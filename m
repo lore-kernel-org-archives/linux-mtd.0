@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 80887FD8FC3
-	for <linux-mtd@archiver.kernel.org>; Thu, 26 Feb 2026 15:59:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 240EFFD8FCF
+	for <linux-mtd@archiver.kernel.org>; Thu, 26 Feb 2026 15:59:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=fH5vkRwQnDtlkTUBry7QcFR5sUSSp9u65/NX+qTt0Qs=; b=CotsWcpSh8fyfc
-	VjV13EE6B/jsDHO2iQRSG4+Hwyc+CvTYthIPaX7Dsl7ujyFm6UyVuxrwQs6/1glcfMkFSnP9mxaRv
-	hD0m80xzf5uUojw8kBdJ1gCVNUPWoLbI3mMWSvi4dHhyCEkx5pzznGcO1tPaHFJctb8vKbzHyRxJH
-	SWBkI4XHvbTrR6uOejaRvjATuO5wLUM7I3iQFX+je0JYiwg4BD0ETxFaKO0qGrbv41QHvZ9CCI5Ki
-	zfYHXH58VTHk8jvQxRn4gE7yjuvwsTeFCdDZ1vXK3mO5BLgDlyMIqTFEd4aQqoybt2n2vt1GtfWvK
-	qvPkxZuhIU/F4oRMOi4g==;
+	List-Owner; bh=UFe1i2x7NVUPnRvRe8McTd9TjV/TT7JQlXMYs+2JqR0=; b=jOHPsHIMxUi7Lq
+	ADyLijrkOGcW9yvgm7eiHAEscxB4ZCWsZ5MyCi0omYtm/Ui1GWqjQDEaiPQmvHuzvS4Ay2jJQJhuT
+	BW0eJwEKGzQ/sbR6BQu9UNZ023wB0wdgqFQfzw6ja/RduakMaVIW0xeCdQ8bC7r+NTSuiKbDQtzH1
+	BCuHOK2V3GhzJix0yNfXG9I8+O1yoIxPUMux/Z6RnKvKxH1JVatBD2sofPKddNOJj3Jr31RagOdxF
+	ldI7Hst0jJSWccZ3srnjVT49LOsH1VnMRPibzGZc6GRzvPHXvo6JE1IWq/ctxFdCiKz0DAe3E6qHU
+	7RurAcVBc/d0crRz/chQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vvdlk-00000006b5Q-1Ciq;
-	Thu, 26 Feb 2026 15:59:16 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1vvdlw-00000006bCH-2DuT;
+	Thu, 26 Feb 2026 15:59:28 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vvdlh-00000006b3i-4A3W;
-	Thu, 26 Feb 2026 15:59:15 +0000
+	id 1vvdlu-00000006bBG-3tty;
+	Thu, 26 Feb 2026 15:59:27 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 8568B44329;
+	by tor.source.kernel.org (Postfix) with ESMTP id 304A3600AE;
+	Thu, 26 Feb 2026 15:59:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BCBFC19424;
 	Thu, 26 Feb 2026 15:59:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21497C2BCB2;
-	Thu, 26 Feb 2026 15:59:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772121553;
-	bh=/dIyAeV0SWp+d5wV41a2YQTvW0T+tDEAvSeW39MxQrw=;
+	s=k20201202; t=1772121565;
+	bh=g5wV3nKd2fkYaUzdtAFph9msp5xwJ6RZyVnJ1pAoKXQ=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=ghaIMgZ0Kc9sSFxLqN3M3k3TK+60uJC0pPBBx9i2Lxpt0oo/B72RlYrHZ5doKyEj4
-	 p/nyNLpPDIidxOkEnm7U3/35E11ov0+Rb0jIejiEJmkHCz0aVwJZRyvIN1zXco/Yjz
-	 d6H2cjgr2HTg0vooB26P2lu8M8somfn6uC4kg8yaF3AKM7eZGMimt73uTMiqXnPm0N
-	 yhIX1ErPK7xbvUpa2Y3UR81NlDwbK+tc3MCOm3fD704u1tguf4hCtEdOipJWTvG+90
-	 W0dnZ3lqQTX5vShOId2hTZvCGE6hOF7cSapC3LXaJJboq6djJCIAwfUZQXky+bBZKX
-	 KEYsgUDdZmazA==
+	b=N77oxwXzWSmqiv4n9JoAOeNfszEZBfeOgSv8Tvh6hdzfxMHzcWkg6NqzIwzXL1t9J
+	 lIfgR0aoySbF9TxW4bRiTuva6YbgTY7qIIkaiL0SyNKorrLDxsWZwwc77811vnw/4z
+	 kH1IrYSjgNM/SD7ioFxLkm0RjZqGM3zdAdSxhKHrqgU2v6KjjiZEedNO1Oay17zKYI
+	 m29sPyavc2gZoemVxxngEEdBgYx7vYYt6cswz+cjE+UpRoOcJEabGTgYyhStcY/9PD
+	 W7SiFP1Zc9ivzrBKhGK10ZSSiECGZ/2W0j3mghQNRu4TT6vd2HuPhzeOT3wYYlaDHD
+	 SFeO6K5okNvrQ==
 From: Jeff Layton <jlayton@kernel.org>
-Date: Thu, 26 Feb 2026 10:55:16 -0500
-Subject: [PATCH 14/61] smb: remove cifs_uniqueid_to_ino_t()
+Date: Thu, 26 Feb 2026 10:55:17 -0500
+Subject: [PATCH 15/61] locks: update /proc/locks format for u64 i_ino
 MIME-Version: 1.0
-Message-Id: <20260226-iino-u64-v1-14-ccceff366db9@kernel.org>
+Message-Id: <20260226-iino-u64-v1-15-ccceff366db9@kernel.org>
 References: <20260226-iino-u64-v1-0-ccceff366db9@kernel.org>
 In-Reply-To: <20260226-iino-u64-v1-0-ccceff366db9@kernel.org>
 To: Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Dan Williams <dan.j.williams@intel.com>, Matthew Wilcox <willy@infradead.org>, Eric Biggers <ebiggers@kernel.org>, "Theodore Y. Ts'o" <tytso@mit.edu>, Muchun Song <muchun.song@linux.dev>, Oscar Salvador <osalvador@suse.de>, David Hildenbrand <david@kernel.org>, David Howells <dhowells@redhat.com>, Paulo Alcantara <pc@manguebit.org>, Andreas Dilger <adilger.kernel@dilger.ca>, Jan Kara <jack@suse.com>, Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>, Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, Chuck Lever <chuck.lever@oracle.com>, NeilBrown <neil@brown.name>, Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, Steve French <sfrench@samba.org>, Ronnie Sahlberg <ronniesahlberg@gmail.com>, Shyam Prasad N <sprasad@microsoft.com>, Bharath SM <bharathsm@microsoft.com>, Alexander Aring <alex.aring@gmail.com>, Ryusuke Konishi <konishi.ryusuke@gmail.com>, Viacheslav Dubeyko <slava@dubeyko.com>, Eric Van Hensbergen <ericvh@kernel.org>, Latchesar Ionkov <lucho@ionkov.net>, Dominique Martinet <asmadeus@codewreck.org>, Christian Schoenebeck <linux_oss@crudebyte.com>, David Sterba <dsterba@suse.com>, Marc Dionne <marc.dionne@auristor.com>, Ian Kent <raven@themaw.net>, Luis de Bethencourt <luisbg@kernel.org>, Salah Triki <salah.triki@gmail.com>, "Tigran A. Aivazian" <aivazian.tigran@gmail.com>, Ilya Dryomov <idryomov@gmail.com>, Alex Markuze <amarkuze@redhat.com>, Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu, Nicolas Pitre <nico@fluxnic.net>, Tyler Hicks <code@tyhicks.com>, Amir Goldstein <amir73il@gmail.com>, Christoph Hellwig <hch@infradead.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Yangtao Li <frank.li@vivo.com>, Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>, David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>, Dave Kleikamp <shaggy@kernel.org>, Konstantin Komarov <almaz.alexandrovich@paragon-software.com>, Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>, Joseph Qi <joseph.qi@linux.alibaba.com>, Mike Marshall <hubcap@omnibond.com>, Martin Brandenburg <martin@omnibond.com>, Miklos Szeredi <miklos@szeredi.hu>, Anders Larsen <al@alarsen.net>, Zhihao Cheng <chengzhihao1@huawei.com>, Damien Le Moal <dlemoal@kernel.org>, Naohiro Aota <naohiro.aota@wdc.com>, Johannes Thumshirn <jth@kernel.org>, John Johansen <john.johansen@canonical.com>, Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, Mimi Zohar <zohar@linux.ibm.com>, Roberto Sassu <roberto.sassu@huawei.com>, Dmitry Kasatkin <dmitry.kasatkin@gmail.com>, Eric Snowberg <eric.snowberg@oracle.com>, Fan Wu <wufan@kernel.org>, Stephen Smalley <stephen.smalley.work@gmail.com>, Ondrej Mosnacek <omosnace@redhat.com>, Casey Schaufler <casey@schaufler-ca.com>, Alex Deucher <alexander.deucher@amd.com>, =?utf-8?q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, Sumit Semwal <sumit.semwal@linaro.org>, Eric Dumazet <edumazet@google.com>, Kuniyuki Iwashima <kuniyu@google.com>, Paolo Abeni <pabeni@redhat.com>, Willem de Bruijn <willemb@google.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Simon Horman <horms@kernel.org>, Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, James Clark <james.clark@linaro.org>, "Darrick J. Wong" <djwong@kernel.org>, Martin Schiller <ms@dev.tdt.de>
@@ -69,25 +69,22 @@ Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-xfs@vger.kernel.org, linux-hams@vger.kernel.org, 
  linux-x25@vger.kernel.org, Jeff Layton <jlayton@kernel.org>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2241; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=/dIyAeV0SWp+d5wV41a2YQTvW0T+tDEAvSeW39MxQrw=;
- b=owEBbQKS/ZANAwAKAQAOaEEZVoIVAcsmYgBpoG0HEnCSKK/SHb3sYW/c+eUblqdBA7d53olyL
- 4HBWYDiVJmJAjMEAAEKAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCaaBtBwAKCRAADmhBGVaC
- FZpYEACU6I0oc4IB+ERKTJODeo5sUbUQRcurbkTkmeBdHU+MAD5YdiZ6z83x8OfcmpXWliPk5Ya
- u7AmLMTAsggh98Rh4QxIO+fwJLpw4ZIK1sEPEhfrzx2Mgoa9MXxpfxwLrHMTDktm0UmImLGKuIf
- yIsqBYSeqK50NLbrZmGWoz6GnXH2YyhrZboFMWnt3vm2eKyCA2IfY5cpb8RmBEzOhc2MIYSUKJp
- c1vDjKmB5HdCEbItlJxl0T+SLOrSQSDwqM2tt75fI2d0FL4k36/L5myAi/kfDy85B/w7xVV6VpB
- EPgaEOCOTjEOfCNsZ3dMpzRZ1OxTuEfuYWvqD/qrQYx30qYjjv2BTr6x8/8i0AjFF2MxCT6cMUF
- JEtme2MWU9XZ6fOnYlbsXvScqGY89Xrq0gULrm//VGWgzKBiZRLR9JDj+rpklL65JZvEyXG9ODI
- v2DH1wdJq7wy+QuXfNJrHleTpkA1Efl7+FFi1OBwkJVrdFEKMDxkFUDYJlRUXEFaZqcaBZZwazU
- QjNwVDsgfKk44TmlVoSyAOa9vYw/0LYojdfN8/k6ojhYSAyaCwmTTWi8n7vY7cgmuqoJXf+DuEV
- bTHCuOqlSQp/scKU84C72kyiBfqs3OKPxgoG0kfTlDICkZK3DbX/LfyRxd4grRdimZjMkLQgkOf
- Qzu15dS5Cp6Qypw==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1741; i=jlayton@kernel.org;
+ h=from:subject:message-id; bh=g5wV3nKd2fkYaUzdtAFph9msp5xwJ6RZyVnJ1pAoKXQ=;
+ b=owEBbQKS/ZANAwAKAQAOaEEZVoIVAcsmYgBpoG0HH319jkE4Yrl34DaunuDnGYZ75BXLH9h46
+ zoQskxUz6GJAjMEAAEKAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCaaBtBwAKCRAADmhBGVaC
+ FUwjEAC2ZD0qhNxn0eTdG9w5L7ZFtQ6MZt/PduR8tBc3steDLPNlVr1HlkztvzNhjEOjeFzGNPU
+ 4noqHrsD5fArwVU/hc6LnjXeQ8RAy/6Hlf3azXhaKWbWbrzkh13zrEYDIdOJ14A9y6jY3+xttky
+ D8J0Zr1cBS+Fea9EypNUH9iUbsMWzobZMoFdR0QuVJKHuORdhQcCVeBdduppG5CLBlz8mDe9fO4
+ fl87CAf8I8SWWGbHr+Ci6+/7Cr8hK6ED5HB2IDSeilxnKXdaHNFgGNGNGzYwowpMPX6H/JlrNSN
+ EanbpucgYZEbZp8Q5AP8enVYbOCx8iesoQSTsYqhB4YbEZyRXe/HyQcclJ+1cKiT+/mKW7y8Krc
+ M0+g4XeUfCV28zdM/SRcop8nhoVyuv4ZR9JNdA9pb4+iiVb41A9l8m9vkxO/uFsXMfaG2sPRjk3
+ l3rQ2itrahMP9pU9pjjJ3pO6wU4VI1O8I3iw87/ngaPXuWbRUxWm+ZQ3BLLijixSs2EGPRHP0s1
+ FP/nnlD54YoVMLF9vPr4rvBWgP4pY2pJsjAOTLFpNvYzfvlVpGWBUhJwm6vSBhfysRhoV3ME84C
+ 9U+FefjqnYIccrpU9UZdDviywXX3E9g8/fiSYVJTayZJdkBeH4Qdvg+hgVcv3BrX1XcZxdljHr4
+ zqhW1CQyEOF9qKA==
 X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
  fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260226_075914_075124_0528E560 
-X-CRM114-Status: GOOD (  14.04  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -104,70 +101,45 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Now that i_ino is u64, cifs_uniqueid_to_ino_t() is a trivial identity
-function. Remove it and use fattr->cf_uniqueid directly at both call
-sites.
-
-Also remove the now-unused #include <linux/hash.h>, which was only
-needed for the old XOR-folding logic.
+Update the seq_printf format string in lock_get_status() from %lu to
+%llu for printing inode->i_ino, since i_ino is now u64.
 
 Signed-off-by: Jeff Layton <jlayton@kernel.org>
 ---
- fs/smb/client/cifsfs.h  | 11 -----------
- fs/smb/client/inode.c   |  2 +-
- fs/smb/client/readdir.c |  2 +-
- 3 files changed, 2 insertions(+), 13 deletions(-)
+ fs/locks.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/fs/smb/client/cifsfs.h b/fs/smb/client/cifsfs.h
-index 4a1f18022c711a7ff5b141d08ec6cac8483a6b6a..f71b490b548c0274f314dd0dc76bf570ee3cfd09 100644
---- a/fs/smb/client/cifsfs.h
-+++ b/fs/smb/client/cifsfs.h
-@@ -9,19 +9,8 @@
- #ifndef _CIFSFS_H
- #define _CIFSFS_H
+diff --git a/fs/locks.c b/fs/locks.c
+index d13ec930b7bb03905df50bdce30b84749edab8d0..d8b066fb42108971f6b3c7449dbc9b5f8df16b13 100644
+--- a/fs/locks.c
++++ b/fs/locks.c
+@@ -234,7 +234,7 @@ locks_check_ctx_lists(struct inode *inode)
+ 	if (unlikely(!list_empty(&ctx->flc_flock) ||
+ 		     !list_empty(&ctx->flc_posix) ||
+ 		     !list_empty(&ctx->flc_lease))) {
+-		pr_warn("Leaked locks on dev=0x%x:0x%x ino=0x%lx:\n",
++		pr_warn("Leaked locks on dev=0x%x:0x%x ino=0x%llx:\n",
+ 			MAJOR(inode->i_sb->s_dev), MINOR(inode->i_sb->s_dev),
+ 			inode->i_ino);
+ 		locks_dump_ctx_list(&ctx->flc_flock, "FLOCK");
+@@ -251,7 +251,7 @@ locks_check_ctx_file_list(struct file *filp, struct list_head *list, char *list_
  
--#include <linux/hash.h>
--
- #define ROOT_I 2
- 
--/*
-- * With i_ino being u64, we can store the full 64-bit uniqueid directly.
-- */
--static inline u64
--cifs_uniqueid_to_ino_t(u64 fileid)
--{
--	return fileid;
--}
--
- static inline void cifs_set_time(struct dentry *dentry, unsigned long time)
- {
- 	dentry->d_fsdata = (void *) time;
-diff --git a/fs/smb/client/inode.c b/fs/smb/client/inode.c
-index 102e7615b658726551e9b01ba25065d1f0c505ac..a82f4fbf8146572e522080bcd7df41153403978d 100644
---- a/fs/smb/client/inode.c
-+++ b/fs/smb/client/inode.c
-@@ -1618,7 +1618,7 @@ cifs_iget(struct super_block *sb, struct cifs_fattr *fattr)
- 	cifs_dbg(FYI, "looking for uniqueid=%llu\n", fattr->cf_uniqueid);
- 
- 	/* With u64 i_ino, we can use the full uniqueid */
--	hash = cifs_uniqueid_to_ino_t(fattr->cf_uniqueid);
-+	hash = fattr->cf_uniqueid;
- 
- 	inode = iget5_locked(sb, hash, cifs_find_inode, cifs_init_inode, fattr);
+ 	list_for_each_entry(flc, list, flc_list)
+ 		if (flc->flc_file == filp)
+-			pr_warn("Leaked %s lock on dev=0x%x:0x%x ino=0x%lx "
++			pr_warn("Leaked %s lock on dev=0x%x:0x%x ino=0x%llx "
+ 				" fl_owner=%p fl_flags=0x%x fl_type=0x%x fl_pid=%u\n",
+ 				list_type, MAJOR(inode->i_sb->s_dev),
+ 				MINOR(inode->i_sb->s_dev), inode->i_ino,
+@@ -2896,7 +2896,7 @@ static void lock_get_status(struct seq_file *f, struct file_lock_core *flc,
+ 			     (type == F_RDLCK) ? "READ" : "UNLCK");
  	if (inode) {
-diff --git a/fs/smb/client/readdir.c b/fs/smb/client/readdir.c
-index 8615a8747b7f0127a781b9b3795535df4c9b73cd..cec74bd2e2302c3baeba8d7e1348ba5114d4b1e4 100644
---- a/fs/smb/client/readdir.c
-+++ b/fs/smb/client/readdir.c
-@@ -919,7 +919,7 @@ static bool cifs_dir_emit(struct dir_context *ctx,
- {
- 	size_t delta_bytes = 0;
- 	bool rc, added = false;
--	ino_t ino = cifs_uniqueid_to_ino_t(fattr->cf_uniqueid);
-+	ino_t ino = fattr->cf_uniqueid;
- 
- 	rc = dir_emit(ctx, name, namelen, ino, fattr->cf_dtype);
- 	if (!rc)
+ 		/* userspace relies on this representation of dev_t */
+-		seq_printf(f, "%d %02x:%02x:%lu ", pid,
++		seq_printf(f, "%d %02x:%02x:%llu ", pid,
+ 				MAJOR(inode->i_sb->s_dev),
+ 				MINOR(inode->i_sb->s_dev), inode->i_ino);
+ 	} else {
 
 -- 
 2.53.0
