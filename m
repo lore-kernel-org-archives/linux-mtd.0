@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4CCA9FD8FCE
-	for <linux-mtd@archiver.kernel.org>; Thu, 26 Feb 2026 16:03:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B680FD8FCE
+	for <linux-mtd@archiver.kernel.org>; Thu, 26 Feb 2026 16:04:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=mmAFfhxFDESF+ffF0F0rMd0xkwfCxV0q1aYJNNLTbnY=; b=IK0g6/HmyjFOyC
-	ToPtlH0rde5aeQvM064Wufb9RsM88ZQfzbgCekWYr2j7EDg+Aoc8TNnB6iJwKFopDMopQavcoTCcg
-	yLT3nUwPqBSigNW/90LVCihOpXvqk2CRhvdDzc+jUN1xSZUJsciKdUfNm3vkScYkxXwhkIQms15go
-	Gz2P24VGhAC6cKSe8wa1OFgYrVZgVfnL+S/H3FmR6nZxCwSTYR2TIKno7yZOyQVVA7KdVQ9Oz6MD3
-	Z2ylQsaPJFGJbnvGP/P063ug+2S7C8ZfEIwM/ArtbEC9ZMXLfh0vQHR+zRIZX2ecEetXTdovuZgwc
-	hXaw8r0t7IWwy0FdU0LA==;
+	List-Owner; bh=EuUitm3zjzPM1FtYacWiW4pEP+CU9Xqa4Opk8ebp964=; b=gjBQSVvjAsDO8Z
+	gPQq4ghg4QDWjU2Mwymfu2Zi/+sdp6UY87q4j8CuDiSXcsB7dTydiJjHeYuZ/uURCygvw/n6JGfUo
+	iHynt5jRdTu1cZcDx9d8Hm0TyQMfpU3IeDXMBJdH3XhVGxlbvgIxxfIC6RGSrs2vo2HMFbh20zRDU
+	HOP6U6wqnJbAkH8SEGt4Cqs60JjNIa0ItUgRBCrwwbHN+C/5dUgJrfnEsvOthZtsXUyaWqGlhsxMZ
+	kF9P2R1cCSeuBKnmZmeNNs6xH2jFNVyc8F1TH35HlfDQvgbT20y9T7jXG0KH4V8QQd1ESDVqacGe1
+	H9SfV3JfamYyOBQBWuBw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vvdqA-00000006eNH-4Bva;
-	Thu, 26 Feb 2026 16:03:51 +0000
+	id 1vvdqO-00000006eWg-0jMU;
+	Thu, 26 Feb 2026 16:04:04 +0000
 Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vvdqA-00000006eMS-1Qpr;
-	Thu, 26 Feb 2026 16:03:50 +0000
+	id 1vvdqM-00000006eVW-3NJK;
+	Thu, 26 Feb 2026 16:04:02 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 7D03661842;
+	by tor.source.kernel.org (Postfix) with ESMTP id 0D37461858;
+	Thu, 26 Feb 2026 16:04:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D281C2BC86;
 	Thu, 26 Feb 2026 16:03:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE2E7C2BCB3;
-	Thu, 26 Feb 2026 16:03:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772121829;
-	bh=7ZXyl76yXKAVgEB9XnfKu8Y7KFxyRRm589E8p3gkT2s=;
+	s=k20201202; t=1772121841;
+	bh=HQnqBhHZU2sAWZhxdsq0PVvzgqOCHqHvsaI1swrWu1M=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=KcTCpPsqT0E5ocLxE89k0oKhHGVx7VoQTn3/uYe5/qXwIXPvYdQEwFRCyS6KM1cNQ
-	 zBEzmngpDW+7qc2cn+9opn0tPt8pJ7awOyzzo0R5hQL5PQdk4CPX09raGl2N5LarlE
-	 7+YA4JD9zTwdj4F6AXiUzJ9Vh7bLryWHvL9ZqFHCerZTQRHd/fYOQx7E1Wh7ou7xgX
-	 BxRLHJs9N2l7iFfbzvFtwyb2aFJy0N6n6b9nIrxXFd0GZBeTaQbiZSvOMvGG+M89eU
-	 MR+4+e3oV4GpXdunFeQDn39GpWw62ct90x3cMW7WCAK3bvjdi6sKTZKRMHVG66nLiR
-	 F4O2Jt9m7SwHw==
+	b=gJlVm7bE76zMjPY0CgXsfeaUiMCfDr29KRS7Vh4h2cufOsxVaL5HokgQrFZjvKWr0
+	 LEH+khOHPUXIeREJ7JyKNIXJlLHTCAOxJPnAYoeWoFtolV2nTN/DhtW7MOAbUVibQc
+	 WTdgnawaWwkZx/nuKKRr7IFt/5sE9Nl9CFm9QEukVr5io4yf2T5BY0t386rJEC+GEl
+	 SflifBzQRFAoEaN/bU2SoYbHxhSyHeYnJKCUiuG46KLIUz85b/Ru9/lo2uzwMGJzZM
+	 y3ZayvYKCJ9VnC/06j4fIoKbF7OIfu0CdyMytRJDWNemrerfOYGB0Kys9ZbiVmtqY5
+	 73k3GRG0I2lLA==
 From: Jeff Layton <jlayton@kernel.org>
-Date: Thu, 26 Feb 2026 10:55:38 -0500
-Subject: [PATCH 36/61] isofs: update format strings for u64 i_ino
+Date: Thu, 26 Feb 2026 10:55:39 -0500
+Subject: [PATCH 37/61] jffs2: update format strings for u64 i_ino
 MIME-Version: 1.0
-Message-Id: <20260226-iino-u64-v1-36-ccceff366db9@kernel.org>
+Message-Id: <20260226-iino-u64-v1-37-ccceff366db9@kernel.org>
 References: <20260226-iino-u64-v1-0-ccceff366db9@kernel.org>
 In-Reply-To: <20260226-iino-u64-v1-0-ccceff366db9@kernel.org>
 To: Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Dan Williams <dan.j.williams@intel.com>, Matthew Wilcox <willy@infradead.org>, Eric Biggers <ebiggers@kernel.org>, "Theodore Y. Ts'o" <tytso@mit.edu>, Muchun Song <muchun.song@linux.dev>, Oscar Salvador <osalvador@suse.de>, David Hildenbrand <david@kernel.org>, David Howells <dhowells@redhat.com>, Paulo Alcantara <pc@manguebit.org>, Andreas Dilger <adilger.kernel@dilger.ca>, Jan Kara <jack@suse.com>, Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>, Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, Chuck Lever <chuck.lever@oracle.com>, NeilBrown <neil@brown.name>, Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, Steve French <sfrench@samba.org>, Ronnie Sahlberg <ronniesahlberg@gmail.com>, Shyam Prasad N <sprasad@microsoft.com>, Bharath SM <bharathsm@microsoft.com>, Alexander Aring <alex.aring@gmail.com>, Ryusuke Konishi <konishi.ryusuke@gmail.com>, Viacheslav Dubeyko <slava@dubeyko.com>, Eric Van Hensbergen <ericvh@kernel.org>, Latchesar Ionkov <lucho@ionkov.net>, Dominique Martinet <asmadeus@codewreck.org>, Christian Schoenebeck <linux_oss@crudebyte.com>, David Sterba <dsterba@suse.com>, Marc Dionne <marc.dionne@auristor.com>, Ian Kent <raven@themaw.net>, Luis de Bethencourt <luisbg@kernel.org>, Salah Triki <salah.triki@gmail.com>, "Tigran A. Aivazian" <aivazian.tigran@gmail.com>, Ilya Dryomov <idryomov@gmail.com>, Alex Markuze <amarkuze@redhat.com>, Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu, Nicolas Pitre <nico@fluxnic.net>, Tyler Hicks <code@tyhicks.com>, Amir Goldstein <amir73il@gmail.com>, Christoph Hellwig <hch@infradead.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Yangtao Li <frank.li@vivo.com>, Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>, David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>, Dave Kleikamp <shaggy@kernel.org>, Konstantin Komarov <almaz.alexandrovich@paragon-software.com>, Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>, Joseph Qi <joseph.qi@linux.alibaba.com>, Mike Marshall <hubcap@omnibond.com>, Martin Brandenburg <martin@omnibond.com>, Miklos Szeredi <miklos@szeredi.hu>, Anders Larsen <al@alarsen.net>, Zhihao Cheng <chengzhihao1@huawei.com>, Damien Le Moal <dlemoal@kernel.org>, Naohiro Aota <naohiro.aota@wdc.com>, Johannes Thumshirn <jth@kernel.org>, John Johansen <john.johansen@canonical.com>, Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, Mimi Zohar <zohar@linux.ibm.com>, Roberto Sassu <roberto.sassu@huawei.com>, Dmitry Kasatkin <dmitry.kasatkin@gmail.com>, Eric Snowberg <eric.snowberg@oracle.com>, Fan Wu <wufan@kernel.org>, Stephen Smalley <stephen.smalley.work@gmail.com>, Ondrej Mosnacek <omosnace@redhat.com>, Casey Schaufler <casey@schaufler-ca.com>, Alex Deucher <alexander.deucher@amd.com>, =?utf-8?q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, Sumit Semwal <sumit.semwal@linaro.org>, Eric Dumazet <edumazet@google.com>, Kuniyuki Iwashima <kuniyu@google.com>, Paolo Abeni <pabeni@redhat.com>, Willem de Bruijn <willemb@google.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Simon Horman <horms@kernel.org>, Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, James Clark <james.clark@linaro.org>, "Darrick J. Wong" <djwong@kernel.org>, Martin Schiller <ms@dev.tdt.de>
@@ -69,20 +69,20 @@ Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-xfs@vger.kernel.org, linux-hams@vger.kernel.org, 
  linux-x25@vger.kernel.org, Jeff Layton <jlayton@kernel.org>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3467; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=7ZXyl76yXKAVgEB9XnfKu8Y7KFxyRRm589E8p3gkT2s=;
- b=owEBbQKS/ZANAwAKAQAOaEEZVoIVAcsmYgBpoG0Nmf52pdo656jlWG4t6yni37xfclzHx2ZRe
- Hw1/6GQjdmJAjMEAAEKAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCaaBtDQAKCRAADmhBGVaC
- FW3AD/9rOAXtG95ctw6n0QBFd93xKDo7vJh93xVrf1hM7M7M9YqMLCRzKaYvrvf8+yQ1GDCcm3J
- S/+kU0HuaVEfXXKjGWe8VYJS5AHh2kuXydz4f8AZaFEh5T3E/tj5W6xHU2l3kMYX9rKqM+TLKUV
- 6eDA2MJcyUi8LBzCkaElVmMUIuvbHvuj5FeqDDymRc0g5DEq88RLsQafiDn+oIBtQav0OwofD/H
- UQA2j5KV382N7yGCPNhG0xeX70APRR15I5Jkkh5E3JyUIUuJ/dgFHSNUFUvA6gV7BOMc9T75Idw
- /HFKLptC7dGdiHO2WKVZBqq3/xTN6Dy8AiyxY/qR2SBAPlRvyagaRa5sg3Nh5fqyn7rEO+K1SWz
- p2A0gQ+Pf1CwKBuynNegFK7pPKf29/drS5qS45bhHmF3NH/U2HdfJL4P6FzfjulDLVEZChFiqJr
- Z5Qok9gagjzuWpfkx9r97B/LKvi2+qoJXIwoRY4kPevQhamlcZ5ep4h5Af18MGgCCLLFoT08ZmV
- qUabhq/rjFG0UEiy72/s0O3dRIfUi16mLehRNeqlBe539MhbgGK1XFlaDDUVcGvzWA9YBWDWwBb
- bIZSztIcE7iXdNRY3OdAt/IfwuQbe0vr8GuaY4IIHodKPolCQQghHhemHJpZ91FU9wQppzWJQ2Y
- BHEQ22WX0qewrzQ==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4882; i=jlayton@kernel.org;
+ h=from:subject:message-id; bh=HQnqBhHZU2sAWZhxdsq0PVvzgqOCHqHvsaI1swrWu1M=;
+ b=owEBbQKS/ZANAwAKAQAOaEEZVoIVAcsmYgBpoG0NSWGyn7zHQs4lO9B7QHYKEbCOl3hhGFFiP
+ wXI+jDlXyCJAjMEAAEKAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCaaBtDQAKCRAADmhBGVaC
+ FSE6D/oDcjFvjSL27UnDC75n4tTWmF3e+3hOlngVHS0P8swlrVZHH8UB/b5H9mPfSBtEwXOQ1Kk
+ MG7NQleGUa3kL6qeHvNkP+Nh8nsEaTHjrvHUZiIrhWp7x6ItgtwqyKAOBGvCIm/ta4v/QNNLCW/
+ U7+MA/+xQRyCPuJMUkEEffctlwe12qlyupf0uWNsR0SVxcFfc6tuqzxl7CNAf81vEfaRGZXKOjf
+ iBw1omDa0EZ5xyRlJQgyvwDn6gYmkqiCec2DjDz3n21jYMA6oUvsdVldlPSoT4jBRQwFxiTUZwY
+ 4WsvihWU3QXqlN3KfgXvQBm4yE9dar7P0n35DxdQm+bxDzg9hOxMx7DArTKBYlogjLiQiaEkbIJ
+ QyD6nTO13d55OgImz6XzFTTGgQSBr6CVz67a1snb/v5o+133K6uJ5nJ1HNXeptjXGc5O8ea3YOW
+ +A/zEnZ4mJfWGG2qeDI8yQVZnR5lZV6OyCbzZaLFZaxIvadZ6m4EWHmLfcblHaPIguoJbzdKyVJ
+ 9b4uhXscumqEchfZwL61TofMl1Wnc4+VvquOetaInENpVxsGuUyv5KxOr4RN1gknWp1mzefX5v0
+ nusE399ByDmiN2rubObzc6m3vJLBare12HsXVGbGORpySeuYoRB/HJXyFKUH4NBTzeJfVgIZxL5
+ flGSB6N+pfsDpgQ==
 X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
  fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
 X-BeenThere: linux-mtd@lists.infradead.org
@@ -101,87 +101,128 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Update format strings and local variable types in isofs for the
+Update format strings and local variable types in jffs2 for the
 i_ino type change from unsigned long to u64.
 
 Signed-off-by: Jeff Layton <jlayton@kernel.org>
 ---
- fs/isofs/compress.c | 2 +-
- fs/isofs/dir.c      | 2 +-
- fs/isofs/inode.c    | 6 +++---
- fs/isofs/namei.c    | 2 +-
- 4 files changed, 6 insertions(+), 6 deletions(-)
+ fs/jffs2/dir.c  |  4 ++--
+ fs/jffs2/file.c |  4 ++--
+ fs/jffs2/fs.c   | 18 +++++++++---------
+ 3 files changed, 13 insertions(+), 13 deletions(-)
 
-diff --git a/fs/isofs/compress.c b/fs/isofs/compress.c
-index 50b4cb3aea87c7fc46b8b5483162bce84573b483..397568b9c7e7d3e28873be02c8a4befcddaec7b5 100644
---- a/fs/isofs/compress.c
-+++ b/fs/isofs/compress.c
-@@ -156,7 +156,7 @@ static loff_t zisofs_uncompress_block(struct inode *inode, loff_t block_start,
- 				else {
- 					printk(KERN_DEBUG
- 					       "zisofs: zisofs_inflate returned"
--					       " %d, inode = %lu,"
-+					       " %d, inode = %llu,"
- 					       " page idx = %d, bh idx = %d,"
- 					       " avail_in = %ld,"
- 					       " avail_out = %ld\n",
-diff --git a/fs/isofs/dir.c b/fs/isofs/dir.c
-index 2ca16c3fe5ef3427e5bbd0631eb8323ef3c58bf1..2fd9948d606e9c92f3003bfbaa4f0271c750a93d 100644
---- a/fs/isofs/dir.c
-+++ b/fs/isofs/dir.c
-@@ -152,7 +152,7 @@ static int do_isofs_readdir(struct inode *inode, struct file *file,
- 		    de_len < de->name_len[0] +
- 					sizeof(struct iso_directory_record)) {
- 			printk(KERN_NOTICE "iso9660: Corrupted directory entry"
--			       " in block %lu of inode %lu\n", block,
-+			       " in block %lu of inode %llu\n", block,
- 			       inode->i_ino);
- 			brelse(bh);
- 			return -EIO;
-diff --git a/fs/isofs/inode.c b/fs/isofs/inode.c
-index 5c01536c5e8fecb73a95d801cdd3b8ee22011a3c..1d9a8aeee1fd55998abca74c7e171dc2bc242084 100644
---- a/fs/isofs/inode.c
-+++ b/fs/isofs/inode.c
-@@ -1261,7 +1261,7 @@ static int isofs_read_level3_size(struct inode *inode)
+diff --git a/fs/jffs2/dir.c b/fs/jffs2/dir.c
+index 2b38ce1fd8e8d8d59e80f6ffb9ea2935f8cb27e4..c4088c3b4ac0362074cfa186c04f9c3afcccdff2 100644
+--- a/fs/jffs2/dir.c
++++ b/fs/jffs2/dir.c
+@@ -129,7 +129,7 @@ static int jffs2_readdir(struct file *file, struct dir_context *ctx)
+ 	struct jffs2_full_dirent *fd;
+ 	unsigned long curofs = 1;
  
- out_toomany:
- 	printk(KERN_INFO "%s: More than 100 file sections ?!?, aborting...\n"
--		"isofs_read_level3_size: inode=%lu\n",
-+		"isofs_read_level3_size: inode=%llu\n",
- 		__func__, inode->i_ino);
- 	goto out;
- }
-@@ -1380,7 +1380,7 @@ static int isofs_read_inode(struct inode *inode, int relocated)
- 	/* I have no idea what file_unit_size is used for, so
- 	   we will flag it for now */
- 	if (de->file_unit_size[0] != 0) {
--		printk(KERN_DEBUG "ISOFS: File unit size != 0 for ISO file (%ld).\n",
-+		printk(KERN_DEBUG "ISOFS: File unit size != 0 for ISO file (%lld).\n",
- 			inode->i_ino);
+-	jffs2_dbg(1, "jffs2_readdir() for dir_i #%lu\n", inode->i_ino);
++	jffs2_dbg(1, "jffs2_readdir() for dir_i #%llu\n", inode->i_ino);
+ 
+ 	if (!dir_emit_dots(file, ctx))
+ 		return 0;
+@@ -211,7 +211,7 @@ static int jffs2_create(struct mnt_idmap *idmap, struct inode *dir_i,
+ 
+ 	jffs2_free_raw_inode(ri);
+ 
+-	jffs2_dbg(1, "%s(): Created ino #%lu with mode %o, nlink %d(%d). nrpages %ld\n",
++	jffs2_dbg(1, "%s(): Created ino #%llu with mode %o, nlink %d(%d). nrpages %ld\n",
+ 		  __func__, inode->i_ino, inode->i_mode, inode->i_nlink,
+ 		  f->inocache->pino_nlink, inode->i_mapping->nrpages);
+ 
+diff --git a/fs/jffs2/file.c b/fs/jffs2/file.c
+index 5e1ef4bc009b6e5b4818a7467639fc328c137c12..1e18d3a798409d23440a5890808bc25372549e93 100644
+--- a/fs/jffs2/file.c
++++ b/fs/jffs2/file.c
+@@ -88,7 +88,7 @@ static int jffs2_do_readpage_nolock(struct inode *inode, struct folio *folio)
+ 	unsigned char *kaddr;
+ 	int ret;
+ 
+-	jffs2_dbg(2, "%s(): ino #%lu, page at offset 0x%lx\n",
++	jffs2_dbg(2, "%s(): ino #%llu, page at offset 0x%lx\n",
+ 		  __func__, inode->i_ino, folio->index << PAGE_SHIFT);
+ 
+ 	BUG_ON(!folio_test_locked(folio));
+@@ -259,7 +259,7 @@ static int jffs2_write_end(const struct kiocb *iocb,
+ 	uint32_t writtenlen = 0;
+ 	void *buf;
+ 
+-	jffs2_dbg(1, "%s(): ino #%lu, page at 0x%llx, range %d-%d, flags %lx\n",
++	jffs2_dbg(1, "%s(): ino #%llu, page at 0x%llx, range %d-%d, flags %lx\n",
+ 		  __func__, inode->i_ino, folio_pos(folio),
+ 		  start, end, folio->flags.f);
+ 
+diff --git a/fs/jffs2/fs.c b/fs/jffs2/fs.c
+index c3ce2c868f7a33476d5cde4f1af7c7ed9c6c6c41..d3561a9c3d2a836e2c1f9de87816b80d0a1cf2e0 100644
+--- a/fs/jffs2/fs.c
++++ b/fs/jffs2/fs.c
+@@ -43,7 +43,7 @@ int jffs2_do_setattr (struct inode *inode, struct iattr *iattr)
+ 	int ret;
+ 	int alloc_type = ALLOC_NORMAL;
+ 
+-	jffs2_dbg(1, "%s(): ino #%lu\n", __func__, inode->i_ino);
++	jffs2_dbg(1, "%s(): ino #%llu\n", __func__, inode->i_ino);
+ 
+ 	/* Special cases - we don't want more than one data node
+ 	   for these types on the medium at any time. So setattr
+@@ -243,7 +243,7 @@ void jffs2_evict_inode (struct inode *inode)
+ 	struct jffs2_sb_info *c = JFFS2_SB_INFO(inode->i_sb);
+ 	struct jffs2_inode_info *f = JFFS2_INODE_INFO(inode);
+ 
+-	jffs2_dbg(1, "%s(): ino #%lu mode %o\n",
++	jffs2_dbg(1, "%s(): ino #%llu mode %o\n",
+ 		  __func__, inode->i_ino, inode->i_mode);
+ 	truncate_inode_pages_final(&inode->i_data);
+ 	clear_inode(inode);
+@@ -334,8 +334,8 @@ struct inode *jffs2_iget(struct super_block *sb, unsigned long ino)
+ 		ret = jffs2_read_dnode(c, f, f->metadata, (char *)&jdev, 0, f->metadata->size);
+ 		if (ret < 0) {
+ 			/* Eep */
+-			pr_notice("Read device numbers for inode %lu failed\n",
+-				  (unsigned long)inode->i_ino);
++			pr_notice("Read device numbers for inode %llu failed\n",
++				  (unsigned long long)inode->i_ino);
+ 			goto error;
+ 		}
+ 		if (f->metadata->size == sizeof(jdev.old_id))
+@@ -351,8 +351,8 @@ struct inode *jffs2_iget(struct super_block *sb, unsigned long ino)
+ 		break;
+ 
+ 	default:
+-		pr_warn("%s(): Bogus i_mode %o for ino %lu\n",
+-			__func__, inode->i_mode, (unsigned long)inode->i_ino);
++		pr_warn("%s(): Bogus i_mode %o for ino %llu\n",
++			__func__, inode->i_mode, (unsigned long long)inode->i_ino);
  	}
  
-@@ -1450,7 +1450,7 @@ static int isofs_read_inode(struct inode *inode, int relocated)
- 		/* XXX - parse_rock_ridge_inode() had already set i_rdev. */
- 		init_special_inode(inode, inode->i_mode, inode->i_rdev);
- 	} else {
--		printk(KERN_DEBUG "ISOFS: Invalid file type 0%04o for inode %lu.\n",
-+		printk(KERN_DEBUG "ISOFS: Invalid file type 0%04o for inode %llu.\n",
- 			inode->i_mode, inode->i_ino);
- 		ret = -EIO;
- 		goto fail;
-diff --git a/fs/isofs/namei.c b/fs/isofs/namei.c
-index 58f80e1b3ac0d5082c24b5dbfd064cf5bff7d5a5..8dd3911717e0cc221f60fb6447e1bf26cc2223dd 100644
---- a/fs/isofs/namei.c
-+++ b/fs/isofs/namei.c
-@@ -100,7 +100,7 @@ isofs_find_entry(struct inode *dir, struct dentry *dentry,
- 		/* Basic sanity check, whether name doesn't exceed dir entry */
- 		if (de_len < dlen + sizeof(struct iso_directory_record)) {
- 			printk(KERN_NOTICE "iso9660: Corrupted directory entry"
--			       " in block %lu of inode %lu\n", block,
-+			       " in block %lu of inode %llu\n", block,
- 			       dir->i_ino);
- 			brelse(bh);
- 			return 0;
+ 	mutex_unlock(&f->sem);
+@@ -374,12 +374,12 @@ void jffs2_dirty_inode(struct inode *inode, int flags)
+ 	struct iattr iattr;
+ 
+ 	if (!(inode_state_read_once(inode) & I_DIRTY_DATASYNC)) {
+-		jffs2_dbg(2, "%s(): not calling setattr() for ino #%lu\n",
++		jffs2_dbg(2, "%s(): not calling setattr() for ino #%llu\n",
+ 			  __func__, inode->i_ino);
+ 		return;
+ 	}
+ 
+-	jffs2_dbg(1, "%s(): calling setattr() for ino #%lu\n",
++	jffs2_dbg(1, "%s(): calling setattr() for ino #%llu\n",
+ 		  __func__, inode->i_ino);
+ 
+ 	iattr.ia_valid = ATTR_MODE|ATTR_UID|ATTR_GID|ATTR_ATIME|ATTR_MTIME|ATTR_CTIME;
+@@ -428,7 +428,7 @@ struct inode *jffs2_new_inode (struct inode *dir_i, umode_t mode, struct jffs2_r
+ 	struct jffs2_inode_info *f;
+ 	int ret;
+ 
+-	jffs2_dbg(1, "%s(): dir_i %ld, mode 0x%x\n",
++	jffs2_dbg(1, "%s(): dir_i %lld, mode 0x%x\n",
+ 		  __func__, dir_i->i_ino, mode);
+ 
+ 	c = JFFS2_SB_INFO(sb);
 
 -- 
 2.53.0
