@@ -4,62 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08532FD8FCA
-	for <linux-mtd@archiver.kernel.org>; Thu, 26 Feb 2026 16:02:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32E30FD8FD0
+	for <linux-mtd@archiver.kernel.org>; Thu, 26 Feb 2026 16:02:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=quiDzJMi1NfmYGskTZg7Y/J/+VG2vG+jTR94pSiW4Aw=; b=QmOtlYWJmJXfuN
-	Zp9hmf2Yxec7m5bWGZeWA0KwAOnQHv+oFt7ZLROQgVf3KFUDxW8BFoLxposQ9pmtZEVT6UOsaE5JI
-	rBoaSqoYMN7WDzt+B2pykKJ2fmgDlhkU33mUJUfBXz8mJAReonI8k1GJ5XpKSU2ZDylXHtmybTozf
-	KJWCK5h79gckqL0FlKagfE7hQPfOeExYaMfRYK2rBv57oedH3LcGXPyEzilh/nWTtJcir9qPSTC5W
-	TjOXEUVXpJDAXqXqKw/8ok/ViHnkQUXAozIkr7cfmNVtJhgWcHPuOBIMtwpyr9hB34qhjEyyivZLf
-	VE5qAU5/EZVP4Uja5MkA==;
+	List-Owner; bh=/6yxAtGlOyEFsZCm31bP6L0EFAqm3D9B4PJYovtm2bU=; b=nyKmajx9i5rwsD
+	A4awNZQjdiAhsN6Er1XV1AM75sAj0ysKbEu2euwEmVCh6RvHWJgz4vAVHd5KJjbRyMxXNMbe6LKLF
+	JFVMPXRhz8N8JIgEV4QI9aXXHg5iWy2OaBaaGYKUHnz74IqlcpOinqUojtgPZ6/pJ92aUgeStrpZR
+	p8J6YF6CgLHWpeNwsOIcwYlGX5lQg9PpP+MaHovuDeDIymVdjJk8TXcYl7GdoZDuKlxeIIaa1x0pn
+	pACpjzQIWZMMvgEbBcrXr3m2oZLnC4WN1HIzdmlOkwdMvlfUKa9uVSlR2NH2pEkXDQIL1b2p8ij6d
+	qEcYqgAK06h3xP8vrgMw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vvdp2-00000006dZd-3JQM;
-	Thu, 26 Feb 2026 16:02:40 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1vvdpB-00000006dfr-3CPk;
+	Thu, 26 Feb 2026 16:02:49 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vvdp0-00000006dWp-26Aj;
-	Thu, 26 Feb 2026 16:02:38 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Cc:To:In-Reply-To:References:
-	Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
-	From:Sender:Reply-To:Content-ID:Content-Description;
-	bh=QNshNCgnV5XTGjlZCNUGjSs9zbbjG/V3gBkBoY+OlDA=; b=gJB4jOy2tNyxv1wWfyf5Inb0CA
-	2380GIz5vchYlTekcnaWtx7F5Kk9anDWeRfBCjWtgNpBdGtWiGrklNIzV4lDSO42UNyKhoKDF0pX2
-	ajjed3xGm6aH/uzmAnfVYEcpfwTpJIqRbCJkTRvZacPDrcqIdMzT0uHBZR8BrDSPmPXWRpj5Zb7GA
-	Woknq8UXOiOJJYEHkhujeFKhEEpK7P4D8O4/08kjziOBVtdXvbCJpvmlUUc/W0DNUAoE9s+jmpOKk
-	AL68ePebA9Wd+gMdHK+ULnc6TvWB4o/IjN8eQ7g1zbNMrfGOeszDO5eh2jXD02b4ZS5KsL2qv8Juq
-	21sml/og==;
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
-	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vvdox-0000000BPhB-2P5u;
-	Thu, 26 Feb 2026 16:02:37 +0000
+	id 1vvdpA-00000006deP-0ZXT;
+	Thu, 26 Feb 2026 16:02:48 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 4D155409DB;
+	by tor.source.kernel.org (Postfix) with ESMTP id 24CC36184C;
+	Thu, 26 Feb 2026 16:02:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 662A7C2BCB6;
 	Thu, 26 Feb 2026 16:02:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C75CAC19424;
-	Thu, 26 Feb 2026 16:02:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772121754;
-	bh=e36wvBqbLnA74Icp0D/z5ihyz+lsimYXgzizPubPc88=;
+	s=k20201202; t=1772121766;
+	bh=fIoK69cdEWEBP2I83U9z6r8DTMmEfNeiFVnV/oaeX78=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=TRyb5ELUwAisy0K081InalDzTYh15bN85HIat66QUrbTbFqkuLts5A/eu+pmsvLRc
-	 SUtPpvZo/C6MKT5xJLJAOusvl3H7JGF/sDA1x8eaecHzewRHMiahhr85S/WbysY9LE
-	 S5eQ+L7mcOqPK7QlRAcOG63JiHGqjanMp0FAj8Txtay4IK/egUUnFTKjjf+hzff1IF
-	 zClndhO/xidSow88/OYkvEbqe1Z//ZmzId5N+5NBRYwVbHvy4VqwrCs9iB6fmMzado
-	 OKRxYN4dnupx2LVz/oLfTLGDmszUVeYOi5uLa9S8LI4zeJ8YH/d5NUXTzULFR+KbUM
-	 LdNv4gRs8sCzg==
+	b=Ji2YnR8mQ5wad/oF0jPuW9nL/OPwCpL6+zKMmv0H19n9XnotdFO3o3e3rUCEDhb9Z
+	 1WF/KkwzM64ExlHBH0B69S4s2meMjQx9vWjoA/AkZ80bU81SsuAlI2fXJwJraJ238b
+	 zH7VVtRkcRXHsnWSJaF5568UCrPS7PThaFg9NlqqN+urXCQoEZRdyaUzrdrxBCUO2E
+	 7I82X6Y5bVSyvS9s81e5aPbOZ1Dp3A7Hecs7W8mEzGL4plcq6VYIkCD9jx4XfbbS7i
+	 sO8wk3aypDF8Sqbh28vP5BmlyYB77S1ZnMG8ghlFhEhkRk5jxxg9jMGGDMylpiV/ff
+	 015uIipzZyWwA==
 From: Jeff Layton <jlayton@kernel.org>
-Date: Thu, 26 Feb 2026 10:55:32 -0500
-Subject: [PATCH 30/61] exportfs: update format strings for u64 i_ino
+Date: Thu, 26 Feb 2026 10:55:33 -0500
+Subject: [PATCH 31/61] ext2: update format strings for u64 i_ino
 MIME-Version: 1.0
-Message-Id: <20260226-iino-u64-v1-30-ccceff366db9@kernel.org>
+Message-Id: <20260226-iino-u64-v1-31-ccceff366db9@kernel.org>
 References: <20260226-iino-u64-v1-0-ccceff366db9@kernel.org>
 In-Reply-To: <20260226-iino-u64-v1-0-ccceff366db9@kernel.org>
 To: Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Dan Williams <dan.j.williams@intel.com>, Matthew Wilcox <willy@infradead.org>, Eric Biggers <ebiggers@kernel.org>, "Theodore Y. Ts'o" <tytso@mit.edu>, Muchun Song <muchun.song@linux.dev>, Oscar Salvador <osalvador@suse.de>, David Hildenbrand <david@kernel.org>, David Howells <dhowells@redhat.com>, Paulo Alcantara <pc@manguebit.org>, Andreas Dilger <adilger.kernel@dilger.ca>, Jan Kara <jack@suse.com>, Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>, Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, Chuck Lever <chuck.lever@oracle.com>, NeilBrown <neil@brown.name>, Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, Steve French <sfrench@samba.org>, Ronnie Sahlberg <ronniesahlberg@gmail.com>, Shyam Prasad N <sprasad@microsoft.com>, Bharath SM <bharathsm@microsoft.com>, Alexander Aring <alex.aring@gmail.com>, Ryusuke Konishi <konishi.ryusuke@gmail.com>, Viacheslav Dubeyko <slava@dubeyko.com>, Eric Van Hensbergen <ericvh@kernel.org>, Latchesar Ionkov <lucho@ionkov.net>, Dominique Martinet <asmadeus@codewreck.org>, Christian Schoenebeck <linux_oss@crudebyte.com>, David Sterba <dsterba@suse.com>, Marc Dionne <marc.dionne@auristor.com>, Ian Kent <raven@themaw.net>, Luis de Bethencourt <luisbg@kernel.org>, Salah Triki <salah.triki@gmail.com>, "Tigran A. Aivazian" <aivazian.tigran@gmail.com>, Ilya Dryomov <idryomov@gmail.com>, Alex Markuze <amarkuze@redhat.com>, Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu, Nicolas Pitre <nico@fluxnic.net>, Tyler Hicks <code@tyhicks.com>, Amir Goldstein <amir73il@gmail.com>, Christoph Hellwig <hch@infradead.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Yangtao Li <frank.li@vivo.com>, Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>, David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>, Dave Kleikamp <shaggy@kernel.org>, Konstantin Komarov <almaz.alexandrovich@paragon-software.com>, Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>, Joseph Qi <joseph.qi@linux.alibaba.com>, Mike Marshall <hubcap@omnibond.com>, Martin Brandenburg <martin@omnibond.com>, Miklos Szeredi <miklos@szeredi.hu>, Anders Larsen <al@alarsen.net>, Zhihao Cheng <chengzhihao1@huawei.com>, Damien Le Moal <dlemoal@kernel.org>, Naohiro Aota <naohiro.aota@wdc.com>, Johannes Thumshirn <jth@kernel.org>, John Johansen <john.johansen@canonical.com>, Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, Mimi Zohar <zohar@linux.ibm.com>, Roberto Sassu <roberto.sassu@huawei.com>, Dmitry Kasatkin <dmitry.kasatkin@gmail.com>, Eric Snowberg <eric.snowberg@oracle.com>, Fan Wu <wufan@kernel.org>, Stephen Smalley <stephen.smalley.work@gmail.com>, Ondrej Mosnacek <omosnace@redhat.com>, Casey Schaufler <casey@schaufler-ca.com>, Alex Deucher <alexander.deucher@amd.com>, =?utf-8?q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, Sumit Semwal <sumit.semwal@linaro.org>, Eric Dumazet <edumazet@google.com>, Kuniyuki Iwashima <kuniyu@google.com>, Paolo Abeni <pabeni@redhat.com>, Willem de Bruijn <willemb@google.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Simon Horman <horms@kernel.org>, Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, James Clark <james.clark@linaro.org>, "Darrick J. Wong" <djwong@kernel.org>, Martin Schiller <ms@dev.tdt.de>
@@ -83,25 +69,22 @@ Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-xfs@vger.kernel.org, linux-hams@vger.kernel.org, 
  linux-x25@vger.kernel.org, Jeff Layton <jlayton@kernel.org>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1061; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=e36wvBqbLnA74Icp0D/z5ihyz+lsimYXgzizPubPc88=;
- b=owEBbQKS/ZANAwAKAQAOaEEZVoIVAcsmYgBpoG0L3+TuSu4JgWyD1O9aXArZUMQ6ROSrPqkT1
- DvBvPOLQJOJAjMEAAEKAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCaaBtCwAKCRAADmhBGVaC
- Fet2D/9Nq6OH+wWNLA7uY3LUWtFVML7UMlUF3CZ6lkxbs2ZFlG76cdpXh8UVAuWv24ikYq7RZoV
- 4onKygMToVtMwKvbxh6adn1CT80krVi3vlsb81Y2IY9z7cKeK0fC1yrEMlMEmoppHSK3L24mQww
- 5pp9nLFT7gWIzm6/Lvj8e9FQr+1CpHHeA6nzGX+F+OVu3CVLcwRvNc1FOCrY85NAfAEZXAwP3Yu
- ww6lvg4vMbk6zCFUtjw6xJJssvy68cKX88tIhT1/MRmufCFsG4Mzc4puW/9OOkRhGmlWyXNrDK4
- Xe2Sb0i5KQDFDnAKCoaIUls3VjGqDqDliIm/ux6ZrD78hXcSHQHMAMcRmJPP0GKTWNoxIzsezpN
- kxIhx5qrMEifohsa2S4/56QGWIbS5ZnPoF6MlAJhbHtgv0e50asp7m8bArINnPxyPWDbJhA7EaE
- Tt9oDe8j7EuZGzLKMSBdmMo6AQU4y8oPKQq4ZpAkOfNsdu1qUFO/Jf3YyCrltpx4q+F63X0gn+w
- LyRJyufz81WgOojER6AjeUhQsdB3QDqEdXAhmhWz3mqhTDl1mZV40cNem/TWiLbs0a7BbJQGS5u
- 4ysEMzwC/R6VktA7f2DqeBct1fX8MC1tyCwC+fCtJVYPlD7/xN1f4g6ilt7VsEroaAigB+ZWULQ
- F25b2DCB1PEj4Gg==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=7381; i=jlayton@kernel.org;
+ h=from:subject:message-id; bh=fIoK69cdEWEBP2I83U9z6r8DTMmEfNeiFVnV/oaeX78=;
+ b=owEBbQKS/ZANAwAKAQAOaEEZVoIVAcsmYgBpoG0MrWn95OY2IvrlnUkZNzB5OKGldbHxaeOhx
+ 6fnNYyqTCaJAjMEAAEKAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCaaBtDAAKCRAADmhBGVaC
+ FTUQD/48IgCmYwuVS4Syo6OsAn79pnl/D+n76rrtbnabt+Gej6so4CnUg14EOIdtAOICigP2EiV
+ LrN/eA1QXBz+cgGpZ+Bp+uYstZEXVE4wj85CNn3345fs/O8Twwy59xmFxPLabFN+2rhMKDFRUVB
+ qZHd1/KAm3NDhhTnrF12i7q6W6qeY6ACZvT5gYalYp289/OgmM50p12JHBIxViZOGjK9yW9ZJ5k
+ 6C8j82F0K6aqnKKDaAlwZ5G4swXcYaRLDSCKLfeErd/1ggu8jObCi+H25F6gwuAsQD2TEC+bRgP
+ +xT3s+NtSrG3Cf0Q/Kim3XDDQc7abwcwqij61zu07WrcrGMBJCsaUvJqb73ZKWekCHuuEurPyC2
+ A60TdWIk2ox9QpZhNSdCY7UyXhyPqdBCpKB3TAPA7g8osE4Siu/sPGrhS6yaxcl72XJu6kFBODo
+ y2D23z9768RuMBc07LSCgxsuYStiKlUuplXWVStRZ1nQqm5i9ktn7YPXuFtmTY4HqnsfVMaDgjY
+ G3ZTx5towv6Y6QxYKbTVv3Eu/VDTdtWWHhf+o4H1YT4TtWRumFVxwiGrd712o3hs/2ccYsV2sJm
+ qbvTzz3JyAjyloZygBQkSVIGL8QK+PeRmEtzUJ/e1SzB51SUxA85NK9dyRNGtX+eOX/PCgt7gVU
+ oQbY/jqG9WlxSQg==
 X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
  fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260226_160235_943290_44183229 
-X-CRM114-Status: GOOD (  13.66  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -118,33 +101,188 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Update format strings and local variable types in exportfs for the
+Update format strings and local variable types in ext2 for the
 i_ino type change from unsigned long to u64.
 
 Signed-off-by: Jeff Layton <jlayton@kernel.org>
 ---
- fs/exportfs/expfs.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/ext2/dir.c    | 10 +++++-----
+ fs/ext2/ialloc.c |  9 +++++----
+ fs/ext2/inode.c  |  2 +-
+ fs/ext2/xattr.c  | 14 +++++++-------
+ 4 files changed, 18 insertions(+), 17 deletions(-)
 
-diff --git a/fs/exportfs/expfs.c b/fs/exportfs/expfs.c
-index 6c9be60a3e48dc5e984a826029375550d1494835..5c3183ce350ebc89ba4a5c10ffd644b6666395c3 100644
---- a/fs/exportfs/expfs.c
-+++ b/fs/exportfs/expfs.c
-@@ -130,12 +130,12 @@ static struct dentry *reconnect_one(struct vfsmount *mnt,
- 		parent = mnt->mnt_sb->s_export_op->get_parent(dentry);
+diff --git a/fs/ext2/dir.c b/fs/ext2/dir.c
+index 395fc36c089b7bb6360a8326727bd5606c7e2476..278d4be8ecbe7790204b5ba985a7ce088fadb181 100644
+--- a/fs/ext2/dir.c
++++ b/fs/ext2/dir.c
+@@ -141,7 +141,7 @@ static bool ext2_check_folio(struct folio *folio, int quiet, char *kaddr)
+ Ebadsize:
+ 	if (!quiet)
+ 		ext2_error(sb, __func__,
+-			"size of directory #%lu is not a multiple "
++			"size of directory #%llu is not a multiple "
+ 			"of chunk size", dir->i_ino);
+ 	goto fail;
+ Eshort:
+@@ -160,7 +160,7 @@ static bool ext2_check_folio(struct folio *folio, int quiet, char *kaddr)
+ 	error = "inode out of bounds";
+ bad_entry:
+ 	if (!quiet)
+-		ext2_error(sb, __func__, "bad entry in directory #%lu: : %s - "
++		ext2_error(sb, __func__, "bad entry in directory #%llu: : %s - "
+ 			"offset=%llu, inode=%lu, rec_len=%d, name_len=%d",
+ 			dir->i_ino, error, folio_pos(folio) + offs,
+ 			(unsigned long) le32_to_cpu(p->inode),
+@@ -170,7 +170,7 @@ static bool ext2_check_folio(struct folio *folio, int quiet, char *kaddr)
+ 	if (!quiet) {
+ 		p = (ext2_dirent *)(kaddr + offs);
+ 		ext2_error(sb, "ext2_check_folio",
+-			"entry in directory #%lu spans the page boundary"
++			"entry in directory #%llu spans the page boundary"
+ 			"offset=%llu, inode=%lu",
+ 			dir->i_ino, folio_pos(folio) + offs,
+ 			(unsigned long) le32_to_cpu(p->inode));
+@@ -281,7 +281,7 @@ ext2_readdir(struct file *file, struct dir_context *ctx)
  
- 	if (IS_ERR(parent)) {
--		dprintk("get_parent of %lu failed, err %ld\n",
-+		dprintk("get_parent of %llu failed, err %ld\n",
- 			dentry->d_inode->i_ino, PTR_ERR(parent));
- 		return parent;
+ 		if (IS_ERR(kaddr)) {
+ 			ext2_error(sb, __func__,
+-				   "bad page in #%lu",
++				   "bad page in #%llu",
+ 				   inode->i_ino);
+ 			ctx->pos += PAGE_SIZE - offset;
+ 			return PTR_ERR(kaddr);
+@@ -383,7 +383,7 @@ struct ext2_dir_entry_2 *ext2_find_entry (struct inode *dir,
+ 		/* next folio is past the blocks we've got */
+ 		if (unlikely(n > (dir->i_blocks >> (PAGE_SHIFT - 9)))) {
+ 			ext2_error(dir->i_sb, __func__,
+-				"dir %lu size %lld exceeds block count %llu",
++				"dir %llu size %lld exceeds block count %llu",
+ 				dir->i_ino, dir->i_size,
+ 				(unsigned long long)dir->i_blocks);
+ 			goto out;
+diff --git a/fs/ext2/ialloc.c b/fs/ext2/ialloc.c
+index fdf63e9c6e7caa6d5267c25faa6c293622f00627..bf21b57cf98cd5f90e1177454a8fd5cca482c2f8 100644
+--- a/fs/ext2/ialloc.c
++++ b/fs/ext2/ialloc.c
+@@ -169,9 +169,10 @@ static void ext2_preread_inode(struct inode *inode)
+ 	unsigned long block_group;
+ 	unsigned long offset;
+ 	unsigned long block;
++	unsigned int ino = inode->i_ino;
+ 	struct ext2_group_desc * gdp;
+ 
+-	block_group = (inode->i_ino - 1) / EXT2_INODES_PER_GROUP(inode->i_sb);
++	block_group = (ino - 1) / EXT2_INODES_PER_GROUP(inode->i_sb);
+ 	gdp = ext2_get_group_desc(inode->i_sb, block_group, NULL);
+ 	if (gdp == NULL)
+ 		return;
+@@ -179,7 +180,7 @@ static void ext2_preread_inode(struct inode *inode)
+ 	/*
+ 	 * Figure out the offset within the block group inode table
+ 	 */
+-	offset = ((inode->i_ino - 1) % EXT2_INODES_PER_GROUP(inode->i_sb)) *
++	offset = ((ino - 1) % EXT2_INODES_PER_GROUP(inode->i_sb)) *
+ 				EXT2_INODE_SIZE(inode->i_sb);
+ 	block = le32_to_cpu(gdp->bg_inode_table) +
+ 				(offset >> EXT2_BLOCK_SIZE_BITS(inode->i_sb));
+@@ -381,7 +382,7 @@ static int find_group_other(struct super_block *sb, struct inode *parent)
+ 	 *
+ 	 * So add our directory's i_ino into the starting point for the hash.
+ 	 */
+-	group = (group + parent->i_ino) % ngroups;
++	group = (group + (unsigned int)parent->i_ino) % ngroups;
+ 
+ 	/*
+ 	 * Use a quadratic hash to find a group with a free inode and some
+@@ -589,7 +590,7 @@ struct inode *ext2_new_inode(struct inode *dir, umode_t mode,
+ 		goto fail_free_drop;
+ 
+ 	mark_inode_dirty(inode);
+-	ext2_debug("allocating inode %lu\n", inode->i_ino);
++	ext2_debug("allocating inode %llu\n", inode->i_ino);
+ 	ext2_preread_inode(inode);
+ 	return inode;
+ 
+diff --git a/fs/ext2/inode.c b/fs/ext2/inode.c
+index dbfe9098a1245d97ba97cff24395754197043c33..819fa81901b79e0ef4e01e428445bd8d8cc01e68 100644
+--- a/fs/ext2/inode.c
++++ b/fs/ext2/inode.c
+@@ -1152,7 +1152,7 @@ static void ext2_free_branches(struct inode *inode, __le32 *p, __le32 *q, int de
+ 			 */ 
+ 			if (!bh) {
+ 				ext2_error(inode->i_sb, "ext2_free_branches",
+-					"Read failure, inode=%ld, block=%ld",
++					"Read failure, inode=%lld, block=%ld",
+ 					inode->i_ino, nr);
+ 				continue;
+ 			}
+diff --git a/fs/ext2/xattr.c b/fs/ext2/xattr.c
+index c885dcc3bd0d180c4c3f0945ca23ed8ce569ef10..e7f87d1514458f14252702119e1c065a28ea3d73 100644
+--- a/fs/ext2/xattr.c
++++ b/fs/ext2/xattr.c
+@@ -227,7 +227,7 @@ ext2_xattr_get(struct inode *inode, int name_index, const char *name,
+ 	if (!ext2_xattr_header_valid(HDR(bh))) {
+ bad_block:
+ 		ext2_error(inode->i_sb, "ext2_xattr_get",
+-			"inode %ld: bad block %d", inode->i_ino,
++			"inode %llu: bad block %d", inode->i_ino,
+ 			EXT2_I(inode)->i_file_acl);
+ 		error = -EIO;
+ 		goto cleanup;
+@@ -313,7 +313,7 @@ ext2_xattr_list(struct dentry *dentry, char *buffer, size_t buffer_size)
+ 	if (!ext2_xattr_header_valid(HDR(bh))) {
+ bad_block:
+ 		ext2_error(inode->i_sb, "ext2_xattr_list",
+-			"inode %ld: bad block %d", inode->i_ino,
++			"inode %llu: bad block %d", inode->i_ino,
+ 			EXT2_I(inode)->i_file_acl);
+ 		error = -EIO;
+ 		goto cleanup;
+@@ -454,7 +454,7 @@ ext2_xattr_set(struct inode *inode, int name_index, const char *name,
+ 		if (!ext2_xattr_header_valid(header)) {
+ bad_block:
+ 			ext2_error(sb, "ext2_xattr_set",
+-				"inode %ld: bad block %d", inode->i_ino, 
++				"inode %llu: bad block %d", inode->i_ino,
+ 				   EXT2_I(inode)->i_file_acl);
+ 			error = -EIO;
+ 			goto cleanup;
+@@ -833,7 +833,7 @@ ext2_xattr_delete_inode(struct inode *inode)
+ 
+ 	if (!ext2_data_block_valid(sbi, EXT2_I(inode)->i_file_acl, 1)) {
+ 		ext2_error(inode->i_sb, "ext2_xattr_delete_inode",
+-			"inode %ld: xattr block %d is out of data blocks range",
++			"inode %lld: xattr block %d is out of data blocks range",
+ 			inode->i_ino, EXT2_I(inode)->i_file_acl);
+ 		goto cleanup;
  	}
- 
--	dprintk("%s: find name of %lu in %lu\n", __func__,
-+	dprintk("%s: find name of %llu in %llu\n", __func__,
- 		dentry->d_inode->i_ino, parent->d_inode->i_ino);
- 	err = exportfs_get_name(mnt, parent, nbuf, dentry);
- 	if (err == -ENOENT)
+@@ -841,14 +841,14 @@ ext2_xattr_delete_inode(struct inode *inode)
+ 	bh = sb_bread(inode->i_sb, EXT2_I(inode)->i_file_acl);
+ 	if (!bh) {
+ 		ext2_error(inode->i_sb, "ext2_xattr_delete_inode",
+-			"inode %ld: block %d read error", inode->i_ino,
++			"inode %llu: block %d read error", inode->i_ino,
+ 			EXT2_I(inode)->i_file_acl);
+ 		goto cleanup;
+ 	}
+ 	ea_bdebug(bh, "b_count=%d", atomic_read(&(bh->b_count)));
+ 	if (!ext2_xattr_header_valid(HDR(bh))) {
+ 		ext2_error(inode->i_sb, "ext2_xattr_delete_inode",
+-			"inode %ld: bad block %d", inode->i_ino,
++			"inode %llu: bad block %d", inode->i_ino,
+ 			EXT2_I(inode)->i_file_acl);
+ 		goto cleanup;
+ 	}
+@@ -952,7 +952,7 @@ ext2_xattr_cache_find(struct inode *inode, struct ext2_xattr_header *header)
+ 		bh = sb_bread(inode->i_sb, ce->e_value);
+ 		if (!bh) {
+ 			ext2_error(inode->i_sb, "ext2_xattr_cache_find",
+-				"inode %ld: block %ld read error",
++				"inode %lld: block %ld read error",
+ 				inode->i_ino, (unsigned long) ce->e_value);
+ 		} else {
+ 			lock_buffer(bh);
 
 -- 
 2.53.0
