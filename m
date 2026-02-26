@@ -4,119 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8089CFD377E
-	for <linux-mtd@archiver.kernel.org>; Wed, 25 Feb 2026 17:58:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9903FD4605
+	for <linux-mtd@archiver.kernel.org>; Thu, 26 Feb 2026 01:42:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=RQSiDtWv95TwhQHrg3xCH5hMHioa2G4OJcpfsmAGxx4=; b=oDTzkXFReYJAhHZogQFItuAZwA
-	Kx6NbH4v+kRmhz99Dcr41HeeBmUWQ6B/Z+Vu7eacL50uy0JofMjJkMa2RmIJFcb8FZ6HfAawlVHUH
-	z+JpLK/i+UbtMXBbGlqrmainJioYMYJbrHCCJLeIxIuNu6xYF50ptQaixgL3WLFuXI/xNMPRoaB12
-	t4SyRjq5wuIXQ9LiqV2ghjyqQ/PVT0AYOtQVt7QgCFlwrKdOAne9+JWn61YLwrJnmoo1uGMCnmGed
-	SPBrD4b9cv7rI98Pl+aLMcK+wIcXxCRlg+zbB4jrQJNz5rnu5F7aik9KpnmsmFy57eX6bKo9LsEgn
-	xcRRv1cA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=TqrhcXdvqZW/s+l2Ht4Vt8Hs4xH9jB0SG+is/NyvZpY=; b=y+9r4N/iy7jlnS
+	73sMwm4Pbw/TE1iNaeWRUtxXZsxfj+NDPCxZXUGxCilwfAvnht5zhEWBkAEB61P31E5vaNyHdFSXc
+	nQhy8c+Wbu3xpSga9CEkORDItyB91xHL/6ObV8753S5i2hCd5Uk6gQFBq5DkfiXqBLC7qP8tIuw+p
+	9I6KtUuM6kogs7Olaph5y9J6Q/fgnvOyD87QiFYkw4JdQs5dKs+voGykFVKxwlBEU0mUmB0RKyaRy
+	k79bGDbZM3yTK+Zcsi5vALoGUVJLH6AM1fhZxca1wN7oNrYh4ZBa7iOeQN7kK5r33Taz/t7grfGUu
+	qWYnuD2P5jEw3ZMEUckg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vvJ9t-00000004hjZ-1cA1;
-	Wed, 25 Feb 2026 17:58:49 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1vvQO5-00000005CU1-3t4v;
+	Thu, 26 Feb 2026 01:41:57 +0000
+Received: from mail-pj1-x1034.google.com ([2607:f8b0:4864:20::1034])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vvJ9s-00000004hjS-2arr
+	id 1vvQO2-00000005CTc-0d0X
 	for linux-mtd@lists.infradead.org;
-	Wed, 25 Feb 2026 17:58:48 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 62F5F60054;
-	Wed, 25 Feb 2026 17:58:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99D58C19421;
-	Wed, 25 Feb 2026 17:58:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772042327;
-	bh=v0gF9Yip5vqOARGERS15X+Fy4jzc8bSZ5q+f4+jXpUg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Zu8JNqj/+hKCuwHWQmCTVK1tpzyAwq+TjOic7LMbDsxpza4QKAWhfMSzlUs+0RVaB
-	 dVEVQkTrA/nffg0WU/RbRyizDjK8x/ZZIKCxA+UXJEwWrxt5Wpbq5rQUCtJM3nvtLx
-	 q+JxJeiHbsMLzLZ6iqjDQWOSGmPTmUhRf/ziwKMKjrPhiDtm/w8nMJInDFHB/sHrXC
-	 Do+b3hGxgat3Nv8fAK0fCFQp3tHzsLTxU+5lrdqimLhUJMr6yJEnnwPFXJhST7BjVB
-	 rb299g0C9pNfUgE11c2kcpJ0CTepo+iR7WwwBYjEhjklyRu8LgjuGzc8b730qjqJ6p
-	 y/a4iv4wHRlTw==
-Date: Wed, 25 Feb 2026 12:58:45 -0500
-From: Mike Snitzer <snitzer@kernel.org>
-To: Jeff Layton <jlayton@kernel.org>
-Cc: Luis de Bethencourt <luisbg@kernel.org>,
-	Salah Triki <salah.triki@gmail.com>,
-	Nicolas Pitre <nico@fluxnic.net>,
-	Christoph Hellwig <hch@infradead.org>, Jan Kara <jack@suse.cz>,
-	Anders Larsen <al@alarsen.net>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>,
-	David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
-	Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>,
-	Yue Hu <zbestahu@gmail.com>, Jeffle Xu <jefflexu@linux.alibaba.com>,
-	Sandeep Dhavale <dhavale@google.com>,
-	Hongbo Li <lihongbo22@huawei.com>,
-	Chunhai Guo <guochunhai@vivo.com>, Jan Kara <jack@suse.com>,
-	Theodore Ts'o <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	Jaegeuk Kim <jaegeuk@kernel.org>,
-	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Richard Weinberger <richard@nod.at>,
-	Dave Kleikamp <shaggy@kernel.org>,
-	Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-	Viacheslav Dubeyko <slava@dubeyko.com>,
-	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-	Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
-	Joseph Qi <joseph.qi@linux.alibaba.com>,
-	Mike Marshall <hubcap@omnibond.com>,
-	Martin Brandenburg <martin@omnibond.com>,
-	Miklos Szeredi <miklos@szeredi.hu>,
-	Amir Goldstein <amir73il@gmail.com>,
-	Phillip Lougher <phillip@squashfs.org.uk>,
-	Carlos Maiolino <cem@kernel.org>, Hugh Dickins <hughd@google.com>,
-	Baolin Wang <baolin.wang@linux.alibaba.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Namjae Jeon <linkinjeon@kernel.org>,
-	Sungjong Seo <sj1557.seo@samsung.com>,
-	Yuezhang Mo <yuezhang.mo@sony.com>,
-	Chuck Lever <chuck.lever@oracle.com>,
-	Alexander Aring <alex.aring@gmail.com>,
-	Andreas Gruenbacher <agruenba@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Eric Van Hensbergen <ericvh@kernel.org>,
-	Latchesar Ionkov <lucho@ionkov.net>,
-	Dominique Martinet <asmadeus@codewreck.org>,
-	Christian Schoenebeck <linux_oss@crudebyte.com>,
-	Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>,
-	Trond Myklebust <trondmy@kernel.org>,
-	Anna Schumaker <anna@kernel.org>, Steve French <sfrench@samba.org>,
-	Paulo Alcantara <pc@manguebit.org>,
-	Ronnie Sahlberg <ronniesahlberg@gmail.com>,
-	Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
-	Bharath SM <bharathsm@microsoft.com>,
-	Hans de Goede <hansg@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	linux-mtd@lists.infradead.org, jfs-discussion@lists.sourceforge.net,
-	linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev,
-	ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
-	linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org,
-	linux-mm@kvack.org, gfs2@lists.linux.dev, linux-doc@vger.kernel.org,
-	v9fs@lists.linux.dev, ceph-devel@vger.kernel.org,
-	linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-	samba-technical@lists.samba.org
-Subject: Re: [PATCH 24/24] fs: remove simple_nosetlease()
-Message-ID: <aZ84VRrRVyGEzSJn@kernel.org>
-References: <20260108-setlease-6-20-v1-0-ea4dec9b67fa@kernel.org>
- <20260108-setlease-6-20-v1-24-ea4dec9b67fa@kernel.org>
+	Thu, 26 Feb 2026 01:41:56 +0000
+Received: by mail-pj1-x1034.google.com with SMTP id 98e67ed59e1d1-3590c295150so72651a91.1
+        for <linux-mtd@lists.infradead.org>; Wed, 25 Feb 2026 17:41:53 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1772070113; cv=none;
+        d=google.com; s=arc-20240605;
+        b=fUHFxbRWON0jl7V15J5UoK6Tbb7K12PBUvxsCOe2xVQmJkcijUYud1IlYLlNWXSw18
+         WaSBNxSuVSmqx4WGtrdJld/zo8vP4kDtltEaHgcpmm3q+OKLiS7GtFz23XKDxKFsHIb8
+         qGK/GIO02N/GVNVs/oy53YHKtarRwF5v0OPS2vA0XBd35H8t1i6zs4xPrluulz2dDCfN
+         Oui7DmMKw4QnQNAo9bxZaPwQzpfG7Rz/eRWRXMggvRoJ03gALjZEu/1cHnlTWRzOM+qv
+         vFR3adXK0IAh0KrUQauwZ4gPaMbjAjeEb53rjRMVdwntt7iVuZTp7KnOLgFm7E5ak+mx
+         nrRw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=rqXDxR6r3K3O/MS1HryN8hRV89OcJSerUknDb4iUGVU=;
+        fh=5KwncA1qUERxT9xo7LIyvPHbNq2IZ3hH/nxpkV8lLBc=;
+        b=VScQeDW3aPelva4b70eGoJI9elQpSCX2yDNs89R/npg0zEWuO1J7hMsmJ7m7hLK1Hf
+         cK8XVi4lf43Tuk2nPXpxYYFZrTlE/x7Nlg9YldQ0nrqmGl/Fqy955TTAOYJf6sC3AVrI
+         OWZK9BhIjs3k3OP/QONjzta5rydmojaYGqOQRkZ3eltMrRlGvsVaXocsPXWlvXY0v0xP
+         NQI3uDSDRUdUytp2uAhsBT6+gQ3qB/TGkHE59tQ8l6F41pkbsFug9UWBQMCb/xWuwrvv
+         X++mIGzVrNnUo1GgogamdbEYqSBzRCiAZ8/EhW1+35qcg+NIVfuCMB2dfMYvxbkBtGCu
+         7iDw==;
+        darn=lists.infradead.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1772070113; x=1772674913; darn=lists.infradead.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rqXDxR6r3K3O/MS1HryN8hRV89OcJSerUknDb4iUGVU=;
+        b=MfbRaKkaKsr1kc5MYnZ5J3OOPe2AePjh+6uoHyeQrRRRZSoI7AV9IrFWjXjppIfmbR
+         FBIIDyHOJFPuonXoW/VNT+0skRYJTNjF8kT+sKAGeMUUJXu1SUM6800RkP9xTzqZkY9U
+         XhbV4K4hEAxMGioM0Dg4Ki6ouI61bkeQd2ASdg0zhRkHwMl3u6FE17XJ8Dv3BfTbLqS8
+         mvh6/+I6BYrghM6aUK61uSszlqxpsFKXsFennUC7ZTqo9GyeioSsNcWSa2e2edPC/zmZ
+         69NVpd0osd/Zs0mbzl4Py/D1DBv/f4foifbLDmJFibmuvgAopekh94WTLMN1t+gFcpHM
+         hmDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1772070113; x=1772674913;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=rqXDxR6r3K3O/MS1HryN8hRV89OcJSerUknDb4iUGVU=;
+        b=s8vB/3d1wljchVPFz6k+k7wTs5ZSkEqahJS+z3HEIUdx5kIbSCmICrxR7oR5gHKl59
+         QniAYJprbQjXFwC5Z5PyciG30HnF3yANSUE7KmjRfkqNZvPV6uLdSlhhTUZ73opmsaDK
+         9dedQZus0bbnafpoQZPAg+TTdqe8juiMA7+1Q16JzafUv12bryidPXX8LfhLgCq9AXJd
+         XuAsoBB6i1vBjnYBpjlurCQK8e2/XEsLMQWSshRy1nDssSi6/MCwoU0iME/aNMqou7a9
+         RZugE7qVK2VG7I8TTTCwp0MZaQgJMQi64kGv2UCL0ubu4X+K6/flJT29ClY0sDCVtxfV
+         yLtA==
+X-Forwarded-Encrypted: i=1; AJvYcCUzVDYT3GUovAiPCgqYK2NQcqxQNeVcIFB5eG5UEqUiUinuqbOBK6A/rIVaRil2lE30yFjB2M+Z/jE=@lists.infradead.org
+X-Gm-Message-State: AOJu0YwkPLxYIZMjCtAVc1gRmhV/klnmYGIMTrKgRpKtgFO99L42H8b+
+	Q/jBpYNCpMFDzi2wOKcNQzWpqWD2/Nz+Otg5nrKz2JcXs3Q1yoxTYrFV4vYX571QXtfyTFGnsj7
+	++litITJ6Y/hv3ee7ONz+sGz4yRZ7x5I=
+X-Gm-Gg: ATEYQzwUY98lIFMHbWJcLF/ThMk9891z9KxSbRNgXanChshnqd5mRviZw2momeP7MCt
+	KulYgn8qSQvAWqLfe3E0RsIQmTc4E2IqDynxamEy5R6G5bZAcrzIafCAw9sMZYzRLNXy27i502M
+	hu4YmKsl//Xs+VjpEeZYSkRIgKeUKzXueEATIyuD2ZL6U5WMQNqt7iCGiTSnc7qfKF7rjdzBXeO
+	ZHnCT/r0XuxExpyg6KNsJpgZKjKEZlK9tRs2w5ngzLKVTVPUQXIL882R8n15i5cPfKtzmjlTp64
+	LycqAVM=
+X-Received: by 2002:a17:90b:2e4d:b0:356:2bdb:a375 with SMTP id
+ 98e67ed59e1d1-3593daf4e60mr634315a91.14.1772070112551; Wed, 25 Feb 2026
+ 17:41:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="BuvfweD5MaN+t/uz"
-Content-Disposition: inline
-In-Reply-To: <20260108-setlease-6-20-v1-24-ea4dec9b67fa@kernel.org>
+References: <20260225015705.1113199-1-linchengming884@gmail.com>
+ <20260225015705.1113199-2-linchengming884@gmail.com> <87ldggq2pb.fsf@bootlin.com>
+In-Reply-To: <87ldggq2pb.fsf@bootlin.com>
+From: Cheng Ming Lin <linchengming884@gmail.com>
+Date: Thu, 26 Feb 2026 09:39:54 +0800
+X-Gm-Features: AaiRm52FXOgLSZXxD4WwgpVru-DPSpst1rXFD2wx0GOw_KFmuGibYim2rg84h_0
+Message-ID: <CAAyq3SYx9jza9Qba5G2AY6Zbg6=3MLcoPgKEkwe_Srv-GWHHmQ@mail.gmail.com>
+Subject: Re: [PATCH v7 1/3] dt-bindings: mtd: spinand: Add randomizer
+ enable/disable properties
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Tudor Ambarus <tudor.ambarus@linaro.org>, 
+	Mikhail Kshevetskiy <mikhail.kshevetskiy@iopsys.eu>, 
+	Pablo Martin-Gomez <pmartin-gomez@freebox.fr>, Tianling Shen <cnsztl@gmail.com>, 
+	Pratyush Yadav <pratyush@kernel.org>, linux-mtd@lists.infradead.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	alvinzhou@mxic.com.tw, Cheng Ming Lin <chengminglin@mxic.com.tw>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260225_174154_222517_315E42E8 
+X-CRM114-Status: GOOD (  24.28  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -128,178 +119,58 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
---BuvfweD5MaN+t/uz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Jan 08, 2026 at 12:13:19PM -0500, Jeff Layton wrote:
-> Setting ->setlease() to a NULL pointer now has the same effect as
-> setting it to simple_nosetlease(). Remove all of the setlease
-> file_operations that are set to simple_nosetlease, and the function
-> itself.
-> 
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> ---
->  fs/9p/vfs_dir.c        |  2 --
->  fs/9p/vfs_file.c       |  2 --
->  fs/ceph/dir.c          |  2 --
->  fs/ceph/file.c         |  1 -
->  fs/fuse/dir.c          |  1 -
->  fs/gfs2/file.c         |  2 --
->  fs/libfs.c             | 18 ------------------
->  fs/nfs/dir.c           |  1 -
->  fs/nfs/file.c          |  1 -
->  fs/smb/client/cifsfs.c |  1 -
->  fs/vboxsf/dir.c        |  1 -
->  fs/vboxsf/file.c       |  1 -
->  include/linux/fs.h     |  1 -
->  13 files changed, 34 deletions(-)
-> 
-
-<snip>
-
-> diff --git a/fs/libfs.c b/fs/libfs.c
-> index 697c6d5fc12786c036f0086886297fb5cd52ae00..f1860dff86f2703266beecf31e9d2667af7a9684 100644
-> --- a/fs/libfs.c
-> +++ b/fs/libfs.c
-> @@ -1699,24 +1699,6 @@ struct inode *alloc_anon_inode(struct super_block *s)
->  }
->  EXPORT_SYMBOL(alloc_anon_inode);
->  
-> -/**
-> - * simple_nosetlease - generic helper for prohibiting leases
-> - * @filp: file pointer
-> - * @arg: type of lease to obtain
-> - * @flp: new lease supplied for insertion
-> - * @priv: private data for lm_setup operation
-> - *
-> - * Generic helper for filesystems that do not wish to allow leases to be set.
-> - * All arguments are ignored and it just returns -EINVAL.
-> - */
-> -int
-> -simple_nosetlease(struct file *filp, int arg, struct file_lease **flp,
-> -		  void **priv)
-> -{
-> -	return -EINVAL;
-> -}
-> -EXPORT_SYMBOL(simple_nosetlease);
-> -
->  /**
->   * simple_get_link - generic helper to get the target of "fast" symlinks
->   * @dentry: not used here
-> diff --git a/fs/nfs/dir.c b/fs/nfs/dir.c
-> index 71df279febf797880ded19e45528c3df4cea2dde..23a78a742b619dea8b76ddf28f4f59a1c8a015e2 100644
-> --- a/fs/nfs/dir.c
-> +++ b/fs/nfs/dir.c
-> @@ -66,7 +66,6 @@ const struct file_operations nfs_dir_operations = {
->  	.open		= nfs_opendir,
->  	.release	= nfs_closedir,
->  	.fsync		= nfs_fsync_dir,
-> -	.setlease	= simple_nosetlease,
->  };
->  
->  const struct address_space_operations nfs_dir_aops = {
-> diff --git a/fs/nfs/file.c b/fs/nfs/file.c
-> index d020aab40c64ebda30d130b6acee1b9194621457..9d269561961825f88529551b0f0287920960ac62 100644
-> --- a/fs/nfs/file.c
-> +++ b/fs/nfs/file.c
-> @@ -962,7 +962,6 @@ const struct file_operations nfs_file_operations = {
->  	.splice_read	= nfs_file_splice_read,
->  	.splice_write	= iter_file_splice_write,
->  	.check_flags	= nfs_check_flags,
-> -	.setlease	= simple_nosetlease,
->  	.fop_flags	= FOP_DONTCACHE,
->  };
->  EXPORT_SYMBOL_GPL(nfs_file_operations);
-
-Hey Jeff,
-
-I've noticed an NFS reexport regression in v6.19 and now v7.0-rc1
-(similar but different due to your series that requires opt-in via
-.setlease).
-
-Bisect first pointed out this commit:
-10dcd5110678 nfs: properly disallow delegation requests on directories
-
-And now with v7.0-rc1 its the fact that NFS doesn't provide .setlease
-so lstat() on parent dir (of file that I touch) gets -EINVAL.
-
-So its a confluence of NFS's dir delegations and your setlease changes.
-
-If I reexport NFSv4.2 filesystem in terms of NFSv4.1, the regression
-is seen by doing (lstat reproducer that gemini spit out for me is
-attached):
-
-$ touch /mnt/share41/test
-$ strace ./lstat /mnt/share41
-...
-lstat("/mnt/share41", 0x7ffec0d79920)   = -1 EINVAL (Invalid argument)
-
-If I immediately re-run it works:
-...
-lstat("/mnt/share41", {st_mode=S_IFDIR|0777, st_size=4096, ...}) = 0
-
-I'm not sure what the proper fix is yet, but I feel like you've missed
-that NFS itself can be (re)exported?
-
-Thanks,
-Mike
-
---BuvfweD5MaN+t/uz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="lstat.c"
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <unistd.h>
-
-int main(int argc, char *argv[]) {
-    // 1. Check if the filename was provided via argv
-    if (argc < 2) {
-        fprintf(stderr, "Usage: %s <filename>\n", argv[0]);
-        return EXIT_FAILURE;
-    }
-
-    struct stat file_stats;
-
-    // 2. Pass the filename to the lstat syscall
-    if (lstat(argv[1], &file_stats) < 0) {
-        perror("lstat error");
-        return EXIT_FAILURE;
-    }
-
-    // 3. Display some basic metadata
-    printf("Information for: %s\n", argv[1]);
-    printf("---------------------------\n");
-    printf("File Size: \t\t%lld bytes\n", (long long)file_stats.st_size);
-    printf("Number of Links: \t%ld\n", (long)file_stats.st_nlink);
-    printf("File inode: \t\t%ld\n", (long)file_stats.st_ino);
-
-    // 4. Determine file type using macros
-    printf("File Type: \t\t");
-    if (S_ISLNK(file_stats.st_mode)) printf("Symbolic Link\n");
-    else if (S_ISREG(file_stats.st_mode)) printf("Regular File\n");
-    else if (S_ISDIR(file_stats.st_mode)) printf("Directory\n");
-    else printf("Other\n");
-
-    return EXIT_SUCCESS;
-}
-
---BuvfweD5MaN+t/uz
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---BuvfweD5MaN+t/uz--
-
+SGkgTWlxdWVsLAoKTWlxdWVsIFJheW5hbCA8bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4g5pa8
+IDIwMjblubQy5pyIMjXml6XpgLHkuIkg5LiL5Y2IMTE6MTDlr6vpgZPvvJoKPgo+IEhlbGxvIENo
+ZW5nIE1pbmcsCj4KPiBPbiAyNS8wMi8yMDI2IGF0IDA5OjU3OjAzICswOCwgQ2hlbmcgTWluZyBM
+aW4gPGxpbmNoZW5nbWluZzg4NEBnbWFpbC5jb20+IHdyb3RlOgo+Cj4gPiBGcm9tOiBDaGVuZyBN
+aW5nIExpbiA8Y2hlbmdtaW5nbGluQG14aWMuY29tLnR3Pgo+ID4KPiA+IEFkZCAibmFuZC1yYW5k
+b21pemVyLWVuYWJsZSIgYW5kICJuYW5kLXJhbmRvbWl6ZXItZGlzYWJsZSIgYm9vbGVhbgo+ID4g
+cHJvcGVydGllcy4KPiA+Cj4gPiBUaGVzZSBwcm9wZXJ0aWVzIGFsbG93IGVuYWJsaW5nIG9yIGRp
+c2FibGluZyB0aGUgcmFuZG9taXplciBmZWF0dXJlCj4gPiB2aWEgdGhlIGRldmljZSB0cmVlLgo+
+ID4KPiA+IEFjY29yZGluZyB0byBKRURFQyBzdGFuZGFyZCBKRVNEMjItQTExN0UsIG5vIHNpbmds
+ZSBkYXRhIHBhdHRlcm4KPiA+IHJlcHJlc2VudHMgYSB1bml2ZXJzYWwgd29yc3QtY2FzZSBmb3Ig
+YWxsIE5BTkQgZmxhc2ggZmFpbHVyZSBtZWNoYW5pc21zLgo+ID4gRGlmZmVyZW50IHBhdHRlcm5z
+LCBzdWNoIGFzIGZ1bGx5IHByb2dyYW1tZWQsIGNoZWNrZXJib2FyZCwgb3IgbW9zdGx5Cj4gPiBl
+cmFzZWQsIGNhbiBkaXNwcm9wb3J0aW9uYXRlbHkgc3RyZXNzIHNwZWNpZmljIGNlbGxzIChlLmcu
+LCBwcm9ncmFtbWVkLAo+ID4gZXJhc2VkLCBvciB0aG9zZSBpbmZsdWVuY2VkIGJ5IGFkamFjZW50
+IHN0YXRlcykuCj4gPgo+ID4gR2l2ZW4gdGhhdCBubyBmaXhlZCBwYXR0ZXJuIGNhbiBjb3ZlciBh
+bGwgc2NlbmFyaW9zLCB0aGUgdXNlIG9mIGEKPiA+IHJhbmRvbWl6ZWQgZGF0YSBwYXR0ZXJuIGlz
+IGEgcHJhY3RpY2FsIGFuZCBlZmZlY3RpdmUgbWl0aWdhdGlvbiBzdHJhdGVneS4KPiA+IE91ciBo
+YXJkd2FyZSBpbXBsZW1lbnRzIGEgcmFuZG9taXplciBmZWF0dXJlIHRoYXQgc2NyYW1ibGVzIHVz
+ZXIgZGF0YQo+ID4gYmVmb3JlIGl0IGlzIHdyaXR0ZW4gdG8gdGhlIGZsYXNoIGFuZCByZXN0b3Jl
+cyB0aGUgb3JpZ2luYWwgZGF0YSB1cG9uIHJlYWQuCj4gPgo+ID4gVGhpcyBlbnN1cmVzIHRoZSBk
+YXRhIHN0b3JlZCBvbiB0aGUgbWVkaWEgaXMgbW9yZSBldmVubHkgZGlzdHJpYnV0ZWQsCj4gPiB0
+aHVzIHJlZHVjaW5nIHBhdHRlcm4tZGVwZW5kZW50IGRlZ3JhZGF0aW9uLiBUaGlzIGlzIGVzcGVj
+aWFsbHkgY3J1Y2lhbAo+ID4gZm9yIHByZXZlbnRpbmcgZXJyb3JzIGNhdXNlZCBieSB1bmJhbGFu
+Y2VkIGRhdGEgKGUuZy4sIGFsbCB6ZXJvcyBvcgo+ID4gYWxsIG9uZXMpIGluIGJsb2NrcyB3aXRo
+IGhpZ2ggcHJvZ3JhbS9lcmFzZSAoUC9FKSBjeWNsZSBjb3VudHMuCj4gPiBVbHRpbWF0ZWx5LCB0
+aGUgcmFuZG9taXplciBpbXByb3ZlcyB0aGUgbG9uZy10ZXJtIHJlbGlhYmlsaXR5IGFuZAo+ID4g
+ZW5kdXJhbmNlIG9mIHRoZSBmbGFzaCBkZXZpY2UuCj4gPgo+ID4gUGxlYXNlIHJlZmVyIHRvIHRo
+ZSBmb2xsb3dpbmcgbGluayBmb3IgcmFuZG9taXplciBmZWF0dXJlOgo+ID4gTGluazoKPiA+IGh0
+dHBzOi8vd3d3Lm14aWMuY29tLnR3L0xpc3RzL0FwcGxpY2F0aW9uTm90ZS9BdHRhY2htZW50cy8y
+MTUxL0FOMTA1MVYxLVRoZSUyMEludHJvZHVjdGlvbiUyMG9mJTIwUmFuZG9taXplciUyMEZlYXR1
+cmUlMjBvbiUyME1YMzB4RnhHMjhBRF9NWDM1eEZ4RzI0QUQuCj4KPiBUaGlzIGxpbmsgYnJpbmdz
+IG1lIHRvIGEgIldlIGhhdmUgbW92ZWQgdG8gb3VyIG5ldyBob21lIiBwYWdlLgoKSSBhcG9sb2dp
+emUgZm9yIHRoZSBicm9rZW4gbGluay4gSSB3aWxsIGZpbmQgdGhlIHVwZGF0ZWQsIGFjdGl2ZSBs
+aW5rCmZvciB0aGUgQXBwbGljYXRpb24gTm90ZS4KCj4KPiBBbnlob3csIHRoaXMgTGluayBkb2Vz
+IG5vdCBtYWtlIG11Y2ggc2Vuc2UgaW4gdGhlIGJpbmRpbmcuIElmIHRoaXMgaXMgYQo+IHZlcnkg
+Z2VuZXJpYyBBTiwgd2h5IG5vdCwgYnV0IG1heWJlIEknZCBtb3ZlIGl0IHRvIHRoZSBTUEkgTkFO
+RCBwYXRjaGVzLAo+IGFzIHRoZSBuYW1lIGltcGxpZXMgdGhhdCBpdCBpcyBhIGJpdCBzcGVjaWZp
+YyB0byBNYWNyb25peCBjaGlwcy4KCllvdSBhcmUgcmlnaHQgYWJvdXQgdGhlIHBsYWNlbWVudC4g
+U2luY2UgdGhlIHJhbmRvbWl6ZXIgZmVhdHVyZSBhbmQgdGhpcwpBTiBhcmUgaW5kZWVkIHNwZWNp
+ZmljIHRvIE1hY3Jvbml4IGNoaXBzLCBJIGFncmVlIGl0IG1ha2VzIG11Y2ggbW9yZSBzZW5zZQpp
+biB0aGUgZHJpdmVyIHBhdGNoLiBJIHdpbGwgcmVtb3ZlIHRoZSBsaW5rIGZyb20gdGhlIGR0LWJp
+bmRpbmcgY29tbWl0Cm1lc3NhZ2UgYW5kIG1vdmUgdGhlIHVwZGF0ZWQgbGluayB0byB0aGUgU1BJ
+IE5BTkQgcGF0Y2hlcyBpbiB0aGUgbmV4dAp2ZXJzaW9uLgoKPgo+ID4gU2lnbmVkLW9mZi1ieTog
+Q2hlbmcgTWluZyBMaW4gPGNoZW5nbWluZ2xpbkBteGljLmNvbS50dz4KPgo+IE90aGVyd2lzZSBi
+b3RoIHRoZSBiaW5kaW5nIGFuZCBjb2RlIGxvb2sgb2sgZnJvbSBteSBQb1YuIFNvIGJlc2lkZXMg
+dGhlCj4gTGluayB0aGF0IG11c3QgYmUgbW92ZWQgYW5kIGZpeGVkLCBJJ2xsIHdhaXQgZm9yIGJp
+bmRpbmcgYXBwcm92YWwuCj4KPiBUaGFua3MsCj4gTWlxdcOobAoKVGhhbmtzLApDaGVuZyBNaW5n
+IExpbgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFk
+ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
