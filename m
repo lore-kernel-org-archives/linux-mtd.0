@@ -4,61 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33FF7104891D
-	for <linux-mtd@archiver.kernel.org>; Fri, 27 Feb 2026 23:01:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6BD3104891E
+	for <linux-mtd@archiver.kernel.org>; Fri, 27 Feb 2026 23:02:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=CU70q2hCQPvCAR0d0ytAoNejx4ULJUjfAvmWpya2pJU=; b=h0VzePe+OYufLG
-	mUaHyD9cnT0B1jb4FADpeyitXJMaFrx3dOYakchNrINdv1Feiam14nybiZnda/lPujXvBf/rrU++V
-	Tn2jjLCOIcFIqr24v5IgPyh+Z6jgNdP5tKyD5NMUPMo8Oc+7pdcQGK2esRmGRv42mTrrkB7h4fZ3H
-	6znC8porQSIBMG2s0d4o0Dgqmg04X6J2LhVN4rxfMlEBNrmExJdsp8SBfkZBVFUPS1a7qlSxpML2q
-	NnkYyuPVA4MZaZKAcn2ToC8wh0w9FPsduW467NPcu3cbxYPVJTrCJXHEUPae/cs79AKd9m4eKK5/L
-	AP+s7IuaIMoVWijQQopg==;
+	List-Owner; bh=veboqQk/os/kqC0jzzB6j7i7SkiS5kTlaxk0I3z1OwA=; b=BJwPEpc/5qcQru
+	GGOaMNF9/FeqZT7K7Jef7JlwQ/dCToMfYelzHjEbOTJuQSR+HRzh6Iq0HFa2Sw9vna7fC8gY9Vi++
+	EfDo2e7E0QcIVs42L1GBl3itwO3HXhU5YvBJDKIXB8pkuHMZc90zn1gHop441g26x1s6fuqCdRwJv
+	nOtr4lYJmmJzm3zya6hSo8/vJSk+lbM3FjtsD9uG4cNO8QclHpXWqcDciDbzwDs74X95VRM39n3Sc
+	UvQ7UyA/zNBjbLwJly8AOHPKz4V4g4xoVQ9PvnnGPPF7OAkJ0J04vZRGsxhIpWac7QhvqpihJJgd4
+	tDioEDHhRAa3cyxP5FYw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vw6q9-00000009FOV-1H4P;
-	Fri, 27 Feb 2026 23:01:45 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1vw6qQ-00000009FQA-2ZSl;
+	Fri, 27 Feb 2026 23:02:02 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vw6q5-00000009FOL-2uW7
+	id 1vw6qM-00000009FPq-422y
 	for linux-mtd@lists.infradead.org;
-	Fri, 27 Feb 2026 23:01:43 +0000
+	Fri, 27 Feb 2026 23:02:01 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 217A96132B;
-	Fri, 27 Feb 2026 23:01:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0F63C116C6;
-	Fri, 27 Feb 2026 23:01:39 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 174076132B;
+	Fri, 27 Feb 2026 23:01:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 994A6C116C6;
+	Fri, 27 Feb 2026 23:01:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772233299;
-	bh=BBIvSXYQfhf68vmVEDvIkDYtypJyo+cLCcL0YQtfWSI=;
+	s=k20201202; t=1772233317;
+	bh=28Aa1hjG1G4KSehZS4U+2cawa4luZRnfRxEZ8i65f4s=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=h5uCpJED6HfvjmypFUtAOpPg/qZfAFC3LLJ/cRVOEAl8WEkmQyWPsIYgyPGBhpqQE
-	 2jXojza1H1G1xGbGPwHdqb9S/lia41EO6t8iBBpwowZ+rMY/sBI9UyFHZM2jJoVh9W
-	 14JQ/40ovOFckBuj+DR0WGUxjygQG1JSgx6XhpMYXpbiMm8UkDe3rPIaKESvUKTojJ
-	 R3CwCkrjgwAmmLZBm7G3jxD3x+7uA1Ryb2RlHrBNMo9hquUDiiYJ0wTieGZCq9ntRq
-	 P9J4AyAeDr9nuEsof+CQHVjwRS7rDvM7s4nKDnnh2xIyciRRZ0NYuG8YKTkOAIQgoP
-	 VPLAWr9yY6Rdg==
-Date: Fri, 27 Feb 2026 17:01:38 -0600
+	b=o+JSyRXiPcJ4nUHz5cbZUIWySO57SIl1p9+okGz+lx9b6gOCvcs82sCSPOytGJfYp
+	 i2aKaHR4y6UIPftnGIM+Su/xC1KPWSB3DACCWmp58pGknHOENaJ1WT/ACcrCyFE5fs
+	 npfn7jxAAg7vBTQXAMx6X8M7gf2buE+1Ra6s0nGfw1hxZP1EshoskvX6fhYFDD8OAf
+	 L0Wx3hWBNFGKetfYs9UOJFMm6dT2Bxpzke+aPilUtJDx0K93m33wcpP0aHwjWukDvs
+	 eVIcQqgmKgAucRfPJPXdR+NNckETy5EPm5UoNe9VnSZJ4d7lN9hCMXesyjPfbJVtQx
+	 85ypmXfD58Z6A==
+Date: Fri, 27 Feb 2026 17:01:56 -0600
 From: "Rob Herring (Arm)" <robh@kernel.org>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+Cc: Conor Dooley <conor.dooley@microchip.com>,
+	Akhila YS <akhilayalmati@gmail.com>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	devicetree@vger.kernel.org, Akhila YS <akhilayalmati@gmail.com>,
-	linux-kernel@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>
-Subject: Re: [PATCH 1/3] dt-bindings: mtd: st,spear600-smi: Fix description
-Message-ID: <177223329836.922128.17532965792785409405.robh@kernel.org>
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	linux-mtd@lists.infradead.org, Conor Dooley <conor+dt@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org
+Subject: Re: [PATCH 2/3] dt-bindings: mtd: st,spear600-smi:
+ #address/size-cells is mandatory
+Message-ID: <177223331638.922595.7344216125056033708.robh@kernel.org>
 References: <20260225-perso-fix-spear600-smi-yaml-v1-0-8ef3d205ab3a@bootlin.com>
- <20260225-perso-fix-spear600-smi-yaml-v1-1-8ef3d205ab3a@bootlin.com>
+ <20260225-perso-fix-spear600-smi-yaml-v1-2-8ef3d205ab3a@bootlin.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260225-perso-fix-spear600-smi-yaml-v1-1-8ef3d205ab3a@bootlin.com>
+In-Reply-To: <20260225-perso-fix-spear600-smi-yaml-v1-2-8ef3d205ab3a@bootlin.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,18 +78,16 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
-On Wed, 25 Feb 2026 17:24:43 +0100, Miquel Raynal wrote:
-> The description mixes two nodes. There is the controller, and there is
-> the flash. Describe the flash (which itself can be considered an mtd
-> device, unlike the top level controller), and move the st,smi-fast-mode
-> property inside, as this property is flash specific and should not live
-> in the parent controller node.
+On Wed, 25 Feb 2026 17:24:44 +0100, Miquel Raynal wrote:
+> These properties must be set because they overwrite the default values,
+> especially #size-cells which is 0 for most controllers and is 'const: 1'
+> here.
 > 
 > Fixes: 68cd8ef48452 ("dt-bindings: mtd: st,spear600-smi: convert to DT schema")
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 > ---
->  .../devicetree/bindings/mtd/st,spear600-smi.yaml   | 22 ++++++++++++++++------
->  1 file changed, 16 insertions(+), 6 deletions(-)
+>  Documentation/devicetree/bindings/mtd/st,spear600-smi.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
 
 Reviewed-by: Rob Herring (Arm) <robh@kernel.org>
