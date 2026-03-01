@@ -4,60 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0B9AFD0049
-	for <linux-mtd@archiver.kernel.org>; Sun,  1 Mar 2026 01:26:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32AC4FD0049
+	for <linux-mtd@archiver.kernel.org>; Sun,  1 Mar 2026 01:36:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=GRfbpm0oOE0gGni8aGBHxfowD41jjtLbyfIOLeLNk9s=; b=P18cQeNBHsXO6y
-	uxz3U7YbT3iM+6WGlKWVjrd/zQmN04txboZQLOTW5dwFhvCkZsql4V3BjmRtMkgH3Ode5GlMOjv4i
-	tLJdX5M6iPZnTXbCS9kvbddmBGSc7jgocihXjfwOu5OVEMCas1qn+SGnO+nB1PYVA9/HAD7TKMEXa
-	u2cyTfg2GwEv9CR3jeemDlPOR8k87FO/Famg7KO9FFbWeg68zCgR3Xml1Pi29bOjDSmiM+t1JlpXe
-	4KoZ+QF70MXDCsVOu0et6FVwga141cnjBrkU+roTAPHPAoihI5QCJMaxw+djb1rgu+An+ocacTy3X
-	4JgQhWziqn/4qJ4Et7nw==;
+	List-Owner; bh=SFXtNTErinAcBnIUAwDVznVOmB8BHTcgH2sSyBGwYT8=; b=aSFnwx90B7VZPy
+	h47IDCfmwSXyRC6YUO+2thf8LsnmnYPJMlAnb3HrCQ6C6YbyUshERgiJbxC1o5cEOz6zhvdXI4BZs
+	89AiI0SYvVSbAfemKy2WWaNdfjweQ3iPchgAYTQnmY5r89tVJOgSkOf5Mq2jDwhYClIED21YPq8VR
+	MshkxuFzgQCPWlkt6iTKmc4MP6k6PTXfYJPjASOW6DWLFPgrGv6yjuidMEFg8F8Ou6diWNzMkTX2T
+	NsjaO+A5lJUGM9aWczG7uvxc4GaanTAyETdwFvNBVZ/RJPzrcLTW66E+CW7Skd5jskrmcGAFfjEHq
+	zbzYAw6fba+nj9kX3SPw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vwVZL-0000000AWZa-3WRa;
-	Sun, 01 Mar 2026 01:26:03 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1vwVjR-0000000AaXO-49WJ;
+	Sun, 01 Mar 2026 01:36:29 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vwVZJ-0000000AWYB-31fs
+	id 1vwVjR-0000000AaWT-0Mzk
 	for linux-mtd@lists.infradead.org;
-	Sun, 01 Mar 2026 01:26:02 +0000
+	Sun, 01 Mar 2026 01:36:29 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 50030437F7;
-	Sun,  1 Mar 2026 01:26:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98E1EC19421;
-	Sun,  1 Mar 2026 01:26:00 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 7EE9160126;
+	Sun,  1 Mar 2026 01:36:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E6F4C19421;
+	Sun,  1 Mar 2026 01:36:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772328361;
-	bh=HmeO96EzGOW33qi49IOXOtz5wmcVF770WRnYU5a+q0c=;
+	s=k20201202; t=1772328988;
+	bh=TmlyE3kqyax39PCy07Zsgthvl210QqlXKy8uoI3awrw=;
 	h=From:To:Cc:Subject:Date:From;
-	b=hvfrrMuSrvBU8nSVTluTF1IHUQwrN3IaqdBA9i6vPKt9MwsJ0IpD4M5oJasULkeqm
-	 /UGBHBFJp5L/mbhUERf7FnIiCA1ikWdSVbfBChwJ8c8Wqg4UbAbj29PgyDxkqIH+fe
-	 kS52twZjR7r6lj4A/z2+Rnt+q8GszKukauAndMXxxLIc0sgGBYOLAPb28eG8qgt1zn
-	 plqTTPHeBDFPlXW6W7uJmcbf0vapdKfrB5pb+US+blv2kwPUhiI3JeXcTu67SgUqnc
-	 KQpnCSP9DBKHNPRBPPgVIdk5Lg1kAA2qKheQENvHXpLkKjxaSeyQIzI262p+3aSMjp
-	 cyr+6MgTtSFSw==
+	b=oGnC97IMGTCIA6aNp426v5V2r3ssTe8F50+eiRz4t8uNbEKECbeQwlBhbcSsYGhHA
+	 VF6P4VqjRT1OHWKoJSMTa80EHrhOJSSrjfGDu1KftksMtsKyAx4MAf1V6xQkRRdC0U
+	 dSVHmb6SjPlLzgZUNFLqwq7OAZ5s+zQ7oGppMeG/ilQyg9wlmDeBvcDHZyb+Hqjpxj
+	 cuDwskV5Dtop6AHLGE1Mg9pQA+aPVYY+Xlip3eYemx4032YkggoXyBskO8DrCJrUVW
+	 GAEH8lFfVJ/4pdhlnx8w7LvCRccpPITIOPibOiWG/waAINkZDOz6budXuWMD940LDm
+	 eLkLJ4ZXysAtw==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
 	andrea.scian@dave.eu
 Cc: stable@kernel.org,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
 	linux-mtd@lists.infradead.org
-Subject: FAILED: Patch "mtd: rawnand: pl353: Fix software ECC support" failed to apply to 6.12-stable tree
-Date: Sat, 28 Feb 2026 20:25:59 -0500
-Message-ID: <20260301012559.1683274-1-sashal@kernel.org>
+Subject: FAILED: Patch "mtd: rawnand: pl353: Fix software ECC support" failed to apply to 6.6-stable tree
+Date: Sat, 28 Feb 2026 20:36:26 -0500
+Message-ID: <20260301013626.1696397-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.51.0
 MIME-Version: 1.0
 X-Patchwork-Hint: ignore
 X-stable: review
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260228_172601_800048_7185EB67 
-X-CRM114-Status: GOOD (  10.59  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,7 +71,7 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The patch below does not apply to the 6.12-stable tree.
+The patch below does not apply to the 6.6-stable tree.
 If someone wants it applied there, or to any other stable or longterm
 tree, then please email the backport, including the original git commit
 id to <stable@vger.kernel.org>.
