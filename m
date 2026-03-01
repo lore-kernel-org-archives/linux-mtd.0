@@ -4,62 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C3CE104891D
-	for <linux-mtd@archiver.kernel.org>; Fri, 27 Feb 2026 23:02:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78716FD0049
+	for <linux-mtd@archiver.kernel.org>; Sun,  1 Mar 2026 01:24:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=f7z1oY3ROUyl73Ee2gyNe1tr+N2AD2PIXtGX0Hy5X90=; b=2RIwI2vH8Y8+Im
-	idb7NT+G+wSxCGX64ItQv7gbc8JVIL7nqQJVVHqDpPzBfzHms6670dZMpuGZxqbeOmelaKeMhO/Ra
-	RzeNOsLD052bgnzqa62t+Cl+hpGRAxgq/sgugky7HaU+NPV+RkqkUe2PcTRyexLT+P99FaZnzx/0e
-	EQtcYHEBJ03Lb+HJprP9ZGw615Yqe86CafjrQCm3ImUeO1khOA/jbiKE766EYrRYd0zsaCyl3K+Wq
-	lrQkXaUqqPX7ahPesQMe3GeA6dUvnfdDzpxKMHXJZD8IoZc983k7RId2SaeYJ4XBybQa2FDkVCvf0
-	Bl/m7g2SEOTI/MhqFiHw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=WC1jknIidSygj4wTZJovLlryE7578b+swNpwOFiXw4E=; b=mTEWNReQh6pGDt
+	lmp1msGt5y9qedXQdJ4yXYVRb/Zu9koH5+nKE6UCc/t22qrQ5SMHT0hVBVCZn1JaEr2J8Lt4frSal
+	phLBTQ4Uo81IYxZOj8/XHQZa/hWxV4G77/MVRutCoIB1yhGJNI25VT9t9jq3RHIShb0Z7d21G7jtN
+	shP3TW5nmTQShPBNuT181c39zYLbLkJwsqSp/+09/hodHEEe2DHIIl2K1AZKXd0Z29On76HFu2BN6
+	4S/eBUoTlfViEyOO67nK7c51awpubzySF0/0/ScOKtSDRt2QGZA5Uosi0uv/pW89FyF8pkOR3Y5Ot
+	MAe6p8niCFaHzGFDXbVQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vw6qc-00000009FS1-3olX;
-	Fri, 27 Feb 2026 23:02:14 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1vwVY7-0000000AVqt-1s3s;
+	Sun, 01 Mar 2026 01:24:47 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vw6qb-00000009FRo-3Ysd
+	id 1vwVXy-0000000AVqK-48WJ
 	for linux-mtd@lists.infradead.org;
-	Fri, 27 Feb 2026 23:02:13 +0000
+	Sun, 01 Mar 2026 01:24:39 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 4F46C6132F;
-	Fri, 27 Feb 2026 23:02:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0A98C116C6;
-	Fri, 27 Feb 2026 23:02:12 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 5FE3660008;
+	Sun,  1 Mar 2026 01:24:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68288C19421;
+	Sun,  1 Mar 2026 01:24:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772233333;
-	bh=Iglr5a/uMiSNItPCwlIYFisg2PDATTWy5iPvGNVh5Ic=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=WjKuB2FcE68TLhxxy8HRgIlDbxjmfSUCGBE91EcAIpnf7OAby0GY3b2VcsQGY/5bS
-	 w0+MUg1NtI5r/LbRU4D5ZxVwe1Upcoj3B5hiyb+t3awrdSkobMB8VOMJc8cFeROsr7
-	 L+WflGGwN54py3hgQEo55lI9ppfGyYUCJloySgO2MkZfLfpzCs7fURR47jQbM0GeUN
-	 9K0BMckCNw+f2vxtTCnzkImtiMN/7SW1mKB8LkzrI+FYgKXM6YSzeL1cvAhOphUnkc
-	 uaiooKkLMD5EVFbBtw3Ujc2U3C+SdhJjEDAXFFKlE4UIxI+rAkLYxKe3fvmTSWAZRh
-	 CrM94IKEnv4/Q==
-Date: Fri, 27 Feb 2026 17:02:12 -0600
-From: "Rob Herring (Arm)" <robh@kernel.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Akhila YS <akhilayalmati@gmail.com>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>
-Subject: Re: [PATCH 3/3] dt-bindings: mtd: st,spear600-smi: Fix example
-Message-ID: <177223333156.922984.12576783607070606721.robh@kernel.org>
-References: <20260225-perso-fix-spear600-smi-yaml-v1-0-8ef3d205ab3a@bootlin.com>
- <20260225-perso-fix-spear600-smi-yaml-v1-3-8ef3d205ab3a@bootlin.com>
+	s=k20201202; t=1772328278;
+	bh=UZtwMz5sW1+hrbJWun+5atmQ1Rt3jEw+JR/O8wl6ogo=;
+	h=From:To:Cc:Subject:Date:From;
+	b=NnDdYycJ/yJpxOgBPT0QLaRGfMTLhoJNvRM3RzVNqBKEYmN9+O3BQEFaJp8q6rWcY
+	 Y0UvAnQl/LZfpJsBt3ySIREucVzn8z9XkIuPlx/T3Iq7XzON6g71PmE9M3DEZNfj4R
+	 DZTWxbqJ/gs+dIAlcNWHSC5/Z3Ce5s6N9jxobGsLHOwMujcjf5MoDwM++AcMc824yx
+	 xUzA5ZE7N2rixd6OKWY5K4NwCKElRRuJaanKOihEEjECGCIpBeeaLimS1R+B4ktm+k
+	 aSfc9xBuSf01ncRr8h7nPpo++GzApmQfValnA6+nS8SEplqN6lNnP4ne0aIJfVYS/b
+	 nfsoevsIhlGVQ==
+From: Sasha Levin <sashal@kernel.org>
+To: stable@vger.kernel.org,
+	dalaport@amazon.com
+Cc: Gunnar Kudrjavets <gunnarku@amazon.com>,
+	Mikhail Kshevetskiy <mikhail.kshevetskiy@iopsys.eu>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	linux-mtd@lists.infradead.org
+Subject: FAILED: Patch "mtd: spinand: Disable continuous read during probe" failed to apply to 6.12-stable tree
+Date: Sat, 28 Feb 2026 20:24:35 -0500
+Message-ID: <20260301012436.1681493-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.51.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260225-perso-fix-spear600-smi-yaml-v1-3-8ef3d205ab3a@bootlin.com>
+X-Patchwork-Hint: ignore
+X-stable: review
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,19 +72,77 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+The patch below does not apply to the 6.12-stable tree.
+If someone wants it applied there, or to any other stable or longterm
+tree, then please email the backport, including the original git commit
+id to <stable@vger.kernel.org>.
 
-On Wed, 25 Feb 2026 17:24:45 +0100, Miquel Raynal wrote:
-> Example is wrong, the reg property of the flash is always matching the
-> node name.
-> 
-> Fixes: 68cd8ef48452 ("dt-bindings: mtd: st,spear600-smi: convert to DT schema")
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> ---
->  Documentation/devicetree/bindings/mtd/st,spear600-smi.yaml | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
+Thanks,
+Sasha
 
-Reviewed-by: Rob Herring (Arm) <robh@kernel.org>
+------------------ original commit in Linus's tree ------------------
+
+From b4af7d194dc879353829f3c56988a68fbba1fbdd Mon Sep 17 00:00:00 2001
+From: David LaPorte <dalaport@amazon.com>
+Date: Thu, 29 Jan 2026 17:33:22 -0800
+Subject: [PATCH] mtd: spinand: Disable continuous read during probe
+
+Macronix serial NAND devices with continuous read support do not
+clear the configuration register on soft reset and lack a hardware
+reset pin. When continuous read is interrupted (e.g., during reboot),
+the feature remains enabled at the device level.
+
+With continuous read enabled, the OOB area becomes inaccessible and
+all reads are instead directed to the main area. As a result, during
+partition allocation as part of MTD device registration, the first two
+bytes of the main area for the master block are read and indicate that
+the block is bad. This process repeats for every subsequent block for
+the partition.
+
+All reads and writes that reference the BBT find no good blocks and
+fail.
+
+The only paths for recovery from this state are triggering the
+continuous read feature by way of raw MTD reads or through a NAND
+device power drain.
+
+Disable continuous read explicitly during spinand probe to ensure
+quiescent feature state.
+
+Fixes: 631cfdd0520d ("mtd: spi-nand: Add continuous read support")
+Cc: stable@vger.kernel.org
+Signed-off-by: David LaPorte <dalaport@amazon.com>
+Reviewed-by: Gunnar Kudrjavets <gunnarku@amazon.com>
+Reviewed-by: Mikhail Kshevetskiy <mikhail.kshevetskiy@iopsys.eu>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+---
+ drivers/mtd/nand/spi/core.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index 21a980e626eb2..514f653f27f3e 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -940,6 +940,14 @@ static void spinand_cont_read_init(struct spinand_device *spinand)
+ 	    (engine_type == NAND_ECC_ENGINE_TYPE_ON_DIE ||
+ 	     engine_type == NAND_ECC_ENGINE_TYPE_NONE)) {
+ 		spinand->cont_read_possible = true;
++
++		/*
++		 * Ensure continuous read is disabled on probe.
++		 * Some devices retain this state across soft reset,
++		 * which leaves the OOB area inaccessible and results
++		 * in false positive returns from spinand_isbad().
++		 */
++		spinand_cont_read_enable(spinand, false);
+ 	}
+ }
+ 
+-- 
+2.51.0
+
+
+
 
 
 ______________________________________________________
