@@ -4,58 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78716FD0049
-	for <linux-mtd@archiver.kernel.org>; Sun,  1 Mar 2026 01:24:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0B9AFD0049
+	for <linux-mtd@archiver.kernel.org>; Sun,  1 Mar 2026 01:26:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=WC1jknIidSygj4wTZJovLlryE7578b+swNpwOFiXw4E=; b=mTEWNReQh6pGDt
-	lmp1msGt5y9qedXQdJ4yXYVRb/Zu9koH5+nKE6UCc/t22qrQ5SMHT0hVBVCZn1JaEr2J8Lt4frSal
-	phLBTQ4Uo81IYxZOj8/XHQZa/hWxV4G77/MVRutCoIB1yhGJNI25VT9t9jq3RHIShb0Z7d21G7jtN
-	shP3TW5nmTQShPBNuT181c39zYLbLkJwsqSp/+09/hodHEEe2DHIIl2K1AZKXd0Z29On76HFu2BN6
-	4S/eBUoTlfViEyOO67nK7c51awpubzySF0/0/ScOKtSDRt2QGZA5Uosi0uv/pW89FyF8pkOR3Y5Ot
-	MAe6p8niCFaHzGFDXbVQ==;
+	List-Owner; bh=GRfbpm0oOE0gGni8aGBHxfowD41jjtLbyfIOLeLNk9s=; b=P18cQeNBHsXO6y
+	uxz3U7YbT3iM+6WGlKWVjrd/zQmN04txboZQLOTW5dwFhvCkZsql4V3BjmRtMkgH3Ode5GlMOjv4i
+	tLJdX5M6iPZnTXbCS9kvbddmBGSc7jgocihXjfwOu5OVEMCas1qn+SGnO+nB1PYVA9/HAD7TKMEXa
+	u2cyTfg2GwEv9CR3jeemDlPOR8k87FO/Famg7KO9FFbWeg68zCgR3Xml1Pi29bOjDSmiM+t1JlpXe
+	4KoZ+QF70MXDCsVOu0et6FVwga141cnjBrkU+roTAPHPAoihI5QCJMaxw+djb1rgu+An+ocacTy3X
+	4JgQhWziqn/4qJ4Et7nw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vwVY7-0000000AVqt-1s3s;
-	Sun, 01 Mar 2026 01:24:47 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1vwVZL-0000000AWZa-3WRa;
+	Sun, 01 Mar 2026 01:26:03 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vwVXy-0000000AVqK-48WJ
+	id 1vwVZJ-0000000AWYB-31fs
 	for linux-mtd@lists.infradead.org;
-	Sun, 01 Mar 2026 01:24:39 +0000
+	Sun, 01 Mar 2026 01:26:02 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 5FE3660008;
-	Sun,  1 Mar 2026 01:24:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68288C19421;
-	Sun,  1 Mar 2026 01:24:37 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 50030437F7;
+	Sun,  1 Mar 2026 01:26:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98E1EC19421;
+	Sun,  1 Mar 2026 01:26:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772328278;
-	bh=UZtwMz5sW1+hrbJWun+5atmQ1Rt3jEw+JR/O8wl6ogo=;
+	s=k20201202; t=1772328361;
+	bh=HmeO96EzGOW33qi49IOXOtz5wmcVF770WRnYU5a+q0c=;
 	h=From:To:Cc:Subject:Date:From;
-	b=NnDdYycJ/yJpxOgBPT0QLaRGfMTLhoJNvRM3RzVNqBKEYmN9+O3BQEFaJp8q6rWcY
-	 Y0UvAnQl/LZfpJsBt3ySIREucVzn8z9XkIuPlx/T3Iq7XzON6g71PmE9M3DEZNfj4R
-	 DZTWxbqJ/gs+dIAlcNWHSC5/Z3Ce5s6N9jxobGsLHOwMujcjf5MoDwM++AcMc824yx
-	 xUzA5ZE7N2rixd6OKWY5K4NwCKElRRuJaanKOihEEjECGCIpBeeaLimS1R+B4ktm+k
-	 aSfc9xBuSf01ncRr8h7nPpo++GzApmQfValnA6+nS8SEplqN6lNnP4ne0aIJfVYS/b
-	 nfsoevsIhlGVQ==
+	b=hvfrrMuSrvBU8nSVTluTF1IHUQwrN3IaqdBA9i6vPKt9MwsJ0IpD4M5oJasULkeqm
+	 /UGBHBFJp5L/mbhUERf7FnIiCA1ikWdSVbfBChwJ8c8Wqg4UbAbj29PgyDxkqIH+fe
+	 kS52twZjR7r6lj4A/z2+Rnt+q8GszKukauAndMXxxLIc0sgGBYOLAPb28eG8qgt1zn
+	 plqTTPHeBDFPlXW6W7uJmcbf0vapdKfrB5pb+US+blv2kwPUhiI3JeXcTu67SgUqnc
+	 KQpnCSP9DBKHNPRBPPgVIdk5Lg1kAA2qKheQENvHXpLkKjxaSeyQIzI262p+3aSMjp
+	 cyr+6MgTtSFSw==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	dalaport@amazon.com
-Cc: Gunnar Kudrjavets <gunnarku@amazon.com>,
-	Mikhail Kshevetskiy <mikhail.kshevetskiy@iopsys.eu>,
+	andrea.scian@dave.eu
+Cc: stable@kernel.org,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
 	linux-mtd@lists.infradead.org
-Subject: FAILED: Patch "mtd: spinand: Disable continuous read during probe" failed to apply to 6.12-stable tree
-Date: Sat, 28 Feb 2026 20:24:35 -0500
-Message-ID: <20260301012436.1681493-1-sashal@kernel.org>
+Subject: FAILED: Patch "mtd: rawnand: pl353: Fix software ECC support" failed to apply to 6.12-stable tree
+Date: Sat, 28 Feb 2026 20:25:59 -0500
+Message-ID: <20260301012559.1683274-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.51.0
 MIME-Version: 1.0
 X-Patchwork-Hint: ignore
 X-stable: review
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260228_172601_800048_7185EB67 
+X-CRM114-Status: GOOD (  10.59  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,62 +84,34 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From b4af7d194dc879353829f3c56988a68fbba1fbdd Mon Sep 17 00:00:00 2001
-From: David LaPorte <dalaport@amazon.com>
-Date: Thu, 29 Jan 2026 17:33:22 -0800
-Subject: [PATCH] mtd: spinand: Disable continuous read during probe
+From 89b831ebdaca0df4ca3b226f7e7a1d1db1629060 Mon Sep 17 00:00:00 2001
+From: Andrea Scian <andrea.scian@dave.eu>
+Date: Wed, 4 Feb 2026 18:41:44 +0100
+Subject: [PATCH] mtd: rawnand: pl353: Fix software ECC support
 
-Macronix serial NAND devices with continuous read support do not
-clear the configuration register on soft reset and lack a hardware
-reset pin. When continuous read is interrupted (e.g., during reboot),
-the feature remains enabled at the device level.
+We need to set also write_page_raw in ecc structure to allow
+choosing SW ECC instead of HW one, otherwise write operation fail.
 
-With continuous read enabled, the OOB area becomes inaccessible and
-all reads are instead directed to the main area. As a result, during
-partition allocation as part of MTD device registration, the first two
-bytes of the main area for the master block are read and indicate that
-the block is bad. This process repeats for every subsequent block for
-the partition.
-
-All reads and writes that reference the BBT find no good blocks and
-fail.
-
-The only paths for recovery from this state are triggering the
-continuous read feature by way of raw MTD reads or through a NAND
-device power drain.
-
-Disable continuous read explicitly during spinand probe to ensure
-quiescent feature state.
-
-Fixes: 631cfdd0520d ("mtd: spi-nand: Add continuous read support")
-Cc: stable@vger.kernel.org
-Signed-off-by: David LaPorte <dalaport@amazon.com>
-Reviewed-by: Gunnar Kudrjavets <gunnarku@amazon.com>
-Reviewed-by: Mikhail Kshevetskiy <mikhail.kshevetskiy@iopsys.eu>
+Fixes: 08d8c62164a322 ("mtd: rawnand: pl353: Add support for the ARM PL353 SMC NAND controller")
+Signed-off-by: Andrea Scian <andrea.scian@dave.eu>
+Cc: stable@kernel.org
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/spi/core.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/mtd/nand/raw/pl35x-nand-controller.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index 21a980e626eb2..514f653f27f3e 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -940,6 +940,14 @@ static void spinand_cont_read_init(struct spinand_device *spinand)
- 	    (engine_type == NAND_ECC_ENGINE_TYPE_ON_DIE ||
- 	     engine_type == NAND_ECC_ENGINE_TYPE_NONE)) {
- 		spinand->cont_read_possible = true;
-+
-+		/*
-+		 * Ensure continuous read is disabled on probe.
-+		 * Some devices retain this state across soft reset,
-+		 * which leaves the OOB area inaccessible and results
-+		 * in false positive returns from spinand_isbad().
-+		 */
-+		spinand_cont_read_enable(spinand, false);
- 	}
- }
- 
+diff --git a/drivers/mtd/nand/raw/pl35x-nand-controller.c b/drivers/mtd/nand/raw/pl35x-nand-controller.c
+index 11bd90e3f18cb..7f012b7c3eaec 100644
+--- a/drivers/mtd/nand/raw/pl35x-nand-controller.c
++++ b/drivers/mtd/nand/raw/pl35x-nand-controller.c
+@@ -976,6 +976,7 @@ static int pl35x_nand_attach_chip(struct nand_chip *chip)
+ 		fallthrough;
+ 	case NAND_ECC_ENGINE_TYPE_NONE:
+ 	case NAND_ECC_ENGINE_TYPE_SOFT:
++		chip->ecc.write_page_raw = nand_monolithic_write_page_raw;
+ 		break;
+ 	case NAND_ECC_ENGINE_TYPE_ON_HOST:
+ 		ret = pl35x_nand_init_hw_ecc_controller(nfc, chip);
 -- 
 2.51.0
 
