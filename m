@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F2E9EB3634
-	for <linux-mtd@archiver.kernel.org>; Mon,  2 Mar 2026 20:29:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91CBAEB3633
+	for <linux-mtd@archiver.kernel.org>; Mon,  2 Mar 2026 20:29:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=6+am/oKMzmNd6g/CMOUAO/wbfaCKaQl0gfqeEPTKbxM=; b=b/dgtU0QefolwJ
-	skfXH5Q1aVdFyQWOJqYtMK2DKwPOkCptWfi4FGLhfqi6YTT8K3PdVcZXERazWgFl+dS2EX1lZQqo0
-	lkZJ3EQ7jOwMPX9e/HtLLxfRAf0h7xPTZp7vnGmqUz7L2wqJs46K+09dZZN450tL8mKBjOHaIibkZ
-	RXG02g4da6owmmR3F8p7+z85amPLw7ogA2rdlkguog2usaKgepY7zQzjVJQESfzwILf3NaWyyhKf8
-	2azBjdHzuzNM+HFSfKkxz0hDLKhhV5N+hopP01/JUL/G3yDtcQcUvxTPV3wMG0fo5zKN3jMO8F7Vr
-	mbDPb4MPZtPvJ22Ano7g==;
+	List-Owner; bh=YJzF+Xkx5JtFR/CV8GEbyUX87/9SWl47OVXB2Ka6dCs=; b=2m36vJ3m7/wwhp
+	/+d3ILIGzmqHggoUv19EQJLpLvDH9SU8tl0g2aYo9LEUkpFaAFMPQ4KO2JQWkhYnI0DsXAsSuBgp7
+	fdPj9chLCQ/LyA+GmMoqqwrv55JVJtNzLp8LWaD3ZQaCbTjdUNTZ5+Zrxuymwmw/RwpppZKCrku3K
+	7wc1crPgt9ngTlZADjl1+NtEB05Xs4KqYABw+yjgHCLZfbJn7493qU5w8/vN9yWxsqWWliB6Ihcvg
+	XFTZ74ixBlU05hB/AhgIxu84x3XAL7xHFnhAmKV/v6YRB54PIWF+Xc+HUGW997EQIX06UVrIZxRjI
+	lQLMRMJfwy1cdGsppSGQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vx9tK-0000000Dp5g-0Eto;
-	Mon, 02 Mar 2026 20:29:22 +0000
+	id 1vx9tX-0000000DpBR-1MTz;
+	Mon, 02 Mar 2026 20:29:35 +0000
 Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vx9tI-0000000Dp50-1x34;
-	Mon, 02 Mar 2026 20:29:20 +0000
+	id 1vx9tW-0000000DpB9-36ko;
+	Mon, 02 Mar 2026 20:29:34 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id AB04660145;
+	by tor.source.kernel.org (Postfix) with ESMTP id 067906014B;
+	Mon,  2 Mar 2026 20:29:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96829C2BCAF;
 	Mon,  2 Mar 2026 20:29:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4398CC19425;
-	Mon,  2 Mar 2026 20:29:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772483359;
-	bh=eZCt7O/cBHS6+jaXbF0bDvdTJVnhNrKq3wa2lAjd6r8=;
+	s=k20201202; t=1772483373;
+	bh=2RJcyjz9ZeepO9vr+z/SvIbxdF+oLrZ3JyX/sNvQFOI=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=fBMBqtart3aD0C9RzMfCHTMFx3kcpZai+WoV3/wlDdnhCRn576Oi01in8ttP89rrE
-	 1jbLEXnH+DHrEGsYmqJiPrBONqu8+W536+wcd7gPdwUXljUJbhXOcQjv3U58cWs1Bw
-	 yvA04Z5/1tYmvhR6EIwuN4x6yE4TQ3vij1yl36SwVS+9uAikR3ofEAIaHwhf28yVQI
-	 nnWs1kCVddFM1M6h5PvLxCCq1vG4N3N0eg9OcH++fLDnbg2+WgxiVb6DgHnL1XIpBG
-	 kmEmtZg4iFg5s/AtPz7mqssjfeXGuS5qEvVqKxEZGY+sy05o1BzDpXrkCWS3pnQ490
-	 lHm6Qt5QdCPrA==
+	b=APIWiey4U3dasR0GqDP5lzqiatNJ/0sd/9IPXYTGa0AnIUb8in7RwdYg1yIwqrCgS
+	 NJHoiVaZ2uxVHpOgfc3xAPCiTirraHQ3NBF+Akq+CRSUOPxxeoKo5SVV9V5Qbl29kz
+	 /LlOzqmjkRJ+JvjOVpfruNcuGD0FqGDrfn8XNzgWcU+MXhbs53ffYLQOcm8TEnvUgq
+	 sRITLz9UEm/xqmGgU4l9z4ugevXhqrsZ9q9P94UpvlH9NWtv4MGDCTa65OzNlOGCVK
+	 /MqAoToFOmYHHjPwpuQ02igo30+X2doISjUzfLNJVgd0QpQZ4MMG8RzW9qWlDY8TN4
+	 ajUXKzdEw4vQA==
 From: Jeff Layton <jlayton@kernel.org>
-Date: Mon, 02 Mar 2026 15:24:02 -0500
-Subject: [PATCH v2 018/110] afs: use PRIino format for i_ino
+Date: Mon, 02 Mar 2026 15:24:03 -0500
+Subject: [PATCH v2 019/110] autofs: use PRIino format for i_ino
 MIME-Version: 1.0
-Message-Id: <20260302-iino-u64-v2-18-e5388800dae0@kernel.org>
+Message-Id: <20260302-iino-u64-v2-19-e5388800dae0@kernel.org>
 References: <20260302-iino-u64-v2-0-e5388800dae0@kernel.org>
 In-Reply-To: <20260302-iino-u64-v2-0-e5388800dae0@kernel.org>
 To: Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Dan Williams <dan.j.williams@intel.com>, Matthew Wilcox <willy@infradead.org>, Eric Biggers <ebiggers@kernel.org>, "Theodore Y. Ts'o" <tytso@mit.edu>, Muchun Song <muchun.song@linux.dev>, Oscar Salvador <osalvador@suse.de>, David Hildenbrand <david@kernel.org>, David Howells <dhowells@redhat.com>, Paulo Alcantara <pc@manguebit.org>, Andreas Dilger <adilger.kernel@dilger.ca>, Jan Kara <jack@suse.com>, Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>, Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, Chuck Lever <chuck.lever@oracle.com>, NeilBrown <neil@brown.name>, Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, Steve French <sfrench@samba.org>, Ronnie Sahlberg <ronniesahlberg@gmail.com>, Shyam Prasad N <sprasad@microsoft.com>, Bharath SM <bharathsm@microsoft.com>, Alexander Aring <alex.aring@gmail.com>, Ryusuke Konishi <konishi.ryusuke@gmail.com>, Viacheslav Dubeyko <slava@dubeyko.com>, Eric Van Hensbergen <ericvh@kernel.org>, Latchesar Ionkov <lucho@ionkov.net>, Dominique Martinet <asmadeus@codewreck.org>, Christian Schoenebeck <linux_oss@crudebyte.com>, David Sterba <dsterba@suse.com>, Marc Dionne <marc.dionne@auristor.com>, Ian Kent <raven@themaw.net>, Luis de Bethencourt <luisbg@kernel.org>, Salah Triki <salah.triki@gmail.com>, "Tigran A. Aivazian" <aivazian.tigran@gmail.com>, Ilya Dryomov <idryomov@gmail.com>, Alex Markuze <amarkuze@redhat.com>, Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu, Nicolas Pitre <nico@fluxnic.net>, Tyler Hicks <code@tyhicks.com>, Amir Goldstein <amir73il@gmail.com>, Christoph Hellwig <hch@infradead.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Yangtao Li <frank.li@vivo.com>, Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>, David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>, Dave Kleikamp <shaggy@kernel.org>, Konstantin Komarov <almaz.alexandrovich@paragon-software.com>, Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>, Joseph Qi <joseph.qi@linux.alibaba.com>, Mike Marshall <hubcap@omnibond.com>, Martin Brandenburg <martin@omnibond.com>, Miklos Szeredi <miklos@szeredi.hu>, Anders Larsen <al@alarsen.net>, Zhihao Cheng <chengzhihao1@huawei.com>, Damien Le Moal <dlemoal@kernel.org>, Naohiro Aota <naohiro.aota@wdc.com>, Johannes Thumshirn <jth@kernel.org>, John Johansen <john.johansen@canonical.com>, Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, Mimi Zohar <zohar@linux.ibm.com>, Roberto Sassu <roberto.sassu@huawei.com>, Dmitry Kasatkin <dmitry.kasatkin@gmail.com>, Eric Snowberg <eric.snowberg@oracle.com>, Fan Wu <wufan@kernel.org>, Stephen Smalley <stephen.smalley.work@gmail.com>, Ondrej Mosnacek <omosnace@redhat.com>, Casey Schaufler <casey@schaufler-ca.com>, Alex Deucher <alexander.deucher@amd.com>, =?utf-8?q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, Sumit Semwal <sumit.semwal@linaro.org>, Eric Dumazet <edumazet@google.com>, Kuniyuki Iwashima <kuniyu@google.com>, Paolo Abeni <pabeni@redhat.com>, Willem de Bruijn <willemb@google.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Simon Horman <horms@kernel.org>, Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, James Clark <james.clark@linaro.org>, "Darrick J. Wong" <djwong@kernel.org>, Martin Schiller <ms@dev.tdt.de>, Eric Paris <eparis@redhat.com>, 
@@ -73,20 +73,20 @@ Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-sctp@vger.kernel.org, bpf@vger.kernel.org, 
  Jeff Layton <jlayton@kernel.org>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3901; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=eZCt7O/cBHS6+jaXbF0bDvdTJVnhNrKq3wa2lAjd6r8=;
- b=owEBbQKS/ZANAwAKAQAOaEEZVoIVAcsmYgBppfH0RWX8wpryRk/QgAbjn1Q1ANZbw4V+PFw8A
- vATQsWHGvyJAjMEAAEKAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCaaXx9AAKCRAADmhBGVaC
- FQaAD/9DyJTyKKu/cuTCajh+8TP5xfDXlFmrEcCNSHdEiwWEokDdm2i1zkGOG7X37vO2jK00FQo
- WjBIS9/SahFHFKYltsILzhUTsyqG2dGgqlMHmmvEsPlH3sY4ceSTCVxr7QPAAXw4qs0Ubk5uk6v
- 66Ta9GmMoq1EVnQdLiocwj8ezT1Tip7XxRvuesh0eaZ4t7PYnVShZvOq/8pxR5lBdi2x4UawIyY
- Da9WRPW2K3CENHKIL0mMv6M8duTJvIpXQM+1jTZ/GxO2pPtbYoVrDsdcZbOufwZv+2khcznhGTr
- asoLO2U26rig19ah9eoWCs8/wlRtvU+8z6/OlVXeeF9rGXbbLuE4iSPpUqP7jxBQfwMuHj5ZCX4
- EOxwz8pdqTN+NW6Z5baBdvt2ZlIAiut/DYl1I+MiPUYp/UJ2QqGbCm1lZoP/SYCEtNaAzTbIKAJ
- u11RPrKEnI/046wbiTYxb3VWrNRz9oxghsSipLPEgFccdFxmdm61J1ol2HcWaSxC6rrtcP7Bevq
- KGc12QzSt8zNfENsH+pM2JNf7XxMK5LTyXT3D4pnmbZsw+aKFwf3r2GmTAt+nCEuWwd050ur19+
- 4lYSgVxjvBOPBGW+PkSFoOwP1q2Ro8/isBujNxmKasNg0fsW9KA5a9E/0PjiIrziosap53nhDmG
- NQgJaccyKt30Rqw==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=928; i=jlayton@kernel.org;
+ h=from:subject:message-id; bh=2RJcyjz9ZeepO9vr+z/SvIbxdF+oLrZ3JyX/sNvQFOI=;
+ b=owEBbQKS/ZANAwAKAQAOaEEZVoIVAcsmYgBppfH0lfPeH+lXXMPPhgtyZwPlwVBd02yrBNJF1
+ cfR3ubKSfOJAjMEAAEKAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCaaXx9AAKCRAADmhBGVaC
+ Fd52D/9S3JOF2DmRqLy2J/Rw1CSYpFxiI0GSgzdt4oasCoIaNzZcFYo6MA7ZjyhM3CbBv30Ppcv
+ H3I8pTide5u371BYpAw3g313farXvCypcfrGQUxkOrKbCgrWUMPf1KXzvC6vnCs8uyagsVRaStl
+ zLiKg5VXiWj2JvGBYQEAUjFLo4G7ihjSTjiW4yeFr/kdTd1seolERoXYneFY2hgFdA4iwpZoLPp
+ fGuc/QRrMc7R3VD9jLgORDGR1KIHUd5gDkKhkOlw0cnKEC+SSD1e6XH8l/oAwhszaxL7W5pT8+C
+ eI0A3imTsJRmCaVypsIF7cSR/vKcMbZ3xU1ZllXMRHWdeY5kie7Q3NrE0SA2vauj/gXcZ/iMBXK
+ nQKGjEzRnhOH31rcaDiCpcKhSMZJwNqukRxD1wDm094BEgLg2NUC6cWh2BQgovQGu9RzCt0C9ra
+ R++dBBKpb361aYp+N6ye4/P4iqz2oQhI2QgN8TkkwUXkPGMrkLxCRSpzXgCzZrbLY2uZDu3kNz7
+ vRQZrpvv8ILesrYhEFDbyODHPv3ZKZlSrfC0eGPdN3Do1q1ZYtBlQeoyYexj2BkVRaopCfLwVU3
+ 9uCmXoYZIN4T+60axuvwlKrOpNjzaO1pHROb3wTknmqqrLWdW82bVM/wBKoqWubTnT+F1QfbNsy
+ eEHguUfBX8+zoeQ==
 X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
  fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
 X-BeenThere: linux-mtd@lists.infradead.org
@@ -105,105 +105,30 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Convert afs i_ino format strings to use the PRIino format
+Convert autofs i_ino format strings to use the PRIino format
 macro in preparation for the widening of i_ino via kino_t.
+
+Also correct signed format specifiers to unsigned, since inode
+numbers are unsigned values.
 
 Signed-off-by: Jeff Layton <jlayton@kernel.org>
 ---
- fs/afs/dir.c        | 10 +++++-----
- fs/afs/dir_search.c |  2 +-
- fs/afs/dynroot.c    |  2 +-
- fs/afs/inode.c      |  2 +-
- 4 files changed, 8 insertions(+), 8 deletions(-)
+ fs/autofs/inode.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/afs/dir.c b/fs/afs/dir.c
-index 78caef3f13388c5f604e4970bc0874de168b57f3..52accf0a8d9d2e4dfdff444080683d5ab16d8e69 100644
---- a/fs/afs/dir.c
-+++ b/fs/afs/dir.c
-@@ -148,7 +148,7 @@ static bool afs_dir_check_block(struct afs_vnode *dvnode, size_t progress,
- 				union afs_xdr_dir_block *block)
- {
- 	if (block->hdr.magic != AFS_DIR_MAGIC) {
--		pr_warn("%s(%lx): [%zx] bad magic %04x\n",
-+		pr_warn("%s(%" PRIino "x): [%zx] bad magic %04x\n",
- 		       __func__, dvnode->netfs.inode.i_ino,
- 		       progress, ntohs(block->hdr.magic));
- 		trace_afs_dir_check_failed(dvnode, progress);
-@@ -214,7 +214,7 @@ static int afs_dir_check(struct afs_vnode *dvnode)
-  */
- static int afs_dir_open(struct inode *inode, struct file *file)
- {
--	_enter("{%lu}", inode->i_ino);
-+	_enter("{%" PRIino "u}", inode->i_ino);
- 
- 	BUILD_BUG_ON(sizeof(union afs_xdr_dir_block) != 2048);
- 	BUILD_BUG_ON(sizeof(union afs_xdr_dirent) != 32);
-@@ -523,7 +523,7 @@ static int afs_dir_iterate(struct inode *dir, struct dir_context *ctx,
- 	int retry_limit = 100;
- 	int ret;
- 
--	_enter("{%lu},%llx,,", dir->i_ino, ctx->pos);
-+	_enter("{%" PRIino "u},%llx,,", dir->i_ino, ctx->pos);
- 
- 	do {
- 		if (--retry_limit < 0) {
-@@ -610,7 +610,7 @@ static int afs_do_lookup_one(struct inode *dir, const struct qstr *name,
- 	};
- 	int ret;
- 
--	_enter("{%lu},{%.*s},", dir->i_ino, name->len, name->name);
-+	_enter("{%" PRIino "u},{%.*s},", dir->i_ino, name->len, name->name);
- 
- 	/* search the directory */
- 	ret = afs_dir_iterate(dir, &cookie.ctx, NULL, _dir_version);
-@@ -783,7 +783,7 @@ static struct inode *afs_do_lookup(struct inode *dir, struct dentry *dentry)
- 	long ret;
- 	int i;
- 
--	_enter("{%lu},%p{%pd},", dir->i_ino, dentry, dentry);
-+	_enter("{%" PRIino "u},%p{%pd},", dir->i_ino, dentry, dentry);
- 
- 	cookie = kzalloc_obj(struct afs_lookup_cookie);
- 	if (!cookie)
-diff --git a/fs/afs/dir_search.c b/fs/afs/dir_search.c
-index d2516e55b5edb273677c9cedb6f15524bc56348d..903cefd81f3f2ccbdb28264b5e99151f5a54d1ce 100644
---- a/fs/afs/dir_search.c
-+++ b/fs/afs/dir_search.c
-@@ -194,7 +194,7 @@ int afs_dir_search(struct afs_vnode *dvnode, const struct qstr *name,
- 	struct afs_dir_iter iter = { .dvnode = dvnode, };
- 	int ret, retry_limit = 3;
- 
--	_enter("{%lu},,,", dvnode->netfs.inode.i_ino);
-+	_enter("{%" PRIino "u},,,", dvnode->netfs.inode.i_ino);
- 
- 	if (!afs_dir_init_iter(&iter, name))
- 		return -ENOENT;
-diff --git a/fs/afs/dynroot.c b/fs/afs/dynroot.c
-index aa56e8951e037b2e3fa9fc452b43e7bd2d61b926..448083d79c3d0d2f29934e105f48d617330de8b4 100644
---- a/fs/afs/dynroot.c
-+++ b/fs/afs/dynroot.c
-@@ -59,7 +59,7 @@ static struct inode *afs_iget_pseudo_dir(struct super_block *sb, ino_t ino)
- 		return ERR_PTR(-ENOMEM);
- 	}
- 
--	_debug("GOT INODE %p { ino=%lu, vl=%llx, vn=%llx, u=%x }",
-+	_debug("GOT INODE %p { ino=%" PRIino "u, vl=%llx, vn=%llx, u=%x }",
- 	       inode, inode->i_ino, fid.vid, fid.vnode, fid.unique);
- 
- 	vnode = AFS_FS_I(inode);
-diff --git a/fs/afs/inode.c b/fs/afs/inode.c
-index dde1857fcabb302cc6b06cc018fb1e4108ec6284..a0261c2c246a379689cbaa44b7ec456f1a986142 100644
---- a/fs/afs/inode.c
-+++ b/fs/afs/inode.c
-@@ -683,7 +683,7 @@ int afs_getattr(struct mnt_idmap *idmap, const struct path *path,
- 	struct key *key;
- 	int ret, seq;
- 
--	_enter("{ ino=%lu v=%u }", inode->i_ino, inode->i_generation);
-+	_enter("{ ino=%" PRIino "u v=%u }", inode->i_ino, inode->i_generation);
- 
- 	if (vnode->volume &&
- 	    !(query_flags & AT_STATX_DONT_SYNC) &&
+diff --git a/fs/autofs/inode.c b/fs/autofs/inode.c
+index c53dc551053ba53fa7c85ca57eb877fff74a4ed1..ef3444d57f6ee15767f744a5ecda020c247095d7 100644
+--- a/fs/autofs/inode.c
++++ b/fs/autofs/inode.c
+@@ -92,7 +92,7 @@ static int autofs_show_options(struct seq_file *m, struct dentry *root)
+ 		seq_puts(m, ",ignore");
+ #ifdef CONFIG_CHECKPOINT_RESTORE
+ 	if (sbi->pipe)
+-		seq_printf(m, ",pipe_ino=%ld", file_inode(sbi->pipe)->i_ino);
++		seq_printf(m, ",pipe_ino=%" PRIino "u", file_inode(sbi->pipe)->i_ino);
+ 	else
+ 		seq_puts(m, ",pipe_ino=-1");
+ #endif
 
 -- 
 2.53.0
