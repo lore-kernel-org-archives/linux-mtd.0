@@ -4,49 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 174FCEB3634
-	for <linux-mtd@archiver.kernel.org>; Mon,  2 Mar 2026 20:44:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7289EB362C
+	for <linux-mtd@archiver.kernel.org>; Mon,  2 Mar 2026 20:45:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=IxJHDhCthSU1DqJw+FTY0oCnzKcnUnvtEf6/21Dg+VI=; b=hnWBTP+8zDyPm5
-	h9QD6If292LjrCjfWkaTs494/5x2XC0vK/v0e+5Vh4sOaAknc4r+6f+AOoGaWOX8U+HTMBrXRqsFj
-	Gd1xWU3RLMtcrmM3AtRhTKwIVNVF3rnC4rON59TqyAMXZ0rxSBAamw23X9w7pTols2vSmrIp79Zuc
-	oNiUuu8TaYkJPpE16BV9cTIP3MwOIuAnWfAj32jqm9XxGE4ZFao1xE5DBceQ7mFqL2fRZ29NqTbvH
-	tjxkroHu8XtlwBK6bZOjGyV3Y7gbc7/Wvxp9esQE3GF/taS2nKc/k409IO/6xVQkSEUxEOdmqdl4O
-	zYx0uNfoHmCpuFey5fAQ==;
+	List-Owner; bh=gul9Hs7wt1PobJo0wDzTvkx63wdDHnPtHP4XrGl7ZLA=; b=kRrN6115xjlx9v
+	k/ElfUZLN120/zWRaxuYQXsDD9YLuu7wWAS65EI6/WcHiJO1j/YVSrV2t8bdkZh3wYdfi6boRca7q
+	rI+n+uEfVO7hW38WNXq+H+SFl73GetSGxMBIA410xRtmXqImZI2z11xQadkyRU0lPqVfHSxEyIBMP
+	SKx/3c+mK1eZJc0neVbJJYEsMgccLSiTXNHXD3RXC7F4T/u3F3q1IytelhPLhVAhHAEdOB6s3Vw8q
+	PLJqXySbz8jFLuarrcvfcaK10OeqDVpjQgbb3fqHtjQTXEFClHpTb4EVeZcSTVQNuohTJu2fMkHzr
+	WcqER6+RtZ5j8wGQOSDA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vxA8N-0000000DvTq-3Imd;
-	Mon, 02 Mar 2026 20:44:55 +0000
+	id 1vxA8e-0000000DvZm-0IMB;
+	Mon, 02 Mar 2026 20:45:12 +0000
 Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vxA8L-0000000DvSZ-1OqN;
-	Mon, 02 Mar 2026 20:44:54 +0000
+	id 1vxA8Z-0000000DvYd-3iA2;
+	Mon, 02 Mar 2026 20:45:08 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 0639743400;
+	by sea.source.kernel.org (Postfix) with ESMTP id 81273404C1;
+	Mon,  2 Mar 2026 20:45:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CA94C19425;
 	Mon,  2 Mar 2026 20:44:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB738C2BC87;
-	Mon,  2 Mar 2026 20:44:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772484292;
-	bh=CaXz7RGcHHVAhT07ep0L/GlP30YdNndWLSBX71BRKbA=;
+	s=k20201202; t=1772484307;
+	bh=AleFBN5sPrQMDxoQcz7RCiAUkW1M4y/w/e4fiUlZ1xQ=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=circxKIpiBxq0f565ltJUoYfA2oXGxwh7LcfZImbOw2GGlPm7i+GIskUzJ8IJB1r9
-	 IrC/a5hdDvFhLsLHcii+10l5+6FiyMDFxhZvVMfk795FqxGfVJ2oidra1SP25ZCwP4
-	 dYfhkJdowq8GYgn78A2hxskuG56UodpY71BuJlBMtZqO3TBKn61IKAnGLWX4aOOGyL
-	 go2uX4m0sEAi18+oxXMD8jhfZC7Eo1P2vcN4vO+PA4MJy/ZF0cONyAH4/ocgrwykgo
-	 ZvQQfcHCb0Lu4TW4BSujaytMF1l+t+UBIt0fBzQf+TN4cjbZTTj8wIbUGP6RuU3Qo1
-	 4qpKbp5tGEHzQ==
+	b=bVw7xJahfm8Tm4bdZCyfu9P+ZCi6iCMfEgJmGOL343/w8HBOS3WJSPgeazUL20mEh
+	 Md8ughee7NhUqXO6x3bQHqYigaVlCjxp5hO+Pz5xOr/pXujjHW7c1ksaEmHybrfqYD
+	 tiZNxerAZmZtyrFfhXdQg/Cy5zNDrsRIzhZvKnEOdrdI0K8SJt2qJlfoRXfnDu/fDa
+	 dYuW9qi4QO0mJiXkhAUASBfIm+QkMWlPfaGdA0sT0gUaZr9XpPsbneKwSj5k3neDnW
+	 FwcfM4oN0G+zThHw++OqtWYJZJNQpEA264Tub1PeSciUq5+FPaRVtgu+rhFKO11pEh
+	 PDq3cTCbyQycA==
 From: Jeff Layton <jlayton@kernel.org>
-Date: Mon, 02 Mar 2026 15:25:07 -0500
-Subject: [PATCH v2 083/110] freevxfs: replace PRIino with %llu/%llx format
+Date: Mon, 02 Mar 2026 15:25:08 -0500
+Subject: [PATCH v2 084/110] hfs: replace PRIino with %llu/%llx format
  strings
 MIME-Version: 1.0
-Message-Id: <20260302-iino-u64-v2-83-e5388800dae0@kernel.org>
+Message-Id: <20260302-iino-u64-v2-84-e5388800dae0@kernel.org>
 References: <20260302-iino-u64-v2-0-e5388800dae0@kernel.org>
 In-Reply-To: <20260302-iino-u64-v2-0-e5388800dae0@kernel.org>
 To: Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Dan Williams <dan.j.williams@intel.com>, Matthew Wilcox <willy@infradead.org>, Eric Biggers <ebiggers@kernel.org>, "Theodore Y. Ts'o" <tytso@mit.edu>, Muchun Song <muchun.song@linux.dev>, Oscar Salvador <osalvador@suse.de>, David Hildenbrand <david@kernel.org>, David Howells <dhowells@redhat.com>, Paulo Alcantara <pc@manguebit.org>, Andreas Dilger <adilger.kernel@dilger.ca>, Jan Kara <jack@suse.com>, Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>, Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, Chuck Lever <chuck.lever@oracle.com>, NeilBrown <neil@brown.name>, Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, Steve French <sfrench@samba.org>, Ronnie Sahlberg <ronniesahlberg@gmail.com>, Shyam Prasad N <sprasad@microsoft.com>, Bharath SM <bharathsm@microsoft.com>, Alexander Aring <alex.aring@gmail.com>, Ryusuke Konishi <konishi.ryusuke@gmail.com>, Viacheslav Dubeyko <slava@dubeyko.com>, Eric Van Hensbergen <ericvh@kernel.org>, Latchesar Ionkov <lucho@ionkov.net>, Dominique Martinet <asmadeus@codewreck.org>, Christian Schoenebeck <linux_oss@crudebyte.com>, David Sterba <dsterba@suse.com>, Marc Dionne <marc.dionne@auristor.com>, Ian Kent <raven@themaw.net>, Luis de Bethencourt <luisbg@kernel.org>, Salah Triki <salah.triki@gmail.com>, "Tigran A. Aivazian" <aivazian.tigran@gmail.com>, Ilya Dryomov <idryomov@gmail.com>, Alex Markuze <amarkuze@redhat.com>, Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu, Nicolas Pitre <nico@fluxnic.net>, Tyler Hicks <code@tyhicks.com>, Amir Goldstein <amir73il@gmail.com>, Christoph Hellwig <hch@infradead.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Yangtao Li <frank.li@vivo.com>, Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>, David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>, Dave Kleikamp <shaggy@kernel.org>, Konstantin Komarov <almaz.alexandrovich@paragon-software.com>, Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>, Joseph Qi <joseph.qi@linux.alibaba.com>, Mike Marshall <hubcap@omnibond.com>, Martin Brandenburg <martin@omnibond.com>, Miklos Szeredi <miklos@szeredi.hu>, Anders Larsen <al@alarsen.net>, Zhihao Cheng <chengzhihao1@huawei.com>, Damien Le Moal <dlemoal@kernel.org>, Naohiro Aota <naohiro.aota@wdc.com>, Johannes Thumshirn <jth@kernel.org>, John Johansen <john.johansen@canonical.com>, Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, Mimi Zohar <zohar@linux.ibm.com>, Roberto Sassu <roberto.sassu@huawei.com>, Dmitry Kasatkin <dmitry.kasatkin@gmail.com>, Eric Snowberg <eric.snowberg@oracle.com>, Fan Wu <wufan@kernel.org>, Stephen Smalley <stephen.smalley.work@gmail.com>, Ondrej Mosnacek <omosnace@redhat.com>, Casey Schaufler <casey@schaufler-ca.com>, Alex Deucher <alexander.deucher@amd.com>, =?utf-8?q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, Sumit Semwal <sumit.semwal@linaro.org>, Eric Dumazet <edumazet@google.com>, Kuniyuki Iwashima <kuniyu@google.com>, Paolo Abeni <pabeni@redhat.com>, Willem de Bruijn <willemb@google.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Simon Horman <horms@kernel.org>, Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, James Clark <james.clark@linaro.org>, "Darrick J. Wong" <djwong@kernel.org>, Martin Schiller <ms@dev.tdt.de>, Eric Paris <eparis@redhat.com>, 
@@ -74,25 +74,25 @@ Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-sctp@vger.kernel.org, bpf@vger.kernel.org, 
  Jeff Layton <jlayton@kernel.org>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1047; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=CaXz7RGcHHVAhT07ep0L/GlP30YdNndWLSBX71BRKbA=;
- b=owEBbQKS/ZANAwAKAQAOaEEZVoIVAcsmYgBppfIFgMWAln4cg4xE10Xxdtt+jeVxKyAcI0DE4
- EA6JE8uULWJAjMEAAEKAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCaaXyBQAKCRAADmhBGVaC
- FS+2EAC45+71+ZptBWInk064ZQQuMfwEzEkUswN0EvRJbBebsOGu78WyzGrUne7jy6eFZlgn4HF
- uhR4xXahZIDdoB+Reon8U1O+vYdmrbeJ2E33O5BTEzLMbIj0IjxScs4PFNzmJJDhRw7gkvOSXp7
- jpjptBUln0YROEOeyZ5ICgAA6ifdrkcXJAnNVvlDsuMHG07dJb1utcWOHodHVmeuCje9Vpvid4B
- aoYAY0EJ+MQSmobZ9IMTCRKtS4F6kyYybPG23VXxQUU+WSsxReZvI07Qzeh/Gweon5rHRV+NZyH
- TpMf0wuF2EmM1f971sbfqOFmCdAF4BH4E5Sd1TW+EiWcGrhifXZFdzkz+PK03PSthO0AyETuWN3
- vr+SSq+vPeDfN8UphdTEDox+bNlzGsgRcAay7ScxvCL6FCv6HkkaTR8uSUHmS0wPepysi7qAZD+
- dbXCqWcx2C/IPmN/Wz6Q4OohC2Gq99tEMUGSWTA3B4ucAbpUz+wDjG9oTpo2Qxyv+fZJr9PTv6G
- YdjSGUDUm2MxGMN2nxEu4qGUDk3TgWc6LjA2VMHmjSAVa10e5UN5IkvYZksPecr08hTHInTpsro
- cKszv0etxwyPQhW/Jp6NWkcjntR8sRrhhlHvPcZp1C3WQF1pTIIFfxh1KAdyZTffByYKbYrv2hX
- 1dqur4vQhhgGM9w==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2652; i=jlayton@kernel.org;
+ h=from:subject:message-id; bh=AleFBN5sPrQMDxoQcz7RCiAUkW1M4y/w/e4fiUlZ1xQ=;
+ b=owEBbQKS/ZANAwAKAQAOaEEZVoIVAcsmYgBppfIGUHTTAeH14AJWhmBMM+46YGeMmg+2iIHQu
+ C44K4yGKBWJAjMEAAEKAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCaaXyBgAKCRAADmhBGVaC
+ FdPkD/9z51R7liAqp5UFbxwRLqvIszl+C5qd/GP67j1aaC/feMl/zq/MoEHMtECSHLQ9Cr3vli3
+ KpUje8gXVPw8c5FJNmy+SPLAUOICqlAoyIrtY1Q/tievM+0wDAAYH/Y7uDsDl4MmVcB2USjO6UQ
+ ukvOawig2HgJZ0JvJALhNY4Sj9KgenVymKYm127j9mmiDTvBOzMz6N+S1qZ5mhd5PepsJPfCZkn
+ hplvsjjEHQs2/sUppyDaCCdYjICR1TJt8KG714Zesw8MNlGx0eIuUceT64U+dIkPvy2qesW8ofR
+ DgLylhrKsu/uxfcDL9qCTfcOnRNXOsELegSHGOCPJmo/VSzvCZOwg8e2dD1d/6BxrE//YhflElq
+ xRPy0UKjO9n8kmHjhb1xBl+KqNJoQxODV9Et1DTPcrli1PHyaTMWil5LmUe1MUUomv9yX5Btv2V
+ q+KhWTjonmYMELcnDujhF/krR3jJy4qo9IWYMKEQo08+U+sw+FhUwwfAj3uWW5nuB7kNQWhxWHx
+ g9cuwPby+C5yqOUbWZxIEYJ5+oZTXDZynkOBOTyXjrEpCZDPGlAUyeXcOql9EpeKKMeItDP3Y+w
+ RSmXgCAyrXMXP9me0PpEVNjIBd4ll4mceHkANulCrg6cRHy/vstlFXOM1V6W5at3+tDq5NDhkwe
+ ZW2EtEyXcB5JPTQ==
 X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
  fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260302_124453_420799_E183E38E 
-X-CRM114-Status: GOOD (  13.41  )
+X-CRM114-CacheID: sfid-20260302_124507_970973_EE205890 
+X-CRM114-Status: GOOD (  15.40  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -110,32 +110,72 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Now that i_ino is u64 and the PRIino format macro has been removed,
-replace all uses in freevxfs with the concrete format strings.
+replace all uses in hfs with the concrete format strings.
 
 Signed-off-by: Jeff Layton <jlayton@kernel.org>
 ---
- fs/freevxfs/vxfs_bmap.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/hfs/catalog.c | 2 +-
+ fs/hfs/extent.c  | 4 ++--
+ fs/hfs/inode.c   | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/fs/freevxfs/vxfs_bmap.c b/fs/freevxfs/vxfs_bmap.c
-index 93570fc8eee1e0889d13e3e6e351fdda91d9094a..e85222892038fd676d0bc02b9a8b00d1e3799142 100644
---- a/fs/freevxfs/vxfs_bmap.c
-+++ b/fs/freevxfs/vxfs_bmap.c
-@@ -260,12 +260,12 @@ vxfs_bmap1(struct inode *ip, long iblock)
- 	if (VXFS_ISIMMED(vip))
- 		goto unsupp;
+diff --git a/fs/hfs/catalog.c b/fs/hfs/catalog.c
+index b07c0a3ffc61584165e8cc9f646de6066a6ad2c9..7f5339ee57c15aae2d5d00474133a985be3af6ca 100644
+--- a/fs/hfs/catalog.c
++++ b/fs/hfs/catalog.c
+@@ -417,7 +417,7 @@ int hfs_cat_move(u32 cnid, struct inode *src_dir, const struct qstr *src_name,
+ 	int entry_size, type;
+ 	int err;
  
--	printk(KERN_WARNING "vxfs: inode %" PRIino "u has no valid orgtype (%x)\n",
-+	printk(KERN_WARNING "vxfs: inode %llu has no valid orgtype (%x)\n",
- 			ip->i_ino, vip->vii_orgtype);
- 	BUG();
+-	hfs_dbg("cnid %u - (ino %" PRIino "u, name %s) - (ino %" PRIino "u, name %s)\n",
++	hfs_dbg("cnid %u - (ino %llu, name %s) - (ino %llu, name %s)\n",
+ 		cnid, src_dir->i_ino, src_name->name,
+ 		dst_dir->i_ino, dst_name->name);
+ 	sb = src_dir->i_sb;
+diff --git a/fs/hfs/extent.c b/fs/hfs/extent.c
+index 60875cc23880b758bbbb5e4b8281d9ee1f2dbcbb..f066a99a863bc739948aac921bc906874c6009b2 100644
+--- a/fs/hfs/extent.c
++++ b/fs/hfs/extent.c
+@@ -411,7 +411,7 @@ int hfs_extend_file(struct inode *inode)
+ 		goto out;
+ 	}
  
- unsupp:
--	printk(KERN_WARNING "vxfs: inode %" PRIino "u has an unsupported orgtype (%x)\n",
-+	printk(KERN_WARNING "vxfs: inode %llu has an unsupported orgtype (%x)\n",
- 			ip->i_ino, vip->vii_orgtype);
- 	return 0;
- }
+-	hfs_dbg("ino %" PRIino "u, start %u, len %u\n", inode->i_ino, start, len);
++	hfs_dbg("ino %llu, start %u, len %u\n", inode->i_ino, start, len);
+ 	if (HFS_I(inode)->alloc_blocks == HFS_I(inode)->first_blocks) {
+ 		if (!HFS_I(inode)->first_blocks) {
+ 			hfs_dbg("first_extent: start %u, len %u\n",
+@@ -482,7 +482,7 @@ void hfs_file_truncate(struct inode *inode)
+ 	u32 size;
+ 	int res;
+ 
+-	hfs_dbg("ino %" PRIino "u, phys_size %llu -> i_size %llu\n",
++	hfs_dbg("ino %llu, phys_size %llu -> i_size %llu\n",
+ 		inode->i_ino, (long long)HFS_I(inode)->phys_size,
+ 		inode->i_size);
+ 	if (inode->i_size > HFS_I(inode)->phys_size) {
+diff --git a/fs/hfs/inode.c b/fs/hfs/inode.c
+index b19866525c1e9c43decf3a943c709922ee8630f6..95f0333a608b0fb57239cf5eec7d9489a25efb3a 100644
+--- a/fs/hfs/inode.c
++++ b/fs/hfs/inode.c
+@@ -270,7 +270,7 @@ void hfs_delete_inode(struct inode *inode)
+ {
+ 	struct super_block *sb = inode->i_sb;
+ 
+-	hfs_dbg("ino %" PRIino "u\n", inode->i_ino);
++	hfs_dbg("ino %llu\n", inode->i_ino);
+ 	if (S_ISDIR(inode->i_mode)) {
+ 		atomic64_dec(&HFS_SB(sb)->folder_count);
+ 		if (HFS_I(inode)->cat_key.ParID == cpu_to_be32(HFS_ROOT_CNID))
+@@ -455,7 +455,7 @@ int hfs_write_inode(struct inode *inode, struct writeback_control *wbc)
+ 	hfs_cat_rec rec;
+ 	int res;
+ 
+-	hfs_dbg("ino %" PRIino "u\n", inode->i_ino);
++	hfs_dbg("ino %llu\n", inode->i_ino);
+ 	res = hfs_ext_write_extent(inode);
+ 	if (res)
+ 		return res;
 
 -- 
 2.53.0
