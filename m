@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27122EB3632
-	for <linux-mtd@archiver.kernel.org>; Mon,  2 Mar 2026 20:34:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9FCD1EB3634
+	for <linux-mtd@archiver.kernel.org>; Mon,  2 Mar 2026 20:34:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=BY552oefZHM4/RYocn5EZqB3YmZyslkBgLam2Uvttpo=; b=IZzFQbNeISqO18
-	jgqqKm6kiJ+NaWOctsbHfvDXj9AMeBd3VPAWiNwhWUOIU639jqiAfeYmrBzGjEYZfeBkVICh3Z56I
-	yV0hOi2l2xqmJ31YToqBdS3OCmoSB1ct/wgeUwq5z1tEXtqVjTpyZwF04xMonhBn//2N3HfnTebhB
-	mxu2XiO2D89klliymx83ou5J5CGEOmMMr8LOE2Tq9uYHEkHgbnpeGRPaETxGmfWthA1/R+YbBFQkx
-	OUz3abvAQ45uf/TVNV254xoI5l5ringb9HU1dAY3eJMAVAKpMrI992izu9eJsHz2PLOFji7oEVYvS
-	afM6WhXZMrJ9RjyYQSoQ==;
+	List-Owner; bh=EebDGH9J+gr70DE4g8rVPdLZM8fI6L/Xg0JzGe3AgI4=; b=jJs8YneCWHyF3h
+	HKGWLc+rySJ9X+LQQPgPbomSOFcfqXsT2OCSncHlCwDGfqffOucdmDJgg2ag7KoxPkykRzjfB0cBt
+	blD8h6uGnxm9amFgaipWGpirVEdEhh/EfdBGDgP/pSdDLvhwZAVPe67ZM8/z0zQGqTMCIBs3KF4ul
+	7ug+U+D3XpN3OPE1SbO5my7ooo6ExtzMPDq2iDTJeKNpeN7CHBO5awEK8Wrxj+pWQO1ViqXE46eWE
+	hWYHyN2gg9Rd1ntj1Odn6BQSDiCFSo577QslZwhYEQYHtGpmpGrYKw0YFePsUYV7CWgdtuXN3A1J4
+	SRWNfAhPOyGo080dfmBA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vx9yR-0000000DrLn-39Km;
-	Mon, 02 Mar 2026 20:34:39 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1vx9ye-0000000DrRZ-1Y07;
+	Mon, 02 Mar 2026 20:34:52 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vx9yO-0000000DrKC-2QdC;
-	Mon, 02 Mar 2026 20:34:37 +0000
+	id 1vx9yd-0000000DrQu-1rg8;
+	Mon, 02 Mar 2026 20:34:51 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 2868C43E15;
+	by tor.source.kernel.org (Postfix) with ESMTP id A2B6D61332;
+	Mon,  2 Mar 2026 20:34:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40AFDC2BCB1;
 	Mon,  2 Mar 2026 20:34:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9153C2BCB3;
-	Mon,  2 Mar 2026 20:34:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772483676;
-	bh=zDOfQu3cch1u1Ngb97bS3zzdl0dgOjMk0bBEwc1nc/8=;
+	s=k20201202; t=1772483690;
+	bh=EHTsZzHVuU/dAy7aXd2v1GUI+PyYFtjQTBu0LlSdxmo=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=dugwQL0rTQlo0eqDRzSj4bYCAaBkPTXwufIqepq8L90QxEZs131C8UyeZwQkXNV5w
-	 Lsk4QdjxCSTp8kwzxRwVjy2QkvT4nom7g3raD5B/rkXq2DpuY/wMATjLDt9fRLqVTc
-	 UtpvEt96O1ADdKNw2IppMzkDUg/eisPOIVPYCYsPxy7r0hrIIQyytgyk1BZDLCz5Pe
-	 g/JLxWm1VRV7z/75H9nFzdMmu50H0lDEU8fuF3/3lIJOSXOB4X+zZVv3mXp/sNRpJi
-	 NvajzXzASpyuyjaCxWYTXFpgLHERczrlNtRBRyrDg1mcKFrZprGTcncFL49eXanKVQ
-	 qF/pw/twmcmoA==
+	b=fgY16fS38E/poeIDCvXwd3Uta9LHaa1wjvUhqssQ1VgO6gCS6Y1GzJlWzt+QOplXT
+	 +wL/zcmPvZR6tRpbj+9gDIhvp3laupQc95FBZa/PLD/4FiyPanmiQUTP5Yivwzh5+8
+	 ltJRJD7fRDVnX62HkgYMdezXFWsSlTl/Kxxaal8h8NrN9OMVgP/npyY9E1Bki6/2e5
+	 Kq9R12cj0929PjFeVc3hwTl+oknr5F9dtb6M2ZV9nnEr2FPIUzzewSlYEajo/imw9Y
+	 67RLjLyAPet1y4NBEUiQvYbWxunU1VBAmdGFz2rFIcIBeCcdVqPlXXKZ5PbVUWcYFl
+	 CUpiqX/BGq9AA==
 From: Jeff Layton <jlayton@kernel.org>
-Date: Mon, 02 Mar 2026 15:24:24 -0500
-Subject: [PATCH v2 040/110] ocfs2: use PRIino format for i_ino
+Date: Mon, 02 Mar 2026 15:24:25 -0500
+Subject: [PATCH v2 041/110] orangefs: use PRIino format for i_ino
 MIME-Version: 1.0
-Message-Id: <20260302-iino-u64-v2-40-e5388800dae0@kernel.org>
+Message-Id: <20260302-iino-u64-v2-41-e5388800dae0@kernel.org>
 References: <20260302-iino-u64-v2-0-e5388800dae0@kernel.org>
 In-Reply-To: <20260302-iino-u64-v2-0-e5388800dae0@kernel.org>
 To: Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Dan Williams <dan.j.williams@intel.com>, Matthew Wilcox <willy@infradead.org>, Eric Biggers <ebiggers@kernel.org>, "Theodore Y. Ts'o" <tytso@mit.edu>, Muchun Song <muchun.song@linux.dev>, Oscar Salvador <osalvador@suse.de>, David Hildenbrand <david@kernel.org>, David Howells <dhowells@redhat.com>, Paulo Alcantara <pc@manguebit.org>, Andreas Dilger <adilger.kernel@dilger.ca>, Jan Kara <jack@suse.com>, Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>, Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, Chuck Lever <chuck.lever@oracle.com>, NeilBrown <neil@brown.name>, Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, Steve French <sfrench@samba.org>, Ronnie Sahlberg <ronniesahlberg@gmail.com>, Shyam Prasad N <sprasad@microsoft.com>, Bharath SM <bharathsm@microsoft.com>, Alexander Aring <alex.aring@gmail.com>, Ryusuke Konishi <konishi.ryusuke@gmail.com>, Viacheslav Dubeyko <slava@dubeyko.com>, Eric Van Hensbergen <ericvh@kernel.org>, Latchesar Ionkov <lucho@ionkov.net>, Dominique Martinet <asmadeus@codewreck.org>, Christian Schoenebeck <linux_oss@crudebyte.com>, David Sterba <dsterba@suse.com>, Marc Dionne <marc.dionne@auristor.com>, Ian Kent <raven@themaw.net>, Luis de Bethencourt <luisbg@kernel.org>, Salah Triki <salah.triki@gmail.com>, "Tigran A. Aivazian" <aivazian.tigran@gmail.com>, Ilya Dryomov <idryomov@gmail.com>, Alex Markuze <amarkuze@redhat.com>, Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu, Nicolas Pitre <nico@fluxnic.net>, Tyler Hicks <code@tyhicks.com>, Amir Goldstein <amir73il@gmail.com>, Christoph Hellwig <hch@infradead.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Yangtao Li <frank.li@vivo.com>, Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>, David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>, Dave Kleikamp <shaggy@kernel.org>, Konstantin Komarov <almaz.alexandrovich@paragon-software.com>, Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>, Joseph Qi <joseph.qi@linux.alibaba.com>, Mike Marshall <hubcap@omnibond.com>, Martin Brandenburg <martin@omnibond.com>, Miklos Szeredi <miklos@szeredi.hu>, Anders Larsen <al@alarsen.net>, Zhihao Cheng <chengzhihao1@huawei.com>, Damien Le Moal <dlemoal@kernel.org>, Naohiro Aota <naohiro.aota@wdc.com>, Johannes Thumshirn <jth@kernel.org>, John Johansen <john.johansen@canonical.com>, Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, Mimi Zohar <zohar@linux.ibm.com>, Roberto Sassu <roberto.sassu@huawei.com>, Dmitry Kasatkin <dmitry.kasatkin@gmail.com>, Eric Snowberg <eric.snowberg@oracle.com>, Fan Wu <wufan@kernel.org>, Stephen Smalley <stephen.smalley.work@gmail.com>, Ondrej Mosnacek <omosnace@redhat.com>, Casey Schaufler <casey@schaufler-ca.com>, Alex Deucher <alexander.deucher@amd.com>, =?utf-8?q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, Sumit Semwal <sumit.semwal@linaro.org>, Eric Dumazet <edumazet@google.com>, Kuniyuki Iwashima <kuniyu@google.com>, Paolo Abeni <pabeni@redhat.com>, Willem de Bruijn <willemb@google.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Simon Horman <horms@kernel.org>, Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, James Clark <james.clark@linaro.org>, "Darrick J. Wong" <djwong@kernel.org>, Martin Schiller <ms@dev.tdt.de>, Eric Paris <eparis@redhat.com>, 
@@ -73,25 +73,22 @@ Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-sctp@vger.kernel.org, bpf@vger.kernel.org, 
  Jeff Layton <jlayton@kernel.org>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=12707; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=zDOfQu3cch1u1Ngb97bS3zzdl0dgOjMk0bBEwc1nc/8=;
- b=owEBbQKS/ZANAwAKAQAOaEEZVoIVAcsmYgBppfH5TH81MLXzhYX9ei+5zmHkw2gJXRYBhwKEr
- Jw8vSwrFu6JAjMEAAEKAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCaaXx+QAKCRAADmhBGVaC
- FWlGD/9G0B+TKkI8uy3/96mmUDo5WHDJCLonyJTn0kWyjP9i0eBajXAHt1oQL6Lw129hT0PB6xk
- 4mdougx7mf/BE6XmUcqAx+uzskgptUnDaYSdftObugoUd+kw6PGxHR8HUdRXN8Fa6MVw85JgFZ7
- 9ZOL9MqZhJcGXjUn/11WT/w2cLSpf31tBHS+zRaNdNlRjYwdu/qG4Eywt66YnnFasE2NU8EXFuI
- hGY+DT21F3nA99M1IUicDc9WS7tPFk2HFtDlviD6+AQWJnOCbr5x7vAxoxCdJPMUvHNHIChjGMN
- 0zfQrLVLz/eBQvCIOoaH1f8ob9UQakCQXZ0hTd1Wz9iDByUkzxz6RnSc7lLhr5d1fgnEvVjRVYq
- 2wLlq+YN4Fqhad3LrKtFIODaGIvpvzg13GB6wKejwN4G3gj7hewX4vcwspbWO88vQujvwl8jpHm
- D2n4fsox9PfGt09vUTu5++IhlvfkM8jBlh1Y9tS+QN2gC4WWLnoMwut/ONLYDLjDZzCQmIAj1MH
- fj8wQbQQWXZqLXLEQoxRzjuoSWcVGZVCAN1FC9o1xTlUbcdgpWHjPoFc4lYw5VDlclxQ5rEvatn
- aeKm7ipPYT/7vBaPyMs9AVwWrP24kooYoy2NWKb7x0YC0ccAwKc7xOnPq6XbBrfCYv43dOcA6Fx
- R1s8v/5yER4ThmQ==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=808; i=jlayton@kernel.org;
+ h=from:subject:message-id; bh=EHTsZzHVuU/dAy7aXd2v1GUI+PyYFtjQTBu0LlSdxmo=;
+ b=owEBbQKS/ZANAwAKAQAOaEEZVoIVAcsmYgBppfH5WfrxGH3Mh44KYOsW9XO3qsbxXNwgi6BBy
+ q2ckAptuM6JAjMEAAEKAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCaaXx+QAKCRAADmhBGVaC
+ FTRpD/wO+gig26Q2pAO0c10h91G7JeQHdtm93kH3B5YmF+85UiTROFT/FQ6b8Xr8QyQ8yB6pcNE
+ OIynDYQwbs0utcUEU2W23V2gSV6M6UolcdjiDkL4C6yC27/J5tgxPfXFkRcCGmzhYtFfdg7t4Pl
+ Uj/YIZ+k5+YjstOHulNPBp7qzrkatUoQ1Ngz5qq4nPswn8NkK72vs52MQ+I8CLKrF4CCy7wAQwI
+ F07cyOuNO+ao8KdbWqwRgVcm3QjyAcj59iL3ThjYPnZyz4zudphEqaR1F/Oz69if0BJ3ybiGWbG
+ 7QQvJsih7YiAxDSGAnNblFKgw6vQ5Okr7yQaEjeeMhvwSbbusMZBrYz1Bjz+mslvl85HyW18nsx
+ ad6VSTOCsXafZidzXSqx1NK2w/Z0EegWPpG6rbk+PmTIzW8bhl8jA7zgLQFVaWt+uvWF3/YsWR3
+ phuYf55TbT4TBqEMOJdr1DuiI/CCKM+SNkHOobO0JQct04U1Xc2dIUKKVttqz3bmoZlGw1mB2ZR
+ 3fx/A3s4KYjTu+RyvqioVFNutz6Gik5US9ioG8UKG90XFVIPkVz/PF2tPXGkGN4/jYGPi594gZY
+ T3eps8lpKzobfpEhVn5gbXSL/MToqXXiuXyUPUD35K77OcFQV1hZMFb8FSe9pSJ17khNtZqgizn
+ nHzm2A2UJPzbMiw==
 X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
  fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260302_123436_671479_152E23B0 
-X-CRM114-Status: GOOD (  20.13  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -108,303 +105,27 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Convert ocfs2 i_ino format strings to use the PRIino format
+Convert orangefs i_ino format strings to use the PRIino format
 macro in preparation for the widening of i_ino via kino_t.
-
-Remove now-unnecessary (unsigned long) casts on i_ino.
 
 Signed-off-by: Jeff Layton <jlayton@kernel.org>
 ---
- fs/ocfs2/alloc.c        |  2 +-
- fs/ocfs2/aops.c         |  4 ++--
- fs/ocfs2/dir.c          |  8 ++++----
- fs/ocfs2/dlmfs/dlmfs.c  | 10 +++++-----
- fs/ocfs2/extent_map.c   | 12 ++++++------
- fs/ocfs2/inode.c        |  2 +-
- fs/ocfs2/quota_local.c  |  2 +-
- fs/ocfs2/refcounttree.c | 10 +++++-----
- fs/ocfs2/xattr.c        |  4 ++--
- 9 files changed, 27 insertions(+), 27 deletions(-)
+ fs/orangefs/inode.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/ocfs2/alloc.c b/fs/ocfs2/alloc.c
-index 344fd4d95fbc8bd7a749e9d51d31b5682ff030d0..d7703549645b548d9f5d77b2214a9a7c0af0ef6f 100644
---- a/fs/ocfs2/alloc.c
-+++ b/fs/ocfs2/alloc.c
-@@ -7318,7 +7318,7 @@ int ocfs2_commit_truncate(struct ocfs2_super *osb,
- 		 * to check it up here before changing the tree.
- 		*/
- 		if (root_el->l_tree_depth && rec->e_int_clusters == 0) {
--			mlog(ML_ERROR, "Inode %lu has an empty "
-+			mlog(ML_ERROR, "Inode %" PRIino "u has an empty "
- 				    "extent record, depth %u\n", inode->i_ino,
- 				    le16_to_cpu(root_el->l_tree_depth));
- 			status = ocfs2_remove_rightmost_empty_extent(osb,
-diff --git a/fs/ocfs2/aops.c b/fs/ocfs2/aops.c
-index 17ba79f443ee736cb5225702c57d13f4019f3c52..aea35b1c9fa3ce7327672c1862d0d1201c895c40 100644
---- a/fs/ocfs2/aops.c
-+++ b/fs/ocfs2/aops.c
-@@ -137,7 +137,7 @@ int ocfs2_get_block(struct inode *inode, sector_t iblock,
- 			      (unsigned long long)iblock, bh_result, create);
+diff --git a/fs/orangefs/inode.c b/fs/orangefs/inode.c
+index 2d4710d0e05e195855186c6bedd211bc419abc36..fc0b20bd1d37043461bd2768e9155a763d3469fe 100644
+--- a/fs/orangefs/inode.c
++++ b/fs/orangefs/inode.c
+@@ -1062,7 +1062,7 @@ struct inode *orangefs_iget(struct super_block *sb,
+ 	unlock_new_inode(inode);
  
- 	if (OCFS2_I(inode)->ip_flags & OCFS2_INODE_SYSTEM_FILE)
--		mlog(ML_NOTICE, "get_block on system inode 0x%p (%lu)\n",
-+		mlog(ML_NOTICE, "get_block on system inode 0x%p (%" PRIino "u)\n",
- 		     inode, inode->i_ino);
- 
- 	if (S_ISLNK(inode->i_mode)) {
-@@ -2146,7 +2146,7 @@ static int ocfs2_dio_wr_get_block(struct inode *inode, sector_t iblock,
- 	    ((iblock + ((len - 1) >> i_blkbits)) > endblk))
- 		len = (endblk - iblock + 1) << i_blkbits;
- 
--	mlog(0, "get block of %lu at %llu:%u req %u\n",
-+	mlog(0, "get block of %" PRIino "u at %llu:%u req %u\n",
- 			inode->i_ino, pos, len, total_len);
- 
- 	/*
-diff --git a/fs/ocfs2/dir.c b/fs/ocfs2/dir.c
-index 1c8abf2c592caacbe734d49254b04d507925c9d1..eecb2b1d2ec17fb4b3f09abb9e168d2f28f9b420 100644
---- a/fs/ocfs2/dir.c
-+++ b/fs/ocfs2/dir.c
-@@ -794,7 +794,7 @@ static int ocfs2_dx_dir_lookup_rec(struct inode *inode,
- 	if (le16_to_cpu(el->l_count) !=
- 	    ocfs2_extent_recs_per_dx_root(inode->i_sb)) {
- 		ret = ocfs2_error(inode->i_sb,
--				  "Inode %lu has invalid extent list length %u\n",
-+				  "Inode %" PRIino "u has invalid extent list length %u\n",
- 				  inode->i_ino, le16_to_cpu(el->l_count));
- 		goto out;
- 	}
-@@ -812,7 +812,7 @@ static int ocfs2_dx_dir_lookup_rec(struct inode *inode,
- 
- 		if (el->l_tree_depth) {
- 			ret = ocfs2_error(inode->i_sb,
--					  "Inode %lu has non zero tree depth in btree tree block %llu\n",
-+					  "Inode %" PRIino "u has non zero tree depth in btree tree block %llu\n",
- 					  inode->i_ino,
- 					  (unsigned long long)eb_bh->b_blocknr);
- 			goto out;
-@@ -821,7 +821,7 @@ static int ocfs2_dx_dir_lookup_rec(struct inode *inode,
- 
- 	if (le16_to_cpu(el->l_next_free_rec) == 0) {
- 		ret = ocfs2_error(inode->i_sb,
--				  "Inode %lu has empty extent list at depth %u\n",
-+				  "Inode %" PRIino "u has empty extent list at depth %u\n",
- 				  inode->i_ino,
- 				  le16_to_cpu(el->l_tree_depth));
- 		goto out;
-@@ -839,7 +839,7 @@ static int ocfs2_dx_dir_lookup_rec(struct inode *inode,
- 
- 	if (!found) {
- 		ret = ocfs2_error(inode->i_sb,
--				  "Inode %lu has bad extent record (%u, %u, 0) in btree\n",
-+				  "Inode %" PRIino "u has bad extent record (%u, %u, 0) in btree\n",
- 				  inode->i_ino,
- 				  le32_to_cpu(rec->e_cpos),
- 				  ocfs2_rec_clusters(el, rec));
-diff --git a/fs/ocfs2/dlmfs/dlmfs.c b/fs/ocfs2/dlmfs/dlmfs.c
-index 45cce261da65cab7ef48b5b88c0de5d41fa57615..e96c1c574ff7dc3dffad58ce8536b7e337d3f6fa 100644
---- a/fs/ocfs2/dlmfs/dlmfs.c
-+++ b/fs/ocfs2/dlmfs/dlmfs.c
-@@ -123,7 +123,7 @@ static int dlmfs_file_open(struct inode *inode,
- 	if (S_ISDIR(inode->i_mode))
- 		BUG();
- 
--	mlog(0, "open called on inode %lu, flags 0x%x\n", inode->i_ino,
-+	mlog(0, "open called on inode %" PRIino "u, flags 0x%x\n", inode->i_ino,
- 		file->f_flags);
- 
- 	status = dlmfs_decode_open_flags(file->f_flags, &level, &flags);
-@@ -170,7 +170,7 @@ static int dlmfs_file_release(struct inode *inode,
- 	if (S_ISDIR(inode->i_mode))
- 		BUG();
- 
--	mlog(0, "close called on inode %lu\n", inode->i_ino);
-+	mlog(0, "close called on inode %" PRIino "u\n", inode->i_ino);
- 
- 	if (fp) {
- 		level = fp->fp_lock_level;
-@@ -242,7 +242,7 @@ static ssize_t dlmfs_file_write(struct file *filp,
- 	int bytes_left;
- 	struct inode *inode = file_inode(filp);
- 
--	mlog(0, "inode %lu, count = %zu, *ppos = %llu\n",
-+	mlog(0, "inode %" PRIino "u, count = %zu, *ppos = %llu\n",
- 		inode->i_ino, count, *ppos);
- 
- 	if (*ppos >= DLM_LVB_LEN)
-@@ -301,7 +301,7 @@ static void dlmfs_evict_inode(struct inode *inode)
- 
- 	clear_inode(inode);
- 
--	mlog(0, "inode %lu\n", inode->i_ino);
-+	mlog(0, "inode %" PRIino "u\n", inode->i_ino);
- 
- 	ip = DLMFS_I(inode);
- 	lockres = &ip->ip_lockres;
-@@ -490,7 +490,7 @@ static int dlmfs_unlink(struct inode *dir,
- 	int status;
- 	struct inode *inode = d_inode(dentry);
- 
--	mlog(0, "unlink inode %lu\n", inode->i_ino);
-+	mlog(0, "unlink inode %" PRIino "u\n", inode->i_ino);
- 
- 	/* if there are no current holders, or none that are waiting
- 	 * to acquire a lock, this basically destroys our lockres. */
-diff --git a/fs/ocfs2/extent_map.c b/fs/ocfs2/extent_map.c
-index d68229422dda3423971d7ab0e9a4335acab8b344..3cf93a08f7a8946810ccd2de246be4d07a23b53b 100644
---- a/fs/ocfs2/extent_map.c
-+++ b/fs/ocfs2/extent_map.c
-@@ -291,7 +291,7 @@ static int ocfs2_last_eb_is_empty(struct inode *inode,
- 
- 	if (el->l_tree_depth) {
- 		ocfs2_error(inode->i_sb,
--			    "Inode %lu has non zero tree depth in leaf block %llu\n",
-+			    "Inode %" PRIino "u has non zero tree depth in leaf block %llu\n",
- 			    inode->i_ino,
- 			    (unsigned long long)eb_bh->b_blocknr);
- 		ret = -EROFS;
-@@ -427,7 +427,7 @@ static int ocfs2_get_clusters_nocache(struct inode *inode,
- 
- 		if (el->l_tree_depth) {
- 			ocfs2_error(inode->i_sb,
--				    "Inode %lu has non zero tree depth in leaf block %llu\n",
-+				    "Inode %" PRIino "u has non zero tree depth in leaf block %llu\n",
- 				    inode->i_ino,
- 				    (unsigned long long)eb_bh->b_blocknr);
- 			ret = -EROFS;
-@@ -437,7 +437,7 @@ static int ocfs2_get_clusters_nocache(struct inode *inode,
- 
- 	if (le16_to_cpu(el->l_next_free_rec) > le16_to_cpu(el->l_count)) {
- 		ocfs2_error(inode->i_sb,
--			    "Inode %lu has an invalid extent (next_free_rec %u, count %u)\n",
-+			    "Inode %" PRIino "u has an invalid extent (next_free_rec %u, count %u)\n",
- 			    inode->i_ino,
- 			    le16_to_cpu(el->l_next_free_rec),
- 			    le16_to_cpu(el->l_count));
-@@ -472,7 +472,7 @@ static int ocfs2_get_clusters_nocache(struct inode *inode,
- 
- 	if (!rec->e_blkno) {
- 		ocfs2_error(inode->i_sb,
--			    "Inode %lu has bad extent record (%u, %u, 0)\n",
-+			    "Inode %" PRIino "u has bad extent record (%u, %u, 0)\n",
- 			    inode->i_ino,
- 			    le32_to_cpu(rec->e_cpos),
- 			    ocfs2_rec_clusters(el, rec));
-@@ -561,7 +561,7 @@ int ocfs2_xattr_get_clusters(struct inode *inode, u32 v_cluster,
- 
- 		if (el->l_tree_depth) {
- 			ocfs2_error(inode->i_sb,
--				    "Inode %lu has non zero tree depth in xattr leaf block %llu\n",
-+				    "Inode %" PRIino "u has non zero tree depth in xattr leaf block %llu\n",
- 				    inode->i_ino,
- 				    (unsigned long long)eb_bh->b_blocknr);
- 			ret = -EROFS;
-@@ -580,7 +580,7 @@ int ocfs2_xattr_get_clusters(struct inode *inode, u32 v_cluster,
- 
- 		if (!rec->e_blkno) {
- 			ocfs2_error(inode->i_sb,
--				    "Inode %lu has bad extent record (%u, %u, 0) in xattr\n",
-+				    "Inode %" PRIino "u has bad extent record (%u, %u, 0) in xattr\n",
- 				    inode->i_ino,
- 				    le32_to_cpu(rec->e_cpos),
- 				    ocfs2_rec_clusters(el, rec));
-diff --git a/fs/ocfs2/inode.c b/fs/ocfs2/inode.c
-index 03a51662ea8e79f7a64fcd320b974f954b2ea8bf..c3076b450de3599291c386ceeb8b2d26e8680904 100644
---- a/fs/ocfs2/inode.c
-+++ b/fs/ocfs2/inode.c
-@@ -1196,7 +1196,7 @@ static void ocfs2_clear_inode(struct inode *inode)
- 				inode->i_nlink);
- 
- 	mlog_bug_on_msg(osb == NULL,
--			"Inode=%lu\n", inode->i_ino);
-+			"Inode=%" PRIino "u\n", inode->i_ino);
- 
- 	dquot_drop(inode);
- 
-diff --git a/fs/ocfs2/quota_local.c b/fs/ocfs2/quota_local.c
-index c4e0117d8977807dd6f0f4df64e1ddf72a62ea09..269b0f27d5679aba317059b245ee4bf4f5580eca 100644
---- a/fs/ocfs2/quota_local.c
-+++ b/fs/ocfs2/quota_local.c
-@@ -471,7 +471,7 @@ static int ocfs2_recover_local_quota_file(struct inode *lqinode,
- 	qsize_t spacechange, inodechange;
- 	unsigned int memalloc;
- 
--	trace_ocfs2_recover_local_quota_file((unsigned long)lqinode->i_ino, type);
-+	trace_ocfs2_recover_local_quota_file(lqinode->i_ino, type);
- 
- 	list_for_each_entry_safe(rchunk, next, &(rec->r_list[type]), rc_list) {
- 		chunk = rchunk->rc_chunk;
-diff --git a/fs/ocfs2/refcounttree.c b/fs/ocfs2/refcounttree.c
-index c1cdececdfa4ef51a1bd3a5addad734b324b92c0..1586c42fdabe70056bf7f103d583dd9000fe9510 100644
---- a/fs/ocfs2/refcounttree.c
-+++ b/fs/ocfs2/refcounttree.c
-@@ -2341,7 +2341,7 @@ static int ocfs2_mark_extent_refcounted(struct inode *inode,
- 					   cpos, len, phys);
- 
- 	if (!ocfs2_refcount_tree(OCFS2_SB(inode->i_sb))) {
--		ret = ocfs2_error(inode->i_sb, "Inode %lu want to use refcount tree, but the feature bit is not set in the super block\n",
-+		ret = ocfs2_error(inode->i_sb, "Inode %" PRIino "u want to use refcount tree, but the feature bit is not set in the super block\n",
- 				  inode->i_ino);
- 		goto out;
- 	}
-@@ -2524,7 +2524,7 @@ int ocfs2_prepare_refcount_change_for_del(struct inode *inode,
- 	u64 start_cpos = ocfs2_blocks_to_clusters(inode->i_sb, phys_blkno);
- 
- 	if (!ocfs2_refcount_tree(OCFS2_SB(inode->i_sb))) {
--		ret = ocfs2_error(inode->i_sb, "Inode %lu want to use refcount tree, but the feature bit is not set in the super block\n",
-+		ret = ocfs2_error(inode->i_sb, "Inode %" PRIino "u want to use refcount tree, but the feature bit is not set in the super block\n",
- 				  inode->i_ino);
- 		goto out;
- 	}
-@@ -2650,7 +2650,7 @@ static int ocfs2_refcount_cal_cow_clusters(struct inode *inode,
- 
- 		if (el->l_tree_depth) {
- 			ret = ocfs2_error(inode->i_sb,
--					  "Inode %lu has non zero tree depth in leaf block %llu\n",
-+					  "Inode %" PRIino "u has non zero tree depth in leaf block %llu\n",
- 					  inode->i_ino,
- 					  (unsigned long long)eb_bh->b_blocknr);
- 			goto out;
-@@ -2662,7 +2662,7 @@ static int ocfs2_refcount_cal_cow_clusters(struct inode *inode,
- 		rec = &el->l_recs[i];
- 
- 		if (ocfs2_is_empty_extent(rec)) {
--			mlog_bug_on_msg(i != 0, "Inode %lu has empty record in "
-+			mlog_bug_on_msg(i != 0, "Inode %" PRIino "u has empty record in "
- 					"index %d\n", inode->i_ino, i);
- 			continue;
- 		}
-@@ -3325,7 +3325,7 @@ static int ocfs2_replace_cow(struct ocfs2_cow_context *context)
- 	struct ocfs2_super *osb = OCFS2_SB(inode->i_sb);
- 
- 	if (!ocfs2_refcount_tree(osb)) {
--		return ocfs2_error(inode->i_sb, "Inode %lu want to use refcount tree, but the feature bit is not set in the super block\n",
-+		return ocfs2_error(inode->i_sb, "Inode %" PRIino "u want to use refcount tree, but the feature bit is not set in the super block\n",
- 				   inode->i_ino);
- 	}
- 
-diff --git a/fs/ocfs2/xattr.c b/fs/ocfs2/xattr.c
-index 42ee5db362d3eb6df886d6721dd7398b8aca8cdb..74cd6dd57abf71a69adef18863d057e48496ccfe 100644
---- a/fs/ocfs2/xattr.c
-+++ b/fs/ocfs2/xattr.c
-@@ -3741,7 +3741,7 @@ static int ocfs2_xattr_get_rec(struct inode *inode,
- 
- 		if (el->l_tree_depth) {
- 			ret = ocfs2_error(inode->i_sb,
--					  "Inode %lu has non zero tree depth in xattr tree block %llu\n",
-+					  "Inode %" PRIino "u has non zero tree depth in xattr tree block %llu\n",
- 					  inode->i_ino,
- 					  (unsigned long long)eb_bh->b_blocknr);
- 			goto out;
-@@ -3758,7 +3758,7 @@ static int ocfs2_xattr_get_rec(struct inode *inode,
- 	}
- 
- 	if (!e_blkno) {
--		ret = ocfs2_error(inode->i_sb, "Inode %lu has bad extent record (%u, %u, 0) in xattr\n",
-+		ret = ocfs2_error(inode->i_sb, "Inode %" PRIino "u has bad extent record (%u, %u, 0) in xattr\n",
- 				  inode->i_ino,
- 				  le32_to_cpu(rec->e_cpos),
- 				  ocfs2_rec_clusters(el, rec));
+ 	gossip_debug(GOSSIP_INODE_DEBUG,
+-		     "iget handle %pU, fsid %d hash %ld i_ino %lu\n",
++		     "iget handle %pU, fsid %d hash %ld i_ino %" PRIino "u\n",
+ 		     &ref->khandle,
+ 		     ref->fs_id,
+ 		     hash,
 
 -- 
 2.53.0
