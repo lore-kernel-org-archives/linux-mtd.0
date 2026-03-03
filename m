@@ -4,54 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0E3BEDEBF0
-	for <linux-mtd@archiver.kernel.org>; Tue,  3 Mar 2026 21:03:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC1A2EDEBF7
+	for <linux-mtd@archiver.kernel.org>; Tue,  3 Mar 2026 21:03:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=C1MZVz8YKs59OCVdYRcw6K5q77rsxB+fYigCxTZq7Vo=; b=jFRxcEMyZNhhql
-	SZ+zYTCnr3Y85uciHmayWqJo/qGV0WqFuTIBj69QAjIQD6iGNwFg/47A+k8ViS9VMCBMjgiS1ZX8d
-	5zByTRWTHwZpOZohmq90q7LaCaGSgcnh0epM19d6rkn2wn24kLpf/n/5bycZNAbB/9WMimlsV5rxK
-	Yta83/2BJQQ6c+ULSDJC/YlQdzqARHBUmkh/SskZTJNGMYav9jOA4wLRyLfgwlLgRPZC+vnU5b4Sv
-	DYxwbYryJu+4+ImdAFE/486Bu9LgP0a9cCtFXaZenzIWDHcHIU2fOlwF4EnopdpbmRpzuVmj8RTet
-	k4eXVgnJkG8t0XgzwqDA==;
+	List-Owner; bh=7Lz5YtsX/WjQXnG0v3kZTpm8FaXeNCaHzpMDu/bQztc=; b=I+BZ3/fwbo7rkc
+	3YpGjp5mAzg+r4ueOYvyXBj8ucZTDzsXv8NhCzAbNI269ij6FnJ/IOm6tZU4aQ4kLbYqZxcFET9l1
+	+an7mh/ti4xEZOFWDo2QAAVDK9L6wAqaEr016ZYjgFKpDTir8T27aiLcaeuxtjvyCg93NmjAzAAzr
+	wswmuJa9JnmBvmS+dIjHIUHbArGkiM2qxEgukOPky7ezL5bkOpwaglBpnjdynXaB01Fb9A98s6Ika
+	V+U3biVDKErpPo+N6eU9qZxD+7NXscmJLhTirfQ5vtuu91PJmV133O1hnOw+47EKUv8cMaiVDURa/
+	Q8Q5gkRI+rRvk029+yTQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vxWtZ-0000000FxCn-468T;
-	Tue, 03 Mar 2026 21:03:09 +0000
+	id 1vxWtd-0000000FxFz-1o06;
+	Tue, 03 Mar 2026 21:03:13 +0000
 Received: from mail-francecentralazon11013034.outbound.protection.outlook.com ([40.107.162.34] helo=PA4PR04CU001.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vxWtT-0000000Fx1H-3xct
+	id 1vxWtY-0000000Fx1H-3eQy
 	for linux-mtd@lists.infradead.org;
-	Tue, 03 Mar 2026 21:03:08 +0000
+	Tue, 03 Mar 2026 21:03:12 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=ORQMozZB9MQb6r3jVzi6xm2OaziGO/hB7UjNNScOEknNvoIznyAnbYaTpntlQivxaOtTaLsxmi7X4HcFVNqFkXoeZaSgCVa6kueKFyU/p+RQvCOqTD/IynSlgDnTDf51azVEf/0UuKgPxIt9qn0Qpw/JFI/+bq0N8DWS0eU/yUuEPk+vxylLJSlhkmFNXMBtMvAH6QwtrbIgHa7hYEXka3mB4FkcSr4rkgcEwsDUhjmhIxHEmeYlPjRvbmk72BV4GJtr9xQTV0VIxYTBdyrPy2F6nfUrNLHNCsoDsnIGcl/6mGRvfXs5VX/bqq6pGsFSSMHE9jZckMczPkhX3aRf2Q==
+ b=tBHN+3YYm9kT8YhK8R/GcJubyl/EdvKbQds8myDpIUitHGyHghRx/PtRFald55iZWG8Ivd92FfzTaXF5fL9Kr9eeKl+40SE4O7NIU9G2QURGewaAlVVp21b3EDYOEFnzPjp2MYh5aPh5tnSS9InQsslZA79UQVAClONwwS/oadVy6Geh/bm8FUkW/dLFFAH3QpHVOmP9XQYiAwKVw5YaSNyrUeUvlTCArS61WaBZBasCuvrJKLZ+Jo3DEE37MU3ttyqYeTs8rQZL2TF4uQGchWjERBVyyd4CTpDJncZ4RgUC2jwUHvapbpzoTdPpNY2XdmTdrbip0DGiFTppClzNXQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=NcUBM89CfcafqPNUduLz+fPs2+MPmwpMJfq9Gtl8p2U=;
- b=bk3rirolRaiSM7gasCMSNS+/6FwE8M276WQ8HQ/oES7RDGUTaD6kwD1Zth5CsOiCFOPZvDt4x+0byCGSNDdBT54MWYA8kWTkm5HE1o+/DfVRrpP0ARr0LcDn3gQhLVpruJc7jVgMF2T1/ynYjD3J1903iXBZz0/ZmzeDMYiWFapWVyZI4nkVauL76N1OaGjWk+H6CEaxfzu9y9ZNUplMw949kHgLD4JYK6iyp0sOQnwiI65jbC8QEGK3o9fatUUYk3gZyjMNQDZXGoagPlgw6hz0C+8Jd2mghxcktjOX1SPOIn1arGIzEUs4bJ7CR4zAS6FnNx2OhTziialY+5Ub4A==
+ bh=sJ1ymeCX8mr/RVzhDMvBVEz8lzXTgnoUTwdRrffJjxo=;
+ b=LXVe8OSmnAK6g7I/GCE80ZfDCEpjtAqUCCf4MAiowhBWjGWeiFwg2cVLj5S16dVMFVbbzfovr8Vc/0pCyMfYE7/lRUbyQI/03HM2Z5s/i8k5FiylDqBrJTax9g+dNInJRDolQzSJnL1UJpW0vAGr0pODo5nLwgAniBHgDu7CILQzrM03vCqwy11h1EKUq1Jp4tVJxauV8C9osBTrEreFZF7Honubrt2p86k6QOlBvcxVKfvRYrPYOJdqONNBmL/mFxnPWW1wZWBOaMdc3IhcbJRGlIyygi98rqrFEDzWyLhIeqtgq3RrYibkiOXcku7x0J3fy0AnDDAGM5N/YWLXCw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
  header.d=nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NcUBM89CfcafqPNUduLz+fPs2+MPmwpMJfq9Gtl8p2U=;
- b=WPQHrZ2ODCIGvg29ljOWYwLAGABcpDYcAAEEDYxebUi8xzyReU5UzokoeN8J46H7hmboHcSmsdwZw26lECHYQCLIDzwnW97uT9apkc7VWN3/XbbvDGtjv2TiWuDQ45QMY8AFp+amv41NeJEwalv8IbZNiRblDomBvAi82Cf1jZQwhBh78sRWPcphBlyfaroW3EeWMYXRyZCmk6KPZqchtqLqZnKDk2j829oKlHm3A174hmENowZSFkwbTHASzUeBZvCB3gDUVoAqYJM+lUO+OMaN65SjkH8it8yoeNmW+lmULySxp68o0V/Y/TprRYZhFgD9K5sx8a1MMXIY27cx7Q==
+ bh=sJ1ymeCX8mr/RVzhDMvBVEz8lzXTgnoUTwdRrffJjxo=;
+ b=DlLneizstOZU3znPrFUOV8Of7Mi1NK749jEAgwa+hJGt8CZ1eNN3cYhhMdJVfCh4VDgYcDQRaUvyTdTZkYGzqMptgCLswNplIFYpDy/5VaptTvOUdg/sLemdPiQWnucO6ft/JHH+BaW7U9sXtdf07jLmViFQ4rykiBaf86ShtQznlstopLZaDy2055xQPa8NKXGBKWrIXAYASjnNmh8nji30uqPxDBYQmv08wnuWxg1NuvP6/SBp0ve5jC8/H1FPSBaTz7Ycy5mYu3AnOVjCxIolO9CqqOpzT/O5omEIEeFGtsc6qYt7xaOIbOStdoYfSP+DR/aGOvqtkPj6pF6SXQ==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nxp.com;
 Received: from PA4PR04MB9366.eurprd04.prod.outlook.com (2603:10a6:102:2a9::8)
  by DB8PR04MB6858.eurprd04.prod.outlook.com (2603:10a6:10:113::9) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9654.20; Tue, 3 Mar
- 2026 21:02:53 +0000
+ 2026 21:02:56 +0000
 Received: from PA4PR04MB9366.eurprd04.prod.outlook.com
  ([fe80::75e4:8143:ddbc:6588]) by PA4PR04MB9366.eurprd04.prod.outlook.com
  ([fe80::75e4:8143:ddbc:6588%6]) with mapi id 15.20.9654.020; Tue, 3 Mar 2026
- 21:02:53 +0000
+ 21:02:56 +0000
 From: Frank Li <Frank.Li@nxp.com>
 To: Mark Brown <broonie@kernel.org>,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
@@ -68,69 +68,69 @@ Cc: Frank Li <frank.li@nxp.com>,
 	linux-kernel@vger.kernel.org,
 	linux-mtd@lists.infradead.org,
 	imx@lists.linux.dev
-Subject: Re: [PATCH RFC 7/7] spi: spi-fsl-qspi: Add support for RX data sampling point adjustment
-Date: Tue,  3 Mar 2026 16:01:12 -0500
-Message-ID: <20260303210131.2966214-17-Frank.Li@nxp.com>
+Subject: Re: [PATCH RFC 5/7] spi: Add RX sampling point adjustment
+Date: Tue,  3 Mar 2026 16:01:13 -0500
+Message-ID: <20260303210131.2966214-18-Frank.Li@nxp.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260303-fsl-qspi-rx-sampling-delay-v1-7-9326bbc492d6@kontron.de>
-References: <20260303-fsl-qspi-rx-sampling-delay-v1-7-9326bbc492d6@kontron.de>
+In-Reply-To: <20260303-fsl-qspi-rx-sampling-delay-v1-5-9326bbc492d6@kontron.de>
+References: <20260303-fsl-qspi-rx-sampling-delay-v1-5-9326bbc492d6@kontron.de>
 X-ClientProxiedBy: SA1PR05CA0014.namprd05.prod.outlook.com
  (2603:10b6:806:2d2::23) To PA4PR04MB9366.eurprd04.prod.outlook.com
  (2603:10a6:102:2a9::8)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: PA4PR04MB9366:EE_|DB8PR04MB6858:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5729fdb1-0741-4b68-46c2-08de79683c77
+X-MS-Office365-Filtering-Correlation-Id: 385fdd43-83cd-47a6-bf49-08de79683e07
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;ARA:13230040|19092799006|366016|1800799024|52116014|376014|7416014|38350700014;
-X-Microsoft-Antispam-Message-Info: hhzGwX3dDUlIlm8nshnUxRjs915q4zhe9YWlkKe1TUHmcUt7+lJaDFMlgEk3QYSFkGFEH/7Sj6OhgL8xwDeIWyHfZBXElsXw2B+y3r36zFyKInA8XnP1JgdIitJAWvHR2p5TCn1QejOKA+Nc9R0u0f3pVSEFl6lrG5VrS9bZ9f4fP5xb2OjgQ8EXgvuHUdZggvs3GJLdsXzUhhs2bUw0JR6Zf1QazrUCW3QnEbh41jaOMFwb19aAbQenRYgDaahn8itTz1ph5VqKoj/TyYq7avvmnmBj8/M90N3m78eDhTZmqAOq5jXyrjzCeNEZW1Py+NWC55sgSMD3w3bW4HxEA3d+UT3WcTbR6CZW6kNveaoRKXovrScsVJht5/E7kkCNdoCJx7zOGR757y+3vG9cxUkVlTxoT+QbCdsw7AZKc+dsQqQqafitYLQEWVI6fKYHM//o5mf62C0UrNU87F823Nrg5jCV4Cwn7AQVVLxYTnzKXu9oO110oErTEujrN3OimQnFoaJAiY61Ff2t08anEcCqKo/WaY0PBylFBq+OEIL7UeZqXp3/rEHF9MYiQLIfZTvoVozodXspp6/cJauLRHs3lt1FoeYZFU3njRKcnHYs9zDlTm48uH7B2buktgmT8Olz9ZAvGRkG1fsOyBPtBbRQs/AYc2jXsxmfTxdfcg5BP8joN+cytHMHIX9MpesmTh4VHD7ibhHVzMvqfgHnR8xhn7t/rfi2uIxtJTWfeJKo5Bb6v8jdk5zLGB3zti+PqnWBCYbnCMNK8yGKqzhF1r00GJJxfWZeRDjDS62CTqg=
+X-Microsoft-Antispam-Message-Info: eGiS9x8kJRVy4q5dpZo6zfSZJSR/FvbrGut3pZtvqwAjmH0Xmie34ngLSMJQmZzrOYaitlo24iqTeUuZd0yk1CR7pxc9dAhCJNoFsl6ahYT9c9D4wJVu28n7/bQ+6WsziD35zqcyqdXgQ+KbaFhwSPepL0aC91ZYDZEZeI4ROfrLulxiM1mgkDNMXtG/HN8cFWzDk/uXatQSRn3j8xDaJ6b+wRU+zBKHcFw4Flz3s8/6ExRAjIifAnCISwkfHBmUkcNoZYa2ab3wh+nL8upkh5s0oJR0VXz2sSCJ4ysD4ETlhnOV2Gdr9tUpi4N72S7wDl/lAWAkNWfjA10ctoJZMzG54NLYp052d3tBkB9/koAJnSShnDIPKI/yxNizihCrLOQJrfI/ibVQKd41LHVpAZyf5GNex4ypvuq59iTwhN3ZbQPfLR+hoOBnwbstc41Cwxz+DXedz8ujfg9MM0FdTa7nSxDgGegJESqJBlvuSsNdSo2lz8yfBUw9hGDH3r06J88ecOAWrRN0x/EOv/AZwkXKFGMwHpj7UG3OmIsCHS9/0oVTZ0I/mky3l/CJNq0VssY1aLrMVWLLQSaSHjjumVpIGbgez+ibiKDRf6bLc6VT8T/zHb/+ooQmviOEcz/8S7ZxP03w3A6zgh8QcgyROyWe8XnGNDzMo2TEwoqySvyJ35695SYAuRrlszFZenAE0ZtSUUghJi5bYjYGwM5ObFl9bCd7LTI1IUbGDBNbQykg4Wyy9AknPtl0uFn5gzY0zgCJgxZK5ock8xb+jYm/vURL7LGW3tnYVokTsJz5pQ4=
 X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR04MB9366.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(19092799006)(366016)(1800799024)(52116014)(376014)(7416014)(38350700014);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?k6b3xoES5p659rcOcTs29Hj3f017moEUw8ezkUst66B+cnf0iHHmTL56ZWYc?=
- =?us-ascii?Q?P/FCdaNxy49XvTeCz1/yqoC9hK4VapPFRA8crWvezx22oA0PVVMA2Mjx+8Rv?=
- =?us-ascii?Q?w/kScY/aWYRRpZ3MYMzAn0bMY5gMZ7Q5beA9nKY/HuY13z3U0PRp66wKmRY/?=
- =?us-ascii?Q?mDMT3A1uYP00BKAUtQJnTgG9csHTmLt82zLqtUHX7WLcMqaoTHAnhrCcYRk1?=
- =?us-ascii?Q?9TK3FkJoY6GA5oSUb3dkm3yMo0vpRqWD55WowQ6IYVAlmy5ooGXgkHV15WRk?=
- =?us-ascii?Q?ntDGGnKwzs8VnKGeYI/xGaBZ+YQOUG27X3TR5rbyRmng1D830aE4IPwq7ja5?=
- =?us-ascii?Q?RHLxCPFIu15kdPrka+V3pvXSi7W0vR5awTTNLcga6TK9ICxb58nv7cnbITPN?=
- =?us-ascii?Q?GdpJPVZd4I67vQ3SF139/auYylCi9dJE1IbhU5y2hUGwJSLKj2br6qOXjHKA?=
- =?us-ascii?Q?rBXCQfMSpFnMHcf6xuqm2L4mXYXpaSQshxlDIMeZbaTf5lA3GZlOF0bRoxVU?=
- =?us-ascii?Q?QSg/XfSYWiYbMaNbPjUVVTzrccTE8EFElNDDpPdunG95pvCKgWj5eHG3yALt?=
- =?us-ascii?Q?mUPomtLK08moobH64377U78NS+OVSNx8eS4y1zRhojvQ2eLjIM/cZ5Wrug+4?=
- =?us-ascii?Q?bbdhn1+BDyhm9CbbcZUHGT6xn26fkLo+7EBDO7NqrHGxQwFhLE+k/BeXU0tZ?=
- =?us-ascii?Q?mu+PDDp3H9isDQrlY26npzhoKhSdlv8k9WWPgv0zcu/2QNbzLZwBsZ23woRE?=
- =?us-ascii?Q?lzbjfIjwDH4/PJxkVQK/WI6VLIbB3+rzso7JaWVSmazRZYU9OULoyRMmDkXV?=
- =?us-ascii?Q?fQF50jTPvQVkIgLC2zT0rSVc9gG+cBVgZZmbyP7I63MUcyF2GLI8/DFA79Qb?=
- =?us-ascii?Q?YBNjwD0oeLzjsrRgsgzDJhUQ0Tj1/fiCrPZtPPpmP/zOH2gNxNQcx0ur4XH3?=
- =?us-ascii?Q?x1fKGy1NbQLqM2xXa/7JoD0S36j90hnV3ZuApR7JRKNShgONIGbvTyTMRjlr?=
- =?us-ascii?Q?MwK1FR/YsT8+UjCyhvs7cgXMyBcfRDfJo+7NM56b5SHWbRQsTqzPoVQVCJhQ?=
- =?us-ascii?Q?ZxNoSOloNgNUBRHRoORRP6w9zgejeC5SYuB+fT0i+NPbGs54Cf3ndxfoUzXF?=
- =?us-ascii?Q?zyRG5kDuXWONkmV4flaQjPqVtJ4rfCtUgDB1pSMEUqqjo3L/JTWbzoqve1hG?=
- =?us-ascii?Q?O4MxdwwmQs7DIAx196sQ3eW/FbjzMgg+bpMJ08JupQ5aqq1TYn3G0SkZxIsj?=
- =?us-ascii?Q?0sOVUA5VqeEHlILRHDdpWdA6gt2pn/QVlD1dQhpfR/IR4T4LS1nrsQO7NtxH?=
- =?us-ascii?Q?rHqgmESUghJQzMjPK9WPII909U51SFQ81eivXgSJv22KS7rlY323kF1PsJGN?=
- =?us-ascii?Q?e0dhrhGdr+mHixMOZnYT7UL/ftdvgRSFqDJtwmqdYMfn8vKkXVHpSs20Z5UV?=
- =?us-ascii?Q?XzI4Eh5Yr+9XWsgIC8P1POwN5crJm5zPa/KesiG0SQQsbpthSBgZJe8RP8aV?=
- =?us-ascii?Q?/NuBaZNjfJxTLeGmbFpFHLAyaqRWnThP1Bt3yo9X6xTYtEidcI//wxLPMseD?=
- =?us-ascii?Q?DCk4e1OJZZ7x/Y9JnFP1H1qQ+biL9N/GATdt4UcsIP9prKI99QHscB1BLpse?=
- =?us-ascii?Q?m/4h+7ihKwx0aW4M2S/JELrtlscrzUF+D5lmVVzsvaj+pTSL6BOA1YN+ckwg?=
- =?us-ascii?Q?7wi2mWluo4hs4X7dVYy+m5S2rbNJfiRpturDu6orh0Lxk25ynw4PIC66gmpy?=
- =?us-ascii?Q?HkxL7TCD0g=3D=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?OWEspUL7NuEH0B+Q6QoBGVcL4jDB4QxKl6nIo9wZbvHT7D8kBbXsjP6+tPEO?=
+ =?us-ascii?Q?qVvlQODTuTNARMEI193qrF/ThXW0M1o/GSAGCC9RXsZsFtECg4JVBvAet23m?=
+ =?us-ascii?Q?BkiFtTbSU3c4x4Nd2cZIlGb9Oi7N5xbLkpATD+hmvhgjpUrQNh0YIk7F9gtY?=
+ =?us-ascii?Q?Y+g+KYm3MatF31XTC7W4yivYZbOqnAa8ZR4LNoWmhNMAryWi2GjNdrk1tkRJ?=
+ =?us-ascii?Q?pABSg2wc5N5IxyV/beZpqw3WXUez/UheGrs/2n+MoJB8pEHROI683zpecY25?=
+ =?us-ascii?Q?ybJ9ztoe77rQ0r2veSapUcUWpOlhaijJktsFlZVUP0nH5J/8qJwZF699/N79?=
+ =?us-ascii?Q?BqsjGjD8NnrUxBoZv7P7VBDpTJKe2SPzMowAtftaWHloBv0Jy41zJtmeLC/m?=
+ =?us-ascii?Q?Fbz19agsK5NyginB9Zq9hEitYh9Wkwj7VmEXAv/d/OHOlPcWxa/bfn9nQDK2?=
+ =?us-ascii?Q?HoRhyNtMRtQGm1a4P3rpTuEA/f05yXI50/KvBZX/WE9vX5esQfLneyTYLtTF?=
+ =?us-ascii?Q?CEwx+s1umLywUj2Xsqe97TVU9pBbpd4rsRXIr4w4t1g0gZVmtK1iyZqM8vnW?=
+ =?us-ascii?Q?XtHQTklG3ZNuouEwtPeyZ3IR8lMjLg64x17nsmzbHexFWoMFURne/Alimwbr?=
+ =?us-ascii?Q?JRfJEl/ye2kaCuaD6ClVBva98F48Dy656bAOkLhn7oyvyrIsw5OV2ZdPiJHy?=
+ =?us-ascii?Q?yLtWayWu4sgDCLCoT3kJyRmQGyKNJ3Dy9ajwRcmmfd1NM307zitYb6lA2grt?=
+ =?us-ascii?Q?4qbGH13rflySYgBlrMAj8Goo4cnliDnPpOuMmAEUzVXJFoJ4JI55oxV/VUG8?=
+ =?us-ascii?Q?f5+2nPUxSPAuk/BPq3E7a8vflOcWgy4r2AHIy6jG+6KmQ7GZLoh6Rp13X2if?=
+ =?us-ascii?Q?hSi6UBd+Wz66QxGQ4gYsUpEML/6goUjAkYwhYd49UkDV2uMMGALVNZ2iv6oe?=
+ =?us-ascii?Q?xd4huZxgoJZmyYlLORAc44u0qygno991+eIzDh1eb+wcQaNLKWLhXmhSC4+E?=
+ =?us-ascii?Q?kUQiYVWQVjDjqPuRZAW2j+N61ue3HqQpjHJxR8LEmMfvlYr5nMbUWqOhQ+AK?=
+ =?us-ascii?Q?K6DlIklWcD8lrp8RHrEokH0C1ugqV7ePojfuRm4KVGNlpZMsQkSF+aw7y09n?=
+ =?us-ascii?Q?48z2PFmFEFc9IaQBFzfncNwj7GGGIpmJUCUOGuVRrNfXn0A533jpf1PQxckL?=
+ =?us-ascii?Q?w2x67tmhbx4HjY5RzzqoZQJkouKzxga91XiDClNQQSk39lL67Rx7QhOYAkkP?=
+ =?us-ascii?Q?kUoFX0cc9fxbDp+S0MjxSvmBD9Co7YJfva2W1KYg1owxzPp0Ih1lfbIBwRoF?=
+ =?us-ascii?Q?PtXODy3SevaXlB/7GxVfIUeoAhkxTIpbAiYuH5GiW2iKlPF7PNFCNOqn3yBc?=
+ =?us-ascii?Q?n7OsT3iHRT9Pi/22GO3EOr7/TZ2OniMDD5l2DyK7aY0QdHBQGdfvuzVE9bJk?=
+ =?us-ascii?Q?QY/dC6MIEZPAt8vWyXUHoq7ph1Ff9I1dz09SaugFn9JgIaB+16Zw+rtF/r3p?=
+ =?us-ascii?Q?RJ+ywg4q3NDh6QNmOpG8FcUxXyPSUce9YRjoIBiUZGkn5PJvTCKzmOzzSjFI?=
+ =?us-ascii?Q?Mrnm/FEoMuE5iVDFLZEzJLyU/bHq0iMksECv+MenAI2MKR+eh5WEhG4TZpX8?=
+ =?us-ascii?Q?J1/KYoyauykUaveiLdHd5JYgADLmxdguu30DeKYbXQbNtvNnKiS+9yNqq2UZ?=
+ =?us-ascii?Q?781qOsS0TSjmlBpXWzlaGe8qDcB9NaBTkmEjUjSVawk7lGfJJwcdCUOHGGV5?=
+ =?us-ascii?Q?rYgJMpHRmg=3D=3D?=
 X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5729fdb1-0741-4b68-46c2-08de79683c77
+X-MS-Exchange-CrossTenant-Network-Message-Id: 385fdd43-83cd-47a6-bf49-08de79683e07
 X-MS-Exchange-CrossTenant-AuthSource: PA4PR04MB9366.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Mar 2026 21:02:53.2405
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Mar 2026 21:02:55.9529
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: eBIiHEA+Ujut2ZHFciUY+2QdDNQ9QK/bTv5Gxy4fppcMxd0Ml3pmgTsgRBZ0m5AeS+o8uXiLaMb5LQpSd0fYuQ==
+X-MS-Exchange-CrossTenant-UserPrincipalName: QCNvp6wWPDkla7oUxepDknTDpw1xfCv7PgghYRgSX8Q8gfmeLlqk2Q++rPlrG473q27H3PNb0urOgdRoVOr3mA==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB6858
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260303_130304_012444_1A474C3B 
-X-CRM114-Status: GOOD (  16.87  )
+X-CRM114-CacheID: sfid-20260303_130308_927886_021CDA36 
+X-CRM114-Status: GOOD (  14.86  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -149,80 +149,60 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Frank Li (AI-BOT) <frank.li@nxp.com>
 
+> +unsigned int spi_calc_rx_sampling_point(struct spi_device *spi, unsigned int *freq,
+> +					u16 max_delay_cycles,
+> +					u16 delay_cycles_per_clock_cycle)
+> +{
+> +	unsigned long long temp;
+> +	u16 delay_cycles;
+> +
+> +	/* if sampling delay is zero, we assume the default sampling point can be used */
+> +	if (!spi->rx_sampling_delay_ns)
+> +		return 0;
+> +
+> +	temp = *freq * delay_cycles_per_clock_cycle * spi->rx_sampling_delay_ns;
+> +	do_div(temp, 1000000000UL);
+> +	delay_cycles = temp;
+
+Potential overflow: multiplying three u32/u16 values before assigning to
+u64. Cast operands to u64 before multiplication to avoid intermediate
+overflow.
+
+> +	if (delay_cycles > max_delay_cycles) {
+> +		/*
+> +		 * Reduce the clock to the point where the sampling delay requirement
+> +		 * can be met.
+> +		 */
+> +		delay_cycles = max_delay_cycles;
+> +		temp = (1000000000UL * delay_cycles);
+> +		do_div(temp, spi->rx_sampling_delay_ns * delay_cycles_per_clock_cycle);
+> +		*freq = temp;
+
+Same overflow risk in denominator multiplication. Cast to u64 first.
+
+> +	dev_dbg(&spi->controller->dev, "calculated RX sampling point delay: %u cycle(s) at %lu KHz", delay_cycles, *freq / 1000);
+
+Line exceeds 80 chars. Break into two lines.
+
+> +unsigned int spi_set_rx_sampling_point(struct spi_device *spi, unsigned int freq)
+> +{
+> +	if (spi->controller->set_rx_sampling_point)
+> +		return spi->controller->set_rx_sampling_point(spi, spi->max_speed_hz);
+> +
+> +	return freq;
+> +}
+
+Bug: function receives 'freq' parameter but ignores it and passes
+'spi->max_speed_hz' to the handler instead. Should pass 'freq' or remove
+the parameter.
+
+> +	spi->max_speed_hz = spi_set_rx_sampling_point(spi, spi->max_speed_hz);
+
+This call happens after spi_set_cs_timing() check but before the mutex is
+unlocked. Verify this is the intended placement and that no locking issues
+exist with controller callbacks.
+
 AI bot review and may be useless.
-
-> +#define QUADSPI_SMPR_SDRSMP(x)		((x) << 5)
-
-Macro argument 'x' should be parenthesized: ((x) << 5) is fine, but
-consider ((x) << 5) for consistency with kernel style.
-
-> +struct fsl_qspi_chip_data {
-> +	u8 sdrsmp;
-> +	u32 rx_sampling_delay_ns;
-> +	unsigned int rate;
-> +};
-
-Consider documenting struct members with kernel-doc comments explaining
-the purpose of each field.
-
-> +static void fsl_qspi_update_rx_sampling_delay(struct fsl_qspi *q, u32 sdrsmp)
-> +{
-> +	void __iomem *base = q->iobase;
-> +	u32 mcr, smpr = QUADSPI_SMPR_SDRSMP(sdrsmp);
-> +
-> +	/* skip if requested value matches cached value */
-> +	if (q->smpr == smpr)
-> +		return;
-> +
-> +	/* Disable the module */
-> +	mcr = qspi_readl(q, base + QUADSPI_MCR);
-> +	qspi_writel(q, mcr | QUADSPI_MCR_MDIS_MASK, base + QUADSPI_MCR);
-> +
-> +	qspi_writel(q, smpr, base + QUADSPI_SMPR);
-> +
-> +	/* Enable the module */
-> +	qspi_writel(q, mcr & ~QUADSPI_MCR_MDIS_MASK, base + QUADSPI_MCR);
-> +
-> +	q->smpr = smpr;
-> +}
-
-Missing synchronization: if fsl_qspi_exec_op() calls this concurrently
-from multiple threads, q->smpr cache may become inconsistent. Consider
-protecting with q->lock (already used elsewhere in driver).
-
-> +	struct fsl_qspi_chip_data *chip = spi_get_ctldata(mem->spi);
-> +	void __iomem *base = q->iobase;
-> +	u32 addr_offset = 0;
-> +	int err = 0;
-> @@ -679,6 +712,8 @@ static int fsl_qspi_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
-> 	fsl_qspi_readl_poll_tout(q, base + QUADSPI_SR, (QUADSPI_SR_IP_ACC_MASK |
-> 				 QUADSPI_SR_AHB_ACC_MASK), 10, 1000);
-> 
-> +	fsl_qspi_update_rx_sampling_delay(q, chip->sdrsmp);
-
-Potential NULL dereference: if fsl_qspi_setup_device() was never called
-or failed silently, 'chip' is NULL. Add NULL check or ensure setup is
-always called before exec_op.
-
-> +static int fsl_qspi_setup_device(struct spi_device *spi)
-> +{
-> +	struct fsl_qspi_chip_data *chip = spi_get_ctldata(spi);
-> +
-> +	if (!chip) {
-> +		chip = kzalloc_obj(*chip, GFP_KERNEL);
-
-kzalloc_obj() is non-standard. Use kzalloc(sizeof(*chip), GFP_KERNEL)
-or verify kzalloc_obj() is defined in kernel headers.
-
-> +		if (!chip)
-> +			return -ENOMEM;
-> +		spi_set_ctldata(spi, chip);
-> +	}
-> +
-> +	return 0;
-> +}
-
-setup_device() allows re-entry without freeing old chip. If called
 
 ______________________________________________________
 Linux MTD discussion mailing list
