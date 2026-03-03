@@ -4,94 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4EB7EC1431
-	for <linux-mtd@archiver.kernel.org>; Tue,  3 Mar 2026 11:32:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6530EC1434
+	for <linux-mtd@archiver.kernel.org>; Tue,  3 Mar 2026 11:32:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Oi25c/FbaXZObGzyyeemmfOKWZG//+mjuNATSP+3Ufk=; b=s7dFi34Ff6c5pa
-	oye6eQ6WEbP7sCk6fEfLTGzD3MH0cLD0OvNzQ8mu7qj94MGSrlnH6aZv/32EvqcXqxqE39Fbn9cPy
-	Z4cVybcl9cKRKYuA2wUJgvyB64a/1mDy3gef6nxu/alcHXByJE/FEUkk4acPCiBsETlGjOnEwsZ2U
-	3sH+cniEi1EtIJl11jS5CctTmhmwKYVnYxVunmTTim0/rmxR6IpLuHVzvCJY6rvIrF7Dz8ZCMuAR4
-	xbFDFd2AB2ouBVpFV0UpejaSbXvULbIxYv7PiFQH9TUco+frpgE3WfszRuv2ufV+Ndqq2CW0qFnQF
-	NxL74louPwHyAUb50irA==;
+	List-Owner; bh=r457lsDuAmWv11tchHk5+D8bJEv6UaA5u9UrwZ2PlI0=; b=REdX0N3yP5MRP9
+	XjhiiZkmRUp+NPEtI7kPW+3yjvNPlV/G6mV20Pg9Z1HZdqAzdB8JzDfhlR/7CygbCNnp6DvoBzio3
+	UutS/5v2VjwFzcbfncP9n+vhkJ2rZpYJ4YacamhCm2EKB8f67TCazFNQmkig+EnHHxKh8StrlV5Wf
+	REcwwQnPFGi14E1KzOyq5pHub4xcVE7SBcu3ArV898T+5Uh85+5QsHrbhTL5AST90++RbWfaelM/h
+	YGgqPtjxS7ettIrN4nkEUBWyL50N0ENSM36JakHjv7k4uM2vPccaKKPdRp7bK/Dl7ZErcHIwpvt4Q
+	n/YtFv8Ug9wtf++66yZw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vxNzB-0000000F4Sd-1Vvr;
-	Tue, 03 Mar 2026 11:32:21 +0000
-Received: from smtp-out2.suse.de ([195.135.223.131])
+	id 1vxNze-0000000F4Y6-1hIk;
+	Tue, 03 Mar 2026 11:32:50 +0000
+Received: from smtp-out1.suse.de ([2a07:de40:b251:101:10:150:64:1])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vxNz9-0000000F4RN-11lj
+	id 1vxNza-0000000F4Ws-49Ym
 	for linux-mtd@lists.infradead.org;
-	Tue, 03 Mar 2026 11:32:20 +0000
+	Tue, 03 Mar 2026 11:32:48 +0000
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 640475BDF1;
-	Tue,  3 Mar 2026 11:32:17 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id B3B143F959;
+	Tue,  3 Mar 2026 11:32:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1772537537; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1772537564; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=RzhnvihOfHfydYiO1CwZD2NgrteYNhrJZScxCSioSLs=;
-	b=qZixKyc0tT2bdyykJ4KebrYwpRE96amUtxEvkOfDSqAfZauAZbLqVj3b3hg61ZPWxZbF9C
-	OUpSbd6Rg4p+mjWRKNToHt5JlNJ3w2Cbe2e9l0ZdodQBbVtB0EnILd3o3uZTc8HcEgGrhH
-	BopqWcNrZKr9KtyWXmvVajcGNzpqpk8=
+	bh=iXP9gapkvJkQwmzCnRQCpwpSx1/qOrmg7rRUhHTzz+E=;
+	b=HfJjB9z1513Kp7eff2XsY+fgu5N3lYrgW5QmS+gRImeA3LnL+qnr6dE+Mth73FU+8XMCW4
+	Fj46WBAPxTvohb3FCq5NTFT3S6oJjdA8jy3hzHCnrJHtHwc0wu3cPeFqx8z30qEcJO52If
+	kjnx8zsxDQoxya+au9IePYorlhmHeFQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1772537537;
+	s=susede2_ed25519; t=1772537564;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=RzhnvihOfHfydYiO1CwZD2NgrteYNhrJZScxCSioSLs=;
-	b=vTR9ctkMvDHxvhaSZs0f7E6BCo0TNU+oZifncBH21JXuweYA50y0R7NXn3t7Epi7ng2HSo
-	BQ7+h+d05nukQJDQ==
-Authentication-Results: smtp-out2.suse.de;
+	bh=iXP9gapkvJkQwmzCnRQCpwpSx1/qOrmg7rRUhHTzz+E=;
+	b=AElBCnhIP5Bu0X3IX90FwwyrLkyZJjJcGtGikQEIRtRytW9GR/hFpndKZOiJIbxDGhEVfz
+	KCmgoQOSvLYJ3BBQ==
+Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1772537537; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1772537564; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=RzhnvihOfHfydYiO1CwZD2NgrteYNhrJZScxCSioSLs=;
-	b=qZixKyc0tT2bdyykJ4KebrYwpRE96amUtxEvkOfDSqAfZauAZbLqVj3b3hg61ZPWxZbF9C
-	OUpSbd6Rg4p+mjWRKNToHt5JlNJ3w2Cbe2e9l0ZdodQBbVtB0EnILd3o3uZTc8HcEgGrhH
-	BopqWcNrZKr9KtyWXmvVajcGNzpqpk8=
+	bh=iXP9gapkvJkQwmzCnRQCpwpSx1/qOrmg7rRUhHTzz+E=;
+	b=HfJjB9z1513Kp7eff2XsY+fgu5N3lYrgW5QmS+gRImeA3LnL+qnr6dE+Mth73FU+8XMCW4
+	Fj46WBAPxTvohb3FCq5NTFT3S6oJjdA8jy3hzHCnrJHtHwc0wu3cPeFqx8z30qEcJO52If
+	kjnx8zsxDQoxya+au9IePYorlhmHeFQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1772537537;
+	s=susede2_ed25519; t=1772537564;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=RzhnvihOfHfydYiO1CwZD2NgrteYNhrJZScxCSioSLs=;
-	b=vTR9ctkMvDHxvhaSZs0f7E6BCo0TNU+oZifncBH21JXuweYA50y0R7NXn3t7Epi7ng2HSo
-	BQ7+h+d05nukQJDQ==
+	bh=iXP9gapkvJkQwmzCnRQCpwpSx1/qOrmg7rRUhHTzz+E=;
+	b=AElBCnhIP5Bu0X3IX90FwwyrLkyZJjJcGtGikQEIRtRytW9GR/hFpndKZOiJIbxDGhEVfz
+	KCmgoQOSvLYJ3BBQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4DEC23EA69;
-	Tue,  3 Mar 2026 11:32:17 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A05EE3EA69;
+	Tue,  3 Mar 2026 11:32:44 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id gj8AE8HGpmm3UgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Tue, 03 Mar 2026 11:32:17 +0000
+	id AVQgJ9zGpml6UwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Tue, 03 Mar 2026 11:32:44 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 11AD7A0A1B; Tue,  3 Mar 2026 12:32:17 +0100 (CET)
-Date: Tue, 3 Mar 2026 12:32:17 +0100
+	id 64588A0A1B; Tue,  3 Mar 2026 12:32:44 +0100 (CET)
+Date: Tue, 3 Mar 2026 12:32:44 +0100
 From: Jan Kara <jack@suse.cz>
 To: Jeff Layton <jlayton@kernel.org>
 Cc: Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Dan Williams <dan.j.williams@intel.com>, Matthew Wilcox <willy@infradead.org>, Eric Biggers <ebiggers@kernel.org>, "Theodore Y. Ts'o" <tytso@mit.edu>, Muchun Song <muchun.song@linux.dev>, Oscar Salvador <osalvador@suse.de>, David Hildenbrand <david@kernel.org>, David Howells <dhowells@redhat.com>, Paulo Alcantara <pc@manguebit.org>, Andreas Dilger <adilger.kernel@dilger.ca>, Jan Kara <jack@suse.com>, Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>, Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, Chuck Lever <chuck.lever@oracle.com>, NeilBrown <neil@brown.name>, Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, Steve French <sfrench@samba.org>, Ronnie Sahlberg <ronniesahlberg@gmail.com>, Shyam Prasad N <sprasad@microsoft.com>, Bharath SM <bharathsm@microsoft.com>, Alexander Aring <alex.aring@gmail.com>, Ryusuke Konishi <konishi.ryusuke@gmail.com>, Viacheslav Dubeyko <slava@dubeyko.com>, Eric Van Hensbergen <ericvh@kernel.org>, Latchesar Ionkov <lucho@ionkov.net>, Dominique Martinet <asmadeus@codewreck.org>, Christian Schoenebeck <linux_oss@crudebyte.com>, David Sterba <dsterba@suse.com>, Marc Dionne <marc.dionne@auristor.com>, Ian Kent <raven@themaw.net>, Luis de Bethencourt <luisbg@kernel.org>, Salah Triki <salah.triki@gmail.com>, "Tigran A. Aivazian" <aivazian.tigran@gmail.com>, Ilya Dryomov <idryomov@gmail.com>, Alex Markuze <amarkuze@redhat.com>, Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu, Nicolas Pitre <nico@fluxnic.net>, Tyler Hicks <code@tyhicks.com>, Amir Goldstein <amir73il@gmail.com>, Christoph Hellwig <hch@infradead.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Yangtao Li <frank.li@vivo.com>, Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>, David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>, Dave Kleikamp <shaggy@kernel.org>, Konstantin Komarov <almaz.alexandrovich@paragon-software.com>, Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>, Joseph Qi <joseph.qi@linux.alibaba.com>, Mike Marshall <hubcap@omnibond.com>, Martin Brandenburg <martin@omnibond.com>, Miklos Szeredi <miklos@szeredi.hu>, Anders Larsen <al@alarsen.net>, Zhihao Cheng <chengzhihao1@huawei.com>, Damien Le Moal <dlemoal@kernel.org>, Naohiro Aota <naohiro.aota@wdc.com>, Johannes Thumshirn <jth@kernel.org>, John Johansen <john.johansen@canonical.com>, Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, Mimi Zohar <zohar@linux.ibm.com>, Roberto Sassu <roberto.sassu@huawei.com>, Dmitry Kasatkin <dmitry.kasatkin@gmail.com>, Eric Snowberg <eric.snowberg@oracle.com>, Fan Wu <wufan@kernel.org>, Stephen Smalley <stephen.smalley.work@gmail.com>, Ondrej Mosnacek <omosnace@redhat.com>, Casey Schaufler <casey@schaufler-ca.com>, Alex Deucher <alexander.deucher@amd.com>, Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>, David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, Sumit Semwal <sumit.semwal@linaro.org>, Eric Dumazet <edumazet@google.com>, Kuniyuki Iwashima <kuniyu@google.com>, Paolo Abeni <pabeni@redhat.com>, Willem de Bruijn <willemb@google.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Simon Horman <horms@kernel.org>, Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, James Clark <james.clark@linaro.org>, "Darrick J. Wong" <djwong@kernel.org>, Martin Schiller <ms@dev.tdt.de>, Eric Paris <eparis@redhat.com>, 
  Joerg Reuter <jreuter@yaina.de>, Marcel Holtmann <marcel@holtmann.org>, Johan Hedberg <johan.hedberg@gmail.com>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>, Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, David Ahern <dsahern@kernel.org>, Neal Cardwell <ncardwell@google.com>, Steffen Klassert <steffen.klassert@secunet.com>, Herbert Xu <herbert@gondor.apana.org.au>, Remi Denis-Courmont <courmisch@gmail.com>, Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>, Xin Long <lucien.xin@gmail.com>, Magnus Karlsson <magnus.karlsson@intel.com>, Maciej Fijalkowski <maciej.fijalkowski@intel.com>, Stanislav Fomichev <sdf@fomichev.me>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, nvdimm@lists.linux.dev, fsverity@lists.linux.dev, linux-mm@kvack.org, netfs@lists.linux.dev, linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org, samba-technical@lists.samba.org, linux-nilfs@vger.kernel.org, v9fs@lists.linux.dev, linux-afs@lists.infradead.org, autofs@vger.kernel.org, ceph-devel@vger.kernel.org, codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org, linux-mtd@lists.infradead.org, jfs-discussion@lists.sourceforge.net, ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org, linux-unionfs@vger.kernel.org, apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org, linux-integrity@vger.kernel.org, selinux@vger.kernel.org, amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org, netdev@vger.kernel.org, linux-perf-users@vger.kernel.org, linux-fscrypt@vger.kernel.org, linux-xfs@vger.kernel.org, linux-hams@vger.kernel.org, linux-x25@vger.kernel.org, audit@vger.kernel.org, linux-bluetooth@vger.kernel.org, linux-can@vger.kernel.org, linux-sctp@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH v2 062/110] jbd2: replace PRIino with %llu/%llx format
+Subject: Re: [PATCH v2 067/110] proc: replace PRIino with %llu/%llx format
  strings
-Message-ID: <qc6zicmkpuonxte4exzsrh7a4dstbhpughp74tqf3w5okgetto@huf6zcd3bf6g>
+Message-ID: <6myy5axw5zn3e3gtmxrfw2iynowkont7dc7mm74j24cvecrewb@7qitmwzmad2k>
 References: <20260302-iino-u64-v2-0-e5388800dae0@kernel.org>
- <20260302-iino-u64-v2-62-e5388800dae0@kernel.org>
+ <20260302-iino-u64-v2-67-e5388800dae0@kernel.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260302-iino-u64-v2-62-e5388800dae0@kernel.org>
+In-Reply-To: <20260302-iino-u64-v2-67-e5388800dae0@kernel.org>
 X-Spamd-Result: default: False [-0.30 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	FORGED_RECIPIENTS(2.00)[m:viro@zeniv.linux.org.uk,m:jack@suse.cz,m:rostedt@goodmis.org,m:mathieu.desnoyers@efficios.com,m:tytso@mit.edu,m:osalvador@suse.de,m:dhowells@redhat.com,m:pc@manguebit.org,m:adilger.kernel@dilger.ca,m:jack@suse.com,m:chuck.lever@oracle.com,m:neil@brown.name,m:okorniev@redhat.com,m:Dai.Ngo@oracle.com,m:tom@talpey.com,m:sfrench@samba.org,m:ronniesahlberg@gmail.com,m:sprasad@microsoft.com,m:bharathsm@microsoft.com,m:alex.aring@gmail.com,m:konishi.ryusuke@gmail.com,m:slava@dubeyko.com,m:asmadeus@codewreck.org,m:linux_oss@crudebyte.com,m:dsterba@suse.com,m:marc.dionne@auristor.com,m:raven@themaw.net,m:salah.triki@gmail.com,m:aivazian.tigran@gmail.com,m:idryomov@gmail.com,m:amarkuze@redhat.com,m:jaharkes@cs.cmu.edu,m:coda@cs.cmu.edu,m:nico@fluxnic.net,m:code@tyhicks.com,m:amir73il@gmail.com,m:glaubitz@physik.fu-berlin.de,m:frank.li@vivo.com,m:mikulas@artax.karlin.mff.cuni.cz,m:richard@nod.at,m:almaz.alexandrovich@paragon-software.com,m:mark@fasheh.com,m:jlbec@evil
@@ -103,26 +103,26 @@ X-Spamd-Result: default: False [-0.30 / 50.00];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
 	MIME_TRACE(0.00)[0:+];
 	TO_DN_SOME(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	TAGGED_RCPT(0.00)[];
 	FREEMAIL_CC(0.00)[zeniv.linux.org.uk,kernel.org,suse.cz,goodmis.org,efficios.com,intel.com,infradead.org,mit.edu,linux.dev,suse.de,redhat.com,manguebit.org,dilger.ca,suse.com,oracle.com,brown.name,talpey.com,samba.org,gmail.com,microsoft.com,dubeyko.com,ionkov.net,codewreck.org,crudebyte.com,auristor.com,themaw.net,cs.cmu.edu,fluxnic.net,tyhicks.com,physik.fu-berlin.de,vivo.com,artax.karlin.mff.cuni.cz,nod.at,paragon-software.com,fasheh.com,evilplan.org,linux.alibaba.com,omnibond.com,szeredi.hu,alarsen.net,huawei.com,wdc.com,canonical.com,paul-moore.com,namei.org,hallyn.com,linux.ibm.com,schaufler-ca.com,amd.com,ffwll.ch,linaro.org,google.com,davemloft.net,arm.com,linux.intel.com,dev.tdt.de,yaina.de,holtmann.org,hartkopp.net,pengutronix.de,secunet.com,gondor.apana.org.au,fomichev.me,iogearbox.net,vger.kernel.org,lists.linux.dev,kvack.org,lists.sourceforge.net,lists.samba.org,lists.infradead.org,coda.cs.cmu.edu,lists.orangefs.org,lists.ubuntu.com,lists.freedesktop.org,lists.linaro.or
  g];
+	RCVD_COUNT_THREE(0.00)[3];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
 	R_RATELIMIT(0.00)[to_ip_from(RLzmnxm7msfpf7ixykpj9feesk)];
 	TO_MATCH_ENVRCPT_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	TAGGED_RCPT(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
 	RCPT_COUNT_GT_50(0.00)[172];
+	RCVD_TLS_LAST(0.00)[];
 	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo,suse.cz:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.cz:email]
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260303_033219_588795_8D767CC9 
-X-CRM114-Status: GOOD (  20.92  )
+X-CRM114-CacheID: sfid-20260303_033247_461280_21876A49 
+X-CRM114-Status: GOOD (  22.44  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -139,9 +139,9 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon 02-03-26 15:24:46, Jeff Layton wrote:
+On Mon 02-03-26 15:24:51, Jeff Layton wrote:
 > Now that i_ino is u64 and the PRIino format macro has been removed,
-> replace all uses in jbd2 with the concrete format strings.
+> replace all uses in proc with the concrete format strings.
 > 
 > Signed-off-by: Jeff Layton <jlayton@kernel.org>
 
@@ -152,45 +152,45 @@ Reviewed-by: Jan Kara <jack@suse.cz>
 								Honza
 
 > ---
->  fs/jbd2/journal.c     | 4 ++--
->  fs/jbd2/transaction.c | 2 +-
+>  fs/proc/fd.c       | 2 +-
+>  fs/proc/task_mmu.c | 4 ++--
 >  2 files changed, 3 insertions(+), 3 deletions(-)
 > 
-> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-> index 9df937f0e15c71028038e1c0c12159421a2444b4..b60918ed8a9965efe42419e6de3f449be50f7ca0 100644
-> --- a/fs/jbd2/journal.c
-> +++ b/fs/jbd2/journal.c
-> @@ -1677,7 +1677,7 @@ journal_t *jbd2_journal_init_inode(struct inode *inode)
->  		return err ? ERR_PTR(err) : ERR_PTR(-EINVAL);
->  	}
+> diff --git a/fs/proc/fd.c b/fs/proc/fd.c
+> index 936d0258d688be5fdc384ee5c4dfbb8fa0d19dff..aae1a83e884686471758703634f0d3479e77c9a7 100644
+> --- a/fs/proc/fd.c
+> +++ b/fs/proc/fd.c
+> @@ -54,7 +54,7 @@ static int seq_show(struct seq_file *m, void *v)
+>  	if (ret)
+>  		return ret;
 >  
-> -	jbd2_debug(1, "JBD2: inode %s/%" PRIino "u, size %lld, bits %d, blksize %ld\n",
-> +	jbd2_debug(1, "JBD2: inode %s/%llu, size %lld, bits %d, blksize %ld\n",
->  		  inode->i_sb->s_id, inode->i_ino, (long long) inode->i_size,
->  		  inode->i_sb->s_blocksize_bits, inode->i_sb->s_blocksize);
->  
-> @@ -1689,7 +1689,7 @@ journal_t *jbd2_journal_init_inode(struct inode *inode)
->  
->  	journal->j_inode = inode;
->  	snprintf(journal->j_devname, sizeof(journal->j_devname),
-> -		 "%pg-%" PRIino "u", journal->j_dev, journal->j_inode->i_ino);
-> +		 "%pg-%llu", journal->j_dev, journal->j_inode->i_ino);
->  	strreplace(journal->j_devname, '/', '!');
->  	jbd2_stats_proc_init(journal);
->  
-> diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
-> index 2a03d4eafdee95e5caa8dbd0afe4e32ef4104378..a90f9092706cceea56c1100f7d40ccba0d50adba 100644
-> --- a/fs/jbd2/transaction.c
-> +++ b/fs/jbd2/transaction.c
-> @@ -2651,7 +2651,7 @@ static int jbd2_journal_file_inode(handle_t *handle, struct jbd2_inode *jinode,
->  		return -EROFS;
->  	journal = transaction->t_journal;
->  
-> -	jbd2_debug(4, "Adding inode %" PRIino "u, tid:%d\n", jinode->i_vfs_inode->i_ino,
-> +	jbd2_debug(4, "Adding inode %llu, tid:%d\n", jinode->i_vfs_inode->i_ino,
->  			transaction->t_tid);
->  
->  	spin_lock(&journal->j_list_lock);
+> -	seq_printf(m, "pos:\t%lli\nflags:\t0%o\nmnt_id:\t%i\nino:\t%" PRIino "u\n",
+> +	seq_printf(m, "pos:\t%lli\nflags:\t0%o\nmnt_id:\t%i\nino:\t%llu\n",
+>  		   (long long)file->f_pos, f_flags,
+>  		   real_mount(file->f_path.mnt)->mnt_id,
+>  		   file_inode(file)->i_ino);
+> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+> index 702b0f0433f91077cd0d0af4a07e9d67d9fa9a45..751b9ba160fbf15499555875871d727644b0df44 100644
+> --- a/fs/proc/task_mmu.c
+> +++ b/fs/proc/task_mmu.c
+> @@ -442,7 +442,7 @@ static void get_vma_name(struct vm_area_struct *vma,
+>  static void show_vma_header_prefix(struct seq_file *m,
+>  				   unsigned long start, unsigned long end,
+>  				   vm_flags_t flags, unsigned long long pgoff,
+> -				   dev_t dev, kino_t ino)
+> +				   dev_t dev, u64 ino)
+>  {
+>  	seq_setwidth(m, 25 + sizeof(void *) * 6 - 1);
+>  	seq_put_hex_ll(m, NULL, start, 8);
+> @@ -465,7 +465,7 @@ show_map_vma(struct seq_file *m, struct vm_area_struct *vma)
+>  	const struct path *path;
+>  	const char *name_fmt, *name;
+>  	vm_flags_t flags = vma->vm_flags;
+> -	kino_t ino = 0;
+> +	u64 ino = 0;
+>  	unsigned long long pgoff = 0;
+>  	unsigned long start, end;
+>  	dev_t dev = 0;
 > 
 > -- 
 > 2.53.0
