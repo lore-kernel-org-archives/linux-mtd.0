@@ -4,49 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71F7FEDA698
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 89DF5EDA68D
 	for <linux-mtd@archiver.kernel.org>; Tue,  3 Mar 2026 16:30:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id:Date:
-	Subject:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=9fx7bZSxOKSSTlu7wWpVVvFZJwGCZUI8JpZZ10GPrKc=; b=n1mYbeEMFQfS/p
-	lndRicWDKm4FQe9uowFWLRknXVY4oXKaVEr2X3VA30aPW+AxWbeuYescyzWho9eEVKN4DISZhoYQD
-	ixCc8+IvCHQ7qCqo23CzBTlqYcffTZcdt60CZyheQyglObPW7HCbPAh+yrWSm3bNW1eyAKt6+jRj4
-	LThf/E1CeN8vvVwV8Wq3YfdCKhcZkGI4ESyqXJyF6Ql512VDMs6gSkip6uE82ZfTQi4eiXRMV+iyO
-	FSQLwW8IuU5AXNSD9pd8YE4P+rPKiH27TYXrPGIxD/JLmUyFvwuTlcE/dve6LusrOHrD+xSSNjMAH
-	WKdMpbZ779pDMM8XAAeQ==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
+	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=LI6XvgBkCoYhM8+kZKBihJsUCQU9UpurUQC9kGQ9tdI=; b=Rm+UmwREy0U/72
+	3bJcUYoel2PmU8RBKPoKQDevXYp9R+/3kIa0dFFrvNxA1xg5rjWyDARPwjuqpaiw919qZ5SaRIP0t
+	zzfYusFTZo/kaZ8UpuoDLAcKbZUFe/YtHYtim9vh8CroY8RSEoURK5tUO+xh47jezaF250mMma9kq
+	yr8Di4RsW8b4M+RJpPTdMvLISk4vqyB01Jyu8O2mxvfz3QBNRq2VsEBQVP4nPw+ugD5ge9ZuRgIj1
+	Tm2DyqXlCOUSADyeCZcnTg36Hz4U/UgCBBp3kY5uDO5hJrRp1e7+QGCNFo1PjLcdK/kO16802g7Fq
+	Wxfq4YGVgeAYswucz9qQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vxSdJ-0000000FZI7-1c47;
-	Tue, 03 Mar 2026 16:30:05 +0000
+	id 1vxSdL-0000000FZIg-13fc;
+	Tue, 03 Mar 2026 16:30:07 +0000
 Received: from mail.fris.de ([116.203.77.234])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vxSdF-0000000FZFh-1HPm
+	id 1vxSdI-0000000FZHS-2mpX
 	for linux-mtd@lists.infradead.org;
-	Tue, 03 Mar 2026 16:30:03 +0000
+	Tue, 03 Mar 2026 16:30:05 +0000
 From: Frieder Schrempf <frieder@fris.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fris.de; s=mail;
-	t=1772555396;
+	t=1772555398;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=yyUqdUEqhJyknAkJorlxRX2q3YtJbxtKcmib+aj9K9c=;
-	b=J8D4EZ6By/kAutGk56KiJkwZi/LnkHlnmvP+lm+lDnFc2ftdzb0zwc4GZrv331+baXn3/c
-	1pqto+EsmpSk0m370KTbHaMuq0LkKMDSZKapc3bJGBw569vQWyJtLKo9YPS9BLELBkCuWy
-	ZZV8HwVNXxvzskFmDUK4brWuq9S39MrZgeQHz154g19UN7lxIAF7fLzT0MMIGGShavPDkG
-	ku1yuGUhHrRHX5g96dQPGt7P6cJrjjYHpbal8e/xvV7s69x8QK15pPF07yTbB/RngcJB/D
-	9wCyFMLEcuTNX4p4ruWuEv49q3tVw/NqxcrdqFEMbsqp30uUQoJuYOgULH0iNA==
-Subject: [PATCH RFC 0/7] Support for SPI RX Sampling Delay Compensation
-Date: Tue, 03 Mar 2026 17:29:21 +0100
-Message-Id: <20260303-fsl-qspi-rx-sampling-delay-v1-0-9326bbc492d6@kontron.de>
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5uNHkFScFKLbXXB9ZwjM5ltQMNCVgdS4C7r79FlbEvY=;
+	b=La7AI87ecgOu8O/+k2VAc9NRK2hZnZsq1JVHmj7hZoSUH95NG247PgJy2ySiuNxFZUmCYe
+	kFAASFxOzCX0yNsmsrrIbgoZpntAUWIZbs8+/D1LxPeNDsycyY0Yo+gkil71TPGxWMb8Tx
+	f4y1WsN4g0tvGcs/6hefIY7GriYoosj5x+ipJaNXj7NpJkUyMt/hJrEB7Hs8sxe2lwjx/D
+	DLxcSCHdXj/xa2yKe4how+3cFqrE5Qge/XyC89+49S/GNqIHsoQIFUO2WFdy2qQ0+Jo15Q
+	u9FwUU7F6Q2dGX+yvbYHLURwD14iWkz25V4oNA32l510mZ+4EM3j/R2U3GMbqQ==
+Date: Tue, 03 Mar 2026 17:29:28 +0100
+Subject: [PATCH RFC 7/7] spi: spi-fsl-qspi: Add support for RX data
+ sampling point adjustment
 MIME-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAAAAAAAC/x3MwQqDMAwA0F+RnA20BoV5HfgBXmWHotEFalcbG
- B3iv694fJd3gnISVuirExJ/ReUTCmxdwfx2YWOUpRga03SGDOGqHg+Ngimjuj16CRsu7N0PH5a
- IWztzawhKEBOvku98gnF4wuu6/ojaOc5xAAAA
-X-Change-ID: 20260303-fsl-qspi-rx-sampling-delay-9133e51ce503
+Message-Id: <20260303-fsl-qspi-rx-sampling-delay-v1-7-9326bbc492d6@kontron.de>
+References: <20260303-fsl-qspi-rx-sampling-delay-v1-0-9326bbc492d6@kontron.de>
+In-Reply-To: <20260303-fsl-qspi-rx-sampling-delay-v1-0-9326bbc492d6@kontron.de>
 To: Mark Brown <broonie@kernel.org>, 
  Miquel Raynal <miquel.raynal@bootlin.com>, 
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
@@ -57,18 +57,18 @@ Cc: Eberhard Stoll <eberhard.stoll@kontron.de>,
  Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
  linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org, 
  linux-mtd@lists.infradead.org, imx@lists.linux.dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4091;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5107;
  i=frieder.schrempf@kontron.de; h=from:subject:message-id;
- bh=xstZJYw1Dm12lkQHmBUHQZrWV6Wnaa8/ASUkX26e8tU=;
- b=owGbwMvMwCWWWSatKlDTJMZ4Wi2JIXM5T9O1gN/bt7Cx5ixWrG/lFfpxen7CC8GVy6s+sJ74Y
- BkXPdm0o5SFQYyLQVZMkUWK3+K1rVmsj/yx6iiYOaxMIEMYuDgFYCIz5jEyrC9s2bq4tH1BIFP4
- rRjRk3fZQ0RuNK9pt7r/e1/Obun+mYwMmz62L+gX9mOUC64ut6hj2PSFS6Fks3J2aW9DwY/Lbh6
- 8AA==
+ bh=1Xfa4uE+iSkew2K7toE6BY8+v+eWmZiraSEE7IGgrhI=;
+ b=owGbwMvMwCWWWSatKlDTJMZ4Wi2JIXM5T9ObmRvrL3mzrOYpOaxq/eb0/v2PmSJTZM6K+DMc+
+ dra/eF3RykLgxgXg6yYIosUv8VrW7NYH/lj1VEwc1iZQIYwcHEKwETEAhgZDk7ac717Ea/JleyD
+ J4yvJ3++ZXz+1u2fcbJTgnKll3DKuzP8L3pTvcl+wtWmt3z/015Xr0ideNdLtIdxYWzSmY09dg1
+ BPAA=
 X-Developer-Key: i=frieder.schrempf@kontron.de; a=openpgp;
  fpr=1A0F38EB3D365D4C1FC67B5A69761B25107C8216
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260303_083001_798626_2D7E33D5 
-X-CRM114-Status: GOOD (  19.46  )
+X-CRM114-CacheID: sfid-20260303_083004_867336_C80399E7 
+X-CRM114-Status: GOOD (  18.60  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,95 +85,171 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This is an attempt to continue the efforts started in [1] to support
-SPI devices that are clocked at high speeds and have a significant
-delay in the RX path.
+From: Eberhard Stoll <eberhard.stoll@kontron.de>
 
-This aims to handle the known RX path delay introduced by the SPI
-device itself and specified in the datasheet as maximum tCLQV value
-by:
+This QSPI controller supports shifting the RX data sampling point to
+compensate line or SPI device response delays. This enables fast SPI
+data transfers even for devices which have a significant delay in the
+RX data stream.
 
-1. Applying compensation if the controller driver supports it
-2. Reducing the clock frequency to a safe value if the controller
-   driver's compensation capabilities are exceeded.
+Implement the set_rx_sampling_point() handler to:
 
-I'm sending this as a new RFC as quite a few things have changed
-compared to [1] and a lot of time has passed. Also I'm quite unsure
-if the layering for this implementation is correct and wether
-it conflicts or overlaps with the PHY tuning series [2] in some
-way.
+1. check if the sampling point needs to be adjusted
+2. prepare a value for the SDRSMP bits in the SMPR register and save it
+3. reduce the clock rate if sampling point adjustment is not enough
 
-This approach adds a new attribute for SPI devices to track the
-RX sampling delay requirements of the device and extends the SPI
-NAND drivers for Toshiba and Winbond devices to specify the values
-from the datasheets (patch 1-4).
+During operation the SDRSMP bits in the SMPR register get updated
+with the calculated value.
 
-Then it adds calls to a new handler in the SPI controller drivers to
-the core and provides a generic helper to calculate the delay cycles
-(patch 5-6).
-
-At last it implements the new handler for the FSL QSPI driver in
-order to compensate the RX sampling delay, or as a fallback reduce
-the clock rate to a value that is safe to use without violating the
-RX sampling delay requirement of the device (patch 7).
-
-This does not yet implement the fallback to reduce the clock rate
-for controllers that don't have compensation capabilities or that
-have not yet implemented the compensation handler. Therefore this
-series doesn't cause changes in behavior for controllers other than
-FSL QSPI.
-
-Please note that some drivers such as spi-stm32-qspi.c currently
-enable a RX sampling delay of one half clock cycle unconditionally
-for all devices. While this works in general, as all currently known
-devices are in range of sampling the data at this point, when testing
-this approach with FSL QSPI it failed at low clock rates (e.g.
-100 kHz). This is probably due to the sampling happening too late,
-when the data line is alredy changing its state as the delay is
-negligible compared to the (rather long) clock period in this case.
-
-This series was tested on i.MX6UL with the following SPI NAND devices:
-
-* Toshiba/Kioxia TC58CVG2S0HRAIJ (133 MHz, tCLQV max. 6 ns)
-* Winbond W25M02GV (104 MHz, tCLQV max. 7 ns)
-* Winbond W25N02KV (104 MHz, tCLQV max. 7 ns)
-
-The former two chips seem to work fine even without this patchset,
-probably due to the actual RX sampling delay being lower than the
-maximum value specified in the datasheet. The latter chip fails
-reading at 104 MHz without RX sampling delay compensation.
-
-[1] https://lore.kernel.org/all/20231026152316.2729575-1-estl@gmx.net/
-[2] https://patchwork.ozlabs.org/project/linux-mtd/cover/20260113141617.1905039-1-s-k6@ti.com/
-
+Signed-off-by: Eberhard Stoll <eberhard.stoll@kontron.de>
+Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
 ---
-Eberhard Stoll (4):
-      spi: Add 'rx_sampling_delay_ns' parameter for clock to RX delay
-      mtd: spinand: Add support for clock to RX delay setting
-      mtd: spinand: winbond: Add RX sampling delay values
-      spi: spi-fsl-qspi: Add support for RX data sampling point adjustment
+ drivers/spi/spi-fsl-qspi.c | 80 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 80 insertions(+)
 
-Frieder Schrempf (3):
-      mtd: spinand: toshiba: Add RX sampling delay values
-      spi: Add RX sampling point adjustment
-      spi: spi-mem: Call spi_set_rx_sampling_point() for each op
+diff --git a/drivers/spi/spi-fsl-qspi.c b/drivers/spi/spi-fsl-qspi.c
+index a223b4bc6e637..7021db144f84b 100644
+--- a/drivers/spi/spi-fsl-qspi.c
++++ b/drivers/spi/spi-fsl-qspi.c
+@@ -88,6 +88,7 @@
+ 
+ #define QUADSPI_SMPR			0x108
+ #define QUADSPI_SMPR_DDRSMP_MASK	GENMASK(18, 16)
++#define QUADSPI_SMPR_SDRSMP(x)		((x) << 5)
+ #define QUADSPI_SMPR_FSDLY_MASK		BIT(6)
+ #define QUADSPI_SMPR_FSPHS_MASK		BIT(5)
+ #define QUADSPI_SMPR_HSENA_MASK		BIT(0)
+@@ -290,6 +291,16 @@ struct fsl_qspi {
+ 	struct device *dev;
+ 	int selected;
+ 	u32 memmap_phy;
++	u32 smpr;
++};
++
++#define RX_SAMPLING_MAX_DELAY_CYCLES			3
++#define RX_SAMPLING_DELAY_CYCLES_PER_CLOCK_CYCLE	2
++
++struct fsl_qspi_chip_data {
++	u8 sdrsmp;
++	u32 rx_sampling_delay_ns;
++	unsigned int rate;
+ };
+ 
+ static bool needs_swap_endian(struct fsl_qspi *q)
+@@ -545,6 +556,27 @@ static void fsl_qspi_invalidate(struct fsl_qspi *q)
+ 	qspi_writel(q, reg, q->iobase + QUADSPI_MCR);
+ }
+ 
++static void fsl_qspi_update_rx_sampling_delay(struct fsl_qspi *q, u32 sdrsmp)
++{
++	void __iomem *base = q->iobase;
++	u32 mcr, smpr = QUADSPI_SMPR_SDRSMP(sdrsmp);
++
++	/* skip if requested value matches cached value */
++	if (q->smpr == smpr)
++		return;
++
++	/* Disable the module */
++	mcr = qspi_readl(q, base + QUADSPI_MCR);
++	qspi_writel(q, mcr | QUADSPI_MCR_MDIS_MASK, base + QUADSPI_MCR);
++
++	qspi_writel(q, smpr, base + QUADSPI_SMPR);
++
++	/* Enable the module */
++	qspi_writel(q, mcr & ~QUADSPI_MCR_MDIS_MASK, base + QUADSPI_MCR);
++
++	q->smpr = smpr;
++}
++
+ static void fsl_qspi_select_mem(struct fsl_qspi *q, struct spi_device *spi,
+ 				const struct spi_mem_op *op)
+ {
+@@ -668,6 +700,7 @@ static int fsl_qspi_readl_poll_tout(struct fsl_qspi *q, void __iomem *base,
+ static int fsl_qspi_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
+ {
+ 	struct fsl_qspi *q = spi_controller_get_devdata(mem->spi->controller);
++	struct fsl_qspi_chip_data *chip = spi_get_ctldata(mem->spi);
+ 	void __iomem *base = q->iobase;
+ 	u32 addr_offset = 0;
+ 	int err = 0;
+@@ -679,6 +712,8 @@ static int fsl_qspi_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
+ 	fsl_qspi_readl_poll_tout(q, base + QUADSPI_SR, (QUADSPI_SR_IP_ACC_MASK |
+ 				 QUADSPI_SR_AHB_ACC_MASK), 10, 1000);
+ 
++	fsl_qspi_update_rx_sampling_delay(q, chip->sdrsmp);
++
+ 	fsl_qspi_select_mem(q, mem->spi, op);
+ 
+ 	if (needs_amba_base_offset(q))
+@@ -871,6 +906,28 @@ static const struct spi_controller_mem_caps fsl_qspi_mem_caps = {
+ 	.per_op_freq = true,
+ };
+ 
++static int fsl_qspi_setup_device(struct spi_device *spi)
++{
++	struct fsl_qspi_chip_data *chip = spi_get_ctldata(spi);
++
++	if (!chip) {
++		chip = kzalloc_obj(*chip, GFP_KERNEL);
++		if (!chip)
++			return -ENOMEM;
++		spi_set_ctldata(spi, chip);
++	}
++
++	return 0;
++}
++
++static void fsl_qspi_cleanup_device(struct spi_device *spi)
++{
++	struct fsl_qspi_chip_data *chip = spi_get_ctldata(spi);
++
++	kfree(chip);
++	spi_set_ctldata(spi, NULL);
++}
++
+ static void fsl_qspi_disable(void *data)
+ {
+ 	struct fsl_qspi *q = data;
+@@ -891,6 +948,25 @@ static void fsl_qspi_cleanup(void *data)
+ 	mutex_destroy(&q->lock);
+ }
+ 
++static unsigned int fsl_qspi_set_rx_sampling_point(struct spi_device *spi, unsigned int freq)
++{
++	struct fsl_qspi_chip_data *chip = spi_get_ctldata(spi);
++
++	/* skip calculation if input clock rate and sampling delay did not change */
++	if (spi->rx_sampling_delay_ns == chip->rx_sampling_delay_ns &&
++	    freq == chip->rate)
++		return freq;
++
++	chip->rate = freq;
++	chip->rx_sampling_delay_ns = spi->rx_sampling_delay_ns;
++
++	chip->sdrsmp = spi_calc_rx_sampling_point(spi, &freq,
++						  RX_SAMPLING_MAX_DELAY_CYCLES,
++						  RX_SAMPLING_DELAY_CYCLES_PER_CLOCK_CYCLE);
++
++	return freq;
++}
++
+ static int fsl_qspi_probe(struct platform_device *pdev)
+ {
+ 	struct spi_controller *ctlr;
+@@ -915,6 +991,10 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+ 
+ 	platform_set_drvdata(pdev, q);
+ 
++	ctlr->setup = fsl_qspi_setup_device;
++	ctlr->cleanup = fsl_qspi_cleanup_device;
++	ctlr->set_rx_sampling_point = fsl_qspi_set_rx_sampling_point;
++
+ 	/* find the resources */
+ 	q->iobase = devm_platform_ioremap_resource_byname(pdev, "QuadSPI");
+ 	if (IS_ERR(q->iobase))
 
- drivers/mtd/nand/spi/core.c    |  1 +
- drivers/mtd/nand/spi/toshiba.c | 48 ++++++++++++++++---------
- drivers/mtd/nand/spi/winbond.c | 42 ++++++++++++++--------
- drivers/spi/spi-fsl-qspi.c     | 80 ++++++++++++++++++++++++++++++++++++++++++
- drivers/spi/spi-mem.c          |  2 ++
- drivers/spi/spi.c              | 73 ++++++++++++++++++++++++++++++++++++++
- include/linux/mtd/spinand.h    |  5 +++
- include/linux/spi/spi.h        | 11 ++++++
- 8 files changed, 231 insertions(+), 31 deletions(-)
----
-base-commit: 11439c4635edd669ae435eec308f4ab8a0804808
-change-id: 20260303-fsl-qspi-rx-sampling-delay-9133e51ce503
-
-Best regards,
 -- 
-Frieder Schrempf <frieder.schrempf@kontron.de>
+2.53.0
 
 
 ______________________________________________________
