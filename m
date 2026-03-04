@@ -4,89 +4,123 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F77BEFCE47
-	for <linux-mtd@archiver.kernel.org>; Wed,  4 Mar 2026 22:15:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DAAF2EFCE4E
+	for <linux-mtd@archiver.kernel.org>; Wed,  4 Mar 2026 22:29:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=1/9IkWrGglDmx6GycH0GvRv26guZn5bE0FkaPdKwX+E=; b=oZ7Qsh+Ac2KQhP
-	a7eEduNNFULMAO/HRnGQ4SFlBQTF+/6s6Atecj0Z+UE2D0RU92XXn4diyYKiw/2Ek2no8qdQuC9+X
-	nCfh6rOkVo5XDYtozsTtUzsbWIENg5cTPu+WDje3xo2ZQ4P2BJbfzHR0cDGvk517UX+UXuApZzYFO
-	uIirdv+Po+QMikbXadVXUMpG8/CATwfQu89kwjwQ2UiHDRFmIhOOD/Yxem42clakT5oHf2xwvOwaX
-	5M0DEtfBwI2KoRJnfbYwzdUkRkd7kF5m8KKhmbjDxc9lhulxxwyz0Nv39owtcodkv20RRt1slFlDq
-	lAmdwRyIFE7EMzfSa61w==;
+	List-Owner; bh=dLjJD/NyR9BoErad5fakTquAh5BmvoArW/bywsPmABY=; b=WEzz4OQZdof/Fq
+	+CfTtaPgPeEo0znKX+5e+CSooYszGg2Mg2fMKKAdBLSo0qxqRbz8iQ5r/VL7cNMPPUOVcaNTdJEMl
+	gs5+HN/hQ96XIBbnUw+30gxtFRDtbEPXRBxQzdvv8u7iSPlalqc+PI56c2rQ6fBWozgx59KDyK+7i
+	Yw3zaq3+/eWQSzaRSwPtL8PhtbxT7W7tbPUKVoUSg7QVYqHa3j3NtyO4wToj/iMLsKSUPaVmUKGw0
+	7FaKwGWdTN+ipvZXQx55b1YlUOn994LU3t8ymRJQa1wKsuW+7Aad1emAkOlsAFpBZrJUeZzBUAAIw
+	wcZ2uCnvpggzoADa3wcA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vxuVY-00000000ZDG-2w8m;
-	Wed, 04 Mar 2026 22:15:56 +0000
-Received: from mail-pf1-x42a.google.com ([2607:f8b0:4864:20::42a])
+	id 1vxuj1-00000000aa6-0sxC;
+	Wed, 04 Mar 2026 22:29:51 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vxuVU-00000000ZBf-1h40
+	id 1vxuiz-00000000aZL-2HH3
 	for linux-mtd@lists.infradead.org;
-	Wed, 04 Mar 2026 22:15:55 +0000
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-827307b12dfso3952951b3a.1
-        for <linux-mtd@lists.infradead.org>; Wed, 04 Mar 2026 14:15:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1772662551; x=1773267351; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=N6xGxKiEmjafobho7Pm8BBn/5trBV+odB8B7flKPqK4=;
-        b=YsW8XUWwFtEVFWcACQq12syF1W9GsqnSEOGYlTDkU0qzSvNLB5BH4NUE8OIJwceDZ+
-         VetM9ttD7BIWv8cMIeXvA06A3iScd9a0C1z32vIT6v0baHUxEPochOJ4HKmAxHZG+Vty
-         JnlHqf2hYJ5hrGAd8EQ1bma8Ara8GV7zW3xOgisqcobKV1BI+Dng5tMeLqFq78RfY4bJ
-         JtFHdNRD0bMVjbn4mww1HnCmnnRHIhjRJALUA/qEv18WJmGlKd+kmlWfxNGiACQu7ziA
-         aBPEldD2fbO4hPnmz+0OACJF3t5DGKe/jAI9vAZDyMojwPTLaq7eERoavVd5R12K6fpm
-         u8Gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772662551; x=1773267351;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=N6xGxKiEmjafobho7Pm8BBn/5trBV+odB8B7flKPqK4=;
-        b=UblqMd1769bJ34LakOCvg1Ua4obX/O+hfo9HNlBhuZ0UAuaDOf7LF/DMcv1noYPgB1
-         5ntDDVcclBbNRYwj+qkMxaHbkzAF3EDueqiGdsp5ervZE6eAAe9udI+k5IIWh8V0VO/K
-         5zGIXDIqUsxtcPLGeJY8dzWdNLjI5qUe4/OxSYp99WRxhh3E0cnH4sKvMw7PvXrvhqLW
-         5tAEnH3094ikD/+u4VkWBk0hJCi0Aev+2GxR0Y6e9PF9kuXQV0ma5ibO7qnifE1A/cBC
-         zXxQSKgKj98Tw61YxqU7bhuofpLTB3iw2bHov3uVolzdxF97WXLTuNBopj3x2sqR9ICU
-         J35A==
-X-Gm-Message-State: AOJu0Yx+WlsZ2kr07P6it9N5ntQ9ZA9pD3m3dV8yUx8SeDSRZv9ZB+Ie
-	bycD1Jh63HvuEYFqtnFgDqEdh1WZcXAsN4jVptZt2TDmowG7KsG3c5mjywmGfZr+fk4=
-X-Gm-Gg: ATEYQzzG/RdFsJxefo8vQBJxDcWoy0cvgd7xMYYpbkK/kPyWZytV2phal/b/FBLwj+P
-	IJL4kVYWHO1Nt7PyaEQRFx1Bz2f9xWEB1qVuaZCSSC4NiFNnntNOIcmEDZsgVBIPQeZ7FUh4X7D
-	7xsyv1hOhsV7xXI14MWqcpgnRwuvQF6gzurcNjdi1f1KHfMTHWjdSdzZTeuSa67R67MjutKmJ5p
-	HE9Or3SwEqj9Te62zLKNBCKq88s0F6aK9juD5CA/4MrKK1fcqD+Z3b/9A88nGL9Yet72UcACAR+
-	KgBUSDVNY++yheN0IHTEJxcT2dFSxWDbnsgeBYjd2/iFuK1+6TqTNP9t67Uljg+A2IcD92r/xRZ
-	0nNj9IefEas+R3fdCXAvzkjxiCOL+QSIvdXqjdnv/XsLlcbdwrH9UTAYa+rGL1R/lStGtK1QSe2
-	HnPVsNIYWg6xxxvz6+FHPH2rEc2JKLdqPxLdG2xkXWuHDc5g6aFNcFlA==
-X-Received: by 2002:a05:6a21:207:b0:394:782c:cb8e with SMTP id adf61e73a8af0-398425c24d9mr73436637.28.1772662551223;
-        Wed, 04 Mar 2026 14:15:51 -0800 (PST)
-Received: from ryzen ([2601:644:8000:56f5::8bd])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-c70fa6203a6sm17637399a12.8.2026.03.04.14.15.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Mar 2026 14:15:50 -0800 (PST)
-From: Rosen Penev <rosenp@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Wed, 04 Mar 2026 22:29:50 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id 526FB43E93;
+	Wed,  4 Mar 2026 22:29:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E566C4CEF7;
+	Wed,  4 Mar 2026 22:29:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1772663388;
+	bh=4g9Hc6BCi1UzcQ6UmFUsAKXtEqFK6/wIIRnu62xorDM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=H7E6g6Lm08bdby4/2tHEolh5uuAfzAVSsM3yLpncdqLzpMpx2R/jiaVVx3BrpUlHV
+	 zLgQZLl3q+J8YOTxOWa4cFn0qM9qtzHl3urpYxu/J8dk/Ng4eTR5ve5/MwMG2EM0x4
+	 13hRsUgqaHxQn1bDCNJafYTopHM59GSiSSfWDaMrsTRgNMP0a8wibVOr0aBrw1II97
+	 INDpQBDBhw/6g/ZfJeCr4GjGF8S8trfaYHGCsvv3rBpIoZHp4hfWrZiyJa1NX9T5Ya
+	 lxm3zNjb7ZsIhtDD0mqurpzxaf9es4FePOHSAnjX78l7+ajL920pZ2wjsA901PjGJl
+	 9YO9TEkdx8L9Q==
+Date: Wed, 4 Mar 2026 17:29:46 -0500
+From: Mike Snitzer <snitzer@kernel.org>
+To: Jeff Layton <jlayton@kernel.org>
+Cc: Luis de Bethencourt <luisbg@kernel.org>,
+	Salah Triki <salah.triki@gmail.com>,
+	Nicolas Pitre <nico@fluxnic.net>,
+	Christoph Hellwig <hch@infradead.org>, Jan Kara <jack@suse.cz>,
+	Anders Larsen <al@alarsen.net>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>,
+	David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
+	Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>,
+	Yue Hu <zbestahu@gmail.com>, Jeffle Xu <jefflexu@linux.alibaba.com>,
+	Sandeep Dhavale <dhavale@google.com>,
+	Hongbo Li <lihongbo22@huawei.com>,
+	Chunhai Guo <guochunhai@vivo.com>, Jan Kara <jack@suse.com>,
+	Theodore Ts'o <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	Jaegeuk Kim <jaegeuk@kernel.org>,
+	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+	David Woodhouse <dwmw2@infradead.org>,
 	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Kees Cook <kees@kernel.org>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	linux-kernel@vger.kernel.org (open list),
-	linux-hardening@vger.kernel.org (open list:KERNEL HARDENING (not covered by other areas):Keyword:\b__counted_by(_le|_be)?\b)
-Subject: [PATCH 2/2] mtd: concat: replace alloc + calloc with 1 alloc
-Date: Wed,  4 Mar 2026 14:15:30 -0800
-Message-ID: <20260304221530.15018-3-rosenp@gmail.com>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260304221530.15018-1-rosenp@gmail.com>
-References: <20260304221530.15018-1-rosenp@gmail.com>
+	Dave Kleikamp <shaggy@kernel.org>,
+	Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+	Viacheslav Dubeyko <slava@dubeyko.com>,
+	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+	Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
+	Joseph Qi <joseph.qi@linux.alibaba.com>,
+	Mike Marshall <hubcap@omnibond.com>,
+	Martin Brandenburg <martin@omnibond.com>,
+	Miklos Szeredi <miklos@szeredi.hu>,
+	Amir Goldstein <amir73il@gmail.com>,
+	Phillip Lougher <phillip@squashfs.org.uk>,
+	Carlos Maiolino <cem@kernel.org>, Hugh Dickins <hughd@google.com>,
+	Baolin Wang <baolin.wang@linux.alibaba.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Namjae Jeon <linkinjeon@kernel.org>,
+	Sungjong Seo <sj1557.seo@samsung.com>,
+	Yuezhang Mo <yuezhang.mo@sony.com>,
+	Chuck Lever <chuck.lever@oracle.com>,
+	Alexander Aring <alex.aring@gmail.com>,
+	Andreas Gruenbacher <agruenba@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	Eric Van Hensbergen <ericvh@kernel.org>,
+	Latchesar Ionkov <lucho@ionkov.net>,
+	Dominique Martinet <asmadeus@codewreck.org>,
+	Christian Schoenebeck <linux_oss@crudebyte.com>,
+	Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>,
+	Trond Myklebust <trondmy@kernel.org>,
+	Anna Schumaker <anna@kernel.org>, Steve French <sfrench@samba.org>,
+	Paulo Alcantara <pc@manguebit.org>,
+	Ronnie Sahlberg <ronniesahlberg@gmail.com>,
+	Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
+	Bharath SM <bharathsm@microsoft.com>,
+	Hans de Goede <hansg@kernel.org>, linux-kernel@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-mtd@lists.infradead.org, jfs-discussion@lists.sourceforge.net,
+	linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev,
+	ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
+	linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org,
+	linux-mm@kvack.org, gfs2@lists.linux.dev, linux-doc@vger.kernel.org,
+	v9fs@lists.linux.dev, ceph-devel@vger.kernel.org,
+	linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+	samba-technical@lists.samba.org
+Subject: Re: [PATCH 24/24] fs: remove simple_nosetlease()
+Message-ID: <aaiyWlJelhHju741@kernel.org>
+References: <20260108-setlease-6-20-v1-0-ea4dec9b67fa@kernel.org>
+ <20260108-setlease-6-20-v1-24-ea4dec9b67fa@kernel.org>
+ <aZ84VRrRVyGEzSJn@kernel.org>
+ <e07e9b893ca04ce6ead4790e72c7f285a7159070.camel@kernel.org>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <e07e9b893ca04ce6ead4790e72c7f285a7159070.camel@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260304_141554_223944_4141F44D 
-X-CRM114-Status: GOOD (  17.61  )
+X-CRM114-CacheID: sfid-20260304_142949_623309_D89385B6 
+X-CRM114-Status: GOOD (  35.94  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,96 +137,147 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-A flex array can be used to reduce the allocation to 1.
+On Wed, Mar 04, 2026 at 11:59:32AM -0500, Jeff Layton wrote:
+> On Wed, 2026-02-25 at 12:58 -0500, Mike Snitzer wrote:
+> > On Thu, Jan 08, 2026 at 12:13:19PM -0500, Jeff Layton wrote:
+> > > Setting ->setlease() to a NULL pointer now has the same effect as
+> > > setting it to simple_nosetlease(). Remove all of the setlease
+> > > file_operations that are set to simple_nosetlease, and the function
+> > > itself.
+> > > 
+> > > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> > > ---
+> > >  fs/9p/vfs_dir.c        |  2 --
+> > >  fs/9p/vfs_file.c       |  2 --
+> > >  fs/ceph/dir.c          |  2 --
+> > >  fs/ceph/file.c         |  1 -
+> > >  fs/fuse/dir.c          |  1 -
+> > >  fs/gfs2/file.c         |  2 --
+> > >  fs/libfs.c             | 18 ------------------
+> > >  fs/nfs/dir.c           |  1 -
+> > >  fs/nfs/file.c          |  1 -
+> > >  fs/smb/client/cifsfs.c |  1 -
+> > >  fs/vboxsf/dir.c        |  1 -
+> > >  fs/vboxsf/file.c       |  1 -
+> > >  include/linux/fs.h     |  1 -
+> > >  13 files changed, 34 deletions(-)
+> > > 
+> > 
+> > <snip>
+> > 
+> > > diff --git a/fs/libfs.c b/fs/libfs.c
+> > > index 697c6d5fc12786c036f0086886297fb5cd52ae00..f1860dff86f2703266beecf31e9d2667af7a9684 100644
+> > > --- a/fs/libfs.c
+> > > +++ b/fs/libfs.c
+> > > @@ -1699,24 +1699,6 @@ struct inode *alloc_anon_inode(struct super_block *s)
+> > >  }
+> > >  EXPORT_SYMBOL(alloc_anon_inode);
+> > >  
+> > > -/**
+> > > - * simple_nosetlease - generic helper for prohibiting leases
+> > > - * @filp: file pointer
+> > > - * @arg: type of lease to obtain
+> > > - * @flp: new lease supplied for insertion
+> > > - * @priv: private data for lm_setup operation
+> > > - *
+> > > - * Generic helper for filesystems that do not wish to allow leases to be set.
+> > > - * All arguments are ignored and it just returns -EINVAL.
+> > > - */
+> > > -int
+> > > -simple_nosetlease(struct file *filp, int arg, struct file_lease **flp,
+> > > -		  void **priv)
+> > > -{
+> > > -	return -EINVAL;
+> > > -}
+> > > -EXPORT_SYMBOL(simple_nosetlease);
+> > > -
+> > >  /**
+> > >   * simple_get_link - generic helper to get the target of "fast" symlinks
+> > >   * @dentry: not used here
+> > > diff --git a/fs/nfs/dir.c b/fs/nfs/dir.c
+> > > index 71df279febf797880ded19e45528c3df4cea2dde..23a78a742b619dea8b76ddf28f4f59a1c8a015e2 100644
+> > > --- a/fs/nfs/dir.c
+> > > +++ b/fs/nfs/dir.c
+> > > @@ -66,7 +66,6 @@ const struct file_operations nfs_dir_operations = {
+> > >  	.open		= nfs_opendir,
+> > >  	.release	= nfs_closedir,
+> > >  	.fsync		= nfs_fsync_dir,
+> > > -	.setlease	= simple_nosetlease,
+> > >  };
+> > >  
+> > >  const struct address_space_operations nfs_dir_aops = {
+> > > diff --git a/fs/nfs/file.c b/fs/nfs/file.c
+> > > index d020aab40c64ebda30d130b6acee1b9194621457..9d269561961825f88529551b0f0287920960ac62 100644
+> > > --- a/fs/nfs/file.c
+> > > +++ b/fs/nfs/file.c
+> > > @@ -962,7 +962,6 @@ const struct file_operations nfs_file_operations = {
+> > >  	.splice_read	= nfs_file_splice_read,
+> > >  	.splice_write	= iter_file_splice_write,
+> > >  	.check_flags	= nfs_check_flags,
+> > > -	.setlease	= simple_nosetlease,
+> > >  	.fop_flags	= FOP_DONTCACHE,
+> > >  };
+> > >  EXPORT_SYMBOL_GPL(nfs_file_operations);
+> > 
+> > Hey Jeff,
+> > 
+> > I've noticed an NFS reexport regression in v6.19 and now v7.0-rc1
+> > (similar but different due to your series that requires opt-in via
+> > .setlease).
+> > 
+> > Bisect first pointed out this commit:
+> > 10dcd5110678 nfs: properly disallow delegation requests on directories
+> > 
+> > And now with v7.0-rc1 its the fact that NFS doesn't provide .setlease
+> > so lstat() on parent dir (of file that I touch) gets -EINVAL.
+> > 
+> > So its a confluence of NFS's dir delegations and your setlease changes.
+> > 
+> > If I reexport NFSv4.2 filesystem in terms of NFSv4.1, the regression
+> > is seen by doing (lstat reproducer that gemini spit out for me is
+> > attached):
+> > 
+> > $ touch /mnt/share41/test
+> > $ strace ./lstat /mnt/share41
+> > ...
+> > lstat("/mnt/share41", 0x7ffec0d79920)   = -1 EINVAL (Invalid argument)
+> > 
+> > If I immediately re-run it works:
+> > ...
+> > lstat("/mnt/share41", {st_mode=S_IFDIR|0777, st_size=4096, ...}) = 0
+> > 
+> > I'm not sure what the proper fix is yet, but I feel like you've missed
+> > that NFS itself can be (re)exported?
+> > 
+> > 
+> 
+> My apologies. I missed seeing this last week.
+> 
+> That's a very simple reproducer! That's very strange behavior,
+> especially since NFS4 does provide a setlease operation:
+> 
+> const struct file_operations nfs4_file_operations = {
+> 	[...]
+> 	.setlease       = nfs4_setlease,
+> 	[...]
+> };
 
-And actually mtdconcat was using the pointer + 1 trick to point to the
-overallocated area. Better alternatives exist.
+Huh, not sure how I missed nfs4_setlease...
 
-Signed-off-by: Rosen Penev <rosenp@gmail.com>
----
- drivers/mtd/mtd_virt_concat.c | 10 ++--------
- drivers/mtd/mtdconcat.c       |  5 +----
- include/linux/mtd/concat.h    |  2 +-
- 3 files changed, 4 insertions(+), 13 deletions(-)
+> I'm not sure why this would cause lstat() to return -EINVAL.
 
-diff --git a/drivers/mtd/mtd_virt_concat.c b/drivers/mtd/mtd_virt_concat.c
-index 89e223edac6a..b56f2431974b 100644
---- a/drivers/mtd/mtd_virt_concat.c
-+++ b/drivers/mtd/mtd_virt_concat.c
-@@ -32,7 +32,7 @@ struct mtd_virt_concat_node {
- 	struct list_head head;
- 	unsigned int count;
- 	struct mtd_concat *concat;
--	struct device_node *nodes[] __counted_by(nodes);
-+	struct device_node *nodes[] __counted_by(count);
- };
- 
- /**
-@@ -182,18 +182,12 @@ static int mtd_virt_concat_create_item(struct device_node *parts,
- 	for (i = 1; i < count; i++)
- 		item->nodes[i] = of_parse_phandle(parts, CONCAT_PROP, (i - 1));
- 
--	concat = kzalloc(sizeof(*concat), GFP_KERNEL);
-+	concat = kzalloc_flex(*concat, subdev, count, GFP_KERNEL);
- 	if (!concat) {
- 		kfree(item);
- 		return -ENOMEM;
- 	}
- 
--	concat->subdev = kcalloc(count, sizeof(*concat->subdev), GFP_KERNEL);
--	if (!concat->subdev) {
--		kfree(item);
--		kfree(concat);
--		return -ENOMEM;
--	}
- 	item->concat = concat;
- 
- 	list_add_tail(&item->head, &concat_node_list);
-diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
-index 241d15235d01..c97167d51fe2 100644
---- a/drivers/mtd/mtdconcat.c
-+++ b/drivers/mtd/mtdconcat.c
-@@ -627,7 +627,6 @@ struct mtd_info *mtd_concat_create(struct mtd_info *subdev[],	/* subdevices to c
- 				   const char *name)
- {				/* name for the new device   */
- 	int i;
--	size_t size;
- 	struct mtd_concat *concat;
- 	struct mtd_info *subdev_master = NULL;
- 	uint32_t max_erasesize, curr_erasesize;
-@@ -640,15 +639,13 @@ struct mtd_info *mtd_concat_create(struct mtd_info *subdev[],	/* subdevices to c
- 	printk(KERN_NOTICE "into device \"%s\"\n", name);
- 
- 	/* allocate the device structure */
--	size = SIZEOF_STRUCT_MTD_CONCAT(num_devs);
--	concat = kzalloc(size, GFP_KERNEL);
-+	concat = kzalloc_flex(*concat, subdev, num_devs, GFP_KERNEL);
- 	if (!concat) {
- 		printk
- 		    ("memory allocation error while creating concatenated device \"%s\"\n",
- 		     name);
- 		return NULL;
- 	}
--	concat->subdev = (struct mtd_info **) (concat + 1);
- 
- 	/*
- 	 * Set up the new "super" device's MTD object structure, check for
-diff --git a/include/linux/mtd/concat.h b/include/linux/mtd/concat.h
-index 2cd9d48958a8..f8d4d6ac1fc1 100644
---- a/include/linux/mtd/concat.h
-+++ b/include/linux/mtd/concat.h
-@@ -18,7 +18,7 @@
- struct mtd_concat {
- 	struct mtd_info mtd;
- 	int num_subdev;
--	struct mtd_info **subdev;
-+	struct mtd_info *subdev[];
- };
- 
- struct mtd_info *mtd_concat_create(
--- 
-2.53.0
+Likewise, especially given nfs4_setlease
 
+> What's happening on the wire when this occurs?
+> 
+> I'll plan to take a look here soon either way.
+
+I'll have to revisit myself, been a bit.
+
+Will let you know.
+
+Thanks,
+Mike
 
 ______________________________________________________
 Linux MTD discussion mailing list
