@@ -4,85 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 67CB0EFCE4B
-	for <linux-mtd@archiver.kernel.org>; Wed,  4 Mar 2026 21:18:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 43E6DEFCE4B
+	for <linux-mtd@archiver.kernel.org>; Wed,  4 Mar 2026 21:41:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=t0bPC1G3TJZ5pZCiy8JYO/7Ax2mJoHEZF4sgSEDu2Kc=; b=4t9u8LDIdDxdUU
-	Jjk1Ac+YQWBbE4IdmUzEwhfnlKrAJIQ7x3DBhHIEIcwXkmgyk0MaOsztvF/La0sSw0HLmf5gCJyO0
-	FhA2+7nHKaCEIdLYHjRqp0P8c3AWZuw6SLmI2jV5HJj5Blk17e0JVwcncKUtfn4KOoRSYR05z+k8J
-	5cMu7BMjrTSt6ba4ncRhhJ92Cfkp9JFWMYV0sAdbBOmyps0hbzqOolucPPVzZLhwLmFBBBdeAayKh
-	LDeQdW1DvK//Yza566X+dQFl4BfHjepXf6qhq0jCVJd1N2O0b9+/rNAXCXUUCia/TDxcFjkYzSKgP
-	CAzQoo7LbAqeCawcvJVw==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=zqRwmcB+NtjCNNvSUIufTML89uIhVeXed+IXlFN9WoQ=; b=bu8wAtb2RcBFmN
+	tWFAf/wTOen3rnv911jluHf5pU9cCAsLy3UXLfg0FsjGG6C2yVERTZ+tVCtgpggi6oawgT+cfw1rk
+	B4DApLnSZBvM29ob3s5V7gFRBVH8bfJVWDEKBYaldSB047hdH3/6DARc8nzd/qi/XcvLC7MvbzcMr
+	dVponyLuVqwsBQm9LS3rapXAWigQ0sPJXrzQ3jAfr5UBk32Rt9+pTy0kAYkY2ctVA8i1dHgR0c7VR
+	MJklh+7+iGmYPdznsu4r4WlZgYLUTOwAlJsZSd8y3p/y+hZS3UerciZpyawC3mI/KYs0rNZwMGGpP
+	YZwVdXARD4zkm4d/PyeA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vxtc0-00000000VBV-1j61;
-	Wed, 04 Mar 2026 21:18:32 +0000
-Received: from mail-wm1-x330.google.com ([2a00:1450:4864:20::330])
+	id 1vxtya-00000000XH6-1g4f;
+	Wed, 04 Mar 2026 21:41:52 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vxtbv-00000000VBA-1NH6
-	for linux-mtd@lists.infradead.org;
-	Wed, 04 Mar 2026 21:18:29 +0000
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-48372efa020so65328755e9.2
-        for <linux-mtd@lists.infradead.org>; Wed, 04 Mar 2026 13:18:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1772659105; x=1773263905; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=9QvjHp8PfoTUpkZ9GZXFo2vz0XN8DGSQuJNmycudMJg=;
-        b=hz+P9+u/4xK6ILI+4VXLNOuUPikqVRSzEvem2fRg95IIgHex+9z7A6H7g5+jiDrIbv
-         j4Kv/dE31F3s2whl5/rAL45aSZ5M5rOgj62wT45xe7SApWK+nwtdmMLnOgL3HhGHd2GZ
-         fVQFJtMuF/F7W/XKqO9uH+aQYE4dJJOCF5uVlKrC1exJQBhpxp/gFE4HAc79cpnXN5Lk
-         6eTvAiaFXIvI9vObU1o7G9biMteJkZxiYCa6pFHot9eVFGGgV8kjci5WLs8xe7EU31Ko
-         suAUfKGuomEi4Vyef0sJbCNzgDFI6Dc0jKh/Z4SBMPGDQxpLPpXhDCu48qsgVf/2SxUA
-         TjLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772659105; x=1773263905;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9QvjHp8PfoTUpkZ9GZXFo2vz0XN8DGSQuJNmycudMJg=;
-        b=OLErc3Qx6bzRbo1uIABJFHS+aBBLJUIJsP9viESrv+6Xltq4O3L9rlf9u74PMKhtXW
-         QLwms8CpUwXa6IxdTHNOCRnACDq2Jy+Wa1N0TIwaMn4gcv9cp5uNDz8mMRBjASVZ9aj2
-         dfIeuxUJ3EB2ywjIRf9Otryj4NAvWLGrmx0Ef8rNSR+aKW/eidG6QeHux043wSb+8Ae5
-         gqbz8qntVDI50S5H1A90t1lJLO44kdTYEtu1fo9Z1XUHrnrPDRWOpFxYYopfbF+HAw6F
-         XWSAU+8BDtWd06yj6T6dj8d1UeWNEU9WAkzsMmZkJxs2OsTb3dXwE00wuZJg8B9DX/kX
-         WSHg==
-X-Forwarded-Encrypted: i=1; AJvYcCUf64LMxfkoMOGZHDVbwE/iwSfP2vVwQuuhM/GjfWqpbTZaVQ2SFTUrinJXaq2oohlzocZhuOzBJjk=@lists.infradead.org
-X-Gm-Message-State: AOJu0YzBoAIgXVxPDzTS52QJ10lsCi+YIrCO+tTl492oxMho20A0NFgk
-	m9+SpzoEi2mfF+fYM3UcVujFF4UTgk+Y3R24r6rHl1viFAuGy12F39g+
-X-Gm-Gg: ATEYQzwVJL7sED+1qn/sJteuLbFNtaovzi2A+OWQCXwW38YiiPnyVZVB3H7CFXdLp6P
-	eVemHGAz1NX2tMmF24zGVsbF/r8t/Nzi2g0fX0NaIf2ZaWEQ70roedOPRUeNghbpVshflSqE7kn
-	eXiPSRbV5yH6PVGUwD1phAaCH4jSwSMJZoXQ4H7qhJcSgiVp2swm/lKu20baU1Sw8qD3vzAY6nX
-	UaMftaNMyFlDjRUoWEB+KV3K5FKwiuCko+Ew81HfShtGrznYWOkzjD+UjKxcWCs/nA1nr4Pyzfd
-	YmhTqN7Cu9I9hWKVmIS6APmj+e0dz6WXiqQHjUlCa3eoJz4+90lEV5AmBe9xYzkJNEcw5cdLlod
-	G4Bi+QWAQdlUlQifo1EjsewzmAUevPwOXw44PX5w4h1FiB1vgvVWuYXdu8xVLZG+xCwXPXze18y
-	khkkNdU8BrxFbTos+CBzyW8GCRX4lsKHJq+8f5z52n
-X-Received: by 2002:a05:600c:138a:b0:45d:f81d:eae7 with SMTP id 5b1f17b1804b1-4851989ca9cmr64359365e9.28.1772659104632;
-        Wed, 04 Mar 2026 13:18:24 -0800 (PST)
-Received: from localhost ([2a02:a03f:b7dc:2b00:a97a:8551:7733:cb60])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-485187b6fedsm97409655e9.1.2026.03.04.13.18.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Mar 2026 13:18:24 -0800 (PST)
-From: Olivier Sobrie <olivier@sobrie.be>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Michal Simek <michal.simek@amd.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: rawnand: pl353: make sure optimal timings are applied
-Date: Wed,  4 Mar 2026 22:18:23 +0100
-Message-ID: <20260304211823.569972-1-olivier@sobrie.be>
-X-Mailer: git-send-email 2.53.0
+	id 1vxtyX-00000000XG5-1kTx;
+	Wed, 04 Mar 2026 21:41:50 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id D16CC432D4;
+	Wed,  4 Mar 2026 21:41:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFDDDC4CEF7;
+	Wed,  4 Mar 2026 21:41:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1772660507;
+	bh=PV67OS/91fsa6EbIf+u5pJQmbMnqcMaw7mOqQaMZtc4=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=WOy+ahU5UARQ0yTbDyVVAn1fSlv8RpYZwjPT+Gigf4F6vtlQM47BUEAaHpPl28jTi
+	 zijTiFmnsokrQhTEwusFFZyPjXjLpzptmexKVrqiO7zalnrs6jCk/4Dtvo7p2Wi1b1
+	 deFntjfjHaMPD1GtY9aIYLocTQHgNd9upu9na/Ju2G9Ir6nNYqwGJRWtco86cB0/5r
+	 uO2UQtHfq4CG7HDfigIocItuDJOTEaZae9H5bHTqKAx9IDkUJuakGJN2s0X8q9pydZ
+	 YUjxavtU51Dm29ViV1Ch1zVWrQIQ2z11hjkuPtHX/LzHUzaMqMA8RcsW3Ko5J8lxOB
+	 JCi7YwgNkSxnQ==
+Message-ID: <d5ef252a-02db-42d1-8ffa-1769189ae60a@kernel.org>
+Date: Thu, 5 Mar 2026 06:41:21 +0900
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 12/12] treewide: change inode->i_ino from unsigned long
+ to u64
+To: Jeff Layton <jlayton@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Dan Williams <dan.j.williams@intel.com>, Eric Biggers <ebiggers@kernel.org>, "Theodore Y. Ts'o" <tytso@mit.edu>, Muchun Song <muchun.song@linux.dev>, Oscar Salvador <osalvador@suse.de>, David Hildenbrand <david@kernel.org>, David Howells <dhowells@redhat.com>, Paulo Alcantara <pc@manguebit.org>, Andreas Dilger <adilger.kernel@dilger.ca>, Jan Kara <jack@suse.com>, Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>, Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, Chuck Lever <chuck.lever@oracle.com>, NeilBrown <neil@brown.name>, Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, Steve French <sfrench@samba.org>, Ronnie Sahlberg <ronniesahlberg@gmail.com>, Shyam Prasad N <sprasad@microsoft.com>, Bharath SM <bharathsm@microsoft.com>, Alexander Aring <alex.aring@gmail.com>, Ryusuke Konishi <konishi.ryusuke@gmail.com>, Viacheslav Dubeyko <slava@dubeyko.com>, Eric Van Hensbergen <ericvh@kernel.org>, Latchesar Ionkov <lucho@ionkov.net>, Dominique Martinet <asmadeus@codewreck.org>, Christian Schoenebeck <linux_oss@crudebyte.com>, David Sterba <dsterba@suse.com>, Marc Dionne <marc.dionne@auristor.com>, Ian Kent <raven@themaw.net>, Luis de Bethencourt <luisbg@kernel.org>, Salah Triki <salah.triki@gmail.com>, "Tigran A. Aivazian" <aivazian.tigran@gmail.com>, Ilya Dryomov <idryomov@gmail.com>, Alex Markuze <amarkuze@redhat.com>, Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu, Nicolas Pitre <nico@fluxnic.net>, Tyler Hicks <code@tyhicks.com>, Amir Goldstein <amir73il@gmail.com>, Christoph Hellwig <hch@infradead.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Yangtao Li <frank.li@vivo.com>, Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>, David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>, Dave Kleikamp <shaggy@kernel.org>, Konstantin Komarov <almaz.alexandrovich@paragon-software.com>, Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>, Joseph Qi <joseph.qi@linux.alibaba.com>, Mike Marshall <hubcap@omnibond.com>, Martin Brandenburg <martin@omnibond.com>, Miklos Szeredi <miklos@szeredi.hu>, Anders Larsen <al@alarsen.net>, Zhihao Cheng <chengzhihao1@huawei.com>, Naohiro Aota <naohiro.aota@wdc.com>, Johannes Thumshirn <jth@kernel.org>, John Johansen <john.johansen@canonical.com>, Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, Mimi Zohar <zohar@linux.ibm.com>, Roberto Sassu <roberto.sassu@huawei.com>, Dmitry Kasatkin <dmitry.kasatkin@gmail.com>, Eric Snowberg <eric.snowberg@oracle.com>, Fan Wu <wufan@kernel.org>, Stephen Smalley <stephen.smalley.work@gmail.com>, Ondrej Mosnacek <omosnace@redhat.com>, Casey Schaufler <casey@schaufler-ca.com>, Alex Deucher <alexander.deucher@amd.com>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, Sumit Semwal <sumit.semwal@linaro.org>, Eric Dumazet <edumazet@google.com>, Kuniyuki Iwashima <kuniyu@google.com>, Paolo Abeni <pabeni@redhat.com>, Willem de Bruijn <willemb@google.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Simon Horman <horms@kernel.org>, Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, James Clark <james.clark@linaro.org>, "Darrick J. Wong" <djwong@kernel.org>, Martin Schiller <ms@dev.tdt.de>, Eric Paris <eparis@redhat.com>,
+ Joerg Reuter <jreuter@yaina.de>, Marcel Holtmann <marcel@holtmann.org>, Johan Hedberg <johan.hedberg@gmail.com>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>, Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, David Ahern <dsahern@kernel.org>, Neal Cardwell <ncardwell@google.com>, Steffen Klassert <steffen.klassert@secunet.com>, Herbert Xu <herbert@gondor.apana.org.au>, Remi Denis-Courmont <courmisch@gmail.com>, Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>, Xin Long <lucien.xin@gmail.com>, Magnus Karlsson <magnus.karlsson@intel.com>, Maciej Fijalkowski <maciej.fijalkowski@intel.com>, Stanislav Fomichev <sdf@fomichev.me>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, nvdimm@lists.linux.dev,
+ fsverity@lists.linux.dev, linux-mm@kvack.org, netfs@lists.linux.dev,
+ linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+ linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+ samba-technical@lists.samba.org, linux-nilfs@vger.kernel.org,
+ v9fs@lists.linux.dev, linux-afs@lists.infradead.org, autofs@vger.kernel.org,
+ ceph-devel@vger.kernel.org, codalist@coda.cs.cmu.edu,
+ ecryptfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+ jfs-discussion@lists.sourceforge.net, ntfs3@lists.linux.dev,
+ ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
+ linux-unionfs@vger.kernel.org, apparmor@lists.ubuntu.com,
+ linux-security-module@vger.kernel.org, linux-integrity@vger.kernel.org,
+ selinux@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+ dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
+ linaro-mm-sig@lists.linaro.org, netdev@vger.kernel.org,
+ linux-perf-users@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+ linux-xfs@vger.kernel.org, linux-hams@vger.kernel.org,
+ linux-x25@vger.kernel.org, audit@vger.kernel.org,
+ linux-bluetooth@vger.kernel.org, linux-can@vger.kernel.org,
+ linux-sctp@vger.kernel.org, bpf@vger.kernel.org
+References: <20260304-iino-u64-v3-0-2257ad83d372@kernel.org>
+ <20260304-iino-u64-v3-12-2257ad83d372@kernel.org>
+Content-Language: en-US
+From: Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <20260304-iino-u64-v3-12-2257ad83d372@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260304_131827_374861_8C9F57F0 
-X-CRM114-Status: GOOD (  13.81  )
+X-CRM114-CacheID: sfid-20260304_134149_508390_91776DA8 
+X-CRM114-Status: GOOD (  13.77  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,39 +95,32 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Timings of the nand are adjusted by pl35x_nfc_setup_interface() but
-actually applied by the pl35x_nand_select_target() function.
-If there is only one nand chip, the pl35x_nand_select_target() will only
-apply the timings once since the test at its beginning will always be true
-after the first call to this function. As a result, the hardware will
-keep using the default timings set at boot to detect the nand chip, not
-the optimal ones.
+On 3/5/26 00:32, Jeff Layton wrote:
+> On 32-bit architectures, unsigned long is only 32 bits wide, which
+> causes 64-bit inode numbers to be silently truncated. Several
+> filesystems (NFS, XFS, BTRFS, etc.) can generate inode numbers that
+> exceed 32 bits, and this truncation can lead to inode number collisions
+> and other subtle bugs on 32-bit systems.
+> 
+> Change the type of inode->i_ino from unsigned long to u64 to ensure that
+> inode numbers are always represented as 64-bit values regardless of
+> architecture. Update all format specifiers treewide from %lu/%lx to
+> %llu/%llx to match the new type, along with corresponding local variable
+> types.
+> 
+> This is the bulk treewide conversion. Earlier patches in this series
+> handled trace events separately to allow trace field reordering for
+> better struct packing on 32-bit.
+> 
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
 
-With this patch, we program directly the new timings when
-pl35x_nfc_setup_interface() is called.
+For the zonefs bits:
 
-Signed-off-by: Olivier Sobrie <olivier@sobrie.be>
----
- drivers/mtd/nand/raw/pl35x-nand-controller.c | 3 +++
- 1 file changed, 3 insertions(+)
+Acked-by: Damien Le Moal <dlemoal@kernel.org>
 
-diff --git a/drivers/mtd/nand/raw/pl35x-nand-controller.c b/drivers/mtd/nand/raw/pl35x-nand-controller.c
-index 947fd86ac5fa..f2c65eb7a8d9 100644
---- a/drivers/mtd/nand/raw/pl35x-nand-controller.c
-+++ b/drivers/mtd/nand/raw/pl35x-nand-controller.c
-@@ -862,6 +862,9 @@ static int pl35x_nfc_setup_interface(struct nand_chip *chip, int cs,
- 			  PL35X_SMC_NAND_TAR_CYCLES(tmgs.t_ar) |
- 			  PL35X_SMC_NAND_TRR_CYCLES(tmgs.t_rr);
- 
-+	writel(plnand->timings, nfc->conf_regs + PL35X_SMC_CYCLES);
-+	pl35x_smc_update_regs(nfc);
-+
- 	return 0;
- }
- 
 -- 
-2.53.0
-
+Damien Le Moal
+Western Digital Research
 
 ______________________________________________________
 Linux MTD discussion mailing list
