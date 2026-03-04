@@ -4,80 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81A7BEFCE4C
-	for <linux-mtd@archiver.kernel.org>; Wed,  4 Mar 2026 21:42:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 88780EFCE4D
+	for <linux-mtd@archiver.kernel.org>; Wed,  4 Mar 2026 22:15:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=c4qvD8ePHB2EBKHSDarYOJTPnTxn07TtYfYqrCBPy0g=; b=obXHFkdLnOmu/K
-	7UEKVkjqtNMxnLrJcgVQVlVXPI7AG2gL0pI+iqfrEA/ajcJmZnHGNHlOct33fDsGOwYKDTdu2QeDW
-	er7YA7LNNvW/EnVNo5ycArsRt+TZdXafI+V2RcJrda27YCE4p0QtYahq62iP1oIPCPvUdjKXUQSsl
-	v8O49E/0Dg4jO5akzUsX1DM8EePIjyQ5lZrD0lFN1FE+8UK1xPdKtt8H605l6VC9QFw+7rJ/lq3hr
-	9WUfZ0+z7lQkGh2powi05d6Msn8EH//vwDFC2/aec2HCEZvBjGaBKwr4ZAhUgIPbwWbwC+WnNW/ss
-	8BCHHJiV4oW6JXObj8XA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=BmSidUy+k1sHMdz8HCMfef4mpUYqM6ae6oSA/A1iCWQ=; b=JE9e/fqkZLP/CP
+	1k1SWqY6WQkv+LChNKkAR20JsWAH5sFBiVrVM+nQCeBqinEUs04pGjQ3fSCrX7bPiSV5Kuk7UjS/3
+	yV0fsonAnL1S1Rd34ZHpAZjhGjUSQgvEnqnMg0vQ5/rQr3JW76KroZNLsh4J8+rsjrmLH+F9R1A+m
+	7AxrmuW71LQqHdv3QZ2/ECev9sp/j+6TWt1O2ZGKNDrKlZwpaVfsgw7ocZ0FYVrogLcIe93GqIvWk
+	dz7xImF8FW1bZ/Um2mvXuEWVorIy9q8SXAkYvwff+fhRT6Q9sqGkSUZ93tMaChP1Kw4Zs5ixjkM2/
+	WoS8VayOtN8Cdu6KqWng==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vxtyz-00000000XMP-0gFk;
-	Wed, 04 Mar 2026 21:42:17 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1vxuVT-00000000ZBZ-2bvM;
+	Wed, 04 Mar 2026 22:15:51 +0000
+Received: from mail-pf1-x42f.google.com ([2607:f8b0:4864:20::42f])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vxtyw-00000000XLu-2fEv;
-	Wed, 04 Mar 2026 21:42:15 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id A3CB743232;
-	Wed,  4 Mar 2026 21:42:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07326C2BCB4;
-	Wed,  4 Mar 2026 21:41:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772660533;
-	bh=xiOhB9YembJ+CStGf833o6vXChZ9R9iPIsGRMRIY668=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=MTiNOmzumY+Ccr9Y25oeq5uYZKghdKy9YuMJBVJenlXMeDIlM5fFuFFctJXPSrlj1
-	 KOikET8YCvcGy9yWYQw1bgH6uo7qLLK1Yimq397PsLMKP+QRrCFPLt2x5Iauoplbvb
-	 eVdpKah8RLNh0zfOSHOOrQ3xqtsNbQi1nkFz6EB4vJXFLpSPJMg52b3nqo2mplKkNj
-	 xJmYwih0yzyZ+saefyHXLopmh2Uw8y8KnyiNiI3ZzGwKqQQ7Bt9hEM//Ab6R2kTuX0
-	 dvCJZkANj5UO/wUvSeTKYiDWcUSEi2O8IiF1HH0MkcYb0vMhcqKbNtD1e26QLX94o6
-	 x5Esh08bkPubQ==
-Message-ID: <000dfca2-3101-45dd-8fdd-987ca885124a@kernel.org>
-Date: Thu, 5 Mar 2026 06:41:41 +0900
+	id 1vxuVR-00000000ZB0-2vrD
+	for linux-mtd@lists.infradead.org;
+	Wed, 04 Mar 2026 22:15:50 +0000
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-82976220e97so632300b3a.3
+        for <linux-mtd@lists.infradead.org>; Wed, 04 Mar 2026 14:15:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1772662548; x=1773267348; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=pknTK9DovrvOWreCLiec4pXoC+apbckmLy6Og46MTYI=;
+        b=DczIwghxj/j3oa89XO8fSzWTCEIVeXH/JUTZZ6ahhZea0MArckj45UQg/M4CXPXoD1
+         0aifsu/N1+MAWMPok85OmptRlAeib4sGc2U6iLzFEk3magdc+JEbV4YlUpdc9ADJQY2F
+         SQ3ZhDOMkKfr8uznp5w5rbUjyf46ofQRULkABPt+SvFK3Yo5dJ5d0msShpZgAmd/B9KC
+         Q8dFkKBvPPVoIxcWQOI4RyR2MSJ05b38JZAmYA+/BedWf/OzXun94Bhks6RxpqnkjmRT
+         IMc2XvrdQos7/4wNBneYNESRGBcZtYkCbdOypHxeGhWddv0CriPvpFHiYxd/FoZ/tChX
+         j85Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1772662548; x=1773267348;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pknTK9DovrvOWreCLiec4pXoC+apbckmLy6Og46MTYI=;
+        b=KBXchmYbgPd0SXMZVyKL3v2KnSvWOaBvKzluv3WYtblZvSghw/bAuC0EgS4spnmV/F
+         Hl5Z+icu7BSPDa52Q92/n31baOEhhtVKvyu3EYd2YF28lfV7yZjX6h5GGgpVcWbyyhx9
+         8I67qH0ijfYlbjvTUqpqjzNP1Ld5GJwXxKuntmw3FnKxi5URPtM44mgg8GG9i7G3iOUT
+         3igC8giE6XzIXqvD7kv7E9Ffihrmg4+n8SVfxcm3Jlthylx+wN846sCj12b6O0SYGzmG
+         QiKJd8PxHo33DUVwapsIIXjBLhEuucTXU/qXNML41TvQr4yIRBvsFHcvaJhH5W1eGxnN
+         2DmQ==
+X-Gm-Message-State: AOJu0YzfOGCTxJdxlBl7PKMZkYZR2LzUA1YQN1XZMiW/ybM1WUwkGiKb
+	bHWh8JISEaqT2Ikakg5djghQRJAWKVYaV9zHvf8OZXTAeCMA8dLsSKYsRtUpU635uQA=
+X-Gm-Gg: ATEYQzy6Vpf3mSlAop7Cx30W4/2Ja9Vg5oAsaa6m8Ep+Q8xCznvTs2smTzigJpmt2NI
+	QFla5zxB5yPVL0RI/lWIIj9uu0Sp+S14BiGrAuNJM3rSGawNuvjAEMRscj689I/NEW+ofWqbeQr
+	EdVDWq1N83wr4Nm3pnShjlwqxaWsuKbtuAQAS4nrz+qIO4uZ++0uVzU5+VM+tXb+Ooysga159uq
+	Wtohln+HRRx7t54IavZCBoDLWvN7Y1dp3ezHU3GS90K1to6VO2DBOPEF8nrAjsJCK5Jx3oxK8vD
+	saWjwxVMg2vhIzdzOQDRcTa+Re21GT92HAjXsk9xqq5s5XLt+Vx6rlTawyw2eAWc1fx1b0t2nLF
+	fPs7bfyfwsqH/QTfvPpIiha+oN6qp/MwhY5Giokt65lncGiGLPE57jYrS26BsXhVVMIrQJSPtEv
+	0XHtr/9xK52IopaLamPBePNOqUrLsuNnN5Z+/o+qn1QKqv70eBlb1NltbFQb1jaIUK
+X-Received: by 2002:a05:6a21:608a:b0:35b:9ba2:8cd5 with SMTP id adf61e73a8af0-3982e2036d4mr3459771637.56.1772662548516;
+        Wed, 04 Mar 2026 14:15:48 -0800 (PST)
+Received: from ryzen ([2601:644:8000:56f5::8bd])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-c70fa6203a6sm17637399a12.8.2026.03.04.14.15.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Mar 2026 14:15:47 -0800 (PST)
+From: Rosen Penev <rosenp@gmail.com>
+To: linux-mtd@lists.infradead.org
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Kees Cook <kees@kernel.org>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	linux-kernel@vger.kernel.org (open list),
+	linux-hardening@vger.kernel.org (open list:KERNEL HARDENING (not covered by other areas):Keyword:\b__counted_by(_le|_be)?\b)
+Subject: [PATCH 0/2] mtd: concat: use flex array
+Date: Wed,  4 Mar 2026 14:15:28 -0800
+Message-ID: <20260304221530.15018-1-rosenp@gmail.com>
+X-Mailer: git-send-email 2.53.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 08/12] zonefs: widen trace event i_ino fields to u64
-To: Jeff Layton <jlayton@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Dan Williams <dan.j.williams@intel.com>, Eric Biggers <ebiggers@kernel.org>, "Theodore Y. Ts'o" <tytso@mit.edu>, Muchun Song <muchun.song@linux.dev>, Oscar Salvador <osalvador@suse.de>, David Hildenbrand <david@kernel.org>, David Howells <dhowells@redhat.com>, Paulo Alcantara <pc@manguebit.org>, Andreas Dilger <adilger.kernel@dilger.ca>, Jan Kara <jack@suse.com>, Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>, Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, Chuck Lever <chuck.lever@oracle.com>, NeilBrown <neil@brown.name>, Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, Steve French <sfrench@samba.org>, Ronnie Sahlberg <ronniesahlberg@gmail.com>, Shyam Prasad N <sprasad@microsoft.com>, Bharath SM <bharathsm@microsoft.com>, Alexander Aring <alex.aring@gmail.com>, Ryusuke Konishi <konishi.ryusuke@gmail.com>, Viacheslav Dubeyko <slava@dubeyko.com>, Eric Van Hensbergen <ericvh@kernel.org>, Latchesar Ionkov <lucho@ionkov.net>, Dominique Martinet <asmadeus@codewreck.org>, Christian Schoenebeck <linux_oss@crudebyte.com>, David Sterba <dsterba@suse.com>, Marc Dionne <marc.dionne@auristor.com>, Ian Kent <raven@themaw.net>, Luis de Bethencourt <luisbg@kernel.org>, Salah Triki <salah.triki@gmail.com>, "Tigran A. Aivazian" <aivazian.tigran@gmail.com>, Ilya Dryomov <idryomov@gmail.com>, Alex Markuze <amarkuze@redhat.com>, Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu, Nicolas Pitre <nico@fluxnic.net>, Tyler Hicks <code@tyhicks.com>, Amir Goldstein <amir73il@gmail.com>, Christoph Hellwig <hch@infradead.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Yangtao Li <frank.li@vivo.com>, Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>, David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>, Dave Kleikamp <shaggy@kernel.org>, Konstantin Komarov <almaz.alexandrovich@paragon-software.com>, Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>, Joseph Qi <joseph.qi@linux.alibaba.com>, Mike Marshall <hubcap@omnibond.com>, Martin Brandenburg <martin@omnibond.com>, Miklos Szeredi <miklos@szeredi.hu>, Anders Larsen <al@alarsen.net>, Zhihao Cheng <chengzhihao1@huawei.com>, Naohiro Aota <naohiro.aota@wdc.com>, Johannes Thumshirn <jth@kernel.org>, John Johansen <john.johansen@canonical.com>, Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, Mimi Zohar <zohar@linux.ibm.com>, Roberto Sassu <roberto.sassu@huawei.com>, Dmitry Kasatkin <dmitry.kasatkin@gmail.com>, Eric Snowberg <eric.snowberg@oracle.com>, Fan Wu <wufan@kernel.org>, Stephen Smalley <stephen.smalley.work@gmail.com>, Ondrej Mosnacek <omosnace@redhat.com>, Casey Schaufler <casey@schaufler-ca.com>, Alex Deucher <alexander.deucher@amd.com>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, Sumit Semwal <sumit.semwal@linaro.org>, Eric Dumazet <edumazet@google.com>, Kuniyuki Iwashima <kuniyu@google.com>, Paolo Abeni <pabeni@redhat.com>, Willem de Bruijn <willemb@google.com>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Simon Horman <horms@kernel.org>, Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, James Clark <james.clark@linaro.org>, "Darrick J. Wong" <djwong@kernel.org>, Martin Schiller <ms@dev.tdt.de>, Eric Paris <eparis@redhat.com>,
- Joerg Reuter <jreuter@yaina.de>, Marcel Holtmann <marcel@holtmann.org>, Johan Hedberg <johan.hedberg@gmail.com>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>, Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, David Ahern <dsahern@kernel.org>, Neal Cardwell <ncardwell@google.com>, Steffen Klassert <steffen.klassert@secunet.com>, Herbert Xu <herbert@gondor.apana.org.au>, Remi Denis-Courmont <courmisch@gmail.com>, Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>, Xin Long <lucien.xin@gmail.com>, Magnus Karlsson <magnus.karlsson@intel.com>, Maciej Fijalkowski <maciej.fijalkowski@intel.com>, Stanislav Fomichev <sdf@fomichev.me>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, nvdimm@lists.linux.dev,
- fsverity@lists.linux.dev, linux-mm@kvack.org, netfs@lists.linux.dev,
- linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
- samba-technical@lists.samba.org, linux-nilfs@vger.kernel.org,
- v9fs@lists.linux.dev, linux-afs@lists.infradead.org, autofs@vger.kernel.org,
- ceph-devel@vger.kernel.org, codalist@coda.cs.cmu.edu,
- ecryptfs@vger.kernel.org, linux-mtd@lists.infradead.org,
- jfs-discussion@lists.sourceforge.net, ntfs3@lists.linux.dev,
- ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
- linux-unionfs@vger.kernel.org, apparmor@lists.ubuntu.com,
- linux-security-module@vger.kernel.org, linux-integrity@vger.kernel.org,
- selinux@vger.kernel.org, amd-gfx@lists.freedesktop.org,
- dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
- linaro-mm-sig@lists.linaro.org, netdev@vger.kernel.org,
- linux-perf-users@vger.kernel.org, linux-fscrypt@vger.kernel.org,
- linux-xfs@vger.kernel.org, linux-hams@vger.kernel.org,
- linux-x25@vger.kernel.org, audit@vger.kernel.org,
- linux-bluetooth@vger.kernel.org, linux-can@vger.kernel.org,
- linux-sctp@vger.kernel.org, bpf@vger.kernel.org
-References: <20260304-iino-u64-v3-0-2257ad83d372@kernel.org>
- <20260304-iino-u64-v3-8-2257ad83d372@kernel.org>
-Content-Language: en-US
-From: Damien Le Moal <dlemoal@kernel.org>
-Organization: Western Digital Research
-In-Reply-To: <20260304-iino-u64-v3-8-2257ad83d372@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260304_134214_722591_20E986AB 
-X-CRM114-Status: UNSURE (   9.55  )
+X-CRM114-CacheID: sfid-20260304_141549_774652_2F3634F1 
+X-CRM114-Status: UNSURE (   7.90  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -95,17 +101,21 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 3/5/26 00:32, Jeff Layton wrote:
-> Update zonefs trace event definitions to use u64 instead of
-> ino_t/unsigned long for inode number fields.
-> 
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+Simplifies allocation. There may or may not be missing frees here. One
+allocation is simpler to reason about.
 
-Acked-by: Damien Le Moal <dlemoal@kernel.org>
+Rosen Penev (2):
+  mtd: virt_concat: use single allocation for node
+  mtd: concat: replace alloc + calloc with 1 alloc
 
--- 
-Damien Le Moal
-Western Digital Research
+ drivers/mtd/mtd_virt_concat.c | 19 +++----------------
+ drivers/mtd/mtdconcat.c       |  5 +----
+ include/linux/mtd/concat.h    |  2 +-
+ 3 files changed, 5 insertions(+), 21 deletions(-)
+
+--
+2.53.0
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
