@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD473F513E6
-	for <linux-mtd@archiver.kernel.org>; Thu,  5 Mar 2026 22:44:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D770F513E7
+	for <linux-mtd@archiver.kernel.org>; Thu,  5 Mar 2026 22:44:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=j8HZrDqVOnRg33SzVXmfRgn8uD0TcP2nX6whexyk8bQ=; b=oeHn7v6IF6mDLY
-	MdATwU2iXRsWfPTdfFJwoZ7cC7JzXLdsJegemRJNFUlY530v75VQoHoMIxMAqW9ZIB1OPt2vaKojQ
-	EORmF52pCxfzrLXgc6qphjWdYVMZL8CHGPedbusl7iFjVxgmSMbZe5RuVl5yaN7n0gn++uP1hQnIv
-	Gi5HUZRBKhVhZoH7CU9d4+Te4Z5aHLpTYn7yGxmR7wcms06Vpzh7D4nxUlOBQ/u0QM6sJWZjT7Iub
-	+K+VQPo1J26IW5n8e9EOH+jSdfFRFhsuro+BkHmcAILdEueDdgY+Q6+d6OlFu4rR0kIyEb3CFgm76
-	OBHq0cYjtYlsP80VsSQg==;
+	List-Owner; bh=21xeVRt/Qdx4RFblcd5NAHTwyuAnitGqbacO5bitxmU=; b=pezx9fJ7dNMvRK
+	HLsna7lfOITFzKKfjiyReV1YL8UvviKhSs0FE/n6I8LOm3jOS5RJ9/cpBcQLvu3Iy8HBer4mwFKZh
+	XW3wC/Gdyykb2nm3jMAelm01FEF1MUBOmkxQWPDlJNpyIhBpr/cb8e4nBy1tiYkjqTUhLogIlwCuP
+	lWj0x6uXJgC23FDOG2c0SBHDMksxryfM6RCtL5AsbfUxf8xON4/X9LC+Yz7kyk0mTzwbHnWkEIQfl
+	/8jTjJi+3cZe9zkRzRq+jkzsa8yHQHyocz+x2LN57ZVFm+BKrNyKWWaVlS7ErwWzQjy9o0eVWEliw
+	W462wEA0ooJEDHjd9ncQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vyHQn-00000002h9I-1wst;
-	Thu, 05 Mar 2026 22:44:33 +0000
-Received: from mail-pl1-x62c.google.com ([2607:f8b0:4864:20::62c])
+	id 1vyHQo-00000002hA4-38cH;
+	Thu, 05 Mar 2026 22:44:34 +0000
+Received: from mail-pf1-x429.google.com ([2607:f8b0:4864:20::429])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vyHQl-00000002h8I-0qgX
+	id 1vyHQm-00000002h8j-2Kzw
 	for linux-mtd@lists.infradead.org;
-	Thu, 05 Mar 2026 22:44:32 +0000
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-2ad4d639db3so39204985ad.0
-        for <linux-mtd@lists.infradead.org>; Thu, 05 Mar 2026 14:44:31 -0800 (PST)
+	Thu, 05 Mar 2026 22:44:33 +0000
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-824ac5d28f9so8721975b3a.0
+        for <linux-mtd@lists.infradead.org>; Thu, 05 Mar 2026 14:44:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1772750670; x=1773355470; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1772750671; x=1773355471; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Ruj//+N0PDXJjZsC+IcqmIp3UGMkpYjjecZnM6Zp70A=;
-        b=FWerljsX+l1vSk0GbSxnZO9YBz2hLnTOdqKP1qOjvW7B4OQKauvi3aOEtq1uyl+dgK
-         g5HUkUzP1jyoJwFg+irLbpIUAtpZXcHiR+PRIK7/hTnV70cMtp1rsCCMIwkKBJk8ufE0
-         bctXvjZZBpFs9ORIc8t1r/JcBs+SoOU88aLWUmekYdwDiipEMraZNEMrMy1w3RXXLvNJ
-         Flz+4d5z9cRciMqSEZCaG/V4+pP8Y26+6nGtaAIlHhSzhkclHmnVyCWzU7/5bhgxlxQ2
-         dWRJGnIyTmAJLvIT5xfS6Jpj0QS0S47V9N4IrlLkoPh6dAibFgiXUCZ4YI1v3NgsVF8I
-         mg1Q==
+        bh=nOmbFn8ywU95rp5pZjzICmiW6tw+/7i3nDvDUHUWrQE=;
+        b=hPprwu6wx5UzF5s/P4K1x8QW23+cErPg8qYkc9NWt+LkBd9OoYQqb1hJ20WbuAbC7v
+         05s+vrxxx4Z6hFXs5Pwit/4/V8jSteoiHSnqUrD5N3XpjWSiV2q9bFBor05jXAsXMpSh
+         P05M9JL/+cawALtyAAQz9yFw+ikpV8hg1kan2vwiktGn7nN5yypSjpyqcPTANHZi0ET5
+         NfxvVyfVNR+mPqdkfTd8HDpWw12lCHaaEa1iy5hIKPVBLslUbVNtyr4z/0CNisE2zB0R
+         cHGjtESCLs2r42BDtnnUrnpbGFzawUxgkjwbNGpTyRu0owydAhzejQZWFoncWtZtV4Gk
+         D0cA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772750670; x=1773355470;
+        d=1e100.net; s=20230601; t=1772750671; x=1773355471;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=Ruj//+N0PDXJjZsC+IcqmIp3UGMkpYjjecZnM6Zp70A=;
-        b=nUKK2DwoiM6emHH6qB2efGh76kls0xiQgvDaMm4oZfWPWAwb00G62T2w2pHzpADL4y
-         ybg/4VXF2feprh6mysfDB3y+jrf5ZNe1Gsubb5/99rGr+tIckumg10iC5dV0HWDm0lQG
-         69s1RFieI5rbhRsfTqjTj+EmOBuhGaCW6cuPm/hM04t1AXuFAqbMMswqwFVdaR4yvVAF
-         9XdGK+aQUryp8iP0j98GFr+61jd8xoGbubsyvKtVDPH0OZTOGYExWhsp0303NwNwGeRo
-         +lCC0SuiVSKi0CervsRwYJVTbvIbFjt8ML88TZO1m0B2BOp6NorilCKQ58tVHIwmgLP3
-         wplg==
-X-Gm-Message-State: AOJu0Yxzh32TcBWnOR4py/cGLC1iXrT4NcjEkL/hj6FeB5OtXM44i+3+
-	/bW+jEW/F2Rs/MsXgQjxniNkB5KkDrsBfbygPq6+VqmBGJUSDBcr7sgL3GYERPi8sSM=
-X-Gm-Gg: ATEYQzy5Wzmgc3SxAV05CQ6qTi6EXF5qvxqwiDosalbYLGFB0fjT8/S1vUmY4+Q+ErQ
-	AVQmMjJCNK+zyXdlAcd24WLtmmKfNBWH4LMQ+E31GeugcGwYB/2W/TVi3thiES/cmfPWsas6Yia
-	H0HSlaRhdiJw7fQm8LvyG0+CV5/WH83+Mw6io06sbhVw8g/+k8o+HcRedNXuxmgkNWafPxoPPjz
-	4Ts8sPrNlgM63MNIvuwROc9Q6g32/M6uQGkIvAp6Vms0fiukd++CTfMRE+rsEu30mNNnr+sM4pN
-	LtuRcYHPXRTaDDPKmUVpz7OPZAyr/PoQYVPVvkox8iUPxUSBM4wu6BSqNrSfAlmzvsKtjq35tpS
-	Kw7WL5ZSVC8xSgSuDkpZArsYo5r2DZIgEXf2eHIqBIefO3Db3CE27uepzv8uWloEcBKEiMQLeBY
-	rhbgyixAp9vRDil2lzVON5MSzPcucR3AKk0oJuKBDN88V/ojPFxKxnWw==
-X-Received: by 2002:a17:903:4b50:b0:2ae:63a4:3baf with SMTP id d9443c01a7336-2ae8248ed61mr1294875ad.46.1772750669885;
-        Thu, 05 Mar 2026 14:44:29 -0800 (PST)
+        bh=nOmbFn8ywU95rp5pZjzICmiW6tw+/7i3nDvDUHUWrQE=;
+        b=GZjbjYZ45S5YjuqC1KRJxMtuBaHSGqH49J81j5lINqL95KzYuXles2CmsGzShjxECO
+         TS7TedPW+qD6AowMriyRobebRzwdWs4WDDt1IrA8JcKQNgHXVkl7NZIrnDfF1SYq3UFT
+         6Z7w8d9k2DXhE5EpmkJf5pdO2dIAmJlmIj3zEp+HkDF7ZYzS0SoJBHECtlmUd3hiAXaA
+         IpIAJxCcvMM04qEQAEELjGj80Ivi59F54aqOBDp0CKbwo0UEEfF60kHH6NXnHon5Yzr+
+         KO/eZ+vPmi/zrZRxbQLolkYlklGBh46J51Q7fgPSyjRu5yORBjOpO48aYk6nzu8IRDJz
+         tt2Q==
+X-Gm-Message-State: AOJu0YxpTbbWtAEt/mkArhQKHosCtzsmKha6WauEk3muNXHTo2XruQUM
+	moLjHL234kwCJCQLKmX7IJannL1A98zVHSg+LSYtW79os79jb0kivjXcNzxkxhNTsnQ=
+X-Gm-Gg: ATEYQzx60JVPiHfTSb6OgNLnpXsbe5mRNis2Dr9Znj1Krl1Ia2N8gHdPgEg/T4SQycE
+	AdQDcywSaXD6Y/KZeAr4C7hijggQus+ZybescCeu4pRGVcGnspFNCI4rQ/KaWbFBCrFlDuve6hY
+	VFr+sWU7vGnfcJdnFhev+RQbFJaLbNXeVaMFRKBkm1sZjRcXGt3CxT19kvmJYfUKgEWWBg8ihS2
+	6fbe7l+Q8BhzUOFPhST0/GUGR/Ey+iGw0btGTii4wDTfTQOuInIEI9WzLl6C7TK+dnsCqjRiDyV
+	8B7KkF1Y30/xys/to8q2FrEJg8NnhKN/zA99a4+Pzd4fcZGVX/9j8rCrkJ88dnOv+Grjwgb5JJY
+	CmTBgEXAHqFpilAC1XeWvyG0d2vdTmpFvWe2OtQ8q5GTiHl3NF4ixyKxg0VemmG3i+mE13wz5Uj
+	gcyonFCt8SHBrrzwx4EoNGAHJ7YdWLBfXizRtUfwTziT4fxhv3+q+KWw==
+X-Received: by 2002:a05:6a21:6b12:b0:394:65bb:d1b9 with SMTP id adf61e73a8af0-39858fdbd15mr159399637.20.1772750671359;
+        Thu, 05 Mar 2026 14:44:31 -0800 (PST)
 Received: from ryzen ([2601:644:8000:56f5::8bd])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-c738877202fsm3565477a12.25.2026.03.05.14.44.28
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-c738877202fsm3565477a12.25.2026.03.05.14.44.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Mar 2026 14:44:29 -0800 (PST)
+        Thu, 05 Mar 2026 14:44:30 -0800 (PST)
 From: Rosen Penev <rosenp@gmail.com>
 To: linux-mtd@lists.infradead.org
 Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
@@ -77,16 +77,16 @@ Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
 	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
 	linux-kernel@vger.kernel.org (open list),
 	linux-hardening@vger.kernel.org (open list:KERNEL HARDENING (not covered by other areas):Keyword:\b__counted_by(_le|_be)?\b)
-Subject: [PATCHv2 1/2] mtd: virt_concat: use single allocation for node
-Date: Thu,  5 Mar 2026 14:44:09 -0800
-Message-ID: <20260305224410.14251-2-rosenp@gmail.com>
+Subject: [PATCHv2 2/2] mtd: concat: replace alloc + calloc with 1 alloc
+Date: Thu,  5 Mar 2026 14:44:10 -0800
+Message-ID: <20260305224410.14251-3-rosenp@gmail.com>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260305224410.14251-1-rosenp@gmail.com>
 References: <20260305224410.14251-1-rosenp@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260305_144431_244087_119D5686 
-X-CRM114-Status: GOOD (  12.82  )
+X-CRM114-CacheID: sfid-20260305_144432_619987_9124A8CE 
+X-CRM114-Status: GOOD (  16.97  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,63 +103,84 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Simpler to reason about and avoids having to free nodes separately.
+A flex array can be used to reduce the allocation to 1.
 
-Also add __counted_by attribute for extra runtime analysis.
+And actually mtdconcat was using the pointer + 1 trick to point to the
+overallocated area. Better alternatives exist.
 
 Signed-off-by: Rosen Penev <rosenp@gmail.com>
 ---
- drivers/mtd/mtd_virt_concat.c | 11 ++---------
- 1 file changed, 2 insertions(+), 9 deletions(-)
+ drivers/mtd/mtd_virt_concat.c | 8 +-------
+ drivers/mtd/mtdconcat.c       | 5 +----
+ include/linux/mtd/concat.h    | 2 +-
+ 3 files changed, 3 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/mtd/mtd_virt_concat.c b/drivers/mtd/mtd_virt_concat.c
-index aea88d1c9bc5..33f9a63dd450 100644
+index 33f9a63dd450..b56f2431974b 100644
 --- a/drivers/mtd/mtd_virt_concat.c
 +++ b/drivers/mtd/mtd_virt_concat.c
-@@ -31,8 +31,8 @@ static LIST_HEAD(concat_node_list);
- struct mtd_virt_concat_node {
- 	struct list_head head;
- 	unsigned int count;
--	struct device_node **nodes;
- 	struct mtd_concat *concat;
-+	struct device_node *nodes[] __counted_by(count);
- };
+@@ -182,18 +182,12 @@ static int mtd_virt_concat_create_item(struct device_node *parts,
+ 	for (i = 1; i < count; i++)
+ 		item->nodes[i] = of_parse_phandle(parts, CONCAT_PROP, (i - 1));
  
- /**
-@@ -133,7 +133,6 @@ int mtd_virt_concat_destroy(struct mtd_info *mtd)
- 		for (idx = 0; idx < item->count; idx++)
- 			of_node_put(item->nodes[idx]);
- 
--		kfree(item->nodes);
+-	concat = kzalloc(sizeof(*concat), GFP_KERNEL);
++	concat = kzalloc_flex(*concat, subdev, count, GFP_KERNEL);
+ 	if (!concat) {
  		kfree(item);
- 	}
- 	return 0;
-@@ -167,16 +166,11 @@ static int mtd_virt_concat_create_item(struct device_node *parts,
- 			return 0;
- 	}
- 
--	item = kzalloc(sizeof(*item), GFP_KERNEL);
-+	item = kzalloc_flex(*item, nodes, count, GFP_KERNEL);
- 	if (!item)
  		return -ENOMEM;
+ 	}
  
- 	item->count = count;
--	item->nodes = kcalloc(count, sizeof(*item->nodes), GFP_KERNEL);
--	if (!item->nodes) {
+-	concat->subdev = kcalloc(count, sizeof(*concat->subdev), GFP_KERNEL);
+-	if (!concat->subdev) {
 -		kfree(item);
+-		kfree(concat);
 -		return -ENOMEM;
 -	}
+ 	item->concat = concat;
+ 
+ 	list_add_tail(&item->head, &concat_node_list);
+diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
+index 241d15235d01..c97167d51fe2 100644
+--- a/drivers/mtd/mtdconcat.c
++++ b/drivers/mtd/mtdconcat.c
+@@ -627,7 +627,6 @@ struct mtd_info *mtd_concat_create(struct mtd_info *subdev[],	/* subdevices to c
+ 				   const char *name)
+ {				/* name for the new device   */
+ 	int i;
+-	size_t size;
+ 	struct mtd_concat *concat;
+ 	struct mtd_info *subdev_master = NULL;
+ 	uint32_t max_erasesize, curr_erasesize;
+@@ -640,15 +639,13 @@ struct mtd_info *mtd_concat_create(struct mtd_info *subdev[],	/* subdevices to c
+ 	printk(KERN_NOTICE "into device \"%s\"\n", name);
+ 
+ 	/* allocate the device structure */
+-	size = SIZEOF_STRUCT_MTD_CONCAT(num_devs);
+-	concat = kzalloc(size, GFP_KERNEL);
++	concat = kzalloc_flex(*concat, subdev, num_devs, GFP_KERNEL);
+ 	if (!concat) {
+ 		printk
+ 		    ("memory allocation error while creating concatenated device \"%s\"\n",
+ 		     name);
+ 		return NULL;
+ 	}
+-	concat->subdev = (struct mtd_info **) (concat + 1);
  
  	/*
- 	 * The partition in which "part-concat-next" property
-@@ -216,7 +210,6 @@ void mtd_virt_concat_destroy_items(void)
- 		for (i = 0; i < item->count; i++)
- 			of_node_put(item->nodes[i]);
+ 	 * Set up the new "super" device's MTD object structure, check for
+diff --git a/include/linux/mtd/concat.h b/include/linux/mtd/concat.h
+index 2cd9d48958a8..f8d4d6ac1fc1 100644
+--- a/include/linux/mtd/concat.h
++++ b/include/linux/mtd/concat.h
+@@ -18,7 +18,7 @@
+ struct mtd_concat {
+ 	struct mtd_info mtd;
+ 	int num_subdev;
+-	struct mtd_info **subdev;
++	struct mtd_info *subdev[];
+ };
  
--		kfree(item->nodes);
- 		kfree(item);
- 	}
- }
+ struct mtd_info *mtd_concat_create(
 -- 
 2.53.0
 
