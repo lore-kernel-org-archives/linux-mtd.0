@@ -4,89 +4,137 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D770F513E7
-	for <linux-mtd@archiver.kernel.org>; Thu,  5 Mar 2026 22:44:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF806F513E7
+	for <linux-mtd@archiver.kernel.org>; Thu,  5 Mar 2026 23:12:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=21xeVRt/Qdx4RFblcd5NAHTwyuAnitGqbacO5bitxmU=; b=pezx9fJ7dNMvRK
-	HLsna7lfOITFzKKfjiyReV1YL8UvviKhSs0FE/n6I8LOm3jOS5RJ9/cpBcQLvu3Iy8HBer4mwFKZh
-	XW3wC/Gdyykb2nm3jMAelm01FEF1MUBOmkxQWPDlJNpyIhBpr/cb8e4nBy1tiYkjqTUhLogIlwCuP
-	lWj0x6uXJgC23FDOG2c0SBHDMksxryfM6RCtL5AsbfUxf8xON4/X9LC+Yz7kyk0mTzwbHnWkEIQfl
-	/8jTjJi+3cZe9zkRzRq+jkzsa8yHQHyocz+x2LN57ZVFm+BKrNyKWWaVlS7ErwWzQjy9o0eVWEliw
-	W462wEA0ooJEDHjd9ncQ==;
+	List-Owner; bh=UweZ0XQwj7Wi+1z5BXFc2DaElXwnYxVHiSFFd0PnvaI=; b=ac/6zKOEWBHrM8
+	Ea/6o3wmmmee9YWrDktBOFZL4TJppXBwQzOoUFm0ogeHV5Tysb/r70DTthhPI3Fa1GH0KJngZ+Uiv
+	maUWu6m8iFvNUpa3CFoWVcQvXZYRjBDRmhFbHjWDTHXwaEPEMz+XeQhGindrQsw26X8ubveRLEGpv
+	NC00aZl7p6d2C/rZ2L0PN+hhoLh40DpqA67o6GaMKYkdSJYvZN8kXfdS0ohd9zWudiWpsLEL0EQVL
+	gLSwMdWDxQpHZ8HZubJIFAIUzhPNTQXJW6F6BXW4EGTPBktGPOlS4vnazyKEY+M1gkEVmTeU6Ybdm
+	udfrD1BK9i58u7RC2zTg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vyHQo-00000002hA4-38cH;
-	Thu, 05 Mar 2026 22:44:34 +0000
-Received: from mail-pf1-x429.google.com ([2607:f8b0:4864:20::429])
+	id 1vyHs9-00000002iJm-3TjV;
+	Thu, 05 Mar 2026 23:12:49 +0000
+Received: from mail-pl1-x661.google.com ([2607:f8b0:4864:20::661])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vyHQm-00000002h8j-2Kzw
+	id 1vyHs7-00000002iJT-2GzZ
 	for linux-mtd@lists.infradead.org;
-	Thu, 05 Mar 2026 22:44:33 +0000
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-824ac5d28f9so8721975b3a.0
-        for <linux-mtd@lists.infradead.org>; Thu, 05 Mar 2026 14:44:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1772750671; x=1773355471; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nOmbFn8ywU95rp5pZjzICmiW6tw+/7i3nDvDUHUWrQE=;
-        b=hPprwu6wx5UzF5s/P4K1x8QW23+cErPg8qYkc9NWt+LkBd9OoYQqb1hJ20WbuAbC7v
-         05s+vrxxx4Z6hFXs5Pwit/4/V8jSteoiHSnqUrD5N3XpjWSiV2q9bFBor05jXAsXMpSh
-         P05M9JL/+cawALtyAAQz9yFw+ikpV8hg1kan2vwiktGn7nN5yypSjpyqcPTANHZi0ET5
-         NfxvVyfVNR+mPqdkfTd8HDpWw12lCHaaEa1iy5hIKPVBLslUbVNtyr4z/0CNisE2zB0R
-         cHGjtESCLs2r42BDtnnUrnpbGFzawUxgkjwbNGpTyRu0owydAhzejQZWFoncWtZtV4Gk
-         D0cA==
+	Thu, 05 Mar 2026 23:12:48 +0000
+Received: by mail-pl1-x661.google.com with SMTP id d9443c01a7336-2ae41544dcfso62488165ad.1
+        for <linux-mtd@lists.infradead.org>; Thu, 05 Mar 2026 15:12:46 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772750671; x=1773355471;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=nOmbFn8ywU95rp5pZjzICmiW6tw+/7i3nDvDUHUWrQE=;
-        b=GZjbjYZ45S5YjuqC1KRJxMtuBaHSGqH49J81j5lINqL95KzYuXles2CmsGzShjxECO
-         TS7TedPW+qD6AowMriyRobebRzwdWs4WDDt1IrA8JcKQNgHXVkl7NZIrnDfF1SYq3UFT
-         6Z7w8d9k2DXhE5EpmkJf5pdO2dIAmJlmIj3zEp+HkDF7ZYzS0SoJBHECtlmUd3hiAXaA
-         IpIAJxCcvMM04qEQAEELjGj80Ivi59F54aqOBDp0CKbwo0UEEfF60kHH6NXnHon5Yzr+
-         KO/eZ+vPmi/zrZRxbQLolkYlklGBh46J51Q7fgPSyjRu5yORBjOpO48aYk6nzu8IRDJz
-         tt2Q==
-X-Gm-Message-State: AOJu0YxpTbbWtAEt/mkArhQKHosCtzsmKha6WauEk3muNXHTo2XruQUM
-	moLjHL234kwCJCQLKmX7IJannL1A98zVHSg+LSYtW79os79jb0kivjXcNzxkxhNTsnQ=
-X-Gm-Gg: ATEYQzx60JVPiHfTSb6OgNLnpXsbe5mRNis2Dr9Znj1Krl1Ia2N8gHdPgEg/T4SQycE
-	AdQDcywSaXD6Y/KZeAr4C7hijggQus+ZybescCeu4pRGVcGnspFNCI4rQ/KaWbFBCrFlDuve6hY
-	VFr+sWU7vGnfcJdnFhev+RQbFJaLbNXeVaMFRKBkm1sZjRcXGt3CxT19kvmJYfUKgEWWBg8ihS2
-	6fbe7l+Q8BhzUOFPhST0/GUGR/Ey+iGw0btGTii4wDTfTQOuInIEI9WzLl6C7TK+dnsCqjRiDyV
-	8B7KkF1Y30/xys/to8q2FrEJg8NnhKN/zA99a4+Pzd4fcZGVX/9j8rCrkJ88dnOv+Grjwgb5JJY
-	CmTBgEXAHqFpilAC1XeWvyG0d2vdTmpFvWe2OtQ8q5GTiHl3NF4ixyKxg0VemmG3i+mE13wz5Uj
-	gcyonFCt8SHBrrzwx4EoNGAHJ7YdWLBfXizRtUfwTziT4fxhv3+q+KWw==
-X-Received: by 2002:a05:6a21:6b12:b0:394:65bb:d1b9 with SMTP id adf61e73a8af0-39858fdbd15mr159399637.20.1772750671359;
-        Thu, 05 Mar 2026 14:44:31 -0800 (PST)
-Received: from ryzen ([2601:644:8000:56f5::8bd])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-c738877202fsm3565477a12.25.2026.03.05.14.44.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Mar 2026 14:44:30 -0800 (PST)
-From: Rosen Penev <rosenp@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Kees Cook <kees@kernel.org>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	linux-kernel@vger.kernel.org (open list),
-	linux-hardening@vger.kernel.org (open list:KERNEL HARDENING (not covered by other areas):Keyword:\b__counted_by(_le|_be)?\b)
-Subject: [PATCHv2 2/2] mtd: concat: replace alloc + calloc with 1 alloc
-Date: Thu,  5 Mar 2026 14:44:10 -0800
-Message-ID: <20260305224410.14251-3-rosenp@gmail.com>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260305224410.14251-1-rosenp@gmail.com>
-References: <20260305224410.14251-1-rosenp@gmail.com>
+        d=1e100.net; s=20230601; t=1772752366; x=1773357166;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:dkim-signature:x-gm-gg:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=dMqZ0LvHE3xAoRASq7YjZFz+HV67N3xBC0l7/K0nmRM=;
+        b=dl9BfjoST1eoDvoKOatYiKTFMCIMyROVTri+T6MY9cFQLY8i4uqRJ4YnvXBSQw30lk
+         417A+eCHumAZHxIZRWZC/SYZ3e6FpWX4ZvRD1tgvmoWC7LPt5OyiODBQ9H+/j0UEWbOc
+         UQv6xIgchnPHvyRFFku6PodiGzUoh+nOBjsqqVwOCoFmkLZcNGaLADWmSPOODjoVERIM
+         g1fXh6AWqat9lkjOG+0xIozQkR9t9B2xeCjpJ9G51mCf1sHZRTI3eIbYPkoLJHe7T09x
+         QNv/2kd86cd8sEiJRrcK3DvTli+StmBq1ueeGhJ67p2xAJLlP52CdCXN+iOePN7Ezt3T
+         g5ZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWtr+9n4fPqD1axVUVOhRnQt1vAuFbnCnX7QiJEpy/zFpa7meyf5semx1d84BumAhiBwLXyslf6f/M=@lists.infradead.org
+X-Gm-Message-State: AOJu0YzafZKx5Nj7ocjunCAuRjU2IBsWkRphx53eg7WsXzdl1A/GbR8E
+	toFprB4OsTPAi8Jyw9VyjAwYjNConMlAbLzQDs9cUSaF2KBHSehbqnz9+7OkejMhQxfJUCtPydv
+	bW45F0e8bN1b/9W2PQCHEa3Htk0aYn//hRtMV+wCp9DAoKqgEAniNrcCjm391OopD4nau1Z3mBw
+	X3EQ+WhMwEUesKGkpLOdXlGAQcOpGd+DEw2iaJeG8ycOe4KJ4BPjTv6GICoFmbG4wdXGZ97Siyd
+	a8mcx5vQ/JaUaRabIgPbQ0LFA==
+X-Gm-Gg: ATEYQzzRixQxkN03Sm/sZ3eLc/pbtpcuRYmMFKZ4aHOoxx7kqb/1MvTFRg06wfkmHLh
+	/jB5+eu47mztbdGXWksTO66Nd/aw/qXZU9pF+tYIUAm2jNCFatxGXxNvD+zNWigOMzRWbsHfmxI
+	0BR+XJqKBhBMOP3ysFZMhJBDYjrgiRzlyz2yv3cqfOWznz4rdW2rDLuFgHmxq6Q9bUpTIk6s+cp
+	KX+OVHRVUgtnFSe72BXHa6JKPuvHl7Lp2yadLB81nv6U809ttSyjhR3jIkCW+Vx5orrqk2ZrVsR
+	xqFOQ/EoZbz6KwCFwW8OiyItirCkcwYCZeW1JPnyX+LMwCS5yu3KN6bk6IrUU/jAy/uXinHGmzt
+	8Mt4cUK4OGcNchwrDytiu5lWHnKMF3sWsnUXvuVKZNJfWqqXvfs87vbvzGlN3jbzYRRWcPJWawa
+	B6SJJgcKfoEnQktdK+2eWdLnuy2/qH4K9J1bSJVSUBPDoO1VdYA+bATkZ4muRqyYSk
+X-Received: by 2002:a17:903:380f:b0:2ae:4f2b:9263 with SMTP id d9443c01a7336-2ae82451675mr2467335ad.40.1772752365927;
+        Thu, 05 Mar 2026 15:12:45 -0800 (PST)
+Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-117.dlp.protect.broadcom.com. [144.49.247.117])
+        by smtp-relay.gmail.com with ESMTPS id d9443c01a7336-2ae5468d85csm17108465ad.10.2026.03.05.15.12.45
+        for <linux-mtd@lists.infradead.org>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 05 Mar 2026 15:12:45 -0800 (PST)
+X-Relaying-Domain: broadcom.com
+X-CFilter-Loop: Reflected
+Received: by mail-dl1-f69.google.com with SMTP id a92af1059eb24-124a95b6f61so107493165c88.0
+        for <linux-mtd@lists.infradead.org>; Thu, 05 Mar 2026 15:12:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1772752364; x=1773357164; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=dMqZ0LvHE3xAoRASq7YjZFz+HV67N3xBC0l7/K0nmRM=;
+        b=LZKOY1TkZskerBTAyIlY7vNvON9RXPPHiw/YNUVkausWCKjzMC6Nx/m+83ol9EKwSF
+         m003iWYbB0lgQK00Wv9QEbfDbQ5OJkNzg3cCAOUo29Bzj53IjiPbT1qtj9vje+cUzImz
+         mV575dX3F1+kLReqTuDBye8IEzQe0C0/34s/Q=
+X-Forwarded-Encrypted: i=1; AJvYcCX26oIUJubXOLaH4FON926XlPQdvvgaZKzqE7kExbv3H1Eq1RHrkDH9ykAtguLzuzD1dBno0kxghCA=@lists.infradead.org
+X-Received: by 2002:a05:7022:122:b0:11b:c1ab:bdd4 with SMTP id a92af1059eb24-128c2eaea56mr58470c88.38.1772752363885;
+        Thu, 05 Mar 2026 15:12:43 -0800 (PST)
+X-Received: by 2002:a05:7022:122:b0:11b:c1ab:bdd4 with SMTP id a92af1059eb24-128c2eaea56mr58456c88.38.1772752363245;
+        Thu, 05 Mar 2026 15:12:43 -0800 (PST)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-128bac04455sm3307094c88.1.2026.03.05.15.12.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Mar 2026 15:12:42 -0800 (PST)
+Message-ID: <75359b55-763f-4a90-bb09-141d42315eba@broadcom.com>
+Date: Thu, 5 Mar 2026 15:12:40 -0800
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mtd: rawnand: brcmnand: skip DMA during panic write
+To: Kamal Dasu <kamal.dasu@broadcom.com>, computersforpeace@gmail.com,
+ miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com
+Cc: florian.fainelli@broadcom.com, william.zhang@broadcom.com,
+ bcm-kernel-feedback-list@broadcom.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20260305202157.3571334-1-kamal.dasu@broadcom.com>
+Content-Language: en-US, fr-FR
+From: Florian Fainelli <florian.fainelli@broadcom.com>
+Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
+ xsBNBFPAG8ABCAC3EO02urEwipgbUNJ1r6oI2Vr/+uE389lSEShN2PmL3MVnzhViSAtrYxeT
+ M0Txqn1tOWoIc4QUl6Ggqf5KP6FoRkCrgMMTnUAINsINYXK+3OLe7HjP10h2jDRX4Ajs4Ghs
+ JrZOBru6rH0YrgAhr6O5gG7NE1jhly+EsOa2MpwOiXO4DE/YKZGuVe6Bh87WqmILs9KvnNrQ
+ PcycQnYKTVpqE95d4M824M5cuRB6D1GrYovCsjA9uxo22kPdOoQRAu5gBBn3AdtALFyQj9DQ
+ KQuc39/i/Kt6XLZ/RsBc6qLs+p+JnEuPJngTSfWvzGjpx0nkwCMi4yBb+xk7Hki4kEslABEB
+ AAHNMEZsb3JpYW4gRmFpbmVsbGkgPGZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tPsLB
+ IQQQAQgAywUCZWl41AUJI+Jo+hcKAAG/SMv+fS3xUQWa0NryPuoRGjsA3SAUAAAAAAAWAAFr
+ ZXktdXNhZ2UtbWFza0BwZ3AuY29tjDAUgAAAAAAgAAdwcmVmZXJyZWQtZW1haWwtZW5jb2Rp
+ bmdAcGdwLmNvbXBncG1pbWUICwkIBwMCAQoFF4AAAAAZGGxkYXA6Ly9rZXlzLmJyb2FkY29t
+ Lm5ldAUbAwAAAAMWAgEFHgEAAAAEFQgJChYhBNXZKpfnkVze1+R8aIExtcQpvGagAAoJEIEx
+ tcQpvGagWPEH/2l0DNr9QkTwJUxOoP9wgHfmVhqc0ZlDsBFv91I3BbhGKI5UATbipKNqG13Z
+ TsBrJHcrnCqnTRS+8n9/myOF0ng2A4YT0EJnayzHugXm+hrkO5O9UEPJ8a+0553VqyoFhHqA
+ zjxj8fUu1px5cbb4R9G4UAySqyeLLeqnYLCKb4+GklGSBGsLMYvLmIDNYlkhMdnnzsSUAS61
+ WJYW6jjnzMwuKJ0ZHv7xZvSHyhIsFRiYiEs44kiYjbUUMcXor/uLEuTIazGrE3MahuGdjpT2
+ IOjoMiTsbMc0yfhHp6G/2E769oDXMVxCCbMVpA+LUtVIQEA+8Zr6mX0Yk4nDS7OiBlvOwE0E
+ U8AbwQEIAKxr71oqe+0+MYCc7WafWEcpQHFUwvYLcdBoOnmJPxDwDRpvU5LhqSPvk/yJdh9k
+ 4xUDQu3rm1qIW2I9Puk5n/Jz/lZsqGw8T13DKyu8eMcvaA/irm9lX9El27DPHy/0qsxmxVmU
+ pu9y9S+BmaMb2CM9IuyxMWEl9ruWFS2jAWh/R8CrdnL6+zLk60R7XGzmSJqF09vYNlJ6Bdbs
+ MWDXkYWWP5Ub1ZJGNJQ4qT7g8IN0qXxzLQsmz6tbgLMEHYBGx80bBF8AkdThd6SLhreCN7Uh
+ IR/5NXGqotAZao2xlDpJLuOMQtoH9WVNuuxQQZHVd8if+yp6yRJ5DAmIUt5CCPcAEQEAAcLB
+ gQQYAQIBKwUCU8AbwgUbDAAAAMBdIAQZAQgABgUCU8AbwQAKCRCTYAaomC8PVQ0VCACWk3n+
+ obFABEp5Rg6Qvspi9kWXcwCcfZV41OIYWhXMoc57ssjCand5noZi8bKg0bxw4qsg+9cNgZ3P
+ N/DFWcNKcAT3Z2/4fTnJqdJS//YcEhlr8uGs+ZWFcqAPbteFCM4dGDRruo69IrHfyyQGx16s
+ CcFlrN8vD066RKevFepb/ml7eYEdN5SRALyEdQMKeCSf3mectdoECEqdF/MWpfWIYQ1hEfdm
+ C2Kztm+h3Nkt9ZQLqc3wsPJZmbD9T0c9Rphfypgw/SfTf2/CHoYVkKqwUIzI59itl5Lze+R5
+ wDByhWHx2Ud2R7SudmT9XK1e0x7W7a5z11Q6vrzuED5nQvkhAAoJEIExtcQpvGagugcIAJd5
+ EYe6KM6Y6RvI6TvHp+QgbU5dxvjqSiSvam0Ms3QrLidCtantcGT2Wz/2PlbZqkoJxMQc40rb
+ fXa4xQSvJYj0GWpadrDJUvUu3LEsunDCxdWrmbmwGRKqZraV2oG7YEddmDqOe0Xm/NxeSobc
+ MIlnaE6V0U8f5zNHB7Y46yJjjYT/Ds1TJo3pvwevDWPvv6rdBeV07D9s43frUS6xYd1uFxHC
+ 7dZYWJjZmyUf5evr1W1gCgwLXG0PEi9n3qmz1lelQ8lSocmvxBKtMbX/OKhAfuP/iIwnTsww
+ 95A2SaPiQZA51NywV8OFgsN0ITl2PlZ4Tp9hHERDe6nQCsNI/Us=
+In-Reply-To: <20260305202157.3571334-1-kamal.dasu@broadcom.com>
+X-DetectorID-Processed: b00c1d49-9d2e-4205-b15f-d015386d3d5e
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260305_144432_619987_9124A8CE 
-X-CRM114-Status: GOOD (  16.97  )
+X-CRM114-CacheID: sfid-20260305_151247_648341_B6BC1EFC 
+X-CRM114-Status: UNSURE (   8.70  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,91 +146,24 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-A flex array can be used to reduce the allocation to 1.
+On 3/5/26 12:21, Kamal Dasu wrote:
+> When oops_panic_write is set, the driver disables interrupts and
+> switches to PIO polling mode but still falls through into the DMA
+> path. DMA cannot be used reliably in panic context, so make the
+> DMA path an else branch to ensure only PIO is used during panic
+> writes.
+> 
+> Fixes: c1ac2dc34b51 ("mtd: rawnand: brcmnand: When oops in progress use pio and interrupt polling")
+> Signed-off-by: Kamal Dasu <kamal.dasu@broadcom.com>
 
-And actually mtdconcat was using the pointer + 1 trick to point to the
-overallocated area. Better alternatives exist.
-
-Signed-off-by: Rosen Penev <rosenp@gmail.com>
----
- drivers/mtd/mtd_virt_concat.c | 8 +-------
- drivers/mtd/mtdconcat.c       | 5 +----
- include/linux/mtd/concat.h    | 2 +-
- 3 files changed, 3 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/mtd/mtd_virt_concat.c b/drivers/mtd/mtd_virt_concat.c
-index 33f9a63dd450..b56f2431974b 100644
---- a/drivers/mtd/mtd_virt_concat.c
-+++ b/drivers/mtd/mtd_virt_concat.c
-@@ -182,18 +182,12 @@ static int mtd_virt_concat_create_item(struct device_node *parts,
- 	for (i = 1; i < count; i++)
- 		item->nodes[i] = of_parse_phandle(parts, CONCAT_PROP, (i - 1));
- 
--	concat = kzalloc(sizeof(*concat), GFP_KERNEL);
-+	concat = kzalloc_flex(*concat, subdev, count, GFP_KERNEL);
- 	if (!concat) {
- 		kfree(item);
- 		return -ENOMEM;
- 	}
- 
--	concat->subdev = kcalloc(count, sizeof(*concat->subdev), GFP_KERNEL);
--	if (!concat->subdev) {
--		kfree(item);
--		kfree(concat);
--		return -ENOMEM;
--	}
- 	item->concat = concat;
- 
- 	list_add_tail(&item->head, &concat_node_list);
-diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
-index 241d15235d01..c97167d51fe2 100644
---- a/drivers/mtd/mtdconcat.c
-+++ b/drivers/mtd/mtdconcat.c
-@@ -627,7 +627,6 @@ struct mtd_info *mtd_concat_create(struct mtd_info *subdev[],	/* subdevices to c
- 				   const char *name)
- {				/* name for the new device   */
- 	int i;
--	size_t size;
- 	struct mtd_concat *concat;
- 	struct mtd_info *subdev_master = NULL;
- 	uint32_t max_erasesize, curr_erasesize;
-@@ -640,15 +639,13 @@ struct mtd_info *mtd_concat_create(struct mtd_info *subdev[],	/* subdevices to c
- 	printk(KERN_NOTICE "into device \"%s\"\n", name);
- 
- 	/* allocate the device structure */
--	size = SIZEOF_STRUCT_MTD_CONCAT(num_devs);
--	concat = kzalloc(size, GFP_KERNEL);
-+	concat = kzalloc_flex(*concat, subdev, num_devs, GFP_KERNEL);
- 	if (!concat) {
- 		printk
- 		    ("memory allocation error while creating concatenated device \"%s\"\n",
- 		     name);
- 		return NULL;
- 	}
--	concat->subdev = (struct mtd_info **) (concat + 1);
- 
- 	/*
- 	 * Set up the new "super" device's MTD object structure, check for
-diff --git a/include/linux/mtd/concat.h b/include/linux/mtd/concat.h
-index 2cd9d48958a8..f8d4d6ac1fc1 100644
---- a/include/linux/mtd/concat.h
-+++ b/include/linux/mtd/concat.h
-@@ -18,7 +18,7 @@
- struct mtd_concat {
- 	struct mtd_info mtd;
- 	int num_subdev;
--	struct mtd_info **subdev;
-+	struct mtd_info *subdev[];
- };
- 
- struct mtd_info *mtd_concat_create(
+Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
 -- 
-2.53.0
+Florian
 
 
 ______________________________________________________
