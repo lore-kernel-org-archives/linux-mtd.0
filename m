@@ -4,123 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DAAF2EFCE4E
-	for <linux-mtd@archiver.kernel.org>; Wed,  4 Mar 2026 22:29:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70FF2EEF312
+	for <linux-mtd@archiver.kernel.org>; Thu,  5 Mar 2026 07:13:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=dLjJD/NyR9BoErad5fakTquAh5BmvoArW/bywsPmABY=; b=WEzz4OQZdof/Fq
-	+CfTtaPgPeEo0znKX+5e+CSooYszGg2Mg2fMKKAdBLSo0qxqRbz8iQ5r/VL7cNMPPUOVcaNTdJEMl
-	gs5+HN/hQ96XIBbnUw+30gxtFRDtbEPXRBxQzdvv8u7iSPlalqc+PI56c2rQ6fBWozgx59KDyK+7i
-	Yw3zaq3+/eWQSzaRSwPtL8PhtbxT7W7tbPUKVoUSg7QVYqHa3j3NtyO4wToj/iMLsKSUPaVmUKGw0
-	7FaKwGWdTN+ipvZXQx55b1YlUOn994LU3t8ymRJQa1wKsuW+7Aad1emAkOlsAFpBZrJUeZzBUAAIw
-	wcZ2uCnvpggzoADa3wcA==;
+	List-Owner; bh=bKwwWK9Wm1hIf3mkFnrpXFBO3ByJVGadPx0/Wb28Kus=; b=IqcS1u15eBqkKw
+	lUNgdWCB4S0PCkWm0TO6rsyxvo07ZriF3VUYYzIvZo2nqQKfHeZqyVPWw/MvT8BstUkR7mfCcbC6r
+	dKl3du7KSFtPqE4Xw8txwtGut4AD15OdRLWWPEZGNeNUpB7EVL3k9BCHezVqjoL7EHBTcffuIici6
+	G031Fq+01Q2O1nCO8+tp3Lt8v+Fym+dEP03XU4ycvLX77hR5Er7Ti5be1ayPE/BTJCiJqWw3tWGRc
+	ima3Aw64wOpEJLsktC0sIIb0u0NIzNWEWxmHiHtImkh3Y8dSeiFWDievtI0M4aK7T7vBzCTxG/0n4
+	iwRtkaNbfUCauv4tK4qw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vxuj1-00000000aa6-0sxC;
-	Wed, 04 Mar 2026 22:29:51 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1vy2tF-000000014Je-0wpb;
+	Thu, 05 Mar 2026 07:12:57 +0000
+Received: from mail-pl1-x629.google.com ([2607:f8b0:4864:20::629])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vxuiz-00000000aZL-2HH3
+	id 1vy2tC-000000014Hl-2t8t
 	for linux-mtd@lists.infradead.org;
-	Wed, 04 Mar 2026 22:29:50 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 526FB43E93;
-	Wed,  4 Mar 2026 22:29:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E566C4CEF7;
-	Wed,  4 Mar 2026 22:29:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772663388;
-	bh=4g9Hc6BCi1UzcQ6UmFUsAKXtEqFK6/wIIRnu62xorDM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=H7E6g6Lm08bdby4/2tHEolh5uuAfzAVSsM3yLpncdqLzpMpx2R/jiaVVx3BrpUlHV
-	 zLgQZLl3q+J8YOTxOWa4cFn0qM9qtzHl3urpYxu/J8dk/Ng4eTR5ve5/MwMG2EM0x4
-	 13hRsUgqaHxQn1bDCNJafYTopHM59GSiSSfWDaMrsTRgNMP0a8wibVOr0aBrw1II97
-	 INDpQBDBhw/6g/ZfJeCr4GjGF8S8trfaYHGCsvv3rBpIoZHp4hfWrZiyJa1NX9T5Ya
-	 lxm3zNjb7ZsIhtDD0mqurpzxaf9es4FePOHSAnjX78l7+ajL920pZ2wjsA901PjGJl
-	 9YO9TEkdx8L9Q==
-Date: Wed, 4 Mar 2026 17:29:46 -0500
-From: Mike Snitzer <snitzer@kernel.org>
-To: Jeff Layton <jlayton@kernel.org>
-Cc: Luis de Bethencourt <luisbg@kernel.org>,
-	Salah Triki <salah.triki@gmail.com>,
-	Nicolas Pitre <nico@fluxnic.net>,
-	Christoph Hellwig <hch@infradead.org>, Jan Kara <jack@suse.cz>,
-	Anders Larsen <al@alarsen.net>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>,
-	David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
-	Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>,
-	Yue Hu <zbestahu@gmail.com>, Jeffle Xu <jefflexu@linux.alibaba.com>,
-	Sandeep Dhavale <dhavale@google.com>,
-	Hongbo Li <lihongbo22@huawei.com>,
-	Chunhai Guo <guochunhai@vivo.com>, Jan Kara <jack@suse.com>,
-	Theodore Ts'o <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	Jaegeuk Kim <jaegeuk@kernel.org>,
-	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-	David Woodhouse <dwmw2@infradead.org>,
+	Thu, 05 Mar 2026 07:12:55 +0000
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-2ae46fc8ec1so29639405ad.3
+        for <linux-mtd@lists.infradead.org>; Wed, 04 Mar 2026 23:12:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1772694773; x=1773299573; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ajhw8hYpqHjqV3r6yWVus18nRMpwuD8YgLrA+5qE4SA=;
+        b=djKOtg2SwrjQVy7p7qeTRwJpBHZJluA11t8QABJxNHcntm+E2zjU1pRTXG52eMxWyK
+         XoGXKD93tFmQKMWI6MieNib/91l963dgY45WfzAv/6RhjQfBzyHEaB3U8sduMIsPL3j1
+         coWNKxchuUGcrK8nY+yNGkKMiM8zkHSFJtMccYirZiTO+PUhcjZT+iOe2vvBKOQr70yD
+         K02QkE20RGTPNNck72WmAlBoBCYOatPGwmjR8FePfI8LAyvUKR+TgtwRn23O2Bxv9GrL
+         nbOwae7C44B3ouMkGzJbhSi9qEjVwYAg2pyu20GFjsfmlJOkwcTnGMicxyaD65tRz+Nq
+         MbTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1772694773; x=1773299573;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=ajhw8hYpqHjqV3r6yWVus18nRMpwuD8YgLrA+5qE4SA=;
+        b=cASidZ0r+YM6dkSu/QEN0gPeuGhwXYjytE6gErnpUxXXKHANZVndIjIBZGUC7iwhz5
+         zKT+9ILEVPimdyUmEDsUJO5r49+VaK0A1j+ptzAlLoaVcHQh5Y7XhQeT30VofWSI0yzG
+         E/zpX+nuUvhm3tDMGjHYTgMZwaxyUI1tkEETu7eRvbtiCo81wBkSH3tNTb0+4kShNwSr
+         yrTBjPUc7O6cYmiMp6dpS3mroQNOchuBr0m7HgQo1Txp0evBtnmU9x7p3YvHbyHzzYc9
+         sWeByR56x0h3/Zau/HXheg1G+YUk28Q25shlrqIzYpedXBUA+8K7M+0sx/HJm9XyJ0MQ
+         CVxw==
+X-Forwarded-Encrypted: i=1; AJvYcCUgxIm2gB+PMz83pLf/s5NSllJdktWR0DW6EV2WcJRJoXsTO/+LlQBcfPvcps8D36z4fvsmdS9m+OU=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yw9bgCpXH1iYRiJytDr884TU/U/OSPaFLEbe2aaBex4UwRN6XH8
+	ZTn0mcF1BZ5NzceY5Ae/Y9ZuatKDE3Hw3fLfmn2pC2WJQHWkklEbVHjU
+X-Gm-Gg: ATEYQzyfs0GodMxnBQQlNr8rWTkeAWs3o4rkIyKITZlUTi1CknY+Mp80mxcizdqLHbh
+	3uLE1PZNUFiIjyL5x/zzFC+A88xwE592WMsqY+9UGYU1xR4PD7aiC2lPNFdAQjFr+Tl9Qkj0Rlq
+	MFgP6PHkzXhzdszmqSoOQ2+mpWG5jiqMAMd2H/fWd5WOHj84todRbTNz+QNRlgcSn/AIU14rq8i
+	7hw3PYwu9V+UnbRBBcfNFVnAwOQIW7RnPbUxu2ROvHVXWvyw0gt0PIwPYiU6COtehBBUkK/cCzl
+	NX8vkuAgxoOf2bmFhgADn/sJAG7oC7CXRzBYheRdPHEs13wlJu1mkGd5a0sVjcZpIwREtxRKy5h
+	Jielnkzqaj+iqYc7nowWtQ2pN7mpuSl6J6rcxgkQmoqjX+FRBXhyosmyESF+mdweE7b7bK+qWno
+	8s6TMxrR7/bSmSkE61VvDY9DiqUtGjkKkurX3hFUlplRpgnw==
+X-Received: by 2002:a17:902:c94a:b0:2ad:ca65:a398 with SMTP id d9443c01a7336-2ae6abe7cd8mr42850435ad.57.1772694773349;
+        Wed, 04 Mar 2026 23:12:53 -0800 (PST)
+Received: from twhmp6px (mxsmtp211.mxic.com.tw. [211.75.127.162])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2adfb6a03fbsm283865575ad.43.2026.03.04.23.12.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Mar 2026 23:12:52 -0800 (PST)
+Received: from hqs-appsw-a2o.mp600.macronix.com (unknown [172.17.236.67])
+	by twhmp6px (Postfix) with ESMTPS id B62F94163B6B;
+	Thu,  5 Mar 2026 15:12:50 +0800 (CST)
+From: Cheng Ming Lin <linchengming884@gmail.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
-	Dave Kleikamp <shaggy@kernel.org>,
-	Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-	Viacheslav Dubeyko <slava@dubeyko.com>,
-	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-	Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
-	Joseph Qi <joseph.qi@linux.alibaba.com>,
-	Mike Marshall <hubcap@omnibond.com>,
-	Martin Brandenburg <martin@omnibond.com>,
-	Miklos Szeredi <miklos@szeredi.hu>,
-	Amir Goldstein <amir73il@gmail.com>,
-	Phillip Lougher <phillip@squashfs.org.uk>,
-	Carlos Maiolino <cem@kernel.org>, Hugh Dickins <hughd@google.com>,
-	Baolin Wang <baolin.wang@linux.alibaba.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Namjae Jeon <linkinjeon@kernel.org>,
-	Sungjong Seo <sj1557.seo@samsung.com>,
-	Yuezhang Mo <yuezhang.mo@sony.com>,
-	Chuck Lever <chuck.lever@oracle.com>,
-	Alexander Aring <alex.aring@gmail.com>,
-	Andreas Gruenbacher <agruenba@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Eric Van Hensbergen <ericvh@kernel.org>,
-	Latchesar Ionkov <lucho@ionkov.net>,
-	Dominique Martinet <asmadeus@codewreck.org>,
-	Christian Schoenebeck <linux_oss@crudebyte.com>,
-	Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>,
-	Trond Myklebust <trondmy@kernel.org>,
-	Anna Schumaker <anna@kernel.org>, Steve French <sfrench@samba.org>,
-	Paulo Alcantara <pc@manguebit.org>,
-	Ronnie Sahlberg <ronniesahlberg@gmail.com>,
-	Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
-	Bharath SM <bharathsm@microsoft.com>,
-	Hans de Goede <hansg@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	linux-mtd@lists.infradead.org, jfs-discussion@lists.sourceforge.net,
-	linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev,
-	ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
-	linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org,
-	linux-mm@kvack.org, gfs2@lists.linux.dev, linux-doc@vger.kernel.org,
-	v9fs@lists.linux.dev, ceph-devel@vger.kernel.org,
-	linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-	samba-technical@lists.samba.org
-Subject: Re: [PATCH 24/24] fs: remove simple_nosetlease()
-Message-ID: <aaiyWlJelhHju741@kernel.org>
-References: <20260108-setlease-6-20-v1-0-ea4dec9b67fa@kernel.org>
- <20260108-setlease-6-20-v1-24-ea4dec9b67fa@kernel.org>
- <aZ84VRrRVyGEzSJn@kernel.org>
- <e07e9b893ca04ce6ead4790e72c7f285a7159070.camel@kernel.org>
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Mikhail Kshevetskiy <mikhail.kshevetskiy@iopsys.eu>,
+	Pablo Martin-Gomez <pmartin-gomez@freebox.fr>,
+	Tianling Shen <cnsztl@gmail.com>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	linux-mtd@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	alvinzhou@mxic.com.tw,
+	Cheng Ming Lin <chengminglin@mxic.com.tw>
+Subject: [PATCH v8 1/3] dt-bindings: mtd: spinand: Add randomizer enable/disable properties
+Date: Thu,  5 Mar 2026 15:10:40 +0800
+Message-Id: <20260305071042.1193522-2-linchengming884@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20260305071042.1193522-1-linchengming884@gmail.com>
+References: <20260305071042.1193522-1-linchengming884@gmail.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <e07e9b893ca04ce6ead4790e72c7f285a7159070.camel@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260304_142949_623309_D89385B6 
-X-CRM114-Status: GOOD (  35.94  )
+X-CRM114-CacheID: sfid-20260304_231254_730173_08E9D4A2 
+X-CRM114-Status: GOOD (  10.12  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -137,147 +115,69 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Mar 04, 2026 at 11:59:32AM -0500, Jeff Layton wrote:
-> On Wed, 2026-02-25 at 12:58 -0500, Mike Snitzer wrote:
-> > On Thu, Jan 08, 2026 at 12:13:19PM -0500, Jeff Layton wrote:
-> > > Setting ->setlease() to a NULL pointer now has the same effect as
-> > > setting it to simple_nosetlease(). Remove all of the setlease
-> > > file_operations that are set to simple_nosetlease, and the function
-> > > itself.
-> > > 
-> > > Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> > > ---
-> > >  fs/9p/vfs_dir.c        |  2 --
-> > >  fs/9p/vfs_file.c       |  2 --
-> > >  fs/ceph/dir.c          |  2 --
-> > >  fs/ceph/file.c         |  1 -
-> > >  fs/fuse/dir.c          |  1 -
-> > >  fs/gfs2/file.c         |  2 --
-> > >  fs/libfs.c             | 18 ------------------
-> > >  fs/nfs/dir.c           |  1 -
-> > >  fs/nfs/file.c          |  1 -
-> > >  fs/smb/client/cifsfs.c |  1 -
-> > >  fs/vboxsf/dir.c        |  1 -
-> > >  fs/vboxsf/file.c       |  1 -
-> > >  include/linux/fs.h     |  1 -
-> > >  13 files changed, 34 deletions(-)
-> > > 
-> > 
-> > <snip>
-> > 
-> > > diff --git a/fs/libfs.c b/fs/libfs.c
-> > > index 697c6d5fc12786c036f0086886297fb5cd52ae00..f1860dff86f2703266beecf31e9d2667af7a9684 100644
-> > > --- a/fs/libfs.c
-> > > +++ b/fs/libfs.c
-> > > @@ -1699,24 +1699,6 @@ struct inode *alloc_anon_inode(struct super_block *s)
-> > >  }
-> > >  EXPORT_SYMBOL(alloc_anon_inode);
-> > >  
-> > > -/**
-> > > - * simple_nosetlease - generic helper for prohibiting leases
-> > > - * @filp: file pointer
-> > > - * @arg: type of lease to obtain
-> > > - * @flp: new lease supplied for insertion
-> > > - * @priv: private data for lm_setup operation
-> > > - *
-> > > - * Generic helper for filesystems that do not wish to allow leases to be set.
-> > > - * All arguments are ignored and it just returns -EINVAL.
-> > > - */
-> > > -int
-> > > -simple_nosetlease(struct file *filp, int arg, struct file_lease **flp,
-> > > -		  void **priv)
-> > > -{
-> > > -	return -EINVAL;
-> > > -}
-> > > -EXPORT_SYMBOL(simple_nosetlease);
-> > > -
-> > >  /**
-> > >   * simple_get_link - generic helper to get the target of "fast" symlinks
-> > >   * @dentry: not used here
-> > > diff --git a/fs/nfs/dir.c b/fs/nfs/dir.c
-> > > index 71df279febf797880ded19e45528c3df4cea2dde..23a78a742b619dea8b76ddf28f4f59a1c8a015e2 100644
-> > > --- a/fs/nfs/dir.c
-> > > +++ b/fs/nfs/dir.c
-> > > @@ -66,7 +66,6 @@ const struct file_operations nfs_dir_operations = {
-> > >  	.open		= nfs_opendir,
-> > >  	.release	= nfs_closedir,
-> > >  	.fsync		= nfs_fsync_dir,
-> > > -	.setlease	= simple_nosetlease,
-> > >  };
-> > >  
-> > >  const struct address_space_operations nfs_dir_aops = {
-> > > diff --git a/fs/nfs/file.c b/fs/nfs/file.c
-> > > index d020aab40c64ebda30d130b6acee1b9194621457..9d269561961825f88529551b0f0287920960ac62 100644
-> > > --- a/fs/nfs/file.c
-> > > +++ b/fs/nfs/file.c
-> > > @@ -962,7 +962,6 @@ const struct file_operations nfs_file_operations = {
-> > >  	.splice_read	= nfs_file_splice_read,
-> > >  	.splice_write	= iter_file_splice_write,
-> > >  	.check_flags	= nfs_check_flags,
-> > > -	.setlease	= simple_nosetlease,
-> > >  	.fop_flags	= FOP_DONTCACHE,
-> > >  };
-> > >  EXPORT_SYMBOL_GPL(nfs_file_operations);
-> > 
-> > Hey Jeff,
-> > 
-> > I've noticed an NFS reexport regression in v6.19 and now v7.0-rc1
-> > (similar but different due to your series that requires opt-in via
-> > .setlease).
-> > 
-> > Bisect first pointed out this commit:
-> > 10dcd5110678 nfs: properly disallow delegation requests on directories
-> > 
-> > And now with v7.0-rc1 its the fact that NFS doesn't provide .setlease
-> > so lstat() on parent dir (of file that I touch) gets -EINVAL.
-> > 
-> > So its a confluence of NFS's dir delegations and your setlease changes.
-> > 
-> > If I reexport NFSv4.2 filesystem in terms of NFSv4.1, the regression
-> > is seen by doing (lstat reproducer that gemini spit out for me is
-> > attached):
-> > 
-> > $ touch /mnt/share41/test
-> > $ strace ./lstat /mnt/share41
-> > ...
-> > lstat("/mnt/share41", 0x7ffec0d79920)   = -1 EINVAL (Invalid argument)
-> > 
-> > If I immediately re-run it works:
-> > ...
-> > lstat("/mnt/share41", {st_mode=S_IFDIR|0777, st_size=4096, ...}) = 0
-> > 
-> > I'm not sure what the proper fix is yet, but I feel like you've missed
-> > that NFS itself can be (re)exported?
-> > 
-> > 
-> 
-> My apologies. I missed seeing this last week.
-> 
-> That's a very simple reproducer! That's very strange behavior,
-> especially since NFS4 does provide a setlease operation:
-> 
-> const struct file_operations nfs4_file_operations = {
-> 	[...]
-> 	.setlease       = nfs4_setlease,
-> 	[...]
-> };
+From: Cheng Ming Lin <chengminglin@mxic.com.tw>
 
-Huh, not sure how I missed nfs4_setlease...
+Add "nand-randomizer-enable" and "nand-randomizer-disable" boolean
+properties.
 
-> I'm not sure why this would cause lstat() to return -EINVAL.
+These properties allow enabling or disabling the randomizer feature
+via the device tree.
 
-Likewise, especially given nfs4_setlease
+According to JEDEC standard JESD22-A117E, no single data pattern
+represents a universal worst-case for all NAND flash failure mechanisms.
+Different patterns, such as fully programmed, checkerboard, or mostly
+erased, can disproportionately stress specific cells (e.g., programmed,
+erased, or those influenced by adjacent states).
 
-> What's happening on the wire when this occurs?
-> 
-> I'll plan to take a look here soon either way.
+Given that no fixed pattern can cover all scenarios, the use of a
+randomized data pattern is a practical and effective mitigation strategy.
+Our hardware implements a randomizer feature that scrambles user data
+before it is written to the flash and restores the original data upon read.
 
-I'll have to revisit myself, been a bit.
+This ensures the data stored on the media is more evenly distributed,
+thus reducing pattern-dependent degradation. This is especially crucial
+for preventing errors caused by unbalanced data (e.g., all zeros or
+all ones) in blocks with high program/erase (P/E) cycle counts.
+Ultimately, the randomizer improves the long-term reliability and
+endurance of the flash device.
 
-Will let you know.
+Signed-off-by: Cheng Ming Lin <chengminglin@mxic.com.tw>
+---
+ .../devicetree/bindings/mtd/nand-chip.yaml     | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-Thanks,
-Mike
+diff --git a/Documentation/devicetree/bindings/mtd/nand-chip.yaml b/Documentation/devicetree/bindings/mtd/nand-chip.yaml
+index 609d4a4ddd80..2559cd97ccc5 100644
+--- a/Documentation/devicetree/bindings/mtd/nand-chip.yaml
++++ b/Documentation/devicetree/bindings/mtd/nand-chip.yaml
+@@ -67,6 +67,24 @@ properties:
+       the secure regions present.
+     $ref: /schemas/types.yaml#/definitions/uint64-matrix
+ 
++  nand-randomizer-enable:
++    description:
++      Enable the randomizer feature. This property is mutually-exclusive
++      with nand-randomizer-disable.
++    type: boolean
++
++  nand-randomizer-disable:
++    description:
++      Disable the randomizer feature. This property is mutually-exclusive
++      with nand-randomizer-enable.
++    type: boolean
++
++dependencies:
++  nand-randomizer-enable:
++    not:
++      required:
++        - nand-randomizer-disable
++
+ required:
+   - reg
+ 
+-- 
+2.25.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
