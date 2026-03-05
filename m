@@ -4,45 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A94EF30922
-	for <linux-mtd@archiver.kernel.org>; Thu,  5 Mar 2026 10:02:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37BE8F30922
+	for <linux-mtd@archiver.kernel.org>; Thu,  5 Mar 2026 10:02:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=qsDFouvbgUgIJOOjHKmpWaf/qVN4NWyDL/hVn3uxu5I=; b=RKIFJlYwvbgxeW
-	ptekXfDNG8Clyjy0WjZ77Nz0zQjQ2IChVuPtn3Dd7PHej6cGuauODqF9bmFsLHUbNVag9cJWc2Qm0
-	eEAL7+XOye2Wdi/W2/aXgyRR8bAE15xEeZTelX73OlaoXrdm5WbXI3DXYz5idMi4l8UZZpvyyBuBr
-	HIbcnffMx69epOrbJQY0CTjNLoluHmkzkbocZLyhPsEMrGvu8ElNtgBdnWEfFQpEnXytHUEiaRnlM
-	tEL6fy+nct56eN6iDXlgPZWIyPq1eQo/FOWiJq14k6cEwB2C/QEc5j7US4OwFEwmeizY0QJ3h+fmO
-	IedAOQY5XaEDSqme5wVw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=vLBFpH76FBociB89iGiX5LjyIg6LquHCXxchsX/io4A=; b=IxsD1V/mP80HNW
+	VphIK4hRjzoNyCh1s5lHYVEb2oX6JIcwnBf3tJz96qF0D8FUPXOyU9gjdISTYCGf9SmjnWIQGfom1
+	ZN7hY3/SqhoZWhWMQBIuGPlmcLoqhqJwglHqgxOlFIofzm7FTTqw5YDSoNbMX0uGJsalMKsE0p6KO
+	yrR1KeUGlwhzTqd9wm9eztAigGgldj52/90YeLKutF+9hwMinhsQ4/FEToUkOg+PuJtHrGXxhxC4R
+	VPrJWFOFpD+tbafrv3ul+eOvI60hpyMKvDPqhlK2Rnucl7wSh/lAlGEqYnNM0cA2YiRS/ocoaspyS
+	cSAPazeP08mYCeMH41cA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vy5Wy-00000001UJI-2cxN;
-	Thu, 05 Mar 2026 10:02:08 +0000
-Received: from smtpout-03.galae.net ([185.246.85.4])
+	id 1vy5X1-00000001ULZ-3FsK;
+	Thu, 05 Mar 2026 10:02:11 +0000
+Received: from smtpout-02.galae.net ([185.246.84.56])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vy5Ww-00000001UIC-0t8E
+	id 1vy5Wz-00000001UJH-2hbl
 	for linux-mtd@lists.infradead.org;
-	Thu, 05 Mar 2026 10:02:07 +0000
+	Thu, 05 Mar 2026 10:02:10 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id E14A04E4256B;
-	Thu,  5 Mar 2026 10:02:03 +0000 (UTC)
+	by smtpout-02.galae.net (Postfix) with ESMTPS id 256701A2CDC;
+	Thu,  5 Mar 2026 10:02:08 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id B54E55FDEB;
-	Thu,  5 Mar 2026 10:02:03 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id EB371103683FF;
-	Thu,  5 Mar 2026 11:01:58 +0100 (CET)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id EE8F75FDEB;
+	Thu,  5 Mar 2026 10:02:07 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id B2B37103683FF;
+	Thu,  5 Mar 2026 11:02:05 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1772704922; h=from:subject:date:message-id:to:cc:mime-version:
-	 content-transfer-encoding; bh=+Ukn0Yvb5TGeLdfNUGvVVDbAWuNnjNEYtRv3RO9qwKA=;
-	b=cz0BjviQaYJ+d9g1FXpkfniB/qlG1QqEPcplCAMwp99Xc5Fq/PhiayYmCKHXQCFbEK+jPJ
-	D6CCSX9KL5rMUWp8CFl+OEf8zfAiD+arSephpwuc1SjxTz0BbEEaxro2Z5Xx9DjdLOJrcp
-	6bedvuR15cOlrEhQPj6wE+oBwaJaMp3Jjgi/LGS+I3CIdVbQUvj4s1YDnUfkOfMIpnKV3H
-	Zr6/MQ69nMGRFbTE9yGcuF3YvzOg5PgmyOJBh+KgbjLSju04lDEEfWcoFdxXG2bdK0XkQZ
-	ziVdVsat+ivCfu8SsunRps9LAkTFZBQ1M3s9UvAvgF6aAhtZywyA+FjgP5n65A==
+	t=1772704927; h=from:subject:date:message-id:to:cc:mime-version:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=cDyw0VT/gRD0S6ZYgJzuggHzvkdYaJdJvFIQKhQJvv0=;
+	b=lBilC751rjznANkYaxxbdfu4vosOyLn5O8oxsGdjQqYN5hInWOVO2qKi/yggbFucjrpJqB
+	58SL80VfxsI64nvR+fVgVX0wbKI8mczC+Ra+aPZla98kkxCNPDABwg+PH5H5CMXcWM+E2v
+	qIKZeRILxUCgT6czPcAMSVTHnn/FSyBVS4lZX4PCZnmX9KvtT/Mt7RHxT9S9fhVd9tS1qr
+	Gt94UbJEex9MN51YOAlHidVt18dXo1J4YxWE1V539qh4DvWRHZijn4irJWdXkmorXcClb3
+	mUGX5w44in3hC4oCDJzXDxiUqHY838U22hoHKFaS77VAV3FLpVwj1Gx8HFjWMQ==
 From: Richard Genoud <richard.genoud@bootlin.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
@@ -59,15 +60,17 @@ Cc: Wentao Liang <vulab@iscas.ac.cn>,
 	linux-sunxi@lists.linux.dev,
 	linux-kernel@vger.kernel.org,
 	Richard Genoud <richard.genoud@bootlin.com>
-Subject: [PATCH v2 0/6] mtd: rawnand: sunxi: Fixes user data length for H6
-Date: Thu,  5 Mar 2026 11:01:31 +0100
-Message-ID: <20260305100137.2558423-1-richard.genoud@bootlin.com>
+Subject: [PATCH v2 2/6] mtd: rawnand: sunxi: fix sunxi_nfc_hw_ecc_read_extra_oob
+Date: Thu,  5 Mar 2026 11:01:33 +0100
+Message-ID: <20260305100137.2558423-3-richard.genoud@bootlin.com>
 X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20260305100137.2558423-1-richard.genoud@bootlin.com>
+References: <20260305100137.2558423-1-richard.genoud@bootlin.com>
 MIME-Version: 1.0
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260305_020206_396480_6AB88DE0 
-X-CRM114-Status: GOOD (  10.65  )
+X-CRM114-CacheID: sfid-20260305_020209_817464_331D2FD5 
+X-CRM114-Status: GOOD (  12.87  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,37 +87,58 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This series introduces the correct usage of user data length for
-H6/H616.
-If the older SoCs must use a fixed value of 4 user data bytes for each
-ECC step, the H6 can have a different value for each step.
+When dumping the OOB, the bytes at the end where actually copied from
+the beginning of the OOB instead of current_offset.
 
-In the first round, the behavior was kept as the one used by A10 when in
-fact the images in the wild with the vendor kernel are using a different
-layout.
+That leads to something like:
+OOB: ff ff ff ff ff ff ff ff ea 19 00 3a 83 db aa 8d
+OOB: 99 09 c8 9a 90 36 35 7d aa 15 13 07 3d 97 b2 a4
+OOB: a8 bb 19 b3 07 e9 f6 25 52 d7 1a 23 e2 7e 0a e4
+OOB: 52 8a 09 d2 1a 86 3d cf b4 99 43 13 d3 90 33 0b
+OOB: ff ff ff ff ff ff ff ff ea 19 00 3a 83 db aa 8d
+OOB: 99 09 c8 9a 90 36 35 7d aa 15 13 07 3d 97 b2 a4
+OOB: a8 bb 19 b3 07 e9 f6 25 52 d7 1a 23 e2 7e 0a e4
+OOB: 52 8a 09 d2 1a 86 3d cf b4 99 43 13 d3 90 33 0b
+instead of:
+OOB: ff ff ff ff ff ff ff ff ea 19 00 3a 83 db aa 8d
+OOB: 99 09 c8 9a 90 36 35 7d aa 15 13 07 3d 97 b2 a4
+OOB: a8 bb 19 b3 07 e9 f6 25 52 d7 1a 23 e2 7e 0a e4
+OOB: 52 8a 09 d2 1a 86 3d cf b4 99 43 13 d3 90 33 0b
+OOB: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+OOB: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+OOB: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+OOB: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+(example with BCH16, user data [8,0], no scrambling)
 
-The first patches are fixes/code cleaning and the last one enables using
-a variable user data length for H6/H616
+*cur_off (offset from the beginning of the page) was compared to offset
+(offset from the beginning of the OOB), and then, the
+nand_change_read_column_op() sets the current position to the beginning
+of the OOB instead of OOB+offset
 
-Changes from v1:
-- gather Reviewed-by/Acked-by
-- rework patch 1 subject (more a code clarification than a fix)
-- fix typo in patch 2
-- remove patch 4 Fixes since it's not really a fix
+Fixes: 15d6f118285f ("mtd: rawnand: sunxi: Stop supporting ECC_HW_SYNDROME mode")
+Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+Signed-off-by: Richard Genoud <richard.genoud@bootlin.com>
+---
+ drivers/mtd/nand/raw/sunxi_nand.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Richard Genoud (6):
-  mtd: rawnand: sunxi: sunxi_nand_ooblayout_free code clarification
-  mtd: rawnand: sunxi: fix sunxi_nfc_hw_ecc_read_extra_oob
-  mtd: rawnand: sunxi: do not count BBM bytes twice
-  mtd: rawnand: sunxi: replace hard coded value by a define - take2
-  mtd: rawnand: sunxi: make the code mode self-explanatory
-  mtd: rawnand: sunxi: introduce variable user data length
-
- drivers/mtd/nand/raw/sunxi_nand.c | 299 +++++++++++++++++++++++-------
- 1 file changed, 227 insertions(+), 72 deletions(-)
-
-
-base-commit: 11439c4635edd669ae435eec308f4ab8a0804808
+diff --git a/drivers/mtd/nand/raw/sunxi_nand.c b/drivers/mtd/nand/raw/sunxi_nand.c
+index 915f1240546f..8af449e548d4 100644
+--- a/drivers/mtd/nand/raw/sunxi_nand.c
++++ b/drivers/mtd/nand/raw/sunxi_nand.c
+@@ -1048,9 +1048,9 @@ static void sunxi_nfc_hw_ecc_read_extra_oob(struct nand_chip *nand,
+ 	if (len <= 0)
+ 		return;
+ 
+-	if (!cur_off || *cur_off != offset)
+-		nand_change_read_column_op(nand, mtd->writesize, NULL, 0,
+-					   false);
++	if (!cur_off || *cur_off != (offset + mtd->writesize))
++		nand_change_read_column_op(nand, mtd->writesize + offset,
++					   NULL, 0, false);
+ 
+ 	if (!randomize)
+ 		sunxi_nfc_read_buf(nand, oob + offset, len);
 
 ______________________________________________________
 Linux MTD discussion mailing list
