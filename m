@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E179EEF30C
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75E6AEEF314
 	for <linux-mtd@archiver.kernel.org>; Thu,  5 Mar 2026 07:13:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,65 +12,65 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=agWjBNvEyHwv59Rit1U3lGwBAITSDkCKsUwmU7ifsjo=; b=LoIty0aNiY4pw/
-	QREOpGqy7GO5Jdmvz5oTs2uUAGJ/3AdJrjLtTfJH8JbeJ/lL0ngskaIVV2yCEjf6bQOvGXZ39sKx6
-	4+tcCzXUo8cW8zPDjHF4CJXikIWrS6fucdInf+G8StkjEm/t/6JarAJ4oWf4tHNPQfojcPHRlwYFK
-	ZnCBc1lN0UmDpzdw93+Cp4elNOyz+vvj3lHASBKwosKRCT+17beben6WWaxZ69Ysj3ZKtd4XdVNiJ
-	xD30V7kiWUgZ1M8JVzH1aXvUWELydZ8Kht+ZKKZhhOQBUdhWUWcA4ZIrPCBu60FW/b4MhWp7T72PZ
-	EC5xZK/MDG8eHdme0RNQ==;
+	List-Owner; bh=M+k9OxuWMiij3MdRuE2ehmLhCRbYhH6JTxcPCthgXLU=; b=msGG87CDIybMeS
+	3JQsySM963qouHWOIkuXaYEOG2r3Vg4KxKyX2MCzHko6bIqc8Xx0ZzthZ7dB9pgbD0IrgAX2/5ALV
+	V69ZxbU4I+Nx5NO+njaYzPLlaFWo1+Tk2P1Wea1/89Zog1uCaG8/ufU18/EjG5B4ZG7wyJ+Q+1Gxy
+	+KJQQOJkagDbKdcFtoSy5i/HMQpZly2bwI1SEpJRfSQGku3zfSRj6p2IEHwQJiqVkMv1G0gPuk+fZ
+	qLlIUFWj3SOMovdSGQqHx1JgbHGpzI6wqSmIMANZjsUNi2bG52Mt1JK4YW/8xQLTr7336DMVypF6B
+	arvvMpkr9nqQkBa5Gszg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vy2tE-000000014JS-3g2F;
-	Thu, 05 Mar 2026 07:12:56 +0000
-Received: from mail-pl1-x634.google.com ([2607:f8b0:4864:20::634])
+	id 1vy2tH-000000014Ke-1wsf;
+	Thu, 05 Mar 2026 07:12:59 +0000
+Received: from mail-pf1-x432.google.com ([2607:f8b0:4864:20::432])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vy2tC-000000014Ha-24XI
+	id 1vy2tC-000000014Hn-3XmY
 	for linux-mtd@lists.infradead.org;
-	Thu, 05 Mar 2026 07:12:55 +0000
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-2ae50a33ff8so33145485ad.3
-        for <linux-mtd@lists.infradead.org>; Wed, 04 Mar 2026 23:12:53 -0800 (PST)
+	Thu, 05 Mar 2026 07:12:57 +0000
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-82748095963so3954571b3a.2
+        for <linux-mtd@lists.infradead.org>; Wed, 04 Mar 2026 23:12:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1772694773; x=1773299573; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1772694774; x=1773299574; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=nILoW48W9hqLRwmHITphjoIJRhEY+2JRSNwPbSj3wbI=;
-        b=XzIshjP/gchkFFpDgjzRlv2kXg0aSaqBWv1sk1fvW5A0AYY8fdKJujA5Y+Xp5XVYYh
-         QehvgU9Y7ct5jr8CUBZ1DAAimtGd4xnw16yzXkNGeqjPUpUK0x8x7zVBVs0zNECBStJp
-         xUmI53X/OCJ38axAsFc4+Dk85sTy1w/b/apapxMsZEtU2+5SJP13m4GmsV8wP7oNnr4K
-         2+s4XQ4aGjbbEVKCaq38HDmocqBgaSd6AZgvjq//5+pXKHMuk68WXriUH/rgswgQtUMn
-         7e3d2rae9gcc9RNZ9Ntg9lHTmfDIn9pABeKZXBp323LbQZ1GIjG3NxJC8iXstXgwSwgY
-         Hs1Q==
+        bh=8aIGlyOzKqFOkPBlr/GKgJ5SMsPwq+ibKKXshl+7xEI=;
+        b=EsphL2hSOQlKPYoN7euCcdK8RLaRRaktoyMP6Y4sIIpw7AvXu/cR8zLlwsx6xYmyLm
+         Tkd0xXB7U4980ROdmKr/twHozhocy+XF+BCY+sK8Af/BpsT0uAwdROcybljdJfmsLsEu
+         VcC7flsgu+hLHp6WQLVaBrqITMQxOrngnTx4gdAsaJAavZ9GrmLzQC3Hco8kpaFeKeRp
+         XlBpp0/D9R0y7JzJcT9S18CRlsqNe7sJ38ksaAamy8BLPVV90wWpXN/dQ0FssZs6evEl
+         OQY/y9wJeMYbITr7N0LQd4hptQcP5O56xYGtv26uXZcZoABVrJBq9y2x8erjidjsPZRl
+         LV3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772694773; x=1773299573;
+        d=1e100.net; s=20230601; t=1772694774; x=1773299574;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=nILoW48W9hqLRwmHITphjoIJRhEY+2JRSNwPbSj3wbI=;
-        b=pwgRCMO8irXclDut+NTlBfd1x9PiSmRW6w3xhDGsMwbJxp7WXhI0fhwYkk6DDWS65o
-         nJkFEpJmqfdp9cvJwZI7Yl1y+Zn0Va/7VkTo+3Xi4YDRsRSVVl4Ept7kS/FOEPvUc1qX
-         UtS65a4YUeK3qWgiXZHcoCPlFnH4MAxSJwMB93mRnlnJN+1MfSikXnxpiA+9ow0rb731
-         HYrCRiPXBuAuRLmmtOZHKlK0zx62PlY+z4XhV6RblHVYE46SUpKnstiEI7nmmtuzZZKN
-         qnLFKAeLgDKZl/re7JCenYzer6FnHdTjYo/4XhNOvnLwu0OXiHIEKE/GWbsyHI4uF4P4
-         z+dg==
-X-Forwarded-Encrypted: i=1; AJvYcCW7kpTmSzbckTVKo1FwYXqbqZytm6azEPdSbe8SNSQRzPJEqBsk1so5v087/q0I/mpe+35tHuaA/J0=@lists.infradead.org
-X-Gm-Message-State: AOJu0YwB5GTKPITSTZ5OZE6Xqs6koT0lUHoblS+2W1c1nXwtGybs8/a7
-	j9H4fUN9et2pYJzfcJzi5cTrHe5w6IzK+9BHu30Ck8/JdXKwJW93uVWt
-X-Gm-Gg: ATEYQzx9oa0pOj0afFHo8tLSFv0jSAEtTh6Gvr7wHF2Na8aAc4hjDNTIzQtogTdumxs
-	ymgv5l1DizEAVi+iCKJFPuaQwLRm9MJGe9Kg4V0bIf7bxbAD2J6k7s/uusXiIVpAQ311+o6+9bi
-	hfUyCzQ1axe5TurmQcO9jl/lnvYxxHGLk+fj5Fm5G5X8QcweNonRhCzBR6uzErUJNFJkzJlbAjO
-	QFtola2tbkGFyuoMb3YGi7wQGQW0NVFYFhIK83p7qM5zssKAXY5Gz3pj+SNZPuLLBHuZbhUFcHB
-	QNczHOms9gNtRFLAe3Y5Vg1GJr+qgOjshOXyzZIbYxYasf4Tiv1PmMDNPP4KT/D7y0WpE7mx22v
-	DxrEjlX+OGX4Ml6VeLe9GmMBmWNQrR952Sa27DP465tofJ9i6QekXLcT/kPiG5frx1mYl4rfK5g
-	LqaOCHx3tnAaJh1ox2lJ7M77KjA11uv0s8eoN6iwz74IHelw==
-X-Received: by 2002:a17:902:db0f:b0:2ae:57e6:616c with SMTP id d9443c01a7336-2ae6a9c6eecmr45501805ad.3.1772694772962;
-        Wed, 04 Mar 2026 23:12:52 -0800 (PST)
+        bh=8aIGlyOzKqFOkPBlr/GKgJ5SMsPwq+ibKKXshl+7xEI=;
+        b=XYmo+EZllV2fsxpOESGktRONzYh9k21ApDwxWCYdcYN3tJl8ehRxHFWJyLUH4f6blE
+         pzc56nWTBZQUDCjJ3lKt2C3YLfbnNYlLp3hbfQFWKnjBC8jSXu3wdO5oGKB6i01o5uWg
+         9bnGXH/qXWObb56xZPZRgLDzYp7k8nAKNNLWQv6VEMu3xTwWIeKpaW2vL1293c6w9kh6
+         B4NyJ2khYsQZ3lJp+02L9ykG75/E0dHji0haPaXfH1MAd2fq11UPNCt0AZlEr4C3lVYZ
+         xxiRwSjsn6+SqfapueP9SEVp6PxxT3j6M+qWWhAIQ+tGyrqaJXFULinn/DmVz700hPJN
+         AC4g==
+X-Forwarded-Encrypted: i=1; AJvYcCUiSpuVGaJE65SY+AKDDI1aO/RyH3fbniuYlUwtcS3JhgxZbx/MHGIH/E2GybMSt1yJP6kX+aMIpTY=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yysjew0SXEObMMsSNIClbjOP3AYnYOxx+cxcEX+VPSCuoyQqmAG
+	/Eca0W3P/TKIBBL5wG/3hf23IFNbfuNJHIbxc/YHDau5xMWhD8OQkJfS
+X-Gm-Gg: ATEYQzzibnNDqBDwOavNJMrSaeVX4vPXlAezYsqzevcBdK5/4pBu51vbS5F/8LF6Ehf
+	eSa6l9lf0PCZb85/L45fHFQJY7Ac9lZr7PY//6GbilFPAXsLzQEiy0To0QzLpEn0mK/8KEKEJVO
+	8s1s3KYHLQ+D6ljj068J/+oRn9SPAr6nOnTfdABTQIrKtox1ND/1MDXwWU7PT/iUipb9ivealli
+	mURRCcYvqBAkT+MSSZ54/w39c79k9j3d0Yyv+i1nxv22gr9Ot0dF4W9BoAvwlTsQ5tRLRCfNlXl
+	bTmzWMqnkGRAN0rtlpUVI4sNzfpN3XwaqgN5CBLu9xRQqeZOfuFfYd7zUxQPP9v24GDe0lBsVsQ
+	RVrLQArnWFZ/UDv0PCV4YUpsjd6DhSrqoBwz758uq9NmLDxbYccktB6Z2pSYKQiO9a9Nq6r17Vy
+	gvCAaRIVIuB5fX8+XbsuEbB2iQQFX7CjUO8ot4GLTMRU8L2u8z50mUQzix
+X-Received: by 2002:a05:6a20:ce4d:b0:38e:53cc:3bb0 with SMTP id adf61e73a8af0-3982deb4e17mr4746429637.19.1772694773785;
+        Wed, 04 Mar 2026 23:12:53 -0800 (PST)
 Received: from twhmp6px (mxsmtp211.mxic.com.tw. [211.75.127.162])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2adfb69ef1csm227491785ad.53.2026.03.04.23.12.52
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-c7378d24c99sm3488488a12.6.2026.03.04.23.12.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Mar 2026 23:12:52 -0800 (PST)
+        Wed, 04 Mar 2026 23:12:53 -0800 (PST)
 Received: from hqs-appsw-a2o.mp600.macronix.com (unknown [172.17.236.67])
-	by twhmp6px (Postfix) with ESMTPS id B91B74163B71;
+	by twhmp6px (Postfix) with ESMTPS id BC2534163B76;
 	Thu,  5 Mar 2026 15:12:50 +0800 (CST)
 From: Cheng Ming Lin <linchengming884@gmail.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
@@ -89,16 +89,16 @@ Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
 	linux-kernel@vger.kernel.org,
 	alvinzhou@mxic.com.tw,
 	Cheng Ming Lin <chengminglin@mxic.com.tw>
-Subject: [PATCH v8 2/3] mtd: spi-nand: Add support for randomizer
-Date: Thu,  5 Mar 2026 15:10:41 +0800
-Message-Id: <20260305071042.1193522-3-linchengming884@gmail.com>
+Subject: [PATCH v8 3/3] mtd: spi-nand: macronix: Enable randomizer support
+Date: Thu,  5 Mar 2026 15:10:42 +0800
+Message-Id: <20260305071042.1193522-4-linchengming884@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20260305071042.1193522-1-linchengming884@gmail.com>
 References: <20260305071042.1193522-1-linchengming884@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260304_231254_528783_1835290A 
-X-CRM114-Status: GOOD (  18.42  )
+X-CRM114-CacheID: sfid-20260304_231254_899715_486ED5BF 
+X-CRM114-Status: GOOD (  13.27  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -117,121 +117,152 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Cheng Ming Lin <chengminglin@mxic.com.tw>
 
-This patch adds support for the randomizer feature.
+Implement the 'set_randomizer' callback for Macronix SPI NAND chips.
+The randomizer is enabled by setting bit 1 of the Configuration Register
+(address 0x10).
 
-It introduces a 'set_randomizer' callback in 'struct spinand_info' and
-'struct spinand_device'.
+This patch adds support for the following chips:
+  - MX35LFxG24AD series
+  - MX35UFxG24AD series
 
-If a driver implements this callback, the core will invoke it during
-device initialization (spinand_init) to enable or disable the randomizer
-feature based on the device tree configuration.
+When the randomizer is enabled, data is scrambled internally during
+program operations and automatically descrambled during read operations.
+This helps reduce bit errors caused by program disturbance.
+
+Please refer to the following link for randomizer feature:
+Link: https://www.mxic.com.tw/Lists/ApplicationNote/Attachments/2151/AN1051V1-The%20Introduction%20of%20Randomizer%20Feature%20on%20MX30xFxG28AD_MX35xFxG24AD.pdf
 
 Signed-off-by: Cheng Ming Lin <chengminglin@mxic.com.tw>
 ---
- drivers/mtd/nand/spi/core.c | 27 +++++++++++++++++++++++++++
- include/linux/mtd/spinand.h |  9 +++++++++
- 2 files changed, 36 insertions(+)
+ drivers/mtd/nand/spi/macronix.c | 38 ++++++++++++++++++++++++---------
+ 1 file changed, 28 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index 8aa3753aaaa1..77a0371010c4 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -1307,6 +1307,29 @@ static int spinand_create_dirmaps(struct spinand_device *spinand)
- 	return 0;
+diff --git a/drivers/mtd/nand/spi/macronix.c b/drivers/mtd/nand/spi/macronix.c
+index 67cafa1bb8ef..7dfcc34e9b72 100644
+--- a/drivers/mtd/nand/spi/macronix.c
++++ b/drivers/mtd/nand/spi/macronix.c
+@@ -14,6 +14,8 @@
+ #define MACRONIX_ECCSR_BF_LAST_PAGE(eccsr) FIELD_GET(GENMASK(3, 0), eccsr)
+ #define MACRONIX_ECCSR_BF_ACCUMULATED_PAGES(eccsr) FIELD_GET(GENMASK(7, 4), eccsr)
+ #define MACRONIX_CFG_CONT_READ         BIT(2)
++#define MACRONIX_CFG_RANDOMIZER_EN     BIT(1)
++#define MACRONIX_FEATURE_ADDR_RANDOMIZER 0x10
+ #define MACRONIX_FEATURE_ADDR_READ_RETRY 0x70
+ #define MACRONIX_NUM_READ_RETRY_MODES 5
+ 
+@@ -170,6 +172,12 @@ static int macronix_set_read_retry(struct spinand_device *spinand,
+ 	return spi_mem_exec_op(spinand->spimem, &op);
  }
  
-+static int spinand_randomizer_init(struct spinand_device *spinand)
++static int macronix_set_randomizer(struct spinand_device *spinand, bool enable)
 +{
-+	struct device_node *np = spinand->spimem->spi->dev.of_node;
-+	bool enable = false;
-+	int ret;
-+
-+	if (!spinand->set_randomizer)
-+		return 0;
-+
-+	if (of_property_read_bool(np, "nand-enable-randomizer"))
-+		enable = true;
-+	else if (of_property_read_bool(np, "nand-disable-randomizer"))
-+		enable = false;
-+	else
-+		return 0;
-+
-+	ret = spinand->set_randomizer(spinand, enable);
-+	if (ret)
-+		return ret;
-+
-+	return 0;
++	return spinand_write_reg_op(spinand, MACRONIX_FEATURE_ADDR_RANDOMIZER,
++				    enable ? MACRONIX_CFG_RANDOMIZER_EN : 0);
 +}
 +
- static const struct nand_ops spinand_ops = {
- 	.erase = spinand_erase,
- 	.markbad = spinand_markbad,
-@@ -1594,6 +1617,7 @@ int spinand_match_and_init(struct spinand_device *spinand,
- 		spinand->user_otp = &table[i].user_otp;
- 		spinand->read_retries = table[i].read_retries;
- 		spinand->set_read_retry = table[i].set_read_retry;
-+		spinand->set_randomizer = table[i].set_randomizer;
- 
- 		/* I/O variants selection with single-spi SDR commands */
- 
-@@ -1881,6 +1905,9 @@ static int spinand_init(struct spinand_device *spinand)
- 	 * ECC initialization must have happened previously.
- 	 */
- 	spinand_cont_read_init(spinand);
-+	ret = spinand_randomizer_init(spinand);
-+	if (ret)
-+		goto err_cleanup_nanddev;
- 
- 	mtd->_read_oob = spinand_mtd_read;
- 	mtd->_write_oob = spinand_mtd_write;
-diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
-index 6a024cf1c53a..6a68a6c3866a 100644
---- a/include/linux/mtd/spinand.h
-+++ b/include/linux/mtd/spinand.h
-@@ -584,6 +584,7 @@ enum spinand_bus_interface {
-  * @user_otp: SPI NAND user OTP info.
-  * @read_retries: the number of read retry modes supported
-  * @set_read_retry: enable/disable read retry for data recovery
-+ * @set_randomizer: enable/disable randomizer support
-  *
-  * Each SPI NAND manufacturer driver should have a spinand_info table
-  * describing all the chips supported by the driver.
-@@ -612,6 +613,8 @@ struct spinand_info {
- 	unsigned int read_retries;
- 	int (*set_read_retry)(struct spinand_device *spinand,
- 			     unsigned int read_retry);
-+	int (*set_randomizer)(struct spinand_device *spinand,
-+			      bool enable);
- };
- 
- #define SPINAND_ID(__method, ...)					\
-@@ -668,6 +671,9 @@ struct spinand_info {
- 	.read_retries = __read_retries,					\
- 	.set_read_retry = __set_read_retry
- 
-+#define SPINAND_RANDOMIZER(__set_randomizer)				\
-+	.set_randomizer = __set_randomizer
-+
- #define SPINAND_INFO(__model, __id, __memorg, __eccreq, __op_variants,	\
- 		     __flags, ...)					\
- 	{								\
-@@ -753,6 +759,7 @@ struct spinand_mem_ops {
-  * @user_otp: SPI NAND user OTP info.
-  * @read_retries: the number of read retry modes supported
-  * @set_read_retry: Enable/disable the read retry feature
-+ * @set_randomizer: Enable/disable the randomizer feature
-  */
- struct spinand_device {
- 	struct nand_device base;
-@@ -786,6 +793,8 @@ struct spinand_device {
- 	bool cont_read_possible;
- 	int (*set_cont_read)(struct spinand_device *spinand,
- 			     bool enable);
-+	int (*set_randomizer)(struct spinand_device *spinand,
-+			      bool enable);
- 
- 	const struct spinand_fact_otp *fact_otp;
- 	const struct spinand_user_otp *user_otp;
+ static const struct spinand_info macronix_spinand_table[] = {
+ 	SPINAND_INFO("MX35LF1GE4AB",
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x12),
+@@ -231,7 +239,8 @@ static const struct spinand_info macronix_spinand_table[] = {
+ 		     SPINAND_HAS_QE_BIT,
+ 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout, NULL),
+ 		     SPINAND_READ_RETRY(MACRONIX_NUM_READ_RETRY_MODES,
+-					macronix_set_read_retry)),
++					macronix_set_read_retry),
++		     SPINAND_RANDOMIZER(macronix_set_randomizer)),
+ 	SPINAND_INFO("MX35LF2G24AD",
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x24, 0x03),
+ 		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 2, 1, 1),
+@@ -243,7 +252,8 @@ static const struct spinand_info macronix_spinand_table[] = {
+ 		     SPINAND_HAS_PROG_PLANE_SELECT_BIT,
+ 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout, NULL),
+ 		     SPINAND_READ_RETRY(MACRONIX_NUM_READ_RETRY_MODES,
+-					macronix_set_read_retry)),
++					macronix_set_read_retry),
++		     SPINAND_RANDOMIZER(macronix_set_randomizer)),
+ 	SPINAND_INFO("MX35LF2G24AD-Z4I8",
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x64, 0x03),
+ 		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
+@@ -254,7 +264,8 @@ static const struct spinand_info macronix_spinand_table[] = {
+ 		     SPINAND_HAS_QE_BIT,
+ 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout, NULL),
+ 		     SPINAND_READ_RETRY(MACRONIX_NUM_READ_RETRY_MODES,
+-					macronix_set_read_retry)),
++					macronix_set_read_retry),
++		     SPINAND_RANDOMIZER(macronix_set_randomizer)),
+ 	SPINAND_INFO("MX35LF4G24AD",
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x35, 0x03),
+ 		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 2, 1, 1),
+@@ -266,7 +277,8 @@ static const struct spinand_info macronix_spinand_table[] = {
+ 		     SPINAND_HAS_PROG_PLANE_SELECT_BIT,
+ 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout, NULL),
+ 		     SPINAND_READ_RETRY(MACRONIX_NUM_READ_RETRY_MODES,
+-					macronix_set_read_retry)),
++					macronix_set_read_retry),
++		     SPINAND_RANDOMIZER(macronix_set_randomizer)),
+ 	SPINAND_INFO("MX35LF4G24AD-Z4I8",
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x75, 0x03),
+ 		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
+@@ -277,7 +289,8 @@ static const struct spinand_info macronix_spinand_table[] = {
+ 		     SPINAND_HAS_QE_BIT,
+ 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout, NULL),
+ 		     SPINAND_READ_RETRY(MACRONIX_NUM_READ_RETRY_MODES,
+-					macronix_set_read_retry)),
++					macronix_set_read_retry),
++		     SPINAND_RANDOMIZER(macronix_set_randomizer)),
+ 	SPINAND_INFO("MX31LF1GE4BC",
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x1e),
+ 		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
+@@ -327,7 +340,8 @@ static const struct spinand_info macronix_spinand_table[] = {
+ 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
+ 				     macronix_ecc_get_status),
+ 		     SPINAND_READ_RETRY(MACRONIX_NUM_READ_RETRY_MODES,
+-					macronix_set_read_retry)),
++					macronix_set_read_retry),
++		     SPINAND_RANDOMIZER(macronix_set_randomizer)),
+ 	SPINAND_INFO("MX35UF4G24AD-Z4I8",
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xf5, 0x03),
+ 		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
+@@ -340,7 +354,8 @@ static const struct spinand_info macronix_spinand_table[] = {
+ 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
+ 				     macronix_ecc_get_status),
+ 		     SPINAND_READ_RETRY(MACRONIX_NUM_READ_RETRY_MODES,
+-					macronix_set_read_retry)),
++					macronix_set_read_retry),
++		     SPINAND_RANDOMIZER(macronix_set_randomizer)),
+ 	SPINAND_INFO("MX35UF4GE4AD",
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xb7, 0x03),
+ 		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
+@@ -381,7 +396,8 @@ static const struct spinand_info macronix_spinand_table[] = {
+ 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
+ 				     macronix_ecc_get_status),
+ 		     SPINAND_READ_RETRY(MACRONIX_NUM_READ_RETRY_MODES,
+-					macronix_set_read_retry)),
++					macronix_set_read_retry),
++		     SPINAND_RANDOMIZER(macronix_set_randomizer)),
+ 	SPINAND_INFO("MX35UF2G24AD-Z4I8",
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xe4, 0x03),
+ 		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
+@@ -394,7 +410,8 @@ static const struct spinand_info macronix_spinand_table[] = {
+ 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
+ 				     macronix_ecc_get_status),
+ 		     SPINAND_READ_RETRY(MACRONIX_NUM_READ_RETRY_MODES,
+-					macronix_set_read_retry)),
++					macronix_set_read_retry),
++		     SPINAND_RANDOMIZER(macronix_set_randomizer)),
+ 	SPINAND_INFO("MX35UF2GE4AD",
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xa6, 0x03),
+ 		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
+@@ -444,7 +461,8 @@ static const struct spinand_info macronix_spinand_table[] = {
+ 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
+ 				     macronix_ecc_get_status),
+ 		     SPINAND_READ_RETRY(MACRONIX_NUM_READ_RETRY_MODES,
+-					macronix_set_read_retry)),
++					macronix_set_read_retry),
++		     SPINAND_RANDOMIZER(macronix_set_randomizer)),
+ 	SPINAND_INFO("MX35UF1GE4AD",
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x96, 0x03),
+ 		     NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
 -- 
 2.25.1
 
