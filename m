@@ -4,46 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37BE8F30922
-	for <linux-mtd@archiver.kernel.org>; Thu,  5 Mar 2026 10:02:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90ACEF3092A
+	for <linux-mtd@archiver.kernel.org>; Thu,  5 Mar 2026 10:02:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=vLBFpH76FBociB89iGiX5LjyIg6LquHCXxchsX/io4A=; b=IxsD1V/mP80HNW
-	VphIK4hRjzoNyCh1s5lHYVEb2oX6JIcwnBf3tJz96qF0D8FUPXOyU9gjdISTYCGf9SmjnWIQGfom1
-	ZN7hY3/SqhoZWhWMQBIuGPlmcLoqhqJwglHqgxOlFIofzm7FTTqw5YDSoNbMX0uGJsalMKsE0p6KO
-	yrR1KeUGlwhzTqd9wm9eztAigGgldj52/90YeLKutF+9hwMinhsQ4/FEToUkOg+PuJtHrGXxhxC4R
-	VPrJWFOFpD+tbafrv3ul+eOvI60hpyMKvDPqhlK2Rnucl7wSh/lAlGEqYnNM0cA2YiRS/ocoaspyS
-	cSAPazeP08mYCeMH41cA==;
+	List-Owner; bh=+S/lJAk6lk7a89UK7ZgnSNDpx/87g4gdF+ZpOhtXGoo=; b=egVtRyuKXmmg87
+	xUYLdMRwUWp18/63wiAtcN5atQ5EfUgnuDJ1Bbc2FpLP6tWOtVpSzDNWXLUin0hxM9cj4j8WfXW/C
+	ES46MbCfix5wOTr5UedagqtNGEGcNr1Ia/J/1EYlycYKCq+GvidmnBG16CgRXrcrshBLC4bgvTvKY
+	PUVN3emURU9wWRcf4EgJZnbYDODGPb8/5XwiNtAjZTTo63nQVpTlI/hsSzf3txIIlIh2W14LIt85k
+	nwdqH+PsDneimY3Z37HFBlVNKFPCfAWQFmrlU7AjS+YVx2aq9tVzoc6yCTlTKxQSAHVPqkEekOwn4
+	OrSEhxSt78niXKIbG/bg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vy5X1-00000001ULZ-3FsK;
-	Thu, 05 Mar 2026 10:02:11 +0000
-Received: from smtpout-02.galae.net ([185.246.84.56])
+	id 1vy5X5-00000001UPW-0eV6;
+	Thu, 05 Mar 2026 10:02:15 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vy5Wz-00000001UJH-2hbl
+	id 1vy5X3-00000001UM5-0zPl
+	for linux-mtd@bombadil.infradead.org;
+	Thu, 05 Mar 2026 10:02:13 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
+	Content-Type:Content-ID:Content-Description;
+	bh=1fl+dYL251xXhtusEZ7b8g0kjCughX2VCuIW1qgsL2Q=; b=GDwYhJ6oZttyTQXl2OsYBgFbam
+	sJnh4IVFqcB99ohmnnW1m1Y5GzsAKgBZGtJk4qXK2RxJaSFDg+ebZXIT4oBucaGBCcpCjb6MIgxSe
+	JD6bm3ql5VgWK2eY2u9IiuHs1fZydSY0xh8ShCTYM2WFQ51QsEgz3z5MRZhIt7p/9QQmY4RCrK7Dl
+	Fr+wPvTcx8MG72ubxbFBmg0LPtNfDuesFwFWm3Nyz86725jwtYheSMvYR6TrbgWsRhjSFsbxI9Lwr
+	AlO547TgpMO8QRxhlML4GVCWCc69NAw+T+N4x5zB0WvPyOp0A+Q9fDKuaqZ1SmuQwme8u94ZCdYBT
+	JWiVBUIA==;
+Received: from smtpout-03.galae.net ([185.246.85.4])
+	by casper.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vy5X0-0000000EnTV-1qAh
 	for linux-mtd@lists.infradead.org;
-	Thu, 05 Mar 2026 10:02:10 +0000
+	Thu, 05 Mar 2026 10:02:12 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id 256701A2CDC;
-	Thu,  5 Mar 2026 10:02:08 +0000 (UTC)
+	by smtpout-03.galae.net (Postfix) with ESMTPS id AC80D4E4256C;
+	Thu,  5 Mar 2026 10:02:06 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id EE8F75FDEB;
-	Thu,  5 Mar 2026 10:02:07 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id B2B37103683FF;
-	Thu,  5 Mar 2026 11:02:05 +0100 (CET)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 821595FDEB;
+	Thu,  5 Mar 2026 10:02:06 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 3C67410369782;
+	Thu,  5 Mar 2026 11:02:03 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1772704927; h=from:subject:date:message-id:to:cc:mime-version:
+	t=1772704924; h=from:subject:date:message-id:to:cc:mime-version:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=cDyw0VT/gRD0S6ZYgJzuggHzvkdYaJdJvFIQKhQJvv0=;
-	b=lBilC751rjznANkYaxxbdfu4vosOyLn5O8oxsGdjQqYN5hInWOVO2qKi/yggbFucjrpJqB
-	58SL80VfxsI64nvR+fVgVX0wbKI8mczC+Ra+aPZla98kkxCNPDABwg+PH5H5CMXcWM+E2v
-	qIKZeRILxUCgT6czPcAMSVTHnn/FSyBVS4lZX4PCZnmX9KvtT/Mt7RHxT9S9fhVd9tS1qr
-	Gt94UbJEex9MN51YOAlHidVt18dXo1J4YxWE1V539qh4DvWRHZijn4irJWdXkmorXcClb3
-	mUGX5w44in3hC4oCDJzXDxiUqHY838U22hoHKFaS77VAV3FLpVwj1Gx8HFjWMQ==
+	bh=1fl+dYL251xXhtusEZ7b8g0kjCughX2VCuIW1qgsL2Q=;
+	b=Zghiv2yoEfOauiKl+7OTiaMkunISYRUhHzMXxmuaIzAGpGxApG7CiDMXvPQ5zHnHZ0rom4
+	8eqbL/QkYOOvaoUtnF4N1Fr/sJHS7nKFaIUVvfCqfOD1dbOigohz9hABMKrYbU9L3kvL0k
+	Id31ptliJ7YLUKThNetmyQxFWFGz+BL5geqUHPrFgRlOwQFeyROwr1gpFXdFPuP7pwqhxI
+	/d0e9cEYiVySQzWnyNhiyM4mJEx1PDdZnGbmufZ7N9psPVpm3oRqegxMRXb/YoxxrRsWrt
+	88TMVNqFuWcgnU5/x+8nZ0UUMzwGTWotg9Q3SVvDHhviKRZTcqs6NMExh1Mjpg==
 From: Richard Genoud <richard.genoud@bootlin.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
@@ -60,17 +75,17 @@ Cc: Wentao Liang <vulab@iscas.ac.cn>,
 	linux-sunxi@lists.linux.dev,
 	linux-kernel@vger.kernel.org,
 	Richard Genoud <richard.genoud@bootlin.com>
-Subject: [PATCH v2 2/6] mtd: rawnand: sunxi: fix sunxi_nfc_hw_ecc_read_extra_oob
-Date: Thu,  5 Mar 2026 11:01:33 +0100
-Message-ID: <20260305100137.2558423-3-richard.genoud@bootlin.com>
+Subject: [PATCH v2 1/6] mtd: rawnand: sunxi: sunxi_nand_ooblayout_free code clarification
+Date: Thu,  5 Mar 2026 11:01:32 +0100
+Message-ID: <20260305100137.2558423-2-richard.genoud@bootlin.com>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20260305100137.2558423-1-richard.genoud@bootlin.com>
 References: <20260305100137.2558423-1-richard.genoud@bootlin.com>
 MIME-Version: 1.0
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260305_020209_817464_331D2FD5 
-X-CRM114-Status: GOOD (  12.87  )
+X-CRM114-CacheID: sfid-20260305_100210_510667_A532D6B4 
+X-CRM114-Status: GOOD (  13.66  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,58 +102,35 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-When dumping the OOB, the bytes at the end where actually copied from
-the beginning of the OOB instead of current_offset.
+The available length is really USER_DATA_LEN - 2 instead of just 2 (the
+user data length minus the BBM length)
+USER_DATA_LEN being 4, that doesn't change anything now, but if
+USER_DATA_LEN changes, it will.
 
-That leads to something like:
-OOB: ff ff ff ff ff ff ff ff ea 19 00 3a 83 db aa 8d
-OOB: 99 09 c8 9a 90 36 35 7d aa 15 13 07 3d 97 b2 a4
-OOB: a8 bb 19 b3 07 e9 f6 25 52 d7 1a 23 e2 7e 0a e4
-OOB: 52 8a 09 d2 1a 86 3d cf b4 99 43 13 d3 90 33 0b
-OOB: ff ff ff ff ff ff ff ff ea 19 00 3a 83 db aa 8d
-OOB: 99 09 c8 9a 90 36 35 7d aa 15 13 07 3d 97 b2 a4
-OOB: a8 bb 19 b3 07 e9 f6 25 52 d7 1a 23 e2 7e 0a e4
-OOB: 52 8a 09 d2 1a 86 3d cf b4 99 43 13 d3 90 33 0b
-instead of:
-OOB: ff ff ff ff ff ff ff ff ea 19 00 3a 83 db aa 8d
-OOB: 99 09 c8 9a 90 36 35 7d aa 15 13 07 3d 97 b2 a4
-OOB: a8 bb 19 b3 07 e9 f6 25 52 d7 1a 23 e2 7e 0a e4
-OOB: 52 8a 09 d2 1a 86 3d cf b4 99 43 13 d3 90 33 0b
-OOB: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-OOB: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-OOB: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-OOB: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-(example with BCH16, user data [8,0], no scrambling)
-
-*cur_off (offset from the beginning of the page) was compared to offset
-(offset from the beginning of the OOB), and then, the
-nand_change_read_column_op() sets the current position to the beginning
-of the OOB instead of OOB+offset
-
-Fixes: 15d6f118285f ("mtd: rawnand: sunxi: Stop supporting ECC_HW_SYNDROME mode")
-Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
 Signed-off-by: Richard Genoud <richard.genoud@bootlin.com>
 ---
- drivers/mtd/nand/raw/sunxi_nand.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/mtd/nand/raw/sunxi_nand.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/sunxi_nand.c b/drivers/mtd/nand/raw/sunxi_nand.c
-index 915f1240546f..8af449e548d4 100644
+index e66adfcca7cd..915f1240546f 100644
 --- a/drivers/mtd/nand/raw/sunxi_nand.c
 +++ b/drivers/mtd/nand/raw/sunxi_nand.c
-@@ -1048,9 +1048,9 @@ static void sunxi_nfc_hw_ecc_read_extra_oob(struct nand_chip *nand,
- 	if (len <= 0)
- 		return;
+@@ -1755,12 +1755,12 @@ static int sunxi_nand_ooblayout_free(struct mtd_info *mtd, int section,
  
--	if (!cur_off || *cur_off != offset)
--		nand_change_read_column_op(nand, mtd->writesize, NULL, 0,
--					   false);
-+	if (!cur_off || *cur_off != (offset + mtd->writesize))
-+		nand_change_read_column_op(nand, mtd->writesize + offset,
-+					   NULL, 0, false);
+ 	/*
+ 	 * The first 2 bytes are used for BB markers, hence we
+-	 * only have 2 bytes available in the first user data
++	 * only have USER_DATA_SZ - 2 bytes available in the first user data
+ 	 * section.
+ 	 */
+ 	if (!section && ecc->engine_type == NAND_ECC_ENGINE_TYPE_ON_HOST) {
+ 		oobregion->offset = 2;
+-		oobregion->length = 2;
++		oobregion->length = USER_DATA_SZ - 2;
  
- 	if (!randomize)
- 		sunxi_nfc_read_buf(nand, oob + offset, len);
+ 		return 0;
+ 	}
 
 ______________________________________________________
 Linux MTD discussion mailing list
