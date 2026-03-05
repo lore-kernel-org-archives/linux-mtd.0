@@ -4,65 +4,133 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90CA3F513E1
-	for <linux-mtd@archiver.kernel.org>; Thu,  5 Mar 2026 22:14:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2266F513E6
+	for <linux-mtd@archiver.kernel.org>; Thu,  5 Mar 2026 22:34:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=n3y1Rzc0drLYvvHn5zZ7VGk7BkqSkaa85a11hGncy8o=; b=oI3Q1P0vG7ixejJuEuA0+kOmIJ
-	jFMI2XMJCimYDrmYMQiTMqHSkQgSd5QI0Ag42SteB5Hi7HA9S6NqeezcNEmgawksB/aA4UWyrekd7
-	FP5riMSDhbOozmvzhsvhwYwm0oFS+pFoHwktCDKI+eozyhATZbK2JLQxU+fD5lx6MpoeB0bM0YVSJ
-	QamA/Wi25T0jpwNYxKGIbUU8PdHjnNJfJzrBJLbDf0AG+TaTO9tszwzT965dcW8IW3qZ1Ip0+iGF+
-	9EmyviCPgQP3shvdphpSg3TF3tHyTXaUz5xa+V6yQoBh3DLbW6z3vSlp+V3Fg0GpTmGxtJxlYM4Pe
-	qll+Kwhg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=3DkdLZxedRuGceLwG9qUZjhXdyuvAGV0VM6uB8s09CI=; b=p6ATJTlqvhnJs2
+	GCVbQD+jkqXN4PgKI+POs9hqlITQFpq1ycdrwI5EumHsb/T3HsDhHNjoonPbu1JwhkL/IHWM7zRSy
+	nn2uakmEKfQab7QWWhn2OZe4ou9nxXHY5iDWMPsvA7qZ8uPlksHTvziHTAxNG6DAB+uECMz1xsol0
+	9OBERsu/eA07JjTFWawaR3ftGdHMuatHOt7q7gtfSx+ek/+Es7cW+VG+CD786xSfPzh/sNkunzdzl
+	71NLczd+pqnlyaezz+CsZAJ4AW5Rqkn7Zm0C6CYg7ey5+4NxhsBqpFrpA9QuH431AYPJKKGb1NLEC
+	qifzthYWCDH9P11K5LEQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vyGxk-00000002dDp-3AHy;
-	Thu, 05 Mar 2026 22:14:32 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1vyHHS-00000002gjq-2aNp;
+	Thu, 05 Mar 2026 22:34:54 +0000
+Received: from mail-francecentralazlp170130007.outbound.protection.outlook.com ([2a01:111:f403:c20a::7] helo=PA4PR04CU001.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vyGxh-00000002dCI-2u6i
+	id 1vyHHP-00000002giu-2v9h
 	for linux-mtd@lists.infradead.org;
-	Thu, 05 Mar 2026 22:14:29 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id CDD1860127;
-	Thu,  5 Mar 2026 22:14:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4BF0C116C6;
-	Thu,  5 Mar 2026 22:14:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772748868;
-	bh=w9TjvGcKwJt8/ARHSEztsvDfZLAllFDGqn1q3g9Xd0A=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Y8LIfBUNHfNlibr/LWwaJVc97mlmmpka3bZTOtYcYLewV61glSEY65BPIi89kVjse
-	 aktYtnm8J8wbRpWVH6pQlpHVXyj57XCUBqn7uvSMs6oRTgTNTEvdFG0o9X9MBJBhjf
-	 H3JgF4iPNGjmU2x/kKAIQXB9q0kj6ByzShtSMNLC4Rqj5BLZ3irmhbFoN6G4hooGRS
-	 h6nqq8pycmsEKZ6ywT14M4laQkXWpZ0o2NgkM4lRgC0WWAGNIbIZ5cJxu5NsZobzph
-	 LbbNyAhJ73PMLjO3VyswNRriU/pQS+AxYFPQx8gb3YuZe8C6mHDs/SvfpDV9obO1wj
-	 ffjs0SNWQKyIQ==
-Date: Thu, 5 Mar 2026 22:14:22 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Frank Li <Frank.Li@nxp.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>, Han Xu <han.xu@nxp.com>,
-	Eberhard Stoll <eberhard.stoll@kontron.de>,
-	Frieder Schrempf <frieder.schrempf@kontron.de>,
-	Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <mwalle@kernel.org>, linux-spi@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-	imx@lists.linux.dev
-Subject: Re: [PATCH RFC 1/7] spi: Add 'rx_sampling_delay_ns' parameter for
- clock to RX delay
-Message-ID: <c5c762db-86f5-4ca8-b2da-a7e0b73b8f27@sirena.org.uk>
+	Thu, 05 Mar 2026 22:34:52 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=mIWqGAJu3Pi0osyn5UCcH2k4MdIYIW81NiVu+RL5Huz1Ik8uAfS7ZJ+ZpIKQI4zcfuQZct+zZyzWOCRCYiLc1dKGvYIgy5MZLc2EQAtS6iwzZD+RRAxuQsuPgkYdZ96gPmri2+ZIJVuhtkHa5XKDb8usFISHmJVajTympU3iE/wRFZiTt7JbKIHs8+ZptTw5Ku0XnXHOskaVkrZpU1v9nDsNupgRYfZiHEhsqNKRl6iaSmyV9fiKS+EGRakz8c/QPB6ylGs0YIhyq10n/gDj/WOiE8s7NBQpDZ3cRb+ovvAIzY9g7Uw28Q6q9Dtsnr2WknQoMSy2TPEbummPLPWNqQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=glLgvDuv0o3E3/oN87IDsPUt8k57ykiCOkDQWVE1t00=;
+ b=NdY2N+09LcOmbS2sPN8vu/imS9Tdv5qcCvOk5znWeEheWx1ATGCca5fM3f7/rYQKOisglUzpI2RqV47cLLk6GK94C13HtuPxc35k72oEqn6B3qRSxbZwad0poy53+zngJo+1RhPtwU+4CoKZpYIWsMMGeuXtTNUc08aFPC5ncoIiEgGWN+hDMOb36dX4i6xtzdDvDHJNcvuYX067KRZpig6gpD5xd7IalpydWMJXDGNHMlw/Nuq99ql3dioEk9/fgjNjem2vAA2su+odkTs16wadk8ahNx2nsoACKEf5EBEkq8pGFb+p2BOiGhrZQ9i3gslUdaZxgiZq+5mSCLWS6g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=glLgvDuv0o3E3/oN87IDsPUt8k57ykiCOkDQWVE1t00=;
+ b=cnTt8ytQMD+rcS3EXxSrMAc9knOWLYLMYBLhppfSypG7Gii18G2zqNKBETtLLmLRGt3T79Z9L8h1qmPQ2mDPwhGiLwKtvX2psHPkJtMV/85iW6oM4A68H8k0u9IwMw/7sPxIUJMfFhaDXbymujapqcyAARDyHtDMGyTsFSfdXEUtJm+lpaGg0T8pR9O7kCNVUkbTf0+J6jsFnhaWwN5ahxoYP8c1/IgF0V7tpXv/7Ip0Ch9+nWMLiPqMKEaByyiovE0YUruIB4UMoKdaoM9h/COM/+u2NNYmy2nJthaQKxp0IWowSjVVUN7lfOcJTbR+zuiQYC6BYqbx05iylq59qQ==
+Received: from PA4PR04MB9366.eurprd04.prod.outlook.com (2603:10a6:102:2a9::8)
+ by AM7PR04MB6871.eurprd04.prod.outlook.com (2603:10a6:20b:109::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9678.17; Thu, 5 Mar
+ 2026 22:34:46 +0000
+Received: from PA4PR04MB9366.eurprd04.prod.outlook.com
+ ([fe80::75e4:8143:ddbc:6588]) by PA4PR04MB9366.eurprd04.prod.outlook.com
+ ([fe80::75e4:8143:ddbc:6588%6]) with mapi id 15.20.9654.020; Thu, 5 Mar 2026
+ 22:34:46 +0000
+From: Frank Li <frank.li@nxp.com>
+To: Mark Brown <broonie@kernel.org>
+CC: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+	<richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Han Xu
+	<han.xu@nxp.com>, Eberhard Stoll <eberhard.stoll@kontron.de>, Frieder
+ Schrempf <frieder.schrempf@kontron.de>, Tudor Ambarus
+	<tudor.ambarus@linaro.org>, Pratyush Yadav <pratyush@kernel.org>, Michael
+ Walle <mwalle@kernel.org>, "linux-spi@vger.kernel.org"
+	<linux-spi@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "linux-mtd@lists.infradead.org"
+	<linux-mtd@lists.infradead.org>, "imx@lists.linux.dev" <imx@lists.linux.dev>
+Subject: RE: [EXT] Re: [PATCH RFC 1/7] spi: Add 'rx_sampling_delay_ns'
+ parameter for clock to RX delay
+Thread-Topic: [EXT] Re: [PATCH RFC 1/7] spi: Add 'rx_sampling_delay_ns'
+ parameter for clock to RX delay
+Thread-Index: AQHcq1EdL8acAPHpxku5HHIxU5RQb7WghDQAgAAE62A=
+Date: Thu, 5 Mar 2026 22:34:46 +0000
+Message-ID: <PA4PR04MB9366BBFB4EAD4C4867398265887DA@PA4PR04MB9366.eurprd04.prod.outlook.com>
 References: <20260303-fsl-qspi-rx-sampling-delay-v1-1-9326bbc492d6@kontron.de>
  <20260303210131.2966214-19-Frank.Li@nxp.com>
+ <c5c762db-86f5-4ca8-b2da-a7e0b73b8f27@sirena.org.uk>
+In-Reply-To: <c5c762db-86f5-4ca8-b2da-a7e0b73b8f27@sirena.org.uk>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PA4PR04MB9366:EE_|AM7PR04MB6871:EE_
+x-ms-office365-filtering-correlation-id: fbf04fef-394e-4529-6c1b-08de7b076768
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230040|376014|7416014|1800799024|19092799006|366016|38070700021;
+x-microsoft-antispam-message-info: Xb3oExehlP9LE8T9KThMOoUzn63mOc8VOxFRge2tRcA5B4y9RlrRUwefwtdLrFG56SKk9xoNH29QMdJ06IuxifaqtCHvjt4Og5ObcjZCjaQhI0IlqkUfKj+wO3iguliTX1SQR8+0vhizDSQDf/DhB40WwB18ye1g0jP2xVgDwhf/L1gaSJE+lgPu8Rkuvy1DUv3G0PkXUbwqmAqM1aXfmB/TFO56pxEnjxpO+NDdp0w3m0Qu7iKzR9FgAkhahjOlEIQy0jto0eFlTiCOw01P9BHAS4pBN5TnTbTd8E6LFErPnJETi4ukAYVANVi6i4e05lf0jjA1Dd/tQmCq5oTeVcdcxR5FTtCoKDApIl2BWw7HU3kf4gH9/cViTcbfUFeG0lDy1gITt3ejGx3mh+E5wK3wOGLdQaZ5sfUxVbA30VmVNv+aUWzGx+rfojtDRozCFSkpLsFQJxyIoxBuJrpwJ/T2fPWPKKp8bbXqXJWc0zaacCovTLFcFraw6VnxfzCUhknr4kR6DXT08nJN53PNFFVLu8GREUlXf5MUbS38QVEBS0DrA901TiboIk0p1aU8hIjk51OtKWZJgriT1GhrFLYDgTtl1d429Sutg9Qj702H4zVcB34MOS9vcQJOYPZoPab0f4TtkVYlLDTHeog7MHn766ilRPl+7qb5uAgbE3VE26w8g+/S0QvAlXxAm/krr/gVDFJSsaRK/vRafvnUEZxIW7r2vAw+WPo8PYzlhhsPiWzCLlv4mUvqZwOnZC+hY3x8vEJnKDDfBK7cyAREfwAdOARF20pbHkJ+mW+woE8=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR04MB9366.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(1800799024)(19092799006)(366016)(38070700021);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?pQZOuTggJpLuLF9WNsVNv4OIjXiYE29P2oHbbuacbFmQdVGR7IqkApM3QWxq?=
+ =?us-ascii?Q?qIFjVCWlOpO1wgO3zBhA/vCJLINoufE+WXaCXwtq4tUDhTRQ1gj/5vrUgFBf?=
+ =?us-ascii?Q?pQTv3DqQwI1fxpP5NH4nRa0vZNqvyBA6KJ5pOZPgZ/MFDTvs9nGb0sR9xe7X?=
+ =?us-ascii?Q?Q1V962PyEwhK2FBl5YXDA9PBZcX7vU8nS1n43wkWAvfWw5fyrg4f3D8W3WxQ?=
+ =?us-ascii?Q?Vmw3C+IHPQzli4Nr+/j618HKyadAdYBUIQwNmdPl3IPaWtAGEtdW92/KXNju?=
+ =?us-ascii?Q?VUEqlYld4E7NvceEn+lRr94+xD5plckTtcaGK8pYJ5QSfAXuHcnXz5zqQOLR?=
+ =?us-ascii?Q?tolt4WH0voa/PItI89EHOLy0neYJRdPJFhYgduAVZdqMjakAEslwujeWRN6q?=
+ =?us-ascii?Q?yHzL7NkKLwtbNadivnk4rZiY0zYYt+jKiQeLLNcdLJXHW7YP2ymQnFoEM1Hn?=
+ =?us-ascii?Q?22Suw5nJQiSmwEDi8Y9iNeHq30tnNWbVRU2+WVD17Ieq72k5BELr7zGDJExs?=
+ =?us-ascii?Q?LC1aLenJXogYogU3SozNCUf9P7Rz+WHZjFrKMbW9X1GVPAut1Vk5jyxrvOsF?=
+ =?us-ascii?Q?UKlNiA0/nL9AIC+y6hBZkJ6BXqwAFZNr2c3E9MHDfJ5WFB2sj81y9r+TW4oq?=
+ =?us-ascii?Q?IBLwfsnASFEodt0AXeGlOsYxPlGcG9Kynb3+ohfyUJL86cYTl8jbMH7CJxbz?=
+ =?us-ascii?Q?mrTR5rWLYSi/qA4Jq2/iyybK8GxG719e7F5I589ND8s59Fz4FQhxRcjinEwl?=
+ =?us-ascii?Q?g55HGMOsMzBudZYntoWpSN2lYXDlUxesIBEEgGseTlOdEw2LIQ4O9THLuG3E?=
+ =?us-ascii?Q?EP9tMWrYR5xCG1mb6MA8QIS9HCiK8q+3/Mng0gm8x/d+d/bK838hhGiGpHGm?=
+ =?us-ascii?Q?CVOsrWW1w0LPVRiciMhSBFi9mUCyuqGHclBHCWwlCXBITv/WPdujBi0noK9c?=
+ =?us-ascii?Q?Nuzp3nVyV6xnafYMBgmJ+flkDuXFghOu25pO0/cHRdQoa7xiZrLwSdTCCUxT?=
+ =?us-ascii?Q?7d8//4aBTyRtu3HjFNdMdSawWWDOCx1ozoA7WZHMNFrGHB+yfY0jqQNWiBsO?=
+ =?us-ascii?Q?iFBTPwH0hh0BDrNEWxoVD30ZxxFi/4KCcHgssTZvq8MluWSnD03JCm9/AvHR?=
+ =?us-ascii?Q?mPT1BYFQpm3CeVgjKg1JTNhdaauV7TUXCbY0oNvMmV5YrKpISmpvKaWAmqKs?=
+ =?us-ascii?Q?KUEjx7UUBjHkt3mGzbkcJO2lNS4gbTGeIf2geaNTRjhVyAqiRpGI4Xx+/SnR?=
+ =?us-ascii?Q?Ar5f1GqGxIbG+GbdRYWdUcultA8C6nkVEHC6KBw+yiuPtg3DIcxYH/252KvY?=
+ =?us-ascii?Q?4aGzfxrz7tw5Z0gt2APxRARMG+vp7Gxbis2TslEl1P7jYdmMMK4rNVjmiVjJ?=
+ =?us-ascii?Q?U4iYs+pcYW/B7VhN+Of7st0J09vu1x849+KmTjdKza5WVClFCu78HPcTEUUa?=
+ =?us-ascii?Q?1/ZrXuh6VVFta//5BURCgQtmOnwf4TGsd0haceOgaiI0167v1vv4tweHlRkv?=
+ =?us-ascii?Q?O22uX+I2ONPoxOVZyh9hvDJXFJcRQ9VhwIVEgF0XEPYKzPOEJUABUFHxNvmy?=
+ =?us-ascii?Q?vAaWizW99+OmVE7Dm9dk/bgD8yrv8Bme6CRlbaRq18deAsPTd++QGFtRWfGE?=
+ =?us-ascii?Q?1g1v5Mh25lQ6qDpera1WQ9YRn4fY7PCJeAJ/k4bhaFtF2d79cU7CvfJrn0Si?=
+ =?us-ascii?Q?br4YLHSmDjqEZYnTX9bO+I+0NIDF22YjAnnsDM+UfPMGOCp+?=
 MIME-Version: 1.0
-In-Reply-To: <20260303210131.2966214-19-Frank.Li@nxp.com>
-X-Cookie: Onward through the fog.
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PA4PR04MB9366.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fbf04fef-394e-4529-6c1b-08de7b076768
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Mar 2026 22:34:46.2515
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: FHQ0YWrpNaow3b7G8Qj5ClI5eS9boF2sklByJnrllGAb6D7iTja43iC+cYN320hdUQg0Lay5pH7yFQP86YBmhg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR04MB6871
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260305_143451_742694_35071BD5 
+X-CRM114-Status: GOOD (  16.41  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,74 +142,44 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1091475955077913923=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+> 
+> On Tue, Mar 03, 2026 at 04:01:14PM -0500, Frank Li wrote:
+> > From: Frank Li (AI-BOT) <frank.li@nxp.com>
+> 
+> Please add a human step before sending these reviews.
+> 
+> > > + * @rx_sampling_delay_ns: spi clk to spi rx data delay
+> 
+> > Comment is too terse. Expand to clarify the unit and purpose:
+> > "clock-to-RX-data delay in nanoseconds; see tCLQV in device datasheets"
+> 
+> I'm not sure restating the unit in the comment as well as the name is
+> super useful...
+> 
+> > > +	/* Transfer characteristics */
+> > > +	u32			rx_sampling_delay_ns; /* clk to rx data delay
+> */
+> 
+> > The inline comment duplicates the field name. Remove it or expand the
+> > block comment above to explain when/how drivers should use this field.
+> > Also: is u32 the right type? Consider if negative values or larger
+> > ranges are possible, or if this should be `struct spi_delay` for
+> > consistency with cs_setup, cs_hold, cs_inactive above.
+> 
+> ...especially given the contradictory feedback here, and the comment
+> about a negative delay is obviously not appropriate.  I'm not convinced
+> anyone needs an explanation of what to do with the field either.
 
---===============1091475955077913923==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="b1uVgqjIjfycBOiD"
-Content-Disposition: inline
+Sorry, I have not careful review AI bot generated result before sent
+Out. Please discard it
 
-
---b1uVgqjIjfycBOiD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Mar 03, 2026 at 04:01:14PM -0500, Frank Li wrote:
-> From: Frank Li (AI-BOT) <frank.li@nxp.com>
-
-Please add a human step before sending these reviews.
-
-> > + * @rx_sampling_delay_ns: spi clk to spi rx data delay
-
-> Comment is too terse. Expand to clarify the unit and purpose:
-> "clock-to-RX-data delay in nanoseconds; see tCLQV in device datasheets"
-
-I'm not sure restating the unit in the comment as well as the name is
-super useful...
-
-> > +	/* Transfer characteristics */
-> > +	u32			rx_sampling_delay_ns; /* clk to rx data delay */
-
-> The inline comment duplicates the field name. Remove it or expand the
-> block comment above to explain when/how drivers should use this field.
-> Also: is u32 the right type? Consider if negative values or larger
-> ranges are possible, or if this should be `struct spi_delay` for
-> consistency with cs_setup, cs_hold, cs_inactive above.
-
-...especially given the contradictory feedback here, and the comment
-about a negative delay is obviously not appropriate.  I'm not convinced
-anyone needs an explanation of what to do with the field either.
-
---b1uVgqjIjfycBOiD
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmmqAD4ACgkQJNaLcl1U
-h9AnSgf/aUqkU1qA+35Es3IE9yRd/Tn35gI+K3cIbQwk2tKVgQ3JnJBxhVyqE0XV
-RCO3HXJTjOF/G+5OUcCyE5O0fPnHv/83+tKYdO6gteK2qDmL4FQOoxEo7uyhck0A
-wCEyYwQ+mA30wOE8S5d4npnhB9K1aIw1gMGFjvUfWUc2gHysTVL7mJOM7oo24dCB
-kbfSgaXXcavf8j8YQQLMzjuJ6xAAYf0Rkgw6cNr7nuxI3bUK6jJPY1z9FpcKj6rT
-MNcV9et+BaiGEpoVKmx8sGybIkhD9XNHhFHJLlNLi9LKhsVhzzmGQ/n3mUmpaeE1
-8B5vtuGNBMwiL4K5tZ/FoXEL0RhlaA==
-=yiHr
------END PGP SIGNATURE-----
-
---b1uVgqjIjfycBOiD--
-
-
---===============1091475955077913923==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Frank
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============1091475955077913923==--
-
