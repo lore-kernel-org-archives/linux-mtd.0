@@ -4,67 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B913EA8549
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 Mar 2026 01:09:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 452C4F5513A
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 Mar 2026 06:07:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Subject:Cc:To:From:Mime-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=/vc8MyXkf+XvsYttXdYwOCPe40SzFTAlFrftdZ1Wo0w=; b=ITJVF+A1ba+lWX
-	DrOv/MnEel4JXB2scKZgkVYFPfy7cDWES9WjjE4PBtPw1JVW/Nq+BtCmq218hdmC042ReDtYgaI7q
-	MOat2Uil7TmMPNySYE++gN3qYtzd3IAcf6oKUf+3LEAJNT7MHVpxmxzHo59xnK5OdcfSQPZL81Aol
-	k0xr1ws0/8+b15lRmGraCsxfwjjUW3M0zWSjA+p+cbOg2EKvZmdWE88OOCTpfdeyD8BZNMDtcGny+
-	AGX8rOMj5Ax7iYXDQsv6SS3ANwHAS5YU1bKUVSiabl/b6gkjB3VGJPPckoRgNxKnEEgqr/aH+2K8r
-	HbBf8vbFJAPCxXGuTWJQ==;
+	List-Owner; bh=BubxszqPUdSMCkG4oxJ5f9qaDiekwEDecJ2IvXbE31M=; b=lwxnITneayaIMK
+	9lEbUTZX8dT1oEQRVZBRmeLwqRIYI3kzDTOTYL++SSjusQS+ApGMFrQ3a8ichXhZcT8m1KILKNyVr
+	HGGI4WWZSCeJe15flAXLm4BwSC8/xF3iJcL3jJtOOnRO9Fv1h2+NDLhbBn9jIwGZp5tj2xQtJBkgt
+	cfQakpm0wdauM4R94P7ICy7OOTM3gBdNezauvIWbx63LqY18wd2PtQ0JthlbSTB5qOZ44DNYJCs2o
+	MOKYv+ssBLavyJyTwPZFWcyIFJEeHmaNtbgjQUkEatYNxhx+CARwcywd+vrxb15xT8bjyc2AjlG0q
+	z7FfWZDZqOCE60P1PscA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vzP7w-00000006VG0-1OtH;
-	Mon, 09 Mar 2026 01:09:44 +0000
-Received: from mxhk.zte.com.cn ([160.30.148.35])
+	id 1vzTlY-00000006iAG-2nxa;
+	Mon, 09 Mar 2026 06:06:56 +0000
+Received: from mail-pl1-x62e.google.com ([2607:f8b0:4864:20::62e])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vzP7r-00000006VFf-3Q0M
+	id 1vzTlW-00000006i9o-1I8X
 	for linux-mtd@lists.infradead.org;
-	Mon, 09 Mar 2026 01:09:41 +0000
-Received: from mse-fl1.zte.com.cn (unknown [10.5.228.132])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mxhk.zte.com.cn (FangMail) with ESMTPS id 4fTf6z0f18z8Xs70;
-	Mon, 09 Mar 2026 09:09:31 +0800 (CST)
-Received: from xaxapp01.zte.com.cn ([10.88.99.176])
-	by mse-fl1.zte.com.cn with SMTP id 62919PXG013932;
-	Mon, 9 Mar 2026 09:09:25 +0800 (+08)
-	(envelope-from fan.yu9@zte.com.cn)
-Received: from mapi (xaxapp02[null])
-	by mapi (Zmail) with MAPI id mid32;
-	Mon, 9 Mar 2026 09:09:26 +0800 (CST)
-X-Zmail-TransId: 2afa69ae1dc63e1-427e6
-X-Mailer: Zmail v1.0
-Message-ID: <202603090909261904qeLJ4zFnhW7fFPmKw8sV@zte.com.cn>
-Date: Mon, 9 Mar 2026 09:09:26 +0800 (CST)
-Mime-Version: 1.0
-From: <fan.yu9@zte.com.cn>
-To: <richard@nod.at>, <chengzhihao1@huawei.com>, <linmiaohe@huawei.com>,
-        <nao.horiguchi@gmail.com>
-Cc: <cui.jinpeng2@zte.com.cn>, <zhang.yue5@zte.com.cn>, <xu.xin16@zte.com.cn>,
-        <yang.tao172@zte.com.cn>, <yang.yang29@zte.com.cn>,
-        <hu.shengming@zte.com.cn>, <linux-mtd@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: =?UTF-8?B?W1BBVENIIHYyIFJFU0VORF0gdWJpZnM6IHByZXZlbnQgY29ycnVwdGVkIGRhdGEgd3JpdGUgdmlhIGVycm9yX3JlbW92ZV9mb2xpb8KgwqA=?=
-X-MAIL: mse-fl1.zte.com.cn 62919PXG013932
-X-TLS: YES
-X-SPF-DOMAIN: zte.com.cn
-X-ENVELOPE-SENDER: fan.yu9@zte.com.cn
-X-SPF: None
-X-SOURCE-IP: 10.5.228.132 unknown Mon, 09 Mar 2026 09:09:31 +0800
-X-Fangmail-Anti-Spam-Filtered: true
-X-Fangmail-MID-QID: 69AE1DCB.000/4fTf6z0f18z8Xs70
+	Mon, 09 Mar 2026 06:06:55 +0000
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-2ae8979dbb2so13468935ad.3
+        for <linux-mtd@lists.infradead.org>; Sun, 08 Mar 2026 23:06:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1773036413; x=1773641213; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=tWFv1BB7FN3hcOOghSBDtnN98xOSLiQpa+eHf8S5Tyg=;
+        b=WW/e8+9kI6GBjWpMp90Gg3fzMPiAO6hd5/Wymus0Z9Yj7QYSQQKirjFPtsRD/NYfV1
+         DHlVWJlqNaDWa8j6uLfK5cnuaa5JH8F0daVcIZIfuDh0h1Dv4fSfpfzcg1cz/uMYEk3z
+         GsDfpngNMuP8uMUvzwh+zw48LBchipFf31O3uIRwTU+IGL8yeWkqcyN177kydrznX2gF
+         rJdegeyZn3FPGVGbYM7hffYeLCCnByWVQrlEuodi1IXFf0Zdw0X4ZD7naolnf0QuSC64
+         WdZuhYuG7tlxcU22f+z+P9L7p7zFMKpRdlQkg6CJgomDkOX8K4gMlWcGglw88YIMo1zv
+         SEZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1773036413; x=1773641213;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tWFv1BB7FN3hcOOghSBDtnN98xOSLiQpa+eHf8S5Tyg=;
+        b=Wumc7oD1nUCfe9Okp4zvysViZIf26KUGgfquO7x2XUQjSDSGUyYEtU0Xf7lWCWYUai
+         4l3v2/QhPrO8d9LvzPW94c95iwmd0RYWexSogT4sAXbvtIzRno7DCHHgNCVSEVFBTFI2
+         0WmLxtRFpdgWBHbmeLqNwIclFk/rEp2ohmxWgWgwPCgkX2qkq0Mp79OpmQ0jXs63guhK
+         9lKPbbYL8e1StvFpyppHhNiB/KtKopLZjqR67cwLJpica2PXF6uL9W1XmcHvtpWlkfHc
+         24Xld7OeE0rvoSIoaZ97LIupqJp+0sygCMjZfyLIHjchO/4sWSXThoRi0ofPQZBNm/5j
+         mYvg==
+X-Gm-Message-State: AOJu0YxtRWTl7fLmdi/pMAB/scLCS6b6KzkQvjkeQDQKkaAdB9XWp5e4
+	gvBss1TDGGxi/pfXvzu8oM/jSpsE4HHCO5+QjFS/wBEpj7rxS6BMyc0b
+X-Gm-Gg: ATEYQzyzBWV1Spzo0dVNOCAu8xpf0pzEprmPinfyTe4sNJ/DV1IZDpq055bZe6Y7SnO
+	uDVa9Y1eTbK27SfPU8bHE/+G3w8Stgs+De3d5Xe+TlQE/whCiiojdTl7f7SJ77NFf6UBF0RIP/q
+	Q0j1QQ2I6I0r/7e63X0rJ/VAwGqtJLb+S1+JTA8aM6d/kkdCGTJCGNKcGVI0QMl1ud33zTAtzs1
+	WXHLnuo/Su2bQFi0M/2FT+8pkEvejrFRbDyJM6qQg/PKpglICgHSfMaTjZ+qzOd0lt4rFwG90ik
+	cbJMz7qhbvVdLMVeR9V8L/reGM1151Fi9nk83XU7oAm+EpVzR2d8b7ArK7l+Igob2QF3aZafVTH
+	n3sZHEPiBMuWpJ7KSLFAwqljEFxbQMkCRjGbxJzAY+maHuF4zjk/nwORdtaY3+1r9UI5tO6I0w4
+	K+j01LL4o546kpgBJyorBXFSvtBqi1aYaKZms6YyiSvIqtz9O43O2nstc=
+X-Received: by 2002:a17:902:f70a:b0:2ae:7f4a:8e2e with SMTP id d9443c01a7336-2ae82530c7amr95865405ad.52.1773036412848;
+        Sun, 08 Mar 2026 23:06:52 -0700 (PDT)
+Received: from localhost.localdomain ([119.204.109.25])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2ae83e57b1fsm133043635ad.12.2026.03.08.23.06.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 08 Mar 2026 23:06:52 -0700 (PDT)
+From: James Kim <james010kim@gmail.com>
+To: robert.jarzmik@free.fr,
+	miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com
+Cc: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	James Kim <james010kim@gmail.com>,
+	stable@vger.kernel.org
+Subject: [PATCH] mtd: docg3: fix use-after-free in docg3_release()
+Date: Mon,  9 Mar 2026 15:05:12 +0900
+Message-ID: <20260309060512.3634570-1-james010kim@gmail.com>
+X-Mailer: git-send-email 2.43.0
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260308_180940_016196_C188DCF5 
-X-CRM114-Status: UNSURE (   7.01  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260308_230654_371146_9CF3BB36 
+X-CRM114-Status: GOOD (  13.11  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,45 +100,48 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Jinpeng Cui <cui.jinpeng2@zte.com.cn>
-When a memory corruption event triggers memory_failure, ext4 releases
-references to the affected dirty pages, ensuring that no corrupted data
-is written to disk.
+In docg3_release(), the docg3 pointer is obtained from
+cascade->floors[0]->priv before the loop that calls
+doc_release_device() on each floor. doc_release_device() frees the
+docg3 struct via kfree(docg3) at line 1881. After the loop,
+docg3->cascade->bch dereferences the already-freed pointer.
 
-However, ubifs currently lacks the error_remove_folio capabilityand
-therefore cannot release references to faulty private memory. As a result,
-corrupted data may eventually be written to flash storage.
+Fix this by accessing cascade->bch directly, which is equivalent
+since docg3->cascade points back to the same cascade struct, and
+is already available as a local variable. This also removes the
+now-unused docg3 local variable.
 
-Add generic_error_remove_folio support to ubifs,
-preventing corrupted memory data from being persisted to flash.
-
-Signed-off-by: Jinpeng Cui <cui.jinpeng2@zte.com.cn>
-Signed-off-by: Shengming Hu <hu.shengming@zte.com.cn>
-Signed-off-by: Fan Yu <fan.yu9@zte.com.cn>
-Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
-Reviewed-by: xu xin <xu.xin16@zte.com.cn>
+Fixes: c8ae3f744ddc ("lib/bch: Rework a little bit the exported function names")
+Cc: stable@vger.kernel.org
+Signed-off-by: James Kim <james010kim@gmail.com>
 ---
-Changes in v2:
-- Some format fixes according to
-https://lore.kernel.org/all/20260211173233604W9pVxv17lV3V2uYD3zCOq@zte.com.cn/
+ drivers/mtd/devices/docg3.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
- fs/ubifs/file.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-index ca41ce8208c4..730318eb1ba8 100644
---- a/fs/ubifs/file.c
-+++ b/fs/ubifs/file.c
-@@ -1635,6 +1635,7 @@ const struct address_space_operations ubifs_file_address_operations = {
- 	.dirty_folio	= ubifs_dirty_folio,
- 	.migrate_folio	= filemap_migrate_folio,
- 	.release_folio	= ubifs_release_folio,
-+	.error_remove_folio = generic_error_remove_folio,
- };
-
- const struct inode_operations ubifs_file_inode_operations = {
+diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
+index 33050a2a80f7..603fd0efc2ea 100644
+--- a/drivers/mtd/devices/docg3.c
++++ b/drivers/mtd/devices/docg3.c
+@@ -2049,7 +2049,6 @@ static int __init docg3_probe(struct platform_device *pdev)
+ static void docg3_release(struct platform_device *pdev)
+ {
+ 	struct docg3_cascade *cascade = platform_get_drvdata(pdev);
+-	struct docg3 *docg3 = cascade->floors[0]->priv;
+ 	int floor;
+ 
+ 	doc_unregister_sysfs(pdev, cascade);
+@@ -2057,7 +2056,7 @@ static void docg3_release(struct platform_device *pdev)
+ 		if (cascade->floors[floor])
+ 			doc_release_device(cascade->floors[floor]);
+ 
+-	bch_free(docg3->cascade->bch);
++	bch_free(cascade->bch);
+ }
+ 
+ #ifdef CONFIG_OF
 -- 
-2.25.1
+2.43.0
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
