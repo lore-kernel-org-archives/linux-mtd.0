@@ -4,79 +4,127 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C11F6FCA178
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 Mar 2026 19:33:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F15B9FCA17D
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 Mar 2026 20:04:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=kWhMqSDJGwNN6Sv8WooQMl2AV66Kv2PmEzKwcVug/LU=; b=LGO7c89CuVBcpb
-	6PujzLNCCn3QO9cD0vspvD9tlt86Bs8iYI1lz3f7icB8BsV67JNGIMcKh6J4wn1EiW2eYfLm7k5nL
-	1k9R2c4Cn/Kq+uM92P9BL9ddqKXT4nbOFo2MZjJqfCVt+i9qmBSBayUmgexhAsshEP14pvRaA1kB9
-	nlQ3DOf+XzwcxzVcotSYNZpqxJKfRxwPs+cWwouoOcxp48+qrS5UeJGqdtuIqzY30+Rg+BA/1tJqJ
-	26vPSZ8kCKPrro9GKd/Ob5xGhKygsIoDVCzg/ieyl52jfsomiKdO2e/VsCM2hyK1u3JTbA8T8sWt7
-	SV2jRcXcw2JY3C9sSIiQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=0WbDXREOTuqZUyuBkGxXYR0BWrU+LLwL3hNPWt6MnkA=; b=yk0QCNqmtY2QaJ
+	SlDW9gFy8CUBKTQ0mBFtWLihoZcixE4EoNVF8R8j4T8tUgGO4AgzRM7w++qyn348U41MCuKIgBSr4
+	hdKM8h7Am47ZiquzauBN2zeqqJ/pDUMGRFIn+cqSR7Iwb9DtEPuOkLpf8KdPVI8j7bx8STJ5hOLj2
+	i0xKqgZqdtYlwUsiFoP64MRQusfR6CRjCV2f7DUwlPECGhheGQpvhn3RbrOgL60nrCwrXOxbPReM5
+	0fRuf4j6OniIoJtXhlKogVbgUh4LlRBtPXaOI4o6jSgY5D0mrnUdnwL9of50KrVusAXmbSuz3khaG
+	2I/Rc1YHntvsmwikTlGw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vzgLo-0000000845n-1qmr;
-	Mon, 09 Mar 2026 19:33:12 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1vzgq8-000000086E2-1iua;
+	Mon, 09 Mar 2026 20:04:32 +0000
+Received: from mail-westeuropeazlp170100001.outbound.protection.outlook.com ([2a01:111:f403:c201::1] helo=AM0PR83CU005.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vzgLn-0000000845R-0Foz;
-	Mon, 09 Mar 2026 19:33:11 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 107C760054;
-	Mon,  9 Mar 2026 19:33:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBAE9C4CEF7;
-	Mon,  9 Mar 2026 19:33:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773084789;
-	bh=pvOA7z7LAJ55Pql7T2iOG6EB9ez/gWB7V9MCZ/Zjlxo=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=Zcp0vPvGFcZ64z2raW4wDIh6j/XTTVgNcxeU6VWNbEqd3gJuDkjSzkOpsspUcVCKQ
-	 lcc1XL1FP2pWRLr+NlaKDAMpjvtN9zBII7AcLdNk1bPWn1WQKp7bbcxfLC/m9pPB/N
-	 IEY6Fnduwj/32EH8XBInBsK25APHGZx6v+VZKXH5b9MOO4KRs2f/HfKETxZ6bQRWF5
-	 dtM/8cl3v/DJKwm6MrSDpPIxnE4JZ94CyZpQ5RFLZk1zEcO5rifdFzuz9yWMRlnl0P
-	 Cw7l0xykXbtHms2rm+pFvFKz7om9OVETWDWxVlg6TPC/S9c57HXwELizpEeZDVP7VL
-	 zdDmzqN6JLEqg==
-Message-ID: <dd3f9873c7939fba0ca2366effd24e4b6326f17b.camel@kernel.org>
-Subject: Re: [PATCH v3 00/12] vfs: change inode->i_ino from unsigned long to
- u64
-From: Jeff Layton <jlayton@kernel.org>
-To: Mimi Zohar <zohar@linux.ibm.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, nvdimm@lists.linux.dev, 
-	fsverity@lists.linux.dev, linux-mm@kvack.org, netfs@lists.linux.dev, 
-	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, 
-	linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org, 
-	samba-technical@lists.samba.org, linux-nilfs@vger.kernel.org, 
-	v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
- autofs@vger.kernel.org, 	ceph-devel@vger.kernel.org,
- codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org, 
-	linux-mtd@lists.infradead.org, jfs-discussion@lists.sourceforge.net, 
-	ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev,
- devel@lists.orangefs.org, 	linux-unionfs@vger.kernel.org,
- apparmor@lists.ubuntu.com, 	linux-security-module@vger.kernel.org,
- linux-integrity@vger.kernel.org, 	selinux@vger.kernel.org,
- amd-gfx@lists.freedesktop.org, 	dri-devel@lists.freedesktop.org,
- linux-media@vger.kernel.org, 	linaro-mm-sig@lists.linaro.org,
- netdev@vger.kernel.org, 	linux-perf-users@vger.kernel.org,
- linux-fscrypt@vger.kernel.org, 	linux-xfs@vger.kernel.org,
- linux-hams@vger.kernel.org, linux-x25@vger.kernel.org, 
-	audit@vger.kernel.org, linux-bluetooth@vger.kernel.org, 
-	linux-can@vger.kernel.org, linux-sctp@vger.kernel.org, bpf@vger.kernel.org
-Date: Mon, 09 Mar 2026 15:33:03 -0400
-In-Reply-To: <c9500adc562665d44feaca9206f23a5ba07432c1.camel@linux.ibm.com>
-References: <20260304-iino-u64-v3-0-2257ad83d372@kernel.org>
-			 <05b5d55c49b5a1bbc43a5315e3c84872e7e634b3.camel@linux.ibm.com>
-		 <f22758116dabd3c135a833bcb5cfcd2ea4f6ecf4.camel@kernel.org>
-	 <c9500adc562665d44feaca9206f23a5ba07432c1.camel@linux.ibm.com>
-Autocrypt: addr=jlayton@kernel.org; prefer-encrypt=mutual; keydata=mQINBE6V0TwBEADXhJg7s8wFDwBMEvn0qyhAnzFLTOCHooMZyx7XO7dAiIhDSi7G1NPxw n8jdFUQMCR/GlpozMFlSFiZXiObE7sef9rTtM68ukUyZM4pJ9l0KjQNgDJ6Fr342Htkjxu/kFV1Wv egyjnSsFt7EGoDjdKqr1TS9syJYFjagYtvWk/UfHlW09X+jOh4vYtfX7iYSx/NfqV3W1D7EDi0PqV T2h6v8i8YqsATFPwO4nuiTmL6I40ZofxVd+9wdRI4Db8yUNA4ZSP2nqLcLtFjClYRBoJvRWvsv4lm 0OX6MYPtv76hka8lW4mnRmZqqx3UtfHX/hF/zH24Gj7A6sYKYLCU3YrI2Ogiu7/ksKcl7goQjpvtV YrOOI5VGLHge0awt7bhMCTM9KAfPc+xL/ZxAMVWd3NCk5SamL2cE99UWgtvNOIYU8m6EjTLhsj8sn VluJH0/RcxEeFbnSaswVChNSGa7mXJrTR22lRL6ZPjdMgS2Km90haWPRc8Wolcz07Y2se0xpGVLEQ cDEsvv5IMmeMe1/qLZ6NaVkNuL3WOXvxaVT9USW1+/SGipO2IpKJjeDZfehlB/kpfF24+RrK+seQf CBYyUE8QJpvTZyfUHNYldXlrjO6n5MdOempLqWpfOmcGkwnyNRBR46g/jf8KnPRwXs509yAqDB6sE LZH+yWr9LQZEwARAQABtCVKZWZmIExheXRvbiA8amxheXRvbkBwb29jaGllcmVkcy5uZXQ+iQI7BB MBAgAlAhsDBgsJCAcDAgYVCAIJCgsEFgIDAQIeAQIXgAUCTpXWPAIZAQAKCRAADmhBGVaCFc65D/4 gBLNMHopQYgG/9RIM3kgFCCQV0pLv0hcg1cjr+bPI5f1PzJoOVi9s0wBDHwp8+vtHgYhM54yt43uI 7Htij0RHFL5eFqoVT4TSfAg2qlvNemJEOY0e4daljjmZM7UtmpGs9NN0r9r50W82eb5Kw5bc/r0km R/arUS2st+ecRsCnwAOj6HiURwIgfDMHGPtSkoPpu3DDp/cjcYUg3HaOJuTjtGHFH963B+f+hyQ2B rQZBBE76ErgTDJ2Db9Ey0kw7VEZ4I2nnVUY9B5dE2pJFVO5HJBMp30fUGKvwaKqYCU2iAKxdmJXRI ONb7dSde8LqZahuunPDMZyMA5+mkQl7kpIpR6kVDIiqmxzRuPeiMP7O2FCUlS2DnJnRVrHmCljLkZ Wf7ZUA22wJpepBligemtSRSbqCyZ3B48zJ8g5B8xLEntPo/NknSJaYRvfEQqGxgk5kkNWMIMDkfQO lDSXZvoxqU9wFH/9jTv1/6p8dHeGM0BsbBLMqQaqnWiVt5mG92E1zkOW69LnoozE6Le+12DsNW7Rj iR5K+27MObjXEYIW7FIvNN/TQ6U1EOsdxwB8o//Yfc3p2QqPr5uS93SDDan5ehH59BnHpguTc27Xi QQZ9EGiieCUx6Zh2ze3X2UW9YNzE15uKwkkuEIj60NvQRmEDfweYfOfPVOueC+iFifbQgSmVmZiBM YXl0b24gPGpsYXl0b25AcmVkaGF0LmNvbT6JAjgEEwECACIFAk6V0q0CGwMGCwkIBwMCBhUIAgkKC wQWAgMBAh4BAheAAAoJEAAOaEEZVoIViKUQALpvsacTMWWOd7SlPFzIYy2/fjvKlfB/Xs4YdNcf9q LqF+lk2RBUHdR/dGwZpvw/OLmnZ8TryDo2zXVJNWEEUFNc7wQpl3i78r6UU/GUY/RQmOgPhs3epQC 3PMJj4xFx+VuVcf/MXgDDdBUHaCTT793hyBeDbQuciARDJAW24Q1RCmjcwWIV/pgrlFa4lAXsmhoa c8UPc82Ijrs6ivlTweFf16VBc4nSLX5FB3ls7S5noRhm5/Zsd4PGPgIHgCZcPgkAnU1S/A/rSqf3F LpU+CbVBDvlVAnOq9gfNF+QiTlOHdZVIe4gEYAU3CUjbleywQqV02BKxPVM0C5/oVjMVx3bri75n1 TkBYGmqAXy9usCkHIsG5CBHmphv9MHmqMZQVsxvCzfnI5IO1+7MoloeeW/lxuyd0pU88dZsV/riHw 87i2GJUJtVlMl5IGBNFpqoNUoqmvRfEMeXhy/kUX4Xc03I1coZIgmwLmCSXwx9MaCPFzV/dOOrju2 xjO+2sYyB5BNtxRqUEyXglpujFZqJxxau7E0eXoYgoY9gtFGsspzFkVNntamVXEWVVgzJJr/EWW0y +jNd54MfPRqH+eCGuqlnNLktSAVz1MvVRY1dxUltSlDZT7P2bUoMorIPu8p7ZCg9dyX1+9T6Muc5d Hxf/BBP/ir+3e8JTFQBFOiLNdFtB9KZWZmIExheXRvbiA8amxheXRvbkBzYW1iYS5vcmc+iQI4BBM BAgAiBQJOldK9AhsDBgsJCAcDAgYVCAIJCgsEFgIDAQIeAQIXgAAKCRAADmhBGVaCFWgWD/0ZRi4h N9FK2BdQs9RwNnFZUr7JidAWfCrs37XrA/56olQl3ojn0fQtrP4DbTmCuh0SfMijB24psy1GnkPep naQ6VRf7Dxg/Y8muZELSOtsv2CKt3/02J1BBitrkkqmHyni5fLLYYg6fub0T/8Kwo1qGPdu1hx2BQ RERYtQ/S5d/T0cACdlzi6w8rs5f09hU9Tu4qV1JLKmBTgUWKN969HPRkxiojLQziHVyM/weR5Reu6 FZVNuVBGqBD+sfk/c98VJHjsQhYJijcsmgMb1NohAzwrBKcSGKOWJToGEO/1RkIN8tqGnYNp2G+aR 685D0chgTl1WzPRM6mFG1+n2b2RR95DxumKVpwBwdLPoCkI24JkeDJ7lXSe3uFWISstFGt0HL8Eew P8RuGC8s5h7Ct91HMNQTbjgA+Vi1foWUVXpEintAKgoywaIDlJfTZIl6Ew8ETN/7DLy8bXYgq0Xzh aKg3CnOUuGQV5/nl4OAX/3jocT5Cz/OtAiNYj5mLPeL5z2ZszjoCAH6caqsF2oLyAnLqRgDgR+wTQ T6gMhr2IRsl+cp8gPHBwQ4uZMb+X00c/Amm9VfviT+BI7B66cnC7Zv6Gvmtu2rEjWDGWPqUgccB7h dMKnKDthkA227/82tYoFiFMb/NwtgGrn5n2vwJyKN6SEoygGrNt0SI84y6hEVbQlSmVmZiBMYXl0b 24gPGpsYXl0b25AcHJpbWFyeWRhdGEuY29tPokCOQQTAQIAIwUCU4xmKQIbAwcLCQgHAwIBBhUIAg kKCwQWAgMBAh4BAheAAAoJEAAOaEEZVoIV1H0P/j4OUTwFd7BBbpoSp695qb6HqCzWMuExsp8nZjr uymMaeZbGr3OWMNEXRI1FWNHMtcMHWLP/RaDqCJil28proO+PQ/yPhsr2QqJcW4nr91tBrv/MqItu AXLYlsgXqp4BxLP67bzRJ1Bd2x0bWXurpEXY//VBOLnODqThGEcL7jouwjmnRh9FTKZfBDpFRaEfD FOXIfAkMKBa/c9TQwRpx2DPsl3eFWVCNuNGKeGsirLqCxUg5kWTxEorROppz9oU4HPicL6rRH22Ce 6nOAON2vHvhkUuO3GbffhrcsPD4DaYup4ic+DxWm+DaSSRJ+e1yJvwi6NmQ9P9UAuLG93S2MdNNbo sZ9P8k2mTOVKMc+GooI9Ve/vH8unwitwo7ORMVXhJeU6Q0X7zf3SjwDq2lBhn1DSuTsn2DbsNTiDv qrAaCvbsTsw+SZRwF85eG67eAwouYk+dnKmp1q57LDKMyzysij2oDKbcBlwB/TeX16p8+LxECv51a sjS9TInnipssssUDrHIvoTTXWcz7Y5wIngxDFwT8rPY3EggzLGfK5Zx2Q5S/N0FfmADmKknG/D8qG IcJE574D956tiUDKN4I+/g125ORR1v7bP+OIaayAvq17RP+qcAqkxc0x8iCYVCYDouDyNvWPGRhbL
- UO7mlBpjW9jK9e2fvZY9iw3QzIPGKtClKZWZmIExheXRvbiA8amVmZi5sYXl0b25AcHJpbWFyeWRh dGEuY29tPokCOQQTAQIAIwUCU4xmUAIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEAAOa EEZVoIVzJoQALFCS6n/FHQS+hIzHIb56JbokhK0AFqoLVzLKzrnaeXhE5isWcVg0eoV2oTScIwUSU apy94if69tnUo4Q7YNt8/6yFM6hwZAxFjOXR0ciGE3Q+Z1zi49Ox51yjGMQGxlakV9ep4sV/d5a50 M+LFTmYSAFp6HY23JN9PkjVJC4PUv5DYRbOZ6Y1+TfXKBAewMVqtwT1Y+LPlfmI8dbbbuUX/kKZ5d dhV2736fgyfpslvJKYl0YifUOVy4D1G/oSycyHkJG78OvX4JKcf2kKzVvg7/Rnv+AueCfFQ6nGwPn 0P91I7TEOC4XfZ6a1K3uTp4fPPs1Wn75X7K8lzJP/p8lme40uqwAyBjk+IA5VGd+CVRiyJTpGZwA0 jwSYLyXboX+Dqm9pSYzmC9+/AE7lIgpWj+3iNisp1SWtHc4pdtQ5EU2SEz8yKvDbD0lNDbv4ljI7e flPsvN6vOrxz24mCliEco5DwhpaaSnzWnbAPXhQDWb/lUgs/JNk8dtwmvWnqCwRqElMLVisAbJmC0 BhZ/Ab4sph3EaiZfdXKhiQqSGdK4La3OTJOJYZphPdGgnkvDV9Pl1QZ0ijXQrVIy3zd6VCNaKYq7B AKidn5g/2Q8oio9Tf4XfdZ9dtwcB+bwDJFgvvDYaZ5bI3ln4V3EyW5i2NfXazz/GA/I/ZtbsigCFc 8ftCBKZWZmIExheXRvbiA8amxheXRvbkBrZXJuZWwub3JnPokCOAQTAQIAIgUCWe8u6AIbAwYLCQg HAwIGFQgCCQoLBBYCAwECHgECF4AACgkQAA5oQRlWghUuCg/+Lb/xGxZD2Q1oJVAE37uW308UpVSD 2tAMJUvFTdDbfe3zKlPDTuVsyNsALBGclPLagJ5ZTP+Vp2irAN9uwBuacBOTtmOdz4ZN2tdvNgozz uxp4CHBDVzAslUi2idy+xpsp47DWPxYFIRP3M8QG/aNW052LaPc0cedYxp8+9eiVUNpxF4SiU4i9J DfX/sn9XcfoVZIxMpCRE750zvJvcCUz9HojsrMQ1NFc7MFT1z3MOW2/RlzPcog7xvR5ENPH19ojRD CHqumUHRry+RF0lH00clzX/W8OrQJZtoBPXv9ahka/Vp7kEulcBJr1cH5Wz/WprhsIM7U9pse1f1g Yy9YbXtWctUz8uvDR7shsQxAhX3qO7DilMtuGo1v97I/Kx4gXQ52syh/w6EBny71CZrOgD6kJwPVV AaM1LRC28muq91WCFhs/nzHozpbzcheyGtMUI2Ao4K6mnY+3zIuXPygZMFr9KXE6fF7HzKxKuZMJO aEZCiDOq0anx6FmOzs5E6Jqdpo/mtI8beK+BE7Va6ni7YrQlnT0i3vaTVMTiCThbqsB20VrbMjlhp f8lfK1XVNbRq/R7GZ9zHESlsa35ha60yd/j3pu5hT2xyy8krV8vGhHvnJ1XRMJBAB/UYb6FyC7S+m QZIQXVeAA+smfTT0tDrisj1U5x6ZB9b3nBg65kc=
-User-Agent: Evolution 3.58.3 (3.58.3-1.fc43) 
+	id 1vzgq4-000000086DL-4907
+	for linux-mtd@lists.infradead.org;
+	Mon, 09 Mar 2026 20:04:30 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=u6QhJsrfXBxf/QI0NZjLWMQ++EaBxIYcJBh1io3YxBrPge707G3TfRZv7YLDaKBSxs/fDUjz+aCP1pWyLTWnS8bd1rTlRzfJonyiVbAUHmidnGZYoQ1E3xJ0/LDkyf8+rvSgRMncDui+9MfXU/1+uNV4xcOUMg55rYfMAQn7Y2ksFUgF9YH9nBR7NH2Ar+MdDioU+RkYQGJ5mvcR2cCyoFdJjYKf6cG9BeTP/TDRMjNPT+BtTXmPqgys2uK0HT3uCGOac/tp6rbrM6K39xx0VWXCDk150A0izYIoAgBx26QLGLVkeDBUrwotBXV9tBpOd4pcD6INFrov6swn9Do4Ag==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=4iGWj0n11IaMOv92dLR6ist5yPEOF1ruAucm/hKJkks=;
+ b=dlWlBLvrX8nYQYOF6xvq/DgeJN3z2LZtcj6Y9wE6DvDzVTW8vJrkmlDyIxNwoJQuWiQDcsCNFhYxAqaY/OYMkhpyV1IisXgKdYz+174xNH1YTHKYjVFi39yAoN+crJ/bQc0dvv7r7xFklACtjtFJoHeLQl1Y+p0D9ApRGq9RJJDZpFJ1dE4vcWN8vXwugfou4v7IGjDo5li+LYYJse0LsHkNEvJ1UjRJRu0aE82XNF2GXBAleyFFejLgZaPf8s18uhw2xBgctp3Y+m++4+451k6y8Vu48UKw6AIyXr90/51ZYhHSuPKRbjSwAC5tPz3+EBph70HiK+BH2k8THhq9ww==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4iGWj0n11IaMOv92dLR6ist5yPEOF1ruAucm/hKJkks=;
+ b=gkuUanR3CMxlN7YKiH70VDVDeHbWPyx6HfY8QJBIsnTGPoXaoLIVg8RDqaCVaKGYK5LTWS+ot31SR/sWnyqGWdQiBFK82mIfa4DzAXl4pfFfOqFyKHEgvFgyNxPVllCAR6TxepNxlkMFED2tC4/DGxagFuXAOHsRUe7yxXJ1t++M0QM9QMNzjpwA2BcsK6tI/cRlqH19Yg3QmNGaLppNhpnVWkWmfKhXhbO1oZuxgMIGgWYRqb/fUkBZ+pDMYVpyKUYkrREDkbm5YWEDjcyVgvSnSIrNSrYIGne+dK32MUXopJVoDotgBw/fcdAamkU2GrJj3M9+GxOoV7qNtI2svQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from DU0PR04MB9372.eurprd04.prod.outlook.com (2603:10a6:10:35b::7)
+ by GV2PR04MB11934.eurprd04.prod.outlook.com (2603:10a6:150:2f3::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9678.22; Mon, 9 Mar
+ 2026 20:04:23 +0000
+Received: from DU0PR04MB9372.eurprd04.prod.outlook.com
+ ([fe80::4f6:1e57:c3b9:62b4]) by DU0PR04MB9372.eurprd04.prod.outlook.com
+ ([fe80::4f6:1e57:c3b9:62b4%4]) with mapi id 15.20.9678.020; Mon, 9 Mar 2026
+ 20:04:19 +0000
+From: Frank Li <Frank.Li@nxp.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	linux-mtd@lists.infradead.org (open list:MEMORY TECHNOLOGY DEVICES (MTD)),
+	devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS),
+	linux-kernel@vger.kernel.org (open list)
+Cc: imx@lists.linux.dev,
+	Frank Li <Frank.Li@nxp.com>
+Subject: [PATCH v2 1/3] dt-bindings: mtd: refactor NAND bindings and add nand-controller-legacy.yaml
+Date: Mon,  9 Mar 2026 16:03:42 -0400
+Message-ID: <20260309200351.1791162-1-Frank.Li@nxp.com>
+X-Mailer: git-send-email 2.43.0
+X-ClientProxiedBy: SJ0PR03CA0220.namprd03.prod.outlook.com
+ (2603:10b6:a03:39f::15) To PA4PR04MB9366.eurprd04.prod.outlook.com
+ (2603:10a6:102:2a9::8)
 MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DU0PR04MB9372:EE_|GV2PR04MB11934:EE_
+X-MS-Office365-Filtering-Correlation-Id: b8c1de43-6029-42f5-9fab-08de7e170610
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|19092799006|1800799024|7416014|52116014|366016|376014|13003099007|38350700014;
+X-Microsoft-Antispam-Message-Info: s+kNz44AW4vJIYyLEIGpUTTLWICWLGNLZqk8fmpmav0JLivWwTmMbNy7h7R8+lslD/gcOcNh90+bI8qB41dvhOs3hRAIwBs3dd+D16OdnFOKTedGng51lWu6/39nKGlccsSztKSU4MCEB3A+1650YJEHYR/CI0L6BvVPO88edEl2rqGroNo5L00z5sRsmZMPY/3907EATEyuo+gz4zLFedakDkfjgdhRWik2dNHY6IkFs6VKfYmoaKCWbDSfIEr3jJPJiDSpGaEYrNpjzvJNqpIJhRrxyniWxXZNq03nYGyYEOjbmSlrYeRz+8PRQBnbYZ5xOLJE0eaSTbonICiPF8H7etJowPH3mQ2QxdpaF6liGn6wUyZHblTG7r48n0W2/v3h6D+APYQiphIFKV2gGAJRJSNqCQrJ9pY4ixsekUT0NHFHaGDH660xxuPT2IYqvnZWX5OmcEauD7pRILibPZli8f5cpTuBXIVWs7M2ooQk4TXMVnh5DjZkrdVP2oW1Uv6BaovQL6qSPCS8si7gs23z6v/QYau/szrGdl2zEeT8oTZ0Coo+ZjBttqsgTXl84qJPsq1YCVIEs/8J2IgDOsW3lGIw+w3yh1ceJ9fY2YGPbq+BeQozsvF/Hc3dHVuNrgOIhVoLYCzeQsd+HX7PpRrL9VeE2tS8bB+D0cFJHh/wFENzrGuuwFKbr3ztcOjB/9jb8OXPTgc6wvi6ugzMs5Ris4PhUwJHDTkGhwm3ds+b95ylxatrvLfx95L3iXoI
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9372.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(19092799006)(1800799024)(7416014)(52116014)(366016)(376014)(13003099007)(38350700014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?EOi41fELC27EaYyHC+aS+ygUDxomTtuxaZGfrMzDSFxwWHcV3askk26Q8pKU?=
+ =?us-ascii?Q?Gzqw//82D0joBzhhB5zOTnXSx2HJCRlzwW4E6HdjlEcOADlfmxmKKgEMfXL6?=
+ =?us-ascii?Q?dlRd8ZzDv+nLzcSTrytDhLBnZbSW06/1Vw4jZ/TSzwXexsUKRlEKOhXRLs1f?=
+ =?us-ascii?Q?7C6uQnbWhRzKzcIleClvDqIKEQ8N2ssi0tlXSY89ZM7p3UJxIstoAoZh+b1R?=
+ =?us-ascii?Q?LQ7/aiKhNvuujz9AlAJJ45ZEicpmFGx4O3uUbbPumcunL8Nmk+2ADCGWimbU?=
+ =?us-ascii?Q?/2CSB+yYt28V33T7sTCCmZOjb4e5P49o7anvjQykiBzoy2fvBQAC/pHTbpY7?=
+ =?us-ascii?Q?cID66hQ6YYJnQ4lxVcxBOUmGcvHMdMtrrmNbg1liOKeTvmNDUF4g5vJa6pz5?=
+ =?us-ascii?Q?xWLsQWWH2THI1MsEVppAHjO6bAYVzRFQsorojHRNdvi+jh9CuDKRGhn1W8FY?=
+ =?us-ascii?Q?1ijD+bHiR+sVBcbNxiLA9VXZf2HLnhjjVe5dk+36Rmc+89SYub0H01K2dKaU?=
+ =?us-ascii?Q?Q0VtOXlyKDeYn+b6EvzjosB+VX8oAdKpu5ZiVeAf6BufF9YZoeHeATeoBVmc?=
+ =?us-ascii?Q?IiAIha2TCJh2hDLn/OkLLjlieqOXkQhRZk7yLWIJ/A0mkD0boJNTejPuW938?=
+ =?us-ascii?Q?ee8DLQqpCVhWQv3+F7fCOs/tw5g65ThyEAFV15w41hoHsL11bCG0ryUOBEqi?=
+ =?us-ascii?Q?n9/b51z2Emvc5yWkmeghcBjIL1GnZThCEWT8nNnOaEPydJ8zlkIMt8MVTCKR?=
+ =?us-ascii?Q?QInoViEYi74dzH0Jfa6mZDN+cEIuUAWHKq1c3uR+jwyeijxubrmqq+zTFd7+?=
+ =?us-ascii?Q?2jN9M9YrFk5nwsWtPtnAWdwjMKVIm6Z91W+lx183E7RdqL5wU0+4bDF4Gzuy?=
+ =?us-ascii?Q?gCahU1Y6DdyeQX5dCXPfd4GcJZPnVijzPza5yon510bNLZ7+QwSJi0jXd3lj?=
+ =?us-ascii?Q?ozOGc1HJv8hr7eOmRWlBmowCZbhLcVKy2lA7NZTyY0VNc12pA7rf62Ie4Apf?=
+ =?us-ascii?Q?h99Q3oMqSOzYrvS3k5/3c+GUY+RPe7pTqrIkxY30foHJPpXfWXquDSpaIesN?=
+ =?us-ascii?Q?VEYaDFzcNI17SL+F5njbTdaJpjuPzJJN8TQ/yuxCo5BXWPgCEfqVQfydpW8h?=
+ =?us-ascii?Q?mvy+PL2YC/eg6THHixY6AR8dSpHnDTFcXvw92WCVA4Z5Tm1tqXXWffcRD5CE?=
+ =?us-ascii?Q?oJ02soY/s8HFQOzGPNnAfBCBDXIA988Z880WZsSwW9jWVKxXovhRfeLBsuQk?=
+ =?us-ascii?Q?6Flmp0jv6nJZ6EH2rdGKrgkEg+NfLvzZgg+t1/BELMsKuqG99sRkfVx76SGC?=
+ =?us-ascii?Q?68/K/xUl04/IGoCIZQwilkNVjQ9y8qhjgGSawB0ukgUg3eu58xMxFuat7X28?=
+ =?us-ascii?Q?n1aFPIRa4FMckgYE77XFA/F7wetPxfxPuXVPYiy01rkCvIam9Zy4E6ISbadN?=
+ =?us-ascii?Q?dffWqKV1NyuXidL0JpnmubFICFpZTTBN3zU7RAAeubq/6FlJb0lWQFwtyIfE?=
+ =?us-ascii?Q?NnptzQ8CI4zvwjV3B20OI5Oul4ZELTf9No0wNV2U+teC/i8y5HohIWPC+rrL?=
+ =?us-ascii?Q?Hv7r3S5HHMqC/aAnI9Pv6EJvZie7ypZPDMmKXUWD+QZGch0JDQ46YZNjsHXu?=
+ =?us-ascii?Q?AURCjEUFQAlXtLcq9TL4mRj+Zs+5cNa/zlSpKa6q8ibOn8Q+Ihb20ZtghoK7?=
+ =?us-ascii?Q?iyVEWHk1ZGBNnrA7m1Tzv5f/Xb2alPcrytmHelwmcmvquTUi6E07/JzTWMXS?=
+ =?us-ascii?Q?Vfs6K/E3JA=3D=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b8c1de43-6029-42f5-9fab-08de7e170610
+X-MS-Exchange-CrossTenant-AuthSource: PA4PR04MB9366.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Mar 2026 20:04:19.5719
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9YmPzaafGUXFkFDwGLZOb0KZg6wPLCdg9Lk9k1RVq/rcfI3liUH1E4Rq0CpwkkJAUpF8k9Rt4+t+6+Aqv7Hi6g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: GV2PR04MB11934
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260309_130429_220278_29493062 
+X-CRM114-Status: GOOD (  19.95  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,116 +141,425 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 2026-03-09 at 15:00 -0400, Mimi Zohar wrote:
-> On Mon, 2026-03-09 at 13:59 -0400, Jeff Layton wrote:
-> > On Mon, 2026-03-09 at 13:47 -0400, Mimi Zohar wrote:
-> > > [ I/O socket time out.  Trimming the To list.]
-> > > 
-> > > On Wed, 2026-03-04 at 10:32 -0500, Jeff Layton wrote:
-> > > > This version squashes all of the format-string changes and the i_ino
-> > > > type change into the same patch. This results in a giant 600+ line patch
-> > > > at the end of the series, but it does remain bisectable.  Because the
-> > > > patchset was reorganized (again) some of the R-b's and A-b's have been
-> > > > dropped.
-> > > > 
-> > > > The entire pile is in the "iino-u64" branch of my tree, if anyone is
-> > > > interested in testing this.
-> > > > 
-> > > >     https://git.kernel.org/pub/scm/linux/kernel/git/jlayton/linux.git/
-> > > > 
-> > > > Original cover letter follows:
-> > > > 
-> > > > ----------------------8<-----------------------
-> > > > 
-> > > > Christian said [1] to "just do it" when I proposed this, so here we are!
-> > > > 
-> > > > For historical reasons, the inode->i_ino field is an unsigned long,
-> > > > which means that it's 32 bits on 32 bit architectures. This has caused a
-> > > > number of filesystems to implement hacks to hash a 64-bit identifier
-> > > > into a 32-bit field, and deprives us of a universal identifier field for
-> > > > an inode.
-> > > > 
-> > > > This patchset changes the inode->i_ino field from an unsigned long to a
-> > > > u64. This shouldn't make any material difference on 64-bit hosts, but
-> > > > 32-bit hosts will see struct inode grow by at least 4 bytes. This could
-> > > > have effects on slabcache sizes and field alignment.
-> > > > 
-> > > > The bulk of the changes are to format strings and tracepoints, since the
-> > > > kernel itself doesn't care that much about the i_ino field. The first
-> > > > patch changes some vfs function arguments, so check that one out
-> > > > carefully.
-> > > > 
-> > > > With this change, we may be able to shrink some inode structures. For
-> > > > instance, struct nfs_inode has a fileid field that holds the 64-bit
-> > > > inode number. With this set of changes, that field could be eliminated.
-> > > > I'd rather leave that sort of cleanups for later just to keep this
-> > > > simple.
-> > > > 
-> > > > Much of this set was generated by LLM, but I attributed it to myself
-> > > > since I consider this to be in the "menial tasks" category of LLM usage.
-> > > > 
-> > > > [1]: https://lore.kernel.org/linux-fsdevel/20260219-portrait-winkt-959070cee42f@brauner/
-> > > > 
-> > > > Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> > > 
-> > > Jeff, missing from this patch set is EVM.  In hmac_add_misc() EVM copies the
-> > > i_ino and calculates either an HMAC or file meta-data hash, which is then
-> > > signed. 
-> > > 
-> > > 
-> > 
-> > Thanks Mimi, good catch.
-> > 
-> > It looks like we should just be able to change the ino field to a u64
-> > alongside everything else. Something like this:
-> > 
-> > diff --git a/security/integrity/evm/evm_crypto.c b/security/integrity/evm/evm_crypto.c
-> > index c0ca4eedb0fe..77b6c2fa345e 100644
-> > --- a/security/integrity/evm/evm_crypto.c
-> > +++ b/security/integrity/evm/evm_crypto.c
-> > @@ -144,7 +144,7 @@ static void hmac_add_misc(struct shash_desc *desc, struct inode *inode,
-> >                           char type, char *digest)
-> >  {
-> >         struct h_misc {
-> > -               unsigned long ino;
-> > +               u64 ino;
-> >                 __u32 generation;
-> >                 uid_t uid;
-> >                 gid_t gid;
-> > 
-> 
-> Agreed.
->
-> > 
-> > That should make no material difference on 64-bit hosts. What's the
-> > effect on 32-bit? Will they just need to remeasure everything or would
-> > the consequences be more dire? Do we have any clue whether anyone is
-> > using EVM in 32-bit environments?
-> 
-> All good questions. Unfortunately I don't know the answer to most of them. What
-> we do know: changing the size of the i_ino field would affect EVM file metadata
-> verification and would require relabeling the filesystem.  Even packages
-> containing EVM portable signatures, which don't include or verify the i_ino
-> number, would be affected.
-> 
+The modern NAND controller binding requires NAND chips to be described as
+child nodes of the controller, for example:
 
-Ouch. Technically, I guess this is ABI...
+  nand-controller {
+          ...
+          nand@0 {
+                  /* raw NAND chip properties */
+          };
+  };
 
-While converting to u64 seems like the ideal thing to do, the other
-option might be to just keep this as an unsigned long for now.
+However, many existing device trees place NAND chip properties directly
+under the controller node because those controllers support only a single
+chip. This layout is still widely used by older platforms and by other DT
+consumers such as U-Boot. Migrating all existing users to the new layout
+will take time.
 
-No effect on 64-bit, but that could keep things working 32-bit when the
-i_ino casts properly to a u32. ext4 would be fine since they don't
-issue inode numbers larger than UINT_MAX. xfs and btrfs are a bit more
-iffy, but worst case they'd just need to be relabeled (which is what
-they'll need to do anyway).
+Several kernel drivers, such as ams-delta.c, davinci_nand.c and
+fsmc_nand.c, still expect the legacy layout where raw NAND properties are
+defined in the controller node.
 
-If we do that, then we should probably add a comment to this function
-explaining why it's an unsigned long.
+To support both layouts during the transition:
 
-Thoughts?
+- Extract NAND chip-related properties into separate schemas
+  (nand-property.yaml and raw-nand-property.yaml) from
+  nand-chip.yaml and raw-nand-chip.yaml.
+- Introduce nand-controller-legacy.yaml to allow both the
+  legacy and modern layouts.
+- Add a select condition in nand-controller.yaml to prevent
+  node name pattern matching for fsl,* NAND controllers.
+
+Keep compatibility with existing device trees while allowing gradual
+migration to the modern binding structure.
+
+Signed-off-by: Frank Li <Frank.Li@nxp.com>
+---
+change in v2
+- none
+
+change dts layout break boot
+https://lore.kernel.org/imx/177281063848.253518.12995342124719933118.b4-ty@nxp.com/T/#t
+---
+ .../devicetree/bindings/mtd/nand-chip.yaml    | 46 +-----------
+ ...oller.yaml => nand-controller-legacy.yaml} | 46 +++++-------
+ .../bindings/mtd/nand-controller.yaml         | 11 +++
+ .../{nand-chip.yaml => nand-property.yaml}    | 14 +---
+ .../bindings/mtd/raw-nand-chip.yaml           | 74 +------------------
+ ...-nand-chip.yaml => raw-nand-property.yaml} | 15 +---
+ 6 files changed, 36 insertions(+), 170 deletions(-)
+ copy Documentation/devicetree/bindings/mtd/{nand-controller.yaml => nand-controller-legacy.yaml} (69%)
+ copy Documentation/devicetree/bindings/mtd/{nand-chip.yaml => nand-property.yaml} (89%)
+ copy Documentation/devicetree/bindings/mtd/{raw-nand-chip.yaml => raw-nand-property.yaml} (94%)
+
+diff --git a/Documentation/devicetree/bindings/mtd/nand-chip.yaml b/Documentation/devicetree/bindings/mtd/nand-chip.yaml
+index 609d4a4ddd80e..8800d1d072665 100644
+--- a/Documentation/devicetree/bindings/mtd/nand-chip.yaml
++++ b/Documentation/devicetree/bindings/mtd/nand-chip.yaml
+@@ -11,6 +11,7 @@ maintainers:
+ 
+ allOf:
+   - $ref: mtd.yaml#
++  - $ref: nand-property.yaml
+ 
+ description: |
+   This file covers the generic description of a NAND chip. It implies that the
+@@ -22,51 +23,6 @@ properties:
+     description:
+       Contains the chip-select IDs.
+ 
+-  nand-ecc-engine:
+-    description: |
+-      A phandle on the hardware ECC engine if any. There are
+-      basically three possibilities:
+-      1/ The ECC engine is part of the NAND controller, in this
+-      case the phandle should reference the parent node.
+-      2/ The ECC engine is part of the NAND part (on-die), in this
+-      case the phandle should reference the node itself.
+-      3/ The ECC engine is external, in this case the phandle should
+-      reference the specific ECC engine node.
+-    $ref: /schemas/types.yaml#/definitions/phandle
+-
+-  nand-use-soft-ecc-engine:
+-    description: Use a software ECC engine.
+-    type: boolean
+-
+-  nand-no-ecc-engine:
+-    description: Do not use any ECC correction.
+-    type: boolean
+-
+-  nand-ecc-algo:
+-    description:
+-      Desired ECC algorithm.
+-    $ref: /schemas/types.yaml#/definitions/string
+-    enum: [hamming, bch, rs]
+-
+-  nand-ecc-strength:
+-    description:
+-      Maximum number of bits that can be corrected per ECC step.
+-    $ref: /schemas/types.yaml#/definitions/uint32
+-    minimum: 1
+-
+-  nand-ecc-step-size:
+-    description:
+-      Number of data bytes covered by a single ECC step.
+-    $ref: /schemas/types.yaml#/definitions/uint32
+-    minimum: 1
+-
+-  secure-regions:
+-    description:
+-      Regions in the NAND chip which are protected using a secure element
+-      like Trustzone. This property contains the start address and size of
+-      the secure regions present.
+-    $ref: /schemas/types.yaml#/definitions/uint64-matrix
+-
+ required:
+   - reg
+ 
+diff --git a/Documentation/devicetree/bindings/mtd/nand-controller.yaml b/Documentation/devicetree/bindings/mtd/nand-controller-legacy.yaml
+similarity index 69%
+copy from Documentation/devicetree/bindings/mtd/nand-controller.yaml
+copy to Documentation/devicetree/bindings/mtd/nand-controller-legacy.yaml
+index 28167c0cf2719..d6e612413df19 100644
+--- a/Documentation/devicetree/bindings/mtd/nand-controller.yaml
++++ b/Documentation/devicetree/bindings/mtd/nand-controller-legacy.yaml
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+ %YAML 1.2
+ ---
+-$id: http://devicetree.org/schemas/mtd/nand-controller.yaml#
++$id: http://devicetree.org/schemas/mtd/nand-controller-legacy.yaml#
+ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+ title: NAND Controller Common Properties
+@@ -10,21 +10,22 @@ maintainers:
+   - Miquel Raynal <miquel.raynal@bootlin.com>
+   - Richard Weinberger <richard@nod.at>
+ 
+-description: |
++description: >
+   The NAND controller should be represented with its own DT node, and
+   all NAND chips attached to this controller should be defined as
+   children nodes of the NAND controller. This representation should be
+   enforced even for simple controllers supporting only one chip.
+ 
++  This is only for legacy nand controller, new controller should use
++  nand-controller.yaml
++
+ properties:
+-  $nodename:
+-    pattern: "^nand-controller(@.*)?"
+ 
+   "#address-cells":
+     const: 1
+ 
+   "#size-cells":
+-    const: 0
++    enum: [0, 1]
+ 
+   ranges: true
+ 
+@@ -39,33 +40,26 @@ properties:
+     minItems: 1
+     maxItems: 8
+ 
++  partitions:
++    type: object
++
++    required:
++      - compatible
++
+ patternProperties:
+   "^nand@[a-f0-9]$":
+     type: object
+     $ref: raw-nand-chip.yaml#
+ 
+-required:
+-  - "#address-cells"
+-  - "#size-cells"
++  "^partition@[0-9a-f]+$":
++    type: object
++    $ref: /schemas/mtd/partitions/partition.yaml#/$defs/partition-node
++    deprecated: true
++
++allOf:
++  - $ref: raw-nand-property.yaml#
++  - $ref: nand-property.yaml#
+ 
+ # This is a generic file other binding inherit from and extend
+ additionalProperties: true
+ 
+-examples:
+-  - |
+-    nand-controller {
+-      #address-cells = <1>;
+-      #size-cells = <0>;
+-      cs-gpios = <0>, <&gpioA 1>; /* A single native CS is available */
+-
+-      /* controller specific properties */
+-
+-      nand@0 {
+-        reg = <0>; /* Native CS */
+-        /* NAND chip specific properties */
+-      };
+-
+-      nand@1 {
+-        reg = <1>; /* GPIO CS */
+-      };
+-    };
+diff --git a/Documentation/devicetree/bindings/mtd/nand-controller.yaml b/Documentation/devicetree/bindings/mtd/nand-controller.yaml
+index 28167c0cf2719..81d4ffc3fc1fa 100644
+--- a/Documentation/devicetree/bindings/mtd/nand-controller.yaml
++++ b/Documentation/devicetree/bindings/mtd/nand-controller.yaml
+@@ -16,6 +16,17 @@ description: |
+   children nodes of the NAND controller. This representation should be
+   enforced even for simple controllers supporting only one chip.
+ 
++select:
++  allOf:
++    - properties:
++        $nodename:
++          pattern: "^nand-controller(@.*)?"
++    - not:
++        properties:
++          compatible:
++            contains:
++              pattern: "^fsl,"
++
+ properties:
+   $nodename:
+     pattern: "^nand-controller(@.*)?"
+diff --git a/Documentation/devicetree/bindings/mtd/nand-chip.yaml b/Documentation/devicetree/bindings/mtd/nand-property.yaml
+similarity index 89%
+copy from Documentation/devicetree/bindings/mtd/nand-chip.yaml
+copy to Documentation/devicetree/bindings/mtd/nand-property.yaml
+index 609d4a4ddd80e..5bbc93e506fd8 100644
+--- a/Documentation/devicetree/bindings/mtd/nand-chip.yaml
++++ b/Documentation/devicetree/bindings/mtd/nand-property.yaml
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+ %YAML 1.2
+ ---
+-$id: http://devicetree.org/schemas/mtd/nand-chip.yaml#
++$id: http://devicetree.org/schemas/mtd/nand-property.yaml#
+ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+ title: NAND Chip Common Properties
+@@ -9,19 +9,12 @@ title: NAND Chip Common Properties
+ maintainers:
+   - Miquel Raynal <miquel.raynal@bootlin.com>
+ 
+-allOf:
+-  - $ref: mtd.yaml#
+-
+ description: |
+-  This file covers the generic description of a NAND chip. It implies that the
++  This file covers the generic property of a NAND chip. It implies that the
+   bus interface should not be taken into account: both raw NAND devices and
+   SPI-NAND devices are concerned by this description.
+ 
+ properties:
+-  reg:
+-    description:
+-      Contains the chip-select IDs.
+-
+   nand-ecc-engine:
+     description: |
+       A phandle on the hardware ECC engine if any. There are
+@@ -67,8 +60,5 @@ properties:
+       the secure regions present.
+     $ref: /schemas/types.yaml#/definitions/uint64-matrix
+ 
+-required:
+-  - reg
+-
+ # This file can be referenced by more specific devices (like spi-nands)
+ additionalProperties: true
+diff --git a/Documentation/devicetree/bindings/mtd/raw-nand-chip.yaml b/Documentation/devicetree/bindings/mtd/raw-nand-chip.yaml
+index 092448d7bfc5c..792de3e3c6eee 100644
+--- a/Documentation/devicetree/bindings/mtd/raw-nand-chip.yaml
++++ b/Documentation/devicetree/bindings/mtd/raw-nand-chip.yaml
+@@ -11,6 +11,7 @@ maintainers:
+ 
+ allOf:
+   - $ref: nand-chip.yaml#
++  - $ref: raw-nand-property.yaml#
+ 
+ description: |
+   The ECC strength and ECC step size properties define the user
+@@ -31,79 +32,6 @@ properties:
+     description:
+       Contains the chip-select IDs.
+ 
+-  nand-ecc-placement:
+-    description:
+-      Location of the ECC bytes. This location is unknown by default
+-      but can be explicitly set to "oob", if all ECC bytes are
+-      known to be stored in the OOB area, or "interleaved" if ECC
+-      bytes will be interleaved with regular data in the main area.
+-    $ref: /schemas/types.yaml#/definitions/string
+-    enum: [ oob, interleaved ]
+-    deprecated: true
+-
+-  nand-ecc-mode:
+-    description:
+-      Legacy ECC configuration mixing the ECC engine choice and
+-      configuration.
+-    $ref: /schemas/types.yaml#/definitions/string
+-    enum: [none, soft, soft_bch, hw, hw_syndrome, on-die]
+-    deprecated: true
+-
+-  nand-bus-width:
+-    description:
+-      Bus width to the NAND chip
+-    $ref: /schemas/types.yaml#/definitions/uint32
+-    enum: [8, 16]
+-    default: 8
+-
+-  nand-on-flash-bbt:
+-    description:
+-      With this property, the OS will search the device for a Bad
+-      Block Table (BBT). If not found, it will create one, reserve
+-      a few blocks at the end of the device to store it and update
+-      it as the device ages. Otherwise, the out-of-band area of a
+-      few pages of all the blocks will be scanned at boot time to
+-      find Bad Block Markers (BBM). These markers will help to
+-      build a volatile BBT in RAM.
+-    $ref: /schemas/types.yaml#/definitions/flag
+-
+-  nand-ecc-maximize:
+-    description:
+-      Whether or not the ECC strength should be maximized. The
+-      maximum ECC strength is both controller and chip
+-      dependent. The ECC engine has to select the ECC config
+-      providing the best strength and taking the OOB area size
+-      constraint into account. This is particularly useful when
+-      only the in-band area is used by the upper layers, and you
+-      want to make your NAND as reliable as possible.
+-    $ref: /schemas/types.yaml#/definitions/flag
+-
+-  nand-is-boot-medium:
+-    description:
+-      Whether or not the NAND chip is a boot medium. Drivers might
+-      use this information to select ECC algorithms supported by
+-      the boot ROM or similar restrictions.
+-    $ref: /schemas/types.yaml#/definitions/flag
+-
+-  nand-rb:
+-    description:
+-      Contains the native Ready/Busy IDs.
+-    $ref: /schemas/types.yaml#/definitions/uint32-array
+-
+-  rb-gpios:
+-    description:
+-      Contains one or more GPIO descriptor (the numper of descriptor
+-      depends on the number of R/B pins exposed by the flash) for the
+-      Ready/Busy pins. Active state refers to the NAND ready state and
+-      should be set to GPIOD_ACTIVE_HIGH unless the signal is inverted.
+-
+-  wp-gpios:
+-    description:
+-      Contains one GPIO descriptor for the Write Protect pin.
+-      Active state refers to the NAND Write Protect state and should be
+-      set to GPIOD_ACTIVE_LOW unless the signal is inverted.
+-    maxItems: 1
+-
+ required:
+   - reg
+ 
+diff --git a/Documentation/devicetree/bindings/mtd/raw-nand-chip.yaml b/Documentation/devicetree/bindings/mtd/raw-nand-property.yaml
+similarity index 94%
+copy from Documentation/devicetree/bindings/mtd/raw-nand-chip.yaml
+copy to Documentation/devicetree/bindings/mtd/raw-nand-property.yaml
+index 092448d7bfc5c..f853b72426c43 100644
+--- a/Documentation/devicetree/bindings/mtd/raw-nand-chip.yaml
++++ b/Documentation/devicetree/bindings/mtd/raw-nand-property.yaml
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+ %YAML 1.2
+ ---
+-$id: http://devicetree.org/schemas/mtd/raw-nand-chip.yaml#
++$id: http://devicetree.org/schemas/mtd/raw-nand-property.yaml#
+ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+ title: Raw NAND Chip Common Properties
+@@ -9,9 +9,6 @@ title: Raw NAND Chip Common Properties
+ maintainers:
+   - Miquel Raynal <miquel.raynal@bootlin.com>
+ 
+-allOf:
+-  - $ref: nand-chip.yaml#
+-
+ description: |
+   The ECC strength and ECC step size properties define the user
+   desires in terms of correction capability of a controller. Together,
+@@ -24,13 +21,6 @@ description: |
+   specify the value(s) they support.
+ 
+ properties:
+-  $nodename:
+-    pattern: "^nand@[a-f0-9]$"
+-
+-  reg:
+-    description:
+-      Contains the chip-select IDs.
+-
+   nand-ecc-placement:
+     description:
+       Location of the ECC bytes. This location is unknown by default
+@@ -104,8 +94,5 @@ properties:
+       set to GPIOD_ACTIVE_LOW unless the signal is inverted.
+     maxItems: 1
+ 
+-required:
+-  - reg
+-
+ # This is a generic file other binding inherit from and extend
+ additionalProperties: true
 -- 
-Jeff Layton <jlayton@kernel.org>
+2.43.0
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
