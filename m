@@ -4,157 +4,129 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E603AFCA17B
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 Mar 2026 20:04:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EAA51FCA17B
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 Mar 2026 20:11:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ZdyFdXSUgtxVTsOlNL6hklxFHZpwK9I45hwSXwHh/AM=; b=ZHHVLsKkwZzF6S
-	xQq64tefdu+rmclmNjR5ic2oRvOM3zo12mUeb8VZsNrGBRaYdzEqDLucMxAoDXQdBhfjZ2ngv1HhY
-	tRzf/g/4zvsC1lltP+gM7v66DG5VuCEEpwL2XDjLvAMqCBo9WyiSb47Jxp/wL+Et+t8A9qgA8RMHv
-	tcehHUjLP6ms+CMrYGWCkv5CDXFjasZcYJh3w+nMJ6cujoOUUw2dqv/Fa66Sicf+pPm3xgrXkvLpj
-	EdXwbc2VjvDLZZXCH5EB6nh0hWcu8xKyPWoUi473zXGCGlRPhw5T+9MPog4xQQGMMt/fbCV/8IX7S
-	B1Qlz5ye62gURtMY2ajA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:References:
+	In-Reply-To:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=B2utpsWucSvTOY5fAlfLWQpExl/Tlt6AkLtJYzEQjrA=; b=NQPkdXlF7XifpywSW131IA9Kqi
+	P8J9ezCjhw12pdC+7fZhcAjOmO9xYgQg6B0RdBa5PQWHQdqyWxWCog1Xhj/SHPcITGaJfr64ykgCP
+	i1/Mnz5fkc/G/kBBcchUwk/iHjBIpr/PWrKJeM7JMur/neLgVp4PfMaL5nv9/sa5//baNDnDB8s4A
+	8wGtsg/zGiNvWUXLjHZuVTUt9/fPhgkSSrXG/DSAcui8smgm6Yj9ouEycXLXXiUPqJjJ53S1Bdrqv
+	2MuQJBI1UOqzGqnnfCe6j3JCUeu3AYfm46/laYWSutNB7L2Ht1OwhewfoceRq+g7PjsMavX1HAvW4
+	6u4gMNkg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vzgqL-000000086HE-2NTm;
-	Mon, 09 Mar 2026 20:04:45 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1vzgwh-000000086j2-3uSr;
+	Mon, 09 Mar 2026 20:11:19 +0000
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vzgqJ-000000086GP-1up9;
-	Mon, 09 Mar 2026 20:04:43 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=MIME-Version:Content-Transfer-Encoding
-	:Content-Type:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=xLz+JdaK1h7LNsrboNwLyQvHuNruttFneXvlMhaazd4=; b=Ac8Edr1Gf1zNjz5nWCSfk4jw+o
-	dUgBk9A0x9/8DIsxQcVV8Yu/XLiW/K7QtWA1Ii8bMn+GpC1tMQvDhhu9qnxU4yoz39Z0oXPtTIIKt
-	C8KkFWvV0pUbQUzvpL4DbviQxO03OUXMZoM+g4gIHtYJFf29PvTmvL0mAPEqZxuFdPqWkP6oS4neX
-	ZuP171J1phEjLrd1zVFgmX+CQNEYT+Z6Xmu1mFPUH5DqNhysqa+R/Tu7DeYEDLFY5Y1/xMKZnWLrh
-	smdSm1VjD7IKOvYc4aYxqxNVyzureGwv26ZSaxRBz2+C3FynzO6gTdGSF7e0AMTcHvglQHSRBLi0d
-	EJc6QDOA==;
-Received: from mail-westeuropeazon11010069.outbound.protection.outlook.com ([52.101.69.69] helo=AM0PR83CU005.outbound.protection.outlook.com)
-	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vzgqF-0000000D9mb-00vp;
-	Mon, 09 Mar 2026 20:04:41 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=T4fMgWLqsKJOKHNhR+Goz+7Y1dEINpK86+S76Ctc6IowSb0uPbsT1y5CKHayAwMm0LoKsgg8P1Y7wJfMFQSjqpcP+Y5y5AWa7UncZ1zrY34QaWloUxZVXiqrVb/6HErepAU74Nj3VvNJ+nCpCf66EAPbwOufgkmH0NWt2uMT+SczoGHw4J4qKZn09VIr3CBKiaQPQ/h1DrOLfNvD0AGBKrVAMsIepeIHcV5zbuCH0xS0BW5yZ95ISxpOjBY3PtvvDcoBzowPa3apfPVXbnhpF/RbdG65UreJc/qDR+ufi67IEIQZCgIg7I4kU+sRL9yV8cj/TiobvqKJBOEtRZU4ag==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xLz+JdaK1h7LNsrboNwLyQvHuNruttFneXvlMhaazd4=;
- b=q9N9tj2bKBxLUOVO5GdBciuSPaw9+HU/ya2tRrkoVK6JIXfNPR9JQYBdm658S/mYrh+LekZaiZaLgONTgn1QlktiJGg0hOZlBqveSEKByNC1U7grEHB8Qx9DMrdz+XeHUobuL47mxQRQQ8g2uKcW9rfyinXkKsFpVU8FtebID+x4PWNzFoTr35UZqpELwEdMUt8jDUydg89dZQihy29XII0rvvGzmPO6fGPRY4Ua/pVe9f6pH9Y2mU37gQKTnyxQCJM4i9dTQxOnfCedx1J3VW5l6uSE2RH5PAuf96RhW6Kq1X3N7RGy4fR6PUM7M1Qr+Ruhvpckiyvx5gEKDdJxqw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xLz+JdaK1h7LNsrboNwLyQvHuNruttFneXvlMhaazd4=;
- b=elb5z1ex1+O+TADDqmI3ZL44GlT65gNEeI7KKE0z9zgIqv0j3Da5EwU7BKCLSJ09vb1IiWNwXORJVBn382CVaI697k6MTm4pl3A/km1zWmhBNA6t3SoCGea5s9Ng0fa92W8vR1nc2P/RE+oc58qGGcnf7bJP1sIEjKnET98/ycq0uuxi+eWmtuFOGYwG6bbCSXwCVqnBN3gZtZWow80IqvMJILLPKhx7fCqhwcGmmGRSiFDx+ZRHqM2YMjsf5J4Nh2Jq3cQswJw0YUfZksUPoh3IZn8M9b3x/ulyUv6m+ykK2l/dH7IDpAgvBcCHc6980Ba7ZCA7luaq37MFHr5gxA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from DU0PR04MB9372.eurprd04.prod.outlook.com (2603:10a6:10:35b::7)
- by GV2PR04MB11934.eurprd04.prod.outlook.com (2603:10a6:150:2f3::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9678.22; Mon, 9 Mar
- 2026 20:04:36 +0000
-Received: from DU0PR04MB9372.eurprd04.prod.outlook.com
- ([fe80::4f6:1e57:c3b9:62b4]) by DU0PR04MB9372.eurprd04.prod.outlook.com
- ([fe80::4f6:1e57:c3b9:62b4%4]) with mapi id 15.20.9678.020; Mon, 9 Mar 2026
- 20:04:32 +0000
-From: Frank Li <Frank.Li@nxp.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Frank Li <Frank.Li@nxp.com>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-	linux-mtd@lists.infradead.org (open list:MEMORY TECHNOLOGY DEVICES (MTD)),
-	devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS),
-	imx@lists.linux.dev (open list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE),
-	linux-arm-kernel@lists.infradead.org (moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE),
-	linux-kernel@vger.kernel.org (open list)
-Cc: imx@lists.linux.dev
-Subject: [PATCH v2 3/3] dt-bindings: mtd: mxc-nand: add missing compatible string and ref to nand-controller-legacy.yaml
-Date: Mon,  9 Mar 2026 16:03:44 -0400
-Message-ID: <20260309200351.1791162-3-Frank.Li@nxp.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260309200351.1791162-1-Frank.Li@nxp.com>
-References: <20260309200351.1791162-1-Frank.Li@nxp.com>
-X-ClientProxiedBy: SJ0PR03CA0220.namprd03.prod.outlook.com
- (2603:10b6:a03:39f::15) To PA4PR04MB9366.eurprd04.prod.outlook.com
- (2603:10a6:102:2a9::8)
+	id 1vzgwe-000000086iT-20HA;
+	Mon, 09 Mar 2026 20:11:18 +0000
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 629FwFY71433673;
+	Mon, 9 Mar 2026 20:11:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=J+MReH
+	kdFCzDINevGmN7BYrD5h16dkVpWOVjmnX1Q/k=; b=AMPyvjp0jQUNgXn6Hk1tmf
+	EG4FCBlJk8vU0dzchEkhTCFJFLesmCchgPistcAgAs639vnP9pptng8kXMAbzOia
+	q5NshJyvTNfof8gdYp1GzwxZulybshI3PqRKjOb/SaI0UPEJrIt4jyexAIN48Wm0
+	w/Mw3wPT6W3BQmrKZWXHn6/DFARVTupqS/iLqqNyLrME9wToruViZdwdbBsu3Qtl
+	0zEFIHGN04u6+OjrW21Tgfm9LJbMSCz1cBRZneiIQ0NfJfCZ4Y4F3a9ghOwfDLyJ
+	r+N+wncn0OldU7zZnFVO0t6vNaRxLqtcCgLdbScpUcJtgriSZx0KQ9bsYjERgKcw
+	==
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4crcuy86s0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 09 Mar 2026 20:11:07 +0000 (GMT)
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 629JvVsj024649;
+	Mon, 9 Mar 2026 20:11:06 GMT
+Received: from smtprelay02.dal12v.mail.ibm.com ([172.16.1.4])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 4cs0jjx73p-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 09 Mar 2026 20:11:06 +0000
+Received: from smtpav02.dal12v.mail.ibm.com (smtpav02.dal12v.mail.ibm.com [10.241.53.101])
+	by smtprelay02.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 629KB6ZU9699942
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 9 Mar 2026 20:11:06 GMT
+Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 276F258051;
+	Mon,  9 Mar 2026 20:11:06 +0000 (GMT)
+Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 4A42F5805E;
+	Mon,  9 Mar 2026 20:11:03 +0000 (GMT)
+Received: from li-43857255-d5e6-4659-90f1-fc5cee4750ad.ibm.com (unknown [9.61.72.80])
+	by smtpav02.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Mon,  9 Mar 2026 20:11:03 +0000 (GMT)
+Message-ID: <0bd92b4fce00a6111a0fc7764904f7e6ae0ece3a.camel@linux.ibm.com>
+Subject: Re: [PATCH v3 00/12] vfs: change inode->i_ino from unsigned long
+ to u64
+From: Mimi Zohar <zohar@linux.ibm.com>
+To: Jeff Layton <jlayton@kernel.org>
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, nvdimm@lists.linux.dev,
+        fsverity@lists.linux.dev, linux-mm@kvack.org, netfs@lists.linux.dev,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        samba-technical@lists.samba.org, linux-nilfs@vger.kernel.org,
+        v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
+        autofs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
+        linux-mtd@lists.infradead.org, jfs-discussion@lists.sourceforge.net,
+        ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev,
+        devel@lists.orangefs.org, linux-unionfs@vger.kernel.org,
+        apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
+        netdev@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-hams@vger.kernel.org, linux-x25@vger.kernel.org,
+        audit@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-can@vger.kernel.org, linux-sctp@vger.kernel.org,
+        bpf@vger.kernel.org
+In-Reply-To: <dd3f9873c7939fba0ca2366effd24e4b6326f17b.camel@kernel.org>
+References: <20260304-iino-u64-v3-0-2257ad83d372@kernel.org>
+				 <05b5d55c49b5a1bbc43a5315e3c84872e7e634b3.camel@linux.ibm.com>
+			 <f22758116dabd3c135a833bcb5cfcd2ea4f6ecf4.camel@kernel.org>
+		 <c9500adc562665d44feaca9206f23a5ba07432c1.camel@linux.ibm.com>
+	 <dd3f9873c7939fba0ca2366effd24e4b6326f17b.camel@kernel.org>
+Date: Mon, 09 Mar 2026 16:11:02 -0400
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU0PR04MB9372:EE_|GV2PR04MB11934:EE_
-X-MS-Office365-Filtering-Correlation-Id: 086bab13-b7f8-47c1-dec4-08de7e17164c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|19092799006|1800799024|7416014|52116014|366016|376014|38350700014|921020;
-X-Microsoft-Antispam-Message-Info: pNoDnaB3f/6HnHQNryQqqVkm039X/Ar9MI8xriNyfdDyG3daLsNVz+wbu0A7Rlbhpx0x8skLsKzIfjRNDvi7N97yqY5Y8wiPQp7fm7PYHy83jC7c1/fGPkneN51E+dCY6FfmtiU8veZrEgannHlZE/IZTh9JF4DAsLjzd6etBLzcN/XWXkBkMIFcK/z/B0Srmw6HpI+6zTHi+xgMmJzoXbmTtZrNrkqkG70rusWHmrIvTAid46Neg/X+w9CEm3BIAm4cOOdST16z7fFqQf4oPKIlVqUboM8g01diwPu6Y85Gk7CsrxpE0ta2Kh08Cv6gPBn2JPaCnGWFOeTNZ/nJJ5TdkyEy1FiFw1iAGVev9AI4XL+gHwtG38czV4jM5W8u8wAXwjW3FenYuNxbLgiNrULFAUGFGBS8sgH/h/x73DC4+3CIt28pleNAND8Sy4tu7LvAlNVkGnCi7Ao4m9a2TZWK9JrW9ppzTNwaQfnxLDjqPh09C2STU5EYqU405FKjHBi2qp+nAfuYKk0s1ymojCUB5oNvTT9snCUQ9v/OCxMkKF5FARaWOEnWLp/ZuHxVsM3HE3EbIHCdd74ppCEA/OD6agG/JotnrbbOtBS92KC+sb096krsLQhhnGadNCTs0A9YKoEsAE1DWkV6AqF9YDB1H9hnpB+13g/9PkmYt8Sw5OOuq9CRtsIfioKgC79pMVtvFQwezwWoZ7FIzd0dkkdCqqm3rBUnxYzpg8TbI9QE9+cHjdeE/C01XTD8eLoaAYistEPTPIyJIH/hcbHOeTxm9IlG72Zg6n+lpQj0hIrDnj/6OoYBMH4mxOgUn10A
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9372.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(19092799006)(1800799024)(7416014)(52116014)(366016)(376014)(38350700014)(921020);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SklLajV3MnowWTRHWFA3OEthem90WVNWL0JOb0VNRmtXaWVUVU9RS2VSdTk4?=
- =?utf-8?B?bnpxSGpxU3RFTVB3NlhGTE5GVFBpUVR6Ny9EY2UzcFEzaDJjYjYrTW9LcmFR?=
- =?utf-8?B?MFpDUlQxQUR3Nk9iZWZFclBrRWtQQUFac1Y5RXdDa1FOSUo0ZFRyU3lVbEtU?=
- =?utf-8?B?MkJzWk8rYytBeXpOazR0Zk1ObEI0dmk3Z3U3TVQ4a1d1ditPL3dDSjFQaXJS?=
- =?utf-8?B?ZHVIQWJRUVdnWWxqRStMM3R1aFdCVFp0cHdDbEY3OWxSaUZCc3NsNHFUOEFF?=
- =?utf-8?B?QVRLaXlIeEhiS1BlaEhYTWJsMXJhZ0ZoUGhLaWlxaE9rc0ZjNnBycUFIa2g0?=
- =?utf-8?B?aXFFaDdjeFNOblB0QUNldG1WbEFQUktCZ0pFYStDK3BhVzM1akl3Q3JQblMx?=
- =?utf-8?B?dWdEOXpMcFFyeStVanprRWpldVJET1RTQXJ1ZWRiVjl6VUJxeVJqZlE3OUpV?=
- =?utf-8?B?aGxXZ09DT2g5OVB3eHZsbG0zVUh4UHU5SENQc3lsTndsckNSVjlIZ0c0Y3Zz?=
- =?utf-8?B?b1FhZG5wWW9RNFZaUENGUEJPOEdnb3VhSGZySXc3U1diYUFpdUpYRy9wUmha?=
- =?utf-8?B?d2svTXRGbE1xT0FqdHdvSE5Lcm5LOUhmcDVtZnlrcHUrUkpoQnFFQkVVQzl2?=
- =?utf-8?B?Rm15cThzakpWOVBQQ2FyY1lsK2VVYnNxRGFncUVyRTNkSzE4WG5ib1VtVHZq?=
- =?utf-8?B?L3JuV3dKUVdYUXNVbW1SamVGUHcrcCtmd284NE9CR1N0OXVnUFl1eG1vb2JN?=
- =?utf-8?B?YUZDMXAwSG1Obm1GRlVlNXFINzM3NFdBTVoxa3ZYTXRDblJjSlVvYVR4a2U4?=
- =?utf-8?B?azZmNUdXazdZcFlrWXg1OFBReWpWS3pMRlM0Y0hBNXhlVVZzWmMvcDNIZjRw?=
- =?utf-8?B?a05qME9HbWkzMkJVUXBoSHdqelMrVDNwOEFVUnA5NnpJTWJkSU5xUVB0bERX?=
- =?utf-8?B?aVUyaUVzUTU3YzBOeWthQXk0ZmVMZFBZVFUrWEJzdWZNdlZFSjI2czByTHp1?=
- =?utf-8?B?aW5oWUJmZ0c5TkZmMUJlVUtHcGtrWktkTXIvZS90SWQwU3psb0ZnSkpjdmo3?=
- =?utf-8?B?R1h0cTRxWWVjWUdEcm9FWHpRSWpVeWllWEt2ZnlhWEpEZGM0b0ptbG1MZit6?=
- =?utf-8?B?SFNKZ1Z6U0VjbGdJejEzSklsVFIvVnR4eWN0OVhHNzBSRjEvbGp6K3ZUaW5u?=
- =?utf-8?B?eGp0OUo3K2dqa29UdkNQd25kejIxN3dkSUE5UzZYclAxRS90MDlPSW5wNUlm?=
- =?utf-8?B?WkdXWTE5SU1MbXhOZEwxck41WnRrS29FUDJmd2Iva2dlTlZyb0Mzc2JXMUNt?=
- =?utf-8?B?UkNMeVRUVWVWRVo5WmNsTkZ5YTNndVo1NTBiS2F1Z1RXVGVEcGlNK2hCbkJB?=
- =?utf-8?B?QXVIRHNzZ3ZMU0ZmU3BvMnI4UUU1VFB0NC90UFhaREtjc3NFY2RhejIvaXNU?=
- =?utf-8?B?cGNQVFVkNVdkdVp5cDZNdzRHc1YvMFlmSU1tODlKN0ZtYlhyTEtKY3NMSjFL?=
- =?utf-8?B?dEdvVXczbklpNUlOZTBwaUlxNWhzdHYxUGFRSnFncVFNaUtkVnQ2UlFxb08w?=
- =?utf-8?B?alNibG4rZktvYisycVJkZWpCekI3NVhwR21kRFlWc1FWam1EdGNUTS94OVVm?=
- =?utf-8?B?SCtKeFIvcHh6N3l5N3doSmdtcE1aWUJGZnNTMzhuVW1zem5JUFQrQVhGN0JG?=
- =?utf-8?B?UUd4UDlKNDc2cGhlZEc3SjZndklHK1pyMUFDbk00L09RQ2J4M0N3dThZSGVy?=
- =?utf-8?B?SmFaOGVEbWNCWFZzRms4Ui9BVEFSVnJjejRwbkc2RnBwWS9PRWQ4QTkrdEsw?=
- =?utf-8?B?YzN6L2hxeVZjclVxajZMVDRrSlZTWUR6L25WNW9Zb0tkTSt3bW5MbkpmdE4w?=
- =?utf-8?B?d0N4WTR0YXQzczV4dkExY3dBT1JJak52WHJXaXBLdTZ3eFVzeDV6WjRTeEJ6?=
- =?utf-8?B?SkdqZXMzVUdNWnZyckZLSE95YUxHbjR6TzdBUHkreFdLQUJuTkdaME4ydWhR?=
- =?utf-8?B?MDR0NFN1NFZFZkNVMWEvcDZhcWxtVThsL3FONHEzbE9CWDYwQkoyR09uRjNm?=
- =?utf-8?B?eXh4OGpUbThoN051T2dYRExudUI5Vy9YeEJ6akc4Z2R3dThBWEJNUmMwakNJ?=
- =?utf-8?B?QTM2ODl3WkFGM1B2RFp3bFlQd2tsSlJtZ1ZNS1d1K1d0QTlNZDUxQ0M4d1Qz?=
- =?utf-8?B?anh5Mzg1dXYyM1NZK0UxL3lDTUVXSHpZT2szQndBMXV0NndlMTNuVXlSTXpm?=
- =?utf-8?B?dXZmbzRtUlFIdGFOMm43M0hTUUZ6bm1JRnJwVGdLcGc4WGZJMDR6VitGZkJ6?=
- =?utf-8?B?Z1NBRTJ5bjMrOEhCWUJwWnZaQWdEN05WT2hMUHFFWnBzV2Fzb3ZyUT09?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 086bab13-b7f8-47c1-dec4-08de7e17164c
-X-MS-Exchange-CrossTenant-AuthSource: PA4PR04MB9366.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Mar 2026 20:04:32.3821
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: V0LXa6BbsFaMUKoCF4zlP4uXcWyg9Yj/h3mgV8WCiBf8jOGt2S4EXIoZtZL52pVnF2Kq+fnOI9GLNZYx6gUx1g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: GV2PR04MB11934
+User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
+X-TM-AS-GCONF: 00
+X-Authority-Analysis: v=2.4 cv=EK4LElZC c=1 sm=1 tr=0 ts=69af295b cx=c_pps
+ a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17
+ a=IkcTkHD0fZMA:10 a=Yq5XynenixoA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=RnoormkPH1_aCDwRdu11:22 a=uAbxVGIbfxUO_5tXvNgY:22 a=VwQbUJbxAAAA:8
+ a=Ohuc5M0UGw20_VvRb6sA:9 a=QEXdDO2ut3YA:10
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMzA5MDE3OCBTYWx0ZWRfX48NInAXNxJ9I
+ cqZ2w42oLBKp6f6ShdJYkvtWo35W1xBR9wJ3/AMrAgqtjjRmHF+LNmGqeG928jRHEGfhi5Dc3Ir
+ wmrxB6T58L1jgUeut/UN4ASDb+YKdYMu+ThxKOBJOKt26YDnsAlMtjSvmCcaxE+TT5Ibe0zYC0f
+ zBgbUGDl6m62+LPcwjv67C82HPGKVuU4mQ7dUKg2Sv0H9xprcqNV55N1hEVQyFV4pb7QXKtAhGE
+ YVUSx215hmiPcMqQdaRgfBi/PErZi+WGgzrtD+EeiIqh5iBJfaUE0yW08tvcIRwoQr42lAufyzB
+ vYZKyixwfkjfLVLXUjHMdBtRGJrXaAm82jJw9wIV+5PYqMOONm6AlqMVRpwFh8k3h3nwk8wQiR2
+ zhIg8VMnQ/RF3WK3QDU7+acPMfehsyHGr854HkqAG/4Nm9pp74q0YkbWa+CcmHp5NJJ/sMPIvY9
+ s27fVbRyzlJIijxgTKg==
+X-Proofpoint-GUID: xB1hrjZmRj2bIZxp5d4ApU8QU-_XE2VB
+X-Proofpoint-ORIG-GUID: xB1hrjZmRj2bIZxp5d4ApU8QU-_XE2VB
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
+ definitions=2026-03-09_05,2026-03-09_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ phishscore=0 lowpriorityscore=0 spamscore=0 suspectscore=0 clxscore=1015
+ bulkscore=0 impostorscore=0 priorityscore=1501 malwarescore=0 adultscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2602130000 definitions=main-2603090178
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260309_200439_815448_83E27758 
-X-CRM114-Status: GOOD (  11.96  )
+X-CRM114-CacheID: sfid-20260309_131117_571568_97DB9F76 
+X-CRM114-Status: GOOD (  49.46  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -166,41 +138,129 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-QWRkIGNvbXBhdGlibGUgc3RyaW5nIGZzbCxpbXg1MS1uYW5kLCBmc2wsaW14NTMtbmFuZCBhbmQg
-ZnNsLGlteDM1LW5hbmQuCgpBZGQgbWlzc2luZ2UgcHJvcGVydGllcyBkbWFzIGFuZCBkbWEtbmFt
-ZXMuCgpDaGFuZ2UgcmVnJ3MgbWF4SXRlbXMgdG8gMiBiZWNhdXNlIGkuTVg1MyBoYXZlIGFkZGl0
-aW9uIE5BTkQgZmxhc2ggaW50ZXJuYWwKYnVmZmVyIHNwYWNlLgoKQ2hhbmdlIHJlZiB0byBuYW5k
-LWNvbnRyb2xsZXItbGVnYWN5LnlhbWwgYWxsb3cgbGVnYWN5IERUIGxheW91dC4KClNpZ25lZC1v
-ZmYtYnk6IEZyYW5rIExpIDxGcmFuay5MaUBueHAuY29tPgotLS0KQ2hhbmdlcyBpbiB2MjoKLSB1
-c2UgaXRlbXMgZm9yIHJlZ3MuCi0tLQogLi4uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL214Yy1u
-YW5kLnlhbWwgICAgIHwgMjAgKysrKysrKysrKysrKysrKystLQogMSBmaWxlIGNoYW5nZWQsIDE4
-IGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlv
-bi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9teGMtbmFuZC55YW1sIGIvRG9jdW1lbnRhdGlvbi9k
-ZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9teGMtbmFuZC55YW1sCmluZGV4IDQzM2FlNTcyN2FkODUu
-LmZiYWZmN2QzZWRhODUgMTAwNjQ0Ci0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5k
-aW5ncy9tdGQvbXhjLW5hbmQueWFtbAorKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmlu
-ZGluZ3MvbXRkL214Yy1uYW5kLnlhbWwKQEAgLTEwLDcgKzEwLDcgQEAgbWFpbnRhaW5lcnM6CiAg
-IC0gVXdlIEtsZWluZS1Lw7ZuaWcgPHUua2xlaW5lLWtvZW5pZ0BwZW5ndXRyb25peC5kZT4KIAog
-YWxsT2Y6Ci0gIC0gJHJlZjogbmFuZC1jb250cm9sbGVyLnlhbWwKKyAgLSAkcmVmOiBuYW5kLWNv
-bnRyb2xsZXItbGVnYWN5LnlhbWwKIAogcHJvcGVydGllczoKICAgY29tcGF0aWJsZToKQEAgLTE4
-LDEyICsxOCwyMSBAQCBwcm9wZXJ0aWVzOgogICAgICAgLSBlbnVtOgogICAgICAgICAgIC0gZnNs
-LGlteDI1LW5hbmQKICAgICAgICAgICAtIGZzbCxpbXgyNy1uYW5kCisgICAgICAgICAgLSBmc2ws
-aW14NTEtbmFuZAorICAgICAgICAgIC0gZnNsLGlteDUzLW5hbmQKKyAgICAgIC0gaXRlbXM6Cisg
-ICAgICAgICAgLSBlbnVtOgorICAgICAgICAgICAgICAtIGZzbCxpbXgzNS1uYW5kCisgICAgICAg
-ICAgLSBjb25zdDogZnNsLGlteDI1LW5hbmQKICAgICAgIC0gaXRlbXM6CiAgICAgICAgICAgLSBl
-bnVtOgogICAgICAgICAgICAgICAtIGZzbCxpbXgzMS1uYW5kCiAgICAgICAgICAgLSBjb25zdDog
-ZnNsLGlteDI3LW5hbmQKICAgcmVnOgotICAgIG1heEl0ZW1zOiAxCisgICAgbWluSXRlbXM6IDEK
-KyAgICBpdGVtczoKKyAgICAgIC0gZGVzY3JpcHRpb246IElQIHJlZ2lzdGVyIHNwYWNlCisgICAg
-ICAtIGRlc2NyaXB0aW9uOiBOYW5kIGZsYXNoIGludGVybmFsIGJ1ZmZlciBzcGFjZQogCiAgIGlu
-dGVycnVwdHM6CiAgICAgbWF4SXRlbXM6IDEKQEAgLTMxLDYgKzQwLDEzIEBAIHByb3BlcnRpZXM6
-CiAgIGNsb2NrczoKICAgICBtYXhJdGVtczogMQogCisgIGRtYXM6CisgICAgbWF4SXRlbXM6IDEK
-KworICBkbWEtbmFtZXM6CisgICAgaXRlbXM6CisgICAgICAtIGNvbnN0OiByeC10eAorCiByZXF1
-aXJlZDoKICAgLSBjb21wYXRpYmxlCiAgIC0gcmVnCi0tIAoyLjQzLjAKCgpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1
-c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
-dGluZm8vbGludXgtbXRkLwo=
+On Mon, 2026-03-09 at 15:33 -0400, Jeff Layton wrote:
+> On Mon, 2026-03-09 at 15:00 -0400, Mimi Zohar wrote:
+> > On Mon, 2026-03-09 at 13:59 -0400, Jeff Layton wrote:
+> > > On Mon, 2026-03-09 at 13:47 -0400, Mimi Zohar wrote:
+> > > > [ I/O socket time out.  Trimming the To list.]
+> > > > 
+> > > > On Wed, 2026-03-04 at 10:32 -0500, Jeff Layton wrote:
+> > > > > This version squashes all of the format-string changes and the i_ino
+> > > > > type change into the same patch. This results in a giant 600+ line patch
+> > > > > at the end of the series, but it does remain bisectable.  Because the
+> > > > > patchset was reorganized (again) some of the R-b's and A-b's have been
+> > > > > dropped.
+> > > > > 
+> > > > > The entire pile is in the "iino-u64" branch of my tree, if anyone is
+> > > > > interested in testing this.
+> > > > > 
+> > > > >     https://git.kernel.org/pub/scm/linux/kernel/git/jlayton/linux.git/
+> > > > > 
+> > > > > Original cover letter follows:
+> > > > > 
+> > > > > ----------------------8<-----------------------
+> > > > > 
+> > > > > Christian said [1] to "just do it" when I proposed this, so here we are!
+> > > > > 
+> > > > > For historical reasons, the inode->i_ino field is an unsigned long,
+> > > > > which means that it's 32 bits on 32 bit architectures. This has caused a
+> > > > > number of filesystems to implement hacks to hash a 64-bit identifier
+> > > > > into a 32-bit field, and deprives us of a universal identifier field for
+> > > > > an inode.
+> > > > > 
+> > > > > This patchset changes the inode->i_ino field from an unsigned long to a
+> > > > > u64. This shouldn't make any material difference on 64-bit hosts, but
+> > > > > 32-bit hosts will see struct inode grow by at least 4 bytes. This could
+> > > > > have effects on slabcache sizes and field alignment.
+> > > > > 
+> > > > > The bulk of the changes are to format strings and tracepoints, since the
+> > > > > kernel itself doesn't care that much about the i_ino field. The first
+> > > > > patch changes some vfs function arguments, so check that one out
+> > > > > carefully.
+> > > > > 
+> > > > > With this change, we may be able to shrink some inode structures. For
+> > > > > instance, struct nfs_inode has a fileid field that holds the 64-bit
+> > > > > inode number. With this set of changes, that field could be eliminated.
+> > > > > I'd rather leave that sort of cleanups for later just to keep this
+> > > > > simple.
+> > > > > 
+> > > > > Much of this set was generated by LLM, but I attributed it to myself
+> > > > > since I consider this to be in the "menial tasks" category of LLM usage.
+> > > > > 
+> > > > > [1]: https://lore.kernel.org/linux-fsdevel/20260219-portrait-winkt-959070cee42f@brauner/
+> > > > > 
+> > > > > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> > > > 
+> > > > Jeff, missing from this patch set is EVM.  In hmac_add_misc() EVM copies the
+> > > > i_ino and calculates either an HMAC or file meta-data hash, which is then
+> > > > signed. 
+> > > > 
+> > > > 
+> > > 
+> > > Thanks Mimi, good catch.
+> > > 
+> > > It looks like we should just be able to change the ino field to a u64
+> > > alongside everything else. Something like this:
+> > > 
+> > > diff --git a/security/integrity/evm/evm_crypto.c b/security/integrity/evm/evm_crypto.c
+> > > index c0ca4eedb0fe..77b6c2fa345e 100644
+> > > --- a/security/integrity/evm/evm_crypto.c
+> > > +++ b/security/integrity/evm/evm_crypto.c
+> > > @@ -144,7 +144,7 @@ static void hmac_add_misc(struct shash_desc *desc, struct inode *inode,
+> > >                           char type, char *digest)
+> > >  {
+> > >         struct h_misc {
+> > > -               unsigned long ino;
+> > > +               u64 ino;
+> > >                 __u32 generation;
+> > >                 uid_t uid;
+> > >                 gid_t gid;
+> > > 
+> > 
+> > Agreed.
+> > 
+> > > 
+> > > That should make no material difference on 64-bit hosts. What's the
+> > > effect on 32-bit? Will they just need to remeasure everything or would
+> > > the consequences be more dire? Do we have any clue whether anyone is
+> > > using EVM in 32-bit environments?
+> > 
+> > All good questions. Unfortunately I don't know the answer to most of them. What
+> > we do know: changing the size of the i_ino field would affect EVM file metadata
+> > verification and would require relabeling the filesystem.  Even packages
+> > containing EVM portable signatures, which don't include or verify the i_ino
+> > number, would be affected.
+> > 
+> 
+> Ouch. Technically, I guess this is ABI...
+> 
+> While converting to u64 seems like the ideal thing to do, the other
+> option might be to just keep this as an unsigned long for now.
+> 
+> No effect on 64-bit, but that could keep things working 32-bit when the
+> i_ino casts properly to a u32. ext4 would be fine since they don't
+> issue inode numbers larger than UINT_MAX. xfs and btrfs are a bit more
+> iffy, but worst case they'd just need to be relabeled (which is what
+> they'll need to do anyway).
+> 
+> If we do that, then we should probably add a comment to this function
+> explaining why it's an unsigned long.
+
+Agreed.
+
+> 
+> Thoughts?
+
+My concern would be embedded/IoT devices, but I don't have any insight into who
+might be using it on 32 bit.
+
+Mimi
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
