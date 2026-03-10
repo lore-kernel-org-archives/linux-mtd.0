@@ -4,47 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F275EB1058
-	for <linux-mtd@archiver.kernel.org>; Tue, 10 Mar 2026 11:56:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0FDBBEB1054
+	for <linux-mtd@archiver.kernel.org>; Tue, 10 Mar 2026 11:56:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=566lDfWtO56n7SLygxhchB+phChsvvmwxZZjnkhPR+4=; b=3ie3uXBOfv1FaZ
-	i47TxC26hvJEByMkkKbGrSTNQJaJeqKlGoh1rn726sr14pBNSHeak29dNrOAYMQuJJg9hVIR2bVxW
-	g8yfzpYFock3uPF570dNew08H2vv1zHGs+Hci6i1ivcOr0ejt4fNbSdN5+ZEFzNrXyUeTUF8HlqQy
-	AdsCYNAOhk7xAHsjpvOYy4cOc0n5/mkGNEPNWj9QEtsqQ56Sqho+uE6MxAbsqrDs83ygwvY3Mmxv2
-	X43sPf858FQvFTkB0LTYXLlX7ytaYO0NemqaBkygp3WiqYcUN4oJEprEgmNWmUKIPUyX/vPAfz6Yp
-	fckLvcEcHpLNXdpxu0rg==;
+	List-Owner; bh=+l7OiOnmiP17mzGxpkBjqbzf8d/T5kDZmPvKxuim/FU=; b=wFU26BTq3bBXVb
+	yref4oFZ35gGxrZQqx3er/WVhXo4pp4xQXDq+cXNGRxiXCc+6YswHiFwr1DW/AlJboWx0oRkr7Rg6
+	g16kQsALX2fvNZkTJXTjqbdZyHfH08bxXDvMl41LBMIFGc/mzuObY2io6YpR6sufAW9kwrjlqOrGz
+	wyb7jf/ev08BFnwyMAbsetYwaWfsCPoT4RnoRifnPzncWPpaLUSOS76qhAAf/bFdJUJnqcJUwmXDm
+	Q/ZSkm8JIBx/426ShChXTwA/gNq16stNT+BQfYwBthzl5iZU8bl591YnQc5e0Ec50n0p6rt1a/mDz
+	xbCxe0B+n0h+s2+SJLGw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vzvhY-00000009M3m-1gI4;
-	Tue, 10 Mar 2026 11:56:40 +0000
-Received: from mail.avm.de ([2001:bf0:244:244::120])
+	id 1vzvhc-00000009MCP-3hs8;
+	Tue, 10 Mar 2026 11:56:44 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vzvgZ-00000009KUd-1cft;
+	id 1vzvgd-00000009Kar-0KTQ;
+	Tue, 10 Mar 2026 11:55:43 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=Cc:To:In-Reply-To:References:Message-Id
+	:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:From:Sender
+	:Reply-To:Content-ID:Content-Description;
+	bh=C3ysDg7oU3Ik8LJ7AkFJ4IpI0srzE03Ecj3qWGQ34tM=; b=cFcD8K3L8iIqpu4xiUBRBL1ma+
+	HsxFYBScCSo0hZV6J7B2EgXiKqq+GEcvqKKq2VsP3SyxyV0DdUprXJuJmRWBYUhkuytwAhPspVivE
+	qN79iFTnWHtfpP6rOd4hEEhnsjNf/aBV/IGCyukmrBGgtSoS4rkpJoog+MZABoY7Vn1zn1Cc6j7w9
+	IZjy126jPxsizx2V/7VdZEQaj4al9Xkjew43zHBhdbDIRB8YNUsGXXucJ0a/N/nxPe75LghP0AEXh
+	X8l0V8oItGqb7zPGp2ODT+5vu0PbqMUcWLdY8bIJhsY5yU9oSTKQivCA4HTcw68tuxBk6yyfjWCUh
+	Nw4HW5Qw==;
+Received: from mail.avm.de ([212.42.244.120])
+	by casper.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vzvgX-00000007ldF-2joC;
 	Tue, 10 Mar 2026 11:55:41 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=avm.de; s=mail;
-	t=1773143727; bh=+XsCLvfG0yRq7Clc+S6vXeLkWzACx5pWWBTw1PU8u30=;
+	t=1773143726; bh=iG/6Gbypjz2OmWQb0dXEIiFm2wHO3xZ/QJrRffJjoq0=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=NQWcwkCO5Yf5aFU0Fr+hSnIE5j/fbQz1ZZ6kLAVpTNGfPh7umHqxt9pFFOy6bAroX
-	 RBLvd0qLA99dtqQiGKYjsTOTfTZlUhx6yNiXQHG8dQ5sdIeNL7CirLYAhT5AwBd36o
-	 YiESNxlbhaOWr4PVxOJfomk8wbeHNmFvrkSTOpuc=
+	b=g+N0/sgSQ8SRQky5YcCPVvBqWjz0hDf6/mz5MXtIt5pp3nndKwnydeDBFFaGciw76
+	 fK8hCsX2XQfm37mz50EiEfGo9ClFJDaFX6LRzTWB5+xeibMvG/0El8aLjh4dU3qpIV
+	 pdtzYGFmANh8kH/hW7lr12MBHwTlKf1PiSqCWud4=
 Received: from [2001:bf0:244:244::71] (helo=mail.avm.de)
 	by mail.avm.de with ESMTP (eXpurgate 4.55.2)
 	(envelope-from <phahn-oss@avm.de>)
-	id 69b006af-b734-7f0000032729-7f0000019c1c-1
-	for <multiple-recipients>; Tue, 10 Mar 2026 12:55:27 +0100
+	id 69b006ac-b734-7f0000032729-7f000001c052-1
+	for <multiple-recipients>; Tue, 10 Mar 2026 12:55:24 +0100
 Received: from mail-auth.avm.de (dovecot-mx-01.avm.de [IPv6:2001:bf0:244:244::71])
 	by mail.avm.de (Postfix) with ESMTPS;
-	Tue, 10 Mar 2026 12:55:27 +0100 (CET)
+	Tue, 10 Mar 2026 12:55:24 +0100 (CET)
 From: Philipp Hahn <phahn-oss@avm.de>
-Date: Tue, 10 Mar 2026 12:49:16 +0100
-Subject: [PATCH 50/61] iommu: Prefer IS_ERR_OR_NULL over manual NULL check
+Date: Tue, 10 Mar 2026 12:48:53 +0100
+Subject: [PATCH 27/61] net/netlink: Prefer IS_ERR_OR_NULL over manual NULL
+ check
 MIME-Version: 1.0
-Message-Id: <20260310-b4-is_err_or_null-v1-50-bd63b656022d@avm.de>
+Message-Id: <20260310-b4-is_err_or_null-v1-27-bd63b656022d@avm.de>
 References: <20260310-b4-is_err_or_null-v1-0-bd63b656022d@avm.de>
 In-Reply-To: <20260310-b4-is_err_or_null-v1-0-bd63b656022d@avm.de>
 To: amd-gfx@lists.freedesktop.org, apparmor@lists.ubuntu.com, 
@@ -74,28 +89,29 @@ To: amd-gfx@lists.freedesktop.org, apparmor@lists.ubuntu.com,
  sched-ext@lists.linux.dev, target-devel@vger.kernel.org, 
  tipc-discussion@lists.sourceforge.net, v9fs@lists.linux.dev, 
  Philipp Hahn <phahn-oss@avm.de>
-Cc: Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>, 
- Robin Murphy <robin.murphy@arm.com>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=934; i=phahn-oss@avm.de;
- h=from:subject:message-id; bh=+XsCLvfG0yRq7Clc+S6vXeLkWzACx5pWWBTw1PU8u30=;
- b=owEBbQGS/pANAwAKATQtBlPRrKzbAcsmYgBpsAaAP0a4MkqsRJ5x7o2AECAXDJXUcNnvcP2jL
- Fnncqolc+mJATMEAAEKAB0WIQQ5bPBtrWDUcDQCppg0LQZT0ays2wUCabAGgAAKCRA0LQZT0ays
- 26BWCACZ2FsBOvK5vymJ4jNeheyMBLZmlutrR9jfimv19CKbp3wX0yqY0IgbC3+xiW+xz2CmiEu
- elpLzpFROPj+lHciOMtwniWl836Y8y3OBxdIzgp1Tcy3Ffv4iiDYZg6fn4s21C30sfDewBkZzM/
- oTShSXVQk2aaQji24A4tVvesTB1YCSJ0cdodFVu8ytRsCFbRhzUGEybOG9Bk1gp1pizhlUrevZe
- ky3pa8774nGDXRNTenO3QPi5eYmjmp3+jl22odQgRq4UYaTFuckuTj8ZjbSd3Db6Vvti4yjTzbj
- dPn6v3i40vUhGSdowNFCOZB8euyQhRspr8tJsS+hGDqM4vf7
+Cc: "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1045; i=phahn-oss@avm.de;
+ h=from:subject:message-id; bh=iG/6Gbypjz2OmWQb0dXEIiFm2wHO3xZ/QJrRffJjoq0=;
+ b=owEBbQGS/pANAwAKATQtBlPRrKzbAcsmYgBpsAYxKX27oPhhgjZ9L2aN+uf2Pkd/lJuV0FZGx
+ 7sT5NeXxfGJATMEAAEKAB0WIQQ5bPBtrWDUcDQCppg0LQZT0ays2wUCabAGMQAKCRA0LQZT0ays
+ 2910CACA5AX3Aqq6mMRjUqWLJkwISGQ/SClIom7gyl5y4YdXmFh365btAW6CDMrujm4g2yYHKMn
+ icMIaMalhr2gJPGai/SU/Cr5CZi3ZY+4gua5T+uq+HkP8vLsixdy6MzBKvC4YJ7SQ9u1y3suTJ2
+ dXw3LfFbSDyXJK4eAmt3Q9xLN+IDoqMq7+VyONJtkwZmjMDy5iHAJpd4FamMBrqSwy4GaDMKKm7
+ glgw85FRb142AMKifN1ghWcWZj4AIrKdQR8M3/bZ64Q5ElxSWaeaZ0coUuPBsdwn1welLaCtuOr
+ MNnjMGoWnx945CHnVYBBpgGh+sR8NWsokX9o62B2ZLaEYpxG
 X-Developer-Key: i=phahn-oss@avm.de; a=openpgp;
  fpr=58AF7C2E007CDBE62C59E078F50EFDCF8AD04B1A
-X-purgate-ID: 149429::1773143727-E15CBA3D-56C34FAB/0/0
+X-purgate-ID: 149429::1773143724-DEDD0A3D-09A71CC5/0/0
 X-purgate-type: clean
-X-purgate-size: 936
+X-purgate-size: 1047
 X-purgate-Ad: Categorized by eleven eXpurgate (R) https://www.eleven.de
 X-purgate: This mail is considered clean (visit https://www.eleven.de for further information)
 X-purgate: clean
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260310_045539_679355_9ADFE6AB 
-X-CRM114-Status: UNSURE (   9.95  )
+X-CRM114-CacheID: sfid-20260310_115538_769427_D548876F 
+X-CRM114-Status: UNSURE (   9.85  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -118,29 +134,31 @@ check.
 
 Change generated with coccinelle.
 
-To: Joerg Roedel <joro@8bytes.org>
-To: Will Deacon <will@kernel.org>
-To: Robin Murphy <robin.murphy@arm.com>
-Cc: iommu@lists.linux.dev
+To: "David S. Miller" <davem@davemloft.net>
+To: Eric Dumazet <edumazet@google.com>
+To: Jakub Kicinski <kuba@kernel.org>
+To: Paolo Abeni <pabeni@redhat.com>
+To: Simon Horman <horms@kernel.org>
+Cc: netdev@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
 Signed-off-by: Philipp Hahn <phahn-oss@avm.de>
 ---
- drivers/iommu/omap-iommu.c | 2 +-
+ net/netlink/af_netlink.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/iommu/omap-iommu.c b/drivers/iommu/omap-iommu.c
-index 8231d7d6bb6a9202025643639a6b28e6faa84659..500a42b57a997696ff37c76f028a717ab71d01f9 100644
---- a/drivers/iommu/omap-iommu.c
-+++ b/drivers/iommu/omap-iommu.c
-@@ -881,7 +881,7 @@ static int omap_iommu_attach(struct omap_iommu *obj, u32 *iopgd)
-  **/
- static void omap_iommu_detach(struct omap_iommu *obj)
- {
--	if (!obj || IS_ERR(obj))
-+	if (IS_ERR_OR_NULL(obj))
- 		return;
+diff --git a/net/netlink/af_netlink.c b/net/netlink/af_netlink.c
+index 4d609d5cf40653e04de60f2d28ee26b8bdcdc2ed..58707b9da84adf1002ab9eff9401fa2083374189 100644
+--- a/net/netlink/af_netlink.c
++++ b/net/netlink/af_netlink.c
+@@ -2667,7 +2667,7 @@ static void *netlink_seq_start(struct seq_file *seq, loff_t *posp)
  
- 	spin_lock(&obj->iommu_lock);
+ 	netlink_walk_start(iter);
+ 
+-	for (pos = *posp; pos && obj && !IS_ERR(obj); pos--)
++	for (pos = *posp; pos && !IS_ERR_OR_NULL(obj); pos--)
+ 		obj = __netlink_seq_next(seq);
+ 
+ 	return obj;
 
 -- 
 2.43.0
