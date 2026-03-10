@@ -4,76 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32D0DFD2D98
-	for <linux-mtd@archiver.kernel.org>; Tue, 10 Mar 2026 13:56:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5C4EFD2D9A
+	for <linux-mtd@archiver.kernel.org>; Tue, 10 Mar 2026 14:08:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=vzA7UoyCaLAyTVfEZ8o7eMzvZy+grPi5SZw1fhfIIjc=; b=vqLJJqhiT2zsdJ
-	DHIRaBqbuZ7hYDqfJPsKC8ljLmksNnCh82t4txsBJtY7b+O03a8RZPrZv2lC7C1fn6mQpU2MYegMy
-	aVateIFYguzhCykT2Bg/maOFvOc5fGVqFGYhkUjAjKD6yYW5jWqTQ+7QCEaGL0iI6b0AU3EdAIJyj
-	LGbP7dBH8DBa233QNquXJU0bOZzO3CHHZiNp11khf0rnh+49EHgqTrmR1u7gfDhDe/BOIvP4Z1r5l
-	SF4t51dBA3l1QbVbI+D4rjz98CYTD1cQ1k73jlnENWLN75yoGnBvcMCEO46xRgcHHZhT1Xe5Xr5Z/
-	uBCwI9qL+CcnyAikd4ag==;
+	List-Owner; bh=1pxQ07gqa/BJpbbzHKTWAnh5U9MXkYEChnpan3TFY8c=; b=aj9R9r7Fkq4JL2
+	vd+96ySG3iWQwxeLVxW8aPIbuWkEBTXroJF0B3YDG+W0tKUE1ixPqo6BJ2zQzh5wUioCnTXALNKMr
+	clO5/AUgc+1+ouVhvCuXYea1WrD6joSDQKiAgavyZnYk5MUbJqhZA4y5Ms+grWb59PoYsUkQB2lQr
+	Zyem5kTz6v/Z1/le4plWslxrYOZoGy4ugnahSZ9yK/xoNPSeUP7P07etQ3hNx1YKuhja+301jEtc6
+	fbHSWr05szwuqKVOuWSYCYkIQl3dfI0wUhiRv6+PUXaI12fmlKvgzCiOXsdv9/p6QNdS1j6vCnwiI
+	ncDI1l0jytLei9aX1c9g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vzxZC-00000009dmg-3TGv;
-	Tue, 10 Mar 2026 13:56:10 +0000
-Received: from relay8-d.mail.gandi.net ([217.70.183.201])
+	id 1vzxku-00000009fNL-2h4Y;
+	Tue, 10 Mar 2026 14:08:16 +0000
+Received: from smtprelay0010.hostedemail.com ([216.40.44.10] helo=relay.hostedemail.com)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vzxZ9-00000009dlv-33LR;
-	Tue, 10 Mar 2026 13:56:09 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 539B3433BD;
-	Tue, 10 Mar 2026 13:55:53 +0000 (UTC)
-Message-ID: <375c7c30c184d331c199876e45920976030f3cbc.camel@hadess.net>
-Subject: Re: [PATCH 25/61] net/bluetooth: Prefer IS_ERR_OR_NULL over manual
- NULL check
-From: Bastien Nocera <hadess@hadess.net>
-To: Philipp Hahn <phahn-oss@avm.de>, amd-gfx@lists.freedesktop.org, 
-	apparmor@lists.ubuntu.com, bpf@vger.kernel.org, ceph-devel@vger.kernel.org,
- 	cocci@inria.fr, dm-devel@lists.linux.dev, dri-devel@lists.freedesktop.org,
- 	gfs2@lists.linux.dev, intel-gfx@lists.freedesktop.org, 
-	intel-wired-lan@lists.osuosl.org, iommu@lists.linux.dev,
- kvm@vger.kernel.org, 	linux-arm-kernel@lists.infradead.org,
- linux-block@vger.kernel.org, 	linux-bluetooth@vger.kernel.org,
- linux-btrfs@vger.kernel.org, 	linux-cifs@vger.kernel.org,
- linux-clk@vger.kernel.org, 	linux-erofs@lists.ozlabs.org,
- linux-ext4@vger.kernel.org, 	linux-fsdevel@vger.kernel.org,
- linux-gpio@vger.kernel.org, 	linux-hyperv@vger.kernel.org,
- linux-input@vger.kernel.org, 	linux-kernel@vger.kernel.org,
- linux-leds@vger.kernel.org, 	linux-media@vger.kernel.org,
- linux-mips@vger.kernel.org, linux-mm@kvack.org, 
-	linux-modules@vger.kernel.org, linux-mtd@lists.infradead.org, 
-	linux-nfs@vger.kernel.org, linux-omap@vger.kernel.org, 
-	linux-phy@lists.infradead.org, linux-pm@vger.kernel.org, 
-	linux-rockchip@lists.infradead.org, linux-s390@vger.kernel.org, 
-	linux-scsi@vger.kernel.org, linux-sctp@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, linux-sh@vger.kernel.org, 
-	linux-sound@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
-	linux-trace-kernel@vger.kernel.org, linux-usb@vger.kernel.org, 
-	linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
- ntfs3@lists.linux.dev, 	samba-technical@lists.samba.org,
- sched-ext@lists.linux.dev, 	target-devel@vger.kernel.org,
- tipc-discussion@lists.sourceforge.net, 	v9fs@lists.linux.dev
-Cc: Marcel Holtmann <marcel@holtmann.org>, Johan Hedberg
-	 <johan.hedberg@gmail.com>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Date: Tue, 10 Mar 2026 14:55:52 +0100
-In-Reply-To: <20260310-b4-is_err_or_null-v1-25-bd63b656022d@avm.de>
+	id 1vzxkr-00000009fMo-2swp;
+	Tue, 10 Mar 2026 14:08:15 +0000
+Received: from omf14.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay01.hostedemail.com (Postfix) with ESMTP id 0CEFF1C171;
+	Tue, 10 Mar 2026 14:08:05 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf14.hostedemail.com (Postfix) with ESMTPA id 847E92D;
+	Tue, 10 Mar 2026 14:07:40 +0000 (UTC)
+Date: Tue, 10 Mar 2026 10:07:50 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Philipp Hahn <phahn-oss@avm.de>
+Cc: amd-gfx@lists.freedesktop.org, apparmor@lists.ubuntu.com,
+ bpf@vger.kernel.org, ceph-devel@vger.kernel.org, cocci@inria.fr,
+ dm-devel@lists.linux.dev, dri-devel@lists.freedesktop.org,
+ gfs2@lists.linux.dev, intel-gfx@lists.freedesktop.org,
+ intel-wired-lan@lists.osuosl.org, iommu@lists.linux.dev,
+ kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-block@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+ linux-btrfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+ linux-clk@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+ linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-gpio@vger.kernel.org, linux-hyperv@vger.kernel.org,
+ linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-leds@vger.kernel.org, linux-media@vger.kernel.org,
+ linux-mips@vger.kernel.org, linux-mm@kvack.org,
+ linux-modules@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-nfs@vger.kernel.org, linux-omap@vger.kernel.org,
+ linux-phy@lists.infradead.org, linux-pm@vger.kernel.org,
+ linux-rockchip@lists.infradead.org, linux-s390@vger.kernel.org,
+ linux-scsi@vger.kernel.org, linux-sctp@vger.kernel.org,
+ linux-security-module@vger.kernel.org, linux-sh@vger.kernel.org,
+ linux-sound@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+ linux-trace-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+ linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+ ntfs3@lists.linux.dev, samba-technical@lists.samba.org,
+ sched-ext@lists.linux.dev, target-devel@vger.kernel.org,
+ tipc-discussion@lists.sourceforge.net, v9fs@lists.linux.dev, Masami
+ Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>
+Subject: Re: [PATCH 15/61] trace: Prefer IS_ERR_OR_NULL over manual NULL
+ check
+Message-ID: <20260310100750.303af303@gandalf.local.home>
+In-Reply-To: <20260310-b4-is_err_or_null-v1-15-bd63b656022d@avm.de>
 References: <20260310-b4-is_err_or_null-v1-0-bd63b656022d@avm.de>
-	 <20260310-b4-is_err_or_null-v1-25-bd63b656022d@avm.de>
-User-Agent: Evolution 3.58.3 (3.58.3-1.fc43) 
+	<20260310-b4-is_err_or_null-v1-15-bd63b656022d@avm.de>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-GND-Sasl: hadess@hadess.net
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddvkeduudelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefkuffhvfevffgjfhgtgfgfggesthhqredttderjeenucfhrhhomhepuegrshhtihgvnhcupfhotggvrhgruceohhgruggvshhssehhrgguvghsshdrnhgvtheqnecuggftrfgrthhtvghrnhepieffgfehtedtgefgjeeggfffgeeuvdegveekveejfeekkedujeehteffueefffeunecukfhppedvrgdtudemvgefgeemvggtjeefmegtfhdvtdemsggrgeefmegrieejieemtgdvugefmeejrgehfeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpedvrgdtudemvgefgeemvggtjeefmegtfhdvtdemsggrgeefmegrieejieemtgdvugefmeejrgehfedphhgvlhhopeglkffrvheimedvrgdtudemvgefgeemvggtjeefmegtfhdvtdemsggrgeefmegrieejieemtgdvugefmeejrgehfegnpdhmrghilhhfrhhomhephhgruggvshhssehhrgguvghsshdrnhgvthdpqhhiugepheefleeufeegfeefueffpdhmohguvgepshhmthhpohhuthdpnhgspghrtghpthhtohepheejpdhrtghpthhtohepphhhrghhnhdqohhsshesrghvmhdruggvpdhrtghpthhtoheprghmugdqghhfgieslhhishhtshdrfhhrvggvu
- ggvshhkthhophdrohhrghdprhgtphhtthhopegrphhprghrmhhorheslhhishhtshdruhgsuhhnthhurdgtohhmpdhrtghpthhtohepsghpfhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegtvghphhdquggvvhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegtohgttghisehinhhrihgrrdhfrh
-X-GND-State: clean
-X-GND-Score: -100
+X-Rspamd-Server: rspamout05
+X-Rspamd-Queue-Id: 847E92D
+X-Stat-Signature: 7qtdkkf3por5hcs9du9pir5nqq8uht35
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX19Z3Tx1sMlUDFHS8YYPfSOpiqPw8cg/LfU=
+X-HE-Tag: 1773151660-993833
+X-HE-Meta: U2FsdGVkX1+JWrMXdInzvBx9l2WUqahyoYUezPLaF3HICGuHpiLcos2NJHmqwFPLfM8ZBXZ6/fmTg/vlHLcqcaFGukyEZOsOE3kBaCKhhIkGksjLucUHfFRW8KX39dTkHeOQhZTWX/A0f9Y+1fWRMEQzHGhaJF2wpPshgb4yUxNCAKdeI6QYyukTSlQGbTY7Uxizi79ndrJuznFkrJ0f1Gh3JC2I5gazyCY5QhqLMJ9a9ShPFpKdZ7NDaPeyx31oXfa0p+bWWHR1R5JbGDYWhbllAgJDuEbxQsOff6UlFUV0L3hTo0f3pFVAKw4ZSe/3wUeKTGah6IcaIcnei7ziR9eK5k/ow6hfmOBOZGq2CLBxHUplOJMJzaQEF/IeU48U6bUZ8WiPpl/JDxwK03ucqBa/7oG+YB+etWyAxh+TKdi7NbCLCb6PbeExJ2cO76n2AdjJCB03SaDGNN90kGsLmA==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260310_065607_922658_77A04CBE 
-X-CRM114-Status: GOOD (  10.64  )
+X-CRM114-CacheID: sfid-20260310_070813_807714_498D294E 
+X-CRM114-Status: GOOD (  16.36  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,41 +91,83 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gVHVlLCAyMDI2LTAzLTEwIGF0IDEyOjQ4ICswMTAwLCBQaGlsaXBwIEhhaG4gd3JvdGU6Cj4g
-UHJlZmVyIHVzaW5nIElTX0VSUl9PUl9OVUxMKCkgb3ZlciB1c2luZyBJU19FUlIoKSBhbmQgYSBt
-YW51YWwgTlVMTAo+IGNoZWNrLgo+IAo+IENoYW5nZSBnZW5lcmF0ZWQgd2l0aCBjb2NjaW5lbGxl
-Lgo+IAo+IFRvOiBNYXJjZWwgSG9sdG1hbm4gPG1hcmNlbEBob2x0bWFubi5vcmc+Cj4gVG86IEpv
-aGFuIEhlZGJlcmcgPGpvaGFuLmhlZGJlcmdAZ21haWwuY29tPgo+IFRvOiBMdWl6IEF1Z3VzdG8g
-dm9uIERlbnR6IDxsdWl6LmRlbnR6QGdtYWlsLmNvbT4KPiBDYzogbGludXgtYmx1ZXRvb3RoQHZn
-ZXIua2VybmVsLm9yZwo+IENjOiBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnCj4gU2lnbmVk
-LW9mZi1ieTogUGhpbGlwcCBIYWhuIDxwaGFobi1vc3NAYXZtLmRlPgoKUmV2aWV3ZWQtYnk6IEJh
-c3RpZW4gTm9jZXJhIDxoYWRlc3NAaGFkZXNzLm5ldD4KCj4gLS0tCj4gwqBuZXQvYmx1ZXRvb3Ro
-L21nbXQuYyB8IDYgKysrLS0tCj4gwqAxIGZpbGUgY2hhbmdlZCwgMyBpbnNlcnRpb25zKCspLCAz
-IGRlbGV0aW9ucygtKQo+IAo+IGRpZmYgLS1naXQgYS9uZXQvYmx1ZXRvb3RoL21nbXQuYyBiL25l
-dC9ibHVldG9vdGgvbWdtdC5jCj4gaW5kZXgKPiBhNzIzOGZkM2IwM2JiNTRmMzlhZjFhZmVlNzRk
-YzFhY2Q5MzFjMzI0Li4wNmQyZGE2N2JiZTE0ZTE3ZWU0NzhhYTkzOWQKPiBlMjY1MjZjMzMzZDkx
-IDEwMDY0NAo+IC0tLSBhL25ldC9ibHVldG9vdGgvbWdtdC5jCj4gKysrIGIvbmV0L2JsdWV0b290
-aC9tZ210LmMKPiBAQCAtNDE2OSw3ICs0MTY5LDcgQEAgc3RhdGljIHZvaWQgc2V0X2RlZmF1bHRf
-cGh5X2NvbXBsZXRlKHN0cnVjdAo+IGhjaV9kZXYgKmhkZXYsIHZvaWQgKmRhdGEsIGludCBlcnIp
-Cj4gwqAJCW1nbXRfcGh5X2NvbmZpZ3VyYXRpb25fY2hhbmdlZChoZGV2LCBjbWQtPnNrKTsKPiDC
-oAl9Cj4gwqAKPiAtCWlmIChza2IgJiYgIUlTX0VSUihza2IpKQo+ICsJaWYgKCFJU19FUlJfT1Jf
-TlVMTChza2IpKQo+IMKgCQlrZnJlZV9za2Ioc2tiKTsKPiDCoAo+IMKgCW1nbXRfcGVuZGluZ19m
-cmVlKGNtZCk7Cj4gQEAgLTU3MzAsNyArNTczMCw3IEBAIHN0YXRpYyB2b2lkIHJlYWRfbG9jYWxf
-b29iX2RhdGFfY29tcGxldGUoc3RydWN0Cj4gaGNpX2RldiAqaGRldiwgdm9pZCAqZGF0YSwKPiDC
-oAkJCcKgIE1HTVRfU1RBVFVTX1NVQ0NFU1MsICZtZ210X3JwLCBycF9zaXplKTsKPiDCoAo+IMKg
-cmVtb3ZlOgo+IC0JaWYgKHNrYiAmJiAhSVNfRVJSKHNrYikpCj4gKwlpZiAoIUlTX0VSUl9PUl9O
-VUxMKHNrYikpCj4gwqAJCWtmcmVlX3NrYihza2IpOwo+IMKgCj4gwqAJbWdtdF9wZW5kaW5nX2Zy
-ZWUoY21kKTsKPiBAQCAtODI3Nyw3ICs4Mjc3LDcgQEAgc3RhdGljIHZvaWQKPiByZWFkX2xvY2Fs
-X29vYl9leHRfZGF0YV9jb21wbGV0ZShzdHJ1Y3QgaGNpX2RldiAqaGRldiwgdm9pZCAqZGF0YSwK
-PiDCoAkJCQkgbWdtdF9ycCwgc2l6ZW9mKCptZ210X3JwKSArCj4gZWlyX2xlbiwKPiDCoAkJCQkg
-SENJX01HTVRfT09CX0RBVEFfRVZFTlRTLCBjbWQtPnNrKTsKPiDCoGRvbmU6Cj4gLQlpZiAoc2ti
-ICYmICFJU19FUlIoc2tiKSkKPiArCWlmICghSVNfRVJSX09SX05VTEwoc2tiKSkKPiDCoAkJa2Zy
-ZWVfc2tiKHNrYik7Cj4gwqAKPiDCoAlrZnJlZShtZ210X3JwKTsKCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lv
-biBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9saW51eC1tdGQvCg==
+On Tue, 10 Mar 2026 12:48:41 +0100
+Philipp Hahn <phahn-oss@avm.de> wrote:
+
+> Prefer using IS_ERR_OR_NULL() over using IS_ERR() and a manual NULL
+> check.
+
+Why?
+
+> 
+> Change generated with coccinelle.
+> 
+> To: Steven Rostedt <rostedt@goodmis.org>
+> To: Masami Hiramatsu <mhiramat@kernel.org>
+> To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Cc: linux-kernel@vger.kernel.org
+> Cc: linux-trace-kernel@vger.kernel.org
+> Signed-off-by: Philipp Hahn <phahn-oss@avm.de>
+> ---
+>  kernel/trace/fprobe.c                | 2 +-
+>  kernel/trace/kprobe_event_gen_test.c | 2 +-
+>  kernel/trace/trace_events_hist.c     | 2 +-
+>  3 files changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/kernel/trace/fprobe.c b/kernel/trace/fprobe.c
+> index dcadf1d23b8a31f571392d0c49cbd22df1716b4f..a94ce810d83b90f55d1178a9bd29c78fd068df4c 100644
+> --- a/kernel/trace/fprobe.c
+> +++ b/kernel/trace/fprobe.c
+> @@ -607,7 +607,7 @@ static int fprobe_module_callback(struct notifier_block *nb,
+>  	do {
+>  		rhashtable_walk_start(&iter);
+>  
+> -		while ((node = rhashtable_walk_next(&iter)) && !IS_ERR(node))
+> +		while (!IS_ERR_OR_NULL((node = rhashtable_walk_next(&iter))))
+
+Ug, No!
+
+That looks so much worse than the original.
+
+-- Steve
+
+>  			fprobe_remove_node_in_module(mod, node, &alist);
+>  
+>  		rhashtable_walk_stop(&iter);
+> diff --git a/kernel/trace/kprobe_event_gen_test.c b/kernel/trace/kprobe_event_gen_test.c
+> index 5a4b722b50451bfdee42769a6d3be39c055690d1..a1735ca273f0b756aa1fcfcdab30ddad9bc51c5f 100644
+> --- a/kernel/trace/kprobe_event_gen_test.c
+> +++ b/kernel/trace/kprobe_event_gen_test.c
+> @@ -75,7 +75,7 @@ static struct trace_event_file *gen_kretprobe_test;
+>  
+>  static bool trace_event_file_is_valid(struct trace_event_file *input)
+>  {
+> -	return input && !IS_ERR(input);
+> +	return !IS_ERR_OR_NULL(input);
+>  }
+>  
+>  /*
+> diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
+> index 73ea180cad555898693e92ee397a1c9493c7c167..59df215e1dfd9349eca1c0823ed709ec7285f766 100644
+> --- a/kernel/trace/trace_events_hist.c
+> +++ b/kernel/trace/trace_events_hist.c
+> @@ -3973,7 +3973,7 @@ trace_action_create_field_var(struct hist_trigger_data *hist_data,
+>  	 */
+>  	field_var = create_target_field_var(hist_data, system, event, var);
+>  
+> -	if (field_var && !IS_ERR(field_var)) {
+> +	if (!IS_ERR_OR_NULL(field_var)) {
+>  		save_field_var(hist_data, field_var);
+>  		hist_field = field_var->var;
+>  	} else {
+> 
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
