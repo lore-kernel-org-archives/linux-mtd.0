@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87CC8EB1055
-	for <linux-mtd@archiver.kernel.org>; Tue, 10 Mar 2026 11:56:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4440BEB1052
+	for <linux-mtd@archiver.kernel.org>; Tue, 10 Mar 2026 11:56:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=gsYtF5OFT/0y0woYJ1YH+Fy0dvUvzvHXV/fu0nqhRWU=; b=r9AB05Fo2MtYsu
-	qbWcmYPZzF0mzldwGJyvaewzwU5W+1t6XKLUIROIgTQ/0supGDmOGQUYSPRV3sJHi7O0TUhxp/Uht
-	aFZEKX61s/yzZCiI2xnmOgfiOyTeF0VSsQfqAVoNfLiqdqEIYsGQTpqsoy7MLfplq3dcH0fX3pWXD
-	VjL+mFhBs1oNMD3nZTp690qbJwSRSzv1dUaZB5YQ66OJ4SGsNOFtutH4dmUsHU46IuzwHajfVhzgR
-	1Fu162mrArpzXrTRQVLZxvJworqRka1otYn4SDEuyozjuf/8dzvT0izvQ7G+wtZZAbyQLCm9vQL6G
-	m4T/MsJw0diERhPrq3rg==;
+	List-Owner; bh=MN4gHq3eDp7mnOcm2I0xZqzGZ61zt2InLqhv9Oa+t8s=; b=VwwA1GXxAzz5UX
+	lzpnAevHri11QlqIh6Fovwe63U9kNl6tAxwo1rWSDrWqaazY4YFmWFHgepp2sw4IuJSgrpqhuQxgS
+	fXVdrs6H5MHow9K2nMiKRvIGAQGBRz+/7yXowqJxo/K34Y2CnLgu9OLPTMbPKTh40ilTTYuOBgXEA
+	xsd6Erm/dAqDlWgLJeRJqqh+Q9dCm2Ka2q6IUL25jnuinHbmVlvHm6ETWe1ghXm6RKzftYOGG22LS
+	NzEp9Yn628eI2dJrv08AACfRisWGWMzWL0hCTyqdv0+JZJa0e23zFmaVQ8l633N599iW+xIvME270
+	Xe5agB1zVMz/VjCI+bTA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vzvhD-00000009Lax-0e5t;
-	Tue, 10 Mar 2026 11:56:19 +0000
-Received: from mail.avm.de ([212.42.244.119])
+	id 1vzvhG-00000009LfM-2XlN;
+	Tue, 10 Mar 2026 11:56:22 +0000
+Received: from mail.avm.de ([212.42.244.120])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vzvgQ-00000009KMM-0CqL;
-	Tue, 10 Mar 2026 11:55:39 +0000
+	id 1vzvgU-00000009KPr-1EkN;
+	Tue, 10 Mar 2026 11:55:40 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=avm.de; s=mail;
-	t=1773143723; bh=wq/KSwJcA3hqLetMFo3dTHFYxjONcw4I7Ih9VV1gllk=;
+	t=1773143725; bh=N8ytNu1U36GmBgTPXVAE5/A4s2PfdogY1tJY/l2pxcM=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=lEAp/s1FGs3gh/G3BwLm92E1HCxjGWlqxsQSbz/j1CB+Vlb/y59DpH7suq9qWHqSS
-	 sYNh9xzFzAwYyP3SKrKt2sCrYh94W00YkOJHULlnCDrzYXE+bJd6oNQ88ujEwWl/IW
-	 WDyVvJrtHTQ4L2Ennx46mVzCXGqAvMhY+uWIILEA=
-Received: from [212.42.244.71] (helo=mail.avm.de)
+	b=f0/sH3vWUtSFTcrY68KbpDRxIZCYT2hIiwDi3Dik93BJCASdZICq9tTWJ3wgjDVyu
+	 Jxt6MZXNePDtV4TX0U7P53CBk1XHgvUArUuxPPUnS5hIbTeOVph/0B/h50wymqYtj1
+	 3T7/WTJwdzfusP5uEpNMFoKuQUCnMWZUuDcbxKoU=
+Received: from [2001:bf0:244:244::71] (helo=mail.avm.de)
 	by mail.avm.de with ESMTP (eXpurgate 4.55.2)
 	(envelope-from <phahn-oss@avm.de>)
-	id 69b006ab-2367-7f0000032729-7f0000019cd2-1
+	id 69b006ab-b734-7f0000032729-7f000001bfc8-1
 	for <multiple-recipients>; Tue, 10 Mar 2026 12:55:23 +0100
-Received: from mail-auth.avm.de (dovecot-mx-01.avm.de [212.42.244.71])
+Received: from mail-auth.avm.de (dovecot-mx-01.avm.de [IPv6:2001:bf0:244:244::71])
 	by mail.avm.de (Postfix) with ESMTPS;
 	Tue, 10 Mar 2026 12:55:23 +0100 (CET)
 From: Philipp Hahn <phahn-oss@avm.de>
-Date: Tue, 10 Mar 2026 12:48:30 +0100
-Subject: [PATCH 04/61] ext4: Prefer IS_ERR_OR_NULL over manual NULL check
+Date: Tue, 10 Mar 2026 12:48:38 +0100
+Subject: [PATCH 12/61] quota: Prefer IS_ERR_OR_NULL over manual NULL check
 MIME-Version: 1.0
-Message-Id: <20260310-b4-is_err_or_null-v1-4-bd63b656022d@avm.de>
+Message-Id: <20260310-b4-is_err_or_null-v1-12-bd63b656022d@avm.de>
 References: <20260310-b4-is_err_or_null-v1-0-bd63b656022d@avm.de>
 In-Reply-To: <20260310-b4-is_err_or_null-v1-0-bd63b656022d@avm.de>
 To: amd-gfx@lists.freedesktop.org, apparmor@lists.ubuntu.com, 
@@ -74,28 +74,28 @@ To: amd-gfx@lists.freedesktop.org, apparmor@lists.ubuntu.com,
  sched-ext@lists.linux.dev, target-devel@vger.kernel.org, 
  tipc-discussion@lists.sourceforge.net, v9fs@lists.linux.dev, 
  Philipp Hahn <phahn-oss@avm.de>
-Cc: Theodore Ts'o <tytso@mit.edu>, 
- Andreas Dilger <adilger.kernel@dilger.ca>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2748; i=phahn-oss@avm.de;
- h=from:subject:message-id; bh=wq/KSwJcA3hqLetMFo3dTHFYxjONcw4I7Ih9VV1gllk=;
- b=owEBbQGS/pANAwAKATQtBlPRrKzbAcsmYgBpsAXjBVZQh0oHFoS6hdf46zx6cg9yKqCoM11bV
- 3iWUec0h4iJATMEAAEKAB0WIQQ5bPBtrWDUcDQCppg0LQZT0ays2wUCabAF4wAKCRA0LQZT0ays
- 29vPB/9f5lFIt+0FtFBJpiKbUGS7UgY9T4E/E6CJ5zu/RqCe6vd531NLZdsmBEosrdFBBXDX57H
- sd8LCXF/sp89Zga6l1XIWkSIeHW4dDtT/UJNpkUGlvpmR4wd6cIocUQ2SKJZm2I5Ny799jzRqsU
- 77XwGSzBy8rHgewt3q+d77K7620aLC+ceQfquSvw5IkT7R5aPt+VaJGvb/4d0wK060SD2e3AbrD
- KG5aPg5rty9abqBDIFiMe9sH7jc7Ssmy8RQOhQUuB/vX9zXXRZULMf0v4sI8el0Gl3lDI9uBnpn
- 7EXyqizDRxBWqqlsbAFrtlRuPcNXRB2sNpMKxVhp0my3RZH1
+Cc: Jan Kara <jack@suse.com>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=763; i=phahn-oss@avm.de;
+ h=from:subject:message-id; bh=N8ytNu1U36GmBgTPXVAE5/A4s2PfdogY1tJY/l2pxcM=;
+ b=owEBbQGS/pANAwAKATQtBlPRrKzbAcsmYgBpsAX+MICb9QGDh9sr8xrXC0GI/+3a26bt3TCKL
+ Vjl33LfQY+JATMEAAEKAB0WIQQ5bPBtrWDUcDQCppg0LQZT0ays2wUCabAF/gAKCRA0LQZT0ays
+ 26n6B/wNFZznKdxnE0qMd12a2eIuA9+krGiImi7olxEd9wOJhsBf8sKwI0E3QgvpW0h7L8AJ/V7
+ YwWi88O6oeBiZ3QDKSUmLS/9VlykYZ97N4eOIEzkOMJxki98cx4PncgKAN9Jy63O/7GoZyteCZ7
+ +9i83brafUHJWnhfe2dyfef6pp7LRzaCEfdld6TPIgAENhsi0/zr3Pv5hQfjJiyWTNInkfN/Wc9
+ eBcVMsl2Zb6jE1xGE/aNpGFG8dNw74geAiaLniVxheZHeJfqzhWkArPaHQ0SYGtCtwd5smdDDAA
+ 6BFeqEcljgo2LkEM+gZQjogP088dQYDyFGUkwYA0hLFDBEaT
 X-Developer-Key: i=phahn-oss@avm.de; a=openpgp;
  fpr=58AF7C2E007CDBE62C59E078F50EFDCF8AD04B1A
-X-purgate-ID: 149429::1773143723-7D482E1F-03DD7EA2/0/0
+X-purgate-ID: 149429::1773143723-435C7A3D-F151BDE4/0/0
 X-purgate-type: clean
-X-purgate-size: 2750
+X-purgate-size: 765
 X-purgate-Ad: Categorized by eleven eXpurgate (R) https://www.eleven.de
 X-purgate: This mail is considered clean (visit https://www.eleven.de for further information)
 X-purgate: clean
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260310_045530_246654_95A3217E 
-X-CRM114-Status: GOOD (  10.72  )
+X-CRM114-CacheID: sfid-20260310_045534_542007_574395B5 
+X-CRM114-Status: UNSURE (   9.30  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -117,70 +117,26 @@ check.
 
 Change generated with coccinelle.
 
-To: "Theodore Ts'o" <tytso@mit.edu>
-To: Andreas Dilger <adilger.kernel@dilger.ca>
-Cc: linux-ext4@vger.kernel.org
+To: Jan Kara <jack@suse.com>
 Cc: linux-kernel@vger.kernel.org
 Signed-off-by: Philipp Hahn <phahn-oss@avm.de>
 ---
- fs/ext4/fast_commit.c | 2 +-
- fs/ext4/mballoc.c     | 2 +-
- fs/ext4/namei.c       | 2 +-
- fs/ext4/symlink.c     | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
+ fs/quota/quota.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-index f575751f1cae430eead31afa4f7d03ade1099d4a..bc69ac1195acb823465e735572b8a21255d485f5 100644
---- a/fs/ext4/fast_commit.c
-+++ b/fs/ext4/fast_commit.c
-@@ -320,7 +320,7 @@ void ext4_fc_mark_ineligible(struct super_block *sb, int reason, handle_t *handl
- 	if (ext4_fc_disabled(sb))
- 		return;
- 
--	if (handle && !IS_ERR(handle))
-+	if (!IS_ERR_OR_NULL(handle))
- 		tid = handle->h_transaction->t_tid;
- 	else {
- 		read_lock(&sbi->s_journal->j_state_lock);
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 20e9fdaf4301b61c9d54401ed95067db6b6b8173..d7f004817c1ff758e4e25f84b2c27238b7420f84 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -2870,7 +2870,7 @@ ext4_group_t ext4_mb_prefetch(struct super_block *sb, ext4_group_t group,
- 		    EXT4_MB_GRP_NEED_INIT(grp) &&
- 		    ext4_free_group_clusters(sb, gdp) > 0 ) {
- 			bh = ext4_read_block_bitmap_nowait(sb, group, true);
--			if (bh && !IS_ERR(bh)) {
-+			if (!IS_ERR_OR_NULL(bh)) {
- 				if (!buffer_uptodate(bh) && cnt)
- 					(*cnt)++;
- 				brelse(bh);
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index c4b5e252af0efbfcbaf83688a32d445327a74a02..4fdfc81f79028a588b3c1f912bff5e8a52cd9f13 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -723,7 +723,7 @@ struct stats dx_show_entries(struct dx_hash_info *hinfo, struct inode *dir,
- 		struct stats stats;
- 		printk("%s%3u:%03u hash %8x/%8x ",levels?"":"   ", i, block, hash, range);
- 		bh = ext4_bread(NULL,dir, block, 0);
--		if (!bh || IS_ERR(bh))
-+		if (IS_ERR_OR_NULL(bh))
- 			continue;
- 		stats = levels?
- 		   dx_show_entries(hinfo, dir, ((struct dx_node *) bh->b_data)->entries, levels - 1):
-diff --git a/fs/ext4/symlink.c b/fs/ext4/symlink.c
-index 645240cc0229fe4a2eda4499ae4a834fe3bd3a66..b612262719ede35d2612c5834d2bef7f18215516 100644
---- a/fs/ext4/symlink.c
-+++ b/fs/ext4/symlink.c
-@@ -92,7 +92,7 @@ static const char *ext4_get_link(struct dentry *dentry, struct inode *inode,
- 
- 	if (!dentry) {
- 		bh = ext4_getblk(NULL, inode, 0, EXT4_GET_BLOCKS_CACHED_NOWAIT);
--		if (IS_ERR(bh) || !bh)
-+		if (IS_ERR_OR_NULL(bh))
- 			return ERR_PTR(-ECHILD);
- 		if (!ext4_buffer_uptodate(bh)) {
- 			brelse(bh);
+diff --git a/fs/quota/quota.c b/fs/quota/quota.c
+index 33bacd70758007129e0375bab44d7431195ec441..2e09fc247d0cf45b9e83a4f8a0be7ea694c8c2a1 100644
+--- a/fs/quota/quota.c
++++ b/fs/quota/quota.c
+@@ -965,7 +965,7 @@ SYSCALL_DEFINE4(quotactl, unsigned int, cmd, const char __user *, special,
+ 	else
+ 		drop_super_exclusive(sb);
+ out:
+-	if (pathp && !IS_ERR(pathp))
++	if (!IS_ERR_OR_NULL(pathp))
+ 		path_put(pathp);
+ 	return ret;
+ }
 
 -- 
 2.43.0
