@@ -4,62 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61019FD2D78
-	for <linux-mtd@archiver.kernel.org>; Tue, 10 Mar 2026 11:57:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0E69FD2D7E
+	for <linux-mtd@archiver.kernel.org>; Tue, 10 Mar 2026 11:57:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=cC7xjfAEn5IsE3DwWr+9kOBgUuGg33idsWvQWUd1ikE=; b=juevI3y5HuD5gy
-	qJYFgxCSG6789DQdMRsYsTzMtgZxFSGS3PivJ9VkaPxhFKsDMtAplikbywx+qU9+DKBxrS4/HBh7X
-	2PkPMr9Z8josydNSakKNXOH4bmmQV+r7ap3J9xbnbJuhUxFxEZw3mTx6Eau9vhQUWMaJr96weW2KK
-	o9PdeWSJlC79WguTUobdqQIQfQqd3pgJB80Iziy7by0ad1nZPd89BnXGpSCx5yJEGs7i+tPYpTrmu
-	epuBk0ZzBNVyigmUg++NGFvbV5gdyEn1zOy2EuxaT5YbAq1QeN9Idt3Y6VzpiEfBcjiWXUlKtoCm9
-	xMurS/i4aUYmItAWZ7PA==;
+	List-Owner; bh=YcWdXT/ymmX5XnwKlaPra4GLedJwhQCShht+u0RWkgw=; b=02R/P50PDB1JKA
+	co3dChhA7ERQcQV4A15Zr+aAx0tyo6ASDIWBOBw69UWP9e5SY0YEvxTESmSp03CAJ9U9m4pBYBucZ
+	nI7KhZWSKnn/vHN1JLHUnxU2087xg+e0NdRU4UfUCVjdtV29oZUvzyq97sf7RKYE5O0XsJ+0DA8/4
+	+YXxjUHHdf7FqAQq//ooemygpDUxw38qAQxAoSh8qIEOnnGLOyKA5/W+utwl+oCDMpek1ASbxtov/
+	nyjuro6gQnkAlpHO38AsTVQSBcuvw/1+L7/s7bY501Ybye1CjMzjgK5APD3zPM2eujQs7AVDrMEfR
+	b8pv0R4hQu6xNgYT/Ylw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vzvii-00000009ODQ-03k1;
-	Tue, 10 Mar 2026 11:57:52 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1vzvik-00000009OKK-4Bbc;
+	Tue, 10 Mar 2026 11:57:55 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vzvgj-00000009Kna-2axN;
-	Tue, 10 Mar 2026 11:55:49 +0000
+	id 1vzvgh-00000009Kj9-1IIG;
+	Tue, 10 Mar 2026 11:55:47 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Cc:To:In-Reply-To:References:
-	Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
-	From:Sender:Reply-To:Content-ID:Content-Description;
-	bh=CMAEotzjl80q/k3AHUpFdsqecrdK0X6tjqiBMW6zbGo=; b=aY7kUwner0/lRi0Wwv5i8g2Fpa
-	C+lp5ZrIZp0yatatBQ5dm+19Kt4ms0T9IFi3oGXugYGjjWjoV6QmQ0zi1iyQ6HfxLvWjsidHMpd86
-	9FBEmudD8dwI0lT5eMR72883LBBLq1iGGnDcjqM1CdlMHqsyKA86XR9yz6yT3NbLEYOOndaJkizIc
-	L9Pu6IM3l9rStDBD6tqA2hsCiZ/Wg2oiAgyZ7zb0WLmso32ra2W6iXRRfTcreywzelZjJSnv8vgY4
-	zj83e7J7ZsdxNciKNmEjPjCCF48swXrLkXXu0bho3CtigywOJLbBhr2YukwHm/Zht23Wbu3bfCmUz
-	LYnAWaxg==;
-Received: from mail.avm.de ([212.42.244.120])
-	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vzvgT-0000000EQ7U-3yMP;
-	Tue, 10 Mar 2026 11:55:44 +0000
+	d=infradead.org; s=casper.20170209; h=Cc:To:In-Reply-To:References:Message-Id
+	:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:From:Sender
+	:Reply-To:Content-ID:Content-Description;
+	bh=vRq2g61wWE1srncME+gnVjuT8yOFss+lGNNn6b4Uit4=; b=AeIN/ORe4the7XtghrEM7Z19Mc
+	62/A720r9/k1Gle7PIZwBXDfjTeaSNkQcIT2DcDHH6SEY+KQD+gO480flYqeMr6WR7yI35sumKU+u
+	cmdB+Skw47HQkfTslG2VqgSF3GF4DrtXE6rLTcgVIeFMp1JrS+H8An2RSSyPTYyN7nW7wo5RG4FWh
+	wm1ETnD5RHGnS2+QskWDxawW1um9+qA7OOq44USvdi1gSlCmHfiv7i5lPIxsmzE8RTcxwrv+jKzP5
+	HYaEAL8UiiCQ7SfDWoK2W66/aKGrV/dbNYx0GHOOzaNu3ytoB7aLRiVyhyGtiWuaezmSRMTqCs91Z
+	MYS5lGcw==;
+Received: from mail.avm.de ([2001:bf0:244:244::120])
+	by casper.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vzvgb-00000007lgF-1DR1;
+	Tue, 10 Mar 2026 11:55:46 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=avm.de; s=mail;
-	t=1773143726; bh=g4FFdRUzUDur+rKeacaiCQZ+hQh7tI9Z6NjRyFnQc8w=;
+	t=1773143727; bh=r2ZNUyu6wG+N08MfsdquggU1Q5xHuPu+4B/VYVv0t9Q=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=rRX3stPQMInmxRJPEzximgG0zMf53EmXskDxqUtsKeYEkVQ/dYQttdiJ1RwUnbcpz
-	 vUIyMp9GJewHbVUEmLcfea/7Tczz6UnxZqIBZpZCQjil3jUyfWJvjrL+lRSOeW+TzV
-	 m1ne+0b2SGo4W3cNeV9kwvYwa/se7AsaBn9ffb+U=
-Received: from [2001:bf0:244:244::71] (helo=mail.avm.de)
+	b=YXGm2fddB0bD05XRQUo0zroBzSiXv55w6mXtnC3/rbyTRBzDlz9PWwan2loANEchz
+	 3nUHhdwioF2zPrdtj5GGDiz2/RlpAekCz2aZgV1toF9qbrEYEb5oV3jU7h9yUVsShF
+	 X4koU5bE7tqGGpl7IdLmkPqUNFFBIWSBlmjRRwMc=
+Received: from [212.42.244.71] (helo=mail.avm.de)
 	by mail.avm.de with ESMTP (eXpurgate 4.55.2)
 	(envelope-from <phahn-oss@avm.de>)
-	id 69b006ad-b734-7f0000032729-7f000001c092-1
-	for <multiple-recipients>; Tue, 10 Mar 2026 12:55:25 +0100
-Received: from mail-auth.avm.de (dovecot-mx-01.avm.de [IPv6:2001:bf0:244:244::71])
+	id 69b006af-b734-7f0000032729-7f0000019c66-1
+	for <multiple-recipients>; Tue, 10 Mar 2026 12:55:27 +0100
+Received: from mail-auth.avm.de (dovecot-mx-01.avm.de [212.42.244.71])
 	by mail.avm.de (Postfix) with ESMTPS;
-	Tue, 10 Mar 2026 12:55:25 +0100 (CET)
+	Tue, 10 Mar 2026 12:55:27 +0100 (CET)
 From: Philipp Hahn <phahn-oss@avm.de>
-Date: Tue, 10 Mar 2026 12:49:05 +0100
-Subject: [PATCH 39/61] irqchip: Prefer IS_ERR_OR_NULL over manual NULL
- check
+Date: Tue, 10 Mar 2026 12:49:20 +0100
+Subject: [PATCH 54/61] aoe: Prefer IS_ERR_OR_NULL over manual NULL check
 MIME-Version: 1.0
-Message-Id: <20260310-b4-is_err_or_null-v1-39-bd63b656022d@avm.de>
+Message-Id: <20260310-b4-is_err_or_null-v1-54-bd63b656022d@avm.de>
 References: <20260310-b4-is_err_or_null-v1-0-bd63b656022d@avm.de>
 In-Reply-To: <20260310-b4-is_err_or_null-v1-0-bd63b656022d@avm.de>
 To: amd-gfx@lists.freedesktop.org, apparmor@lists.ubuntu.com, 
@@ -89,29 +88,28 @@ To: amd-gfx@lists.freedesktop.org, apparmor@lists.ubuntu.com,
  sched-ext@lists.linux.dev, target-devel@vger.kernel.org, 
  tipc-discussion@lists.sourceforge.net, v9fs@lists.linux.dev, 
  Philipp Hahn <phahn-oss@avm.de>
-Cc: Marc Zyngier <maz@kernel.org>, Thomas Gleixner <tglx@kernel.org>, 
- Andrew Lunn <andrew@lunn.ch>, Gregory Clement <gregory.clement@bootlin.com>, 
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1797; i=phahn-oss@avm.de;
- h=from:subject:message-id; bh=g4FFdRUzUDur+rKeacaiCQZ+hQh7tI9Z6NjRyFnQc8w=;
- b=owEBbQGS/pANAwAKATQtBlPRrKzbAcsmYgBpsAZajgCYubaE210ybXd9Qufza8n+eFtBCfTFO
- oQVV6kxanqJATMEAAEKAB0WIQQ5bPBtrWDUcDQCppg0LQZT0ays2wUCabAGWgAKCRA0LQZT0ays
- 28ISB/9piM+RbVSziEng1t7dun6orhPWKQV9naYfNjFW3SarwsnzmnBDz0nuaGgkwHFCge92/YT
- C6PE2tX58vKdugSVIB0D9NRq5gq4thjVq3D0H2GAQlza/oKxurc4wdXC5dXInbYl5OUB2w09WQy
- fMKAkwG0m3WFPKRgizEtCKM6l/9q3B4q2rnnpcRKQx0iNvhf+dUkY5BUPSwCcfQvJK7+4PoC/ZE
- ddAoJcpror4/MCI0j47/BVNaHIB5K9WykFVMhov3BZvNavqXT9C64hKXxD2btf1UcwShvWKloSd
- PxNXkra2HopfIdMjPOY9w4hG57NjkAcqg0vkRHvvtwjYvgsZ
+Cc: Justin Sanders <justin@coraid.com>, Jens Axboe <axboe@kernel.dk>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=955; i=phahn-oss@avm.de;
+ h=from:subject:message-id; bh=r2ZNUyu6wG+N08MfsdquggU1Q5xHuPu+4B/VYVv0t9Q=;
+ b=owEBbQGS/pANAwAKATQtBlPRrKzbAcsmYgBpsAaNWcUAch/xMnI0wAbOgPf41K9NsP36Msk7P
+ Nki6xRL5YKJATMEAAEKAB0WIQQ5bPBtrWDUcDQCppg0LQZT0ays2wUCabAGjQAKCRA0LQZT0ays
+ 2xbWCACfzS98X1Mp5R5EwpIK0pTgqrssQIB840NNUj3GRa/d9D29Lch2JFjR2Yy+ldzvSmEDJYr
+ +FATwB8i4z+nArVkmYPgbG8vodjj8pep1H5lik7YhU3G9ClazVWr99T039Q+W8sEprULXLQ0dbA
+ 4Kpe3/L1QfxY1N+GchfqAHMv0rRJq1RvirATmISGmxTg7n0SEymJW83Bn4X8R0ZnvK6kohy5NEW
+ 2Ii5RKfTmBA8YgN2bfh5HrwrKAUrDiQU4qD40KTADcaRVC7Oxd160l9rFHE0+fB+GiDoct83TcC
+ /85+2RTmaR+Iva1VQ69ftJxFcgDmZC/vMk3mknKyTuNPcNM+
 X-Developer-Key: i=phahn-oss@avm.de; a=openpgp;
  fpr=58AF7C2E007CDBE62C59E078F50EFDCF8AD04B1A
-X-purgate-ID: 149429::1773143725-DB5DFA3D-FD67F9DA/0/0
+X-purgate-ID: 149429::1773143727-DADD8A3D-0ED39ACF/0/0
 X-purgate-type: clean
-X-purgate-size: 1799
+X-purgate-size: 957
 X-purgate-Ad: Categorized by eleven eXpurgate (R) https://www.eleven.de
 X-purgate: This mail is considered clean (visit https://www.eleven.de for further information)
 X-purgate: clean
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260310_115540_972387_F89EBE60 
-X-CRM114-Status: GOOD (  12.41  )
+X-CRM114-CacheID: sfid-20260310_115541_399941_85D242F6 
+X-CRM114-Status: UNSURE (   8.66  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -133,45 +131,28 @@ check.
 
 Change generated with coccinelle.
 
-To: Marc Zyngier <maz@kernel.org>
-To: Thomas Gleixner <tglx@kernel.org>
-To: Andrew Lunn <andrew@lunn.ch>
-To: Gregory Clement <gregory.clement@bootlin.com>
-To: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
-Cc: linux-arm-kernel@lists.infradead.org
+To: Justin Sanders <justin@coraid.com>
+To: Jens Axboe <axboe@kernel.dk>
+Cc: linux-block@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
 Signed-off-by: Philipp Hahn <phahn-oss@avm.de>
 ---
- drivers/irqchip/irq-gic-v3.c     | 2 +-
- drivers/irqchip/irq-mvebu-odmi.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/block/aoe/aoecmd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
-index 20f13b686ab22faf722dd2b24faf96af636a4bbd..6dc9827357a21ae05dd838fb717871c73f3c7562 100644
---- a/drivers/irqchip/irq-gic-v3.c
-+++ b/drivers/irqchip/irq-gic-v3.c
-@@ -2252,7 +2252,7 @@ static int __init gic_of_init(struct device_node *node, struct device_node *pare
+diff --git a/drivers/block/aoe/aoecmd.c b/drivers/block/aoe/aoecmd.c
+index a4744a30a8af4ff05113f3234021eec728265b4f..b31e539a66433a0a5d6e81117a32d12735ffc1bc 100644
+--- a/drivers/block/aoe/aoecmd.c
++++ b/drivers/block/aoe/aoecmd.c
+@@ -1268,7 +1268,7 @@ aoe_ktstart(struct ktstate *k)
  
- out_unmap_rdist:
- 	for (i = 0; i < nr_redist_regions; i++)
--		if (rdist_regs[i].redist_base && !IS_ERR(rdist_regs[i].redist_base))
-+		if (!IS_ERR_OR_NULL(rdist_regs[i].redist_base))
- 			iounmap(rdist_regs[i].redist_base);
- 	kfree(rdist_regs);
- out_unmap_dist:
-diff --git a/drivers/irqchip/irq-mvebu-odmi.c b/drivers/irqchip/irq-mvebu-odmi.c
-index b99ab9dcc14b3ba982876cf5525499d02bc1c997..94e7eda46e81833cfe0479b6fabba715bf4ef6b8 100644
---- a/drivers/irqchip/irq-mvebu-odmi.c
-+++ b/drivers/irqchip/irq-mvebu-odmi.c
-@@ -217,7 +217,7 @@ static int __init mvebu_odmi_init(struct device_node *node,
- 	for (i = 0; i < odmis_count; i++) {
- 		struct odmi_data *odmi = &odmis[i];
- 
--		if (odmi->base && !IS_ERR(odmi->base))
-+		if (!IS_ERR_OR_NULL(odmi->base))
- 			iounmap(odmis[i].base);
- 	}
- 	bitmap_free(odmis_bm);
+ 	init_completion(&k->rendez);
+ 	task = kthread_run(kthread, k, "%s", k->name);
+-	if (task == NULL || IS_ERR(task))
++	if (IS_ERR_OR_NULL(task))
+ 		return -ENOMEM;
+ 	k->task = task;
+ 	wait_for_completion(&k->rendez); /* allow kthread to start */
 
 -- 
 2.43.0
