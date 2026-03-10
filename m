@@ -4,110 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6E1A8FD4F1B
-	for <linux-mtd@archiver.kernel.org>; Tue, 10 Mar 2026 18:40:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB54BFD4F23
+	for <linux-mtd@archiver.kernel.org>; Tue, 10 Mar 2026 19:07:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:
+	Message-Id:MIME-Version:Subject:Date:From:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=bDglEtRppKYof2PfgsYIgDDSLoOI287+63qaVmVTo9I=; b=rnHBM386dHOLg4
-	bViwJwZyniqSm+OzosImRlHnmsa1qKxOsvPRfA0wNiztod1SwpMcfR6zRF7fJdG1RKhEMb4kqeG+u
-	8nDRMsXx3GtAAAKG6LWfRWZpXp+pQ1n1Yoa9IW8NgVdJTus6r0fUSo8S2FhXb/UvEBqEoy9vzgcBD
-	9UguS92LMBmnWuv/ACgCORYMOx6vjP749fvZ7la0qtwruQ35H/GqI7z0SnBmhy7rFXXp+IS0aUH75
-	RZObfMDj+BNYyX8ngEkq1RREbzLJPzP2eRUOXXIMBqi0j+HQmSDUotoDXMTLS8aMmJNp+GYFmcfNJ
-	QiOsaDZtJwKHmGq5xUhA==;
+	List-Owner; bh=kj9GaQ8spzRf0TgDu5hpWydwPJOXf3qHcY0OUoKaOd0=; b=xybxPRd+rlltLT
+	PbT5HuzO8FNj3bt1oXqtGwwbMJT4Um5Nq30npVycyqNmGfXo8G9op/nSK7ygxDSbOaIanYDo5riP/
+	PmZZTqwiiDskSwDR83b8h1ySScxYDL2vjAAm9EpO58Ju96ljF0eRYAEyhtJd1ybfqAIhYSpAcU0au
+	fdlCcAcMv4YR44+j6FiJQ7R6+znAmhOnX6V87HGpFCatYItp5ny5CUjNdNhS6L1W2DyQsvnejwIWd
+	NqW+f5t1V7gr8qx4xdbfFn52hVoTHgj8vZTW74Wmq1TX9tRDWJXo7ddn/9AdRGHNtQrZ6NsqPJXRg
+	0s6Yh6RqDVL7OBH5n62w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w020l-0000000A6Fb-1rmX;
-	Tue, 10 Mar 2026 18:40:55 +0000
-Received: from mail-pl1-x62b.google.com ([2607:f8b0:4864:20::62b])
+	id 1w02Qg-0000000A8zY-3YnW;
+	Tue, 10 Mar 2026 19:07:42 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w020h-0000000A6BF-1rFm
-	for linux-mtd@lists.infradead.org;
-	Tue, 10 Mar 2026 18:40:54 +0000
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-2ae82df847bso30023665ad.2
-        for <linux-mtd@lists.infradead.org>; Tue, 10 Mar 2026 11:40:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1773168050; x=1773772850; darn=lists.infradead.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=bjFZ9oZWWc3RZ4UdO5rq+AZbr7uPDX73K58gh1+yuH0=;
-        b=gtLybQfMSjecfKBaGNqaukRn3K/7o8JorJppIKNpCc+QM/VJDFJvQwwbooZQ9FcmwP
-         GCJvFN1msrobA2RnJ6du+aZ+7LE8i6/Pk9CnOufc1FiA/Ls9JTwqbiEwN0GiAlxEDCyW
-         7H7mM09xEr8SCiQcpLZ64RPaXO8aM0vVmSFf5Iw80b+sAnAm9XsVaGZVzWdCHJWBX+ib
-         /6nxmSb16ClMReUtBFSqlLUtXsyUxp9FlN1rO2Ktv660+THVRNhWB7k87ee+i1sMFwOr
-         JgIovHR0jlAXD5w0qlh76L4y4llZogMns7Q8v4LbegdO35xX29KypZYhSSLLNFLOppEI
-         Cy2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1773168050; x=1773772850;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bjFZ9oZWWc3RZ4UdO5rq+AZbr7uPDX73K58gh1+yuH0=;
-        b=jJ2MRWnHMD7uO6UwjhJIgjPSpNAIfhrKfNZIS+q1VJG1hnSDVQS6l/1IAObQ5VonVA
-         yuCpWZJf1n5c9mi16Z0TKYq/72/hJ7Nz9hmPJgWVOc/rgokwcXOkqxKcZ5VB6pOiiJ+i
-         vfMdy1W5xhTeNtdGqyA3ctTPBIbI3Y/FnW6HRZhehDmtbLkcB+eDhNracOhTfJlR9N+K
-         LrcRtC7RaOyAl0IO0surfGeqPN4zjoBs3QWsq09mrXjLLlFUbePe0RMW6pNYITqiVcE+
-         x6oDmoVIkosalkB5/4gikjimmN6lunmf3uVFYcwJI8ye83Do0HVJ9KQE+ZHfUAUKi7cJ
-         a5fg==
-X-Forwarded-Encrypted: i=1; AJvYcCUBdfhGiv6hRJJE7Rvwp3tfRtIgJQUmTMl13vSM1c7boN6hEKCYSEMu4PuoXZAXT3c5eR1aHItC6rg=@lists.infradead.org
-X-Gm-Message-State: AOJu0YyD2+7iWbScebNSDxbwF6fkJWfA4huOr5iSrB6yUW67+Ug8vim3
-	qtwuDmN8hbQ/LR5JKXluqQTC74kp3C2EROtR4sXB5Z31X053kmpyXqjZ
-X-Gm-Gg: ATEYQzwvRnkhIt57nbIShqF72+VO4DdoVxsupDBaCipXCAkFQhQiQd5OWEMeLL6h+kv
-	IlxA1t/7/e/QDJNgnU1SvDHlKRa+jTWCQvYw1LFqVZGSnPqO6KyfW6LxU+W3MbmGxeX0J6IQHUc
-	GFoBDWIdrLJHAK/RkvUTw1hsa6ZhQlxhqaDadT0mBjLtAHF6j4ViMqtoAlNlxaqq9ANjNEWiBA/
-	U0oPCCysTj4LxqlB6m8L8h3Ivhi291OxXK9XVPWQ7kf3JFcu/EAYN8w+ZSEll1zzwJAQIIhXvv7
-	EQRXVpw0a2Gr2Lu1Lm/E1TVxT0bcHur/Dhj8iULMheddIl36RdJL1SWz2MKae0Mo4JV36k09u/4
-	uLSSqdpQe7mE/WBAUHCb8EpQcgR87chebM7CbxTTydYgSGjjAHU8SXv0+LhULHa8jGFOfEGYtQa
-	L9Yresn2d55oN0TfEmjyhwbmW/MlLHNY9oEPiq3wr27RnCUQ==
-X-Received: by 2002:a17:903:28c8:b0:2ae:5671:7071 with SMTP id d9443c01a7336-2ae8252cf0fmr96662285ad.43.1773168050081;
-        Tue, 10 Mar 2026 11:40:50 -0700 (PDT)
-Received: from google.com ([2402:7500:a44:85b:2953:97d3:b283:95c3])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2ae83e58592sm220535625ad.14.2026.03.10.11.40.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Mar 2026 11:40:49 -0700 (PDT)
-Date: Wed, 11 Mar 2026 02:40:36 +0800
-From: Kuan-Wei Chiu <visitorckw@gmail.com>
-To: Philipp Hahn <phahn-oss@avm.de>
-Cc: amd-gfx@lists.freedesktop.org, apparmor@lists.ubuntu.com,
-	bpf@vger.kernel.org, ceph-devel@vger.kernel.org, cocci@inria.fr,
-	dm-devel@lists.linux.dev, dri-devel@lists.freedesktop.org,
-	gfs2@lists.linux.dev, intel-gfx@lists.freedesktop.org,
-	intel-wired-lan@lists.osuosl.org, iommu@lists.linux.dev,
-	kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-block@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-	linux-btrfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-	linux-clk@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-gpio@vger.kernel.org, linux-hyperv@vger.kernel.org,
-	linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-leds@vger.kernel.org, linux-media@vger.kernel.org,
-	linux-mips@vger.kernel.org, linux-mm@kvack.org,
-	linux-modules@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-nfs@vger.kernel.org, linux-omap@vger.kernel.org,
-	linux-phy@lists.infradead.org, linux-pm@vger.kernel.org,
-	linux-rockchip@lists.infradead.org, linux-s390@vger.kernel.org,
-	linux-scsi@vger.kernel.org, linux-sctp@vger.kernel.org,
-	linux-security-module@vger.kernel.org, linux-sh@vger.kernel.org,
-	linux-sound@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-trace-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-	linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-	ntfs3@lists.linux.dev, samba-technical@lists.samba.org,
-	sched-ext@lists.linux.dev, target-devel@vger.kernel.org,
-	tipc-discussion@lists.sourceforge.net, v9fs@lists.linux.dev
-Subject: Re: [PATCH 00/61] treewide: Use IS_ERR_OR_NULL over manual NULL
- check - refactor
-Message-ID: <abBlpGKO842B3yl9@google.com>
-References: <20260310-b4-is_err_or_null-v1-0-bd63b656022d@avm.de>
+	id 1w02Qf-0000000A8yQ-2deF;
+	Tue, 10 Mar 2026 19:07:41 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id 8313260054;
+	Tue, 10 Mar 2026 19:07:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 348F3C19425;
+	Tue, 10 Mar 2026 19:07:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1773169660;
+	bh=8IrGoRMwtgnhv48TdfwYQOdUsxHDpClxitdKrDFCMOc=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
+	b=secGepUA67AOJDs5Ab46ZOq9y6zfskEMSvmOWP2VoG/l6UvtI9vfvRHlps5qOgMum
+	 1bi/HF0Wjr2s2zJ4z4uwa5t/QHt7tu0XIsJpTRnMUTHs+Ez/yuOjR9Pjb1xiuaP29V
+	 YNCPzRH9gNX700Wo/PDfy5uknFut8yAPVEi83fxK9lDsYru55Hjii4Uvi3B+yBmvbc
+	 2E8+p3g1mOJ5uKuAdNNJLVm08jauLe7FPdyZ44HosePyHRZQrLGiQXEXZpT1KMqyGy
+	 3qXMKk9UeBendIayJzjkkP8C1j9J4p/HZle2LYB4P9t2EA1UtiG/wnMWHVZSvtdaTg
+	 5PN8sfLdlUvig==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 26516FD4F16;
+	Tue, 10 Mar 2026 19:07:40 +0000 (UTC)
+From: Frank Li via B4 Relay <devnull+Frank.Li.nxp.com@kernel.org>
+Date: Tue, 10 Mar 2026 15:07:37 -0400
+Subject: [PATCH 1/3] mtd: rawnand: gpmi: set chip->of_node to nand@0 child
+ node if present
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260310-b4-is_err_or_null-v1-0-bd63b656022d@avm.de>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260310_114051_554407_E04B0FC8 
-X-CRM114-Status: GOOD (  17.39  )
+Message-Id: <20260310-gpmi_nand-v1-1-6a665151aa75@nxp.com>
+References: <20260310-gpmi_nand-v1-0-6a665151aa75@nxp.com>
+In-Reply-To: <20260310-gpmi_nand-v1-0-6a665151aa75@nxp.com>
+To: Han Xu <han.xu@nxp.com>, Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+ Sascha Hauer <s.hauer@pengutronix.de>, 
+ Pengutronix Kernel Team <kernel@pengutronix.de>, 
+ Fabio Estevam <festevam@gmail.com>
+Cc: imx@lists.linux.dev, linux-mtd@lists.infradead.org, 
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ Max Krummenacher <max.oss.09@gmail.com>, 
+ Francesco Dolcini <francesco.dolcini@toradex.com>, 
+ Frank Li <Frank.Li@nxp.com>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1773169659; l=1960;
+ i=Frank.Li@nxp.com; s=20240130; h=from:subject:message-id;
+ bh=a9JwL4V+z0V/CdLgwtBGNvbdwXlOFNtmIrkNA8GkZ4Q=;
+ b=1hqUkmrfgaunI5WwUJZTxhGdYB1iquyAtHc/hWcUoyZ+nhMTFPedqecwiuKNw/Vi/kyU+RAOS
+ WgeCfL6SUijBZuehbGpcjgygs1j1Altum22n53OH5VMsyVIe5TsjQsn
+X-Developer-Key: i=Frank.Li@nxp.com; a=ed25519;
+ pk=I0L1sDUfPxpAkRvPKy7MdauTuSENRq+DnA+G4qcS94Q=
+X-Endpoint-Received: by B4 Relay for Frank.Li@nxp.com/20240130 with
+ auth_id=121
+X-Original-From: Frank Li <Frank.Li@nxp.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -119,47 +84,67 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Reply-To: Frank.Li@nxp.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Philipp,
+From: Frank Li <Frank.Li@nxp.com>
 
-On Tue, Mar 10, 2026 at 12:48:26PM +0100, Philipp Hahn wrote:
-> While doing some static code analysis I stumbled over a common pattern,
-> where IS_ERR() is combined with a NULL check. For that there is
-> IS_ERR_OR_NULL().
-> 
-> I've written a Coccinelle patch to find and patch those instances.
-> The patches follow grouped by subsystem.
-> 
-> Patches 55-58 may be dropped as they have a (minor?) semantic change:
-> They use WARN_ON() or WARN_ON_ONCE(), but only in the IS_ERR() path, not
-> for the NULL check. Iff it is okay to print the warning also for NULL,
-> then the patches can be applied.
-> 
-> While generating the patch set `checkpatch` complained about mixing
-> [un]likely() with IS_ERR_OR_NULL(), which already uses likely()
-> internally. I found and fixed several locations, where that combination
-> has been used.
+The nand-controller.yaml binding requires a child node (e.g. nand@0) under
+the NAND controller. However, the driver currently assigns the controller's
+of_node directly to the NAND chip.
 
-Thanks for the patchset. However, I think we need a explanation for why
-switching to IS_ERR_OR_NULL() is an improvement over the existing code.
+Search for the first child node with the "nand" prefix and assign it to
+chip->of_node. This filters out properties such as "partition" that may be
+placed under the controller node in some older DTS files.
 
-IMHO, the necessity of IS_ERR_OR_NULL() often highlights a confusing or
-flawed API design. It usually implies that the caller is unsure whether
-a failure results in an error pointer or a NULL pointer. Rather than
-doing a treewide conversion of this pattern, I believe it would be much
-more meaningful to review these instances case-by-case and fix the
-underlying APIs or caller logic instead.
+Fall back to using the controller's of_node if no suitable child node is
+found to maintain backward compatibility.
 
-Additionally, a treewide refactoring like this has the practical
-drawback of creating unnecessary merge conflicts when backporting to
-stable trees.
+This issue went unnoticed because the default behavior works for most NAND
+chips.
 
-Regards,
-Kuan-Wei
+Signed-off-by: Frank Li <Frank.Li@nxp.com>
+---
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+index 51f595fbc834e7f711331629bb9f7a1482749b62..c1f766cb225aad3502d73ef54a9aedcd50054b93 100644
+--- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+@@ -5,6 +5,7 @@
+  * Copyright (C) 2010-2015 Freescale Semiconductor, Inc.
+  * Copyright (C) 2008 Embedded Alley Solutions, Inc.
+  */
++#include <linux/cleanup.h>
+ #include <linux/clk.h>
+ #include <linux/delay.h>
+ #include <linux/slab.h>
+@@ -2688,7 +2689,15 @@ static int gpmi_nand_init(struct gpmi_nand_data *this)
+ 
+ 	/* init the nand_chip{}, we don't support a 16-bit NAND Flash bus. */
+ 	nand_set_controller_data(chip, this);
+-	nand_set_flash_node(chip, this->pdev->dev.of_node);
++
++	struct device_node *np __free(device_node) =
++		of_get_next_child_with_prefix(this->pdev->dev.of_node, NULL, "nand");
++
++	if (np)
++		nand_set_flash_node(chip, np);
++	else
++		nand_set_flash_node(chip, this->pdev->dev.of_node);
++
+ 	chip->legacy.block_markbad = gpmi_block_markbad;
+ 	chip->badblock_pattern	= &gpmi_bbt_descr;
+ 	chip->options		|= NAND_NO_SUBPAGE_WRITE;
+
+-- 
+2.43.0
+
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
