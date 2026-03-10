@@ -4,71 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C15F3FD4F16
-	for <linux-mtd@archiver.kernel.org>; Tue, 10 Mar 2026 18:30:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6E1A8FD4F1B
+	for <linux-mtd@archiver.kernel.org>; Tue, 10 Mar 2026 18:40:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=iRtnaOnbSNyvOjkCz1wf1EkrpaQFYnbm33p/YJPPlto=; b=LYefxLsbw2kf8J
-	IvqW7rAq1kOrUVBN4235z8fTg37F4mZxA0tox4/jWEgnwsoYKuAXoORVEo5UPW69s4Ft8mmCyj3E6
-	6b4lqvMGBRAOgnMby+RbIISOq4X+E7gthCksYWNudwsA+ucPBCVddGBPQOkAHyPQzS1toT0nDKOhs
-	IE+c7x2r7f7DhOJxQhWQdgQj3+Bf6R5qyOQKzodJuFYPmsirNycTlQpqjJI3Z1K72KaR8O4iGGsMp
-	/bKw8THUlWkumLun5PGwoOyB6CORvulelDcaGhV+87IMrqNvSeKNnVJ3sloSUrstEbzsHuk5SlORY
-	z2Lw+wd4OxrLZqMn6ZPA==;
+	List-Owner; bh=bDglEtRppKYof2PfgsYIgDDSLoOI287+63qaVmVTo9I=; b=rnHBM386dHOLg4
+	bViwJwZyniqSm+OzosImRlHnmsa1qKxOsvPRfA0wNiztod1SwpMcfR6zRF7fJdG1RKhEMb4kqeG+u
+	8nDRMsXx3GtAAAKG6LWfRWZpXp+pQ1n1Yoa9IW8NgVdJTus6r0fUSo8S2FhXb/UvEBqEoy9vzgcBD
+	9UguS92LMBmnWuv/ACgCORYMOx6vjP749fvZ7la0qtwruQ35H/GqI7z0SnBmhy7rFXXp+IS0aUH75
+	RZObfMDj+BNYyX8ngEkq1RREbzLJPzP2eRUOXXIMBqi0j+HQmSDUotoDXMTLS8aMmJNp+GYFmcfNJ
+	QiOsaDZtJwKHmGq5xUhA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w01qU-0000000A4vY-3WYb;
-	Tue, 10 Mar 2026 18:30:18 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1w020l-0000000A6Fb-1rmX;
+	Tue, 10 Mar 2026 18:40:55 +0000
+Received: from mail-pl1-x62b.google.com ([2607:f8b0:4864:20::62b])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w01qS-0000000A4uj-2GNp
+	id 1w020h-0000000A6BF-1rFm
 	for linux-mtd@lists.infradead.org;
-	Tue, 10 Mar 2026 18:30:17 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id C4E3840DE6
-	for <linux-mtd@lists.infradead.org>; Tue, 10 Mar 2026 18:30:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4773C2BCAF
-	for <linux-mtd@lists.infradead.org>; Tue, 10 Mar 2026 18:30:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773167415;
-	bh=aQlHMtCyk/aiLXV0M0P+Eap9vVmkJKZ3nEtOiif8yFs=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=bVt351IEoFi5+UWDbxI9FAUSa97i/8zXIhdXcP6Zx3NkVE4wdkURVMwX9zlLpbmqX
-	 ge9Q385hvvSRWdzlGY0Uv/7Xc7wM/Gc14UX9GO2X+DPyaTWatC0q9q+4OARxjZWPv2
-	 7IBV/zoaJYXyWrBoxSIQm0woqo24tFSsLotD6u3JYn4fzjYrdSbojuwkx9md2ZGeJM
-	 L2dXiNQTPqb4fJxTb0WnbAeQZLzs4EV5o7+AnDSrF2MiSF3SzcU723jzGtv1A//YeJ
-	 kgb73p0JVpSlM9C0ef7EKxhUbeAUBfwvDlpKKcLL8vWD2vbIi4c8pmUAXLBu3yv13d
-	 UJXN5v5ML/7xw==
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-b941762394aso637917466b.1
-        for <linux-mtd@lists.infradead.org>; Tue, 10 Mar 2026 11:30:15 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUdYlDeyuBYsRMre7loyDipjYI6cSES4tvRXhWgsPIjoWMO9jyyyCIRhcS9euxZWl2ujyHJgYUj1u8=@lists.infradead.org
-X-Gm-Message-State: AOJu0YwCih99NpiPee5IXaVKCDvkw9krTIUOcq0umqzATJ16dfcn8GxO
-	0/gt+Cc8dvMtza5OThFveZFpYPbhR18AoBOSXVxAm3vkk0xxvDPLscqj//Se3cK+8Sp8k8TV2wP
-	WQIhmveA8DKfoVP+588fazl7gUh32Cg==
-X-Received: by 2002:a17:906:f588:b0:b94:29f9:34c2 with SMTP id
- a640c23a62f3a-b942dfb4792mr846273666b.34.1773167414119; Tue, 10 Mar 2026
- 11:30:14 -0700 (PDT)
+	Tue, 10 Mar 2026 18:40:54 +0000
+Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-2ae82df847bso30023665ad.2
+        for <linux-mtd@lists.infradead.org>; Tue, 10 Mar 2026 11:40:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1773168050; x=1773772850; darn=lists.infradead.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=bjFZ9oZWWc3RZ4UdO5rq+AZbr7uPDX73K58gh1+yuH0=;
+        b=gtLybQfMSjecfKBaGNqaukRn3K/7o8JorJppIKNpCc+QM/VJDFJvQwwbooZQ9FcmwP
+         GCJvFN1msrobA2RnJ6du+aZ+7LE8i6/Pk9CnOufc1FiA/Ls9JTwqbiEwN0GiAlxEDCyW
+         7H7mM09xEr8SCiQcpLZ64RPaXO8aM0vVmSFf5Iw80b+sAnAm9XsVaGZVzWdCHJWBX+ib
+         /6nxmSb16ClMReUtBFSqlLUtXsyUxp9FlN1rO2Ktv660+THVRNhWB7k87ee+i1sMFwOr
+         JgIovHR0jlAXD5w0qlh76L4y4llZogMns7Q8v4LbegdO35xX29KypZYhSSLLNFLOppEI
+         Cy2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1773168050; x=1773772850;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bjFZ9oZWWc3RZ4UdO5rq+AZbr7uPDX73K58gh1+yuH0=;
+        b=jJ2MRWnHMD7uO6UwjhJIgjPSpNAIfhrKfNZIS+q1VJG1hnSDVQS6l/1IAObQ5VonVA
+         yuCpWZJf1n5c9mi16Z0TKYq/72/hJ7Nz9hmPJgWVOc/rgokwcXOkqxKcZ5VB6pOiiJ+i
+         vfMdy1W5xhTeNtdGqyA3ctTPBIbI3Y/FnW6HRZhehDmtbLkcB+eDhNracOhTfJlR9N+K
+         LrcRtC7RaOyAl0IO0surfGeqPN4zjoBs3QWsq09mrXjLLlFUbePe0RMW6pNYITqiVcE+
+         x6oDmoVIkosalkB5/4gikjimmN6lunmf3uVFYcwJI8ye83Do0HVJ9KQE+ZHfUAUKi7cJ
+         a5fg==
+X-Forwarded-Encrypted: i=1; AJvYcCUBdfhGiv6hRJJE7Rvwp3tfRtIgJQUmTMl13vSM1c7boN6hEKCYSEMu4PuoXZAXT3c5eR1aHItC6rg=@lists.infradead.org
+X-Gm-Message-State: AOJu0YyD2+7iWbScebNSDxbwF6fkJWfA4huOr5iSrB6yUW67+Ug8vim3
+	qtwuDmN8hbQ/LR5JKXluqQTC74kp3C2EROtR4sXB5Z31X053kmpyXqjZ
+X-Gm-Gg: ATEYQzwvRnkhIt57nbIShqF72+VO4DdoVxsupDBaCipXCAkFQhQiQd5OWEMeLL6h+kv
+	IlxA1t/7/e/QDJNgnU1SvDHlKRa+jTWCQvYw1LFqVZGSnPqO6KyfW6LxU+W3MbmGxeX0J6IQHUc
+	GFoBDWIdrLJHAK/RkvUTw1hsa6ZhQlxhqaDadT0mBjLtAHF6j4ViMqtoAlNlxaqq9ANjNEWiBA/
+	U0oPCCysTj4LxqlB6m8L8h3Ivhi291OxXK9XVPWQ7kf3JFcu/EAYN8w+ZSEll1zzwJAQIIhXvv7
+	EQRXVpw0a2Gr2Lu1Lm/E1TVxT0bcHur/Dhj8iULMheddIl36RdJL1SWz2MKae0Mo4JV36k09u/4
+	uLSSqdpQe7mE/WBAUHCb8EpQcgR87chebM7CbxTTydYgSGjjAHU8SXv0+LhULHa8jGFOfEGYtQa
+	L9Yresn2d55oN0TfEmjyhwbmW/MlLHNY9oEPiq3wr27RnCUQ==
+X-Received: by 2002:a17:903:28c8:b0:2ae:5671:7071 with SMTP id d9443c01a7336-2ae8252cf0fmr96662285ad.43.1773168050081;
+        Tue, 10 Mar 2026 11:40:50 -0700 (PDT)
+Received: from google.com ([2402:7500:a44:85b:2953:97d3:b283:95c3])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2ae83e58592sm220535625ad.14.2026.03.10.11.40.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Mar 2026 11:40:49 -0700 (PDT)
+Date: Wed, 11 Mar 2026 02:40:36 +0800
+From: Kuan-Wei Chiu <visitorckw@gmail.com>
+To: Philipp Hahn <phahn-oss@avm.de>
+Cc: amd-gfx@lists.freedesktop.org, apparmor@lists.ubuntu.com,
+	bpf@vger.kernel.org, ceph-devel@vger.kernel.org, cocci@inria.fr,
+	dm-devel@lists.linux.dev, dri-devel@lists.freedesktop.org,
+	gfs2@lists.linux.dev, intel-gfx@lists.freedesktop.org,
+	intel-wired-lan@lists.osuosl.org, iommu@lists.linux.dev,
+	kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-block@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+	linux-btrfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+	linux-clk@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-gpio@vger.kernel.org, linux-hyperv@vger.kernel.org,
+	linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-leds@vger.kernel.org, linux-media@vger.kernel.org,
+	linux-mips@vger.kernel.org, linux-mm@kvack.org,
+	linux-modules@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-nfs@vger.kernel.org, linux-omap@vger.kernel.org,
+	linux-phy@lists.infradead.org, linux-pm@vger.kernel.org,
+	linux-rockchip@lists.infradead.org, linux-s390@vger.kernel.org,
+	linux-scsi@vger.kernel.org, linux-sctp@vger.kernel.org,
+	linux-security-module@vger.kernel.org, linux-sh@vger.kernel.org,
+	linux-sound@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-trace-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+	linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+	ntfs3@lists.linux.dev, samba-technical@lists.samba.org,
+	sched-ext@lists.linux.dev, target-devel@vger.kernel.org,
+	tipc-discussion@lists.sourceforge.net, v9fs@lists.linux.dev
+Subject: Re: [PATCH 00/61] treewide: Use IS_ERR_OR_NULL over manual NULL
+ check - refactor
+Message-ID: <abBlpGKO842B3yl9@google.com>
+References: <20260310-b4-is_err_or_null-v1-0-bd63b656022d@avm.de>
 MIME-Version: 1.0
-References: <20260225-perso-fix-spear600-smi-yaml-v1-0-8ef3d205ab3a@bootlin.com>
-In-Reply-To: <20260225-perso-fix-spear600-smi-yaml-v1-0-8ef3d205ab3a@bootlin.com>
-From: Rob Herring <robh@kernel.org>
-Date: Tue, 10 Mar 2026 13:30:02 -0500
-X-Gmail-Original-Message-ID: <CAL_Jsq+WE33tSSqywbPN3g8i92foVmqna6K2zaFO1RUreMvB-w@mail.gmail.com>
-X-Gm-Features: AaiRm53GadTJk1y1FXTWSOHUjVdcwczpoucawTc3iDJf70yoFWL4SacHxaC7LH8
-Message-ID: <CAL_Jsq+WE33tSSqywbPN3g8i92foVmqna6K2zaFO1RUreMvB-w@mail.gmail.com>
-Subject: Re: [PATCH 0/3] Fix spear600-smi YAML conversion
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Akhila YS <akhilayalmati@gmail.com>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
-	Conor Dooley <conor.dooley@microchip.com>, linux-mtd@lists.infradead.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Disposition: inline
+In-Reply-To: <20260310-b4-is_err_or_null-v1-0-bd63b656022d@avm.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260310_113016_605922_373FB8A1 
-X-CRM114-Status: GOOD (  10.55  )
+X-CRM114-CacheID: sfid-20260310_114051_554407_E04B0FC8 
+X-CRM114-Status: GOOD (  17.39  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,24 +119,48 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gV2VkLCBGZWIgMjUsIDIwMjYgYXQgMTA6MjTigK9BTSBNaXF1ZWwgUmF5bmFsCjxtaXF1ZWwu
-cmF5bmFsQGJvb3RsaW4uY29tPiB3cm90ZToKPgo+IFJlY2VudCBjb252ZXJzaW9uIGZyb20gdHh0
-IHRvIHlhbWwgb2YgdGhlIFNwZWFyNjAwIFNNSSBiaW5kaW5nIGJ5IEFraGlsYQo+IGxlYWQgdG8g
-d2FybmluZ3MuIFRoZXNlIGFyZSBteSAyY3RzIGluIGdldHRpbmcgdGhlIHlhbWwgY29udmVyc2lv
-biBkb25lCj4gOi0pCj4KPiBDaGVlcnMsCj4gTWlxdcOobAo+Cj4gU2lnbmVkLW9mZi1ieTogTWlx
-dWVsIFJheW5hbCA8bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4KPiAtLS0KPiBNaXF1ZWwgUmF5
-bmFsICgzKToKPiAgICAgICBkdC1iaW5kaW5nczogbXRkOiBzdCxzcGVhcjYwMC1zbWk6IEZpeCBk
-ZXNjcmlwdGlvbgo+ICAgICAgIGR0LWJpbmRpbmdzOiBtdGQ6IHN0LHNwZWFyNjAwLXNtaTogI2Fk
-ZHJlc3Mvc2l6ZS1jZWxscyBpcyBtYW5kYXRvcnkKPiAgICAgICBkdC1iaW5kaW5nczogbXRkOiBz
-dCxzcGVhcjYwMC1zbWk6IEZpeCBleGFtcGxlCj4KPiAgLi4uL2RldmljZXRyZWUvYmluZGluZ3Mv
-bXRkL3N0LHNwZWFyNjAwLXNtaS55YW1sICAgfCAyNiArKysrKysrKysrKysrKysrLS0tLS0tCj4g
-IDEgZmlsZSBjaGFuZ2VkLCAxOSBpbnNlcnRpb25zKCspLCA3IGRlbGV0aW9ucygtKQoKU3RpbGwg
-d2FybmluZyBpbiBuZXh0IGFuZCB2Ny4wLXJjIHdpdGhvdXQgdGhlc2UgZml4ZXMuIFBsZWFzZSBh
-cHBseSB0aGVtIHNvb24uCgpSb2IKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0
-cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+Hi Philipp,
+
+On Tue, Mar 10, 2026 at 12:48:26PM +0100, Philipp Hahn wrote:
+> While doing some static code analysis I stumbled over a common pattern,
+> where IS_ERR() is combined with a NULL check. For that there is
+> IS_ERR_OR_NULL().
+> 
+> I've written a Coccinelle patch to find and patch those instances.
+> The patches follow grouped by subsystem.
+> 
+> Patches 55-58 may be dropped as they have a (minor?) semantic change:
+> They use WARN_ON() or WARN_ON_ONCE(), but only in the IS_ERR() path, not
+> for the NULL check. Iff it is okay to print the warning also for NULL,
+> then the patches can be applied.
+> 
+> While generating the patch set `checkpatch` complained about mixing
+> [un]likely() with IS_ERR_OR_NULL(), which already uses likely()
+> internally. I found and fixed several locations, where that combination
+> has been used.
+
+Thanks for the patchset. However, I think we need a explanation for why
+switching to IS_ERR_OR_NULL() is an improvement over the existing code.
+
+IMHO, the necessity of IS_ERR_OR_NULL() often highlights a confusing or
+flawed API design. It usually implies that the caller is unsure whether
+a failure results in an error pointer or a NULL pointer. Rather than
+doing a treewide conversion of this pattern, I believe it would be much
+more meaningful to review these instances case-by-case and fix the
+underlying APIs or caller logic instead.
+
+Additionally, a treewide refactoring like this has the practical
+drawback of creating unnecessary merge conflicts when backporting to
+stable trees.
+
+Regards,
+Kuan-Wei
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
