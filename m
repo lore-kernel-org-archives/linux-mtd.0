@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8956FD2D73
-	for <linux-mtd@archiver.kernel.org>; Tue, 10 Mar 2026 11:58:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8ED4FD2D76
+	for <linux-mtd@archiver.kernel.org>; Tue, 10 Mar 2026 11:58:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WytU3JWpZ9OcLnXYqv/SuFR+LqtbWbF3xJtI8Aq20lU=; b=wTIwugUB1UnlDY
-	mi0+wqPtoovUEIExYW6W9b0oNzoIR67CLvfRIsZvvuRcNdoGKuTrk2QquhsF99Fg4dJsYlKt5jYax
-	JaWmM50cvf35do+1RfjLL60fMW9SrUx5+bkjxYNhZ/5G9QYymfJAW1OfbB3s8zvMZ8ipE3MKfvLQi
-	XgWvzqgV+YAeNccW0RD8gS9j3a5D9CeyInyaG5ejNKHb4MZ1vf9TS9C8pwePsx6ddG3bMDLYFnv4P
-	qocp5s/fX/Ko0ZcUyvle7SY6IdCv/4+j2p+T9TAuRJCOSMYX4EfWEToNX+wsXn3KZWbS8wi2Kjiiw
-	EK21CSShYT93MrWnFoYw==;
+	List-Owner; bh=Fm+9ZYR4RCiAXzzhKl8peI/HH7fjWaiAn8YLiezoiFs=; b=kmi7ldjcs0Lgn0
+	+gof/MA7Sc4F8RhJQB7h9yoWxAqiuPXZHoRphtVhcdANYN6gl+omIjPyDOMR1oaoV3mdRzUu3rohU
+	uYxZGBhK2PsUblb/D6ArfvYm0aPtf9PWjxlzz9uvj6w+S/AH+MYegDJh2ZQIkEwpg8scRPMQ8OVTz
+	pOUp/pDPzeQtpk0PpGbZQ6l58iBlrQwMkLWXBebnch7QeYYcZMhsx/5nE7Oj//x50waQ3OPRZfbmu
+	Eai3wci9P0H0JCJNrhgWBpaZAZb0L30dlJxUyDzk58K1d9E4HyKWzRqu1SqjoMPqhT9VyB79zdg0E
+	ngAM3PoNLDJVrRxLF5cQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vzvjB-00000009P9v-0J3f;
-	Tue, 10 Mar 2026 11:58:21 +0000
+	id 1vzvjH-00000009PIL-1Mml;
+	Tue, 10 Mar 2026 11:58:27 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vzvgk-00000009Ko9-0cXw;
+	id 1vzvgk-00000009Knw-06Za;
 	Tue, 10 Mar 2026 11:55:51 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=desiato.20200630; h=Cc:To:In-Reply-To:References:
 	Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
 	From:Sender:Reply-To:Content-ID:Content-Description;
-	bh=TMYuXsAwXlZPj+pNBI19fXQVyelGTABQZdwu3TAkE2A=; b=S5Wx12drjA4PIhuiOq/J0hUO84
-	yHlLhn/RD7u0tzMp4JxYy4KgxMzkH+K0lr7i/CtDVxAnHOIxfA1dxcgP8E3A/mQN3CvdLZfL5SHog
-	COZBOAk+KmzWiVrzdMDcg3H1vjZcnoylDD1QRAAzFIvqBb8vUElW/WG7K5H+49IuNq7zCG7zzCfYu
-	3MiEEDiPqWM0YOwtaRkOabNvLLXfj8MUiL4RCJ49Pt8TF822LcuVVb8i0Qg9VedNIUlPLGsslQRVa
-	ekYSU0Yc1prcuVhAyE5xYBNDmahpfmzuKMIPpRCep3wel0cPnRdo9/pkEMvqOYqC4kLrvvuoPfP41
-	Ouxo2aAg==;
-Received: from mail.avm.de ([2001:bf0:244:244::119])
+	bh=Ph1uUWr1L/iF1ZEQmadj650OhaHNRF4I0z9qkCXYfg8=; b=YZH1aQNFQGa0i9QzsCLJQrfiQe
+	gjT4CHgUNiwUCqITeIvw5rPhR7/4MNAZ8Bzdug81USs/4ccFryG3DOOcroXfU7KkDLcCU992kIAli
+	02+A4TeaqFaVSeJHuxylN195VD2czLo6NpFZ1JsaBnSr0BizS2yDtioATufbo0IhNwh/wIcAfG4dm
+	QS8upxJVWU4OBG4W+MZG4UmSFjpUePYBulGVTs6zlVfb/WpNGkVWREYe3n0OFIgFlkvuzgSyvlXY1
+	udiJ/vwy0MGAw7WbMx+iLJqV6HlKaIBTBsxT1OBxtvyGZGKGivOL2xmyg/mx1nSkQXnXFBcIA034R
+	1Q3XCV0A==;
+Received: from mail.avm.de ([212.42.244.94])
 	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vzvgU-0000000EQ7Y-03pa;
+	id 1vzvgV-0000000EQ8V-01S8;
 	Tue, 10 Mar 2026 11:55:46 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=avm.de; s=mail;
-	t=1773143725; bh=lEmCou71DQIv3rJiH+2ZIvzOcBQ45/hCLHA8fjFTjEM=;
+	t=1773143727; bh=KQiEoi/5KK1uW5/WekNTwCqBkzEqSA1SWtsVPdM2q90=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=AHWaJPiBsL+GwFoetOExpKLG9cmnqvpt8xMBxHRmuFnKfjqJNAZAD1Wuu27hEzCjp
-	 yo/8LH57/iizP+bjiVmoMZwTMOiCMC/XLDqy5SSCcm+OQZZ/0iP8EPctZ2sQqxK7Ab
-	 XT9/JQSyTpsDOlLEGnKt3l1avwq96+RDdo3lipF8=
+	b=Hzc3GuxHf6WKr4EWmy7suWfFtUIN+cSSog0xcKAdq1K62+58VIbGObMn11FXUjfnw
+	 XSgX37V9MsgZIzaqlzkHaWhxgePi5JwVjORgVIpVxik46tgfvcV/Ti0iljkdkzgEMz
+	 GP23Vofxf0i5EbReeE876OiemRlixpOKPI/O3H3w=
 Received: from [212.42.244.71] (helo=mail.avm.de)
 	by mail.avm.de with ESMTP (eXpurgate 4.55.2)
 	(envelope-from <phahn-oss@avm.de>)
-	id 69b006ac-2367-7f0000032729-7f0000019d40-1
-	for <multiple-recipients>; Tue, 10 Mar 2026 12:55:24 +0100
+	id 69b006ae-e21d-7f0000032729-7f000001da34-1
+	for <multiple-recipients>; Tue, 10 Mar 2026 12:55:26 +0100
 Received: from mail-auth.avm.de (dovecot-mx-01.avm.de [212.42.244.71])
 	by mail.avm.de (Postfix) with ESMTPS;
-	Tue, 10 Mar 2026 12:55:24 +0100 (CET)
+	Tue, 10 Mar 2026 12:55:26 +0100 (CET)
 From: Philipp Hahn <phahn-oss@avm.de>
-Date: Tue, 10 Mar 2026 12:48:41 +0100
-Subject: [PATCH 15/61] trace: Prefer IS_ERR_OR_NULL over manual NULL check
+Date: Tue, 10 Mar 2026 12:49:04 +0100
+Subject: [PATCH 38/61] net: Prefer IS_ERR_OR_NULL over manual NULL check
 MIME-Version: 1.0
-Message-Id: <20260310-b4-is_err_or_null-v1-15-bd63b656022d@avm.de>
+Message-Id: <20260310-b4-is_err_or_null-v1-38-bd63b656022d@avm.de>
 References: <20260310-b4-is_err_or_null-v1-0-bd63b656022d@avm.de>
 In-Reply-To: <20260310-b4-is_err_or_null-v1-0-bd63b656022d@avm.de>
 To: amd-gfx@lists.freedesktop.org, apparmor@lists.ubuntu.com, 
@@ -88,29 +88,42 @@ To: amd-gfx@lists.freedesktop.org, apparmor@lists.ubuntu.com,
  sched-ext@lists.linux.dev, target-devel@vger.kernel.org, 
  tipc-discussion@lists.sourceforge.net, v9fs@lists.linux.dev, 
  Philipp Hahn <phahn-oss@avm.de>
-Cc: Steven Rostedt <rostedt@goodmis.org>, 
- Masami Hiramatsu <mhiramat@kernel.org>, 
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2257; i=phahn-oss@avm.de;
- h=from:subject:message-id; bh=lEmCou71DQIv3rJiH+2ZIvzOcBQ45/hCLHA8fjFTjEM=;
- b=owEBbQGS/pANAwAKATQtBlPRrKzbAcsmYgBpsAYJfb+qOowLIkUmfJbwapQWgbBrCmoY2MGV1
- kQO676TIO+JATMEAAEKAB0WIQQ5bPBtrWDUcDQCppg0LQZT0ays2wUCabAGCQAKCRA0LQZT0ays
- 264GB/0ePCsoEZ4dvusK/+59DK+nFUG4TMYrwfcQ9Aw8geb+nDTbFBXmGXKhwNE0FGNMoZ9u6w0
- 6Z8ff6aHriAkc9Kt7Cgo70KOX6BjUy2bKgpnqJ9UCEmLABUocGsnikIoRM/S+kmqBXC+hSxD7sM
- X70l7rxeP1jyVHxWJrxfa6E/R35lI3vjpmjnsYcBxz/fgBeGY30s+ys1gafR9RwiFHF5/fl9jcb
- Y3J+3Pom6JCnaZYPGyS2UG84plp5l+rENGjhP2UWug9tGkZ5pwYbuR79z7QaUT6EEnR3YbR314t
- 8SpG12KL4Vc7ZU5W2GsSc9E64021CyFWbNdSoNZGwreTwyp2
+Cc: Igor Russkikh <irusskikh@marvell.com>, 
+ Andrew Lunn <andrew+netdev@lunn.ch>, 
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+ Pavan Chebbi <pavan.chebbi@broadcom.com>, Michael Chan <mchan@broadcom.com>, 
+ Potnuri Bharat Teja <bharat@chelsio.com>, 
+ Tony Nguyen <anthony.l.nguyen@intel.com>, 
+ Przemek Kitszel <przemyslaw.kitszel@intel.com>, 
+ Taras Chornyi <taras.chornyi@plvision.eu>, 
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
+ Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+ Iyappan Subramanian <iyappan@os.amperecomputing.com>, 
+ Keyur Chudgar <keyur@os.amperecomputing.com>, 
+ Quan Nguyen <quan@os.amperecomputing.com>, 
+ Heiner Kallweit <hkallweit1@gmail.com>, 
+ Russell King <linux@armlinux.org.uk>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=6679; i=phahn-oss@avm.de;
+ h=from:subject:message-id; bh=KQiEoi/5KK1uW5/WekNTwCqBkzEqSA1SWtsVPdM2q90=;
+ b=owEBbQGS/pANAwAKATQtBlPRrKzbAcsmYgBpsAZXMdz3AdJ9BDXSNnmAtbN1zmhCLGlM5aT0i
+ DUnFwIG7QKJATMEAAEKAB0WIQQ5bPBtrWDUcDQCppg0LQZT0ays2wUCabAGVwAKCRA0LQZT0ays
+ 20CyB/4lggnkY4K4Lo4sONwYMpv2ax2osa3aOBaZeOsk7IrX5OefQhdbIn4njQGFhSRkoN1OS74
+ RFM1P8Zj2ox5AT2OTTsGgJszYrviPiI6f3OB4fORCX0D5Uy+q+MJ9QaHAVOTki7YRDRPqPU8eot
+ qXUXo3MWBintiQb+VUgj0c7V53AbuvEdsGiANz4ngxrRyeRv0LQno6AOBMWbXRBogpDl1L0S2i4
+ UZBntAPoWZbboJc05+3p5MczuG3QperMntaj9Tb4wrxw8nvaoynlDjGr2dg61cj+UKtCoiisS82
+ re/u1kbEtkI5dJs+aKf1mABBLdny1Poccch6DjzUum6aDXBE
 X-Developer-Key: i=phahn-oss@avm.de; a=openpgp;
  fpr=58AF7C2E007CDBE62C59E078F50EFDCF8AD04B1A
-X-purgate-ID: 149429::1773143724-764F0E1F-76E75FCD/0/0
+X-purgate-ID: 149429::1773143726-95E77E6F-9B3D9DCE/0/0
 X-purgate-type: clean
-X-purgate-size: 2259
+X-purgate-size: 6681
 X-purgate-Ad: Categorized by eleven eXpurgate (R) https://www.eleven.de
 X-purgate: This mail is considered clean (visit https://www.eleven.de for further information)
 X-purgate: clean
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260310_115541_164292_CC03816E 
-X-CRM114-Status: GOOD (  11.49  )
+X-CRM114-CacheID: sfid-20260310_115543_497028_E5E552B2 
+X-CRM114-Status: GOOD (  15.64  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -132,57 +145,148 @@ check.
 
 Change generated with coccinelle.
 
-To: Steven Rostedt <rostedt@goodmis.org>
-To: Masami Hiramatsu <mhiramat@kernel.org>
-To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To: Igor Russkikh <irusskikh@marvell.com>
+To: Andrew Lunn <andrew+netdev@lunn.ch>
+To: "David S. Miller" <davem@davemloft.net>
+To: Eric Dumazet <edumazet@google.com>
+To: Jakub Kicinski <kuba@kernel.org>
+To: Paolo Abeni <pabeni@redhat.com>
+To: Pavan Chebbi <pavan.chebbi@broadcom.com>
+To: Michael Chan <mchan@broadcom.com>
+To: Potnuri Bharat Teja <bharat@chelsio.com>
+To: Tony Nguyen <anthony.l.nguyen@intel.com>
+To: Przemek Kitszel <przemyslaw.kitszel@intel.com>
+To: Taras Chornyi <taras.chornyi@plvision.eu>
+To: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+To: Alexandre Torgue <alexandre.torgue@foss.st.com>
+To: Iyappan Subramanian <iyappan@os.amperecomputing.com>
+To: Keyur Chudgar <keyur@os.amperecomputing.com>
+To: Quan Nguyen <quan@os.amperecomputing.com>
+To: Heiner Kallweit <hkallweit1@gmail.com>
+To: Russell King <linux@armlinux.org.uk>
+Cc: netdev@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
-Cc: linux-trace-kernel@vger.kernel.org
+Cc: intel-wired-lan@lists.osuosl.org
+Cc: linux-stm32@st-md-mailman.stormreply.com
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-usb@vger.kernel.org
 Signed-off-by: Philipp Hahn <phahn-oss@avm.de>
 ---
- kernel/trace/fprobe.c                | 2 +-
- kernel/trace/kprobe_event_gen_test.c | 2 +-
- kernel/trace/trace_events_hist.c     | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/aquantia/atlantic/aq_ring.c        | 2 +-
+ drivers/net/ethernet/broadcom/tg3.c                     | 2 +-
+ drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_flower.c    | 3 +--
+ drivers/net/ethernet/intel/ice/devlink/devlink.c        | 2 +-
+ drivers/net/ethernet/marvell/prestera/prestera_router.c | 2 +-
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c       | 2 +-
+ drivers/net/mdio/mdio-xgene.c                           | 2 +-
+ drivers/net/usb/r8152.c                                 | 2 +-
+ 8 files changed, 8 insertions(+), 9 deletions(-)
 
-diff --git a/kernel/trace/fprobe.c b/kernel/trace/fprobe.c
-index dcadf1d23b8a31f571392d0c49cbd22df1716b4f..a94ce810d83b90f55d1178a9bd29c78fd068df4c 100644
---- a/kernel/trace/fprobe.c
-+++ b/kernel/trace/fprobe.c
-@@ -607,7 +607,7 @@ static int fprobe_module_callback(struct notifier_block *nb,
+diff --git a/drivers/net/ethernet/aquantia/atlantic/aq_ring.c b/drivers/net/ethernet/aquantia/atlantic/aq_ring.c
+index e270327e47fd804cc8ee5cfd53ed1b993c955c41..43edef35c4b1ff606b2f1519a07fad4c9a990ad4 100644
+--- a/drivers/net/ethernet/aquantia/atlantic/aq_ring.c
++++ b/drivers/net/ethernet/aquantia/atlantic/aq_ring.c
+@@ -810,7 +810,7 @@ static int __aq_ring_xdp_clean(struct aq_ring_s *rx_ring,
+ 		}
+ 
+ 		skb = aq_xdp_run_prog(aq_nic, &xdp, rx_ring, buff);
+-		if (IS_ERR(skb) || !skb)
++		if (IS_ERR_OR_NULL(skb))
+ 			continue;
+ 
+ 		if (ptp_hwtstamp_len > 0)
+diff --git a/drivers/net/ethernet/broadcom/tg3.c b/drivers/net/ethernet/broadcom/tg3.c
+index 2328fce336447eb4a796f9300ccc0ab536ff0a35..8ed79f34f03d81184dcc12e6eaff009cb8f7756e 100644
+--- a/drivers/net/ethernet/broadcom/tg3.c
++++ b/drivers/net/ethernet/broadcom/tg3.c
+@@ -7943,7 +7943,7 @@ static int tg3_tso_bug(struct tg3 *tp, struct tg3_napi *tnapi,
+ 
+ 	segs = skb_gso_segment(skb, tp->dev->features &
+ 				    ~(NETIF_F_TSO | NETIF_F_TSO6));
+-	if (IS_ERR(segs) || !segs) {
++	if (IS_ERR_OR_NULL(segs)) {
+ 		tnapi->tx_dropped++;
+ 		goto tg3_tso_bug_end;
+ 	}
+diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_flower.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_flower.c
+index 3307e50426819087ad985178c4a5383f16b8e7b4..1c8a6445d4b2e3535d8f1b7908dd02d8dd2f23fa 100644
+--- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_flower.c
++++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_flower.c
+@@ -1032,8 +1032,7 @@ static void ch_flower_stats_handler(struct work_struct *work)
  	do {
  		rhashtable_walk_start(&iter);
  
--		while ((node = rhashtable_walk_next(&iter)) && !IS_ERR(node))
-+		while (!IS_ERR_OR_NULL((node = rhashtable_walk_next(&iter))))
- 			fprobe_remove_node_in_module(mod, node, &alist);
+-		while ((flower_entry = rhashtable_walk_next(&iter)) &&
+-		       !IS_ERR(flower_entry)) {
++		while (!IS_ERR_OR_NULL((flower_entry = rhashtable_walk_next(&iter)))) {
+ 			ret = cxgb4_get_filter_counters(adap->port[0],
+ 							flower_entry->filter_id,
+ 							&packets, &bytes,
+diff --git a/drivers/net/ethernet/intel/ice/devlink/devlink.c b/drivers/net/ethernet/intel/ice/devlink/devlink.c
+index 6c72bd15db6d75a1d4fa04ef8fefbd26fb6e84bd..3d08b9187fd76ca3198af28111b6f1c1765ea01e 100644
+--- a/drivers/net/ethernet/intel/ice/devlink/devlink.c
++++ b/drivers/net/ethernet/intel/ice/devlink/devlink.c
+@@ -791,7 +791,7 @@ static void ice_traverse_tx_tree(struct devlink *devlink, struct ice_sched_node
+ 						  node->parent->rate_node);
+ 	}
  
- 		rhashtable_walk_stop(&iter);
-diff --git a/kernel/trace/kprobe_event_gen_test.c b/kernel/trace/kprobe_event_gen_test.c
-index 5a4b722b50451bfdee42769a6d3be39c055690d1..a1735ca273f0b756aa1fcfcdab30ddad9bc51c5f 100644
---- a/kernel/trace/kprobe_event_gen_test.c
-+++ b/kernel/trace/kprobe_event_gen_test.c
-@@ -75,7 +75,7 @@ static struct trace_event_file *gen_kretprobe_test;
+-	if (rate_node && !IS_ERR(rate_node))
++	if (!IS_ERR_OR_NULL(rate_node))
+ 		node->rate_node = rate_node;
  
- static bool trace_event_file_is_valid(struct trace_event_file *input)
- {
--	return input && !IS_ERR(input);
-+	return !IS_ERR_OR_NULL(input);
- }
+ traverse_children:
+diff --git a/drivers/net/ethernet/marvell/prestera/prestera_router.c b/drivers/net/ethernet/marvell/prestera/prestera_router.c
+index b036b173a308b5f994ad8538eb010fa27196988c..4492938e8a3da91d32efe8d45ccbe2eb437c0e49 100644
+--- a/drivers/net/ethernet/marvell/prestera/prestera_router.c
++++ b/drivers/net/ethernet/marvell/prestera/prestera_router.c
+@@ -1061,7 +1061,7 @@ static void __prestera_k_arb_hw_state_upd(struct prestera_switch *sw,
+ 		n = NULL;
+ 	}
  
- /*
-diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-index 73ea180cad555898693e92ee397a1c9493c7c167..59df215e1dfd9349eca1c0823ed709ec7285f766 100644
---- a/kernel/trace/trace_events_hist.c
-+++ b/kernel/trace/trace_events_hist.c
-@@ -3973,7 +3973,7 @@ trace_action_create_field_var(struct hist_trigger_data *hist_data,
- 	 */
- 	field_var = create_target_field_var(hist_data, system, event, var);
- 
--	if (field_var && !IS_ERR(field_var)) {
-+	if (!IS_ERR_OR_NULL(field_var)) {
- 		save_field_var(hist_data, field_var);
- 		hist_field = field_var->var;
+-	if (!IS_ERR(n) && n) {
++	if (!IS_ERR_OR_NULL(n)) {
+ 		neigh_event_send(n, NULL);
+ 		neigh_release(n);
  	} else {
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index 6827c99bde8c22db42b363d2d36ad6f26075ed50..356a4e9ce04b1fcf8786d7274d31ace404be2cf6 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -1275,7 +1275,7 @@ static int stmmac_init_phy(struct net_device *dev)
+ 	/* Some DT bindings do not set-up the PHY handle. Let's try to
+ 	 * manually parse it
+ 	 */
+-	if (!phy_fwnode || IS_ERR(phy_fwnode)) {
++	if (IS_ERR_OR_NULL(phy_fwnode)) {
+ 		int addr = priv->plat->phy_addr;
+ 		struct phy_device *phydev;
+ 
+diff --git a/drivers/net/mdio/mdio-xgene.c b/drivers/net/mdio/mdio-xgene.c
+index a8f91a4b7fed0927ee14e408000cd3a2bfb9b09a..09b30b563295c6085dc1358ac361301e5cf6b2a8 100644
+--- a/drivers/net/mdio/mdio-xgene.c
++++ b/drivers/net/mdio/mdio-xgene.c
+@@ -265,7 +265,7 @@ struct phy_device *xgene_enet_phy_register(struct mii_bus *bus, int phy_addr)
+ 	struct phy_device *phy_dev;
+ 
+ 	phy_dev = get_phy_device(bus, phy_addr, false);
+-	if (!phy_dev || IS_ERR(phy_dev))
++	if (IS_ERR_OR_NULL(phy_dev))
+ 		return NULL;
+ 
+ 	if (phy_device_register(phy_dev))
+diff --git a/drivers/net/usb/r8152.c b/drivers/net/usb/r8152.c
+index 0c83bbbea2e7c322ee6339893e281237663bd3ae..73f17ebd7d40007eec5004f887a46249defd28ab 100644
+--- a/drivers/net/usb/r8152.c
++++ b/drivers/net/usb/r8152.c
+@@ -2218,7 +2218,7 @@ static void r8152_csum_workaround(struct r8152 *tp, struct sk_buff *skb,
+ 
+ 		features &= ~(NETIF_F_SG | NETIF_F_IPV6_CSUM | NETIF_F_TSO6);
+ 		segs = skb_gso_segment(skb, features);
+-		if (IS_ERR(segs) || !segs)
++		if (IS_ERR_OR_NULL(segs))
+ 			goto drop;
+ 
+ 		__skb_queue_head_init(&seg_list);
 
 -- 
 2.43.0
