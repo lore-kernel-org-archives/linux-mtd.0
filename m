@@ -4,85 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9FB7FD2D92
-	for <linux-mtd@archiver.kernel.org>; Tue, 10 Mar 2026 13:47:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32D0DFD2D98
+	for <linux-mtd@archiver.kernel.org>; Tue, 10 Mar 2026 13:56:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=oaKRTiZ6iTHLA0y0H7uwje0O+fiFLxJLYUJ960ioiAc=; b=MGpRTgmzVMC8qJ
-	uNGMa2rq0ixnT2WdX7p07P9LI0u8UmzlvnhMN7uj/sBSR2e+O1C8ZM6fZpQ4OV1UoMriVKbCk9Zby
-	QfmvT3poFoWuT1qPCPJ6+2T8vhJa791DufsBzbpfO6oKTYoeFoQM7oCol0tIb1mTn/GQbHOPktbeu
-	32FYC1x85lVnZqc8HPQ5xbDEiSOAL18kT4C09fdvFVMe5ptyT/P3CAptFvq8tCPMMCF8QYhifA1/W
-	agq6Lh+5ZXy3Xke4pvF1tZLxnkQZIBLh5kArpGcQYFT/FOMZ2+od4KNGmMgHUmNjOevgikcLPMWBk
-	X/AD4SpvmGDqfX/L7g1A==;
+	List-Owner; bh=vzA7UoyCaLAyTVfEZ8o7eMzvZy+grPi5SZw1fhfIIjc=; b=vqLJJqhiT2zsdJ
+	DHIRaBqbuZ7hYDqfJPsKC8ljLmksNnCh82t4txsBJtY7b+O03a8RZPrZv2lC7C1fn6mQpU2MYegMy
+	aVateIFYguzhCykT2Bg/maOFvOc5fGVqFGYhkUjAjKD6yYW5jWqTQ+7QCEaGL0iI6b0AU3EdAIJyj
+	LGbP7dBH8DBa233QNquXJU0bOZzO3CHHZiNp11khf0rnh+49EHgqTrmR1u7gfDhDe/BOIvP4Z1r5l
+	SF4t51dBA3l1QbVbI+D4rjz98CYTD1cQ1k73jlnENWLN75yoGnBvcMCEO46xRgcHHZhT1Xe5Xr5Z/
+	uBCwI9qL+CcnyAikd4ag==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vzxQg-00000009d2k-0NYR;
-	Tue, 10 Mar 2026 13:47:22 +0000
-Received: from kylie.crudebyte.com ([5.189.157.229])
+	id 1vzxZC-00000009dmg-3TGv;
+	Tue, 10 Mar 2026 13:56:10 +0000
+Received: from relay8-d.mail.gandi.net ([217.70.183.201])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vzxQd-00000009d2B-3wWD;
-	Tue, 10 Mar 2026 13:47:21 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=crudebyte.com; s=kylie; h=Content-Type:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Content-ID:Content-Description;
-	bh=aVv/PSZT5NGeZjfHxwg8OpWgNHlsgZDJ/5CMzeiUbdo=; b=dTpIUmFyfV+bP6Hy0ueZpN32tu
-	piiOrm2xYxIB724JO1nPYEvLrwNppM7ldi2VsLNiB9a22ZPzaNJQ0YaGHJwVuraOF2yk5SpAHZold
-	s8t7GSMCpZMXoj2MN+HCYF9oJcPgVF+TLl3oulmGF4t7YrhkwJ3IfsTmzXldUh96w/myd3pDSVX1g
-	/e8bzPXWMBYBNoEloTPI5IYSewDyrYj60Js0etFfclp4hEgkn7HaHPBIdN5mmqp8OC3Z4JyMZY1In
-	us3k02cy2EDC8Yr2DD9TZj2Bfv2JCzi8o1CBU/q/X+4deOd5/tymAnt0Bem3HGOfb0TZNQXc+sRV/
-	1upKIM10UX7QbQ98BeJxn1cHAUt80a13aLlrns2kgX3r4ZD43IvQ3qOgYizweNeHFZvB+bpwBSNFD
-	hlDW1qIdKmIN+wC7qSL6cU7m+YgH+eIF1AeR8pLLvTFBNqmI6qti9D+O96RBcbYAwE/olpfjlTGn5
-	mdLSL9FFfI7mx4Sepl5WAdeD1XVerb2KTcAMA8AXYimzng7DssEnPDbX6u+t3yAcQjc1BrWIujZyx
-	Gao2D20IgKGUx784nxNUpYJ2ZiCkXzoDKyugnEIdTC+VrOwC2OEJanP1Uq3/BrGj0qOrmxYFeI51c
-	48zjYWWU3v40e6itkF189TkI8Acs6/RLaheNlL7MM=;
-From: Christian Schoenebeck <linux_oss@crudebyte.com>
-To: amd-gfx@lists.freedesktop.org, apparmor@lists.ubuntu.com,
- bpf@vger.kernel.org, ceph-devel@vger.kernel.org, cocci@inria.fr,
- dm-devel@lists.linux.dev, dri-devel@lists.freedesktop.org,
- gfs2@lists.linux.dev, intel-gfx@lists.freedesktop.org,
- intel-wired-lan@lists.osuosl.org, iommu@lists.linux.dev, kvm@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org,
- linux-bluetooth@vger.kernel.org, linux-btrfs@vger.kernel.org,
- linux-cifs@vger.kernel.org, linux-clk@vger.kernel.org,
- linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-gpio@vger.kernel.org,
- linux-hyperv@vger.kernel.org, linux-input@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
- linux-media@vger.kernel.org, linux-mips@vger.kernel.org, linux-mm@kvack.org,
- linux-modules@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-nfs@vger.kernel.org, linux-omap@vger.kernel.org,
- linux-phy@lists.infradead.org, linux-pm@vger.kernel.org,
- linux-rockchip@lists.infradead.org, linux-s390@vger.kernel.org,
- linux-scsi@vger.kernel.org, linux-sctp@vger.kernel.org,
- linux-security-module@vger.kernel.org, linux-sh@vger.kernel.org,
- linux-sound@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
- linux-trace-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
- linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
- ntfs3@lists.linux.dev, samba-technical@lists.samba.org,
- sched-ext@lists.linux.dev, target-devel@vger.kernel.org,
- tipc-discussion@lists.sourceforge.net, v9fs@lists.linux.dev,
- Philipp Hahn <phahn-oss@avm.de>, Philipp Hahn <phahn-oss@avm.de>
-Cc: Eric Van Hensbergen <ericvh@kernel.org>,
- Latchesar Ionkov <lucho@ionkov.net>,
- Dominique Martinet <asmadeus@codewreck.org>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Simon Horman <horms@kernel.org>
-Subject: Re: [PATCH 24/61] net/9p: Prefer IS_ERR_OR_NULL over manual NULL check
-Date: Tue, 10 Mar 2026 14:47:03 +0100
-Message-ID: <1948861.tdWV9SEqCh@weasel>
-In-Reply-To: <20260310-b4-is_err_or_null-v1-24-bd63b656022d@avm.de>
+	id 1vzxZ9-00000009dlv-33LR;
+	Tue, 10 Mar 2026 13:56:09 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 539B3433BD;
+	Tue, 10 Mar 2026 13:55:53 +0000 (UTC)
+Message-ID: <375c7c30c184d331c199876e45920976030f3cbc.camel@hadess.net>
+Subject: Re: [PATCH 25/61] net/bluetooth: Prefer IS_ERR_OR_NULL over manual
+ NULL check
+From: Bastien Nocera <hadess@hadess.net>
+To: Philipp Hahn <phahn-oss@avm.de>, amd-gfx@lists.freedesktop.org, 
+	apparmor@lists.ubuntu.com, bpf@vger.kernel.org, ceph-devel@vger.kernel.org,
+ 	cocci@inria.fr, dm-devel@lists.linux.dev, dri-devel@lists.freedesktop.org,
+ 	gfs2@lists.linux.dev, intel-gfx@lists.freedesktop.org, 
+	intel-wired-lan@lists.osuosl.org, iommu@lists.linux.dev,
+ kvm@vger.kernel.org, 	linux-arm-kernel@lists.infradead.org,
+ linux-block@vger.kernel.org, 	linux-bluetooth@vger.kernel.org,
+ linux-btrfs@vger.kernel.org, 	linux-cifs@vger.kernel.org,
+ linux-clk@vger.kernel.org, 	linux-erofs@lists.ozlabs.org,
+ linux-ext4@vger.kernel.org, 	linux-fsdevel@vger.kernel.org,
+ linux-gpio@vger.kernel.org, 	linux-hyperv@vger.kernel.org,
+ linux-input@vger.kernel.org, 	linux-kernel@vger.kernel.org,
+ linux-leds@vger.kernel.org, 	linux-media@vger.kernel.org,
+ linux-mips@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, linux-mtd@lists.infradead.org, 
+	linux-nfs@vger.kernel.org, linux-omap@vger.kernel.org, 
+	linux-phy@lists.infradead.org, linux-pm@vger.kernel.org, 
+	linux-rockchip@lists.infradead.org, linux-s390@vger.kernel.org, 
+	linux-scsi@vger.kernel.org, linux-sctp@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, linux-sh@vger.kernel.org, 
+	linux-sound@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
+	linux-trace-kernel@vger.kernel.org, linux-usb@vger.kernel.org, 
+	linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+ ntfs3@lists.linux.dev, 	samba-technical@lists.samba.org,
+ sched-ext@lists.linux.dev, 	target-devel@vger.kernel.org,
+ tipc-discussion@lists.sourceforge.net, 	v9fs@lists.linux.dev
+Cc: Marcel Holtmann <marcel@holtmann.org>, Johan Hedberg
+	 <johan.hedberg@gmail.com>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Date: Tue, 10 Mar 2026 14:55:52 +0100
+In-Reply-To: <20260310-b4-is_err_or_null-v1-25-bd63b656022d@avm.de>
 References: <20260310-b4-is_err_or_null-v1-0-bd63b656022d@avm.de>
- <20260310-b4-is_err_or_null-v1-24-bd63b656022d@avm.de>
+	 <20260310-b4-is_err_or_null-v1-25-bd63b656022d@avm.de>
+User-Agent: Evolution 3.58.3 (3.58.3-1.fc43) 
 MIME-Version: 1.0
+X-GND-Sasl: hadess@hadess.net
+X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddvkeduudelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefkuffhvfevffgjfhgtgfgfggesthhqredttderjeenucfhrhhomhepuegrshhtihgvnhcupfhotggvrhgruceohhgruggvshhssehhrgguvghsshdrnhgvtheqnecuggftrfgrthhtvghrnhepieffgfehtedtgefgjeeggfffgeeuvdegveekveejfeekkedujeehteffueefffeunecukfhppedvrgdtudemvgefgeemvggtjeefmegtfhdvtdemsggrgeefmegrieejieemtgdvugefmeejrgehfeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpedvrgdtudemvgefgeemvggtjeefmegtfhdvtdemsggrgeefmegrieejieemtgdvugefmeejrgehfedphhgvlhhopeglkffrvheimedvrgdtudemvgefgeemvggtjeefmegtfhdvtdemsggrgeefmegrieejieemtgdvugefmeejrgehfegnpdhmrghilhhfrhhomhephhgruggvshhssehhrgguvghsshdrnhgvthdpqhhiugepheefleeufeegfeefueffpdhmohguvgepshhmthhpohhuthdpnhgspghrtghpthhtohepheejpdhrtghpthhtohepphhhrghhnhdqohhsshesrghvmhdruggvpdhrtghpthhtoheprghmugdqghhfgieslhhishhtshdrfhhrvggvu
+ ggvshhkthhophdrohhrghdprhgtphhtthhopegrphhprghrmhhorheslhhishhtshdruhgsuhhnthhurdgtohhmpdhrtghpthhtohepsghpfhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegtvghphhdquggvvhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegtohgttghisehinhhrihgrrdhfrh
+X-GND-State: clean
+X-GND-Score: -100
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260310_064719_990321_365F03C0 
-X-CRM114-Status: GOOD (  12.85  )
+X-CRM114-CacheID: sfid-20260310_065607_922658_77A04CBE 
+X-CRM114-Status: GOOD (  10.64  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,81 +85,41 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tuesday, 10 March 2026 12:48:50 CET Philipp Hahn wrote:
-> Prefer using IS_ERR_OR_NULL() over using IS_ERR() and a manual NULL
-> check.
-> 
-> Change generated with coccinelle.
-> 
-> To: Eric Van Hensbergen <ericvh@kernel.org>
-> To: Latchesar Ionkov <lucho@ionkov.net>
-> To: Dominique Martinet <asmadeus@codewreck.org>
-> To: Christian Schoenebeck <linux_oss@crudebyte.com>
-> To: "David S. Miller" <davem@davemloft.net>
-> To: Eric Dumazet <edumazet@google.com>
-> To: Jakub Kicinski <kuba@kernel.org>
-> To: Paolo Abeni <pabeni@redhat.com>
-> To: Simon Horman <horms@kernel.org>
-> Cc: v9fs@lists.linux.dev
-> Cc: netdev@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Philipp Hahn <phahn-oss@avm.de>
-> ---
->  include/net/9p/client.h | 2 +-
->  net/9p/trans_rdma.c     | 8 ++++----
->  2 files changed, 5 insertions(+), 5 deletions(-)
-
-Reviewed-by: Christian Schoenebeck <linux_oss@crudebyte.com>
- 
-> diff --git a/include/net/9p/client.h b/include/net/9p/client.h
-> index
-> 838a94218b593f3fb19e6827c472753380193461..4bde6bd716f323c819745e64c7aac0dea
-> 7beb72f 100644 --- a/include/net/9p/client.h
-> +++ b/include/net/9p/client.h
-> @@ -364,7 +364,7 @@ static inline struct p9_fid *p9_fid_get(struct p9_fid
-> *fid)
-> 
->  static inline int p9_fid_put(struct p9_fid *fid)
->  {
-> -	if (!fid || IS_ERR(fid))
-> +	if (IS_ERR_OR_NULL(fid))
->  		return 0;
-> 
->  	if (tracepoint_enabled(9p_fid_ref))
-> diff --git a/net/9p/trans_rdma.c b/net/9p/trans_rdma.c
-> index
-> aa5bd74d333f3b5e6fd1e4344d26bc0201ff7f7f..60461344b536bcb6e94112aace75a88b6
-> a99ad86 100644 --- a/net/9p/trans_rdma.c
-> +++ b/net/9p/trans_rdma.c
-> @@ -252,16 +252,16 @@ static void rdma_destroy_trans(struct p9_trans_rdma
-> *rdma) if (!rdma)
->  		return;
-> 
-> -	if (rdma->qp && !IS_ERR(rdma->qp))
-> +	if (!IS_ERR_OR_NULL(rdma->qp))
->  		ib_destroy_qp(rdma->qp);
-> 
-> -	if (rdma->pd && !IS_ERR(rdma->pd))
-> +	if (!IS_ERR_OR_NULL(rdma->pd))
->  		ib_dealloc_pd(rdma->pd);
-> 
-> -	if (rdma->cq && !IS_ERR(rdma->cq))
-> +	if (!IS_ERR_OR_NULL(rdma->cq))
->  		ib_free_cq(rdma->cq);
-> 
-> -	if (rdma->cm_id && !IS_ERR(rdma->cm_id))
-> +	if (!IS_ERR_OR_NULL(rdma->cm_id))
->  		rdma_destroy_id(rdma->cm_id);
-> 
->  	kfree(rdma);
-
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gVHVlLCAyMDI2LTAzLTEwIGF0IDEyOjQ4ICswMTAwLCBQaGlsaXBwIEhhaG4gd3JvdGU6Cj4g
+UHJlZmVyIHVzaW5nIElTX0VSUl9PUl9OVUxMKCkgb3ZlciB1c2luZyBJU19FUlIoKSBhbmQgYSBt
+YW51YWwgTlVMTAo+IGNoZWNrLgo+IAo+IENoYW5nZSBnZW5lcmF0ZWQgd2l0aCBjb2NjaW5lbGxl
+Lgo+IAo+IFRvOiBNYXJjZWwgSG9sdG1hbm4gPG1hcmNlbEBob2x0bWFubi5vcmc+Cj4gVG86IEpv
+aGFuIEhlZGJlcmcgPGpvaGFuLmhlZGJlcmdAZ21haWwuY29tPgo+IFRvOiBMdWl6IEF1Z3VzdG8g
+dm9uIERlbnR6IDxsdWl6LmRlbnR6QGdtYWlsLmNvbT4KPiBDYzogbGludXgtYmx1ZXRvb3RoQHZn
+ZXIua2VybmVsLm9yZwo+IENjOiBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnCj4gU2lnbmVk
+LW9mZi1ieTogUGhpbGlwcCBIYWhuIDxwaGFobi1vc3NAYXZtLmRlPgoKUmV2aWV3ZWQtYnk6IEJh
+c3RpZW4gTm9jZXJhIDxoYWRlc3NAaGFkZXNzLm5ldD4KCj4gLS0tCj4gwqBuZXQvYmx1ZXRvb3Ro
+L21nbXQuYyB8IDYgKysrLS0tCj4gwqAxIGZpbGUgY2hhbmdlZCwgMyBpbnNlcnRpb25zKCspLCAz
+IGRlbGV0aW9ucygtKQo+IAo+IGRpZmYgLS1naXQgYS9uZXQvYmx1ZXRvb3RoL21nbXQuYyBiL25l
+dC9ibHVldG9vdGgvbWdtdC5jCj4gaW5kZXgKPiBhNzIzOGZkM2IwM2JiNTRmMzlhZjFhZmVlNzRk
+YzFhY2Q5MzFjMzI0Li4wNmQyZGE2N2JiZTE0ZTE3ZWU0NzhhYTkzOWQKPiBlMjY1MjZjMzMzZDkx
+IDEwMDY0NAo+IC0tLSBhL25ldC9ibHVldG9vdGgvbWdtdC5jCj4gKysrIGIvbmV0L2JsdWV0b290
+aC9tZ210LmMKPiBAQCAtNDE2OSw3ICs0MTY5LDcgQEAgc3RhdGljIHZvaWQgc2V0X2RlZmF1bHRf
+cGh5X2NvbXBsZXRlKHN0cnVjdAo+IGhjaV9kZXYgKmhkZXYsIHZvaWQgKmRhdGEsIGludCBlcnIp
+Cj4gwqAJCW1nbXRfcGh5X2NvbmZpZ3VyYXRpb25fY2hhbmdlZChoZGV2LCBjbWQtPnNrKTsKPiDC
+oAl9Cj4gwqAKPiAtCWlmIChza2IgJiYgIUlTX0VSUihza2IpKQo+ICsJaWYgKCFJU19FUlJfT1Jf
+TlVMTChza2IpKQo+IMKgCQlrZnJlZV9za2Ioc2tiKTsKPiDCoAo+IMKgCW1nbXRfcGVuZGluZ19m
+cmVlKGNtZCk7Cj4gQEAgLTU3MzAsNyArNTczMCw3IEBAIHN0YXRpYyB2b2lkIHJlYWRfbG9jYWxf
+b29iX2RhdGFfY29tcGxldGUoc3RydWN0Cj4gaGNpX2RldiAqaGRldiwgdm9pZCAqZGF0YSwKPiDC
+oAkJCcKgIE1HTVRfU1RBVFVTX1NVQ0NFU1MsICZtZ210X3JwLCBycF9zaXplKTsKPiDCoAo+IMKg
+cmVtb3ZlOgo+IC0JaWYgKHNrYiAmJiAhSVNfRVJSKHNrYikpCj4gKwlpZiAoIUlTX0VSUl9PUl9O
+VUxMKHNrYikpCj4gwqAJCWtmcmVlX3NrYihza2IpOwo+IMKgCj4gwqAJbWdtdF9wZW5kaW5nX2Zy
+ZWUoY21kKTsKPiBAQCAtODI3Nyw3ICs4Mjc3LDcgQEAgc3RhdGljIHZvaWQKPiByZWFkX2xvY2Fs
+X29vYl9leHRfZGF0YV9jb21wbGV0ZShzdHJ1Y3QgaGNpX2RldiAqaGRldiwgdm9pZCAqZGF0YSwK
+PiDCoAkJCQkgbWdtdF9ycCwgc2l6ZW9mKCptZ210X3JwKSArCj4gZWlyX2xlbiwKPiDCoAkJCQkg
+SENJX01HTVRfT09CX0RBVEFfRVZFTlRTLCBjbWQtPnNrKTsKPiDCoGRvbmU6Cj4gLQlpZiAoc2ti
+ICYmICFJU19FUlIoc2tiKSkKPiArCWlmICghSVNfRVJSX09SX05VTEwoc2tiKSkKPiDCoAkJa2Zy
+ZWVfc2tiKHNrYik7Cj4gwqAKPiDCoAlrZnJlZShtZ210X3JwKTsKCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lv
+biBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9saW51eC1tdGQvCg==
