@@ -4,89 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB8D8FD4F03
-	for <linux-mtd@archiver.kernel.org>; Tue, 10 Mar 2026 16:31:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5791BFD4F08
+	for <linux-mtd@archiver.kernel.org>; Tue, 10 Mar 2026 17:16:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=riaRmNnLREpct5DbZwT165CSiZ5jmdW74RpyvqwDP/o=; b=WSAzSKRfKLfZiR
-	AMMVb3eRZqCyXdkrIAyvIcYiyUUEKkanRBtThV26qmZ3jdHNa/jLkCJm+vN69EOr2XafhzAQ0fD6b
-	YRfLum30OZmFkF1lKMDPYV8WOeP1aqwPLP7A5MZIZRuACzdMGzXwQwpGnPvWsdUEkjIQoVRopEJMQ
-	ZkaKZuruGfhggnwyIsjpJL/fchUrMKSAB27MbUMf8+sHQx+B4ToKCPTbkf+DTKCGkXqVQV/FXGp1X
-	uP0nw4TS1POzAWBs5V7xOnipaCsrYGRcvmkT7kJhZRFxqRcWdvS9aA4cCVgmd/VNNjZSOQhgZ882+
-	dn4q0ZbbKosOFNpJ29ug==;
+	List-Owner; bh=YyiyDE9ACkDr1ajxYW6IPWkQDzVvTMZ43Aw/yDLlYUY=; b=dlafWwNvW5S+1+
+	HrnshdRUPhXVL4oLD+ylfUILiQW+uhcREGeFOO5f2iNaKahvAr3xOvBovmVMPjuZT1obySFIUriKD
+	DUCFUwj2lYKgtA8iiUoTXKv6HDC3Ci31oMljVFs1XHrRz/ZIBkDwQBEP0tsa/Vo0vLjpICAFwU9Hu
+	RA3rWi+OZDeijcmrMPPKndpsDZwTA4ddCXUAW9OqxQ/IeREozuDB+Ey+295/0IQWj/i6ERecgReVR
+	ybRgEAdWinvVygIQld/vHlw2TsyMHvRMU0bBVBg4Izp/rJldsACTRUNCvFDhypUT6gpU4cPLmMH29
+	xoeW1dUvfo9+j8fsMX0Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vzzz1-00000009v9T-2XFT;
-	Tue, 10 Mar 2026 16:30:59 +0000
-Received: from mail-wm1-x331.google.com ([2a00:1450:4864:20::331])
+	id 1w00h7-00000009xW7-3unz;
+	Tue, 10 Mar 2026 17:16:33 +0000
+Received: from mail.fris.de ([116.203.77.234])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vzzyw-00000009v8w-0bAu
+	id 1w00h4-00000009xVB-27dh
 	for linux-mtd@lists.infradead.org;
-	Tue, 10 Mar 2026 16:30:58 +0000
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-4853f2826f7so21652355e9.1
-        for <linux-mtd@lists.infradead.org>; Tue, 10 Mar 2026 09:30:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1773160252; x=1773765052; darn=lists.infradead.org;
-        h=user-agent:content-disposition:mime-version:message-id:subject:cc
-         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=gYBvK2rlSIcllf1TDoPU5OPmatvR57ndq7IdcRF+FTw=;
-        b=OVK/v8Em/WezpqXhoGuduwSV8twEFwZMTUTIl2iLVBDxosmWQklN9OZnImqY0nqfK5
-         HlatYQnOZqTsV6JfNJxLzqkVf7SN9pmPVPJqtR8sOUJ9vydeVbAwTnqsaRKef3bY3KFt
-         Fx8zIWE1HvGyGIFt6FzV/Z0GPpEryyfRlD0BGOqAqn0jYCyVnKKWRXN5rhbJ2yHSwbbl
-         enPmuwHIcmZpJGzjWSNtPkoh8NX4xStUsuJofteVC0f6hvqIXWEtxU1JZru/mepGc3MV
-         MaZ//TD/OUIrzHa/cpe/93KpbIBNINRZBOfRstTzKgK8iPHgdoHCsxiW/ARL8E9HVIu1
-         NyZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1773160252; x=1773765052;
-        h=user-agent:content-disposition:mime-version:message-id:subject:cc
-         :to:from:date:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gYBvK2rlSIcllf1TDoPU5OPmatvR57ndq7IdcRF+FTw=;
-        b=az9o1pv/M57lfr/94KCf7VEe9rzeZ6zzRNeQd7LsguKMONWu0kmtDDk+PeQLHRmGAW
-         2+ezuDEwucoDp0+M8NKRPRJJGYB4do4fmVVix7ot4J8i32YIU8tQt5cv77fRUMm88o2p
-         DLJ+GoJslOuJ+X4P35QBvsXQBf4rtKcDZnIU8UTOpAR0x6vbtNN9ImIryO3vlhBePv8l
-         NV6npXZsgWdzBkGqpg1dvwSm3rAxMC6HnjwzAcytLxHqpKaSZr5r+s9batOrc740uNbe
-         w1ZNbUmc/S2hc9YcVyHEPPpgqjb1eaUUBo5v1CbJZFMlienbXQkzEFrdrfLloMsm6QTf
-         7RNQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXhWNDdkg5GAkPdzCaCeqe7hpqLesOd5ZtD4tW3P6jZUg9xRXOTvFII0DykcNLanf6PhN8dMGyQ26M=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yww8nuHjuqy2W5rb9aF7jmc6Vmr71fJlpx8tWYfpxE0YXvce2i6
-	XGYDnzfJS+3itbvtTgrcwZQaHtPbbMJ49RYp2gi89XowJPYhQksa3hErkTVul0MZxn8=
-X-Gm-Gg: ATEYQzyHspM05YkzD6rCXr/I58o0nY0RD/y8vh02YguN2kq5wxVhW/UjAsfohMc5C4p
-	ajdCcfXEvF/lftfZ3lx0pF/PpMxWBXD4ozdGU4gnz4ACkUUP0nPLHdWSHMmAKNqSoADNMXGfBSA
-	odYBc38AZewJ+CW7oCLXK6igIZ9xaNJLieNhmvqZ9OYdsD34PcpclBrrQ3SXpmVVE9XvtvroxL4
-	wtvIp5vlbKhnLY2MYkTlakC+UjP5IZMcDYy90lXSVtNYJ3qwkhJAUj7RyEZnvdAHAmJAXmehMiP
-	xD0YfiS9goZAg1Nrc9IQQPN3yVt8sQ1xrSSuoksqzPBQRHwVU96jjiXf5zUQaSc8xYjpLpbY5fc
-	DEUNNhyj+Cu+IVIZ9fmpPIWL1alV/jfaILwj2lSWOzdzmbaD3Q1ce0rJ4KSwNpQ6ZNQgh9rHL6X
-	MHTmkpVgrfL+roqcmHZttwb6ERUWdJXf6/PgCFZSaIR/kU0IxQA6TxAuWUqQVQ
-X-Received: by 2002:a05:600c:3b0c:b0:483:ad56:8d16 with SMTP id 5b1f17b1804b1-48526918944mr271866725e9.6.1773160251764;
-        Tue, 10 Mar 2026 09:30:51 -0700 (PDT)
-Received: from r1chard (1-164-69-22.dynamic-ip.hinet.net. [1.164.69.22])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4852f369118sm112376625e9.20.2026.03.10.09.30.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Mar 2026 09:30:51 -0700 (PDT)
-Date: Wed, 11 Mar 2026 00:30:43 +0800
-From: Richard Lyu <richard.lyu@suse.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Richard Lyu <richard.lyu@suse.com>,
-	Aryan Srivastava <aryan.srivastava@alliedtelesis.co.nz>,
-	Markus Stockhausen <markus.stockhausen@gmx.de>,
-	Thomas Gleixner <tglx@kernel.org>, Kees Cook <kees@kernel.org>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: nand: Use scoped_guard for mutex in nand_resume
-Message-ID: <20260310163036.300392-1-richard.lyu@suse.com>
+	Tue, 10 Mar 2026 17:16:32 +0000
+From: Frieder Schrempf <frieder@fris.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fris.de; s=mail;
+	t=1773162984;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=YN9NqA2BdcEm2/4Kq3U8fwrpU71hC9cRhN8LE4Av7CM=;
+	b=jPFQbXvURFqgN14i6nwVPxl0suSxd7mbCuRxCnx5ZupezKQcOprLAjCLx/O1QNbJi0M6ui
+	LPegkccitFg8w40D2oqwH0PhHhGIGaqfB9LmGDYA3iOk7zeUKilw1XHjQTt/8xdGG7PwKL
+	f4QtZnpxNLiQ8dw8voEF1CRAFCInTpP+ep8bQ5H8aV8Bqv3iNwa0FxdwhfW+UYta5GE+s4
+	qQSulJn5HF4jLGxCzwQMJMonCWQj8j63+m5lgcO37hgf+aXwyOQVf7kJ/+Dm/8FeRbpA+6
+	X9KIvd8TmiWuE1ahrmgX5OJcujlUG2uX1O14wDS6QMweS6eKCeCzE3CFTz39nQ==
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Sasha Levin <sashal@kernel.org>,
+	stable@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Daniel Golle <daniel@makrotopia.org>,
+	Dhruva Gole <d-gole@ti.com>,
+	Frieder Schrempf <frieder.schrempf@kontron.de>
+Subject: [PATCH 6.1.y] mtd: spinand: macronix: use scratch buffer for DMA operation
+Date: Tue, 10 Mar 2026 18:15:44 +0100
+Message-ID: <20260310171544.1568499-1-frieder@fris.de>
 MIME-Version: 1.0
-Content-Disposition: inline
-X-Mailer: git-send-email 2.51.0
-User-Agent: Mutt/2.2.13 (2024-03-09)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260310_093054_221356_28650F40 
-X-CRM114-Status: GOOD (  15.15  )
+X-CRM114-CacheID: sfid-20260310_101631_081708_AF9FD46C 
+X-CRM114-Status: GOOD (  13.27  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,59 +73,72 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Refactor nand_resume() to use scoped_guard() instead of explicit
-mutex_lock/unlock. This improves code safety by ensuring the mutex
-is always released through the RAII-based cleanup infrastructure.
+From: Daniel Golle <daniel@makrotopia.org>
 
-The behavior is functionally equivalent. The mutex is released at the
-end of the scoped block, after which wake_up_all() is called to
-preserve the original locking semantics.
+[ Upstream commit ebed787a0becb9354f0a23620a5130cccd6c730c ]
 
-Signed-off-by: Richard Lyu <richard.lyu@suse.com>
+The mx35lf1ge4ab_get_eccsr() function uses an SPI DMA operation to
+read the eccsr, hence the buffer should not be on stack. Since commit
+380583227c0c7f ("spi: spi-mem: Add extra sanity checks on the op param")
+the kernel emmits a warning and blocks such operations.
+
+Use the scratch buffer to get eccsr instead of trying to directly read
+into a stack-allocated variable.
+
+Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+Reviewed-by: Dhruva Gole <d-gole@ti.com>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Link: https://lore.kernel.org/linux-mtd/Y8i85zM0u4XdM46z@makrotopia.org
+Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
 ---
- drivers/mtd/nand/raw/nand_base.c | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+This backport fixes the following error in 6.1:
 
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 770c26f9c6ce..9e3561f34ea8 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -43,6 +43,7 @@
- #include <linux/mtd/partitions.h>
- #include <linux/of.h>
- #include <linux/gpio/consumer.h>
-+#include <linux/cleanup.h>
+[  102.320032] WARNING: CPU: 0 PID: 537 at drivers/spi/spi-mem.c:216 spi_mem_check_op+0x15c/0x168
+[  102.328775] Modules linked in: bluetooth rfkill ipv6 snd_soc_fsl_asrc
+[  102.335289] CPU: 0 PID: 537 Comm: nandtest Not tainted 6.1.158-ktn #1
+[  102.341745] Hardware name: Freescale i.MX6 Ultralite (Device Tree)
+[  102.347943]  unwind_backtrace from show_stack+0x10/0x14
+[  102.353203]  show_stack from dump_stack_lvl+0x24/0x2c
+[  102.358280]  dump_stack_lvl from __warn+0x74/0x120
+[  102.363092]  __warn from warn_slowpath_fmt+0x178/0x188
+[  102.368250]  warn_slowpath_fmt from spi_mem_check_op+0x15c/0x168
+[  102.374286]  spi_mem_check_op from spi_mem_exec_op+0x3c/0x3e0
+[  102.380063]  spi_mem_exec_op from mx35lf1ge4ab_ecc_get_status+0x9c/0xf8
+[  102.386712]  mx35lf1ge4ab_ecc_get_status from spinand_ondie_ecc_finish_io_req+0x38/0x9c
+[  102.394748]  spinand_ondie_ecc_finish_io_req from spinand_mtd_read+0x184/0x350
+[  102.401998]  spinand_mtd_read from mtd_read_oob+0x98/0x160
+[  102.407517]  mtd_read_oob from mtd_read+0x5c/0x80
+[  102.412247]  mtd_read from mtdchar_read+0x108/0x2bc
+[  102.417158]  mtdchar_read from vfs_read+0x98/0x24c
+[  102.421977]  vfs_read from sys_pread64+0x8c/0xb8
+[  102.426613]  sys_pread64 from ret_fast_syscall+0x0/0x54
+[  102.431858] Exception stack(0xe0ce1fa8 to 0xe0ce1ff0)
+[  102.436922] 1fa0:                   00200000 00000000 00000003 b6e1f008 00040000 00000000
+[  102.445110] 1fc0: 00200000 00000000 00000001 000000b4 b6ff3220 b6e1f008 b6e1f008 b6ddf008
+[  102.453294] 1fe0: 000000b4 be925b38 b6f3d611 b6ec1b26
+[  102.458414] ---[ end trace 0000000000000000 ]---
+---
+ drivers/mtd/nand/spi/macronix.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/nand/spi/macronix.c b/drivers/mtd/nand/spi/macronix.c
+index dce835132a1e2..722a9738ba370 100644
+--- a/drivers/mtd/nand/spi/macronix.c
++++ b/drivers/mtd/nand/spi/macronix.c
+@@ -83,9 +83,10 @@ static int mx35lf1ge4ab_ecc_get_status(struct spinand_device *spinand,
+ 		 * in order to avoid forcing the wear-leveling layer to move
+ 		 * data around if it's not necessary.
+ 		 */
+-		if (mx35lf1ge4ab_get_eccsr(spinand, &eccsr))
++		if (mx35lf1ge4ab_get_eccsr(spinand, spinand->scratchbuf))
+ 			return nanddev_get_ecc_conf(nand)->strength;
  
- #include "internals.h"
- 
-@@ -4704,16 +4705,16 @@ static void nand_resume(struct mtd_info *mtd)
- {
- 	struct nand_chip *chip = mtd_to_nand(mtd);
- 
--	mutex_lock(&chip->lock);
--	if (chip->suspended) {
--		if (chip->ops.resume)
--			chip->ops.resume(chip);
--		chip->suspended = 0;
--	} else {
--		pr_err("%s called for a chip which is not in suspended state\n",
--			__func__);
-+	scoped_guard(mutex, &chip->lock) {
-+		if (chip->suspended) {
-+			if (chip->ops.resume)
-+				chip->ops.resume(chip);
-+			chip->suspended = 0;
-+		} else {
-+			pr_err("%s called for a chip which is not in suspended state\n",
-+				__func__);
-+		}
- 	}
--	mutex_unlock(&chip->lock);
- 
- 	wake_up_all(&chip->resume_wq);
- }
++		eccsr = *spinand->scratchbuf;
+ 		if (WARN_ON(eccsr > nanddev_get_ecc_conf(nand)->strength ||
+ 			    !eccsr))
+ 			return nanddev_get_ecc_conf(nand)->strength;
 -- 
-2.51.0
+2.53.0
 
 
 ______________________________________________________
