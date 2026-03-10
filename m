@@ -4,47 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 745E6EB1055
-	for <linux-mtd@archiver.kernel.org>; Tue, 10 Mar 2026 11:55:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25601EB1054
+	for <linux-mtd@archiver.kernel.org>; Tue, 10 Mar 2026 11:55:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=smD1wYYBnz50dH2uEN5Jstmj/cyC3aL5FMVG72pisNA=; b=Oz3YCKOzTfkGnj
-	+c6SSXsLmTH7x/0ScBcK/VA+HspCTLIhV1IXsSwdLI5h+FXMqScLMcI7og0ejTiQ0LWITFkynmwNZ
-	HKvTMPDES6+UQy7PaV2vGFd3iZqABG4KqMFuqSyqEZUmdUkOivpRVrFrQZMrMQ7OKMUqrvsebB3je
-	WvO/qk9lNh9xCXit8DIqnqKzn1b/QqoDZUQH/7Y13FKkx92iM4+MIs3OEv2eulxlplGYYWjTAHaUo
-	N0oOFGzIupvvHpav89jU0LeXw6MS/b57uSnZMCvKYPs/gjmD3qgak/AQDLJh/mULqjRjoRyLcfOKV
-	3CY6ujqPvda05E/RyHCA==;
+	List-Owner; bh=1nDDShMmSJrAzPKOaSvt90q2Qd054PzWHd0AgG7ExIc=; b=lJA1w4yeUNexbu
+	SKNf06PfvJipZELoQydpwduXFvbPikyjc1GVVFB9UryaVdjYEJgiUYjqZHkC8MKDbNqGtZJf8AZ+m
+	vd9ZGF7CcbE+khGrwdq/eAS57oGNrggHwsraeFHbiGuEAIA6ez8DHSYgWCVTlDUlwq+cXenQKxRTe
+	QVRZ0Elo96Hm69TqFIIaV6kArlAJt6yfYKKVFUCR/Lqmf8jcJXIZ6yJk7AvNhQHavzkJ53qCJYcqk
+	VsG/IJQ5XlwGUiFQsSHlBW7F9jUHmCXg4qL9uke/pCJ9JvdtgszZ9Z6Uq7pcwMVcm0ED+08hIkvDO
+	Kz/F4v1EPs6qEofYGUcQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vzvgn-00000009Kuh-2xOB;
-	Tue, 10 Mar 2026 11:55:53 +0000
-Received: from mail.avm.de ([212.42.244.119])
+	id 1vzvgq-00000009L02-3n0G;
+	Tue, 10 Mar 2026 11:55:56 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vzvgP-00000009KMH-1C38;
+	id 1vzvgT-00000009KQ1-27NK;
 	Tue, 10 Mar 2026 11:55:33 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Cc:To:In-Reply-To:References:
+	Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
+	From:Sender:Reply-To:Content-ID:Content-Description;
+	bh=awwiZWdQD63BruGvltZFRwj8p2Y5WEoFULKdNAbwIBo=; b=Mh8ZzBaypdEqkJpDi0iMgBLTRS
+	omkVG2sG7uY+83EPr0oyriNuh3So71xMOC6CTrL5LnERX7P/PLCPLswERplIS4dFhMZImw2IjhDDH
+	6gx5oON/wSEq8vs9bhCSYf5cd9SHSpCyDlIzuRXg3iGC6d21jug38TcfI2R6T8MK8Q9bChggHTUjk
+	32+15DuDB5KxIN7/9W/zbfnh4cd/PvXpMv/PvdpcToDYCo8t9cIXzzRduSixgvL5kYiLadhgTwWfT
+	tq4cgGLbrnXuNSAeljqU34AL59Mi+t4hUmE35lMEN1jlqOt4bhTabx+GHg6f3XKFKlyuM2or9resl
+	D2T/wNvw==;
+Received: from mail.avm.de ([212.42.244.120])
+	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vzvgO-0000000EQ4k-3Spg;
+	Tue, 10 Mar 2026 11:55:30 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=avm.de; s=mail;
-	t=1773143723; bh=DGbCaZBy1FpfvXwgzKpSCwa07WA8CY/Qb4IJHso0Te4=;
+	t=1773143724; bh=U4MQ2UyTEtTm9FfUFN8u0E2v86RR/vLyOkwrg7Rl0HM=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=rc8Hq89Fb5fz3t9XGAV9DEbHVf5dfp7yp00Gf9MYpCbFElXUliv8K0TJ88EegoebM
-	 lMHRZL83a9AqjbASsPk3qVgNFrp4VheSaUprtXI9vxtui90WS9FjZFrbxSMEBA+AFT
-	 xc3KncdB3VgIsSI2EjPb3pbBX8z4jE0V+gxrfv0k=
+	b=pkZgS6E2b6HyMFIjBzS/B+8+S0biV0Szf5QLvjvxmALO/k+UU3HGuHgtEcUK6r0hT
+	 l3sidqEaLmVC6CjiI74oRmEKxGfUqB5EqeVLendnLbzsQ2HomXxjkzlaNLXsRLIGkS
+	 uT2G4P9Dig0e7DdWmJ/gJ1GOA6l1sZgQVMwHxKoY=
 Received: from [2001:bf0:244:244::71] (helo=mail.avm.de)
 	by mail.avm.de with ESMTP (eXpurgate 4.55.2)
 	(envelope-from <phahn-oss@avm.de>)
-	id 69b006ab-2367-7f0000032729-7f0000019cc4-1
-	for <multiple-recipients>; Tue, 10 Mar 2026 12:55:23 +0100
+	id 69b006ac-b734-7f0000032729-7f000001c046-1
+	for <multiple-recipients>; Tue, 10 Mar 2026 12:55:24 +0100
 Received: from mail-auth.avm.de (dovecot-mx-01.avm.de [IPv6:2001:bf0:244:244::71])
 	by mail.avm.de (Postfix) with ESMTPS;
-	Tue, 10 Mar 2026 12:55:23 +0100 (CET)
+	Tue, 10 Mar 2026 12:55:24 +0100 (CET)
 From: Philipp Hahn <phahn-oss@avm.de>
-Date: Tue, 10 Mar 2026 12:48:28 +0100
-Subject: [PATCH 02/61] btrfs: Prefer IS_ERR_OR_NULL over manual NULL check
+Date: Tue, 10 Mar 2026 12:48:51 +0100
+Subject: [PATCH 25/61] net/bluetooth: Prefer IS_ERR_OR_NULL over manual
+ NULL check
 MIME-Version: 1.0
-Message-Id: <20260310-b4-is_err_or_null-v1-2-bd63b656022d@avm.de>
+Message-Id: <20260310-b4-is_err_or_null-v1-25-bd63b656022d@avm.de>
 References: <20260310-b4-is_err_or_null-v1-0-bd63b656022d@avm.de>
 In-Reply-To: <20260310-b4-is_err_or_null-v1-0-bd63b656022d@avm.de>
 To: amd-gfx@lists.freedesktop.org, apparmor@lists.ubuntu.com, 
@@ -74,27 +89,30 @@ To: amd-gfx@lists.freedesktop.org, apparmor@lists.ubuntu.com,
  sched-ext@lists.linux.dev, target-devel@vger.kernel.org, 
  tipc-discussion@lists.sourceforge.net, v9fs@lists.linux.dev, 
  Philipp Hahn <phahn-oss@avm.de>
-Cc: Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3017; i=phahn-oss@avm.de;
- h=from:subject:message-id; bh=DGbCaZBy1FpfvXwgzKpSCwa07WA8CY/Qb4IJHso0Te4=;
- b=owEBbQGS/pANAwAKATQtBlPRrKzbAcsmYgBpsAXVP8rQiO4oClcWoVpEQy4tTT6UufgJ8AjmW
- meFZ085mAaJATMEAAEKAB0WIQQ5bPBtrWDUcDQCppg0LQZT0ays2wUCabAF1QAKCRA0LQZT0ays
- 26ZTCACM3Mi9LEMEAWgAR6v8SxUVk3um+/46scAm+wvRfrMWEFwlnMkQBbCGIGZUNkKB1Pk7uvR
- q9d3fZ689cKMySmmjPCYjQ/WgGDVLcywEn6In35Jwnklhlj4dYJLSL6WxXsza+vlAV93TQDvaTs
- OFlLEsZ2j+XY+f2mrUOcVwOk+301k/goYUacbLoVSw0YZnroo7kAB2acRVGhOGAOOiJoiVAdHNU
- Yf8QURa2qrPqHMwGd4SQRV57t+Grw+zEItF3L0eYw7mf41TaJcLeP7Vo+0nFp2D9QdrMND4nUec
- WhX0remRDcBywCJPWh7SmqRiZyiXDaIfp9JkUkUr5yx6Wacb
+Cc: Marcel Holtmann <marcel@holtmann.org>, 
+ Johan Hedberg <johan.hedberg@gmail.com>, 
+ Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1522; i=phahn-oss@avm.de;
+ h=from:subject:message-id; bh=U4MQ2UyTEtTm9FfUFN8u0E2v86RR/vLyOkwrg7Rl0HM=;
+ b=owEBbQGS/pANAwAKATQtBlPRrKzbAcsmYgBpsAYq6Vp4tN82O3UqmYAB2rCpxamSEi8qzxQbQ
+ a7J5ECg00uJATMEAAEKAB0WIQQ5bPBtrWDUcDQCppg0LQZT0ays2wUCabAGKgAKCRA0LQZT0ays
+ 2zTjB/4mjCTr3iXgM6OBkpfxhcEN7EQQZ1y9EXzSAaaFnPJ4J6dbscyHQ/vrwihzqSCkid2ehYX
+ PXWgLr3enkVF+dbM8V9NRPpLg6F53eMyK7CDWQG9AEEJdJq5IDVkThiVxeIs2iOyPBRVnnYWh+Q
+ FhA5NtTEwVLOnsWfWahJLqDe7jVY+yfeXhrX4z5N5WnqSQs4m5vScZRnTkdBPMBPzYgMtNL5igV
+ SF/croNsrnotNJXtafaXYhWm05HCgfm5TNLHJLZIRe+0bC9Er8RwnfgRXEDKBgK6ljnqVy3QgCk
+ bdr+gnx+ukbOMXU8jf2GxeDozNZ6NjdS7QCYNHlx/c+fJCr+
 X-Developer-Key: i=phahn-oss@avm.de; a=openpgp;
  fpr=58AF7C2E007CDBE62C59E078F50EFDCF8AD04B1A
-X-purgate-ID: 149429::1773143723-80C85E1F-0AA4A985/0/0
+X-purgate-ID: 149429::1773143724-27DC6A3D-212813DF/0/0
 X-purgate-type: clean
-X-purgate-size: 3019
+X-purgate-size: 1524
 X-purgate-Ad: Categorized by eleven eXpurgate (R) https://www.eleven.de
 X-purgate: This mail is considered clean (visit https://www.eleven.de for further information)
 X-purgate: clean
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260310_045529_718643_5FCA5763 
-X-CRM114-Status: GOOD (  11.17  )
+X-CRM114-CacheID: sfid-20260310_115529_087842_ABF2ADF5 
+X-CRM114-Status: UNSURE (   8.45  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -114,78 +132,49 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 Prefer using IS_ERR_OR_NULL() over using IS_ERR() and a manual NULL
 check.
 
-IS_ERR_OR_NULL() already uses likely(!ptr) internally. checkpatch does
-not like nesting it:
-> WARNING: nested (un)?likely() calls, IS_ERR_OR_NULL already uses
-> unlikely() internally
-Remove the explicit use of likely().
-
 Change generated with coccinelle.
 
-To: Chris Mason <clm@fb.com>
-To: David Sterba <dsterba@suse.com>
-Cc: linux-btrfs@vger.kernel.org
+To: Marcel Holtmann <marcel@holtmann.org>
+To: Johan Hedberg <johan.hedberg@gmail.com>
+To: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Cc: linux-bluetooth@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
 Signed-off-by: Philipp Hahn <phahn-oss@avm.de>
 ---
- fs/btrfs/inode.c       | 2 +-
- fs/btrfs/transaction.c | 2 +-
- fs/btrfs/tree-log.c    | 2 +-
- fs/btrfs/uuid-tree.c   | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
+ net/bluetooth/mgmt.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index a11fcc9e9f502c559148cf33679014fb83b0d3b0..7c26a0bf56bf7309e2ce8256854d760b2d64b16a 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -4683,7 +4683,7 @@ static noinline int may_destroy_subvol(struct btrfs_root *root)
- 	dir_id = btrfs_super_root_dir(fs_info->super_copy);
- 	di = btrfs_lookup_dir_item(NULL, fs_info->tree_root, path,
- 				   dir_id, &name, 0);
--	if (di && !IS_ERR(di)) {
-+	if (!IS_ERR_OR_NULL(di)) {
- 		btrfs_dir_item_key_to_cpu(path->nodes[0], di, &key);
- 		if (key.objectid == btrfs_root_id(root)) {
- 			ret = -EPERM;
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index 7ef8c9b7dfc17a5133b6d2dc134e288975ed98d1..40b83037725033d3178dc3fc2c1e347ad2c597f7 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -1737,7 +1737,7 @@ static noinline int create_pending_snapshot(struct btrfs_trans_handle *trans,
- 	dir_item = btrfs_lookup_dir_item(NULL, parent_root, path,
- 					 btrfs_ino(parent_inode),
- 					 &fname.disk_name, 0);
--	if (unlikely(dir_item != NULL && !IS_ERR(dir_item))) {
-+	if (!IS_ERR_OR_NULL(dir_item)) {
- 		pending->error = -EEXIST;
- 		goto dir_item_existed;
- 	} else if (IS_ERR(dir_item)) {
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 780a06d592409b05fb42dc8079b019d23fe0cdfa..2e07ae393cf9d16f562047dd4cbfd7b4b9f2952e 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -5750,7 +5750,7 @@ static int btrfs_check_ref_name_override(struct extent_buffer *eb,
- 		name_str.len = this_name_len;
- 		di = btrfs_lookup_dir_item(NULL, inode->root, search_path,
- 				parent, &name_str, 0);
--		if (di && !IS_ERR(di)) {
-+		if (!IS_ERR_OR_NULL(di)) {
- 			struct btrfs_key di_key;
+diff --git a/net/bluetooth/mgmt.c b/net/bluetooth/mgmt.c
+index a7238fd3b03bb54f39af1afee74dc1acd931c324..06d2da67bbe14e17ee478aa939de26526c333d91 100644
+--- a/net/bluetooth/mgmt.c
++++ b/net/bluetooth/mgmt.c
+@@ -4169,7 +4169,7 @@ static void set_default_phy_complete(struct hci_dev *hdev, void *data, int err)
+ 		mgmt_phy_configuration_changed(hdev, cmd->sk);
+ 	}
  
- 			btrfs_dir_item_key_to_cpu(search_path->nodes[0],
-diff --git a/fs/btrfs/uuid-tree.c b/fs/btrfs/uuid-tree.c
-index f24c14b9bb2fd7420b06263a5a0c4b889a859bc6..c497b287f3418933e532903b326b969416ae22cb 100644
---- a/fs/btrfs/uuid-tree.c
-+++ b/fs/btrfs/uuid-tree.c
-@@ -478,7 +478,7 @@ int btrfs_uuid_scan_kthread(void *data)
+-	if (skb && !IS_ERR(skb))
++	if (!IS_ERR_OR_NULL(skb))
+ 		kfree_skb(skb);
  
- out:
- 	btrfs_free_path(path);
--	if (trans && !IS_ERR(trans))
-+	if (!IS_ERR_OR_NULL(trans))
- 		btrfs_end_transaction(trans);
- 	if (ret)
- 		btrfs_warn(fs_info, "btrfs_uuid_scan_kthread failed %d", ret);
+ 	mgmt_pending_free(cmd);
+@@ -5730,7 +5730,7 @@ static void read_local_oob_data_complete(struct hci_dev *hdev, void *data,
+ 			  MGMT_STATUS_SUCCESS, &mgmt_rp, rp_size);
+ 
+ remove:
+-	if (skb && !IS_ERR(skb))
++	if (!IS_ERR_OR_NULL(skb))
+ 		kfree_skb(skb);
+ 
+ 	mgmt_pending_free(cmd);
+@@ -8277,7 +8277,7 @@ static void read_local_oob_ext_data_complete(struct hci_dev *hdev, void *data,
+ 				 mgmt_rp, sizeof(*mgmt_rp) + eir_len,
+ 				 HCI_MGMT_OOB_DATA_EVENTS, cmd->sk);
+ done:
+-	if (skb && !IS_ERR(skb))
++	if (!IS_ERR_OR_NULL(skb))
+ 		kfree_skb(skb);
+ 
+ 	kfree(mgmt_rp);
 
 -- 
 2.43.0
