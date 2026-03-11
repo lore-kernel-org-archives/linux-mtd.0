@@ -4,93 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD8F9104BECD
-	for <linux-mtd@archiver.kernel.org>; Wed, 11 Mar 2026 10:31:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0635A1062872
+	for <linux-mtd@archiver.kernel.org>; Wed, 11 Mar 2026 12:09:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=gFjUhTjGeUXXFtw0EIuDNveo46ICpViMxzXtKRm7n9E=; b=exYcXMbkolXzUS
-	5WYoJDKARaiKaFlEJ/HVrECw5AmWt/txVRGLt6u7N82d3fIGuvVrWMTHxRqzZMBEOv2rvI1jZzxjQ
-	GhO+aLkPavtQoiZJJRHp2m9GPaC0iifQ1Ub8bUHED8edy1Qb7u0Lhh0b3Uicp+eEtDUAyowJG/cxn
-	E/KYQEMDjxRWc5HFTMlrkhhQnhihtE0Upc0Pifb5b3oAzEFF+qS6ON7jnPczN7cYYVvjwoniNOXy2
-	XuX+Z7gfgSXQefJv+TEcgKxGCcwxu2/Yl/q3gftL++Tt1/oQ1IKFPm0+RBgTNyN9bBOLaT5yx7umh
-	McFzqteZvHOL7oF63YYA==;
+	List-Owner; bh=zrAflSpPrNv6z8fQj0O2XhrjJEU5wsoNmRB5SIYWyvs=; b=TL7ikKq/v3Bv4E
+	PRCgd8UiRJojsM5Afmx2vIEz3NT6I4YSa1ya+4WyTN58L8reQoor6rrwAr7UPnU6shPZA3/fvBpLZ
+	hGVpm/B526T4OODhdUiHL1c+zMgSv3yTm69P9vKvQj4BbRksb25oRHeAt94SZ7zhPidjl39j52/lw
+	aAmHkro8PDYABTwwxNJy/8YjDTmqUPORSdlLQj37Lrl7BTIs6aph7a4HP9Y/85LDbQQYEbtAOM9dk
+	oyusM1Bko9ks8EAH4BaQaDuvJbgM8K3iZdOntCIFhGcA09ljTOyOoZplLydaYRXXkr2LMmy+HI4fJ
+	k+lY8MVMS7bmWFsoVuGA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w0Gql-0000000BR9s-2Fpi;
-	Wed, 11 Mar 2026 10:31:35 +0000
-Received: from mail-pf1-x42c.google.com ([2607:f8b0:4864:20::42c])
+	id 1w0IMy-0000000BXSC-0B5f;
+	Wed, 11 Mar 2026 12:08:56 +0000
+Received: from mgamail.intel.com ([192.198.163.7])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w0Gqj-0000000BR8v-1T3w
+	id 1w0IMi-0000000BXQD-0Uqw
 	for linux-mtd@lists.infradead.org;
-	Wed, 11 Mar 2026 10:31:34 +0000
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-829ac8d56c5so4528032b3a.3
-        for <linux-mtd@lists.infradead.org>; Wed, 11 Mar 2026 03:31:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1773225092; x=1773829892; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CmNvd1PHGKe/+jOkhZ60vdpiKJgn6ANHvZ8AjwmtkSQ=;
-        b=O9TCSu+5vyeZXn7YU6dwfv8lRpAwXkfL/I3jE3qSiWQmA/YZy7SGwvJRTSJusm4XG7
-         O3ghmKfhJqYm5QtKI39AYNVcr3l0RidVFixK6VMVoOFwHHJFeh9cTA2/12owL5YKtNbM
-         LHY68xhQVfvGJpTtAyHkAaJ+TLMyvDcGvc1sMBJ8Ct45xkzAfUGyt3AQ9V5ukJV7kPcP
-         ZW86SH7Q/Uw2ALnVvTmrR4Mude79zuuKMfQDv6kNLwBMm5eyNiylqnlhSr9ncisyJbV+
-         9QuvpgyUnE1RPK89tqSH3BCjnswplJJmIa1tOQr9go4Ts1ECPQTvx36/KzwxF6/zZ863
-         lSgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1773225092; x=1773829892;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=CmNvd1PHGKe/+jOkhZ60vdpiKJgn6ANHvZ8AjwmtkSQ=;
-        b=CGmgF/LQD72dsukCWkB4p39UZ5bAlMLDun1bFtmfj5BXgymRWpwKf+hdV0zSHq8GU+
-         akV+ap9J3afLWRVprx13o9vLJ4YBa16RilssGcCECmTIgjCQDuPWiD13qdF1IeJ8JjhO
-         oqqd5k4ej9OWVpHn/J67qOnmaKPL/LYXXQoBWDhUXIH3o5Hba84vNXtFiySnBgJhhcUy
-         azuuTCKx3BG3kZ78oYEQatx0Tp+qZJOqEleGjQhSl9JaHH/4raxAe6uyqkvifFO0F4Z6
-         yY4Yxjo8aSK1OY48AZyzM10qnozHLiZLO5PmAuNh0PJhr9i7odv6unOYREkeMnwa3Ogd
-         DD+g==
-X-Forwarded-Encrypted: i=1; AJvYcCVoXoqqOXy2bEI7m62V+erkgiVTirkwdPOhccRbGMSacpvWEcl0IMCuWrwMlZpua8Q39IkHn3qjm5g=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxSOa4x1oywKjwjuea3SHGM+Ang9owwNEAtp2vPSaFxX6c+cfTH
-	KkHyl5kZSyw6nx35RUW702gtCY7on1NMVT2enerGVJFLzw8tJVgQE+sb
-X-Gm-Gg: ATEYQzyFNHlNv7GhwH0SPF546QygCPje7vK02uJhbdU+PKaXACxcb1/5H7EeUf9ed5o
-	ABCB0y4VDSpxJ0BXra7RnePuUI3yAO09T9pyf++mIg9WkvE/EK6k3Sq+CL5NC81IFjROuq3aP3U
-	mvbUOYTZfW9n1acmf+6fnf/1tzPZjjEN8/84FgLEipQm5+iajOvKeUW48N2OJtBKQ2fykwH+syh
-	PIoup3uUjA930ziuKBaL8jktdTc/bf2DCbuSNno2XtPkYtyimAeISUz5xai0hgWz2g2/vmhlKGk
-	aprAmWZClJ2QjOEfH+dxuXaRpjc5NgvVNDK7iXuindJXj1HXM2sFjy2l5g4gu1TY6/oUSXgm8/c
-	egMI/F1ykG+nz2cjmpvSTXQ94L6S3AO8dX7jg2H4txkXZGyeXD7L5MW1F7EK8kGxFOcf68mfS+R
-	mjBGQo/AEjzmGcHWyCSleqM3y4pZ1i6A==
-X-Received: by 2002:a05:6a00:ac0f:b0:827:2d0f:1ed3 with SMTP id d2e1a72fcca58-829f7199380mr2087752b3a.56.1773225092254;
-        Wed, 11 Mar 2026 03:31:32 -0700 (PDT)
-Received: from 1f3ae71dd79f ([115.245.213.202])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-829f6eebf57sm2052558b3a.38.2026.03.11.03.31.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Mar 2026 03:31:31 -0700 (PDT)
-From: Sanjaikumar V S <sanjaikumarvs@gmail.com>
-To: mwalle@kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	miquel.raynal@bootlin.com,
-	pratyush@kernel.org,
-	richard@nod.at,
-	sanjaikumar.vs@dicortech.com,
-	sanjaikumarvs@gmail.com,
-	stable@vger.kernel.org,
-	tudor.ambarus@linaro.org,
-	vigneshr@ti.com
-Subject: [PATCH v4 2/2] mtd: spi-nor: core: Fix AAI mode when dirmap is not available
-Date: Wed, 11 Mar 2026 10:30:57 +0000
-Message-ID: <20260311103057.29-3-sanjaikumarvs@gmail.com>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <20260311103057.29-1-sanjaikumarvs@gmail.com>
-References: <20260311103057.29-1-sanjaikumarvs@gmail.com>
+	Wed, 11 Mar 2026 12:08:54 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1773230920; x=1804766920;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=/7rVkSG9iP24p1/+gcW6MgxSWNy07goaOW18JGJc75s=;
+  b=ASoxeFDV75GjDMBrq7aKyimMF6q3OOQtNftcQ7TnOV+/W/ujmS3DA7sZ
+   TjdYEGri5ZEictqfy/tGT30EXIo9+rLmqlS2Sgzes/yP59npTg1oNZrtG
+   qjfbEqFsOG+UN5EiRoZ2GqYhSTBn30Ks2d+30ABO7AQlyI5TwUj5H9csg
+   D0cx3YuJn5MrkH25nx5TNNgNbNzGNIP1T0QM7eww8NFKlaY29mWErXlAf
+   0Xbk0pom9jhQ/Nb1S3lGfLVUvkvgyqRvyzl2FstAaUOhu81fn/zZTiL1W
+   o6HaYcbJjLbAMfNsfsGORa46wMJkX9tnY+V3dQTs++7V3Tg66+7uOTD8U
+   w==;
+X-CSE-ConnectionGUID: RQ6dOntLR26Q+smHqwPgFg==
+X-CSE-MsgGUID: mYB2bPuaT2SrQMfH5cnBQg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11726"; a="99760525"
+X-IronPort-AV: E=Sophos;i="6.23,113,1770624000"; 
+   d="scan'208";a="99760525"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2026 05:08:09 -0700
+X-CSE-ConnectionGUID: Lb2VjBjwSx2NX4hIwnoUIA==
+X-CSE-MsgGUID: OZuH9n5OTTiAuTLWbuDkOQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.23,113,1770624000"; 
+   d="scan'208";a="220628678"
+Received: from amilburn-desk.amilburn-desk (HELO localhost) ([10.245.244.178])
+  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2026 05:08:06 -0700
+Date: Wed, 11 Mar 2026 14:08:04 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH v2 1/1] mtd: physmap: physmap-bt1-rom: Remove
+ not-going-to-be-supported code for Baikal SoC
+Message-ID: <abFbJFQoF0QUQjDP@ashevche-desk.local>
+References: <20260225162406.3815267-1-andriy.shevchenko@linux.intel.com>
+ <abAEN7_1aQjSxYhc@ashevche-desk.local>
+ <875x72n35c.fsf@bootlin.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <875x72n35c.fsf@bootlin.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - c/o Alberga Business Park, 6
+ krs, Bertel Jungin Aukio 5, 02600 Espoo
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260311_033133_395220_653F91B1 
-X-CRM114-Status: GOOD (  12.57  )
+X-CRM114-CacheID: sfid-20260311_050846_957904_8E19CF95 
+X-CRM114-Status: GOOD (  13.09  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,39 +91,24 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Sanjaikumar V S <sanjaikumar.vs@dicortech.com>
+On Wed, Mar 11, 2026 at 10:09:35AM +0100, Miquel Raynal wrote:
+> On 10/03/2026 at 13:44:55 +02, Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+> 
+> > On Wed, Feb 25, 2026 at 05:23:34PM +0100, Andy Shevchenko wrote:
+> >> As noticed in the discussion [1] the Baikal SoC and platforms
+> >> are not going to be finalized, hence remove stale code.
+> >
+> > Can this be moved forward?
+> 
+> Yes, I reviewed it and I plan to apply it. I will do a round of
+> applied/thanks soon.
 
-When the SPI controller lacks direct mapping support, the fallback path
-in spi_nor_spimem_write_data() uses nor->write_proto based operation
-template. However, this template uses the standard page program opcode
-set during probe, not the AAI opcode required for SST flash.
+Thank you!
 
-Add check for nodirmap flag to ensure the code falls through to
-spi_nor_spimem_exec_op() path which builds the operation at runtime
-with the correct program_opcode set by sst_nor_write_data().
-
-Fixes: df5c21002cf4 ("mtd: spi-nor: use spi-mem dirmap API")
-Cc: stable@vger.kernel.org
-Signed-off-by: Sanjaikumar V S <sanjaikumar.vs@dicortech.com>
----
- drivers/mtd/spi-nor/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 8ffeb41c3e08..cb7f4d447156 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -281,7 +281,7 @@ static ssize_t spi_nor_spimem_write_data(struct spi_nor *nor, loff_t to,
- 	if (spi_nor_spimem_bounce(nor, &op))
- 		memcpy(nor->bouncebuf, buf, op.data.nbytes);
- 
--	if (nor->dirmap.wdesc) {
-+	if (nor->dirmap.wdesc && !nor->dirmap.wdesc->nodirmap) {
- 		nbytes = spi_mem_dirmap_write(nor->dirmap.wdesc, op.addr.val,
- 					      op.data.nbytes, op.data.buf.out);
- 	} else {
 -- 
-2.43.0
+With Best Regards,
+Andy Shevchenko
+
 
 
 ______________________________________________________
