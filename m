@@ -4,89 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD84E106703C
-	for <linux-mtd@archiver.kernel.org>; Thu, 12 Mar 2026 14:44:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2626BFED2E9
+	for <linux-mtd@archiver.kernel.org>; Thu, 12 Mar 2026 14:45:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=10U5gRJCcAw/ytn9dU2+x2GTe0/2efkVZS8d1aSNYA8=; b=AL22fAOIxkWw8p
-	6bRI4ebgJL4xKQRD7nbSU8m1CCe6Gy5Et7GHLIH6F+wGbSCAnXgyP1yM7I1ZDV3FbmOD9GjdqTRSi
-	DWRBfiJK/Z0oSuPE9mpGHshsYhw4aCOOy9zVyMUyOWZjN9gvspTeGEKPY/b/XVDDukKi4ev8XwbY1
-	0hHVWlhFesnCWtikOlRrPeoXJQkTpay2VPfvI5nyFe8H9HkHw7koefVqEw1EpQVmqguWKU823CVMm
-	znjrCwTS+RLtQj8fO0x7W1vh4ojVzkOCV+eG/AxC3ftVW8edo0h2akWVk8lfUiZPUqn81xTOthVKm
-	y3l++dEEWsxlGt2fXUQA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=tDMkHiMWbKbrzJ81xYehBu2ww9nc7lmo/+sqYSMdewQ=; b=uOH1LXkeiojmN0
+	US17VmG6L2sJSv7osZ2alV3EzoyLRcFviQjSSz20ggWLLzqDSrY8s64IQmk8eAWdmrAQCDgpDXTi3
+	Flx7rQKFiYdlN77y2utOReK9A/Pw/SUcxPCHZ4gpEi8AEEmC+qzWJBLqy4XtjwzpogGcZdVEa4zfz
+	9GNTr+i4AgRL37ucN9FGAKarkKnqNfdjnaV9zgY8syyWifG25j5PYiILDpFSDNYu+OndyAY690yCF
+	3mt9VDyBC1aqBFdaH8ZX60Zlbt4f6OgVp/UMxrT8S/Io6GoncJsVk24uQA9OYLDZx5VxXcpEgDXmZ
+	zD37HqSXM6djCqStbfJQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w0hHD-0000000EEZg-1xvX;
-	Thu, 12 Mar 2026 14:44:39 +0000
-Received: from mail-wm1-x335.google.com ([2a00:1450:4864:20::335])
+	id 1w0hHv-0000000EF4w-3bc8;
+	Thu, 12 Mar 2026 14:45:23 +0000
+Received: from smtpout-02.galae.net ([185.246.84.56])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w0hHB-0000000EEVg-1gyZ
+	id 1w0hHo-0000000EEuP-2Etu
 	for linux-mtd@lists.infradead.org;
-	Thu, 12 Mar 2026 14:44:38 +0000
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-48539cbb7b1so6385925e9.3
-        for <linux-mtd@lists.infradead.org>; Thu, 12 Mar 2026 07:44:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1773326675; x=1773931475; darn=lists.infradead.org;
-        h=user-agent:content-disposition:mime-version:message-id:subject:cc
-         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=6tbwg7jIPlVn43vEtDrerdp8Sucm9BuiML4a+qkWNHU=;
-        b=Zy12OsdBIykUPTpFc7uVysEbRpfQWv7KUBo6BAsPf3SXj/vuctc/N4y+Cv+YcGuLUz
-         rVLxy65OJ5TuPChS3/9TBIOVKLhrrlgbB0AeliYi1W4jB9Y4U7stEdO7TsGj7WOnHObN
-         OaNY8IaxZVo48zEKNO1nmJ0nNrAi21QNDxHv/3zcxLjtTaQi2xTZC9mG6yKOzF/VBGLn
-         CSvn5vDM0l9d4g1yCgo2zMNv2maVnHTr4+jLdrfKKu5jYcAjCwVsYjcTj8JokKbI8mUS
-         0fLTw6GYaCMpqwqnGbnMqADRUyVUDT9uy16MA4ll4wmW890aATdOmqo6NTkZ7pJIEHhq
-         YslA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1773326675; x=1773931475;
-        h=user-agent:content-disposition:mime-version:message-id:subject:cc
-         :to:from:date:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6tbwg7jIPlVn43vEtDrerdp8Sucm9BuiML4a+qkWNHU=;
-        b=lOP2s802N97tRu8ayKOPMyCJS0WiokJZtS6pMq10IOeJ//sd+JnFdUpjypneY/RpsM
-         1+9Yvx8u/7BAsjXf8ZDBy0avhKPFgIB4tWlSjlWNgCzXJpzi/gBumFoYxFnDf8XligiE
-         yPGXoYZ+PnIa9/ZxA62qFs8ZEKP8Gb1+mj0o20CTj19xZF1L3qXXnzey9qONwUItWQfB
-         ajKKhaBnxOKiPdgX91fRSXpaiLzuGl1UOXEtFHsIGTrPZFHlMIBPnMYLURZH1Z9bBrNw
-         6x1UCQmirzZV9u8QsYEl84p5Qm4GjejtBCz4dRv5Jp9nm6hTEmhBeCwrk4byEV4Djpv5
-         zUdQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUkgPnJjIsGYQOpLJoGevxqQYZq2Hr9ibCXpRAAHoKnsbwcBSEpal4sZwNjgFeR3EE/6AqM1cs04sg=@lists.infradead.org
-X-Gm-Message-State: AOJu0Ywc/HbHcRFfUHqt7GY+o2Hlf2hpFuA7GEm+DrvGwr69RcEFOGiJ
-	+mEcRwm4AcpJvT99MrlCSoqLREJkwF9JWvPRlf4G76fYQ8F7jAcKuf6BqT7Iwa262Ts=
-X-Gm-Gg: ATEYQzzirUFVUOHFaHcsFgOG6K/Pa5W8U9HqvebVMjLrnOqfmfjNiEH5pEI6YcCot4M
-	uQ98upHA1b8qiBtW9K3elrtaml7dmCZXXbC2Sb3Gm8EmLisHm7EVCzgr+ePkAcHtZbdEJdEx/pT
-	HKD+p06RFfY9Ng5ud7Hkck3zbib0FJ1OmefhHHU5QevIB+0is3kZkvKynB8syhurdge9VHuNeE2
-	V4FkFlbmKYlKUuT+XePp730mOCbUrbl0HRcJ8GlI0paMEd+11b0tUzJ/7nAKZelLQqsWJ7iTLz4
-	SOpPUaNZRCxDL1xTW+jajTXKDJEc/vVgCjberrxTZ24oXm+4I32sC2t0TY+Fbon3K/PFtajUQOw
-	sGCWC2qixe8HgmXYfw4PLYSFedfjdJta752nsMYc8tNKE+vTxgGUKPKkFy3sagYjRTH2rfSbdiq
-	morzEWGyg4r9H49qhbHZZONKDgFZJ8wOnUjjoaN8DCt/UAXs3qAA==
-X-Received: by 2002:a05:600c:4710:b0:485:3b00:f939 with SMTP id 5b1f17b1804b1-4854b0bafa5mr115152145e9.8.1773326674810;
-        Thu, 12 Mar 2026 07:44:34 -0700 (PDT)
-Received: from r1chard (1-164-69-22.dynamic-ip.hinet.net. [1.164.69.22])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4854b65fed7sm128019995e9.11.2026.03.12.07.44.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Mar 2026 07:44:34 -0700 (PDT)
-Date: Thu, 12 Mar 2026 22:44:25 +0800
-From: Richard Lyu <richard.lyu@suse.com>
-To: Richard Weinberger <richard@nod.at>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>,
-	Richard Lyu <richard.lyu@suse.com>,
-	Aryan Srivastava <aryan.srivastava@alliedtelesis.co.nz>,
-	Thomas Gleixner <tglx@kernel.org>,
-	Markus Stockhausen <markus.stockhausen@gmx.de>,
-	Kees Cook <kees@kernel.org>, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: nand: Use guard for mutex in nand_suspend
-Message-ID: <20260312144408.489659-1-richard.lyu@suse.com>
+	Thu, 12 Mar 2026 14:45:22 +0000
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-02.galae.net (Postfix) with ESMTPS id 1D7271A2E09;
+	Thu, 12 Mar 2026 14:45:14 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id DF3245FDEB;
+	Thu, 12 Mar 2026 14:45:13 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id CD3EB10369DD7;
+	Thu, 12 Mar 2026 15:45:06 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1773326713; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 in-reply-to:references; bh=4daAQZWFYXM6mQK2PksFrwRHEdQEwOFynA5SkgmnW1w=;
+	b=k54hmVgT0xaFqCJtR3GbR3zGCAB20/a+19R66w4l0p+aHd4JVXrkqkTP0r3wHJo5GIgOB3
+	c4FnpJq5MT728TpHIr+DclaqeazBsb+FtNvFgnRjnem1LjYoFFzC395CCbNcFSWSsHfEkS
+	qRk8d+nJAeGsKkcFjXiOmjCyINkbMK+dkxxPekFu6gt3aADOjhJFp5tUJRdPkQkWQ7QjWf
+	SDz6NJb/fBa3nD/nY826wsMFxIxzgLa7gLHQ+UsI6Orrn6iO+tpBGoKm1wnWqoAXxOOhwz
+	Y9SRXKwLzlVm0u1Bw3trxYQTmgAlQC7ZpBREBfNrzWcZCg+Uo8P5fPxouaRZUw==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Rob Herring <robh@kernel.org>
+Cc: Cheng Ming Lin <linchengming884@gmail.com>,  Richard Weinberger
+ <richard@nod.at>,  Vignesh Raghavendra <vigneshr@ti.com>,  Krzysztof
+ Kozlowski <krzk+dt@kernel.org>,  Conor Dooley <conor+dt@kernel.org>,
+  Tudor Ambarus <tudor.ambarus@linaro.org>,  Mikhail Kshevetskiy
+ <mikhail.kshevetskiy@iopsys.eu>,  Pablo Martin-Gomez
+ <pmartin-gomez@freebox.fr>,  Tianling Shen <cnsztl@gmail.com>,  Pratyush
+ Yadav <pratyush@kernel.org>,  linux-mtd@lists.infradead.org,
+  devicetree@vger.kernel.org,  linux-kernel@vger.kernel.org,
+  alvinzhou@mxic.com.tw,  Cheng Ming Lin <chengminglin@mxic.com.tw>
+Subject: Re: [PATCH v8 1/3] dt-bindings: mtd: spinand: Add randomizer
+ enable/disable properties
+In-Reply-To: <20260312140553.GA2914438-robh@kernel.org> (Rob Herring's message
+	of "Thu, 12 Mar 2026 09:05:53 -0500")
+References: <20260305071042.1193522-1-linchengming884@gmail.com>
+	<20260305071042.1193522-2-linchengming884@gmail.com>
+	<20260312140553.GA2914438-robh@kernel.org>
+User-Agent: mu4e 1.12.7; emacs 30.2
+Date: Thu, 12 Mar 2026 15:45:06 +0100
+Message-ID: <874imlksy5.fsf@bootlin.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-X-Mailer: git-send-email 2.51.0
-User-Agent: Mutt/2.2.13 (2024-03-09)
+X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260312_074437_475282_5CDC3C4F 
-X-CRM114-Status: GOOD (  11.77  )
+X-CRM114-CacheID: sfid-20260312_074520_418305_1B66B7D2 
+X-CRM114-Status: UNSURE (   8.66  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,39 +86,36 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Refactor nand_suspend() to use the guard(mutex) macro instead of explicit
-mutex_lock() and mutex_unlock() calls. This simplifies the code and
-improves safety by ensuring the mutex is always released via the
-RAII-based cleanup infrastructure when the function returns.
 
-No functional changes intended.
+>> +  nand-randomizer-enable:
+>> +    description:
+>> +      Enable the randomizer feature. This property is mutually-exclusive
+>> +      with nand-randomizer-disable.
+>> +    type: boolean
+>> +
+>> +  nand-randomizer-disable:
+>> +    description:
+>> +      Disable the randomizer feature. This property is mutually-exclusive
+>> +      with nand-randomizer-enable.
+>> +    type: boolean
+>> +
+>> +dependencies:
+>> +  nand-randomizer-enable:
+>> +    not:
+>> +      required:
+>> +        - nand-randomizer-disable
+>
+> Rather than define this in the schema, make the properties inheritly 
+> mutually-exclusive with a single property:
+>
+> nand-randomizer = <0|1>;
+>
+> That's assuming you need not present to mean a 3rd thing such as use the 
+> bootloader setting. If you only need enable/disable, then a 
+> single boolean property works.
 
-Signed-off-by: Richard Lyu <richard.lyu@suse.com>
----
- drivers/mtd/nand/raw/nand_base.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 9e3561f34ea8..93ba5dec1669 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -4687,12 +4687,11 @@ static int nand_suspend(struct mtd_info *mtd)
- 	struct nand_chip *chip = mtd_to_nand(mtd);
- 	int ret = 0;
- 
--	mutex_lock(&chip->lock);
-+	guard(mutex)(&chip->lock);
- 	if (chip->ops.suspend)
- 		ret = chip->ops.suspend(chip);
- 	if (!ret)
- 		chip->suspended = 1;
--	mutex_unlock(&chip->lock);
- 
- 	return ret;
- }
--- 
-2.51.0
-
+We need the "not present" case, so the single boolean property cannot
+be considered here.
 
 ______________________________________________________
 Linux MTD discussion mailing list
