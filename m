@@ -4,57 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2A1B106ACE9
-	for <linux-mtd@archiver.kernel.org>; Thu, 12 Mar 2026 20:28:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04B92106ACE4
+	for <linux-mtd@archiver.kernel.org>; Thu, 12 Mar 2026 20:28:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=jGkoeZN0iUxuvQRcw7fU/Jpfp2rVqkT1mMDtm8e16zs=; b=wazJ27/z/edyr7
-	0xVkYRw3E6aIxf0UvJJ7QRnni5lVPXGLppr9gQ8JOkKJ1VKipCPD+ba/pfQJJtWTtnOKdZWGcZrci
-	K/Ak+ktAWtVJc21qCmHQJYJm873pDSxE6Le/LZHSeSXdWm0sw/zr1L6Kl6nbymyI7di+odEdcudGH
-	w2Nbh7IIjEJHBVVn1vGIN8/sqyMizzdAOdaZwSAfU+LH7eA3CmYVBLFpHIEzlkHe9wIxKPXZYBnCP
-	AQ0x7Qm7gi0ddLh3xIRWAiW48DkhDR3o9yRqIwFkX0miD6lGkF5WyH1EgJfOLoeAdurKxNO6miqk9
-	af+QdQ5v7KK1QuRfBqDw==;
+	List-Owner; bh=aQJQ4sUSFUJhru6M9Icx3EUAp/tVg+Ikk9JUw0HUxfA=; b=G6O4o5GLR6MST4
+	NjDq+Ih0WxzTEOl84iuPK3oxcwVVomoVKNwwAwL+/s50p8iM62ymNMIpysAOysQccuBR5V6jJmNqZ
+	FjlnFgMM7Mp+O270KFFeCrypX7acJgxezdeYmRe0VZOKkGo7TPeeBWuuRzFIGfjuVDg9I7ZiadvuX
+	LmFQqsM9W7wZOeNrSIzugYqClIJrUJneEqYSUatuh5Eq6OQEbvs8jAdWebSLqRLbuTweTSw8bUW0R
+	UrGiKusSjB5rQ3NfEUeVtg0JO6qczK3VsE2iVUg4V7jeyhrzOgUbg5CNTAQyhTBXWx6VU5oQZA2dv
+	3GnXpFS+jOtM5gHTtK6w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w0mdx-0000000FHb0-2ZJJ;
-	Thu, 12 Mar 2026 20:28:29 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1w0me1-0000000FHip-25ux;
+	Thu, 12 Mar 2026 20:28:33 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w0mdm-0000000FHER-1jHI;
-	Thu, 12 Mar 2026 20:28:18 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
-	:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description;
-	bh=22u/zPXLif+tmx8jfL6mwxg5k2jKGBmc27j1Epm3TuI=; b=pqRAv/MelG16x4QkDnWU/qAws0
-	Bvz2dCSNNSRhERo1MI9D3Nqh4D8EGxy+MptlBV5jTTlouOhYu+lWgXVGOB4lchsm7B1Yg0xfi+iFW
-	RmzdirqpKi1VBUVWV9haCxfwgrmJqrrVcmNt3NB4L7LmdraqSHJurbpWthbQQK+Zn5zlJdGXO7UOq
-	We9Qk/LJpmECINcev20MyfKsdfOoI52F9kmz/dUGjQ3w2lEeAlRrC45zQ163KhtE/jUeJyARJGvuA
-	ew1Us8fujgD7Ib4os1Nj/uY5dCXMlMtZHYlDMTn8RAY557WcofSY+G76Rk+ANIyOfrZ/BWM6cBiT7
-	tB3PZ+jw==;
-Received: from sea.source.kernel.org ([172.234.252.31])
-	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w0mdh-00000001zSm-3bDQ;
-	Thu, 12 Mar 2026 20:28:16 +0000
+	id 1w0mdo-0000000FHIb-1RlU;
+	Thu, 12 Mar 2026 20:28:20 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 7349442A65;
-	Thu, 12 Mar 2026 20:28:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4CA5C2BC9E;
-	Thu, 12 Mar 2026 20:28:11 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 92BDA61840;
+	Thu, 12 Mar 2026 20:28:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBE0CC2BC86;
+	Thu, 12 Mar 2026 20:28:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773347292;
-	bh=GSvvK91SQuAGo90FmVnYDSWYlOSBV2oGchryB/VUxUY=;
+	s=k20201202; t=1773347299;
+	bh=3gkyUtsSx7jHel7cmRKZSxJv14d/Oyif1xbXqVSUag8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=sWsa4YCwUKUZ6NF6FYl+pCdBC1dxci2Ej9zB0JHhNByo+147eLDUQ5j+WO+JV3dDT
-	 HPGMlhtmjp1vUY8qrJhcezjYyDbT6t8kN73X+N7ASnDu1Gs0XVXr5JIkNghq2FJSJq
-	 fc0ghbJShYJ4L3gBRp0CQK4fCZfDK0VNeCKnfBCH7R80M78BVItR+Smim/TYIv3o/g
-	 j55D8qFvvK06ryl48cViDm7kPX92qwyVcSOZ6lejCdYpmzI6mgUU2UnRDcSu1cKuug
-	 ZzB2nNVwTFGi3cqApGKwXIWslumCVtZokUxr7PoiWbDx6tZD6MGmI2dCRDrE26/Mkn
-	 qjzCQqiUkRaSg==
+	b=SE1eoNLLnCchG8HnK6XRvfFeHKhyfrzwwjiWm9QdAt5SsrbT5Uw9DpSpKd50HTu4X
+	 xdndXitgm96uIJn7PRDHQ7k9Hgf4LZp/zIwyQxTDnU08FmxgNaGLbcUr/QaZemp3i6
+	 DkSmTS08I/Wqy4/GCxky+IbGqrb4HTAtMgXkKY6chyfRut5Zuvanm3/fJh/KyDnajD
+	 zgAsNGcfUqJVqPQsSSgeeaMqILTnr1t9nv9XdS8jqAAcPSUMs8GYDUPyMJIN6ryyR7
+	 WipiB8AnSPEZcCIwFfuXFjLJFpnnAcxDM1jDa9nEcFSnQ+CAffoYMGMMWgKSaFy739
+	 ZBR1/mSnh9p4Q==
 From: "Lorenzo Stoakes (Oracle)" <ljs@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Jonathan Corbet <corbet@lwn.net>,
@@ -100,16 +86,13 @@ Cc: Jonathan Corbet <corbet@lwn.net>,
 	linux-fsdevel@vger.kernel.org,
 	linux-mm@kvack.org,
 	Ryan Roberts <ryan.roberts@arm.com>
-Subject: [PATCH 10/15] stm: replace deprecated mmap hook with mmap_prepare
-Date: Thu, 12 Mar 2026 20:27:25 +0000
-Message-ID: <671403f4278a7c77ecbb7617e0bc762536ce25da.1773346620.git.ljs@kernel.org>
+Subject: [PATCH 13/15] drivers: hv: vmbus: replace deprecated mmap hook with mmap_prepare
+Date: Thu, 12 Mar 2026 20:27:28 +0000
+Message-ID: <1f0408ba81f455d35bcf510ccd3dc3cb939b55ca.1773346620.git.ljs@kernel.org>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <cover.1773346620.git.ljs@kernel.org>
 References: <cover.1773346620.git.ljs@kernel.org>
 MIME-Version: 1.0
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260312_202814_598895_0CDFC07B 
-X-CRM114-Status: GOOD (  14.50  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -126,99 +109,172 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The f_op->mmap interface is deprecated, so update driver to use its
-successor, mmap_prepare.
+The f_op->mmap interface is deprecated, so update the vmbus driver to use
+its successor, mmap_prepare.
 
-The driver previously used vm_iomap_memory(), so this change replaces it
+This updates all callbacks which referenced the function pointer
+hv_mmap_ring_buffer to instead reference hv_mmap_prepare_ring_buffer,
+utilising the newly introduced compat_set_desc_from_vma() and
+__compat_vma_mmap() to be able to implement this change.
+
+The UIO HV generic driver is the only user of hv_create_ring_sysfs(), which
+is the only function which references
+vmbus_channel->mmap_prepare_ring_buffer which, in turn, is the only
+external interface to hv_mmap_prepare_ring_buffer.
+
+This patch therefore updates this caller to use mmap_prepare instead, which
+also previously used vm_iomap_memory(), so this change replaces it
 with its mmap_prepare equivalent, mmap_action_simple_ioremap().
-
-Also, in order to correctly maintain reference counting, add a
-vm_ops->mapped callback to increment the reference count when successfully
-mapped.
 
 Signed-off-by: Lorenzo Stoakes (Oracle) <ljs@kernel.org>
 ---
- drivers/hwtracing/stm/core.c | 31 +++++++++++++++++++++----------
- 1 file changed, 21 insertions(+), 10 deletions(-)
+ drivers/hv/hyperv_vmbus.h    |  4 ++--
+ drivers/hv/vmbus_drv.c       | 27 +++++++++++++++++----------
+ drivers/uio/uio_hv_generic.c | 11 ++++++-----
+ include/linux/hyperv.h       |  4 ++--
+ 4 files changed, 27 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/hwtracing/stm/core.c b/drivers/hwtracing/stm/core.c
-index 37584e786bb5..f48c6a8a0654 100644
---- a/drivers/hwtracing/stm/core.c
-+++ b/drivers/hwtracing/stm/core.c
-@@ -666,6 +666,16 @@ static ssize_t stm_char_write(struct file *file, const char __user *buf,
- 	return count;
+diff --git a/drivers/hv/hyperv_vmbus.h b/drivers/hv/hyperv_vmbus.h
+index 7bd8f8486e85..31f576464f18 100644
+--- a/drivers/hv/hyperv_vmbus.h
++++ b/drivers/hv/hyperv_vmbus.h
+@@ -545,8 +545,8 @@ static inline int hv_debug_add_dev_dir(struct hv_device *dev)
+ 
+ /* Create and remove sysfs entry for memory mapped ring buffers for a channel */
+ int hv_create_ring_sysfs(struct vmbus_channel *channel,
+-			 int (*hv_mmap_ring_buffer)(struct vmbus_channel *channel,
+-						    struct vm_area_struct *vma));
++			 int (*hv_mmap_prepare_ring_buffer)(struct vmbus_channel *channel,
++							    struct vm_area_desc *desc));
+ int hv_remove_ring_sysfs(struct vmbus_channel *channel);
+ 
+ #endif /* _HYPERV_VMBUS_H */
+diff --git a/drivers/hv/vmbus_drv.c b/drivers/hv/vmbus_drv.c
+index bc4fc1951ae1..a76fa3f0588c 100644
+--- a/drivers/hv/vmbus_drv.c
++++ b/drivers/hv/vmbus_drv.c
+@@ -1951,12 +1951,19 @@ static int hv_mmap_ring_buffer_wrapper(struct file *filp, struct kobject *kobj,
+ 				       struct vm_area_struct *vma)
+ {
+ 	struct vmbus_channel *channel = container_of(kobj, struct vmbus_channel, kobj);
++	struct vm_area_desc desc;
++	int err;
+ 
+ 	/*
+ 	 * hv_(create|remove)_ring_sysfs implementation ensures that mmap_ring_buffer
+ 	 * is not NULL.
+ 	 */
+-	return channel->mmap_ring_buffer(channel, vma);
++	compat_set_desc_from_vma(&desc, filp, vma);
++	err = channel->mmap_prepare_ring_buffer(channel, &desc);
++	if (err)
++		return err;
++
++	return __compat_vma_mmap(&desc, vma);
  }
  
-+static int stm_mmap_mapped(unsigned long start, unsigned long end, pgoff_t pgoff,
-+			   const struct file *file, void **vm_private_data)
-+{
-+	struct stm_file *stmf = file->private_data;
-+	struct stm_device *stm = stmf->stm;
-+
-+	pm_runtime_get_sync(&stm->dev);
+ static struct bin_attribute chan_attr_ring_buffer = {
+@@ -2048,13 +2055,13 @@ static const struct kobj_type vmbus_chan_ktype = {
+ /**
+  * hv_create_ring_sysfs() - create "ring" sysfs entry corresponding to ring buffers for a channel.
+  * @channel: Pointer to vmbus_channel structure
+- * @hv_mmap_ring_buffer: function pointer for initializing the function to be called on mmap of
++ * @hv_mmap_ring_buffer: function pointer for initializing the function to be called on mmap
+  *                       channel's "ring" sysfs node, which is for the ring buffer of that channel.
+  *                       Function pointer is of below type:
+- *                       int (*hv_mmap_ring_buffer)(struct vmbus_channel *channel,
+- *                                                  struct vm_area_struct *vma))
+- *                       This has a pointer to the channel and a pointer to vm_area_struct,
+- *                       used for mmap, as arguments.
++ *                       int (*hv_mmap_prepare_ring_buffer)(struct vmbus_channel *channel,
++ *                                                          struct vm_area_desc *desc))
++ *                       This has a pointer to the channel and a pointer to vm_area_desc,
++ *                       used for mmap_prepare, as arguments.
+  *
+  * Sysfs node for ring buffer of a channel is created along with other fields, however its
+  * visibility is disabled by default. Sysfs creation needs to be controlled when the use-case
+@@ -2071,12 +2078,12 @@ static const struct kobj_type vmbus_chan_ktype = {
+  * Returns 0 on success or error code on failure.
+  */
+ int hv_create_ring_sysfs(struct vmbus_channel *channel,
+-			 int (*hv_mmap_ring_buffer)(struct vmbus_channel *channel,
+-						    struct vm_area_struct *vma))
++			 int (*hv_mmap_prepare_ring_buffer)(struct vmbus_channel *channel,
++							    struct vm_area_desc *desc))
+ {
+ 	struct kobject *kobj = &channel->kobj;
+ 
+-	channel->mmap_ring_buffer = hv_mmap_ring_buffer;
++	channel->mmap_prepare_ring_buffer = hv_mmap_prepare_ring_buffer;
+ 	channel->ring_sysfs_visible = true;
+ 
+ 	return sysfs_update_group(kobj, &vmbus_chan_group);
+@@ -2098,7 +2105,7 @@ int hv_remove_ring_sysfs(struct vmbus_channel *channel)
+ 
+ 	channel->ring_sysfs_visible = false;
+ 	ret = sysfs_update_group(kobj, &vmbus_chan_group);
+-	channel->mmap_ring_buffer = NULL;
++	channel->mmap_prepare_ring_buffer = NULL;
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(hv_remove_ring_sysfs);
+diff --git a/drivers/uio/uio_hv_generic.c b/drivers/uio/uio_hv_generic.c
+index 3f8e2e27697f..29ec2d15ada8 100644
+--- a/drivers/uio/uio_hv_generic.c
++++ b/drivers/uio/uio_hv_generic.c
+@@ -154,15 +154,16 @@ static void hv_uio_rescind(struct vmbus_channel *channel)
+  * The ring buffer is allocated as contiguous memory by vmbus_open
+  */
+ static int
+-hv_uio_ring_mmap(struct vmbus_channel *channel, struct vm_area_struct *vma)
++hv_uio_ring_mmap_prepare(struct vmbus_channel *channel, struct vm_area_desc *desc)
+ {
+ 	void *ring_buffer = page_address(channel->ringbuffer_page);
+ 
+ 	if (channel->state != CHANNEL_OPENED_STATE)
+ 		return -ENODEV;
+ 
+-	return vm_iomap_memory(vma, virt_to_phys(ring_buffer),
+-			       channel->ringbuffer_pagecount << PAGE_SHIFT);
++	mmap_action_simple_ioremap(desc, virt_to_phys(ring_buffer),
++			channel->ringbuffer_pagecount << PAGE_SHIFT);
 +	return 0;
-+}
-+
- static void stm_mmap_open(struct vm_area_struct *vma)
- {
- 	struct stm_file *stmf = vma->vm_file->private_data;
-@@ -684,12 +694,14 @@ static void stm_mmap_close(struct vm_area_struct *vma)
  }
  
- static const struct vm_operations_struct stm_mmap_vmops = {
-+	.mapped = stm_mmap_mapped,
- 	.open	= stm_mmap_open,
- 	.close	= stm_mmap_close,
- };
+ /* Callback from VMBUS subsystem when new channel created. */
+@@ -183,7 +184,7 @@ hv_uio_new_channel(struct vmbus_channel *new_sc)
+ 	}
  
--static int stm_char_mmap(struct file *file, struct vm_area_struct *vma)
-+static int stm_char_mmap_prepare(struct vm_area_desc *desc)
- {
-+	struct file *file = desc->file;
- 	struct stm_file *stmf = file->private_data;
- 	struct stm_device *stm = stmf->stm;
- 	unsigned long size, phys;
-@@ -697,10 +709,10 @@ static int stm_char_mmap(struct file *file, struct vm_area_struct *vma)
- 	if (!stm->data->mmio_addr)
- 		return -EOPNOTSUPP;
+ 	set_channel_read_mode(new_sc, HV_CALL_ISR);
+-	ret = hv_create_ring_sysfs(new_sc, hv_uio_ring_mmap);
++	ret = hv_create_ring_sysfs(new_sc, hv_uio_ring_mmap_prepare);
+ 	if (ret) {
+ 		dev_err(device, "sysfs create ring bin file failed; %d\n", ret);
+ 		vmbus_close(new_sc);
+@@ -366,7 +367,7 @@ hv_uio_probe(struct hv_device *dev,
+ 	 * or decoupled from uio_hv_generic probe. Userspace programs can make use of inotify
+ 	 * APIs to make sure that ring is created.
+ 	 */
+-	hv_create_ring_sysfs(channel, hv_uio_ring_mmap);
++	hv_create_ring_sysfs(channel, hv_uio_ring_mmap_prepare);
  
--	if (vma->vm_pgoff)
-+	if (desc->pgoff)
- 		return -EINVAL;
+ 	hv_set_drvdata(dev, pdata);
  
--	size = vma->vm_end - vma->vm_start;
-+	size = vma_desc_size(desc);
+diff --git a/include/linux/hyperv.h b/include/linux/hyperv.h
+index dfc516c1c719..3a721b1853a4 100644
+--- a/include/linux/hyperv.h
++++ b/include/linux/hyperv.h
+@@ -1015,8 +1015,8 @@ struct vmbus_channel {
+ 	/* The max size of a packet on this channel */
+ 	u32 max_pkt_size;
  
- 	if (stmf->output.nr_chans * stm->data->sw_mmiosz != size)
- 		return -EINVAL;
-@@ -712,13 +724,12 @@ static int stm_char_mmap(struct file *file, struct vm_area_struct *vma)
- 	if (!phys)
- 		return -EINVAL;
+-	/* function to mmap ring buffer memory to the channel's sysfs ring attribute */
+-	int (*mmap_ring_buffer)(struct vmbus_channel *channel, struct vm_area_struct *vma);
++	/* function to mmap_prepare ring buffer memory to the channel's sysfs ring attribute */
++	int (*mmap_prepare_ring_buffer)(struct vmbus_channel *channel, struct vm_area_desc *desc);
  
--	pm_runtime_get_sync(&stm->dev);
--
--	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
--	vm_flags_set(vma, VM_IO | VM_DONTEXPAND | VM_DONTDUMP);
--	vma->vm_ops = &stm_mmap_vmops;
--	vm_iomap_memory(vma, phys, size);
-+	desc->page_prot = pgprot_noncached(desc->page_prot);
-+	vma_desc_set_flags(desc, VMA_IO_BIT, VMA_DONTEXPAND_BIT,
-+			   VMA_DONTDUMP_BIT);
-+	desc->vm_ops = &stm_mmap_vmops;
- 
-+	mmap_action_simple_ioremap(desc, phys, size);
- 	return 0;
- }
- 
-@@ -836,7 +847,7 @@ static const struct file_operations stm_fops = {
- 	.open		= stm_char_open,
- 	.release	= stm_char_release,
- 	.write		= stm_char_write,
--	.mmap		= stm_char_mmap,
-+	.mmap_prepare	= stm_char_mmap_prepare,
- 	.unlocked_ioctl	= stm_char_ioctl,
- 	.compat_ioctl	= compat_ptr_ioctl,
- };
+ 	/* boolean to control visibility of sysfs for ring buffer */
+ 	bool ring_sysfs_visible;
 -- 
 2.53.0
 
