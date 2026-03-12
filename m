@@ -4,62 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F16A01067044
-	for <linux-mtd@archiver.kernel.org>; Thu, 12 Mar 2026 15:29:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD1B2106703C
+	for <linux-mtd@archiver.kernel.org>; Thu, 12 Mar 2026 15:32:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=DBlhNXEd2sR0++IfkN7DAlVHXVaveFqER+5a7Tnquqw=; b=SN4GS7tthdJnKX
-	f5j7Ntj9upwC3tbzY//XJEnOEbHD1FeSKD6TBSGUXBJAoQUASUncgEvyliXn5nlXavkrh6d3fJseG
-	AhC8gGRMFZsGH7agaKSvcSz9hi7YnJr8aGCUnsVeJkfzpT/eEpp3ePBLWu6Mp+I5pUQhLQQ7dwd0O
-	5GJBud0D5jxmDi/JTbJXwImUqiBdqk9v2f3cR6/2o/JTQSro6JtEPzUajZFq8FbhGQW5y1kLYCfIe
-	MXci5TpPask0ghLzALYHnGRkXvn1Bt2t446NLBIJf18FkgklVphFoED1l+F5K0CLdjtw35OV7Vx1p
-	T63yyJQMPUIooIB80NTw==;
+	List-Owner; bh=LGwjAbMqaZb3MuG1jC+1g0tAcCDmZpim31WZ5PSuur8=; b=mSWbKdm4TcIJez
+	kC0yvwMDAdfJp4bUhVFFwJYgrMs4c6gWcktIpG2TBUBAuoxb41fSFEJQnQKSfde/Wj2hQPVvyb9dz
+	Prtf2OVVt7rm5ON01tbnPO4q0km3L9faKDiZMTCq5kCoQP/mvbIn33RWRKXkTFbHFDbGHgRo2YzD/
+	1PVV3fPSKpE43pp+scVAXqltpVGEiEPzBCKavJffu7BYIAMRBjXRtCRdFMBIDwn7TyGhqwwDV5ebt
+	YpjSoze0pZ6tkNfn/S2VWdfFX+CwqCXyv/fUxEKBRRmrdUY0Xh4u9/pHYMnsoXQCcoIlLpdVFHi97
+	MG0dJTwAFJRdqU3pvt2A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w0hy4-0000000ENjZ-3RAM;
-	Thu, 12 Mar 2026 15:28:56 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1w0i1p-0000000EOS2-0Nop;
+	Thu, 12 Mar 2026 15:32:49 +0000
+Received: from lamorak.hansenpartnership.com ([2604:f440:8:8::2])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w0hy2-0000000ENiO-0ZJm
-	for linux-mtd@lists.infradead.org;
-	Thu, 12 Mar 2026 15:28:55 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id A782140199;
-	Thu, 12 Mar 2026 15:28:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C1E6C4CEF7;
-	Thu, 12 Mar 2026 15:28:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773329332;
-	bh=evlB7UmYgfXR0LeObfNN35XybfXOCZeXbvVto+3/lcI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=gFodYMLyNAGPQXugwNFC72H1iGvqR3UrCJVMCOPPy8Mto5tlMsMz+Y0leMQsoppvi
-	 FZBoZgaILr9+s0zmv6f1PTedIvH6FbNOYFjUS/sOfeBXJUHwvQ+qsDkA60SGKRptAW
-	 WHB5A0kLVm7eDLMndht6nDye7g1VvFmOXkOMpLn+a/02eQ5OSVRecdXiDiennCAYep
-	 MloOn9u7q3U9uDY5k6Zik/SqOFsbiFhvZwLxpMli8s2yPm6rEcbXi9o4OrzpoO3vqX
-	 mCRgdGtbI/rjC7h0lQhuxM7FSabdYQiU5JB5CuX3x+PLfXnGy/xl0fXYeVDBukXewO
-	 SvuEmIZxkQaTg==
-Date: Thu, 12 Mar 2026 10:28:51 -0500
-From: Rob Herring <robh@kernel.org>
-To: Akhila YS <akhilayalmati@gmail.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-mtd@lists.infradead.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: mtd: hisilicon,504-nfc: convert to DT schema
-Message-ID: <20260312152851.GA3190071-robh@kernel.org>
-References: <20260307-hisi504-1-v1-1-8bf9a186faf2@gmail.com>
+	id 1w0i1l-0000000EORW-2omP;
+	Thu, 12 Mar 2026 15:32:47 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+	d=hansenpartnership.com; s=20151216; t=1773329560;
+	bh=zTDNMMg/o0AbpOakTawLJV8HRHueJx9lUWpbuHSD3BU=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+	b=pcvJZxMlUnyDHCQWdoy7oBw4t3ApqjoLShbfu4EGfeRRF/0XvwrUC3nRWEDXXVQdM
+	 hMwbriKe/NL1VZ4m3mEc/Q/oxiEwEcX/NNUV+xlSHstrQ2AykR2/lPVz8ssLEFKVvD
+	 cNP4AXmMocQMY4pE83K1rY1dx5NyhQ9bJbZtUZWw=
+Received: from [IPv6:2601:5c4:4300:d341::a774] (unknown [IPv6:2601:5c4:4300:d341::a774])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by lamorak.hansenpartnership.com (Postfix) with ESMTPSA id 599341C02A4;
+	Thu, 12 Mar 2026 11:32:38 -0400 (EDT)
+Message-ID: <f5688b895eaebabae6545a0d9baf8f1404e8454e.camel@HansenPartnership.com>
+Subject: Re: [PATCH 00/61] treewide: Use IS_ERR_OR_NULL over manual NULL
+ check - refactor
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+To: Jason Gunthorpe <jgg@ziepe.ca>, Kuan-Wei Chiu <visitorckw@gmail.com>
+Cc: Philipp Hahn <phahn-oss@avm.de>, amd-gfx@lists.freedesktop.org, 
+ apparmor@lists.ubuntu.com, bpf@vger.kernel.org, ceph-devel@vger.kernel.org,
+  cocci@inria.fr, dm-devel@lists.linux.dev, dri-devel@lists.freedesktop.org,
+  gfs2@lists.linux.dev, intel-gfx@lists.freedesktop.org, 
+ intel-wired-lan@lists.osuosl.org, iommu@lists.linux.dev,
+ kvm@vger.kernel.org,  linux-arm-kernel@lists.infradead.org,
+ linux-block@vger.kernel.org,  linux-bluetooth@vger.kernel.org,
+ linux-btrfs@vger.kernel.org,  linux-cifs@vger.kernel.org,
+ linux-clk@vger.kernel.org,  linux-erofs@lists.ozlabs.org,
+ linux-ext4@vger.kernel.org,  linux-fsdevel@vger.kernel.org,
+ linux-gpio@vger.kernel.org,  linux-hyperv@vger.kernel.org,
+ linux-input@vger.kernel.org,  linux-kernel@vger.kernel.org,
+ linux-leds@vger.kernel.org,  linux-media@vger.kernel.org,
+ linux-mips@vger.kernel.org, linux-mm@kvack.org, 
+ linux-modules@vger.kernel.org, linux-mtd@lists.infradead.org, 
+ linux-nfs@vger.kernel.org, linux-omap@vger.kernel.org, 
+ linux-phy@lists.infradead.org, linux-pm@vger.kernel.org, 
+ linux-rockchip@lists.infradead.org, linux-s390@vger.kernel.org, 
+ linux-scsi@vger.kernel.org, linux-sctp@vger.kernel.org, 
+ linux-security-module@vger.kernel.org, linux-sh@vger.kernel.org, 
+ linux-sound@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
+ linux-trace-kernel@vger.kernel.org, linux-usb@vger.kernel.org, 
+ linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+ ntfs3@lists.linux.dev,  samba-technical@lists.samba.org,
+ sched-ext@lists.linux.dev,  target-devel@vger.kernel.org,
+ tipc-discussion@lists.sourceforge.net,  v9fs@lists.linux.dev
+Date: Thu, 12 Mar 2026 11:32:37 -0400
+In-Reply-To: <20260312125730.GI1469476@ziepe.ca>
+References: <20260310-b4-is_err_or_null-v1-0-bd63b656022d@avm.de>
+	 <abBlpGKO842B3yl9@google.com> <20260312125730.GI1469476@ziepe.ca>
+Autocrypt: addr=James.Bottomley@HansenPartnership.com; prefer-encrypt=mutual; keydata=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
+User-Agent: Evolution 3.50.3 
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260307-hisi504-1-v1-1-8bf9a186faf2@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260312_082854_660848_0AD7204A 
-X-CRM114-Status: GOOD (  20.82  )
+X-CRM114-CacheID: sfid-20260312_083245_774611_E5466DD5 
+X-CRM114-Status: GOOD (  14.42  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,134 +97,38 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sat, Mar 07, 2026 at 04:43:56PM +0000, Akhila YS wrote:
-> Convert Hisilicon Hip04 Soc NAND controller DT binding to YAML format.
+On Thu, 2026-03-12 at 09:57 -0300, Jason Gunthorpe wrote:
+> On Wed, Mar 11, 2026 at 02:40:36AM +0800, Kuan-Wei Chiu wrote:
 > 
-> Signed-off-by: Akhila YS <akhilayalmati@gmail.com>
-> ---
->  .../devicetree/bindings/mtd/hisilicon,504-nfc.yaml | 90 ++++++++++++++++++++++
->  1 file changed, 90 insertions(+)
-
-Convert implies the removal of the .txt binding. Where is that? Could be 
-missing? If so, say that.
-
+> > IMHO, the necessity of IS_ERR_OR_NULL() often highlights a
+> > confusing or flawed API design. It usually implies that the caller
+> > is unsure whether a failure results in an error pointer or a NULL
+> > pointer. 
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/hisilicon,504-nfc.yaml b/Documentation/devicetree/bindings/mtd/hisilicon,504-nfc.yaml
-> new file mode 100644
-> index 000000000000..805ef0af0e04
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/hisilicon,504-nfc.yaml
-> @@ -0,0 +1,90 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mtd/hisilicon,504-nfc.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: HiSilicon Hip04 NAND Flash Controller
-> +
-> +maintainers:
-> +  - Miquel Raynal <miquel.raynal@bootlin.com>
-> +  - Richard Weinberger <richard@nod.at>
-
-This should be someone with the h/w. I would use the HiSilicon 
-maintainer from MAINTAINERS.
-
-> +
-> +description:
-> +  The HiSilicon 504 NFC is a NAND flash memory controller used in the
-> +  Hip04 SoC. It supports hardware ECC for NAND devices and provides
-> +  register and buffer regions for NAND operations.
-> +
-> +allOf:
-> +  - $ref: nand-controller.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    const: hisilicon,504-nfc
-> +
-> +  reg:
-> +    minItems: 2
-> +    maxItems: 2
-
-Need to define what each entry is.
-
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  nand-bus-width:
-> +    enum: [8, 16]
-> +
-> +  nand-ecc-mode:
-> +    enum:
-> +      - none
-> +      - hw
-> +
-> +  nand-ecc-strength:
-> +    const: 16
-> +
-> +  nand-ecc-step-size:
-> +    const: 1024
-> +
-
-> +  "#address-cells":
-> +    const: 1
-> +
-> +  "#size-cells":
-> +    const: 0
-
-These can be dropped as the child (partitions) doesn't have an address.
-
-> +
-> +  partitions:
-> +    $ref: /schemas/mtd/partitions/fixed-partitions.yaml#
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - nand-bus-width
-> +  - nand-ecc-mode
-> +  - "#address-cells"
-> +  - "#size-cells"
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    nand-controller@4020000 {
-> +        compatible = "hisilicon,504-nfc";
-> +        reg = <0x04020000 0x10000>, <0x05000000 0x1000>;
-> +        interrupts = <0 379 4>;
-> +        nand-bus-width = <8>;
-> +        nand-ecc-mode = "hw";
-> +        nand-ecc-strength = <16>;
-> +        nand-ecc-step-size = <1024>;
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        partitions {
-> +             compatible = "fixed-partitions";
-> +             #address-cells = <1>;
-> +             #size-cells = <1>;
-> +
-> +             partition@0 {
-> +                 label = "nand_text";
-> +                 reg = <0x0 0x400000>;
-> +            };
-> +        };
-> +    };
-> +...
+> +1
 > 
-> ---
-> base-commit: d4906ae14a5f136ceb671bb14cedbf13fa560da6
-> change-id: 20260306-hisi504-1-d7aa09c70d93
-> 
-> Best regards,
-> -- 
-> Akhila YS <akhilayalmati@gmail.com>
-> 
+> IS_ERR_OR_NULL() should always be looked on with suspicion. Very
+> little should be returning some tri-state 'ERR' 'NULL' 'SUCCESS'
+> pointer. What does the middle condition even mean? IS_ERR_OR_NULL()
+> implies ERR and NULL are semanticly the same, so fix the things to
+> always use ERR.
+
+Not in any way supporting the original patch.  However, the pattern
+ERR, NULL, PTR is used extensively in the dentry code of filesystems. 
+See the try_lookup..() set of functions in fs/namei.c
+
+The meaning is
+
+PTR - I found it
+NULL - It definitely doesn't exist
+ERR - something went wrong during the lookup.
+
+So I don't think you can blanket say this pattern is wrong.
+
+Regards,
+
+James
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
