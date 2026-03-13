@@ -4,60 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07B48105F798
-	for <linux-mtd@archiver.kernel.org>; Fri, 13 Mar 2026 11:04:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 012B0105F79A
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 Mar 2026 11:08:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ye4uTYS7DCpX1cfLK+cC87qyMyONa9xHDTByWvIYrlg=; b=GScIn3AoPajJE6
-	o7+I4IyCOqAhNDSNaNVD7EWvvYaC6ZinzjDYE8MMNYR5G6v08Ws2afk+lWZZFpEP70TMa5grJVUJs
-	i8xHMWtxh4ZM10qmthoMK+PcAKuIFxAIxroymS76+iqIThARtuBYH/tYqOs39KuupFNigFDu5Fn73
-	wyJOHiBc3DRYxqx9jlFiWnUmgqkCUY3DXWKK1d6x4pAzeypcT+Yt9XUCEtT0WDuEQOPuVgQye+tIK
-	hI0gPJ4I4Ua2C9e14Hbgx2lcImaflqa1QoT19OPQXx75RkcM8BbOiTosV+XlpnoxeVHcXI1QOnNru
-	bib69nICBWRS4TxLUCrg==;
+	List-Owner; bh=7kH1hZDgGGWR7PjTwL9kXIQ3o4MPRy/qZq0hcwal94g=; b=n1VXYKEjqfZCyK
+	g6m5dzMgKX4oDnj5kvZDaByXcAyOrIZN4Q6Ajqj2Ec8wSziUDdCBEpSxt/QJhRgJ+fs1mc6P2kuCI
+	WsGqmthH1shbUMtCBlDdb1/5Z+0lpTn9UjZI5/lqTx+e8tABaTtxHNO8Rik6aWfZwVMQd6umDN2/p
+	Z+Id4vm08xKd1kaV/NzvJwAvA63IwgqUIeP73WC2G1OdZM4c36ho1tjUA71dVdaVBF+IsxDLEZRWw
+	OBh7cwouOHzYh57472Il9ucovE00JWxbHw8u5bmchUDp/7zcwR7qbmELb4i57UhHmo9tp9qMqKcAw
+	wg7MgglvgiNDgtPWvMIw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w10Jb-0000000HZLL-40Z7;
-	Fri, 13 Mar 2026 11:04:23 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1w10NM-0000000HZgw-2yg6;
+	Fri, 13 Mar 2026 11:08:16 +0000
+Received: from out-179.mta1.migadu.com ([95.215.58.179])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w10Ja-0000000HZKt-2UaR
+	id 1w10NI-0000000HZex-3RbJ
 	for linux-mtd@lists.infradead.org;
-	Fri, 13 Mar 2026 11:04:22 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id B569560130;
-	Fri, 13 Mar 2026 11:04:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36EC0C19421;
-	Fri, 13 Mar 2026 11:04:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773399861;
-	bh=aDY7aDvju9S0EycKm7uyON4BJEJMwtI97NvuRv3BhK8=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=tdaxiyrtxhzO4ftXor8cTENoD/FIZTK68iKKFalpNdkeHI1FSjWQgh1SPwgua8p7D
-	 rPdyXyu30pSK1YBAFK8tE9J0oIRLBQNZhAbJ0f1zcb5fAIBMFrpGHHmKs2pYmP/l/e
-	 B4GRER4/pwo1Lt5EW52R33Qqx2RkQEkoEXB9TAHSxdfMLnu0XOYlEdKGUUpt3Elv4D
-	 zPb15B3TEiD161LQ9MBn6bZ8FHWfB/8VvX31WVREFID/zrIR4kC74emWcKY53UD6z/
-	 r6LzM2sR7qPMjm7XfzBfFYVhVHcYV73HtFXdAYLWQTVC7hUlcAJLgMTMFboYxDlttC
-	 OkF+sTFjUHrkA==
-From: Pratyush Yadav <pratyush@kernel.org>
-To: Haibo Chen <haibo.chen@nxp.com>
-Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,  Pratyush Yadav
- <pratyush@kernel.org>,  Michael Walle <mwalle@kernel.org>,  Miquel Raynal
- <miquel.raynal@bootlin.com>,  Richard Weinberger <richard@nod.at>,
-  Vignesh Raghavendra <vigneshr@ti.com>,  linux-mtd@lists.infradead.org,
-  linux-kernel@vger.kernel.org,  imx@lists.linux.dev,  han.xu@nxp.com
-Subject: Re: [PATCH v3] mtd: spi-nor: micron-st: add SNOR_CMD_PP_8_8_8_DTR
- sfdp fixup for mt35xu512aba
-In-Reply-To: <20251223-nor-v3-1-09e26797a8b5@nxp.com> (Haibo Chen's message of
-	"Tue, 23 Dec 2025 11:01:02 +0800")
-References: <20251223-nor-v3-1-09e26797a8b5@nxp.com>
-Date: Fri, 13 Mar 2026 11:04:17 +0000
-Message-ID: <2vxz8qbwf0su.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	Fri, 13 Mar 2026 11:08:14 +0000
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1773400079;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=F4uzVIqz7pq7OLZ2jBdjHr4kmFUvKLHY52M+cHA2QeM=;
+	b=V+cY0BjRyCwwv+an7013A6hvA3GyXKTxVzI0c7mg6CUX4RHl0JdUtUuEibl7yaHJKANQrY
+	sfoNtKukyd5R0qYUnFCiFxmhMBVUE3qhkBh4TFl3MaFTV1RL2OfuYZ423tSWXHrbh2SiI7
+	HmHqIv7Jx07xOw2GrVC1AFAIcvl9ClA=
+From: Usama Arif <usama.arif@linux.dev>
+To: "Lorenzo Stoakes (Oracle)" <ljs@kernel.org>
+Cc: Usama Arif <usama.arif@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Clemens Ladisch <clemens@ladisch.de>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"K . Y . Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>,
+	Dexuan Cui <decui@microsoft.com>,
+	Long Li <longli@microsoft.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Bodo Stroesser <bostroesser@gmail.com>,
+	"Martin K . Petersen" <martin.petersen@oracle.com>,
+	David Howells <dhowells@redhat.com>,
+	Marc Dionne <marc.dionne@auristor.com>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>,
+	Jan Kara <jack@suse.cz>,
+	David Hildenbrand <david@kernel.org>,
+	"Liam R . Howlett" <Liam.Howlett@oracle.com>,
+	Vlastimil Babka <vbabka@kernel.org>,
+	Mike Rapoport <rppt@kernel.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Michal Hocko <mhocko@suse.com>,
+	Jann Horn <jannh@google.com>,
+	Pedro Falcato <pfalcato@suse.de>,
+	linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-hyperv@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mtd@lists.infradead.org,
+	linux-staging@lists.linux.dev,
+	linux-scsi@vger.kernel.org,
+	target-devel@vger.kernel.org,
+	linux-afs@lists.infradead.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org,
+	Ryan Roberts <ryan.roberts@arm.com>
+Subject: Re: [PATCH 05/15] fs: afs: correctly drop reference count on mapping failure
+Date: Fri, 13 Mar 2026 04:07:43 -0700
+Message-ID: <20260313110745.2573005-1-usama.arif@linux.dev>
+In-Reply-To: <4a5fa45119220b9d99ed72a36308aed01a30d2c1.1773346620.git.ljs@kernel.org>
+References: 
 MIME-Version: 1.0
+X-Migadu-Flow: FLOW_OUT
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260313_040813_151389_6D782AF5 
+X-CRM114-Status: GOOD (  26.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,31 +110,90 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Dec 23 2025, Haibo Chen wrote:
+On Thu, 12 Mar 2026 20:27:20 +0000 "Lorenzo Stoakes (Oracle)" <ljs@kernel.org> wrote:
 
-> Find two batches mt35xu512aba has different SFDP but with same
-> jedec ID. The batch which use the new version of SFDP contain
-> all the necessary information to support OCT DTR mode. The batch
-> with old version do not contain the OCT DTR command information,
-> but in fact it did support OCT DTR mode.
->
-> Current mt35xu512aba_post_sfdp_fixup() add some setting including
-> SNOR_CMD_READ_8_8_8_DTR, but still lack SNOR_CMD_PP_8_8_8_DTR. Meet
-> issue on the batch mt35xu512aba with old SFDP version. Because no
-> SNOR_CMD_PP_8_8_8_DTR, micron_st_nor_octal_dtr_en() will not be
-> called, then use SNOR_CMD_READ_8_8_8_DTR will meet issue.
->
-> Fixes: 44dd635cd632 ("mtd: spi-nor: micron-st: use SFDP of mt35xu512aba")
-> Reviewed-by: Pratyush Yadav <pratyush@kernel.org>
-> Signed-off-by: Haibo Chen <haibo.chen@nxp.com>
+> Commit 9d5403b1036c ("fs: convert most other generic_file_*mmap() users to
+> .mmap_prepare()") updated AFS to use the mmap_prepare callback in favour of
+> the deprecated mmap callback.
+> 
+> However, it did not account for the fact that mmap_prepare can fail to map
+> due to an out of memory error, and thus should not be incrementing a
+> reference count on mmap_prepare.
+> 
+> With the newly added vm_ops->mapped callback available, we can simply defer
+> this operation to that callback which is only invoked once the mapping is
+> successfully in place (but not yet visible to userspace as the mmap and VMA
+> write locks are held).
+> 
+> Therefore add afs_mapped() to implement this callback for AFS.
+> 
+> In practice the mapping allocations are 'too small to fail' so this is
+> something that realistically should never happen in practice (or would do
+> so in a case where the process is about to die anyway), but we should still
+> handle this.
+> 
+> Signed-off-by: Lorenzo Stoakes (Oracle) <ljs@kernel.org>
+> ---
+>  fs/afs/file.c | 20 ++++++++++++++++----
+>  1 file changed, 16 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/afs/file.c b/fs/afs/file.c
+> index f609366fd2ac..69ef86f5e274 100644
+> --- a/fs/afs/file.c
+> +++ b/fs/afs/file.c
+> @@ -28,6 +28,8 @@ static ssize_t afs_file_splice_read(struct file *in, loff_t *ppos,
+>  static void afs_vm_open(struct vm_area_struct *area);
+>  static void afs_vm_close(struct vm_area_struct *area);
+>  static vm_fault_t afs_vm_map_pages(struct vm_fault *vmf, pgoff_t start_pgoff, pgoff_t end_pgoff);
+> +static int afs_mapped(unsigned long start, unsigned long end, pgoff_t pgoff,
+> +		      const struct file *file, void **vm_private_data);
+>  
+>  const struct file_operations afs_file_operations = {
+>  	.open		= afs_open,
+> @@ -61,6 +63,7 @@ const struct address_space_operations afs_file_aops = {
+>  };
+>  
+>  static const struct vm_operations_struct afs_vm_ops = {
+> +	.mapped		= afs_mapped,
+>  	.open		= afs_vm_open,
+>  	.close		= afs_vm_close,
+>  	.fault		= filemap_fault,
+> @@ -500,13 +503,22 @@ static int afs_file_mmap_prepare(struct vm_area_desc *desc)
+>  	afs_add_open_mmap(vnode);
 
-Applied to spi-nor/next. Thanks!
+Is the above afs_add_open_mmap an additional one, which could cause a reference
+leak? Does the above one need to be removed and only the one in afs_mapped()
+needs to be kept?
 
-[...]
-
--- 
-Regards,
-Pratyush Yadav
+>  
+>  	ret = generic_file_mmap_prepare(desc);
+> -	if (ret == 0)
+> -		desc->vm_ops = &afs_vm_ops;
+> -	else
+> -		afs_drop_open_mmap(vnode);
+> +	if (ret)
+> +		return ret;
+> +
+> +	desc->vm_ops = &afs_vm_ops;
+>  	return ret;
+>  }
+>  
+> +static int afs_mapped(unsigned long start, unsigned long end, pgoff_t pgoff,
+> +		      const struct file *file, void **vm_private_data)
+> +{
+> +	struct afs_vnode *vnode = AFS_FS_I(file_inode(file));
+> +
+> +	afs_add_open_mmap(vnode);
+> +	return 0;
+> +}
+> +
+>  static void afs_vm_open(struct vm_area_struct *vma)
+>  {
+>  	afs_add_open_mmap(AFS_FS_I(file_inode(vma->vm_file)));
+> -- 
+> 2.53.0
+> 
+> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
