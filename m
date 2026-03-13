@@ -4,115 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3BDE105F7A6
-	for <linux-mtd@archiver.kernel.org>; Fri, 13 Mar 2026 12:50:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE56C105F7A7
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 Mar 2026 13:17:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
 	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
 	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=pQDXTZ6LL5GalD/KTen2sJCEU2H7Up9gtmcLnxR42NM=; b=t0ZJw5noTIpMk4
-	vPRwudXHt5+rh2TjnGHPMNp4eB6IGImHu7PBNi23RNJ0Poajg8Fz68HQ9AefdZxr052upbj+T+dtO
-	DVvGBwgHyQRRDryjRp1DT+3sBqc+jwMmY6YAPEQp83NkbksMbJiqdk6wY4qgeuLH7q+miYNn3LAB+
-	gBMVUo/kAJNW791297t8ayPlNnaabMQF1uXr+PsgmM+cTlfTOF7Us63O5JHNUIufEF8MfeYCbSApF
-	IBB8G/my0e6deicOglJyMig9Va+AHjKuOEj6Fd6yNWca+FVn/YkQerS5zkVk3IXPCT2ikYooldQzB
-	QAf3VyX+u/dzHV5VeChA==;
+	List-Owner; bh=R3uN2yOPFRNSFvd9ONOo0nrhILOXx4w5bArpAOGd6Rs=; b=NWUsfZ4r2OcDlP
+	pr0/2CwaumK4edrmovarUk+om5jweiFvb2gDsftBa4dP8Sm4oPDgE8mbASl/GHtmGFGfHZz7Lahrh
+	7jDx8wOuU5jOa0w3m7qIOM9CoWGPCTFl950L/cF0sdXOx+PLxnCzVob+OdK5V2m163uMJjEHLN2D6
+	7R/PNJxufGoglU7imo38GGc0CJSGGLvPrhCitBNLpOcgOc2DW48msjqbTWF7M5NcBvcZgcrp6Z10V
+	w1k3+ingvA8znAwXONjDWsPPIDGOQMgN/g68sly3WeBtqmNJvSRhRL2FNRVz+7LsVm7Bb6zuEKhPT
+	Q3uqMwS5ol1/kPh78FGQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w11yc-000000009jj-1kXO;
-	Fri, 13 Mar 2026 12:50:50 +0000
-Received: from mx.os-c.de ([213.165.83.196] helo=os-cillation.de)
+	id 1w12OH-00000000Chw-0MPW;
+	Fri, 13 Mar 2026 13:17:21 +0000
+Received: from smtpout-02.galae.net ([185.246.84.56])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w11ya-000000009jO-105Q
+	id 1w12OD-00000000Cg6-1pBG
 	for linux-mtd@lists.infradead.org;
-	Fri, 13 Mar 2026 12:50:49 +0000
-Received: from core2024.osc.gmbh (ip-094-079-177-042.um30.pools.vodafone-ip.de [94.79.177.42])
-	by os-cillation.de (Postfix) with ESMTPSA id 9D4D5C00EC;
-	Fri, 13 Mar 2026 13:50:42 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=os-cillation.de;
-	s=202409; t=1773406242;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=W9s7DsJlXt7kVwh12JgxnA5gL7P46xWuvv+NbcZTtuo=;
-	b=FJ+vn4iZ7eE/65CVVk5LLY10mDrv0LxKUwjUzH/Rwz52fYAtaUDRXxXIDZxQ/jB+PgX583
-	+XQqDdEer7BPqIaI8dc7lO9UjmTIOsEQNqEUqyVT0TQ/6qtNywEn1MuFApD94VnbKpNvWK
-	kfZtnqqib9srGuaj+mkicGDexmjfnLZ1ai2wnRjBfEI4L27/qir9A/nLqD5M2B61YveeI6
-	SioCm31jJHpfUgdNxhIXtRNeOO0ofa2lLoxlfKCaZJ9YnJM1DYHKQQldTdrg4qH61suPiw
-	04lFxYJEM56IRQTxfmreT7f0Qexf3ckyl89oWyLQe+DTsjDypHtiz6AL+Uh8iQ==
-Authentication-Results: os-cillation.de;
-	auth=pass smtp.auth=os-c@schweissgut.net smtp.mailfrom=hd@os-cillation.de
-Received: from [192.168.3.45] (hd2022.osc.gmbh [192.168.3.45])
-	by core2024.osc.gmbh (Postfix) with ESMTPSA id 502EE200B4A;
-	Fri, 13 Mar 2026 13:50:42 +0100 (CET)
-Message-ID: <aa6bfa3a-8389-4dfa-a477-dcfb3340b1f5@os-cillation.de>
-Date: Fri, 13 Mar 2026 13:50:42 +0100
+	Fri, 13 Mar 2026 13:17:19 +0000
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-02.galae.net (Postfix) with ESMTPS id 272D91A2E20;
+	Fri, 13 Mar 2026 13:17:13 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id EFCFA60027;
+	Fri, 13 Mar 2026 13:17:12 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 8601B10369EFA;
+	Fri, 13 Mar 2026 14:17:05 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1773407832; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:content-language:in-reply-to:references;
+	bh=JOFoYAGJVyyk6xus0Z9WrQazmgihSHEPBTdXrGtZqcU=;
+	b=VvoaKN1dElbt5A/ybhYmCk6wEI1Ngpxe3iW3oiNxdyeYLq1bqdTWhYNUJrTky/N5PLukYP
+	+SX8Pxiy0Amwukf7dJZ0u1o3+9D+hjQri/gJIOkGvLzoeunqOR83EhbIwSNY4T1MfA2fpq
+	OjmOjaa8OKvYpQP173AzLyfCYegCnyzfkYNCfLRi8p/Q2rq79ZosUn3F4oKIUPvVZCWtoR
+	rW6a1Fdzan6FZ6YcGjglY+5bxobYNRmAVtVpYqAFHIWdMLbrf09qfKh6Z/59CMG/T6UzDS
+	AHhAfsXlSebetCMmVajdULN7rrm8taDoo3nq/adst4SvEmeygDrg3B+PiH1DiQ==
+Message-ID: <8d33c193-995c-4225-9998-8c81a2268065@bootlin.com>
+Date: Fri, 13 Mar 2026 14:17:04 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] mtd: spi-nor: sst: Fix write enable before AAI
- sequence
-To: Pratyush Yadav <pratyush@kernel.org>
-Cc: Michael Walle <mwalle@kernel.org>,
- Sanjaikumar V S <sanjaikumarvs@gmail.com>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com, richard@nod.at,
- sanjaikumar.vs@dicortech.com, stable@vger.kernel.org,
- tudor.ambarus@linaro.org, vigneshr@ti.com
-References: <DGM6ZPOT1WCR.157JI0LW4W3E8@kernel.org>
- <20260223091733.47-1-sanjaikumarvs@gmail.com>
- <DGM8HPC181AF.3FCCS4MIE4A43@kernel.org>
- <8a1db3a5-09b3-4ef1-87e8-66553a81ec27@os-cillation.de>
- <2vxzpl58dk9u.fsf@kernel.org>
-Content-Language: en-US
-From: Hendrik Donner <hd@os-cillation.de>
-Autocrypt: addr=hd@os-cillation.de; keydata=
- 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 li+2
-In-Reply-To: <2vxzpl58dk9u.fsf@kernel.org>
+Subject: Re: [PATCH v2 6/6] mtd: rawnand: sunxi: introduce variable user data
+ length
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+ <vigneshr@ti.com>, Chen-Yu Tsai <wens@csie.org>,
+ Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Samuel Holland <samuel@sholland.org>, Wentao Liang <vulab@iscas.ac.cn>,
+ Maxime Ripard <mripard@kernel.org>, Boris Brezillon <bbrezillon@kernel.org>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20260305100137.2558423-1-richard.genoud@bootlin.com>
+ <20260305100137.2558423-7-richard.genoud@bootlin.com>
+ <87a4wdkt3y.fsf@bootlin.com>
+From: Richard GENOUD <richard.genoud@bootlin.com>
+Content-Language: en-US, fr
+Organization: Bootlin
+In-Reply-To: <87a4wdkt3y.fsf@bootlin.com>
+X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260313_055048_528180_9D76F23E 
-X-CRM114-Status: GOOD (  26.54  )
+X-CRM114-CacheID: sfid-20260313_061717_603755_16D75AD3 
+X-CRM114-Status: GOOD (  17.26  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -124,134 +81,38 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello,
-
-On 3/13/26 12:46, Pratyush Yadav wrote:
-> On Fri, Mar 06 2026, Hendrik Donner wrote:
-> 
->> Hello,
->>
->> On 2/23/26 10:29, Michael Walle wrote:
->>> Hi,
->>> On Mon Feb 23, 2026 at 10:17 AM CET, Sanjaikumar V S wrote:
->>>>> Raises concern about writes ending at odd offsets potentially
->>>>> having the same issue
->>>>
->>>> The odd end address case (trailing byte) is already handled in the
->>>> existing code at lines 243-255:
->>>>
->>>> /* Write out trailing byte if it exists. */
->>>> if (actual != len) {
->>>>       ret = spi_nor_write_enable(nor);
->>>>       ...
->>>>       ret = sst_nor_write_data(nor, to, 1, buf + actual);
->>>> }
->>> Ah, I must be blind. I stopped reading at the write_disable.
->>>
->>>> So write_enable is already called before writing the trailing
->>>> byte. My patch only addresses the odd start case where BP clears
->>>> WEL before the AAI sequence begins.
->>>>
->>>>> Suggests simplifying the conditional logic by removing the length
->>>>> check
->>>>
->>>> The condition `if (actual < len - 1)` avoids an unnecessary
->>>> write_enable when len == 1 (single byte write at odd address, no
->>>> AAI follows). But if you prefer unconditional write_enable for
->>>> simplicity, I can change it in v3.
->>> I know, but I actually don't like repeating the condition in the for
->>> loop. So I'd prefer to have a local "needs_write_enable" boolean
->>> which will be set to true. But then, I wouldn't care too much if
->>> there is a write enable followed by a write disable for a rare case.
->>>
->>>>> Notes the patch lacks runtime testing
->>>>
->>>> I don't have the hardware setup to test odd-address writes at the
->>>> moment. The fix is based on code analysis. I have tested patch 2/2
->>>> (dirmap fallback) on hardware.
->>> I'm hesitant - because like I said, if there is really a bug - it
->>> would have never worked correctly, since day 1. But yeah, I've also
->>> read the datasheet and it clearly states that the byte write will
->>> clear the write enable latch.
->>>
->>
->> i can confirm both patches fix real issues, i have similiar fixes
->> on a kernel tree i always wanted to clean up and upstream. Diffs
->> based on 6.6.127:
->>
->> diff --git a/drivers/mtd/spi-nor/sst.c b/drivers/mtd/spi-nor/sst.c
->> index 197d2c1101ed5..eaa50561ede2c 100644
->> --- a/drivers/mtd/spi-nor/sst.c
->> +++ b/drivers/mtd/spi-nor/sst.c
->> @@ -155,6 +155,13 @@ static int sst_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
->>                  if (ret)
->>                          goto out;
->>
->> +               ret = spi_nor_write_enable(nor);
->> +               if (ret)
->> +                       goto out;
->> +               ret = spi_nor_wait_till_ready(nor);
->> +               if (ret)
->> +                       goto out;
->> +
->>                  to++;
->>                  actual++;
->>          }
->>
->>
->> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
->> index 1b0c6770c14e4..646bfb2e91a65 100644
->> --- a/drivers/mtd/spi-nor/core.c
->> +++ b/drivers/mtd/spi-nor/core.c
->> @@ -276,7 +276,7 @@ static ssize_t spi_nor_spimem_write_data(struct spi_nor *nor, loff_t to,
->>          if (spi_nor_spimem_bounce(nor, &op))
->>                  memcpy(nor->bouncebuf, buf, op.data.nbytes);
->>
->> -       if (nor->dirmap.wdesc) {
->> +       if (nor->dirmap.wdesc && nor->program_opcode != SPINOR_OP_AAI_WP) {
-> 
-> Why is this better? This removes the use of dirmap for all flashes other
-> than SST.
-
-i claim the opposite down below? That patch 2 of the posted patch series
-looks better to me. Sorry if that was unclear.
-
-Regards,
-Hendrik
-
-> 
->>                  nbytes = spi_mem_dirmap_write(nor->dirmap.wdesc, op.addr.val,
->>                                                op.data.nbytes, op.data.buf.out);
->>          } else {
->>
->>
->> I think patch 2 of this series is the better approach though.
-> 
-> There is a v4 here:
-> https://lore.kernel.org/linux-mtd/20260311103057.29-1-sanjaikumarvs@gmail.com/T/#u
-> 
-> Can you please review and test it so we can apply it?
-> 
->>
->> Regards,
->> Hendrik
->>
->>>> Please let me know if you'd like me to send a v3 with the
->>>> simplified unconditional write_enable.
->>> Please see above.
->>> -michael
->>> ______________________________________________________
->>> Linux MTD discussion mailing list
->>> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->>
-> 
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+TGUgMTIvMDMvMjAyNiDDoCAxNTo0MSwgTWlxdWVsIFJheW5hbCBhIMOpY3JpdMKgOgo+IEhlbGxv
+IFJpY2hhcmQsCj4gCj4gT24gMDUvMDMvMjAyNiBhdCAxMTowMTozNyArMDEsIFJpY2hhcmQgR2Vu
+b3VkIDxyaWNoYXJkLmdlbm91ZEBib290bGluLmNvbT4gd3JvdGU6Cj4gCj4+IEluIEFsbHdpbm5l
+ciBTb0NzLCB1c2VyIGRhdGEgY2FuIGJlIGFkZGVkIGluIE9PQiBiZWZvcmUgZWFjaCBFQ0MgZGF0
+YS4KPj4gRm9yIG9sZGVyIFNvQ3MgbGlrZSBBMTAsIHRoZSB1c2VyIGRhdGEgc2l6ZSB3YXMgdGhl
+IHNpemUgb2YgYSByZWdpc3Rlcgo+PiAoNCBieXRlcykgYW5kIHdhcyBtYW5kYXRvcnkgYmVmb3Jl
+IGVhY2ggRUNDIHN0ZXAuCj4+IFNvLCB0aGUgQTEwIE9PQiBMYXlvdXQgaXM6Cj4+IFs0Qnl0ZXMg
+VVNFUl9EQVRBX1NURVAwXSBbRUNDX1NURVAwIGJ5dGVzXQo+PiBbNGJ5dGVzIFVTRVJfREFUQV9T
+VEVQMV0gW0VDQ19TVEVQMSBieXRlc10KPj4gLi4uCj4+IE5COiB0aGUgQkJNIGlzIHN0b3JlZCBh
+dCB0aGUgYmVnaW5uaW5nIG9mIHRoZSBVU0VSX0RBVEFfU1RFUDAuCj4+Cj4+IE5vdywgZm9yIEg2
+L0g2MTYgTkFORCBmbGFzaCBjb250cm9sbGVyLCB0aGlzIHVzZXIgZGF0YSBjYW4gaGF2ZSBhCj4+
+IGRpZmZlcmVudCBzaXplIGZvciBlYWNoIHN0ZXAuCj4+IEFuZCB0aGUgdmVuZG9yIGhhcyBjaG9z
+ZW4gYSBkaWZmZXJlbnQgbGF5b3V0IGZyb20gdGhlIG9uZSBvbiBBMTAsIHVzaW5nCj4+IDggYnl0
+ZXMgZm9yIHN0ZXAgMCBhbmQgbm90aGluZyBmb3IgZnVydGhlciBzdGVwczoKPj4gWzhieXRlcyBV
+U0VSX0RBVEFfU1RFUDBdIFtFQ0NfU1RFUDAgYnl0ZXNdIFtFQ0NfU1RFUDEgYnl0ZXNdLi4uCj4+
+IChTdGlsbCB3aXRoIEJCTSBzdG9yZWQgYXQgdGhlIGJlZ2lubmluZyBvZiB0aGUgVVNFUl9EQVRB
+X1NURVAwKQo+IAo+IEkgd291bGQgcmF0aGVyIGJlIGluIGZhdm91ciBvZiBub3QgZm9sbG93aW5n
+ICQocmFuZG9tIHZlbmRvcikgZmlybXdhcmUKPiBsYXlvdXQuIFVwc3RyZWFtLCBpdCBtYWtlcyBw
+cm9iYWJseSBtb3JlIHNlbnNlIHRvIGp1c3QgYWxsb3cgYWNjZXNzIHRvCj4gdGhlIG1heGltdW0g
+bnVtYmVyIG9mIGJ5dGVzIHRoYXQgY2FuIGJlIGNvdmVyZWQgYnkgdGhlIEVDQyBlbmdpbmUsIHNv
+IEkKPiB3b3VsZCByYXRoZXIgYmUgaW4gZmF2b3VyIG9mIGNvbXB1dGluZyB0aGUgbWF4aW11bSBz
+aXplIHRoYXQgeW91IGNhbiBzZXQKPiBmb3IgZWFjaCBzdGVwLCB3aXRob3V0IGdvaW5nIG92ZXIg
+dGhlIE9PQiBzaXplLgpPaywgSSdsbCB3cml0ZSBhbiBpbXBsZW1lbnRhdGlvbiBmb3IgdGhhdC4K
+ClRoYW5rcyAhCgo+IAo+IE9uY2UgdGhpcyBzZXQgdXAsIEkgYmVsaWV2ZSBhZGFwdGluZyB0aGUg
+ZHJpdmVyIGxvY2FsbHkgKG91dCBvZiB0cmVlKSB0bwo+IG1hdGNoIGEgc3BlY2lmaWMgdmVuZG9y
+IGxheW91dCB3b3VsZCBiZSByYXRoZXIgc3RyYWlnaHRmb3J3YXJkLCBhcyBhbGwKPiB0aGUgY29u
+ZmlndXJhdGlvbiBwaWVjZXMgd291bGQgYWxyZWFkeSBiZSBpbiBwbGFjZS4KPiAKPiBUaGFua3Ms
+Cj4gTWlxdcOobAoKCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlz
+dHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
