@@ -4,86 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3C7C0105F7AC
-	for <linux-mtd@archiver.kernel.org>; Fri, 13 Mar 2026 13:39:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 358E6105F7A8
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 Mar 2026 13:39:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=OIl4KsiJtJ5iWuAr+0fOfyCE9wLzpliL/PHty6DXbgM=; b=QALDLiFymaHspO
-	zA/mEzjd2BXJb6bncZIGpH4KzhiVlkaec9s6ooicU8ysKmZEdu/z4aArGvWcitbc5YNlOPJJIHTLq
-	SZLYf9ckEff9x+tMtfBPUzf9VJ2mLQNmL+t8N6T/zobJMSnGBtl5I6OeplbRd9Lu3zxyr3VjuVunD
-	3c+Em+g6w8KKTDz9WGD22j8wbRnTFNw+AUJFozQb++2taL6uQZ0NWlxmdVmMY16yMIVXSWpDicoYJ
-	Zoikdzj5EeWvO8RPRW0tYC10LHWBA+2cH2rUGdiC3SVhMAhC/iNnutGE5AR3k9KxbUt450msnrOdv
-	VEdlKUJs9CjU7xUFvHnA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=WlhCupZK/FgSx4Tp+uprOpIJeUQLAuIAQH7KSNT9uqc=; b=zr3gFsXzMQApxZ
+	MyMKm3lZwQK7y7dNKbs51//CuAeAAVLrL+DpkT/kKdpRGFlVrx/+A4HZ+Yj1PsooZaWp0e5NqmsEp
+	vMCvW359xvMj6UsygFDMJlOU9SMvbKQ55fGtfe1cAVuPYVr022ZDcjripG9c8P41GdTBsEdlY694I
+	OqqcwCIcoLQdOZsKa3vrf8v9SDK/BBf5FINRFIWYe2t5eTRuaxzzzJdrAXvrwGaGlUvHxbGVeuQQf
+	vRuyGUWOCfiGj4/hN/FFMG3aqNN4ObKv/tpWUAnPmYKxPIePg8CiOpJDOprVcryqQnIwY+fYY09oS
+	GrdgGPH7OvSjjaC1xJgQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w12jC-00000000IEd-1wWO;
-	Fri, 13 Mar 2026 13:38:58 +0000
-Received: from mail-pf1-x42d.google.com ([2607:f8b0:4864:20::42d])
+	id 1w12jt-00000000IPw-1VHZ;
+	Fri, 13 Mar 2026 13:39:41 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w12j9-00000000IDm-1gwK
+	id 1w12jp-00000000IO5-0TlB
 	for linux-mtd@lists.infradead.org;
-	Fri, 13 Mar 2026 13:38:57 +0000
-Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-829759ca646so1307412b3a.2
-        for <linux-mtd@lists.infradead.org>; Fri, 13 Mar 2026 06:38:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=huaqin-corp-partner-google-com.20230601.gappssmtp.com; s=20230601; t=1773409134; x=1774013934; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=VVlBxLx93dYm/v39k+lAv+cdQqoileUcSY7dr3O8QjA=;
-        b=dSSiB+ZcnVFh8ECZbuelt5kgC2GB6T+LLctj+LondGcaj0p4Z0RcAN5NjMI1swA+pp
-         aCFbLYSF8mkV0p7lDPL8UZaPeAje5wH1rRuuJIcRymtVPScwcMmZp4MfgYyTci11X+KZ
-         grFveR/LkyU+37O5BqGcdsh1u/jYnxP6KrNvjKCnCQ6Vq4sbygeCs2iMWMjRVYgEWvwz
-         OKgk1tIE48/Try5dFaIDByoPvPZ2ZtX980735+25v6V5NS+IbtWFwglgWDdpm/epSxxJ
-         Bd0kJnV546ZsixWlYWF1BFFej97e5LrAxGcLYmFIthy7J34LnL1KclUtPPGjIxEgcs03
-         GYTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1773409134; x=1774013934;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VVlBxLx93dYm/v39k+lAv+cdQqoileUcSY7dr3O8QjA=;
-        b=gtS+bmmALWzyBRBoNtciwxuTsyQT3toG31MOGXuLGF+V/6M9H66bHeXEVzDZ9kQivN
-         ZVEyWLIQZEHPdb9NXhffL8eNMmUsQPPkmDEo1/sZmjr3SnRpYKRnkB4WgQAM+2Bh7Avf
-         T2J9R+7IJNsFuF4KSsmNwiwFAXZB2AKtVVrQiri4yunwo5klRkJY4Su/kczW9xqSC8aT
-         6GGoovZ5DQQtdVrbFPFySp8Im7y170S24MkeGWnmpqNcnwJKjvpQeTk7d4s/GF1tZlTc
-         h0f8/tJ7nIVC8v6/gCgw6+C+RvFXtQaBC/Tirj+uIdME+z6feJ18jgKfFubLw+dnPpyf
-         8mGA==
-X-Forwarded-Encrypted: i=1; AJvYcCWnZWlwHAu11lxbK0m3SRR2rK0XHoc8hW5YYNrb7rmCoCt9uogeHPR0S2DvVxdigSoztNCNa+21MYo=@lists.infradead.org
-X-Gm-Message-State: AOJu0YzoRzRosF3xbnJiHsZOIBPBJq9xVA3QOD2oFQkxOxQ23CUdzfnX
-	eJYtFBWevx59LnVuufTaCDFei117WZCxEvkgmovoVCKCWGiDJDkD5R+iUVs1prTTxYc=
-X-Gm-Gg: ATEYQzzffA3Bqcc5hp4p/hugaVjbTCOD6qYOFgkNhZRzAnvpw1mq5Xc8bgCMyNZiMH/
-	TW5+f9DaPuyXNKsmEgYfD60lKbMG1ElS1rNOcYws2GkfWmPK0mFHqOwbsqVJ19eI5LLUCKKW8yJ
-	fu9fps7AiTBXGmOCO4xlMjUdWshsKaI36jpYjJcFzg3gjZXWOhEAheJMp7t/hGDSWCfu9SmVLDK
-	4n7x8p/Mgz602kgt1+70HK2gQr5opI+o0tSKV8E2ZHzmeg+7WoE9kpOIll+jukwIGzeOtDYNeqS
-	s/jPLwTp9+SNEcXbG/ftEsLcoQ6bF5/1nDBhKxLQNBt9Ybaw0qtL/AkIUoAy97ZUYk7b/c+Yrgs
-	2X01bXGrUknSJU4/eJfukEA+uzD2zPHmrOhHnP6V1Tj4E5Yq6cH5vs+RlMmielyeDtINvJGQp2K
-	x1tqAuGYwEOIA3RW4A/Q8gjF0hn0mD1tA+3LIOY56pFfimB5btJFjDdYLb9rUSw8s=
-X-Received: by 2002:a05:6a00:138e:b0:823:ad3:4ff4 with SMTP id d2e1a72fcca58-82a198b84ddmr3060475b3a.37.1773409133845;
-        Fri, 13 Mar 2026 06:38:53 -0700 (PDT)
-Received: from ubuntu2404.huaqin.com ([103.117.77.120])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-82a07343719sm6101620b3a.38.2026.03.13.06.38.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Mar 2026 06:38:53 -0700 (PDT)
-From: Weimin Wu <wuweimin@huaqin.corp-partner.google.com>
-To: takahiro.kuwano@infineon.com
-Cc: tudor.ambarus@linaro.org,
-	pratyush@kernel.org,
-	mwalle@kernel.org,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Weimin Wu <wuweimin@huaqin.corp-partner.google.com>
-Subject: [PATCH] Subject: [v2] mtd: spi-nor: gigadevice: Add support for GD25LQ255E
-Date: Fri, 13 Mar 2026 21:38:06 +0800
-Message-ID: <20260313133806.2390946-1-wuweimin@huaqin.corp-partner.google.com>
-X-Mailer: git-send-email 2.43.0
+	Fri, 13 Mar 2026 13:39:38 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id CFCD240393;
+	Fri, 13 Mar 2026 13:39:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5AD73C19425;
+	Fri, 13 Mar 2026 13:39:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1773409176;
+	bh=xnp+Riyh/w0YpgxEvhFWS/9bdMiL79ATIFLfP7pHKwI=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=uq+3PqYk5bxRdIZxNbbFeNn6Z2tT9FmuCHBT9bGu23AKK/FAm/m42z16iZ3L/IMoJ
+	 u6aIcaigAKV2VxMz9c30y1iwOrvAL5f/FzeJTzva5tMrBWkbXIXBFEiY58G4hcKFK4
+	 OvzixvLmvGLntJy3+xMTnRU6dt0h1rD85ZDdStA2yTUwudy3TVvdvHVlAey+feOuLK
+	 9juPeU/F2JxozjlkQPtXsx4uhLE7IYIVcyT1kDluoiUXdxmjZmR2pLs9UOE82UA8fK
+	 HkDaiej8qSJhVncd5R260aZlb53SEwjvD4f7A2mFT8393hFF1Xu7NX5TjfFOAazmv8
+	 2N6bxXhE+OihQ==
+From: Pratyush Yadav <pratyush@kernel.org>
+To: Hendrik Donner <hd@os-cillation.de>
+Cc: Pratyush Yadav <pratyush@kernel.org>,  Michael Walle
+ <mwalle@kernel.org>,  Sanjaikumar V S <sanjaikumarvs@gmail.com>,
+  linux-kernel@vger.kernel.org,  linux-mtd@lists.infradead.org,
+  miquel.raynal@bootlin.com,  richard@nod.at,
+  sanjaikumar.vs@dicortech.com,  stable@vger.kernel.org,
+  tudor.ambarus@linaro.org,  vigneshr@ti.com
+Subject: Re: [PATCH v2 1/2] mtd: spi-nor: sst: Fix write enable before AAI
+ sequence
+In-Reply-To: <aa6bfa3a-8389-4dfa-a477-dcfb3340b1f5@os-cillation.de> (Hendrik
+	Donner's message of "Fri, 13 Mar 2026 13:50:42 +0100")
+References: <DGM6ZPOT1WCR.157JI0LW4W3E8@kernel.org>
+	<20260223091733.47-1-sanjaikumarvs@gmail.com>
+	<DGM8HPC181AF.3FCCS4MIE4A43@kernel.org>
+	<8a1db3a5-09b3-4ef1-87e8-66553a81ec27@os-cillation.de>
+	<2vxzpl58dk9u.fsf@kernel.org>
+	<aa6bfa3a-8389-4dfa-a477-dcfb3340b1f5@os-cillation.de>
+Date: Fri, 13 Mar 2026 13:39:32 +0000
+Message-ID: <2vxz8qbvetm3.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260313_063855_540084_A94DFB1F 
-X-CRM114-Status: GOOD (  12.30  )
+X-CRM114-CacheID: sfid-20260313_063937_189245_D79A4C2C 
+X-CRM114-Status: GOOD (  21.57  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,60 +83,108 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add support for the GigaDevice GD25LQ255E (JEDEC ID c8 60 19),
-a 256Mbit (32MB) SPI NOR flash chip which supports SFDP.
+On Fri, Mar 13 2026, Hendrik Donner wrote:
 
-The chip supports 4K sector erase, dual read, and quad read modes.
+> Hello,
+>
+> On 3/13/26 12:46, Pratyush Yadav wrote:
+>> On Fri, Mar 06 2026, Hendrik Donner wrote:
+>> 
+>>> Hello,
+>>>
+>>> On 2/23/26 10:29, Michael Walle wrote:
+>>>> Hi,
+>>>> On Mon Feb 23, 2026 at 10:17 AM CET, Sanjaikumar V S wrote:
+>>>>>> Raises concern about writes ending at odd offsets potentially
+>>>>>> having the same issue
+>>>>>
+>>>>> The odd end address case (trailing byte) is already handled in the
+>>>>> existing code at lines 243-255:
+>>>>>
+>>>>> /* Write out trailing byte if it exists. */
+>>>>> if (actual != len) {
+>>>>>       ret = spi_nor_write_enable(nor);
+>>>>>       ...
+>>>>>       ret = sst_nor_write_data(nor, to, 1, buf + actual);
+>>>>> }
+>>>> Ah, I must be blind. I stopped reading at the write_disable.
+>>>>
+>>>>> So write_enable is already called before writing the trailing
+>>>>> byte. My patch only addresses the odd start case where BP clears
+>>>>> WEL before the AAI sequence begins.
+>>>>>
+>>>>>> Suggests simplifying the conditional logic by removing the length
+>>>>>> check
+>>>>>
+>>>>> The condition `if (actual < len - 1)` avoids an unnecessary
+>>>>> write_enable when len == 1 (single byte write at odd address, no
+>>>>> AAI follows). But if you prefer unconditional write_enable for
+>>>>> simplicity, I can change it in v3.
+>>>> I know, but I actually don't like repeating the condition in the for
+>>>> loop. So I'd prefer to have a local "needs_write_enable" boolean
+>>>> which will be set to true. But then, I wouldn't care too much if
+>>>> there is a write enable followed by a write disable for a rare case.
+>>>>
+>>>>>> Notes the patch lacks runtime testing
+>>>>>
+>>>>> I don't have the hardware setup to test odd-address writes at the
+>>>>> moment. The fix is based on code analysis. I have tested patch 2/2
+>>>>> (dirmap fallback) on hardware.
+>>>> I'm hesitant - because like I said, if there is really a bug - it
+>>>> would have never worked correctly, since day 1. But yeah, I've also
+>>>> read the datasheet and it clearly states that the byte write will
+>>>> clear the write enable latch.
+>>>>
+>>>
+>>> i can confirm both patches fix real issues, i have similiar fixes
+>>> on a kernel tree i always wanted to clean up and upstream. Diffs
+>>> based on 6.6.127:
+>>>
+>>> diff --git a/drivers/mtd/spi-nor/sst.c b/drivers/mtd/spi-nor/sst.c
+>>> index 197d2c1101ed5..eaa50561ede2c 100644
+>>> --- a/drivers/mtd/spi-nor/sst.c
+>>> +++ b/drivers/mtd/spi-nor/sst.c
+>>> @@ -155,6 +155,13 @@ static int sst_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
+>>>                  if (ret)
+>>>                          goto out;
+>>>
+>>> +               ret = spi_nor_write_enable(nor);
+>>> +               if (ret)
+>>> +                       goto out;
+>>> +               ret = spi_nor_wait_till_ready(nor);
+>>> +               if (ret)
+>>> +                       goto out;
+>>> +
+>>>                  to++;
+>>>                  actual++;
+>>>          }
+>>>
+>>>
+>>> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+>>> index 1b0c6770c14e4..646bfb2e91a65 100644
+>>> --- a/drivers/mtd/spi-nor/core.c
+>>> +++ b/drivers/mtd/spi-nor/core.c
+>>> @@ -276,7 +276,7 @@ static ssize_t spi_nor_spimem_write_data(struct spi_nor *nor, loff_t to,
+>>>          if (spi_nor_spimem_bounce(nor, &op))
+>>>                  memcpy(nor->bouncebuf, buf, op.data.nbytes);
+>>>
+>>> -       if (nor->dirmap.wdesc) {
+>>> +       if (nor->dirmap.wdesc && nor->program_opcode != SPINOR_OP_AAI_WP) {
+>> Why is this better? This removes the use of dirmap for all flashes other
+>> than SST.
+>
+> i claim the opposite down below? That patch 2 of the posted patch series
+> looks better to me. Sorry if that was unclear.
 
-Link: https://download.gigadevice.com/Datasheet/DS-00562-GD25LQ255E-Rev1.2.pdf
+Oh, then I misunderstood.
 
-Without this patch, The WP status cannot be obtained using flashrom:
-device:/ # flashrom --wp-status
-...
-linux_mtd_wp_read_cfg:
-ioctl: Operation not supported on transport endpoint
-Failed to get WP status: failed to read the current WP configuration
+Please review and test the v4, it will help land those fixes.
 
-and with this patch:
-device:/ # flashrom --wp-status
-...
-Protection range: start=0x00000000 length=0x00000000 (none)
-Protection mode: disabled
-SUCCESS
+[...]
 
-Signed-off-by: Weimin Wu <wuweimin@huaqin.corp-partner.google.com>
-
----
-Changes in v2:
-- Following the recommendation of v1, remove name and no_sfdp_flags
-  parameter, and SPI_NOR_QUAD_PP flag bit.
-- Remove size parameter to to make the `spi_nor_needs_sfdp()`
-  function return true.
-- Link to v1: https://patchwork.ozlabs.org/project/linux-mtd/patch/20260213144133.1778932-1-wuweimin@huaqin.corp-partner.google.com/
-
-This flash memory has been successfully tested on a Chromebook device running the Intel Patherlake platform, which is currently under development.
----
----
- drivers/mtd/spi-nor/gigadevice.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/mtd/spi-nor/gigadevice.c b/drivers/mtd/spi-nor/gigadevice.c
-index ef1edd0ad..9774f7fe7 100644
---- a/drivers/mtd/spi-nor/gigadevice.c
-+++ b/drivers/mtd/spi-nor/gigadevice.c
-@@ -82,6 +82,9 @@ static const struct flash_info gigadevice_nor_parts[] = {
- 		.size = SZ_16M,
- 		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB,
- 		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
-+	}, {
-+		.id = SNOR_ID(0xc8, 0x60, 0x19),
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB,
- 	},
- };
- 
 -- 
-2.43.0
-
+Regards,
+Pratyush Yadav
 
 ______________________________________________________
 Linux MTD discussion mailing list
