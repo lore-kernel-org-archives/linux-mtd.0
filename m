@@ -4,62 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 633F3105F79A
-	for <linux-mtd@archiver.kernel.org>; Fri, 13 Mar 2026 11:10:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 97B5C105F799
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 Mar 2026 11:15:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
 	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=C1F2iOyrL/e1XAapUoh6dLkOXHr2Ipy1MZaB7uPkNyM=; b=NdBt9+UiQp6Y7m
-	OTYL3cAkLLpSgzO1/ojtcv+e8E9yJLKx8sblUFK2qHzLRpGCeTkLPC0uPXeirXqGmmh+Idsv5dSg7
-	xy7YVmVG2b7ec5e5UnI2UXHoAMhXPP4NsAoOwTWwF1U1OMWPyellBGEWmdBKoUNVGFGm7h15+xy8s
-	xtJHDlHLQKRQO8SDUiM1fM0P/Ji7H7g8i/RQvdsgdjqLVprx2hULPRW/hccjG63dMnN0v+jU7lzs+
-	dOgvZv6/K5pVfq+Tdrd+M8TMrfbOa88i3ZMK//dk3v68WhwoKHWii40n0nrpVK3k2FqjsSLT3Mvwf
-	lyKAw3SGd6sGMyeIRE4A==;
+	List-Owner; bh=o97tiRqvdVLALIxeUbng1PRP1gFPtC8aDC4DzoUER2A=; b=dg7aLqhuqlHw9k
+	263TzUvfCxAhq7VhIlTfl4kZrojfSi6RKqNosqXQlgVTqi4Dl9aGyDYwGmnHp0XtFPYbRJ9zlTMbE
+	/lemgWf+UIUWg4E45sNas6nq1Yv6pV4bWZafiXMCNyY3hiCWvg9wzz9fUTZ1T4zlJTyFKj+nbFFxQ
+	r8eILbXsQM1etwmyhk3gQ9ec4sSDV5Gnqk8gmuV5p0kubpYtFDh0QUroeY4SMlVuSGDc+QfEUG/I7
+	wzNL/3MaUKjlJeElh9XLNuPXVFt2Jq/mwgRa9sUWn/KAceRiPeDgyRHTAMy03vi/Z7Q4L7LJl0dpJ
+	uzALeBQqYnMU7b1NhHsg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w10Pw-0000000HaQz-0anR;
-	Fri, 13 Mar 2026 11:10:56 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1w10UH-000000000NH-2VCN;
+	Fri, 13 Mar 2026 11:15:25 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w10Pv-0000000HaQp-0e27
+	id 1w10UB-000000000Ms-3iQ7
 	for linux-mtd@lists.infradead.org;
-	Fri, 13 Mar 2026 11:10:55 +0000
+	Fri, 13 Mar 2026 11:15:24 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 4D8D160138;
-	Fri, 13 Mar 2026 11:10:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED157C19424;
-	Fri, 13 Mar 2026 11:10:51 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 596B344353;
+	Fri, 13 Mar 2026 11:15:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55DB0C19424;
+	Fri, 13 Mar 2026 11:15:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773400254;
-	bh=5fm+8ayCZTHyZH9HASL9sNm8UJfHAmahYNBfyHAHSVU=;
+	s=k20201202; t=1773400519;
+	bh=jYuoKNBhuCXL3heQKmgb9WQBJ5DvtrphUrCqIJ0uGqY=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=qJrP71BsDCj4qYf5PxQiY3gWCpbpDVAwamgjQPUUGBUXvcmDV5k1rV3pj/oLkz3JG
-	 iWfZEi5P7jV7esVcKFJ5DhimlNreLn9zsor8kzNklolgX31rWuybtLB48kdV1WOIjE
-	 Dqio/on7s2Y+vvBVsEHjzIiM9KwB1eYogBVX3IwhzGVOJtPoFxYWvlUx4C4ipNa0JI
-	 YzmHscWMFnPcSiQ2LF/l5ocH9Fb3dxl4Yr2a6kCb0M805CUUbCcQgQddz8wJb1ycP8
-	 QaLpXeB7nC+UUXwNS9pv7ok2nYIadGiAAZzwJKPfDk4ZLRiwZBi87fXul64wsiPLld
-	 IxGx5jGBDu5tg==
+	b=Ip6AnNJ9yKRYxbPTdl2EIK3JPESyv4vhf3yOyiF7Gz37C3Jrs/f79o3FN4N99TpNd
+	 hjC8wHtvLMnRDaWUv8wBT32FyNjaB6avj+oFRT6MJgEvHuluZ9a3343BrLNpBRFRB/
+	 /FGZww/bXttWAXSmw59XjaFC7Tb6vAPXLuQIRqMJoYiDn2cQCtsiCEaM7Jd6qM3FCm
+	 oAPa/Oahs3TDB0HIWkqyX0vR4ONjgY6hWXepRihyDexfuTnKwqNT+k0nhVthSI0K+t
+	 ZGX54kwQXPXSyB7LyUy/364+6NrgVfBc9BMBu1jYgzO/Ow0lc3UVqheoDVSjYISEV5
+	 ZzUm6osi4T2nA==
 From: Pratyush Yadav <pratyush@kernel.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
- <vigneshr@ti.com>,  Tudor Ambarus <tudor.ambarus@linaro.org>,  Pratyush
- Yadav <pratyush@kernel.org>,  Michael Walle <michael@walle.cc>,
-  <linux-mtd@lists.infradead.org>,  Jakub Czapiga <czapiga@google.com>,
-  Thomas Petazzoni <thomas.petazzoni@bootlin.com>,  Takahiro Kuwano
- <takahiro.kuwano@infineon.com>
-Subject: Re: [PATCH 1/2] mtd: spi-nor: Fix RDCR controller capability core
- check
-In-Reply-To: <873429oxwf.fsf@bootlin.com> (Miquel Raynal's message of "Mon, 09
-	Mar 2026 15:55:28 +0100")
-References: <20260108121430.1096844-1-miquel.raynal@bootlin.com>
-	<873429oxwf.fsf@bootlin.com>
-Date: Fri, 13 Mar 2026 11:10:50 +0000
-Message-ID: <2vxz4imkf0hx.fsf@kernel.org>
+To: Shiji Yang <yangshiji66@outlook.com>
+Cc: linux-mtd@lists.infradead.org,  Tudor Ambarus
+ <tudor.ambarus@linaro.org>,  Pratyush Yadav <pratyush@kernel.org>,
+  Michael Walle <mwalle@kernel.org>,  Miquel Raynal
+ <miquel.raynal@bootlin.com>,  Richard Weinberger <richard@nod.at>,
+  Vignesh Raghavendra <vigneshr@ti.com>,  linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: spi-nor: swp: check SR_TB flag when getting tb_mask
+In-Reply-To: <TYRPR01MB135884849485DE52A81D94965BC91A@TYRPR01MB13588.jpnprd01.prod.outlook.com>
+	(Shiji Yang's message of "Wed, 28 Jan 2026 20:42:56 +0800")
+References: <TYRPR01MB135884849485DE52A81D94965BC91A@TYRPR01MB13588.jpnprd01.prod.outlook.com>
+Date: Fri, 13 Mar 2026 11:15:15 +0000
+Message-ID: <2vxzzf4cdlq4.fsf@kernel.org>
 User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260313_041521_586156_8CAD0AC1 
+X-CRM114-Status: UNSURE (   7.38  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,48 +77,14 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Mar 09 2026, Miquel Raynal wrote:
+On Wed, Jan 28 2026, Shiji Yang wrote:
 
-> Hello SPI NOR folks :-)
+> When the chip does not support top/bottom block protect, the tb_mask
+> must be set to 0, otherwise SR1 bit5 will be unexpectedly modified.
 >
-> + Takahiro
->
-> On 08/01/2026 at 13:14:29 +01, Miquel Raynal <miquel.raynal@bootlin.com> wrote:
->
->> Commit 5008c3ec3f89 ("mtd: spi-nor: core: Check read CR support") adds a
->> controller check to make sure the core will not use CR reads on
->> controllers not supporting them. The approach is valid but the fix is
->> incorrect. Unfortunately, the author could not catch it, because the
->> expected behavior was met. The patch indeed drops the RDCR capability,
->> but it does it for all controllers!
->>
->> The issue comes from the use of spi_nor_spimem_check_op() which is an
->> internal helper dedicated to check page operations, ie. it is only used
->> for page reads and page programs (despite its generic name).
->>
->> This helper looks for the biggest number of address bytes that can be
->> used for a page operation and tries 4 then 3. It then calls the usual
->> spi-mem helpers to do the checks. These will always fail because there
->> is now an inconsistency: the address cycles are forced to 4 (then 3)
->> bytes, but the bus width during the address cycles rightfully remains 0:
->> impossible, the operation is invalid.
->>
->> The correct check in this case is to directly call spi_mem_supports_op()
->> which doesn't messes up with the operation content.
->>
->> Fixes: 5008c3ec3f89 ("mtd: spi-nor: core: Check read CR support")
->> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
->
-> These two patches are fixes which need to get in, I'd like to pick them
-> for the next fixes MTD PR that I am preparing, but I was expecting some
-> kind of acknowledgement on it.
+> Signed-off-by: Shiji Yang <yangshiji66@outlook.com>
 
-With Tudor's suggestions:
-
-Reviewed-by: Pratyush Yadav <pratyush@kernel.org>
-
-I am going through the SPI NOR patch backlog. Since you plan to take
-these directly via mtd/fixes, I'll not queue these.
+Applied to spi-nor/next. Thanks!
 
 [...]
 
