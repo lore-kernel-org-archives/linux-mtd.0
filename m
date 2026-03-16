@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4928F013FA
-	for <linux-mtd@archiver.kernel.org>; Mon, 16 Mar 2026 21:14:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E268F53D9B
+	for <linux-mtd@archiver.kernel.org>; Mon, 16 Mar 2026 21:14:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=UHs7weqShYMBoPyxUwnStBmB0C9ts7G/daLtdL9Eimo=; b=yAEUOXUk7V52zH
-	btJLQ9Ryn2KyUSK1PA6gylZYAC6lrlfhwmRUbchCZd6qzcH9NL/MYfe87iLYGA/tlztLMvpf8vY0J
-	vB++l6It/zOnX1qN2AM2YCXbLggAXpKtUyLpH+bemUYO6Nb116oEG4zSHf81o7hDZTLEjtmy9mNdf
-	oqLEwUF0ACtKEOqMJDaFxaL7N+PouTTzDnZmBhwHtgkrwtHBFbb/w3vdl2+q/xmqx5KDAobLQufoY
-	hYmvyibLwegkt7GtxO7saRgQtnn9IZp6i1vGCWDkjsEnyYm5FdRaFSX6wo+FsHOqIJY1VBetu/1I7
-	cGf2PNolnTCd/bywZV8A==;
+	List-Owner; bh=jGkoeZN0iUxuvQRcw7fU/Jpfp2rVqkT1mMDtm8e16zs=; b=TfR371G3spHFCk
+	DKStcyYN8MTEbqS0NicM4kKQIVU6kavntnaVk5LZWNETnWEQh9KfoWcR2XIisDj0PhfprSiaLsmQX
+	T9GTEBTW+KNfH4cxeVglrKXvR2bRmRNXbGiJFWVZ+3k+ylkWCe2Soew+xUxmj0sVhc/av4mqizRFw
+	mMCnxGAdA6+pyT3WYMv+1gm7zCQD1ZcB/7eX2I0VolBCzumEXL8bGIcgcWr54/FGw9EMXgdHgz+jN
+	gBqW9MQoCrHoV6rjT7Kayb3pKU8GSvPXglIjM5CbAMOU9NzWZLQI7B1EBS6s+CYhWpHnm06nAd4BQ
+	To6J8I/fPBz2c1vcCz2w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w2FGZ-00000004t6G-0nP2;
-	Mon, 16 Mar 2026 21:14:23 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1w2FGc-00000004tAy-2bHK;
+	Mon, 16 Mar 2026 21:14:26 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w2FGF-00000004sht-4ByH;
-	Mon, 16 Mar 2026 21:14:04 +0000
+	id 1w2FGJ-00000004slL-08DQ;
+	Mon, 16 Mar 2026 21:14:07 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 32C6B60018;
-	Mon, 16 Mar 2026 21:14:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4068DC19421;
-	Mon, 16 Mar 2026 21:14:02 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id E950560123;
+	Mon, 16 Mar 2026 21:14:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A443C2BCAF;
+	Mon, 16 Mar 2026 21:14:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773695642;
-	bh=xj+/JrCOmW2N2PV/njSsEjr7rELQWaiXJ1jd0LU4DrA=;
+	s=k20201202; t=1773695645;
+	bh=GSvvK91SQuAGo90FmVnYDSWYlOSBV2oGchryB/VUxUY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=L851tmo58ppDwux2Mpnj+FZxbfkIplkdPxJHfycO9WNNDY7sZYeQFCjfwmFU+Fh45
-	 aGdDoJEgZUxVMnut+bnWzxTDIaLFOe78WTKM9S7RSFC3uT/xfT05m2ZlAsIq28U4iQ
-	 9jurjcxG80MdMhRbbNDlcqmDGC2PrLhOGX0db+AAJ71398lwzDtMCoct5askADFWxZ
-	 Io2E/A1jMzOx66Kn0KNQSYKM0bUnjpDpyComzKUDNfkZ0WRcSMiiuaSNzZYs4uNe13
-	 XC4FPAahrQJUgC/LkBLaGQJvQxEeZ9GAF5mJk4dBQpoxwjy5s2NZDrJ28uUbyZHkWZ
-	 0VeVtepqiNWgQ==
+	b=sOpvgf+n0IrRUfwxTPsPjWcWeL2agf7X2Q3cZAX3WMAt3lkVZVATJlBeCGrE//uUQ
+	 VntjBcXYomVj18FLQi1d+mHVPk0SbQT5HE9DnQSnA97Gk6TGuFs4SQBKF95PUjw2/l
+	 KehKxNDGMLZBV7sE5ZZQ/Fm505cgqDDHgNW2PVMZ+2gDhZSyqaw8l2FWbDMWk0qLMI
+	 43UuJnnFI5UbKsvjTmQf/C77Ec7oaNpxQRC082bygg0hBc1z3Jj3/+uBuArC6w3/ry
+	 8ybhySHmn2B/Sbgm0DrVSWCB0b2MVrgHjBd1KEfwsWB9MX+Mm40OiGsRNBxZTHDUJt
+	 yySLVoVqyamXw==
 From: "Lorenzo Stoakes (Oracle)" <ljs@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Jonathan Corbet <corbet@lwn.net>,
@@ -86,9 +86,9 @@ Cc: Jonathan Corbet <corbet@lwn.net>,
 	linux-fsdevel@vger.kernel.org,
 	linux-mm@kvack.org,
 	Ryan Roberts <ryan.roberts@arm.com>
-Subject: [PATCH v2 09/16] mtdchar: replace deprecated mmap hook with mmap_prepare, clean up
-Date: Mon, 16 Mar 2026 21:12:05 +0000
-Message-ID: <e3071ae43af79277d3919bafb71f009694d0854d.1773695307.git.ljs@kernel.org>
+Subject: [PATCH v2 10/16] stm: replace deprecated mmap hook with mmap_prepare
+Date: Mon, 16 Mar 2026 21:12:06 +0000
+Message-ID: <d34056a65bd387286f4e155d52449106ddc99f78.1773695307.git.ljs@kernel.org>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <cover.1773695307.git.ljs@kernel.org>
 References: <cover.1773695307.git.ljs@kernel.org>
@@ -109,61 +109,99 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Replace the deprecated mmap callback with mmap_prepare.
+The f_op->mmap interface is deprecated, so update driver to use its
+successor, mmap_prepare.
 
-Commit f5cf8f07423b ("mtd: Disable mtdchar mmap on MMU systems") commented
-out the CONFIG_MMU part of this function back in 2012, so after ~14 years
-it's probably reasonable to remove this altogether rather than updating
-dead code.
+The driver previously used vm_iomap_memory(), so this change replaces it
+with its mmap_prepare equivalent, mmap_action_simple_ioremap().
+
+Also, in order to correctly maintain reference counting, add a
+vm_ops->mapped callback to increment the reference count when successfully
+mapped.
 
 Signed-off-by: Lorenzo Stoakes (Oracle) <ljs@kernel.org>
 ---
- drivers/mtd/mtdchar.c | 21 +++------------------
- 1 file changed, 3 insertions(+), 18 deletions(-)
+ drivers/hwtracing/stm/core.c | 31 +++++++++++++++++++++----------
+ 1 file changed, 21 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index 55a43682c567..bf01e6ac7293 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -1376,27 +1376,12 @@ static unsigned mtdchar_mmap_capabilities(struct file *file)
- /*
-  * set up a mapping for shared memory segments
-  */
--static int mtdchar_mmap(struct file *file, struct vm_area_struct *vma)
-+static int mtdchar_mmap_prepare(struct vm_area_desc *desc)
- {
- #ifdef CONFIG_MMU
--	struct mtd_file_info *mfi = file->private_data;
--	struct mtd_info *mtd = mfi->mtd;
--	struct map_info *map = mtd->priv;
--
--        /* This is broken because it assumes the MTD device is map-based
--	   and that mtd->priv is a valid struct map_info.  It should be
--	   replaced with something that uses the mtd_get_unmapped_area()
--	   operation properly. */
--	if (0 /*mtd->type == MTD_RAM || mtd->type == MTD_ROM*/) {
--#ifdef pgprot_noncached
--		if (file->f_flags & O_DSYNC || map->phys >= __pa(high_memory))
--			vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
--#endif
--		return vm_iomap_memory(vma, map->phys, map->size);
--	}
- 	return -ENODEV;
- #else
--	return vma->vm_flags & VM_SHARED ? 0 : -EACCES;
-+	return vma_desc_test(desc, VMA_SHARED_BIT) ? 0 : -EACCES;
- #endif
+diff --git a/drivers/hwtracing/stm/core.c b/drivers/hwtracing/stm/core.c
+index 37584e786bb5..f48c6a8a0654 100644
+--- a/drivers/hwtracing/stm/core.c
++++ b/drivers/hwtracing/stm/core.c
+@@ -666,6 +666,16 @@ static ssize_t stm_char_write(struct file *file, const char __user *buf,
+ 	return count;
  }
  
-@@ -1411,7 +1396,7 @@ static const struct file_operations mtd_fops = {
- #endif
- 	.open		= mtdchar_open,
- 	.release	= mtdchar_close,
--	.mmap		= mtdchar_mmap,
-+	.mmap_prepare	= mtdchar_mmap_prepare,
- #ifndef CONFIG_MMU
- 	.get_unmapped_area = mtdchar_get_unmapped_area,
- 	.mmap_capabilities = mtdchar_mmap_capabilities,
++static int stm_mmap_mapped(unsigned long start, unsigned long end, pgoff_t pgoff,
++			   const struct file *file, void **vm_private_data)
++{
++	struct stm_file *stmf = file->private_data;
++	struct stm_device *stm = stmf->stm;
++
++	pm_runtime_get_sync(&stm->dev);
++	return 0;
++}
++
+ static void stm_mmap_open(struct vm_area_struct *vma)
+ {
+ 	struct stm_file *stmf = vma->vm_file->private_data;
+@@ -684,12 +694,14 @@ static void stm_mmap_close(struct vm_area_struct *vma)
+ }
+ 
+ static const struct vm_operations_struct stm_mmap_vmops = {
++	.mapped = stm_mmap_mapped,
+ 	.open	= stm_mmap_open,
+ 	.close	= stm_mmap_close,
+ };
+ 
+-static int stm_char_mmap(struct file *file, struct vm_area_struct *vma)
++static int stm_char_mmap_prepare(struct vm_area_desc *desc)
+ {
++	struct file *file = desc->file;
+ 	struct stm_file *stmf = file->private_data;
+ 	struct stm_device *stm = stmf->stm;
+ 	unsigned long size, phys;
+@@ -697,10 +709,10 @@ static int stm_char_mmap(struct file *file, struct vm_area_struct *vma)
+ 	if (!stm->data->mmio_addr)
+ 		return -EOPNOTSUPP;
+ 
+-	if (vma->vm_pgoff)
++	if (desc->pgoff)
+ 		return -EINVAL;
+ 
+-	size = vma->vm_end - vma->vm_start;
++	size = vma_desc_size(desc);
+ 
+ 	if (stmf->output.nr_chans * stm->data->sw_mmiosz != size)
+ 		return -EINVAL;
+@@ -712,13 +724,12 @@ static int stm_char_mmap(struct file *file, struct vm_area_struct *vma)
+ 	if (!phys)
+ 		return -EINVAL;
+ 
+-	pm_runtime_get_sync(&stm->dev);
+-
+-	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
+-	vm_flags_set(vma, VM_IO | VM_DONTEXPAND | VM_DONTDUMP);
+-	vma->vm_ops = &stm_mmap_vmops;
+-	vm_iomap_memory(vma, phys, size);
++	desc->page_prot = pgprot_noncached(desc->page_prot);
++	vma_desc_set_flags(desc, VMA_IO_BIT, VMA_DONTEXPAND_BIT,
++			   VMA_DONTDUMP_BIT);
++	desc->vm_ops = &stm_mmap_vmops;
+ 
++	mmap_action_simple_ioremap(desc, phys, size);
+ 	return 0;
+ }
+ 
+@@ -836,7 +847,7 @@ static const struct file_operations stm_fops = {
+ 	.open		= stm_char_open,
+ 	.release	= stm_char_release,
+ 	.write		= stm_char_write,
+-	.mmap		= stm_char_mmap,
++	.mmap_prepare	= stm_char_mmap_prepare,
+ 	.unlocked_ioctl	= stm_char_ioctl,
+ 	.compat_ioctl	= compat_ptr_ioctl,
+ };
 -- 
 2.53.0
 
