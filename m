@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0DF5EF53D9E
-	for <linux-mtd@archiver.kernel.org>; Mon, 16 Mar 2026 21:14:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C760DF53D9B
+	for <linux-mtd@archiver.kernel.org>; Mon, 16 Mar 2026 21:14:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Dfpmoass0o4EbFUs6B5gxqhO9Wov7Yd7+oRNtyX/5Jo=; b=wFdc285YH7zi9N
-	7AmravLLalDveRzGXVdXszmD74Yd4eBfRxgeKd64xDh+rubHiiQ6ujkUM+NmwZ866kf79Mg6HH7J7
-	s/xddXxn1C5uMs/nEadkvODodc3NH1fErJYCIgwjGMx8NZB1MzCwWQhh3Vu39oQutNFVh+rg0HJIx
-	OflNyCR3+fjiDhJhZbkjmGwsU29lZ+jHjxmalR7TlBcVHt8uSZ+3wqE8IQR7yHzlkU2h0xovLwdfp
-	hVGgjYW9gyN+4wxVvJVjMjBmOeQeS12DwDwzIw8hNaV0ygFLg6frvrnFBvhf34KwHWQKdiLnHVyhg
-	rRMarpxvaob0aaccYAPA==;
+	List-Owner; bh=/inUxFiHWr55ib/6y9rzAGx06D6fomsb3J2G60294No=; b=pSWgUAi9r/fvIi
+	x7+Ct11/jINxY5jtEQ2KIOv8AIY5sCHnZ8BVD2YwXrjA94zKSo9LqHdm1JCaRvknk/vH7L45A/dbr
+	KgAXKG3HLQ0QNb0tZ9vbN9UzhatmOIoXMeloN2+9IZa9PnCcx0PnTcOhGZ6JUXbLkNeSxJf0AUE6d
+	H4IDDUtJZNlCmBiDTMugU0CkiYceupsGQD8iCVRX2przic1s5sIBGcB9SM7IAft5FDNKWMfF9nHWT
+	DmMD3CADVQJk6sOOJNnlOIn1Qh+DGOKkPjN6HExLOmaAmvzy7Pw63MNgpX+cZt36LAgnKx6Zc2L4H
+	+S1bHdVJZSkkwcT90XXg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w2FH2-00000004tnV-3rlI;
-	Mon, 16 Mar 2026 21:14:52 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1w2FH5-00000004tqX-2HIo;
+	Mon, 16 Mar 2026 21:14:55 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w2FGU-00000004syj-1M14;
-	Mon, 16 Mar 2026 21:14:20 +0000
+	id 1w2FGZ-00000004t6T-2yCt;
+	Mon, 16 Mar 2026 21:14:24 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id EB0B444501;
-	Mon, 16 Mar 2026 21:14:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B998C19424;
-	Mon, 16 Mar 2026 21:14:16 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id B80E16132F;
+	Mon, 16 Mar 2026 21:14:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF9A6C2BCB1;
+	Mon, 16 Mar 2026 21:14:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773695656;
-	bh=fgCpyzFg81kyNJg/EfR9MYplzdNgFwcM7fKHK8x1TBs=;
+	s=k20201202; t=1773695662;
+	bh=dElPd1/2yYuQnbmBxFem9K254mqoyGxI5ua35pg5dJU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=f9wa1g+qYZKP6JvRfHYdd3Mi7gE2gobzLF3Ef0Hpjr5s4CKaZ03ETRYKOxBQksNe5
-	 kvq7s2PDuJ1CxtBB2Zbp24YhKCzCA6585G1sYDVP59cf4EQTIvrNaxH6jCTahGeH8+
-	 nX2aJven1SgNUxh6mp5GdVaNUBRPKrwHJHJpRPFDvJSR/h0YUmjAWYZI/S+ef9Cxp1
-	 TuIHRbmGdEMHNnllEIgEiUsIIGxhRkjTEHGe1m8A0voIHe2vkHveO0bJ2nsGF/BeXt
-	 +XAAykshocro6yJ4+7d6BUurBngpzoZH0nPFZ3REHSh7l8WhwsIHx/5WwesU3quOSL
-	 ph8COYuLyZSyA==
+	b=WSQBK1iLku67+ML1WmdG5gvZLWS7LBzAh+jY1gRa2yWEDslVldYCYBTPugdDPtK3i
+	 CJUPJvXQZ/W8O2eLGawpJj4z7/Gc/0AG/4/vE6vYrREysTXhDw+AehDa8KdJrBOSlC
+	 XhH22ZMH6c73yrZxTi5u16TG0R08vkR0Hg/N25ka99GCvGxJVINDVuFd31W7b8egcK
+	 vue6N3UbG8dGv7WpxgZ343wv1BtFDUqGFbAbGk7WlXYTrbd+eiSrkAi0pp+So15ggU
+	 sTJ2YQNiWnWZSMjPaxJ+T1mbsuo+/9JntOuw+gRsL+gTD6u/BCWW3CJwONZsgLHGWx
+	 bcXTswhvf3Pkw==
 From: "Lorenzo Stoakes (Oracle)" <ljs@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Jonathan Corbet <corbet@lwn.net>,
@@ -86,16 +86,13 @@ Cc: Jonathan Corbet <corbet@lwn.net>,
 	linux-fsdevel@vger.kernel.org,
 	linux-mm@kvack.org,
 	Ryan Roberts <ryan.roberts@arm.com>
-Subject: [PATCH v2 14/16] uio: replace deprecated mmap hook with mmap_prepare in uio_info
-Date: Mon, 16 Mar 2026 21:12:10 +0000
-Message-ID: <892a8b32e5ef64c69239ccc2d1bd364716fd7fdf.1773695307.git.ljs@kernel.org>
+Subject: [PATCH v2 16/16] mm: on remap assert that input range within the proposed VMA
+Date: Mon, 16 Mar 2026 21:12:12 +0000
+Message-ID: <4e152e7b8e1a93baf0777628eef9409d031cf8f6.1773695307.git.ljs@kernel.org>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <cover.1773695307.git.ljs@kernel.org>
 References: <cover.1773695307.git.ljs@kernel.org>
 MIME-Version: 1.0
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260316_141418_552503_B258FAA3 
-X-CRM114-Status: GOOD (  19.07  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -112,132 +109,33 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The f_op->mmap interface is deprecated, so update uio_info to use its
-successor, mmap_prepare.
+Now we have range_in_vma_desc(), update remap_pfn_range_prepare() to check
+whether the input range in contained within the specified VMA, so we can
+fail at prepare time if an invalid range is specified.
 
-Therefore, replace the uio_info->mmap hook with a new
-uio_info->mmap_perepare hook, and update its one user, target_core_user,
-to both specify this new mmap_prepare hook and also to use the new
-vm_ops->mapped() hook to continue to maintain a correct udev->kref
-refcount.
-
-Then update uio_mmap() to utilise the mmap_prepare compatibility layer to
-invoke this callback from the uio mmap invocation.
+This covers the I/O remap mmap actions also which ultimately call into this
+function, and other mmap action types either already span the full VMA or
+check this already.
 
 Signed-off-by: Lorenzo Stoakes (Oracle) <ljs@kernel.org>
 ---
- drivers/target/target_core_user.c | 26 ++++++++++++++++++--------
- drivers/uio/uio.c                 | 10 ++++++++--
- include/linux/uio_driver.h        |  4 ++--
- 3 files changed, 28 insertions(+), 12 deletions(-)
+ mm/memory.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/target/target_core_user.c b/drivers/target/target_core_user.c
-index af95531ddd35..9d211dad5e53 100644
---- a/drivers/target/target_core_user.c
-+++ b/drivers/target/target_core_user.c
-@@ -1860,6 +1860,17 @@ static struct page *tcmu_try_get_data_page(struct tcmu_dev *udev, uint32_t dpi)
- 	return NULL;
- }
+diff --git a/mm/memory.c b/mm/memory.c
+index 849d5d9eeb83..de0dd17759e2 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -3142,6 +3142,9 @@ int remap_pfn_range_prepare(struct vm_area_desc *desc)
+ 	const bool is_cow = vma_desc_is_cow_mapping(desc);
+ 	int err;
  
-+static int tcmu_vma_mapped(unsigned long start, unsigned long end, pgoff_t pgoff,
-+			   const struct file *file, void **vm_private_data)
-+{
-+	struct tcmu_dev *udev = *vm_private_data;
++	if (!range_in_vma_desc(desc, start, end))
++		return -EFAULT;
 +
-+	pr_debug("vma_open\n");
-+
-+	kref_get(&udev->kref);
-+	return 0;
-+}
-+
- static void tcmu_vma_open(struct vm_area_struct *vma)
- {
- 	struct tcmu_dev *udev = vma->vm_private_data;
-@@ -1919,26 +1930,25 @@ static vm_fault_t tcmu_vma_fault(struct vm_fault *vmf)
- }
- 
- static const struct vm_operations_struct tcmu_vm_ops = {
-+	.mapped = tcmu_vma_mapped,
- 	.open = tcmu_vma_open,
- 	.close = tcmu_vma_close,
- 	.fault = tcmu_vma_fault,
- };
- 
--static int tcmu_mmap(struct uio_info *info, struct vm_area_struct *vma)
-+static int tcmu_mmap_prepare(struct uio_info *info, struct vm_area_desc *desc)
- {
- 	struct tcmu_dev *udev = container_of(info, struct tcmu_dev, uio_info);
- 
--	vm_flags_set(vma, VM_DONTEXPAND | VM_DONTDUMP);
--	vma->vm_ops = &tcmu_vm_ops;
-+	vma_desc_set_flags(desc, VMA_DONTEXPAND_BIT, VMA_DONTDUMP_BIT);
-+	desc->vm_ops = &tcmu_vm_ops;
- 
--	vma->vm_private_data = udev;
-+	desc->private_data = udev;
- 
- 	/* Ensure the mmap is exactly the right size */
--	if (vma_pages(vma) != udev->mmap_pages)
-+	if (vma_desc_pages(desc) != udev->mmap_pages)
- 		return -EINVAL;
- 
--	tcmu_vma_open(vma);
--
- 	return 0;
- }
- 
-@@ -2253,7 +2263,7 @@ static int tcmu_configure_device(struct se_device *dev)
- 	info->irqcontrol = tcmu_irqcontrol;
- 	info->irq = UIO_IRQ_CUSTOM;
- 
--	info->mmap = tcmu_mmap;
-+	info->mmap_prepare = tcmu_mmap_prepare;
- 	info->open = tcmu_open;
- 	info->release = tcmu_release;
- 
-diff --git a/drivers/uio/uio.c b/drivers/uio/uio.c
-index 5a4998e2caf8..1e4ade78ed84 100644
---- a/drivers/uio/uio.c
-+++ b/drivers/uio/uio.c
-@@ -850,8 +850,14 @@ static int uio_mmap(struct file *filep, struct vm_area_struct *vma)
- 		goto out;
- 	}
- 
--	if (idev->info->mmap) {
--		ret = idev->info->mmap(idev->info, vma);
-+	if (idev->info->mmap_prepare) {
-+		struct vm_area_desc desc;
-+
-+		compat_set_desc_from_vma(&desc, filep, vma);
-+		ret = idev->info->mmap_prepare(idev->info, &desc);
-+		if (ret)
-+			goto out;
-+		ret = __compat_vma_mmap(&desc, vma);
- 		goto out;
- 	}
- 
-diff --git a/include/linux/uio_driver.h b/include/linux/uio_driver.h
-index 334641e20fb1..53bdc557c423 100644
---- a/include/linux/uio_driver.h
-+++ b/include/linux/uio_driver.h
-@@ -97,7 +97,7 @@ struct uio_device {
-  * @irq_flags:		flags for request_irq()
-  * @priv:		optional private data
-  * @handler:		the device's irq handler
-- * @mmap:		mmap operation for this uio device
-+ * @mmap_prepare:	mmap_pepare operation for this uio device
-  * @open:		open operation for this uio device
-  * @release:		release operation for this uio device
-  * @irqcontrol:		disable/enable irqs when 0/1 is written to /dev/uioX
-@@ -112,7 +112,7 @@ struct uio_info {
- 	unsigned long		irq_flags;
- 	void			*priv;
- 	irqreturn_t (*handler)(int irq, struct uio_info *dev_info);
--	int (*mmap)(struct uio_info *info, struct vm_area_struct *vma);
-+	int (*mmap_prepare)(struct uio_info *info, struct vm_area_desc *desc);
- 	int (*open)(struct uio_info *info, struct inode *inode);
- 	int (*release)(struct uio_info *info, struct inode *inode);
- 	int (*irqcontrol)(struct uio_info *info, s32 irq_on);
+ 	err = get_remap_pgoff(is_cow, start, end, desc->start, desc->end, pfn,
+ 			      &desc->pgoff);
+ 	if (err)
 -- 
 2.53.0
 
