@@ -4,74 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C09A6F53D8C
-	for <linux-mtd@archiver.kernel.org>; Mon, 16 Mar 2026 19:17:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7ABC8F53D9E
+	for <linux-mtd@archiver.kernel.org>; Mon, 16 Mar 2026 21:13:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=BkilvRpmYjJkuBIXK3WDxN24H7sr193ik44/UwiVYwY=; b=iKQGW5YnX7GJst
-	GvtDBYJ4rSiLPpjDK40tob1q55H6PcPApV+w+1rHNBZ00adGX9pCPvN2qmeyfpweweb0lnpUEpaio
-	B0TSjScykXHhJsLyvbwnG/7mlZD0/g9FzYgAnJY//h3RIFwr3d5rcaf1BxAr09yd0EHM6dLtbK/R9
-	ZAV25QYqkJY2PjQbN5M4xceN7T45RnvqfuOwN0fmxJHmFAuZ0eMH4wo3FXSEwzsLeQeJGd9e7R82Y
-	gTfx+/z87CoawA85j6ZoApTP3hTQt4krE+Net7TCWfKDa9scyFUhFnAf2HrMGbVD4ElgNWv9PbCc7
-	bytXZ1/z9x9DhEy3VH6A==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=VhMgZDozn/p/nFsDfVo8oGe4oKJSOvnLoH2TZr0pFoI=; b=cYNru7zuE1QZ1V
+	x2Z1SRQjJbpfXTsPlddb9Z9RFk7KqGuT4J8j/vbpDY+YpTt2EClHK5lyMMhoOaqPlD6ndSztu1oIq
+	BRyGE56rY99UXBOhfdVXVQxp6YHwglvghx9d6ZfeuR4AzIlyhrgIOITNqXeYRgHavwyhGqkMQQZfH
+	DNmwPSgBbRSz/9Agv1LrhMPHhrfmGxuKI8NKbyzKkSClVAtg3iiPWQJdjNE6hsgKYOjgBaIOYi60L
+	aNIeIzzNkDvE0D2lYPr2P3nr6VV3d9S62o73QGTdBvEaKoLKWXD/VJpJzZXFbsiAewbnQUDrWLUKO
+	B1fUcuED9+ZsDWEjwUfA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w2DRA-00000004kVm-0NLW;
-	Mon, 16 Mar 2026 19:17:12 +0000
+	id 1w2FFt-00000004sGy-3vjK;
+	Mon, 16 Mar 2026 21:13:41 +0000
 Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w2DR7-00000004kUv-2mkK;
-	Mon, 16 Mar 2026 19:17:09 +0000
+	id 1w2FFp-00000004sG0-0pch;
+	Mon, 16 Mar 2026 21:13:37 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id A6F9060097;
-	Mon, 16 Mar 2026 19:17:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC7BCC19421;
-	Mon, 16 Mar 2026 19:16:58 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 0D8E860018;
+	Mon, 16 Mar 2026 21:13:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 248B4C19421;
+	Mon, 16 Mar 2026 21:13:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773688628;
-	bh=QyEpZlZG4opNA8anvj6G5Slo7c/FEhsWdlvBbfWACi4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=p6V8nYcqmeDZKuY4zGNJ/3JO3CnU0d9efgyFdkVY7WSUNYIDhCTI9Db2OUNnvZkuV
-	 DJKNEIr0LVqkw7Qm+7/LNMZVIy2H6lZSikEMJxAeb3rC/4Ok0+/5T9pPdWx0hxlyfF
-	 YC9hu93u2F0y8eWR++ss1I+ojYbIFXoX/ZuREscW0OSdbh8qpKKHZ34v9W5/hiyDoR
-	 j6phsp0FGdk9ZAHp8Dp/oyzPLmvM0Lji+BhGIxnplEpsoKuFzNUNe28cRSEOmi6Zgz
-	 5pNsd9DGY8/zp1LM+egYfiwZmkjPSb7Ys/IvaCJPlZM7sDDRwMQVyAWIqyg9+q9N6f
-	 35RjXxG9KVfKA==
-Date: Mon, 16 Mar 2026 19:16:56 +0000
+	s=k20201202; t=1773695615;
+	bh=ilMdtysPCdNXPtzF2zNSpIrJ8Gr1Wv5rYS8ynVlNkEU=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Ntq/l3UGM9JqyJJD9JGa7/yDJgNVnVPNfki9aJRX4uarYRuo6x4Dvl1Nvv2uizzFY
+	 PKNBhPwaDwYOT2ryPSG03lQzK/iVm6SI95tlkq8E9XT6eanSVjR8YC7k3x5yHct10Z
+	 0KpqmHVJ//eqjlE2lbzqizxCuq2HekJx0MVEF0CFZiORAS4KC/NJ00mX8hqxEHngbN
+	 dN//9WHytXP2+KVpaS88wjMwl7EtwsiLj0M1lgSWEd4oxUmAaUwkJzaE8ngvjhvq+y
+	 1g+fHhAmOGC1WKRn1K9zFe7N/Cc7a3sZPGoqKRVY/lmxStNOEuDKUMfI7PC9kSX4Hr
+	 YuQ4yI1r6vyzA==
 From: "Lorenzo Stoakes (Oracle)" <ljs@kernel.org>
-To: Suren Baghdasaryan <surenb@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, 
-	Jonathan Corbet <corbet@lwn.net>, Clemens Ladisch <clemens@ladisch.de>, 
-	Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	"K . Y . Srinivasan" <kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>, 
-	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>, Long Li <longli@microsoft.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
-	Alexandre Torgue <alexandre.torgue@foss.st.com>, Miquel Raynal <miquel.raynal@bootlin.com>, 
-	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
-	Bodo Stroesser <bostroesser@gmail.com>, "Martin K . Petersen" <martin.petersen@oracle.com>, 
-	David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
-	David Hildenbrand <david@kernel.org>, "Liam R . Howlett" <Liam.Howlett@oracle.com>, 
-	Vlastimil Babka <vbabka@kernel.org>, Mike Rapoport <rppt@kernel.org>, Michal Hocko <mhocko@suse.com>, 
-	Jann Horn <jannh@google.com>, Pedro Falcato <pfalcato@suse.de>, linux-kernel@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-hyperv@vger.kernel.org, 
-	linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, 
-	linux-mtd@lists.infradead.org, linux-staging@lists.linux.dev, linux-scsi@vger.kernel.org, 
-	target-devel@vger.kernel.org, linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org, 
-	linux-mm@kvack.org, Ryan Roberts <ryan.roberts@arm.com>
-Subject: Re: [PATCH 02/15] mm: add documentation for the mmap_prepare file
- operation callback
-Message-ID: <6a0e73a5-519e-49ca-9f76-2f6cc5a1577c@lucifer.local>
-References: <cover.1773346620.git.ljs@kernel.org>
- <c5bb61cf789df1ecb32facc29df9749987c7ddfc.1773346620.git.ljs@kernel.org>
- <CAJuCfpGd702=Xop3X5Aop9rrScdiAOQEEooTu1gcJqR9pmO5GA@mail.gmail.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Jonathan Corbet <corbet@lwn.net>,
+	Clemens Ladisch <clemens@ladisch.de>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"K . Y . Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>,
+	Dexuan Cui <decui@microsoft.com>,
+	Long Li <longli@microsoft.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Bodo Stroesser <bostroesser@gmail.com>,
+	"Martin K . Petersen" <martin.petersen@oracle.com>,
+	David Howells <dhowells@redhat.com>,
+	Marc Dionne <marc.dionne@auristor.com>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>,
+	Jan Kara <jack@suse.cz>,
+	David Hildenbrand <david@kernel.org>,
+	"Liam R . Howlett" <Liam.Howlett@oracle.com>,
+	Vlastimil Babka <vbabka@kernel.org>,
+	Mike Rapoport <rppt@kernel.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Michal Hocko <mhocko@suse.com>,
+	Jann Horn <jannh@google.com>,
+	Pedro Falcato <pfalcato@suse.de>,
+	linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-hyperv@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mtd@lists.infradead.org,
+	linux-staging@lists.linux.dev,
+	linux-scsi@vger.kernel.org,
+	target-devel@vger.kernel.org,
+	linux-afs@lists.infradead.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org,
+	Ryan Roberts <ryan.roberts@arm.com>
+Subject: [PATCH v2 00/16] mm: expand mmap_prepare functionality and usage
+Date: Mon, 16 Mar 2026 21:11:56 +0000
+Message-ID: <cover.1773695307.git.ljs@kernel.org>
+X-Mailer: git-send-email 2.53.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAJuCfpGd702=Xop3X5Aop9rrScdiAOQEEooTu1gcJqR9pmO5GA@mail.gmail.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,148 +102,142 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gU3VuLCBNYXIgMTUsIDIwMjYgYXQgMDQ6MjM6MTRQTSAtMDcwMCwgU3VyZW4gQmFnaGRhc2Fy
-eWFuIHdyb3RlOgo+IE9uIFRodSwgTWFyIDEyLCAyMDI2IGF0IDE6MjfigK9QTSBMb3JlbnpvIFN0
-b2FrZXMgKE9yYWNsZSkgPGxqc0BrZXJuZWwub3JnPiB3cm90ZToKPiA+Cj4gPiBUaGlzIGRvY3Vt
-ZW50YXRpb24gbWFrZXMgaXQgZWFzaWVyIGZvciBhIGRyaXZlci9maWxlIHN5c3RlbSBpbXBsZW1l
-bnRlciB0bwo+ID4gY29ycmVjdGx5IHVzZSB0aGlzIGNhbGxiYWNrLgo+ID4KPiA+IEl0IGNvdmVy
-cyB0aGUgZnVuZGFtZW50YWxzLCB3aGlsc3QgaW50ZW50aW9uYWxseSBsZWF2aW5nIHRoZSBsZXNz
-IGxvdmVseQo+ID4gcG9zc2libGUgYWN0aW9ucyBvbmUgbWlnaHQgdGFrZSB1bmRvY3VtZW50ZWQg
-KGZvciBpbnN0YW5jZSAtIHRoZQo+ID4gc3VjY2Vzc19ob29rLCBlcnJvcl9ob29rIGZpZWxkcyBp
-biBtbWFwX2FjdGlvbikuCj4gPgo+ID4gVGhlIGRvY3VtZW50IGFsc28gY292ZXJzIHRoZSBuZXcg
-Vk1BIGZsYWdzIGltcGxlbWVudGF0aW9uIHdoaWNoIGlzIHRoZSBvbmx5Cj4gPiBvbmUgd2hpY2gg
-d2lsbCB3b3JrIGNvcnJlY3RseSB3aXRoIG1tYXBfcHJlcGFyZS4KPiA+Cj4gPiBTaWduZWQtb2Zm
-LWJ5OiBMb3JlbnpvIFN0b2FrZXMgKE9yYWNsZSkgPGxqc0BrZXJuZWwub3JnPgo+ID4gLS0tCj4g
-PiAgRG9jdW1lbnRhdGlvbi9maWxlc3lzdGVtcy9tbWFwX3ByZXBhcmUucnN0IHwgMTMxICsrKysr
-KysrKysrKysrKysrKysrKwo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAxMzEgaW5zZXJ0aW9ucygrKQo+
-ID4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0aW9uL2ZpbGVzeXN0ZW1zL21tYXBfcHJl
-cGFyZS5yc3QKPiA+Cj4gPiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9maWxlc3lzdGVtcy9t
-bWFwX3ByZXBhcmUucnN0IGIvRG9jdW1lbnRhdGlvbi9maWxlc3lzdGVtcy9tbWFwX3ByZXBhcmUu
-cnN0Cj4gPiBuZXcgZmlsZSBtb2RlIDEwMDY0NAo+ID4gaW5kZXggMDAwMDAwMDAwMDAwLi43Njkw
-ODIwMGYzYTEKPiA+IC0tLSAvZGV2L251bGwKPiA+ICsrKyBiL0RvY3VtZW50YXRpb24vZmlsZXN5
-c3RlbXMvbW1hcF9wcmVwYXJlLnJzdAo+ID4gQEAgLTAsMCArMSwxMzEgQEAKPiA+ICsuLiBTUERY
-LUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMAo+ID4gKwo+ID4gKz09PT09PT09PT09PT09PT09
-PT09PT09PT09PQo+ID4gK21tYXBfcHJlcGFyZSBjYWxsYmFjayBIT1dUTwo+ID4gKz09PT09PT09
-PT09PT09PT09PT09PT09PT09PQo+ID4gKwo+ID4gK0ludHJvZHVjdGlvbgo+ID4gKyMjIyMjIyMj
-IyMjIwo+ID4gKwo+ID4gK1RoZSBgc3RydWN0IGZpbGUtPmZfb3AtPm1tYXAoKWAgY2FsbGJhY2sg
-aGFzIGJlZW4gZGVwcmVjYXRlZCBhcyBpdCBpcyBib3RoIGEKPiA+ICtzdGFiaWxpdHkgYW5kIHNl
-Y3VyaXR5IHJpc2ssIGFuZCBkb2Vzbid0IGFsd2F5cyBwZXJtaXQgdGhlIG1lcmdpbmcgb2YgYWRq
-YWNlbnQKPiA+ICttYXBwaW5ncyByZXN1bHRpbmcgaW4gdW5uZWNlc3NhcnkgbWVtb3J5IGZyYWdt
-ZW50YXRpb24uCj4gPiArCj4gPiArSXQgaGFzIGJlZW4gcmVwbGFjZWQgd2l0aCB0aGUgYGZpbGUt
-PmZfb3AtPm1tYXBfcHJlcGFyZSgpYCBjYWxsYmFjayB3aGljaCBzb2x2ZXMKPiA+ICt0aGVzZSBw
-cm9ibGVtcy4KPiA+ICsKPiA+ICsjIyBIb3cgVG8gVXNlCj4gPiArCj4gPiArSW4geW91ciBkcml2
-ZXIncyBgc3RydWN0IGZpbGVfb3BlcmF0aW9uc2Agc3RydWN0LCBzcGVjaWZ5IGFuIGBtbWFwX3By
-ZXBhcmVgCj4gPiArY2FsbGJhY2sgcmF0aGVyIHRoYW4gYW4gYG1tYXBgIG9uZSwgZS5nLiBmb3Ig
-ZXh0NDoKPiA+ICsKPiA+ICsKPiA+ICsuLiBjb2RlLWJsb2NrOjogQwo+ID4gKwo+ID4gKyAgICBj
-b25zdCBzdHJ1Y3QgZmlsZV9vcGVyYXRpb25zIGV4dDRfZmlsZV9vcGVyYXRpb25zID0gewo+ID4g
-KyAgICAgICAgLi4uCj4gPiArICAgICAgICAubW1hcF9wcmVwYXJlICAgID0gZXh0NF9maWxlX21t
-YXBfcHJlcGFyZSwKPiA+ICsgICAgfTsKPiA+ICsKPiA+ICtUaGlzIGhhcyBhIHNpZ25hdHVyZSBv
-ZiBgaW50ICgqbW1hcF9wcmVwYXJlKShzdHJ1Y3Qgdm1fYXJlYV9kZXNjICopYC4KPiA+ICsKPiA+
-ICtFeGFtaW5pbmcgdGhlIGBzdHJ1Y3Qgdm1fYXJlYV9kZXNjYCB0eXBlOgo+ID4gKwo+ID4gKy4u
-IGNvZGUtYmxvY2s6OiBDCj4gPiArCj4gPiArICAgIHN0cnVjdCB2bV9hcmVhX2Rlc2Mgewo+ID4g
-KyAgICAgICAgLyogSW1tdXRhYmxlIHN0YXRlLiAqLwo+ID4gKyAgICAgICAgY29uc3Qgc3RydWN0
-IG1tX3N0cnVjdCAqY29uc3QgbW07Cj4gPiArICAgICAgICBzdHJ1Y3QgZmlsZSAqY29uc3QgZmls
-ZTsgLyogTWF5IHZhcnkgZnJvbSB2bV9maWxlIGluIHN0YWNrZWQgY2FsbGVycy4gKi8KPiA+ICsg
-ICAgICAgIHVuc2lnbmVkIGxvbmcgc3RhcnQ7Cj4gPiArICAgICAgICB1bnNpZ25lZCBsb25nIGVu
-ZDsKPiA+ICsKPiA+ICsgICAgICAgIC8qIE11dGFibGUgZmllbGRzLiBQb3B1bGF0ZWQgd2l0aCBp
-bml0aWFsIHN0YXRlLiAqLwo+ID4gKyAgICAgICAgcGdvZmZfdCBwZ29mZjsKPiA+ICsgICAgICAg
-IHN0cnVjdCBmaWxlICp2bV9maWxlOwo+ID4gKyAgICAgICAgdm1hX2ZsYWdzX3Qgdm1hX2ZsYWdz
-Owo+ID4gKyAgICAgICAgcGdwcm90X3QgcGFnZV9wcm90Owo+ID4gKwo+ID4gKyAgICAgICAgLyog
-V3JpdGUtb25seSBmaWVsZHMuICovCj4gPiArICAgICAgICBjb25zdCBzdHJ1Y3Qgdm1fb3BlcmF0
-aW9uc19zdHJ1Y3QgKnZtX29wczsKPiA+ICsgICAgICAgIHZvaWQgKnByaXZhdGVfZGF0YTsKPiA+
-ICsKPiA+ICsgICAgICAgIC8qIFRha2UgZnVydGhlciBhY3Rpb24/ICovCj4gPiArICAgICAgICBz
-dHJ1Y3QgbW1hcF9hY3Rpb24gYWN0aW9uOwo+Cj4gU28sIGFjdGlvbiBzdGlsbCBiZWxvbmdzIHRv
-IC8qIFdyaXRlLW9ubHkgZmllbGRzLiAqLyBzZWN0aW9uPyBUaGlzIGlzCj4gbml0cGlja3ksIGJ1
-dCBpdCBtaWdodCBiZSBiZXR0ZXIgdG8gaGF2ZSB0aGlzIGFzOgo+Cj4gICAgICAgICAvKiBXcml0
-ZS1vbmx5IGZpZWxkcy4gKi8KPiAgICAgICAgIGNvbnN0IHN0cnVjdCB2bV9vcGVyYXRpb25zX3N0
-cnVjdCAqdm1fb3BzOwo+ICAgICAgICAgdm9pZCAqcHJpdmF0ZV9kYXRhOwo+ICAgICAgICAgc3Ry
-dWN0IG1tYXBfYWN0aW9uIGFjdGlvbjsgLyogVGFrZSBmdXJ0aGVyIGFjdGlvbj8gKi8KCkFic29s
-dXRlbHkgbm90LiBUaGlzIGZpZWxkIGlzIG5vdCB0byBiZSB3cml0dGVuIHRvIGJ5IHRoZSB1c2Vy
-LgoKV2Ugc2FkbHkgaGF2ZSB0byBhbGxvdyBodWdldGxiIHRvIGRvIHNvbWUgaGFja3MsIGJ1dCB0
-aGVzZSBhcmUgdGhpbmdzIHdlIGRvbid0CndhbnQgdG8gcG9pbnQgb3V0LgoKVXNlcnMgc2hvdWxk
-IHVzZSBtbWFwX2FjdGlvbl94eHgoKSBmdW5jdGlvbnMuCgo+Cj4gPiArICAgIH07Cj4gPiArCj4g
-PiArVGhpcyBpcyBzdHJhaWdodGZvcndhcmQgLSB5b3UgaGF2ZSBhbGwgdGhlIGZpZWxkcyB5b3Ug
-bmVlZCB0byBzZXQgdXAgdGhlCj4gPiArbWFwcGluZywgYW5kIHlvdSBjYW4gdXBkYXRlIHRoZSBt
-dXRhYmxlIGFuZCB3cml0YWJsZSBmaWVsZHMsIGZvciBpbnN0YW5jZToKPiA+ICsKPiA+ICsuLiBj
-b2RlLWJsb2NrOjogQ3cKPiA+ICsKPiA+ICsgICAgc3RhdGljIGludCBleHQ0X2ZpbGVfbW1hcF9w
-cmVwYXJlKHN0cnVjdCB2bV9hcmVhX2Rlc2MgKmRlc2MpCj4gPiArICAgIHsKPiA+ICsgICAgICAg
-IGludCByZXQ7Cj4gPiArICAgICAgICBzdHJ1Y3QgZmlsZSAqZmlsZSA9IGRlc2MtPmZpbGU7Cj4g
-PiArICAgICAgICBzdHJ1Y3QgaW5vZGUgKmlub2RlID0gZmlsZS0+Zl9tYXBwaW5nLT5ob3N0Owo+
-ID4gKwo+ID4gKyAgICAgICAgLi4uCj4gPiArCj4gPiArICAgICAgICBmaWxlX2FjY2Vzc2VkKGZp
-bGUpOwo+ID4gKyAgICAgICAgaWYgKElTX0RBWChmaWxlX2lub2RlKGZpbGUpKSkgewo+ID4gKyAg
-ICAgICAgICAgIGRlc2MtPnZtX29wcyA9ICZleHQ0X2RheF92bV9vcHM7Cj4gPiArICAgICAgICAg
-ICAgdm1hX2Rlc2Nfc2V0X2ZsYWdzKGRlc2MsIFZNQV9IVUdFUEFHRV9CSVQpOwo+ID4gKyAgICAg
-ICAgfSBlbHNlIHsKPiA+ICsgICAgICAgICAgICBkZXNjLT52bV9vcHMgPSAmZXh0NF9maWxlX3Zt
-X29wczsKPiA+ICsgICAgICAgIH0KPiA+ICsgICAgICAgIHJldHVybiAwOwo+ID4gKyAgICB9Cj4g
-PiArCj4gPiArSW1wb3J0YW50bHksIHlvdSBubyBsb25nZXIgaGF2ZSB0byBkYW5jZSBhcm91bmQg
-d2l0aCByZWZlcmVuY2UgY291bnRzIG9yIGxvY2tzCj4gPiArd2hlbiB1cGRhdGluZyB0aGVzZSBm
-aWVsZHMgLSBfX3lvdSBjYW4gc2ltcGx5IGdvIGFoZWFkIGFuZCBjaGFuZ2UgdGhlbV9fLgo+ID4g
-Kwo+ID4gK0V2ZXJ5dGhpbmcgaXMgdGFrZW4gY2FyZSBvZiBieSB0aGUgbWFwcGluZyBjb2RlLgo+
-ID4gKwo+ID4gK1ZNQSBGbGFncwo+ID4gKz09PT09PT09PQo+ID4gKwo+ID4gK0Fsb25nIHdpdGgg
-YG1tYXBfcHJlcGFyZWAsIFZNQSBmbGFncyBoYXZlIHVuZGVyZ29uZSBhbiBvdmVyaGF1bC4gV2hl
-cmUgYmVmb3JlCj4gPiAreW91IHdvdWxkIGludm9rZSBvbmUgb2YgYHZtX2ZsYWdzX2luaXQoKWAs
-IGB2bV9mbGFnc19yZXNldCgpYCwgYHZtX2ZsYWdzX3NldCgpYCwKPiA+ICtgdm1fZmxhZ3NfY2xl
-YXIoKWAsIGFuZCBgdm1fZmxhZ3NfbW9kKClgIHRvIG1vZGlmeSBmbGFncyAoYW5kIHRvIGhhdmUg
-dGhlCj4gPiArbG9ja2luZyBkb25lIGNvcnJlY3RseSBmb3IgeW91LCB0aGlzIGlzIG5vIGxvbmdl
-ciBuZWNlc3NhcnkuCj4gPiArCj4gPiArQWxzbywgdGhlIGxlZ2FjeSBhcHByb2FjaCBvZiBzcGVj
-aWZ5aW5nIFZNQSBmbGFncyB2aWEgYFZNX1JFQURgLCBgVk1fV1JJVEVgLAo+ID4gK2V0Yy4gLSBp
-LmUuIHVzaW5nIGEgYFZNX3h4eGAgbWFjcm8gaGFzIGNoYW5nZWQgdG9vLgo+ID4gKwo+ID4gK1do
-ZW4gaW1wbGVtZW50aW5nIGBtbWFwX3ByZXBhcmUoKWAsIHJlZmVyZW5jZSBmbGFncyBieSB0aGVp
-ciBiaXQgbnVtYmVyLCBkZWZpbmVkCj4gPiArYXMgYSBgVk1BX3h4eF9CSVRgIG1hY3JvLCBlLmcu
-IGBWTUFfUkVBRF9CSVRgLCBgVk1BX1dSSVRFX0JJVGAgZXRjLiwgYW5kIHVzZSBvbmUKPiA+ICtv
-ZiAod2hlcmUgYGRlc2NgIGlzIGEgcG9pbnRlciB0byBgc3RydWN0IHZtYV9hcmVhX2Rlc2NgKToK
-PiA+ICsKPiA+ICsqIGB2bWFfZGVzY190ZXN0X2ZsYWdzKGRlc2MsIC4uLilgIC0gU3BlY2lmeSBh
-IGNvbW1hLXNlcGFyYXRlZCBsaXN0IG9mIGZsYWdzIHlvdQo+ID4gKyAgd2lzaCB0byB0ZXN0IGZv
-ciAod2hldGhlciBfYW55XyBhcmUgc2V0KSwgZS5nLiAtIGB2bWFfZGVzY190ZXN0X2ZsYWdzKGRl
-c2MsCj4gPiArICBWTUFfV1JJVEVfQklULCBWTUFfTUFZV1JJVEVfQklUKWAgLSByZXR1cm5zIGB0
-cnVlYCBpZiBlaXRoZXIgYXJlIHNldCwKPiA+ICsgIG90aGVyd2lzZSBgZmFsc2VgLgo+ID4gKyog
-YHZtYV9kZXNjX3NldF9mbGFncyhkZXNjLCAuLi4pYCAtIFVwZGF0ZSB0aGUgVk1BIGRlc2NyaXB0
-b3IgZmxhZ3MgdG8gc2V0Cj4gPiArICBhZGRpdGlvbmFsIGZsYWdzIHNwZWNpZmllZCBieSBhIGNv
-bW1hLXNlcGFyYXRlZCBsaXN0LAo+ID4gKyAgZS5nLiAtIGB2bWFfZGVzY19zZXRfZmxhZ3MoZGVz
-YywgVk1BX1BGTk1BUF9CSVQsIFZNQV9JT19CSVQpYC4KPiA+ICsqIGB2bWFfZGVzY19jbGVhcl9m
-bGFncyhkZXNjLCAuLi4pYCAtIFVwZGF0ZSB0aGUgVk1BIGRlc2NyaXB0b3IgZmxhZ3MgdG8gY2xl
-YXIKPiA+ICsgIGZsYWdzIHNwZWNpZmllZCBieSBhIGNvbW1hLXNlcGFyYXRlZCBsaXN0LCBlLmcu
-IC0gYHZtYV9kZXNjX2NsZWFyX2ZsYWdzKGRlc2MsCj4gPiArICBWTUFfV1JJVEVfQklULCBWTUFf
-TUFZV1JJVEVfQklUKWAuCj4gPiArCj4gPiArQWN0aW9ucwo+ID4gKz09PT09PT0KPiA+ICsKPiA+
-ICtZb3UgY2FuIG5vdyB2ZXJ5IGVhc2lseSBoYXZlIGFjdGlvbnMgYmUgcGVyZm9ybWVkIHVwb24g
-YSBtYXBwaW5nIG9uY2Ugc2V0IHVwIGJ5Cj4gPiArdXRpbGlzaW5nIHNpbXBsZSBoZWxwZXIgZnVu
-Y3Rpb25zIGludm9rZWQgdXBvbiB0aGUgYHN0cnVjdCB2bV9hcmVhX2Rlc2NgCj4gPiArcG9pbnRl
-ci4gVGhlc2UgYXJlOgo+ID4gKwo+ID4gKyogYG1tYXBfYWN0aW9uX3JlbWFwKClgIC0gUmVtYXBz
-IGEgcmFuZ2UgY29uc2lzdGluZyBvbmx5IG9mIFBGTnMgZm9yIGEgc3BlY2lmaWMKPiA+ICsgIHJh
-bmdlIHN0YXJ0aW5nIGEgdmlydHVhbCBhZGRyZXNzIGFuZCBQRk4gbnVtYmVyIG9mIGEgc2V0IHNp
-emUuCj4gPiArCj4gPiArKiBgbW1hcF9hY3Rpb25fcmVtYXBfZnVsbCgpYCAtIFNhbWUgYXMgYG1t
-YXBfYWN0aW9uX3JlbWFwKClgLCBvbmx5IHJlbWFwcyB0aGUKPiA+ICsgIGVudGlyZSBtYXBwaW5n
-IGZyb20gYHN0YXJ0X3BmbmAgb253YXJkLgo+ID4gKwo+ID4gKyogYG1tYXBfYWN0aW9uX2lvcmVt
-YXAoKWAgLSBTYW1lIGFzIGBtbWFwX2FjdGlvbl9yZW1hcCgpYCwgb25seSBwZXJmb3JtcyBhbiBJ
-L08KPiA+ICsgIHJlbWFwLgo+ID4gKwo+ID4gKyogYG1tYXBfYWN0aW9uX2lvcmVtYXBfZnVsbCgp
-YCAtIFNhbWUgYXMgYG1tYXBfYWN0aW9uX2lvcmVtYXAoKWAsIG9ubHkgcmVtYXBzCj4gPiArICB0
-aGUgZW50aXJlIG1hcHBpbmcgZnJvbSBgc3RhcnRfcGZuYCBvbndhcmQuCj4gPiArCj4gPiArKipO
-T1RFOioqIFRoZSAnYWN0aW9uJyBmaWVsZCBzaG91bGQgbmV2ZXIgbm9ybWFsbHkgYmUgbWFuaXB1
-bGF0ZWQgZGlyZWN0bHksCj4gPiArcmF0aGVyIHlvdSBvdWdodCB0byB1c2Ugb25lIG9mIHRoZXNl
-IGhlbHBlcnMuCj4KPiBJJ20gZ3Vlc3NpbmcgdGhlIHN0YXJ0IGFuZCBzaXplIHBhcmFtZXRlcnMg
-cGFzc2VkIHRvCj4gbW1hcF9hY3Rpb25fcmVtYXAoKSBhbmQgc3VjaCBhcmUgcmVzdHJpY3RlZCBi
-eSB2bV9hcmVhX2Rlc2Muc3RhcnQKPiB2bV9hcmVhX2Rlc2MuZW5kLiBJZiBzbywgc2hvdWxkIHdl
-IGRvY3VtZW50IHRob3NlIHJlc3RyaWN0aW9ucyBhbmQKPiBlbmZvcmNlIHRoZW0gaW4gdGhlIGNv
-ZGU/CgpJIG1lYW4gaXQncyB0aGUgc2FtZSByZXN0cmljdGlvbnMgYXMgYWxsIG9mIHRoZSBmdW5j
-dGlvbnMgYWxyZWFkeSBhcHBseSBpZiB5b3UKd2VyZSB0byB1c2UgdGhlbSB3aXRoIGEgVk1BIGRl
-c2NyaXB0b3IuCgpJIHRoaW5rIGltcGxpY2l0bHkgYSByZW1hcCB3aWxsIGZhaWwgaWYgeW91IHRy
-eSBpdCBvdXQgb2YgdGhlIFZNQSByYW5nZSBhdCB0aGUKcG9pbnQgb2YgYXBwbHlpbmcgdGhlIGNo
-YW5nZS4KCkJ1dCBpdCBtaWdodCBiZSB3b3J0aCBhZGRpbmcgcmFuZ2VfaW5fdm1hX2Rlc2MoKSBj
-aGVja3MgYXQgcHJlcGFyZSB0aW1lLCB3aWxsCnNlZSBpZiBJIGNhbiBkbyB0aGF0IGZvciB0aGUg
-cmVzcGluLgoKSSB0aGluayBpdCdzIHByZXR0eSBvYnZpb3VzIHRoYXQgeW91IHNob3VsZG4ndCBi
-ZSB0cnlpbmcgdG8gcmVtYXAgdG90YWxseQp1bnJlbGF0ZWQgbWVtb3J5LCBzbyBJJ20gbm90IHN1
-cmUgdGhhdCdzIGF0IGEgbGV2ZWwgb2YgZ3JhbnVsYXJpdHkgdGhhdCdzIHN1aXRlZAp0byB0aGlz
-IGRvY3VtZW50IHRob3VnaC4KCj4KPiA+ICsgICAgc3RydWN0IHZtX2FyZWFfZGVzYyB7Cj4gPiAr
-ICAgICAgICAvKiBJbW11dGFibGUgc3RhdGUuICovCj4gPiArICAgICAgICBjb25zdCBzdHJ1Y3Qg
-bW1fc3RydWN0ICpjb25zdCBtbTsKPiA+ICsgICAgICAgIHN0cnVjdCBmaWxlICpjb25zdCBmaWxl
-OyAvKiBNYXkgdmFyeSBmcm9tIHZtX2ZpbGUgaW4gc3RhY2tlZCBjYWxsZXJzLiAqLwo+ID4gKyAg
-ICAgICAgdW5zaWduZWQgbG9uZyBzdGFydDsKPiA+ICsgICAgICAgIHVuc2lnbmVkIGxvbmcgZW5k
-Owo+Cj4KPiA+IC0tCj4gPiAyLjUzLjAKPiA+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBs
-aXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRk
-Lwo=
+This series expands the mmap_prepare functionality, which is intended to
+replace the deprecated f_op->mmap hook which has been the source of bugs
+and security issues for some time.
+
+This series starts with some cleanup of existing mmap_prepare logic, then
+adds documentation for the mmap_prepare call to make it easier for
+filesystem and driver writers to understand how it works.
+
+It then importantly adds a vm_ops->mapped hook, a key feature that was
+missing from mmap_prepare previously - this is invoked when a driver which
+specifies mmap_prepare has successfully been mapped but not merged with
+another VMA.
+
+mmap_prepare is invoked prior to a merge being attempted, so you cannot
+manipulate state such as reference counts as if it were a new mapping.
+
+The vm_ops->mapped hook allows a driver to perform tasks required at this
+stage, and provides symmetry against subsequent vm_ops->open,close calls.
+
+The series uses this to correct the afs implementation which wrongly
+manipulated reference count at mmap_prepare time.
+
+It then adds an mmap_prepare equivalent of vm_iomap_memory() -
+mmap_action_simple_ioremap(), then uses this to update a number of drivers.
+
+It then splits out the mmap_prepare compatibility layer (which allows for
+invocation of mmap_prepare hooks in an mmap() hook) in such a way as to
+allow for more incremental implementation of mmap_prepare hooks.
+
+It then uses this to extend mmap_prepare usage in drivers.
+
+Finally it adds an mmap_prepare equivalent of vm_map_pages(), which lays
+the foundation for future work which will extend mmap_prepare to DMA
+coherent mappings.
+
+v2:
+* Rebased on
+  https://lore.kernel.org/all/cover.1773665966.git.ljs@kernel.org/ to make
+  Andrew's life easier :)
+* Folded all interim fixes into series (thanks Randy for many doc fixes!))
+* As per Suren, removed a comment about allocations too small to fail.
+* As per Randy, fixed up typo in documentation for vm_area_desc.
+* Fixed mmap_action_prepare() not returning if invalid action->type
+  specified, as updated from Andrew's interim fix (thanks!) and also
+  reported by kernel test bot.
+* Updated mmap_action_prepare() and specific prepare functions to only
+  pass vm_area_desc parameter as per Suren.
+* Fixed up whitespace as per Suren.
+* Updated vm_op->open comment in vm_operations_struct to reference forking
+  as per Suren.
+* Added a commit to check that input range is within VMA on remap as per
+  Suren (this also covers I/O remap and all other cases already asserted).
+* Updated AFS to not incorrectly reference count on mmap prepare as per
+  Usama.
+* Also updated various static AFS functions to be consistent with each
+  other.
+* Updated AFS commit message to reflect mmap_prepare being before any VMA
+  merging as per Suren.
+* Updated __compat_vma_mapped() to check for NULL vm_ops as per Usama.
+* Updated __compat_vma_mapped() to not reference an unmapped VMA's fields
+  as per Usama.
+* Updated __vma_check_mmap_hook() to check for NULL vm_ops as per Usama.
+* Dropped comment about preferring mmap_prepare as seems overly confusing,
+  as per Suren.
+* Updated the mmap lock assert in unmap_vma_locked() to a write lock assert
+  as per Suren.
+* Copied vm_ops->open comment over to VMA tests in appropriate patch as per
+  Suren.
+* Updated mmap_prepare documentation to reflect the fact that no resources
+  should be allocated upon mmap_prepare.
+* Updated mmap_prepare documentation to reference the vm_ops->mapped
+  callback.
+* Fixed stray markdown '## How to use' in documentation.
+* Fixed bug reported by kernel test bot re: overlooked
+  vma_desc_test_flags() -> vma_desc_test() in MTD driver for nommu.
+
+v1:
+https://lore.kernel.org/linux-mm/cover.1773346620.git.ljs@kernel.org/
+
+Lorenzo Stoakes (Oracle) (16):
+  mm: various small mmap_prepare cleanups
+  mm: add documentation for the mmap_prepare file operation callback
+  mm: document vm_operations_struct->open the same as close()
+  mm: add vm_ops->mapped hook
+  fs: afs: correctly drop reference count on mapping failure
+  mm: add mmap_action_simple_ioremap()
+  misc: open-dice: replace deprecated mmap hook with mmap_prepare
+  hpet: replace deprecated mmap hook with mmap_prepare
+  mtdchar: replace deprecated mmap hook with mmap_prepare, clean up
+  stm: replace deprecated mmap hook with mmap_prepare
+  staging: vme_user: replace deprecated mmap hook with mmap_prepare
+  mm: allow handling of stacked mmap_prepare hooks in more drivers
+  drivers: hv: vmbus: replace deprecated mmap hook with mmap_prepare
+  uio: replace deprecated mmap hook with mmap_prepare in uio_info
+  mm: add mmap_action_map_kernel_pages[_full]()
+  mm: on remap assert that input range within the proposed VMA
+
+ Documentation/driver-api/vme.rst           |   2 +-
+ Documentation/filesystems/index.rst        |   1 +
+ Documentation/filesystems/mmap_prepare.rst | 168 ++++++++++++++++
+ drivers/char/hpet.c                        |  12 +-
+ drivers/hv/hyperv_vmbus.h                  |   4 +-
+ drivers/hv/vmbus_drv.c                     |  27 ++-
+ drivers/hwtracing/stm/core.c               |  31 ++-
+ drivers/misc/open-dice.c                   |  19 +-
+ drivers/mtd/mtdchar.c                      |  21 +-
+ drivers/staging/vme_user/vme.c             |  20 +-
+ drivers/staging/vme_user/vme.h             |   2 +-
+ drivers/staging/vme_user/vme_user.c        |  51 +++--
+ drivers/target/target_core_user.c          |  26 ++-
+ drivers/uio/uio.c                          |  10 +-
+ drivers/uio/uio_hv_generic.c               |  11 +-
+ fs/afs/file.c                              |  36 +++-
+ include/linux/fs.h                         |  14 +-
+ include/linux/hyperv.h                     |   4 +-
+ include/linux/mm.h                         | 158 +++++++++++++--
+ include/linux/mm_types.h                   |  17 +-
+ include/linux/uio_driver.h                 |   4 +-
+ mm/internal.h                              |  37 ++--
+ mm/memory.c                                | 177 ++++++++++++-----
+ mm/util.c                                  | 219 +++++++++++++++------
+ mm/vma.c                                   |  59 ++++--
+ mm/vma.h                                   |   2 +-
+ tools/testing/vma/include/dup.h            | 141 +++++++++----
+ tools/testing/vma/include/stubs.h          |   8 +-
+ 28 files changed, 970 insertions(+), 311 deletions(-)
+ create mode 100644 Documentation/filesystems/mmap_prepare.rst
+
+--
+2.53.0
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
