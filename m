@@ -4,55 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 598EBFD7074
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56C66FD7073
 	for <linux-mtd@archiver.kernel.org>; Tue, 17 Mar 2026 10:24:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id:Date:
-	Subject:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=XxLx95U4Rf7voYB7IF7htEtOz1YDbHD381Bh/iyP/Rg=; b=S29RBwcrtEPN5o
-	pkt9VR+gNSs6yTYcbOtnMOGRcunir54Fm2HDb1e6dZX8mfWGhrrCraDu7I9Jko5PeOnr4wmEp2/O8
-	aFBQOEGOEFTuiNMfiykX5h1Kfsf4nuVVrmMy2scwkn1hm6JAHYaJ7+aU4WlDMbGsLkALwgDQDzZkX
-	N3J1Bin2UOhWqlgUuo580FxdEAQhNef8N8QfktTVwE5usNHd/DO4+kuDJ6EOApssDmubG2G7cplBU
-	OAHz86R5ZsZX2TUvgsETksMYqSTGNrlntd+EN7PMUj67DB0CRoCe/pdcoPgQ9tsGg3K/yXuoUMBle
-	qlCDduvtoQ1agprzjCLg==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
+	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=dRPP0lpzLSyfT3ArRs1Z9hrIIWv8edjvagq+YDHk+p8=; b=AAqHVK/kLPsIYL
+	2QEWWJFuFPOLJTJ2fF8YKBjSEUqp3LGf96Spl9k6ndGXcxcAOL6cZ4Tx7C+r7TjG3N3MyP+nwkckB
+	iSYK0J0N6UY8krRC7ilnFKgyvj1SdScO81DImdY9sbo4+CWBDgLTj/WxMAY3c05xEZr1Ck7MuyoTI
+	FsoC6kpA8iE12LCRu/typcZ2vxhTt2s6PWs/rUhv29erNKNBjWKavEVO04WdC2qDzbIO8VjVL81uq
+	ElIwy1qnk6Wffdaxk5t/EHBZKb+90IFRl90pYmRJamZStvx7l0Br9y/4XZQEKXwFFu4vGtKHX5LIF
+	05OyAkoUiWIN+ZslJLxg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w2Rb1-00000005zKG-2gUW;
+	id 1w2Rb1-00000005zKM-3taD;
 	Tue, 17 Mar 2026 10:24:19 +0000
-Received: from smtpout-02.galae.net ([185.246.84.56])
+Received: from smtpout-03.galae.net ([185.246.85.4])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w2Ray-00000005zJC-1452
+	id 1w2Ray-00000005zJQ-3zL0
 	for linux-mtd@lists.infradead.org;
 	Tue, 17 Mar 2026 10:24:18 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id 0B5821A2D73;
-	Tue, 17 Mar 2026 10:24:14 +0000 (UTC)
+	by smtpout-03.galae.net (Postfix) with ESMTPS id 798874E42629;
+	Tue, 17 Mar 2026 10:24:15 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id D42185FC9A;
-	Tue, 17 Mar 2026 10:24:13 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 85263104503A6;
-	Tue, 17 Mar 2026 11:24:08 +0100 (CET)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 4E4995FC9A;
+	Tue, 17 Mar 2026 10:24:15 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 38142104503AE;
+	Tue, 17 Mar 2026 11:24:13 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1773743052; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding; bh=sElk1a0rbyXJo2pC2tiqhDCKfLfW9ww2qocJ8ozGUyk=;
-	b=Aaqk0gG1QlXT/xNCx4Y55fzfBGepX7CPp5up8bZbeaSh+ZD11vCeer/h8+MOiz56iZRZc8
-	s35NETAlpIeX6f/7dJo5YKeFA2NZUQ3M7LkFHWCyEVAN4YJjk8qqadn5y+NuwvB3anCeYy
-	q3PHGFEAq3S4Xy92r0rhjLdmkdQ/g9POg4dcSFXucIRMp01TNNMSvfKmtcXHIxPMMg09Ue
-	3on305oxf5qEiN2uQ6a2BWZczyu10yn8hQr6/igEVJr8WzwkoAWKgc6lFOCBXk3/7YskY3
-	O3xnOr3cyRz15SBFEtool9Zu8QUTpmU2gwsmHTUTAuWP4P0G5d4GriRvQMxGxg==
+	t=1773743054; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=7UGHB4CnkC5yHvpQ1KlMte4F9RtOgCrxhLW069LNgLo=;
+	b=bTUhlRmEA9eD/lL9k3ctzWWtTzNEBpFO4+LerBE3plx/WSl26GYBjk8WtQ1sDmKIzitWxv
+	0UNC8aPSjfBfoG7eFmdoLjVOskYR1SfufuS8r8/DGfw+0Sd6JyvDzVe47ZzZtgcmg2J4tU
+	82bhV2oxGWcgRPFwY5U2Vyfj3KVNeZxOO1yCjIHWRMxlbde90QhqOvG1WdFAbAPRWRElww
+	WNCf2rzUCJk2K776cjVpuq34dWhyrc+HN0qbe3moZKW700cJmMlM2hr0jfqn65BnwPfkZs
+	dhmYrVhfDP+6O4G+3+xsAgZEaBXfCigr/oKTJy0U/SjRhpfffkn51LgTpEnzTg==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v3 00/27] mtd: spi-nor: Enhance software protection
-Date: Tue, 17 Mar 2026 11:24:03 +0100
-Message-Id: <20260317-winbond-v6-18-rc1-spi-nor-swp-v3-0-2ca9ea4e7b9b@bootlin.com>
+Date: Tue, 17 Mar 2026 11:24:04 +0100
+Subject: [PATCH v3 01/27] mtd: spi-nor: Drop duplicate Kconfig dependency
 MIME-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAAAAAAAC/43NsQ6CMBSF4Vcxnb2mt5RSnHwP4yClyE20JS0pG
- sK7W0gcnHT8z/CdmUUbyEZ23M0s2ESRvMtR7HfM9Fd3s0Btbia4KBFRwkSu8a6FpAA1BIMQBwL
- nA8RpAK3KtlCd7FRdsmwMwXb03PzzJXdPcfThtd0lXNd/5YTAQeqqMRWKui7w1Hg/3skdjH+w1
- U7i4ymOXP/yRPaMVMJ2miss+Le3LMsbwPZprhwBAAA=
-X-Change-ID: 20251114-winbond-v6-18-rc1-spi-nor-swp-865d36f4f695
+Message-Id: <20260317-winbond-v6-18-rc1-spi-nor-swp-v3-1-2ca9ea4e7b9b@bootlin.com>
+References: <20260317-winbond-v6-18-rc1-spi-nor-swp-v3-0-2ca9ea4e7b9b@bootlin.com>
+In-Reply-To: <20260317-winbond-v6-18-rc1-spi-nor-swp-v3-0-2ca9ea4e7b9b@bootlin.com>
 To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
  Takahiro Kuwano <takahiro.kuwano@infineon.com>, 
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
@@ -62,12 +60,13 @@ Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
  Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
  Steam Lin <STLin2@winbond.com>, linux-mtd@lists.infradead.org, 
  linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
- Miquel Raynal <miquel.raynal@bootlin.com>, stable@kernel.org
+ Miquel Raynal <miquel.raynal@bootlin.com>
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260317_032416_434274_F0310738 
-X-CRM114-Status: GOOD (  21.58  )
+X-CRM114-CacheID: sfid-20260317_032417_141155_978742E9 
+X-CRM114-Status: UNSURE (   9.42  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,131 +83,32 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello,
+I do not think the MTD dependency is needed twice. This is likely a
+duplicate coming from a former rebase when the spi-nor core got cleaned
+up a while ago. Remove the extra line.
 
-As recently raised on the mailing-list (link below), it seems that the
-"locking" support in SPI NOR could benefit from some enhancements. As I
-myself had to dig into it recently, here is a proposal.
-
-First issue that I see, the MEMLOCK ioctl is not behaving correctly
-in some cases, as addressed in:
-
-    mtd: spi-nor: swp: Improve locking user experience
-
-Then there is no clear explanation of the shortcuts taken by the kernel
-in terms of uAPI, so there is an attempt to list them in:
-
-    mtd: spi-nor: swp: Explain the MEMLOCK ioctl implementation behaviour
-
-Plus, Tudor also asked if we could cover locking in the testing
-procedure, which is done in:
-
-    mtd: spi-nor: Add steps for testing locking support
-
-In order to simplify this procedure, and because it got very helpful
-during my testing/development, I want to propose additions to the
-debugfs output:
-
-    mtd: spi-nor: debugfs: Add locking support TODO: make the captures again
-
-Finally, I am providing an implementation for the complement (CMP)
-feature in order to allow finer control of the regions locked. This
-feature is for instance available on Winbond chips:
-
-    [core] mtd: spi-nor: swp: Add support for the complement feature
-    [doc]  mtd: spi-nor: Add steps for testing locking with CMP
-    [use]  mtd: spi-nor: winbond: Add CMP locking support
-
-Disclaimer: it was much less straightforward than I initially thought to
-get the CMP feature working correctly. I tested it with as much focus as
-I could, and I am improving the test coverage for the new cases, I am
-also providing extra test cases in the metadata of the commit (which do
-not make sense to test for chip additions, but may be sensible show when
-making core additions like this one), but honestly there are so many
-possibilities, I may still be missing corner cases. I hope this will
-anyway be helpful to others!
-
-All the other patches are misc improvements or style fixes which I faced
-and fixed during my development.
-
-Link: https://lore.kernel.org/linux-mtd/92e99a96-5582-48a5-a4f9-e9b33fcff171@linux.dev/
-
+Fixes: b35b9a10362d ("mtd: spi-nor: Move m25p80 code in spi-nor.c")
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Reviewed-by: Michael Walle <mwalle@kernel.org>
 ---
-Changes in v3:
-- No change at all, just rebased on top of v7.0-rc1.
-- Collected 2 R-by from M. Walle.
-- Link to v2: https://lore.kernel.org/r/20260108-winbond-v6-18-rc1-spi-nor-swp-v2-0-c462ef806130@bootlin.com
+ drivers/mtd/spi-nor/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-Changes in v2:
-- Collect tags.
-- Add missing Fixes/Cc: stable tags.
-- Add a comment explaining why can_be_top && can_be_bottom is a specific
-  condition.
-- Fix commit logs following Michael Walle's reviews.
-- Amend the documentation following our discussion with Michael Walle as
-  well.
-- Cache the SR register for debugfs use.
-- Create a locked sector map file instead of dumping it as part of the
-  `params` file output.
-- Improved greatly the output of the map as suggested by Michael.
-- Add a patch fixing a duplicate dependency in Kconfig.
-- Add an important comment in the doc about the small 4kiB erase size
-  choice.
-- Add test runs for each and every chip for which the CMP feature is
-  added. This prove me that testing of each and every chip was needed,
-  as some of them seem to feature a broken BFPT table which does not
-  advertise a working 35h (Read CR) command.
-- Added a condition on which the CMP feature is enabled: RDCR must be
-  possible.
-- Link to v1: https://lore.kernel.org/r/20251114-winbond-v6-18-rc1-spi-nor-swp-v1-0-487bc7129931@bootlin.com
+diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
+index 24cd25de2b8b..fd05a24d64a9 100644
+--- a/drivers/mtd/spi-nor/Kconfig
++++ b/drivers/mtd/spi-nor/Kconfig
+@@ -1,7 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ menuconfig MTD_SPI_NOR
+ 	tristate "SPI NOR device support"
+-	depends on MTD
+ 	depends on MTD && SPI_MASTER
+ 	select SPI_MEM
+ 	help
 
----
-Miquel Raynal (27):
-      mtd: spi-nor: Drop duplicate Kconfig dependency
-      mtd: spi-nor: debugfs: Fix the flags list
-      mtd: spi-nor: swp: Improve locking user experience
-      mtd: spi-nor: Improve opcodes documentation
-      mtd: spi-nor: debugfs: Align variable access with the rest of the file
-      mtd: spi-nor: debugfs: Enhance output
-      mtd: spi-nor: swp: Explain the MEMLOCK ioctl implementation behaviour
-      mtd: spi-nor: swp: Clarify a comment
-      mtd: spi-nor: swp: Use a pointer for SR instead of a single byte
-      mtd: spi-nor: swp: Create a helper that writes SR, CR and checks
-      mtd: spi-nor: swp: Rename a mask
-      mtd: spi-nor: swp: Create a TB intermediate variable
-      mtd: spi-nor: swp: Create helpers for building the SR register
-      mtd: spi-nor: swp: Simplify checking the locked/unlocked range
-      mtd: spi-nor: swp: Cosmetic changes
-      mtd: spi-nor: Create a local SR cache
-      mtd: spi-nor: debugfs: Add locking support
-      mtd: spi-nor: debugfs: Add a locked sectors map
-      mtd: spi-nor: Add steps for testing locking support
-      mtd: spi-nor: swp: Add support for the complement feature
-      mtd: spi-nor: Add steps for testing locking with CMP
-      mtd: spi-nor: winbond: Add W25H512NWxxAM CMP locking support
-      mtd: spi-nor: winbond: Add W25H01NWxxAM CMP locking support
-      mtd: spi-nor: winbond: Add W25H02NWxxAM CMP locking support
-      mtd: spi-nor: winbond: Add W25H01NWxxIQ CMP locking support
-      mtd: spi-nor: winbond: Add W25Q01NWxxIM CMP locking support
-      mtd: spi-nor: winbond: Add W25Q02NWxxIM CMP locking support
-
- Documentation/driver-api/mtd/spi-nor.rst | 164 ++++++++++++++
- drivers/mtd/spi-nor/Kconfig              |   1 -
- drivers/mtd/spi-nor/core.c               |  74 ++++++-
- drivers/mtd/spi-nor/core.h               |  10 +
- drivers/mtd/spi-nor/debugfs.c            |  63 +++++-
- drivers/mtd/spi-nor/swp.c                | 359 ++++++++++++++++++++++++-------
- drivers/mtd/spi-nor/winbond.c            |  41 +++-
- include/linux/mtd/spi-nor.h              |   7 +-
- 8 files changed, 631 insertions(+), 88 deletions(-)
----
-base-commit: 7ec0b5645131696d2ae9423ae32a80441ce201d6
-change-id: 20251114-winbond-v6-18-rc1-spi-nor-swp-865d36f4f695
-
-Best regards,
 -- 
-Miquel Raynal <miquel.raynal@bootlin.com>
+2.51.1
 
 
 ______________________________________________________
