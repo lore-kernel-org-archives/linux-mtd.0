@@ -4,52 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB553FD7072
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Mar 2026 10:24:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49676FD7072
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Mar 2026 10:24:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=7gLYYZKaYiJk26By7Mm1VobXsD3dfM0AgmXOuVKGoFY=; b=O1PCnOxsatK+S7
-	bXrDjBDIWOnqGHADm/MT1i5JZ7XdfuVgSzhLXX64EwsZHrB51O55n0eCiTsYLif1HZz2KiBd45hhL
-	zw6q9c+yeqiULCMDDQCQ53Z+pHD1ayBKZNe6tbrpYDX9trvKLvF7ZuBVoXbK3pCMG2uq9SsfDxqa/
-	lMtnjhTjdSKR9QwRvvHoGNhTZwnkYwlJ1SXWSs7V+mZ9Ue4oWjeJ5t2YQIvluOCCbgdt85iMMEQ4M
-	0tUMFzkeQJj9rMe6lIhLmUChauIOcSOrpzKTVnqDvM9M/2nx2/hx7ocWPcm06amXUoLIHkWARljYT
-	qd+0DR0jVnFTQx6BK23A==;
+	List-Owner; bh=Dy2cWgdHTxwiVqpbqDu/XsBaNNf2pSSF0DroyhBFesY=; b=Azx4s0Z3vKSqTI
+	IYJuedifCJXfMho1dP4RE6tKEBy0thF59ve0X90PhGjsK07NDExYh303aGBuI4Sy9FMVxus+NuXBS
+	MlHvIDCK1ec+Vl+e/ASJ6Be2aXxR/vEEZz1ZLRUGPS4Y0XkUbDp2nkDBeJLjZ3H/jFlplPzd6AwNr
+	fLQac3ZL2ff6AK7Pmq2EwAK03q728JJxQC+TvVqPAxQH22x2ZziK4z1DmhhsWwXHsl4K6RDycoi7y
+	opokCGOeCFKrV950bZAQ4dPgAMhkIhLHMP8W2kDPpGTR1BXBhY/bmkQCJgajEXmn3cnG6shqkswwB
+	PbqtOQ5w5/1Uflqw6rtQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w2RbB-00000005zTM-1knj;
-	Tue, 17 Mar 2026 10:24:29 +0000
-Received: from smtpout-02.galae.net ([185.246.84.56])
+	id 1w2RbF-00000005zXv-0Hd9;
+	Tue, 17 Mar 2026 10:24:33 +0000
+Received: from smtpout-03.galae.net ([185.246.85.4])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w2Rb9-00000005zPW-1F7F
+	id 1w2RbA-00000005zRU-3H9A
 	for linux-mtd@lists.infradead.org;
-	Tue, 17 Mar 2026 10:24:28 +0000
+	Tue, 17 Mar 2026 10:24:29 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id DF0FD1A2D73;
-	Tue, 17 Mar 2026 10:24:25 +0000 (UTC)
+	by smtpout-03.galae.net (Postfix) with ESMTPS id 5802D4E42639;
+	Tue, 17 Mar 2026 10:24:27 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id AF1145FC9A;
-	Tue, 17 Mar 2026 10:24:25 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 95C80104503A6;
-	Tue, 17 Mar 2026 11:24:23 +0100 (CET)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 2F2EE5FC9A;
+	Tue, 17 Mar 2026 10:24:27 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 318B010450453;
+	Tue, 17 Mar 2026 11:24:25 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1773743064; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1773743066; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=uBSfAslupKiDUjYa9VdOz+tUE+1u7aYrr2OFADafudU=;
-	b=oOGaC2i9lLEU64q+oZ0r2QGoz4idF7IPxDdsm3W4fLhv+7mnI+EUblWRysxMQg/Aqdryyv
-	MlkyUFxKs+avwRfmAaHynkoVoqQxzC9/g3zWQtBP0D9jvYL0rTnWu0K79vhVckeMbRIo2X
-	x/xcd57dsca5KaQirVOm/bv7flu3vbomsgBkWt5r9+Lhkxn9m1Qy8Vpx4gI3f06Uibv5Xn
-	VPIXWqQoAyROOv05XR7Eup+PD5AOdWV9c7R5K5NoRfQLkTPLyNJBzQkjGN5GVj4aVrGHF1
-	sQJgfU4A++wePdwIQKHBu+/aYaelsdg7Fr5/JL3C6HWxmUiOKQ8TSwQicz2V7g==
+	bh=KPr75/L7Q2MSPflmaco7Z/uPl6GqRaTpWsWBClHqZT8=;
+	b=aKDR/eCHncmkAJZvKx0YEaEnKk8we87xPMAxoQjzi3jsqrWzgSRr6gJHsTlB9OHfR11Lbp
+	FKMLvOcvxEfeDXSJ7hXtcgyOALT1oC0E4kHkbbzUhFAW7sMfBazUYfI9Z9MYU7MZwJJX7y
+	GCqDOe+BEUTpm5hGuFqDzzTHMcxW8FuIbYEusInoMT5xx68teNGYc0j8hRF/gzTcK5Hbs4
+	mjCX6NhXvF5Ikkd2/o10xNYgtlTf/Gk+DLopDY+52ERuMLMSy1Non44tmjFhPIFGSoJ5wx
+	5IcC9GpkN5AsSpqVsZJXHSSJ8p7yoK7ZNfi0PiFnbhoeZ+ZPvgXi9Q9iWBpIfw==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Tue, 17 Mar 2026 11:24:10 +0100
-Subject: [PATCH v3 07/27] mtd: spi-nor: swp: Explain the MEMLOCK ioctl
- implementation behaviour
+Date: Tue, 17 Mar 2026 11:24:11 +0100
+Subject: [PATCH v3 08/27] mtd: spi-nor: swp: Clarify a comment
 MIME-Version: 1.0
-Message-Id: <20260317-winbond-v6-18-rc1-spi-nor-swp-v3-7-2ca9ea4e7b9b@bootlin.com>
+Message-Id: <20260317-winbond-v6-18-rc1-spi-nor-swp-v3-8-2ca9ea4e7b9b@bootlin.com>
 References: <20260317-winbond-v6-18-rc1-spi-nor-swp-v3-0-2ca9ea4e7b9b@bootlin.com>
 In-Reply-To: <20260317-winbond-v6-18-rc1-spi-nor-swp-v3-0-2ca9ea4e7b9b@bootlin.com>
 To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
@@ -65,9 +64,8 @@ Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260317_032427_473512_428A03E2 
-X-CRM114-Status: UNSURE (   9.63  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260317_032428_967321_D79875FF 
+X-CRM114-Status: GOOD (  11.55  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,35 +82,29 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add comments about how these requests are actually handled in the SPI
-NOR core. Their behaviour was not entirely clear to me at first, and
-explaining them in plain English sounds the way to go.
+The comment states that some power of two sizes are not supported. This
+is very device dependent (based on the size), so modulate a bit the
+sentence to make it more accurate.
 
 Reviewed-by: Michael Walle <mwalle@kernel.org>
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/spi-nor/swp.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/mtd/spi-nor/swp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/spi-nor/swp.c b/drivers/mtd/spi-nor/swp.c
-index 1d50db1ef1a0..64a917543928 100644
+index 64a917543928..246f6d5ca8dd 100644
 --- a/drivers/mtd/spi-nor/swp.c
 +++ b/drivers/mtd/spi-nor/swp.c
-@@ -346,6 +346,14 @@ static int spi_nor_sr_is_locked(struct spi_nor *nor, loff_t ofs, u64 len)
- 	return spi_nor_is_locked_sr(nor, ofs, len, nor->bouncebuf[0]);
- }
+@@ -303,7 +303,7 @@ static int spi_nor_sr_unlock(struct spi_nor *nor, loff_t ofs, u64 len)
+ 		if (nor->flags & SNOR_F_HAS_SR_BP3_BIT6 && val & SR_BP3)
+ 			val = (val & ~SR_BP3) | SR_BP3_BIT6;
  
-+/*
-+ * These ioctls behave according to the following rules:
-+ * ->lock(): Never locks more than what is requested, ie. may lock less
-+ * ->unlock(): Never unlocks more than what is requested, ie. may unlock less
-+ * -is_locked(): Checks if the region is *fully* locked, returns false otherwise.
-+ *               This feeback may be misleading because users may get an "unlocked"
-+ *               status even though a subpart of the region is effectively locked.
-+ */
- static const struct spi_nor_locking_ops spi_nor_sr_locking_ops = {
- 	.lock = spi_nor_sr_lock,
- 	.unlock = spi_nor_sr_unlock,
+-		/* Some power-of-two sizes are not supported */
++		/* Some power-of-two sizes may not be supported */
+ 		if (val & ~mask)
+ 			return -EINVAL;
+ 	}
 
 -- 
 2.51.1
