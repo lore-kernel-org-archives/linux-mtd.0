@@ -4,67 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0870FFD7073
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Mar 2026 10:24:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF842FD7074
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Mar 2026 10:24:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=wlZNnPgmaCzGM0rhsI9MA/AyeK4oSnECqSiztf7RiPI=; b=3RkcA68pRjxt98
-	Kx/9+vBg4ACFTAe/dDVLqUMHaNKWlwbu9tb29ppsqBZlRDAbTFd5mvZdhDBWw8yp90FpUHqwgSL7j
-	1FIa2KkmHOfESW/S6tWixQvIP1l3nsTwBeI76IqFS82evZzmg84y2qZDwGpJ0BBr2nHwaf7CMQ7fY
-	xhCg75kB7H+CQdvJA6nuny+lG0Xi8LmsA+yUoPbrtMZ0CtqBoYsg52ybOePe8n7JgXTcDL3GFVdIa
-	oCPlGwX0zyN502PlvuWIS3LNDyTZGnrsuolxYEiqjAflcaX5bBDNZ0oYCwejjGf6oaYX9fzLrIATP
-	6AwOOKLS5aR141MMSceA==;
+	List-Owner; bh=nI/kBvfSBOIFjf+DvRHuE0PMU+tfQ1Kh459hoc7nBkw=; b=a6uefKAWQJ0BKN
+	6mSYhCsc0fNvtMbvRfitjZRV4E/SdVpgDYfwIaBCLqhsjUij6kal57LHUstT9JLXknSBzLyr/jrw7
+	fwBK6VLImlPy120CXumQDeTTaH2GX3w0zx4lRw2HyPjFuZ39cIuphs2cPEsrs8OBc19D7YtVpXHHX
+	erFmdC9i4P2gfrM89gOxeVVVcn80Rsw9/+TneD/2UL2h2p9vchglDHyxI5KGS4X9ZAwUK0G/rTE2+
+	g+RTf32nuqS/mnPPGd5Qnx3COLeUV6aw3NbuLcg6CHbbzWQyjn/+/aC6eKs9fEasXW3A7Gw5/HlIS
+	A2x8dMOBuva2+h3riVIQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w2RbT-00000005zsc-1MWG;
-	Tue, 17 Mar 2026 10:24:47 +0000
+	id 1w2RbV-00000005zwi-3Zzi;
+	Tue, 17 Mar 2026 10:24:49 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w2RbR-00000005zoW-2age
+	id 1w2RbU-00000005zsZ-0t2d
 	for linux-mtd@bombadil.infradead.org;
-	Tue, 17 Mar 2026 10:24:45 +0000
+	Tue, 17 Mar 2026 10:24:48 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=casper.20170209; h=Cc:To:In-Reply-To:References:Message-Id
 	:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:From:Sender
 	:Reply-To:Content-ID:Content-Description;
-	bh=cErOh0nPQq4JaUTOOkelLy8W6h1AXJeJNMbiy0SldGw=; b=LGkyGa5osvZT0vkyJrje4hz5Ux
-	hsli0X7QWeKGP+P1ER/a5L/5+4eL3YvbD0lu8KbA5nyhU3qGsmNoTVi3dxiZTrC7a3lk4qHK8ZuIu
-	DA9AgTs/HxUhBqNeH7NWn7XkM/EGVWStjZSeIuZvwYjVU5SgIs6++JJpaY4klGHrRALCOZJW93Jkj
-	Pq9bJecNcBgDqZNFvL7FCJf2syPcuwITwYhhmBCNx24i2Vie7ccNRErdrfQi2pE250Amed0JcfXXO
-	cOQJKEWQNauBqI2dkvOfwghHoxlieiGdAmHYnBEiyhfvRGjP9oSxjiAhzrXDQUP9OpN3gIrQmnJ8R
-	iS+HDz1w==;
-Received: from smtpout-04.galae.net ([185.171.202.116])
+	bh=fSGWAo4880GBGohVwH5amGuxHfsnb+vsg8Hq4o36l8E=; b=YeX/6nTeRhWt8CvPjfo2gpauai
+	fi+uwLWr1AVyNbLJjVQUcdUZdSVtULOhzZueEmUzR5frcn7Nm4kdnukV6M122W4Js/OOiIdlpXLSy
+	jjXGeZdxoZAT/Sp6+WaOrbyBrdBcfVHpsBPGKdF6sCskU12fngbVnuuosqzp/P/tdDgg4jgv53akV
+	cU8b9jPqWMy8bjuOpEfgLyBHiVWkWiV+N/rqNVP4HyJLfBDNRAlf7K0jnVD8Cv4IJYwGoedPJydOc
+	4Av/V3o77sRl2q5VvcXl3h94cFRZRX+tQ7h+hB7I2GEkkTTgfNcQ544SoBZxYliKHPFLaWJ7k4ImF
+	9j4i1LRg==;
+Received: from smtpout-03.galae.net ([185.246.85.4])
 	by casper.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w2RbO-00000002WEl-1JGc
+	id 1w2RbQ-00000002WFZ-3k7q
 	for linux-mtd@lists.infradead.org;
-	Tue, 17 Mar 2026 10:24:44 +0000
+	Tue, 17 Mar 2026 10:24:46 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id 49C65C55055;
-	Tue, 17 Mar 2026 10:25:01 +0000 (UTC)
+	by smtpout-03.galae.net (Postfix) with ESMTPS id 5D1734E425F5;
+	Tue, 17 Mar 2026 10:24:39 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 4E65F5FC9A;
-	Tue, 17 Mar 2026 10:24:37 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 2C97A1045045C;
-	Tue, 17 Mar 2026 11:24:35 +0100 (CET)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 2D2525FC9A;
+	Tue, 17 Mar 2026 10:24:39 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id C55501045045B;
+	Tue, 17 Mar 2026 11:24:36 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1773743076; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1773743078; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=cErOh0nPQq4JaUTOOkelLy8W6h1AXJeJNMbiy0SldGw=;
-	b=xtA3mxHCOLUNsy2AtBIeiAq4hxQrJdW2TrDwozuJ1tvcqsQs9za7nGFvFmbVj6b17+Df7c
-	CCfAbPcQHKnbkhAXpZP+LlMWRoOgm7mI282KyfIfi9VrpYLXqkUbUSC1mtL1e1i9NFh1eA
-	cNBr0Cm0n+gvKKFEJD8YpT1MPZENDIslPyyYUJiWMzecFdijH1SWICUJ5dUs+xZKR7MDdL
-	5Ve/vB0EfaAn8ksGbRlC5j3jEVaCcMQc7jfB9F2nHmyv0uyZarDhzWtb0eXT7IuYjFMQBu
-	vU1uGn0FHzxiMCTDrHNjqkbtOolSc/Bd5qUcLnJe0ki1bFFSQA3NZtWXSjZ84Q==
+	bh=fSGWAo4880GBGohVwH5amGuxHfsnb+vsg8Hq4o36l8E=;
+	b=LVGfKPX7sUAFB7L6oJBvHnWnrfphQztxJ6qR5ByOZRX6w5xw6n6tu0SjwCWTo2rpbrt1NB
+	3jRevzCQtipfLbVHbP8AP2WDb9GYK+AG+65mHHJ694i2hlWCfMtuhu/YSwEvfkB7IqNEtv
+	EDx7dbwss1rzMOABSP/TpZwM97LMAGZ78/Aaxv0yYAVR58BlucfoKfsxxBgEUpvZfMNuZN
+	JdHj8Xdg46R8IdM2CAXziT6lPHlkt5wmaQMHdp9v2zgAY/aGT8KAa8F+U24R49rgiGojo9
+	HNw1z2eBIj0EsBKUzNbQprlpIvYEeNx6LX/njX3Ofe8jS8fsscZAvT52VHbasw==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Tue, 17 Mar 2026 11:24:17 +0100
-Subject: [PATCH v3 14/27] mtd: spi-nor: swp: Simplify checking the
- locked/unlocked range
+Date: Tue, 17 Mar 2026 11:24:18 +0100
+Subject: [PATCH v3 15/27] mtd: spi-nor: swp: Cosmetic changes
 MIME-Version: 1.0
-Message-Id: <20260317-winbond-v6-18-rc1-spi-nor-swp-v3-14-2ca9ea4e7b9b@bootlin.com>
+Message-Id: <20260317-winbond-v6-18-rc1-spi-nor-swp-v3-15-2ca9ea4e7b9b@bootlin.com>
 References: <20260317-winbond-v6-18-rc1-spi-nor-swp-v3-0-2ca9ea4e7b9b@bootlin.com>
 In-Reply-To: <20260317-winbond-v6-18-rc1-spi-nor-swp-v3-0-2ca9ea4e7b9b@bootlin.com>
 To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
@@ -80,8 +79,8 @@ Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260317_102442_450183_CC13D1DA 
-X-CRM114-Status: GOOD (  11.74  )
+X-CRM114-CacheID: sfid-20260317_102444_955487_8D1B8FAA 
+X-CRM114-Status: GOOD (  11.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,87 +97,79 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-In both the locking/unlocking steps, at the end we verify whether we do
-not lock/unlock more than requested (in which case an error must be
-returned).
-
-While being possible to do that with very simple mask comparisons, it
-does not scale when adding extra locking features such as the CMP
-possibility. In order to make these checks slightly easier to read and
-more future proof, use existing helpers to read the (future) status
-register, extract the covered range, and compare it with very usual
-algebric comparisons.
+As a final preparation step for the introduction of CMP support, make
+a few more cosmetic changes to simplify the reading of the diff when
+adding the CMP feature. In particular, define "min_prot_len" earlier as
+it will be reused and move the definition of the "ret" variable at the
+end of the stack just because it looks better.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/spi-nor/swp.c | 25 +++++++++++++++++--------
- 1 file changed, 17 insertions(+), 8 deletions(-)
+ drivers/mtd/spi-nor/swp.c | 19 +++++++------------
+ 1 file changed, 7 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/swp.c b/drivers/mtd/spi-nor/swp.c
-index e2e423b20989..c45a9ddd5788 100644
+index c45a9ddd5788..c3dbc8832025 100644
 --- a/drivers/mtd/spi-nor/swp.c
 +++ b/drivers/mtd/spi-nor/swp.c
-@@ -198,7 +198,8 @@ static int spi_nor_sr_lock(struct spi_nor *nor, loff_t ofs, u64 len)
- 	u64 min_prot_len;
- 	int ret;
+@@ -195,14 +195,14 @@ static int spi_nor_build_sr(struct spi_nor *nor, const u8 *old_sr, u8 *new_sr,
+  */
+ static int spi_nor_sr_lock(struct spi_nor *nor, loff_t ofs, u64 len)
+ {
+-	u64 min_prot_len;
+-	int ret;
++	u64 min_prot_len = spi_nor_get_min_prot_length_sr(nor);
  	u8 status_old[1] = {}, status_new[1] = {};
--	u8 bp_mask = spi_nor_get_sr_bp_mask(nor);
-+	loff_t ofs_old, ofs_new;
-+	u64 len_old, len_new;
+ 	loff_t ofs_old, ofs_new;
+ 	u64 len_old, len_new;
  	loff_t lock_len;
  	bool can_be_top = true, can_be_bottom = nor->flags & SNOR_F_HAS_SR_TB;
  	bool use_top;
-@@ -246,10 +247,6 @@ static int spi_nor_sr_lock(struct spi_nor *nor, loff_t ofs, u64 len)
++	int ret;
+ 	u8 pow;
+ 
+ 	ret = spi_nor_read_sr(nor, nor->bouncebuf);
+@@ -236,12 +236,10 @@ static int spi_nor_sr_lock(struct spi_nor *nor, loff_t ofs, u64 len)
+ 	else
+ 		lock_len = ofs + len;
+ 
+-	if (lock_len == nor->params->size) {
++	if (lock_len == nor->params->size)
+ 		pow = (nor->flags & SNOR_F_HAS_4BIT_BP) ? GENMASK(3, 0) : GENMASK(2, 0);
+-	} else {
+-		min_prot_len = spi_nor_get_min_prot_length_sr(nor);
++	else
+ 		pow = ilog2(lock_len) - ilog2(min_prot_len) + 1;
+-	}
+ 
+ 	ret = spi_nor_build_sr(nor, status_old, status_new, pow, use_top);
  	if (ret)
- 		return ret;
- 
--	/* Don't "lock" with no region! */
--	if (!(status_new[0] & bp_mask))
--		return -EINVAL;
--
- 	/*
- 	 * Disallow further writes if WP# pin is neither left floating nor
- 	 * wrongly tied to GND (that includes internal pull-downs).
-@@ -262,8 +259,16 @@ static int spi_nor_sr_lock(struct spi_nor *nor, loff_t ofs, u64 len)
- 	if (status_new[0] == status_old[0])
- 		return 0;
- 
-+	spi_nor_get_locked_range_sr(nor, status_old, &ofs_old, &len_old);
-+	spi_nor_get_locked_range_sr(nor, status_new, &ofs_new, &len_new);
-+
-+	/* Don't "lock" with no region! */
-+	if (!len_new)
-+		return -EINVAL;
-+
- 	/* Only modify protection if it will not unlock other areas */
--	if ((status_new[0] & bp_mask) < (status_old[0] & bp_mask))
-+	if (len_old &&
-+	    (ofs_old < ofs_new || (ofs_new + len_new) < (ofs_old + len_old)))
- 		return -EINVAL;
- 
- 	return spi_nor_write_sr_and_check(nor, status_new[0]);
-@@ -279,7 +284,8 @@ static int spi_nor_sr_unlock(struct spi_nor *nor, loff_t ofs, u64 len)
- 	u64 min_prot_len;
+@@ -281,7 +279,7 @@ static int spi_nor_sr_lock(struct spi_nor *nor, loff_t ofs, u64 len)
+  */
+ static int spi_nor_sr_unlock(struct spi_nor *nor, loff_t ofs, u64 len)
+ {
+-	u64 min_prot_len;
++	u64 min_prot_len = spi_nor_get_min_prot_length_sr(nor);
  	int ret;
  	u8 status_old[1], status_new[1];
--	u8 bp_mask = spi_nor_get_sr_bp_mask(nor);
-+	loff_t ofs_old, ofs_new;
-+	u64 len_old, len_new;
- 	loff_t lock_len;
- 	bool can_be_top = true, can_be_bottom = nor->flags & SNOR_F_HAS_SR_TB;
- 	bool use_top;
-@@ -344,7 +350,10 @@ static int spi_nor_sr_unlock(struct spi_nor *nor, loff_t ofs, u64 len)
- 		return 0;
+ 	loff_t ofs_old, ofs_new;
+@@ -329,14 +327,11 @@ static int spi_nor_sr_unlock(struct spi_nor *nor, loff_t ofs, u64 len)
+ 	else
+ 		lock_len = ofs;
  
- 	/* Only modify protection if it will not lock other areas */
--	if ((status_new[0] & bp_mask) > (status_old[0] & bp_mask))
-+	spi_nor_get_locked_range_sr(nor, status_old, &ofs_old, &len_old);
-+	spi_nor_get_locked_range_sr(nor, status_new, &ofs_new, &len_new);
-+	if (len_old && len_new &&
-+	    (ofs_new < ofs_old || (ofs_old + len_old) < (ofs_new + len_new)))
- 		return -EINVAL;
+-	if (lock_len == 0) {
++	if (lock_len == 0)
+ 		pow = 0; /* fully unlocked */
+-	} else {
+-		min_prot_len = spi_nor_get_min_prot_length_sr(nor);
++	else
+ 		pow = ilog2(lock_len) - ilog2(min_prot_len) + 1;
  
- 	return spi_nor_write_sr_and_check(nor, status_new[0]);
+-	}
+-
+ 	ret = spi_nor_build_sr(nor, status_old, status_new, pow, use_top);
+ 	if (ret)
+ 		return ret;
 
 -- 
 2.51.1
