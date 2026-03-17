@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 67252F33827
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Mar 2026 14:34:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8D5CFB5EAD
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Mar 2026 14:38:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=LjPYuU4uxbO+/LcZkVlPEsT2pwAbipdosC041GCK2p4=; b=h0BfvMfD1ylYn1
-	+Uzu5auVJ2IY9T2NeRc19ke8A2hJavAKZPIb97ZRThkHBuuSSLP+9cEl6hVQINVThHl8G4xvol/2/
-	ccLj0MigEUQ6aBRGQf5ziq51TCNigc5pLjZ/f3h/4yyKVED1PZPHVcRnSKuDV7v1fqcucjBqFOIVr
-	2wiFvC+4yGrnjJw+M3EHTjOyA8yW6xcDhqaFKQM/LUZrIEPQPCrTOIlpn/h0K5AuimmUrk4yQ1CIZ
-	IXLHT6SuSMEH0TzxJ73A1JE6iQyLPeHnRuBQtl4LDpAR4YhJY3xVxPZM2jclw/+SbxwGZk5mkjlS8
-	3N22ePk/hUFNSBybmXPw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
+	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=3Z7r8C24Vc+Ty2C56oA89B64M787xxHh+BtDOBv1p8A=; b=QPaqR9a7S9vPpLUHZwpy3f131V
+	TpROjKVWiEYcCCuWDIY2ZKKT/1uqiTJmTdX6p+OoIpbP1Q1RI1rbz7ueUapAdjK12IUG60r1wnuML
+	Au07lMjndm+Bl42QwBvmFye8JQgCS/NLd1dDW44bimc0oEJIP+WuquPPgBjEOqLBz0Wdsg/wcxWsw
+	kiMjcaocyYy5CHz4xRpRCBU33AeZWiUA4KdfCVTLkbR4K8AI3RJPxiwXrN8Nb49d+JAITh43eY/0w
+	uxaKluVNxOFHn40ABirQ3Ei8i+YqG/49sk9zLl6WQBjWLKnUrLB2CNnltLdTG8/EED9AFNRNfc+g2
+	ZRPxmXvw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w2VVW-00000006cpk-43Uo;
-	Tue, 17 Mar 2026 14:34:54 +0000
-Received: from smtpout-02.galae.net ([185.246.84.56])
+	id 1w2VZJ-00000006dEG-12dR;
+	Tue, 17 Mar 2026 14:38:49 +0000
+Received: from mailout.nod.at ([116.203.167.152] helo=lithops.sigma-star.at)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w2VVU-00000006cox-1WBz
+	id 1w2VZG-00000006dDi-2GEK
 	for linux-mtd@lists.infradead.org;
-	Tue, 17 Mar 2026 14:34:54 +0000
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id AB2D61A2D3F;
-	Tue, 17 Mar 2026 14:34:50 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 78B695FC9A;
-	Tue, 17 Mar 2026 14:34:50 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 2619D10450600;
-	Tue, 17 Mar 2026 15:34:46 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1773758089; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 in-reply-to:references; bh=AB27t9Hrh8v1l+efxd9rGwee8zT4bz2+Oer3gQQO2fI=;
-	b=pPqPaEBe+JR022mSMm8YzTax1CYVXEJJstYBH/9n/RK+TN6NH+7xauD2sKhAgheF/2pkbD
-	JP8aT2j4IAweob1w7uFC00DeSGhow/E1mPqf/aT/OoLpf1EaeEnA0h4d42De7TK/CpPNxk
-	wGzx9C48G9SY1lD9J1UJLbXEG2MyeD9z+bWIV2YMO9UYY01bQ/Z2hYE/LcUs1G+ogu2V6E
-	bDR4J9JmH8HLgc3Ew6q+cfnnw5T/z0ewQVN/NhbB/5Yh0o5EVunpUJzIoA4SnRR2XZGvHH
-	u1MbCVvlNibinl4IsVzS0q/TW8zK9zcwgrRfAUmSLEddAMuw0wFknUmja6bjkA==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Richard Genoud <richard.genoud@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
- <vigneshr@ti.com>,  Chen-Yu Tsai <wens@csie.org>,  Jernej Skrabec
- <jernej.skrabec@gmail.com>,  Samuel Holland <samuel@sholland.org>,  Wentao
- Liang <vulab@iscas.ac.cn>,  Maxime Ripard <mripard@kernel.org>,  Boris
- Brezillon <bbrezillon@kernel.org>,  Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>,  linux-mtd@lists.infradead.org,
-  linux-arm-kernel@lists.infradead.org,  linux-sunxi@lists.linux.dev,
-  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 6/9] mtd: rawnand: sunxi: remove dead code
-In-Reply-To: <20260317142437.580204-7-richard.genoud@bootlin.com> (Richard
-	Genoud's message of "Tue, 17 Mar 2026 15:24:34 +0100")
-References: <20260317142437.580204-1-richard.genoud@bootlin.com>
-	<20260317142437.580204-7-richard.genoud@bootlin.com>
-User-Agent: mu4e 1.12.7; emacs 30.2
-Date: Tue, 17 Mar 2026 15:34:45 +0100
-Message-ID: <875x6ued8a.fsf@bootlin.com>
+	Tue, 17 Mar 2026 14:38:48 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 251452A8813;
+	Tue, 17 Mar 2026 15:38:42 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id JVFc-2brI84U; Tue, 17 Mar 2026 15:38:41 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id AF22DBE33F;
+	Tue, 17 Mar 2026 15:38:41 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id bGQlM34sh7um; Tue, 17 Mar 2026 15:38:41 +0100 (CET)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 770A52ABFDC;
+	Tue, 17 Mar 2026 15:38:41 +0100 (CET)
+Date: Tue, 17 Mar 2026 15:38:41 +0100 (CET)
+From: Richard Weinberger <richard@nod.at>
+To: Christoph Hellwig <hch@infradead.org>
+Cc: Kuan-Wei Chiu <visitorckw@gmail.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, 
+	chengzhihao1 <chengzhihao1@huawei.com>, 
+	jserv <jserv@ccns.ncku.edu.tw>, eleanor15x <eleanor15x@gmail.com>, 
+	marscheng <marscheng@google.com>, 
+	linux-mtd <linux-mtd@lists.infradead.org>, 
+	linux-kernel <linux-kernel@vger.kernel.org>
+Message-ID: <218787364.49542.1773758321128.JavaMail.zimbra@nod.at>
+In-Reply-To: <abljlKim3-hPngCG@infradead.org>
+References: <20260315193900.218737-1-visitorckw@gmail.com> <1295583760.42468.1773645957126.JavaMail.zimbra@nod.at> <abhGF65wCbI7CsTm@google.com> <abljlKim3-hPngCG@infradead.org>
+Subject: Re: [PATCH] lib/list_sort: introduce list_sort_nonatomic() and
+ remove dummy cmp() calls
 MIME-Version: 1.0
-X-Last-TLS-Session-Version: TLSv1.3
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF148 (Linux)/8.8.12_GA_3809)
+Thread-Topic: lib/list_sort: introduce list_sort_nonatomic() and remove dummy cmp() calls
+Thread-Index: uDEeBY8PTxKklIbTW3z36v/lSAdQYw==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260317_073452_556142_C22DCA26 
-X-CRM114-Status: UNSURE (   7.44  )
+X-CRM114-CacheID: sfid-20260317_073846_722286_65ED67FE 
+X-CRM114-Status: UNSURE (   4.67  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -78,23 +78,20 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 17/03/2026 at 15:24:34 +01, Richard Genoud <richard.genoud@bootlin.com> wrote:
-
-> sunxi_nand_ooblayout_free() is only used in a code path where
-> engine_type == NAND_ECC_ENGINE_TYPE_ON_HOST
->
-> So the other cases can be removed.
->
-> Signed-off-by: Richard Genoud <richard.genoud@bootlin.com>
-> ---
-
-Thanks! This looks much simpler and yet remains accurate.
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+PiBGb3IgVUJJRlMsIHRoaXMgcGF0Y2gg
+ZG9lc24ndCBhbHRlciB0aGUgZnJlcXVlbmN5LCB0aW1pbmcsIG9yIGJlaGF2aW9yCj4+IG9mIHRo
+ZSBjb25kX3Jlc2NoZWQoKSBjYWxscyBhdCBhbGwsIHNvIEkgYW0gY29uZmlkZW50IHRoYXQgdGhp
+cyB3b24ndAo+PiBpbnRyb2R1Y2UgYW55IHJlZ3Jlc3Npb25zLgo+IAo+IEknZCBiZSB0ZW1wdGVk
+IHRvIGRyb3AgdGhlIHdvcmthcm91bmQgYW5kIHJlbW92ZSB0aGUgY29uZF9yZXNjaGVkCj4gZnJv
+bSB1YmlmcyBnaXZlbiB0aGF0IGVudGlyZWx5IG5vbi1wcmVlbXB0aWJsZSBzY2hlZHVsaW5nIG1v
+ZGVscyBhcmUKPiBvbiB0aGVpciB3YXkgb3V0LgoKYXJtMzIgc3RpbGwgaGFzIG5vIHByZWVtcHQt
+bGF6eS4KVGhpcyBpcyBvbmUgb2YgdGhlIGJpZ2dlc3QgcGxhdGZvcm1zIHdoZXJlIFVCSUZTIGlz
+IHN0aWxsIHVzZWQuCgpUaGFua3MsCi8vcmljaGFyZAoKX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxp
+bmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4
+LW10ZC8K
