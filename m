@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0F94FD7074
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9810FD7076
 	for <linux-mtd@archiver.kernel.org>; Tue, 17 Mar 2026 10:33:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,44 +12,43 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Eq1i3Iid2u8m2e3E2d+Iv6HNX8LLaJ5kQ+Kypwe7VnA=; b=Eb5tMmM5LdHgrr
-	fxyxaFMrkxC7Vc1KZH64y/N000etQpjY35Op324kOUdUsAYuSEWy7YGBTuUDbO7xQ8CrnPRQICKqp
-	DH8uEecH8n6srhGhvAEz8LzX+Tjmney9lnmB4ardwWUwjgCqJgtU7V6jZZ+G03wAe/rLUx7EMGjx8
-	XaCUIGnPdjyhz1scatHQHR3WySF5clksy48N/eBaGNioyuq0uLtbR+Rv2b3a15ySMuZ3FHs35Yiu8
-	vrofq9WT5v9sdlsEeqDl24uHT61zO0wVBzrTiQdpMop9s3EfoBexHeplx20j6F/TE/TXId5bAFfbf
-	dMEM9hEKEe+nwXX/QoqA==;
+	List-Owner; bh=hZr0vPDnVk1Gco7JJbJxLcunM7z+cnH0U9iKnMbQa6Y=; b=ufjAOq+W45YL23
+	F+dYDEGpPC3zecqA9gPG9bm71tL692rCzuDJGbEuK1MUD+qs+dlgvAo2RRWfNDUeYFcrbSSYOebVu
+	h8YW7uJXosBmxiOPAkHSOLXB+cOFBjPRylqpOFgwHZ4ek1LD1F5n9JqizA6ju7Top5T78UGBXSXFM
+	0wNi79AZMuOwhqaoqnzSZa7ngP2Dw3m2AnTS2Z0TZSmX6HialXS+9kKaQmzY0SRhehXriPA2mxl9Q
+	INMvZykxmt3/z57Y8RMu3FQTw7IQI53GzFp0uXJ37/4IBV0CQF67abU6/+EsnwpOpWD0WPZk6BEEb
+	yrOh/B4PSZDXf7XtwNRg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w2Rjn-000000061qW-2Fx3;
+	id 1w2Rjn-000000061qQ-15Gp;
 	Tue, 17 Mar 2026 10:33:23 +0000
 Received: from smtpout-02.galae.net ([185.246.84.56])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w2Rjl-000000061ph-0B1D
+	id 1w2Rjl-000000061pi-0B0I
 	for linux-mtd@lists.infradead.org;
 	Tue, 17 Mar 2026 10:33:22 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id 189781A2E84;
-	Tue, 17 Mar 2026 10:24:50 +0000 (UTC)
+	by smtpout-02.galae.net (Postfix) with ESMTPS id F417C1A2E5D;
+	Tue, 17 Mar 2026 10:24:42 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id E2C695FC9A;
-	Tue, 17 Mar 2026 10:24:49 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id D95EB10450451;
-	Tue, 17 Mar 2026 11:24:47 +0100 (CET)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id CA4F25FC9A;
+	Tue, 17 Mar 2026 10:24:42 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 54F5C104503A6;
+	Tue, 17 Mar 2026 11:24:40 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1773743089; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1773743081; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=7/ZShnKFDMohqlPS8rHFdEyfu+4BivJefw8T/oDlCwI=;
-	b=gDEDqNMlUsolCHS1quv+HEvulyLizeJOQyEuOQB5JbEmouhDvxBkTouFH8pN1/ik3HGOj/
-	UGM5jghjoUKsHx/5dlrH9lVOXYQLjTY4cMXL/zFHloJVojteL01tcyAvXamOUKPdcdir1+
-	z2CjLdxtzm2VGpO/aBWLZvFVXAcCsFFkNxQbhfkBpo0OWJAJNv50RwbivNu0H5C0bGtXT6
-	SurouOuy4AobchJr+AaZmp6heXJENtlqfipytf4XsPQ8KwXHxy1wemPM+UiqppjtjgGrFF
-	IOx/HukZKELS/bDRmhD3o0QdBFnMtjqNHDAqsX/mgsLZv9ykN1F3eO4aZWQxBA==
+	bh=5c8b+vAxWRpFsI1z94Obh+lca7KIQv9tXkU1B1za+2E=;
+	b=EQIvQ3kFQ8pb3V6jc2K1P5Lui4fnCsGe4ytbe4BtlaZ4uzpvn3PA9he27dx1w3KG4fMC2V
+	WTvBJyi6HmCsnuRoaSCml0BAYrq/qqhmjyusHsQI5vlFdfTbJxPiuRvAVSFHej4w+cyIN4
+	bTJW6KRIO6pvk75GhsrLaqNNnAghxxpBqDxwxu3ks5PogT3CFQQRuKZSxBCPUMOuTiOTZA
+	l0XNkGFF/CzEd5WwlMJL0MPYDKyAsxyJFF5NtGjfJMYgbpHjWS3vhU3pZiHFQhHUPviVyF
+	vKtzdoIoc8E+9uzj7i/B0LWVt60bhBg+ZehQoKXv0Ow/j20611y77qIcCTngAw==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Tue, 17 Mar 2026 11:24:24 +0100
-Subject: [PATCH v3 21/27] mtd: spi-nor: Add steps for testing locking with
- CMP
+Date: Tue, 17 Mar 2026 11:24:20 +0100
+Subject: [PATCH v3 17/27] mtd: spi-nor: debugfs: Add locking support
 MIME-Version: 1.0
-Message-Id: <20260317-winbond-v6-18-rc1-spi-nor-swp-v3-21-2ca9ea4e7b9b@bootlin.com>
+Message-Id: <20260317-winbond-v6-18-rc1-spi-nor-swp-v3-17-2ca9ea4e7b9b@bootlin.com>
 References: <20260317-winbond-v6-18-rc1-spi-nor-swp-v3-0-2ca9ea4e7b9b@bootlin.com>
 In-Reply-To: <20260317-winbond-v6-18-rc1-spi-nor-swp-v3-0-2ca9ea4e7b9b@bootlin.com>
 To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
@@ -65,8 +64,8 @@ Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260317_033321_262594_DFA06A35 
-X-CRM114-Status: GOOD (  11.21  )
+X-CRM114-CacheID: sfid-20260317_033321_262463_919888CF 
+X-CRM114-Status: GOOD (  17.90  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,166 +82,206 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Extend the test coverage by giving guidelines to verify the CMP bit acts
-according to our expectations.
+The ioctl output may be counter intuitive in some cases. Asking for a
+"locked status" over a region that is only partially locked will return
+"unlocked" whereas in practice maybe the biggest part is actually
+locked.
+
+Knowing what is the real software locking state through debugfs would be
+very convenient for development/debugging purposes, hence this proposal
+for adding an extra block at the end of the file: a "locked sectors"
+array which lists every section, if it is locked or not, showing both
+the address ranges and the sizes in numbers of blocks.
+
+Here is an example of output, what is after the "sector map" is new.
+
+$ cat /sys/kernel/debug/spi-nor/spi0.0/params
+name		(null)
+id		ef a0 20 00 00 00
+size		64.0 MiB
+write size	1
+page size	256
+address nbytes	4
+flags		HAS_SR_TB | 4B_OPCODES | HAS_4BAIT | HAS_LOCK | HAS_16BIT_SR | HAS_SR_TB_BIT6 | HAS_4BIT_BP | SOFT_RESET | NO_WP
+
+opcodes
+ read		0xec
+  dummy cycles	6
+ erase		0xdc
+ program	0x34
+ 8D extension	none
+
+protocols
+ read		1S-4S-4S
+ write		1S-1S-4S
+ register	1S-1S-1S
+
+erase commands
+ 21 (4.00 KiB) [1]
+ dc (64.0 KiB) [3]
+ c7 (64.0 MiB)
+
+sector map
+ region (in hex)   | erase mask | overlaid
+ ------------------+------------+---------
+ 00000000-03ffffff |     [   3] | no
+
+locked sectors
+ region (in hex)   | status   | #blocks
+ ------------------+----------+--------
+ 00000000-03ffffff | unlocked | 1024
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
-The instructions listed in this file target people adding support for
-new chips, however here are below extra steps that I also ran with the
-same W25H512NWxxAM chip. They are here to prove core correctness.
+Here are below more examples of output with various situations. The full
+output of the "params" content has been manually removed to only show
+what has been added and how it behaves.
 
-    $ flash_lock -u /dev/mtd0
-    $ flash_lock -l /dev/mtd0 0 1008
-    $ show_sectors
-    software locked sectors
-     region (in hex)   | status   | #blocks
-     ------------------+----------+--------
-     00000000-03efffff |   locked | 1008
-     03f00000-03ffffff | unlocked | 16
-    $ flash_lock -l /dev/mtd0 0 1009
-    $ show_sectors # should not change
-    software locked sectors
-     region (in hex)   | status   | #blocks
-     ------------------+----------+--------
-     00000000-03efffff |   locked | 1008
-     03f00000-03ffffff | unlocked | 16
-    $ flash_lock -l /dev/mtd0 0 1015
-    $ show_sectors # should not change
-    software locked sectors
-     region (in hex)   | status   | #blocks
-     ------------------+----------+--------
-     00000000-03efffff |   locked | 1008
-     03f00000-03ffffff | unlocked | 16
-    $ flash_lock -l /dev/mtd0 0 1016
-    $ show_sectors # should cover more
-    software locked sectors
-     region (in hex)   | status   | #blocks
-     ------------------+----------+--------
-     00000000-03f7ffff |   locked | 1016
-     03f80000-03ffffff | unlocked | 8
-    $ flash_lock -u /dev/mtd0 $((1015 * $bs)) 1
-    $ show_sectors # should not change
-    software locked sectors
-     region (in hex)   | status   | #blocks
-     ------------------+----------+--------
-     00000000-03f7ffff |   locked | 1016
-     03f80000-03ffffff | unlocked | 8
-    $ flash_lock -u /dev/mtd0 $((1009 * $bs)) 7
-    $ show_sectors # should not change
-    software locked sectors
-     region (in hex)   | status   | #blocks
-     ------------------+----------+--------
-     00000000-03f7ffff |   locked | 1016
-     03f80000-03ffffff | unlocked | 8
-    $ flash_lock -u /dev/mtd0 $((1008 * $bs)) 8
-    $ show_sectors # range should reduce down to initial value
-    software locked sectors
-     region (in hex)   | status   | #blocks
-     ------------------+----------+--------
-     00000000-03efffff |   locked | 1008
-     03f00000-03ffffff | unlocked | 16
-
-    [Similar situations, on the other side of the device]
-
-    $ flash_lock -u /dev/mtd0
-    $ flash_lock -l /dev/mtd0 $((16 * $bs)) 1008
-    $ show_sectors
-    software locked sectors
-     region (in hex)   | status   | #blocks
-     ------------------+----------+--------
-     00000000-000fffff | unlocked | 16
-     00100000-03ffffff |   locked | 1008
-    $ flash_lock -l /dev/mtd0 $((15 * $bs)) 1009
-    $ show_sectors # should not change
-    software locked sectors
-     region (in hex)   | status   | #blocks
-     ------------------+----------+--------
-     00000000-000fffff | unlocked | 16
-     00100000-03ffffff |   locked | 1008
-    $ flash_lock -l /dev/mtd0 $((9 * $bs)) 1015
-    $ show_sectors # should not change
-    software locked sectors
-     region (in hex)   | status   | #blocks
-     ------------------+----------+--------
-     00000000-000fffff | unlocked | 16
-     00100000-03ffffff |   locked | 1008
-    $ flash_lock -l /dev/mtd0 $((8 * $bs)) 1016
-    $ show_sectors # should cover more
-    software locked sectors
-     region (in hex)   | status   | #blocks
-     ------------------+----------+--------
-     00000000-0007ffff | unlocked | 8
-     00080000-03ffffff |   locked | 1016
-    $ flash_lock -u /dev/mtd0 $((8 * $bs)) 1
-    $ show_sectors # should not change
-    software locked sectors
-     region (in hex)   | status   | #blocks
-     ------------------+----------+--------
-     00000000-0007ffff | unlocked | 8
-     00080000-03ffffff |   locked | 1016
-    $ flash_lock -u /dev/mtd0 $((8 * $bs)) 7
-    $ show_sectors # should not change
-    software locked sectors
-     region (in hex)   | status   | #blocks
-     ------------------+----------+--------
-     00000000-0007ffff | unlocked | 8
-     00080000-03ffffff |   locked | 1016
-    $ flash_lock -u /dev/mtd0 $((8 * $bs)) 8
-    $ show_sectors # range should reduce down to initial value
-    software locked sectors
-     region (in hex)   | status   | #blocks
-     ------------------+----------+--------
-     00000000-000fffff | unlocked | 16
-     00100000-03ffffff |   locked | 1008
+$ flash_lock -l /dev/mtd0 0x3f00000 16
+$ cat /sys/kernel/debug/spi-nor/spi0.0/params
+locked sectors
+ region (in hex)   | status   | #blocks
+ ------------------+----------+--------
+ 00000000-03efffff | unlocked | 1008
+ 03f00000-03ffffff |   locked | 16
+$
+$ flash_lock -u /dev/mtd0 0x3f00000 8
+$ cat /sys/kernel/debug/spi-nor/spi0.0/params
+locked sectors
+ region (in hex)   | status   | #blocks
+ ------------------+----------+--------
+ 00000000-03f7ffff | unlocked | 1016
+ 03f80000-03ffffff |   locked | 8
+$
+$ flash_lock -u /dev/mtd0
+$ cat /sys/kernel/debug/spi-nor/spi0.0/params
+locked sectors
+ region (in hex)   | status   | #blocks
+ ------------------+----------+--------
+ 00000000-03ffffff | unlocked | 1024
+$
+$ flash_lock -l /dev/mtd0
+$ cat /sys/kernel/debug/spi-nor/spi0.0/params
+locked sectors
+ region (in hex)   | status   | #blocks
+ ------------------+----------+--------
+ 00000000-03ffffff |   locked | 1024
+$
+$ flash_lock -u /dev/mtd0 0x20000 1022
+$ cat /sys/kernel/debug/spi-nor/spi0.0/params
+locked sectors
+ region (in hex)   | status   | #blocks
+ ------------------+----------+--------
+ 00000000-0001ffff |   locked | 2
+ 00020000-03ffffff | unlocked | 1022
 ---
- Documentation/driver-api/mtd/spi-nor.rst | 36 ++++++++++++++++++++++++++++++++
- 1 file changed, 36 insertions(+)
+ drivers/mtd/spi-nor/core.h    |  4 ++++
+ drivers/mtd/spi-nor/debugfs.c | 22 ++++++++++++++++++++++
+ drivers/mtd/spi-nor/swp.c     | 11 +++++++----
+ 3 files changed, 33 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/driver-api/mtd/spi-nor.rst b/Documentation/driver-api/mtd/spi-nor.rst
-index 4755eb75fe5e..ec46bba8297a 100644
---- a/Documentation/driver-api/mtd/spi-nor.rst
-+++ b/Documentation/driver-api/mtd/spi-nor.rst
-@@ -331,3 +331,39 @@ section, after the ``---`` marker.
-      ------------------+----------+--------
-      00000000-0000ffff |   locked | 1
-      00010000-03ffffff | unlocked | 1023
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index 091eb934abe4..99ed6c54b90f 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -707,6 +707,10 @@ static inline bool spi_nor_needs_sfdp(const struct spi_nor *nor)
+ 	return !nor->info->size;
+ }
+ 
++u64 spi_nor_get_min_prot_length_sr(struct spi_nor *nor);
++void spi_nor_get_locked_range_sr(struct spi_nor *nor, const u8 *sr, loff_t *ofs, u64 *len);
++bool spi_nor_is_locked_sr(struct spi_nor *nor, loff_t ofs, u64 len, const u8 *sr);
 +
-+   If the flash features a Complement (CMP) bit, we can protect with
-+   more granularity above half of the capacity. Let's lock all but one
-+   block, then unlock one more block::
+ #ifdef CONFIG_DEBUG_FS
+ void spi_nor_debugfs_register(struct spi_nor *nor);
+ void spi_nor_debugfs_shutdown(void);
+diff --git a/drivers/mtd/spi-nor/debugfs.c b/drivers/mtd/spi-nor/debugfs.c
+index d0191eb9f879..821fbc9587dc 100644
+--- a/drivers/mtd/spi-nor/debugfs.c
++++ b/drivers/mtd/spi-nor/debugfs.c
+@@ -77,10 +77,12 @@ static void spi_nor_print_flags(struct seq_file *s, unsigned long flags,
+ static int spi_nor_params_show(struct seq_file *s, void *data)
+ {
+ 	struct spi_nor *nor = s->private;
++	unsigned int min_prot_len = spi_nor_get_min_prot_length_sr(nor);
+ 	struct spi_nor_flash_parameter *params = nor->params;
+ 	struct spi_nor_erase_map *erase_map = &params->erase_map;
+ 	struct spi_nor_erase_region *region = erase_map->regions;
+ 	const struct flash_info *info = nor->info;
++	loff_t lock_start, lock_length;
+ 	char buf[16], *str;
+ 	unsigned int i;
+ 
+@@ -159,6 +161,26 @@ static int spi_nor_params_show(struct seq_file *s, void *data)
+ 			   region[i].overlaid ? "yes" : "no");
+ 	}
+ 
++	seq_puts(s, "\nlocked sectors\n");
++	seq_puts(s, " region (in hex)   | status   | #blocks\n");
++	seq_puts(s, " ------------------+----------+--------\n");
 +
-+    root@1:~# all_but_one=$((($size / $bs) - 1))
-+    root@1:~# flash_lock -u /dev/mtd0
-+    root@1:~# flash_lock -l /dev/mtd0 $bs $all_but_one # all but the first
-+    root@1:~# show_sectors
-+    software locked sectors
-+     region (in hex)   | status   | #blocks
-+     ------------------+----------+--------
-+     00000000-0000ffff | unlocked | 1
-+     00010000-03ffffff |   locked | 1023
-+    root@1:~# flash_lock -u /dev/mtd0 $bs 1 # all but the two first
-+    root@1:~# show_sectors
-+    software locked sectors
-+     region (in hex)   | status   | #blocks
-+     ------------------+----------+--------
-+     00000000-0001ffff | unlocked | 2
-+     00020000-03ffffff |   locked | 1022
-+    root@1:~# flash_lock -u /dev/mtd0
-+    root@1:~# flash_lock -l /dev/mtd0 0 $all_but_one # same from the other side
-+    root@1:~# show_sectors
-+    software locked sectors
-+     region (in hex)   | status   | #blocks
-+     ------------------+----------+--------
-+     00000000-03feffff |   locked | 1023
-+     03ff0000-03ffffff | unlocked | 1
-+    root@1:~# flash_lock -u /dev/mtd0 $(($size - (2 * $bs))) 1 # all but two
-+    root@1:~# show_sectors
-+    software locked sectors
-+     region (in hex)   | status   | #blocks
-+     ------------------+----------+--------
-+     00000000-03fdffff |   locked | 1022
-+     03fe0000-03ffffff | unlocked | 2
++	spi_nor_get_locked_range_sr(nor, nor->dfs_sr_cache, &lock_start, &lock_length);
++	if (!lock_length || lock_length == params->size) {
++		seq_printf(s, " %08llx-%08llx | %s | %llu\n", 0ULL, params->size - 1,
++			   lock_length ? "  locked" : "unlocked", params->size / min_prot_len);
++	} else if (!lock_start) {
++		seq_printf(s, " %08llx-%08llx | %s | %llu\n", 0ULL, lock_length - 1,
++			   "  locked", lock_length / min_prot_len);
++		seq_printf(s, " %08llx-%08llx | %s | %llu\n", lock_length, params->size - 1,
++			   "unlocked", (params->size - lock_length) / min_prot_len);
++	} else {
++		seq_printf(s, " %08llx-%08llx | %s | %llu\n", 0ULL, lock_start - 1,
++			   "unlocked", lock_start / min_prot_len);
++		seq_printf(s, " %08llx-%08llx | %s | %llu\n", lock_start, params->size - 1,
++			   "  locked", lock_length / min_prot_len);
++	}
++
+ 	return 0;
+ }
+ DEFINE_SHOW_ATTRIBUTE(spi_nor_params);
+diff --git a/drivers/mtd/spi-nor/swp.c b/drivers/mtd/spi-nor/swp.c
+index 7a6c2b8ef921..8de8459e8e90 100644
+--- a/drivers/mtd/spi-nor/swp.c
++++ b/drivers/mtd/spi-nor/swp.c
+@@ -32,7 +32,7 @@ static u8 spi_nor_get_sr_tb_mask(struct spi_nor *nor)
+ 		return SR_TB_BIT5;
+ }
+ 
+-static u64 spi_nor_get_min_prot_length_sr(struct spi_nor *nor)
++u64 spi_nor_get_min_prot_length_sr(struct spi_nor *nor)
+ {
+ 	unsigned int bp_slots, bp_slots_needed;
+ 	/*
+@@ -53,8 +53,8 @@ static u64 spi_nor_get_min_prot_length_sr(struct spi_nor *nor)
+ 		return sector_size;
+ }
+ 
+-static void spi_nor_get_locked_range_sr(struct spi_nor *nor, const u8 *sr, loff_t *ofs,
+-					u64 *len)
++void spi_nor_get_locked_range_sr(struct spi_nor *nor, const u8 *sr, loff_t *ofs,
++				 u64 *len)
+ {
+ 	u64 min_prot_len;
+ 	u8 bp_mask = spi_nor_get_sr_bp_mask(nor);
+@@ -112,7 +112,7 @@ static bool spi_nor_check_lock_status_sr(struct spi_nor *nor, loff_t ofs,
+ 		return (ofs >= lock_offs_max) || (offs_max <= lock_offs);
+ }
+ 
+-static bool spi_nor_is_locked_sr(struct spi_nor *nor, loff_t ofs, u64 len, const u8 *sr)
++bool spi_nor_is_locked_sr(struct spi_nor *nor, loff_t ofs, u64 len, const u8 *sr)
+ {
+ 	return spi_nor_check_lock_status_sr(nor, ofs, len, sr, true);
+ }
+@@ -410,6 +410,9 @@ static int spi_nor_sr_is_locked(struct spi_nor *nor, loff_t ofs, u64 len)
+  * -is_locked(): Checks if the region is *fully* locked, returns false otherwise.
+  *               This feeback may be misleading because users may get an "unlocked"
+  *               status even though a subpart of the region is effectively locked.
++ *
++ * If in doubt during development, check-out the debugfs output which tries to
++ * be more user friendly.
+  */
+ static const struct spi_nor_locking_ops spi_nor_sr_locking_ops = {
+ 	.lock = spi_nor_sr_lock,
 
 -- 
 2.51.1
