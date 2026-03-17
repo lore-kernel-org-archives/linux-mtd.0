@@ -4,67 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28674F3382A
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Mar 2026 09:33:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DCD3DFD7070
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Mar 2026 10:19:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=t9srZMTRjFEKOl4ZHoOgW01H9dY/AIl4eobVt0EZdWc=; b=xFHXhoNz+R+NSE
-	7T1Steb0gEDRpTsYdRKT2MWeA+ExqF6ytZ8oHrAK9ywqIdZ5+hPdA1+44KXLGjCvF8c24g3kECtWw
-	gMl8aiU8YrsngHhe8RgE3UBAB7HUy6e8H4LokswRFrs9dsqjYjz8nOVhCdsms6NGT07Y7DtjVgzRs
-	7aXK5IB577HhBMMylO4u2ihPctPDbH0rXQ48lHdxbfZFE+rEkK3jC4YViAxqu27z9bxgwF0rYwUtf
-	LVyyXiQhvA5MQOQoVzhi7Yn7GBGYiAzTIoIJ3dEeJ5w3f7S++keFA3DK92jsOR1TEO4alGJEyK7VR
-	tEB6v+pAPd7BxSTrbceg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=em54FDtyWXZ3eUAIcBQJBMIxYC+DTK/XNp3cnG0VPSA=; b=viI5rYHhuOsNJ6
+	9ucCC+OL+9V2eL18ZrMIpkCfJRCTHC2GPKaHljAiHXePDGNhLn9NkiXRaJ9qGQxC9wyNN45nQUpL3
+	ulZmtCWlQW0LYa8VSd0TKMHmfdnLbOJ9X299hceLy3t36dm9Njm1/GXL9Dr1g+r4USNp51+zpMER8
+	Fx6a0cHNepC3ub8JNt2pDP0AFPlC+8g3xPqkEnuWrfQ6NU2CxQzdMZnsP09FyxhW3+IYFZmsNKdSQ
+	9x4gOZLkhfVN6ZZ5zq7lQsdhaqKwDi9lz0iYINFNgZfGoPYHP1AezlWyuiJsS6jQntsGmmwbW1vbS
+	GMWqA+ShTbGjisigra5Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w2QoD-00000005tlk-358F;
-	Tue, 17 Mar 2026 09:33:53 +0000
-Received: from smtpout-03.galae.net ([185.246.85.4])
+	id 1w2RVs-00000005yOc-0fEy;
+	Tue, 17 Mar 2026 10:19:00 +0000
+Received: from smtpout-04.galae.net ([185.171.202.116])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w2QoA-00000005tkC-0cou
+	id 1w2RVp-00000005yOG-0HxL
 	for linux-mtd@lists.infradead.org;
-	Tue, 17 Mar 2026 09:33:51 +0000
+	Tue, 17 Mar 2026 10:18:59 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id C18E24E42629;
-	Tue, 17 Mar 2026 09:33:45 +0000 (UTC)
+	by smtpout-04.galae.net (Postfix) with ESMTPS id B5B1FC55055
+	for <linux-mtd@lists.infradead.org>; Tue, 17 Mar 2026 10:19:17 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 8F7295FC9A;
-	Tue, 17 Mar 2026 09:33:45 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id DD3F810450443;
-	Tue, 17 Mar 2026 10:33:43 +0100 (CET)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id A8A095FC9A;
+	Tue, 17 Mar 2026 10:18:53 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id A2620104503AE;
+	Tue, 17 Mar 2026 11:18:48 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1773740025; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=ZH2Xz8ShbrJwPAntCFRQ4Yi2mvxVhWbaPLwCb64VsEE=;
-	b=V4GSA3zuzKFVa9iObHPB6hI9VaYSqiyEmM2svhkMTmUT0pv+/8d11nB5Hsz0+Ry5oY2jJu
-	EZz9YgqK+I5OD6O9+GjXBIuiVC8aH2zZCJ359/1br9p4AoLPqsKzoWyw8yfehUf3JWWSMe
-	3+Ok6enp32jL0HRoIDCJcPDZDJGqD6rghLZoy0F1/9YqzKO6QEt9K35zqWVZ809lGlMyWU
-	HH5/d2LwNDoNsHwLK8AZlBs3a1lNWYS1cOD+oGlWeCKgOCDZhxKvfrtpEvfGTc+ljYC64G
-	9tscOTPAkPgZCn7HrulvR2JdpmSHXdeesQkbUwg/tg7Gf/19DIC72zKXAgDNSA==
+	t=1773742732; h=from:subject:date:message-id:to:cc:mime-version:
+	 content-transfer-encoding; bh=4431+403VgIMOFb1WnJXNwOIWwdeLzJGBbwjHIdj18M=;
+	b=fkCP15LEhQo8MK56RIRXFqlDzhkbVTelzf1BlfscgR4iwwc5mdRvPbItLYg9/oUJF7it5a
+	H8JeGJMpAdgida0koLDGy3aoxq1hRyJ0msVJ17Xap7ZutsO8ayh2+q/vVyj/wm2hcleW0D
+	Uf4ZrFNso1jSQA6/BjmQqMH8H+fl/GdpDAj+CQfVqKd3o3f5OWrlJT0n9mTisQptEOnfJw
+	OIboTUBBoHwV4VzXjrmn/RmzHz7DTut4kavbgBM5ZjH7KJKMihAxGLaHhWf9yp53HwIt/E
+	mcWAVqpqHl/Ea/rn5h/BEaK5xr3mAje7IYC5eWSyPp2jfoml0Zjps61oW/WGgw==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
- <vigneshr@ti.com>,  Pratyush Yadav <pratyush@kernel.org>,  Michael Walle
- <michael@walle.cc>,  linux-mtd@lists.infradead.org,  Jakub Czapiga
- <czapiga@google.com>,  Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH 2/2] mtd: spi-nor: Rename spi_nor_spimem_check_op()
-In-Reply-To: <230c1e00-25c2-44f7-afa5-a8ccbcf145db@linaro.org> (Tudor
-	Ambarus's message of "Tue, 10 Mar 2026 11:54:03 +0200")
-References: <20260108121430.1096844-1-miquel.raynal@bootlin.com>
-	<20260108121430.1096844-2-miquel.raynal@bootlin.com>
-	<230c1e00-25c2-44f7-afa5-a8ccbcf145db@linaro.org>
-User-Agent: mu4e 1.12.7; emacs 30.2
-Date: Tue, 17 Mar 2026 10:33:43 +0100
-Message-ID: <87ms06er60.fsf@bootlin.com>
+To: Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <michael@walle.cc>,
+	<linux-mtd@lists.infradead.org>
+Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Cheng Ming Lin <chengminglin@mxic.com.tw>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	stable@vger.kernel.org,
+	Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Takahiro Kuwano <takahiro.kuwano@infineon.com>
+Subject: [PATCH v2] mtd: spi-nor: Fix RDCR controller capability core check
+Date: Tue, 17 Mar 2026 11:18:42 +0100
+Message-ID: <20260317101842.319656-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.51.1
 MIME-Version: 1.0
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260317_023350_392965_9AB1D8EE 
-X-CRM114-Status: UNSURE (   7.64  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260317_031857_283929_CB36BCC5 
+X-CRM114-Status: GOOD (  16.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,21 +75,65 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Cj4+IC1zdGF0aWMgaW50IHNwaV9ub3Jfc3BpbWVtX2NoZWNrX29wKHN0cnVjdCBzcGlfbm9yICpu
-b3IsCj4+IC0JCQkJICAgc3RydWN0IHNwaV9tZW1fb3AgKm9wKQo+PiArc3RhdGljIGludCBzcGlf
-bm9yX3NwaW1lbV9jaGVja19wYWdlX29wKHN0cnVjdCBzcGlfbm9yICpub3IsCj4+ICsJCQkJCXN0
-cnVjdCBzcGlfbWVtX29wICpvcCkKPgo+IHBhZ2UgaXMgYSBiaXQgbWlzbGVhZGluZyBhcyBpdCBj
-YW4gaW5kaWNhdGUgaXQncyB1c2VkIGp1c3QgZm9yIHBhZ2UKPiBwcm9ncmFtcy4gV2UgbmVlZCB0
-byBmb2N1cyBvbiBvcGVyYXRpb25zIHRoYXQgbmVlZCBhZGRyZXNzIGJ5dGVzLAo+IHJlYWRzLCBw
-cCwgcGFnZSBzY3J1YiwgZXJhc2UsIHdyaXRlL3JlYWQgYW55IHJlZ2lzdGVyLCBldGMuCgpUaGlz
-IGhlbHBlciBpcyBvbmx5IHVzZWQgZm9yIHJlYWRzIGFuZCBwYWdlIHByb2dyYW1zLiBUaGUgcG9p
-bnQgaXMKdG8gbm90IHVzZSBpdCB3aGVuIHJlYWRpbmcvd3JpdGluZyByZWdpc3RlcnMuCgpXaGF0
-IGFib3V0IHNwaV9ub3Jfc3BpbWVtX2NoZWNrX2lvX29wKCkgPyBvciBfaW9yd19vcCgpID8KClRo
-YW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlz
-dHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Commit 5008c3ec3f89 ("mtd: spi-nor: core: Check read CR support") adds a
+controller check to make sure the core will not use CR reads on
+controllers not supporting them. The approach is valid but the fix is
+incorrect. Unfortunately, the author could not catch it, because the
+expected behavior was met. The patch indeed drops the RDCR capability,
+but it does it for all controllers!
+
+The issue comes from the use of spi_nor_spimem_check_op() which is an
+internal helper dedicated to check read/write operations only, despite
+its generic name.
+
+This helper looks for the biggest number of address bytes that can be
+used for a page operation and tries 4 then 3. It then calls the usual
+spi-mem helpers to do the checks. These will always fail because there
+is now an inconsistency: the address cycles are forced to 4 (then 3)
+bytes, but the bus width during the address cycles rightfully remains
+0. There is a non-zero address length but a zero address bus width,
+which is an invalid combination.
+
+The correct check in this case is to directly call spi_mem_supports_op()
+which doesn't messes up with the operation content.
+
+Fixes: 5008c3ec3f89 ("mtd: spi-nor: core: Check read CR support")
+Cc: stable@vger.kernel.org
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Acked-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+Acked-by: Takahiro Kuwano <takahiro.kuwano@infineon.com>
+Reviewed-by: Pratyush Yadav <pratyush@kernel.org>
+---
+Changes in v2:
+* Add precisions about how it fails.
+* Collect tags.
+* Mention reads/writes instead of page reads/page writes.
+---
+ drivers/mtd/spi-nor/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 8ffeb41c3e08..13201908a69f 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -2466,7 +2466,7 @@ spi_nor_spimem_adjust_hwcaps(struct spi_nor *nor, u32 *hwcaps)
+ 
+ 		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
+ 
+-		if (spi_nor_spimem_check_op(nor, &op))
++		if (!spi_mem_supports_op(nor->spimem, &op))
+ 			nor->flags |= SNOR_F_NO_READ_CR;
+ 	}
+ }
+-- 
+2.51.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
