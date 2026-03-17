@@ -4,51 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A143FD7072
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Mar 2026 10:24:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01830FD7072
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Mar 2026 10:24:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Ir3Fhm7E27zW8TsPftwAqDXVAdpJIkmVFCkEDxF4mFY=; b=02yFoAoCO1ucVR
-	6To7CebllhQ6z8//nJSuwZijInXeSvr6kmN1x6R3JBDR3YuIes2B4GEfz9Bz9Fivj+H8x7EyXbIbH
-	ySREwHGqc/kir5Wnp7HDA7DXZ89M2sewpXv4te2IDyH/SQM9QGcNDpJDUZiLMwu2y/jaYv2oiMv15
-	4mH8R0YNR3llfnT6Bxfeh6xlEFkYehBgUmZMCraJvIaBFgwMoJqXMKVjfaT1h9UrmfXVHIQIWH/i/
-	Lpn9qRnSITnc8/21s6T1eLwLO9VIQjp1a9MpYf3dFeNOv26z3a/Bw3y+Lmrg62wQrlolBDxSJPIkh
-	MkSArINIHG5XNCqT+HEQ==;
+	List-Owner; bh=9DYNS2t9pxcRExz0/n1cfOPkPfVJl5rT7LLM+FbHIJ0=; b=GBWB9Lop4LMfCS
+	YR36b+tmUiKwM97uOwu0ugMkjKznJF/QykTRtDWePvBZRbmcWNrWA8j/CGqaaT811b0cCYwJ0++RI
+	SHOuRTD2ZMKdOs2IsL5gOsMZdZx2PTOrL1SjUcPQW5ReqZ0ctFA1L8FsqkYal0vuTtOQun+6Uz73o
+	43PFxPd2Q0ZIiDG6X2MIGx+h0qo94UdEIxK/F2H5QFy+um9HlYvYu/1l1vBjejvu9qq1fJkzjod6X
+	EAgEFYxF2w8ghe4aRQTVf1rXvjG1cgub5EzgzOw3L2tfo1TCjT/ZT7WuOfmTSwOldRxuRnDLLo8vJ
+	6HiGRRxeQwy+OnvdYUmg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w2RbJ-00000005zey-445b;
-	Tue, 17 Mar 2026 10:24:37 +0000
-Received: from smtpout-04.galae.net ([185.171.202.116])
+	id 1w2RbN-00000005zjd-1iIC;
+	Tue, 17 Mar 2026 10:24:41 +0000
+Received: from smtpout-02.galae.net ([185.246.84.56])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w2RbH-00000005zXn-0edY
+	id 1w2RbH-00000005zZn-2qT9
 	for linux-mtd@lists.infradead.org;
-	Tue, 17 Mar 2026 10:24:36 +0000
+	Tue, 17 Mar 2026 10:24:37 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id 6941DC55055;
-	Tue, 17 Mar 2026 10:24:56 +0000 (UTC)
+	by smtpout-02.galae.net (Postfix) with ESMTPS id 46C291A2DAB;
+	Tue, 17 Mar 2026 10:24:34 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 6E7D95FC9A;
-	Tue, 17 Mar 2026 10:24:32 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 550AD10450458;
-	Tue, 17 Mar 2026 11:24:30 +0100 (CET)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 1D77B5FC9A;
+	Tue, 17 Mar 2026 10:24:34 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id D309810450459;
+	Tue, 17 Mar 2026 11:24:31 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1773743071; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1773743073; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=Ec0kbPx+edwoqApwKlNsfKYC2JUdHu2CV9kwwUFOJtw=;
-	b=vo3ID7tL65bSVLiFSYDKEvzPrXAoJKJjNr1TWvmprROuC5UJz9uGirrLnMI7lXSyU+m4/i
-	vY3GCXYKvH49YF85+BVBaXI2AxEn0tuexxwUuiywySv5/MHfJel4X0+4+Jq/ZpkrM9b4pF
-	LbwNuGC3xTizmoiVfSWuQK0E0uiO4/4QenN1VqDvqVf1rEFAvFMJV7UL/i10LPCL+EivZY
-	w454Ah5DUgdn+bScI8N/XSzSS6FTU68+wPpSeio2oV3/COjZJcYc1+xYt2+MekhWm4e8Fa
-	MDGP/K2RJhAPDl6WZzadEXm9bJSoqY+46mSrYbF5KKJNeVJNR4Zv+HvIa6PE2g==
+	bh=oqqmuaxM0JPFUFPYjxJGr40Kx4IWxVfbQQsEuyrgdv8=;
+	b=eqArXNxlvSUirqG7WYzTJZP+wQBeFXCc8W2m/+Z9s8KRjGyQgqTAJ2KB37RTOmEG/4aPyF
+	h0ZrROygWdEjQAXaiWN0IzdCvoQfz/LQSpKtBVFrA0HWSriJg30UPeenfpRyg71WaryuJf
+	G0bwKlryHgfGbsKEY357O1YeuX9LtWSEJKD++XbVzENBpyy4QYZJ3I1V14Gsa9Og+LmBtm
+	qg5j2oFMa7iZ2dcILDNBGu2OdDhCeaXxPCsAg2QjKpJmPYkmHI3t7vvEftaskF6S1P3bRP
+	lrgrv4xFPY1TgrA6kKkU9GV7T0vs3mEG8f4tBvGjwZIPD1XmHA+Ow0fRCN1qow==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Tue, 17 Mar 2026 11:24:14 +0100
-Subject: [PATCH v3 11/27] mtd: spi-nor: swp: Rename a mask
+Date: Tue, 17 Mar 2026 11:24:15 +0100
+Subject: [PATCH v3 12/27] mtd: spi-nor: swp: Create a TB intermediate
+ variable
 MIME-Version: 1.0
-Message-Id: <20260317-winbond-v6-18-rc1-spi-nor-swp-v3-11-2ca9ea4e7b9b@bootlin.com>
+Message-Id: <20260317-winbond-v6-18-rc1-spi-nor-swp-v3-12-2ca9ea4e7b9b@bootlin.com>
 References: <20260317-winbond-v6-18-rc1-spi-nor-swp-v3-0-2ca9ea4e7b9b@bootlin.com>
 In-Reply-To: <20260317-winbond-v6-18-rc1-spi-nor-swp-v3-0-2ca9ea4e7b9b@bootlin.com>
 To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
@@ -64,8 +65,9 @@ Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260317_032435_471392_7B5FF22E 
-X-CRM114-Status: GOOD (  11.93  )
+X-CRM114-CacheID: sfid-20260317_032435_875367_EFD6970C 
+X-CRM114-Status: UNSURE (   9.56  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,109 +84,35 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-"mask" is not very descriptive when we already manipulate two masks, and
-soon will manipulate three. Rename it "bp_mask" to align with the
-existing "tb_mask" and soon "cmp_mask".
+Ease the future reuse of the tb (Top/Bottom) boolean by creating an
+intermediate variable.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/spi-nor/swp.c | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+ drivers/mtd/spi-nor/swp.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/spi-nor/swp.c b/drivers/mtd/spi-nor/swp.c
-index af6e577d9b42..66f85826ba0d 100644
+index 66f85826ba0d..f068cb9c8f6d 100644
 --- a/drivers/mtd/spi-nor/swp.c
 +++ b/drivers/mtd/spi-nor/swp.c
-@@ -57,9 +57,9 @@ static void spi_nor_get_locked_range_sr(struct spi_nor *nor, const u8 *sr, loff_
- 					u64 *len)
- {
- 	u64 min_prot_len;
--	u8 mask = spi_nor_get_sr_bp_mask(nor);
-+	u8 bp_mask = spi_nor_get_sr_bp_mask(nor);
+@@ -60,6 +60,7 @@ static void spi_nor_get_locked_range_sr(struct spi_nor *nor, const u8 *sr, loff_
+ 	u8 bp_mask = spi_nor_get_sr_bp_mask(nor);
  	u8 tb_mask = spi_nor_get_sr_tb_mask(nor);
--	u8 bp, val = sr[0] & mask;
-+	u8 bp, val = sr[0] & bp_mask;
+ 	u8 bp, val = sr[0] & bp_mask;
++	bool tb = (nor->flags & SNOR_F_HAS_SR_TB) ? sr[0] & tb_mask : 0;
  
  	if (nor->flags & SNOR_F_HAS_SR_BP3_BIT6 && val & SR_BP3_BIT6)
  		val = (val & ~SR_BP3_BIT6) | SR_BP3;
-@@ -160,7 +160,7 @@ static int spi_nor_sr_lock(struct spi_nor *nor, loff_t ofs, u64 len)
- 	u64 min_prot_len;
- 	int ret;
- 	u8 status_old[1] = {}, status_new[1] = {};
--	u8 mask = spi_nor_get_sr_bp_mask(nor);
-+	u8 bp_mask = spi_nor_get_sr_bp_mask(nor);
- 	u8 tb_mask = spi_nor_get_sr_tb_mask(nor);
- 	u8 pow, val;
- 	loff_t lock_len;
-@@ -199,7 +199,7 @@ static int spi_nor_sr_lock(struct spi_nor *nor, loff_t ofs, u64 len)
- 		lock_len = ofs + len;
+@@ -79,7 +80,7 @@ static void spi_nor_get_locked_range_sr(struct spi_nor *nor, const u8 *sr, loff_
+ 	if (*len > nor->params->size)
+ 		*len = nor->params->size;
  
- 	if (lock_len == nor->params->size) {
--		val = mask;
-+		val = bp_mask;
- 	} else {
- 		min_prot_len = spi_nor_get_min_prot_length_sr(nor);
- 		pow = ilog2(lock_len) - ilog2(min_prot_len) + 1;
-@@ -208,15 +208,15 @@ static int spi_nor_sr_lock(struct spi_nor *nor, loff_t ofs, u64 len)
- 		if (nor->flags & SNOR_F_HAS_SR_BP3_BIT6 && val & SR_BP3)
- 			val = (val & ~SR_BP3) | SR_BP3_BIT6;
- 
--		if (val & ~mask)
-+		if (val & ~bp_mask)
- 			return -EINVAL;
- 
- 		/* Don't "lock" with no region! */
--		if (!(val & mask))
-+		if (!(val & bp_mask))
- 			return -EINVAL;
- 	}
- 
--	status_new[0] = (status_old[0] & ~mask & ~tb_mask) | val;
-+	status_new[0] = (status_old[0] & ~bp_mask & ~tb_mask) | val;
- 
- 	/*
- 	 * Disallow further writes if WP# pin is neither left floating nor
-@@ -234,7 +234,7 @@ static int spi_nor_sr_lock(struct spi_nor *nor, loff_t ofs, u64 len)
- 		return 0;
- 
- 	/* Only modify protection if it will not unlock other areas */
--	if ((status_new[0] & mask) < (status_old[0] & mask))
-+	if ((status_new[0] & bp_mask) < (status_old[0] & bp_mask))
- 		return -EINVAL;
- 
- 	return spi_nor_write_sr_and_check(nor, status_new[0]);
-@@ -250,7 +250,7 @@ static int spi_nor_sr_unlock(struct spi_nor *nor, loff_t ofs, u64 len)
- 	u64 min_prot_len;
- 	int ret;
- 	u8 status_old[1], status_new[1];
--	u8 mask = spi_nor_get_sr_bp_mask(nor);
-+	u8 bp_mask = spi_nor_get_sr_bp_mask(nor);
- 	u8 tb_mask = spi_nor_get_sr_tb_mask(nor);
- 	u8 pow, val;
- 	loff_t lock_len;
-@@ -306,11 +306,11 @@ static int spi_nor_sr_unlock(struct spi_nor *nor, loff_t ofs, u64 len)
- 			val = (val & ~SR_BP3) | SR_BP3_BIT6;
- 
- 		/* Some power-of-two sizes may not be supported */
--		if (val & ~mask)
-+		if (val & ~bp_mask)
- 			return -EINVAL;
- 	}
- 
--	status_new[0] = (status_old[0] & ~mask & ~tb_mask) | val;
-+	status_new[0] = (status_old[0] & ~bp_mask & ~tb_mask) | val;
- 
- 	/* Don't protect status register if we're fully unlocked */
- 	if (lock_len == 0)
-@@ -324,7 +324,7 @@ static int spi_nor_sr_unlock(struct spi_nor *nor, loff_t ofs, u64 len)
- 		return 0;
- 
- 	/* Only modify protection if it will not lock other areas */
--	if ((status_new[0] & mask) > (status_old[0] & mask))
-+	if ((status_new[0] & bp_mask) > (status_old[0] & bp_mask))
- 		return -EINVAL;
- 
- 	return spi_nor_write_sr_and_check(nor, status_new[0]);
+-	if (nor->flags & SNOR_F_HAS_SR_TB && sr[0] & tb_mask)
++	if (tb)
+ 		*ofs = 0;
+ 	else
+ 		*ofs = nor->params->size - *len;
 
 -- 
 2.51.1
