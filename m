@@ -4,62 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87F4AFED9F0
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Mar 2026 17:17:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CDE4AFED9F1
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Mar 2026 17:18:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=iIXGG88AfwLnBq5GP2cKDyBNrLaKLfF/6D8gNlRhToQ=; b=waGxO8w2Us6DMT
-	TQSP2XLjV6Is/3S/UMz+0+h5nittQt7w7o+Lniiq0u7k6u5KFEabBd4mrMQ8i6/n8/RphOSR9JDO8
-	d4+/6p8VcIp5Yc3PnYuw3g0MxlT62yG3LRy2exG+oZN6fJk1X92C8Otc3Bp6IJptgv0EbMfYFGyHf
-	zoEuDJbJns9WjLFf3Fgh7WiFyx4BoQW+Dtui3LmMj1xYIKLeUN2rZKn/gy6yVBqaMg3q0QZCQqf3c
-	dV43kgg+YxqsYiKMD8+XFP9IHPyXxHWpE32o5mjpQhSDxp5pUMOZ5I1833RgIfXhW5++JV0fRgh+P
-	FVGOGB07sSAR5vsUQspQ==;
+	List-Owner; bh=ZZSoTO3uON/90M2qVziC77diMG54kPQUKPhHexQeZA0=; b=ar9c85w35QGsfq
+	o1a/2czlAx3w8Z0HK2li6EvsJw3ib++WZEvrRrZez7KNRJzW7CNfM162mQC3IOsq8ElxH/nq6p8lw
+	0bg/zFRApUjouiPLoTJIP4kITrRzCVdhOz/ScL+nlkC+6d1cxnwSnGxpHNtCIjNzcKeO3KOtxUBsJ
+	oHptjPuCTG39SXzt1U+KuO13NY2EBCWL60yoVLKo8TelBHc6yuiQb7CQ6+eOZNcKDklXWRe2c+A3A
+	SaxkSNCSWRx3R+imuBqVppExmEyvDj6BOsBcvqlLRfyjTsbKQa3W6PMXPUBMz/pM7xFIAMWPI++Dq
+	nMaNJN+8lrY358SYObSw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w2Y33-00000006uwJ-01VF;
-	Tue, 17 Mar 2026 17:17:41 +0000
-Received: from smtpout-03.galae.net ([185.246.85.4])
+	id 1w2Y4C-00000006v6K-1UUy;
+	Tue, 17 Mar 2026 17:18:52 +0000
+Received: from mail-ed1-x535.google.com ([2a00:1450:4864:20::535])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w2Y2z-00000006uvo-2wQC
+	id 1w2Y49-00000006v5y-1FpE
 	for linux-mtd@lists.infradead.org;
-	Tue, 17 Mar 2026 17:17:39 +0000
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id 164074E426D5;
-	Tue, 17 Mar 2026 17:17:34 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id DA7CC5FC9A;
-	Tue, 17 Mar 2026 17:17:33 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id B3CE110450658;
-	Tue, 17 Mar 2026 18:17:30 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1773767853; h=from:subject:date:message-id:to:cc:mime-version:
-	 content-transfer-encoding; bh=15EiClnf19RhusewSb6oQE8g0GLpia2XVIfVvm497/8=;
-	b=rR4kjMM07Z6WlgkMtP1ncX4bGSbIQs8ONxojI952qVaEjgOvs+woqZx48rpVg79dseea22
-	sJyoL++pJNHJw6JB2MtF4jKgMng3bRVD81t1ElQgkyeh5q4UYTb52WR7D39FHzWGIWYlyk
-	CmHhHgZt+f89G0WgWifQYa2I7w9cLfEFUW7jKLWXJKMQ8p1x8RTGbRLkuGzTSVTNbM5C9Y
-	qCizG/4P5FdKxCGymNFlvUhW2RgEXclwsErR/2G/IlpHI/oJS1Gxmk141//In4QWo6RJnB
-	QfoZPP7LlOv1nuuIWGcugQi3SUVEeq2Cf6lFHOGP8lJ97E1Ebvvf2Bj6GarA+A==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Richard Weinberger <richard@nod.at>,
+	Tue, 17 Mar 2026 17:18:50 +0000
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-660a293515fso11398101a12.1
+        for <linux-mtd@lists.infradead.org>; Tue, 17 Mar 2026 10:18:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1773767927; x=1774372727; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=x+NNnq7TQZcUH92fhtXl669qaHmWjEo80sBNFHMpXaQ=;
+        b=IXCGhKwi0tlAZAcytCFohtt52cM08/JWLuP+xeZ2MeJbZPPbSweMGjwMIU3lRTqaPk
+         LVRbo6qnq3jirnc9r4wWtr+y0ixs5HYVIaNUjfUnixxqeiehvOzDi57l+q7W/qsncX60
+         3/m7ysbg4EsL7izE7gTjOdoWUq+nWm6GAGc8HxizHE4KVFcmYwMubK7uWeKoNMs18mvA
+         sx1/jLSrvt1OHUBQNTu66uBiESdOSVFzerItuioG9RoRFV62kLNNYf/KGkZj0SrUuYBr
+         SEZRSpHkcBHvBeajRC9ryRYY7HHMIH7+NmzOz45EuvrD6ipsRe9MOEzvRjQbm3I1q1iT
+         bR1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1773767927; x=1774372727;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=x+NNnq7TQZcUH92fhtXl669qaHmWjEo80sBNFHMpXaQ=;
+        b=lJC94zIhKo6mXrDqnPH/ydlqp3jV6mLBiOfwXCwVKhErpKL1RweAVSMD8FrAeaQPJU
+         pq8ZaUxEbQlPFALSMlHzUOtfHfD7S2iAYbedr+iuEOgBH8OWuBWreXDqJo4Ym40EeI6h
+         r+NtiUqGLX24TfhMORW64NcfGzG7OzoksfAfRDXFwV+3Fey15EpvcRrHNy3RBXz2a9VR
+         tzLWUIBXYUmTjQP6hGrv8oUW/0CGFYIxt62pvJ9vFD8TbS1jp94RNiBLoO80tOetIiSL
+         iHfwuDGs7160WwbnTld0bPg1f7BVi8STD2HLmy1CUC0KTipYb/D/QG8ACyfB8GWy57+q
+         L0fQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUwaqKst3L814aMFt577pkIEr0QPGdgpLen8T2demKLVIdiE+KHXsRFn4QFRaNnapqZkUJzadxKvn8=@lists.infradead.org
+X-Gm-Message-State: AOJu0YxgUcr5jj2/RqqqTPF9Q/HkR4bPZY02sovwUj1R/mkurA4GL6Kk
+	6BwVIo/B6UZCBmwLMCNWbqClo1ksG7engFhGA1Ap7SRTRwJMKV1SwYax
+X-Gm-Gg: ATEYQzz9iNJNrRoHcAW7bylInMtvawZ67agIFpz1PABql4WXqdidnCyaBj0wOdHvri6
+	YRrCKRbeqLwyx/wkj0dWquMC9yAeKOJWCRV398drtEjV0+9mG/i5d7lfQcN/JIKyOiZCsSmjYGJ
+	bkkrCNHBhLnUuwfyuzhlAVunu8tJxJUlc+MKV65qfR4kH/dckdECmYO5NIDlzJpvQdxew+46640
+	AS+ZIs9jG6KmkQtd3ytrT53fCjCrj+8CcoZo1s8W8FsQsoRa7HDVIVR32DEpwRKeKi5AtjaF9zi
+	VSdB5/PxHrALyRE4MoNd4efB7/mckcE0/L2a41oOX9rvYFmtaVq22ISLJpxKi9Qxrf5MqnzY93e
+	FWvF9fE+8D5J3i4xft7FDT4rEt4JidZyQOd940hH7m179oLPKI52Zw2h/uh6SjaCjnzCWlZFoKr
+	4gLpFu8YvdWVFAYDypR5ksNZk9bwZMPWAGggK2zx5n
+X-Received: by 2002:a17:906:7955:b0:b97:6a2a:405b with SMTP id a640c23a62f3a-b976a2a48dcmr951610866b.37.1773767926595;
+        Tue, 17 Mar 2026 10:18:46 -0700 (PDT)
+Received: from localhost ([2a02:a03f:b7dc:2b00:a97a:8551:7733:cb60])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b97f13edad8sm23641566b.6.2026.03.17.10.18.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Mar 2026 10:18:46 -0700 (PDT)
+From: Olivier Sobrie <olivier@sobrie.be>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Michal Simek <michal.simek@amd.com>,
+	Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <michael@walle.cc>,
-	<linux-mtd@lists.infradead.org>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v3] mtd: spi-nor: Rename spi_nor_spimem_check_op()
-Date: Tue, 17 Mar 2026 18:17:22 +0100
-Message-ID: <20260317171722.431171-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.51.1
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Andrea Scian <andrea.scian@dave.eu>,
+	stable@vger.kernel.org
+Subject: [PATCH v2] mtd: rawnand: pl353: make sure optimal timings are applied
+Date: Tue, 17 Mar 2026 18:18:07 +0100
+Message-ID: <20260317171807.652642-1-olivier@sobrie.be>
+X-Mailer: git-send-email 2.53.0
 MIME-Version: 1.0
-X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260317_101737_872052_E4FC0E7E 
-X-CRM114-Status: GOOD (  11.94  )
+X-CRM114-CacheID: sfid-20260317_101849_344133_4FDB4B0B 
+X-CRM114-Status: GOOD (  13.52  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,67 +101,44 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This helper really is just a little helper for internal purposes, and is
-I/O operation oriented, despite its name. It has already been misused
-in commit 5008c3ec3f89 ("mtd: spi-nor: core: Check read CR support"), so
-rename it to clarify its purpose: it is only useful for reads and page
-programs.
+Timings of the nand are adjusted by pl35x_nfc_setup_interface() but
+actually applied by the pl35x_nand_select_target() function.
+If there is only one nand chip, the pl35x_nand_select_target() will only
+apply the timings once since the test at its beginning will always be true
+after the first call to this function. As a result, the hardware will
+keep using the default timings set at boot to detect the nand chip, not
+the optimal ones.
 
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+With this patch, we program directly the new timings when
+pl35x_nfc_setup_interface() is called.
+
+Fixes: 08d8c62164a3 ("mtd: rawnand: pl353: Add support for the ARM PL353 SMC NAND controller")
+Signed-off-by: Olivier Sobrie <olivier@sobrie.be>
+Cc: stable@vger.kernel.org
 ---
-Changes in v3:
-* Propose another helper name, more explicit (*_read_pp_op).
-
 Changes in v2:
-* Propose a new helper name, not including "page" in it.
----
- drivers/mtd/spi-nor/core.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+  - added Fixes tag.
+  - added stable in Cc.
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 13201908a69f..1eee519c01e5 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -2345,15 +2345,15 @@ int spi_nor_hwcaps_pp2cmd(u32 hwcaps)
+ drivers/mtd/nand/raw/pl35x-nand-controller.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/mtd/nand/raw/pl35x-nand-controller.c b/drivers/mtd/nand/raw/pl35x-nand-controller.c
+index 947fd86ac5fa..f2c65eb7a8d9 100644
+--- a/drivers/mtd/nand/raw/pl35x-nand-controller.c
++++ b/drivers/mtd/nand/raw/pl35x-nand-controller.c
+@@ -862,6 +862,9 @@ static int pl35x_nfc_setup_interface(struct nand_chip *chip, int cs,
+ 			  PL35X_SMC_NAND_TAR_CYCLES(tmgs.t_ar) |
+ 			  PL35X_SMC_NAND_TRR_CYCLES(tmgs.t_rr);
+ 
++	writel(plnand->timings, nfc->conf_regs + PL35X_SMC_CYCLES);
++	pl35x_smc_update_regs(nfc);
++
+ 	return 0;
  }
  
- /**
-- * spi_nor_spimem_check_op - check if the operation is supported
-- *                           by controller
-+ * spi_nor_spimem_check_read_pp_op - check if a read or a page program operation is
-+ *                                   supported by controller
-  *@nor:        pointer to a 'struct spi_nor'
-  *@op:         pointer to op template to be checked
-  *
-  * Returns 0 if operation is supported, -EOPNOTSUPP otherwise.
-  */
--static int spi_nor_spimem_check_op(struct spi_nor *nor,
--				   struct spi_mem_op *op)
-+static int spi_nor_spimem_check_read_pp_op(struct spi_nor *nor,
-+					   struct spi_mem_op *op)
- {
- 	/*
- 	 * First test with 4 address bytes. The opcode itself might
-@@ -2396,7 +2396,7 @@ static int spi_nor_spimem_check_readop(struct spi_nor *nor,
- 	if (spi_nor_protocol_is_dtr(nor->read_proto))
- 		op.dummy.nbytes *= 2;
- 
--	return spi_nor_spimem_check_op(nor, &op);
-+	return spi_nor_spimem_check_read_pp_op(nor, &op);
- }
- 
- /**
-@@ -2414,7 +2414,7 @@ static int spi_nor_spimem_check_pp(struct spi_nor *nor,
- 
- 	spi_nor_spimem_setup_op(nor, &op, pp->proto);
- 
--	return spi_nor_spimem_check_op(nor, &op);
-+	return spi_nor_spimem_check_read_pp_op(nor, &op);
- }
- 
- /**
 -- 
-2.51.1
+2.53.0
 
 
 ______________________________________________________
