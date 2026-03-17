@@ -4,45 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F30CFD877D
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Mar 2026 14:22:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 97A7BFD877E
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Mar 2026 14:25:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=rnxo5ee0FHRWjUs5rr5c5ozwZUMcYq0vvLb5Mwtg/20=; b=khP/fLQ673Iigm
-	Qg/R6ABkpLhvnZBj1JHpynrtAmuFN3SmEqrdY32UXVs/YTEjTTmVwc6yRBRc38d1THL9z/ptPdrS8
-	2ZlKL2aCctSKaZ5tKc0jtkAxbFzIoRGJ4H8GWLBufgMKQhw+cJ+gjZDNWhabAgv7Iv5f7DNfUOnCX
-	0bcpC6lnHxCDIMhgGffKVd1Nlk+nzNtvCGhDLi+bX+xl7AD0s6If4QxorP0IRlrVggRgEcy1Dx0sd
-	ObxB711Ul5SVzWzPzFj0QrQdRAJ30/2dMMPSF2j+kLzxcUzNtf2WU5p0BxgGNdHbeo1RzfJb7UGGy
-	BsQ8Rip8esz3rhYaoyIg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=xUPdRyYYPXpNTg1F+pwD5xBuvmBcf9sQTt7I+wVyAaw=; b=Y4hUvSXgqF0pvI
+	4sfAYiyPyyZ7LiBimFhcZtfny4Xv1GVnjtmSZMnd90N7MDzqUYrvOP9niA4/nzBMFpgnSLRWdLz6m
+	MkhhyO+bplumPgQwo5mSSF/A/98iqsYb1ZYACTHBa8i9PWBJkaTl9DMOnictt0O22obbXSfLNohyf
+	UXIQEImv9ehdMlM9I/m1p+CnfYwDqAv1HK/5137+cUTYeYGfsfpO1GwUj5Tzvbsgn5939iJvChI/I
+	sWOyJj6gbqsUCWUaBWUpBv0/r+K07WGW0a3VgHLQHBPVNYX8wBM5wHuAzrEJ79Y6kjr0tvVQ2LLLj
+	YuvErXZe3HOjO+8j87eQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w2VJI-00000006ZOg-2FnV;
-	Tue, 17 Mar 2026 14:22:16 +0000
-Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w2VJE-00000006ZO6-1K4P;
-	Tue, 17 Mar 2026 14:22:12 +0000
-Date: Tue, 17 Mar 2026 07:22:12 -0700
-From: Christoph Hellwig <hch@infradead.org>
-To: Kuan-Wei Chiu <visitorckw@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	chengzhihao1 <chengzhihao1@huawei.com>, jserv@ccns.ncku.edu.tw,
-	eleanor15x@gmail.com, marscheng@google.com,
-	linux-mtd <linux-mtd@lists.infradead.org>,
-	linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] lib/list_sort: introduce list_sort_nonatomic() and
- remove dummy cmp() calls
-Message-ID: <abljlKim3-hPngCG@infradead.org>
-References: <20260315193900.218737-1-visitorckw@gmail.com>
- <1295583760.42468.1773645957126.JavaMail.zimbra@nod.at>
- <abhGF65wCbI7CsTm@google.com>
+	id 1w2VLu-00000006Zm5-41ez;
+	Tue, 17 Mar 2026 14:24:58 +0000
+Received: from smtpout-02.galae.net ([185.246.84.56])
+	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1w2VLq-00000006Zk4-3XRJ;
+	Tue, 17 Mar 2026 14:24:56 +0000
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-02.galae.net (Postfix) with ESMTPS id 8D77B1A2D2A;
+	Tue, 17 Mar 2026 14:24:49 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 604C45FC9A;
+	Tue, 17 Mar 2026 14:24:49 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 8AE7C104505F9;
+	Tue, 17 Mar 2026 15:24:42 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1773757488; h=from:subject:date:message-id:to:cc:mime-version:
+	 content-transfer-encoding; bh=DN78EL9T5Ru3RT9ZOEzKnpYV80b6m9rbH2jsKW98yuk=;
+	b=0Tbm+tOwnWZWD3hVCVLj6+aaoji2FfaYNAfB7ZBgC54xlBT6q26z5NiCypgNpgfJUBT6Je
+	2i4WFnjGXAQ6zgGH6GP1fytWGmgMMITuUfG7trg7lwcSQw++OI9wfM7w0k2gROe9LJcrjW
+	mn+eH6USQyS4dy7izgnTKSLNB+B/IMGqOEIVSqgANtdrEUyhOPjt+HZ3/swbmGSK7LCsdX
+	3tCrLydh46Hae9jqy+t0SCrrLAb8bhaOxfS4UmTyyCQu09+ghtc7UGVRTdmZoX65uXR3OK
+	qg4N1w278igbsyzx9C3vNhhSdCbcZTDc4reC7B/NRmtBFPTnrpFTBFjqka0/jw==
+From: Richard Genoud <richard.genoud@bootlin.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>
+Cc: Wentao Liang <vulab@iscas.ac.cn>,
+	Maxime Ripard <mripard@kernel.org>,
+	Boris Brezillon <bbrezillon@kernel.org>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	linux-mtd@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-sunxi@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	Richard Genoud <richard.genoud@bootlin.com>
+Subject: [PATCH v3 0/9] mtd: rawnand: sunxi: Fixes user data length for H6
+Date: Tue, 17 Mar 2026 15:24:28 +0100
+Message-ID: <20260317142437.580204-1-richard.genoud@bootlin.com>
+X-Mailer: git-send-email 2.47.3
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <abhGF65wCbI7CsTm@google.com>
+X-Last-TLS-Session-Version: TLSv1.3
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260317_072455_010762_3FEC5B15 
+X-CRM114-Status: GOOD (  12.53  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -59,27 +83,51 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Mar 17, 2026 at 02:04:07AM +0800, Kuan-Wei Chiu wrote:
-> I tried to dig into the history. It turns out this mechanism was
-> introduced 16 years ago in commit 835cc0c8477f ("lib: more scalable
-> list_sort()"). The commit message explicitly mentioned both XFS and
-> UBIFS as the intended users for this long-list workaround. However,
-> looking at the tree back then, XFS never actually put a cond_resched()
-> in their cmp() function. It seems UBIFS has been the sole user of this
-> trick ever since. Given that it has been this way for 16 years, it
-> seems other subsystems haven't really encountered any practical issues
-> with it.
+This series introduces the correct usage of user data length for
+H6/H616.
+If the older SoCs must use a fixed value of 4 user data bytes for each
+ECC step, the H6 can have a different value for each step.
 
-.. or it wasn't even needed in the first place.
+In the first round, the behavior was kept as the one used by A10.
+But we have multiple choices:
+- do like A10 like before (and not use all OOB)
+- do like the vendor kernel (different from A10, but not using all OOB)
+- use the whole OOB for user data bytes
 
-> For UBIFS, this patch doesn't alter the frequency, timing, or behavior
-> of the cond_resched() calls at all, so I am confident that this won't
-> introduce any regressions.
+In this second round, the third approach is implemented.
 
-I'd be tempted to drop the workaround and remove the cond_resched
-from ubifs given that entirely non-preemptible scheduling models are
-on their way out.
+The first patches are fixes/code cleaning and the last one enables using
+a variable user data length for H6/H616
 
+Changes from v2:
+- fix typos in commit messages
+- add a patch fixing typos in code comments
+- add a patch to remove some dead code in sunxi_nand_ooblayout_free()
+- add a patch to change an error prone variable name
+- maximize user data length instead of relying on vendor layout
+
+Changes from v1:
+- gather Reviewed-by/Acked-by
+- rework patch 1 subject (more a code clarification than a fix)
+- fix typo in patch 2
+- remove patch 4 Fixes since it's not really a fix
+
+Richard Genoud (9):
+  mtd: rawnand: sunxi: sunxi_nand_ooblayout_free code clarification
+  mtd: rawnand: sunxi: fix sunxi_nfc_hw_ecc_read_extra_oob
+  mtd: rawnand: sunxi: do not count BBM bytes twice
+  mtd: rawnand: sunxi: replace hard coded value by a define - take2
+  mtd: rawnand: sunxi: make the code more self-explanatory
+  mtd: rawnand: sunxi: remove dead code
+  mtd: rawnand: sunxi: change error prone variable name
+  mtd: rawnand: sunxi: fix typos in comments
+  mtd: rawnand: sunxi: introduce maximize variable user data length
+
+ drivers/mtd/nand/raw/sunxi_nand.c | 381 +++++++++++++++++++++++-------
+ 1 file changed, 294 insertions(+), 87 deletions(-)
+
+
+base-commit: 11439c4635edd669ae435eec308f4ab8a0804808
 
 ______________________________________________________
 Linux MTD discussion mailing list
