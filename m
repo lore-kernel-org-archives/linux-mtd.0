@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82A97FD7073
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1140FD7072
 	for <linux-mtd@archiver.kernel.org>; Tue, 17 Mar 2026 10:24:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,43 +12,44 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=XFz5Z6pPsbU0KAsLhO6zPZ/8rINgVMWJggU5/AWrbV8=; b=11eDi2gt2GTDM1
-	fBlgO35fgPOlpa4ZuljosZJMIZNjcqlXkitp3zWRcb1xNSLLN6zHnMkj7muGXFmkG1HGLVVPTHXDK
-	BnWgSa4xXTCon5mPyuSrLKlqmaDQvWL8fEUFmWLI9WgD1kdQDVCp9PssyO825LCwJAAs9zs76C+Gm
-	Lzi7QPVvsnjBuNGMJOEJ2Tis/v1vFRZtYwg3dnM62VHIQQpQ8grm+FaeB/zDAj6ToYL/LOv2Z0+p6
-	Pn4gRejmdLCISHw+sNKqEfOdumwgW0vaHs0j3RgjiBoUIEOgnq4PD4BIeUf0VXs6tkNtRH1mw37V/
-	FYpyGxag0YoCbEDuq2gg==;
+	List-Owner; bh=gNdiKd2q3aONv9sOW3+yz7WxdM7I0Pbdbsh3po09M1E=; b=dT+8MoQiI2UKfE
+	epx3qm1ur/OWgw4r8vzwCqR4qcBYCzqx1tBTuItzzgvrQoWC7WxbastlLSSc2tJzPA1GVLTI5ZfHG
+	DfUBNI0UeK+EQngxKyoFEUbrOmgCCH0Dj5eUeWx99lVDtOHQdvAGMlcxTu9mqC6dG3irQyyvh3RHn
+	PvOOFmtF2YjD44xsk931oyqdQFKh3iYiqRnxomUZbWR/Hr3r3nbj8yRW4jamxGX2xQYPJpijg6Iot
+	7cB1sPiXaCPLn1atOy9RUS9c9OtWF7Wal7xK4krRbH1ZXnxB9AD2D5PyjAlFQZMDz4MCbJSMw8QAZ
+	HWCtpWNmooz1UqMQT2/A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w2Rb8-00000005zPZ-1Iy0;
+	id 1w2Rb8-00000005zPx-2Yxu;
 	Tue, 17 Mar 2026 10:24:26 +0000
-Received: from smtpout-04.galae.net ([185.171.202.116])
+Received: from smtpout-03.galae.net ([185.246.85.4])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w2Rb4-00000005zLI-1s8r
+	id 1w2Rb5-00000005zN3-3Tuw
 	for linux-mtd@lists.infradead.org;
-	Tue, 17 Mar 2026 10:24:23 +0000
+	Tue, 17 Mar 2026 10:24:25 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id 78166C55056;
-	Tue, 17 Mar 2026 10:24:44 +0000 (UTC)
+	by smtpout-03.galae.net (Postfix) with ESMTPS id 646C44E4263E;
+	Tue, 17 Mar 2026 10:24:22 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 795585FC9A;
-	Tue, 17 Mar 2026 10:24:20 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 4310C104503AE;
-	Tue, 17 Mar 2026 11:24:18 +0100 (CET)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 3A1985FC9A;
+	Tue, 17 Mar 2026 10:24:22 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id F0B8B10450450;
+	Tue, 17 Mar 2026 11:24:19 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1773743059; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1773743061; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=hXc+5kjs1EF92jBqcrTSRSedlWRYjsDeVRr6sDpavVg=;
-	b=oAP6OoM4wnXZe8QPqP/R2D2+8ULChbXgKjwQLTh4fQQSGl4WPp9glOl3sYE3wNmf4CDOHV
-	FU6oITksTfbjkV3bqST9cM55oo/EqYrk8A73RYUyg+c1cTT+Xkm4gWfLkk3mNq3Gd6RCv6
-	a0xuZ5bZCU5cBQw+9xc96f5NI7/kWt7UslhCD+0pxSMR8LSVfKut3KZw01FqAn28nVVvyX
-	nysT5QgOgGXfqgYO3z5O9fOmEd229MylexMywTwvNjEt9QuxYARXsLFMvx8DmoQEbCK74g
-	Y2RuINDi1BEV5NDe3d7KP+Np2FFLsdCoXeT3ReThrte7sIFJb6FgF8PY4A+L0A==
+	bh=rre/i4KjHYI+91ZaQYrTCZUTDkibP+vKxwiQw3sQxfU=;
+	b=VON7bPAEZCIpQWCqqGVDft9kNNyuw0K+FEtWRCGExdnb2KMEz9Fhy+WRbzUGOWlfhsnY9h
+	T1OzS1kdjRaF7vOMib39VJFmDyQ100bxLs3WzAFpSGu044GehE/riOK0Jg3xfVKId829nj
+	elf1LUWuOZyXHXM+ZNCa0ILA1zO6FIYeWXWhvGrBcPeslMhV3F6aiXcvvDa403+oeXHHEa
+	sWTTqGQldbwUq2Kzu1hmeSKZTBfSymFHJIiY7dU+rp4FBNvEu0za0PPiYq7v/+x/6rJA9f
+	U3ERQbLC5MVZdccmm7hDWUAN2D8lYapE+x32fQ+L0GZQNYVcxgjCtDHx0WjeUQ==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Tue, 17 Mar 2026 11:24:07 +0100
-Subject: [PATCH v3 04/27] mtd: spi-nor: Improve opcodes documentation
+Date: Tue, 17 Mar 2026 11:24:08 +0100
+Subject: [PATCH v3 05/27] mtd: spi-nor: debugfs: Align variable access with
+ the rest of the file
 MIME-Version: 1.0
-Message-Id: <20260317-winbond-v6-18-rc1-spi-nor-swp-v3-4-2ca9ea4e7b9b@bootlin.com>
+Message-Id: <20260317-winbond-v6-18-rc1-spi-nor-swp-v3-5-2ca9ea4e7b9b@bootlin.com>
 References: <20260317-winbond-v6-18-rc1-spi-nor-swp-v3-0-2ca9ea4e7b9b@bootlin.com>
 In-Reply-To: <20260317-winbond-v6-18-rc1-spi-nor-swp-v3-0-2ca9ea4e7b9b@bootlin.com>
 To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
@@ -64,8 +65,8 @@ Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260317_032422_641054_CFF94CEC 
-X-CRM114-Status: GOOD (  10.65  )
+X-CRM114-CacheID: sfid-20260317_032424_012209_A52318AA 
+X-CRM114-Status: GOOD (  10.47  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,34 +83,28 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-There are two status registers, named 1 and 2. The current wording is
-misleading as "1" may refer to the status register ID as well as the
-number of bytes required (which, in this case can be 1 or 2).
-
-Clarify the comments by aligning them on the same pattern:
-"{read,write} status {1,2} register"
+The "params" variable is used everywhere else, align this particular
+line of the file to use "params" directly rather than the "nor" pointer.
 
 Reviewed-by: Michael Walle <mwalle@kernel.org>
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- include/linux/mtd/spi-nor.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/mtd/spi-nor/debugfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index cdcfe0fd2e7d..90a0cf583512 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -21,8 +21,8 @@
- /* Flash opcodes. */
- #define SPINOR_OP_WRDI		0x04	/* Write disable */
- #define SPINOR_OP_WREN		0x06	/* Write enable */
--#define SPINOR_OP_RDSR		0x05	/* Read status register */
--#define SPINOR_OP_WRSR		0x01	/* Write status register 1 byte */
-+#define SPINOR_OP_RDSR		0x05	/* Read status register 1 */
-+#define SPINOR_OP_WRSR		0x01	/* Write status register 1 */
- #define SPINOR_OP_RDSR2		0x3f	/* Read status register 2 */
- #define SPINOR_OP_WRSR2		0x3e	/* Write status register 2 */
- #define SPINOR_OP_READ		0x03	/* Read data bytes (low frequency) */
+diff --git a/drivers/mtd/spi-nor/debugfs.c b/drivers/mtd/spi-nor/debugfs.c
+index d700e0b27182..69830ad43990 100644
+--- a/drivers/mtd/spi-nor/debugfs.c
++++ b/drivers/mtd/spi-nor/debugfs.c
+@@ -139,7 +139,7 @@ static int spi_nor_params_show(struct seq_file *s, void *data)
+ 
+ 	if (!(nor->flags & SNOR_F_NO_OP_CHIP_ERASE)) {
+ 		string_get_size(params->size, 1, STRING_UNITS_2, buf, sizeof(buf));
+-		seq_printf(s, " %02x (%s)\n", nor->params->die_erase_opcode, buf);
++		seq_printf(s, " %02x (%s)\n", params->die_erase_opcode, buf);
+ 	}
+ 
+ 	seq_puts(s, "\nsector map\n");
 
 -- 
 2.51.1
