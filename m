@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C450AFD7074
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Mar 2026 10:25:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 388ADFD7072
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Mar 2026 10:25:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=CxntSUJr6lp/ANy4lAx6DR8tdnGEOW2woJlqos0mDIk=; b=eavJivKJBcHBOg
-	wXYPTow37FEzJMFyxlC6hioCf+ScwBXgJPLLEFtWrW3FvaCZ2ckGRCuXJWxTGrMK4EzJ/oVLA+SbH
-	Nh5NnmdensXV05qUC7YESHhANeRUgEfKz4KpEdwuhAB8IzOiN7N/tVkU/zIq4DOhXYaTxjjYJrdTM
-	JiVVu4uuBLbHheA+EwZ7iSLTSl2RQUChuZ7AlWMfBcklmPCN7c+tbqLzaDzVsyULToD1eqapbkc9f
-	DRSYxv1/7n9L6CCAltbIFcpzi2qBDrAqq2ilsp8Cdm+USwcYQheJpoybrSnXHKumymIlCXiiWaKq/
-	B+ubfjFUkg6ZxRjk3+Jw==;
+	List-Owner; bh=k6xy2ibVEH7A37uLy5p3LbG1cJtYpNJ9EhZR7NtRmLk=; b=eJWFiratFuW6nU
+	SzDFNvBPQ1HCbS/FQNcQ6hKsqwyBP6h3CHRV565VRa8oo66o0HmThX4oUuqINYO0vOsH5oaPqSSMi
+	/hOi7kt+dQgPW7JbhUUM7vfy3IL6FP7ZAo5T/DKpLtfWnVH/oM+Yms7V3s2AUYgsiPnaXlKFwU6Fd
+	CrzVhXESG4fBuBz2WkBfVlmy6tkIDt5c+iRvQEPjcYV0DjckZbs2P+DAg+OywO+UMLlko+52e9CgB
+	1kKHLspYBegwhhPLQ3Sr054EufTmbSuVjwAlGkbCqTfY2zcXNtRrTqcjg3STPDnk0eHlaLVPwX11E
+	DhWjKOyyv9iXJ1aFZ6lA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w2Rbh-000000060F8-28m7;
-	Tue, 17 Mar 2026 10:25:01 +0000
+	id 1w2Rbj-000000060J6-1nLh;
+	Tue, 17 Mar 2026 10:25:03 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w2Rbd-0000000607P-1JvC
+	id 1w2Rbe-00000006094-1iSI
 	for linux-mtd@bombadil.infradead.org;
-	Tue, 17 Mar 2026 10:24:57 +0000
+	Tue, 17 Mar 2026 10:24:58 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=casper.20170209; h=Cc:To:In-Reply-To:References:Message-Id
 	:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:From:Sender
 	:Reply-To:Content-ID:Content-Description;
-	bh=3UTw9aN/2yCK3EvGO8QBuf8zar07N1b/IrNqKvh1CgE=; b=XHBJU2U28x/urSXEyFfqpQv6Bu
-	b39/st1qAeb5fcuDEexEO2zI/hWoDcBqWvEGKWGMwkVZ3n4WaMJOWdDXV9enzfM7CDQwuPX1qP2os
-	4PiCEnhW+yi7+5OkHofYichAob+EAFhWZ7CBw6DmLQ/D63ZxJCVJZXbO3rIY2pCCyWNkYP09bDFJV
-	yNj11bOIjyqAZgBGd2x4+lVJWXmaFOloUC2CKaOSsQEP3WPFURvwbAIbbjr0g59j9D3hMg/LwgHce
-	aCEOKVlAGsRTJjsAG6jmdiHLHH8G1leMtFd7dWrkCSopjxbj6WWqJNjCaejNhhhHZDSxw9a/1aa1m
-	jXvzfbQg==;
-Received: from smtpout-04.galae.net ([185.171.202.116])
+	bh=MeVqIfBpy7cynYdckZP4tUPjyA2vBhyS34Ryk6tlKjQ=; b=tOHBthSRxneH0dTnDPG42dpF6N
+	eTYYB8HFbpVoJS1PNKZr5IB/KVq3Slir0atggEH9QoInEyhHZmYhbBsVdQwVf/YkeQ2MULXCEyW3l
+	4zoLBByVaiZPsuhl5gzglRa0Ye7nDOaCr9tiCSu3H7tA1zLA+taG1yrgg6g7vtbwpxvCHaCU7qBlD
+	Bg9imB3MFvdMYnDfPZ/9K11PmIu6E3AsrDqQsWRPxfcy0VsQiTy6lQrUHT1JyoSI1Wmc8zHSEz+rh
+	w4VkHRO1GJqAz5hpsQ1RzQYo5DCuAavyG84chVQwvuU33z6oqmPLJ+v3Uo3dlOdCMAUFXdfftAv+l
+	r1Awon7Q==;
+Received: from smtpout-02.galae.net ([185.246.84.56])
 	by casper.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w2RbY-00000002WKc-10xY
+	id 1w2RbZ-00000002WLD-45D8
 	for linux-mtd@lists.infradead.org;
-	Tue, 17 Mar 2026 10:24:55 +0000
+	Tue, 17 Mar 2026 10:24:56 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id 75CA3C55056;
-	Tue, 17 Mar 2026 10:25:15 +0000 (UTC)
+	by smtpout-02.galae.net (Postfix) with ESMTPS id 4146E1A2E89;
+	Tue, 17 Mar 2026 10:24:53 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 7A5175FC9A;
-	Tue, 17 Mar 2026 10:24:51 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 73D8310450453;
-	Tue, 17 Mar 2026 11:24:49 +0100 (CET)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 199905FC9A;
+	Tue, 17 Mar 2026 10:24:53 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 0993010450456;
+	Tue, 17 Mar 2026 11:24:50 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1773743090; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1773743092; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=3UTw9aN/2yCK3EvGO8QBuf8zar07N1b/IrNqKvh1CgE=;
-	b=2eDnJIsIIFtXSHEnNT0QdUMy/UeGSLx1odw1HIC8E3lP17E8zCWp40u53c4CdsSVYWkBKD
-	ihz4qbr9oJWEGVLa07H+jOqmpl/qnLiCRGqyuQuHUJfFJGp9jq5BQvcnOOLtkjWvliKRpC
-	cyClh4i1C9nyDPuzcQnuvy6ARasEWUUBzX9YpcZtGOM5TcjKHWU35TNxc7ccciQ+C5RWSd
-	vbkbMIwH1fL2ba2vlry/b5GzNODZ/FXIenkEl9o7zIQ9N5U6Vc7gm6HH3E+LoI1fOPZF/Z
-	b+d0ZXjVCC/QjjeafJGM7cx/25dyhYB6wNWP9nWFhTcT6xe36yLGREbou6l0sw==
+	bh=MeVqIfBpy7cynYdckZP4tUPjyA2vBhyS34Ryk6tlKjQ=;
+	b=iROP7Y4+mNa6qQzIhV7y9fE/sYYMZGI1eUB7v7BU/8QWOjcHu6ygr8YthnN2LqttgP6PXG
+	Y6DRrsxDxQ0Wn05jfLZUIqzHA5VXPIgeXyGtNsA5DBF/8Kfx2jXA9Xg7pmC1EkaA8k/u3I
+	bvlwlaix27qtsZQuAUegi38pDZZW/X/ygk3Dh9/lyyXOv2EvKqjVHWwnEQXYBCAfT8OrIV
+	XgOh/BgTOZWpvcl3zZLsltSp2weIzskFsgJ8ZPsqx8SZ9Qwm4jZeYcKylwwfeBXcM/j5SF
+	U5j8cdnchHqH85RPHyUL3FJNtJBh+AAfcAwpGmcppkLTCTT3hP3TjC0I5w/ObA==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Tue, 17 Mar 2026 11:24:25 +0100
-Subject: [PATCH v3 22/27] mtd: spi-nor: winbond: Add W25H512NWxxAM CMP
+Date: Tue, 17 Mar 2026 11:24:26 +0100
+Subject: [PATCH v3 23/27] mtd: spi-nor: winbond: Add W25H01NWxxAM CMP
  locking support
 MIME-Version: 1.0
-Message-Id: <20260317-winbond-v6-18-rc1-spi-nor-swp-v3-22-2ca9ea4e7b9b@bootlin.com>
+Message-Id: <20260317-winbond-v6-18-rc1-spi-nor-swp-v3-23-2ca9ea4e7b9b@bootlin.com>
 References: <20260317-winbond-v6-18-rc1-spi-nor-swp-v3-0-2ca9ea4e7b9b@bootlin.com>
 In-Reply-To: <20260317-winbond-v6-18-rc1-spi-nor-swp-v3-0-2ca9ea4e7b9b@bootlin.com>
 To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
@@ -80,8 +80,8 @@ Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260317_102452_348751_CE81761E 
-X-CRM114-Status: GOOD (  11.00  )
+X-CRM114-CacheID: sfid-20260317_102454_722116_9BEC69F1 
+X-CRM114-Status: GOOD (  11.15  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,8 +103,7 @@ the relevant bit to enable it.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
-Test run following the freshly written documentation:
-
+Test run with W25H01NWxxAM:
 $ flash_lock -u /dev/mtd0
 $ flash_lock -l /dev/mtd0 $bs $all_but_one # all but the first
 $ show_sectors
@@ -112,47 +111,47 @@ locked sectors
  region (in hex)   | status   | #blocks
  ------------------+----------+--------
  00000000-0000ffff | unlocked | 1
- 00010000-03ffffff |   locked | 1023
+ 00010000-07ffffff |   locked | 2047
 $ flash_lock -u /dev/mtd0 $bs 1 # all but the two first
 $ show_sectors
 locked sectors
  region (in hex)   | status   | #blocks
  ------------------+----------+--------
  00000000-0001ffff | unlocked | 2
- 00020000-03ffffff |   locked | 1022
+ 00020000-07ffffff |   locked | 2046
 $ flash_lock -u /dev/mtd0
 $ flash_lock -l /dev/mtd0 0 $all_but_one # same from the other side
 $ show_sectors
 locked sectors
  region (in hex)   | status   | #blocks
  ------------------+----------+--------
- 00000000-03feffff |   locked | 1023
- 03ff0000-03ffffff | unlocked | 1
+ 00000000-07feffff |   locked | 2047
+ 07ff0000-07ffffff | unlocked | 1
 $ flash_lock -u /dev/mtd0 $(($size - (2 * $bs))) 1 # all but two
 $ show_sectors
 locked sectors
  region (in hex)   | status   | #blocks
  ------------------+----------+--------
- 00000000-03fdffff |   locked | 1022
- 03fe0000-03ffffff | unlocked | 2
+ 00000000-07fdffff |   locked | 2046
+ 07fe0000-07ffffff | unlocked | 2
 ---
  drivers/mtd/spi-nor/winbond.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
-index fb855fe44733..7609dcc768f0 100644
+index 7609dcc768f0..1b9b0e9598ef 100644
 --- a/drivers/mtd/spi-nor/winbond.c
 +++ b/drivers/mtd/spi-nor/winbond.c
-@@ -358,7 +358,8 @@ static const struct flash_info winbond_nor_parts[] = {
+@@ -363,7 +363,8 @@ static const struct flash_info winbond_nor_parts[] = {
  	}, {
- 		/* W25H512NWxxAM */
- 		.id = SNOR_ID(0xef, 0xa0, 0x20),
+ 		/* W25H01NWxxAM */
+ 		.id = SNOR_ID(0xef, 0xa0, 0x21),
 -		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6 | SPI_NOR_4BIT_BP,
 +		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6 |
 +			 SPI_NOR_4BIT_BP | SPI_NOR_HAS_CMP,
  	}, {
- 		/* W25H01NWxxAM */
- 		.id = SNOR_ID(0xef, 0xa0, 0x21),
+ 		/* W25H02NWxxAM */
+ 		.id = SNOR_ID(0xef, 0xa0, 0x22),
 
 -- 
 2.51.1
