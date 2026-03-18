@@ -4,126 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB56E107761B
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 Mar 2026 21:08:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D35FC1088E4B
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 Mar 2026 22:54:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=fQW7OGsW2nDXkETvnfzIAjJE+23bw+koQau5/poqgYA=; b=Z5WBnmwUTu7V4f
-	8ykIU+qWdDOy34gs+ZB4xp807l6d2r/01XPTsljCN9Zd8siJO5lYNBKME7OnBy3oyZN9LAvlijMSV
-	d27vcdsQ8SsmVCubY8OcFPjHhekplVDU5ZjNXj1JdmvwN+CdS08bsKsOw9ji3SHZL4YyENgdCweHE
-	7NwmO6R2VcBZAAF2jVXXkZxL9bdQTPi9sXI2ZCXif93jHYGmYnrYCWBImoN6uLJT89XglvgF5zB8q
-	5v670c0vZyGC6UGCJacuzgnzhHGJjuEq+2eVmf5ODuZbbIG0ohI8vkEgW8hTJDiPJggGNBcvTUW5W
-	MkXQUTnVyUCgLYm0LVUA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=siYGs+rHcEEKSCfBPrK9UuvPcll6msFV1DwzeHKexTo=; b=Pgewav+zYIH+0B
+	ax3kVTQAMTpdsMkND0i2jLJc2To6sN34AocAg+IBw380IR01C+DM3WraeKhFRMkThV8LyBSx+b5X/
+	pGrge1tuG9WVUsbcGCcjMIU4sbXRVuQQtOK+DWGXSHpE++sseERgE++m79ZZaOv5YkhkQUyfKt909
+	gvFonJQ3QAR1AnGR8+3C9ll7CEZw2RsY3bAaJResX9T26fgduNuIaJtVBjIDDFsOqBwQJl5W8F/vL
+	wX01e5tUWHkF8fm8/erx7WxI35zEl5uPLHtmKjiCUc3KqID0a6PNk/o3hscStYVmFo9dwq7d7YjsE
+	S00JXMv6Hxo6RKw3cLhA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w2y8O-00000009MCj-1Z80;
-	Wed, 18 Mar 2026 21:08:56 +0000
-Received: from mail-ot1-x333.google.com ([2607:f8b0:4864:20::333])
+	id 1w2zm9-00000009S7K-47KW;
+	Wed, 18 Mar 2026 22:54:05 +0000
+Received: from mail-wr1-x42c.google.com ([2a00:1450:4864:20::42c])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w2y8L-00000009MBc-474a
+	id 1w2zm5-00000009S6y-2RvY
 	for linux-mtd@lists.infradead.org;
-	Wed, 18 Mar 2026 21:08:56 +0000
-Received: by mail-ot1-x333.google.com with SMTP id 46e09a7af769-7d750eeaec3so153940a34.0
-        for <linux-mtd@lists.infradead.org>; Wed, 18 Mar 2026 14:08:51 -0700 (PDT)
+	Wed, 18 Mar 2026 22:54:02 +0000
+Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-43b41b545d9so315793f8f.2
+        for <linux-mtd@lists.infradead.org>; Wed, 18 Mar 2026 15:54:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1773868130; x=1774472930; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hjkVCGc9UuS/iYmQSMn+hsLjVouvW5XYtaAItifULpw=;
-        b=Hi6oZbcMfHUe0A6msdrrRFMC+xXNwM2VC7P6LSDcnRQB1zaTiqn0q1skVMSdVbarCF
-         Jfn0rO2hu5hnKmuxXY3tGiXSlvhEcTa630ZxOkAKy3Mqf/TYise8HKHmO2Dzn+T7lew2
-         pqbpYxuyTgiX4htmrgEuq7q+Aqqb8eugmSfJ7GxqORNDTWXoqil/JByQ/f3q7ndtKB5f
-         HMTJVIEsL3R55rpMSc06hQc8vTRQUQFJXeDE96l/97kl1ue+lpB+3DvN9z337icneqGb
-         S5/HokciqXy5r1XjioPPFNkyq2t18waHvU5TZnWsufagKAEnuO8L4pHnlSXrNb8UEHcX
-         kR5A==
+        d=gmail.com; s=20230601; t=1773874439; x=1774479239; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=tz+7kRqmNKMu49t5cWTIMffDOUjKAtKjalbQqhljI7U=;
+        b=X7pNaHubwcO6tpQTJFbSLFZFb5vnGuu/byiY17dJLiLHD7B4ra4z6angAa1E3Z1jFz
+         Xq9HTJNt+1R4Q0+Fby26NxUc9JDttPGLmPjbajyl1y4SsnTutmJ6GZPcqb2WKTczPoOz
+         W0r0qUoxxad9pEnQ31h9igp6tcMSWqXGtSO5iRon6gqaJexNuuVERqzrXc86aTjJ/5QS
+         yTt6XeJR1Cb3S6Sb3Yl0TvIp7Bek+s4SIJDTG8hH4pjq+ggSovnqsn1nZB3INlrJNOze
+         G2dQsR0hjdKKLAA/oCsEr9w1VRiLpsvIHz5UUqnBtq6kBpDOW/CgkMl4qN3XpOQF49Na
+         6yXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1773868130; x=1774472930;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=hjkVCGc9UuS/iYmQSMn+hsLjVouvW5XYtaAItifULpw=;
-        b=YZglepT/6I0qaGoL1cOntN63X+FOpzP6HBwsulbXzH/V/Oncr+MEDPfWWNna9cr70J
-         mwJ3p8v2Nt3fPFkORPwWVtJpDden6sJZaCbYpsST3cuXRqxACxMd2/KxXGI6DF6fZgoR
-         jM4dVkzI2yfqZdC6lyX/MwrATecPDK53E25Q0A/tbT2We/EMMP0lPLpn2RRWhalbC+il
-         VttwzUqBUnGShslsVclXAj5MR/f/dRKzWNE0ni7jiztczpC4Cofiy7W9vN//eBYSNHhA
-         eyMaqdBg+GiC8lbegk+7rHZipUi1ssTsaB4iT7hXbp1zAOJASXJAok3TRjLgruYp/LG7
-         zq+w==
-X-Forwarded-Encrypted: i=1; AJvYcCW7AWw3HDpjfapzHaVXQwVYabjvgCdXJnRFVnQjB+8e+zxiYyfuPQ1FBXSEIwvxiWGicD/y3tIw0QE=@lists.infradead.org
-X-Gm-Message-State: AOJu0YychuFz5gky3vTgBdr1Z8SfZsWJWMU/hyAWAm/6yATO+jRlnC4B
-	ZxVz9nnKfe2ttnQ+R7jKYypQ1C+1qDqYMMQz87chGQ2tEy1gTWetNDBX
-X-Gm-Gg: ATEYQzwPC7V6W2NYGvSqutgZqS8e6kH5dhvyPviB4zTdCMM8tcecCzVaIXwqJhtUQj2
-	ybBbyElCICXV0t9jbyc5rJCqZs2+GJZ6GhHKClI5ZvNdOPGMo9ReLCVAK10fpWjYeEfIEhMARQx
-	R2Owvdeghvrp7VRmq+VxXv4Ae5GNFZVX/rWKkF3HC93Wlqd++JgxmiO4Wvrm2uu2JjC8GDj5zRB
-	NzKVcpnIlFYLi97VmVozImoYGoG5cM89f3udknZ5NxcgVIqkHMGvPrTgFgOHJL6CyogJOa3ITZS
-	DM3UyYDWS5Xzv8MPuU2laWkgdMt+mg9bGhlnwd0oLakzK36RE0J1TCZb/WxbAoS2U3YCYjdOBRp
-	m12xVQQZ4BP1MrmhCt/ylk3FfHw/ynbzz+sYZxu9FqcnISOg5dlNuI74E+qhBggarZkRdwMKSEA
-	VCVUWU8dtNl0npkvat3xvISpRNfVXcK46u
-X-Received: by 2002:a05:6820:4513:b0:67b:f775:e5fe with SMTP id 006d021491bc7-67c0db33831mr2728249eaf.65.1773868129977;
-        Wed, 18 Mar 2026 14:08:49 -0700 (PDT)
-Received: from localhost ([2a03:2880:10ff:56::])
-        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-41bd2c3111dsm3532488fac.12.2026.03.18.14.08.47
+        d=1e100.net; s=20251104; t=1773874439; x=1774479239;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tz+7kRqmNKMu49t5cWTIMffDOUjKAtKjalbQqhljI7U=;
+        b=Yv2TbR0JMxc9oo/b1VlaOFzXdIaJxmAh/z4DGyK8vWGQWYojcez8oPDnBrcpkByVCQ
+         OT7U6ZbLSfj4uVc7qyXG3NzQc78OG7H9sMFgYrGaJzTKWAjZGxxqdCNP+mRLg+X5ACsT
+         sKgrnwYzza6dQRW9rXKENwTq1xOuvWVv5hGzWGk+5nTN54P27ApZFtXddxX4f0l7dtKu
+         xnAKjSPQaj2fpzcjJZS6qIcgN/oOKyLxsDomCI1cg1OlOED7i00zaI4EV9IE7v9RO79d
+         eCqFjnrmIxX7vU25wQuHvGNdVz8qYV2xrvqVWEm8NkO4NDrtoNG5+bHex90Q7tCHL9sg
+         XxRQ==
+X-Gm-Message-State: AOJu0YzHAGK1e543D2sEGki64Ul/8N9XHpKjwDMxZyvtN416SBfqzUrW
+	8akmqglMeD4R6w6BH+c4oN/K+9C+d5KgQylrfD7Wqifpc/lt6ESdc80s6ZxApg==
+X-Gm-Gg: ATEYQzz94s9sRSDUXjr1WWHATPR+ka7eOJcsmDE0wh5Jwx3lVqSGrMMxBMDPsA2cMlu
+	5mmmIo11FH1sTpJDXJ59NMrC/r+XXgX6QTzpOXEyNWO7FsnQIkKR7fZrfyPJ2tgBSRV4h4O7ctL
+	4xEWtywjnx29dYMWkmhIyiBI0DZmds6v8iaPnyBP8BPs26O6KnTEwN4bFkXF6gYr3RzUm0wyNGu
+	ijZLsorw+qA5AI8jpdY45AIdGLBsN5cwtFuu4nf1QEmhPjEFyeOVhONKp3Lze3hkMUd93POXYcp
+	vWQ3sCf7UGGG0GlSm1ok/cua7NqVK1NqQ/saTHKFrAUUlUHZtPKlFNlhlVjrE6KJaPic4mI17po
+	S2ZNelB3Q9B0gVeQFB4X6Fer+l4+jzn4D/HbdRvDEcR4rbLL+5GpGOWuFBCP1YYQP6egKukZOY1
+	feEaOn+ZRz38NAnbcpNQ+JXWORm7IrfVgjvY0=
+X-Received: by 2002:a5d:5d85:0:b0:43b:4a2c:ff4 with SMTP id ffacd0b85a97d-43b527c40a9mr9036691f8f.33.1773874438236;
+        Wed, 18 Mar 2026 15:53:58 -0700 (PDT)
+Received: from localhost.localdomain ([147.235.207.31])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-43b51899617sm11891113f8f.31.2026.03.18.15.53.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Mar 2026 14:08:48 -0700 (PDT)
-From: Joshua Hahn <joshua.hahnjy@gmail.com>
-To: "Lorenzo Stoakes (Oracle)" <ljs@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Clemens Ladisch <clemens@ladisch.de>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"K . Y . Srinivasan" <kys@microsoft.com>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	Wei Liu <wei.liu@kernel.org>,
-	Dexuan Cui <decui@microsoft.com>,
-	Long Li <longli@microsoft.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Bodo Stroesser <bostroesser@gmail.com>,
-	"Martin K . Petersen" <martin.petersen@oracle.com>,
-	David Howells <dhowells@redhat.com>,
-	Marc Dionne <marc.dionne@auristor.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>,
-	Jan Kara <jack@suse.cz>,
-	David Hildenbrand <david@kernel.org>,
-	"Liam R . Howlett" <Liam.Howlett@oracle.com>,
-	Vlastimil Babka <vbabka@kernel.org>,
-	Mike Rapoport <rppt@kernel.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Michal Hocko <mhocko@suse.com>,
-	Jann Horn <jannh@google.com>,
-	Pedro Falcato <pfalcato@suse.de>,
-	linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-hyperv@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mtd@lists.infradead.org,
-	linux-staging@lists.linux.dev,
-	linux-scsi@vger.kernel.org,
-	target-devel@vger.kernel.org,
-	linux-afs@lists.infradead.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-mm@kvack.org,
-	Ryan Roberts <ryan.roberts@arm.com>
-Subject: Re: [PATCH v2 12/16] mm: allow handling of stacked mmap_prepare hooks in more drivers
-Date: Wed, 18 Mar 2026 14:08:45 -0700
-Message-ID: <20260318210845.2591228-1-joshua.hahnjy@gmail.com>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <72750af6906fd96fb6f18e83ac3e694cf357a2c1.1773695307.git.ljs@kernel.org>
-References: 
+        Wed, 18 Mar 2026 15:53:57 -0700 (PDT)
+From: Aviv Daum <aviv.daum@gmail.com>
+To: linux-mtd@lists.infradead.org
+Cc: Aviv Daum <aviv.daum@gmail.com>
+Subject: [PATCH] mtd-utils: tests: jittertest: reject overlong file names
+Date: Thu, 19 Mar 2026 00:53:32 +0200
+Message-Id: <20260318225332.31623-1-aviv.daum@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260318_140854_056401_ED3112FD 
-X-CRM114-Status: GOOD (  22.50  )
+X-CRM114-CacheID: sfid-20260318_155401_684738_9324F820 
+X-CRM114-Status: GOOD (  24.49  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -140,130 +94,326 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 16 Mar 2026 21:12:08 +0000 "Lorenzo Stoakes (Oracle)" <ljs@kernel.org> wrote:
+plotJittervsFill copies the -f argument into a 250-byte buffer with
+strncpy(..., sizeof(LogFile)). A 250-byte file name leaves the buffer
+unterminated, and the subsequent fopen() reads past the end of LogFile.
 
-> While the conversion of mmap hooks to mmap_prepare is underway, we wil
-> encounter situations where mmap hooks need to invoke nested mmap_prepare
-> hooks.
-> 
-> The nesting of mmap hooks is termed 'stacking'.  In order to flexibly
-> facilitate the conversion of custom mmap hooks in drivers which stack, we
-> must split up the existing compat_vma_mapped() function into two separate
-> functions:
-> 
-> * compat_set_desc_from_vma() - This allows the setting of a vm_area_desc
->   object's fields to the relevant fields of a VMA.
+JitterTest uses the same fixed-size file name pattern for -r, while -c
+still silently truncates overlong names and -f already rejects them.
 
-Hello Lorenzo, I hope you are doing well!
+Validate jittertest file name arguments before copying them so these
+options all reject overlong input instead of truncating it or reading
+past the end of fixed-size buffers.
 
-Thank you for this patch. I was developing on top of mm-new today and had
-an error that I think was caused by this patch. I want to preface this by
-saying that I am not at all familiar with this area of the code, so please
-do forgive me if I've misinterpreted the crash and mistakenly pointed
-at this commit : -)
+Add a shell regression test that exercises the accepted and rejected
+boundary lengths for plotJittervsFill and JitterTest during make check.
 
-Here is the crash:
+Signed-off-by: Aviv Daum <aviv.daum@gmail.com>
+---
+ Makefile.am                            |   3 +
+ configure.ac                           |   1 +
+ tests/jittertest/JitterTest.c          |  52 +++++++----
+ tests/jittertest/Makemodule.am         |   6 +-
+ tests/jittertest/filename_bounds.sh.in | 115 +++++++++++++++++++++++++
+ tests/jittertest/plotJittervsFill.c    |  17 +++-
+ 6 files changed, 175 insertions(+), 19 deletions(-)
+ create mode 100755 tests/jittertest/filename_bounds.sh.in
 
-[    1.083795] kernel tried to execute NX-protected page - exploit attempt? (uid: 0)
-[    1.083883] BUG: unable to handle page fault for address: ffa00000048efbb8
-[    1.083957] #PF: supervisor instruction fetch in kernel mode
-[    1.084030] #PF: error_code(0x0011) - permissions violation
-[    1.084086] PGD 100000067 P4D 10035f067 PUD 100364067 PMD 441ed9067 PTE 80000004466a3163
-[    1.084162] Oops: Oops: 0011 [#1] SMP
-[    1.084218] CPU: 0 UID: 0 PID: 305 Comm: mkdir Tainted: G        W   E       7.0.0-rc4-virtme-00442-ge53de5a0302f-dirty #85 PREEMPTLAZY
+diff --git a/Makefile.am b/Makefile.am
+index c756127..ba54acc 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -42,6 +42,9 @@ test_SCRIPTS =
+ test_DATA =
+ 
+ TESTS =
++TEST_EXTENSIONS = .sh
++SH_LOG_COMPILER = $(SHELL)
++AM_TESTS_ENVIRONMENT = TESTBINDIR='$(abs_top_builddir)'; export TESTBINDIR;
+ EXTRA_DIST = COPYING CHANGELOG.md README.txt
+ 
+ include lib/Makemodule.am
+diff --git a/configure.ac b/configure.ac
+index 2a79ba8..f17d703 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -304,6 +304,7 @@ AC_CONFIG_FILES([tests/fs-tests/fs_help_all.sh
+ 	tests/fs-tests/fs_run_all.sh
+ 	tests/fs-tests/stress/fs_stress00.sh
+ 	tests/fs-tests/stress/fs_stress01.sh
++	tests/jittertest/filename_bounds.sh
+ 	tests/ubi-tests/runubitests.sh
+ 	tests/ubi-tests/ubi-stress-test.sh
+ 	tests/ubifs_tools-tests/lib/common.sh
+diff --git a/tests/jittertest/JitterTest.c b/tests/jittertest/JitterTest.c
+index 2bee0b0..a3e3764 100644
+--- a/tests/jittertest/JitterTest.c
++++ b/tests/jittertest/JitterTest.c
+@@ -205,6 +205,7 @@ static int RunAsRTTask = FALSE; /* default action unless priority is
+ 
+ /********************* Local Function Prototypes **********************/
+ void HandleCmdLineArgs(int argc, char *argv[]);
++static void SaveFileName(char *pDest, size_t destSize, const char *pFileName);
+ void SetFileName(char * pFileName);
+ void SetInterruptPeriod(char * pASCIIInterruptPeriodMilliSec);
+ void SetSchedulerPriority(char * pASCIISchedulerPriority);
+@@ -830,9 +831,14 @@ void HandleCmdLineArgs(
+                      (strcmp(argv[argNum],"-r")       == STRINGS_EQUAL)) {
+                 /* Set the file to read*/
+                 ++argNum;
+-
+-                strncpy(ReadFile, argv[argNum], sizeof(ReadFile));
+-                DoRead = TRUE;
++                if (argNum < argc) {
++                    SaveFileName(ReadFile, sizeof(ReadFile), argv[argNum]);
++                    DoRead = TRUE;
++                }
++                else {
++                    printf("*** Read file name not specified. ***\n");
++                    exit(0);
++                }
+             }
+ 
+             else if ((strcmp(argv[argNum],"--write_bytes") ==
+@@ -858,9 +864,13 @@ void HandleCmdLineArgs(
+                      (strcmp(argv[argNum],"-c")       == STRINGS_EQUAL)) {
+ 	      /* Set the file to log console log on. */
+ 	      ++argNum;
+-
+-	      strncpy(LogFile, argv[argNum], sizeof(LogFile) - 1);
+-	      LogFile[sizeof(LogFile) - 1] = '\0';
++	      if (argNum < argc) {
++	          SaveFileName(LogFile, sizeof(LogFile), argv[argNum]);
++	      }
++	      else {
++	          printf("*** Console log file name not specified. ***\n");
++	          exit(0);
++	      }
+             }
+ 
+             else if ((strcmp(argv[argNum],"--grab_kprofile") ==
+@@ -913,27 +923,37 @@ void HandleCmdLineArgs(
+ 
+ 
+ /***********************************************************************
+- *                                SetFileName
+- *  This function sets the output file name.
++ *                              SaveFileName
++ *  This function validates and saves a file name.
+  *  output: N/A
+  ***********************************************************************/
+-void SetFileName(
+-    char * pFileName)               /* ptr to desired output file name  */
++static void SaveFileName(
++    char *pDest,                    /* ptr to destination buffer        */
++    size_t destSize,                /* destination buffer size          */
++    const char *pFileName)          /* ptr to desired file name         */
+ {
+     size_t fileNameLen;             /* file name length (bytes)         */
+ 
+-    /* Check file name length. */
+     fileNameLen = strlen(pFileName);
+-    if (fileNameLen > (size_t) MAX_FILE_NAME_LEN) {
++    if (fileNameLen > destSize - 1) {
+         printf("File name %s exceeds maximum length %d.\n",
+-               pFileName, MAX_FILE_NAME_LEN);
++               pFileName, (int)(destSize - 1));
+         exit(0);
+     }
+ 
+-    /* File name length is OK so save the file name. */
+-    strcpy(OutFileName, pFileName);
++    strcpy(pDest, pFileName);
++}
+ 
+-    return;
++
++/***********************************************************************
++ *                                SetFileName
++ *  This function sets the output file name.
++ *  output: N/A
++ ***********************************************************************/
++void SetFileName(
++    char * pFileName)               /* ptr to desired output file name  */
++{
++    SaveFileName(OutFileName, sizeof(OutFileName), pFileName);
+ }
+ 
+ 
+diff --git a/tests/jittertest/Makemodule.am b/tests/jittertest/Makemodule.am
+index d280192..2cb85c1 100644
+--- a/tests/jittertest/Makemodule.am
++++ b/tests/jittertest/Makemodule.am
+@@ -6,6 +6,8 @@ plotJittervsFill_CPPFLAGS = $(AM_CPPFLAGS)
+ 
+ test_PROGRAMS += JitterTest plotJittervsFill
+ 
+-test_SCRIPTS += tests/jittertest/filljffs2.sh
++test_SCRIPTS += tests/jittertest/filljffs2.sh tests/jittertest/filename_bounds.sh
++TESTS += tests/jittertest/filename_bounds.sh
+ 
+-EXTRA_DIST += tests/jittertest/README tests/jittertest/filljffs2.sh
++EXTRA_DIST += tests/jittertest/README tests/jittertest/filljffs2.sh \
++	tests/jittertest/filename_bounds.sh.in
+diff --git a/tests/jittertest/filename_bounds.sh.in b/tests/jittertest/filename_bounds.sh.in
+new file mode 100755
+index 0000000..0dfba74
+--- /dev/null
++++ b/tests/jittertest/filename_bounds.sh.in
+@@ -0,0 +1,115 @@
++#!/bin/sh
++
++TESTBINDIR=${TESTBINDIR-@TESTBINDIR@}
++
++tmpdir=
++jt_pid=
++watchdog_pid=
++
++fatal()
++{
++	echo "Error: $1" 1>&2
++	exit 1
++}
++
++cleanup()
++{
++	if [ -n "$watchdog_pid" ]; then
++		kill "$watchdog_pid" >/dev/null 2>&1 || :
++		wait "$watchdog_pid" 2>/dev/null || :
++	fi
++
++	if [ -n "$jt_pid" ]; then
++		kill "$jt_pid" >/dev/null 2>&1 || :
++		wait "$jt_pid" 2>/dev/null || :
++	fi
++
++	if [ -n "$tmpdir" ]; then
++		rm -rf "$tmpdir"
++	fi
++}
++
++trap 'status=$?; trap - EXIT; cleanup; exit $status' EXIT
++trap 'exit 1' HUP INT QUIT TERM
++
++make_name()
++{
++	char="$1"
++	length="$2"
++	name=
++	i=0
++
++	while [ "$i" -lt "$length" ]; do
++		name="${name}${char}"
++		i=$((i + 1))
++	done
++
++	printf '%s' "$name"
++}
++
++tmpdir=$(mktemp -d "${TMPDIR:-/tmp}/mtd-utils-jittertest.XXXXXX") ||
++	fatal "mktemp failed"
++cd "$tmpdir" || fatal "cannot change to temp dir"
++
++plot_valid=$(make_name a 249)
++: > "$plot_valid" || fatal "cannot create valid plot input"
++"$TESTBINDIR/plotJittervsFill" -f "$plot_valid" >plot-valid.out 2>plot-valid.err ||
++	fatal "plotJittervsFill rejected a 249-byte file name"
++if grep -q "exceeds maximum length" plot-valid.out plot-valid.err; then
++	fatal "plotJittervsFill reported a max-length error for a 249-byte file name"
++fi
++
++plot_invalid=$(make_name b 250)
++"$TESTBINDIR/plotJittervsFill" -f "$plot_invalid" >plot-invalid.out 2>plot-invalid.err || :
++if ! grep -q "exceeds maximum length" plot-invalid.out plot-invalid.err; then
++	fatal "plotJittervsFill did not reject a 250-byte file name"
++fi
++if grep -q "Unable to open input log file" plot-invalid.out plot-invalid.err; then
++	fatal "plotJittervsFill reached fopen() for an overlong file name"
++fi
++
++jt_read_valid=$(make_name r 32)
++"$TESTBINDIR/JitterTest" -c /dev/null -f out.dat -r "$jt_read_valid" >jt-valid.out 2>jt-valid.err &
++jt_pid=$!
++(
++	sleep 10
++	kill -TERM "$jt_pid" >/dev/null 2>&1 || :
++	sleep 1
++	kill -KILL "$jt_pid" >/dev/null 2>&1 || :
++) &
++watchdog_pid=$!
++sleep 1
++kill -INT "$jt_pid" >/dev/null 2>&1 || fatal "cannot stop JitterTest"
++wait "$jt_pid" || fatal "JitterTest failed with a 32-byte read file name"
++jt_pid=
++kill "$watchdog_pid" >/dev/null 2>&1 || :
++wait "$watchdog_pid" 2>/dev/null || :
++watchdog_pid=
++if ! grep -q "Press Ctrl+C to exit the program." jt-valid.out; then
++	fatal "JitterTest did not start normally with a 32-byte read file name"
++fi
++if ! grep -q "JitterTest exiting." jt-valid.out; then
++	fatal "JitterTest did not exit cleanly after SIGINT"
++fi
++
++jt_read_invalid=$(make_name s 33)
++"$TESTBINDIR/JitterTest" -c /dev/null -f out.dat -r "$jt_read_invalid" \
++	>jt-read-invalid.out 2>jt-read-invalid.err || :
++if ! grep -q "exceeds maximum length" jt-read-invalid.out jt-read-invalid.err; then
++	fatal "JitterTest did not reject a 33-byte read file name"
++fi
++if grep -q "Press Ctrl+C to exit the program." jt-read-invalid.out jt-read-invalid.err; then
++	fatal "JitterTest started despite an overlong read file name"
++fi
++
++jt_console_invalid=$(make_name c 33)
++"$TESTBINDIR/JitterTest" -c "$jt_console_invalid" -f out.dat \
++	>jt-console-invalid.out 2>jt-console-invalid.err || :
++if ! grep -q "exceeds maximum length" jt-console-invalid.out jt-console-invalid.err; then
++	fatal "JitterTest did not reject a 33-byte console file name"
++fi
++if grep -q "Press Ctrl+C to exit the program." jt-console-invalid.out jt-console-invalid.err; then
++	fatal "JitterTest started despite an overlong console file name"
++fi
++
++echo "SUCCESS"
+diff --git a/tests/jittertest/plotJittervsFill.c b/tests/jittertest/plotJittervsFill.c
+index 03929a9..8929f9a 100644
+--- a/tests/jittertest/plotJittervsFill.c
++++ b/tests/jittertest/plotJittervsFill.c
+@@ -75,6 +75,21 @@ static int Debug = 0; /* Debug level. Each "-d" on the cmd line increases the le
+ 
+ #define MIN_JITTER_THRESHOLD 1 /* ms minimum jitter threshold */
+ 
++static void SetLogFileName(
++    const char *pFileName)          /* ptr to desired input file name   */
++{
++    size_t fileNameLen;             /* file name length (bytes)         */
++
++    fileNameLen = strlen(pFileName);
++    if (fileNameLen > sizeof(LogFile) - 1) {
++        printf("File name %s exceeds maximum length %d.\n",
++               pFileName, (int)(sizeof(LogFile) - 1));
++        exit(0);
++    }
++
++    strcpy(LogFile, pFileName);
++}
++
+ static void PrintHelpInfo(void)
+ {
+     printf("Usage: plotJittervsFill [options] -f [--file] <input log file name> -t [--jitter_threshold] <jitter threshold in ms>\n");
+@@ -122,7 +137,7 @@ static void HandleCmdLineArgs(
+                 /* Set the name of the output file. */
+                 ++argNum;
+                 if (argNum < argc) {
+-                    strncpy(LogFile, argv[argNum], sizeof(LogFile));
++                    SetLogFileName(argv[argNum]);
+                 }
+                 else {
+                     printf("*** Input file name not specified. ***\n");
+-- 
+2.34.1
 
-As you can see, it's on a QEMU instance. I don't think this makes a difference
-in the crash, though.
-
-[    1.084321] Tainted: [W]=WARN, [E]=UNSIGNED_MODULE
-[    1.084369] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.3-5.el9 11/05/2023
-[    1.084450] RIP: 0010:0xffa00000048efbb8
-[    1.084489] Code: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 <40> 12 0e 00 01 00 11 ff d0 fa 8e 04 00 00 a0 ff 80 33 51 02 01 00
-[    1.084642] RSP: 0018:ffa00000048ef998 EFLAGS: 00010286
-[    1.084692] RAX: ffa00000048efbb8 RBX: ff11000102512cc0 RCX: 000000000000000d
-[    1.084766] RDX: ffffffffa06247d0 RSI: ffa00000048efa18 RDI: ff11000102512cc0
-[    1.084826] RBP: ffa00000048ef9c8 R08: 0000000000000000 R09: 0000000000000007
-[    1.084889] R10: ff110001047d1f08 R11: 00007effdc3d0fff R12: ff110001047d3b00
-[    1.084954] R13: ff11000446cae600 R14: ff110001024efe00 R15: ff11000102510a80
-[    1.085021] FS:  0000000000000000(0000) GS:ff110004aae72000(0000) knlGS:0000000000000000
-[    1.085083] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[    1.085136] CR2: ffa00000048efbb8 CR3: 0000000102667001 CR4: 0000000000771ef0
-[    1.085201] PKRU: 55555554
-[    1.085228] Call Trace:
-[    1.085248]  <TASK>
-[    1.085274]  ? __compat_vma_mmap+0x8e/0x130
-[    1.085318]  ? compat_vma_mmap+0x76/0x80
-[    1.085354]  ? mas_alloc_nodes+0xb2/0x110
-[    1.085390]  ? backing_file_mmap+0xc3/0xf0
-[    1.085426]  ? ovl_mmap+0x41/0x50
-[    1.085463]  ? ovl_mmap+0x50/0x50
-[    1.085499]  ? __mmap_region+0x7e8/0x1100
-[    1.085539]  ? do_mmap+0x49f/0x5e0
-[    1.085573]  ? vm_mmap_pgoff+0xef/0x1e0
-[    1.085609]  ? ksys_mmap_pgoff+0x15c/0x1f0
-[    1.085647]  ? do_syscall_64+0xab/0x980
-[    1.085684]  ? entry_SYSCALL_64_after_hwframe+0x4b/0x53
-[    1.085730]  </TASK>
-[    1.085770] Modules linked in: virtio_mmio(E) 9pnet_virtio(E) 9p(E) 9pnet(E) netfs(E)
-[    1.085838] CR2: ffa00000048efbb8
-[    1.085874] ---[ end trace 0000000000000000 ]---
-[    1.085875] kernel tried to execute NX-protected page - exploit attempt? (uid: 0)
-[    1.085918] RIP: 0010:0xffa00000048efbb8
-[    1.085921] Code: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 <40> 12 0e 00 01 00 11 ff d0 fa 8e 04 00 00 a0 ff 80 33 51 02 01 00
-[    1.085988] BUG: unable to handle page fault for address: ffa00000048f7bb8
-[    1.086026] RSP: 0018:ffa00000048ef998 EFLAGS: 00010286
-[    1.086166] #PF: supervisor instruction fetch in kernel mode
-[    1.086221]
-[    1.086267] #PF: error_code(0x0011) - permissions violation
-[    1.086321] RAX: ffa00000048efbb8 RBX: ff11000102512cc0 RCX: 000000000000000d
-[    1.086348] PGD 100000067
-[    1.086394] RDX: ffffffffa06247d0 RSI: ffa00000048efa18 RDI: ff11000102512cc0
-[    1.086459] P4D 10035f067
-[    1.086486] RBP: ffa00000048ef9c8 R08: 0000000000000000 R09: 0000000000000007
-[    1.086550] PUD 100364067
-[    1.086577] R10: ff110001047d1f08 R11: 00007effdc3d0fff R12: ff110001047d3b00
-[    1.086641] PMD 441ed9067
-[    1.086668] R13: ff11000446cae600 R14: ff110001024efe00 R15: ff11000102510a80
-[    1.086731] PTE 80000004433d3163
-[    1.086764] FS:  0000000000000000(0000) GS:ff110004aae72000(0000) knlGS:0000000000000000
-[    1.086829]
-[    1.086868] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[    1.086931] Oops: Oops: 0011 [#2] SMP
-[    1.086958] CR2: ffa00000048efbb8 CR3: 0000000102667001 CR4: 0000000000771ef0
-[    1.087015] CPU: 29 UID: 0 PID: 306 Comm: mount Tainted: G      D W   E       7.0.0-rc4-virtme-00442-ge53de5a0302f-dirty #85 PREEMPTLAZY
-[    1.087050] PKRU: 55555554
-[    1.087115] Tainted: [D]=DIE, [W]=WARN, [E]=UNSIGNED_MODULE
-[    1.087207] Kernel panic - not syncing: Fatal exception
-[    2.158392] Shutting down cpus with NMI
-[    2.158629] Kernel Offset: disabled
-[    2.158668] ---[ end Kernel panic - not syncing: Fatal exception ]---
-
-It crashes at compat_vma_mmap, and here is what I think could be the 
-potential crash path:
-
-- compat_vma_mmap() creates struct vm_area_desc desc;
-  - compat_set_desc_from_vma Doesn't initialize the struct, but instead
-    modifies independent fields. I think this is where the behavior
-    diverges, since before we would use the C initializer and uninitialized
-    variables would be set to 0 (including ommitted ones, like
-    action.success_hook or action.error_hook). But action.type = MMAP_NOTHING
-  - desc.action.success_hook remains uninitialized in vfs_mmap_prepare
-  - mmap_action_complete()
-    - Here, We've set action.type to be MMAP_NOTHING, so we have err = 0
-    - mmap_action_finish(action, vma, 0)
-      - And here, since err == 0, we check action->success_hook (which has
-        garbage, therefore it's nonzero) and call action->success_hook(vma)
-
-And I think action->success_hook(vma) where success_hook is uninitialized
-stack garbage gets me to where I am.
-
-Again, I'm not too familiar with this area of the kernel, this is just
-based on the quick digging that I did. And aplogies again if I'm missing
-something ; -) I do think that the uninitialized members could be a problem
-though.
-
-Thank you, I hope you have a great day Lorenzo!
-Joshua
 
 ______________________________________________________
 Linux MTD discussion mailing list
