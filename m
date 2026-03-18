@@ -4,63 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75F91103E161
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 Mar 2026 10:48:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5A74103E177
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 Mar 2026 13:19:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=t//DpX9aTrEqIStDCPF4b6EAdj39lhjfDo3bSXC/2+c=; b=TYgGnqOh27b1KU
-	22hC0s8QrwY46+xxFs8AqxVjyIW1e/te+ElORFcrU+D/YODHx3lqzKYGN2y2sKbgYWHC2CKKFjmzK
-	wpsV/fWgojTblOi6F6YTtiJK+IqVFWfo6VMLv7KUutF1UjhnYVQ8oiMzfm5iUit2uqU+oBNM//Bik
-	SAeK9F3YXJjcg1b3JRmiful6qFPm3GNdGlk/lo9dtmhK/8vBIKaj1eog3fn8j0anUJx5ZEnO9txjD
-	pMiETHqgVErr86OcRHePOKFJaruhSrR0wvtxpcsnXuzt+eZeG9O0xfh9Iv1XBvdhtzhVdtGodHOzA
-	FxTz/ouBjLyHkWOXZGyA==;
+	List-Owner; bh=7i8pA7Jht1y73jCa4MMpc599BH4cHNx0Ln7OiEVh+uA=; b=vw00tC/rKZs190
+	NIFktDKnC3G1xdqyaSZgS+PmgGIFqTU2zzqk3yanxmSu0QaGZRUBwJOIxR0cVAgUzEHZmZkRlCqar
+	0gHSOfBVN4L8m4BJqJKrAcY/qnIWk5WEgbsTSYD4NGA3ooybsArmdUZFfYwmFlPwXT4H3GqStFkzw
+	98O0xMl4bP+oXK08PainIR+2px9j0FVtlEL/zBNly7BCd7tCiqCfjpDz3BT5pazgo925dm45CmA4f
+	44wWeAvJ7Ole9bg/lN+iaxh0AkLYWkpLpXhbxNJVtnWKx+0Hf0S2fXm36sBlNv3vVzTyfutlccelC
+	h5zZQ5t25VldOMNT428w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w2oRa-00000008EUH-0I3D;
-	Wed, 18 Mar 2026 10:48:06 +0000
-Received: from smtpout-03.galae.net ([185.246.85.4])
+	id 1w2qoC-00000008TCP-0cfD;
+	Wed, 18 Mar 2026 13:19:36 +0000
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.50])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w2oRW-00000008ESe-2OPj
+	id 1w2qo9-00000008TB9-1yWn
 	for linux-mtd@lists.infradead.org;
-	Wed, 18 Mar 2026 10:48:04 +0000
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id 554674E426E0;
-	Wed, 18 Mar 2026 10:47:59 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 1EB386004F;
-	Wed, 18 Mar 2026 10:47:59 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id D8D7E1045077B;
-	Wed, 18 Mar 2026 11:47:55 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1773830878; h=from:subject:date:message-id:to:cc:mime-version:
-	 content-transfer-encoding; bh=LdL0DJ2zWmild6aoaYq8ogKRjuS6nkkO6eYhSHPXzqA=;
-	b=zB06cacwPFCKhtUe96WWF08arEXkF5zsUudJNQJmNAwUQhFxkdpya4JkVyyEl3pO/fP9XY
-	yRoqlGgQ3+TyoWOq2ZXgN7RGnLwkb4ocZfq3T0reXT12BFATyaoZhU2Wns8NoOKIQUWEzE
-	At0ou7Kw+4rUVL/rWbeiAwOCsI4r7zQSP6XpIrrFKj+e+GyPqiCnrvHwHyp9Xm2cYeHTBK
-	/UADpQgQjTUODfbnuztneM+h91wkTv4xnl8dDIwZfMNr18romSg5R8df2ZO9LBkFB7mkNg
-	r27gLB9w1zLVDXhpGo0dK+klk3ITTXMUfNaQY5w5BoQhKsifIIyGDT6DXV/9+g==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <michael@walle.cc>,
-	<linux-mtd@lists.infradead.org>
-Cc: Steam Lin <stlin2@winbond.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH] mtd: spinand: winbond: Clarify when to enable the HS bit
-Date: Wed, 18 Mar 2026 11:47:50 +0100
-Message-ID: <20260318104750.581596-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.51.1
+	Wed, 18 Mar 2026 13:19:34 +0000
+ARC-Seal: i=1; a=rsa-sha256; t=1773839954; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=JbpuFD5M8VyqBBfjag5Sh9zMijBIoCUE1k7o2aB+/DYEWPjpeW0HbHiizUN+dQg3o0
+    BoEsSGn5Stfz0k+fEaYFK6I7ZnNftRKAj7SVwPQUC68P2ffSYggXvJEG8CLbS6rkRrxQ
+    w6gl7IQyjlEKSNXmpP31e6qBEvmpn4USICrjQCWsbJa1ufmyttCfrjNe9r6KpUcU/IzO
+    nn3ApHbc4/2Gxe33h+yHd9ifG/2XZ8bR14Slzdt9MyH4aB6/8i/vtdWXnCqHqCy+rPT9
+    3N9a+lPPXgVX5zvrI+3vxdRBMOSby2K9FKJyHkMyO4ORo0qIWkfoSD/fOrgdZSh63raS
+    3eAQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1773839954;
+    s=strato-dkim-0002; d=strato.com;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=I/uG8WadfGOEs8IsUfuu9YM8DWeLiNne33lmLuugg+c=;
+    b=HTOAwGxK3vEEDld8Ki/FmEZrs40ImazQyVVmRYp8lyYEY/HVJYaQyjDSfPerFiMY9l
+    ONHzJuzmxHoIglVaQN3AsbojTKcrAJO9xs+2KRjGgKRFWHpmPG0iGu9h+pyHqhX7LAoC
+    fVSlTo+JlzuU39htjGNcGoD/LbHkyTSa0QSOvTmAKoovRDlU6Bbml9Xp1ZlnqRxtk0Xk
+    rV2ytbkdICeM0q/eqgM1KOhGoptaFhc8SGl44dMyj9NYpDtoAgtUkZLMHUP0fffvvUzA
+    YCxIS3C7J3lcDJrJBgXstU2MiVOk7QnBrDH5UrXpgTX7Fd3qwBBjGGg5QWGt6cBdsTkt
+    ZLXg==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1773839954;
+    s=strato-dkim-0002; d=iokpp.de;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=I/uG8WadfGOEs8IsUfuu9YM8DWeLiNne33lmLuugg+c=;
+    b=epv6EhOWg2g+cE1YFtEKRMZLFs87xQnZ24IOrcVhDAyXPWgYuLbaj7HPTy4eotZeMN
+    wglv1lhGFn5yujuaNAcNBI8AVCXX9w3t2huOK5uQCtLJ/v7uxojWLACbl2DeuQaPJMm1
+    V0vh8eXep9EW3OEFH8fbiydpnWQmO1kZaAg8DmY5T8yCR3Yy3GWraUbqqD2bpyP431lr
+    tuHUzBB7ATpqNhCWi/LP81uMnbFnVXNdqbhkgq9GKV9p+4yVtiHURNyY0L2LJZG1yCoF
+    VNv1Fnp3QHJrUW+YgLt1wDEsMk5Zv26EQlg+3HXRxKENFIXR3v5ZQofkNc0P+L4rFfbe
+    pjWQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1773839954;
+    s=strato-dkim-0003; d=iokpp.de;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=I/uG8WadfGOEs8IsUfuu9YM8DWeLiNne33lmLuugg+c=;
+    b=rXCbDpySz3uKWMCswr+w2s2uB8AzMSzB43JKw1iD3ogqZ1UJSCgweQyVR0CCs9p6SG
+    D3WgwMymSYByeSo1LPBw==
+X-RZG-AUTH: ":LmkFe0i9dN8c2t4QQyGBB/NDXvjDB6pBSfNuhhDSDt3O2J2YOom0XQaPis+nU/5K"
+Received: from Munilab01-lab.micron.com
+    by smtp.strato.de (RZmta 55.0.1 AUTH)
+    with ESMTPSA id z7934522IDJD9G0
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Wed, 18 Mar 2026 14:19:13 +0100 (CET)
+From: Bean Huo <beanhuo@iokpp.de>
+To: tudor.ambarus@linaro.org,
+	pratyush@kernel.org,
+	mwalle@kernel.org
+Cc: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	zaizhang@cisco.com,
+	Bean Huo <beanhuo@micron.com>
+Subject: [PATCH] mtd: spi-nor: micron-st: fix FSR read fallback for controllers returning -ENOTSUPP
+Date: Wed, 18 Mar 2026 14:18:56 +0100
+Message-Id: <20260318131857.2685004-1-beanhuo@iokpp.de>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260318_034802_742781_AD532939 
-X-CRM114-Status: GOOD (  14.00  )
+X-CRM114-CacheID: sfid-20260318_061933_766389_23E2AF3C 
+X-CRM114-Status: GOOD (  12.44  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,55 +104,44 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Above 104MHz when in fast dual or quad I/O reads, the delay between
-address and data cycles is too short. It is possible to reach higher
-frequencies, up to 166MHz, by adding a few more dummy cycles through the
-setting of the HS bit. Improve the condition for enabling this bit, and
-also make sure we set it at soon as we go over 104MHz.
+From: Bean Huo <beanhuo@micron.com>
 
-Fixes: f1a91175faaa ("mtd: spinand: winbond: Enable high-speed modes on w25n0xjw")
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
-The boards I have which are mounted with W25N chips cannot go over
-104MHz, so both the original commit and this one are mostly based on
-speculation and datasheet reading. There are no designs allowing to test
-this yet, so it is possible that some cases might still not be correctly
-supported.
----
- drivers/mtd/nand/spi/winbond.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+micron_st_nor_ready() falls back to SR-only polling when the SPI
+controller does not support low-level FSR reads, but only checks for
+-EOPNOTSUPP (95).  Some SPI master drivers return the kernel-internal
+-ENOTSUPP (524) for the same condition.  The two codes carry identical
+semantics but have different numeric values, so the fallback is never
+reached when the master returns -ENOTSUPP; the function propagates the
+error instead, causing all subsequent erase/program operations on the
+Micron flash to fail.
 
-diff --git a/drivers/mtd/nand/spi/winbond.c b/drivers/mtd/nand/spi/winbond.c
-index 6dfd0dcc8ee7..e0138785e280 100644
---- a/drivers/mtd/nand/spi/winbond.c
-+++ b/drivers/mtd/nand/spi/winbond.c
-@@ -337,16 +337,19 @@ static int w25n0xjw_hs_cfg(struct spinand_device *spinand,
- 	if (iface != SSDR)
- 		return -EOPNOTSUPP;
+Fix this by treating -ENOTSUPP equivalently to -EOPNOTSUPP in the FSR
+error path.  Note that spi-mem.c already treats both error codes as
+equivalent in its own fallback logic, so this aligns micron_st_nor_ready()
+with that existing convention.
+
+Fixes: 90c517f435a9 ("mtd: spi-nor: micron-st: Skip FSR reading if SPI controller does not support it")
+Reported-by: Zailiang Zhang <zaizhang@cisco.com>
+Signed-off-by: Bean Huo <beanhuo@micron.com>
+---
+ drivers/mtd/spi-nor/micron-st.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
+index 88033384a71e..4be6a76fc3e5 100644
+--- a/drivers/mtd/spi-nor/micron-st.c
++++ b/drivers/mtd/spi-nor/micron-st.c
+@@ -598,7 +598,7 @@ static int micron_st_nor_ready(struct spi_nor *nor)
+ 		 * operations to the software. If this is the case we use
+ 		 * only the status register value.
+ 		 */
+-		return ret == -EOPNOTSUPP ? sr_ready : ret;
++		return (ret == -EOPNOTSUPP || ret == -ENOTSUPP) ? sr_ready : ret;
+ 	}
  
-+	/*
-+	 * SDR dual and quad I/O operations over 104MHz require the HS bit to
-+	 * enable a few more dummy cycles.
-+	 */
- 	op = spinand->op_templates->read_cache;
- 	if (op->cmd.dtr || op->addr.dtr || op->dummy.dtr || op->data.dtr)
- 		hs = false;
--	else if (op->cmd.buswidth == 1 && op->addr.buswidth == 1 &&
--		 op->dummy.buswidth == 1 && op->data.buswidth == 1)
-+	else if (op->cmd.buswidth != 1 || op->addr.buswidth == 1)
-+		hs = false;
-+	else if (op->max_freq && op->max_freq <= 104 * HZ_PER_MHZ)
- 		hs = false;
--	else if (!op->max_freq)
--		hs = true;
- 	else
--		hs = false;
-+		hs = true;
- 
- 	ret = spinand_read_reg_op(spinand, W25N0XJW_SR4, &sr4);
- 	if (ret)
+ 	if (nor->bouncebuf[0] & (FSR_E_ERR | FSR_P_ERR)) {
 -- 
-2.51.1
+2.34.1
 
 
 ______________________________________________________
