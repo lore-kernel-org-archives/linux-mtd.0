@@ -4,95 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8BC6108E1F7
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Mar 2026 11:43:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2B771090222
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Mar 2026 12:52:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=vlkDw3E6uUgFjuqf8NkjD+y/5VX3GfpBDOgzK1kCaDE=; b=HPaojywdmVuc4K
-	fl6cahbkGIwcFxPkhk3h8ATap4ATPppe8RqYTl8dE/RBaP5miBPqWc5EtlECZWoDcLfuGJO72hyH4
-	3Hj9RZjtRk85iXO3vZrvmSbREL2aUEq6IDpthIFAf4YnRGFJx6wpCpCiOfT5iy/0A+/OwgaCqJBY5
-	znRQSRIIGFqRMmNvi84WDNTyQoQrCPx7/OQGbHEC0C4KaybEXeFEaBz2rxz1zrdrw0nqRjAugYMwk
-	lCL16gvEZmT3ZycjFM5rJfxpZpTO8G99QqNzFILzxLVzZeJ/BoKYi0faGDeGPNS53iqaoBPOpo1Y2
-	E0Vlqs+A5Wj4r+iBjsIg==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=/VfFP6iOa3EzKMsqd2NChcheQ1znSpdjUQALiv+HxI0=; b=br/HcFMfIvMSrQ
+	6X14pepIOSHdhKhBgN6znn3E1zI/oZHqj9lYh3R/M4pcIcIsES08Dk9EOiaNeE2gfK5Iub45Dot0S
+	pf9pZQTe27F2KfoW3hKwanHK41P4k8zUvVP3ZvqmD56NRejH+MUWF2jpxoGQkQbMY5RgMycdo8zpF
+	VXTDqTQ0SLNHC/vHzPLLV2MmlsZJlaxY1e4JYkRdItjrgd4+Rcke+JFbknfEONNrvlfz/tALVPJ/t
+	CcRcF3KGFg5xG3whvUn/H8/zyX9SjZDLxrDkKShy4VHd2s9IW5LOkq8TahLetVpmX77mdPBvxynLt
+	cDU+LDTWabAToGw0q2PQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w3Bmy-0000000AYqT-17BA;
-	Thu, 19 Mar 2026 11:43:44 +0000
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.51])
+	id 1w3Crd-0000000AdNm-2eTW;
+	Thu, 19 Mar 2026 12:52:37 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w3Bmu-0000000AYpc-1uZ3
-	for linux-mtd@lists.infradead.org;
-	Thu, 19 Mar 2026 11:43:42 +0000
-ARC-Seal: i=1; a=rsa-sha256; t=1773920596; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=kSNwXc5l1aJ7hIGQ86RtJOAoSleE49YAuYk/xKjaZJU93XToJFUnf07HTWybiBrc/W
-    f7qN1ae9NKz63ka6gNBKaeyISpc8BIs5H9xDAyQK0ZpCmf1daZWZ1URbgyDl/Gt5QAvS
-    jM88BQz0WhBUoI+HEJBFtJDfoCMbF9c/B8P9+gIU8QvBDnD+fILiqQb5nUKb2yaH5o/0
-    ngGQhPwAfKktNw5oE3ICddOYcEWQTy0OhZcYevF5TXXv6LqU6XzbkGWH5LsswABbBQhW
-    9tXxetN/U+NW/7SkFnFcm23j78KzMmH1yzUgadz1kWx0JB/nGCumF5u8gZLf+SMHn8x2
-    GjXw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1773920596;
-    s=strato-dkim-0002; d=strato.com;
-    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=pfMMyLzzsMT+XemQO4FfYPLmXUpfhJiBhG+oG+yUaxI=;
-    b=mD4JoZfIIygD0wHiXo31mBtYbhe58/8Dzl9QLFAYiqDfwmnkVkQvVyXIMrnzBA0sr5
-    0UkHBVSlu527/QmPetRIHqvRsww2UCtcNtp3GSt6Efkjmey/akNGj2YoU13+4HbDPD3I
-    k/P6yBMCcKOOOdLLfnqtTYZGbbI0kpn9d2X+fW8OqTuFxE6rtdofV5/oQe2jDaapd0Aj
-    PLZFryKiA+jFxgd7DNjRVI7R6TmCUvHvjrZKTeRacnymsC7z8XbZtt/Hyi1TR3SOBpP2
-    NXLwAQNrR0eEsk9GWn4Rf85wzys5nt2flYoukKOuYuPUpSIV8qmVcR9ZAWlCUCc8/6sZ
-    X2rw==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1773920596;
-    s=strato-dkim-0002; d=iokpp.de;
-    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=pfMMyLzzsMT+XemQO4FfYPLmXUpfhJiBhG+oG+yUaxI=;
-    b=eYqAUH0RgiSj38MVJh6C6x75gubvvrkMwVQ/JHmuFEnmfhpwxfTjeTWAnXZLKFn8ws
-    xeAj1zkPW91IO17UF+x7KsSwXcc6rnLx9r7l06ThDBjvryRJOtFlL3qG4e0Y5dmHBJDI
-    dyVOkEO132hIzJWiIdZWcKfZOelbBP3EcD9Rh4rw9byRND7wqKVkve0LahCCOMDJelwK
-    mod7nbc3Oxg0BSBrr7PrkIpvI1Dx+Sv0RuyGPl3OvpP91e2jOrg0L0yHWdAJPwVdxQoM
-    YtDt85MuW4YfYpdEMFIbU+mDliNiLrQOu/EK1Be2Vp+mI3bKsCVadxCUW1GdfSuGSii6
-    JFzw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1773920596;
-    s=strato-dkim-0003; d=iokpp.de;
-    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=pfMMyLzzsMT+XemQO4FfYPLmXUpfhJiBhG+oG+yUaxI=;
-    b=yBoYE3fMjL+W0m+2lwtbuc474hyGoUCUsJr88POeushqCj0jZRiVLsejE7OMldbdw7
-    uzsYjiRPMhr05nbb4BAw==
-X-RZG-AUTH: ":LmkFe0i9dN8c2t4QQyGBB/NDXvjDB6pBSfNuhhDSDt3O2J2YOom0XQaPis+nU/5K"
-Received: from Munilab01-lab.micron.com
-    by smtp.strato.de (RZmta 55.0.1 AUTH)
-    with ESMTPSA id z7934522JBhGDit
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Thu, 19 Mar 2026 12:43:16 +0100 (CET)
-From: Bean Huo <beanhuo@iokpp.de>
-To: stable@vger.kernel.org
-Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <mwalle@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Mark Brown <broonie@kernel.org>,
-	linux-mtd@lists.infradead.org,
-	linux-spi@vger.kernel.org,
-	Bean Huo <beanhuo@micron.com>,
-	"Chia-Lin Kao (AceLan)" <acelan.kao@canonical.com>,
-	Mika Westerberg <mika.westerberg@linux.intel.com>,
-	Michael Walle <michael@walle.cc>
-Subject: [PATCH] spi: Unify error codes by replacing -ENOTSUPP with -EOPNOTSUPP
-Date: Thu, 19 Mar 2026 12:43:05 +0100
-Message-Id: <20260319114305.1777261-1-beanhuo@iokpp.de>
-X-Mailer: git-send-email 2.34.1
+	id 1w3Crc-0000000AdNU-1WxN;
+	Thu, 19 Mar 2026 12:52:36 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id 4926C600C4;
+	Thu, 19 Mar 2026 12:52:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9282C19424;
+	Thu, 19 Mar 2026 12:52:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1773924755;
+	bh=jA7diFAaatzjClu0BNNjaXH84miUw/aL+tXzTcfiSyY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Udm/5szmcmrn1FQPUv6e/j0SN6gP++q+sDVLk95f5h2PMysLxA/Z+vmQxnocUccUn
+	 NuBv89GwjGw+atxJn1J0so9qkU5Fz40p+PTENxR41hcO8d78y7WoL7d68u7RJwiVoU
+	 24b8F9r9Rglgs2jG81B2Ku5fqywDVKhnmPJe34SHQaQbe0jVM5wnV7X8Yl87k20mNN
+	 uLVYl3OTVyKbPcX2UWMxSpOwWjfeL17ZUhqEmwTrU9V9I6dAEZqrK0WhNYjr1Zk1rv
+	 FL2a3cllmUIkPZSTj7CNTbJNtleLxEuRoC6olnUM1WEiLl3YJslQyYkYq6xD3FW/z0
+	 rvKJyE92if+Dg==
+Date: Thu, 19 Mar 2026 12:52:22 +0000
+From: "Lorenzo Stoakes (Oracle)" <ljs@kernel.org>
+To: Joshua Hahn <joshua.hahnjy@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, 
+	Clemens Ladisch <clemens@ladisch.de>, Arnd Bergmann <arnd@arndb.de>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "K . Y . Srinivasan" <kys@microsoft.com>, 
+	Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>, 
+	Long Li <longli@microsoft.com>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+	Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
+	Vignesh Raghavendra <vigneshr@ti.com>, Bodo Stroesser <bostroesser@gmail.com>, 
+	"Martin K . Petersen" <martin.petersen@oracle.com>, David Howells <dhowells@redhat.com>, 
+	Marc Dionne <marc.dionne@auristor.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, David Hildenbrand <david@kernel.org>, 
+	"Liam R . Howlett" <Liam.Howlett@oracle.com>, Vlastimil Babka <vbabka@kernel.org>, 
+	Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>, 
+	Michal Hocko <mhocko@suse.com>, Jann Horn <jannh@google.com>, Pedro Falcato <pfalcato@suse.de>, 
+	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, linux-hyperv@vger.kernel.org, 
+	linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, 
+	linux-mtd@lists.infradead.org, linux-staging@lists.linux.dev, linux-scsi@vger.kernel.org, 
+	target-devel@vger.kernel.org, linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org, 
+	linux-mm@kvack.org, Ryan Roberts <ryan.roberts@arm.com>
+Subject: Re: [PATCH v2 12/16] mm: allow handling of stacked mmap_prepare
+ hooks in more drivers
+Message-ID: <caf19e7e-e8dc-4409-8655-f734279b0c45@lucifer.local>
+References: <72750af6906fd96fb6f18e83ac3e694cf357a2c1.1773695307.git.ljs@kernel.org>
+ <20260318210845.2591228-1-joshua.hahnjy@gmail.com>
 MIME-Version: 1.0
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260319_044340_907402_5E655911 
-X-CRM114-Status: GOOD (  26.83  )
+Content-Disposition: inline
+In-Reply-To: <20260318210845.2591228-1-joshua.hahnjy@gmail.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -109,242 +87,139 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Bean Huo <beanhuo@micron.com>
+On Wed, Mar 18, 2026 at 02:08:45PM -0700, Joshua Hahn wrote:
+> On Mon, 16 Mar 2026 21:12:08 +0000 "Lorenzo Stoakes (Oracle)" <ljs@kernel.org> wrote:
+>
+> > While the conversion of mmap hooks to mmap_prepare is underway, we wil
+> > encounter situations where mmap hooks need to invoke nested mmap_prepare
+> > hooks.
+> >
+> > The nesting of mmap hooks is termed 'stacking'.  In order to flexibly
+> > facilitate the conversion of custom mmap hooks in drivers which stack, we
+> > must split up the existing compat_vma_mapped() function into two separate
+> > functions:
+> >
+> > * compat_set_desc_from_vma() - This allows the setting of a vm_area_desc
+> >   object's fields to the relevant fields of a VMA.
+>
+> Hello Lorenzo, I hope you are doing well!
+>
+> Thank you for this patch. I was developing on top of mm-new today and had
+> an error that I think was caused by this patch. I want to preface this by
+> saying that I am not at all familiar with this area of the code, so please
+> do forgive me if I've misinterpreted the crash and mistakenly pointed
+> at this commit : -)
+>
+> Here is the crash:
+>
+> [    1.083795] kernel tried to execute NX-protected page - exploit attempt? (uid: 0)
+> [    1.083883] BUG: unable to handle page fault for address: ffa00000048efbb8
+> [    1.083957] #PF: supervisor instruction fetch in kernel mode
+> [    1.084030] #PF: error_code(0x0011) - permissions violation
+> [    1.084086] PGD 100000067 P4D 10035f067 PUD 100364067 PMD 441ed9067 PTE 80000004466a3163
+> [    1.084162] Oops: Oops: 0011 [#1] SMP
+> [    1.084218] CPU: 0 UID: 0 PID: 305 Comm: mkdir Tainted: G        W   E       7.0.0-rc4-virtme-00442-ge53de5a0302f-dirty #85 PREEMPTLAZY
+>
+> As you can see, it's on a QEMU instance. I don't think this makes a difference
+> in the crash, though.
+>
+> [    1.084321] Tainted: [W]=WARN, [E]=UNSIGNED_MODULE
+> [    1.084369] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.3-5.el9 11/05/2023
+> [    1.084450] RIP: 0010:0xffa00000048efbb8
+> [    1.084489] Code: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 <40> 12 0e 00 01 00 11 ff d0 fa 8e 04 00 00 a0 ff 80 33 51 02 01 00
+> [    1.084642] RSP: 0018:ffa00000048ef998 EFLAGS: 00010286
+> [    1.084692] RAX: ffa00000048efbb8 RBX: ff11000102512cc0 RCX: 000000000000000d
+> [    1.084766] RDX: ffffffffa06247d0 RSI: ffa00000048efa18 RDI: ff11000102512cc0
+> [    1.084826] RBP: ffa00000048ef9c8 R08: 0000000000000000 R09: 0000000000000007
+> [    1.084889] R10: ff110001047d1f08 R11: 00007effdc3d0fff R12: ff110001047d3b00
+> [    1.084954] R13: ff11000446cae600 R14: ff110001024efe00 R15: ff11000102510a80
+> [    1.085021] FS:  0000000000000000(0000) GS:ff110004aae72000(0000) knlGS:0000000000000000
+> [    1.085083] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [    1.085136] CR2: ffa00000048efbb8 CR3: 0000000102667001 CR4: 0000000000771ef0
+> [    1.085201] PKRU: 55555554
+> [    1.085228] Call Trace:
+> [    1.085248]  <TASK>
+> [    1.085274]  ? __compat_vma_mmap+0x8e/0x130
+> [    1.085318]  ? compat_vma_mmap+0x76/0x80
+> [    1.085354]  ? mas_alloc_nodes+0xb2/0x110
+> [    1.085390]  ? backing_file_mmap+0xc3/0xf0
+> [    1.085426]  ? ovl_mmap+0x41/0x50
+> [    1.085463]  ? ovl_mmap+0x50/0x50
+> [    1.085499]  ? __mmap_region+0x7e8/0x1100
+> [    1.085539]  ? do_mmap+0x49f/0x5e0
+> [    1.085573]  ? vm_mmap_pgoff+0xef/0x1e0
+> [    1.085609]  ? ksys_mmap_pgoff+0x15c/0x1f0
+> [    1.085647]  ? do_syscall_64+0xab/0x980
+> [    1.085684]  ? entry_SYSCALL_64_after_hwframe+0x4b/0x53
+> [    1.085730]  </TASK>
+> [    1.085770] Modules linked in: virtio_mmio(E) 9pnet_virtio(E) 9p(E) 9pnet(E) netfs(E)
+> [    1.085838] CR2: ffa00000048efbb8
+> [    1.085874] ---[ end trace 0000000000000000 ]---
+> [    1.085875] kernel tried to execute NX-protected page - exploit attempt? (uid: 0)
+> [    1.085918] RIP: 0010:0xffa00000048efbb8
+> [    1.085921] Code: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 <40> 12 0e 00 01 00 11 ff d0 fa 8e 04 00 00 a0 ff 80 33 51 02 01 00
+> [    1.085988] BUG: unable to handle page fault for address: ffa00000048f7bb8
+> [    1.086026] RSP: 0018:ffa00000048ef998 EFLAGS: 00010286
+> [    1.086166] #PF: supervisor instruction fetch in kernel mode
+> [    1.086221]
+> [    1.086267] #PF: error_code(0x0011) - permissions violation
+> [    1.086321] RAX: ffa00000048efbb8 RBX: ff11000102512cc0 RCX: 000000000000000d
+> [    1.086348] PGD 100000067
+> [    1.086394] RDX: ffffffffa06247d0 RSI: ffa00000048efa18 RDI: ff11000102512cc0
+> [    1.086459] P4D 10035f067
+> [    1.086486] RBP: ffa00000048ef9c8 R08: 0000000000000000 R09: 0000000000000007
+> [    1.086550] PUD 100364067
+> [    1.086577] R10: ff110001047d1f08 R11: 00007effdc3d0fff R12: ff110001047d3b00
+> [    1.086641] PMD 441ed9067
+> [    1.086668] R13: ff11000446cae600 R14: ff110001024efe00 R15: ff11000102510a80
+> [    1.086731] PTE 80000004433d3163
+> [    1.086764] FS:  0000000000000000(0000) GS:ff110004aae72000(0000) knlGS:0000000000000000
+> [    1.086829]
+> [    1.086868] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [    1.086931] Oops: Oops: 0011 [#2] SMP
+> [    1.086958] CR2: ffa00000048efbb8 CR3: 0000000102667001 CR4: 0000000000771ef0
+> [    1.087015] CPU: 29 UID: 0 PID: 306 Comm: mount Tainted: G      D W   E       7.0.0-rc4-virtme-00442-ge53de5a0302f-dirty #85 PREEMPTLAZY
+> [    1.087050] PKRU: 55555554
+> [    1.087115] Tainted: [D]=DIE, [W]=WARN, [E]=UNSIGNED_MODULE
+> [    1.087207] Kernel panic - not syncing: Fatal exception
+> [    2.158392] Shutting down cpus with NMI
+> [    2.158629] Kernel Offset: disabled
+> [    2.158668] ---[ end Kernel panic - not syncing: Fatal exception ]---
+>
+> It crashes at compat_vma_mmap, and here is what I think could be the
+> potential crash path:
+>
+> - compat_vma_mmap() creates struct vm_area_desc desc;
+>   - compat_set_desc_from_vma Doesn't initialize the struct, but instead
+>     modifies independent fields. I think this is where the behavior
+>     diverges, since before we would use the C initializer and uninitialized
 
-From: Chia-Lin Kao (AceLan) <acelan.kao@canonical.com>
+Ah yeah you're right I'll fix that up!
 
-This commit updates the SPI subsystem, particularly affecting "SPI MEM"
-drivers and core parts, by replacing the -ENOTSUPP error code with
--EOPNOTSUPP.
+>     variables would be set to 0 (including ommitted ones, like
+>     action.success_hook or action.error_hook). But action.type = MMAP_NOTHING
+>   - desc.action.success_hook remains uninitialized in vfs_mmap_prepare
+>   - mmap_action_complete()
+>     - Here, We've set action.type to be MMAP_NOTHING, so we have err = 0
+>     - mmap_action_finish(action, vma, 0)
+>       - And here, since err == 0, we check action->success_hook (which has
+>         garbage, therefore it's nonzero) and call action->success_hook(vma)
+>
+> And I think action->success_hook(vma) where success_hook is uninitialized
+> stack garbage gets me to where I am.
+>
+> Again, I'm not too familiar with this area of the kernel, this is just
+> based on the quick digging that I did. And aplogies again if I'm missing
+> something ; -) I do think that the uninitialized members could be a problem
+> though.
+>
+> Thank you, I hope you have a great day Lorenzo!
+> Joshua
 
-The key motivations for this change are as follows:
-1. The spi-nor driver currently uses EOPNOTSUPP, whereas calls to spi-mem
-might return ENOTSUPP. This update aims to unify the error reporting
-within the SPI subsystem for clarity and consistency.
+Thanks for the report and analysis, much appreciated, hope you have a great
+day too :)
 
-2. The use of ENOTSUPP has been flagged by checkpatch as inappropriate,
-mainly being reserved for NFS-related errors. To align with kernel coding
-standards and recommendations, this change is being made.
-
-3. By using EOPNOTSUPP, we provide more specific context to the error,
-indicating that a particular operation is not supported. This helps
-differentiate from the more generic ENOTSUPP error, allowing drivers to
-better handle and respond to different error scenarios.
-
-Risks and Considerations:
-While this change is primarily intended as a code cleanup and error code
-unification, there is a minor risk of breaking user-space applications
-that rely on specific return codes for unsupported operations. However,
-this risk is considered low, as such use-cases are unlikely to be common
-or critical. Nevertheless, developers and users should be aware of this
-change, especially if they have scripts or tools that specifically handle
-SPI error codes.
-
-This commit does not introduce any functional changes to the SPI subsystem
-or the affected drivers.
-
-Signed-off-by: "Chia-Lin Kao (AceLan)" <acelan.kao@canonical.com>
-Acked-by: Tudor Ambarus <tudor.ambarus@linaro.org>
-Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Acked-by: Michael Walle <michael@walle.cc>
-Link: https://lore.kernel.org/r/20231129064311.272422-1-acelan.kao@canonical.com
-Fixes: 90c517f435a9 ("mtd: spi-nor: micron-st: Skip FSR reading if SPI controller does not support it")
-Cc: stable@vger.kernel.org # v5.18+
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
-Greg,
-
-Please consider this upstream commit for stable backport.
-
-This commit was merged as a cleanup but it fixes a real regression for
-users of Micron SPI-NOR flash attached to SPI controllers that return
--ENOTSUPP (524) instead of -EOPNOTSUPP (95) for unsupported operations.
-
-The regression was introduced by commit 90c517f435a9 ("mtd: spi-nor:
-micron-st: Skip FSR reading if SPI controller does not support it"), which
-added FSR read fallback logic in micron_st_nor_ready() but only checked
-for -EOPNOTSUPP. When a controller returns -ENOTSUPP for the same
-condition, the fallback is never triggered and the error propagates,
-causing all subsequent erase/program operations on the flash to fail.
-
-A targeted fix was proposed on the MTD mailing list but the maintainers
-recommended backporting this commit to stable instead:
-
-  https://patchwork.ozlabs.org/project/linux-mtd/patch/20260318131857.2685004-1-beanhuo@iokpp.de/
-
-The Fixes tag and Cc: stable have been added to facilitate backport to
-all stable trees carrying 90c517f435a9 (v5.18+).
-
- drivers/mtd/nand/spi/core.c | 2 +-
- drivers/mtd/spi-nor/core.c  | 2 +-
- drivers/spi/atmel-quadspi.c | 2 +-
- drivers/spi/spi-ath79.c     | 2 +-
- drivers/spi/spi-bcm-qspi.c  | 2 +-
- drivers/spi/spi-mem.c       | 6 +++---
- drivers/spi/spi-npcm-fiu.c  | 2 +-
- drivers/spi/spi-ti-qspi.c   | 4 ++--
- drivers/spi/spi-wpcm-fiu.c  | 2 +-
- include/linux/spi/spi-mem.h | 2 ++
- 10 files changed, 14 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index 849ccfedbc72..e0b6715e5dfe 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -974,7 +974,7 @@ static int spinand_manufacturer_match(struct spinand_device *spinand,
- 		spinand->manufacturer = manufacturer;
- 		return 0;
- 	}
--	return -ENOTSUPP;
-+	return -EOPNOTSUPP;
- }
- 
- static int spinand_id_detect(struct spinand_device *spinand)
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 1c443fe568cf..87cb2047df80 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -3146,7 +3146,7 @@ int spi_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
- 	int ret;
- 
- 	ret = params->set_4byte_addr_mode(nor, enable);
--	if (ret && ret != -ENOTSUPP)
-+	if (ret && ret != -EOPNOTSUPP)
- 		return ret;
- 
- 	if (enable) {
-diff --git a/drivers/spi/atmel-quadspi.c b/drivers/spi/atmel-quadspi.c
-index 3d1252566134..370c4d1572ed 100644
---- a/drivers/spi/atmel-quadspi.c
-+++ b/drivers/spi/atmel-quadspi.c
-@@ -272,7 +272,7 @@ static int atmel_qspi_find_mode(const struct spi_mem_op *op)
- 		if (atmel_qspi_is_compatible(op, &atmel_qspi_modes[i]))
- 			return i;
- 
--	return -ENOTSUPP;
-+	return -EOPNOTSUPP;
- }
- 
- static bool atmel_qspi_supports_op(struct spi_mem *mem,
-diff --git a/drivers/spi/spi-ath79.c b/drivers/spi/spi-ath79.c
-index c9f1d1e1dcf7..b7ada981464a 100644
---- a/drivers/spi/spi-ath79.c
-+++ b/drivers/spi/spi-ath79.c
-@@ -146,7 +146,7 @@ static int ath79_exec_mem_op(struct spi_mem *mem,
- 	/* Only use for fast-read op. */
- 	if (op->cmd.opcode != 0x0b || op->data.dir != SPI_MEM_DATA_IN ||
- 	    op->addr.nbytes != 3 || op->dummy.nbytes != 1)
--		return -ENOTSUPP;
-+		return -EOPNOTSUPP;
- 
- 	/* disable GPIO mode */
- 	ath79_spi_wr(sp, AR71XX_SPI_REG_FS, 0);
-diff --git a/drivers/spi/spi-bcm-qspi.c b/drivers/spi/spi-bcm-qspi.c
-index ef08fcac2f6d..d96222e6d7d2 100644
---- a/drivers/spi/spi-bcm-qspi.c
-+++ b/drivers/spi/spi-bcm-qspi.c
-@@ -1199,7 +1199,7 @@ static int bcm_qspi_exec_mem_op(struct spi_mem *mem,
- 
- 	if (!op->data.nbytes || !op->addr.nbytes || op->addr.nbytes > 4 ||
- 	    op->data.dir != SPI_MEM_DATA_IN)
--		return -ENOTSUPP;
-+		return -EOPNOTSUPP;
- 
- 	buf = op->data.buf.in;
- 	addr = op->addr.val;
-diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
-index edd7430d4c05..2dc8ceb85374 100644
---- a/drivers/spi/spi-mem.c
-+++ b/drivers/spi/spi-mem.c
-@@ -323,7 +323,7 @@ int spi_mem_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
- 		return ret;
- 
- 	if (!spi_mem_internal_supports_op(mem, op))
--		return -ENOTSUPP;
-+		return -EOPNOTSUPP;
- 
- 	if (ctlr->mem_ops && ctlr->mem_ops->exec_op && !spi_get_csgpiod(mem->spi, 0)) {
- 		ret = spi_mem_access_start(mem);
-@@ -339,7 +339,7 @@ int spi_mem_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
- 		 * read path) and expect the core to use the regular SPI
- 		 * interface in other cases.
- 		 */
--		if (!ret || ret != -ENOTSUPP)
-+		if (!ret || ret != -ENOTSUPP || ret != -EOPNOTSUPP)
- 			return ret;
- 	}
- 
-@@ -559,7 +559,7 @@ spi_mem_dirmap_create(struct spi_mem *mem,
- 	if (ret) {
- 		desc->nodirmap = true;
- 		if (!spi_mem_supports_op(desc->mem, &desc->info.op_tmpl))
--			ret = -ENOTSUPP;
-+			ret = -EOPNOTSUPP;
- 		else
- 			ret = 0;
- 	}
-diff --git a/drivers/spi/spi-npcm-fiu.c b/drivers/spi/spi-npcm-fiu.c
-index 03db9f016a11..f3bb8bbc192f 100644
---- a/drivers/spi/spi-npcm-fiu.c
-+++ b/drivers/spi/spi-npcm-fiu.c
-@@ -556,7 +556,7 @@ static int npcm_fiu_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
- 		op->data.nbytes);
- 
- 	if (fiu->spix_mode || op->addr.nbytes > 4)
--		return -ENOTSUPP;
-+		return -EOPNOTSUPP;
- 
- 	if (fiu->clkrate != chip->clkrate) {
- 		ret = clk_set_rate(fiu->clk, chip->clkrate);
-diff --git a/drivers/spi/spi-ti-qspi.c b/drivers/spi/spi-ti-qspi.c
-index fdc092a05284..a6a89c59c418 100644
---- a/drivers/spi/spi-ti-qspi.c
-+++ b/drivers/spi/spi-ti-qspi.c
-@@ -613,12 +613,12 @@ static int ti_qspi_exec_mem_op(struct spi_mem *mem,
- 	/* Only optimize read path. */
- 	if (!op->data.nbytes || op->data.dir != SPI_MEM_DATA_IN ||
- 	    !op->addr.nbytes || op->addr.nbytes > 4)
--		return -ENOTSUPP;
-+		return -EOPNOTSUPP;
- 
- 	/* Address exceeds MMIO window size, fall back to regular mode. */
- 	from = op->addr.val;
- 	if (from + op->data.nbytes > qspi->mmap_size)
--		return -ENOTSUPP;
-+		return -EOPNOTSUPP;
- 
- 	mutex_lock(&qspi->list_lock);
- 
-diff --git a/drivers/spi/spi-wpcm-fiu.c b/drivers/spi/spi-wpcm-fiu.c
-index 852ffe013d32..d76f7b5a9b97 100644
---- a/drivers/spi/spi-wpcm-fiu.c
-+++ b/drivers/spi/spi-wpcm-fiu.c
-@@ -361,7 +361,7 @@ static int wpcm_fiu_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
- 
- 	wpcm_fiu_stall_host(fiu, false);
- 
--	return -ENOTSUPP;
-+	return -EOPNOTSUPP;
- }
- 
- static int wpcm_fiu_adjust_op_size(struct spi_mem *mem, struct spi_mem_op *op)
-diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
-index 6b0a7dc48a4b..f866d5c8ed32 100644
---- a/include/linux/spi/spi-mem.h
-+++ b/include/linux/spi/spi-mem.h
-@@ -233,6 +233,8 @@ static inline void *spi_mem_get_drvdata(struct spi_mem *mem)
-  *		    limitations)
-  * @supports_op: check if an operation is supported by the controller
-  * @exec_op: execute a SPI memory operation
-+ *           not all driver provides supports_op(), so it can return -EOPNOTSUPP
-+ *           if the op is not supported by the driver/controller
-  * @get_name: get a custom name for the SPI mem device from the controller.
-  *	      This might be needed if the controller driver has been ported
-  *	      to use the SPI mem layer and a custom name is used to keep
--- 
-2.34.1
-
+Cheers, Lorenzo
 
 ______________________________________________________
 Linux MTD discussion mailing list
