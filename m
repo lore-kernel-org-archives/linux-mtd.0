@@ -4,43 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EEC991091910
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Mar 2026 18:24:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F1BD109190D
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Mar 2026 18:24:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Xz6LY1EC4zay5BmQ8GWNoy7QWMqkEMNjTreGhf/iQLE=; b=JAOUWAgUV08S4Z
-	TGM8EBYJ0MYp0X+iAYURUymr5rJtj5l5w7G6R+kce2slY77XMtmH82iIBVbLb9UifFD6ed7z73Ux7
-	g0rF3xii9LaeqinlpSsAw+yjxc+5CIHagDeEkd3AymFSfpHsWGTQ+6BO0/kMGBJugBEkMW0XP7imW
-	VE0/Q+cmBGswFHcWJp6NCc3WuyuQTkdEOz+jQZvUEfM5nFYLVXQ1euKfc9jY2dvJibQ6LYKJoREtW
-	z087aDdvZCsr0+jk3fXepa/XnmDfqMxUdAfs62TjoqnCHKC0W++gGFJCKjp6AWQ1UNM7eSEdOShuz
-	tQ/24BrnBoFg8mIvUDbw==;
+	List-Owner; bh=9dhc44wDW2CsxjQ+2IBo/8lPbj8cHd1yyZCCXqDb9qg=; b=G0tKt9VHR85jtC
+	bFuKKHLMTh9ULfWEr35LHRShE66kh8G9GeaeL6Vtkc3FrvvrJf0Ls2M5dxg3ZfX8/f0xCjtU5TTqn
+	i5KsnW1tA0m1FuLeXkpNojk6Dy3qPvtvnWK+VKdlxAMh0SfIzmTkmXpco7v6MmYcIOFFcRR62Rv1d
+	xRYd4pPeLBDb3bhEVvV5MwfUzDTWADOeqBGGEPdQsswb6svi8zDJRxDKB/bLRHelbbeRTW5pSOZPw
+	kqPgOIKcfnhPPH/MlbQH/FTvPdBNC31rWUNWg464Ujfb51BLUGVQLD1Zy3CyFwpG9xbRmNTkbbbpG
+	rD6Kg9/HqKhuBBMP8KDg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w3I2a-0000000BIyN-3fz8;
-	Thu, 19 Mar 2026 18:24:16 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1w3I2b-0000000BIzx-2h17;
+	Thu, 19 Mar 2026 18:24:17 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w3I2T-0000000BIol-21je;
-	Thu, 19 Mar 2026 18:24:09 +0000
+	id 1w3I2V-0000000BIqW-1RjD;
+	Thu, 19 Mar 2026 18:24:11 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
+	:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
+	Content-Type:Content-ID:Content-Description;
+	bh=eQ5fcRfRZBqewJhpBVyDo43yFkyuLWkspExiz7UwmeI=; b=kjGjQtrmPlzqX+AW7T4LvKUEk6
+	/rd3Sjj4aBMeK4DTAjZXypSbwGKWDZTOUMKxr3xw+5zE68jjmSr+bp4YNSTtgOuoY1kfVAThYqpwm
+	JTePeot8SkJRb2XL4Fdzw5BMlemnkOvgV3R30J2fEyWzi0qcIHt9rgUDvQ103WzXLReAc5FIb7jvz
+	+9wcDWsJuEWfLQ9x/fdRAuAwTPd9mbj9BD72u1vxlGoevcNOwYZ9E6PuEeFCd1WLQd4evFN8DeE8i
+	XYLzknBJbWiq6db8II8lyfl6YtTu9LlqU2emdGzjVrGbdlG6g2ryB+JdJReZQE6kR0UimMJrJmmEh
+	Qc6rBKvw==;
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1w3I2R-0000000EDob-1ygg;
+	Thu, 19 Mar 2026 18:24:10 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id D9BDD60054;
-	Thu, 19 Mar 2026 18:24:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACFCBC19425;
-	Thu, 19 Mar 2026 18:24:07 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 9D2DE4369B;
+	Thu, 19 Mar 2026 18:24:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DAFBEC2BCAF;
+	Thu, 19 Mar 2026 18:24:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773944648;
-	bh=LhT0XvoqFL5inoAn3uLwrHjF8WgiWC6oU1y5hKpoQX4=;
+	s=k20201202; t=1773944645;
+	bh=zxWNAJj7O8GtoZ6ysYQIGq3mbn9MaN35AkA3dod/SuI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Xix1hbzJ17ib608MrpnaHLSucjdnwjosxSDyq47tfbrRhwyG7s308M1gzj3WuaQBZ
-	 mYnz0FxfmNkkvF6/w6M1GodW8m/d88eySpDOdx99xXsOo5tuwx9gaf47WhdUN3dbmm
-	 pqIqFVBuoLDjcgsq43adH3LA5d3+IYUWO+6gysnULFkCuAK5/UAHgsIi6gS277LJIm
-	 0ksjH5Git6YNho13gk0VVEKAbV+jBcbc3wRjyqxjbp74q6vxX1k15DRnzKNg1BpL7u
-	 wOUEtso4ghSPyQ5wjqiqAWPqLFPKK9g2JFcEFKOEKjeFzQA0Q8Eg9pdlakIk71kwqH
-	 44c0TBid3Al3Q==
+	b=dvwse2TYXUyFSEEHXSYnuuMx/6EtWicIHQiNBtjzi9BMylWZnkZolWGYbY1Dm8dG+
+	 iZEMNApPU9MiUIMHpNkl/dbTN6gvv/L5XR7vAeSUfPQbNgGc0qi4PAIw+LoNeFQTY7
+	 ETXtpSK7lClP5bOuhcNyWpLEH7mMQSWw+sIGyY0cfgoAewXRRByojGGsFCR26P16+3
+	 AsVf61sZnPetqHYg9LmjGvD35RA33pP88xZaLa1mVutFMFphplkO2Ast/BoDGGgJku
+	 7pPiqFXnb9yA9xPORUBYg0AaceYQVG4OVbOfd5gvitBw3kYujc0gpf7sK4qwnesfiH
+	 BbuNePHI8EsiQ==
 From: "Lorenzo Stoakes (Oracle)" <ljs@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Jonathan Corbet <corbet@lwn.net>,
@@ -86,13 +100,16 @@ Cc: Jonathan Corbet <corbet@lwn.net>,
 	linux-fsdevel@vger.kernel.org,
 	linux-mm@kvack.org,
 	Ryan Roberts <ryan.roberts@arm.com>
-Subject: [PATCH v3 08/16] hpet: replace deprecated mmap hook with mmap_prepare
-Date: Thu, 19 Mar 2026 18:23:32 +0000
-Message-ID: <aad6e8903eb4a8949f658eaf57a55a09a104c6f6.1773944114.git.ljs@kernel.org>
+Subject: [PATCH v3 07/16] misc: open-dice: replace deprecated mmap hook with mmap_prepare
+Date: Thu, 19 Mar 2026 18:23:31 +0000
+Message-ID: <eca64f8c12ea145c9667ab7059ce16c50d919b44.1773944114.git.ljs@kernel.org>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <cover.1773944114.git.ljs@kernel.org>
 References: <cover.1773944114.git.ljs@kernel.org>
 MIME-Version: 1.0
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260319_182408_458650_9CD52A79 
+X-CRM114-Status: GOOD (  15.70  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -118,49 +135,54 @@ with its mmap_prepare equivalent, mmap_action_simple_ioremap().
 Reviewed-by: Suren Baghdasaryan <surenb@google.com>
 Signed-off-by: Lorenzo Stoakes (Oracle) <ljs@kernel.org>
 ---
- drivers/char/hpet.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ drivers/misc/open-dice.c | 19 +++++++++++--------
+ 1 file changed, 11 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/char/hpet.c b/drivers/char/hpet.c
-index 60dd09a56f50..8f128cc40147 100644
---- a/drivers/char/hpet.c
-+++ b/drivers/char/hpet.c
-@@ -354,8 +354,9 @@ static __init int hpet_mmap_enable(char *str)
- }
- __setup("hpet_mmap=", hpet_mmap_enable);
- 
--static int hpet_mmap(struct file *file, struct vm_area_struct *vma)
-+static int hpet_mmap_prepare(struct vm_area_desc *desc)
+diff --git a/drivers/misc/open-dice.c b/drivers/misc/open-dice.c
+index 24c29e0f00ef..45060fb4ea27 100644
+--- a/drivers/misc/open-dice.c
++++ b/drivers/misc/open-dice.c
+@@ -86,29 +86,32 @@ static ssize_t open_dice_write(struct file *filp, const char __user *ptr,
+ /*
+  * Creates a mapping of the reserved memory region in user address space.
+  */
+-static int open_dice_mmap(struct file *filp, struct vm_area_struct *vma)
++static int open_dice_mmap_prepare(struct vm_area_desc *desc)
  {
-+	struct file *file = desc->file;
- 	struct hpet_dev *devp;
- 	unsigned long addr;
++	struct file *filp = desc->file;
+ 	struct open_dice_drvdata *drvdata = to_open_dice_drvdata(filp);
  
-@@ -368,11 +369,12 @@ static int hpet_mmap(struct file *file, struct vm_area_struct *vma)
- 	if (addr & (PAGE_SIZE - 1))
- 		return -ENOSYS;
+-	if (vma->vm_flags & VM_MAYSHARE) {
++	if (vma_desc_test(desc, VMA_MAYSHARE_BIT)) {
+ 		/* Do not allow userspace to modify the underlying data. */
+-		if (vma->vm_flags & VM_WRITE)
++		if (vma_desc_test(desc, VMA_WRITE_BIT))
+ 			return -EPERM;
+ 		/* Ensure userspace cannot acquire VM_WRITE later. */
+-		vm_flags_clear(vma, VM_MAYWRITE);
++		vma_desc_clear_flags(desc, VMA_MAYWRITE_BIT);
+ 	}
  
--	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
--	return vm_iomap_memory(vma, addr, PAGE_SIZE);
-+	desc->page_prot = pgprot_noncached(desc->page_prot);
-+	mmap_action_simple_ioremap(desc, addr, PAGE_SIZE);
+ 	/* Create write-combine mapping so all clients observe a wipe. */
+-	vma->vm_page_prot = pgprot_writecombine(vma->vm_page_prot);
+-	vm_flags_set(vma, VM_DONTCOPY | VM_DONTDUMP);
+-	return vm_iomap_memory(vma, drvdata->rmem->base, drvdata->rmem->size);
++	desc->page_prot = pgprot_writecombine(desc->page_prot);
++	vma_desc_set_flags(desc, VMA_DONTCOPY_BIT, VMA_DONTDUMP_BIT);
++	mmap_action_simple_ioremap(desc, drvdata->rmem->base,
++				   drvdata->rmem->size);
 +	return 0;
  }
- #else
--static int hpet_mmap(struct file *file, struct vm_area_struct *vma)
-+static int hpet_mmap_prepare(struct vm_area_desc *desc)
- {
- 	return -ENOSYS;
- }
-@@ -710,7 +712,7 @@ static const struct file_operations hpet_fops = {
- 	.open = hpet_open,
- 	.release = hpet_release,
- 	.fasync = hpet_fasync,
--	.mmap = hpet_mmap,
-+	.mmap_prepare = hpet_mmap_prepare,
+ 
+ static const struct file_operations open_dice_fops = {
+ 	.owner = THIS_MODULE,
+ 	.read = open_dice_read,
+ 	.write = open_dice_write,
+-	.mmap = open_dice_mmap,
++	.mmap_prepare = open_dice_mmap_prepare,
  };
  
- static int hpet_is_known(struct hpet_data *hdp)
+ static int __init open_dice_probe(struct platform_device *pdev)
 -- 
 2.53.0
 
