@@ -4,133 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7798D108E1F3
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Mar 2026 11:35:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8BC6108E1F7
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Mar 2026 11:43:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=69+ZAn9A8Z0dREwPPGqlg1X6ulWI9DE1tm4Cv+jPVjk=; b=B/4cysUzsQsQ1s
-	7mJgDrmtm2Hia2B4qLOHccUVN22lOdq10E2WcTvfN9eH/SPWv5wjhjX2xVa/2032rTxnHf+jgKjX6
-	b/kGG9xpbpD0+bzHz3ABlUqcrizWO81d05VOFx2ztmXO4H/lVdRLST7OrapJ17C+g4ZZpCptEvXMh
-	5ncSNK1U85uBQeq6no+nrfBs9FdTa07gYMbiSyBkC8fUAcicjqtt8TP8Sc05c5Fyw9NkaG9FjV9HA
-	3YvvF0GpIsJ1Q18Hbz+zSolq3tEAaNudJlpZyO6CrTtX6p8+nak0I2py9ZN2s4AyvMHEf7bCvMNOB
-	C7SNszkJQoqhuRE2llMg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=vlkDw3E6uUgFjuqf8NkjD+y/5VX3GfpBDOgzK1kCaDE=; b=HPaojywdmVuc4K
+	fl6cahbkGIwcFxPkhk3h8ATap4ATPppe8RqYTl8dE/RBaP5miBPqWc5EtlECZWoDcLfuGJO72hyH4
+	3Hj9RZjtRk85iXO3vZrvmSbREL2aUEq6IDpthIFAf4YnRGFJx6wpCpCiOfT5iy/0A+/OwgaCqJBY5
+	znRQSRIIGFqRMmNvi84WDNTyQoQrCPx7/OQGbHEC0C4KaybEXeFEaBz2rxz1zrdrw0nqRjAugYMwk
+	lCL16gvEZmT3ZycjFM5rJfxpZpTO8G99QqNzFILzxLVzZeJ/BoKYi0faGDeGPNS53iqaoBPOpo1Y2
+	E0Vlqs+A5Wj4r+iBjsIg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w3BfB-0000000AXtb-3Gn3;
-	Thu, 19 Mar 2026 11:35:41 +0000
-Received: from mail-italynorthazlp170100001.outbound.protection.outlook.com ([2a01:111:f403:c215::1] helo=MI1P293CU004.outbound.protection.outlook.com)
+	id 1w3Bmy-0000000AYqT-17BA;
+	Thu, 19 Mar 2026 11:43:44 +0000
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.51])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w3Bf7-0000000AXsi-2m0m
+	id 1w3Bmu-0000000AYpc-1uZ3
 	for linux-mtd@lists.infradead.org;
-	Thu, 19 Mar 2026 11:35:39 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=HrB2ha9JqpaR57Cyijuv+Nq36ff5ykiHIn6zVQH3bDGmU8gISOUMtlW4h4yiPTImDt1ceecR2vmOKR6ReKen5T39xXWwGj8yaQnrdOuJ5D5vo7/PRj15d1F2vteLg9sRtnUbJ0FBMgdXuBHztXcL2PDCTbgHNlPNytsdAE/PExGpsV0hLscdlg1BwafcgkdbVQvbH6jHaRzVA3fHPVRSQvofVgjKEtO/d5ipo12xt8XHdeHAXTugZm+l8LJogy/3eg7bPVS1REoAmpwQ438r8YBTlWfwuwKM7IktUW13nP9DpBA4fNy/i7l7w5EW7bn7m5nUKYBqUsHFzR91SzIZCw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=53AiirzawLhviTlq0FYv67ImWlwsaEWYarkr+WCoaQQ=;
- b=mNzllDqyKLrWc1AcjJfVQs+iaYCesay7Q0RjK7VOlJ52OUbVCmEk/RyBEnP/ckxI9hPtdoQIMCn6dgHLXI4RBd84aIGmentlwQNMDI7pLcHsa+Re8ionoQ2aU0aDJ4oos9o6lrILNjgLsDHETtB7vrq2lkY3pSGeZfI1mN2/AYQ7ipyXSs8lePuQDop1XRdSGgF4zFPr+u8419m5zgb47SiI7RgiLma5kYQnNbfan9PH7jLI8UvtgwuYZkAkLsfaXtfi0vn/hAqE6Dnzuw/SREULKJgbBjJ11PrrdpvKC2RMDpD93FqOm7YNKrvTag9AxJIbV2yAgOXFGQ8GDzpl5g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=dave.eu; dmarc=pass action=none header.from=dave.eu; dkim=pass
- header.d=dave.eu; arc=none
-Received: from MI2P293MB0264.ITAP293.PROD.OUTLOOK.COM (2603:10a6:290:50::6) by
- MI1P293MB0160.ITAP293.PROD.OUTLOOK.COM (2603:10a6:290:d::13) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9723.19; Thu, 19 Mar 2026 11:35:29 +0000
-Received: from MI2P293MB0264.ITAP293.PROD.OUTLOOK.COM
- ([fe80::5fc8:9a15:2d20:a015]) by MI2P293MB0264.ITAP293.PROD.OUTLOOK.COM
- ([fe80::5fc8:9a15:2d20:a015%4]) with mapi id 15.20.9723.018; Thu, 19 Mar 2026
- 11:35:28 +0000
-From: Andrea Scian <andrea.scian@dave.eu>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, Olivier Sobrie
-	<olivier@sobrie.be>
-CC: Michal Simek <michal.simek@amd.com>, Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>, "linux-mtd@lists.infradead.org"
-	<linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] mtd: rawnand: pl353: make sure optimal timings are
- applied
-Thread-Topic: [PATCH] mtd: rawnand: pl353: make sure optimal timings are
- applied
-Thread-Index: AQHctSFsRztTSkKi+0OSZy0NDxL3YrW1vM5Q
-Date: Thu, 19 Mar 2026 11:35:28 +0000
-Message-ID: <MI2P293MB0264169E2D7E0528FA4989C9974FA@MI2P293MB0264.ITAP293.PROD.OUTLOOK.COM>
-References: <20260304211823.569972-1-olivier@sobrie.be>
- <87bjgogo0g.fsf@bootlin.com>
-In-Reply-To: <87bjgogo0g.fsf@bootlin.com>
-Accept-Language: it-IT, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=dave.eu;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MI2P293MB0264:EE_|MI1P293MB0160:EE_
-x-ms-office365-filtering-correlation-id: 2a75ad46-27c5-41fc-1dd8-08de85ab9f20
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230040|366016|19092799006|1800799024|376014|38070700021|18002099003|56012099003|22082099003;
-x-microsoft-antispam-message-info: eYPzkJZwwEBoCPiR4RmEG3q0WLdTUBs3uBJDnQpfBXUi8PJmDPp4AesV8dtw8HRrDAr9iu7ZlVo0hWTTLwqoIolo70MmhPh6vySiZHhi9FT9y3OPxRno4VjW1HFIfDdhPzy/ggzyZJ2P6nHBYzpWvxE4Fl+pdc9L/Q/Q3L44uRXA88wgF0peFWhQ56KJ8hd4hoYVVa2kM9hfzfEx3P8ZRGwg+05bwofy7ULYM7Se1PEmvGZUF8p4H0BNzuIiLoiiW7Z9VVykFCKquNH5B8xVP/5Tmod/9OXcslVzDrQlIP+KFwUWtqEzPSbDniFMVhBEnzJG0cPFbUoFjFAt9avJhrWr4g+5lyislcObNjJwBA+fjzqZ/3jeAsRYstzF3utNMKk1QJcqogZMIJqmfagmQVLwFvuzq6ft1de/N2j57VIE7tfhDO4onrKTVXmqdNcd/x8qv6ElJrzjRNP5dmQQh1cFeGQxPLz2CTFEYUOntX9M4WPFNoqh/mJzS4WNLv5rpR0ZEtwPt+mWZ+DHdL1uNOeHZp3VCq7haxl5XohBoxvkg9HC6j4Te9tP/xiBeUSN25/NZybiGGCZ6UG7HlivSonKy3ZBKFMw4cPVmvqWmR2DmGwWYcPj1xuQ8rO1LKZOz41j7WQxjKEAtG8HtMwXutyPMTTwUi9QYnlc7QVJQIeY53TTxkPTsReLy75WGbicl0FG5zzwH73WhRzN7BHYe1+3Owi3WiPqjnO0alY0mJcelLA4TC9J5sYZRk55kpgH1iW8rM87mlWTXd3KgAZ85bLEsq0pVyk0vZhtzIJsJ18=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MI2P293MB0264.ITAP293.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(366016)(19092799006)(1800799024)(376014)(38070700021)(18002099003)(56012099003)(22082099003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?QVJCdktZa1JxS0lZMU9VYXhKNU5vdk16VHVIS0lGeFRDMmdhRjJPek9ONXV1?=
- =?utf-8?B?WTk1TW9BUDRXRGozQXZWSFBRMzhJZUcrUW5pYkUvWmswRWRDMjB0RFdReUE2?=
- =?utf-8?B?dEduZkdzQk1JLy9SZmdMVmNQRGxvdTR1OHpJSFVTbml6VjBveXlYRGNuVWt6?=
- =?utf-8?B?aTlzSGUzWDMxVTlGSjNrS1FXU0NrYUhCQTdQZWwrdlhscGZVOWVkNVNoTHRK?=
- =?utf-8?B?UHVJdkd0MG5QeEZrQTA1ZVhmYUZ4WDdLaTNGRkszQVc5dWlIaUdUcWxLVDE0?=
- =?utf-8?B?d1JGRzlZZmxTTG9MUXlJUm1sREVBemZid1ZDZElmT2VHbjc3K0dvU1NWZmd0?=
- =?utf-8?B?VW8wMnZjTHoweE10bWZFd01leGhkZ1lzZWpUOS9nQndnaEdMck5Rd3lQVmVS?=
- =?utf-8?B?enhnRkY4dXFBYXlZdUc4MFhlYXg5YVNEeHQveklIeVAxbmJYVmYwVVBtUzBH?=
- =?utf-8?B?ZWVoNk1HUVlnUmlQOFp2LzNGNU5TMTVCR1Z6bm1VV3ZvZHJuYVV6MjkxVW94?=
- =?utf-8?B?V24xejE1RUw3NzByVk92d3lrczYvcVJkUjVmeXJKN1ZOcklhTTRpNXU0aHhU?=
- =?utf-8?B?RUpURGhCOFQyWkJFaEtXS1lhdVlzdThvTHNlcmlRaFkxd2dDdVNEWEE3aVdz?=
- =?utf-8?B?K0YxaVZFR3d2RFEwaHhmTncxN2lEWmJvTm0wcWhRSm03Tkg0S0lReEtTRE1u?=
- =?utf-8?B?TnowYWNXZS9lM2lKOHNub01WRHJYT1RUN3ZVbzNTRUszRTNOdTZLNng5d3Qx?=
- =?utf-8?B?Q1hTVGFwWkw3bVJuWFBnaWx2V25zQUc3WVhvcGowWUVIU1J3aytlZ1A3dlU4?=
- =?utf-8?B?bFF6RUNyalUyTGRzZU9sVU9lY2FCUTFRaXU4Nm1jdlY5dzZDTFZ0OW9GYVVZ?=
- =?utf-8?B?M2NndkVWdUJxN0V6aVZwMzhCTFJmNFNqZVIyY1YxbkN0TlN6S2RWQkQycnRp?=
- =?utf-8?B?Q2xKdlJKTk9pR3dCemRsc28rb1pROVlCNTVCQ2s1SUtjc3VVS29DV2o2ZzVh?=
- =?utf-8?B?MFhGcW1LWGNHbUl1cVBZeG5JSzZwU3Z6ZWRza2FnNXhMUWcxYjZOeVRDTzIw?=
- =?utf-8?B?ZTNXeXV6YjNuMkpYRGlxMVkwTG03RUFXVU81cEVMY1pLSDMvNnR2YWdGcXVN?=
- =?utf-8?B?N2VSNk5Zb29EUXViSThqTjhnNEVVdVE5dnpPdnAvWnQxakxFdk96NFBNckFD?=
- =?utf-8?B?QVFnYVBlVzVSSjljZk5lTmlzMlJ3NWVldm41ZmhDQmg1N0ZWZlhlTk5Ud3JJ?=
- =?utf-8?B?dnYrNlJCSndTdGkrVmRuNkRRaU1qSmNBM3dLSlBhYU9ucDkvbWxVOTlDKzho?=
- =?utf-8?B?aEMzWnoyclRpQjN0TVlCc01Rb3JFZkRFenFxVldmMVplVjRtVld3S2dXdTFv?=
- =?utf-8?B?aXp4ZjJZUEduU2k0cTFjZ21nS1RQUWtiRVhHckFhU2NWd3VKdjkwQTJ1aXNZ?=
- =?utf-8?B?UkJPMDI4TzNQNURQS0hZY0JKWFhKQ1VEVzNET0phZGk5ME5iU1JEM3gzVS85?=
- =?utf-8?B?dWthNkZ5M05adWFobGtSd2NYUWFiSzJ5RXVSQm9mN0NTSVNZa2lmekxwSnNq?=
- =?utf-8?B?dmtFZFJaQVl6YTJBbnBaNUxUTURSM3ZaTVpEZjRoNVhIcE53UXA4SHJVNy9j?=
- =?utf-8?B?amYyTnltcmFBQzRJeWRmMW9reDBYcUhNZllJVW1TUTA5K1pyT01pZEpvdi9H?=
- =?utf-8?B?MFJQSzU0akRXZVlnQU5ybjdhYzk5Vk9zaHc5RS9zRjlSc3ZjcUxpRCtmR1BX?=
- =?utf-8?B?ck1PV3ArQVB4U3BLT0xKcXV0bEJKQmxqbGVoTTBoNFdDOEF1SXY4NEZxMDkv?=
- =?utf-8?B?Q1AvWDg4V3NOZko3OHJDa1VqWEVCRkhpZ0hVQ3Z2QWlDZjVxZnZ6MXRjekxt?=
- =?utf-8?B?K0RpUGwzQmdpRzU1RXl2LzhoVitPS3ZwT3owN3hibGpPZkVEaFpFamRadHZ1?=
- =?utf-8?B?S2NvWVVXK3ZIdHc4OEZtSVByYnlQdzVoa3hHMlhWd3pEck9EelhFMG1KY1Q3?=
- =?utf-8?B?azlDY3N0S0dkdk03NGZQMWRXalVVQXNTL29ZcENicmttWnYyVEpkVklBOHVa?=
- =?utf-8?B?ZmIvOWZWUEw3eExMd1lUeTlHdkRvTkNkc1Y4RmcySk9uY0JHbXQ2OHExK1JB?=
- =?utf-8?B?V0ZHaFhrc0FKS05sTlF5TFFrY2ZPNWxsVDF2RXYwcytlY3RyRHMzcWRzbVNy?=
- =?utf-8?B?M3Z4ekJQWWJKRklBcFRlRkUwZEtjNUZRL0x0dnFVbzAzT3pvTXdkMzAwN2Fj?=
- =?utf-8?B?UFJHNmF6R0EwYTNKTFlzc3JFcWNwS0RNVmxGeG1mNGxkbnhac21jMjNCUVZz?=
- =?utf-8?Q?nJzhuakohikQLIe0In?=
+	Thu, 19 Mar 2026 11:43:42 +0000
+ARC-Seal: i=1; a=rsa-sha256; t=1773920596; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=kSNwXc5l1aJ7hIGQ86RtJOAoSleE49YAuYk/xKjaZJU93XToJFUnf07HTWybiBrc/W
+    f7qN1ae9NKz63ka6gNBKaeyISpc8BIs5H9xDAyQK0ZpCmf1daZWZ1URbgyDl/Gt5QAvS
+    jM88BQz0WhBUoI+HEJBFtJDfoCMbF9c/B8P9+gIU8QvBDnD+fILiqQb5nUKb2yaH5o/0
+    ngGQhPwAfKktNw5oE3ICddOYcEWQTy0OhZcYevF5TXXv6LqU6XzbkGWH5LsswABbBQhW
+    9tXxetN/U+NW/7SkFnFcm23j78KzMmH1yzUgadz1kWx0JB/nGCumF5u8gZLf+SMHn8x2
+    GjXw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1773920596;
+    s=strato-dkim-0002; d=strato.com;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=pfMMyLzzsMT+XemQO4FfYPLmXUpfhJiBhG+oG+yUaxI=;
+    b=mD4JoZfIIygD0wHiXo31mBtYbhe58/8Dzl9QLFAYiqDfwmnkVkQvVyXIMrnzBA0sr5
+    0UkHBVSlu527/QmPetRIHqvRsww2UCtcNtp3GSt6Efkjmey/akNGj2YoU13+4HbDPD3I
+    k/P6yBMCcKOOOdLLfnqtTYZGbbI0kpn9d2X+fW8OqTuFxE6rtdofV5/oQe2jDaapd0Aj
+    PLZFryKiA+jFxgd7DNjRVI7R6TmCUvHvjrZKTeRacnymsC7z8XbZtt/Hyi1TR3SOBpP2
+    NXLwAQNrR0eEsk9GWn4Rf85wzys5nt2flYoukKOuYuPUpSIV8qmVcR9ZAWlCUCc8/6sZ
+    X2rw==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1773920596;
+    s=strato-dkim-0002; d=iokpp.de;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=pfMMyLzzsMT+XemQO4FfYPLmXUpfhJiBhG+oG+yUaxI=;
+    b=eYqAUH0RgiSj38MVJh6C6x75gubvvrkMwVQ/JHmuFEnmfhpwxfTjeTWAnXZLKFn8ws
+    xeAj1zkPW91IO17UF+x7KsSwXcc6rnLx9r7l06ThDBjvryRJOtFlL3qG4e0Y5dmHBJDI
+    dyVOkEO132hIzJWiIdZWcKfZOelbBP3EcD9Rh4rw9byRND7wqKVkve0LahCCOMDJelwK
+    mod7nbc3Oxg0BSBrr7PrkIpvI1Dx+Sv0RuyGPl3OvpP91e2jOrg0L0yHWdAJPwVdxQoM
+    YtDt85MuW4YfYpdEMFIbU+mDliNiLrQOu/EK1Be2Vp+mI3bKsCVadxCUW1GdfSuGSii6
+    JFzw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1773920596;
+    s=strato-dkim-0003; d=iokpp.de;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=pfMMyLzzsMT+XemQO4FfYPLmXUpfhJiBhG+oG+yUaxI=;
+    b=yBoYE3fMjL+W0m+2lwtbuc474hyGoUCUsJr88POeushqCj0jZRiVLsejE7OMldbdw7
+    uzsYjiRPMhr05nbb4BAw==
+X-RZG-AUTH: ":LmkFe0i9dN8c2t4QQyGBB/NDXvjDB6pBSfNuhhDSDt3O2J2YOom0XQaPis+nU/5K"
+Received: from Munilab01-lab.micron.com
+    by smtp.strato.de (RZmta 55.0.1 AUTH)
+    with ESMTPSA id z7934522JBhGDit
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Thu, 19 Mar 2026 12:43:16 +0100 (CET)
+From: Bean Huo <beanhuo@iokpp.de>
+To: stable@vger.kernel.org
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <mwalle@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Mark Brown <broonie@kernel.org>,
+	linux-mtd@lists.infradead.org,
+	linux-spi@vger.kernel.org,
+	Bean Huo <beanhuo@micron.com>,
+	"Chia-Lin Kao (AceLan)" <acelan.kao@canonical.com>,
+	Mika Westerberg <mika.westerberg@linux.intel.com>,
+	Michael Walle <michael@walle.cc>
+Subject: [PATCH] spi: Unify error codes by replacing -ENOTSUPP with -EOPNOTSUPP
+Date: Thu, 19 Mar 2026 12:43:05 +0100
+Message-Id: <20260319114305.1777261-1-beanhuo@iokpp.de>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-OriginatorOrg: dave.eu
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MI2P293MB0264.ITAP293.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2a75ad46-27c5-41fc-1dd8-08de85ab9f20
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Mar 2026 11:35:28.8282
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4c85ddbc-ed10-48cc-8f28-5d7f9561238a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: deo3TRB+87tuM7a4swFIjf1yBZ0OF1rKk+dpTlhxcpMZuYvWDqSjlXauOorxMUvL
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MI1P293MB0160
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260319_043537_699696_506054E2 
-X-CRM114-Status: GOOD (  16.09  )
+X-CRM114-CacheID: sfid-20260319_044340_907402_5E655911 
+X-CRM114-Status: GOOD (  26.83  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -142,54 +104,248 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-DQpEZWFyIE1pcXVlbCwNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBN
-aXF1ZWwgUmF5bmFsIDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPg0KPiBTZW50OiBsdW5lZMOs
-IDE2IG1hcnpvIDIwMjYgMDk6NDcNCj4gW3NuaXBdIA0KPiBBbmRyZWEsIHRoaXMgbWlnaHQgYmUg
-dGhlIHJlYXNvbiB3aHkgeW91ciBOQU5EIGNoaXAgbWlzYmVoYXZlcyBhZnRlciBhDQo+IHNldF9m
-ZWF0dXJlLiBXb3VsZCB5b3UgbWluZCB0ZXN0aW5nIGl0Pw0KDQpUaGFua3MgZm9yIHBvaW50aW5n
-IG1lIHRvIHRoaXMgcGF0Y2guDQpJIGdvdCBhIHNpbWlsYXIgb25lIGluIG15IHRyZWUgKHNvcnJ5
-IGZvciBub3QgcHVibGlzaGluZyBpdCBiZWZvcmUsIGJ1dCBFQ0Mgd2FzIGEgYmlnZ2VyIHByb2Js
-ZW0gOy0pICksIHRoYXQgYXBwbGllcyBuZXcgdGltaW5nIGxpa2Ugb24gT2xpdmllciBwYXRjaCBi
-dXQgb25seSB3aGVuIHRoZXkgY2hhbmdlDQoNCg0KY29tbWl0IDM1YmEzNzQzM2ViZWY3N2FiMWYw
-ZTQ3ZTc5ZTY5YmJjMGQyMWNmOTANCkF1dGhvcjogQW5kcmVhIFNjaWFuIDxhbmRyZWEuc2NpYW5A
-ZGF2ZS5ldT4NCkRhdGU6ICAgTW9uIEphbiAxMiAxNzo0OTozNyAyMDI2ICswMTAwDQoNCiAgICBt
-dGQ6IHJhd25hbmQ6IHBsMzUzOiB1cGRhdGUgdGltaW5ncyBvbiBjaGFuZ2VzDQogICAgDQogICAg
-SXQncyBub3QgZW5vdWdoIHRvIHdhaXQgZm9yIHNlbGVjdGluZyBhbm90aGVyIGNoaXAgdG8NCiAg
-ICB1cGRhdGUgdGhlIHRpbWluZ3MsIGJlY2F1c2UgdGhpcyBhbHNvIGhhcHBlbnMgd2l0aG91dA0K
-ICAgIGNoYW5naW5nIENTIChlLmcuIHdoZW4gc3dpdGNoaW5nIGJldHdlZW4gZGlmZmVyZW50IFNE
-UiBtb2RlcykNCg0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L3BsMzV4LW5hbmQt
-Y29udHJvbGxlci5jIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvcGwzNXgtbmFuZC1jb250cm9sbGVy
-LmMNCmluZGV4IDc0Y2MzN2U3YjdkYS4uNzI0NjM2MzgxNDhkIDEwMDY0NA0KLS0tIGEvZHJpdmVy
-cy9tdGQvbmFuZC9yYXcvcGwzNXgtbmFuZC1jb250cm9sbGVyLmMNCisrKyBiL2RyaXZlcnMvbXRk
-L25hbmQvcmF3L3BsMzV4LW5hbmQtY29udHJvbGxlci5jDQpAQCAtNzkwLDYgKzc5MCw3IEBAIHN0
-YXRpYyBpbnQgcGwzNXhfbmZjX3NldHVwX2ludGVyZmFjZShzdHJ1Y3QgbmFuZF9jaGlwICpjaGlw
-LCBpbnQgY3MsDQogCWNvbnN0IHN0cnVjdCBuYW5kX3Nkcl90aW1pbmdzICpzZHI7DQogCXVuc2ln
-bmVkIGludCBwZXJpb2RfbnMsIHZhbDsNCiAJc3RydWN0IGNsayAqbWNsazsNCisJdTMyIG5ld190
-aW1pbmdzOw0KIA0KIAlzZHIgPSBuYW5kX2dldF9zZHJfdGltaW5ncyhjb25mKTsNCiAJaWYgKElT
-X0VSUihzZHIpKQ0KQEAgLTg1NywxMyArODU4LDE4IEBAIHN0YXRpYyBpbnQgcGwzNXhfbmZjX3Nl
-dHVwX2ludGVyZmFjZShzdHJ1Y3QgbmFuZF9jaGlwICpjaGlwLCBpbnQgY3MsDQogCWlmIChjcyA9
-PSBOQU5EX0RBVEFfSUZBQ0VfQ0hFQ0tfT05MWSkNCiAJCXJldHVybiAwOw0KIA0KLQlwbG5hbmQt
-PnRpbWluZ3MgPSBQTDM1WF9TTUNfTkFORF9UUkNfQ1lDTEVTKHRtZ3MudF9yYykgfA0KKwluZXdf
-dGltaW5ncyA9ICBQTDM1WF9TTUNfTkFORF9UUkNfQ1lDTEVTKHRtZ3MudF9yYykgfA0KIAkJCSAg
-UEwzNVhfU01DX05BTkRfVFdDX0NZQ0xFUyh0bWdzLnRfd2MpIHwNCiAJCQkgIFBMMzVYX1NNQ19O
-QU5EX1RSRUFfQ1lDTEVTKHRtZ3MudF9yZWEpIHwNCiAJCQkgIFBMMzVYX1NNQ19OQU5EX1RXUF9D
-WUNMRVModG1ncy50X3dwKSB8DQogCQkJICBQTDM1WF9TTUNfTkFORF9UQ0xSX0NZQ0xFUyh0bWdz
-LnRfY2xyKSB8DQogCQkJICBQTDM1WF9TTUNfTkFORF9UQVJfQ1lDTEVTKHRtZ3MudF9hcikgfA0K
-IAkJCSAgUEwzNVhfU01DX05BTkRfVFJSX0NZQ0xFUyh0bWdzLnRfcnIpOw0KKwlpZiAocGxuYW5k
-LT50aW1pbmdzICE9IG5ld190aW1pbmdzKSB7DQorCQlwbG5hbmQtPnRpbWluZ3MgPSBuZXdfdGlt
-aW5nczsNCisJCXdyaXRlbChwbG5hbmQtPnRpbWluZ3MsIG5mYy0+Y29uZl9yZWdzICsgUEwzNVhf
-U01DX0NZQ0xFUyk7DQorCQlwbDM1eF9zbWNfdXBkYXRlX3JlZ3MobmZjKTsNCisJfQ0KIA0KIAlk
-ZXZfaW5mbyhuZmMtPmRldiwNCiAJCSAiTkFORCB0aW1pbmdzOiB0UkM9JXUsIHRXQz0ldSwgdFJF
-QT0ldSwgdFdQPSV1LCB0Q0xSPSV1LCB0QVI9JXUsIHRSUj0ldSAoaW4gY3ljbGVzKSAocmVnIDB4
-JTA4eClcbiIsDQoNCg0KVGhpcyB3b3JrcyBvbiBteSBzZXR1cCAoTkFORCBub3cgcnVuIGEgbG90
-IGZhc3RlcikgYnV0IGl0IGRvZXNuJ3Qgc29sdmUgdGhlIHNldF9mZWF0dXJlIHByb2JsZW0uDQpI
-b3dldmVyLCBsZXQgbWUgdHJ5IHRoaXMgYWdhaW4gd2l0aCBhIGNsZWFuZXIgc2V0dXANCg0KS2lu
-ZCBSZWdhcmRzLA0KDQpBbmRyZWEgU2NpYW4NCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxp
-c3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQv
-Cg==
+From: Bean Huo <beanhuo@micron.com>
+
+From: Chia-Lin Kao (AceLan) <acelan.kao@canonical.com>
+
+This commit updates the SPI subsystem, particularly affecting "SPI MEM"
+drivers and core parts, by replacing the -ENOTSUPP error code with
+-EOPNOTSUPP.
+
+The key motivations for this change are as follows:
+1. The spi-nor driver currently uses EOPNOTSUPP, whereas calls to spi-mem
+might return ENOTSUPP. This update aims to unify the error reporting
+within the SPI subsystem for clarity and consistency.
+
+2. The use of ENOTSUPP has been flagged by checkpatch as inappropriate,
+mainly being reserved for NFS-related errors. To align with kernel coding
+standards and recommendations, this change is being made.
+
+3. By using EOPNOTSUPP, we provide more specific context to the error,
+indicating that a particular operation is not supported. This helps
+differentiate from the more generic ENOTSUPP error, allowing drivers to
+better handle and respond to different error scenarios.
+
+Risks and Considerations:
+While this change is primarily intended as a code cleanup and error code
+unification, there is a minor risk of breaking user-space applications
+that rely on specific return codes for unsupported operations. However,
+this risk is considered low, as such use-cases are unlikely to be common
+or critical. Nevertheless, developers and users should be aware of this
+change, especially if they have scripts or tools that specifically handle
+SPI error codes.
+
+This commit does not introduce any functional changes to the SPI subsystem
+or the affected drivers.
+
+Signed-off-by: "Chia-Lin Kao (AceLan)" <acelan.kao@canonical.com>
+Acked-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Acked-by: Michael Walle <michael@walle.cc>
+Link: https://lore.kernel.org/r/20231129064311.272422-1-acelan.kao@canonical.com
+Fixes: 90c517f435a9 ("mtd: spi-nor: micron-st: Skip FSR reading if SPI controller does not support it")
+Cc: stable@vger.kernel.org # v5.18+
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+Greg,
+
+Please consider this upstream commit for stable backport.
+
+This commit was merged as a cleanup but it fixes a real regression for
+users of Micron SPI-NOR flash attached to SPI controllers that return
+-ENOTSUPP (524) instead of -EOPNOTSUPP (95) for unsupported operations.
+
+The regression was introduced by commit 90c517f435a9 ("mtd: spi-nor:
+micron-st: Skip FSR reading if SPI controller does not support it"), which
+added FSR read fallback logic in micron_st_nor_ready() but only checked
+for -EOPNOTSUPP. When a controller returns -ENOTSUPP for the same
+condition, the fallback is never triggered and the error propagates,
+causing all subsequent erase/program operations on the flash to fail.
+
+A targeted fix was proposed on the MTD mailing list but the maintainers
+recommended backporting this commit to stable instead:
+
+  https://patchwork.ozlabs.org/project/linux-mtd/patch/20260318131857.2685004-1-beanhuo@iokpp.de/
+
+The Fixes tag and Cc: stable have been added to facilitate backport to
+all stable trees carrying 90c517f435a9 (v5.18+).
+
+ drivers/mtd/nand/spi/core.c | 2 +-
+ drivers/mtd/spi-nor/core.c  | 2 +-
+ drivers/spi/atmel-quadspi.c | 2 +-
+ drivers/spi/spi-ath79.c     | 2 +-
+ drivers/spi/spi-bcm-qspi.c  | 2 +-
+ drivers/spi/spi-mem.c       | 6 +++---
+ drivers/spi/spi-npcm-fiu.c  | 2 +-
+ drivers/spi/spi-ti-qspi.c   | 4 ++--
+ drivers/spi/spi-wpcm-fiu.c  | 2 +-
+ include/linux/spi/spi-mem.h | 2 ++
+ 10 files changed, 14 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index 849ccfedbc72..e0b6715e5dfe 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -974,7 +974,7 @@ static int spinand_manufacturer_match(struct spinand_device *spinand,
+ 		spinand->manufacturer = manufacturer;
+ 		return 0;
+ 	}
+-	return -ENOTSUPP;
++	return -EOPNOTSUPP;
+ }
+ 
+ static int spinand_id_detect(struct spinand_device *spinand)
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 1c443fe568cf..87cb2047df80 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -3146,7 +3146,7 @@ int spi_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
+ 	int ret;
+ 
+ 	ret = params->set_4byte_addr_mode(nor, enable);
+-	if (ret && ret != -ENOTSUPP)
++	if (ret && ret != -EOPNOTSUPP)
+ 		return ret;
+ 
+ 	if (enable) {
+diff --git a/drivers/spi/atmel-quadspi.c b/drivers/spi/atmel-quadspi.c
+index 3d1252566134..370c4d1572ed 100644
+--- a/drivers/spi/atmel-quadspi.c
++++ b/drivers/spi/atmel-quadspi.c
+@@ -272,7 +272,7 @@ static int atmel_qspi_find_mode(const struct spi_mem_op *op)
+ 		if (atmel_qspi_is_compatible(op, &atmel_qspi_modes[i]))
+ 			return i;
+ 
+-	return -ENOTSUPP;
++	return -EOPNOTSUPP;
+ }
+ 
+ static bool atmel_qspi_supports_op(struct spi_mem *mem,
+diff --git a/drivers/spi/spi-ath79.c b/drivers/spi/spi-ath79.c
+index c9f1d1e1dcf7..b7ada981464a 100644
+--- a/drivers/spi/spi-ath79.c
++++ b/drivers/spi/spi-ath79.c
+@@ -146,7 +146,7 @@ static int ath79_exec_mem_op(struct spi_mem *mem,
+ 	/* Only use for fast-read op. */
+ 	if (op->cmd.opcode != 0x0b || op->data.dir != SPI_MEM_DATA_IN ||
+ 	    op->addr.nbytes != 3 || op->dummy.nbytes != 1)
+-		return -ENOTSUPP;
++		return -EOPNOTSUPP;
+ 
+ 	/* disable GPIO mode */
+ 	ath79_spi_wr(sp, AR71XX_SPI_REG_FS, 0);
+diff --git a/drivers/spi/spi-bcm-qspi.c b/drivers/spi/spi-bcm-qspi.c
+index ef08fcac2f6d..d96222e6d7d2 100644
+--- a/drivers/spi/spi-bcm-qspi.c
++++ b/drivers/spi/spi-bcm-qspi.c
+@@ -1199,7 +1199,7 @@ static int bcm_qspi_exec_mem_op(struct spi_mem *mem,
+ 
+ 	if (!op->data.nbytes || !op->addr.nbytes || op->addr.nbytes > 4 ||
+ 	    op->data.dir != SPI_MEM_DATA_IN)
+-		return -ENOTSUPP;
++		return -EOPNOTSUPP;
+ 
+ 	buf = op->data.buf.in;
+ 	addr = op->addr.val;
+diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
+index edd7430d4c05..2dc8ceb85374 100644
+--- a/drivers/spi/spi-mem.c
++++ b/drivers/spi/spi-mem.c
+@@ -323,7 +323,7 @@ int spi_mem_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
+ 		return ret;
+ 
+ 	if (!spi_mem_internal_supports_op(mem, op))
+-		return -ENOTSUPP;
++		return -EOPNOTSUPP;
+ 
+ 	if (ctlr->mem_ops && ctlr->mem_ops->exec_op && !spi_get_csgpiod(mem->spi, 0)) {
+ 		ret = spi_mem_access_start(mem);
+@@ -339,7 +339,7 @@ int spi_mem_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
+ 		 * read path) and expect the core to use the regular SPI
+ 		 * interface in other cases.
+ 		 */
+-		if (!ret || ret != -ENOTSUPP)
++		if (!ret || ret != -ENOTSUPP || ret != -EOPNOTSUPP)
+ 			return ret;
+ 	}
+ 
+@@ -559,7 +559,7 @@ spi_mem_dirmap_create(struct spi_mem *mem,
+ 	if (ret) {
+ 		desc->nodirmap = true;
+ 		if (!spi_mem_supports_op(desc->mem, &desc->info.op_tmpl))
+-			ret = -ENOTSUPP;
++			ret = -EOPNOTSUPP;
+ 		else
+ 			ret = 0;
+ 	}
+diff --git a/drivers/spi/spi-npcm-fiu.c b/drivers/spi/spi-npcm-fiu.c
+index 03db9f016a11..f3bb8bbc192f 100644
+--- a/drivers/spi/spi-npcm-fiu.c
++++ b/drivers/spi/spi-npcm-fiu.c
+@@ -556,7 +556,7 @@ static int npcm_fiu_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
+ 		op->data.nbytes);
+ 
+ 	if (fiu->spix_mode || op->addr.nbytes > 4)
+-		return -ENOTSUPP;
++		return -EOPNOTSUPP;
+ 
+ 	if (fiu->clkrate != chip->clkrate) {
+ 		ret = clk_set_rate(fiu->clk, chip->clkrate);
+diff --git a/drivers/spi/spi-ti-qspi.c b/drivers/spi/spi-ti-qspi.c
+index fdc092a05284..a6a89c59c418 100644
+--- a/drivers/spi/spi-ti-qspi.c
++++ b/drivers/spi/spi-ti-qspi.c
+@@ -613,12 +613,12 @@ static int ti_qspi_exec_mem_op(struct spi_mem *mem,
+ 	/* Only optimize read path. */
+ 	if (!op->data.nbytes || op->data.dir != SPI_MEM_DATA_IN ||
+ 	    !op->addr.nbytes || op->addr.nbytes > 4)
+-		return -ENOTSUPP;
++		return -EOPNOTSUPP;
+ 
+ 	/* Address exceeds MMIO window size, fall back to regular mode. */
+ 	from = op->addr.val;
+ 	if (from + op->data.nbytes > qspi->mmap_size)
+-		return -ENOTSUPP;
++		return -EOPNOTSUPP;
+ 
+ 	mutex_lock(&qspi->list_lock);
+ 
+diff --git a/drivers/spi/spi-wpcm-fiu.c b/drivers/spi/spi-wpcm-fiu.c
+index 852ffe013d32..d76f7b5a9b97 100644
+--- a/drivers/spi/spi-wpcm-fiu.c
++++ b/drivers/spi/spi-wpcm-fiu.c
+@@ -361,7 +361,7 @@ static int wpcm_fiu_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
+ 
+ 	wpcm_fiu_stall_host(fiu, false);
+ 
+-	return -ENOTSUPP;
++	return -EOPNOTSUPP;
+ }
+ 
+ static int wpcm_fiu_adjust_op_size(struct spi_mem *mem, struct spi_mem_op *op)
+diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
+index 6b0a7dc48a4b..f866d5c8ed32 100644
+--- a/include/linux/spi/spi-mem.h
++++ b/include/linux/spi/spi-mem.h
+@@ -233,6 +233,8 @@ static inline void *spi_mem_get_drvdata(struct spi_mem *mem)
+  *		    limitations)
+  * @supports_op: check if an operation is supported by the controller
+  * @exec_op: execute a SPI memory operation
++ *           not all driver provides supports_op(), so it can return -EOPNOTSUPP
++ *           if the op is not supported by the driver/controller
+  * @get_name: get a custom name for the SPI mem device from the controller.
+  *	      This might be needed if the controller driver has been ported
+  *	      to use the SPI mem layer and a custom name is used to keep
+-- 
+2.34.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
