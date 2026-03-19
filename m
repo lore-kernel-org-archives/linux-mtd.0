@@ -4,57 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1ADCC1091910
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Mar 2026 18:24:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2FD1F1091911
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Mar 2026 18:24:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=9pyHJjb5aL8qVN3qpqzQhbBSXjMXHadp6ZOi9tZEHLw=; b=jBEOh0569swUKH
-	1CYR54E/zDlfruXJGyxDcTNB3Wq4ijdkn8fHCA0tzG/qSKalondj6+4pTTxmj1dxiwPq605ktAZhk
-	+5CKyl/tLfIcTC90Umy//nFcHN4qHISjk7cvChRs5L6xtmL5EN6YIREWO1SHkcScQVUnu+eFSMpZ1
-	H8wXdXjfbli5bggdPdSn/nWnIP1DmAq+4R30sQpxyOAua59h0GWWmp1VpoZk/t0UCG0kIhivMBq0T
-	HigzGYSmTC7seXBKdP7EXLBotIH+Nb3JNgzR/JCTIgSVOwYez7LLREMYkOEaflx5Ff0RusWIKTmM9
-	Ju5grLLqjtV9A1y44b4A==;
+	List-Owner; bh=lVHDaaOZA4jLVGKJmnBrKApu9U+BAAikUB0P8S4r6Ak=; b=sIyYCwqs+DsYHm
+	VIXJdIUENiREsoqOBYliBZE9oKj8Kay2LoVDxhzm8jicI1gr9RI1LzvuCpxFSXTMRfoqCQjfdb+Zw
+	1I60G0kX+LF9YRi1TohiQXRFYgkceW5PfRRkfuprKr1PpHg8myvy24kMyR43QjbQx86JXR9iPYB6t
+	n7HA2T/wzqUQ3rN7l2ULvLcFlWViTZ8jP31JDuKoQNCQ9LBK2We42VILzMgWOhlg3Ym83eygKbrJz
+	nASBbzT+YwjOhxkeeme03ST3SNsmK4bQatr8He6JTLwSqLGK9ZMH6CWybGBk+r6qgipHoQnH1rGid
+	KlCHzS813YBGhFIgLvWQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w3I2y-0000000BJb5-2Gnm;
-	Thu, 19 Mar 2026 18:24:40 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1w3I2z-0000000BJd1-1CaK;
+	Thu, 19 Mar 2026 18:24:41 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w3I2e-0000000BJ3A-0cvf;
-	Thu, 19 Mar 2026 18:24:20 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
-	:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description;
-	bh=r35YOE041kjIYjgv/OQz8KG0qzuYqKZnDI2YsRILJW4=; b=X/nMsYjXbxPkjTq8fn2HeuL8QD
-	/m8srNzb6tUAzC9LV42PXVzMT/1MaMqMEYo7kyMJalSZTzpw08bV/gHiRuDKMxGbVYLFuRf8grP5b
-	vnHY03qqx3ttQKt1bEwEND5mT3UAmUO9iAX/okzE/h6VmH456zbZsovCTDrsWVz94d05PfXKlI81S
-	n1LA3suMWJCux7gRtFiD4Bja5p5cSW4z+dNERSpslS+IpzncMFFTJADEbaY8X6gZpYF9K40ZtwNlL
-	ifyg79kbKHb6cqGaNYKBsx5EQAWvtv6vDrjTWrK5gv0IxVWsZw+hAhim9+3n6msMBGE/DJygmiW+W
-	FHuDtkTg==;
-Received: from sea.source.kernel.org ([172.234.252.31])
-	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w3I2a-0000000EDtC-0BaM;
-	Thu, 19 Mar 2026 18:24:18 +0000
+	id 1w3I2f-0000000BJ6j-2ul2;
+	Thu, 19 Mar 2026 18:24:22 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 6919D4397C;
-	Thu, 19 Mar 2026 18:24:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1D35C19425;
-	Thu, 19 Mar 2026 18:24:13 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 7916660097;
+	Thu, 19 Mar 2026 18:24:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8234FC2BCB1;
+	Thu, 19 Mar 2026 18:24:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773944654;
-	bh=rC8UhPo2hXOr5FxBAlmEyrOxvDFCNwpWMS0HCPMZ5xQ=;
+	s=k20201202; t=1773944660;
+	bh=xhLlmwR4AUj9PhlewTo4sEx2FcR6iF+ofwi5SoZX8Hk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=c8MZA6BbVpovPBpcDjikiDEKExVRyvFJ1VDdXmorpYbEnFCGlAEoGNfwsBpIITKU/
-	 6LPZyq0TxRfFN2m9fuAuDjSaAkbZmwuW0zW9jELmCdtCs6/5y3VVTOhhPrK3vk9sZW
-	 xIAwwrNC9rIffajpSStQsB0IRY92EN6ZYJ1YRX+0A39w62Q8aqI/sR48/YP8u6H/QK
-	 Y5AQgl+QHTautUDpepeCkBtTsdspYZNm7aah5g+mK7IxublL/6KRC61vi40Jx0LMhp
-	 AS3R3HbpjRFmtOeQjR0Pc6mnL+K9k7knc+ijyJK+V0ijCLjONmtEoHRQOBDDTqj7bd
-	 lRHO1eTRT6GeA==
+	b=mZgkP81+To5o4+opP9DVY1B5L2QIqkffzZEmmi0qbgQF8ZVYK6KsNBItOdUPSj8Nw
+	 bMAJAsZplTZg309A7z2OhoR8cJq1hs3Voltr+9XPsXqcr6B8T7QpMIUib8B1mw5zpn
+	 zoJGI26UscPsQWtn1lV1WfrFgdQq/o2bKzW0dF1zLlzxZsvheOTfctL2OpkWYsLPm6
+	 nf4EakEPzGXz2D3JzZ3dRo797Ig/ffZ8ia8X/aRBpZVx1/2wLN18YVJKawCcJFWUqK
+	 28ck4MYHjmCzOUK3wFG9x513U6FnnHUq3xwOTyMHg9ARTMeUrZvVAYbymNlAVqMYPt
+	 dO8wscgfJc1bg==
 From: "Lorenzo Stoakes (Oracle)" <ljs@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Jonathan Corbet <corbet@lwn.net>,
@@ -100,16 +86,13 @@ Cc: Jonathan Corbet <corbet@lwn.net>,
 	linux-fsdevel@vger.kernel.org,
 	linux-mm@kvack.org,
 	Ryan Roberts <ryan.roberts@arm.com>
-Subject: [PATCH v3 10/16] stm: replace deprecated mmap hook with mmap_prepare
-Date: Thu, 19 Mar 2026 18:23:34 +0000
-Message-ID: <f549353e1705dd885de4041e8facf18866c7f7bd.1773944114.git.ljs@kernel.org>
+Subject: [PATCH v3 12/16] mm: allow handling of stacked mmap_prepare hooks in more drivers
+Date: Thu, 19 Mar 2026 18:23:36 +0000
+Message-ID: <05b4d97d6248777a827f17445760b460cd293cb4.1773944114.git.ljs@kernel.org>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <cover.1773944114.git.ljs@kernel.org>
 References: <cover.1773944114.git.ljs@kernel.org>
 MIME-Version: 1.0
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260319_182416_437852_9DDE1C7F 
-X-CRM114-Status: GOOD (  15.28  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -126,100 +109,449 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The f_op->mmap interface is deprecated, so update driver to use its
-successor, mmap_prepare.
+While the conversion of mmap hooks to mmap_prepare is underway, we will
+encounter situations where mmap hooks need to invoke nested mmap_prepare
+hooks.
 
-The driver previously used vm_iomap_memory(), so this change replaces it
-with its mmap_prepare equivalent, mmap_action_simple_ioremap().
+The nesting of mmap hooks is termed 'stacking'.  In order to flexibly
+facilitate the conversion of custom mmap hooks in drivers which stack, we
+must split up the existing __compat_vma_mmap() function into two separate
+functions:
 
-Also, in order to correctly maintain reference counting, add a
-vm_ops->mapped callback to increment the reference count when successfully
-mapped.
+* compat_set_desc_from_vma() - This allows the setting of a vm_area_desc
+  object's fields to the relevant fields of a VMA.
 
-Reviewed-by: Suren Baghdasaryan <surenb@google.com>
+* __compat_vma_mmap() - Once an mmap_prepare hook has been executed upon a
+  vm_area_desc object, this function performs any mmap actions specified by
+  the mmap_prepare hook and then invokes its vm_ops->mapped() hook if any
+  were specified.
+
+In ordinary cases, where a file's f_op->mmap_prepare() hook simply needs
+to be invoked in a stacked mmap() hook, compat_vma_mmap() can be used.
+
+However some drivers define their own nested hooks, which are invoked in
+turn by another hook.
+
+A concrete example is vmbus_channel->mmap_ring_buffer(), which is invoked
+in turn by bin_attribute->mmap():
+
+vmbus_channel->mmap_ring_buffer() has a signature of:
+
+int (*mmap_ring_buffer)(struct vmbus_channel *channel,
+			struct vm_area_struct *vma);
+
+And bin_attribute->mmap() has a signature of:
+
+	int (*mmap)(struct file *, struct kobject *,
+		    const struct bin_attribute *attr,
+		    struct vm_area_struct *vma);
+
+And so compat_vma_mmap() cannot be used here for incremental conversion of
+hooks from mmap() to mmap_prepare().
+
+There are many such instances like this, where conversion to mmap_prepare
+would otherwise cascade to a huge change set due to nesting of this kind.
+
+The changes in this patch mean we could now instead convert
+vmbus_channel->mmap_ring_buffer() to
+vmbus_channel->mmap_prepare_ring_buffer(), and implement something like:
+
+	struct vm_area_desc desc;
+	int err;
+
+	compat_set_desc_from_vma(&desc, file, vma);
+	err = channel->mmap_prepare_ring_buffer(channel, &desc);
+	if (err)
+		return err;
+
+	return __compat_vma_mmap(&desc, vma);
+
+Allowing us to incrementally update this logic, and other logic like it.
+
+Unfortunately, as part of this change, we need to be able to flexibly
+assign to the VMA descriptor, so have to remove some of the const
+declarations within the structure.
+
+Also update the VMA tests to reflect the changes.
+
 Signed-off-by: Lorenzo Stoakes (Oracle) <ljs@kernel.org>
 ---
- drivers/hwtracing/stm/core.c | 31 +++++++++++++++++++++----------
- 1 file changed, 21 insertions(+), 10 deletions(-)
+ include/linux/fs.h              |   3 +
+ include/linux/mm_types.h        |   4 +-
+ mm/util.c                       | 112 ++++++++++++++++++++++---------
+ mm/vma.h                        |   2 +-
+ tools/testing/vma/include/dup.h | 114 +++++++++++++++++++++-----------
+ 5 files changed, 162 insertions(+), 73 deletions(-)
 
-diff --git a/drivers/hwtracing/stm/core.c b/drivers/hwtracing/stm/core.c
-index 37584e786bb5..f48c6a8a0654 100644
---- a/drivers/hwtracing/stm/core.c
-+++ b/drivers/hwtracing/stm/core.c
-@@ -666,6 +666,16 @@ static ssize_t stm_char_write(struct file *file, const char __user *buf,
- 	return count;
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index c390f5c667e3..0bdccfa70b44 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -2058,6 +2058,9 @@ static inline bool can_mmap_file(struct file *file)
+ 	return true;
  }
  
-+static int stm_mmap_mapped(unsigned long start, unsigned long end, pgoff_t pgoff,
-+			   const struct file *file, void **vm_private_data)
++void compat_set_desc_from_vma(struct vm_area_desc *desc, const struct file *file,
++			      const struct vm_area_struct *vma);
++int __compat_vma_mmap(struct vm_area_desc *desc, struct vm_area_struct *vma);
+ int compat_vma_mmap(struct file *file, struct vm_area_struct *vma);
+ int __vma_check_mmap_hook(struct vm_area_struct *vma);
+ 
+diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+index 50685cf29792..7538d64f8848 100644
+--- a/include/linux/mm_types.h
++++ b/include/linux/mm_types.h
+@@ -891,8 +891,8 @@ static __always_inline bool vma_flags_empty(vma_flags_t *flags)
+  */
+ struct vm_area_desc {
+ 	/* Immutable state. */
+-	const struct mm_struct *const mm;
+-	struct file *const file; /* May vary from vm_file in stacked callers. */
++	struct mm_struct *mm;
++	struct file *file; /* May vary from vm_file in stacked callers. */
+ 	unsigned long start;
+ 	unsigned long end;
+ 
+diff --git a/mm/util.c b/mm/util.c
+index 879ba62b5f0c..8cf59267a9ac 100644
+--- a/mm/util.c
++++ b/mm/util.c
+@@ -1163,34 +1163,40 @@ void flush_dcache_folio(struct folio *folio)
+ EXPORT_SYMBOL(flush_dcache_folio);
+ #endif
+ 
+-static int __compat_vma_mmap(struct file *file, struct vm_area_struct *vma)
++/**
++ * compat_set_desc_from_vma() - assigns VMA descriptor @desc fields from a VMA.
++ * @desc: A VMA descriptor whose fields need to be set.
++ * @file: The file object describing the file being mmap()'d.
++ * @vma: The VMA whose fields we wish to assign to @desc.
++ *
++ * This is a compatibility function to allow an mmap() hook to call
++ * mmap_prepare() hooks when drivers nest these. This function specifically
++ * allows the construction of a vm_area_desc value, @desc, from a VMA @vma for
++ * the purposes of doing this.
++ *
++ * Once the conversion of drivers is complete this function will no longer be
++ * required and will be removed.
++ */
++void compat_set_desc_from_vma(struct vm_area_desc *desc,
++			      const struct file *file,
++			      const struct vm_area_struct *vma)
+ {
+-	struct vm_area_desc desc = {
+-		.mm = vma->vm_mm,
+-		.file = file,
+-		.start = vma->vm_start,
+-		.end = vma->vm_end,
++	memset(desc, 0, sizeof(*desc));
+ 
+-		.pgoff = vma->vm_pgoff,
+-		.vm_file = vma->vm_file,
+-		.vma_flags = vma->flags,
+-		.page_prot = vma->vm_page_prot,
+-
+-		.action.type = MMAP_NOTHING, /* Default */
+-	};
+-	int err;
++	desc->mm = vma->vm_mm;
++	desc->file = (struct file *)file;
++	desc->start = vma->vm_start;
++	desc->end = vma->vm_end;
+ 
+-	err = vfs_mmap_prepare(file, &desc);
+-	if (err)
+-		return err;
++	desc->pgoff = vma->vm_pgoff;
++	desc->vm_file = vma->vm_file;
++	desc->vma_flags = vma->flags;
++	desc->page_prot = vma->vm_page_prot;
+ 
+-	err = mmap_action_prepare(&desc);
+-	if (err)
+-		return err;
+-
+-	set_vma_from_desc(vma, &desc);
+-	return mmap_action_complete(vma, &desc.action, /*rmap_lock_held=*/false);
++	/* Default. */
++	desc->action.type = MMAP_NOTHING;
+ }
++EXPORT_SYMBOL(compat_set_desc_from_vma);
+ 
+ static int __compat_vma_mapped(struct file *file, struct vm_area_struct *vma)
+ {
+@@ -1211,6 +1217,50 @@ static int __compat_vma_mapped(struct file *file, struct vm_area_struct *vma)
+ 	return err;
+ }
+ 
++/**
++ * __compat_vma_mmap() - Similar to compat_vma_mmap(), only it allows
++ * flexibility as to how the mmap_prepare callback is invoked, which is useful
++ * for drivers which invoke nested mmap_prepare callbacks in an mmap() hook.
++ * @desc: A VMA descriptor upon which an mmap_prepare() hook has already been
++ * executed.
++ * @vma: The VMA to which @desc should be applied.
++ *
++ * The function assumes that you have obtained a VMA descriptor @desc from
++ * compat_set_desc_from_vma(), and already executed the mmap_prepare() hook upon
++ * it.
++ *
++ * It then performs any specified mmap actions, and invokes the vm_ops->mapped()
++ * hook if one is present.
++ *
++ * See the description of compat_vma_mmap() for more details.
++ *
++ * Once the conversion of drivers is complete this function will no longer be
++ * required and will be removed.
++ *
++ * Returns: 0 on success or error.
++ */
++int __compat_vma_mmap(struct vm_area_desc *desc,
++		      struct vm_area_struct *vma)
 +{
-+	struct stm_file *stmf = file->private_data;
-+	struct stm_device *stm = stmf->stm;
++	int err;
 +
-+	pm_runtime_get_sync(&stm->dev);
-+	return 0;
++	/* Perform any preparatory tasks for mmap action. */
++	err = mmap_action_prepare(desc);
++	if (err)
++		return err;
++	/* Update the VMA from the descriptor. */
++	compat_set_vma_from_desc(vma, desc);
++	/* Complete any specified mmap actions. */
++	err = mmap_action_complete(vma, &desc->action,
++				   /*rmap_lock_held=*/false);
++	if (err)
++		return err;
++
++	/* Invoke vm_ops->mapped callback. */
++	return __compat_vma_mapped(desc->file, vma);
++}
++EXPORT_SYMBOL(__compat_vma_mmap);
++
+ /**
+  * compat_vma_mmap() - Apply the file's .mmap_prepare() hook to an
+  * existing VMA and execute any requested actions.
+@@ -1218,10 +1268,10 @@ static int __compat_vma_mapped(struct file *file, struct vm_area_struct *vma)
+  * @vma: The VMA to apply the .mmap_prepare() hook to.
+  *
+  * Ordinarily, .mmap_prepare() is invoked directly upon mmap(). However, certain
+- * stacked filesystems invoke a nested mmap hook of an underlying file.
++ * stacked drivers invoke a nested mmap hook of an underlying file.
+  *
+- * Until all filesystems are converted to use .mmap_prepare(), we must be
+- * conservative and continue to invoke these stacked filesystems using the
++ * Until all drivers are converted to use .mmap_prepare(), we must be
++ * conservative and continue to invoke these stacked drivers using the
+  * deprecated .mmap() hook.
+  *
+  * However we have a problem if the underlying file system possesses an
+@@ -1232,20 +1282,22 @@ static int __compat_vma_mapped(struct file *file, struct vm_area_struct *vma)
+  * establishes a struct vm_area_desc descriptor, passes to the underlying
+  * .mmap_prepare() hook and applies any changes performed by it.
+  *
+- * Once the conversion of filesystems is complete this function will no longer
+- * be required and will be removed.
++ * Once the conversion of drivers is complete this function will no longer be
++ * required and will be removed.
+  *
+  * Returns: 0 on success or error.
+  */
+ int compat_vma_mmap(struct file *file, struct vm_area_struct *vma)
+ {
++	struct vm_area_desc desc;
+ 	int err;
+ 
+-	err = __compat_vma_mmap(file, vma);
++	compat_set_desc_from_vma(&desc, file, vma);
++	err = vfs_mmap_prepare(file, &desc);
+ 	if (err)
+ 		return err;
+ 
+-	return __compat_vma_mapped(file, vma);
++	return __compat_vma_mmap(&desc, vma);
+ }
+ EXPORT_SYMBOL(compat_vma_mmap);
+ 
+diff --git a/mm/vma.h b/mm/vma.h
+index adc18f7dd9f1..a76046c39b14 100644
+--- a/mm/vma.h
++++ b/mm/vma.h
+@@ -300,7 +300,7 @@ static inline int vma_iter_store_gfp(struct vma_iterator *vmi,
+  * f_op->mmap() but which might have an underlying file system which implements
+  * f_op->mmap_prepare().
+  */
+-static inline void set_vma_from_desc(struct vm_area_struct *vma,
++static inline void compat_set_vma_from_desc(struct vm_area_struct *vma,
+ 		struct vm_area_desc *desc)
+ {
+ 	/*
+diff --git a/tools/testing/vma/include/dup.h b/tools/testing/vma/include/dup.h
+index 1b86c34e1158..1f123704078e 100644
+--- a/tools/testing/vma/include/dup.h
++++ b/tools/testing/vma/include/dup.h
+@@ -519,8 +519,8 @@ enum vma_operation {
+  */
+ struct vm_area_desc {
+ 	/* Immutable state. */
+-	const struct mm_struct *const mm;
+-	struct file *const file; /* May vary from vm_file in stacked callers. */
++	struct mm_struct *mm;
++	struct file *file; /* May vary from vm_file in stacked callers. */
+ 	unsigned long start;
+ 	unsigned long end;
+ 
+@@ -1272,43 +1272,95 @@ static inline void vma_set_anonymous(struct vm_area_struct *vma)
+ }
+ 
+ /* Declared in vma.h. */
+-static inline void set_vma_from_desc(struct vm_area_struct *vma,
++static inline void compat_set_vma_from_desc(struct vm_area_struct *vma,
+ 		struct vm_area_desc *desc);
+ 
+-static inline int __compat_vma_mmap(const struct file_operations *f_op,
+-		struct file *file, struct vm_area_struct *vma)
++static inline void compat_set_desc_from_vma(struct vm_area_desc *desc,
++			      const struct file *file,
++			      const struct vm_area_struct *vma)
+ {
+-	struct vm_area_desc desc = {
+-		.mm = vma->vm_mm,
+-		.file = file,
+-		.start = vma->vm_start,
+-		.end = vma->vm_end,
++	memset(desc, 0, sizeof(*desc));
+ 
+-		.pgoff = vma->vm_pgoff,
+-		.vm_file = vma->vm_file,
+-		.vma_flags = vma->flags,
+-		.page_prot = vma->vm_page_prot,
++	desc->mm = vma->vm_mm;
++	desc->file = (struct file *)file;
++	desc->start = vma->vm_start;
++	desc->end = vma->vm_end;
+ 
+-		.action.type = MMAP_NOTHING, /* Default */
+-	};
++	desc->pgoff = vma->vm_pgoff;
++	desc->vm_file = vma->vm_file;
++	desc->vma_flags = vma->flags;
++	desc->page_prot = vma->vm_page_prot;
++
++	/* Default. */
++	desc->action.type = MMAP_NOTHING;
 +}
 +
- static void stm_mmap_open(struct vm_area_struct *vma)
- {
- 	struct stm_file *stmf = vma->vm_file->private_data;
-@@ -684,12 +694,14 @@ static void stm_mmap_close(struct vm_area_struct *vma)
++static inline unsigned long vma_pages(const struct vm_area_struct *vma)
++{
++	return (vma->vm_end - vma->vm_start) >> PAGE_SHIFT;
++}
++
++static inline void unmap_vma_locked(struct vm_area_struct *vma)
++{
++	const size_t len = vma_pages(vma) << PAGE_SHIFT;
++
++	mmap_assert_write_locked(vma->vm_mm);
++	do_munmap(vma->vm_mm, vma->vm_start, len, NULL);
++}
++
++static inline int __compat_vma_mapped(struct file *file, struct vm_area_struct *vma)
++{
++	const struct vm_operations_struct *vm_ops = vma->vm_ops;
+ 	int err;
+ 
+-	err = f_op->mmap_prepare(&desc);
++	if (!vm_ops->mapped)
++		return 0;
++
++	err = vm_ops->mapped(vma->vm_start, vma->vm_end, vma->vm_pgoff, file,
++			     &vma->vm_private_data);
+ 	if (err)
+-		return err;
++		unmap_vma_locked(vma);
++	return err;
++}
+ 
+-	err = mmap_action_prepare(&desc);
++static inline int __compat_vma_mmap(struct vm_area_desc *desc,
++		struct vm_area_struct *vma)
++{
++	int err;
++
++	/* Perform any preparatory tasks for mmap action. */
++	err = mmap_action_prepare(desc);
++	if (err)
++		return err;
++	/* Update the VMA from the descriptor. */
++	compat_set_vma_from_desc(vma, desc);
++	/* Complete any specified mmap actions. */
++	err = mmap_action_complete(vma, &desc->action,
++				   /*rmap_lock_held=*/false);
+ 	if (err)
+ 		return err;
+ 
+-	set_vma_from_desc(vma, &desc);
+-	return mmap_action_complete(vma, &desc.action, /*rmap_lock_held=*/false);
++	/* Invoke vm_ops->mapped callback. */
++	return __compat_vma_mapped(desc->file, vma);
++}
++
++static inline int vfs_mmap_prepare(struct file *file, struct vm_area_desc *desc)
++{
++	return file->f_op->mmap_prepare(desc);
  }
  
- static const struct vm_operations_struct stm_mmap_vmops = {
-+	.mapped = stm_mmap_mapped,
- 	.open	= stm_mmap_open,
- 	.close	= stm_mmap_close,
- };
- 
--static int stm_char_mmap(struct file *file, struct vm_area_struct *vma)
-+static int stm_char_mmap_prepare(struct vm_area_desc *desc)
+ static inline int compat_vma_mmap(struct file *file,
+ 		struct vm_area_struct *vma)
  {
-+	struct file *file = desc->file;
- 	struct stm_file *stmf = file->private_data;
- 	struct stm_device *stm = stmf->stm;
- 	unsigned long size, phys;
-@@ -697,10 +709,10 @@ static int stm_char_mmap(struct file *file, struct vm_area_struct *vma)
- 	if (!stm->data->mmio_addr)
- 		return -EOPNOTSUPP;
+-	return __compat_vma_mmap(file->f_op, file, vma);
++	struct vm_area_desc desc;
++	int err;
++
++	compat_set_desc_from_vma(&desc, file, vma);
++	err = vfs_mmap_prepare(file, &desc);
++	if (err)
++		return err;
++
++	return __compat_vma_mmap(&desc, vma);
+ }
  
--	if (vma->vm_pgoff)
-+	if (desc->pgoff)
- 		return -EINVAL;
  
--	size = vma->vm_end - vma->vm_start;
-+	size = vma_desc_size(desc);
+@@ -1318,11 +1370,6 @@ static inline void vma_iter_init(struct vma_iterator *vmi,
+ 	mas_init(&vmi->mas, &mm->mm_mt, addr);
+ }
  
- 	if (stmf->output.nr_chans * stm->data->sw_mmiosz != size)
- 		return -EINVAL;
-@@ -712,13 +724,12 @@ static int stm_char_mmap(struct file *file, struct vm_area_struct *vma)
- 	if (!phys)
- 		return -EINVAL;
- 
--	pm_runtime_get_sync(&stm->dev);
+-static inline unsigned long vma_pages(struct vm_area_struct *vma)
+-{
+-	return (vma->vm_end - vma->vm_start) >> PAGE_SHIFT;
+-}
 -
--	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
--	vm_flags_set(vma, VM_IO | VM_DONTEXPAND | VM_DONTDUMP);
--	vma->vm_ops = &stm_mmap_vmops;
--	vm_iomap_memory(vma, phys, size);
-+	desc->page_prot = pgprot_noncached(desc->page_prot);
-+	vma_desc_set_flags(desc, VMA_IO_BIT, VMA_DONTEXPAND_BIT,
-+			   VMA_DONTDUMP_BIT);
-+	desc->vm_ops = &stm_mmap_vmops;
- 
-+	mmap_action_simple_ioremap(desc, phys, size);
- 	return 0;
+ static inline void mmap_assert_locked(struct mm_struct *);
+ static inline struct vm_area_struct *find_vma_intersection(struct mm_struct *mm,
+ 						unsigned long start_addr,
+@@ -1492,11 +1539,6 @@ static inline int vfs_mmap(struct file *file, struct vm_area_struct *vma)
+ 	return file->f_op->mmap(file, vma);
  }
  
-@@ -836,7 +847,7 @@ static const struct file_operations stm_fops = {
- 	.open		= stm_char_open,
- 	.release	= stm_char_release,
- 	.write		= stm_char_write,
--	.mmap		= stm_char_mmap,
-+	.mmap_prepare	= stm_char_mmap_prepare,
- 	.unlocked_ioctl	= stm_char_ioctl,
- 	.compat_ioctl	= compat_ptr_ioctl,
- };
+-static inline int vfs_mmap_prepare(struct file *file, struct vm_area_desc *desc)
+-{
+-	return file->f_op->mmap_prepare(desc);
+-}
+-
+ static inline void vma_set_file(struct vm_area_struct *vma, struct file *file)
+ {
+ 	/* Changing an anonymous vma with this is illegal */
+@@ -1521,11 +1563,3 @@ static inline pgprot_t vma_get_page_prot(vma_flags_t vma_flags)
+ 
+ 	return vm_get_page_prot(vm_flags);
+ }
+-
+-static inline void unmap_vma_locked(struct vm_area_struct *vma)
+-{
+-	const size_t len = vma_pages(vma) << PAGE_SHIFT;
+-
+-	mmap_assert_write_locked(vma->vm_mm);
+-	do_munmap(vma->vm_mm, vma->vm_start, len, NULL);
+-}
 -- 
 2.53.0
 
