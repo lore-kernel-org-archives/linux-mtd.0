@@ -4,57 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BF21B109190D
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Mar 2026 18:24:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 86908109190B
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Mar 2026 18:25:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=xcZiGcXlzvviUgIzKt3AdTr2P2x0Yts24HcjTD7NHjM=; b=Nhn5jtSoNGcQIR
-	iT7LZ8vX5K7fgCXZ7wYlMGYzaEaemF3+tp8YQnK1VgLQXKX0Fkm0kI8VOtdM+tNX1y6fGI2D+sdBr
-	Y28gfFVYPwszntYkxfBPacChPo80Lmji/r7wQ5OYxBV2mAMZ9duSfPulkHtVJbYnW2bo4D0xtMT5m
-	Oyg2B371YiKu4u8QZcB03L9AZ3XL+bz0dcU4ZGU9+ZMsZYgT9Y+LzRiADksQhNCVdrW/IuH0kXRig
-	XnL76TArvmGo3+0RM09UvXyr9hWxs0J4fv6sBm9rQKhZoglL68aJPtauAW4gEShw70mqCIlvf/25z
-	RiVWmlM8Nrua7ORMd92g==;
+	List-Owner; bh=Cs1x0RfOUgkJoawHoTF/vWvUaF2TKJ3ySexOn+AQ1dY=; b=upEHA6HERmVWst
+	wDXtVbguWIjoC0yxoK5GKyzDDpmXSKkYjIcg/+4zlXrhohowG0tACsMqULdjxIaFOEWgqI8eHZham
+	ZeenTYv8qSicxPeYOoIz+IxDAvIOu6915C+7FfSACaYAX4JTOLVESZc656PbM8c4uEsfOViP7tz2j
+	drlCnlH2Maly8dG+kdpdiUDL7d8fIb+ov66L5XioN+WE+ctIIT0qG5XJ6AiI9HQJzV4PK6GcjcC3i
+	Oi8WtRewvIpFJMhmKXxI3oHqWrP82U1Pr8R7ZtexJFxJy6figLDgZD+oAmNkCFsqmDAJGSM9gztso
+	+42koE3XUeAt5EUmz1tg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w3I35-0000000BJnC-3izJ;
-	Thu, 19 Mar 2026 18:24:47 +0000
+	id 1w3I3J-0000000BK6N-3mzc;
+	Thu, 19 Mar 2026 18:25:01 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w3I2m-0000000BJHy-0vrk;
-	Thu, 19 Mar 2026 18:24:28 +0000
+	id 1w3I2r-0000000BJPi-3pUI;
+	Thu, 19 Mar 2026 18:24:34 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
 	:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description;
-	bh=qpyrJDtEcfK31WekvvFctIFyXCehDJ45NDia2zmBN90=; b=GqxuWFthbUAYTSvqpDk8IXwcCm
-	88d7R5crjuIpquECrNTo1/QffwvL4raO1XpsUMU8Lbj3LvnJcNEL65V/Ass4IkYvghEbkDeY2fNd8
-	2wSFa6j20z2gpYoucRxc7IN3Z8xm61KI4pDNOsL/9bLhhmrrsoBlr1HjWLxs6RQh7XpIPJsDGhQQj
-	POt6GUMVWOB0H1iCdNcDvo6xfBP4edIFO2lZjo5bwTculsX/JjeFAye626Yn2O820QslVJKeixvih
-	MejomkvpUurMF3lLG+dUQyRzyzE0bYNIdGaLCpSskCbx5UYoYdNpICh+tpmYgVB2kO5ZnXsMpaIsH
-	6C72ofpQ==;
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	bh=MjxIOkReCim7ECcE9jQ99O/+EFCKH7u/v09sCALXGoM=; b=GHQ8JWwftJgzQillaL3LV6xOVf
+	g8e2bQbm49t2UUV27jgv7JmNiRe/SuxU2fOt9tx7nZRZY4MReRCtrrCtCAM+xOWM1ZoIxB4XU0kYt
+	FB33obXCiy1+FSF8Zw3AMvDFUTZrFDb+Qf8QboT+91QKlHTOhbUzYgI7rv6nSlAzPm6LM/FJ0rHEN
+	7XoiWqUr8MpknNlrfj8SqWcfS53bI9djUR3IHdiqHhR0I8URuSB/tHf7rr6jjbB3FGnTK8QH9IxSD
+	m4tVgsFVlajia86XjgwmJjHnfDuqEZTsufIxDMnFSLdHKC9HZq3v83cPXbJo8oI7Dtc4SgvTbVsbO
+	PmL6D98w==;
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w3I2i-0000000EDyg-3aeC;
-	Thu, 19 Mar 2026 18:24:26 +0000
+	id 1w3I2o-0000000EE1l-1cGs;
+	Thu, 19 Mar 2026 18:24:32 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 426E74356A;
-	Thu, 19 Mar 2026 18:24:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7EF46C2BCB0;
-	Thu, 19 Mar 2026 18:24:22 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 0B9F94356A;
+	Thu, 19 Mar 2026 18:24:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43677C2BCAF;
+	Thu, 19 Mar 2026 18:24:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773944663;
-	bh=xqeFdev8haZYqVKb9RyAQUT5x4QpuIREk0dFqk3m3oA=;
+	s=k20201202; t=1773944668;
+	bh=Xfm2EMeV/hOieA9zaZd6qkFhY4F85DO1ABfgwHvn3So=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=JJK0BhPxcSG+aCy4r2yWIpJpiiD03CkqXoBJOB64BOS0ViRvag8rx+Jnjfqk/SZPL
-	 g666deEFztMfmq3C2UsflBp0Z2rTqhdAlTdDNUGmiieudG0ZHa+EzXuP/5tFceEa55
-	 urFi/WhH8H3i0ZWA3A/GBJn03pACqTekFzJEFt10rJa4/OC48XV3WXeqEGudATQQ5M
-	 3Kc+Ygte+TIBN5hdPiaxTnjkLug057IKcR1T+UZxAr5kZSRjh9IVPlBrlcE04TPAlZ
-	 jtZ5xazL9mGvdIctT21/0EO4CW5WDNIhApQQ2fWM0waBBg86FbMH7cLNXxeIlGqvVE
-	 9EEiACvAfrgqg==
+	b=YBdtGTcDszRTCcJDn60lh/lhw3KmxT2M5XuTYiUUPnOpslHinEHOre/2pcze8/l86
+	 DNIk5C88bxxzqifUrjVpmbC/eZMesbFWO1pBoXBBlZMkIXmZbZg1q5b+IU60ed1h+k
+	 Xbqaf+G71UYt1J3vYUpDSTJXNg8N5rNAuAwNEeCxwqeDfKuVVNO+87kJJ+tzT5I/k0
+	 ArGur/TxZi+/gEsUopT1yrtLfeUC9RZmgW7U1enQBxEhHKWIbwCXpZ3zZ39WcgaoS8
+	 cqfHKD2nA13AbFcSOF93+05EJcYHtwtcoUV13ui/QP/ll4giXSLqQLo4FYQ0zEjgdZ
+	 fnayzXij3iOqA==
 From: "Lorenzo Stoakes (Oracle)" <ljs@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Jonathan Corbet <corbet@lwn.net>,
@@ -100,16 +100,16 @@ Cc: Jonathan Corbet <corbet@lwn.net>,
 	linux-fsdevel@vger.kernel.org,
 	linux-mm@kvack.org,
 	Ryan Roberts <ryan.roberts@arm.com>
-Subject: [PATCH v3 13/16] drivers: hv: vmbus: replace deprecated mmap hook with mmap_prepare
-Date: Thu, 19 Mar 2026 18:23:37 +0000
-Message-ID: <e300a15e0576ee4b51a519b51bcac7e4a0871442.1773944114.git.ljs@kernel.org>
+Subject: [PATCH v3 15/16] mm: add mmap_action_map_kernel_pages[_full]()
+Date: Thu, 19 Mar 2026 18:23:39 +0000
+Message-ID: <54ff3670662e10a66ce0c1a13c0ae93b99a5f201.1773944114.git.ljs@kernel.org>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <cover.1773944114.git.ljs@kernel.org>
 References: <cover.1773944114.git.ljs@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260319_182425_363921_3C8932B4 
-X-CRM114-Status: GOOD (  25.30  )
+X-CRM114-CacheID: sfid-20260319_182430_788845_D76DB6F1 
+X-CRM114-Status: GOOD (  27.25  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -126,174 +126,331 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The f_op->mmap interface is deprecated, so update the vmbus driver to use
-its successor, mmap_prepare.
+A user can invoke mmap_action_map_kernel_pages() to specify that the
+mapping should map kernel pages starting from desc->start of a specified
+number of pages specified in an array.
 
-This updates all callbacks which referenced the function pointer
-hv_mmap_ring_buffer to instead reference hv_mmap_prepare_ring_buffer,
-utilising the newly introduced compat_set_desc_from_vma() and
-__compat_vma_mmap() to be able to implement this change.
+In order to implement this, adjust mmap_action_prepare() to be able to
+return an error code, as it makes sense to assert that the specified
+parameters are valid as quickly as possible as well as updating the VMA
+flags to include VMA_MIXEDMAP_BIT as necessary.
 
-The UIO HV generic driver is the only user of hv_create_ring_sysfs(),
-which is the only function which references
-vmbus_channel->mmap_prepare_ring_buffer which, in turn, is the only
-external interface to hv_mmap_prepare_ring_buffer.
+This provides an mmap_prepare equivalent of vm_insert_pages().  We
+additionally update the existing vm_insert_pages() code to use
+range_in_vma() and add a new range_in_vma_desc() helper function for the
+mmap_prepare case, sharing the code between the two in range_is_subset().
 
-This patch therefore updates this caller to use mmap_prepare instead,
-which also previously used vm_iomap_memory(), so this change replaces it
-with its mmap_prepare equivalent, mmap_action_simple_ioremap().
+We add both mmap_action_map_kernel_pages() and
+mmap_action_map_kernel_pages_full() to allow for both partial and full VMA
+mappings.
 
+We update the documentation to reflect the new features.
+
+Finally, we update the VMA tests accordingly to reflect the changes.
+
+Reviewed-by: Suren Baghdasaryan <surenb@google.com>
 Signed-off-by: Lorenzo Stoakes (Oracle) <ljs@kernel.org>
 ---
- drivers/hv/hyperv_vmbus.h    |  4 ++--
- drivers/hv/vmbus_drv.c       | 31 +++++++++++++++++++------------
- drivers/uio/uio_hv_generic.c | 11 ++++++-----
- include/linux/hyperv.h       |  4 ++--
- 4 files changed, 29 insertions(+), 21 deletions(-)
+ Documentation/filesystems/mmap_prepare.rst |  8 ++
+ include/linux/mm.h                         | 95 +++++++++++++++++++++-
+ include/linux/mm_types.h                   |  7 ++
+ mm/memory.c                                | 42 +++++++++-
+ mm/util.c                                  |  6 ++
+ tools/testing/vma/include/dup.h            |  7 ++
+ 6 files changed, 159 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/hv/hyperv_vmbus.h b/drivers/hv/hyperv_vmbus.h
-index 7bd8f8486e85..31f576464f18 100644
---- a/drivers/hv/hyperv_vmbus.h
-+++ b/drivers/hv/hyperv_vmbus.h
-@@ -545,8 +545,8 @@ static inline int hv_debug_add_dev_dir(struct hv_device *dev)
+diff --git a/Documentation/filesystems/mmap_prepare.rst b/Documentation/filesystems/mmap_prepare.rst
+index be76ae475b9c..e810aa4134eb 100644
+--- a/Documentation/filesystems/mmap_prepare.rst
++++ b/Documentation/filesystems/mmap_prepare.rst
+@@ -156,5 +156,13 @@ pointer. These are:
+ * mmap_action_simple_ioremap() - Sets up an I/O remap from a specified
+   physical address and over a specified length.
  
- /* Create and remove sysfs entry for memory mapped ring buffers for a channel */
- int hv_create_ring_sysfs(struct vmbus_channel *channel,
--			 int (*hv_mmap_ring_buffer)(struct vmbus_channel *channel,
--						    struct vm_area_struct *vma));
-+			 int (*hv_mmap_prepare_ring_buffer)(struct vmbus_channel *channel,
-+							    struct vm_area_desc *desc));
- int hv_remove_ring_sysfs(struct vmbus_channel *channel);
- 
- #endif /* _HYPERV_VMBUS_H */
-diff --git a/drivers/hv/vmbus_drv.c b/drivers/hv/vmbus_drv.c
-index bc4fc1951ae1..45625487ba36 100644
---- a/drivers/hv/vmbus_drv.c
-+++ b/drivers/hv/vmbus_drv.c
-@@ -1951,12 +1951,19 @@ static int hv_mmap_ring_buffer_wrapper(struct file *filp, struct kobject *kobj,
- 				       struct vm_area_struct *vma)
- {
- 	struct vmbus_channel *channel = container_of(kobj, struct vmbus_channel, kobj);
-+	struct vm_area_desc desc;
-+	int err;
- 
- 	/*
--	 * hv_(create|remove)_ring_sysfs implementation ensures that mmap_ring_buffer
--	 * is not NULL.
-+	 * hv_(create|remove)_ring_sysfs implementation ensures that
-+	 * mmap_prepare_ring_buffer is not NULL.
- 	 */
--	return channel->mmap_ring_buffer(channel, vma);
-+	compat_set_desc_from_vma(&desc, filp, vma);
-+	err = channel->mmap_prepare_ring_buffer(channel, &desc);
-+	if (err)
-+		return err;
++* mmap_action_map_kernel_pages() - Maps a specified array of `struct page`
++  pointers in the VMA from a specific offset.
 +
-+	return __compat_vma_mmap(&desc, vma);
- }
- 
- static struct bin_attribute chan_attr_ring_buffer = {
-@@ -2048,13 +2055,13 @@ static const struct kobj_type vmbus_chan_ktype = {
- /**
-  * hv_create_ring_sysfs() - create "ring" sysfs entry corresponding to ring buffers for a channel.
-  * @channel: Pointer to vmbus_channel structure
-- * @hv_mmap_ring_buffer: function pointer for initializing the function to be called on mmap of
-+ * @hv_mmap_prepare_ring_buffer: function pointer for initializing the function to be called on mmap
-  *                       channel's "ring" sysfs node, which is for the ring buffer of that channel.
-  *                       Function pointer is of below type:
-- *                       int (*hv_mmap_ring_buffer)(struct vmbus_channel *channel,
-- *                                                  struct vm_area_struct *vma))
-- *                       This has a pointer to the channel and a pointer to vm_area_struct,
-- *                       used for mmap, as arguments.
-+ *                       int (*hv_mmap_prepare_ring_buffer)(struct vmbus_channel *channel,
-+ *                                                          struct vm_area_desc *desc))
-+ *                       This has a pointer to the channel and a pointer to vm_area_desc,
-+ *                       used for mmap_prepare, as arguments.
++* mmap_action_map_kernel_pages_full() - Maps a specified array of `struct
++  page` pointers over the entire VMA. The caller must ensure there are
++  sufficient entries in the page array to cover the entire range of the
++  described VMA.
++
+ **NOTE:** The ``action`` field should never normally be manipulated directly,
+ rather you ought to use one of these helpers.
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index ef2e4dccfe8e..8aadf115278e 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -2912,7 +2912,7 @@ static inline bool folio_maybe_mapped_shared(struct folio *folio)
+  * The caller must add any reference (e.g., from folio_try_get()) it might be
+  * holding itself to the result.
   *
-  * Sysfs node for ring buffer of a channel is created along with other fields, however its
-  * visibility is disabled by default. Sysfs creation needs to be controlled when the use-case
-@@ -2071,12 +2078,12 @@ static const struct kobj_type vmbus_chan_ktype = {
-  * Returns 0 on success or error code on failure.
+- * Returns the expected folio refcount.
++ * Returns: the expected folio refcount.
   */
- int hv_create_ring_sysfs(struct vmbus_channel *channel,
--			 int (*hv_mmap_ring_buffer)(struct vmbus_channel *channel,
--						    struct vm_area_struct *vma))
-+			 int (*hv_mmap_prepare_ring_buffer)(struct vmbus_channel *channel,
-+							    struct vm_area_desc *desc))
+ static inline int folio_expected_ref_count(const struct folio *folio)
  {
- 	struct kobject *kobj = &channel->kobj;
- 
--	channel->mmap_ring_buffer = hv_mmap_ring_buffer;
-+	channel->mmap_prepare_ring_buffer = hv_mmap_prepare_ring_buffer;
- 	channel->ring_sysfs_visible = true;
- 
- 	return sysfs_update_group(kobj, &vmbus_chan_group);
-@@ -2098,7 +2105,7 @@ int hv_remove_ring_sysfs(struct vmbus_channel *channel)
- 
- 	channel->ring_sysfs_visible = false;
- 	ret = sysfs_update_group(kobj, &vmbus_chan_group);
--	channel->mmap_ring_buffer = NULL;
-+	channel->mmap_prepare_ring_buffer = NULL;
- 	return ret;
+@@ -4364,6 +4364,45 @@ static inline void mmap_action_simple_ioremap(struct vm_area_desc *desc,
+ 	action->type = MMAP_SIMPLE_IO_REMAP;
  }
- EXPORT_SYMBOL_GPL(hv_remove_ring_sysfs);
-diff --git a/drivers/uio/uio_hv_generic.c b/drivers/uio/uio_hv_generic.c
-index 3f8e2e27697f..29ec2d15ada8 100644
---- a/drivers/uio/uio_hv_generic.c
-+++ b/drivers/uio/uio_hv_generic.c
-@@ -154,15 +154,16 @@ static void hv_uio_rescind(struct vmbus_channel *channel)
-  * The ring buffer is allocated as contiguous memory by vmbus_open
-  */
- static int
--hv_uio_ring_mmap(struct vmbus_channel *channel, struct vm_area_struct *vma)
-+hv_uio_ring_mmap_prepare(struct vmbus_channel *channel, struct vm_area_desc *desc)
+ 
++/**
++ * mmap_action_map_kernel_pages - helper for mmap_prepare hook to specify that
++ * @num kernel pages contained in the @pages array should be mapped to userland
++ * starting at virtual address @start.
++ * @desc: The VMA descriptor for the VMA requiring kernel pags to be mapped.
++ * @start: The virtual address from which to map them.
++ * @pages: An array of struct page pointers describing the memory to map.
++ * @nr_pages: The number of entries in the @pages aray.
++ */
++static inline void mmap_action_map_kernel_pages(struct vm_area_desc *desc,
++		unsigned long start, struct page **pages,
++		unsigned long nr_pages)
++{
++	struct mmap_action *action = &desc->action;
++
++	action->type = MMAP_MAP_KERNEL_PAGES;
++	action->map_kernel.start = start;
++	action->map_kernel.pages = pages;
++	action->map_kernel.nr_pages = nr_pages;
++	action->map_kernel.pgoff = desc->pgoff;
++}
++
++/**
++ * mmap_action_map_kernel_pages_full - helper for mmap_prepare hook to specify that
++ * kernel pages contained in the @pages array should be mapped to userland
++ * from @desc->start to @desc->end.
++ * @desc: The VMA descriptor for the VMA requiring kernel pags to be mapped.
++ * @pages: An array of struct page pointers describing the memory to map.
++ *
++ * The caller must ensure that @pages contains sufficient entries to cover the
++ * entire range described by @desc.
++ */
++static inline void mmap_action_map_kernel_pages_full(struct vm_area_desc *desc,
++		struct page **pages)
++{
++	mmap_action_map_kernel_pages(desc, desc->start, pages,
++				     vma_desc_pages(desc));
++}
++
+ int mmap_action_prepare(struct vm_area_desc *desc);
+ int mmap_action_complete(struct vm_area_struct *vma,
+ 			 struct mmap_action *action,
+@@ -4381,10 +4420,59 @@ static inline struct vm_area_struct *find_exact_vma(struct mm_struct *mm,
+ 	return vma;
+ }
+ 
++/**
++ * range_is_subset - Is the specified inner range a subset of the outer range?
++ * @outer_start: The start of the outer range.
++ * @outer_end: The exclusive end of the outer range.
++ * @inner_start: The start of the inner range.
++ * @inner_end: The exclusive end of the inner range.
++ *
++ * Returns: %true if [inner_start, inner_end) is a subset of [outer_start,
++ * outer_end), otherwise %false.
++ */
++static inline bool range_is_subset(unsigned long outer_start,
++				   unsigned long outer_end,
++				   unsigned long inner_start,
++				   unsigned long inner_end)
++{
++	return outer_start <= inner_start && inner_end <= outer_end;
++}
++
++/**
++ * range_in_vma - is the specified [@start, @end) range a subset of the VMA?
++ * @vma: The VMA against which we want to check [@start, @end).
++ * @start: The start of the range we wish to check.
++ * @end: The exclusive end of the range we wish to check.
++ *
++ * Returns: %true if [@start, @end) is a subset of [@vma->vm_start,
++ * @vma->vm_end), %false otherwise.
++ */
+ static inline bool range_in_vma(const struct vm_area_struct *vma,
+ 				unsigned long start, unsigned long end)
  {
- 	void *ring_buffer = page_address(channel->ringbuffer_page);
+-	return (vma && vma->vm_start <= start && end <= vma->vm_end);
++	if (!vma)
++		return false;
++
++	return range_is_subset(vma->vm_start, vma->vm_end, start, end);
++}
++
++/**
++ * range_in_vma_desc - is the specified [@start, @end) range a subset of the VMA
++ * described by @desc, a VMA descriptor?
++ * @desc: The VMA descriptor against which we want to check [@start, @end).
++ * @start: The start of the range we wish to check.
++ * @end: The exclusive end of the range we wish to check.
++ *
++ * Returns: %true if [@start, @end) is a subset of [@desc->start, @desc->end),
++ * %false otherwise.
++ */
++static inline bool range_in_vma_desc(const struct vm_area_desc *desc,
++				     unsigned long start, unsigned long end)
++{
++	if (!desc)
++		return false;
++
++	return range_is_subset(desc->start, desc->end, start, end);
+ }
  
- 	if (channel->state != CHANNEL_OPENED_STATE)
- 		return -ENODEV;
+ #ifdef CONFIG_MMU
+@@ -4428,6 +4516,9 @@ int remap_pfn_range(struct vm_area_struct *vma, unsigned long addr,
+ int vm_insert_page(struct vm_area_struct *, unsigned long addr, struct page *);
+ int vm_insert_pages(struct vm_area_struct *vma, unsigned long addr,
+ 			struct page **pages, unsigned long *num);
++int map_kernel_pages_prepare(struct vm_area_desc *desc);
++int map_kernel_pages_complete(struct vm_area_struct *vma,
++			      struct mmap_action *action);
+ int vm_map_pages(struct vm_area_struct *vma, struct page **pages,
+ 				unsigned long num);
+ int vm_map_pages_zero(struct vm_area_struct *vma, struct page **pages,
+diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+index 7538d64f8848..c46224020a46 100644
+--- a/include/linux/mm_types.h
++++ b/include/linux/mm_types.h
+@@ -815,6 +815,7 @@ enum mmap_action_type {
+ 	MMAP_REMAP_PFN,		/* Remap PFN range. */
+ 	MMAP_IO_REMAP_PFN,	/* I/O remap PFN range. */
+ 	MMAP_SIMPLE_IO_REMAP,	/* I/O remap with guardrails. */
++	MMAP_MAP_KERNEL_PAGES,	/* Map kernel page range from array. */
+ };
  
--	return vm_iomap_memory(vma, virt_to_phys(ring_buffer),
--			       channel->ringbuffer_pagecount << PAGE_SHIFT);
-+	mmap_action_simple_ioremap(desc, virt_to_phys(ring_buffer),
-+			channel->ringbuffer_pagecount << PAGE_SHIFT);
+ /*
+@@ -833,6 +834,12 @@ struct mmap_action {
+ 			phys_addr_t start_phys_addr;
+ 			unsigned long size;
+ 		} simple_ioremap;
++		struct {
++			unsigned long start;
++			struct page **pages;
++			unsigned long nr_pages;
++			pgoff_t pgoff;
++		} map_kernel;
+ 	};
+ 	enum mmap_action_type type;
+ 
+diff --git a/mm/memory.c b/mm/memory.c
+index b3bcc21af20a..53ef8ef3d04a 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -2484,13 +2484,14 @@ static int insert_pages(struct vm_area_struct *vma, unsigned long addr,
+ int vm_insert_pages(struct vm_area_struct *vma, unsigned long addr,
+ 			struct page **pages, unsigned long *num)
+ {
+-	const unsigned long end_addr = addr + (*num * PAGE_SIZE) - 1;
++	const unsigned long nr_pages = *num;
++	const unsigned long end = addr + PAGE_SIZE * nr_pages;
+ 
+-	if (addr < vma->vm_start || end_addr >= vma->vm_end)
++	if (!range_in_vma(vma, addr, end))
+ 		return -EFAULT;
+ 	if (!(vma->vm_flags & VM_MIXEDMAP)) {
+-		BUG_ON(mmap_read_trylock(vma->vm_mm));
+-		BUG_ON(vma->vm_flags & VM_PFNMAP);
++		VM_WARN_ON_ONCE(mmap_read_trylock(vma->vm_mm));
++		VM_WARN_ON_ONCE(vma->vm_flags & VM_PFNMAP);
+ 		vm_flags_set(vma, VM_MIXEDMAP);
+ 	}
+ 	/* Defer page refcount checking till we're about to map that page. */
+@@ -2498,6 +2499,39 @@ int vm_insert_pages(struct vm_area_struct *vma, unsigned long addr,
+ }
+ EXPORT_SYMBOL(vm_insert_pages);
+ 
++int map_kernel_pages_prepare(struct vm_area_desc *desc)
++{
++	const struct mmap_action *action = &desc->action;
++	const unsigned long addr = action->map_kernel.start;
++	unsigned long nr_pages, end;
++
++	if (!vma_desc_test(desc, VMA_MIXEDMAP_BIT)) {
++		VM_WARN_ON_ONCE(mmap_read_trylock(desc->mm));
++		VM_WARN_ON_ONCE(vma_desc_test(desc, VMA_PFNMAP_BIT));
++		vma_desc_set_flags(desc, VMA_MIXEDMAP_BIT);
++	}
++
++	nr_pages = action->map_kernel.nr_pages;
++	end = addr + PAGE_SIZE * nr_pages;
++	if (!range_in_vma_desc(desc, addr, end))
++		return -EFAULT;
++
 +	return 0;
- }
- 
- /* Callback from VMBUS subsystem when new channel created. */
-@@ -183,7 +184,7 @@ hv_uio_new_channel(struct vmbus_channel *new_sc)
++}
++EXPORT_SYMBOL(map_kernel_pages_prepare);
++
++int map_kernel_pages_complete(struct vm_area_struct *vma,
++			      struct mmap_action *action)
++{
++	unsigned long nr_pages;
++
++	nr_pages = action->map_kernel.nr_pages;
++	return insert_pages(vma, action->map_kernel.start,
++			    action->map_kernel.pages,
++			    &nr_pages, vma->vm_page_prot);
++}
++EXPORT_SYMBOL(map_kernel_pages_complete);
++
+ /**
+  * vm_insert_page - insert single page into user vma
+  * @vma: user vma to map to
+diff --git a/mm/util.c b/mm/util.c
+index 8cf59267a9ac..682d0d24e1c6 100644
+--- a/mm/util.c
++++ b/mm/util.c
+@@ -1446,6 +1446,8 @@ int mmap_action_prepare(struct vm_area_desc *desc)
+ 		return io_remap_pfn_range_prepare(desc);
+ 	case MMAP_SIMPLE_IO_REMAP:
+ 		return simple_ioremap_prepare(desc);
++	case MMAP_MAP_KERNEL_PAGES:
++		return map_kernel_pages_prepare(desc);
  	}
  
- 	set_channel_read_mode(new_sc, HV_CALL_ISR);
--	ret = hv_create_ring_sysfs(new_sc, hv_uio_ring_mmap);
-+	ret = hv_create_ring_sysfs(new_sc, hv_uio_ring_mmap_prepare);
- 	if (ret) {
- 		dev_err(device, "sysfs create ring bin file failed; %d\n", ret);
- 		vmbus_close(new_sc);
-@@ -366,7 +367,7 @@ hv_uio_probe(struct hv_device *dev,
- 	 * or decoupled from uio_hv_generic probe. Userspace programs can make use of inotify
- 	 * APIs to make sure that ring is created.
- 	 */
--	hv_create_ring_sysfs(channel, hv_uio_ring_mmap);
-+	hv_create_ring_sysfs(channel, hv_uio_ring_mmap_prepare);
+ 	WARN_ON_ONCE(1);
+@@ -1476,6 +1478,9 @@ int mmap_action_complete(struct vm_area_struct *vma,
+ 	case MMAP_REMAP_PFN:
+ 		err = remap_pfn_range_complete(vma, action);
+ 		break;
++	case MMAP_MAP_KERNEL_PAGES:
++		err = map_kernel_pages_complete(vma, action);
++		break;
+ 	case MMAP_IO_REMAP_PFN:
+ 	case MMAP_SIMPLE_IO_REMAP:
+ 		/* Should have been delegated. */
+@@ -1497,6 +1502,7 @@ int mmap_action_prepare(struct vm_area_desc *desc)
+ 	case MMAP_REMAP_PFN:
+ 	case MMAP_IO_REMAP_PFN:
+ 	case MMAP_SIMPLE_IO_REMAP:
++	case MMAP_MAP_KERNEL_PAGES:
+ 		WARN_ON_ONCE(1); /* nommu cannot handle these. */
+ 		break;
+ 	}
+diff --git a/tools/testing/vma/include/dup.h b/tools/testing/vma/include/dup.h
+index 1f123704078e..6392e7835f89 100644
+--- a/tools/testing/vma/include/dup.h
++++ b/tools/testing/vma/include/dup.h
+@@ -454,6 +454,7 @@ enum mmap_action_type {
+ 	MMAP_REMAP_PFN,		/* Remap PFN range. */
+ 	MMAP_IO_REMAP_PFN,	/* I/O remap PFN range. */
+ 	MMAP_SIMPLE_IO_REMAP,	/* I/O remap with guardrails. */
++	MMAP_MAP_KERNEL_PAGES,	/* Map kernel page range from an array. */
+ };
  
- 	hv_set_drvdata(dev, pdata);
+ /*
+@@ -472,6 +473,12 @@ struct mmap_action {
+ 			phys_addr_t start_phys_addr;
+ 			unsigned long size;
+ 		} simple_ioremap;
++		struct {
++			unsigned long start;
++			struct page **pages;
++			unsigned long nr_pages;
++			pgoff_t pgoff;
++		} map_kernel;
+ 	};
+ 	enum mmap_action_type type;
  
-diff --git a/include/linux/hyperv.h b/include/linux/hyperv.h
-index dfc516c1c719..3a721b1853a4 100644
---- a/include/linux/hyperv.h
-+++ b/include/linux/hyperv.h
-@@ -1015,8 +1015,8 @@ struct vmbus_channel {
- 	/* The max size of a packet on this channel */
- 	u32 max_pkt_size;
- 
--	/* function to mmap ring buffer memory to the channel's sysfs ring attribute */
--	int (*mmap_ring_buffer)(struct vmbus_channel *channel, struct vm_area_struct *vma);
-+	/* function to mmap_prepare ring buffer memory to the channel's sysfs ring attribute */
-+	int (*mmap_prepare_ring_buffer)(struct vmbus_channel *channel, struct vm_area_desc *desc);
- 
- 	/* boolean to control visibility of sysfs for ring buffer */
- 	bool ring_sysfs_visible;
 -- 
 2.53.0
 
