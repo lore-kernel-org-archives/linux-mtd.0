@@ -4,49 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF3F31099B2C
-	for <linux-mtd@archiver.kernel.org>; Fri, 20 Mar 2026 17:24:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7FE031099B2C
+	for <linux-mtd@archiver.kernel.org>; Fri, 20 Mar 2026 17:30:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=YZi7F976OWio4SEnDTghCC7kM6xgGQKEZdLnWwvp9FM=; b=q5kS+/adYdKOOq
-	7dceGbrm+Ymky/tP3X/Pjd4gUw7FnnaMTH4CO5d8uuopCdgP2C6koNyl0zwMQCm2gFyCiw/KvLs4m
-	Qt2wjfof/SUTm0Eud2M7iyRXDxlLVZwurJVlRPtDflcNGTKVWmCg9Slug3ScMqm60WOOBkxIiHOj9
-	cmjKLdUosXmT5+UuL9Ej3Hq0UikBQqgLtJWHYxkvp00m8SjhX3X0ghPh3Cr3atO5EWhryTLv+53b8
-	sv096bfZdsMZIatTY30Fb8CtfwyzmjyjmZCPcOs6yra+HE0kW/5iCCCRaltVUX4b6UrA7h7K3+W4V
-	PNQXznSBDy7LJ9M0DCZg==;
+	List-Owner; bh=R0fGu+k2eYeDM/MDgW6KTIHRqt6lMRSrruFZLrBO0eA=; b=2n/E3JJ78W81Q+
+	edvFsv6fhRYpRfDjR37vLljJ9gK6GM9QicH/MXkPb3vfGqqf5CA6RIvpdkTLqI6BFqGfkwTSJHhi1
+	QkPnnzKEACIDskh7wLdn09Q3PdPDR0QOrJBoZqN+9dns7NTgCSVgvlVhm6HOWL8yHhfF4QNb5bRw8
+	1uhZF8BQ6vMDMLaow6/1c4YpsV53Zw+B47sX3f0qvXCwiMdr5ph1fHBorK9/Ki0qkKGRfJkYep2Uo
+	EIAXFnp3/q8/Cmcabt7uNYCG4/g+HmDNlg/KHRI+XYWlHFT7+lcFsK54hZ/LMg+RmWC17JsULg5jP
+	C/6zN23PckTKJIKGqVAA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w3dZr-0000000DEno-346t;
-	Fri, 20 Mar 2026 17:24:03 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1w3dg3-0000000DG8L-0sOh;
+	Fri, 20 Mar 2026 17:30:27 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w3dZp-0000000DEml-0ZuL;
-	Fri, 20 Mar 2026 17:24:02 +0000
+	id 1w3dfv-0000000DG6O-19yv;
+	Fri, 20 Mar 2026 17:30:21 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 9CDAE43F9B;
-	Fri, 20 Mar 2026 17:23:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 952EDC4CEF7;
-	Fri, 20 Mar 2026 17:23:51 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id E1F43418D8;
+	Fri, 20 Mar 2026 17:30:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DD94C4CEF7;
+	Fri, 20 Mar 2026 17:30:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774027439;
-	bh=lkMH+Fs61pHyUrN0N7PA7Smmgeamo1Ed8V7OOsLNBN8=;
+	s=k20201202; t=1774027818;
+	bh=cn49vooa6zI1bK7Ne2keDKeM7S0Q3DYN+gFeecdr7S8=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=ATswcWl7MXWHHj389gFxOlECgcgQeJYv1wKqdExtZHqinVM8C1iUlLVry9OwlEG+s
-	 hQm57r7Pk+ZpJ3t0nw1/vvLOsQgKwispPEvcju2E9P/9JEP3v3yKvGkvycL7b0J2eK
-	 ezcqS/hxxM9fVO52XT/cmWkPIx24fW0C1LS9PL8IDJR6j8X/JoZ8s36B+4wxYvx/7M
-	 P98bC7b6fLvX4lzSxnJYRzQmThW9ckw1V9os4pxuNV73Z4BucD39QRODtyzANsRpNK
-	 4W1hTmWPTL9W0bOriXcoFpQK+v+c1Mbp60aVI67dnQEaAkyxZ6w2Qp0mXlzveN3nC0
-	 CSmw5tCHpFg1g==
-Message-ID: <b917813f-78fb-4c31-913c-5e343c52cab7@kernel.org>
-Date: Fri, 20 Mar 2026 18:23:49 +0100
+	b=k3SpwwTm3+LqCjrQj7miOUpofGNKZgHYqEQFraeDhPNVkXfECxvLW8Zobe+NTCg+G
+	 i7xlPNhvtTYeO7xTUc3PKqRzid15IRNPdH4YUSohCwce42VZkVlfUBCOYco/sVD2et
+	 vxE3mFh096D4OSX2GQRa+4bRuL3WZDLWUKtjGXNpv90+4RK+i5qV9A834ZJ9lkzev7
+	 lahhfRWQ33ItmIvlrTAdoDUipL3iLC6ZC/fkTuxcE0ZVmjxz+jG3WsJOCgw84oKjof
+	 B8nLkrNSu+NEYlk9zV6lwNjmYwBOeq57KIpkyhjcIZtOPDWfA1AJwLaP+3IsTjxXfR
+	 z+df8M86zwjVg==
+Message-ID: <ea8a46ab-3ae5-447b-96c1-37b58619edd3@kernel.org>
+Date: Fri, 20 Mar 2026 18:30:08 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 02/16] mm: add documentation for the mmap_prepare file
- operation callback
+Subject: Re: [PATCH v3 03/16] mm: document vm_operations_struct->open the same
+ as close()
 Content-Language: en-US
 To: "Lorenzo Stoakes (Oracle)" <ljs@kernel.org>,
  Andrew Morton <akpm@linux-foundation.org>
@@ -77,12 +77,13 @@ Cc: Jonathan Corbet <corbet@lwn.net>, Clemens Ladisch <clemens@ladisch.de>,
  linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org,
  linux-mm@kvack.org, Ryan Roberts <ryan.roberts@arm.com>
 References: <cover.1773944114.git.ljs@kernel.org>
- <172ef809d9976b067bba4cd9d2b78410c6c6d03d.1773944114.git.ljs@kernel.org>
+ <808919eaae0b682ec631301b3c06d85c62ba428d.1773944114.git.ljs@kernel.org>
 From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
-In-Reply-To: <172ef809d9976b067bba4cd9d2b78410c6c6d03d.1773944114.git.ljs@kernel.org>
+In-Reply-To: <808919eaae0b682ec631301b3c06d85c62ba428d.1773944114.git.ljs@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260320_102401_317961_371AAFC5 
-X-CRM114-Status: GOOD (  10.96  )
+X-CRM114-CacheID: sfid-20260320_103020_925599_686915A7 
+X-CRM114-Status: UNSURE (   7.30  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,15 +101,11 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 On 3/19/26 19:23, Lorenzo Stoakes (Oracle) wrote:
-> This documentation makes it easier for a driver/file system implementer to
-> correctly use this callback.
+> Describe when the operation is invoked and the context in which it is
+> invoked, matching the description already added for vm_op->close().
 > 
-> It covers the fundamentals, whilst intentionally leaving the less lovely
-> possible actions one might take undocumented (for instance - the
-> success_hook, error_hook fields in mmap_action).
-> 
-> The document also covers the new VMA flags implementation which is the
-> only one which will work correctly with mmap_prepare.
+> While we're here, update all outdated references to an 'area' field for
+> VMAs to the more consistent 'vma'.
 > 
 > Signed-off-by: Lorenzo Stoakes (Oracle) <ljs@kernel.org>
 
