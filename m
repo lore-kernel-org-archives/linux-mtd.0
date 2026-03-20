@@ -4,72 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1CCBA1099B37
-	for <linux-mtd@archiver.kernel.org>; Fri, 20 Mar 2026 20:43:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC8601099B3F
+	for <linux-mtd@archiver.kernel.org>; Fri, 20 Mar 2026 21:08:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=55BOtkVgNk3FA0DgYwV0oMMdC1fZfTISzJMpYzosw0k=; b=Xw9EBN5T7qRhO+
-	9V0oIWaxYAOfOzvqCUEUSHas9RyFGDQR3FHh3fYkFSr6ozXqyy6A2z19jPlK8KRir5Yq949mcY5UB
-	OUuS9UyJR87IfAW2Cr5qq7G0PvmSzHwNOSxqyboxxiLVZNP3oTKKRuKhzROSF5zf58q2X1vOLl2pA
-	eQnwKzSnZ4hrFtKthkkQc/Gq3eKCMwZZFsrkK3o1KcdT3ojjqZ/1gaQdPBaw9razhfqAssVBYHA1G
-	mDnHCwyB6AWDdgt8/GXL22BzCjpJEMUx/4berv1AXbbHeBkfNRCsdVJI5gpe0b2IR/NYDQOV4NvVR
-	sJVSjc3E3YIbT8ObAvwA==;
+	List-Owner; bh=OHHPqa6fQ9OGGiLfb+J9o0xNgUrTrc/eVwwi4/b0CeY=; b=cfEZRu9navde5T
+	N4+v4oCC/P10YXXErnzCAs5FCozvaRJ1nTbu2SALCdfAT6gJyM+T2UyZfvRf6AF3lJeRsAtz8VHLB
+	aUWDnkBHLQymtx/3bMaDccYxVbaOZWcCkfLoNEXOjDVB7TBZyKwetMbRja9z73OWmSAyDy/8RuRod
+	chWxv8YA8tpg0B4Mg3eU09J3Jedm7iRA77q2WJ87F32mMrSpnTf4UJx+NXyXes6MSiqSddeBPYh6N
+	lmHN60eMl6/GI3g7Ezvcf2BxyRgcj5P45yDRkarnbM2txBuU6glb1PSqxRUo4nZt/O0d3Gu0S6A6s
+	VxYzsEkripS927kGq9/Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w3ggy-0000000DZkl-1KDD;
-	Fri, 20 Mar 2026 20:43:36 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1w3h52-0000000DaaN-1PBr;
+	Fri, 20 Mar 2026 21:08:28 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w3ggw-0000000DZkD-17U4;
-	Fri, 20 Mar 2026 20:43:34 +0000
+	id 1w3h4y-0000000DaZz-3jvg;
+	Fri, 20 Mar 2026 21:08:25 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 3419D60154;
-	Fri, 20 Mar 2026 20:43:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45D20C2BC87;
-	Fri, 20 Mar 2026 20:43:32 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id BF0F760126;
+	Fri, 20 Mar 2026 21:08:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84E28C4CEF7;
+	Fri, 20 Mar 2026 21:08:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774039412;
-	bh=XzczC32VV00AwDiIh21zb/sCHxyX8rnSOTF7An9uPcg=;
+	s=k20201202; t=1774040903;
+	bh=u0zdmPIhkicnjjaekGwGuaSnl24uNp/SD6pTY4tTyoI=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=CypuAB31keYeNpOx6+BKaUkwMJAfZXn2C8u2PsOdPDThy38YXRFbY3/5pqAtP2cro
-	 HcRPsPMEoqtBOp0Y89OOq0diEXH+QJUGD4o3QQPB/lSWNd63ck3NFlPYMPPWlX6Xdh
-	 NY1MxQ8mtYPuDD9Hbj0TTMRMJ5nHPBd59/x7XDvfNJi+dQOQLqpW3Cc07z0rxBdKVg
-	 Zj4xs72z1sb5iNfDp0ESmZJVtFbjrzICMsXM1S8xUE9gwY/R6UUKFhHfPVNUMKzrEc
-	 uXQMf3LaWOivk84XWig7hurOoAmqWcKrF5KB1u4nDb4nrI88wQkI0PYARg8sxzO+Xv
-	 /gE1kUOfP2KbA==
-Date: Fri, 20 Mar 2026 20:43:30 +0000
-From: "Lorenzo Stoakes (Oracle)" <ljs@kernel.org>
-To: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, 
-	Jonathan Corbet <corbet@lwn.net>, Clemens Ladisch <clemens@ladisch.de>, 
-	Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	"K . Y . Srinivasan" <kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>, 
-	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>, Long Li <longli@microsoft.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
-	Alexandre Torgue <alexandre.torgue@foss.st.com>, Miquel Raynal <miquel.raynal@bootlin.com>, 
-	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
-	Bodo Stroesser <bostroesser@gmail.com>, "Martin K . Petersen" <martin.petersen@oracle.com>, 
-	David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
-	David Hildenbrand <david@kernel.org>, "Liam R . Howlett" <Liam.Howlett@oracle.com>, 
-	Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>, 
-	Michal Hocko <mhocko@suse.com>, Jann Horn <jannh@google.com>, Pedro Falcato <pfalcato@suse.de>, 
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, linux-hyperv@vger.kernel.org, 
-	linux-mtd@lists.infradead.org, linux-staging@lists.linux.dev, linux-scsi@vger.kernel.org, 
-	target-devel@vger.kernel.org, linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org, 
-	linux-mm@kvack.org, Ryan Roberts <ryan.roberts@arm.com>
-Subject: Re: [PATCH v3 04/16] mm: add vm_ops->mapped hook
-Message-ID: <f711f67a-9c87-4c9c-8ddd-0a78df962942@lucifer.local>
+	b=qC8HBmDJbc3QTlANvhaLjcn0O5ay5GqzDEvYHXsOkZQejTAbOkx+bkEo+ki3/IcqS
+	 2zxeTAiPAA/ZnIrs1vWkKIH1qQM6hWWWHXeyTtkY/GTcJVwCwrNv3c5QnInC7yBUEZ
+	 Emq3X5gGUqXLf66MStAVqC5m2WCTfSbnlpAHXDlhTtb1Ap6h4AtLg1EuCVIYnM3U2k
+	 9XYMGV8lFcVQ3Ofo63x/aFk8UD8Gt0FgB8ThIniVMGJGtCnjMclwn9hpHtv2VORGXx
+	 vrpZQBmOIITR6wCUusRaEbZoc8REFtZupMT7Shny3yqCThx6DNBFOpK9/XXBVuE7o9
+	 ZHBuzLHK9WgAw==
+Date: Fri, 20 Mar 2026 14:08:12 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: "Lorenzo Stoakes (Oracle)" <ljs@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Clemens Ladisch <clemens@ladisch.de>, Arnd Bergmann <arnd@arndb.de>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"K . Y . Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+	Long Li <longli@microsoft.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Bodo Stroesser <bostroesser@gmail.com>,
+	"Martin K . Petersen" <martin.petersen@oracle.com>,
+	David Howells <dhowells@redhat.com>,
+	Marc Dionne <marc.dionne@auristor.com>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	David Hildenbrand <david@kernel.org>,
+	"Liam R . Howlett" <Liam.Howlett@oracle.com>,
+	Vlastimil Babka <vbabka@kernel.org>,
+	Mike Rapoport <rppt@kernel.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Michal Hocko <mhocko@suse.com>, Jann Horn <jannh@google.com>,
+	Pedro Falcato <pfalcato@suse.de>, linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-hyperv@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
+	linux-staging@lists.linux.dev, linux-scsi@vger.kernel.org,
+	target-devel@vger.kernel.org, linux-afs@lists.infradead.org,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+	Ryan Roberts <ryan.roberts@arm.com>
+Subject: Re: [PATCH v3 15/16] mm: add mmap_action_map_kernel_pages[_full]()
+Message-ID: <20260320210812.GA3988975@ax162>
 References: <cover.1773944114.git.ljs@kernel.org>
- <a97366fa6f22a0ca1340cfd2b0d4df87c80ac80a.1773944114.git.ljs@kernel.org>
- <c9068fbb-a23c-4342-8638-3b11897a57cb@kernel.org>
+ <54ff3670662e10a66ce0c1a13c0ae93b99a5f201.1773944114.git.ljs@kernel.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <c9068fbb-a23c-4342-8638-3b11897a57cb@kernel.org>
+In-Reply-To: <54ff3670662e10a66ce0c1a13c0ae93b99a5f201.1773944114.git.ljs@kernel.org>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,54 +101,94 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Mar 20, 2026 at 07:26:37PM +0100, Vlastimil Babka (SUSE) wrote:
-> On 3/19/26 19:23, Lorenzo Stoakes (Oracle) wrote:
-> > Previously, when a driver needed to do something like establish a
-> > reference count, it could do so in the mmap hook in the knowledge that the
-> > mapping would succeed.
-> >
-> > With the introduction of f_op->mmap_prepare this is no longer the case, as
-> > it is invoked prior to actually establishing the mapping.
-> >
-> > mmap_prepare is not appropriate for this kind of thing as it is called
-> > before any merge might take place, and after which an error might occur
-> > meaning resources could be leaked.
-> >
-> > To take this into account, introduce a new vm_ops->mapped callback which
-> > is invoked when the VMA is first mapped (though notably - not when it is
-> > merged - which is correct and mirrors existing mmap/open/close behaviour).
-> >
-> > We do better that vm_ops->open() here, as this callback can return an
-> > error, at which point the VMA will be unmapped.
-> >
-> > Note that vm_ops->mapped() is invoked after any mmap action is complete
-> > (such as I/O remapping).
-> >
-> > We intentionally do not expose the VMA at this point, exposing only the
-> > fields that could be used, and an output parameter in case the operation
-> > needs to update the vma->vm_private_data field.
-> >
-> > In order to deal with stacked filesystems which invoke inner filesystem's
-> > mmap() invocations, add __compat_vma_mapped() and invoke it on vfs_mmap()
-> > (via compat_vma_mmap()) to ensure that the mapped callback is handled when
-> > an mmap() caller invokes a nested filesystem's mmap_prepare() callback.
-> >
-> > We can now also remove call_action_complete() and invoke
-> > mmap_action_complete() directly, as we separate out the rmap lock logic.
-> >
-> > The rmap lock logic, which was added in order to keep hugetlb working (!)
-> > to allow for the rmap lock to be held longer, needs to be propagated to the
-> > error paths on mmap complete and mapped hook error paths.
-> >
-> > This is because do_munmap() might otherwise deadlock with the rmap being
-> > held, so instead we unlock at the point of unmap.
->
-> Hmm but that was also true prior to this series? So is this a bugfix? Should
-> it be a stable hotfix done outside of the series before the refactoring?
+Hi Lorenzo,
 
-Yup, will send a hotfix.
+On Thu, Mar 19, 2026 at 06:23:39PM +0000, Lorenzo Stoakes (Oracle) wrote:
+> A user can invoke mmap_action_map_kernel_pages() to specify that the
+> mapping should map kernel pages starting from desc->start of a specified
+> number of pages specified in an array.
+> 
+> In order to implement this, adjust mmap_action_prepare() to be able to
+> return an error code, as it makes sense to assert that the specified
+> parameters are valid as quickly as possible as well as updating the VMA
+> flags to include VMA_MIXEDMAP_BIT as necessary.
+> 
+> This provides an mmap_prepare equivalent of vm_insert_pages().  We
+> additionally update the existing vm_insert_pages() code to use
+> range_in_vma() and add a new range_in_vma_desc() helper function for the
+> mmap_prepare case, sharing the code between the two in range_is_subset().
+> 
+> We add both mmap_action_map_kernel_pages() and
+> mmap_action_map_kernel_pages_full() to allow for both partial and full VMA
+> mappings.
+> 
+> We update the documentation to reflect the new features.
+> 
+> Finally, we update the VMA tests accordingly to reflect the changes.
+> 
+> Reviewed-by: Suren Baghdasaryan <surenb@google.com>
+> Signed-off-by: Lorenzo Stoakes (Oracle) <ljs@kernel.org>
+...
+> diff --git a/mm/util.c b/mm/util.c
+> index 8cf59267a9ac..682d0d24e1c6 100644
+> --- a/mm/util.c
+> +++ b/mm/util.c
+> @@ -1446,6 +1446,8 @@ int mmap_action_prepare(struct vm_area_desc *desc)
+>  		return io_remap_pfn_range_prepare(desc);
+>  	case MMAP_SIMPLE_IO_REMAP:
+>  		return simple_ioremap_prepare(desc);
+> +	case MMAP_MAP_KERNEL_PAGES:
+> +		return map_kernel_pages_prepare(desc);
+>  	}
+>  
+>  	WARN_ON_ONCE(1);
+> @@ -1476,6 +1478,9 @@ int mmap_action_complete(struct vm_area_struct *vma,
+>  	case MMAP_REMAP_PFN:
+>  		err = remap_pfn_range_complete(vma, action);
+>  		break;
+> +	case MMAP_MAP_KERNEL_PAGES:
+> +		err = map_kernel_pages_complete(vma, action);
+> +		break;
+>  	case MMAP_IO_REMAP_PFN:
+>  	case MMAP_SIMPLE_IO_REMAP:
+>  		/* Should have been delegated. */
+> @@ -1497,6 +1502,7 @@ int mmap_action_prepare(struct vm_area_desc *desc)
+>  	case MMAP_REMAP_PFN:
+>  	case MMAP_IO_REMAP_PFN:
+>  	case MMAP_SIMPLE_IO_REMAP:
+> +	case MMAP_MAP_KERNEL_PAGES:
+>  		WARN_ON_ONCE(1); /* nommu cannot handle these. */
+>  		break;
+>  	}
 
-Thanks, Lorenzo
+Not sure if it has been reported/addressed yet but it looks like
+mmap_action_complete() was missed here, as pointed out by clang:
+
+  $ make -skj"$(nproc)" ARCH=arm LLVM=1 mrproper allnoconfig mm/util.o
+  mm/util.c:1520:10: warning: enumeration value 'MMAP_MAP_KERNEL_PAGES' not handled in switch [-Wswitch]
+   1520 |         switch (action->type) {
+        |                 ^~~~~~~~~~~~
+
+I assume
+
+diff --git a/mm/util.c b/mm/util.c
+index 682d0d24e1c6..c41c119a5a74 100644
+--- a/mm/util.c
++++ b/mm/util.c
+@@ -1523,6 +1523,7 @@ int mmap_action_complete(struct vm_area_struct *vma,
+ 	case MMAP_REMAP_PFN:
+ 	case MMAP_IO_REMAP_PFN:
+ 	case MMAP_SIMPLE_IO_REMAP:
++	case MMAP_MAP_KERNEL_PAGES:
+ 		WARN_ON_ONCE(1); /* nommu cannot handle this. */
+ 
+ 		err = -EINVAL;
+--
+
+should be the fix?
+
+Cheers,
+Nathan
 
 ______________________________________________________
 Linux MTD discussion mailing list
