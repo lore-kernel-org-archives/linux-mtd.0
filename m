@@ -4,57 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1496EC01A9
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Mar 2026 09:22:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1BC1EC01D4
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 Mar 2026 11:46:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=6OzMSc/x9rzDe2QCuKlpQmY05U2ypcuk+JKMq3TzTlo=; b=F05aj2MJOmy1Wx
-	jdwnvzOjm2y4nVOV+KFxe5mAEE2ccTiXX5WcYk5y/vQ2l8PyrctnEI+VkNF4BjRgH7Vl+Gd8tJXev
-	NZRJB5OZbzGBY0QsN9GwnMzk45Qs/ylwbOd3+tN3eGCkjbHznjkVPloCg0yE54zPiR9N9/6ISZRCQ
-	s6nlFv4axiEogIcMLGcYrpTmGx0vtDNhp+Rb5HJ/7ewYf0S1jLvQl6XFI5JlOAoT9PWspaA24ixDw
-	G8sgeRLYHB1Mz5wBbZisUyYi4dfwl+hYT8HF/AeiLRMw1ia6Q5DTGNSjUwpU3eLQY6nngTe4T8R6u
-	Pfugyw7LN1VX+Jps3mYQ==;
+	List-Owner; bh=IQKS7bBv6WVkQwPPQs1uz05OAvk6YYauDB3G8ts2H4s=; b=gwsWRiVuEbXmqY
+	9bfNZid96TxTv+FB5MO3hxlOe5bi8KPxTOhaKlbr+yKHPkYab13G9v0usmbf3OwD3NXH4zvreOAJ7
+	OYr2m8U7joS1xZCsJVdRG0Lkav+Fetbulbq9BDRphiJ0VICMF3e6q0I+QszdtD0Cbc+J3vaRzP9ma
+	tp0kVkWDdHksmDFHdOMddmF5pqF7rfvlAnQuvSFfSaxi23ECmCJQAxrz2KbeRSq6b2US3/N/2EEjh
+	eyY+mbQrZXPVE6wzlrfKtRwc3g/CVEO2etUaNvSEQjqvqmCdg7O39jUh4d08ufXjZ9q2quSU3RMLE
+	TgKa67qQ1b0PD/ist6hw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w4bUT-0000000GN0D-071x;
-	Mon, 23 Mar 2026 09:22:29 +0000
-Received: from mx2.cyberprotect.ru ([176.10.93.31])
+	id 1w4dk9-0000000Gdxx-0V0v;
+	Mon, 23 Mar 2026 11:46:49 +0000
+Received: from mail-pf1-x430.google.com ([2607:f8b0:4864:20::430])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w4bUP-0000000GMzR-3LdP
+	id 1w4dk6-0000000Gdxc-1dOj
 	for linux-mtd@lists.infradead.org;
-	Mon, 23 Mar 2026 09:22:27 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=cyberprotect.ru; s=dkim-r; h=MIME-Version:Date:From:Sender:Reply-To;
-	bh=NOaRPSDC4hvOaKwBBZyyruA+Hbtj/kUSKaD2sInZ+tw=; b=d3aNjm/tHXxGtTmRiZ3AaBhrHP
-	OzNSJXT/5mDIvqEylm3qt0+2UXRLPtWUpfmCl8E4ZYTfhJyupaC9vo0RNZhRFf+vkzuRxfhppqTIA
-	VLmCS0e+iqtJxeyN4R9/KQc6R9auPTBFvgpo4GaSdtQf6YwWdizc+BySfmn4O2jSVoBjy4FurngQm
-	2/XpX71RnfxfOPxQ/1ESll/G67xQapn2TO2aD4nn/ZewQuBntynK7aoJHLcpLa1S9vQhcR7ijt6ue
-	5mIjjxka4R+RW5l8adKwbDTfFXyI2cMSGewpFylufIIrVdzXp5f1jxGT5OpNyeoW/M4E6SAAZvXoy
-	cp8pBOZw==;
-DKIM-Signature: v=1; a=ed25519-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=cyberprotect.ru; s=dkim; h=MIME-Version:Date:From:Sender:Reply-To;
-	bh=NOaRPSDC4hvOaKwBBZyyruA+Hbtj/kUSKaD2sInZ+tw=; b=zE/pLUgDUXBX4OxpntXEU+z4RV
-	WAI3wY5/gNmVvSRFdv9YJk6CPu7XGcDgXU58c9Rrg9sZKiiBqfW05HdPbRBw==;
-From: Dmitriy Chumachenko <Dmitry.Chumachenko@cyberprotect.ru>
-To: David Woodhouse <dwmw2@infradead.org>
-CC: Richard Weinberger <richard@nod.at>, Thomas Gleixner <tglx@linutronix.de>,
-	<linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<lvc-project@linuxtesting.org>
-Subject: [PATCH] jffs2: fix use-after-free in jffs2_garbage_collect_thread()
-Date: Mon, 23 Mar 2026 12:21:42 +0300
-Message-ID: <20260323092142.15241-1-Dmitry.Chumachenko@cyberprotect.ru>
-X-Mailer: git-send-email 2.49.0
+	Mon, 23 Mar 2026 11:46:47 +0000
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-82ae378fff8so2043698b3a.2
+        for <linux-mtd@lists.infradead.org>; Mon, 23 Mar 2026 04:46:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1774266405; x=1774871205; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=6YDeWZHXRa4daiYxKEEr5jdpzKRDCkw5dQS/GFEp8F8=;
+        b=mihtbLPsohm6txCRbQWslArM8WgeaYIyfCsYEnu473pmUt8FDATuDsGQ0Q5/g1wdxT
+         yg3GRM9jHZtwLimzYat4SKZMPwflTZqeyDPFdz/CAeJsTBKodFIbPZ6NFkQiO0tWaa7H
+         GZgvqDuRiuA6giwwa+eq8wCKiefRimduXOgNfcAwRtF9uzz+6CEq+AqhCafHG7JstoV/
+         WryWynhc6WAAwrxOtBhOET75azv2Xxp5r8fba9Vgjpp/BkWQoNNR1Kgp8sctWrNYS4A0
+         UEC89/jMViswgoyYQOoZEhsLRHEETncjGAINeNlPNerBuCQKXqdGokBl+L2/lIXxXYJV
+         pbSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1774266405; x=1774871205;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6YDeWZHXRa4daiYxKEEr5jdpzKRDCkw5dQS/GFEp8F8=;
+        b=OL3eSn8q0jfRWZAsenagGHbaP7vud7dU0zj7giGPo5hPu8XBFkRJlmyNv9vRAQ0tLJ
+         XIhDqn28U0INMlWD1XLDZGqB+sPwhO9czTmTF1OUw8+XewjBA2uvF1vVaUmeKYxwJQDg
+         4oT0w4IxbIDNHMWaWMLeUqOAhDX5aEo9NpK7Qt0Pe4VrLvxxSNeS5uCVZBbMfbHATKpD
+         DJdkXhM1ZjmE06R+s5AkrTdT6D8sQ7NcN79mbhDQyjNoV4tB8yvVtcZQS8jm+AxWVU//
+         Arlf5z0XTSBmq25URMoU7j9/R9cDrBUcADEjLfbmtj4nMQf7i8HLajULFypr31LaC6dM
+         v2IA==
+X-Forwarded-Encrypted: i=1; AJvYcCUIQc+lc8Idzj2+IO0W8tD5BR8PXXaMo4o/nnockathHaNvTxqhmApG6WbWS6iyOfTl6VOnxX1WQfA=@lists.infradead.org
+X-Gm-Message-State: AOJu0YwFYBwFXCiGWfwVz6mtQDVKfGa1NBDCg3dkCfKmLfb40EgNooi4
+	m6lq2IRZEYseqReFaG0Zmb59E5Auiv7KMa/PjiBEvgu6g/Kp1OYFyZU58GH7E26S
+X-Gm-Gg: ATEYQzxbNsYthenCjp4aiuFFuHUVY24m7AAzMtyIY6vIi8hzEuilE4V7yEq8U70lb2n
+	ZMvN98v/hZ6Al0MFmFcwGN2qqjzdzyIFmR+DwN+j7vIXP75NC7eco0Bpc6Uv2lNedt4HuNhUHGf
+	TCUISwPduPp8gXcwbcpz8JFSxvMYwwZ8Ln4CnlR9uwFrff1mL++bxDgxbQrgZSX+SLaCCz4coDJ
+	FaeoF53CHTf5vvaDvQXGaAeeE3ndUg9Ja94gSV7MN8AtU236O7SRh0ue7oYJv9mJfCj5R2eNF1Z
+	ULeWU49GeT1Zx9Q0JVQwIaziH+acC0M4gbqxstElAukTp4+cN1Cdh2koJBxIEBG1r3dwhY72+gZ
+	nWLdEfHDOknqT4RkngKmJEceisLTGeHzPWdDgGP4zEfofGNvh733/GWHdVRkDti4j5Z03Ho3JMB
+	IrJciFqNN/d7olHoGHkoTWZI/SZwPu8/icxxOAD+ZF01TduS7hrXQw
+X-Received: by 2002:a05:6a00:e0a:b0:829:a590:6d0f with SMTP id d2e1a72fcca58-82a8c3b1e1cmr10419776b3a.58.1774266405098;
+        Mon, 23 Mar 2026 04:46:45 -0700 (PDT)
+Received: from ZC-202510311500 ([123.139.39.86])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-82b03aa7d8esm9046980b3a.4.2026.03.23.04.46.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Mar 2026 04:46:44 -0700 (PDT)
+From: Haoyu Lu <hechushiguitu666@gmail.com>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <mwalle@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	"haoyu.lu" <hechushiguitu666@gmail.com>
+Subject: [PATCH] mtd: spi-nor: micron-st: Enable die erase support for MT35XU02GCBA
+Date: Mon, 23 Mar 2026 19:46:35 +0800
+Message-ID: <20260323114636.2020-1-hechushiguitu666@gmail.com>
+X-Mailer: git-send-email 2.53.0.windows.1
 MIME-Version: 1.0
-X-Originating-IP: [10.80.0.30]
-X-ClientProxiedBy: AIP-EXCH-1.aip.ooo (10.77.28.101) To AIP-EXCH-2.aip.ooo
- (10.77.28.102)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260323_022226_339487_DB1EAD8E 
-X-CRM114-Status: GOOD (  11.12  )
+X-CRM114-CacheID: sfid-20260323_044646_511656_20A0DAB4 
+X-CRM114-Status: GOOD (  13.84  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,99 +102,43 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-During fuzz testing, the following issue was discovered.                        
-                                                                                
-BUG: KASAN: use-after-free in __lock_acquire+0x3f22/0x53c0 kernel/locking/lockdep.c:4825
-Read of size 8 at addr ffff888053cfa098 by task jffs2_gcd_mtd0/11093            
-                                                                                
-CPU: 1 PID: 11093 Comm: jffs2_gcd_mtd0 Not tainted 5.10.232-syzkaller #0        
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014 
-Call Trace:                                                                     
- __dump_stack lib/dump_stack.c:77 [inline]                                      
- dump_stack+0x107/0x167 lib/dump_stack.c:118                                    
- print_address_description.constprop.0+0x1c/0x220 mm/kasan/report.c:377         
- __kasan_report mm/kasan/report.c:537 [inline]                                  
- kasan_report.cold+0x1f/0x37 mm/kasan/report.c:554                              
- __lock_acquire+0x3f22/0x53c0 kernel/locking/lockdep.c:4825                     
- lock_acquire kernel/locking/lockdep.c:5566 [inline]                            
- lock_acquire+0x197/0x480 kernel/locking/lockdep.c:5531                         
- __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]          
- _raw_spin_lock_irqsave+0x36/0x60 kernel/locking/spinlock.c:159                 
- complete+0x13/0x60 kernel/sched/completion.c:32                                
- complete_and_exit+0x20/0x40 kernel/exit.c:943                                  
- jffs2_garbage_collect_thread+0x554/0x750 fs/jffs2/background.c:164             
- kthread+0x3a9/0x490 kernel/kthread.c:328                                       
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:298                          
-                                                                                
-Allocated by task 11091:                                                        
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48                                
- kasan_set_track mm/kasan/common.c:56 [inline]                                  
- __kasan_kmalloc.constprop.0+0xc9/0xd0 mm/kasan/common.c:461                    
- kmalloc include/linux/slab.h:552 [inline]                                      
- kzalloc include/linux/slab.h:664 [inline]                                      
- jffs2_init_fs_context+0x41/0xd0 fs/jffs2/super.c:314                           
- alloc_fs_context+0x4f9/0x840 fs/fs_context.c:267                               
- do_new_mount fs/namespace.c:2896 [inline]                                      
- path_mount+0xb99/0x2140 fs/namespace.c:3247                                    
- do_mount fs/namespace.c:3260 [inline]                                          
- __do_sys_mount fs/namespace.c:3468 [inline]                                    
- __se_sys_mount fs/namespace.c:3445 [inline]                                    
- __x64_sys_mount+0x283/0x300 fs/namespace.c:3445                                
- do_syscall_64+0x30/0x40 arch/x86/entry/common.c:46                             
- entry_SYSCALL_64_after_hwframe+0x67/0xd1                                       
-                                                                                
-Freed by task 28546:                                                            
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48                                
- kasan_set_track+0x1c/0x30 mm/kasan/common.c:56                                 
- kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355                           
- __kasan_slab_free+0x112/0x170 mm/kasan/common.c:422                            
- slab_free_hook mm/slub.c:1542 [inline]                                         
- slab_free_freelist_hook+0xb8/0x1b0 mm/slub.c:1576                              
- slab_free mm/slub.c:3149 [inline]                                              
- kfree+0xd9/0x360 mm/slub.c:4125                                                
- deactivate_locked_super+0x96/0x170 fs/super.c:335                              
- deactivate_super+0xb2/0xd0 fs/super.c:366                                      
- cleanup_mnt+0x3a3/0x530 fs/namespace.c:1118                                    
- task_work_run+0xdf/0x1a0 kernel/task_work.c:185                                
- tracehook_notify_resume include/linux/tracehook.h:188 [inline]                 
- exit_to_user_mode_loop kernel/entry/common.c:172 [inline]                      
- exit_to_user_mode_prepare+0x1de/0x1f0 kernel/entry/common.c:199                
- syscall_exit_to_user_mode+0x38/0x1e0 kernel/entry/common.c:274
+From: "haoyu.lu" <hechushiguitu666@gmail.com>
 
-In jffs2_garbage_collect_thread() gc_task is set to NULL and then
-kthread_complete_and_exit() calls complete() on gc_thread_exit. These operations
-are not atomic: stop path can see gc_task == NULL, skip wait_for_completion(),
-and the caller frees jffs2_sb_info while the GC thread still accesses
-gc_thread_exit in complete().
+The MT35XU02GCBA flash device does not support chip erase according
+to its datasheet, but supports die erase. The existing code had a TODO
+comment noting that the SPI_NOR_IO_MODE_EN_VOLATILE flag probably needs
+to be enabled and the driver implementation needs to be converted to
+use die erase.
 
-Fix moving complete() under erase_completion_lock together with gc_task =
-NULL, and replacing kthread_complete_and_exit() with kthread_exit(). The
-conditional wait in stop path is preserved as it is needed when
-jffs2_do_fill_super() fails before start().
+This patch enables the SPI_NOR_IO_MODE_EN_VOLATILE flag and adds the
+mt35xu01gbba_fixups to the MT35XU02GCBA entry, which includes the
+micron_st_nor_two_die_late_init() function that sets up die erase
+support.
 
-Found by Linux Verification Center (linuxtesting.org) with Syzkaller.
+With these changes, the flash device can properly use die erase
+operations instead of chip erase.
 
-Fixes: e2d48b1a98bb ("[JFFS2] Fix cleanup in case of GC-Task not started")
-Signed-off-by: Dmitriy Chumachenko <Dmitry.Chumachenko@cyberprotect.ru>
+Signed-off-by: haoyu.lu <hechushiguitu666@gmail.com>
 ---
- fs/jffs2/background.c | 3 ++-
+ drivers/mtd/spi-nor/micron-st.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/fs/jffs2/background.c b/fs/jffs2/background.c
-index bb0ee1a59e71..abf0572dfd3c 100644
---- a/fs/jffs2/background.c
-+++ b/fs/jffs2/background.c
-@@ -160,6 +160,7 @@ static int jffs2_garbage_collect_thread(void *_c)
-  die:
- 	spin_lock(&c->erase_completion_lock);
- 	c->gc_task = NULL;
-+	complete(&c->gc_thread_exit);
- 	spin_unlock(&c->erase_completion_lock);
--	kthread_complete_and_exit(&c->gc_thread_exit, 0);
-+	kthread_exit(0);
- }
+diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
+index 88033384a71e..4e8c6ef14697 100644
+--- a/drivers/mtd/spi-nor/micron-st.c
++++ b/drivers/mtd/spi-nor/micron-st.c
+@@ -220,7 +220,8 @@ static const struct flash_info micron_nor_parts[] = {
+ 		.size = SZ_256M,
+ 		.no_sfdp_flags = SECT_4K | SPI_NOR_OCTAL_READ,
+ 		.mfr_flags = USE_FSR,
+-		.fixup_flags = SPI_NOR_4B_OPCODES,
++		.fixup_flags = SPI_NOR_4B_OPCODES | SPI_NOR_IO_MODE_EN_VOLATILE,
++		.fixups = &mt35xu01gbba_fixups,
+ 	},
+ };
+ 
 -- 
-2.49.0
+2.53.0.windows.1
 
 
 ______________________________________________________
