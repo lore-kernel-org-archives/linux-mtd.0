@@ -4,49 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B79FE9A76A
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Mar 2026 10:55:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0AB0FF54AC4
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Mar 2026 14:26:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Hu7NMWWPN1jvFKyjYWNk4IQKvSYL348DRw9rNUKQoIE=; b=MqhA53NfUeeFq4
-	vdRmm15mXu5ZcQ3kAYqsy31IAoYCmnbzqHpAlOyE9tR6fcfEDOk64+q1mdEwd6SHQnNrAfXZNNOc+
-	lP03GvHNoroPyohNRZIjHPnleJDf1vx2rvQkBYv3K0VVcTb9iNkToJhzPNU/wSq5MGT2sBSMf9f31
-	TnsFSP6slU3dhZymEHneigPeg60bSCt35UVI4Jk1n4Plbhm168shBOKew6kXBp+HelIpykw5whyQ6
-	j43YKO7ayXu2hUyG/C1SbbOI8a2UJIRBpJux5cQ6Qm1IuznE1OAD0JxGrN0Gu2PFp/c4cVkfjiPWg
-	71bpAQPi5nt6P6eHoY8A==;
+	List-Owner; bh=gjoXeqIE9Wv0bk1BHapEBYTUXHWk9CStrbK002s2lJ0=; b=qEarP1b685rNMs
+	b0HzuZozMoVu1+fn4t/wMxa1UOygeZ8JKGNBOljGIfYWFFgh4b4KWWtS2djuRA5qqNGRKtA4mgUId
+	kKBaPoBmSB2AWbnK7dxD5wXL1yEQWd2N+BsrFTRuJVo0iDWSH7444r74hRXYwM929xlMwPsXASaFM
+	ouBCwfKHyZgls8qjr/wYvrI646+CMSVKI6PoecuIlWkzbJ5TEACv3ke6kXms6A3Igg18pZPbXWM8m
+	65n5+PPSARU3ToDdmwzOnUT/XYj/ZQCsErFg+06ssw7pLIFfI26pPxMErw39UieYoDKdxEJjSSGfU
+	C2xdGLhVcY+ZPXIOU/pg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w4zQR-00000001F4s-0QYo;
-	Tue, 24 Mar 2026 10:55:55 +0000
+	id 1w52iW-00000001dt9-0U4i;
+	Tue, 24 Mar 2026 14:26:48 +0000
 Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w4zQN-00000001F46-2t6A;
-	Tue, 24 Mar 2026 10:55:53 +0000
+	id 1w52iO-00000001dpL-3seC;
+	Tue, 24 Mar 2026 14:26:44 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 4078344490;
-	Tue, 24 Mar 2026 10:55:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12D7FC19424;
-	Tue, 24 Mar 2026 10:55:42 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 1748040207;
+	Tue, 24 Mar 2026 14:26:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF10FC19424;
+	Tue, 24 Mar 2026 14:26:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774349751;
-	bh=PKmRQSmpQcoJaB3C8EeGp80u+1D+x7QmhnNQbCSeB8o=;
+	s=k20201202; t=1774362397;
+	bh=jbmeTUiHgD1/BUVa6y6/L4uBWdzAaIyEnuCWg6Aqqwk=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=fMEcgbbGgPyzprrfIXmnWzFQVASvL51viSIEUIGq0ULM2FvF4mbfhFjh/HfjosHht
-	 cgW+/u9gxB9fYbahyMGnurb7qoARj2GLGX6Ra96W/IHys+NfiTnIL/mImcGXUmlDjh
-	 NebVgjLehpGJwqkV4cVX7lDDhnYo58udnTxoI3ZrFyMQMHtl4DswqW26b/zG06s1sO
-	 T1KpDuiaLK8G1+W+b214NZfc+rI3YgT9zrIPw8TCw1KOpmEjvUWFSZAmeubTl2MSkT
-	 fUye6Vy/rI8+HkSs58CRHJoldtPx4J8kBNNWCqvbMR5Ikppaz5prA9TA7BNpQhgvcl
-	 Af6e9o0yrXfiQ==
-Message-ID: <a9ac9f4b-9b25-43f3-a2c1-da7157a95ab9@kernel.org>
-Date: Tue, 24 Mar 2026 11:55:41 +0100
+	b=jHLE0f+jKQrZNp687YBoBRWvKqV1yWHDJoeSVdPwmNvSWECrmPXDTbAi2oKjk+1NJ
+	 qnx4cHZLM+LIL/EoJtJgr2egOHXEYl3PmIEgTgWfctCXapgNTUzCU72gmELiYyBz2u
+	 Bmagz4Dqlv/xXZnYGIqOcn/VE+9HcIDQca+kSTZwU2EdFdYDcSCQi3OsySsDqMWMEj
+	 xJBl1+rl8ONOJYI/rFp2Q6/AgAT6Ooo3EbuSldP/+bCHPCgnXfLdZYk7zRnOoBztke
+	 5D4hhUKhkSo5DjVR7YkZzeoY/AhHGi4yeVpH65JJi5N0Pl6nFAlDHXYhnAvm2OMXP/
+	 QLKTQd8HLcvhQ==
+Message-ID: <d5b66671-697f-4a4d-8039-d9c9ac5ad4d7@kernel.org>
+Date: Tue, 24 Mar 2026 15:26:28 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 04/21] mm: avoid deadlock when holding rmap on
- mmap_prepare error
+Subject: Re: [PATCH v4 05/21] mm: switch the rmap lock held option off in
+ compat layer
 Content-Language: en-US
 To: "Lorenzo Stoakes (Oracle)" <ljs@kernel.org>,
  Andrew Morton <akpm@linux-foundation.org>
@@ -79,12 +79,12 @@ Cc: Jonathan Corbet <corbet@lwn.net>, Clemens Ladisch <clemens@ladisch.de>,
  linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
  Ryan Roberts <ryan.roberts@arm.com>
 References: <cover.1774045440.git.ljs@kernel.org>
- <d44248be9da68258b07c2c59d4e73485ee0ca943.1774045440.git.ljs@kernel.org>
+ <dda74230d26a1fcd79a3efab61fa4101dd1cac64.1774045440.git.ljs@kernel.org>
 From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
-In-Reply-To: <d44248be9da68258b07c2c59d4e73485ee0ca943.1774045440.git.ljs@kernel.org>
+In-Reply-To: <dda74230d26a1fcd79a3efab61fa4101dd1cac64.1774045440.git.ljs@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260324_035551_772470_181B3578 
-X-CRM114-Status: GOOD (  19.58  )
+X-CRM114-CacheID: sfid-20260324_072641_033543_CF188ED1 
+X-CRM114-Status: GOOD (  19.88  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,46 +102,59 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 On 3/20/26 23:39, Lorenzo Stoakes (Oracle) wrote:
-> Commit ac0a3fc9c07d ("mm: add ability to take further action in
-> vm_area_desc") added the ability for drivers to instruct mm to take actions
-> after the .mmap_prepare callback is complete.
+> In the mmap_prepare compatibility layer, we don't need to hold the rmap
+> lock, as we are being called from an .mmap handler.
 > 
-> To make life simpler and safer, this is done before the VMA/mmap write lock
-> is dropped but when the VMA is completely established.
+> The .mmap_prepare hook, when invoked in the VMA logic, is called prior to
+> the VMA being instantiated, but the completion hook is called after the VMA
+> is linked into the maple tree, meaning rmap walkers can reach it.
 > 
-> So on error, we simply munmap() the VMA.
+> The mmap hook does not link the VMA into the tree, so this cannot happen.
 > 
-> As part of this implementation, unfortunately a horrible hack had to be
-> implemented to support some questionable behaviour hugetlb relies upon -
-> that is that the file rmap lock is held until the operation is complete.
+> Therefore it's safe to simply disable this in the mmap_prepare
+> compatibility layer.
 > 
-> The implementation, for convenience, did this in mmap_action_finish() so
-> both the VMA and mmap_prepare compatibility layer paths would have this
-> correctly handled.
+> Also update VMA tests code to reflect current compatibility layer state.
 > 
-> However, it turns out there is a mistake here - the rmap lock cannot be
-> held on munmap, as free_pgtables() -> unlink_file_vma_batch_add() ->
-> unlink_file_vma_batch_process() takes the file rmap lock.
-> 
-> We therefore currently have a deadlock issue that might arise.
-> 
-> Resolve this by leaving it to callers to handle the unmap.
-> 
-> The compatibility layer does not support this rmap behaviour, so we simply
-> have it unmap on error after calling mmap_action_complete().
-> 
-> In the VMA implementation, we only perform the unmap after the rmap lock is
-> dropped.
-> 
-> This resolves the issue by ensuring the rmap lock is always dropped when
-> the unmap occurs.
-> 
-> Fixes: ac0a3fc9c07d ("mm: add ability to take further action in vm_area_desc")
-> Cc: <stable@vger.kernel.org>
 > Signed-off-by: Lorenzo Stoakes (Oracle) <ljs@kernel.org>
 
 Acked-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
 
+a typo fix below, Andrew can fix locally?
+
+> ---
+>  mm/util.c                       |  6 ++++-
+>  tools/testing/vma/include/dup.h | 42 +++++++++++++++++----------------
+>  2 files changed, 27 insertions(+), 21 deletions(-)
+> 
+> diff --git a/mm/util.c b/mm/util.c
+> index a2cfa0d77c35..182f0f5cc400 100644
+> --- a/mm/util.c
+> +++ b/mm/util.c
+> @@ -1204,6 +1204,7 @@ int compat_vma_mmap(struct file *file, struct vm_area_struct *vma)
+> 
+>  		.action.type = MMAP_NOTHING, /* Default */
+>  	};
+> +	struct mmap_action *action = &desc.action;
+>  	int err;
+> 
+>  	err = vfs_mmap_prepare(file, &desc);
+> @@ -1214,8 +1215,11 @@ int compat_vma_mmap(struct file *file, struct vm_area_struct *vma)
+>  	if (err)
+>  		return err;
+> 
+> +	/* being invoked from .mmmap means we don't have to enforce this. */
+
+				.mmap
+
+> +	action->hide_from_rmap_until_complete = false;
+> +
+>  	set_vma_from_desc(vma, &desc);
+> -	err = mmap_action_complete(vma, &desc.action);
+> +	err = mmap_action_complete(vma, action);
+>  	if (err) {
+>  		const size_t len = vma_pages(vma) << PAGE_SHIFT;
+> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
