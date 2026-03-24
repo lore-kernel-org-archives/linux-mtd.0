@@ -4,49 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68525F54AC6
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Mar 2026 14:31:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C45B9F54AC4
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Mar 2026 14:38:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Z3TB2ro45RSfAY7GzoWW960+zy63TXnE1xjKCNjPCXE=; b=hUPoYiGS+SLMfR
-	dJF44jEMPy4B9AZvS6Y39yNwVTZWWYoAjZUV1IGJk1OJRToHCXKK33xy8Yd8OfwwiOhGno30dOU/3
-	kDQwvPXnyA2gbPmoWXy3SKtUzBnZt+GInikFdCitbQW+TckJr+yLQc0gAnHkY6jEHvJjO27LCEc8R
-	p5gIjPWJ06G39OrScZd8JPS2DXB5+7Az3InBVnFEFUhTRZWQ+vBMI1s5qM1sG1XXm3CjzZKr+VxN1
-	UEpJYBvXjFJi8leQsD3tpidH+GLtQs+2s3ojReu+kAYHj8URpDdmdKbOyKu6Zch92w3+j3Lgben2d
-	M421UHsiYEbLu6/b3y0w==;
+	List-Owner; bh=qnNT8Ie8Odx00BpUY0MFqj+BHsNcjdrQJafTF2uQsQo=; b=1fXwvjRf/+yvY5
+	JRDttkto06+1xCoNmfXMDT3vzPC/JxMdJT9I/of8BrUGyveaPjov2wayHSM2txedTTnGEThjfoyGQ
+	f96HLb5HOTqw/gRfiWF7pvLXWVQk5WHY3a1LvishFE+M/UEYkHg3JQ0HW4FiU+buzFVmcAuOiTQi6
+	pQhtAmdKh03GQq9XUy7o9Wc9NlHoCpu7ucPRBK+2p4LwG2G3ulUa1eNaj2Q6x60+1DE1W1aVZKFLk
+	LrdFN7eiws+3UcR8g27fUyuNoGJYQdm6U1egfTQQYnuO2dLKvbb7xmPdLj7ATX1kz2yKFyRDLSoIc
+	xKaFpTwFfoXaK8GJQAjw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w52n3-00000001eRP-1mXH;
-	Tue, 24 Mar 2026 14:31:29 +0000
+	id 1w52ta-00000001fML-2BlX;
+	Tue, 24 Mar 2026 14:38:14 +0000
 Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w52n1-00000001eR9-2PgJ;
-	Tue, 24 Mar 2026 14:31:27 +0000
+	id 1w52tY-00000001fLQ-1FQU;
+	Tue, 24 Mar 2026 14:38:12 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id A1F53600AC;
-	Tue, 24 Mar 2026 14:31:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61DCDC19424;
-	Tue, 24 Mar 2026 14:31:18 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 5648760103;
+	Tue, 24 Mar 2026 14:38:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE6B0C19424;
+	Tue, 24 Mar 2026 14:38:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774362686;
-	bh=0oYopjVJ5FfZx7yBJY5biK1wFueGF1ISoTXTBTdvEco=;
+	s=k20201202; t=1774363091;
+	bh=e5f6jgo0dBEyQUURQKSWrpDzBd0JxDsZ01SMVL8k3SU=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=j/iVyRqoAgsG15GdgKyoiArd2eFqRcIl7DXzGaGTtG2Y0o7o+tjV70May3h7h7RLT
-	 V7S2RptNUFiSvB3YL9Arvd1/5pUSBJrsV385XLYdp8ncPFclpr5NciQAWxqxmbnEiV
-	 oGusSnopYimqq5x+nEGLkPHfJfSrph+4t9ZTsmakMF24m+DuJZinF+HwwBv0F6oXfj
-	 8Ajb3LcvpJ0geiSO23cTGq4R54D5xwU781bHvtDBiy0/W+L+jGnt1gku6YsbTLI6qO
-	 tBqw5ZSz29d6y6/PZPYtjCgDpggJ+d1BrWbTeduVQTASS9C9lGiBuYSSdwtQJAyER5
-	 Iy/3msdCCKs7A==
-Message-ID: <82dc0ffb-a0e2-4358-b182-94af71ceb697@kernel.org>
-Date: Tue, 24 Mar 2026 15:31:16 +0100
+	b=qIMNEe8jc/gh4IeEeHB78CDBRX8uly5TJ7AQbfM/aTBCdNlUClXSmZ3DGj32XYiJq
+	 w3bJ+ggFkIa6py50tYHZOmCtQhawWtrsj76/eDZGqNTS2E6DEDw7zok6+dGEPnugh1
+	 rN0pTjYTfRuusdcmWnyo9rBjiDrJMXTlzi6iUnqi2UkrzVyRfQZmP9Akgci7mz3F+g
+	 QuGR7o1Khy+ZyGWNS8jwo3oNlwx2iL889bycIRnXzH46HhBhKml65awhc9OfKZRYcU
+	 c9A/SwhXZceArl/7YVlb4KEf7T2vzd4jdb/0Re/Fh6+vKY2naQlBbaFBfS5NTPAKfw
+	 5GaQjW2N9rzXA==
+Message-ID: <89b0e46e-693f-454e-ac74-6e396183c5c6@kernel.org>
+Date: Tue, 24 Mar 2026 15:38:01 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 06/21] mm/vma: remove superfluous
- map->hold_file_rmap_lock
+Subject: Re: [PATCH v4 07/21] mm: have mmap_action_complete() handle the rmap
+ lock and unmap
 Content-Language: en-US
 To: "Lorenzo Stoakes (Oracle)" <ljs@kernel.org>,
  Andrew Morton <akpm@linux-foundation.org>
@@ -79,9 +79,9 @@ Cc: Jonathan Corbet <corbet@lwn.net>, Clemens Ladisch <clemens@ladisch.de>,
  linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
  Ryan Roberts <ryan.roberts@arm.com>
 References: <cover.1774045440.git.ljs@kernel.org>
- <42c3fbb701e361a17193ecda0d2dabcc326288a5.1774045440.git.ljs@kernel.org>
+ <8d1ee8ebd3542d006a47e8382fb80cf5b57ecf10.1774045440.git.ljs@kernel.org>
 From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
-In-Reply-To: <42c3fbb701e361a17193ecda0d2dabcc326288a5.1774045440.git.ljs@kernel.org>
+In-Reply-To: <8d1ee8ebd3542d006a47e8382fb80cf5b57ecf10.1774045440.git.ljs@kernel.org>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,11 +99,21 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 On 3/20/26 23:39, Lorenzo Stoakes (Oracle) wrote:
-> We don't need to reference this field, it's confusing as it duplicates
-> mmap_action->hide_from_rmap_until_complete, so thread the mmap_action
-> through to __mmap_new_vma() instead and use the same field consistently.
+> Rather than have the callers handle this both the rmap lock release and
+> unmapping the VMA on error, handle it within the mmap_action_complete()
+> logic where it makes sense to, being careful not to unlock twice.
+> 
+> This simplifies the logic and makes it harder to make mistake with this,
+> while retaining correct behaviour with regard to avoiding deadlocks.
+> 
+> Also replace the call_action_complete() function with a direct invocation
+> of mmap_action_complete() as the abstraction is no longer required.
+> 
+> Also update the VMA tests to reflect this change.
 > 
 > Signed-off-by: Lorenzo Stoakes (Oracle) <ljs@kernel.org>
+
+Nice simplification.
 
 Acked-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
 
