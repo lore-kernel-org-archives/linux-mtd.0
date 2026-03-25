@@ -4,49 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 46234FEC11B
-	for <linux-mtd@archiver.kernel.org>; Wed, 25 Mar 2026 10:35:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E41B5106B53A
+	for <linux-mtd@archiver.kernel.org>; Wed, 25 Mar 2026 13:43:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=uKEm1ihlQklDI5E3Zx436EsgvYT5bHK6Ydfg+ZxT7r8=; b=F/h8N0I+TFIjfS
-	ib28dmEVpWqgaOpHZuWkpgjtRXQGq5sypY0DRyQ/D+fehpywfCAMDPyloOxLDXafDPNo8U9vxklR/
-	Dy3BVCOh/3Nbfp4xJelBs2S6YF9+XrHjlggx2dd0gxbFXBTVb7v5c7u18w7pHF6CrWiv0P0XZPd4h
-	a1a3FwoPL8FWN9MOY6uMkvP7XWhT2Izf7dk7cgTK1RfoG/ZK21r30TmvDh5V/KY6oGqiyQM2B+EGw
-	vYTjEhFbIzAVfz8OWHNCwSOB6KWXX+Nc5dYt6/vyDn+jgVzbXQ9dpn9HfP5jryD5V0fjaXeJk4TUA
-	yPsgCaiS245weNMM4hjQ==;
+	List-Owner; bh=5qPqYMdQKOqZ6yIc1s3HRbxbMyBO61w8u8JG0g/pA4I=; b=lAQ/lfP3LJU+cp
+	op5fEdWp+9bsHSHPSRpPTXhWXDtXcFvGDGgo4q4gxc0D6gc4LcVJ8zxXGjLwK56k43mQBOjTURtg1
+	QDqyuxp632NTs0qqt36X0XtADRaGSJROYt+GYMEGVQfgreLs31px3rDg/+cFzxLzz9hYXiTQoUPAA
+	Rk54ckB8Ds2ITeevZTjZYk58GL9AD14kuZFBBEqqzRh4pJ5CIdocnfwJ+1stGWTLOfBaGbfsv/JTu
+	wSeHYPEKJb3bcTNJBgDGp8SLACmxGg1k6tvreXYaH2OHdD9AYu1S4sTqA8AH/S/N9kX5mMl2wErzt
+	tTUniEBVRvwm9ykzjsVA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w5LZp-00000003AHs-48A6;
-	Wed, 25 Mar 2026 10:35:05 +0000
+	id 1w5OWB-00000003UPH-3zyC;
+	Wed, 25 Mar 2026 13:43:31 +0000
 Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w5LZo-00000003AHN-3dlv;
-	Wed, 25 Mar 2026 10:35:04 +0000
+	id 1w5OW8-00000003UOO-37D0;
+	Wed, 25 Mar 2026 13:43:28 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 48ADB600AC;
-	Wed, 25 Mar 2026 10:35:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DEB41C4CEF7;
-	Wed, 25 Mar 2026 10:34:55 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id ADF8E600AC;
+	Wed, 25 Mar 2026 13:43:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A6BBC4CEF7;
+	Wed, 25 Mar 2026 13:43:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774434904;
-	bh=+W7AYaAXVw1i2DYITazSh58FngLmUYCv1t3fq5pVTRU=;
+	s=k20201202; t=1774446207;
+	bh=qxevTlxq6Ql+gdnUMuEobyzjtUWmEQEM7p+9cyL1w4Y=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=XyqtwD0BVJpUUEeIxQNuop7kP0eDlwdduGR8d5uf2MwwJPd+cw307oTk9Phhs8x3l
-	 Hh6rIELrW6PhJt0RPyJGSFPMzadyDZwsObuPFoqXKHX/qCFcrK66BtKCtHaH7HSpF+
-	 0NGL1KxEeCeVDvLkU166GKoCMV5sPI0Hq9RLohb9yNUsRArIsKfhzMbamkj//nH3YJ
-	 4ug/r3J4vaM4CSS0e7WBb9VfoiGQ7drIOGpXk5kZ8oqKTpFew/rcW80Y1ZfDDm0HKl
-	 tIqVPpHAE7k98Loz1LnKsoU5+bfkVjx6lxzQNcGzna+siEzTrHVlZuoNwTrwpSF67C
-	 HbfXsN+/yyUDQ==
-Message-ID: <ec28f19e-072f-4f26-ad6b-feadf7a88dfc@kernel.org>
-Date: Wed, 25 Mar 2026 11:34:54 +0100
+	b=ODtAzKp5cU4HDdomvw7sjdSs8IHMAYOOSxEs2h/rRrufXoBx4l+v61cnqidyuTOjR
+	 iyslCByJgqr+gYe1bpcw+qjFkLYUy2aJBCrTv7KOx+rg/9hq5C1zQTvm6a8/0OKmDp
+	 xXjVE9RyRH1deEzegZ4TCsOnQVxdwZsSvAa9CCFcC5wjmHDMcU8HW+oBbiOik87SmN
+	 OLN8n4X7Jmzw1dtixKYNu9Iz2DUe+Au4CZmOQDmiYIkAkcjqZj1Bh791LYOoWgopPm
+	 B4loXaMgr7w3ShZ9dyeuoE2TY9qrf2WGjX+ihaHCV+KkYfXDhqdALgObvmO/DiuGm3
+	 oZal5k+Xpk1qA==
+Message-ID: <bd916c05-504f-4d81-8020-45c5a563a2d8@kernel.org>
+Date: Wed, 25 Mar 2026 14:43:17 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 16/21] staging: vme_user: replace deprecated mmap hook
- with mmap_prepare
+Subject: Re: [PATCH v4 17/21] mm: allow handling of stacked mmap_prepare hooks
+ in more drivers
 Content-Language: en-US
 To: "Lorenzo Stoakes (Oracle)" <ljs@kernel.org>,
  Andrew Morton <akpm@linux-foundation.org>
@@ -79,9 +79,9 @@ Cc: Jonathan Corbet <corbet@lwn.net>, Clemens Ladisch <clemens@ladisch.de>,
  linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
  Ryan Roberts <ryan.roberts@arm.com>
 References: <cover.1774045440.git.ljs@kernel.org>
- <08ecc1e1d319564fd49b9e9012f994edaff921db.1774045440.git.ljs@kernel.org>
+ <24aac3019dd34740e788d169fccbe3c62781e648.1774045440.git.ljs@kernel.org>
 From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
-In-Reply-To: <08ecc1e1d319564fd49b9e9012f994edaff921db.1774045440.git.ljs@kernel.org>
+In-Reply-To: <24aac3019dd34740e788d169fccbe3c62781e648.1774045440.git.ljs@kernel.org>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,21 +99,75 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 On 3/20/26 23:39, Lorenzo Stoakes (Oracle) wrote:
-> The f_op->mmap interface is deprecated, so update driver to use its
-> successor, mmap_prepare.
+> While the conversion of mmap hooks to mmap_prepare is underway, we will
+> encounter situations where mmap hooks need to invoke nested mmap_prepare
+> hooks.
 > 
-> The driver previously used vm_iomap_memory(), so this change replaces it
-> with its mmap_prepare equivalent, mmap_action_simple_ioremap().
+> The nesting of mmap hooks is termed 'stacking'.  In order to flexibly
+> facilitate the conversion of custom mmap hooks in drivers which stack, we
+> must split up the existing __compat_vma_mmap() function into two separate
+> functions:
 > 
-> Functions that wrap mmap() are also converted to wrap mmap_prepare()
-> instead.
+> * compat_set_desc_from_vma() - This allows the setting of a vm_area_desc
+>   object's fields to the relevant fields of a VMA.
 > 
-> Also update the documentation accordingly.
+> * __compat_vma_mmap() - Once an mmap_prepare hook has been executed upon a
+>   vm_area_desc object, this function performs any mmap actions specified by
+>   the mmap_prepare hook and then invokes its vm_ops->mapped() hook if any
+>   were specified.
 > 
-> Reviewed-by: Suren Baghdasaryan <surenb@google.com>
+> In ordinary cases, where a file's f_op->mmap_prepare() hook simply needs
+> to be invoked in a stacked mmap() hook, compat_vma_mmap() can be used.
+> 
+> However some drivers define their own nested hooks, which are invoked in
+> turn by another hook.
+> 
+> A concrete example is vmbus_channel->mmap_ring_buffer(), which is invoked
+> in turn by bin_attribute->mmap():
+> 
+> vmbus_channel->mmap_ring_buffer() has a signature of:
+> 
+> int (*mmap_ring_buffer)(struct vmbus_channel *channel,
+> 			struct vm_area_struct *vma);
+> 
+> And bin_attribute->mmap() has a signature of:
+> 
+> 	int (*mmap)(struct file *, struct kobject *,
+> 		    const struct bin_attribute *attr,
+> 		    struct vm_area_struct *vma);
+> 
+> And so compat_vma_mmap() cannot be used here for incremental conversion of
+> hooks from mmap() to mmap_prepare().
+> 
+> There are many such instances like this, where conversion to mmap_prepare
+> would otherwise cascade to a huge change set due to nesting of this kind.
+> 
+> The changes in this patch mean we could now instead convert
+> vmbus_channel->mmap_ring_buffer() to
+> vmbus_channel->mmap_prepare_ring_buffer(), and implement something like:
+> 
+> 	struct vm_area_desc desc;
+> 	int err;
+> 
+> 	compat_set_desc_from_vma(&desc, file, vma);
+> 	err = channel->mmap_prepare_ring_buffer(channel, &desc);
+> 	if (err)
+> 		return err;
+> 
+> 	return __compat_vma_mmap(&desc, vma);
+> 
+> Allowing us to incrementally update this logic, and other logic like it.
+> 
+> Unfortunately, as part of this change, we need to be able to flexibly
+> assign to the VMA descriptor, so have to remove some of the const
+> declarations within the structure.
+> 
+> Also update the VMA tests to reflect the changes.
+> 
 > Signed-off-by: Lorenzo Stoakes (Oracle) <ljs@kernel.org>
 
 Acked-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
+
 
 
 ______________________________________________________
