@@ -4,45 +4,45 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C06FFEC11B
-	for <linux-mtd@archiver.kernel.org>; Wed, 25 Mar 2026 10:04:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C34AFEA83B
+	for <linux-mtd@archiver.kernel.org>; Wed, 25 Mar 2026 10:15:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=p3utYu7I36UpWQpQe3VB+Vy+rwAIdIE3dQB/i6zHsLU=; b=qkMs+Q4i34nwDJ
-	7AW0R4PQMvue8sokEE7RcWzHin1rEBNIlaZInETJxkVctAz9n6PevpTVUkYH3e4Q2Y/M2AcgcBhVU
-	/EeTg2g2P/DLY/gjjqnQMqepo8BiCDpCgc1bdm5qNtvlf6gExhDtTRBnB+E0mqUbi+jhHnYvQbPZs
-	8BzkKyzBVJzr6OVN/Mkk02yr8eUnF7HURPpJ3sj9sX53nmIkqAs2FencP090IwnovuT18vB7/JHgf
-	+BV4wXBLoJrsxafJz1HdcTKAlduBXvcXWFkp5KJIKmdLdLA3couzGlCrn6ABTa8gHrB3wCqRdSAl3
-	fdAx17X7LifipCOI2dVQ==;
+	List-Owner; bh=p3utYu7I36UpWQpQe3VB+Vy+rwAIdIE3dQB/i6zHsLU=; b=UsjIr6Gfp64cP6
+	6zSGWfYPBddamWrmc2NwjNrE6qFzIaUkdl4NxHsvbnGFkCZeo7gPd++hGTGosxIEy6mqdyqZGm13E
+	rVf7MMP1tfO1h+GGrHPw7BZZq7tczS0UYGUJvN3I6p7Ui4tm8ZiHBMXZ0Bx7hHm4SxfkygE6KOgdX
+	mM3Vj9IkZe5HjxdjiqwmY4+d+O9jZUpOIb8+hFUTUdr0SzNaXdauSIEe+PQKZ7sn/C0LY57h3Wlxi
+	fFR2TJDMNkCBWHbjAkI+Lit1jKNM6fNwqYJqjUyTC7kmC+iDA1lu/Lck6AN38OrRGkPzpKFadXb9k
+	TWll7AMVTIYRQZwDfkMA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w5L6b-000000036Vx-2iZV;
-	Wed, 25 Mar 2026 10:04:53 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1w5LGO-0000000371U-3T3W;
+	Wed, 25 Mar 2026 10:15:00 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w5L6Y-000000036VI-45Dl;
-	Wed, 25 Mar 2026 10:04:52 +0000
+	id 1w5LGM-0000000370F-30Fa;
+	Wed, 25 Mar 2026 10:14:58 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 2A1CA42B3E;
-	Wed, 25 Mar 2026 10:04:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99004C4CEF7;
-	Wed, 25 Mar 2026 10:04:41 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id B6149600AC;
+	Wed, 25 Mar 2026 10:14:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 677D8C2BC9E;
+	Wed, 25 Mar 2026 10:14:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774433090;
+	s=k20201202; t=1774433697;
 	bh=mWCjyaxKu+x+LzWRgLuhujGHLbxlc3MmkD51VDioSIg=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=TNJpNZcIC+RvxqTV15Sf9sni6H4IWM0T+i3wt5MLiMfUHkfT34q1CwGBusWH1kE3/
-	 dnN4SNi4+AvIgkYt4oSgjYjdYCeFsI6VrGO5PEXoPnnlOc1fbEncDzZgNiPcjbFygA
-	 /ZtI085ad/dYBptuY3ARMNcg2KQletfHZ9gpOpculjQh5nP+N4E8Zr8dD6BGl/fyUR
-	 zafOK0794Im+0DBGvQliZGSK7JRyRUDI4tpM02JeU+gvdZP2ymlEdlBc6wgAXyOd0B
-	 aK/i0OiLd75T1xW0NaawDtJsRy0EK96sVVOg5mJbXC0sIeQ13cP6pms6xqicRCBsL8
-	 W+CvXhvSGQluw==
-Message-ID: <e41b5b30-7371-4c61-b6f6-2bf35e4d68c6@kernel.org>
-Date: Wed, 25 Mar 2026 11:04:39 +0100
+	b=Avb9roEtz2tZC7EnR8/vBPTkFsUrFyERzOI3tR4QciMupwqnA3DiWXvUrFwz/I8Gi
+	 iToXYDmfHcDBl+a0Z9K6rywnep3+HsnmYiTLv00vR8Hb44EItpTuJmrZrkc7RDMuof
+	 3qYGqfxEmVJG1qEt1tGMGJ3FjTgRTeD1Xuk38xFFI74ll1XywwHliBcHsOjCiqH0s0
+	 Mf1322lzYqLtit9CzSq96FEzvxUS0em6gQP+PC+HiEQ7XGm7P5Ha2K8pVKtSU72lSb
+	 eV5gJPu7fOk1RVXaPY3BJekak8hgmqpoh2HE9XIskljcq/LHkXCpoUTbG74tqJfX7S
+	 iVt/tb9OUXrLw==
+Message-ID: <6fe7f335-2dbd-4d95-9918-702ca9fd10a7@kernel.org>
+Date: Wed, 25 Mar 2026 11:14:47 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v4 12/21] misc: open-dice: replace deprecated mmap hook
@@ -82,9 +82,6 @@ References: <cover.1774045440.git.ljs@kernel.org>
  <5a83ab00195dc8d0609fa6cc525493010ac4ead1.1774045440.git.ljs@kernel.org>
 From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
 In-Reply-To: <5a83ab00195dc8d0609fa6cc525493010ac4ead1.1774045440.git.ljs@kernel.org>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260325_030451_080216_8CEEA88C 
-X-CRM114-Status: GOOD (  21.62  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
