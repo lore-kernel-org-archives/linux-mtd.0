@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8234BFEA837
-	for <linux-mtd@archiver.kernel.org>; Wed, 25 Mar 2026 09:06:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8902CFEA83E
+	for <linux-mtd@archiver.kernel.org>; Wed, 25 Mar 2026 09:47:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=CiGmx/0PUayhdjjRD4DrInry1D+KjXiLdisPmBVCit8=; b=MvKZMa9qY+vaRc
-	VqVXKW4+l1q2Nebegfq3Yh4sPnTZE6QvLO7x52ufSldtJimwnXF+zcVF4AQE7m6GYEySPIurpQvya
-	IZ9vwRXFT6nBzkP8jkQ5lTv6U0Jd7T6K7PX/M7Gwi569rq9ZZPmsPV9QmbcBfZxT30VhPBgESPm6G
-	4K6kiNQFKqx2Pe/WpX9kaCPLb5xLROwaXx4uTFjco4L638T+jh95ZUpR3ApsEgeVeGU9YZ4Q1QXAe
-	jUDyN40QCvX1MsDwk1iNm9fMl+AQ445cZkV4dUDnWV2z46XFDTrf6CI5+mIa0zwXTb6d8hvPXjl6/
-	VKTQkKk5IU9lO+kAsGHQ==;
+	List-Owner; bh=86g2sdzFQxa4LO1emm0+sRBULtPr4IKJwnDXXZNv8C8=; b=tnQZYCyvsbBrrV
+	EdTp3BmFV4afGNAR7l6WC2LCg5wUhE34fk9VJ+nVZKAtzG1vE/GFkhA2uAr5s32HLhk9KYMgntGN8
+	24zTlPiRvQWjDSz8WxaIo4C+328giVUPlhdblGdfDIVSwiFVXXZHXnO3+bfCEgIVHgRjEzd4uIedG
+	rFG0ABD2eO7nfrvA9ym9jEcQkoa7xQMnPS6wuG02spfeomdqCZ9hmWzGl3qmeQnwNSKwLDE6zCXgi
+	fORtyxov1YwHnc3YRxt8Mux9ZQpmeEzU/6meZBOnKFiqwLMnmc695qLkZKFUtid5+TTwfyNtcCuU1
+	PwYuUF43H1TCVkUap66Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w5KC4-000000030MB-2r0n;
-	Wed, 25 Mar 2026 09:06:28 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1w5Kps-000000034XS-0mCe;
+	Wed, 25 Mar 2026 09:47:36 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w5KC2-000000030Lu-1mSX;
-	Wed, 25 Mar 2026 09:06:26 +0000
+	id 1w5Kpo-000000034Wo-37xc;
+	Wed, 25 Mar 2026 09:47:33 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 73617600AC;
-	Wed, 25 Mar 2026 09:06:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F5A1C4CEF7;
-	Wed, 25 Mar 2026 09:06:16 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 5B0374417E;
+	Wed, 25 Mar 2026 09:47:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44F83C2BC9E;
+	Wed, 25 Mar 2026 09:47:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774429585;
-	bh=TGeHJllmZaOU480qUtXeb/jUm42/azepnhJdaLl9P5A=;
+	s=k20201202; t=1774432051;
+	bh=vUFrcOFz84OveU1pgKHoD1qwpdPZX9ciji33h3siGaE=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=B/pXGWqxkc77H/QNjcNN4hXFs+1yWtOO/K6ZlFDqfhgwHp4yHtUXBY1gINF1N/v7H
-	 Swoeh/4pl25iEnor6XcK93/xaSpBQCXea/x0tJWaU2vmaO0gQrTCNvrvDCRgFprVKV
-	 1KqlwKP+22aqYID5Rc4LF4kA7w+kAFXYTzDiwCQpdMmDJrHF9HDz+HIU9m1OkF3LTb
-	 /jwCEhab+UIAPA9vKX7zWI8lclKZJMoZ3e82DcRkAVWva3ZfDqkkW0tKKWs9g8wCY/
-	 xPGCmHA6G5g4E8Zs8WC6hluY2t54Kvjz8OpvZWbU1RkOlOvI5O2Nk6MOymHovUB97F
-	 cRXNnffbCU5+g==
-Message-ID: <e9e9c3a3-26fb-4ca5-af27-158f4860a810@kernel.org>
-Date: Wed, 25 Mar 2026 10:06:15 +0100
+	b=h7rjxRys800WY0i8LFUswSR3PcQtVI+WfcvFbM55iwz1ZH6sEQagzhf2LyOreVOSW
+	 R1lGyQTKbfLllWJzdn5W8eaoKRVYpL0edcGcr6SCeDfoN1NRmrSZOCLjsPkGst2Vue
+	 whTAV+F4IJb7xm4J+qcGoX5SFmIZFB+fhBwrR2605pUGNgx0fg/E3JSQRqS9sFkabZ
+	 CtbaFD/j2jHu/4k19QPOkOOINFcC55JlaP/BKzrZDZAQkiiAvQh9vim4ubQ9CkIKj9
+	 xhp7ke2Xf5zs7lnOYxqAky/AVcczwO5PeQU9qs8vfUKFRe22DcZ0GFLqD7cqpncinF
+	 7/z8KNyW3nyVA==
+Message-ID: <2bf17da7-fb46-4503-8de9-9368a73d8487@kernel.org>
+Date: Wed, 25 Mar 2026 10:47:21 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 09/21] fs: afs: revert mmap_prepare() change
+Subject: Re: [PATCH v4 10/21] fs: afs: restore mmap_prepare implementation
 Content-Language: en-US
 To: "Lorenzo Stoakes (Oracle)" <ljs@kernel.org>,
  Andrew Morton <akpm@linux-foundation.org>
@@ -78,9 +78,12 @@ Cc: Jonathan Corbet <corbet@lwn.net>, Clemens Ladisch <clemens@ladisch.de>,
  linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
  Ryan Roberts <ryan.roberts@arm.com>
 References: <cover.1774045440.git.ljs@kernel.org>
- <08804c94e39d9102a3a8fbd12385e8aa079ba1d3.1774045440.git.ljs@kernel.org>
+ <ad9a94350a9c7d2bdab79fc397ef0f64d3412d71.1774045440.git.ljs@kernel.org>
 From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
-In-Reply-To: <08804c94e39d9102a3a8fbd12385e8aa079ba1d3.1774045440.git.ljs@kernel.org>
+In-Reply-To: <ad9a94350a9c7d2bdab79fc397ef0f64d3412d71.1774045440.git.ljs@kernel.org>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260325_024732_835914_26C67ABB 
+X-CRM114-Status: GOOD (  31.65  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,69 +101,143 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 On 3/20/26 23:39, Lorenzo Stoakes (Oracle) wrote:
-> Partially reverts commit 9d5403b1036c ("fs: convert most other
-> generic_file_*mmap() users to .mmap_prepare()").
+> Commit 9d5403b1036c ("fs: convert most other generic_file_*mmap() users to
+> .mmap_prepare()") updated AFS to use the mmap_prepare callback in favour
+> of the deprecated mmap callback.
 > 
-> This is because the .mmap invocation establishes a refcount, but
-> .mmap_prepare is called at a point where a merge or an allocation failure
-> might happen after the call, which would leak the refcount increment.
+> However, it did not account for the fact that mmap_prepare is called
+> pre-merge, and may then be merged, nor that mmap_prepare can fail to map
+> due to an out of memory error.
 > 
-> Functionality is being added to permit the use of .mmap_prepare in this
-> case, but in the interim, we need to fix this.
+> This change was therefore since reverted.
 > 
-> Fixes: 9d5403b1036c ("fs: convert most other generic_file_*mmap() users to .mmap_prepare()")
-> Cc: <stable@vger.kernel.org>
+> Both of those are cases in which we should not be incrementing a reference
+> count.
+> 
+> With the newly added vm_ops->mapped callback available, we can simply
+> defer this operation to that callback which is only invoked once the
+> mapping is successfully in place (but not yet visible to userspace as the
+> mmap and VMA write locks are held).
+> 
+> This allows us to once again reimplement the .mmap_prepare implementation
+> for this file system.
+> 
+> Therefore add afs_mapped() to implement this callback for AFS, and remove
+> the code doing so in afs_mmap_prepare().
+> 
+> Also update afs_vm_open(), afs_vm_close() and afs_vm_map_pages() to be
+> consistent in how the vnode is accessed.
+> 
 > Signed-off-by: Lorenzo Stoakes (Oracle) <ljs@kernel.org>
+
+Yep that should take care of that reference count problem.
 
 Acked-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
 
 > ---
->  fs/afs/file.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
+>  fs/afs/file.c | 42 +++++++++++++++++++++++++++++-------------
+>  1 file changed, 29 insertions(+), 13 deletions(-)
 > 
 > diff --git a/fs/afs/file.c b/fs/afs/file.c
-> index f609366fd2ac..74d04af51ff4 100644
+> index 74d04af51ff4..85696ac984cc 100644
 > --- a/fs/afs/file.c
 > +++ b/fs/afs/file.c
 > @@ -19,7 +19,7 @@
 >  #include <trace/events/netfs.h>
 >  #include "internal.h"
->  
-> -static int afs_file_mmap_prepare(struct vm_area_desc *desc);
-> +static int afs_file_mmap(struct file *file, struct vm_area_struct *vma);
->  
+> 
+> -static int afs_file_mmap(struct file *file, struct vm_area_struct *vma);
+> +static int afs_file_mmap_prepare(struct vm_area_desc *desc);
+> 
 >  static ssize_t afs_file_read_iter(struct kiocb *iocb, struct iov_iter *iter);
 >  static ssize_t afs_file_splice_read(struct file *in, loff_t *ppos,
-> @@ -35,7 +35,7 @@ const struct file_operations afs_file_operations = {
+> @@ -28,6 +28,8 @@ static ssize_t afs_file_splice_read(struct file *in, loff_t *ppos,
+>  static void afs_vm_open(struct vm_area_struct *area);
+>  static void afs_vm_close(struct vm_area_struct *area);
+>  static vm_fault_t afs_vm_map_pages(struct vm_fault *vmf, pgoff_t start_pgoff, pgoff_t end_pgoff);
+> +static int afs_mapped(unsigned long start, unsigned long end, pgoff_t pgoff,
+> +		      const struct file *file, void **vm_private_data);
+> 
+>  const struct file_operations afs_file_operations = {
+>  	.open		= afs_open,
+> @@ -35,7 +37,7 @@ const struct file_operations afs_file_operations = {
 >  	.llseek		= generic_file_llseek,
 >  	.read_iter	= afs_file_read_iter,
 >  	.write_iter	= netfs_file_write_iter,
-> -	.mmap_prepare	= afs_file_mmap_prepare,
-> +	.mmap		= afs_file_mmap,
+> -	.mmap		= afs_file_mmap,
+> +	.mmap_prepare	= afs_file_mmap_prepare,
 >  	.splice_read	= afs_file_splice_read,
 >  	.splice_write	= iter_file_splice_write,
 >  	.fsync		= afs_fsync,
-> @@ -492,16 +492,16 @@ static void afs_drop_open_mmap(struct afs_vnode *vnode)
+> @@ -61,6 +63,7 @@ const struct address_space_operations afs_file_aops = {
+>  };
+> 
+>  static const struct vm_operations_struct afs_vm_ops = {
+> +	.mapped		= afs_mapped,
+>  	.open		= afs_vm_open,
+>  	.close		= afs_vm_close,
+>  	.fault		= filemap_fault,
+> @@ -492,34 +495,47 @@ static void afs_drop_open_mmap(struct afs_vnode *vnode)
 >  /*
 >   * Handle setting up a memory mapping on an AFS file.
 >   */
-> -static int afs_file_mmap_prepare(struct vm_area_desc *desc)
-> +static int afs_file_mmap(struct file *file, struct vm_area_struct *vma)
+> -static int afs_file_mmap(struct file *file, struct vm_area_struct *vma)
+> +static int afs_file_mmap_prepare(struct vm_area_desc *desc)
 >  {
-> -	struct afs_vnode *vnode = AFS_FS_I(file_inode(desc->file));
-> +	struct afs_vnode *vnode = AFS_FS_I(file_inode(file));
+> -	struct afs_vnode *vnode = AFS_FS_I(file_inode(file));
 >  	int ret;
->  
->  	afs_add_open_mmap(vnode);
->  
-> -	ret = generic_file_mmap_prepare(desc);
-> +	ret = generic_file_mmap(file, vma);
->  	if (ret == 0)
-> -		desc->vm_ops = &afs_vm_ops;
-> +		vma->vm_ops = &afs_vm_ops;
->  	else
->  		afs_drop_open_mmap(vnode);
+> 
+> -	afs_add_open_mmap(vnode);
+> +	ret = generic_file_mmap_prepare(desc);
+> +	if (ret)
+> +		return ret;
+> 
+> -	ret = generic_file_mmap(file, vma);
+> -	if (ret == 0)
+> -		vma->vm_ops = &afs_vm_ops;
+> -	else
+> -		afs_drop_open_mmap(vnode);
+> +	desc->vm_ops = &afs_vm_ops;
 >  	return ret;
+>  }
+> 
+> +static int afs_mapped(unsigned long start, unsigned long end, pgoff_t pgoff,
+> +		      const struct file *file, void **vm_private_data)
+> +{
+> +	struct afs_vnode *vnode = AFS_FS_I(file_inode(file));
+> +
+> +	afs_add_open_mmap(vnode);
+> +	return 0;
+> +}
+> +
+>  static void afs_vm_open(struct vm_area_struct *vma)
+>  {
+> -	afs_add_open_mmap(AFS_FS_I(file_inode(vma->vm_file)));
+> +	struct file *file = vma->vm_file;
+> +	struct afs_vnode *vnode = AFS_FS_I(file_inode(file));
+> +
+> +	afs_add_open_mmap(vnode);
+>  }
+> 
+>  static void afs_vm_close(struct vm_area_struct *vma)
+>  {
+> -	afs_drop_open_mmap(AFS_FS_I(file_inode(vma->vm_file)));
+> +	struct file *file = vma->vm_file;
+> +	struct afs_vnode *vnode = AFS_FS_I(file_inode(file));
+> +
+> +	afs_drop_open_mmap(vnode);
+>  }
+> 
+>  static vm_fault_t afs_vm_map_pages(struct vm_fault *vmf, pgoff_t start_pgoff, pgoff_t end_pgoff)
+>  {
+> -	struct afs_vnode *vnode = AFS_FS_I(file_inode(vmf->vma->vm_file));
+> +	struct file *file = vmf->vma->vm_file;
+> +	struct afs_vnode *vnode = AFS_FS_I(file_inode(file));
+> 
+>  	if (afs_check_validity(vnode))
+>  		return filemap_map_pages(vmf, start_pgoff, end_pgoff);
+> --
+> 2.53.0
 
 
 ______________________________________________________
