@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9BB310A88E9
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E609D10A88EA
 	for <linux-mtd@archiver.kernel.org>; Thu, 26 Mar 2026 16:26:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,44 +12,43 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=THAukNZtr5KqhrLtumgtatkqCfSCDRzgC87/Z8npSgs=; b=TmkFAgRzxepH91
-	lI0vn/DVhc3tKVXW77Ix3VMlCPWQrULHlawV+ERV4j6YJA66ucY7ApvbQTH1K9Nos3/WORbA6nEkZ
-	ZvdyqvLXriGHhBXf3VvlOndiNsP6oq+assbd5zSlYeTVLMBmG3ZCvPSHdNGYr6NfFiOwyEfnetvfY
-	uGuOXIadctre5Kd5ZYgif/HYx5afeTq7rW24McoiMZldVc6QqLmugMuXNd8Q6DplA2rRidQ5QXM4J
-	KhD9eD5lJXix8+2wgKUo58/r9esZmDFV6QAWmPebzCc3C7RovoJmUOeqdENKNvP4VZyiCpDjnGCdV
-	K2rdxlXHG0bJcoUIzU6g==;
+	List-Owner; bh=lREmBHbVu6c/48KY76zF8HY9ubwCWSJ3hu3FtMZVfBk=; b=hr3gA2MErbVk2+
+	xvVoA8bVrpmeF56tCRQyEDmE2UvGMzGoz/WQbyeo/Y5dbyCN9bGZaVWkfm3ClxcRl8Zcxnt99xgSG
+	WPtnkG+qoavvxwWQ28YXzs3WY8DUsLjbAyUpzvAh1FyuJEl6/q/Y5XiJ+d41W7Zl2T4+KjA+SiSi4
+	GXKIqMVzh2uVSbJ8V/WJuAHK3Q1PK3uwqfndp1bihKRqLfcemTmynwrcpDmWOLmvL7W2uIHALbBtP
+	yUKIALykn+nUsOZhwqumUl5GZikd+9you/2Zj97Bb14U+kBq6OrYGfASdRTPpBjH5X4951gOnBZ7o
+	ZZ4r9ad39BHNd0o/ixSg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w5nXK-00000005qdY-03z5;
-	Thu, 26 Mar 2026 16:26:22 +0000
-Received: from smtpout-02.galae.net ([185.246.84.56])
+	id 1w5nXJ-00000005qdR-35ez;
+	Thu, 26 Mar 2026 16:26:21 +0000
+Received: from smtpout-03.galae.net ([185.246.85.4])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w5nXE-00000005qZz-3Wf0
+	id 1w5nXD-00000005qZl-3y7Y
 	for linux-mtd@lists.infradead.org;
-	Thu, 26 Mar 2026 16:26:18 +0000
+	Thu, 26 Mar 2026 16:26:17 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id 6769C1A300A;
-	Thu, 26 Mar 2026 16:26:15 +0000 (UTC)
+	by smtpout-03.galae.net (Postfix) with ESMTPS id 3AF6D4E42811;
+	Thu, 26 Mar 2026 16:26:14 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 370DB601FA;
-	Thu, 26 Mar 2026 16:26:15 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id A616F10450C95;
-	Thu, 26 Mar 2026 17:26:13 +0100 (CET)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 10BD2601FA;
+	Thu, 26 Mar 2026 16:26:14 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 6784310450C96;
+	Thu, 26 Mar 2026 17:26:12 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1774542374; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1774542373; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=lFv1r9faEQTu1UkMy2vWIxsC6tbdpaaG5r+kI87RNaQ=;
-	b=FX+aXyR+ZQsx+lELxkC4W095Bv8MkKG/9OTCbji+dUaqS65mJiWgCk0ASLmRNqcL3iwEzS
-	T2ZkfcTlE5B/JcSuQ3YOvob6hCeUYSlNCe0g9NkIUk9nq1VonjwevpGMQzQ1x13yOg5t0b
-	1C0uypUPLqEAxwHNkz2Kjh90/pwE14rGCyAOJ2rfhIh6GyUMUbRxBJHXw1UlonDort14bT
-	6bBpVV5o8lDaRaKJEfZRTFvXZDVLyE4u+WX7Ar5D2mPzXFbM5e0iYnyRlF8ePvjSTGctTm
-	ns/IF97kyBQ1dHiCKbQ2hBKfoCZoBbvw4BWtPWoR0niCRSq1OmLBkth9JDsUjw==
+	bh=AP5EDvNSDOA4mcH2wjjTrtd89tS9FG178G3LqqbkZ1Y=;
+	b=I/QLYXw94NxpfiQ3i07ghpBYmjFR65mBcb2bSgGRkLT8NmTV4awILLREQcVwzt1PZVMrvV
+	TZj3wCkZDcxfM8knSa2UFLliOx2/o6ZrUWutvLmuhCYXqNvqnz/6x64c1XqqxERRPfbCQB
+	NWJOpus8tSl+l2eLgSo17ryVhAB2uk2BUN/Zx7NhXNjqxAVMxIayo8Lnn8x5IJVuFJPF0Z
+	jvdHlB1Z95tZGwifXAeZ056R6XXtp3m/s4K+9QPgSglP2Qr5tAeUMx2J60aSPETUoT6oFY
+	fb4ZFmbjYW/WqLCa/MjXPGtaAWaCrA6UQBAStC5plHZ0Fg/OpiqgZ2Ts+EOTzw==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Thu, 26 Mar 2026 17:25:53 +0100
-Subject: [PATCH v2 06/11] mtd: spinand: Use secondary ops for continuous
- reads
+Date: Thu, 26 Mar 2026 17:25:52 +0100
+Subject: [PATCH v2 05/11] spi: spi-mem: Create a secondary read operation
 MIME-Version: 1.0
-Message-Id: <20260326-winbond-v6-18-rc1-cont-read-v2-6-643de97a68a3@bootlin.com>
+Message-Id: <20260326-winbond-v6-18-rc1-cont-read-v2-5-643de97a68a3@bootlin.com>
 References: <20260326-winbond-v6-18-rc1-cont-read-v2-0-643de97a68a3@bootlin.com>
 In-Reply-To: <20260326-winbond-v6-18-rc1-cont-read-v2-0-643de97a68a3@bootlin.com>
 To: Mark Brown <broonie@kernel.org>, Richard Weinberger <richard@nod.at>, 
@@ -63,8 +62,8 @@ Cc: Pratyush Yadav <pratyush@kernel.org>,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260326_092617_025731_2DE11D58 
-X-CRM114-Status: GOOD (  22.80  )
+X-CRM114-CacheID: sfid-20260326_092616_131161_8D886FF3 
+X-CRM114-Status: GOOD (  19.84  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,183 +80,109 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-In case a chip supports continuous reads, but uses a slightly different
-cache operation for these, it may provide a secondary operation template
-which will be used only during continuous cache read operations.
+In some situations, direct mappings may need to use different
+operation templates.
 
-From a vendor driver point of view, enabling this feature implies
-providing a new set of templates for these continuous read
-operations. The core will automatically pick the fastest variant,
-depending on the hardware capabilities.
+For instance, when enabling continuous reads, Winbond SPI NANDs no
+longer expect address cycles because they would be ignoring them
+otherwise. Hence, right after the command opcode, they start counting
+dummy cycles, followed by the data cycles as usual.
 
+This breaks the assumptions of "reads from cache" always being done
+identically once the best variant has been picked up, across the
+lifetime of the system.
+
+In order to support this feature, we must give direct mapping more than
+a single operation template to use, in order to switch to using
+secondary operations upon request by the upper layer.
+
+Create the concept of optional secondary operation template, which may
+or may not be fulfilled by the SPI NAND and SPI NOR cores. If the
+underlying SPI controller does not leverage any kind of direct mapping
+acceleration, the feature has no impact and can be freely
+used. Otherwise, the controller driver needs to opt-in for using this
+feature, if supported.
+
+The condition checked to know whether a secondary operation has been
+provided or not is to look for a non zero opcode to limit the creation
+of extra variables. In practice, the opcode 0x00 exist, but is not
+related to any cache related operation.
+
+Acked-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/spi/core.c | 61 ++++++++++++++++++++++++++++++++++++++++++++-
- include/linux/mtd/spinand.h | 12 +++++++++
- 2 files changed, 72 insertions(+), 1 deletion(-)
+The choice of defining two variables named primary and secondary instead
+of using an array of templates is on purpose, to simplify the reading. I
+find less obvious the use of an array here but this is personal taste.
+---
+ drivers/spi/spi-mem.c       | 17 +++++++++++++++++
+ include/linux/spi/spi-mem.h |  5 +++++
+ 2 files changed, 22 insertions(+)
 
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index a66510747b31..45c3afb9cceb 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -489,6 +489,11 @@ static int spinand_read_from_cache_op(struct spinand_device *spinand,
+diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
+index e2eaa1ba4ff6..f64eda9bbd9f 100644
+--- a/drivers/spi/spi-mem.c
++++ b/drivers/spi/spi-mem.c
+@@ -713,6 +713,23 @@ spi_mem_dirmap_create(struct spi_mem *mem,
+ 	if (info->primary_op_tmpl.data.dir == SPI_MEM_NO_DATA)
+ 		return ERR_PTR(-EINVAL);
  
- 	rdesc = spinand->dirmaps[req->pos.plane].rdesc;
- 
-+	if (spinand->op_templates->cont_read_cache && req->continuous)
-+		rdesc->info.op_tmpl = &rdesc->info.secondary_op_tmpl;
-+	else
-+		rdesc->info.op_tmpl = &rdesc->info.primary_op_tmpl;
++	/* Apply similar constraints to the secondary template */
++	if (info->secondary_op_tmpl.cmd.opcode) {
++		if (!info->secondary_op_tmpl.addr.nbytes ||
++		    info->secondary_op_tmpl.addr.nbytes > 8)
++			return ERR_PTR(-EINVAL);
 +
- 	if (nand->ecc.engine->integration == NAND_ECC_ENGINE_INTEGRATION_PIPELINED &&
- 	    req->mode != MTD_OPS_RAW)
- 		rdesc->info.op_tmpl->data.ecc = true;
-@@ -1221,6 +1226,7 @@ static struct spi_mem_dirmap_desc *spinand_create_rdesc(
- 		 * its spi controller, use regular reading
- 		 */
- 		spinand->cont_read_possible = false;
-+		memset(&info->secondary_op_tmpl, 0, sizeof(info->secondary_op_tmpl));
- 
- 		info->length = nanddev_page_size(nand) +
- 			       nanddev_per_page_oobsize(nand);
-@@ -1237,11 +1243,24 @@ static int spinand_create_dirmap(struct spinand_device *spinand,
- 	struct nand_device *nand = spinand_to_nand(spinand);
- 	struct spi_mem_dirmap_info info = { 0 };
- 	struct spi_mem_dirmap_desc *desc;
--	bool enable_ecc = false;
-+	bool enable_ecc = false, secondary_op = false;
- 
- 	if (nand->ecc.engine->integration == NAND_ECC_ENGINE_INTEGRATION_PIPELINED)
- 		enable_ecc = true;
- 
-+	if (spinand->cont_read_possible && spinand->op_templates->cont_read_cache)
-+		secondary_op = true;
++		if (info->secondary_op_tmpl.data.dir == SPI_MEM_NO_DATA)
++			return ERR_PTR(-EINVAL);
 +
-+	/*
-+	 * Continuous read implies that only the main data is retrieved, backed
-+	 * by an on-die ECC engine. It is not possible to use a pipelind ECC
-+	 * engine with continuous read.
-+	 */
-+	if (enable_ecc && secondary_op) {
-+		secondary_op = false;
-+		spinand->cont_read_possible = false;
++		if (!spi_mem_supports_op(mem, &info->secondary_op_tmpl))
++			return ERR_PTR(-EOPNOTSUPP);
++
++		if (ctlr->mem_ops && ctlr->mem_ops->dirmap_create &&
++		    !spi_mem_controller_is_capable(ctlr, secondary_op_tmpl))
++			return ERR_PTR(-EOPNOTSUPP);
 +	}
 +
- 	/* The plane number is passed in MSB just above the column address */
- 	info.offset = plane << fls(nand->memorg.pagesize);
- 
-@@ -1259,6 +1278,10 @@ static int spinand_create_dirmap(struct spinand_device *spinand,
- 	/* Read descriptor */
- 	info.primary_op_tmpl = *spinand->op_templates->read_cache;
- 	info.primary_op_tmpl.data.ecc = enable_ecc;
-+	if (secondary_op) {
-+		info.secondary_op_tmpl = *spinand->op_templates->cont_read_cache;
-+		info.secondary_op_tmpl.data.ecc = enable_ecc;
-+	}
- 	desc = spinand_create_rdesc(spinand, &info);
- 	if (IS_ERR(desc))
- 		return PTR_ERR(desc);
-@@ -1607,6 +1630,33 @@ int spinand_match_and_init(struct spinand_device *spinand,
- 		if (ret)
- 			return ret;
- 
-+		if (info->op_variants.cont_read_cache) {
-+			op = spinand_select_op_variant(spinand, SSDR,
-+						       info->op_variants.cont_read_cache);
-+			if (op) {
-+				const struct spi_mem_op *read_op;
-+
-+				read_op = spinand->ssdr_op_templates.read_cache;
-+
-+				/*
-+				 * Sometimes the fastest continuous read variant may not
-+				 * be supported. In this case, prefer to use the fastest
-+				 * read from cache variant and disable continuous reads.
-+				 */
-+				if (read_op->cmd.buswidth > op->cmd.buswidth ||
-+				    (read_op->cmd.dtr && !op->cmd.dtr) ||
-+				    read_op->addr.buswidth > op->addr.buswidth ||
-+				    (read_op->addr.dtr && !op->addr.dtr) ||
-+				    read_op->data.buswidth > op->data.buswidth ||
-+				    (read_op->data.dtr && !op->data.dtr))
-+					spinand->cont_read_possible = false;
-+				else
-+					spinand->ssdr_op_templates.cont_read_cache = op;
-+			} else {
-+				spinand->cont_read_possible = false;
-+			}
-+		}
-+
- 		/* I/O variants selection with octo-spi DDR commands (optional) */
- 
- 		ret = spinand_init_odtr_instruction_set(spinand);
-@@ -1629,6 +1679,15 @@ int spinand_match_and_init(struct spinand_device *spinand,
- 					       info->op_variants.update_cache);
- 		spinand->odtr_op_templates.update_cache = op;
- 
-+		if (info->op_variants.cont_read_cache) {
-+			op = spinand_select_op_variant(spinand, ODTR,
-+						       info->op_variants.cont_read_cache);
-+			if (op)
-+				spinand->odtr_op_templates.cont_read_cache = op;
-+			else
-+				spinand->cont_read_possible = false;
-+		}
-+
- 		return 0;
- 	}
- 
-diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
-index bbf17c346887..aab17e2c8ac9 100644
---- a/include/linux/mtd/spinand.h
-+++ b/include/linux/mtd/spinand.h
-@@ -575,6 +575,7 @@ enum spinand_bus_interface {
-  * @op_variants.read_cache: variants of the read-cache operation
-  * @op_variants.write_cache: variants of the write-cache operation
-  * @op_variants.update_cache: variants of the update-cache operation
-+ * @op_variants.cont_read_cache: variants of the continuous read-cache operation
-  * @vendor_ops: vendor specific operations
-  * @select_target: function used to select a target/die. Required only for
-  *		   multi-die chips
-@@ -599,6 +600,7 @@ struct spinand_info {
- 		const struct spinand_op_variants *read_cache;
- 		const struct spinand_op_variants *write_cache;
- 		const struct spinand_op_variants *update_cache;
-+		const struct spinand_op_variants *cont_read_cache;
- 	} op_variants;
- 	const struct spinand_op_variants *vendor_ops;
- 	int (*select_target)(struct spinand_device *spinand,
-@@ -628,6 +630,14 @@ struct spinand_info {
- 		.update_cache = __update,				\
- 	}
- 
-+#define SPINAND_INFO_OP_VARIANTS_WITH_CONT(__read, __write, __update, __cont_read) \
-+	{								\
-+		.read_cache = __read,					\
-+		.write_cache = __write,					\
-+		.update_cache = __update,				\
-+		.cont_read_cache = __cont_read,				\
-+	}
-+
- #define SPINAND_INFO_VENDOR_OPS(__ops)					\
- 	.vendor_ops = __ops
- 
-@@ -699,6 +709,7 @@ struct spinand_dirmap {
-  * @read_cache: read cache op template
-  * @write_cache: write cache op template
-  * @update_cache: update cache op template
-+ * @cont_read_cache: continuous read cache op template (optional)
+ 	desc = kzalloc_obj(*desc);
+ 	if (!desc)
+ 		return ERR_PTR(-ENOMEM);
+diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
+index 3cba7fe4bed5..bd2a73d46980 100644
+--- a/include/linux/spi/spi-mem.h
++++ b/include/linux/spi/spi-mem.h
+@@ -215,6 +215,8 @@ struct spi_mem_op {
+  * struct spi_mem_dirmap_info - Direct mapping information
+  * @op_tmpl: operation template that should be used by the direct mapping when
+  *	     the memory device is accessed
++ * @secondary_op_tmpl: secondary template, may be used as an alternative to the
++ *                     primary template (decided by the upper layer)
+  * @offset: absolute offset this direct mapping is pointing to
+  * @length: length in byte of this direct mapping
+  *
+@@ -227,6 +229,7 @@ struct spi_mem_op {
+ struct spi_mem_dirmap_info {
+ 	struct spi_mem_op *op_tmpl;
+ 	struct spi_mem_op primary_op_tmpl;
++	struct spi_mem_op secondary_op_tmpl;
+ 	u64 offset;
+ 	u64 length;
+ };
+@@ -370,12 +373,14 @@ struct spi_controller_mem_ops {
+  * @swap16: Supports swapping bytes on a 16 bit boundary when configured in
+  *	    Octal DTR
+  * @per_op_freq: Supports per operation frequency switching
++ * @secondary_op_tmpl: Supports leveraging a secondary memory operation template
   */
- struct spinand_mem_ops {
- 	struct spi_mem_op reset;
-@@ -713,6 +724,7 @@ struct spinand_mem_ops {
- 	const struct spi_mem_op *read_cache;
- 	const struct spi_mem_op *write_cache;
- 	const struct spi_mem_op *update_cache;
-+	const struct spi_mem_op *cont_read_cache;
+ struct spi_controller_mem_caps {
+ 	bool dtr;
+ 	bool ecc;
+ 	bool swap16;
+ 	bool per_op_freq;
++	bool secondary_op_tmpl;
  };
  
- /**
+ #define spi_mem_controller_is_capable(ctlr, cap)	\
 
 -- 
 2.51.1
