@@ -4,55 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6FCE10A88E8
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0E7E10A88E4
 	for <linux-mtd@archiver.kernel.org>; Thu, 26 Mar 2026 16:26:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id:Date:
-	Subject:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=3V9RaHRjBrDhLHp9rSJKi0eTO31OLlFSa74SBfHa7s8=; b=2+tx2x3XW37GPh
-	RUPhgeKGWGemffdpFo6VwyCbzVEOVwuG//uGchiy8RwXvV/6Z02bfa8qpMA6G7mzdo57HicaW/goK
-	fbGI/ddIG9EZ0OMn+yXxf2pC+PF0vAy67WXd3QHKEqTviJxf8Kb6oF77Qa/m+NPqP72KhpxGrMjM0
-	/haGeD7fOSDe3798+yyC56FcvmWqsvmcw2Rkg7GNCy+RxeKnMeOMEFpAA8aHuSK0b9UyLNGW+4UyL
-	tIrL7ugTaMGtZPeoLIl4OIEQFUNvFqSSih/+ZMVlim2QgoL9OMcPS34+D2g5ewmaWLsCWHhiakq6C
-	iwAdTYLVaJMA7Z03GNqA==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
+	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=WUw5cGD47T8zKxYhqCJBPc1ztPXviRTNXCB9cgY7QV4=; b=ofhE6yEWijkri6
+	kytQk3eO2k6THOIAfIvrO+WdY4SxI+i0yJ31fgY10lcgAUpsnbosnpSIlUxvhL2n4uZE1LSiEC50o
+	AX/lKXwa2SQ802B21QoilihQFL5FQYpoC4o13CLdlJZgPfxkMtvmi9V3jaq7A0ikGjVFRemTGWZJc
+	AnrsxEbM7ybJTfACz9VUSdXVDPc3coRrxfhGhvGgjM6tD0CdBmoaTTQSBuSurUAXaAfPwp4fHWenY
+	2fS46L8I8OYrb8Jce6gwKiyhbXq2Szuk70atBiFhC25ffCN8+s29Gfyyt/QdjgMdrMCvadpS8evFA
+	mdeVfgYCGdd602/3t6Sg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w5nXG-00000005qbO-47x9;
-	Thu, 26 Mar 2026 16:26:18 +0000
+	id 1w5nXM-00000005qfg-0YZG;
+	Thu, 26 Mar 2026 16:26:24 +0000
 Received: from smtpout-04.galae.net ([185.171.202.116])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w5nX9-00000005qYI-3vOj
+	id 1w5nXH-00000005qb0-1dg7
 	for linux-mtd@lists.infradead.org;
-	Thu, 26 Mar 2026 16:26:16 +0000
+	Thu, 26 Mar 2026 16:26:20 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id AFE7EC56688;
-	Thu, 26 Mar 2026 16:26:35 +0000 (UTC)
+	by smtpout-04.galae.net (Postfix) with ESMTPS id 2FE19C56688;
+	Thu, 26 Mar 2026 16:26:46 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 52D0B601FA;
-	Thu, 26 Mar 2026 16:26:07 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 5055210450C91;
-	Thu, 26 Mar 2026 17:26:03 +0100 (CET)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id E0B6A601FA;
+	Thu, 26 Mar 2026 16:26:17 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 2C73010450C97;
+	Thu, 26 Mar 2026 17:26:15 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1774542366; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding; bh=Gv6+pU3gWouDpRuPiASiArS42OSpTvuqTUpZgZA6vk0=;
-	b=VPdoqyIZ5nvjGSuFsWRZIIh4niMRjcvS8/2w5GiZsYj+SXr2Kvurpc84GGz2mUjT/490G4
-	LQGmuE4m+wFhsJ8gSF4ZlZKjMWWJtAUXZ1AC2RU7tADgoWsNJ0pDI4EqTgybIOH6nz2Jr8
-	APUdCIoomEBtmIHPPQUwKRhdE+FjZb8ihHvUlqTW0YkpL7a80Q+7ZWLlr0PvCQR9QpbCQv
-	AVCvqw7fqJotsREfl3m5l5Pny/tBhxdgVsyUwUUTV1yUcEpNGUK65Um7rR04/+DkH5NPzg
-	99GXMr+L+ybFWkF8y/waUwFzxzGKAsWD4SkQHyEL8JOXhxpc5Wt+di+EYnIQCA==
+	t=1774542377; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=PjiqCAer8dc/ymhlc49FengV+fEKdf1NUEYJuqvysio=;
+	b=ISDYqAUzCXiSKEhOwaeLxZH24u8R+ua5npYysPiz5lqHCdowOZE/2+KsxVlaJ5Kgc5sSJm
+	2bTIorlHLN9YtOWR1sVmtZ4NQ8lb2dxtMpIPyhNInWr0Z2cvpFfLENHRwMS00MyBNLM/6Z
+	NjQ3zQ4aoYdV8yEtL/+Wk9Imb9EQZ1G79T+2RnZIwpz4yreFBpZL6TBjRjZykv96gamMZ1
+	uJpOjJH4J9+9tDIDDbUs5QW3NoPL8GW8Si/OMM1DvgWk2q9DeOKIPMgzCBqXQrNk22eEkW
+	Gba1X5zZAsRv8+zsE2tjs+avLmrs8oD7axbGUz+03CHEfK9TdkBT8nu27EMNcw==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v2 00/11] mtd: spinand: Winbond continuous read support
-Date: Thu, 26 Mar 2026 17:25:47 +0100
-Message-Id: <20260326-winbond-v6-18-rc1-cont-read-v2-0-643de97a68a3@bootlin.com>
+Date: Thu, 26 Mar 2026 17:25:55 +0100
+Subject: [PATCH v2 08/11] mtd: spinand: winbond: Add support for continuous
+ reads on W35NxxJW
 MIME-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAAAAAAAC/33Nyw6CMBCF4VchXTumU6CgK9/DsKAXZRLtmJZUD
- eHdrSRuXf5n8Z1FJB/JJ3GsFhF9pkQcSqhdJew0hqsHcqWFkqpFJRt4UjAcHGQN2EO0CJbDDNG
- PDrRuugM6Z5SuRREe0V/otennofREaeb43s4yftef2/51M4IEicY2va7RdvXJMM83CnvLdzGs6
- /oBuP4Gq8gAAAA=
-X-Change-ID: 20251204-winbond-v6-18-rc1-cont-read-664791ddb263
+Message-Id: <20260326-winbond-v6-18-rc1-cont-read-v2-8-643de97a68a3@bootlin.com>
+References: <20260326-winbond-v6-18-rc1-cont-read-v2-0-643de97a68a3@bootlin.com>
+In-Reply-To: <20260326-winbond-v6-18-rc1-cont-read-v2-0-643de97a68a3@bootlin.com>
 To: Mark Brown <broonie@kernel.org>, Richard Weinberger <richard@nod.at>, 
  Vignesh Raghavendra <vigneshr@ti.com>, Michael Walle <mwalle@kernel.org>, 
  Miquel Raynal <miquel.raynal@bootlin.com>
@@ -64,8 +63,8 @@ Cc: Pratyush Yadav <pratyush@kernel.org>,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260326_092612_142137_7EAA4BB2 
-X-CRM114-Status: GOOD (  20.41  )
+X-CRM114-CacheID: sfid-20260326_092619_734878_518C2744 
+X-CRM114-Status: GOOD (  20.33  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,122 +76,291 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8sCgpTUEkgTkFORCBjb250aW51b3VzIHJlYWQgc3VwcG9ydCBoYXMgYWxyZWFkeSBiZWVu
-IGFkZGVkIGEgZmV3IHJlbGVhc2VzCmFnbywgYnV0IG9ubHkgTWFjcm9uaXggY2hpcHMgd2VyZSBi
-ZW5lZml0aW5nIGZyb20gdGhpcyBzdXBwb3J0LiBXaW5ib25kCmNoaXBzIGFsc28gaGF2ZSBhIGNv
-bnRpbnVvdXMgcmVhZCBmZWF0dXJlLCB3aGljaCBpcyBzbGlnaHRseSBtb3JlCmNvbXBsZXggdG8g
-dXNlIGluIHRoZSBzY29wZSBvZiB0aGUgTGludXgga2VybmVsLCBiZWNhdXNlIHRoZXkgdGhlc2UK
-Y2hpcHMgZXhwZWN0IGEgZGlmZmVyZW50IHJlYWQgZnJvbSBjYWNoZSBvcGVyYXRpb24gb25jZSBp
-biBjb250aW51b3VzCm1vZGUuCgpJbiBvcmRlciB0byBiZSBtb3JlIGZsZXhpYmxlLCB0aGlzIHNl
-cmllcyBjaGFuZ2VzIHRoZSBsb2dpYyBiZWhpbmQKZGlybWFwcy4gRGlyZWN0IG1hcHBpbmdzIHVz
-ZWQgdG8gYmUgdmVyeSBzdGF0aWMsIG5vdCBmbGV4aWJsZS4gSSBhbQpwcm9wb3NpbmcgdG8gY2hh
-bmdlIHRoaXMgYW5kIHR1cm4gdGhlbSBpbiB0byBzbGlnaHRseSBtb3JlIGR5bmFtaWMKaW50ZXJm
-YWNlcywgd2hlcmUgZm9yIGluc3RhbmNlIHdlIGNhbjoKLSBFbmFibGUvZGlzYWJsZSB0aGUgY29y
-cmVjdGlvbiAod2FzIHByZXZpb3VzbHkgaGFuZGxlZCBieSBjcmVhdGluZyB5ZXQKICBhbm90aGVy
-IHBhaXIgb2YgZGlyZWN0IG1hcHBpbmdzIHBlciB0YXJnZXQpLgotIFNlbGVjdCBvbmUgb3IgYW5v
-dGhlciB2YXJpYW50IGZvciB0aGUgY2FjaGUgb3BlcmF0aW9ucy4KCkkgcHJvcG9zZSB0byBuYW1l
-IHRoZSB2YXJpYW50cyBhdmFpbGFibGUgaW4gYSBkaXJlY3QgbWFwcGluZyAicHJpbWFyeSIKYW5k
-ICJzZWNvbmRhcnkiLCBhbmQgbGV0IHRoZSB1cHBlciBsYXllciAoU1BJIE5PUiBvciBTUEkgTkFO
-RCkgcG9pbnQgdG8KdGhlIG9uZSB0aGF0IG5lZWRzIHRvIGJlIHVzZWQgZm9yIHRoZSBvcGVyYXRp
-b24uIENvbnRyb2xsZXIgZHJpdmVycwpzaG91bGQgbm90IHJlYWxseSBjYXJlIGFib3V0IHRoaXMg
-Y2hhbmdlLCBleHBlY3QgdGhlIGZhY3QgdGhhdCB0aGV5CnNob3VsZCBub3Qga2VlcCBhIHN0YXRp
-YyByZXByZXNlbnRhdGlvbiBvZiB0aGUgdGVtcGxhdGUgb24gdGhlaXIKc2lkZS4gQmVjYXVzZSBv
-ZiB0aGF0LCBJIGFtIGNyZWF0aW5nIGEgY2FwYWJpbGl0eSBib29sZWFuIHRvIGZsYWcKZHJpdmVy
-cyB0aGF0IHN1cHBvcnQgdGhpcyBjYXBhYmlsaXR5ICh0aGUgZmxhZyBpcyBpZ25vcmVkIGluIHRo
-ZQpub2Rpcm1hcCBjYXNlKS4KClRoaXMgc2VyaWVzIGlzIG5vdyBzZW50IGFzIHYyIGZvbGxvd2lu
-ZyBhIGZvcm1lciBSRkMgKGxpbmsgYmVsb3cpLgoKSGVyZSBpcyBhIGJlbmNobWFyayB3aXRoIHRo
-ZSBmYXN0ZXIgV2luYm9uZCBjaGlwIEkgaGF2ZSwgVzM1TjAySlcgb24gYQpUSSBBTTYyYTcgTFAg
-U0sgZmVhdHVyaW5nIHRoZSBDYWRlbmNlIFFTUEkgY29udHJvbGxlciwgY2xvY2tlZCBhdAoyNU1I
-ei4gU3BlZWQgZ2FpbiBmb3IgYSAxMC1wYWdlIHJlYWQgaXMgYWJvdXQgKzMyJSBpbiBvY3RhbCBT
-RFIgbW9kZSwKKzQ3JSBmb3IgYSAxMC1wYWdlIHJlYWQgaW4gb2N0YWwgRFRSIG1vZGUgYW5kIHVw
-IHRvICs4MyUgZm9yIGEgZW50aXJlCmJsb2NrIHJlYWQhCgogICAgMVMtOFMtOFMsIG5vIGNvbnRp
-bnVvdXMgcmVhZDoKCiAgICAgICA2NCBwYWdlIHJlYWQgc3BlZWQgaXMgMTUwNTggS2lCL3MKCiAg
-ICAxUy04Uy04Uywgd2l0aCBjb250aW51b3VzIHJlYWRzOgoKICAgICAgIDEgcGFnZSByZWFkIHNw
-ZWVkIGlzIDE1MDU4IEtpQi9zCiAgICAgICAyIHBhZ2UgcmVhZCBzcGVlZCBpcyAxNTA1OCBLaUIv
-cwogICAgICAgMyBwYWdlIHJlYWQgc3BlZWQgaXMgMTY4MDAgS2lCL3MKICAgICAgIDQgcGFnZSBy
-ZWFkIHNwZWVkIGlzIDE3MDY2IEtpQi9zCiAgICAgICA1IHBhZ2UgcmVhZCBzcGVlZCBpcyAxODQ2
-MSBLaUIvcwogICAgICAgNiBwYWdlIHJlYWQgc3BlZWQgaXMgMTg0NjEgS2lCL3MKICAgICAgIDcg
-cGFnZSByZWFkIHNwZWVkIGlzIDE5Mzg0IEtpQi9zCiAgICAgICA4IHBhZ2UgcmVhZCBzcGVlZCBp
-cyAxOTY5MiBLaUIvcwogICAgICAgOSBwYWdlIHJlYWQgc3BlZWQgaXMgMTkzODQgS2lCL3MKICAg
-ICAgIDEwIHBhZ2UgcmVhZCBzcGVlZCBpcyAyMDAwMCBLaUIvcwogICAgICAgMTEgcGFnZSByZWFk
-IHNwZWVkIGlzIDIwMDAwIEtpQi9zCiAgICAgICAxMiBwYWdlIHJlYWQgc3BlZWQgaXMgMjAwMDAg
-S2lCL3MKICAgICAgIDEzIHBhZ2UgcmVhZCBzcGVlZCBpcyAyMDgwMCBLaUIvcwogICAgICAgMTQg
-cGFnZSByZWFkIHNwZWVkIGlzIDIwMzYzIEtpQi9zCiAgICAgICAxNSBwYWdlIHJlYWQgc3BlZWQg
-aXMgMjAwMDAgS2lCL3MKICAgICAgIDE2IHBhZ2UgcmVhZCBzcGVlZCBpcyAxOTY5MiBLaUIvcwog
-ICAgICAgMzIgcGFnZSByZWFkIHNwZWVkIGlzIDE5NjkyIEtpQi9zCiAgICAgICA2NCBwYWdlIHJl
-YWQgc3BlZWQgaXMgMTk2OTIgS2lCL3MKCiAgICA4RC04RC04RCwgbm8gY29udGludW91cyByZWFk
-OgoKICAgICAgIDY0IHBhZ2UgcmVhZCBzcGVlZCBpcyAyMzI3MiBLaUIvcwoKICAgIDhELThELThE
-LCB3aXRoIGNvbnRpbnVvdXMgcmVhZDoKCiAgICAgICAxIHBhZ2UgcmVhZCBzcGVlZCBpcyAyMzI3
-MiBLaUIvcwogICAgICAgMiBwYWdlIHJlYWQgc3BlZWQgaXMgMjMyNzIgS2lCL3MKICAgICAgIDMg
-cGFnZSByZWFkIHNwZWVkIGlzIDI4MDAwIEtpQi9zCiAgICAgICA0IHBhZ2UgcmVhZCBzcGVlZCBp
-cyAzMjAwMCBLaUIvcwogICAgICAgNSBwYWdlIHJlYWQgc3BlZWQgaXMgMzQyODUgS2lCL3MKICAg
-ICAgIDYgcGFnZSByZWFkIHNwZWVkIGlzIDM0Mjg1IEtpQi9zCiAgICAgICA3IHBhZ2UgcmVhZCBz
-cGVlZCBpcyAzNjAwMCBLaUIvcwogICAgICAgOCBwYWdlIHJlYWQgc3BlZWQgaXMgMzY1NzEgS2lC
-L3MKICAgICAgIDkgcGFnZSByZWFkIHNwZWVkIGlzIDM2MDAwIEtpQi9zCiAgICAgICAxMCBwYWdl
-IHJlYWQgc3BlZWQgaXMgMzQyODUgS2lCL3MKICAgICAgIDExIHBhZ2UgcmVhZCBzcGVlZCBpcyAz
-NjY2NiBLaUIvcwogICAgICAgMTIgcGFnZSByZWFkIHNwZWVkIGlzIDQwMDAwIEtpQi9zCiAgICAg
-ICAxMyBwYWdlIHJlYWQgc3BlZWQgaXMgNDE2MDAgS2lCL3MKICAgICAgIDE0IHBhZ2UgcmVhZCBz
-cGVlZCBpcyAzNzMzMyBLaUIvcwogICAgICAgMTUgcGFnZSByZWFkIHNwZWVkIGlzIDQwMDAwIEtp
-Qi9zCiAgICAgICAxNiBwYWdlIHJlYWQgc3BlZWQgaXMgMzY1NzEgS2lCL3MKICAgICAgIDMyIHBh
-Z2UgcmVhZCBzcGVlZCBpcyA0MjY2NiBLaUIvcwogICAgICAgNjQgcGFnZSByZWFkIHNwZWVkIGlz
-IDQyNjY2IEtpQi9zCgpPbiB0aGUgTnV2b3RvbiBwbGF0Zm9ybSwgdGhlIHNwZWVkIGdhaW4gaXMg
-cmVhbCwgZXZlbiB0aG91Z2ggaXQgaXMgbGVzcwppbXByZXNzaXZlOgoKICAgICAgIDEgcGFnZSBy
-ZWFkIHNwZWVkIGlzIDE4MDIgS2lCL3MKICAgICAgIDIgcGFnZSByZWFkIHNwZWVkIGlzIDE4ODIg
-S2lCL3MKICAgICAgIDMgcGFnZSByZWFkIHNwZWVkIGlzIDE5MzggS2lCL3MKICAgICAgIDQgcGFn
-ZSByZWFkIHNwZWVkIGlzIDE5MzkgS2lCL3MKICAgICAgIDUgcGFnZSByZWFkIHNwZWVkIGlzIDE5
-MzUgS2lCL3MKICAgICAgIDYgcGFnZSByZWFkIHNwZWVkIGlzIDE5NjcgS2lCL3MKICAgICAgIDcg
-cGFnZSByZWFkIHNwZWVkIGlzIDE5NjggS2lCL3MKICAgICAgIDggcGFnZSByZWFkIHNwZWVkIGlz
-IDE5NjkgS2lCL3MKICAgICAgIDkgcGFnZSByZWFkIHNwZWVkIGlzIDE5NjggS2lCL3MKICAgICAg
-IDEwIHBhZ2UgcmVhZCBzcGVlZCBpcyAyMDAwIEtpQi9zCiAgICAgICAxMSBwYWdlIHJlYWQgc3Bl
-ZWQgaXMgMjAwMCBLaUIvcwogICAgICAgMTIgcGFnZSByZWFkIHNwZWVkIGlzIDIwMDAgS2lCL3MK
-ICAgICAgIDEzIHBhZ2UgcmVhZCBzcGVlZCBpcyAyMDAwIEtpQi9zCiAgICAgICAxNCBwYWdlIHJl
-YWQgc3BlZWQgaXMgMjAwMCBLaUIvcwogICAgICAgMTUgcGFnZSByZWFkIHNwZWVkIGlzIDIwMDAg
-S2lCL3MKICAgICAgIDE2IHBhZ2UgcmVhZCBzcGVlZCBpcyAyMDAwIEtpQi9zCiAgICAgICAzMiBw
-YWdlIHJlYWQgc3BlZWQgaXMgMjAwMCBLaUIvcwogICAgICAgNjQgcGFnZSByZWFkIHNwZWVkIGlz
-IDIwMDAgS2lCL3MKClRoYW5rcyEKTWlxdcOobAoKLS0tCkNoYW5nZXMgaW4gdjI6Ci0gUmViYXNl
-ZCBvbiB2Ny4wLXJjMS4KLSBDb2xsZWN0ZWQgdGFncy4KLSBJIG1hbnVhbGx5IHRlc3RlZCB0aGUg
-aW50ZWdyaXR5IG9mIHRoZSBkYXRhIGJ5IG1hbnVhbGx5IGRpc2FibGluZyBhbGwKICBwb3NzaWJs
-ZSB2YXJpYW50cyBvbmUgYWZ0ZXIgdGhlIG90aGVyIHVzaW5nIGEgMiBwYWdlIHJlYWQgc2NlbmFy
-aW8uIEFsbAogIHdvcmtlZCBleGNlcHQgdGhlIGZhc3Rlc3QgOEQtOEQtOEQgdmFyaWFudCAodGhl
-IGZpcnN0IG9uZSBpbiB0aGUgbGlzdCkKICB3aGljaCB0cmlnZ2VyZWQgdGhlIENTIGRlYXNzZXJ0
-IGlzc3VlIG9uIHRoZSBDYWRlbmNlIGNvbnRyb2xsZXIuIFRoaXMKICBpc3N1ZSBpcyBvcnRob2dv
-bmFsIHRvIHRoaXMgcGF0Y2hzZXQsIGEgZm9sbG93LXVwIHNlcmllcyB3aWxsIGJlIHNlbnQKICB0
-byBkaXNhYmxlIGNvbnRpbnVvdXMgcmVhZHMgb24gdGhpcyBjb250cm9sbGVyLgotIEFsbCBjb250
-aW51b3VzIHJlYWQgdmFyaWFudHMgZm9yIHRoZSBXMjVOeHhKVyBjaGlwcyBoYXZlIGJlZW4gdGVz
-dGVkCiAgb24gdGhlIE1BMzVEMSBwbGF0Zm9ybSAod2hpY2ggbGVhZCB0byBzZXZlcmFsIGZpeGVz
-KSBhbmQgdGhlCiAgVzM1Tnh4SlcgY2hpcHMgaGF2ZSBiZWVuIHRlc3RlZCBvbiBUSSBBTTYyYTcg
-TFAgU0suCi0gU2V2ZXJhbCBjaGFuZ2VzIGhhdmUgYmVlbiBvcGVyYXRlZCBpbiB0aGUgY29yZSB0
-byBzdGFiaWxpemUgdGhlCiAgZmVhdHVyZSB3aGVuIGEgc2Vjb25kYXJ5IG9wIGlzIHVzZWQuCi0g
-QSBjb3VwbGUgb2YgaGVscGVycyBoYXZlIGJlZW4gY3JlYXRlZCB0byBjbGVhbnVwIHRoZSB3aW5i
-b25kLmMgZHJpdmVyLgotIExpbmsgdG8gdjE6IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL3IvMjAy
-NTEyMDUtd2luYm9uZC12Ni0xOC1yYzEtY29udC1yZWFkLXYxLTAtMDFiYzQ4NjMxYzczQGJvb3Rs
-aW4uY29tCgotLS0KTWlxdWVsIFJheW5hbCAoMTEpOgogICAgICBtdGQ6IHNwaW5hbmQ6IERyb3Ag
-YSB0b28gc3Ryb25nIGxpbWl0YXRpb24KICAgICAgbXRkOiBzcGluYW5kOiBFeHBvc2Ugc3BpbmFu
-ZF9vcF9pc19vZHRyKCkKICAgICAgbXRkOiBzcGluYW5kOiBEcm9wIEVDQyBkaXJtYXBzCiAgICAg
-IHNwaTogc3BpLW1lbTogVHJhbnNmb3JtIHRoZSByZWFkIG9wZXJhdGlvbiB0ZW1wbGF0ZQogICAg
-ICBzcGk6IHNwaS1tZW06IENyZWF0ZSBhIHNlY29uZGFyeSByZWFkIG9wZXJhdGlvbgogICAgICBt
-dGQ6IHNwaW5hbmQ6IFVzZSBzZWNvbmRhcnkgb3BzIGZvciBjb250aW51b3VzIHJlYWRzCiAgICAg
-IG10ZDogc3BpbmFuZDogd2luYm9uZDogRW5zdXJlIGNoaXBzIGFyZSBvcmRlcmVkIGJ5IGRlbnNp
-dHkKICAgICAgbXRkOiBzcGluYW5kOiB3aW5ib25kOiBBZGQgc3VwcG9ydCBmb3IgY29udGludW91
-cyByZWFkcyBvbiBXMzVOeHhKVwogICAgICBtdGQ6IHNwaW5hbmQ6IHdpbmJvbmQ6IENyZWF0ZSBh
-IGhlbHBlciB0byB3cml0ZSB0aGUgSFMgYml0CiAgICAgIG10ZDogc3BpbmFuZDogd2luYm9uZDog
-Q3JlYXRlIGEgaGVscGVyIHRvIGRldGVjdCB0aGUgbmVlZCBmb3IgdGhlIEhTIGJpdAogICAgICBt
-dGQ6IHNwaW5hbmQ6IHdpbmJvbmQ6IEFkZCBzdXBwb3J0IGZvciBjb250aW51b3VzIHJlYWRzIG9u
-IFcyNU54eEpXCgogZHJpdmVycy9tdGQvbmFuZC9zcGkvY29yZS5jICAgIHwgMTM1ICsrKysrKysr
-KysrKy0tLS0tLQogZHJpdmVycy9tdGQvbmFuZC9zcGkvd2luYm9uZC5jIHwgMzE3ICsrKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKysrLS0tLS0tLS0tCiBkcml2ZXJzL210ZC9zcGktbm9yL2Nv
-cmUuYyAgICAgfCAgMjIgKy0tCiBkcml2ZXJzL3NwaS9zcGktbWVtLmMgICAgICAgICAgfCAgMzIg
-KysrKy0KIGluY2x1ZGUvbGludXgvbXRkL3NwaW5hbmQuaCAgICB8ICAxNiArKy0KIGluY2x1ZGUv
-bGludXgvc3BpL3NwaS1tZW0uaCAgICB8ICAgOCArLQogNiBmaWxlcyBjaGFuZ2VkLCAzOTkgaW5z
-ZXJ0aW9ucygrKSwgMTMxIGRlbGV0aW9ucygtKQotLS0KYmFzZS1jb21taXQ6IDVkNzM3MWE4Njk2
-M2JhZDlmMGJmZGZmN2Q2ZDU2YmJkZWFlNzU0NjgKY2hhbmdlLWlkOiAyMDI1MTIwNC13aW5ib25k
-LXY2LTE4LXJjMS1jb250LXJlYWQtNjY0NzkxZGRiMjYzCgpCZXN0IHJlZ2FyZHMsCi0tIApNaXF1
-ZWwgUmF5bmFsIDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPgoKCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lv
-biBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9saW51eC1tdGQvCg==
+W35N{01,02,04}JW support being read continuously under certain
+circumstances. A bit must be set in their configuration register, and
+a specific read from cache operation, a bit shorter than usual because
+it no longer requires the address cycles, must be used for the occasion.
+
+Setting the "enable" bit is already supported by the core, aside from
+the subtlety of making sure the HFREQ bit is also set in octal DTR mode
+above 90MHz. However, handling two different read from cache templates
+involves creating a list of read from cache variants adapted the
+continuous reads, ie. without address cycles.
+
+Unfortunately, these operations, despite being very close to their
+original read from cache cousins, are often unsupported by smart SPI
+controller drivers because reading from cache historically allowed
+changing the offset at which the host would start by providing a 2-byte
+column address. In order to prevent issues with this, it has been
+decided to implement these variants with a single "ignored" address byte
+(respectively two in the octal DTR case), further reducing the amount of
+dummy cycles needed before the first bit of data.
+
+Enabling continuous reads has a side effect: the ECC status register now
+may also return the value b11, which means that more than 1
+uncorrectable error happened during the read. This non standard
+behaviour requires to re-implement, almost identically the "get ECC"
+helper from the core, with just an extra case for this value (it is
+prefixed "w25w35nxxjw" because all these chips have the same behaviour).
+
+Speed gain is substantial, see below. The flash_speed -C benchmark has
+been run on a TI AM62A7 LP SK with CPU power management disabled,
+mounted with a W35N01JW chip.
+
+1S-8S-8S:
+
+     1 page read speed is 15058 KiB/s
+     2 page read speed is 15058 KiB/s
+     3 page read speed is 16800 KiB/s
+     4 page read speed is 17066 KiB/s
+     5 page read speed is 18461 KiB/s
+     6 page read speed is 18461 KiB/s
+     7 page read speed is 19384 KiB/s
+     8 page read speed is 19692 KiB/s
+     9 page read speed is 19384 KiB/s
+     10 page read speed is 20000 KiB/s
+     11 page read speed is 20000 KiB/s
+     12 page read speed is 20000 KiB/s
+     13 page read speed is 20800 KiB/s
+     14 page read speed is 20363 KiB/s
+     15 page read speed is 20000 KiB/s
+     16 page read speed is 19692 KiB/s
+     32 page read speed is 19692 KiB/s
+     64 page read speed is 19692 KiB/s
+
+8D-8D-8D:
+
+     1 page read speed is 23272 KiB/s
+     2 page read speed is 23272 KiB/s
+     3 page read speed is 28000 KiB/s
+     4 page read speed is 32000 KiB/s
+     5 page read speed is 34285 KiB/s
+     6 page read speed is 34285 KiB/s
+     7 page read speed is 36000 KiB/s
+     8 page read speed is 36571 KiB/s
+     9 page read speed is 36000 KiB/s
+     10 page read speed is 34285 KiB/s
+     11 page read speed is 36666 KiB/s
+     12 page read speed is 40000 KiB/s
+     13 page read speed is 41600 KiB/s
+     14 page read speed is 37333 KiB/s
+     15 page read speed is 40000 KiB/s
+     16 page read speed is 36571 KiB/s
+     32 page read speed is 42666 KiB/s
+     64 page read speed is 42666 KiB/s
+
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+---
+Not all configurations have been tested/validated yet.
+---
+ drivers/mtd/nand/spi/winbond.c | 126 ++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 111 insertions(+), 15 deletions(-)
+
+diff --git a/drivers/mtd/nand/spi/winbond.c b/drivers/mtd/nand/spi/winbond.c
+index f4d4ffaa1f62..6c11f59a9f8d 100644
+--- a/drivers/mtd/nand/spi/winbond.c
++++ b/drivers/mtd/nand/spi/winbond.c
+@@ -15,9 +15,11 @@
+ 
+ #define SPINAND_MFR_WINBOND		0xEF
+ 
++#define WINBOND_CFG_HFREQ		BIT(0)
+ #define WINBOND_CFG_BUF_READ		BIT(3)
+ 
+ #define W25N04KV_STATUS_ECC_5_8_BITFLIPS	(3 << 4)
++#define W25W35NXXJW_STATUS_ECC_MULT_UNCOR	(3 << 4)
+ 
+ #define W25N0XJW_SR4			0xD0
+ #define W25N0XJW_SR4_HS			BIT(2)
+@@ -29,6 +31,49 @@
+ #define W35N01JW_VCR_IO_MODE_OCTAL_DDR		0xC7
+ #define W35N01JW_VCR_DUMMY_CLOCK_REG	0x01
+ 
++/*
++ * Winbond chips ignore the address bytes during continuous reads, and
++ * because the dummy cycles are enough they indicate dropping the
++ * address cycles from the continuous read from cache variants. This is
++ * very poorly supported by SPI controller drivers which are "wired" to
++ * always at least provide the column. Keep using address cycles, but
++ * reduce the number of dummy cycles accordingly.
++ */
++#define WINBOND_CONT_READ_FROM_CACHE_FAST_1S_1S_1S_OP(ndummy, buf, len, freq) \
++	SPI_MEM_OP(SPI_MEM_OP_CMD(0x0b, 1),				\
++		   SPI_MEM_OP_ADDR(1, 0, 1),				\
++		   SPI_MEM_OP_DUMMY(ndummy - 1, 1),			\
++		   SPI_MEM_OP_DATA_IN(len, buf, 1),			\
++		   SPI_MEM_OP_MAX_FREQ(freq))
++
++#define WINBOND_CONT_READ_FROM_CACHE_1S_1S_8S_OP(ndummy, buf, len, freq) \
++	SPI_MEM_OP(SPI_MEM_OP_CMD(0x8b, 1),				\
++		   SPI_MEM_OP_ADDR(1, 0, 1),				\
++		   SPI_MEM_OP_DUMMY(ndummy - 1, 1),			\
++		   SPI_MEM_OP_DATA_IN(len, buf, 8),			\
++		   SPI_MEM_OP_MAX_FREQ(freq))
++
++#define WINBOND_CONT_READ_FROM_CACHE_1S_1D_8D_OP(ndummy, buf, len, freq) \
++	SPI_MEM_OP(SPI_MEM_OP_CMD(0x9d, 1),				\
++		   SPI_MEM_DTR_OP_ADDR(1, 0, 1),			\
++		   SPI_MEM_DTR_OP_DUMMY(ndummy - 1, 1),			\
++		   SPI_MEM_DTR_OP_DATA_IN(len, buf, 8),			\
++		   SPI_MEM_OP_MAX_FREQ(freq))
++
++#define WINBOND_CONT_READ_FROM_CACHE_1S_8S_8S_OP(ndummy, buf, len, freq) \
++	SPI_MEM_OP(SPI_MEM_OP_CMD(0xcb, 1),				\
++		   SPI_MEM_OP_ADDR(1, 0, 8),				\
++		   SPI_MEM_OP_DUMMY(ndummy - 1, 8),			\
++		   SPI_MEM_OP_DATA_IN(len, buf, 8),			\
++		   SPI_MEM_OP_MAX_FREQ(freq))
++
++#define WINBOND_CONT_READ_FROM_CACHE_8D_8D_8D_OP(ndummy, buf, len, freq) \
++	SPI_MEM_OP(SPI_MEM_DTR_OP_RPT_CMD(0x9d, 8),			\
++		   SPI_MEM_DTR_OP_ADDR(2, 0, 8),			\
++		   SPI_MEM_DTR_OP_DUMMY(ndummy - 2, 8),			\
++		   SPI_MEM_DTR_OP_DATA_IN(len, buf, 8),			\
++		   SPI_MEM_OP_MAX_FREQ(freq))
++
+ /*
+  * "X2" in the core is equivalent to "dual output" in the datasheets,
+  * "X4" in the core is equivalent to "quad output" in the datasheets.
+@@ -49,6 +94,19 @@ static SPINAND_OP_VARIANTS(read_cache_octal_variants,
+ 		SPINAND_PAGE_READ_FROM_CACHE_FAST_1S_1S_1S_OP(0, 1, NULL, 0, 0),
+ 		SPINAND_PAGE_READ_FROM_CACHE_1S_1S_1S_OP(0, 1, NULL, 0, 0));
+ 
++static SPINAND_OP_VARIANTS(cont_read_cache_octal_variants,
++		WINBOND_CONT_READ_FROM_CACHE_8D_8D_8D_OP(24, NULL, 0, 120 * HZ_PER_MHZ),
++		WINBOND_CONT_READ_FROM_CACHE_8D_8D_8D_OP(16, NULL, 0, 86 * HZ_PER_MHZ),
++		WINBOND_CONT_READ_FROM_CACHE_1S_1D_8D_OP(3, NULL, 0, 120 * HZ_PER_MHZ),
++		WINBOND_CONT_READ_FROM_CACHE_1S_1D_8D_OP(2, NULL, 0, 105 * HZ_PER_MHZ),
++		WINBOND_CONT_READ_FROM_CACHE_1S_8S_8S_OP(20, NULL, 0, 0),
++		WINBOND_CONT_READ_FROM_CACHE_1S_8S_8S_OP(16, NULL, 0, 162 * HZ_PER_MHZ),
++		WINBOND_CONT_READ_FROM_CACHE_1S_8S_8S_OP(12, NULL, 0, 124 * HZ_PER_MHZ),
++		WINBOND_CONT_READ_FROM_CACHE_1S_8S_8S_OP(8, NULL, 0, 86 * HZ_PER_MHZ),
++		WINBOND_CONT_READ_FROM_CACHE_1S_1S_8S_OP(2, NULL, 0, 0),
++		WINBOND_CONT_READ_FROM_CACHE_1S_1S_8S_OP(1, NULL, 0, 133 * HZ_PER_MHZ),
++		WINBOND_CONT_READ_FROM_CACHE_FAST_1S_1S_1S_OP(1, NULL, 0, 0));
++
+ static SPINAND_OP_VARIANTS(write_cache_octal_variants,
+ 		SPINAND_PROG_LOAD_8D_8D_8D_OP(true, 0, NULL, 0),
+ 		SPINAND_PROG_LOAD_1S_8S_8S_OP(true, 0, NULL, 0),
+@@ -326,6 +384,26 @@ static int w25n02kv_ecc_get_status(struct spinand_device *spinand,
+ 	return -EINVAL;
+ }
+ 
++static int w25w35nxxjw_ecc_get_status(struct spinand_device *spinand, u8 status)
++{
++	switch (status & STATUS_ECC_MASK) {
++	case STATUS_ECC_NO_BITFLIPS:
++		return 0;
++
++	case STATUS_ECC_HAS_BITFLIPS:
++		return 1;
++
++	case STATUS_ECC_UNCOR_ERROR:
++	case W25W35NXXJW_STATUS_ECC_MULT_UNCOR:
++		return -EBADMSG;
++
++	default:
++		break;
++	}
++
++	return -EINVAL;
++}
++
+ static int w25n0xjw_hs_cfg(struct spinand_device *spinand,
+ 			   enum spinand_bus_interface iface)
+ {
+@@ -451,6 +529,18 @@ static int w35n0xjw_vcr_cfg(struct spinand_device *spinand,
+ 	return 0;
+ }
+ 
++static int w35n0xjw_set_cont_read(struct spinand_device *spinand, bool enable)
++{
++	const struct spi_mem_op *cont_op = spinand->op_templates->cont_read_cache;
++	u8 mask = enable ? 0 : WINBOND_CFG_BUF_READ;
++
++	if (cont_op && enable && spinand_op_is_odtr(cont_op) &&
++	    cont_op->max_freq >= 90 * HZ_PER_MHZ)
++		mask |= WINBOND_CFG_HFREQ;
++
++	return spinand_upd_cfg(spinand, WINBOND_CFG_BUF_READ | WINBOND_CFG_HFREQ, mask);
++}
++
+ static const struct spinand_info winbond_spinand_table[] = {
+ 	/* 512M-bit densities */
+ 	SPINAND_INFO("W25N512GW", /* 1.8V */
+@@ -504,13 +594,15 @@ static const struct spinand_info winbond_spinand_table[] = {
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xdc, 0x21),
+ 		     NAND_MEMORG(1, 4096, 128, 64, 512, 10, 1, 1, 1),
+ 		     NAND_ECCREQ(1, 512),
+-		     SPINAND_INFO_OP_VARIANTS(&read_cache_octal_variants,
+-					      &write_cache_octal_variants,
+-					      &update_cache_octal_variants),
++		     SPINAND_INFO_OP_VARIANTS_WITH_CONT(&read_cache_octal_variants,
++							&write_cache_octal_variants,
++							&update_cache_octal_variants,
++							&cont_read_cache_octal_variants),
+ 		     0,
+ 		     SPINAND_INFO_VENDOR_OPS(&winbond_w35_ops),
+-		     SPINAND_ECCINFO(&w35n01jw_ooblayout, NULL),
+-		     SPINAND_CONFIGURE_CHIP(w35n0xjw_vcr_cfg)),
++		     SPINAND_ECCINFO(&w35n01jw_ooblayout, w25w35nxxjw_ecc_get_status),
++		     SPINAND_CONFIGURE_CHIP(w35n0xjw_vcr_cfg),
++		     SPINAND_CONT_READ(w35n0xjw_set_cont_read)),
+ 	/* 2G-bit densities */
+ 	SPINAND_INFO("W25M02GV", /* 2x1G-bit 3.3V */
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xab, 0x21),
+@@ -555,13 +647,15 @@ static const struct spinand_info winbond_spinand_table[] = {
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xdf, 0x22),
+ 		     NAND_MEMORG(1, 4096, 128, 64, 512, 10, 1, 2, 1),
+ 		     NAND_ECCREQ(1, 512),
+-		     SPINAND_INFO_OP_VARIANTS(&read_cache_octal_variants,
+-					      &write_cache_octal_variants,
+-					      &update_cache_octal_variants),
++		     SPINAND_INFO_OP_VARIANTS_WITH_CONT(&read_cache_octal_variants,
++							&write_cache_octal_variants,
++							&update_cache_octal_variants,
++							&cont_read_cache_octal_variants),
+ 		     0,
+ 		     SPINAND_INFO_VENDOR_OPS(&winbond_w35_ops),
+-		     SPINAND_ECCINFO(&w35n01jw_ooblayout, NULL),
+-		     SPINAND_CONFIGURE_CHIP(w35n0xjw_vcr_cfg)),
++		     SPINAND_ECCINFO(&w35n01jw_ooblayout, w25w35nxxjw_ecc_get_status),
++		     SPINAND_CONFIGURE_CHIP(w35n0xjw_vcr_cfg),
++		     SPINAND_CONT_READ(w35n0xjw_set_cont_read)),
+ 	/* 4G-bit densities */
+ 	SPINAND_INFO("W25N04KV", /* 3.3V */
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xaa, 0x23),
+@@ -585,13 +679,15 @@ static const struct spinand_info winbond_spinand_table[] = {
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xdf, 0x23),
+ 		     NAND_MEMORG(1, 4096, 128, 64, 512, 10, 1, 4, 1),
+ 		     NAND_ECCREQ(1, 512),
+-		     SPINAND_INFO_OP_VARIANTS(&read_cache_octal_variants,
+-					      &write_cache_octal_variants,
+-					      &update_cache_octal_variants),
++		     SPINAND_INFO_OP_VARIANTS_WITH_CONT(&read_cache_octal_variants,
++							&write_cache_octal_variants,
++							&update_cache_octal_variants,
++							&cont_read_cache_octal_variants),
+ 		     0,
+ 		     SPINAND_INFO_VENDOR_OPS(&winbond_w35_ops),
+-		     SPINAND_ECCINFO(&w35n01jw_ooblayout, NULL),
+-		     SPINAND_CONFIGURE_CHIP(w35n0xjw_vcr_cfg)),
++		     SPINAND_ECCINFO(&w35n01jw_ooblayout, w25w35nxxjw_ecc_get_status),
++		     SPINAND_CONFIGURE_CHIP(w35n0xjw_vcr_cfg),
++		     SPINAND_CONT_READ(w35n0xjw_set_cont_read)),
+ };
+ 
+ static int winbond_spinand_init(struct spinand_device *spinand)
+
+-- 
+2.51.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
