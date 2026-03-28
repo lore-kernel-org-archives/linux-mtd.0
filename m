@@ -4,66 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3580410A88E0
-	for <linux-mtd@archiver.kernel.org>; Thu, 26 Mar 2026 16:47:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A14EA10F3DCE
+	for <linux-mtd@archiver.kernel.org>; Sat, 28 Mar 2026 13:26:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
-	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=hWCrlpAp+xZ8Fd8BQBWyafS7CNtEa7SAZRCudJ5zDOE=; b=K9v2s35r/Nuymz
-	BIMbV1XOYIM/ANQcco1+5Wp7mHDM5hB0k/Ke32qxm+sSMZ4ThQLn6MBnNP7/+tKYwe2NmRi18sShP
-	fRje7OYIdvNKMx+I8fIILa76mrcgw2RhMnVjMLS58/urhpwdTxZBGENFQGl8jmz5dU8I05dumjsGF
-	9gsdwwTtXaxYIsF5Q3RZOqMRkDv6O3+YV7Dni3WDzZwsQ235l+Qv33u/LYs6fOV9rEecqU5/m7+OJ
-	akL8rhLTCuXi0Yp+UgCP0I/g50UKlw0zpSDVgztAV9FUsqhG/ceofSP7S6W35fiDtRvxn9fTgqzVr
-	GbptBOjXt3R1wOhHEa8Q==;
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=7hW1QlFKYp7w0uJw7iSPItVWamXaPyt7sufp5xH+Pys=; b=P97
+	wQzhF7h4aCqTo6VVQbG/J4CsfLH3CsUL7DfTw0ZsiqlJ5hzFW5C2abPxFhkgBX7UzSkLBn93nyRfk
+	hCcmd39aCA7Mv2dBcQEQoVzx2qlDw9Ng9/xjcN+lumYUFbc1SFPhwuvk6mp1kCv7tg/SkZ0lAwaCw
+	wRoj/fp7NNBC8N9ffLMSQgbQGJASWqd9y0L78ygucBGqqYDjk2DWkuG0SPPXWqdNR9UtDySl+icgR
+	TZeOma6TnFVfACGjlXew6wQdSp7Kq62P2EEqHuYUbWB/5mTT19t0qeekn63y/umuKjeuhSgoX/evW
+	hnQXLVk+6ZbqQ/eEYOavz2AYuuhBchQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w5nrz-00000005svj-4BFs;
-	Thu, 26 Mar 2026 16:47:43 +0000
-Received: from smtpout-04.galae.net ([185.171.202.116])
+	id 1w6Tg1-00000008yX1-0p0e;
+	Sat, 28 Mar 2026 13:26:09 +0000
+Received: from mail-ed1-x535.google.com ([2a00:1450:4864:20::535])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w5nrt-00000005sq6-07Ac
+	id 1w6Tfv-00000008yWe-11CY
 	for linux-mtd@lists.infradead.org;
-	Thu, 26 Mar 2026 16:47:41 +0000
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id C828CC566BF;
-	Thu, 26 Mar 2026 16:48:03 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 840E8601FA;
-	Thu, 26 Mar 2026 16:47:35 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 7D95F10450CCF;
-	Thu, 26 Mar 2026 17:47:33 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1774543654; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=oi9vHPgZ6TQ8sWVxiBtvclwkIMonxdZq7gPFy31C+DI=;
-	b=f13qncoxoULR4Z6zD7IG2dWYwE0ImXS4pJrZVzifYdfpGuM2TAObnWGnhtHJLZhxhbbAF1
-	kKxdYaV9LMajndQnLm5arTfIjj8xeDw9bfEEEq4h87fqCrzrg1ewe10XOVUFfBT3cQw9gt
-	+RqUbj+zOCz6qgFQn8mJClzvsNZIygZfTGt8uqSk3dK692h+eRx/nXkLtZsM/5fdY4hByE
-	8hYCgxpeqXeCtrzzWUL7uW/rfigawivze800C8LqWXyOIwyB/BxRhbeuFHnejfJDiJyqgC
-	aWYf46VKmIwUnFgEHUVBmdL9tiydFMZnoFNIP3+4wx8BeCn3CMLK0oEOlHHN2Q==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Thu, 26 Mar 2026 17:47:18 +0100
-Subject: [PATCH 4/4] spi: cadence-qspi: Prevent SPI NAND continuous reads
+	Sat, 28 Mar 2026 13:26:04 +0000
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-66a4c6bb6ecso5290925a12.1
+        for <linux-mtd@lists.infradead.org>; Sat, 28 Mar 2026 06:26:01 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1774704360; cv=none;
+        d=google.com; s=arc-20240605;
+        b=Njz1QVfDJmAiPhwrrF3/9KDtOrBVd3YlDBt+DHMWCwDWyyWLJjNS9A51CZiwZfP9KY
+         ZeTC0rxcegni5aBDwt1GC6ZU7pf/SfyFcZ1KMBwWfALvmj5cl3OSf3HcMKHO5GOLJYzA
+         txULO37kjDA4Vd+HpdC+Ljdv2F8SRGOc9H+RBWabI/WH8Ud3R7Tt/Wp5BrTQjzGQWiXZ
+         6IRAVALmfG+y5UkIds4i9GdH1HQrkVM+cj7TLfP4GJhXBSlicXuMfn6YDvl8VZeeE/ru
+         YnhGjBkZcYnBLWqf1pwKxuWwujQ6f7/WfZi27oAB3kmRxHHGkToFI4R1ZdtE7t6DHaZG
+         gyGQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=to:subject:message-id:date:from:mime-version:dkim-signature;
+        bh=MwTWI+dSmfj1rJzwxvqDvKiCnitNzHAij7DOw5d0Vxo=;
+        fh=Gd4kRfoyr9WvSS9M3j9+RFhdcaNG97fzsqYHZ6IIOZI=;
+        b=LCSnjdd1smvkyITNzuyHJCqVo3SjGX263wrTGWiBMHzQkQKZs/WNcC2+6xfEsZhB7F
+         gqbfOxuPyQIL/ChcdllHxaaNk6oxYY5N8BpZkRF4PKAiD+PIQNTmziS6c7AdDJpTzXb2
+         q4vJO2EKbSZcdJMNcFswwiRPNi03km3w5pULLexJmRpvUwr8y2LcJ3XN2FVHZmusxmpe
+         fTP949MFJlbeIsttB66nCyvXJcVIqCvGY8eyU0jduPCm2aWJ6jFuO2RIgCbdc2XP8/Tj
+         6jaTJcNFf6DzLInuqP6ncJUTyo7FnS5q268grmHetdY1X/qGEI8lSOXkB0Qpe2u8hyt2
+         O11w==;
+        darn=lists.infradead.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1774704360; x=1775309160; darn=lists.infradead.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=MwTWI+dSmfj1rJzwxvqDvKiCnitNzHAij7DOw5d0Vxo=;
+        b=OQRvW/C/gcTwdz6Dam68LFZti5gpO4C3Vs/wR7n2wbn/IyCTZzU5tErQ5PVpKJXBTn
+         XB7ucx3hywDSFFMmvxK61ryTLa6VsRSAh4vohi/aVbP8x4V2dAxhW3W1xyj2NhDIhvqT
+         h1u2VGlYfnv3XpNmK8HEXuUYpAGFK0AeJNHGLHhyLb6YGaJPUHanEogOeyQHg6dLbdDX
+         //hpPiNtbJ2Q1s+vbhLOQe17faKlNRFSsp3TDHRFXKAEOsFwe5v2dO5+MimnSKuhm6WY
+         IwPtKMzIxb57IiJAFZdl1yzne0vbL1he2e0iERkWnw/HUQjvHN3rcrJb9kyLnvZbrqDJ
+         SZiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1774704360; x=1775309160;
+        h=to:subject:message-id:date:from:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MwTWI+dSmfj1rJzwxvqDvKiCnitNzHAij7DOw5d0Vxo=;
+        b=E79Qv7ckLELUPFgz4lxWLx0LccngZeQmgdN4M+m7XFjljBUlhdXem1s7tzoC+LRypb
+         F95qsWelYEB6M7wfhSGi+BWGobBB9DiAsuRbBXy4RdY31BjolafBnuPl9CzCGoYMR/I8
+         MttRRvShZCdtHbcdv0iWftHcySzgHNI/OObUaK7PMTGbMPtVkLFYnHAoIhsH5zNZ59Kz
+         sNoGbgMUH8/F2m6D3POW9tVGjg7bKRVZ4F4IAGS5thtlVJ0Nj5fviBU2A+9OmU30GuK1
+         3gMKG2Wr6MdeAbZvH9ThgPWLmeG5LOUt8hV7p8NduagKnsp4ytVhh+X1KzNiRL4DcRIh
+         Pu5Q==
+X-Gm-Message-State: AOJu0YwayQoOH09JyXWfsWKYyrw0AYrCYJ7nl6M2qjt5EXJPNBskqlXy
+	GsX3++V8OegA87LQnR4gBG7aee+JHNiJICwUlFtgJxKe9DpkHIWb80ls5PhvBdwN/lElT+RpvCW
+	lRWM6OOFAvyAAvlsjhGiNKgRiIisxYuuzKg+uL1Q=
+X-Gm-Gg: ATEYQzzu/WAVLxKQNJpAdLRPsGhhpHuUQdf1E1/sGfgZClMWQviDm6CqJntdBmkSTgs
+	jeHljUM7fzwyToN5ozfv6FrRVzwigwUVisr8W0Xgf83l2PUU2rDQysW/XJE+n/Pg5/8vjYA35ZP
+	c68NRYpaxdV6dwukQGFzI17FSxBwwyYSMBRmsULSynYAXdigvvsGwdpANymRVB/96YLqBvMDRuG
+	7WD7BBKap0AWQvs/Ns2MoW/NtDc/uw6ZxC+IHyAhxq0Nb6PFPS6UpLBGgeoLmWpOVhj92fsklq4
+	CJkdA/vzdQgdqFu1WiOSIytL/bKSLe8qDX+zbOiz768po+Op5bT0DUVraaw2ptP+N7a5GmGogb7
+	EE+a0UiouMac=
+X-Received: by 2002:a05:6402:a0dc:b0:666:d675:e2ed with SMTP id
+ 4fb4d7f45d1cf-66b28b5d0c3mr3135815a12.21.1774704360186; Sat, 28 Mar 2026
+ 06:26:00 -0700 (PDT)
 MIME-Version: 1.0
-Message-Id: <20260326-winbond-v7-0-rc1-cadence-cont-read-v1-4-0d626e1dfb2b@bootlin.com>
-References: <20260326-winbond-v7-0-rc1-cadence-cont-read-v1-0-0d626e1dfb2b@bootlin.com>
-In-Reply-To: <20260326-winbond-v7-0-rc1-cadence-cont-read-v1-0-0d626e1dfb2b@bootlin.com>
-To: Mark Brown <broonie@kernel.org>, Richard Weinberger <richard@nod.at>, 
- Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
- linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-mtd@lists.infradead.org, Michael Walle <mwalle@kernel.org>, 
- Takahiro Kuwano <takahiro.kuwano@infineon.com>, 
- Pratyush Yadav <pratyush@kernel.org>, Steam Lin <STLin2@winbond.com>, 
- Santhosh Kumar K <s-k6@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>
-X-Mailer: b4 0.14.3
-X-Last-TLS-Session-Version: TLSv1.3
+From: Adrian McMenamin <adrianmcmenamin@gmail.com>
+Date: Sat, 28 Mar 2026 13:25:49 +0000
+X-Gm-Features: AQROBzDdOxAOK_gRe8B2DerXiFBmdAPw6-eihSshlIJl9aSmtKEAXl_QNv1F0CQ
+Message-ID: <CACwZE5QV+2d4iBvSP4hQimLCs+UCbQFrVSfvBFQ-Ne7z_tgfbw@mail.gmail.com>
+Subject: [PATCH] Ensure Dreamcast VMU MTD code keeps building
+To: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260326_094737_211487_941C1039 
-X-CRM114-Status: GOOD (  17.31  )
+X-CRM114-CacheID: sfid-20260328_062603_324252_6EDA812B 
+X-CRM114-Status: UNSURE (   6.33  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,69 +110,29 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-TI AM62Ax errata i2351, entitled "OSPI: Direct Access Controller (DAC)
-does not support Continuous Read mode with NAND Flash", explains that
-the CS can be deasserted almost at any time during a transfer (basically
-there is an interconnect arbitration every 1023 byte). This is an
-expected internal behaviour of the controller, but this leads to
-spurious CS deasserts. These are totally forbidden during SPI NAND
-continuous read transfers, because they indicate an end of transfer and
-the continuous read is then stopped on the flash side.
+vmu-flash.c will not build for 7.0.x without this change
 
-I initially tried to query the flash type and geometry to decide whether
-to apply a spi message size limit (there is a spi helper for that) but
-we cannot reliably get up to the MTD structure to discriminate if it is
-a NOR or a NAND we are playing with (it is not relevant to limit SPI NOR
-transfers, they are not affected). If we actually take this path, what
-limitation shall we enforce? The errata mentions 1023B, this is super
-low, less than a typical page size (about 2k or 4k, for most of them),
-so this is not usable. On my side, I only observed this problem on a
-2-page read in octal DTR mode with more than 12 dummy cycles. The
-writesize summed with the oobsize could be a relevant boundary, but it
-is still quite arbitrary. Hence, I opted for implementing a controller
-capability flag, which then is used to decide whether the SPI NAND
-continuous read feature can be enabled.
 
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+
+Make necessary include explicit
+
+Signed-off-by: Adrian McMenamin <adrianmcmenamin@gmail.com>
 ---
-I do not know if all flavours of this controller have the same
-limitation, or whether it is integration specific. As I only found
-mention of this errata for the AM62 processor, I opted for limiting the
-flag to a single compatible.
----
- drivers/spi/spi-cadence-quadspi.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+drivers/mtd/maps/vmu-flash.c | 1+
+1 file changed, 1 insertion(+)
 
-diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
-index 649ff55333f0..9f9b3013aa5d 100644
---- a/drivers/spi/spi-cadence-quadspi.c
-+++ b/drivers/spi/spi-cadence-quadspi.c
-@@ -1740,6 +1740,12 @@ static const struct spi_controller_mem_caps cqspi_mem_caps = {
- 	.per_op_freq = true,
- };
- 
-+static const struct spi_controller_mem_caps cqspi_am654_mem_caps = {
-+	.dtr = true,
-+	.per_op_freq = true,
-+	.no_cs_assertion = true,
-+};
-+
- static int cqspi_setup_flash(struct cqspi_st *cqspi)
- {
- 	struct platform_device *pdev = cqspi->pdev;
-@@ -1797,6 +1803,8 @@ static int cqspi_probe(struct platform_device *pdev)
- 	host->mode_bits = SPI_RX_QUAD | SPI_RX_DUAL;
- 	host->mem_ops = &cqspi_mem_ops;
- 	host->mem_caps = &cqspi_mem_caps;
-+	if (of_device_is_compatible(pdev->dev.of_node, "ti,am654-ospi"))
-+		host->mem_caps = &cqspi_am654_mem_caps;
- 
- 	cqspi = spi_controller_get_devdata(host);
- 	if (of_device_is_compatible(pdev->dev.of_node, "starfive,jh7110-qspi"))
-
--- 
-2.51.1
-
+diff --git a/drivers/mtd/maps/vmu-flash.c b/drivers/mtd/maps/vmu-flash.c
+index 75e06d249ce9..7c18658a5e7d 100644
+--- a/drivers/mtd/maps/vmu-flash.c
++++ b/drivers/mtd/maps/vmu-flash.c
+@@ -6,6 +6,7 @@
+  * Copyright (c) Paul Mundt 2001
+  */
+ #include <linux/init.h>
++#include <linux/device.h>
+ #include <linux/slab.h>
+ #include <linux/sched.h>
+ #include <linux/delay.h>
 
 ______________________________________________________
 Linux MTD discussion mailing list
