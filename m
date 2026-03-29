@@ -4,61 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B78110F3DEC
-	for <linux-mtd@archiver.kernel.org>; Sat, 28 Mar 2026 15:56:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36DB8FC9804
+	for <linux-mtd@archiver.kernel.org>; Sun, 29 Mar 2026 22:39:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
-	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=6c2cYwkG2FHPPeF8IN+Qd/rsPcOElvWnUMqPtI8y8+s=; b=tmF1KMfWDQLota
-	DHYFJh+HSMkXNJoYml7r9VL+/YYmSH9H7WhpGAtgwFPLr4W8sAZ9lF+mrEUpznQxtYkpWwacrjMQ6
-	f7EY+nsCnXIUrzIjrftxTDqh9eR1lY/IRgSmT3GfTDTsLRE1I+Re1MId8Xv23coQZ4sHug7GBb8t9
-	7TxFbd4p0X/3Xlc+91AX4ikL/HoHnJeO/bEbNl50Tn9hwG1/srUvpKZnACVuEmvuuYZffjYEKoBwD
-	wCNR+HVhswpe/LP38WTvIXNN5lwawbvDo0KwtCOmQFnFzdM06iYwZsmSxwmsrnLp9+84L6EggLFEp
-	NfC/d7tRUXw/xQnqxCLA==;
+	List-Owner; bh=6VFcfMiCnguoVbwCBO/m52NAUDF7+uQaPSFHEkobp74=; b=USG/fpQH//CN2F
+	s4OMoQkPo3f15TEd10TrJsQ8mFIyH0TtoxHY0tapWwNErrcE4Q8oZmzDF2MggKGdH8pK4TclFWTU0
+	8mycgEkh1FBKyTfV6l03aTZxHuKpRAt49wkDl/kmlqIsYzXRkSnoOVn97PwlILWd6tzvUBsvMmVU8
+	HCc+/czyflHi2/EdCpScf+s9LfJyBsEWhU6zmMAbkx7HzoZOcu76iwWToaaApW9cooDTs6MW5yl30
+	Z3nll4O7BkekPGC0ZL+TZ/0UrnANTKBWLqsVG50TfCtiEStzVZ4tHL3FsL2yXGRH58k5GQrsdFgqu
+	ypaU8odZECcmvj2pfSYQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w6W12-000000095Up-0Clj;
-	Sat, 28 Mar 2026 15:56:00 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1w6ymf-0000000AOMi-1o0u;
+	Sun, 29 Mar 2026 22:39:06 +0000
+Received: from mail-dl1-x122e.google.com ([2607:f8b0:4864:20::122e])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w6W0z-000000095US-2b7q
+	id 1w6ymZ-0000000AOMN-0dvN
 	for linux-mtd@lists.infradead.org;
-	Sat, 28 Mar 2026 15:55:57 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id BA5D8600AE;
-	Sat, 28 Mar 2026 15:55:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64A26C2BC86;
-	Sat, 28 Mar 2026 15:55:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774713356;
-	bh=UD/TwSuuylvsTVk6WuLqLc/i823tJemYw2VTGjQDzOU=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=Bm7fMoYFkUbimvOYpNbqJa1zS9jOSlu3hhkd1VIWosEKAiRFMr0AbqbdeuoXQ6za1
-	 slZjp+JbOw4XGUTyGKd83DJdlyE5RLol1fN1LxQZS3Qy5C5ae/SHwu7NvyvLNl+7Kl
-	 Tmy9K7uxnwDUIRiXkcR4sy4eXorE6OLiKOqpKde6NYgCh+LgD0jhwG5nfFsQoePwmZ
-	 5NBVj5J41BY1UqisNpeBe79Z7tqOQ3DxRnBATawJnrhNFinStUy9sE6tcHzv/y5sVB
-	 +qsZ1B1KWFzbeMgHRm8nwy9ZbvEPdthwa1FuEKJx/2bZcB7mlBXeONsodKpwPcFNS7
-	 d0+YXPgPSQ2hA==
-From: Linus Walleij <linusw@kernel.org>
-Date: Sat, 28 Mar 2026 16:55:48 +0100
-Subject: [PATCH 2/2] MIPS/mtd: Handle READY GPIO in generic NAND platform
- data
-MIME-Version: 1.0
-Message-Id: <20260328-mips-input-rb532-button-v1-2-98e201621501@kernel.org>
+	Sun, 29 Mar 2026 22:39:00 +0000
+Received: by mail-dl1-x122e.google.com with SMTP id a92af1059eb24-12732e6a123so1787016c88.1
+        for <linux-mtd@lists.infradead.org>; Sun, 29 Mar 2026 15:38:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1774823938; x=1775428738; darn=lists.infradead.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=mIaCRwsPiPLGbHW57vve74Uei7PyZwajOXtEVAjCMmE=;
+        b=e8nqOr71JFvniHAvXGi3EjKsd5jjVKshFDukDFj/8vPnwPwofZTUNA/KG8ekuUn7Bz
+         6bQzktd9Wp8M7tInLBDWP4IKfO8k/RlUTC0bzqxWwAVuurWU5W6t2KaaMwBv/IrRdEX7
+         MgDTP0p8vtmzQaqy6mT7iKNGdxZCXw/UzJlskUthuVPTm+kmHH1xjEcZ4Z/wQD7CHuOE
+         heftBXIJvsg5MpW0g1MLpwFWOrrMrBsv9E6U7kowoGFVLEUG5zePFbShIFHnfuDTlZ/0
+         fVfENBlUHAz96boI5LYGrvY7fHrmZtG4zq9OsArN2ER32UvRqbZXqc9KhwgmbwCdWbaL
+         HtIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1774823938; x=1775428738;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mIaCRwsPiPLGbHW57vve74Uei7PyZwajOXtEVAjCMmE=;
+        b=IwImo/V5PMKxVsSpmX4OUrIuzvQi1p8JPcPNQAXbzW8dhFC4djws3Nw5g7h91J/zwm
+         fFAwCdHwZa2aJeMyRrXRVGFl6ecDJPeVEsScHfm02e4uDNdLdEuBetBbNW/IX4xqrhlJ
+         en+PyNxhJrsgJHQUoryeDqHFeezwpB5zpup6g62lF12rauTyEoH33m7sOWRdAdbEdm25
+         yrHRhOgVzXU3dmaVDo+yHDtj7JumbHXeATKUWehGmvx4k4OngJURdVn67MMAyUVTHDAU
+         pMaW06MqkfW1TIvGMJYZmE8ZS7m8r0GzqjOV79cHVKbRJujDymgSIC1En+xL9r7Hx5V6
+         ShKA==
+X-Forwarded-Encrypted: i=1; AJvYcCVIs8nhD3PyX+A7VhvUNu+uxv7Dx8QzpYIrAsQD7L13JhXd6Su/6sZKmEk8HvsTs5MQ/NXATqiC914=@lists.infradead.org
+X-Gm-Message-State: AOJu0YwV1bhQMpiHkrukCsO+0WfHQMjiD/obUbJh+pLuAG2ca+3zhkj7
+	3SBpHHLQqDimC0dShnxkCBFEM/Ch0uax2WIvgsdWLsfQ4jg6zotP/WyG
+X-Gm-Gg: ATEYQzzJy3ba+9ZBFxEWMXQ331MoVq2Y9BJSFV+OlaUMcVdqlSLCVSMNTIxx4M6ykEa
+	MwCveW6s+zZiX59sFlAqPvKEpJCqCdnW7EBmzxisj2re3qRFAksWPEf8w0foa/Y0X0H6sV9r2+1
+	8YhBG8+NyVsHH8tq+bdmicqnCnmPxRNditoCySW6FlZALdQbTR4FCZcnZd6G3j8FVuxR6mMBUfy
+	G02OL/+EwgH1oTqtNnIEHiA/o/hvGaTsoqDd8aYZaZJ8LRCur00FAaGA+XNAgBCa0X9Uzyb60/8
+	xYiHnnlOX+hua6O73To/6kWzEt1CUTFnAExP/hyFENGeDetEufcAuNlLQBYyyDMwO8Q0SYXSb6e
+	pUYm22W2Tto/TO6loOYKVkJh8I6hC7s+oypFJrYAk0leqDqFoyW4h2Cso65nly1sQhlI7mnEDZf
+	MmkTPlVPZ/wyj3SbJ1RiJp9wCczwuIpnrSx5t//ct5ZzPLBIUGP98XxpIzdoodHmF7
+X-Received: by 2002:a05:7022:6190:b0:11a:641f:ba11 with SMTP id a92af1059eb24-12ab2928cb4mr5161322c88.29.1774823937606;
+        Sun, 29 Mar 2026 15:38:57 -0700 (PDT)
+Received: from google.com ([2a00:79e0:2ebe:8:7265:773a:8e51:c62f])
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-12ab983f9f3sm8212926c88.10.2026.03.29.15.38.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 29 Mar 2026 15:38:57 -0700 (PDT)
+Date: Sun, 29 Mar 2026 15:38:53 -0700
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To: Linus Walleij <linusw@kernel.org>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	Bartosz Golaszewski <brgl@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>, 
+	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+	linux-mips@vger.kernel.org, linux-input@vger.kernel.org, linux-gpio@vger.kernel.org, 
+	linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 1/2] MIPS/input: Move RB532 button to GPIO descriptors
+Message-ID: <acmo7_clKRWzhyOi@google.com>
 References: <20260328-mips-input-rb532-button-v1-0-98e201621501@kernel.org>
-In-Reply-To: <20260328-mips-input-rb532-button-v1-0-98e201621501@kernel.org>
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
- Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
- Bartosz Golaszewski <brgl@kernel.org>, 
- Miquel Raynal <miquel.raynal@bootlin.com>, 
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-mips@vger.kernel.org, linux-input@vger.kernel.org, 
- linux-gpio@vger.kernel.org, linux-mtd@lists.infradead.org, 
- Linus Walleij <linusw@kernel.org>
-X-Mailer: b4 0.14.3
+ <20260328-mips-input-rb532-button-v1-1-98e201621501@kernel.org>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20260328-mips-input-rb532-button-v1-1-98e201621501@kernel.org>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260329_153859_202512_E02D1AEB 
+X-CRM114-Status: GOOD (  22.89  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,179 +102,85 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The callbacks into the MIPS RB532 platform to read the GPIO pin
-indicating that the NAND chip is ready are oldschool and does
-not assign GPIOs as properties to the NAND device.
+Hi Linus,
 
-Add a capability to the generic platform NAND chip driver to use
-a GPIO line to detect if a NAND chip is ready and override the
-platform-local drv_ready() callback with this check if the GPIO
-is present.
+On Sat, Mar 28, 2026 at 04:55:47PM +0100, Linus Walleij wrote:
+> Convert the Mikrotik RouterBoard RB532 to use GPIO descriptors
+> by defining a software node for the GPIO chip, then register
+> the button platform device with full info passing the GPIO
+> as a device property.
+> 
+> This can be used as a base to move more of the RB532 devices
+> over to passing GPIOs using device properties.
+> 
+> Use the GPIO_ACTIVE_LOW flag and drop the inversion in the
+> rb532_button_pressed() function.
+> 
+> Signed-off-by: Linus Walleij <linusw@kernel.org>
+> ---
+>  arch/mips/rb532/devices.c         | 47 +++++++++++++++++++++++++++++++++------
+>  drivers/input/misc/rb532_button.c | 35 ++++++++++++++++++++++++-----
+>  2 files changed, 69 insertions(+), 13 deletions(-)
+> 
+> diff --git a/arch/mips/rb532/devices.c b/arch/mips/rb532/devices.c
+> index 4f027efbf27b..3f56d9feb73a 100644
+> --- a/arch/mips/rb532/devices.c
+> +++ b/arch/mips/rb532/devices.c
+> @@ -16,8 +16,10 @@
+>  #include <linux/mtd/mtd.h>
+>  #include <linux/gpio.h>
+>  #include <linux/gpio/machine.h>
+> +#include <linux/gpio/property.h>
+>  #include <linux/gpio_keys.h>
+>  #include <linux/input.h>
+> +#include <linux/property.h>
+>  #include <linux/serial_8250.h>
+>  
+>  #include <asm/bootinfo.h>
+> @@ -38,6 +40,10 @@ extern unsigned int idt_cpu_freq;
+>  
+>  static struct mpmc_device dev3;
+>  
+> +static const struct software_node rb532_gpio0_node = {
+> +	.name = "gpio0",
+> +};
 
-This makes it possible to drop the legacy include header
-<linux/gpio.h> from the RB532 devices.
+You need to move this and registration into arch/mips/rb532/gpio.c,
+export it and use it here: Bartosz is against using gpiohip label to
+match with software node name and prefers identity matching.
 
-Signed-off-by: Linus Walleij <linusw@kernel.org>
----
- arch/mips/rb532/devices.c        | 36 +++++++++++++++++++++---------------
- drivers/mtd/nand/raw/plat_nand.c | 24 +++++++++++++++++++++++-
- 2 files changed, 44 insertions(+), 16 deletions(-)
+...
 
-diff --git a/arch/mips/rb532/devices.c b/arch/mips/rb532/devices.c
-index 3f56d9feb73a..c3d8d96d0ef5 100644
---- a/arch/mips/rb532/devices.c
-+++ b/arch/mips/rb532/devices.c
-@@ -14,7 +14,6 @@
- #include <linux/platform_device.h>
- #include <linux/mtd/platnand.h>
- #include <linux/mtd/mtd.h>
--#include <linux/gpio.h>
- #include <linux/gpio/machine.h>
- #include <linux/gpio/property.h>
- #include <linux/gpio_keys.h>
-@@ -135,12 +134,6 @@ static struct platform_device cf_slot0 = {
- 	.num_resources = ARRAY_SIZE(cf_slot0_res),
- };
- 
--/* Resources and device for NAND */
--static int rb532_dev_ready(struct nand_chip *chip)
--{
--	return gpio_get_value(GPIO_RDY);
--}
--
- static void rb532_cmd_ctrl(struct nand_chip *chip, int cmd, unsigned int ctrl)
- {
- 	unsigned char orbits, nandbits;
-@@ -166,16 +159,23 @@ static struct resource nand_slot0_res[] = {
- };
- 
- static struct platform_nand_data rb532_nand_data = {
--	.ctrl.dev_ready = rb532_dev_ready,
- 	.ctrl.cmd_ctrl	= rb532_cmd_ctrl,
- };
- 
--static struct platform_device nand_slot0 = {
--	.name = "gen_nand",
--	.id = -1,
--	.resource = nand_slot0_res,
--	.num_resources = ARRAY_SIZE(nand_slot0_res),
--	.dev.platform_data = &rb532_nand_data,
-+static const struct property_entry nand0_properties[] = {
-+	PROPERTY_ENTRY_GPIO("ready-gpios", &rb532_gpio0_node,
-+			    GPIO_RDY, GPIO_ACTIVE_HIGH),
-+	{ }
-+};
-+
-+static const struct platform_device_info nand0_info  __initconst = {
-+	.name		= "gen_nand",
-+	.id		= PLATFORM_DEVID_NONE,
-+	.res		= nand_slot0_res,
-+	.num_res	= ARRAY_SIZE(nand_slot0_res),
-+	.data		= &rb532_nand_data,
-+	.size_data	= sizeof(struct platform_nand_data),
-+	.properties	= nand0_properties,
- };
- 
- static struct mtd_partition rb532_partition_info[] = {
-@@ -234,7 +234,6 @@ static struct platform_device rb532_uart = {
- 
- static struct platform_device *rb532_devs[] = {
- 	&korina_dev0,
--	&nand_slot0,
- 	&cf_slot0,
- 	&rb532_led,
- 	&rb532_uart,
-@@ -321,6 +320,13 @@ static int __init plat_setup_devices(void)
- 	 */
- 	software_node_register(&rb532_gpio0_node);
- 
-+	pd = platform_device_register_full(&nand0_info);
-+	ret = PTR_ERR_OR_ZERO(pd);
-+	if (ret) {
-+		pr_err("failed to create NAND slot0 device: %d\n", ret);
-+		return ret;
-+	}
-+
- 	pd = platform_device_register_full(&rb532_button_info);
- 	ret = PTR_ERR_OR_ZERO(pd);
- 	if (ret) {
-diff --git a/drivers/mtd/nand/raw/plat_nand.c b/drivers/mtd/nand/raw/plat_nand.c
-index 0bcd455328ef..fe31551bcf5f 100644
---- a/drivers/mtd/nand/raw/plat_nand.c
-+++ b/drivers/mtd/nand/raw/plat_nand.c
-@@ -6,6 +6,7 @@
-  */
- 
- #include <linux/err.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/io.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
-@@ -17,6 +18,7 @@ struct plat_nand_data {
- 	struct nand_controller	controller;
- 	struct nand_chip	chip;
- 	void __iomem		*io_base;
-+	struct gpio_desc	*ready_gpio;
- };
- 
- static int plat_nand_attach_chip(struct nand_chip *chip)
-@@ -32,6 +34,14 @@ static const struct nand_controller_ops plat_nand_ops = {
- 	.attach_chip = plat_nand_attach_chip,
- };
- 
-+/* Resources and device for NAND */
-+static int plat_nand_gpio_dev_ready(struct nand_chip *chip)
-+{
-+	struct plat_nand_data *data = nand_get_controller_data(chip);
-+
-+	return gpiod_get_value(data->ready_gpio);
-+}
-+
- /*
-  * Probe for the NAND device.
-  */
-@@ -41,6 +51,7 @@ static int plat_nand_probe(struct platform_device *pdev)
- 	struct plat_nand_data *data;
- 	struct mtd_info *mtd;
- 	const char **part_types;
-+	struct nand_chip *chip;
- 	int err = 0;
- 
- 	if (!pdata) {
-@@ -59,9 +70,17 @@ static int plat_nand_probe(struct platform_device *pdev)
- 	if (!data)
- 		return -ENOMEM;
- 
-+	data->ready_gpio = devm_gpiod_get_optional(&pdev->dev, "ready",
-+						   GPIOD_IN);
-+	if (IS_ERR(data->ready_gpio))
-+		return dev_err_probe(&pdev->dev, PTR_ERR(data->ready_gpio),
-+				     "could not get READY GPIO\n");
-+
- 	data->controller.ops = &plat_nand_ops;
- 	nand_controller_init(&data->controller);
- 	data->chip.controller = &data->controller;
-+	chip = &data->chip;
-+	nand_set_controller_data(chip, data);
- 
- 	data->io_base = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(data->io_base))
-@@ -74,7 +93,10 @@ static int plat_nand_probe(struct platform_device *pdev)
- 	data->chip.legacy.IO_ADDR_R = data->io_base;
- 	data->chip.legacy.IO_ADDR_W = data->io_base;
- 	data->chip.legacy.cmd_ctrl = pdata->ctrl.cmd_ctrl;
--	data->chip.legacy.dev_ready = pdata->ctrl.dev_ready;
-+	if (data->ready_gpio)
-+		data->chip.legacy.dev_ready = plat_nand_gpio_dev_ready;
-+	else
-+		data->chip.legacy.dev_ready = pdata->ctrl.dev_ready;
- 	data->chip.legacy.select_chip = pdata->ctrl.select_chip;
- 	data->chip.legacy.write_buf = pdata->ctrl.write_buf;
- 	data->chip.legacy.read_buf = pdata->ctrl.read_buf;
+> -static bool rb532_button_pressed(void)
+> +static bool rb532_button_pressed(struct rb532_button *button)
+>  {
+>  	int val;
+>  
+>  	set_latch_u5(0, LO_FOFF);
+> -	gpio_direction_input(GPIO_BTN_S1);
+> +	gpiod_direction_input(button->gpio);
+>  
+> -	val = gpio_get_value(GPIO_BTN_S1);
+> +	val = gpiod_get_value(button->gpio);
+>  
+>  	rb532_gpio_set_func(GPIO_BTN_S1);
+>  	set_latch_u5(LO_FOFF, 0);
+>  
+> -	return !val;
+> +	return val;
+>  }
+
+I suppose there is no reasonable way of making this work with
+gpio-keys...
+
+For input piece:
+
+Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+
+Thanks.
 
 -- 
-2.53.0
-
+Dmitry
 
 ______________________________________________________
 Linux MTD discussion mailing list
