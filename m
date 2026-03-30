@@ -4,73 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1868CFB3CE4
-	for <linux-mtd@archiver.kernel.org>; Mon, 30 Mar 2026 09:12:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 597CF10F3DCD
+	for <linux-mtd@archiver.kernel.org>; Mon, 30 Mar 2026 14:11:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:
-	References:MIME-Version:In-Reply-To:From:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=KT1cVxC+JRkSwZp6S56hT4zyswFzgidV7GKl/nQcibg=; b=AhTenGfNt8L9E7Ir4dR1cCKger
-	pXMZipaQJwSaJZSIHa14MkcxgMNBeVHfUo/sXaWgH8TWayNMpQWKbWU9md6GuX0Vxl32zBIeQgh1F
-	Xj5bd7aAwVfG4iluqhJLgPLiU2zjo75XEoJP17iZK3NxOkJ5fDsiY6PpWyXiQdqV/9tzuXoPYmkPF
-	LjcZ/SXbCvLWhtPVOy36BOV1IvztF/RA+MpCMG/6/RrT14psSEznlybPChWx0UCOG8dgMTHnxNjAb
-	gn0+bIalAToEz3JmfEE491a+hWZw9xGEpC2mg4s8xcWofpmL7sTI/h9qzc7NTQ5eY3MS8PVQ+3DXI
-	+JyveY8w==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=lyF43MQ2djGU76Vf9lG+NeYnKLHXXGk5E3Gpn49N5+c=; b=wniKtElliF1Rci
+	0OEXA0UguQlHQfOXwpk4sRe9+ozwpesC+lC5qxjSWvMeNmRWyTxz4hFPx6QpxsRGb/YbC/ODUvEWt
+	A59uspkz84dWYXdyz8zI+vMhASaWUlaW0mAn8A4TMCaLbyVruyIEXeyznPCDJPsKpk0q+flQtHKv6
+	xg7ZDYORV/xLwqfGg4FyiV38+Cn3YoyKTAL2mZrmKaffWOMUOHUxvRwEZmaTkRGsS98ks++e1jnH0
+	oGEKgNZqrLhX+Xh1TS65bPPEljZCr6BH9bLk0EccLqUwTK/5zJ8rq79wpvc5vRgMl97HqQgBC4Wj7
+	8Psdk/mmpPkbCmqPByEg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w78fF-0000000AwFt-3bXn;
-	Mon, 30 Mar 2026 09:12:05 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1w7DKc-0000000BOQK-33Rc;
+	Mon, 30 Mar 2026 14:11:06 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w78fE-0000000AwFh-1fwV
+	id 1w7DKa-0000000BOPZ-2k1y
 	for linux-mtd@lists.infradead.org;
-	Mon, 30 Mar 2026 09:12:04 +0000
+	Mon, 30 Mar 2026 14:11:05 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 79581600AE
-	for <linux-mtd@lists.infradead.org>; Mon, 30 Mar 2026 09:12:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E211C2BCB3
-	for <linux-mtd@lists.infradead.org>; Mon, 30 Mar 2026 09:12:03 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 3A691438AC;
+	Mon, 30 Mar 2026 14:11:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3AE70C4CEF7;
+	Mon, 30 Mar 2026 14:11:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774861923;
-	bh=ceON4+OyPO9Dpt3uRo/YI9ctvvIsu5NXrp2cWjyJbGM=;
-	h=From:In-Reply-To:References:Date:Subject:To:Cc:From;
-	b=RhbUYW1mny2+1VgOOKTjJlNgARppS1K9nt7p4vpy0jKBvrMYdfM0wQKv0I14eSCdJ
-	 HvPbgZFcjWyv0PJXoZOBX4tTlamzeGfteGy5KmcxV3rgC6Yw6imrhxXlCAehnSOzvV
-	 FlwEpqnYzWJyF53poKcxDSCGxfyfixlgcDsQYEtDWU6Td9sJ0sH7Vh4g4Wj5BRKy+0
-	 N8BzdWPmbNRNGV637fkqEcY0dNobxhOf6ohvVtVY7b8UrSkJrADR8rT5XVJy3aJBYI
-	 Kb4pOCR1o2NNisdwpg6viQCe14RIB5F/XGupZz4pEjdSfRsE8VE+gvrVutISqiDaKT
-	 U9iRekWyD0KCQ==
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-38bd60d7a2cso40244421fa.1
-        for <linux-mtd@lists.infradead.org>; Mon, 30 Mar 2026 02:12:03 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCU34RFSI7kB5j5twofV9xjl1zWN2u81QfnmmbZpDXIqScn2/9D44IZbreXEOKUL6qUgWoMDg4BB7+Y=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxwlgVtUU13oozluKmiDXPKX8qEmd3GsD9iHMFBfk8p4gv3Sblz
-	bGFHsG33ssXBECKczjQEXE3petZzf9Tmum4P1LltoKf8qh9cD3HdRMQFas8NWAN6jthI+o8HBAG
-	cuYOR/BCvmUYYMXM9vO7oTeNb8rTIRZ/BKnZnWewdcQ==
-X-Received: by 2002:a05:651c:1594:b0:38a:8c44:75a1 with SMTP id
- 38308e7fff4ca-38c730901a6mr29310131fa.8.1774861921807; Mon, 30 Mar 2026
- 02:12:01 -0700 (PDT)
-Received: from 969154062570 named unknown by gmailapi.google.com with
- HTTPREST; Mon, 30 Mar 2026 02:12:00 -0700
-Received: from 969154062570 named unknown by gmailapi.google.com with
- HTTPREST; Mon, 30 Mar 2026 02:12:00 -0700
-From: Bartosz Golaszewski <brgl@kernel.org>
-In-Reply-To: <20260328-mips-input-rb532-button-v1-1-98e201621501@kernel.org>
+	s=k20201202; t=1774879863;
+	bh=4im8A6qI3vNo5u1cIKaeC/wVSOXe9GnXsdheMSJcYlE=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=VGwELGrJxZKgimq0j6OK2Mhv+JpXJcad7vWxpMxVQlCa8qfyatgpb4bDfBMU/JWyA
+	 DVQFhMvsSuZHabwRvtiv+zkke6X1buHyH5hIvGOXj4rvSfHeFBNCR1EYBkHYntc+ow
+	 vSwfiVHqRFFHtPH+8j6arS/JPlFEM4PelCc+awDxl5AclaLxN2lCiw49T8ZmFaKk/G
+	 DVKI4xvZGXS7SRU6PDPdfAY1aIibwD/YMS8XxXkXGbAYIv+HmfHNT9vk9YdSIm0Mtc
+	 VKYmBbgkN7/i9a+1PKNZELBRe4xPYaMM2mRiYwjomtI3mwkn+vGkL437E/nzAfzbti
+	 r6LmcNRGrKsxA==
+From: Pratyush Yadav <pratyush@kernel.org>
+To: Eliav Farber <farbere@amazon.com>
+Cc: <tudor.ambarus@linaro.org>,  <pratyush@kernel.org>,
+  <mwalle@kernel.org>,  <miquel.raynal@bootlin.com>,  <richard@nod.at>,
+  <vigneshr@ti.com>,  <linux-mtd@lists.infradead.org>,
+  <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 0/3] mtd: spi-nor: winbond: Fix protection handling
+In-Reply-To: <20260218143523.17467-1-farbere@amazon.com> (Eliav Farber's
+	message of "Wed, 18 Feb 2026 14:35:20 +0000")
+References: <20260218143523.17467-1-farbere@amazon.com>
+Date: Mon, 30 Mar 2026 14:10:59 +0000
+Message-ID: <2vxzcy0l1k7g.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-References: <20260328-mips-input-rb532-button-v1-0-98e201621501@kernel.org> <20260328-mips-input-rb532-button-v1-1-98e201621501@kernel.org>
-Date: Mon, 30 Mar 2026 02:12:00 -0700
-X-Gmail-Original-Message-ID: <CAMRc=Mct_F-LPAsvsHWxS1SeT+SBXQ7opikmf33eR7tz_5tJwA@mail.gmail.com>
-X-Gm-Features: AQROBzDH9cuPCu9EfBdDYtLtddxHJtuJYI_E5t-aB4_H_wCaSEBQDt7of5qpvKI
-Message-ID: <CAMRc=Mct_F-LPAsvsHWxS1SeT+SBXQ7opikmf33eR7tz_5tJwA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] MIPS/input: Move RB532 button to GPIO descriptors
-To: Linus Walleij <linusw@kernel.org>
-Cc: linux-mips@vger.kernel.org, linux-input@vger.kernel.org, 
-	linux-gpio@vger.kernel.org, linux-mtd@lists.infradead.org, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
-	Bartosz Golaszewski <brgl@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>, 
-	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260330_071104_712497_A294A42E 
+X-CRM114-Status: GOOD (  13.08  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,64 +75,40 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sat, 28 Mar 2026 16:55:47 +0100, Linus Walleij <linusw@kernel.org> said:
-> Convert the Mikrotik RouterBoard RB532 to use GPIO descriptors
-> by defining a software node for the GPIO chip, then register
-> the button platform device with full info passing the GPIO
-> as a device property.
->
-> This can be used as a base to move more of the RB532 devices
-> over to passing GPIOs using device properties.
->
-> Use the GPIO_ACTIVE_LOW flag and drop the inversion in the
-> rb532_button_pressed() function.
->
-> Signed-off-by: Linus Walleij <linusw@kernel.org>
-> ---
->  arch/mips/rb532/devices.c         | 47 +++++++++++++++++++++++++++++++++------
->  drivers/input/misc/rb532_button.c | 35 ++++++++++++++++++++++++-----
->  2 files changed, 69 insertions(+), 13 deletions(-)
->
-> diff --git a/arch/mips/rb532/devices.c b/arch/mips/rb532/devices.c
-> index 4f027efbf27b..3f56d9feb73a 100644
-> --- a/arch/mips/rb532/devices.c
-> +++ b/arch/mips/rb532/devices.c
-> @@ -16,8 +16,10 @@
->  #include <linux/mtd/mtd.h>
->  #include <linux/gpio.h>
->  #include <linux/gpio/machine.h>
-> +#include <linux/gpio/property.h>
->  #include <linux/gpio_keys.h>
->  #include <linux/input.h>
-> +#include <linux/property.h>
->  #include <linux/serial_8250.h>
->
->  #include <asm/bootinfo.h>
-> @@ -38,6 +40,10 @@ extern unsigned int idt_cpu_freq;
->
->  static struct mpmc_device dev3;
->
-> +static const struct software_node rb532_gpio0_node = {
-> +	.name = "gpio0",
-> +};
-> +
+On Wed, Feb 18 2026, Eliav Farber wrote:
 
-Hi Linus!
+> This series fixes block protection handling for the following Winbond
+> SPI-NOR devices:
+>  - w25q256jwm
+>  - w25q256jw
+>  - w25q64jvm
+>
+> The devices do not correctly describe their Status Register layout and
+> protection capabilities (locking flags, TB bit, BP bit configuration).
+> As a result, the spi-nor core rejects protection requests and locking
+> operations fail with -EINVAL, e.g.:
+>
+>   flash_lock -l /dev/mtd29
+>   flash_lock: error!: could not lock device: /dev/mtd29
+>   error 22 (Invalid argument)
+>
+> Update the device flags to match the actual hardware behavior so that
+> locking and unlocking regions work correctly.
+>
+> All changes were validated using flash_lock on the affected devices.
 
-I'm seeing patches from you lately using the pattern of "dangling software"
-nodes that's documented under Documentation/driver-api/gpio/board.rst as the
-recommended approach but which I have been trying to come up with a better
-alternetive for and eventually phase out. I will post a series providing a way
-to automatically assign software nodes as secondary firmware nodes for devices
-and this series will also remove the offending bits from the docs.
+Applied patches 1 and 3 to spi-nor/next. Thanks!
 
-As you're dealing with a board file here: could you assign the firmware node
-you get after registering this software node to the target GPIO controller
-under arch/mips/rb532/gpio.c so that the firmware node lookup can work by
-matching the address rather than falling back to the label string matching?
+Skipped patch 2 since you say that you haven't got a device to test
+with. I don't have a very strong opinion on this, but I do think we
+should test patches on real hardware just to we get some sanity checking
+for the patch.
 
-Thanks,
-Bartosz
+[...]
+
+-- 
+Regards,
+Pratyush Yadav
 
 ______________________________________________________
 Linux MTD discussion mailing list
