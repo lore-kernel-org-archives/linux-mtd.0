@@ -4,88 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36DB8FC9804
-	for <linux-mtd@archiver.kernel.org>; Sun, 29 Mar 2026 22:39:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 680C2FF492F
+	for <linux-mtd@archiver.kernel.org>; Mon, 30 Mar 2026 07:31:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=6VFcfMiCnguoVbwCBO/m52NAUDF7+uQaPSFHEkobp74=; b=USG/fpQH//CN2F
-	s4OMoQkPo3f15TEd10TrJsQ8mFIyH0TtoxHY0tapWwNErrcE4Q8oZmzDF2MggKGdH8pK4TclFWTU0
-	8mycgEkh1FBKyTfV6l03aTZxHuKpRAt49wkDl/kmlqIsYzXRkSnoOVn97PwlILWd6tzvUBsvMmVU8
-	HCc+/czyflHi2/EdCpScf+s9LfJyBsEWhU6zmMAbkx7HzoZOcu76iwWToaaApW9cooDTs6MW5yl30
-	Z3nll4O7BkekPGC0ZL+TZ/0UrnANTKBWLqsVG50TfCtiEStzVZ4tHL3FsL2yXGRH58k5GQrsdFgqu
-	ypaU8odZECcmvj2pfSYQ==;
+	List-Owner; bh=mGEiKDXxAIWxKNqaLtuzbl8I8584Kcptpp7I1tZhA64=; b=pNuXDLb2QIxNc/
+	Cyj+o1Olhmb8ZWYujl062DZsI0wNacoqqHqEVNR+htw0EQ5sK21nvCFlXuvmniQFfjTSzr3r4ZuTZ
+	wxinmvilZichEa1dn4Ik9EQOfJHugQaGUVt63y/Cf6TCF1CYXd/FVW/AzoBO24Kas7tIB+fOgx6V8
+	L2SjW54LDH5fJOTdobnEGa+XYRroTQ4C864V3Nxx28ODaLx4T5PWRcFb7UgwgGla/1X+UB6z14Mwi
+	HIkbi0fUbFlADSrZ7P2dD0YpjdetDKNPNmi1XeQajN84NlhbRVY0Tya1VFIiCSd1JPlnudFnj6YZ4
+	3jeYENRl0ny6y1OTEo6w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w6ymf-0000000AOMi-1o0u;
-	Sun, 29 Mar 2026 22:39:06 +0000
-Received: from mail-dl1-x122e.google.com ([2607:f8b0:4864:20::122e])
+	id 1w776B-0000000Alyo-1FMk;
+	Mon, 30 Mar 2026 07:31:47 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w6ymZ-0000000AOMN-0dvN
+	id 1w7768-0000000AlxF-3rgD
+	for linux-mtd@bombadil.infradead.org;
+	Mon, 30 Mar 2026 07:31:45 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
+	:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
+	Content-Type:Content-ID:Content-Description;
+	bh=yBvn4M2fwZ/wUpBIpN5sR6P7GDJXzK0vo3gw3vBP+xw=; b=SZtM66IoQ+qby8aednce36TCuj
+	GUcvjejGv1sc6B1j7FppIF+4ecJrMc3jg9IeeSbuH0yMhZ19k8JMX2ew+aV+wVVSogVRxiybeoLGC
+	k+4apC04WwBxzZOQX8K2B3tcTlOAWl2A03VAJ+ataS8vE9Pq7Y613MMPSxELm/q2bIrrf+8Tr7S/6
+	CsxAyeedvbob9WNBuhNXkOj3Foe9ocldow0GjQKNIZpDN9yL7CR5MeAVsAuoumgbKvuBmOYG1ftSH
+	LVBcIOzftHguk9kZqYzi+bg8gRdMP+SmrBbU6pWkF13vhJLkS3u/3gEEv14/IEFllwnnRRd+wYp/o
+	TV5u5mdw==;
+Received: from mail-pj1-x102c.google.com ([2607:f8b0:4864:20::102c])
+	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1w7766-0000000DDXC-0XpU
 	for linux-mtd@lists.infradead.org;
-	Sun, 29 Mar 2026 22:39:00 +0000
-Received: by mail-dl1-x122e.google.com with SMTP id a92af1059eb24-12732e6a123so1787016c88.1
-        for <linux-mtd@lists.infradead.org>; Sun, 29 Mar 2026 15:38:58 -0700 (PDT)
+	Mon, 30 Mar 2026 07:31:43 +0000
+Received: by mail-pj1-x102c.google.com with SMTP id 98e67ed59e1d1-35d9f68d011so657508a91.2
+        for <linux-mtd@lists.infradead.org>; Mon, 30 Mar 2026 00:31:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1774823938; x=1775428738; darn=lists.infradead.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=mIaCRwsPiPLGbHW57vve74Uei7PyZwajOXtEVAjCMmE=;
-        b=e8nqOr71JFvniHAvXGi3EjKsd5jjVKshFDukDFj/8vPnwPwofZTUNA/KG8ekuUn7Bz
-         6bQzktd9Wp8M7tInLBDWP4IKfO8k/RlUTC0bzqxWwAVuurWU5W6t2KaaMwBv/IrRdEX7
-         MgDTP0p8vtmzQaqy6mT7iKNGdxZCXw/UzJlskUthuVPTm+kmHH1xjEcZ4Z/wQD7CHuOE
-         heftBXIJvsg5MpW0g1MLpwFWOrrMrBsv9E6U7kowoGFVLEUG5zePFbShIFHnfuDTlZ/0
-         fVfENBlUHAz96boI5LYGrvY7fHrmZtG4zq9OsArN2ER32UvRqbZXqc9KhwgmbwCdWbaL
-         HtIg==
+        d=gmail.com; s=20251104; t=1774855900; x=1775460700; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yBvn4M2fwZ/wUpBIpN5sR6P7GDJXzK0vo3gw3vBP+xw=;
+        b=lPtOhmRKU3JiApzy5B3PyngRzcQFIHW2yzOA9W9yl6tfXVPRQ1xfmQXGWqOPexINS+
+         IQYiuBSc9bp5KzST95d9PiG/1R5cHJOu6Ak4A0I+DXy6WaVzHD9oRSSCd5yiIyFRB6LU
+         y2syh2kyLsL5hvvJS4Tx0P3mKubPoCbMTAUHPusqW2QtLdrZzJTa6ZjROOUpxc1Q7dHl
+         gpFRm2Zg8CKFj4RhWvmpOeChKs/QMb+y7Y+TKLvgokyBwqhKiusjI79S8NAtdtOJBiVe
+         vUBaDjTTiDZYZHeyru4cuEhlA9qzKxbUb0NlpPtOXG1dxJ9qfLFKQY+EqXUYmkMscaQ2
+         FoiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1774823938; x=1775428738;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mIaCRwsPiPLGbHW57vve74Uei7PyZwajOXtEVAjCMmE=;
-        b=IwImo/V5PMKxVsSpmX4OUrIuzvQi1p8JPcPNQAXbzW8dhFC4djws3Nw5g7h91J/zwm
-         fFAwCdHwZa2aJeMyRrXRVGFl6ecDJPeVEsScHfm02e4uDNdLdEuBetBbNW/IX4xqrhlJ
-         en+PyNxhJrsgJHQUoryeDqHFeezwpB5zpup6g62lF12rauTyEoH33m7sOWRdAdbEdm25
-         yrHRhOgVzXU3dmaVDo+yHDtj7JumbHXeATKUWehGmvx4k4OngJURdVn67MMAyUVTHDAU
-         pMaW06MqkfW1TIvGMJYZmE8ZS7m8r0GzqjOV79cHVKbRJujDymgSIC1En+xL9r7Hx5V6
-         ShKA==
-X-Forwarded-Encrypted: i=1; AJvYcCVIs8nhD3PyX+A7VhvUNu+uxv7Dx8QzpYIrAsQD7L13JhXd6Su/6sZKmEk8HvsTs5MQ/NXATqiC914=@lists.infradead.org
-X-Gm-Message-State: AOJu0YwV1bhQMpiHkrukCsO+0WfHQMjiD/obUbJh+pLuAG2ca+3zhkj7
-	3SBpHHLQqDimC0dShnxkCBFEM/Ch0uax2WIvgsdWLsfQ4jg6zotP/WyG
-X-Gm-Gg: ATEYQzzJy3ba+9ZBFxEWMXQ331MoVq2Y9BJSFV+OlaUMcVdqlSLCVSMNTIxx4M6ykEa
-	MwCveW6s+zZiX59sFlAqPvKEpJCqCdnW7EBmzxisj2re3qRFAksWPEf8w0foa/Y0X0H6sV9r2+1
-	8YhBG8+NyVsHH8tq+bdmicqnCnmPxRNditoCySW6FlZALdQbTR4FCZcnZd6G3j8FVuxR6mMBUfy
-	G02OL/+EwgH1oTqtNnIEHiA/o/hvGaTsoqDd8aYZaZJ8LRCur00FAaGA+XNAgBCa0X9Uzyb60/8
-	xYiHnnlOX+hua6O73To/6kWzEt1CUTFnAExP/hyFENGeDetEufcAuNlLQBYyyDMwO8Q0SYXSb6e
-	pUYm22W2Tto/TO6loOYKVkJh8I6hC7s+oypFJrYAk0leqDqFoyW4h2Cso65nly1sQhlI7mnEDZf
-	MmkTPlVPZ/wyj3SbJ1RiJp9wCczwuIpnrSx5t//ct5ZzPLBIUGP98XxpIzdoodHmF7
-X-Received: by 2002:a05:7022:6190:b0:11a:641f:ba11 with SMTP id a92af1059eb24-12ab2928cb4mr5161322c88.29.1774823937606;
-        Sun, 29 Mar 2026 15:38:57 -0700 (PDT)
-Received: from google.com ([2a00:79e0:2ebe:8:7265:773a:8e51:c62f])
-        by smtp.gmail.com with ESMTPSA id a92af1059eb24-12ab983f9f3sm8212926c88.10.2026.03.29.15.38.56
+        d=1e100.net; s=20251104; t=1774855900; x=1775460700;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=yBvn4M2fwZ/wUpBIpN5sR6P7GDJXzK0vo3gw3vBP+xw=;
+        b=falS7ccIHYNtPz0kD9r0dg8i3QfbW3ZIYBIR1Gtlxbh8wfIfIrw+wGEgXtP5okq8Is
+         6OnM4MfzqI4Mvwb1ZBWBr3BMrXDRcJapIRpCAliQ/YW4MIxPfKYse3UBd3UGGMGV2Hrk
+         W7yYobD/uHZzt0HgEIorMDAdsdPdL2JQ5WvbUSwNafw9twNaLadiE1OCwiPTWAbFg12b
+         XXYvEEdrTQsHw//tjUVLCZydwsnDgsPp1i46+rq3NYNU69VJ9NNl89hKEtDZ6K0iPLew
+         A7P//qPdrw7cvGjtBdkLeUafifX0gRW7Tz2Z7guH85TXBuL33F2umAlN8SJolsuzNTbo
+         HuDg==
+X-Forwarded-Encrypted: i=1; AJvYcCU6SdHJfYBlcVskbG3IkoAgVvYVPS5VkL2LahAnys5iYwbK8mDB8mepGc8riWRnPWjDE8quw4GBY+M=@lists.infradead.org
+X-Gm-Message-State: AOJu0YwwDy5Yyc54ZDEkXPnL058CIDO+0EdZv9ECbQQQYPFmVi+zU4+d
+	SyO5yTznD3ZWN9w8oNyD2QM0tQ1zS744v9vTDcZTKG5vJEsPNp3QGSuM
+X-Gm-Gg: ATEYQzzqp+MVzJZSDQo5p5pdwnZlwTpb2H7h6y7Jk91o/lnhjOiobN5SmFu3y5e4ssG
+	9LvBglTcE90CjzV7GdAAbp++xmppWNbNF9AwsN0pD9Ro52vqCbZtQbOPjg2vHPyL/+4VGbFQWSZ
+	R3R1wr8uI8mESBp6s5njkhs7YRQGO09TxAR6IOEjEC749rujtmlHquCPhEU51BIM6jmnvraGQdE
+	Lp8sxc6aM1XupIE35lYXVap9nw1KhZ/jwh0CiPBN6w5yg8aY0PAlHoCiS3jry0BLYIMboruukb3
+	KivqsuAVfZaJe7GrybzI1kdhLwJsyNr1au4cCnvvwEh8AXAv++YZmu7l8u10cW0alqdGm/Z6zQx
+	rQHdZbZ6qZo0gSfu5vrsNxNgXvKQC9qUWbkwaj+ZJxJPXQzgsarNMLklyOdkE5mhOFLpPLGZ0ri
+	u3eQabSlCIKACrTp51Q1KeepOmB3eVR1k=
+X-Received: by 2002:a17:902:ce81:b0:2ae:c5fc:b2ea with SMTP id d9443c01a7336-2b0cdcb73edmr129302335ad.30.1774855899658;
+        Mon, 30 Mar 2026 00:31:39 -0700 (PDT)
+Received: from d14217fb1c18 ([115.245.213.202])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2b2427c3a4esm87361935ad.78.2026.03.30.00.31.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 29 Mar 2026 15:38:57 -0700 (PDT)
-Date: Sun, 29 Mar 2026 15:38:53 -0700
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To: Linus Walleij <linusw@kernel.org>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	Bartosz Golaszewski <brgl@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>, 
-	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
-	linux-mips@vger.kernel.org, linux-input@vger.kernel.org, linux-gpio@vger.kernel.org, 
-	linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 1/2] MIPS/input: Move RB532 button to GPIO descriptors
-Message-ID: <acmo7_clKRWzhyOi@google.com>
-References: <20260328-mips-input-rb532-button-v1-0-98e201621501@kernel.org>
- <20260328-mips-input-rb532-button-v1-1-98e201621501@kernel.org>
+        Mon, 30 Mar 2026 00:31:39 -0700 (PDT)
+From: Sanjaikumar V S <sanjaikumarvs@gmail.com>
+To: mwalle@kernel.org,
+	pratyush@kernel.org
+Cc: hd@os-cillation.de,
+	linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	miquel.raynal@bootlin.com,
+	richard@nod.at,
+	sanjaikumar.vs@dicortech.com,
+	sanjaikumarvs@gmail.com,
+	stable@vger.kernel.org,
+	tudor.ambarus@linaro.org,
+	vigneshr@ti.com
+Subject: Re: [PATCH v4 0/2] mtd: spi-nor: Fix SST AAI write mode
+Date: Mon, 30 Mar 2026 07:31:29 +0000
+Message-ID: <20260330073129.24-1-sanjaikumarvs@gmail.com>
+X-Mailer: git-send-email 2.52.0
+In-Reply-To: <20260311103057.29-1-sanjaikumarvs@gmail.com>
+References: <20260311103057.29-1-sanjaikumarvs@gmail.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260328-mips-input-rb532-button-v1-1-98e201621501@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260329_153859_202512_E02D1AEB 
-X-CRM114-Status: GOOD (  22.89  )
+X-CRM114-CacheID: sfid-20260330_083142_296563_90F261B1 
+X-CRM114-Status: UNSURE (   7.52  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,85 +124,17 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Linus,
+Hi,
 
-On Sat, Mar 28, 2026 at 04:55:47PM +0100, Linus Walleij wrote:
-> Convert the Mikrotik RouterBoard RB532 to use GPIO descriptors
-> by defining a software node for the GPIO chip, then register
-> the button platform device with full info passing the GPIO
-> as a device property.
-> 
-> This can be used as a base to move more of the RB532 devices
-> over to passing GPIOs using device properties.
-> 
-> Use the GPIO_ACTIVE_LOW flag and drop the inversion in the
-> rb532_button_pressed() function.
-> 
-> Signed-off-by: Linus Walleij <linusw@kernel.org>
-> ---
->  arch/mips/rb532/devices.c         | 47 +++++++++++++++++++++++++++++++++------
->  drivers/input/misc/rb532_button.c | 35 ++++++++++++++++++++++++-----
->  2 files changed, 69 insertions(+), 13 deletions(-)
-> 
-> diff --git a/arch/mips/rb532/devices.c b/arch/mips/rb532/devices.c
-> index 4f027efbf27b..3f56d9feb73a 100644
-> --- a/arch/mips/rb532/devices.c
-> +++ b/arch/mips/rb532/devices.c
-> @@ -16,8 +16,10 @@
->  #include <linux/mtd/mtd.h>
->  #include <linux/gpio.h>
->  #include <linux/gpio/machine.h>
-> +#include <linux/gpio/property.h>
->  #include <linux/gpio_keys.h>
->  #include <linux/input.h>
-> +#include <linux/property.h>
->  #include <linux/serial_8250.h>
->  
->  #include <asm/bootinfo.h>
-> @@ -38,6 +40,10 @@ extern unsigned int idt_cpu_freq;
->  
->  static struct mpmc_device dev3;
->  
-> +static const struct software_node rb532_gpio0_node = {
-> +	.name = "gpio0",
-> +};
+I wanted to follow up on this patch series fixing SST AAI write mode
+issues. It has received Tested-by and Reviewed-by tags from Hendrik
+Donner.
 
-You need to move this and registration into arch/mips/rb532/gpio.c,
-export it and use it here: Bartosz is against using gpiohip label to
-match with software node name and prefers identity matching.
+Could you please let me know if any further changes or actions are
+required for these patches to be considered for inclusion?
 
-...
-
-> -static bool rb532_button_pressed(void)
-> +static bool rb532_button_pressed(struct rb532_button *button)
->  {
->  	int val;
->  
->  	set_latch_u5(0, LO_FOFF);
-> -	gpio_direction_input(GPIO_BTN_S1);
-> +	gpiod_direction_input(button->gpio);
->  
-> -	val = gpio_get_value(GPIO_BTN_S1);
-> +	val = gpiod_get_value(button->gpio);
->  
->  	rb532_gpio_set_func(GPIO_BTN_S1);
->  	set_latch_u5(LO_FOFF, 0);
->  
-> -	return !val;
-> +	return val;
->  }
-
-I suppose there is no reasonable way of making this work with
-gpio-keys...
-
-For input piece:
-
-Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-
-Thanks.
-
--- 
-Dmitry
+Thanks,
+Sanjaikumar
 
 ______________________________________________________
 Linux MTD discussion mailing list
