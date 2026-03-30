@@ -4,68 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16E3FFF4959
-	for <linux-mtd@archiver.kernel.org>; Mon, 30 Mar 2026 08:04:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1868CFB3CE4
+	for <linux-mtd@archiver.kernel.org>; Mon, 30 Mar 2026 09:12:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=k6hP8NdDPaxBwHotm+fKZTpK/+pL/gRSJrRXOtAoW1I=; b=xj0ZmbZhqRU+ag
-	/mQ5bcLRJaZz6o4KZbI1AdcKoSiGqx32jw9CnJwZaav48+xLU7JA6tqoXEnGZHHRMPB8x9N5pJIY8
-	CiBMH+oGvvtsDYvNB/hCx6Ox+zdIDTZ8Ub8yVeVuDKx3fE0n2tCBwzBi9bOhUt1mrlrI/i8H6RBKY
-	Vh3b8g9rkyBbngmUaCMVeFUBoz00xw9XKi8CZIP3LfHG9mR9WbG4PvZ84skN7il1VAL5oCs+1iXdk
-	gveX6HciqgdT02gUcdmiqIDLi/g78UmIh5p6ngwFaQiDejDuH5E/1dqH302Q6DbwEI2MknKgkog6F
-	7vHeU5D9yztGiZ9waD8A==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:
+	References:MIME-Version:In-Reply-To:From:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=KT1cVxC+JRkSwZp6S56hT4zyswFzgidV7GKl/nQcibg=; b=AhTenGfNt8L9E7Ir4dR1cCKger
+	pXMZipaQJwSaJZSIHa14MkcxgMNBeVHfUo/sXaWgH8TWayNMpQWKbWU9md6GuX0Vxl32zBIeQgh1F
+	Xj5bd7aAwVfG4iluqhJLgPLiU2zjo75XEoJP17iZK3NxOkJ5fDsiY6PpWyXiQdqV/9tzuXoPYmkPF
+	LjcZ/SXbCvLWhtPVOy36BOV1IvztF/RA+MpCMG/6/RrT14psSEznlybPChWx0UCOG8dgMTHnxNjAb
+	gn0+bIalAToEz3JmfEE491a+hWZw9xGEpC2mg4s8xcWofpmL7sTI/h9qzc7NTQ5eY3MS8PVQ+3DXI
+	+JyveY8w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w77c8-0000000AoFM-017m;
-	Mon, 30 Mar 2026 08:04:48 +0000
-Received: from smtpout-02.galae.net ([185.246.84.56])
+	id 1w78fF-0000000AwFt-3bXn;
+	Mon, 30 Mar 2026 09:12:05 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w77c1-0000000AoDA-3tSH
+	id 1w78fE-0000000AwFh-1fwV
 	for linux-mtd@lists.infradead.org;
-	Mon, 30 Mar 2026 08:04:46 +0000
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id D41151A3095;
-	Mon, 30 Mar 2026 08:04:34 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id A8E525FFA8;
-	Mon, 30 Mar 2026 08:04:34 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id CC6F110451B68;
-	Mon, 30 Mar 2026 10:04:30 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1774857874; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=e9yXhXYtA6S7FCEzYya4xIi0QVtCAmYf97xEC+a39pE=;
-	b=BuLAqCs+HBjveDvPLCofBbG3aZy+a93jX/iMOoC574ORAOecwYhDZ09PuPx2PYleznVEuX
-	F+SVcj/mvXpWnUqakXVfj+24ofCXLNpg87FiS2fkHDdD+N3uvb1Bn7M50LKueAwkimYCwo
-	F/ebg/i4BGA104opCHdNPWw1/pDQjewsSbM95bsM5WAhx8lkUEI5YEXlVgKMOp3K7ZrEWc
-	gVT/CrDIU/adbPBjqFewfx+8OGL8KnGZz9vUtT3JdgwqkiZbe7+ynqPhXmf/ozL6pj7INl
-	VBJN8D7+dUhrOX1ksxOMMzZVABbl7TaBhcjPKVIQuxBi1Ov5yE84uCqiP9rQTA==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Linus Walleij <linusw@kernel.org>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,  Dmitry Torokhov
- <dmitry.torokhov@gmail.com>,  Bartosz Golaszewski <brgl@kernel.org>,
-  Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
- <vigneshr@ti.com>,  linux-mips@vger.kernel.org,
-  linux-input@vger.kernel.org,  linux-gpio@vger.kernel.org,
-  linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 2/2] MIPS/mtd: Handle READY GPIO in generic NAND
- platform data
-In-Reply-To: <20260328-mips-input-rb532-button-v1-2-98e201621501@kernel.org>
-	(Linus Walleij's message of "Sat, 28 Mar 2026 16:55:48 +0100")
-References: <20260328-mips-input-rb532-button-v1-0-98e201621501@kernel.org>
-	<20260328-mips-input-rb532-button-v1-2-98e201621501@kernel.org>
-User-Agent: mu4e 1.12.7; emacs 30.2
-Date: Mon, 30 Mar 2026 10:04:30 +0200
-Message-ID: <87a4vpbv5d.fsf@bootlin.com>
+	Mon, 30 Mar 2026 09:12:04 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id 79581600AE
+	for <linux-mtd@lists.infradead.org>; Mon, 30 Mar 2026 09:12:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E211C2BCB3
+	for <linux-mtd@lists.infradead.org>; Mon, 30 Mar 2026 09:12:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1774861923;
+	bh=ceON4+OyPO9Dpt3uRo/YI9ctvvIsu5NXrp2cWjyJbGM=;
+	h=From:In-Reply-To:References:Date:Subject:To:Cc:From;
+	b=RhbUYW1mny2+1VgOOKTjJlNgARppS1K9nt7p4vpy0jKBvrMYdfM0wQKv0I14eSCdJ
+	 HvPbgZFcjWyv0PJXoZOBX4tTlamzeGfteGy5KmcxV3rgC6Yw6imrhxXlCAehnSOzvV
+	 FlwEpqnYzWJyF53poKcxDSCGxfyfixlgcDsQYEtDWU6Td9sJ0sH7Vh4g4Wj5BRKy+0
+	 N8BzdWPmbNRNGV637fkqEcY0dNobxhOf6ohvVtVY7b8UrSkJrADR8rT5XVJy3aJBYI
+	 Kb4pOCR1o2NNisdwpg6viQCe14RIB5F/XGupZz4pEjdSfRsE8VE+gvrVutISqiDaKT
+	 U9iRekWyD0KCQ==
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-38bd60d7a2cso40244421fa.1
+        for <linux-mtd@lists.infradead.org>; Mon, 30 Mar 2026 02:12:03 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCU34RFSI7kB5j5twofV9xjl1zWN2u81QfnmmbZpDXIqScn2/9D44IZbreXEOKUL6qUgWoMDg4BB7+Y=@lists.infradead.org
+X-Gm-Message-State: AOJu0YxwlgVtUU13oozluKmiDXPKX8qEmd3GsD9iHMFBfk8p4gv3Sblz
+	bGFHsG33ssXBECKczjQEXE3petZzf9Tmum4P1LltoKf8qh9cD3HdRMQFas8NWAN6jthI+o8HBAG
+	cuYOR/BCvmUYYMXM9vO7oTeNb8rTIRZ/BKnZnWewdcQ==
+X-Received: by 2002:a05:651c:1594:b0:38a:8c44:75a1 with SMTP id
+ 38308e7fff4ca-38c730901a6mr29310131fa.8.1774861921807; Mon, 30 Mar 2026
+ 02:12:01 -0700 (PDT)
+Received: from 969154062570 named unknown by gmailapi.google.com with
+ HTTPREST; Mon, 30 Mar 2026 02:12:00 -0700
+Received: from 969154062570 named unknown by gmailapi.google.com with
+ HTTPREST; Mon, 30 Mar 2026 02:12:00 -0700
+From: Bartosz Golaszewski <brgl@kernel.org>
+In-Reply-To: <20260328-mips-input-rb532-button-v1-1-98e201621501@kernel.org>
 MIME-Version: 1.0
-X-Last-TLS-Session-Version: TLSv1.3
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260330_010442_451206_A6FD52DE 
-X-CRM114-Status: GOOD (  12.65  )
+References: <20260328-mips-input-rb532-button-v1-0-98e201621501@kernel.org> <20260328-mips-input-rb532-button-v1-1-98e201621501@kernel.org>
+Date: Mon, 30 Mar 2026 02:12:00 -0700
+X-Gmail-Original-Message-ID: <CAMRc=Mct_F-LPAsvsHWxS1SeT+SBXQ7opikmf33eR7tz_5tJwA@mail.gmail.com>
+X-Gm-Features: AQROBzDH9cuPCu9EfBdDYtLtddxHJtuJYI_E5t-aB4_H_wCaSEBQDt7of5qpvKI
+Message-ID: <CAMRc=Mct_F-LPAsvsHWxS1SeT+SBXQ7opikmf33eR7tz_5tJwA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] MIPS/input: Move RB532 button to GPIO descriptors
+To: Linus Walleij <linusw@kernel.org>
+Cc: linux-mips@vger.kernel.org, linux-input@vger.kernel.org, 
+	linux-gpio@vger.kernel.org, linux-mtd@lists.infradead.org, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
+	Bartosz Golaszewski <brgl@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>, 
+	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,26 +82,70 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gMjgvMDMvMjAyNiBhdCAxNjo1NTo0OCArMDEsIExpbnVzIFdhbGxlaWogPGxpbnVzd0BrZXJu
-ZWwub3JnPiB3cm90ZToKCj4gVGhlIGNhbGxiYWNrcyBpbnRvIHRoZSBNSVBTIFJCNTMyIHBsYXRm
-b3JtIHRvIHJlYWQgdGhlIEdQSU8gcGluCj4gaW5kaWNhdGluZyB0aGF0IHRoZSBOQU5EIGNoaXAg
-aXMgcmVhZHkgYXJlIG9sZHNjaG9vbCBhbmQgZG9lcwo+IG5vdCBhc3NpZ24gR1BJT3MgYXMgcHJv
-cGVydGllcyB0byB0aGUgTkFORCBkZXZpY2UuCj4KPiBBZGQgYSBjYXBhYmlsaXR5IHRvIHRoZSBn
-ZW5lcmljIHBsYXRmb3JtIE5BTkQgY2hpcCBkcml2ZXIgdG8gdXNlCj4gYSBHUElPIGxpbmUgdG8g
-ZGV0ZWN0IGlmIGEgTkFORCBjaGlwIGlzIHJlYWR5IGFuZCBvdmVycmlkZSB0aGUKPiBwbGF0Zm9y
-bS1sb2NhbCBkcnZfcmVhZHkoKSBjYWxsYmFjayB3aXRoIHRoaXMgY2hlY2sgaWYgdGhlIEdQSU8K
-PiBpcyBwcmVzZW50Lgo+Cj4gVGhpcyBtYWtlcyBpdCBwb3NzaWJsZSB0byBkcm9wIHRoZSBsZWdh
-Y3kgaW5jbHVkZSBoZWFkZXIKPiA8bGludXgvZ3Bpby5oPiBmcm9tIHRoZSBSQjUzMiBkZXZpY2Vz
-Lgo+Cj4gU2lnbmVkLW9mZi1ieTogTGludXMgV2FsbGVpaiA8bGludXN3QGtlcm5lbC5vcmc+Cj4g
-LS0tCj4gIGFyY2gvbWlwcy9yYjUzMi9kZXZpY2VzLmMgICAgICAgIHwgMzYgKysrKysrKysrKysr
-KysrKysrKysrLS0tLS0tLS0tLS0tLS0tCj4gIGRyaXZlcnMvbXRkL25hbmQvcmF3L3BsYXRfbmFu
-ZC5jIHwgMjQgKysrKysrKysrKysrKysrKysrKysrKystCgpGaW5lIGJ5IG1lIGZvciB0aGUgTVRE
-IGJpdHMhCgpBY2tlZC1ieTogTWlxdWVsIFJheW5hbCA8bWlxdWVsLnJheW5hbEBib290bGluLmNv
-bT4KClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRw
-Oi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+On Sat, 28 Mar 2026 16:55:47 +0100, Linus Walleij <linusw@kernel.org> said:
+> Convert the Mikrotik RouterBoard RB532 to use GPIO descriptors
+> by defining a software node for the GPIO chip, then register
+> the button platform device with full info passing the GPIO
+> as a device property.
+>
+> This can be used as a base to move more of the RB532 devices
+> over to passing GPIOs using device properties.
+>
+> Use the GPIO_ACTIVE_LOW flag and drop the inversion in the
+> rb532_button_pressed() function.
+>
+> Signed-off-by: Linus Walleij <linusw@kernel.org>
+> ---
+>  arch/mips/rb532/devices.c         | 47 +++++++++++++++++++++++++++++++++------
+>  drivers/input/misc/rb532_button.c | 35 ++++++++++++++++++++++++-----
+>  2 files changed, 69 insertions(+), 13 deletions(-)
+>
+> diff --git a/arch/mips/rb532/devices.c b/arch/mips/rb532/devices.c
+> index 4f027efbf27b..3f56d9feb73a 100644
+> --- a/arch/mips/rb532/devices.c
+> +++ b/arch/mips/rb532/devices.c
+> @@ -16,8 +16,10 @@
+>  #include <linux/mtd/mtd.h>
+>  #include <linux/gpio.h>
+>  #include <linux/gpio/machine.h>
+> +#include <linux/gpio/property.h>
+>  #include <linux/gpio_keys.h>
+>  #include <linux/input.h>
+> +#include <linux/property.h>
+>  #include <linux/serial_8250.h>
+>
+>  #include <asm/bootinfo.h>
+> @@ -38,6 +40,10 @@ extern unsigned int idt_cpu_freq;
+>
+>  static struct mpmc_device dev3;
+>
+> +static const struct software_node rb532_gpio0_node = {
+> +	.name = "gpio0",
+> +};
+> +
+
+Hi Linus!
+
+I'm seeing patches from you lately using the pattern of "dangling software"
+nodes that's documented under Documentation/driver-api/gpio/board.rst as the
+recommended approach but which I have been trying to come up with a better
+alternetive for and eventually phase out. I will post a series providing a way
+to automatically assign software nodes as secondary firmware nodes for devices
+and this series will also remove the offending bits from the docs.
+
+As you're dealing with a board file here: could you assign the firmware node
+you get after registering this software node to the target GPIO controller
+under arch/mips/rb532/gpio.c so that the firmware node lookup can work by
+matching the address rather than falling back to the label string matching?
+
+Thanks,
+Bartosz
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
