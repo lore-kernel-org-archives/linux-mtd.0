@@ -4,64 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ABAC910F3DCD
-	for <linux-mtd@archiver.kernel.org>; Mon, 30 Mar 2026 14:22:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DBD0410F3DCD
+	for <linux-mtd@archiver.kernel.org>; Mon, 30 Mar 2026 14:23:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
 	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=FUtshePYb1JjTacIX08zzPUdEiJYQARUVAyJCfiEzcE=; b=r3t2nhj5ybbZ8A
-	ILn/10exxKVTo4g8VNOi9RODYZiOKWB4nZjwzBGgjNuN0OVGpjKZd+4QFzLMCSzVhXep5n8ElymGq
-	iKRIfeowb9Ifob55R4hEdb9cU2s1bInMxVLNqXjoV5A3wxNGXiHJTQryLbOx7qCUnjfyoC6Fst4Tm
-	ORrrp2vN0smGqxM/aP+sEik+eXYTsGvRx5isFUf4XPbeULFnpaiojPzAzC8XRmLgC1XdVdxdttl13
-	/QKjnHYJnjRdZxfO/She3Nr7Imhqb3q42R6h+3HZh9bs3GBCkT2ZA8+kp96+lHkHxv7d5Wy5Km1sS
-	niEhCqFVb6i0WJPbAb4A==;
+	List-Owner; bh=QcXdRXAUvgnt4lYGEL/KViYgv5crl1EDty/BOyUs4Eg=; b=vJWlcQARIbgoJJ
+	VFPcSXeI8AlrXiyETmbjCQ8XHNaVe1bjSIBWf8a2x+3zqEIadhujVfKBtE6/7jTx7EzRxigbxBE1/
+	eVKLFUk2IaFHFHbVi5X7y4bFn7mX2K//oYhEJSQCyggak24Bmp4wkFw/NSTA1sbRZq6mFl1M0gf/J
+	p1U7PLxoTcBbnZl8vfggQgtQKv7wX+40i7noArjp/EzVBPEy+ShJmR6xjUhhjaw9P7m5EnHbShzK5
+	F7xgIdl7jhV4YNOqK3EUPNTmzOTBZpmFPVQ2JR1yy3xAGls/hXuvHO8rUm0Bo9pst8Kg6ls4sJ8KT
+	0yL7NOZftFX3EAeQ8bRQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w7DVa-0000000BPdL-0N4X;
-	Mon, 30 Mar 2026 14:22:26 +0000
-Received: from smtpout-03.galae.net ([185.246.85.4])
+	id 1w7DWc-0000000BPli-2dr3;
+	Mon, 30 Mar 2026 14:23:30 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w7DVX-0000000BPcl-0OAh
+	id 1w7DWc-0000000BPla-02jG
 	for linux-mtd@lists.infradead.org;
-	Mon, 30 Mar 2026 14:22:25 +0000
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id AAB434E427BA;
-	Mon, 30 Mar 2026 14:22:19 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 7E8B25FFA8;
-	Mon, 30 Mar 2026 14:22:19 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 7685710450520;
-	Mon, 30 Mar 2026 16:22:16 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1774880539; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=P+TOHPnqWTS0+au25Q+Iw6/W1cExbaPQRvs67MI09EA=;
-	b=OcOy7g0CWYr8YyU+iP0AYmitw4QOsaWzpQNIlQqdMW0+aAynROjsjF6WkdOqyOgxXVL/q9
-	f/CumuY9K0NYhFbGeuWvx+2H4b7DO1F17ET/RYj7e9E9FpgA+vmzBZyhgbjK8DzLDMz35n
-	V6twMyhQkkSWcSt7I15YwqGpjqOm5X4iodNw6bx/r/hJDTH6FuyH/z0iw92N73TYc0bZe7
-	T6PKjvLCT0NB2hSxIZQ03oAwvDrEOkjmfQZE2d0112/KsQAXFRmqpSWp+HjWz1zZOYttzX
-	e6aPGGiRKOZxOSkLbyKVvFRxghxomo9TRh25dpM27ycM7GKotgAxQTvxo0uqRg==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Pratyush Yadav <pratyush@kernel.org>
-Cc: Eliav Farber <farbere@amazon.com>,  <tudor.ambarus@linaro.org>,
-  <mwalle@kernel.org>,  <richard@nod.at>,  <vigneshr@ti.com>,
-  <linux-mtd@lists.infradead.org>,  <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 0/3] mtd: spi-nor: winbond: Fix protection handling
-In-Reply-To: <2vxzcy0l1k7g.fsf@kernel.org> (Pratyush Yadav's message of "Mon,
-	30 Mar 2026 14:10:59 +0000")
-References: <20260218143523.17467-1-farbere@amazon.com>
-	<2vxzcy0l1k7g.fsf@kernel.org>
-User-Agent: mu4e 1.12.7; emacs 30.2
-Date: Mon, 30 Mar 2026 16:22:15 +0200
-Message-ID: <87pl4l9z3c.fsf@bootlin.com>
+	Mon, 30 Mar 2026 14:23:30 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id 66A5260054;
+	Mon, 30 Mar 2026 14:23:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DAF42C4CEF7;
+	Mon, 30 Mar 2026 14:23:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1774880609;
+	bh=e0hg5eoopMhTtmpcjcSal5SyT8XCUR+mbUqFsFXPDKI=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=FrzkimvWMG+nbVM5UKZb8g2tqwoHEWNuBqtaU1Ez05sztLuk4jBmqLk2SrgOdMVF7
+	 0ZBNil9YLv6aaSdfMYRhuAn80iO/4c6Qlf51GLOM8jpNpufcS7+9DAIKdFYyeExIIb
+	 LaiWclnLZjomd7StJ8369lyc9AJxTpIlnxMzoEKIpKhm8dqew1uPctyWVIiCB0Pcel
+	 +oFJs2MRQlJo5FlSeOCCn6MUyF3wW5ntzPQz1m8Bsn0lILROxGb5KRc8vWwvZ13zuB
+	 YviYP/boG8rjOg1MW2uyNEQC4KsCrT20XOlEFBfQx590iW0mMN3cQyswoqFVYeBePj
+	 vn4ukvlL9t7sA==
+From: Pratyush Yadav <pratyush@kernel.org>
+To: Sanjaikumar V S <sanjaikumarvs@gmail.com>
+Cc: mwalle@kernel.org,  linux-kernel@vger.kernel.org,
+  linux-mtd@lists.infradead.org,  miquel.raynal@bootlin.com,
+  pratyush@kernel.org,  richard@nod.at,  sanjaikumar.vs@dicortech.com,
+  stable@vger.kernel.org,  tudor.ambarus@linaro.org,  vigneshr@ti.com
+Subject: Re: [PATCH v4 2/2] mtd: spi-nor: core: Fix AAI mode when dirmap is
+ not available
+In-Reply-To: <20260311103057.29-3-sanjaikumarvs@gmail.com> (Sanjaikumar V.
+	S.'s message of "Wed, 11 Mar 2026 10:30:57 +0000")
+References: <20260311103057.29-1-sanjaikumarvs@gmail.com>
+	<20260311103057.29-3-sanjaikumarvs@gmail.com>
+Date: Mon, 30 Mar 2026 14:23:25 +0000
+Message-ID: <2vxz1ph11jmq.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-X-Last-TLS-Session-Version: TLSv1.3
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260330_072223_462957_4EEC0C7F 
-X-CRM114-Status: GOOD (  11.57  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,33 +69,54 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Cj4+IFRoZSBkZXZpY2VzIGRvIG5vdCBjb3JyZWN0bHkgZGVzY3JpYmUgdGhlaXIgU3RhdHVzIFJl
-Z2lzdGVyIGxheW91dCBhbmQKPj4gcHJvdGVjdGlvbiBjYXBhYmlsaXRpZXMgKGxvY2tpbmcgZmxh
-Z3MsIFRCIGJpdCwgQlAgYml0IGNvbmZpZ3VyYXRpb24pLgo+PiBBcyBhIHJlc3VsdCwgdGhlIHNw
-aS1ub3IgY29yZSByZWplY3RzIHByb3RlY3Rpb24gcmVxdWVzdHMgYW5kIGxvY2tpbmcKPj4gb3Bl
-cmF0aW9ucyBmYWlsIHdpdGggLUVJTlZBTCwgZS5nLjoKPj4KPj4gICBmbGFzaF9sb2NrIC1sIC9k
-ZXYvbXRkMjkKPj4gICBmbGFzaF9sb2NrOiBlcnJvciE6IGNvdWxkIG5vdCBsb2NrIGRldmljZTog
-L2Rldi9tdGQyOQo+PiAgIGVycm9yIDIyIChJbnZhbGlkIGFyZ3VtZW50KQo+Pgo+PiBVcGRhdGUg
-dGhlIGRldmljZSBmbGFncyB0byBtYXRjaCB0aGUgYWN0dWFsIGhhcmR3YXJlIGJlaGF2aW9yIHNv
-IHRoYXQKPj4gbG9ja2luZyBhbmQgdW5sb2NraW5nIHJlZ2lvbnMgd29yayBjb3JyZWN0bHkuCj4+
-Cj4+IEFsbCBjaGFuZ2VzIHdlcmUgdmFsaWRhdGVkIHVzaW5nIGZsYXNoX2xvY2sgb24gdGhlIGFm
-ZmVjdGVkIGRldmljZXMuCj4KPiBBcHBsaWVkIHBhdGNoZXMgMSBhbmQgMyB0byBzcGktbm9yL25l
-eHQuIFRoYW5rcyEKPgo+IFNraXBwZWQgcGF0Y2ggMiBzaW5jZSB5b3Ugc2F5IHRoYXQgeW91IGhh
-dmVuJ3QgZ290IGEgZGV2aWNlIHRvIHRlc3QKPiB3aXRoLiBJIGRvbid0IGhhdmUgYSB2ZXJ5IHN0
-cm9uZyBvcGluaW9uIG9uIHRoaXMsIGJ1dCBJIGRvIHRoaW5rIHdlCj4gc2hvdWxkIHRlc3QgcGF0
-Y2hlcyBvbiByZWFsIGhhcmR3YXJlIGp1c3QgdG8gd2UgZ2V0IHNvbWUgc2FuaXR5IGNoZWNraW5n
-Cj4gZm9yIHRoZSBwYXRjaC4KCkhvbmVzdGx5LCBJIGFtIHByZXR0eSBjb252aW5jZWQgcGF0Y2gg
-MiBjYW5ub3QgbWFrZSBtb3JlIGhhcm0gYXMgdGhlCmJsb2NrIHByb3RlY3Rpb24gaXMgYWxyZWFk
-eSBiYWRseSBicm9rZW4gYnkgbm90IGJlaW5nIGRlc2NyaWJlZCBhdAphbGwuIEZ1cnRoZXJtb3Jl
-LCBmb3Igc2ltaWxhciBjaGlwcyBJIGhhdmUsIHRoZXNlIGJpdHMgYXJlIHJlbGV2YW50LCBzbwpJ
-IHdvdWxkIHJhdGhlciBiZSBpbiBmYXZvdXIgb2YgZ29pbmcgZm9yd2FyZCB3aXRoIHBhdGNoIDIs
-IGJlY2F1c2UgYXQKbW9zdCBpdCB3aWxsIGp1c3Qgbm90IGZpeCB0aGUgYmVoYXZpb3VyIGFzIGl0
-IHByZXRlbmRzIGl0IGRvZXMuCgpNeSAyY3RzIDopCgpNaXF1w6hsCgpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Np
-b24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
-Zm8vbGludXgtbXRkLwo=
+On Wed, Mar 11 2026, Sanjaikumar V S wrote:
+
+> From: Sanjaikumar V S <sanjaikumar.vs@dicortech.com>
+>
+> When the SPI controller lacks direct mapping support, the fallback path
+> in spi_nor_spimem_write_data() uses nor->write_proto based operation
+> template. However, this template uses the standard page program opcode
+> set during probe, not the AAI opcode required for SST flash.
+
+But if the controller does support direct mapping, won't it end up using
+the wrong opcode? Would it be a better idea to update the dirmap_info
+with the right opcodes?
+
+>
+> Add check for nodirmap flag to ensure the code falls through to
+> spi_nor_spimem_exec_op() path which builds the operation at runtime
+> with the correct program_opcode set by sst_nor_write_data().
+>
+> Fixes: df5c21002cf4 ("mtd: spi-nor: use spi-mem dirmap API")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Sanjaikumar V S <sanjaikumar.vs@dicortech.com>
+> ---
+>  drivers/mtd/spi-nor/core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> index 8ffeb41c3e08..cb7f4d447156 100644
+> --- a/drivers/mtd/spi-nor/core.c
+> +++ b/drivers/mtd/spi-nor/core.c
+> @@ -281,7 +281,7 @@ static ssize_t spi_nor_spimem_write_data(struct spi_nor *nor, loff_t to,
+>  	if (spi_nor_spimem_bounce(nor, &op))
+>  		memcpy(nor->bouncebuf, buf, op.data.nbytes);
+>  
+> -	if (nor->dirmap.wdesc) {
+> +	if (nor->dirmap.wdesc && !nor->dirmap.wdesc->nodirmap) {
+>  		nbytes = spi_mem_dirmap_write(nor->dirmap.wdesc, op.addr.val,
+>  					      op.data.nbytes, op.data.buf.out);
+>  	} else {
+
+-- 
+Regards,
+Pratyush Yadav
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
