@@ -4,60 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 274DCFF60CF
-	for <linux-mtd@archiver.kernel.org>; Tue, 31 Mar 2026 07:26:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D40C2FF60EE
+	for <linux-mtd@archiver.kernel.org>; Tue, 31 Mar 2026 09:23:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
 	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=gSwib2BcjhkjQTIWL6sX3eKSPlMk98ITRcWFKKgyUtE=; b=qZXX6eX/fL/F+4
-	6ssusC/KjuXV8JnT8lGtU3w8+wIQjHC6AVU5U3JCP+ewtGaeSAnx3Jrk7dKqla7pyuUwp5jGIgGc2
-	a60RW8xLIs/eVr3vGhdkkAcgpb5/muMmG73zbwEHe1vE4B6NdKs2qy/eFIazDRGMidQFnVG7obGg9
-	LKxilUOa2l3dyU7iF/3ATXozXad7XbhmWIi8tHK+zMVVdmkZ/audpbPjzWsUX/ZL31S5bCzC1Qgkp
-	yZs9CzARvX6/A/xKZ1X+VDDNfD0e+ckmNILe0Ea+clcwE3ayiRl+gEyN4OApQmYjgM+dZnNOs76iF
-	T1IDgWK2PXQj7XtqcREg==;
+	List-Owner; bh=4wueUauR2IwUMewkG+tscnu7/6vjB/zBnkbjTRak/W4=; b=Bhhv5KbKUKgmAE
+	bNB2P3zrnMgDOTj/IffBlL2l22qdaL0oaLFFW94qZI1PmoTJ1TqCRMPzpBwJ2kMUqaFEWpgJh0rlE
+	9Z8wyjFY+cH8rsE56/btgEqruWUjXWLpLSoLf/0V55DqW5FrRQPL+UWqBzt+cuTz99WYkcBOivaEi
+	1Y1JUs9ZIcToRAfssxAQgmMlLyL+wI37JXJGsPCAhK6kYflsyqgDsPIRhf3D6/HPHCBSQKRSiC1FA
+	OiUFsBBUK89kzKATyjGJlHzqchMHW/S8GipNTUiBE2tm03ZsYQkdEtM1SOQRXuZOWlnQ9KpIGdorl
+	P9vy6GfkT0VdJmeqzBqQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w7TUC-0000000CU3Z-4AFj;
-	Tue, 31 Mar 2026 07:26:04 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1w7VKC-0000000Cga8-1o8o;
+	Tue, 31 Mar 2026 09:23:52 +0000
+Received: from smtpout-03.galae.net ([185.246.85.4])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w7TUA-0000000CU2R-40Qw
+	id 1w7VK9-0000000CgZi-1Y9w
 	for linux-mtd@lists.infradead.org;
-	Tue, 31 Mar 2026 07:26:03 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 5B43B6091C;
-	Tue, 31 Mar 2026 07:26:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30204C19423;
-	Tue, 31 Mar 2026 07:26:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774941962;
-	bh=J/7X+rQIo5zVinBT3FXkg0ilM9H8ma02sqnI5YAvjc4=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=FFDzRNrdpX6MZRGUDWl6u1Wx+lPoS0ARP2Anzjb2OG5UnMjLNIXeEmHbcMs8rfYA1
-	 yb9TrU5ktqKRIGSeNp2muHjjc2zy2iWGCrVbNKGWuoduOL4ePXy/tcNKUnudeH7AOS
-	 8Xn/tNvrkf6rclUDDkGs/dhy2ifIFGF+jhlk+/Zbr1N+mkMhfxiWs0Ua5HO+egBpIt
-	 jNK+uN8XbuIHAAUgeBqnijMFKy0I56hhghVdPyJ+46XNumcq/6CGYgT0wODKS3CuJQ
-	 FO/k3WKbgtUY+QbiAlgEBlw/IGAk+aY0MVd940IB0WOyVlo/iZHUhO4IvCfjCnx5ft
-	 APGeEvHdDmUuQ==
-From: Pratyush Yadav <pratyush@kernel.org>
-To: Haoyu Lu <hechushiguitu666@gmail.com>
-Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,  Pratyush Yadav
- <pratyush@kernel.org>,  Michael Walle <mwalle@kernel.org>,  Miquel Raynal
- <miquel.raynal@bootlin.com>,  Richard Weinberger <richard@nod.at>,
-  Vignesh Raghavendra <vigneshr@ti.com>,  linux-mtd@lists.infradead.org,
-  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mtd: spi-nor: micron-st: Enable die erase support
- for MT35XU02GCBA
-In-Reply-To: <20260331030644.1120-1-hechushiguitu666@gmail.com> (Haoyu Lu's
-	message of "Tue, 31 Mar 2026 11:06:42 +0800")
-References: <20260331030644.1120-1-hechushiguitu666@gmail.com>
-Date: Tue, 31 Mar 2026 07:25:58 +0000
-Message-ID: <2vxzqzp0iho9.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	Tue, 31 Mar 2026 09:23:51 +0000
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-03.galae.net (Postfix) with ESMTPS id 2E3A84E42884;
+	Tue, 31 Mar 2026 09:23:29 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id EE17F6029D;
+	Tue, 31 Mar 2026 09:23:28 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id D6B3210451114;
+	Tue, 31 Mar 2026 11:23:24 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1774949008; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=fkBjjN7bhpG5aw4pPbOMePbSqonLTcmD2I2uQB/bMjk=;
+	b=ZHnjeBZJluQoayfHtxxX3c10BPU4KWGyV1gVTK5ZdH8P8kFLWrPjaHonn7FVTSNAyaxIPm
+	zqA5nCnxGEkINET8MEv8ZAL9d/9AhEQjjKLzEnXKldLrNgstNgHXh/9fouSuUvW2IxkCN3
+	7gYwb7rnXrFlSfph/kkH0uXW+SeI3hHVLgrb04DYJnECHUs8pOqOrGDz6zXBdp0yXjWGs7
+	i9vfCfmf1ymHpgEbCtpLQqQJ5CElhLbuisSx/EpOpG1oz+1ib94CaSmSvLY2jLWzMlaSgw
+	fdHfHt6aeuJhO7pPiEzPH7a58CS8ug5ozTOfb6vMb7LnwtodY/Ufu0Rx7n3yuA==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Frieder Schrempf <frieder.schrempf@kontron.de>
+Cc: Frieder Schrempf <frieder@fris.de>,  Mark Brown <broonie@kernel.org>,
+  Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
+ <vigneshr@ti.com>,  Han Xu <han.xu@nxp.com>,  Eberhard Stoll
+ <eberhard.stoll@kontron.de>,  Tudor Ambarus <tudor.ambarus@linaro.org>,
+  Pratyush Yadav <pratyush@kernel.org>,  Michael Walle <mwalle@kernel.org>,
+  linux-spi@vger.kernel.org,  linux-kernel@vger.kernel.org,
+  linux-mtd@lists.infradead.org,  imx@lists.linux.dev
+Subject: Re: [PATCH RFC 6/7] spi: spi-mem: Call spi_set_rx_sampling_point()
+ for each op
+In-Reply-To: <a1a711c4-d9df-4bba-8831-2ec787f84cc4@kontron.de> (Frieder
+	Schrempf's message of "Tue, 10 Mar 2026 15:16:47 +0100")
+References: <20260303-fsl-qspi-rx-sampling-delay-v1-0-9326bbc492d6@kontron.de>
+	<20260303-fsl-qspi-rx-sampling-delay-v1-6-9326bbc492d6@kontron.de>
+	<87wlzlnioh.fsf@bootlin.com>
+	<a1a711c4-d9df-4bba-8831-2ec787f84cc4@kontron.de>
+User-Agent: mu4e 1.12.7; emacs 30.2
+Date: Tue, 31 Mar 2026 11:23:24 +0200
+Message-ID: <87ecl09wtv.fsf@bootlin.com>
 MIME-Version: 1.0
+X-Last-TLS-Session-Version: TLSv1.3
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260331_022349_542739_AB872578 
+X-CRM114-Status: GOOD (  18.24  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,44 +80,47 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Haoyu,
-
-On Tue, Mar 31 2026, Haoyu Lu wrote:
-
-> The MT35XU02GCBA flash device does not support chip erase according
-> to its datasheet, but supports die erase. The existing code had a TODO
-> comment noting that the SPI_NOR_IO_MODE_EN_VOLATILE flag probably needs
-> to be enabled and the driver implementation needs to be converted to
-> use die erase.
->
-> This patch enables the SPI_NOR_IO_MODE_EN_VOLATILE flag and adds the
-> mt35_two_die_fixups to the MT35XU02GCBA entry, which includes the
-> micron_st_nor_two_die_late_init() function that sets up die erase
-> support.
->
-> With these changes, the flash device can properly use die erase
-> operations instead of chip erase.
->
-> Signed-off-by: Haoyu Lu <hechushiguitu666@gmail.com>
-
-I tried applying this patch and it fails to apply. It seems you have
-sent the v2 on top of your v1 patch. You should do the v2 as a fresh
-patch on top of spi-nor/next with all the changes, and not a incremental
-version on top of v1.
-
-Please squash your two patches and resend.
-
-[...]
-
--- 
-Regards,
-Pratyush Yadav
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgRnJpZWRlciwKCj4gVGhlIHNhbXBsaW5nIHBvaW50IGRlbGF5IGlzIGNvdXBsZWQgdG8gdGhl
+IGNsb2NrIGZyZXF1ZW5jeS4gU28gaWYgdGhlCj4gY2xvY2sgY2hhbmdlcyBwZXItb3AsIHdlIGFs
+c28gbmVlZCB0byBjaGFuZ2UgdGhlIHNhbXBsaW5nIGRlbGF5IHBlci1vcC4KPgo+IEluIGdlbmVy
+YWwsIGlmIHdlIHdhbnQgdG8gYXZvaWQgc3dpdGNoaW5nIHRoZSBwYXJhbWV0ZXJzIGJhY2sgYW5k
+IGZvcnRoCj4gaW4gY2FzZXMgb2YgYWx0ZXJuYXRpbmcgb3BzIHdpdGggZGlmZmVyZW50IG1heCBm
+cmVxdWVuY2llcywgd2Ugc2hvdWxkCj4gbWF5YmUgZG8gc29tZSAibWluIG9mIHRoZSBtYXgiIGNh
+bGN1bGF0aW9uIGFuZCB1c2UgdGhlIHJlc3VsdGluZwo+IGZyZXF1ZW5jeSBmb3IgYWxsIG9wcy4K
+Pgo+IElzIHRoYXQgd2hhdCB5b3UgbWVhbj8KCk5vdCBleGFjdGx5LCBJIGFtIG5vdCBhZnJhaWQg
+YnkgdGhlIHRpbWUgaXQgd291bGQgdGFrZSB0byBzd2l0Y2gsIEkgYW0KYWZyYWlkIGJ5IHRoZSBs
+aWtlbGlob29kIHRoYXQgYm90aCB0aGUgUEhZIHR1bmluZyBzZXJpZXMgYW5kIHlvdXIgc2VyaWVz
+Cm1pZ2h0IHdhbnQgdG8gZm9yY2UgYSBkaWZmZXJlbnQgbWF4aW11bSBmcmVxdWVuY3kuIEZvciBp
+bnN0YW5jZSB3aXRoIFRJCmRlc2lnbnMsIHdoZW4gZW50ZXJpbmcgUEhZIG1vZGUsIHRoZSBmcmVx
+dWVuY3kgaXMgMTY2TUh6LCBwZXJpb2QuIFlvdQpjYW5ub3QgbG93ZXIgaXQgYmVjYXVzZSBieSBk
+ZXNpZ24sIHlvdSBieXBhc3MgdGhlIFNQSSBkaXZpc29ycy4KCj4gV2UgY291bGQgZXZlbiBzZXQg
+YSB0aHJlc2hvbGQgdG8gZGVjaWRlIGJldHdlZW4gdXNpbmcgYSBjb21tb24gIm1pbiBvZgo+IHRo
+ZSBtYXgiIGZyZXF1ZW5jeSBvciBkbyB0aGUgc3dpdGNoaW5nIHBlci1vcC4KPgo+IE9uZSBvdGhl
+ciBwb3NzaWJpbGl0eSB3b3VsZCBiZSB0byBzb21laG93IGNhY2hlIHRoZSBwZXItb3AgZnJlcXVl
+bmNpZXMKPiBhbmQgY2FsY3VsYXRlZCBzYW1wbGluZyBkZWxheSB2YWx1ZXMgc28gdGhleSBjYW4g
+YmUgcmV1c2VkIHdoZW4KPiBzd2l0Y2hpbmcgd2l0aG91dCBtdWNoIG92ZXJoZWFkLgo+Cj4gVGhl
+cmUgaXMgb25lIG1vcmUgaXNzdWUgdGhhdCBpcyBub3QgeWV0IGNvdmVyZWQgYnkgdGhpcyBzZXJp
+ZXM6IEJlZm9yZQo+IHNwaW5hbmRfaWRfZGV0ZWN0KCkgd2UgZG9uJ3Qga25vdyB5ZXQgd2hhdCBS
+WCBzYW1wbGluZyBkZWxheSB2YWx1ZSB0aGUKPiBjaGlwIHJlcXVpcmVzLCBidXQgd2UgYWxyZWFk
+eSB1c2UgcmVhZC1zdGF0dXMgYW5kIHJlYWQtaWQgb3BlcmF0aW9ucyBhdAo+IG1heGltdW0gY2hp
+cCBjbG9jay4KCk5vdCBleGFjdGx5ICJtYXhpbXVtIGNoaXAgY2xvY2siIGFzIGluIFNhbnRob3No
+J3Mgd29yaywgYnV0IGluZGVlZCB3ZQpydW4gdGhlc2UgYXQgdGhlIGZyZXF1ZW5jeSBnaXZlbiBp
+biB0aGUgRFQgYXMgYmVpbiB0aGUgbWF4aW11bQpmcmVxdWVuY3kuIElmIHRoYXQncyBub3QgY29y
+cmVjdCwgeW91IG11c3QgbG93ZXIgaXQgaW4gdGhlIERULiBUaGF0IGlzCndoeSBJIGFtIGluIGZh
+dm91ciBvZiBoYXZpbmcgdHdvIG1heGltdW0gZnJlcXVlbmNpZXM6IHRoZSBzdGFuZGFyZCBvbmUs
+CnRoYXQganVzdCB3b3Jrcywgd2hpY2ggaXMgdGhlIG9uZSBmb3Igbm9uIG9wdGltaXplZCBzZXR0
+aW5ncyAodGhlIG9uZSB3ZQphY3R1YWxseSB1c2UgdG9kYXkpIGFuZCBhbm90aGVyIG9uZSwgd2hl
+biB0dW5pbmcgdGhlIGJ1cyB0aW1pbmdzLgoKPiBGb3IgZXhhbXBsZSBvbiBXaW5ib25kIFcyNU4w
+NEtWIHRoaXMgbGVhZHMgdG8gZGV0ZWN0aW9uIGZhaWx1cmVzLiBTbyB3ZQo+IHNob3VsZCBtYXli
+ZSBpbnRyb2R1Y2Ugc29tZSBraW5kIG9mIHJlZHVjZWQgY2xvY2sgc2V0cG9pbnQgZm9yIHRoZQo+
+IGluaXRpYWwgZGV0ZWN0aW9uLCB0aGF0IGlzIHNhZmUgdG8gYmUgdXNlZCB3aXRob3V0IFJYIHNh
+bXBsaW5nIGRlbGF5Cj4gY29tcGVuc2F0aW9uLgoKVGhhdCBzaG91bGQgYmUgdGhlIERUIG1heCBm
+cmVxdWVuY3ksIG5vPwoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGlu
+ZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgt
+bXRkLwo=
