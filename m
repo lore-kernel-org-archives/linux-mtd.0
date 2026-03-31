@@ -4,91 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6CAD0FF60F7
-	for <linux-mtd@archiver.kernel.org>; Tue, 31 Mar 2026 09:50:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58F4BFF60F9
+	for <linux-mtd@archiver.kernel.org>; Tue, 31 Mar 2026 09:54:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=cmY/97acqJHejxscy9K1j2b0UkyzowfInlFsQr2By0o=; b=JZc9WsOuaf9Z0k
-	UTL9hfSn8a62ohJqf82ru88GKsaUMd/ix4HeZTSYXIegHLdPWlh/36ThoZz5Edv9T9+ia2PETyW0m
-	0B00ND5K0MUcC2ZlGXzldz3eVtsIo4Qkj8+WlC5p8Ff+bG+jb4KPTSN0M/VDIg3VmyeoqAB9TXI/c
-	r5qRG+pSnKujhwQg8PvMBYmCjPGCbOk1/dKfbPMVvx94sRzxH3sFVuhsYaUtrlBjFOTx17Jg+KQ2k
-	8perguAWf63C5/W8adhcLMmwpUklUQ+w0GluDzfil8p9GTWNpvxVZg7o5SKbLqBehXTI8WkfVRWaz
-	NVVstt3ItL4VF3MVBCZg==;
+	List-Owner; bh=moFHKdMaaVCdyAqpPm/OGkOHxVKIokqDWXG5Slq4thU=; b=i3zXd3lvxOEQGd
+	Pl9LISNUQCionb5y4X86UOic9HyHZqCAHn3csHyEmWKpJpAhGTV1WsNZoeUdJ064h/Qkuw1bmtM6x
+	ivabuZqigdFGjYFKrRRFPbghump5XeY4ocKikXYe8hnx96VuFgejFm2ThAvVzkvwy8q+drsn9HtoI
+	5enMbUxnrIX+Qh39tSERhF+824sf+LK2q8SybNrzLhOEi2nqa+2+CmwIxc9zNIP6NautfEUW4Dy7g
+	j1sGw2MIlhZ1MX/Skhr2PJPjZ/z+1ufC+BPDX21isAPrzoKDG7XMBQlbRAcvpdOkvXpX8Ad3T4B8p
+	SBjS5tz4RZVFh33lWAsg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w7VkG-0000000CiaG-346a;
-	Tue, 31 Mar 2026 09:50:48 +0000
-Received: from mail-pf1-x436.google.com ([2607:f8b0:4864:20::436])
+	id 1w7Vng-0000000Ciq1-1AhL;
+	Tue, 31 Mar 2026 09:54:20 +0000
+Received: from mail-dl1-x1231.google.com ([2607:f8b0:4864:20::1231])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w7VkE-0000000CiZc-1hwS
+	id 1w7Vnd-0000000CipF-0yqU
 	for linux-mtd@lists.infradead.org;
-	Tue, 31 Mar 2026 09:50:47 +0000
-Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-8296dabef74so5198435b3a.1
-        for <linux-mtd@lists.infradead.org>; Tue, 31 Mar 2026 02:50:46 -0700 (PDT)
+	Tue, 31 Mar 2026 09:54:18 +0000
+Received: by mail-dl1-x1231.google.com with SMTP id a92af1059eb24-12732e6a123so560958c88.1
+        for <linux-mtd@lists.infradead.org>; Tue, 31 Mar 2026 02:54:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1774950645; x=1775555445; darn=lists.infradead.org;
+        d=gmail.com; s=20251104; t=1774950856; x=1775555656; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=GU/F2QI9q8EVNVojnX0CtcCJf9ZvbWREtW+2yWmBDUg=;
-        b=DmROnmk3j5LnH3GHIjIxFmVnnwfaXH1QVOnWPdW9q5f/bUDqeDqzEy04btDQYVAM+9
-         IN14yMlaLet+tbg2n+ctCBSrQD5bolnSi02qO/gKJz7pC8JlOEfIQNF9DwrdmLHCshix
-         Z5g/DPnG07fURNaPe/tOSFLcCY8J2vAhlN6ffug9USewkHYkoxQWtEOMATkex5YgORgU
-         ptvlfq4BYtp5nIkSxtmievBUxcS5oD+N3/RxjPa8zz7fRI0OKje4zJHZtAOFiAab2aMp
-         acDUrNBE5/FEfdqM0qWZeFQ5/OT9zSbOmGu7+t5C0AdTw3Ii3o9eUk95tfC+GOOb5NFn
-         q1Mg==
+        bh=J4NjLkSeK7tOc11RYbBwCiMEr0t3nU9/WnMqnzyoAbk=;
+        b=P76+xVLBvR9qj8JL/k92nhHMEhqicba1nzLMbFBqXGlHU4iA9MustBMZdt+Gdt7Vwn
+         fKp9bs1DajI5PEa0uID8vt6hiNAJcDIzSD8/5pA+gJ8uBh9cjgY38CndeMhL1JnTdIph
+         jzhiAs0nQacwpE0jdojL0A8DAfXB0NaLyUMeYLjL7r017+YwWyvghJxv2rVO+ddcrG7z
+         gaHpfnkW3tQGyNo7uAEufZW2WXgAh+6nze9rsJLRpzUixpUS+pvAuEuKXcTNoEfP1sP7
+         26Lrk4soMrHLjD/R0VxcH8IHokjDegAGq2VCEzkIlNaNftHyvwFAu83G9JsVadlhoixH
+         /WNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1774950645; x=1775555445;
+        d=1e100.net; s=20251104; t=1774950856; x=1775555656;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=GU/F2QI9q8EVNVojnX0CtcCJf9ZvbWREtW+2yWmBDUg=;
-        b=B2hC11M2R2Lm6oEaMU+VOhdSwA2Km5x9Y19FJTQDs8U3yI686dGWBfcucBRQEDrVNG
-         xQ/z//UXdGh2DWvPfYs4eQn2uk1dIGksNG0xVbqNvHwfSpcqAl5aEwBmTH492mq8cmmJ
-         9uB1P0ErY0Coea9gZBrEJDIIK2BtgWYvM9EGdcj79NJwT6emwqNB7Sn+hK1AelvT41SJ
-         hHKrrthu5cjjRD9wJDAF5cB+R/R2Gk/kwZAnihWb/7jMUhML6mifXrIyKQAdJhAjFNEz
-         z91mkZro7QoNyKmy9zDjkWS9phVo4//z1Qyk0Ovdmoab8op/vYlWDWgl5pbZFYktq2uc
-         fhHw==
-X-Forwarded-Encrypted: i=1; AJvYcCWgpzA7w8/bO8Srf9ICauqk9ckb/75lVs7ZKtALFsriGyq5UFSDpzqtrnz9cQPATAXHGbVL8nc9p9Q=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yxbl23GB/iM3re84PMoZaZkL9/bxLV49IEiKagOZeQvq+rTJJ4T
-	54f+qOISJTvUo4qMAdZ2HTeHQWn5soVVep3ioQiuIH7USNCfCoG72eBC
-X-Gm-Gg: ATEYQzwHavKpxc7rYZySYQXdcB/SiRGUXN90fhxacu0wosHmbX0qxhp0WOxmMme57+J
-	fyDimmN+Sd4Sgq6A2tdLdYHb9j5+mczlrjIaHRR6Nd3R494+iAaO02WTb1Wheg5S0XpEvQcFLTM
-	4a6kL8oovjsJFEAyFVvCecqj00Qb4iPW9MWQsysUKG2pcgljeMs+J103tmAHo6zbGpc5W8KRA2W
-	VHC/NL1zHNzMs4DCb3L8irJX6OR8rzt/QHe8j+D+tgQSIg+L3Z7IWpjee9V46YIuci3FkaEI/Wa
-	0c8I1YD+B+o8Ip1Fd6aS9fgVlHDNrV7CYPVFNgb1qjmN5wdfHEiJjNh/ije4J8ivB9XEyTRD5ri
-	98IqXVvbLsBqf7BL3sIJ7oTikP4qjzfBL+/NPI/VqEZelWxEB/66h5r18cstO9DElyBGVBrbz/d
-	mC2TKY3JIbBomhKoAR1gaQQyAlSkGL3N6wK1RA0Ezd4w==
-X-Received: by 2002:a05:6a00:4c9c:b0:82a:7f6b:3fa1 with SMTP id d2e1a72fcca58-82c95ed4602mr15144187b3a.33.1774950645507;
-        Tue, 31 Mar 2026 02:50:45 -0700 (PDT)
-Received: from f7eceb44c2db ([115.245.213.202])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-82ca85fc6e9sm11279771b3a.46.2026.03.31.02.50.41
+        bh=J4NjLkSeK7tOc11RYbBwCiMEr0t3nU9/WnMqnzyoAbk=;
+        b=Wkfu54FICeguFbCdyWWMwEuwpUgstlnbQgj3GK6EILYZK3ICUcQVQ7WoIRE0W6nnuv
+         b4ZLdG8Tn5YJjBJ1Z+tHI/faXYvOyB4q7i96WwoOhw7sy5pa3u19g0PibnixkZ/cuPoJ
+         ISwmxpGIqAOd3zyJkZ3ERI4NaRD2r74RAKxrXV+qJ3KZK/ITjwAwAOQmQAHRujaGDI/x
+         zkjlhQcf+Ig/ZE2ymRBezKPr9NYv7UAMREPfr4bRmdpD1ZtG/vSn9MwqbFrt+LmA+NuY
+         k3tPh79kmYRD64a5HrMYenjLfCuEcoovQcl/YptNRc5ZtN7eEcFh+GO9K+fX5n0O3m47
+         F9EQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVFh7tAKzKcCZ3MP+LSKM9zuVv/AMY0BGlQDujvOQdHmCNTzhRYMftQjKLxwhqKLB8KS8tZ9yOj1PM=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yy3/QUmLzo9xXGVx651ZsHOsur70YdedwZS9CoXMBgsPQ3k9Svh
+	IAv7Uw5jinmapTWPxDlLP2l/GYkK47/yRjSp0dXItVs2aG8dFswXB0QL
+X-Gm-Gg: ATEYQzyi6+8QJl3X2cnNeqNrvPcueQjPaB01uTIGiLgDyF9DV2Dawy9Zhq4aCt2CQJS
+	RS3W2lXdned8eHgMe5FRP+C9BeV0KlCIIWM3BxCRT7geLRssFhCe6MUunkwfc2bi3exvz/K7x9l
+	0MRzcrjySiFmS1GalSsIkzWWYtw5zWinBURnNTgcNbEQM3qIV360Bah7arII0n3IKaapn/yNVGz
+	sFlVx0I82zNJ7jqrnLUUIf4Ih5x6uqBIWq4mAnJ9vAR3nM9VzgE41xj1RfETUyBUKTCLGSsalsJ
+	SY4/3gRY5PdDF0GBsOtEXCxWwZJZyfrIh27GJ5wBWZ7UEtQQgnJIWFAA3QbTPV34mNCvtZ7jcp+
+	O4J72zaqAGm5H+AnFm1zT5gNk20vhdfJ9/nOhe+RwKu1qNTks9Y/SRH4YiDSqBIC5RQ17SbPRYr
+	SOtRgD9vAgOn8B43VsqyOxJ3SlAug1uZP6tU+qJMUwokpPajKPLKkaazT022tPRA==
+X-Received: by 2002:a05:7022:6182:b0:124:9e46:82d6 with SMTP id a92af1059eb24-12ab291277bmr8619579c88.25.1774950856245;
+        Tue, 31 Mar 2026 02:54:16 -0700 (PDT)
+Received: from ZC-202510311500 ([123.139.39.4])
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-2c3c747e410sm9668962eec.25.2026.03.31.02.54.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Mar 2026 02:50:44 -0700 (PDT)
-From: Sanjaikumar V S <sanjaikumarvs@gmail.com>
-To: mwalle@kernel.org,
-	pratyush@kernel.org
-Cc: hd@os-cillation.de,
-	linux-kernel@vger.kernel.org,
+        Tue, 31 Mar 2026 02:54:15 -0700 (PDT)
+From: Haoyu Lu <hechushiguitu666@gmail.com>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <mwalle@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
 	linux-mtd@lists.infradead.org,
-	miquel.raynal@bootlin.com,
-	richard@nod.at,
-	sanjaikumar.vs@dicortech.com,
-	sanjaikumarvs@gmail.com,
-	stable@vger.kernel.org,
-	tudor.ambarus@linaro.org,
-	vigneshr@ti.com
-Subject: [PATCH v5] mtd: spi-nor: Fix SST AAI write mode opcode handling
-Date: Tue, 31 Mar 2026 09:50:26 +0000
-Message-ID: <20260331095026.38-1-sanjaikumarvs@gmail.com>
-X-Mailer: git-send-email 2.52.0
+	linux-kernel@vger.kernel.org,
+	Haoyu Lu <hechushiguitu666@gmail.com>
+Subject: [PATCH v3] mtd: spi-nor: micron-st: Enable die erase support for MT35XU02GCBA
+Date: Tue, 31 Mar 2026 17:53:51 +0800
+Message-ID: <20260331095354.1861-1-hechushiguitu666@gmail.com>
+X-Mailer: git-send-email 2.53.0.windows.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260331_025046_453710_C5C91805 
-X-CRM114-Status: GOOD (  18.29  )
+X-CRM114-CacheID: sfid-20260331_025417_279300_2D816AEE 
+X-CRM114-Status: GOOD (  15.12  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -105,83 +102,69 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Sanjaikumar V S <sanjaikumar.vs@dicortech.com>
+The MT35XU02GCBA flash device does not support chip erase according
+to its datasheet, but supports die erase. The existing code had a TODO
+comment noting that the SPI_NOR_IO_MODE_EN_VOLATILE flag probably needs
+to be enabled and the driver implementation needs to be converted to
+use die erase.
 
-When the SPI controller lacks direct mapping support, the fallback path
-in spi_nor_spimem_write_data() uses nor->write_proto based operation
-template. However, this template uses the standard page program opcode
-set during probe, not the AAI opcode required for SST flash.
+This patch enables the SPI_NOR_IO_MODE_EN_VOLATILE flag and adds the
+mt35_two_die_fixups to the MT35XU02GCBA entry, which includes the
+micron_st_nor_two_die_late_init() function that sets up die erase
+support.
 
-Additionally, controllers that do support direct mapping will also use
-the wrong opcode since the dirmap template is created at probe time
-with the standard page program opcode.
+With these changes, the flash device can properly use die erase
+operations instead of chip erase.
 
-Fix this by:
-1. Checking the nodirmap flag in spi_nor_spimem_write_data() to ensure
-   the code falls through to spi_nor_spimem_exec_op() path which builds
-   the operation at runtime with the correct program_opcode.
-2. Setting nodirmap=true for SST AAI devices in sst_nor_late_init() to
-   disable dirmap and force the runtime opcode path.
-
-This only affects SST devices with SST_WRITE flag. Other SST devices
-that use standard page program can still benefit from dirmap.
-
-Fixes: df5c21002cf4 ("mtd: spi-nor: use spi-mem dirmap API")
-Cc: stable@vger.kernel.org
-Signed-off-by: Sanjaikumar V S <sanjaikumar.vs@dicortech.com>
+Signed-off-by: Haoyu Lu <hechushiguitu666@gmail.com>
 ---
-Changes since v4:
-- Disable dirmap for SST AAI devices in sst_nor_late_init() to fix
-  the case when controller supports direct mapping (Pratyush)
-- Updated commit message and subject to reflect the broader fix
+v3: Squash v1 and v2 into a single patch based on spi-nor/next as requested
+v2: Remove TODO comment and rename mt35xu01gbba_fixups to mt35_two_die_fixups per review.
 
-Note: Patch 1/2 from v4 series is already in spi-nor/next.
+ drivers/mtd/spi-nor/micron-st.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-I don't have hardware to test the new sst.c change. Hendrik, could you
-please verify this on your SST25VF032B setup?
+diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
+index 88033384a71e..c22d62545391 100644
+--- a/drivers/mtd/spi-nor/micron-st.c
++++ b/drivers/mtd/spi-nor/micron-st.c
+@@ -188,7 +188,7 @@ static const struct spi_nor_fixups mt35xu512aba_fixups = {
+ 	.post_sfdp = mt35xu512aba_post_sfdp_fixup,
+ };
 
- drivers/mtd/spi-nor/core.c |  2 +-
- drivers/mtd/spi-nor/sst.c  | 10 +++++++++-
- 2 files changed, 10 insertions(+), 2 deletions(-)
+-static const struct spi_nor_fixups mt35xu01gbba_fixups = {
++static const struct spi_nor_fixups mt35_two_die_fixups = {
+ 	.post_sfdp = mt35xu512aba_post_sfdp_fixup,
+ 	.late_init = micron_st_nor_two_die_late_init,
+ };
+@@ -205,7 +205,7 @@ static const struct flash_info micron_nor_parts[] = {
+ 		.id = SNOR_ID(0x2c, 0x5b, 0x1b),
+ 		.mfr_flags = USE_FSR,
+ 		.fixup_flags = SPI_NOR_IO_MODE_EN_VOLATILE,
+-		.fixups = &mt35xu01gbba_fixups,
++		.fixups = &mt35_two_die_fixups,
+ 	}, {
+ 		/*
+ 		 * The MT35XU02GCBA flash device does not support chip erase,
+@@ -215,7 +215,6 @@ static const struct flash_info micron_nor_parts[] = {
+ 		 * MT35XU01GBBA, the SPI_NOR_IO_MODE_EN_VOLATILE flag probably
+ 		 * needs to be enabled.
+ 		 *
+-		 * TODO: Fix these and test on real hardware.
+ 		 */
+ 		.id = SNOR_ID(0x2c, 0x5b, 0x1c),
+ 		.name = "mt35xu02g",
+@@ -223,7 +223,8 @@ static const struct flash_info micron_nor_parts[] = {
+ 		.no_sfdp_flags = SECT_4K | SPI_NOR_OCTAL_READ,
+ 		.mfr_flags = USE_FSR,
+-		.fixup_flags = SPI_NOR_4B_OPCODES,
++		.fixup_flags = SPI_NOR_4B_OPCODES | SPI_NOR_IO_MODE_EN_VOLATILE,
++		.fixups = &mt35_two_die_fixups,
+ 	},
+ };
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index e6c1fda61f57..2e4b167cab57 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -281,7 +281,7 @@ static ssize_t spi_nor_spimem_write_data(struct spi_nor *nor, loff_t to,
- 	if (spi_nor_spimem_bounce(nor, &op))
- 		memcpy(nor->bouncebuf, buf, op.data.nbytes);
- 
--	if (nor->dirmap.wdesc) {
-+	if (nor->dirmap.wdesc && !nor->dirmap.wdesc->nodirmap) {
- 		nbytes = spi_mem_dirmap_write(nor->dirmap.wdesc, op.addr.val,
- 					      op.data.nbytes, op.data.buf.out);
- 	} else {
-diff --git a/drivers/mtd/spi-nor/sst.c b/drivers/mtd/spi-nor/sst.c
-index db02c14ba16f..cd2f04830a6b 100644
---- a/drivers/mtd/spi-nor/sst.c
-+++ b/drivers/mtd/spi-nor/sst.c
-@@ -267,8 +267,16 @@ static int sst_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
- 
- static int sst_nor_late_init(struct spi_nor *nor)
- {
--	if (nor->info->mfr_flags & SST_WRITE)
-+	if (nor->info->mfr_flags & SST_WRITE) {
- 		nor->mtd._write = sst_nor_write;
-+		/*
-+		 * AAI mode requires dynamic opcode changes (BP vs AAI_WP).
-+		 * Disable dirmap to ensure spi_nor_spimem_exec_op() uses
-+		 * the runtime opcode instead of the dirmap template.
-+		 */
-+		if (nor->dirmap.wdesc)
-+			nor->dirmap.wdesc->nodirmap = true;
-+	}
- 
- 	return 0;
- }
--- 
-2.43.0
-
+--
+2.53.0.windows.1
 
 ______________________________________________________
 Linux MTD discussion mailing list
