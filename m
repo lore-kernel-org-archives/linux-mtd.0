@@ -4,94 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 788F4FF60CE
-	for <linux-mtd@archiver.kernel.org>; Tue, 31 Mar 2026 06:24:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F1068FF60D5
+	for <linux-mtd@archiver.kernel.org>; Tue, 31 Mar 2026 07:10:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=eWpRPxo3drjA4q3o92v79UPvloxmCr2ZBQNbH7NSn74=; b=l8Q++MQSvZcUvm
-	/sxV8iJP3sQuiY6Gkd801Eibe8vyTBkeJRqdi6WmSa/WozJotFfAzCziQqDVHj9cbK0M4TeCQDcvq
-	tJGmITb/GqvNNDEHZn2vkUC/YNhFm/YzvpY6rhIyXs7HNGHCgcLp47JNIHK9Hga2Fap7Lu4RwEG7d
-	yMnY5gyFpXM0OEqK7/aBvOMrHF+eiqN0P/Pc8zmxR05NJFBXXO1Q/cZAHqxiaayAOhcR1V/j/12KF
-	AViACNSNII9h7+w9zk1ocDaH18uZ9xh4ZfHUlUoFgjQeoNjg2SSufsqQ26Hin1t6wa4mzRd30W+Su
-	v+GY6eYfUpOf8Fc5DSug==;
+	List-Owner; bh=YXgxuIYjLIonNDRgVNpzIOWLFwsy0WJHfRU5XtLZ6CY=; b=GMpklwXGLHodPx
+	SfPk8Q+28uLWyU/+XI83XT6kMliG4yBJgDDtRggHKK+X+vwhdCtwIVBztr47O++NY33ORJeFp41wt
+	i1OlOvGsGEorpTCRQd4Tok9geHOwc2nWd45rQBue/rRooeoLlHy6rcFEpSkFqRD3bs1ay8Wn5IBR3
+	7pKYW/NTW28mu3OYfsDxlPEj5tTPwRgRlqIfUYM+UUxRuCg9e9AxJkoYNh0CMT9WnZzjfVVJzuhkK
+	hqsCvBZDVLuqgEU0pi2+esbjy2tHATsFqMx3FCFxsFW4u4n72Ng4Bkg5JgqE2rG3qjZbhHKEaannB
+	iYgjQ3wcSXN4k0qtuF5Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w7SWm-0000000CM7l-0rys;
-	Tue, 31 Mar 2026 06:24:40 +0000
-Received: from mail-pj1-x102e.google.com ([2607:f8b0:4864:20::102e])
+	id 1w7TEx-0000000CR5s-0jfF;
+	Tue, 31 Mar 2026 07:10:19 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w7SWj-0000000CM7P-3xOh
+	id 1w7TEw-0000000CR5P-0Kk8
 	for linux-mtd@lists.infradead.org;
-	Tue, 31 Mar 2026 06:24:39 +0000
-Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-354bc7c2c46so3124740a91.0
-        for <linux-mtd@lists.infradead.org>; Mon, 30 Mar 2026 23:24:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1774938277; x=1775543077; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vWlAHWkTCyA7++NZ0O2EqtDYUYeKrn9fUAwZU7E8i7s=;
-        b=h2rybFYVVeut4Tw4sofj2lPpjn3IFClaJHne06wCNFZcY7BlbQzgaNPxhGRe+00/b3
-         1UhjG8CfiYwHV/27MnRsfU21yH483fi5dNwSoVqZ4skGKJ6cvgAWWJhrGlnRnlOCmzwQ
-         afm3IgSB1+7L39/582MakhqLT+vIBGh9kLRCAFPq8nWmbhKHmD8WK/YEzDoS8l8e1rT2
-         14DgJNcHFV33s5WYqO8MCyQyQyzKKXDgI0u/9a3QaBCL74oFpO7NFSOg3jyNdJmm3bDf
-         z3QM1SXJDcWzQ3OrIuYX6a7VpNqRRtcxJIjlqVtW7CHyZUmECgA0ICYb3MjJlf9Y45pA
-         aonw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1774938277; x=1775543077;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=vWlAHWkTCyA7++NZ0O2EqtDYUYeKrn9fUAwZU7E8i7s=;
-        b=fto2gV5Kqx3CFBwswho1N/hr+O6NZNYLlxaQxGm8Xxru5wov9/fOni5esDwiToucXl
-         QJPBjCHwIkqt8qmsOUPjPDbvclQs0yUSBMLQygPfYO4zNNUO1MNCijLf3jFlTgCMdsfy
-         cbUl4qPz0iEGyBg2cGatC0La5OysDSNFhH4WAhMpti3BSTQpGwuCPdSABWJgqRigu2Th
-         rlodsidv4j8sqoBgjgnAGgfAeLgSx6dEkaUmd+PHWlv0ZHE9eI8iSCKFDWM+TKCjxsGO
-         D4XPDzvOjb7VmEZqp08O+i+l7NEdcWkpNt9kVZxF49YgkUygMUCzpc0WRp9xwo+EfW8F
-         3Z7A==
-X-Forwarded-Encrypted: i=1; AJvYcCWUlTeGgCXBzWXjNKeKskSCNhDbJY4uH2fjdLwmDvx1puCMeeZPmpNWlLHdiqXAN9pMxmRPQYUHz6g=@lists.infradead.org
-X-Gm-Message-State: AOJu0YyCv9gM5BccGPutkVgY8ctM7+V76dZpWcDWIBZdi9HF5eAPaKf+
-	UrsTQWbI/ui6oxeGeAPiCqBrT/GOS0xXTdgSeafO82khjCqTVSbgujJL
-X-Gm-Gg: ATEYQzwYQJD6cd6w8TGgjr8icBrfxPM6R5RH9OB9qUwQZM5R+nULsdVkZqqWz/kNV1J
-	CPlcLOAjJnqaGmrjBTC31AvA2Ri9NbJ4RA1DsvLuYg0sYupWHJpzduYwLnC2Zz4kcn3MLhLSeFw
-	b7vCeBQae7AV1fuW/ZqTB1XwIevccoR7FY3HR/IfeTd2U3VXW7eT3zH19zIQlIiFpIkRdOtyanL
-	y6Tkj35QBu7+yianU4AIZucD3PZqbMC+0Ozov+z2Vh9Hj6VoZKmyYiOaibPCR4kF+9LPUzSo9eU
-	sJlnCKKgtVrCk60sHyujeT6lNSOCdlSQUF0oV/f+mPt9e4S/axXaQougHIP40UF0nptul6a9cke
-	m4Q4tBocApnXfqdFuNijScB4kZkqL8IZUsmh28XdfPDNpWBcTa38qGBrnD4JGivdOZgjRheXXdR
-	09YHz73YFIw8mQ5bX6WrOPtqXEiJgoppg=
-X-Received: by 2002:a17:902:e889:b0:2ae:d09c:5241 with SMTP id d9443c01a7336-2b0cdc0332dmr160886305ad.2.1774938276711;
-        Mon, 30 Mar 2026 23:24:36 -0700 (PDT)
-Received: from f7eceb44c2db ([115.245.213.202])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2b242676e13sm103873625ad.28.2026.03.30.23.24.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Mar 2026 23:24:36 -0700 (PDT)
-From: Sanjaikumar V S <sanjaikumarvs@gmail.com>
-To: mwalle@kernel.org,
-	pratyush@kernel.org
-Cc: hd@os-cillation.de,
-	linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	miquel.raynal@bootlin.com,
-	richard@nod.at,
-	sanjaikumar.vs@dicortech.com,
-	sanjaikumarvs@gmail.com,
-	stable@vger.kernel.org,
-	tudor.ambarus@linaro.org,
-	vigneshr@ti.com
-Subject: Re: [PATCH v4 2/2] mtd: spi-nor: core: Fix AAI mode when dirmap is not available
-Date: Tue, 31 Mar 2026 06:24:17 +0000
-Message-ID: <20260331062417.26-1-sanjaikumarvs@gmail.com>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <2vxz1ph11jmq.fsf@kernel.org>
-References: <2vxz1ph11jmq.fsf@kernel.org>
+	Tue, 31 Mar 2026 07:10:18 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id 2D5DC60127;
+	Tue, 31 Mar 2026 07:10:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFDDFC2BCB0;
+	Tue, 31 Mar 2026 07:10:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1774941016;
+	bh=RR3CtjKWfDUOb/LevbVt+Lxojt6uAl8U9oM3JXrFdIU=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=Y86lVtye1rdWVPwrVEvRH8o1K37HvVjyQirZihw4E0p8DbPAKTKqKZi+G/SSt0AGX
+	 nIoKLg1LKnV2HOamHlHXe/xda7hwuWtm9HZDVWKYc6C8AgctlLRx6abA+zXoGDUJDZ
+	 VPbzrWNNZzOcLz1dtwBhy1HMMqtA0Fs1C03eFyxlI4hYsQzzRrf0lUJ/jrPdAiwP5i
+	 S3aoI4mX3cAh1W0nJOQ7N+ajaVxC+2hiuOH+A60h/scnQiQCU/RB40pGp7z06l6S9v
+	 qrWDHjTkqc1EX2teqJgT9CkVw8k5imHZ+LZclfWoGbJUVth1qqGFU5xI/5TuhHuKsb
+	 +B5PUlbHHrw5A==
+From: Pratyush Yadav <pratyush@kernel.org>
+To: Haoyu Lu <hechushiguitu666@gmail.com>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,  Pratyush Yadav
+ <pratyush@kernel.org>,  Michael Walle <mwalle@kernel.org>,  Miquel Raynal
+ <miquel.raynal@bootlin.com>,  Richard Weinberger <richard@nod.at>,
+  Vignesh Raghavendra <vigneshr@ti.com>,  linux-mtd@lists.infradead.org,
+  linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mtd: spi-nor: micron-st: Enable die erase support
+ for MT35XU02GCBA
+In-Reply-To: <20260331030644.1120-1-hechushiguitu666@gmail.com> (Haoyu Lu's
+	message of "Tue, 31 Mar 2026 11:06:42 +0800")
+References: <20260331030644.1120-1-hechushiguitu666@gmail.com>
+Date: Tue, 31 Mar 2026 07:10:13 +0000
+Message-ID: <2vxzv7eciiei.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260330_232438_003848_1D5A4AD9 
-X-CRM114-Status: GOOD (  10.71  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -108,35 +74,80 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
+On Tue, Mar 31 2026, Haoyu Lu wrote:
 
-> But if the controller does support direct mapping, won't it end up
-> using the wrong opcode? Would it be a better idea to update the
-> dirmap_info with the right opcodes?
+> The MT35XU02GCBA flash device does not support chip erase according
+> to its datasheet, but supports die erase. The existing code had a TODO
+> comment noting that the SPI_NOR_IO_MODE_EN_VOLATILE flag probably needs
+> to be enabled and the driver implementation needs to be converted to
+> use die erase.
+>
+> This patch enables the SPI_NOR_IO_MODE_EN_VOLATILE flag and adds the
+> mt35_two_die_fixups to the MT35XU02GCBA entry, which includes the
+> micron_st_nor_two_die_late_init() function that sets up die erase
+> support.
+>
+> With these changes, the flash device can properly use die erase
+> operations instead of chip erase.
+>
+> Signed-off-by: Haoyu Lu <hechushiguitu666@gmail.com>
+> ---
+> v2: Remove TODO comment and rename mt35xu01gbba_fixups to mt35_two_die_fixups per review.
+>
+>  drivers/mtd/spi-nor/micron-st.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
+> index 4e8c6ef14697..c22d62545391 100644
+> --- a/drivers/mtd/spi-nor/micron-st.c
+> +++ b/drivers/mtd/spi-nor/micron-st.c
+> @@ -185,7 +185,7 @@ static const struct spi_nor_fixups mt35xu512aba_fixups = {
+>  	.post_sfdp = mt35xu512aba_post_sfdp_fixup,
+>  };
+>  
+> -static const struct spi_nor_fixups mt35xu01gbba_fixups = {
+> +static const struct spi_nor_fixups mt35_two_die_fixups = {
+>  	.post_sfdp = mt35xu512aba_post_sfdp_fixup,
+>  	.late_init = micron_st_nor_two_die_late_init,
+>  };
+> @@ -202,7 +202,7 @@ static const struct flash_info micron_nor_parts[] = {
+>  		.id = SNOR_ID(0x2c, 0x5b, 0x1b),
+>  		.mfr_flags = USE_FSR,
+>  		.fixup_flags = SPI_NOR_IO_MODE_EN_VOLATILE,
+> -		.fixups = &mt35xu01gbba_fixups,
+> +		.fixups = &mt35_two_die_fixups,
+>  	}, {
+>  		/*
+>  		 * The MT35XU02GCBA flash device does not support chip erase,
+> @@ -212,7 +212,6 @@ static const struct flash_info micron_nor_parts[] = {
+>  		 * MT35XU01GBBA, the SPI_NOR_IO_MODE_EN_VOLATILE flag probably
+>  		 * needs to be enabled.
+>  		 *
+> -		 * TODO: Fix these and test on real hardware.
 
-You're right. If the controller supports direct mapping, it would still
-use the wrong opcode from the template created at probe time.
+I meant to drop the whole comment. But no problem, I can do that when
+applying.
 
-Updating dirmap_info at runtime is problematic because SST AAI mode
-requires dynamic changes per write:
-- cmd.opcode: SPINOR_OP_BP (single byte) vs SPINOR_OP_AAI_WP (word)
-- addr.nbytes: must be 0 for subsequent AAI writes
+Reviewed-by: Pratyush Yadav <pratyush@kernel.org>
 
-Controllers may also cache the template at dirmap_create time, so
-modifying it at runtime could cause issues.
+Thanks for the patch!
 
-A cleaner approach is to disable dirmap for SST AAI devices by setting
-nodirmap=1 in sst_nor_late_init(). This ensures all writes go through
-spi_nor_spimem_exec_op() which uses the runtime opcode.
+>  		 */
+>  		.id = SNOR_ID(0x2c, 0x5b, 0x1c),
+>  		.name = "mt35xu02g",
+> @@ -221,7 +220,7 @@ static const struct flash_info micron_nor_parts[] = {
+>  		.no_sfdp_flags = SECT_4K | SPI_NOR_OCTAL_READ,
+>  		.mfr_flags = USE_FSR,
+>  		.fixup_flags = SPI_NOR_4B_OPCODES | SPI_NOR_IO_MODE_EN_VOLATILE,
+> -		.fixups = &mt35xu01gbba_fixups,
+> +		.fixups = &mt35_two_die_fixups,
+>  	},
+>  };
+>  
 
-This only affects devices with SST_WRITE flag (sst25wf*, sst25vf016b,
-sst25vf032b, sst25vf040b, sst25vf080b). Other SST devices that use
-standard page program can still benefit from dirmap.
-
-I'll send a v5 with this change.
-
-Thanks,
-Sanjaikumar
+-- 
+Regards,
+Pratyush Yadav
 
 ______________________________________________________
 Linux MTD discussion mailing list
