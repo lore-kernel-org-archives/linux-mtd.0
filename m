@@ -4,51 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F92BE8537A
-	for <linux-mtd@archiver.kernel.org>; Fri,  3 Apr 2026 16:10:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E752EE85371
+	for <linux-mtd@archiver.kernel.org>; Fri,  3 Apr 2026 16:10:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=TvvI05UTRSjV6IXa9AfjBVPjhcsLT1YTrdkWJxAIbzg=; b=v6OwKwGSdYHkcZ
-	bz8QXwBlS4Ol9OLo5w4wKo19wUzjYnqxRQZmTGA1Tk1refANr+DdYhtwXGaPUyCBZUNMfQceIy1FA
-	jLNhyuNCv8M3RNEQm89fj7LVa+X4dYTFi/xQG/MI02vdfFqak6cNj0AH7P9b3IxqYaB+xovzAeS+H
-	FcKCApOa5jdTH0WsJ8skJ5Nk3mtnK6ef3aBnzanNf/IgACPvSoan8V+Q0crZOJTUEXr0R9Q+/oOBG
-	g9D2Uw4yIX87vYp9K1cNTjHDZ4K325AMmyQ2Ii5alaOTTAKTQfrYPMGk4HJD3E3XKP88bqYRt8TDG
-	HiKeq7yJhzIzOA7S1LAQ==;
+	List-Owner; bh=Adk8VpQWzgZzGmyFJxmXdCOWq10GWyJCLwKFRGXEieU=; b=IPagMqsKQ5mwT7
+	KM36UQrF2LlJP12cYW4EveEs5gpqwNnyHVAesmefeNyY9ChXSHqKdkQv+cOfF5uL/e7OVOl7nQp5C
+	zvKVg1c208rNM981pxvJaW8m8KmXklbQqHgq4ByOUIqsSyoe74Lt0DsjfGhYg0NZR8W6R6S9hqwKE
+	Tq9+kW4Kft/d4JbXwP8kB/9iOUZXbKZnkR3i6au1sshNFnCCPKG7COWWs29Qib0NEEag65YoMgoSy
+	I4jtVKMjFwFeblWKzn0j+Oju+ZLD+483nTaSgxwZ3k22O7qJsx2k6N4MTBvuo5RrwcMfMpcOcnbc1
+	YG4W6DyN1lIxZhaAb+IA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w8h6J-00000002Hag-0cP3;
-	Fri, 03 Apr 2026 16:10:27 +0000
-Received: from smtpout-03.galae.net ([185.246.85.4])
+	id 1w8h6M-00000002HfS-25Zh;
+	Fri, 03 Apr 2026 16:10:30 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w8h6B-00000002HOF-3kpW
+	id 1w8h6I-00000002HYB-1eqK
+	for linux-mtd@bombadil.infradead.org;
+	Fri, 03 Apr 2026 16:10:26 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=Cc:To:In-Reply-To:References:Message-Id
+	:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:From:Sender
+	:Reply-To:Content-ID:Content-Description;
+	bh=xzSy+EhNI9t9zTqMF1NixCi1hFBNiZkvrrCmxjn6Qww=; b=KEnwPFjKUo2nJnTpOjEK4wKVoa
+	UJr6+7juki0EqmNNQLP7ySY6PNjkTBApS2iZR/XCK1zDkkEad1ar+sQDcnXWR9YL7BmfmM/1rjOk8
+	sPPKrvrORnspW4ur6KMUtcqmgRVSRp8VVcogkDau4eP2LG5zEL9kbyVVpMkHyYnnyO5reC5BFYsjt
+	eTCkSyZho/eEJ9dn07bVjvrvbd7t4TZQPFxdn2HOhx/wDXcrAcW0OcplYlYkI/jZN4dV0Fz35X7bI
+	arVcA4N/SeSKYk2Wtc7UV3vX1Ncu31rYbTx7f9SBakKZXBEQ6wHmsUFiECZAi8Ovn6/3CVxXmbRmA
+	Je/njzgw==;
+Received: from smtpout-04.galae.net ([185.171.202.116])
+	by casper.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1w8h6A-0000000EgaO-2JwI
 	for linux-mtd@lists.infradead.org;
-	Fri, 03 Apr 2026 16:10:25 +0000
+	Fri, 03 Apr 2026 16:10:24 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id 254484E428D7;
-	Fri,  3 Apr 2026 16:10:18 +0000 (UTC)
+	by smtpout-04.galae.net (Postfix) with ESMTPS id 8A260C59F65;
+	Fri,  3 Apr 2026 16:10:40 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id EF749603C1;
-	Fri,  3 Apr 2026 16:10:17 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 32B7810450109;
-	Fri,  3 Apr 2026 18:10:15 +0200 (CEST)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 8BF11603C1;
+	Fri,  3 Apr 2026 16:10:08 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id EE5CA104500F6;
+	Fri,  3 Apr 2026 18:10:04 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1775232617; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1775232607; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=BTfD2i7QceyxCGKPOQo667FcG7sbtAJLIKE74Vn9+eQ=;
-	b=zMM4hbm8g/TT9sNB1p3va8+BxJfTg1OaTe1CGq8hJU9ZRigsEF50tT2TfUkv3KR1W9iyrD
-	OkZVDbn5wIwynP9CQ1T9Nd9SJhhVbHESsr/yKFODj+ra+TcmaANGueyK6roJJslB8j6p4c
-	E0ZNs9cPGf5ajeQrGUd0ixX4oPaDOgYy71+c9afkcbc/00JRUJu/ydStcK/ni+6K+z5VDr
-	RPj/FwXYYjPuOdrBvh/42v8OlUoyE2mqHim8aCkK1B5Q8eqwrI7JBR4YfnmRk/cstbrnNW
-	HYL+d3SJqJy33GV+/xf/o8loSFlvFOM+AYI/Kfi1rBxEy03Ajs3FnUWxZkwEqA==
+	bh=xzSy+EhNI9t9zTqMF1NixCi1hFBNiZkvrrCmxjn6Qww=;
+	b=LUXasgoYgUxnSYaqKpNjymZ/Qvv340Urc9Z5AxflgEzL0mlHnOmx6ujlAOqq8HMTe4RnKl
+	SqWLHFfhrDHx0Jp89i1tlZ52r2t5gkEnWBCJ/HR6dAZailfXtM/CXeibU+TJz/xNvDFmuP
+	tBJthi+c4CQUWGOyXv9KKXt8PEQ6G/OFY5niqOnyn3bGp3JFoLke9oQprxN8WA9auU1M34
+	aa077vkc3vZVDiBF22ZZH9Db51bP0uqyS3sA3+L/Hj910K6OlS4zRwaNfMgpmDdd2ZS0nt
+	CAr7ryl50sDv8YyimqmbKU8MARmDz0mnrHk0ZFHeWxgC/LSo87ber6jHXSw2ag==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Fri, 03 Apr 2026 18:09:35 +0200
-Subject: [PATCH v4 17/27] mtd: spi-nor: debugfs: Add locking support
+Date: Fri, 03 Apr 2026 18:09:31 +0200
+Subject: [PATCH v4 13/27] mtd: spi-nor: swp: Create helpers for building
+ the SR register
 MIME-Version: 1.0
-Message-Id: <20260403-winbond-v6-18-rc1-spi-nor-swp-v4-17-833dab5e7288@bootlin.com>
+Message-Id: <20260403-winbond-v6-18-rc1-spi-nor-swp-v4-13-833dab5e7288@bootlin.com>
 References: <20260403-winbond-v6-18-rc1-spi-nor-swp-v4-0-833dab5e7288@bootlin.com>
 In-Reply-To: <20260403-winbond-v6-18-rc1-spi-nor-swp-v4-0-833dab5e7288@bootlin.com>
 To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
@@ -63,8 +79,8 @@ Cc: Sean Anderson <sean.anderson@linux.dev>,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260403_091020_156612_4EFDC755 
-X-CRM114-Status: GOOD (  19.92  )
+X-CRM114-CacheID: sfid-20260403_171018_673001_AE52DF1D 
+X-CRM114-Status: GOOD (  13.77  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,238 +97,170 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The ioctl output may be counter intuitive in some cases. Asking for a
-"locked status" over a region that is only partially locked will return
-"unlocked" whereas in practice maybe the biggest part is actually
-locked.
+The status register contains 3 or 4 BP (Block Protect) bits, 0 or 1
+TB (Top/Bottom) bit, soon 0 or 1 CMP (Complement) bit. The last BP bit
+and the TB bit locations change between vendors. The whole logic of
+buildling the content of the status register based on some input
+conditions is used two times and soon will be used 4 times.
 
-Knowing what is the real software locking state through debugfs would be
-very convenient for development/debugging purposes, hence this proposal
-for adding an extra block at the end of the file: a "locked sectors"
-array which lists every section, if it is locked or not, showing both
-the address ranges and the sizes in numbers of blocks.
-
-Here is an example of output, what is after the "sector map" is new.
-
-$ cat /sys/kernel/debug/spi-nor/spi0.0/params
-name		(null)
-id		ef a0 20 00 00 00
-size		64.0 MiB
-write size	1
-page size	256
-address nbytes	4
-flags		HAS_SR_TB | 4B_OPCODES | HAS_4BAIT | HAS_LOCK | HAS_16BIT_SR | HAS_SR_TB_BIT6 | HAS_4BIT_BP | SOFT_RESET | NO_WP
-
-opcodes
- read		0xec
-  dummy cycles	6
- erase		0xdc
- program	0x34
- 8D extension	none
-
-protocols
- read		1S-4S-4S
- write		1S-1S-4S
- register	1S-1S-1S
-
-erase commands
- 21 (4.00 KiB) [1]
- dc (64.0 KiB) [3]
- c7 (64.0 MiB)
-
-sector map
- region (in hex)   | erase mask | overlaid
- ------------------+------------+---------
- 00000000-03ffffff |     [   3] | no
-
-locked sectors
- region (in hex)   | status   | #blocks
- ------------------+----------+--------
- 00000000-03ffffff | unlocked | 1024
+Create dedicated helpers for these steps.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
-Here are below more examples of output with various situations. The full
-output of the "params" content has been manually removed to only show
-what has been added and how it behaves.
+ drivers/mtd/spi-nor/swp.c | 83 +++++++++++++++++++++++++++++------------------
+ 1 file changed, 51 insertions(+), 32 deletions(-)
 
-$ flash_lock -l /dev/mtd0 0x3f00000 16
-$ cat /sys/kernel/debug/spi-nor/spi0.0/params
-locked sectors
- region (in hex)   | status   | #blocks
- ------------------+----------+--------
- 00000000-03efffff | unlocked | 1008
- 03f00000-03ffffff |   locked | 16
-$
-$ flash_lock -u /dev/mtd0 0x3f00000 8
-$ cat /sys/kernel/debug/spi-nor/spi0.0/params
-locked sectors
- region (in hex)   | status   | #blocks
- ------------------+----------+--------
- 00000000-03f7ffff | unlocked | 1016
- 03f80000-03ffffff |   locked | 8
-$
-$ flash_lock -u /dev/mtd0
-$ cat /sys/kernel/debug/spi-nor/spi0.0/params
-locked sectors
- region (in hex)   | status   | #blocks
- ------------------+----------+--------
- 00000000-03ffffff | unlocked | 1024
-$
-$ flash_lock -l /dev/mtd0
-$ cat /sys/kernel/debug/spi-nor/spi0.0/params
-locked sectors
- region (in hex)   | status   | #blocks
- ------------------+----------+--------
- 00000000-03ffffff |   locked | 1024
-$
-$ flash_lock -u /dev/mtd0 0x20000 1022
-$ cat /sys/kernel/debug/spi-nor/spi0.0/params
-locked sectors
- region (in hex)   | status   | #blocks
- ------------------+----------+--------
- 00000000-0001ffff |   locked | 2
- 00020000-03ffffff | unlocked | 1022
----
- drivers/mtd/spi-nor/core.h    |  5 +++++
- drivers/mtd/spi-nor/debugfs.c | 27 +++++++++++++++++++++++++++
- drivers/mtd/spi-nor/swp.c     | 16 ++++++++++++----
- 3 files changed, 44 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 091eb934abe4..8717a0ad90f0 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -673,6 +673,7 @@ int spi_nor_post_bfpt_fixups(struct spi_nor *nor,
- 			     const struct sfdp_bfpt *bfpt);
- 
- void spi_nor_init_default_locking_ops(struct spi_nor *nor);
-+bool spi_nor_has_default_locking_ops(struct spi_nor *nor);
- void spi_nor_try_unlock_all(struct spi_nor *nor);
- void spi_nor_cache_sr_lock_bits(struct spi_nor *nor, u8 *sr);
- void spi_nor_set_mtd_locking_ops(struct spi_nor *nor);
-@@ -707,6 +708,10 @@ static inline bool spi_nor_needs_sfdp(const struct spi_nor *nor)
- 	return !nor->info->size;
- }
- 
-+u64 spi_nor_get_min_prot_length_sr(struct spi_nor *nor);
-+void spi_nor_get_locked_range_sr(struct spi_nor *nor, const u8 *sr, loff_t *ofs, u64 *len);
-+bool spi_nor_is_locked_sr(struct spi_nor *nor, loff_t ofs, u64 len, const u8 *sr);
-+
- #ifdef CONFIG_DEBUG_FS
- void spi_nor_debugfs_register(struct spi_nor *nor);
- void spi_nor_debugfs_shutdown(void);
-diff --git a/drivers/mtd/spi-nor/debugfs.c b/drivers/mtd/spi-nor/debugfs.c
-index d0191eb9f879..298ce3d9e905 100644
---- a/drivers/mtd/spi-nor/debugfs.c
-+++ b/drivers/mtd/spi-nor/debugfs.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
- 
- #include <linux/debugfs.h>
-+#include <linux/math64.h>
- #include <linux/mtd/spi-nor.h>
- #include <linux/spi/spi.h>
- #include <linux/spi/spi-mem.h>
-@@ -77,10 +78,12 @@ static void spi_nor_print_flags(struct seq_file *s, unsigned long flags,
- static int spi_nor_params_show(struct seq_file *s, void *data)
- {
- 	struct spi_nor *nor = s->private;
-+	unsigned int min_prot_len = spi_nor_get_min_prot_length_sr(nor);
- 	struct spi_nor_flash_parameter *params = nor->params;
- 	struct spi_nor_erase_map *erase_map = &params->erase_map;
- 	struct spi_nor_erase_region *region = erase_map->regions;
- 	const struct flash_info *info = nor->info;
-+	loff_t lock_start, lock_length;
- 	char buf[16], *str;
- 	unsigned int i;
- 
-@@ -159,6 +162,30 @@ static int spi_nor_params_show(struct seq_file *s, void *data)
- 			   region[i].overlaid ? "yes" : "no");
- 	}
- 
-+	if (!spi_nor_has_default_locking_ops(nor))
-+		return 0;
-+
-+	seq_puts(s, "\nlocked sectors\n");
-+	seq_puts(s, " region (in hex)   | status   | #blocks\n");
-+	seq_puts(s, " ------------------+----------+--------\n");
-+
-+	spi_nor_get_locked_range_sr(nor, nor->dfs_sr_cache, &lock_start, &lock_length);
-+	if (!lock_length || lock_length == params->size) {
-+		seq_printf(s, " %08llx-%08llx | %s | %llu\n", 0ULL, params->size - 1,
-+			   lock_length ? "  locked" : "unlocked",
-+			   div_u64(params->size, min_prot_len));
-+	} else if (!lock_start) {
-+		seq_printf(s, " %08llx-%08llx | %s | %llu\n", 0ULL, lock_length - 1,
-+			   "  locked", div_u64(lock_length, min_prot_len));
-+		seq_printf(s, " %08llx-%08llx | %s | %llu\n", lock_length, params->size - 1,
-+			   "unlocked", div_u64(params->size - lock_length, min_prot_len));
-+	} else {
-+		seq_printf(s, " %08llx-%08llx | %s | %llu\n", 0ULL, lock_start - 1,
-+			   "unlocked", div_u64(lock_start, min_prot_len));
-+		seq_printf(s, " %08llx-%08llx | %s | %llu\n", lock_start, params->size - 1,
-+			   "  locked", div_u64(lock_length, min_prot_len));
-+	}
-+
- 	return 0;
- }
- DEFINE_SHOW_ATTRIBUTE(spi_nor_params);
 diff --git a/drivers/mtd/spi-nor/swp.c b/drivers/mtd/spi-nor/swp.c
-index 7a6c2b8ef921..d75ed83eb787 100644
+index f068cb9c8f6d..e2e423b20989 100644
 --- a/drivers/mtd/spi-nor/swp.c
 +++ b/drivers/mtd/spi-nor/swp.c
-@@ -32,7 +32,7 @@ static u8 spi_nor_get_sr_tb_mask(struct spi_nor *nor)
- 		return SR_TB_BIT5;
+@@ -123,6 +123,43 @@ static bool spi_nor_is_unlocked_sr(struct spi_nor *nor, loff_t ofs, u64 len,
+ 	return spi_nor_check_lock_status_sr(nor, ofs, len, sr, false);
  }
  
--static u64 spi_nor_get_min_prot_length_sr(struct spi_nor *nor)
-+u64 spi_nor_get_min_prot_length_sr(struct spi_nor *nor)
- {
- 	unsigned int bp_slots, bp_slots_needed;
- 	/*
-@@ -53,8 +53,8 @@ static u64 spi_nor_get_min_prot_length_sr(struct spi_nor *nor)
- 		return sector_size;
- }
- 
--static void spi_nor_get_locked_range_sr(struct spi_nor *nor, const u8 *sr, loff_t *ofs,
--					u64 *len)
-+void spi_nor_get_locked_range_sr(struct spi_nor *nor, const u8 *sr, loff_t *ofs,
-+				 u64 *len)
- {
- 	u64 min_prot_len;
- 	u8 bp_mask = spi_nor_get_sr_bp_mask(nor);
-@@ -112,7 +112,7 @@ static bool spi_nor_check_lock_status_sr(struct spi_nor *nor, loff_t ofs,
- 		return (ofs >= lock_offs_max) || (offs_max <= lock_offs);
- }
- 
--static bool spi_nor_is_locked_sr(struct spi_nor *nor, loff_t ofs, u64 len, const u8 *sr)
-+bool spi_nor_is_locked_sr(struct spi_nor *nor, loff_t ofs, u64 len, const u8 *sr)
- {
- 	return spi_nor_check_lock_status_sr(nor, ofs, len, sr, true);
- }
-@@ -410,6 +410,9 @@ static int spi_nor_sr_is_locked(struct spi_nor *nor, loff_t ofs, u64 len)
-  * -is_locked(): Checks if the region is *fully* locked, returns false otherwise.
-  *               This feeback may be misleading because users may get an "unlocked"
-  *               status even though a subpart of the region is effectively locked.
-+ *
-+ * If in doubt during development, check-out the debugfs output which tries to
-+ * be more user friendly.
-  */
- static const struct spi_nor_locking_ops spi_nor_sr_locking_ops = {
- 	.lock = spi_nor_sr_lock,
-@@ -422,6 +425,11 @@ void spi_nor_init_default_locking_ops(struct spi_nor *nor)
- 	nor->params->locking_ops = &spi_nor_sr_locking_ops;
- }
- 
-+bool spi_nor_has_default_locking_ops(struct spi_nor *nor)
++static int spi_nor_sr_set_bp_mask(struct spi_nor *nor, u8 *sr, u8 pow)
 +{
-+	return nor->params->locking_ops == &spi_nor_sr_locking_ops;
++	u8 mask = spi_nor_get_sr_bp_mask(nor);
++	u8 val = pow << SR_BP_SHIFT;
++
++	if (nor->flags & SNOR_F_HAS_SR_BP3_BIT6 && val & SR_BP3)
++		val = (val & ~SR_BP3) | SR_BP3_BIT6;
++
++	if (val & ~mask)
++		return -EINVAL;
++
++	sr[0] = val;
++
++	return 0;
 +}
 +
- static int spi_nor_lock(struct mtd_info *mtd, loff_t ofs, u64 len)
- {
- 	struct spi_nor *nor = mtd_to_spi_nor(mtd);
++static int spi_nor_build_sr(struct spi_nor *nor, const u8 *old_sr, u8 *new_sr,
++			    u8 pow, bool use_top)
++{
++	u8 bp_mask = spi_nor_get_sr_bp_mask(nor);
++	u8 tb_mask = spi_nor_get_sr_tb_mask(nor);
++	int ret;
++
++	new_sr[0] = old_sr[0] & ~bp_mask & ~tb_mask;
++
++	/* Build BP field */
++	ret = spi_nor_sr_set_bp_mask(nor, &new_sr[0], pow);
++	if (ret)
++		return ret;
++
++	/* Build TB field */
++	if (!use_top)
++		new_sr[0] |= tb_mask;
++
++	return 0;
++}
++
+ /*
+  * Lock a region of the flash. Compatible with ST Micro and similar flash.
+  * Supports the block protection bits BP{0,1,2}/BP{0,1,2,3} in the status
+@@ -162,11 +199,10 @@ static int spi_nor_sr_lock(struct spi_nor *nor, loff_t ofs, u64 len)
+ 	int ret;
+ 	u8 status_old[1] = {}, status_new[1] = {};
+ 	u8 bp_mask = spi_nor_get_sr_bp_mask(nor);
+-	u8 tb_mask = spi_nor_get_sr_tb_mask(nor);
+-	u8 pow, val;
+ 	loff_t lock_len;
+ 	bool can_be_top = true, can_be_bottom = nor->flags & SNOR_F_HAS_SR_TB;
+ 	bool use_top;
++	u8 pow;
+ 
+ 	ret = spi_nor_read_sr(nor, nor->bouncebuf);
+ 	if (ret)
+@@ -200,24 +236,19 @@ static int spi_nor_sr_lock(struct spi_nor *nor, loff_t ofs, u64 len)
+ 		lock_len = ofs + len;
+ 
+ 	if (lock_len == nor->params->size) {
+-		val = bp_mask;
++		pow = (nor->flags & SNOR_F_HAS_4BIT_BP) ? GENMASK(3, 0) : GENMASK(2, 0);
+ 	} else {
+ 		min_prot_len = spi_nor_get_min_prot_length_sr(nor);
+ 		pow = ilog2(lock_len) - ilog2(min_prot_len) + 1;
+-		val = pow << SR_BP_SHIFT;
+-
+-		if (nor->flags & SNOR_F_HAS_SR_BP3_BIT6 && val & SR_BP3)
+-			val = (val & ~SR_BP3) | SR_BP3_BIT6;
+-
+-		if (val & ~bp_mask)
+-			return -EINVAL;
+-
+-		/* Don't "lock" with no region! */
+-		if (!(val & bp_mask))
+-			return -EINVAL;
+ 	}
+ 
+-	status_new[0] = (status_old[0] & ~bp_mask & ~tb_mask) | val;
++	ret = spi_nor_build_sr(nor, status_old, status_new, pow, use_top);
++	if (ret)
++		return ret;
++
++	/* Don't "lock" with no region! */
++	if (!(status_new[0] & bp_mask))
++		return -EINVAL;
+ 
+ 	/*
+ 	 * Disallow further writes if WP# pin is neither left floating nor
+@@ -227,9 +258,6 @@ static int spi_nor_sr_lock(struct spi_nor *nor, loff_t ofs, u64 len)
+ 	if (!(nor->flags & SNOR_F_NO_WP))
+ 		status_new[0] |= SR_SRWD;
+ 
+-	if (!use_top)
+-		status_new[0] |= tb_mask;
+-
+ 	/* Don't bother if they're the same */
+ 	if (status_new[0] == status_old[0])
+ 		return 0;
+@@ -252,11 +280,10 @@ static int spi_nor_sr_unlock(struct spi_nor *nor, loff_t ofs, u64 len)
+ 	int ret;
+ 	u8 status_old[1], status_new[1];
+ 	u8 bp_mask = spi_nor_get_sr_bp_mask(nor);
+-	u8 tb_mask = spi_nor_get_sr_tb_mask(nor);
+-	u8 pow, val;
+ 	loff_t lock_len;
+ 	bool can_be_top = true, can_be_bottom = nor->flags & SNOR_F_HAS_SR_TB;
+ 	bool use_top;
++	u8 pow;
+ 
+ 	ret = spi_nor_read_sr(nor, nor->bouncebuf);
+ 	if (ret)
+@@ -297,29 +324,21 @@ static int spi_nor_sr_unlock(struct spi_nor *nor, loff_t ofs, u64 len)
+ 		lock_len = ofs;
+ 
+ 	if (lock_len == 0) {
+-		val = 0; /* fully unlocked */
++		pow = 0; /* fully unlocked */
+ 	} else {
+ 		min_prot_len = spi_nor_get_min_prot_length_sr(nor);
+ 		pow = ilog2(lock_len) - ilog2(min_prot_len) + 1;
+-		val = pow << SR_BP_SHIFT;
+ 
+-		if (nor->flags & SNOR_F_HAS_SR_BP3_BIT6 && val & SR_BP3)
+-			val = (val & ~SR_BP3) | SR_BP3_BIT6;
+-
+-		/* Some power-of-two sizes may not be supported */
+-		if (val & ~bp_mask)
+-			return -EINVAL;
+ 	}
+ 
+-	status_new[0] = (status_old[0] & ~bp_mask & ~tb_mask) | val;
++	ret = spi_nor_build_sr(nor, status_old, status_new, pow, use_top);
++	if (ret)
++		return ret;
+ 
+ 	/* Don't protect status register if we're fully unlocked */
+ 	if (lock_len == 0)
+ 		status_new[0] &= ~SR_SRWD;
+ 
+-	if (!use_top)
+-		status_new[0] |= tb_mask;
+-
+ 	/* Don't bother if they're the same */
+ 	if (status_new[0] == status_old[0])
+ 		return 0;
 
 -- 
 2.53.0
