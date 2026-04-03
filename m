@@ -4,67 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5FFEAE85381
-	for <linux-mtd@archiver.kernel.org>; Fri,  3 Apr 2026 16:09:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB1C3E85371
+	for <linux-mtd@archiver.kernel.org>; Fri,  3 Apr 2026 16:10:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=GVZ5cfBMlEkQwQi3X4B0z0/cDa4ZlXFnoFrlEc97o7Y=; b=n0HMK9c3zaeIh1
-	Zq7guHY8fdOyLIIqlfe/mWu+daDEefIIu3fyNlWQwaluxa8hTrRGi6tiIwN7b6fizLDvOmTnr4ccJ
-	L2xwyMsRnOGuY5VPcYmkBgjLrDGZGRhUEz/n+gpv5orr6a+4BYHvCCviYtWxVtE6OIGtY+KD5QfU+
-	cmRfRipcZZnaqc1nT/ejDPcXYR74j4tmzY/SZFOH3FUJHFQO48alG5srmU+WQhkE8B/eOUDqfbtSV
-	m+HClf42AoTJ8UtlvSF21BxeuBQO5EgSW7uf0VDh8nEdP8r7Xv69c2vpv1EjefZpsafqZpXRp4rNo
-	X+jzo94/aUN2JboL067Q==;
+	List-Owner; bh=eP7osXsYpIb/ggkIJvAPmNDHFM/pw64DBK9822qriWs=; b=3Ntiq8hCCzZTJD
+	WmBFpQoohtsTg44xMkIcgG4PoThHBFYu3MlOjgiXnbaT2rp625EJfdEp9VW8JO4dEvBTjdj6+WR6V
+	DsAku5TAhYcsZwO0uh7yiLSPoaZg2+Am/U081zL3wlECujbTXe4Cewi/pOPMYK9Ti/zDt1DtVY0x6
+	S8ziuYBEYEUgxrMBtuLlymiHXoTfzOjz6nET1LJ2pf96Dn94FvrSMwHW5Ev/bQlUdxbKieFmK4rKv
+	IDDp2H0GqWbGjbn8aPM1SBQBXUmIqYDSEKY/YpMRBS/UsJHP0Hv2JsRXqmBHsF89dIpsQaczMBR9V
+	M2yT+El86fDW94QBuLeQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w8h5n-00000002Gqu-3XGI;
-	Fri, 03 Apr 2026 16:09:55 +0000
+	id 1w8h5r-00000002GwD-1iRu;
+	Fri, 03 Apr 2026 16:09:59 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w8h5l-00000002GmU-1fH4
+	id 1w8h5p-00000002GsX-48Sn
 	for linux-mtd@bombadil.infradead.org;
-	Fri, 03 Apr 2026 16:09:53 +0000
+	Fri, 03 Apr 2026 16:09:58 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=desiato.20200630; h=Cc:To:In-Reply-To:References:
 	Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
 	From:Sender:Reply-To:Content-ID:Content-Description;
-	bh=UWpfRE4WtdnRITw0PIgGXyjweTZSRtj+l56eZxMc4k0=; b=L6ON1axUFRZO1RdQ9BuniBR1sH
-	HSCggm9++TGhZoKNzYQ0ryH2BBsc4Yu5LJc2KKdGPDgngHiAHqDFNzSeLjgvqm++9xsjSZrQBP3N5
-	w81Mdx6MKQCisDMTZ8sOeCebLdJqCBxN/3eOovihaUiagUiQuJWJdk5nBKotA8DYqr5Dm8Lt1Y9l+
-	23o6to6wTfc00h1Lv2hBG06oLaKa0/wEfXaUKCzf0o+i/Q1jU4ho80RoRKjaFlgVMocWzlRqNBL5G
-	cl/k3/tbH5rxaMsl8e28SyiePxSnoS+P2pHr0X9ors5aIScT7QAFz+lHdpApqIieTcioaspd/U7kE
-	3N3G6NCw==;
-Received: from smtpout-02.galae.net ([185.246.84.56])
+	bh=380DMxOtkVf4S8j1lpaF5rnIUMKJfHDNDSHsb4bomqI=; b=qbJFdaGRYjQWLB21hN3p2JM6gz
+	3pSxlGgrr47lO17u2H+Q5b5lHvfdJausmo0WDzuI6HEyu7iUJhjpqQwEdVrCztHjg0RsXF67Fd9ZK
+	tlkIf1NNjmShufO+1Lcve/STHoghQrq+JnwOMeFsr5P/v14tsBbT0gBEOa9g5amdZ1LW+iQ7cwdFD
+	xkyn1uIIt91mS10zjdYj6a/6iDbb4fJrT3Xm0T/EQKSGKP+mr7N1CVIP1f5Cn8aLVuBG5T8WUpzlJ
+	2//nRHSDyBFkyGo2oCRYMQKElOyLQgVpVjZBhlKtyIgq69KC32U7b+BF72JagSIrsRD2/Q3tMruHB
+	wHgYfO1g==;
+Received: from smtpout-04.galae.net ([185.171.202.116])
 	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w8h5h-00000004OJX-1PfH
+	id 1w8h5l-00000004OKB-0MCN
 	for linux-mtd@lists.infradead.org;
-	Fri, 03 Apr 2026 16:09:52 +0000
+	Fri, 03 Apr 2026 16:09:56 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id 7949C1A312D;
-	Fri,  3 Apr 2026 16:09:48 +0000 (UTC)
+	by smtpout-04.galae.net (Postfix) with ESMTPS id ABBBDC59F65;
+	Fri,  3 Apr 2026 16:10:22 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 4F663603C1;
-	Fri,  3 Apr 2026 16:09:48 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 1DDD310450104;
-	Fri,  3 Apr 2026 18:09:45 +0200 (CEST)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id AC2C2603C1;
+	Fri,  3 Apr 2026 16:09:50 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 07CE010450109;
+	Fri,  3 Apr 2026 18:09:47 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1775232587; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1775232589; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=UWpfRE4WtdnRITw0PIgGXyjweTZSRtj+l56eZxMc4k0=;
-	b=beNsjK4q//+q1Zgb3Ggz6kZ58H9Rh8De5IrbwClMCJgnF95ZDHbfpQgoQaUP5czuUHZXrb
-	Qx2SxlYsvL6RqsFX9wQYB1+2aL0dP7/bbW96SXLGfW9fFnSf3N/GylbiXm4zrd2aTW/Xo/
-	LPcu4DzRh/u5iz7y3TqRgjcEaiJ0dksAIKFrEmu3AVehOlbjYsZhLgXDxZpC6PpDcXNAL/
-	cGOGq1cZS6H9xUMCN5sPi88ywglPg8hD2DVoROjMjePzSi6Ouk6+MilN4HLtz09vH9ulUS
-	eiw2RRdNluejCF4YT30jqpWDExTs96yAurpY4xD7ToIGTmuGcMyv2Jttc/sP0w==
+	bh=380DMxOtkVf4S8j1lpaF5rnIUMKJfHDNDSHsb4bomqI=;
+	b=mk8QuibAk95VamgZNE+FL3M989pwdgmWpqW4LMiT+KCNbITz2GPesT6IeR31Px2Vl9dy3A
+	pnp2GYNhrn6fVGfxksGFmKjufllajN9DVXXN7nh4C46w+RjLRtPO+Pv2s+k7Mfesi0UkwG
+	7H4XojzYgaFAmnjh4dX8guOXXPBP5/lY2wS3xH+BppNNwH9Jg4MNEScIIA51GQJCqaHl/j
+	u98bo7CJrqMFr2gEtZoqeO/vjiI1uNZAkXTgVFlAtlEMbqDmzJiK3AkmNudydq9oxjkz5H
+	kNKmRjYRIf5GJS4upyXfmnHQyyHSxbjgVuhKsSA9CRRK54/OCqTHYYebCZD2zw==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Fri, 03 Apr 2026 18:09:23 +0200
-Subject: [PATCH v4 05/27] mtd: spi-nor: debugfs: Align variable access with
- the rest of the file
+Date: Fri, 03 Apr 2026 18:09:24 +0200
+Subject: [PATCH v4 06/27] mtd: spi-nor: debugfs: Enhance output
 MIME-Version: 1.0
-Message-Id: <20260403-winbond-v6-18-rc1-spi-nor-swp-v4-5-833dab5e7288@bootlin.com>
+Message-Id: <20260403-winbond-v6-18-rc1-spi-nor-swp-v4-6-833dab5e7288@bootlin.com>
 References: <20260403-winbond-v6-18-rc1-spi-nor-swp-v4-0-833dab5e7288@bootlin.com>
 In-Reply-To: <20260403-winbond-v6-18-rc1-spi-nor-swp-v4-0-833dab5e7288@bootlin.com>
 To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
@@ -79,9 +78,8 @@ Cc: Sean Anderson <sean.anderson@linux.dev>,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260403_170949_494385_AE21BDE3 
-X-CRM114-Status: UNSURE (   9.38  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260403_170954_181325_75641642 
+X-CRM114-Status: GOOD (  10.30  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,8 +96,9 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The "params" variable is used everywhere else, align this particular
-line of the file to use "params" directly rather than the "nor" pointer.
+Align the number of dashes to the bigger column width (the title in this
+case) to make the output more pleasant and aligned with what is done
+in the "params" file output.
 
 Reviewed-by: Michael Walle <mwalle@kernel.org>
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
@@ -108,18 +107,18 @@ Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/spi-nor/debugfs.c b/drivers/mtd/spi-nor/debugfs.c
-index d700e0b27182..69830ad43990 100644
+index 69830ad43990..d0191eb9f879 100644
 --- a/drivers/mtd/spi-nor/debugfs.c
 +++ b/drivers/mtd/spi-nor/debugfs.c
-@@ -139,7 +139,7 @@ static int spi_nor_params_show(struct seq_file *s, void *data)
- 
- 	if (!(nor->flags & SNOR_F_NO_OP_CHIP_ERASE)) {
- 		string_get_size(params->size, 1, STRING_UNITS_2, buf, sizeof(buf));
--		seq_printf(s, " %02x (%s)\n", nor->params->die_erase_opcode, buf);
-+		seq_printf(s, " %02x (%s)\n", params->die_erase_opcode, buf);
- 	}
+@@ -144,7 +144,7 @@ static int spi_nor_params_show(struct seq_file *s, void *data)
  
  	seq_puts(s, "\nsector map\n");
+ 	seq_puts(s, " region (in hex)   | erase mask | overlaid\n");
+-	seq_puts(s, " ------------------+------------+----------\n");
++	seq_puts(s, " ------------------+------------+---------\n");
+ 	for (i = 0; i < erase_map->n_regions; i++) {
+ 		u64 start = region[i].offset;
+ 		u64 end = start + region[i].size - 1;
 
 -- 
 2.53.0
