@@ -4,51 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0831E85371
-	for <linux-mtd@archiver.kernel.org>; Fri,  3 Apr 2026 16:09:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15C36E8537F
+	for <linux-mtd@archiver.kernel.org>; Fri,  3 Apr 2026 16:09:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=USI8cL7oTBguvV8Opfa2ywsRd1FQraQRy4KB4jh9QM0=; b=gd1BkxBMQSWiuo
-	eYj9c81hIQPToUOmvjaF4h7qVqPvgNwblCn6tFgjtORh3WhQ4kZDldLIsapQJQAb+hnf+AGME1bqU
-	AjcE4zcbEhsXsgnG5twMa8J01hkj0zTASTg/k3S1kZSAWyTyrZBkFgIYy5O0wgT5ODLOI5XX/Wvhu
-	mimsJdGnwT6BdJJTNhPDSOfdXcU5TGzu4LOg/DcKzF8pCDuWU6CMSzQu64+oIGQwnWcW4dn7tbWkv
-	Zps4wa2frL9k3LLyk2SIAwtxereBxt2P6fstT9RG3PZVfmSXvBOREtzHlPN+1s+Go9GHHwrANexh1
-	C1NepAhTopNFU5Zl80RA==;
+	List-Owner; bh=p0IiZiFch02/cuVmo34I/fTlUdYSnX5XJQCIC0LeNvk=; b=a6Ysu+kKaF0Zah
+	0zAIefQkSb0pK1sGCn18IOCa6GdfKr0XVxh0YrwQA5t/BoGsMoAlx7jdmz6cxWIvuZ+AymqyYV3OP
+	l6kz2SHygyk70dkEDDiEsGYR6DE8SwHG8YN0I2FLA9KG0KJ3LlnRwGKtJ3Rjk8n4RW44BM+FeZM44
+	fbqC2xsmux9fFuHdPRGwKGqd2CNWvC1qUQddD6M/+m5pC9wEV1ARLBcAwNlO43RTodN2qi7TBripX
+	I7oPFWs6/QgT48Gdjs0Rc17D8l7rwQ770yeXKR7ycGNSuJvnnlish4XGIlS2gUioJi0Ch06730s/i
+	1BvVltAQrMZG3AsdLmQw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w8h5l-00000002GnT-0bhV;
-	Fri, 03 Apr 2026 16:09:53 +0000
-Received: from smtpout-04.galae.net ([185.171.202.116])
+	id 1w8h5n-00000002Gpr-0QxS;
+	Fri, 03 Apr 2026 16:09:55 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w8h5f-00000002Gbt-0ALV
+	id 1w8h5j-00000002Gjr-3qln
+	for linux-mtd@bombadil.infradead.org;
+	Fri, 03 Apr 2026 16:09:51 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Cc:To:In-Reply-To:References:
+	Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
+	From:Sender:Reply-To:Content-ID:Content-Description;
+	bh=leC2dd2KClzTPcQ+8AI037xoM94Wj2JcMmNh8kB3Pi8=; b=C+k+jmdmLZ2qOVN86+/Z+ujOor
+	0Dj32O2eSjjgR/t9mnmQ5ABBSiEn8npP/4fNYh2AaaD6llieWywO0Dis42DRcjIG60ePkwQS4Ql/Z
+	+JE5DEWA7lNQok+/tHx2YHx5JMEGPlJsdVbklYQrGRhS4Yk1ReNUJMVjjqu9VNUbv9LqmeZQBdbTE
+	iT+wkjGPGdhJspsil4Jro0SvPqm6crJ/3sap7OmAd3Mk8JXgdMpjOzC+ilHzu4e6UrnJvzgzSJCjq
+	TjyF+MR5N6ggYTay8P2ilytwoUyKpi495lBqx+I78PDsGDg228Vafp3iuP/u6RnA5JAqjy89obTyD
+	ki2oXPRg==;
+Received: from smtpout-02.galae.net ([185.246.84.56])
+	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1w8h5f-00000004OFY-3T5w
 	for linux-mtd@lists.infradead.org;
-	Fri, 03 Apr 2026 16:09:48 +0000
+	Fri, 03 Apr 2026 16:09:50 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id 6E12EC59F65;
-	Fri,  3 Apr 2026 16:10:17 +0000 (UTC)
+	by smtpout-02.galae.net (Postfix) with ESMTPS id AE19C1A312C;
+	Fri,  3 Apr 2026 16:09:37 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 7271B603C1;
-	Fri,  3 Apr 2026 16:09:45 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 8A02C104500FA;
-	Fri,  3 Apr 2026 18:09:42 +0200 (CEST)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 7CE46603C1;
+	Fri,  3 Apr 2026 16:09:37 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 3EDFF104500FB;
+	Fri,  3 Apr 2026 18:09:34 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1775232584; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1775232576; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=qqYr/KNjLLcJYcEfDklSWHxXQ8BxYrzb3yZHrjztITk=;
-	b=Dsu3EnbaILNX5V0F5ab8fLoPGLUjrRk1csn9QUM3knb3I4gmjcGUBz5JsmTAFeghkV6wEu
-	Slhq73+GW9A7ie28CVBpGZ/7CIoUDTDXuFiIWkLkHHnWele1bpUXtYBsS4+6n96yX61Yg1
-	/ZSkUn8+7aDg6NzGd7W9DnA7poKLQQ/8lc0WKBj3mlNE7XewIRfd88uJDYycKSiw+yhsMO
-	5snhDSDx5gha83q0UZTBqvl7vPkMV1VxDVvnMMkh54aM3I4PzLJEPG6AQhWekmeEc3XoXe
-	FsWy1DLTHV12rKUNPA4JGVlD4Omf7DwwmZW7L8OmhbLMurSrFv0DoogD1GOb2A==
+	bh=leC2dd2KClzTPcQ+8AI037xoM94Wj2JcMmNh8kB3Pi8=;
+	b=Hn4h7qIM4fJSHsGqMHx5JY8OqoBGLRKnqcJvlZopGP+HUvWSPk+5wKvKSgPr2E/5Uvg4Ax
+	Q8uAUayCOe7YAnuqfmI+o4y0gnSD5fIQwjE/aBOMa2Z9wqFpkPh2gTavoc3kCqYJd6EkPD
+	Su0lLda10KhbJ6wQmZYR/tLoQIWeuh+JVfekdpPK6G1a7cjbRwaVv7vloQ+6xZK+cPaxOE
+	pQN21+xK94Vw9DiJJsA0rXZ9/An1Hy6KNpClW3H0el0SQ5NzDnULNOqttbESydTRAxYdB0
+	5YhDudGOqNJSuXSGhWOjRQxBcOR3Qz0CjwBdgfyyqS9zsC3IPF+Fsu9zHhUq3w==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Fri, 03 Apr 2026 18:09:22 +0200
-Subject: [PATCH v4 04/27] mtd: spi-nor: Improve opcodes documentation
+Date: Fri, 03 Apr 2026 18:09:19 +0200
+Subject: [PATCH v4 01/27] mtd: spi-nor: Drop duplicate Kconfig dependency
 MIME-Version: 1.0
-Message-Id: <20260403-winbond-v6-18-rc1-spi-nor-swp-v4-4-833dab5e7288@bootlin.com>
+Message-Id: <20260403-winbond-v6-18-rc1-spi-nor-swp-v4-1-833dab5e7288@bootlin.com>
 References: <20260403-winbond-v6-18-rc1-spi-nor-swp-v4-0-833dab5e7288@bootlin.com>
 In-Reply-To: <20260403-winbond-v6-18-rc1-spi-nor-swp-v4-0-833dab5e7288@bootlin.com>
 To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
@@ -63,8 +78,8 @@ Cc: Sean Anderson <sean.anderson@linux.dev>,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260403_090947_292920_38CEECCA 
-X-CRM114-Status: UNSURE (   9.93  )
+X-CRM114-CacheID: sfid-20260403_170948_110081_909C2FAD 
+X-CRM114-Status: UNSURE (   8.53  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -82,34 +97,29 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-There are two status registers, named 1 and 2. The current wording is
-misleading as "1" may refer to the status register ID as well as the
-number of bytes required (which, in this case can be 1 or 2).
+I do not think the MTD dependency is needed twice. This is likely a
+duplicate coming from a former rebase when the spi-nor core got cleaned
+up a while ago. Remove the extra line.
 
-Clarify the comments by aligning them on the same pattern:
-"{read,write} status {1,2} register"
-
-Reviewed-by: Michael Walle <mwalle@kernel.org>
+Fixes: b35b9a10362d ("mtd: spi-nor: Move m25p80 code in spi-nor.c")
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Reviewed-by: Michael Walle <mwalle@kernel.org>
 ---
- include/linux/mtd/spi-nor.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/mtd/spi-nor/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index cdcfe0fd2e7d..90a0cf583512 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -21,8 +21,8 @@
- /* Flash opcodes. */
- #define SPINOR_OP_WRDI		0x04	/* Write disable */
- #define SPINOR_OP_WREN		0x06	/* Write enable */
--#define SPINOR_OP_RDSR		0x05	/* Read status register */
--#define SPINOR_OP_WRSR		0x01	/* Write status register 1 byte */
-+#define SPINOR_OP_RDSR		0x05	/* Read status register 1 */
-+#define SPINOR_OP_WRSR		0x01	/* Write status register 1 */
- #define SPINOR_OP_RDSR2		0x3f	/* Read status register 2 */
- #define SPINOR_OP_WRSR2		0x3e	/* Write status register 2 */
- #define SPINOR_OP_READ		0x03	/* Read data bytes (low frequency) */
+diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
+index 24cd25de2b8b..fd05a24d64a9 100644
+--- a/drivers/mtd/spi-nor/Kconfig
++++ b/drivers/mtd/spi-nor/Kconfig
+@@ -1,7 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ menuconfig MTD_SPI_NOR
+ 	tristate "SPI NOR device support"
+-	depends on MTD
+ 	depends on MTD && SPI_MASTER
+ 	select SPI_MEM
+ 	help
 
 -- 
 2.53.0
