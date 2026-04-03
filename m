@@ -4,66 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E26F9E8537A
-	for <linux-mtd@archiver.kernel.org>; Fri,  3 Apr 2026 16:10:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71482E85371
+	for <linux-mtd@archiver.kernel.org>; Fri,  3 Apr 2026 16:10:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=alQDtBK3JLXrqAQYpfaJrWv9oVL7jZQMyuH1WVNobUo=; b=Jf0DGxzMJIOjp1
-	q4ZatPnsEOekwgtQzGtDOLhL0rTeH4ExTCHCx9jUO23e78xohvcLTN36fvwFWhR/TZTEWQbxDk7XX
-	7k9igNGbgiobcAUMqvrJHUZ5KUIdHje6IgrBcBsc49XOahhfeWwopLcP8jRPgARtnwIyeo0tAdVmG
-	yi2y4yIL9Yt6BrPbRwDtRRWBguvOYFqZEo7NGAGuYt7xv8JP/XalRCruMDECmxzxhwbQD3P/xRwV4
-	yfJjT/OdIYhrBXLEsoMe4u1UhSDSvpW5Ako9c0IwhQg/U8Y32rsLgLYZIaYMYrsn1Xh7z4KItYkj3
-	LX4w1Sj7S9ADmtTITqYQ==;
+	List-Owner; bh=rkIaqjvzyIz9W7WomTbVYDcG/qe2D5YOPftnPGUiuwc=; b=MtDYi0QVWxAqMR
+	wreEGNVwHR9sQKp07qYtnT3wSEfGLia6DJJqu7bQrT1kcxShWaTqPpmbH07wFsw1y7eUE94IhPjTN
+	AbWhbNCHz0pCGKrsIAvzUk0iZOeQXOh6NmqhlIskeR0BuCFGRAECCuVOwutbQBz0ie6V7RqD2w4uV
+	ifHBphNalRF5qU5o4GJQbhpfwlHpbhDfr9APNP+PKjdrgnLlG5qkk0V/djx4k7oXyiUuxZ6oW5Kae
+	G6fQ+FJTpexAlmbqwg3ooztSq+s6ARcuyp/F9QPKE1SZO2Joet2cd/6ZsKeN3z9PXOagHmpc6+JGx
+	OQZyb9wpOjyXhM3LGWKg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w8h6P-00000002HkC-3izU;
-	Fri, 03 Apr 2026 16:10:33 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
-	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w8h6L-00000002HcD-0sv0
-	for linux-mtd@bombadil.infradead.org;
-	Fri, 03 Apr 2026 16:10:29 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=Cc:To:In-Reply-To:References:Message-Id
-	:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:From:Sender
-	:Reply-To:Content-ID:Content-Description;
-	bh=xR38gyrQC5XhhjYq85zVZxA7ePkj9xFcfqojI3JaBuI=; b=FHA02KzR2N+RJAiWJwNO1jsfJ0
-	kU6M8HpCbp9APPx1SOnmevxoyiskhmjsAVgMslBXXHYTVJzmqAQckws9641rAqvcGzmLloKhZe+gI
-	/2ah02sPfCYi+hoeNF3wFZBSELlqPDDAsLnwRjUFECxEZaAegfTfc9WRtxG46T76nJfZRlDSZlMqR
-	ahReKwGy3FBk4QT3M1tz/wQhEs3+ffg9FdiHEJuG4FZKdEf/mkWiRrhmNqSLPt/gyD/S1Xwl590Bv
-	C16K5zM9LEzO0Lhlh7M5OVL3Eap156u7vsfYcchGRY6kfu0tcONK2f3j5bFDOvGQ85S2ALUYkqmqd
-	J3BtAljg==;
+	id 1w8h6R-00000002Hm5-023Z;
+	Fri, 03 Apr 2026 16:10:35 +0000
 Received: from smtpout-03.galae.net ([185.246.85.4])
-	by casper.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w8h6D-0000000Egcu-1Azl
+	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1w8h6D-00000002HR7-3RHF
 	for linux-mtd@lists.infradead.org;
-	Fri, 03 Apr 2026 16:10:27 +0000
+	Fri, 03 Apr 2026 16:10:31 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id 7BE204E428D6;
-	Fri,  3 Apr 2026 16:10:13 +0000 (UTC)
+	by smtpout-03.galae.net (Postfix) with ESMTPS id 39C014E428D5;
+	Fri,  3 Apr 2026 16:10:20 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 531D2603C1;
-	Fri,  3 Apr 2026 16:10:13 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id DF6DF10450103;
-	Fri,  3 Apr 2026 18:10:10 +0200 (CEST)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 09274603C1;
+	Fri,  3 Apr 2026 16:10:20 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 9724A10450106;
+	Fri,  3 Apr 2026 18:10:17 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1775232612; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1775232619; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=xR38gyrQC5XhhjYq85zVZxA7ePkj9xFcfqojI3JaBuI=;
-	b=eDOTYLgib43BSK2VON0gYT0KXJz2WSOkmHGSSDQ2r/2MGo3XMbch10FjMtO65399sOrHM7
-	z6hPRz67qFQ85k+pkDOBtC1NCUugEtFbRdafrXG7y8IKefi7tsbO639VCKeecvfxQwJJ0Y
-	k2ZkadLgedtepXWbg6YQO3gqvyWbfmZ/k2hVMjmNwcYzorQhxcVIvgQ5bSpxq4knllLkbF
-	9nBQRO1KbIzuG5Jn3kXK1PAnaAVxSf4lDKmr1kUoacBQYFLHtIjsa9fMZwop7PYyNG1PMq
-	GI4f88DJfELXfxthQOOtfH18boC62941FnPXsRwcEp2Y7//ZAR4oJ26vblMSug==
+	bh=Q9l5x2r5UdhKn08UDwTKQGOl9IC4XLp/x1cNumetPAg=;
+	b=d/PELGgmZKF3PB7LQij5Q9+DHLB+FgmaOfUs+jPBgbW1naHZ6koVNgQ5EUar2il5L0jNFQ
+	GNSP0q88m9YxjDsxGe0hrg9ZdItUAcKiWsZ8ogiK6HWDXgRvYZoB5pv2Hlh5orjegYYbX2
+	YK5umDAkNRqRiLD76vZyebCWzxaBikuN5rnEFRi80jgjhOy4Mm9uSRIRQbFdEUqr9uTucj
+	QJZAl7KlVA9yEL4yjgX6ZcYQ6R6yjpg8U2XGWmEG+08cWwmuaMrk1f0tJ3yv3SwMcqcRid
+	IKvzZ7hUkMvup0onCUR+y+KhQrJ81q7RJ2KUU9aFIsT/88WJtTK0Ir1yfQQJgQ==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Fri, 03 Apr 2026 18:09:33 +0200
-Subject: [PATCH v4 15/27] mtd: spi-nor: swp: Cosmetic changes
+Date: Fri, 03 Apr 2026 18:09:36 +0200
+Subject: [PATCH v4 18/27] mtd: spi-nor: debugfs: Add a locked sectors map
 MIME-Version: 1.0
-Message-Id: <20260403-winbond-v6-18-rc1-spi-nor-swp-v4-15-833dab5e7288@bootlin.com>
+Message-Id: <20260403-winbond-v6-18-rc1-spi-nor-swp-v4-18-833dab5e7288@bootlin.com>
 References: <20260403-winbond-v6-18-rc1-spi-nor-swp-v4-0-833dab5e7288@bootlin.com>
 In-Reply-To: <20260403-winbond-v6-18-rc1-spi-nor-swp-v4-0-833dab5e7288@bootlin.com>
 To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
@@ -78,8 +63,8 @@ Cc: Sean Anderson <sean.anderson@linux.dev>,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260403_171021_405030_652AD6AB 
-X-CRM114-Status: GOOD (  10.87  )
+X-CRM114-CacheID: sfid-20260403_091022_079006_61F14C55 
+X-CRM114-Status: GOOD (  11.35  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,79 +81,98 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-As a final preparation step for the introduction of CMP support, make
-a few more cosmetic changes to simplify the reading of the diff when
-adding the CMP feature. In particular, define "min_prot_len" earlier as
-it will be reused and move the definition of the "ret" variable at the
-end of the stack just because it looks better.
+In order to get a very clear view of the sectors being locked, besides
+the `params` output giving the ranges, we may want to see a proper map
+of the sectors and for each of them, their status. Depending on the use
+case, this map may be easier to parse by humans and gives a more acurate
+feeling of the situation. At least myself, for the few locking-related
+developments I recently went through, I found it very useful to get a
+clearer mental model of what was locked/unlocked.
+
+Here is an example of output:
+
+$ cat /sys/kernel/debug/spi-nor/spi0.0/locked-sectors-map
+Locked sectors map (x: locked, .: unlocked, unit: 64kiB)
+ 0x00000000 (#    0): ................ ................ ................ ................
+ 0x00400000 (#   64): ................ ................ ................ ................
+ 0x00800000 (#  128): ................ ................ ................ ................
+ 0x00c00000 (#  192): ................ ................ ................ ................
+ 0x01000000 (#  256): ................ ................ ................ ................
+ 0x01400000 (#  320): ................ ................ ................ ................
+ 0x01800000 (#  384): ................ ................ ................ ................
+ 0x01c00000 (#  448): ................ ................ ................ ................
+ 0x02000000 (#  512): ................ ................ ................ ................
+ 0x02400000 (#  576): ................ ................ ................ ................
+ 0x02800000 (#  640): ................ ................ ................ ................
+ 0x02c00000 (#  704): ................ ................ ................ ................
+ 0x03000000 (#  768): ................ ................ ................ ................
+ 0x03400000 (#  832): ................ ................ ................ ................
+ 0x03800000 (#  896): ................ ................ ................ ................
+ 0x03c00000 (#  960): ................ ................ ................ ..............xx
+
+The output is wrapped at 64 sectors, spaces every 16 sectors are
+improving the readability, every line starts by the first sector
+offset (hex) and number (decimal).
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/spi-nor/swp.c | 19 +++++++------------
- 1 file changed, 7 insertions(+), 12 deletions(-)
+ drivers/mtd/spi-nor/debugfs.c | 36 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 36 insertions(+)
 
-diff --git a/drivers/mtd/spi-nor/swp.c b/drivers/mtd/spi-nor/swp.c
-index c45a9ddd5788..c3dbc8832025 100644
---- a/drivers/mtd/spi-nor/swp.c
-+++ b/drivers/mtd/spi-nor/swp.c
-@@ -195,14 +195,14 @@ static int spi_nor_build_sr(struct spi_nor *nor, const u8 *old_sr, u8 *new_sr,
-  */
- static int spi_nor_sr_lock(struct spi_nor *nor, loff_t ofs, u64 len)
+diff --git a/drivers/mtd/spi-nor/debugfs.c b/drivers/mtd/spi-nor/debugfs.c
+index 298ce3d9e905..1ed1a0bbef3b 100644
+--- a/drivers/mtd/spi-nor/debugfs.c
++++ b/drivers/mtd/spi-nor/debugfs.c
+@@ -190,6 +190,40 @@ static int spi_nor_params_show(struct seq_file *s, void *data)
+ }
+ DEFINE_SHOW_ATTRIBUTE(spi_nor_params);
+ 
++static int spi_nor_locked_sectors_map_show(struct seq_file *s, void *data)
++{
++	struct spi_nor *nor = s->private;
++	struct spi_nor_flash_parameter *params = nor->params;
++	unsigned int min_prot_len = spi_nor_get_min_prot_length_sr(nor);
++	unsigned int offset = 0, sector = 0;
++	bool locked;
++	int i;
++
++	seq_printf(s, "Locked sectors map (x: locked, .: unlocked, unit: %dkiB)\n",
++		   min_prot_len / 1024);
++	while (offset < params->size) {
++		seq_printf(s, " 0x%08x (#%5d): ", offset, sector);
++		for (i = 0; i < 64 && offset < params->size; i++) {
++			locked = spi_nor_is_locked_sr(nor, offset, min_prot_len,
++						      nor->dfs_sr_cache);
++			if (locked)
++				seq_puts(s, "x");
++			else
++				seq_puts(s, ".");
++
++			if (((i + 1) % 16) == 0)
++				seq_puts(s, " ");
++
++			offset += min_prot_len;
++			sector++;
++		}
++		seq_puts(s, "\n");
++	}
++
++	return 0;
++}
++DEFINE_SHOW_ATTRIBUTE(spi_nor_locked_sectors_map);
++
+ static void spi_nor_print_read_cmd(struct seq_file *s, u32 cap,
+ 				   struct spi_nor_read_command *cmd)
  {
--	u64 min_prot_len;
--	int ret;
-+	u64 min_prot_len = spi_nor_get_min_prot_length_sr(nor);
- 	u8 status_old[1] = {}, status_new[1] = {};
- 	loff_t ofs_old, ofs_new;
- 	u64 len_old, len_new;
- 	loff_t lock_len;
- 	bool can_be_top = true, can_be_bottom = nor->flags & SNOR_F_HAS_SR_TB;
- 	bool use_top;
-+	int ret;
- 	u8 pow;
+@@ -275,6 +309,8 @@ void spi_nor_debugfs_register(struct spi_nor *nor)
+ 	debugfs_create_file("params", 0444, d, nor, &spi_nor_params_fops);
+ 	debugfs_create_file("capabilities", 0444, d, nor,
+ 			    &spi_nor_capabilities_fops);
++	if (spi_nor_has_default_locking_ops(nor))
++		debugfs_create_file("locked-sectors-map", 0444, d, nor, &spi_nor_locked_sectors_map_fops);
+ }
  
- 	ret = spi_nor_read_sr(nor, nor->bouncebuf);
-@@ -236,12 +236,10 @@ static int spi_nor_sr_lock(struct spi_nor *nor, loff_t ofs, u64 len)
- 	else
- 		lock_len = ofs + len;
- 
--	if (lock_len == nor->params->size) {
-+	if (lock_len == nor->params->size)
- 		pow = (nor->flags & SNOR_F_HAS_4BIT_BP) ? GENMASK(3, 0) : GENMASK(2, 0);
--	} else {
--		min_prot_len = spi_nor_get_min_prot_length_sr(nor);
-+	else
- 		pow = ilog2(lock_len) - ilog2(min_prot_len) + 1;
--	}
- 
- 	ret = spi_nor_build_sr(nor, status_old, status_new, pow, use_top);
- 	if (ret)
-@@ -281,7 +279,7 @@ static int spi_nor_sr_lock(struct spi_nor *nor, loff_t ofs, u64 len)
-  */
- static int spi_nor_sr_unlock(struct spi_nor *nor, loff_t ofs, u64 len)
- {
--	u64 min_prot_len;
-+	u64 min_prot_len = spi_nor_get_min_prot_length_sr(nor);
- 	int ret;
- 	u8 status_old[1], status_new[1];
- 	loff_t ofs_old, ofs_new;
-@@ -329,14 +327,11 @@ static int spi_nor_sr_unlock(struct spi_nor *nor, loff_t ofs, u64 len)
- 	else
- 		lock_len = ofs;
- 
--	if (lock_len == 0) {
-+	if (lock_len == 0)
- 		pow = 0; /* fully unlocked */
--	} else {
--		min_prot_len = spi_nor_get_min_prot_length_sr(nor);
-+	else
- 		pow = ilog2(lock_len) - ilog2(min_prot_len) + 1;
- 
--	}
--
- 	ret = spi_nor_build_sr(nor, status_old, status_new, pow, use_top);
- 	if (ret)
- 		return ret;
+ void spi_nor_debugfs_shutdown(void)
 
 -- 
 2.53.0
