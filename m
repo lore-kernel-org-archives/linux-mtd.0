@@ -4,52 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52D3FE85381
-	for <linux-mtd@archiver.kernel.org>; Fri,  3 Apr 2026 16:10:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB047E85371
+	for <linux-mtd@archiver.kernel.org>; Fri,  3 Apr 2026 16:10:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Wo7SWq1gzczJwdjFn8TgwhmBSRsVsTNCahyccMysM10=; b=aJYQh37VLx9+y9
-	YuqhaClhLg16WWTJN/382729otJbrPWwDSOKwcVfct+pbdw//R9eXn7xxQBhoNZKq6qreCcFlO8Ry
-	+vEWmV8qFq8L6LwWV4iBMvf4/hrFCMLr5FezMol+U//Kt5Cno4cvy14ADdrlCPVthI/7+jHOrrSzw
-	QNQ/O1Df4bIIqlTKXH3GU1DgYYsEWv/FDkXhnNVBGRnnHEMWA2ew9TqX7KTaqGMpw/0GRGLyNJj5h
-	yOeI65N1fRE3TWFe9s6ZnmnKJiUqUFfizICqYlHEkdy2OjvjHGlCc4fU2ABOecVGaRcg40ANRfY1b
-	sBmKDIZy5VNVsGD6BRQw==;
+	List-Owner; bh=l7YoAfPkMso1EMJKPIwidR0EO2yGnSJdX/nxS4tgAfc=; b=bZx+xxsCx+X5/z
+	bxCuh4rqAzjJTe9SozEslg7EpnwmsMTmcwADg7QyttDzwdwS34+JmmFlKf25vdK9y8wrG5LD/hUwt
+	eUUYir8oLXiCdWGkrCZhUd5PZzViBcgduIKDaWeXURMvKXtD3ujug5+pFfCtda0W30WgeQFIvv3+M
+	fGhFgiwnLKk5zcxcGXFA1Jp66B/uXvM2ZIm7e2c6XS7V8q343VS1TVNCY5ES95dYvWliLMP3Ew7Wm
+	3B3B7fk7SYF4nDOOuBarI5oA1Z3rafMjbPHevzEvTyzwvPGtbk+ZzSADPNVCl4MJxF3y+S7lPyQvd
+	ul4n8lVLe1azH6NuupKg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w8h6b-00000002I0W-3DOO;
-	Fri, 03 Apr 2026 16:10:45 +0000
-Received: from smtpout-03.galae.net ([185.246.85.4])
+	id 1w8h6e-00000002I41-0skv;
+	Fri, 03 Apr 2026 16:10:48 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w8h6N-00000002Hef-12EM
+	id 1w8h6Y-00000002HuS-0b9o
+	for linux-mtd@bombadil.infradead.org;
+	Fri, 03 Apr 2026 16:10:42 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=Cc:To:In-Reply-To:References:Message-Id
+	:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:From:Sender
+	:Reply-To:Content-ID:Content-Description;
+	bh=R7OT2YlAzzFHwB/uvEM78CXYvmQMpqZLz49OKpEP2YA=; b=RXzvs9t3UOkHM+chw5U60OH8IW
+	dwVV8BWUoCafxAwg/9I374wyiwUy3ZN9s9z3tTvYOJT03cjisuNojDGNM0ROYYNzQtLDOoQZkpLUH
+	ozajZV+aq3NFi8gbracZ2Rl+oqSPL7j1PSXZNZXC2GkcGxa15lVnSqtceHZgzxS43uYqO2VWmgUiG
+	V82cH8+9FPvxZu25eLPwwKi59nDJazXLyftkG6bj3kNtU3USAx+t2chM3McwGVPlvz0HK9CVp5QNS
+	4/SkShV+L/JM14JfSv0g4EYRh7GEorLk0Uw+a6pKkwtL6kdXjxyG3jSPU01RMeJqi5rWkjEAHu9Hd
+	BtBVBFHQ==;
+Received: from smtpout-03.galae.net ([185.246.85.4])
+	by casper.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1w8h6S-0000000EglD-0EZY
 	for linux-mtd@lists.infradead.org;
-	Fri, 03 Apr 2026 16:10:38 +0000
+	Fri, 03 Apr 2026 16:10:40 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id 5E7824E428D6;
-	Fri,  3 Apr 2026 16:10:29 +0000 (UTC)
+	by smtpout-03.galae.net (Postfix) with ESMTPS id C13404E428D8;
+	Fri,  3 Apr 2026 16:10:34 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 33261603C1;
-	Fri,  3 Apr 2026 16:10:29 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 8F953104500FA;
-	Fri,  3 Apr 2026 18:10:26 +0200 (CEST)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 9887D603C1;
+	Fri,  3 Apr 2026 16:10:34 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 23F4010450102;
+	Fri,  3 Apr 2026 18:10:31 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1775232628; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1775232633; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=o3gJUgDW9H+8FokaFsD1jp2lD0qzceXQjBYL+wiCljw=;
-	b=Vdr5oWDY7qm5YRAhfp9Z4Ia8tLdvlHkHrDK9fHlNUEZoNdgKWCBF5258VfkX+seO3KiFnR
-	O+bufpYOM9TyEYBqKk/NI7SNtFgpifrGk1RRlY0dvCi5KDxNECQNioCdO+mj+KBJwWC6Lw
-	LY2PF6kn61NpZByQ2uZcSm+Mu7ku4Sw591l4nQiw5yfZGFzC2cKQc6MKgTna385pw4AIPH
-	lMCTw3zdhwbLJhct+6iAGUakxx/sRHhY+FHMVsi91ckZpCB04bqfjDHeu7oi25N4MKbsvx
-	lIwP8UnbJLCLqPxiKVEadfHUg0QsLTWBN16WMEO2J5MvN/qefoBlo++BphO+eg==
+	bh=R7OT2YlAzzFHwB/uvEM78CXYvmQMpqZLz49OKpEP2YA=;
+	b=q8lUnjwH9jPWI4Yb3j8YS90x52RZKXekZVFr7dYwDVHBPhlSn/m+pxLA7xKcFSeqrFaC5x
+	0E8c6amxWmqFbkBZqGPkXqokVy3j2BPz1dVAiUFbpB5KQAiG5dAw1Ct4A6SHWLKs3MaP22
+	QWhrMfpeidVa3cmm/y4YDM3Fl31rDLEcZwanNJezFJGO4neVxOF1D9ngzh3RQFb62FXtFq
+	jpNXk50SIpXnRi6KmBQuRGrteLAMQ7hPYwi0pBeat+gsytxp32HDzmjGZ70LDlSHR+5ATV
+	miiTeZG242ctUsKzCLNrqitlc0Yk3wcFe+tdBhxMNSUvj0Z6yLYUM+Si5HvNPg==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Fri, 03 Apr 2026 18:09:40 +0200
-Subject: [PATCH v4 22/27] mtd: spi-nor: winbond: Add W25H512NWxxAM CMP
+Date: Fri, 03 Apr 2026 18:09:42 +0200
+Subject: [PATCH v4 24/27] mtd: spi-nor: winbond: Add W25H02NWxxAM CMP
  locking support
 MIME-Version: 1.0
-Message-Id: <20260403-winbond-v6-18-rc1-spi-nor-swp-v4-22-833dab5e7288@bootlin.com>
+Message-Id: <20260403-winbond-v6-18-rc1-spi-nor-swp-v4-24-833dab5e7288@bootlin.com>
 References: <20260403-winbond-v6-18-rc1-spi-nor-swp-v4-0-833dab5e7288@bootlin.com>
 In-Reply-To: <20260403-winbond-v6-18-rc1-spi-nor-swp-v4-0-833dab5e7288@bootlin.com>
 To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
@@ -64,8 +79,8 @@ Cc: Sean Anderson <sean.anderson@linux.dev>,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260403_091031_558606_99A54A71 
-X-CRM114-Status: GOOD (  10.80  )
+X-CRM114-CacheID: sfid-20260403_171036_194324_15AEE62D 
+X-CRM114-Status: GOOD (  14.51  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,10 +100,19 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 This chip has support for the locking complement (CMP) feature. Add
 the relevant bit to enable it.
 
+Unfortunately, this chip also comes with an incorrect BFPT table,
+indicating the Control Register cannot be read back. This is wrong,
+reading back the register works and has no (observed) side effect. The
+datasheet clearly indicates supporting the 35h command and all bits from
+the CR are marked readable. QE and CMP bits are inside, and can be
+properly read back.
+
+Add a fixup for this, otherwise it would defeat the use of the CMP
+feature.
+
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
-Test run following the freshly written documentation:
-
+Test run with W25H02NWxxAM:
 $ flash_lock -u /dev/mtd0
 $ flash_lock -l /dev/mtd0 $bs $all_but_one # all but the first
 $ show_sectors
@@ -96,47 +120,75 @@ locked sectors
  region (in hex)   | status   | #blocks
  ------------------+----------+--------
  00000000-0000ffff | unlocked | 1
- 00010000-03ffffff |   locked | 1023
+ 00010000-0fffffff |   locked | 4095
 $ flash_lock -u /dev/mtd0 $bs 1 # all but the two first
 $ show_sectors
 locked sectors
  region (in hex)   | status   | #blocks
  ------------------+----------+--------
  00000000-0001ffff | unlocked | 2
- 00020000-03ffffff |   locked | 1022
+ 00020000-0fffffff |   locked | 4094
 $ flash_lock -u /dev/mtd0
 $ flash_lock -l /dev/mtd0 0 $all_but_one # same from the other side
 $ show_sectors
 locked sectors
  region (in hex)   | status   | #blocks
  ------------------+----------+--------
- 00000000-03feffff |   locked | 1023
- 03ff0000-03ffffff | unlocked | 1
+ 00000000-0ffeffff |   locked | 4095
+ 0fff0000-0fffffff | unlocked | 1
 $ flash_lock -u /dev/mtd0 $(($size - (2 * $bs))) 1 # all but two
 $ show_sectors
 locked sectors
  region (in hex)   | status   | #blocks
  ------------------+----------+--------
- 00000000-03fdffff |   locked | 1022
- 03fe0000-03ffffff | unlocked | 2
+ 00000000-0ffdffff |   locked | 4094
+ 0ffe0000-0fffffff | unlocked | 2
 ---
- drivers/mtd/spi-nor/winbond.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/mtd/spi-nor/winbond.c | 24 +++++++++++++++++++++++-
+ 1 file changed, 23 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
-index fb855fe44733..7609dcc768f0 100644
+index 1b9b0e9598ef..959fd4f46eb5 100644
 --- a/drivers/mtd/spi-nor/winbond.c
 +++ b/drivers/mtd/spi-nor/winbond.c
-@@ -358,7 +358,8 @@ static const struct flash_info winbond_nor_parts[] = {
+@@ -73,6 +73,26 @@ static const struct spi_nor_fixups w25q256_fixups = {
+ 	.post_bfpt = w25q256_post_bfpt_fixups,
+ };
+ 
++static int
++winbond_rdcr_post_bfpt_fixup(struct spi_nor *nor,
++			     const struct sfdp_parameter_header *bfpt_header,
++			     const struct sfdp_bfpt *bfpt)
++{
++	/*
++	 * W25H02NW, unlike its W25H512NW nor W25H01NW cousins, improperly sets
++	 * the QE BFPT configuration bits, indicating a non readable CR. This is
++	 * both incorrect and impractical, as the chip features a CMP bit for its
++	 * locking scheme that lays in the Control Register, and needs to be read.
++	 */
++	nor->flags &= ~SNOR_F_NO_READ_CR;
++
++	return 0;
++}
++
++static const struct spi_nor_fixups winbond_rdcr_fixup = {
++	.post_bfpt = winbond_rdcr_post_bfpt_fixup,
++};
++
+ /**
+  * winbond_nor_select_die() - Set active die.
+  * @nor:	pointer to 'struct spi_nor'.
+@@ -368,7 +388,9 @@ static const struct flash_info winbond_nor_parts[] = {
  	}, {
- 		/* W25H512NWxxAM */
- 		.id = SNOR_ID(0xef, 0xa0, 0x20),
+ 		/* W25H02NWxxAM */
+ 		.id = SNOR_ID(0xef, 0xa0, 0x22),
 -		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6 | SPI_NOR_4BIT_BP,
 +		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6 |
 +			 SPI_NOR_4BIT_BP | SPI_NOR_HAS_CMP,
- 	}, {
- 		/* W25H01NWxxAM */
- 		.id = SNOR_ID(0xef, 0xa0, 0x21),
++		.fixups = &winbond_rdcr_fixup,
+ 	},
+ };
+ 
 
 -- 
 2.53.0
