@@ -4,67 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0B63E8537F
-	for <linux-mtd@archiver.kernel.org>; Fri,  3 Apr 2026 16:10:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2BBBE8537A
+	for <linux-mtd@archiver.kernel.org>; Fri,  3 Apr 2026 16:10:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=9w7E6Yn3V5sXB/iFvxH9OwvHzettYnUA1jjtaH/97us=; b=10yEi8/ESToier
-	hdVdEr2QottOXVTBAhvFHZMX8IhI/eTtu+YG2+G0kEDlbnJXQEkXFIx25rlhP/Wgq797WxSbV2Z3D
-	QSWl9d0IQ5oaTyfWh+qVPf1Ef6sXjS5ScGQnstaj/qHzPVJAuxjIkNpwuv2cl9r9pOCvBWLU8YUz0
-	zul51byv0CPKZr+EhDinnjED9D+OE+H5DRTgWZFFn5hWXiaKMMXTh7OlkiOwFvz/0I3ovnuqVJbgn
-	fPTsHMGQJNMRxB2MdIOG0CEwhr8/hsMotLL7JNXDNzF0bOttyKHCzhyqHY/VvmIqdD0HPVGwVLGJ3
-	x63L+jBbgZgRjFeLhBdw==;
+	List-Owner; bh=QAxwfldijvg6e+tRrnvE6lD/WKyTm9Y05Jq5bY5vsF8=; b=OOBpgzhDVFdbJR
+	qA6Wk2dl0j0r08Yo1Lrt9YAJo1mBcx7E6PPefiL8vmoFttrBipe4toQtVju6WLXqv4EoX20G7OAFw
+	KP6ppBMrBmfMz5wesSv24NZbs2zkigJlIYEoGcZrHApFzbSUEy5UGeu/vOOWO35wtpwGzYPh2qr/2
+	JyR2cxgA40nTZxyusQm/DI4c2iq1SpwYDCoOTYX1Jgcf0ezE7OVLDbtViHKSHhdjQ8usJyYD2hGm/
+	VW9TsOLMW2iaiycw/6/f8EL0BVXQRgWgJN62kElBJdJSbIcBSZthujaP2iRmJH966JCW0d9mn3ZVz
+	L1VLnWohQGLJwQ11p09w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w8h5t-00000002Gyw-30Uy;
-	Fri, 03 Apr 2026 16:10:01 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1w8h5x-00000002H3k-056I;
+	Fri, 03 Apr 2026 16:10:05 +0000
+Received: from smtpout-03.galae.net ([185.246.85.4])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w8h5q-00000002Gsy-07kV
-	for linux-mtd@bombadil.infradead.org;
-	Fri, 03 Apr 2026 16:09:58 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Cc:To:In-Reply-To:References:
-	Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
-	From:Sender:Reply-To:Content-ID:Content-Description;
-	bh=tFedJhlwMXaI/keWu4o5kk0Lj8Dpliq7e9ukabUVktc=; b=qTz5oSSDumTCumDm99um27KAfm
-	Hcg6b5x3SM59Nh+WEv2D+Lpyo+bJ3mhINbEhe6ZOZizg4Tvk482vZBTsByPWkt6h6g/KHJlBTF0Te
-	EqkvJrhLxKa8qxU6hyu8J9IOAPHehvgBQjW5WlnAm7lr4wQMmkFTkIIvs4/RDfZQsdtgLsNU4btTw
-	HTYF6ykaf8RHhJvYS6ia5tVPRRyN/7NZjKFxPcgfoinM3YtfEEFhSTwtNWkG1ibK6hWSXPVMgHRZ9
-	u00Q+kpINM4U7WrKU9PUEMetQ/AeQHN/15+Nn3ozBzYfFso1rW73gG3rSgGVuVx/W4Oh8d7d7iSBp
-	qLbS9aNw==;
-Received: from smtpout-02.galae.net ([185.246.84.56])
-	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w8h5m-00000004OKc-1g4k
+	id 1w8h5r-00000002Gux-37RT
 	for linux-mtd@lists.infradead.org;
-	Fri, 03 Apr 2026 16:09:56 +0000
+	Fri, 03 Apr 2026 16:10:02 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id 47EC81A312B;
-	Fri,  3 Apr 2026 16:09:53 +0000 (UTC)
+	by smtpout-03.galae.net (Postfix) with ESMTPS id 1B2E84E428D7;
+	Fri,  3 Apr 2026 16:09:58 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 1E72F603C1;
-	Fri,  3 Apr 2026 16:09:53 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 52F0510450103;
-	Fri,  3 Apr 2026 18:09:50 +0200 (CEST)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id E5D20603C1;
+	Fri,  3 Apr 2026 16:09:57 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id EE5EE1045010B;
+	Fri,  3 Apr 2026 18:09:54 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1775232592; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1775232597; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=tFedJhlwMXaI/keWu4o5kk0Lj8Dpliq7e9ukabUVktc=;
-	b=lvA4n3WWkwT+4QMF+Rrao8+Z7oiN4v5mOxgXfzmPLYv4BJ+sMBFUM3JFq7QphWgVyL4+/X
-	/sSihHBKuCalFojGjweW8+QBvVNLbWWYMLz03xX8J6fQYMznczIaHwhjoMGdJewqRqzuTp
-	4GqzuTbaAePzTVkXhOrD47J/HEFnhpJY4fxDHMGQrCyhL9hvNroEHxA5A7sQxif0DnlzaX
-	KDFtVOc+mfDJctN3JF29BIK6K5TBwraB3p+jt4fxI2IHuKgsciwtuK3YkYAowEFhKxP+sE
-	CqU3/3LGmEdQMiEZvfgzOM4Ag1dqn29q2eGhZAATSgaWDCnsADlW5gC5R2cSaA==
+	bh=FEEJakSsTWiMfYL5vUeTthcl4clNdNKUdcaA2VGznAA=;
+	b=RQQscKklE9JLDBE2pkzvq5SjtLPYh6KpYMqw03+UcsgrhI9SCx8a/SG1gMf+MS8WSm+Ixy
+	CsuSgwUJirWj7mwxqG1R1CMKgFPy0E36aM6pmQ+fIZcfevsDuLPgib2GywHU76kRUtVfoF
+	rbeuicc4m4egh/lueoGr/0k+AfnrUn/fIp02VrViUYkrcR4H4vl9lONDUppC10lVASFw8a
+	Elfto3s8YAQoK7IadWSGGNUcOMGRVAJw/HmDkvAtcsFV6c6Q0TvsdnI1v8Wv6bxtyG4lj+
+	0xHV9DMIb/WHduO+8/5jJ+u5h8RNP6HaMVSXmd4P4MaOnjbZksfosT0L16ZrDQ==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Fri, 03 Apr 2026 18:09:25 +0200
-Subject: [PATCH v4 07/27] mtd: spi-nor: swp: Explain the MEMLOCK ioctl
- implementation behaviour
+Date: Fri, 03 Apr 2026 18:09:27 +0200
+Subject: [PATCH v4 09/27] mtd: spi-nor: swp: Use a pointer for SR instead
+ of a single byte
 MIME-Version: 1.0
-Message-Id: <20260403-winbond-v6-18-rc1-spi-nor-swp-v4-7-833dab5e7288@bootlin.com>
+Message-Id: <20260403-winbond-v6-18-rc1-spi-nor-swp-v4-9-833dab5e7288@bootlin.com>
 References: <20260403-winbond-v6-18-rc1-spi-nor-swp-v4-0-833dab5e7288@bootlin.com>
 In-Reply-To: <20260403-winbond-v6-18-rc1-spi-nor-swp-v4-0-833dab5e7288@bootlin.com>
 To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
@@ -79,9 +64,8 @@ Cc: Sean Anderson <sean.anderson@linux.dev>,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260403_170954_554331_FA024D79 
-X-CRM114-Status: UNSURE (   8.57  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260403_091000_185610_382B6CA4 
+X-CRM114-Status: GOOD (  14.93  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,35 +82,189 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add comments about how these requests are actually handled in the SPI
-NOR core. Their behaviour was not entirely clear to me at first, and
-explaining them in plain English sounds the way to go.
+At this stage, the Status Register is most often seen as a single
+byte. This is subject to change when we will need to read the CMP bit
+which is located in the Control Register (kind of secondary status
+register). Both will need to be carried.
 
-Reviewed-by: Michael Walle <mwalle@kernel.org>
+Change a few prototypes to carry a u8 pointer. This way it also makes it
+very clear where we access the first register, and where we will access
+the second.
+
+There is no functional change.
+
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/spi-nor/swp.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/mtd/spi-nor/swp.c | 48 ++++++++++++++++++++++++-----------------------
+ 1 file changed, 25 insertions(+), 23 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/swp.c b/drivers/mtd/spi-nor/swp.c
-index 1d50db1ef1a0..64a917543928 100644
+index 246f6d5ca8dd..af6e577d9b42 100644
 --- a/drivers/mtd/spi-nor/swp.c
 +++ b/drivers/mtd/spi-nor/swp.c
-@@ -346,6 +346,14 @@ static int spi_nor_sr_is_locked(struct spi_nor *nor, loff_t ofs, u64 len)
- 	return spi_nor_is_locked_sr(nor, ofs, len, nor->bouncebuf[0]);
+@@ -53,13 +53,13 @@ static u64 spi_nor_get_min_prot_length_sr(struct spi_nor *nor)
+ 		return sector_size;
  }
  
-+/*
-+ * These ioctls behave according to the following rules:
-+ * ->lock(): Never locks more than what is requested, ie. may lock less
-+ * ->unlock(): Never unlocks more than what is requested, ie. may unlock less
-+ * -is_locked(): Checks if the region is *fully* locked, returns false otherwise.
-+ *               This feeback may be misleading because users may get an "unlocked"
-+ *               status even though a subpart of the region is effectively locked.
-+ */
- static const struct spi_nor_locking_ops spi_nor_sr_locking_ops = {
- 	.lock = spi_nor_sr_lock,
- 	.unlock = spi_nor_sr_unlock,
+-static void spi_nor_get_locked_range_sr(struct spi_nor *nor, u8 sr, loff_t *ofs,
++static void spi_nor_get_locked_range_sr(struct spi_nor *nor, const u8 *sr, loff_t *ofs,
+ 					u64 *len)
+ {
+ 	u64 min_prot_len;
+ 	u8 mask = spi_nor_get_sr_bp_mask(nor);
+ 	u8 tb_mask = spi_nor_get_sr_tb_mask(nor);
+-	u8 bp, val = sr & mask;
++	u8 bp, val = sr[0] & mask;
+ 
+ 	if (nor->flags & SNOR_F_HAS_SR_BP3_BIT6 && val & SR_BP3_BIT6)
+ 		val = (val & ~SR_BP3_BIT6) | SR_BP3;
+@@ -79,7 +79,7 @@ static void spi_nor_get_locked_range_sr(struct spi_nor *nor, u8 sr, loff_t *ofs,
+ 	if (*len > nor->params->size)
+ 		*len = nor->params->size;
+ 
+-	if (nor->flags & SNOR_F_HAS_SR_TB && sr & tb_mask)
++	if (nor->flags & SNOR_F_HAS_SR_TB && sr[0] & tb_mask)
+ 		*ofs = 0;
+ 	else
+ 		*ofs = nor->params->size - *len;
+@@ -90,7 +90,7 @@ static void spi_nor_get_locked_range_sr(struct spi_nor *nor, u8 sr, loff_t *ofs,
+  * (if @locked is false); false otherwise.
+  */
+ static bool spi_nor_check_lock_status_sr(struct spi_nor *nor, loff_t ofs,
+-					 u64 len, u8 sr, bool locked)
++					 u64 len, const u8 *sr, bool locked)
+ {
+ 	loff_t lock_offs, lock_offs_max, offs_max;
+ 	u64 lock_len;
+@@ -111,13 +111,13 @@ static bool spi_nor_check_lock_status_sr(struct spi_nor *nor, loff_t ofs,
+ 		return (ofs >= lock_offs_max) || (offs_max <= lock_offs);
+ }
+ 
+-static bool spi_nor_is_locked_sr(struct spi_nor *nor, loff_t ofs, u64 len, u8 sr)
++static bool spi_nor_is_locked_sr(struct spi_nor *nor, loff_t ofs, u64 len, const u8 *sr)
+ {
+ 	return spi_nor_check_lock_status_sr(nor, ofs, len, sr, true);
+ }
+ 
+ static bool spi_nor_is_unlocked_sr(struct spi_nor *nor, loff_t ofs, u64 len,
+-				   u8 sr)
++				   const u8 *sr)
+ {
+ 	return spi_nor_check_lock_status_sr(nor, ofs, len, sr, false);
+ }
+@@ -158,7 +158,8 @@ static bool spi_nor_is_unlocked_sr(struct spi_nor *nor, loff_t ofs, u64 len,
+ static int spi_nor_sr_lock(struct spi_nor *nor, loff_t ofs, u64 len)
+ {
+ 	u64 min_prot_len;
+-	int ret, status_old, status_new;
++	int ret;
++	u8 status_old[1] = {}, status_new[1] = {};
+ 	u8 mask = spi_nor_get_sr_bp_mask(nor);
+ 	u8 tb_mask = spi_nor_get_sr_tb_mask(nor);
+ 	u8 pow, val;
+@@ -170,7 +171,7 @@ static int spi_nor_sr_lock(struct spi_nor *nor, loff_t ofs, u64 len)
+ 	if (ret)
+ 		return ret;
+ 
+-	status_old = nor->bouncebuf[0];
++	status_old[0] = nor->bouncebuf[0];
+ 
+ 	/* If nothing in our range is unlocked, we don't need to do anything */
+ 	if (spi_nor_is_locked_sr(nor, ofs, len, status_old))
+@@ -215,7 +216,7 @@ static int spi_nor_sr_lock(struct spi_nor *nor, loff_t ofs, u64 len)
+ 			return -EINVAL;
+ 	}
+ 
+-	status_new = (status_old & ~mask & ~tb_mask) | val;
++	status_new[0] = (status_old[0] & ~mask & ~tb_mask) | val;
+ 
+ 	/*
+ 	 * Disallow further writes if WP# pin is neither left floating nor
+@@ -223,20 +224,20 @@ static int spi_nor_sr_lock(struct spi_nor *nor, loff_t ofs, u64 len)
+ 	 * WP# pin hard strapped to GND can be a valid use case.
+ 	 */
+ 	if (!(nor->flags & SNOR_F_NO_WP))
+-		status_new |= SR_SRWD;
++		status_new[0] |= SR_SRWD;
+ 
+ 	if (!use_top)
+-		status_new |= tb_mask;
++		status_new[0] |= tb_mask;
+ 
+ 	/* Don't bother if they're the same */
+-	if (status_new == status_old)
++	if (status_new[0] == status_old[0])
+ 		return 0;
+ 
+ 	/* Only modify protection if it will not unlock other areas */
+-	if ((status_new & mask) < (status_old & mask))
++	if ((status_new[0] & mask) < (status_old[0] & mask))
+ 		return -EINVAL;
+ 
+-	return spi_nor_write_sr_and_check(nor, status_new);
++	return spi_nor_write_sr_and_check(nor, status_new[0]);
+ }
+ 
+ /*
+@@ -247,7 +248,8 @@ static int spi_nor_sr_lock(struct spi_nor *nor, loff_t ofs, u64 len)
+ static int spi_nor_sr_unlock(struct spi_nor *nor, loff_t ofs, u64 len)
+ {
+ 	u64 min_prot_len;
+-	int ret, status_old, status_new;
++	int ret;
++	u8 status_old[1], status_new[1];
+ 	u8 mask = spi_nor_get_sr_bp_mask(nor);
+ 	u8 tb_mask = spi_nor_get_sr_tb_mask(nor);
+ 	u8 pow, val;
+@@ -259,7 +261,7 @@ static int spi_nor_sr_unlock(struct spi_nor *nor, loff_t ofs, u64 len)
+ 	if (ret)
+ 		return ret;
+ 
+-	status_old = nor->bouncebuf[0];
++	status_old[0] = nor->bouncebuf[0];
+ 
+ 	/* If nothing in our range is locked, we don't need to do anything */
+ 	if (spi_nor_is_unlocked_sr(nor, ofs, len, status_old))
+@@ -308,24 +310,24 @@ static int spi_nor_sr_unlock(struct spi_nor *nor, loff_t ofs, u64 len)
+ 			return -EINVAL;
+ 	}
+ 
+-	status_new = (status_old & ~mask & ~tb_mask) | val;
++	status_new[0] = (status_old[0] & ~mask & ~tb_mask) | val;
+ 
+ 	/* Don't protect status register if we're fully unlocked */
+ 	if (lock_len == 0)
+-		status_new &= ~SR_SRWD;
++		status_new[0] &= ~SR_SRWD;
+ 
+ 	if (!use_top)
+-		status_new |= tb_mask;
++		status_new[0] |= tb_mask;
+ 
+ 	/* Don't bother if they're the same */
+-	if (status_new == status_old)
++	if (status_new[0] == status_old[0])
+ 		return 0;
+ 
+ 	/* Only modify protection if it will not lock other areas */
+-	if ((status_new & mask) > (status_old & mask))
++	if ((status_new[0] & mask) > (status_old[0] & mask))
+ 		return -EINVAL;
+ 
+-	return spi_nor_write_sr_and_check(nor, status_new);
++	return spi_nor_write_sr_and_check(nor, status_new[0]);
+ }
+ 
+ /*
+@@ -343,7 +345,7 @@ static int spi_nor_sr_is_locked(struct spi_nor *nor, loff_t ofs, u64 len)
+ 	if (ret)
+ 		return ret;
+ 
+-	return spi_nor_is_locked_sr(nor, ofs, len, nor->bouncebuf[0]);
++	return spi_nor_is_locked_sr(nor, ofs, len, nor->bouncebuf);
+ }
+ 
+ /*
 
 -- 
 2.53.0
