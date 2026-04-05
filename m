@@ -4,57 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D41E9E85384
-	for <linux-mtd@archiver.kernel.org>; Fri,  3 Apr 2026 16:39:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2DA67E9D800
+	for <linux-mtd@archiver.kernel.org>; Sun,  5 Apr 2026 16:23:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Gdhj8JIRQAATgjSDK6dbtTFoLwKbP1kojXr3lD8siL4=; b=RL+TEBiYQlix/m
-	46A3eKmL6g/mhzVVSFUvD8gYmK8sFcf9q7BNtZFZCZhF8Kb91h02oMDyNzFjSQ2pMjITtkjFHzg4M
-	oPczptbCGgneVonshdLMNQxReE+N/xrRWQNCN6xUy0QAmePdWiYAvj3XExWglOeZI9uKb3Q8DGCoy
-	tR2IfYYCy5QmJdhVVTQhqBe2dSWUuDaVFLAnXCzMOgf6JvMRUfe437FpsgiRwNs/0ixKZoJxgn6JU
-	PpPuCBbLyN2ZVND7bz1if+pNlyNR1EUFlqQ5GP9hLyTp6Ea4CVxTmDEANlfkEBWNwW0AFqYWitAEU
-	P7dFFo3SbkWoQi2Llvdw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=m7ujC5QKX7dXDPv8C06SAZChgh8WCBI61RXThqv6BVU=; b=eqIKMmoQs8wlI7
+	4j/3j3ihGPVEadQ7fU4zK62iOr28sqPeUrlfgjYQ4tVoUg1pJ5dTrot/CCjAM0GWnprXa20ed0spO
+	TDloYBEjcRMbmMYgIPI3+7KPTh1wIIX5erz4D2jHmkiHySwCLzM0vmU5M0hnvvapLZHqvUuKAp7Ah
+	2ltmSefusgZbndO2Iy6KyHGy5+r8Ivy/JEOfCJiUvi9iT6YrTQN99UhifjrYYfVsEquDTG/+7fuQf
+	fBp/mfgfp58GN3fMAvHgOTWM9En11XbOdul+tOF6DjijhUW7ynTuoZFAKcyPzmRexKyhHBTHpatpk
+	/zge/OlCD38RSYzdEO6g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w8hY6-00000002L4W-0hxR;
-	Fri, 03 Apr 2026 16:39:10 +0000
-Received: from forward102a.mail.yandex.net ([2a02:6b8:c0e:500:1:45:d181:d102])
+	id 1w9QFh-00000004L6A-3Ddw;
+	Sun, 05 Apr 2026 16:23:09 +0000
+Received: from mail-wm1-x330.google.com ([2a00:1450:4864:20::330])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w8hXz-00000002L1g-3QJa
+	id 1w9QFd-00000004L5M-0Wtg
 	for linux-mtd@lists.infradead.org;
-	Fri, 03 Apr 2026 16:39:08 +0000
-Received: from mail-nwsmtp-smtp-production-main-92.vla.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-92.vla.yp-c.yandex.net [IPv6:2a02:6b8:c1f:251b:0:640:cb7f:0])
-	by forward102a.mail.yandex.net (Yandex) with ESMTPS id 18EC1C005F;
-	Fri, 03 Apr 2026 19:38:53 +0300 (MSK)
-Received: by mail-nwsmtp-smtp-production-main-92.vla.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id pcg2buER9mI0-4TL1oQUC;
-	Fri, 03 Apr 2026 19:38:52 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
-	t=1775234332; bh=MB8oxfIUX0wsCz5sHTPSX7GEpSEQTEuvnQuqs8WQdPM=;
-	h=Message-ID:Date:In-Reply-To:Cc:Subject:References:To:From;
-	b=xB4+87QcHSVngcTe1pf64zvdREGDWFe6Y3ZpP+onF5OP9gXnvzW1NB3st1ZkzhSuE
-	 cRYiyykKxEwd6n7gkRbLbzybwTSEfvdy/vgi647DCfkNjlwC0qVb6m1KVZ3Ne7sl3o
-	 1GPK1fRKlACb/unIP17LyhvGgRCOfT2XzI17iIZ4=
-Authentication-Results: mail-nwsmtp-smtp-production-main-92.vla.yp-c.yandex.net; dkim=pass header.i=@yandex.ru
-From: Dmitry Antipov <dmantipov@yandex.ru>
-To: Zhihao Cheng <chengzhihao1@huawei.com>
-Cc: Richard Weinberger <richard@nod.at>,
-	linux-mtd@lists.infradead.org,
-	Dmitry Antipov <dmantipov@yandex.ru>
-Subject: [PATCH v2 1/2] ubifs: prefer kstrtobool_from_user() over custom helper
-Date: Fri,  3 Apr 2026 19:37:50 +0300
-Message-ID: <20260403163751.1303250-1-dmantipov@yandex.ru>
+	Sun, 05 Apr 2026 16:23:07 +0000
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-488b00ed86fso2729455e9.3
+        for <linux-mtd@lists.infradead.org>; Sun, 05 Apr 2026 09:23:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1775406182; x=1776010982; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=K0J4Lnp3C5ItsHinm8I1puNCYkuJ6gslpQqXTXzYE4w=;
+        b=ig6XUumjfKJ8JjuUQJ2zdrNPsl0TI/nAD03PLG+RZueyfKMKJQFVVKbVlihKY+yXtO
+         YRkHazRIf0/Tc65+tY/n76W08js/JYhdnl4UgAQUgUAA/hPJUBH5MvwHUM7cW1+zeyaV
+         7b0/LXQLO3M7AXg9SakzvM4fMNMGP5zY3tejqNFOkWkFZp2oLMpmPDHZsHpY/rf+yXGW
+         uONpiRVge/xVmgtdXmGtv/LqnjRYA5jt1VwX0kdwS8cq3+6R/wxiX8CcDBJqWoeEMEsh
+         6bZ2+gYlOdtFBOSwp20lfIGkyDhKrkw4vh206IoQ27pCH9iBxUuye21vU9fh3YsTA9Dj
+         m+eQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1775406182; x=1776010982;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=K0J4Lnp3C5ItsHinm8I1puNCYkuJ6gslpQqXTXzYE4w=;
+        b=U81MSA5SPZpXoCLznjwTyh05zFyV/oZldSU3KMQ+OqambbrQ0GldMVUzpiiuTndZjX
+         R2rxztBFTboqtuiCIzYIbaeafW70Sj0+g3sPUvsMi6ub+OCFE5nF83rVmA/8zdqP1kVS
+         R8Lq4HAtKIQhZdP2b1ERHIzkSses1PjKdCpOnmuLh6JTivCubX2KeiQ9ZoHCoc9Ezucy
+         Nn70kqmPiaMN0jGuVmxCoKZYXU4FdJG4K0SGlvLfEuXW9no+KpPcse/KdVlydzwpdfMk
+         7rJJpgupuf1+Rth/Tcv2vSZFzbrXMgbTGOuxKhQmoJJmJusD9gcBmWsngAy1StHCnnu/
+         O08A==
+X-Gm-Message-State: AOJu0YzUEpDYogTEKSuy5TdUzcofIm9BAqzmicgCNMr61EgEXaVZm4iq
+	8BxgXBVQ+4UeoSEVlbml9clgkVU0Zbks39p95S6EaTTMotrqp21D7VV/
+X-Gm-Gg: AeBDiesGFvq/1PScORgOVdMN7aeqdh8/cw72pJKn3jNG/8AbpOj7cgemHHQE9jPibmS
+	raj7lVXGWIL7dSaahaDs+6hfoqF8y6G4Q2DPYDCb7K0mimcV8Y3j771qB3XDWJj4UL0j90ePRTh
+	x4RrQvH1VBp4C6n2Pqd/guNHF1e+jI3nmSnBW79OcgM4hQydKk/VVwhQ8LQa+g71Q3vG3aDn5b4
+	Ti4ADkzBlKQscgLBwQQilfgtzE2821SxrTZvKUlDnF9kes8HLfcYPLotD4UwAMGE6aleaH/obGu
+	0zA8Dqh5gVRKzBiP7u5XWVwN+dfeiLRxUZ/rtAoGuQc1iBMckMaOpCf3NHch6V7PU9IwJhqbVby
+	zDv0+SQ5G7WoodSlYCAjJQRFNGuF0s2imMGf3/P1M0ryj40j/yG9fOWRQbbDZhtXhv/iuwyqtHk
+	Xm6Xq3XWuzaEWxHVnMoFgSWfg5BbLmMtWlq0mIReYYIwixzvW95zkHdcY=
+X-Received: by 2002:a05:600c:820e:b0:485:40c6:f507 with SMTP id 5b1f17b1804b1-488997ee0bdmr148068135e9.30.1775406182255;
+        Sun, 05 Apr 2026 09:23:02 -0700 (PDT)
+Received: from nixos-office (195-23-151-163.net.novis.pt. [195.23.151.163])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-43d1e4e6224sm34090458f8f.25.2026.04.05.09.23.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 05 Apr 2026 09:23:01 -0700 (PDT)
+From: Julian Braha <julianbraha@gmail.com>
+To: dwmw2@infradead.org,
+	richard@nod.at,
+	adobriyan@gmail.com
+Cc: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Julian Braha <julianbraha@gmail.com>
+Subject: [PATCH] [JFFS2] update dead link in kconfig help text
+Date: Sun,  5 Apr 2026 17:22:52 +0100
+Message-ID: <20260405162252.163276-1-julianbraha@gmail.com>
 X-Mailer: git-send-email 2.53.0
-In-Reply-To: <67df08d1-6bbf-560c-de40-9cf1e88c406a@huawei.com>
-References: <67df08d1-6bbf-560c-de40-9cf1e88c406a@huawei.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260403_093904_401358_C737B006 
-X-CRM114-Status: GOOD (  14.15  )
+X-CRM114-CacheID: sfid-20260405_092305_192923_96D2CF3C 
+X-CRM114-Status: GOOD (  10.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,94 +98,32 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Adjust 'dfs_file_write()' and 'dfs_global_file_write()' to prefer generic
-'kstrtobool_from_user()' over an ad-hoc 'interpret_user_input()' helper,
-thus making the latter not needed anymore.
+The existing http://www.gzip.org/zlib/ link in the help text gives a 404
+error. I believe the most up-to-date website for zlib
+is https://www.zlib.net/
 
-Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
-Signed-off-by: Dmitry Antipov <dmantipov@yandex.ru>
----
-v2: add Reviewed-by: and bump version to match the series
----
- fs/ubifs/debug.c | 44 ++++++++++----------------------------------
- 1 file changed, 10 insertions(+), 34 deletions(-)
+Let's update it.
 
-diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c
-index 160c16aa7b6e..252cf82012cf 100644
---- a/fs/ubifs/debug.c
-+++ b/fs/ubifs/debug.c
-@@ -2732,39 +2732,14 @@ static ssize_t dfs_file_read(struct file *file, char __user *u, size_t count,
- 	return provide_user_output(val, u, count, ppos);
- }
+This dead link was found by kconfirm, a static analysis tool for Kconfig.
+
+Signed-off-by: Julian Braha <julianbraha@gmail.com>
+---
+ fs/jffs2/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/jffs2/Kconfig b/fs/jffs2/Kconfig
+index 560187d61562..289dc25f62cb 100644
+--- a/fs/jffs2/Kconfig
++++ b/fs/jffs2/Kconfig
+@@ -119,7 +119,7 @@ config JFFS2_ZLIB
+ 	help
+ 	  Zlib is designed to be a free, general-purpose, legally unencumbered,
+ 	  lossless data-compression library for use on virtually any computer
+-	  hardware and operating system. See <http://www.gzip.org/zlib/> for
++	  hardware and operating system. See <https://www.zlib.net/> for
+ 	  further information.
  
--/**
-- * interpret_user_input - interpret user debugfs file input.
-- * @u: user-provided buffer with the input
-- * @count: buffer size
-- *
-- * This is a helper function which interpret user input to a boolean UBIFS
-- * debugfs file. Returns %0 or %1 in case of success and a negative error code
-- * in case of failure.
-- */
--static int interpret_user_input(const char __user *u, size_t count)
--{
--	size_t buf_size;
--	char buf[8];
--
--	buf_size = min_t(size_t, count, (sizeof(buf) - 1));
--	if (copy_from_user(buf, u, buf_size))
--		return -EFAULT;
--
--	if (buf[0] == '1')
--		return 1;
--	else if (buf[0] == '0')
--		return 0;
--
--	return -EINVAL;
--}
--
- static ssize_t dfs_file_write(struct file *file, const char __user *u,
- 			      size_t count, loff_t *ppos)
- {
- 	struct ubifs_info *c = file->private_data;
- 	struct ubifs_debug_info *d = c->dbg;
- 	struct dentry *dent = file->f_path.dentry;
--	int val;
-+	bool val;
-+	int ret;
- 
- 	if (file->f_path.dentry == d->dfs_dump_lprops) {
- 		ubifs_dump_lprops(c);
-@@ -2781,9 +2756,9 @@ static ssize_t dfs_file_write(struct file *file, const char __user *u,
- 		return count;
- 	}
- 
--	val = interpret_user_input(u, count);
--	if (val < 0)
--		return val;
-+	ret = kstrtobool_from_user(u, count, &val);
-+	if (unlikely(ret))
-+		return ret;
- 
- 	if (dent == d->dfs_chk_gen)
- 		d->chk_gen = val;
-@@ -2926,11 +2901,12 @@ static ssize_t dfs_global_file_write(struct file *file, const char __user *u,
- 				     size_t count, loff_t *ppos)
- {
- 	struct dentry *dent = file->f_path.dentry;
--	int val;
-+	bool val;
-+	int ret;
- 
--	val = interpret_user_input(u, count);
--	if (val < 0)
--		return val;
-+	ret = kstrtobool_from_user(u, count, &val);
-+	if (unlikely(ret))
-+		return ret;
- 
- 	if (dent == dfs_chk_gen)
- 		ubifs_dbg.chk_gen = val;
+ 	  Say 'Y' if unsure.
 -- 
 2.53.0
 
