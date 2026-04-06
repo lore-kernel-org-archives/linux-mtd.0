@@ -4,84 +4,118 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2DA67E9D800
-	for <linux-mtd@archiver.kernel.org>; Sun,  5 Apr 2026 16:23:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A482EF4EAE
+	for <linux-mtd@archiver.kernel.org>; Mon,  6 Apr 2026 06:44:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=m7ujC5QKX7dXDPv8C06SAZChgh8WCBI61RXThqv6BVU=; b=eqIKMmoQs8wlI7
-	4j/3j3ihGPVEadQ7fU4zK62iOr28sqPeUrlfgjYQ4tVoUg1pJ5dTrot/CCjAM0GWnprXa20ed0spO
-	TDloYBEjcRMbmMYgIPI3+7KPTh1wIIX5erz4D2jHmkiHySwCLzM0vmU5M0hnvvapLZHqvUuKAp7Ah
-	2ltmSefusgZbndO2Iy6KyHGy5+r8Ivy/JEOfCJiUvi9iT6YrTQN99UhifjrYYfVsEquDTG/+7fuQf
-	fBp/mfgfp58GN3fMAvHgOTWM9En11XbOdul+tOF6DjijhUW7ynTuoZFAKcyPzmRexKyhHBTHpatpk
-	/zge/OlCD38RSYzdEO6g==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:CC:From:References:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=BUmn+rrEGmp4r2hdyhCFxyv9/BBa8GRPGbkn+4XYzjs=; b=FrzHN7Cp7L6Bqr
+	0IuYnqduzWMODtPwTqB7eRmBPTipQmmrudYg5GrskI+xfnif7eGYnk7do2cMyQa1mE5Gim/t/tehC
+	r9B60wKRZwm/r7dHOmGAud8I2x67k1bRXNeV4Pz458WC5mQoOpRf4zW+IRXau0A4KL1bGO4VO0EUN
+	u+IowS2wT6nLof7ytwaMeSlXcl8pbNcAJnH2eaqS03z2t5L7IX0umvbCt4jtBikk9w1+sMcfZQoWs
+	Hs23BZ493BQ8eGtlhc6Tag58mrKGRfNBNOn3QbA1G8d/+Ri1IIF8FdPrfwgnDF/rGDxN5fRqa+QRi
+	e7fXk33pX27B90uv4RdA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w9QFh-00000004L6A-3Ddw;
-	Sun, 05 Apr 2026 16:23:09 +0000
-Received: from mail-wm1-x330.google.com ([2a00:1450:4864:20::330])
+	id 1w9dgz-00000004reS-17f3;
+	Mon, 06 Apr 2026 06:44:13 +0000
+Received: from mail-eastusazon11012047.outbound.protection.outlook.com ([52.101.53.47] helo=BL0PR03CU003.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w9QFd-00000004L5M-0Wtg
+	id 1w9dgw-00000004re6-3ioV
 	for linux-mtd@lists.infradead.org;
-	Sun, 05 Apr 2026 16:23:07 +0000
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-488b00ed86fso2729455e9.3
-        for <linux-mtd@lists.infradead.org>; Sun, 05 Apr 2026 09:23:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1775406182; x=1776010982; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=K0J4Lnp3C5ItsHinm8I1puNCYkuJ6gslpQqXTXzYE4w=;
-        b=ig6XUumjfKJ8JjuUQJ2zdrNPsl0TI/nAD03PLG+RZueyfKMKJQFVVKbVlihKY+yXtO
-         YRkHazRIf0/Tc65+tY/n76W08js/JYhdnl4UgAQUgUAA/hPJUBH5MvwHUM7cW1+zeyaV
-         7b0/LXQLO3M7AXg9SakzvM4fMNMGP5zY3tejqNFOkWkFZp2oLMpmPDHZsHpY/rf+yXGW
-         uONpiRVge/xVmgtdXmGtv/LqnjRYA5jt1VwX0kdwS8cq3+6R/wxiX8CcDBJqWoeEMEsh
-         6bZ2+gYlOdtFBOSwp20lfIGkyDhKrkw4vh206IoQ27pCH9iBxUuye21vU9fh3YsTA9Dj
-         m+eQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1775406182; x=1776010982;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=K0J4Lnp3C5ItsHinm8I1puNCYkuJ6gslpQqXTXzYE4w=;
-        b=U81MSA5SPZpXoCLznjwTyh05zFyV/oZldSU3KMQ+OqambbrQ0GldMVUzpiiuTndZjX
-         R2rxztBFTboqtuiCIzYIbaeafW70Sj0+g3sPUvsMi6ub+OCFE5nF83rVmA/8zdqP1kVS
-         R8Lq4HAtKIQhZdP2b1ERHIzkSses1PjKdCpOnmuLh6JTivCubX2KeiQ9ZoHCoc9Ezucy
-         Nn70kqmPiaMN0jGuVmxCoKZYXU4FdJG4K0SGlvLfEuXW9no+KpPcse/KdVlydzwpdfMk
-         7rJJpgupuf1+Rth/Tcv2vSZFzbrXMgbTGOuxKhQmoJJmJusD9gcBmWsngAy1StHCnnu/
-         O08A==
-X-Gm-Message-State: AOJu0YzUEpDYogTEKSuy5TdUzcofIm9BAqzmicgCNMr61EgEXaVZm4iq
-	8BxgXBVQ+4UeoSEVlbml9clgkVU0Zbks39p95S6EaTTMotrqp21D7VV/
-X-Gm-Gg: AeBDiesGFvq/1PScORgOVdMN7aeqdh8/cw72pJKn3jNG/8AbpOj7cgemHHQE9jPibmS
-	raj7lVXGWIL7dSaahaDs+6hfoqF8y6G4Q2DPYDCb7K0mimcV8Y3j771qB3XDWJj4UL0j90ePRTh
-	x4RrQvH1VBp4C6n2Pqd/guNHF1e+jI3nmSnBW79OcgM4hQydKk/VVwhQ8LQa+g71Q3vG3aDn5b4
-	Ti4ADkzBlKQscgLBwQQilfgtzE2821SxrTZvKUlDnF9kes8HLfcYPLotD4UwAMGE6aleaH/obGu
-	0zA8Dqh5gVRKzBiP7u5XWVwN+dfeiLRxUZ/rtAoGuQc1iBMckMaOpCf3NHch6V7PU9IwJhqbVby
-	zDv0+SQ5G7WoodSlYCAjJQRFNGuF0s2imMGf3/P1M0ryj40j/yG9fOWRQbbDZhtXhv/iuwyqtHk
-	Xm6Xq3XWuzaEWxHVnMoFgSWfg5BbLmMtWlq0mIReYYIwixzvW95zkHdcY=
-X-Received: by 2002:a05:600c:820e:b0:485:40c6:f507 with SMTP id 5b1f17b1804b1-488997ee0bdmr148068135e9.30.1775406182255;
-        Sun, 05 Apr 2026 09:23:02 -0700 (PDT)
-Received: from nixos-office (195-23-151-163.net.novis.pt. [195.23.151.163])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-43d1e4e6224sm34090458f8f.25.2026.04.05.09.23.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 05 Apr 2026 09:23:01 -0700 (PDT)
-From: Julian Braha <julianbraha@gmail.com>
-To: dwmw2@infradead.org,
-	richard@nod.at,
-	adobriyan@gmail.com
-Cc: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Julian Braha <julianbraha@gmail.com>
-Subject: [PATCH] [JFFS2] update dead link in kconfig help text
-Date: Sun,  5 Apr 2026 17:22:52 +0100
-Message-ID: <20260405162252.163276-1-julianbraha@gmail.com>
-X-Mailer: git-send-email 2.53.0
+	Mon, 06 Apr 2026 06:44:12 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=bwVHDwYcTyZkljaO1G2z5xmmfSmyjc1tVZrxupPj0InpkYqWQ4tvfzkxnSE58SnX4tfNbQ5G9kZPDhGtQo9UzyJ1pHRYpZ9o+ko1M4DykWY89bu9NPXEpJcbwA8xh/vpj0uISV2HQKxk0PlsPowbQG0uXJM41Hsfdw0QaWcG367Qo7W1j1X+aE5+tWlGYT3/xCHhR3rzt85B3JCag/swr2Eq+ybEQAvP8mOQvF1cPftv6IHGH9hmq153//53EQhQOnxM0UvWZx2Qe+EcUvddhOL2BICouuhVm8dco8ObNR6Qkek6OL/X0TzpkxR8Jg4hLyzyQzm6G3kMd1uIB6xZbQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=SOPaoJuUaPfu6hGOWg+Xsn1PZm671AYbxECEAGO/3u0=;
+ b=Hsl0DbwFPs1BBooH50av+Dk9v/p1zlMhgEUSdm3R/A65iKb83ljp9Ujf6OwMVmBo7g+17mOOAGbaUyRXe1bQE7VT2pEYM+1AxyiCZBSvuIa1NgWR/n0TYUejCm26O1ttYwSY+MscCP187xL+AocyB+tQRxZnYR+niIzYLpoaU2u1lgpktpyFOX5clfH3lG4MY2CksCMalchbooPv6iD6fEmlMwqoMFWJOBxHGLRnuOoHsaYmqTPiS+t2NnDuiY+UqLt/Q66m3zBzeffmeSXkqb1E/aTXchlHnhTE1bGzpG3NMwJHZDdK1/hK5xewK9LBL/ckZCGnm5ez5WxJqsG/zg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 198.47.21.195) smtp.rcpttodomain=lists.infradead.org smtp.mailfrom=ti.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=ti.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SOPaoJuUaPfu6hGOWg+Xsn1PZm671AYbxECEAGO/3u0=;
+ b=Md4qnJN9MpXCDVTNRanW+84KuvTjnG3mbsLkzgdYgWhFeUNQj5xSU4e7TKxHwgZfBlyMIAJQpw4C5SsUOHumdd/1Sg40THtC2/wOFcydFWYF4xF/gaOx+T7cKOmRVl0jCtyXf1UnNT1uvyIq0w0FQJ/23pX1a/psCVb9tM/0LWc=
+Received: from PH5P220CA0008.NAMP220.PROD.OUTLOOK.COM (2603:10b6:510:34a::6)
+ by MN6PR10MB8093.namprd10.prod.outlook.com (2603:10b6:208:4f5::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9769.20; Mon, 6 Apr
+ 2026 06:44:05 +0000
+Received: from SN1PEPF00036F3E.namprd05.prod.outlook.com
+ (2603:10b6:510:34a:cafe::67) by PH5P220CA0008.outlook.office365.com
+ (2603:10b6:510:34a::6) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9769.32 via Frontend Transport; Mon,
+ 6 Apr 2026 06:44:15 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 198.47.21.195)
+ smtp.mailfrom=ti.com; dkim=none (message not signed) header.d=none;dmarc=pass
+ action=none header.from=ti.com;
+Received-SPF: Pass (protection.outlook.com: domain of ti.com designates
+ 198.47.21.195 as permitted sender) receiver=protection.outlook.com;
+ client-ip=198.47.21.195; helo=flwvzet201.ext.ti.com; pr=C
+Received: from flwvzet201.ext.ti.com (198.47.21.195) by
+ SN1PEPF00036F3E.mail.protection.outlook.com (10.167.248.22) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9769.17 via Frontend Transport; Mon, 6 Apr 2026 06:44:02 +0000
+Received: from DFLE201.ent.ti.com (10.64.6.59) by flwvzet201.ext.ti.com
+ (10.248.192.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Mon, 6 Apr
+ 2026 01:44:02 -0500
+Received: from DFLE207.ent.ti.com (10.64.6.65) by DFLE201.ent.ti.com
+ (10.64.6.59) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Mon, 6 Apr
+ 2026 01:44:02 -0500
+Received: from lelvem-mr06.itg.ti.com (10.180.75.8) by DFLE207.ent.ti.com
+ (10.64.6.65) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20 via Frontend
+ Transport; Mon, 6 Apr 2026 01:44:02 -0500
+Received: from [172.24.233.103] (uda0132425.dhcp.ti.com [172.24.233.103])
+	by lelvem-mr06.itg.ti.com (8.18.1/8.18.1) with ESMTP id 6366i0nj255392;
+	Mon, 6 Apr 2026 01:44:00 -0500
+Message-ID: <94610ba0-a1d3-4996-879c-0c05e24ba489@ti.com>
+Date: Mon, 6 Apr 2026 12:13:59 +0530
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: arm allmodconfig
+To: Andrew Morton <akpm@linux-foundation.org>, Miquel Raynal
+	<miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, "Andy
+ Shevchenko" <andriy.shevchenko@linux.intel.com>
+References: <20260405143513.268f59ae31ab905630d5fbc8@linux-foundation.org>
+From: Vignesh Raghavendra <vigneshr@ti.com>
+Content-Language: en-US
+CC: MTD Maling List <linux-mtd@lists.infradead.org>
+In-Reply-To: <20260405143513.268f59ae31ab905630d5fbc8@linux-foundation.org>
+X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN1PEPF00036F3E:EE_|MN6PR10MB8093:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9a129b8a-8f70-4d29-3ac1-08de93a7e421
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|36860700016|376014|82310400026|1800799024|22082099003|56012099003|18002099003;
+X-Microsoft-Antispam-Message-Info: 0DLsr7H5/bnof9qBvP1lqARylCFrEquWQoEeDkvckD4xoTsyHcRHYsLaIkBPNaex3GhEXj42gHlk6rKVk2Agpe8Rz2Zy7BThqMjETcMhMhHHCEucAet7RQHyOW6gTSQIv6YU6AVJ++o9Zz/FSknFzd65X3kP7yiHgMpwtwpdg2A+s+8a+nG7ISF71NCejUAtfmUQ9sxsxy0hVAsmokOpC5FxFVP/96XIGhDoRjB7jJrUv6yxVYZgp1LIuHvb2SUZWrHbxsZj1mBh0sPYN4ScWmZ4Z1XHtesNj/wQrP9IDzto4Jm/9eJEACKadmWQVFy0/VJOZhrL5q8GNMrWavuJ4Y7WvK6KUaWZKU0FH1SL2/XcGYl0ECWd0+MbB7nIFaH34HNCZVly4JhRcyM2oDfAP0Fm6usOtQ5V28InwtBEmg2xuWHy17V3GYGjN7rDIIfdIQvT+OuXGbVaindYMRO5mMHKDKecOQHscbTq4KaQV3f54jZOWyV3WZslniI4zkAeBlijAcLNGYfwhwxep67s73+jsqM3flfkAvLztEpIIMqTTtdtsDAQ15hsnPF9sYmYKvGZ1EGVbFB+zdftAEmnATr4sAWFCy8zq9hcrWhx9/0qxrwEZNtbL+blOlvvBIP9JzkX/+XRtxc4rL3hdPvffpqed1NlRGYGs9G6mj0Bd9NXcIVNRT+kkM0Df25eFp6rnLzm3xqauhLXCpj/nuJ+u1Jb0gBVDN/uFLbJwjKFwwZzLfzUdCCLA2xaFy5Nvy/x3jvSiHhwUu4Kag2ab2r7Vw==
+X-Forefront-Antispam-Report: CIP:198.47.21.195;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:flwvzet201.ext.ti.com;PTR:ErrorRetry;CAT:NONE;SFS:(13230040)(36860700016)(376014)(82310400026)(1800799024)(22082099003)(56012099003)(18002099003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: +nEeMEUJeFsznMr9+FMl03YBbpSHg9NVzOUyn6h6gSiDZBDZbfM1LBhTEXmpcHGkJSq5QpZlPtOY7tCnnxw0FfQ9jr653xvC1NwzmfKQE3u/wWNm5w7Yc+Y7rZehRRXCJ8KogTymRgb35A3h2DW4ozv4Aa2+ii3q7qozrvPHm0unydPIca+HBYZRi/nBWJ/tSejhlVouKRh8WeNQ8EvbkwwjzV8BtiVpzpRI2XJLz0K4nd0LJ6W7jBDx2S3evCm/XtE/HvF9Re0JkiFEjlrl/61dW1JK7BSt9RPdyDvXRGB56op7atV1DXrTyw1/RgO9oiSrdfomfmwFcOzkntTtJ/3yYdl+YiQ/PVyydj6mWXeZDdycEvI3aeUhZ5mnI0WVYnSv4XQ+g4R19VEqUpa1Llgne5WlIRvB7gjDMYRU8rqzGR2xZvah9a3XDDvBcWSK
+X-OriginatorOrg: ti.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Apr 2026 06:44:02.8583
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9a129b8a-8f70-4d29-3ac1-08de93a7e421
+X-MS-Exchange-CrossTenant-Id: e5b49634-450b-4709-8abb-1e2b19b982b7
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=e5b49634-450b-4709-8abb-1e2b19b982b7;Ip=[198.47.21.195];Helo=[flwvzet201.ext.ti.com]
+X-MS-Exchange-CrossTenant-AuthSource: SN1PEPF00036F3E.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN6PR10MB8093
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260405_092305_192923_96D2CF3C 
-X-CRM114-Status: GOOD (  10.14  )
+X-CRM114-CacheID: sfid-20260405_234410_986847_198CB6A6 
+X-CRM114-Status: UNSURE (   9.77  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,34 +132,43 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The existing http://www.gzip.org/zlib/ link in the help text gives a 404
-error. I believe the most up-to-date website for zlib
-is https://www.zlib.net/
+Hi Andrew,
 
-Let's update it.
++ linux-mtd, Andy
 
-This dead link was found by kconfirm, a static analysis tool for Kconfig.
+On 06/04/26 03:05, Andrew Morton wrote:
+> 
+> current mm.git, ARCH=arm, gcc-15.2.0
+> 
+> drivers/mtd/chips/cfi_cmdset_0001.c: In function 'do_write_buffer':
+> drivers/mtd/chips/cfi_cmdset_0001.c:1883:1: error: the frame size of 1296 bytes is larger than 1280 bytes [-Werror=frame-larger-than=]
+> 
+> Am I doing something wrong (or unconventional) here?
+> 
 
-Signed-off-by: Julian Braha <julianbraha@gmail.com>
----
- fs/jffs2/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks for the report. Adding Andy  who had attempted to fix this [1]
 
-diff --git a/fs/jffs2/Kconfig b/fs/jffs2/Kconfig
-index 560187d61562..289dc25f62cb 100644
---- a/fs/jffs2/Kconfig
-+++ b/fs/jffs2/Kconfig
-@@ -119,7 +119,7 @@ config JFFS2_ZLIB
- 	help
- 	  Zlib is designed to be a free, general-purpose, legally unencumbered,
- 	  lossless data-compression library for use on virtually any computer
--	  hardware and operating system. See <http://www.gzip.org/zlib/> for
-+	  hardware and operating system. See <https://www.zlib.net/> for
- 	  further information.
- 
- 	  Say 'Y' if unsure.
+make allmodconfig ARCH=arm  actually sets CONFIG_FRAME_WARN=2048. But, I 
+can see the warning when I change it to 1280 manually (bit strange as I 
+expected 1280 to be default based on definition in lib/Kconfig.debug)
+
+I am not seeing any recent code change to this file in at least 6 weeks 
+(the changes are still minor code cleanup and nothing before that for 2 
+years). I can only assume newer gcc is exposing something here?
+
+
+Andy,
+
+Wondering if you plan to work on your patches further, anytime soon?
+
+[1] https://lore.kernel.org/linux-mtd/20260225162406.3815267-1-andriy.shevchenko@linux.intel.com/
+
+> Thanks.
+
 -- 
-2.53.0
+Regards
+Vignesh
+https://ti.com/opensource
 
 
 ______________________________________________________
