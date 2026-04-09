@@ -4,83 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D77C810FC447
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 Apr 2026 21:36:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C50EAE98FB0
+	for <linux-mtd@archiver.kernel.org>; Thu,  9 Apr 2026 04:56:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=f9pw694yzOcqnBGHGGtmN6pJgR6XRU0nl2+C2nyXZRE=; b=plzFAAvmYFTTNF
-	ruDtNsodgJX60pAX8hZD3Yf8S0Zl/iDN5CuIWAqDrBQw/PGgPg7AUys7fNv9z5Cx6HruzVwe1daoh
-	51UC/lsdsQA6t1xEmMDXW/FYBk6SsOgWHAItlD74l210TqLuvPAguDiGSQIJwRy6YFAm2Tfxi44ec
-	+AqlR4PW7pV62FJK7OQ6K2ldP1MFF7S5Lvu1wr5IWFTahqiIBa4eO99PATysSM97/VEK7Sb/chyfQ
-	l0L2wJGR8F33UAl+eUVvAvlDPKMTLX1G2iW/Coq8EMpYGduZiQJLSQk4EHExkjYnvYGBxCrgwHsr1
-	DCorHqfa9nWTBszPst7w==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=DQKlqm+URrbeDRp7q5wm3QE+Ve8CC5TBmEz22fT1b/g=; b=LZSKYwHW72+12b
+	86X4SHbbJiTiwM02n76Umo0MVtI1Gi35fRKm6+RgT9QayOAGeIxBAv5j3cIOOWpCZjiluoUwdXhOa
+	KzxUNSAP/9fQHTCigI/s1ccMhl0ZzGQRsPZumgUV8/or8ybTpL4u1bVvcWaXauXhFStTiLwBmmgtU
+	Y4UF9yEv31JSe7zE4ZmZDz/HvQgAKSevC2M20AbM00550ofq/fPrRrgVorbW1zrEluP2sb7NeUAcN
+	bhmv7J65cEGijzHETmNfUCTs8pReq4rmzVWtCWiAmqwW1S7cXXkft6HOdHpL8Kx0GP3PVDjLXVt4U
+	AO4fA1UI911fZ8tbS7PQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wAaZt-00000009RYt-353M;
-	Wed, 08 Apr 2026 21:36:49 +0000
-Received: from mail-wm1-x32f.google.com ([2a00:1450:4864:20::32f])
+	id 1wAhRe-00000009hTI-40vC;
+	Thu, 09 Apr 2026 04:56:46 +0000
+Received: from forward102d.mail.yandex.net ([178.154.239.213])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wAaZr-00000009RYZ-38Sq
+	id 1wAhRa-00000009hSY-3eQ8
 	for linux-mtd@lists.infradead.org;
-	Wed, 08 Apr 2026 21:36:48 +0000
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-482f454be5bso1693085e9.0
-        for <linux-mtd@lists.infradead.org>; Wed, 08 Apr 2026 14:36:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1775684205; x=1776289005; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=rjVxWYOeFnQfJj1Uu8QEV+84w2reIr8oTpqTdhpQ/Ac=;
-        b=LvLpPiZC9Q/EIIt+LQs12Q8TDuwm0Ai+jkFdwtNmsYDMhAl7N9OBYtDDvTZz03W298
-         /u53KBzE8X6P9liCrsQBO2LnX4+JA6t/8ZCyHUFJ9fFzERPO7Cx0/NIQiNTa6/abvs7f
-         LbDcdEhjkyXpkPwK5ExIrYhFi5WL4M+z2TohIb90nvUk2SNLqrtMjCBj7DVgprcRyjuF
-         08b86Shl0lKDGC9BA8+KicBACmPXOvpHi3Atp/g7s9nSsmERH0TxABDIkIcgu6t2MZ8p
-         96ocLe1Rx5n6Y3rn2l+R9qXPJhrhwFzoNTAqChkEfreG8RZxseGb60HL609Mq0QJnlJV
-         +WdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1775684205; x=1776289005;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rjVxWYOeFnQfJj1Uu8QEV+84w2reIr8oTpqTdhpQ/Ac=;
-        b=L7rYOUBWTvKH0Eq0p58Gp6rI9+jDDD6ZMFWAFxpvRsKyZ7F5tCcEcxjeoDMte1h4zx
-         9xlM/66PCc/R1696ZSTzSnVsxogW4vuUd2qEaRDwzyExoIhNIABEZki78j8ChgfFCUoj
-         Q+vUL7mnCFcn89XqVmnNEDZC/z+J1zIiEAFKtVC8OKb30eu3RBoL7ieHJxk/nE3yWGfS
-         jhNgkzpVsTro9e5zHrkD1nLVJjBngEStXmepQv/nv4esjH42A+8hD9DDy+WaPKR5v52k
-         5F2VUx0WHKCNAG34nRRH8d2r8C1wpd4LBZIrT8lVABF+tnxOTAQXJpW5YGV0ROvi8Wa7
-         x/DA==
-X-Gm-Message-State: AOJu0YzjueF+4dQMAZhsVTBtyDPckYyRYNHq/XfqgJBWiWm7ONedAB4G
-	Ijdl63wgEG/lDBXDgDzcKxCXsKLH0a6lt55P3oY0RijF4tUz91guerFoxRkN7g==
-X-Gm-Gg: AeBDieudxFqb2uStPtGoLZ0htuFcxTsyljCzA0a6MDhtVw+00eNShPEI5a3TLDA2+e7
-	6OUyfkiK94Y/zqeN3GwKAuRVNEUWIUGxDWj4DPYovmdOA4Dw9Qm0bt52gZf+GEYzVZbbJIk65dy
-	DOwGRRY3a6FHnNdZLX4T/pbXN8P7qaucjX50rAhOytJA0TBzg/gX+WWITpicKaP/PVk+NwClkWO
-	DDtUFb7pH/qXHimOoR2te+R448KdAjDs1QiwvYyM6ufw+lEs/nBzA1AGsHkhhr0eMLG9j/Krwxg
-	gr3PCmmF1EC9/NAoVkZ8DpVm65rNFzqhLa4YdPhxuP5Xsyo/UCVrNiu44pMCHxjrJpehUCK8i40
-	fAs36nyRQ74tfxc3r+vXu9d07r97KHaBTzWbM0FGZcRyG7P5O/gBTNh3OeI/SsFcb8usr70VnGh
-	lhrH7bWVGHobMN15w8jG/EK/fGaZUgDJXJClGnbg4tCrv+lbuTVLcixNsBo0kn3JFrcLQKsBqPK
-	H8Sgk3hUmuMVVAcjJzE
-X-Received: by 2002:a05:6000:1a8b:b0:43d:1df7:e3af with SMTP id ffacd0b85a97d-43d595bbe8emr1451289f8f.22.1775684205254;
-        Wed, 08 Apr 2026 14:36:45 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:c7c:37d6:c100:cca3:7cee:f0b5:b56f])
-        by smtp.googlemail.com with ESMTPSA id ffacd0b85a97d-43d473b8c1esm21404661f8f.12.2026.04.08.14.36.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Apr 2026 14:36:44 -0700 (PDT)
-From: Adrian McMenamin <adrianmcmenamin@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org,
-	linux-sh@vger.kernel.org,
-	Adrian McMenamin <adrianmcmenamin@gmail.com>
-Subject: [PATCH] mtd: maps: vmu: add include to ensure maple mtd code builds
-Date: Wed,  8 Apr 2026 22:29:51 +0100
-Message-ID: <20260408212950.275065-2-adrianmcmenamin@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	Thu, 09 Apr 2026 04:56:45 +0000
+Received: from mail-nwsmtp-smtp-production-main-78.klg.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-78.klg.yp-c.yandex.net [IPv6:2a02:6b8:c43:d880:0:640:3563:0])
+	by forward102d.mail.yandex.net (Yandex) with ESMTPS id 69D2EC0111;
+	Thu, 09 Apr 2026 07:56:36 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-78.klg.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id Yu76IE8SJuQ0-v3buwENo;
+	Thu, 09 Apr 2026 07:56:36 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
+	t=1775710596; bh=8jYrWOQ1rEq47acNXqtzgaDC3GwdJWMLeILnxWMyA0o=;
+	h=Message-ID:Date:In-Reply-To:Cc:Subject:References:To:From;
+	b=mclK5qVmzfS1/40RJ/H2RSIkFIMTIXv6rrBEtT1RECXV9E+RonxSyS8SvYH792h41
+	 DE3E7aLL5F+WpfZ+gUYyJEdWJlbEH26E0RDSpJn18KVr3yHPxpRBCLeOw+5ektOnUK
+	 fyrwRA4WXrGwefPfD2LvWTcbH4XbxPXSgzhG1U5g=
+Authentication-Results: mail-nwsmtp-smtp-production-main-78.klg.yp-c.yandex.net; dkim=pass header.i=@yandex.ru
+From: Dmitry Antipov <dmantipov@yandex.ru>
+To: Zhihao Cheng <chengzhihao1@huawei.com>
+Cc: Richard Weinberger <richard@nod.at>,
+	linux-mtd@lists.infradead.org,
+	Dmitry Antipov <dmantipov@yandex.ru>
+Subject: [PATCH v4 1/2] ubifs: prefer kstrtobool_from_user() over custom helper
+Date: Thu,  9 Apr 2026 07:56:28 +0300
+Message-ID: <20260409045629.527019-1-dmantipov@yandex.ru>
+X-Mailer: git-send-email 2.53.0
+In-Reply-To: <5deffdfa-6a99-8205-1f71-ff1f07ce28d1@huawei.com>
+References: <5deffdfa-6a99-8205-1f71-ff1f07ce28d1@huawei.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260408_143647_790692_E51ACDD7 
-X-CRM114-Status: GOOD (  10.18  )
+X-CRM114-CacheID: sfid-20260408_215643_426182_9453AD53 
+X-CRM114-Status: GOOD (  14.04  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,33 +71,97 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Adjust 'dfs_file_write()' and 'dfs_global_file_write()' to prefer generic
+'kstrtobool_from_user()' over an ad-hoc 'interpret_user_input()' helper,
+thus making the latter not needed anymore.
 
-maple.h included in vmu-flash.c references struct device and struct
-device_driver, so we should explicitly include linux/device.h to ensure
-the code builds without error.
-
-
-Include header file required for build.
-
-Signed-off-by: Adrian McMenamin <adrianmcmenamin@gmail.com>
+Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Signed-off-by: Dmitry Antipov <dmantipov@yandex.ru>
 ---
- drivers/mtd/maps/vmu-flash.c | 1 +
- 1 file changed, 1 insertion(+)
+v3 and upwards: bump version to match the series
+v2: add Reviewed-by: and bump version to match the series
+---
+ fs/ubifs/debug.c | 44 ++++++++++----------------------------------
+ 1 file changed, 10 insertions(+), 34 deletions(-)
 
-diff --git a/drivers/mtd/maps/vmu-flash.c b/drivers/mtd/maps/vmu-flash.c
-index 75e06d249ce9..e2a574a4b438 100644
---- a/drivers/mtd/maps/vmu-flash.c
-+++ b/drivers/mtd/maps/vmu-flash.c
-@@ -9,6 +9,7 @@
- #include <linux/slab.h>
- #include <linux/sched.h>
- #include <linux/delay.h>
-+#include <linux/device.h>
- #include <linux/maple.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/map.h>
+diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c
+index 160c16aa7b6e..252cf82012cf 100644
+--- a/fs/ubifs/debug.c
++++ b/fs/ubifs/debug.c
+@@ -2732,39 +2732,14 @@ static ssize_t dfs_file_read(struct file *file, char __user *u, size_t count,
+ 	return provide_user_output(val, u, count, ppos);
+ }
+ 
+-/**
+- * interpret_user_input - interpret user debugfs file input.
+- * @u: user-provided buffer with the input
+- * @count: buffer size
+- *
+- * This is a helper function which interpret user input to a boolean UBIFS
+- * debugfs file. Returns %0 or %1 in case of success and a negative error code
+- * in case of failure.
+- */
+-static int interpret_user_input(const char __user *u, size_t count)
+-{
+-	size_t buf_size;
+-	char buf[8];
+-
+-	buf_size = min_t(size_t, count, (sizeof(buf) - 1));
+-	if (copy_from_user(buf, u, buf_size))
+-		return -EFAULT;
+-
+-	if (buf[0] == '1')
+-		return 1;
+-	else if (buf[0] == '0')
+-		return 0;
+-
+-	return -EINVAL;
+-}
+-
+ static ssize_t dfs_file_write(struct file *file, const char __user *u,
+ 			      size_t count, loff_t *ppos)
+ {
+ 	struct ubifs_info *c = file->private_data;
+ 	struct ubifs_debug_info *d = c->dbg;
+ 	struct dentry *dent = file->f_path.dentry;
+-	int val;
++	bool val;
++	int ret;
+ 
+ 	if (file->f_path.dentry == d->dfs_dump_lprops) {
+ 		ubifs_dump_lprops(c);
+@@ -2781,9 +2756,9 @@ static ssize_t dfs_file_write(struct file *file, const char __user *u,
+ 		return count;
+ 	}
+ 
+-	val = interpret_user_input(u, count);
+-	if (val < 0)
+-		return val;
++	ret = kstrtobool_from_user(u, count, &val);
++	if (unlikely(ret))
++		return ret;
+ 
+ 	if (dent == d->dfs_chk_gen)
+ 		d->chk_gen = val;
+@@ -2926,11 +2901,12 @@ static ssize_t dfs_global_file_write(struct file *file, const char __user *u,
+ 				     size_t count, loff_t *ppos)
+ {
+ 	struct dentry *dent = file->f_path.dentry;
+-	int val;
++	bool val;
++	int ret;
+ 
+-	val = interpret_user_input(u, count);
+-	if (val < 0)
+-		return val;
++	ret = kstrtobool_from_user(u, count, &val);
++	if (unlikely(ret))
++		return ret;
+ 
+ 	if (dent == dfs_chk_gen)
+ 		ubifs_dbg.chk_gen = val;
 -- 
-2.43.0
+2.53.0
 
 
 ______________________________________________________
