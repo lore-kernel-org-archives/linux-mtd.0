@@ -4,87 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 547B8F44863
-	for <linux-mtd@archiver.kernel.org>; Fri, 10 Apr 2026 13:38:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5DBEFF459F4
+	for <linux-mtd@archiver.kernel.org>; Fri, 10 Apr 2026 15:19:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=UkBdZJI2Y2DCt4KrZ/Vq8uRtSf18/D8eLiolEDGJ+zw=; b=WtzYM/ytfgD4n+
-	auc4trMc4r3D6rvzaj2Nfcx0fEq2Zaq4zvo1Z4tkdupSwkS2GKXJqiL0mheSRvtrbcBmm+ZHyDaEQ
-	+fQcSv4shItcXMHudK0yGNDaXUH9SKNkogN/wpq3I9nwIe9zVTvD1sgvllF3zXTTB0pLct10pv5t9
-	CkhmJmPqVyrPn6U3IKVWCqgooRwW83bsqffm8GWp5Wh6SYttXalLGccpgqxY6MPiTng3nUZlvSvCN
-	K3O0ZV8AjTdmP7Dh/RkzkXGTqqECiFnleJHaFiV4sfYNy2EOA3Bh7K0p2bPNbim9POEMkEbR4JElT
-	znSLLv4MGbvDHFVNnS+g==;
+	List-Owner; bh=Wbx7HN8q4IKyOBimz9BRxzahH7Paz72V/NppXnfDIO0=; b=aNJT3l5i6DiDUl
+	qiRV2rTwAqDcvBUv5UZOUpTk/Skc/wC6hDrdPC9mbcExTLBLy5MuNlTIlXakP6TDq/IBqvS9Filiw
+	34HbXeunbDbyVOxdZY3qcClLbIzORU7pZjHnEczE3Or5M2H3nPqeSupoqN4MGrT+1/GEH1fSQ5aAk
+	kRiqIjRCALFSWkRK+g5xHl5RgItJ3iyGQCUpzWON7YJaZlPaeqMCAAvUXQL7cz1T6TWKlorPnW2tL
+	n3R7oIz91ti1XeuCqS6d2Wx8O9os2DG6FEJSBy7fj43XayFvq2dwdEBlnGb9Y+WbS1v8OkJ+MdUfQ
+	TUHCWuuKZAI5b9JWXhhA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wBC3t-0000000CKJP-2LXw;
-	Fri, 10 Apr 2026 13:38:17 +0000
-Received: from mail-pj1-x1031.google.com ([2607:f8b0:4864:20::1031])
+	id 1wBDdd-0000000CS3O-3NaC;
+	Fri, 10 Apr 2026 15:19:17 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wBC3q-0000000CKIj-3s0e
+	id 1wBDdd-0000000CS31-0ZxC
+	for linux-mtd@bombadil.infradead.org;
+	Fri, 10 Apr 2026 15:19:17 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+	:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=eTlXD+fEi5OyNbu4TxRTwpDmEzFd2ThBwniicSqJG9M=; b=gyDBb8ubZ9g8PbVDh5y7NfoA4O
+	X6H+RRSVCb5Oqsap4AqNFQ7LiuoC8eDY3Jq+AOKK1uRe1h0vHBhLdZ877/NITXAMwvSyXYcuLG4GS
+	Hd7+XfphWKI0khZAWTuH54nlM3/OIf47ks3VGfk2syhiCSzxi47jyNFDZl2wB+fXiWN3cgB9fOsmD
+	uX0pzWizflRCtRZ3mtsPMM/0LbUxl/3FRvRAwKLmY8rrXftWCXEIc/JDjinPntSOzkJKgeGF3S4xc
+	CRAjrAutu92Pc6wTPlHniRo78sjt08ipffDzmbQhf5vvZajO+EDsrWC7UD2WnK27vjyprSYz7n9bX
+	hqIVl/uQ==;
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11] helo=outgoing.mit.edu)
+	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1wBDda-0000000DkPr-0UGg
 	for linux-mtd@lists.infradead.org;
-	Fri, 10 Apr 2026 13:38:16 +0000
-Received: by mail-pj1-x1031.google.com with SMTP id 98e67ed59e1d1-35d8e548a05so2040600a91.1
-        for <linux-mtd@lists.infradead.org>; Fri, 10 Apr 2026 06:38:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1775828294; x=1776433094; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uJlPJW8FpDciknW1ezsaq3xMTwniBfxMiXGcZYoSCWI=;
-        b=Wh+VyatWe7coc9XEHR/uI2e2LpFTlSGgNSwBIAhML42zq5U+9bnPV50RjR/Vm0u3T1
-         JpD2GMSMzW/L38Z+5BQcPVLN9U+MAkv90Ey42fDd9RYorhWzdGySgSt2vf/VKFbSi44/
-         HR/RvqDEgS8PqN+Q1Bt5AUbNHlkaMID8JafcDA8f/A7Tu+I4oyRs25fK8QPcAwT3/F6d
-         bsK60HytGW5C4HJWiXqV18C4rYwwe+/HM5hiW0adbbFvIE/HkshDfY2kDUj3x27Tosj1
-         SshAChTSPjY4SVstHFQEmhZSbdHO1+8xODRsoY3IIPWNALBhRlf1UAHHOlw3dFn/OhmZ
-         R73Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1775828294; x=1776433094;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=uJlPJW8FpDciknW1ezsaq3xMTwniBfxMiXGcZYoSCWI=;
-        b=SfSaEBubBa0p6uo1EyAJDo8TIRA0Ef1/tKB8DTxKrgsapRw6eyTwg5DegE4Q3PPw9f
-         ndIzVrWOYW7rYK3Xy7F0o373Vw+iZGR8QmgBwx+rSv7uPGUNC3/oa+OJUCCYTW4YWfCM
-         vxzIKVYVlcSEXQ5jiA0OKKlVE5pzwb8QrKeLSYX+KbkWNf9n6+pqkxqZBMLzYft/N6fz
-         4q0x8/YRE7K3kuPtEZRJi6NGs+12sCkcxwB3QjWnEjK5/7FyQ17SoMERcbwcoTy3mqwP
-         WmNxsQF9TBfexg2iFHHx29+w+A7ZN7Dzw/IZ8kIz2EvgllCsVsw9abyxOc3p5UBJdbXB
-         EdlQ==
-X-Gm-Message-State: AOJu0YxA6lp+dgABfaaBnYm8UWLL5utJhocDCgO5+qCdEEvcHGZZ2Aod
-	UIepLKi/puRbVdC22+Q4iBQ7hoiioA8PHXV0bReb+ZkUvYLAIq9F/+Gp
-X-Gm-Gg: AeBDietRxp7JhMvGP+Ux03WZ1+rl1V3LsiyQL2TgJB93R+gdjHNZZnCpN5eCuboiPC0
-	49V0PDPU2F+qCL3oxb6CiKrrLTeCNafBqan2BrTsk5MRE+4PgrKOhHux8XOzlevlNDFx3zlLFxx
-	Ydw5SH47GHp4Pa23TpK/FZxuXpqXr/QZP2R7tH2U2tXgvnpoyr4He/m/RhtqU8IOOpo4Ceksr48
-	1p4YKGPJLs2jLcLkbRlPn2dF4PDeW+lFkW9tDob0aqIr/EGMR2SxNettQeFdXwF91jM8eO/XcNe
-	fdQ9UbjNRzRjxsjqU3bGhaihUCUESWrRiT3u557WfRGWqhhTrfFpkXPO6F2ua3e2gl4kThxdBUl
-	UiCxXWa3ezhwrht8dbEUvNzKToJ/DV6qo6E3zc2vU9gqv8gs1czROO0o23CCJg3WAubW5e5CRQP
-	b8HGaVssOp4OrX+1LRNXpUAOqtdTzVGDReW04ZJC9UfTokwdvmWeVXVA==
-X-Received: by 2002:a17:90b:38c8:b0:35d:a542:2dc4 with SMTP id 98e67ed59e1d1-35e42842cc9mr3680530a91.21.1775828294018;
-        Fri, 10 Apr 2026 06:38:14 -0700 (PDT)
-Received: from ZC-202510311500 ([123.139.41.116])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-35e4122314dsm3442353a91.6.2026.04.10.06.38.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Apr 2026 06:38:13 -0700 (PDT)
-From: Haoyu Lu <hechushiguitu666@gmail.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Haoyu Lu <hechushiguitu666@gmail.com>
-Subject: [PATCH 2/2] mtd: mtdsuper: replace simple_strtoul with kstrtouint
-Date: Fri, 10 Apr 2026 21:37:35 +0800
-Message-ID: <20260410133739.1632-2-hechushiguitu666@gmail.com>
-X-Mailer: git-send-email 2.53.0.windows.1
-In-Reply-To: <20260410133739.1632-1-hechushiguitu666@gmail.com>
-References: <20260410133739.1632-1-hechushiguitu666@gmail.com>
+	Fri, 10 Apr 2026 15:19:15 +0000
+Received: from trampoline.thunk.org (pool-173-48-116-90.bstnma.fios.verizon.net [173.48.116.90])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 63AFIonm015842
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 10 Apr 2026 11:18:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1775834338; bh=eTlXD+fEi5OyNbu4TxRTwpDmEzFd2ThBwniicSqJG9M=;
+	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type;
+	b=VM9pR3FUqiyu4dGQLYjxtn5fwtIzfU7ySZMp0abbH18xV6/gDABRi9uB743lXz8hh
+	 DLg+D58JGiw6cmfTe96qrNZsfI1LrX8CH4Z4SZsryjUI4LnJNSYnME68kmTAWN0bac
+	 +APmObxjmRctPfSGmHJbriSXfrkN55pWYIbiVRfu2y0ECqpOPHSJun6K+BHM+LkVI2
+	 DM7T+QYmlRWbU/sqPlO03FdXluf2F9iRmmuiDmCsbPLwL4U9izV2zs90P/AyWnNi7/
+	 WJE2W3FtW9KojAgen2wKI5w3YJJGh4CS8IuF5T47bMgUta6WPQzUW9F7QaunmIRgXz
+	 enYXQQPwNnobw==
+Received: by trampoline.thunk.org (Postfix, from userid 15806)
+	id 0D7462E00E1; Fri, 10 Apr 2026 11:18:48 -0400 (EDT)
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: amd-gfx@lists.freedesktop.org, apparmor@lists.ubuntu.com,
+        bpf@vger.kernel.org, ceph-devel@vger.kernel.org, cocci@inria.fr,
+        dm-devel@lists.linux.dev, dri-devel@lists.freedesktop.org,
+        gfs2@lists.linux.dev, intel-gfx@lists.freedesktop.org,
+        intel-wired-lan@lists.osuosl.org, iommu@lists.linux.dev,
+        kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-leds@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-mm@kvack.org,
+        linux-modules@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-nfs@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-phy@lists.infradead.org, linux-pm@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-sctp@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-sh@vger.kernel.org,
+        linux-sound@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-trace-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        ntfs3@lists.linux.dev, samba-technical@lists.samba.org,
+        sched-ext@lists.linux.dev, target-devel@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net, v9fs@lists.linux.dev,
+        Philipp Hahn <phahn-oss@avm.de>
+Cc: "Theodore Ts'o" <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>
+Subject: Re: [PATCH 04/61] ext4: Prefer IS_ERR_OR_NULL over manual NULL check
+Date: Fri, 10 Apr 2026 11:18:40 -0400
+Message-ID: <177583430870.2758959.6171961359325912353.b4-ty@b4>
+X-Mailer: git-send-email 2.51.0
+In-Reply-To: <20260310-b4-is_err_or_null-v1-4-bd63b656022d@avm.de>
+References: <20260310-b4-is_err_or_null-v1-4-bd63b656022d@avm.de>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260410_063814_984548_64638C49 
-X-CRM114-Status: GOOD (  13.98  )
+X-CRM114-CacheID: sfid-20260410_161914_452569_FE5BAF81 
+X-CRM114-Status: UNSURE (   5.68  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,42 +115,21 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Modernize string-to-number conversion in mtdsuper.c by replacing
-simple_strtoul with kstrtouint. This change provides proper type safety
-for MTD device numbers which are non-negative integers.
 
-Using kstrtouint avoids unsigned long to int conversion and is more
-appropriate for device indices. The debug output format specifier is
-updated to %u for unsigned int.
+On Tue, 10 Mar 2026 12:48:30 +0100, Philipp Hahn wrote:
+> Prefer using IS_ERR_OR_NULL() over using IS_ERR() and a manual NULL
+> check.
+> 
+> Change generated with coccinelle.
 
-Signed-off-by: Haoyu Lu <hechushiguitu666@gmail.com>
----
- drivers/mtd/mtdsuper.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+Applied, thanks!
 
-diff --git a/drivers/mtd/mtdsuper.c b/drivers/mtd/mtdsuper.c
-index b7e3763c47f0..c709ff7aa6b5 100644
---- a/drivers/mtd/mtdsuper.c
-+++ b/drivers/mtd/mtdsuper.c
-@@ -132,12 +132,12 @@ int get_tree_mtd(struct fs_context *fc,
+[04/61] ext4: Prefer IS_ERR_OR_NULL over manual NULL check
+        commit: 1d749e110277ce4103f27bd60d6181e52c0cc1e3
 
- 		} else if (isdigit(fc->source[3])) {
- 			/* mount by MTD device number name */
--			char *endptr;
-+			unsigned int mtdnr_val;
-
--			mtdnr = simple_strtoul(fc->source + 3, &endptr, 0);
--			if (!*endptr) {
-+			if (kstrtouint(fc->source + 3, 0, &mtdnr_val) == 0) {
-+				mtdnr = mtdnr_val;
- 				/* It was a valid number */
--				pr_debug("MTDSB: mtd%%d, mtdnr %d\n", mtdnr);
-+				pr_debug("MTDSB: mtd%%d, mtdnr %u\n", mtdnr_val);
- 				return mtd_get_sb_by_nr(fc, mtdnr, fill_super);
- 			}
- 		}
---
-2.53.0.windows.1
+Best regards,
+-- 
+Theodore Ts'o <tytso@mit.edu>
 
 ______________________________________________________
 Linux MTD discussion mailing list
