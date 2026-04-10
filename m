@@ -4,66 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3ECDF36B97
-	for <linux-mtd@archiver.kernel.org>; Fri, 10 Apr 2026 01:07:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30777F36BAA
+	for <linux-mtd@archiver.kernel.org>; Fri, 10 Apr 2026 04:39:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=GOcIQ6l+cYBP1eG8OZ1J3yK9OCjxiPpXc/m04jnUoJk=; b=bus6+9fcluQP5rddpWauIHyss/
-	TjXZeiaDnQUVRe/UwOWPYyM1yR763CykO3u2Ge0CsQwzcOwHE8GFA9QA7TQxhU1w1am2pKplALkVQ
-	aVxtkSM2/Y5FiNwrLEh/nRK/owYJpy5siZWba/FhMSnFOdVu/DbOogHzpug0NBev/JW+asSgCtaMT
-	0QCguCWXrP55S+wb2K5+rYtb5vA/4PfrpymdYxIMN7RKPdglQGPsociTI7eevm7rHVsxSU3UzAYxz
-	FKXUIhtSydS0rAEFj/TFkQkgTD/szfku+/JcoNOJ1D66MZ8h3wItsZDZdFd+2XaWQNf9zWUa3PVj2
-	Jfz0dNjA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=p4hz1hwORRHZxPnPHTXoNOSfQii12a1K5E9oYmdEhSI=; b=xp3PJpAIeUUCd/
+	1k5/JCGBiG6CRFzHJ9tY2GHykjUvp4dpe9in5vOKeMXh5JF6W7D3bobvb9IC7QlJZmvPxuZL0BvNe
+	RCjz12USfd7fF1T1D7imEjUtBa8HA/WPrA5Eyt0Wj+Q/B8ls9Jtv4dTyY5MwcD/qbS6v6VZb5PLaV
+	W3YFyglPcZoo/EoCRxtY5oepzAx4Ar8nd6+WF2PvWXKsT5IH8V2EXfBbiEH3dqbCSn9O+h3rMUtQK
+	I9ACEz1HX1m7zijm/+1kNuNYnl/rdXkBn0/4WBOztgnDNuTPpOIAAKWgV8bVv/3eVHHtOuUjLj7Vr
+	4/1sCGRaSBc8/iuHEPoQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wB0Km-0000000BOcF-1F4F;
-	Fri, 10 Apr 2026 01:06:56 +0000
-Received: from canpmsgout03.his.huawei.com ([113.46.200.218])
+	id 1wB3eV-0000000Bb37-3nyZ;
+	Fri, 10 Apr 2026 04:39:31 +0000
+Received: from smtp14.infineon.com ([2a00:18f0:1e00:4::6])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wB0Kj-0000000BObi-0XiB
+	id 1wB3eR-0000000Bb2T-3xHH
 	for linux-mtd@lists.infradead.org;
-	Fri, 10 Apr 2026 01:06:55 +0000
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=fsxoXGD/fPWpV5xyEdnFJYBL5PDJH6ffP46dWCdx3SE=;
-	b=3YSM6JW35iLVppJzaQ013Lmj3JLxwMeFjfVZJ/WgFHGttYpjzqVVyqXHqxsnC7oukQ6797kue
-	NWo9GrxRTH4QfFWFbEzGuxZLy+uRnXjEnFuhmJ7JBbNtvSEN1zcjhMuAJLLlEU88NSYjuOcF5lq
-	Mc3bGUdeCGYNvi8T0Y5IvJk=
-Received: from mail.maildlp.com (unknown [172.19.163.104])
-	by canpmsgout03.his.huawei.com (SkyGuard) with ESMTPS id 4fsJPx4wr4zpSwq;
-	Fri, 10 Apr 2026 09:00:37 +0800 (CST)
-Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id BDB474048F;
-	Fri, 10 Apr 2026 09:06:40 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemk500005.china.huawei.com (7.202.194.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Fri, 10 Apr 2026 09:06:40 +0800
-Subject: Re: [PATCH v4 2/2] ubifs: use strscpy() and kmemdup_nul() where
- appropriate
-To: Dmitry Antipov <dmantipov@yandex.ru>
-CC: Richard Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>
-References: <5deffdfa-6a99-8205-1f71-ff1f07ce28d1@huawei.com>
- <20260409045629.527019-1-dmantipov@yandex.ru>
- <20260409045629.527019-2-dmantipov@yandex.ru>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <a8d991e7-7c66-2049-41e1-0a3f07114333@huawei.com>
-Date: Fri, 10 Apr 2026 09:06:39 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	Fri, 10 Apr 2026 04:39:29 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=infineon.com; i=@infineon.com; q=dns/txt; s=IFXMAIL;
+  t=1775795968; x=1807331968;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=sjGWn7+fy9yPuoagO7nCCICEsLk1p9rQMDNZOLFAsWc=;
+  b=DV0g6W4itW68p3b1yAbwzBKHTV2NamOwMrZ1UZp74Oiffn9Owh8S+ZuB
+   pBecWczJzg4gxPfbk9aWPdxDFfTsLlLfqs8q7tuXghIGv6SwKFLdbZ1Ly
+   kuCdJDbQAcPdVlJqUViQtPNo/Z9HRcVv3EKUsWvtlDSSh9fM/2W1jQ9QQ
+   A=;
+X-CSE-ConnectionGUID: vCb3euiaRpmJ27qRWl8dQw==
+X-CSE-MsgGUID: 12F2J5gTRHOi5SmBW2dqzA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11754"; a="125399480"
+X-IronPort-AV: E=Sophos;i="6.23,170,1770591600"; 
+   d="scan'208";a="125399480"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO MUCSE812.infineon.com) ([172.23.29.38])
+  by smtp14.infineon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2026 06:39:24 +0200
+Received: from MUCSE815.infineon.com (172.23.29.41) by MUCSE812.infineon.com
+ (172.23.29.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.37; Fri, 10 Apr
+ 2026 06:39:22 +0200
+Received: from MUCSE815.infineon.com (172.23.29.41) by MUCSE815.infineon.com
+ (172.23.29.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.37; Fri, 10 Apr
+ 2026 06:39:22 +0200
+Received: from MUCSE815.infineon.com ([fe80::b54c:c0bd:546c:c9be]) by
+ MUCSE815.infineon.com ([fe80::b54c:c0bd:546c:c9be%12]) with mapi id
+ 15.02.2562.037; Fri, 10 Apr 2026 06:39:22 +0200
+From: <Takahiro.Kuwano@infineon.com>
+To: <miquel.raynal@bootlin.com>, <pratyush@kernel.org>, <mwalle@kernel.org>,
+	<richard@nod.at>, <vigneshr@ti.com>, <corbet@lwn.net>
+CC: <sean.anderson@linux.dev>, <thomas.petazzoni@bootlin.com>,
+	<STLin2@winbond.com>, <linux-mtd@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>
+Subject: RE: [PATCH v4 17/27] mtd: spi-nor: debugfs: Add locking support
+Thread-Topic: [PATCH v4 17/27] mtd: spi-nor: debugfs: Add locking support
+Thread-Index: AQHcw4RelEXg6NHRDkGFCIUYpLBcj7XXwIdw
+Date: Fri, 10 Apr 2026 04:39:22 +0000
+Message-ID: <c8521e12e49040ce8683f81692644574@infineon.com>
+References: <20260403-winbond-v6-18-rc1-spi-nor-swp-v4-0-833dab5e7288@bootlin.com>
+ <20260403-winbond-v6-18-rc1-spi-nor-swp-v4-17-833dab5e7288@bootlin.com>
+In-Reply-To: <20260403-winbond-v6-18-rc1-spi-nor-swp-v4-17-833dab5e7288@bootlin.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.161.6.196]
 MIME-Version: 1.0
-In-Reply-To: <20260409045629.527019-2-dmantipov@yandex.ru>
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: kwepems200002.china.huawei.com (7.221.188.68) To
- kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260409_180653_794758_317B0094 
-X-CRM114-Status: GOOD (  16.64  )
+X-CRM114-CacheID: sfid-20260409_213928_453781_B2AB543B 
+X-CRM114-Status: GOOD (  30.36  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,109 +90,253 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="gbk"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-1NogMjAyNi80LzkgMTI6NTYsIERtaXRyeSBBbnRpcG92INC0tcA6Cj4gR28gY2xvc2VyIHRvIHRo
-ZSBtb2Rlcm4ga2VybmVsIEFQSSBhbmQgdXNlICdzdHJzY3B5KCknIGFuZCAna21lbWR1cF9udWwo
-KScKPiBvdmVyIGFuIGFkLWhvYyBlbnN1cmUtdG8taGF2ZS0nXDAnIHF1aXJrcyB3aGVyZSBhcHBy
-b3ByaWF0ZS4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBEbWl0cnkgQW50aXBvdiA8ZG1hbnRpcG92QHlh
-bmRleC5ydT4KPiAtLS0KPiB2NDogb25jZSBhZ2FpbiB0byBub3QgZm9yZ2V0IGEgZmlsZXN5c3Rl
-bS1uYXRpdmUgKGxpdHRsZSkgdG8gQ1BVIGVuZGlhbiBzd2FwCj4gdjM6IGZpeCBzdHJzY3B5KCkg
-dXNhZ2UgYXMgbm90aWNlZCBieSBaaGloYW8KPiB2MjogaW5pdGlhbCB2ZXJzaW9uIHRvIGpvaW4g
-dGhlIHNlcmllcwo+IC0tLQo+ICAgZnMvdWJpZnMvam91cm5hbC5jIHwgMTggKysrKysrLS0tLS0t
-LS0tLS0tCj4gICBmcy91Ymlmcy9yZXBsYXkuYyAgfCAgMyArLS0KPiAgIGZzL3ViaWZzL3N1cGVy
-LmMgICB8ICA4ICsrLS0tLS0tCj4gICAzIGZpbGVzIGNoYW5nZWQsIDkgaW5zZXJ0aW9ucygrKSwg
-MjAgZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL2ZzL3ViaWZzL2pvdXJuYWwuYyBiL2Zz
-L3ViaWZzL2pvdXJuYWwuYwo+IGluZGV4IGUyOGFiNDM5NWU1Yy4uNDNlMTljODNhZDZkIDEwMDY0
-NAo+IC0tLSBhL2ZzL3ViaWZzL2pvdXJuYWwuYwo+ICsrKyBiL2ZzL3ViaWZzL2pvdXJuYWwuYwo+
-IEBAIC03MjksOCArNzI5LDcgQEAgaW50IHViaWZzX2pubF91cGRhdGUoc3RydWN0IHViaWZzX2lu
-Zm8gKmMsIGNvbnN0IHN0cnVjdCBpbm9kZSAqZGlyLAo+ICAgCWRlbnQtPmludW0gPSBkZWxldGlv
-biA/IDAgOiBjcHVfdG9fbGU2NChpbm9kZS0+aV9pbm8pOwo+ICAgCWRlbnQtPnR5cGUgPSBnZXRf
-ZGVudF90eXBlKGlub2RlLT5pX21vZGUpOwo+ICAgCWRlbnQtPm5sZW4gPSBjcHVfdG9fbGUxNihm
-bmFtZV9sZW4obm0pKTsKPiAtCW1lbWNweShkZW50LT5uYW1lLCBmbmFtZV9uYW1lKG5tKSwgZm5h
-bWVfbGVuKG5tKSk7Cj4gLQlkZW50LT5uYW1lW2ZuYW1lX2xlbihubSldID0gJ1wwJzsKPiArCXN0
-cnNjcHkoZGVudC0+bmFtZSwgZm5hbWVfbmFtZShubSksIGxlMTZfdG9fY3B1KGRlbnQtPm5sZW4p
-ICsgMSk7CgpJIHRoaW5rIHdlIGNhbiB1c2UgJ2ZuYW1lX2xlbihubSkgKyAxJyB0byByZXBsYWNl
-IAonbGUxNl90b19jcHUoZGVudC0+bmxlbikgKyAxJy4KPiAgIAlzZXRfZGVudF9jb29raWUoYywg
-ZGVudCk7Cj4gICAKPiAgIAl6ZXJvX2RlbnRfbm9kZV91bnVzZWQoZGVudCk7Cj4gQEAgLTEyMzIs
-OCArMTIzMSw3IEBAIGludCB1Ymlmc19qbmxfeHJlbmFtZShzdHJ1Y3QgdWJpZnNfaW5mbyAqYywg
-Y29uc3Qgc3RydWN0IGlub2RlICpmc3RfZGlyLAo+ICAgCWRlbnQxLT5pbnVtID0gY3B1X3RvX2xl
-NjQoZnN0X2lub2RlLT5pX2lubyk7Cj4gICAJZGVudDEtPnR5cGUgPSBnZXRfZGVudF90eXBlKGZz
-dF9pbm9kZS0+aV9tb2RlKTsKPiAgIAlkZW50MS0+bmxlbiA9IGNwdV90b19sZTE2KGZuYW1lX2xl
-bihzbmRfbm0pKTsKPiAtCW1lbWNweShkZW50MS0+bmFtZSwgZm5hbWVfbmFtZShzbmRfbm0pLCBm
-bmFtZV9sZW4oc25kX25tKSk7Cj4gLQlkZW50MS0+bmFtZVtmbmFtZV9sZW4oc25kX25tKV0gPSAn
-XDAnOwo+ICsJc3Ryc2NweShkZW50MS0+bmFtZSwgZm5hbWVfbmFtZShzbmRfbm0pLCBsZTE2X3Rv
-X2NwdShkZW50MS0+bmxlbikgKyAxKTsKPiAgIAlzZXRfZGVudF9jb29raWUoYywgZGVudDEpOwo+
-ICAgCXplcm9fZGVudF9ub2RlX3VudXNlZChkZW50MSk7Cj4gICAJdWJpZnNfcHJlcF9ncnBfbm9k
-ZShjLCBkZW50MSwgZGxlbjEsIDApOwo+IEBAIC0xMjQ4LDggKzEyNDYsNyBAQCBpbnQgdWJpZnNf
-am5sX3hyZW5hbWUoc3RydWN0IHViaWZzX2luZm8gKmMsIGNvbnN0IHN0cnVjdCBpbm9kZSAqZnN0
-X2RpciwKPiAgIAlkZW50Mi0+aW51bSA9IGNwdV90b19sZTY0KHNuZF9pbm9kZS0+aV9pbm8pOwo+
-ICAgCWRlbnQyLT50eXBlID0gZ2V0X2RlbnRfdHlwZShzbmRfaW5vZGUtPmlfbW9kZSk7Cj4gICAJ
-ZGVudDItPm5sZW4gPSBjcHVfdG9fbGUxNihmbmFtZV9sZW4oZnN0X25tKSk7Cj4gLQltZW1jcHko
-ZGVudDItPm5hbWUsIGZuYW1lX25hbWUoZnN0X25tKSwgZm5hbWVfbGVuKGZzdF9ubSkpOwo+IC0J
-ZGVudDItPm5hbWVbZm5hbWVfbGVuKGZzdF9ubSldID0gJ1wwJzsKPiArCXN0cnNjcHkoZGVudDIt
-Pm5hbWUsIGZuYW1lX25hbWUoZnN0X25tKSwgbGUxNl90b19jcHUoZGVudDItPm5sZW4pICsgMSk7
-Cj4gICAJc2V0X2RlbnRfY29va2llKGMsIGRlbnQyKTsKPiAgIAl6ZXJvX2RlbnRfbm9kZV91bnVz
-ZWQoZGVudDIpOwo+ICAgCXViaWZzX3ByZXBfZ3JwX25vZGUoYywgZGVudDIsIGRsZW4yLCAwKTsK
-PiBAQCAtMTQyNCw4ICsxNDIxLDcgQEAgaW50IHViaWZzX2pubF9yZW5hbWUoc3RydWN0IHViaWZz
-X2luZm8gKmMsIGNvbnN0IHN0cnVjdCBpbm9kZSAqb2xkX2RpciwKPiAgIAlkZW50LT5pbnVtID0g
-Y3B1X3RvX2xlNjQob2xkX2lub2RlLT5pX2lubyk7Cj4gICAJZGVudC0+dHlwZSA9IGdldF9kZW50
-X3R5cGUob2xkX2lub2RlLT5pX21vZGUpOwo+ICAgCWRlbnQtPm5sZW4gPSBjcHVfdG9fbGUxNihm
-bmFtZV9sZW4obmV3X25tKSk7Cj4gLQltZW1jcHkoZGVudC0+bmFtZSwgZm5hbWVfbmFtZShuZXdf
-bm0pLCBmbmFtZV9sZW4obmV3X25tKSk7Cj4gLQlkZW50LT5uYW1lW2ZuYW1lX2xlbihuZXdfbm0p
-XSA9ICdcMCc7Cj4gKwlzdHJzY3B5KGRlbnQtPm5hbWUsIGZuYW1lX25hbWUobmV3X25tKSwgbGUx
-Nl90b19jcHUoZGVudC0+bmxlbikgKyAxKTsKPiAgIAlzZXRfZGVudF9jb29raWUoYywgZGVudCk7
-Cj4gICAJemVyb19kZW50X25vZGVfdW51c2VkKGRlbnQpOwo+ICAgCXViaWZzX3ByZXBfZ3JwX25v
-ZGUoYywgZGVudCwgZGxlbjEsIDApOwo+IEBAIC0xNDQ2LDggKzE0NDIsNyBAQCBpbnQgdWJpZnNf
-am5sX3JlbmFtZShzdHJ1Y3QgdWJpZnNfaW5mbyAqYywgY29uc3Qgc3RydWN0IGlub2RlICpvbGRf
-ZGlyLAo+ICAgCQlkZW50Mi0+dHlwZSA9IERUX1VOS05PV047Cj4gICAJfQo+ICAgCWRlbnQyLT5u
-bGVuID0gY3B1X3RvX2xlMTYoZm5hbWVfbGVuKG9sZF9ubSkpOwo+IC0JbWVtY3B5KGRlbnQyLT5u
-YW1lLCBmbmFtZV9uYW1lKG9sZF9ubSksIGZuYW1lX2xlbihvbGRfbm0pKTsKPiAtCWRlbnQyLT5u
-YW1lW2ZuYW1lX2xlbihvbGRfbm0pXSA9ICdcMCc7Cj4gKwlzdHJzY3B5KGRlbnQyLT5uYW1lLCBm
-bmFtZV9uYW1lKG9sZF9ubSksIGxlMTZfdG9fY3B1KGRlbnQyLT5ubGVuKSArIDEpOwo+ICAgCXNl
-dF9kZW50X2Nvb2tpZShjLCBkZW50Mik7Cj4gICAJemVyb19kZW50X25vZGVfdW51c2VkKGRlbnQy
-KTsKPiAgIAl1Ymlmc19wcmVwX2dycF9ub2RlKGMsIGRlbnQyLCBkbGVuMiwgMCk7Cj4gQEAgLTE4
-OTcsOCArMTg5Miw3IEBAIGludCB1Ymlmc19qbmxfZGVsZXRlX3hhdHRyKHN0cnVjdCB1Ymlmc19p
-bmZvICpjLCBjb25zdCBzdHJ1Y3QgaW5vZGUgKmhvc3QsCj4gICAJeGVudC0+aW51bSA9IDA7Cj4g
-ICAJeGVudC0+dHlwZSA9IGdldF9kZW50X3R5cGUoaW5vZGUtPmlfbW9kZSk7Cj4gICAJeGVudC0+
-bmxlbiA9IGNwdV90b19sZTE2KGZuYW1lX2xlbihubSkpOwo+IC0JbWVtY3B5KHhlbnQtPm5hbWUs
-IGZuYW1lX25hbWUobm0pLCBmbmFtZV9sZW4obm0pKTsKPiAtCXhlbnQtPm5hbWVbZm5hbWVfbGVu
-KG5tKV0gPSAnXDAnOwo+ICsJc3Ryc2NweSh4ZW50LT5uYW1lLCBmbmFtZV9uYW1lKG5tKSwgbGUx
-Nl90b19jcHUoeGVudC0+bmxlbikgKyAxKTsKPiAgIAl6ZXJvX2RlbnRfbm9kZV91bnVzZWQoeGVu
-dCk7Cj4gICAJdWJpZnNfcHJlcF9ncnBfbm9kZShjLCB4ZW50LCB4bGVuLCAwKTsKPiAgIAo+IGRp
-ZmYgLS1naXQgYS9mcy91Ymlmcy9yZXBsYXkuYyBiL2ZzL3ViaWZzL3JlcGxheS5jCj4gaW5kZXgg
-YTlhNTY4ZjRhODY4Li5lZjZhZTYzNzkyZDEgMTAwNjQ0Cj4gLS0tIGEvZnMvdWJpZnMvcmVwbGF5
-LmMKPiArKysgYi9mcy91Ymlmcy9yZXBsYXkuYwo+IEBAIC00NjMsOCArNDYzLDcgQEAgc3RhdGlj
-IGludCBpbnNlcnRfZGVudChzdHJ1Y3QgdWJpZnNfaW5mbyAqYywgaW50IGxudW0sIGludCBvZmZz
-LCBpbnQgbGVuLAo+ICAgCXItPnNxbnVtID0gc3FudW07Cj4gICAJa2V5X2NvcHkoYywga2V5LCAm
-ci0+a2V5KTsKPiAgIAlmbmFtZV9sZW4oJnItPm5tKSA9IG5sZW47Cj4gLQltZW1jcHkobmJ1Ziwg
-bmFtZSwgbmxlbik7Cj4gLQluYnVmW25sZW5dID0gJ1wwJzsKPiArCXN0cnNjcHkobmJ1ZiwgbmFt
-ZSwgbmxlbiArIDEpOwo+ICAgCWZuYW1lX25hbWUoJnItPm5tKSA9IG5idWY7Cj4gICAKPiAgIAls
-aXN0X2FkZF90YWlsKCZyLT5saXN0LCAmYy0+cmVwbGF5X2xpc3QpOwo+IGRpZmYgLS1naXQgYS9m
-cy91Ymlmcy9zdXBlci5jIGIvZnMvdWJpZnMvc3VwZXIuYwo+IGluZGV4IDAzYmY5MjQ3NTZjYS4u
-ZGEyZjEwNjdmMDU0IDEwMDY0NAo+IC0tLSBhL2ZzL3ViaWZzL3N1cGVyLmMKPiArKysgYi9mcy91
-Ymlmcy9zdXBlci5jCj4gQEAgLTE2OCwxMyArMTY4LDExIEBAIHN0cnVjdCBpbm9kZSAqdWJpZnNf
-aWdldChzdHJ1Y3Qgc3VwZXJfYmxvY2sgKnNiLCB1bnNpZ25lZCBsb25nIGludW0pCj4gICAJCWlu
-b2RlLT5pX29wID0gJnViaWZzX2ZpbGVfaW5vZGVfb3BlcmF0aW9uczsKPiAgIAkJaW5vZGUtPmlf
-Zm9wID0gJnViaWZzX2ZpbGVfb3BlcmF0aW9uczsKPiAgIAkJaWYgKHVpLT54YXR0cikgewo+IC0J
-CQl1aS0+ZGF0YSA9IGttYWxsb2ModWktPmRhdGFfbGVuICsgMSwgR0ZQX05PRlMpOwo+ICsJCQl1
-aS0+ZGF0YSA9IGttZW1kdXBfbnVsKGluby0+ZGF0YSwgdWktPmRhdGFfbGVuLCBHRlBfTk9GUyk7
-Cj4gICAJCQlpZiAoIXVpLT5kYXRhKSB7Cj4gICAJCQkJZXJyID0gLUVOT01FTTsKPiAgIAkJCQln
-b3RvIG91dF9pbm87Cj4gICAJCQl9Cj4gLQkJCW1lbWNweSh1aS0+ZGF0YSwgaW5vLT5kYXRhLCB1
-aS0+ZGF0YV9sZW4pOwo+IC0JCQkoKGNoYXIgKil1aS0+ZGF0YSlbdWktPmRhdGFfbGVuXSA9ICdc
-MCc7Cj4gICAJCX0gZWxzZSBpZiAodWktPmRhdGFfbGVuICE9IDApIHsKPiAgIAkJCWVyciA9IDEw
-Owo+ICAgCQkJZ290byBvdXRfaW52YWxpZDsKPiBAQCAtMTk0LDEzICsxOTIsMTEgQEAgc3RydWN0
-IGlub2RlICp1Ymlmc19pZ2V0KHN0cnVjdCBzdXBlcl9ibG9jayAqc2IsIHVuc2lnbmVkIGxvbmcg
-aW51bSkKPiAgIAkJCWVyciA9IDEyOwo+ICAgCQkJZ290byBvdXRfaW52YWxpZDsKPiAgIAkJfQo+
-IC0JCXVpLT5kYXRhID0ga21hbGxvYyh1aS0+ZGF0YV9sZW4gKyAxLCBHRlBfTk9GUyk7Cj4gKwkJ
-dWktPmRhdGEgPSBrbWVtZHVwX251bChpbm8tPmRhdGEsIHVpLT5kYXRhX2xlbiwgR0ZQX05PRlMp
-Owo+ICAgCQlpZiAoIXVpLT5kYXRhKSB7Cj4gICAJCQllcnIgPSAtRU5PTUVNOwo+ICAgCQkJZ290
-byBvdXRfaW5vOwo+ICAgCQl9Cj4gLQkJbWVtY3B5KHVpLT5kYXRhLCBpbm8tPmRhdGEsIHVpLT5k
-YXRhX2xlbik7Cj4gLQkJKChjaGFyICopdWktPmRhdGEpW3VpLT5kYXRhX2xlbl0gPSAnXDAnOwo+
-ICAgCQlicmVhazsKPiAgIAljYXNlIFNfSUZCTEs6Cj4gICAJY2FzZSBTX0lGQ0hSOgo+IAoKCl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51
-eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+> The ioctl output may be counter intuitive in some cases. Asking for a
+> "locked status" over a region that is only partially locked will return
+> "unlocked" whereas in practice maybe the biggest part is actually
+> locked.
+> 
+> Knowing what is the real software locking state through debugfs would be
+> very convenient for development/debugging purposes, hence this proposal
+> for adding an extra block at the end of the file: a "locked sectors"
+> array which lists every section, if it is locked or not, showing both
+> the address ranges and the sizes in numbers of blocks.
+> 
+> Here is an example of output, what is after the "sector map" is new.
+> 
+> $ cat /sys/kernel/debug/spi-nor/spi0.0/params
+> name            (null)
+> id              ef a0 20 00 00 00
+> size            64.0 MiB
+> write size      1
+> page size       256
+> address nbytes  4
+> flags           HAS_SR_TB | 4B_OPCODES | HAS_4BAIT | HAS_LOCK | HAS_16BIT_SR | HAS_SR_TB_BIT6 | HAS_4BIT_BP |
+> SOFT_RESET | NO_WP
+> 
+> opcodes
+>  read           0xec
+>   dummy cycles  6
+>  erase          0xdc
+>  program        0x34
+>  8D extension   none
+> 
+> protocols
+>  read           1S-4S-4S
+>  write          1S-1S-4S
+>  register       1S-1S-1S
+> 
+> erase commands
+>  21 (4.00 KiB) [1]
+>  dc (64.0 KiB) [3]
+>  c7 (64.0 MiB)
+> 
+> sector map
+>  region (in hex)   | erase mask | overlaid
+>  ------------------+------------+---------
+>  00000000-03ffffff |     [   3] | no
+> 
+> locked sectors
+>  region (in hex)   | status   | #blocks
+>  ------------------+----------+--------
+>  00000000-03ffffff | unlocked | 1024
+> 
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> ---
+> Here are below more examples of output with various situations. The full
+> output of the "params" content has been manually removed to only show
+> what has been added and how it behaves.
+> 
+> $ flash_lock -l /dev/mtd0 0x3f00000 16
+> $ cat /sys/kernel/debug/spi-nor/spi0.0/params
+> locked sectors
+>  region (in hex)   | status   | #blocks
+>  ------------------+----------+--------
+>  00000000-03efffff | unlocked | 1008
+>  03f00000-03ffffff |   locked | 16
+> $
+> $ flash_lock -u /dev/mtd0 0x3f00000 8
+> $ cat /sys/kernel/debug/spi-nor/spi0.0/params
+> locked sectors
+>  region (in hex)   | status   | #blocks
+>  ------------------+----------+--------
+>  00000000-03f7ffff | unlocked | 1016
+>  03f80000-03ffffff |   locked | 8
+> $
+> $ flash_lock -u /dev/mtd0
+> $ cat /sys/kernel/debug/spi-nor/spi0.0/params
+> locked sectors
+>  region (in hex)   | status   | #blocks
+>  ------------------+----------+--------
+>  00000000-03ffffff | unlocked | 1024
+> $
+> $ flash_lock -l /dev/mtd0
+> $ cat /sys/kernel/debug/spi-nor/spi0.0/params
+> locked sectors
+>  region (in hex)   | status   | #blocks
+>  ------------------+----------+--------
+>  00000000-03ffffff |   locked | 1024
+> $
+> $ flash_lock -u /dev/mtd0 0x20000 1022
+> $ cat /sys/kernel/debug/spi-nor/spi0.0/params
+> locked sectors
+>  region (in hex)   | status   | #blocks
+>  ------------------+----------+--------
+>  00000000-0001ffff |   locked | 2
+>  00020000-03ffffff | unlocked | 1022
+> ---
+>  drivers/mtd/spi-nor/core.h    |  5 +++++
+>  drivers/mtd/spi-nor/debugfs.c | 27 +++++++++++++++++++++++++++
+>  drivers/mtd/spi-nor/swp.c     | 16 ++++++++++++----
+>  3 files changed, 44 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+> index 091eb934abe4..8717a0ad90f0 100644
+> --- a/drivers/mtd/spi-nor/core.h
+> +++ b/drivers/mtd/spi-nor/core.h
+> @@ -673,6 +673,7 @@ int spi_nor_post_bfpt_fixups(struct spi_nor *nor,
+>                              const struct sfdp_bfpt *bfpt);
+> 
+>  void spi_nor_init_default_locking_ops(struct spi_nor *nor);
+> +bool spi_nor_has_default_locking_ops(struct spi_nor *nor);
+>  void spi_nor_try_unlock_all(struct spi_nor *nor);
+>  void spi_nor_cache_sr_lock_bits(struct spi_nor *nor, u8 *sr);
+>  void spi_nor_set_mtd_locking_ops(struct spi_nor *nor);
+> @@ -707,6 +708,10 @@ static inline bool spi_nor_needs_sfdp(const struct spi_nor *nor)
+>         return !nor->info->size;
+>  }
+> 
+> +u64 spi_nor_get_min_prot_length_sr(struct spi_nor *nor);
+> +void spi_nor_get_locked_range_sr(struct spi_nor *nor, const u8 *sr, loff_t *ofs, u64 *len);
+> +bool spi_nor_is_locked_sr(struct spi_nor *nor, loff_t ofs, u64 len, const u8 *sr);
+> +
+>  #ifdef CONFIG_DEBUG_FS
+>  void spi_nor_debugfs_register(struct spi_nor *nor);
+>  void spi_nor_debugfs_shutdown(void);
+> diff --git a/drivers/mtd/spi-nor/debugfs.c b/drivers/mtd/spi-nor/debugfs.c
+> index d0191eb9f879..298ce3d9e905 100644
+> --- a/drivers/mtd/spi-nor/debugfs.c
+> +++ b/drivers/mtd/spi-nor/debugfs.c
+> @@ -1,6 +1,7 @@
+>  // SPDX-License-Identifier: GPL-2.0
+> 
+>  #include <linux/debugfs.h>
+> +#include <linux/math64.h>
+>  #include <linux/mtd/spi-nor.h>
+>  #include <linux/spi/spi.h>
+>  #include <linux/spi/spi-mem.h>
+> @@ -77,10 +78,12 @@ static void spi_nor_print_flags(struct seq_file *s, unsigned long flags,
+>  static int spi_nor_params_show(struct seq_file *s, void *data)
+>  {
+>         struct spi_nor *nor = s->private;
+> +       unsigned int min_prot_len = spi_nor_get_min_prot_length_sr(nor);
+>         struct spi_nor_flash_parameter *params = nor->params;
+>         struct spi_nor_erase_map *erase_map = &params->erase_map;
+>         struct spi_nor_erase_region *region = erase_map->regions;
+>         const struct flash_info *info = nor->info;
+> +       loff_t lock_start, lock_length;
+>         char buf[16], *str;
+>         unsigned int i;
+> 
+> @@ -159,6 +162,30 @@ static int spi_nor_params_show(struct seq_file *s, void *data)
+>                            region[i].overlaid ? "yes" : "no");
+>         }
+> 
+> +       if (!spi_nor_has_default_locking_ops(nor))
+> +               return 0;
+> +
+> +       seq_puts(s, "\nlocked sectors\n");
+> +       seq_puts(s, " region (in hex)   | status   | #blocks\n");
+> +       seq_puts(s, " ------------------+----------+--------\n");
+> +
+> +       spi_nor_get_locked_range_sr(nor, nor->dfs_sr_cache, &lock_start, &lock_length);
+> +       if (!lock_length || lock_length == params->size) {
+> +               seq_printf(s, " %08llx-%08llx | %s | %llu\n", 0ULL, params->size - 1,
+> +                          lock_length ? "  locked" : "unlocked",
+> +                          div_u64(params->size, min_prot_len));
+> +       } else if (!lock_start) {
+> +               seq_printf(s, " %08llx-%08llx | %s | %llu\n", 0ULL, lock_length - 1,
+> +                          "  locked", div_u64(lock_length, min_prot_len));
+> +               seq_printf(s, " %08llx-%08llx | %s | %llu\n", lock_length, params->size - 1,
+> +                          "unlocked", div_u64(params->size - lock_length, min_prot_len));
+> +       } else {
+> +               seq_printf(s, " %08llx-%08llx | %s | %llu\n", 0ULL, lock_start - 1,
+> +                          "unlocked", div_u64(lock_start, min_prot_len));
+> +               seq_printf(s, " %08llx-%08llx | %s | %llu\n", lock_start, params->size - 1,
+> +                          "  locked", div_u64(lock_length, min_prot_len));
+> +       }
+> +
+>         return 0;
+>  }
+>  DEFINE_SHOW_ATTRIBUTE(spi_nor_params);
+> diff --git a/drivers/mtd/spi-nor/swp.c b/drivers/mtd/spi-nor/swp.c
+> index 7a6c2b8ef921..d75ed83eb787 100644
+> --- a/drivers/mtd/spi-nor/swp.c
+> +++ b/drivers/mtd/spi-nor/swp.c
+> @@ -32,7 +32,7 @@ static u8 spi_nor_get_sr_tb_mask(struct spi_nor *nor)
+>                 return SR_TB_BIT5;
+>  }
+> 
+> -static u64 spi_nor_get_min_prot_length_sr(struct spi_nor *nor)
+> +u64 spi_nor_get_min_prot_length_sr(struct spi_nor *nor)
+>  {
+>         unsigned int bp_slots, bp_slots_needed;
+>         /*
+> @@ -53,8 +53,8 @@ static u64 spi_nor_get_min_prot_length_sr(struct spi_nor *nor)
+>                 return sector_size;
+>  }
+> 
+> -static void spi_nor_get_locked_range_sr(struct spi_nor *nor, const u8 *sr, loff_t *ofs,
+> -                                       u64 *len)
+> +void spi_nor_get_locked_range_sr(struct spi_nor *nor, const u8 *sr, loff_t *ofs,
+> +                                u64 *len)
+>  {
+>         u64 min_prot_len;
+>         u8 bp_mask = spi_nor_get_sr_bp_mask(nor);
+> @@ -112,7 +112,7 @@ static bool spi_nor_check_lock_status_sr(struct spi_nor *nor, loff_t ofs,
+>                 return (ofs >= lock_offs_max) || (offs_max <= lock_offs);
+>  }
+> 
+> -static bool spi_nor_is_locked_sr(struct spi_nor *nor, loff_t ofs, u64 len, const u8 *sr)
+> +bool spi_nor_is_locked_sr(struct spi_nor *nor, loff_t ofs, u64 len, const u8 *sr)
+>  {
+>         return spi_nor_check_lock_status_sr(nor, ofs, len, sr, true);
+>  }
+> @@ -410,6 +410,9 @@ static int spi_nor_sr_is_locked(struct spi_nor *nor, loff_t ofs, u64 len)
+>   * -is_locked(): Checks if the region is *fully* locked, returns false otherwise.
+>   *               This feeback may be misleading because users may get an "unlocked"
+>   *               status even though a subpart of the region is effectively locked.
+> + *
+> + * If in doubt during development, check-out the debugfs output which tries to
+> + * be more user friendly.
+>   */
+>  static const struct spi_nor_locking_ops spi_nor_sr_locking_ops = {
+>         .lock = spi_nor_sr_lock,
+> @@ -422,6 +425,11 @@ void spi_nor_init_default_locking_ops(struct spi_nor *nor)
+>         nor->params->locking_ops = &spi_nor_sr_locking_ops;
+>  }
+> 
+> +bool spi_nor_has_default_locking_ops(struct spi_nor *nor)
+> +{
+> +       return nor->params->locking_ops == &spi_nor_sr_locking_ops;
+> +}
+> +
+>  static int spi_nor_lock(struct mtd_info *mtd, loff_t ofs, u64 len)
+>  {
+>         struct spi_nor *nor = mtd_to_spi_nor(mtd);
+> 
+> --
+> 2.53.0
+
+Reviewed-by: Takahiro Kuwano <takahiro.kuwano@infineon.com>
+
+Thanks,
+Takahiro
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
