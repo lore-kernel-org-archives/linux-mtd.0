@@ -4,70 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78B82F3ED4B
-	for <linux-mtd@archiver.kernel.org>; Sat, 11 Apr 2026 11:58:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9EEDEF3ED67
+	for <linux-mtd@archiver.kernel.org>; Sun, 12 Apr 2026 00:05:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
-	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=LXED8GKKVwrdRQFHsmtZYyy6kx5/+ACsVq9QP6Y7np0=; b=tFBl7qFeQxGrH+
-	2eRKiZI0kc7f1ZmhSHoX44zdlJH1x4/c/nKPqjjTgJ1wNMpBsRyJf2hi+xH+9bDhtixZEB/vF5eTs
-	v0VsU4oDf1YYQ8jxK5zvtikMBji1WRi1J7Ja8y+X3skCskUNbksbNa2n/eR9rRfb6h+BNbtXu0qYd
-	oe1QSNWnLPFzA5ZhJDHnd2mNdqwgdHzX0BeYKkwWVyIUuqrYIdxEHJgquDW4HSyKvsTqsRzrX1T9b
-	eQ77X6xryXAzDAAHsi0Mq54FpZR99BepmhQsN5oeHID5Jz003lg/MwtIBht/6YGqNHpOFWlqh2lop
-	CzttBoPInK2PYpeRtw5g==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:To:From
+	:Date:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=YCfp4W/wSPj3ZAEz28cN+mOTBvNfWfjYsP/vTuxmKgI=; b=rO7sy5enqe2ugl
+	kaqyDzssSoVYk9EByKRi0WtEIcHZppo+cqwCHjb3B7roY/ZQu7uHTmRMNPvZmqjkhKbkB4hAbQC3L
+	K/Juq1XP1qTH4E80YVgUd18bftVd7P/K3HDRfqX54pTT1WxptGBrTZFAw6vJ313hF6t8aKhddWitq
+	xNqNLAKOvNjvSPusSH00AVoiywA9DU38NwqHdtm3TzD2Ks07JIKwQnA0XhMGfOcrWO6xJd8FuX4Ni
+	PMZqyZ56NF+/2tvUBwaQevwtsI7GvFJF4felYSvt97NOSGO0ZZxKv4jncFBoQtlAH/NsGJA/kUWSV
+	Ojfe273c99LFps0hud3w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wBWyT-0000000DOxw-3uip;
-	Sat, 11 Apr 2026 11:58:05 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1wBiKY-0000000DtyA-0C4Z;
+	Sun, 12 Apr 2026 00:05:38 +0000
+Received: from pidgin.makrotopia.org ([2a07:2ec0:3002::65])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wBWyP-0000000DOxp-1WYR
+	id 1wBiKV-0000000DtxC-0jK5
 	for linux-mtd@lists.infradead.org;
-	Sat, 11 Apr 2026 11:58:01 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 57E4E60142;
-	Sat, 11 Apr 2026 11:58:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7EF7C4CEF7;
-	Sat, 11 Apr 2026 11:57:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1775908679;
-	bh=9aNqulo+bCDLgbWF+8OgFjFhrZ7sbZ/hMi9TK61Sr4Y=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=QOL9zfUNhkMZizlDfk1CXuqqsB+elpMicOaY6nk4xnfwf3qT5+LpKECMV5gSE0iN7
-	 Y8pE0UQA283oAeP4VrIWGixvNvK19mqDD5Pjv5I5L+1bwNXugFFWCTVAqv93dxp0Uh
-	 YI7KqfVP2BYQlsAhr8Fnf5gFNFkrzhIzFaLDuFoGp8BgLuiLVBCPqCQ4NHNylzr39n
-	 WKjL+cCqW/UoBMLfCVZvFpa6XT+qcPMA0r0uyYeGRTTZy/i0dk2z7uESepfFpH+im6
-	 EyZZI2+oxlbAWFsSP/qeybpAVguLbkMEZHhjiLqdAkdtm1Bq/uCYhCFFWbkK+QhXZ9
-	 Z6NoQxVyKIq5A==
-From: Mark Brown <broonie@kernel.org>
-To: Richard Weinberger <richard@nod.at>, 
- Vignesh Raghavendra <vigneshr@ti.com>, Pratyush Yadav <pratyush@kernel.org>, 
- Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Steam Lin <STLin2@winbond.com>, 
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, linux-spi@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-In-Reply-To: <20260410-winbond-6-19-rc1-oddr-v1-0-2ac4827a3868@bootlin.com>
-References: <20260410-winbond-6-19-rc1-oddr-v1-0-2ac4827a3868@bootlin.com>
-Subject: Re: (subset) [PATCH 0/5] mtd/spi: Fix Winbond W35N02JW / W35N04JW
- support
-Message-Id: <177590483913.1311359.6081286854444459409.b4-ty@b4>
-Date: Sat, 11 Apr 2026 11:53:59 +0100
+	Sun, 12 Apr 2026 00:05:36 +0000
+Received: from local
+	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+	 (Exim 4.99)
+	(envelope-from <daniel@makrotopia.org>)
+	id 1wBiKL-000000005c9-2I2c;
+	Sun, 12 Apr 2026 00:05:25 +0000
+Date: Sun, 12 Apr 2026 01:05:23 +0100
+From: Daniel Golle <daniel@makrotopia.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Boris Brezillon <bbrezillon@kernel.org>,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: nand: bbt: clamp GENMASK high bit to word boundary
+Message-ID: <2a62dc1a58f2f8467d95444fa4b37a0af27aeb45.1775951973.git.daniel@makrotopia.org>
 MIME-Version: 1.0
-X-Mailer: b4 0.16-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1581; i=broonie@kernel.org;
- h=from:subject:message-id; bh=9aNqulo+bCDLgbWF+8OgFjFhrZ7sbZ/hMi9TK61Sr4Y=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBp2jdDnJedcoisHr8tbHDR8goEXSs8gjCLDC7gn
- CpwO75H5uOJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCado3QwAKCRAk1otyXVSH
- 0GhkB/4+9YuJbCvIZ+MzzcRpmGNisyUfJa1P4bnbAvshl9dO0wBzx7b2+pvM37qGIQR7usjVcfr
- MOVg9Cx+s2rWedOrqXH+o4gAE+HalWL1BdxPXs6EIy8zbd+UCRphSnxcAOKoSu9TRSPrNN2IQST
- 4ZM9jKmhjNHhlVF06FwJ5IO2ZF7gleQtp/0QK0CN9c/M34jLAqTe0pZP3Ql6P+gI2X3+v6RxHdI
- 4hAKWpJPGMbmOsRFeDDepBsBhSQjGPIzecWiVRnBpm2SpkztO8aXg59yO1mSBhf6fQ6FjwSoY6M
- 5OtXVl6fSPVuuR12eCI4CZAWuRjzFK4kwwbdQh750YYMTDIP
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+Content-Disposition: inline
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260411_170535_237354_915FADFA 
+X-CRM114-Status: UNSURE (   9.88  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,47 +64,39 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 10 Apr 2026 19:41:00 +0200, Miquel Raynal wrote:
-> mtd/spi: Fix Winbond W35N02JW / W35N04JW support
-> 
-> Winbond chips W35N02JW and W35N04JW differ slightly from W35N01JW. As
-> they have more blocks, they require a couple more bits to fully address
-> the whole device. These address bits have been stuffed at the end of the
-> command cycles, which is non standard, and this is something I didn't
-> catch in the first place.
-> 
-> [...]
+When a BBT entry straddles an unsigned long boundary, the GENMASK in
+nanddev_bbt_set_block_status() can potentially overflow because
+offs + bits_per_block - 1 can theoretically exceed BITS_PER_LONG - 1.
+Clamp the high bit so only bits within the current word are masked.
+The cross-word portion is already handled by the pos[1] block below.
 
-Applied to
+Discovered by UBSAN: shift-out-of-bounds in
+drivers/mtd/nand/bbt.c:116:13
+shift exponent 18446744073709551614 is too large for 64-bit type
+'long unsigned int'
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-7.1
+Fixes: 9c3736a3de21 ("mtd: nand: Add core infrastructure to deal with NAND devices")
+Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+---
+ drivers/mtd/nand/bbt.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Thanks!
-
-[1/5] spi: cadence-qspi: Revert the filtering of certain opcodes in ODTR
-      https://git.kernel.org/broonie/spi/c/5e75c1d4d386
-[2/5] spi: spi-mem: Add a packed command operation
-      https://git.kernel.org/broonie/spi/c/f79ee9e4b232
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+diff --git a/drivers/mtd/nand/bbt.c b/drivers/mtd/nand/bbt.c
+index db4f93a903e48..dfe4a6a991c15 100644
+--- a/drivers/mtd/nand/bbt.c
++++ b/drivers/mtd/nand/bbt.c
+@@ -113,7 +113,8 @@ int nanddev_bbt_set_block_status(struct nand_device *nand, unsigned int entry,
+ 	if (entry >= nanddev_neraseblocks(nand))
+ 		return -ERANGE;
+ 
+-	pos[0] &= ~GENMASK(offs + bits_per_block - 1, offs);
++	pos[0] &= ~GENMASK(min(offs + bits_per_block - 1,
++			       BITS_PER_LONG - 1), offs);
+ 	pos[0] |= val << offs;
+ 
+ 	if (bits_per_block + offs > BITS_PER_LONG) {
+-- 
+2.53.0
 
 ______________________________________________________
 Linux MTD discussion mailing list
