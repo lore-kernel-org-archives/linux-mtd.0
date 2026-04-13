@@ -4,86 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8016CF3ED78
-	for <linux-mtd@archiver.kernel.org>; Mon, 13 Apr 2026 06:18:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0BC25EBFD01
+	for <linux-mtd@archiver.kernel.org>; Mon, 13 Apr 2026 06:24:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
 	List-Unsubscribe:List-Id:In-Reply-To:From:References:To:Subject:MIME-Version:
 	Date:Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=chNqTMTp6lKOlpseihB8+Nn9/G9hF2cU/TJ8ojPi8Vo=; b=m0ES8/HOrKR3fHeNfawUyON+m2
-	1cT0/YeNRfFxccfebwldqj9saivMptOP6s+EpKHjFOP7otcRhIjMhBFoammlvIGLhWNR9fxzvfvFF
-	5uWAyKMqjYEbaR86lbkTsOCIpd65k052eXxB4kES8NPVS0YBEUTb7PYTllh6Gfh0vvccFEBdQMwh2
-	p86UZHGZeckdrXd0W87uBGOMI9IWgwLnXj6Zj5AkVLndj/930oKeaqCbZ5ViAEy35MKgZzIYuXPo/
-	GzqyuBadNPknvkjtMZIFPIo74fJChq419CHj7u/UNnJpjbhNKoiZWtc3TpzC+RGpW3Ro7JG5HAsoE
-	tLEiuQGA==;
+	bh=8h7wnt024nwsHnp7RZx4S22H2EBx/TzcfQ7lhv9JuSo=; b=1RZKiMcN3L/HSh0i0eXUmn7uEh
+	AJfrjsEqtrEDF+njPjkA8OQ0Uyu69CX2CsuBLBUuFWP3WGcja7lbmp99eNJlEKnQwgqYFGxU5PmMA
+	x91n0/lkK8jQzoDPTNQlD0C2pqJtGM1NOFTi5Bu2mN4YYtVskcC9fvmRtsErc21K0Qhv2Yu2JyPdW
+	4tGw5umyzulC4rURulwPQrkpE7JguIW+3NUzSGWJiZA0urJnPLH+5wPj2HvaCFIMV0eeLRwsRWhGD
+	CdW+2u2FwgcOT4hJXwP9pVN5cNSWRylMVi1J87Yc61ivr1hIEnXBLr625KA7h8qKaegHh89haMxTz
+	94Qy4Z0w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wCAcX-0000000F3le-2DTN;
-	Mon, 13 Apr 2026 06:18:05 +0000
-Received: from mail-wm1-x335.google.com ([2a00:1450:4864:20::335])
+	id 1wCAiu-0000000F4Zf-1ngi;
+	Mon, 13 Apr 2026 06:24:40 +0000
+Received: from mail-wm1-x330.google.com ([2a00:1450:4864:20::330])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wCAcU-0000000F3ku-0YgC
+	id 1wCAir-0000000F4Z6-29qB
 	for linux-mtd@lists.infradead.org;
-	Mon, 13 Apr 2026 06:18:03 +0000
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-488ba840146so38099485e9.1
-        for <linux-mtd@lists.infradead.org>; Sun, 12 Apr 2026 23:18:01 -0700 (PDT)
+	Mon, 13 Apr 2026 06:24:38 +0000
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-48374014a77so56280175e9.3
+        for <linux-mtd@lists.infradead.org>; Sun, 12 Apr 2026 23:24:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sigma-star.at; s=google; t=1776061080; x=1776665880; darn=lists.infradead.org;
+        d=sigma-star.at; s=google; t=1776061475; x=1776666275; darn=lists.infradead.org;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:to:subject:user-agent:mime-version:date:message-id:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=fVEj969j16lBnXqUeOElFIMEKm5V6nh37Gy/MgYcWK4=;
-        b=dDCiPNmFebmcr5DlgJxgneQiXqWget110YU2jkDMUNC+8hWQ4HXEXqo9c4AOTWlJe2
-         k3b9Io4CScSFrGPOiA8mc1hiC8BGf7qgaOt6/O0Up85imljUsRzMY5SXD+xDjt3hi9YH
-         nw9yPDN6jk6AeeIpWmn+Km5OY7rHKgew0KhAkcEaGW0HdolJqvjrNxQjSKvAXl6r32Bp
-         0YpKJQOdWl+WXLm5QLeYYqT85huoYtX0xZXJ2q+TUk8Z67FDjlJseYFftTQgjzhjhiYl
-         RQSWuVp0e/QmET61XBjDrh3QEoYuUyC97e6jYvrTUUUyH4kXimFa/JZR2dGmLPPE2WGR
-         kMXw==
+        bh=68rztNcaSqWy06z6jMLcJ0QzbRTa9AwIyCbs9lpmxq0=;
+        b=kb6wCxnsL/zfPSdSuo2K6WRXJ+vdjmsifAFvdtA+GzpYUfUQdmHonSrRRnwWZaZnO9
+         6WlmnTuvahO8ntxgSEoifVQgjMO9uF4ClG4jWtijQ4K0wEXjT6VNwxAGlhNCzt+f6Mex
+         avJyzDwfSW+nQeHQz0gT5bO8r535FLa/Odk95ze2jDKVhbe7NSCq+zsGuiPOnJj6kEas
+         B/8jdPVNfnVuxoTK/e5BfeBty/K2ORDONCJMfW/egiVZuQ4rHNr77838eodJFYcMa+Y0
+         vsT9zQq2yc7bA3eWeBTFWwoV7pdjPe2/qoVC9QWasAtlNr4bSr5+JpwYh5QjZuXr4/PN
+         KmPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1776061080; x=1776665880;
+        d=1e100.net; s=20251104; t=1776061475; x=1776666275;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:to:subject:user-agent:mime-version:date:message-id
          :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=fVEj969j16lBnXqUeOElFIMEKm5V6nh37Gy/MgYcWK4=;
-        b=mRVsAuWYokKeiyAO3+Cr6YH+qeIITLR+6MNudK9Xihvf4vRxOKY1DAY08qynPRPbje
-         a9nW1SFx5Un+EooThymcMbAS3G+T4bUaAGXMXyitRdL+agZQU1fiwNKiopfqD2VizqZ+
-         bh35f7Tc6WISv94IG9lSJ8YUfb2XUVQrevtGHibHTGH1AZgMl/3aETGlA6gRKIaExzyv
-         BtjmEKVC+d7R0zzPdrbDgKTarK1/aIJ9wXCm5frcPnSWeR1bFHdv8JI9n1fl6jwf4ok2
-         rbHVEKWzDc+iYQ7am0AbRzgmhId+lrJe5KhsghyeE866HWuqoZszPhNvAfqIzRMy0fDV
-         iRog==
-X-Forwarded-Encrypted: i=1; AFNElJ/Bbd4e5xb9TvBlv9FEvndI46EqzoCXOHdq3eAbkeLo014oHoetHcplYP15bH1ejDS51U3g8N5n3VI=@lists.infradead.org
-X-Gm-Message-State: AOJu0YyvJraxtJxcVDg+dBnidRTlONbDbOthfYUHcmQSZGAp8w9LnkoO
-	nNOS0/FM8eZfNtcJAVWIPwFk/qwRyGT7TMW5Dy+LI6uWxfqSbkMxudkodi1hfJJ0zis=
-X-Gm-Gg: AeBDievsHlyzbw+gV+ZsMvzc8T78432gOmBZogxEU3nGhB1QrPdySR4abTLQtHqBLmi
-	0W9ak0KjiRKv09RIqmi20ZvCO8ivxD5aJXBSi+oEBGTiuVUHAs1VLZ9eYVK/FfQexF4MK9+6kLh
-	IHa4UI5ybxfClehHdAtsMMJyKT0mvkitoXStDMHQwBpohwAF/FIZLqgOM2DQy2Ugv++ql13sGCU
-	cUK3APKckB5zBb8gG1BCxfki5Ps6HkoiVyHtKD2kzEfZTCRMZzJ/hY4iiz2Vozu4WAAEpu6A8Ey
-	x3tAbAxm4ww/8iM5BX2T6KphhidMHytvHXHf0vM9r14QWqN3/fAidZPgQU5XxP+ojobjh4ZLhYs
-	XCvaRUpKKzzzsAHHgHtsJgMXpKFS0BdeaL6mKKUL+B26amo5ngDoZBO0PYGVaAEreuVJGrI6CbR
-	YSaBUVn5SPzV23f/d8WleAZ/9Zedp8dEfiNnHfF72wyv1ahw==
-X-Received: by 2002:a05:600c:45cf:b0:487:243f:dc3e with SMTP id 5b1f17b1804b1-488d67b8d8cmr147582435e9.6.1776061080075;
-        Sun, 12 Apr 2026 23:18:00 -0700 (PDT)
+        bh=68rztNcaSqWy06z6jMLcJ0QzbRTa9AwIyCbs9lpmxq0=;
+        b=F/ish/fUZkXiffQHaGJXtB3+bpf5mKpdpVHvtkaWTGIzhu/EWsRsCDC+I7XDTnh5xl
+         VWHEKCHZxLFGp+s/WKUENlYejporx8KJokVvH9rxW2uWOdbOTElG8Gm6INt/hJH9rbvX
+         ad1crA2DcBifxWccr169C+vsSp34E10zEPEGeX3kNUg+FKt3BCfpnbvF1byG17SpUpSJ
+         a8H8ZMxj5HTXQLAx1cj8tgDrnsU5XVvu9KLXXZPWVevQTsad43HabprSssopN0egd6gq
+         fNstPRp2OstqrycAE0IqsGv+er/sBXWyAFUvbJD0MhjA+NMEo1r5dQoj+OaVg9EK4YrR
+         MZVg==
+X-Forwarded-Encrypted: i=1; AFNElJ/NZxR839ZpM7rz90nG3OFYsDlVYxz8pJFDpRZ8f/0hkAubDv+NzG10ldarL8S00oWxYwP1gVTh51E=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yxls2Vp52UUCN5yaccvKtPGEC5PUsDPwupp2ExJRbSVIA9AU05S
+	xkLLXil9PvN/vWLFnCEYYWY9tFMQ0hZ3fIk7aPPo4+yvuK34BvnEZBbGk2Yc646c9eA=
+X-Gm-Gg: AeBDievAHi3LVx3Z01/pV4FndlsceQQ8P5rtJf7e4W/MF6TPlD1oPfY3kF1gpLezTWY
+	oWOoKGiZOFqVg0QTe1/b5TaWUDUK+AZw0i4lt3q7KmmXppToEL2+jb5ssegPH4PqWxlWKcqrxMA
+	0/emn52mnEVl78qppHtkvY4Awt2nQvyKJ+LbasoWkI9QUNkVPlODuQEW1YCYW0kazqoRsekf814
+	EU0YtorVcNeFi1sKRyhgIULRpklpUX63KljCnNOnQDZJay/pOriIUeGkpNME07U/5+PEGPK+bwS
+	xbO/zVHXYAch5nD8xOk6/o/pM3xweWIaTZbo+kk9JS/4n0gHL9F7r33fXRahjGb5fHmgXQtBqK+
+	s4K13yrNh7j/4+0F0tRrNISLMSiJ3s5dbdS3L4TeIp1AL0UTv01lLG2roh1AZWJfoc2OmVTSFyK
+	z9FuTgG5CFviLyzEIAZtypJLmK81729Tpr9SW1qY/9TuEIVsge2Mi8mAIY
+X-Received: by 2002:a05:600c:820b:b0:483:2c98:4368 with SMTP id 5b1f17b1804b1-488d685b878mr164492595e9.18.1776061475505;
+        Sun, 12 Apr 2026 23:24:35 -0700 (PDT)
 Received: from [10.115.255.165] ([82.150.214.1])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-488d531f229sm357225395e9.3.2026.04.12.23.17.59
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-488d688da2csm90017425e9.34.2026.04.12.23.24.35
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 12 Apr 2026 23:17:59 -0700 (PDT)
-Message-ID: <89474dac-72ab-4872-8394-98abdf5518a9@sigma-star.at>
-Date: Mon, 13 Apr 2026 08:17:59 +0200
+        Sun, 12 Apr 2026 23:24:35 -0700 (PDT)
+Message-ID: <9143c346-5716-41ba-be38-bb533b0996a7@sigma-star.at>
+Date: Mon, 13 Apr 2026 08:24:34 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] nftl_format: prevent buffer overflow in BadUnitTable
- access
+Subject: Re: [PATCH] nftl_format: prevent unsigned underflow in INFTL virtual
+ unit calculation
 To: Anton Moryakov <ant.v.moryakov@gmail.com>, linux-mtd@lists.infradead.org
-References: <20260127131609.53932-1-ant.v.moryakov@gmail.com>
+References: <20260127123100.47486-1-ant.v.moryakov@gmail.com>
 Content-Language: en-US
 From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-In-Reply-To: <20260127131609.53932-1-ant.v.moryakov@gmail.com>
+In-Reply-To: <20260127123100.47486-1-ant.v.moryakov@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260412_231802_207999_27D62940 
-X-CRM114-Status: UNSURE (   8.48  )
+X-CRM114-CacheID: sfid-20260412_232437_567732_9703ADEC 
+X-CRM114-Status: UNSURE (   7.74  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -103,22 +103,20 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Hi,
 
-On 1/27/26 2:16 PM, Anton Moryakov wrote:
-> However, `BadUnitTable` is a fixed-size array of
-> `MAX_ERASE_ZONES` elements (typically 1024 or 4096).
-> 
-> If the MTD device has more erase blocks than `MAX_ERASE_ZONES`,
-> `ezone` can exceed the array bounds, causing a buffer overflow.
-> 
-> Fix by limiting the loop upper bound to `MIN(maxzones, MAX_ERASE_ZONES)`.
-> 
+On 1/27/26 1:31 PM, Anton Moryakov wrote:
+> @@ -371,6 +371,8 @@ int main(int argc, char **argv)
+>   		maxzones = meminfo.size / meminfo.erasesize;
+>   		pezstart = startofs / meminfo.erasesize + 1;
+>   		pezend = startofs / meminfo.erasesize + ezones - 1;
+> +		if (ezones < 2)
+> +   			exit(EXIT_FAILURE);
+>   		numvunits = (ezones - 2) * PERCENTUSED / 100;
+>   		for (ezone = pezstart; ezone < maxzones; ezone++) {
+>   			if (BadUnitTable[ezone] != ZONE_GOOD) {
 
-I get that this would silence the static analyzer, but wouldn't that
-introduce a different (logic) bug where the tool now silently fails
-to handle erase zones past a magic limit?
-
-I think the correct thing to do here is to dynamically allocate the
-array based on the number of erase blocks.
+I think at the very least we should produce some sort of error message
+if this is triggered. Maybe a simple `assert(ezones >= 2)` should be
+preferred here?
 
 Greetings,
 
