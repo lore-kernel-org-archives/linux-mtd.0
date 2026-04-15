@@ -4,55 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC6B5FA0C3F
-	for <linux-mtd@archiver.kernel.org>; Wed, 15 Apr 2026 07:19:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A15D1F41986
+	for <linux-mtd@archiver.kernel.org>; Wed, 15 Apr 2026 10:08:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=w5M+PHDmBbaB9gTlP8Igif1gQ6sfsoe9SMn8n4wKbVU=; b=o8L6fv1Ssitynd
-	DClu0mFlUvt/SJeN5p2L+l5KwKvj6MeOO2y5DpmqEthATUjiM6xnpQkOUf81lzhaEjvSNUpVdzWSN
-	l/M+DiTxpFN4liiWnCyyQagkaC1iHU7eWFu+GCldse1JH5qR68sVe4rjv+97d+bmqVwbG5ewZDHJt
-	/Al+GPE/EP4LkkUu2MfjHhMZrG9a8gqig4H/yzh/wLa4z6ebalaj/nifkg/nKGHrcJdpCnpVi86d6
-	ZKUmqp1Ejne3VOYOF+6ssXhcdodPnYn+w9JDCPRWJmTAf9qfqQ9h7qStCKMWqoUAHk8C7G4tAQ2q9
-	wlEEvuqAabXzC3vvf/Lw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:References:To:From:Cc:Subject:Message-Id:Date:Mime-Version:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=b4WQg7nEAYQfVurVv6/kPedEfMMmBnYKuF5D5FhGsMk=; b=yFeGtGCiKOVKPg/xkDdRuzGRzE
+	2DeIrVbvUtzhj8pVnHJuG7uBCWLHeNXMTwy/p3USwurwSq8zA0pn7eU/wVBPFeXbdWy6gTup/8dEk
+	LeMgc2+DU3klWKDjqeEhSqRni+l7pa/Uo81eBDjc4Bv/0eLjUw9tMnB936g/cVCLlAUxtqxRiG7/t
+	X4GRBHbCiZjnL/8bWcik27H0qla52rLEZLwOlGwOPu6n2xFeH7+hqa3JKYH0BiCbYaOu8svmle/qA
+	KcelT8933rvUVbjgFmsO0eNhO7Blf3heI7wzBhPDZPuv35ZteWjZnk2C2aTWZDKC7uDnCeSqzTcpQ
+	P4ttRzCA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wCuWX-00000000hvS-1oKu;
-	Wed, 15 Apr 2026 07:18:57 +0000
-Received: from forward101b.mail.yandex.net ([2a02:6b8:c02:900:1:45:d181:d101])
+	id 1wCxAC-00000000x73-3EYY;
+	Wed, 15 Apr 2026 10:08:04 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wCuWU-00000000huN-0ldp
+	id 1wCxA9-00000000x6c-02kg
 	for linux-mtd@lists.infradead.org;
-	Wed, 15 Apr 2026 07:18:56 +0000
-Received: from mail-nwsmtp-smtp-production-main-59.iva.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-59.iva.yp-c.yandex.net [IPv6:2a02:6b8:c0c:489d:0:640:baa6:0])
-	by forward101b.mail.yandex.net (Yandex) with ESMTPS id DA727C00C4;
-	Wed, 15 Apr 2026 10:18:47 +0300 (MSK)
-Received: by mail-nwsmtp-smtp-production-main-59.iva.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id kIGRDIAS44Y0-IXihI9u3;
-	Wed, 15 Apr 2026 10:18:47 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
-	t=1776237527; bh=j4e2Tbwc1l9KNiP+JgHrqYkNpcJz6oop1kOl94bYZmY=;
-	h=Message-ID:Date:Cc:Subject:To:From;
-	b=hCbo9wXRCzt9daRID7KscQoWrF5xqdDn8Lum7X8nf5hN3rXxN9xqT+rRyJ+CJgAr6
-	 qU8apPmQL/RtAFf9NupX8JeJzkSzcS+xG+0u9bkJ+iGGax6Liha3J2XBrQ4+ZFcIV9
-	 JZd09hiW46MhbYdB9lmqw+ku4x+7o0jt944p7kM0=
-Authentication-Results: mail-nwsmtp-smtp-production-main-59.iva.yp-c.yandex.net; dkim=pass header.i=@yandex.ru
-From: Dmitry Antipov <dmantipov@yandex.ru>
-To: Zhihao Cheng <chengzhihao1@huawei.com>,
-	Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org,
-	Dmitry Antipov <dmantipov@yandex.ru>
-Subject: [PATCH v5 1/3] ubifs: prefer kstrtobool_from_user() over custom helper
-Date: Wed, 15 Apr 2026 10:18:10 +0300
-Message-ID: <20260415071812.1139054-1-dmantipov@yandex.ru>
-X-Mailer: git-send-email 2.53.0
-MIME-Version: 1.0
+	Wed, 15 Apr 2026 10:08:02 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id 9DC7743D0F;
+	Wed, 15 Apr 2026 10:07:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A221C19424;
+	Wed, 15 Apr 2026 10:07:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1776247679;
+	bh=aUwaJptVs33Hoj1V7He3D+SI134FNzm8HENeUyJiyUs=;
+	h=Date:Subject:Cc:From:To:References:In-Reply-To:From;
+	b=WEMaoie+3XU/z9j/KwJ9RCAifk46bFk5PJHtR1cxwYOXavwrhq8ypQhrvPIbR5RHh
+	 FurHJ20cYF7yJ7KBQ+S6q9jaMffyABPVx/KxTm5ChIl4eeunCo3cPuoWwrzTd2zGhb
+	 fxJUpOzC2z4ijv8ONK7AnwZ4gEeRS89eLQh3XddwKYwlok/sulr+kC6Wre+eqYbjXv
+	 LtUQxErrk/6gGyqm2O/+h+hNWTnL/CuQSLTpBBiwu6OL4iWDcRgKAlmA2oD0A28y91
+	 mpSRowjt8i2aFMQhL/yjyKEcevTwpblf+yOdnFtZ9molbzgYO+VpmVYTnuU0ZpRe7k
+	 ubTM9+Yok2Bcg==
+Mime-Version: 1.0
+Date: Wed, 15 Apr 2026 12:07:55 +0200
+Message-Id: <DHTN915DJBSP.15QT83JYA4LWA@kernel.org>
+Subject: Re: [PATCH] mtd: spi-nor: macronix: Document support for additional
+ flash aliases
+Cc: "Pratyush Yadav" <pratyush@kernel.org>, "Takahiro Kuwano"
+ <takahiro.kuwano@infineon.com>, "Miquel Raynal"
+ <miquel.raynal@bootlin.com>, "Richard Weinberger" <richard@nod.at>,
+ "Vignesh Raghavendra" <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>, <alvinzhou@mxic.com.tw>, "Cheng Ming Lin"
+ <chengminglin@mxic.com.tw>
+From: "Michael Walle" <mwalle@kernel.org>
+To: "Cheng Ming Lin" <linchengming884@gmail.com>
+X-Mailer: aerc 0.20.0
+References: <20260410091039.389911-1-linchengming884@gmail.com>
+ <DHPD8DFIQCMM.13NPOBDQOSXL2@kernel.org>
+ <CAAyq3SbbyT_wYmVNqgyK4J7C34q2beXGOa+hN0hpi5JNUBfrjw@mail.gmail.com>
+In-Reply-To: <CAAyq3SbbyT_wYmVNqgyK4J7C34q2beXGOa+hN0hpi5JNUBfrjw@mail.gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260415_001854_737690_0942CDF3 
-X-CRM114-Status: GOOD (  13.00  )
+X-CRM114-CacheID: sfid-20260415_030801_091000_4288E985 
+X-CRM114-Status: UNSURE (   7.26  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -64,104 +75,67 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3266870448866720653=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Adjust 'dfs_file_write()' and 'dfs_global_file_write()' to prefer generic
-'kstrtobool_from_user()' over an ad-hoc 'interpret_user_input()' helper,
-thus making the latter not needed anymore.
+--===============3266870448866720653==
+Content-Type: multipart/signed;
+ boundary=0841a41031df2269291596afdfdff64d5d5d3341d99f2cab1d8ce3e79068;
+ micalg=pgp-sha384; protocol="application/pgp-signature"
 
-Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
-Signed-off-by: Dmitry Antipov <dmantipov@yandex.ru>
----
-v3 and upwards: bump version to match the series
-v2: add Reviewed-by: and bump version to match the series
----
- fs/ubifs/debug.c | 44 ++++++++++----------------------------------
- 1 file changed, 10 insertions(+), 34 deletions(-)
+--0841a41031df2269291596afdfdff64d5d5d3341d99f2cab1d8ce3e79068
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
 
-diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c
-index 5794de5a9069..9e0468dc72d3 100644
---- a/fs/ubifs/debug.c
-+++ b/fs/ubifs/debug.c
-@@ -2732,39 +2732,14 @@ static ssize_t dfs_file_read(struct file *file, char __user *u, size_t count,
- 	return provide_user_output(val, u, count, ppos);
- }
- 
--/**
-- * interpret_user_input - interpret user debugfs file input.
-- * @u: user-provided buffer with the input
-- * @count: buffer size
-- *
-- * This is a helper function which interpret user input to a boolean UBIFS
-- * debugfs file. Returns %0 or %1 in case of success and a negative error code
-- * in case of failure.
-- */
--static int interpret_user_input(const char __user *u, size_t count)
--{
--	size_t buf_size;
--	char buf[8];
--
--	buf_size = min_t(size_t, count, (sizeof(buf) - 1));
--	if (copy_from_user(buf, u, buf_size))
--		return -EFAULT;
--
--	if (buf[0] == '1')
--		return 1;
--	else if (buf[0] == '0')
--		return 0;
--
--	return -EINVAL;
--}
--
- static ssize_t dfs_file_write(struct file *file, const char __user *u,
- 			      size_t count, loff_t *ppos)
- {
- 	struct ubifs_info *c = file->private_data;
- 	struct ubifs_debug_info *d = c->dbg;
- 	struct dentry *dent = file->f_path.dentry;
--	int val;
-+	bool val;
-+	int ret;
- 
- 	if (file->f_path.dentry == d->dfs_dump_lprops) {
- 		ubifs_dump_lprops(c);
-@@ -2781,9 +2756,9 @@ static ssize_t dfs_file_write(struct file *file, const char __user *u,
- 		return count;
- 	}
- 
--	val = interpret_user_input(u, count);
--	if (val < 0)
--		return val;
-+	ret = kstrtobool_from_user(u, count, &val);
-+	if (unlikely(ret))
-+		return ret;
- 
- 	if (dent == d->dfs_chk_gen)
- 		d->chk_gen = val;
-@@ -2926,11 +2901,12 @@ static ssize_t dfs_global_file_write(struct file *file, const char __user *u,
- 				     size_t count, loff_t *ppos)
- {
- 	struct dentry *dent = file->f_path.dentry;
--	int val;
-+	bool val;
-+	int ret;
- 
--	val = interpret_user_input(u, count);
--	if (val < 0)
--		return val;
-+	ret = kstrtobool_from_user(u, count, &val);
-+	if (unlikely(ret))
-+		return ret;
- 
- 	if (dent == dfs_chk_gen)
- 		ubifs_dbg.chk_gen = val;
--- 
-2.53.0
+Hi
 
+thanks for providing the dumps.
+
+> 1. MX25L51245G
+..
+> zynq> sha256sum /sys/bus/spi/devices/spi2.0/spi-nor/sfdp
+> 7281b0a355a4497ec6256c57b81c3d2b303bc34220cb77790278d719d7465276
+> /sys/bus/spi/devices/spi2.0/spi-nor/sfdp
+>
+> 2. MX25L51273G
+..
+> zynq> sha256sum /sys/bus/spi/devices/spi2.0/spi-nor/sfdp
+> 7281b0a355a4497ec6256c57b81c3d2b303bc34220cb77790278d719d7465276
+> /sys/bus/spi/devices/spi2.0/spi-nor/sfdp
+
+Different parts, same ID, same SFDP :(( Are they the same from a
+software perspective? With Macronix reusing the same ID for
+different flash chips it makes software support for different
+features really hard.  And with even with the SFDP being the very
+same, it's impossible to distinguish them during auto probing.
+
+-michael
+
+--0841a41031df2269291596afdfdff64d5d5d3341d99f2cab1d8ce3e79068
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCad9jexIcbXdhbGxlQGtl
+cm5lbC5vcmcACgkQEic87j4CH/hQ4AGAhv7ADzlPatwb7nsE3KXxWsIOPAkA/RLM
+VSbJW1+OabkBm1oqr2gR9bOAajOeA2R/AX9Z2ab7ZCeODBX4LCCQX+w+hG2ZF6T5
+3JJUwoNcte4unjUd3P4tfwDkWfCEdE2Q254=
+=o8Xe
+-----END PGP SIGNATURE-----
+
+--0841a41031df2269291596afdfdff64d5d5d3341d99f2cab1d8ce3e79068--
+
+
+--===============3266870448866720653==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============3266870448866720653==--
+
