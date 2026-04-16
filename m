@@ -4,89 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01A99F43858
-	for <linux-mtd@archiver.kernel.org>; Wed, 15 Apr 2026 17:00:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C7D8F433D2
+	for <linux-mtd@archiver.kernel.org>; Thu, 16 Apr 2026 01:11:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=u1lxCYb7Jn5YkPUY47PInjyRJ26+/nidvMib4dkNkNE=; b=ntVJMmcDDFAKQz
-	907pd4wZvHm3evCM2UCO9ExM1z+A/gIbeY2nbA/JVFAtG2aHEEAZWRhQ8WZDR9gd9nboPpNSVgJWN
-	+6/KNNLoBfwensO3RwLWyeSceJ2fviOnMkRDbLmDrRrBL1hfi1BWFhb5HCyAcKl4+CTV2be24Zsvh
-	maEcgQxTBm1X2A/cgk2CjUbnEz6kih9MNDOFzkL4b0s8rh27FfuOZGET7P45vSQQ2CrKOka/0tDHf
-	slZhCdBLR/2u8pxn+6Bdr+eo1nIfVhZ3oIhEwNOR39006e6yweHqotUUxPgh/y7EHOPIf7wuYzeCG
-	SVJhYIxwgqUr3cMwX0Og==;
+	List-Owner; bh=INnFxs/Ma4pu+AV1yE8J3AgLKZeiJhMNXjW95u031CI=; b=p0G/bjd55cuTGE
+	FSLqVY48IthmCn8mm06bo7AUQ8j8ohdt/iSd2yo8eRitNYEev3cY8pA0pxxa/pX7aGsHG1FaFP1jS
+	Fvh2tqHE426QTQlP11XFpaqQqlTBrh2xIF8D3I3PNE7VFgIA8Os1u/XncLcNeQt0k0ZdxJQslsx8b
+	QMkW2NkHr496kxHEwV7sYhHz6c4+WVP3ID2V4dOu1cXbRqXGe2Bmzb/7CjH8ZPCWYR563KgTz5OXX
+	fe1OjHpsP4ajP6n5YxbV46LQ6Z75ji2tSm/GFLHunEjUdSoCswZYXlffPUrxpVo3RNxU1ekSn4KFr
+	Jh52nAZq9gjc5KiR64wg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wD3bY-00000001QmZ-115N;
-	Wed, 15 Apr 2026 17:00:44 +0000
-Received: from mail-pl1-x62b.google.com ([2607:f8b0:4864:20::62b])
+	id 1wDBGa-00000001pxb-0iIo;
+	Thu, 16 Apr 2026 01:11:36 +0000
+Received: from mail-qk1-x729.google.com ([2607:f8b0:4864:20::729])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wD3bU-00000001QmA-2UvL
+	id 1wDBGY-00000001px3-2PN8
 	for linux-mtd@lists.infradead.org;
-	Wed, 15 Apr 2026 17:00:41 +0000
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-2ad617d5b80so38835895ad.1
-        for <linux-mtd@lists.infradead.org>; Wed, 15 Apr 2026 10:00:39 -0700 (PDT)
+	Thu, 16 Apr 2026 01:11:35 +0000
+Received: by mail-qk1-x729.google.com with SMTP id af79cd13be357-8d00cf835b7so901127485a.1
+        for <linux-mtd@lists.infradead.org>; Wed, 15 Apr 2026 18:11:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1776272439; x=1776877239; darn=lists.infradead.org;
+        d=gmail.com; s=20251104; t=1776301892; x=1776906692; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=tJqWM7Qg/yxY9S66GjsuTrsJ7EEWVnPgKW5QeWWEd6M=;
-        b=gnaBYO47HeAsEdQANyGYHfUryOKBt4uqLI7iPSxEtdElmRPhfQohSTGpIQP+FSSYjS
-         rEgqoPhveeUyVGMKa1SVh3LUaGYapkfc5FKInrDeohQyw3GI7GsZiL8EPwWNQ0gZQ2C6
-         Xxpb/z+hdAhJz1E7JdxlCGw4Hf2DvJuVVAKkP5bLAmdDs5IlLs9mUy42fd2YPFdT/eBO
-         1oNF/MAzy4vuA4sWJguQY57LQDdmsSP0LZTNj99QbErGfofPaXHt1x1pzAKDSHsyBxJR
-         9dsRfx1XHQd4Z67vLNa5F0jcyzwzaOuEEr2q+TfQ6FPxILue0Ipa/tDvo+DjWKeItmIz
-         Ts8Q==
+        bh=QfpySMydajhmy8CDZ0KzUQHaW9x3r0jflQmjPEkL1UA=;
+        b=R0K+wkp0CFDAoUzecBoj52MjL9wwexyTnLh7qySXChaFJlkaWWIqbWU5NqorhoIS2v
+         0HpDGwMO98wk/J6IRUCThpaZm+P9eiwTN8rj6OOsqmczgYE2sm8Z7YlXBtw5tytc+6eI
+         y4r8xcC1howCGHBHRdpZhR5iaEqfT2aa3jqYWo6T8PhUDNoMpIuSBwVdhruMGBs5Wy7w
+         GlHjLcTUW20AMf0sBEtSTb9WrjqN03Iy/gXlReB9ijl/SpLanxSGmjnl8uooJWDdesVn
+         fsLG5DTBQ02lZAQ9a1BzwJ/bawmOpiSfX25I7WKY7+tNC10B54eVTxLPVidCPMll1+Yg
+         bpSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1776272439; x=1776877239;
+        d=1e100.net; s=20251104; t=1776301893; x=1776906693;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=tJqWM7Qg/yxY9S66GjsuTrsJ7EEWVnPgKW5QeWWEd6M=;
-        b=J1kvE6E64e5v8QkqPRQAkZv4g9xgyFbOCDt+hGbmpuB8vOjPsiiIWEYuGVSssZ9Ba7
-         ir1E1UfrYLrUbvars802YEP+rolbeQQmsNbhKiVrHXLP/EcFizyu9t8Rf08kv7RPJLsN
-         3X9pAYQMMxcuiF/08bCkSL9g4Oma8Wox81cFIvSKdxjwRt5R5oUOKphCGjovJBYVy3m5
-         aVkLyY7pzCUdlp9nL//igMqv1qsYBzZ13/Sp9FSPoNlsjy0yDbakBzENvKihxEcw4f8k
-         JjJj26/JUqB0+sLR+DlV9oaeDxpb0FfsxHGBgqyN3rVcYE7k4EjKk7NM3MAcZzb8uVLr
-         bxJQ==
-X-Forwarded-Encrypted: i=1; AFNElJ8kPidAj0yfJV4AXSPHbyoGCYBBZQJinn2cXpQqPjYATjYQ82F/oGHLHg28R2VRidXIcrgFh5yM7Ak=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yx1m5wPIB38wv3akUrrqp4uVkWrN+E30Jq8cX0OMG+scsScv3cB
-	DDA5p3fYR7ZI0jS3wiLsuMVIPlwx9SP2ynBETCPqPewvH4XNYxXRyEwG
-X-Gm-Gg: AeBDieuiKLpT9RYqZiYV7QklLrkkr0drRaMznViu9K9jI38T17GjSUMcMiguE93gY9p
-	LeuUYvM5vgMoOdduuMQOqwDo2+fIZ96J+eLeL6gqYun+Tjf09Ah83kQEhpjeFP7Il1P6qmXNvzE
-	QdRgbOycfo3rKG9z+3cFWGJv8fD49ykppsbz2D6r5nr0s983rv8yz9swVNi6HYal+9DnJKQkgfG
-	Guh7HbsxMbkTxsPLDBlWLzvQYPGN/o8eoS+9Ki7ns5V3Qt9aQmuqsc36Eb5miFPRTYXu1YxQSQs
-	sOb3snArbGsFYp/tv8wwq5EUN4GFFLpt7ab/kYFDG5gIX6NIW46tQTj4iDwuCUtx0K88fRc/na3
-	cFkw/m2wxFq26bOFzdFp0s1ynMsrz1QlOS7G/XNoDl7At6OeGNLxTJq/eE/7V3JCSGg6Ag22qW8
-	muLlxUxmmMm/Otn06zPGQZijW3JHf/P5j9kYLI48tCc+aoIIw=
-X-Received: by 2002:a17:903:284:b0:2b2:5822:7a70 with SMTP id d9443c01a7336-2b2d5a63d4dmr223583195ad.38.1776272439043;
-        Wed, 15 Apr 2026 10:00:39 -0700 (PDT)
-Received: from lgs.. ([2409:893d:1171:10e2:48dd:8f21:beaa:cec8])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2b4780ef365sm25319625ad.1.2026.04.15.10.00.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Apr 2026 10:00:38 -0700 (PDT)
-From: Guangshuo Li <lgs201920130244@gmail.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Linus Walleij <linusw@kernel.org>,
-	Guangshuo Li <lgs201920130244@gmail.com>,
-	David Woodhouse <David.Woodhouse@intel.com>,
-	H Hartley Sweeten <hartleys@visionengravers.com>,
+        bh=QfpySMydajhmy8CDZ0KzUQHaW9x3r0jflQmjPEkL1UA=;
+        b=M2ZH8le/97Z0wzEPShoNP+DM7/oOhnCHVxPCfyyCt+/Mh7Fl/p1adHEvqbaJEsiRAP
+         Ajg/zV6XLONoQp2l8gSvNU7cpeuCEFI3kRL4dTB/V2jbkSpBMzZv6/eUdZyv1Vfdo+sa
+         EbIz1ko7+2p+pWC37M9+esDTL91qXl2NzUO+ws8Zd389BuLvAt2ygAgaVOAXy3m4GRxp
+         zafh+JdS+v6RZ+8Hyt75LCGzPzzM4cGb+5XI+ArhZXDxJRImRUHNqaL7Y7QLk9AtTQ11
+         YimRSf7XaYHpVHe1zYAdnuHF2OQUWIJmDPlQ9K7hD/xHvsvCAt0T3wiTzffmv8qGKwZU
+         MFlg==
+X-Forwarded-Encrypted: i=1; AFNElJ8r/a0V1bRlvb2OstfX/wr+Lm7pqLmHNpFpjai0oBB43lyQeebRtubYjw2unvS4jpQv9dxK45zU9Ew=@lists.infradead.org
+X-Gm-Message-State: AOJu0YyDI0py0rkQ3J9lf4AUHTMQ/uAtyLQ8Xt206oIO6+R5rl2PC1zx
+	QSvrEm2fKSEDh7v6rO/Wbl+NyZcNM6+z+X3t7JCAynyjPyBwxuhq2e2F
+X-Gm-Gg: AeBDiesAZQsaqPvS0Bxu/JbnwAh0aqgieK41OiDWmU/2dO62yVxsFWCgd1NJR18eG14
+	3+fJO9pXXevQJLPrXvy3OdjfAPyDVVlExvOKtXiRpiiBSoRkpDcHd0fxdhLWv8D2t50zLWhOcXj
+	7dydmbnHx8YMrKPcV7hF/UYooSPySiFD86zolCw7TnhWygi6zidLAFvTwuRgdTGn1NEEJCHfa+D
+	AkCss3fyYxxvCiEtNIy3wh/hfJhi39JLJgtXo9jZhRP9gS1jNRc3nZXgzvJqyW7bsKCt/lc+Fpg
+	xImJeZhVF6/JDM+lGMEed/8ZoAjcBsMnaBi2SBCV6rMmElKOyhYGF5AJCbYB3vndAzDX4R0BpFH
+	76eckP5KeOicJAGAX9J31bKtmZAdh3LpeBHuu8Kj0iViozi6ifKYmMXUZja0mM1B72uQqLdbHhb
+	Jmtin13JswkuCivSXatsEHygeltXjqdgyJl8zlXOGhg6Vl2cuKwht2M9o4uw==
+X-Received: by 2002:a05:620a:d86:b0:8cf:cfdf:7346 with SMTP id af79cd13be357-8ddcecbd993mr3555177485a.30.1776301892568;
+        Wed, 15 Apr 2026 18:11:32 -0700 (PDT)
+Received: from localhost.localdomain ([165.85.38.17])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-8e4f29227a5sm244769885a.32.2026.04.15.18.11.31
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Wed, 15 Apr 2026 18:11:32 -0700 (PDT)
+From: Yuho Choi <dbgh9129@gmail.com>
+To: Richard Weinberger <richard@nod.at>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Zhihao Cheng <chengzhihao1@huawei.com>,
 	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: stable@vger.kernel.org
-Subject: [PATCH] mtd: maps: physmap: fix reference leak on failed device registration
-Date: Thu, 16 Apr 2026 01:00:27 +0800
-Message-ID: <20260415170027.3593563-1-lgs201920130244@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	linux-kernel@vger.kernel.org,
+	Yuho Choi <dbgh9129@gmail.com>
+Subject: [PATCH v1] mtd: ubi: fix kref leak on -EBUSY return in ubi_detach_mtd_dev()
+Date: Wed, 15 Apr 2026 21:11:28 -0400
+Message-ID: <20260416011128.45754-1-dbgh9129@gmail.com>
+X-Mailer: git-send-email 2.50.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260415_100040_638382_5E21ECCE 
-X-CRM114-Status: GOOD (  14.61  )
+X-CRM114-CacheID: sfid-20260415_181134_642639_7C5E2582 
+X-CRM114-Status: GOOD (  11.90  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,50 +100,41 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-When platform_device_register() fails in physmap_init(), the embedded
-struct device in physmap_flash has already been initialized by
-device_initialize(), but the failure path only unregisters the platform
-driver and does not drop the device reference for the current platform
-device:
+ubi_detach_mtd_dev() calls ubi_get_device() which increments both
+ubi->ref_count and the device kref via get_device(). When the device
+is busy and anyway==0, the function returns -EBUSY after releasing
+ubi_devices_lock, but never calls put_device() to drop the kref
+acquired by ubi_get_device(). This leaks the kref, preventing the
+device from ever being freed.
 
-  physmap_init()
-    -> platform_device_register(&physmap_flash)
-       -> device_initialize(&physmap_flash.dev)
-       -> setup_pdev_dma_masks(&physmap_flash)
-       -> platform_device_add(&physmap_flash)
+Commit 7e84c961b2eb ("mtd: ubi: introduce pre-removal notification
+for UBI volumes") moved put_device() to after ubi->is_dead = true
+to pair it with the notify+nullify sequence, but inadvertently left
+the early -EBUSY return without a matching put_device().
 
-This leads to a reference leak when platform_device_register() fails.
-Fix this by calling platform_device_put() before unregistering the
-platform driver.
+Add put_device(&ubi->dev) before returning -EBUSY to balance the
+get_device() inside ubi_get_device().
 
-The issue was identified by a static analysis tool I developed and
-confirmed by manual review.
-
-Fixes: 1ca5d2f0196cf ("mtd/maps/physmap: catch failure to register MTD_PHYSMAP_COMPAT device")
-Cc: stable@vger.kernel.org
-Signed-off-by: Guangshuo Li <lgs201920130244@gmail.com>
+Fixes: 7e84c961b2eb ("mtd: ubi: introduce pre-removal notification for UBI volumes")
+Signed-off-by: Yuho Choi <dbgh9129@gmail.com>
 ---
- drivers/mtd/maps/physmap-core.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/mtd/ubi/build.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/mtd/maps/physmap-core.c b/drivers/mtd/maps/physmap-core.c
-index 0dcc25b7ff98..6299a741e65b 100644
---- a/drivers/mtd/maps/physmap-core.c
-+++ b/drivers/mtd/maps/physmap-core.c
-@@ -659,8 +659,10 @@ static int __init physmap_init(void)
- #ifdef CONFIG_MTD_PHYSMAP_COMPAT
- 	if (err == 0) {
- 		err = platform_device_register(&physmap_flash);
--		if (err)
-+		if (err) {
-+			platform_device_put(&physmap_flash);
- 			platform_driver_unregister(&physmap_flash_driver);
-+		}
- 	}
- #endif
- 
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index 674ad87809df0..d81f5e0395ac0 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -1106,6 +1106,7 @@ int ubi_detach_mtd_dev(int ubi_num, int anyway)
+ 	if (ubi->ref_count) {
+ 		if (!anyway) {
+ 			spin_unlock(&ubi_devices_lock);
++			put_device(&ubi->dev);
+ 			return -EBUSY;
+ 		}
+ 		/* This may only happen if there is a bug */
 -- 
-2.43.0
+2.50.1 (Apple Git-155)
 
 
 ______________________________________________________
