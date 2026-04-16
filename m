@@ -4,90 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7445AF8A14D
-	for <linux-mtd@archiver.kernel.org>; Thu, 16 Apr 2026 09:32:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 129B1F8A14D
+	for <linux-mtd@archiver.kernel.org>; Thu, 16 Apr 2026 10:46:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Tj2/S578iKhx8msVvkEw1zn5RQ8MiVKSUdIJ6kq0e+A=; b=gnA6bzFhgraImc
-	HY3KxPK50bnmzzl/DwqSwd6jmdKHWERpBGQBwrllq64Ezd23sj3nT60xyD+qCY5yGClRO0RfKtfKz
-	OeQ/QJ4IA7DkjjVnP5EUfYNsRcA8lZCYLcv4CiDelY5nepaQn56ojrGZP31VcKOAITTioB109H3iN
-	OhDuOq2aHf4vdj9aUIKfXQ2brcPQUP8CBtFHkh7YF1G/OBq0yXtr4ZSME0wBChyGRhyEKhkU+pN8v
-	C0If62iv6e7N816cWNG9fFwz5KLJW5GxwyqpdvMf8W1RaVanA7U5FyKMguXtKzyvFIWbwD5oM9Rlx
-	TgVwKnyk0Lz31PU2ocjA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:References:To:From:Cc:Subject:Message-Id:Date:Mime-Version:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=g4RBqPJCW1d3Gy6lg/VUayHBuJz4smr3gk7lOCr2anc=; b=sZOMR7N06OKw3DBmqLHXWY2bTn
+	ljkiqZzUOBnrsKdHm9GXxuHYSvKJP7XkCCXeBMms28Kqn/8EnFYMcPrro1BfRl6hGYPQKtO4ZLGKF
+	BOBC9VpyOaWdYL4uFf43eKpdYx/pYFBLNWIbtp7QBazdQCCCBJ3c3ZcMrpbdzNKNWlmn9CpU46M4r
+	r+LtkhEoKwPPmtFUIjpCY85RatFlO9qb9Tb7/GRWjpTXPkWl7fgr1TmoACH76lEB6vkmFshRHabY/
+	wZSiiHiWaS3UTYRL6bekRdsDXx7397q26GBIAetM/TSp/W6Txnkor7F2u6S10QXi8o4kVtrjwG0LI
+	lz5aQNtw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wDJ5D-00000002FOQ-0TiP;
-	Thu, 16 Apr 2026 09:32:23 +0000
-Received: from mail-wr1-x432.google.com ([2a00:1450:4864:20::432])
+	id 1wDKEg-00000002KAQ-3aK2;
+	Thu, 16 Apr 2026 10:46:14 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wDJ5A-00000002FO7-1kde
+	id 1wDKEe-00000002KAK-3ACV
 	for linux-mtd@lists.infradead.org;
-	Thu, 16 Apr 2026 09:32:21 +0000
-Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-43d7a5e77b1so282103f8f.1
-        for <linux-mtd@lists.infradead.org>; Thu, 16 Apr 2026 02:32:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1776331938; x=1776936738; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Yyfk8X7hQAsUD9G+4fe4CzUE4boCyIRsCV8/4Z21Gnc=;
-        b=E2ybdNuZ3XUNGyDkVPR7mRG4NeCJm+R9zF2KrENk/Wo/QiwpbY6Y58rBOkZ2ujlIaS
-         7kIBMUgQbN/GJlF5cJW+Mimez1LXrhSDJhioLo2aLXlv5BxHZQ2+W2Sr33SD2xYoPiPp
-         ufErnToFVSanujp9ngOEcvEjbDtTCHSQEvbYYhzKRXV1hL//2EqjBPNFMH8Vm8jMUJm0
-         eWc1BbNV0vWZ/p33PSImzu3FpYxctEaSOuiZUlU7ne57Pc+ycKMgx1ZnrOMf9tP5M2/u
-         wZMGtThJWejYsPC+YOnnxMqrCgdIsK/FweKtPDi1QlrT+EDkeSL+H5TR8fWUhWvokNzP
-         QX8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1776331938; x=1776936738;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Yyfk8X7hQAsUD9G+4fe4CzUE4boCyIRsCV8/4Z21Gnc=;
-        b=k7jYMsS9aEsJhn2jyE32k+7fKkc45utQZr1sOqnuvroI5TkJyMUdy0qLpqkmPlkEMw
-         o+wU5aPsDUE9V0Yv/45j0rLol+GYLpnRMXRv3eC3drzxUG7ESlhpNo29ZCJabm6BS5vc
-         lXPqmisHDns5oUKW3Kgp8zV7iyrUZxGrdMXmsBAIpiCCaQfwoivxmCAge8CUwnGLc6Gb
-         8JpYHbexnEpMeWAuYxrtQDi0DZa9QPEUcDqAjIfNc9Be+lBzsB5t06VJoWMjRe9FW5KJ
-         icFOmV77dUJWOTVc0t+LYrCHdS0lI6A6kfdU8g0kReCMQSjE2bbVGL0a/L0Z/zDsBK3J
-         593A==
-X-Forwarded-Encrypted: i=1; AFNElJ/Cufog0nPLWpy9AfiQQ5Xcpvls5vFwbXE2yrcoxboRz5QHpA+kIdkdmAv3lnk1LJshzq/UKE6qSFg=@lists.infradead.org
-X-Gm-Message-State: AOJu0YwK7WkOmeWaPLRj0BF9DTJ/tL10IsTsFhYyBnAcl6M8O+Y8QOCI
-	b75f8Vt5n2sMnW4FnjEsONVitM764GvOaK+J7xc98LxySBKVAUVAGkvOTotIxaoHepor9Eho5GJ
-	hd1qtN64=
-X-Gm-Gg: AeBDiesZdFEH7mI/xaGTRg5ULuFy4luYKYImUd99KNcr84xYhnRJzNz/FJ7fdRqI/VJ
-	3xjH4GBHPd5+roUGMEGiKObVOSm6DG6nANlxWTYgr+tum+/DOXMZu+MXltyLHEWSB9zg6ISy0bd
-	Vv02h6Bymhr9FBWuAo3hFOMcPsniVjv9NKz6SHgCT7t16kwFYztwanj4Z+pxNKf+YRTNKLfnkke
-	DxWswrrSnDQbmnZp/Z90pGM7WaGVBNbx1cNNO3ojnRd3KQthlR6X+DZntKuig4vr0SHDbBjIHSv
-	JkfHKzihx9LiweIuHHdb8JukXGirrwG91bhBLlS5g07vhn65SRSPWh4HO0ckZdsMtJmK+8DHCks
-	iGw9kuHifg0ltwy+MvXDs3DrEp9N+m3rHtsB414lssirejy0Av64ZGp9C2f0UFJzE84+yvO6bCY
-	4rxrPZVv8PKbNnZ5HFUD72GcTNN67p4N6MTS3e6qDc8g==
-X-Received: by 2002:a05:6000:2a0d:b0:43d:210:2b2d with SMTP id ffacd0b85a97d-43eb1ba57fbmr2907897f8f.31.1776331938365;
-        Thu, 16 Apr 2026 02:32:18 -0700 (PDT)
-Received: from [10.11.12.108] ([79.115.63.48])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-43ead3d5eb4sm12434350f8f.20.2026.04.16.02.32.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Apr 2026 02:32:18 -0700 (PDT)
-Message-ID: <9cd16c55-ba25-4f8b-ae27-e882d0704e63@linaro.org>
-Date: Thu, 16 Apr 2026 12:32:13 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+	Thu, 16 Apr 2026 10:46:12 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id BDA0060126;
+	Thu, 16 Apr 2026 10:46:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2081BC2BCAF;
+	Thu, 16 Apr 2026 10:46:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1776336371;
+	bh=0XA90+CDKIQOfyPdPgeY6a8Pxr+2GC0kjQSiuQutyW4=;
+	h=Date:Subject:Cc:From:To:References:In-Reply-To:From;
+	b=dM/DZQT1QpLo2VqiOFuR4CBO+8mbnDiW1ZaT7VKol40Ey+sHUZk5eQTSK3hXzGr9w
+	 WrdBJbxQx/0ilA3nkGxrtLOR4khdrKr/q74NMvDJGcY3MOXjNkJGIwY+8FsSQGpmyk
+	 NG3VtRhq077EOobNCGsK9a2x9cNQ0civpzEnNPoysO0X8yvmG/LO7YJRcxx96zKGWQ
+	 gkVHvA4h+3jFafSegjm2LPd7x3ljgSWB88s4cmpGnoJm/nXn7jnA2AvD1/0D8Q/9vk
+	 jbjwsk5NCGlU8BIaqSFk9vDSK8mMt5B1mDMjTFMPEhzitbVhNJLb2QnEIxJ5eKaxlD
+	 uMEA3f2Mc+gEg==
+Mime-Version: 1.0
+Date: Thu, 16 Apr 2026 12:46:07 +0200
+Message-Id: <DHUIOTOESC19.117TN18W5AV86@kernel.org>
 Subject: Re: [PATCH] mtd: spi-nor: remove unused NO_OP_CHIP_ERASE flag
-To: tkuw584924@gmail.com, linux-mtd@lists.infradead.org
-Cc: pratyush@kernel.org, mwalle@kernel.org, miquel.raynal@bootlin.com,
- richard@nod.at, vigneshr@ti.com, Bacem.Daassi@infineon.com,
- Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+Cc: <tudor.ambarus@linaro.org>, <pratyush@kernel.org>,
+ <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+ <Bacem.Daassi@infineon.com>, "Takahiro Kuwano"
+ <Takahiro.Kuwano@infineon.com>
+From: "Michael Walle" <mwalle@kernel.org>
+To: <tkuw584924@gmail.com>, <linux-mtd@lists.infradead.org>
+X-Mailer: aerc 0.20.0
 References: <20260416090320.21699-1-Takahiro.Kuwano@infineon.com>
-Content-Language: en-US
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
 In-Reply-To: <20260416090320.21699-1-Takahiro.Kuwano@infineon.com>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260416_023220_484864_E9ABBB92 
-X-CRM114-Status: UNSURE (   3.79  )
-X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,14 +66,94 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7967825838618407996=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+--===============7967825838618407996==
+Content-Type: multipart/signed;
+ boundary=e94a267ab793ae527cbce6530bdfeaff9ccad361ddb5eada1cbc25358642;
+ micalg=pgp-sha384; protocol="application/pgp-signature"
 
-Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+--e94a267ab793ae527cbce6530bdfeaff9ccad361ddb5eada1cbc25358642
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+
+Hi,
+
+On Thu Apr 16, 2026 at 11:03 AM CEST, tkuw584924 wrote:
+> --- a/drivers/mtd/spi-nor/core.h
+> +++ b/drivers/mtd/spi-nor/core.h
+> @@ -124,23 +124,22 @@
+>  /* Keep these in sync with the list in debugfs.c */
+>  enum spi_nor_option_flags {
+>  	SNOR_F_HAS_SR_TB	=3D BIT(0),
+> -	SNOR_F_NO_OP_CHIP_ERASE	=3D BIT(1),
+
+Can we just drop this line and leave the rest as is? It's already
+hard to follow any development in spi-nor due to code churn. I don't
+think one hole in the flags hurts. The next new flag can then just
+reuse it.
+
+-michael
+
+> -	SNOR_F_BROKEN_RESET	=3D BIT(2),
+> -	SNOR_F_4B_OPCODES	=3D BIT(3),
+> -	SNOR_F_HAS_4BAIT	=3D BIT(4),
+> -	SNOR_F_HAS_LOCK		=3D BIT(5),
+> -	SNOR_F_HAS_16BIT_SR	=3D BIT(6),
+> -	SNOR_F_NO_READ_CR	=3D BIT(7),
+> -	SNOR_F_HAS_SR_TB_BIT6	=3D BIT(8),
+> -	SNOR_F_HAS_4BIT_BP      =3D BIT(9),
+> -	SNOR_F_HAS_SR_BP3_BIT6  =3D BIT(10),
+> -	SNOR_F_IO_MODE_EN_VOLATILE =3D BIT(11),
+> -	SNOR_F_SOFT_RESET	=3D BIT(12),
+> -	SNOR_F_SWP_IS_VOLATILE	=3D BIT(13),
+> -	SNOR_F_RWW		=3D BIT(14),
+> -	SNOR_F_ECC		=3D BIT(15),
+> -	SNOR_F_NO_WP		=3D BIT(16),
+> -	SNOR_F_SWAP16		=3D BIT(17),
+> +	SNOR_F_BROKEN_RESET	=3D BIT(1),
+> +	SNOR_F_4B_OPCODES	=3D BIT(2),
+> +	SNOR_F_HAS_4BAIT	=3D BIT(3),
+> +	SNOR_F_HAS_LOCK		=3D BIT(4),
+> +	SNOR_F_HAS_16BIT_SR	=3D BIT(5),
+> +	SNOR_F_NO_READ_CR	=3D BIT(6),
+> +	SNOR_F_HAS_SR_TB_BIT6	=3D BIT(7),
+> +	SNOR_F_HAS_4BIT_BP      =3D BIT(8),
+> +	SNOR_F_HAS_SR_BP3_BIT6  =3D BIT(9),
+> +	SNOR_F_IO_MODE_EN_VOLATILE =3D BIT(10),
+> +	SNOR_F_SOFT_RESET	=3D BIT(11),
+> +	SNOR_F_SWP_IS_VOLATILE	=3D BIT(12),
+> +	SNOR_F_RWW		=3D BIT(13),
+> +	SNOR_F_ECC		=3D BIT(14),
+> +	SNOR_F_NO_WP		=3D BIT(15),
+> +	SNOR_F_SWAP16		=3D BIT(16),
+
+--e94a267ab793ae527cbce6530bdfeaff9ccad361ddb5eada1cbc25358642
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCaeC97xIcbXdhbGxlQGtl
+cm5lbC5vcmcACgkQEic87j4CH/hY8gGAk/ya+dVJJR9j40Ht8RVARAIKm6QoXBgT
+qc7Z7s+AyF9c6dQ4npbWUD6bv3NwMR5eAYDwHEm2U4WBDdyjR5pEQlwx7/MU3WcV
+LHXCzurYbIOwnGhfVnKqHh8ABwqLDS/0RGA=
+=1yiI
+-----END PGP SIGNATURE-----
+
+--e94a267ab793ae527cbce6530bdfeaff9ccad361ddb5eada1cbc25358642--
+
+
+--===============7967825838618407996==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============7967825838618407996==--
+
