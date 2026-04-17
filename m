@@ -4,99 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2F67F436B9
-	for <linux-mtd@archiver.kernel.org>; Fri, 17 Apr 2026 15:24:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 664A8F436B8
+	for <linux-mtd@archiver.kernel.org>; Fri, 17 Apr 2026 15:27:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version:Subject:
-	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=KNPwhoJCjHQ/iJbrhXPxyplW15/ENniujNpS8Kxv2yk=; b=pCvqS7QnULXls4
-	OpbkVrustUEC5be65Ts0CGyohrybSeEbW7z98keWs1417LT+L0qgUcd6aIGzwsPlgTOfKJ/LAj+PX
-	V2YdgT/R3nvDgxJLMTlPUJdBa82QjKIoTPL26WKRv0So5xzqF+B0ciy5e8/RPrnXyGoNK+hkGd9iP
-	8QSaJ9ktz/eVTtn0NAJwFN1bS7Km95AjniWvvNsCsGEwLg/E9cVWJoGhJ3KbqVkz72jeVSHEI3k5l
-	ZnvAUE94qpyvGMOus6UH2pDyJizHTfjyIwXdwntwtUHV2rMSdB3snQ2g/LYEmyhoCQ6N2vbnN7gtu
-	HQpQ9IWqPYqtdZ3KKUfQ==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=ME6YtxQ7/JuGX3EhcJCBY0sAn90HbQSCWBmNanLZPno=; b=g6hVqMtKyMFrS3
+	quXNIHnt+S5lWIno0p1Yxo2Pt5aHL202v7I9VMkBZp0r8wztqJxQh/t0onCLzVegC32WKG6ztyV4C
+	KIf7iqMiOfB2JLKmQv85E4KPBY6deBMegXmUglaRMEfFy6KVFb3a3w1RjReGGLErHFLGG2Y3e8xXi
+	0juR6EqnMXiQRQn/t2JOIndw7k5DASaQz3bEVykdw5nwOnpZKGnyjHf7TVpztl7mNwfZimPX3Qcp7
+	YtmLWwAS47hSFBdImLKB1hZNzzvtjRyl+l1x6xYUf2yxsfiBy/1VzJpdb2i9S8UHlMCtr0CkJQOsN
+	+aDL6/mzwC/+kBX+YEzA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wDl3o-00000004CrP-2xg8;
-	Fri, 17 Apr 2026 15:24:48 +0000
-Received: from mail-wm1-x329.google.com ([2a00:1450:4864:20::329])
+	id 1wDl6G-00000004D70-1LXp;
+	Fri, 17 Apr 2026 15:27:20 +0000
+Received: from mail-wr1-x435.google.com ([2a00:1450:4864:20::435])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wDl3k-00000004Cr2-2AJb
+	id 1wDl6E-00000004D6U-0Q5p
 	for linux-mtd@lists.infradead.org;
-	Fri, 17 Apr 2026 15:24:45 +0000
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-482f454be5bso18845515e9.0
-        for <linux-mtd@lists.infradead.org>; Fri, 17 Apr 2026 08:24:43 -0700 (PDT)
+	Fri, 17 Apr 2026 15:27:19 +0000
+Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-43d0deb7ad5so647133f8f.2
+        for <linux-mtd@lists.infradead.org>; Fri, 17 Apr 2026 08:27:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1776439482; x=1777044282; darn=lists.infradead.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=q2bC6Hz2MAErwrJ8lu8pBzVTd3KLTohmvccUkPb3vXE=;
-        b=u8u9ixX/ndJl9G2sBDRI4DtfJBqPpPRqLXYk7Jv3S/3YkU3+KPzSVIw4sYjJsF7TJ6
-         dSbErorHJVZOp3f4xv4MNpOykovvYenHX/IKWDES9jcnHBRQ0yapo9oq9Wtbpja5lpyc
-         QxvM+rtLh+Mzu0G+4jF0OsqWhAgP8hg1diPM2ctwW1j4QEKxpMG93o++jEbYxD0D3QyG
-         xHhhfu1SFez247xUnuX/nGYAEnAOC+HAyJjNnoXbl/Zk6W4ZYeQhgw1vB8JIeHYA3lbl
-         pbQWRSrVMYcoe21fOWSv6f5kupvD/oVPwHWuO1cpWozQWr5h4KIM6jS9djFQMZj+jXs0
-         AcIw==
+        d=linaro.org; s=google; t=1776439636; x=1777044436; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=40ZypixgjKXIo6XSohZvf0mN6J7nrFoGdssup44acmU=;
+        b=B3CBzWi0QQt+ZjJ5hUrlAZjkXrVHx1lC1Xo/L37I7dSvIYLrSO7GrJeuPMyhWLiEOn
+         Xk8CN4jU8gcOxbhpQN7IZdgJoJMcUqeW9Tu+uiVaML70W/AzfdyfpX+bIpl1WiJfaehZ
+         If9Tyku7Y/fPg81BcMjJTyljQeyVW4dHBk/lxlgZCm8CNj34hppvjMyLkZfBvlIIZRv2
+         B/HbH0AGWK/MIkV5sYHeeVSnvmGgmJLVph1h4bZQ5etI+cPH5eiaIz9YAnoFoBfaRbgc
+         u105CBHBHFLHMFa8KRhhRj1t+3lKwPnTZr/yQsxm+TNrqmsYLSH3jGTh0OPiERnY73be
+         nhAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1776439482; x=1777044282;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=q2bC6Hz2MAErwrJ8lu8pBzVTd3KLTohmvccUkPb3vXE=;
-        b=C1oRpg4e+jCXczw527MSf9cade37xSC6aU8jrRAFWCyZuZugwmjbbxaW43Z7dPSQRR
-         CDl1Es5aQKs4nTqDaQvdzG97FAyD9g12aJY8N7FXYpi0EoaP64kLy4ZnpWhlZjIliDNh
-         rj6KVAMgI4La6MHppbB1e/UCkwDolzdpT6aepR0+v2Gf37yoY2iUzMbmePKbQJyOWaXN
-         kxgPmaDgs+qCNWqLt1oNHbp26my3zkj4QSQMsbLXGANEyGzVTlGP4cX6L3M4FcqxdB/K
-         YrsR/Wo/VnH3/DVUXOj7rRmnRDhPgcAxd0ooz3iYBxL0Bu1zN4KOS/dF+kPxaIFkKU74
-         FFjg==
-X-Forwarded-Encrypted: i=1; AFNElJ85WCclF2dS5K1xNRBdDoWQsagybUeKAXNsc3pTSSQfBaxQYWF1Deg8dSq9DkPDh27E8fTat++UQZY=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxJTvZR6JEHJ9AemDdMAQJ4Jy2fI6fQ6hU+hnJR81+8lDrHYSgl
-	R6ulgDgHaIeN+EKOITFkenjjcXtMfIxtgWEIyMVT0N7OJ43m06YFnPItBON8/3TxKj8=
-X-Gm-Gg: AeBDiesNdGjNii90DKLxsOdUHcZ6NpfeeFaqvmQewlAib84Jva37xWj3tJYGT7YD5w7
-	KCKrQJNONh6VHbyCobL3xYwtO6pb7I5cIB+Z8yBHJJSguzDmCuT4djafUrRKMEmLyfst34d6PW+
-	N+ucYC/nYm4wFol9bQ3YbNDmE13lFNrQhzCBOwYtUEfOp5FlEF/8YgRckuLZUlbiOaAvSxNdnEu
-	0F8YoDnsSgQK+R2l97DlCyfBBR8zfoVR5v/oiQhpEiX8XYMH5BTqohwdUd/hMtVL5FD1xyc5u43
-	rCjyMM4iVM+0QEsczfPbnRavTU+KHeNgGGmheZOSfD1acf+a32npnGqYroVPDOf2yXR6GDpsj1c
-	TrCLjV+9A7Z2WIrYimu9We5R7QeBjriGzEsbpquUfe2ZUevnscFc58MDxagc0dXGITcJdwHvVAa
-	NhBfBJFvKMrQysUyzD3GKaEiujkiOPqOO+yTwu3+BXbec7tCGMmnTmVJ4NuK6AVgtsVG0nrzAbg
-	GjK32UttFJVW1IrJg==
-X-Received: by 2002:a05:600c:c0d8:b0:485:fbd2:f72 with SMTP id 5b1f17b1804b1-488fb8838abmr31594955e9.1.1776439482480;
-        Fri, 17 Apr 2026 08:24:42 -0700 (PDT)
-Received: from ta2.c.googlers.com (17.83.155.104.bc.googleusercontent.com. [104.155.83.17])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-488fb7aa593sm19318855e9.24.2026.04.17.08.24.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Apr 2026 08:24:42 -0700 (PDT)
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-Date: Fri, 17 Apr 2026 15:24:39 +0000
-Subject: [PATCH] mtd: spi-nor: debugfs: fix out-of-bounds read in
- spi_nor_params_show()
+        d=1e100.net; s=20251104; t=1776439636; x=1777044436;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=40ZypixgjKXIo6XSohZvf0mN6J7nrFoGdssup44acmU=;
+        b=W4H+oOgRehKk/qFDTdGbXlHb3rqHztBwVqZdkxgCpzoUP7F55UAdyTxYqyYsyMK3ww
+         ZrcXlFPamPvLFZ9h/LIaYAlelNpvn2CzJdOBRsLvmlnj/Aj9LkUIyr0RUgai5HMFmdeu
+         RVbLp2UkxC8RFzaQnWteBkQeQonCogEDaji5XeYvzdSJXHFEXjZFiZ4DwMf8HmfJe1fT
+         kCHQXczq0OFDHZB4vB16mxViE/fKvuaAkeMpfBKyD1H5rgBmZs2oe/tgD525u0cLZqmJ
+         enimCAdbtpTZWjwhNVj20B6psXqP3KRXpN+NDs+tHksVrxCfUM+wWOEreROd8cD7J/Of
+         m+Ug==
+X-Gm-Message-State: AOJu0YyVgNTFbpl/porOytj3FgHK2p+qiD4zY4hTVuCHgcwwHRSJTSFu
+	XL2YFMOK059tE7UgmK733ynn/yWZNR7qBUBrXl1zOEkJZAkimHX4pmxbEbckpkkyS20F/17Eqer
+	2weyQfUpV7Q==
+X-Gm-Gg: AeBDievawzY0flXwkVwVvu+OKQBP8GT4Vg8Eaav//jrVrklgfrrq7fAIU6Jrb1HDsE6
+	GUqe+PLZKgaYbDjdOTaE2wrXVDTZXplNI8XjF/nqNQaxsw4ZVTBLxWUvYQzSfLb1X23POXBn1YV
+	aw3HJbdJO250LbKJERBMxh9AwMPogmiW2x7bshRh6uu7XWJRV6UUMKfvIYtBZNuhStpD8e/IRwZ
+	rrACd6qK84BEoAabAgdDSYJueJwvInsju20Puxli2uKcjKpcdL7bCYRDmMonkQtITvWD3ds3ONF
+	TW0h9MtwbbahLSHb9EFwtYXaj3upRy8ZqcdajTKZqUfhEZSdtE5xxsRmmsenjnLZMaVGcJRr0qS
+	NyZKtbWerN8lUAzy274gyzf4Zda8COUUO8UziitU3XCgQrEKOozVTZKsL8IEuDQzaMgPCElNCEk
+	tm2aHBPKd1t11VY+ucqgNta9lbn74hJ1xzduHdL87I7g==
+X-Received: by 2002:a5d:5849:0:b0:43e:a8ad:975e with SMTP id ffacd0b85a97d-43fe3dfbedbmr5330169f8f.27.1776439635158;
+        Fri, 17 Apr 2026 08:27:15 -0700 (PDT)
+Received: from [10.11.12.108] ([79.115.63.48])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-43fe4e59f97sm5594838f8f.37.2026.04.17.08.27.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 17 Apr 2026 08:27:14 -0700 (PDT)
+Message-ID: <e3529aa2-9372-4b5f-b87d-c236cce11947@linaro.org>
+Date: Fri, 17 Apr 2026 18:27:11 +0300
 MIME-Version: 1.0
-Message-Id: <20260417-fix-oob-read-spi-nor-v1-1-2132e61a684a@linaro.org>
-X-B4-Tracking: v=1; b=H4sIALZQ4mkC/x2MQQqAIBAAvxJ7bkHNivpKdNDcai8aK0QQ/j3pO
- DAzL2QSpgxz84LQzZlTrKDbBrbTxYOQQ2UwygzK6hF3fjAlj0IuYL4YYxI0vVWT73RQ2kFNL6H
- q/dtlLeUD/N0NFmYAAAA=
-X-Change-ID: 20260417-fix-oob-read-spi-nor-25409b31d01a
-To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
- Takahiro Kuwano <takahiro.kuwano@infineon.com>, 
- Miquel Raynal <miquel.raynal@bootlin.com>, 
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Pratyush Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>, 
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
- stable@vger.kernel.org, Tudor Ambarus <tudor.ambarus@linaro.org>
-X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1776439482; l=2246;
- i=tudor.ambarus@linaro.org; s=20241212; h=from:subject:message-id;
- bh=tPwzxOzm9uakxuwTOcaC6u3ngixwWgQyrsHL71YIYTU=;
- b=YEZm7VO5nMzhEC2ZjHHkxyVPrh8RqY7QfAve2g2czKQlHG7IhQzXTiAzdiWNjmv/aHtJCgjXz
- J7wTQsy5Gv4BqCCXi8QEBKX9Rwd5fEhlGUpMBPbQHGmhGJ31U8ZID0B
-X-Developer-Key: i=tudor.ambarus@linaro.org; a=ed25519;
- pk=uQzE0NXo3dIjeowMTOPCpIiPHEz12IA/MbyzrZVh9WI=
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] mtd: spi-nor: remove unused NO_OP_CHIP_ERASE flag
+To: tkuw584924@gmail.com, Pratyush Yadav <pratyush@kernel.org>,
+ Michael Walle <mwalle@kernel.org>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+References: <20260417-die-erase-fix-v2-1-73bb7004ebad@infineon.com>
+Content-Language: en-US
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <20260417-die-erase-fix-v2-1-73bb7004ebad@infineon.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260417_082444_615051_CBB548B0 
-X-CRM114-Status: GOOD (  12.30  )
+X-CRM114-CacheID: sfid-20260417_082718_169960_C6F2DE6A 
+X-CRM114-Status: UNSURE (   4.70  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -113,67 +105,18 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Sashiko noticed an out-of-bounds read [1].
 
-In spi_nor_params_show(), the snor_f_names array is passed to
-spi_nor_print_flags() using sizeof(snor_f_names).
 
-Since snor_f_names is an array of pointers, sizeof() returns the total
-number of bytes occupied by the pointers
-	(element_count * sizeof(void *))
-rather than the element count itself. On 64-bit systems, this makes the
-passed length 8x larger than intended.
+On 4/17/26 10:17 AM, tkuw584924@gmail.com wrote:
+> - Copy to <linux-kernel@vger.kernel.org>
 
-Inside spi_nor_print_flags(), the 'names_len' argument is used to
-bounds-check the 'names' array access. An out-of-bounds read occurs
-if a flag bit is set that exceeds the array's actual element count
-but is within the inflated byte-size count.
+cool, thanks.
 
-Correct this by using ARRAY_SIZE() to pass the actual number of
-string pointers in the array.
+see what sashiko discovered:
+https://sashiko.dev/#/patchset/20260417-die-erase-fix-v2-1-73bb7004ebad%40infineon.com
 
-Cc: stable@vger.kernel.org
-Fixes: 0257be79fc4a ("mtd: spi-nor: expose internal parameters via debugfs")
-Closes: https://sashiko.dev/#/patchset/20260417-die-erase-fix-v2-1-73bb7004ebad%40infineon.com [1]
-Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
----
-We shall assign a CVE to this. I'll look into how next week.
-
-Link: https://lore.kernel.org/linux-mtd/20260417-die-erase-fix-v2-1-73bb7004ebad@infineon.com/
----
- drivers/mtd/spi-nor/debugfs.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/spi-nor/debugfs.c b/drivers/mtd/spi-nor/debugfs.c
-index fa6956144d2e..14ba1680c315 100644
---- a/drivers/mtd/spi-nor/debugfs.c
-+++ b/drivers/mtd/spi-nor/debugfs.c
-@@ -1,5 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- 
-+#include <linux/array_size.h>
- #include <linux/debugfs.h>
- #include <linux/mtd/spi-nor.h>
- #include <linux/spi/spi.h>
-@@ -92,7 +93,8 @@ static int spi_nor_params_show(struct seq_file *s, void *data)
- 	seq_printf(s, "address nbytes\t%u\n", nor->addr_nbytes);
- 
- 	seq_puts(s, "flags\t\t");
--	spi_nor_print_flags(s, nor->flags, snor_f_names, sizeof(snor_f_names));
-+	spi_nor_print_flags(s, nor->flags, snor_f_names,
-+			    ARRAY_SIZE(snor_f_names));
- 	seq_puts(s, "\n");
- 
- 	seq_puts(s, "\nopcodes\n");
-
----
-base-commit: 43cfbdda5af60ffc6272a7b8c5c37d1d0a181ca9
-change-id: 20260417-fix-oob-read-spi-nor-25409b31d01a
-
-Best regards,
--- 
-Tudor Ambarus <tudor.ambarus@linaro.org>
-
+and the patch
+https://lore.kernel.org/linux-mtd/20260417-fix-oob-read-spi-nor-v1-1-2132e61a684a@linaro.org/T/#u
 
 ______________________________________________________
 Linux MTD discussion mailing list
