@@ -4,65 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82FA9F43682
-	for <linux-mtd@archiver.kernel.org>; Fri, 17 Apr 2026 08:49:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48172F43682
+	for <linux-mtd@archiver.kernel.org>; Fri, 17 Apr 2026 08:54:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=fKf6oVkJW2YtbPjn9YhuwnteATDY1TOVe5/6ROZkMJE=; b=uSVomvSzxWb0fO
-	ZOH5Zg4ne3M5fuxxqOEB5WqHRNlbNfm0UHr4T/WN8jIZmwXXkirrb8nPrp2ztl/sDXMo6RlqTW0+r
-	tzB9VFK1V1oVVs1fEbG8pRc9/fcDq7BjUk2rrT7orLUq3jP5Cfv9ryN3TsDY1LCtJx/CeVQFM5DG5
-	mPhtXjNTgn3aQtamtMvn+u6OhjArg3z1NC171rVBTW7rt23A8eJ2WbqZtWydv2pGDRujuqzLlp9xX
-	EaboIluZqTLSumSNxvMWtcecdHDOFv25aO1jKbIpoKx/N1y0Tdi1sgufkRlPT3wWDipLY2zfEUHD/
-	6d2+ch4dNW+7DmY53Qew==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:References:To:From:Cc:Subject:Message-Id:Date:Mime-Version:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=k7LyDOdy5AFNgAy21A5UlHCbj90wWsMRu3lf58zooMs=; b=p7a/yjm3A8RSe8bNNrHtkhzzQz
+	qW9E6CSOtlY/ogiolxIifAgaDwjgMMdGmnM87A2I+y9YncoUv/mNWWvn0JTPOCQctnckXArP6Wv+4
+	Vl7M6TkH4McWECFyYtf9hvFJ/59nZVSj0YPLng/IckcWOee5qYzgwggz+m8Yc3R7wGOg6wNlp4r7N
+	Q4dqPkqSq5xN58a+rbjljwtHp+JyRboPJIPPi5TT3rCvOJ6OFXw16brdgFUk/H+SGSWWeJpeixH1K
+	6G0n+rAw+/KEh/kKTh6ChYxa7YcKRj9vHEn/uhIME71kSz6Rztd6bJfQTThMbj7nffRNnDeL8fXYA
+	AGGd71Jg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wDetd-00000003i0r-0mu4;
-	Fri, 17 Apr 2026 08:49:53 +0000
-Received: from smtpout-04.galae.net ([185.171.202.116])
+	id 1wDeyX-00000003ihG-29lB;
+	Fri, 17 Apr 2026 08:54:57 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wDetZ-00000003i0Z-3w2l
+	id 1wDeyV-00000003igw-1NbO
 	for linux-mtd@lists.infradead.org;
-	Fri, 17 Apr 2026 08:49:52 +0000
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id 69544C5C3D8;
-	Fri, 17 Apr 2026 08:50:23 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 017E960497;
-	Fri, 17 Apr 2026 08:49:45 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id BEBB21046097F;
-	Fri, 17 Apr 2026 10:49:40 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1776415784; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=sdYzpMdW6TeyWluJ9v0gzzSQwH1Y2RGPjPMFY/co9ss=;
-	b=WHNGe9B1L7cjCtLZe03WYL7bSPH3qnjXUk2+3wELbu83Cj8+vnqXv2CimAIeK7TGom+41N
-	IzgSTbWStnRla0cHVIuSfn4IY7mUvh8Mb9f5nG6ZsfZzy2O23KER0PqlKIsL9pn17/+S0J
-	mAhlzJkeDgN/hOErM3QeDy1dDbfL30RGMrukmuE8gXn+1vbwnTNR4MyEojA6sdUVgtxNv3
-	0FdKEboJs3Y+JzelM2d3a9v3EMb/+KGcxvASeuUKogosDZKqOVTHFyMWSQywCcVvs+YElO
-	XZCDRUX1vsTpT7U7E37q0l+kh9NuzH/dB68RArtAbLfnlSwapF4uL/XNX0aXag==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: tkuw584924@gmail.com
-Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,  Pratyush Yadav
- <pratyush@kernel.org>,  Michael Walle <mwalle@kernel.org>,  Richard
- Weinberger <richard@nod.at>,  Vignesh Raghavendra <vigneshr@ti.com>,
-  linux-mtd@lists.infradead.org,  linux-kernel@vger.kernel.org,  Takahiro
- Kuwano <Takahiro.Kuwano@infineon.com>
+	Fri, 17 Apr 2026 08:54:56 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id 58C3142D74;
+	Fri, 17 Apr 2026 08:54:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D54E6C19425;
+	Fri, 17 Apr 2026 08:54:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1776416094;
+	bh=6TrQKCjh4dQ2SnoddhWbtSZu3gzLo0fIkwSsJnp/b2E=;
+	h=Date:Subject:Cc:From:To:References:In-Reply-To:From;
+	b=ZuEQI+1DkTO2vtiEggUkzuRuKfDKzcN7BHRZYl5BWT9D/f9sBArh+NZMoPllvqQJo
+	 TUvEv7DVQAZuI6pXgvVi6BTfd+bQ2Kt63GSJSMztsoujznfbrin9I+a4Omnz717yJ4
+	 uGmu/FzNx1EP7ie3yvMzkDbuqVG8Uy3ZlE6WRaWyUwKwXpOWiLVeGAFXf9bcvANaQG
+	 YFtMUI9hXEt8UeAidrypv/RSNgOfd3KvXhuI5BJR0Ewu/dbJ64yDk21Qs6uv8j/2UL
+	 SYFqHmWBzjqeK6fYRVnqxVyMQLRD6T+Ha+DEy/xv02aMjm+t0WwzBNWq7nqSPk3dju
+	 RGIIi9UL96S9A==
+Mime-Version: 1.0
+Date: Fri, 17 Apr 2026 10:54:50 +0200
+Message-Id: <DHVAY5UJNGL7.A7WVJ8FHRWW0@kernel.org>
 Subject: Re: [PATCH v2] mtd: spi-nor: remove unused NO_OP_CHIP_ERASE flag
-In-Reply-To: <20260417-die-erase-fix-v2-1-73bb7004ebad@infineon.com> (tkuw's
-	message of "Fri, 17 Apr 2026 16:17:15 +0900")
+Cc: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ "Takahiro Kuwano" <Takahiro.Kuwano@infineon.com>
+From: "Michael Walle" <mwalle@kernel.org>
+To: <tkuw584924@gmail.com>, "Tudor Ambarus" <tudor.ambarus@linaro.org>,
+ "Pratyush Yadav" <pratyush@kernel.org>, "Miquel Raynal"
+ <miquel.raynal@bootlin.com>, "Richard Weinberger" <richard@nod.at>,
+ "Vignesh Raghavendra" <vigneshr@ti.com>
+X-Mailer: aerc 0.20.0
 References: <20260417-die-erase-fix-v2-1-73bb7004ebad@infineon.com>
-User-Agent: mu4e 1.12.7; emacs 30.2
-Date: Fri, 17 Apr 2026 10:49:39 +0200
-Message-ID: <87cxzyc6os.fsf@bootlin.com>
-MIME-Version: 1.0
-X-Last-TLS-Session-Version: TLSv1.3
+In-Reply-To: <20260417-die-erase-fix-v2-1-73bb7004ebad@infineon.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260417_014950_118083_E5F4C9E1 
-X-CRM114-Status: UNSURE (   5.14  )
+X-CRM114-CacheID: sfid-20260417_015455_389105_9D50B03A 
+X-CRM114-Status: UNSURE (   6.49  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -75,20 +71,54 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============1725710838469743145=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gMTcvMDQvMjAyNiBhdCAxNjoxNzoxNSArMDksIHRrdXc1ODQ5MjRAZ21haWwuY29tIHdyb3Rl
-OgoKPiBGcm9tOiBUYWthaGlybyBLdXdhbm8gPFRha2FoaXJvLkt1d2Fub0BpbmZpbmVvbi5jb20+
-Cj4KPiBOT19PUF9DSElQX0VSQVNFIGZsYWcgaXMgbm8gbG9uZ2VyIHVzZWQuCj4gUmVtb3ZlIGRl
-ZmluaXRpb24gYW5kIHJlZmVyZW5jZXMgb2YgdGhlIGZsYWcgaW4gY29yZSBhbmQgZGVidWdmcy4K
-Pgo+IFJldmlld2VkLWJ5OiBUdWRvciBBbWJhcnVzIDx0dWRvci5hbWJhcnVzQGxpbmFyby5vcmc+
-Cj4gU2lnbmVkLW9mZi1ieTogVGFrYWhpcm8gS3V3YW5vIDxUYWthaGlyby5LdXdhbm9AaW5maW5l
-b24uY29tPgo+IC0tLQoKUmV2aWV3ZWQtYnk6IE1pcXVlbCBSYXluYWwgPG1pcXVlbC5yYXluYWxA
-Ym9vdGxpbi5jb20+CgpUaGFua3MgZm9yIHRoZSBjb21tZW50IGFib3V0IHRoZSBiaXRzIHJlbnVt
-YmVyaW5nIE1pY2hhZWwsIEkgcHJlZmVyIHRoaXMKdmVyc2lvbiBpbmRlZWQuCgpUaGFua3MsCk1p
-cXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJh
-ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+--===============1725710838469743145==
+Content-Type: multipart/signed;
+ boundary=27ca0e393bffe5fcd753e42a441c90256d09b01a93982bf58ca1665671f3;
+ micalg=pgp-sha384; protocol="application/pgp-signature"
+
+--27ca0e393bffe5fcd753e42a441c90256d09b01a93982bf58ca1665671f3
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+
+On Fri Apr 17, 2026 at 9:17 AM CEST, tkuw584924 wrote:
+> From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+>
+> NO_OP_CHIP_ERASE flag is no longer used.
+> Remove definition and references of the flag in core and debugfs.
+>
+> Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+> Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+
+Reviewed-by: Michael Walle <mwalle@kernel.org>
+
+--27ca0e393bffe5fcd753e42a441c90256d09b01a93982bf58ca1665671f3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCaeH1WhIcbXdhbGxlQGtl
+cm5lbC5vcmcACgkQEic87j4CH/ivoAF/Uu0zI8m9EUTZSrr1oxrwyCTkf0OagKxS
+OJgyHYKu4RSDDVb/LRa7/qSppKaIpB53AXsHpORhzFRDlvHAeFfo4JGddNMSoXUX
+cUfkudkQUffNR/Jwk2R7TZt5Op8H1UCEnXQ=
+=okT8
+-----END PGP SIGNATURE-----
+
+--27ca0e393bffe5fcd753e42a441c90256d09b01a93982bf58ca1665671f3--
+
+
+--===============1725710838469743145==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============1725710838469743145==--
+
