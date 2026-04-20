@@ -4,57 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2758DF55803
-	for <linux-mtd@archiver.kernel.org>; Mon, 20 Apr 2026 09:54:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8FFFEF5580D
+	for <linux-mtd@archiver.kernel.org>; Mon, 20 Apr 2026 10:45:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=BEVF+DVOkmfb1yMK7ttkIyk5FMwYZxh7iujdwrRvDFE=; b=TZn/DDasoZpa+g
-	7n9L+SHc4F94BwgFtQrOkRdMfbFcnAuE0LeAeHW7b/L9uoYMhYamoFeD6ZbBztjjyzxvRnow4Y0ov
-	0R1FO2YcqgG3KTe+Y4oiJZfY/j7cLEy7Zmu1gNlRldfmZSeXnCUjbneQ5dQjlz68SwKlWH2mZOIj5
-	VJ0SUlOLTt0djpbJcnuXfBRJryy30xChMOpPXpCr2EGeXaqaQONFfE3xyPOWAdSxON0dZjz6v7idA
-	MewzjPo+DetT+x9iZ/yqZqflIEuPQp6bwWEtZnfXgrFhJJ/IKcD5UwZMOA3lqmL4cxwwP2YptzlsQ
-	7MvmwwUdN6g7N6U2piuA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:References:Subject:To:From:Cc:Message-Id:Date:Mime-Version:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=3F68mXOgD1ykVGDhvrVDEEzyyZypiU7yWJscZvBryAQ=; b=VC/j1WQWBDnJi64b8cQ5Dr7yjn
+	Msco5FZHK36eDMaEc0dsnDBnAIo53ZtlsIXc9IJreqfv+IBrZ2Emzs+0u0xXUmvdFwYqB4hpVy4P/
+	iVL3pHRR9H8bxbgXLOgC7bJYK7UxtX7nDMQdlF+WxXmrLqrO9R+RxzhCkSiIIzfs4RPISxjaGn+nV
+	/4Mb9eFIZAFN1u3uOWXzSZxhTdtg+KAlyvDpx3XZs/ia5Huw4teOvO7zqi68skUOSVU82tM22I/8K
+	X4gn+Kwv8pdCRQ3lainy3vD37m/zIMJ/h2zGJq9CJNT2Yf2ErBBgHOu+DMGjNDFSLXg4pENPjbd3U
+	PEApzAjQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wElKX-00000006he5-18dp;
-	Mon, 20 Apr 2026 09:54:13 +0000
-Received: from mx2.cyberprotect.ru ([176.10.93.31])
+	id 1wEm7d-00000006kHi-44Lh;
+	Mon, 20 Apr 2026 10:44:57 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wElKT-00000006hdF-2W2Z
+	id 1wEm7d-00000006kHc-1lUZ
 	for linux-mtd@lists.infradead.org;
-	Mon, 20 Apr 2026 09:54:11 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=cyberprotect.ru; s=dkim-r; h=MIME-Version:Date:From:Sender:Reply-To;
-	bh=mz9CQHA7o3rjpRsMyGHAcvLiblzyf8jQKOq+34jl4L4=; b=fDLa19TRysc+mC0JjaI3mtxzP/
-	iZ41PqyJrcDwkvV0BeY1xC75rcoi4YS54WL8/l+ODGYrKquMZ/H8Y7LqF7OZ5OUHgfx5y4MZC68X0
-	XSrYOMHEW3dL7F2vo5Dd8Bt6L9TUL1vWPCBwz6M6NhBN5eqR3DLdTU9CgCHl7p0fe+IELgmpCNeUw
-	vtM7xD2JXXjpbc8lRdcivrAiSJeRacEFn2q97zjmbatvcXsyQyDI2YXkrVtnoMycq/TNgsLkUyynZ
-	mAJcDVioViyuF5fya/b5i0KtT4srlyZ3utAck3KWxUl2gjnxwtr0Tgx+UtgnqeV17+z5BB6A0KVye
-	UT+YxVSg==;
-DKIM-Signature: v=1; a=ed25519-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=cyberprotect.ru; s=dkim; h=MIME-Version:Date:From:Sender:Reply-To;
-	bh=mz9CQHA7o3rjpRsMyGHAcvLiblzyf8jQKOq+34jl4L4=; b=cv3z6pPHaqKRLxByNnZndFu0E4
-	roSPNk5UTBAkwLvmp4HDHUoEofcKvcS7sXlea+JfYKxC5gR2o26UeWhmgpAQ==;
-From: Dmitriy Chumachenko <Dmitry.Chumachenko@cyberprotect.ru>
-To: David Woodhouse <dwmw2@infradead.org>
-CC: Richard Weinberger <richard@nod.at>, Al Viro <viro@zeniv.linux.org.uk>,
-	David Howells <dhowells@redhat.com>, <linux-mtd@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>
-Subject: [PATCH] jffs2: fix BUG_ON in jffs2_start_garbage_collect_thread on reconfigure
-Date: Mon, 20 Apr 2026 12:52:20 +0300
-Message-ID: <20260420095220.18769-1-Dmitry.Chumachenko@cyberprotect.ru>
-X-Mailer: git-send-email 2.49.0
-MIME-Version: 1.0
-X-Originating-IP: [10.80.0.30]
-X-ClientProxiedBy: AIP-EXCH-1.aip.ooo (10.77.28.101) To AIP-EXCH-2.aip.ooo
- (10.77.28.102)
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260420_025410_224195_67DA9EFE 
-X-CRM114-Status: GOOD (  14.56  )
+	Mon, 20 Apr 2026 10:44:57 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id DCDA960141;
+	Mon, 20 Apr 2026 10:44:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F3EFC19425;
+	Mon, 20 Apr 2026 10:44:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1776681896;
+	bh=TMJkCzOessYLb1VcTlPJbCPICj+wBOUKL06CBrs8khA=;
+	h=Date:Cc:From:To:Subject:References:In-Reply-To:From;
+	b=tMdX5CwiHoXzX8CUsVQ/OzXjx8I7xpNwOcJBlDObbQv3H4ZFVp+s6ZGOIuMxZFu1l
+	 87FXhgEmowV85SSAQ+COeSBAAGHzPWX8DhZ2mTvTI61aPRlYcXslBFJrld5alQnS1r
+	 1TRgpRbY25k6MZpHdoASSnu9vuHSz1DdlnGBdTP0VmxnCDfp16M/VaYDFoqornyyDL
+	 9pxOdpEPON6Au0xAiU2Dy1CTI0cmR0vf9LgNRDNl7wJv0vGDwRk6thCjlpJtnyGgLt
+	 zv1dMpbiysbd+snOZuOksjzl4+IGb+vrQaj+Z1Xyd6a+6VbxamNqNfzViIWJlaD1Sv
+	 575Acx3/pdD5Q==
+Mime-Version: 1.0
+Date: Mon, 20 Apr 2026 12:44:52 +0200
+Message-Id: <DHXX61QRBDVA.2VIO2J63UKZC3@kernel.org>
+Cc: <tudor.ambarus@linaro.org>, <pratyush@kernel.org>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+From: "Michael Walle" <mwalle@kernel.org>
+To: <Takahiro.Kuwano@infineon.com>,
+ <wuweimin@huaqin.corp-partner.google.com>
+Subject: Re: [PATCH] [v3] mtd: spi-nor: gigadevice: Add support for
+ GD25LQ255E
+X-Mailer: aerc 0.20.0
+References: <20260418084253.792395-1-wuweimin@huaqin.corp-partner.google.com> <DHXTLXWEPUDM.2LSB322E4R3ZZ@kernel.org> <792c09f5ae754bf899693f110ef1dbe0@infineon.com>
+In-Reply-To: <792c09f5ae754bf899693f110ef1dbe0@infineon.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,75 +66,94 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3204903764092697500=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-During fuzz testing, the following issue was discovered.
+--===============3204903764092697500==
+Content-Type: multipart/signed;
+ boundary=73dfe8a03485c5b565fa61a9fcc3cdf1d267ae70f3a48ecb534463a67e83;
+ micalg=pgp-sha384; protocol="application/pgp-signature"
 
-kernel BUG at fs/jffs2/background.c:40!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
-CPU: 0 PID: 5060 Comm: syz-executor108 Not tainted 6.8.0-syzkaller-08951-gfe46a7dd189e #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-RIP: 0010:jffs2_start_garbage_collect_thread+0x1f5/0x200 fs/jffs2/background.c:40
+--73dfe8a03485c5b565fa61a9fcc3cdf1d267ae70f3a48ecb534463a67e83
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
 
-Call Trace:
- <TASK>
- jffs2_do_remount_fs+0x15b/0x1d0 fs/jffs2/fs.c:415
- reconfigure_super+0x445/0x880 fs/super.c:1071
- vfs_cmd_reconfigure fs/fsopen.c:267 [inline]
- vfs_fsconfig_locked fs/fsopen.c:296 [inline]
- __do_sys_fsconfig fs/fsopen.c:476 [inline]
- __se_sys_fsconfig+0xab5/0xec0 fs/fsopen.c:349
- do_syscall_64+0xfb/0x240
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
+On Mon Apr 20, 2026 at 11:51 AM CEST, Takahiro.Kuwano wrote:
+> Hi,
+>
+>>=20
+>> On Sat Apr 18, 2026 at 10:42 AM CEST, Weimin Wu wrote:
+>> > Add support for the GigaDevice GD25LQ255E (JEDEC ID c8 60 19),
+>> > a 256Mbit (32MB) SPI NOR flash chip which supports SFDP.
+>> >
+>> > The chip supports 4K sector erase, dual read, and quad read modes.
+>> >
+>> > Link: https://download.gigadevice.com/Datasheet/DS-00562-GD25LQ255E-Re=
+v1.2.pdf
+>>=20
+>> Please move the Link: tag above your SoB line.
+>>=20
+>> ..
+>>=20
+>> > diff --git a/drivers/mtd/spi-nor/gigadevice.c b/drivers/mtd/spi-nor/gi=
+gadevice.c
+>> > index ef1edd0ad..22a430798 100644
+>> > --- a/drivers/mtd/spi-nor/gigadevice.c
+>> > +++ b/drivers/mtd/spi-nor/gigadevice.c
+>> > @@ -82,6 +82,10 @@ static const struct flash_info gigadevice_nor_parts=
+[] =3D {
+>> >  		.size =3D SZ_16M,
+>> >  		.flags =3D SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB,
+>> >  		.no_sfdp_flags =3D SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
+>> > +	}, {
+>> > +		/* gd25lb256 */
+>> > +		.id =3D SNOR_ID(0xc8, 0x60, 0x19),
+>> > +		.flags =3D SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP | SPI_NOR_HAS_TB | SP=
+I_NOR_TB_SR_BIT6,
+>>=20
+>> Reviewed-by: Michael Walle <mwalle@kernel.org>
+>>=20
+> The datasheet explains (in Table 5) that BP2-BP0 control the length
+> of protection area (all, 1/2 ... 1/64, 0) and BP3 controls upper/lower.
+> It looks 3 BP and 1 TB so SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB should work.
+> BP4 protects top or bottom 4KB to 32KB and current SWP doesn't support
+> that protection mechanism, right? Sorry if I missed something...
 
-When reconfiguring a mount without explicitly setting mount flags,
-fc->sb_flags and fc->sb_flags_mask are both zero. jffs2_do_remount_fs()
-skips stopping the GC thread because the superblock is read-only, but
-starts a new one because fc->sb_flags lacks SB_RDONLY. The superblock
-remains read-only, so on the next reconfigure the same path triggers
-BUG_ON(c->gc_task) since the previous thread is still running.
+Ha, you are right, thanks for pointing that out. I actually fell for
+the wrong comment and looked at that datasheet in the end.. for
+which the flags are correct. And what weird name is that gd25lq255..
+Anyway. The ID matches the linked datasheet. So something is wrong
+here. Weimin, please test the locking properly and update the
+comment as Tudor already pointed out.
 
-Fix this by computing the effective new superblock flags using the same
-formula as reconfigure_super() so the start decision reflects the
-actual future state of the superblock.
+Thanks,
+-michael
 
-Found by Linux Verification Center (linuxtesting.org) with Syzkaller.
+--73dfe8a03485c5b565fa61a9fcc3cdf1d267ae70f3a48ecb534463a67e83
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Fixes: ec10a24f10c8 ("vfs: Convert jffs2 to use the new mount API")
-Signed-off-by: Dmitriy Chumachenko <Dmitry.Chumachenko@cyberprotect.ru>
----
- fs/jffs2/fs.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+-----BEGIN PGP SIGNATURE-----
 
-diff --git a/fs/jffs2/fs.c b/fs/jffs2/fs.c
-index d175cccb7c55..abfe6eead880 100644
---- a/fs/jffs2/fs.c
-+++ b/fs/jffs2/fs.c
-@@ -396,6 +396,8 @@ void jffs2_dirty_inode(struct inode *inode, int flags)
- int jffs2_do_remount_fs(struct super_block *sb, struct fs_context *fc)
- {
- 	struct jffs2_sb_info *c = JFFS2_SB_INFO(sb);
-+	unsigned long s_flags_new = (sb->s_flags & ~fc->sb_flags_mask) |
-+				    (fc->sb_flags & fc->sb_flags_mask);
- 
- 	if (c->flags & JFFS2_SB_FLAG_RO && !sb_rdonly(sb))
- 		return -EROFS;
-@@ -411,7 +413,7 @@ int jffs2_do_remount_fs(struct super_block *sb, struct fs_context *fc)
- 		mutex_unlock(&c->alloc_sem);
- 	}
- 
--	if (!(fc->sb_flags & SB_RDONLY))
-+	if (!(s_flags_new & SB_RDONLY))
- 		jffs2_start_garbage_collect_thread(c);
- 
- 	fc->sb_flags |= SB_NOATIME;
--- 
-2.49.0
+iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCaeYDpBIcbXdhbGxlQGtl
+cm5lbC5vcmcACgkQEic87j4CH/hmXgF+J5yrTL1g+ijLWNJIwfr4xp8z3Nb/rM6v
+KIiJRwmWkPuvKlGpTOFENqDxWCVi0mDNAXwPVJ4WBSMPSbLj9CVoqC6eG6eWJfBK
+Nnv5LArxqw8GGxF5zqFfUOhcKEfXaVVEFzs=
+=8ycM
+-----END PGP SIGNATURE-----
 
+--73dfe8a03485c5b565fa61a9fcc3cdf1d267ae70f3a48ecb534463a67e83--
+
+
+--===============3204903764092697500==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============3204903764092697500==--
+
