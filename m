@@ -4,91 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27C0DF557FA
-	for <linux-mtd@archiver.kernel.org>; Mon, 20 Apr 2026 09:42:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6537F55804
+	for <linux-mtd@archiver.kernel.org>; Mon, 20 Apr 2026 09:53:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ujHKOme7yF7QbqaKMfzSJR0Jf4R3sU2st5nANF23Vas=; b=aVRA9Y6GDtx+e8
-	OmSUZchTKLdoN55QdPjTPiFAJopsFelojMmlnfl61Ta9r31i6rB+hi1w0ydrUpnV4JZ39NbdRfH8p
-	sffFeSJOhPF2yX7D15G0k2Klh5OxlN7cu7twRCFD3j6EwjaDXicvl/NCLSauQHYWh9tHoHkITAT74
-	YKHx84PZCjDnrpY4smq5P48SY8mLMAE/F1F/iWIq5OYhTdJg1DUvLokZaG/bNx2GXdS+wGRAkKPge
-	ccdKQljG9gUFwtjUsvMin9kpulp7C9yOpk0ytTGbQeN7rzSE9swldU062drRxI4yEzwJYwUbeJOr0
-	CJqK5Iw4X8I+qyMGSM+A==;
+	List-Owner; bh=Vof+HduS+t2qFmshachiav786FNOKeVoWxNP6Fp4Kmw=; b=KD9k1EvIpl9lFg
+	PG5VvQUnedFYSyJ0JBBv5ZMJ7IOOv1Vvrg8k/JmMeR4VCBJpvY0TLiGdBL9JTbMNhBusGGhTekVCQ
+	uXlzjlfOuU3RSxWF6pcskbk4wYLH9Ro0rsDEYigtAhR0YyOacnXJr3YN0RJlsqhE8vCKve8Sj+CxU
+	k9UyINX6W7sMdk61QV8hUyxVGL+XD+8VGmjffiKVXQakFN0DzjQaNZkcgHrbyxehcJ4HMeR4QXfJe
+	bAcQRH7XWgrMxeyeMGWaJTZ2E2cBOt+ECQn9NK52ahuGhNM1pSrSRXIMT+03+dgXX5eZFZ6+tSH9T
+	qe2fAj9sMlEmcxRh9buQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wEl8x-00000006gu4-1IZ9;
-	Mon, 20 Apr 2026 09:42:15 +0000
-Received: from mail-wm1-x333.google.com ([2a00:1450:4864:20::333])
+	id 1wElJj-00000006hZS-3apN;
+	Mon, 20 Apr 2026 09:53:23 +0000
+Received: from smtp2.infineon.com ([2a00:18f0:1e00:4::4])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wEl8u-00000006gtX-0fg2
+	id 1wElJg-00000006hOb-0FlB
 	for linux-mtd@lists.infradead.org;
-	Mon, 20 Apr 2026 09:42:13 +0000
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-48984d29fe3so5369665e9.0
-        for <linux-mtd@lists.infradead.org>; Mon, 20 Apr 2026 02:42:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1776678129; x=1777282929; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=XVj2E0kR9vgM3fFufU475XcX4Uh+G31rNfkdN/woTQg=;
-        b=XAGIblxOHwn4MSQawThLhhbpT2UuYZai269czQThzlo/NR08TcYuVin6X0A/zBwwN4
-         /VQfcL3UXttuMKZXZQkdwlkvf9MTILBDMIsZ3UV86NSAUgVYdpyRntATwDXGpdL8a3K+
-         uuYfInxEI0Rgd0ut/PzWUXDVXCODj/Et9J6OPrEZfuNisPRcYHfgjlZ4GrelJvciaIne
-         WmrFYmTX3N2CJiacLkyWVIshpXsvOXpSEAolMxIGLyV910rAH5xW4zimkZuT1F2HLq13
-         usGzF3NjYbvcuImrmE+9Rg+ve8X2hfigd3h61RhJuZOU1Q7l8I1EmsujHmtE3SL9jWtm
-         Lq1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1776678129; x=1777282929;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=XVj2E0kR9vgM3fFufU475XcX4Uh+G31rNfkdN/woTQg=;
-        b=jKrsAXG2mcyC2FBImIFUHCsgNFsw60MO+h/7Cf6ET5Pv/DzwPtp7Bz3Qs800VwMTIY
-         O1Fc2mHyfq+aE+tkRvxcx4x+u77g0IbtRNelG28nB94aB0RrwoPx4tahWFAiFTWIhpBN
-         7L2P3Rxpk7gbLuUzA+oe4tIy6Qapl7tLF6iJZ8N4pq5udXX9hihGB5vGn6IF7OfbNHGp
-         lJo5y5qdQK/GzXrsYwuX1gzXnYRNFj4aYSugqr98HzCCLmRr5nxIyfq2U75FQEckQG5L
-         llC71PbzcQPYkMbMTdRM4Ze5GLiqAd/87fw+p3qZP7Iek3IFhemivuQtF4LlgtkmnE6v
-         CO+A==
-X-Forwarded-Encrypted: i=1; AFNElJ/ZpUYsvmAVCpunNwxYeFJ4TLpBNQeD98UT84yTZRBCAr/c1EpZCB53N9j/oAEHi3j1263DpGBZyF0=@lists.infradead.org
-X-Gm-Message-State: AOJu0YyDjpsUj9Sl+6U4cbl37SYiDbrBVMraXGiz4t5pxKt+7O0ZUz6i
-	/6aU1ecqHg791Y3jChTzLm8LY75Kdac5dACT21Y2HERHOppWf81o1gs6c1zsK8maTlU=
-X-Gm-Gg: AeBDiet6bRWrS+2S4bPxigbm8rpxJVhiI6VNI0WONnIG2n1hBVW4SsXQQGjBIlXt5rM
-	k/XNzLaKUlh82x42MrOtSDn3AQ1TX0Ik/jYe9PvksRa0R+mAMaowzHC1OfAXaU1ggMsSHG0Jf8q
-	tIi6FLX0JUHNEIEmbxMGegtuLC/cjWSRAxv/cT6Xv1eRWPshWQ72ZjCpYcOUidyjUWs8TQd0gUa
-	7bfkva8t1TVzpo4qgdwNNnKGLupO9UsEn4BJrC6NJ2ls/ZVb3kUMTfcT6Ljhkhn8GPYhqZOafg9
-	v9BJVa2hPtQTvAwHLGAyx+bBQJa/K8oxkPcWMS++wZacHoFnpjgxM4p766fC2IQPM39UbIUYMNE
-	bo45jU/URpU7p9cW4hcY/WdImoYWaGfo+nR04fVlsJrQStkFI9nmLCMKF1U7e17q2Uy3skGDIBq
-	05PO75Jg3XqE1UhIPfFBmb1SE4Q/X29R5COk/E4AiqFw==
-X-Received: by 2002:a05:600c:4895:b0:488:ffad:6728 with SMTP id 5b1f17b1804b1-488ffad67f4mr78373285e9.19.1776678129400;
-        Mon, 20 Apr 2026 02:42:09 -0700 (PDT)
-Received: from [10.11.12.108] ([79.115.63.48])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-43fe4e59f97sm31101696f8f.37.2026.04.20.02.42.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Apr 2026 02:42:09 -0700 (PDT)
-Message-ID: <19592fee-979e-4b94-89a1-76581c95b877@linaro.org>
-Date: Mon, 20 Apr 2026 12:42:05 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] [v3] mtd: spi-nor: gigadevice: Add support for GD25LQ255E
-To: Michael Walle <mwalle@kernel.org>,
- Weimin Wu <wuweimin@huaqin.corp-partner.google.com>,
- takahiro.kuwano@infineon.com
-Cc: pratyush@kernel.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+	Mon, 20 Apr 2026 09:53:22 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=infineon.com; i=@infineon.com; q=dns/txt; s=IFXMAIL;
+  t=1776678800; x=1808214800;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=X5UfUdR9jGooYFjEEzS/6kJ5YJf4NT7at4t7F/oqPZ8=;
+  b=BoRVDsWECVEsZYwT84uNlG19aSEl7aRPu1XumzsCQ9bI6kNU0KYKoU+j
+   fTj8W9KKdqW6mcKXu+FmUNdlquvJPVNxxnCs4qSwIKlDb0OJfum+MM9jn
+   ROnm3PDTuHrmQtxfARKfGnLIzOqnIlxHfe6NeMLYpJpiCGnC72kQWrTyV
+   k=;
+X-CSE-ConnectionGUID: 9BfHqPaoSfagm3o89GmVRA==
+X-CSE-MsgGUID: GVlrDzK1SD2hPGDTe+vbwg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11762"; a="153965079"
+X-IronPort-AV: E=Sophos;i="6.23,189,1770591600"; 
+   d="scan'208";a="153965079"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO MUCSE814.infineon.com) ([172.23.29.40])
+  by smtp2.infineon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2026 11:51:15 +0200
+Received: from MUCSE818.infineon.com (172.23.29.44) by MUCSE814.infineon.com
+ (172.23.29.40) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.37; Mon, 20 Apr
+ 2026 11:51:14 +0200
+Received: from MUCSE815.infineon.com (172.23.29.41) by MUCSE818.infineon.com
+ (172.23.29.44) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.37; Mon, 20 Apr
+ 2026 11:51:13 +0200
+Received: from MUCSE815.infineon.com ([fe80::b54c:c0bd:546c:c9be]) by
+ MUCSE815.infineon.com ([fe80::b54c:c0bd:546c:c9be%12]) with mapi id
+ 15.02.2562.037; Mon, 20 Apr 2026 11:51:13 +0200
+From: <Takahiro.Kuwano@infineon.com>
+To: <mwalle@kernel.org>, <wuweimin@huaqin.corp-partner.google.com>
+CC: <tudor.ambarus@linaro.org>, <pratyush@kernel.org>,
+	<linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] [v3] mtd: spi-nor: gigadevice: Add support for GD25LQ255E
+Thread-Topic: [PATCH] [v3] mtd: spi-nor: gigadevice: Add support for
+ GD25LQ255E
+Thread-Index: AQHczw+FlAbYwg9LE0q1dMBwwlMtI7XndwmAgAA6tvA=
+Date: Mon, 20 Apr 2026 09:51:13 +0000
+Message-ID: <792c09f5ae754bf899693f110ef1dbe0@infineon.com>
 References: <20260418084253.792395-1-wuweimin@huaqin.corp-partner.google.com>
  <DHXTLXWEPUDM.2LSB322E4R3ZZ@kernel.org>
-Content-Language: en-US
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
 In-Reply-To: <DHXTLXWEPUDM.2LSB322E4R3ZZ@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.161.6.196]
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260420_024212_284205_F50D10E3 
-X-CRM114-Status: UNSURE (   5.31  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260420_025320_419378_AD576E6E 
+X-CRM114-Status: GOOD (  18.04  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -105,14 +94,55 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Hi,
 
+> 
+> On Sat Apr 18, 2026 at 10:42 AM CEST, Weimin Wu wrote:
+> > Add support for the GigaDevice GD25LQ255E (JEDEC ID c8 60 19),
+> > a 256Mbit (32MB) SPI NOR flash chip which supports SFDP.
+> >
+> > The chip supports 4K sector erase, dual read, and quad read modes.
+> >
+> > Link: https://download.gigadevice.com/Datasheet/DS-00562-GD25LQ255E-Rev1.2.pdf
+> 
+> Please move the Link: tag above your SoB line.
+> 
+> ..
+> 
+> > diff --git a/drivers/mtd/spi-nor/gigadevice.c b/drivers/mtd/spi-nor/gigadevice.c
+> > index ef1edd0ad..22a430798 100644
+> > --- a/drivers/mtd/spi-nor/gigadevice.c
+> > +++ b/drivers/mtd/spi-nor/gigadevice.c
+> > @@ -82,6 +82,10 @@ static const struct flash_info gigadevice_nor_parts[] = {
+> >  		.size = SZ_16M,
+> >  		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB,
+> >  		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
+> > +	}, {
+> > +		/* gd25lb256 */
+> > +		.id = SNOR_ID(0xc8, 0x60, 0x19),
+> > +		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP | SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6,
+> 
+> Reviewed-by: Michael Walle <mwalle@kernel.org>
+> 
+The datasheet explains (in Table 5) that BP2-BP0 control the length
+of protection area (all, 1/2 ... 1/64, 0) and BP3 controls upper/lower.
+It looks 3 BP and 1 TB so SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB should work.
+BP4 protects top or bottom 4KB to 32KB and current SWP doesn't support
+that protection mechanism, right? Sorry if I missed something...
 
-On 4/20/26 10:57 AM, Michael Walle wrote:
-> +		/* gd25lb256 */
-please clarify the name:
+> It looks like the gd25q256 is also missing the 4BIT_BP flag. Could
+> you add second patch fixing that one, please?
+> 
+The GD25Q256 looks 4 BP + 1 TB, according to the datasheet.
 
-https://sashiko.dev/#/patchset/20260418084253.792395-1-wuweimin%40huaqin.corp-partner.google.com
+> FWIW, the GigaDevice datasheets are super confusing, sometimes there
+> are 5 BP bits, where the last one is the TB, sometimes there are 4
+> BP and 1 TB but only 3 BP bits are used..
+> 
+> -michael
 
+Thanks,
+Takahiro
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
