@@ -4,57 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8FFFEF5580D
-	for <linux-mtd@archiver.kernel.org>; Mon, 20 Apr 2026 10:45:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9BEFCF5A8A2
+	for <linux-mtd@archiver.kernel.org>; Tue, 21 Apr 2026 01:14:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:References:Subject:To:From:Cc:Message-Id:Date:Mime-Version:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=3F68mXOgD1ykVGDhvrVDEEzyyZypiU7yWJscZvBryAQ=; b=VC/j1WQWBDnJi64b8cQ5Dr7yjn
-	Msco5FZHK36eDMaEc0dsnDBnAIo53ZtlsIXc9IJreqfv+IBrZ2Emzs+0u0xXUmvdFwYqB4hpVy4P/
-	iVL3pHRR9H8bxbgXLOgC7bJYK7UxtX7nDMQdlF+WxXmrLqrO9R+RxzhCkSiIIzfs4RPISxjaGn+nV
-	/4Mb9eFIZAFN1u3uOWXzSZxhTdtg+KAlyvDpx3XZs/ia5Huw4teOvO7zqi68skUOSVU82tM22I/8K
-	X4gn+Kwv8pdCRQ3lainy3vD37m/zIMJ/h2zGJq9CJNT2Yf2ErBBgHOu+DMGjNDFSLXg4pENPjbd3U
-	PEApzAjQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
+	:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=rXaYN5Oa6Lgu2CjII312GZzaxCsu/VeVjnFIbMhQQ9M=; b=ai5FuqQzijltrB
+	M1dw1jMeHxZHmP7HlgmuBGFQ3QnCUiTAX3b+8oNdQDnz+tygeeREcq2pRKHo9JIKlqfcNtBaGHDOZ
+	GMKJxVhP5NFqAtsu1FAMBqaRBuCydJ3udufVZ7JTWPXG6bn5MDO1pi1nacVvsjVFDKvScV+IPfMix
+	zWFlasdKZ1IgujAbGF25ezllQ7LPcUGpUif/4SaaMfOfBRZp93dVMr/AsXYchhPghrni/z62aoKxP
+	hq0kdQ037qhhMgz9EeMrUHItmX7llShP/9F3qqMY2OtgCSNC2489ZIQoZv+CGRZh4DXPEDPm6vl3x
+	wSv6nD4s+oiwg+HfF67g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wEm7d-00000006kHi-44Lh;
-	Mon, 20 Apr 2026 10:44:57 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1wEzhU-00000007tI4-0IUR;
+	Tue, 21 Apr 2026 01:14:52 +0000
+Received: from mail-qv1-xf35.google.com ([2607:f8b0:4864:20::f35])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wEm7d-00000006kHc-1lUZ
+	id 1wEzhR-00000007tHl-3h1K
 	for linux-mtd@lists.infradead.org;
-	Mon, 20 Apr 2026 10:44:57 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id DCDA960141;
-	Mon, 20 Apr 2026 10:44:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F3EFC19425;
-	Mon, 20 Apr 2026 10:44:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776681896;
-	bh=TMJkCzOessYLb1VcTlPJbCPICj+wBOUKL06CBrs8khA=;
-	h=Date:Cc:From:To:Subject:References:In-Reply-To:From;
-	b=tMdX5CwiHoXzX8CUsVQ/OzXjx8I7xpNwOcJBlDObbQv3H4ZFVp+s6ZGOIuMxZFu1l
-	 87FXhgEmowV85SSAQ+COeSBAAGHzPWX8DhZ2mTvTI61aPRlYcXslBFJrld5alQnS1r
-	 1TRgpRbY25k6MZpHdoASSnu9vuHSz1DdlnGBdTP0VmxnCDfp16M/VaYDFoqornyyDL
-	 9pxOdpEPON6Au0xAiU2Dy1CTI0cmR0vf9LgNRDNl7wJv0vGDwRk6thCjlpJtnyGgLt
-	 zv1dMpbiysbd+snOZuOksjzl4+IGb+vrQaj+Z1Xyd6a+6VbxamNqNfzViIWJlaD1Sv
-	 575Acx3/pdD5Q==
-Mime-Version: 1.0
-Date: Mon, 20 Apr 2026 12:44:52 +0200
-Message-Id: <DHXX61QRBDVA.2VIO2J63UKZC3@kernel.org>
-Cc: <tudor.ambarus@linaro.org>, <pratyush@kernel.org>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-From: "Michael Walle" <mwalle@kernel.org>
-To: <Takahiro.Kuwano@infineon.com>,
- <wuweimin@huaqin.corp-partner.google.com>
-Subject: Re: [PATCH] [v3] mtd: spi-nor: gigadevice: Add support for
- GD25LQ255E
-X-Mailer: aerc 0.20.0
-References: <20260418084253.792395-1-wuweimin@huaqin.corp-partner.google.com> <DHXTLXWEPUDM.2LSB322E4R3ZZ@kernel.org> <792c09f5ae754bf899693f110ef1dbe0@infineon.com>
-In-Reply-To: <792c09f5ae754bf899693f110ef1dbe0@infineon.com>
+	Tue, 21 Apr 2026 01:14:50 +0000
+Received: by mail-qv1-xf35.google.com with SMTP id 6a1803df08f44-8acae26e564so43645426d6.2
+        for <linux-mtd@lists.infradead.org>; Mon, 20 Apr 2026 18:14:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1776734088; x=1777338888; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=L6mJ12VZeI0zbm3RIq0mrgvlSRaTLBa7l+MiRgl2pGY=;
+        b=Q8Bokg/eqUtDIj1sXmWD3kU5ouD1J26Og8vcPc8k3DUc01sputHJ1t1fxfG7lUcHpt
+         0r6rakTmIpuKKhIKxBL7LrF1nKDnOY2sOAgqtNNafz0fSrW4v2Wo8HKB4ZAV00QiOOZJ
+         XsGTEw4KFaeKyBv1sXW5UwJlb4YDdVTa4tv4SLAR2NxjpOAuJ+/w256IVW93ZwGkHKnD
+         STFZcotCRrKgObFivLGdMqIZhwbMi2Nm5MiKM+ZYDNbgu2hqtQRDR0nL1DVcUpS5OIoO
+         oRzSEIWVtmgvQFMGQW6tSOilZA2LL95+hEoNBeGqNp0qvfzHUDPCnZ/40JmDcppbP3NA
+         pqgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1776734088; x=1777338888;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=L6mJ12VZeI0zbm3RIq0mrgvlSRaTLBa7l+MiRgl2pGY=;
+        b=pUmAjlyTlILHpmDX0VWEn3lZs+m8sDb4iyAmu9X+1eSmMtoNBU34037R35pyTsJsoq
+         Y9V2EzaIrKIEaGMhxzVAlPw+WDfea93PzGpOFdTuPd4wHpvwkxy5B03G65we7Mwlurpm
+         FOYcnbZ9mtOnJco0PtBF+nWhQZrnUMerfC0oEtjo+OnJLViN1KrkPwVhcuwlL45Jvw1m
+         t8K9NW8C54KoP/9G/W6eL08dot4TmxqkpQstgt92M85l67Pre8jTgPvzvJBH5h3Sqzo2
+         v586cNLxnkUOrXP0j0ux7a9pV+Hzv5RJTab+JegARGub9pFamIt97y3XQrf8aM1YA94C
+         ox9A==
+X-Gm-Message-State: AOJu0Yyperf+Xfe1yfRXdZRgdX5LpxA81dKGE5bk/bYEK4COG5UFVmbn
+	C3z95GOZ3ZRfC0mtZX1L3ahUnWvlHoIKeN0FttnP+LmW0oQbil1eNNKY1QJ8/A==
+X-Gm-Gg: AeBDieuyIEufp3wkdxPIesfwYrRaWx1pjQt4QNKOJMlprH8ehr7W9AKPZbm27eUgtsQ
+	N/lmPM7eAC1vXUJZeG84U/WbAKVJWK/IufPLxEejD1btV+MgJxjHP0qd39gAsW0y6UEF4lc8MjZ
+	wYxBqdj/rLjCVEZEmsN7YhJ1EsfSSYe7MHkSdWgLC1iP3ZOaQgbeBeA7fXn/1iAa1gxouZ/XHR8
+	jw6t6BdQX+GKgFY1oCF0SHuk/sSkuPlrHO2Y924glW1heoJfd8S86Q7+BY9jcKzLw0I6NG0+IAl
+	HzWICLjFMln7GWxEwFMLc7n9y2JH1YAnxf72Oy7ZOBjuPPIP6qYUyoYaY9rS87l1tSXKT7zc8gA
+	17Jo31/Xc4CTq/KrFVIZW6lAF1/++MztKlsaXEbLKkrr2fTUu2xws52GXKhv1ljCOogoGxSHUT+
+	uedAwDu3Y4kB7Bc9/6sAhMblNAAEcrYM5wu5FNHqFvmfYWdiv2m+OgU1whgJbWoTgXkA==
+X-Received: by 2002:a05:6214:20a8:b0:8ac:b7f1:ae09 with SMTP id 6a1803df08f44-8b0282182bbmr252523606d6.42.1776734087747;
+        Mon, 20 Apr 2026 18:14:47 -0700 (PDT)
+Received: from ryzen ([2601:644:8000:5b5d::8be])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8b02ac4685csm88868306d6.6.2026.04.20.18.14.46
+        for <linux-mtd@lists.infradead.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Apr 2026 18:14:47 -0700 (PDT)
+From: Rosen Penev <rosenp@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd-utils: don't include features.h
+Date: Mon, 20 Apr 2026 18:14:10 -0700
+Message-ID: <20260421011429.294896-1-rosenp@gmail.com>
+X-Mailer: git-send-email 2.53.0
+MIME-Version: 1.0
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260420_181449_942659_4D2F123B 
+X-CRM114-Status: UNSURE (   8.67  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,94 +90,34 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============3204903764092697500=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============3204903764092697500==
-Content-Type: multipart/signed;
- boundary=73dfe8a03485c5b565fa61a9fcc3cdf1d267ae70f3a48ecb534463a67e83;
- micalg=pgp-sha384; protocol="application/pgp-signature"
+This is an internal header that's already included with others.
 
---73dfe8a03485c5b565fa61a9fcc3cdf1d267ae70f3a48ecb534463a67e83
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
+Signed-off-by: Rosen Penev <rosenp@gmail.com>
+---
+ include/common.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-On Mon Apr 20, 2026 at 11:51 AM CEST, Takahiro.Kuwano wrote:
-> Hi,
->
->>=20
->> On Sat Apr 18, 2026 at 10:42 AM CEST, Weimin Wu wrote:
->> > Add support for the GigaDevice GD25LQ255E (JEDEC ID c8 60 19),
->> > a 256Mbit (32MB) SPI NOR flash chip which supports SFDP.
->> >
->> > The chip supports 4K sector erase, dual read, and quad read modes.
->> >
->> > Link: https://download.gigadevice.com/Datasheet/DS-00562-GD25LQ255E-Re=
-v1.2.pdf
->>=20
->> Please move the Link: tag above your SoB line.
->>=20
->> ..
->>=20
->> > diff --git a/drivers/mtd/spi-nor/gigadevice.c b/drivers/mtd/spi-nor/gi=
-gadevice.c
->> > index ef1edd0ad..22a430798 100644
->> > --- a/drivers/mtd/spi-nor/gigadevice.c
->> > +++ b/drivers/mtd/spi-nor/gigadevice.c
->> > @@ -82,6 +82,10 @@ static const struct flash_info gigadevice_nor_parts=
-[] =3D {
->> >  		.size =3D SZ_16M,
->> >  		.flags =3D SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB,
->> >  		.no_sfdp_flags =3D SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
->> > +	}, {
->> > +		/* gd25lb256 */
->> > +		.id =3D SNOR_ID(0xc8, 0x60, 0x19),
->> > +		.flags =3D SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP | SPI_NOR_HAS_TB | SP=
-I_NOR_TB_SR_BIT6,
->>=20
->> Reviewed-by: Michael Walle <mwalle@kernel.org>
->>=20
-> The datasheet explains (in Table 5) that BP2-BP0 control the length
-> of protection area (all, 1/2 ... 1/64, 0) and BP3 controls upper/lower.
-> It looks 3 BP and 1 TB so SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB should work.
-> BP4 protects top or bottom 4KB to 32KB and current SWP doesn't support
-> that protection mechanism, right? Sorry if I missed something...
+diff --git a/include/common.h b/include/common.h
+index 303d30d..d443e17 100644
+--- a/include/common.h
++++ b/include/common.h
+@@ -26,7 +26,6 @@
+ #include <string.h>
+ #include <fcntl.h>
+ #include <errno.h>
+-#include <features.h>
+ #include <inttypes.h>
+ #include <unistd.h>
+ #include <sys/sysmacros.h>
+-- 
+2.53.0
 
-Ha, you are right, thanks for pointing that out. I actually fell for
-the wrong comment and looked at that datasheet in the end.. for
-which the flags are correct. And what weird name is that gd25lq255..
-Anyway. The ID matches the linked datasheet. So something is wrong
-here. Weimin, please test the locking properly and update the
-comment as Tudor already pointed out.
-
-Thanks,
--michael
-
---73dfe8a03485c5b565fa61a9fcc3cdf1d267ae70f3a48ecb534463a67e83
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCaeYDpBIcbXdhbGxlQGtl
-cm5lbC5vcmcACgkQEic87j4CH/hmXgF+J5yrTL1g+ijLWNJIwfr4xp8z3Nb/rM6v
-KIiJRwmWkPuvKlGpTOFENqDxWCVi0mDNAXwPVJ4WBSMPSbLj9CVoqC6eG6eWJfBK
-Nnv5LArxqw8GGxF5zqFfUOhcKEfXaVVEFzs=
-=8ycM
------END PGP SIGNATURE-----
-
---73dfe8a03485c5b565fa61a9fcc3cdf1d267ae70f3a48ecb534463a67e83--
-
-
---===============3204903764092697500==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============3204903764092697500==--
-
