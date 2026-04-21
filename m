@@ -4,94 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8437DF8FA6A
-	for <linux-mtd@archiver.kernel.org>; Tue, 21 Apr 2026 12:31:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77E47F8FA86
+	for <linux-mtd@archiver.kernel.org>; Tue, 21 Apr 2026 14:33:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=i2C5K7y+w82TPuhxoE0eCiQ9BrD97DHEfSA3kKyNiks=; b=CKrONlsN0XWp/S
-	pUrMXFM/Xt0vJcNhrjPzL9jW6ZYwxQAGC724RCuMU9lO6URRabD2vwT12VKqXZ/B5j8gHcc7j2Deu
-	QuYTVRDlizLltVKwAErOXYMyUA+Gb9stpDbZKMs4A25uuYrI2aW9lnNM+WP6z0ZIixPJduqrGx2nd
-	fYG77QNWpUT1Pd2YrPnFNbdiF1RRjtcS6KW+tQ08l/75nAHiNnoa8l0bmcdBbtQ4VLbIaDBlB2Vst
-	v34sRHBB3M/HzN6tefTlR1USBiNwCueWetOnRLsFsH3zNYxGOmzV5LLfedwi9w8ZLS+SIU97VGycD
-	YCNJQqr36eoUOgjC3eng==;
+	List-Owner; bh=rRZg8QbxJai4PZBUS1PuogDYVYMod+VvN1VPDAge68w=; b=zvs49Td6OgVenc
+	/ImgTsNWUR/4XchmQlIaNddkiutBj6Pc0DhRYX7NfprwVkBMQZGHtWJkM8AcR0kOvELDSvmjh77gg
+	PccPGDC32W5W/tpb5cqWNtJdeemEF1lcIbaf1KUsxsPvgVZklhEgw/F73yL46Xi3DyAo+c8G/nY+l
+	cjVKx6im9VyJH59R5X/cFX0l+MaZSrqskjNIG2tDUG9NDtR2i0cYiTH086MHeL4vfIJQo0BYZCmer
+	1CqLV4e3TgPUMEtUyyAF5Oxm+aoluflEkdFIRrIwSPDVUEUZR6lxbWC3NmtOcOYwjHZIoU4B9tS5a
+	FCrqxiStsZSXqzpfZeaw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wFAFm-00000008aa7-2if4;
-	Tue, 21 Apr 2026 12:30:58 +0000
-Received: from mail-wm1-x32f.google.com ([2a00:1450:4864:20::32f])
+	id 1wFCAj-00000008k3c-3m68;
+	Tue, 21 Apr 2026 14:33:53 +0000
+Received: from smtp9.infineon.com ([217.10.52.204])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wFAFj-00000008aZk-34KG
+	id 1wFCAh-00000008k2X-0C07
 	for linux-mtd@lists.infradead.org;
-	Tue, 21 Apr 2026 12:30:57 +0000
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-4891e86fabeso26627435e9.1
-        for <linux-mtd@lists.infradead.org>; Tue, 21 Apr 2026 05:30:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1776774653; x=1777379453; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=XwOo9xRWLW6tG6sZmBXLKlDtnsoM7zgsn7Qwt0pNS28=;
-        b=Y44upiEOY1E9A72D1JIecqi94xzpOsnk+Vd5ex5wIKL3r03hNvCgDbeK7pDCyi7q3M
-         sPlpsPvENG1pFXoia6UMNvTHkMuc679nTAI6Q4JCxhmzytl5rsj2KKv5eFNKwe5Z1MoX
-         GSnffK09KjBXv7YGZBemcrazklFFD7k8IRA+Ps75pPpLGVUyU/b5boIsyO+Kg88GL1af
-         gztx/JIVrAcur2jVC1LKU3NTJdkbHB3EWx31KLjGYyweEzWSw9074rpiTbb1LCWqX/uC
-         c/j0qQn4uXot2K/kVLjnVCfPirlyNHKO0xTYvrfvgagRpNUb4dVMSN4m2qu/W+MM+PO0
-         Agpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1776774653; x=1777379453;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=XwOo9xRWLW6tG6sZmBXLKlDtnsoM7zgsn7Qwt0pNS28=;
-        b=rtwFZkxrAtrD7TGztnEZUWoS8+dDC79jSLTDkOxtkVQLxsGhDCn0OqtZELfEDSJA2B
-         DcruBsaMs2byUxFbrstJuLwmrTmIRmUjC5UfRd5Or0cp/9yHNjFDS0Qs8z9cTqMvHvH5
-         Syp5qcX4Bcw6RIQkR6Rfa1BAlyaqJ+k/y0e9wwf52muxw0CV6GVir0w/suZEDwMrbtjv
-         GVSJpC5XFqbbLZcFzll3QG4ovwtQB//8+Qav0HgmsfxLDxuzqGleZI9WhfUsa0hSRqy5
-         VXQX1WbHy8Eoopeh6FhkKKphYJvVSDVHe3iDjXOhNUun4nM1d7BeOO7tZnc3X4DXoUHO
-         TVeg==
-X-Forwarded-Encrypted: i=1; AFNElJ+RqlwXv78MRAGMl4xvVcJr25NE5+CK2t15T+Uuor+1JGJOxPffxA6Oh/6LMPy6gCMK5Yksj3ZPKjM=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yw9qI7FTZasxZIb37zCI3Lpmkxx9P4Th2IhSKSXnp498VoB3dTO
-	A7Cr59QNBPeUnynqjwoPiXJMxEusmywnphUNmcA6eGTjJ3O5l8g0LcSPziWW49bzSJw=
-X-Gm-Gg: AeBDiev9QkkZ8bmqKQidSrqMym/+K/HCgQNU9qfEOc/F/o2624eFjnoqPPP7WXxBb3B
-	s/EH1wCAh+h9kVWK5jogacXs36wbG82+qoR9kP1+y4tRzwLIHG26Epr4stn42+HQjLmQK49E8vM
-	8WyUpZss7cTjg2X/w5MMKRT3LYHcrK6OYr7sduICsu5C20woDGPZC4FoQJaiG11IpfikiEUG7NN
-	MXmXzm7HHsRhCFQz1/RypVr6gLKlByRsLZpK5eJfC+iO/B+s3/6MDuQi65SgyjgZ5+Kpd31jKV4
-	9SHOfxHh19DeNFlPt0WHmyTayNYpkdi2x6oiJyjed12ZTN2xrM42dMxKah/+CLK33XPwLEDlest
-	SCUfDsPAXBJYsWhvBaY8k9MR7vjARiILTJocbvYMTd5fBTjBFUCqHd95yePHUMXTz5RAvYq+1Xb
-	PqQm7mW0tvw8bjhVqgG3xqFaVhMVekzqb9Y1usArD9pNQ=
-X-Received: by 2002:a05:600c:350e:b0:488:b811:51c4 with SMTP id 5b1f17b1804b1-488fb788231mr265072705e9.25.1776774652851;
-        Tue, 21 Apr 2026 05:30:52 -0700 (PDT)
-Received: from [10.11.12.108] ([86.127.43.116])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4891b46cffasm179118705e9.13.2026.04.21.05.30.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Apr 2026 05:30:52 -0700 (PDT)
-Message-ID: <ef1cc3d7-a710-4b90-9ff9-bbc27bb28bbd@linaro.org>
-Date: Tue, 21 Apr 2026 15:30:47 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mtd: spi-nor: debugfs: fix out-of-bounds read in
+	Tue, 21 Apr 2026 14:33:52 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=infineon.com; i=@infineon.com; q=dns/txt; s=IFXMAIL;
+  t=1776782031; x=1808318031;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=ArMpXotcTeEwyqUdj8I1RO41SIFb1S0fVagj1cHmjlc=;
+  b=M0Azxz4ZAVrT1dsnhK6xJLtUUo/mnTDa9y9qx9FHH0ZHkWkBsAtWQhdv
+   TgakFr8lK3TvnnZhwZ8T7EEVGpnqa/xfww6mToWxUDjkDdJC9brEmz8+1
+   o1PjIJ4P3pJDUunneIdjYg/0doMWjsjpbsYy1WJn1ydhrS+9oSru0+zYT
+   0=;
+X-CSE-ConnectionGUID: +FeV1V4KQSyIe2LMbQyvdg==
+X-CSE-MsgGUID: A+6UxzbISeGE7osJaVQCWg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11763"; a="90661278"
+X-IronPort-AV: E=Sophos;i="6.23,191,1770591600"; 
+   d="scan'208";a="90661278"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO MUCSE812.infineon.com) ([172.23.29.38])
+  by smtp9.infineon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2026 16:32:46 +0200
+Received: from MUCSE820.infineon.com (172.23.29.46) by MUCSE812.infineon.com
+ (172.23.29.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.37; Tue, 21 Apr
+ 2026 16:32:46 +0200
+Received: from MUCSE815.infineon.com (172.23.29.41) by MUCSE820.infineon.com
+ (172.23.29.46) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.37; Tue, 21 Apr
+ 2026 16:32:45 +0200
+Received: from MUCSE815.infineon.com ([fe80::b54c:c0bd:546c:c9be]) by
+ MUCSE815.infineon.com ([fe80::b54c:c0bd:546c:c9be%12]) with mapi id
+ 15.02.2562.037; Tue, 21 Apr 2026 16:32:45 +0200
+From: <Takahiro.Kuwano@infineon.com>
+To: <tudor.ambarus@linaro.org>, <pratyush@kernel.org>, <mwalle@kernel.org>,
+	<miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>
+CC: <p.yadav@ti.com>, <michael@walle.cc>, <linux-mtd@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
+Subject: RE: [PATCH] mtd: spi-nor: debugfs: fix out-of-bounds read in
  spi_nor_params_show()
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>,
- Takahiro Kuwano <takahiro.kuwano@infineon.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Pratyush Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
+Thread-Topic: [PATCH] mtd: spi-nor: debugfs: fix out-of-bounds read in
+ spi_nor_params_show()
+Thread-Index: AQHczn5R2lmDsActuEKo+AhMPfaN4bXpmZig
+Date: Tue, 21 Apr 2026 14:32:45 +0000
+Message-ID: <308e7510718f46169d9465658f2c385a@infineon.com>
 References: <20260417-fix-oob-read-spi-nor-v1-1-2132e61a684a@linaro.org>
- <87jyu07olj.fsf@bootlin.com>
+In-Reply-To: <20260417-fix-oob-read-spi-nor-v1-1-2132e61a684a@linaro.org>
+Accept-Language: en-US
 Content-Language: en-US
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <87jyu07olj.fsf@bootlin.com>
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.161.6.196]
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260421_053055_953672_49AC595B 
-X-CRM114-Status: UNSURE (   6.62  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260421_073351_485744_D7143217 
+X-CRM114-Status: GOOD (  12.77  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -108,18 +95,31 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+> Sashiko noticed an out-of-bounds read [1].
+> 
+> In spi_nor_params_show(), the snor_f_names array is passed to
+> spi_nor_print_flags() using sizeof(snor_f_names).
+> 
+> Since snor_f_names is an array of pointers, sizeof() returns the total
+> number of bytes occupied by the pointers
+>         (element_count * sizeof(void *))
+> rather than the element count itself. On 64-bit systems, this makes the
+> passed length 8x larger than intended.
+> 
+> Inside spi_nor_print_flags(), the 'names_len' argument is used to
+> bounds-check the 'names' array access. An out-of-bounds read occurs
+> if a flag bit is set that exceeds the array's actual element count
+> but is within the inflated byte-size count.
+> 
+> Correct this by using ARRAY_SIZE() to pass the actual number of
+> string pointers in the array.
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: 0257be79fc4a ("mtd: spi-nor: expose internal parameters via debugfs")
+> Closes: https://sashiko.dev/#/patchset/20260417-die-erase-fix-v2-1-73bb7004ebad%40infineon.com [1]
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 
-
-On 4/21/26 10:35 AM, Miquel Raynal wrote:
->> We shall assign a CVE to this. I'll look into how next week.
-> They are assigned automatically to every fix, no?
-
-Indeed, it seems there's a dedicated team assigning CVEs to
-security bugs, I didn't know:
-https://docs.kernel.org/process/cve.html
-
-Cheers,
-ta
+Reviewed-by: Takahiro Kuwano <takahiro.kuwano@infineon.com>
 
 ______________________________________________________
 Linux MTD discussion mailing list
