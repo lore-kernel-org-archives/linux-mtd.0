@@ -4,93 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A61A3FF8860
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Apr 2026 11:51:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16F5DFF8860
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Apr 2026 12:34:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=iKD8M25UtZlbJlPIf9IdQnmmTbwzrXn6kj9GL+EqOBI=; b=C48RT0xwWZafFc
-	vQ9422pcBlvOiy/CzTyfwfWiFO0hJAztnF5faiPzk5tnZRrx8i9TyZBwNIbReRUZ522aQDuMRTDP4
-	z4PyGzgzf9KAkOC5L7SQuoizd0JOY4F/ahD1HUIfUhflIYbjdc7ls8QNzOLFL585Ciohsy5T1AAvN
-	rRcXBvsmfnASpCY7+qoZpTBJKFQ7FfSDNAlmALm6q+0zjxOg1g2zfvNiVdu4b23B+kBXsZC4VwAnf
-	tQ4g1eft5fI80oLU7VBan+29ciYtnjt+JkyzMjFL5XPi8TBbUblWWFYLXsVRC7xYzDYfX8klM2Jby
-	m6satgKi6xd3VFilVAcw==;
+	List-Owner; bh=MYEUCogbaEolxJ7dRA1W+21UtGzbZDBfKwQ1Q2C+u5U=; b=A8E1s8UEoN3Yw1
+	GfS6YgeeizG9au59ZIqciE2Sq9Lwg/wOwKFgpEyvSJcVgo+nXJhAzqu59QLvbhUAk7tp5BaUkH9Bu
+	zfi0qqwrdj0oFOMs8C9yGtFMRm8QU1NbWZkzVyCCsmO6SLSnn0ok37FwzLSwPlMfkYEi+uqtWxDBY
+	h43eDNtIb25H6v8duvO1An8hVYA/otCM5NWyuOWyZeuQ09tsNnIAXJ7b2vMMIA+0pLSGuVTNeScM6
+	c7VQ068+96BR9pYJgOyQbet074FuAO8m1z7I3NjXv47VlkIM0DaUnj6H/KdaHDaVMii50G78cbGcm
+	6K6pNBrtb+7udk5cuidA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wHKUq-0000000GpSQ-29SD;
-	Mon, 27 Apr 2026 11:51:28 +0000
-Received: from mail-wr1-x435.google.com ([2a00:1450:4864:20::435])
+	id 1wHLAh-0000000Gv49-2R1s;
+	Mon, 27 Apr 2026 12:34:43 +0000
+Received: from smtpout-04.galae.net ([185.171.202.116])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wHKUi-0000000GpOi-480D
+	id 1wHLAe-0000000Gv3n-1P4P
 	for linux-mtd@lists.infradead.org;
-	Mon, 27 Apr 2026 11:51:23 +0000
-Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-43d74086e5bso9704929f8f.0
-        for <linux-mtd@lists.infradead.org>; Mon, 27 Apr 2026 04:51:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1777290679; x=1777895479; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sK29FoURh791KB3pSonK6KWtGokZs28tGn9ydulth7M=;
-        b=MBz0Tv3aXQEVl+hRxYjkwt82i6QT1SUk4/bO+UUHGStt3Kx65P4ComjYKp9b64ueeL
-         wTgVIimegS4q5Z+H7SCW7Lrjp1qQDHnN+iu8w3gpR3viE8miZL9pJWYLYRW1HNmqP4oK
-         JIpiad96uI4K4K2ZAeCgK+JBSMIjHYcmQn48bI1T1JV420+ird93/fKQJjBk/sXufB4m
-         fwniZw/wE63nuhcNrhHbuLJzVZjd+zkRVi53I5zBeosks6ZQvGqhdV7TMlxbJ6pbof3s
-         smg62Gb2w0lA4FCjbcyt1Qje1pHHXH/zeNnjHTdzejo1JFw5QzjrsRptREwcJEGRFIeY
-         X0vQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1777290679; x=1777895479;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=sK29FoURh791KB3pSonK6KWtGokZs28tGn9ydulth7M=;
-        b=OYJXhq2XSdm2ogFcrFZ2HqoTCXRhd1x+3zOLMADvI7hbdvNz5o5AC7ulik8G81JoQC
-         vAutnWH349czuSnyVR+UT1jDeWjse851JTX/xjIW0KsRStE70hw/TYBPR0Lik8q8uDQr
-         nOrJPKShg+l9LfhJqYpiMD3/OmGERJQlH9BIG2BeSwf5P0ug8b+VcvWYxJJkuvWlgPbA
-         jgGMfLKSQU9HXwIDCS1X+Nrr42sttEANBpTJGbvibiDyDLlcB+sHx8oZf+k6hbuFOnLd
-         YrZcoly0a7/ewjovvjSWz5SHTgs/vOgotnRNsg40Geujj4uxA0XCiRlb0QJhvnQCE2eG
-         2Sog==
-X-Forwarded-Encrypted: i=1; AFNElJ96ZXVzw8s+8Qaf/hXfZCsbyUajTLefeVT4wCBt3qW/z9gIz7rABquNiGQhpzHJzXQwXA3V8RB+/bs=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yxl/Vo5OxaJr9Am0RcFGmXSzPd3HDkRByYHrRlBZy1q/IfPJqF7
-	xu7lpAx3kIQ/U97Sc6EPjyvPkFgFo7G5ZcfJ/8hgLZ5VwAQ5adUq8sQ=
-X-Gm-Gg: AeBDiet8WjmqoYsb35mqhfgNO+b9B6lyOi+vxmQoQrCuK9sfVCrdTTwU01MJpTQTcmJ
-	C3McXWwdeY/IM33oRPbzm4T3zLdznvvOv0vSz4JiExAuRKsJcEUnzGtqUu8gmyjZKNQihyIMCP5
-	CegAiBOeTVTACJzpe/VCme1Z1qCq4heFvEngvYqXMRKc89b7Q6lzTPW5zcCO59DEc5nzl9CDsgk
-	Fmy+doi78AQ4/MxpiffRf/lFxWu5b3bkR/ha31h8VYkntSXJJL8JsUU+HED1xKKnObCyKe5ow6u
-	LKKCacOyu1kCP6aVRePaHFRf/u3xvY3jFOrJ7qmkYU4RNqctUgLViJ5oSWDfml7DBre8TR5LGfB
-	hZL+5gi103zcgkYbOqGbj2jwFYXp3KftHoLM5V/UpmT/TshdcXzQzpP9Y+mtNDnbgFfw16VFZMr
-	UAvT/iCpJz7kPLK0XdvQXBGf1N6jCsRigzAEPYwxdvIDm423DI2nQgG3mZhq8TsX3sJEy/YPGYT
-	Tj9K3zi92hyg+ZbP0o=
-X-Received: by 2002:a05:6000:2303:b0:43e:b020:f8a2 with SMTP id ffacd0b85a97d-43fe3dd5208mr63553484f8f.19.1777290678780;
-        Mon, 27 Apr 2026 04:51:18 -0700 (PDT)
-Received: from localhost ([2a02:810d:4a94:b300:3c87:b0bc:8c35:1ba0])
-        by smtp.gmail.com with UTF8SMTPSA id ffacd0b85a97d-43fe4e59f97sm87393680f8f.37.2026.04.27.04.51.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Apr 2026 04:51:18 -0700 (PDT)
-From: Florian Fuchs <fuchsfl@gmail.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-mtd@lists.infradead.org
-Cc: linux-sh@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Rich Felker <dalias@libc.org>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Florian Fuchs <fuchsfl@gmail.com>,
-	Artur Rojek <contact@artur-rojek.eu>
-Subject: [PATCH v2 3/3] mtd: maps: vmu-flash: Fix NULL pointer dereference in initialization
-Date: Mon, 27 Apr 2026 13:47:50 +0200
-Message-ID: <20260427114750.2480900-4-fuchsfl@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260427114750.2480900-1-fuchsfl@gmail.com>
+	Mon, 27 Apr 2026 12:34:42 +0000
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-04.galae.net (Postfix) with ESMTPS id C41BCC5CD46;
+	Mon, 27 Apr 2026 12:35:19 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 8D1BD600D1;
+	Mon, 27 Apr 2026 12:34:36 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 8D3D51072806A;
+	Mon, 27 Apr 2026 14:34:33 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1777293276; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=jCxkAOBQczVa5vCrereqaQuzkFeKTL+bu3gajaEh6CA=;
+	b=V4CIzrmN9pFd3j7SEkG9OFQ0vIpI09scTnbE9VSkmXByNjy7mXrFik0BSx5UXrJ5fnhSeU
+	AXEhperFc3JOfVThM7o2HmQNv8MR3RNYBeVUFvMU0ElcjaiQSVMIOL5kWbeIEnh4LCqGhx
+	TGT44OnV7YPYydcpkYYmjQb/SNbWH2p3uHNKdp/qRd1fZO3FidxKdtAZNtfihIBakYQR5g
+	bgM53ehi+L4dJrfhVCfueIu6VupSTc78y3Mo8ToYmLCJNPL4RnO1BwO9wgMtM5E6soy78v
+	fFedLg2p/9TK/WIjX8UYfLT+vcrXvGm8r002oBHjTK61COZFFh8X7MldxqiLdA==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Florian Fuchs <fuchsfl@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
+ <vigneshr@ti.com>,  linux-mtd@lists.infradead.org,
+  linux-sh@vger.kernel.org,  linux-kernel@vger.kernel.org,  Rich Felker
+ <dalias@libc.org>,  John Paul Adrian Glaubitz
+ <glaubitz@physik.fu-berlin.de>,  Artur Rojek <contact@artur-rojek.eu>
+Subject: Re: [PATCH v2 2/3] mtd: maps: vmu-flash: fix fault in unaligned fixup
+In-Reply-To: <20260427114750.2480900-3-fuchsfl@gmail.com> (Florian Fuchs's
+	message of "Mon, 27 Apr 2026 13:47:49 +0200")
 References: <20260427114750.2480900-1-fuchsfl@gmail.com>
+	<20260427114750.2480900-3-fuchsfl@gmail.com>
+User-Agent: mu4e 1.12.7; emacs 30.2
+Date: Mon, 27 Apr 2026 14:34:35 +0200
+Message-ID: <874ikwintw.fsf@bootlin.com>
 MIME-Version: 1.0
+X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260427_045121_075534_664683AB 
-X-CRM114-Status: GOOD (  10.31  )
+X-CRM114-CacheID: sfid-20260427_053440_517156_CF03D466 
+X-CRM114-Status: UNSURE (   5.04  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,40 +76,19 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The mtd_info contains a struct device, which must be linked to its
-parent. Without this, the initialization of the MTD fails with a NULL
-pointer dereference.
-
-Signed-off-by: Florian Fuchs <fuchsfl@gmail.com>
----
-v1->v2: no functional change
-
-v1: https://lore.kernel.org/lkml/20251117224408.498449-4-fuchsfl@gmail.com/
-
- drivers/mtd/maps/vmu-flash.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/mtd/maps/vmu-flash.c b/drivers/mtd/maps/vmu-flash.c
-index b76d0609d1b7..10244e6731d0 100644
---- a/drivers/mtd/maps/vmu-flash.c
-+++ b/drivers/mtd/maps/vmu-flash.c
-@@ -547,6 +547,7 @@ static void vmu_queryblocks(struct mapleq *mq)
- 	mpart->partition = card->partition;
- 	mtd_cur->priv = mpart;
- 	mtd_cur->owner = THIS_MODULE;
-+	mtd_cur->dev.parent = &mdev->dev;
- 
- 	pcache = kzalloc_obj(struct vmu_cache);
- 	if (!pcache)
--- 
-2.43.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gMjcvMDQvMjAyNiBhdCAxMzo0Nzo0OSArMDIsIEZsb3JpYW4gRnVjaHMgPGZ1Y2hzZmxAZ21h
+aWwuY29tPiB3cm90ZToKCj4gVXNlIGt6YWxsb2Nfb2JqKCkgLyBremFsbG9jX29ianMoKSB0byBh
+bGxvY2F0ZSB0aGUgbWVtY2FyZCBzdHJ1Y3RzLAo+IGluc3RlYWQgb2Yga21hbGxvY19vYmooKSAv
+IGttYWxsb2Nfb2JqcygpIHRvIHByZXZlbnQgYWNjZXNzIHRvCj4gdW5pbml0aWFsaXplZCBkYXRh
+Lgo+Cj4gRml4ZXMgcnVudGltZSBlcnJvcjogRmF1bHQgaW4gdW5hbGlnbmVkIGZpeHVwOiAwMDAw
+IFsjMV0gYXQKPiBtdGRfZ2V0X2ZhY3RfcHJvdF9pbmZvLgoKU2hhbGwgdGhpcyBwYXRjaCByZWNl
+aXZlIGEgRml4ZXMgdGFnIGlmIGl0IGFjdHVhbGx5IGZpeGVzIHJ1bnRpbWUKYmVoYXZpb3VyPwoK
+QWxzbywgcGxlYXNlIGFkZCB0aGUgJ0NjOiBzdGFibGUnIGxpbmUgaW4geW91ciBmaXhlcy4KClRo
+YW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlz
+dHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
