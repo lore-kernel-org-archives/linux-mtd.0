@@ -4,57 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E881FF8861
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Apr 2026 11:24:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 424FFFF8860
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Apr 2026 11:51:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=j1MpEGvnUfPcTAJhgmR5/sCxtlYkbY5/KU5ngVBFAgY=; b=ZubHJs8Vakn7Z8
-	UA/oPoRm+fU4qNmeFtfqoplL9XZyL2L38hFPZW1J386PxyGl9Pr3q8ZXgSiHlURnNaYdbmO5qa5Y6
-	7f7eP+jyCT5J3HKYi23RvKN0GmiQu3zmjkjHcwyFelcuAXsZKdNP2t3dixXUivGHyNfOpMkrchfSS
-	f2aJe8Ga+l58YGNwtduF1F7zI++pG7ohzCSJ7CQYmcn635JkyVNIeX9/osaeqSvilviAtTUsVlEs8
-	QntgPUw869OxzPu2fMYijq1/MmVUrIBx078wkUn0QUS0EWCEuidT5MyG2+GwFFCJ+YCIlWrRsuZhs
-	JMokY1ar4UuHFxPbv+Xw==;
+	List-Owner; bh=SG4ROyGeFTtTKbudjF0oKpKjPukS4bWP5EqKJzX8SIU=; b=W1D5PfeLla7O/B
+	Kd65eai4dTOj/Q8/bT2Y7eumOyA+i68lfdNqmEPQIvkYmxREPhQ0M8So36md4+3xqKyXNxLMukgsY
+	+Usg4UczgtppzizI+MSBqZ5WB2zuvz7clPmcxfmJ4sWCrvmANqk0z/sET7sOCf/Zst3IIyQ54rZFd
+	L9moml0wTYGmdIsiI/g2H+cwt3uXzNsVGCtlIZUDs+nKHuvDX7IQ+kKcbFJIA6+1NqGpf4xsAXg6g
+	lFzOuo1BTCl0sOABkjDdTjyVGzd/4AqkrejV4utGzOw9A5zwIw5ydj2J+6JQGayISNPLP2hOE+ey7
+	yrDsoA457Z/+BLHPn93Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wHK4k-0000000GnH6-0G86;
-	Mon, 27 Apr 2026 11:24:30 +0000
-Received: from stravinsky.debian.org ([2001:41b8:202:deb::311:108])
+	id 1wHKUj-0000000GpPL-1JoO;
+	Mon, 27 Apr 2026 11:51:21 +0000
+Received: from mail-wm1-x32c.google.com ([2a00:1450:4864:20::32c])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wHK4h-0000000GnGD-3mPM
+	id 1wHKUf-0000000GpO0-31Pu
 	for linux-mtd@lists.infradead.org;
-	Mon, 27 Apr 2026 11:24:28 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=debian.org;
-	s=smtpauto.stravinsky; h=X-Debian-User:Content-Transfer-Encoding:MIME-Version
-	:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:Content-ID:
-	Content-Description:In-Reply-To:References;
-	bh=k9+9Xcyc6Vw4VjuwsHzY/CazhicUbx2QqBvYrGBkzgQ=; b=OQTfxdCsbU891ED9n4igbB2uh/
-	J279dwosYlStPKrVIMhaZUH6YE8A+uLHOqY8hG/q5WAwNLOMlJ7uu1tZg64BQLJ2EwjxTsx1JvXWK
-	l7K43Ck2Wn+qe43GoPPAIMVVc02U8sf0enf9yhsOYNZh/VbBCwnuBii04y2/FAfOm9pvZEzk+Xj8x
-	Jnw2IOWzMhi9S04sM7DUglVBQicwn1HjpksOUgAIqoc8s6qSt7xrC0JDxCd46CLos7iSD9z/Sz4M5
-	jimLNbDVRDIntgjTAIq+vsinx7dJOo4xodyFgFh6V75DRCg4Sb+3Yv0VDgkWfoVHBunV7YdMWv5fJ
-	eBmM31Xg==;
-Received: from authenticated user
-	by stravinsky.debian.org with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.96)
-	(envelope-from <bage@debian.org>)
-	id 1wHK4e-005RoO-0U;
-	Mon, 27 Apr 2026 11:24:24 +0000
-From: Bastian Germann <bage@debian.org>
-To: linux-mtd@lists.infradead.org
-Cc: Bastian Germann <bage@debian.org>
-Subject: [PATCH] lib: libmtd: fix sign extension of ioctl request in mtd_xlock
-Date: Mon, 27 Apr 2026 13:24:16 +0200
-Message-ID: <20260427112422.132746-1-bage@debian.org>
-X-Mailer: git-send-email 2.53.0
+	Mon, 27 Apr 2026 11:51:20 +0000
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-488a9033b2cso108379425e9.2
+        for <linux-mtd@lists.infradead.org>; Mon, 27 Apr 2026 04:51:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1777290675; x=1777895475; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=c9PGXNkAslwn5PF5hDFlY4Tr7da2SwHFO7xPTeUxuok=;
+        b=TnhmMjgRYZpFbazK0UY9HrFLsdogPpgUdL5Gxt2gL7IzatGSyvBqzpYW9sl9clE+ac
+         1ILNlOOD7ccbBB/pXaCk+GFlkIozxwxLhbV8RepYEfkvS+dqANnIdkN/72RhTdpaqU8v
+         j5KRos8Q/AoXbELnRa+xnwnC3KLWarexu6kdTMWUcYWBrdHVDT934+9c04sVraKZrf6+
+         VfFduD22vRHshjA8OaahbHWDU7SoOZueTwfMHcBqZrzi1rpR2f65GLDt6sMrj0k3LrWV
+         eSWlKiEC+rtLJgJpjcX8rm3J4+i8z1CrPNI3DfWR+AhYS6TSMAs92wdsaTh2Anx63Aqi
+         TvlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1777290675; x=1777895475;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=c9PGXNkAslwn5PF5hDFlY4Tr7da2SwHFO7xPTeUxuok=;
+        b=ezNCaQupoF/tBXAQJLbL2jzdGtJPvrwXc2AbGlU1pucstMOOTqBG6DD9FdgJiLGM8c
+         BbPGK57pn+cC/8Cfhisa8lHQ8EFgsS348cO+hEDzda3U03Gh8CJtbZpUSDn1USZBnlli
+         G4sdFepj1wIl2hYPwx3AM8iQBV8IdIFoWJnEE1rNkWjOGCMBeBT4jRG1ZozbSkBUIKIQ
+         85RAZ71v9TcJefiugMNTlS/1cJz0MMZi0DCGEgNuDlnj98o9TDJ4sAoccOkSlSb/8jPu
+         kKdW7iLeehllWVOFRglUxivQlPUbzRzOGj8qiU82yuDj4fFrylJjUdx00EOPBT32Tebg
+         Ir3Q==
+X-Forwarded-Encrypted: i=1; AFNElJ+e6rAl8ECAljWVK7Zq4bh71R/Xs9MoykP1m9BCkmb+BTLUmTmAJO6g4efWtXYRQGHUuYwORIxqQ9I=@lists.infradead.org
+X-Gm-Message-State: AOJu0YxX3743B019B1a31dQGWgyZgLloPWtkqF4ii4JeYysDaUiBS+3Z
+	tj74NHncW130E8CUlUzbzhOZ3EpCPywXJtIH71Zc8nK+iAcd/pv8HAY=
+X-Gm-Gg: AeBDiesW3MGo5UGk/KfRp/vsTSc4eJxckH0iA1jmCvCFfLqxnvll/JchplJZwzhVoEm
+	VZI0iRBhdRcEVW0i4mNr5q1w358eMcvqT9NRa7kQCv7mOh3eYfL1GmbVu6WRbJMw7JO+iMvTNc6
+	w6G5f62oQzzrECfWhtae+VvlcgNmCfNpD9AARcmQ13NlgkXW96Gl8ruWZeMqm94Nq0EnSoKK8+B
+	0pm6rybbYkVls66QI/vTibW6PrCMEY/F9wEXCZph/pwkLEIDFTTCt7rcSjzIpNbRzIDx1nYeJ85
+	K/Za27lbRjsetmlgUpkrX18h8onguQ/yPujrQ44iIS1gAM2k5nsuen2DWCFvQBHKOtB0VQxRnBE
+	2X7aLTzRqsYIGcp11onjGuUYknU4z/gjXk+rR7mJ50rMLSbLeX25Rdb7JUqnFziUC5oLkZouY/C
+	hQXY7AmpzwTws5uqhQbJy4OuLvIZ/bWCn8B49CT1zZuHkg7NzKu2Fqel+ZxoUO8ZnJtkXUEenvN
+	r4jLFFv01eo2L2j2bg=
+X-Received: by 2002:a05:600c:1f94:b0:489:1c2d:211e with SMTP id 5b1f17b1804b1-4891c2d2213mr476219715e9.5.1777290674926;
+        Mon, 27 Apr 2026 04:51:14 -0700 (PDT)
+Received: from localhost ([2a02:810d:4a94:b300:3c87:b0bc:8c35:1ba0])
+        by smtp.gmail.com with UTF8SMTPSA id ffacd0b85a97d-43fe4c221cdsm81399615f8f.0.2026.04.27.04.51.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Apr 2026 04:51:14 -0700 (PDT)
+From: Florian Fuchs <fuchsfl@gmail.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-mtd@lists.infradead.org
+Cc: linux-sh@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Rich Felker <dalias@libc.org>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Florian Fuchs <fuchsfl@gmail.com>,
+	Artur Rojek <contact@artur-rojek.eu>
+Subject: [PATCH v2 0/3] mtd: maps: vmu-flash: Fix build and runtime errors
+Date: Mon, 27 Apr 2026 13:47:47 +0200
+Message-ID: <20260427114750.2480900-1-fuchsfl@gmail.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-X-Debian-User: bage
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260427_042427_983489_D2BA7DC0 
-X-CRM114-Status: GOOD (  10.67  )
+X-CRM114-CacheID: sfid-20260427_045118_133057_4497B64C 
+X-CRM114-Status: GOOD (  12.33  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,37 +104,58 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The req parameter of mtd_xlock() was declared as int.  On 64-bit
-big-endian architectures such as ppc64el, _IOW()-derived ioctl numbers
-have bit 31 set (because _IOC_WRITE=4 is placed at bit 29).  Storing
-such a value in a signed int and then passing it to ioctl(), whose
-second argument is unsigned long, causes implicit sign extension:
-0x80084d05 becomes 0xffffffff80084d05, which does not match the
-expected constant and fails the cmocka check_expected() assertion in
-the unit tests for mtd_lock and mtd_unlock.
+Hi all,
 
-Fix by declaring req as unsigned long, matching the type used by the
-ioctl() syscall interface.
+This small series fixes build and runtime errors in the vmu-flash driver
+(enabled by CONFIG_MTD_VMU) and the included maple.h. These changes were
+verified on real Dreamcast hardware with a physical VMU. The VMU can now
+be successfully probed, read and written with MTD tools like mtdinfo and
+mtd_debug. Previously, the driver failed to build or crashed during
+probing.
 
-Fixes: test_mtd_lock / test_mtd_unlock failures on ppc64el
-Signed-off-by: Bastian Germann <bage@debian.org>
+        bash-5.3# mtdinfo /dev/mtd0
+        mtd0
+        Name:                           vmu2.1.0
+        Type:                           mlc-nand
+        Eraseblock size:                512 bytes
+        Amount of eraseblocks:          256 (131072 bytes, 128.0 KiB)
+        Minimum input/output unit size: 512 bytes
+        Sub-page size:                  512 bytes                 
+        Character device major/minor:   90:0
+        Bad blocks are allowed:         true
+        Device is writable:             true
+                       
+Thanks,
+Florian
 ---
- lib/libmtd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+v1->v2: Rebased patches and fixed the hotplug issues in other sh
+        patches.
 
-diff --git a/lib/libmtd.c b/lib/libmtd.c
-index f588e09..96a2167 100644
---- a/lib/libmtd.c
-+++ b/lib/libmtd.c
-@@ -902,7 +902,7 @@ static int mtd_valid_erase_block(const struct mtd_dev_info *mtd, int eb)
- }
+v1: https://lore.kernel.org/linux-mtd/20251117224408.498449-1-fuchsfl@gmail.com/
+   
+The original v1 was postponed to fix the hotplug issue and other runtime
+panics, that are fixed in the following patch:
+"[PATCH v2] sh: maple: fix empty port handling":
+https://lore.kernel.org/linux-sh/20260426212714.2286437-1-fuchsfl@gmail.com/
  
- static int mtd_xlock(const struct mtd_dev_info *mtd, int fd, int eb,
--		     int blocks, int req, const char *sreq)
-+		     int blocks, unsigned long req, const char *sreq)
- {
- 	int ret;
- 	struct erase_info_user ei;
+Note that in order to use the VMUs while there are empty ports, it
+requires the above patch.
+
+Florian Fuchs (3):
+  mtd: maps: vmu-flash: fix build error due to missing include of
+    linux/device.h
+  mtd: maps: vmu-flash: fix fault in unaligned fixup
+  mtd: maps: vmu-flash: Fix NULL pointer dereference in initialization
+
+ drivers/mtd/maps/vmu-flash.c | 7 ++++---
+ include/linux/maple.h        | 3 +--
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+
+base-commit: 6de23f81a5e08be8fbf5e8d7e9febc72a5b5f27f
+-- 
+2.43.0
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
