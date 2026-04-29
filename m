@@ -4,76 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02730FF8875
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 Apr 2026 13:02:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BF534FF8867
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 Apr 2026 13:59:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=f0GssSSGXOMnYdHWrLiJcmpQV9EI2K6r0MjGvd3YPa4=; b=RH2f/ntulriycQ
-	2W+Nm+3SC4EUqo9L3W1lCaGxVJQB00Mom7wxSM/w5iO2h0L2XsB9tiMH1eLv05q1LQCHFCSdEesab
-	V4mJe7fkSjo1CJ4xD8hSP/VqkkFy+GsA9P59kIh+TEgmc+7vE9oAn22TULw+YFspK7HKyASie7MEf
-	KcU4RGHVO4vhAwIePYq9nyvt4YxR+oNR8eVnOxfJS+NGudvMmqeP9HzV/ESBfZNHAcLmEHMuf9gB9
-	r1Jv6s/V+bwftlFqAvp12ufr/cKkuBOVWKSgl86bI53cQSDV4fIOqSCYlYIUCQmKeIWi2Pht1UjFg
-	V5FQlABjki7DziMh3tAQ==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version:Subject:
+	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=FHUnIzhz5Q/k0DwQ9IIJBmPr8NnzNRJ/vhRxT2xE7LA=; b=bdfclVY5MpLPLk
+	KIAzn2IFrPwp2MJOgA4bGmbpEJApvHFlgGU6GujHoE4m2NKoTeDGq6V3phdzac5+HTln+uSCARWEs
+	3Bm6InsLPAa3+imaPrh7o9vzTc0cVTILusb73J+el40VRM01vORVlaq2NkxTDw1gbs7C4rMofrG88
+	pThuTKfxzIx9N9ODt6dkpPeBxzHkJlXx+ijuh5YwHU5bIiM+nSU/JVOVK+u9r0FDWypudsvXf0nWR
+	jtvQzDUc16PjPZJ12m9aoAwGBBEgiMgLu16dj3H330sYjdAKdnC2u/PGbdM89bEPlbs4XYMyuv835
+	rlcao3HuIuKYFCIqIRCQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wI4Yw-00000003d4E-2uSO;
-	Wed, 29 Apr 2026 13:02:46 +0000
-Received: from mail.thorsis.com ([217.92.40.78])
+	id 1wI5RW-00000003ihk-4AIO;
+	Wed, 29 Apr 2026 13:59:10 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wI4Yq-00000003d3b-2Wry;
-	Wed, 29 Apr 2026 13:02:45 +0000
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 37C9C14841EA;
-	Wed, 29 Apr 2026 15:02:23 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=thorsis.com; s=dkim;
-	t=1777467747; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 in-reply-to:references; bh=Rz5+8HKBObbUzWkRkJLrMIZCYQXi9v58Y1B9PohQInM=;
-	b=X1aSroswucp7gpg/zRyamurUe94FEatr3CkLFyVcwVK8gdcpvPjF/sFtGyhB+90ndxnXHT
-	8HZei4yi9Rh3wWQ9uq1KfQ2bhhcAy05niuSE7x8/ArSfCN94bs38t28rLlnynXiwDdtb6X
-	Wctigieia+1vIdAo/UueqJN8i1pYoA03yQ+toNriBSz0BQUKmVEoI8HJaRO/ZY5HTd7cX0
-	czQwW6LdQBbRtBWtTy9H+9WCsuX2n4p1ECaT7wzDWTUqmhzRGoABZPohs8QqWgZUd8l4yu
-	6i8kIy1i6aZgkp5Y6kZ0zI4LpMsdzNWqX53xcSWpuwCGF1y90Ib+awmsPeG5Tg==
-Date: Wed, 29 Apr 2026 15:02:22 +0200
-From: Alexander Dahl <ada@thorsis.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: "Rob Herring (Arm)" <robh@kernel.org>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-	Russell King <linux@armlinux.org.uk>, linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] ARM: at91: remove unnecessary
- of_platform_default_populate calls
-Message-ID: <20260429-blazing-thus-c1a4eb9b6b0c@thorsis.com>
-Mail-Followup-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	"Rob Herring (Arm)" <robh@kernel.org>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-	Russell King <linux@armlinux.org.uk>, linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20260105-at91-probe-v3-0-594013ff2965@kernel.org>
- <20260105-at91-probe-v3-3-594013ff2965@kernel.org>
- <20260423-stoke-ocean-139dbe306256@thorsis.com>
- <20260424-worried-renewal-924d34ed945c@thorsis.com>
- <87tsswfnmy.fsf@bootlin.com>
- <20260429-lushly-greasily-c14c01c1aee8@thorsis.com>
- <87lde6cdc4.fsf@bootlin.com>
+	id 1wI5RV-00000003ihc-2ZuV
+	for linux-mtd@bombadil.infradead.org;
+	Wed, 29 Apr 2026 13:59:09 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Cc:To:Message-Id:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:From:Sender:
+	Reply-To:Content-ID:Content-Description:In-Reply-To:References;
+	bh=j4jvB3Kacym5aA/GzaVEdwvfeHsV5g63n5kDwQx9gIE=; b=Lrndj1lDiUyQie3XaHkDyQ1Nt4
+	+Ozo7PJC3GoLis4Ns71/D8nJBcdtQqz9F7gEHbpEDzlvdnkuSZlL5Nm6oz9HKjOJclZhgSI3ZoYak
+	rpCI+24LtFLe695D1jCV6SXeYDHDJKM93eFrzW0/z/3tA6I7ZhVpxAVO0gB/XNq5YzMSWcHHCa9fR
+	Oe6Jzx+6siG8C4fRLdyFNXJm4NxGNiHxlN8rmYqjs87mTgiIIFAyN3jqvYK7mn5fEpz/dLnZeIBl5
+	C2JG1TuAFTgXDHiUGJRgXe/ho3qOHTLtRHe7Xs9XmcWmPGN6FEu6giT7+JFpDwqzfFfbs1azUMBN/
+	VW9+2Taw==;
+Received: from metis.whiteo.stw.pengutronix.de ([2a0a:edc0:2:b01:1d::104])
+	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1wI5RS-00000005SEI-2Mcr
+	for linux-mtd@lists.infradead.org;
+	Wed, 29 Apr 2026 13:59:08 +0000
+Received: from dude06.red.stw.pengutronix.de ([2a0a:edc0:0:1101:1d::5c])
+	by metis.whiteo.stw.pengutronix.de with esmtp (Exim 4.92)
+	(envelope-from <f.pflug@pengutronix.de>)
+	id 1wI5RK-0008Q6-UH; Wed, 29 Apr 2026 15:58:58 +0200
+From: Fabian Pflug <f.pflug@pengutronix.de>
+Date: Wed, 29 Apr 2026 15:58:45 +0200
+Subject: [PATCH] mtd: spi-nor: cypress: Add support for CY15V104QSN
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <87lde6cdc4.fsf@bootlin.com>
-User-Agent: Mutt/2.2.13 (2024-03-09)
-X-Last-TLS-Session-Version: TLSv1.3
+Message-Id: <20260429-v6-18-topic-infineon_fram-v1-1-504d241942a4@pengutronix.de>
+X-B4-Tracking: v=1; b=H4sIAJQO8mkC/x3MQQqEMAxA0atI1hOopZQ6VxlkqJpoFqbSigji3
+ S0u3+L/CwploQLf5oJMhxRJWtF+GhiXqDOhTNVgjfXG2Q4Pj23APW0yoiiLUtI/57hicMYxD5G
+ C9VD7LRPL+b5//X0/+TWdWWsAAAA=
+X-Change-ID: 20260429-v6-18-topic-infineon_fram-8404ffbae826
+To: Tudor Ambarus <tudor.ambarus@linaro.org>, 
+ Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
+ Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, 
+ kernel@pengutronix.de, Fabian Pflug <f.pflug@pengutronix.de>
+X-Mailer: b4 0.14.3
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:1101:1d::5c
+X-SA-Exim-Mail-From: f.pflug@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260429_060240_828483_BCCED4D7 
-X-CRM114-Status: GOOD (  16.71  )
+X-CRM114-CacheID: sfid-20260429_145906_743845_9D69BD80 
+X-CRM114-Status: GOOD (  13.90  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,54 +85,97 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello Miquel,
+Infineon CY15V104QSN is an FRAM Chip with Quad-SPI interface, a size of
+4Mb and a nominal Voltage of 1.8V
+It should be the same as CY15B104QSN, just with a different Voltage
+range. (3.0V)
 
-Am Wed, Apr 29, 2026 at 11:42:19AM +0200 schrieb Miquel Raynal:
-> Hi Alexander,
-> 
-> >     [    0.958298] bus: 'platform': add driver atmel-ebi
-> >     [    0.958451] platform 10000000.ebi: bus: 'platform': __driver_probe_device: matched device with driver atmel-ebi
-> >     [    0.958566] platform 10000000.ebi: error -EPROBE_DEFER: wait for supplier /ahb/apb/pinctrl@fffff400/ebi/ebi-data-lsb
-> >     [    0.958649] platform 10000000.ebi: Added to deferred list
-> >     [    0.959429] bus: 'platform': remove driver atmel-ebi
-> >     [    0.959540] driver: 'atmel-ebi': driver_release
-> 
-> Interesting.
-> 
-> If you look at the very last line of the driver, the EBI driver does not
-> use a standard "module_platform_driver" macro, it uses some kind of
-> run-once probe that is kept in an __init section:
-> https://elixir.bootlin.com/linux/v7.0.1/source/drivers/memory/atmel-ebi.c#L637
-> 
-> And this seems to be incompatible with probe deferrals:
-> https://elixir.bootlin.com/linux/v7.0.1/source/drivers/base/platform.c#L948
+Cypress is an Infineon company. The FRAM was originally developed by
+Cypress.
 
-Indeed. o.O
+Link: https://www.infineon.com/assets/row/public/documents/10/49/infineon-cy15b104qsn-cy15v104qsn-4mb-excelon-ultra-ferroelectric-ram-f-ram-serial-quad-spi-512k-8-108-mhz-industrial-datasheet-en.pdf
+Signed-off-by: Fabian Pflug <f.pflug@pengutronix.de>
+---
+ drivers/mtd/spi-nor/Makefile  |  1 +
+ drivers/mtd/spi-nor/core.c    |  1 +
+ drivers/mtd/spi-nor/core.h    |  1 +
+ drivers/mtd/spi-nor/cypress.c | 24 ++++++++++++++++++++++++
+ 4 files changed, 27 insertions(+)
 
-> I would suggest trying something alone these lines:
-> 
-> --- a/drivers/memory/atmel-ebi.c
-> +++ b/drivers/memory/atmel-ebi.c
-> @@ -633,5 +633,6 @@ static struct platform_driver atmel_ebi_driver = {
->                 .of_match_table = atmel_ebi_id_table,
->                 .pm = &atmel_ebi_pm_ops,
->         },
-> +       .probe = atmel_ebi_probe,
->  };
-> -builtin_platform_driver_probe(atmel_ebi_driver, atmel_ebi_probe);
-> +builtin_platform_driver(atmel_ebi_driver);
-> 
-> Memory taken by the probe function will remain mapped. That seems to be
-> the drawback.
+diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
+index 5dd9c35f6b6f8..73267677c22ad 100644
+--- a/drivers/mtd/spi-nor/Makefile
++++ b/drivers/mtd/spi-nor/Makefile
+@@ -2,6 +2,7 @@
+ 
+ spi-nor-objs			:= core.o sfdp.o swp.o otp.o sysfs.o
+ spi-nor-objs			+= atmel.o
++spi-nor-objs			+= cypress.o
+ spi-nor-objs			+= eon.o
+ spi-nor-objs			+= esmt.o
+ spi-nor-objs			+= everspin.o
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 20ea80450f222..b52219216f872 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -1941,6 +1941,7 @@ int spi_nor_sr2_bit7_quad_enable(struct spi_nor *nor)
+ 
+ static const struct spi_nor_manufacturer *manufacturers[] = {
+ 	&spi_nor_atmel,
++	&spi_nor_cypress,
+ 	&spi_nor_eon,
+ 	&spi_nor_esmt,
+ 	&spi_nor_everspin,
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index ceff412f7d65a..95b09ca981c8b 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -585,6 +585,7 @@ struct sfdp {
+ 
+ /* Manufacturer drivers. */
+ extern const struct spi_nor_manufacturer spi_nor_atmel;
++extern const struct spi_nor_manufacturer spi_nor_cypress;
+ extern const struct spi_nor_manufacturer spi_nor_eon;
+ extern const struct spi_nor_manufacturer spi_nor_esmt;
+ extern const struct spi_nor_manufacturer spi_nor_everspin;
+diff --git a/drivers/mtd/spi-nor/cypress.c b/drivers/mtd/spi-nor/cypress.c
+new file mode 100644
+index 0000000000000..20079d3338e73
+--- /dev/null
++++ b/drivers/mtd/spi-nor/cypress.c
+@@ -0,0 +1,24 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (C) 2026 Pengutronix, Fabian Pflug <kernel@pengutronix.de>
++ */
++
++#include <linux/mtd/spi-nor.h>
++
++#include "core.h"
++
++static const struct flash_info cypress_nor_parts[] = {
++	{
++		.id = SNOR_ID(0x50, 0x51, 0x80, 0x06),
++		.name = "cy15x104qs",
++		.size = SZ_512K,
++		.sector_size = SZ_512K,
++		.flags = SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_NO_ERASE,
++	}
++};
++
++const struct spi_nor_manufacturer spi_nor_cypress = {
++	.name = "cypress",
++	.parts = cypress_nor_parts,
++	.nparts = ARRAY_SIZE(cypress_nor_parts),
++};
 
-This works.  Sent a patch, see:
+---
+base-commit: 7d0a66e4bb9081d75c82ec4957c50034cb0ea449
+change-id: 20260429-v6-18-topic-infineon_fram-8404ffbae826
 
-https://lore.kernel.org/all/20260429125930.844790-1-ada@thorsis.com/
-
-Regarding the drawback: This can't be much memory, can it?
-
-Greets
-Alex
+Best regards,
+-- 
+Fabian Pflug <f.pflug@pengutronix.de>
 
 
 ______________________________________________________
