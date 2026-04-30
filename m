@@ -4,79 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE06ECCFA13
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 Apr 2026 17:58:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2B2DCD13D3
+	for <linux-mtd@archiver.kernel.org>; Thu, 30 Apr 2026 16:21:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
-	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+Y/TvmGCyNdHG0KwdGcGEMepQ1aUrTZfYrbwuYVK5+U=; b=e3VyjAkx9VuS6Y
-	h36AyUM2SOCL95m12K28xiES1CKhGA0bc/mkGqsamqUK/jxJWhBRHOtfWYJwT+5/tN+XSXSvlussI
-	DOY0pYKCZf1i93dWkmFFhn3I545ylGfDkMv8I0g5VJw1Sghj1+9kT+8BxK4X3+A/HYz9gKHEwECKz
-	Lg3ZbFDbUKlyjj6mOBHyLPzcfUkfzIPcS2w24GFSHlCSnJLCJATLrzzoQhmF4sgraL665xiTHF+As
-	XWS5zVbx0WXFQdf/9hwJNJT4zxt1aDikGLrMmNt+TvC5P/gfR8koK8D0qYu0IcFyfOizkFJWi/W2q
-	Yb85zjmz3U+PdB5F1kAA==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Subject:To:From:Date:
+	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
+	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=rdb0o+bAR1rwoPUkNwT7Lw2hss7OByGpapga35IO40g=; b=VbVGeXmoDEI6rW
+	dLmRDKfd36BUyQ8H+DxggB198CIwYac2Oy1i/sOf3Uyi9vaQ4UOcIFOaYpnoSMSFL3d4jnpIi3ApV
+	HKc4VcBc5e2oMTpsxe8p64H9BWq+psAX7fcMWJq01T8v4OmI3owbvrCBD6aUZDCaE2OY8dIqz2tbM
+	Qgh4fZUD7hZvbHglks80Ak3lzkEDy33mnwjBfWjzfYF/43emsSWh3UXIyAXS28rWv1fjOk4rRZro4
+	FNdyPBTMjZApzIcclyaFyD8+X6V8tgf0qiQQc4kwpBuANqaMvnAZon32PTfznQ8Gowugz3p4l30Ru
+	KjFFwoctFjvXmAhqo3Gw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wI9BN-000000041Tc-2wKr;
-	Wed, 29 Apr 2026 17:58:45 +0000
-Received: from smtpout-03.galae.net ([185.246.85.4])
+	id 1wIU8K-00000005ixv-0wvO;
+	Thu, 30 Apr 2026 16:21:01 +0000
+Received: from mail-pj1-x1033.google.com ([2607:f8b0:4864:20::1033])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wI9Ay-000000040wf-0uN6;
-	Wed, 29 Apr 2026 17:58:28 +0000
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id 38FA24E42B71;
-	Wed, 29 Apr 2026 17:58:18 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 0CCFF5FD43;
-	Wed, 29 Apr 2026 17:58:18 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 3C0971072B171;
-	Wed, 29 Apr 2026 19:58:12 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1777485495; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=djNQC+WiehgbSjZPUHPGAOR2nkZcZmEr0KjHIcYf3t4=;
-	b=NmSZF+iWjEyn2SmSbXR4+EkHCCLdjDtILUG9X51p5SCiphlxZnjKNNGhMMDdv6+IE8Z0pT
-	ASIHf/oK5ins8abEGkf3OT/DpAh4+l/rTkVjcESvNc56zjX3c6MzBilErApZ2Bhx8qWhnA
-	q4skr5wiZcq3mmwHq2jiVNGW1mYCJN/tNbDh2F3BzrrvyfD4fdGmhsSID0jKhhjNOiGAz6
-	jJJPYq8QKvuUtagfzMs9+zJqCAJairETws7j+Woa85G71iDosgPBr85dnsTyIGKlD82Shb
-	llYfvCKlpMGTCJF/Xyt0qdAzxC71iYXH4L/FxQpv9jVgln0FJY4chh9edS6YQw==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Wed, 29 Apr 2026 19:56:47 +0200
-Subject: [PATCH v3 10/11] mtd: spinand: winbond: Create a helper to detect
- the need for the HS bit
-MIME-Version: 1.0
-Message-Id: <20260429-winbond-v6-18-rc1-cont-read-v3-10-0f38b3c229ad@bootlin.com>
-References: <20260429-winbond-v6-18-rc1-cont-read-v3-0-0f38b3c229ad@bootlin.com>
-In-Reply-To: <20260429-winbond-v6-18-rc1-cont-read-v3-0-0f38b3c229ad@bootlin.com>
-To: Mark Brown <broonie@kernel.org>, Richard Weinberger <richard@nod.at>, 
- Vignesh Raghavendra <vigneshr@ti.com>, Michael Walle <mwalle@kernel.org>, 
- Miquel Raynal <miquel.raynal@bootlin.com>, 
- Takahiro Kuwano <takahiro.kuwano@infineon.com>, 
- Lorenzo Bianconi <lorenzo@kernel.org>, Ray Liu <ray.liu@airoha.com>, 
- Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>, 
- =?utf-8?q?C=C3=A9dric_Le_Goater?= <clg@kaod.org>, 
- Joel Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@codeconstruct.com.au>, 
- Avi Fishman <avifishman70@gmail.com>, Tomer Maimon <tmaimon77@gmail.com>, 
- Tali Perry <tali.perry1@gmail.com>, Patrick Venture <venture@google.com>, 
- Nancy Yuen <yuenn@google.com>, Benjamin Fair <benjaminfair@google.com>, 
- Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
- Alexandre Torgue <alexandre.torgue@foss.st.com>, 
- =?utf-8?q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-Cc: Pratyush Yadav <pratyush@kernel.org>, 
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
- Steam Lin <STLin2@winbond.com>, Santhosh Kumar K <s-k6@ti.com>, 
- linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
- linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org, 
- linux-stm32@st-md-mailman.stormreply.com
-X-Mailer: b4 0.14.3
-X-Last-TLS-Session-Version: TLSv1.3
+	id 1wIU8F-00000005ixG-37g2
+	for linux-mtd@lists.infradead.org;
+	Thu, 30 Apr 2026 16:20:56 +0000
+Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-35da9c0c007so1165887a91.2
+        for <linux-mtd@lists.infradead.org>; Thu, 30 Apr 2026 09:20:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1777566054; x=1778170854; darn=lists.infradead.org;
+        h=subject:to:from:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4Gw064Q23J27DAP5y+Ta6YktUGKYfW6dQ9PUO0n7lsk=;
+        b=ITrKmw5xdVXIjuDdSwY2TE4ZofByxbYVzhIdKaL35UupYdxRzDiSTJjxGnaP3UExlr
+         0vGbqu5vKssN4QClpImRH50paUHb1Euhagu44CbZXrvzcne+Mu/GrERaPr684FxLEOPh
+         L8P1cX+phIAwpE/qQZ0BDNbmKXj3tpdE9sNZc9NPIy5kSit86jX/lAV/IsjvUWhxgull
+         y2VwOuO3B7U7b5hL2dOSguHeh+A9K4fSamTxfLj+I7FKKbkYqESwMdxmvk4HLVlWH2p/
+         u79ETJRyUHqu9HM1bWlIwRgdsNX3grsYPzoOtSpVJkuXUkbg8cPWTvuJsd7cELhzI4Cj
+         PewA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1777566054; x=1778170854;
+        h=subject:to:from:date:message-id:x-gm-gg:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=4Gw064Q23J27DAP5y+Ta6YktUGKYfW6dQ9PUO0n7lsk=;
+        b=BYC2bi+LQ46XWF4bMOIq/YDbKEBOklDjxzp5r0ADGuRxwgJZDVe9by+hboh3PBSIY5
+         N6mLhU+hYbfU2yKirDiv1COLsm4G1JY+/66ft+WjXvSp5w9xVMR9j/3c1HCuxfG5g94M
+         OUiIqE4fmFAMsBXOcR/S9XPWD2+LWLzTC8o7X4LtLosMDfjWdLEGU9zuWPIDI8sNdnza
+         iYF9ed4/0XCFDfXW3FlaU/kk2d93cwc/3BRCzfVA0mmtBT0rSNwLooXncnLlpz5+rkfa
+         6lMJ7AL9pRF20GJt/n7svfXcHNYlyehhkUlYnAbRrSDH32KdtaOGYrF4bC5MMXyzT/oo
+         Jxhw==
+X-Gm-Message-State: AOJu0YxDuMGiN20Kp8rqZjuxkhPxXpdKCwDzt2jNc1VaD3h92K5QqjCI
+	cmpvkMHjXbVOMCU6BlQZCcrznUtovxh6bWbYYeMzIVfDRYfRlkqKNnYBYKFk3pUl
+X-Gm-Gg: AeBDietV+N5Q9OPilhROiDJVRh0OPGGTowozeWjK+5nj1eaiEseecAZBg3AU4s7kG6Q
+	7fwPfbV+u8Ua23SU8AD7iUu9x4i9WaUiVNrIvKQXQ0aQ14wil8/uBgDjC8kNXOy8djSEpMy+vsQ
+	pgsS/nq7D9Vmvu2Qsht1TKoKHxtDq3VqRMR9qjIWD13aVXlV0m1+uFO0AA6hutJgGYhcO8vYBZ/
+	KDsBR3CoWcboY1rDeNOuhNzqcEXch7foJiuV6NqZnng3T/I4fDDIUYpph10vWlc36AbSXlw6ssi
+	2ZV2pFMaic9/w5zWTXTz1M6/UvEJu+Ob3UhxBVfw67QuqVdwlBGEASmgztc+d4Uo5xR47aw25rg
+	yg1wnbMJZu1gWI8q9fa5++lb0aVPhv788B7N7fdeLPCc6UDxSUN1VVBIHir2tLS+xt/FB3VoGp4
+	NjI3iPdhaHf5688FPZvai6+z/hTqCn4N37QIhaS1QdkWGjQgv6ujT1NqFfl7LVbsBMf2A+S7JBE
+	fI2xERMEfpr6sDuYNIhTBATaQWHYkzbzSeXzsjNoV54WnM=
+X-Received: by 2002:a17:902:c94d:b0:2b2:cfdf:10f2 with SMTP id d9443c01a7336-2b9a24b7250mr39666145ad.20.1777566053640;
+        Thu, 30 Apr 2026 09:20:53 -0700 (PDT)
+Received: from localhost (ec2-35-87-127-182.us-west-2.compute.amazonaws.com. [35.87.127.182])
+        by smtp.gmail.com with UTF8SMTPSA id d9443c01a7336-2b9caa7e84asm1064765ad.17.2026.04.30.09.20.52
+        for <linux-mtd@lists.infradead.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Apr 2026 09:20:52 -0700 (PDT)
+Message-ID: <69f38164.170a0220.2f0e88.894b@mx.google.com>
+Date: Thu, 30 Apr 2026 09:20:52 -0700 (PDT)
+From: rcshsmith1838@gmail.com
+X-Google-Original-From: PayPal,Inc.
+To: linux-mtd@lists.infradead.org
+Subject: VIP Client Invoice #6974082 – Please Review
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260429_105820_487417_E9A1875B 
-X-CRM114-Status: UNSURE (   9.62  )
+X-CRM114-CacheID: sfid-20260430_092055_798757_8FCB6C34 
+X-CRM114-Status: UNSURE (   3.22  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -89,75 +89,31 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The logic is not complex but might be reused to cleanup a bit the
-section by moving it to a dedicated helper.
+Subject: Your PayPal,Inc. Renewal
 
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
- drivers/mtd/nand/spi/winbond.c | 31 +++++++++++++++++--------------
- 1 file changed, 17 insertions(+), 14 deletions(-)
+Hi Platinum,
 
-diff --git a/drivers/mtd/nand/spi/winbond.c b/drivers/mtd/nand/spi/winbond.c
-index b30a343a6672..ffbcd25b0366 100644
---- a/drivers/mtd/nand/spi/winbond.c
-+++ b/drivers/mtd/nand/spi/winbond.c
-@@ -421,30 +421,33 @@ static int w25n0xjw_set_sr4_hs(struct spinand_device *spinand, bool enable)
- 	return spinand_write_reg_op(spinand, W25N0XJW_SR4, sr4);
- }
- 
-+/*
-+ * SDR dual and quad I/O operations over 104MHz require the HS bit to
-+ * enable a few more dummy cycles.
-+ */
-+static bool w25n0xjw_op_needs_hs(const struct spi_mem_op *op)
-+{
-+	if (op->cmd.dtr || op->addr.dtr || op->dummy.dtr || op->data.dtr)
-+		return false;
-+	else if (op->cmd.buswidth != 1 || op->addr.buswidth == 1)
-+		return false;
-+	else if (op->max_freq && op->max_freq <= 104 * HZ_PER_MHZ)
-+		return false;
-+
-+	return true;
-+}
-+
- static int w25n0xjw_hs_cfg(struct spinand_device *spinand,
- 			   enum spinand_bus_interface iface)
- {
- 	const struct spi_mem_op *op;
--	bool hs;
- 
- 	if (iface != SSDR)
- 		return -EOPNOTSUPP;
- 
--	/*
--	 * SDR dual and quad I/O operations over 104MHz require the HS bit to
--	 * enable a few more dummy cycles.
--	 */
- 	op = spinand->op_templates->read_cache;
--	if (op->cmd.dtr || op->addr.dtr || op->dummy.dtr || op->data.dtr)
--		hs = false;
--	else if (op->cmd.buswidth != 1 || op->addr.buswidth == 1)
--		hs = false;
--	else if (op->max_freq && op->max_freq <= 104 * HZ_PER_MHZ)
--		hs = false;
--	else
--		hs = true;
- 
--	return w25n0xjw_set_sr4_hs(spinand, hs);
-+	return w25n0xjw_set_sr4_hs(spinand, w25n0xjw_op_needs_hs(op));
- }
- 
- static int w35n0xjw_write_vcr(struct spinand_device *spinand, u8 reg, u8 val)
+Thanks for being part of PayPal,Inc.! Your 1-year membership renewed automatically at our special anniversary rate.
 
--- 
-2.53.0
+Renewal Details:
 
+Service: Digital Real Protection
+
+Customer: Platinum user (ID: 13822-1675)
+
+Amount: 497.85 USD
+
+Need help? C_ontact u_s: +1 (802) 278 0978
+
+Best,
+PayPal,Inc.
++1 (802) 278 0978
 
 ______________________________________________________
 Linux MTD discussion mailing list
