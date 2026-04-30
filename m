@@ -4,79 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2B2DCD13D3
-	for <linux-mtd@archiver.kernel.org>; Thu, 30 Apr 2026 16:21:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28E2FCD13DA
+	for <linux-mtd@archiver.kernel.org>; Thu, 30 Apr 2026 20:26:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Subject:To:From:Date:
-	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
-	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=rdb0o+bAR1rwoPUkNwT7Lw2hss7OByGpapga35IO40g=; b=VbVGeXmoDEI6rW
-	dLmRDKfd36BUyQ8H+DxggB198CIwYac2Oy1i/sOf3Uyi9vaQ4UOcIFOaYpnoSMSFL3d4jnpIi3ApV
-	HKc4VcBc5e2oMTpsxe8p64H9BWq+psAX7fcMWJq01T8v4OmI3owbvrCBD6aUZDCaE2OY8dIqz2tbM
-	Qgh4fZUD7hZvbHglks80Ak3lzkEDy33mnwjBfWjzfYF/43emsSWh3UXIyAXS28rWv1fjOk4rRZro4
-	FNdyPBTMjZApzIcclyaFyD8+X6V8tgf0qiQQc4kwpBuANqaMvnAZon32PTfznQ8Gowugz3p4l30Ru
-	KjFFwoctFjvXmAhqo3Gw==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=iLfSsmPBpr/odmnGKkTD6vK/krY6LeIl4hEmQGbDsDQ=; b=avestAlLYIZjMp
+	uCWunghhu2p1lo1FqWkzwXsFJupiog+ab1+rqEm7ck5D/VZPTBVfz4ZeIB9ImNYaymgsCRMfa1TKK
+	4wm1Kw4Kb0cG/IRa/bR6drhbs/s3XhnpBoFxu5oFoBRDwQkego+z+t6+3sHBaqKW5O0CQzYxDWOqY
+	k81+8nHYttTbJYndGa9lTJzpO7/XlfOFvdrVLBfZ01JF9vK2g6DaQXIkR5tZ8IJ7LrI0+uLpXbktN
+	DbLX5o1EJBBWorvY7ai+kVv8yXlY6ji6anM+FBJ1UgkJ210IGDEB7M5QpeqTzZFXTXKq7SGDdYE9w
+	0be9P2ZdnKyG4vW7jSvw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wIU8K-00000005ixv-0wvO;
-	Thu, 30 Apr 2026 16:21:01 +0000
-Received: from mail-pj1-x1033.google.com ([2607:f8b0:4864:20::1033])
+	id 1wIXxJ-00000005us7-1n1S;
+	Thu, 30 Apr 2026 20:25:53 +0000
+Received: from smtpout-02.galae.net ([185.246.84.56])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wIU8F-00000005ixG-37g2
+	id 1wIXxF-00000005urh-1UnS
 	for linux-mtd@lists.infradead.org;
-	Thu, 30 Apr 2026 16:20:56 +0000
-Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-35da9c0c007so1165887a91.2
-        for <linux-mtd@lists.infradead.org>; Thu, 30 Apr 2026 09:20:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1777566054; x=1778170854; darn=lists.infradead.org;
-        h=subject:to:from:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4Gw064Q23J27DAP5y+Ta6YktUGKYfW6dQ9PUO0n7lsk=;
-        b=ITrKmw5xdVXIjuDdSwY2TE4ZofByxbYVzhIdKaL35UupYdxRzDiSTJjxGnaP3UExlr
-         0vGbqu5vKssN4QClpImRH50paUHb1Euhagu44CbZXrvzcne+Mu/GrERaPr684FxLEOPh
-         L8P1cX+phIAwpE/qQZ0BDNbmKXj3tpdE9sNZc9NPIy5kSit86jX/lAV/IsjvUWhxgull
-         y2VwOuO3B7U7b5hL2dOSguHeh+A9K4fSamTxfLj+I7FKKbkYqESwMdxmvk4HLVlWH2p/
-         u79ETJRyUHqu9HM1bWlIwRgdsNX3grsYPzoOtSpVJkuXUkbg8cPWTvuJsd7cELhzI4Cj
-         PewA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1777566054; x=1778170854;
-        h=subject:to:from:date:message-id:x-gm-gg:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=4Gw064Q23J27DAP5y+Ta6YktUGKYfW6dQ9PUO0n7lsk=;
-        b=BYC2bi+LQ46XWF4bMOIq/YDbKEBOklDjxzp5r0ADGuRxwgJZDVe9by+hboh3PBSIY5
-         N6mLhU+hYbfU2yKirDiv1COLsm4G1JY+/66ft+WjXvSp5w9xVMR9j/3c1HCuxfG5g94M
-         OUiIqE4fmFAMsBXOcR/S9XPWD2+LWLzTC8o7X4LtLosMDfjWdLEGU9zuWPIDI8sNdnza
-         iYF9ed4/0XCFDfXW3FlaU/kk2d93cwc/3BRCzfVA0mmtBT0rSNwLooXncnLlpz5+rkfa
-         6lMJ7AL9pRF20GJt/n7svfXcHNYlyehhkUlYnAbRrSDH32KdtaOGYrF4bC5MMXyzT/oo
-         Jxhw==
-X-Gm-Message-State: AOJu0YxDuMGiN20Kp8rqZjuxkhPxXpdKCwDzt2jNc1VaD3h92K5QqjCI
-	cmpvkMHjXbVOMCU6BlQZCcrznUtovxh6bWbYYeMzIVfDRYfRlkqKNnYBYKFk3pUl
-X-Gm-Gg: AeBDietV+N5Q9OPilhROiDJVRh0OPGGTowozeWjK+5nj1eaiEseecAZBg3AU4s7kG6Q
-	7fwPfbV+u8Ua23SU8AD7iUu9x4i9WaUiVNrIvKQXQ0aQ14wil8/uBgDjC8kNXOy8djSEpMy+vsQ
-	pgsS/nq7D9Vmvu2Qsht1TKoKHxtDq3VqRMR9qjIWD13aVXlV0m1+uFO0AA6hutJgGYhcO8vYBZ/
-	KDsBR3CoWcboY1rDeNOuhNzqcEXch7foJiuV6NqZnng3T/I4fDDIUYpph10vWlc36AbSXlw6ssi
-	2ZV2pFMaic9/w5zWTXTz1M6/UvEJu+Ob3UhxBVfw67QuqVdwlBGEASmgztc+d4Uo5xR47aw25rg
-	yg1wnbMJZu1gWI8q9fa5++lb0aVPhv788B7N7fdeLPCc6UDxSUN1VVBIHir2tLS+xt/FB3VoGp4
-	NjI3iPdhaHf5688FPZvai6+z/hTqCn4N37QIhaS1QdkWGjQgv6ujT1NqFfl7LVbsBMf2A+S7JBE
-	fI2xERMEfpr6sDuYNIhTBATaQWHYkzbzSeXzsjNoV54WnM=
-X-Received: by 2002:a17:902:c94d:b0:2b2:cfdf:10f2 with SMTP id d9443c01a7336-2b9a24b7250mr39666145ad.20.1777566053640;
-        Thu, 30 Apr 2026 09:20:53 -0700 (PDT)
-Received: from localhost (ec2-35-87-127-182.us-west-2.compute.amazonaws.com. [35.87.127.182])
-        by smtp.gmail.com with UTF8SMTPSA id d9443c01a7336-2b9caa7e84asm1064765ad.17.2026.04.30.09.20.52
-        for <linux-mtd@lists.infradead.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Apr 2026 09:20:52 -0700 (PDT)
-Message-ID: <69f38164.170a0220.2f0e88.894b@mx.google.com>
-Date: Thu, 30 Apr 2026 09:20:52 -0700 (PDT)
-From: rcshsmith1838@gmail.com
-X-Google-Original-From: PayPal,Inc.
-To: linux-mtd@lists.infradead.org
-Subject: VIP Client Invoice #6974082 – Please Review
+	Thu, 30 Apr 2026 20:25:51 +0000
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-02.galae.net (Postfix) with ESMTPS id E15A81A348D;
+	Thu, 30 Apr 2026 20:25:43 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id ADC7F601DF;
+	Thu, 30 Apr 2026 20:25:43 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 1006E11AC9CEF;
+	Thu, 30 Apr 2026 22:25:38 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1777580742; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding; bh=TwgDcGMvMaf7/H1uJ5BNVsHeW9a4UKPekUo7iYHK2Tc=;
+	b=yn8Ge8GKtmK7WYpmHMiVjhjBSzm4CVA96uwvSP7Txe4HI5wKEq4wd6ALkD1VFVgbIgRKG/
+	CLRNRtnYezahS8W4tcbxeXZ9Ir7MA5bf9+gqJTVTXCS8Zivw7NMVSxzOoU43g4RARtA59P
+	GY+34xjaEdV3NacuC14XckNsZYLL1wd7wf1QGbER1/2voR55B4xgSU2vt+tDD5C5+kt+sA
+	A+ln18BjfGAzqbkLV/a7Rrc3SoeNVAr8/doakByfPVALtMhoowhe9MndEY0bAL4Fv+oDky
+	BvUx03PUzLpLVQ/HZRMh/z07B4cAhn9FQvaGcKBX/XspsWXvULyKK00F7hYCwQ==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Richard Weinberger <richard@nod.at>, Tudor Ambarus
+ <Tudor.Ambarus@linaro.org>, Vignesh Raghavendra <vigneshr@ti.com>, Frieder
+ Schrempf <frieder.schrempf@kontron.de>, Michael Walle <michael@walle.cc>,
+ Pratyush Yadav <pratyush@kernel.org>, linux-mtd@lists.infradead.org,
+ Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [GIT PULL] mtd: Fixes for 7.1-rc2
+User-Agent: mu4e 1.12.7; emacs 30.2
+Date: Thu, 30 Apr 2026 22:25:37 +0200
+Message-ID: <87jytob3ge.fsf@bootlin.com>
+MIME-Version: 1.0
+X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260430_092055_798757_8FCB6C34 
-X-CRM114-Status: UNSURE (   3.22  )
+X-CRM114-CacheID: sfid-20260430_132549_837907_602B8F81 
+X-CRM114-Status: UNSURE (   7.66  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -89,32 +71,37 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Subject: Your PayPal,Inc. Renewal
-
-Hi Platinum,
-
-Thanks for being part of PayPal,Inc.! Your 1-year membership renewed automatically at our special anniversary rate.
-
-Renewal Details:
-
-Service: Digital Real Protection
-
-Customer: Platinum user (ID: 13822-1675)
-
-Amount: 497.85 USD
-
-Need help? C_ontact u_s: +1 (802) 278 0978
-
-Best,
-PayPal,Inc.
-+1 (802) 278 0978
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGVsbG8sCgpUaGlzIGlzIGEgZml4ZXMgTVREIFBSIGZvciA3LjEtcmMyLgoKVGhhbmtzLApNaXF1
+w6hsCgpUaGUgZm9sbG93aW5nIGNoYW5nZXMgc2luY2UgY29tbWl0IDI1NGY0OTYzNGVlMTZhNzMx
+MTc0ZDJhZTM0YmM1MGJkNWY0NWU3MzE6CgogIExpbnV4IDcuMS1yYzEgKDIwMjYtMDQtMjYgMTQ6
+MTk6MDAgLTA3MDApCgphcmUgYXZhaWxhYmxlIGluIHRoZSBHaXQgcmVwb3NpdG9yeSBhdDoKCiAg
+Z2l0Oi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L210ZC9saW51eC5n
+aXQgdGFncy9tdGQvZml4ZXMtZm9yLTcuMS1yYzIKCmZvciB5b3UgdG8gZmV0Y2ggY2hhbmdlcyB1
+cCB0byAxMzVhYzNiODRiY2VkYWUxODYwZTdhOTUxMmQ2MzE2NmY0MmI3MzZlOgoKICBtdGQ6IHNw
+aW5hbmQ6IHdpbmJvbmQ6IEZpeCBPRFRSIHdyaXRlIFZDUiBvbiBXMzVOeHhKVyAoMjAyNi0wNC0y
+NyAxNTowODowNCArMDIwMCkKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KQmVzaWRlcyBhbiBvdXQtb2YtYm91bmQgYnVnLCB0
+aGlzIGlzIGFib3V0IHByb3Blcmx5IHN1cHBvcnRpbmcgV2luYm9uZApvY3RhbCBTUEkgTkFORCBj
+aGlwcyB3aGljaCB1c2UgYSBzcGVjaWZpYyBwYXR0ZXJuIGZvciBzdHVmZmluZyBtb3JlCmFkZHJl
+c3MgYml0cyBpbiBzb21lIG9wZXJhdGlvbnMuIFRoaXMgUFIgb25seSBjYXJyaWVzIHRoZSB1c2Ug
+b2YgdGhlIGEKc3BpLW1lbSBmbGFnIGluIFNQSSBOQU5ELiBUaGlzIGZsYWcgaGFzIGJlZW4gYWRk
+ZWQgaW4gdGhlIHNwaS1tZW0gbGF5ZXIKanVzdCBiZWZvcmUgdGhlIG1lcmdlIHdpbmRvdyB0aHJv
+dWdoIHRoZSBzcGkgdHJlZS4KCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KTWlxdWVsIFJheW5hbCAoMyk6CiAgICAgIG10ZDog
+c3BpbmFuZDogQWRkIHN1cHBvcnQgZm9yIHBhY2tlZCByZWFkIGRhdGEgT0RUUiBjb21tYW5kcwog
+ICAgICBtdGQ6IHNwaW5hbmQ6IHdpbmJvbmQ6IFNldCB0aGUgcGFja2VkIHBhZ2UgcmVhZCBmbGFn
+IHRvIFczNU4wMi8wNEpXCiAgICAgIG10ZDogc3BpbmFuZDogd2luYm9uZDogRml4IE9EVFIgd3Jp
+dGUgVkNSIG9uIFczNU54eEpXCgpUdWRvciBBbWJhcnVzICgxKToKICAgICAgbXRkOiBzcGktbm9y
+OiBkZWJ1Z2ZzOiBmaXggb3V0LW9mLWJvdW5kcyByZWFkIGluIHNwaV9ub3JfcGFyYW1zX3Nob3co
+KQoKIGRyaXZlcnMvbXRkL25hbmQvc3BpL2NvcmUuYyAgICB8IDI0ICsrKysrKysrKysrKysrKysr
+KysrKy0tLQogZHJpdmVycy9tdGQvbmFuZC9zcGkvd2luYm9uZC5jIHwgIDYgKysrLS0tCiBkcml2
+ZXJzL210ZC9zcGktbm9yL2RlYnVnZnMuYyAgfCAgNCArKystCiBpbmNsdWRlL2xpbnV4L210ZC9z
+cGluYW5kLmggICAgfCAgNyArKysrKysrCiA0IGZpbGVzIGNoYW5nZWQsIDM0IGluc2VydGlvbnMo
+KyksIDcgZGVsZXRpb25zKC0pCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6
+Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
