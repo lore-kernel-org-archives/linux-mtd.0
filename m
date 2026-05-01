@@ -4,84 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A877ACCFA13
-	for <linux-mtd@archiver.kernel.org>; Thu, 30 Apr 2026 22:07:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ED087FF886F
+	for <linux-mtd@archiver.kernel.org>; Fri,  1 May 2026 00:46:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=weXtU4iwwfAHn+5PPzJv82Qx7VoQvs7gnPMMvldkFzY=; b=w7+EjVODU24lcH
-	w9xA9Lf2rhSbK4tpyI0AquY9boQGbR+LuWAh4n2K+RAIGyaDp1UBpJCeqsihJ4LlN4v7D9W/sgisi
-	mTgljy++M9QjVn3QaqP6OnEeXXuZCnBDxQT+RDtzPPLBlWxMQiafOd7x948fW5dJzyWP41McMwDjV
-	olcg46O4OUZ7FaTghLX7Ushp7hK6Eip1trxN4O6++iQloEiG1PyAzPrxlLNDKY5YRnq+iTByj4aGU
-	lizkVeqiXp/WXyD2q6vqg0fiC09kUfYQHIVJxzW1Rtl0LzvdJ2OsvESy+BzH3rd8eDH89eYF+7/Ns
-	ZH/wMRtw3oTIUMMKjZ6w==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Date:Message-Id:
+	References:In-Reply-To:From:Subject:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Wzi9nXPLJccQJByqi13Y3SwFOqq0RTTOC18F98MIeCQ=; b=zRfLP+tDG6l5oB
+	J5CkqzKKV8aYsfkS57D0Mfml4BedAbmzWYEUjRUYnEco6YdxrPCgyTjHt4oxPIAE4AJchVz2gJK5K
+	hdy1zfNpZ3kfgbiMP8oy4DSzJat801m0pKq9r3vBFbnr+fnqrX1f4Af/JAQkXAIvGu7o++4lG1+GK
+	NwEdFw4S6qIKK/JPrhn9uyVRo/Ux1D9pqXubCxAuFyVPXA9oBZwvq2VBDPmSsyfewgJvyp8ON+PHD
+	B8U1aXdB76ZsT546oHhuJOhKbVgfIB+0msydMq2AMes4t5Zd2xIK7gEYzd9e0i/hfAVtOi6H+owzp
+	aERFBbXV1AEcnDL+yVtA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wIZXq-000000061Nj-1Bq4;
-	Thu, 30 Apr 2026 22:07:42 +0000
-Received: from mail-pj1-x102d.google.com ([2607:f8b0:4864:20::102d])
+	id 1wIc1i-00000006BmP-1Ef4;
+	Fri, 01 May 2026 00:46:42 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wIZXn-000000061NN-0gLi
+	id 1wIc1c-00000006Bke-1XyI
 	for linux-mtd@lists.infradead.org;
-	Thu, 30 Apr 2026 22:07:40 +0000
-Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-35d971fb6f1so1604343a91.0
-        for <linux-mtd@lists.infradead.org>; Thu, 30 Apr 2026 15:07:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1777586857; x=1778191657; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=io9P2rkHvmKPxGQBn5MKYkMRkO761qnxJqz17cwJFt0=;
-        b=XW+3Sjj3Mi5JGnbkasHmf3l33ZIJ7Sm7CgDSrNdlHZ+mD/WCP/wIE9kTqvl+GITgWE
-         Xf+ke49C49l8C2E85txdjV0AGeyVWWWSZ+lFuOjQvQJ22ZL9U0RrjOoun0En5bQPY/ww
-         4QcTIJNd+FBBeYoJe3vCtCjMD1/zyuPna25t7IHPIRiCS3UeJmrdLbJtWRUgaz5ZlxzF
-         WVhQg1ESVT/sykQBXr/8xhbUa/v3ZCEzEt6yPQV9JJe4HNvGreyJVpT7JlBAwJM0il0x
-         +FVyWpN6Snn0UzKwM/LGvCb6eHgU0hrgShEqZAQolEjQUhkusxj89wot60G3y5WbJJnm
-         64dg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1777586857; x=1778191657;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=io9P2rkHvmKPxGQBn5MKYkMRkO761qnxJqz17cwJFt0=;
-        b=IGSfV5XjA5rPWqz1ch2Y8pynfcwBrV9w8CZ7DPpjpaDj6zsIYEvPwINU0cdXdc/nI0
-         xohkxK3Sf4/wRIpjkWAEct/gCwttnCFucg5Kvw96Cc4vpHVRoRInSNu/rU0tn3KYAwW3
-         fk3ZUxFNjToO7vKkaDpvAOTRydaAwnPp6jsCTQcPM24vtYp+Ke8cPblZFztJC8+hiX0Q
-         qRuMjWhhtG7LRzdU2vUbG92KduiL2cH3O8Sa0UYfoIUfUR0eIpZsizUFolmm3/evjA7z
-         /zaomtKCWTblO6dMD4MCzvAvjs5EqPsqNzr6TyZr+hdFP2pmlJa5A1yqcH2ry3uOrMrC
-         yH3g==
-X-Gm-Message-State: AOJu0YyNxgFwCmhl8OHP4ltwhpJ84I24MQF9S2mphmVvuLXsIYvRY5Oi
-	C93ygs1Bwifgkgq4X56FnDP79CHS3y/YinhxxgzFfOQY3Na4riRnsun1yPXmzykZ
-X-Gm-Gg: AeBDietz2bwCOkUuN/Qe1YL/7FrDKH5gciZ7Agl1SDpBZ8897X0qd8KHFL49eUGcAOJ
-	BdA+l38IFs0TzryOFomYzZL8MIzxA4s9HdTNPg4TC5fo7l/YYwosEMxVr2P4AcPrZr4jltCq4kj
-	defvxsxkkK9OzRk6XOMAxpadAjNthWB4jfoR3+eC70eEWjkwbTCh6u/J1e8jo9GlcC4sIIRF5Pt
-	cGtHcVlxuXpJ44I2c4UrG1XpwI84hF9S5rq4cP5rAeJUscg12Gq+UTZPUIi20bJcfLoqNUSflLM
-	Yf3Lu7XPVq+HAKwGUsVo1rmn0cpKsAutTNVnBc+9BLIgm0PKk+XrUXAPFEGqOw7lj/wMnC2eZUl
-	s4eu3WxF5PJQwFMDl5/hnaoQ6Eg1EjzrNkWULgv4h8nwvAZ4dyorqXkS9UFbDWxFbKDO0VB9cJL
-	KpYAB05oT86pJHILuj4isTn9MoDDpyOAwyPa3p5MQawUowUkzlw2am2APxP0DKNIa1q9fBH4pG2
-	UFnUB++87Op0iPY7/BWzsEhF0droKiJtmfntgtc61HjottuTgeiFzOS
-X-Received: by 2002:a17:90b:4a51:b0:35f:ba8e:150d with SMTP id 98e67ed59e1d1-364c312dcc8mr4771553a91.14.1777586857335;
-        Thu, 30 Apr 2026 15:07:37 -0700 (PDT)
-Received: from ryzen ([2601:644:8000:5b5d:7285:c2ff:fe45:8a32])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-364ec00ad4dsm517183a91.11.2026.04.30.15.07.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Apr 2026 15:07:36 -0700 (PDT)
-From: Rosen Penev <rosenp@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] mtd: sm_ftl: allocate cis_buffer with main struct
-Date: Thu, 30 Apr 2026 15:07:19 -0700
-Message-ID: <20260430220719.77223-1-rosenp@gmail.com>
-X-Mailer: git-send-email 2.54.0
-MIME-Version: 1.0
+	Fri, 01 May 2026 00:46:40 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id 7A19344480;
+	Fri,  1 May 2026 00:46:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59F16C2BCB3;
+	Fri,  1 May 2026 00:46:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1777596379;
+	bh=SkEss+lRGsQhdQjDUGPx13BycAHh+K3mZq2Itv8xRxw=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=S2SfttiA04ELyaC0DqgcMgOvOD/DTsDX6A9awqdDK4mRNzbBKrGpXaTbGs5yozAOk
+	 bD+8ilGKLjmfxPYAP3OXZD37aPdaAIUiamyy5kRe0B2VypEtvS+LqcoX6AFh22A41N
+	 MOnXYiGdAGZs+7aMsnl6zwFsCdP0kFHnZgk9q6GovOptF/5ZSjrO2qOOUl0UN5CDlK
+	 ubHlg1ifXV5vhP6oKm+kazP+158hbnGN+n1noUbAoq03DeTt+HcHRUiTCMBOj32NeH
+	 0zzxTf4QCYF8C7Zt9vRNpX52kXdGIklwZ9dw/ZU9T5yWGyOOeaAlu42GIp917YBpcE
+	 Rb7zioWkF0l+g==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id BA06C380CEC4;
+	Fri,  1 May 2026 00:45:34 +0000 (UTC)
+Subject: Re: [GIT PULL] mtd: Fixes for 7.1-rc2
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <87jytob3ge.fsf@bootlin.com>
+References: <87jytob3ge.fsf@bootlin.com>
+X-PR-Tracked-List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
+X-PR-Tracked-Message-Id: <87jytob3ge.fsf@bootlin.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/mtd/fixes-for-7.1-rc2
+X-PR-Tracked-Commit-Id: 135ac3b84bcedae1860e7a9512d63166f42b736e
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 26fd6bff2c050196005312d1d306889220952a99
+Message-Id: <177759633344.3267405.8446350886225335272.pr-tracker-bot@kernel.org>
+Date: Fri, 01 May 2026 00:45:33 +0000
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Richard Weinberger <richard@nod.at>, Tudor Ambarus <Tudor.Ambarus@linaro.org>, Vignesh Raghavendra <vigneshr@ti.com>, Frieder Schrempf <frieder.schrempf@kontron.de>, Michael Walle <michael@walle.cc>, Pratyush Yadav <pratyush@kernel.org>, linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260430_150739_228024_DEBBA5F0 
-X-CRM114-Status: GOOD (  14.21  )
+X-CRM114-CacheID: sfid-20260430_174637_721606_39E41545 
+X-CRM114-Status: UNSURE (   4.92  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,139 +75,24 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Use a flexible array member and kzalloc_flex() to do so. Simplifies
-memory allocation slightly.
+The pull request you sent on Thu, 30 Apr 2026 22:25:37 +0200:
 
-Signed-off-by: Rosen Penev <rosenp@gmail.com>
----
- drivers/mtd/sm_ftl.c | 30 +++++++++++-------------------
- drivers/mtd/sm_ftl.h |  2 +-
- 2 files changed, 12 insertions(+), 20 deletions(-)
+> git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/mtd/fixes-for-7.1-rc2
 
-diff --git a/drivers/mtd/sm_ftl.c b/drivers/mtd/sm_ftl.c
-index c8032755f9a4..fb0f97fb94f0 100644
---- a/drivers/mtd/sm_ftl.c
-+++ b/drivers/mtd/sm_ftl.c
-@@ -1133,7 +1133,7 @@ static void sm_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
- 	struct sm_ftl *ftl;
- 
- 	/* Allocate & initialize our private structure */
--	ftl = kzalloc_obj(struct sm_ftl);
-+	ftl = kzalloc_flex(*ftl, cis_buffer, SM_SECTOR_SIZE);
- 	if (!ftl)
- 		goto error1;
- 
-@@ -1145,25 +1145,20 @@ static void sm_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
- 	/* Read media information */
- 	if (sm_get_media_info(ftl, mtd)) {
- 		dbg("found unsupported mtd device, aborting");
--		goto error2;
-+		goto error1;
- 	}
- 
- 
--	/* Allocate temporary CIS buffer for read retry support */
--	ftl->cis_buffer = kzalloc(SM_SECTOR_SIZE, GFP_KERNEL);
--	if (!ftl->cis_buffer)
--		goto error2;
--
- 	/* Allocate zone array, it will be initialized on demand */
- 	ftl->zones = kzalloc_objs(struct ftl_zone, ftl->zone_count);
- 	if (!ftl->zones)
--		goto error3;
-+		goto error2;
- 
- 	/* Allocate the cache*/
- 	ftl->cache_data = kzalloc(ftl->block_size, GFP_KERNEL);
- 
- 	if (!ftl->cache_data)
--		goto error4;
-+		goto error3;
- 
- 	sm_cache_init(ftl);
- 
-@@ -1171,7 +1166,7 @@ static void sm_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
- 	/* Allocate upper layer structure and initialize it */
- 	trans = kzalloc_obj(struct mtd_blktrans_dev);
- 	if (!trans)
--		goto error5;
-+		goto error4;
- 
- 	ftl->trans = trans;
- 	trans->priv = ftl;
-@@ -1184,12 +1179,12 @@ static void sm_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
- 
- 	if (sm_find_cis(ftl)) {
- 		dbg("CIS not found on mtd device, aborting");
--		goto error6;
-+		goto error5;
- 	}
- 
- 	ftl->disk_attributes = sm_create_sysfs_attributes(ftl);
- 	if (!ftl->disk_attributes)
--		goto error6;
-+		goto error5;
- 	trans->disk_attributes = ftl->disk_attributes;
- 
- 	sm_printk("Found %d MiB xD/SmartMedia FTL on mtd%d",
-@@ -1206,17 +1201,15 @@ static void sm_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
- 	/* Register device*/
- 	if (add_mtd_blktrans_dev(trans)) {
- 		dbg("error in mtdblktrans layer");
--		goto error6;
-+		goto error5;
- 	}
- 	return;
--error6:
--	kfree(trans);
- error5:
--	kfree(ftl->cache_data);
-+	kfree(trans);
- error4:
--	kfree(ftl->zones);
-+	kfree(ftl->cache_data);
- error3:
--	kfree(ftl->cis_buffer);
-+	kfree(ftl->zones);
- error2:
- 	kfree(ftl);
- error1:
-@@ -1242,7 +1235,6 @@ static void sm_remove_dev(struct mtd_blktrans_dev *dev)
- 	}
- 
- 	sm_delete_sysfs_attributes(ftl);
--	kfree(ftl->cis_buffer);
- 	kfree(ftl->zones);
- 	kfree(ftl->cache_data);
- 	kfree(ftl);
-diff --git a/drivers/mtd/sm_ftl.h b/drivers/mtd/sm_ftl.h
-index 6aed8b60de16..1a1a54ce836a 100644
---- a/drivers/mtd/sm_ftl.h
-+++ b/drivers/mtd/sm_ftl.h
-@@ -39,7 +39,6 @@ struct sm_ftl {
- 	int cis_block;			/* CIS block location */
- 	int cis_boffset;		/* CIS offset in the block */
- 	int cis_page_offset;		/* CIS offset in the page */
--	void *cis_buffer;		/* tmp buffer for cis reads */
- 
- 	/* Cache */
- 	int cache_block;		/* block number of cached block */
-@@ -56,6 +55,7 @@ struct sm_ftl {
- 	int cylinders;
- 
- 	struct attribute_group *disk_attributes;
-+	u8 cis_buffer[];		/* tmp buffer for cis reads */
- };
- 
- struct chs_entry {
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/26fd6bff2c050196005312d1d306889220952a99
+
+Thank you!
+
 -- 
-2.54.0
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
 ______________________________________________________
 Linux MTD discussion mailing list
