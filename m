@@ -4,65 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4CCC6CD342F
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 May 2026 07:50:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C595FF885A
+	for <linux-mtd@archiver.kernel.org>; Tue,  5 May 2026 08:00:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=/SW83s6KRsDr5JkbKZn2XbVqXrhx7k+CzILz+V3lXc8=; b=kOW9wevKsLbpWV
-	XUVqPsPSBtKKEf6ypfAG6wsZwFpMun4NrP7mvaaO8TvM/3MA0unTEMUFHiqPhfnA/1M3G2iu987Ym
-	MFtNJNqSZr1+uHfat+pi3RvkazmnHAipb9eCzKzGKuGRzmkW1LD1KcqxF3SE/fHfJaL29O2ar5Cyh
-	D5Rbs2v6vvqjF3k1dMRg3H3wJMTXHTVwDsgOuSSUyp5bJtsHTlei4Fe78FhVL3pU2CL8qIAWYGM50
-	9M5yT+L+eEnPZoLUiX/op87rH5yXRq0H3R9bvpeUrfgy/2iLRdj6atLZRSXJH8RDaCL2SxDqmfd+8
-	5bm2ekeTHELp+uqultjA==;
+	List-Owner; bh=/XypZWiVo3i9l3tRXOWyISAo4bT7UnyOKbiw8eeUoLw=; b=yIwFcBtDw1bH9j
+	FRvfTxFVju+/fxtugXXgIhZIrapc4pfkj+CMVLQ3ADCdpaoXBsQoeVwUn8WxeymF2sz2MxodUv2bM
+	B98VzUI33gPyh0o9fcrN5u83ejNfVsAUoo2af9SXU4IlzuC9Kl7xDDg++37wAKb5Bqg6Ip8MCW2Oz
+	ipU8FlaeaDVApJZCKvSdjOieAM/wKamXxzAnp3XvYHIYHiSt03AjBeTzxAttIZihQZz6ERXlKGSTv
+	67ca5DmZfboLMQuCwe+6c3oNoUkRwLrp0Mk1WrQ/2rmxmlttWetoB13PbjX2Q37NE/+vCFS33gQJh
+	Wq9sUb06OjWJ7oOHN1GQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wKAY3-0000000FRze-2whC;
-	Tue, 05 May 2026 07:50:31 +0000
-Received: from smtpout-04.galae.net ([185.171.202.116])
+	id 1wKAhE-0000000FTHk-3y10;
+	Tue, 05 May 2026 08:00:00 +0000
+Received: from mail.rulkc.org ([155.212.184.193])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wKAY0-0000000FRy3-1tQf
+	id 1wKAhB-0000000FTGj-0F5e
 	for linux-mtd@lists.infradead.org;
-	Tue, 05 May 2026 07:50:30 +0000
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id E7254C5D739;
-	Tue,  5 May 2026 07:51:11 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 288D35FD9D;
-	Tue,  5 May 2026 07:50:25 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 20E3E11AD1006;
-	Tue,  5 May 2026 09:50:19 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1777967424; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=LOLxxzEAMizK1N6MnTWd69181RhDona4ue7L+aw+YA8=;
-	b=UsA7P2B8feoFxoCTKXhBTkhk9Xpie8FO9SW12TNXFxG38cUGVWBA/DPHiZhn4Lf9jNbIqA
-	xGGEO636XKZGZy4PxuNOfQp+OhY/E/XcTQGx7IQsc3PTglvhxE1J0NdwePZS3jX1+BkrlP
-	+PXW+SmIZ8OWLnw/vfU0CsLR9Hm4pwKm2tfqn++ON3N7rmHPgIrygIlYI9fiTiPumh0Sav
-	wgMtlIwM1RGIk+8Id36bYpgqaITdlU//5tRPUx/oqIarewq8ZbUDuuicRlApSVYtF05FQM
-	NK0DM8bi0CbesfTpdCgCVb6Ed4ae5Nd3Yh6JfcJNOpuZKmt/r8+VMIzNYuE5og==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Arseniy Krasnov <avkrasnov@rulkc.org>
-Cc: Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
- <vigneshr@ti.com>,  Frieder Schrempf <frieder.schrempf@kontron.de>,  Boris
- Brezillon <bbrezillon@kernel.org>,  linux-mtd@lists.infradead.org,
-  linux-kernel@vger.kernel.org,  rulkc@linuxtesting.org,
-  oxffffaa@gmail.com,  stable@vger.kernel.org
-Subject: Re: [PATCH v1] mtd: rawnand: fix condition in 'nand_select_target()'
-In-Reply-To: <20260504221012.1310605-1-avkrasnov@rulkc.org> (Arseniy Krasnov's
-	message of "Tue, 5 May 2026 01:10:12 +0300")
-References: <20260504221012.1310605-1-avkrasnov@rulkc.org>
-User-Agent: mu4e 1.12.7; emacs 30.2
-Date: Tue, 05 May 2026 09:50:19 +0200
-Message-ID: <87mryeqoqs.fsf@bootlin.com>
+	Tue, 05 May 2026 07:59:58 +0000
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id C87681006E6;
+	Tue,  5 May 2026 10:59:41 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=rulkc.org; s=dkim;
+	t=1777967992; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:content-language:in-reply-to:references;
+	bh=4OdOBoWJ4ACSfIixekPE8cVTYjRFt/rkbnFpQqOJuxQ=;
+	b=SWIjxXx0kmTtkUzX9UBhUNI5cN9FyEAftPaPrNR/30tp+WsbGwZgV71cqRlQAf51OLdPmp
+	q60eV1oLadf8IoHlPpyCb2CK4aCD6PrLntsjy3RenGzIYlIRb8be27Rl8IVFWHVPUPHcjU
+	0Xy0/Bqir9Kkunwgn56F+dJpqAtvlx21M/xun1nJFLThBJ5fXZfGrZfeYkUeuD95SOC15y
+	gR0grlgTEktZZnM3rYnQX1z1UIYN9OAFX8CWtDEJGuFtowYWEHyQwNZfjloGGgkVWf+Pes
+	9VH6NsdGuhgnMq/hY9kGSiULY7ihuaM632DbiwtmLWt6iu7lyJ+l0mhOaM8/Zw==
+Message-ID: <57b0cc2a-6d62-405c-bfa5-68d1c46dbad9@rulkc.org>
+Date: Tue, 5 May 2026 10:59:16 +0300
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1] mtd: rawnand: fix condition in 'nand_select_target()'
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+ <vigneshr@ti.com>, Frieder Schrempf <frieder.schrempf@kontron.de>,
+ Boris Brezillon <bbrezillon@kernel.org>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, rulkc@linuxtesting.org, oxffffaa@gmail.com,
+ stable@vger.kernel.org
+References: <20260504221012.1310605-1-avkrasnov@rulkc.org>
+ <87mryeqoqs.fsf@bootlin.com>
+Content-Language: ru
+From: Arseniy Krasnov <avkrasnov@rulkc.org>
+In-Reply-To: <87mryeqoqs.fsf@bootlin.com>
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260505_005028_943985_A3A532EE 
-X-CRM114-Status: UNSURE (   4.40  )
+X-CRM114-CacheID: sfid-20260505_005957_645595_B4990F2C 
+X-CRM114-Status: UNSURE (   7.12  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -80,10 +75,13 @@ Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGksCgpPbiAwNS8wNS8yMDI2IGF0IDAxOjEwOjEyICswMywgQXJzZW5peSBLcmFzbm92IDxhdmty
-YXNub3ZAcnVsa2Mub3JnPiB3cm90ZToKClR3byBpbXBvcnRhbnQgdHlwb3MgaW4gdGhlIGNvbW1p
-dCBsb2cgOi0pCgo+ICdjcycgaGVyZSBtdXN0IGluIHJhbmdlIFswOm5hbmRkZXZfbnRhcmdldHMp
-LgoKICAgICAgICAgICAgICAgIGJlICAgICAgICAgICAgICAgICAgICAgICAgICAgWwoKVGhhbmtz
-LApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5p
-bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+CjA1LjA1LjIwMjYgMTA6NTAsIE1pcXVlbCBSYXluYWwgd3JvdGU6Cj4gSGksCj4KPiBPbiAwNS8w
+NS8yMDI2IGF0IDAxOjEwOjEyICswMywgQXJzZW5peSBLcmFzbm92IDxhdmtyYXNub3ZAcnVsa2Mu
+b3JnPiB3cm90ZToKPgo+IFR3byBpbXBvcnRhbnQgdHlwb3MgaW4gdGhlIGNvbW1pdCBsb2cgOi0p
+Cj4KPj4gJ2NzJyBoZXJlIG11c3QgaW4gcmFuZ2UgWzA6bmFuZGRldl9udGFyZ2V0cykuCj4gICAg
+ICAgICAgICAgICAgIGJlICAgICAgICAgICAgICAgICAgICAgICAgICAgWwoKCkhpLCBzb3JyeSwg
+WW91IG1lYW4/CgoKJ2NzJyBoZXJlIG11c3QgYmUgaW4gcmFuZ2UgWzA6bmFuZGRldl9udGFyZ2V0
+c10uwqAKCgpUaGFua3MKCgo+Cj4gVGhhbmtzLAo+IE1pcXXDqGwKCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lv
+biBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9saW51eC1tdGQvCg==
