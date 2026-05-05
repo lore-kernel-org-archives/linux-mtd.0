@@ -4,62 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 340F0FF8855
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 May 2026 15:17:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F167CCD343F
+	for <linux-mtd@archiver.kernel.org>; Tue,  5 May 2026 15:40:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=nrOoI3FTWvJyHb88KlAxA5t3wfVb8GgdOktEiU9s4oo=; b=AaPQoNldq1QbYd
-	STUIHGRIZDp/G45kWHXRmwkSRPGOPSMJ3AssPHmHFSal+wSLO/8+XEWwyDnZzyPBXNcswJUW9vPn2
-	am94d+yjOTSfH09SgCLCwG+dZZzci060MaofG3KXFcNcFgkmtB5GrWLI8zCnHgrVm7YWsOegSoPbK
-	OQPTqds547WbiqHR0WZ3kY2zGoLNCTKm1v3rGwI+gDjHGa/YsBQd1qEDFZYl4YuhAEqzlqXWU+Xlu
-	VLgMJm2iMSw13WIRFwsE5wwipSekq8o4FF9xDKLgD8TM+/JvYOqi2pBH3B/X3YeDzIq7kxWF/3WD8
-	fHOOXHxOAAvJDD0z+hZQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=F/GRuJj6HmD5HTIbEnpsdaqPh67dQSfEx9hl12rmydU=; b=VrN9kboed73gAo
+	Jnvp0jczTZfTZABnYjoDulzNa02l/tvHHIZRHfzE76ePYxLo4KG7CQlQUndiBegkpxfrdo1rukIKb
+	j41YjuLcxmRxf6Lb9kGQqbrzmV4vulTMC+LTuzHVnK3y8V9x5zfRvWsfNh6tK0Cc/ti9oj4X9dLrS
+	sLjfIFxR60D2aTxVcqN6tkHpZNd66ObjxiunkeA7HFLZk+fOOw65ISXF7UMvqetOb3GMv4Q+nyrDY
+	K723iYRkvKZYzIKJB4/K/Jalzudcjq8JjvLf/Ya6tE2nJqLoyLDqb8gxwHwezqV7bX7hsnhQT04Ew
+	x9+mOppcVjycxgPpe8yg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wKHWx-0000000GdOS-3b7x;
-	Tue, 05 May 2026 15:17:51 +0000
-Received: from smtpout-02.galae.net ([185.246.84.56])
+	id 1wKHsn-0000000GgnK-3FDr;
+	Tue, 05 May 2026 15:40:25 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wKHWu-0000000GdNa-45UX
+	id 1wKHsl-0000000GgmY-3OFx
 	for linux-mtd@lists.infradead.org;
-	Tue, 05 May 2026 15:17:50 +0000
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id 008641A3522;
-	Tue,  5 May 2026 15:17:46 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id C0FDC6053C;
-	Tue,  5 May 2026 15:17:45 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 8CFF311AD0294;
-	Tue,  5 May 2026 17:17:42 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1777994265; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding; bh=DJOziYNK85wKAueLIhUm0OYRigtc/n2nqr8Gi1+TtLA=;
-	b=TO/2sKFX6i8aL3LKxEBrb33ch+Sb9B1UCGUqpFlZocNQpIN/hzv/wvFTFANg13vaVl8tTW
-	M/sReYc57TILRvBrNgJmMkScXjac9EUrlRjTz4Np1LiHrKBFjSthw8oTpyYz80yW0M1jje
-	UYmFA8fXaiHzU9NeVn18GJ8NeaqmSTXZuKtD0W4mgqDqHi6nUoouuTXcpGBSg4ejn/oY1Y
-	8kvXWzHVSKf5gNa3041XqcuJfSLWaOmBrftsqX02Kpq8cFI3FkRtc0c1CwFntZil26Wbxz
-	vg0gmEG/v1Kse9mvEcwQDwUZeWloohye4Isj7mS51pFsehvRGUuADASA/5PH2Q==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Mark Brown <broonie@kernel.org>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
- <vigneshr@ti.com>, Frieder Schrempf <frieder.schrempf@kontron.de>, Michael
- Walle <michael@walle.cc>, Pratyush Yadav <pratyush@kernel.org>,
- linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
-Subject: [GIT PULL] spi-nand/spi-mem changes for 7.2
-User-Agent: mu4e 1.12.7; emacs 30.2
-Date: Tue, 05 May 2026 17:17:42 +0200
-Message-ID: <87jythopgp.fsf@bootlin.com>
+	Tue, 05 May 2026 15:40:24 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id 70B9540DE9;
+	Tue,  5 May 2026 15:40:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F15BAC2BD04;
+	Tue,  5 May 2026 15:40:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1777995623;
+	bh=049qJAgxHgN7rjuqk0ssOpe8JOJ4sYqPMqmLvTrcURA=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=eXHG/2X8k3o03NZxsIJjI388gsoNF56px4sHtOhl/I9OeCXbfh0QUr/eCL+r/vZF0
+	 ulBEyh4btxyEusuJ2NwDWHa5He+24I6TTyJdnJ7R8H/8igz4sSP3KUfxEZfChZhtkA
+	 RSn6jASEUBBBl4OUbF7royOrK3DY1aC7/+e9ILKE9HrG9ipae4Ea+1M3kdDOZLeu1/
+	 3usxfK9IFZ7+dkr5+CCUH7m+fQiQZUWYcHYnmdJwxGOrpSb2Y5BYIspyX3Q052iTF1
+	 DVkf6lR9tOtGNqstb0nQvoUT7XuA16VPHe4mV4BByWe97yWMbR1jjqmP6OsC55tDyY
+	 8N2/r2cBVnXrg==
+From: Pratyush Yadav <pratyush@kernel.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Pratyush Yadav <pratyush@kernel.org>,  Michael Walle
+ <mwalle@kernel.org>,  Takahiro Kuwano <takahiro.kuwano@infineon.com>,
+  Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
+ <vigneshr@ti.com>,  Jonathan Corbet <corbet@lwn.net>,  Sean Anderson
+ <sean.anderson@linux.dev>,  Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>,  Steam Lin <STLin2@winbond.com>,
+  linux-mtd@lists.infradead.org,  linux-kernel@vger.kernel.org,
+  linux-doc@vger.kernel.org
+Subject: Re: [PATCH v4 07/27] mtd: spi-nor: swp: Explain the MEMLOCK ioctl
+ implementation behaviour
+In-Reply-To: <20260403-winbond-v6-18-rc1-spi-nor-swp-v4-7-833dab5e7288@bootlin.com>
+	(Miquel Raynal's message of "Fri, 03 Apr 2026 18:09:25 +0200")
+References: <20260403-winbond-v6-18-rc1-spi-nor-swp-v4-0-833dab5e7288@bootlin.com>
+	<20260403-winbond-v6-18-rc1-spi-nor-swp-v4-7-833dab5e7288@bootlin.com>
+Date: Tue, 05 May 2026 17:40:18 +0200
+Message-ID: <2vxzfr4527bx.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260505_081749_146731_B16099D2 
-X-CRM114-Status: UNSURE (   9.94  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260505_084023_863783_86E944A5 
+X-CRM114-Status: GOOD (  17.91  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,54 +76,53 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8gTWFyaywKCkhlcmUgaXMgYW4gaW1tdXRhYmxlIHRhZyBmb3IgeW91IHRvIHB1bGwgaW50
-byB5b3VyIHNwaSB0cmVlIHdpdGggYWxsIHRoZQpzcGktbWVtIGNoYW5nZXMgd2UgYWdyZWVkIHVw
-b24uIEkgYWxzbyBtZXJnZWQgaXQgaW50byBuYW5kL25leHQuCgpUaGFua3MsCk1pcXXDqGwKClRo
-ZSBmb2xsb3dpbmcgY2hhbmdlcyBzaW5jZSBjb21taXQgMjU0ZjQ5NjM0ZWUxNmE3MzExNzRkMmFl
-MzRiYzUwYmQ1ZjQ1ZTczMToKCiAgTGludXggNy4xLXJjMSAoMjAyNi0wNC0yNiAxNDoxOTowMCAt
-MDcwMCkKCmFyZSBhdmFpbGFibGUgaW4gdGhlIEdpdCByZXBvc2l0b3J5IGF0OgoKICBnaXQ6Ly9n
-aXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvbXRkL2xpbnV4LmdpdCB0YWdz
-L210ZC9zcGktbWVtLWNvbnQtcmVhZC1mb3ItNy4yCgpmb3IgeW91IHRvIGZldGNoIGNoYW5nZXMg
-dXAgdG8gMzhmYmU0YjNmNjZlNWI4ZTJmMmFiOGU3Y2EzZDkxMmUxZTkzNWZlMjoKCiAgc3BpOiBz
-cGktbWVtOiBBZGQgYSBub19jc19hc3NlcnRpb24gY2FwYWJpbGl0eSAoMjAyNi0wNS0wNCAxNTow
-NzozNyArMDIwMCkKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0KQXNpZGUgZnJvbSBwcmVwYXJhdGlvbiBjaGFuZ2VzIGluIHRo
-ZSBTUEkgTkFORCBjb3JlLCB0aGUgY2hhbmdlcyBjYXJyaWVkCmhlcmUgZm9jdXMgb24gdGhlIHNo
-YXJlZCBzcGktbWVtIGxheWVyIHdoaWNoIGlzIGVuaGFuY2VkIGluIG9yZGVyIHRvCmJyaW5nIHR3
-byBuZXcgZmVhdHVyZXM6CgotIFRoZSBwb3NzaWJpbGl0eSB0byBmaWxsIGEgcHJpbWFyeSBhbmQg
-YSBzZWNvbmRhcnkgb3BlcmF0aW9uIHRlbXBsYXRlCiAgaW4gdGhlIGRpcmVjdCBtYXBwaW5nIHN0
-cnVjdHVyZSBpbiBvcmRlciB0byBzdXBwb3J0IGNvbnRpbnVvdXMgcmVhZHMKICBpbiBTUEkgTkFO
-RCwgd2hpY2ggbWF5IHJlcXVpcmUgdHdvIGRpZmZlcmVudCByZWFkIG9wZXJhdGlvbnMuCgotIFNQ
-SSBjb250cm9sbGVycyBtYXkgaW5kaWNhdGUgcG9zc2libGUgQ1MgaW5zdGFiaWxpdGllcyBvdmVy
-IGxvbmcKICB0cmFuc2ZlcnMgYnkgc2V0dGluZyBhIGJvb2xlYW4uIFRoaXMgY2FwYWJpbGl0eSBp
-cyByZWxhdGVkIHRvIHRoZQogIHByZXZpb3VzIG9uZSwgdGhlIG5lZWQgZm9yIGl0IGhhcyBhcmlz
-ZWQgd2hpbGUgdGVzdGluZyBTUEkgTkFORAogIGNvbnRpbnVvdXMgcmVhZHMgd2l0aCB0aGUgQ2Fk
-ZW5jZSBRU1BJIGNvbnRyb2xsZXIgd2hpY2ggY2Fubm90LCB1bmRlcgogIGNlcnRhaW4gY29uZGl0
-aW9ucywga2VlcCB0aGUgQ1MgYXNzZXJ0ZWQgZm9yIHRoZSBsZW5ndGggb2YKICBhbiBlcmFzZWJs
-b2NrLWxhcmdlIHRyYW5zZmVyLgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpNaXF1ZWwgUmF5bmFsICg2KToKICAgICAgbXRk
-OiBzcGluYW5kOiBEcm9wIGEgdG9vIHN0cm9uZyBsaW1pdGF0aW9uCiAgICAgIG10ZDogc3BpbmFu
-ZDogRXhwb3NlIHNwaW5hbmRfb3BfaXNfb2R0cigpCiAgICAgIG10ZDogc3BpbmFuZDogRHJvcCBF
-Q0MgZGlybWFwcwogICAgICBzcGk6IHNwaS1tZW06IFRyYW5zZm9ybSB0aGUgcmVhZCBvcGVyYXRp
-b24gdGVtcGxhdGUKICAgICAgc3BpOiBzcGktbWVtOiBDcmVhdGUgYSBzZWNvbmRhcnkgcmVhZCBv
-cGVyYXRpb24KICAgICAgc3BpOiBzcGktbWVtOiBBZGQgYSBub19jc19hc3NlcnRpb24gY2FwYWJp
-bGl0eQoKIGRyaXZlcnMvbXRkL25hbmQvc3BpL2NvcmUuYyAgIHwgNzYgKysrKysrKysrKysrKysr
-KystLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogZHJpdmVycy9tdGQvc3BpLW5vci9jb3JlLmMg
-ICAgfCAyMiArKysrKysrLS0tLS0tCiBkcml2ZXJzL3NwaS9zcGktYWlyb2hhLXNuZmkuYyB8ICA2
-ICsrLS0KIGRyaXZlcnMvc3BpL3NwaS1hc3BlZWQtc21jLmMgIHwgIDQgKy0tCiBkcml2ZXJzL3Nw
-aS9zcGktaW50ZWwuYyAgICAgICB8ICA2ICsrLS0KIGRyaXZlcnMvc3BpL3NwaS1tZW0uYyAgICAg
-ICAgIHwgMzIgKysrKysrKysrKysrKystLS0tCiBkcml2ZXJzL3NwaS9zcGktbXhpYy5jICAgICAg
-ICB8IDE4ICsrKysrLS0tLS0KIGRyaXZlcnMvc3BpL3NwaS1ucGNtLWZpdS5jICAgIHwgMTYgKysr
-Ky0tLS0tCiBkcml2ZXJzL3NwaS9zcGktcnBjLWlmLmMgICAgICB8ICA4ICsrLS0tCiBkcml2ZXJz
-L3NwaS9zcGktc3RtMzItb3NwaS5jICB8ICA2ICsrLS0KIGRyaXZlcnMvc3BpL3NwaS1zdG0zMi1x
-c3BpLmMgIHwgIDYgKystLQogZHJpdmVycy9zcGkvc3BpLXdwY20tZml1LmMgICAgfCAgMiArLQog
-aW5jbHVkZS9saW51eC9tdGQvc3BpbmFuZC5oICAgfCAgNCArLS0KIGluY2x1ZGUvbGludXgvc3Bp
-L3NwaS1tZW0uaCAgIHwgMTIgKysrKysrLQogMTQgZmlsZXMgY2hhbmdlZCwgMTE1IGluc2VydGlv
-bnMoKyksIDEwMyBkZWxldGlvbnMoLSkKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QK
-aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+Hi,
+
+On Fri, Apr 03 2026, Miquel Raynal wrote:
+
+> Add comments about how these requests are actually handled in the SPI
+> NOR core. Their behaviour was not entirely clear to me at first, and
+> explaining them in plain English sounds the way to go.
+>
+> Reviewed-by: Michael Walle <mwalle@kernel.org>
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> ---
+>  drivers/mtd/spi-nor/swp.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+>
+> diff --git a/drivers/mtd/spi-nor/swp.c b/drivers/mtd/spi-nor/swp.c
+> index 1d50db1ef1a0..64a917543928 100644
+> --- a/drivers/mtd/spi-nor/swp.c
+> +++ b/drivers/mtd/spi-nor/swp.c
+> @@ -346,6 +346,14 @@ static int spi_nor_sr_is_locked(struct spi_nor *nor, loff_t ofs, u64 len)
+>  	return spi_nor_is_locked_sr(nor, ofs, len, nor->bouncebuf[0]);
+>  }
+>  
+> +/*
+> + * These ioctls behave according to the following rules:
+> + * ->lock(): Never locks more than what is requested, ie. may lock less
+> + * ->unlock(): Never unlocks more than what is requested, ie. may unlock less
+> + * -is_locked(): Checks if the region is *fully* locked, returns false otherwise.
+> + *               This feeback may be misleading because users may get an "unlocked"
+> + *               status even though a subpart of the region is effectively locked.
+> + */
+
+We already have some text where struct spi_nor_locking_ops is defined.
+Can we move this information there?
+
+>  static const struct spi_nor_locking_ops spi_nor_sr_locking_ops = {
+>  	.lock = spi_nor_sr_lock,
+>  	.unlock = spi_nor_sr_unlock,
+
+-- 
+Regards,
+Pratyush Yadav
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
