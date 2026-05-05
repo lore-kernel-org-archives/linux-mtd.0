@@ -4,71 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD69DCD343B
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD656CD342C
 	for <linux-mtd@archiver.kernel.org>; Tue,  5 May 2026 01:37:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=nLtJNHd2bcxKfdUyUIJyBELfukUQ+ngynCiL8nJARQM=; b=cprmY93ejB9sct
-	Y3HmN3VeoHamiNKHJvaxd+4B3Ya4SgnbB8VWORcYjzncd9tKWUxzLrCj1ceiLVSo0QS9TUyVsIWMS
-	x0+QXP6RvsSUySCeDKhsLH4C/Z5nasBEeKN9omd4J6GDOAx2JMoMYi319b0tqVdSguZPSpmj7eOSI
-	uUvS0HSXSD87rUPcv+sa4+b/Psb9S34r0hLnzDEDpL6V1Pqu2wgFt/H50f3SFqi67BqrfCFoUm9dr
-	syUUbF9sf0r6VeJar7T7rt+IGSuD7967vzV/1mi/JEV50cQOjXUijrv2OZRVKbC1xpb2cTBDxvYPf
-	M82wHCTEX7I1qTjGNI5A==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=6ueXm8QMnW5GAlUb+k/4P5+CmpVTBO0jjkjlIJbtdT4=; b=kAzzMADD5hTKEW
+	mixb7Nm5f2ZM/yKwRB2aTSBmQoBjbO+oD11R8YofT0yQvkfVekQd71hYn584OlGfhavkru1kV26mf
+	ROugyZrC5kUo0xEpxaDOSS/Pi4EqzXSw581JoXNLB/1OFKTnm+mb41ICeHcrDnMv9prz7fOU0F7hN
+	RW5Vft9hU3xsTEWPxde5mrioOQjV4cFVrs9V2JpwoOyX8y/MoxTmxC0QE2b3g5FRe5lA3o9b6sKzv
+	h90AuQzEcSQ4o4Gp3cqJlauNKbS36/ESB8dhQblupUA8wQjbM1V+X57C8dhF135LKCL+dcqgCp810
+	1YNMyhzRvyGVVc7q0C2Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wK4jI-0000000EpF1-3NGW;
-	Tue, 05 May 2026 01:37:44 +0000
-Received: from mail-pg1-x52a.google.com ([2607:f8b0:4864:20::52a])
+	id 1wK4jJ-0000000EpF8-0Pkv;
+	Tue, 05 May 2026 01:37:45 +0000
+Received: from mail-pf1-x435.google.com ([2607:f8b0:4864:20::435])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wK4jD-0000000EpDG-1YHa
+	id 1wK4jD-0000000EpDY-39fx
 	for linux-mtd@lists.infradead.org;
 	Tue, 05 May 2026 01:37:41 +0000
-Received: by mail-pg1-x52a.google.com with SMTP id 41be03b00d2f7-c80148ae949so778742a12.2
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-8353fd1cb5fso910835b3a.0
         for <linux-mtd@lists.infradead.org>; Mon, 04 May 2026 18:37:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1777945058; x=1778549858; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=q2ubLRqm6894E/xfqMy1P4qorSpO675XYrOno1l/mUk=;
-        b=oTOzaRlzWmGPe7sJS8SwN/ukJELlOMtc+FtOc1p1GJKkN2VNKvVhP+Gtdnnk/I6IdA
-         67tAK76c3xCZq+IPSV1S0m02jOJ5TthmOa3wi3QwgLF6i3614OtHkSBFgCA9fohwe69a
-         ACcjb0JIXUStO3NC9LDDnqZ9hk2zGsLXzSGzWAxwJJX6HEGWHyXqPHwi3TZmc0q4sdp3
-         bLej/IOZPHUg6qegmwt1JEGJiIdLIZ9brvFtK36ar1p9F9n+n9toe/vmyu/826nsLPmW
-         iwnbyoINA9qNkPQfruARvOp7jknNqd5dgZo23dAwBZnJ+KLgEbY40TJlFGR+tB+6TxJS
-         /nbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1777945058; x=1778549858;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20251104; t=1777945059; x=1778549859; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=q2ubLRqm6894E/xfqMy1P4qorSpO675XYrOno1l/mUk=;
-        b=UhUDoCqpblEb2la2BNXQg7/3deSTC5jp3twKt7Ala4fZdRB5EqpDFIYn12TUzv45RW
-         6SdPMTRzmUhzLEWANc38n/d1lqE1WTszIT7HN9i/hLFkqfcuOgiNGDnKZ+UIID7v3yRq
-         X3CCY3G67oDaaFOz4xCWSKzhdHYY+lOeTKdw0vOwM8BnQwREwP3wkH9fvkHBZpZYz6Hk
-         xoEl+Qlt5PXteD7Qlvkim5KodAHR6yyA1tYHw3ddeAVsZ9oAD1qNY4FpzL7H9QfmKaXe
-         aikm9q9E/K/Korzfh8wWzyQBNNf/X2VN34GpvgZwOLm1Jsa4SCiNLmp8kePmx4Myhpn4
-         EAbg==
-X-Gm-Message-State: AOJu0Yz/dA59zlCYJGDFJc3B5iJpU3RHYYM3RVW1xbRAcj0SFamByMd+
-	3X5/wJj3DGTsCa2rIOZ6Ip20UC0mz6/+1ZRtxVX8LMmLYu5Xeanzh1SC
-X-Gm-Gg: AeBDiesTRp9qNuJuyE0edWskQhK43sLWo9a4GLjw0GpyuhJidQHGMw0yvNq4Ai+l6N5
-	UJvDOszFUaKp4Jv2KZKTagJLSM4jx1mimZPnkwdFp1DOzG2yif9Hx8wEpkWBoGTfDsBV/eTvvex
-	n13dbz7sGM5WOwkIXjM0g0UuQ3gbXJLOY7a7QIyV6qLT+UnYga1ASpa+p+dUVhZQQjB0e0CUJ+y
-	FUpxeploLabEj5xn9zDVD4aq7c/4PyOdjN70H8y+cR+amVmZJiA4KV51C5PswzwQZMaBUUqclVg
-	g9ktB3Y8PpLG8q6xjkxreTkFyoMedzFfUI0ek8mlNT4CDjS7qpawpqcEWNw4djpjDWt60B44yTm
-	kiGGmir+iuRlrOYQiGWSU74PSPp2/6GRUSIFnjeU+g6OHTTuJyJb0wUSZ2Ib4B3PGUJ3iAfX4h2
-	xOzu4sfJRiK3AUblf5hqiekBYuP9g7vpYgdgkTLojY+/BftfkZx0UewROz
-X-Received: by 2002:a05:6a20:244f:b0:3a2:bd1d:d67d with SMTP id adf61e73a8af0-3aa3b6d8fbdmr1166764637.34.1777945058179;
+        bh=csjPh52S+pcBTGEpydk3ocZJOCMxJr2uaOVx7ol9BXo=;
+        b=fhya6BIlJK4i8Sv/6+P/qct2NEDLP+gavx7gTO3uq7JseBEY447HZjgtN+tNTPYPWv
+         Y8TUm0PZFHWrlT3mKwdwsZBTsS9aR5Cpk38CtXE/xQavitB/Q9jIVatBCXMmwgiauItd
+         dlXGCJkJPhYrB6298IEGDuebLjbjFQ2D+F/vQ2WpvUUvYj3CrmFoZBVTju1+yoQ1UPHX
+         OESmYxL/QuePcMIg0CwAVRIYTkWMGUbzJ58iuLXuJtzE4kQUhobgwwgIYmNr+Bna9v6z
+         S+M9480vJ17GpuvMts+Wnvq01K6igsc4aTZvIf40tnPBMy2+tu9gfLNBaWkJgQFyE7ac
+         pDWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1777945059; x=1778549859;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=csjPh52S+pcBTGEpydk3ocZJOCMxJr2uaOVx7ol9BXo=;
+        b=B5/CAoW4N3/09v84zMEGbPUEK1V1+MsWjFCVx3Fpa5q24z5XfW+1anJVwULL6JKqzh
+         sHnTqC2XipoI4j/r5l8Q+SuIJy7hwj5GVChF9RmfyDHmuh9yD7Tyr033I7I6rCAlrUGz
+         4Wy1u3HflzPu6nsSFH5EoSueaxXpsjedqpyLMiIRxYrYJ6h4XNARnTHAUt5tiucFIIYq
+         P06aG7fy8eqo3m80ow57D4QiZTvRzwO4S296RYNMQDhtxUCNB6SRBejhLfIpIfaIcQ5e
+         Ch1gZ7qWv7akYxu4R4+PYYh3z22TXKcHniyPdFi2GUa5P4WMMB4WQcEyrlVWNidOnvKN
+         01Mw==
+X-Gm-Message-State: AOJu0YzJe6ato1zr2t8MS4Zsxqs/HHeuvpiwsZDRdQEo03A0LQJvra0c
+	R6QB3Lwt8vE4MJSojxKSU1ZOk4UQA8GarTNxHPUci4mTkzHg7Y6Nf03l
+X-Gm-Gg: AeBDievOW2NXL7hV1WtezSbYKJ17qtp2xixfsT/tewEbkuEPYOIfi4e8/CRi+vuCnCr
+	Y3P7NfQQz24mvarDriFv+XOf9nIyrx5duUBp8dG94ovMu4jEd/4DqGuUPpe/2Q0bXksaBDvmRXy
+	PXzEtpmjdCXIQmbkLjMvHAB4412xG3tvf/7zshc4EpkWIQ0JBuY0tS199/KYho1RUXU4qDBXhvb
+	Ki9Untlm9Q66a+rnYNe9OsEoJOFlGBIKYu9AKEas9rkUFkE6Gb77xJJd+rIJjqvD502WGpvhhum
+	trrRfBSguJwY9xYFk/ppMQalNRoqUt1Y5wXcKUGcK+9U2UtwmqmWU5Ml8PJKgnE1QKT13DomDsU
+	OXABsv0aMv2f2gESrp7MON2lm+96ImH86JwObvq9zh8oyXMHWiaCjSQQBWYyo6eNaIIlSF2Oadf
+	heOPXmCZeXMYKzWBxsR/nfy8wsr/sSGhD9WPZ0MYsz009FmviAj0D0dnK1
+X-Received: by 2002:a05:6a00:4208:b0:82f:47ec:944f with SMTP id d2e1a72fcca58-838fdaabea1mr1434680b3a.16.1777945058692;
         Mon, 04 May 2026 18:37:38 -0700 (PDT)
 Received: from twhmp6px (mxsmtp211.mxic.com.tw. [211.75.127.162])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-83967dbf7d2sm230054b3a.49.2026.05.04.18.37.36
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-839679c8629sm196721b3a.36.2026.05.04.18.37.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Mon, 04 May 2026 18:37:37 -0700 (PDT)
 Received: from hqs-appsw-a2o.mp600.macronix.com (unknown [172.17.236.67])
-	by twhmp6px (Postfix) with ESMTPS id B379C4163B75;
+	by twhmp6px (Postfix) with ESMTPS id CE32C4163B7D;
 	Tue,  5 May 2026 09:37:34 +0800 (CST)
 From: Cheng Ming Lin <linchengming884@gmail.com>
 To: miquel.raynal@bootlin.com,
@@ -82,14 +83,16 @@ Cc: linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	alvinzhou@mxic.com.tw,
 	Cheng Ming Lin <chengminglin@mxic.com.tw>
-Subject: [PATCH v10 0/3] mtd: spi-nand: Add support for randomizer feature
-Date: Tue,  5 May 2026 09:34:50 +0800
-Message-Id: <20260505013453.980249-1-linchengming884@gmail.com>
+Subject: [PATCH v10 3/3] mtd: spi-nand: macronix: Enable randomizer support
+Date: Tue,  5 May 2026 09:34:53 +0800
+Message-Id: <20260505013453.980249-4-linchengming884@gmail.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20260505013453.980249-1-linchengming884@gmail.com>
+References: <20260505013453.980249-1-linchengming884@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260504_183739_412761_4B796579 
-X-CRM114-Status: GOOD (  15.66  )
+X-CRM114-CacheID: sfid-20260504_183739_796502_F719B6F6 
+X-CRM114-Status: GOOD (  12.87  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -108,86 +111,152 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Cheng Ming Lin <chengminglin@mxic.com.tw>
 
-This patch series introduces randomizer support for SPI NAND devices.
+Implement the 'set_randomizer' callback for Macronix SPI NAND chips.
+The randomizer is enabled by setting bit 1 of the Configuration Register
+(address 0x10).
 
-- Patch 1: add the nand-randomizer property to the generic nand-chip.yaml
-           bindings. Instead of using boolean properties, it introduces a
-           uint32 enum (0 or 1). If the property is omitted, the driver
-           will not interfere and will leave the randomizer in its current
-           state.
-- Patch 2: add the initialization logic and the set_randomizer callback
-           to the core framework. The core will now parse the device tree
-           properties and enable or disable the randomizer accordingly
-           during spinand_init.
-- Patch 3: implement the set_randomizer callback specifically for Macronix
-           chips (MX35LF/UF series) to handle the vendor-specific register
-           operations.
+This patch adds support for the following chips:
+  - MX35LFxG24AD series
+  - MX35UFxG24AD series
 
-v10:
-* mtd: spi-nand: Add support for randomizer: set_randomizer call
-  now passes the rand_val directly.
+When the randomizer is enabled, data is scrambled internally during
+program operations and automatically descrambled during read operations.
+This helps reduce bit errors caused by program disturbance.
 
-v9:
-* Replaced 'nand-enable-randomizer'/'nand-disable-randomizer'
-  boolean properties with a single 'nand-randomizer' uint32 enum.	
-* Switched to use of_property_read_u32() to align with the new
-  binding.
+Please refer to the following link for randomizer feature:
+Link: https://www.mxic.com.tw/Lists/ApplicationNote/Attachments/2151/AN1051V1-The%20Introduction%20of%20Randomizer%20Feature%20on%20MX30xFxG28AD_MX35xFxG24AD.pdf
 
-v8:
-* dt-bindings: spi-nand: macronix: Remove the chip-specific Application
-  Note link from the commit message to keep the binding generic.
-* mtd: spi-nand: macronix: Update the broken Application Note link and
-  move it here from the dt-binding patch per Miquel's suggestion.
+Signed-off-by: Cheng Ming Lin <chengminglin@mxic.com.tw>
+---
+ drivers/mtd/nand/spi/macronix.c | 38 ++++++++++++++++++++++++---------
+ 1 file changed, 28 insertions(+), 10 deletions(-)
 
-v7:
-* Directly return the result in macronix_set_randomizer()
-
-v6:
-* Added mutual-exclusive constraints using not with required for
-  nand-randomizer-enable and nand-randomizer-disable properties based
-  on Krzysztof's feedback.
-* Simplified the return path in macronix_set_randomizer() to directly
-  return ret; and dropped unrelated formatting changes.
-
-v5:
-* Promoted the randomizer configuration to use generic NAND properties
-  (nand-randomizer-enable and nand-randomizer-disable) instead of
-  vendor-specific bindings.
-* Refactored the initialization architecture in core.c. The core framework
-  is now responsible for parsing the device tree properties and deciding
-  whether to enable or disable the randomizer.
-
-v4:
-* Fix a build error in spinand_randomizer_init() where a value was
-  returned from a void function. (Reported by kernel test robot)
-* Update the return type to int.
-
-v3:
-* Revert the device tree property to the vendor-specific
-  "mxic,randomizer-enable" to strictly follow vendor-specific bindings.
-
-* Update the 'set_randomizer' callback signature to accept a boolean
-  'enable' argument, allowing the feature to be explicitly enabled or
-  disabled.
-
-* Switch the implementation to use the standard SET_FEATURE command
-  to modify the Configuration Register (0x10), replacing the previous
-  special program command method.
-
-v2:
-* Create a global NAND DT property
-
-Cheng Ming Lin (3):
-  dt-bindings: mtd: nand: Add nand-randomizer property
-  mtd: spi-nand: Add support for randomizer
-  mtd: spi-nand: macronix: Enable randomizer support
-
- .../devicetree/bindings/mtd/nand-chip.yaml    |  9 +++++
- drivers/mtd/nand/spi/core.c                   | 20 ++++++++++
- drivers/mtd/nand/spi/macronix.c               | 38 ++++++++++++++-----
- include/linux/mtd/spinand.h                   |  9 +++++
- 4 files changed, 66 insertions(+), 10 deletions(-)
-
+diff --git a/drivers/mtd/nand/spi/macronix.c b/drivers/mtd/nand/spi/macronix.c
+index 67cafa1bb..7dfcc34e9 100644
+--- a/drivers/mtd/nand/spi/macronix.c
++++ b/drivers/mtd/nand/spi/macronix.c
+@@ -14,6 +14,8 @@
+ #define MACRONIX_ECCSR_BF_LAST_PAGE(eccsr) FIELD_GET(GENMASK(3, 0), eccsr)
+ #define MACRONIX_ECCSR_BF_ACCUMULATED_PAGES(eccsr) FIELD_GET(GENMASK(7, 4), eccsr)
+ #define MACRONIX_CFG_CONT_READ         BIT(2)
++#define MACRONIX_CFG_RANDOMIZER_EN     BIT(1)
++#define MACRONIX_FEATURE_ADDR_RANDOMIZER 0x10
+ #define MACRONIX_FEATURE_ADDR_READ_RETRY 0x70
+ #define MACRONIX_NUM_READ_RETRY_MODES 5
+ 
+@@ -170,6 +172,12 @@ static int macronix_set_read_retry(struct spinand_device *spinand,
+ 	return spi_mem_exec_op(spinand->spimem, &op);
+ }
+ 
++static int macronix_set_randomizer(struct spinand_device *spinand, bool enable)
++{
++	return spinand_write_reg_op(spinand, MACRONIX_FEATURE_ADDR_RANDOMIZER,
++				    enable ? MACRONIX_CFG_RANDOMIZER_EN : 0);
++}
++
+ static const struct spinand_info macronix_spinand_table[] = {
+ 	SPINAND_INFO("MX35LF1GE4AB",
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x12),
+@@ -231,7 +239,8 @@ static const struct spinand_info macronix_spinand_table[] = {
+ 		     SPINAND_HAS_QE_BIT,
+ 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout, NULL),
+ 		     SPINAND_READ_RETRY(MACRONIX_NUM_READ_RETRY_MODES,
+-					macronix_set_read_retry)),
++					macronix_set_read_retry),
++		     SPINAND_RANDOMIZER(macronix_set_randomizer)),
+ 	SPINAND_INFO("MX35LF2G24AD",
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x24, 0x03),
+ 		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 2, 1, 1),
+@@ -243,7 +252,8 @@ static const struct spinand_info macronix_spinand_table[] = {
+ 		     SPINAND_HAS_PROG_PLANE_SELECT_BIT,
+ 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout, NULL),
+ 		     SPINAND_READ_RETRY(MACRONIX_NUM_READ_RETRY_MODES,
+-					macronix_set_read_retry)),
++					macronix_set_read_retry),
++		     SPINAND_RANDOMIZER(macronix_set_randomizer)),
+ 	SPINAND_INFO("MX35LF2G24AD-Z4I8",
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x64, 0x03),
+ 		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
+@@ -254,7 +264,8 @@ static const struct spinand_info macronix_spinand_table[] = {
+ 		     SPINAND_HAS_QE_BIT,
+ 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout, NULL),
+ 		     SPINAND_READ_RETRY(MACRONIX_NUM_READ_RETRY_MODES,
+-					macronix_set_read_retry)),
++					macronix_set_read_retry),
++		     SPINAND_RANDOMIZER(macronix_set_randomizer)),
+ 	SPINAND_INFO("MX35LF4G24AD",
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x35, 0x03),
+ 		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 2, 1, 1),
+@@ -266,7 +277,8 @@ static const struct spinand_info macronix_spinand_table[] = {
+ 		     SPINAND_HAS_PROG_PLANE_SELECT_BIT,
+ 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout, NULL),
+ 		     SPINAND_READ_RETRY(MACRONIX_NUM_READ_RETRY_MODES,
+-					macronix_set_read_retry)),
++					macronix_set_read_retry),
++		     SPINAND_RANDOMIZER(macronix_set_randomizer)),
+ 	SPINAND_INFO("MX35LF4G24AD-Z4I8",
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x75, 0x03),
+ 		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
+@@ -277,7 +289,8 @@ static const struct spinand_info macronix_spinand_table[] = {
+ 		     SPINAND_HAS_QE_BIT,
+ 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout, NULL),
+ 		     SPINAND_READ_RETRY(MACRONIX_NUM_READ_RETRY_MODES,
+-					macronix_set_read_retry)),
++					macronix_set_read_retry),
++		     SPINAND_RANDOMIZER(macronix_set_randomizer)),
+ 	SPINAND_INFO("MX31LF1GE4BC",
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x1e),
+ 		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
+@@ -327,7 +340,8 @@ static const struct spinand_info macronix_spinand_table[] = {
+ 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
+ 				     macronix_ecc_get_status),
+ 		     SPINAND_READ_RETRY(MACRONIX_NUM_READ_RETRY_MODES,
+-					macronix_set_read_retry)),
++					macronix_set_read_retry),
++		     SPINAND_RANDOMIZER(macronix_set_randomizer)),
+ 	SPINAND_INFO("MX35UF4G24AD-Z4I8",
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xf5, 0x03),
+ 		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
+@@ -340,7 +354,8 @@ static const struct spinand_info macronix_spinand_table[] = {
+ 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
+ 				     macronix_ecc_get_status),
+ 		     SPINAND_READ_RETRY(MACRONIX_NUM_READ_RETRY_MODES,
+-					macronix_set_read_retry)),
++					macronix_set_read_retry),
++		     SPINAND_RANDOMIZER(macronix_set_randomizer)),
+ 	SPINAND_INFO("MX35UF4GE4AD",
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xb7, 0x03),
+ 		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
+@@ -381,7 +396,8 @@ static const struct spinand_info macronix_spinand_table[] = {
+ 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
+ 				     macronix_ecc_get_status),
+ 		     SPINAND_READ_RETRY(MACRONIX_NUM_READ_RETRY_MODES,
+-					macronix_set_read_retry)),
++					macronix_set_read_retry),
++		     SPINAND_RANDOMIZER(macronix_set_randomizer)),
+ 	SPINAND_INFO("MX35UF2G24AD-Z4I8",
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xe4, 0x03),
+ 		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
+@@ -394,7 +410,8 @@ static const struct spinand_info macronix_spinand_table[] = {
+ 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
+ 				     macronix_ecc_get_status),
+ 		     SPINAND_READ_RETRY(MACRONIX_NUM_READ_RETRY_MODES,
+-					macronix_set_read_retry)),
++					macronix_set_read_retry),
++		     SPINAND_RANDOMIZER(macronix_set_randomizer)),
+ 	SPINAND_INFO("MX35UF2GE4AD",
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xa6, 0x03),
+ 		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
+@@ -444,7 +461,8 @@ static const struct spinand_info macronix_spinand_table[] = {
+ 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
+ 				     macronix_ecc_get_status),
+ 		     SPINAND_READ_RETRY(MACRONIX_NUM_READ_RETRY_MODES,
+-					macronix_set_read_retry)),
++					macronix_set_read_retry),
++		     SPINAND_RANDOMIZER(macronix_set_randomizer)),
+ 	SPINAND_INFO("MX35UF1GE4AD",
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x96, 0x03),
+ 		     NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
 -- 
 2.25.1
 
