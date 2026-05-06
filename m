@@ -4,71 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B39ACD342C
-	for <linux-mtd@archiver.kernel.org>; Wed,  6 May 2026 08:42:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB92ECD342C
+	for <linux-mtd@archiver.kernel.org>; Wed,  6 May 2026 08:51:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Rse9hfHyR3ENWOvmFhQuvFs/e49RCONDGnD0JkgA8WM=; b=T9vRX04oWBpVrx
-	q6fsTDwKN4q4Wr1aCMErOye80dx61rtcJLEsf1gdrtrBENabe/W1PNiiJeotngjtM+TBd6QlRIy97
-	N3tQ73ut0F8mphx2B0/p3g7Xc8tx2E/wUgZbjUQlZpr7m3ymodc0NriJig2/LiFDa9344Bui4JVMb
-	Et9KckPCcpca4kyehQHoi6QmU3CNcjKMqZ60Pc+xnLvn4Caj/s/VokDfwdVoe3/oVTI9t62DU8PFF
-	NRFRZVKmOz8fOXeFHeX9LAgNF30dM9hDq7w0mqRqUFaG9IcETHN/PMdI8bOz/cUPGiennEDFlpm07
-	o3Fg15olVcuiJCvkcx8g==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:References:To:From:Cc:Subject:Message-Id:Date:Mime-Version:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=oMXzE2s29cy3a5t+hcZjg3pJCldm+qxkodX916KztmM=; b=lmBUTFUYwGwFziUWI3FZ5I6pZC
+	LsDxNpbXa0fRUkqcDta6VU7GslWtcI+ldSawtZ9SjbYW9B8MKsC1O7+2IT6Dgfiz0VMBbaqgsLwqG
+	6MohdyRAD7faZxz8eMxm/oeIun68EqFYxlKBb/xZVTpLXy+jWkfvEufFdRosDxFCDVSZaqfGMNK+k
+	JESWVFHP7rL4CvpAtS5NMlDTJaEJWt8Dgwf4uQHNV3XcMIRcgaG+vT9Tei2/UiB+v4CbvXl6Aj2O5
+	7snI+LAcndUv5niEXvaMZJx/9j8y7iIEcpKsmGKroq7pRqUusZFAPWMKfbds298CqW1BPvRmUSclz
+	o/XRIuxA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wKXpj-00000000CBK-0tJI;
-	Wed, 06 May 2026 08:42:19 +0000
-Received: from smtpout-02.galae.net ([185.246.84.56])
+	id 1wKXyY-00000000EN7-2uC3;
+	Wed, 06 May 2026 08:51:26 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wKXpg-00000000CAm-4C6v
+	id 1wKXyX-00000000ELZ-1TMI
 	for linux-mtd@lists.infradead.org;
-	Wed, 06 May 2026 08:42:17 +0000
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id 57EB91A3551;
-	Wed,  6 May 2026 08:42:15 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 2B9136053C;
-	Wed,  6 May 2026 08:42:15 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 79AE8102F225A;
-	Wed,  6 May 2026 10:42:09 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1778056934; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=1j2OwQNIlx64QT21MfQW28rM8o9wlhGOk4TyUaj1rlY=;
-	b=KbeZ/GIZRqwuNT2eZoXLP/denZ7bkA/a4/2d+eU2HPVKUPU71N8KIXF1Uttslj1QZVnfSJ
-	LMTrzvFZ3rrqXIlgCbLjsOALeA02bxqPsxB29/em+WgSXwWhFI0NKAM7opZGvxHh8xkv8k
-	arEK5t1hGehf5WVoRVHufFNx8/De1SbWQqsYDYT8CKRYC9WoGR3HpYFZqw1ercd3z002q9
-	qoBAYmwFHp8Iohrs8VCgNJOkn24KxO7Bbzii1eGgCz0eWnI4bjKH7KWyqg4I37SMjS5L5+
-	iV9ISQuNH5s6EFcXYxTubTDczqwchuSrZDqsFrF+CPM/kkSmvYRWtoogh0B1Ww==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Pratyush Yadav <pratyush@kernel.org>
-Cc: Michael Walle <mwalle@kernel.org>,  Takahiro Kuwano
- <takahiro.kuwano@infineon.com>,  Richard Weinberger <richard@nod.at>,
-  Vignesh Raghavendra <vigneshr@ti.com>,  Jonathan Corbet <corbet@lwn.net>,
-  Sean Anderson <sean.anderson@linux.dev>,  Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>,  Steam Lin <STLin2@winbond.com>,
-  linux-mtd@lists.infradead.org,  linux-kernel@vger.kernel.org,
-  linux-doc@vger.kernel.org
-Subject: Re: [PATCH v4 07/27] mtd: spi-nor: swp: Explain the MEMLOCK ioctl
- implementation behaviour
-In-Reply-To: <2vxzfr4527bx.fsf@kernel.org> (Pratyush Yadav's message of "Tue,
-	05 May 2026 17:40:18 +0200")
-References: <20260403-winbond-v6-18-rc1-spi-nor-swp-v4-0-833dab5e7288@bootlin.com>
-	<20260403-winbond-v6-18-rc1-spi-nor-swp-v4-7-833dab5e7288@bootlin.com>
-	<2vxzfr4527bx.fsf@kernel.org>
-User-Agent: mu4e 1.12.7; emacs 30.2
-Date: Wed, 06 May 2026 10:42:09 +0200
-Message-ID: <87zf2dlyji.fsf@bootlin.com>
-MIME-Version: 1.0
-X-Last-TLS-Session-Version: TLSv1.3
+	Wed, 06 May 2026 08:51:25 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id 7736A42DAB;
+	Wed,  6 May 2026 08:51:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 059BBC2BCB8;
+	Wed,  6 May 2026 08:51:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1778057484;
+	bh=x4Kzu3DSvB+xMkONDghyst4p2G5CH0NY5txEKz1Gx90=;
+	h=Date:Subject:Cc:From:To:References:In-Reply-To:From;
+	b=WcceAVYSZ12uRJJaHje+a5bxMGIQ1tnXWVnzlaPW+MWT+kPfPvlZegPXY9SCCeCCh
+	 q9BSm5PZLCJh0rH9WN6zQoYr6XVVjkOAuv6A0EWIWmvJ8QOmAhahtTc8WYXAiutfyW
+	 RxPLZrEb0mk72rUHPP0iP0x+Y2MJLivT9ZrmWuOyK6ccz183JPgdZVN1+I1sadbGZU
+	 V34XgZOt/DhmKjXmIQL45poJNT0OuD+T5icrTc+Dtr+PTxOLUcFyz3RK4lV5a64nlk
+	 Sj2YM7pq8eF+9x22vJE4HwDop8rWsMCG8lAxR27gcUDWq+LKDaxkHbfYKcytRAlhlg
+	 inmo6FFd2sF0w==
+Mime-Version: 1.0
+Date: Wed, 06 May 2026 10:51:20 +0200
+Message-Id: <DIBGRTZ3BUEE.1GIAWVBNNXUY5@kernel.org>
+Subject: Re: [PATCH v4 16/27] mtd: spi-nor: Create a local SR cache
+Cc: "Takahiro Kuwano" <takahiro.kuwano@infineon.com>, "Richard Weinberger"
+ <richard@nod.at>, "Vignesh Raghavendra" <vigneshr@ti.com>, "Jonathan
+ Corbet" <corbet@lwn.net>, "Sean Anderson" <sean.anderson@linux.dev>,
+ "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>, "Steam Lin"
+ <STLin2@winbond.com>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>
+From: "Michael Walle" <mwalle@kernel.org>
+To: "Pratyush Yadav" <pratyush@kernel.org>, "Miquel Raynal"
+ <miquel.raynal@bootlin.com>
+X-Mailer: aerc 0.20.0
+References: <20260403-winbond-v6-18-rc1-spi-nor-swp-v4-0-833dab5e7288@bootlin.com> <20260403-winbond-v6-18-rc1-spi-nor-swp-v4-16-833dab5e7288@bootlin.com> <2vxz7bph25qx.fsf@kernel.org>
+In-Reply-To: <2vxz7bph25qx.fsf@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260506_014217_170696_FE9DD8F6 
-X-CRM114-Status: UNSURE (   6.39  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260506_015125_406708_9699EE7F 
+X-CRM114-Status: GOOD (  12.79  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,23 +72,65 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============4793362709635198318=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Cj4+ICsvKgo+PiArICogVGhlc2UgaW9jdGxzIGJlaGF2ZSBhY2NvcmRpbmcgdG8gdGhlIGZvbGxv
-d2luZyBydWxlczoKPj4gKyAqIC0+bG9jaygpOiBOZXZlciBsb2NrcyBtb3JlIHRoYW4gd2hhdCBp
-cyByZXF1ZXN0ZWQsIGllLiBtYXkgbG9jayBsZXNzCj4+ICsgKiAtPnVubG9jaygpOiBOZXZlciB1
-bmxvY2tzIG1vcmUgdGhhbiB3aGF0IGlzIHJlcXVlc3RlZCwgaWUuIG1heSB1bmxvY2sgbGVzcwo+
-PiArICogLWlzX2xvY2tlZCgpOiBDaGVja3MgaWYgdGhlIHJlZ2lvbiBpcyAqZnVsbHkqIGxvY2tl
-ZCwgcmV0dXJucyBmYWxzZSBvdGhlcndpc2UuCj4+ICsgKiAgICAgICAgICAgICAgIFRoaXMgZmVl
-YmFjayBtYXkgYmUgbWlzbGVhZGluZyBiZWNhdXNlIHVzZXJzIG1heSBnZXQgYW4gInVubG9ja2Vk
-Igo+PiArICogICAgICAgICAgICAgICBzdGF0dXMgZXZlbiB0aG91Z2ggYSBzdWJwYXJ0IG9mIHRo
-ZSByZWdpb24gaXMgZWZmZWN0aXZlbHkgbG9ja2VkLgo+PiArICovCj4KPiBXZSBhbHJlYWR5IGhh
-dmUgc29tZSB0ZXh0IHdoZXJlIHN0cnVjdCBzcGlfbm9yX2xvY2tpbmdfb3BzIGlzIGRlZmluZWQu
-Cj4gQ2FuIHdlIG1vdmUgdGhpcyBpbmZvcm1hdGlvbiB0aGVyZT8KCk9rLCBJIHdpbGwgdWRwYXRl
-IHRoZSBwb3NpdGlvbiBvZiB0aGUgY29tbWVudC4KClRoYW5rcywKTWlxdcOobAoKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBk
-aXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2xpbnV4LW10ZC8K
+--===============4793362709635198318==
+Content-Type: multipart/signed;
+ boundary=a4c0add991cee5d4c94cd50ba1c744ab3647074d71e77d29746d9541a0c5;
+ micalg=pgp-sha384; protocol="application/pgp-signature"
+
+--a4c0add991cee5d4c94cd50ba1c744ab3647074d71e77d29746d9541a0c5
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+
+On Tue May 5, 2026 at 6:14 PM CEST, Pratyush Yadav wrote:
+> On Fri, Apr 03 2026, Miquel Raynal wrote:
+>
+>> In order to be able to generate debugfs output without having to
+>> actually reach the flash, create a SPI NOR local cache of the status
+>> registers. What matters in our case are all the bits related to sector
+>> locking. As such, in order to make it clear that this cache is not
+>> intended to be used anywhere else, we zero the irrelevant bits.
+>>
+>> The cache is initialized once during the early init, and then maintained
+>> every time the write protection scheme is updated.
+>
+> What is the reason for doing so? Do the reads have side effects?
+
+I don't like that a debugfs read will issue a SPI transaction, at
+least not these informational files.
+
+If we ever want to access the registers in the flash, we should have
+a separate debugfs file/interface.
+
+-michael
+
+--a4c0add991cee5d4c94cd50ba1c744ab3647074d71e77d29746d9541a0c5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCafsBCBIcbXdhbGxlQGtl
+cm5lbC5vcmcACgkQEic87j4CH/iM2QGAodj/4y+LGqm9YV53c2/YGEkzVsrj3w+i
+ZSJBiz7L5WD3XKx7Sk0eqi30Ua6/rNXAAX4xUXCEN7Aa9xEbN6KJYu5i4NPEHL9c
+5M8DqAkASm6gWJKeJXmnWRzFrjL9IVizs50=
+=f4lG
+-----END PGP SIGNATURE-----
+
+--a4c0add991cee5d4c94cd50ba1c744ab3647074d71e77d29746d9541a0c5--
+
+
+--===============4793362709635198318==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============4793362709635198318==--
+
