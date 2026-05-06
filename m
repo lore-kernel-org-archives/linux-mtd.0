@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5FBB4CD343B
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 784E8CD342C
 	for <linux-mtd@archiver.kernel.org>; Wed,  6 May 2026 14:52:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,63 +12,63 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ZhY59ruCmqleqV0y3xTeeKP2s54jzlQYpw6vkAGT8bE=; b=KMgHfKfz2J0f8Q
-	YS/mqzs+rMziVxyx44AA59d5CS4Iad7KA+WHO1rWx37ZvLm4H/dlfC6W3yVNBtexCsBlLFRGieL5a
-	fdvp+ajyuHUuz8wVV0wgMp469Z+SaNveB2OTz+HgeZdXwfjN1DpyrmEHH1ieZob1TQ54JYMFC2TG+
-	N+tGfuAmxHf00kpo3IHRS3aX5wOzslMuLNR3jpJ8G+gRTYhbhJWBZ3sUb2oWXary5o62xRk9PVk6w
-	o80MK2ctA1OHbk+W69gNTJyMjyr2o7WSJ45jW5wpsRQrOo3Caajrs00VwYE01Hj2pIwcb2W+9rWZR
-	1ivtusJFG+drkLt/Nisw==;
+	List-Owner; bh=Cv3spr850rqPuhkLDVee2cWtaUlDS36q9+P5aLBzBl0=; b=e9rfcnzA5InEJf
+	3wMg0ARbyjO1D+Ggpl3Myw4mw/kLQ7dJScCIJHv/PlOLJbeIhNK0MYXrVFGpoUVdoPdwqcvWdApg7
+	ijSKPQw42s+UDltTQxg8ZGhQXNzsUF2Wk7dgRyqWaEOD7q8KA3kz+UBncIQX82glpCCvtpxFRU7rR
+	2AJLJ5aPAFJl1gYFgKQHb0iYm/pYPAcY9pRXfuzxBm4hXROl39FoomPtn8eMtxNg42HXCJCOaEWNy
+	kJPtNiTzhbmTXnv5OybKc/HMk2JT8hNmbtH+Iawz97C2MBxUZ16uwVrI8uvbILpLyI9dtlvWYRy5Q
+	yLV9MfFKMQu/7uEmihMg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wKdbW-00000001B0t-2GN9;
+	id 1wKdbW-00000001B12-2enP;
 	Wed, 06 May 2026 14:52:02 +0000
 Received: from extorris.mess.org ([2001:4b98:dc0:43:f816:3eff:fee1:13b9])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wKdbS-00000001Az1-0MSv
+	id 1wKdbS-00000001Az0-0MSX
 	for linux-mtd@lists.infradead.org;
 	Wed, 06 May 2026 14:51:58 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
-	t=1778078597; bh=G1bGyQ92mZxo9cX1G/JO7vqGJFj875AcyucMClNOOZM=;
+	t=1778078601; bh=IpaJU7Ptdixw7tkDNDKcQUsgWqg5xyH5+gvrwGBrZpA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=hqz/MCu7SA0VnHH3Y6rP/x8iEcDfG3adOtSzFgIccgqI5xuhWk1mhrvWxjdSm4zGC
-	 yxCsLLvF9Fpd4csotf6kEqAf8Xrx21NomB+6DDWVNKwHfU8qeHlMdIMXlGM8NwNDQO
-	 V4opMWro1mx7rzmMAgVRPhttEzt+oB+j1mNvIAilIH7jhz+IY3NAHKL0PLsEBSEZrC
-	 CLlv9ViAnhF6uUn7cHw3OFHHbnxatcZ4fJKZJAAxxByhDBMUG3T3DTxkrx9uCIjHi7
-	 hPo19MZKbjYnczUB4G7HQQA2Y4teStK6rrwgnx9Qz9GWIF/WoIMtVQQppPwhWV//MD
-	 qC/CgDPfix4Rw==
+	b=fU/aRzpz6AQMoBYKhFGEL2EC8Nm/F71FunDEv20E9BgMq54gociJOzOxLCfYiXX2Y
+	 vw08qn6vmbDk2UfK+BdF1Dp55VRRvqMaHYRCQnP5fUoP+9uRFBulI9pxyFnpvsJ5ul
+	 tqLyYpLPs947HTJRNWRY/+I7hQxEEjUWbZ3ZO5BvkUoerhEZzewl3EAeO5kDygDDd0
+	 q1Abhz2xTOc+Bc8/9ym6p2vZMFXcjMQt6P/lvfhANa+S05M88zUM33Y0QzwWj/SWM3
+	 etL9v3SO0qzGTRpck3mUcr+xE3BY0QSgQfLORE9VLKFw9OjXCOSAYuP/aeV6wXJCJW
+	 h5Jd8tlA+cInQ==
 Received: by extorris.mess.org (Postfix, from userid 1004)
-	id 33C1841CEE; Wed, 06 May 2026 15:43:17 +0100 (BST)
+	id 6F45241CE8; Wed, 06 May 2026 15:43:21 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
-	t=1778078588; bh=G1bGyQ92mZxo9cX1G/JO7vqGJFj875AcyucMClNOOZM=;
+	t=1778078589; bh=IpaJU7Ptdixw7tkDNDKcQUsgWqg5xyH5+gvrwGBrZpA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=DUV7J8vPc1t/BSdIPY3nIFLuSJMEChFbW5BU7QfIw5ku7qFqMTj4WlYD0Ta69FWIg
-	 1XL3pPnFvt1ZGbVTwbczs6qrK7RDJSgC49lEgwXEliFsTo6kKrlJXQUJLsZBMGMSQS
-	 UFCvQdUxL2igfytQSamxw4UMuK4GQIENXfRDAIjtxSI+MRIp+Q713ahnuXEdrWibfQ
-	 /eH3vLaTYvdiZN55Xv9p/Q8Il06ZzfaTU3JdLinZTGbxdysCCH56EtWkMrUBSP1whJ
-	 3RLVMg1YsOEzovbLY0ZMjvl9Rjib8RykI29JTQQj10lVm64wfqhv1L+d+k9/9wgEvj
-	 2BJ0UiwYEXHbA==
+	b=EoCDAjif85TtrTsFPF1ho2ir0arDnyvmDaLRDyOCAbSMqaQByJ4e7+vNOq1eG2LFQ
+	 ZwVqBNsERNW8qC+ysSzUTgWkZivm5vUGy7gK8ZufDmzDPmx4LGroZl9iO9Pu/8Giux
+	 ftiRUQ6hIpwtEc5ghRsrQnjUbRxygwY1ZA5QznCgza3As6mjBeYVAIIlCsSR/rKLM4
+	 UtiJkV2HVswODGs8OloceTdiBdCGgYNRmp080X28LCdrDAyNdA5i7Jkb0F1X5l7fP0
+	 jacMV0Ev1ocbk7TQ+xqECnMGEx/ZgRY18rTXWQgzqMIW1DIOlxzGP2j7uwtNgkH3Ga
+	 ocAQf9oJHyCKw==
 Received: from maru.local (unknown [140.228.74.55])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by extorris.mess.org (Postfix) with ESMTPSA id E231441CDE;
-	Wed, 06 May 2026 15:43:08 +0100 (BST)
+	by extorris.mess.org (Postfix) with ESMTPSA id BBC8341CDF;
+	Wed, 06 May 2026 15:43:09 +0100 (BST)
 From: Sean Young <sean@mess.org>
 To: linux-kernel@vger.kernel.org,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>
 Cc: linux-mtd@lists.infradead.org
-Subject: [PATCH 3/8] mtd: netsc520: Remove mapping since board is no longer supported
-Date: Wed,  6 May 2026 15:42:48 +0100
-Message-ID: <7d42d63fe53968d0e917dd6913affc9c8ecc97b6.1778071745.git.sean@mess.org>
+Subject: [PATCH 4/8] mtd: sc520cdp: Remove mapping since board is no longer supported
+Date: Wed,  6 May 2026 15:42:49 +0100
+Message-ID: <b938ad58517e02f142597e8c0749dd717e12aaef.1778071745.git.sean@mess.org>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <cover.1778071745.git.sean@mess.org>
 References: <cover.1778071745.git.sean@mess.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260506_075158_259048_CFA9F05C 
-X-CRM114-Status: GOOD (  23.94  )
+X-CRM114-CacheID: sfid-20260506_075158_256543_6E07CA9E 
+X-CRM114-Status: GOOD (  29.62  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,58 +90,58 @@ this board is no longer supported. Remove the mtd map too.
 
 Signed-off-by: Sean Young <sean@mess.org>
 ---
- drivers/mtd/maps/Kconfig    |   8 ---
+ drivers/mtd/maps/Kconfig    |   8 -
  drivers/mtd/maps/Makefile   |   1 -
- drivers/mtd/maps/netsc520.c | 127 ------------------------------------
- 3 files changed, 136 deletions(-)
- delete mode 100644 drivers/mtd/maps/netsc520.c
+ drivers/mtd/maps/sc520cdp.c | 294 ------------------------------------
+ 3 files changed, 303 deletions(-)
+ delete mode 100644 drivers/mtd/maps/sc520cdp.c
 
 diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
-index e48221e97f8d..b34f3c34c626 100644
+index b34f3c34c626..db63b5af4b39 100644
 --- a/drivers/mtd/maps/Kconfig
 +++ b/drivers/mtd/maps/Kconfig
-@@ -133,14 +133,6 @@ config MTD_SC520CDP
- 	  Dual-in-line JEDEC chip. This 'mapping' driver supports that
- 	  arrangement, implementing three MTD devices.
+@@ -125,14 +125,6 @@ config MTD_SUN_UFLASH
+ 	  Sun Microsystems boardsets.  This driver will require CFI support
+ 	  in the kernel, so if you did not enable CFI previously, do that now.
  
--config MTD_NETSC520
--	tristate "CFI Flash device mapped on AMD NetSc520"
+-config MTD_SC520CDP
+-	tristate "CFI Flash device mapped on AMD SC520 CDP"
 -	depends on (MELAN || COMPILE_TEST) && MTD_CFI
 -	help
--	  This enables access routines for the flash chips on the AMD NetSc520
--	  demonstration board. If you have one of these boards and would like
--	  to use the flash chips on it, say 'Y'.
+-	  The SC520 CDP board has two banks of CFI-compliant chips and one
+-	  Dual-in-line JEDEC chip. This 'mapping' driver supports that
+-	  arrangement, implementing three MTD devices.
 -
  config MTD_SBC_GXX
  	tristate "CFI Flash device mapped on Arcom SBC-GXx boards"
  	depends on X86 && MTD_CFI_INTELEXT && MTD_COMPLEX_MAPPINGS
 diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
-index 46ff278006a7..e8b5caa17ccc 100644
+index e8b5caa17ccc..c545d1e68e91 100644
 --- a/drivers/mtd/maps/Makefile
 +++ b/drivers/mtd/maps/Makefile
-@@ -27,7 +27,6 @@ obj-$(CONFIG_MTD_PCMCIA)	+= pcmciamtd.o
+@@ -26,7 +26,6 @@ obj-$(CONFIG_MTD_PISMO)		+= pismo.o
+ obj-$(CONFIG_MTD_PCMCIA)	+= pcmciamtd.o
  obj-$(CONFIG_MTD_SA1100)	+= sa1100-flash.o
  obj-$(CONFIG_MTD_SBC_GXX)	+= sbc_gxx.o
- obj-$(CONFIG_MTD_SC520CDP)	+= sc520cdp.o
--obj-$(CONFIG_MTD_NETSC520)	+= netsc520.o
+-obj-$(CONFIG_MTD_SC520CDP)	+= sc520cdp.o
  obj-$(CONFIG_MTD_SUN_UFLASH)	+= sun_uflash.o
  obj-$(CONFIG_MTD_SCx200_DOCFLASH)+= scx200_docflash.o
  obj-$(CONFIG_MTD_SOLUTIONENGINE)+= solutionengine.o
-diff --git a/drivers/mtd/maps/netsc520.c b/drivers/mtd/maps/netsc520.c
+diff --git a/drivers/mtd/maps/sc520cdp.c b/drivers/mtd/maps/sc520cdp.c
 deleted file mode 100644
-index 0bb651624f05..000000000000
---- a/drivers/mtd/maps/netsc520.c
+index 8ef7aec634c7..000000000000
+--- a/drivers/mtd/maps/sc520cdp.c
 +++ /dev/null
-@@ -1,127 +0,0 @@
+@@ -1,294 +0,0 @@
 -// SPDX-License-Identifier: GPL-2.0-or-later
--/* netsc520.c -- MTD map driver for AMD NetSc520 Demonstration Board
+-/* sc520cdp.c -- MTD map driver for AMD SC520 Customer Development Platform
 - *
-- * Copyright (C) 2001 Mark Langsdorf (mark.langsdorf@amd.com)
-- *	based on sc520cdp.c by Sysgo Real-Time Solutions GmbH
+- * Copyright (C) 2001 Sysgo Real-Time Solutions GmbH
 - *
-- * The NetSc520 is a demonstration board for the Elan Sc520 processor available
-- * from AMD.  It has a single back of 16 megs of 32-bit Flash ROM and another
-- * 16 megs of SDRAM.
+- * The SC520CDP is an evaluation board for the Elan SC520 processor available
+- * from AMD. It has two banks of 32-bit Flash ROM, each 8 Megabytes in size,
+- * and up to 512 KiB of 8-bit DIL Flash ROM.
+- * For details see https://www.amd.com/products/epd/desiging/evalboards/18.elansc520/520_cdp_brief/index.html
 - */
 -
 -#include <linux/module.h>
@@ -151,115 +151,282 @@ index 0bb651624f05..000000000000
 -#include <asm/io.h>
 -#include <linux/mtd/mtd.h>
 -#include <linux/mtd/map.h>
--#include <linux/mtd/partitions.h>
+-#include <linux/mtd/concat.h>
+-
+-/*
+-** The Embedded Systems BIOS decodes the first FLASH starting at
+-** 0x8400000. This is a *terrible* place for it because accessing
+-** the flash at this location causes the A22 address line to be high
+-** (that's what 0x8400000 binary's ought to be). But this is the highest
+-** order address line on the raw flash devices themselves!!
+-** This causes the top HALF of the flash to be accessed first. Beyond
+-** the physical limits of the flash, the flash chip aliases over (to
+-** 0x880000 which causes the bottom half to be accessed. This splits the
+-** flash into two and inverts it! If you then try to access this from another
+-** program that does NOT do this insanity, then you *will* access the
+-** first half of the flash, but not find what you expect there. That
+-** stuff is in the *second* half! Similarly, the address used by the
+-** BIOS for the second FLASH bank is also quite a bad choice.
+-** If REPROGRAM_PAR is defined below (the default), then this driver will
+-** choose more useful addresses for the FLASH banks by reprogramming the
+-** responsible PARxx registers in the SC520's MMCR region. This will
+-** cause the settings to be incompatible with the BIOS's settings, which
+-** shouldn't be a problem since you are running Linux, (i.e. the BIOS is
+-** not much use anyway). However, if you need to be compatible with
+-** the BIOS for some reason, just undefine REPROGRAM_PAR.
+-*/
+-#define REPROGRAM_PAR
+-
+-
+-
+-#ifdef REPROGRAM_PAR
+-
+-/* These are the addresses we want.. */
+-#define WINDOW_ADDR_0	0x08800000
+-#define WINDOW_ADDR_1	0x09000000
+-#define WINDOW_ADDR_2	0x09800000
+-
+-/* .. and these are the addresses the BIOS gives us */
+-#define WINDOW_ADDR_0_BIOS	0x08400000
+-#define WINDOW_ADDR_1_BIOS	0x08c00000
+-#define WINDOW_ADDR_2_BIOS	0x09400000
+-
+-#else
+-
+-#define WINDOW_ADDR_0	0x08400000
+-#define WINDOW_ADDR_1	0x08C00000
+-#define WINDOW_ADDR_2	0x09400000
+-
+-#endif
+-
+-#define WINDOW_SIZE_0	0x00800000
+-#define WINDOW_SIZE_1	0x00800000
+-#define WINDOW_SIZE_2	0x00080000
+-
+-
+-static struct map_info sc520cdp_map[] = {
+-	{
+-		.name = "SC520CDP Flash Bank #0",
+-		.size = WINDOW_SIZE_0,
+-		.bankwidth = 4,
+-		.phys = WINDOW_ADDR_0
+-	},
+-	{
+-		.name = "SC520CDP Flash Bank #1",
+-		.size = WINDOW_SIZE_1,
+-		.bankwidth = 4,
+-		.phys = WINDOW_ADDR_1
+-	},
+-	{
+-		.name = "SC520CDP DIL Flash",
+-		.size = WINDOW_SIZE_2,
+-		.bankwidth = 1,
+-		.phys = WINDOW_ADDR_2
+-	},
+-};
+-
+-#define NUM_FLASH_BANKS	ARRAY_SIZE(sc520cdp_map)
+-
+-static struct mtd_info *mymtd[NUM_FLASH_BANKS];
+-static struct mtd_info *merged_mtd;
+-
+-#ifdef REPROGRAM_PAR
+-
+-/*
+-** The SC520 MMCR (memory mapped control register) region resides
+-** at 0xFFFEF000. The 16 Programmable Address Region (PAR) registers
+-** are at offset 0x88 in the MMCR:
+-*/
+-#define SC520_MMCR_BASE		0xFFFEF000
+-#define SC520_MMCR_EXTENT	0x1000
+-#define SC520_PAR(x)		((0x88/sizeof(unsigned long)) + (x))
+-#define NUM_SC520_PAR		16	/* total number of PAR registers */
+-
+-/*
+-** The highest three bits in a PAR register determine what target
+-** device is controlled by this PAR. Here, only ROMCS? and BOOTCS
+-** devices are of interest.
+-*/
+-#define SC520_PAR_BOOTCS	(0x4<<29)
+-#define SC520_PAR_ROMCS0	(0x5<<29)
+-#define SC520_PAR_ROMCS1	(0x6<<29)
+-#define SC520_PAR_TRGDEV	(0x7<<29)
+-
+-/*
+-** Bits 28 thru 26 determine some attributes for the
+-** region controlled by the PAR. (We only use non-cacheable)
+-*/
+-#define SC520_PAR_WRPROT	(1<<26)	/* write protected       */
+-#define SC520_PAR_NOCACHE	(1<<27)	/* non-cacheable         */
+-#define SC520_PAR_NOEXEC	(1<<28)	/* code execution denied */
 -
 -
 -/*
--** The single, 16 megabyte flash bank is divided into four virtual
--** partitions.  The first partition is 768 KiB and is intended to
--** store the kernel image loaded by the bootstrap loader.  The second
--** partition is 256 KiB and holds the BIOS image.  The third
--** partition is 14.5 MiB and is intended for the flash file system
--** image.  The last partition is 512 KiB and contains another copy
--** of the BIOS image and the reset vector.
--**
--** Only the third partition should be mounted.  The first partition
--** should not be mounted, but it can erased and written to using the
--** MTD character routines.  The second and fourth partitions should
--** not be touched - it is possible to corrupt the BIOS image by
--** mounting these partitions, and potentially the board will not be
--** recoverable afterwards.
+-** Bit 25 determines the granularity: 4K or 64K
 -*/
+-#define SC520_PAR_PG_SIZ4	(0<<25)
+-#define SC520_PAR_PG_SIZ64	(1<<25)
 -
--/* partition_info gives details on the logical partitions that the split the
-- * single flash device into. If the size if zero we use up to the end of the
-- * device. */
--static const struct mtd_partition partition_info[] = {
--    {
--	    .name = "NetSc520 boot kernel",
--	    .offset = 0,
--	    .size = 0xc0000
--    },
--    {
--	    .name = "NetSc520 Low BIOS",
--	    .offset = 0xc0000,
--	    .size = 0x40000
--    },
--    {
--	    .name = "NetSc520 file system",
--	    .offset = 0x100000,
--	    .size = 0xe80000
--    },
--    {
--	    .name = "NetSc520 High BIOS",
--	    .offset = 0xf80000,
--	    .size = 0x80000
--    },
--};
--#define NUM_PARTITIONS ARRAY_SIZE(partition_info)
+-/*
+-** Build a value to be written into a PAR register.
+-** We only need ROM entries, 64K page size:
+-*/
+-#define SC520_PAR_ENTRY(trgdev, address, size) \
+-	((trgdev) | SC520_PAR_NOCACHE | SC520_PAR_PG_SIZ64 | \
+-	(address) >> 16 | (((size) >> 16) - 1) << 14)
 -
--#define WINDOW_SIZE	0x00100000
--#define WINDOW_ADDR	0x00200000
--
--static struct map_info netsc520_map = {
--	.name = "netsc520 Flash Bank",
--	.size = WINDOW_SIZE,
--	.bankwidth = 4,
--	.phys = WINDOW_ADDR,
+-struct sc520_par_table
+-{
+-	unsigned long trgdev;
+-	unsigned long new_par;
+-	unsigned long default_address;
 -};
 -
--#define NUM_FLASH_BANKS	ARRAY_SIZE(netsc520_map)
--
--static struct mtd_info *mymtd;
--
--static int __init init_netsc520(void)
+-static const struct sc520_par_table par_table[NUM_FLASH_BANKS] =
 -{
--	printk(KERN_NOTICE "NetSc520 flash device: 0x%Lx at 0x%Lx\n",
--			(unsigned long long)netsc520_map.size,
--			(unsigned long long)netsc520_map.phys);
--	netsc520_map.virt = ioremap(netsc520_map.phys, netsc520_map.size);
+-	{	/* Flash Bank #0: selected by ROMCS0 */
+-		SC520_PAR_ROMCS0,
+-		SC520_PAR_ENTRY(SC520_PAR_ROMCS0, WINDOW_ADDR_0, WINDOW_SIZE_0),
+-		WINDOW_ADDR_0_BIOS
+-	},
+-	{	/* Flash Bank #1: selected by ROMCS1 */
+-		SC520_PAR_ROMCS1,
+-		SC520_PAR_ENTRY(SC520_PAR_ROMCS1, WINDOW_ADDR_1, WINDOW_SIZE_1),
+-		WINDOW_ADDR_1_BIOS
+-	},
+-	{	/* DIL (BIOS) Flash: selected by BOOTCS */
+-		SC520_PAR_BOOTCS,
+-		SC520_PAR_ENTRY(SC520_PAR_BOOTCS, WINDOW_ADDR_2, WINDOW_SIZE_2),
+-		WINDOW_ADDR_2_BIOS
+-	}
+-};
 -
--	if (!netsc520_map.virt) {
--		printk("Failed to ioremap\n");
--		return -EIO;
+-
+-static void sc520cdp_setup_par(void)
+-{
+-	unsigned long __iomem *mmcr;
+-	unsigned long mmcr_val;
+-	int i, j;
+-
+-	/* map in SC520's MMCR area */
+-	mmcr = ioremap(SC520_MMCR_BASE, SC520_MMCR_EXTENT);
+-	if(!mmcr) { /* ioremap failed: skip the PAR reprogramming */
+-		/* force physical address fields to BIOS defaults: */
+-		for(i = 0; i < NUM_FLASH_BANKS; i++)
+-			sc520cdp_map[i].phys = par_table[i].default_address;
+-		return;
 -	}
 -
--	simple_map_init(&netsc520_map);
--
--	mymtd = do_map_probe("cfi_probe", &netsc520_map);
--	if(!mymtd)
--		mymtd = do_map_probe("map_ram", &netsc520_map);
--	if(!mymtd)
--		mymtd = do_map_probe("map_rom", &netsc520_map);
--
--	if (!mymtd) {
--		iounmap(netsc520_map.virt);
--		return -ENXIO;
+-	/*
+-	** Find the PARxx registers that are responsible for activating
+-	** ROMCS0, ROMCS1 and BOOTCS. Reprogram each of these with a
+-	** new value from the table.
+-	*/
+-	for(i = 0; i < NUM_FLASH_BANKS; i++) {		/* for each par_table entry  */
+-		for(j = 0; j < NUM_SC520_PAR; j++) {	/* for each PAR register     */
+-			mmcr_val = readl(&mmcr[SC520_PAR(j)]);
+-			/* if target device field matches, reprogram the PAR */
+-			if((mmcr_val & SC520_PAR_TRGDEV) == par_table[i].trgdev)
+-			{
+-				writel(par_table[i].new_par, &mmcr[SC520_PAR(j)]);
+-				break;
+-			}
+-		}
+-		if(j == NUM_SC520_PAR)
+-		{	/* no matching PAR found: try default BIOS address */
+-			printk(KERN_NOTICE "Could not find PAR responsible for %s\n",
+-				sc520cdp_map[i].name);
+-			printk(KERN_NOTICE "Trying default address 0x%lx\n",
+-				par_table[i].default_address);
+-			sc520cdp_map[i].phys = par_table[i].default_address;
+-		}
 -	}
+-	iounmap(mmcr);
+-}
+-#endif
 -
--	mymtd->owner = THIS_MODULE;
--	mtd_device_register(mymtd, partition_info, NUM_PARTITIONS);
--	return 0;
+-
+-static int __init init_sc520cdp(void)
+-{
+-	int i, j, devices_found = 0;
+-
+-#ifdef REPROGRAM_PAR
+-	/* reprogram PAR registers so flash appears at the desired addresses */
+-	sc520cdp_setup_par();
+-#endif
+-
+-	for (i = 0; i < NUM_FLASH_BANKS; i++) {
+-		printk(KERN_NOTICE "SC520 CDP flash device: 0x%Lx at 0x%Lx\n",
+-			(unsigned long long)sc520cdp_map[i].size,
+-			(unsigned long long)sc520cdp_map[i].phys);
+-
+-		sc520cdp_map[i].virt = ioremap(sc520cdp_map[i].phys, sc520cdp_map[i].size);
+-
+-		if (!sc520cdp_map[i].virt) {
+-			printk("Failed to ioremap\n");
+-			for (j = 0; j < i; j++) {
+-				if (mymtd[j]) {
+-					map_destroy(mymtd[j]);
+-					iounmap(sc520cdp_map[j].virt);
+-				}
+-			}
+-			return -EIO;
+-		}
+-
+-		simple_map_init(&sc520cdp_map[i]);
+-
+-		mymtd[i] = do_map_probe("cfi_probe", &sc520cdp_map[i]);
+-		if(!mymtd[i])
+-			mymtd[i] = do_map_probe("jedec_probe", &sc520cdp_map[i]);
+-		if(!mymtd[i])
+-			mymtd[i] = do_map_probe("map_rom", &sc520cdp_map[i]);
+-
+-		if (mymtd[i]) {
+-			mymtd[i]->owner = THIS_MODULE;
+-			++devices_found;
+-		}
+-		else {
+-			iounmap(sc520cdp_map[i].virt);
+-		}
+-	}
+-	if(devices_found >= 2) {
+-		/* Combine the two flash banks into a single MTD device & register it: */
+-		merged_mtd = mtd_concat_create(mymtd, 2, "SC520CDP Flash Banks #0 and #1");
+-		if(merged_mtd)
+-			mtd_device_register(merged_mtd, NULL, 0);
+-	}
+-	if(devices_found == 3) /* register the third (DIL-Flash) device */
+-		mtd_device_register(mymtd[2], NULL, 0);
+-	return(devices_found ? 0 : -ENXIO);
 -}
 -
--static void __exit cleanup_netsc520(void)
+-static void __exit cleanup_sc520cdp(void)
 -{
--	if (mymtd) {
--		mtd_device_unregister(mymtd);
--		map_destroy(mymtd);
+-	int i;
+-
+-	if (merged_mtd) {
+-		mtd_device_unregister(merged_mtd);
+-		mtd_concat_destroy(merged_mtd);
 -	}
--	if (netsc520_map.virt) {
--		iounmap(netsc520_map.virt);
--		netsc520_map.virt = NULL;
+-	if (mymtd[2])
+-		mtd_device_unregister(mymtd[2]);
+-
+-	for (i = 0; i < NUM_FLASH_BANKS; i++) {
+-		if (mymtd[i])
+-			map_destroy(mymtd[i]);
+-		if (sc520cdp_map[i].virt) {
+-			iounmap(sc520cdp_map[i].virt);
+-			sc520cdp_map[i].virt = NULL;
+-		}
 -	}
 -}
 -
--module_init(init_netsc520);
--module_exit(cleanup_netsc520);
+-module_init(init_sc520cdp);
+-module_exit(cleanup_sc520cdp);
 -
 -MODULE_LICENSE("GPL");
--MODULE_AUTHOR("Mark Langsdorf <mark.langsdorf@amd.com>");
--MODULE_DESCRIPTION("MTD map driver for AMD NetSc520 Demonstration Board");
+-MODULE_AUTHOR("Sysgo Real-Time Solutions GmbH");
+-MODULE_DESCRIPTION("MTD map driver for AMD SC520 Customer Development Platform");
 -- 
 2.54.0
 
