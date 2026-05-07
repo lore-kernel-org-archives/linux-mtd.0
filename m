@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73D96CD3446
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 May 2026 16:47:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9796ACD3442
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 May 2026 16:48:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+uILJUOksMJGwPtf/TxBAzI6rOnYeeo3fAMFbiU7jsM=; b=sNTaF8eRgi3kdr
-	pyO6dv81rqlFeLU9C/Pt1MsG0u5wtMbuRu8zT040/UT21eMmuRyQjRNumKX8y5xL+sMENc+jIvMVD
-	/nPLowHXB2fw0H+91WUN7DYUlGQDDoc73z04VSoZyOMRgB0siXNAVIkZLnrU7y25PBTYoIeEiq0Uz
-	5npEB8hFAISrlYtjt+zoCYAmBtfwRWMntTvpAQOPE2bHooF7ltxo8F9XcWf/oxJfIzdNAXoXRdqVR
-	xv9UyDZTJm2ic82kkEgZ4IaPKssf3S7LD6H1zmjUq6l0HV6EvGg2vflVCksHle0xzLBskkhLpbDGM
-	X7wwR+EzhKpOb71NZC4A==;
+	List-Owner; bh=LRP0WUDZo1MZerWGA0VUBU1ZOCtC6BM5I7nXtOrZQX8=; b=RRRplMPTV2FFNe
+	Bk66m8yvAGXwfX9fTn8+KdpX+5Ep7+nq64NOemev9JD5No8WbB5RmOqtfTIF7vBFWDBIoLjIAT8Rb
+	Kq9HCr8qgofzJ/+Dvxoy2lxsPCIrCSC/G8a4Qb3u9BSTr4ZEsB2Cn4c53awUQffAKQwkNTJYxCh7q
+	n0Oj24qjNR8vt8Nny2jROH6SBt3+FuJfKhZOuqRRfxN+vyW9u9eBp+e9ybkSKgAVLwk4RW867y6G8
+	T4knwQs99CzVqrdPT2RihvQiQjGSuvUXLRV4vtHc/JpOEuqhLMw2ubt86l2Gy9naWJ8uKDZlXSzRG
+	KXMf4Tq6/jX48U7U5Y4w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wL1tB-00000004O0E-0pQy;
-	Thu, 07 May 2026 16:47:53 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1wL1tH-00000004O7T-1Pn5;
+	Thu, 07 May 2026 16:47:59 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wL1t8-00000004NwC-38fL
+	id 1wL1tG-00000004O5P-1e6M
 	for linux-mtd@bombadil.infradead.org;
-	Thu, 07 May 2026 16:47:50 +0000
+	Thu, 07 May 2026 16:47:58 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Cc:To:In-Reply-To:References:
-	Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
-	From:Sender:Reply-To:Content-ID:Content-Description;
-	bh=BzudXirteyCIpUHAn2PSh0cnsxh8jvQrz2NfKL2yz8c=; b=Nmd33WXp8x0jKLDehUD9lUydsw
-	CBFyexgNTEveZ4/PfGtGIHNSqB3Na+NX/cp65uBl3gA2hIaLeZo7RLgwZ3kRreVhvseyREhkzCIYd
-	uzWI0McPyRF94xCkEST6I2lZujs++zEIg2C+ZY9fTPbbnfuJahGVX2Y6p9fYhZryn/5XYwxKvz5N7
-	eCKCklV177ElZPnZ1e3xu0RNOTeTN4+J3bW0M9afSf5FwnNqh79FseLdwqu4RTUayt7FbRE6kk0t5
-	a+/NjIJSaddoCa4MlFeFhSbyrMBl6DJWlxNjmtgu4Yd5rnY+TAHkxYtHsuojVhbn+YLoPTdyzAYNw
-	GMr3z9xw==;
-Received: from smtpout-04.galae.net ([185.171.202.116])
-	by desiato.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wL1t2-000000046OQ-3ujp
+	d=infradead.org; s=casper.20170209; h=Cc:To:In-Reply-To:References:Message-Id
+	:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:From:Sender
+	:Reply-To:Content-ID:Content-Description;
+	bh=tZrjKlrSTIx0EpT8S91i2zZxREgNAGIUjyhXtv54w/g=; b=Tlk2oZLkBwLblP0oLP6vXY9EE+
+	X5F29arAyoUMIB574KRjkOkj2I+51R80NHolaD9Vyf4qBkWpVjt7R7Z+GlvdAKHobbxjRo+HN7qbq
+	JAbgAwFpnyKTr+oBynIy2nFUKB97NcURlQhrvRhIGFOGh3AkNggcCLkdMURG7gT4dsTR1e4MTPEDS
+	X6rZf7HnncdwgJLAnbIfOqsShWaNK3bLlA1y7YyykBZQ7bY2Zaq53yq7NMDMTVxnyOrrsTs2vKOwW
+	WmwOdswF2dGOLsFQK9mhkhMQpjFz2U8PPL5Du4HJaKanGvPd8Sr3/TyZ/AzSaP3F0fwV9Qf7mq7Y4
+	MXUvqleg==;
+Received: from smtpout-02.galae.net ([185.246.84.56])
+	by casper.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
+	id 1wL1tB-000000035aK-3SSD
 	for linux-mtd@lists.infradead.org;
-	Thu, 07 May 2026 16:47:49 +0000
+	Thu, 07 May 2026 16:47:57 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id 598F0C5DC60;
-	Thu,  7 May 2026 16:48:32 +0000 (UTC)
+	by smtpout-02.galae.net (Postfix) with ESMTPS id 63C7B1A355D;
+	Thu,  7 May 2026 16:47:46 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 8FBF1605CF;
-	Thu,  7 May 2026 16:47:44 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 670BE108194E4;
-	Thu,  7 May 2026 18:47:42 +0200 (CEST)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 31FC7605CF;
+	Thu,  7 May 2026 16:47:46 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 2856A108194ED;
+	Thu,  7 May 2026 18:47:44 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1778172463; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1778172465; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=BzudXirteyCIpUHAn2PSh0cnsxh8jvQrz2NfKL2yz8c=;
-	b=rqFqbMZwEdCfqW2o+ClqRVtVQmm3OWeDk4XGcfZWRMAtYbEE8GhsmkPsLaWG2euWrP3Npx
-	cc79bemYuxskGmxsiAVu4GM3/9mn0UUQ0xCV5O2VesnE8q3JbsoIkrAmEWibujGmiBlJ6Z
-	4mJflq7+xthqOTZl8jf8rq/8lc+EnU2GfAv3e5ZKIKDx6xlKc9nX1v7FU+1HOJWRW1U7ls
-	KKnxj5glOix0lsJeGXUWwbO8Y0fNG8dyAlPD/l8h8HzONNc6Cpw2tDHBBJJR5pi9jVIuNT
-	ZD8M9BN5q5twd020YHoLMKlskOHacilHRLW8EvD75N7GPFxgKPYDH13CGDITlQ==
+	bh=tZrjKlrSTIx0EpT8S91i2zZxREgNAGIUjyhXtv54w/g=;
+	b=mYvXZdy8urt7OjdZ5yUP+KbpFc+fDEFrhM0yjtEhBT19fVKAnPtcI2Ni6A2QaIN1+GXEhn
+	wy9gzxJ1MqCzQQtqERtht7A/B6yBofBfP8BDn1cohGMkQqcq1LCPF+gsWmVRO4RlbtMrXn
+	80JuZZBSncYuwUpmJykMVxiaC6/U6WrNxevVZfEfoE4y/SLi9wdUQpG+oWJeoFdS57xEZH
+	IP4IOGM2xEuURMMEG/nRKWgsLC9OY4uxxVnOBu1BpA2Zte/4gSTUMe2A2eO0LxB6eUE288
+	bJCFUf8uTUZz0eydFl9s+37noV7rmMeaVJLEah6t0QcCsW2R8bY0j1D4lN68yw==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Thu, 07 May 2026 18:47:08 +0200
-Subject: [PATCH v5 27/28] mtd: spi-nor: winbond: Add W25Q01NWxxIM CMP
+Date: Thu, 07 May 2026 18:47:09 +0200
+Subject: [PATCH v5 28/28] mtd: spi-nor: winbond: Add W25Q02NWxxIM CMP
  locking support
 MIME-Version: 1.0
-Message-Id: <20260507-winbond-v6-18-rc1-spi-nor-swp-v5-27-93453e1a9597@bootlin.com>
+Message-Id: <20260507-winbond-v6-18-rc1-spi-nor-swp-v5-28-93453e1a9597@bootlin.com>
 References: <20260507-winbond-v6-18-rc1-spi-nor-swp-v5-0-93453e1a9597@bootlin.com>
 In-Reply-To: <20260507-winbond-v6-18-rc1-spi-nor-swp-v5-0-93453e1a9597@bootlin.com>
 To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
@@ -80,8 +80,8 @@ Cc: Sean Anderson <sean.anderson@linux.dev>,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260507_174745_397541_D57D0B0B 
-X-CRM114-Status: GOOD (  10.82  )
+X-CRM114-CacheID: sfid-20260507_174754_330544_BCA17817 
+X-CRM114-Status: GOOD (  12.67  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,9 +101,19 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 This chip has support for the locking complement (CMP) feature. Add
 the relevant bit to enable it.
 
+Unfortunately, this chip also comes with an incorrect BFPT table,
+indicating the Control Register cannot be read back. This is wrong,
+reading back the register works and has no (observed) side effect. The
+datasheet clearly indicates supporting the 35h command and all bits from
+the CR are marked readable. QE and CMP bits are inside, and can be
+properly read back.
+
+Add a fixup for this, otherwise it would defeat the use of the CMP
+feature.
+
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
-Test run with W25Q01NWxxIM:
+Test run with W25Q02NWxxIM:
 $ flash_lock -u /dev/mtd0
 $ flash_lock -l /dev/mtd0 $bs $all_but_one # all but the first
 $ show_sectors
@@ -135,23 +145,24 @@ locked sectors
  00000000-0ffdffff |   locked | 4094
  0ffe0000-0fffffff | unlocked | 2
 ---
- drivers/mtd/spi-nor/winbond.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/mtd/spi-nor/winbond.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
-index 3eca7baa4d5a..3a3b7f2f1659 100644
+index 3a3b7f2f1659..8ebdbcec0b3f 100644
 --- a/drivers/mtd/spi-nor/winbond.c
 +++ b/drivers/mtd/spi-nor/winbond.c
-@@ -374,7 +374,8 @@ static const struct flash_info winbond_nor_parts[] = {
- 	}, {
- 		/* W25Q01NWxxIM */
- 		.id = SNOR_ID(0xef, 0x80, 0x21),
--		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6 | SPI_NOR_4BIT_BP,
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6 |
-+			 SPI_NOR_4BIT_BP | SPI_NOR_HAS_CMP,
+@@ -379,7 +379,9 @@ static const struct flash_info winbond_nor_parts[] = {
  	}, {
  		/* W25Q02NWxxIM */
  		.id = SNOR_ID(0xef, 0x80, 0x22),
+-		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6 | SPI_NOR_4BIT_BP,
++		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6 |
++			 SPI_NOR_4BIT_BP | SPI_NOR_HAS_CMP,
++		.fixups = &winbond_rdcr_fixup,
+ 	}, {
+ 		/* W25H512NWxxAM */
+ 		.id = SNOR_ID(0xef, 0xa0, 0x20),
 
 -- 
 2.53.0
