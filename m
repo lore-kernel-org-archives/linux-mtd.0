@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 26124CD37AA
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4FB57CD37AB
 	for <linux-mtd@archiver.kernel.org>; Thu,  7 May 2026 16:47:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,43 +12,43 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=eP7osXsYpIb/ggkIJvAPmNDHFM/pw64DBK9822qriWs=; b=cGoIw8OEq6r+Ft
-	J04byxjJ4j03Xd4x66IjlnrwZYorLh5lV+1n/EoLsmcF3qK5IxLxYUtemnIrym7ivhDbuEWD3Kj1N
-	wbMz9CJo7qfyLXnoH3Sg9sVCBsSp8cqqNUc4eT6lT+AvmaM720xkWYvWAN5btgNmRSCGwY6Hh0vo2
-	tXNWZfOUXXPnb+wTpTzk2/riKHTs0j+RQddaR4CslM56NwPZyY6GA7Q7Ry4A3z6A7214911xjBCaq
-	l+JDztlLRicIDK00E0NZhQ/KFQXpyUHqHa6LKngImq1fLko+m58KTZqyEspOpojE6DU/C6AvEqxgF
-	5mxnMKsDJuN8v/mjlGqg==;
+	List-Owner; bh=aDzIoMn8HLNwmBTRvSUaW0CrDGlpKox3XwOTfB2RckA=; b=QdejdQPsVy7ru4
+	XATWWJjpS9YOXZQceoHWGYfcoOdg3WUKPx2VyGdWe/KS2VhAUDK+l2tx6qXZRY15ejNnQ+hcW4ypT
+	HwdaG1Ig3+M2UWgvsicmbPsQkTR68IbBVmoKj/QVCYNU82WKQzl8sEhGiUQgZCDvtgOhP01z9qy/A
+	FY6HqJ5rg7Ao81l0UYJunZo5dGvWnHXcbZstq4/Qd+s6lTj6JRNlMPnUvnV8Mac+8i38qVqvlEEOa
+	xah8yH7FncuF6QqHvCmcSMnQdev+T0YDAMpfpP/XlVij9hyQYRucfy3UKRpuPNodwJa7PYk+mkXd6
+	OMtGa6DhP71HEYcaIhzg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wL1sX-00000004N06-0NxM;
-	Thu, 07 May 2026 16:47:13 +0000
-Received: from smtpout-03.galae.net ([185.246.85.4])
+	id 1wL1sR-00000004Mww-1zAf;
+	Thu, 07 May 2026 16:47:07 +0000
+Received: from smtpout-04.galae.net ([185.171.202.116])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wL1sT-00000004Mxq-2s5S
+	id 1wL1sM-00000004MuH-1EqP
 	for linux-mtd@lists.infradead.org;
-	Thu, 07 May 2026 16:47:10 +0000
+	Thu, 07 May 2026 16:47:04 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id 485494E42C33;
-	Thu,  7 May 2026 16:47:08 +0000 (UTC)
+	by smtpout-04.galae.net (Postfix) with ESMTPS id 765B7C5DC64;
+	Thu,  7 May 2026 16:47:47 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 1C970605CF;
-	Thu,  7 May 2026 16:47:08 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 28A5D108194E2;
-	Thu,  7 May 2026 18:47:06 +0200 (CEST)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id AB3A4605CF;
+	Thu,  7 May 2026 16:46:59 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 97513108194E4;
+	Thu,  7 May 2026 18:46:57 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1778172427; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1778172418; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=380DMxOtkVf4S8j1lpaF5rnIUMKJfHDNDSHsb4bomqI=;
-	b=jZOMbxa1u8EpHor/OaMpOtoS4ck+q56bAJc6QdT3wvqxVBB5E3wxslMFb4HA4BhRsOp+ct
-	7Qzva9KLTTFGVCvP0NusFmBfxPBhuXkY901MJ7LJgnDvf0K2OxhI/oON14kvDfkhy1JDss
-	P7FuFh9FlNxlcYw2dpQZV4ocB7MIwZL727OjBRVi++vKnAhX9Kr0LMRMJ4bCiAsOGlPFuP
-	Icq3ru76HZQb9SsPW0BW5gGFXyPKwnZkJalKtopQhOs3/dAA5MbJ+evq8Cbr6zaGFPH9ql
-	edGg3h4MKbEITN1wFmP0FyLoD+QWE5S2XbITlKMe46QgN2nJ5ywwbvEacENLAg==
+	bh=p/VrR2zWyEuP7FnbthxkSprPO27GGH7TRyCzje2SKqM=;
+	b=LyRU2v1weD668CqE79SrASuJpy0VoVm3w+qVm3NiuaeV4+qF+8/nYGO1cRFgKKXtiuny6G
+	onEYe6OPKMewhx3Mh/6l3sKWcmAWltnkB7JHG5rJvBzvtmFU/KzWCo/tTu21kqDuVuYn8P
+	Jv1Xo1xxyF0XBWRpiatxs2SmRafrg4rDLpeAdmYXQ/psdjnR/MholvQx7NkDMv06sscWPB
+	p5Vx16aqfQ2IJWT49y3APTBHaEg+jykoQsi9SZCkxK+MhQzrHtmAskCwm4sJoRHVY11tbo
+	KrfI7vWRap2sKT+B32RsvCERS/SeqGLcP27yNzcwxjqgW/7CgmiqzMjczWylsg==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Thu, 07 May 2026 18:46:48 +0200
-Subject: [PATCH v5 07/28] mtd: spi-nor: debugfs: Enhance output
+Date: Thu, 07 May 2026 18:46:43 +0200
+Subject: [PATCH v5 02/28] mtd: spi-nor: debugfs: Fix the flags list
 MIME-Version: 1.0
-Message-Id: <20260507-winbond-v6-18-rc1-spi-nor-swp-v5-7-93453e1a9597@bootlin.com>
+Message-Id: <20260507-winbond-v6-18-rc1-spi-nor-swp-v5-2-93453e1a9597@bootlin.com>
 References: <20260507-winbond-v6-18-rc1-spi-nor-swp-v5-0-93453e1a9597@bootlin.com>
 In-Reply-To: <20260507-winbond-v6-18-rc1-spi-nor-swp-v5-0-93453e1a9597@bootlin.com>
 To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
@@ -64,8 +64,9 @@ Cc: Sean Anderson <sean.anderson@linux.dev>,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260507_094709_864923_628AC820 
-X-CRM114-Status: GOOD (  10.30  )
+X-CRM114-CacheID: sfid-20260507_094702_476251_5A6427F5 
+X-CRM114-Status: UNSURE (   6.86  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,29 +83,30 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Align the number of dashes to the bigger column width (the title in this
-case) to make the output more pleasant and aligned with what is done
-in the "params" file output.
+As mentioned above the spi_nor_option_flags enumeration in core.h, this
+list should be kept in sync with the one in the core.
 
+Add the missing flag.
+
+Fixes: 6a42bc97ccda ("mtd: spi-nor: core: Allow specifying the byte order in Octal DTR mode")
 Reviewed-by: Michael Walle <mwalle@kernel.org>
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/spi-nor/debugfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/spi-nor/debugfs.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/drivers/mtd/spi-nor/debugfs.c b/drivers/mtd/spi-nor/debugfs.c
-index 69830ad43990..d0191eb9f879 100644
+index fa6956144d2e..d700e0b27182 100644
 --- a/drivers/mtd/spi-nor/debugfs.c
 +++ b/drivers/mtd/spi-nor/debugfs.c
-@@ -144,7 +144,7 @@ static int spi_nor_params_show(struct seq_file *s, void *data)
+@@ -28,6 +28,7 @@ static const char *const snor_f_names[] = {
+ 	SNOR_F_NAME(RWW),
+ 	SNOR_F_NAME(ECC),
+ 	SNOR_F_NAME(NO_WP),
++	SNOR_F_NAME(SWAP16),
+ };
+ #undef SNOR_F_NAME
  
- 	seq_puts(s, "\nsector map\n");
- 	seq_puts(s, " region (in hex)   | erase mask | overlaid\n");
--	seq_puts(s, " ------------------+------------+----------\n");
-+	seq_puts(s, " ------------------+------------+---------\n");
- 	for (i = 0; i < erase_map->n_regions; i++) {
- 		u64 start = region[i].offset;
- 		u64 end = start + region[i].size - 1;
 
 -- 
 2.53.0
