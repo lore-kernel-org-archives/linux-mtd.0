@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F272CD3446
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F132CD3442
 	for <linux-mtd@archiver.kernel.org>; Thu,  7 May 2026 16:47:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,44 +12,43 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=EKfkOVmKsrXA/5ApQUBgODZKMghL/1VPNmIhu7/GKIA=; b=EwvOz5L9HVeP1Y
-	zS0m31Yylg7tgiXc4opYGxOQReQG0VEE01uiE5z/K5XObMZ1lRGo+P3QYsnYBJRgXLoU8mtfzw+Qk
-	VX9e9FAS6hqdhS6OIthrn1r24057la4J4UWwcjnGLZIVaOzv8jqwB27bA6+q81axK+xuMWBQ3EGgq
-	vAhc8Cs8KaeZ8UJlNXkrMHlBmq1K6fU7jUBwhFu1dsP7Wiur2Wvsw16HvNjsZVoezxE0STuCsMlvE
-	Gl6Wr9VfFxACpeWF3lDD8kKqYefP6nfjk/yWFdLGOy+XjzAlH47S+zakNBzEKLRCPrzBw9dhYQyX8
-	aa9ECCO76+lNzZgroz0w==;
+	List-Owner; bh=p0IiZiFch02/cuVmo34I/fTlUdYSnX5XJQCIC0LeNvk=; b=mG9ki0gWbQCbHp
+	FqC67Mi120P2El+KlSDILw+SxneHAD96/NLC8Vbp2WV9gnZFGELLR0W1f/Yc5X2ibGmx2UMZhDfey
+	+zc1q+hyQyppzcG/MuqQBvr62CI8+Mz0kyqgxIJMyCQ1dyPC5DGXbWcAxEY2SwMfqca9HGyeOqw6F
+	tgsYUTr00aQ1Xo8vOtYmwhsWzCNP8uBy/UTm1SbdYqglC+8Wuezvc8dk5g+A6Zxl4FyycddVAikxo
+	K8rwMecsWJxA9A6X62BYMhgfGJ1XWoybnX7mXvu3engm516nip89oAHYAxMgTsTMoZNxaCPY4NBoB
+	OU0W8ODMQPwJADTL1mvQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wL1sR-00000004Mwp-1bSA;
+	id 1wL1sR-00000004MwK-1EKC;
 	Thu, 07 May 2026 16:47:07 +0000
 Received: from smtpout-02.galae.net ([185.246.84.56])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wL1sM-00000004MuS-40CP
+	id 1wL1sM-00000004Mu6-0K80
 	for linux-mtd@lists.infradead.org;
 	Thu, 07 May 2026 16:47:04 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id 8B0501A356B;
-	Thu,  7 May 2026 16:47:01 +0000 (UTC)
+	by smtpout-02.galae.net (Postfix) with ESMTPS id 319E71A355D;
+	Thu,  7 May 2026 16:46:58 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 59213605CF;
-	Thu,  7 May 2026 16:47:01 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 4514F108194A8;
-	Thu,  7 May 2026 18:46:59 +0200 (CEST)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 07205605CF;
+	Thu,  7 May 2026 16:46:58 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id F2F26108194E2;
+	Thu,  7 May 2026 18:46:55 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1778172420; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1778172417; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=r/I8HpmdlgiZEDA4JzntxIQZil5h8OVsqG1FV3N20+g=;
-	b=dcXqUxO2tgoi2qQeatUweuEc3whB+18tPx9IUiJ/OnXR7WUd12k/11SZ2tHzoW6Waq9lqo
-	qn/+d6PfFZnHekXaAqy2nl2SC+9Snr6iOHT0EV1Hoho+L1i0OndrLaf136lD6y22VB+AGM
-	N9+m2za0qwGZSgAFAx3Et6nYfMLZ1dm9g0cDFqOjLYqVOciCCg8WIt1wWBucVyCQTfA3Ct
-	ymk7iysyd6aHVle/0N+5Z7zRdUsMW0iCF+dnqzWr5bs/CD5qJQnJyvhhi9bJbfNMXf00L/
-	VNpOvJKPHtIkiCV46EeBds4b/iSHkJ42kO8uZX++PfGbOcwWaUY9JXz55aHQaA==
+	bh=leC2dd2KClzTPcQ+8AI037xoM94Wj2JcMmNh8kB3Pi8=;
+	b=aDS/QXCu/GSwSaA2Dqjk5EkDRxAYQd488pFZleTrwWX6rv3zBwQOox1q5Om1x2wlWW2T1/
+	0sAFqPY/PYVww+9JXATjxui8iniivuxJSyA0VxgNpbiEgEQ6VUnA1Q4Yje0dcMjgLtxtF7
+	PzsAzqHTSsZT9oJmb2cfsNuv6ZVy6+FKZif0MHuV3joLxohIq/i06LfAqHQ+VCEKz1HBvK
+	uxtysc5i4E68haDBXHJCPjrr9ad8grX/4Va3kVpDgdYktghJbZgPziTCIfer9WEtm5SXr3
+	zLHM2Gl0AY3p37Rl6K6FKoblZn3ixgj8qlwAXHHLtaAgjrOYLkejQU5NfVZ/eg==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Thu, 07 May 2026 18:46:44 +0200
-Subject: [PATCH v5 03/28] mtd: spi-nor: Make sure the QE bit is kept
- enabled if useful
+Date: Thu, 07 May 2026 18:46:42 +0200
+Subject: [PATCH v5 01/28] mtd: spi-nor: Drop duplicate Kconfig dependency
 MIME-Version: 1.0
-Message-Id: <20260507-winbond-v6-18-rc1-spi-nor-swp-v5-3-93453e1a9597@bootlin.com>
+Message-Id: <20260507-winbond-v6-18-rc1-spi-nor-swp-v5-1-93453e1a9597@bootlin.com>
 References: <20260507-winbond-v6-18-rc1-spi-nor-swp-v5-0-93453e1a9597@bootlin.com>
 In-Reply-To: <20260507-winbond-v6-18-rc1-spi-nor-swp-v5-0-93453e1a9597@bootlin.com>
 To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
@@ -65,8 +64,9 @@ Cc: Sean Anderson <sean.anderson@linux.dev>,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260507_094703_133152_F2D2A7C9 
-X-CRM114-Status: GOOD (  12.71  )
+X-CRM114-CacheID: sfid-20260507_094702_275508_2740165E 
+X-CRM114-Status: UNSURE (   8.53  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,40 +83,29 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Not all chips implement the 4BAIT table which typically indicates the
-program capability, while many of them do implement the relevant SFDP
-parts indicating the read capabilities. In such a situation, programs
-can happen in single mode (1-1-1) and reads in quad mode (1-1-4 or
-1-4-4). For the reads to work in such condition, the QE bit must be set.
-In case we later use the spi_nor_write_16bit_sr_and_check() helper with
-a chip with such configuration, the QE bit would get incorrectly
-cleared.
+I do not think the MTD dependency is needed twice. This is likely a
+duplicate coming from a former rebase when the spi-nor core got cleaned
+up a while ago. Remove the extra line.
 
-Make sure this doesn't happen by keeping the QE bit under a simpler
-condition:
-- the quad enable hook is there (no change)
-- and at least one of the two protocols is based on quad I/O cycles
-
+Fixes: b35b9a10362d ("mtd: spi-nor: Move m25p80 code in spi-nor.c")
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Reviewed-by: Michael Walle <mwalle@kernel.org>
 ---
- drivers/mtd/spi-nor/core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/mtd/spi-nor/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 5dd0b3cb5250..394c27de02d6 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -869,8 +869,8 @@ static int spi_nor_write_16bit_sr_and_check(struct spi_nor *nor, u8 sr1)
- 		ret = spi_nor_read_cr(nor, &sr_cr[1]);
- 		if (ret)
- 			return ret;
--	} else if (spi_nor_get_protocol_width(nor->read_proto) == 4 &&
--		   spi_nor_get_protocol_width(nor->write_proto) == 4 &&
-+	} else if ((spi_nor_get_protocol_width(nor->read_proto) == 4 ||
-+		    spi_nor_get_protocol_width(nor->write_proto) == 4) &&
- 		   nor->params->quad_enable) {
- 		/*
- 		 * If the Status Register 2 Read command (35h) is not
+diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
+index 24cd25de2b8b..fd05a24d64a9 100644
+--- a/drivers/mtd/spi-nor/Kconfig
++++ b/drivers/mtd/spi-nor/Kconfig
+@@ -1,7 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ menuconfig MTD_SPI_NOR
+ 	tristate "SPI NOR device support"
+-	depends on MTD
+ 	depends on MTD && SPI_MASTER
+ 	select SPI_MEM
+ 	help
 
 -- 
 2.53.0
