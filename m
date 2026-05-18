@@ -4,86 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C446CD4F52
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2FA91CD4F3C
 	for <linux-mtd@archiver.kernel.org>; Mon, 18 May 2026 11:47:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=c71o34G309pmwTZ69iUFWUapNfhDND7Kphu89TsUt3A=; b=AI0acS1/LYL8Cx
-	iJ2gFX3nfrGeOK5mMkEX95BqHrpi2wBCfpH/FslQrHzKWM5m3JXIFYhM8232Kn0WyOOD/e+NEfuuE
-	vK0KzG9cEOuBLzC/bPyQgFGo5kQ+XoaL0yVlyAIz3S+NMVzWg4OylzlFQedWAuKb8oIIddkW/kTDd
-	rgmIVboxyaBGO39NzvSwhpDs+CcOoHbXbg338WXQ3wBSNyMOg9MfcTbOURdua2dwwp8Mq06TOp2Uw
-	wzDkP84JKjeHSNyfMsNTyfJypxtAMfQwJ+mbgbM4lsDYZjeu6GvqsAcFKilLaGR4facwVDDJ193m4
-	L59xhkV3VUkJUnWwp4Pw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=mgrmykqL8pWfHayv9NZMnW7lmQ4g8NaUqEmGla4mHjI=; b=2/zYWstH72E8Oi
+	mem3HOteLoMM9iCNEAzQM6XdKb33fjrCrY3SeJl/jrTVHg2fdVGKBh9lB2uJoVEsFQURGmfRW/BoI
+	w3EFHxhLB+hYwgYRnfHYsSC/DQmv9R9JCD3danC6dY3+btx9icID9MOecVx1FNG/xDPUhYs7c+uub
+	0XQ6yOeaIsNZDHZ37vnemcaU5NzDArfz5J2qxUpw/mKucFY/n+FWHrR6u++vWpuADxsU58nfjtXE7
+	B+V7Nf6j5vZ2SDAdwMg90pdIUtkB+fWGgBipj+oc8YGsmBwVn0Xl3YpuriHfTW9Wk3bxaX+LR5BY6
+	TzixZYmhxBfA9T6v/lJQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wOwRI-0000000FUOB-0Qru;
-	Mon, 18 May 2026 11:47:16 +0000
+	id 1wOwRK-0000000FUOx-1ka3;
+	Mon, 18 May 2026 11:47:18 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wOwRH-0000000FUNw-0myn
+	id 1wOwRI-0000000FUOG-3zOu
 	for linux-mtd@bombadil.infradead.org;
-	Mon, 18 May 2026 11:47:15 +0000
+	Mon, 18 May 2026 11:47:16 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
-	:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-	Content-Description:In-Reply-To:References;
-	bh=HP1FkQP3upUXw27uw6hA2g2czB6GYP9RbzsbFRYmzIQ=; b=aoxTYqbg+e3cedQA5t1BdUlRcu
-	ht4mH7exyoocUj4jiYxQUYdVUaigfsIpIcjmRT90goWCwg8fh1PTgj+wRW5+4v5Gaue+asCKVM5D7
-	EAxt9RkJzDWUq9tk8E5MtIkZc8Icu1yBfExuDJ/fkfnGJWONcCLkCW/eBDtOEjgXjoDo0VUgIyaSR
-	AiJQG0iPyROPmC0wHZSsR7l1IZi4mknei9NEyvjW1z7jbeZRmWyGYTlaFL5udt1JcdzbFsn63cInV
-	AUqYfJyeHTjY+VCBn9fm8B07cbncrqYlsSkNemi7R89zVwFUE+MZwYuXlCaOTtJcvlsi7vBj66DAM
-	kWe12m4g==;
-Received: from mail-wm1-x32a.google.com ([2a00:1450:4864:20::32a])
+	:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
+	Content-Type:Content-ID:Content-Description;
+	bh=OLKMx0XG0KEj4EtOA3tO3neraMW/tRjRnfYn5YIq3Mw=; b=Q68sEJJxbv7KAa5oAWxEGiDtX+
+	m1Mc+F6J6HeNx88mYLjva3rsGOwGCJ3YJRJ+TSRagm3MR+DxPPv6/MYZn/LfUPrXsC3DuR4FCPbx0
+	vYtyeORgVhapWRmHL3THuJJY+6zpu7W95cyeL0IE3Q9t5r8GyALSu5gBVOLZOizzvKta4BkqgcjHQ
+	ZiPOtLnz0swP736mSs0F/Ukz2orI9vcL1UFpQL2IaVCyt2X712RGNDwV88CFpLOoHDxbIJYBZB4+2
+	A1Vls1tRLosVRcyXp1Qc0mieNmp3zmNEwMEQH1dtEiExt9PxLLlONlDY2EcWfI2sljLFVVYQqEFkC
+	KufgETOA==;
+Received: from mail-wr1-f54.google.com ([209.85.221.54])
 	by desiato.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wOwRD-0000000Aztz-2zZP
+	id 1wOwRF-0000000Azu6-0mnK
 	for linux-mtd@lists.infradead.org;
-	Mon, 18 May 2026 11:47:13 +0000
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-4891d7164ddso11805165e9.3
-        for <linux-mtd@lists.infradead.org>; Mon, 18 May 2026 04:47:10 -0700 (PDT)
+	Mon, 18 May 2026 11:47:15 +0000
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-45ae6a0e523so1025100f8f.1
+        for <linux-mtd@lists.infradead.org>; Mon, 18 May 2026 04:47:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1779104829; x=1779709629; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=HP1FkQP3upUXw27uw6hA2g2czB6GYP9RbzsbFRYmzIQ=;
-        b=qGXDONnvbLF2lJGVLTWz+RtySqc8sNTLd+QjcdEjRNU5yE3UqQ8sra+b2woWsv3Orj
-         uLP8iB+ZKYvqvF9HQ/8f9ZhOCnLbN+0+Y5YBEzp7z564OLd6BD4UTdHFe/Fi7ud1AWq+
-         vvwaPQ2A6bNBPrcHALFvolo2o+f6v5t9qZeg1/ERqD8HUhQ/LibDUbsi5SwxVXhzXr2d
-         CDWNW6ZOtcy9LhIYE1EX6DG9Wl9ReYRZZjaYWB1G1QhNWhboI93h8wllkbqAgDpT+sbi
-         jG7CxrnsvG1D5B+36F3pMH8sobUZ6u5JEkuLi7qdLqW/wWHCVxLv16Lym/Nadllxg1cw
-         TtHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779104829; x=1779709629;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20251104; t=1779104830; x=1779709630; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HP1FkQP3upUXw27uw6hA2g2czB6GYP9RbzsbFRYmzIQ=;
-        b=MprkG8OqOQ5/dE6t5VlvWs2zc6Iduhk2AW9KaWwz7iHze4L6eJ2duYLnY+Y+ZB+mcp
-         YvfMl9zYVuhSquwgrkOsOM6bXZ2ApXxO7WKCM4bG3eDV4cV3hLFkiM87LYxecsXl4DK9
-         SvCg5RJBt58T6mwfA+1QH5bisL/c8mCTSLXkMwEapRmC5PRjHD1gHM9wrRucrCb7DIQb
-         hDX63FgBjYbGqHbVC6s3cF79etHdn+PTJ75JV9qjqOuGoSGZ25GEOe/BalcHqnAIeVgt
-         7KkokhwQz96bx2a8b4c8k7RS7B4lmbKZp4qY5J9FPQCvfmVxL0DIsTTPUoXkU80GRRJb
-         f5Lw==
-X-Forwarded-Encrypted: i=1; AFNElJ+wXK50WGBwEEbl++wkWTPDnSG6rwQCFog5+l2+endrmJTPlSNvKe5E9IBH8HDx5F8Pzn2x3pSI3Wo=@lists.infradead.org
-X-Gm-Message-State: AOJu0YwiwG8kzCSpF1NBf9S3tYWh54dGosX0McmFPB9o+pwqzAUqAAcn
-	TeCtr+NXR891p6jjSoKgVYzP1awmuR5wurA2GETir7CIvBf+sSKCfzg06tnmDiQ=
-X-Gm-Gg: Acq92OFl6D6dmX8iud/lh3W3FBSWNzpWDgi9TV0VAjebIXrjWNbqDVwUAOgIIe76T3P
-	DPOrrvX624fqeJo3giDg6qSnZ0MuEUzy22ZRu9qu/amY01pIN7iAlP2t6SxkrWMUHGKt+xpd4bE
-	UnoiYq4187LAihbP9GzRKtSeWqQ75At5FD3376/5xepN0Mmwj44oY25AzbneeWyxeiXy/moSsp/
-	bATQlyfM/prUOZkXQf+sCcwivsEIe7L2yvdzKXdQyrhA4HuM+SphtLPYdbbDJHFtfv9ByD9oAPo
-	hN1scvKrsVwhTLjAcPDuv8F+sydEHIP9sAkVoeyjBHMtwtxwGISxnEnQse3g8f2BlWmZcD7tu8H
-	25GF/orfVY90iQ/3l1Xis/qUwidayq0uHi6WzPFa/7Y7ML1ZSQ4G4akeiL0I21usPk1f5BK9Mfe
-	qpU7CSAL4RNEz0+QJNYchJ9lKvkcGNZzGi/qYutt8wUY7PmfQR8wohVnzf5y/kH2mXkeP7W+2oR
-	AwFBIeT
-X-Received: by 2002:a05:600c:3f0f:b0:48f:99a9:bbcc with SMTP id 5b1f17b1804b1-48fe60ecb9cmr207456935e9.10.1779104829093;
-        Mon, 18 May 2026 04:47:09 -0700 (PDT)
+        bh=OLKMx0XG0KEj4EtOA3tO3neraMW/tRjRnfYn5YIq3Mw=;
+        b=TKWoyw/ACO8XBH7h14uh6VtJPwmTo8h/GX6b9t487az/uI9KtS3rGYqy8UXpsvcSvH
+         4U6XyVFnRTmyi3dmhSn1PZt7boazx06We0FtHQob09JZP1WficPd31Jbsj/72pNvS7Jg
+         pa+FAfkI7BNVY1iZ1+ogIey4cpBi1x3uJv1ygm8LwEnvmXVdQSX0mV9OveKydPvR1+i4
+         EN4A+AnJAgopltaRM/JdOcXtmkBhX8xjIm7vHS5JzzBKdzvzWpVuO/JCV8tU3j+IZAC4
+         StPX718OfQ+bT9UgcZQbWfeQ9qooZhP+65YxmXQSMaXg+bCHDtX0O0Sxsmj4WrNyr1D/
+         +OGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1779104830; x=1779709630;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=OLKMx0XG0KEj4EtOA3tO3neraMW/tRjRnfYn5YIq3Mw=;
+        b=sFrhz/nLrC5UU4aLstXQsl1tktDqAud9+TWt2u7Bhp0rp4UR+Fu/03ku90Iz/Keziq
+         xdkGuh5pxIAis9a9XfBuqD2QgDYtdTw2SftoYmwK0WNtPh5EHRyGLXkZIiMCbpUMdmj/
+         EBwKO97SX4zaRMBHbsdgleZGbt6pUll7xhez4bw4lVsxeOFRZSKvLi5J3375cwbGaOv3
+         P4cCtGfP0Q5HLtYo5N2JGddB0hoHHjG03xQ3fxEzlainMCzg033Do4GiYV9er/5NOEsM
+         ajb2qkItPWtWPWubojRbW0ZiMAnjBs+0F0uoFmw+JUO0I40UZ/UzuOedO6qzh1JTutt+
+         5asg==
+X-Forwarded-Encrypted: i=1; AFNElJ83pk1XFcZrcbbio11VBHj9DaxgDeAfWUtv9X4/soXGN2Bbj2+FT29uXhLE2aa2uECVJ2HfTfmdxvo=@lists.infradead.org
+X-Gm-Message-State: AOJu0YyaJgXFdggcHcKcA0+25rlc5hWQ2IgLROUgE7EM5R9sZteLi+wh
+	+OeVw4wmDr5uJJWlGTYGzRqVzjCOe9WVIvUKGkl79RwWWte/dWnMSMs=
+X-Gm-Gg: Acq92OFH+RIX4eDV0Gjm/HzIOG0giTNr5o/3DQ12hAwBEgpMuHoD9TpslDYzPblvcH8
+	U4/VGJFwKakHu0mPM9miRxR2tvE6chpCKB1aODIKi9xvTw4Xt/xRuU/uEneTdEmdL/tApQkqtXn
+	KEcDPmNMXY1csMoUIKgyWh5VejkwTuByhR+okX2pfGokGwYKcjiD4/c17dh39EJQmt+3PNwWc+b
+	8s06qjvkJ+Z/CT35aTofTRAfh/Dq/dmJG8DiZEFayjA2ZXs0WSA2FISZMvBQh65c79qQPoWTo/O
+	scMiG2MsX8JGgxttHWwIvcyWYVZPopWxm/9Qnr4kuo1XRPhgqd3ls1JxhHKRPTHqreo+QEeDatn
+	Z66gOkh8wIpSIoH9vI+0fgs6FUAw0t2ohNr8QGPfPw+Sii+0COBi6W6yNvxHZ3XCCryuqiS9deV
+	xScczxl7J1AzHfqG7FCt58a3KzogKkca2OvZhpkvZAIz/ZJgW76OwmfV4DGgzrjrS611KvMUkdS
+	lrNUxBX
+X-Received: by 2002:a05:6000:2503:b0:43f:e43a:f4a6 with SMTP id ffacd0b85a97d-45e5c35e7bdmr22892189f8f.6.1779104830110;
+        Mon, 18 May 2026 04:47:10 -0700 (PDT)
 Received: from localhost ([2a02:810d:4a94:b300:f15c:fd38:3fe1:9653])
-        by smtp.gmail.com with UTF8SMTPSA id ffacd0b85a97d-45d9e767d0bsm35203411f8f.3.2026.05.18.04.47.08
+        by smtp.gmail.com with UTF8SMTPSA id ffacd0b85a97d-45da15a666fsm35365327f8f.36.2026.05.18.04.47.09
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 May 2026 04:47:08 -0700 (PDT)
+        Mon, 18 May 2026 04:47:09 -0700 (PDT)
 From: Florian Fuchs <fuchsfl@gmail.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
@@ -96,14 +97,16 @@ Cc: linux-sh@vger.kernel.org,
 	Adrian McMenamin <adrian@newgolddream.dyndns.info>,
 	Florian Fuchs <fuchsfl@gmail.com>,
 	Artur Rojek <contact@artur-rojek.eu>
-Subject: [PATCH v3 0/3] mtd: maps: vmu-flash: Fix build and runtime errors
-Date: Mon, 18 May 2026 13:45:18 +0200
-Message-ID: <20260518114521.81564-1-fuchsfl@gmail.com>
+Subject: [PATCH v3 1/3] maple: fix build error due to missing include of linux/device.h
+Date: Mon, 18 May 2026 13:45:19 +0200
+Message-ID: <20260518114521.81564-2-fuchsfl@gmail.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20260518114521.81564-1-fuchsfl@gmail.com>
+References: <20260518114521.81564-1-fuchsfl@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260518_124712_180258_1917F001 
-X-CRM114-Status: GOOD (  11.82  )
+X-CRM114-CacheID: sfid-20260518_124713_643347_EA61D2DE 
+X-CRM114-Status: GOOD (  10.68  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -120,56 +123,44 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi all,
+The commit 313162d0b838 ("device.h: audit and cleanup users in main
+include dir") removed the include linux/device.h from linux/maple.h,
+which led to build errors as linux/maple.h embeds struct device via
+struct maple_device. So restore this, as it otherwise results in errors:
 
-This small series fixes build and runtime errors in the vmu-flash driver
-(enabled by CONFIG_MTD_VMU) and the related maple.h. These changes were
-verified on real Dreamcast hardware with a physical VMU. The VMU can now
-be successfully probed, read and written with MTD tools like mtdinfo and
-mtd_debug. Previously, the driver failed to build or crashed during
-probing.
+./include/linux/maple.h:81:16: error: field 'dev' has incomplete type
+  struct device dev;
 
-        bash-5.3# mtdinfo /dev/mtd0
-        mtd0
-        Name:                           vmu2.1.0
-        Type:                           mlc-nand
-        Eraseblock size:                512 bytes
-        Amount of eraseblocks:          256 (131072 bytes, 128.0 KiB)
-        Minimum input/output unit size: 512 bytes
-        Sub-page size:                  512 bytes
-        Character device major/minor:   90:0
-        Bad blocks are allowed:         true
-        Device is writable:             true
-
-Thanks,
-Florian
+Fixes: 313162d0b838 ("device.h: audit and cleanup users in main include dir")
+Cc: stable@vger.kernel.org
+Signed-off-by: Florian Fuchs <fuchsfl@gmail.com>
 ---
-v2->v3: Add Fixes tag to respective patches, fix subject to previous
-        commits
-v1->v2: Rebased patches and fixed the hotplug issues in other sh
-        patches.
+v2->v3: no functional change, reword commit message, align subject to
+	main includedir, add Cc tag
+v1->v2: no functional change, just rebase patch
 
-v2: https://lore.kernel.org/lkml/20260427114750.2480900-1-fuchsfl@gmail.com/
-v1: https://lore.kernel.org/lkml/20251117224408.498449-1-fuchsfl@gmail.com/
+v2: https://lore.kernel.org/lkml/20260427114750.2480900-2-fuchsfl@gmail.com/
+v1: https://lore.kernel.org/lkml/20251117224408.498449-2-fuchsfl@gmail.com/
 
-The original v1 was postponed until the hotplug issue and other runtime
-panics were fixed by the following patch:
-"[PATCH v3] sh: maple: fix empty port handling":
-https://lore.kernel.org/linux-sh/20260515181115.3244161-1-fuchsfl@gmail.com/
+ include/linux/maple.h | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Using VMUs while some ports are empty requires the above patch.
-
-Florian Fuchs (3):
-  maple: fix build error due to missing include of linux/device.h
-  mtd: maps: vmu-flash: fix fault in unaligned fixup
-  mtd: maps: vmu-flash: fix NULL pointer dereference in initialization
-
- drivers/mtd/maps/vmu-flash.c | 7 ++++---
- include/linux/maple.h        | 3 +--
- 2 files changed, 5 insertions(+), 5 deletions(-)
-
-
-base-commit: 254f49634ee16a731174d2ae34bc50bd5f45e731
+diff --git a/include/linux/maple.h b/include/linux/maple.h
+index 3be4e567473c..22f2930251ed 100644
+--- a/include/linux/maple.h
++++ b/include/linux/maple.h
+@@ -2,10 +2,9 @@
+ #ifndef __LINUX_MAPLE_H
+ #define __LINUX_MAPLE_H
+ 
++#include <linux/device.h>
+ #include <mach/maple.h>
+ 
+-struct device;
+-
+ /* Maple Bus command and response codes */
+ enum maple_code {
+ 	MAPLE_RESPONSE_FILEERR =	-5,
 -- 
 2.43.0
 
