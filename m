@@ -4,78 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96958CD5BB3
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2026 16:08:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7642CD5BB3
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2026 16:19:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=7KhyTv1pVnt4vGVTmx1fgXKYiI8HT91m1lEUcEpbCdA=; b=wrU4TB/Dh8tCNg
-	bLjgVqGcpLewAjxn4MLtpS5DJjRJWh+GEx7Us2DNJiLazNbJuOJ8IOMtypb8DU56BQAIHVi5y1z7B
-	YfIXNulXtxAONZjpG7w5UzVq5nkeY2iGK1yGd7Q/a46Z3QPAH6JSKGFyue1AfrS30jXxkqNixQhhw
-	FEfE0wlWWOOb3/YARDtjRPgu1ubSG7tr8TCqa0CUEGw8wsgBCE/Cwffo8MnPbgE9DGYfvfnoXQ9lg
-	8+79OaFljI1nmi3N32kDIiEBOPXmQpvl9AxKchb6Ug22JpYhXMU8FMHDXLmevAaCvGG5WpQ9stC3i
-	T1qBp1LboQq/NwDMaXOg==;
+	List-Owner; bh=jB8yo/o1OS7UrVcIUXMbz5SIwt6eRaq+1quJb5eTEbE=; b=uk90XIsKWTBaZX
+	0aYhpQxa+t8lMSXRTt5EIeR9gyBCA1yzpalN8ixTTtDAFBHWGCCJuSyULPHtaE6UeMpteiPOE7J5u
+	YWXwEesMQb39yviDyDjwTBQWJul3meQtpHaErlaVhR31DgvwQd84Udwz6+AVKiDbLzSlrdGrUnG7r
+	OsVpd3xwhhklWW2rg+xkFcMG9D+5dzu2zkBoqFF9uROZtm2vENoFGwicMTPLNSWmPJd7d4ufyMrI1
+	7R1UPZdDLG+Ow+B2fBp+oHOiVt4SLfh0/KiBYeE0tFRix2Ht9iwZUCaIwewQ2fT2Rp+wDTHafIt/7
+	tM2inw0k3whOQcewnKyg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wQSPo-0000000BNIW-3RlY;
-	Fri, 22 May 2026 16:08:00 +0000
-Received: from mail-wm1-x335.google.com ([2a00:1450:4864:20::335])
+	id 1wQSat-0000000BPTi-2oap;
+	Fri, 22 May 2026 16:19:27 +0000
+Received: from mail-wm1-x32e.google.com ([2a00:1450:4864:20::32e])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wQSPn-0000000BNHh-0YgS
+	id 1wQSaq-0000000BPTA-3qL0
 	for linux-mtd@lists.infradead.org;
-	Fri, 22 May 2026 16:08:00 +0000
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-488ab2db91aso78980565e9.3
-        for <linux-mtd@lists.infradead.org>; Fri, 22 May 2026 09:07:58 -0700 (PDT)
+	Fri, 22 May 2026 16:19:26 +0000
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-4891c00e7aeso54747845e9.2
+        for <linux-mtd@lists.infradead.org>; Fri, 22 May 2026 09:19:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1779466077; x=1780070877; darn=lists.infradead.org;
+        d=linaro.org; s=google; t=1779466763; x=1780071563; darn=lists.infradead.org;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZKfMNH2kUd3DMgQ8XsJCvcvLB0TOMk+MaTvVWRLAx/Q=;
-        b=NF8NqPAYGHolA+mpXE+/zJbhzXk6i2v7YFAT3/RZMwFNoODHbmxFTHwsuRFvuqJPJJ
-         +XJR4Q7cuWHGkkNuRi612B+KIXkVk/fmwU529cXUDuENVnIyHHTTi6EGgZgT9CBWOeH3
-         VPyyekYs0wfuakcDanNyWb+D59qA5kCwtbNU22tpSNMiOKezIqKmyhkw6TRNW2QHDeID
-         qazGOR3nu9Mb2maXAGFrdaaRW/SYPwdPj6xfcifU9B5JBI5RoWKUxEdjYJKicTWBZ1w8
-         eEklpa1O83fyOqovd2zvJcXkDua+BuGiDV6F0xOyp7Rhfa0nY9MbTGpH26p5wAIXCP23
-         17VQ==
+        bh=khURmgI8xAljbpClwOX73v/ypCL2TwOkHn4DqsHmwrI=;
+        b=sXnuZAUVwnvoeA7NkEqU1lw7tmgf7mPPhDcbiee+M+Z3I8ijnghODSJxWj6Qmc4kve
+         4uxeT81oDq3boGQrbp08AyRo7FIOH0jWUK23R4f68WYbH1NcWgE8i/HLPFuQpv3Br0LT
+         p30mcjqQtOe6nhxC0+xPnplvackQl3zq3GySKkuQ+6MS0/ReFH9dYFQ3HZoPnJKwzk6X
+         FZNxf1AiLmZgUY2PoJy7ePu0QDpq5NJFSAU2w8hZbuE+u5qmwDKuIb79lzBrroOax49i
+         NXVk22biiW8JBWNPFjPw8DYu+6b00zeJavzLgxvTjZxSVOOlRipoJGdq/Votol4Ehk4k
+         mZSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779466077; x=1780070877;
+        d=1e100.net; s=20251104; t=1779466763; x=1780071563;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=ZKfMNH2kUd3DMgQ8XsJCvcvLB0TOMk+MaTvVWRLAx/Q=;
-        b=Q1bgtqku739AybMTHERG5Pbw64M42pP5vO4m2QHT0+FHCbHrprShrUDGm8v9fQBz3a
-         v6LO6UvtQiSMOn7Ega1vJ4mXJEofPP25q2e2RV5tza61ifRuFGjjw0mV+AwNG6NA/KRg
-         DNLdHFpX+dhDBYsjyvYiacybf4XMosfTXjMfo9X6Oa0UiAub64UbemU0Np0S058Ug27H
-         tkCOx5tyw0j6FcJ0lS8qW+RrkulYZS6jIhSMiZKBI/Gf9M60GXU7vu3+4DnwMD1l5llZ
-         QAU/QvwjPtpDw+sctyR2HaQ1D559rmylf8BcHYFx+wUDDFm0vuMMjyUiYCHBMLgJ3C4k
-         Uwzw==
-X-Forwarded-Encrypted: i=1; AFNElJ/EtUPGIH895xzbSGtR4C7kLUqU1LLyMor5j/UBd8aqYkJUGZNElE5jkLfYVW2IW5L+UJi+OGTZ144=@lists.infradead.org
-X-Gm-Message-State: AOJu0YzNDCJkWmcbruuXced8TKbZEleas3GJweuoUqBju2Kw1cj3omPY
-	slQm+prHz1s1mQ3G2n2PMN+b66J45McVfKE6uYsDZT7TxCOmFBxh0tpxQ9tW6iNzFRM=
-X-Gm-Gg: Acq92OFeduUF2H/vjzOL+hnxalgQzH+8W6zlsD2fTdJfFthi6+R+mzAcYqJ8QDanxir
-	P3SSjUG1RRkDmY6i37IXWArJKV8ZjAQ2vot8+6NsDZab4HBr2vQi7QnxopfKhbKgWpWpjnyLKs2
-	m+JmUOl2+wgohtTQg/JMwCYRvHRQfi327T5tEosWX/4v6XwmBio/2wqIDj8VMsMlIX+p35B9nMz
-	bVxCZu4eShPNHt/xo2aEMmjFqxym60iplHa9ohWZm4QLwr5Yhtk8G60XzGSoMQKHYRf8FM6am+V
-	5Maes7qE9JDKJhvWQwzSm1HIdOcxsmOSy3isGNRXdm504r/6ypjOb0Je4CFAzzF8M4W7q1iYaeS
-	WVyesAR5l2ZdzFw+E1Jn45if5SvE/JbJFp11tFUxic5Now6bpK4c3CGQBaBboixt4nCtGsduDds
-	I+I6+6LFSFbZmkmALP3+CRVT/sP92IFkR0E+e8GZ3N7w==
-X-Received: by 2002:a05:600c:1393:b0:489:c57:7836 with SMTP id 5b1f17b1804b1-490428e5b31mr62133915e9.27.1779466076932;
-        Fri, 22 May 2026 09:07:56 -0700 (PDT)
+        bh=khURmgI8xAljbpClwOX73v/ypCL2TwOkHn4DqsHmwrI=;
+        b=LMMtkx7CxtnA3W5QJy0Q/VTjYvlnLCsomxG+EN+AI1JawORNQk4V32Vhlpa7R/7AN6
+         RjwhVSv8ydM59QiJ0v2ik3KEhp2reG7b9kloQzch0KVuuKmbTnFofl+cYAMPd/GJDJUu
+         61T+PsyqnQSmhK2ydXmpsJoLowOiHMjDT5Pan9IjK4h33k1E6ER+IAnEP9Iy74RCqEav
+         ZMdB07rDxPfnZKXMGtKCj6Cg1iySn2jAY/2zJ3NDkR230szJ36xfzuprS0piNz1CdRP6
+         V6qcdvUicEP5Ll0TGM28s9rzjxLIEB9hbIBFwAx7zHQmQhdVHO7/8d3OsZ32k50k2q/l
+         bTjQ==
+X-Forwarded-Encrypted: i=1; AFNElJ8bkVvx/80DNROfYevzZL4765NPgRQL7fsu3H8AajTv2xBsnsYuarmdNSITisRtjSHIz3dISqDHsKw=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yx0x0HIo2euDAYJSRlL2QFkf1Rl8f5Tfv/gcfHGWjAMqxJTgGRe
+	RgfEoFdnbFyKj9Ycy3GxEVQff+HvZX25qnXyEZ1QrIjivhAoQXZi9+b2IqKoZaKPbUQ=
+X-Gm-Gg: Acq92OHbAG4PIKgbrD7WyX36k7y2RUn/gSiOZSgBZAe34kjz70EmegAwIDUKhHAzjSO
+	YyVqQsbPoRy9xJkQgnaJ0RydogTf1C++k/tBzQQIWYOMEEqzOVWq54aj1pPSM16h0I2NSdlVMoY
+	FGFreMRDnq5ByPxPkNOdGqBo57qhdv9Ec8II8k2tprQHXdACyX/KNWVxrPc3OUYW5UMr4sJRR2u
+	Hwkyyuso/f9QTNh+FY6TdmQF2aR4iqGIwqTi2OY7a8RrxSVP6egZ1xfIE63AaG/UgxfZboqwIx4
+	niaK92c8bysyZdfaxAG4GUEybTqmPt1lbYXPPT5uNjuy7rej9mdLyUuaR5Fl5+oWrQWAX6QaJ0Q
+	bVM9i7w85+IeFu8tf12uR/IAKzCzJkDBzJe+ioGJTdvc5xgR8EWone1yIa/afUh1wIuIgZ2v19h
+	hJ2EOhi9S1SZm2ldKIdvhlWE2cQUMSj2kcLP9goz2WvA==
+X-Received: by 2002:a05:600c:8484:b0:490:3b87:be0e with SMTP id 5b1f17b1804b1-490428e3362mr60457495e9.29.1779466762913;
+        Fri, 22 May 2026 09:19:22 -0700 (PDT)
 Received: from [10.11.12.110] ([82.76.215.73])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-490454c600esm52915925e9.3.2026.05.22.09.07.55
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-45eb6c9f598sm5363185f8f.6.2026.05.22.09.19.21
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 May 2026 09:07:56 -0700 (PDT)
-Message-ID: <779f2680-2c67-4bbd-9576-bde8e83d111d@linaro.org>
-Date: Fri, 22 May 2026 19:07:53 +0300
+        Fri, 22 May 2026 09:19:22 -0700 (PDT)
+Message-ID: <456a7b82-0d53-4c83-b17d-5361bd1f4a47@linaro.org>
+Date: Fri, 22 May 2026 19:19:19 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 04/28] mtd: spi-nor: swp: Improve locking user
- experience
+Subject: Re: [PATCH v5 13/28] mtd: spi-nor: swp: Create a TB intermediate
+ variable
 To: Miquel Raynal <miquel.raynal@bootlin.com>
 Cc: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>,
  Takahiro Kuwano <takahiro.kuwano@infineon.com>,
@@ -84,17 +84,17 @@ Cc: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>,
  Sean Anderson <sean.anderson@linux.dev>,
  Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
  Steam Lin <STLin2@winbond.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, stable@kernel.org
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
 References: <20260507-winbond-v6-18-rc1-spi-nor-swp-v5-0-93453e1a9597@bootlin.com>
- <20260507-winbond-v6-18-rc1-spi-nor-swp-v5-4-93453e1a9597@bootlin.com>
- <9432f07f-3724-4257-b6ab-84721e619f78@linaro.org>
- <875x4fphgr.fsf@bootlin.com>
+ <20260507-winbond-v6-18-rc1-spi-nor-swp-v5-13-93453e1a9597@bootlin.com>
+ <a54562a0-1a75-401c-9508-8e0322d81a3f@linaro.org>
+ <87zf1ro2dt.fsf@bootlin.com>
 Content-Language: en-US
 From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <875x4fphgr.fsf@bootlin.com>
+In-Reply-To: <87zf1ro2dt.fsf@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260522_090759_193910_B2616AA4 
-X-CRM114-Status: GOOD (  15.08  )
+X-CRM114-CacheID: sfid-20260522_091924_984383_2FE132AA 
+X-CRM114-Status: GOOD (  14.05  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -113,46 +113,27 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
 
-On 5/22/26 6:55 PM, Miquel Raynal wrote:
-> On 22/05/2026 at 12:10:45 +03, Tudor Ambarus <tudor.ambarus@linaro.org> wrote:
+On 5/22/26 7:06 PM, Miquel Raynal wrote:
+> 
+> On 22/05/2026 at 12:39:48 +03, Tudor Ambarus <tudor.ambarus@linaro.org> wrote:
 > 
 >> On 5/7/26 7:46 PM, Miquel Raynal wrote:
->>> Fixes: 3dd8012a8eeb ("mtd: spi-nor: add TB (Top/Bottom) protect support")
->>> Cc: stable@kernel.org
->> Fixes shall be the first patches in the set.
+>>> Ease the future reuse of the tb (Top/Bottom) boolean by creating an
+>>> intermediate variable.
+>>
+>> Please squash this in the patch that needs it.
 > 
-> Technically speaking all four first patches are fixes, except I don't
-> ask the first one to be backported. The reason why we ask fixes to be
-> first in the series is because we want them to be as independent as
-> possible from previous cleanups/changes. Here each four first patch are
-> targeting completely different places and should not interact with each
-> other. Anyway, I will re-shuffle the patches.
+> The problem with CMP addition is that it touches all functions all over
+> the place. I want people to be able to focus on the CMP addition, not
+> all the side changes which have nothing to do with the CMP addition by
+> itself. Most of the preparation patches are just steps in that
+> direction, they could also be squashed, but overall they make the final
+> diff much simpler. I believe every small change making that last step a
+> little bit easier to read goes into the right direction?
 
-you don't need to resend just for that I think. Pratyush or Michael can
-re-shuffle when applying.
-
-> 
-> As for Sashiko's feedback, the AI raises the same point as our previous
-> discussion: the QE bit handling is really bad, and I am working on
-
-I forgot what we talked about, sorry.
-
-> improving this, in another series which waits for this one to land.
-> 
-> However the other warning it raises is IMO wrong: mixed-modes chips
-> (either read or write working in quad mode, and the other in single
-
-that's good to know, thanks. It assures people that the AI feedback was
-considered.
-
-> mode) should enable their QE bit anyway. Please raise a warning if you
-> think this assumption is wrong.
-
-Not sure if I'll be able to allocate time to review it. No blockers from
-my side.
-
-Cheers,
-ta
+I was looking where was this particular bool used and couldn't find it.
+Fine by me to keep as dedicated patch if you think a 3 line change
+distracts the reader of the bigger scope.
 
 ______________________________________________________
 Linux MTD discussion mailing list
