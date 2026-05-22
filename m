@@ -4,78 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E347CD5BB1
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2026 09:39:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0485BCD5BB1
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 May 2026 09:57:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=57L3grafU0ORtA0b5TzZFE936TZPZTzWvBB9ZXY45zc=; b=bycM+yzc7njkQd
-	WB0SoCBKx3LXM9j57LW8ZYZUB9kE3p8H1jlxCAOLLamsXGkrAvW20DIsFyBzUUnTT1CoSPIxEx2/H
-	I232dCugX3G59qvWzLlHqjyZ7I7RhnnNIV/HPABbLCWFAAUy3hCiFGUGcueL5o7gJ78BuaA5eg+3p
-	EYJ3dhyyEZPiZkTpTo6SjALJ3HoRLp2qvuJf4o2qZd/3icaFWT23h4nrakK7uSwGzq78UYOWzuu0X
-	MNlWllfXOE4mMA55nM5Jb3kXWr+rYnacHkbpt6Ad4enr0SE2jB9wTsKsbGViyWufTTZaPoxy9oxtu
-	ym0tCTeaBC3XJp/pisXw==;
+	List-Owner; bh=qZlHM6AiPCfmtYMDm6yWk04C9+YSqhETtP0BxHribDs=; b=O2eDHCqrwkG3p0
+	gLJJcDgeielGnsTSBbbunr3UNIZSHY54K2BF7/MRCsMTnlTz6vgwmx8CovWUHW1xfyhM9nE/ZlGKc
+	Iy7QLh0Xt1uoJQ/jqMKJB7nOI+93Lo5CUZQ7mkHJSpXT+CLqMNyXyqRFV1tuCMS1WeFii7QdJEyuF
+	15TyovvgOpXGi9R/d94EQ0abJRmETofQhwMny7RVJDgBZF81gu2GMed5sdOtUCVeRbizpIKxfzLDX
+	39TlnpKDc0jdTwW2FgpVzHHzaydco82hWRO+qsglWSuT7UpnXaQfQIaz6aRLEAUGVUvIvjld6Cynh
+	xg0BPVJ3bjqC3fiWytHw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wQMMG-0000000AMEt-2giB;
-	Fri, 22 May 2026 09:39:56 +0000
-Received: from mail-wr1-x42a.google.com ([2a00:1450:4864:20::42a])
+	id 1wQMcp-0000000AOFb-0JVU;
+	Fri, 22 May 2026 09:57:03 +0000
+Received: from mail-wm1-x32e.google.com ([2a00:1450:4864:20::32e])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wQMME-0000000AMEO-3uFC
+	id 1wQMcm-0000000AOET-10vz
 	for linux-mtd@lists.infradead.org;
-	Fri, 22 May 2026 09:39:56 +0000
-Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-45e6a4d0be0so3142931f8f.1
-        for <linux-mtd@lists.infradead.org>; Fri, 22 May 2026 02:39:54 -0700 (PDT)
+	Fri, 22 May 2026 09:57:01 +0000
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-490426d72f7so5775855e9.3
+        for <linux-mtd@lists.infradead.org>; Fri, 22 May 2026 02:56:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1779442793; x=1780047593; darn=lists.infradead.org;
+        d=linaro.org; s=google; t=1779443818; x=1780048618; darn=lists.infradead.org;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=T4EjzCYBZo6gDDp6/NnHFvlpvgywvXkHrB1KsgSmjjY=;
-        b=yK+UqPrDuml+i4vqqq3RfM5P7nYgqEDCtzzcSfyPY4z4bs+JfxH1tFYf3AmS4EZ373
-         WHp2+lt0aCReog0K9n0sIgAyv8r8QyZnPvOaoXjBCgjOYnsnRFx7Avk3X7B6Kd9AnOlj
-         DVEx6WdQonbsRqBdlk4uHv0Lnh4Zk1K15EWFualx8s806X0ezTNW8c+LHurx44KQc65B
-         kuH+Yp2INGYVaGUGBimLv3BFSqP9PBQ7l6kdWntymPB3qzPwKOsVQy6mmnEDX8MyIS/a
-         MBCp10ajXwXXPmBMjgeNfHe0yGZahG5XF8kvUOBvpf6sTYT6+guP8L8OsOSXoudFHaiS
-         efNw==
+        bh=O3SzrBOlCrckP+aA4rKT29EYfixN0BXUD7FV7+QYzVI=;
+        b=BvW95nK5/ZtQq5AB/gVQ18vvKocU5eIGCzNxcL0UteZJAKGNZaNMtLBGgQX6vxlXE8
+         xOZJWOm893Tx5cPg70Xeh7tC4u3eUPxHrB7zuE3DP9ksVSGsgn9oFZBrldejJ67Oz0Bv
+         plzo6lR4v081MKdcSUIZQOwRmvbpRznrrt+I4NrClvHWea03oN9qMDCzW+fIr3Lnugqi
+         hKs3XoXN04MDSykCdWSmqqrWBogQFpOubthi2QwZ+wNras1Hez0erhI0cc+dNe8s46T2
+         LVq1378kTpnaiutt1Ljx8JO7JPclEb1Zb16jp1uNrWIighWPnmzON8Ha0b71MMF0bXIs
+         D55A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779442793; x=1780047593;
+        d=1e100.net; s=20251104; t=1779443818; x=1780048618;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=T4EjzCYBZo6gDDp6/NnHFvlpvgywvXkHrB1KsgSmjjY=;
-        b=GNEQ78KXvzX5F4E7BeoaE12L39wQH6JXdVhZSL4KF+P4671Rc0gdbo3wF47aGvQRpb
-         gt2Et8KCX0Ko5ihJ8DqANSkkF3c316rbmjVOr/pTzRbU9mCRmpM4CzPhltQFUWHQY1+Q
-         JKh99TSKMekKp8HpPPqBDfet8hsE6dRFMIhMdnseBcYZGOEsNkVEB0yjSphbknrrSq8q
-         qrz31J+K6FwaMrhhvEIhrplYuH2815PupaQyMnehiRXrliJDYTq3r5dLS/wMcDIl+zUl
-         0Zh63VFZxvaA6PutPgm9cTFdK02n/a0e35GuQ7jnnrHzG35dLszogmrtnx9m9mWd2rse
-         a72A==
-X-Forwarded-Encrypted: i=1; AFNElJ8+9Nz1jzgE/5nI4rsJzWLXpQqby45KY8Ny0mnA2jtR+6J58+4bG5iLZUSO0IBYw6QA1pr1pLKUkYI=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxobtmNTCFfqJKsuhHpo6aDsbDIZEdV+95gSnviMx0vkZc3W9tL
-	+VdOi6S632xHKpje6tDKL2eMQZXhZ5iRdCkr2HqgAC41f7b0aCeCgsab+zdNIsi+808=
-X-Gm-Gg: Acq92OHu5aABdQuYF/iGxQq1DAq+vnqdppe1xYEl3fokBQY4SxSe7euAjFAQpbY9qLU
-	CRzEKO2/Zq/XcAcW1i3tbeTcfySvJQtjJuCTAdQw1zsTiyzt19VrhYQocwHI/VbdaYkJwpGDvJn
-	0sqLexzzuvWyHK3MFSgyxJLeSytfcPxsuQNAi4nxNEzULREB9cU2bByUIQgbTHqv3cEQiHgB4s5
-	6pwcAPpHFbwtihdhp0rXtbPQ1HRDPowwKZ9oyzOvKncahgKjUJcW259Ca6GfwVctXIz4yGJIA1o
-	CLKmr3Opzi14Chs3lO9p8nTNd990ZSQh5Ez0qNnooDUD9Yq1pD7uehTykpjL5BlTC97kCsAn6gA
-	evW04C74ZLnzwK9p+rgN+O8Q0ySueLZGwCiHGW9/jDV4t/vtS6t1Pu+Fbq8MItdJuGOls5gknBm
-	tbbEVvgvBN3JVJ3ZpVsuhRZx8LvJRmBpNTjll64jMsSw==
-X-Received: by 2002:a05:6000:290c:b0:455:d927:1b30 with SMTP id ffacd0b85a97d-45eb38af531mr4204251f8f.28.1779442792871;
-        Fri, 22 May 2026 02:39:52 -0700 (PDT)
+        bh=O3SzrBOlCrckP+aA4rKT29EYfixN0BXUD7FV7+QYzVI=;
+        b=gEgNgbt0c5b5+Kd1QKsihEsXlUw4NatYdhMt4e2QSIFJdD234JEoDPUnxAESrdwH1p
+         IK3JSyX+f1BZ+RR9NQd9zdI+TGCeNlmS8pH/Q9J5j8iFUixDA3VxjUQgpdnB9JHLCvTV
+         g53USa5XLQPa7t3yaWBLPGb7RZDL2s0zZuO4ubrT9LGkn45XghjN16xmtYrKeHvECs1B
+         i8LtimH0yYuwCbuNvqCoS8EWiEzS89E9uzyJmCGbaNfNyEO9JcVgHNEYEFC5mXpkoG2E
+         m6RZQfaKrDkNcsTxsX25yUWqPFK70HjGN0fN79Jsj8P+78cyDfzv55fHHc9laiadRIZL
+         MOug==
+X-Forwarded-Encrypted: i=1; AFNElJ/lz4q/Tbkkmcs1Z+unbErUG5N75C6PL6kCIXC3bSbSfP1oeny91kiuYdnZZvd5b6giKEsrOYsVrHo=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yy0RVw0f/8Zh7kQMv0r99IulQiZzTUJd8t/hCyFbcOyqOId/b81
+	jxx7YRVBvYKlgCt0fqv8+ot+V6NRjEzZFp/Ko0bqX0ImQpQCK1B4291l1JH9z8S3bmecpNVB7dL
+	cGJ3d
+X-Gm-Gg: Acq92OFV4BdHG3gCEmCg68e3zjBUygujVFOLKJda4nprgcUteE5OE2ZfJQ4K7nx00Xo
+	qCmftdQtVtjyJbNXVR7G7mVtpAFGTDp4+rkqy5+ibK4VAZOYIamslPlDemj3R0boS/GWX10xdfk
+	zGUnBAfY/cpdwAoOVxh010IXzjs/W17NhspbxFlSM9NGTVSB5dkVPisXNf1Z4MUSXxRPeY+gUW9
+	VPm+2D4/vyvVS2OOSkH4ZWayxGW0+jkGfL7u67qG7osZLeOr2d+tLH1rTrKh3dGj1GTydBl63Mb
+	VoaxfZ9mW1bLE1h9W9217oJdaqoDSXM/4AT8ARxDO+oG4AEBw13iVVHBlhTYrQZZsgSuCMeatXA
+	uc2Vg5EEdL21bcyXA1kqNgPgKxsv9TZiNdqTtF4AGC1rjvCQ221tGsDooQLqBZzG7PKzfNPx31g
+	GJrM9FRsN4PEDVOHAGgu7mZwhpwLZfxMh/ct3gRQ7ukw==
+X-Received: by 2002:a05:600d:8444:20b0:490:3b8b:6ba2 with SMTP id 5b1f17b1804b1-4904249af9amr27400615e9.8.1779443818210;
+        Fri, 22 May 2026 02:56:58 -0700 (PDT)
 Received: from [10.11.12.110] ([82.76.215.73])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-45eb6c9f6ffsm2725005f8f.1.2026.05.22.02.39.51
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-490454cfcaesm29624265e9.4.2026.05.22.02.56.57
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 May 2026 02:39:52 -0700 (PDT)
-Message-ID: <a54562a0-1a75-401c-9508-8e0322d81a3f@linaro.org>
-Date: Fri, 22 May 2026 12:39:48 +0300
+        Fri, 22 May 2026 02:56:57 -0700 (PDT)
+Message-ID: <0640ef90-52f4-443b-90c9-ac4acb48d59f@linaro.org>
+Date: Fri, 22 May 2026 12:56:55 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 13/28] mtd: spi-nor: swp: Create a TB intermediate
- variable
+Subject: Re: [PATCH v5 14/28] mtd: spi-nor: swp: Create helpers for building
+ the SR register
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>,
  Takahiro Kuwano <takahiro.kuwano@infineon.com>,
@@ -86,13 +87,13 @@ Cc: Sean Anderson <sean.anderson@linux.dev>,
  Steam Lin <STLin2@winbond.com>, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
 References: <20260507-winbond-v6-18-rc1-spi-nor-swp-v5-0-93453e1a9597@bootlin.com>
- <20260507-winbond-v6-18-rc1-spi-nor-swp-v5-13-93453e1a9597@bootlin.com>
+ <20260507-winbond-v6-18-rc1-spi-nor-swp-v5-14-93453e1a9597@bootlin.com>
 Content-Language: en-US
 From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20260507-winbond-v6-18-rc1-spi-nor-swp-v5-13-93453e1a9597@bootlin.com>
+In-Reply-To: <20260507-winbond-v6-18-rc1-spi-nor-swp-v5-14-93453e1a9597@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260522_023954_995203_477C6058 
-X-CRM114-Status: GOOD (  14.84  )
+X-CRM114-CacheID: sfid-20260522_025700_313086_799F8412 
+X-CRM114-Status: GOOD (  16.77  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -112,40 +113,41 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
 On 5/7/26 7:46 PM, Miquel Raynal wrote:
-> Ease the future reuse of the tb (Top/Bottom) boolean by creating an
-> intermediate variable.
-
-Please squash this in the patch that needs it.
-
+> The status register contains 3 or 4 BP (Block Protect) bits, 0 or 1
+> TB (Top/Bottom) bit, soon 0 or 1 CMP (Complement) bit. The last BP bit
+> and the TB bit locations change between vendors. The whole logic of
+> buildling the content of the status register based on some input
+> conditions is used two times and soon will be used 4 times.
+> 
+> Create dedicated helpers for these steps.
 > 
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 > ---
->  drivers/mtd/spi-nor/swp.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+>  drivers/mtd/spi-nor/swp.c | 83 +++++++++++++++++++++++++++++------------------
+>  1 file changed, 51 insertions(+), 32 deletions(-)
 > 
 > diff --git a/drivers/mtd/spi-nor/swp.c b/drivers/mtd/spi-nor/swp.c
-> index 07269e09370a..540cd221c455 100644
+> index 540cd221c455..8aa0fe297188 100644
 > --- a/drivers/mtd/spi-nor/swp.c
 > +++ b/drivers/mtd/spi-nor/swp.c
-> @@ -62,6 +62,7 @@ static void spi_nor_get_locked_range_sr(struct spi_nor *nor, const u8 *sr, loff_
->  	u8 bp_mask = spi_nor_get_sr_bp_mask(nor);
->  	u8 tb_mask = spi_nor_get_sr_tb_mask(nor);
->  	u8 bp, val = sr[0] & bp_mask;
-> +	bool tb = (nor->flags & SNOR_F_HAS_SR_TB) ? sr[0] & tb_mask : 0;
+> @@ -125,6 +125,43 @@ static bool spi_nor_is_unlocked_sr(struct spi_nor *nor, loff_t ofs, u64 len,
+>  	return spi_nor_check_lock_status_sr(nor, ofs, len, sr, false);
+>  }
 >  
->  	if (nor->flags & SNOR_F_HAS_SR_BP3_BIT6 && val & SR_BP3_BIT6)
->  		val = (val & ~SR_BP3_BIT6) | SR_BP3;
-> @@ -81,7 +82,7 @@ static void spi_nor_get_locked_range_sr(struct spi_nor *nor, const u8 *sr, loff_
->  	if (*len > nor->params->size)
->  		*len = nor->params->size;
->  
-> -	if (nor->flags & SNOR_F_HAS_SR_TB && sr[0] & tb_mask)
-> +	if (tb)
->  		*ofs = 0;
->  	else
->  		*ofs = nor->params->size - *len;
-> 
+> +static int spi_nor_sr_set_bp_mask(struct spi_nor *nor, u8 *sr, u8 pow)
+> +{
+> +	u8 mask = spi_nor_get_sr_bp_mask(nor);
+> +	u8 val = pow << SR_BP_SHIFT;
+> +
+> +	if (nor->flags & SNOR_F_HAS_SR_BP3_BIT6 && val & SR_BP3)
+> +		val = (val & ~SR_BP3) | SR_BP3_BIT6;
+> +
+> +	if (val & ~mask)
+> +		return -EINVAL;
+> +
+> +	sr[0] = val;
 
+As sashiko already noticed, I think too this should have been sr[0] |= val
 
 ______________________________________________________
 Linux MTD discussion mailing list
