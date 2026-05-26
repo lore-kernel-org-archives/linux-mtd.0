@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2F5DCD5BC8
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA07FCD5BB1
 	for <linux-mtd@archiver.kernel.org>; Tue, 26 May 2026 14:57:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,59 +12,59 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4fvMwgA/7+lJnAaUGe8VLqcV4q3M5K+APgfWVbZ8c8Q=; b=Dh2zcu8wWTdw4J
-	nOpEc+5bjD82C0Tk50U91hplR8iXRCOKtlYzyuLqZpK+iw4HzwDaAoxSBz4SLh9hMravJiDe8sIsM
-	LkPPLgVyY3/x8/TA/o5uPnOKKScb511WnMnhXxNrkAePfvAvFAp7ziFj/qX1g6nb6S4NODyynCRwL
-	epZLm9/6Mn4rOFsn+NCisSswbe+9AFiCsOZJ910WiZOfrJFF+lCTRo2iOcKymZup2Xq3Af/FCJ9G6
-	YE5nE4dR4++L8c4GrQesS6yym+5dRqZb1cVZnlbn3CeDuvgIVRzLP1Xp7xTICFftWUNM249YE1C4y
-	GgO/MtigUfwT0VxtW73g==;
+	List-Owner; bh=R6V16bWUTuKt3FsmoJacq1AtbPJn7lmcU41RPaZAK8o=; b=j0Cy06E+bRJwbK
+	1IVF4gi5skNsa5/GlYkGQ8g6ExXtIVLR1Y1VK/KfcdheUBHzAYTElRHAukSkHeJgeiEMLzk2PfnJl
+	GM5Zokojb6TOWnwSRQDRVhlD5e6Irdr87AWjpRCXKyCavmIcHXcJ0OxvMvojo56htxVBenkqW1AwB
+	8MLAbOAQvExRgPM1DKhpqObLDytMuL27onPpCYAyY9elMa9+3aD19rpK5LkWvobgxpvyDnIqvBla3
+	vj/wCPdpBIWA8E5gdGjH6lr221MSeTXqjA7BklBHt4wS+QBsSCeNIN9YspCLSyvu0eaW/YpHvG6Jx
+	SXyWtaBQWUM1tcV4Wjew==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wRtDj-00000002Fm6-2fMa;
+	id 1wRtDj-00000002Flq-1xMx;
 	Tue, 26 May 2026 14:57:27 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wRtDi-00000002Fjo-20Ao
+	id 1wRtDh-00000002FjC-2gYa
 	for linux-mtd@bombadil.infradead.org;
 	Tue, 26 May 2026 14:57:26 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Cc:To:In-Reply-To:References:
-	Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
-	From:Sender:Reply-To:Content-ID:Content-Description;
-	bh=4eOxwXGdBa/N/cxA091GkSGGYkj0VIM36RQVYQqTbRQ=; b=TQovw3WftzbJ2WqNnrvzuGwYjn
-	drPwGByWxxqJAVyBx9Mk3vX9x1Nq92iFNePyG8NXuw+kAO0S26qT6fTWNT2JWlUfPVowhMGftjglo
-	G3juErDBJ527eaxhEIyhxjJBWkqDUdU6v0YRuoqV69msrrRLscYBTNgDT65Q96vnjrXUpRPFuAoTb
-	xQHdxFGbLc3/fwYm1wk56aSzH72YQld9EFQ7I/jyD0QBKLZTgp9A4t+2IVLAReNZNsbjmUWX1I/mn
-	vAsFTzW6nKwz1da35vEpEDPsCEOKj/1Pzg979F3yf7GKjk4clyI94DdcBInlQ6yVXfwjjTB9QTz+m
-	7649GuGA==;
-Received: from smtpout-03.galae.net ([185.246.85.4])
-	by desiato.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wRtDc-0000000BalF-3zCN
+	d=infradead.org; s=casper.20170209; h=Cc:To:In-Reply-To:References:Message-Id
+	:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:From:Sender
+	:Reply-To:Content-ID:Content-Description;
+	bh=fNfQtEn0rDKQ08xTLMyGfUSzqnBc/J5aa9LBz96hoMc=; b=cyaVZteBDI3FdPg80D89EH8ocJ
+	Z25piz0DEeolGVzr2qxYymWojFQBHOU84R0sCxvuyi5HwUckoUisyKAvfqSQv3+lqwvE1igrCZ5C5
+	2I24OR+5gtzPijUbav3H7XlbUEbrKh3cVIZc0a67RjXET15kYZvZRUt8+gK+PQC7Rh6RF0MnMxjYY
+	bLU/yxEC/km7/UlmOLHyfIuHA9qfgmCInsBnudRvYrHA/0lFoNXEsHU/t1NYhykSd7ALgsaBE2a7w
+	n8ukICJ47v3OnZxoIcAkMB6wTTSujIcRL39mlgk9GJPysyJfrlaXMqRkTWVhXLqmGY9jT/FR1h94H
+	DYWTEV/A==;
+Received: from smtpout-04.galae.net ([185.171.202.116])
+	by casper.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
+	id 1wRtDe-00000001Bky-165S
 	for linux-mtd@lists.infradead.org;
 	Tue, 26 May 2026 14:57:24 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id 99EFC4E42D5E;
-	Tue, 26 May 2026 14:57:12 +0000 (UTC)
+	by smtpout-04.galae.net (Postfix) with ESMTPS id 41AEEC79ABB;
+	Tue, 26 May 2026 14:56:53 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 6E8A76073B;
-	Tue, 26 May 2026 14:57:12 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 0706C108888D4;
-	Tue, 26 May 2026 16:57:09 +0200 (CEST)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id D80676011D;
+	Tue, 26 May 2026 14:56:53 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 81040108888CB;
+	Tue, 26 May 2026 16:56:50 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1779807431; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1779807412; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=4eOxwXGdBa/N/cxA091GkSGGYkj0VIM36RQVYQqTbRQ=;
-	b=BKNZo7frA6/ZOrUI+7NGbYpd3jsiXHr1sCYqHQAuO8ooGoXk8JEG/mv3EbDK4/GTe74JFP
-	3X7SFy8tEYHxKdAPw0IMJedIQ7FKgBBkSBu+vgr0NNN5UZZ2TWZ/hJk2MCA6776LcC7jgh
-	FDRYQ7ywM5nMtt+RJKcRnmHbtw236Tm8BgAdiGWDjmAyYiFvmLET5SJVJ1EjK0jvN2Rnc8
-	OohmwHJ18OQrkzD7cxISnFdC5JqUEgXk8k1Rt14ii/D7JqpIfg+v62bAfZthl71gS52X4i
-	x3EU7LzeOIBqtnW1NsVcvlFndZHHBoT0aGoyO7Jp4J5duxNqoiIN4ngKTwaF5Q==
+	bh=fNfQtEn0rDKQ08xTLMyGfUSzqnBc/J5aa9LBz96hoMc=;
+	b=S3+CyI0ghG88Z8U/qkK/B9aqs8PBZ1gfUkuD4dScLrjxiAc/Ut/ltlNVVUe9YTeBMEoPPR
+	9B1E5PxL/eo+N/Y7f8U+HasYOV1kvYlLCBggX7p8VDXwi5EX04Oq7gJ6uIQ71v0jQIvIEO
+	tbvv+qXGpPQmb1bMDtSykFZYQ0qo77GgwinYQx7yG1kRcO29n58WJC2zn+VckZLf18AUBU
+	X2zc/cz8lyjGU6EzG8UT6iM8FL3sKEdQU0AWOBoVJ8k5IuBO8lJo0q+TjMtsCuu2pEOlYg
+	Gw5QZpmpynGt6GxCyCBIp6vtE7HfYCCs1doVG1W9OLIEzBV2YC+sYIdjnitdKA==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Tue, 26 May 2026 16:56:37 +0200
-Subject: [PATCH v6 13/28] mtd: spi-nor: swp: Create a TB intermediate
- variable
+Date: Tue, 26 May 2026 16:56:28 +0200
+Subject: [PATCH v6 04/28] mtd: spi-nor: Make sure the QE bit is kept
+ enabled if useful
 MIME-Version: 1.0
-Message-Id: <20260526-winbond-v6-18-rc1-spi-nor-swp-v6-13-4092f1419f8f@bootlin.com>
+Message-Id: <20260526-winbond-v6-18-rc1-spi-nor-swp-v6-4-4092f1419f8f@bootlin.com>
 References: <20260526-winbond-v6-18-rc1-spi-nor-swp-v6-0-4092f1419f8f@bootlin.com>
 In-Reply-To: <20260526-winbond-v6-18-rc1-spi-nor-swp-v6-0-4092f1419f8f@bootlin.com>
 To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
@@ -80,9 +80,8 @@ Cc: Sean Anderson <sean.anderson@linux.dev>,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260526_155721_423712_3D221059 
-X-CRM114-Status: UNSURE (   9.35  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260526_155722_426332_130E7389 
+X-CRM114-Status: GOOD (  13.96  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,35 +98,41 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Ease the future reuse of the tb (Top/Bottom) boolean by creating an
-intermediate variable.
+Not all chips implement the 4BAIT table which typically indicates the
+program capability, while many of them do implement the relevant SFDP
+parts indicating the read capabilities. In such a situation, programs
+can happen in single mode (1-1-1) and reads in quad mode (1-1-4 or
+1-4-4). For the reads to work in such condition, the QE bit must be set.
+In case we later use the spi_nor_write_16bit_sr_and_check() helper with
+a chip with such configuration, the QE bit would get incorrectly
+cleared.
+
+Make sure this doesn't happen by keeping the QE bit under a simpler
+condition:
+- the quad enable hook is there (no change)
+- and at least one of the two protocols is based on quad I/O cycles
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Reviewed-by: Pratyush Yadav <pratyush@kernel.org>
 ---
- drivers/mtd/spi-nor/swp.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/mtd/spi-nor/core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/swp.c b/drivers/mtd/spi-nor/swp.c
-index 07269e09370a..540cd221c455 100644
---- a/drivers/mtd/spi-nor/swp.c
-+++ b/drivers/mtd/spi-nor/swp.c
-@@ -62,6 +62,7 @@ static void spi_nor_get_locked_range_sr(struct spi_nor *nor, const u8 *sr, loff_
- 	u8 bp_mask = spi_nor_get_sr_bp_mask(nor);
- 	u8 tb_mask = spi_nor_get_sr_tb_mask(nor);
- 	u8 bp, val = sr[0] & bp_mask;
-+	bool tb = (nor->flags & SNOR_F_HAS_SR_TB) ? sr[0] & tb_mask : 0;
- 
- 	if (nor->flags & SNOR_F_HAS_SR_BP3_BIT6 && val & SR_BP3_BIT6)
- 		val = (val & ~SR_BP3_BIT6) | SR_BP3;
-@@ -81,7 +82,7 @@ static void spi_nor_get_locked_range_sr(struct spi_nor *nor, const u8 *sr, loff_
- 	if (*len > nor->params->size)
- 		*len = nor->params->size;
- 
--	if (nor->flags & SNOR_F_HAS_SR_TB && sr[0] & tb_mask)
-+	if (tb)
- 		*ofs = 0;
- 	else
- 		*ofs = nor->params->size - *len;
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 5dd0b3cb5250..394c27de02d6 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -869,8 +869,8 @@ static int spi_nor_write_16bit_sr_and_check(struct spi_nor *nor, u8 sr1)
+ 		ret = spi_nor_read_cr(nor, &sr_cr[1]);
+ 		if (ret)
+ 			return ret;
+-	} else if (spi_nor_get_protocol_width(nor->read_proto) == 4 &&
+-		   spi_nor_get_protocol_width(nor->write_proto) == 4 &&
++	} else if ((spi_nor_get_protocol_width(nor->read_proto) == 4 ||
++		    spi_nor_get_protocol_width(nor->write_proto) == 4) &&
+ 		   nor->params->quad_enable) {
+ 		/*
+ 		 * If the Status Register 2 Read command (35h) is not
 
 -- 
 2.53.0
