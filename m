@@ -4,63 +4,108 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8C022CD5BB1
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 May 2026 15:35:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2722ECD5BC8
+	for <linux-mtd@archiver.kernel.org>; Tue, 26 May 2026 16:37:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
+	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=I5l92htV+gdPvU3GwkbUTBpC1vXoJrOOjTXqtaM5KG8=; b=vSvhIUpttFU8vK
-	STCGw9VOO38j8GI2b8MtgnaMi2SBggkxEXuXUGzWv70REFdB0vkWq81L8bsaD5QVxkl8yJGaBIUMs
-	LQAlxYYj2lxaEf54Q9Okw91EBV1Hg0GVVfetNPAvwHLTZTZwltrdwSqTpBWjcwO1G42QAzeoMJsAv
-	PIS6bkYY6J8iJ+4xalmL+zhxT5lQ76NpA9HVhq2UfLm5ZvYYm5yk8lBtKEIaIbATszVKiminpuU9z
-	102FaiC/bUen0uy6i1g9b53bo/tGhr+vrW90XR6wcTKh4yVhiJ+6hJSmIbZWTc8PiMAQYlh6CBbQo
-	dNKLaY0EfC8YvRoMdYyQ==;
+	List-Owner; bh=iGR7DG9O93/ulIVwLIxF6XKu0FZ7gRM8bxxdUbITYo0=; b=3ssCx+DwRWMH+C
+	2Cd7lr7p9A3Z9pV2itmhOStguycXocRo4BCcU+9NLIHNsfHLq3XkBekLUtU3xdhEPGRrLRTgy442r
+	l23sSKYL/S4mj+s5LxGflLkJNVtHwJoQ3VxFjXWCwtJKE+brsAWV1UwMnZea6wClL0d8Ye3VpZ6qa
+	SEYU2ZzfM6cUyOvNZnMQXd8Vm0C0VkxoSMZ2GrotmcfFv47JeRN/t3TAi+eXY4b2Z/fSfpPqrh26O
+	iDJ3lJ3hydVcGwQrSt/Hkt8A+WFXRlp7l7lFtXZdwClIYBOesnkTY+yNI2MIQahYKWiFbZwmQqQa/
+	qMQY0Zxqvnbz/SKuMZKw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wRtoX-00000002OLJ-2Ja8;
-	Tue, 26 May 2026 15:35:29 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1wRumX-00000002WxO-1A9d;
+	Tue, 26 May 2026 16:37:29 +0000
+Received: from mail-oa1-x32.google.com ([2001:4860:4864:20::32])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wRtoW-00000002OL4-0qcv
+	id 1wRumU-00000002Wvz-14o1
 	for linux-mtd@lists.infradead.org;
-	Tue, 26 May 2026 15:35:28 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id A4E8C60018;
-	Tue, 26 May 2026 15:35:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6E2F1F000E9;
-	Tue, 26 May 2026 15:35:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1779809727;
-	bh=idMbG6Muree+cvLwC3HEjKGEVbk/jCLWFu0evZJQ3Ig=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date;
-	b=CZo4exUQ2oXd7kuFQy8VkDB82ZOWnadorXWtHXCVIm88pFgxiAKvx1RAI09eyQy7l
-	 0HM3twUxFtVgIgG0G34YVmSPaBqlQnUiKlsNeL6+BtjaR6in7dJ8IBRtUB0NvE2cim
-	 Sl4ZBQUCHOx2ogeVpW6pniOYryqnfzYZIIupJc1IP/krGbGhkSJx8MTT07jtinEjeI
-	 Egu2kcUoZMx1jCx3EjC3mHbY9zImTdS4f4sQYMH2k3swblnNRr8aQlBrR/4ldNDe6r
-	 YeYVg2UyYq47go1wzR7+SrgvWAVSLAs6AFptom5GmwBELQmLzqpmcYq5ouY4HDj6Gm
-	 kSekovzGLJ8XA==
-From: Pratyush Yadav <pratyush@kernel.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Pratyush Yadav <pratyush@kernel.org>,  Michael Walle
- <mwalle@kernel.org>,  Takahiro Kuwano <takahiro.kuwano@infineon.com>,
-  Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
- <vigneshr@ti.com>,  Jonathan Corbet <corbet@lwn.net>,  Tudor Ambarus
- <tudor.ambarus@linaro.org>,  Shuah Khan <skhan@linuxfoundation.org>,  Sean
- Anderson <sean.anderson@linux.dev>,  Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>,  Steam Lin <STLin2@winbond.com>,
-  linux-mtd@lists.infradead.org,  linux-kernel@vger.kernel.org,
-  linux-doc@vger.kernel.org,  stable@kernel.org
-Subject: Re: [PATCH v6 00/28] mtd: spi-nor: Enhance software protection
-In-Reply-To: <20260526-winbond-v6-18-rc1-spi-nor-swp-v6-0-4092f1419f8f@bootlin.com>
-	(Miquel Raynal's message of "Tue, 26 May 2026 16:56:24 +0200")
-References: <20260526-winbond-v6-18-rc1-spi-nor-swp-v6-0-4092f1419f8f@bootlin.com>
-Date: Tue, 26 May 2026 17:35:23 +0200
-Message-ID: <2vxz8q964210.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	Tue, 26 May 2026 16:37:28 +0000
+Received: by mail-oa1-x32.google.com with SMTP id 586e51a60fabf-43587e63a8eso6808618fac.0
+        for <linux-mtd@lists.infradead.org>; Tue, 26 May 2026 09:37:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20251104.gappssmtp.com; s=20251104; t=1779813445; x=1780418245; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CbEyVDKYB6brZVOZVveRW94ChbWHXbhuaSGALUdMmOo=;
+        b=HEL4T936s/nS5h0Z96ZhVfw+APwy1p0C5+kKXnev5S8aQkzRpqp/oasBn0WwiMOLGb
+         rL/KYbvRtvHe+hmn1b5jgHs9Zn8nEmJ011we0Dd/dRYwCb3IxU/q2+vPIOw03wxS9XHO
+         pvnIe3hGcX5sE5rtT0mV6MStCv9kpBS4bUDJGPCd5tKX7aISOIf3bSyFm9BqHu9q4LO1
+         p+73BHAa50MIyRTU4e7xBlk3ldGLN5kaqvFmhHoEMMaTPxWb8ZFVIeG6MlBcjwkRIofy
+         V8MS0OofcLSDfWoSme6tXEScxOJ9gTgMeDmf28Pwa5KqueXnQHzdLNqW5CN5NjCTHll7
+         Ibiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1779813445; x=1780418245;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=CbEyVDKYB6brZVOZVveRW94ChbWHXbhuaSGALUdMmOo=;
+        b=oy+l1w6i6ZXzanzmWS77i/uQxRVNR1PoTO9ncGFknM6huKyKtlojt5tROnG2D+y5y5
+         2GKuTncf51Ez0q4vJeFFeqhEluCOFgz/D/yjEeEJTySqZ7QSjuLNUQDP83laY8F3PxpC
+         jDKGzlDgdzE6VNd8AJlQBDP0ht3qXisB7XilHB/XelySe01fPLxZHmuE77R37qlJnLow
+         wSxcuN4U0DMUSDJtNGyw0oZM9Sr+nmbYsQ2+gw4pYwl7V5F2/Maqw2bfFtbsEmZU3Es8
+         zswCLKv+ME26bcN51mscDoLJKddoKO2+LI7GJLkkpJLEMK/ob7KXdOVWo//9IAWOpdz6
+         Ru1w==
+X-Forwarded-Encrypted: i=1; AFNElJ/tU7i5oe2MCK/qQXmh/qUMay1MW2vQJKV9YbsGwW6/gLEZCSt4sgXOFpEnjZdiChCupDuFtkhIQ+A=@lists.infradead.org
+X-Gm-Message-State: AOJu0YxjeNlJNii8UKPw9X45f6KYVjYDBh6KZNYvfTUvVJ7237PoHwF/
+	m3s8j/HX1/tV3YozpMDOUba036sKiaPDlBkivf5d32OGhvkCTxOikKNfXu+spkGSRt0=
+X-Gm-Gg: Acq92OGqHzUG1+xL4DUKQI7QXNOfyUjgdaefp7CdROG5aVe5cRWSETz73Eggzlh+D5b
+	7E2i6ntgVZkYO1W085YeAf3tEyMK8gabzHu4z0vcxWUT6n8MQmG80JKM9olsLovf5MDCMtry2rB
+	l7b97xUXbcRj/huqkVhn/xjjhI2ASkOr8l+mNO2YJRCfZSz2eSFAWf12rct3ZsfoZ9wwil77rJ4
+	AsMtTPazpPy88hsu4GK38sKva3u/Zjh0tdw/CvfSWqozhVDxYTRJe5FR2sXTXwED1ZriDA6Ck7O
+	6pAnOnlt26Oxa3zBpSQtQUw5fPFZGwxBvqPibSV9HElQXG7C+ab2pGXx1AQAySz6kK2Cm9gcLXX
+	uj3UpIR+299qOOdczuoU0LrAhPtX8olhLu81TmOFlUHW1ZRFFYgMJr+bnSlRMBJf2X1RaspDF3O
+	WEPko5IIe+Nc1JgNcIsJeAq6JEcz9KIBYQXLrmofeKHu2eKWHJGZncZtpIWigp5v2pF8or4KUbh
+	atC2k+eZ1KDhH0/K4kFNe4w
+X-Received: by 2002:a05:6871:289a:b0:43a:5cd0:db00 with SMTP id 586e51a60fabf-43b5adb7a25mr12258063fac.23.1779813444777;
+        Tue, 26 May 2026 09:37:24 -0700 (PDT)
+Received: from [127.0.0.1] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-43b639fd7adsm13561265fac.14.2026.05.26.09.37.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 May 2026 09:37:22 -0700 (PDT)
+From: Jens Axboe <axboe@kernel.dk>
+To: Mateusz Nowicki <mateusz.nowicki@posteo.net>
+Cc: Caleb Sander Mateos <csander@purestorage.com>, 
+ Sung-woo Kim <iam@sung-woo.kim>, Josef Bacik <josef@toxicpanda.com>, 
+ Alasdair Kergon <agk@redhat.com>, Mike Snitzer <snitzer@kernel.org>, 
+ Mikulas Patocka <mpatocka@redhat.com>, 
+ Benjamin Marzinski <bmarzins@redhat.com>, Ulf Hansson <ulfh@kernel.org>, 
+ Richard Weinberger <richard@nod.at>, Zhihao Cheng <chengzhihao1@huawei.com>, 
+ Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Vignesh Raghavendra <vigneshr@ti.com>, Sven Peter <sven@kernel.org>, 
+ Janne Grunau <j@jannau.net>, Neal Gompa <neal@gompa.dev>, 
+ Keith Busch <kbusch@kernel.org>, Christoph Hellwig <hch@lst.de>, 
+ Sagi Grimberg <sagi@grimberg.me>, Justin Tee <justin.tee@broadcom.com>, 
+ Naresh Gottumukkala <nareshgottumukkala83@gmail.com>, 
+ Paul Ely <paul.ely@broadcom.com>, Chaitanya Kulkarni <kch@nvidia.com>, 
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, 
+ "Martin K. Petersen" <martin.petersen@oracle.com>, 
+ Thomas Fourier <fourier.thomas@gmail.com>, 
+ Al Viro <viro@zeniv.linux.org.uk>, Luke Wang <ziniu.wang_1@nxp.com>, 
+ Kees Cook <kees@kernel.org>, linux-block@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, nbd@other.debian.org, 
+ dm-devel@lists.linux.dev, linux-mmc@vger.kernel.org, 
+ linux-mtd@lists.infradead.org, asahi@lists.linux.dev, 
+ linux-arm-kernel@lists.infradead.org, linux-nvme@lists.infradead.org, 
+ linux-scsi@vger.kernel.org
+In-Reply-To: <20260523125210.272274-1-mateusz.nowicki@posteo.net>
+References: <20260523125210.272274-1-mateusz.nowicki@posteo.net>
+Subject: Re: [PATCH v1] block: switch numa_node to int in blk_mq_hw_ctx and
+ init_request
+Message-Id: <177981344077.464267.4670805396521914701.b4-ty@b4>
+Date: Tue, 26 May 2026 10:37:20 -0600
 MIME-Version: 1.0
+X-Mailer: b4 0.15.2
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260526_093726_297435_E5409AB8 
+X-CRM114-Status: GOOD (  10.08  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,73 +122,31 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, May 26 2026, Miquel Raynal wrote:
 
-> Hello,
->
-> Back in October 2025, the "locking" support in SPI NOR was discussed on
-> the mailing list (link below). The conclusion was that this support
-> could benefit from some enhancements. As I myself had to dig into it,
-> here is a proposal.
->
-> First issue that I see, the MEMLOCK ioctl is not behaving correctly
-> in some cases, as addressed in:
->
->     mtd: spi-nor: swp: Improve locking user experience
->
-> Then there is no clear explanation of the shortcuts taken by the kernel
-> in terms of uAPI, so there is an attempt to list them in:
->
->     mtd: spi-nor: swp: Explain the MEMLOCK ioctl implementation behaviour
->
-> Plus, Tudor also asked if we could cover locking in the testing
-> procedure, which is done in:
->
->     mtd: spi-nor: Add steps for testing locking support
->
-> In order to simplify this procedure, and because it got very helpful
-> during my testing/development, I want to propose additions to the
-> debugfs output:
->
->     mtd: spi-nor: debugfs: Add locking support TODO: make the captures again
->
-> Finally, I am providing an implementation for the complement (CMP)
-> feature in order to allow finer control of the regions locked. This
-> feature is for instance available on Winbond chips:
->
->     [core] mtd: spi-nor: swp: Add support for the complement feature
->     [doc]  mtd: spi-nor: Add steps for testing locking with CMP
->     [use]  mtd: spi-nor: winbond: Add CMP locking support
->
-> Disclaimer: it was much less straightforward than I initially thought to
-> get the CMP feature working correctly. I tested it with as much focus as
-> I could, and I am improving the test coverage for the new cases, I am
-> also providing extra test cases in the metadata of the commit (which do
-> not make sense to test for chip additions, but may be sensible show when
-> making core additions like this one), but honestly there are so many
-> possibilities, I may still be missing corner cases. I hope this will
-> anyway be helpful to others!
->
-> All the other patches are misc improvements or style fixes which I faced
-> and fixed during my development.
->
-> Link: https://lore.kernel.org/linux-mtd/92e99a96-5582-48a5-a4f9-e9b33fcff171@linux.dev/
->
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+On Sat, 23 May 2026 12:52:35 +0000, Mateusz Nowicki wrote:
+> numa_node in blk_mq_hw_ctx and the matching argument of
+> blk_mq_ops::init_request can be NUMA_NO_NODE (-1).  Declared as
+> unsigned int, NUMA_NO_NODE becomes UINT_MAX and walks off
+> nvme_dev::descriptor_pools[] on CONFIG_NUMA=n [1].
+> 
+> Switch the field and the callback prototype to int and update all
+> in-tree init_request implementations.  No functional change:
+> cpu_to_node(), kmalloc_node() and blk_alloc_flush_queue() already
+> take int.
+> 
+> [...]
 
-Applied to spi-nor/next. This should give us around 3 weeks to soak in
-linux next. Expect the SPI NOR PR a little bit later than usual, around
-the start of the merge window so we can maximize the exposure of these
-patches.
+Applied, thanks!
 
-Apologies once again for the crappy contributor experience, I tried to
-get to this sooner, but wasn't much successful at it :-/
+[1/1] block: switch numa_node to int in blk_mq_hw_ctx and init_request
+      commit: 65e1c8f96ad1a1f3b72e8a91d1341d570f91d985
 
-[...]
-
+Best regards,
 -- 
-Regards,
-Pratyush Yadav
+Jens Axboe
+
+
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
