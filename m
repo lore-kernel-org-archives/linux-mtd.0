@@ -4,52 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56DBCCD5BB1
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 May 2026 14:57:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 80267CD5BB1
+	for <linux-mtd@archiver.kernel.org>; Tue, 26 May 2026 14:57:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=yk9UMOUBiJBgN6wkCcklxX40dEVyq+0WcctC38LneEE=; b=t+3fQesAIQd0DO
-	IaPBM+C2P9G+RRXwY9N5slbhAIWXM8nIh0WDjkuuPh4TxJT8+sHRHBjBI2i/LcHoAiYTKB2mH6r3l
-	q/DYGgctWXOJYd1i/ChsleWrKEK6+jB5N8GGe+XsEfglZqABlS5sTa4YPXMiE4vxughwDd0o7EGUW
-	MA9vxM1Ki6Q2YKMvQyH9/YcwK1k1woORZWwz9GFN+bf3RQkoqAgyU+8fWp6SwPVEccIkPvsvpNoQt
-	43flJ7KOYl7Rsc6mlHCnulPNZWRBM53KL3sQbFaKfSC8Kk2z9KnAit2JxzT0ofNsblOQeyb98GfMY
-	sNgRE05WFTnoORVvXktw==;
+	List-Owner; bh=YVG4hBhbz3GA5SoEQeIRyXVtDjaCX/kc41DFajRfGYM=; b=w4G4LX/4yvKZji
+	fMjwfhbPi6Tgf4ntVk5BUXTRCxNN7uAY2lAJ/KZqjuL9Eph8PFXlLAiEd3v8uxAuc0QqycUipEv8d
+	Uyh8/By9pX+1OHUylw3VAFg8tKqXKZWH0g6PMhZgA8IS4EhHWyMZCM6JOWlQHMCaE2Co6WUdB8KHn
+	Ca4PpEKPLoX7g+YEMVFa0K5zwQ3uVoWTOsH1YPjSv7Wsqn+FRZz4g/Ew81Ekp0/3HWtHTjx9igcQe
+	imwriwyGwaeppCahQRbeO2F35x3YjU5i3MAFMLvFXckJmobwQpmepBXN3hrM412RiXs+mcYRLNeTB
+	FLJQBxoQnLVTJm1C1z0Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wRtDU-00000002FZE-0Px9;
-	Tue, 26 May 2026 14:57:12 +0000
-Received: from smtpout-02.galae.net ([185.246.84.56])
+	id 1wRtDf-00000002FiE-169j;
+	Tue, 26 May 2026 14:57:23 +0000
+Received: from smtpout-03.galae.net ([185.246.85.4])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wRtDS-00000002FVq-0KAc
+	id 1wRtDc-00000002FfH-0lVM
 	for linux-mtd@lists.infradead.org;
-	Tue, 26 May 2026 14:57:11 +0000
+	Tue, 26 May 2026 14:57:22 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id AE0B51A363F;
-	Tue, 26 May 2026 14:57:08 +0000 (UTC)
+	by smtpout-03.galae.net (Postfix) with ESMTPS id ADA674E42D5F;
+	Tue, 26 May 2026 14:57:18 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 7C1F760733;
-	Tue, 26 May 2026 14:57:08 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id E8B2E108888CE;
-	Tue, 26 May 2026 16:57:05 +0200 (CEST)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 811276011D;
+	Tue, 26 May 2026 14:57:18 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 63C84108888CA;
+	Tue, 26 May 2026 16:57:16 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1779807427; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1779807437; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=c54SBPmc1/TosVcdK/PJb5zKdGWJlYw/ZXBJnTYebAY=;
-	b=C9qpZQE/znOXCdZaTAOVj14+2vS2mvvXgKH0/qeGDzgOZlsp2Nv6WLVCQvAspb0wJw+fRQ
-	c0E1jM1UCbQcItRVnaOtc7csXOoaOvPsZmxXxxqX3UELGZOmBanoA4hlO914KrhVDRWMJB
-	JXM7IFlq7VQyv07rhC7CpA783P21FxLWSkqJ3TiWxnC5QH2U5S9DmqmXRuAF8x73i4qmnx
-	UYHjxpXBmxZzBWrv7Q+2tTk4rfMK0JE+xdgRhGHVPbq8RmQkLX9Gnv89Soyz8o59rRKJU4
-	LJm3clrJ4+kQzXtxmN5MAZOknsR1n7sC0hvD5xpGXjlmAtRSrX3miyLuxD4grQ==
+	bh=xSz8lH002GPUpQgEP1oBjyrBoW3KkUAq7QuEKEyUZms=;
+	b=VJvVm+qml8mpb1hs6gQHyKXK+5mBXpYnT6gGvtGIjeadCrF5pL8fZMTwcqPXRcca7kGSan
+	He/ijehA2cvuidTGqPhg5X/fyumLyUdra8t2LQ3A5C4zxYijBKMFBv3Zgm7zsbDOFuLkKB
+	5H9kzTpiNsBuO/mN83BLdhrKSlpTHrXCtzatIBDR689iQ/XFvAj+CUXUkQRDFYgBhDJK7m
+	eLUjlWFLibFhzuJrOxwcvA4SFZL3xQfBPXuG5xnZFUk7puiWZSi/Fyd1GzFabthTvrwILj
+	ziALhoHEd1evc+RTjPOSdiG+uwlqAgrQNPtGXzRrTPWCMcJDwayrvqyPSHzncw==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Tue, 26 May 2026 16:56:35 +0200
-Subject: [PATCH v6 11/28] mtd: spi-nor: swp: Create a helper that writes
- SR, CR and checks
+Date: Tue, 26 May 2026 16:56:40 +0200
+Subject: [PATCH v6 16/28] mtd: spi-nor: swp: Cosmetic changes
 MIME-Version: 1.0
-Message-Id: <20260526-winbond-v6-18-rc1-spi-nor-swp-v6-11-4092f1419f8f@bootlin.com>
+Message-Id: <20260526-winbond-v6-18-rc1-spi-nor-swp-v6-16-4092f1419f8f@bootlin.com>
 References: <20260526-winbond-v6-18-rc1-spi-nor-swp-v6-0-4092f1419f8f@bootlin.com>
 In-Reply-To: <20260526-winbond-v6-18-rc1-spi-nor-swp-v6-0-4092f1419f8f@bootlin.com>
 To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
@@ -65,8 +64,8 @@ Cc: Sean Anderson <sean.anderson@linux.dev>,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260526_075710_711066_A6ACF61A 
-X-CRM114-Status: GOOD (  14.42  )
+X-CRM114-CacheID: sfid-20260526_075720_376651_982B14E7 
+X-CRM114-Status: GOOD (  11.70  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,117 +82,87 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-There are many helpers already to either read and/or write SR and/or CR,
-as well as sometimes check the returned values. In order to be able to
-switch from a 1 byte status register to a 2 bytes status register while
-keeping the same level of verification, let's introduce a new helper
-that writes them both (atomically) and then reads them back (separated)
-to compare the values.
-
-In case 2 bytes registers are not supported, we still have the usual
-fallback available in the helper being exported to the rest of the core.
+As a final preparation step for the introduction of CMP support, make
+a few more cosmetic changes to simplify the reading of the diff when
+adding the CMP feature. In particular, define "min_prot_len" earlier as
+it will be reused and move the definition of the "ret" variable at the
+end of the stack just because it looks better.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/spi-nor/core.c | 65 ++++++++++++++++++++++++++++++++++++++++++++++
- drivers/mtd/spi-nor/core.h |  1 +
- 2 files changed, 66 insertions(+)
+ drivers/mtd/spi-nor/swp.c | 21 ++++++++-------------
+ 1 file changed, 8 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 394c27de02d6..2799c21d0b67 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -976,6 +976,54 @@ int spi_nor_write_16bit_cr_and_check(struct spi_nor *nor, u8 cr)
- 	return 0;
- }
- 
-+/**
-+ * spi_nor_write_16bit_sr_cr_and_check() - Write the Status Register 1 and the
-+ * Configuration Register in one shot. Ensure that the bytes written in both
-+ * registers match the received value.
-+ * @nor:	pointer to a 'struct spi_nor'.
-+ * @regs:	two-byte array with values to be written to the status and
-+ *		configuration registers.
-+ *
-+ * Return: 0 on success, -errno otherwise.
-+ */
-+static int spi_nor_write_16bit_sr_cr_and_check(struct spi_nor *nor, const u8 *regs)
-+{
-+	u8 written_regs[2];
+diff --git a/drivers/mtd/spi-nor/swp.c b/drivers/mtd/spi-nor/swp.c
+index 229074d4e121..2d1b1c8a535a 100644
+--- a/drivers/mtd/spi-nor/swp.c
++++ b/drivers/mtd/spi-nor/swp.c
+@@ -197,14 +197,14 @@ static int spi_nor_build_sr(struct spi_nor *nor, const u8 *old_sr, u8 *new_sr,
+  */
+ static int spi_nor_sr_lock(struct spi_nor *nor, loff_t ofs, u64 len)
+ {
+-	u64 min_prot_len;
+-	int ret;
++	u64 min_prot_len = spi_nor_get_min_prot_length_sr(nor);
+ 	u8 status_old[1] = {}, status_new[1] = {};
+ 	loff_t ofs_old, ofs_new;
+ 	u64 len_old, len_new;
+ 	loff_t lock_len;
+ 	bool can_be_top = true, can_be_bottom = nor->flags & SNOR_F_HAS_SR_TB;
+ 	bool use_top;
 +	int ret;
-+
-+	written_regs[0] = regs[0];
-+	written_regs[1] = regs[1];
-+	nor->bouncebuf[0] = regs[0];
-+	nor->bouncebuf[1] = regs[1];
-+
-+	ret = spi_nor_write_sr(nor, nor->bouncebuf, 2);
-+	if (ret)
-+		return ret;
-+
-+	ret = spi_nor_read_sr(nor, &nor->bouncebuf[0]);
-+	if (ret)
-+		return ret;
-+
-+	if (written_regs[0] != nor->bouncebuf[0]) {
-+		dev_dbg(nor->dev, "SR: Read back test failed\n");
-+		return -EIO;
-+	}
-+
-+	if (nor->flags & SNOR_F_NO_READ_CR)
-+		return 0;
-+
-+	ret = spi_nor_read_cr(nor, &nor->bouncebuf[1]);
-+	if (ret)
-+		return ret;
-+
-+	if (written_regs[1] != nor->bouncebuf[1]) {
-+		dev_dbg(nor->dev, "CR: read back test failed\n");
-+		return -EIO;
-+	}
-+
-+	return 0;
-+}
-+
- /**
-  * spi_nor_write_sr_and_check() - Write the Status Register 1 and ensure that
-  * the byte written match the received value without affecting other bits in the
-@@ -993,6 +1041,23 @@ int spi_nor_write_sr_and_check(struct spi_nor *nor, u8 sr1)
- 	return spi_nor_write_sr1_and_check(nor, sr1);
- }
+ 	u8 pow;
  
-+/**
-+ * spi_nor_write_sr_cr_and_check() - Write the Status Register 1 and ensure that
-+ * the byte written match the received value. Same for the Control Register if
-+ * available.
-+ * @nor:	pointer to a 'struct spi_nor'.
-+ * @regs:	byte array to be written to the registers.
-+ *
-+ * Return: 0 on success, -errno otherwise.
-+ */
-+int spi_nor_write_sr_cr_and_check(struct spi_nor *nor, const u8 *regs)
-+{
-+	if (nor->flags & SNOR_F_HAS_16BIT_SR)
-+		return spi_nor_write_16bit_sr_cr_and_check(nor, regs);
-+
-+	return spi_nor_write_sr1_and_check(nor, regs[0]);
-+}
-+
- /**
-  * spi_nor_write_sr2() - Write the Status Register 2 using the
-  * SPINOR_OP_WRSR2 (3eh) command.
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 65bb4b5e1e2b..0753d0a6f8b8 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -637,6 +637,7 @@ int spi_nor_read_cr(struct spi_nor *nor, u8 *cr);
- int spi_nor_write_sr(struct spi_nor *nor, const u8 *sr, size_t len);
- int spi_nor_write_sr_and_check(struct spi_nor *nor, u8 sr1);
- int spi_nor_write_16bit_cr_and_check(struct spi_nor *nor, u8 cr);
-+int spi_nor_write_sr_cr_and_check(struct spi_nor *nor, const u8 *regs);
+ 	ret = spi_nor_read_sr(nor, nor->bouncebuf);
+@@ -238,12 +238,10 @@ static int spi_nor_sr_lock(struct spi_nor *nor, loff_t ofs, u64 len)
+ 	else
+ 		lock_len = ofs + len;
  
- ssize_t spi_nor_read_data(struct spi_nor *nor, loff_t from, size_t len,
- 			  u8 *buf);
+-	if (lock_len == nor->params->size) {
++	if (lock_len == nor->params->size)
+ 		pow = (nor->flags & SNOR_F_HAS_4BIT_BP) ? GENMASK(3, 0) : GENMASK(2, 0);
+-	} else {
+-		min_prot_len = spi_nor_get_min_prot_length_sr(nor);
++	else
+ 		pow = ilog2(lock_len) - ilog2(min_prot_len) + 1;
+-	}
+ 
+ 	ret = spi_nor_build_sr(nor, status_old, status_new, pow, use_top);
+ 	if (ret)
+@@ -283,14 +281,14 @@ static int spi_nor_sr_lock(struct spi_nor *nor, loff_t ofs, u64 len)
+  */
+ static int spi_nor_sr_unlock(struct spi_nor *nor, loff_t ofs, u64 len)
+ {
+-	u64 min_prot_len;
+-	int ret;
++	u64 min_prot_len = spi_nor_get_min_prot_length_sr(nor);
+ 	u8 status_old[1], status_new[1];
+ 	loff_t ofs_old, ofs_new;
+ 	u64 len_old, len_new;
+ 	loff_t lock_len;
+ 	bool can_be_top = true, can_be_bottom = nor->flags & SNOR_F_HAS_SR_TB;
+ 	bool use_top;
++	int ret;
+ 	u8 pow;
+ 
+ 	ret = spi_nor_read_sr(nor, nor->bouncebuf);
+@@ -331,14 +329,11 @@ static int spi_nor_sr_unlock(struct spi_nor *nor, loff_t ofs, u64 len)
+ 	else
+ 		lock_len = ofs;
+ 
+-	if (lock_len == 0) {
++	if (lock_len == 0)
+ 		pow = 0; /* fully unlocked */
+-	} else {
+-		min_prot_len = spi_nor_get_min_prot_length_sr(nor);
++	else
+ 		pow = ilog2(lock_len) - ilog2(min_prot_len) + 1;
+ 
+-	}
+-
+ 	ret = spi_nor_build_sr(nor, status_old, status_new, pow, use_top);
+ 	if (ret)
+ 		return ret;
 
 -- 
 2.53.0
