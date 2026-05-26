@@ -4,84 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9048ACD5BC8
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 May 2026 14:57:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83D10CD5BC8
+	for <linux-mtd@archiver.kernel.org>; Tue, 26 May 2026 15:20:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
-	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=LRP0WUDZo1MZerWGA0VUBU1ZOCtC6BM5I7nXtOrZQX8=; b=HTXVN+xSCO9WRw
-	FYGKYexxMILG78iwm/8T7vt0AlGPiUnf1sBNgXMtcpJe9EGFt2uUp52RrC+ZYOYKo1pR0TMErwYdo
-	NWCDGro97SQJIctq11N2BcssZWL9291NkraqymWbLGqvl1+13ZQq2oar8iEafO3YrtkR8oUfC9MNF
-	J7sZouNiBlLoKl+avIikYpX9ZlmEh0eBpiZraiZ1TmznX7Pgw+52acD53nJc+x3wGCov/8NmAXVRK
-	267CvV7bKCvxY9/2yw+8qx8agTxCPhHpnjj5DKICPJ6WDC+EvxRHOIcFPl3GpwpBeeaRVUEcrWGrp
-	iygputhN6NEDCF/1XF8w==;
+	List-Owner; bh=a1wF+eDG+LLENSTAx70xaDcxLZt5IBltW+c6mlODlPA=; b=1OloMHcpjv2j80
+	AEwY2Xo71TVuGHKkt9CALOvIBREyr/0UOdrx2z57SEjaEFzLScpVfadC5PCt+SQaA+k6xxOwBPlyv
+	SAn1ieaa2/97s123nit5JvPUF7G8d2MbA7CbyMktVjMF88Wd908EjiVLQ8NT7yfGTAF9cKWo9hNVY
+	Zm+endIsngUSpClAM2MPf76CxkWGK7XbvbcK+fFFB3oHdt+quSZFCPaFONkLBqoTlI5y8qytn/IOz
+	xUZBxadRgjVqlKFVhqm01/hiBFjwRRnoSab1457kj7h3ipu//5snO3ZPW+V8V0rG0GFVvKYDYq68e
+	UZORSSiOHVZnzbjx+K9A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wRtE7-00000002GUg-0SGZ;
-	Tue, 26 May 2026 14:57:51 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1wRtZm-00000002Low-0HNf;
+	Tue, 26 May 2026 15:20:14 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wRtE4-00000002GNp-2R1h
-	for linux-mtd@bombadil.infradead.org;
-	Tue, 26 May 2026 14:57:48 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Cc:To:In-Reply-To:References:
-	Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
-	From:Sender:Reply-To:Content-ID:Content-Description;
-	bh=tZrjKlrSTIx0EpT8S91i2zZxREgNAGIUjyhXtv54w/g=; b=IHg8UwuaX2pGJE5BHullyihUVP
-	3/hZb+vEE/iFN+r5AtchiBEAHB5J1stbevw65wn8jiseMKLZCBSEfKefJy03rUmRYNVTmg+RGYz6v
-	6t6TJOjeAvbYChfR5F+mddD/Gthk398Mlrce0PYIDrWmnnk4P8vuQtGL+PRWUJ0gHRMUnKJVGxSrp
-	DAyN9MpZyJQB1+ktx2oJZ1DsMkeLt1yI/46Rm6SOH17ToQrNS/rHxHt5Uft1Oz3lLdUqQydhDMzEY
-	d5z+nKFSVow+F4NjurPrueuJpGriDCnMnhTm4nYqQsmrCWToNR9c0y2OWkw06dR9X9LRcITNk+VTd
-	VONnceCQ==;
-Received: from smtpout-04.galae.net ([185.171.202.116])
-	by desiato.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wRtDz-0000000Bazl-4AUd
+	id 1wRtZj-00000002Lmd-0aCy
 	for linux-mtd@lists.infradead.org;
-	Tue, 26 May 2026 14:57:47 +0000
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id 3EF39C79ABE;
-	Tue, 26 May 2026 14:57:42 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id D52166011D;
-	Tue, 26 May 2026 14:57:42 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 9F4AD10888865;
-	Tue, 26 May 2026 16:57:40 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1779807461; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=tZrjKlrSTIx0EpT8S91i2zZxREgNAGIUjyhXtv54w/g=;
-	b=2u4ore6k2VW6md2mMVcAkBL+AYihfqTaVZB2EzIbys+W+OFuunvTVrbvzu2rfMDDI+snz2
-	o5KtTejGgqptkKJ8l7/4Jws+dcLRqWDDsAU0d8wtN9K7QE0bSIozzn+DdOd+DbUBo6/zG0
-	1otK91C0SR+dHzIZbAtk1AmKcm7bxGPLUXbWOwWCmKKdgQljy5s33c9JHUSyCpf4VfyZpI
-	JzfuHzFwaFnp4NNePOErVXpz6qIlbIYZg7V37B6HSrPObaTa4YKLM6mIivvy6XzLcIFlLT
-	1sPk2ClgHBR7GO8cJYXjVhHlulRZC9E5MFkCvZ6nm5CCeU7f2iU3rY6wuJekjA==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Tue, 26 May 2026 16:56:52 +0200
-Subject: [PATCH v6 28/28] mtd: spi-nor: winbond: Add W25Q02NWxxIM CMP
- locking support
+	Tue, 26 May 2026 15:20:12 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id 71CAF43A2B;
+	Tue, 26 May 2026 15:20:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF9D91F000E9;
+	Tue, 26 May 2026 15:20:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1779808810;
+	bh=SH8qWHJju4uEAUf18GIpquuRbDg0vcsabcryMTE0gLE=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date;
+	b=Yf74WaraQu+culrxNM7OHuH/zSP4TM4/HGEx2r/fpoNbU4BL7xtLWNZxgSbUt7SXh
+	 9T6fAf5xsM2R0n5yG8qom6jBLJIp+HKzyfs1j/9YkdJ2/T+gUycOjKkEBH6KnE+Xcj
+	 geeN1dYKtNOtgXZ6COQi/gJnMToYeDPUVWQcI11nnoARWBfi8xpqWkJiWhueZevFEY
+	 +R3MeI0W6TilQF5kgigh6D+kl9WvKV642zUaO5awh/BwT1jOmqMd6iiNJEraBusVMe
+	 V+zWOYT16/jLo2/oBL18U5Cny1aV31ES4zb7gm4LLjeWtfwZZ2dlc0Mu9Y9z/KmPij
+	 da3VA4tVczz1Q==
+From: Pratyush Yadav <pratyush@kernel.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Pratyush Yadav <pratyush@kernel.org>,  Tudor Ambarus
+ <tudor.ambarus@linaro.org>,  Michael Walle <mwalle@kernel.org>,  Takahiro
+ Kuwano <takahiro.kuwano@infineon.com>,  Richard Weinberger
+ <richard@nod.at>,  Vignesh Raghavendra <vigneshr@ti.com>,  Jonathan Corbet
+ <corbet@lwn.net>,  Shuah Khan <skhan@linuxfoundation.org>,  Sean Anderson
+ <sean.anderson@linux.dev>,  Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>,  Steam Lin <STLin2@winbond.com>,
+  linux-mtd@lists.infradead.org,  linux-kernel@vger.kernel.org,
+  linux-doc@vger.kernel.org,  stable@kernel.org
+Subject: Re: [PATCH v5 04/28] mtd: spi-nor: swp: Improve locking user
+ experience
+In-Reply-To: <87v7cakz7u.fsf@bootlin.com> (Miquel Raynal's message of "Tue, 26
+	May 2026 16:44:05 +0200")
+References: <20260507-winbond-v6-18-rc1-spi-nor-swp-v5-0-93453e1a9597@bootlin.com>
+	<20260507-winbond-v6-18-rc1-spi-nor-swp-v5-4-93453e1a9597@bootlin.com>
+	<9432f07f-3724-4257-b6ab-84721e619f78@linaro.org>
+	<875x4fphgr.fsf@bootlin.com>
+	<779f2680-2c67-4bbd-9576-bde8e83d111d@linaro.org>
+	<87o6i7o0tj.fsf@bootlin.com> <2vxz8q965ub7.fsf@kernel.org>
+	<87v7cakz7u.fsf@bootlin.com>
+Date: Tue, 26 May 2026 17:20:06 +0200
+Message-ID: <2vxzcxyi42qh.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-Message-Id: <20260526-winbond-v6-18-rc1-spi-nor-swp-v6-28-4092f1419f8f@bootlin.com>
-References: <20260526-winbond-v6-18-rc1-spi-nor-swp-v6-0-4092f1419f8f@bootlin.com>
-In-Reply-To: <20260526-winbond-v6-18-rc1-spi-nor-swp-v6-0-4092f1419f8f@bootlin.com>
-To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
- Takahiro Kuwano <takahiro.kuwano@infineon.com>, 
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
- Jonathan Corbet <corbet@lwn.net>, Tudor Ambarus <tudor.ambarus@linaro.org>, 
- Shuah Khan <skhan@linuxfoundation.org>
-Cc: Sean Anderson <sean.anderson@linux.dev>, 
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
- Steam Lin <STLin2@winbond.com>, linux-mtd@lists.infradead.org, 
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
- Miquel Raynal <miquel.raynal@bootlin.com>
-X-Mailer: b4 0.14.3
-X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260526_155744_370273_6730BC2A 
-X-CRM114-Status: GOOD (  13.59  )
+X-CRM114-CacheID: sfid-20260526_082011_227254_CDA2C7AD 
+X-CRM114-Status: GOOD (  23.90  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,81 +82,56 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This chip has support for the locking complement (CMP) feature. Add
-the relevant bit to enable it.
-
-Unfortunately, this chip also comes with an incorrect BFPT table,
-indicating the Control Register cannot be read back. This is wrong,
-reading back the register works and has no (observed) side effect. The
-datasheet clearly indicates supporting the 35h command and all bits from
-the CR are marked readable. QE and CMP bits are inside, and can be
-properly read back.
-
-Add a fixup for this, otherwise it would defeat the use of the CMP
-feature.
-
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
-Test run with W25Q02NWxxIM:
-$ flash_lock -u /dev/mtd0
-$ flash_lock -l /dev/mtd0 $bs $all_but_one # all but the first
-$ show_sectors
-locked sectors
- region (in hex)   | status   | #blocks
- ------------------+----------+--------
- 00000000-0000ffff | unlocked | 1
- 00010000-0fffffff |   locked | 4095
-$ flash_lock -u /dev/mtd0 $bs 1 # all but the two first
-$ show_sectors
-locked sectors
- region (in hex)   | status   | #blocks
- ------------------+----------+--------
- 00000000-0001ffff | unlocked | 2
- 00020000-0fffffff |   locked | 4094
-$ flash_lock -u /dev/mtd0
-$ flash_lock -l /dev/mtd0 0 $all_but_one # same from the other side
-$ show_sectors
-locked sectors
- region (in hex)   | status   | #blocks
- ------------------+----------+--------
- 00000000-0ffeffff |   locked | 4095
- 0fff0000-0fffffff | unlocked | 1
-$ flash_lock -u /dev/mtd0 $(($size - (2 * $bs))) 1 # all but two
-$ show_sectors
-locked sectors
- region (in hex)   | status   | #blocks
- ------------------+----------+--------
- 00000000-0ffdffff |   locked | 4094
- 0ffe0000-0fffffff | unlocked | 2
----
- drivers/mtd/spi-nor/winbond.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
-index 3a3b7f2f1659..8ebdbcec0b3f 100644
---- a/drivers/mtd/spi-nor/winbond.c
-+++ b/drivers/mtd/spi-nor/winbond.c
-@@ -379,7 +379,9 @@ static const struct flash_info winbond_nor_parts[] = {
- 	}, {
- 		/* W25Q02NWxxIM */
- 		.id = SNOR_ID(0xef, 0x80, 0x22),
--		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6 | SPI_NOR_4BIT_BP,
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6 |
-+			 SPI_NOR_4BIT_BP | SPI_NOR_HAS_CMP,
-+		.fixups = &winbond_rdcr_fixup,
- 	}, {
- 		/* W25H512NWxxAM */
- 		.id = SNOR_ID(0xef, 0xa0, 0x20),
-
--- 
-2.53.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gVHVlLCBNYXkgMjYgMjAyNiwgTWlxdWVsIFJheW5hbCB3cm90ZToKCj4gSGkgUHJhdHl1c2gs
+Cj4KPj4gQW5kIGhlcmUncyB3aGF0IEkgYW0gdGhpbmtpbmc6IHRoZSBmaXJzdCA5IHBhdGNoZXMg
+YXJlIHJldmlld2VkIGFuZCBnb29kCj4+IHRvIGdvLiBJIHdhbnQgdG8gbGFuZCB0aGVtIGluIHRo
+aXMgbWVyZ2Ugd2luZG93IHNvIHdlIGN1dCBkb3duIHlvdXIKPj4gcGF0Y2hzZXQgYW5kIGxhbmQg
+c3R1ZmYgc29vbmVyLgo+Pgo+PiBVbmZvcnR1bmF0ZWx5IEkganVzdCBjYW4ndCBzZWVtIHRvIGZp
+bmQgdGltZSB0byByZXZpZXcgdGhpcyBzZXJpZXMgc28gSQo+PiBob3BlIHRoaXMgaGVscHMgc29t
+ZSBhdCBsZWFzdC4KPgo+IEkga25vdyB3aGF0IHRoZSBtYWludGFpbmVyIGxvYWQgY2FuIGJlLCBz
+b21ldGltZXMgaXQgZG9lcyBub3QgcGxheSB3ZWxsCj4gd2l0aCB0aGUgcmVzdCBvZiB0aGUgeW91
+ciBwZXJzb25hbCBhbmQgcHJvZmVzc2lvbmFsIGR1dGllcy4gQnV0IHRoZQo+IHNlcmllcyBoYXMg
+YWxyZWFkeSBiZWVuIG9uIHRoZSBsaXN0IGZvciBhYm91dCA4IG1vbnRocywgaXQncyBiZWVuIGxv
+b2tlZAo+IGF0IGJ5IG90aGVyIHBlb3BsZSwgdGhlIG9uZXMgd2hvIGhhZCBlbm91Z2ggdGltZSB0
+byBkZWRpY2F0ZSB0byBpdC4gRnJvbQo+IG15IHBlcnNwZWN0aXZlLCBhc2tpbmcgc3VjaCBjb250
+cmlidXRpb25zIHRvIHdhaXQgaW5kZWZpbml0ZWx5IGFuZCB0aGVuCj4gc3VnZ2VzdGluZyBwYXJ0
+aWFsIGFwcGxpY2F0aW9uIHdpdGhvdXQgYSB0ZWNobmljYWwgcmVhc29uIGlzIG5vdCBhCj4gc3Vz
+dGFpbmFibGUgd2F5IHRvIGhhbmRsZSBjb250cmlidXRpb25zLiBUaGlzIHNlcmllcyBoYXMgbm90
+IG1vdmVkIG11Y2gsCj4gaXQgY291bGQgaGF2ZSBiZWVuIGFwcGxpZWQgKm11Y2gqIGVhcmxpZXIu
+IEkndmUgbm93IGFkZHJlc3NlZCBtb3N0IG9mCj4gdGhlIGNvbW1lbnRzIGZyb20gU2FzaGlrbywg
+djYgaXMgY29taW5nLCBmdXJ0aGVyIGltcHJvdmluZyB0aGUgcXVhbGl0eQo+IGZvciBzdXJlLCBh
+cyB0aGVyZSB3ZXJlIGJ1Z3MgLSB0aGVyZSBhcmUgYWx3YXlzLiBJIGFtIG9mIGNvdXJzZSBoYXBw
+eSB0bwo+IGFkZHJlc3MgZnVydGhlciB0ZWNobmljYWwgY29uY2VybnMsIGlmIHRoZXJlIGFyZSBh
+bnksIGJ1dCBJIHdvdWxkCj4gc3Ryb25nbHkgcHJlZmVyIG1lcmdpbmcgdGhlIHNlcmllcyBhcyB0
+aGUgY29oZXJlbnQgc2V0IGl0IHdhcyBpbnRlbmRlZAo+IHRvIGJlLCByYXRoZXIgdGhhbiBvbmx5
+IHRha2luZyB0aGUgcHJlcGFyYXRvcnkgcGFydHMuCgpVbmZvcnR1bmF0ZWx5IEkgYW0gb25seSBh
+IHBhdGNoIG1vbmtleSBmb3IgU1BJIE5PUiB0aGVzZSBkYXlzIGFuZCBkbyBub3QKaGF2ZSBhbnkg
+dGltZSB0byBkbyByZXZpZXdzLCBlc3BlY2lhbGx5IGZvciBiaWcgc2VyaWVzLiBJIG1haW5seSBj
+aGVjawpmb3IgcmV2aWV3ZWQgcGF0Y2hlcyBhbmQgdHJ5IHRvIGFwcGx5IHRoZW0uIEV2ZW4gdGhh
+dCBpcyBiZWNvbWluZyBoYXJkZXIKdGhlc2UgZGF5cyBzaW5jZSBJIGFtIG1vcmUgYnVzeSBhdCBu
+ZXcgJERBWUpPQi4KCkkgdW5kZXJzdGFuZCB5b3VyIGZydXN0cmF0aW9uLCBhbmQgZG8gdGFrZSB0
+aGUgYmxhbWUgZm9yIHRoaXMsIGJ1dAp1bmZvcnR1bmF0ZWx5IGNhbid0IHByb21pc2UgYW55dGhp
+bmcgYmV0dGVyIGluIHRoZSBmdXR1cmUuIFdlIHByZXR0eQptdWNoIGRvbid0IGhhdmUgYW55IGFj
+dGl2ZSByZXZpZXdlcnMgaW4gU1BJIE5PUi4gTWljaGFlbCBhbmQgVHVkb3IgYXJlCmFsc28gc2hv
+cnQgb24gdGltZSB0aGVzZSBkYXlzLiBJZiB5b3VyIGVtcGxveWVyIGNhcmVzIGFib3V0IFNQSSBO
+T1IsCnBlcmhhcHMgeW91IGNhbiBlbmNvdXJhZ2UgdGhlbSB0byBzdXBwb3J0IGRldmVsb3BlcnMg
+aW4gaGVscGluZyBvdXQgd2l0aApyZXZpZXdzIGFuZCBtYWludGVuYW5jZS4KCkFwcGx5aW5nIHRo
+ZSByZXZpZXdlZCBwYXRjaGVzIHJlZHVjZXMgdGhlIHRvdGFsIHBhdGNoc2V0IHNpemUgYW5kIGRv
+ZXMKbWFrZSB0aGluZ3MgZWFzaWVyIHRvIHJldmlldyBhbmQgbGFuZC4gU28gSSBkb24ndCBnZXQg
+d2h5IHlvdSBhcmUgc28Kb3Bwb3NlZCB0byB0aGUgaWRlYS4KCkJ1dCBhbnl3YXksIEknbGwgYml0
+ZSB0aGUgYnVsbGV0IGhlcmUgYW5kIGFwcGx5IHRoZSBzZXJpZXMuIFlvdQpnZW5lcmFsbHkgaGF2
+ZSBoaWdoIHF1YWxpdHkgcGF0Y2hlcyBzbyBJIGFtIG5vdCBzdXBlciB3b3JyaWVkIGFib3V0IHRo
+aXMKdG8gYmVnaW4gd2l0aC4gV2UgY2FuIGRlYWwgd2l0aCB0aGUgYnVncyBvciBzaG9ydGNvbWlu
+Z3MgbGF0ZXIgSQpzdXBwb3NlLi4uCgo+Cj4gT24gdG9wIG9mIHRoYXQsIGFzIG1lbnRpb25lZCBw
+cmV2aW91c2x5LCBJIG5vdyBoYXZlIGFkZGl0aW9uYWwgc3BpLW5vcgo+IGltcHJvdmVtZW50cyBh
+bmQgY2xlYW51cHMgd2FpdGluZyBiZWhpbmQgdGhpcyBzZXJpZXMuIEtlZXBpbmcgc3VjaCBhCj4g
+bGFyZ2Ugc3RhY2sgb2Ygb3V0IG9mIHRyZWUgcGF0Y2hlcyBmb3IgbW9udGhzIGlzIGJlY29taW5n
+IHBhaW5mdWwgdG8KPiBtYWludGFpbi4KPgo+IFRoYW5rcywKPiBNaXF1w6hsCgotLSAKUmVnYXJk
+cywKUHJhdHl1c2ggWWFkYXYKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDov
+L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
