@@ -4,86 +4,117 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93EACCD5BD5
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 May 2026 13:08:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A07DCD4F54
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 May 2026 17:55:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=+Ub7dzoLRJ/RAbVeRu1216qWRjzmew0bHoVeGoT/2uY=; b=e4MRoQs2kTTuYb
-	VU8LnuntnYTWqMuJYYEdi6/bXtG3Q9lKOLYmhkjx5JJG6hE0H+iMlI1okhdQ58l/Y9kNhYQCEQ4cf
-	nReY3qmmcv39PKHpjIT0q5PG5jlZl+nWklFvgNOt1P1A4LRxDYGq/WToC3RqgqV0XTjkaX/sHc7ZM
-	RVLVrKjmgMsPnVfI5HQi7AhhmJFo61/pdqIdy2R0YJO9sT8H2U3bNo7aY/rr/4cde6MwYVkpZ4RPU
-	WPof3hePXXRL/SiPSaOurXkt+WsogxDF8wFD7Yp7cQv5Tr4BmUmVHawqAp/ry2fRMtrLtFyb2pdam
-	0bBblrSTCrBbxcyuQA0w==;
+	List-Owner; bh=lhn+Kib0G2ux0Pq1Walc0+7xapl3vUjRefPu62ZH3KE=; b=Ys+O7QyKFqxa+k
+	h4ixq1xlixUKu5YVVvb3ulhAnHd3RjZDcXDiwtYN1ADlRm+mnVJvXf9jlNKEfroHsx0vVPX7pj9mC
+	u7sP3FAfRg85r1duqKCoBewGkd4NSSaIE0GrTp1biwC5MC4wmITiPfYASWII3tXbmcl/qrefM7yel
+	jUz+KyNt1RHepOxISoiXTyUix5QbIfJ8lLYX5ULuQQMNeTUXNNyaUOMAK7qnXCLc4Pm2UY0j+Kyhv
+	xx+WXvQ2Hmy0SpWVsEENJeRQpOE6QrKKx958NJ4ip1qx7JJKIsPUfAkFG/pPdMxpb0PBG++kjuxHu
+	1oQx3xCFv9l5bx24LG5A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wSDzb-000000049iI-3PZz;
-	Wed, 27 May 2026 13:08:15 +0000
-Received: from mail-qv1-xf30.google.com ([2607:f8b0:4864:20::f30])
+	id 1wSITw-00000004bSB-3JkU;
+	Wed, 27 May 2026 17:55:52 +0000
+Received: from mail-eastus2azon11010068.outbound.protection.outlook.com ([52.101.56.68] helo=BN1PR04CU002.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wSDzZ-000000049hv-2ZOL
+	id 1wSITs-00000004bRn-2q9m
 	for linux-mtd@lists.infradead.org;
-	Wed, 27 May 2026 13:08:15 +0000
-Received: by mail-qv1-xf30.google.com with SMTP id 6a1803df08f44-8b74b460d77so157643666d6.3
-        for <linux-mtd@lists.infradead.org>; Wed, 27 May 2026 06:08:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1779887292; x=1780492092; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=DO+OVa0uvgfe0VBImj35jZte/cP6pXfJrwHyo3JhXxA=;
-        b=seGFuHL/GXHiW4EJsZ3rgt2irzSBjCDaks3Wrda12MzXIPX+ZzIJeRJxPBiKUPrCPS
-         rlMESNlEVI63GTPlFhhvcYwJIsr+y2i/jgB2vPzFFDiRJrOfdQF+xVDZCrt2f3uUq0eN
-         yfK8rqNKMkjszPaU8IFkAKhi2VlzRDjrVGyCwqeQRkVJH/VcCzr8ePOY8/XUlrbU7l+5
-         rlZ7rAFCo6+xnG/FhIyuOWutPT11fG6Z/VOlgTUIaZTDPaWllmtEboomFI5FB1iIFxAa
-         Ff0fmsij2pvmxyKDPNTzPUYxBSjz30Qf/qP3+dszP7kimE9K8Ctcpjc0BgVxY1K1kDZ8
-         IcTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779887292; x=1780492092;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DO+OVa0uvgfe0VBImj35jZte/cP6pXfJrwHyo3JhXxA=;
-        b=CHNpvdKOq2W0yf0cCgH89dfNpaI4ZQ1scNPePpC/jMLoF6jh2arENS6Ena0jwWnegK
-         nZEiDIU7B7L+cajScFficMwcG21UgLqL2eT4jbutF0X2n4MaUiUxTdIuH2udBI6myaI7
-         Ko2yFYKvAhWu9RKEp1c/+dhfXMUdN97hSV5xh6Zx1C7MKeTr7yC8mb4UflW5Oajs4Za6
-         TbNcph/2vvOFXqSh6Os1MAPM6s2iXa29tqwBD/6AQyWeMC42y1xFlelWpPD34ZVM4xvm
-         VbQ83jN/G0N19d2qL6ArkuV2UAR9Oxe56YsjrOmKYaLLkrS0XVC48yRciZco+JLFCjpf
-         UO3A==
-X-Forwarded-Encrypted: i=1; AFNElJ+tN1pU0UdCIgUeaiA2+1bMnF/1aE+lzcdiP6sEB0OpHOtHEEs3GJUQI9VTUxnxFwtdfSrcOjv1p8c=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxaZ95NpGSP5Arwx5k21x/aXXpCGp5IM4yM4osBRPMuBLCU4kPt
-	Yx30s8xJipZXkuOahudVPW7otXEEqe2ckUXyxT7rIE2ONUtJsUzZ2zEq
-X-Gm-Gg: Acq92OGSvB2zw4IrM9ky5QJZ7jWCoVmDhjiwwnr/k4dLjWfbPPvX2HFBuh3pqXC1Cgb
-	pDGklw39yLIFwnvdxQXheY/74J7s33mhDvlLxJbCEOtfNapNgOJh8nmdT/6snPW9hH0U6QKwxfF
-	lMnfmTtpt+IK35sbFbexu0Jom0xR0eJuw3vKXzqLtV0HcVXrzEq613EeBXDM7Esx9LmP5f10QUt
-	HIOFtDB4QqjbyOqMTIi2+67QCN7RpMmLvBM05NuOlxIObJpzKjjyNV7bJZ02owRMHtkFaQGs/3M
-	rPUuN59WnWAeBcMy6Ws108m6zavUlijS45FDRddLVdMImo6vgHyWPRZukGSGqPqZKbUXhiE1mfZ
-	s9XeCw/Q5ZFLutUPf2qbT3hmucnYYyynCyIzqHTXnlxGxeXPA+1l533siQ2F4DegRi7I6rLgnes
-	LXB/bmAq/Q2r+ZoY8X5BIZyMpIAtOOPe8cvrFnQ98x5CBLK6QvPin31/GioqUSkQcdwBlzIlFTQ
-	p6ox07MkYwwWx+f
-X-Received: by 2002:a05:6214:1c43:b0:8b5:84:aa1b with SMTP id 6a1803df08f44-8cc7b50024dmr354653206d6.9.1779887292067;
-        Wed, 27 May 2026 06:08:12 -0700 (PDT)
-Received: from localhost.localdomain ([94.156.149.59])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8cca9c02e56sm70321176d6.43.2026.05.27.06.08.08
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Wed, 27 May 2026 06:08:11 -0700 (PDT)
-From: Qing Wu <ses1er@gmail.com>
-To: ses1er@gmail.com
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Michal Simek <michal.simek@amd.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v4] mtd: spinand: dosilicon: Add support for additional models
-Date: Wed, 27 May 2026 09:07:54 -0400
-Message-ID: <20260527130754.10867-1-ses1er@gmail.com>
-X-Mailer: git-send-email 2.50.1
+	Wed, 27 May 2026 17:55:50 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=oCqu9N0C1+7YQUt/Gyu2T5+4yoXn67Qlv0ZqolrFKD1flihmgLOZ5oqkSryZcRKCv31CFqxL3O1TFzvdRWcg/BYv0JcZWcphB2JG0QYuDFgoMyWMtmosYNIxvBNds5VGsH4GQ7VwrovsfWLNdXeUsFXfxhFXHZwZMtYnXAmDdC4l0JhPFifZUQOx4DrxO0aURFjN++rYiy1gN1ZWAR7YxsLMyX+fOWRApFqNIFQ2HafNPdtUKTOKTBKmu5T4JdluYWQ2Fatb7IhQfe08qkDcSJtFlcEkgc71r5zRCcEx02BunJBMR1omtpZRIS0P+qkB+KBmJ12rJ11F8+yLkYYiUw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=6Ty9hVFxWecAL6NGZT+1PlS5sRvlEoMxg+zodtodw+4=;
+ b=CvJUvjXKo8kkHvbLXm56QYY0zKoYzt7bWDGDyzhOFq3S/c+Vlcnd2FGBbhwcQsLhYhfQHJqQnEqmjZDnF54BCW8b7qreRuiOOGuj2MpTqFjA/AuF2V9nbxq1QuoAM1XhLjDuk+14fMOHCcrPXVMe4fKmujba4UqS850523kGB14rIxPS0wzflH1nKNo4d0YeYt9ldTGN3bBKLPDl3zB81dLg9PiKYBvkS5Sghh7E3XM23MV4lj1MILoQB4xz8BbgU+OUTCrD3Ibit2A4RhTjac7S0W+/dFAeZfrCWCeoB76jz3S3k4JLVzbIx0A54ivI58ydvNg7xN2i/aj/d1lAug==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 198.47.21.194) smtp.rcpttodomain=lists.infradead.org smtp.mailfrom=ti.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=ti.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6Ty9hVFxWecAL6NGZT+1PlS5sRvlEoMxg+zodtodw+4=;
+ b=cZGnLIqLDsy0AHI7miiXSR7WHLvHT5+eMhwBtwmaByOyRLIcLLq88SP6nGBXHFzOGuEmNedS+rU3GgahZSfa9XcCoVkHzxU8hgGCGrmNtkC357YTd7gh9LeOdRb/Y5vcEiOFNueBYOIM8C6L6YKRUdGWEfy5lsS3OvMboGTuZFc=
+Received: from CH3P220CA0002.NAMP220.PROD.OUTLOOK.COM (2603:10b6:610:1e8::13)
+ by SA1PR10MB997580.namprd10.prod.outlook.com (2603:10b6:806:4b9::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.71.12; Wed, 27 May
+ 2026 17:55:44 +0000
+Received: from DM2PEPF00003FC2.namprd04.prod.outlook.com
+ (2603:10b6:610:1e8:cafe::92) by CH3P220CA0002.outlook.office365.com
+ (2603:10b6:610:1e8::13) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.21.71.13 via Frontend Transport; Wed, 27
+ May 2026 17:55:43 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 198.47.21.194)
+ smtp.mailfrom=ti.com; dkim=none (message not signed) header.d=none;dmarc=pass
+ action=none header.from=ti.com;
+Received-SPF: Pass (protection.outlook.com: domain of ti.com designates
+ 198.47.21.194 as permitted sender) receiver=protection.outlook.com;
+ client-ip=198.47.21.194; helo=flwvzet200.ext.ti.com; pr=C
+Received: from flwvzet200.ext.ti.com (198.47.21.194) by
+ DM2PEPF00003FC2.mail.protection.outlook.com (10.167.23.20) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.21.71.7 via Frontend Transport; Wed, 27 May 2026 17:55:42 +0000
+Received: from DFLE207.ent.ti.com (10.64.6.65) by flwvzet200.ext.ti.com
+ (10.248.192.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.37; Wed, 27 May
+ 2026 12:55:39 -0500
+Received: from DFLE215.ent.ti.com (10.64.6.73) by DFLE207.ent.ti.com
+ (10.64.6.65) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.37; Wed, 27 May
+ 2026 12:55:39 -0500
+Received: from lelvem-mr06.itg.ti.com (10.180.75.8) by DFLE215.ent.ti.com
+ (10.64.6.73) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.37 via Frontend
+ Transport; Wed, 27 May 2026 12:55:39 -0500
+Received: from santhoshkumark.dhcp.ti.com (santhoshkumark.dhcp.ti.com [172.24.233.254])
+	by lelvem-mr06.itg.ti.com (8.18.1/8.18.1) with ESMTP id 64RHtYpc4052476;
+	Wed, 27 May 2026 12:55:34 -0500
+From: Santhosh Kumar K <s-k6@ti.com>
+To: <broonie@kernel.org>, <robh@kernel.org>, <krzk+dt@kernel.org>,
+	<conor+dt@kernel.org>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
+	<vigneshr@ti.com>, <pratyush@kernel.org>, <mwalle@kernel.org>,
+	<takahiro.kuwano@infineon.com>
+CC: <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+	<praneeth@ti.com>, <u-kumar1@ti.com>, <a-dutta@ti.com>, <s-k6@ti.com>
+Subject: [PATCH v3 00/13] spi: cadence-quadspi: add PHY tuning support
+Date: Wed, 27 May 2026 23:25:14 +0530
+Message-ID: <20260527175527.2247679-1-s-k6@ti.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
+X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM2PEPF00003FC2:EE_|SA1PR10MB997580:EE_
+X-MS-Office365-Filtering-Correlation-Id: b3eabe6a-25af-459e-b610-08debc192b73
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|82310400026|36860700016|7416014|376014|1800799024|56012099006|6133799003|18002099003|3023799007|921020;
+X-Microsoft-Antispam-Message-Info: bQy6JPEjmMmyHxqKwrzU/yeD455c5MbNH7pMZy2m0x/vU0USlwFA7YvwTdpmi799C644huPYdwWIuZyLE0F2/EfbCWUaulrv3aktsvaYw33Y585FzvxjOg7owUgzzfjNSRbYSjPMdcP4Yr9VpNBOefm6e50b9+FAWpuCxlyO62J0o9kWuvr7u5HTWA8J6LohsgbIaJcyo0YgUzPRigjpQ8H5OmUKEkMz5dOMsDY1ZwS9KrhrTktV61KShRxeETwmtR6cDuazUjFfBWRAfhcvXn+KffvDIGU21UjkrdBt0qh4GsyIqLBTFHMprk+26yD/DIpxNcAj2KV9vqVWe5P8Bt+f8k49O79Au6RkyMiTVAX2rP7ibFIe7X/0RUKOQKgR1KSUn8iY3EG2ROXcY8+1FtdrjDwi4V4g0OMdSh0KtHe+AX1AidmkpqVtfrqMZDD7ngdE9U7G4Qh//CCFtgLSyjPnWhIXM1AEDpTWfSNMGVMfrDjD8+C0VI+Kk9a46/ueGgnX1frQBfo97r8tWrn2tsjoApHiTRvzXmjlN/Y1NZd7DhIYVdqmscGjS55KCrnKhPM4Crno0WWqvdNqsj6T6eQEKTIAdJ53X0uke/1l8K7XKCjK24jvNQzkbpOrp2z+WmbBv45EsOj3YO4Cier+13yyUMjFKCmeJqzw7cfLvZUYeMhkonnuViCzICIdRnIjrQSj4x2SeDzui1l1vzibzV6YelZeEWcNoMBJcMxEyBo=
+X-Forefront-Antispam-Report: CIP:198.47.21.194;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:flwvzet200.ext.ti.com;PTR:ErrorRetry;CAT:NONE;SFS:(13230040)(82310400026)(36860700016)(7416014)(376014)(1800799024)(56012099006)(6133799003)(18002099003)(3023799007)(921020);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: TSPGekrwuwrj3fBlGqgADuiA0OlsofRSE3Dgjo9ZzXTYAqRRIznN0jWjy3x4CNB9W+Zmov5ZbUfy6am78y8ci4+zVP+KWYfsx2zU4OS+R+sJpgKjMjqL1qR6qBeiP/mUEZJpOYefylXNtEFO5/S2OTZETO5FMaD4LtGjFXJ5Euu7Pmc7AYwAdEzZCgCrO5b1ULyczlSwcc8OMaDo45NdMM7hixkM95MVxr0csTyjvHDeUikGIUokHIQymA8UDbNLm+qVlV9qO4SlwBJOBxVM7sD4LvzFn8xGTWUHd5UayyasJc532R9ReTrPj33M+021PLtzGefYoJ5f7l36I8B6MOl24uJSDPNg+OW2cz/jiMDzBa7uvyvnMebgRQRQHbUh8H5HDqmBdwbYx88viMipkvcWD7Aln3MCbXI2BQecS76s2et0qw3uWeVzyfeUAoG2
+X-OriginatorOrg: ti.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 May 2026 17:55:42.1448
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: b3eabe6a-25af-459e-b610-08debc192b73
+X-MS-Exchange-CrossTenant-Id: e5b49634-450b-4709-8abb-1e2b19b982b7
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=e5b49634-450b-4709-8abb-1e2b19b982b7;Ip=[198.47.21.194];Helo=[flwvzet200.ext.ti.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM2PEPF00003FC2.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR10MB997580
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260527_060813_679176_B46F2557 
-X-CRM114-Status: GOOD (  14.68  )
+X-CRM114-CacheID: sfid-20260527_105548_802292_841A4C6E 
+X-CRM114-Status: GOOD (  16.62  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,277 +131,180 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add support for additional Dosilicon SPI NAND chips.
+This series implements PHY tuning support for the Cadence QSPI controller
+to enable reliable high-speed operations. Without PHY tuning, controllers
+use conservative timing that limits performance. PHY tuning calibrates
+RX/TX delay lines to find optimal data capture timing windows, enabling
+operation up to the controller's maximum frequency.
 
-Datasheets for chips included in this patch: https://www.dosilicon.com/SPI%20NAND%20Flash.html
+Background:
+High-speed SPI memory controllers require precise timing calibration for
+reliable operation. At higher frequencies, board-to-board variations make
+fixed timing parameters inadequate. The Cadence QSPI controller includes
+a PHY interface with programmable delay lines (0-127 taps) for RX and TX
+paths, but these require runtime calibration to find the valid timing
+window.
 
-Tested on a TP-Link TL-7DR7250 with a Dosilicon DS35Q1GB (0xE5 0xF1)
+Approach:
+Add SDR/DDR PHY tuning algorithms for the Cadence controller:
 
-Signed-off-by: Qing Wu <ses1er@gmail.com>
----
-Changes in v4:
-- Fixed compilation errors.
+SDR Mode Tuning (1D search):
+ - Searches for two consecutive valid RX delay windows
+ - Selects the larger window and uses its midpoint for maximum margin
+ - TX delay fixed at maximum (127) as it's less critical in SDR
+
+DDR Mode Tuning (2D search):
+ - Finds RX boundaries (rxlow/rxhigh) using TX window sweeps
+ - Finds TX boundaries (txlow/txhigh) at fixed RX positions
+ - Defines valid region corners and detects gaps via binary search
+ - Applies temperature compensation for optimal point selection
+ - Handles single or dual passing regions with different strategies
+
+Patch description:
+Infrastructure (1-5):
+ - Patch 1:   Extend spi-max-frequency DT binding to accept an optional
+              second value forming a [base-freq, max-freq] pair
+ - Patch 2:   Add cadence-specific cdns,phy-pattern-partition phandle for
+              NOR flash PHY tuning pattern location
+ - Patch 3:   Parse two-element spi-max-frequency in spi.c; adds
+              spi_device.base_speed_hz (0 when a single value is used,
+              keeping all existing DT fully compatible)
+ - Patch 4:   Add spi_mem_apply_base_freq_cap(), called from
+              spi_mem_exec_op() to cap non-PHY ops to base_speed_hz;
+              tuned ops bypass the cap because execute_tuning() marks
+              them with op->max_freq = max_speed_hz
+ - Patch 5:   Add execute_tuning callback to spi_controller_mem_ops and
+              spi_mem_execute_tuning() wrapper in SPI-MEM core
+
+Cadence QSPI Implementation (6-10):
+ - Patch 6:   Move cqspi_readdata_capture() earlier (preparatory)
+ - Patch 7:   Add DQS bit to cqspi_readdata_capture() (preparatory)
+ - Patch 8:   Add complete PHY tuning support: DLL management, pattern
+              verification (NOR via cdns,phy-pattern-partition phandle,
+              NAND via write-to-cache), SDR 1D and DDR 2D search
+              algorithms with temperature compensation, AM654-specific
+              execute_tuning entry point; base_speed_hz is cleared during
+              the tuning loop and restored unconditionally on return
+ - Patch 9:   Reject 2-byte-address DDR operations via a new
+              CQSPI_NO_2BYTE_ADDR_PHY_DDR quirk flag to work around
+              AM654 OSPI erratum i2383
+ - Patch 10:  Enable PHY for direct memory-mapped reads (aligned body
+              region only; unaligned head and tail run without PHY) and
+              for indirect writes >= 1 KB
+
+MTD core (11-13):
+ - Patch 11:  Integrate tuning in SPI-NAND probe; propagate the validated
+              frequency to all plane dirmaps (primary and secondary op
+              templates) and to the persistent write dirmap template
+ - Patch 12:  Extract spi_nor_spimem_get_read_op() helper (preparatory)
+ - Patch 13:  Integrate tuning in SPI-NOR probe; patch the dirmap op
+              template with the validated frequency; store the result in
+              nor->max_read_op so all subsequent reads (dirmap and direct)
+              pick up the tuned speed automatically
+
+Series dependency:
+Merge after: https://lore.kernel.org/linux-spi/20260527173736.2243004-1-s-k6@ti.com/T/#u
+
+Testing:
+This series was tested on TI's
+AM62Ax SK with OSPI NAND flash and
+AM62Px SK with OSPI NOR flash:
+
+Read throughput:
+|-------------------------------------|
+|           | without PHY | with PHY  |
+|-------------------------------------|
+| OSPI NOR  | 37.5 MB/s   | 216 MB/s  |
+|-------------------------------------|
+| OSPI NAND | 9.2 MB/s    | 35.1 MB/s |
+|-------------------------------------|
+
+Write throughput:
+|-------------------------------------|
+|           | without PHY | with PHY  |
+|-------------------------------------|
+| OSPI NAND | 6 MB/s      | 9.2 MB/s  |
+|-------------------------------------|
+
+Test log: https://gist.github.com/santhosh21/3434d062f31622c5877a375218cd49c7
+Repo: https://github.com/santhosh21/linux/commits/phy_tuning_v3/
+
 Changes in v3:
-- Changed title
-- Updated 2 bytes for BBM
-- Link to v2: https://lore.kernel.org/all/20260520003733.82514-1-ses1er@gmail.com/
-Changes in v2:
-- Fixed compilation errors.
-- Link to v1: https://lore.kernel.org/all/20260217211427.9120-1-ses1er@gmail.com
----
- drivers/mtd/nand/spi/dosilicon.c | 202 +++++++++++++++++++++++++++++--
- 1 file changed, 195 insertions(+), 7 deletions(-)
+ - Drop spi-has-dqs DT property; DQS is now enabled automatically when
+   the selected read operation uses DDR signalling (dtr flags in the op)
+ - Extend spi-max-frequency to accept an optional second value forming a
+   [base-freq, max-freq] pair; the presence of two values signals PHY
+   tuning intent and encodes both the conservative base speed and the
+   calibration target in one property
+ - Add base_speed_hz to struct spi_device (spi.c/spi.h) and parse the
+   two-element array there; single-value DT is fully backward-compatible
+ - Move frequency enforcement from the cadence driver to core: new
+   spi_mem_apply_base_freq_cap() called from spi_mem_exec_op() replaces
+   the per-driver cqspi_op_matches_tuned() and non_phy_clk_rate field
+ - Propagate the tuned max_freq to dirmap op templates after
+   execute_tuning() succeeds; store persistent op templates in
+   spi_nor.max_read_op and spinand.{max_read,max_write}_op so the
+   frequency writeback survives across the probe call
+ - Replace NOR pattern partition lookup by name with a
+   cdns,phy-pattern-partition DT phandle pointing directly to the
+   partition node
+ - Add CQSPI_NO_2BYTE_ADDR_PHY_DDR quirk and reject 2-byte-address DDR
+   ops in cqspi_supports_mem_op() to work around AM654 erratum i2383
+ - Remove RFC tag
+ - Rebase on v7.1-rc5
+ - Collect tags from Miquel
+ - Link to v2: https://lore.kernel.org/linux-spi/20260113141617.1905039-1-s-k6@ti.com/
 
-diff --git a/drivers/mtd/nand/spi/dosilicon.c b/drivers/mtd/nand/spi/dosilicon.c
-index f99899866ceb..8f96ea7922e8 100644
---- a/drivers/mtd/nand/spi/dosilicon.c
-+++ b/drivers/mtd/nand/spi/dosilicon.c
-@@ -9,6 +9,12 @@
- 
- #define SPINAND_MFR_DOSILICON        0xE5
- 
-+#define DOSICON_STATUS_ECC_MASK			GENMASK(6, 4)
-+#define DOSICON_STATUS_ECC_NO_BITFLIPS		(0 << 4)
-+#define DOSICON_STATUS_ECC_1TO3_BITFLIPS	(1 << 4)
-+#define DOSICON_STATUS_ECC_4TO6_BITFLIPS	(3 << 4)
-+#define DOSICON_STATUS_ECC_7TO8_BITFLIPS	(5 << 4)
-+
- static SPINAND_OP_VARIANTS(read_cache_variants,
- 		SPINAND_PAGE_READ_FROM_CACHE_1S_1S_4S_OP(0, 1, NULL, 0, 0),
- 		SPINAND_PAGE_READ_FROM_CACHE_1S_1S_2S_OP(0, 1, NULL, 0, 0),
-@@ -23,7 +29,7 @@ static SPINAND_OP_VARIANTS(update_cache_variants,
- 		SPINAND_PROG_LOAD_1S_1S_4S_OP(false, 0, NULL, 0),
- 		SPINAND_PROG_LOAD_1S_1S_1S_OP(false, 0, NULL, 0));
- 
--static int ds35xx_ooblayout_ecc(struct mtd_info *mtd, int section,
-+static int ds35xxga_ooblayout_ecc(struct mtd_info *mtd, int section,
- 				struct mtd_oob_region *region)
- {
- 	if (section > 3)
-@@ -35,7 +41,7 @@ static int ds35xx_ooblayout_ecc(struct mtd_info *mtd, int section,
- 	return 0;
- }
- 
--static int ds35xx_ooblayout_free(struct mtd_info *mtd, int section,
-+static int ds35xxga_ooblayout_free(struct mtd_info *mtd, int section,
- 				 struct mtd_oob_region *region)
- {
- 	if (section > 3)
-@@ -53,11 +59,67 @@ static int ds35xx_ooblayout_free(struct mtd_info *mtd, int section,
- 	return 0;
- }
- 
--static const struct mtd_ooblayout_ops ds35xx_ooblayout = {
--	.ecc = ds35xx_ooblayout_ecc,
--	.free = ds35xx_ooblayout_free,
-+static const struct mtd_ooblayout_ops ds35xxga_ooblayout = {
-+	.ecc = ds35xxga_ooblayout_ecc,
-+	.free = ds35xxga_ooblayout_free,
- };
- 
-+static int ds35xxgb_ooblayout_ecc(struct mtd_info *mtd, int section,
-+				  struct mtd_oob_region *region)
-+{
-+	if (section)
-+		return -ERANGE;
-+
-+	region->offset = 64;
-+	region->length = 64;
-+
-+	return 0;
-+}
-+
-+static int ds35xxgb_ooblayout_free(struct mtd_info *mtd, int section,
-+				   struct mtd_oob_region *region)
-+{
-+	if (section)
-+		return -ERANGE;
-+
-+	/* Reserve 2 bytes for the BBM. */
-+	region->offset = 2;
-+	region->length = 62;
-+
-+	return 0;
-+}
-+
-+static const struct mtd_ooblayout_ops ds35xxgb_ooblayout = {
-+	.ecc = ds35xxgb_ooblayout_ecc,
-+	.free = ds35xxgb_ooblayout_free,
-+};
-+
-+static int ds35xxgb_ecc_get_status(struct spinand_device *spinand,
-+				   u8 status)
-+{
-+	switch (status & DOSICON_STATUS_ECC_MASK) {
-+	case STATUS_ECC_NO_BITFLIPS:
-+		return 0;
-+
-+	case STATUS_ECC_UNCOR_ERROR:
-+		return -EBADMSG;
-+
-+	case DOSICON_STATUS_ECC_1TO3_BITFLIPS:
-+		return 3;
-+
-+	case DOSICON_STATUS_ECC_4TO6_BITFLIPS:
-+		return 6;
-+
-+	case DOSICON_STATUS_ECC_7TO8_BITFLIPS:
-+		return 8;
-+
-+	default:
-+		break;
-+	}
-+
-+	return -EINVAL;
-+}
-+
- static const struct spinand_info dosilicon_spinand_table[] = {
- 	SPINAND_INFO("DS35Q1GA",
- 		SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x71),
-@@ -67,7 +129,16 @@ static const struct spinand_info dosilicon_spinand_table[] = {
- 					 &write_cache_variants,
- 					 &update_cache_variants),
- 		SPINAND_HAS_QE_BIT,
--		SPINAND_ECCINFO(&ds35xx_ooblayout, NULL)),
-+		SPINAND_ECCINFO(&ds35xxga_ooblayout, NULL)),
-+	SPINAND_INFO("DS35Q2GA",
-+		SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x72),
-+		NAND_MEMORG(1, 2048, 64, 64, 2048, 40, 2, 1, 1),
-+		NAND_ECCREQ(4, 512),
-+		SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					 &write_cache_variants,
-+					 &update_cache_variants),
-+		SPINAND_HAS_QE_BIT,
-+		SPINAND_ECCINFO(&ds35xxga_ooblayout, NULL)),
- 	SPINAND_INFO("DS35M1GA",
- 		SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x21),
- 		NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
-@@ -76,7 +147,124 @@ static const struct spinand_info dosilicon_spinand_table[] = {
- 					 &write_cache_variants,
- 					 &update_cache_variants),
- 		SPINAND_HAS_QE_BIT,
--		SPINAND_ECCINFO(&ds35xx_ooblayout, NULL)),
-+		SPINAND_ECCINFO(&ds35xxga_ooblayout, NULL)),
-+	SPINAND_INFO("DS35M2GA",
-+		SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x22),
-+		NAND_MEMORG(1, 2048, 64, 64, 2048, 40, 2, 1, 1),
-+		NAND_ECCREQ(4, 512),
-+		SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					 &write_cache_variants,
-+					 &update_cache_variants),
-+		SPINAND_HAS_QE_BIT,
-+		SPINAND_ECCINFO(&ds35xxga_ooblayout, NULL)),
-+	SPINAND_INFO("DS35Q2GB",
-+		SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xF2),
-+		NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 2, 1, 1),
-+		NAND_ECCREQ(8, 512),
-+		SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					 &write_cache_variants,
-+					 &update_cache_variants),
-+		SPINAND_HAS_QE_BIT,
-+		SPINAND_ECCINFO(&ds35xxgb_ooblayout, ds35xxgb_ecc_get_status)),
-+	SPINAND_INFO("DS35M1GB",
-+		SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xA1),
-+		NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
-+		NAND_ECCREQ(8, 512),
-+		SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					 &write_cache_variants,
-+					 &update_cache_variants),
-+		SPINAND_HAS_QE_BIT,
-+		SPINAND_ECCINFO(&ds35xxgb_ooblayout, ds35xxgb_ecc_get_status)),
-+	SPINAND_INFO("DS35Q1GB",
-+		SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xF1),
-+		NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
-+		NAND_ECCREQ(8, 512),
-+		SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					 &write_cache_variants,
-+					 &update_cache_variants),
-+		SPINAND_HAS_QE_BIT,
-+		SPINAND_ECCINFO(&ds35xxgb_ooblayout, ds35xxgb_ecc_get_status)),
-+	SPINAND_INFO("DS35Q4GM",
-+		SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xF4),
-+		NAND_MEMORG(1, 2048, 128, 64, 4096, 80, 2, 1, 1),
-+		NAND_ECCREQ(8, 512),
-+		SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					 &write_cache_variants,
-+					 &update_cache_variants),
-+		SPINAND_HAS_QE_BIT,
-+		SPINAND_ECCINFO(&ds35xxgb_ooblayout, ds35xxgb_ecc_get_status)),
-+	SPINAND_INFO("DS35Q12B",
-+		SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xF5),
-+		NAND_MEMORG(1, 2048, 128, 64, 512, 10, 1, 1, 1),
-+		NAND_ECCREQ(8, 512),
-+		SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					 &write_cache_variants,
-+					 &update_cache_variants),
-+		SPINAND_HAS_QE_BIT,
-+		SPINAND_ECCINFO(&ds35xxgb_ooblayout, ds35xxgb_ecc_get_status)),
-+	SPINAND_INFO("DS35M12B",
-+		SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xA5),
-+		NAND_MEMORG(1, 2048, 128, 64, 512, 10, 1, 1, 1),
-+		NAND_ECCREQ(8, 512),
-+		SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					 &write_cache_variants,
-+					 &update_cache_variants),
-+		SPINAND_HAS_QE_BIT,
-+		SPINAND_ECCINFO(&ds35xxgb_ooblayout, ds35xxgb_ecc_get_status)),
-+	SPINAND_INFO("DS35Q1GD-IB",
-+		SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x51),
-+		NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
-+		NAND_ECCREQ(8, 512),
-+		SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					&write_cache_variants,
-+					&update_cache_variants),
-+		SPINAND_HAS_QE_BIT,
-+		SPINAND_ECCINFO(&ds35xxgb_ooblayout, ds35xxgb_ecc_get_status)),
-+	SPINAND_INFO("DS35M4GB-IB",
-+		SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x64),
-+		NAND_MEMORG(1, 2048, 128, 64, 4096, 40, 1, 1, 1),
-+		NAND_ECCREQ(8, 512),
-+		SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					 &write_cache_variants,
-+					 &update_cache_variants),
-+		SPINAND_HAS_QE_BIT,
-+		SPINAND_ECCINFO(&ds35xxgb_ooblayout, ds35xxgb_ecc_get_status)),
-+	SPINAND_INFO("DS35Q4GB-IB",
-+		SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xB4),
-+		NAND_MEMORG(1, 2048, 128, 64, 4096, 40, 1, 1, 1),
-+		NAND_ECCREQ(8, 512),
-+		SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					 &write_cache_variants,
-+					 &update_cache_variants),
-+		SPINAND_HAS_QE_BIT,
-+		SPINAND_ECCINFO(&ds35xxgb_ooblayout, ds35xxgb_ecc_get_status)),
-+	SPINAND_INFO("DS35Q12C-IB",
-+		SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x75),
-+		NAND_MEMORG(1, 2048, 128, 64, 512, 10, 1, 1, 1),
-+		NAND_ECCREQ(8, 512),
-+		SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					 &write_cache_variants,
-+					 &update_cache_variants),
-+		SPINAND_HAS_QE_BIT,
-+		SPINAND_ECCINFO(&ds35xxgb_ooblayout, ds35xxgb_ecc_get_status)),
-+	SPINAND_INFO("DS35M12C-IB",
-+		SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x25),
-+		NAND_MEMORG(1, 2048, 128, 64, 512, 10, 1, 1, 1),
-+		NAND_ECCREQ(8, 512),
-+		SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					 &write_cache_variants,
-+					 &update_cache_variants),
-+		SPINAND_HAS_QE_BIT,
-+		SPINAND_ECCINFO(&ds35xxgb_ooblayout, ds35xxgb_ecc_get_status)),
-+	SPINAND_INFO("DS35Q2GBS",
-+		SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xB2),
-+		NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
-+		NAND_ECCREQ(8, 512),
-+		SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					 &write_cache_variants,
-+					 &update_cache_variants),
-+		SPINAND_HAS_QE_BIT,
-+		SPINAND_ECCINFO(&ds35xxgb_ooblayout, ds35xxgb_ecc_get_status)),
- };
- 
- static const struct spinand_manufacturer_ops dosilicon_spinand_manuf_ops = {
+Changes in v2:
+ - Restructure the .execute_tuning() call from spi-mem clients instead
+   of mtdcore with best read_op and write_op (optional) passed
+ - Add compatible-specific .execute_tuning() call which can be called by
+   spi_mem_execute_tuning() if exists
+ - Handle tuning requirement check by controller instead of spi-mem
+   clients
+ - Add support to write the phy_pattern to cache if relevant write_op
+   is passed or get the partition offset which contains the phy_pattern
+ - Add tuning algorithm for DDR mode
+ - Add support for DQS
+ - Restrict PHY frequency to tuned operations
+ - Link to v1: https://lore.kernel.org/linux-spi/20250811193219.731851-1-s-k6@ti.com/
+
+Signed-off-by: Santhosh Kumar K <s-k6@ti.com>
+
+Pratyush Yadav (1):
+  mtd: spi-nor: extract read op template construction into helper
+
+Santhosh Kumar K (12):
+  spi: dt-bindings: allow spi-max-frequency to specify a frequency pair
+  spi: dt-bindings: cdns,qspi-nor: add PHY tuning pattern partition
+    property
+  spi: parse two-element spi-max-frequency property
+  spi: spi-mem: add spi_mem_apply_base_freq_cap()
+  spi: spi-mem: add execute_tuning callback and spi_mem_execute_tuning()
+  spi: cadence-quadspi: move cqspi_readdata_capture earlier
+  spi: cadence-quadspi: add DQS support to read data capture
+  spi: cadence-quadspi: add PHY tuning support
+  spi: cadence-quadspi: reject 2-byte-address DDR ops on PHY-tunable
+    hardware
+  spi: cadence-quadspi: enable PHY for direct reads and indirect writes
+  mtd: spinand: run PHY tuning after init and update dirmap frequencies
+  mtd: spi-nor: run PHY tuning after init and update dirmap frequency
+
+ .../spi/cdns,qspi-nor-peripheral-props.yaml   |    8 +
+ .../bindings/spi/spi-peripheral-props.yaml    |   10 +-
+ drivers/mtd/nand/spi/core.c                   |   35 +
+ drivers/mtd/spi-nor/core.c                    |   85 +-
+ drivers/spi/spi-cadence-quadspi.c             | 2267 +++++++++++++++--
+ drivers/spi/spi-mem.c                         |   57 +-
+ drivers/spi/spi.c                             |   17 +-
+ include/linux/mtd/spi-nor.h                   |    3 +
+ include/linux/mtd/spinand.h                   |    4 +
+ include/linux/spi/spi-mem.h                   |   10 +
+ include/linux/spi/spi.h                       |    2 +
+ 11 files changed, 2308 insertions(+), 190 deletions(-)
+
+-- 
+2.34.1
 
 ______________________________________________________
 Linux MTD discussion mailing list
