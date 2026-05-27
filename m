@@ -4,92 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85BEECD4F54
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 May 2026 09:07:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CFA9FCD5BDE
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 May 2026 09:08:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
+	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=bQ+Wiz2AyqYYaUiVBpzSKus24EdiFrvW42SY2DwaVS4=; b=O57sADMpPO9Sde
-	WKULN4nlwMEUWP1Xgd0JuCHodO/mrlin+wJshLkv7bZsSUTEY8Ev86NZojSuv82S8nADAwprHD1ch
-	IGXd7/DFGD3q2usdx0kczmiDKjtMInFxYQ6AHadkuds/xk97Wj49gfrFHZXb0Vu+isP6QjEVcF6fl
-	REn2VWPNn/IT+sYMiVr4CdNHa+/hbr++3iP8HVsAyMgFThmw+k4VGUFj/XG8avGsiM6C02Z8NkbyN
-	YYMwEVUfXP2JSJ+m/XVK7aAarZemFWqbzsgqU2/Vq783IRd+Q1sr6G/EuyONbSCGRUt7IUQ/dCIvi
-	iR2yvF4bOFM9ehduTs2g==;
+	List-Owner; bh=LDwNWBco4QjMT7/hiKRAMGRCn8bbgfEvL2PyJYot3sQ=; b=wr4sL/ytEzfvGq
+	ca1/90DAHug69gNB7UG24+0XkcUZrbuGGuKq6Ht7dbtMSvEJD51d5Ma9xn9GdmM9U+kpQ9ho4+rR7
+	/TwQed5VIFwGol+otyayIW8x7e/B15iKCXiD64sc0whOa/7c+TANuqEjCtcj6hZmz3hGfK/YhrJel
+	SBeU6+E/kI8SNR3EasEA9cKIPy1G9Z9s3PJpYxfXqzBHiWOuULhwp9bC3W37hp0PijhQPvhcd7lf5
+	EQ8uqRk+PGbkCCAqqQLMyJfAJgcQLlnneG6ha8gvtcZDgsaK0XOaQRiECnjAs7KutKJctjQhkD7q2
+	B/j7DYdp1lYvdwUSicqg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wSAE9-00000003ayS-19yZ;
-	Wed, 27 May 2026 09:07:01 +0000
-Received: from mail-pg1-x532.google.com ([2607:f8b0:4864:20::532])
+	id 1wSAFO-00000003bHO-2mBr;
+	Wed, 27 May 2026 09:08:18 +0000
+Received: from smtpout-04.galae.net ([185.171.202.116])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wSAE7-00000003axC-0coW
+	id 1wSAFL-00000003bGl-1qUn
 	for linux-mtd@lists.infradead.org;
-	Wed, 27 May 2026 09:07:00 +0000
-Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-c8016d642b2so5140859a12.0
-        for <linux-mtd@lists.infradead.org>; Wed, 27 May 2026 02:06:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1779872818; x=1780477618; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IHfJs41z74yWyxNYCsI9T7FUV5fvNUyK3Y2GYC39FLg=;
-        b=JRZ4u6Ui7sncjGLdq/loJC2ngp3/vqUQNrNf+rSly19LDHmOuePHOEBCELn4ACDnDG
-         CTCXDmsTNfmI0f54sHcArFtNynRClY7nRccwX8RMNBr+PTNjwZj04TKtxnyJN//v71KV
-         XA1R7DSd8WyzswOhPHqtsWipGOLoB0tY1mNce7WGruJnJA9YrirgDnjsKEpMRq6LjuR2
-         vtMjYzckgLSmE0vsgMIf/MSNndCn6rJJXv238R81h66JM0W/1jN3iWlLrP+CaAD2uAUo
-         +R7XZoabnn1YnlDbkBuKsDFOMCkGtHJL8A9QnPO+GAAQhW8RCIRbdEJehGgY6nQdwxuR
-         iktw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779872818; x=1780477618;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=IHfJs41z74yWyxNYCsI9T7FUV5fvNUyK3Y2GYC39FLg=;
-        b=TBjuC3paUFDlyONzHCtUgXVAsgtAaxgTMLjhdLOxZRDAFZX5zza/QObR2pAtGXtM7C
-         gBMsXgaoFDW63Dd5Cni7sBZMseqhqHSRJfuJSF2fqVbFmUTIisAMluUEq3KrRjMPKQPs
-         C7QwRzB7JxalZwYTlkJVRIhw4isf89JekankxsNWGckkUXU3+cnygz+sBhu9Xw2F8X1u
-         oCJCrYKxILmz6WjOd0Qxp37wzCo2eXbnc++iinPlhYmwfE5VwrYNbqKjUaw0/E6qREqE
-         cKSWdsQVKbuDRgPotWfvxALegkaiJgEysLVwTxmhC6RiPuxxt+6dMngHjqMd4cOJHIcD
-         v/+w==
-X-Gm-Message-State: AOJu0Yw2h2OWx7UjztImHag6SiLZ6+fsMjnvxn8p/LOYM5paISjfjJg6
-	4USfeCnlopPMuZAfIQWapC844M3SIjAIelsYqCSGTJiKMoY6l7KwlhKg
-X-Gm-Gg: Acq92OGwPQ8QSYGidFDrkfUv1YDBzt6kpCWneLxK6oEF6OzIV7F/dsMJuH4D5RbfjOD
-	/+PbM+xS/SxMQoriJdcRYxGa4ZuStl1/+Ocsiny3EhfX+Nd8lR/AOSB5NhvzbUhFRqHXxe0I2dR
-	5Uqrv+zzglkuZ/7qAmuYNiqRLWEWWzRPTJNfQba3+PKATav8jLNLRYIDKr2950Acs/wyHfuFmbm
-	HEN9CVnu2Zld42HY/tJ5S0oRat3c4oSH5urJodgbnXgpWyDN1ohxvKnjIfO77RL5zUW3tGUQwKs
-	2CNzyJxdnP7pp/YRNRYhVia1/OliuOfUI3xLQi+8f/xZz/7eIR9mdVhakN9n2Mkq/g1WaoxaNJ7
-	5bh8vqJEgb3GWcKnay02vo2N5CEF9bIWTUNNWpUCpE0asgcbM/c7KTKCbt+iLSMBbL6gIhygTwH
-	YBJiO0ThW7WjMSqI434pDzHf8E6XFOynxuGIpxR6NmkejY/autICh8qFcKcZv5rFn9e9OHiUr1f
-	UTvIammjdFQWDsye3U=
-X-Received: by 2002:a05:6a20:a122:b0:395:acfc:b679 with SMTP id adf61e73a8af0-3b307ec72e9mr22523522637.18.1779872818298;
-        Wed, 27 May 2026 02:06:58 -0700 (PDT)
-Received: from ISCN5CG2520RPD.infineon.com (KD106168128197.ppp-bb.dion.ne.jp. [106.168.128.197])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-c85202b91c6sm12065004a12.14.2026.05.27.02.06.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 May 2026 02:06:57 -0700 (PDT)
-From: tkuw584924@gmail.com
-X-Google-Original-From: takahiro.kuwano@infineon.com
-To: Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <mwalle@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Takahiro Kuwano <takahiro.kuwano@infineon.com>
-Subject: [PATCH v2 2/2] mtd: spi-nor: spansion: add die erase support in s28hx-t
-Date: Wed, 27 May 2026 18:05:40 +0900
-Message-ID: <36045be168c5e9525f9c649986b0f1a54dcb2be1.1779872008.git.takahiro.kuwano@infineon.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1779872008.git.takahiro.kuwano@infineon.com>
-References: <cover.1779872008.git.takahiro.kuwano@infineon.com>
+	Wed, 27 May 2026 09:08:16 +0000
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-04.galae.net (Postfix) with ESMTPS id 4A041C2C646;
+	Wed, 27 May 2026 09:08:13 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 8C0B1601A1;
+	Wed, 27 May 2026 09:08:13 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 37E9410888BA2;
+	Wed, 27 May 2026 11:08:10 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1779872893; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=kK4DTYkH4mVqwbeUHZEIbZsf6OS+5cQBMBpoc2DcWR8=;
+	b=I6SVVkiOFww4QVTTTD7F7O1TYjm+ySSBsQfX6Y8/mfPsdhbzIkTo3Gsn2+jPEsG73kI9Xf
+	zws+RC/t3v8l2NQgg/kDgN2g8Las5DBzhE1WmzZIj8TkkVKoTFuf7K7ttWTG8c4n5aKNHc
+	W7PwTT0/MR7498W1CGFyHhYduvN66YAF+PctgU0zUDl5RlczG6MucMRePGOSwdQ/wlDUS/
+	VIx+d9mXKXH6n4dxKLH0LB5HFTajOvUh6OyPzq88WBmJsBAUTINdVjzlThwEsq/z3hJq4V
+	1MnYpnvnw12nbHO+Y67l43wR+OhWjHa0VDDX3obB4kvgpnJ5OVh1wHdbZxnXOw==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Richard Weinberger <richard@nod.at>, 
+ Vignesh Raghavendra <vigneshr@ti.com>, linux-mtd@lists.infradead.org, 
+ Florian Fuchs <fuchsfl@gmail.com>
+Cc: linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Rich Felker <dalias@libc.org>, 
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
+ Adrian McMenamin <adrian@newgolddream.dyndns.info>, 
+ Artur Rojek <contact@artur-rojek.eu>
+In-Reply-To: <20260518114521.81564-1-fuchsfl@gmail.com>
+References: <20260518114521.81564-1-fuchsfl@gmail.com>
+Subject: Re: [PATCH v3 0/3] mtd: maps: vmu-flash: Fix build and runtime
+ errors
+Message-Id: <177987289003.3980206.15138963212721838518.b4-ty@bootlin.com>
+Date: Wed, 27 May 2026 11:08:10 +0200
 MIME-Version: 1.0
+X-Mailer: b4 0.14.3
+X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260527_020659_191199_BEFF796B 
-X-CRM114-Status: GOOD (  11.25  )
+X-CRM114-CacheID: sfid-20260527_020815_640783_7B77B393 
+X-CRM114-Status: UNSURE (   7.53  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,42 +77,28 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Takahiro Kuwano <takahiro.kuwano@infineon.com>
-
-S28Hx-T family has multi-die devices that support die erase opcode.
-Update die erase opcode when the device is multi-die.
-
-Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
-Reviewed-by: Pratyush Yadav <pratyush@kernel.org>
-Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Signed-off-by: Takahiro Kuwano <takahiro.kuwano@infineon.com>
----
- drivers/mtd/spi-nor/spansion.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-index b6023076903a..65227d989de1 100644
---- a/drivers/mtd/spi-nor/spansion.c
-+++ b/drivers/mtd/spi-nor/spansion.c
-@@ -762,6 +762,9 @@ static int s28hx_t_late_init(struct spi_nor *nor)
- 	params->ready = cypress_nor_sr_ready_and_clear;
- 	cypress_nor_ecc_init(nor);
- 
-+	if (params->n_dice > 1)
-+		params->die_erase_opcode = SPINOR_OP_CYPRESS_DIE_ERASE;
-+
- 	return 0;
- }
- 
--- 
-2.43.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gTW9uLCAxOCBNYXkgMjAyNiAxMzo0NToxOCArMDIwMCwgRmxvcmlhbiBGdWNocyB3cm90ZToK
+PiBUaGlzIHNtYWxsIHNlcmllcyBmaXhlcyBidWlsZCBhbmQgcnVudGltZSBlcnJvcnMgaW4gdGhl
+IHZtdS1mbGFzaCBkcml2ZXIKPiAoZW5hYmxlZCBieSBDT05GSUdfTVREX1ZNVSkgYW5kIHRoZSBy
+ZWxhdGVkIG1hcGxlLmguIFRoZXNlIGNoYW5nZXMgd2VyZQo+IHZlcmlmaWVkIG9uIHJlYWwgRHJl
+YW1jYXN0IGhhcmR3YXJlIHdpdGggYSBwaHlzaWNhbCBWTVUuIFRoZSBWTVUgY2FuIG5vdwo+IGJl
+IHN1Y2Nlc3NmdWxseSBwcm9iZWQsIHJlYWQgYW5kIHdyaXR0ZW4gd2l0aCBNVEQgdG9vbHMgbGlr
+ZSBtdGRpbmZvIGFuZAo+IG10ZF9kZWJ1Zy4gUHJldmlvdXNseSwgdGhlIGRyaXZlciBmYWlsZWQg
+dG8gYnVpbGQgb3IgY3Jhc2hlZCBkdXJpbmcKPiBwcm9iaW5nLgo+IAo+IFsuLi5dCgpBcHBsaWVk
+IHRvIG10ZC9uZXh0LCB0aGFua3MhCgpbMS8zXSBtYXBsZTogZml4IGJ1aWxkIGVycm9yIGR1ZSB0
+byBtaXNzaW5nIGluY2x1ZGUgb2YgbGludXgvZGV2aWNlLmgKICAgICAgKG5vIGNvbW1pdCBpbmZv
+KQpbMi8zXSBtdGQ6IG1hcHM6IHZtdS1mbGFzaDogZml4IGZhdWx0IGluIHVuYWxpZ25lZCBmaXh1
+cAogICAgICBjb21taXQ6IDc5ZDE2NjE1MDJjNmU0YjZmNjI2MTg1Y2VmNzJjZjJmYTc4MTE2ZTEK
+WzMvM10gbXRkOiBtYXBzOiB2bXUtZmxhc2g6IGZpeCBOVUxMIHBvaW50ZXIgZGVyZWZlcmVuY2Ug
+aW4gaW5pdGlhbGl6YXRpb24KICAgICAgY29tbWl0OiAzNTdlM2I4ZTNhODc2OWJhMzZlYjhlYzVl
+MDUzZTQ4MjVmMWE5MzI5CgpQYXRjaGUocykgc2hvdWxkIGJlIGF2YWlsYWJsZSBvbiBtdGQvbGlu
+dXguZ2l0IGFuZCB3aWxsIGJlCnBhcnQgb2YgdGhlIG5leHQgUFIgKHByb3ZpZGVkIHRoYXQgbm8g
+cm9ib3QgY29tcGxhaW5zIGJ5IHRoZW4pLgoKS2luZCByZWdhcmRzLApNaXF1w6hsCgoKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1U
+RCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
