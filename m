@@ -4,86 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0E06CD4F54
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 May 2026 10:00:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 120FBCD5BD5
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 May 2026 12:29:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=ACY9aFDc91P8jMwNKJ0YqoCbyeGmXMLxFgmTx411SLw=; b=189m2WnZeRXEt8
-	cDXFA+iI/z/mIIK65n76c7+vAzIWPst3Z/Lx3ZBWgsGhSjnaatcTTwR3haJQxCln3YYqQ7fQdzH1B
-	iDUNwrJNwdg5+/1AmJs0LVvC/n+iSx9sD0GORW9AxLIHmocFRDtw8/naatFLFiSAQK8OkMhG9y5ey
-	B+ROiIpcXn1Ppolh+2Is6g38CW+WUFiLZXGIwQHTD3nEWIWhvdPmnSoQW76Jepcky7PmNTXHNpev0
-	+3mUfbPseHaa8JZ69X8NKUrkOTk9oL/6XB5aQvu5Dcll7RtpktwZme7S83DBQX43OjBc108q9wEZY
-	W0KF3KDgm3yN6f5nuflA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=EPw2ZGFqptAfCFF1sSPzt8pl2N+JNh86U3QK/rt84zE=; b=ASj+9p/iIRQlpL
+	gJYTLd/+joWx/ZY61ggK6ZR1FtM+zStHHZPL2ZpoI9MqiyCvPV6f7iynidqutLmcYpbB4aKRhZbWC
+	2EadqdJG1XTQaF2im3ArvixSn7z9mk8Yp83jj9Vy6gtC+YS3JUMvqx7xwe3/rVM6QlA7d5aI+SgOp
+	/Zc38GXlnnGX3FTUD9HKIWZIbOul4bWvDF/OWdNdwy9MxDQLNmzbGfnhAvuBWOFtjd5ooE2e367cT
+	VxsstqVAvmJVMVQ2thJmtfrBBB1mAiOLVAu4DE1EOuHZqVJy3khoaewCcqnQ/RxSp8CL55vw4BdPC
+	C3VnB1AYxlKiyPggN9Aw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wSB42-00000003gzv-1rwL;
-	Wed, 27 May 2026 10:00:38 +0000
-Received: from mail-qt1-x82d.google.com ([2607:f8b0:4864:20::82d])
+	id 1wSDOQ-000000045c5-0uYE;
+	Wed, 27 May 2026 12:29:50 +0000
+Received: from smtpout-03.galae.net ([185.246.85.4])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wSB3w-00000003guk-39Y3
+	id 1wSDOM-000000045bE-2c38
 	for linux-mtd@lists.infradead.org;
-	Wed, 27 May 2026 10:00:35 +0000
-Received: by mail-qt1-x82d.google.com with SMTP id d75a77b69052e-51306c36c3eso126208601cf.0
-        for <linux-mtd@lists.infradead.org>; Wed, 27 May 2026 03:00:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1779876031; x=1780480831; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=TYYX7F9TU2UqvnQ4rqTvcIfA7/lt//2BpmT7qAbp7ck=;
-        b=fzZYX08RlEKH5sw7aFG3IqmCpMtDkYbotZE0idepss6wUnzyoUaf6gc5TIsH94KA+Z
-         dxgMnhDn0g3JVLk3RYIMFJTDdaNico0EiRccfLyiXvNnk1olk0f7OTl8dTSIjD9/lSKv
-         04VAJanYXjwwMbdEIhQmrue29ITGDy8pZttDzU/0/hYNv8RXiOVTYOz6QvYj4N4IWkb9
-         P6cIFLC8fmNu2Jz9CfqvzQWZ95DUeI8SBEOLyKCPgQGIlPudoWuD1RdN0ihl/H4aJ1r1
-         uaqBpNoC6aFiJeIrX11h50P2Q9bCjwa+v7/VdTVkXvu8PulM6PskVFKep8N+Kw2Wo1+C
-         6ZuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779876031; x=1780480831;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TYYX7F9TU2UqvnQ4rqTvcIfA7/lt//2BpmT7qAbp7ck=;
-        b=Fa+VEbTo/cGMcaVG349KRbRwiASeBoHqFThtEX4H6uTa08xtY0WOkXx7u4CsNKYeKG
-         rd/YnVJscIrcalUz231nuwcNPXZCcXCZZGfbXWmJ6td4QM1F6lMH/lOGGHSlyNTZ+QsS
-         dgFlBrhWlr/olXWGDlMGCXCbJ6d7555aDUGur0LUOHtL80KprvxB6P708aQuIjqITcow
-         vcemBk6eVhZ3hgaHv+0ISda9gWDTTSXh60Nedo03wJS2U/zZjZhy1jZmqv00G3DmkbcU
-         wJpd7OwTubC6ImA/HblDSXbSw5AHfAo+8B6lQlj24u1X5voCPPdjHlybnhFVL2fzmQxS
-         xkSQ==
-X-Forwarded-Encrypted: i=1; AFNElJ9l79HOyrZQq5vf4OeAyQDAw0+FYrWQW/rvzt1335d7PJSPjZwXtfvFZUk/QNdoioc0c3jaf92L3Xw=@lists.infradead.org
-X-Gm-Message-State: AOJu0YwC1LE14sSgj4uIeDqtUhdts7FnX36dZPlVGEWS6ReCHjoidolY
-	xaqJMbpyOwLc7gx/94Lb4Q3ncBA9km0LFgvWt2NeFLWpY/uoDe4HmLAkdkz4iXBCWBpmqA==
-X-Gm-Gg: Acq92OE3pEtHCe7PVWqcXKKzRgtsbSwNQj3AIJMfhEev5Wea/1W1HIhZgR+1yxrvpc5
-	zD05TTCIsW1kAS+HLb5UF1O0Z+JDgI+klsZ24tmNFMHS8GW6jjcXWHkIGQMejwG4DorSadwIcae
-	vzxmiipHQszV3woM5hhoLYTP8z8AakDW7v5A6UBYgbcE3EqlTtcXaL4zJ3jnc6qFqg4MjGlUb7C
-	RSBxHXZ8R+W3/WfpvshRNywwup+zN+ybDifjGRdiCDOCHCnMz792O6uxBfSlDE07WQsTbpDlBX8
-	OvbXEW18AnFbFPtXh8/aJr7vHq5/BC7Lk7FI8qXUDpcha9Aj0Y5kaQDbw4Ynrl5ceY8iFc1aMCK
-	U9QVYsQ4w6hvPWQAgRRd5TpAcZgo0ZYly0qIzUkECK5VrdbxnFr+CF66SDva+MnfCvUmj9WPt7X
-	5VUPH3ea/NtyLUa9AFmXso7epMaeIrT03VAReXpoMoKahAa6uxWeBxoToMIHmQFJikfbCMMS9rE
-	3d23A==
-X-Received: by 2002:a05:622a:350:b0:50f:b724:85e3 with SMTP id d75a77b69052e-516d42bfc09mr313428371cf.17.1779876030931;
-        Wed, 27 May 2026 03:00:30 -0700 (PDT)
-Received: from localhost.localdomain ([94.156.149.59])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-51706adc63dsm39366011cf.16.2026.05.27.03.00.27
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Wed, 27 May 2026 03:00:30 -0700 (PDT)
-From: Qing Wu <ses1er@gmail.com>
-To: ses1er@gmail.com
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Michal Simek <michal.simek@amd.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v3] mtd: spinand: dosilicon: Add support for additional models
-Date: Wed, 27 May 2026 06:00:21 -0400
-Message-ID: <20260527100021.76247-1-ses1er@gmail.com>
-X-Mailer: git-send-email 2.50.1
+	Wed, 27 May 2026 12:29:49 +0000
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-03.galae.net (Postfix) with ESMTPS id DE1304E42D68;
+	Wed, 27 May 2026 12:29:42 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 94EDE601A1;
+	Wed, 27 May 2026 12:29:42 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id DF12C10888060;
+	Wed, 27 May 2026 14:29:39 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1779884982; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=QZ113z6If22F9e7yLjEYBGa8nC6AiS+7y7cHO6FwrLw=;
+	b=TcCuC7b/TXN+rKfVRcGh3hgYCx88DnANr3Ht11vtP3a3dTHDoUEhm48zZvp/HGk+rzrahp
+	SksbeZ/R9YwN9diBFa5eMF1DzDu790CLc5/myv594+VUub+tc2hDOLFZaitE8c3q8znsxl
+	ntM9vux5zKobcn1710W0qRYnsVzIb4+eeE9VTXA6NJSUdRO5w4N6a53Z0fvEseiFJaZ7rL
+	WO56fPDRf2utMqPyYJeEpLAEo9o59Es9VvJYxIxf5NOREkzZJ1pj0RrGbHLLJphd+vYbgi
+	XtrXAE/5UHll4VJSkx8LoibBtzY6RcXHjSkM0J+1bkfeeLihL/e3I5XV6GE+lw==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Qing Wu <ses1er@gmail.com>
+Cc: Michal Simek <michal.simek@amd.com>,  Vignesh Raghavendra
+ <vigneshr@ti.com>,  linux-mtd@lists.infradead.org,
+  linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] mtd: spinand: dosilicon: Add support for additional
+ models
+In-Reply-To: <20260527100021.76247-1-ses1er@gmail.com> (Qing Wu's message of
+	"Wed, 27 May 2026 06:00:21 -0400")
+References: <20260527100021.76247-1-ses1er@gmail.com>
+User-Agent: mu4e 1.12.7; emacs 30.2
+Date: Wed, 27 May 2026 14:29:39 +0200
+Message-ID: <87v7c9hw7g.fsf@bootlin.com>
 MIME-Version: 1.0
+X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260527_030032_839322_A94275CD 
-X-CRM114-Status: GOOD (  14.90  )
+X-CRM114-CacheID: sfid-20260527_052946_814069_A3099871 
+X-CRM114-Status: GOOD (  11.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,296 +73,46 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add support for additional Dosilicon SPI NAND chips.
-
-Datasheets for chips included in this patch: https://www.dosilicon.com/SPI%20NAND%20Flash.html
-
-Tested on a TP-Link TL-7DR7250 with a Dosilicon DS35Q1GB (0xE5 0xF1)
-
-Signed-off-by: Qing Wu <ses1er@gmail.com>
----
-Changes in v3:
-- Changed title
-- Updated 2 bytes for BBM
-- Link to v2: https://lore.kernel.org/all/20260520003733.82514-1-ses1er@gmail.com/
-Changes in v2:
-- Fixed compilation errors.
-- Link to v1: https://lore.kernel.org/all/20260217211427.9120-1-ses1er@gmail.com
----
- drivers/mtd/nand/spi/dosilicon.c | 218 ++++++++++++++++++++++++++++---
- 1 file changed, 203 insertions(+), 15 deletions(-)
-
-diff --git a/drivers/mtd/nand/spi/dosilicon.c b/drivers/mtd/nand/spi/dosilicon.c
-index f99899866ceb..fcd967c1bcbc 100644
---- a/drivers/mtd/nand/spi/dosilicon.c
-+++ b/drivers/mtd/nand/spi/dosilicon.c
-@@ -9,21 +9,27 @@
- 
- #define SPINAND_MFR_DOSILICON        0xE5
- 
-+#define DOSICON_STATUS_ECC_MASK			GENMASK(6, 4)
-+#define DOSICON_STATUS_ECC_NO_BITFLIPS		(0 << 4)
-+#define DOSICON_STATUS_ECC_1TO3_BITFLIPS	(1 << 4)
-+#define DOSICON_STATUS_ECC_4TO6_BITFLIPS	(3 << 4)
-+#define DOSICON_STATUS_ECC_7TO8_BITFLIPS	(5 << 4)
-+
- static SPINAND_OP_VARIANTS(read_cache_variants,
--		SPINAND_PAGE_READ_FROM_CACHE_1S_1S_4S_OP(0, 1, NULL, 0, 0),
--		SPINAND_PAGE_READ_FROM_CACHE_1S_1S_2S_OP(0, 1, NULL, 0, 0),
--		SPINAND_PAGE_READ_FROM_CACHE_FAST_1S_1S_1S_OP(0, 1, NULL, 0, 0),
--		SPINAND_PAGE_READ_FROM_CACHE_1S_1S_1S_OP(0, 1, NULL, 0, 0));
-+		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
- 
- static SPINAND_OP_VARIANTS(write_cache_variants,
--		SPINAND_PROG_LOAD_1S_1S_4S_OP(true, 0, NULL, 0),
--		SPINAND_PROG_LOAD_1S_1S_1S_OP(true, 0, NULL, 0));
-+		SPINAND_PROG_LOAD_X4(true, 0, NULL, 0),
-+		SPINAND_PROG_LOAD(true, 0, NULL, 0));
- 
- static SPINAND_OP_VARIANTS(update_cache_variants,
--		SPINAND_PROG_LOAD_1S_1S_4S_OP(false, 0, NULL, 0),
--		SPINAND_PROG_LOAD_1S_1S_1S_OP(false, 0, NULL, 0));
-+		SPINAND_PROG_LOAD_X4(false, 0, NULL, 0),
-+		SPINAND_PROG_LOAD(false, 0, NULL, 0));
- 
--static int ds35xx_ooblayout_ecc(struct mtd_info *mtd, int section,
-+static int ds35xxga_ooblayout_ecc(struct mtd_info *mtd, int section,
- 				struct mtd_oob_region *region)
- {
- 	if (section > 3)
-@@ -35,7 +41,7 @@ static int ds35xx_ooblayout_ecc(struct mtd_info *mtd, int section,
- 	return 0;
- }
- 
--static int ds35xx_ooblayout_free(struct mtd_info *mtd, int section,
-+static int ds35xxga_ooblayout_free(struct mtd_info *mtd, int section,
- 				 struct mtd_oob_region *region)
- {
- 	if (section > 3)
-@@ -53,11 +59,67 @@ static int ds35xx_ooblayout_free(struct mtd_info *mtd, int section,
- 	return 0;
- }
- 
--static const struct mtd_ooblayout_ops ds35xx_ooblayout = {
--	.ecc = ds35xx_ooblayout_ecc,
--	.free = ds35xx_ooblayout_free,
-+static const struct mtd_ooblayout_ops ds35xxga_ooblayout = {
-+	.ecc = ds35xxga_ooblayout_ecc,
-+	.free = ds35xxga_ooblayout_free,
- };
- 
-+static int ds35xxgb_ooblayout_ecc(struct mtd_info *mtd, int section,
-+				  struct mtd_oob_region *region)
-+{
-+	if (section)
-+		return -ERANGE;
-+
-+	region->offset = 64;
-+	region->length = 64;
-+
-+	return 0;
-+}
-+
-+static int ds35xxgb_ooblayout_free(struct mtd_info *mtd, int section,
-+				   struct mtd_oob_region *region)
-+{
-+	if (section)
-+		return -ERANGE;
-+
-+	/* Reserve 2 bytes for the BBM. */
-+	region->offset = 2;
-+	region->length = 62;
-+
-+	return 0;
-+}
-+
-+static const struct mtd_ooblayout_ops ds35xxgb_ooblayout = {
-+	.ecc = ds35xxgb_ooblayout_ecc,
-+	.free = ds35xxgb_ooblayout_free,
-+};
-+
-+static int ds35xxgb_ecc_get_status(struct spinand_device *spinand,
-+				   u8 status)
-+{
-+	switch (status & DOSICON_STATUS_ECC_MASK) {
-+	case STATUS_ECC_NO_BITFLIPS:
-+		return 0;
-+
-+	case STATUS_ECC_UNCOR_ERROR:
-+		return -EBADMSG;
-+
-+	case DOSICON_STATUS_ECC_1TO3_BITFLIPS:
-+		return 3;
-+
-+	case DOSICON_STATUS_ECC_4TO6_BITFLIPS:
-+		return 6;
-+
-+	case DOSICON_STATUS_ECC_7TO8_BITFLIPS:
-+		return 8;
-+
-+	default:
-+		break;
-+	}
-+
-+	return -EINVAL;
-+}
-+
- static const struct spinand_info dosilicon_spinand_table[] = {
- 	SPINAND_INFO("DS35Q1GA",
- 		SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x71),
-@@ -67,7 +129,16 @@ static const struct spinand_info dosilicon_spinand_table[] = {
- 					 &write_cache_variants,
- 					 &update_cache_variants),
- 		SPINAND_HAS_QE_BIT,
--		SPINAND_ECCINFO(&ds35xx_ooblayout, NULL)),
-+		SPINAND_ECCINFO(&ds35xxga_ooblayout, NULL)),
-+	SPINAND_INFO("DS35Q2GA",
-+		SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x72),
-+		NAND_MEMORG(1, 2048, 64, 64, 2048, 40, 2, 1, 1),
-+		NAND_ECCREQ(4, 512),
-+		SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					 &write_cache_variants,
-+					 &update_cache_variants),
-+		SPINAND_HAS_QE_BIT,
-+		SPINAND_ECCINFO(&ds35xxga_ooblayout, NULL)),
- 	SPINAND_INFO("DS35M1GA",
- 		SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x21),
- 		NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
-@@ -76,7 +147,124 @@ static const struct spinand_info dosilicon_spinand_table[] = {
- 					 &write_cache_variants,
- 					 &update_cache_variants),
- 		SPINAND_HAS_QE_BIT,
--		SPINAND_ECCINFO(&ds35xx_ooblayout, NULL)),
-+		SPINAND_ECCINFO(&ds35xxga_ooblayout, NULL)),
-+	SPINAND_INFO("DS35M2GA",
-+		SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x22),
-+		NAND_MEMORG(1, 2048, 64, 64, 2048, 40, 2, 1, 1),
-+		NAND_ECCREQ(4, 512),
-+		SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					 &write_cache_variants,
-+					 &update_cache_variants),
-+		SPINAND_HAS_QE_BIT,
-+		SPINAND_ECCINFO(&ds35xxga_ooblayout, NULL)),
-+	SPINAND_INFO("DS35Q2GB",
-+		SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xF2),
-+		NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 2, 1, 1),
-+		NAND_ECCREQ(8, 512),
-+		SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					 &write_cache_variants,
-+					 &update_cache_variants),
-+		SPINAND_HAS_QE_BIT,
-+		SPINAND_ECCINFO(&ds35xxgb_ooblayout, ds35xxgb_ecc_get_status)),
-+	SPINAND_INFO("DS35M1GB",
-+		SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xA1),
-+		NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
-+		NAND_ECCREQ(8, 512),
-+		SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					 &write_cache_variants,
-+					 &update_cache_variants),
-+		SPINAND_HAS_QE_BIT,
-+		SPINAND_ECCINFO(&ds35xxgb_ooblayout, ds35xxgb_ecc_get_status)),
-+	SPINAND_INFO("DS35Q1GB",
-+		SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xF1),
-+		NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
-+		NAND_ECCREQ(8, 512),
-+		SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					 &write_cache_variants,
-+					 &update_cache_variants),
-+		SPINAND_HAS_QE_BIT,
-+		SPINAND_ECCINFO(&ds35xxgb_ooblayout, ds35xxgb_ecc_get_status)),
-+	SPINAND_INFO("DS35Q4GM",
-+		SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xF4),
-+		NAND_MEMORG(1, 2048, 128, 64, 4096, 80, 2, 1, 1),
-+		NAND_ECCREQ(8, 512),
-+		SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					 &write_cache_variants,
-+					 &update_cache_variants),
-+		SPINAND_HAS_QE_BIT,
-+		SPINAND_ECCINFO(&ds35xxgb_ooblayout, ds35xxgb_ecc_get_status)),
-+	SPINAND_INFO("DS35Q12B",
-+		SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xF5),
-+		NAND_MEMORG(1, 2048, 128, 64, 512, 10, 1, 1, 1),
-+		NAND_ECCREQ(8, 512),
-+		SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					 &write_cache_variants,
-+					 &update_cache_variants),
-+		SPINAND_HAS_QE_BIT,
-+		SPINAND_ECCINFO(&ds35xxgb_ooblayout, ds35xxgb_ecc_get_status)),
-+	SPINAND_INFO("DS35M12B",
-+		SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xA5),
-+		NAND_MEMORG(1, 2048, 128, 64, 512, 10, 1, 1, 1),
-+		NAND_ECCREQ(8, 512),
-+		SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					 &write_cache_variants,
-+					 &update_cache_variants),
-+		SPINAND_HAS_QE_BIT,
-+		SPINAND_ECCINFO(&ds35xxgb_ooblayout, ds35xxgb_ecc_get_status)),
-+	SPINAND_INFO("DS35Q1GD-IB",
-+		SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x51),
-+		NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
-+		NAND_ECCREQ(8, 512),
-+		SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					&write_cache_variants,
-+					&update_cache_variants),
-+		SPINAND_HAS_QE_BIT,
-+		SPINAND_ECCINFO(&ds35xxgb_ooblayout, ds35xxgb_ecc_get_status)),
-+	SPINAND_INFO("DS35M4GB-IB",
-+		SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x64),
-+		NAND_MEMORG(1, 2048, 128, 64, 4096, 40, 1, 1, 1),
-+		NAND_ECCREQ(8, 512),
-+		SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					 &write_cache_variants,
-+					 &update_cache_variants),
-+		SPINAND_HAS_QE_BIT,
-+		SPINAND_ECCINFO(&ds35xxgb_ooblayout, ds35xxgb_ecc_get_status)),
-+	SPINAND_INFO("DS35Q4GB-IB",
-+		SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xB4),
-+		NAND_MEMORG(1, 2048, 128, 64, 4096, 40, 1, 1, 1),
-+		NAND_ECCREQ(8, 512),
-+		SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					 &write_cache_variants,
-+					 &update_cache_variants),
-+		SPINAND_HAS_QE_BIT,
-+		SPINAND_ECCINFO(&ds35xxgb_ooblayout, ds35xxgb_ecc_get_status)),
-+	SPINAND_INFO("DS35Q12C-IB",
-+		SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x75),
-+		NAND_MEMORG(1, 2048, 128, 64, 512, 10, 1, 1, 1),
-+		NAND_ECCREQ(8, 512),
-+		SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					 &write_cache_variants,
-+					 &update_cache_variants),
-+		SPINAND_HAS_QE_BIT,
-+		SPINAND_ECCINFO(&ds35xxgb_ooblayout, ds35xxgb_ecc_get_status)),
-+	SPINAND_INFO("DS35M12C-IB",
-+		SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x25),
-+		NAND_MEMORG(1, 2048, 128, 64, 512, 10, 1, 1, 1),
-+		NAND_ECCREQ(8, 512),
-+		SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					 &write_cache_variants,
-+					 &update_cache_variants),
-+		SPINAND_HAS_QE_BIT,
-+		SPINAND_ECCINFO(&ds35xxgb_ooblayout, ds35xxgb_ecc_get_status)),
-+	SPINAND_INFO("DS35Q2GBS",
-+		SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xB2),
-+		NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
-+		NAND_ECCREQ(8, 512),
-+		SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					 &write_cache_variants,
-+					 &update_cache_variants),
-+		SPINAND_HAS_QE_BIT,
-+		SPINAND_ECCINFO(&ds35xxgb_ooblayout, ds35xxgb_ecc_get_status)),
- };
- 
- static const struct spinand_manufacturer_ops dosilicon_spinand_manuf_ops = {
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gMjcvMDUvMjAyNiBhdCAwNjowMDoyMSAtMDQsIFFpbmcgV3UgPHNlczFlckBnbWFpbC5jb20+
+IHdyb3RlOgoKPiBBZGQgc3VwcG9ydCBmb3IgYWRkaXRpb25hbCBEb3NpbGljb24gU1BJIE5BTkQg
+Y2hpcHMuCj4KPiBEYXRhc2hlZXRzIGZvciBjaGlwcyBpbmNsdWRlZCBpbiB0aGlzIHBhdGNoOiBo
+dHRwczovL3d3dy5kb3NpbGljb24uY29tL1NQSSUyME5BTkQlMjBGbGFzaC5odG1sCj4KPiBUZXN0
+ZWQgb24gYSBUUC1MaW5rIFRMLTdEUjcyNTAgd2l0aCBhIERvc2lsaWNvbiBEUzM1UTFHQiAoMHhF
+NSAweEYxKQo+Cj4gU2lnbmVkLW9mZi1ieTogUWluZyBXdSA8c2VzMWVyQGdtYWlsLmNvbT4KPiAt
+LS0KPiBDaGFuZ2VzIGluIHYzOgo+IC0gQ2hhbmdlZCB0aXRsZQo+IC0gVXBkYXRlZCAyIGJ5dGVz
+IGZvciBCQk0KPiAtIExpbmsgdG8gdjI6IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2FsbC8yMDI2
+MDUyMDAwMzczMy44MjUxNC0xLXNlczFlckBnbWFpbC5jb20vCj4gQ2hhbmdlcyBpbiB2MjoKPiAt
+IEZpeGVkIGNvbXBpbGF0aW9uIGVycm9ycy4KPiAtIExpbmsgdG8gdjE6IGh0dHBzOi8vbG9yZS5r
+ZXJuZWwub3JnL2FsbC8yMDI2MDIxNzIxMTQyNy45MTIwLTEtc2VzMWVyQGdtYWlsLmNvbQo+IC0t
+LQo+ICBkcml2ZXJzL210ZC9uYW5kL3NwaS9kb3NpbGljb24uYyB8IDIxOCArKysrKysrKysrKysr
+KysrKysrKysrKysrKysrLS0tCj4gIDEgZmlsZSBjaGFuZ2VkLCAyMDMgaW5zZXJ0aW9ucygrKSwg
+MTUgZGVsZXRpb25zKC0pCj4KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9zcGkvZG9z
+aWxpY29uLmMgYi9kcml2ZXJzL210ZC9uYW5kL3NwaS9kb3NpbGljb24uYwo+IGluZGV4IGY5OTg5
+OTg2NmNlYi4uZmNkOTY3YzFiY2JjIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQvc3Bp
+L2Rvc2lsaWNvbi5jCj4gKysrIGIvZHJpdmVycy9tdGQvbmFuZC9zcGkvZG9zaWxpY29uLmMKPiBA
+QCAtOSwyMSArOSwyNyBAQAo+ICAKPiAgI2RlZmluZSBTUElOQU5EX01GUl9ET1NJTElDT04gICAg
+ICAgIDB4RTUKPiAgCj4gKyNkZWZpbmUgRE9TSUNPTl9TVEFUVVNfRUNDX01BU0sJCQlHRU5NQVNL
+KDYsIDQpCj4gKyNkZWZpbmUgRE9TSUNPTl9TVEFUVVNfRUNDX05PX0JJVEZMSVBTCQkoMCA8PCA0
+KQo+ICsjZGVmaW5lIERPU0lDT05fU1RBVFVTX0VDQ18xVE8zX0JJVEZMSVBTCSgxIDw8IDQpCj4g
+KyNkZWZpbmUgRE9TSUNPTl9TVEFUVVNfRUNDXzRUTzZfQklURkxJUFMJKDMgPDwgNCkKPiArI2Rl
+ZmluZSBET1NJQ09OX1NUQVRVU19FQ0NfN1RPOF9CSVRGTElQUwkoNSA8PCA0KQo+ICsKPiAgc3Rh
+dGljIFNQSU5BTkRfT1BfVkFSSUFOVFMocmVhZF9jYWNoZV92YXJpYW50cywKPiAtCQlTUElOQU5E
+X1BBR0VfUkVBRF9GUk9NX0NBQ0hFXzFTXzFTXzRTX09QKDAsIDEsIE5VTEwsIDAsIDApLAo+IC0J
+CVNQSU5BTkRfUEFHRV9SRUFEX0ZST01fQ0FDSEVfMVNfMVNfMlNfT1AoMCwgMSwgTlVMTCwgMCwg
+MCksCj4gLQkJU1BJTkFORF9QQUdFX1JFQURfRlJPTV9DQUNIRV9GQVNUXzFTXzFTXzFTX09QKDAs
+IDEsIE5VTEwsIDAsIDApLAo+IC0JCVNQSU5BTkRfUEFHRV9SRUFEX0ZST01fQ0FDSEVfMVNfMVNf
+MVNfT1AoMCwgMSwgTlVMTCwgMCwgMCkpOwo+ICsJCVNQSU5BTkRfUEFHRV9SRUFEX0ZST01fQ0FD
+SEVfWDRfT1AoMCwgMSwgTlVMTCwgMCksCj4gKwkJU1BJTkFORF9QQUdFX1JFQURfRlJPTV9DQUNI
+RV9YMl9PUCgwLCAxLCBOVUxMLCAwKSwKPiArCQlTUElOQU5EX1BBR0VfUkVBRF9GUk9NX0NBQ0hF
+X09QKHRydWUsIDAsIDEsIE5VTEwsIDApLAo+ICsJCVNQSU5BTkRfUEFHRV9SRUFEX0ZST01fQ0FD
+SEVfT1AoZmFsc2UsIDAsIDEsIE5VTEwsIDApKTsKClNwdXJpb3VzIGNoYW5nZXM/IFRoaXMgY2Fu
+bm90IGJlIGV2ZW4gY29tcGlsZSB0ZXN0ZWQuCgpQbGVhc2UgZG9uJ3QgcnVzaCB5b3VyIHY0LgoK
+QWxzbyBwbGVhc2UgcnVuIGdldF9tYWludGFpbmVycy5wbCwgdGhlIENjIGxpc3QgaXMgbm90IGNv
+bXBsZXRlLgoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0
+Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
