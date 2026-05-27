@@ -4,102 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B58DACD6E43
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 May 2026 09:34:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5A2CCD5BD5
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 May 2026 09:39:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Subject:References:In-Reply-To:
-	Message-Id:Cc:To:From:Date:MIME-Version:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=hzj1jj7fG/JaWzxf8xyA9gMkhdMk3TmsMajfwvdk3+8=; b=B8pw/bFEF47MkPYlbcV/hiIU90
-	uFTEGS25RpQYZ517I92jRYooHQuW9fBNNWoFQE6iP9eX6HOtByi0DZM51IbTn36ZgZj6VqCnLzLtK
-	cn3VH6FZDpiFueHn4snNtpcasI9nhylnfrwsC6VY4HCWFRRUYoP/qr+NlIX/nNFl5pNS9YcDHNjsA
-	eoeuJ1PleFP4WrsXe2vac65qO4VUW4o4EZFwjVMt5zr48Lh6s79EgmEbuk3GMwWMm8hIwZDwO9P5z
-	2eOh+kcKSw3vuqw5B8HPACBXg2dB74hvqeU9av3OLKVR4ujzUAZGjB83VWMKbYrrH5Ao2aKGegcFr
-	/NRxCndg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:References:To:From:Cc:Subject:Message-Id:Date:Mime-Version:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=ttRCrcdSfjBKudDVKQwHcPNl+yW38Vqb3jxvVdjOiec=; b=OwkqWMA+2bJTuakG9vWM93LeQi
+	/LX/Nphl0JFPu1D4q/e4sStOqYv2ApdzILNrhnBpAyB1UluY7v/sAyggKDE1Fou1MW1TZFBV8SosV
+	AVNZP5eLAS85gk8msUlRQt6b04Htdqm8YXc7R/XgPyD5xv3LveyBp1DLViiFQ+SQoy3m8xmHLLhl5
+	hbIloL6Z6umkEV1xXN4Ns5xZVY5coAusEKEMsPrhkO7devg1wbHhUTWcHF5EELrPuGngZVujvrCOF
+	FHC76+3FLq+xdLOmKcSVjLbWi3AGLn9TBSgIxFbM7T1a8H3u8MctQbZpmnw/grtDh1B1iCdTi57tG
+	jAG0cVTg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wSAfA-00000003edG-2s1o;
-	Wed, 27 May 2026 09:34:56 +0000
-Received: from fhigh-a5-smtp.messagingengine.com ([103.168.172.156])
+	id 1wSAjp-00000003f7E-2cf8;
+	Wed, 27 May 2026 09:39:45 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wSAf8-00000003eca-1fIH
+	id 1wSAjm-00000003f75-1W03
 	for linux-mtd@lists.infradead.org;
-	Wed, 27 May 2026 09:34:55 +0000
-Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id 1F80B14000B6;
-	Wed, 27 May 2026 05:34:53 -0400 (EDT)
-Received: from phl-imap-05 ([10.202.2.95])
-  by phl-compute-04.internal (MEProxy); Wed, 27 May 2026 05:34:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1779874493;
-	 x=1779960893; bh=S9YlJzsKcVvZ1lUPJ+PugHZmYhkA+/elOtZQeUcnhXc=; b=
-	hvZM/n/MuiLWuGM5AHBEd9X91319fH/Z6kDlX8S704Ac/0/37Gcek7xo02nxRcdE
-	QRvxgh58vItip44J+VsTMdGPZgDwh/HWq0aX7LoyDFvxHqdma680AlrNC9CGf8WO
-	4nECootn/f+tyj3DYHMAmKikchU533jWhmGZvsDhGdShGtZF7ZnV9c+vIbtlUb4l
-	Ej8M1WyKGrcigiNtrEerkZfDdH3sgJEF9YwcMZI6S1u2WOyA/Fx1nKuzFrjv0gIc
-	+qAKPzyN5QRAkkC9k6jNtin3G7YQ8FDHm99NTI1uqTAyS7b8x02GlVU2sm/VzAKW
-	wF7buDqM84saxUuiRD18rA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1779874493; x=
-	1779960893; bh=S9YlJzsKcVvZ1lUPJ+PugHZmYhkA+/elOtZQeUcnhXc=; b=s
-	FjOCOg8r7iho4PbSlHXAs5QhJAPXGR05seGmpgUtZg9lIDEuipDhEANIYNMjO/8C
-	nL5S40jMrBmrpyLbfey9m5mUpRj9YliqbIfTvMXxREn3a38nyyTEmvC8j9feO5RC
-	dTk7xVEZ98yTH9kooURgnGYi/MG5GorqBsHxx4tuQG06ZA4OoU678nnnS8M3Yc1W
-	/c5R7QUEBhtoYZI2cVY0f924+YqNmYeuekyh2v8A2P6ALUWGSPzLx5KXOYZdgw/q
-	OFrLhdNq38Ed+bVYZ4TKOMn4O5qIJCz9WroVAVqgHKRgfp/qIXkM/ILkDoR1thoe
-	ERgrzgqUIYb9IJlHAwerA==
-X-ME-Sender: <xms:vLoWarCt3ljYfoJPvMYLG8gBxh68mNhGPSP6eZqMmHxLSvGxDaJv0g>
-    <xme:vLoWasXnqoCr-S1m0KPRlyTBJOW6d9snV8kEfBFDr9lz6aNI0DWLS8Dl2cRWv_ZXd
-    8aFUlBS0xF0ozh8LcWm7qNztoK7q2wO88_dKExYrsNOWWMrGS5OrCU>
-X-ME-Proxy-Cause: dmFkZTGs/eQA4UV6bVk8Ubl0C7Mne/LKfc8mnqdK2jE+zgEL7AK5PT91zwPjWuvdt0N/bB
-    dOnx631CcPksmLLbb6QjlIBHHM5HL7+3JjAInSUjApFdr995/m3ChS/r6J02MKZBiEK9IH
-    qKfXfv8T2gJ1xkEpWWDQatYS/J0gfC8cYoG3XI4Qr8vULh5Ad6F80S9E9Tr5M/E1BBoP5s
-    UGXtO6DzSCAj+bHeXN6le/68FGEts9qXQB97ZyZv985UItCcCG2tGciqYtqnEg/BMHAZFk
-    f2Zfv9MczP8kTi9j7L1H36O/oBIqrOIxhLphjKM8PeDhlMIp1XJgBg7ilUZYZXKeG8n7Rk
-    z0LncfjODOJS7XrenvvGU2h+4B9KHk1khHVUAx0m/E4Ft8THcfFuxu6KoanRUOaiB59sc4
-    bAgbVemJ4/f3Wjhz/58XbMmFxBLirnlTC64aJZkzIV8wIU3Si+P/DqVVCYtMBSCJgdBoyd
-    o+kU9SlYUqNNAbKgbU2Vq8RNLkVJWG2XPInZ0ruvKwv+kcUuJu3kFB3ODXr+jsntJoYDht
-    LDpDf/BprI4nXumchHBRLEVSlfZa25qKvFfPOYARWy3drmZKRFJEIjbGeYclhByOXGcZk1
-    mn7go+mMcTpcVqXJDa0Uu8WZJ63DzZwBaTYophl0KabmZuVclhRyNpyPBYKg
-X-ME-Proxy: <xmx:vLoWalywHuGEwNnh2bLmwrGgP1kysHRuXm_-4E_SGFhonQXVlhjTAA>
-    <xmx:vLoWan2fB_w08cIM783c8ytM4xVBqWi4P0GQO3eFE_PXiiTYuCS2Bg>
-    <xmx:vLoWai8L4xytgn5VEDicOgerRvByLBaCQ3hvkdkpipoqhqGb95EPJg>
-    <xmx:vLoWanqymGd7B5vtl9esz8T23rGawKL3Sb9-hn8DoawlIEYl4mSybQ>
-    <xmx:vboWalNLXFhANTrnGIaZhT2Qwa-FDGnC4Dbw3QP2uMBMO-DwCtHx4ZTQ>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 10C58182007A; Wed, 27 May 2026 05:34:52 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-MIME-Version: 1.0
-X-ThreadId: AwzDuXPgpp8N
-Date: Wed, 27 May 2026 11:34:30 +0200
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Miquel Raynal" <miquel.raynal@bootlin.com>,
- "Arnd Bergmann" <arnd@kernel.org>
-Cc: "Richard Weinberger" <richard@nod.at>,
- "Vignesh Raghavendra" <vigneshr@ti.com>,
- "Randy Dunlap" <rdunlap@infradead.org>,
- "Andy Shevchenko" <andriy.shevchenko@linux.intel.com>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-Message-Id: <6909a1ef-355b-41a9-9ce5-ae0c9c993b25@app.fastmail.com>
-In-Reply-To: <87fr3djjhl.fsf@bootlin.com>
-References: <20260526103227.3152003-1-arnd@kernel.org>
- <87fr3djjhl.fsf@bootlin.com>
-Subject: =?UTF-8?Q?Re:_[PATCH_1/3]_mtd:_maps:_remove_AMD_=C3=89lan_specific_drive?=
- =?UTF-8?Q?rs?=
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260527_023454_506807_3183F6CB 
-X-CRM114-Status: UNSURE (   6.54  )
-X-CRM114-Notice: Please train this message.
+	Wed, 27 May 2026 09:39:44 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with UTF8SMTP id A28E8600AB;
+	Wed, 27 May 2026 09:39:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id CB49F1F000E9;
+	Wed, 27 May 2026 09:39:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1779874781;
+	bh=2Bn8gyGPiQfqOVs/pmI51tKekDBHNiAdwq0QNIiWMuA=;
+	h=Date:Subject:Cc:From:To:References:In-Reply-To;
+	b=NVTpfAM0m4jFfIrgtl0zbjKt9gs8LgTxImjH14j7fhnBUh0xAbf3ecAqhFMctX8HN
+	 EnxFRO7sZPsqksJPC2HAYDRU0IDNqAt2WVB9keAUUV1oGUK6vFpfBiFDRLH36LZp+/
+	 owRvMd8K3VwnUnAlrPQ74XEySqyzdzaAoC5rjMalhzSz+pt9eL4u+CSY9RDlBdSoDt
+	 jtY5SeA8dYT6MnwpNxU29dgNBYkmwtOSrjoP3qCn8mJMwaByk3r754tSEnM98IawPQ
+	 KR74AwpdYVbM8AJz5IusfNENKGf6xEqYRHYHy8TicYerzS1yIdh1j92clw02DfMRQb
+	 HSY5PPlxlM8aA==
+Mime-Version: 1.0
+Date: Wed, 27 May 2026 11:39:35 +0200
+Message-Id: <DITCY7X2NFWI.2SUAC9UISD6X3@kernel.org>
+Subject: Re: [PATCH] [v3] mtd: spi-nor: gigadevice: Add support for
+ GD25LQ255E
+Cc: <Takahiro.Kuwano@infineon.com>, <tudor.ambarus@linaro.org>,
+ <pratyush@kernel.org>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>
+From: "Michael Walle" <mwalle@kernel.org>
+To: "Weimin Wu" <wuweimin@huaqin.corp-partner.google.com>
+X-Mailer: aerc 0.20.0
+References: <20260418084253.792395-1-wuweimin@huaqin.corp-partner.google.com> <DHXTLXWEPUDM.2LSB322E4R3ZZ@kernel.org> <792c09f5ae754bf899693f110ef1dbe0@infineon.com> <DHXX61QRBDVA.2VIO2J63UKZC3@kernel.org> <CAB2WukQjU=ik5fom=5B=C_R-Tsxwcx+Y78ON5qZt6zAtV7sjhg@mail.gmail.com>
+In-Reply-To: <CAB2WukQjU=ik5fom=5B=C_R-Tsxwcx+Y78ON5qZt6zAtV7sjhg@mail.gmail.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -111,22 +66,79 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2937995299116164836=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, May 27, 2026, at 11:21, Miquel Raynal wrote:
-> On 26/05/2026 at 12:32:04 +02, Arnd Bergmann <arnd@kernel.org> wrote:
->      3 files changed, 469 deletions(-)
->
->
-> Is it okay for you?
+--===============2937995299116164836==
+Content-Type: multipart/signed;
+ boundary=6bfe5e8538d6e204e18c56b1fc8128ca6cdeffe03cd19cc553cd77f8f655;
+ micalg=pgp-sha384; protocol="application/pgp-signature"
 
-Looks good to me, thanks a lot for rebasing the patch.
+--6bfe5e8538d6e204e18c56b1fc8128ca6cdeffe03cd19cc553cd77f8f655
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
 
-     Arnd
+Hi,
+
+On Tue May 26, 2026 at 3:30 PM CEST, Weimin Wu wrote:
+> Hi, sorry for the late reply.
+
+Please do not top post, see https://docs.kernel.org/process/submitting-patc=
+hes.html
+
+
+> I consulted GD's engineers, and they replied that jedec_id=3D0xC86019
+> corresponds to several FlashROM models: GD25LQ255E, GD25LB256F,
+> GD25LQ256H, GD25LE256H, and GD25LR256F. It has been confirmed that we
+> are currently using the GD25LQ256HYIGR chip, and the corresponding
+> datasheet is https://download.gigadevice.com/Datasheet/DS-01085-GD25LQ256=
+H-Rev1.3.pdf.
+> It seems that the model I previously read as GD25LQ255E using Google's
+> tool was incorrect. I used .flags =3D SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP
+> | SPI_NOR_HAS_TB | The SPI_NOR_TB_SR_BIT6 configuration verification
+> passed Google's flashrom_tester program test, indicating that
+> read/write and write protection meet the requirements. For these
+> reasons, I will modify the title and remove the description of the
+> name; therefore, I will submit a separate patch v4 update. Thanks.
+
+
+No this won't work. You have to find a way to differentiate between
+all these flashes with the same id because the locking is different.
+As you've noticed, one needs the SPI_NOR_4BIT_BP and one doesn't. So
+either way, it's wrong. You'll need to have a fixup which needs to
+detect that particular type at runtime and fix the locking.
+
+So please work with GD's how to fingerprint a particular flash
+using it's SFDP data (which is hopefully different between the
+devices).
+
+-michael
+
+--6bfe5e8538d6e204e18c56b1fc8128ca6cdeffe03cd19cc553cd77f8f655
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCaha71xIcbXdhbGxlQGtl
+cm5lbC5vcmcACgkQEic87j4CH/j0JAGApFOJ3KSjj8a527xSNZW5E5k88pjfCe/M
+kt6wJV+caFKtC/rd8pCj415maLPQmssmAYC1EK1y0XrAO0NDusJP3WBg/+ROTpZ6
+ajKzaTy1kiE01QI6UkqAaLc61+cFFXlWkqE=
+=jmtf
+-----END PGP SIGNATURE-----
+
+--6bfe5e8538d6e204e18c56b1fc8128ca6cdeffe03cd19cc553cd77f8f655--
+
+
+--===============2937995299116164836==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============2937995299116164836==--
+
