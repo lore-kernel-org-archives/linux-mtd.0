@@ -4,126 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13F53CD4F54
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 May 2026 14:52:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7008CD4F54
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 May 2026 17:37:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=c0htVFvDRDvH93k+ZvU+CbNAlA9nFJ5Capw7mzFTSCU=; b=epoHYZKgCoXPZ7
-	Ibn8cv0DK0577sAXo2UQV0M6axDcftV6UsD3gC8C9BCxt2cuPd1qxgXvIylYe+v1SnkzN46zOK+Y4
-	CCv66YwzYtQEqLJlJp00RY96w2TFr5/nuehMZYOJ48DL4zPpfCp24wVKhUr07uiNSjF0t6oa/1J7A
-	+M6wrv+xxXX7ZPz6/Iw4VzIZ1zJPfplLNvEGAxcSy48ofSQSy5uEGY0jLbP57SLJfR8/OgxxCBxO/
-	+VtUyNB/FdNWQLsrvFkqc7oX54CzkqY1iV3QFFRXauURFHwNgJZFXVD+keAaFyM5FOrlTsKeGDY8E
-	VxnqciBSNkvlkXfSfj9Q==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=In2vpkAVryIe2qH0DAkiYDFiJoZeVInxBmNz6hlL0js=; b=uKv7tWRIjUHpevfuuWZbazsyW4
+	P9aZqxPFJzL+4aRq9khJ99MyviNWTPT9fJAYRd3hGWxp6XBGOQAL05ijDWycmYrmpsdKm059gM/Lw
+	YGgaI4CHMjbbQCvnk5zlFGXwOB+wzqVuhVhcTIUabLP6qjbbCpyV6bbw66BsY0amqW3SXVqreV/m/
+	VVLj8X5fSWuZzxGqGDp3P8sPHC7yIeldlzRGFgY7qM99bVh/+Rz9uEmHvVWIm/sEsOg2BOC9njk1H
+	O79XD3KJMGOlpEuT29mJlvKF722KAI1PDyufFPJHcLFJOpRS7r3HuNnINfwXBCwe1b9GQM1mZf/Y2
+	K3xR3uVA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wSc5z-00000005soG-3HCY;
-	Thu, 28 May 2026 14:52:27 +0000
-Received: from relay.yourmailgateway.de ([188.68.63.166])
+	id 1wSefK-00000006722-2pHW;
+	Thu, 28 May 2026 17:37:06 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wSc5w-00000005snW-2zw2;
-	Thu, 28 May 2026 14:52:26 +0000
-Received: from mors-relay-8202.netcup.net (localhost [127.0.0.1])
-	by mors-relay-8202.netcup.net (Postfix) with ESMTPS id 4gR8Qs3ycTz3v2k;
-	Thu, 28 May 2026 16:44:53 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=leemhuis.info;
-	s=key2; t=1779979493;
-	bh=+bObBq6umQjUKIR3pjneCtStWldSJgwVKPiVN8yI9GA=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=ONEtuAJidQLoH7Y9ovFSOvNZHr+fqca7AEHiPpSnxvcKzVmNot6Eqi/RbdPVdBc9G
-	 tzUuwKycpqd1NiWRu+d97nUo8wup37f9RRC9iFj1ELtP/IAvZgq4Ef9frEfMlQoF3A
-	 Jgysk9HPJVxtoDWlHx1qkqhY7KBOCcRcuPgMcJX1xbNbsmEbQP1b9anA6NxxBmPIWk
-	 67AlmG9n9bCE5wwbzAd3jUIa5hPl/zemmLNVR8ucTgV5O8MDqLvTVkyZcdOkwPhbr+
-	 S1FYkDqExq/sWVmS3wZiPyiuiIfDABR4xb+JuS4Zy/lpNtTjHRTpoEENJhN4bPfwy0
-	 hqpwwKwj3ZNVw==
-Received: from policy01-mors.netcup.net (unknown [46.38.225.35])
-	by mors-relay-8202.netcup.net (Postfix) with ESMTPS id 4gR8Qs3CHCz3v2H;
-	Thu, 28 May 2026 16:44:53 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at policy01-mors.netcup.net
-Received: from mxe9fb.netcup.net (unknown [10.243.12.53])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by policy01-mors.netcup.net (Postfix) with ESMTPS id 4gR8Qq4vgmz8sbc;
-	Thu, 28 May 2026 16:44:51 +0200 (CEST)
-Received: from [IPV6:2a02:8108:8984:1d00:a0cf:1912:4be:477f] (unknown [IPv6:2a02:8108:8984:1d00:a0cf:1912:4be:477f])
-	by mxe9fb.netcup.net (Postfix) with ESMTPSA id D19D561884;
-	Thu, 28 May 2026 16:44:49 +0200 (CEST)
-Authentication-Results: mxe9fb;
-        spf=pass (sender IP is 2a02:8108:8984:1d00:a0cf:1912:4be:477f) smtp.mailfrom=regressions@leemhuis.info smtp.helo=[IPV6:2a02:8108:8984:1d00:a0cf:1912:4be:477f]
-Received-SPF: pass (mxe9fb: connection is authenticated)
-Message-ID: <a76e1b63-84cd-49c7-a69f-8b71522dd5e6@leemhuis.info>
-Date: Thu, 28 May 2026 16:44:49 +0200
+	id 1wSefI-0000000671c-0HaM
+	for linux-mtd@lists.infradead.org;
+	Thu, 28 May 2026 17:37:05 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id 59DBA43F0D;
+	Thu, 28 May 2026 17:37:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D22881F000E9;
+	Thu, 28 May 2026 17:36:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1779989823;
+	bh=Ew+PCmfH8+DLsOwWNMBYxmqZmSklKm/4ETgUFhXg9U0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=D1NWSE88IZHKHzj0tlR39Y8NgfRrnNXWwA0F+h2NYM7OD/4tZNAPq+h+Fp/10Fe3W
+	 srednJmCWPp4AN+rRShTEU9k67QguKkuzScp0RHzNyHnh2YafJiZBqB2DMKVSVH+CR
+	 pMbVlEz4A15oeXjrPlNK5EV9EJ70eMQ816Qf9PIU2Qkq7fhumFr51cAoKgO9qF53hM
+	 Uf5asWGQlyochEMKyu3A/+IOiMoVJTfKyM2rRLP8nCj/aZyGF2dBXo8n5Q5ihaaHzk
+	 aOgWbsubLI3sYQLvN+ovVW1zOpDVyZnCrPVuSQMqL4wI9s8P/j6MzpqX9fE+HhZomD
+	 N+IryXlU2O4HA==
+Date: Thu, 28 May 2026 18:36:57 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Santhosh Kumar K <s-k6@ti.com>
+Cc: broonie@kernel.org, robh@kernel.org, krzk+dt@kernel.org,
+	conor+dt@kernel.org, miquel.raynal@bootlin.com, richard@nod.at,
+	vigneshr@ti.com, pratyush@kernel.org, mwalle@kernel.org,
+	takahiro.kuwano@infineon.com, linux-spi@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org, praneeth@ti.com, u-kumar1@ti.com,
+	a-dutta@ti.com
+Subject: Re: [PATCH v3 01/13] spi: dt-bindings: allow spi-max-frequency to
+ specify a frequency pair
+Message-ID: <20260528-clergyman-kindling-20971775ba78@spud>
+References: <20260527175527.2247679-1-s-k6@ti.com>
+ <20260527175527.2247679-2-s-k6@ti.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] memory: atmel-ebi: Allow deferred probing
-To: Krzysztof Kozlowski <krzk@kernel.org>, linux-kernel@vger.kernel.org,
- Alexander Dahl <ada@thorsis.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org,
- stable@vger.kernel.org, Nicolas Ferre <nicolas.ferre@microchip.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Claudiu Beznea <claudiu.beznea@tuxon.dev>,
- "Rob Herring (Arm)" <robh@kernel.org>, linux-arm-kernel@lists.infradead.org,
- Linux kernel regressions list <regressions@lists.linux.dev>
-References: <20260429125930.844790-1-ada@thorsis.com>
- <177791688430.723206.2269403194221624148.b4-ty@b4>
-From: Thorsten Leemhuis <regressions@leemhuis.info>
-Content-Language: de-DE, en-US
-X-Enigmail-Draft-Status: N11222
-Autocrypt: addr=linux@leemhuis.info; keydata=
- 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 MEK4
-In-Reply-To: <177791688430.723206.2269403194221624148.b4-ty@b4>
-X-PPP-Message-ID: <177997949041.1020144.5344286188940027184@mxe9fb.netcup.net>
-X-Rspamd-Server: rspamd-worker-8404
-X-Rspamd-Queue-Id: D19D561884
-X-NC-CID: LuDs7YKoDu0aVTeGgOVvghNjtwoxc8OmBXbsxIklV6mTdMrL6Qk=
+In-Reply-To: <20260527175527.2247679-2-s-k6@ti.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260528_075225_070764_2AEF0104 
-X-CRM114-Status: GOOD (  13.72  )
+X-CRM114-CacheID: sfid-20260528_103704_148879_276AE491 
+X-CRM114-Status: GOOD (  22.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -135,40 +73,113 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1050788214164198808=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 5/4/26 19:48, Krzysztof Kozlowski wrote:
-> 
-> On Wed, 29 Apr 2026 14:59:30 +0200, Alexander Dahl wrote:
->> After removing of_platform_default_populate() calls the atmel-ebi driver
->> was affected by deferred probing.  platform_driver_probe() is
->> incompatible with deferred probing.  This led to atmel-ebi driver
->> eventually not being probed on at91 sam9x60-curiosity and other sam9x60
->> based boards.  Subsequently the nand-controller driver (nand-controller
->> being a child node of ebi) on that platform was not probed and thus raw
->> NAND flash was inaccessible, preventing devices to boot with rootfs on
->> raw NAND flash (e.g. with UBI/UBIFS).
->>
->> [...]
-> 
-> Applied, thanks!
-> 
-> [1/1] memory: atmel-ebi: Allow deferred probing
->       https://git.kernel.org/krzk/linux-mem-ctrl/c/754d60ad1c91895be0bc7d771fbf9fb3c9448640
 
-Lo! What's the status of this regression fix? It seems to be sitting in
-next for a while already. To me as an outsider it looks like this should
-be on track to get it merged for -rc6, as that's when Linus ideally
-wants all regressions fixed; but it looks a bit like this is destined to
-be merged in the next merge window. But I might be entirely wrong here
--- or I'm right and there are good reasons why the next merge window is
-better here.
+--===============1050788214164198808==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="pQNz/q7IjnyAqEJl"
+Content-Disposition: inline
 
-Ciao, Thorsten
+
+--pQNz/q7IjnyAqEJl
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, May 27, 2026 at 11:25:15PM +0530, Santhosh Kumar K wrote:
+> Some SPI controllers support high-speed operating modes that require
+> controller-side configuration before the device can be driven at its
+> rated maximum frequency. In these cases two frequencies are relevant:
+> a conservative speed usable without any such configuration, and the
+> maximum speed achievable once the controller is set up accordingly.
+>=20
+> The existing spi-max-frequency property accepts only a single u32,
+> which cannot express this distinction. Extend it to accept either a
+> single value (retaining full backward compatibility) or a two-element
+> array [base-frequency, max-frequency], where base-frequency is the
+> conservative operating speed and max-frequency is the highest speed
+> the device supports after controller-side configuration.
+>=20
+> Signed-off-by: Santhosh Kumar K <s-k6@ti.com>
+> ---
+>  .../devicetree/bindings/spi/spi-peripheral-props.yaml  | 10 ++++++++--
+>  1 file changed, 8 insertions(+), 2 deletions(-)
+
+Pretty sure this hasn't been tested, dt_binding_check cannot even build
+processed-schema.json with this applied because there are multiple
+definitions of spi-max-frequency with it applied.
+
+The sashiko makes the point that this breaks every binding that uses
+minimum/maximum to set constraints too, because these properties do not
+apply to arrays unless applied per item.
+
+I also don't get the point of this property, why can't you just set the
+max that the device can do and if the controller can configure itself to
+be fast enough it will do so, and if it can't then it'll pick whatever
+the fastest it can actually do instead?
+Seems like you're abusing a peripheral property to encode information
+about the controller.
+
+pw-bot: changes-requested
+
+Thanks,
+Conor.
+
+>=20
+> diff --git a/Documentation/devicetree/bindings/spi/spi-peripheral-props.y=
+aml b/Documentation/devicetree/bindings/spi/spi-peripheral-props.yaml
+> index 880a9f624566..c88f6f3a1801 100644
+> --- a/Documentation/devicetree/bindings/spi/spi-peripheral-props.yaml
+> +++ b/Documentation/devicetree/bindings/spi/spi-peripheral-props.yaml
+> @@ -41,9 +41,15 @@ properties:
+>        The device requires the LSB first mode.
+> =20
+>    spi-max-frequency:
+> -    $ref: /schemas/types.yaml#/definitions/uint32
+> +    $ref: /schemas/types.yaml#/definitions/uint32-array
+> +    minItems: 1
+> +    maxItems: 2
+>      description:
+> -      Maximum SPI clocking speed of the device in Hz.
+> +      SPI clocking speed of the device in Hz. Either a single maximum
+> +      frequency, or two values [base-frequency, max-frequency] where
+> +      base-frequency is the conservative speed and max-frequency is the
+> +      highest speed the device supports after controller-side configurat=
+ions
+> +      such as data training.
+> =20
+>    spi-cs-setup-delay-ns:
+>      description:
+> --=20
+> 2.34.1
+>=20
+
+--pQNz/q7IjnyAqEJl
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCahh9OQAKCRB4tDGHoIJi
+0lxfAQCiYNypuQYi25j9taj720oiiR9VKl5PbBX+BUJBEjZjqwD+MX89+OgpNete
+q9HGB/H/VITdOUGVene2p+OvlTO+QQE=
+=veuz
+-----END PGP SIGNATURE-----
+
+--pQNz/q7IjnyAqEJl--
+
+
+--===============1050788214164198808==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============1050788214164198808==--
+
