@@ -4,119 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8426BCD4F54
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 May 2026 17:57:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09465CD5BD5
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 May 2026 05:20:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=JWbwzGXtMCJd8zJTKxoMOTg/orm2kUY8IP4CJKOE+xw=; b=XH3Az96XL09w+y
-	LCdLU8870iCvjZe8RpC2Gvd7i+6E+NEdoDv3t2b/DVOm/EKgBganm7ZCv66eoFMcDT6zQxfhaWDL4
-	ylxssoaUaIdLB436ADFv6uuXMxsVd3iO99xIeardO9NSfWMBIz9qZnTuqgJcPqBjEmuB+ps/dum80
-	aYncPUDN0OTw3dJaPWFY/FP3HVSvD2ZL6+CixmD13cgRHzUfEjvEA2T5rZHN/ZDh6PpGb0DOi3ygO
-	CFayM7a+aV1wtluZ/VZXYGRj1FFOTIQm05U3FHI7XNnAEyPTAwWFis6sCDiPNhJTANuYcmm2wDJaI
-	WY//e0H6YK8MKSd1b4yQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=2MzHJqA4r9FP0OiZuQrR4A0duRPU2F1LTwgtofeYlis=; b=NeuOC0d/V1mgmu
+	eUzrBwoa8qGDM/jjGYGQej+zHQkT+tIN+f9FqZbauNimyP7DubFRVumY4+P0IFnlm99+FLcv+h4OD
+	d4/W/Ti0HXB+Yh/9WEBlgYzP/bt9Mt1VbFPelq6128lV+N7kI8AVleM90mClRnxBpwEFnp/CR1VSH
+	wZvvLKTq+HITtGcCwb0kZnyVlZJJMQSGi38VOGKNuq0fSykzTO4AqmOXR8ssKbu4wCsrNzt2GW9jn
+	XsmZSByBux3CJuRHwycTqH4wHJTV3taTCn7mZmlbQHGih26cMDm85OuNJwcuu4YWbrMyHiJ22cAJn
+	WDKdPrxKQEvdkXOvlBlQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wSIV1-00000004c1R-1AbZ;
-	Wed, 27 May 2026 17:56:59 +0000
-Received: from mail-northcentralusazon11013043.outbound.protection.outlook.com ([40.107.201.43] helo=CH4PR04CU002.outbound.protection.outlook.com)
+	id 1wSTAT-000000058I8-3J6A;
+	Thu, 28 May 2026 05:20:29 +0000
+Received: from mail-pj1-x1032.google.com ([2607:f8b0:4864:20::1032])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wSIUz-00000004byd-0cF4
+	id 1wSTAQ-000000058Hj-3gtI
 	for linux-mtd@lists.infradead.org;
-	Wed, 27 May 2026 17:56:58 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=TUupaBTKKm5M/D6aRIigzpmJFNtbQCm+EgknL/dFQyf+WDOtXOMLM5gxaqu17+Lu0m8hTPIAAk6UMIL6x3/PM3rNs6BBcGMEDUsnyrdbNt2iDr3WIkfN45Ncf8sa0iBxWRViXL5/yBSLeD2qjYiBYQWzer1kmNG1ircwY/tUyV4z/cX3loBedOJ84xH2cEVW1Tq0WgluVAnSspRWfcjYWyUwdeHCkcHuFK8pr0cC0HCOW/BzP7WX9J4nBwc8khh4BWrUE8NuT6MjnXEHxqzlYAQXsdaPCngUjhIfp/LG0pPk+JOa/sJmLQrn/43ceHSI8lsAbFVd4fXMK7wXkfe9aw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LcSrydGSONihnxK+52dlm7a6KcXFBq+/rJkl7Fv7mWs=;
- b=uGRRlVgqtUlAsW7JASWtQUdt7A04vMW5YujGgDOFCkDpUIaYhd/gRvYzVmOqZAJk90+62ozR6FapIfvYVw6CfGajSC9AgZCesTM9lCZaP8ZjV+qlKuOId3+GBMR3nonxIp/d+bT6ReKcMb7dmWnk5Ds0CPIoF52Sw8cP9097MRmHS0M8BflcoTLXir1au7QyyN2qTXcBFn7Ipx7jIzmarQcC4DPCxjjtODOYS9JP6uLQdIPScsWXGR2Dq3mocB1VW0lXB5LC3f+WuqWxcm+PDkUhGjMPfGL2jl5j+M4hfK3UU5hbEFwwdXk7YHDXZpkyZu3DVNa+zN+dd/slT7cmiQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 198.47.21.195) smtp.rcpttodomain=lists.infradead.org smtp.mailfrom=ti.com;
- dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=ti.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LcSrydGSONihnxK+52dlm7a6KcXFBq+/rJkl7Fv7mWs=;
- b=fiIm3uI08mquooIZm/rSfEBzfyulnohw4Qqf5At+3h1HyhIuzyt2Wgya/F3CYcUkQtd+llA4ctjPQJyaMC9/HPmfZ27sd7VxiFjjXVMrLSEmmr7y9HamG1DbDvDHaclJaF/Bp4Pm82vRQw9uo7jfK88C9c+kSSA2M2sdDnt6u8U=
-Received: from MW4PR03CA0181.namprd03.prod.outlook.com (2603:10b6:303:b8::6)
- by SJ0PR10MB4573.namprd10.prod.outlook.com (2603:10b6:a03:2ac::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.71.13; Wed, 27 May
- 2026 17:56:52 +0000
-Received: from CO1PEPF00012E61.namprd05.prod.outlook.com
- (2603:10b6:303:b8:cafe::43) by MW4PR03CA0181.outlook.office365.com
- (2603:10b6:303:b8::6) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.21.71.13 via Frontend Transport; Wed, 27
- May 2026 17:56:52 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 198.47.21.195)
- smtp.mailfrom=ti.com; dkim=none (message not signed) header.d=none;dmarc=pass
- action=none header.from=ti.com;
-Received-SPF: Pass (protection.outlook.com: domain of ti.com designates
- 198.47.21.195 as permitted sender) receiver=protection.outlook.com;
- client-ip=198.47.21.195; helo=flwvzet201.ext.ti.com; pr=C
-Received: from flwvzet201.ext.ti.com (198.47.21.195) by
- CO1PEPF00012E61.mail.protection.outlook.com (10.167.249.70) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.71.7 via Frontend Transport; Wed, 27 May 2026 17:56:50 +0000
-Received: from DFLE202.ent.ti.com (10.64.6.60) by flwvzet201.ext.ti.com
- (10.248.192.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.37; Wed, 27 May
- 2026 12:56:46 -0500
-Received: from DFLE206.ent.ti.com (10.64.6.64) by DFLE202.ent.ti.com
- (10.64.6.60) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.37; Wed, 27 May
- 2026 12:56:45 -0500
-Received: from lelvem-mr06.itg.ti.com (10.180.75.8) by DFLE206.ent.ti.com
- (10.64.6.64) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.37 via Frontend
- Transport; Wed, 27 May 2026 12:56:45 -0500
-Received: from santhoshkumark.dhcp.ti.com (santhoshkumark.dhcp.ti.com [172.24.233.254])
-	by lelvem-mr06.itg.ti.com (8.18.1/8.18.1) with ESMTP id 64RHtYpp4052476;
-	Wed, 27 May 2026 12:56:41 -0500
-From: Santhosh Kumar K <s-k6@ti.com>
-To: <broonie@kernel.org>, <robh@kernel.org>, <krzk+dt@kernel.org>,
-	<conor+dt@kernel.org>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
-	<vigneshr@ti.com>, <pratyush@kernel.org>, <mwalle@kernel.org>,
-	<takahiro.kuwano@infineon.com>
-CC: <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
-	<praneeth@ti.com>, <u-kumar1@ti.com>, <a-dutta@ti.com>, <s-k6@ti.com>
-Subject: [PATCH v3 13/13] mtd: spi-nor: run PHY tuning after init and update dirmap frequency
-Date: Wed, 27 May 2026 23:25:27 +0530
-Message-ID: <20260527175527.2247679-14-s-k6@ti.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20260527175527.2247679-1-s-k6@ti.com>
-References: <20260527175527.2247679-1-s-k6@ti.com>
+	Thu, 28 May 2026 05:20:28 +0000
+Received: by mail-pj1-x1032.google.com with SMTP id 98e67ed59e1d1-369002b26f4so7302043a91.3
+        for <linux-mtd@lists.infradead.org>; Wed, 27 May 2026 22:20:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1779945625; x=1780550425; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZjGtLzO2HanIiK43HgLOPftGVf4OR0HNAd0NSMfxuBo=;
+        b=Nb+UvMIRffoVoGGbGwR1M0nSxAIe5fTSoIQ5VjkMGFp7QUlaxHk1O9D9CJhvmxZZF/
+         fKjQQfIshkH/F1GQg/Ii/d4/SUMFRZnKV0DodXJWwfGeWks5CJlPBFb6sdMu9pcJgw9+
+         /5RL7FE7h6W5UoDizPPYXV2DC2WMKxZDP0fg8TOq7aIf3cmeVnzy09YcZqUEq0j7Tj9m
+         yp2wy6S7QYR50m64cPH7zHTi0R53IW09TGMGfCcuROgmRfud6AsC2wf5zwxW6+ydE4Zj
+         qIhhvdMRYxbHkFnBIDybM2KGgqrCl1gKq75Rm62g8S970EiDoMtCDw61HdAM42ozsfn6
+         Ptsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1779945625; x=1780550425;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZjGtLzO2HanIiK43HgLOPftGVf4OR0HNAd0NSMfxuBo=;
+        b=BolFOWhm9Bh1D26YuCA10dI3gzDreD7xGRqGgBlj9zsgKkZrHHekGamoD4CY9+4M9u
+         vtPC5mO3EXILdq8romHwbkEEGS3/98yj/FaCiv4kBECN1BwCH7Yasy6NroW7ogz+YtIy
+         vuLS/RPCbMThZwYTbmQAXAbsy688KeOPPvAs0WJQeOHYKI2Uqv0Y2mX+tHKe7JOqRfN4
+         uzSoACslc9MHy5fSBL8kpscWOr8bndlNz6URT9GyA2zdrE8kTIzKbhf00cKYkF0znQ9m
+         /oKMyrAAfkUQkU0peq7PUI6G5Oafcekh3ro9CnWquq7nKlHf8C+s0jasZ+SFZ87179nz
+         Kxpw==
+X-Gm-Message-State: AOJu0YzDbMkX4t9h2BzBo36/9L4i8xZClkgOtGLw9mjBQ+6ZDceVvv2E
+	k4ey9KwZKuiqNj7ptMlsoCrApxYqkgRhXNZF7/62U0/DonD8pa6bYcRz
+X-Gm-Gg: Acq92OHipTxSIUa1rc8d4ko9lc47M03633OhbHFnfVU0o792QXEFO4Oft6f6p6p9dOm
+	jR2BoWk+MGZZvsvsbxF2CU63DZFD9R46QVP2jD+jm0PW/prFPJQebjzMO+aNRu5JjLUuW4P9+1F
+	gw2JZ7ygkntht8uXrhGWd+8O5gRp59LiBQOTbm5bCw0/cchpOI2UnJiEpSX7o/eL+8es7rhZ6op
+	VN5e2GXo31e1viQ68gaBvXggWBFXoSfp4q31qAlCYtqyH4vlNBYH508I+FKjlxL3iqXrSmeLIMG
+	I930YHrwqvQ2Vi6AAmDWoKiecUL749Zvo2vW172lSNKlLz+gEw043mw3XAEw8zJuWR9Yp8GDoSe
+	GJ8kHfKHSYy4CYE9dvQSTOtJnxlDQjxwhGTd48CmAEVmEiiJI94WwIasqZoIO6r0CILAFcNgyYz
+	vHsbyORtr6UbvEENISfMEL2CiFmoxIcGPMMNYCeF1md9gD22fiYKZ3PyUA
+X-Received: by 2002:a17:90b:2b4e:b0:35f:d56d:1c45 with SMTP id 98e67ed59e1d1-36a6772ff38mr27327004a91.12.1779945625363;
+        Wed, 27 May 2026 22:20:25 -0700 (PDT)
+Received: from twhmp6px (mxsmtp211.mxic.com.tw. [211.75.127.162])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-36b9096dc30sm581434a91.17.2026.05.27.22.20.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 May 2026 22:20:16 -0700 (PDT)
+Received: from hqs-appsw-a2o.mp600.macronix.com (unknown [172.17.236.67])
+	by twhmp6px (Postfix) with ESMTPS id 2708D4163B6F;
+	Thu, 28 May 2026 13:20:14 +0800 (CST)
+From: Cheng Ming Lin <linchengming884@gmail.com>
+To: Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <mwalle@kernel.org>,
+	Takahiro Kuwano <takahiro.kuwano@infineon.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	alvinzhou@mxic.com.tw,
+	Cheng Ming Lin <chengminglin@mxic.com.tw>
+Subject: [PATCH] mtd: spi-nor: Add support for MX25L12833F and MX25L12845G
+Date: Thu, 28 May 2026 13:17:51 +0800
+Message-Id: <20260528051751.1648246-1-linchengming884@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF00012E61:EE_|SJ0PR10MB4573:EE_
-X-MS-Office365-Filtering-Correlation-Id: 396d73b4-b233-4502-2a33-08debc195464
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|82310400026|36860700016|376014|1800799024|7416014|921020|6133799003|56012099006|3023799007|18002099003|22082099003;
-X-Microsoft-Antispam-Message-Info: G4ETrd+YcPvD7xvQJDSeJHpY+6Dn5rhLqgTHB2d3djaZNrKBVcJ3nIYv5vHfCWdTtFao+CEkwle65qQygxaHZUPbP9+DlHCkYHkeqhLX7IQNt3sTlcWd/VE7hkOEwnm8nA1YwLmNLGuSCq1bX1CGmPMCzQpHcQm1Kgbr680kF14Ml2OtFmi9v/96RFWmA1cPORnO877k4NQP4HcZ9a4m3e8sL5VZ1iHJkb7btrXsa26WZv4yq0UZ4SIJ3f+Hq8oLPkbx6WmBV+YlJqnxZAtsG4002RddCGjWjQn3MB9htGQ2hERG8iEH+z3IuSPnq+bz/xAT9ek7a6AJzWjuKnWG7J5WYUkYyrErgp7CYFqAtf6Tho5rF/y6JgpXT39GH22Ff+56xROLNBvdH6rYJ8xHSkMFj8IaMDn93DW5LxbVQ/GqwuXR4I8EZdJQFotda7vW7DsaioRWQ6J4ayx55AGWfn/Q5LurPIEbgqCUSpjODiWp8AqD2evycKbFPsXHBL3edVMuLpGotwPh2vYVSq6vbb8MULTnRtojGJUXmVENxAQzG+TM1km/E1A+41zIvDSAXsSrSFX8Zd+U69ahTzlzsssbohHWkfw5dJNDZ8+VXnPLHtVFU71jb0znzTBNVw3SZqITAm2wN+ZIKLmFElXcNKPVYDQCa51frEgBmIpaC8lGhbEW02/Na+yO79saAIzOlza8dk2yaTcwXmiwsvjhHLTvLoWt2jWVTAF+r9xTH34b+o5QNArgo8puIpo8ktfEUwWPPcLBrqwmPVIr0IxxpQ==
-X-Forefront-Antispam-Report: CIP:198.47.21.195;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:flwvzet201.ext.ti.com;PTR:ErrorRetry;CAT:NONE;SFS:(13230040)(82310400026)(36860700016)(376014)(1800799024)(7416014)(921020)(6133799003)(56012099006)(3023799007)(18002099003)(22082099003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: BFPJHT0hc2SjcMdLPQ2XdMDduW+VjwxrIlvnvJW/PHpL4tS6kw0EJuuzOLngiD7pzEnZRy7aEwu1EvnnSlpvBWyTpIqZ4bfRGoe5A7+se+lyeIp2tHjYL30+SC7z7nagVZbpdm8CbCk5rSGemCz/N/8pzNEfg7bDrn8G3okSEbKxAKznCWkMPmGRqbIN4CKYjiDrn45o4E0cL3KxSIzsDIdcmfmldUX9Ldthck0VftBeMlI2dOzSj+PYkwkxzbTh8rKeWR/EObTCaMdLPGhFy2TCHm58txWIIcA4ELOwu3ENRcv5/egNX/yRaQCoeX02paFAkIiPTvhD8rc6NteQ5NM/E6DkrD2Wgm9amV+29xp1e3r87vHkd5AV0jIDdc70i0D4sAvnYkFCl5uG5b2gxLdYywzbiHtM3QhECmoyl+9rg/fabr/yP8yi2PBMerbT
-X-OriginatorOrg: ti.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 May 2026 17:56:50.7991
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 396d73b4-b233-4502-2a33-08debc195464
-X-MS-Exchange-CrossTenant-Id: e5b49634-450b-4709-8abb-1e2b19b982b7
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=e5b49634-450b-4709-8abb-1e2b19b982b7;Ip=[198.47.21.195];Helo=[flwvzet201.ext.ti.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1PEPF00012E61.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4573
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260527_105657_270895_4F989372 
-X-CRM114-Status: GOOD (  14.51  )
+X-CRM114-CacheID: sfid-20260527_222026_940782_485515A1 
+X-CRM114-Status: GOOD (  14.90  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -133,84 +105,342 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Introduce a persistent max_read_op field in struct spi_nor. Populate it
-with the correct op layout before creating the read dirmap so
-execute_tuning() receives a fully configured op. After both dirmaps are
-set up, run spi_mem_execute_tuning() to let the controller validate the
-read frequency and write it back into max_read_op.max_freq. Patch the
-dirmap's op template with this value so subsequent dirmap reads use
-the validated speed.
+From: Cheng Ming Lin <chengminglin@mxic.com.tw>
 
-spi_nor_spimem_get_read_op() is updated to propagate max_read_op.max_freq
-into every returned op, so non-dirmap reads via spi_nor_spimem_read_data()
-also benefit from the validated frequency automatically.
+Add support for Macronix MX25L12833F and MX25L12845G.
 
-Signed-off-by: Santhosh Kumar K <s-k6@ti.com>
+The SFDP tables for these flashes only declare 1-4-4 Page Program
+support in 4-byte address mode. However, since these parts operate
+in 3-byte address mode, the standard SFDP parsing does not automatically
+enable this capability. To address this, this patch introduces
+macronix_4pp3b_late_init_fixups() to explicitly enable the 1-4-4
+Page Program.
+
+Signed-off-by: Cheng Ming Lin <chengminglin@mxic.com.tw>
 ---
- drivers/mtd/spi-nor/core.c  | 19 +++++++++++++++++++
- include/linux/mtd/spi-nor.h |  3 +++
- 2 files changed, 22 insertions(+)
+- mx25l12833f
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 2c9859fb0794..207e0679549e 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -216,6 +216,9 @@ static struct spi_mem_op spi_nor_spimem_get_read_op(struct spi_nor *nor)
- 	if (spi_nor_protocol_is_dtr(nor->read_proto))
- 		op.dummy.nbytes *= 2;
- 
-+	/* Propagate the validated frequency; zero before tuning. */
-+	op.max_freq = nor->max_read_op.max_freq;
-+
- 	return op;
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id 
+c22018
+
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer 
+macronix
+
+zynq> xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+53464450060102ff00060110300000ffc2000104100100ff84000102c000
+00ffffffffffffffffffffffffffffffffffe520f1ffffffff0744eb086b
+083b04bbfeffffffffff00ffffff44eb0c200f5210d800ff8241bd0081e5
+7bc64403673830b030b0f7bdd55c4abe29ffe1d0ffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffff0000ffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffff003600279df9c06485cbffffffffffff
+
+zynq> sha256sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp 
+c7c4287a584fa23f4f5037a90ab0ee6ddc6ff3f0cee89889e54465e86542c85e  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+
+zynq> cat /sys/kernel/debug/spi-nor/spi0.0/capabilities 
+Supported read modes by the flash
+ 1S-1S-1S
+  opcode        0x03
+  mode cycles   0
+  dummy cycles  0
+ 1S-1S-2S
+  opcode        0x3b
+  mode cycles   0
+  dummy cycles  8
+ 1S-2S-2S
+  opcode        0xbb
+  mode cycles   0
+  dummy cycles  4
+ 1S-1S-4S
+  opcode        0x6b
+  mode cycles   0
+  dummy cycles  8
+ 1S-4S-4S
+  opcode        0xeb
+  mode cycles   2
+  dummy cycles  4
+ 4S-4S-4S
+  opcode        0xeb
+  mode cycles   2
+  dummy cycles  4
+
+Supported page program modes by the flash
+ 1S-1S-1S
+  opcode        0x02
+ 1S-4S-4S
+  opcode        0x38
+
+zynq> cat /sys/kernel/debug/spi-nor/spi0.0/params 
+name            (null)
+id              c2 20 18 c2 20 18
+size            16.0 MiB
+write size      1
+page size       256
+address nbytes  3
+flags           HAS_LOCK | HAS_4BIT_BP | SOFT_RESET
+
+opcodes
+ read           0xeb
+  dummy cycles  6
+ erase          0xd8
+ program        0x38
+ 8D extension   none
+
+protocols
+ read           1S-4S-4S
+ write          1S-4S-4S
+ register       1S-1S-1S
+
+erase commands
+ 20 (4.00 KiB) [1]
+ 52 (32.0 KiB) [2]
+ d8 (64.0 KiB) [3]
+ c7 (16.0 MiB)
+
+sector map
+ region (in hex)   | erase mask | overlaid
+ ------------------+------------+----------
+ 00000000-00ffffff |     [   3] | no
+
+zynq> dd if=/dev/urandom of=/tmp/spi_test bs=1M count=2
+2+0 records in
+2+0 records out
+2097152 bytes (2.0MB) copied, 0.085447 seconds, 23.4MB/s
+
+zynq> mtd_debug erase /dev/mtd0 0 2097152
+Erased 2097152 bytes from address 0x00000000 in flash
+
+zynq> mtd_debug read /dev/mtd0 0 2097152 /tmp/spi_read
+Copied 2097152 bytes from address 0x00000000 in flash to /tmp/spi_read
+
+zynq> hexdump /tmp/spi_read 
+0000000 ffff ffff ffff ffff ffff ffff ffff ffff
+*
+0200000
+
+zynq> sha256sum /tmp/spi_read 
+4bda3a28f4ffe603c0ec1258c0034d65a1a0d35ab7bd523a834608adabf03cc5  /tmp/spi_read
+
+zynq> mtd_debug write /dev/mtd0 0 2097152 /tmp/spi_test
+Copied 2097152 bytes from /tmp/spi_test to address 0x00000000 in flash
+
+zynq> mtd_debug read /dev/mtd0 0 2097152 /tmp/spi_read
+Copied 2097152 bytes from address 0x00000000 in flash to /tmp/spi_read
+
+zynq> sha256sum /tmp/spi*
+847f8009f10c04d3664098f210f5eb5a54cf9e08bd24dbdb1a983c56e3f89256  /tmp/spi_read
+847f8009f10c04d3664098f210f5eb5a54cf9e08bd24dbdb1a983c56e3f89256  /tmp/spi_test
+
+zynq> mtd_debug erase /dev/mtd0 0 2097152
+Erased 2097152 bytes from address 0x00000000 in flash
+
+zynq> mtd_debug read /dev/mtd0 0 2097152 /tmp/spi_read
+Copied 2097152 bytes from address 0x00000000 in flash to /tmp/spi_read
+
+zynq> sha256sum /tmp/spi*
+4bda3a28f4ffe603c0ec1258c0034d65a1a0d35ab7bd523a834608adabf03cc5  /tmp/spi_read
+847f8009f10c04d3664098f210f5eb5a54cf9e08bd24dbdb1a983c56e3f89256  /tmp/spi_test
+
+zynq> mtd_debug info /dev/mtd0
+mtd.type = MTD_NORFLASH
+mtd.flags = MTD_CAP_NORFLASH
+mtd.size = 16777216 (16M)
+mtd.erasesize = 65536 (64K)
+mtd.writesize = 1 
+mtd.oobsize = 0 
+regions = 0
+
+- mx25l12845g
+
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id 
+c22018
+
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer 
+macronix
+
+zynq> xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+53464450060102ff00060110300000ffc2000104100100ff84000102c000
+00ffffffffffffffffffffffffffffffffffe520f9ffffffff0744eb086b
+083b04bbfeffffffffff00ffffff44eb0c200f5210d800ffd659dd00829f
+03cd4403673830b030b0f7bdd55c4abe29fff0d0ffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffff0000ffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffff003600279df9c06485cbffffffffffff
+
+zynq> sha256sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp 
+b8b7ec394194bb45effdfa2cd4de23f6a7d05a16ff44a23f86e6d10bc9a83375  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+
+zynq> cat /sys/kernel/debug/spi-nor/spi0.0/capabilities 
+Supported read modes by the flash
+ 1S-1S-1S
+  opcode        0x03
+  mode cycles   0
+  dummy cycles  0
+ 1S-1S-2S
+  opcode        0x3b
+  mode cycles   0
+  dummy cycles  8
+ 1S-2S-2S
+  opcode        0xbb
+  mode cycles   0
+  dummy cycles  4
+ 1S-1S-4S
+  opcode        0x6b
+  mode cycles   0
+  dummy cycles  8
+ 1S-4S-4S
+  opcode        0xeb
+  mode cycles   2
+  dummy cycles  4
+ 4S-4S-4S
+  opcode        0xeb
+  mode cycles   2
+  dummy cycles  4
+
+Supported page program modes by the flash
+ 1S-1S-1S
+  opcode        0x02
+ 1S-4S-4S
+  opcode        0x38
+
+zynq> cat /sys/kernel/debug/spi-nor/spi0.0/params
+name            (null)
+id              c2 20 18 c2 20 18
+size            16.0 MiB
+write size      1
+page size       256
+address nbytes  3
+flags           HAS_LOCK | HAS_4BIT_BP | SOFT_RESET
+
+opcodes
+ read           0xeb
+  dummy cycles  6
+ erase          0xd8
+ program        0x38
+ 8D extension   none
+
+protocols
+ read           1S-4S-4S
+ write          1S-4S-4S
+ register       1S-1S-1S
+
+erase commands
+ 20 (4.00 KiB) [1]
+ 52 (32.0 KiB) [2]
+ d8 (64.0 KiB) [3]
+ c7 (16.0 MiB)
+
+sector map
+ region (in hex)   | erase mask | overlaid
+ ------------------+------------+----------
+ 00000000-00ffffff |     [   3] | no
+
+zynq> dd if=/dev/urandom of=/tmp/spi_test bs=1M count=2
+2+0 records in
+2+0 records out
+2097152 bytes (2.0MB) copied, 0.083618 seconds, 23.9MB/s
+
+zynq> mtd_debug erase /dev/mtd0 0 2097152
+Erased 2097152 bytes from address 0x00000000 in flash
+
+zynq> mtd_debug read /dev/mtd0 0 2097152 /tmp/spi_read
+Copied 2097152 bytes from address 0x00000000 in flash to /tmp/spi_read
+
+zynq> hexdump /tmp/spi_read 
+0000000 ffff ffff ffff ffff ffff ffff ffff ffff
+*
+0200000
+
+zynq> sha256sum /tmp/spi_read
+4bda3a28f4ffe603c0ec1258c0034d65a1a0d35ab7bd523a834608adabf03cc5  /tmp/spi_read
+
+zynq> mtd_debug write /dev/mtd0 0 2097152 /tmp/spi_test
+Copied 2097152 bytes from /tmp/spi_test to address 0x00000000 in flash
+
+zynq> mtd_debug read /dev/mtd0 0 2097152 /tmp/spi_read
+Copied 2097152 bytes from address 0x00000000 in flash to /tmp/spi_read
+
+zynq> sha256sum /tmp/spi*
+ec344b7d2b0022ee54bf94de71b889e5fd3087a5487dcee789e0a0b056bfc6ae  /tmp/spi_read
+ec344b7d2b0022ee54bf94de71b889e5fd3087a5487dcee789e0a0b056bfc6ae  /tmp/spi_test
+
+zynq> mtd_debug erase /dev/mtd0 0 2097152
+Erased 2097152 bytes from address 0x00000000 in flash
+
+zynq> mtd_debug read /dev/mtd0 0 2097152 /tmp/spi_read
+Copied 2097152 bytes from address 0x00000000 in flash to /tmp/spi_read
+
+zynq> sha256sum /tmp/spi*
+4bda3a28f4ffe603c0ec1258c0034d65a1a0d35ab7bd523a834608adabf03cc5  /tmp/spi_read
+ec344b7d2b0022ee54bf94de71b889e5fd3087a5487dcee789e0a0b056bfc6ae  /tmp/spi_test
+
+zynq> mtd_debug info /dev/mtd0
+mtd.type = MTD_NORFLASH
+mtd.flags = MTD_CAP_NORFLASH
+mtd.size = 16777216 (16M)
+mtd.erasesize = 65536 (64K)
+mtd.writesize = 1 
+mtd.oobsize = 0 
+regions = 0
+
+ drivers/mtd/spi-nor/macronix.c | 19 ++++++++++++++++++-
+ 1 file changed, 18 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
+index e97f5cbd9..e91808ad1 100644
+--- a/drivers/mtd/spi-nor/macronix.c
++++ b/drivers/mtd/spi-nor/macronix.c
+@@ -83,6 +83,18 @@ mx25l3255e_late_init_fixups(struct spi_nor *nor)
+ 	return 0;
  }
  
-@@ -3773,6 +3776,9 @@ static int spi_nor_probe(struct spi_mem *spimem)
- 			return -ENOMEM;
- 	}
- 
-+	/* Populate the persistent template with the correct op layout for tuning. */
-+	nor->max_read_op = spi_nor_spimem_get_read_op(nor);
++static int
++macronix_4pp3b_late_init_fixups(struct spi_nor *nor)
++{
++	struct spi_nor_flash_parameter *params = nor->params;
 +
- 	ret = spi_nor_create_read_dirmap(nor);
- 	if (ret)
- 		return ret;
-@@ -3781,6 +3787,19 @@ static int spi_nor_probe(struct spi_mem *spimem)
- 	if (ret)
- 		return ret;
- 
-+	/* Tuning failure is non-fatal; the device operates at base speed. */
-+	ret = spi_mem_execute_tuning(spimem, &nor->max_read_op, NULL);
-+	if (ret && ret != -EOPNOTSUPP)
-+		dev_warn(dev, "Failed to execute PHY tuning: %d\n", ret);
++	params->hwcaps.mask |= SNOR_HWCAPS_PP_1_4_4;
++	spi_nor_set_pp_settings(&params->page_programs[SNOR_CMD_PP_1_4_4],
++				SPINOR_OP_PP_1_4_4, SNOR_PROTO_1_4_4);
 +
-+	/*
-+	 * The dirmap was created before tuning ran; update its op template
-+	 * to use the validated frequency.
-+	 */
-+	if (!ret && nor->dirmap.rdesc)
-+		nor->dirmap.rdesc->info.primary_op_tmpl.max_freq =
-+			nor->max_read_op.max_freq;
++	return 0;
++}
 +
- 	return mtd_device_register(&nor->mtd, data ? data->parts : NULL,
- 				   data ? data->nr_parts : 0);
- }
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index cdcfe0fd2e7d..6a11625f7b2d 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -419,6 +419,9 @@ struct spi_nor {
- 		struct spi_mem_dirmap_desc *wdesc;
- 	} dirmap;
- 
-+	/* Persistent op template updated by execute_tuning with validated speed. */
-+	struct spi_mem_op max_read_op;
-+
- 	void *priv;
+ static const struct spi_nor_fixups mx25l25635_fixups = {
+ 	.post_bfpt = mx25l25635_post_bfpt_fixups,
+ 	.post_sfdp = macronix_qpp4b_post_sfdp_fixups,
+@@ -96,6 +108,10 @@ static const struct spi_nor_fixups mx25l3255e_fixups = {
+ 	.late_init = mx25l3255e_late_init_fixups,
  };
  
++static const struct spi_nor_fixups macronix_4pp3b_fixups = {
++	.late_init = macronix_4pp3b_late_init_fixups,
++};
++
+ static const struct flash_info macronix_nor_parts[] = {
+ 	{
+ 		.id = SNOR_ID(0xc2, 0x20, 0x10),
+@@ -130,9 +146,10 @@ static const struct flash_info macronix_nor_parts[] = {
+ 		.size = SZ_8M,
+ 		.no_sfdp_flags = SECT_4K,
+ 	}, {
+-		/* MX25L12805D */
++		/* MX25L12805D, MX25L12833F, MX25L12845G */
+ 		.id = SNOR_ID(0xc2, 0x20, 0x18),
+ 		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP,
++		.fixups = &macronix_4pp3b_fixups,
+ 	}, {
+ 		/* MX25L25635E, MX25L25645G */
+ 		.id = SNOR_ID(0xc2, 0x20, 0x19),
 -- 
-2.34.1
+2.25.1
 
 
 ______________________________________________________
