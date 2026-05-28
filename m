@@ -4,60 +4,126 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8CAABCD6E49
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 May 2026 13:59:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13F53CD4F54
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 May 2026 14:52:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=9Tgf4Zbw/rN0xZSNcFUVx5JHwb5tPkIcaibBn0R0q+k=; b=4Vu8sLQxZtJ60P
-	8/4Vn6R0vZREhAHMxwdeQL3bx/wJlyHvsvimFDmmFcPoP0e/6AGTe1owWimIfkQAjvwWnTiyj36ux
-	eHA+A5FgQnX4a1B2DmkRai7eW7nJ9j2H38OEdmFmLU6GPOVkyxvoPyXep8Aw9E9QEKVTT1RkE3UxV
-	wXYQLD7C02/1D1guiBZCoAvhlXVOPEZoebk5lqoRKCsdj+ZIWdp9SrasQd4L2UQKD3VCdnmTlPant
-	XkZGwivibWAsGFb2qkZV1J5MeV6SD9rsXuIyYec9XeGp6K/plTcA1N7JIi431i6/qVs3Uq0IQ7DE5
-	qKN/REF2qEQX4Wqarsgg==;
+	List-Owner; bh=c0htVFvDRDvH93k+ZvU+CbNAlA9nFJ5Capw7mzFTSCU=; b=epoHYZKgCoXPZ7
+	Ibn8cv0DK0577sAXo2UQV0M6axDcftV6UsD3gC8C9BCxt2cuPd1qxgXvIylYe+v1SnkzN46zOK+Y4
+	CCv66YwzYtQEqLJlJp00RY96w2TFr5/nuehMZYOJ48DL4zPpfCp24wVKhUr07uiNSjF0t6oa/1J7A
+	+M6wrv+xxXX7ZPz6/Iw4VzIZ1zJPfplLNvEGAxcSy48ofSQSy5uEGY0jLbP57SLJfR8/OgxxCBxO/
+	+VtUyNB/FdNWQLsrvFkqc7oX54CzkqY1iV3QFFRXauURFHwNgJZFXVD+keAaFyM5FOrlTsKeGDY8E
+	VxnqciBSNkvlkXfSfj9Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wSbGK-00000005okv-2rEA;
-	Thu, 28 May 2026 13:59:04 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1wSc5z-00000005soG-3HCY;
+	Thu, 28 May 2026 14:52:27 +0000
+Received: from relay.yourmailgateway.de ([188.68.63.166])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wSbGJ-00000005okn-34k0
-	for linux-mtd@lists.infradead.org;
-	Thu, 28 May 2026 13:59:03 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 0D94C6054B;
-	Thu, 28 May 2026 13:59:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0BD211F000E9;
-	Thu, 28 May 2026 13:59:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1779976742;
-	bh=yizJo2pvoDURIzc8VIfWuM06YJ/ZuC8eY6rRtWBhoBs=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date;
-	b=nuB+iwzPQjO5raRpXX0s+8LMh1sfIHJVWewzoA3GPQ3ofPxhaQkxCf2YuzcT/MaFq
-	 B3vHQUfPoMU1Si3v4tkdICAoS9ep8Pwt77PSl+CPCF9UOzOrBtJrj+8UEAHkDgXDpt
-	 xokjpsq+vqNOVZzoI0ZZzbM5NFzTZ/6/VHrOPSh9/8P6KoJ0MyBgFEZaYHrsVck64O
-	 tjqoBsx0aoy2JWo15UZvnQb7Zcnn+SUigC6rrhtm5GbvaobqedP4Z+Gnkfn4mTl5Hp
-	 6Xvmyh3n6KnVNlotgsDgRBpt94a4RqWUB4zaYDM0iWWMxgThkfFaqqLTzYmXoDnHWL
-	 gydmOeLgTx2+g==
-From: Pratyush Yadav <pratyush@kernel.org>
-To: tkuw584924@gmail.com
-Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,  Pratyush Yadav
- <pratyush@kernel.org>,  Michael Walle <mwalle@kernel.org>,  Miquel Raynal
- <miquel.raynal@bootlin.com>,  Richard Weinberger <richard@nod.at>,
-  Vignesh Raghavendra <vigneshr@ti.com>,  linux-mtd@lists.infradead.org,
-  linux-kernel@vger.kernel.org,  Takahiro Kuwano
- <takahiro.kuwano@infineon.com>
-Subject: Re: [PATCH v2 0/2] mtd: spi-nor: spansion: fix die erase support
-In-Reply-To: <cover.1779872008.git.takahiro.kuwano@infineon.com> (tkuw's
-	message of "Wed, 27 May 2026 18:05:38 +0900")
-References: <cover.1779872008.git.takahiro.kuwano@infineon.com>
-Date: Thu, 28 May 2026 15:58:59 +0200
-Message-ID: <2vxzzf1j3aak.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	id 1wSc5w-00000005snW-2zw2;
+	Thu, 28 May 2026 14:52:26 +0000
+Received: from mors-relay-8202.netcup.net (localhost [127.0.0.1])
+	by mors-relay-8202.netcup.net (Postfix) with ESMTPS id 4gR8Qs3ycTz3v2k;
+	Thu, 28 May 2026 16:44:53 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=leemhuis.info;
+	s=key2; t=1779979493;
+	bh=+bObBq6umQjUKIR3pjneCtStWldSJgwVKPiVN8yI9GA=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=ONEtuAJidQLoH7Y9ovFSOvNZHr+fqca7AEHiPpSnxvcKzVmNot6Eqi/RbdPVdBc9G
+	 tzUuwKycpqd1NiWRu+d97nUo8wup37f9RRC9iFj1ELtP/IAvZgq4Ef9frEfMlQoF3A
+	 Jgysk9HPJVxtoDWlHx1qkqhY7KBOCcRcuPgMcJX1xbNbsmEbQP1b9anA6NxxBmPIWk
+	 67AlmG9n9bCE5wwbzAd3jUIa5hPl/zemmLNVR8ucTgV5O8MDqLvTVkyZcdOkwPhbr+
+	 S1FYkDqExq/sWVmS3wZiPyiuiIfDABR4xb+JuS4Zy/lpNtTjHRTpoEENJhN4bPfwy0
+	 hqpwwKwj3ZNVw==
+Received: from policy01-mors.netcup.net (unknown [46.38.225.35])
+	by mors-relay-8202.netcup.net (Postfix) with ESMTPS id 4gR8Qs3CHCz3v2H;
+	Thu, 28 May 2026 16:44:53 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at policy01-mors.netcup.net
+Received: from mxe9fb.netcup.net (unknown [10.243.12.53])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by policy01-mors.netcup.net (Postfix) with ESMTPS id 4gR8Qq4vgmz8sbc;
+	Thu, 28 May 2026 16:44:51 +0200 (CEST)
+Received: from [IPV6:2a02:8108:8984:1d00:a0cf:1912:4be:477f] (unknown [IPv6:2a02:8108:8984:1d00:a0cf:1912:4be:477f])
+	by mxe9fb.netcup.net (Postfix) with ESMTPSA id D19D561884;
+	Thu, 28 May 2026 16:44:49 +0200 (CEST)
+Authentication-Results: mxe9fb;
+        spf=pass (sender IP is 2a02:8108:8984:1d00:a0cf:1912:4be:477f) smtp.mailfrom=regressions@leemhuis.info smtp.helo=[IPV6:2a02:8108:8984:1d00:a0cf:1912:4be:477f]
+Received-SPF: pass (mxe9fb: connection is authenticated)
+Message-ID: <a76e1b63-84cd-49c7-a69f-8b71522dd5e6@leemhuis.info>
+Date: Thu, 28 May 2026 16:44:49 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] memory: atmel-ebi: Allow deferred probing
+To: Krzysztof Kozlowski <krzk@kernel.org>, linux-kernel@vger.kernel.org,
+ Alexander Dahl <ada@thorsis.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org,
+ stable@vger.kernel.org, Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+ "Rob Herring (Arm)" <robh@kernel.org>, linux-arm-kernel@lists.infradead.org,
+ Linux kernel regressions list <regressions@lists.linux.dev>
+References: <20260429125930.844790-1-ada@thorsis.com>
+ <177791688430.723206.2269403194221624148.b4-ty@b4>
+From: Thorsten Leemhuis <regressions@leemhuis.info>
+Content-Language: de-DE, en-US
+X-Enigmail-Draft-Status: N11222
+Autocrypt: addr=linux@leemhuis.info; keydata=
+ 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 MEK4
+In-Reply-To: <177791688430.723206.2269403194221624148.b4-ty@b4>
+X-PPP-Message-ID: <177997949041.1020144.5344286188940027184@mxe9fb.netcup.net>
+X-Rspamd-Server: rspamd-worker-8404
+X-Rspamd-Queue-Id: D19D561884
+X-NC-CID: LuDs7YKoDu0aVTeGgOVvghNjtwoxc8OmBXbsxIklV6mTdMrL6Qk=
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260528_075225_070764_2AEF0104 
+X-CRM114-Status: GOOD (  13.72  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,15 +140,34 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, May 27 2026, tkuw584924@gmail.com wrote:
+On 5/4/26 19:48, Krzysztof Kozlowski wrote:
+> 
+> On Wed, 29 Apr 2026 14:59:30 +0200, Alexander Dahl wrote:
+>> After removing of_platform_default_populate() calls the atmel-ebi driver
+>> was affected by deferred probing.  platform_driver_probe() is
+>> incompatible with deferred probing.  This led to atmel-ebi driver
+>> eventually not being probed on at91 sam9x60-curiosity and other sam9x60
+>> based boards.  Subsequently the nand-controller driver (nand-controller
+>> being a child node of ebi) on that platform was not probed and thus raw
+>> NAND flash was inaccessible, preventing devices to boot with rootfs on
+>> raw NAND flash (e.g. with UBI/UBIFS).
+>>
+>> [...]
+> 
+> Applied, thanks!
+> 
+> [1/1] memory: atmel-ebi: Allow deferred probing
+>       https://git.kernel.org/krzk/linux-mem-ctrl/c/754d60ad1c91895be0bc7d771fbf9fb3c9448640
 
-> From: Takahiro Kuwano <takahiro.kuwano@infineon.com>
+Lo! What's the status of this regression fix? It seems to be sitting in
+next for a while already. To me as an outsider it looks like this should
+be on track to get it merged for -rc6, as that's when Linus ideally
+wants all regressions fixed; but it looks a bit like this is destined to
+be merged in the next merge window. But I might be entirely wrong here
+-- or I'm right and there are good reasons why the next merge window is
+better here.
 
-Applied to spi-nor/next. Thanks!
-
--- 
-Regards,
-Pratyush Yadav
+Ciao, Thorsten
 
 ______________________________________________________
 Linux MTD discussion mailing list
