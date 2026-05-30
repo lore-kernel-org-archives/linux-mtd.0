@@ -4,65 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6EB5CD4F54
-	for <linux-mtd@archiver.kernel.org>; Fri, 29 May 2026 16:30:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 703F7CD5BD0
+	for <linux-mtd@archiver.kernel.org>; Sat, 30 May 2026 08:52:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
-	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ikw5sceaTwXGJM/lKYzQClKnkIbgLFjW7GiA4lQMy+8=; b=BFBBpi94lu+iaJ
-	gEj1LqPSLHUJW9f1l2+465/VJvAQ/hmJ6AeMw6jprWP15KcHQtp2qfVpE2j+s6mRYldSHloq7QLv/
-	Zhv9UUu3lcH6wUs7EpsWMtsrAd6rIQ+o2InWBLk5YcSUr8W7ccfZp6VoyjnFUaosEPiyEAYo1RHnI
-	Rn3NxGd86RuY0DM22twT2JNCJ+39WVlN3tiY9xZdJ7D2anDspiNdosB3Tbn6Q01EYs22Vtt3ukwir
-	aDIFcYZ6ahvnIaaKD6SCwPzxUAFiO4YMBorjY6sLjnxdBYu6r90zEavM3/Fgg87auykpKqQLwDgo6
-	ou1XmKOMeZ1ZvXFgJSwg==;
+	List-Owner; bh=IhipHxvq1vZmJwQZHuOjPU8+xQ3em1kzEjP6y2TJqTs=; b=jaYgzVFnSfUdea
+	tSgCKey5gSvtb1odOC79kcxrIbszLMH5OIV44nE+jiRSdtrqqrrcJitDiLUQZpyaVUdlUtW6zdq48
+	zw5lHX/1dYdqOt/N1W5OOJtCKS7xGY5FnvUQbkv//GqDHLJQbcqdH7yO+s4U/zJncivI/x+uCtvBB
+	0eBWlioKLA5p4qrzD3ksKXs8CNZ9lxfWMHVNSbIZw0C5Rmczs+pvmWHI77KA1CL7TczcJjVjcyxfJ
+	YIqnMGnb2B7t2W5esm67IFQ5fHPnzDf1XQ26zPuApcqyfYYjj9n8cY7vC95Ojy9Unxrl+lvN7w7x+
+	Hpzqtn6pMNMBAIefNARQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wT06I-00000007t2Y-121u;
-	Fri, 29 May 2026 16:30:22 +0000
-Received: from smtpout-04.galae.net ([185.171.202.116])
+	id 1wTFR1-00000008YJ1-1Wos;
+	Sat, 30 May 2026 08:52:47 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wT06F-00000007t0a-1lqC
+	id 1wTFQy-00000008YIW-4Bds
 	for linux-mtd@lists.infradead.org;
-	Fri, 29 May 2026 16:30:21 +0000
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id 856AFC62462;
-	Fri, 29 May 2026 16:30:18 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id C74EE601FA;
-	Fri, 29 May 2026 16:30:17 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 55ABA10888CC6;
-	Fri, 29 May 2026 18:30:16 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1780072217; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=lgdiO3aZNk41NZamSPA1ZPEFzEUzPqxYcHHOBzZNsnY=;
-	b=hcAxgKPnksVp9dFX/J7K+ldpVTY1UJQTBnTzLv/NtLO4SyLDuvP6j1qhc1LaB2xnX6ebfm
-	pTtY4e7u9UETUoXIublwFGCpg81ask40py6Az7iGfU+DSpLAIpYp0XdlEg4h3pLjR8gOFX
-	i+x3Hupoic8EDgVwHZtwFDd7v3yuOTbeI2Tc3qmyGlvRUH6hzKPkOgYC3ZsZpbBsiDRa11
-	Twby6swkuBahACrq7S36ywpJmG3Y4rvbcT/UgLLbsECPFESCpJPqdhkqlnBgvF3QyD8Yzf
-	XuHmy4dYjwkXkZXuAlCoEZ9LPmnTN8KifXCzEnP86gX/g3zrcMwV+o4JPh20Sg==
-From: "Miquel Raynal (DAVE)" <miquel.raynal@bootlin.com>
-Date: Fri, 29 May 2026 18:29:57 +0200
-Subject: [PATCH 2/3] mtd: rawnand: pl353: Make sure we use the monolithic
- helpers for raw accesses
+	Sat, 30 May 2026 08:52:46 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id E22F040A97;
+	Sat, 30 May 2026 08:52:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D3FA1F00893;
+	Sat, 30 May 2026 08:52:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1780131163;
+	bh=/mT4btVGnimZ9Cv2QimGX1edcsMj9bhXopCVFXdF1jw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=GUOE/JYYD5ukPosFNGICnMEEXmC/PcIE/e/TdmLcyR0vCHekxgmLErsWQJfmMYHss
+	 ypM9VKAGvxo11Bo5h7hD/Wb8S4thlGW2gY1UG7JFo1iSHvpad+j3ECxnpjZ1qAJyje
+	 hPAzXsWK9gsDmxAfT5+Nbj4WaDh32qwPlRER45+CMGP9Pva8WMz+Aw3ElXaJRJ8e/0
+	 XtetNTRBEPgRE10UVO4Lr8GuVBuh6vPcdKajZ9GqNmyK8yIQyQz9xiGwv0bmmDZrij
+	 Xtx2XdOMstrJSS6jKHuIj6lABoa9wbUPsceWF8GpRTs/XA8nn0Ierzm2mYPp6cUtvm
+	 /GtilIJ84WxrA==
+Date: Sat, 30 May 2026 10:52:41 +0200
+From: Krzysztof Kozlowski <krzk@kernel.org>
+To: Santhosh Kumar K <s-k6@ti.com>
+Cc: broonie@kernel.org, robh@kernel.org, krzk+dt@kernel.org, 
+	conor+dt@kernel.org, miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com, 
+	pratyush@kernel.org, mwalle@kernel.org, takahiro.kuwano@infineon.com, 
+	linux-spi@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-mtd@lists.infradead.org, praneeth@ti.com, u-kumar1@ti.com, a-dutta@ti.com
+Subject: Re: [PATCH v3 02/13] spi: dt-bindings: cdns,qspi-nor: add PHY tuning
+ pattern partition property
+Message-ID: <20260530-original-peccary-of-cubism-af68ed@quoll>
+References: <20260527175527.2247679-1-s-k6@ti.com>
+ <20260527175527.2247679-3-s-k6@ti.com>
 MIME-Version: 1.0
-Message-Id: <20260529-dave-upstream-nand-fixes-v1-2-8c72aa23aee2@bootlin.com>
-References: <20260529-dave-upstream-nand-fixes-v1-0-8c72aa23aee2@bootlin.com>
-In-Reply-To: <20260529-dave-upstream-nand-fixes-v1-0-8c72aa23aee2@bootlin.com>
-To: Michal Simek <michal.simek@amd.com>, 
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
- Andrea Scian <andrea.scian@dave.eu>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
- Miquel Raynal <miquel.raynal@bootlin.com>, stable@vger.kernel.org
-X-Mailer: b4 0.14.3
-X-Last-TLS-Session-Version: TLSv1.3
+Content-Disposition: inline
+In-Reply-To: <20260527175527.2247679-3-s-k6@ti.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260529_093019_622881_1FC175A1 
-X-CRM114-Status: GOOD (  10.70  )
+X-CRM114-CacheID: sfid-20260530_015245_076017_C5FC40BF 
+X-CRM114-Status: GOOD (  16.78  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,54 +77,47 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Any access not using the hardware ECC engine should be monolithic
-because the controller has its very own way of handling the end of a
-transaction during operation configuration, so we cannot easily make
-repeated reads.
+On Wed, May 27, 2026 at 11:25:16PM +0530, Santhosh Kumar K wrote:
+> PHY tuning requires a known data pattern to be readable from flash.
+> When no partition is explicitly identified, the controller must search
+> all available partitions to locate the pattern by label, which adds
+> overhead and relies on label naming conventions outside the
+> controller's control.
+> 
+> Add cdns,phy-pattern-partition, a phandle property that allows the DT
+> author to directly reference the flash partition holding the PHY tuning
+> pattern. The controller uses this partition during calibration, avoiding
+> the partition search entirely.
+> 
+> Signed-off-by: Santhosh Kumar K <s-k6@ti.com>
+> ---
+>  .../bindings/spi/cdns,qspi-nor-peripheral-props.yaml      | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/spi/cdns,qspi-nor-peripheral-props.yaml b/Documentation/devicetree/bindings/spi/cdns,qspi-nor-peripheral-props.yaml
+> index 510b82c177c0..0ffcdf5b00d0 100644
+> --- a/Documentation/devicetree/bindings/spi/cdns,qspi-nor-peripheral-props.yaml
+> +++ b/Documentation/devicetree/bindings/spi/cdns,qspi-nor-peripheral-props.yaml
+> @@ -39,4 +39,12 @@ properties:
+>        Delay in nanoseconds between setting qspi_n_ss_out low and
+>        first bit transfer.
+>  
+> +  cdns,phy-pattern-partition:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description:
+> +      Phandle to the flash partition containing the PHY tuning pattern.
+> +      When present, the controller uses this partition to locate the
+> +      pattern data during PHY tuning instead of searching all partitions
+> +      by label.
+> +
 
-This has the side effect of fixing support for software ECC engines.
+This should be used in any of applicable examples.
 
-Suggested-by: Andrea Scian <andrea.scian@dave.eu>
-Cc: stable@vger.kernel.org
-Fixes: 08d8c62164a3 ("mtd: rawnand: pl353: Add support for the ARM PL353 SMC NAND controller")
-Signed-off-by: Miquel Raynal (DAVE) <miquel.raynal@bootlin.com>
----
- drivers/mtd/nand/raw/pl35x-nand-controller.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+I also have doubts that this is per-device property. Your commit msg
+suggests it is per controller.
 
-diff --git a/drivers/mtd/nand/raw/pl35x-nand-controller.c b/drivers/mtd/nand/raw/pl35x-nand-controller.c
-index 986019b42153..a941b5c836a3 100644
---- a/drivers/mtd/nand/raw/pl35x-nand-controller.c
-+++ b/drivers/mtd/nand/raw/pl35x-nand-controller.c
-@@ -917,7 +917,6 @@ static int pl35x_nand_init_hw_ecc_controller(struct pl35x_nandc *nfc,
- 	chip->ecc.steps = mtd->writesize / chip->ecc.size;
- 	chip->ecc.read_page = pl35x_nand_read_page_hwecc;
- 	chip->ecc.write_page = pl35x_nand_write_page_hwecc;
--	chip->ecc.write_page_raw = nand_monolithic_write_page_raw;
- 	pl35x_smc_set_ecc_pg_size(nfc, chip, mtd->writesize);
- 
- 	nfc->ecc_buf = devm_kmalloc(nfc->dev, chip->ecc.bytes * chip->ecc.steps,
-@@ -984,7 +983,6 @@ static int pl35x_nand_attach_chip(struct nand_chip *chip)
- 	case NAND_ECC_ENGINE_TYPE_NONE:
- 	case NAND_ECC_ENGINE_TYPE_SOFT:
- 		dev_dbg(nfc->dev, "Using software ECC (Hamming 1-bit/512B)\n");
--		chip->ecc.write_page_raw = nand_monolithic_write_page_raw;
- 		break;
- 	case NAND_ECC_ENGINE_TYPE_ON_HOST:
- 		dev_dbg(nfc->dev, "Using hardware ECC\n");
-@@ -998,6 +996,9 @@ static int pl35x_nand_attach_chip(struct nand_chip *chip)
- 		return -EINVAL;
- 	}
- 
-+	chip->ecc.read_page_raw = nand_monolithic_read_page_raw;
-+	chip->ecc.write_page_raw = nand_monolithic_write_page_raw;
-+
- 	return 0;
- }
- 
-
--- 
-2.53.0
+Best regards,
+Krzysztof
 
 
 ______________________________________________________
