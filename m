@@ -4,67 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F392CD5BD1
-	for <linux-mtd@archiver.kernel.org>; Mon,  1 Jun 2026 12:57:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D896ECD6E55
+	for <linux-mtd@archiver.kernel.org>; Tue,  2 Jun 2026 02:07:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:References:To:From:Cc:Subject:Message-Id:Date:Mime-Version:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=8KiCCU7U+6+qrdmzUSFUe4uqlTAYyP3FQAdJ8HkU/2s=; b=umj6UT8Z2eRmiLqVNdYv6gV2dp
-	JzTKeaXwqm0ahayKIc/XIuF8Q0S34VCqZ/5p5d8tcZXFNG7hyJqY2quebzBcTJGQJqhgKAbWezlOg
-	X4qXzDA8CLeyXZaJkOjYq+vD8utV4HRiiQRS1cTtvgbYyEaZxJ9NQsu2A13W7UeIL7Kmrexp/L82/
-	TNfZGuu4yQWuo9WzfwKljV6r43F5yj7/yKMfd+Eq4mkDtNe6K2nChR8AEtC20N++y9GJBoP5EDvNu
-	886QYU0UK0TQbHBCMmRVKmB3UYQCfgnCbDl4aG30Pi7R4cvoF/I6C5xvuITt0tmZuZ3OOiQlLrRvH
-	aKOdqiug==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=1zB24MNZIaPyLC6FtdzdmEvhLhV+ZZSLM6hypmhf4fw=; b=dRkCCeJvrBub5/
+	rMtixcPlget4ioHxglGwb/EAZMMVmEi7INIaXy3PLuwYCZHC1uKHEhhhVKylA9dVZXd8VkEjlC5kp
+	/A2JCGwK+TMMgVXCWbSObctwJpvEU9dZ3xk+XgtP91x6qCYpkALIWUQdBT45FG4jwP5PiBU4x1ZzW
+	xY9QC42L1A+ZDXZJmCGxY9Td3DYYMNNZi+uSp3gQpPxcTvGT3X51pJKgkSoZCtI8L7g3bM2sVuYnz
+	PCyKsztW3iaUGTOo/2Mx9vbZB8PwXnNewK1ORuEQJaBCwHmgfkXwXvDzrt9z1nX8U5SBzMgBDaZLT
+	+PdfMj4k2E8hrxcZUKyw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wU2CZ-0000000BB65-3EOE;
-	Mon, 01 Jun 2026 12:57:07 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1wUEXi-0000000CAgW-1E7u;
+	Tue, 02 Jun 2026 02:07:46 +0000
+Received: from mail-pl1-x62f.google.com ([2607:f8b0:4864:20::62f])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wU2CW-0000000BB5X-3BWE
+	id 1wUEXf-0000000CAg8-1f43
 	for linux-mtd@lists.infradead.org;
-	Mon, 01 Jun 2026 12:57:06 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with UTF8SMTP id 647EF43D5E;
-	Mon,  1 Jun 2026 12:57:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id C33B81F00893;
-	Mon,  1 Jun 2026 12:57:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1780318624;
-	bh=uOtGdQ10po6PYUzoNOVZJt/AVviEOzR047rRHV6QZ1Q=;
-	h=Date:Subject:Cc:From:To:References:In-Reply-To;
-	b=RE6Qtf8SZUxxnhNYYx/0QiTWuTcyboY6tatgNt6BXpBe84PZ8RuPXRihSr2jH+pxt
-	 vLhXajVBlbV0MTJk6e+Y4dNRquyg7ehSaMSzdUtv1Pk3lm4X8IFFeiv9Z4UwHPKFWd
-	 ZhCjAcU+RGe/f5X6trFXHi17ud6RZNIsRbJ9PhxN4ybIYheoRrtM1Yg4HosefXdXJO
-	 RMjej9CgY69a3Wv77S5+vUaL7F7tAF8O6NxIfbpkjJgUO8Je0sUK+gx8iFFgG4XLs4
-	 OWYUVjZfX+/qarQ2WejxioQ7p7pdmKw4FN8+bggpl9tNkzP2snuVCxIIliozAPDlKJ
-	 do9LO1XDCeSRA==
-Mime-Version: 1.0
-Date: Mon, 01 Jun 2026 14:57:00 +0200
-Message-Id: <DIXQA3JV2N5M.2UHTAAXQEWB86@kernel.org>
-Subject: Re: [PATCH] mtd: spi-nor: Add support for MX25L12833F and
- MX25L12845G
-Cc: "Miquel Raynal" <miquel.raynal@bootlin.com>, "Pratyush Yadav"
- <pratyush@kernel.org>, "Takahiro Kuwano" <takahiro.kuwano@infineon.com>,
- "Richard Weinberger" <richard@nod.at>, "Vignesh Raghavendra"
- <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>, <alvinzhou@mxic.com.tw>, "Cheng Ming Lin"
- <chengminglin@mxic.com.tw>
-From: "Michael Walle" <mwalle@kernel.org>
-To: "Cheng Ming Lin" <linchengming884@gmail.com>
-X-Mailer: aerc 0.20.0
-References: <20260528051751.1648246-1-linchengming884@gmail.com>
- <DIU3OK3ELUD5.CUL6R3KNX0O9@kernel.org>
- <CAAyq3SY86mVwYtQMqhcZHjTxiD93awQZPDzHr8e5-+B9caNgbA@mail.gmail.com>
- <87eciwhtf8.fsf@bootlin.com> <DIU5AHNXBPN2.27JOC8D5COWAM@kernel.org>
- <CAAyq3SYX9UPwhC_Ume_S2yxhQwimRvB=Y6O_+FFqokhNmw7jQg@mail.gmail.com>
-In-Reply-To: <CAAyq3SYX9UPwhC_Ume_S2yxhQwimRvB=Y6O_+FFqokhNmw7jQg@mail.gmail.com>
+	Tue, 02 Jun 2026 02:07:44 +0000
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-2c0b9328c4aso15778925ad.0
+        for <linux-mtd@lists.infradead.org>; Mon, 01 Jun 2026 19:07:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1780366062; x=1780970862; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=gdm98kg5p3iWmcx/bJBpelRCoxJqA608wE9mubIJEMk=;
+        b=QaCB6Vs8AtsZso2VjfVX3gA6ixss6nevV8TcpxYM0bx1NhKVZx3c3vKNV6jRcOSlpa
+         1ZdvVhW8e1s5qEMJsS6ufe98t6N3+mKC8UesggbukMGC4nTgzVeJZFA1VPvtYuO/HA2U
+         1nceRuhXBDHtJxPFv2sjG/64R4wK0FhyN2KEvwek0i9KKjy89umJnmRs07ggUnCIUN9M
+         CdU9ZxrOPxcLGFyP1wDRcFs+d6tnG4fK6TW7+Lb0Spd5LS7jkMQoLT+IWu9Ah07qhS8i
+         w2zC7u9UqcWdaQi7n6wz9jVDNKG+gTub2rRKmP8xrMenpI0alPHg3pW+eboo8UUJ4HpL
+         R+mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1780366062; x=1780970862;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gdm98kg5p3iWmcx/bJBpelRCoxJqA608wE9mubIJEMk=;
+        b=rVRrVa3TnLF7h309aUpMKRjB3h6ywLDa5P0QHNNNNv+B7SCpvKO1LEUbd1HgqnuXSx
+         FC9x67Kmqu0Osrfw9eUsn63tPSCnkT04mblMNW8wTixZAkHrCKHn96YRkdh+V/np1uUo
+         +FeJlcdOPcgukJXx9FXVoBOcLk3mm0UmKfd0MCvJWdGVD+tgXoeJ+wxBryqE+5hcvKvx
+         +dTPFQdDthsKGd3QpFDEm4IQ/9N+QndGFqAZbZH3lS51/ryGcHcuNcoGgVb6NLVJiHFH
+         cDirjw+7nLpKlxWowCE5iA8aP4ndcxdYEEdTuz+l/WF4eTyXDRzoqx/9qd+JKAULXPu9
+         Okdg==
+X-Gm-Message-State: AOJu0YytT1WbEUNcc2c61En/+Cms/4sR5MpGCugwSG5DwPTHtzWXHXA2
+	tFEiEnKHgGVLMUT0oCT041DPmV81cQ6kgRp1Vh7EHlw58Aen1GBBW8XvmqybyQ==
+X-Gm-Gg: Acq92OF26EX2rYAbhPvWSVA3qwENqgw1ZPc05oDDNc1XMj8yFn73TllaTIOt+eJQ+we
+	VCp7ktHqul91TgYEcFHXCGNGQiTw/MLlj2NOxMm1BauB8a0XhNGS6ihecRUz+D4jL+hL2YTGeBx
+	fB5WXgfgjgpUtQncweMPSziX4eoXblh5qoVehLi9eEXf7AD7LxjDoyY67AFXxhg+gptk//hRNgO
+	KKlFNw/CYdYscqXt8Vp985BEl/LfcvYFgPAGj3QL1bV0sgZVs/W+mlWljx1RSv6MXO6HUGUgMk1
+	3vQkKUhwqkyCRAD0jb/mfyBG9CrgBRJ1X5IlTs4QEn1NEUBLKZP1nO0jlcrLdUFa4yySo1E96qO
+	ZRtO3YSvNvshHbkaB3wk7A3PyMlN7O59toUSnUWIJnVummiEIhJb9/CwJWbdl9UyW8kbbogpskJ
+	buS1S8e4gAxz9jyRqf8xoQPuC+T7W6QZMEaxTY8RkpssFsnI11LhogchWFDFgdAEqVC4W5sWHup
+	6HdDPOpbLQ9yns/H5KlMZk4oU3Ph7/vLvWFOMiibsgXHM/sHPtmg1bR
+X-Received: by 2002:a17:903:94e:b0:2bf:379b:53f5 with SMTP id d9443c01a7336-2bf379b5638mr128637885ad.23.1780366061809;
+        Mon, 01 Jun 2026 19:07:41 -0700 (PDT)
+Received: from ryzen ([2601:644:8000:5b5d:7285:c2ff:fe45:8a32])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2bf23c1e46asm115215045ad.61.2026.06.01.19.07.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Jun 2026 19:07:41 -0700 (PDT)
+From: Rosen Penev <rosenp@gmail.com>
+To: linux-mtd@lists.infradead.org
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+	chleroy@kernel.org,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] mtd: rawnand: ndfc: use ioread32be/iowrite32be and allow COMPILE_TEST
+Date: Mon,  1 Jun 2026 19:07:23 -0700
+Message-ID: <20260602020723.533971-1-rosenp@gmail.com>
+X-Mailer: git-send-email 2.54.0
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260601_055704_840943_2819CDF8 
-X-CRM114-Status: GOOD (  34.46  )
+X-CRM114-CacheID: sfid-20260601_190743_443932_FF4EE77D 
+X-CRM114-Status: GOOD (  17.41  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,140 +94,126 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1666082752401304972=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============1666082752401304972==
-Content-Type: multipart/signed;
- boundary=ed8d132310e85f4b2eec2d3d97e105344fc922fe0d44ac605c9c141fd8a6;
- micalg=pgp-sha384; protocol="application/pgp-signature"
+Replace ppc4xx-specific in_be32/out_be32 with generic ioread32be/
+iowrite32be to make the driver portable. Add COMPILE_TEST dependency
+to get build coverage on non-ppc4xx architectures.
 
---ed8d132310e85f4b2eec2d3d97e105344fc922fe0d44ac605c9c141fd8a6
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
+While at it, replace 4xx with 44x. The latter was removed a while ago
+and is only kept for compatibility.
 
-On Mon Jun 1, 2026 at 2:56 AM CEST, Cheng Ming Lin wrote:
-> Hi Michael,
->
-> Michael Walle <mwalle@kernel.org> =E6=96=BC 2026=E5=B9=B45=E6=9C=8828=E6=
-=97=A5=E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=883:52=E5=AF=AB=E9=81=93=EF=BC=9A
->>
->> Hi,
->>
->> On Thu May 28, 2026 at 9:42 AM CEST, Miquel Raynal wrote:
->> > Hi Cheng Ming,
->> >
->> >>> It looks like you're getting bitten by the ID reuse. You can't just
->> >>> unconditionally add the quad PP because as far as I can see the
->> >>> MX25L12805D [1] is just a standard single bit i/o flash and doesn't
->> >>> support the 4PP.
->> >>
->> >> You are absolutely right. Thanks for catching this.
->> >>
->> >> The MX25L12805D is indeed a much older product (released around 2009)=
-.
->> >> Since the initial JESD216 SFDP standard wasn't published until 2011,
->> >> I double-checked with our internal PM and confirmed that the MX25L128=
-05D
->> >> does not support SFDP at all.
->> >>
->> >> Since the newer flashes (MX25L12833F and MX25L12845G) do support SFDP=
-,
->> >> we could use this as a differentiator to distinguish them from the le=
-gacy
->> >> MX25L12805D.
->> >>
->> >> What if we try to read the SFDP signature (RDSFDP) in the fixup hook?
->> >> If a valid SFDP signature is detected, we can safely identify it as t=
-he
->> >> newer flash and apply the SNOR_HWCAPS_PP_1_4_4 capability. If there i=
-s
->> >> no SFDP signature, we leave it as is for the legacy MX25L12805D.
->> >>
->> >> Do you think this approach is feasible and acceptable? If so, I will
->> >> implement this logic and submit a v2 patch.
->> >
->> > The ->post_sfdp() fixup hook is documented as "not called for SPI NORs
->> > that do not support SFDP". Alternatively, I believe an earlier hook,
->> > like ->post_bfpt() could also work since it does not seem to run on
->> > non SFDP compatible flashes.
->>
->> Moreover:
->>
->>  *    spi_nor_post_sfdp_fixups() is called after the SFDP tables are par=
-sed.
->>  *    It is used to tweak various flash parameters when information prov=
-ided
->>  *    by the SFDP tables are wrong.
->>
->> And it looks like that is the case for these flashes. Also, please
->> provide a comment on the fixup describing that the flash misses that
->> property. Basically, what you've written in the commit message.
->
-> I am currently working on the flash part 0xc22018 and I am planning to
-> add its size back to the flash info table. However, I encountered an
-> issue regarding the fixup hooks.
->
-> Since this specific flash does not support dual, quad, or octal reads,
-> the core logic in spi_nor_init_params_deprecated() determines that SFDP
-> parsing is not needed. Because the SFDP parsing is skipped, the post_bfpt
-> or post_sfdp hooks are never triggered, which prevents us from applying
-> the necessary fixups as we expected.
->
-> I initially considered asking about the possibility of removing this
-> specific check in spi_nor_init_params_deprecated(), which would allow
-> all SPI-NOR flashes to go through SFDP parsing by default (unless
-> SPI_NOR_SKIP_SFDP is explicitly set).
+Assisted-by: opencode:big-pickle
+Signed-off-by: Rosen Penev <rosenp@gmail.com>
+---
+ drivers/mtd/nand/raw/Kconfig |  2 +-
+ drivers/mtd/nand/raw/ndfc.c  | 20 ++++++++++----------
+ 2 files changed, 11 insertions(+), 11 deletions(-)
 
-Oops, I've forgot to add you on CC. Sorry. I've just send a series
-to get rid of that legacy handling. Please give it a try on your
-flashes.
+diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
+index d488213b631f..64b8b99a3a68 100644
+--- a/drivers/mtd/nand/raw/Kconfig
++++ b/drivers/mtd/nand/raw/Kconfig
+@@ -71,7 +71,7 @@ config MTD_NAND_AU1550
+ 
+ config MTD_NAND_NDFC
+ 	tristate "IBM/MCC 4xx NAND controller"
+-	depends on 4xx
++	depends on 44x || COMPILE_TEST
+ 	select MTD_NAND_ECC_SW_HAMMING
+ 	select MTD_NAND_ECC_SW_HAMMING_SMC
+ 	help
+diff --git a/drivers/mtd/nand/raw/ndfc.c b/drivers/mtd/nand/raw/ndfc.c
+index 7ad8bc04be1a..a937ca3eeff5 100644
+--- a/drivers/mtd/nand/raw/ndfc.c
++++ b/drivers/mtd/nand/raw/ndfc.c
+@@ -44,13 +44,13 @@ static void ndfc_select_chip(struct nand_chip *nchip, int chip)
+ 	uint32_t ccr;
+ 	struct ndfc_controller *ndfc = nand_get_controller_data(nchip);
+ 
+-	ccr = in_be32(ndfc->ndfcbase + NDFC_CCR);
++	ccr = ioread32be(ndfc->ndfcbase + NDFC_CCR);
+ 	if (chip >= 0) {
+ 		ccr &= ~NDFC_CCR_BS_MASK;
+ 		ccr |= NDFC_CCR_BS(chip + ndfc->chip_select);
+ 	} else
+ 		ccr |= NDFC_CCR_RESET_CE;
+-	out_be32(ndfc->ndfcbase + NDFC_CCR, ccr);
++	iowrite32be(ccr, ndfc->ndfcbase + NDFC_CCR);
+ }
+ 
+ static void ndfc_hwcontrol(struct nand_chip *chip, int cmd, unsigned int ctrl)
+@@ -70,7 +70,7 @@ static int ndfc_ready(struct nand_chip *chip)
+ {
+ 	struct ndfc_controller *ndfc = nand_get_controller_data(chip);
+ 
+-	return in_be32(ndfc->ndfcbase + NDFC_STAT) & NDFC_STAT_IS_READY;
++	return ioread32be(ndfc->ndfcbase + NDFC_STAT) & NDFC_STAT_IS_READY;
+ }
+ 
+ static void ndfc_enable_hwecc(struct nand_chip *chip, int mode)
+@@ -78,9 +78,9 @@ static void ndfc_enable_hwecc(struct nand_chip *chip, int mode)
+ 	uint32_t ccr;
+ 	struct ndfc_controller *ndfc = nand_get_controller_data(chip);
+ 
+-	ccr = in_be32(ndfc->ndfcbase + NDFC_CCR);
++	ccr = ioread32be(ndfc->ndfcbase + NDFC_CCR);
+ 	ccr |= NDFC_CCR_RESET_ECC;
+-	out_be32(ndfc->ndfcbase + NDFC_CCR, ccr);
++	iowrite32be(ccr, ndfc->ndfcbase + NDFC_CCR);
+ 	wmb();
+ }
+ 
+@@ -92,7 +92,7 @@ static int ndfc_calculate_ecc(struct nand_chip *chip,
+ 	uint8_t *p = (uint8_t *)&ecc;
+ 
+ 	wmb();
+-	ecc = in_be32(ndfc->ndfcbase + NDFC_ECC);
++	ecc = ioread32be(ndfc->ndfcbase + NDFC_ECC);
+ 	/* The NDFC uses Smart Media (SMC) bytes order */
+ 	ecc_code[0] = p[1];
+ 	ecc_code[1] = p[2];
+@@ -114,7 +114,7 @@ static void ndfc_read_buf(struct nand_chip *chip, uint8_t *buf, int len)
+ 	uint32_t *p = (uint32_t *) buf;
+ 
+ 	for(;len > 0; len -= 4)
+-		*p++ = in_be32(ndfc->ndfcbase + NDFC_DATA);
++		*p++ = ioread32be(ndfc->ndfcbase + NDFC_DATA);
+ }
+ 
+ static void ndfc_write_buf(struct nand_chip *chip, const uint8_t *buf, int len)
+@@ -123,7 +123,7 @@ static void ndfc_write_buf(struct nand_chip *chip, const uint8_t *buf, int len)
+ 	uint32_t *p = (uint32_t *) buf;
+ 
+ 	for(;len > 0; len -= 4)
+-		out_be32(ndfc->ndfcbase + NDFC_DATA, *p++);
++		iowrite32be(*p++, ndfc->ndfcbase + NDFC_DATA);
+ }
+ 
+ /*
+@@ -223,13 +223,13 @@ static int ndfc_probe(struct platform_device *ofdev)
+ 	if (reg)
+ 		ccr |= be32_to_cpup(reg);
+ 
+-	out_be32(ndfc->ndfcbase + NDFC_CCR, ccr);
++	iowrite32be(ccr, ndfc->ndfcbase + NDFC_CCR);
+ 
+ 	/* Set the bank settings if given */
+ 	reg = of_get_property(ofdev->dev.of_node, "bank-settings", NULL);
+ 	if (reg) {
+ 		int offset = NDFC_BCFG0 + (ndfc->chip_select << 2);
+-		out_be32(ndfc->ndfcbase + offset, be32_to_cpup(reg));
++		iowrite32be(be32_to_cpup(reg), ndfc->ndfcbase + offset);
+ 	}
+ 
+ 	err = ndfc_chip_init(ndfc, ofdev->dev.of_node);
+-- 
+2.54.0
 
-[1] https://lore.kernel.org/linux-mtd/20260601125438.3481722-1-mwalle@kerne=
-l.org/
-
--michael
-
-> However, I am aware that forcing SFDP parsing globally on all legacy
-> 1-1-1 flashes might be risky. Flashes predating the JESD216 standard
-> might return garbage data when the SFDP opcode (0x5A) is issued,
-> potentially causing regressions if the garbage data accidentally matches
-> the SFDP signature.
->
-> If dropping this global check is indeed considered too risky for older
-> hardware, would it be acceptable to use the late_init hook to handle
-> this flash individually? The idea would be to manually check and parse
-> the SFDP table exclusively for 0xc22018 within its own fixup, ensuring
-> that no other legacy 1-1-1 flashes are affected by this change.
->
-> Any thoughts or guidance on whether this late_init approach is the right
-> way to go would be greatly appreciated.
-
---ed8d132310e85f4b2eec2d3d97e105344fc922fe0d44ac605c9c141fd8a6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCah2BnBIcbXdhbGxlQGtl
-cm5lbC5vcmcACgkQEic87j4CH/h3eQGA9opRdQ0dC72blLAiAtGF/+VPIGb0j1Y7
-5BPFsh3pfCFFJeKsULeBO+14w0gNqf6nAX0fw+QONj2GS599XKdYCyo6NNyTDqUy
-M4LmdntTIEIxGzFkzeZh5RXOBJWhXkU+9xs=
-=8Rlz
------END PGP SIGNATURE-----
-
---ed8d132310e85f4b2eec2d3d97e105344fc922fe0d44ac605c9c141fd8a6--
-
-
---===============1666082752401304972==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============1666082752401304972==--
-
