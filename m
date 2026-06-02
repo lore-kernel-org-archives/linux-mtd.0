@@ -4,111 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5A13CD6E60
-	for <linux-mtd@archiver.kernel.org>; Tue,  2 Jun 2026 12:08:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 365A5CD6E4A
+	for <linux-mtd@archiver.kernel.org>; Tue,  2 Jun 2026 12:15:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=dpb11C5BuRtkEfVwydJ/y9xvUmxMuNuOEAbsRwGJHNQ=; b=hY66Lr1isxQQCs
-	aCi0aDrpZtAqWlapRFpBUTJcCtSeteR3ITH98WDRL9uFqCVtTrwJZp22sgaSCxnpF7x1COZ5Wxn/W
-	q2qrGEA2VB5AdMoSTKP9MupgPQ8SumE4Dn3QeRelxWfVa1FTTGeW9B+u5Wau2jP/vVh2/Jrqdvqy6
-	rQmi0hAzJ0KuI733wyOm6z5fef+tLBpwE3tJtWg7fFdti+uj9LWpJJfi6iJE29nyAMF+WWhBia4SX
-	dMMrk2Hq+fz1cvzQziH7YLnQQb639Ko5EXn86HNbhEiHNdLoX/lZ8smLMA5kLaMw4EvG3CriVe3Bn
-	1j7hqgzvliLKNnCG45uQ==;
+	List-Owner; bh=fUBg36TlxIcPtgas6EDTulY5FDg20zQ49TxaGcgNhNM=; b=boVdAHCRj8Ew9o
+	4OdIkaUCSTg6ey4JX7kHngzUJE44AIq7fxjkJKAckZBIMlIu+qn/wFWjyGlDE5GaDsaXb/ZClSmau
+	52HGcTBKHcUVfwWPYUhAvpB4ToRiQDIAiglqrP4MEUOQcyA4KLoPA9KklPQcHOshEdX4LnBqdLVhw
+	LGGMpj8N/O+00MXvm9/ToE4O+/Kk1QAV8/CrBRWNR7xZMHVPstjZh3zIOGkjTYNsq19QCOq95vcLS
+	Hwc4cgCRezTUjbcIXkqnX6y+R0rYJdmLZqJIryv1/1o2phjbARq1CA2HreP6UmVphOzsjqP9AMzkH
+	DV6fSVVnLI6JujKO0CNg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wUNv3-0000000CwcS-0sIg;
-	Tue, 02 Jun 2026 12:08:29 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1wUO2C-0000000CxLN-3FYF;
+	Tue, 02 Jun 2026 12:15:52 +0000
+Received: from smtpout-03.galae.net ([185.246.85.4])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wUNv1-0000000Cwbm-2Wtf
+	id 1wUO29-0000000CxKH-3DdP
 	for linux-mtd@lists.infradead.org;
-	Tue, 02 Jun 2026 12:08:27 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 137BA60154;
-	Tue,  2 Jun 2026 12:08:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DFCC91F00898;
-	Tue,  2 Jun 2026 12:08:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1780402106;
-	bh=THnT/Gt/QwW7wOT9KoKJmhlIhpy8nq9R8MM5vmnOtAY=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=AZfSdxMWs+MhVbEha3DvypgDVd2/8gxX9brIM+PgPoKTtk3VV9blga3BhcuHmh0VD
-	 uz6v62GpajiGBGfdXNQEDPlVm6Ls4UMaSgkaylHBVvMvfOHYaqfCaBaSnCS9lzeHPb
-	 lkyS5eT7wbYvFeOaoHqJ6nk/zND9ddGUHlaxZKsAOQxhwubZoCUHPskfEIDvYrfp+E
-	 3khUcKRYgo/m96rM5a/hRZAkneNOKr8OiwlaGLn8ouRLOP1ji5+gERBzFLFmkXe5ul
-	 3p0pvRut4r/qE45jMzUxbkQcxiafPqy5pFQnoGA+6EURHoe7he4oyYzHdXolpeuyOg
-	 vrpkLyQmn3xGA==
-Message-ID: <86702ba6-33d0-4a81-8766-18a3d037ae1f@kernel.org>
-Date: Tue, 2 Jun 2026 14:08:19 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 02/13] spi: dt-bindings: cdns,qspi-nor: add PHY tuning
- pattern partition property
+	Tue, 02 Jun 2026 12:15:51 +0000
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-03.galae.net (Postfix) with ESMTPS id 93B934E42DC0;
+	Tue,  2 Jun 2026 12:15:46 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 59A10603BC;
+	Tue,  2 Jun 2026 12:15:46 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 1CE18108883E7;
+	Tue,  2 Jun 2026 14:15:42 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1780402545; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=p03ztj6XSIMc7U28VJy2jGNEbLmsRiEcsPXWwsoNno0=;
+	b=zPImwJiEpyRoEUx8ORaIHzQQ70oK9xBRu+e+8Voz+bIj3qh9kKCet36pw+ptqHSD/yuio+
+	ankAlAIZHatk1GDUxy41rcvREjNFWsKlEuBqmG7eBeMQbc44MWy+Rk2sROFzuC3xTVpsEF
+	0C6jJwhbQ2nxv1xjj7h3AiF0gJj/hCUEBJfdmqhc5o1Yrpy05UaZk1Eq01rtaFM32qZ2Js
+	pk1e9Sr7ikQAhL51zhwMLSXb3Wlu6keOk+AHv90bv7od8wJUDIzXYzJm6iA3G7pJVPyMXJ
+	LrpQnCp86wMxqu1AXkyzQvbsE9ByR6PNGHlJMf1426IZFcGIihMj+mRoYCIBuw==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Santhosh Kumar K <s-k6@ti.com>
-Cc: broonie@kernel.org, robh@kernel.org, krzk+dt@kernel.org,
- conor+dt@kernel.org, miquel.raynal@bootlin.com, richard@nod.at,
- vigneshr@ti.com, pratyush@kernel.org, mwalle@kernel.org,
- takahiro.kuwano@infineon.com, linux-spi@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, praneeth@ti.com, u-kumar1@ti.com,
- a-dutta@ti.com
+Cc: <broonie@kernel.org>,  <robh@kernel.org>,  <krzk+dt@kernel.org>,
+  <conor+dt@kernel.org>,  <richard@nod.at>,  <vigneshr@ti.com>,
+  <pratyush@kernel.org>,  <mwalle@kernel.org>,
+  <takahiro.kuwano@infineon.com>,  <linux-spi@vger.kernel.org>,
+  <devicetree@vger.kernel.org>,  <linux-kernel@vger.kernel.org>,
+  <linux-mtd@lists.infradead.org>,  <praneeth@ti.com>,  <u-kumar1@ti.com>,
+  <a-dutta@ti.com>
+Subject: Re: [PATCH v3 10/13] spi: cadence-quadspi: enable PHY for direct
+ reads and indirect writes
+In-Reply-To: <e2a354fe-ef25-401a-b8a9-4d51ad12f429@ti.com> (Santhosh Kumar
+	K.'s message of "Mon, 1 Jun 2026 14:09:58 +0530")
 References: <20260527175527.2247679-1-s-k6@ti.com>
- <20260527175527.2247679-3-s-k6@ti.com>
- <20260530-original-peccary-of-cubism-af68ed@quoll>
- <2f091813-fa28-407f-892d-bbbbe3cac4e4@ti.com>
- <063fe976-9a28-4670-90df-921fbc1c3a8c@kernel.org>
- <20260601-stirring-tested-mayfly-e97c14@quoll>
- <4a570d36-dda6-4f3d-9c16-d3e57ac55f1c@ti.com>
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Content-Language: en-US
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 a/A=
-In-Reply-To: <4a570d36-dda6-4f3d-9c16-d3e57ac55f1c@ti.com>
+	<20260527175527.2247679-11-s-k6@ti.com> <87se7bgasn.fsf@bootlin.com>
+	<e2a354fe-ef25-401a-b8a9-4d51ad12f429@ti.com>
+User-Agent: mu4e 1.12.7; emacs 30.2
+Date: Tue, 02 Jun 2026 14:15:41 +0200
+Message-ID: <874ijl2l5e.fsf@bootlin.com>
+MIME-Version: 1.0
+X-Last-TLS-Session-Version: TLSv1.3
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260602_051549_993031_A5935EB4 
+X-CRM114-Status: UNSURE (   6.04  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -120,39 +80,35 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 02/06/2026 08:30, Santhosh Kumar K wrote:
-> 
->>
->>>
->>>>
->>>>>
->>>>> I also have doubts that this is per-device property. Your commit msg
->>>>> suggests it is per controller.
->>>>
->>>> This is a per-device property. It is consumed by the controller driver
->>>> only to locate and retrieve the offset of the PHY pattern partition
->>>
->>> So with two devices on a bus, you need two separate partitions for tuning?
-> 
-> Each SPI NOR flash device needs a partition to store PHY tuning pattern.
-> 
-
-I understood that you READ the tuning pattern:
-"PHY tuning requires a known data pattern to be readable from flash."
-Now you write "to store PHY tuning pattern".
-
-I am confused and I still don't understand what would happen if you have
-two flash memories on a bus with each having a partition.
-
-
-Best regards,
-Krzysztof
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGVsbG8sCgo+Pj4gK3N0YXRpYyBib29sIGNxc3BpX3VzZV9waHkoc3RydWN0IGNxc3BpX2ZsYXNo
+X3BkYXRhICpmX3BkYXRhLAo+Pj4gKwkJCSAgY29uc3Qgc3RydWN0IHNwaV9tZW1fb3AgKm9wKQo+
+Pj4gK3sKPj4+ICsJcmV0dXJuIGZfcGRhdGEtPnVzZV9waHkgJiYgb3AtPmRhdGEubmJ5dGVzID4g
+MTYgJiYKPj4gV2h5IGlzIHRoZSBjaGVjayBsb29raW5nIGZvciAxNiBoZXJlLCBhbmQgMWtpQiBh
+Ym92ZT8KPgo+IERpcmVjdCByZWFkcyBoYXZlIHZlcnkgbGl0dGxlIHBlci1vcCBvdmVyaGVhZCwg
+c28gZW5hYmxpbmcgUEhZIGlzCj4gYmVuZWZpY2lhbCBldmVuIGZvciByZWxhdGl2ZWx5IHNtYWxs
+IHRyYW5zZmVycy4gKD4gMTYpCj4KPiBJbmRpcmVjdCB3cml0ZXMsIG9uIHRoZSBvdGhlciBoYW5k
+LCBpbmN1ciBzaWduaWZpY2FudGx5IGhpZ2hlciBzZXR1cAo+IGNvc3QsIHJlc3VsdGluZyBpbiBt
+dWNoIGxhcmdlciBicmVhayBwb2ludC4gKD4gMWtpQikKCk9rLCB0aGlzIHByb2JhYmx5IGRlc2Vy
+dmVzIHRvIGJlIGRlZmluZWQsIGVnLgoKI2RlZmluZSBNSU5fRElSX1JFQUQvSU5ESVJfV1JJVEVf
+TEVOX0ZPUl9QSFkKCkFuZCBhIGNvbW1lbnQgd291bGQgYmUgdmVyeSB3ZWxjb21lIHRvIGV4cGxh
+aW4gdGhlc2UgYXJiaXRyYXJ5IGNob2ljZXMuCgpUaGV5IGNhbiBwcm9iYWJseSBiZSBpbXByb3Zl
+ZCBmdXJ0aGVyIGxhdGVyLgoKPj4+ICAgCWRkZXYgPSBjcXNwaS0+cnhfY2hhbi0+ZGV2aWNlLT5k
+ZXY7Cj4+PiAgIAlkbWFfZHN0ID0gZG1hX21hcF9zaW5nbGUoZGRldiwgYnVmLCBsZW4sIERNQV9G
+Uk9NX0RFVklDRSk7Cj4+PiAgIAlpZiAoZG1hX21hcHBpbmdfZXJyb3IoZGRldiwgZG1hX2RzdCkp
+IHsKPj4+ICAgCQlkZXZfZXJyKGRldiwgImRtYSBtYXBwaW5nIGZhaWxlZFxuIik7Cj4+PiAgIAkJ
+cmV0dXJuIC1FTk9NRU07Cj4+PiAgIAl9Cj4+PiAtCXR4ID0gZG1hZW5naW5lX3ByZXBfZG1hX21l
+bWNweShjcXNwaS0+cnhfY2hhbiwgZG1hX2RzdCwgZG1hX3NyYywKPj4+IC0JCQkJICAgICAgIGxl
+biwgZmxhZ3MpOwo+Pj4gKwl0eCA9IGRtYWVuZ2luZV9wcmVwX2RtYV9tZW1jcHkoY3FzcGktPnJ4
+X2NoYW4sIGRtYV9kc3QsIGRtYV9zcmMsIGxlbiwKPj4+ICsJCQkJICAgICAgIGZsYWdzKTsKPj4g
+Tm90IHJlbGF0ZWQgdG8gdGhlIGNoYW5nZSwgaXNuJ3QgaXQ/Cj4KPiBZZWFoLCBub3QgcmVsYXRl
+ZCBJJ2xsIGxlYXZlIHRoaXMgdW50b3VjaGVkLiBIb3dldmVyLCB0aGUgY2hhbmdlcyBhYm92ZQo+
+IGFuZCBiZWxvdyBhcmUgcmVsYXRlZCBhbmQgYmVsb25nIHRvZ2V0aGVyIGluIHRoZSBzYW1lIHBh
+dGNoLgoKVGhleSBzaG91bGQgbGlrZWx5IGJlIGRvbmUgaW4gYSBwcmVwYXJhdGlvbiBwYXRjaC4K
+ClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8v
+bGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
