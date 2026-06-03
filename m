@@ -4,62 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D0AFCD5BD1
-	for <linux-mtd@archiver.kernel.org>; Tue,  2 Jun 2026 16:49:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58809CD6E5D
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Jun 2026 00:14:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=nccAX6mceqX3OrMa0FUkJKw8zoLi7F2L59HhyslzmVI=; b=NuRknch1i2uY0V
-	9mt+NfxMXZtmMJE11mHUiliaXtW2g0/giuUDassfLJfS4FkEENO4jZc3U6AvEGnzJ5yOQC4Typr6a
-	BRtwjgfzKJcdj9fiuUKsjN7SgHPaAW1HK4XjSC+DKM89s2EXGbjIa6viycEzV7KcWJX6VxbQGqr+4
-	rl6obdiT/knU7autjrkM+lGMO4IIUyWJNbS35PKETZW1SXeZ9Z+ImYrl4kzdeHGSly1yu1XlWW3ve
-	VdiYN4gYgbrHTnlRRLDVtMsnV5LgbhE0FfPhrEEvvNmQMIiJMyssG0lVnlf3ApU+r49cuAkDOuIU2
-	GXFjfq1LY7lOdxylzgZA==;
+	List-Owner; bh=dtQkqY0BEe7Q5tkYkkfBKug2zjaKtFLj1fgLjjIhpTE=; b=I+dgVNmoG0pjhO
+	RmtjE07MYN2p31Z9b3hPGcU5Rz3p3vN/ntUPo0cTHZWoGizm6fo+d9cZ+WKlpiVueeYUBZmOzwMUz
+	gjyCHpjinhPZ4Vg01sa6oWhVIqkeChBj4D/xJwakMxFdfM+OkIol76EBp2Lfzzc+GU9dNyDBHbqFG
+	sDyUeDKABxF4scL7VsRxvgAO9o4sx2Co6U00u9Sz8Uptc+BCQBfTJB17Sa2FpgopDwXEEpT4BCqbY
+	RxWh3uSzbwaP1UL3Jq59hbMwSMojpYuaDs+WDvRjH/m/jLkXsth/KRTWNWl4ubZtCdqpFLIABfVGn
+	nqZ/1BkfW1Ho2hC4Vchw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wUSJK-0000000DUWn-0jmg;
-	Tue, 02 Jun 2026 16:49:50 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1wUZFF-0000000Dz9Z-2npR;
+	Wed, 03 Jun 2026 00:14:05 +0000
+Received: from smtp2.infineon.com ([2a00:18f0:1e00:4::4])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wUSJI-0000000DUWG-4B0t
+	id 1wUZFD-0000000Dz8e-13Cx
 	for linux-mtd@lists.infradead.org;
-	Tue, 02 Jun 2026 16:49:49 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id C268860123;
-	Tue,  2 Jun 2026 16:49:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F0681F00893;
-	Tue,  2 Jun 2026 16:49:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1780418986;
-	bh=LFB8O8U4QgaKB297gBssYNIgpiABI/UmXL93J9wGzfM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=Q0f+O0gv/nkLTpToavxBJddtyEo1zobgVX2X7Jj3xKtlSsDjIRF9S8gJpma1B7Qw/
-	 qpl8eEOQV+9UPVmeeufPbe/H5gPWw7dPYQvaS3mMUo8Ro7bHTttsM4nKQNeSsFd0dY
-	 ANlwIX1w3c4u+XYNghpN2ACSZhR8hrfvovzH1+aY5cRB/ocUbAiQku2BvRldicjt06
-	 KHiK20PsKJ6L2N8hxPXB7Y/QqXvokTdFt2k116t2kSoc8RMJMz4Gdrs239n/VK7i3C
-	 287/dtH4ozIY0ReLdShcsEkgmwITonFIAQzwfVOScdz5P0rWtKCYnSD5/h9gXD/48J
-	 u0Sjr3Er+fpyQ==
-Date: Tue, 2 Jun 2026 11:49:45 -0500
-From: Rob Herring <robh@kernel.org>
-To: Santhosh Kumar K <s-k6@ti.com>
-Cc: broonie@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org,
-	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-	pratyush@kernel.org, mwalle@kernel.org,
-	takahiro.kuwano@infineon.com, linux-spi@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org, praneeth@ti.com, u-kumar1@ti.com,
-	a-dutta@ti.com
-Subject: Re: [PATCH v3 02/13] spi: dt-bindings: cdns,qspi-nor: add PHY tuning
- pattern partition property
-Message-ID: <20260602164945.GA475455-robh@kernel.org>
-References: <20260527175527.2247679-1-s-k6@ti.com>
- <20260527175527.2247679-3-s-k6@ti.com>
+	Wed, 03 Jun 2026 00:14:04 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=infineon.com; i=@infineon.com; q=dns/txt; s=IFXMAIL;
+  t=1780445643; x=1811981643;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=wKv/uP+DH0U5XirB5yo9ezmZw3vr6Vr1rbJY5ew+/cM=;
+  b=j6Jpk0aS3/oN8Q1dzEpWzgMK8tYoXqLAQamG923p0idPxWSxJGYdZ8lW
+   R9OzX3TQCmJ05cw2lclPZIiGCDDp1BdNVRhQkEGO8ny5wqmnGAGV6sBJd
+   NeiyGjQBe4ZVJkqi8Yk0aT2PHNyt+jD4zzsw5Q8zta2bwheML7/C7lkEF
+   w=;
+X-CSE-ConnectionGUID: fc3L/NW+Rp2ggLGaKCtUnQ==
+X-CSE-MsgGUID: 75I89awSSQy6qaCT/S9DhA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11805"; a="160461448"
+X-IronPort-AV: E=Sophos;i="6.24,184,1774306800"; 
+   d="scan'208";a="160461448"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO MUCSE819.infineon.com) ([172.23.29.45])
+  by smtp2.infineon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2026 02:13:59 +0200
+Received: from MUCSE815.infineon.com (172.23.29.41) by MUCSE819.infineon.com
+ (172.23.29.45) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.37; Wed, 3 Jun
+ 2026 02:13:58 +0200
+Received: from MUCSE815.infineon.com ([fe80::ed10:a720:3031:ca14]) by
+ MUCSE815.infineon.com ([fe80::ed10:a720:3031:ca14%12]) with mapi id
+ 15.02.2562.037; Wed, 3 Jun 2026 02:13:58 +0200
+From: <Takahiro.Kuwano@infineon.com>
+To: <miquel.raynal@bootlin.com>, <mwalle@kernel.org>
+CC: <pratyush@kernel.org>, <richard@nod.at>, <vigneshr@ti.com>,
+	<tudor.ambarus@linaro.org>, <linux-mtd@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: RE: [RFC PATCH 0/3] mtd: spi-nor: Rework flash parameter
+ initialization
+Thread-Topic: [RFC PATCH 0/3] mtd: spi-nor: Rework flash parameter
+ initialization
+Thread-Index: AQHc8cXTO5f/tOgcMEyxMymmbryaJrYrCr5PgADpbEA=
+Date: Wed, 3 Jun 2026 00:13:58 +0000
+Message-ID: <c8f082b6deb4483b9a6a5f54ac549d62@infineon.com>
+References: <20260601125438.3481722-1-mwalle@kernel.org>
+ <87tsrlmf7g.fsf@bootlin.com>
+In-Reply-To: <87tsrlmf7g.fsf@bootlin.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.161.6.196]
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260527175527.2247679-3-s-k6@ti.com>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260602_171403_617366_4290A0CF 
+X-CRM114-Status: GOOD (  22.77  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,27 +92,38 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, May 27, 2026 at 11:25:16PM +0530, Santhosh Kumar K wrote:
-> PHY tuning requires a known data pattern to be readable from flash.
-> When no partition is explicitly identified, the controller must search
-> all available partitions to locate the pattern by label, which adds
-> overhead and relies on label naming conventions outside the
-> controller's control.
+Hi,
 
-I agree 'label' is not the best choice. Software should not care what 
-'label' contains. It should really be 'compatible' instead.
+> Hi Michael,
+> 
+> On 01/06/2026 at 14:52:42 +02, Michael Walle <mwalle@kernel.org> wrote:
+> 
+> > Try to simplify the flash initialization and get rid of the legacy
+> > handling. As default, all the flags of the in-kernel database are
+> > taken and amended with the SFDP data.
+> >
+> > This might have the consequence that all the flashes now get a
+> > RDSFPD opcode which might be an unknown opcode. But that was already
+> > the case for any flashes which were unknown to the linux kernel. So
+> > far, there was not a single complaint.
+> >
+> > See patch 3 for more information. If feedback is positive, this is
+> > intended to be applied to the spi-nor tree after the next merge
+> > window, so it will sit around in -next for quite some time and get
+> > some testing.
+> >
+> > That being said, I've just did a quick test on my boards. Please
+> > give it a test on your boards.
+> 
+> Interesting cleanup, thanks for pushing it. I'll run some tests with
+> some old and newer SFDP based flashes. I do not have chips without SFDP
+> though.
+> 
+I do have some non-SFDP chips (S25FL-S). Will get back to you with test
+result.
 
-> Add cdns,phy-pattern-partition, a phandle property that allows the DT
-> author to directly reference the flash partition holding the PHY tuning
-> pattern. The controller uses this partition during calibration, avoiding
-> the partition search entirely.
-
-Do you have any data that this approach being "direct" is faster? In 
-fact, it might be worse. Instead of searching just the limited number of 
-partition subnodes, you now search the entire tree for a matching 
-phandle value. We do have phandle caching, so that might save you here.
-
-Rob
+Thanks,
+Takahiro
 
 ______________________________________________________
 Linux MTD discussion mailing list
