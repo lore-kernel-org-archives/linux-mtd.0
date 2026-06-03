@@ -4,78 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58809CD6E5D
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Jun 2026 00:14:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6A68CD6E4A
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Jun 2026 05:48:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=dtQkqY0BEe7Q5tkYkkfBKug2zjaKtFLj1fgLjjIhpTE=; b=I+dgVNmoG0pjhO
-	RmtjE07MYN2p31Z9b3hPGcU5Rz3p3vN/ntUPo0cTHZWoGizm6fo+d9cZ+WKlpiVueeYUBZmOzwMUz
-	gjyCHpjinhPZ4Vg01sa6oWhVIqkeChBj4D/xJwakMxFdfM+OkIol76EBp2Lfzzc+GU9dNyDBHbqFG
-	sDyUeDKABxF4scL7VsRxvgAO9o4sx2Co6U00u9Sz8Uptc+BCQBfTJB17Sa2FpgopDwXEEpT4BCqbY
-	RxWh3uSzbwaP1UL3Jq59hbMwSMojpYuaDs+WDvRjH/m/jLkXsth/KRTWNWl4ubZtCdqpFLIABfVGn
-	nqZ/1BkfW1Ho2hC4Vchw==;
+	List-Owner; bh=Dng8AKp1DqczeBkIw+SdsrQxY9fD9+UzLr0XetIGq8w=; b=VX8V7kMLjJpmCZ
+	v4qMI52P/wzhcpt5Z1y6UBKP1TpMlB/lA9BVHmpUDfD+TmtokcfJVNrwZe1F8PVj57AQib+jcUUZd
+	o3M7mV5KfnL76ok3d842cH0XvgcTMDJiXntdKBikV+AS7jEOnRHnDfYuqaqRtMxicYLpPbdpQcZXj
+	lZG0Z8mrpn5GU4Csex8krP3tTVw4o9FRzOpmp0jdYxWT/0UM+hqvXduSxWbqLMuqtxkPMKdpbGzdM
+	0vc5JNAgu9VFl3OOPr1nLIVbhyoYSwUlyZFo9Gv5cc/iizZPr8B/YBruT+ZGFDlDf0Od+44LQUN5k
+	hH80r/ctG7zGFauWf61w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wUZFF-0000000Dz9Z-2npR;
-	Wed, 03 Jun 2026 00:14:05 +0000
-Received: from smtp2.infineon.com ([2a00:18f0:1e00:4::4])
+	id 1wUeTF-0000000EJFb-2hGB;
+	Wed, 03 Jun 2026 05:48:53 +0000
+Received: from mail-wm1-x329.google.com ([2a00:1450:4864:20::329])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wUZFD-0000000Dz8e-13Cx
+	id 1wUeTC-0000000EJFF-2xt2
 	for linux-mtd@lists.infradead.org;
-	Wed, 03 Jun 2026 00:14:04 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=infineon.com; i=@infineon.com; q=dns/txt; s=IFXMAIL;
-  t=1780445643; x=1811981643;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=wKv/uP+DH0U5XirB5yo9ezmZw3vr6Vr1rbJY5ew+/cM=;
-  b=j6Jpk0aS3/oN8Q1dzEpWzgMK8tYoXqLAQamG923p0idPxWSxJGYdZ8lW
-   R9OzX3TQCmJ05cw2lclPZIiGCDDp1BdNVRhQkEGO8ny5wqmnGAGV6sBJd
-   NeiyGjQBe4ZVJkqi8Yk0aT2PHNyt+jD4zzsw5Q8zta2bwheML7/C7lkEF
-   w=;
-X-CSE-ConnectionGUID: fc3L/NW+Rp2ggLGaKCtUnQ==
-X-CSE-MsgGUID: 75I89awSSQy6qaCT/S9DhA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11805"; a="160461448"
-X-IronPort-AV: E=Sophos;i="6.24,184,1774306800"; 
-   d="scan'208";a="160461448"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO MUCSE819.infineon.com) ([172.23.29.45])
-  by smtp2.infineon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2026 02:13:59 +0200
-Received: from MUCSE815.infineon.com (172.23.29.41) by MUCSE819.infineon.com
- (172.23.29.45) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.37; Wed, 3 Jun
- 2026 02:13:58 +0200
-Received: from MUCSE815.infineon.com ([fe80::ed10:a720:3031:ca14]) by
- MUCSE815.infineon.com ([fe80::ed10:a720:3031:ca14%12]) with mapi id
- 15.02.2562.037; Wed, 3 Jun 2026 02:13:58 +0200
-From: <Takahiro.Kuwano@infineon.com>
-To: <miquel.raynal@bootlin.com>, <mwalle@kernel.org>
-CC: <pratyush@kernel.org>, <richard@nod.at>, <vigneshr@ti.com>,
-	<tudor.ambarus@linaro.org>, <linux-mtd@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: RE: [RFC PATCH 0/3] mtd: spi-nor: Rework flash parameter
- initialization
-Thread-Topic: [RFC PATCH 0/3] mtd: spi-nor: Rework flash parameter
- initialization
-Thread-Index: AQHc8cXTO5f/tOgcMEyxMymmbryaJrYrCr5PgADpbEA=
-Date: Wed, 3 Jun 2026 00:13:58 +0000
-Message-ID: <c8f082b6deb4483b9a6a5f54ac549d62@infineon.com>
-References: <20260601125438.3481722-1-mwalle@kernel.org>
- <87tsrlmf7g.fsf@bootlin.com>
-In-Reply-To: <87tsrlmf7g.fsf@bootlin.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.161.6.196]
+	Wed, 03 Jun 2026 05:48:52 +0000
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-4903997fcb5so123450425e9.2
+        for <linux-mtd@lists.infradead.org>; Tue, 02 Jun 2026 22:48:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1780465728; x=1781070528; darn=lists.infradead.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=pzDenIalDMAuiWeAwmJnmzeE6FqdHQUL/2zLEDLjuGk=;
+        b=GTEQX6zEdragslP2VnpAbtUkQICkHWU+HZbOWaU1FjwdKge+WbgCpdHsI3IPkBVDFf
+         m7g4HvEmvxsMfW3DvYLyBOxSQ7XHFqiDVTYYeQXNnfgL7NFO6fFayvkYjNhiNGKBwdQ+
+         xgSpAt+KlN4oEPUOfwh/84TurB+jI2QUttKj23AXCiLxmE4OZ3uzTFhOzK3XdwBocu1x
+         qb6XDcPYhDSDAFRZeucq1WUYIDHLfGyXlp0tqWm8F1g4DDhjN4+Bgc0uvzoxKELb5cRz
+         rBN8dHlcZd2KNaxq7G8+woWTuiOLNkEMKsmNz11fj4GfeqMY1HU4jr2MbO0CKKNYR5Je
+         6g0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1780465728; x=1781070528;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pzDenIalDMAuiWeAwmJnmzeE6FqdHQUL/2zLEDLjuGk=;
+        b=s6ASDvqjPVUMK2b/UHoWSSd3R/bIraJvHySRdyjq1kl7kOEAGEG+uro93MwQkY0KXn
+         r+CTJCFIrqzEWWEcKtBdTuhuVRdZibLEuu9x1JYFAHaEBWX/MftKRsCpffo1w2ZW+hOW
+         HM9Y9psVRzn7udJ1HRLYkFgYnYuGEjsJ0YEHYCETETCYbkM19FgpJba5fS+O5PAHYi40
+         qd+gbC+a7hSWCKRWphuHIQeW2PyHaBW3S4O5ummRjkVitjOtKiG2vgAVbI5PicLxgFKR
+         fXX6hkUrtqxCKxjeHzNg9cSEK2MjuCW+djMiJ4IFMUp7vNT2l+ynj9E3B3R+ACGxrRPT
+         iyKQ==
+X-Forwarded-Encrypted: i=1; AFNElJ++wVvjdylGddECW92XEW0Og+ppqGuNqjd8QzD9mJ9kDLbwIAU8Yriv4eNXFVIUOcU2SxZ8BHdRYYI=@lists.infradead.org
+X-Gm-Message-State: AOJu0YxJFcdGGbrywGscPK3nWTbIVo2dtMyjTSKJ0wsbo7vdEVn0OMLM
+	MUCyAq/ZfiAxmjNmMEH5kOsGUu2BBNTYLdYV8j2FW40RfoDthDrry82a
+X-Gm-Gg: Acq92OHtZX1GYfEFOXOA65aJc1LZulvOTDeWGGiC1k41XnMm+xaQ5uQfuIQWLVoCJSu
+	jqT9ztoAp4QB+9ebqqDdNd9TjsZcZT2JXkLMvRvdf+IWBcfC8kD4QCoIBxCdt+02kvXokVqL/FF
+	y9kA6RADYP9qsKSIjSU3knfmvAbrHTx9Aqu1Wj0QSUVx9DSiZxinu+VyzQ6hmERa3BqOqMw//Qw
+	6fQJdyI9YHJrAxZXlWcZ4fv2x52Kj6CEjcNqIk8NRcmupQkhds10TSCbF5TYBMPbIVo6X1g3MM0
+	mzYzf2MkZkLHksYYcugSdFMWvVmQgy58CF5DXErWhYKmU3Pyb25573zM7VNwuHdmabopO48tgZ5
+	klgtnszaZjmYn5ZlpF9Rl6n9+ZgWQI3bQqr+91ACNPm1Rs4SuGukQd3U1BzPjn3CfsDHll5SGnB
+	sXDC+rqoX351XGx2UfFz+uuLcR88LeFY8P+ZnuIADCaRpzuZeh/Vg=
+X-Received: by 2002:a05:600c:698c:b0:48e:6db3:ff33 with SMTP id 5b1f17b1804b1-490b5d41d43mr30103945e9.14.1780465728174;
+        Tue, 02 Jun 2026 22:48:48 -0700 (PDT)
+Received: from localhost ([2a02:a03f:b7dc:2b00:a97a:8551:7733:cb60])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4601f35eae5sm4752182f8f.33.2026.06.02.22.48.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Jun 2026 22:48:47 -0700 (PDT)
+Date: Wed, 3 Jun 2026 07:48:47 +0200
+From: Olivier Sobrie <olivier@sobrie.be>
+To: "Miquel Raynal (DAVE)" <miquel.raynal@bootlin.com>
+Cc: Michal Simek <michal.simek@amd.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Andrea Scian <andrea.scian@dave.eu>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] mtd: rawnand: pl353: Update timings at the right
+ moment
+Message-ID: <ah_AP9Sx9R1i5Q2x@padoso>
+References: <20260529-dave-upstream-nand-fixes-v1-0-8c72aa23aee2@bootlin.com>
+ <20260529-dave-upstream-nand-fixes-v1-1-8c72aa23aee2@bootlin.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20260529-dave-upstream-nand-fixes-v1-1-8c72aa23aee2@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260602_171403_617366_4290A0CF 
-X-CRM114-Status: GOOD (  22.77  )
+X-CRM114-CacheID: sfid-20260602_224850_781936_CC6AD9A0 
+X-CRM114-Status: GOOD (  27.23  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,43 +101,80 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
+Hello Miquel,
 
-> Hi Michael,
-> 
-> On 01/06/2026 at 14:52:42 +02, Michael Walle <mwalle@kernel.org> wrote:
-> 
-> > Try to simplify the flash initialization and get rid of the legacy
-> > handling. As default, all the flags of the in-kernel database are
-> > taken and amended with the SFDP data.
-> >
-> > This might have the consequence that all the flashes now get a
-> > RDSFPD opcode which might be an unknown opcode. But that was already
-> > the case for any flashes which were unknown to the linux kernel. So
-> > far, there was not a single complaint.
-> >
-> > See patch 3 for more information. If feedback is positive, this is
-> > intended to be applied to the spi-nor tree after the next merge
-> > window, so it will sit around in -next for quite some time and get
-> > some testing.
-> >
-> > That being said, I've just did a quick test on my boards. Please
-> > give it a test on your boards.
-> 
-> Interesting cleanup, thanks for pushing it. I'll run some tests with
-> some old and newer SFDP based flashes. I do not have chips without SFDP
-> though.
-> 
-I do have some non-SFDP chips (S25FL-S). Will get back to you with test
-result.
+On Fri, May 29, 2026 at 06:29:56PM +0200, Miquel Raynal (DAVE) wrote:
+> If several CE are wired, we would write the registers for every chip one
+> after the other, and reselect the correct timings for the first chip the
+> use wants to use after probe. This is not exactly efficient and could
+> slightly be improved since we already have a helper that applies the
+> configuration if there is a chip change. Instead of programming the
+> registers in ->setup_interface(), let's just drop the pointer to the
+> chip and let the nand_select_target() helper do its magic.
+> =
+
+> Cc: Olivier Sobrie <olivier@sobrie.be>
+> Signed-off-by: Miquel Raynal (DAVE) <miquel.raynal@bootlin.com>
+> ---
+> Olivier,
+> =
+
+> This is an enhancement to your previous patch which already
+> works. Can you please tell me if that change is okay for you?
+
+Yes it looks good.
+I tested the patch on one of my boards, it works as expected.
+
+Acked-by: Olivier Sobrie <olivier@sobrie.be>
+Tested-by: Olivier Sobrie <olivier@sobrie.be>
 
 Thanks,
-Takahiro
+
+Olivier
+
+> =
+
+> Thanks,
+> Miqu=E8l
+> ---
+>  drivers/mtd/nand/raw/pl35x-nand-controller.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+> =
+
+> diff --git a/drivers/mtd/nand/raw/pl35x-nand-controller.c b/drivers/mtd/n=
+and/raw/pl35x-nand-controller.c
+> index f2c65eb7a8d9..986019b42153 100644
+> --- a/drivers/mtd/nand/raw/pl35x-nand-controller.c
+> +++ b/drivers/mtd/nand/raw/pl35x-nand-controller.c
+> @@ -862,8 +862,11 @@ static int pl35x_nfc_setup_interface(struct nand_chi=
+p *chip, int cs,
+>  			  PL35X_SMC_NAND_TAR_CYCLES(tmgs.t_ar) |
+>  			  PL35X_SMC_NAND_TRR_CYCLES(tmgs.t_rr);
+>  =
+
+> -	writel(plnand->timings, nfc->conf_regs + PL35X_SMC_CYCLES);
+> -	pl35x_smc_update_regs(nfc);
+> +	/*
+> +	 * Reset nfc->selected_chip so the next command will cause the timing
+> +	 * registers to be updated in ->*_select_target().
+> +	 */
+> +	nfc->selected_chip =3D NULL;
+>  =
+
+>  	return 0;
+>  }
+> =
+
+> -- =
+
+> 2.53.0
+> =
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
