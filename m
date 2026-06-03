@@ -4,69 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A14CCD6E57
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Jun 2026 16:07:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52CE0CD6E55
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Jun 2026 16:29:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=S/ltsgr/aHerSdc2sop/Bv+cqCMu2IFvzIdaPgiJgMk=; b=FHqcqmyvk6rlV55iXxvV3JN8dK
-	Vz4JPGoeo8qp2uFBVN0+/HUu6lyeYxd+mCR2AFNW3cQAHo71vaa6uzUwE4m+oEaHVlPvLguo5skBM
-	eB5KgjfyfumkE36TXXuc8qtiE84azS01hDw7S26S2g/eiXAsGUXvXV6Am5t3ISWBe94ow2o9g6Hzp
-	TUd6p2dlXo7iYH3mHbxOnrw0PZeaotpGZr9WM1dtFFkM/8F+nrx0GUigkdrzjdTldvcHE5lFFsy6L
-	AqCZm5SOYcY40GVfKrDmPl8RPC7gG0IqbDQCwJrNK8uFramUkK3YMpZWO42XYPUiFX6NOp0soRXSf
-	Jeiee6GA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=4B6CPw3rCyMkYx56bnVV5wLzobuD58nSAkU3hTeL76w=; b=OvWsOV/PXoDn80
+	TaJNM7VlHKgU9GqndSTDlKBlnfSYAtAJpst/WWgIQGa+b45vIa8R0lfMSB+UNP4k1JKxiU81LNAzH
+	pE1FpX+KbZDejwWzhmZ/JTwEmwbTpVmI6MHoE++K2uQIPMhy8XbYOvFIF0D2I17RH9i8hPid18zSv
+	bNdRMz3sg0jxEHSZvFSih66uCRbTYrOLBLDgx4N/y3Klt3wt+hsJ5G61iwxxymigFw3Mmd2aU1wca
+	GOxjPCnSArtStf/dLAslzkFr8wgZ4NuzAfggEZZZHND5m6KQ3K0JDX/mWnlcA0DMlwLPN1wZBByuj
+	TLABr6RkoK9nZSQ7YVng==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wUo7t-0000000FUGw-43B7;
-	Wed, 03 Jun 2026 16:07:29 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1wUoTL-0000000FWQr-3ICU;
+	Wed, 03 Jun 2026 16:29:39 +0000
+Received: from smtpout-02.galae.net ([185.246.84.56])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wUo7r-0000000FUGS-3DnT
+	id 1wUoTH-0000000FWQK-2gAl
 	for linux-mtd@lists.infradead.org;
-	Wed, 03 Jun 2026 16:07:28 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 035D14167B;
-	Wed,  3 Jun 2026 16:07:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 964A81F00893;
-	Wed,  3 Jun 2026 16:07:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1780502846;
-	bh=4DcE3gdg2zZx4lddjSrV/qCrZ+duToKva+T9bA0+opQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=XzcwUY6hOFK7yIkrn0LZIMQD3zb+4dRS2+e6jrsGkybCCbdk2Z1Sa4GpSNGVP8m2I
-	 R5sMMGyzSggulE3CYbjsmaeCAq3BoNzwy/ydL/TIdYWOWhKxjwBvWXqzZFpPlrYMb0
-	 ZnIiauKyY8o25Bk5pVkIvPbOqhAj25/VMLY/arDAFX1srPFeIaFJvcwQydW0Rtt7Pp
-	 618etvKuJwRj4dtzGwJY0Brhy4q9hA+0y86M6Sq3Wmv4TNzKcKuDRCqCYmLGbcXtQC
-	 uHSTXp7RxLa+bc91uQYWOtKZknSb1WUwhYXG2O3yUVApF0mTRb9hxsqzjf8zsELMJb
-	 9NOk/d3RtSk2A==
-Date: Wed, 3 Jun 2026 17:07:21 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Santhosh Kumar K <s-k6@ti.com>, broonie@kernel.org, robh@kernel.org,
-	krzk+dt@kernel.org, conor+dt@kernel.org, richard@nod.at,
-	vigneshr@ti.com, pratyush@kernel.org, mwalle@kernel.org,
-	takahiro.kuwano@infineon.com, linux-spi@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org, praneeth@ti.com, u-kumar1@ti.com,
-	a-dutta@ti.com
+	Wed, 03 Jun 2026 16:29:38 +0000
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-02.galae.net (Postfix) with ESMTPS id 28BDE1A0119;
+	Wed,  3 Jun 2026 16:29:33 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id E53485FA0A;
+	Wed,  3 Jun 2026 16:29:32 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id B54DB10888CCF;
+	Wed,  3 Jun 2026 18:29:28 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1780504172; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=evJt7jmzVDi65ASf5TV7iH2Zz3iluscmSfjgvIWeKvo=;
+	b=j0+LeAkK88BbWrccUSUayANR5ESpZBgsiz/KRZIKU/qnUFp7VrLXTMIRxvkSG8haI5oJPp
+	+FiKfGoDdHHpQ5rWPYhHIObzT7sLN+ghTk3GGk5YD1GxgddcjdX8LNk6XR3jIklJMxrz++
+	sO3TPVXrKTsAlRZBcngPPo/HwdisCGHSCyxebtrWqhjY0O8gDQMB5fgzdNjQzmJOeRpHUB
+	Abfq6u9XCz+NxpxkAI7mmWw9yalVcEk06S1VssIK2Q3FqJUN9B1ixeiv5UroML0g41TYQP
+	yQTCHj4GUrRzmsxkQQM1BX+MATmUP5PmvN7ObRmh+PJe6F2wn5NKd9Ed0C+QSQ==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Conor Dooley <conor@kernel.org>
+Cc: Santhosh Kumar K <s-k6@ti.com>,  broonie@kernel.org,  robh@kernel.org,
+  krzk+dt@kernel.org,  conor+dt@kernel.org,  richard@nod.at,
+  vigneshr@ti.com,  pratyush@kernel.org,  mwalle@kernel.org,
+  takahiro.kuwano@infineon.com,  linux-spi@vger.kernel.org,
+  devicetree@vger.kernel.org,  linux-kernel@vger.kernel.org,
+  linux-mtd@lists.infradead.org,  praneeth@ti.com,  u-kumar1@ti.com,
+  a-dutta@ti.com
 Subject: Re: [PATCH v3 01/13] spi: dt-bindings: allow spi-max-frequency to
  specify a frequency pair
-Message-ID: <20260603-neatly-twine-e89b923f5cb6@spud>
+In-Reply-To: <20260603-neatly-twine-e89b923f5cb6@spud> (Conor Dooley's message
+	of "Wed, 3 Jun 2026 17:07:21 +0100")
 References: <20260527175527.2247679-1-s-k6@ti.com>
- <20260527175527.2247679-2-s-k6@ti.com>
- <20260528-clergyman-kindling-20971775ba78@spud>
- <eaa75113-2b89-468d-aca8-932bc7e33a7d@ti.com>
- <87cxy92llq.fsf@bootlin.com>
- <20260602-aptly-bunkbed-1bd3a8d63d54@spud>
- <875x3zzkji.fsf@bootlin.com>
+	<20260527175527.2247679-2-s-k6@ti.com>
+	<20260528-clergyman-kindling-20971775ba78@spud>
+	<eaa75113-2b89-468d-aca8-932bc7e33a7d@ti.com>
+	<87cxy92llq.fsf@bootlin.com>
+	<20260602-aptly-bunkbed-1bd3a8d63d54@spud>
+	<875x3zzkji.fsf@bootlin.com> <20260603-neatly-twine-e89b923f5cb6@spud>
+User-Agent: mu4e 1.12.7; emacs 30.2
+Date: Wed, 03 Jun 2026 18:29:27 +0200
+Message-ID: <87o6hry4d4.fsf@bootlin.com>
 MIME-Version: 1.0
-In-Reply-To: <875x3zzkji.fsf@bootlin.com>
+X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260603_090727_852480_86DFF029 
-X-CRM114-Status: GOOD (  33.86  )
+X-CRM114-CacheID: sfid-20260603_092935_810372_FD300AB6 
+X-CRM114-Status: GOOD (  16.56  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,110 +83,38 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6405874866010413017=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
---===============6405874866010413017==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="s1EwmNtQnf9Fscw6"
-Content-Disposition: inline
-
-
---s1EwmNtQnf9Fscw6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Jun 03, 2026 at 05:54:41PM +0200, Miquel Raynal wrote:
-> Hi Conor,
->=20
-> On 02/06/2026 at 17:18:15 +01, Conor Dooley <conor@kernel.org> wrote:
->=20
-> > On Tue, Jun 02, 2026 at 02:05:53PM +0200, Miquel Raynal wrote:
-> >> Hello Conor, Santhosh,
-> >>=20
-> >> >> I also don't get the point of this property, why can't you just set
-> >> >> the
-> >> >> max that the device can do and if the controller can configure itse=
-lf to
-> >> >> be fast enough it will do so, and if it can't then it'll pick whate=
-ver
-> >> >> the fastest it can actually do instead?
-> >>=20
-> >> If I may, this is not doable because there is always a phase at low
-> >> speed. By low speed, I mean the speed which allows reliable data
-> >> transfers between the host and the device. This "maximum low" speed is
-> >> non discoverable, it is necessary to describe it. As of today, it is
-> >> widely used (and I believe for good reasons) and covers 99.99% of the
-> >> use cases.
-> >>=20
-> >> >> Seems like you're abusing a peripheral property to encode informati=
-on
-> >> >> about the controller.
-> >> >
-> >> > The controller-side approach you mentioned is similar to what I had =
-in
-> >> > v2, where a compatible-specific base_freq is used for non-PHY ops.
-> >> >
-> >> > Miquel,
-> >> >
-> >> > I think we should revert to the v2 approach.
-> >> >
-> >> > The non-PHY frequency is a controller limitation/capability rather t=
-han
-> >> > a flash characteristic, so it seems more appropriate to keep it in t=
-he
-> >> > controller driver as Conor suggested.
-> >>=20
-> >> The non tuned frequency is the maximum frequency one could use
-> >> reliably. It is not controller specific. It is mostly board specific,
-> >> and to some extend may also be chip specific.
-> >>=20
-> >> The tuned frequency is the maximum frequency one could use reliably
-> >> after line a controller or chip specific training procedure. It is
-> >> also the result of an aggregated set of non discoverable hardware
-> >> limitations:
-> >> - board routing
-> >> - chip capability
-> >> - controller capability
-> >
-> > Right, and this I guess is what scuppers letting the controller driver
-> > sort the configuration out itself and leaving the property as-is.
-> > It could be that the speed in spi-max-frequency is lower than the "base
-> > speed" of the controller but because of board routing or device
-> > capability that the tuned mode is still required, right?
->=20
-> I do not actually expect any tuned mode/frequency to be mandatory.
-
-I think you misunderstood my use of "required", I meant that the new
-property/information was needed in the scenario I described, not that it
-should be a required property in a binding.
-
---s1EwmNtQnf9Fscw6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCaiBROQAKCRB4tDGHoIJi
-0j5OAQCWb0zo1IHNOKEyAsgZCqvYqoIIDdppeJHQXnA34qJKgwD+LjAZKbifRJpB
-IlxAJqU+VfU6Udqf4CwOEBPWL7ulWAY=
-=iGpw
------END PGP SIGNATURE-----
-
---s1EwmNtQnf9Fscw6--
-
-
---===============6405874866010413017==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============6405874866010413017==--
-
+Cj4+ID4+ID4gVGhlIG5vbi1QSFkgZnJlcXVlbmN5IGlzIGEgY29udHJvbGxlciBsaW1pdGF0aW9u
+L2NhcGFiaWxpdHkgcmF0aGVyIHRoYW4KPj4gPj4gPiBhIGZsYXNoIGNoYXJhY3RlcmlzdGljLCBz
+byBpdCBzZWVtcyBtb3JlIGFwcHJvcHJpYXRlIHRvIGtlZXAgaXQgaW4gdGhlCj4+ID4+ID4gY29u
+dHJvbGxlciBkcml2ZXIgYXMgQ29ub3Igc3VnZ2VzdGVkLgo+PiA+PiAKPj4gPj4gVGhlIG5vbiB0
+dW5lZCBmcmVxdWVuY3kgaXMgdGhlIG1heGltdW0gZnJlcXVlbmN5IG9uZSBjb3VsZCB1c2UKPj4g
+Pj4gcmVsaWFibHkuIEl0IGlzIG5vdCBjb250cm9sbGVyIHNwZWNpZmljLiBJdCBpcyBtb3N0bHkg
+Ym9hcmQgc3BlY2lmaWMsCj4+ID4+IGFuZCB0byBzb21lIGV4dGVuZCBtYXkgYWxzbyBiZSBjaGlw
+IHNwZWNpZmljLgo+PiA+PiAKPj4gPj4gVGhlIHR1bmVkIGZyZXF1ZW5jeSBpcyB0aGUgbWF4aW11
+bSBmcmVxdWVuY3kgb25lIGNvdWxkIHVzZSByZWxpYWJseQo+PiA+PiBhZnRlciBsaW5lIGEgY29u
+dHJvbGxlciBvciBjaGlwIHNwZWNpZmljIHRyYWluaW5nIHByb2NlZHVyZS4gSXQgaXMKPj4gPj4g
+YWxzbyB0aGUgcmVzdWx0IG9mIGFuIGFnZ3JlZ2F0ZWQgc2V0IG9mIG5vbiBkaXNjb3ZlcmFibGUg
+aGFyZHdhcmUKPj4gPj4gbGltaXRhdGlvbnM6Cj4+ID4+IC0gYm9hcmQgcm91dGluZwo+PiA+PiAt
+IGNoaXAgY2FwYWJpbGl0eQo+PiA+PiAtIGNvbnRyb2xsZXIgY2FwYWJpbGl0eQo+PiA+Cj4+ID4g
+UmlnaHQsIGFuZCB0aGlzIEkgZ3Vlc3MgaXMgd2hhdCBzY3VwcGVycyBsZXR0aW5nIHRoZSBjb250
+cm9sbGVyIGRyaXZlcgo+PiA+IHNvcnQgdGhlIGNvbmZpZ3VyYXRpb24gb3V0IGl0c2VsZiBhbmQg
+bGVhdmluZyB0aGUgcHJvcGVydHkgYXMtaXMuCj4+ID4gSXQgY291bGQgYmUgdGhhdCB0aGUgc3Bl
+ZWQgaW4gc3BpLW1heC1mcmVxdWVuY3kgaXMgbG93ZXIgdGhhbiB0aGUgImJhc2UKPj4gPiBzcGVl
+ZCIgb2YgdGhlIGNvbnRyb2xsZXIgYnV0IGJlY2F1c2Ugb2YgYm9hcmQgcm91dGluZyBvciBkZXZp
+Y2UKPj4gPiBjYXBhYmlsaXR5IHRoYXQgdGhlIHR1bmVkIG1vZGUgaXMgc3RpbGwgcmVxdWlyZWQs
+IHJpZ2h0Pwo+PiAKPj4gSSBkbyBub3QgYWN0dWFsbHkgZXhwZWN0IGFueSB0dW5lZCBtb2RlL2Zy
+ZXF1ZW5jeSB0byBiZSBtYW5kYXRvcnkuCj4KPiBJIHRoaW5rIHlvdSBtaXN1bmRlcnN0b29kIG15
+IHVzZSBvZiAicmVxdWlyZWQiLCBJIG1lYW50IHRoYXQgdGhlIG5ldwo+IHByb3BlcnR5L2luZm9y
+bWF0aW9uIHdhcyBuZWVkZWQgaW4gdGhlIHNjZW5hcmlvIEkgZGVzY3JpYmVkLCBub3QgdGhhdCBp
+dAo+IHNob3VsZCBiZSBhIHJlcXVpcmVkIHByb3BlcnR5IGluIGEgYmluZGluZy4KClllcyBJIG1p
+c3VuZGVyc3Rvb2QgdGhlIHRlcm0gaW5kZWVkLiBIb3dldmVyIEkgc3RpbGwgZmFpbCB0byBjYXRj
+aCB3aGF0CnlvdSBtZWFudCBoZXJlLCBJJ20gc29ycnkuIFdvdWxkIHlvdSBtaW5kIHJlcGhyYXNp
+bmc/CgpKdXN0IHRvIGNsYXJpZnksIHR1bmVkIG1vZGVzIGFyZSBvbmx5IGJvbnVzZXMuCgpNaXF1
+w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRl
+YWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
