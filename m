@@ -4,69 +4,129 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76493CD6E4A
-	for <linux-mtd@archiver.kernel.org>; Thu,  4 Jun 2026 08:37:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2724DCD6E4A
+	for <linux-mtd@archiver.kernel.org>; Thu,  4 Jun 2026 12:02:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=mpBiruYSLkcEqgZoytKJT+EmOqyA8RpgToVqphVdjnM=; b=n4aWkmaE0BRDg8EJNys6jY9+wZ
-	LiCT8HGJw1U+dH/bauQVrpIXMKrWgJtl1+nkWQMoFGMwVEcnX7ifq+1qecBiS/kN0ool+gwau1LqW
-	CYkdeW5JFXGRf1xVNIv5c0+tdZ1OjN7jYTSaqD1aJalczY5qUpjET2TN5TbxpbfPCZe3Um2cQQxnv
-	+3FmvSu88YWwKgakENThQ2k5mAdcjvrxGZ3PtsK5PEjM9Qsy6qz+jPGZhci0IxHxTIptYUxeK0/js
-	ZdztS19RvBoMVyptB3zZfRXJIOVkRi2c2M9vkvLEqvlpBIMy3mYJNvTpcLxEabF7LnlKCs0iGx4nO
-	Dg6BgVAQ==;
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=TGNKGbWrly1BNNY5Qata9DtMM+px1+L3KceoBYJDMcU=; b=a+PimX2pgdehQT
+	OAOjZz391UjkeHPBKfLFcVRMJftTLDj5WmihID+P1/R1yS+usj0Q2I+yA7ZbZebecFphGOahC0Efm
+	cYcvj4Y0+Zcv7UDneCkeVtf3Rp0k4OqydV1hDCDE8bi6iouBEEAAoNLzAmwlBMlatu0SQDdQBjyhl
+	we3vLJHFJy3X1FLUeOkWOmCTL7n9cbM7vqjm8asld1BO1a9N8LLxQ0odAagMljWRW3qOb8R+zcrXy
+	ZTjBnCfLFvQIKR8jwUzD+1xgpSIF4m7wMIlA+M75zVz/uIrC/aVxGphFpc5KeY8eFWvWIxSiYrJjP
+	4szWyhkNfbji+tI0Guvw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wV3ZR-0000000GNku-2w4z;
-	Thu, 04 Jun 2026 08:36:57 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1wV6mK-0000000GgqQ-39Fy;
+	Thu, 04 Jun 2026 12:02:28 +0000
+Received: from mail-westcentralusazon11013040.outbound.protection.outlook.com ([40.93.201.40] helo=CY3PR05CU001.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wV3ZQ-0000000GNko-1fRW
+	id 1wV6mH-0000000Ggpx-0LUa
 	for linux-mtd@lists.infradead.org;
-	Thu, 04 Jun 2026 08:36:56 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 76DE26014B;
-	Thu,  4 Jun 2026 08:36:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF7AB1F00893;
-	Thu,  4 Jun 2026 08:36:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1780562215;
-	bh=+KBwoOcDHJ/gKB5QNN8WBfHE175dP+I++e/xL05rNAk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=JFP86ilLCCHzhJlqAKq/rUnRl1SFMEP5JZc+9kfbd0g5Yyrj19XwaIgaXEo4lNSon
-	 KEC0GHXJ66zJqXcab7/+19KIRifpwdxz/H/PLecO5y8ITPQBOJNf9F0lpc/TJ0xBrE
-	 2cQ9czqdmbN22/cC0Gtgt4ESBNsKcwak6Bp+huArDvhLcA76DrGPY82vjZy6ppj0qk
-	 MsKrXRNoMt7NYYudcD+4oV7ZtgZJF6JhPcUXduUHfIY6YtyDkIrp/Ezwgl86Uh0cgo
-	 R8ok/WBhqGzgaN6TcCvGv1Q+gc3IcyZCxPTmM5EUGKi8133ww+tf0JOvR3J39CUzY6
-	 5ylbvc9KAvvYw==
-Date: Thu, 4 Jun 2026 09:36:49 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Santhosh Kumar K <s-k6@ti.com>, broonie@kernel.org, robh@kernel.org,
-	krzk+dt@kernel.org, conor+dt@kernel.org, richard@nod.at,
-	vigneshr@ti.com, pratyush@kernel.org, mwalle@kernel.org,
-	takahiro.kuwano@infineon.com, linux-spi@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org, praneeth@ti.com, u-kumar1@ti.com,
-	a-dutta@ti.com
-Subject: Re: [PATCH v3 01/13] spi: dt-bindings: allow spi-max-frequency to
- specify a frequency pair
-Message-ID: <20260604-shrunk-acclaim-25368d7ad63e@spud>
-References: <20260527175527.2247679-2-s-k6@ti.com>
- <20260528-clergyman-kindling-20971775ba78@spud>
- <eaa75113-2b89-468d-aca8-932bc7e33a7d@ti.com>
- <87cxy92llq.fsf@bootlin.com>
- <20260602-aptly-bunkbed-1bd3a8d63d54@spud>
- <875x3zzkji.fsf@bootlin.com>
- <20260603-neatly-twine-e89b923f5cb6@spud>
- <87o6hry4d4.fsf@bootlin.com>
- <20260603-balance-encounter-94f69e1577f3@spud>
- <87ik7yydyv.fsf@bootlin.com>
+	Thu, 04 Jun 2026 12:02:26 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=YOD5qDLijEZECB70x3V+zN9udZuqcaEk0ocxZORT7BajId0sYpAkSXdLWkXeHpI6H6vyTLGLS09LlqkjXLZUjuJpViqN23AZGefM0srzLUk0y9cJacqtR2KtGXOwI6FXg5qJT2h/lDuj/qZwqPe5z9DKC+kgb1Rk8j7KRpPufwds4Km3QKJEnELkQi8iOGtlkWrCuLfwCfOytOHUoIwlEpIhW00ES2WEGoMKC8zzZcQl+K21D912wG3xnkeVpZA6CN75rzm/LE2F1Z1CkCJOOpEssEiua3OPANntHEiElqRq1Oi7E4wT2SkmNfpn0kfSQ78EnjYx9f+AMI50gPIpcw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=pvKVNSPvepuQwjyc5GfOAeS2pNUGXsZ5bz1FIHibBZA=;
+ b=QYLbyyU7/730BaPCT0hyWc+bW/NA8UtNx9sLz6G/u84uOAzWZCBc7+XVWp49oxy/cmHWgzotOlErRTblswkyz/imOKS07Dzlki2aYQ2jGV6AldCu3ER32GEGykzkxUoHWsmoqTAmYgLttAx4o5UlGpe9YZdOcLBuY4pKEStX9e+v5Xzxe3Hsyn10TAuNR+80VWZPToZ3z9zqvZYEq/4Qrm4s1wRetpXWJNGwMVLunOLuHRtmUN3cHHNKhxXd/TZZ29aEbYs9CW150THEAkcToCQeM/W17Uq4dOFGAjfdk3/UTJEVaTuSoXmKMNcuCdCWIAhhoLp7GaYXmrSV1t5G3Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 198.47.21.195) smtp.rcpttodomain=lists.infradead.org smtp.mailfrom=ti.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=ti.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pvKVNSPvepuQwjyc5GfOAeS2pNUGXsZ5bz1FIHibBZA=;
+ b=S/69wDWyg306qIQTVlo1hz0h+XstL1SCoyBHOqBbXh0C7SAmK25tVtNal005BErZr7H2tY7WLs9hsfI55pOzuqabSlTxWHD09lB85XsDssT+I2jbQA1D7gQyf9q+QF1wpmCaZDWpoQC4AaACqdv/06x/du24LMH4S/UlF40KOcQ=
+Received: from BYAPR21CA0003.namprd21.prod.outlook.com (2603:10b6:a03:114::13)
+ by DS0PR10MB6749.namprd10.prod.outlook.com (2603:10b6:8:11c::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.92.7; Thu, 4 Jun 2026
+ 12:02:17 +0000
+Received: from MWH0EPF000C6188.namprd02.prod.outlook.com
+ (2603:10b6:a03:114:cafe::4e) by BYAPR21CA0003.outlook.office365.com
+ (2603:10b6:a03:114::13) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.21.92.7 via Frontend Transport; Thu, 4
+ Jun 2026 12:02:15 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 198.47.21.195)
+ smtp.mailfrom=ti.com; dkim=none (message not signed) header.d=none;dmarc=pass
+ action=none header.from=ti.com;
+Received-SPF: Pass (protection.outlook.com: domain of ti.com designates
+ 198.47.21.195 as permitted sender) receiver=protection.outlook.com;
+ client-ip=198.47.21.195; helo=flwvzet201.ext.ti.com; pr=C
+Received: from flwvzet201.ext.ti.com (198.47.21.195) by
+ MWH0EPF000C6188.mail.protection.outlook.com (10.167.249.120) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.21.92.5 via Frontend Transport; Thu, 4 Jun 2026 12:02:14 +0000
+Received: from DFLE215.ent.ti.com (10.64.6.73) by flwvzet201.ext.ti.com
+ (10.248.192.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.37; Thu, 4 Jun
+ 2026 07:01:51 -0500
+Received: from DFLE211.ent.ti.com (10.64.6.69) by DFLE215.ent.ti.com
+ (10.64.6.73) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.37; Thu, 4 Jun
+ 2026 07:01:51 -0500
+Received: from lelvem-mr06.itg.ti.com (10.180.75.8) by DFLE211.ent.ti.com
+ (10.64.6.69) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.37 via Frontend
+ Transport; Thu, 4 Jun 2026 07:01:51 -0500
+Received: from [172.24.233.254] (santhoshkumark.dhcp.ti.com [172.24.233.254])
+	by lelvem-mr06.itg.ti.com (8.18.1/8.18.1) with ESMTP id 654C1kjA3321266;
+	Thu, 4 Jun 2026 07:01:46 -0500
+Message-ID: <bcf49d9b-0f95-44ca-bb74-61bef625be84@ti.com>
+Date: Thu, 4 Jun 2026 17:31:45 +0530
 MIME-Version: 1.0
-In-Reply-To: <87ik7yydyv.fsf@bootlin.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 02/13] spi: dt-bindings: cdns,qspi-nor: add PHY tuning
+ pattern partition property
+To: Krzysztof Kozlowski <krzk@kernel.org>, Miquel Raynal
+	<miquel.raynal@bootlin.com>
+CC: <broonie@kernel.org>, <robh@kernel.org>, <krzk+dt@kernel.org>,
+	<conor+dt@kernel.org>, <richard@nod.at>, <vigneshr@ti.com>,
+	<pratyush@kernel.org>, <mwalle@kernel.org>, <takahiro.kuwano@infineon.com>,
+	<linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+	<praneeth@ti.com>, <u-kumar1@ti.com>, <a-dutta@ti.com>, <s-k6@ti.com>
+References: <20260527175527.2247679-1-s-k6@ti.com>
+ <20260527175527.2247679-3-s-k6@ti.com>
+ <20260530-original-peccary-of-cubism-af68ed@quoll>
+ <2f091813-fa28-407f-892d-bbbbe3cac4e4@ti.com>
+ <063fe976-9a28-4670-90df-921fbc1c3a8c@kernel.org>
+ <20260601-stirring-tested-mayfly-e97c14@quoll>
+ <4a570d36-dda6-4f3d-9c16-d3e57ac55f1c@ti.com> <87mrxd15mm.fsf@bootlin.com>
+ <71045249-bd49-4a95-ba17-589cee255eda@kernel.org>
+Content-Language: en-US
+From: Santhosh Kumar K <s-k6@ti.com>
+In-Reply-To: <71045249-bd49-4a95-ba17-589cee255eda@kernel.org>
+X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MWH0EPF000C6188:EE_|DS0PR10MB6749:EE_
+X-MS-Office365-Filtering-Correlation-Id: 33d0dd58-f047-439c-32f6-08dec2311dd9
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|376014|36860700016|7416014|82310400026|56012099006|4143699003|5023799004|3023799007|22082099003|18002099003;
+X-Microsoft-Antispam-Message-Info: lpZO4PL8kxz4TABN2DfG2B9EQoI5ZrMvJuXa3YcY9lOl+b9xUPcACD1HvoK3u2ikUd4vyNne1qJlsrSRqBBo0dyonteyglFn6qB9/I4LRcaCS0GSeIVsN7aaswPEOwR6hPyoAS7B5RDrL0Mlpvk1zCYolvGdcMeqR4DeOOhMoW0zQGxbmQS6xk26hgHKHNY4uPxc9EIxv7Abio6b53eIWa7VOrKE7g+bb4H6l0YQCur5mcM6zXLJYRMhsLVe7g9xoHYq/zqT9geg+H8uDO+1ZPCuvwdMfsbH0qg92I0FXXo4DX8zgOehEJMuJyJ+hNAe7uYgaA1nSR7nb/HaIGo3RSRKExrankkR546yGTAjUn/ZSyNbdkiKlMTsofaJK/zXvpnP+qj6D8Eu4CoyhLWdAAbPuGwaCb4ZsJgCrDUINRncVCVM1c9qWohhMQMhZTlsKArMfNKIVe+dRB6lUyBXgiTj99hn5FDskNMLjWxIqwXIwmT+HfHOiPwKEbNcaYc2+KGZzx5ZTKNdj0jjj3ni3eFLMdqxaJ5QHkLoIL7Cze8WzZ/ooEX2Z64m7yuIUaxFdNDpLjPG9vR5dlLxRozwxto+5wDw314mGSzLlt77qK40DI0da0gYzK9dO6RhKFu/S9ISLbahDYvvX1QzsKesw1C8c52V5HHeSK4BHqht7czhWwraPIqV3EjuK8bPEcD4BINXzWDwLgNy/7dINj7gAxOiMra9Tkn+UUgjuJzs8WU=
+X-Forefront-Antispam-Report: CIP:198.47.21.195;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:flwvzet201.ext.ti.com;PTR:ErrorRetry;CAT:NONE;SFS:(13230040)(1800799024)(376014)(36860700016)(7416014)(82310400026)(56012099006)(4143699003)(5023799004)(3023799007)(22082099003)(18002099003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 0hfgEQZqgTpph9k2uP8NZecTdyCArJLRbrPzox1633eZZR3EYIXreUnXzfCloqyOwL9YAFYLdUZandUZPxftDtcf87JNn5H6bo86zap1vX8cU2SIYreYqwZWe4J53ozfKo8x6bkLYm6g71Kgb5gP8XfBj2YDjuTVjpwhasnfwMDksnUCMi1lICoLX6IuCmlqaBiL1ICakDC9s3xv48CQxfovrzV1IobNoxsiD8AOo93WDfYAvuFQwrCatBmJddqOhbnEve9imOnD4XSQbrB1oiY71vBftVQ94SGqGdhgFg6vNd/nbaUDoUjk00+2KBf/T8IYPBS/DDmNKewp2a8vmFmjFnJIUQKfoRrzHfh2R43BFInFnjXIaejXDnfXH5/YPZNqULvldYJtwXQunBf3F/4fQmuLDqexoPK/CQ09leCULRprGK2Jawso3l00h6GF
+X-OriginatorOrg: ti.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jun 2026 12:02:14.1843
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 33d0dd58-f047-439c-32f6-08dec2311dd9
+X-MS-Exchange-CrossTenant-Id: e5b49634-450b-4709-8abb-1e2b19b982b7
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=e5b49634-450b-4709-8abb-1e2b19b982b7;Ip=[198.47.21.195];Helo=[flwvzet201.ext.ti.com]
+X-MS-Exchange-CrossTenant-AuthSource: MWH0EPF000C6188.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR10MB6749
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260604_050225_246768_600C330B 
+X-CRM114-Status: GOOD (  14.33  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,93 +138,53 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8250705263567663788=="
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
---===============8250705263567663788==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="I/LOsxQxq90rgY8F"
-Content-Disposition: inline
 
+On 02/06/26 18:18, Krzysztof Kozlowski wrote:
+> On 02/06/2026 14:36, Miquel Raynal wrote:
+>> Hello,
+>>
+>>>>>>> I also have doubts that this is per-device property. Your commit msg
+>>>>>>> suggests it is per controller.
+>>>>>>
+>>>>>> This is a per-device property. It is consumed by the controller driver
+>>>>>> only to locate and retrieve the offset of the PHY pattern partition
+>>>>>
+>>>>> So with two devices on a bus, you need two separate partitions for tuning?
+>>>
+>>> Each SPI NOR flash device needs a partition to store PHY tuning
+>>> pattern.
+>>
+>> If I may try to explain a bit what is behind, the read tuning procedure
+>> is about reading data from the spi memory cache (some kind of internal
+>> SRAM) over and over again, while tuning the controller parameters until
+>> we get the best stability (the controller driver knows the pattern it
+>> must get). While SPI NAND chips have "write to cache" opcodes that could
+>> be used to load the pattern into the chip without any actual read from
+>> the memory array, this is not possible with SPI NOR devices which do not
+>> have such capability. Since we want to keep this training procedure
+>> memory agnostic (and also somewhat simple), we shall expect one pattern
+>> per memory.
+> 
+> Can pieces of above be captured in commit msg, so it will be clearer to
+> folks without domain knowledge?
 
---I/LOsxQxq90rgY8F
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Sure, I'll add a brief overview of the tuning procedure in the commit
+message in v4.
 
-On Thu, Jun 04, 2026 at 09:14:16AM +0200, Miquel Raynal wrote:
-> Hi Conor,
->=20
-> >> >> > Right, and this I guess is what scuppers letting the controller d=
-river
-> >> >> > sort the configuration out itself and leaving the property as-is.
-> >> >> > It could be that the speed in spi-max-frequency is lower than the=
- "base
-> >> >> > speed" of the controller but because of board routing or device
-> >> >> > capability that the tuned mode is still required, right?
-> >> >>=20
-> >> >> I do not actually expect any tuned mode/frequency to be mandatory.
-> >> >
-> >> > I think you misunderstood my use of "required", I meant that the new
-> >> > property/information was needed in the scenario I described, not tha=
-t it
-> >> > should be a required property in a binding.
-> >>=20
-> >> Yes I misunderstood the term indeed. However I still fail to catch what
-> >> you meant here, I'm sorry. Would you mind rephrasing?
-> >
-> > I was talking about a scenario where you want to use the tuned mode to
-> > achieve the maximum rate because of the device and/or board configurati=
-on,
-> > but the rate is below the point where the controller would need tuning.
-> > Say the controller needs tuning above 8 Hz but the conditions require
-> > tuning to achieve more than 5 Hz. In this example, if the device can do
-> > 6 Hz, spi-max-frequency (in the current form) would be set to 6 Hz, and
-> > the controller would not enable the tuned mode, leading to problems
-> > because the inflection point determined from the controller compatible
-> > of 8 Hz would not have been reached.
->=20
-> I don't think this is a real situation. If the "conditions", as you say
-> (ie. PCB routing, mostly) require tuning above 5, then spi-max-frequency
-> should be 5.
+Thanks,
+Santhosh.
 
-Then tuning mode would never be used. Remember, this is a theoretical world
-where spi-max-frequency would contain the tuned frequency and the
-controller was using compatible-specific speed thresholds to determine
-if tuning was required.
+> 
+> Best regards,
+> Krzysztof
 
-> It is the frequency that is reachable without any
-> tuning. Tuning is just a plus. If tuning fails, we fallback to the
-> regular "base" speed, which just works.
->=20
-> Thanks,
-> Miqu=E8l
-
---I/LOsxQxq90rgY8F
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCaiE5IQAKCRB4tDGHoIJi
-0vh1AP4hwOVyHbur7c1ahOyaxI1idZEZt+yStGb1CnSi+78HSAEA5OgLzntrwzuS
-46xL3MdoZvkkFkrRs+kEEXgrTZygVQU=
-=RuuS
------END PGP SIGNATURE-----
-
---I/LOsxQxq90rgY8F--
-
-
---===============8250705263567663788==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============8250705263567663788==--
-
