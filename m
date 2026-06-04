@@ -4,71 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DEABDCD6E4A
-	for <linux-mtd@archiver.kernel.org>; Thu,  4 Jun 2026 07:28:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76493CD6E4A
+	for <linux-mtd@archiver.kernel.org>; Thu,  4 Jun 2026 08:37:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=gEdGMc+jrd780pPtW0r2m3EzDS/hFKFXpTm7bKbXjT4=; b=vqdTsDBtc7trK+
-	kslnOaqYP6FJq7T/CTjHvhP5DbNr/M8Yykdjr2b+VlGa+qcFPGP8izoImSKkzGW8os4TD04X4msee
-	8A9qS2ugZRKeCxJ75x6i96SyG5ieL7NSiGWfZEgDvFYsAHDNVT/JvcEozEgZrOND9hfGVO7R44i2X
-	6YaKbIvj/Ynt7ASg6Qhyuts0Acld4G5u/6H7X1iB2/8lSNDLMcmFDPWUg9GCqmnvArLbgwcYJ9la+
-	uVMrLQiHPZrLMOLg1XGpO8Rxazqum9tVwLMtwXREjSnMIhaJDM0Rlv9h7ySDG+Vkc682G+k2i/ZFS
-	N8mafzgYfppxRM7h2ycA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=mpBiruYSLkcEqgZoytKJT+EmOqyA8RpgToVqphVdjnM=; b=n4aWkmaE0BRDg8EJNys6jY9+wZ
+	LiCT8HGJw1U+dH/bauQVrpIXMKrWgJtl1+nkWQMoFGMwVEcnX7ifq+1qecBiS/kN0ool+gwau1LqW
+	CYkdeW5JFXGRf1xVNIv5c0+tdZ1OjN7jYTSaqD1aJalczY5qUpjET2TN5TbxpbfPCZe3Um2cQQxnv
+	+3FmvSu88YWwKgakENThQ2k5mAdcjvrxGZ3PtsK5PEjM9Qsy6qz+jPGZhci0IxHxTIptYUxeK0/js
+	ZdztS19RvBoMVyptB3zZfRXJIOVkRi2c2M9vkvLEqvlpBIMy3mYJNvTpcLxEabF7LnlKCs0iGx4nO
+	Dg6BgVAQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wV2VL-0000000GJ1M-07pB;
-	Thu, 04 Jun 2026 07:28:39 +0000
-Received: from smtpout-03.galae.net ([185.246.85.4])
+	id 1wV3ZR-0000000GNku-2w4z;
+	Thu, 04 Jun 2026 08:36:57 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wV2VI-0000000GJ0p-3HkU
+	id 1wV3ZQ-0000000GNko-1fRW
 	for linux-mtd@lists.infradead.org;
-	Thu, 04 Jun 2026 07:28:38 +0000
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id 0CA894E40505;
-	Thu,  4 Jun 2026 07:28:35 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id D1AD45FEF7;
-	Thu,  4 Jun 2026 07:28:34 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 456D4106A1395;
-	Thu,  4 Jun 2026 09:28:30 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1780558113; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=N3FYJH0Na6n0IvoTQRLh82Jz6KolB+LqBxz9CxTQz94=;
-	b=dMdEvho48GdK6q0uOpDC6L/F42yGqD6zMP7d3/DWu1YG2xKyP41yvy8Ls25V2u26R+R6mw
-	Ll8krPj+hKwrsNoDpMuj6gqO1kVC+8FcKaFegFHR63i2FrG67i9r6U8z8dRxVmTqI13OQA
-	NX2h+kXu06x/b60IjPtlrP5XOA2ctB2D1VbJrrCyv+UqChU71mwngXqLITHqc0KydvPqmL
-	cbnLanbbpXYvPYaGr97h/TB2WNJjKlhWQgdfl1rKPz0RdVX3ZtPAm+UGv36GIz2XtI32oW
-	GfA4m28YL1V5ltQLEpS1UbcvdoPPjQ7phMVD5k/7mEnV5IG5CEJjfLEZJXDryg==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Rob Herring <robh@kernel.org>
-Cc: Santhosh Kumar K <s-k6@ti.com>,  broonie@kernel.org,
-  krzk+dt@kernel.org,  conor+dt@kernel.org,  richard@nod.at,
-  vigneshr@ti.com,  pratyush@kernel.org,  mwalle@kernel.org,
-  takahiro.kuwano@infineon.com,  linux-spi@vger.kernel.org,
-  devicetree@vger.kernel.org,  linux-kernel@vger.kernel.org,
-  linux-mtd@lists.infradead.org,  praneeth@ti.com,  u-kumar1@ti.com,
-  a-dutta@ti.com
-Subject: Re: [PATCH v3 02/13] spi: dt-bindings: cdns,qspi-nor: add PHY
- tuning pattern partition property
-In-Reply-To: <CAL_JsqJwxgcFOB=kE7bVQYDn740-w4RppMF5W-3Ne9=9qV9OrQ@mail.gmail.com>
-	(Rob Herring's message of "Wed, 3 Jun 2026 12:38:46 -0500")
-References: <20260527175527.2247679-1-s-k6@ti.com>
-	<20260527175527.2247679-3-s-k6@ti.com>
-	<20260602164945.GA475455-robh@kernel.org> <87zf1by5oc.fsf@bootlin.com>
-	<CAL_JsqJwxgcFOB=kE7bVQYDn740-w4RppMF5W-3Ne9=9qV9OrQ@mail.gmail.com>
-User-Agent: mu4e 1.12.7; emacs 30.2
-Date: Thu, 04 Jun 2026 09:28:29 +0200
-Message-ID: <87cxy6ydb6.fsf@bootlin.com>
+	Thu, 04 Jun 2026 08:36:56 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with ESMTP id 76DE26014B;
+	Thu,  4 Jun 2026 08:36:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF7AB1F00893;
+	Thu,  4 Jun 2026 08:36:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1780562215;
+	bh=+KBwoOcDHJ/gKB5QNN8WBfHE175dP+I++e/xL05rNAk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=JFP86ilLCCHzhJlqAKq/rUnRl1SFMEP5JZc+9kfbd0g5Yyrj19XwaIgaXEo4lNSon
+	 KEC0GHXJ66zJqXcab7/+19KIRifpwdxz/H/PLecO5y8ITPQBOJNf9F0lpc/TJ0xBrE
+	 2cQ9czqdmbN22/cC0Gtgt4ESBNsKcwak6Bp+huArDvhLcA76DrGPY82vjZy6ppj0qk
+	 MsKrXRNoMt7NYYudcD+4oV7ZtgZJF6JhPcUXduUHfIY6YtyDkIrp/Ezwgl86Uh0cgo
+	 R8ok/WBhqGzgaN6TcCvGv1Q+gc3IcyZCxPTmM5EUGKi8133ww+tf0JOvR3J39CUzY6
+	 5ylbvc9KAvvYw==
+Date: Thu, 4 Jun 2026 09:36:49 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Santhosh Kumar K <s-k6@ti.com>, broonie@kernel.org, robh@kernel.org,
+	krzk+dt@kernel.org, conor+dt@kernel.org, richard@nod.at,
+	vigneshr@ti.com, pratyush@kernel.org, mwalle@kernel.org,
+	takahiro.kuwano@infineon.com, linux-spi@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org, praneeth@ti.com, u-kumar1@ti.com,
+	a-dutta@ti.com
+Subject: Re: [PATCH v3 01/13] spi: dt-bindings: allow spi-max-frequency to
+ specify a frequency pair
+Message-ID: <20260604-shrunk-acclaim-25368d7ad63e@spud>
+References: <20260527175527.2247679-2-s-k6@ti.com>
+ <20260528-clergyman-kindling-20971775ba78@spud>
+ <eaa75113-2b89-468d-aca8-932bc7e33a7d@ti.com>
+ <87cxy92llq.fsf@bootlin.com>
+ <20260602-aptly-bunkbed-1bd3a8d63d54@spud>
+ <875x3zzkji.fsf@bootlin.com>
+ <20260603-neatly-twine-e89b923f5cb6@spud>
+ <87o6hry4d4.fsf@bootlin.com>
+ <20260603-balance-encounter-94f69e1577f3@spud>
+ <87ik7yydyv.fsf@bootlin.com>
 MIME-Version: 1.0
-X-Last-TLS-Session-Version: TLSv1.3
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260604_002836_959601_666B2058 
-X-CRM114-Status: GOOD (  24.45  )
+In-Reply-To: <87ik7yydyv.fsf@bootlin.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,60 +78,93 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============8250705263567663788=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gMDMvMDYvMjAyNiBhdCAxMjozODo0NiAtMDUsIFJvYiBIZXJyaW5nIDxyb2JoQGtlcm5lbC5v
-cmc+IHdyb3RlOgoKPiBPbiBXZWQsIEp1biAzLCAyMDI2IGF0IDExOjAx4oCvQU0gTWlxdWVsIFJh
-eW5hbCA8bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4gd3JvdGU6Cj4+Cj4+IEhlbGxvLAo+Pgo+
-PiBPbiAwMi8wNi8yMDI2IGF0IDExOjQ5OjQ1IC0wNSwgUm9iIEhlcnJpbmcgPHJvYmhAa2VybmVs
-Lm9yZz4gd3JvdGU6Cj4+Cj4+ID4gT24gV2VkLCBNYXkgMjcsIDIwMjYgYXQgMTE6MjU6MTZQTSAr
-MDUzMCwgU2FudGhvc2ggS3VtYXIgSyB3cm90ZToKPj4gPj4gUEhZIHR1bmluZyByZXF1aXJlcyBh
-IGtub3duIGRhdGEgcGF0dGVybiB0byBiZSByZWFkYWJsZSBmcm9tIGZsYXNoLgo+PiA+PiBXaGVu
-IG5vIHBhcnRpdGlvbiBpcyBleHBsaWNpdGx5IGlkZW50aWZpZWQsIHRoZSBjb250cm9sbGVyIG11
-c3Qgc2VhcmNoCj4+ID4+IGFsbCBhdmFpbGFibGUgcGFydGl0aW9ucyB0byBsb2NhdGUgdGhlIHBh
-dHRlcm4gYnkgbGFiZWwsIHdoaWNoIGFkZHMKPj4gPj4gb3ZlcmhlYWQgYW5kIHJlbGllcyBvbiBs
-YWJlbCBuYW1pbmcgY29udmVudGlvbnMgb3V0c2lkZSB0aGUKPj4gPj4gY29udHJvbGxlcidzIGNv
-bnRyb2wuCj4+ID4KPj4gPiBJIGFncmVlICdsYWJlbCcgaXMgbm90IHRoZSBiZXN0IGNob2ljZS4g
-U29mdHdhcmUgc2hvdWxkIG5vdCBjYXJlIHdoYXQKPj4gPiAnbGFiZWwnIGNvbnRhaW5zLiBJdCBz
-aG91bGQgcmVhbGx5IGJlICdjb21wYXRpYmxlJyBpbnN0ZWFkLgo+Pgo+PiBCdXQgY29tcGF0aWJs
-ZSBkb2VzIG5vdCBzZWVtIHJlbGV2YW50IGluIHRoaXMgY2FzZSwgcmlnaHQ/IFdlIGFyZSBqdXN0
-Cj4+IGZsYWdnaW5nIHRoZSBsb2NhdGlvbiBvZiAic29tZSB1c2VmdWwgZGF0YSBmb3IgdGhlIGNv
-bnRyb2xsZXIiLgo+Cj4gY29tcGF0aWJsZSBpcyB3aGF0IHRlbGxzIHVzIHdoYXQgYSByZWdpb24g
-Y29udGFpbnMgYW5kIGhvdyB0byB1c2UgaXQuCj4gVGhhdCBzZWVtcyBleGFjdGx5IHdoYXQgd2Ug
-bmVlZCB0byBkZWZpbmUgaGVyZS4KCldlIHVzdWFsbHkgdGFsayBhYm91dCAicHJvZ3JhbW1pbmcg
-bW9kZWwiIHdoZW4gaXQgY29tZXMgdG8gY29tcGF0aWJsZSwKaGVyZSB3ZSBqdXN0IG5lZWQgdG8g
-cG9pbnQgYXQgYW4gb2Zmc2V0IHdoaWNoIGlzIGluIG5vIHdheSBkaWZmZXJlbnQKKGZyb20gYSBo
-YXJkd2FyZSBzdGFuZHBvaW50KSB0aGFuIHRoZSBvdGhlciBvZmZzZXRzLiBJIGhvbmVzdGx5IGZl
-ZWwKbGlrZSBhIHBoYW5kbGUgcHJvcGVydHkgd291bGQgYmUgc2ltcGxlciwgYWxzbyBiZWNhdXNl
-IGNvbXBhdGlibGVzIGluCk1URCBhcmUgYWxyZWFkeSBxdWl0ZSBjb21wbGV4IHRvIG1hbmFnZSBh
-bmQgSSB3b3VsZCBwcmVmZXIgbm90IHRvIGFkZAptb3JlIGNvbXBsZXhpdHkgaW50byB0aGUgcGFy
-c2luZyBsb2dpYy4KCj4+ID4+IEFkZCBjZG5zLHBoeS1wYXR0ZXJuLXBhcnRpdGlvbiwgYSBwaGFu
-ZGxlIHByb3BlcnR5IHRoYXQgYWxsb3dzIHRoZSBEVAo+PiA+PiBhdXRob3IgdG8gZGlyZWN0bHkg
-cmVmZXJlbmNlIHRoZSBmbGFzaCBwYXJ0aXRpb24gaG9sZGluZyB0aGUgUEhZIHR1bmluZwo+PiA+
-PiBwYXR0ZXJuLiBUaGUgY29udHJvbGxlciB1c2VzIHRoaXMgcGFydGl0aW9uIGR1cmluZyBjYWxp
-YnJhdGlvbiwgYXZvaWRpbmcKPj4gPj4gdGhlIHBhcnRpdGlvbiBzZWFyY2ggZW50aXJlbHkuCj4+
-ID4KPj4gPiBEbyB5b3UgaGF2ZSBhbnkgZGF0YSB0aGF0IHRoaXMgYXBwcm9hY2ggYmVpbmcgImRp
-cmVjdCIgaXMgZmFzdGVyPyBJbgo+PiA+IGZhY3QsIGl0IG1pZ2h0IGJlIHdvcnNlLiBJbnN0ZWFk
-IG9mIHNlYXJjaGluZyBqdXN0IHRoZSBsaW1pdGVkIG51bWJlciBvZgo+PiA+IHBhcnRpdGlvbiBz
-dWJub2RlcywgeW91IG5vdyBzZWFyY2ggdGhlIGVudGlyZSB0cmVlIGZvciBhIG1hdGNoaW5nCj4+
-ID4gcGhhbmRsZSB2YWx1ZS4gV2UgZG8gaGF2ZSBwaGFuZGxlIGNhY2hpbmcsIHNvIHRoYXQgbWln
-aHQgc2F2ZSB5b3UKPj4gPiBoZXJlLgo+Pgo+PiBUcnVlLCBidXQgYmVzaWRlcyBwZXJmb3JtYW5j
-ZSBjb25zaWRlcmF0aW9ucywgSSBwZXJzb25hbGx5IGRvIG5vdCBmaW5kCj4+IGVsZWdhbnQgdXNp
-bmcgYSBwYXJ0aXRpb24gbmFtZS9sYWJlbCwgYnV0IG1heWJlIHRoYXQncyBqdXN0IHBlcnNvbmFs
-Cj4+IHRhc3RlIDotKQo+Cj4gSSBhZ3JlZS4gVGhhdCdzIHRydWUgZm9yIGFsbCB0aGUgcGFydGl0
-aW9uIG5vZGVzIHdpdGggb25seSBub2RlIG5hbWUKPiBvciBsYWJlbCB0byBnbyBvbi4gV2Ugc2hv
-dWxkIGZpeCB0aGF0IGF0IHRoZSBzb3VyY2UuIEhvd2V2ZXIsIHlvdQo+IGFscmVhZHkgaGF2ZSB0
-byBzdXBwb3J0IHVzaW5nIGxhYmVsLAoKSHVtLCBubz8gVGhlcmUgaXMgZG93bnN0cmVhbSBzdXBw
-b3J0IGZvciBsYWJlbHMgaW4gVEkga2VybmVscywgYnV0IHdlCmV4cGxpY2l0bHkgYXNrZWQgU2Fu
-dGhvc2ggdG8gZHJvcCBpdCBmb3IgbWFpbmxpbmUgaW5jbHVzaW9uLiBIaXMgY29tbWl0Cm1lc3Nh
-Z2UgbWF5IGJlIGEgYml0IG1pc2xlYWRpbmcgb24gdGhpcyByZWdhcmQgYmVjYXVzZSBoZSBpcyBt
-ZW50aW9uaW5nCmxhYmVscyBsaWtlIGlmIHdlIHdlcmUgYWxyZWFkeSB1c2luZyB0aGVtLCBkZXNw
-aXRlIHRoZSBmYWN0IHRoYXQgd2UgYXJlCm5vdC4KCj4gc28gYW55dGhpbmcgZWxzZSBpcyBzdXBw
-b3J0aW5nIGEKPiAybmQgd2F5IHdoZXRoZXIgaXQgaXMgY29tcGF0aWJsZSBvciBhIHBoYW5kbGUg
-cHJvcGVydHkuIElzIGl0IHJlYWxseQo+IHdvcnRoIGl0IGhlcmU/Cj4KPiBSb2IKClRoYW5rcywK
-TWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5m
-cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+
+--===============8250705263567663788==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="I/LOsxQxq90rgY8F"
+Content-Disposition: inline
+
+
+--I/LOsxQxq90rgY8F
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Jun 04, 2026 at 09:14:16AM +0200, Miquel Raynal wrote:
+> Hi Conor,
+>=20
+> >> >> > Right, and this I guess is what scuppers letting the controller d=
+river
+> >> >> > sort the configuration out itself and leaving the property as-is.
+> >> >> > It could be that the speed in spi-max-frequency is lower than the=
+ "base
+> >> >> > speed" of the controller but because of board routing or device
+> >> >> > capability that the tuned mode is still required, right?
+> >> >>=20
+> >> >> I do not actually expect any tuned mode/frequency to be mandatory.
+> >> >
+> >> > I think you misunderstood my use of "required", I meant that the new
+> >> > property/information was needed in the scenario I described, not tha=
+t it
+> >> > should be a required property in a binding.
+> >>=20
+> >> Yes I misunderstood the term indeed. However I still fail to catch what
+> >> you meant here, I'm sorry. Would you mind rephrasing?
+> >
+> > I was talking about a scenario where you want to use the tuned mode to
+> > achieve the maximum rate because of the device and/or board configurati=
+on,
+> > but the rate is below the point where the controller would need tuning.
+> > Say the controller needs tuning above 8 Hz but the conditions require
+> > tuning to achieve more than 5 Hz. In this example, if the device can do
+> > 6 Hz, spi-max-frequency (in the current form) would be set to 6 Hz, and
+> > the controller would not enable the tuned mode, leading to problems
+> > because the inflection point determined from the controller compatible
+> > of 8 Hz would not have been reached.
+>=20
+> I don't think this is a real situation. If the "conditions", as you say
+> (ie. PCB routing, mostly) require tuning above 5, then spi-max-frequency
+> should be 5.
+
+Then tuning mode would never be used. Remember, this is a theoretical world
+where spi-max-frequency would contain the tuned frequency and the
+controller was using compatible-specific speed thresholds to determine
+if tuning was required.
+
+> It is the frequency that is reachable without any
+> tuning. Tuning is just a plus. If tuning fails, we fallback to the
+> regular "base" speed, which just works.
+>=20
+> Thanks,
+> Miqu=E8l
+
+--I/LOsxQxq90rgY8F
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCaiE5IQAKCRB4tDGHoIJi
+0vh1AP4hwOVyHbur7c1ahOyaxI1idZEZt+yStGb1CnSi+78HSAEA5OgLzntrwzuS
+46xL3MdoZvkkFkrRs+kEEXgrTZygVQU=
+=RuuS
+-----END PGP SIGNATURE-----
+
+--I/LOsxQxq90rgY8F--
+
+
+--===============8250705263567663788==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============8250705263567663788==--
+
