@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13914CD6E79
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 157DACD6E7C
 	for <linux-mtd@archiver.kernel.org>; Fri,  5 Jun 2026 01:00:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,64 +12,64 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+QsadpbjnvduaU9TKOwT7cuW/0bBgS3I+TrxeVw2wuk=; b=v4/66C/XhU/ojE
-	x2EAWyJj4CA8UmmFqcME7wcjlPU5atXiNYvR+asbfmcT4QdN/KY88hOxCvjLQWXd36sZ/s6Tjiaci
-	tAk9sED0VZY6dyztWlAyNCdkvpV/KcaAr62XBmmCyGghAl6bThfIeMJrIJb92i7gLX9mP5FjvqAJ7
-	z6kw1A/snOmyMldoCQ4pK0E5GvQSXJSS1GNoiZDiKnZnqO0pRR58Zg43OlfpQOYpcygyJozqhQ/X/
-	yOQBEG3wSW2vmxxcUwVMWHsOB1wAArJzwX9zcqZQlBsmDNp/QuRd9tkV1o7+FnXybMOVn2C912gtZ
-	oQITsVT62X6INwhS1Q5g==;
+	List-Owner; bh=4XjRF+0ddGi91F3rbJs/tTAl/3r0BDsFhAjSeBjAazQ=; b=jFd0dZ0dFtEWJF
+	T86x8ycbj0bR/9P2uRBMGnFonWFp4BYkcIqNc4TNz5YwEHXKpnxck+nv8ymqDH4JxFOMILkaDr2ld
+	ZimqF/jxnangojEO4gyIPLcVP5KiqNw1p0cF3caeWbLhIHI3JeA0vw/E8loREiu58x8cUwCb4/e90
+	eiaQGFDQfhfLEFdwpyCA0hdzv+M9a8mu3IDSAfk/NkwiZWJEZMKcNAR9yQvHnAYeo3S+iBvAb7o0T
+	iOvdXtoxb7lX2r3k1rRDAZD6F6zlwDzPIwKN8Rj8eg7H6hFXUw8fNqJW9SMXUPZVHAD98Wf/MFri2
+	rBLTOvB0TqtFsstycyIw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wVIuq-0000000HTSD-1Z3d;
+	id 1wVIuq-0000000HTRu-0dws;
 	Fri, 05 Jun 2026 01:00:04 +0000
-Received: from mail-pj1-x1031.google.com ([2607:f8b0:4864:20::1031])
+Received: from mail-pf1-x42a.google.com ([2607:f8b0:4864:20::42a])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wVIul-0000000HTQV-15r5
+	id 1wVIul-0000000HTQU-0pps
 	for linux-mtd@lists.infradead.org;
-	Fri, 05 Jun 2026 01:00:01 +0000
-Received: by mail-pj1-x1031.google.com with SMTP id 98e67ed59e1d1-36bd175fdbaso924982a91.0
-        for <linux-mtd@lists.infradead.org>; Thu, 04 Jun 2026 17:59:59 -0700 (PDT)
+	Fri, 05 Jun 2026 01:00:00 +0000
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-84231305a80so703871b3a.0
+        for <linux-mtd@lists.infradead.org>; Thu, 04 Jun 2026 17:59:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20251104; t=1780621198; x=1781225998; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=dTPPV6JZiYYlwbArmH1Q/4ShfP+Wrc5dPQHhlSVN1ec=;
-        b=fJjJpOTZmrxlzbgmCn3NFmpznX3U3MgaC+8jpX2rjlra4NvJoqcoYB3jFhm50h/USE
-         sN2xPTzEnGhUgB0/kkjnxPp7/nqXeF49vcy2WZ1NI+nkjGVoz6bzkG1eLrBacfE5/9P4
-         BZe1ycYHI19S7e7bnvdzoSCn2bF+3x2SW845gS84f+/z6poxy5lqEPeKh53+yG1jjkJN
-         huKGNdCDmefj0pxDmSffKosL0exG3pKqF7muO8HgnEHQcg24p36p7xEHsTH5bwo3Xe5T
-         JAfgIQsImvezX9iauC/jfeIsuTfRGjY93WSAIfxOTg3RVxlmYEpxIR05Tr9ocSuAcArQ
-         xqEw==
+        bh=Q2yNPrajpmUjXUxkDV8KTQdIiGB5qpjbVC2V+xxbVWk=;
+        b=Q3gf7VriB2lVfca669Wdp9y5p1o2t/uIsLr8IU6taMmXQp2f7XHD4hxuK1eGc8fHsK
+         7x5JLjMsbW3WeqPUMo4bMudNc4ZReKUuTq7hrAF6L2bPHGhmk6llzkhSY81ZJWPX30sV
+         OZI0N0fB/dT+Xx8mH2pD/1QGH8aELWseJPF320UdfljnbwCFrWlZVaxHJ1cY4CQfyaJq
+         OXicL5JcaFXe7xDkxdJPRnUSNKAf8Psy3rvIRp3i29nLm0Lm+r0j1a3r2V+9Y5JLqTZj
+         omrPmC/bCrppli67eUhHj0U4f+OIuI+iKROWwYNP3wfCAIOea3upkq2bLJxjHMtanSnF
+         DwTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20251104; t=1780621198; x=1781225998;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=dTPPV6JZiYYlwbArmH1Q/4ShfP+Wrc5dPQHhlSVN1ec=;
-        b=Ak5nyPaHriniiw898KNkHWznBUcqXxETgF/23XpqW0ChBMrEJ+te0S/w71IMVEU4TH
-         GdGGsuDi2CQYCFNVwW0MkKfqFP/xNoQtmdQ1MO1U7pG6GmpgQIA6lOBYc7nqoxK5vgCZ
-         c35mmBMO9Jf6IFkpyrDij16MJ4mU9kIPAjOtJ5bkVhvniO6jDdA0wYNetW+qoqP+GmzA
-         xAK179kSPbuUJqlbT3UfdkW+w2dT9F5aGtPNKraMKGTwi4HfjpxFG8PhqXxd0EsSpLSA
-         JpERfqUhG38cGsUb0jFnO6SJTcnJDhivDYW/mR7wPHCk0WOxJb8k+85XZ2044BamXClE
-         9pYw==
-X-Gm-Message-State: AOJu0YyY9UJCsrvGvUdHrAHjzCgXedTi/aD9KXU1FflGKmhHa8KCM42k
-	Pl54nIFW4URt0ntqNqN5td0KfVSNdQxhGr9x0hkTSQj86iT77NBRTP/2
-X-Gm-Gg: Acq92OGybsrLm0ItaAZvlunCtf2GY9GMrY2bmDWfd6Lmu/gXvFz4SmGFHHnQivhdHsF
-	0GgJW5SztNMWEU6QVGMY8XNOJQ/L90FZnxVz5lDdsRRQ1fn26qI26HWqX+RrSftw8sLgTrn8JvH
-	jKjLzjhBd4lrXN3r6JPbsvUb6RZGZFZQBOHj8TdE57i8Os+7idj2wJr1KYFr7l7+kpZfwDdVGqj
-	45+stX9SD7Ze6VEsPkl7aSoMwLtzjT3ZBprv7WQatK6CD+ZQJCFADsGYt3pimBVeWuDlaOEg60n
-	mMcbssDvzfx2n6AdVv5tJrWnglMgpj56/rAeIZAg89z3GUAZBywi9/EyG9GC1qMIQjEEuZREbDi
-	4jt/9YxRsKZlvm+1Gmcsafcsgc5Wvr3+qEFEL5VOWLANMtks4izRKJRVOyKMTJRDqGgLkK7Sr2l
-	SbwsXUQcYITo7Nefhod0JW9/p4nejqQE7c5RE/6XGSI/7o8VgZ20TCT+US
-X-Received: by 2002:a05:6a20:be86:b0:3b3:fc6:6226 with SMTP id adf61e73a8af0-3b4ccf7f128mr1382064637.24.1780621198351;
+        bh=Q2yNPrajpmUjXUxkDV8KTQdIiGB5qpjbVC2V+xxbVWk=;
+        b=iEb2BCpjFkMP82f0uIzFEncFOUfdQDEgviGXuqkA4VhFyCN0i0BI189DFF722T8X2e
+         x5bNJSg9FNL3+Q57b7hI/qOvp48bn3NGD/oxuVYXYmoD5FV8xf22q1K0TtBh/6NRbivZ
+         BgY5Nut4ZupYVA1txiKkbYvYLS+XzffLWR6RGK5pzcAl6q6c0YZ9QVoFIwVi5B0Z4XGJ
+         uQK8/W2Chr6MTc3D5Bg8D00PjifpbkRCfxZNN/p0Lo7inTq7/lgqM1qMvmWjvP9GqG5u
+         VXD2p8/zC6jehvp/qsC440pApBrMFUduOt6E35/XEnnlvfVl9PFJX2gWBGt9gVIWv5ra
+         6K0A==
+X-Gm-Message-State: AOJu0Yw0lEbA37ze7FRo8Wv+11wlxojXs7Uyy7MUW+np1diAHVFtv/n/
+	dl/rccnezLr8GZGIg/6xMOcPVP8WbdEPZ7wZoyaqHWzpySNEvMAJRGMo
+X-Gm-Gg: Acq92OFYLZjOSH4q8v+dNQ3Ak4kbULLso3G4AkOcnCX0W0bhMTi/XHK8IL4MbwIrz7C
+	1KSSQ23j1NsYJhvk9DQePIOSOFDr0HPDr4Qha0/7iu9+FEwpaetKskJK3wk0GHMPc/Q/qe0MwxO
+	4/moKtyeMsXyRZXY7zrZBg8fkRO0g8cDpACQ3teGI6BlRhzc7uQI+06hccrKWytoFwNFhmmGq/w
+	yN8jM5fQkF/OWPJAtqvzMzRjVFZDMGjwQXiVdO904ZGb+5Geu9d30QPix0qwFZh1cLVN2hhHjSP
+	2an73/0FkpHwDAVMHlIDWV5gkEMcIR1BOrmFjx71wG3J9FILGbeMVW3i/MKGiP+aC3HTgCWDWeu
+	tt/BoPzn09wRDYSuJZXdevGNDrrDhnLJOzpcNc9Dd+pkUBQfmFjmmp6QJwAWxyqHlUYHdMpCvjj
+	oBICIAN8+7dODS5/8XhOwTXxPa524Yy1lvnGDQvRSlIgK7bd1510Xpo0ua
+X-Received: by 2002:a05:6a00:908e:b0:842:459b:d61b with SMTP id d2e1a72fcca58-842b0f90d88mr1002312b3a.32.1780621198003;
         Thu, 04 Jun 2026 17:59:58 -0700 (PDT)
 Received: from twhmp6px (mxsmtp211.mxic.com.tw. [211.75.127.162])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-c85df0bdbe4sm6528618a12.32.2026.06.04.17.59.57
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-8428235006dsm7730884b3a.13.2026.06.04.17.59.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Thu, 04 Jun 2026 17:59:57 -0700 (PDT)
 Received: from hqs-appsw-a2o.mp600.macronix.com (unknown [172.17.236.67])
-	by twhmp6px (Postfix) with ESMTPS id 7333E4163B71;
+	by twhmp6px (Postfix) with ESMTPS id 7F6284163B72;
 	Fri,  5 Jun 2026 08:59:55 +0800 (CST)
 From: Cheng Ming Lin <linchengming884@gmail.com>
 To: Pratyush Yadav <pratyush@kernel.org>,
@@ -81,17 +81,18 @@ To: Pratyush Yadav <pratyush@kernel.org>,
 Cc: linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	alvinzhou@mxic.com.tw,
-	Cheng Ming Lin <chengminglin@mxic.com.tw>
-Subject: [PATCH v2 1/2] mtd: spi-nor: Add support for MX25L12833F and MX25L12845G
-Date: Fri,  5 Jun 2026 08:57:19 +0800
-Message-Id: <20260605005720.1857413-2-linchengming884@gmail.com>
+	Cheng Ming Lin <chengminglin@mxic.com.tw>,
+	stable@vger.kernel.org
+Subject: [PATCH v2 2/2] mtd: spi-nor: macronix: Restore fallback parameters for MX25L12805D
+Date: Fri,  5 Jun 2026 08:57:20 +0800
+Message-Id: <20260605005720.1857413-3-linchengming884@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20260605005720.1857413-1-linchengming884@gmail.com>
 References: <20260605005720.1857413-1-linchengming884@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260604_175959_300122_79E790FB 
-X-CRM114-Status: GOOD (  14.39  )
+X-CRM114-CacheID: sfid-20260604_175959_244940_739A1121 
+X-CRM114-Status: GOOD (  12.25  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -110,80 +111,43 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Cheng Ming Lin <chengminglin@mxic.com.tw>
 
-Add support for Macronix MX25L12833F and MX25L12845G SPI NOR flashes.
-These parts share the same JEDEC ID (0xc2, 0x20, 0x18) as the legacy
-MX25L12805D.
+In a previous effort to drop flash_info fields and rely on SFDP, the
+static size and no_sfdp_flags were removed from the MX25L12805D entry
+(JEDEC ID 0xc22018).
 
-The newer flashes support SFDP and 1-4-4 Page Program in 3-byte address
-mode, but this 4PP capability is not defined in their SFDP tables.
-Conversely, the legacy MX25L12805D lacks SFDP support entirely and does
-not support 4PP.
+At that time, the legacy MX25L12805D was already EOL and unavailable
+for physical testing. Verification was inadvertently performed using
+the newer MX25L12833F, which shares the same JEDEC ID but supports
+SFDP. As a result, the probe succeeded during testing, leading to
+the mistaken removal of the fallback parameters.
 
-To safely enable 4PP for the newer flashes without breaking the legacy
-part, introduce a post_bfpt fixup. Since the legacy MX25L12805D does
-not support SFDP, it falls back to static parameters and will never
-execute the post_bfpt hook. The newer flashes will successfully parse
-the BFPT, trigger the hook, and safely append the SNOR_HWCAPS_PP_1_4_4
-capability.
+Since the actual MX25L12805D lacks SFDP support entirely, it strictly
+requires these static parameters.
 
+Restore .size = SZ_16M and .no_sfdp_flags = SECT_4K to this entry
+to fix the probe failure for the legacy part.
+
+Fixes: 947c86e481a0 ("mtd: spi-nor: macronix: Drop the redundant flash info fields")
+Cc: stable@vger.kernel.org
 Signed-off-by: Cheng Ming Lin <chengminglin@mxic.com.tw>
 ---
- drivers/mtd/spi-nor/macronix.c | 26 +++++++++++++++++++++++++-
- 1 file changed, 25 insertions(+), 1 deletion(-)
+ drivers/mtd/spi-nor/macronix.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-index e97f5cbd9..febcef6a1 100644
+index febcef6a1..4cb7c1e98 100644
 --- a/drivers/mtd/spi-nor/macronix.c
 +++ b/drivers/mtd/spi-nor/macronix.c
-@@ -83,6 +83,25 @@ mx25l3255e_late_init_fixups(struct spi_nor *nor)
- 	return 0;
- }
- 
-+static int
-+mx25l12805d_4pp3b_post_bfpt_fixups(struct spi_nor *nor)
-+{
-+	struct spi_nor_flash_parameter *params = nor->params;
-+
-+	/*
-+	 * JEDEC ID 0xc22018 is shared by MX25L12805D (no SFDP, no 4PP) and
-+	 * MX25L12833F/MX25L12845G (support SFDP and 4PP in 3-byte mode).
-+	 * The legacy 05D lacks SFDP and will not execute this hook. For
-+	 * the newer flashes, 3-byte 1-4-4 PP is not defined in SFDP, so
-+	 * we safely enable it here.
-+	 */
-+	params->hwcaps.mask |= SNOR_HWCAPS_PP_1_4_4;
-+	spi_nor_set_pp_settings(&params->page_programs[SNOR_CMD_PP_1_4_4],
-+				SPINOR_OP_PP_1_4_4, SNOR_PROTO_1_4_4);
-+
-+	return 0;
-+}
-+
- static const struct spi_nor_fixups mx25l25635_fixups = {
- 	.post_bfpt = mx25l25635_post_bfpt_fixups,
- 	.post_sfdp = macronix_qpp4b_post_sfdp_fixups,
-@@ -96,6 +115,10 @@ static const struct spi_nor_fixups mx25l3255e_fixups = {
- 	.late_init = mx25l3255e_late_init_fixups,
- };
- 
-+static const struct spi_nor_fixups mx25l12805d_4pp3b_fixups = {
-+	.post_bfpt = mx25l12805d_4pp3b_post_bfpt_fixups,
-+};
-+
- static const struct flash_info macronix_nor_parts[] = {
- 	{
- 		.id = SNOR_ID(0xc2, 0x20, 0x10),
-@@ -130,9 +153,10 @@ static const struct flash_info macronix_nor_parts[] = {
- 		.size = SZ_8M,
- 		.no_sfdp_flags = SECT_4K,
+@@ -155,7 +155,9 @@ static const struct flash_info macronix_nor_parts[] = {
  	}, {
--		/* MX25L12805D */
-+		/* MX25L12805D, MX25L12833F, MX25L12845G */
+ 		/* MX25L12805D, MX25L12833F, MX25L12845G */
  		.id = SNOR_ID(0xc2, 0x20, 0x18),
++		.size = SZ_16M,
  		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP,
-+		.fixups = &mx25l12805d_4pp3b_fixups,
++		.no_sfdp_flags = SECT_4K,
+ 		.fixups = &mx25l12805d_4pp3b_fixups,
  	}, {
  		/* MX25L25635E, MX25L25645G */
- 		.id = SNOR_ID(0xc2, 0x20, 0x19),
 -- 
 2.25.1
 
