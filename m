@@ -4,95 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 157DACD6E7C
-	for <linux-mtd@archiver.kernel.org>; Fri,  5 Jun 2026 01:00:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A827CCD6E5D
+	for <linux-mtd@archiver.kernel.org>; Fri,  5 Jun 2026 05:03:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4XjRF+0ddGi91F3rbJs/tTAl/3r0BDsFhAjSeBjAazQ=; b=jFd0dZ0dFtEWJF
-	T86x8ycbj0bR/9P2uRBMGnFonWFp4BYkcIqNc4TNz5YwEHXKpnxck+nv8ymqDH4JxFOMILkaDr2ld
-	ZimqF/jxnangojEO4gyIPLcVP5KiqNw1p0cF3caeWbLhIHI3JeA0vw/E8loREiu58x8cUwCb4/e90
-	eiaQGFDQfhfLEFdwpyCA0hdzv+M9a8mu3IDSAfk/NkwiZWJEZMKcNAR9yQvHnAYeo3S+iBvAb7o0T
-	iOvdXtoxb7lX2r3k1rRDAZD6F6zlwDzPIwKN8Rj8eg7H6hFXUw8fNqJW9SMXUPZVHAD98Wf/MFri2
-	rBLTOvB0TqtFsstycyIw==;
+	List-Owner; bh=P/rTX6Jve7JcbEVFFB8c4EaQSCfDUzAWwOggC4CBmOY=; b=skHmNoYtJgOsqK
+	zkCzQmUNL/4QHyw7QVwrua4UqA22xGsUcSl+oz3qxB57Aj0M2lEBEgQSZozBeT4R/teOnjSA8sw/F
+	8SGKR7JUb+duSdDb1AQ7u60oVwGqaUgMS83CNIr/K1XbVhurL8ODoZGhYlwjVtyP0bNvrCQgioc0n
+	yuvnUpcAYSRy52HkUMzUlg2vaoMSwOoH6cWE8q903snm+SqKbQI40TbND0qCP6Ad9F8hNGD5javrK
+	u5NdIX1np6gNlyICVuUQ6REAnpd5XSHHH9XsbKCk990OcwqE6NjgwL+aWwnxVqPodHPobVDdGUPMn
+	9qrGz+uGoUT6WjuuIMPw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wVIuq-0000000HTRu-0dws;
-	Fri, 05 Jun 2026 01:00:04 +0000
-Received: from mail-pf1-x42a.google.com ([2607:f8b0:4864:20::42a])
+	id 1wVMht-000000005Rv-0abc;
+	Fri, 05 Jun 2026 05:02:57 +0000
+Received: from smtpout-03.galae.net ([185.246.85.4])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wVIul-0000000HTQU-0pps
+	id 1wVMhp-000000005RW-1lrh
 	for linux-mtd@lists.infradead.org;
-	Fri, 05 Jun 2026 01:00:00 +0000
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-84231305a80so703871b3a.0
-        for <linux-mtd@lists.infradead.org>; Thu, 04 Jun 2026 17:59:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1780621198; x=1781225998; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Q2yNPrajpmUjXUxkDV8KTQdIiGB5qpjbVC2V+xxbVWk=;
-        b=Q3gf7VriB2lVfca669Wdp9y5p1o2t/uIsLr8IU6taMmXQp2f7XHD4hxuK1eGc8fHsK
-         7x5JLjMsbW3WeqPUMo4bMudNc4ZReKUuTq7hrAF6L2bPHGhmk6llzkhSY81ZJWPX30sV
-         OZI0N0fB/dT+Xx8mH2pD/1QGH8aELWseJPF320UdfljnbwCFrWlZVaxHJ1cY4CQfyaJq
-         OXicL5JcaFXe7xDkxdJPRnUSNKAf8Psy3rvIRp3i29nLm0Lm+r0j1a3r2V+9Y5JLqTZj
-         omrPmC/bCrppli67eUhHj0U4f+OIuI+iKROWwYNP3wfCAIOea3upkq2bLJxjHMtanSnF
-         DwTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1780621198; x=1781225998;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=Q2yNPrajpmUjXUxkDV8KTQdIiGB5qpjbVC2V+xxbVWk=;
-        b=iEb2BCpjFkMP82f0uIzFEncFOUfdQDEgviGXuqkA4VhFyCN0i0BI189DFF722T8X2e
-         x5bNJSg9FNL3+Q57b7hI/qOvp48bn3NGD/oxuVYXYmoD5FV8xf22q1K0TtBh/6NRbivZ
-         BgY5Nut4ZupYVA1txiKkbYvYLS+XzffLWR6RGK5pzcAl6q6c0YZ9QVoFIwVi5B0Z4XGJ
-         uQK8/W2Chr6MTc3D5Bg8D00PjifpbkRCfxZNN/p0Lo7inTq7/lgqM1qMvmWjvP9GqG5u
-         VXD2p8/zC6jehvp/qsC440pApBrMFUduOt6E35/XEnnlvfVl9PFJX2gWBGt9gVIWv5ra
-         6K0A==
-X-Gm-Message-State: AOJu0Yw0lEbA37ze7FRo8Wv+11wlxojXs7Uyy7MUW+np1diAHVFtv/n/
-	dl/rccnezLr8GZGIg/6xMOcPVP8WbdEPZ7wZoyaqHWzpySNEvMAJRGMo
-X-Gm-Gg: Acq92OFYLZjOSH4q8v+dNQ3Ak4kbULLso3G4AkOcnCX0W0bhMTi/XHK8IL4MbwIrz7C
-	1KSSQ23j1NsYJhvk9DQePIOSOFDr0HPDr4Qha0/7iu9+FEwpaetKskJK3wk0GHMPc/Q/qe0MwxO
-	4/moKtyeMsXyRZXY7zrZBg8fkRO0g8cDpACQ3teGI6BlRhzc7uQI+06hccrKWytoFwNFhmmGq/w
-	yN8jM5fQkF/OWPJAtqvzMzRjVFZDMGjwQXiVdO904ZGb+5Geu9d30QPix0qwFZh1cLVN2hhHjSP
-	2an73/0FkpHwDAVMHlIDWV5gkEMcIR1BOrmFjx71wG3J9FILGbeMVW3i/MKGiP+aC3HTgCWDWeu
-	tt/BoPzn09wRDYSuJZXdevGNDrrDhnLJOzpcNc9Dd+pkUBQfmFjmmp6QJwAWxyqHlUYHdMpCvjj
-	oBICIAN8+7dODS5/8XhOwTXxPa524Yy1lvnGDQvRSlIgK7bd1510Xpo0ua
-X-Received: by 2002:a05:6a00:908e:b0:842:459b:d61b with SMTP id d2e1a72fcca58-842b0f90d88mr1002312b3a.32.1780621198003;
-        Thu, 04 Jun 2026 17:59:58 -0700 (PDT)
-Received: from twhmp6px (mxsmtp211.mxic.com.tw. [211.75.127.162])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-8428235006dsm7730884b3a.13.2026.06.04.17.59.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Jun 2026 17:59:57 -0700 (PDT)
-Received: from hqs-appsw-a2o.mp600.macronix.com (unknown [172.17.236.67])
-	by twhmp6px (Postfix) with ESMTPS id 7F6284163B72;
-	Fri,  5 Jun 2026 08:59:55 +0800 (CST)
-From: Cheng Ming Lin <linchengming884@gmail.com>
-To: Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <mwalle@kernel.org>,
-	Takahiro Kuwano <takahiro.kuwano@infineon.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	alvinzhou@mxic.com.tw,
-	Cheng Ming Lin <chengminglin@mxic.com.tw>,
-	stable@vger.kernel.org
-Subject: [PATCH v2 2/2] mtd: spi-nor: macronix: Restore fallback parameters for MX25L12805D
-Date: Fri,  5 Jun 2026 08:57:20 +0800
-Message-Id: <20260605005720.1857413-3-linchengming884@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20260605005720.1857413-1-linchengming884@gmail.com>
+	Fri, 05 Jun 2026 05:02:55 +0000
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-03.galae.net (Postfix) with ESMTPS id 5C3064E40760;
+	Fri,  5 Jun 2026 05:02:48 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 0B3E75FED1;
+	Fri,  5 Jun 2026 05:02:48 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id A3FEC106A1E99;
+	Fri,  5 Jun 2026 07:02:41 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1780635767; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=6Mhl8KmIdInKaC12+xQLU0FoCvJVhrND8e1AJkW4CRM=;
+	b=uKs50B31sBCzyWVpMzKJFPUGvDS0f1FJ8ZJhPiYsQAMXy1l8UzmhpZnULJE99LP6tumWoY
+	/MGJzzqg/HCsSoDtpa9RK8xx27kHE0mtxKkZg7NQkVLsprF9Y8bhTw8i9ng7NCk7KJj+eO
+	Hb5o07bHxbqqZF2UHnbV1POvuRB79rWk70eLY9zulXepNTSsdlTdcVeMXkvwASs3MyyGhH
+	46CGiTW9/snEeBC20MkYXfIWB1rHfRWxxC9ft2lhKyU15Xguc5+v6/qtaAQHjlbSR26qfV
+	vU4Q8SEGmDSwdVCgLMZHnoeCSDogVPOPmj4upwXfuVRv2B/HWyyoRKbbzu6atg==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Cheng Ming Lin <linchengming884@gmail.com>
+Cc: Pratyush Yadav <pratyush@kernel.org>,  Michael Walle
+ <mwalle@kernel.org>,  Takahiro Kuwano <takahiro.kuwano@infineon.com>,
+  Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
+ <vigneshr@ti.com>,  linux-mtd@lists.infradead.org,
+  linux-kernel@vger.kernel.org,  alvinzhou@mxic.com.tw,  Cheng Ming Lin
+ <chengminglin@mxic.com.tw>
+Subject: Re: [PATCH v2 1/2] mtd: spi-nor: Add support for MX25L12833F and
+ MX25L12845G
+In-Reply-To: <20260605005720.1857413-2-linchengming884@gmail.com> (Cheng Ming
+	Lin's message of "Fri, 5 Jun 2026 08:57:19 +0800")
 References: <20260605005720.1857413-1-linchengming884@gmail.com>
+	<20260605005720.1857413-2-linchengming884@gmail.com>
+User-Agent: mu4e 1.12.7; emacs 30.2
+Date: Fri, 05 Jun 2026 07:02:38 +0200
+Message-ID: <87v7bxwpe9.fsf@bootlin.com>
 MIME-Version: 1.0
+X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260604_175959_244940_739A1121 
-X-CRM114-Status: GOOD (  12.25  )
+X-CRM114-CacheID: sfid-20260604_220253_635039_2DD63BF8 
+X-CRM114-Status: UNSURE (   8.54  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -104,54 +78,30 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Cheng Ming Lin <chengminglin@mxic.com.tw>
-
-In a previous effort to drop flash_info fields and rely on SFDP, the
-static size and no_sfdp_flags were removed from the MX25L12805D entry
-(JEDEC ID 0xc22018).
-
-At that time, the legacy MX25L12805D was already EOL and unavailable
-for physical testing. Verification was inadvertently performed using
-the newer MX25L12833F, which shares the same JEDEC ID but supports
-SFDP. As a result, the probe succeeded during testing, leading to
-the mistaken removal of the fallback parameters.
-
-Since the actual MX25L12805D lacks SFDP support entirely, it strictly
-requires these static parameters.
-
-Restore .size = SZ_16M and .no_sfdp_flags = SECT_4K to this entry
-to fix the probe failure for the legacy part.
-
-Fixes: 947c86e481a0 ("mtd: spi-nor: macronix: Drop the redundant flash info fields")
-Cc: stable@vger.kernel.org
-Signed-off-by: Cheng Ming Lin <chengminglin@mxic.com.tw>
----
- drivers/mtd/spi-nor/macronix.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-index febcef6a1..4cb7c1e98 100644
---- a/drivers/mtd/spi-nor/macronix.c
-+++ b/drivers/mtd/spi-nor/macronix.c
-@@ -155,7 +155,9 @@ static const struct flash_info macronix_nor_parts[] = {
- 	}, {
- 		/* MX25L12805D, MX25L12833F, MX25L12845G */
- 		.id = SNOR_ID(0xc2, 0x20, 0x18),
-+		.size = SZ_16M,
- 		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP,
-+		.no_sfdp_flags = SECT_4K,
- 		.fixups = &mx25l12805d_4pp3b_fixups,
- 	}, {
- 		/* MX25L25635E, MX25L25645G */
--- 
-2.25.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGVsbG8gQ2hlbmcgTWluZywKCk9uIDA1LzA2LzIwMjYgYXQgMDg6NTc6MTkgKzA4LCBDaGVuZyBN
+aW5nIExpbiA8bGluY2hlbmdtaW5nODg0QGdtYWlsLmNvbT4gd3JvdGU6Cgo+IEZyb206IENoZW5n
+IE1pbmcgTGluIDxjaGVuZ21pbmdsaW5AbXhpYy5jb20udHc+Cj4KPiBBZGQgc3VwcG9ydCBmb3Ig
+TWFjcm9uaXggTVgyNUwxMjgzM0YgYW5kIE1YMjVMMTI4NDVHIFNQSSBOT1IgZmxhc2hlcy4KPiBU
+aGVzZSBwYXJ0cyBzaGFyZSB0aGUgc2FtZSBKRURFQyBJRCAoMHhjMiwgMHgyMCwgMHgxOCkgYXMg
+dGhlIGxlZ2FjeQo+IE1YMjVMMTI4MDVELgo+Cj4gVGhlIG5ld2VyIGZsYXNoZXMgc3VwcG9ydCBT
+RkRQIGFuZCAxLTQtNCBQYWdlIFByb2dyYW0gaW4gMy1ieXRlIGFkZHJlc3MKPiBtb2RlLCBidXQg
+dGhpcyA0UFAgY2FwYWJpbGl0eSBpcyBub3QgZGVmaW5lZCBpbiB0aGVpciBTRkRQIHRhYmxlcy4K
+PiBDb252ZXJzZWx5LCB0aGUgbGVnYWN5IE1YMjVMMTI4MDVEIGxhY2tzIFNGRFAgc3VwcG9ydCBl
+bnRpcmVseSBhbmQgZG9lcwo+IG5vdCBzdXBwb3J0IDRQUC4KPgo+IFRvIHNhZmVseSBlbmFibGUg
+NFBQIGZvciB0aGUgbmV3ZXIgZmxhc2hlcyB3aXRob3V0IGJyZWFraW5nIHRoZSBsZWdhY3kKPiBw
+YXJ0LCBpbnRyb2R1Y2UgYSBwb3N0X2JmcHQgZml4dXAuIFNpbmNlIHRoZSBsZWdhY3kgTVgyNUwx
+MjgwNUQgZG9lcwo+IG5vdCBzdXBwb3J0IFNGRFAsIGl0IGZhbGxzIGJhY2sgdG8gc3RhdGljIHBh
+cmFtZXRlcnMgYW5kIHdpbGwgbmV2ZXIKPiBleGVjdXRlIHRoZSBwb3N0X2JmcHQgaG9vay4gVGhl
+IG5ld2VyIGZsYXNoZXMgd2lsbCBzdWNjZXNzZnVsbHkgcGFyc2UKPiB0aGUgQkZQVCwgdHJpZ2dl
+ciB0aGUgaG9vaywgYW5kIHNhZmVseSBhcHBlbmQgdGhlIFNOT1JfSFdDQVBTX1BQXzFfNF80Cj4g
+Y2FwYWJpbGl0eS4KPgo+IFNpZ25lZC1vZmYtYnk6IENoZW5nIE1pbmcgTGluIDxjaGVuZ21pbmds
+aW5AbXhpYy5jb20udHc+CgpMR1RNLgoKUmV2aWV3ZWQtYnk6IE1pcXVlbCBSYXluYWwgPG1pcXVl
+bC5yYXluYWxAYm9vdGxpbi5jb20+CgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lv
+biBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9saW51eC1tdGQvCg==
