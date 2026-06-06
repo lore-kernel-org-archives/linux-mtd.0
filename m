@@ -4,50 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5FF14CD8C85
-	for <linux-mtd@archiver.kernel.org>; Sat,  6 Jun 2026 20:27:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C154DCD8C88
+	for <linux-mtd@archiver.kernel.org>; Sat,  6 Jun 2026 20:28:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=MK805yZGRZmQ4q1y71hKbhxaz02HJmIrGj9QCCPkQ70=; b=pKigV1GXX49BZq
-	nxJgnQHWVw7pH3FNFSVOTEA4hQYcZmSp5jnhO7H48QE2djS+zzu9HO1st6D6PUMaYaaUuczokSlyt
-	E8RW8/aE9pyHN/lZcIfMpejhowvAKkzBB/rDRCVbBKFaqp7KsLSRxctuTRULVfBh0jJYLUhT6pjXG
-	lBhfLp88nixPRaO+WGIYmX77pVqYsMN0nqvRohLz83Rwq0kvWn5wATB9gnQFBX7e3ecTfMIkmEaJo
-	FLHWt00iUuO1ueA9AXZYy6d0ZRSkAzlKrwwW0hiIGb8p+c1jDY3Fh/ivnqnKXQQ7tsbW+sfObYLfG
-	e3cllv8om4SDyzFdvfYg==;
+	List-Owner; bh=SvPp/wjHOLpxawBonwtid7DZtqcTQHxrf8vXY+oCQ+M=; b=F6XI3XjvJYKUYD
+	UQcAf6/dVp9kO8Ezg6Z4SmFM84T8EuOSEd+srq5nI4C2oThVf7PqQVRRO44acM4PbCEkdFLt6cRtB
+	P8cPqGYbMCF5gVFSkQr2WEeukwTWrVDvp/50t4EGuR9/Fa8MMM9bzO9fTROCHSutjO4yAKzizNF+Q
+	XDdCBGNF2UfzthRv7NuvKBwHZiGDXUaqwP9n5NArLrydOXHMCxRXD0iBQSQ7URoZqpnqSKNU5/Dxc
+	hGKyUcCANw1lFqiJitzqAOcbsqz+ggjuzrt8H5nMQsMOjqsRReTHIB9UQZR9I5fWTS7uOF/oWMDOP
+	Lkjx4rweoj7GSGGJnMnw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wVxcG-00000001oE3-0scQ;
-	Sat, 06 Jun 2026 20:27:36 +0000
+	id 1wVxcf-00000001oFy-1Q9u;
+	Sat, 06 Jun 2026 20:28:01 +0000
 Received: from mailtransmit04.runbox.com ([2a0c:5a00:149::25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wVxcB-00000001oDg-0x5X
+	id 1wVxcd-00000001oFR-0XSz
 	for linux-mtd@lists.infradead.org;
-	Sat, 06 Jun 2026 20:27:33 +0000
+	Sat, 06 Jun 2026 20:28:00 +0000
 Received: from mailtransmit02.runbox ([10.9.9.162] helo=aibo.runbox.com)
 	by mailtransmit04.runbox.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
 	(Exim 4.93)
 	(envelope-from <david.laight.linux_spam@runbox.com>)
-	id 1wVxc0-007NTZ-PW; Sat, 06 Jun 2026 22:27:20 +0200
+	id 1wVxcb-007NWk-Fr; Sat, 06 Jun 2026 22:27:57 +0200
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=runbox.com;
 	 s=selector1; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:
-	Subject:Cc:To:From; bh=d/9GTztrEzzPXewpLi5FMtWP2P8vhwjGmFMrZobrZ+E=; b=C5nqBy
-	vCdtOKXayjTSILT/KY8/J23khkIaz9jxUa7FaZqqJg8Rehuzlk73faTUqByLiB4pMBNu3ruYxJC6K
-	zVAjgVTWmYF1W3CRfVx5Q5JeYlvCtxrMs845MPpOS4bQt+kCBF7P+vXLzIH/MSiAnICKPjLiPUpS3
-	RrZTBf/yM1QcfXWGw+zz0hKh7Dkcu6KXOvSlv3MsyjXhwxbQEBYae9YlShitvN5mGeKq8FY4SMAbz
-	jKX6eeOlbeoUNq+yqSzKgQbUNnE04v28ubZCFy2B0v1NwxcV890chn1287/S2mxCSum4v6mPag0n3
-	RLIjzHCZ+JqwA+tt2aVZSac4ns3g==;
-Received: from [10.9.9.72] (helo=submission01.runbox)
+	Subject:Cc:To:From; bh=BqSj6sMMJtBKls1RZgnD1Em19FvNQq+nxXs2VMR7HV8=; b=IjHIrl
+	XnoRoXcw9sXk0XizwbMyE0ZQeMZv4ohY60FUYhp5VkSFcJ+kD1V7GLPpviM+ss4nH0tjXD2M/My9H
+	9xLEhY6Jp7VXULNQOyOTvn1r6pPRMQWJAz8gFiFnaagrtcplEMyoOQnhvM+Jmg6YJpH8reSgLY1C3
+	9iECS6azYsDtQ7HQx30M1nDbqhU0E7EaneSdGeTfP4nTgkvnAn/6tmbzMg5xGX2YS/sIBlfjxzXvv
+	1mdf+tLr+GJyqSN63DMYsJDVDAYkmnZirhv4JOfZJ3ir32mQqMqtBhMTrP6sEYU+2I5hyzOfVZMCi
+	xaOvpnWsogZ386o2R4v2KQ76xShA==;
+Received: from [10.9.9.74] (helo=submission03.runbox)
 	by mailtransmit02.runbox with esmtp (Exim 4.86_2)
 	(envelope-from <david.laight.linux_spam@runbox.com>)
-	id 1wVxbv-0000u8-6n; Sat, 06 Jun 2026 22:27:15 +0200
-Received: by submission01.runbox with esmtpsa  [Authenticated ID (1493616)]  (TLS1.2:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	id 1wVxca-0000vl-W5; Sat, 06 Jun 2026 22:27:57 +0200
+Received: by submission03.runbox with esmtpsa  [Authenticated ID (1493616)]  (TLS1.2:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.95)
-	id 1wVxbp-006V18-2Y;
-	Sat, 06 Jun 2026 22:27:09 +0200
+	id 1wVxcU-006elj-1q;
+	Sat, 06 Jun 2026 22:27:50 +0200
 From: david.laight.linux@gmail.com
 To: Kees Cook <kees@kernel.org>,
 	linux-hardening@vger.kernel.org,
@@ -59,14 +59,14 @@ Cc: Joern Engel <joern@lazybastard.org>,
 	Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
 	David Laight <david.laight.linux@gmail.com>
-Subject: [PATCH next] drivers/mtd/devices/block2mtd: Replace strnlen() strcpy() pair with strscpy()
-Date: Sat,  6 Jun 2026 21:26:33 +0100
-Message-Id: <20260606202633.5018-39-david.laight.linux@gmail.com>
+Subject: [PATCH next] drivers/mtd/devices/phram: Replace strnlen() strcpy() pair with strscpy()
+Date: Sat,  6 Jun 2026 21:27:40 +0100
+Message-Id: <20260606202744.5113-1-david.laight.linux@gmail.com>
 X-Mailer: git-send-email 2.39.5
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260606_132732_051061_34C19E93 
-X-CRM114-Status: GOOD (  13.86  )
+X-CRM114-CacheID: sfid-20260606_132759_175046_0E5414DD 
+X-CRM114-Status: GOOD (  12.96  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -111,27 +111,25 @@ All the patches are being sent individually to avoid very long cc lists.
 Apologies for the terse commit messages and likely unexpected tags.
 (There are about 100 patches in total.)
 
- drivers/mtd/devices/block2mtd.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/mtd/devices/phram.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/devices/block2mtd.c b/drivers/mtd/devices/block2mtd.c
-index 03e80b2c4f5a..466a061fa9bd 100644
---- a/drivers/mtd/devices/block2mtd.c
-+++ b/drivers/mtd/devices/block2mtd.c
-@@ -415,12 +415,11 @@ static int block2mtd_setup2(const char *val)
- 	unsigned long timeout = MTD_DEFAULT_TIMEOUT;
+diff --git a/drivers/mtd/devices/phram.c b/drivers/mtd/devices/phram.c
+index b42cadcd76b1..7025d9bf5929 100644
+--- a/drivers/mtd/devices/phram.c
++++ b/drivers/mtd/devices/phram.c
+@@ -268,10 +268,8 @@ static int phram_setup(const char *val)
+ 	uint32_t rem;
  	int i, ret;
  
--	if (strnlen(val, sizeof(buf)) >= sizeof(buf)) {
-+	if (strscpy(buf, val) < 0) {
- 		pr_err("parameter too long\n");
- 		return 0;
- 	}
- 
+-	if (strnlen(val, sizeof(buf)) >= sizeof(buf))
++	if (strscpy(buf, val) < 0)
+ 		parse_err("parameter too long\n");
+-
 -	strcpy(str, val);
  	kill_final_newline(str);
  
- 	for (i = 0; i < BLOCK2MTD_PARAM_MAX_COUNT; i++)
+ 	for (i = 0; i < 4; i++)
 -- 
 2.39.5
 
