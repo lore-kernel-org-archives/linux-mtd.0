@@ -4,65 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8417CD8C92
-	for <linux-mtd@archiver.kernel.org>; Mon,  8 Jun 2026 04:45:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A56C9CD8C9F
+	for <linux-mtd@archiver.kernel.org>; Mon,  8 Jun 2026 09:55:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=UGkDcTufcZVG3s7aIfr6JbOdwA3RZspF40T90nxSLKA=; b=xH2dYSIkNiRKzt2Woa7YWp6601
-	z4S14vzHzwIhO/L/LLjVEhRFHFQKSqH5KCZxi76fukhTr2YOuC2aUUj26bf7onT4tasry449EgFH4
-	VBoNrdhs6JxHHtDEF706K40IB3b2k1AwN5x41Ypn6avT4emYeoNm9dv2jYXoUaO883n4RRC9eYou5
-	6o7qgcas/0xdp3HLdpGWZaRNV0DXNgAFqWq/BJodWGBKbgmnr455yQ1QxslIj0ITAMIATMv95t1nu
-	j6b1c0XuehVJHoKlhrdWOA74Ik5Oku89Yv3LaNeoJwXYz5k7NDKbsNEFrYKPOyr/LtaQg10Ko2KYD
-	H4Zc8i2w==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=cN/1L8x0OXnOZPeixgdf6Bgj1rqJJ+9syNTmFCuKKHs=; b=t8gWvCazl3qOe2
+	0j6qXsGFxIFz0jGz9MYWHAkotZpGWzBdAq9tDcxI2PcpGUnuLVUJ/bIGAUqdCcI16fshJTeB3AbxD
+	RjiW5F2aSxq8LSjmBMuoQEQtOvE2r5Y//OV4Hs5hdMJFFFa/Z70Bv4Zk2SpFoUUubXHlrak8a+esb
+	R2psCS9bMQ5+QTqguxhoFexAi29L4Kovgwgqhe0hAo7zDWFILy/3zAp6+Z9mc5F8lmwX48yYHiT5+
+	2fyGkuXwbAEvzFOl8GVqqMTxibgE6bIKMoYi4Rf/C8xNyID6L2QqGyOPjS9d0IBExRR5Pljjzxzv0
+	wiR4hCqssugI1q6Ft41A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wWRrc-00000002nuQ-0hdW;
-	Mon, 08 Jun 2026 04:45:28 +0000
-Received: from canpmsgout05.his.huawei.com ([113.46.200.220])
+	id 1wWWhe-00000003Eyq-3n3X;
+	Mon, 08 Jun 2026 09:55:30 +0000
+Received: from mailtransmit05.runbox.com ([2a0c:5a00:149::26])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wWRrY-00000002nti-1a9x
+	id 1wWWha-00000003Ex0-3F0f
 	for linux-mtd@lists.infradead.org;
-	Mon, 08 Jun 2026 04:45:26 +0000
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=GPBQVFiZqsGhvAZlvcHfu4qK7Re0Y1M+TiyS11nNpL0=;
-	b=uWvOZujX7vQs3FFyvLnOK83h2Je6WdPkFWDyhZnsDxuH281eLEKbrI6jffgzi1xJ9+7dXbgGV
-	cpLh2ViQHH1l/wMU/Lg7JWSZRIi2RnHTIVH9FDD1q6TrG1z4t9eYZwIHsXWHcABnTqLhXr8e1ZB
-	NFz8dL0LquVHNOa3nzU0i7s=
-Received: from mail.maildlp.com (unknown [172.19.163.0])
-	by canpmsgout05.his.huawei.com (SkyGuard) with ESMTPS id 4gYfQb3xhlz12LGP;
-	Mon,  8 Jun 2026 12:37:11 +0800 (CST)
-Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id 80D5F40561;
-	Mon,  8 Jun 2026 12:45:04 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemk500005.china.huawei.com (7.202.194.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Mon, 8 Jun 2026 12:45:03 +0800
-Subject: Re: [PATCH v1] mtd: ubi: Fix rollback for explicit UBI device numbers
-To: Yuho Choi <dbgh9129@gmail.com>, Richard Weinberger <richard@nod.at>,
-	Miquel Raynal <miquel.raynal@bootlin.com>
-CC: <linux-mtd@lists.infradead.org>, Vignesh Raghavendra <vigneshr@ti.com>,
-	<linux-kernel@vger.kernel.org>
-References: <20260608040639.2616638-1-dbgh9129@gmail.com>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <52a0fcca-57ab-12b4-63d1-cdd648bf8254@huawei.com>
-Date: Mon, 8 Jun 2026 12:45:03 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	Mon, 08 Jun 2026 09:55:29 +0000
+Received: from mailtransmit02.runbox ([10.9.9.162] helo=aibo.runbox.com)
+	by mailtransmit05.runbox.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.93)
+	(envelope-from <david.laight.linux_spam@runbox.com>)
+	id 1wWWhR-00Bqzw-V8; Mon, 08 Jun 2026 11:55:17 +0200
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=runbox.com;
+	 s=selector1; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:
+	Subject:Cc:To:From; bh=dvVQtq6KmzTF2DSPmceFBElb1g/eXFZc7duQz7yINc4=; b=S4ch9n
+	mN82TLI48npOG95U+9sDywV9FBPTkUkEH33/D3/2YWCdF1sV8y+7hUAnZF6Kt3KxK9c7iF9QVdDE1
+	TZNHOlWe4ve3x1b9RXOqmPSf4wt0wm8s3YMpUGjz5RTQ3T3BosxUKOitkinsvXUJ3NWMbaHyJ+M1O
+	ncVkEzD0f8TgiQgnGrADDw8lgOaPT70NgXdFRRiLmhoNQLOy9hkHDaJTN9w/nKQmFufOlmFGctz4+
+	f1qGlPRbTz/u5A4Ev+/fH0Hxkc2wsUQe2bB05b8V+uw+b81hl2P0v5E/4IbTPk59FJI/V/tLauIQH
+	FbW6c39U4MHQL2ZiwMnNih1D06mQ==;
+Received: from [10.9.9.73] (helo=submission02.runbox)
+	by mailtransmit02.runbox with esmtp (Exim 4.86_2)
+	(envelope-from <david.laight.linux_spam@runbox.com>)
+	id 1wWWhR-0000C7-Dm; Mon, 08 Jun 2026 11:55:17 +0200
+Received: by submission02.runbox with esmtpsa  [Authenticated ID (1493616)]  (TLS1.2:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.95)
+	id 1wWWhF-00Afz8-Fp;
+	Mon, 08 Jun 2026 11:55:05 +0200
+From: david.laight.linux@gmail.com
+To: Kees Cook <kees@kernel.org>,
+	linux-hardening@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org
+Cc: Arnd Bergmann <arnd@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	David Laight <david.laight.linux@gmail.com>
+Subject: [PATCH next] drivers/mtd/ubi/build: Use strscpy() to copy strings into arrays
+Date: Mon,  8 Jun 2026 10:54:58 +0100
+Message-Id: <20260608095500.2567-3-david.laight.linux@gmail.com>
+X-Mailer: git-send-email 2.39.5
 MIME-Version: 1.0
-In-Reply-To: <20260608040639.2616638-1-dbgh9129@gmail.com>
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: kwepems100001.china.huawei.com (7.221.188.238) To
- kwepemk500005.china.huawei.com (7.202.194.90)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260607_214524_883921_A09BE9C6 
-X-CRM114-Status: GOOD (  16.95  )
+X-CRM114-CacheID: sfid-20260608_025527_699865_B3377B4A 
+X-CRM114-Status: GOOD (  14.44  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,36 +77,69 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="gbk"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-1NogMjAyNi82LzggMTI6MDYsIFl1aG8gQ2hvaSDQtLXAOgo+IHViaV9pbml0X2F0dGFjaCgpIHJv
-bGxzIGJhY2sgbW9kdWxlIGluaXRpYWxpemF0aW9uIGZhaWx1cmVzIGJ5IHNjYW5uaW5nCj4gdWJp
-X2RldmljZXNbMC4uaS0xXSwgd2hlcmUgaSBpcyB0aGUgbXRkPSBwYXJhbWV0ZXIgaW5kZXguIFRo
-YXQgYXNzdW1lcwo+IHRoZSBwYXJhbWV0ZXIgaW5kZXggbWF0Y2hlcyB0aGUgVUJJIGRldmljZSBu
-dW1iZXIuCj4gCj4gVGhhdCBhc3N1bXB0aW9uIGlzIG5vdCB0cnVlIHdoZW4gbXRkPSBzcGVjaWZp
-ZXMgYW4gZXhwbGljaXQgdWJpX251bS4gQQo+IHN1Y2Nlc3NmdWxseSBhdHRhY2hlZCBkZXZpY2Ug
-Y2FuIGJlIHN0b3JlZCBhdCBhIGhpZ2hlciB1YmlfZGV2aWNlc1tdCj4gc2xvdCwgYW5kIGEgbGF0
-ZXIgZmFpbHVyZSBjYW4gbWlzcyBpdCBkdXJpbmcgcm9sbGJhY2suCj4gCj4gU2NhbiB0aGUgZnVs
-bCB1YmlfZGV2aWNlc1tdIGFycmF5IGFuZCBkZXRhY2ggYnkgdGhlIGFjdHVhbCBhcnJheSBpbmRl
-eCwKPiBtYXRjaGluZyB0aGUgd2F5IFVCSSBkZXZpY2VzIGFyZSBzdG9yZWQuCj4gCj4gRml4ZXM6
-IDgzZmY1OWEwNjY2MyAoIlVCSTogc3VwcG9ydCB1YmlfbnVtIG9uIG10ZC51YmkgY29tbWFuZCBs
-aW5lIikKPiBTaWduZWQtb2ZmLWJ5OiBZdWhvIENob2kgPGRiZ2g5MTI5QGdtYWlsLmNvbT4KPiAt
-LS0KPiAgIGRyaXZlcnMvbXRkL3ViaS9idWlsZC5jIHwgNCArKy0tCj4gICAxIGZpbGUgY2hhbmdl
-ZCwgMiBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQo+IApSZXZpZXdlZC1ieTogWmhpaGFv
-IENoZW5nIDxjaGVuZ3poaWhhbzFAaHVhd2VpLmNvbT4KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9t
-dGQvdWJpL2J1aWxkLmMgYi9kcml2ZXJzL210ZC91YmkvYnVpbGQuYwo+IGluZGV4IDY3NGFkODc4
-MDlkZi4uOTBjNWM4M2Q5MGUzIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbXRkL3ViaS9idWlsZC5j
-Cj4gKysrIGIvZHJpdmVycy9tdGQvdWJpL2J1aWxkLmMKPiBAQCAtMTMxNywxMCArMTMxNywxMCBA
-QCBzdGF0aWMgaW50IF9faW5pdCB1YmlfaW5pdF9hdHRhY2godm9pZCkKPiAgIAlyZXR1cm4gMDsK
-PiAgIAo+ICAgb3V0X2RldGFjaDoKPiAtCWZvciAoayA9IDA7IGsgPCBpOyBrKyspCj4gKwlmb3Ig
-KGsgPSAwOyBrIDwgVUJJX01BWF9ERVZJQ0VTOyBrKyspCj4gICAJCWlmICh1YmlfZGV2aWNlc1tr
-XSkgewo+ICAgCQkJbXV0ZXhfbG9jaygmdWJpX2RldmljZXNfbXV0ZXgpOwo+IC0JCQl1YmlfZGV0
-YWNoX210ZF9kZXYodWJpX2RldmljZXNba10tPnViaV9udW0sIDEpOwo+ICsJCQl1YmlfZGV0YWNo
-X210ZF9kZXYoaywgMSk7Cj4gICAJCQltdXRleF91bmxvY2soJnViaV9kZXZpY2VzX211dGV4KTsK
-PiAgIAkJfQo+ICAgCXJldHVybiBlcnI7Cj4gCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcg
-bGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10
-ZC8K
+From: David Laight <david.laight.linux@gmail.com>
+
+Replacing strcpy() with strscpy() ensures that overflow of the target
+buffer cannot happen.
+
+Signed-off-by: David Laight <david.laight.linux@gmail.com>
+---
+This is one of a group of patches that remove potentially unbounded
+strcpy() calls.
+
+They are mostly replaced by strscpy() or, when strlen() has just been
+called, with memcpy() (usually including the '\0').
+
+Calls with copy string literals into arrays are left unchanged.
+They are safe and easily detected as such.
+
+The changes were made by getting the compiler to detect the calls and
+then fixing the code by hand.
+
+Note that all the changes are only compile tested.
+
+Some Makefiles were changed to allow files to contain strcpy().
+As well as 'difficult to fix' files, this included 'show' functions
+as they really need to use sysfs_emit() or seq_printf().
+
+All the patches are being sent individually to avoid very long cc lists.
+Apologies for the terse commit messages and likely unexpected tags.
+(There are about 100 patches in total.)
+
+ drivers/mtd/ubi/build.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index 674ad87809df..e7097d85035c 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -1497,7 +1497,7 @@ static int ubi_mtd_param_parse(const char *val, const struct kernel_param *kp)
+ 		return 0;
+ 	}
+ 
+-	strcpy(buf, val);
++	strscpy(buf, val);
+ 
+ 	/* Get rid of the final newline */
+ 	if (buf[len - 1] == '\n')
+@@ -1512,7 +1512,7 @@ static int ubi_mtd_param_parse(const char *val, const struct kernel_param *kp)
+ 	}
+ 
+ 	p = &mtd_dev_param[mtd_devs];
+-	strcpy(&p->name[0], tokens[0]);
++	strscpy(p->name, tokens[0]);
+ 
+ 	token = tokens[1];
+ 	if (token) {
+-- 
+2.39.5
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
