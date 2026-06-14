@@ -4,86 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 26AB0CD98CF
-	for <linux-mtd@archiver.kernel.org>; Sat, 13 Jun 2026 21:10:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8F711CD98D2
+	for <linux-mtd@archiver.kernel.org>; Sun, 14 Jun 2026 06:32:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=eCIald+Q7XJ9vpNj3erWSE53mVovFeHO8eMAeO4esE0=; b=n78hzxiYQVXq9x
-	SN432miTfHMwQNwI9BrwjeCVv5cDWw8TA9eptNf18UmKaE2cKwiL8K0iOQqTjYXKWufQRCNnaFqms
-	exbO6XtLwAEsA++tW8Hm5PKQwgFLqn1zlgq3/Ec7tfwnOvn2esE8/uEybOgSRh5zMhIhtwMxsYuGk
-	6aksy5dJWcp7bvfri407eIAGj/fLN99Oj1ZqIfuv6TchJcUOdwt2yWamQzTwT12Y74xX9vEWdb9wh
-	+aYHRQhJCgZmGK+z2a1/4XTfACqmsaCaiSr7YDflNfbnvjToEZRiU8fY4tfTdzXOp0aaHjrEu5xcz
-	CFFB9wJMA6TWumLw01Kg==;
+	List-Owner; bh=kFoiPAT2wZt+PbJO6yAwCBV+fRKXeEY59sZrvlgv8G0=; b=ikZyPXADpJsdxy
+	N2CP1Yn9Ylwx1qhz8FFLOSxapvUhQ0rVRCSfGdswLgnh1tIfo+IQuSBJcyk2FbqQTGuQ4+aO2TzJ6
+	9+mwinIsFKJ70qAOmX6nsDiF+Z0cLnoqoKVdHN4t+UI51OTAxN6wYgUUBkju1bOHaxhOTAbXlAes4
+	DPvxbbTEdqND7XNsxuljPiM82bQWjhXU41IcSa1Dullh7EoZh1E7aomAm2LCBP37qYk0+4vzifkj2
+	PfSIUNkGjqPUUFCmdr2reFVLzH7v4XMagCSc+x031iYZeyd2zABY+qAMy0mSr7Q4cDpDJ6ZS2yIsR
+	gn52+U5J/8ETVPoYXSnQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wYVcm-0000000CY0u-02w7;
-	Sat, 13 Jun 2026 21:10:40 +0000
-Received: from mail-dy1-x1341.google.com ([2607:f8b0:4864:20::1341])
+	id 1wYeOF-0000000Cmoh-1mLs;
+	Sun, 14 Jun 2026 06:32:15 +0000
+Received: from mail-pg1-x52c.google.com ([2607:f8b0:4864:20::52c])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wYVci-0000000CY0X-2eAs
+	id 1wYeOC-0000000CmoK-1RSz
 	for linux-mtd@lists.infradead.org;
-	Sat, 13 Jun 2026 21:10:37 +0000
-Received: by mail-dy1-x1341.google.com with SMTP id 5a478bee46e88-30807ba471bso6021542eec.1
-        for <linux-mtd@lists.infradead.org>; Sat, 13 Jun 2026 14:10:35 -0700 (PDT)
+	Sun, 14 Jun 2026 06:32:14 +0000
+Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-c85b73ffb52so968480a12.3
+        for <linux-mtd@lists.infradead.org>; Sat, 13 Jun 2026 23:32:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1781385035; x=1781989835; darn=lists.infradead.org;
+        d=gmail.com; s=20251104; t=1781418730; x=1782023530; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=coh4rqjKZIC8Jcem5U7E85AcHmOjE6sxJohiAW73BkA=;
-        b=eMFXvnd4QyqexUx2J7CD8k6nwc9r66icPooZYELcXkbaEz7elTbj6H334sx7ewZ3ja
-         wB37ijziqB8/2bYuqkMEPnBi55X8a+XmBZ0L7238CTYgdaQfIdRygVDIRi0faIMrPIDH
-         bphFdkadukTe4xjZEeBOtlx5p8y5TnT23j/fbV7d69YKcU9uckmbqW7h9hiI2BQzDK9y
-         3FNYChp8TkW+NKSw9t9xw4YmMr4XbRjBhXsgfv8402mwUVMZe6JcaL4nBFyA+zr+7qgq
-         QxBg45Ndoyf5e6eAGL+n/xjsjdEP5sP/4AuMrzbq1orjcJX8bXuBE+KSZ/PsK0UJDtUX
-         RIWQ==
+        bh=6uJ4C/N63XZ6QChWU9F0voZA7psF+7ng/LdBC6H6EVE=;
+        b=Qt53Q+DfKyv1X7AuEAuT7032Mk23nQZXR4EQnviCIeiZnHtntt8FD9VCkhUvGDleWR
+         i453Gfbn3iT4ey9FOv/41ZnfWN2MGvqQTh4fchxn57RDXGImAZQ/EaVbOxmLQ3G18akt
+         wbxEuW1lF2mcGoe0VN5cTFH6RHb1/81x/E4XearEbyfaH2MKRrPU7WWF1rxvmIG5rJ0j
+         I4y9ISqBC7FZtPuMkF14bXFX/7O3b+CxTdluTgVXBuum9d9hy9ISiKNpi2KJ+3hCbiPO
+         1ScO8vGM0gDuBBGm0qzU2hp1+4TOsbyi5/dp+D6/nxYgWKPEg0eN3b20+uvRVLWL3XoO
+         bUwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1781385035; x=1781989835;
+        d=1e100.net; s=20251104; t=1781418730; x=1782023530;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=coh4rqjKZIC8Jcem5U7E85AcHmOjE6sxJohiAW73BkA=;
-        b=ZKGAZJzxWw6U0M+S0GXW4OiF6cRHmwLIJEwz8XFA0U4LrGSMcK7WQkCNACX4EY1SSc
-         xguR7TZtvaEB6YSAzxuwJSBRs64oQyVt5VeZDjrhrwIbyLSSUI28USKXKuqaDDkXDclg
-         cMSCRsJQdTfrwNiBLPSff5BI0rPua1YetcJ5Yu393cdVeR0kSG4/y7E3ecxnM0e4TVEl
-         2ameAehoJscfEJFdzj3onCMgw74l+YOk1t1neJpdupC1t9T33WEoOWocfz3QR5KKzvMC
-         78AGWv6oUj3oUflfFAn8JA4XjLXcGlVK9/nGEeTejB5ELRcA5eX7attE0AnjmXJSctl8
-         FQ/g==
-X-Forwarded-Encrypted: i=1; AFNElJ+G9Az/Hwbzy4O70uAzvkisUmmYSioiDBumT0tE0FLkkFJ97ax0EKrUr/rcTZFJVWkYgvKH2kp9vTs=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxVvO6pJjsVmDkCDZgKmXxky1XqE+S2lSVHi3+OQhfFWzVHqFVq
-	syZ9Hxcx4RmXkHzZzMYLg8DYR9RW2E0JMKZpVebM0kkkwOLOURqLYrzs
-X-Gm-Gg: Acq92OFbrvyDMep+eF/yyHNrcfYoPEn/a6mgGIcled3BPNl8EeR+G2p1kYB5S26X5j2
-	avfEBkEZltAmnbR2++EVHkKf/KOfreMw0lb8ysblRbtD5uLPGftIiVJjEtgZy+VTmzyZR4pQtL1
-	ssuy5ssEM4RXg5Ry66IZC7L10xMRb3Ao45Hrddnf8sVhlt5kmuTs8qRpcNFv5LvYZpz+OPbaaNi
-	mRYV/a1wW0CtDQXGJ7tNbqIFyumq/qx+I6ROqC0LtKovrIaNK05LezjUFN4syz2Wgndf1fSa4U2
-	8pBGa6sxuH8UhJzX2zX5EyfnAkIch6WWmt5hEify1FFX74K/K0a2ampNhYjkDc/tDEumj4xRtLc
-	jeudN013hfJ4P4DRAZerYN+hZf7jXcDPU7Bc6hXDi7/+494wuhwIuY4jGBhf6xfmDv2T3BtBTJX
-	fWVXjJWSPmD8YIevnNV/Fqx2Xmjooc6hOHlm95eIAv4OMYKOeWcFUinBXYupEemIIkxiz1x9Ymd
-	SKDtFZzPd33q8DMcVXS7WByIn6R/lJaU+sNBjwksI3sqQK9mXGBxIzVSeFj+LcBjmxecjNKeDWt
-	GuaZHkTk1UyCJdB63A==
-X-Received: by 2002:a05:693c:68cb:b0:30b:6181:4749 with SMTP id 5a478bee46e88-30b61814926mr736679eec.16.1781385034884;
-        Sat, 13 Jun 2026 14:10:34 -0700 (PDT)
-Received: from ethan-latitude5420.. (host-127-24.cafrjco.fresno.ca.us.clients.pavlovmedia.net. [68.180.127.24])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-3081e5d810fsm8973538eec.12.2026.06.13.14.10.34
+        bh=6uJ4C/N63XZ6QChWU9F0voZA7psF+7ng/LdBC6H6EVE=;
+        b=Lz8vgWEK4KEjX1gSKWC6+tWLGhVN0sqamHqeL8bZFsCCplBc73NvfwTPk3qe3VaxBk
+         FiOpchqUSj357Rge6o2M0N3mqBEqQr0PLTv2XtV8dik5nSlqlgzpQ2TpZMKKuhnxy2hv
+         EW/ZpWUGZNPW3n2w7BFA61ox/QQZgIIdrTvuI2yeudC14toIM/6iEJEZMSQdsnzPPcrl
+         kE7ES3q8NZ3zmdLmSAaDIoez6kU7ICPFfvxPCsMQsVPynR6peRb0YUTCklT5CBJ6Z7oD
+         uLsKKNh+rTAXOEJv5hWlOXNY3Y3mS/YBeVj7KgEQmhWFSMuohANG7Ce+SjzzJMu8FHLe
+         djBg==
+X-Gm-Message-State: AOJu0YyHOe2+QgPi/TcORdVTiRIeq8itXNGy5kjVg5/lF65Ed5n9e+2x
+	tDYtQDKMc+onvInJRdZWZNoVovO/ToqqI3XSxiV7d95Bt2CoEO6TSvid6v6biQ==
+X-Gm-Gg: Acq92OFEm+0wT54C1XzwhDc6GgSIpIWlkrKYob6QwpcgJ1k0sht7ikiIHn1UCoaPB+Y
+	CaK/dczifJp/cBfhMm92Hdev46xIDzHTSDelEHUDaBx7s2YPg2YKKmk7B1QhaeR6OPmfMd2eYGb
+	EOTVrVx2lbB/qnmO3JhQMAvQFD9/Cf7207XuWnXt3Tci88c4YboaZmH0bC29RzpDBDunpBUBj/W
+	Rpw1WViq2NnX1GSxk0W/nE1oklmHwazEmyWdz3on90cFHMpFnqOO7bMhvSOnyA1OUYxoY0zyWdo
+	5DGjTZWJsrp5+IB8tJ1LXHBsXsRxZliBDJonWOXnPdZTPgSzbUhGOZQHRlA6TfQ8+Q56iUxJEYT
+	IBzpqC7xKkR7fzL55vg7B2zJTS0+qAvyJadMOlJ39pbBh+Kf8vwFNAe6VMCJg0utcg8R4bARaTe
+	+mPvhaEy2RQ8TOw2Mhkk+yB/xhcBAFARHj22mo5YBHxF/eErAyUClv97HBG0mP3M/IklEQ1e/CY
+	BElH1sU2344+sFHWBAQ+s5ErjdoVl5xUvQ=
+X-Received: by 2002:a05:6300:218c:b0:3b4:7c33:296c with SMTP id adf61e73a8af0-3b79644cf8emr6017077637.45.1781418730281;
+        Sat, 13 Jun 2026 23:32:10 -0700 (PDT)
+Received: from ryzen ([2601:644:8000:5b5d:6e63:e53e:e773:8f84])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-c8663164a0fsm5680721a12.8.2026.06.13.23.32.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Jun 2026 14:10:34 -0700 (PDT)
-From: Ethan Nelson-Moore <enelsonmoore@gmail.com>
-To: "GitAuthor: Ethan Nelson-Moore" <enelsonmoore@gmail.com>,
-	linux-mtd@lists.infradead.org
+        Sat, 13 Jun 2026 23:32:09 -0700 (PDT)
+From: Rosen Penev <rosenp@gmail.com>
+To: linux-mtd@lists.infradead.org
 Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>
-Subject: [PATCH] mtd: maps: correct CONFIG_MTD_COMPLEX_MAPPINGS macro name in comment
-Date: Sat, 13 Jun 2026 14:10:28 -0700
-Message-ID: <20260613211031.85166-1-enelsonmoore@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] mtd: rawnand: ndfc: fix gcc uninitialized var
+Date: Sat, 13 Jun 2026 23:31:52 -0700
+Message-ID: <20260614063152.1522268-1-rosenp@gmail.com>
+X-Mailer: git-send-email 2.54.0
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260613_141036_702094_65961839 
-X-CRM114-Status: GOOD (  10.14  )
+X-CRM114-CacheID: sfid-20260613_233212_386670_4789545A 
+X-CRM114-Status: GOOD (  11.40  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,32 +98,31 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-A comment in drivers/mtd/maps/map_funcs.c incorrectly refers to
-CONFIG_COMPLEX_MAPPINGS instead of CONFIG_MTD_COMPLEX_MAPPINGS. Correct
-it.
+Now that this can be built with COMPILE_TEST, an unassigned variable was
+found. Set to 0 to fix the W=1 error under GCC.
 
-Discovered while searching for CONFIG_* symbols referenced in code but
-not defined in any Kconfig file.
-
-Signed-off-by: Ethan Nelson-Moore <enelsonmoore@gmail.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202606141301.iyVdFgl7-lkp@intel.com/
+Signed-off-by: Rosen Penev <rosenp@gmail.com>
 ---
- drivers/mtd/maps/map_funcs.c | 2 +-
+ drivers/mtd/nand/raw/ndfc.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/maps/map_funcs.c b/drivers/mtd/maps/map_funcs.c
-index 1a4add9e119a..b0054933cae0 100644
---- a/drivers/mtd/maps/map_funcs.c
-+++ b/drivers/mtd/maps/map_funcs.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0-only
- /*
-- * Out-of-line map I/O functions for simple maps when CONFIG_COMPLEX_MAPPINGS
-+ * Out-of-line map I/O functions for simple maps when CONFIG_MTD_COMPLEX_MAPPINGS
-  * is enabled.
-  */
+diff --git a/drivers/mtd/nand/raw/ndfc.c b/drivers/mtd/nand/raw/ndfc.c
+index a937ca3eeff5..a48274297d3b 100644
+--- a/drivers/mtd/nand/raw/ndfc.c
++++ b/drivers/mtd/nand/raw/ndfc.c
+@@ -188,7 +188,7 @@ static int ndfc_probe(struct platform_device *ofdev)
+ 	const __be32 *reg;
+ 	u32 ccr;
+ 	u32 cs;
+-	int err, len;
++	int err, len = 0;
  
+ 	/* Read the reg property to get the chip select */
+ 	reg = of_get_property(ofdev->dev.of_node, "reg", &len);
 -- 
-2.43.0
+2.54.0
 
 
 ______________________________________________________
