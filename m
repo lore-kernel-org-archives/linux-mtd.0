@@ -4,99 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14101CD98D6
-	for <linux-mtd@archiver.kernel.org>; Sun, 14 Jun 2026 08:11:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB669CD98CF
+	for <linux-mtd@archiver.kernel.org>; Mon, 15 Jun 2026 06:32:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=TBbeqQ7fgsGo+kMg84FwM3mnpYUVAsH20tXE1RgV328=; b=NqxYmAXA8iBNZJ
-	N32H3Q7eK5+HWiyOtrlKcdZY/7ZnTjumT0Fbmc7V2/kERYeD4TLU+u0H/a1BqrTbuMGKLO3B1nOjz
-	CyopJhi1xLGM1zqRYcSdZ06LD0o0SZgIU53Z5WjLoXT6EEjtnzr6fRF8h8zIiAo21GMzzhFIIOdQ6
-	NXLh69nM3J1Sf7juIhUw93zFj2P22x8cOUIfhIGnA/0s7f8GRmnNekW6tLOvkBphY7ef04T5PMNff
-	SZKW/GXGcbdM8E2GumDoQjIOtKz5I8G7ld/vq32OFmvhIV5jWd5fVbgyth4s/cXaIaUwr6VvN8ira
-	l8IXkyOs6CTKSb3QmkQA==;
+	List-Owner; bh=bFVsmgELJJmlXNF39J7CmfzIDuvWK9C6v++amT1rqmI=; b=lxevsXU7ZyAftM
+	IF9/i8vk7xv5HOQ4II4xmhtpkXxJdPhffvJwXDm2gjvF3INvOjq1WQ1gQt+p3i0jieDzsfqi75UL9
+	OFAsJ666eyVcFibyfKrlQX4cQttvFPchL7lP6++TAeE5clJvOJq48Yx0C+hnPOBdSTGt31XRZMXQf
+	ONdsJBmit0YOqpUgMaD8Q6bAGvVY7U5VKIOig1jiEik+k4kBR3PW9w6rKB5s1hOYGoEBPW9hE9pVS
+	aejcuzHHcxnwJ7S8TH1x+2K0zWvXeZfnGzdPMi63UmrpJdScY4RTLygnY1QWaejOG5DGyoBNmi9bU
+	aI4Ww8ERHrWFcV0AnwQw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wYfw2-0000000CokM-06ZO;
-	Sun, 14 Jun 2026 08:11:14 +0000
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32])
+	id 1wZ0sD-0000000DgvV-3d9x;
+	Mon, 15 Jun 2026 06:32:41 +0000
+Received: from smtp25.cstnet.cn ([159.226.251.25] helo=cstnet.cn)
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wYfvx-0000000Cojx-2cf6
-	for linux-mtd@lists.infradead.org;
-	Sun, 14 Jun 2026 08:11:12 +0000
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 65E602A42470398;
-	Sun, 14 Jun 2026 08:10:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-transfer-encoding:date:from:message-id:mime-version
-	:subject:to; s=corp-2025-04-25; bh=dBwUVwpF8UpikfXpB7S+S5Lp8Cw6O
-	YyIpZSLG9xcbEw=; b=UbQUiuGSqbUGLgB2Xj+2boy9kjp5iw897D3qSOuDvPQvk
-	UiN9fd45dsXXeFFrmBa/aYz9o8ZtWt3t0uNCm3nqDlDagC0Z3sQgeIvLwweYWb01
-	vq2yTTC39RKvCEXSEcX4dt/7/5WoFbH52kOCSfCGeWVIZzgPXifHNN91q1WnSi29
-	N+TKUluVWsMT8oWQ0CJdR5q8v1KL1OC5KIwQeh3dzdHY64+Y/cE5gGfXI7sXphVI
-	WxWvGg6iT0W/5ct2zsOHYRRaQf4OIjhrvRv3AyPeAnNdshXBOs7iUlwNA1gyRnEu
-	4x/1Kry7ZZsngevoQ+g2bx856F2Zv8lL8eUpjNY8w==
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4es1828wug-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sun, 14 Jun 2026 08:10:57 +0000 (GMT)
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.7/8.18.1.7) with ESMTP id 65E885E0026285;
-	Sun, 14 Jun 2026 08:10:56 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 4erwna11kc-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sun, 14 Jun 2026 08:10:56 +0000 (GMT)
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.18.1.12/8.18.1.12) with ESMTP id 65E8AtO2037257;
-	Sun, 14 Jun 2026 08:10:55 GMT
-Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.129.136.47])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 4erwna11jp-1;
-	Sun, 14 Jun 2026 08:10:55 +0000 (GMT)
-From: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+	id 1wZ0s8-0000000Dgv0-44FB;
+	Mon, 15 Jun 2026 06:32:38 +0000
+Received: from localhost.localdomain (unknown [111.196.245.140])
+	by APP-05 (Coremail) with SMTP id zQCowACnGu6CnC9qMHWTEw--.34359S2;
+	Mon, 15 Jun 2026 14:32:34 +0800 (CST)
+From: Pengpeng Hou <pengpeng@iscas.ac.cn>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>,
-        Luca Ceresoli <luca.ceresoli@bootlin.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org, error27@gmail.com,
-        Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-Subject: [PATCH] mtd: virt_concat: fix use-after-free in mtd_virt_concat_destroy_joins()
-Date: Sun, 14 Jun 2026 01:10:52 -0700
-Message-ID: <20260614081052.1332702-1-harshit.m.mogalapalli@oracle.com>
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Cc: pengpeng@iscas.ac.cn
+Subject: [PATCH] mtd: nand: ecc-mtk: handle ECC clock enable failures
+Date: Mon, 15 Jun 2026 14:32:32 +0800
+Message-ID: <20260615063232.44383-1-pengpeng@iscas.ac.cn>
 X-Mailer: git-send-email 2.50.1
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.125,FMLib:17.12.100.49
- definitions=2026-06-14_01,2026-06-12_03,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0
- malwarescore=0 adultscore=0 bulkscore=0 suspectscore=0 lowpriorityscore=0
- spamscore=0 mlxscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2606040000 definitions=main-2606140079
-X-Proofpoint-Spam-Info: AW1haW4tMjYwNjE0MDA4MCBTYWx0ZWRfX1qxXwMMO7i6C
- CRf3UNZcADoVeKRcKfS/b1pXl8F5Q93PZMFudSHA2U3sTJp9+WsCMv52WS2w6yRzIxAwoILi1qx
- Xj8uNYGUIW/Has3HQhCM8Vxn9iGqlmVKo0XA5rOvtn96OU/+6Rf2
-X-Proofpoint-GUID: doz40zM_JbgHqJJDka8rBcJWYndIVSQq
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNjE0MDA4MCBTYWx0ZWRfX6P7pE3nGYj0M
- t7UrQKwv+96nP5aHYqTG4ewk96TS1BTRHqnD52wp6Qir9C9oTYxliLy7AsLt5ZDgq6dHtm7Pnf3
- iot/RCEhVjyC6DG3A55kYuSIVzQ1qyeTFoYO6sRR+i0s0PhEFv2atKfWGHLwVglgL9Pm2wBUe5V
- ouXRXLv853KWDk8I1elT6IJaHcuk04CynqUusOHkYKUyi0CLzIEgMQO+vlUu64vioxLDCTahF3y
- raw945mX6q9hSMiHXT41U7RKit+zuAg2W2hyYRCIPTuCG9RZNWdwAwpvz7DTcA7nn2ngCoS5TyL
- W5KMcZES/QQEmBJVwPjPs0VVPcxOnhbRXRH7p6OaNvbfVfl1k+huNON49flkP04mehQPIeJpNIm
- vdTHpa2MuYcpDyXwv9McF6o+uruTaQlYm3Ll8iqytyku6l359Pffwber3t+yv0u09RUC7VnbDCb
- dyfk31Rcs7oICyVtEtw==
-X-Proofpoint-ORIG-GUID: doz40zM_JbgHqJJDka8rBcJWYndIVSQq
-X-Authority-Analysis: v=2.4 cv=Rr/16imK c=1 sm=1 tr=0 ts=6a2e6211 cx=c_pps
- a=XiAAW1AwiKB2Y8Wsi+sD2Q==:117 a=XiAAW1AwiKB2Y8Wsi+sD2Q==:17
- a=FelO9ux0wxsA:10 a=VkNPw1HP01LnGYTKEx00:22 a=jiCTI4zE5U7BLdzWsZGv:22
- a=BqU2WV_vvsyTyxaotp0D:22 a=yPCof4ZbAAAA:8 a=v0qoSzXYcCiXLhW8FuoA:9
+X-CM-TRANSID: zQCowACnGu6CnC9qMHWTEw--.34359S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7ury3XF4kAF4rWrW7uw18AFb_yoW8Gw15pF
+	WUC395KrWDGayjgwn7ua1UC3WakayxK395Wr98Cw1v93sYvrySyFy8JFWjvwnYvrWrGa13
+	Jrsrta4kAayUAFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9014x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+	6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
+	n2kIc2xKxwCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
+	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+	67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+	CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1x
+	MIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIda
+	VFxhVjvjDU0xZFpf9x0JUpwZcUUUUU=
+X-Originating-IP: [111.196.245.140]
+X-CM-SenderInfo: pshqw1xhqjqxpvfd2hldfou0/
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260614_011110_011805_B31C0A2B 
-X-CRM114-Status: GOOD (  11.88  )
+X-CRM114-CacheID: sfid-20260614_233237_398063_710214B7 
+X-CRM114-Status: GOOD (  12.09  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -113,36 +83,52 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-mtd_concat_destroy() frees item->concat so calling
-mtd_virt_concat_put_mtd_devices(item->concat) leads to a use after free.
+mtk_ecc_get() gets a reference to the ECC platform device, obtains the
+provider state and then enables the ECC clock before initializing the
+hardware.
 
-Fix this by moving mtd_virt_concat_put_mtd_devices() before
-mtd_concat_destroy()
+The clk_prepare_enable() return value is currently ignored.  If enabling
+the clock fails, the code still touches the ECC registers and returns a
+live ECC handle to the caller.  The provider device reference acquired
+by of_find_device_by_node() is also kept even though the handle setup
+failed.
 
-Fixes: 43db6366fc2d ("mtd: Add driver for concatenating devices")
-Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+Propagate the clock enable error and drop the provider device reference
+on that failure path.
+
+Signed-off-by: Pengpeng Hou <pengpeng@iscas.ac.cn>
 ---
-This is static analysis finding by Smatch, only compile tested.
----
- drivers/mtd/mtd_virt_concat.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/nand/ecc-mtk.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/mtd_virt_concat.c b/drivers/mtd/mtd_virt_concat.c
-index 37075ead0f33..a3fb96788e9d 100644
---- a/drivers/mtd/mtd_virt_concat.c
-+++ b/drivers/mtd/mtd_virt_concat.c
-@@ -75,8 +75,8 @@ void mtd_virt_concat_destroy_joins(void)
- 		if (item->concat) {
- 			mtd_device_unregister(mtd);
- 			kfree(mtd->name);
--			mtd_concat_destroy(mtd);
- 			mtd_virt_concat_put_mtd_devices(item->concat);
-+			mtd_concat_destroy(mtd);
- 		}
+diff --git a/drivers/mtd/nand/ecc-mtk.c b/drivers/mtd/nand/ecc-mtk.c
+index c75bb8b80cc1..39be2e3e4ee4 100644
+--- a/drivers/mtd/nand/ecc-mtk.c
++++ b/drivers/mtd/nand/ecc-mtk.c
+@@ -265,6 +265,7 @@ static struct mtk_ecc *mtk_ecc_get(struct device_node *np)
+ {
+ 	struct platform_device *pdev;
+ 	struct mtk_ecc *ecc;
++	int ret;
+ 
+ 	pdev = of_find_device_by_node(np);
+ 	if (!pdev)
+@@ -276,7 +277,12 @@ static struct mtk_ecc *mtk_ecc_get(struct device_node *np)
+ 		return ERR_PTR(-EPROBE_DEFER);
  	}
- }
+ 
+-	clk_prepare_enable(ecc->clk);
++	ret = clk_prepare_enable(ecc->clk);
++	if (ret) {
++		put_device(&pdev->dev);
++		return ERR_PTR(ret);
++	}
++
+ 	mtk_ecc_hw_init(ecc);
+ 
+ 	return ecc;
 -- 
-2.50.1
+2.50.1 (Apple Git-155)
 
 
 ______________________________________________________
