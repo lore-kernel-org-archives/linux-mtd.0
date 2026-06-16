@@ -4,91 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52C40CD98DA
-	for <linux-mtd@archiver.kernel.org>; Tue, 16 Jun 2026 10:13:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3BC12CD98CF
+	for <linux-mtd@archiver.kernel.org>; Tue, 16 Jun 2026 10:15:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=yfNENmy3U8JHYxw4h0jVyrWWF+T9Qdesz1UrInClNWc=; b=lG5F91/Ez9zEg6
-	8csHFzwIFJZR9Y/AhMLv2tZvFypP3cvtS5S95344IaqiEXsKmxj9UvI/ioLBFpbGYA5DtINMh8GU9
-	/plc1KElgYZgOUBKghv1zqCK/lBxSs3Bl4Bafur35h5m6hypieF8PApPM+hrH9bSd4l7ekhVwpvQK
-	QnyUwTNUafUCu0hD2BDmOIB/jo6rpRb2W5qGX0g658ofZycouEssk8HLLkkXR5qDP/LAWXajZubJl
-	1ULI0Q+YnTxTHa5KNxCBQmWhWudoF/GFef5o4yAv5n7N2piF9IRuQEaqfR7bjMchtyYKv66zYGU98
-	KPw7S2L4HnymysbvY7wA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=zQ+W9H6zx+aFvRne4PNozjB7oE1USh2yd6ofXL84nUk=; b=pdgHPlRSLf4WqO
+	Y/UYiyOsa5Wcxz57WugSycLqEcJxDZVojEqc/BQJ3eVo9xPyWIJ0huv3+sztfE+dTaUXGP/Ol5flM
+	2/4Tsi2TtQyMamIzM9O4wcF7Zo2kQ8sMjCO4Dblgz75wojs8jjht2mCDWlQCkgcEMx5JJMSknvYpU
+	fDdHAoF7cJqSP4SxcB5jVmZ1ZsIJmekts9TNMvmv1smqylq+QV9BPF5hJdloey4SUiyz1lHwNtg4u
+	fYX/UXug9fhy2gA+KmHrB+TvXB0lXBELfxdm+Yk70an2l6dD84SMpBoRLPgLsZ9j6DLU8NH1MPyQU
+	11Qtry6XlEwA3xhrR9zQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wZQnR-0000000FaLb-1EME;
-	Tue, 16 Jun 2026 10:13:29 +0000
-Received: from mail-qk1-x733.google.com ([2607:f8b0:4864:20::733])
+	id 1wZQos-0000000FaXl-3LcR;
+	Tue, 16 Jun 2026 10:14:58 +0000
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wZQnK-0000000FaKK-3a2J
+	id 1wZQop-0000000FaXM-216e
 	for linux-mtd@lists.infradead.org;
-	Tue, 16 Jun 2026 10:13:27 +0000
-Received: by mail-qk1-x733.google.com with SMTP id af79cd13be357-9159951f05aso485056085a.0
-        for <linux-mtd@lists.infradead.org>; Tue, 16 Jun 2026 03:13:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1781604800; x=1782209600; darn=lists.infradead.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+M/4BfCg4kebp/5c+3KqKstn3ZcQMD8Dq5coTSVGSOk=;
-        b=Ugkl0k68rRC79X5skescS4aUpVXaNVBlrvo0ML5XAVO2DtfXXUwPPf17xpm96PnXLk
-         g+9by/vgxgDPNTD+kmIQgiGpCMnIA6rxPVKrIrq8M3s0lSsRfIxcCfLJ/YNF1XMZt2W7
-         IJFCIufbUYMDBR2mCRxppimT+Ud6T/sp0IebXDDIluI+kh9BPJKK4UfEJA4Y1u/1ulXU
-         gtHuSa6zRqO79HUz0GG7gCzaoml7QxXnEBLfY2LhDz8oiZXIcccezHzWOFetfBnZ4Rtc
-         ZZePWWEZUl93XgLATyq7tzAX0UV9mbe3HMr7eULUwMzCwHclZ6/i7HtQh9GzqnNMV0bd
-         HBDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1781604800; x=1782209600;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+M/4BfCg4kebp/5c+3KqKstn3ZcQMD8Dq5coTSVGSOk=;
-        b=NnzIR8wVnUvrxLw+DOP1cGVYXecMptstXtMUKFTT0Hfl3D98WgHN0Ux9mrkHeEu/zg
-         L5HCa3u6HCvFojC6imbYUy3m/KqGG9hHnebShB8ft/eEiiCjJhNULGzZXRsFzgIw1/Ah
-         k7TW//TVnO7jN+Z1K09IvokC92P6SS5dlbcpFvFoSigGrg7PDlDIW9H2eDETv3lWsPzL
-         xUUUnuK7tCxLA2E8InDmVyYPwe1Ok8Rqe0i9r79rzljsix0fEhqId5HN8erUjt+zLCDK
-         JNIay8QmmQbpfntZXxiwHopKSTXmmCL2Rwxgd7aXlFLEKukjQpqDptU2A+/o65XEibuW
-         ZjRg==
-X-Forwarded-Encrypted: i=1; AFNElJ9gqqKVcSF72Mn+s2guKs4YHJumtzS13bpaH+lW+qgfyX7SAOByv5HmCOT/iZ2tn8IqyUx4UlnMe4k=@lists.infradead.org
-X-Gm-Message-State: AOJu0YwINdDDnh+vLZv//1YuW+fM/XCiFT4ov9gdBFCiAXEv0y2bneXB
-	pWT+RXv20erBAZny4QdmgUbjRoz4GqhBWFd7/bb8dIqQPQOM/PHzlO4s
-X-Gm-Gg: Acq92OGZjagvzLX9hXyf3wt+HmcMJllj5LpdYiJRBEqj/AAxxw6CZWANwfQF+2ckrAo
-	tkWW3wWqlO2ttR0qOGYNpQjOtc2jzLp1oO2VgemODAIfpk+fU2idieBuPej0oLczzuaCr4NZ69Y
-	rn2prFs7C13auAYYMmJezctdLzIp4/eiH24mzIHqsi5OENAN3qefu/pLFMT6yGJgtlkv1qva9Vp
-	Rar9ppwHAVGTpc/Nz54FNtJnWlbg2WeiVEZNtQ+Mw89NCzisKP2NNOGN4LeneS0dUps+IYFrJIE
-	ok5kR4dylC2mPYmwYpy7ChegKxULa6FH8TVvAu42qiNLSk4mjYiP6T4M6jCyBMOyVoO/O2NFi78
-	Xd2uPpvakhDd2DZyZDssbAoCDEfmNo7/+2xK39b+DpnbByRjOaJIChaIx4ZTJgQdYMMi2mSqhAO
-	dgOGUlodpkyGQyhBRT
-X-Received: by 2002:a05:620a:628b:b0:915:86c6:8432 with SMTP id af79cd13be357-9161bc4aa09mr2765037285a.14.1781604800130;
-        Tue, 16 Jun 2026 03:13:20 -0700 (PDT)
-Received: from localhost ([43.225.189.75])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-9161a03bd31sm1425927085a.34.2026.06.16.03.13.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jun 2026 03:13:19 -0700 (PDT)
-Date: Tue, 16 Jun 2026 13:13:13 +0300
-From: Dan Carpenter <error27@gmail.com>
-To: Luca Ceresoli <luca.ceresoli@bootlin.com>
-Cc: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] mtd: virt_concat: fix use-after-free in
- mtd_virt_concat_destroy_joins()
-Message-ID: <ajEhuS8xwcX1AA_I@stanley.mountain>
-References: <20260614081052.1332702-1-harshit.m.mogalapalli@oracle.com>
- <DJADQJ8GEDNF.334T2EXRX7DXJ@bootlin.com>
+	Tue, 16 Jun 2026 10:14:57 +0000
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 65FKGMeo1349670;
+	Tue, 16 Jun 2026 10:14:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-transfer-encoding:date:from:message-id:mime-version
+	:subject:to; s=corp-2025-04-25; bh=NDZ/rNAyyiQztJHXv1jXH/dgpJCxA
+	0grh9rlj860HiU=; b=eroxbPzqEiFUuwHPbjsRZJ80Hfzrmd8WJptwMYnZERr6t
+	sB7dvzVyOjhBEwoFl23cbBwG42G+ufm09yvfqzh3QGQxAOx+VjsrCiRjpJDn3QzP
+	van1+ALTzfduWhwC603ayEooqSlEp25AsIyYZoqXOdOoMunhW0tVDWrYYiPBojLh
+	Oo5X65wB6AY1J3EZwh9SeA9+VPZPrOuTqhdk6/jcp8WPq8wxjlCmdgsCNtKNrmuO
+	JGiTV+ZMqxcoWbueGp1Zg302KCC2f+vrN9k1HGsljEJKGq7FTRanpzI+ijWkrqGd
+	RPoIVJVX6LXnpOygGSSFLh5PyhKR+GlSa3XVL9nqA==
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4es1acc62f-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 16 Jun 2026 10:14:45 +0000 (GMT)
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.7/8.18.1.7) with ESMTP id 65GAD9MI017054;
+	Tue, 16 Jun 2026 10:14:44 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 4etq679av2-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 16 Jun 2026 10:14:44 +0000 (GMT)
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.1.12) with ESMTP id 65GAEhUc021963;
+	Tue, 16 Jun 2026 10:14:43 GMT
+Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.129.136.47])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 4etq679aup-1;
+	Tue, 16 Jun 2026 10:14:43 +0000 (GMT)
+From: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>,
+        Luca Ceresoli <luca.ceresoli@bootlin.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org, error27@gmail.com,
+        Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+Subject: [PATCH] mtd: virt_concat: fix use-after-free in mtd_virt_concat_destroy()
+Date: Tue, 16 Jun 2026 03:14:39 -0700
+Message-ID: <20260616101439.1489392-1-harshit.m.mogalapalli@oracle.com>
+X-Mailer: git-send-email 2.50.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <DJADQJ8GEDNF.334T2EXRX7DXJ@bootlin.com>
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.125,FMLib:17.12.100.49
+ definitions=2026-06-16_03,2026-06-15_04,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0
+ lowpriorityscore=0 phishscore=0 suspectscore=0 adultscore=0 mlxlogscore=999
+ mlxscore=0 spamscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2606040000 definitions=main-2606160103
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNjE2MDEwMyBTYWx0ZWRfX3G+bETHaEmfM
+ ZmNeyMKvsbk8lLdwyh6X1GQK6nh1Zl8z5fX8sv8QdY3wqqUblLsQ30pX3ErRjo3oSFDAUWNIOsw
+ PKlNxS2iuX8dJrwf75gAZEi1LpWZucLiXcT6eZv7XpCitD5yWQjlL0LmIY7azXvhTayVtAuSjeK
+ eWtyhdSHMGLlDmVMJBndcjwWSH6XCTJqpozi0MOCMSp1qrWeMlkRbjLBAcElOQspD5yEP9yifdC
+ SBF/xSMhuhSk++bPWzjcVi0x1aJ/YFWKnWJUfOXHJBdVeFgf2G+aKPYLkHG4xzknVtamcV0xmV2
+ 3OtQBNrtDi5sTUlT7FYk0xUG5iXSeL529toZTCfQFA/piXC0Pw20IzZrB4GdrVjrsL8HEyGzkg8
+ AymUSH/ubeQmXahQn8U3yDQ5/Y+m57S2KQn7OY8g0pi0OdInVoa1dOjDhTaYCVjytU/tjrOCqw0
+ Fy6HijH+dJbPC8DlCFw==
+X-Proofpoint-Spam-Info: AW1haW4tMjYwNjE2MDEwMyBTYWx0ZWRfX5S1cS4IG8QRG
+ ZCNYH/johDAAXa25pWiHVL50RYLzp59egxgcKf91CRXGKNivMyT6VF6AXhc5edNiTgcSrr4l+OL
+ NjukKWoxLPsPo7VBHiQpKtWjcV4T/AZNzlPRMAMQiGSv2yxIGtPs
+X-Proofpoint-ORIG-GUID: lQaW7GYi0jxgZ1WDebdFVYXrAkF9fXwj
+X-Proofpoint-GUID: lQaW7GYi0jxgZ1WDebdFVYXrAkF9fXwj
+X-Authority-Analysis: v=2.4 cv=IqQutr/g c=1 sm=1 tr=0 ts=6a312215 cx=c_pps
+ a=XiAAW1AwiKB2Y8Wsi+sD2Q==:117 a=XiAAW1AwiKB2Y8Wsi+sD2Q==:17
+ a=FelO9ux0wxsA:10 a=VkNPw1HP01LnGYTKEx00:22 a=jiCTI4zE5U7BLdzWsZGv:22
+ a=RD47p0oAkeU5bO7t-o6f:22 a=yPCof4ZbAAAA:8 a=gnUwlkPgrbXfXN16ycUA:9
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260616_031322_898882_7B76AAD9 
-X-CRM114-Status: GOOD (  13.24  )
+X-CRM114-CacheID: sfid-20260616_031455_912076_480EA4A5 
+X-CRM114-Status: GOOD (  11.75  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -105,23 +113,35 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jun 16, 2026 at 11:51:53AM +0200, Luca Ceresoli wrote:
-> Issue 2: in mtd_virt_concat_destroy_joins():
-> 
-> 	list_for_each_entry_safe(item, tmp, &concat_node_list, head) {
-> 		mtd = &item->concat->mtd; [0]
-> 		if (item->concat) { [1]
-> 
-> At line [0] we dereference item->concat, but at line [1] we apparently
-> handle the case where item->concat can be NULL. Either [1] is always true
-> and we can remove the if(), or [1] can be false, so [0] is a bug and should
-> probably be moved to inside the if().
+mtd_concat_destroy() frees item->concat so calling
+mtd_virt_concat_put_mtd_devices(item->concat) after that leads to a
+use-after-free.
 
-That's not a dereference on line 0, it's pointer math.  So the code
-works.  But a lot of people find the distinction confusing.
+Fix it by moving mtd_virt_concat_put_mtd_devices() before
+mtd_concat_destroy().
 
-regards,
-dan carpenter
+Fixes: 43db6366fc2d ("mtd: Add driver for concatenating devices")
+Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+---
+ drivers/mtd/mtd_virt_concat.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/mtd_virt_concat.c b/drivers/mtd/mtd_virt_concat.c
+index a3fb96788e9d..c872a8827718 100644
+--- a/drivers/mtd/mtd_virt_concat.c
++++ b/drivers/mtd/mtd_virt_concat.c
+@@ -126,8 +126,8 @@ int mtd_virt_concat_destroy(struct mtd_info *mtd)
+ 		if (concat->mtd.name) {
+ 			del_mtd_device(&concat->mtd);
+ 			kfree(concat->mtd.name);
+-			mtd_concat_destroy(&concat->mtd);
+ 			mtd_virt_concat_put_mtd_devices(item->concat);
++			mtd_concat_destroy(&concat->mtd);
+ 		}
+ 
+ 		for (idx = 0; idx < item->count; idx++)
+-- 
+2.50.1
 
 
 ______________________________________________________
