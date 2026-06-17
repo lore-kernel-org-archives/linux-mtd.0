@@ -4,58 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3AB5CD98F0
-	for <linux-mtd@archiver.kernel.org>; Wed, 17 Jun 2026 12:00:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7A2ACD98E2
+	for <linux-mtd@archiver.kernel.org>; Wed, 17 Jun 2026 18:38:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
+	:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=/tm0/aPoudsttoYqK69AXpg0FNN3WSAwQlYjQuAE1YU=; b=Z/kEcjUILsGlON
-	IwHDufmnKzAlsc5TM/hI/hyu6A7oEhDQGxcI5gT5tBipSw19yb19zO74cWJu92EdfJTBICrSaGpL+
-	2kcKy8UYcWzlZx87fhgq4cUytgGAjxyHez3FAGCladDhNyntoqXS2LtGPIMD6C5sZ8b8URErgdo2A
-	ce9gPveq049jr25YqOBbEAowRPy3xjb8/t1iC2IzRo+fXW0AcCbdiudw8pL9zq8OW1f5i4e6E1afS
-	P45ZLYmD7/SywEw5GVRKCwzhvKD2ohrGsLEOECsU/9MiXs1Z0yHDiN241iGeUTHt+4FqoyEpTQpZL
-	EmMQDDZtRNquAC+BpAcg==;
+	List-Owner; bh=O9ThJCeVECGeiEK1KcHRYHhviMuWONUXAdSOrm3kXXo=; b=uIDBQqXsrz6neU
+	/WN9lbCHyDAwwbqLOjMVU0D7d7NJQcLwJsPuSyGpXCxwONoEhD4Vnb48kNyvgASETWRez7mK+zA3z
+	34pSl/5pt7UtSBannE8Xsm1a1jq0H1+NAJVYNNhTslR2DURSnIOmvUsKH42vzQwTNGjBtSk2StLaC
+	P+8PPQt6MXkrhFhMhMwoe6vLALVs6r3h9X+RlEEkG0N8kMjITVoO8KZ+xNnIrVik1N8C2UB8JAy50
+	r9htR66S4bN1vWAMlgQ9Ua5cLS3vkznZ2lpLWffWnvDY7RCsK35htt1UrtLqryyY9Wqr5T528Ig9j
+	CRu5w2bKmCtE0WzcTypQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wZowx-0000000HI5b-1rph;
-	Wed, 17 Jun 2026 12:00:55 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1wZv9D-00000000Agf-0SJC;
+	Wed, 17 Jun 2026 18:37:59 +0000
+Received: from mail-pg1-x535.google.com ([2607:f8b0:4864:20::535])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wZoww-0000000HI5T-1nS7
+	id 1wZv9A-00000000Ag7-0EcT
 	for linux-mtd@lists.infradead.org;
-	Wed, 17 Jun 2026 12:00:54 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 33C6B44404;
-	Wed, 17 Jun 2026 12:00:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C13D81F000E9;
-	Wed, 17 Jun 2026 12:00:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781697654;
-	bh=iDb+feyhI/fEpkP3axJoebokiHgvmCe1iw6p9Zqb6oo=;
-	h=From:To:Cc:Subject:Date;
-	b=oIDDxpzImcQnsL0Zs2pxRq3DPm/N+wrs8Wj7JbJe1jgKmJiCVuahdxeDOjtuzHAMr
-	 tOcQlrGFEHhDFuIM78NVj6M8HlQ61Kyio6Je/WM7iXpc016/4bhlDjdb0+6PtkhK/9
-	 wdjXL2xw66zSkeiIfgk4SvWhLcJZVKJH/hbUyPOhc8+5z68s7TMoT1QJabWkZNj75A
-	 e63OyYYQYy4HU0XutrShKWS1D1jOwCq8nubVWuxTWVH0pTPwWMjecKlRF1z31D/Y/z
-	 zRTaI7rqTsIgcDO1v+f/sJBC0/jG5pOQX6gIUk4F3rpfgWd/InKpPjSUNbxi+PIYBu
-	 IYg0mHJlYP5+g==
-From: Pratyush Yadav <pratyush@kernel.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>,
+	Wed, 17 Jun 2026 18:37:57 +0000
+Received: by mail-pg1-x535.google.com with SMTP id 41be03b00d2f7-c85c531d4a9so55509a12.2
+        for <linux-mtd@lists.infradead.org>; Wed, 17 Jun 2026 11:37:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1781721475; x=1782326275; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=lYpJamEbWyw02n/C8koZ8iP3QVe0VDluw/xlX1fj75c=;
+        b=GBYIre7D1EaYXmf+Y2Sk68eyg0WPJNF8L8QSszszYfVJ5YNhSja+Mzr/3kspg1EfiM
+         lFGkOSNQAClyCS9UQDeHFG/+3cMkpVlHt9i3Vpi3j4weOYmNAHb724GIA8fu+CbRKIsS
+         W+vd9+rSSSQfXteB57EFrUk8Yr5GH/F790elNBOdceqDLMmzfUfo6ZNYDfC5tffKABIK
+         6KikPjT5cgq+DSSwETlyttCXJBymRjpvnDqBQlqHKaI0jEHRmKouhi2e74TejQQ987Av
+         PrLAkVxnIJal1OR8d+UuhIgWM/RbV3X38Cy8rLqfjZe+fMZv6YdX16FXpmBIosXpAG1I
+         71lw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1781721475; x=1782326275;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lYpJamEbWyw02n/C8koZ8iP3QVe0VDluw/xlX1fj75c=;
+        b=qF/JouLzpaS7uwUruDoX/A5bYH59e1PisxK/G+4ufHxKErb0dNampBN2nLB0sxuFo5
+         w87GKQkLLeQE95KGbFnbeTGq8nWeS3cRpF7lyI9wUS+Mhmz5nd+Z6stsUdNaqvsC0LEN
+         nqB4sWVmsU7j7n61RbSNYQ37zuEUyDdEZpkTSKYeldiuUNf5Ca/xAeO9a90I7ONEfMEj
+         fr8TAvv1VmiCcE7DWBnUE4Uz2A+UisX7VyzIyLn6XC+6OmCCiu0nWSG6YIjNdUr97PXf
+         1ecYai7DjFk8FRmvsK2OClrzlmOnABM+aWuMW6urC6gltTw5moe8iWNp3hmy+7Rwqe8U
+         6ZPA==
+X-Forwarded-Encrypted: i=1; AFNElJ+PNyYCzp/WBJwKZP8A7bqGdyD8hPCEKGEagPYGLdRBRNGKZ8aZeEynHywr4nlptxqFRUa+Nri5cP8=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yy5tcWKNOrE18JkyRN7oI8Ir+Y45Q1Txw3elGUgq/K/ISAnmqhp
+	AQA9YEw+WI2ihmhagjCt9xag38tRyCerHSRApqe1pjVE3LP0EAUXdtH8
+X-Gm-Gg: Acq92OEuZBomImZKyTS2QWpYCcKjnZmT95FRSvL1IUxLZ7iQbl2PF/JOnmOOV1fs46B
+	hJwZCZG69pTkf1OacTBrEuk0oMAxS0JqgZ3rWB9ZkQFHHLxlxRSpM9hQei+LOBDcyupTLt3VZro
+	4BTFlbZUcDHW8dHwuCZRiZ/hznhKbmJ4HTY4mxgsoHqzcOH2Z/5qop4TVGDF9w9Cb/bsz1HqVla
+	BEv7bisE3I9vTEJlmUc2mnRqdz3foKgpvYXcpVCJpI3tGR9caMWdrMtoEElZyGzSYnSUj5GmcKz
+	DnzQi793r9a8XdhQPq3C3jgPlIQ/zNuNTNiCCoLBVyhtiYOWaVTsADtqbKqYfUPPZs1WR24tVyW
+	KOawdWuH2SzbY7eMqoRux7ePtLMC6gMKsm5GgNJeZcCNSnrjhguA5eahoCtJ5sqxIk+j531qF57
+	xSwdH357jLi0E1mXOQJczTnKV2dqLCBYp6
+X-Received: by 2002:a05:6a20:2450:b0:3b3:ef0:49f6 with SMTP id adf61e73a8af0-3b9e5b22857mr583816637.7.1781721475097;
+        Wed, 17 Jun 2026 11:37:55 -0700 (PDT)
+Received: from haichao.tail057a43.ts.net ([2001:da8:e000:1206:1886:6b7a:3e78:272c])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-c866325d1c8sm15058327a12.9.2026.06.17.11.37.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Jun 2026 11:37:54 -0700 (PDT)
+From: Ruoyu Wang <ruoyuw560@gmail.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
-	Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <mwalle@kernel.org>,
-	Takahiro Kuwano <takahiro.kuwano@infineon.com>,
-	linux-mtd@lists.infradead.org
-Subject: [GIT PULL] SPI NOR changes for 7.2
-Date: Wed, 17 Jun 2026 14:00:51 +0200
-Message-ID: <2vxz33ylpea4.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: spinand: initialize ret in regular page reads
+Date: Thu, 18 Jun 2026 02:37:49 +0800
+Message-ID: <20260617183750.1103221-1-ruoyuw560@gmail.com>
+X-Mailer: git-send-email 2.51.0
 MIME-Version: 1.0
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260617_113756_092980_83995A8F 
+X-CRM114-Status: GOOD (  12.36  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,89 +98,32 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Miquel,
+spinand_mtd_regular_page_read() returns ret after iterating over the
+requested pages. If the request contains no data or OOB bytes, the
+iterator does not run and ret is not assigned. Initialize it to 0 for the
+empty request path.
 
-Here are the SPI NOR changes for 7.2.
+Signed-off-by: Ruoyu Wang <ruoyuw560@gmail.com>
+---
+ drivers/mtd/nand/spi/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Regards,
-Pratyush Yadav
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index 786e3fb4874d8..051af3e1cf5ea 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -817,7 +817,7 @@ static int spinand_mtd_regular_page_read(struct mtd_info *mtd, loff_t from,
+ 	bool disable_ecc = false;
+ 	bool ecc_failed = false;
+ 	unsigned int retry_mode = 0;
+-	int ret;
++	int ret = 0;
+ 
+ 	old_stats = mtd->ecc_stats;
+ 
+-- 
+2.51.0
 
-The following changes since commit 254f49634ee16a731174d2ae34bc50bd5f45e731:
-
-  Linux 7.1-rc1 (2026-04-26 14:19:00 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git spi-nor/for-7.2
-
-for you to fetch changes up to df415c5e1de0f1aeefacb4e6252ff98d38c04437:
-
-  mtd: spi-nor: spansion: add die erase support in s28hx-t (2026-05-28 15:57:24 +0200)
-
-----------------------------------------------------------------
-SPI NOR changes for 7.2
-
-Notable changes:
-
-- Big set of cleanups and improvements to the locking support. This
-  series contains some cleanups and bug fixes for code and documentation
-  around write protection. Then support is added for complement locking,
-  which allows finer grained configuration of what is considered locked
-  and unlocked. Then complement locking is enabled on a bunch of Winbond
-  W25 flashes.
-
-- Fix die erase support on Spansion flashes. Die erase is only supported
-  on multi-die flashes, but the die erase opcode was set for all. When
-  the opcode is set, it overrides the default chip erase opcode which
-  should be used for single-die flashes. Only set the opcode on
-  multi-die flashes. Also, the opcode was not set on multi-die s28hx-t
-  flashes. Set it so they can use die-erase correctly.
-
-----------------------------------------------------------------
-Miquel Raynal (28):
-      mtd: spi-nor: debugfs: Fix the flags list
-      mtd: spi-nor: swp: Improve locking user experience
-      mtd: spi-nor: Drop duplicate Kconfig dependency
-      mtd: spi-nor: Make sure the QE bit is kept enabled if useful
-      mtd: spi-nor: Improve opcodes documentation
-      mtd: spi-nor: debugfs: Align variable access with the rest of the file
-      mtd: spi-nor: debugfs: Enhance output
-      mtd: spi-nor: swp: Explain the MEMLOCK ioctl implementation behaviour
-      mtd: spi-nor: swp: Clarify a comment
-      mtd: spi-nor: swp: Use a pointer for SR instead of a single byte
-      mtd: spi-nor: swp: Create a helper that writes SR, CR and checks
-      mtd: spi-nor: swp: Rename a mask
-      mtd: spi-nor: swp: Create a TB intermediate variable
-      mtd: spi-nor: swp: Create helpers for building the SR register
-      mtd: spi-nor: swp: Simplify checking the locked/unlocked range
-      mtd: spi-nor: swp: Cosmetic changes
-      mtd: spi-nor: Create a local SR cache
-      mtd: spi-nor: debugfs: Add locking support
-      mtd: spi-nor: debugfs: Add a locked sectors map
-      mtd: spi-nor: Add steps for testing locking support
-      mtd: spi-nor: swp: Add support for the complement feature
-      mtd: spi-nor: Add steps for testing locking with CMP
-      mtd: spi-nor: winbond: Add W25H512NWxxAM CMP locking support
-      mtd: spi-nor: winbond: Add W25H01NWxxAM CMP locking support
-      mtd: spi-nor: winbond: Add W25H02NWxxAM CMP locking support
-      mtd: spi-nor: winbond: Add W25Q01NWxxIQ CMP locking support
-      mtd: spi-nor: winbond: Add W25Q01NWxxIM CMP locking support
-      mtd: spi-nor: winbond: Add W25Q02NWxxIM CMP locking support
-
-Takahiro Kuwano (2):
-      mtd: spi-nor: spansion: use die erase for multi-die devices only
-      mtd: spi-nor: spansion: add die erase support in s28hx-t
-
- Documentation/driver-api/mtd/spi-nor.rst | 170 +++++++++++++++
- drivers/mtd/spi-nor/Kconfig              |   1 -
- drivers/mtd/spi-nor/core.c               |  76 ++++++-
- drivers/mtd/spi-nor/core.h               |  25 ++-
- drivers/mtd/spi-nor/debugfs.c            |  72 +++++-
- drivers/mtd/spi-nor/spansion.c           |   7 +-
- drivers/mtd/spi-nor/swp.c                | 363 ++++++++++++++++++++++++-------
- drivers/mtd/spi-nor/winbond.c            |  41 +++-
- include/linux/mtd/spi-nor.h              |   7 +-
- 9 files changed, 671 insertions(+), 91 deletions(-)
 
 ______________________________________________________
 Linux MTD discussion mailing list
