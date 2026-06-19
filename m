@@ -4,72 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 655CCCD98F6
-	for <linux-mtd@archiver.kernel.org>; Fri, 19 Jun 2026 10:24:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1CE34CD98F2
+	for <linux-mtd@archiver.kernel.org>; Fri, 19 Jun 2026 17:33:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version
-	:Subject:Date:From:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=iiNNvz1qWW6KKJ+PJ+d4aaKIqqWqU9MrNHuvjKN+Kz8=; b=GimjckEW83/Upp
-	re3FxZdgV8OqxpGnNmITvy7wkhr8OnUu+Uula6aXsYM/zve3Q6ASI8WDPM2xpYIzuIh6ewvnZsTuL
-	p4uMPWM/61RnsahjWhyJ005vZkFydWVB32XH7ynzD8Te8e4d1PpgwyZQmQws2VKfsw+kB7ASSMsT/
-	Y3O/K0yJIVFq63NXeT9uNcdf3vzgtu7u6n70a9WW4mOAd/24X03qomAKX06rOSbrF+8WLYQ+i8ULz
-	nGCvYJU8I2+XaTjt9KI9+ucplRo8/i/GZKNME+I4fTIia6tAOsqIYfI6KeVkWgmyrH4rQx6LqOUzw
-	xcvt71XNeF2CxquXr0eg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=ivAx2QToU8RIdb0vYLXe6SJmnDzoRLLvn9uacGDmalQ=; b=k8TNy2cF9D2q8zEAsq26ln3zTX
+	nzQKOjLHlmQrufYs41NQPVe69A2XG1jt4xniWcsWP5JiV9F0D3/p4XrxMzgDcfuWtH3cdOh027bj6
+	KDe8pkS+7K2NN5pM9JPzFrozdWPgmX/JVlmFBdvinqVdNlg814lrcTQVC4D/pUGc7g3rduG6Iap9G
+	lLfR42A4NnLMe9TbGOJJD6jREmKFyKD8lHy7zEXhx+l4kZ4ydHuJOLsFx58HoYx5+3zHTRHdBnc1f
+	Ohh935bqvC31xHV4iRAExFiBVP1KrQ5bAqW+IGbvjOtf36oAalig6ff65Riq6bF262gFUbPqOPLdR
+	PriSv/7Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1waWP8-00000002HWY-34sE;
-	Fri, 19 Jun 2026 10:24:54 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1wad5y-00000002pg5-3IQG;
+	Fri, 19 Jun 2026 17:33:34 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1waWP6-00000002HWP-2xy7
+	id 1wad5w-00000002pfi-19dL
 	for linux-mtd@lists.infradead.org;
-	Fri, 19 Jun 2026 10:24:52 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id B606F601E2;
-	Fri, 19 Jun 2026 10:24:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 6A200C2BCB4;
-	Fri, 19 Jun 2026 10:24:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1781864691;
-	bh=Z9q1+yHHeYjUw8kl6fQrhSLD59rUQcGAz/c3wT5B5bM=;
-	h=From:Date:Subject:To:Cc:Reply-To:From;
-	b=tDEQis0znCPbUmjrWM1aG3sK7OFM3TmEBAVf9mLu4Sw/xIOfPM35epwqCK2MHx0v0
-	 /U4dCRJ5nFz03k/kGwYpnzf0mTUfHallryeYTKELwJ3yrITYj7FHrMu1QXmo9xrlGW
-	 9WdWU6x84an/YGzlPSAFPa7kMCnk64tIY7tV8VAkvR8CjY1CwNhlYFLGkwpdWFgWZk
-	 Noxy6flqQfyKd61tKQ+2gGcuZKG9nA+ytGvvoDGoWgtubDhC9YkgwhtP7Zl0TWQg4e
-	 Y3fw1ZIPldL2JYjTFFE8QlqhuNoG00R0TRv8FXFJpIqyxeIoek8K40DCX5h3XNhzt7
-	 aY0dwKwepB8Mw==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 47FF1CD4F26;
-	Fri, 19 Jun 2026 10:24:51 +0000 (UTC)
-From: Chuwei Yu via B4 Relay <devnull+max_yu2022.163.com@kernel.org>
-Date: Fri, 19 Jun 2026 18:24:23 +0800
-Subject: [PATCH] jffs2:fix a oops arises from a conflict between inocache
- evict and gc
+	Fri, 19 Jun 2026 17:33:32 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with ESMTP id 3B6FC601E2;
+	Fri, 19 Jun 2026 17:33:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB8E51F000E9;
+	Fri, 19 Jun 2026 17:33:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1781890410;
+	bh=jUAGYTKOtwMpNBSHQMUJ5aes50Gr7xk+ZO5i531tYG8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=nc02rNxNGB+A8xG3KABMWnBbTanTkHfoAO1dG+WRyE2ITIbzZRejVtJT+Y5ZAeB39
+	 0Cx4+Xql/dyHXNrsxqTHCQTMWqSWfnmd09A0ITkKCJdX+rJf4fwPXoN+Qpj1OcCyVG
+	 8MJFO3aQRYU+cckSsLKhh7P3u4HmJ3A9NctgLvdyEJtl2tHMlvxq0gTr4Uf4Kt4GiV
+	 jsadi7RhuMv0WPAjdAwtSItBxDbQnM4hCZ7bQ4KfptPqdTPHoFqBYSOoQgMvHszDQo
+	 EaoIsr1MSLjG7bey5jSmQZBRt5bBPf3734uSnn9WsoduQULWPifW99gLYFukuGwz3O
+	 SXpfQSa9Q4ugQ==
+Date: Fri, 19 Jun 2026 18:33:25 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Santhosh Kumar K <s-k6@ti.com>
+Cc: robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org,
+	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+	pratyush@kernel.org, mwalle@kernel.org,
+	takahiro.kuwano@infineon.com, linux-spi@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org, praneeth@ti.com, u-kumar1@ti.com,
+	a-dutta@ti.com
+Subject: Re: [PATCH v4 08/16] spi: cadence-quadspi: add PHY tuning support
+Message-ID: <bc3d98bd-bfbf-4981-8c14-4ffec0f55f7b@sirena.org.uk>
+References: <20260618073725.84733-1-s-k6@ti.com>
+ <20260618073725.84733-9-s-k6@ti.com>
 MIME-Version: 1.0
-Message-Id: <20260619-jffs2-kernel-oops-fix-v1-1-660268541b1b@163.com>
-X-B4-Tracking: v=1; b=H4sIANYYNWoC/yXMUQ6CMBCE4auQfXaTtiGAXsX4IGUKi6YlXTQmh
- LtT9fGbZP6NFFmgdKk2yniLSooF9lSRn+5xBMtQTM64xjT2zHMI6viBHPHklBblIB82tW3ROd/
- bGlS+S0aZf93r7W999TP8+o3Rvh/toF+MeQAAAA==
-X-Change-ID: 20260619-jffs2-kernel-oops-fix-0417e82cb14e
-To: David Woodhouse <dwmw2@infradead.org>, 
- Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
- Chuwei Yu <yuchuwei@tp-link.com.hk>
-X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1781864689; l=3390;
- i=max_yu2022@163.com; s=20260617; h=from:subject:message-id;
- bh=ZFODi3N8e2XsMXVkMEc3e9vOzCxZarLxWNIbK21n2p8=;
- b=lqHbxrg3yKDWuRVblgZkKJ+Fdx0hXnqicmPDwWk2Wt/qxHnF8bDn/Com76v3/JLao98HcdGWk
- uTQrNIiLoxfB8roOAA0BvYHfmlBxwU5DpVfC0il70OdyOnHJq/TmccQ
-X-Developer-Key: i=max_yu2022@163.com; a=ed25519;
- pk=o5nctjiEWWNk2YWC+lqznx73YyfF0W9rjQS+9VwtGqg=
-X-Endpoint-Received: by B4 Relay for max_yu2022@163.com/20260617 with
- auth_id=832
-X-Original-From: Chuwei Yu <max_yu2022@163.com>
+In-Reply-To: <20260618073725.84733-9-s-k6@ti.com>
+X-Cookie: Courage is your greatest present need.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,100 +70,75 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: max_yu2022@163.com
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7381164424922767497=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Chuwei Yu <yuchuwei@tp-link.com.hk>
 
-[CAUSES]
-1 In the garbage collect thread function jffs2_garbage_collect_pass,
-it checks the state of all inocaches each loop. If the state is
-INO_STATE_GC/INO_STATE_CHECKING/INO_STATE_CLEARING, it will call BUG()
-which will cause a kernel oops.
-
-2 If a application executes "echo N > /proc/sys/vm/drop_caches"(N=2/3),
-or,  the size of free memory is very low so the kernel wants to clear
-the cached memory, both cases will result in Function jffs2_evict_inode
- being called.
-Function jffs2_evict_inode calls Function jffs2_do_clear_inode which
-sets the state of one inocache to INO_STATE_CLEARING first and does
-something and then sets the state of the inocache to
-INO_STATE_CHECKEDABSENT.
-
-3 If jffs2_do_clear_inode yields the CPU(Function jffs2_kill_fragtree
- calls cond_resched) after setting the state of one inocache to
-INO_STATE_CLEARING, and gc thread happens to get scheduled for execution
-at that moment, it will discover the state of one inocache is invalid
-and call BUG() to cause a kernel oops.
-
-4 The root cause is that the locks within Function jffs2_evict_inode and
-Function jffs2_garbage_collect_pass are not mutually exclusive.
-
-[SOLUTION]
-1 Function jffs2_garbage_collect_pass locks c->alloc_sem first by
-executing "mutex_lock_interruptible(&c->alloc_sem)" and then lock
-c->inocache_lock by executing "spin_lock(&c->inocache_lock)".
-
-2 Function jffs2_do_clear_inode which is called by Function
-jffs2_evict_inode executes "mutex_lock(&f->sem)" to lock f->sem first,
-then calls Function jffs2_set_inocache_state. In Function
-jffs2_set_inocache_state, it locks c->inocache_lock by executing
-"spin_lock(&c->inocache_lock)", sets the state of one inocache to
-INO_STATE_CLEARING and release the lock c->inocache_lock.
-At this moment, because the lock f->sem can not prevent Function
-jffs2_garbage_collect_pass from checking the state of all inocaches,
-if Function jffs2_garbage_collect_pass gets the CPU to run, the
-problem happens.
-
-3 So, we need lock c->alloc_sem before the code line
-"jffs2_do_clear_inode(c, f);" in Function jffs2_evict_inode and
-unlock c->alloc_sem after the code line "jffs2_do_clear_inode(c, f);"
-to make sure that only after jffs2_do_clear_inode is completed can the
-jffs2_garbage_collect_pass function checks the state of all inocaches.
-
-[EFFECTIVE]
-jffs2 filesystem
-
-[TEST]
-1 Compiling with default config works normally.
-2 Compiling with allyesconfig works normally.
-3 Compiling with allnoconfig works normally.
-4 Compiling with O=builddir works normally.
-5 Repeat to run drop_caches for 5000 times and jffs2 works normally.
-
-Signed-off-by: Chuwei Yu <yuchuwei@tp-link.com.hk>
----
- fs/jffs2/fs.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/fs/jffs2/fs.c b/fs/jffs2/fs.c
-index 6ada8369a762..9cf1c480a159 100644
---- a/fs/jffs2/fs.c
-+++ b/fs/jffs2/fs.c
-@@ -247,7 +247,9 @@ void jffs2_evict_inode (struct inode *inode)
- 		  __func__, inode->i_ino, inode->i_mode);
- 	truncate_inode_pages_final(&inode->i_data);
- 	clear_inode(inode);
-+	mutex_lock(&c->alloc_sem);
- 	jffs2_do_clear_inode(c, f);
-+	mutex_unlock(&c->alloc_sem);
- }
- 
- struct inode *jffs2_iget(struct super_block *sb, unsigned long ino)
-
----
-base-commit: 9ecfb2f7287a967b418ba69f10d45ead0d360593
-change-id: 20260619-jffs2-kernel-oops-fix-0417e82cb14e
-
-Best regards,
---  
-Chuwei Yu <max_yu2022@163.com>
+--===============7381164424922767497==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="emUb/++xjn7z2sWr"
+Content-Disposition: inline
 
 
+--emUb/++xjn7z2sWr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Jun 18, 2026 at 01:07:17PM +0530, Santhosh Kumar K wrote:
+> The Cadence QSPI controller supports a delay-line PHY for high-speed
+> operation. Without calibration the PHY is unused and read capture relies
+> on a fixed delay, limiting throughput at frequencies above the base
+> operating speed.
+
+> +static int cqspi_get_phy_pattern_offset(struct device *dev, u32 *offset)
+> +{
+> +	struct device_node *np, *flash_np = NULL, *part_np;
+> +	const __be32 *reg;
+> +	int len;
+> +
+> +	if (!dev || !dev->of_node)
+> +		return -EINVAL;
+> +
+> +	for_each_child_of_node(dev->of_node, np) {
+> +		if (of_node_name_prefix(np, "flash")) {
+> +			flash_np = np;
+> +			break;
+> +		}
+> +	}
+
+This isn't going to do the right thing if there's more than one flash,
+that doesn't seem a super sensible hardware configuration but I'm not
+sure I see anything stopping it being set up and system integrators do
+enjoy differentiating.
+
+--emUb/++xjn7z2sWr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmo1fWQACgkQJNaLcl1U
+h9CBbwf+JUro882D48ocB6LXQj2ooeWVcGnBvdpgmPzUwbsP7ETh+7BH1ofWUp8z
+58gs3CxQfnlH6CosGuHQ14dJmr41Lc7YRjOMn56SFgJFnNiYN72XRLqT5+SQD6cu
+D5Q/Wiv0oI7F1wSRMPyTU/8XWMxHFYl39mX4gqiI5Q+IcGzQw1SYOliNeZ4djAVa
+FDkRmkvMJNphmQMgNyNbK3WGP9HxHI+6DKrCuliEcKDX2OJ/UBXvrw6JtSGXYavl
+OtPcY2UsK8fwFKuLmPV23w6QBFVD4krToRNED1n+koRWwOuZNtQ3zr4nRYTZItQ2
+pEOS4CCkI2cEPPu79/61uPeZ3IITVg==
+=wojw
+-----END PGP SIGNATURE-----
+
+--emUb/++xjn7z2sWr--
+
+
+--===============7381164424922767497==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============7381164424922767497==--
+
