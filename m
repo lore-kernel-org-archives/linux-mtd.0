@@ -4,105 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09C20CD4F26
-	for <linux-mtd@archiver.kernel.org>; Fri, 19 Jun 2026 17:47:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D0A1CDB466
+	for <linux-mtd@archiver.kernel.org>; Sat, 20 Jun 2026 08:22:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=9uli0ys1pWsDROvAV3FPiUSUlDZu7wjinK/WZa+oXEc=; b=abDcyAi2fy493x
-	b00GmkXcAyMagA3qxWXn4xaGkJeMemK49wRxUcueD5dQCHJVbDPMOjryyqqPCQz0IWDVAU3dPreaZ
-	RLxL6j/3t7abgeCm0hX7z5rHElqYnO1plTrys169nczZSWnHoMU6/4Pjqs0dGSPU46NPI85C83PNI
-	ITeOykysqruJo5M4SeH8uSOmzlyJzbDzCQ4kHQn0/O5NJZSui/poe79s93JaAUceu7nnhnIAf8n94
-	HMKclM+DYoUkRoYjg/aJmmoRnNXuOwVFQRiTZZpVwKvhYKHujUPdTUPwVidh5OnSGDpqTXkKeRlJP
-	GvZB4FLD6e01QCebdPXg==;
+	List-Archive:List-Unsubscribe:List-Id:To:From:Subject:Message-ID:Date:
+	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=oyqihhLJoUd5HJV1S5rmETtfLbsd9fpp6W6HreZ9eog=; b=12g
+	hnhfbVfeLKBYJDNRzG/4VwVTwx5+7E4O/V0PylL+9PWX2n5IPNbMPTWH+d+sNOPYH4jL/1frmtYkU
+	gEMGQjAgdXbNiHEQlVOMnU0ALfM0sBbkAOVux95hVUQw83ufPvy7bMs1+1birl8oozD6rZYI5aFl2
+	E+OtZVR4lD5YqDR4sBcHDjwltWeL/hdcolwigNjw6lrzV1Iuyt0D9x7/wnLapOj5OA8yn/lRD+w7F
+	4CLCG8KAtj4KJemGh/1snJEy4Mh9uERxViBNmTayYWqZNHHN7hxNUYpI+nTVNgy5IkrHKBIMU6Q35
+	XvvtAwwVnrI6juzSnv/nG0qkBip/iRA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wadJd-00000002qW8-0Kj7;
-	Fri, 19 Jun 2026 17:47:41 +0000
-Received: from mail-ej1-x62c.google.com ([2a00:1450:4864:20::62c])
+	id 1waqy8-00000003FB6-2arP;
+	Sat, 20 Jun 2026 08:22:24 +0000
+Received: from mail-ot1-f77.google.com ([209.85.210.77])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wadJb-00000002qVS-0Pko
+	id 1waqy6-00000003FAi-2bFu
 	for linux-mtd@lists.infradead.org;
-	Fri, 19 Jun 2026 17:47:40 +0000
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-c07fd4dc2c8so228307666b.1
-        for <linux-mtd@lists.infradead.org>; Fri, 19 Jun 2026 10:47:38 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1781891257; cv=none;
-        d=google.com; s=arc-20240605;
-        b=dD17fQ7qbvH8U7HdsXyxRh95aR+c3ebWSbtWaH0iPOtaR916+vP6Lht0aCTW7W2AQn
-         8Y92JvIellxDAdEhEDop9BSonzbszk+BthHuTdQhhe/QxKF9LXJa13HMEm8mQ20G2Cmu
-         la0FmUz/h/5icqLLhYuPFlyVILMUBh8hVAuBOm1CWUXN6IhyOqJqkBHgUVFyafslZLwG
-         kBwL0oHURb7P61LHLxOUD8sOWhD0I8oYAE2IXj/F7/DLAmluuOJiOndoNwakZOu3gad0
-         U+JexhoSvi0jrAbrILWIkp1LIrC58GZQ0tlC3GR3P/AT0RRE7sYbE4cOf2DRz78mp7TV
-         34Tw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=HgKFK2/bAzNHbask6kSEPwIbMIWqzM9ItL7Se+JyFGs=;
-        fh=jlztjQe6V6GBtk+F7xKXHhv86H5ieSIhfvf3C+VtTR8=;
-        b=GpKAQsRSVlnscvitLKZWdD1K6eUZiA8AWhiFphNwIwSzPZUk9+7ieblnwWtp5g6Rlb
-         9RgncoFwcxq7nuZ9gWqs+hYW0m5aJN8cMgSIdZScNjz5MdSXKa7c9RUprgK80ffdJygi
-         9TuykIBwFHW4CP9yZXG05kxRagPgYkOYVZxx1bxrf/7rDrDWrdKQ4P7ytiWFZgcHlMfZ
-         IngKGKRu/mY/BWh8rqXokyNlrb3xsds7iJKO1eSS7d+7mza9KuuYOT8o97fyAzBjV3sO
-         MeXkOHXoid8tvqJlMg/yWw0G4Vt8M2z4RaoJJq0+tdUXTHXqnqyHFUtOkyq1JV/9WKlG
-         Z1wQ==;
-        darn=lists.infradead.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1781891257; x=1782496057; darn=lists.infradead.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HgKFK2/bAzNHbask6kSEPwIbMIWqzM9ItL7Se+JyFGs=;
-        b=gbKA/jarQj0nZfetihe/c1PP+qO5HI5AXq4XuYroMlGjvyTjcKqPUAWuGrapgNnMfk
-         8NwIb9uP9wArcT9HnaIhsfFU6G/zfDODkbnI1H30gWxIGLunZfsLzV18Np6NxJUoN7SC
-         R2dbdXksEhG0E/WhF1BAHp05Kat6Mt6NsTWCgKMiR0OoOihbSmulQgXq8ledPCOWnGSK
-         zNB6xZCueSXCMYiL+AGBpK6Gc8JpPTQF6xYR8wbQRxsn6S5I5ZaF8Zaz2LUexF0bAtgw
-         6lqRPrYcLLahYzO+fZkznJQDc47uuLXhi/DtikOZ6g++asALU7hsvn+wm1M5co+gWc3+
-         lxdQ==
+	Sat, 20 Jun 2026 08:22:23 +0000
+Received: by mail-ot1-f77.google.com with SMTP id 46e09a7af769-7e6f905ea78so4513202a34.1
+        for <linux-mtd@lists.infradead.org>; Sat, 20 Jun 2026 01:22:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1781891257; x=1782496057;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=HgKFK2/bAzNHbask6kSEPwIbMIWqzM9ItL7Se+JyFGs=;
-        b=BNbv01oF+TsHeM7HaT2Wxt5j6b0B16m6dGJKOwNImY1dFxigeZ8SqZrAhpPxCJMxNU
-         zureKO9DrQWx2jXhXKnD0EWgEiWJQAD3fZYdDicL3xfwglv6fd7C2mZn8rQy1gvf+I+f
-         jvutYKU+GFzPyHuptSnbMwrOSSMOi2FqipJBrY17Fxhj3u+iZ5U8bgm146uJdV1Ku+l6
-         ALamrWBaLeNUvpM46fqYdClPvEGbdaRCIUGdIs/eEgAPodib1W0U9o2shh0dh2Eb+hyr
-         WaYsBR3MBNzf4R3K/5G+VyqxSt0ozAacv1AD6vRDamx9M99HroFwdKI+HUaJ/cwftUdz
-         Xn1w==
-X-Forwarded-Encrypted: i=1; AFNElJ+4aAIUX2IW2T5AyUIlC2/CUkWEn0Kcu1wQ3wh2WHCSfgLnSTWYVfIZivlV8dlCn6zjRiPtDNis4Do=@lists.infradead.org
-X-Gm-Message-State: AOJu0YwbbeWfHQzSbmak5NXug3FzVny54euZlSCwbl1wwHk0MnkpvbpB
-	/gpuPdAZF7rVVv5ysFD/QU4YswbdM9jwXr32/rJfW5is1VtsCL2aEtvyKnTnozVydp/dc6v4Ivi
-	TP5al7S6Ufi4FvA63iNq5YMsikNCx+2/Cei5Y
-X-Gm-Gg: AfdE7cnWp3c2Pz8wTqzUj+PcJ6P2nQUEt7Iobo1cKmuY4wnjzPd86wdTemMHfeaV/uD
-	+gqXxmQxHkydZCdUoIVAbZFNHkxDsBtYfc2lk86wuXUbWPThaGdtZY2wrFY7BpsyvAEQyuWvSU9
-	G7laNzWZZVwbfC7K6rF5OZIYerQKnJwILY9O7gjhC5h6yI/uzJoQYOeCEiERstFF+MMVT9ywBK0
-	3dj8L9iz4/3/aKMc8RQGSBkspg1tpYpfyRxyUtbQ1wosLe0nuKflYH4ZAUKK4NxSjobk+TimcOW
-	tOHpDVvec9C3dkHNWFq7IKpKspocVzlZJ1J1yBf4la4BvGE+dFmdZN1XPWg5PhPx78bnPRGwN0P
-	4TJmhwS+AG6Sl6j9BjhWmx6ZskZxaPqtzZSzWXqYVu6CoFlQ=
-X-Received: by 2002:a17:907:7b91:b0:bf4:6aca:7010 with SMTP id
- a640c23a62f3a-c097ceba8cbmr272325366b.45.1781891257066; Fri, 19 Jun 2026
- 10:47:37 -0700 (PDT)
+        d=1e100.net; s=20251104; t=1781943740; x=1782548540;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=iK7A0Rlt/6TDFKLm4tXtTVc9zLVvYi9wtPyCEYMULN0=;
+        b=kE5U+yz07WXjJ5RnXcGwa8H4NT0RK+o68fidYJpjQAePktux4qEHaBl8p5dtCxh3IW
+         GwcTj3s+8U+1zY2FehSMwbMd8trKA0XWEwk/UMusTyGFIwRP8vpSYsvMu9xJk/CTGv+C
+         T7ZganZWD8ACrjWAJaGrv4PZDr/hhe7lLNGjvGWY+EuFyyskktFbU7yqaVn2ciE68F+C
+         HgbP7MAcIVhQcd7KFleKkhAXq7ysZu0tvA3U5XCTINAesXvUjLRUX42M2sFytkuEHr/h
+         DYkW9qsGTFdefl8YpRQ1euXIsbcXl4KLIZJo8lCPZvt0N/IPkEvl3qTsueA0fdW9HCZB
+         9qGQ==
+X-Forwarded-Encrypted: i=1; AFNElJ9LjnGhvHLSCpyfX48gj3kdtxTOfgmP8PLvCA9uZPpfacjeCen9zYCsqlDRyvOs3xfXXgj0YgKQ5mQ=@lists.infradead.org
+X-Gm-Message-State: AOJu0Ywou9BzStRqXHGGZYpUOawtAuaDtWRWQEAJ2fLDzBU4utq7bKRj
+	dYgFL+cgg4eZPSpgdWNCWXKD0xyaJ6tJ3Lr+X13LKvbg53PY10WzfpRPzhitxIg6EUC4vekA5kS
+	73dO14ufyIC/Cp6WdfHAu5y12YWXMomVGDSZvJzkl/A3x+2B4zgd6i+sVXCg=
 MIME-Version: 1.0
-References: <20260618205835.1497952-1-arnd@kernel.org>
-In-Reply-To: <20260618205835.1497952-1-arnd@kernel.org>
-From: Rosen Penev <rosenp@gmail.com>
-Date: Fri, 19 Jun 2026 10:47:25 -0700
-X-Gm-Features: AVVi8CdUmO327px2zkmaLafMvxacRiHRidFBADgyBfGM6Henqz-jyT2UIo90lYg
-Message-ID: <CAKxU2N8cJnkGQod5KFjj7_z8OmhWo8q1YAnUJ2nCtjxLBNrgbQ@mail.gmail.com>
-Subject: Re: [PATCH] mtd: rawnand: ndfc: add CONFIG_OF dependency
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
-	Vignesh Raghavendra <vigneshr@ti.com>, Arnd Bergmann <arnd@arndb.de>, Chris Down <chris@chrisdown.name>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>, Binbin Zhou <zhoubinbin@loongson.cn>, 
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+X-Received: by 2002:a05:6808:190d:b0:489:5df6:68ef with SMTP id
+ 5614622812f47-48ac136b184mr2085082b6e.40.1781943740594; Sat, 20 Jun 2026
+ 01:22:20 -0700 (PDT)
+Date: Sat, 20 Jun 2026 01:22:20 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <6a364dbc.713c5d62.148f7.0000.GAE@google.com>
+Subject: [syzbot] [mtd?] WARNING in add_mtd_device
+From: syzbot <syzbot+3ae80219c633aca5431c@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, 
+	miquel.raynal@bootlin.com, richard@nod.at, syzkaller-bugs@googlegroups.com, 
+	vigneshr@ti.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260619_104739_161141_E295A0F9 
-X-CRM114-Status: GOOD (  19.10  )
+X-CRM114-CacheID: sfid-20260620_012222_669305_EE22A991 
+X-CRM114-Status: UNSURE (   5.86  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -114,46 +72,100 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gVGh1LCBKdW4gMTgsIDIwMjYgYXQgMTo1OOKAr1BNIEFybmQgQmVyZ21hbm4gPGFybmRAa2Vy
-bmVsLm9yZz4gd3JvdGU6Cj4KPiBGcm9tOiBBcm5kIEJlcmdtYW5uIDxhcm5kQGFybmRiLmRlPgo+
-Cj4gV2hlbiBjb21waWxlLXRlc3Rpbmcgb24geDg2IHdpdGhvdXQgQ09ORklHX09GLCB0aGUgbmRm
-YyBkcml2ZXIgcHJvZHVjZXMKPiBhIGhhcm1sZXNzIHdhcm5pbmc6Cj4KPiBkcml2ZXJzL210ZC9u
-YW5kL3Jhdy9uZGZjLmM6IEluIGZ1bmN0aW9uICduZGZjX3Byb2JlJzoKPiBpbmNsdWRlL2xpbnV4
-L2Rldl9wcmludGsuaDoxNTQ6MzE6IGVycm9yOiAnbGVuJyBpcyB1c2VkIHVuaW5pdGlhbGl6ZWQg
-Wy1XZXJyb3I9dW5pbml0aWFsaXplZF0KPiAgIDE1NCB8ICAgICAgICAgZGV2X3ByaW50a19pbmRl
-eF93cmFwKF9kZXZfZXJyLCBLRVJOX0VSUiwgZGV2LCBkZXZfZm10KGZtdCksICMjX19WQV9BUkdT
-X18pCj4gICAgICAgfCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBeCj4gZHJpdmVycy9t
-dGQvbmFuZC9yYXcvbmRmYy5jOjE5NjoxNzogbm90ZTogaW4gZXhwYW5zaW9uIG9mIG1hY3JvICdk
-ZXZfZXJyJwo+ICAgMTk2IHwgICAgICAgICAgICAgICAgIGRldl9lcnIoJm9mZGV2LT5kZXYsICJ1
-bmFibGUgcmVhZCByZWcgcHJvcGVydHkgKCVkKVxuIiwgbGVuKTsKPgo+IExpbWl0IGNvbXBpbGUt
-dGVzdGluZyB0byBjb25maWd1cmF0aW9ucyB3aXRoIENPTkZJR19PRiB0byB0cml2aWFsbHkKPiBh
-dm9pZCB0aGlzLiBUaGUgZHJpdmVyIHdpbGwgc3RpbGwgYmUgYnVpbHQgaW4gYWxsbW9kY29uZmln
-IGFuZCBtYW55Cj4gcmFuZGNvbmZpZyBidWlsZHMuCj4KPiBGaXhlczogNGYyNjkyYTUzODNlICgi
-bXRkOiByYXduYW5kOiBuZGZjOiB1c2UgaW9yZWFkMzJiZS9pb3dyaXRlMzJiZSBhbmQgYWxsb3cg
-Q09NUElMRV9URVNUIikKTWlnaHQgYWxzbyB3YW50IHRvIGFkZAoKSWYgeW91IGZpeCB0aGUgaXNz
-dWUgaW4gYSBzZXBhcmF0ZSBwYXRjaC9jb21taXQgKGkuZS4gbm90IGp1c3QgYSBuZXcgdmVyc2lv
-biBvZgp0aGUgc2FtZSBwYXRjaC9jb21taXQpLCBraW5kbHkgYWRkIGZvbGxvd2luZyB0YWdzCnwg
-UmVwb3J0ZWQtYnk6IGtlcm5lbCB0ZXN0IHJvYm90IDxsa3BAaW50ZWwuY29tPgp8IENsb3Nlczog
-aHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvb2Uta2J1aWxkLWFsbC8yMDI2MDYxNjAxNTMucHBlUmRF
-TDAtbGtwQGludGVsLmNvbS8KCj4gU2lnbmVkLW9mZi1ieTogQXJuZCBCZXJnbWFubiA8YXJuZEBh
-cm5kYi5kZT4KUmV2aWV3ZWQtYnk6IFJvc2VuIFBlbmV2IDxyb3NlbnBAZ21haWwuY29tPgo+IC0t
-LQo+IFdlIG1heSBhbHNvIHdhbnQgdG8gY2hhbmdlIHRoZSBvZl9nZXRfcHJvcGVydHkoKSBzdHVi
-IGZ1bmN0aW9uIHRvCj4gaW5pdGlhbGl6ZSAqbGVuLgo+IC0tLQo+ICBkcml2ZXJzL210ZC9uYW5k
-L3Jhdy9LY29uZmlnIHwgMSArCj4gIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKQo+Cj4g
-ZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L0tjb25maWcgYi9kcml2ZXJzL210ZC9u
-YW5kL3Jhdy9LY29uZmlnCj4gaW5kZXggNjRiOGI5OWEzYTY4Li4xZjQwNTNlNTMxZmQgMTAwNjQ0
-Cj4gLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvS2NvbmZpZwo+ICsrKyBiL2RyaXZlcnMvbXRk
-L25hbmQvcmF3L0tjb25maWcKPiBAQCAtNzIsNiArNzIsNyBAQCBjb25maWcgTVREX05BTkRfQVUx
-NTUwCj4gIGNvbmZpZyBNVERfTkFORF9OREZDCj4gICAgICAgICB0cmlzdGF0ZSAiSUJNL01DQyA0
-eHggTkFORCBjb250cm9sbGVyIgo+ICAgICAgICAgZGVwZW5kcyBvbiA0NHggfHwgQ09NUElMRV9U
-RVNUCj4gKyAgICAgICBkZXBlbmRzIG9uIE9GCj4gICAgICAgICBzZWxlY3QgTVREX05BTkRfRUND
-X1NXX0hBTU1JTkcKPiAgICAgICAgIHNlbGVjdCBNVERfTkFORF9FQ0NfU1dfSEFNTUlOR19TTUMK
-PiAgICAgICAgIGhlbHAKPiAtLQo+IDIuMzkuNQo+CgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGlu
-ZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgt
-bXRkLwo=
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    a975094bf98c Merge tag 'exfat-for-7.2-rc1' of git://git.ke..
+git tree:       https://kernel.googlesource.com/pub/scm/linux/kernel/git/torvalds/linux master
+console output: https://syzkaller.appspot.com/x/log.txt?x=16e3dd56580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3c66dc15e483c558
+dashboard link: https://syzkaller.appspot.com/bug?extid=3ae80219c633aca5431c
+compiler:       aarch64-linux-gnu-gcc (Debian 14.2.0-19) 14.2.0, GNU ld (GNU Binutils for Debian) 2.44
+userspace arch: arm64
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/fa3fbcfdac58/non_bootable_disk-a975094b.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/56fd6dc1b679/vmlinux-a975094b.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/b1422518a402/Image-a975094b.gz.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+3ae80219c633aca5431c@syzkaller.appspotmail.com
+
+mtd partition "" doesn't have enough space: 0x8000003 < 0x8000084bb, disabled
+------------[ cut here ]------------
+WARNING: drivers/mtd/mtdcore.c:719 at add_mtd_device+0x56c/0x14cc drivers/mtd/mtdcore.c:719, CPU#1: syz.0.5209/17410
+Modules linked in:
+CPU: 1 UID: 0 PID: 17410 Comm: syz.0.5209 Tainted: G             L      syzkaller #0 PREEMPT 
+Tainted: [L]=SOFTLOCKUP
+Hardware name: linux,dummy-virt (DT)
+pstate: 10000005 (nzcV daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+pc : add_mtd_device+0x56c/0x14cc drivers/mtd/mtdcore.c:719
+lr : mtd_add_partition+0x218/0x48c drivers/mtd/mtdpart.c:280
+sp : ffff80008e3b76f0
+x29: ffff80008e3b77b0 x28: ffff000015758000 x27: ffff00001783c004
+x26: 1fffe00002f0783f x25: ffff00001783c014 x24: 0000000000000004
+x23: ffff00001783c000 x22: 1ffff00011c76f02 x21: 0000000000000000
+x20: ffff00001783c1a0 x19: 0000000000000c00 x18: 0000000000000000
+x17: 3830303030387830 x16: 203c203330303030 x15: 30387830203a6563
+x14: 617073206867756f x13: 0000000000000001 x12: ffff700011c76ee9
+x11: 1ffff00011c76ee8 x10: ffff700011c76ee8 x9 : dfff800000000000
+x8 : ffff80008e3b7747 x7 : 1ffff00011c76eea x6 : 0000000041b58ab3
+x5 : ffff700011c76eea x4 : ffff80008e3b7750 x3 : 1fffe00002f07800
+x2 : 0000000000000000 x1 : 0000000000000007 x0 : 0000000000000000
+Call trace:
+ add_mtd_device+0x56c/0x14cc drivers/mtd/mtdcore.c:719 (P)
+ mtd_add_partition+0x218/0x48c drivers/mtd/mtdpart.c:280
+ mtdchar_blkpg_ioctl+0x17c/0x1b8 drivers/mtd/mtdchar.c:562
+ mtdchar_ioctl+0x2f8/0x1ed8 drivers/mtd/mtdchar.c:1218
+ mtdchar_unlocked_ioctl+0xa0/0xfc drivers/mtd/mtdchar.c:1241
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:597 [inline]
+ __se_sys_ioctl fs/ioctl.c:583 [inline]
+ __arm64_sys_ioctl+0x124/0x1a4 fs/ioctl.c:583
+ __invoke_syscall arch/arm64/kernel/syscall.c:35 [inline]
+ invoke_syscall+0x74/0x240 arch/arm64/kernel/syscall.c:49
+ el0_svc_common.constprop.0+0xac/0x230 arch/arm64/kernel/syscall.c:121
+ do_el0_svc+0x40/0x58 arch/arm64/kernel/syscall.c:140
+ el0_svc+0x58/0x2a4 arch/arm64/kernel/entry-common.c:736
+ el0t_64_sync_handler+0xa0/0xe4 arch/arm64/kernel/entry-common.c:755
+ el0t_64_sync+0x198/0x19c arch/arm64/kernel/entry.S:594
+irq event stamp: 0
+hardirqs last  enabled at (0): [<0000000000000000>] 0x0
+hardirqs last disabled at (0): [<ffff800080215cc8>] copy_process+0x16a8/0x5700 kernel/fork.c:2232
+softirqs last  enabled at (0): [<ffff800080215ce8>] copy_process+0x16c8/0x5700 kernel/fork.c:2233
+softirqs last disabled at (0): [<0000000000000000>] 0x0
+---[ end trace 0000000000000000 ]---
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
