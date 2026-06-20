@@ -4,85 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70698CD98F2
-	for <linux-mtd@archiver.kernel.org>; Sat, 20 Jun 2026 17:06:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EECB0CDB466
+	for <linux-mtd@archiver.kernel.org>; Sat, 20 Jun 2026 22:57:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=hYTGewY82TX/XbZTSXW/R+Gf7pAbbmcrhGRz8R5QbiY=; b=EqCiZVEtttRoOJ
-	E2I6zM5SSrd8zkzcMRPNA/klnAwFV31l2eRnd0YhnugEYmjvcpcbPkB7l7uwevm0Oi8U7hMesAalQ
-	LgF/Y4KJcWF/8B76gh8UHMDfS2F5ANxGwRYJG0PJPAPrd7mSrprEC5SZQVvw+ex+pWbkQw34Q4rQY
-	lRtBQVSsDZZbDdLhucjEqC3A5vDCzEfq+nkO4PHORxuea2HSQeSLXM06SNVp7MaPGzVeG/PnNsH/+
-	YmyzsXhY1tobRGFrM54LTPFtXHtuYD9rurcaESeZgH5qyBHG6NmMsb/2HV/4xtvySY9llgpSBlypS
-	ZvpODQJXuxvrDDZ1ZavQ==;
+	List-Owner; bh=3htxhyONKHiCDCFiBf6o9/0m5caB9LUd3GnAESXzUpQ=; b=wAOAzPZXbmiFpL
+	xNYqG3Io6dbEieEvJ5VzmLnphv0dRy4XFA6Fk14l+aU5/xAPN8EJEvJYOYjLbYGCU4SmOs3hrdhHe
+	ZgmyeeJoL3/juvH+3UwYVwqlvrhyUC86nJTR+XSBbppGOLwRpOsFlUbKCVJyGh1KDowTX2uYu27ty
+	n4kJzc6kFnNpzTQOUacWtPymb8F44OTnh2RTT1A74AnlZlzQtryGSzjLsxMRulTgrQyJ3dK8nSfPw
+	4I4Tmb1/98b2CIBTFUf7F8+9Bk1yKgQCZY5ocY1w0swULQJr9Dc+Q2tfNJG0cDuALoYDZ7bWvGx7q
+	ZzbYBxkjpDoUD7kc4hig==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1waz9W-00000003TMA-03xK;
-	Sat, 20 Jun 2026 17:06:42 +0000
-Received: from mail-lj1-x231.google.com ([2a00:1450:4864:20::231])
+	id 1wb4cU-00000003c4y-3oJ1;
+	Sat, 20 Jun 2026 22:56:58 +0000
+Received: from mail-pl1-x62a.google.com ([2607:f8b0:4864:20::62a])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1waz9T-00000003TLk-0PK4
+	id 1wb4c6-00000003c47-3HAs
 	for linux-mtd@lists.infradead.org;
-	Sat, 20 Jun 2026 17:06:40 +0000
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-3966e5e7cebso4379781fa.2
-        for <linux-mtd@lists.infradead.org>; Sat, 20 Jun 2026 10:06:38 -0700 (PDT)
+	Sat, 20 Jun 2026 22:56:55 +0000
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-2c68190ade4so30281365ad.0
+        for <linux-mtd@lists.infradead.org>; Sat, 20 Jun 2026 15:56:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1781975196; x=1782579996; darn=lists.infradead.org;
+        d=gmail.com; s=20251104; t=1781996193; x=1782600993; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=8iEduaZP3uRIog+A+9jyhhzskmnge2cwf7E3YRjfZ34=;
-        b=gW/VGRIRCn0Uys59chS2GIJM2wkvzM9WcsL/IuTY7wkd6oCkxEKn8xBOBKlZrjZhGR
-         n29bIimDTHm5eE8Euxw8fJJ3f8vM2kGQiAj7sT2QHuFnzhrbNLJGvhz57NELtSsHXQi9
-         mT6DEoNsf11ex+RQ0+Euz9HyO3YEDIiPVK7v2yn1+p7LsLyymseakU2qTGvXrHneHgdr
-         7fPjY133zMrNw/6z/IJj4q5ehvEIBmYH7y1G7oeqmAZGmePjDeWEA++tvbL8r3UqG7ab
-         cmemEZkB5CGG+dRqbPIuwDUJSI5gcWTU/zIVqy9vPCGAveOyK8fhS+Q8qndpjF3nZPk3
-         QV5Q==
+        bh=Rs7b6kK6vyQ8Tj7IknUcX7lymT61ql9jRNgRQ30+eHE=;
+        b=d3rK6ehJstEkyKe9nT7/ofY+k98WwN/GlhJXTyGZLXsnR0F66hwUqnbh3n6/DA7g7x
+         vUDI5WBrc4ZqjG9RN20EX3bc/a0KrHaL0wX1s4/cvtT0xK521Dk3E4UqurlWFzXi5A93
+         pZMlj9irYecyJfOE+R0dSXLODElUI08G02oxIG8NE0D9Dwur+V2hBXg9E9U72jzxnJSs
+         L5Gv0TPq+2kFKLbic6785K2znGOh2+xt939hetMTi+gM9DmXnva/9kDlPEf08Q2MvbFu
+         dmZb4/Cf+l8vrCYQ+Jgv1etmiDDyMBBPdsRVIF6yHjH5grBzMMfCu4Q93jWtTs7Ly7J9
+         gRzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1781975196; x=1782579996;
+        d=1e100.net; s=20251104; t=1781996193; x=1782600993;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8iEduaZP3uRIog+A+9jyhhzskmnge2cwf7E3YRjfZ34=;
-        b=i8Mg2Vi7ui80XiOQcyscXh6xhff8JfYy5QEAKfDUVKjWl550by+XWnmiSdpUGtGm91
-         smrw8cT10YyA6aLG8qhtj/E8ve9z/orkwcqyr+GAILP6oiKQLpBGoloi0PJhko67rViS
-         dlWJMl7mMJFS6gR4BAmbDy7rvK5uXUZ/IcfKnRL1/BR1+bGRA572PWDI3Kp2RcSdH0go
-         cKUvtTD5umpeCpZaZsCD7jskhDqO/h0wbYa/wdAL6UfpxyKwIvevjIY2t2WlO0IKfhrk
-         jo1jnBEFuvBtQ3NQKn9WdiWIuDPPefsHkIFpVFUt8O25SpTRecDDv6h6Zjjgy81LCRV1
-         cV6w==
-X-Gm-Message-State: AOJu0Yx4WIZ9uoap/FaX+zRtLFKkq7cmu1pQs2lswn0n6Cm23+vUXfVC
-	bCpUA3imuvwSqm8DXis/S93JaieMijyftujz0R4hSFuOpaHrOkd4i6R/
-X-Gm-Gg: AfdE7cn3lg4Zen35D/JNXUyl3MzAdyH8AIxgsjjNotHOr+LzQCikwWIKSie4T0A/v4g
-	KaRHurV+dNLGijQT26W9NfF2lcWSJWY++a4jgKFYsmnKLH5aqX5aSH+N+tZkz3+63LbMRaFku5I
-	zofFa8Dx/ZB1hUfhzmSx0QOMGJbRaKQmCQ3qkX1325eFbCZj10Bdl3da2C5C7yIt/QbxeDm8RH3
-	sYtrqsqfBwEyb3JOG7gw+HpriDePvivaSiJJbrPh5QMmlMKvIhZ5F/o9oRu2h6BCjSfJavOcV7M
-	PMpCAGa0Z/73y+eSsG8yNxWnCC0E2vbRV0rXTxpBdutLcNO3RzZkbwfgj6ndg55slh1rAmJSy7+
-	UwDZCTWuZmMw8NDZT0WWzxazSZbcYw9C4qtxE5vwI1s7wSUUGB47E4c4pvx3/QXBFi9fx4CKDmM
-	6pZqSyse9XFAK7+48UPgeGsqq/3K0zzJh7
-X-Received: by 2002:a05:6512:a95:b0:5ad:4c8e:6941 with SMTP id 2adb3069b0e04-5ad5624d140mr1380136e87.0.1781975196247;
-        Sat, 20 Jun 2026 10:06:36 -0700 (PDT)
-Received: from localhost.localdomain ([195.211.194.218])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-5ad5c2aed03sm600535e87.42.2026.06.20.10.06.34
+        bh=Rs7b6kK6vyQ8Tj7IknUcX7lymT61ql9jRNgRQ30+eHE=;
+        b=IFY/DA2WvhUHeLVdxtAfB6cwP7O1Ed9F2O907yq+AtteJEeGbRJoedi3rRF5B0ZP2j
+         w8uTMSAXqKn4beThWTmRZShq49irw5eB28qj4Hf/AtYjyP7aqocaLawKiYWwQ1BB4Vuk
+         VM7HrHVS/fOoTYE0zbYBW+lhbk6HcBsxK0OB4uHIRjvBuDL5BYnansIHhXeXmWbk6PrN
+         ftoEfD00tddb7in9crGXk//eqabJ3JKf5AwemuyRR0cy0wc++PcEJeNE7Qi8wMqKJgyG
+         BmjdBYaMy2axLIC0+beAdGiUbVhJadeKrdhhVxAFWq8pYFyUmcrnZQ2glNSjHZNhP1a2
+         n/gg==
+X-Gm-Message-State: AOJu0YxiLXUXCOU93SiFtmFkXJmGyLPgO+Kg6O0jS6dmjvp9GNbmY5Vl
+	hqu72Q6GB2JQZ9aMl70cfk3lw/oGu+UsAX5GA3ruofessgBcr87gP8U/n09aGg==
+X-Gm-Gg: AfdE7cnndJ+wAevbCHsqmuTGK5U/5M84DTSwka5ada+lUlecpK21wfUlnpLMVoP47xl
+	8XfbBeOjAuUSilLIX4RbWN3ojWyuTzABKulxyqTSHxa8eRdqCiq+AGvbT/B3LXH5mCXUk2FFRXC
+	oPCajgbtNQOJc/aIZyIvT+MtbbnPcVgsT1yk/fN9dnkqhUNp60yaQw/+vBBNBnMN1Pvcq1GipaF
+	usKUiypGfiq97Xsda9LSFT2ap3cEZAmhOWC+2Fyww26iG2S8l02dJQ3fEVomljMg0NBqz+ESwCo
+	lWXRVA2xuuDwbw2eIlzgvWowCE+SII5DEZsiB7b2cechto+kBhKVnO3fKzOpg4WDpUyffajDmwf
+	svFC83DiG95LTFpbd74hia6q1P4dXLm4N3Vk8MA5FB2IIbM7km//ORzZcB98aBQv6Di18xxbxLw
+	xB1QZo9eDROslI+JtlJJSRVLzMZrGl2zLZgrklyQ1lz9rPyz1RVrefyvyxp9qhnEa+pdF6JS3iJ
+	w+HWE8=
+X-Received: by 2002:a17:903:2ac3:b0:2c6:b429:f100 with SMTP id d9443c01a7336-2c7195c4e8bmr76603445ad.15.1781996193368;
+        Sat, 20 Jun 2026 15:56:33 -0700 (PDT)
+Received: from deepanshu-kernel-hacker.. ([2405:201:682f:383f:6622:5068:7fd9:7931])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2c743bfd9ddsm34254705ad.55.2026.06.20.15.56.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Jun 2026 10:06:34 -0700 (PDT)
-From: Nikolay Ivchenko <nivchenko.dev@gmail.com>
+        Sat, 20 Jun 2026 15:56:32 -0700 (PDT)
+From: Deepanshu Kartikey <kartikey406@gmail.com>
 To: miquel.raynal@bootlin.com,
 	richard@nod.at,
 	vigneshr@ti.com
 Cc: linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
-	syzbot+3ae80219c633aca5431c@syzkaller.appspotmail.com,
-	Nikolay Ivchenko <nivchenko.dev@gmail.com>
-Subject: [PATCH] mtd: mtdpart: fix uninitialized erasesize on MTDPART_OFS_RETAIN error path
-Date: Sat, 20 Jun 2026 20:06:03 +0300
-Message-ID: <20260620170603.334732-1-nivchenko.dev@gmail.com>
+	Deepanshu Kartikey <kartikey406@gmail.com>,
+	syzbot+3ae80219c633aca5431c@syzkaller.appspotmail.com
+Subject: [PATCH] mtd: mtdpart: validate partition bounds in mtd_add_partition()
+Date: Sun, 21 Jun 2026 04:26:25 +0530
+Message-ID: <20260620225625.45243-1-kartikey406@gmail.com>
 X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260620_100639_172987_661672CC 
-X-CRM114-Status: GOOD (  10.26  )
+X-CRM114-CacheID: sfid-20260620_155634_823794_00034480 
+X-CRM114-Status: UNSURE (   9.86  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,41 +101,42 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-When parsing partition layouts, if a partition requested with
-MTDPART_OFS_RETAIN runs out of space, the allocator jumps directly
-to 'out_register' to preserve partition numbering.
+mtd_add_partition() checks that 'length' is positive but does not
+validate that 'offset + length' fits within the parent partition's
+size. A userspace caller using the BLKPG_ADD_PARTITION ioctl can
+supply a crafted large 'length' value that passes the length <= 0
+check, causing add_mtd_device() to fire a WARN_ON() when it detects
+the oversized partition.
 
-However, this jump bypasses child->erasesize initialization, leaving
-it at zero. When add_mtd_device() is later called on this child, the
-registration fails and triggers a WARN_ON() due to the zero ->erasesize.
-
-Fix this by zeroing out child->part.offset and child->part.size, and
-initializing child->erasesize to parent->erasesize. This is the exact
-same pattern already used just a few lines below in the "out of reach"
-error check (child->part.offset >= parent_size) to safely register a
-disabled partition.
+Fix this by adding explicit bounds checks before allocate_partition()
+is called:
+  - Reject negative or out-of-range offsets.
+  - Use u64 arithmetic to safely check offset + length <= parent_size,
+    avoiding potential signed integer overflow.
 
 Reported-by: syzbot+3ae80219c633aca5431c@syzkaller.appspotmail.com
 Closes: https://syzkaller.appspot.com/bug?extid=3ae80219c633aca5431c
-Signed-off-by: Nikolay Ivchenko <nivchenko.dev@gmail.com>
+Signed-off-by: Deepanshu Kartikey <kartikey406@gmail.com>
 ---
- drivers/mtd/mtdpart.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/mtd/mtdpart.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 795a94e6b482..7f23f8a1b59c 100644
+index 795a94e6b482..1a0e2207e440 100644
 --- a/drivers/mtd/mtdpart.c
 +++ b/drivers/mtd/mtdpart.c
-@@ -118,6 +118,9 @@ static struct mtd_info *allocate_partition(struct mtd_info *parent,
- 				part->name, parent_size - child->part.offset,
- 				child->part.size);
- 			/* register to preserve ordering */
-+			child->part.offset = 0;
-+			child->part.size = 0;
-+			child->erasesize = parent->erasesize;
- 			goto out_register;
- 		}
- 	}
+@@ -264,6 +264,11 @@ int mtd_add_partition(struct mtd_info *parent, const char *name,
+ 	if (length <= 0)
+ 		return -EINVAL;
+ 
++	if (offset < 0 || offset >= (long long)parent_size)
++		return -EINVAL;
++
++	if ((u64)offset + (u64)length > parent_size)
++		return -EINVAL;
+ 	memset(&part, 0, sizeof(part));
+ 	part.name = name;
+ 	part.size = length;
 -- 
 2.43.0
 
