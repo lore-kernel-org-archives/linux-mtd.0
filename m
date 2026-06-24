@@ -4,52 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17456CDB479
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1EF50CDB470
 	for <linux-mtd@archiver.kernel.org>; Wed, 24 Jun 2026 07:21:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=c05SSZ1R5P86bwrcriQrBmtEysc2fKijw4E0tpxed6A=; b=QS0Bqo4YZ5FUdU
-	nKPpbwzGrbaH98p3PGhijqK4m/Y0ez0cH08OBW/o0+lJlz16r8JEFfsgh32NBnR38k8Px9XsyVCPR
-	5QrHOswQO35KnfwuUjuNa6zlYFBFguT+z2ojXtlawTyc95lmd2pmhr0uvqjkTGj+XO1NJ1CHUGRvB
-	gCVq1679oSVtCJjCGxRpRiSs8UqvYyxwVtXfvESVzjthuKfDs3uwLKhb3OLv0bXTwSbbcoFjBtDXt
-	HZ+ubjAEtSgPe4n8gyhrpueO5a9gfy3mSQKH6MhrNolCKkia6NXl7C3uacypalcjhmhX/Q4NPFg9o
-	tv+hPORnB6OB2ZMZIF2g==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=XF0Kx35z3i99p9zdfCrK401wvkH0wAuJNtxXNKNGokY=; b=CEqt4L5P3L05BT
+	3txgFepZz22ztFcOiRvp/z14PG2hj1TpXHgVXK5FWrpUYNz53GctEt2Lpt0/YX4sHp1Mq/P1Zm4jo
+	MmfuRlHVSHT0ifhC6ZTbi7EgUmE7po3OSYVIZjbLYT8jbhpdNSAwznf8eGi4aCwU+SOWqxSVTl6h2
+	0vQyHXqEUni5ykn2h3OeBaluygak1E2RcR+LnV0kVsM8vYKsEAodVGPcg6+0qhI3XKtu+KsH0k2Wg
+	hVskzCezSi+4Eo31wrMVuWDZ4Lj+euE8jZPva6rJW0YibHtHDS4+JLCbAg2iBxrx6hzIlUrQ1lFSa
+	+3Tg8tMq9fa7lWd5DDYw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wcHvn-00000007Ikt-11W1;
-	Wed, 24 Jun 2026 07:21:55 +0000
+	id 1wcHvo-00000007Iln-3WJa;
+	Wed, 24 Jun 2026 07:21:56 +0000
 Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wcHvf-00000007IY9-445j
+	id 1wcHvj-00000007IhS-3TZK
 	for linux-mtd@lists.infradead.org;
-	Wed, 24 Jun 2026 07:21:52 +0000
+	Wed, 24 Jun 2026 07:21:53 +0000
 Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id A679C2C03E8;
-	Wed, 24 Jun 2026 19:21:28 +1200 (NZST)
+	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 370922C0728;
+	Wed, 24 Jun 2026 19:21:50 +1200 (NZST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-	s=mail181024; t=1782285688;
-	bh=lY1xg1Dts/NCU9IQ0uKUs3cx3xvA/lG0Zk5pWk5kh2s=;
-	h=From:To:Cc:Subject:Date:From;
-	b=Dn+4rTqxCYjJtWae+ToMtCQraae+Kq74oZCT7VGNyGl0+wsY9ristyquXHhWKA+HK
-	 G+kM97rSUGBqONW3AsQms+1Mqfw+yUyA2Jxzc4pWSx/z58GwGHUdMsbnQPfAbqsXDu
-	 CAZPoE3609v+Amzcxi8NlyNCIcgGBPFeRancFqVM/3Da6MVp4ss5vJiTXQLuRAt1JY
-	 oKlpYUO2080prl/Tzgv1LhvciM/qZaBBZE4AFZ2yZpc36Uls0y+axzj4SU8Sx3/uv4
-	 9HmQ6YELsWlzWhH7cpZ0TOhENWpU+AwYM9sEH/LYLOW09szX1y7iFzGWQR+MDhUgJk
-	 YYhuCCgTLjl4A==
+	s=mail181024; t=1782285710;
+	bh=Kiy1gSb9XrxwzNm9y+T6r5psTGT9d0KPP6ZTuYi6s2U=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=oN9CCE925IwaEZMqfA0+G4YWfDE8FTNMzGEvyRlIbwk8D0jxQt0nfjntzqcdKadRd
+	 pIKtFYPreRDLWFrTgAdmPNDWj2wYbb/yP6LOg/zPPku4lUPpZ+wGBvAZuT3Um5Z9W/
+	 48wYrpwbFai0E2kgBhydU1iO/w8JtP779Q5sQfnXp+Gy5c1Wt2ZMmpkNe//Rw6XQrr
+	 zHDewL9berBE8hQ/bAhHon6JAgEEshFinRZ89jzGAm36OYbeFUc0PovrakbNcLP3mo
+	 4MSNaHBz5ao5AW4clwk5Rq2vZk0SLkoFO0HmriIPly8rS2TkMp+ZpFkJNtVRdswFyk
+	 a3O15Mb51dQNQ==
 Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-	id <B6a3b85780000>; Wed, 24 Jun 2026 19:21:28 +1200
+	id <B6a3b858e0000>; Wed, 24 Jun 2026 19:21:50 +1200
 Received: from ronand-dl.ws.atlnz.lc (ronand-dl.ws.atlnz.lc [10.33.12.18])
-	by pat.atlnz.lc (Postfix) with ESMTP id 64C7C13EDE9;
-	Wed, 24 Jun 2026 19:21:28 +1200 (NZST)
+	by pat.atlnz.lc (Postfix) with ESMTP id 14A3B13EDE9;
+	Wed, 24 Jun 2026 19:21:50 +1200 (NZST)
 Received: by ronand-dl.ws.atlnz.lc (Postfix, from userid 1930)
-	id 6022C4E10ED; Wed, 24 Jun 2026 19:21:28 +1200 (NZST)
+	id 11A844E10ED; Wed, 24 Jun 2026 19:21:50 +1200 (NZST)
 From: Ronan Dalton <ronan.dalton@alliedtelesis.co.nz>
 To: pratyush@kernel.org,
 	mwalle@kernel.org,
@@ -62,17 +62,19 @@ Cc: Ronan Dalton <ronan.dalton@alliedtelesis.co.nz>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
 	Chris Packham <chris.packham@alliedtelesis.co.nz>,
 	Aryan Srivastava <aryan.srivastava@alliedtelesis.co.nz>
-Subject: [PATCH 1/3] Revert "mtd: spi-nor: remove Fujitsu MB85RS1MT support"
-Date: Wed, 24 Jun 2026 19:21:03 +1200
-Message-ID: <20260624072104.1123580-2-ronan.dalton@alliedtelesis.co.nz>
+Subject: [PATCH 3/3] mtd: spi-nor: fujitsu: Add support for MB85RS4MTY chip
+Date: Wed, 24 Jun 2026 19:21:07 +1200
+Message-ID: <20260624072104.1123580-6-ronan.dalton@alliedtelesis.co.nz>
 X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260624072104.1123580-2-ronan.dalton@alliedtelesis.co.nz>
+References: <20260624072104.1123580-2-ronan.dalton@alliedtelesis.co.nz>
 MIME-Version: 1.0
-X-SEG-SpamProfiler-Analysis: v=2.4 cv=TI3mSEla c=1 sm=1 tr=0 ts=6a3b8578 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=FelO9ux0wxsA:10 a=VwQbUJbxAAAA:8 a=JfrnYn6hAAAA:8 a=bUQKSiCPAAAA:8 a=P-IC7800AAAA:8 a=sozttTNsAAAA:8 a=P8ycfbC0-FjMsUKx_IAA:9 a=3ZKOabzyN94A:10 a=1CNFftbPRP8L7MoqJWF3:22 a=-fHZXUhsFbuwFN3fwQAr:22 a=d3PnA9EDa4IxuAV0gXij:22
+X-SEG-SpamProfiler-Analysis: v=2.4 cv=TI3mSEla c=1 sm=1 tr=0 ts=6a3b858e a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=FelO9ux0wxsA:10 a=VwQbUJbxAAAA:8 a=JfrnYn6hAAAA:8 a=bUQKSiCPAAAA:8 a=P-IC7800AAAA:8 a=sozttTNsAAAA:8 a=ifWAZ-2JUGfw6fYFB0cA:9 a=3ZKOabzyN94A:10 a=1CNFftbPRP8L7MoqJWF3:22 a=-fHZXUhsFbuwFN3fwQAr:22 a=d3PnA9EDa4IxuAV0gXij:22
 X-SEG-SpamProfiler-Score: 0
 x-atlnz-ls: pat
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260624_002148_503130_8787E264 
-X-CRM114-Status: GOOD (  16.51  )
+X-CRM114-CacheID: sfid-20260624_002152_034828_155F024E 
+X-CRM114-Status: GOOD (  13.91  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,15 +91,16 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This reverts commit d9cd5c9a6fe26d544551cfaa94fb0abc50c0b895.
+The MB85RS4MTY chip is similar to the MB85RS1MT chip, but it has a
+higher capacity and can handle higher temperatures. Compared to the
+MB85RS1MT chip, this chip has an expanded set of opcodes which allow
+control over power-saving modes, access to a special sector data area,
+and reading of the unique ID and serial number. However, since the
+spi-nor subsystem doesn't support these extended abilities, they are not
+taken advantage of here.
 
-The commit that removed support for this chip claimed that the at25
-driver was the correct driver to use for this chip. However, the at25
-driver exposes the chip as an NVMEM device, not a MTD device, so it's
-not a suitable replacement for users that want to mount a file system
-over the chip.
-
-Revert the change that removed support for the MB85RS1MT FRAM chip.
+Add support for this chip by adding an entry to the fujitsu_nor_parts
+table.
 
 Signed-off-by: Ronan Dalton <ronan.dalton@alliedtelesis.co.nz>
 Cc: linux-kernel@vger.kernel.org
@@ -111,76 +114,101 @@ Cc: Vignesh Raghavendra <vigneshr@ti.com>
 Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
 Cc: Aryan Srivastava <aryan.srivastava@alliedtelesis.co.nz>
 ---
- drivers/mtd/spi-nor/Makefile  |  1 +
- drivers/mtd/spi-nor/core.c    |  1 +
- drivers/mtd/spi-nor/core.h    |  1 +
- drivers/mtd/spi-nor/fujitsu.c | 21 +++++++++++++++++++++
- 4 files changed, 24 insertions(+)
- create mode 100644 drivers/mtd/spi-nor/fujitsu.c
 
-diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
-index 5dd9c35f6b6f..9216a5a29a2b 100644
---- a/drivers/mtd/spi-nor/Makefile
-+++ b/drivers/mtd/spi-nor/Makefile
-@@ -5,6 +5,7 @@ spi-nor-objs			+= atmel.o
- spi-nor-objs			+= eon.o
- spi-nor-objs			+= esmt.o
- spi-nor-objs			+= everspin.o
-+spi-nor-objs			+= fujitsu.o
- spi-nor-objs			+= gigadevice.o
- spi-nor-objs			+= intel.o
- spi-nor-objs			+= issi.o
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index ccf4396cdcd0..d5ebbfd3fa7f 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -2009,6 +2009,7 @@ static const struct spi_nor_manufacturer *manufacturers[] = {
- 	&spi_nor_eon,
- 	&spi_nor_esmt,
- 	&spi_nor_everspin,
-+	&spi_nor_fujitsu,
- 	&spi_nor_gigadevice,
- 	&spi_nor_intel,
- 	&spi_nor_issi,
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index ba2d1a862c9d..a4d906e6d07d 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -606,6 +606,7 @@ extern const struct spi_nor_manufacturer spi_nor_atmel;
- extern const struct spi_nor_manufacturer spi_nor_eon;
- extern const struct spi_nor_manufacturer spi_nor_esmt;
- extern const struct spi_nor_manufacturer spi_nor_everspin;
-+extern const struct spi_nor_manufacturer spi_nor_fujitsu;
- extern const struct spi_nor_manufacturer spi_nor_gigadevice;
- extern const struct spi_nor_manufacturer spi_nor_intel;
- extern const struct spi_nor_manufacturer spi_nor_issi;
+This flash is populated on the Allied Telesis x950GEN2 board and was
+tested at 40 MHz using the armada-380 (CN9130) SPI controller.
+
+mb85rs4mty
+047f49
+fujitsu
+xxd: /sys/bus/spi/devices/spi1.2/spi-nor/sfdp: No such file or directory
+
+Supported read modes by the flash
+ 1S-1S-1S
+  opcode        0x03
+  mode cycles   0
+  dummy cycles  0
+
+Supported page program modes by the flash
+ 1S-1S-1S
+  opcode        0x02
+name            mb85rs4mty
+id              04 7f 49 0b ff ff
+size            512 KiB
+write size      1
+page size       256
+address nbytes  3
+flags           HAS_16BIT_SR
+
+opcodes
+ read           0x03
+  dummy cycles  0
+ erase          0xd8
+ program        0x02
+ 8D extension   none
+
+protocols
+ read           1S-1S-1S
+ write          1S-1S-1S
+ register       1S-1S-1S
+
+erase commands
+ d8 (512 KiB) [0]
+ c7 (512 KiB)
+
+sector map
+ region (in hex)   | erase mask | overlaid
+ ------------------+------------+----------
+ 00000000-0007ffff |     [0   ] | no
+
+512+0 records in
+512+0 records out
+524288 bytes (512.0KB) copied, 0.723481 seconds, 707.7KB/s
+MEMERASE: Unknown error 524
+Copied 524288 bytes from address 0x00000000 in flash to spi_read
+0000000 da13 14ec beac 3864 78cb a48b 29a7 1edc
+0000010 446e 772a f20a bcd1 9edb 8b40 bcf5 544c
+0000020 3152 63a1 3081 bcb6 852f 06da f19a 284d
+0000030 1655 4d58 62d7 bd42 90fb 7921 0be8 3ee7
+0000040 3e78 c995 ba19 4f10 09bc b67c d7da aff7
+0000050 e6f9 0691 a5a8 a40e 9a5d bfef 652e ba36
+0000060 60f6 3ecf dfdb 32cb b4b8 b7b4 a0f8 d307
+0000070 19d7 456b 1f35 296c 7e85 7fbc d1ff b1cf
+0000080 28f9 06dd 55df 1f7a 1309 50f3 e30b 14c2
+0000090 3638 6c9b dee0 3101 9b11 e03c 9a01 c0bd
+722489d44edaccfda786c82c63037ae90733998e02d81e985db54588b229ee83 *spi_read
+Copied 524288 bytes from spi_test to address 0x00000000 in flash
+Copied 524288 bytes from address 0x00000000 in flash to spi_read
+343037c927f0dcdf1ae42d51730d316103aca620e701ab9762440d403c057312 *spi_read
+343037c927f0dcdf1ae42d51730d316103aca620e701ab9762440d403c057312 *spi_test
+mtd.type = MTD_NORFLASH
+mtd.flags = MTD_CAP_RAM
+mtd.size = 524288 (512K)
+mtd.erasesize = 524288 (512K)
+mtd.writesize = 1
+mtd.oobsize = 0
+regions = 0
+
+ drivers/mtd/spi-nor/fujitsu.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
 diff --git a/drivers/mtd/spi-nor/fujitsu.c b/drivers/mtd/spi-nor/fujitsu.c
-new file mode 100644
-index 000000000000..69cffc5c73ef
---- /dev/null
+index 3777c80251c5..32d5404b7402 100644
+--- a/drivers/mtd/spi-nor/fujitsu.c
 +++ b/drivers/mtd/spi-nor/fujitsu.c
-@@ -0,0 +1,21 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2005, Intec Automation Inc.
-+ * Copyright (C) 2014, Freescale Semiconductor, Inc.
-+ */
-+
-+#include <linux/mtd/spi-nor.h>
-+
-+#include "core.h"
-+
-+static const struct flash_info fujitsu_nor_parts[] = {
-+	/* Fujitsu */
-+	{ "mb85rs1mt", INFO(0x047f27, 0, 128 * 1024, 1)
-+		FLAGS(SPI_NOR_NO_ERASE) },
-+};
-+
-+const struct spi_nor_manufacturer spi_nor_fujitsu = {
-+	.name = "fujitsu",
-+	.parts = fujitsu_nor_parts,
-+	.nparts = ARRAY_SIZE(fujitsu_nor_parts),
-+};
+@@ -15,6 +15,12 @@ static const struct flash_info fujitsu_nor_parts[] = {
+ 		.size = SZ_128K,
+ 		.sector_size = SZ_128K,
+ 		.flags = SPI_NOR_NO_ERASE,
++	}, {
++		.id = SNOR_ID(0x04, 0x7f, 0x49),
++		.name = "mb85rs4mty",
++		.size = SZ_512K,
++		.sector_size = SZ_512K,
++		.flags = SPI_NOR_NO_ERASE
+ 	}
+ };
+ 
 -- 
 2.54.0
 
