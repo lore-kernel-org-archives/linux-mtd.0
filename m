@@ -4,69 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6DC3ACDB479
-	for <linux-mtd@archiver.kernel.org>; Thu, 25 Jun 2026 00:37:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D8ACCDE001
+	for <linux-mtd@archiver.kernel.org>; Thu, 25 Jun 2026 12:08:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=Lt3nasssiKMoO2pODmBZ9nW+GhrQsRk8D4uJkGacYRY=; b=WsIxfgomsBQUSD
-	4LGGdUv2np0PGqYllvTp/cB8pz8o+OLzLtslEpT8S2zaHrr2Bej6ywNJqgiaIOpXmDm4Df0b4JDLH
-	JqDlFdkKLUhXSncrypI2MrKaKALWjduUjkqQ0puIGkpXR7ydwuTN7n3Ja1BD3MqLy3gaDWhLZnB+b
-	jupGRvS7MagKhasdcShICELPthZkCoVUIQcHY9npFVW4AzC1SKg3/w+69bpoE4aUpFOVb3Xc/3eD2
-	l7s0OTwy/rXKgukF4GxD9gXY//kNXkIG/Uh0141Oaqdb0GhQ/Ny+uakbuvoU+0IHMJ93CK6bhdyl4
-	omiIo2hujKUITFfO8ogA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=cCcIUfGLlk65VQgmNomaQdPdU8oW6c/hTM6MlwiSj0w=; b=tUlHbR3YKRRfPv
+	I6mYhX5xBEXx3VhgmGCkoUw2htmTzfZhzwFqsM0+YBb6h0vF14VsVW086SdrHFhzvl989C3t1V5bK
+	L5ny/+YctXFWTRlWT+NyL/SZb2cg3e0Y0MsVk3GTO4gIg2aYiMBCinIm/mXl6uUZx9eNEG8ng7kMM
+	+DFsvWFkT9dAN6P/HoVIiGhzd8U3OdBt/Z3s4j+zMeoRedIOWk+24fqRKPIfhqfRWqd/kb2UqJltW
+	oViXeIQGCyLqDxGgQ134WV/Kq1+FMHolG6gS2Yx2TSNmL2W74VTegCpllZruGQRzP+g0VbWbeSkIc
+	CMOHZdi7/vgRNFfqpq6w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wcY66-00000008TiG-3xTj;
-	Thu, 25 Jun 2026 00:37:38 +0000
-Received: from smtp81.cstnet.cn ([159.226.251.81] helo=cstnet.cn)
+	id 1wcisk-000000099lu-2VVe;
+	Thu, 25 Jun 2026 12:08:34 +0000
+Received: from omr-01.pc5.atmailcloud.com ([103.150.252.236])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wcY63-00000008Thi-3gxB;
-	Thu, 25 Jun 2026 00:37:37 +0000
-Received: from localhost.localdomain (unknown [111.196.245.140])
-	by APP-03 (Coremail) with SMTP id rQCowAC3k5pMeDxqN+nCFQ--.4432S2;
-	Thu, 25 Jun 2026 08:37:32 +0800 (CST)
-From: Pengpeng Hou <pengpeng@iscas.ac.cn>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: pengpeng@iscas.ac.cn,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: [RFC PATCH] mtd: rawnand: mtk: return errors when reset does not idle
-Date: Thu, 25 Jun 2026 08:37:30 +0800
-Message-ID: <20260625003730.35025-1-pengpeng@iscas.ac.cn>
-X-Mailer: git-send-email 2.50.1
+	id 1wcisd-000000099jX-374v
+	for linux-mtd@lists.infradead.org;
+	Thu, 25 Jun 2026 12:08:31 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=westnet.com.au; s=202309; h=Content-Type:From:To:Subject:MIME-Version:Date:
+	Message-ID; bh=e+PIk+O4rHlHF2NbSeeY/XhTt4M1wzTZ7x5xk7qadZA=; b=pGM9UuEUPAkLRA
+	mJQlySdg44zWHWJItpz58o2akdr/SXkO3v7bmssXxd7XiDry83HduKyIyOU1Rw/pOhtGwY0FL31fs
+	AxSm8Cbw+SPvboDjiUopfby0TzsoDhY4ScLexJMRj77RkkTK2svgFcINLP40Xs48ITj/SfMDLbZ2R
+	9qBhTY8xBXQrSUX8G1+5bEwtgPqPq0h7bkI2ZLq5DFmZOH7mLPnVkkc0s/lDK5aWPKV4rRerFnDYQ
+	GVbwUZFzh6JbLSvTnleP0bKeJst5OJ4hBGC1vQgtn+8PekP9Tb1jINvv/09tEiz0kbqbz3Ot2GVuE
+	izQ1zTrBPKmYv61Wv8jA==;
+Received: from cmr-kakadu04.internal.pc5.atmailcloud.com (cmr-kakadu04.internal.pc5.atmailcloud.com [192.168.1.6]) 
+	by omr-01.pc5.atmailcloud.com (Exim/cmr-kakadu04.i-0c20fa12ae284b9bc) with ESMTPS
+	(envelope-from <gregungerer@westnet.com.au>)
+	id 1wcisN-00000005dSo-45tT ;
+	Thu, 25 Jun 2026 12:08:11 +0000
+Received: from [115.130.81.87] (helo=[192.168.0.22])
+	 by cmr-kakadu04.i-0c20fa12ae284b9bc with esmtpsa
+	(envelope-from <gregungerer@westnet.com.au>)
+	id 1wcisE-000000014x2-0SzC;
+	Thu, 25 Jun 2026 12:08:09 +0000
+Message-ID: <b55ac37f-4523-46d0-8e77-3a17d7235ffe@westnet.com.au>
+Date: Thu, 25 Jun 2026 22:07:50 +1000
 MIME-Version: 1.0
-X-CM-TRANSID: rQCowAC3k5pMeDxqN+nCFQ--.4432S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxZF1xuFyDtr18uFyUAr17Awb_yoW5uFWkpF
-	WrJa47JF4UJF4xuw4kAFs5AFy3A3yft343GrWFg34I93WYvryj9a4rtF109rZxKFW8GFy3
-	Zrs2qasxuF43Ar7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9a14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-	6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r
-	4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2Wl
-	Yx0E2Ix0cI8IcVAFwI0_JF0_Jw1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbV
-	WUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7Cj
-	xVA2Y2ka0xkIwI1lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4I
-	kC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWU
-	WwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JF
-	I_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY6xAIw20EY4v20xvaj40_
-	Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8Jr
-	UvcSsGvfC2KfnxnUUI43ZEXa7VUbtxhJUUUUU==
-X-Originating-IP: [111.196.245.140]
-X-CM-SenderInfo: pshqw1xhqjqxpvfd2hldfou0/
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] mtd: maps: remove uclinux map driver
+To: Arnd Bergmann <arnd@kernel.org>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, Randy Dunlap <rdunlap@infradead.org>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-m68k <linux-m68k@lists.linux-m68k.org>,
+ Pengpeng Hou <pengpeng@iscas.ac.cn>
+References: <20260526103227.3152003-1-arnd@kernel.org>
+ <20260526103227.3152003-2-arnd@kernel.org>
+Content-Language: en-US
+From: Greg Ungerer <gregungerer@westnet.com.au>
+In-Reply-To: <20260526103227.3152003-2-arnd@kernel.org>
+X-Atmail-Id: gregungerer@westnet.com.au
+X-atmailcloud-spam-action: 
+X-AVAS-Report: RCVD_TLS_ALL(0.00) FROM_HAS_DN(0.00) FROM_EQ_ENVFROM(0.00) BAYES_HAM(-0.21) CLOUDMARK_NOT_SPAM(-5.00) TO_MATCH_ENVRCPT_ALL(0.00) KNOWN_SENDER(-1.00) MIME_GOOD(-0.10) MID_RHS_MATCH_FROM(0.00) RCPT_COUNT_SEVEN(0.00) RCVD_VIA_SMTP_AUTH(0.00) ARC_NA(0.00) CYREN_UNKNOWN(0.00) RCVD_COUNT_ONE(0.00) MIME_TRACE(0.00) ASN_FAIL(0.00) FREEMAIL_FROM(0.00) TO_DN_SOME(0.00) FREEMAIL_ENVFROM(0.00) 
+X-atmailcloud-route: unknown
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260624_173736_300430_BB3AE522 
-X-CRM114-Status: GOOD (  14.72  )
+X-CRM114-CacheID: sfid-20260625_050828_358105_1089B799 
+X-CRM114-Status: GOOD (  28.40  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,114 +81,218 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-mtk_nfc_hw_reset() waits for the NFI master to become idle after forcing a
-reset, but it only logs a warning when the wait times out.  Probe-time
-hardware init and later exec_op() calls then continue as if the reset had
-completed.
+Hi Arnd,
 
-Make the reset helper return the poll error and propagate it through both
-initial hardware setup and NAND operation execution.  Keep the final reset
-writes so status registers affected by the NFI master are still forced
-back to the reset state before the error is returned.
+On 26/5/26 20:32, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> Rather than using platform data or DT properties, the configuration
+> for this mtd map driver used to be passed through the global
+> uclinux_ram_map structure, but the last instance was removed in
+> commit 4ba66a976072 ("arch: remove blackfin port") in 2018.
+> 
+> After commit 251f26c9e828 ("mtd: maps: Make uclinux_ram_map static"),
+> it became impossible to configure it at all, even with out-of-tree
+> platform code.
+> 
+> Clearly nobody is using it, so remove it.
 
-This is marked RFC because the existing code only warns about the idle
-timeout and then performs the final reset writes.  Maintainer feedback is
-needed on whether this timeout should be treated as fatal or as a
-recoverable reset condition on affected hardware.
+It is used on some ColdFire platforms, and was working all the way up
+to being removed in the current merge window.
 
-Signed-off-by: Pengpeng Hou <pengpeng@iscas.ac.cn>
----
- drivers/mtd/nand/raw/mtk_nand.c | 27 ++++++++++++++++++++-------
- 1 file changed, 20 insertions(+), 7 deletions(-)
+The ColdFire platform startup code (arch/m68k/coldfire/head.S) has a
+somewhat unusual setup that can copy an attached filesystem blob to
+_bss_stop, and this is one of the places the uclinux.c map driver can
+use as the filesystem memory address. From uclinux.c
 
-diff --git a/drivers/mtd/nand/raw/mtk_nand.c b/drivers/mtd/nand/raw/mtk_nand.c
-index 21c7e1102..059b8070f 100644
---- a/drivers/mtd/nand/raw/mtk_nand.c
-+++ b/drivers/mtd/nand/raw/mtk_nand.c
-@@ -255,7 +255,7 @@ static inline u8 nfi_readb(struct mtk_nfc *nfc, u32 reg)
- 	return readb_relaxed(nfc->regs + reg);
- }
- 
--static void mtk_nfc_hw_reset(struct mtk_nfc *nfc)
-+static int mtk_nfc_hw_reset(struct mtk_nfc *nfc)
- {
- 	struct device *dev = nfc->dev;
- 	u32 val;
-@@ -269,12 +269,14 @@ static void mtk_nfc_hw_reset(struct mtk_nfc *nfc)
- 				 !(val & MASTER_STA_MASK), 50,
- 				 MTK_RESET_TIMEOUT);
- 	if (ret)
--		dev_warn(dev, "master active in reset [0x%x] = 0x%x\n",
--			 NFI_MASTER_STA, val);
-+		dev_err(dev, "master active in reset [0x%x] = 0x%x\n",
-+			NFI_MASTER_STA, val);
- 
- 	/* ensure any status register affected by the NFI master is reset */
- 	nfi_writel(nfc, CON_FIFO_FLUSH | CON_NFI_RST, NFI_CON);
- 	nfi_writew(nfc, STAR_DE, NFI_STRDATA);
-+
-+	return ret;
- }
- 
- static int mtk_nfc_send_command(struct mtk_nfc *nfc, u8 command)
-@@ -517,7 +519,10 @@ static int mtk_nfc_exec_op(struct nand_chip *chip,
- 	if (check_only)
- 		return 0;
- 
--	mtk_nfc_hw_reset(nfc);
-+	ret = mtk_nfc_hw_reset(nfc);
-+	if (ret)
-+		return ret;
-+
- 	nfi_writew(nfc, CNFG_OP_CUST, NFI_CNFG);
- 	mtk_nfc_select_target(chip, op->cs);
- 
-@@ -1084,8 +1089,10 @@ static int mtk_nfc_read_oob_std(struct nand_chip *chip, int page)
- 	return mtk_nfc_read_page_raw(chip, NULL, 1, page);
- }
- 
--static inline void mtk_nfc_hw_init(struct mtk_nfc *nfc)
-+static int mtk_nfc_hw_init(struct mtk_nfc *nfc)
- {
-+	int ret;
-+
- 	/*
- 	 * CNRNB: nand ready/busy register
- 	 * -------------------------------
-@@ -1095,10 +1102,14 @@ static inline void mtk_nfc_hw_init(struct mtk_nfc *nfc)
- 	nfi_writew(nfc, 0xf1, NFI_CNRNB);
- 	nfi_writel(nfc, PAGEFMT_8K_16K, NFI_PAGEFMT);
- 
--	mtk_nfc_hw_reset(nfc);
-+	ret = mtk_nfc_hw_reset(nfc);
-+	if (ret)
-+		return ret;
- 
- 	nfi_readl(nfc, NFI_INTR_STA);
- 	nfi_writel(nfc, 0, NFI_INTR_EN);
-+
-+	return 0;
- }
- 
- static irqreturn_t mtk_nfc_irq(int irq, void *id)
-@@ -1411,7 +1422,9 @@ static int mtk_nfc_nand_chip_init(struct device *dev, struct mtk_nfc *nfc,
- 	mtd->name = MTK_NAME;
- 	mtd_set_ooblayout(mtd, &mtk_nfc_ooblayout_ops);
- 
--	mtk_nfc_hw_init(nfc);
-+	ret = mtk_nfc_hw_init(nfc);
-+	if (ret)
-+		return ret;
- 
- 	ret = nand_scan(nand, nsels);
- 	if (ret)
--- 
-2.50.1 (Apple Git-155)
+     static int __init uclinux_mtd_init(void)
+     {
+         struct mtd_info *mtd;
+         struct map_info *mapp;
+
+         mapp = &uclinux_ram_map;
+
+         if (physaddr == -1)
+                 mapp->phys = (resource_size_t)__bss_stop;
+         else
+                 mapp->phys = physaddr;
+
+No out of tree code is required. Most of the ColdFire defconfigs have
+CONFIG_MTD_UCLINUX enabled, since it is commonly used.
+
+Can we get this reverted?
+
+Regards
+Greg
+
+
+
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>   drivers/mtd/maps/Kconfig   |   6 --
+>   drivers/mtd/maps/Makefile  |   1 -
+>   drivers/mtd/maps/uclinux.c | 118 -------------------------------------
+>   3 files changed, 125 deletions(-)
+>   delete mode 100644 drivers/mtd/maps/uclinux.c
+> 
+> diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
+> index 784dba14e908..1e8f2b518ddd 100644
+> --- a/drivers/mtd/maps/Kconfig
+> +++ b/drivers/mtd/maps/Kconfig
+> @@ -284,12 +284,6 @@ config MTD_PCMCIA_ANONYMOUS
+>   
+>   	  If unsure, say N.
+>   
+> -config MTD_UCLINUX
+> -	bool "Generic uClinux RAM/ROM filesystem support"
+> -	depends on (MTD_RAM=y || MTD_ROM=y) && (!MMU || COLDFIRE)
+> -	help
+> -	  Map driver to support image based filesystems for uClinux.
+> -
+>   config MTD_PLATRAM
+>   	tristate "Map driver for platform device RAM (mtd-ram)"
+>   	select MTD_RAM
+> diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
+> index 157f911f86d8..eff28fc0b60e 100644
+> --- a/drivers/mtd/maps/Makefile
+> +++ b/drivers/mtd/maps/Makefile
+> @@ -31,7 +31,6 @@ obj-$(CONFIG_MTD_SCx200_DOCFLASH)+= scx200_docflash.o
+>   obj-$(CONFIG_MTD_SOLUTIONENGINE)+= solutionengine.o
+>   obj-$(CONFIG_MTD_PCI)		+= pci.o
+>   obj-$(CONFIG_MTD_IMPA7)		+= impa7.o
+> -obj-$(CONFIG_MTD_UCLINUX)	+= uclinux.o
+>   obj-$(CONFIG_MTD_SCB2_FLASH)	+= scb2_flash.o
+>   obj-$(CONFIG_MTD_PLATRAM)	+= plat-ram.o
+>   obj-$(CONFIG_MTD_VMU)		+= vmu-flash.o
+> diff --git a/drivers/mtd/maps/uclinux.c b/drivers/mtd/maps/uclinux.c
+> deleted file mode 100644
+> index de4c46318abb..000000000000
+> --- a/drivers/mtd/maps/uclinux.c
+> +++ /dev/null
+> @@ -1,118 +0,0 @@
+> -/****************************************************************************/
+> -
+> -/*
+> - *	uclinux.c -- generic memory mapped MTD driver for uclinux
+> - *
+> - *	(C) Copyright 2002, Greg Ungerer (gerg@snapgear.com)
+> - *
+> - *      License: GPL
+> - */
+> -
+> -/****************************************************************************/
+> -
+> -#include <linux/moduleparam.h>
+> -#include <linux/types.h>
+> -#include <linux/init.h>
+> -#include <linux/kernel.h>
+> -#include <linux/fs.h>
+> -#include <linux/mm.h>
+> -#include <linux/major.h>
+> -#include <linux/mtd/mtd.h>
+> -#include <linux/mtd/map.h>
+> -#include <linux/mtd/partitions.h>
+> -#include <asm/io.h>
+> -#include <asm/sections.h>
+> -
+> -/****************************************************************************/
+> -
+> -#ifdef CONFIG_MTD_ROM
+> -#define MAP_NAME "rom"
+> -#else
+> -#define MAP_NAME "ram"
+> -#endif
+> -
+> -static struct map_info uclinux_ram_map = {
+> -	.name = MAP_NAME,
+> -	.size = 0,
+> -};
+> -
+> -static unsigned long physaddr = -1;
+> -module_param(physaddr, ulong, S_IRUGO);
+> -
+> -static struct mtd_info *uclinux_ram_mtdinfo;
+> -
+> -/****************************************************************************/
+> -
+> -static const struct mtd_partition uclinux_romfs[] = {
+> -	{ .name = "ROMfs" }
+> -};
+> -
+> -#define	NUM_PARTITIONS	ARRAY_SIZE(uclinux_romfs)
+> -
+> -/****************************************************************************/
+> -
+> -static int uclinux_point(struct mtd_info *mtd, loff_t from, size_t len,
+> -	size_t *retlen, void **virt, resource_size_t *phys)
+> -{
+> -	struct map_info *map = mtd->priv;
+> -	*virt = map->virt + from;
+> -	if (phys)
+> -		*phys = map->phys + from;
+> -	*retlen = len;
+> -	return(0);
+> -}
+> -
+> -/****************************************************************************/
+> -
+> -static int __init uclinux_mtd_init(void)
+> -{
+> -	struct mtd_info *mtd;
+> -	struct map_info *mapp;
+> -
+> -	mapp = &uclinux_ram_map;
+> -
+> -	if (physaddr == -1)
+> -		mapp->phys = (resource_size_t)__bss_stop;
+> -	else
+> -		mapp->phys = physaddr;
+> -
+> -	if (!mapp->size)
+> -		mapp->size = PAGE_ALIGN(ntohl(*((unsigned long *)(mapp->phys + 8))));
+> -	mapp->bankwidth = 4;
+> -
+> -	printk("uclinux[mtd]: probe address=0x%x size=0x%x\n",
+> -	       	(int) mapp->phys, (int) mapp->size);
+> -
+> -	/*
+> -	 * The filesystem is guaranteed to be in direct mapped memory. It is
+> -	 * directly following the kernels own bss region. Following the same
+> -	 * mechanism used by architectures setting up traditional initrds we
+> -	 * use phys_to_virt to get the virtual address of its start.
+> -	 */
+> -	mapp->virt = phys_to_virt(mapp->phys);
+> -
+> -	if (mapp->virt == 0) {
+> -		printk("uclinux[mtd]: no virtual mapping?\n");
+> -		return(-EIO);
+> -	}
+> -
+> -	simple_map_init(mapp);
+> -
+> -	mtd = do_map_probe("map_" MAP_NAME, mapp);
+> -	if (!mtd) {
+> -		printk("uclinux[mtd]: failed to find a mapping?\n");
+> -		return(-ENXIO);
+> -	}
+> -
+> -	mtd->owner = THIS_MODULE;
+> -	mtd->_point = uclinux_point;
+> -	mtd->priv = mapp;
+> -
+> -	uclinux_ram_mtdinfo = mtd;
+> -	mtd_device_register(mtd, uclinux_romfs, NUM_PARTITIONS);
+> -
+> -	return(0);
+> -}
+> -device_initcall(uclinux_mtd_init);
+> -
+> -/****************************************************************************/
 
 
 ______________________________________________________
