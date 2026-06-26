@@ -4,54 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 222B2CDE00B
-	for <linux-mtd@archiver.kernel.org>; Thu, 25 Jun 2026 22:16:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6C72CDE00B
+	for <linux-mtd@archiver.kernel.org>; Fri, 26 Jun 2026 01:26:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=2X2SqT6DXgeXGQ6QNrEMuGv+kmO3NkFmjVM5DhW91FU=; b=IvlhuwqzUfSGoL
-	jUU8ZNKZDPZiFnMZDMbx3g++hBHeRQUVUVoyp1dEJPvqD93zdNVTZXsM1zS7V05GcYkMsH2jcj7i7
-	NZHi/Agd4zyvVNNwQm5RXbYnbegzIoo84lrhFrt9+tQ83cNQuQOXfA1iPb/Eg5VVH3q0hY0UntwUZ
-	xcltN5thw5KIgzrTMHWpSHuwUoF7sOodHLVFyHIdRz010ogCDt+WwIiG0Bfct6aQkC5+/9pkUaTVE
-	IfXUim87URGEygIh2imz1u49ejwm6J+41gWXs6ewobiFA5ibwmSIP+uLljmqTHYDcDZrQcpQqgiem
-	nqSV9xCXQ/f4NCvywvDQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=lyvk9mYuHlkhENOWP5HLFO+4+9bF3teGKtApFhA2Zw0=; b=CTWqOZWuVOQvVi
+	M2eJnXgcmnYJlYARHzrRSNgGEcQdX3q39JRJhwm2ZSBx/9dk75wDZfClGekcL4p6SwqSHiqtcaHR5
+	kZnt0u3p6o8dd000MM+tHkBv4BytsVeyR/e5BL96+f3vZRQndKWU6pNdizP+rpC3DjFL8dy/Td9ZS
+	FAPLv3RjAyUNcmGg94zjXk7pwZ1aojB+Emsx9z80Rle5HOe+DMrs5Ym07raJDEoqy/bhaHS/GtAh+
+	/U11+tvCaPv0UAOnrJPimEMLz82/n5NDIre9syRVDCy8t96poxA6FLkfAdUMWcDoakiLvWuxYbtas
+	WOp/D6MsEqvl/8BJSecg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wcsMS-00000009v5X-3GlG;
-	Thu, 25 Jun 2026 22:15:52 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1wcvKM-0000000A58l-3JFm;
+	Fri, 26 Jun 2026 01:25:54 +0000
+Received: from smtpbg150.qq.com ([18.132.163.193])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wcsMR-00000009v58-1STz
+	id 1wcvKJ-0000000A57Q-0kKM
 	for linux-mtd@lists.infradead.org;
-	Thu, 25 Jun 2026 22:15:51 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id C440540888;
-	Thu, 25 Jun 2026 22:15:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25AFF1F000E9;
-	Thu, 25 Jun 2026 22:15:47 +0000 (UTC)
-Message-ID: <5dd8cf26-533f-4a32-8885-3eaad7c57ed6@linux-m68k.org>
-Date: Fri, 26 Jun 2026 08:15:42 +1000
+	Fri, 26 Jun 2026 01:25:53 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uniontech.com;
+	s=onoh2408; t=1782437131;
+	bh=3fXfBwENMmiz90XicVnuAoBPRhmDgrRJrDZrB+n21oU=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version;
+	b=kptfRmdQQNMnuMYVsUrNCkVP4jkE2cAq6d4r7SPXrflg1rtQgbfNQmfIYU/H8TU2x
+	 lxhx9f9nFdWPEcPtG3q5bdNSIQGHdb7nCVmfTxivFmE+4/MleBhXYvnOVVA3/zgWFz
+	 a5x9Wq9dkDdFG9Z4QuLqPCxXLcvtVd846xAr24IA=
+X-QQ-mid: esmtpgz10t1782437126t9549af7a
+X-QQ-Originating-IP: /zeSQLUbbqHxJ4yuDgl62zoM2AdNb6AjNn+62Ll7Avg=
+Received: from PEN202512010004 ( [113.57.152.160])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Fri, 26 Jun 2026 09:25:24 +0800 (CST)
+X-QQ-SSF: 0000000000000000000000000000000
+X-QQ-GoodBg: 1
+X-BIZMAIL-ID: 12274750682708982893
+EX-QQ-RecipientCnt: 7
+From: raoxu <raoxu@uniontech.com>
+To: miquel.raynal@bootlin.com
+Cc: richard@nod.at,
+	vigneshr@ti.com,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	raoxu@uniontech.com,
+	stable@vger.kernel.org
+Subject: [PATCH 1/2] mtd: virt-concat: free duplicate generated name
+Date: Fri, 26 Jun 2026 09:25:22 +0800
+Message-ID: <363FB8CFA79EDF5F+20260626012522.3683748-1-raoxu@uniontech.com>
+X-Mailer: git-send-email 2.50.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] mtd: maps: remove uclinux map driver
-To: Arnd Bergmann <arnd@arndb.de>, Arnd Bergmann <arnd@kernel.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Randy Dunlap <rdunlap@infradead.org>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-m68k <linux-m68k@lists.linux-m68k.org>,
- Pengpeng Hou <pengpeng@iscas.ac.cn>
-References: <20260526103227.3152003-1-arnd@kernel.org>
- <20260526103227.3152003-2-arnd@kernel.org>
- <b55ac37f-4523-46d0-8e77-3a17d7235ffe@westnet.com.au>
- <f3e984cd-0614-48d1-b03f-e0670b87e282@app.fastmail.com>
-Content-Language: en-US
-From: Greg Ungerer <gerg@linux-m68k.org>
-In-Reply-To: <f3e984cd-0614-48d1-b03f-e0670b87e282@app.fastmail.com>
+X-QQ-SENDSIZE: 520
+Feedback-ID: esmtpgz:uniontech.com:qybglogicsvrgz:qybglogicsvrgz6b-0
+X-QQ-XMAILINFO: MBN1Gf7pvZQZVd/KoRNNiG4aCzL/sp7zK9B9eClFIZR0gz3VD13HSySo
+	UT92DnRc78Q/q0D7IPly4nyimAUW7dg5ZM/jQyDcxZieaTzd5Qq4czynEeqhC+rMK+44d2G
+	DhqO8w00s3IdVeHEYKrjtYGGue3HzR+vJKwxEPauOdq6EkDKSce9JhXMjtqIw6aNuM18WFj
+	z6JwsyQGruoWspyjwarQR1bbkti2wKjYyIwHK2D6kFA7Xx/bmcl7UF09PJUIgtKUmk0ZIFQ
+	WcQMS282pQCU3/Ad1Jvr6K2jrKkFaJ7nyHgJo+HXz2qa3iyR1GCRPKfkTvuFAghmYg4zgmx
+	D0pn0qAEIDYf+Pl079s5CrJYiZPdVK5I5TSuu0d15Lyf+pXHZ8xL94diRn6NutCyisSxiTu
+	vyWbWuSlMsMNlM22kFmd2/Lhq6IWrlBz3ecK/FPHKds+FCiKDGQOBJbl0Ew0kahVKzvEwPP
+	qaGH5xefM2K66pLK3dxffx7XAgnAAF5eJb9poqkIKIhqkr2bZScE7ovxL2lM69qOETHJPKw
+	mmdVXXnSaGiPrvhoDpP36CCEW0exFaAxUaQ5C5n4HkSXEn2B2ThPKoRPccXEsNjJDxsAuVQ
+	UjE+4E664AOacEalMJQ7QYs1QMtkxe73fBkpHbM6/Ibp8O6MstR317n4ZmjQNti4C3+3egf
+	YXnDHDvtyLiSpgcNhSKcSBVUw14i4O7a5g446LzNzps2qmOjnFE+TKxwbpfgwtXIWai4bdl
+	B0rTeFtml2tjQWAOGEwDJZaFQFzr0CQFdvvG/NcahJQca/F+LhoKbZjiw64ekFq2Lv8IvRI
+	xo9RAI3t1ZwnF1lzLnsLDA5VDC/EM2A+bEcYaAOY/OUP9I23DbnucqvviR4spX2YMDAVFSu
+	r4KvLDxaZa5yztSSFsb55vjKZDPpaSZPCYK+ei+mMv6VZaq/49WiUgdibn/xchA6Bhgz/5X
+	kQT5XPfEVhmwO2emX9j5XHyzmP+9SebR+Di3tt7EHrZ5V4YlYBwhnWKPq5v7NdGErO9yIKz
+	k/6KsexE7sLjNboipHQv46D0kW5qTdEt55vkz9lrdEZsNeBwKk
+X-QQ-XMRINFO: NS+P29fieYNwqS3WCnRCOn9D1NpZuCnCRA==
+X-QQ-RECHKSPAM: 0
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260625_182551_985883_915B912F 
+X-CRM114-Status: UNSURE (   9.34  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -63,64 +91,43 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Arnd,
+From: Xu Rao <raoxu@uniontech.com>
 
-On 26/6/26 00:10, Arnd Bergmann wrote:
-> On Thu, Jun 25, 2026, at 14:07, Greg Ungerer wrote:
->> On 26/5/26 20:32, Arnd Bergmann wrote:
->>
->> It is used on some ColdFire platforms, and was working all the way up
->> to being removed in the current merge window.
->>
->> The ColdFire platform startup code (arch/m68k/coldfire/head.S) has a
->> somewhat unusual setup that can copy an attached filesystem blob to
->> _bss_stop, and this is one of the places the uclinux.c map driver can
->> use as the filesystem memory address. From uclinux.c
->>
->>       static int __init uclinux_mtd_init(void)
->>       {
->>           struct mtd_info *mtd;
->>           struct map_info *mapp;
->>
->>           mapp = &uclinux_ram_map;
->>
->>           if (physaddr == -1)
->>                   mapp->phys = (resource_size_t)__bss_stop;
->>           else
->>                   mapp->phys = physaddr;
->>
->> No out of tree code is required. Most of the ColdFire defconfigs have
->> CONFIG_MTD_UCLINUX enabled, since it is commonly used.
-> 
-> I see, this is surprising from reading the source and
-> git history, but I can see exactly how it got there.
+Every MTD registration runs mtd_virt_concat_create_join().  Once a
+virtual concat has already been registered, the function builds the same
+name again and takes the equal-name branch.  That branch skips to the
+next item without freeing the newly allocated string.
 
-The early, and probably more interesting history, predates git.
-It has always "just worked" on ColdFire platforms, so it really hasn't
-needed alot of change over the years for this use case.
+Free the temporary name before continuing.
 
+Fixes: 43db6366fc2d ("mtd: Add driver for concatenating devices")
+Cc: stable@vger.kernel.org
+Signed-off-by: Xu Rao <raoxu@uniontech.com>
+---
+ drivers/mtd/mtd_virt_concat.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-> So this is not actually a device but rather a replacement
-> for CONFIG_BLK_DEV_INITRD that does can work with CONFIG_BLOCK=y,
-> right?
-
-Yes, that is true. Typical use means adding "root=/dev/mtdblock0" to
-kernel boot arguments.
-
-
->> Can we get this reverted?
-> 
-> Yes, of course. Miquel/Richard/Vignesh, should I send a revert or
-> can you just apply one with Greg's explanation and my Ack?
-
-Thanks
-Greg
-
+diff --git a/drivers/mtd/mtd_virt_concat.c b/drivers/mtd/mtd_virt_concat.c
+index 37075ea..5db6e64 100644
+--- a/drivers/mtd/mtd_virt_concat.c
++++ b/drivers/mtd/mtd_virt_concat.c
+@@ -321,8 +321,10 @@ int mtd_virt_concat_create_join(void)
+ 
+ 			if (concat->mtd.name) {
+ 				ret = memcmp(concat->mtd.name, name, name_sz);
+-				if (ret == 0)
++				if (ret == 0) {
++					kfree(name);
+ 					continue;
++				}
+ 			}
+ 			mtd = mtd_concat_create(concat->subdev, concat->num_subdev, name);
+ 			if (!mtd) {
 
 ______________________________________________________
 Linux MTD discussion mailing list
