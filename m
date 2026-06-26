@@ -4,82 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CCF23CD4F26
-	for <linux-mtd@archiver.kernel.org>; Fri, 26 Jun 2026 12:20:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 427A6C43458
+	for <linux-mtd@archiver.kernel.org>; Fri, 26 Jun 2026 14:22:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ixueIbrnatMI9cfs25IRtPeLcaEa+3jFqs3gxLML8i8=; b=ibIL10Qw7dZWkQ
-	P98uJ/daIPE5D56eQXQrUVH1RrHS5N1wbx05zmdDIoq7QKs0WhNtz4DO3qt2/USX+pYeMmcUJFlJZ
-	iJzSCrRTEndT7tDi37QtPg8tk9hOwUsXWPpBrn8pGmtp6lXy1MIcEQl2fW6/KZ8JPwxOIcpZ09MSj
-	Iua72vEE/1X651TCgH/rtiHu5+gI/aaPmkpzy5EhbpoWsEnt5I2VmhGLeVAidPLhz0x7bkqPuEbZP
-	eKqAGpkIuIVXKaqxXk4F0GtdmUdPOdPR/p74o2SAZe1UFswzP2rXv1OISJQaeFyqfQokIYppx+nFs
-	6NZwU6O93SoADNUsZXyg==;
+	List-Owner; bh=n9oXKNiLY20JjNNvGjtuT8cq7jTOcfsHjqqywmmZmlM=; b=eh1X9+jVrT9c9/
+	5V8N1dc2XcSzTCzit+fYerH7HR7Brb9Sr8Suwu/adfG924Wh0o+IBltiVsYLGrljx0Qs8RByoXzIw
+	oGbKET91X/nmmm2OewJOg2AML1nBfaKym71JzF/aQeCD4Gvpg5ckgIJMd9y4dDIKE2n98IhSaJBg/
+	ICQq4v5XcnfTLyX2qgjl2ZVJdWAsJN+MySqoX9Vnim9L9BKPwOlzK8C3kTEKZEjOy2/6B/q1gyjam
+	U/EHJjL6k/M3fjAMPgsNfsgfF/VuGu4B/MjJ6ru6ONqXmBbrp+L5mGEYnSWbF45HxVOMvACde94wk
+	Ow4+tpk/DtCmVaryqaOw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wd5YB-0000000BItB-1Sii;
-	Fri, 26 Jun 2026 12:20:51 +0000
-Received: from mgamail.intel.com ([198.175.65.20])
+	id 1wd7RU-0000000BS0K-1bRJ;
+	Fri, 26 Jun 2026 14:22:04 +0000
+Received: from smtpout-04.galae.net ([185.171.202.116])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wd5Y5-0000000BInD-2Cje
+	id 1wd7RR-0000000BRzJ-2UvC
 	for linux-mtd@lists.infradead.org;
-	Fri, 26 Jun 2026 12:20:47 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1782476445; x=1814012445;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=GQdkiFYQJIel4Gg360i3/xZux3oAYTuuUHnkPqH4GqA=;
-  b=aXSxL9AriLkLr/K4kjoITesjNZyzaQpY6UilAX/ONoaU3BoLeixz3a3h
-   92+vfs70ZXbVsYjSYRHFyVLuauYzP6wZ96k2IOJyVLEyGVFWoSqcK9HCW
-   2h31UASfo6ZlmCncatX99fuwOwBgY1g+GsSNBrwiMPJIhsiZPt18ZKVAJ
-   nEl9zifz9ezJgi2g0JLB4YPpC5WT4NBFw1Q0cWsglHDFZI2EiCRtwycAW
-   frHJHw7zma8B1E0DnDVHglGj1zss2jIKsgHkEDn4FTIrSiiccmJy9xzIC
-   CSXTybvew7POxo2sEJ7IZNnGvedo5p7fi83/LvSW2joZSQjZp4fwOVrrt
-   w==;
-X-CSE-ConnectionGUID: dmqDo4FfTkqHvAuRkOtu3Q==
-X-CSE-MsgGUID: XL2GdXdWQ0CVGxquNVNfEA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11828"; a="83037497"
-X-IronPort-AV: E=Sophos;i="6.24,226,1774335600"; 
-   d="scan'208";a="83037497"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jun 2026 05:18:44 -0700
-X-CSE-ConnectionGUID: ili9L0J/Sr6VR/zo02vtpg==
-X-CSE-MsgGUID: NKlMMr9hSSaFez4psVLROA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.24,226,1774335600"; 
-   d="scan'208";a="251468981"
-Received: from conormcd-mobl2.ger.corp.intel.com (HELO localhost) ([10.245.244.1])
-  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jun 2026 05:18:42 -0700
-Date: Fri, 26 Jun 2026 15:18:39 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Greg Ungerer <gerg@linux-m68k.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Arnd Bergmann <arnd@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	linux-m68k <linux-m68k@lists.linux-m68k.org>,
-	Pengpeng Hou <pengpeng@iscas.ac.cn>
+	Fri, 26 Jun 2026 14:22:03 +0000
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-04.galae.net (Postfix) with ESMTPS id 5E7C1C6344B;
+	Fri, 26 Jun 2026 14:22:06 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 75E2F60232;
+	Fri, 26 Jun 2026 14:21:57 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 4086C104C9767;
+	Fri, 26 Jun 2026 16:21:50 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1782483716; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=nuxf2cfS2nCVAFVu7/RkvHjeobxsvhOt+OH98R0cm+o=;
+	b=D5Rv63OqSdY6oH5OArGLroKQhy2N5Y99QQnpyrAXeHwTQYFnQbu83iypZbUceI836U7rgI
+	KlPZlwbvjFbkHy2Rpk5uEaEFNLnzSr5wMBvmoUjjksPa57I/qzqsl1b+0Jb2qstm7TKlxY
+	8KJ7AHC/DfQruOLtW+/XjjknwWYttA5xeaY1GqKWBmx7IAqXK2W5ddt2IklLc7GsU2jgLm
+	Hq6T1WRvSITvwSoKmgKnib3gGQxlfFv8HKaj98VDLmWF1DAWmL36xXJakMi/rSS0B7alVm
+	luMPRqQMn7W1n6iSaIi2bP0fG1b3VQzTHn+3+gXwC5Vk6xV6y19jtgM4gLfAHA==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: "Arnd Bergmann" <arnd@arndb.de>
+Cc: "Greg Ungerer" <gregungerer@westnet.com.au>,  "Arnd Bergmann"
+ <arnd@kernel.org>,  "Richard Weinberger" <richard@nod.at>,  "Vignesh
+ Raghavendra" <vigneshr@ti.com>,  "Randy Dunlap" <rdunlap@infradead.org>,
+  "Andy Shevchenko" <andriy.shevchenko@linux.intel.com>,
+  linux-kernel@vger.kernel.org,  linux-mtd@lists.infradead.org,  linux-m68k
+ <linux-m68k@lists.linux-m68k.org>,  "Pengpeng Hou" <pengpeng@iscas.ac.cn>
 Subject: Re: [PATCH 2/3] mtd: maps: remove uclinux map driver
-Message-ID: <aj5uH-7WfM4BPXbc@ashevche-desk.local>
+In-Reply-To: <f3e984cd-0614-48d1-b03f-e0670b87e282@app.fastmail.com> (Arnd
+	Bergmann's message of "Thu, 25 Jun 2026 16:10:54 +0200")
 References: <20260526103227.3152003-1-arnd@kernel.org>
- <20260526103227.3152003-2-arnd@kernel.org>
- <b55ac37f-4523-46d0-8e77-3a17d7235ffe@westnet.com.au>
- <f3e984cd-0614-48d1-b03f-e0670b87e282@app.fastmail.com>
- <5dd8cf26-533f-4a32-8885-3eaad7c57ed6@linux-m68k.org>
+	<20260526103227.3152003-2-arnd@kernel.org>
+	<b55ac37f-4523-46d0-8e77-3a17d7235ffe@westnet.com.au>
+	<f3e984cd-0614-48d1-b03f-e0670b87e282@app.fastmail.com>
+User-Agent: mu4e 1.12.7; emacs 30.2
+Date: Fri, 26 Jun 2026 16:21:50 +0200
+Message-ID: <87ik75l6v5.fsf@bootlin.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <5dd8cf26-533f-4a32-8885-3eaad7c57ed6@linux-m68k.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - c/o Alberga Business Park, 6
- krs, Bertel Jungin Aukio 5, 02600 Espoo
+X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260626_052045_627281_D7B8749D 
-X-CRM114-Status: GOOD (  12.56  )
+X-CRM114-CacheID: sfid-20260626_072201_800094_23528881 
+X-CRM114-Status: UNSURE (   9.34  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,37 +79,22 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Jun 26, 2026 at 08:15:42AM +1000, Greg Ungerer wrote:
-> On 26/6/26 00:10, Arnd Bergmann wrote:
-> > On Thu, Jun 25, 2026, at 14:07, Greg Ungerer wrote:
-> > > On 26/5/26 20:32, Arnd Bergmann wrote:
-
-...
-
-> > > No out of tree code is required. Most of the ColdFire defconfigs have
-> > > CONFIG_MTD_UCLINUX enabled, since it is commonly used.
-> > 
-> > I see, this is surprising from reading the source and
-> > git history, but I can see exactly how it got there.
-> 
-> The early, and probably more interesting history, predates git.
-> It has always "just worked" on ColdFire platforms, so it really hasn't
-> needed alot of change over the years for this use case.
-
-If connect history.git and use `git replace`, one can get a history till
-to the very begin of Linux kernel (yeah, some as tags and patch bombs, but...).
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGVsbG8gQXJuZCwKCj4+IE5vIG91dCBvZiB0cmVlIGNvZGUgaXMgcmVxdWlyZWQuIE1vc3Qgb2Yg
+dGhlIENvbGRGaXJlIGRlZmNvbmZpZ3MgaGF2ZQo+PiBDT05GSUdfTVREX1VDTElOVVggZW5hYmxl
+ZCwgc2luY2UgaXQgaXMgY29tbW9ubHkgdXNlZC4KPgo+IEkgc2VlLCB0aGlzIGlzIHN1cnByaXNp
+bmcgZnJvbSByZWFkaW5nIHRoZSBzb3VyY2UgYW5kCj4gZ2l0IGhpc3RvcnksIGJ1dCBJIGNhbiBz
+ZWUgZXhhY3RseSBob3cgaXQgZ290IHRoZXJlLgo+Cj4gU28gdGhpcyBpcyBub3QgYWN0dWFsbHkg
+YSBkZXZpY2UgYnV0IHJhdGhlciBhIHJlcGxhY2VtZW50Cj4gZm9yIENPTkZJR19CTEtfREVWX0lO
+SVRSRCB0aGF0IGRvZXMgY2FuIHdvcmsgd2l0aCBDT05GSUdfQkxPQ0s9eSwKPiByaWdodD8KPgo+
+PiBDYW4gd2UgZ2V0IHRoaXMgcmV2ZXJ0ZWQ/Cj4KPiBZZXMsIG9mIGNvdXJzZS4gTWlxdWVsL1Jp
+Y2hhcmQvVmlnbmVzaCwgc2hvdWxkIEkgc2VuZCBhIHJldmVydCBvcgo+IGNhbiB5b3UganVzdCBh
+cHBseSBvbmUgd2l0aCBHcmVnJ3MgZXhwbGFuYXRpb24gYW5kIG15IEFjaz8KCkknbGwgdHJ5IHRv
+IGNvbWUgdXAgd2l0aCBzb21ldGhpbmcgbmV4dCB3ZWVrIDotKQoKVGhhbmtzLApNaXF1w6hsCgpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGlu
+dXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
+L21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
