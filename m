@@ -4,71 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30478C43602
-	for <linux-mtd@archiver.kernel.org>; Wed,  1 Jul 2026 08:34:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8983BC43327
+	for <linux-mtd@archiver.kernel.org>; Wed,  1 Jul 2026 09:49:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:References:To:From:Cc:Subject:Message-Id:Date:Mime-Version:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=t8Y6lUSh0tR4tEvfhKdhiioINQsTa8Fa4opTb7lcCk4=; b=26xCtSHdPI6OVZgV64W1MyVnSl
-	X3KbfPspKWE/GnaSU0hLjsX0RC0yhlMvVx7pUPUJIvZ0C3Bro+or6OcFWs3j3aNkPFSXVSVc6TkFd
-	bwX40vkXpzzEjLnjZGnR7bXDDYtNb4wjnzHtjHLIPMnnUU+rnb4GURTQ88yDknJ303od0Fi5+79n0
-	+HFT4xTzSYd6n0xuRDk9CRAVFV5imT98R3qjl5NLeAF/JanR1MB0pfFd/1WmUeR3bg9+3nunXNHzu
-	hJZvPlXwnOgVW76MEavYz5vdPRXm9yc/XkK2EnOwxTeELiomDWYVGv/kRi0AABqrXYj5QqRTQpCUe
-	lb4gFqhQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=psJer32KaTB6+df5bmROgec3Ixucqq5p+YFo4ShJ76g=; b=PGBqqUjJ2XeAHk
+	iya/YHGmZKhQ6vbYDeucD17wY2FSzUIxpnhYOO95cvqV5udGEP3yCGWTwU30HOXrzX/EtkdohwIXC
+	MkhTRlmRTZOyeSoESF/64k/YLbK+82S0Ju0gf2Te20WF4ziwswKJ4sck4zRaZxBZiAxJ7Z5bwRvj8
+	ZCAT2KvDZVDbO+LM/Y83ngPncNfnNMUFz0W7TgUR48Cfqx6FxazCbIxE9O+Z63YbuTtDHn4mXzeEp
+	ITpdxY4wj2sCRbfyI7NKokHbMHPfdhX8gc0mHpQn6UeXBT23c98jc0o5siZ8yzKN6iZjna7OPSdma
+	tAUgMo9kjRNq4zvRFdGg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1weqPE-000000012V9-23e3;
-	Wed, 01 Jul 2026 08:34:52 +0000
-Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1] helo=mail.3ffe.de)
+	id 1werZF-00000001Ehj-25No;
+	Wed, 01 Jul 2026 09:49:17 +0000
+Received: from smtp2.infineon.com ([2a00:18f0:1e00:4::4])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1weqPC-000000012U7-0jSY;
-	Wed, 01 Jul 2026 08:34:51 +0000
-Received: from localhost (unknown [213.135.10.150])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id 880D35B6;
-	Wed,  1 Jul 2026 10:34:38 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-	t=1782894878;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OV8gaPiQO40kpe0vnMtC2nXL8DrZwaWi9384uLF+/CY=;
-	b=h67gQjQBVSxm1zGv4NOn57N9gJTCxMWWp3YcNhFmHdxQHNawukaOxBFeoTLd7xSSsUmHEb
-	QHOO7Rdm6R9+IhDqEV//349b1hxptHCVf1Ld31NKjoCEVG3yZWiCutXBBQIV2AETWkCvG0
-	2cvaUpJLCDQ65E9H4T7Bz3ZxH6x4FUP/Fk5LNDw6NweLNxPVKswcK05bPvhIWZ5hC03CGb
-	zu9OuKTRqyoO5BGXK6QgIby1CRCo3dgJBzS+jDk1gA31fpjROSM1sYk8vN6mvqxzcilIxi
-	5sg1p4WSH4Ikuhd3m7Ug/A13vn7+YhQwohIgElCdJhJ/Z95aXmB3+k3/Z3v1Aw==
-Mime-Version: 1.0
-Date: Wed, 01 Jul 2026 10:34:35 +0200
-Message-Id: <DJN3HIIAY4LE.3MXU9Q2YFSCJJ@walle.cc>
-Subject: Re: [PATCH v4 1/7] dt-bindings: mtd: jedec,spi-nor: allow the SFDP
- to be exposed via NVMEM
-Cc: <pratyush@kernel.org>, <mwalle@kernel.org>,
- <takahiro.kuwano@infineon.com>, <miquel.raynal@bootlin.com>,
- <richard@nod.at>, <vigneshr@ti.com>, <robh@kernel.org>,
- <krzk+dt@kernel.org>, <conor+dt@kernel.org>, <srini@kernel.org>,
- <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
- <claudiu.beznea@tuxon.dev>, <linux@armlinux.org.uk>,
- <richardcochran@gmail.com>, <arnd@arndb.de>,
- <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
- <netdev@vger.kernel.org>
-From: "Michael Walle" <michael@walle.cc>
-To: "Linus Walleij" <linusw@kernel.org>, "Manikandan Muralidharan"
- <manikandan.m@microchip.com>
-X-Mailer: aerc 0.20.0
-References: <20260630092406.150587-1-manikandan.m@microchip.com>
- <20260630092406.150587-2-manikandan.m@microchip.com>
- <CAD++jL=FkEfpz-LW0vmPpZ28fLfGFMWo5E479Mapz55YUxKNAQ@mail.gmail.com>
-In-Reply-To: <CAD++jL=FkEfpz-LW0vmPpZ28fLfGFMWo5E479Mapz55YUxKNAQ@mail.gmail.com>
+	id 1werZB-00000001Efe-4ACJ
+	for linux-mtd@lists.infradead.org;
+	Wed, 01 Jul 2026 09:49:15 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=infineon.com; i=@infineon.com; q=dns/txt; s=IFXMAIL;
+  t=1782899354; x=1814435354;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=bikzSr+NRQS0BStBxaDankRVM0j6fnovMuiAylead9M=;
+  b=Jmlr5Fqu8rdcbidjSo7vrlmqlB9bJir9/xUzLCYOeIDZwjnY5cO/J401
+   QRbivVJ9Vufm5Xa0nyJU0XhnBr7QJFPEXbs8tvOKL8Y+tyBwQ4mzKB3oP
+   q2UXYqmWkMY0UUvGTy70E3IDM+GVMRY3RDHoSsjK/ibTt+Sc4sJKUTZgh
+   c=;
+X-CSE-ConnectionGUID: g2aqPEuVQAeQXqvBZU2m+Q==
+X-CSE-MsgGUID: Sef72jcpQhG0MzYbXN0sVA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11833"; a="165441956"
+X-IronPort-AV: E=Sophos;i="6.24,235,1774306800"; 
+   d="scan'208";a="165441956"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO MUCSE822.infineon.com) ([172.23.29.53])
+  by smtp2.infineon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2026 11:49:08 +0200
+Received: from MUCSE816.infineon.com (172.23.29.42) by MUCSE822.infineon.com
+ (172.23.29.53) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.43; Wed, 1 Jul
+ 2026 11:49:07 +0200
+Received: from MUCSE815.infineon.com (172.23.29.41) by MUCSE816.infineon.com
+ (172.23.29.42) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.43; Wed, 1 Jul
+ 2026 11:49:07 +0200
+Received: from MUCSE815.infineon.com ([fe80::b54c:c0bd:546c:c9be]) by
+ MUCSE815.infineon.com ([fe80::b54c:c0bd:546c:c9be%12]) with mapi id
+ 15.02.2562.043; Wed, 1 Jul 2026 11:49:07 +0200
+From: <Takahiro.Kuwano@infineon.com>
+To: <ronan.dalton@alliedtelesis.co.nz>
+CC: <Aryan.Srivastava@alliedtelesis.co.nz>,
+	<Chris.Packham@alliedtelesis.co.nz>, <linux-kernel@vger.kernel.org>,
+	<linux-mtd@lists.infradead.org>, <miquel.raynal@bootlin.com>,
+	<mwalle@kernel.org>, <pratyush@kernel.org>, <richard@nod.at>,
+	<vigneshr@ti.com>
+Subject: RE: [PATCH v2 1/3] Revert "mtd: spi-nor: remove Fujitsu MB85RS1MT
+ support"
+Thread-Topic: [PATCH v2 1/3] Revert "mtd: spi-nor: remove Fujitsu MB85RS1MT
+ support"
+Thread-Index: AQHdBRKBdcAN9mfv+k6bdaeZDwvjfLZWt11QgADFb4CAAFitgP//+/8AgACbEMA=
+Date: Wed, 1 Jul 2026 09:49:07 +0000
+Message-ID: <490fc98b2996487fba3abd62176bb1dd@infineon.com>
+References: <2b8390c0aaae4203af318f9a5edbb0eb@infineon.com>
+ <20260701020856.217664-1-ronan.dalton@alliedtelesis.co.nz>
+In-Reply-To: <20260701020856.217664-1-ronan.dalton@alliedtelesis.co.nz>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.161.6.196]
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260701_013450_403682_95850C06 
-X-CRM114-Status: GOOD (  14.23  )
+X-CRM114-CacheID: sfid-20260701_024914_411872_519F27F0 
+X-CRM114-Status: GOOD (  23.39  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,105 +93,46 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6805135241755632987=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============6805135241755632987==
-Content-Type: multipart/signed;
- boundary=7dc42cc06038756823fa21ce147a9856939103d1b021230f1b15a2a59c78;
- micalg=pgp-sha384; protocol="application/pgp-signature"
+Hi Ronan,
 
---7dc42cc06038756823fa21ce147a9856939103d1b021230f1b15a2a59c78
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
+> Hi Takahiro,
+> 
+> > We don't add any FRAM chips in SPI-NOR...
+> 
+> The SPI-NOR subsystem has support for the cy15x104q chips, which are
+> FRAM chips. There is also support for Everspin MRAM chips, which are
+> comparible to FRAM (and are also of small size).
+> 
+> Because of this, we thought there was precident to add support for this
+> chip. I was under the impression that the opcodes used to interact with
+> the chip had a greater significance than the underlying technology used,
+> and this chip fits in with the other spi-nor chips based on that. Feel
+> free to correct me if I'm wrong here.
+> 
+> > > The use is for a small amount of additional storage separate to the main
+> > > system NAND flash for some small "critical" files that we don't want to
+> > > lose. We've been using devices like the mchp23lcv1024 and mr25h40 on
+> > > other products for some time.
+> > >
+> > For that use, how about using tmpfs with NVMEM backup?
+> 
+> Could you elaborate on this? I'm familiar with tmpfs but not with using
+> NVMEM as a backup for it. Is there some method of syncing a tmpfs to
+> NVMEM that the kernel provides?
+> 
+I didn't mean any kernel features, but we can dump tmpfs contents
+from/to FRAM chip (exposed as NVMEM device) by 'dd'. Doesn't it meet
+your system's requirement?
 
-Hi,
+> Thanks,
+> Ronan.
 
->> Add an optional "sfdp" child node (compatible "jedec,sfdp") that
->> describes the SFDP as a read-only NVMEM provider via nvmem.yaml, so its
->> contents (e.g. a vendor EUI-48/EUI-64) can be read through NVMEM cells.
->>
->> Signed-off-by: Manikandan Muralidharan <manikandan.m@microchip.com>
->
-> I would expect it to follow nvmem conventions like this, notice
-> compatibles specific-to-general with sfdp first:
-
-
-> sfdp {
->     /* NVMEM provided by SFDP */
->     compatible =3D "jedec,sfdp", "nvmem-cells";
->     label =3D "SFDP";
-
-Isn't using label frowned upon? I wouldn't add that to the example.
-
->     read-only;
->     #address-cells =3D <1>;
->     #size-cells =3D <1>;
->
->     mac0: macaddr@0x00 {
->         reg =3D <0x00 0x06>;
->     };
->     mac1: macaddr@0x06 {
->         reg =3D <0x06 0x06>;
->     };
-> };
-
-If I'm correct, this is the old style, see commit bd912c991d2e
-("dt-bindings: nvmem: layouts: add fixed-layout"). So it should
-eventually look like:
-
-sfdp {
-     compatible =3D "jedec,sfdp";
-
-     nvmem-layout {
-	     compatible =3D "microchip,sst26vf-sfdp-eui";
-     };
-};
-
-Which is what patch series will lead to.
-
-Also I'm not sure if we really need to add the "nvmem-cells" here.
-IIRC in MTD it was there to tell a driver to add an nvmem device to
-an already existing compatible/node.
-
-Apart from the MTD case, I've just found qcom,smem-part,yaml which
-has compatible =3D "nvmem-cells".
-
--michael
-
-> Your example should definitely be more elaborate like this,
-> just an opaque sfdp node will not suffice. Maybe a separate
-> example?
->
-> Yours,
-> Linus Walleij
-
-
---7dc42cc06038756823fa21ce147a9856939103d1b021230f1b15a2a59c78
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iKcEABMJAC8WIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCakTRGxEcbWljaGFlbEB3
-YWxsZS5jYwAKCRASJzzuPgIf+PesAYCvxlMrRPb3CpBzPYndulCo9xHSs8WFx8GM
-YRvSkp3iZq/ziK9zzw8WIc8dB59hR7gBgJcgQcwu/qH+CFtJvfiWDEH4EWXU3HSR
-2Jx1LkNCSYEaHycVFgiepmorZPwBghbBeA==
-=IjRV
------END PGP SIGNATURE-----
-
---7dc42cc06038756823fa21ce147a9856939103d1b021230f1b15a2a59c78--
-
-
---===============6805135241755632987==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============6805135241755632987==--
-
