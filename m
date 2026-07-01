@@ -4,72 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66231C43327
-	for <linux-mtd@archiver.kernel.org>; Tue, 30 Jun 2026 22:27:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D6E4C43458
+	for <linux-mtd@archiver.kernel.org>; Wed,  1 Jul 2026 01:12:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Uv6Dq+Rn2aJ7HawdUi966nL6P/lXgrZFAVEPRuJ79IA=; b=thdOjglTJtkLM7
-	rdys9IMuAO7TpOFK9+3dHYNzZ+52QF+mvOs8etQyMJaaVIM3sBEvWCXJ4kEBoVZOnEahsIo17+ixq
-	BckN+ZZ2F0RUuam6SV6eCq+OCHKAUjJf2VzHFubMjBUJi1gY36BEAcXXBDcvsSN7frz6ojkROgfqQ
-	UofSTlBYUjvqHiy/lkz8nA5Whph4HvG59eFpceuS6OKYlxMlANqfK8P/JVK/ERCT4SLAw048XzsZW
-	0KcpG8VRU/5JIhzz9ITLR4EW6PrD11fRQB/3MHtRI+xSuGoGe8SytsMgzivLuqmm/CHdN0+s8yWZ1
-	f1s1+jsXGODqSohe0Usw==;
+	List-Owner; bh=qDOAs8rpHWMFxDLKKrD/gJohoii8fjG6nCaXeruWhzY=; b=m7VYaec7HPr5pW
+	37bGhi7ALQYzPhKs0hMPsVY1Qufh8cym7cEObZfIvS1865lDI7fcxX/iG7jS4rOmu0aQYyQP7/Wun
+	F4aOhyLPZbbUGpMUg5rSxWm91RKDz+XbaFkZe5sc+L8bobpKcIoVzpqIeDn+ZSFgkp9rImnVcfihB
+	GgBjaPAlgH4Kb8pzbMf7FH3b3D8KROOhGp/hODmlIorh3G8bOw5FAWufsebdPIXHnJfKxJKJOD241
+	0pCZ2lSPvbf6L3ixIeCIAh8svVvnE+qhgKby9tSAXKV/yPC+v8rQGWv4RKqw14QzurOFTFoqbLWZr
+	AVDiywqIZOnfiP2XpJvw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wegvW-00000000J9s-0WBq;
-	Tue, 30 Jun 2026 22:27:34 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1wejUg-00000000RNM-1iBR;
+	Wed, 01 Jul 2026 01:12:02 +0000
+Received: from smtp9.infineon.com ([217.10.52.204])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wegvT-00000000J71-3cfT
+	id 1wejUb-00000000RMj-3UuX
 	for linux-mtd@lists.infradead.org;
-	Tue, 30 Jun 2026 22:27:32 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 75A3243D5B
-	for <linux-mtd@lists.infradead.org>; Tue, 30 Jun 2026 22:27:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59FD91F00ADB
-	for <linux-mtd@lists.infradead.org>; Tue, 30 Jun 2026 22:27:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1782858450;
-	bh=TTcVu3N5A2qxImNE8jx0tO9sA0vxx21QZu6VSH0wmU4=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc;
-	b=a3nZipE5rJA5y3N4Pt43hJP+a36yVR5xrcMfyXU20kSXL/EMJ9K0p232l6Wre9wwp
-	 XZGaTAaW+es9sgk2ARLIAXeZYTEfZEKo5NkLTX00wcwnR0btmfhuX2qmDgsgRcXS/Q
-	 BaQDKyMcLqkohVenN5e9fDl+zIbBLwde996RnNIGz3h3eKEQE15LGapkSZsv9IMD0m
-	 Iqoina2XyIvqZEumLIqhlDlgyvjWqtUVlH/1DwkhbLX9mv9yy2rvdW7YtvW9bGvLLU
-	 x9VHYe8+Vd4Yjn/Rs6RW4nQMcWgQ6Jl5XlPCKLmcmP5L7dbjrZpWPH2Edj+0omjQhI
-	 Ur0N2LFTC6dYA==
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-5aebfa21c62so1179835e87.3
-        for <linux-mtd@lists.infradead.org>; Tue, 30 Jun 2026 15:27:30 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AHgh+RpEzX3OG+kPsjphg7SO/YA9sMcRQCpSfW++Ug8+URsXb0Sop882n+rfYmCbQ7zjw8uOBoaRfE6qsTw=@lists.infradead.org
-X-Gm-Message-State: AOJu0YyA+PNQePGumOHdBlBNFZtMEboA3GgHdIgk/mGVIUs7GNflgxs0
-	9UH9FIthgilMvvFb/xOeKj4eJwG08kRJqbvNDnGWsH1cO/Jl9Z7Tx+w0HYg+L43P9dIbu5WEk2N
-	laayrpvGINBR9LgwWgpWpEisKRKWQRko=
-X-Received: by 2002:ac2:4bd0:0:b0:5ae:a2b5:3ae3 with SMTP id
- 2adb3069b0e04-5aebdbb32bdmr1526007e87.29.1782858449161; Tue, 30 Jun 2026
- 15:27:29 -0700 (PDT)
+	Wed, 01 Jul 2026 01:12:00 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=infineon.com; i=@infineon.com; q=dns/txt; s=IFXMAIL;
+  t=1782868318; x=1814404318;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=oY03YraO8qx4m3A0byPJZQky9Ii0vbxUYGmWZvf6feo=;
+  b=AyuYV45+WZzBR5RCc1El0f4RnEFKy71ZrRJd2C3CUCLboNTIqCMvk9x9
+   q4hRqeNSUO/rxkobgIF88dGHjfOXT1gvWdfwlCSPxoFZUjML5M2fVDNwy
+   0v0Fyp+bRdXbN3+QfWUbs1Vjo3VtO8Z83A0DCTsuaTmVTPPmPU/slUaZZ
+   I=;
+X-CSE-ConnectionGUID: Chevf28mT0eeCJclN+oDgA==
+X-CSE-MsgGUID: v1eDE8CMSI6N6AKBBJcdow==
+X-IronPort-AV: E=McAfee;i="6800,10657,11833"; a="99237359"
+X-IronPort-AV: E=Sophos;i="6.24,234,1774306800"; 
+   d="scan'208";a="99237359"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO MUCSE803.infineon.com) ([172.23.29.29])
+  by smtp9.infineon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2026 03:10:55 +0200
+Received: from MUCSE817.infineon.com (172.23.29.43) by MUCSE803.infineon.com
+ (172.23.29.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.43; Wed, 1 Jul
+ 2026 03:10:54 +0200
+Received: from MUCSE815.infineon.com (172.23.29.41) by MUCSE817.infineon.com
+ (172.23.29.43) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.43; Wed, 1 Jul
+ 2026 03:10:54 +0200
+Received: from MUCSE815.infineon.com ([fe80::b54c:c0bd:546c:c9be]) by
+ MUCSE815.infineon.com ([fe80::b54c:c0bd:546c:c9be%12]) with mapi id
+ 15.02.2562.043; Wed, 1 Jul 2026 03:10:54 +0200
+From: <Takahiro.Kuwano@infineon.com>
+To: <Chris.Packham@alliedtelesis.co.nz>, <Ronan.Dalton@alliedtelesis.co.nz>,
+	<pratyush@kernel.org>, <mwalle@kernel.org>
+CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+	<miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+	<Aryan.Srivastava@alliedtelesis.co.nz>
+Subject: RE: [PATCH v2 1/3] Revert "mtd: spi-nor: remove Fujitsu MB85RS1MT
+ support"
+Thread-Topic: [PATCH v2 1/3] Revert "mtd: spi-nor: remove Fujitsu MB85RS1MT
+ support"
+Thread-Index: AQHdBRKBdcAN9mfv+k6bdaeZDwvjfLZWt11QgADFb4CAAFitgA==
+Date: Wed, 1 Jul 2026 01:10:54 +0000
+Message-ID: <2b8390c0aaae4203af318f9a5edbb0eb@infineon.com>
+References: <20260626022108.1963271-2-ronan.dalton@alliedtelesis.co.nz>
+ <858120735ba04d77a422adbc37135ecd@infineon.com>
+ <4efb1cf9-dfd7-432f-b95e-3075507a8eb0@alliedtelesis.co.nz>
+In-Reply-To: <4efb1cf9-dfd7-432f-b95e-3075507a8eb0@alliedtelesis.co.nz>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.161.6.196]
 MIME-Version: 1.0
-References: <20260630092406.150587-1-manikandan.m@microchip.com> <20260630092406.150587-6-manikandan.m@microchip.com>
-In-Reply-To: <20260630092406.150587-6-manikandan.m@microchip.com>
-From: Linus Walleij <linusw@kernel.org>
-Date: Wed, 1 Jul 2026 00:27:17 +0200
-X-Gmail-Original-Message-ID: <CAD++jLmURCUfQNoTgLeTRtxfoWxgyPcmHv6rJpmB1gXWFL+NGA@mail.gmail.com>
-X-Gm-Features: AVVi8CfX0Qclfl00TlhG9NPtI9hB9ExKc-14XAFH9ZzPrWiRzE1N9YyLdRCBq80
-Message-ID: <CAD++jLmURCUfQNoTgLeTRtxfoWxgyPcmHv6rJpmB1gXWFL+NGA@mail.gmail.com>
-Subject: Re: [PATCH v4 5/7] ARM: dts: microchip: sama5d27_wlsom1: use
- fixed-partitions for QSPI flash
-To: Manikandan Muralidharan <manikandan.m@microchip.com>
-Cc: pratyush@kernel.org, mwalle@kernel.org, takahiro.kuwano@infineon.com, 
-	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com, robh@kernel.org, 
-	krzk+dt@kernel.org, conor+dt@kernel.org, srini@kernel.org, 
-	nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com, 
-	claudiu.beznea@tuxon.dev, linux@armlinux.org.uk, richardcochran@gmail.com, 
-	arnd@arndb.de, michael@walle.cc, linux-mtd@lists.infradead.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260630_181158_205734_DDF9D263 
+X-CRM114-Status: GOOD (  32.04  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,19 +93,134 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gVHVlLCBKdW4gMzAsIDIwMjYgYXQgMTE6MjbigK9BTSBNYW5pa2FuZGFuIE11cmFsaWRoYXJh
-bgo8bWFuaWthbmRhbi5tQG1pY3JvY2hpcC5jb20+IHdyb3RlOgoKPiBNb3ZlIHRoZSBRU1BJIGZs
-YXNoIHBhcnRpdGlvbnMgdW5kZXIgYSAicGFydGl0aW9ucyIgbm9kZSB3aXRoIHRoZQo+ICJmaXhl
-ZC1wYXJ0aXRpb25zIiBjb21wYXRpYmxlLCBhcyByZXF1aXJlZCBieSB0aGUgY3VycmVudCBNVEQg
-cGFydGl0aW9uCj4gYmluZGluZywgaW5zdGVhZCBvZiBkZWNsYXJpbmcgdGhlbSBhcyBkaXJlY3Qg
-Y2hpbGRyZW4gb2YgdGhlIGZsYXNoIG5vZGUuCj4gTm8gZnVuY3Rpb25hbCBjaGFuZ2UuCj4KPiBT
-aWduZWQtb2ZmLWJ5OiBNYW5pa2FuZGFuIE11cmFsaWRoYXJhbiA8bWFuaWthbmRhbi5tQG1pY3Jv
-Y2hpcC5jb20+CgpSZXZpZXdlZC1ieTogTGludXMgV2FsbGVpaiA8bGludXN3QGtlcm5lbC5vcmc+
-CgpZb3VycywKTGludXMgV2FsbGVpagoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApo
-dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Hi,
+
+> Hi Takahiro,
+> 
+> On 30/06/2026 19:47, Takahiro.Kuwano@infineon.com wrote:
+> > Hi,
+> >
+> >> This reverts commit d9cd5c9a6fe26d544551cfaa94fb0abc50c0b895.
+> >>
+> >> The commit that removed support for this chip claimed that the at25
+> >> driver was the correct driver to use for this chip. However, the at25
+> >> driver exposes the chip as an NVMEM device, not a MTD device, so it's
+> >> not a suitable replacement for users that want to mount a file system
+> >> over the chip.
+> >>
+> > What file system do you use?
+> > The size of FRAM chips (hundreds of KB) sounds too small for file
+> > systems.
+> 
+> We're using ext2. Technically we want this for the MB85RS4MT which is
+> added in patch 3 of this series.
+> 
+We don't add any FRAM chips in SPI-NOR...
+
+> The use is for a small amount of additional storage separate to the main
+> system NAND flash for some small "critical" files that we don't want to
+> lose. We've been using devices like the mchp23lcv1024 and mr25h40 on
+> other products for some time.
+> 
+For that use, how about using tmpfs with NVMEM backup?
+
+> >> Revert the change that removed support for the MB85RS1MT FRAM chip.
+> >>
+> >> Signed-off-by: Ronan Dalton <ronan.dalton@alliedtelesis.co.nz>
+> >> Cc: linux-kernel@vger.kernel.org
+> >> Cc: linux-mtd@lists.infradead.org
+> >> Cc: Pratyush Yadav <pratyush@kernel.org>
+> >> Cc: Michael Walle <mwalle@kernel.org>
+> >> Cc: Takahiro Kuwano <takahiro.kuwano@infineon.com>
+> >> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+> >> Cc: Richard Weinberger <richard@nod.at>
+> >> Cc: Vignesh Raghavendra <vigneshr@ti.com>
+> >> Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> >> Cc: Aryan Srivastava <aryan.srivastava@alliedtelesis.co.nz>
+> >> ---
+> >> Changes in v2:
+> >> - No changes
+> >>
+> >>   drivers/mtd/spi-nor/Makefile  |  1 +
+> >>   drivers/mtd/spi-nor/core.c    |  1 +
+> >>   drivers/mtd/spi-nor/core.h    |  1 +
+> >>   drivers/mtd/spi-nor/fujitsu.c | 21 +++++++++++++++++++++
+> >>   4 files changed, 24 insertions(+)
+> >>   create mode 100644 drivers/mtd/spi-nor/fujitsu.c
+> >>
+> >> diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
+> >> index 5dd9c35f6b6f..9216a5a29a2b 100644
+> >> --- a/drivers/mtd/spi-nor/Makefile
+> >> +++ b/drivers/mtd/spi-nor/Makefile
+> >> @@ -5,6 +5,7 @@ spi-nor-objs                    += atmel.o
+> >>   spi-nor-objs                   += eon.o
+> >>   spi-nor-objs                   += esmt.o
+> >>   spi-nor-objs                   += everspin.o
+> >> +spi-nor-objs                   += fujitsu.o
+> >>   spi-nor-objs                   += gigadevice.o
+> >>   spi-nor-objs                   += intel.o
+> >>   spi-nor-objs                   += issi.o
+> >> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> >> index ccf4396cdcd0..d5ebbfd3fa7f 100644
+> >> --- a/drivers/mtd/spi-nor/core.c
+> >> +++ b/drivers/mtd/spi-nor/core.c
+> >> @@ -2009,6 +2009,7 @@ static const struct spi_nor_manufacturer *manufacturers[] = {
+> >>          &spi_nor_eon,
+> >>          &spi_nor_esmt,
+> >>          &spi_nor_everspin,
+> >> +       &spi_nor_fujitsu,
+> >>          &spi_nor_gigadevice,
+> >>          &spi_nor_intel,
+> >>          &spi_nor_issi,
+> >> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+> >> index ba2d1a862c9d..a4d906e6d07d 100644
+> >> --- a/drivers/mtd/spi-nor/core.h
+> >> +++ b/drivers/mtd/spi-nor/core.h
+> >> @@ -606,6 +606,7 @@ extern const struct spi_nor_manufacturer spi_nor_atmel;
+> >>   extern const struct spi_nor_manufacturer spi_nor_eon;
+> >>   extern const struct spi_nor_manufacturer spi_nor_esmt;
+> >>   extern const struct spi_nor_manufacturer spi_nor_everspin;
+> >> +extern const struct spi_nor_manufacturer spi_nor_fujitsu;
+> >>   extern const struct spi_nor_manufacturer spi_nor_gigadevice;
+> >>   extern const struct spi_nor_manufacturer spi_nor_intel;
+> >>   extern const struct spi_nor_manufacturer spi_nor_issi;
+> >> diff --git a/drivers/mtd/spi-nor/fujitsu.c b/drivers/mtd/spi-nor/fujitsu.c
+> >> new file mode 100644
+> >> index 000000000000..69cffc5c73ef
+> >> --- /dev/null
+> >> +++ b/drivers/mtd/spi-nor/fujitsu.c
+> >> @@ -0,0 +1,21 @@
+> >> +// SPDX-License-Identifier: GPL-2.0
+> >> +/*
+> >> + * Copyright (C) 2005, Intec Automation Inc.
+> >> + * Copyright (C) 2014, Freescale Semiconductor, Inc.
+> >> + */
+> >> +
+> >> +#include <linux/mtd/spi-nor.h>
+> >> +
+> >> +#include "core.h"
+> >> +
+> >> +static const struct flash_info fujitsu_nor_parts[] = {
+> >> +       /* Fujitsu */
+> >> +       { "mb85rs1mt", INFO(0x047f27, 0, 128 * 1024, 1)
+> >> +               FLAGS(SPI_NOR_NO_ERASE) },
+> >> +};
+> >> +
+> >> +const struct spi_nor_manufacturer spi_nor_fujitsu = {
+> >> +       .name = "fujitsu",
+> >> +       .parts = fujitsu_nor_parts,
+> >> +       .nparts = ARRAY_SIZE(fujitsu_nor_parts),
+> >> +};
+> >> --
+> >> 2.54.0
+> > Thanks,
+> > Takahiro
+> >
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
