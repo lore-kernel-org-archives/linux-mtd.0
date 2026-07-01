@@ -4,61 +4,171 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A56CC43458
-	for <linux-mtd@archiver.kernel.org>; Wed,  1 Jul 2026 08:12:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 57ED3C43602
+	for <linux-mtd@archiver.kernel.org>; Wed,  1 Jul 2026 08:33:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:References:To:From:Cc:Subject:Message-Id:Date:Mime-Version:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:
 	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
 	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=qFYHhf2kx/QofcregO1q/izYBv+SDctm3T3gekCbTh8=; b=jITJiiOltXmWAhOygpo31RSF/I
-	J1LljIVR/1/4w43021ORX6E/DhStisKj5WKpptunJ5XAWpqD8aQTyKTBhVrgvm4US4Xbs5Oq15DhM
-	Zz4G/8vLHPRz1bYJFzTgjKfXNo/DnOuGdmA40w7JHsWEqU3tRp8w9aBe/UShqxw7XYv4o6WvEleAS
-	EWIjbxa39yai0YTeEzBYZyqzeyEWlMGgd6v4UsPG/XY1JZkQ1isc80+puM5IbJAp6s0aW6BjxXdvP
-	7/3ReRAoQK21MCqAqOP5euEBUcfL0YyqxS4IQ2QN2OaXp7l71xll5FwiFpwBYTimuu+wx+V4jsTCt
-	nVId7d8w==;
+	bh=A1LIej1f0TPlzJu20Fm5xrKR1JHlUWUVs98BqHprZ3Q=; b=n+ZkvRRCulGUtoJVVAaOABLvVA
+	HRcSyWFb4NIv8Q7sOyGTz6qaJHZkIdbAoCPSFU4B7aCxi9HRLKlEnXpuv9gC1/KEjpVdiEKE1E2hG
+	Quj1bjrk8PKW6mm88aUuNC5C8MoB54hkvNxpJilD1C79mH0otiUMwQDK3a60WYDGjsHnjJ8S9ovYl
+	qq5TZ065cOtodyPGLNOEj/TMCmSGd9ChktO8ITL3tZpjGJOjwSuHc4fzqCKwWevNs6bNMWwdQgdIr
+	PiFJcpXqrMFx2RejIh4+DdEuFDNjOyjy2aS6sU6qcMmpLhjukHBvsQrFljqMKRSsYuY0quZrFpaQb
+	LfkkQ1mQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1weq3b-0000000100T-3n8e;
-	Wed, 01 Jul 2026 08:12:31 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1weqO0-000000012L8-24oS;
+	Wed, 01 Jul 2026 08:33:36 +0000
+Received: from mail-ed1-x52c.google.com ([2a00:1450:4864:20::52c])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1weq3a-00000001000-0tzx
+	id 1weqNw-000000012JA-2Qo5
 	for linux-mtd@lists.infradead.org;
-	Wed, 01 Jul 2026 08:12:30 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with UTF8SMTP id A680E601D7;
-	Wed,  1 Jul 2026 08:12:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id D70B11F000E9;
-	Wed,  1 Jul 2026 08:12:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1782893549;
-	bh=gHxc/Q4UrjTqx7aoWFRjf3eI8VSOV0mM+Oq/+8eC0BU=;
-	h=Date:Subject:Cc:From:To:References:In-Reply-To;
-	b=jDpZoKjWdmaPa98A1Wqe3i87VTbgvdTaILYr3LF9pru5MEQmmVtIPduMRS4YDTRRr
-	 rI8WUH687tzZtSwt8IPRcpEqcVpxYhP/97dui3UuwJgP3YQJ6nKkPIYR1oOSvRlhhn
-	 h64j3yQBBgYh7yc7y+3jAsyGFHIMXhWYMMD30yM5NNnW/+lpLxYsObPwm25RyjZMTJ
-	 SKnLk/yZ6/gKJR/R3hcyaaoGljPaEvOJRgkY9PGNgj2u2oEXldh21CBEMrVeU4ZjPh
-	 gHu1o9sQq+bb8s4oXYaHz5N2dga/2cs6WBUP+RfZwlSbuaMT4T6UlesK5cyAU7SQx1
-	 MXPx7JeQLbduw==
-Mime-Version: 1.0
-Date: Wed, 01 Jul 2026 10:12:25 +0200
-Message-Id: <DJN30JTAW4NY.28G7HNY6QS299@kernel.org>
-Subject: Re: [PATCH v2 1/3] Revert "mtd: spi-nor: remove Fujitsu MB85RS1MT
- support"
-Cc: <Aryan.Srivastava@alliedtelesis.co.nz>,
- <Chris.Packham@alliedtelesis.co.nz>, <Ronan.Dalton@alliedtelesis.co.nz>,
- <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
- <miquel.raynal@bootlin.com>, <pratyush@kernel.org>, <richard@nod.at>,
- <vigneshr@ti.com>
-From: "Michael Walle" <mwalle@kernel.org>
-To: "Ronan Dalton" <ronan.dalton@alliedtelesis.co.nz>,
- <takahiro.kuwano@infineon.com>
-X-Mailer: aerc 0.20.0
-References: <2b8390c0aaae4203af318f9a5edbb0eb@infineon.com>
- <20260701020856.217664-1-ronan.dalton@alliedtelesis.co.nz>
-In-Reply-To: <20260701020856.217664-1-ronan.dalton@alliedtelesis.co.nz>
+	Wed, 01 Jul 2026 08:33:34 +0000
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-697763eeafcso698629a12.3
+        for <linux-mtd@lists.infradead.org>; Wed, 01 Jul 2026 01:33:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1782894810; x=1783499610; darn=lists.infradead.org;
+        h=in-reply-to:autocrypt:from:content-language:references:cc:to
+         :subject:user-agent:mime-version:date:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=vjpi9gDuzwwRM7WLjI09X9TThOB1p5PHgz+55yL6rYs=;
+        b=BcpMZYWkJfJHW/98iyQ/z1LojhKGERfAsrsv2uYwxRB+C4JimtUDWEsXRUtLI7dQNW
+         57QJ2xiNH1+3t9+B1uiuDNtnpQqohKVmHza1F3/nWSzPBx/8UE7DEwpKjwB7wfSq0SFX
+         c1RYrw2ex5ur/thwXAdEO4HCE4Loass4r4K+HlDtscleh5CbI7YKnYVsQHvyRRC239Ah
+         J2+aMfCkkW8cr5ygY8m6Y/tc0ux8b+p6qEqSv0xdxpbSlGOxb69hUvKS1Vfsr6BPPiOx
+         e8Y3QhGA8R+yJO+z/MNjJ/5IXDebBreap5jPga9iG0trNtcHA11mmWvtK0zY7qGW1dQ9
+         xEhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1782894810; x=1783499610;
+        h=in-reply-to:autocrypt:from:content-language:references:cc:to
+         :subject:user-agent:mime-version:date:message-id:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vjpi9gDuzwwRM7WLjI09X9TThOB1p5PHgz+55yL6rYs=;
+        b=TmU76lMgyxcKE2uY8aK2eOINGN3Kj9/VkOi8J0676hN5T85qZxWsd29cIv0ol7EZ3W
+         D4q/HGwepc82mLAu90Q+eE1FR3Fru+beWZfn2tXwRJtov4r/Sy/NUEWnPifvaTumTbgo
+         K6nqzGAgGedQh03xCrmAwOmFwRXYu0huBbJBqjev0XO5GNpA4Bz83f45LdOxTeNKV/+l
+         kygfdELQ1F4O3q+I+7y/y0u/RFxfn/Mc2av91On9cvr5vmY1sNCVCnQysf1BqvfqB2Ne
+         jiMr40lQxBlRg5aRKz3cLR4C0hhuhzYco3B4hklwnUEiUE6LIeao/pH6pdddwb/ojhk+
+         SqYA==
+X-Forwarded-Encrypted: i=1; AHgh+Rr2YoeiIhPlr8sK6ehdcY0jNTSYHP6S3B9nkm/R8S3Ip7uydvv9S17yBoR4srPrYhxYYzZ8Dw9p8hI=@lists.infradead.org
+X-Gm-Message-State: AOJu0YyD0PfKb49RN/4AJsYyNcc0m6cpjcvHeXhPKRvHu8awsm66LHCC
+	hQctv4QsifuRHiJapFRJihGEKl+CaO8l48s8RwRvqA44WpvtEE/Hrtnv3o0uH1N+32s=
+X-Gm-Gg: AfdE7cn6vCC6MA7NczkTJcGx2lBPhjco/tozBu71gaKVY8Vs2ioV772HxZeA6ngz5Nf
+	oq0hSg59ZGOl5NmAyQ7Y1UBxBX0TrQg6QaeKh5cVmr661nEPUFvDCmcZp9r9cexZ3tfNvbygtJZ
+	On48vCVz3U0QD4vUZSLAjNKDFaqTTtNakERsUGvLgMOaZfj+QGPyH8/kcW2EZUu3BqHhHEP2IQq
+	8GRSSPk8BhLh/U6DWAwbNYauoTdNGMm0+2wedjgXWLBsSx9RJZzw2TKtZSfA2OxPGogsSUBktXW
+	qtFizq04d2bcj0Hk8GgIhP8q2ZsjireXvCiVtKp8yQEv2y6D66sUEdO1Ryzwd6x6rkwhgUlIT9/
+	+6ESZ78KvJTD+7bkzpfTJV4fZnjSF6Ecoaeyn7subnZvSm/GALkhZuZ0EBy4XVfkjcRA5XSUmnx
+	sNZSSnQHXwYcazvmZ0+q9q03DKMDlyA1ikV214PxfJh4OTvGdAY6lNyZIAk8qdAxy5fDfkkWGBI
+	WsMhI6+SKxUL+RSwwVhC78P+MCMbgJYjxKUyGaaztKX0jR1UdFK5g==
+X-Received: by 2002:a05:6402:4146:b0:698:99be:29d6 with SMTP id 4fb4d7f45d1cf-6989f38e868mr343446a12.29.1782894809526;
+        Wed, 01 Jul 2026 01:33:29 -0700 (PDT)
+Received: from ?IPV6:2a00:12d0:af5d:ad01:5d3f:14e6:9bcb:5112? (2a00-12d0-af5d-ad01-5d3f-14e6-9bcb-5112.ip.tng.de. [2a00:12d0:af5d:ad01:5d3f:14e6:9bcb:5112])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-6987c21f123sm2359277a12.0.2026.07.01.01.33.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Jul 2026 01:33:29 -0700 (PDT)
+Message-ID: <0c5e4515-b51e-4b19-8389-a76cabc88042@suse.com>
+Date: Wed, 1 Jul 2026 10:33:27 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 00/32] x86/msr: Drop 32-bit MSR interfaces
+To: Sean Christopherson <seanjc@google.com>, Ingo Molnar <mingo@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+ linux-pm@vger.kernel.org,
+ "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>, x86@kernel.org,
+ linux-acpi@vger.kernel.org, kvm@vger.kernel.org, linux-coco@lists.linux.dev,
+ linux-pci@vger.kernel.org, virtualization@lists.linux.dev,
+ linux-ide@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-fbdev@vger.kernel.org, linux-crypto@vger.kernel.org,
+ "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+ linux-hyperv@vger.kernel.org, linux-hwmon@vger.kernel.org,
+ linux-perf-users@vger.kernel.org, linux-mtd@lists.infradead.org,
+ platform-driver-x86@vger.kernel.org, "Rafael J . Wysocki"
+ <rafael@kernel.org>, Daniel Lezcano <daniel.lezcano@kernel.org>,
+ Zhang Rui <rui.zhang@intel.com>, "lukasz.luba@arm.com"
+ <lukasz.luba@arm.com>, Jason Baron <jbaron@akamai.com>,
+ Borislav Petkov <bp@alien8.de>, Tony Luck <tony.luck@intel.com>,
+ Yazen Ghannam <yazen.ghannam@amd.com>, Len Brown <lenb@kernel.org>,
+ Pavel Machek <pavel@kernel.org>, Thomas Gleixner <tglx@kernel.org>,
+ Ingo Molnar <mingo@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>,
+ "H. Peter Anvin" <hpa@zytor.com>, Paolo Bonzini <pbonzini@redhat.com>,
+ "Kirill A. Shutemov" <kas@kernel.org>,
+ Rick Edgecombe <rick.p.edgecombe@intel.com>, Pu Wen <puwen@hygon.cn>,
+ Bjorn Helgaas <bhelgaas@google.com>, Ajay Kaher <ajay.kaher@broadcom.com>,
+ Alexey Makhalov <alexey.makhalov@broadcom.com>,
+ Broadcom internal kernel review list
+ <bcm-kernel-feedback-list@broadcom.com>,
+ Viresh Kumar <viresh.kumar@linaro.org>,
+ Reinette Chatre <reinette.chatre@intel.com>,
+ Dave Martin <Dave.Martin@arm.com>, James Morse <james.morse@arm.com>,
+ Babu Moger <babu.moger@amd.com>, Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>,
+ Damien Le Moal <dlemoal@kernel.org>, Niklas Cassel <cassel@kernel.org>,
+ Dave Airlie <airlied@redhat.com>, Helge Deller <deller@gmx.de>,
+ linux-geode@lists.infradead.org, Olivia Mackall <olivia@selenic.com>,
+ Herbert Xu <herbert@gondor.apana.org.au>, Linus Walleij <linusw@kernel.org>,
+ Bartosz Golaszewski <brgl@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "K. Y. Srinivasan" <kys@microsoft.com>,
+ Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
+ Dexuan Cui <decui@microsoft.com>, Long Li <longli@microsoft.com>,
+ Guenter Roeck <linux@roeck-us.net>, Peter Zijlstra <peterz@infradead.org>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, James Clark
+ <james.clark@linaro.org>, Josh Poimboeuf <jpoimboe@kernel.org>,
+ Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+ Vitaly Kuznetsov <vkuznets@redhat.com>, Andy Lutomirski <luto@kernel.org>,
+ Boris Ostrovsky <boris.ostrovsky@oracle.com>, Huang Rui <ray.huang@amd.com>,
+ Mario Limonciello <mario.limonciello@amd.com>,
+ Perry Yuan <perry.yuan@amd.com>, K Prateek Nayak <kprateek.nayak@amd.com>,
+ "srinivas.pandruvada@linux.intel.com" <srinivas.pandruvada@linux.intel.com>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Ashok Raj <ashok.raj.linux@gmail.com>, Hans de Goede <hansg@kernel.org>,
+ =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+ Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
+ David E Box <david.e.box@intel.com>, xen-devel@lists.xenproject.org
+References: <20260629060526.3638272-1-jgross@suse.com>
+ <d7c1db52-529a-43cc-ac7d-38b52627e8bc@app.fastmail.com>
+ <c1608c48-13c2-4290-826b-28b5ca51eaf7@suse.com>
+ <7332feff-2649-496c-8e49-b0a19eb54a32@app.fastmail.com>
+ <akJUz0kYkEBdLSZ3@gmail.com> <akQR9YMtMHReJTfB@google.com>
+Content-Language: en-US
+From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Autocrypt: addr=jgross@suse.com; keydata=
+ xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOB
+ ycWxw3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJve
+ dYm8Of8Zd621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJ
+ NwQpd369y9bfIhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvx
+ XP3FAp2pkW0xqG7/377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEB
+ AAHNH0p1ZXJnZW4gR3Jvc3MgPGpncm9zc0BzdXNlLmNvbT7CwHkEEwECACMFAlOMcK8CGwMH
+ CwkIBwMCAQYVCAIJCgsEFgIDAQIeAQIXgAAKCRCw3p3WKL8TL8eZB/9G0juS/kDY9LhEXseh
+ mE9U+iA1VsLhgDqVbsOtZ/S14LRFHczNd/Lqkn7souCSoyWsBs3/wO+OjPvxf7m+Ef+sMtr0
+ G5lCWEWa9wa0IXx5HRPW/ScL+e4AVUbL7rurYMfwCzco+7TfjhMEOkC+va5gzi1KrErgNRHH
+ kg3PhlnRY0Udyqx++UYkAsN4TQuEhNN32MvN0Np3WlBJOgKcuXpIElmMM5f1BBzJSKBkW0Jc
+ Wy3h2Wy912vHKpPV/Xv7ZwVJ27v7KcuZcErtptDevAljxJtE7aJG6WiBzm+v9EswyWxwMCIO
+ RoVBYuiocc51872tRGywc03xaQydB+9R7BHPzsBNBFOMcBYBCADLMfoA44MwGOB9YT1V4KCy
+ vAfd7E0BTfaAurbG+Olacciz3yd09QOmejFZC6AnoykydyvTFLAWYcSCdISMr88COmmCbJzn
+ sHAogjexXiif6ANUUlHpjxlHCCcELmZUzomNDnEOTxZFeWMTFF9Rf2k2F0Tl4E5kmsNGgtSa
+ aMO0rNZoOEiD/7UfPP3dfh8JCQ1VtUUsQtT1sxos8Eb/HmriJhnaTZ7Hp3jtgTVkV0ybpgFg
+ w6WMaRkrBh17mV0z2ajjmabB7SJxcouSkR0hcpNl4oM74d2/VqoW4BxxxOD1FcNCObCELfIS
+ auZx+XT6s+CE7Qi/c44ibBMR7hyjdzWbABEBAAHCwF8EGAECAAkFAlOMcBYCGwwACgkQsN6d
+ 1ii/Ey9D+Af/WFr3q+bg/8v5tCknCtn92d5lyYTBNt7xgWzDZX8G6/pngzKyWfedArllp0Pn
+ fgIXtMNV+3t8Li1Tg843EXkP7+2+CQ98MB8XvvPLYAfW8nNDV85TyVgWlldNcgdv7nn1Sq8g
+ HwB2BHdIAkYce3hEoDQXt/mKlgEGsLpzJcnLKimtPXQQy9TxUaLBe9PInPd+Ohix0XOlY+Uk
+ QFEx50Ki3rSDl2Zt2tnkNYKUCvTJq7jvOlaPd6d/W0tZqpyy7KVay+K4aMobDsodB3dvEAs6
+ ScCnh03dDAFgIq5nsB11j3KPKdVoPlfucX2c7kGNH+LUMbzqV6beIENfNexkOfxHfw==
+In-Reply-To: <akQR9YMtMHReJTfB@google.com>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260701_013332_771000_21E4C783 
+X-CRM114-Status: GOOD (  16.89  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,80 +180,217 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5583728076944829794=="
+Content-Type: multipart/mixed; boundary="===============7333797555799399257=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============5583728076944829794==
-Content-Type: multipart/signed;
- boundary=1120bef0ddc8abd44d357446034fe7dcac59b77e2b6d3535f8b9f4ee624d;
- micalg=pgp-sha384; protocol="application/pgp-signature"
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--===============7333797555799399257==
+Content-Language: en-US
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------yR0aQa1Dp38FRBSVbM28PBR6"
 
---1120bef0ddc8abd44d357446034fe7dcac59b77e2b6d3535f8b9f4ee624d
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------yR0aQa1Dp38FRBSVbM28PBR6
+Content-Type: multipart/mixed; boundary="------------vD8700IqVizDT0GQTpFiBkTP";
+ protected-headers="v1"
+From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+To: Sean Christopherson <seanjc@google.com>, Ingo Molnar <mingo@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+ linux-pm@vger.kernel.org,
+ "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>, x86@kernel.org,
+ linux-acpi@vger.kernel.org, kvm@vger.kernel.org, linux-coco@lists.linux.dev,
+ linux-pci@vger.kernel.org, virtualization@lists.linux.dev,
+ linux-ide@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-fbdev@vger.kernel.org, linux-crypto@vger.kernel.org,
+ "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+ linux-hyperv@vger.kernel.org, linux-hwmon@vger.kernel.org,
+ linux-perf-users@vger.kernel.org, linux-mtd@lists.infradead.org,
+ platform-driver-x86@vger.kernel.org, "Rafael J . Wysocki"
+ <rafael@kernel.org>, Daniel Lezcano <daniel.lezcano@kernel.org>,
+ Zhang Rui <rui.zhang@intel.com>, "lukasz.luba@arm.com"
+ <lukasz.luba@arm.com>, Jason Baron <jbaron@akamai.com>,
+ Borislav Petkov <bp@alien8.de>, Tony Luck <tony.luck@intel.com>,
+ Yazen Ghannam <yazen.ghannam@amd.com>, Len Brown <lenb@kernel.org>,
+ Pavel Machek <pavel@kernel.org>, Thomas Gleixner <tglx@kernel.org>,
+ Ingo Molnar <mingo@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>,
+ "H. Peter Anvin" <hpa@zytor.com>, Paolo Bonzini <pbonzini@redhat.com>,
+ "Kirill A. Shutemov" <kas@kernel.org>,
+ Rick Edgecombe <rick.p.edgecombe@intel.com>, Pu Wen <puwen@hygon.cn>,
+ Bjorn Helgaas <bhelgaas@google.com>, Ajay Kaher <ajay.kaher@broadcom.com>,
+ Alexey Makhalov <alexey.makhalov@broadcom.com>,
+ Broadcom internal kernel review list
+ <bcm-kernel-feedback-list@broadcom.com>,
+ Viresh Kumar <viresh.kumar@linaro.org>,
+ Reinette Chatre <reinette.chatre@intel.com>,
+ Dave Martin <Dave.Martin@arm.com>, James Morse <james.morse@arm.com>,
+ Babu Moger <babu.moger@amd.com>, Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>,
+ Damien Le Moal <dlemoal@kernel.org>, Niklas Cassel <cassel@kernel.org>,
+ Dave Airlie <airlied@redhat.com>, Helge Deller <deller@gmx.de>,
+ linux-geode@lists.infradead.org, Olivia Mackall <olivia@selenic.com>,
+ Herbert Xu <herbert@gondor.apana.org.au>, Linus Walleij <linusw@kernel.org>,
+ Bartosz Golaszewski <brgl@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "K. Y. Srinivasan" <kys@microsoft.com>,
+ Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
+ Dexuan Cui <decui@microsoft.com>, Long Li <longli@microsoft.com>,
+ Guenter Roeck <linux@roeck-us.net>, Peter Zijlstra <peterz@infradead.org>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, James Clark
+ <james.clark@linaro.org>, Josh Poimboeuf <jpoimboe@kernel.org>,
+ Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+ Vitaly Kuznetsov <vkuznets@redhat.com>, Andy Lutomirski <luto@kernel.org>,
+ Boris Ostrovsky <boris.ostrovsky@oracle.com>, Huang Rui <ray.huang@amd.com>,
+ Mario Limonciello <mario.limonciello@amd.com>,
+ Perry Yuan <perry.yuan@amd.com>, K Prateek Nayak <kprateek.nayak@amd.com>,
+ "srinivas.pandruvada@linux.intel.com" <srinivas.pandruvada@linux.intel.com>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Ashok Raj <ashok.raj.linux@gmail.com>, Hans de Goede <hansg@kernel.org>,
+ =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+ Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
+ David E Box <david.e.box@intel.com>, xen-devel@lists.xenproject.org
+Message-ID: <0c5e4515-b51e-4b19-8389-a76cabc88042@suse.com>
+Subject: Re: [PATCH 00/32] x86/msr: Drop 32-bit MSR interfaces
+References: <20260629060526.3638272-1-jgross@suse.com>
+ <d7c1db52-529a-43cc-ac7d-38b52627e8bc@app.fastmail.com>
+ <c1608c48-13c2-4290-826b-28b5ca51eaf7@suse.com>
+ <7332feff-2649-496c-8e49-b0a19eb54a32@app.fastmail.com>
+ <akJUz0kYkEBdLSZ3@gmail.com> <akQR9YMtMHReJTfB@google.com>
+In-Reply-To: <akQR9YMtMHReJTfB@google.com>
+
+--------------vD8700IqVizDT0GQTpFiBkTP
+Content-Type: multipart/mixed; boundary="------------jBK7pBe03sqwPCAFbkx06T5B"
+
+--------------jBK7pBe03sqwPCAFbkx06T5B
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
+
+T24gMzAuMDYuMjYgMjA6NTksIFNlYW4gQ2hyaXN0b3BoZXJzb24gd3JvdGU6DQo+IE9uIE1v
+biwgSnVuIDI5LCAyMDI2LCBJbmdvIE1vbG5hciB3cm90ZToNCj4+ICogQXJuZCBCZXJnbWFu
+biA8YXJuZEBhcm5kYi5kZT4gd3JvdGU6DQo+Pg0KPj4+Pj4+IE5vdGUgdGhhdCBtb3N0IHBh
+dGNoZXMgb2YgdGhpcyBzZXJpZXMgYXJlIGluZGVwZW5kZW50IGZyb20gZWFjaCBvdGhlci4N
+Cj4+Pj4+PiBPbmx5IHRoZSBwYXRjaGVzIHJlbW92aW5nIGEgc3BlY2lmaWMgaW50ZXJmYWNl
+IChwYXRjaGVzIDcsIDE1LCAyNiBhbmQNCj4+Pj4+PiAzMCkgYW5kIHRoZSBsYXN0IHR3byBw
+YXRjaGVzIG9mIHRoZSBzZXJpZXMgZGVwZW5kIG9uIGFsbCBwcmV2aW91cw0KPj4+Pj4+IHBh
+dGNoZXMuDQo+Pj4+Pg0KPj4+Pj4gSXQgbG9va3MgbGlrZSB5b3UgYXJlIHRvdWNoaW5nIG1v
+c3QgZmlsZXMgdHdpY2Ugb3IgbW9yZSBoZXJlLCB0bw0KPj4+Pj4gZmlyc3QgY29udmVydCBm
+cm9tIHJkbXNyIHRvIHJkbXNycSBhbmQgdGhlbiB0byBjaGFuZ2UgdGhlDQo+Pj4+PiB0d28t
+YXJndW1lbnQgcmRtc3JxKCkgbWFjcm8gdG8gYSBzaW5nbGUtYXJndW1lbnQgaW5saW5lLiBJ
+ZiB5b3UNCj4+Pj4+IGludHJvZHVjZSB0aGUgaW5saW5lIHZlcnNpb24gb2YgcmRtc3JxKCkg
+Zmlyc3QsIHlvdSBzaG91bGQgYmUNCj4+Pj4+IGFibGUgdG8gc2tpcCB0aGUgc2Vjb25kIHN0
+ZXAgKHBhdGNoIDMxKSBhcyB0aGV5IGNvdWxkIGJlIGFibGUNCj4+Pj4+IHRvIGNvZXhpc3Qu
+DQo+Pj4+DQo+Pj4+IEkndmUgZGlzY3Vzc2VkIGhvdyB0byBzdHJ1Y3R1cmUgdGhlIHNlcmll
+cyB3aXRoIEluZ28gTW9sbmFyIGJlZm9yZSBbMV0uIFRoZQ0KPj4+PiBjdXJyZW50IGFwcHJv
+YWNoIHdhcyBoaXMgcHJlZmVyZW5jZS4NCj4+Pg0KPj4+IE9rLg0KPj4NCj4+IE5vdGUgdGhh
+dCB0aGUgaW5kaXZpZHVhbCBwYXRjaGVzIGFyZSBJTU8gc2lnbmlmaWNhbnRseSBlYXNpZXIg
+dG8gcmV2aWV3DQo+PiB0aHJvdWdoIHRoZSBhY3R1YWwgMzItYml0ID0+IDY0LWJpdCB2YXJp
+YWJsZSBhc3NpZ25tZW50IGNoYW5nZXMgZG9uZQ0KPj4gaW4gaXNvbGF0aW9uICh3aGljaCBz
+b21ldGltZXMgaW5jbHVkZSBtaW5vciBjbGVhbnVwcyksIHdoaWxlDQo+PiB0aGUgQ29jY2lu
+ZWxsZSBzZW1hbnRpYyBwYXRjaDoNCj4+DQo+PiAgICAgeyBhKGIsYykgPT4gYyA9IGEoYikg
+fQ0KPj4NCj4+IHdoaWNoIGNoYW5nZXMgYm90aCB0aGUgZnVuY3Rpb24gc2lnbmF0dXJlIGFu
+ZCB0aGUgb3JkZXIgb2YgdGVybXMgYXMNCj4+IHdlbGwsIGlzIGp1c3QgYSBzaW5nbGUgYWRk
+LW9uIHRyZWV3aWRlIHBhdGNoLg0KPiANCj4gSXMgdGhlIHBsYW4gZm9yIHN1YnN5c3RlbSBt
+YWludGFpbmVycyB0byBwaWNrIHVwIHRoZSByZWxldmFudCBwYXRjaGVzLCBhbmQgdGhlbg0K
+PiBkbyB0aGUgdHJlZXdpZGUgY2hhbmdlIG9uZSByZWxlYXNlIGN5Y2xlIGxhdGVyPw0KDQpZ
+ZXMsIHBsZWFzZS4NCg0KDQpKdWVyZ2VuDQo=
+--------------jBK7pBe03sqwPCAFbkx06T5B
+Content-Type: application/pgp-keys; name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Disposition: attachment; filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Description: OpenPGP public key
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
 
-On Wed Jul 1, 2026 at 4:08 AM CEST, Ronan Dalton wrote:
-> Hi Takahiro,
->
->> We don't add any FRAM chips in SPI-NOR...
->
-> The SPI-NOR subsystem has support for the cy15x104q chips, which are
-> FRAM chips. There is also support for Everspin MRAM chips, which are
-> comparible to FRAM (and are also of small size).
+-----BEGIN PGP PUBLIC KEY BLOCK-----
 
-Yeah, these are mostly old parts, (except for the newer cypress thing, whic=
-h
-was a mistake to add). But there is little we can do, but to
-eventually remove them in the future when it's likely no boards are
-using them anymore. Thus, we don't want to add newer parts to this
-list and make it even harder for us to get rid of these.
+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
+kt+z4drzFUyEjLM1vVvIMjkUoJs=3D
+=3DeeAB
+-----END PGP PUBLIC KEY BLOCK-----
 
-> Because of this, we thought there was precident to add support for this
-> chip. I was under the impression that the opcodes used to interact with
-> the chip had a greater significance than the underlying technology used,
-> and this chip fits in with the other spi-nor chips based on that. Feel
-> free to correct me if I'm wrong here.
+--------------jBK7pBe03sqwPCAFbkx06T5B--
 
-I'd argue, if they really wanted to emulate a flash device, they
-would have added an (emulated) erase opcode. Without it, it behaves
-like an EEPROM which has byte granularity access.
+--------------vD8700IqVizDT0GQTpFiBkTP--
 
--michael
-
->> > The use is for a small amount of additional storage separate to the ma=
-in
->> > system NAND flash for some small "critical" files that we don't want t=
-o
->> > lose. We've been using devices like the mchp23lcv1024 and mr25h40 on
->> > other products for some time.
->> >=20
->> For that use, how about using tmpfs with NVMEM backup?
->
-> Could you elaborate on this? I'm familiar with tmpfs but not with using
-> NVMEM as a backup for it. Is there some method of syncing a tmpfs to
-> NVMEM that the kernel provides?
->
-> Thanks,
-> Ronan.
-
-
---1120bef0ddc8abd44d357446034fe7dcac59b77e2b6d3535f8b9f4ee624d
-Content-Type: application/pgp-signature; name="signature.asc"
+--------------yR0aQa1Dp38FRBSVbM28PBR6
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCakTL6hIcbXdhbGxlQGtl
-cm5lbC5vcmcACgkQEic87j4CH/iR4AGA/PtPpUX3Nayj5rvpUN/8azknrkxVwwkK
-cZBQH+XGrehbHIn+phERLv77o8ENPMGeAYDesoEFxeV8mCuZ0iTppXi7d1FQRnwU
-c3e3uGLdHMHL5xsH4CNzuZWDbNrrX85/TuU=
-=q2bM
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmpE0NcFAwAAAAAACgkQsN6d1ii/Ey+4
+VQf5ARTTFZkvO/RB1pgLA5pxpW3UUS3uxxV7SopNU0hZc/AzNq9az9lJfyH7jPZ8QBmU9IKulebG
+ITlyXQQs6UjK+gdS9lqvVR/gt7jXQo56BFaXUZQwHSt8ln7k9LhUmdEaBj2m305DZnpb9SGilWTg
+FU/0xAyiM++MkxazBUebIsHavKxiZg3dIjZQ6L7GCivFopHxm59Fg0dv+E0OzaQGPmtrz/oR7sNP
+AkYiOzz84cF2fQXnHTlKAU02RMhfJ2YDp/KAdwPaf1hFwAZsNFL3usH2Ku34Q0ARJoRpUockNhfc
+G3t+JspAVbLH9NBe6jFF+6eWh86FKPsmtwZt0e9tvQ==
+=ng7t
 -----END PGP SIGNATURE-----
 
---1120bef0ddc8abd44d357446034fe7dcac59b77e2b6d3535f8b9f4ee624d--
+--------------yR0aQa1Dp38FRBSVbM28PBR6--
 
 
---===============5583728076944829794==
+--===============7333797555799399257==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -153,5 +400,5 @@ ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
---===============5583728076944829794==--
+--===============7333797555799399257==--
 
