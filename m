@@ -4,64 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33428C43327
-	for <linux-mtd@archiver.kernel.org>; Thu,  2 Jul 2026 00:38:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0130C43458
+	for <linux-mtd@archiver.kernel.org>; Thu,  2 Jul 2026 01:21:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
+	References:Message-ID:Date:Subject:CC:To:From:Reply-To:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=pOirOBYMzylelPdTY5T2etXbFXYbwHwIRoCm5v2nycs=; b=kzxDJxyJ2NSpvy
-	BqIc/WTW3yIVRXe1Inv05Ig/ho0aS+TwT7Xy74YJJhhClfZY4ACm7HlJyDhGm7lWCsCJAYa+FiVg4
-	CCykS731HWtIAhUbk+Bnfr6vG9TDdZkvYRU4dRSrTipzYG/RZsgIocZU+a6YxqN6H4g3XXlbESMa4
-	3W9LoJXJ4NJg6H88CivpMxUb6W4N/QR2NUnRXIkVEBDQKopWUjgvHT0fo87yGTkIEVgFMQ0Bdn20Y
-	DUi4gP+aVzrWxFOu3z8QWf+XMUNUIqzzZd9GDGceRlp+M0CTwBW4UtI+CIrNlzPSm5gqS8zZfU4+h
-	laZD8ozqTdogVlAUlwzA==;
+	List-Owner; bh=Q0w+zACPnZVURsjl1lqcDmgGaV7MZQokgwPj+1+LE88=; b=YML6aU7n91FCQ/
+	wJrwv9japGiZ7JFACXnrm63ZaA338qFsRUx6ZFuazk3Xjt9hdua3q6JctOo3UxqLnxzKerJ/ZUjnt
+	By0zkOkIVC8n6ffOOTb2bJQH4geQleOcEOBsWMsjzkFXFSNz03+kb+E1rJ5iWf0PzUSh1O0cq6Aef
+	rv6wZQKyTwSebtEaEVjsIJYYsc7nSfdJvF2R5GisH+bea6VvE7JLoinW41eXF2VSi/NKJTR6mUZhb
+	7njjWpf8FyJA/oqchPbg/bAmn5P1r82OwsEb6CDgv8GUSG9qPV5ri/SzoaDLek9mdwtX+QDmG9Y6S
+	VJtlKkPO1+bY/KNsQ9uA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wf5SA-00000003Igs-18dY;
-	Thu, 02 Jul 2026 00:38:54 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1wf67a-00000003Kv4-3soN;
+	Thu, 02 Jul 2026 01:21:42 +0000
+Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wf5S9-00000003IgX-0a0l
+	id 1wf67X-00000003Kug-1qhi
 	for linux-mtd@lists.infradead.org;
-	Thu, 02 Jul 2026 00:38:53 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 9950B42AF5;
-	Thu,  2 Jul 2026 00:38:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FD801F00A3A;
-	Thu,  2 Jul 2026 00:38:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1782952732;
-	bh=LpCJQlPE5Ak0zE6/hYgX3ekV8KmQRxvp3FBqk+6eoys=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=Hg8zbCOvSiJwasIpSLYdLlrGV01erTu+gpjTn9O0lplXVuzUv1wwuB+bv/sYElrs/
-	 64pSMOm6Kqzmvf2rGa48Qt1updcvPfdzfKoZYD4mKFn2/gRv6zXea+Ds9g/3IWOhQc
-	 plbWzs5+fK82Q6ThiZrlbjVh7wp/ASt/XFQ0eyhsIuTs1iBizM0A4wmtor7xEy68NS
-	 /bCZYHkyV044QTEqBLiASqNjVaJP2ckeSE8kGia5S268SxGP9BSO+DwlpkRY5J7nkC
-	 xhn46Ai8k0tcTpaqCbwmnVvPUcCLT+9HVmrav+2ht7qu2SjGtUOYsHI4bxjduxCJst
-	 f4crNqeUvY6Fw==
-From: Sasha Levin <sashal@kernel.org>
-To: stable@vger.kernel.org
-Cc: Sasha Levin <sashal@kernel.org>,
-	tudor.ambarus@linaro.org,
-	pratyush@kernel.org,
-	mwalle@kernel.org,
-	miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com,
-	linux-mtd@lists.infradead.org,
-	alvinzhou@mxic.com.tw,
-	Cheng Ming Lin <chengminglin@mxic.com.tw>,
-	Cheng Ming Lin <linchengming884@gmail.com>
-Subject: Re: [PATCH 6.6.y] mtd: spi-nor: macronix: Add post_sfdp fixups for Quad Input Page Program
-Date: Wed,  1 Jul 2026 20:38:33 -0400
-Message-ID: <stable-reply-mtd-macronix-66-20260701193800@kernel.org>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260701023619.2730136-1-linchengming884@gmail.com>
-References: <20260701023619.2730136-1-linchengming884@gmail.com>
+	Thu, 02 Jul 2026 01:21:41 +0000
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 0A63E2C097B;
+	Thu,  2 Jul 2026 13:21:33 +1200 (NZST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+	s=mail181024; t=1782955293;
+	bh=sS5zMoHzPHzcDAgX4IQ77Av+EmYkR4pA9mushDRgPiI=;
+	h=From:To:CC:Subject:Date:References:In-Reply-To:From;
+	b=zf90e0Xd6ygndDLXzTcATL0wdMUsIJt8i++Dk7lJTyxUqi42xuWpDSAbZZN/2agOk
+	 GBZ33PWHtZc327I8tHaSr4xnlygmQOY0r5uSqQgS3oHyO8ibuLREDI2YjGxA1IEITQ
+	 53rtq3Ghhdy0zmFopb+TZj5vCcjGRFWrcGKUKCkkxC9qp9AmtDHQ8f4MNcwBK27jF7
+	 9cxGC1gr9+glFsdpyQF6jp39cawvVEMluIH3YMvDwKruaTfRufhvABvWhreCHrat7r
+	 5UnRqkT0g6cCXymF4yh/W7rYbOQ/XsCOhZKPts0fpG1Z4cai83+HzLueecjFV9V+wT
+	 rp+WzrpsBSlMQ==
+Received: from svr-chch-ex2.atlnz.lc (Not Verified[2001:df5:b000:bc8::76]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+	id <B6a45bd1c0000>; Thu, 02 Jul 2026 13:21:32 +1200
+Received: from svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8:f753:6de:11c0:a008) by
+ svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8:f753:6de:11c0:a008) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1748.39; Thu, 2 Jul 2026 13:21:32 +1200
+Received: from svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567]) by
+ svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567%15]) with mapi id
+ 15.02.1748.039; Thu, 2 Jul 2026 13:21:32 +1200
+From: Ronan Dalton <Ronan.Dalton@alliedtelesis.co.nz>
+To: "Takahiro.Kuwano@infineon.com" <Takahiro.Kuwano@infineon.com>
+CC: "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>, "richard@nod.at"
+	<richard@nod.at>, "pratyush@kernel.org" <pratyush@kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"vigneshr@ti.com" <vigneshr@ti.com>, "linux-mtd@lists.infradead.org"
+	<linux-mtd@lists.infradead.org>, "mwalle@kernel.org" <mwalle@kernel.org>,
+	Aryan Srivastava <Aryan.Srivastava@alliedtelesis.co.nz>, Chris Packham
+	<Chris.Packham@alliedtelesis.co.nz>
+Subject: Re: [PATCH v2 1/3] Revert "mtd: spi-nor: remove Fujitsu MB85RS1MT
+ support"
+Thread-Topic: [PATCH v2 1/3] Revert "mtd: spi-nor: remove Fujitsu MB85RS1MT
+ support"
+Thread-Index: AQHdBRJ8+HvBPYSwmEi4Lf0sk+8LHLZV9jcAgADe8oCAAER1AIAAEDcAgACAk4CAAQSDAA==
+Date: Thu, 2 Jul 2026 01:21:32 +0000
+Message-ID: <8baaf8a603f7f351b4f7acb7a2df4cb60be9f083.camel@alliedtelesis.co.nz>
+References: <2b8390c0aaae4203af318f9a5edbb0eb@infineon.com>
+	 <20260701020856.217664-1-ronan.dalton@alliedtelesis.co.nz>
+	 <490fc98b2996487fba3abd62176bb1dd@infineon.com>
+In-Reply-To: <490fc98b2996487fba3abd62176bb1dd@infineon.com>
+Accept-Language: en-US, en-NZ
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.33.12.18]
+Content-ID: <C5B0921D5873034EAC5DEFEE7F2841D5@alliedtelesis.co.nz>
 MIME-Version: 1.0
+X-SEG-SpamProfiler-Analysis: v=2.4 cv=TI3mSEla c=1 sm=1 tr=0 ts=6a45bd1c a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=BhaoXNk7gXQA:10 a=IkcTkHD0fZMA:10 a=RAioF0-LDSMA:10 a=bUQKSiCPAAAA:8 a=IMAtbdSSmuXookCt3LEA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10 a=-fHZXUhsFbuwFN3fwQAr:22
+X-SEG-SpamProfiler-Score: 0
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260701_182139_958627_FF2DFCCF 
+X-CRM114-Status: UNSURE (   8.68  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,20 +101,19 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-I can't take this series for 6.6.y: patch 2 adds flash_info entries
-with a NULL .name, and 6.6's spi_nor_match_name() has no NULL guard
-(only added upstream in ac5bfa968b60), so the legacy probe-by-name
-path can oops at boot.
+Hi Takahiro,
 
-Please send a v2 that either names the new entries or backports
-ac5bfa968b60 first.
+On Wed, 2026-07-01 at 09:49 +0000, Takahiro.Kuwano@infineon.com wrote:
+> 
+> I didn't mean any kernel features, but we can dump tmpfs contents
+> from/to FRAM chip (exposed as NVMEM device) by 'dd'. Doesn't it meet
+> your system's requirement?
 
-The 6.12.y series is queued, thanks.
+Do you mean something like creating a tmpfs and then say, using `tar`
+and copying the data to nvmem with dd and restoring this data at boot?
 
--- 
-Thanks,
-Sasha
-
+Regards,
+Ronan.
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
