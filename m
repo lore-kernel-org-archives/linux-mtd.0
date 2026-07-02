@@ -4,85 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76060C43458
-	for <linux-mtd@archiver.kernel.org>; Thu,  2 Jul 2026 02:41:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A82C0C43458
+	for <linux-mtd@archiver.kernel.org>; Thu,  2 Jul 2026 02:42:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=LpYqxxSk+0lXT2TqAJGzUlQM9OfN9HuCvvA2Z8vb10I=; b=oP2uvqCGv2zU4K
-	szC3A9EKV+AHNidqy/r7v1EESeG7ffF5yOhSBJ5Owj4Iydi+1yTfcyd2bT++xXaTaeIRyYN/TP8Zu
-	itZJ3Xo7SUxHS39pUGIRLrZPrPzukiKuTwt5GcrOg2ZgDjcgYVfGWl2YAmx6kD3V/BvsBFnO33wMI
-	CDBTNNlRBOHb+5MWxPqFTYwfoXR6EakE8xq+MB9bX1zS6S3bGdHWILgBZirb/YAJy5DS53C17AIjM
-	/ActA/xwdcAR3GjsWvIlXQvwUqqw5+FtK8ReUwwLoDvhFnHmo0NyRwrl/1ZP9+aqOigthEvYKo8c6
-	qKRJEZP10qdoHeU8hKyw==;
+	List-Owner; bh=f5dxTRDrFY0tZaj5KnB0hjSXySfJBxfPx1tjpi+UnVY=; b=r4DWoK7qB+tOzQ
+	JDI06+fxPW6JjasWRkNPgFMYlFzcU6MkgaRumtHwNK5pqPNnu13aPh+fzbkAq2rXRn9IFGjAiMvaI
+	N/IskwJG8BPLdkIHJjZ6scyZMKIYyAGEQe2OkZ7qXZsx3MFYIXz2F6OfAztDpYK0NFNm92lmGbY4s
+	Xw2ga2WnKfokdLqwLwZ7EdsNXe0vHxPUwUDhLfGE1nzV7+pR0kWHQFdZ9FSUyXwNOC0I6MNFzuh6V
+	bMqleWwy12WUGgz4HpZF+vPPus0Q1yF2mydpgfJQ8qyDDHh6n+K/O498Bq/d6bvhN9RMqzLRPtZ5g
+	oiq48mxLONOq20ZTx3eg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wf7MU-00000003RN4-45E9;
-	Thu, 02 Jul 2026 02:41:10 +0000
-Received: from smtp11.infineon.com ([2a00:18f0:1e00:4::5])
+	id 1wf7Nl-00000003RTf-0sGm;
+	Thu, 02 Jul 2026 02:42:29 +0000
+Received: from mail-pl1-x62d.google.com ([2607:f8b0:4864:20::62d])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wf7MS-00000003RMg-3VOI
+	id 1wf7Nj-00000003RT6-1JPy
 	for linux-mtd@lists.infradead.org;
-	Thu, 02 Jul 2026 02:41:10 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=infineon.com; i=@infineon.com; q=dns/txt; s=IFXMAIL;
-  t=1782960069; x=1814496069;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=Nme8sDk+qKnn9KhSg6pks9OQW5XRewRrbivBB4oh/sc=;
-  b=Rh3iNr7M0uofeVohhZmQ6dztXEDnmH3D79Hywr98VOMNPEGNzTDhIktA
-   HJSu9pp3LbVi5E2NbmUV7P9hiGq0Mbghs+AJfr1Mi1FOnh6TafchI9GXE
-   ypjWtnXoRXtGxhcNi5f22M6sxDsX9lrQA9TfohnX3zM5Zkro/INGPvW6v
-   0=;
-X-CSE-ConnectionGUID: 12BUoN3MQhiir6pJ/KxZmw==
-X-CSE-MsgGUID: 89RQFFwvTLCOybx0yo8jvg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11834"; a="149902213"
-X-IronPort-AV: E=Sophos;i="6.25,142,1779141600"; 
-   d="scan'208";a="149902213"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO MUCSE814.infineon.com) ([172.23.29.40])
-  by smtp11.infineon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2026 04:41:07 +0200
-Received: from MUCSE815.infineon.com (172.23.29.41) by MUCSE814.infineon.com
- (172.23.29.40) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.43; Thu, 2 Jul
- 2026 04:41:06 +0200
-Received: from MUCSE815.infineon.com (172.23.29.41) by MUCSE815.infineon.com
- (172.23.29.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.43; Thu, 2 Jul
- 2026 04:41:05 +0200
-Received: from MUCSE815.infineon.com ([fe80::b54c:c0bd:546c:c9be]) by
- MUCSE815.infineon.com ([fe80::b54c:c0bd:546c:c9be%12]) with mapi id
- 15.02.2562.043; Thu, 2 Jul 2026 04:41:05 +0200
-From: <Takahiro.Kuwano@infineon.com>
-To: <Ronan.Dalton@alliedtelesis.co.nz>
-CC: <miquel.raynal@bootlin.com>, <richard@nod.at>, <pratyush@kernel.org>,
-	<linux-kernel@vger.kernel.org>, <vigneshr@ti.com>,
-	<linux-mtd@lists.infradead.org>, <mwalle@kernel.org>,
-	<Aryan.Srivastava@alliedtelesis.co.nz>, <Chris.Packham@alliedtelesis.co.nz>
-Subject: RE: [PATCH v2 1/3] Revert "mtd: spi-nor: remove Fujitsu MB85RS1MT
- support"
-Thread-Topic: [PATCH v2 1/3] Revert "mtd: spi-nor: remove Fujitsu MB85RS1MT
- support"
-Thread-Index: AQHdBRKBdcAN9mfv+k6bdaeZDwvjfLZWt11QgADFb4CAAFitgP//+/8AgACbEMCAAOoHAIAAKPSA
-Date: Thu, 2 Jul 2026 02:41:05 +0000
-Message-ID: <99731a393e5649e692afe57f59d5926b@infineon.com>
-References: <2b8390c0aaae4203af318f9a5edbb0eb@infineon.com>
-	 <20260701020856.217664-1-ronan.dalton@alliedtelesis.co.nz>
-	 <490fc98b2996487fba3abd62176bb1dd@infineon.com>
- <8baaf8a603f7f351b4f7acb7a2df4cb60be9f083.camel@alliedtelesis.co.nz>
-In-Reply-To: <8baaf8a603f7f351b4f7acb7a2df4cb60be9f083.camel@alliedtelesis.co.nz>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.161.6.196]
+	Thu, 02 Jul 2026 02:42:28 +0000
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-2ca64c3ce5fso11993085ad.3
+        for <linux-mtd@lists.infradead.org>; Wed, 01 Jul 2026 19:42:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1782960146; x=1783564946; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SPLD1Nad7dmgJk6iBDV7j32ZrofVNThoKuAf3XZwK3M=;
+        b=rHvW/Z+NB2ttrfSZrTGntX1CJU/YDjNtH5bZBkoZMldA254yQaZ0svq+AjTRb6bbze
+         Ax9MJeTXL2NwRSEqMebODIr80pPi1Y5Njr4c5G34ZjUhpCwAHdM64rLgdX+uj/18LsG2
+         8cRklY2PHyz9Y5RgY4ivfvkFHk9sQk/vfwkBjs3ey54fC5yrA7pSPieJ2CR2tE+avsyE
+         4exTXi4flqkuMzW4hmrdf2b0hf9bMpcPZJYmTkHu9cB8LUOnlSQfK71wqg29ZN87bzb2
+         XNZH6WM9bA/eLtly2/UG0ewSubVZ8BYbRgx0tcu30yA7XBXEhdSvJxa8FRMR7twNdKJ1
+         XIyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1782960146; x=1783564946;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=SPLD1Nad7dmgJk6iBDV7j32ZrofVNThoKuAf3XZwK3M=;
+        b=maIvfCOE6s1ykwSC1o2dv3+s0TISqIsvQhmdpzciw3uRTdeHpFrXkFryTMAvFkqNzo
+         cipU+A+2fElOtJ3k49cPtZNjyCt7Jyj6gAzyjzOlc9Bt/JZHCeoUQlsxB7HxFsoGmjfQ
+         njSfubW17n/i1rBqjTtKncE8wDJ4kRsbqGTyOWZyqTCDFRcpkZbRmohTqmvg2K8w7xyL
+         zJ0YpCUDU5U8FUoZr8qcIQTxPEB6GPM3rpxtGfakPAL6fpb2m6UIBHjk6bjWpkBbsswB
+         1ynX4D7Jz7PgKX9gKHLK0sdGQJx6lPfgEFUKBvcHr0Ose4CW8fWepqv3CrFR0ezcIT+m
+         xQ8Q==
+X-Forwarded-Encrypted: i=1; AHgh+RrqBStB0i0VAHbrFyJUjapkEW7F2S7XUTTbKoGOCnvK1nKBtOt3XXpfnrACluPlcK7XE1RXX1liYBo=@lists.infradead.org
+X-Gm-Message-State: AOJu0YyoLCJq4qzcXRtPTuA2N957DXheFFERAJ0ryhJY3SFM+OscxWyY
+	uuTa6y2FbAcUwt6JB0Vn7deLpGw/0GmrxpW3a/VPSPpyp0is5AADWFFE
+X-Gm-Gg: AfdE7cmdVX61oVlIv3pT4PsPca6tJOA0VyV/5OLEw5D5DnAFouGfqQtutseo/UkRYeF
+	mxzSwPvQKQQwqACVT6s+yUc2qcuxQQuW+NWjvocUKrHTHYzEmVEBX/53t0nLs7Eyfi2l5XM8haQ
+	KugS1Xxber2DMYBi5IqUnSc552rY/ZNkQl4FUJHjYTIsQnHyc7CBvQwHs0fGOhDKdcePW1vVlTj
+	8mqgRVtynlhTo7k2SnnuEhqvZp5Ol771Mtl3+NbieGKjT2wFSSwEyLM1q3BCjhuKk9zN8LGtmaC
+	IpVQ8wgDtvhmkcb6Ws07EjF3kqwlaUQO+71NYu3fBw6jnq++R0DOqNrl0OuhTE6RtIRn1hKSpVD
+	4aTvFlERklSffK3oqwLL/oLUhObBk07ViOmTnstta5URXNBmSdR7D1/XkyOGrxFkp5i9j2qZ/WZ
+	6eDXJ0rTHfgeDVfqz4NDJSZ3YJ205yPAe9q2CYJhvukSv7tw==
+X-Received: by 2002:a17:903:2412:b0:2c9:e86e:aa07 with SMTP id d9443c01a7336-2ca7e758e22mr45668145ad.27.1782960145797;
+        Wed, 01 Jul 2026 19:42:25 -0700 (PDT)
+Received: from twhmp6px (mxsmtp211.mxic.com.tw. [211.75.127.162])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2ca9a9ea0e4sm6233795ad.60.2026.07.01.19.42.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Jul 2026 19:42:24 -0700 (PDT)
+Received: from hqs-appsw-a2o.mp600.macronix.com (unknown [172.17.236.67])
+	by twhmp6px (Postfix) with ESMTPS id 26DD44163B72;
+	Thu,  2 Jul 2026 10:42:22 +0800 (CST)
+From: Cheng Ming Lin <linchengming884@gmail.com>
+To: Michael Walle <mwalle@kernel.org>
+Cc: Pratyush Yadav <pratyush@kernel.org>,
+	Takahiro Kuwano <takahiro.kuwano@infineon.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Tudor Ambarus <tudor.ambarus@linaro.org>,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Cheng Ming Lin <chengminglin@mxic.com.tw>
+Subject: Re: [RFC PATCH 0/3] mtd: spi-nor: Rework flash parameter initialization
+Date: Thu,  2 Jul 2026 10:39:23 +0800
+Message-Id: <20260702023923.2772610-1-linchengming884@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20260601125438.3481722-1-mwalle@kernel.org>
+References: <20260601125438.3481722-1-mwalle@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260701_194109_193357_15D3A9DE 
-X-CRM114-Status: GOOD (  11.76  )
+X-CRM114-CacheID: sfid-20260701_194227_353605_68DD2188 
+X-CRM114-Status: UNSURE (   8.10  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,24 +110,19 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Ronan,
- 
-> Hi Takahiro,
-> 
-> On Wed, 2026-07-01 at 09:49 +0000, Takahiro.Kuwano@infineon.com wrote:
-> >
-> > I didn't mean any kernel features, but we can dump tmpfs contents
-> > from/to FRAM chip (exposed as NVMEM device) by 'dd'. Doesn't it meet
-> > your system's requirement?
-> 
-> Do you mean something like creating a tmpfs and then say, using `tar`
-> and copying the data to nvmem with dd and restoring this data at boot?
+On Mon, 1 Jun 2026 14:52:42 +0200, Michael Walle wrote:
+> That being said, I've just did a quick test on my boards. Please
+> give it a test on your boards.
 
-Yes, I meant something like that (sorry, my comment was still not clear).
-Hope that's worth considering.
+Hi Michael,
+
+I tested this series on our Macronix MX25L12833F and MX25L12845G
+flashes and everything works as expected.
+
+Tested-by: Cheng Ming Lin <chengminglin@mxic.com.tw>
 
 Thanks,
-Takahiro
+Cheng Ming Lin
 
 ______________________________________________________
 Linux MTD discussion mailing list
