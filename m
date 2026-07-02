@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8EE66C43327
-	for <linux-mtd@archiver.kernel.org>; Thu,  2 Jul 2026 06:16:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68B3CC43458
+	for <linux-mtd@archiver.kernel.org>; Thu,  2 Jul 2026 06:44:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=fz6i/n5LWIuWf/ucsVuW3d89gBleECAIe8pZJAnmrcI=; b=bIFfcgnP1hxyTR
-	ODCxdJvYthWrUkSN3f3C2ds9swu1nzQxzq9jZxD0W/r5Jhm0vXv7Xe3dMMO++zdWtWnhy/BrK9cWA
-	IRz/GQjSt65IX9yT6mDcLwx+HeU9j1VuFgo9X4NPJv9TO3z8TtFibqBCUppV0R7Wg8H10q7qyi3Nz
-	h1YM+33Br3n1x5OK49IrURMPhPpDXAm4QyEGlEL0uOTuZDMW6tABzeVvXMZuxtemK1+wn4gL4X9Se
-	IIiekcuU0VMyf22XYUV7R9UR2UAl2TtxasLdhUynPhVj2+SFb+g9Wr1EBKA2mW3vVDezF5QGqk+7f
-	UUBh+g22aCDxvTpqZaJQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:References:To:From:Cc:Subject:Message-Id:Date:Mime-Version:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=74zXhYEg6gZC1dt7eSYedw/mOZ3xgLWTquwAqLRTjg4=; b=wJoIHZQPYuO+LHnCbPtach9pYs
+	SsKTPp0Xe3AzMPM9Bf/scPGw0Wvypr+RFHHTX5wCnGfaZOdbNcc4GKgbE/y91oEuPi/UITptbH2I3
+	4pfidXanrB7FjUoKMWttXPs4Ln0HUkKZdJ0mwgpkgg60G227vQvmekHRS5+UImoVZgLAvS+8QowBt
+	BmKd9C6jGoM6IL1/+kJkQrWDHxBnfq/CDE+K0+pFelGPVt+RBR+nqxvFWMwgExcNJyAol4jCboGwB
+	Gh8K9GeikWXehmmgdD7u1xOLQvAXt6WokJEMreG1r8JZoJ48hbq4zSckeg6QaoJpWsUvGoPwE7uT+
+	1YWh/apA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wfAic-00000003dL7-2ru1;
-	Thu, 02 Jul 2026 06:16:14 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1wfB9t-00000003fW7-1bkR;
+	Thu, 02 Jul 2026 06:44:25 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wfAia-00000003dKt-3xyy;
-	Thu, 02 Jul 2026 06:16:13 +0000
+	id 1wfB9s-00000003fW1-1rt8
+	for linux-mtd@lists.infradead.org;
+	Thu, 02 Jul 2026 06:44:24 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 9244860172;
-	Thu,  2 Jul 2026 06:16:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 482BF1F000E9;
-	Thu,  2 Jul 2026 06:16:10 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with UTF8SMTP id D1E9A437F0;
+	Thu,  2 Jul 2026 06:44:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id 284BC1F000E9;
+	Thu,  2 Jul 2026 06:44:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1782972971;
-	bh=3eBn6yYPLH2ipNnA672FRtzi3xFVI7UPgps+ZwTDFzA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=AgOrK9hWFVZdG7FQCX01vljrn7ocPX3JQbiQA6nbxE6oXhRyf8ZcyWAgYu7FZkoA0
-	 76+h1enpAdnMpRJEF5JTOElp5ebvnL1CPOZD8o6NBhFjzwHydCczUqbhr2p1G1atSS
-	 6SUw86jYT5IYk9OtFbDyINO+5reMP5nfigVeFLwMHwn6gI/FznrIXgdSx7ouoh+obH
-	 2QKD288wDD77Q7kABTMiO/T+BXtY1CbWEOevEwATu3IAeSwDxf6k06VawImAu42s5L
-	 FreGrS86Zq9VHYVfuWeLdda39dG693hFm4VNR0eXjUo5GeZjWZ64eOxOD4sfuc+6tm
-	 94XBuU9R/c42A==
-Date: Thu, 2 Jul 2026 08:16:07 +0200
-From: Krzysztof Kozlowski <krzk@kernel.org>
-To: Manikandan Muralidharan <manikandan.m@microchip.com>
-Cc: pratyush@kernel.org, mwalle@kernel.org, takahiro.kuwano@infineon.com, 
-	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com, robh@kernel.org, 
-	krzk+dt@kernel.org, conor+dt@kernel.org, srini@kernel.org, 
-	nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com, claudiu.beznea@tuxon.dev, 
-	linux@armlinux.org.uk, richardcochran@gmail.com, linusw@kernel.org, arnd@arndb.de, 
-	michael@walle.cc, linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org
-Subject: Re: [PATCH v4 1/7] dt-bindings: mtd: jedec,spi-nor: allow the SFDP
- to be exposed via NVMEM
-Message-ID: <20260702-utopian-termite-of-perfection-f1f3ec@quoll>
-References: <20260630092406.150587-1-manikandan.m@microchip.com>
- <20260630092406.150587-2-manikandan.m@microchip.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260630092406.150587-2-manikandan.m@microchip.com>
+	s=k20260515; t=1782974663;
+	bh=mwsmqT/AXBfpTe26vQoiTiZAbFqjYNZcCxpXpSYlf3w=;
+	h=Date:Subject:Cc:From:To:References:In-Reply-To;
+	b=SGK3+0O32kZ9ZCbjfcsdg//0d8zmtKCISwu9Ycav+VS92nWSKfxIY68cwLNReXtjY
+	 VmyyIkOzAwAWxxVv4aGnfltNm9j8p9eQ32AoznjWl6dBZL+snrs3mcY+TY2OF33mpg
+	 f1tL1KcllNDkxXdQCihyCvKkcxBgjuT+ismE3g+2f1l0w8edzVBrlr8Iwkn513RZV8
+	 tglYNo4YvHQfQDr6rvUulYp/CPQGEuq+LeLuAqpvgpsPidK2gpXdQOMG/6hs4Jc83k
+	 lxpQ+FEFhBpFqsHXdWhMRR4I4MwJrrwOl+0gY8Wlpco6Wh5XmrllNub4VetZMSfb+a
+	 7xzcT1Sz7Nwww==
+Mime-Version: 1.0
+Date: Thu, 02 Jul 2026 08:44:19 +0200
+Message-Id: <DJNVRMSG4C6K.34EGBE463IOCZ@kernel.org>
+Subject: Re: [PATCH 6.6.y] mtd: spi-nor: macronix: Add post_sfdp fixups for
+ Quad Input Page Program
+Cc: <stable@vger.kernel.org>, <tudor.ambarus@linaro.org>,
+ <pratyush@kernel.org>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
+ <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
+ <alvinzhou@mxic.com.tw>, "Cheng Ming Lin" <chengminglin@mxic.com.tw>
+From: "Michael Walle" <mwalle@kernel.org>
+To: "Cheng Ming Lin" <linchengming884@gmail.com>, "Sasha Levin"
+ <sashal@kernel.org>
+X-Mailer: aerc 0.20.0
+References: <20260701023619.2730136-1-linchengming884@gmail.com>
+ <stable-reply-mtd-macronix-66-20260701193800@kernel.org>
+ <CAAyq3SY48RRSO1nN-uRH7HVnXbnvQ1_K823Lc_hRsCyVuf9L3g@mail.gmail.com>
+In-Reply-To: <CAAyq3SY48RRSO1nN-uRH7HVnXbnvQ1_K823Lc_hRsCyVuf9L3g@mail.gmail.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,53 +70,89 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4579034325586443271=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jun 30, 2026 at 02:54:00PM +0530, Manikandan Muralidharan wrote:
-> Add an optional "sfdp" child node (compatible "jedec,sfdp") that
-> describes the SFDP as a read-only NVMEM provider via nvmem.yaml, so its
+--===============4579034325586443271==
+Content-Type: multipart/signed;
+ boundary=33f04db25c885812dee295812b696d3d5602097a9471dc1e72bcb39acfac;
+ micalg=pgp-sha384; protocol="application/pgp-signature"
 
-What is SFDP?
+--33f04db25c885812dee295812b696d3d5602097a9471dc1e72bcb39acfac
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
 
-> contents (e.g. a vendor EUI-48/EUI-64) can be read through NVMEM cells.
-> 
-> Signed-off-by: Manikandan Muralidharan <manikandan.m@microchip.com>
-> ---
->  .../devicetree/bindings/mtd/jedec,spi-nor.yaml | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> index 587af4968255..98fd954598ab 100644
-> --- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> +++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> @@ -103,6 +103,20 @@ properties:
->    spi-cpol: true
->    spi-cpha: true
->  
-> +  sfdp:
-> +    $ref: /schemas/nvmem/nvmem.yaml#
-> +    unevaluatedProperties: false
-> +    description:
-> +      The Serial Flash Discoverable Parameters (SFDP) tables exposed as a
-> +      read-only NVMEM device. This allows standard or vendor-specific SFDP
-> +      data (for example a factory-programmed EUI-48/EUI-64 identifier) to be
-> +      consumed through NVMEM cells.
-> +    properties:
-> +      compatible:
-> +        const: jedec,sfdp
-> +    required:
-> +      - compatible
+On Thu Jul 2, 2026 at 4:13 AM CEST, Cheng Ming Lin wrote:
+> Hi Sasha,
+>
+> Sasha Levin <sashal@kernel.org> =E6=96=BC 2026=E5=B9=B47=E6=9C=882=E6=97=
+=A5=E9=80=B1=E5=9B=9B =E4=B8=8A=E5=8D=888:38=E5=AF=AB=E9=81=93=EF=BC=9A
+>>
+>> I can't take this series for 6.6.y: patch 2 adds flash_info entries
+>> with a NULL .name, and 6.6's spi_nor_match_name() has no NULL guard
+>> (only added upstream in ac5bfa968b60), so the legacy probe-by-name
+>> path can oops at boot.
+>
+> Thank you for pointing this out and catching the potential issue.
+>
+> I have verified this, and you are absolutely right. The issue stems from
+> the strcmp(name, manufacturers[i]->parts[j].name) evaluation within the
+> legacy probe path. Since 6.6.y lacks the null guard, passing a NULL .name
+> will result in a null pointer dereference in strcmp() and cause a kernel
+> oops during boot.
+>
+> I will add the .name to the new flash entries and submit a v2 series.
 
-Where are any resources? What sort of sub-device is represented here by
-an empty device node?
+No, please backport the needed patches. The reason is that the name
+shouldn't become something an application relies on (it is also
+exposed via sysfs).
 
-Best regards,
-Krzysztof
+For all people not too involved: we are dropping the name for new
+flash additions, because it is almost always wrong, due to flash id
+reuse among almost all flash vendors.
 
+-michael
+
+>
+>>
+>> Please send a v2 that either names the new entries or backports
+>> ac5bfa968b60 first.
+>>
+>> The 6.12.y series is queued, thanks.
+>>
+>> --
+>> Thanks,
+>> Sasha
+>
+> Thanks,
+> Cheng Ming Lin
+
+
+--33f04db25c885812dee295812b696d3d5602097a9471dc1e72bcb39acfac
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCakYIwxIcbXdhbGxlQGtl
+cm5lbC5vcmcACgkQEic87j4CH/gYTwGAqnInxCnEvyOPze83NecTmhd2K5gukKMt
+P2Rqcev3TLZuX23WqfTXkSAtEmMXedFWAX9IKEqmtjTceQZNqFZaLiYAEzyM7zTQ
+bgg9J2omXxaFR8jg0wt9/QfDdiUhVII4gUM=
+=15ZK
+-----END PGP SIGNATURE-----
+
+--33f04db25c885812dee295812b696d3d5602097a9471dc1e72bcb39acfac--
+
+
+--===============4579034325586443271==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============4579034325586443271==--
+
