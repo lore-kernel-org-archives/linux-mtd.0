@@ -4,91 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 443BEC43458
-	for <linux-mtd@archiver.kernel.org>; Thu,  2 Jul 2026 23:48:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2CC5C43458
+	for <linux-mtd@archiver.kernel.org>; Fri,  3 Jul 2026 05:38:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:CC:To:From:Reply-To:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=bzok21NvD15xH98HCteJY+p09c0FY0m5iCnzEHCLKFc=; b=Rr6PtcB7hlNZ4M
-	+4m5CCzgkY0b7LYlwbOdry9k5vqIfotmkGJ+bJy/rvEiu11uiczr9CFSguUFBNFjq/CqsenPYB+0V
-	fOqg/QFLq+1cBGHipD6ZJKF5WYgGM5OyWW+YPA7CuzwcA7m/FqWCTOYUjmY//l+cVBEwBStZe+2JG
-	nHjij4KUML7xr7toMu8Nr6LrXLO8pvco0YEkCEmni4KaO8eO6KVOoxYVt8Lmi/m8X8m+CP1c3vlew
-	h47fbuIVTpGmJsuNeIMEDuQ7gmTJaaYYqU1oaviKL9ZSyIvKx3mn3t6AIkF9CVVPH60G8S1z7yIhj
-	50gvzgNsHcwynxiDGsNg==;
+	List-Owner; bh=IydsW5IvR+fZzxt+uGrtvnHIKa0Ppi/ahDPWFis9aZk=; b=bwRYF9ZgH8okXJ
+	Ah0FME+CbgyqEV/xmc0Hwv5yN46SRUAIBXWMYGRbZ9jDa18zgw9l2EvBmZD/aQe1xuYcdnLTA23M0
+	3mAkl3Hci3yTpBUC2KeXd3mxIIEozZjoBLx+3Umt1QIA7RlybzCUxIDARQizO2yhbUT78aMguGjoV
+	SMaUjOlF9Z4NHRiDi8RLZqKRR/Cp0sf+EJ/glJ98IyI/tr908NcVyqMkPmBfwbHhW5/kqm7oPWSEq
+	HXzm+b5nCkTS2NUqBRcAME4TrbpohrlkuMpcgBW+XWpK5WnBBzWEN1/P4BY6x11cL6lJah9XtJkys
+	MBVhDnggnetRe/gOU5pQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wfR8n-00000005kvA-1g4X;
-	Thu, 02 Jul 2026 23:48:21 +0000
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
+	id 1wfWbr-000000065wh-1qj4;
+	Fri, 03 Jul 2026 05:38:43 +0000
+Received: from smtp9.infineon.com ([217.10.52.204])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wfR8f-00000005ktc-3I2A
-	for linux-mtd@lists.infradead.org;
-	Thu, 02 Jul 2026 23:48:19 +0000
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id A47AA2C02D4;
-	Fri,  3 Jul 2026 11:48:02 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-	s=mail181024; t=1783036082;
-	bh=pDX4s94+PabMb6i9h40+2pGl0tOE4N6qYffYc5pXUyg=;
-	h=From:To:CC:Subject:Date:References:In-Reply-To:From;
-	b=Oqc9T5KTMgZ3+5jFi526Zs4wn+7TC5Hcqy4lxz8+9ENY6q9UJR3cctCXg8A7DUDuC
-	 k5iWoZVpuz5yEiMRTQdxtN2SLSARqpMF/KchIGkRLKOMnhO5dJGo0hxszBSt0cYu5A
-	 VAViFuz6gfRDU4bypO8wy4cSMXMBhw+7b0gSz3GY4scymjaeZBjxaGbnSqPr5/GBpr
-	 3wO6EFTqahxIRAchom8cmzg8w13fJlfi4hwN1ZwXZ0Gm1sXTthFo2occ6t0BTA9aj3
-	 va3CJSNUDqknc15Fw0l6uFVzaPonzLx1UqwSAMWanpB31Zdh3IErktfrD+/Pi/NKe9
-	 bI5AvY9ULSvkw==
-Received: from svr-chch-ex2.atlnz.lc (Not Verified[2001:df5:b000:bc8::76]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-	id <B6a46f8b20000>; Fri, 03 Jul 2026 11:48:02 +1200
-Received: from svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) by
- svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1748.39; Fri, 3 Jul 2026 11:48:02 +1200
-Received: from svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567]) by
- svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567%15]) with mapi id
- 15.02.1748.039; Fri, 3 Jul 2026 11:48:02 +1200
-From: Ronan Dalton <Ronan.Dalton@alliedtelesis.co.nz>
-To: Chris Packham <Chris.Packham@alliedtelesis.co.nz>, "richard@nod.at"
-	<richard@nod.at>
-CC: "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
-	"Takahiro.Kuwano@infineon.com" <Takahiro.Kuwano@infineon.com>,
-	"pratyush@kernel.org" <pratyush@kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "vigneshr@ti.com" <vigneshr@ti.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Aryan
- Srivastava" <Aryan.Srivastava@alliedtelesis.co.nz>, "mwalle@kernel.org"
-	<mwalle@kernel.org>
-Subject: Re: [PATCH v2 1/3] Revert "mtd: spi-nor: remove Fujitsu MB85RS1MT
- support"
-Thread-Topic: [PATCH v2 1/3] Revert "mtd: spi-nor: remove Fujitsu MB85RS1MT
- support"
-Thread-Index: AQHdBRJ8+HvBPYSwmEi4Lf0sk+8LHLZV9jcAgADe8oCAAER1AIAAEDcAgACAk4CAAQSDAIAAFjqAgAAHAgDqoturHpVef02A
-Date: Thu, 2 Jul 2026 23:48:02 +0000
-Message-ID: <a86e2233c6ea01b1dcefb8c7f7f582725a25b5e5.camel@alliedtelesis.co.nz>
-References: <2b8390c0aaae4203af318f9a5edbb0eb@infineon.com>
-	 <20260701020856.217664-1-ronan.dalton@alliedtelesis.co.nz>
-	 <490fc98b2996487fba3abd62176bb1dd@infineon.com>
-	 <8baaf8a603f7f351b4f7acb7a2df4cb60be9f083.camel@alliedtelesis.co.nz>
-	 <99731a393e5649e692afe57f59d5926b@infineon.com>
-	 <e946b3c6-304a-4015-a144-285e7f2f4e6a@alliedtelesis.co.nz>
-	 <490633873.5619.1782970758317.JavaMail.zimbra@nod.at>
-In-Reply-To: <490633873.5619.1782970758317.JavaMail.zimbra@nod.at>
-Accept-Language: en-US, en-NZ
+	id 1wfWbo-000000065hq-3EHu;
+	Fri, 03 Jul 2026 05:38:42 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=infineon.com; i=@infineon.com; q=dns/txt; s=IFXMAIL;
+  t=1783057121; x=1814593121;
+  h=from:to:subject:date:message-id:references:in-reply-to:
+   content-transfer-encoding:mime-version;
+  bh=0mtq3LN+KWBSW9lTL9C9FcS9noZX2XKjwf2oyxhAxxI=;
+  b=UvxqtB1OMPXO5bgVZVjJG1+/3l27xZZqLVc9Ar45KPNhWT2chWDsGDel
+   c5RemGgX/rPiEGP7ktsU9QaDiIotM780zLHq9nE5stAl5Ojwx5cMqueGr
+   o7ml7lNAsm0L/oTUfxuFfP9qdvtIgvW4nqJe5AivBOYzPSgOyj9hF8l+a
+   A=;
+X-CSE-ConnectionGUID: xeHXl9QGQGy8HVZGWnHucA==
+X-CSE-MsgGUID: wWH+KjveQ/qycSHEfAysPg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11835"; a="99571517"
+X-IronPort-AV: E=Sophos;i="6.25,145,1779141600"; 
+   d="scan'208";a="99571517"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO MUCSE812.infineon.com) ([172.23.29.38])
+  by smtp9.infineon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jul 2026 07:35:34 +0200
+Received: from MUCSE815.infineon.com (172.23.29.41) by MUCSE812.infineon.com
+ (172.23.29.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.43; Fri, 3 Jul
+ 2026 07:35:33 +0200
+Received: from MUCSE815.infineon.com ([fe80::b54c:c0bd:546c:c9be]) by
+ MUCSE815.infineon.com ([fe80::b54c:c0bd:546c:c9be%12]) with mapi id
+ 15.02.2562.043; Fri, 3 Jul 2026 07:35:33 +0200
+From: <Takahiro.Kuwano@infineon.com>
+To: <manikandan.m@microchip.com>, <pratyush@kernel.org>, <mwalle@kernel.org>,
+	<miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+	<robh@kernel.org>, <krzk+dt@kernel.org>, <conor+dt@kernel.org>,
+	<srini@kernel.org>, <nicolas.ferre@microchip.com>,
+	<alexandre.belloni@bootlin.com>, <claudiu.beznea@tuxon.dev>,
+	<linux@armlinux.org.uk>, <richardcochran@gmail.com>, <linusw@kernel.org>,
+	<arnd@arndb.de>, <michael@walle.cc>, <linux-mtd@lists.infradead.org>,
+	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <netdev@vger.kernel.org>
+Subject: RE: [PATCH v4 3/7] mtd: spi-nor: sfdp: expose the SFDP as a read-only
+ NVMEM device
+Thread-Topic: [PATCH v4 3/7] mtd: spi-nor: sfdp: expose the SFDP as a
+ read-only NVMEM device
+Thread-Index: AQHdCHJjppL/9AvAjUSdTTDRPCeZfLZbR6Aw
+Date: Fri, 3 Jul 2026 05:35:33 +0000
+Message-ID: <8f3b422e0b7749b2a47b14a585dd0a0c@infineon.com>
+References: <20260630092406.150587-1-manikandan.m@microchip.com>
+ <20260630092406.150587-4-manikandan.m@microchip.com>
+In-Reply-To: <20260630092406.150587-4-manikandan.m@microchip.com>
+Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-originating-ip: [10.33.12.18]
-Content-ID: <3831264DCC7D3D478CD01936EE28E658@alliedtelesis.co.nz>
+x-originating-ip: [10.161.6.196]
 MIME-Version: 1.0
-X-SEG-SpamProfiler-Analysis: v=2.4 cv=TI3mSEla c=1 sm=1 tr=0 ts=6a46f8b2 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=BhaoXNk7gXQA:10 a=IkcTkHD0fZMA:10 a=RAioF0-LDSMA:10 a=efkteKykisSJ_N_ILTMA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
-X-SEG-SpamProfiler-Score: 0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260702_164814_304118_EC137516 
-X-CRM114-Status: GOOD (  10.44  )
+X-CRM114-CacheID: sfid-20260702_223841_134549_B7535CB5 
+X-CRM114-Status: UNSURE (   8.40  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -105,27 +97,23 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Richard,
+Hi,
 
-On Thu, 2026-07-02 at 07:39 +0200, Richard Weinberger wrote:
-> Do you really need (POSIX) file system semantics?
-> You could partition the FRAM into cells and then work with them.
-> e.g. Just dd into it and erase it when needed...
-> Maybe the NVMEM cells mechanism needs some polishing but this sounds
-> reasonable to me.
+> Register the cached SFDP as a read-only NVMEM device rooted at the
+> flash's "sfdp" child node, exposing it in on-flash byte order. This lets
+> NVMEM cells reference any SFDP data: a fixed-layout for parameters at a
+> known offset, or an nvmem-layout parser for vendor data whose location
+> must be discovered at runtime. The device is only registered when an
+> "sfdp" node is present in the device tree.
+> 
+> Signed-off-by: Manikandan Muralidharan <manikandan.m@microchip.com>
 
-Yes, that could work for secrets storage. However we also store
-persistent logs and DHCP leases on this flash to minimize read/writes
-on the main flash, and this data is stored as files of varying lengths.
-A filesystem provides the most straightforward way of storing this data
-for us.
-
-That's not to say we couldn't develop some system of using the nvmem
-device as a backend for this data. This may be something we look at in
-the future.
+SFDP is exposed in sysfs (e.g., /sys/bus/spi/devices/spi0.0/spi-nor/sfdp).
+Why don't you just use this existing entry?
 
 Thanks,
-Ronan.
+Takahiro
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
