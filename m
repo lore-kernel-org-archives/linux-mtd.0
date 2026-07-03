@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E7F3C43602
-	for <linux-mtd@archiver.kernel.org>; Fri,  3 Jul 2026 14:30:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A74E3C44500
+	for <linux-mtd@archiver.kernel.org>; Fri,  3 Jul 2026 14:30:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=eugh6h8FTpssSzB8aVWLbPypGDjyWbRXVKodeIslCz8=; b=BmUjHZtfANBca0
-	M3a2GtHZbgO+GMQnJXirjCrJMa/XPr8uOQvaUpwrEMVBdd4AjZd6wnvt9i6I0tfiOdXjwnfWGa7uy
-	I1zz3uNhLFX0+dFUTJTG6qOKOGeBj7zw6QUraHC4D/t1cauKVZCIK87WtefuORe/OhHfEVkebTZZZ
-	56WON4EvIrNnFwELYtSq2f/scjHMGLJHMDzwjVBdRSK9BfBfH7/ILUjfjNxpPIDwnS/ZHWb6iVUkh
-	8fpTNdVOiLEEV7XEMzUHLgpuZ2I4EeP89fWQD3iN4TrB3Pvu/FXpAFd4LaDUQLHYL4+BeHMvthwGW
-	l0yh3PJ3ZRzIG5dD/qcA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=emPNlpLgKyN7Wrjvq88i3Jz9tv5vIZpRwsSSqXFH6HA=; b=OJQ/WBYJaoNefo
+	z/Uc8ThtwnNiOJsP1XOg7sFKqs+IrO9q3uYJ5np5u90IhTOgpkgnIdJJFcukKg46jgaamFfdklgsg
+	A7kvOxM/BTmpGdF8eY7nFfNxNlPDswTLh6fFPHJCXYxyGBy/YN4gOTxr7NxVpC2HcjdBxJ3IuzsPE
+	KpSCJWU+Awr3SBp1+FTGToqN9mAjiQZnxs8QmVcLmlPA+sV0tPTsLmIhuZ/n/aPUL33GOGHmJQbda
+	Mzf7fJb7tirrDr9a7Klc93SNk5KzWj11NIoJ8BYQsjtALNlXTgRilBZaelnjDL6qvu+u8GkXJ9NZp
+	FLolqZkeurNnw4Zb/S9A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wfeuP-00000007GY3-2QJI;
-	Fri, 03 Jul 2026 14:30:25 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1wfeuT-00000007GZ7-35hm;
+	Fri, 03 Jul 2026 14:30:29 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wfeuN-00000007GXr-47AV
+	id 1wfeuS-00000007GYO-1bWY
 	for linux-mtd@lists.infradead.org;
-	Fri, 03 Jul 2026 14:30:24 +0000
+	Fri, 03 Jul 2026 14:30:28 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 0ED1D600B0;
-	Fri,  3 Jul 2026 14:30:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C1991F000E9;
-	Fri,  3 Jul 2026 14:30:20 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 0605043989;
+	Fri,  3 Jul 2026 14:30:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C11B01F000E9;
+	Fri,  3 Jul 2026 14:30:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783089022;
-	bh=YuS9rWn/UpjoxAe+D3hMPCZ9qXXtvPPE9DHjNwtH8a8=;
-	h=From:To:Cc:Subject:Date;
-	b=aJgdxGcV6MeObyhAowtBxEpWVT/vLSuscJVrOdYHmNF6YJ28hH1eZYvcy2jtK61lG
-	 VBZES21stKn0qS9nuc0wmygz4+wG0SXJTrZwd7ggW7DG+2FKU5aNhxg01PExtXZP1n
-	 +ffPLBDejaDvErkj9xS8GRPTWqecGF5VmmUr/2Fd8xzi/Yrfr3nfn86dQ76V/sThAj
-	 RjGwPV0hwY+gyHa3MuR/Ouwh4uXBIYDZ+VYAY2D1WKrwmSnybT2JL64mYFTZ3PsTQP
-	 71tVla3lAvFQMFPEx63QPBTAZ4kEG2J4wUmSz/9e2JvTngV/HUvDgaIxPQiOtNYbEU
-	 phsG0M4mYxPXg==
+	s=k20260515; t=1783089027;
+	bh=2tBIpzrA2mgPVackQiqt2YipbpdW03n68DVd0kQkAho=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=HhEK+Ds/B7KF49mTU59VK6Q/LG2AXRFARX1bbgsREHHRjE9rjbrNNYzx2aXDuXw4o
+	 weUZbdT4oukmaWdATunIOGYCZak7l5621NtbOQEDQJJsgH8qjBr1i6XeTj8a6ra0Bh
+	 u4B5uijo+kDkq2wA8QSfCFPvDtuyZeIXBYoXxpNrh3WckRiF2G29zgzwm2U5yCJBWc
+	 FdVJm4y231EjsVFk7rhMOvMLuGI5c8H48+jxpgIu6Y4sRuX4B0FkoQFxJpSKPZWfqd
+	 Fcp5G36ERgColU480gS+x8VdU3V4PdqDklzBt/HRIjdGfqc3mBNyFlryWjw8ovwWDp
+	 SfTG7wEefHqVQ==
 From: Michael Walle <mwalle@kernel.org>
 To: Pratyush Yadav <pratyush@kernel.org>,
 	Michael Walle <mwalle@kernel.org>,
@@ -53,10 +53,12 @@ To: Pratyush Yadav <pratyush@kernel.org>,
 Cc: linux-mtd@lists.infradead.org,
 	Cheng Ming Lin <chengminglin@mxic.com.tw>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v1 0/8] mtd: spi-nor: Rework flash parameter initialization
-Date: Fri,  3 Jul 2026 16:29:11 +0200
-Message-ID: <20260703143003.1809579-1-mwalle@kernel.org>
+Subject: [PATCH v1 2/8] mtd: spi-nor: don't clear the SNOR_F_4B_OPCODES flag on failure
+Date: Fri,  3 Jul 2026 16:29:13 +0200
+Message-ID: <20260703143003.1809579-3-mwalle@kernel.org>
 X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20260703143003.1809579-1-mwalle@kernel.org>
+References: <20260703143003.1809579-1-mwalle@kernel.org>
 MIME-Version: 1.0
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -74,53 +76,37 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Try to simplify the flash initialization and get rid of the legacy
-handling. As default, all the flags of the in-kernel database are
-taken and amended with the SFDP data.
+This was introduced in commit 548ed6847f530 ("mtd: spi-nor: Add the
+SNOR_F_4B_OPCODES flag"). It looks like it was the rollback mechanism if
+parsing the SFDP failed, but was setting that flag first. Nowadays, that
+flag can only be set if spi_nor_parse_4bait() was successful. IOW, the
+flags won't be left in an undefined state if parsing SFDP fails.
 
-This might have the consequence that all the flashes now get a
-RDSFPD opcode which might be an unknown opcode. But that was already
-the case for any flashes which were unknown to the linux kernel. So
-far, there was not a single complaint. See patch 8 for more
-information.
+Remove the unneeded code to be able to rework spi_nor_init_params().
 
-Sashiko found that not everything is rolled back in case of a SFDP
-parsing failure. Thus there are now 5 additional patches which will
-move the discovered parameters into spi_nor_flash_parameter which is
-rolled back. The new rule is now:
+Signed-off-by: Michael Walle <mwalle@kernel.org>
+Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+---
+ drivers/mtd/spi-nor/core.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-  SFDP parsing and the per-flash SFDP fixups must only change the
-  spi_nor_flash_parameter data.
-
-changes since the RFC:
- - new patches to address the rollback issue, as pointed out by
-   Sashiko
- - remove SKIP_SFDP from kerneldoc, as pointed out by Sashiko
- - mention issuing the potential unsupported RDSFPD command in the
-   commit message, as pointed out by Tudor
-
-Michael Walle (8):
-  mtd: spi-nor: spansion: s25fl256s0: remove SKIP_SFDP flag
-  mtd: spi-nor: don't clear the SNOR_F_4B_OPCODES flag on failure
-  mtd: spi-nor: move cmd_ext_type into spi_nor_flash_parameter
-  mtd: spi-nor: move flags into spi_nor_flash_parameter
-  mtd: spi-nor: move spi_nor_post_bfpt_fixups() into sfdp
-  mtd: spi-nor: spansion: s25fs256t: move ARCFN check into .late_init
-  mtd: spi-nor: push the rollback mechanism into the sfdp module
-  mtd: spi-nor: rework flash parameter initialization
-
- drivers/mtd/spi-nor/core.c      | 178 +++++++++++---------------------
- drivers/mtd/spi-nor/core.h      |  13 +--
- drivers/mtd/spi-nor/debugfs.c   |   6 +-
- drivers/mtd/spi-nor/macronix.c  |   2 +-
- drivers/mtd/spi-nor/micron-st.c |   8 +-
- drivers/mtd/spi-nor/sfdp.c      |  70 ++++++++++---
- drivers/mtd/spi-nor/spansion.c  |  36 ++++---
- drivers/mtd/spi-nor/swp.c       |  52 ++++++----
- drivers/mtd/spi-nor/winbond.c   |   4 +-
- include/linux/mtd/spi-nor.h     |   4 -
- 10 files changed, 185 insertions(+), 188 deletions(-)
-
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 4046e137531f..fbf8c2d9c6b5 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -3066,10 +3066,8 @@ static void spi_nor_sfdp_init_params_deprecated(struct spi_nor *nor)
+ 
+ 	memcpy(&sfdp_params, nor->params, sizeof(sfdp_params));
+ 
+-	if (spi_nor_parse_sfdp(nor)) {
++	if (spi_nor_parse_sfdp(nor))
+ 		memcpy(nor->params, &sfdp_params, sizeof(*nor->params));
+-		nor->flags &= ~SNOR_F_4B_OPCODES;
+-	}
+ }
+ 
+ /**
 -- 
 2.47.3
 
