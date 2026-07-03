@@ -4,70 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4377AC43458
-	for <linux-mtd@archiver.kernel.org>; Fri,  3 Jul 2026 05:46:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7C7AC43458
+	for <linux-mtd@archiver.kernel.org>; Fri,  3 Jul 2026 07:38:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
-	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=YUudvY/ReATYpAGAfmOcemQhgPAuvFaOc+zWlp2lKyo=; b=0YJ5PkKfwbaIRVW1MgmuNQ7JyL
-	tr2yfUQ5xzqdtnB/876kPPXqVSiHEGrqPO+ntINR3xjnvYtFmiA5i3YQ8KpCUnJqvYrRJAQWM4jpT
-	kMrsrRh+U4bpaRYZfpnibaWbA2clXCmsxDWBpVXDpQwlwwW8Fxe/4fL6+O6ZH9O81rIvx/St1Um2h
-	JL4CRHpn5VOpldEk7McsLCjnGuNNGpGgGSPnWOy+q1LMy16akAV+UX4lu5DFEXE4f7P1MJ0iHRozK
-	eehpnngXMH+autr275140rJKZ8DvtzFh46JyXxgs4fwPPxIgh70EqivSI7T80GrY3ZQ0xidPDgrJQ
-	+aKVYMGw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=etgegxxz5C68EPZavMpcqG1KmRN1qLivCybfotkjz2A=; b=KFRLebiyLQQcRJ
+	41fgbUoFnRSmJcALygL891TtxqvOjb4JNn2WU1DLyl7WXWpcFnQEHWBV7nHUj2cJJXI6mPyeY2IVo
+	kSPlLGn+PD4AU+y/VvrmXIfbnFmZJZNeHs/vJ7URDKK2Yrr1d0WGpjHhWLWsFBGyjLF01MsYnkHB/
+	Kz68nuQDNBlhTVBDiuGqMJW4WswpRT0njOfcXQy4xFBVyZ9spsn3u4k091+0zhHVcwP2E9LEycJA3
+	MhOZ4nNphF5w51V8lKq0nXVxOvt1B4b80pp1YsK28LxIozT7rpI6j0R1dahmud5TMECwwhilUEEIS
+	ChqPohonA9MIdmWDzQcA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wfWj5-000000066Vq-2iTf;
-	Fri, 03 Jul 2026 05:46:11 +0000
-Received: from mailout.nod.at ([116.203.167.152] helo=lithops.sigma-star.at)
+	id 1wfYTP-00000006HZO-35Ey;
+	Fri, 03 Jul 2026 07:38:07 +0000
+Received: from smtp81.cstnet.cn ([159.226.251.81] helo=cstnet.cn)
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wfWj3-000000066V5-0a8b
-	for linux-mtd@lists.infradead.org;
-	Fri, 03 Jul 2026 05:46:10 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id B664C2A87F7;
-	Fri,  3 Jul 2026 07:45:58 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-	with ESMTP id 8xxTYfod0syk; Fri,  3 Jul 2026 07:45:57 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 27014FB322;
-	Fri,  3 Jul 2026 07:45:57 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id 0dtgxY-WTfaK; Fri,  3 Jul 2026 07:45:57 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 0557FD5C97;
-	Fri,  3 Jul 2026 07:45:57 +0200 (CEST)
-Date: Fri, 3 Jul 2026 07:45:56 +0200 (CEST)
-From: Richard Weinberger <richard@nod.at>
-To: Ronan Dalton <Ronan.Dalton@alliedtelesis.co.nz>
-Cc: Chris Packham <Chris.Packham@alliedtelesis.co.nz>, 
-	Miquel Raynal <miquel.raynal@bootlin.com>, 
-	Takahiro Kuwano <Takahiro.Kuwano@infineon.com>, 
-	pratyush <pratyush@kernel.org>, 
-	linux-kernel <linux-kernel@vger.kernel.org>, 
-	Vignesh Raghavendra <vigneshr@ti.com>, 
-	linux-mtd <linux-mtd@lists.infradead.org>, 
-	Aryan Srivastava <Aryan.Srivastava@alliedtelesis.co.nz>, 
-	Michael Walle <mwalle@kernel.org>
-Message-ID: <183302295.10735.1783057556804.JavaMail.zimbra@nod.at>
-In-Reply-To: <a86e2233c6ea01b1dcefb8c7f7f582725a25b5e5.camel@alliedtelesis.co.nz>
-References: <2b8390c0aaae4203af318f9a5edbb0eb@infineon.com> <20260701020856.217664-1-ronan.dalton@alliedtelesis.co.nz> <490fc98b2996487fba3abd62176bb1dd@infineon.com> <8baaf8a603f7f351b4f7acb7a2df4cb60be9f083.camel@alliedtelesis.co.nz> <99731a393e5649e692afe57f59d5926b@infineon.com> <e946b3c6-304a-4015-a144-285e7f2f4e6a@alliedtelesis.co.nz> <490633873.5619.1782970758317.JavaMail.zimbra@nod.at> <a86e2233c6ea01b1dcefb8c7f7f582725a25b5e5.camel@alliedtelesis.co.nz>
-Subject: Re: [PATCH v2 1/3] Revert "mtd: spi-nor: remove Fujitsu MB85RS1MT
- support"
+	id 1wfYTM-00000006HYS-1UuR;
+	Fri, 03 Jul 2026 07:38:06 +0000
+Received: from localhost.localdomain (unknown [111.196.245.140])
+	by APP-03 (Coremail) with SMTP id rQCowAD3GODYZkdqez_AFg--.1719S2;
+	Fri, 03 Jul 2026 15:38:01 +0800 (CST)
+From: Pengpeng Hou <pengpeng@iscas.ac.cn>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Vladimir Zapolskiy <vz@kernel.org>,
+	Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>,
+	linux-mtd@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org,
+	Pengpeng Hou <pengpeng@iscas.ac.cn>
+Subject: [PATCH v2] mtd: rawnand: lpc32xx_mlc: fail DMA transfers on timeout
+Date: Fri,  3 Jul 2026 15:37:59 +0800
+Message-ID: <20260703073759.31388-1-pengpeng@iscas.ac.cn>
+X-Mailer: git-send-email 2.50.1
 MIME-Version: 1.0
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF151 (Linux)/8.8.12_GA_3809)
-Thread-Topic: Revert "mtd: spi-nor: remove Fujitsu MB85RS1MT support"
-Thread-Index: AQHdBRJ8+HvBPYSwmEi4Lf0sk+8LHLZV9jcAgADe8oCAAER1AIAAEDcAgACAk4CAAQSDAIAAFjqAgAAHAgDqoturHpVef02A8b9b3lU=
+X-CM-TRANSID: rQCowAD3GODYZkdqez_AFg--.1719S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxZF4kJFyfKr13GF4xZF1DJrb_yoW5XFy8pa
+	1j9wn0kr4jyrsIgrWUCa1UZF1Y9a1rArW7K34qg34F934qvr1q9FnYgFy0qF1YkF95GF12
+	qFs8t3ZxCr1UJ3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9014x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+	6F4UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
+	n2kIc2xKxwCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
+	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+	67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+	CI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1x
+	MIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIda
+	VFxhVjvjDU0xZFpf9x0JUd-B_UUUUU=
+X-Originating-IP: [111.196.245.140]
+X-CM-SenderInfo: pshqw1xhqjqxpvfd2hldfou0/
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260702_224609_328840_F68590E7 
-X-CRM114-Status: GOOD (  11.85  )
+X-CRM114-CacheID: sfid-20260703_003804_770073_13951374 
+X-CRM114-Status: GOOD (  11.46  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,33 +78,84 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIlJvbmFuIERhbHRvbiIgPFJv
-bmFuLkRhbHRvbkBhbGxpZWR0ZWxlc2lzLmNvLm56Pgo+IE9uIFRodSwgMjAyNi0wNy0wMiBhdCAw
-NzozOSArMDIwMCwgUmljaGFyZCBXZWluYmVyZ2VyIHdyb3RlOgo+PiBEbyB5b3UgcmVhbGx5IG5l
-ZWQgKFBPU0lYKSBmaWxlIHN5c3RlbSBzZW1hbnRpY3M/Cj4+IFlvdSBjb3VsZCBwYXJ0aXRpb24g
-dGhlIEZSQU0gaW50byBjZWxscyBhbmQgdGhlbiB3b3JrIHdpdGggdGhlbS4KPj4gZS5nLiBKdXN0
-IGRkIGludG8gaXQgYW5kIGVyYXNlIGl0IHdoZW4gbmVlZGVkLi4uCj4+IE1heWJlIHRoZSBOVk1F
-TSBjZWxscyBtZWNoYW5pc20gbmVlZHMgc29tZSBwb2xpc2hpbmcgYnV0IHRoaXMgc291bmRzCj4+
-IHJlYXNvbmFibGUgdG8gbWUuCj4gCj4gWWVzLCB0aGF0IGNvdWxkIHdvcmsgZm9yIHNlY3JldHMg
-c3RvcmFnZS4gSG93ZXZlciB3ZSBhbHNvIHN0b3JlCj4gcGVyc2lzdGVudCBsb2dzIGFuZCBESENQ
-IGxlYXNlcyBvbiB0aGlzIGZsYXNoIHRvIG1pbmltaXplIHJlYWQvd3JpdGVzCj4gb24gdGhlIG1h
-aW4gZmxhc2gsIGFuZCB0aGlzIGRhdGEgaXMgc3RvcmVkIGFzIGZpbGVzIG9mIHZhcnlpbmcgbGVu
-Z3Rocy4KPiBBIGZpbGVzeXN0ZW0gcHJvdmlkZXMgdGhlIG1vc3Qgc3RyYWlnaHRmb3J3YXJkIHdh
-eSBvZiBzdG9yaW5nIHRoaXMgZGF0YQo+IGZvciB1cy4KCkJ1dCB0aGUgc3RvcmFnZSAoRlJBTSkg
-eW91IGNob3NlIGlzIG5vdCBzdWl0YWJsZSBmb3IgYW55IHJlYWwgZmlsZXN5c3RlbS4KSW4gYSBw
-cmV2aW91cyBtYWlsIHlvdSBzYWlkIHlvdSB1c2UgZXh0MiBvbiBpdC4KSSBoYXZlIGEgaGFyZCB0
-aW1lIHRvIHNlZSBob3cgdXNpbmcgZXh0MiBvbiB0b3Agb2YgbXRkYmxvY2sgb24gYW4gRlJBTQpk
-b2VzIG5vdCBlbmQgaW4gYSBkaXNhc3Rlci4KCj4gVGhhdCdzIG5vdCB0byBzYXkgd2UgY291bGRu
-J3QgZGV2ZWxvcCBzb21lIHN5c3RlbSBvZiB1c2luZyB0aGUgbnZtZW0KPiBkZXZpY2UgYXMgYSBi
-YWNrZW5kIGZvciB0aGlzIGRhdGEuIFRoaXMgbWF5IGJlIHNvbWV0aGluZyB3ZSBsb29rIGF0IGlu
-Cj4gdGhlIGZ1dHVyZS4KCk1heWJlIEZVU0UgY2FuIGhlbHAgd2l0aCBidWlsZGluZyBhIHN1cGVy
-IHNpbXBsZSBmaWxlc3lzdGVtIHdoaWNoIHByb3ZpZGVzCmp1c3QgZW5vdWdoIHRvIGZ1bGZpbGwg
-eW91ciB1c2UgY2FzZS4KClRoYW5rcywKLy9yaWNoYXJkCgpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFp
-bGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGlu
-dXgtbXRkLwo=
+lpc32xx_xmit_dma() starts a DMA transfer and waits up to one second
+for its completion, but it ignores the wait result and returns success
+after unmapping the buffer.
+
+A timed out read can therefore return success with incomplete data, and
+a timed out write can continue the NAND operation without proof that the
+DMA payload reached the controller.
+
+Terminate the DMA channel on timeout, unmap the scatterlist through the
+existing cleanup path, and return -ETIMEDOUT to the NAND read/write
+callers. Initialize the shared cleanup-path result before using it for
+dmaengine_prep_slave_sg() failures.
+
+Fixes: 70f7cb78ec53 ("mtd: add LPC32xx MLC NAND driver")
+Cc: stable@vger.kernel.org
+Reviewed-by: Vladimir Zapolskiy <vz@kernel.org>
+Signed-off-by: Pengpeng Hou <pengpeng@iscas.ac.cn>
+---
+Changes since v1: https://lore.kernel.org/all/20260625003327.11060-1-pengpeng@iscas.ac.cn/
+- add Fixes and Cc stable tags as requested by Miquel
+- carry Vladimir's Reviewed-by tag
+
+ drivers/mtd/nand/raw/lpc32xx_mlc.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/lpc32xx_mlc.c b/drivers/mtd/nand/raw/lpc32xx_mlc.c
+index 19b13ae536d4..8f6a89d9ba83 100644
+--- a/drivers/mtd/nand/raw/lpc32xx_mlc.c
++++ b/drivers/mtd/nand/raw/lpc32xx_mlc.c
+@@ -396,6 +396,7 @@ static int lpc32xx_xmit_dma(struct mtd_info *mtd, void *mem, int len,
+ 	struct lpc32xx_nand_host *host = nand_get_controller_data(chip);
+ 	struct dma_async_tx_descriptor *desc;
+ 	int flags = DMA_CTRL_ACK | DMA_PREP_INTERRUPT;
++	unsigned long time_left;
+ 	int res;
+ 
+ 	sg_init_one(&host->sgl, mem, len);
+@@ -410,6 +411,7 @@ static int lpc32xx_xmit_dma(struct mtd_info *mtd, void *mem, int len,
+ 				       flags);
+ 	if (!desc) {
+ 		dev_err(mtd->dev.parent, "Failed to prepare slave sg\n");
++		res = -ENXIO;
+ 		goto out1;
+ 	}
+ 
+@@ -420,7 +422,13 @@ static int lpc32xx_xmit_dma(struct mtd_info *mtd, void *mem, int len,
+ 	dmaengine_submit(desc);
+ 	dma_async_issue_pending(host->dma_chan);
+ 
+-	wait_for_completion_timeout(&host->comp_dma, msecs_to_jiffies(1000));
++	time_left = wait_for_completion_timeout(&host->comp_dma,
++						msecs_to_jiffies(1000));
++	if (!time_left) {
++		dmaengine_terminate_sync(host->dma_chan);
++		res = -ETIMEDOUT;
++		goto out1;
++	}
+ 
+ 	dma_unmap_sg(host->dma_chan->device->dev, &host->sgl, 1,
+ 		     DMA_BIDIRECTIONAL);
+@@ -428,7 +436,7 @@ static int lpc32xx_xmit_dma(struct mtd_info *mtd, void *mem, int len,
+ out1:
+ 	dma_unmap_sg(host->dma_chan->device->dev, &host->sgl, 1,
+ 		     DMA_BIDIRECTIONAL);
+-	return -ENXIO;
++	return res;
+ }
+ 
+ static int lpc32xx_read_page(struct nand_chip *chip, uint8_t *buf,
+-- 
+2.53.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
