@@ -4,83 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2CC5C43458
-	for <linux-mtd@archiver.kernel.org>; Fri,  3 Jul 2026 05:38:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4377AC43458
+	for <linux-mtd@archiver.kernel.org>; Fri,  3 Jul 2026 05:46:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
-	Message-ID:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=IydsW5IvR+fZzxt+uGrtvnHIKa0Ppi/ahDPWFis9aZk=; b=bwRYF9ZgH8okXJ
-	Ah0FME+CbgyqEV/xmc0Hwv5yN46SRUAIBXWMYGRbZ9jDa18zgw9l2EvBmZD/aQe1xuYcdnLTA23M0
-	3mAkl3Hci3yTpBUC2KeXd3mxIIEozZjoBLx+3Umt1QIA7RlybzCUxIDARQizO2yhbUT78aMguGjoV
-	SMaUjOlF9Z4NHRiDi8RLZqKRR/Cp0sf+EJ/glJ98IyI/tr908NcVyqMkPmBfwbHhW5/kqm7oPWSEq
-	HXzm+b5nCkTS2NUqBRcAME4TrbpohrlkuMpcgBW+XWpK5WnBBzWEN1/P4BY6x11cL6lJah9XtJkys
-	MBVhDnggnetRe/gOU5pQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
+	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=YUudvY/ReATYpAGAfmOcemQhgPAuvFaOc+zWlp2lKyo=; b=0YJ5PkKfwbaIRVW1MgmuNQ7JyL
+	tr2yfUQ5xzqdtnB/876kPPXqVSiHEGrqPO+ntINR3xjnvYtFmiA5i3YQ8KpCUnJqvYrRJAQWM4jpT
+	kMrsrRh+U4bpaRYZfpnibaWbA2clXCmsxDWBpVXDpQwlwwW8Fxe/4fL6+O6ZH9O81rIvx/St1Um2h
+	JL4CRHpn5VOpldEk7McsLCjnGuNNGpGgGSPnWOy+q1LMy16akAV+UX4lu5DFEXE4f7P1MJ0iHRozK
+	eehpnngXMH+autr275140rJKZ8DvtzFh46JyXxgs4fwPPxIgh70EqivSI7T80GrY3ZQ0xidPDgrJQ
+	+aKVYMGw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wfWbr-000000065wh-1qj4;
-	Fri, 03 Jul 2026 05:38:43 +0000
-Received: from smtp9.infineon.com ([217.10.52.204])
+	id 1wfWj5-000000066Vq-2iTf;
+	Fri, 03 Jul 2026 05:46:11 +0000
+Received: from mailout.nod.at ([116.203.167.152] helo=lithops.sigma-star.at)
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wfWbo-000000065hq-3EHu;
-	Fri, 03 Jul 2026 05:38:42 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=infineon.com; i=@infineon.com; q=dns/txt; s=IFXMAIL;
-  t=1783057121; x=1814593121;
-  h=from:to:subject:date:message-id:references:in-reply-to:
-   content-transfer-encoding:mime-version;
-  bh=0mtq3LN+KWBSW9lTL9C9FcS9noZX2XKjwf2oyxhAxxI=;
-  b=UvxqtB1OMPXO5bgVZVjJG1+/3l27xZZqLVc9Ar45KPNhWT2chWDsGDel
-   c5RemGgX/rPiEGP7ktsU9QaDiIotM780zLHq9nE5stAl5Ojwx5cMqueGr
-   o7ml7lNAsm0L/oTUfxuFfP9qdvtIgvW4nqJe5AivBOYzPSgOyj9hF8l+a
-   A=;
-X-CSE-ConnectionGUID: xeHXl9QGQGy8HVZGWnHucA==
-X-CSE-MsgGUID: wWH+KjveQ/qycSHEfAysPg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11835"; a="99571517"
-X-IronPort-AV: E=Sophos;i="6.25,145,1779141600"; 
-   d="scan'208";a="99571517"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO MUCSE812.infineon.com) ([172.23.29.38])
-  by smtp9.infineon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jul 2026 07:35:34 +0200
-Received: from MUCSE815.infineon.com (172.23.29.41) by MUCSE812.infineon.com
- (172.23.29.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.43; Fri, 3 Jul
- 2026 07:35:33 +0200
-Received: from MUCSE815.infineon.com ([fe80::b54c:c0bd:546c:c9be]) by
- MUCSE815.infineon.com ([fe80::b54c:c0bd:546c:c9be%12]) with mapi id
- 15.02.2562.043; Fri, 3 Jul 2026 07:35:33 +0200
-From: <Takahiro.Kuwano@infineon.com>
-To: <manikandan.m@microchip.com>, <pratyush@kernel.org>, <mwalle@kernel.org>,
-	<miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-	<robh@kernel.org>, <krzk+dt@kernel.org>, <conor+dt@kernel.org>,
-	<srini@kernel.org>, <nicolas.ferre@microchip.com>,
-	<alexandre.belloni@bootlin.com>, <claudiu.beznea@tuxon.dev>,
-	<linux@armlinux.org.uk>, <richardcochran@gmail.com>, <linusw@kernel.org>,
-	<arnd@arndb.de>, <michael@walle.cc>, <linux-mtd@lists.infradead.org>,
-	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <netdev@vger.kernel.org>
-Subject: RE: [PATCH v4 3/7] mtd: spi-nor: sfdp: expose the SFDP as a read-only
- NVMEM device
-Thread-Topic: [PATCH v4 3/7] mtd: spi-nor: sfdp: expose the SFDP as a
- read-only NVMEM device
-Thread-Index: AQHdCHJjppL/9AvAjUSdTTDRPCeZfLZbR6Aw
-Date: Fri, 3 Jul 2026 05:35:33 +0000
-Message-ID: <8f3b422e0b7749b2a47b14a585dd0a0c@infineon.com>
-References: <20260630092406.150587-1-manikandan.m@microchip.com>
- <20260630092406.150587-4-manikandan.m@microchip.com>
-In-Reply-To: <20260630092406.150587-4-manikandan.m@microchip.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.161.6.196]
+	id 1wfWj3-000000066V5-0a8b
+	for linux-mtd@lists.infradead.org;
+	Fri, 03 Jul 2026 05:46:10 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id B664C2A87F7;
+	Fri,  3 Jul 2026 07:45:58 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id 8xxTYfod0syk; Fri,  3 Jul 2026 07:45:57 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 27014FB322;
+	Fri,  3 Jul 2026 07:45:57 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id 0dtgxY-WTfaK; Fri,  3 Jul 2026 07:45:57 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 0557FD5C97;
+	Fri,  3 Jul 2026 07:45:57 +0200 (CEST)
+Date: Fri, 3 Jul 2026 07:45:56 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+To: Ronan Dalton <Ronan.Dalton@alliedtelesis.co.nz>
+Cc: Chris Packham <Chris.Packham@alliedtelesis.co.nz>, 
+	Miquel Raynal <miquel.raynal@bootlin.com>, 
+	Takahiro Kuwano <Takahiro.Kuwano@infineon.com>, 
+	pratyush <pratyush@kernel.org>, 
+	linux-kernel <linux-kernel@vger.kernel.org>, 
+	Vignesh Raghavendra <vigneshr@ti.com>, 
+	linux-mtd <linux-mtd@lists.infradead.org>, 
+	Aryan Srivastava <Aryan.Srivastava@alliedtelesis.co.nz>, 
+	Michael Walle <mwalle@kernel.org>
+Message-ID: <183302295.10735.1783057556804.JavaMail.zimbra@nod.at>
+In-Reply-To: <a86e2233c6ea01b1dcefb8c7f7f582725a25b5e5.camel@alliedtelesis.co.nz>
+References: <2b8390c0aaae4203af318f9a5edbb0eb@infineon.com> <20260701020856.217664-1-ronan.dalton@alliedtelesis.co.nz> <490fc98b2996487fba3abd62176bb1dd@infineon.com> <8baaf8a603f7f351b4f7acb7a2df4cb60be9f083.camel@alliedtelesis.co.nz> <99731a393e5649e692afe57f59d5926b@infineon.com> <e946b3c6-304a-4015-a144-285e7f2f4e6a@alliedtelesis.co.nz> <490633873.5619.1782970758317.JavaMail.zimbra@nod.at> <a86e2233c6ea01b1dcefb8c7f7f582725a25b5e5.camel@alliedtelesis.co.nz>
+Subject: Re: [PATCH v2 1/3] Revert "mtd: spi-nor: remove Fujitsu MB85RS1MT
+ support"
 MIME-Version: 1.0
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF151 (Linux)/8.8.12_GA_3809)
+Thread-Topic: Revert "mtd: spi-nor: remove Fujitsu MB85RS1MT support"
+Thread-Index: AQHdBRJ8+HvBPYSwmEi4Lf0sk+8LHLZV9jcAgADe8oCAAER1AIAAEDcAgACAk4CAAQSDAIAAFjqAgAAHAgDqoturHpVef02A8b9b3lU=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260702_223841_134549_B7535CB5 
-X-CRM114-Status: UNSURE (   8.40  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260702_224609_328840_F68590E7 
+X-CRM114-Status: GOOD (  11.85  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,29 +79,33 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
-
-> Register the cached SFDP as a read-only NVMEM device rooted at the
-> flash's "sfdp" child node, exposing it in on-flash byte order. This lets
-> NVMEM cells reference any SFDP data: a fixed-layout for parameters at a
-> known offset, or an nvmem-layout parser for vendor data whose location
-> must be discovered at runtime. The device is only registered when an
-> "sfdp" node is present in the device tree.
-> 
-> Signed-off-by: Manikandan Muralidharan <manikandan.m@microchip.com>
-
-SFDP is exposed in sysfs (e.g., /sys/bus/spi/devices/spi0.0/spi-nor/sfdp).
-Why don't you just use this existing entry?
-
-Thanks,
-Takahiro
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIlJvbmFuIERhbHRvbiIgPFJv
+bmFuLkRhbHRvbkBhbGxpZWR0ZWxlc2lzLmNvLm56Pgo+IE9uIFRodSwgMjAyNi0wNy0wMiBhdCAw
+NzozOSArMDIwMCwgUmljaGFyZCBXZWluYmVyZ2VyIHdyb3RlOgo+PiBEbyB5b3UgcmVhbGx5IG5l
+ZWQgKFBPU0lYKSBmaWxlIHN5c3RlbSBzZW1hbnRpY3M/Cj4+IFlvdSBjb3VsZCBwYXJ0aXRpb24g
+dGhlIEZSQU0gaW50byBjZWxscyBhbmQgdGhlbiB3b3JrIHdpdGggdGhlbS4KPj4gZS5nLiBKdXN0
+IGRkIGludG8gaXQgYW5kIGVyYXNlIGl0IHdoZW4gbmVlZGVkLi4uCj4+IE1heWJlIHRoZSBOVk1F
+TSBjZWxscyBtZWNoYW5pc20gbmVlZHMgc29tZSBwb2xpc2hpbmcgYnV0IHRoaXMgc291bmRzCj4+
+IHJlYXNvbmFibGUgdG8gbWUuCj4gCj4gWWVzLCB0aGF0IGNvdWxkIHdvcmsgZm9yIHNlY3JldHMg
+c3RvcmFnZS4gSG93ZXZlciB3ZSBhbHNvIHN0b3JlCj4gcGVyc2lzdGVudCBsb2dzIGFuZCBESENQ
+IGxlYXNlcyBvbiB0aGlzIGZsYXNoIHRvIG1pbmltaXplIHJlYWQvd3JpdGVzCj4gb24gdGhlIG1h
+aW4gZmxhc2gsIGFuZCB0aGlzIGRhdGEgaXMgc3RvcmVkIGFzIGZpbGVzIG9mIHZhcnlpbmcgbGVu
+Z3Rocy4KPiBBIGZpbGVzeXN0ZW0gcHJvdmlkZXMgdGhlIG1vc3Qgc3RyYWlnaHRmb3J3YXJkIHdh
+eSBvZiBzdG9yaW5nIHRoaXMgZGF0YQo+IGZvciB1cy4KCkJ1dCB0aGUgc3RvcmFnZSAoRlJBTSkg
+eW91IGNob3NlIGlzIG5vdCBzdWl0YWJsZSBmb3IgYW55IHJlYWwgZmlsZXN5c3RlbS4KSW4gYSBw
+cmV2aW91cyBtYWlsIHlvdSBzYWlkIHlvdSB1c2UgZXh0MiBvbiBpdC4KSSBoYXZlIGEgaGFyZCB0
+aW1lIHRvIHNlZSBob3cgdXNpbmcgZXh0MiBvbiB0b3Agb2YgbXRkYmxvY2sgb24gYW4gRlJBTQpk
+b2VzIG5vdCBlbmQgaW4gYSBkaXNhc3Rlci4KCj4gVGhhdCdzIG5vdCB0byBzYXkgd2UgY291bGRu
+J3QgZGV2ZWxvcCBzb21lIHN5c3RlbSBvZiB1c2luZyB0aGUgbnZtZW0KPiBkZXZpY2UgYXMgYSBi
+YWNrZW5kIGZvciB0aGlzIGRhdGEuIFRoaXMgbWF5IGJlIHNvbWV0aGluZyB3ZSBsb29rIGF0IGlu
+Cj4gdGhlIGZ1dHVyZS4KCk1heWJlIEZVU0UgY2FuIGhlbHAgd2l0aCBidWlsZGluZyBhIHN1cGVy
+IHNpbXBsZSBmaWxlc3lzdGVtIHdoaWNoIHByb3ZpZGVzCmp1c3QgZW5vdWdoIHRvIGZ1bGZpbGwg
+eW91ciB1c2UgY2FzZS4KClRoYW5rcywKLy9yaWNoYXJkCgpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFp
+bGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGlu
+dXgtbXRkLwo=
