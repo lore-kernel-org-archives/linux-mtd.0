@@ -4,80 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7031BC44502
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9BB0CC44503
 	for <linux-mtd@archiver.kernel.org>; Sat,  4 Jul 2026 05:57:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id:Date:
-	Subject:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=DLWPQmbnOELHB9/fnDC8c/auBxHWRaOmMbSZJSwLcBo=; b=BpeWDx3D1WzU+7
-	RNohDN0tyk/WZBKkA2P07h7XoycZD/2HdvzvSIkqMpjYM9bzAEQ41jUChuwy8vxv5H+cM5f+8I+Gx
-	dHdceO6+LuVJrvdYFzXoTFKiBGLEDf4LkiIHG13I3BGQ3jhR/K2vwV3o6cChpk21Y5badHe3tFOqJ
-	9tpjvJvLoHsXeF47QNTZmdFqQyCKo32PowpM0iJuKrjShLP1jKE1e1ZnnJEC1rg5VfkbwvI86lfpG
-	yRzhLua3el1sYevS70DA42cKOHTzmm0rJ/axdS182lNXEyZmnkHnOWRRp0yr5Jr+eVsoAO8Eb0w60
-	a8lJdEeggWb18xDvKZFQ==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
+	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=ImTlKHe5WJjoD5pHfc/y3DKC28NgRJOfztVH7MT9How=; b=Dyb3VG7Vg3bKyN
+	82E4tEdUxd6GCJbpKyfT5dFShqWfEwv7/mkSipPZz6er9CNFu9R1JtnJYZMeWr0m3SdQxb92Jv7/F
+	G363sBdj4ngPqVEkv3WW4LkLDtv7lbxQbENGeLEBhttvirr/njq6TTVL6lpZljN1iDeDaTvkFz3Oi
+	+AEp2+5d1kvbUQSNQIm8H+qkywuh/uF95yPKeCbPRS8DHS7ThwLJwckDmH2Rfn0RvKNEGU0RS+zjl
+	RuBgv80+3lWDgJVLjBY0K0UGCU+rMydXh07AuYIuV6pVmYAUAli57h8UoUHgXr1kKjTlFQaRJDZT6
+	+LSNu+uCYsg53vK6pngg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wftNh-00000008BXc-2PTw;
-	Sat, 04 Jul 2026 05:57:37 +0000
-Received: from mail-pj1-x1036.google.com ([2607:f8b0:4864:20::1036])
+	id 1wftNn-00000008BZw-059D;
+	Sat, 04 Jul 2026 05:57:43 +0000
+Received: from mail-pj1-x102c.google.com ([2607:f8b0:4864:20::102c])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wftNe-00000008BWe-3Dys
+	id 1wftNk-00000008BYa-1Ou5
 	for linux-mtd@lists.infradead.org;
-	Sat, 04 Jul 2026 05:57:35 +0000
-Received: by mail-pj1-x1036.google.com with SMTP id 98e67ed59e1d1-37f816d01e3so1292903a91.2
-        for <linux-mtd@lists.infradead.org>; Fri, 03 Jul 2026 22:57:33 -0700 (PDT)
+	Sat, 04 Jul 2026 05:57:41 +0000
+Received: by mail-pj1-x102c.google.com with SMTP id 98e67ed59e1d1-38426d04bb4so53601a91.1
+        for <linux-mtd@lists.infradead.org>; Fri, 03 Jul 2026 22:57:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1783144653; x=1783749453; darn=lists.infradead.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=5+rvElI5DJc+LADkj/yI5i5ZTCILlIx+N3s68Xcqphs=;
-        b=Uz/P5d0rBT0RxGGLVzPAHzSrBzh4pWM7trTgr8va3a2oAe7AEmXilH8XrvON8QEWii
-         872pQ31gutW5T4R3USsP23vjwiOnda+Wj1LQ9cU/7BmkQhEp+4akPd3Vl7N1SHEb8+7F
-         6Z9T3qeqPlZlNMXbLJSrKxPAfmuMEfRJr3P7dhUly4eeyf6WxX1TMCTce9CVu1kW1D2Z
-         EOVXsYL+JzTBvpLb7pA/AFRm0lUGyral0vV2/Vb++blJonBSe0E7CjxdCGas/lOyH2Tj
-         /ZEXIhbdol4YwfEy1ifSVmKHWVXLbXVkeD/GRDlHII9rUpnqakjF1VR3nrGOUhNIKw0U
-         Hcjw==
+        d=gmail.com; s=20251104; t=1783144659; x=1783749459; darn=lists.infradead.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZpRM5xO2P6CrGv5fZ5v8OZOm8BQmO2xLbX7VVDuxobU=;
+        b=kOTydH3esU5TFweCx/SsMvL/07wOHAoTC4Q60sn8XhiYjLn7jN5mUFvjjafjUMOXbL
+         584/OD2+gcTS/wMDDjNzV4USmeywOi3hhSG+4+V8vXegmtjbBId5/uPAj1uT1xAyqZAR
+         J+QgdIduxQp918oVExpMbsMFPAokLUgzqorTiR+bH/H6o1RVjcBmHNNW0yt70SEDeL+B
+         ohpSPQgT+k8q/ZCB3Jg/3/qC6pdf3kUk22a6mThlvc//IIf/i7lWSIUr5ud18Y77PDUp
+         8CdRTlTJ9Z0jjsWCqzN+eq2pI+xZMO8+WlXdgl3lztYQ38ew+EMxXpGktpdKjsW/qEgo
+         1ecw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783144653; x=1783749453;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5+rvElI5DJc+LADkj/yI5i5ZTCILlIx+N3s68Xcqphs=;
-        b=FWQ8pHwma6vHc0pzpJn8pFHm+qlxv8LLniK2n+NcG6NuJkmieauyFNkj/gWgdOiBBM
-         h0SIXQS3MacS4/IPCGabW+kfiA5WudVLiqRCqfvU0tbrR3d4g4p1UfSxTmOEXvtM7Gcc
-         degsdtpdIzDzjwxrvym51VrQddgDantMJyLp8XDU8H0uTSJM+BkObJKJxsPw8bMZINRm
-         5WObYleJiCOPEsG0nMg9r7Lu2HWo70vu7X5CBPchCvT+N8bmt7yoUh1E38ZjmGeAZ3gV
-         4pPCPMMPiZvIQAlFQj7AkOCOxXUbPu5Ns0s2zpc66c06pGkTHpcF3RGGur7jjXBzlvGb
-         BdIA==
-X-Forwarded-Encrypted: i=1; AHgh+RorkbXoV9+bfWwz5+wCXUaP2CZJSGDfMGiAUfRTsWgmJQhLdGaDmjXeEZHn3FJMLXraVAzyDF/0Hc4=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yz8TR3zuOauTkyezVpgMXDtO/sA0v9M+GaZ8XD8IT8r5ShfuqtP
-	ot+I4QB6kbK0g0IlhPh+ArSBIV3QWKGf38Hk/crjfetpUQGPm0eLrBmTYOOG9w==
-X-Gm-Gg: AfdE7cnpT/FYrx0SYz82a3zGRZ3Fk/jeV83Wd0YVpnI8aeZ7szIsM2r/L77P5niYESf
-	q8Mj/420kUzPDmsqrToCB2PU3zURM9amRFR8D+iGrkg8TkMF/8sRzJ8SspdA346MIbFsTaSVsYG
-	TZHIU3kupGgcLQaKH9ksKdt3zValM5qRc1+cXqUzJ/9DD2ZEAGhRAmFVbVHvVrwFwZnDi0xlV8V
-	WDBDphYVqJEog0WsSSrQ0K0s/lpDFpXoLimIqn61hDlDplgl88dbId2CaLzYC2RM50ee8US69XT
-	CmCtSJfM/m7s+K6Vht7DNrIqHfiagNl7NsOUunDN2AltDrGFzQI0BllHozO31xtFK1f3zK2zMYm
-	qtmw8ymQ+Kyfxf2UlM4PPDVrPOKYwqxsD21mcfO+R3vy13Cs1pFRsRIdKtEy8jf5f7flGUT0ZW1
-	J3/VKynV4wOC8F1tn/mbxlxUtLMyzST+RiPqeyVL0DC6HeLUKufMNkwTK4SLe1iPp4fguZvF+r/
-	Uw=
-X-Received: by 2002:a17:90b:17c4:b0:380:40b:f30a with SMTP id 98e67ed59e1d1-38280d99e12mr2630038a91.13.1783144652797;
-        Fri, 03 Jul 2026 22:57:32 -0700 (PDT)
+        d=1e100.net; s=20251104; t=1783144659; x=1783749459;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=ZpRM5xO2P6CrGv5fZ5v8OZOm8BQmO2xLbX7VVDuxobU=;
+        b=Sg175G9Ec6TSgvZtpDH+DSXePhoYHt2zVA/Mp9liYU4ip37ve4ajqrcFebpYioGNU6
+         sWyJFWttljQtaohS9QeFTxUEzybwijWqjKbbm6m0v0jRyA0hR0/og5bvrEM5FsoCGSMf
+         oh7Wd+6THOwZrvj/hYk5LgGJ2yudeEn0GiAoxVUBMVZXS7bvsU5AXT+Yj2KpoPNVhuNH
+         uVdc2Ucc7JXszAFqXIgwqOz8uY80V5PJ9sXKO0qAPMcyuRLfsJTfgJfOmvIURipAhqa9
+         /coSiYif8jKNsecNOY6MOYJo6bGUxLlB6hY0MD1/KrIltoTAas6mrUzDqBUlGmj3rRin
+         xslw==
+X-Forwarded-Encrypted: i=1; AHgh+Rp8O6f93ZqHGcWIXAzaTcAas1blRgx3En4Sz+4iNAuMQ9cpsiwRgotbvFjyPyo6U7PhaYg72yIHy7E=@lists.infradead.org
+X-Gm-Message-State: AOJu0YymXiDzrdlQjev8vRHVnL1H0bHRA7Gk1tOxTyv8xL5l82HfBBt8
+	VvBnnrrOv7gQd1gjJtf/13RJElA8d1S40VpmEMS+wjSWiMd2471i8Drd
+X-Gm-Gg: AfdE7cmEttOrp+ZFBy4ATi1dzqqwhuS/IMtW6srW/DMs2t0xUff5TYiI4cSw7+vtZYC
+	Q3o15K1mPx8xXg03LO63qWe2rjs5/QKnCBAG1f8BF0EHE5F2ZKiU1QKD3th9DGrzQRtX1vJZAYE
+	PivlInokAHURA5FdA/eM27a4jrCBg9o+yd7aHihdP5taxDOxPe7xRGw4E/VJ2TJc8gtBFpnKV+O
+	CtoL7ZALMm28cfVd0l3XqQI0QpNN0uX8RMrI0qYgen3cwzRsc9g94DrsfT6OSVJOwbmGuGE2Xfb
+	835g/R5lu9NKh4EL/aQDsnbDXY1llqnUm4HPrxS3yTsvVcyp0NWczlTwcGWHXpjspNl/jL+p7P4
+	hcz3xFB1uYlBrALpKOxZEY7ahkmw439uGpLwaM9aXFhI/bsaq9HVmRukWt/QlY7GUiYqHjbmRsj
+	ouJAW+rODwzVeLc/LsXknetqBRMVXy2t/Jv/+um9m9FZniiUL5iprEYekQVmg8n4hwh9kF21uPy
+	Ws=
+X-Received: by 2002:a17:90b:5251:b0:380:8bb9:aba9 with SMTP id 98e67ed59e1d1-38112063c22mr7851183a91.3.1783144659437;
+        Fri, 03 Jul 2026 22:57:39 -0700 (PDT)
 Received: from dtor-ws.sjc.corp.google.com ([2a00:79e0:2ebe:8:880:86f9:3b00:6746])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-30f0b813cd9sm26262412eec.8.2026.07.03.22.57.31
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-30f0b813cd9sm26262412eec.8.2026.07.03.22.57.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Jul 2026 22:57:32 -0700 (PDT)
+        Fri, 03 Jul 2026 22:57:38 -0700 (PDT)
 From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: [PATCH 00/26] sh: maple: cleanup and modernize input drivers
-Date: Fri, 03 Jul 2026 22:57:23 -0700
-Message-Id: <20260703-b4-maple-cleanup-v1-0-41e424964da5@gmail.com>
+Date: Fri, 03 Jul 2026 22:57:27 -0700
+Subject: [PATCH 04/26] Input: maplemouse - stop polling and clear callback
+ on close
 MIME-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAMSgSGoC/yXMQQrCMBBG4auUWTuQhhKGXqW4SOKvTmljSKwIp
- Xc36vJbvLdTRVFUGrudCl5a9ZEa+lNH8e7TDayXZrLGOuOscBh49XkBxwU+bZlFBifWozcSqGW
- 54Krv33I6/123MCM+vx86jg9nwHB4dAAAAA==
-X-Change-ID: 20260628-b4-maple-cleanup-884682ae108b
+Message-Id: <20260703-b4-maple-cleanup-v1-4-41e424964da5@gmail.com>
+References: <20260703-b4-maple-cleanup-v1-0-41e424964da5@gmail.com>
+In-Reply-To: <20260703-b4-maple-cleanup-v1-0-41e424964da5@gmail.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, 
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
  Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, 
@@ -88,8 +88,8 @@ Cc: Florian Fuchs <fuchsfl@gmail.com>,
  linux-mtd@lists.infradead.org, linux-sh@vger.kernel.org
 X-Mailer: b4 0.16-dev-6911d
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260703_225734_846958_37285B6D 
-X-CRM114-Status: GOOD (  10.48  )
+X-CRM114-CacheID: sfid-20260703_225740_380458_916A6AB4 
+X-CRM114-Status: GOOD (  12.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -106,74 +106,46 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This series aims to modernize the Maple bus core and its input drivers
-(keyboard, mouse, joystick/controller), addressing build failures, race
-conditions, and coding style issues:
+In dc_mouse_close(), pass NULL instead of dc_mouse_callback to
+maple_getcond_callback() to both stop polling and clear the callback
+pointer when the input device is closed.
 
-- fixes a build failure in vmu-flash.c due to missing include
-- fixes keyboard press detection logic (eliminating a 1-poll delay and
-  redundant press events)
-- corrects D-pad axis limits and optimizes event reporting using
-  branchless calculations
-- implements open() and close() in maple_keyb so all Maple input drivers
-  only poll when actively open
-- introduces callback_mutex in the Maple bus core to avoid potential UAF
-  when stopping/unbinding the drivers
-- removes the unused driver field from struct maple_device (write-only
-  since 2008) and eliminates the redundant maple_unsupported_device dummy
-  driver
-- implements standard bus-level probe() and remove() methods for the
-  Maple bus
-- converts all three Maple input drivers to use managed resources, and
-  fixes style issues reported by checkpatch.
+This makes the manual clearing of mdev->callback in
+remove_maple_mouse() redundant, as input_unregister_device()
+automatically closes the device if it was open. Remove the redundant
+assignment.
 
-This compiles but has not been tested on real hardware.
-
+Assisted-by: Antigravity:gemini-3.5-flash
 Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 ---
-Dmitry Torokhov (26):
-      sh: maple: include linux/device.h in linux/maple.h
-      Input: maple_keyb - fix key press detection
-      Input: maplecontrol - only enable present axes
-      Input: maplemouse - stop polling and clear callback on close
-      Input: maplecontrol - stop polling and clear callback on close
-      Input: maplecontrol - simplify maple_device retrieval in open/close
-      Input: maple_keyb - implement open and close methods
-      Input: maplemouse - remove redundant drvdata resetting
-      Input: maple_keyb - remove redundant drvdata resetting
-      Input: maplecontrol - remove redundant drvdata resetting
-      Input: maplemouse - remove unused mdev->driver assignment
-      Input: maplecontrol - remove unused mdev->driver assignment
-      Input: maple_keyb - remove unused mdev->driver assignment
-      mtd: maps: vmu-flash: remove unused mdev->driver assignment
-      sh: maple: remove not needed maple_unsupported_device driver
-      sh: maple: remove unused driver field from struct maple_device
-      sh: maple: implement bus-level probe/remove
-      sh: maple: introduce callback_mutex in maple_device
-      Input: maple_keyb - remove redundant mutex and remove method
-      Input: maple_keyb - convert to devm
-      Input: maplemouse - convert to devm
-      Input: maplecontrol - convert to devm
-      Input: maple_keyb - fix style issues
-      Input: maplemouse - fix style issues
-      Input: maplecontrol - fix style issues
-      Input: maple_keyb - remove redundant 'new' buffer from struct dc_kbd
+ drivers/input/mouse/maplemouse.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
- drivers/input/joystick/maplecontrol.c |  98 +++++++++------------------
- drivers/input/keyboard/maple_keyb.c   | 124 +++++++++++++---------------------
- drivers/input/mouse/maplemouse.c      |  55 ++++-----------
- drivers/mtd/maps/vmu-flash.c          |  15 ++--
- drivers/sh/maple/maple.c              |  61 ++++++++++-------
- include/linux/maple.h                 |   8 ++-
- 6 files changed, 140 insertions(+), 221 deletions(-)
----
-base-commit: 2b763db0c2763d6bf73d7d3e69665222d1f377cf
-change-id: 20260628-b4-maple-cleanup-884682ae108b
-
-Thanks.
+diff --git a/drivers/input/mouse/maplemouse.c b/drivers/input/mouse/maplemouse.c
+index 0c8f7d1b02aa..97d520e7d66d 100644
+--- a/drivers/input/mouse/maplemouse.c
++++ b/drivers/input/mouse/maplemouse.c
+@@ -60,8 +60,7 @@ static void dc_mouse_close(struct input_dev *dev)
+ {
+ 	struct dc_mouse *mse = input_get_drvdata(dev);
+ 
+-	maple_getcond_callback(mse->mdev, dc_mouse_callback, 0,
+-		MAPLE_FUNC_MOUSE);
++	maple_getcond_callback(mse->mdev, NULL, 0, MAPLE_FUNC_MOUSE);
+ }
+ 
+ /* allow the mouse to be used */
+@@ -122,7 +121,6 @@ static int remove_maple_mouse(struct device *dev)
+ 	struct maple_device *mdev = to_maple_dev(dev);
+ 	struct dc_mouse *mse = maple_get_drvdata(mdev);
+ 
+-	mdev->callback = NULL;
+ 	input_unregister_device(mse->dev);
+ 	maple_set_drvdata(mdev, NULL);
+ 	kfree(mse);
 
 -- 
-Dmitry
+2.55.0.rc0.799.gd6f94ed593-goog
 
 
 ______________________________________________________
