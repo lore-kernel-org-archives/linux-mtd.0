@@ -4,78 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8949C43458
-	for <linux-mtd@archiver.kernel.org>; Sat,  4 Jul 2026 05:57:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7EB8C44506
+	for <linux-mtd@archiver.kernel.org>; Sat,  4 Jul 2026 05:57:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=IM0rFSRohBsxXIJzxr4UBNVSLpWRFBCrhmiG2mz+Z3M=; b=x9FVnGo/hX0D7w
-	ODxBgU29tLkYEaqnm1Mo8Ola4j3ATywIKCWp5TW4uUmOO3kEHeCSzfUwjXs9Rn8CbE3Gk4wufqe8y
-	StzRfW2qK1cvWofe9fItvdR+Nk7oPsDYL7ugt/Gu3jTzv1a+UpsOr+BeLRMX4vbjYXrljz7gutlJN
-	OOGQmOtior9iHC+JQghsiREzUbexM4+Hw8JmMOBlr0VtZIxm22ZapCK0n0YhxFmyxE2t2KLdw1WyV
-	TsM596oCvRDW3WChibx5k6/9VUGKKKdZfQ4OhecpGuCj2kIvLbYsNeNJNjkkvMBYTk5s3qIo7BIDi
-	j2EixQSQIvxF1wZLmtyw==;
+	List-Owner; bh=KRZqAzBTfP3i+TNRmsZz9PKI+qpw9rZZWsEuK/H/RkA=; b=iNPBl8dIiwKrnR
+	t3FQHWZwMv1nM66dcpjxcCniXQLHhvLIGiF3F9FZ/Jgg1AjFWL4zFy3zUdeYyPoeqGSYWMNVAwbXn
+	hnEA1dZhTTfNIc8axialaoQKwr8zhJ+PNPjMkRFWh57Pr7fX1j1e+7pJphvhngOIFZ141YcBifmeq
+	YAjHTYdf6SgTUzkdFR2xKfsUIrUiHZzWDzj8dJXAn2o01e4mGB7nc/2eS8jjRZHWRenTULTwCgi2Y
+	bKC+9VStSqBSvAiX5mKUnYx4EjcMOYoBRUDeCVDu5zv0zzNZxaIp+D9l5c+mHpkgEftaiAOxfUyvg
+	OnER6t8ib2y55ffIVj0A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wftNt-00000008Bf4-23gd;
-	Sat, 04 Jul 2026 05:57:49 +0000
-Received: from mail-pf1-x433.google.com ([2607:f8b0:4864:20::433])
-	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wftNq-00000008Bc5-2x76
-	for linux-mtd@lists.infradead.org;
+	id 1wftNr-00000008Bcc-1N8J;
 	Sat, 04 Jul 2026 05:57:47 +0000
-Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-8479f1a86ecso695896b3a.1
-        for <linux-mtd@lists.infradead.org>; Fri, 03 Jul 2026 22:57:46 -0700 (PDT)
+Received: from mail-pj1-x102c.google.com ([2607:f8b0:4864:20::102c])
+	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
+	id 1wftNp-00000008BbM-0FBC
+	for linux-mtd@lists.infradead.org;
+	Sat, 04 Jul 2026 05:57:46 +0000
+Received: by mail-pj1-x102c.google.com with SMTP id 98e67ed59e1d1-3825c406ffeso466201a91.0
+        for <linux-mtd@lists.infradead.org>; Fri, 03 Jul 2026 22:57:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1783144666; x=1783749466; darn=lists.infradead.org;
+        d=gmail.com; s=20251104; t=1783144664; x=1783749464; darn=lists.infradead.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=4dp1mXo5SNq9TpBKhHNYZae1AakBfR6uJunKVLp5bf8=;
-        b=ObDemSgujlXEOusjrY4cGGSiS6sK1qUo768uECis77Q/BbGxpnO5CPkLpJ+PTsoQHg
-         d0bqNgXoEFlZcDKqwEpxFLwIVY6FMhnK5vxn7mMYRD5OYYKVllWHixGRvcaXUKNUvaDS
-         s79CR1E9xDkT1pnul6vtWARqkNtb6SX3s/LNBolcjBJXY2T+n7qx/mJ/v9It025gfZny
-         4mZ3Sb/n6IVg4z3a3DtGMKae7b+sncmhC/AF+gKt8f5s6Al2lvm5aVCWT9hBJKf35xhq
-         VXid3QjDkn2uVLo+qVIiNk8jl2Xl4SH/XBJ7lYlhYfFJP0pCJ65kw/cQT8EJkkaY2VW2
-         HHrQ==
+        bh=As+a+oXMaauuXL6cjX0g2Fcb3J4Vh+vaEl8MbjsXlXU=;
+        b=L4wgBD66PRSVTkvbmDxsp5xselpEFhXz13MV1bYujHbF7zv0J1P8Ki9fpxo71j6w28
+         cNYPoRTrIcnNwZ1DOz+7KaT7jnSpGt+tlfpwLt8zjy5x6XY29NmueO/FmZQLssFUqNOR
+         TcbcEgNjgtRAvye2KRspR8XWsF5FrSd3CaZx+dOJMFayF8RSr54aqFb8y05bAkjRLbm6
+         fOmxgS/fOknozSiDe3fPHusnnz0eb2NCr1Ia8lyw1N1F939kjjCn0eCq1mSDAWE2zSNc
+         waVqrbiSpopcuKGAlGPt5KZEOGEGVSMIGk7+vkSQl+oTZQow7X6VTHXD4vHJSYsZEE9W
+         L6zQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783144666; x=1783749466;
+        d=1e100.net; s=20251104; t=1783144664; x=1783749464;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=4dp1mXo5SNq9TpBKhHNYZae1AakBfR6uJunKVLp5bf8=;
-        b=CsMiprpZ0YvTkrqVficzKQ+lJUGvPCyKyUM77lG3+lYyClEPxpqYptBM9FdjOFOLAG
-         VnS4spShoAM12B/rKbs1vtDKg8DIIzTm+MgOxj1yrOkseXe2hLCpGslNs8+GjmsoX6mR
-         JUAZc1HMktD2Ij+hW6oo/qEpbu1++7ZR3iMqhrQLVpjHF2XU14P7GRoy1SNn9hhQr+jI
-         PQYzpi/aDoPaOwov/Pd9gQDVQ/p0fL6hkW/9iQXChG4vZ4OsDksGa1T7Z+6hGixOK/Cj
-         c3eKH9uxft6yrw4HIckXDJeMQ+/mDmUn6Ps8yjdNldScPA2H/8eD2bYEQ1lXDqnGPQQy
-         b3pA==
-X-Forwarded-Encrypted: i=1; AFNElJ/o7GVJcOoBe9EtlHFazkFR84u/y+kcUZx/oIhuTA2BsLm0aGvc4lmcCefilLsFXvaTswKl6OXuzCc=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yxro853USLhWFjOd13jXqjy28ubbkA05N5SkAWvzyoXkAianE6h
-	SibpOAip6xi7VhMSbTaMtpaesdAmsf6a3JlzmL0TE0zuKb8wcgp4H0Y0
-X-Gm-Gg: AfdE7ckJJspoPEudzFrS1OAi8vjxR1XFRja5XWFWsj3dpaNypSIZtI5lVaH+Zse4X6+
-	qpUzSZjBiDhMD6u+TCLbthBHYagXmS7aO2t8vsxo35owUF12WztU3kQrRe/W77c9hzosZ5cPdxN
-	vVyfTz1ibDTzDa8CL1hnouAmdv0U9jwDL12P+RuHYjZ6G0pijCz1RKnciCCa32dgqyxsMqTPPgw
-	yLsy0FQqUmXsah2gH4vDHRJKlF/KGcR0vvtmK1oCBRGA8BeZLaspz5nY/jgbiGxV3KQN6ZH3Zp6
-	MOkaQqGCbbMAjPAP06XCU8iJfScRsOgOaYu4RzNN7Q8faF5wn6G9qYllMHqLiguAfQ2HhVP8eTv
-	qrKdcw3GOPTGuSnasEa2E2qMSYr8jGxraolpLcutY89yNZW424FhrKgYndjeijDCQ5h3FhXijM1
-	UpY1baAcyOnKVpuuN90DZnljH5h6Nggk5paWUDh+x8vOKdR1fRCYthagY0sW9myH7sLDaeeDj01
-	Ws=
-X-Received: by 2002:a05:6a20:d43:b0:3bf:e66f:266a with SMTP id adf61e73a8af0-3c03e5b8218mr2447512637.59.1783144665865;
-        Fri, 03 Jul 2026 22:57:45 -0700 (PDT)
+        bh=As+a+oXMaauuXL6cjX0g2Fcb3J4Vh+vaEl8MbjsXlXU=;
+        b=aVy18RPj4zijXPqA14MSj24g3FrrFegi+/iUpbouDbDKr0jT11liRbZxaXE8LOf5hi
+         pzC9EI/5m6h79N3uS5yGCqIeXsWR/QaNmJL7JvXQQWP5Hc6g9e2PKFgrwyS4Rpi2+5y+
+         qCRdyZQrJRNIEf6b5QfpSmQ+IGrzRjJYasombKuR577poRTuc0kApwYfVC2LYDkd9jvl
+         cIBBhP2eN+L/DxW5Z2Vymk3t3XopkRCqqSLGlzi11JBbcl0TDLBvCdxjeIQyBLSgiO9g
+         c8ujrgEagU8ZYvlngDy8A3T8HZvFCuHvHeLugOPnQDSclkQCswbnz5YwQLJ7RzOHuYBk
+         7chw==
+X-Forwarded-Encrypted: i=1; AHgh+RoyeHjQ4yxc9kRUJrYSUWuCs073LFHkznTQNZrCrUtmWMWuBOrw8P31mXcjAKiqFeAxXf13WZFtbus=@lists.infradead.org
+X-Gm-Message-State: AOJu0YyRJCdGjem5jQ41ZGbyvbo4GjEifY0IThDVbOb+VRV2SIJQeU3Q
+	ct50KGj8FMCVDt3dFNo5BL84lL9xaekigYbwHjTNTornQdR0wU2H4b2E
+X-Gm-Gg: AfdE7clqfwmBlhUTdSogkxmYWixlP6yHJ9N7itD+2BoUyRBdb3ca0X+495BcMUV51Gf
+	CrRHYKPeaQdTT5t9Y6CcdUajljgZeOSdS48n2dXUZlcSTP07HmVKIqr9FLlUSvTG+lMvfLabaBi
+	FrfvSSVHoE2X94pIsti9vRK3kXtSPeWgE94Xgdrn0Ao+NR/OQjutPWXIF/OarBCgr6Ro1/mdhDz
+	oJ8b2b5ydPb61jhH73PygRR6Hc/KODisEzmulETtwJbyt5186PCPwBx80qsiSJsghpXwoFQpJWT
+	ldhYtzALwww3qvvXYX+ONBLi7196q6TMOf0JDVMQhzmptQ9jvUWkhfa8b/HLwS5CujH1Jp018Rm
+	HZM3wAgJiroHlxLxaEO2Jyf6tfK/7EKnWzbtMb002bab7moX91TrvphrMPxd62fM8VPGQXLZcwA
+	8H6D35YhulTl7YFTeP/rIpPq2A17nOFyj739bewiM1MRVp0CLu4iSul0O5B0cb7oBmodnBuJmG5
+	fDk1Xi6tzwexw==
+X-Received: by 2002:a17:90b:58e8:b0:37f:b16a:cc23 with SMTP id 98e67ed59e1d1-3829f5ea622mr2048940a91.23.1783144664401;
+        Fri, 03 Jul 2026 22:57:44 -0700 (PDT)
 Received: from dtor-ws.sjc.corp.google.com ([2a00:79e0:2ebe:8:880:86f9:3b00:6746])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-30f0b813cd9sm26262412eec.8.2026.07.03.22.57.44
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-30f0b813cd9sm26262412eec.8.2026.07.03.22.57.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Jul 2026 22:57:45 -0700 (PDT)
+        Fri, 03 Jul 2026 22:57:43 -0700 (PDT)
 From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Date: Fri, 03 Jul 2026 22:57:31 -0700
-Subject: [PATCH 08/26] Input: maplemouse - remove redundant drvdata
- resetting
+Date: Fri, 03 Jul 2026 22:57:30 -0700
+Subject: [PATCH 07/26] Input: maple_keyb - implement open and close methods
 MIME-Version: 1.0
-Message-Id: <20260703-b4-maple-cleanup-v1-8-41e424964da5@gmail.com>
+Message-Id: <20260703-b4-maple-cleanup-v1-7-41e424964da5@gmail.com>
 References: <20260703-b4-maple-cleanup-v1-0-41e424964da5@gmail.com>
 In-Reply-To: <20260703-b4-maple-cleanup-v1-0-41e424964da5@gmail.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, 
@@ -88,8 +87,8 @@ Cc: Florian Fuchs <fuchsfl@gmail.com>,
  linux-mtd@lists.infradead.org, linux-sh@vger.kernel.org
 X-Mailer: b4 0.16-dev-6911d
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260703_225746_756757_9994A56B 
-X-CRM114-Status: GOOD (  10.10  )
+X-CRM114-CacheID: sfid-20260703_225745_107705_85A7B6BD 
+X-CRM114-Status: GOOD (  15.75  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -106,35 +105,76 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The driver core automatically resets driver data to NULL on probe
-failures and device removal, so we can remove it from the driver.
+Instead of polling the keyboard constantly from probe, implement open
+and close methods for the input device to only start polling when the
+device is actually opened by userspace, and stop polling when it is
+closed.
+
+This matches the behavior of maplemouse and maplecontrol drivers.
 
 Assisted-by: Antigravity:gemini-3.5-flash
 Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 ---
- drivers/input/mouse/maplemouse.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/input/keyboard/maple_keyb.c | 25 +++++++++++++++++++++----
+ 1 file changed, 21 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/input/mouse/maplemouse.c b/drivers/input/mouse/maplemouse.c
-index 97d520e7d66d..37f60bbd0ba4 100644
---- a/drivers/input/mouse/maplemouse.c
-+++ b/drivers/input/mouse/maplemouse.c
-@@ -109,7 +109,6 @@ static int probe_maple_mouse(struct device *dev)
+diff --git a/drivers/input/keyboard/maple_keyb.c b/drivers/input/keyboard/maple_keyb.c
+index 623d7951405b..a245774acc55 100644
+--- a/drivers/input/keyboard/maple_keyb.c
++++ b/drivers/input/keyboard/maple_keyb.c
+@@ -140,6 +140,24 @@ static void dc_kbd_callback(struct mapleq *mq)
+ 	}
+ }
  
- fail_register:
- 	input_free_device(input_dev);
--	maple_set_drvdata(mdev, NULL);
- fail_nomem:
- 	kfree(mse);
- fail:
-@@ -122,7 +121,6 @@ static int remove_maple_mouse(struct device *dev)
- 	struct dc_mouse *mse = maple_get_drvdata(mdev);
++static int dc_kbd_open(struct input_dev *dev)
++{
++	struct maple_device *mdev = input_get_drvdata(dev);
++
++	/* Maple polling is locked to VBLANK - which may be just 50/s */
++	maple_getcond_callback(mdev, dc_kbd_callback, HZ / 50,
++			       MAPLE_FUNC_KEYBOARD);
++
++	return 0;
++}
++
++static void dc_kbd_close(struct input_dev *dev)
++{
++	struct maple_device *mdev = input_get_drvdata(dev);
++
++	maple_getcond_callback(mdev, NULL, 0, MAPLE_FUNC_KEYBOARD);
++}
++
+ static int probe_maple_kbd(struct device *dev)
+ {
+ 	struct maple_device *mdev;
+@@ -167,6 +185,7 @@ static int probe_maple_kbd(struct device *dev)
+ 	memcpy(kbd->keycode, dc_kbd_keycode, sizeof(kbd->keycode));
  
- 	input_unregister_device(mse->dev);
--	maple_set_drvdata(mdev, NULL);
- 	kfree(mse);
+ 	maple_set_drvdata(mdev, kbd);
++	input_set_drvdata(idev, mdev);
  
- 	return 0;
+ 	idev->name = mdev->product_name;
+ 	idev->evbit[0] = BIT(EV_KEY) | BIT(EV_REP);
+@@ -175,6 +194,8 @@ static int probe_maple_kbd(struct device *dev)
+ 	idev->keycodemax = ARRAY_SIZE(kbd->keycode);
+ 	idev->id.bustype = BUS_HOST;
+ 	idev->dev.parent = &mdev->dev;
++	idev->open = dc_kbd_open;
++	idev->close = dc_kbd_close;
+ 
+ 	for (i = 0; i < NR_SCANCODES; i++)
+ 		__set_bit(dc_kbd_keycode[i], idev->keybit);
+@@ -186,10 +207,6 @@ static int probe_maple_kbd(struct device *dev)
+ 	if (error)
+ 		goto fail_register;
+ 
+-	/* Maple polling is locked to VBLANK - which may be just 50/s */
+-	maple_getcond_callback(mdev, dc_kbd_callback, HZ/50,
+-		MAPLE_FUNC_KEYBOARD);
+-
+ 	mdev->driver = mdrv;
+ 
+ 	return error;
 
 -- 
 2.55.0.rc0.799.gd6f94ed593-goog
