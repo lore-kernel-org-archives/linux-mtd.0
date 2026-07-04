@@ -4,62 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36633C43458
-	for <linux-mtd@archiver.kernel.org>; Fri,  3 Jul 2026 14:30:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6CB65C43458
+	for <linux-mtd@archiver.kernel.org>; Sat,  4 Jul 2026 05:57:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
+	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=FdUZXfbaXeACXOhK3SlVJK+gqOvCMO9yEhbloaYsVoA=; b=4Jly7QYmGI3PvA
-	ONV33crQ8yOfGuPS83jt5Tr8rBzXKHgLXrHiY7X1WU+BBlkI43B2R5f6kN2W4UWnc99cD7qVravpL
-	pElBkyabVCulq1iCfpjSKCQpFAjwCyNGcrDtjxWdxBf9rwTAMTEDQeb92oXPQgZl5rv2GpOIyyv1+
-	LJ77d3fW+0yhV8Oc9UzuI1qsP0k2F0yO6prD/H86FMDXVH595BWgopDy5Lax0QGf+gNwm1RFsO/Wx
-	EqIU3F5vKfwslu01W0t8MAvbXZ35VzpGub9uyuKJoub9VdlsTPiO/4zjwOE+OaHa1TKONHoRPy7F4
-	wGNAXl11zf17HEcQveFg==;
+	List-Owner; bh=rvvCe3uIQBzZgvlt4AYnADrdx0brzmcHBWOr9N8jZGk=; b=1MfS1LzR66qvWa
+	uLCrHQFyzfOWbs+5XxzCT8xDhnQOg1+XjPhFsGzuXOuwVarduqBZdCpdkJpkVxb/59MGDhefhK8/S
+	GCNvOo3YUfQirVQEz5xmxGH+76og1UYQIgaT+8+RPzdc5SVLLMrg7cNe+7SaDbEVVERBFfGeO9ySh
+	W3bsvmvik3GYe+1U/r+ZxMrcw4UAG9kXEhexO8nvM/x3KJ39XGbyaV5CbOpI495Hh8/6+hq2+AVc7
+	v/u+spBsBatMfT36p8aJbv5t6S38etus4ZL9HG7F4ms442JZmzsig8vzCXlt8UVqyhHjlZK8YoWKn
+	kP0kybe91U586VjJufOQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wfeuk-00000007Gm4-3Rox;
-	Fri, 03 Jul 2026 14:30:46 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1wftNi-00000008BXu-36f0;
+	Sat, 04 Jul 2026 05:57:38 +0000
+Received: from mail-pg1-x530.google.com ([2607:f8b0:4864:20::530])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wfeuj-00000007Gk0-0Mi1
+	id 1wftNg-00000008BXL-44Py
 	for linux-mtd@lists.infradead.org;
-	Fri, 03 Jul 2026 14:30:45 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 8857E6014B;
-	Fri,  3 Jul 2026 14:30:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 230A11F000E9;
-	Fri,  3 Jul 2026 14:30:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783089044;
-	bh=b1uqhF9f4IUQ3lOctsQgx+/OieIeB5YM5aDFRgZRAl0=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=KHfEIUwfdjMaB8wjskkVurei5Aec0zEmDUdhRuinlChFffdJNMO4Mcel2n34uxfja
-	 vBOUa2/dOE/A/jJk/gF9OWI8vvv1m10lG9KEU5ESG5fAvyI8VlqQ3YTkN7cERENH8a
-	 GPhRWfWJ6WtItubQVacr6TxcxXuH9gzl+eZ68aNqgiut8Bli5T8uHxWoBMSS36v1EW
-	 Da29xrdN5JUlrx6XgDMPR8hiKcfeunqsvQpDFt/Hv2HUqtlfCYxaueBV95bBuAZs2U
-	 nEK+MnmswiqTa3AnAjQrZWwVHvhnXG+WNVSw+QaEJy0K6EGNCLaFHoZ94aIJbqwq/D
-	 ZaV7g96E+b6aw==
-From: Michael Walle <mwalle@kernel.org>
-To: Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <mwalle@kernel.org>,
-	Takahiro Kuwano <takahiro.kuwano@infineon.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: linux-mtd@lists.infradead.org,
-	Cheng Ming Lin <chengminglin@mxic.com.tw>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v1 8/8] mtd: spi-nor: rework flash parameter initialization
-Date: Fri,  3 Jul 2026 16:29:19 +0200
-Message-ID: <20260703143003.1809579-9-mwalle@kernel.org>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20260703143003.1809579-1-mwalle@kernel.org>
-References: <20260703143003.1809579-1-mwalle@kernel.org>
+	Sat, 04 Jul 2026 05:57:38 +0000
+Received: by mail-pg1-x530.google.com with SMTP id 41be03b00d2f7-c9a20f70263so788223a12.1
+        for <linux-mtd@lists.infradead.org>; Fri, 03 Jul 2026 22:57:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1783144656; x=1783749456; darn=lists.infradead.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VSErm6zpSptbzDDa+NTYvT0p4kk13g2ope/8ugzuH+A=;
+        b=JkySzGZuZslEx6MSZ23vjiR/DjxcgIn3pAA3JUWDe3RiAzaL9OmfqR3Y4ez9ulPAyW
+         yVOxCAt2oiWBqKXcJTPOpDr+QmSMopnIzXEFLXHyeXcx6tM8/4sjbfOc64hCimJ5i0kT
+         LyCLCXgkgKbdSgN8umh7EE0lUQO3M91SgRRUw3pQrF46ySAGP9k9Cug7hg3whLnXJvGn
+         uOkV6Vr2fs/iimVba/uk2qnCBrclEzKktIxSWLCpESpXuY+gH2SUecTA5TMgCARZpE2/
+         tf4HegdKO/WbzX0oMAEjPiK79tpdmWWzQno+6z62Q2W7x6ZU/n2q+WW9KB2lUrOkRqgE
+         wh5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1783144656; x=1783749456;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=VSErm6zpSptbzDDa+NTYvT0p4kk13g2ope/8ugzuH+A=;
+        b=hboon1PnYen1+kb7QTZEHIPhBJ8MVmI1UP1/fRtEOlPxrs8CPSDQQB6Qdc43KbqaNq
+         DF+XfHBGrQGec0rd1PL+qVbVoKWcLTr8kMyXeADhO1PAjq6j9VcbgnB4Wl9p1d6lbEGm
+         8XbiBlepqsEmctvaWoP057BZn/qmW9gMT+YNoiq6j48PZpY0/vzhP7wV2tMrnDL1Sa6i
+         io0G6WfOtaxttrwvJuSVUrR4s4ystmYCE0XnLrxszwbmXnYCa+hOdPbaWt9iC2Uz/eRC
+         7m81aLqc5/2bKDVwXHzHJ3ILPvNuLvByMSdHNqBb066ZsFSKGLR506Xfmt9hOG+ZFagw
+         VNZA==
+X-Forwarded-Encrypted: i=1; AFNElJ96uesJ6+6LxqDoJP4h8S02F1OZPCI7qhS1Tz4+uZKoid5bhxw20uOFD1oLslldQqPwmPltwfLi/B0=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yx6Atpbh1rxfkqh5T1rZMZ43nKvcPjinAFKO02gXex98yVjRqyz
+	5j85uFpfjk26wZcjcsNPB1nL1QSF1Ct3ySBD4POIHLAp+SiKFHPwSqMD
+X-Gm-Gg: AfdE7cl0+E3lKJrhnt4zq1+DEaKoXRzwSvfcZ/ZIkpiQO5bPX/e9Zz8b+wF+rg7z1Mq
+	vME8Mn9aYs6NDn4rk0JshexIu2h9YykCpC5kd3BD9NhWRNKlGpC/aHnEHrxIsZqCBFhxndJfqYa
+	SjR4EmD8E4NTm/MzmAxglJs/wQqhfJqPOPgFg5/peD45JU6AqYZC6nHUQqnNaLZREZOtoC6+zYC
+	r1/vTosZ/yCIy+vT6tOgHK43fEc0mslygJtkVZQv3XKYpUL6HNTWjfSu4XQHR2A/6dsBzpDlQgs
+	1QkC0u6HK7oTc6W/VvE9JAJ4nUz+MsUpQsV8VTkXouwgfwAPjED4hLLhgYj5T05LPcZyfkzlzqP
+	WfsUsaJSfWT4/LIv6CA5JYdLDjEuvyB8ila4bkiDu0HPBFHUNXz2ngAKv9Ax8KolP4jgVPIRmQc
+	RS/2hcxBcb36IHogTWdbbZqItxvb+lQkMBt1b705sJnE3uqilVmsIvRz4fXn6uIQk23+N1AYbLM
+	58=
+X-Received: by 2002:a05:6a21:3a85:b0:3b4:7459:85a0 with SMTP id adf61e73a8af0-3c01caacc85mr7518057637.18.1783144655975;
+        Fri, 03 Jul 2026 22:57:35 -0700 (PDT)
+Received: from dtor-ws.sjc.corp.google.com ([2a00:79e0:2ebe:8:880:86f9:3b00:6746])
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-30f0b813cd9sm26262412eec.8.2026.07.03.22.57.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Jul 2026 22:57:35 -0700 (PDT)
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Date: Fri, 03 Jul 2026 22:57:25 -0700
+Subject: [PATCH 02/26] Input: maple_keyb - fix key press detection
 MIME-Version: 1.0
+Message-Id: <20260703-b4-maple-cleanup-v1-2-41e424964da5@gmail.com>
+References: <20260703-b4-maple-cleanup-v1-0-41e424964da5@gmail.com>
+In-Reply-To: <20260703-b4-maple-cleanup-v1-0-41e424964da5@gmail.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+ Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, 
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc: Florian Fuchs <fuchsfl@gmail.com>, 
+ Adrian McMenamin <adrianmcmenamin@gmail.com>, linux-kernel@vger.kernel.org, 
+ Dmitry Torokhov <dtor@mail.ru>, linux-input@vger.kernel.org, 
+ linux-mtd@lists.infradead.org, linux-sh@vger.kernel.org
+X-Mailer: b4 0.16-dev-6911d
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260703_225737_036277_F31C10EA 
+X-CRM114-Status: GOOD (  15.88  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,153 +105,44 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Rework how the flash parameters are initialized. It used to make a
-difference whether a flash is in the in-kernel database, whether it
-supports multi I/O and so on. Recently, that makes more and more
-problems because flash IDs are reused among legacy flashes (w/o SFDP
-support) and newer flashes [1,2,3,4].
+The key press detection logic was using ptr instead of !ptr (where ptr is
+the result of memchr searching for the new key in the old keys).
 
-Simplify the whole parameter initialization, by starting with the
-parameters we have in the in-kernel database and the try to parse SFDP
-(and let it override any settings).
+If ptr is not NULL, it means the key was already pressed in the previous
+report, so it is not a new press. If ptr is NULL, it means the key was
+not pressed before, so it is a new press.
 
-This has the consequence that all the flashes now get a RDSFPD opcode
-which might be an unknown opcode from the perspective of the flash. With
-the generic SPI NOR flash driver, this was already the case for any
-flashes not listed in the in-kernel database. So far, there was not a
-single complaint.
+Using ptr instead of !ptr caused new presses to be ignored in the first
+poll cycle (only reported in the second cycle if still held, because
+then it was in 'old'), and caused redundant press events to be sent
+on every subsequent poll while the key was held.
 
-[1] https://lore.kernel.org/linux-mtd/CAAyq3SYX9UPwhC_Ume_S2yxhQwimRvB=Y6O_+FFqokhNmw7jQg@mail.gmail.com/
-[2] https://lore.kernel.org/linux-mtd/DGB4745HRCFI.1DRYTHXURWZJO@kernel.org/
-[3] https://lore.kernel.org/linux-mtd/DD10GE4EOCD7.CPTN7198QFUV@kernel.org/
-[4] https://lore.kernel.org/linux-mtd/DD6SI06QNEE4.2YCRTWJHEAAQM@kernel.org/
+Fix this by using !ptr for press detection, matching the release
+detection logic.
 
-Signed-off-by: Michael Walle <mwalle@kernel.org>
-Tested-by: Cheng Ming Lin <chengminglin@mxic.com.tw>
-Tested-by: Miquel Raynal <miquel.raynal@bootlin.com> # w/ W25Q02JVFIM
+Fixes: b11d2127c489 ("Input: add support for SEGA Dreamcast keyboard")
+Assisted-by: Antigravity:gemini-3.5-flash
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 ---
- drivers/mtd/spi-nor/core.c | 53 ++++++++++----------------------------
- drivers/mtd/spi-nor/core.h |  5 +---
- 2 files changed, 15 insertions(+), 43 deletions(-)
+ drivers/input/keyboard/maple_keyb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 8446b7b39f55..dffa81ec89f7 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -2853,11 +2853,10 @@ static void spi_nor_manufacturer_init_params(struct spi_nor *nor)
- 
- /**
-  * spi_nor_no_sfdp_init_params() - Initialize the flash's parameters and
-- * settings based on nor->info->sfdp_flags. This method should be called only by
-- * flashes that do not define SFDP tables. If the flash supports SFDP but the
-- * information is wrong and the settings from this function can not be retrieved
-- * by parsing SFDP, one should instead use the fixup hooks and update the wrong
-- * bits.
-+ * settings based on nor->info->sfdp_flags.
-+ * If the flash supports SFDP but the information is wrong and the settings from
-+ * this function can not be retrieved by parsing SFDP, one should instead use
-+ * the fixup hooks and update the wrong bits.
-  * @nor:	pointer to a 'struct spi_nor'.
-  */
- static void spi_nor_no_sfdp_init_params(struct spi_nor *nor)
-@@ -3039,28 +3038,6 @@ static int spi_nor_late_init_params(struct spi_nor *nor)
- 	return 0;
- }
- 
--/**
-- * spi_nor_init_params_deprecated() - Deprecated way of initializing flash
-- * parameters and settings.
-- * @nor:	pointer to a 'struct spi_nor'.
-- *
-- * The method assumes that flash doesn't support SFDP so it initializes flash
-- * parameters in spi_nor_no_sfdp_init_params() which later on can be overwritten
-- * when parsing SFDP, if supported.
-- */
--static void spi_nor_init_params_deprecated(struct spi_nor *nor)
--{
--	spi_nor_no_sfdp_init_params(nor);
--
--	spi_nor_manufacturer_init_params(nor);
--
--	if (nor->info->no_sfdp_flags & (SPI_NOR_DUAL_READ |
--					SPI_NOR_QUAD_READ |
--					SPI_NOR_OCTAL_READ |
--					SPI_NOR_OCTAL_DTR_READ))
--		spi_nor_parse_sfdp(nor);
--}
--
- /**
-  * spi_nor_init_default_params() - Default initialization of flash parameters
-  * and settings. Done for all flashes, regardless is they define SFDP tables
-@@ -3121,7 +3098,8 @@ static void spi_nor_init_default_params(struct spi_nor *nor)
-  *
-  * 1/ Default flash parameters initialization. The initializations are done
-  *    based on nor->info data:
-- *		spi_nor_info_init_params()
-+ *		spi_nor_init_default_params()
-+ *		spi_nor_no_sfdp_init_params()
-  *
-  * which can be overwritten by:
-  * 2/ Manufacturer flash parameters initialization. The initializations are
-@@ -3132,7 +3110,7 @@ static void spi_nor_init_default_params(struct spi_nor *nor)
-  * which can be overwritten by:
-  * 3/ SFDP flash parameters initialization. JESD216 SFDP is a standard and
-  *    should be more accurate that the above.
-- *		spi_nor_parse_sfdp() or spi_nor_no_sfdp_init_params()
-+ *		spi_nor_parse_sfdp()
-  *
-  *    Please note that there is a ->post_bfpt() fixup hook that can overwrite
-  *    the flash parameters and settings immediately after parsing the Basic
-@@ -3158,17 +3136,14 @@ static int spi_nor_init_params(struct spi_nor *nor)
- 		return -ENOMEM;
- 
- 	spi_nor_init_default_params(nor);
-+	spi_nor_no_sfdp_init_params(nor);
-+	spi_nor_manufacturer_init_params(nor);
- 
--	if (spi_nor_needs_sfdp(nor)) {
--		ret = spi_nor_parse_sfdp(nor);
--		if (ret) {
--			dev_err(nor->dev, "BFPT parsing failed. Please consider using SPI_NOR_SKIP_SFDP when declaring the flash\n");
--			return ret;
--		}
--	} else if (nor->info->no_sfdp_flags & SPI_NOR_SKIP_SFDP) {
--		spi_nor_no_sfdp_init_params(nor);
--	} else {
--		spi_nor_init_params_deprecated(nor);
-+	ret = spi_nor_parse_sfdp(nor);
-+	if (ret && spi_nor_needs_sfdp(nor)) {
-+		dev_err(nor->dev,
-+			"SFDP parsing failed. You need to manually declare the flash parameters.\n");
-+		return ret;
- 	}
- 
- 	ret = spi_nor_late_init_params(nor);
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 3d0bdb320721..0e554d3d4aa0 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -502,9 +502,7 @@ struct spi_nor_id {
-  *                            be used with SPI_NOR_HAS_LOCK.
-  *
-  * @no_sfdp_flags:  flags that indicate support that can be discovered via SFDP.
-- *                  Used when SFDP tables are not defined in the flash. These
-- *                  flags are used together with the SPI_NOR_SKIP_SFDP flag.
-- *   SPI_NOR_SKIP_SFDP:       skip parsing of SFDP tables.
-+ *                  Used when SFDP tables are not defined in the flash.
-  *   SECT_4K:                 SPINOR_OP_BE_4K works uniformly.
-  *   SPI_NOR_DUAL_READ:       flash supports Dual Read.
-  *   SPI_NOR_QUAD_READ:       flash supports Quad Read.
-@@ -552,7 +550,6 @@ struct flash_info {
- #define SPI_NOR_HAS_CMP			BIT(10)
- 
- 	u8 no_sfdp_flags;
--#define SPI_NOR_SKIP_SFDP		BIT(0)
- #define SECT_4K				BIT(1)
- #define SPI_NOR_DUAL_READ		BIT(3)
- #define SPI_NOR_QUAD_READ		BIT(4)
+diff --git a/drivers/input/keyboard/maple_keyb.c b/drivers/input/keyboard/maple_keyb.c
+index 3d5538dd4f23..623d7951405b 100644
+--- a/drivers/input/keyboard/maple_keyb.c
++++ b/drivers/input/keyboard/maple_keyb.c
+@@ -107,7 +107,7 @@ static void dc_scan_kbd(struct dc_kbd *kbd)
+ 		}
+ 		ptr = memchr(kbd->old + 2, kbd->new[i], 6);
+ 		code = kbd->new[i];
+-		if (code > 3 && ptr) {
++		if (code > 3 && !ptr) {
+ 			keycode = kbd->keycode[code];
+ 			if (keycode) {
+ 				input_event(dev, EV_MSC, MSC_SCAN, code);
+
 -- 
-2.47.3
+2.55.0.rc0.799.gd6f94ed593-goog
 
 
 ______________________________________________________
