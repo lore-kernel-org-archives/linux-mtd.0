@@ -4,78 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 178E4C44500
-	for <linux-mtd@archiver.kernel.org>; Sat,  4 Jul 2026 05:57:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D97CDC44507
+	for <linux-mtd@archiver.kernel.org>; Sat,  4 Jul 2026 05:57:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=yekbtNQw2rDd9GtEiSfHgOAhOcuWh347P6etH2Qt8/E=; b=C05a2V6Ps69GTd
-	Rfip5PIR9MhucIsA6PvB25Sa84Fgt+s0t4L22yH8Shzm0r/z0ipPUdQhc2mno3GGu7yE03hBs6iYb
-	3sOLiX8sZjdmFvEikqhyAoQn/Wbb7bTITcX8tKPmGtL4f9Z1orQ5SFfFnLPLPiQH6Q+hmKFpsTzHP
-	KThSFG7F7qtcHirGG/Fe8hoGO6Inr1nQ+FdUmnfiXT54TRv7lk0SeOgXyZ/78ak3s7K1eMFggqirV
-	TwMiJNPcof48K4Nl4Of8R2ku/zPQhCXe485eWhpgjWHTL5b8slXJW8hM5WJBHgmFaVbObMs6iOA7D
-	hHYwdXratBX4rU4xlGCA==;
+	List-Owner; bh=3WInED/sTUOs5odfgyNGNdAFDvAdRVDT5AYX2WKyt44=; b=kFNGWe/cbBWYPA
+	jsd+tk6JKpq2R91YNhcr+gQQ3h4u92AuXgSZjYWAE7cUf3edEPH9IbMtdXC5Tsri+ZDyqnTlHUT/0
+	konRYuOxFt86qVdn0PdtbApHMTlRn0ekYES7X7bzw/GL/XBcthG13SsyhLD3+fGiIaFb3wFcb66R0
+	a+QubSPBeyEjQj6IJLZ0NgcRPShEvmyltzbMTFtSTgtGG0HrR7DUdEDEWlmpbyJLepFAQfKeAFrUP
+	6M9earR3BWuwNgjh55bklPD1VDFp0HSQhvNukSA9IoNIBHA+Saf/5+oyu2UU7f0vMcULsZD3CL2vZ
+	RYxjoZgSNskEsHrByTdQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wftNo-00000008Bap-0hFB;
-	Sat, 04 Jul 2026 05:57:44 +0000
-Received: from mail-pg1-x52d.google.com ([2607:f8b0:4864:20::52d])
+	id 1wftNq-00000008Bbu-1156;
+	Sat, 04 Jul 2026 05:57:46 +0000
+Received: from mail-pj1-x102a.google.com ([2607:f8b0:4864:20::102a])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wftNm-00000008BZ9-0B1D
+	id 1wftNn-00000008BaG-2r9m
 	for linux-mtd@lists.infradead.org;
-	Sat, 04 Jul 2026 05:57:43 +0000
-Received: by mail-pg1-x52d.google.com with SMTP id 41be03b00d2f7-c9eefcf9175so1139266a12.3
-        for <linux-mtd@lists.infradead.org>; Fri, 03 Jul 2026 22:57:41 -0700 (PDT)
+	Sat, 04 Jul 2026 05:57:44 +0000
+Received: by mail-pj1-x102a.google.com with SMTP id 98e67ed59e1d1-3811074a8c5so885580a91.1
+        for <linux-mtd@lists.infradead.org>; Fri, 03 Jul 2026 22:57:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1783144661; x=1783749461; darn=lists.infradead.org;
+        d=gmail.com; s=20251104; t=1783144663; x=1783749463; darn=lists.infradead.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=15hSQeEEYahDoHIjuKW6WN5DINg66LHxIgPA/aX6Wqk=;
-        b=iJXmAV2ixNnvxFnxm+KN5mVqb3H1S4nPY7+UFc0R/TvA2C+EQIib8UDjp/7Wr7f+2L
-         wkhqtYMtfP1MSNb8k+sNzsnzA3tqN9yCJ2H9d/swQDjugN9h39TufhUfpaHL12QhdlTl
-         TKCIzOu0vOYUh+yfleFqF+HYL3itrDVJoVBvyE3/EtKAvEYzZ0sKH8xND2Sfqyw40AAi
-         mdJ6F+VKZzsYoUc4DE+jP8/rJo6mQQVD5OUlA++LdVMWgn6e8DEEXYfgaKCbeeA4fZz8
-         ho0WrXbhfHuw1NqsnoZ7L7mfOCdPJALbq++GegxF+N0TafgMNJ03WwPQ9iIp8Fn86Fe4
-         tkZQ==
+         :content-type:mime-version:subject:date:from:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=0JiJbOxq7Ya2dq8srztzHeLNjlbnlC1+4jsRTTFCbAA=;
+        b=Pfiu9KTKATo9BV15TTAWbIqCkAUSeezSJnbgssPYDu3cRrcpH0eVmRwPh3DdQi/e70
+         f/mqGodWgOZJYncmolLqEAPrMcJ31FWAkLtnTuTqpz7eZj1wNikIYLxfkLdv8l7+9WxE
+         pcOLAGL9uWsEPBAZAO6L+ASC/HllLj0KpDspUENM0gjhnvfRyRfQ1HxaWJc2G8LHUbqp
+         q7/gRc7DkMiEGo6GdMTKy265ck/IYyRTIfztoO9SPMg3wHIOfkcwlZWGoHBu1Mz4ffRo
+         quNBImJefTylcqXNBJHsEE3scXZPvzc+Iv+0UwQedmS9lpaN2Jhe7glGLtAKG2lHkgvR
+         K+wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783144661; x=1783749461;
+        d=1e100.net; s=20251104; t=1783144663; x=1783749463;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=15hSQeEEYahDoHIjuKW6WN5DINg66LHxIgPA/aX6Wqk=;
-        b=Mo7TmpbVotcp0zGI1+zFWRtbYbc+SMFvIwhZvdFuzoUBUKXuxiBVghODnjevQBi/78
-         31WtPzBZuObDGnf2bLitr4V2IPl7HkzKHzWxyGmZxfvUp6nQSPmUb/h5PE5unPZppmUs
-         rdTTxTGrFk45yNc5hcU6EfxcvUJDf4c0Rt89JkgdGvJrhREPO8yOgQAYQh1qAF8j10gL
-         aq7L5rnLKx7FHtWyByNWbwnbE7jl/NehJ6Kv4EfiuutDUTsw4znTD25CXO+RMHwXbiLx
-         HlF4qngu24+ZOMrJGrAKDpaaFX+BrrLfQeAlgGJGZxHjKmBFe3ua+208UXZxsPtLFFgl
-         IrIQ==
-X-Forwarded-Encrypted: i=1; AFNElJ/p4zk5tHWzDVoAN5pmtmOX3wO+tfCX6nawSCKjxQt7GvUaGVn902gfKU2dhIM18psiotztQ9vWUzE=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yw1YMICKX/1LjhBbyIzPCaRGDbLI7qYJl0BLyOO1Lz0JSsVXQz/
-	Ud3SVKwEhLJUAdQidzH9gNGLYLnDjWcQxOi8AHAYKgPrwR3msr5miCGy
-X-Gm-Gg: AfdE7cmM/6K2hPO1QkxMgr7Hi+6r4b1WsOxh4YAnq8Kda9PMQmH+Ll4ksc0AH3BJA0P
-	O8c70zbc/bPKMoZ3wKR+tSAKGjd2O9h1+ZGq9P/ILORIy8pDN6AF0LDTGPc4b2ErKMZ32IC6R82
-	1nqXEwPOR3DoIocElEwTC72SM0ddV2VZqAeLu4tM/JDRPc+PH27P3nk7fbHQ8xJCWk8ALKFmK+c
-	WSRwJrET2oBm84c1TV3OVjPO2X5HQ3tsYVp445PfL1pOiXI/YFzHGFc2hJ3Z7Pq7RbzQq33DO8Y
-	EiA70vcUTF8invBYW0pjQjvIoxwL4B+epph6HwOY+zXXUt78KQz5Y2DAyjw9wCn6RcQK6IRF/NW
-	wVjDonyUjvuqNxq0GjoNdovFGjD6JlRBtCvz+zKxXhzJseSFMIPq1ihAMynrGfUaR+wBSiDoyhi
-	ZM/IY+KHCi4rinZUp+P/Qml0kv3RSWJB9uqVXo5tFrwuSJzoe35vr/kwzpD/AHYf9Fas/fQexeb
-	xY=
-X-Received: by 2002:a05:6a21:44c8:b0:3bf:6c08:2849 with SMTP id adf61e73a8af0-3c03e540d9dmr2322074637.56.1783144661119;
-        Fri, 03 Jul 2026 22:57:41 -0700 (PDT)
+         :content-type:mime-version:subject:date:from:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=0JiJbOxq7Ya2dq8srztzHeLNjlbnlC1+4jsRTTFCbAA=;
+        b=kcV5i+Y8QWxcW6mHQmKlBKDb2swz/tL9Ea1WlEGdHmnbwBuyG8cVutvVjbI4GeRxWD
+         VXFvwqxpi0fhV/+Z+G6yxhC+KZ4j2NKLEPY/9sl8/EmbiJvpJWD/GG6/TdPTY4RVdD4Z
+         2E5j2yInvpUyiVVTQOMB8PutaBeyuysR/9ColpgLPfwGIetZSAkt+l9MjSIv8+bJZjAY
+         1RQV7ibKR+kpXKMrOCMq3Jd05R3pqvj1ByQ7sp0AiY/D5Zz28bZrO1HxBRrkxZKgd4rP
+         h1rY8qND87Ey0QshNU6LVaCyHWGVOqg66rwOOHes01Yi/ZsI749CcoLs/H8uXD76Y+Bb
+         UzZg==
+X-Forwarded-Encrypted: i=1; AHgh+RpQU+0Y4av8GE7wwJZC1ptbOHR4BV+m0CO/IYu3/pXSolhkJRJkTJt+/njIVemS6JB2b37gMgaYFBk=@lists.infradead.org
+X-Gm-Message-State: AOJu0YxKT64gnN7blQ/ueDWvyhKuNgbjVzuYDcTngxg3lm0oNhBuDmUw
+	2Dd1mRu6DsFtICj8OcXFQaMTIGVPxf2qa/FGTqy/4eZh6aMacKiu5ig+
+X-Gm-Gg: AfdE7ck0qdvxcyUtioEyWopBS1VYlhOkmPypalrOCo85LHWoJu4AgLB8/z3lMKr6sMx
+	kloVhYZZDBfYVA1deJLx+nNw2NfzVl55AUa3p1S9uLy2UwOz3oB90TsT5BhasApmGSLNbaTr1h5
+	YPTCwAoxpGlc6nUSkQPGMYBGPPs3kbRMn95PaqZ51d+Z/N94urY57YDRXHflD/ss/PSC/5cqWX+
+	UBxn5hB+bOKtE4IeWjCdh/1+Ezk+RMtmgbnygJTAz+T+r/xVTZynhIz0nXisfYlWiXcP4KbLvrZ
+	VEOF5AJm3jZHdF7ztf5IGS0JlJ+sxerv9F7Z+XF/tutlyuZwO0Fv6Iwt9r3DkMJixdxm2eWsvnq
+	Lc1DCjK92KtPuQpDBh/xKNNTPe8BU94dEZb1FDda90UJsmgyNYnb5wBPUCtgJ0wFeLrUZJR5GjQ
+	Zr+EKzw1j/++hKuiyAVmliloL3Tmha4iNDZaKFxKFHmFX1qLA/x0a9pCIV5K0uLgxsnw9Mp9Woy
+	6o=
+X-Received: by 2002:a17:90b:510b:b0:37f:c28a:de61 with SMTP id 98e67ed59e1d1-3829eb1e24emr2191947a91.17.1783144662715;
+        Fri, 03 Jul 2026 22:57:42 -0700 (PDT)
 Received: from dtor-ws.sjc.corp.google.com ([2a00:79e0:2ebe:8:880:86f9:3b00:6746])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-30f0b813cd9sm26262412eec.8.2026.07.03.22.57.39
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-30f0b813cd9sm26262412eec.8.2026.07.03.22.57.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Jul 2026 22:57:40 -0700 (PDT)
+        Fri, 03 Jul 2026 22:57:42 -0700 (PDT)
 From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Date: Fri, 03 Jul 2026 22:57:28 -0700
-Subject: [PATCH 05/26] Input: maplecontrol - stop polling and clear
- callback on close
+Date: Fri, 03 Jul 2026 22:57:29 -0700
+Subject: [PATCH 06/26] Input: maplecontrol - simplify maple_device
+ retrieval in open/close
 MIME-Version: 1.0
-Message-Id: <20260703-b4-maple-cleanup-v1-5-41e424964da5@gmail.com>
+Message-Id: <20260703-b4-maple-cleanup-v1-6-41e424964da5@gmail.com>
 References: <20260703-b4-maple-cleanup-v1-0-41e424964da5@gmail.com>
 In-Reply-To: <20260703-b4-maple-cleanup-v1-0-41e424964da5@gmail.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, 
@@ -88,8 +89,8 @@ Cc: Florian Fuchs <fuchsfl@gmail.com>,
  linux-mtd@lists.infradead.org, linux-sh@vger.kernel.org
 X-Mailer: b4 0.16-dev-6911d
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260703_225742_088151_A2A5713F 
-X-CRM114-Status: GOOD (  12.14  )
+X-CRM114-CacheID: sfid-20260703_225743_729911_F19F227E 
+X-CRM114-Status: GOOD (  12.54  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -106,43 +107,64 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-In dc_pad_close(), pass NULL instead of dc_pad_callback to
-maple_getcond_callback() to both stop polling and clear the callback
-pointer when the input device is closed.
+Instead of passing the dc_pad structure via platform_data to the
+input device to retrieve the maple_device in open/close, store the
+maple_device pointer in the input device's private data (drvdata)
+and use input_get_drvdata() to retrieve it.
 
-This makes the manual clearing of mdev->callback in
-remove_maple_controller() redundant, as input_unregister_device()
-automatically closes the device if it was open. Remove the redundant
-assignment.
+This allows us to remove the platform_data assignment in probe.
 
 Assisted-by: Antigravity:gemini-3.5-flash
 Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 ---
- drivers/input/joystick/maplecontrol.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/input/joystick/maplecontrol.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/input/joystick/maplecontrol.c b/drivers/input/joystick/maplecontrol.c
-index a498fc322c4d..c66b2614e298 100644
+index c66b2614e298..9d623c9e8f22 100644
 --- a/drivers/input/joystick/maplecontrol.c
 +++ b/drivers/input/joystick/maplecontrol.c
-@@ -74,8 +74,7 @@ static void dc_pad_close(struct input_dev *dev)
- {
- 	struct dc_pad *pad = dev_get_platdata(&dev->dev);
+@@ -62,19 +62,19 @@ static void dc_pad_callback(struct mapleq *mq)
  
--	maple_getcond_callback(pad->mdev, dc_pad_callback, 0,
+ static int dc_pad_open(struct input_dev *dev)
+ {
+-	struct dc_pad *pad = dev_get_platdata(&dev->dev);
++	struct maple_device *mdev = input_get_drvdata(dev);
+ 
+-	maple_getcond_callback(pad->mdev, dc_pad_callback, HZ/20,
 -		MAPLE_FUNC_CONTROLLER);
-+	maple_getcond_callback(pad->mdev, NULL, 0, MAPLE_FUNC_CONTROLLER);
++	maple_getcond_callback(mdev, dc_pad_callback, HZ / 20,
++			       MAPLE_FUNC_CONTROLLER);
+ 
+ 	return 0;
+ }
+ 
+ static void dc_pad_close(struct input_dev *dev)
+ {
+-	struct dc_pad *pad = dev_get_platdata(&dev->dev);
++	struct maple_device *mdev = input_get_drvdata(dev);
+ 
+-	maple_getcond_callback(pad->mdev, NULL, 0, MAPLE_FUNC_CONTROLLER);
++	maple_getcond_callback(mdev, NULL, 0, MAPLE_FUNC_CONTROLLER);
  }
  
  /* allow the controller to be used */
-@@ -156,7 +155,6 @@ static int remove_maple_controller(struct device *dev)
- 	struct maple_device *mdev = to_maple_dev(dev);
- 	struct dc_pad *pad = maple_get_drvdata(mdev);
+@@ -112,6 +112,7 @@ static int probe_maple_controller(struct device *dev)
+ 	pad->mdev = mdev;
  
--	mdev->callback = NULL;
- 	input_unregister_device(pad->dev);
- 	maple_set_drvdata(mdev, NULL);
- 	kfree(pad);
+ 	maple_set_drvdata(mdev, pad);
++	input_set_drvdata(idev, mdev);
+ 
+ 	idev->open = dc_pad_open;
+ 	idev->close = dc_pad_close;
+@@ -130,7 +131,6 @@ static int probe_maple_controller(struct device *dev)
+ 	if (idev->keybit[BIT_WORD(BTN_JOYSTICK)])
+ 		idev->evbit[0] |= BIT_MASK(EV_KEY);
+ 
+-	idev->dev.platform_data = pad;
+ 	idev->dev.parent = &mdev->dev;
+ 	idev->name = mdev->product_name;
+ 	idev->id.bustype = BUS_HOST;
 
 -- 
 2.55.0.rc0.799.gd6f94ed593-goog
