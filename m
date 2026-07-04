@@ -4,79 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A1E9C44501
-	for <linux-mtd@archiver.kernel.org>; Sat,  4 Jul 2026 05:58:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19D67C43602
+	for <linux-mtd@archiver.kernel.org>; Sat,  4 Jul 2026 05:58:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=TKm2h4zgAbdTgIqvLoVQswUCcA+LjciYQCIzEw85HqU=; b=D/fV1BZUUaIXTO
-	DzmXCXgNzbCN6Gmi+cCQZAlvJa9lXxE4sKJQsaY7FBaOJUB5wxnqjznM1bcFXuAjP6Ky868cmOg1b
-	vpNqYTRiSvtho+xJkyss8NZZfuMs68MTGRLdxi5xm0N6YkYGad/SJsq4JraM8vGAAYreZFnfx7J0d
-	GfrqYWjBSdWJ6OlNU8rrqeXl9RRFGU5N2wdCvTREhtW6CyVzGflzSgwYEGHQA8htySxngI0cfgDdu
-	8fhwDL320W1aJ4m+UXay9/orQWSYvZzoR+rrPLjteQ7g2dDxatiw/HTy/5rctw88V81QGpPfW2I4w
-	fctfMQP4b6J2UlzNx+qg==;
+	List-Owner; bh=csSVBnnp9669HGPodgwHPADy/m1Q8o6hkMbVf3q/4Qo=; b=LlHIKV34Uuy9ix
+	ATZKGqyIAbuz8VipNoNTRZfcbuOPEZ4zSlmDbq/CG0IGbASQZib0/e3Q2+ZrngPWZYgzAqMLi1GOd
+	Vu3msVJ9Yx3CrP3Bx5MMlO5ly7pn56Gw1p0juvinHBaCscZZj1DnzoWSPIm30DNF1298Al62g3Z0r
+	Ez2DsXYf0ImHCZbLrrH+o+zEo0fHNt001BRMnjjLzCq1ISfD7JlYgkF88JJum0PuMfaqvGjdGETc+
+	LmXt0TrHe+VDl8qE2bOexOkmMX1m0DGipdrpE6Euzg0LItm7+uyS3D+HdFjxbwhCOSIIyOQkWTHzA
+	+5Nym+v8qkVHrk38Vc3g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wftOC-00000008C8f-2gNE;
-	Sat, 04 Jul 2026 05:58:08 +0000
-Received: from mail-pj1-x1036.google.com ([2607:f8b0:4864:20::1036])
+	id 1wftOD-00000008CB3-3Dlz;
+	Sat, 04 Jul 2026 05:58:09 +0000
+Received: from mail-pj1-x102d.google.com ([2607:f8b0:4864:20::102d])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wftO9-00000008C1q-1WAD
+	id 1wftOB-00000008C5h-11vz
 	for linux-mtd@lists.infradead.org;
-	Sat, 04 Jul 2026 05:58:07 +0000
-Received: by mail-pj1-x1036.google.com with SMTP id 98e67ed59e1d1-37d70036426so808922a91.3
-        for <linux-mtd@lists.infradead.org>; Fri, 03 Jul 2026 22:58:05 -0700 (PDT)
+	Sat, 04 Jul 2026 05:58:08 +0000
+Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-381216921aaso1142278a91.1
+        for <linux-mtd@lists.infradead.org>; Fri, 03 Jul 2026 22:58:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1783144685; x=1783749485; darn=lists.infradead.org;
+        d=gmail.com; s=20251104; t=1783144686; x=1783749486; darn=lists.infradead.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :content-type:mime-version:subject:date:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=aIbYkeRmMJ3qAal/r9Tkhbn+MH1/NZUDryRDlJi/XtY=;
-        b=dOEmls6nlQgJbtaFK/4bC3EHFKbfhWu14MpSD+6XMulz84wu+yVr76apyYFQtcG8uX
-         Ylf3wPggzrATYveTHJMCLAICjIQdwLTCWj1UvUX1jTp1XdoXaSufwOVGaDzDTPnEa0Vy
-         31Gtks/pTJJ/RS6cLspRVdpAXxcrdp1gmXVu8ypj+7fVDWxSxmv2ODHQuO9sWBMDXtgp
-         NM1EusW0KlVr/uFb229wFPRnilu/J//KMcsA07xrfJMt36bk5a2INWrqrgFr8o+ubbjV
-         ouVv3eu3k8/obCOkLIEe19u/yXT5MMtg0+PjeLO89uL2G0UW4NmcXT0Ir+NzgTIt3MPb
-         pXAQ==
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EtRA/Iz7xW+gdF1+FPWoWbYlNNq+Ml51Iu6T+Ii+D0A=;
+        b=CAxHvigXI3bLkQjagpEEcHWj3y7oBABRrWUm5MirTMS2vicitgbnhwIqdnaoMWhBny
+         PBLHiGo1BBkWJ6PiIQgQdr2NJn/LkohfcVupWzCTiUvuboOSaBaziaSrMsMHLIFStR1Z
+         i0hnwS5IyjCG2cUkk3yZd8QxGM4JmD+tQG6s2pxY91vi3QUdDHy3U6SXuJQHDKJMWz+5
+         vyQh2D66+qGRs7K3/gqTYH6xTmTDPbj3OrZO7dgd3ekj7YKKiX9kJjVE/Ukogxq7gbDe
+         MOFRVGeQXsMX44YCsw87mKJHZrgSOiIaHNlHIYd3Ufg4SOEXccEVBaPXiLu2s0amJaG/
+         68SQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783144685; x=1783749485;
+        d=1e100.net; s=20251104; t=1783144686; x=1783749486;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :content-type:mime-version:subject:date:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=aIbYkeRmMJ3qAal/r9Tkhbn+MH1/NZUDryRDlJi/XtY=;
-        b=sRTnUVjokXj43yGQAbWgs4p8rWaIC634OLhJ3QxasmMJCbFPIMBNGfeU1OQMQGH/Yx
-         g2ug7C6X3GNqJl/wZTc0Bw0p7jdXDyhx974tIDRKd8iJsN9SMJnujMs1YlRceumy7Da4
-         09W8F/lNseaKl0E+9TXMBlNYoy7nQECBpemVfYxt53xouUdwelO3H57kDPu7YE77mj50
-         AHG5q/92XR+m/6VFbBXWdAS9uqZqxLoHtMBjTLiKHSstr7lB/3tz+qPaTJcUdapxj0ei
-         tIn8wLyApX4gHYptuyzasMIKu/SJq3Vz1tzom7jNWSWOHVF7gGBhXbwkXaDa28TPKOR1
-         VnQw==
-X-Forwarded-Encrypted: i=1; AHgh+RqKPht1EyTEzYj4dCAAGvSO0ojPld+43atRb8RYfj7hReB6L1mEcIcpJB/CZ+EwZxRNzrRGe0+Cu3o=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yw1B91aj0tmAdidpS34xH3pHmYt9my8HcXnc/RNw1Y/nd3NsBCn
-	43BHQXim1GvfYqs8KmAHKRgs0AFSFt9/SCot/3OXPOoAZErsgGKobWUV
-X-Gm-Gg: AfdE7cmK325qhNR58NZCiiLSrPEJH3BU9Q7ad48F3fxsuNVkOiq+pR/z2lLK11lewGN
-	OKmJjmT3zM1Q6n3Ena4i1B/n0L5JNWOXE4MFHAkr3roXSLbhY1kpjCJ7rOALGG7c+smm59myGxZ
-	OrODMKb+tv+7t4U6KTdZvsQlOaNCVb953ect38DpsVD0b8OwIdHZcs0qZXO4T3F8hZhtdxVWqOr
-	CUYT2Uh5Se45g90t4g/XQ2aI/jKM0r0cEdGiRaO0yK4o9RTdHK+YP35Q/XuHbUKqC0sMLcsZWqr
-	yZIjQBqC2YRw8Q93nWsX2oQE0XS3c3T68KacPCFBqz4geIBIp8TflRMHYPd2O3o6PnZYrFE456/
-	YCKkUIiwLwUrpuXOXfiPG8JH8Zw90LKdkqi0AEeaYK/oyBIR5GPhGuyzIrE4mOkQC83SxKMn34J
-	rWc/0E1oY5l28ZwlwygLw12EzMmDhFIRLuoKGSR7tw+uHzqRJ5YkK7vYWAzZgRw0r5SniF03V8k
-	y8=
-X-Received: by 2002:a17:90b:564d:b0:381:889a:65ca with SMTP id 98e67ed59e1d1-3829f5e7806mr2141892a91.28.1783144684570;
-        Fri, 03 Jul 2026 22:58:04 -0700 (PDT)
+         :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=EtRA/Iz7xW+gdF1+FPWoWbYlNNq+Ml51Iu6T+Ii+D0A=;
+        b=G9J3eLjO7+4r/Z3aH4qzvO9+PpLTAoImTaqLxn0qk8tcy8GH3E3QP677M0eQfHFcaj
+         GLt7isYIEHtN31iJ/oGz6hAP1P1qWeFWSu8DWyErxmZ1NLvMYkrmN7EW56ev7u0dpc9F
+         1t3CDsJPUxdUYoQPavT/xP+GvvLvqMxYminELO9Cl5jFtTvgXdI2VFq463sKom+Gtjnu
+         dYqNTdYq225uMbqJq28jPBVqbS8ikHiuYk+f4Jt31xBzrIvYaP8sL5rUJonENEikJU/W
+         t3JuLL9LAXKR1GrifFNdykgh3//r9Ruv2X7ng9yKkcBy5Yh4widhykIOiJtY+VZNHExn
+         KPxQ==
+X-Forwarded-Encrypted: i=1; AHgh+Rp+X/VrcLUq0oRvy+j32A55Kww9hS/cnS9vXQZLvbXGNy193A2ASFeQ6LQEdljHQi6QdGEKWUC88x0=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yzwd+10DhiAxQHMPOzo888jYZCTuxo/ic3l+MlFGses+3meyNiB
+	vMBICzLcySrrBg7iroL95nR8HN0qTbjEL8DLDyQPhOYJfBqyjpwhGqvw
+X-Gm-Gg: AfdE7ckdoQdFpCij3+4o+wSSRUaxqV95H7w/mfEAWokrhfTz4h+WFMiezKARgEfUfD2
+	VjTddL9czLhbCE9yFZZPySOybFu2SMNhx4HeiERnlunV9EzgEItXLqw4q5FOzxKARvPNjR2k7BR
+	PcDh8BQAb4JmeD2PvBwxemgg7ecUHklnrMSL3WiSA3W7w5r0+QXhEmjZxC2u24vmcncy7wepfFl
+	jKcuZ5E1H5bYuAZMAPR861o204mvJpVVRmFFgLtJpJTkLIhBZSTFh5Hjf6zVYATMlGxNYvhtBrk
+	jV11zIhbgeN3dFcyfxPkMrxsLjjHAi+cBtecd5Hyzv7HxuFPExA3cpNainmrpVHgyZUto2YgmuO
+	FGsM3XPlGg3voMpDBkSzwytvEzE/27USDSmODHP/O1pf6aK3j9K3ftpNbhyLRIoVdwvUmjXaLLm
+	r3Z1Y5nYZNs9S+dwPgqkjDrrtRrh5OJ85XtteDfaJgstvKaEuMJjvJyeqPZMpFTo8eNnDR/KZAK
+	QA=
+X-Received: by 2002:a17:90b:3f8b:b0:37f:ed7e:7e42 with SMTP id 98e67ed59e1d1-38281185463mr2376208a91.14.1783144686491;
+        Fri, 03 Jul 2026 22:58:06 -0700 (PDT)
 Received: from dtor-ws.sjc.corp.google.com ([2a00:79e0:2ebe:8:880:86f9:3b00:6746])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-30f0b813cd9sm26262412eec.8.2026.07.03.22.58.03
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-30f0b813cd9sm26262412eec.8.2026.07.03.22.58.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Jul 2026 22:58:03 -0700 (PDT)
+        Fri, 03 Jul 2026 22:58:05 -0700 (PDT)
 From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Date: Fri, 03 Jul 2026 22:57:42 -0700
-Subject: [PATCH 19/26] Input: maple_keyb - remove redundant mutex and
- remove method
+Date: Fri, 03 Jul 2026 22:57:43 -0700
+Subject: [PATCH 20/26] Input: maple_keyb - convert to devm
 MIME-Version: 1.0
-Message-Id: <20260703-b4-maple-cleanup-v1-19-41e424964da5@gmail.com>
+Message-Id: <20260703-b4-maple-cleanup-v1-20-41e424964da5@gmail.com>
 References: <20260703-b4-maple-cleanup-v1-0-41e424964da5@gmail.com>
 In-Reply-To: <20260703-b4-maple-cleanup-v1-0-41e424964da5@gmail.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, 
@@ -89,8 +87,8 @@ Cc: Florian Fuchs <fuchsfl@gmail.com>,
  linux-mtd@lists.infradead.org, linux-sh@vger.kernel.org
 X-Mailer: b4 0.16-dev-6911d
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260703_225805_874156_4FB84ABC 
-X-CRM114-Status: GOOD (  14.11  )
+X-CRM114-CacheID: sfid-20260703_225807_305781_915D87F4 
+X-CRM114-Status: GOOD (  11.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,77 +105,73 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Now that the Maple bus core handles callback synchronization via
-callback_mutex, the keyboard-driver-specific maple_keyb_mutex
-is redundant.
+Convert the driver to use managed resources to simplify resource
+lifecycle management.
 
-Remove the mutex and its usage. Since the mutex was the only reason
-we kept the remove method (to synchronize during detach), we can
-now remove remove_maple_kbd entirely. The devm-managed resource
-cleanup is sufficient.
+This eliminates manual error handling in probe() and removes manual
+input device unregistration and memory freeing from remove().
 
 Assisted-by: Antigravity:gemini-3.5-flash
 Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 ---
- drivers/input/keyboard/maple_keyb.c | 25 +++----------------------
- 1 file changed, 3 insertions(+), 22 deletions(-)
+ drivers/input/keyboard/maple_keyb.c | 29 +++++++++--------------------
+ 1 file changed, 9 insertions(+), 20 deletions(-)
 
 diff --git a/drivers/input/keyboard/maple_keyb.c b/drivers/input/keyboard/maple_keyb.c
-index ab9257db7e03..aa9a4a80e26f 100644
+index aa9a4a80e26f..bd4ce803a13e 100644
 --- a/drivers/input/keyboard/maple_keyb.c
 +++ b/drivers/input/keyboard/maple_keyb.c
-@@ -14,9 +14,6 @@
- #include <linux/timer.h>
- #include <linux/maple.h>
+@@ -155,17 +155,13 @@ static int probe_maple_kbd(struct maple_device *mdev)
+ 	struct dc_kbd *kbd;
+ 	struct input_dev *idev;
  
--/* Very simple mutex to ensure proper cleanup */
--static DEFINE_MUTEX(maple_keyb_mutex);
+-	kbd = kzalloc_obj(*kbd);
+-	if (!kbd) {
+-		error = -ENOMEM;
+-		goto fail;
+-	}
++	kbd = devm_kzalloc(&mdev->dev, sizeof(*kbd), GFP_KERNEL);
++	if (!kbd)
++		return -ENOMEM;
+ 
+-	idev = input_allocate_device();
+-	if (!idev) {
+-		error = -ENOMEM;
+-		goto fail_idev_alloc;
+-	}
++	idev = devm_input_allocate_device(&mdev->dev);
++	if (!idev)
++		return -ENOMEM;
+ 
+ 	kbd->dev = idev;
+ 	memcpy(kbd->keycode, dc_kbd_keycode, sizeof(kbd->keycode));
+@@ -179,7 +175,6 @@ static int probe_maple_kbd(struct maple_device *mdev)
+ 	idev->keycodesize = sizeof(unsigned short);
+ 	idev->keycodemax = ARRAY_SIZE(kbd->keycode);
+ 	idev->id.bustype = BUS_HOST;
+-	idev->dev.parent = &mdev->dev;
+ 	idev->open = dc_kbd_open;
+ 	idev->close = dc_kbd_close;
+ 
+@@ -191,15 +186,9 @@ static int probe_maple_kbd(struct maple_device *mdev)
+ 
+ 	error = input_register_device(idev);
+ 	if (error)
+-		goto fail_register;
+-	return error;
 -
- #define NR_SCANCODES 256
- 
- MODULE_AUTHOR("Adrian McMenamin <adrian@mcmen.demon.co.uk");
-@@ -128,15 +125,9 @@ static void dc_kbd_callback(struct mapleq *mq)
- 	struct dc_kbd *kbd = maple_get_drvdata(mapledev);
- 	unsigned long *buf = (unsigned long *)(mq->recvbuf->buf);
- 
--	/*
--	 * We should always get the lock because the only
--	 * time it may be locked is if the driver is in the cleanup phase.
--	 */
--	scoped_guard(mutex_try, &maple_keyb_mutex) {
--		if (buf[1] == mapledev->function) {
--			memcpy(kbd->new, buf + 2, 8);
--			dc_scan_kbd(kbd);
--		}
-+	if (buf[1] == mapledev->function) {
-+		memcpy(kbd->new, buf + 2, 8);
-+		dc_scan_kbd(kbd);
- 	}
- }
- 
-@@ -211,22 +202,12 @@ static int probe_maple_kbd(struct maple_device *mdev)
- 	return error;
- }
- 
--static void remove_maple_kbd(struct maple_device *mdev)
--{
--	struct dc_kbd *kbd = maple_get_drvdata(mdev);
- 
--	guard(mutex)(&maple_keyb_mutex);
- 
--	input_unregister_device(kbd->dev);
+-fail_register:
+-	input_free_device(idev);
+-fail_idev_alloc:
 -	kfree(kbd);
--
--
--}
+-fail:
+-	return error;
++		return error;
++
++	return 0;
+ }
  
- static struct maple_driver dc_kbd_driver = {
- 	.function = MAPLE_FUNC_KEYBOARD,
- 	.probe =	probe_maple_kbd,
--	.remove =	remove_maple_kbd,
- 	.drv = {
- 		.name = "Dreamcast_keyboard",
- 	},
+ 
 
 -- 
 2.55.0.rc0.799.gd6f94ed593-goog
