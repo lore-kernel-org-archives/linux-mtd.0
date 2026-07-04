@@ -4,79 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42B17C43458
-	for <linux-mtd@archiver.kernel.org>; Sat,  4 Jul 2026 05:58:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5EA06C43458
+	for <linux-mtd@archiver.kernel.org>; Sat,  4 Jul 2026 05:58:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=toFulsIYCKuZLZ9fsw5qJM/k4uL5YfJ93D4VJasrSh4=; b=2blco18e+hN6by
-	kM4NWEX5fINLGgDNta+UMf8zeD5ztsiPMjGpBUj5wx0SvvGQArh+TCaWXRSaS/0l8S/wm68Z0BVWN
-	x/3R+p4vIC6N+7Zl2CunnE+u0SwXH5GPRLJIUgzgBbuGdKsCAT/+h2j0G0sdXigL/X33S90ocuVy9
-	J4HqWrsLYkRDejnB9nHsjNJeMQe+4OYloUItunB5HGh7nHnud70P1ZtI3mNhOi6UUyJAyWc4oY1iI
-	dxHj2pp0wPhQEn1PKK33WDCtI7AMeEYyDVv46F/d0YsiRDR8M2JneeBkpd5vhUeDMiQzEHbAT0FOK
-	CgZl9PREPwY0AdI4z0Zw==;
+	List-Owner; bh=NLv682IJi5oesb1KFA4dkuiE2RUEgnS0175UBCSEj1Q=; b=s3Y6UNBBoZknRm
+	/EOo3sJWl+TJFCJtZBdeFu2oiP9mTiGGs3CKJxsYo1BOiN3y5SLpI4E/OQC5dSydoqeDT2N/4JqDj
+	aYgr8Pgt9X9Jfv8+DWJsqgREJDdaWTODdOFFg+8My8t30QcXhDrfXQ2z8RS2wYoWTNbVCXJQ3y0WR
+	LNeoJlESvEny2v1iO3qbl1WptBaDgSJGhs1ipdzNbmn75iYg0qgFgvBkeZD+hBuH4g6SWsKDSv2YJ
+	hA/uY2Vp7g1pVgz4Y5VV0NzpKSs7FPpw5dogyGLiifYzR7vTorIzBcIeJByreGAFVoUOEBteknqCg
+	Wkm+utGDcdObOfP1VK4g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wftOQ-00000008CXK-43cf;
-	Sat, 04 Jul 2026 05:58:22 +0000
-Received: from mail-pj1-x102a.google.com ([2607:f8b0:4864:20::102a])
+	id 1wftOU-00000008Cbi-0Qxw;
+	Sat, 04 Jul 2026 05:58:26 +0000
+Received: from mail-pj1-x102f.google.com ([2607:f8b0:4864:20::102f])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wftOK-00000008CLt-3bvu
+	id 1wftOJ-00000008CLb-1xA0
 	for linux-mtd@lists.infradead.org;
-	Sat, 04 Jul 2026 05:58:21 +0000
-Received: by mail-pj1-x102a.google.com with SMTP id 98e67ed59e1d1-37df416c44bso969516a91.2
-        for <linux-mtd@lists.infradead.org>; Fri, 03 Jul 2026 22:58:16 -0700 (PDT)
+	Sat, 04 Jul 2026 05:58:22 +0000
+Received: by mail-pj1-x102f.google.com with SMTP id 98e67ed59e1d1-3825c406ffeso466428a91.0
+        for <linux-mtd@lists.infradead.org>; Fri, 03 Jul 2026 22:58:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1783144696; x=1783749496; darn=lists.infradead.org;
+        d=gmail.com; s=20251104; t=1783144694; x=1783749494; darn=lists.infradead.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :content-type:mime-version:subject:date:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=tEG7tX5+i0yM5fGvf5APIP8u2V/3BZ/C2R2J5nBR/YM=;
-        b=I4WGGVc95iUGGGpX0LejSpm5EXHpWkPf8BOdbDzgT70wGybt9R4YFI/6Vsf3U0tjVz
-         wXeYGPT5nD4gpn5tAbk6ralP6HNyA9sBHu8XNUku+LHf9nwKseFMwbaXXjYoWMHnPo1q
-         Z1Ez0ujBcM6fgrOjrafFiI9v7TYBZLebBgdFRxgwLtouaZyaYV/lsB6pdnN3rLEptM8Q
-         NxvCbfCV3Ox9+IEHSzYpfHKz+nM6upIqrSdUgrmzW54Ox0k+4Hjg44zzdsXhwQzh0thW
-         tIiuemGKNRSYbLLSdRd/SGYuYb2yq9gzULsCMgHmYVJhxS9XxbA5pd6dOapQEUgPoWCL
-         fYrg==
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/05hwWd8d+nbJ2K7TsHjukJa8IrGxWrR/Hgx1jL48II=;
+        b=YaFZ2gvCpIV4M/sHwyAKHjvterkHbB3eb1bdKkbsVx3Zqw69RRpljJrUL+NkySe9FV
+         yudjltSorGtYIitaV6l5qQFgBn6xCkqB8OzmwATvIQC1tTRtUF6Pcc7TuanoW7anjS9P
+         NvBEejcjrT3N57EAoIQNNdNZZI464a6+Nj0gHa9iiXcmlaB4uEuToj+cyz1nNaRHqDGw
+         pQFkLSgaS3g2NtiVGZQgry9l3jLOnXZc5X/Y2rFCp0kNM+JwrDS8BygKvcZojeCGy2iT
+         k/mmh6vNvNkQK79vCPAIOo4o8Bh7v3Tk3dgUXut0hhOTYrqSrqLayvQgQZ9KDBXo5I38
+         a0BQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783144696; x=1783749496;
+        d=1e100.net; s=20251104; t=1783144694; x=1783749494;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :content-type:mime-version:subject:date:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=tEG7tX5+i0yM5fGvf5APIP8u2V/3BZ/C2R2J5nBR/YM=;
-        b=ck1wEyjyefLL14MzaPxpctK4n4Sss/rWUg92HzvyI3n8Eh3N/70h9cB+Om5Nb7B24x
-         CAARsdu/ar7UYt7/lH8kTmlJclZ+iFb3fjfiBE+7C1ig33peMjjtImSIxwdFsZtvyNnm
-         fjjD67cvE8+7chhkV/69imSXz0Z+KvuoWhzXJ4J0r2eHGxa9oQnu1Ob5vkDQfoi3EwP8
-         gW1mE/EowFjKfD6Q93YPRodjxu4BOBPFvqygf1ctAnf3nJ4Zp2NLBjogHAQKCoVOruca
-         2U12cofCP8buqPzm7IQrbdoj6e4Z8X6XeDoGuO4/B56d82VyFnkLUIkd4i595lgnm8j6
-         1L3g==
-X-Forwarded-Encrypted: i=1; AHgh+Ro9zmMhmCcaWGm39T8h4Rfdlxa+R6WMQ4T/IpG3c4kKAW83c/RVpy+iOmqRNqCkHs6zaRgrPeuzSBc=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxE1pN5JoSHbCJhkTUiwdSsNWdshfuTnnwXT0YgIPlVD+38Cir0
-	/4xBoqW3Ctj5EgzKNmtn7mSQ4Of3D8vi+gSDnkxfXc2hPB7L+Q8xLr3e
-X-Gm-Gg: AfdE7clYvtZRQknCSQia1U+lnpXN7HX/QolwXa8pOpg1nWw43Gob5YXtjtlZNx+A8LF
-	JDDGz7ReRfewdfR/7rREKCZ9xlUdZDjbrTR0wZxPdXso5wK5OM255vwlhkFsyjHoNQHKpc8JI7W
-	LBqjZTVvaT2ybMXnlDS1k1saYtbCmwBDzEzLqkf6lb6ow/2asLEtvDBc5pFHBbEOHH4T3WpFOB1
-	Uay0cK3V031xr3fEOOYHGyjMhlG2EXdoUY88WkAOMOf1+jOFK02eSOEu8pKdyYnZpz3xr6KQmRK
-	1aCPfc177UOOiSelJK8TPfuaw7tUWDpDo7m2MVvmxLLhzFVNWKeGH7PAlZF2seAO1G9EHHbmK7r
-	EMm/6iKYaC3rOCQ4MkAqsA3dWuanPcX/1rvsiAiCpyFMp4zmG/+ZSQq6saerF+bHbLL2RxWXIDY
-	UZBR8C/dQTPHlpvZHWE2R64mcF/rI0XnCY77rnP6Usc5gLStFu12U0dCNaPynIHMS5o1UdfNjhr
-	rY=
-X-Received: by 2002:a17:90a:d44f:b0:37c:8628:f79e with SMTP id 98e67ed59e1d1-382934ec0bemr2222411a91.16.1783144696090;
-        Fri, 03 Jul 2026 22:58:16 -0700 (PDT)
+         :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=/05hwWd8d+nbJ2K7TsHjukJa8IrGxWrR/Hgx1jL48II=;
+        b=bgROLetuJ87VbLmzaXZsjMYUBfFwY2XeqJA7dQgPzMn50yYJRA/dwVVdFqG6R9tlDZ
+         NTYzd0/pcZMwKaKZIJJ00G9fVRDmBleOjmTRYBJ+8rmv7doJoImBVl1q99eFVteqf+/6
+         FOPP2kLS1Kp9vV3z6N2+JESTvCf0MkMstGB10RQy15Bc1T3mgUt1ZUOGnDDlyUpiasTC
+         wuqYpif0beOQ/vqbziIftN8mBI0XZD12oGoIZXbbsECHaQvYrr1Jhz4lWwit4P8FPawi
+         kA3uFmA/fr08PrxtqeLe24uIGKB2eo/n2HOj0Z0L+EpfZUrv00XUA9ziKO8Tdq3lohjA
+         O6kw==
+X-Forwarded-Encrypted: i=1; AHgh+Roblul/s6+DC6rHOH63vvAUOtQ5PWa7iRWmoTL4U9lDg67mlDvTmj94Rm/vRHuDSflaOZRlLertfKE=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yzcj934qJKJPjbwhJoGVo/EjwzAeTw6/rFZHvlAP+HGIxmjp+vu
+	KnC0Nnnv6XeUJhY/PaIoTwLEivnqlkIsvm5Yy2zyZzBj/sbJ7Y48gRX5
+X-Gm-Gg: AfdE7ckSfUPXw+yhdmhes1RNaDKnBerJ2Hhm7gOMoIqVqyISV4d+FvyczVYYiefDoCD
+	frncOJoMEZKwMeeFbL5+QOmGWtMMuo8jK2BI5kt6w020LUWdbZRPiB/pLPt7SDDz3/wAMxoKZbZ
+	KX0xA5quNn21rp3hwzhzS7XhAHpme9sCVDcVeLkLKNxfzVALWijwnTPxvFWbBUl67+pg+FTByUA
+	FsPc3+cQsjjYnV1CMHVFD32UjicMK2acDAAuuC1cAnmIj5QU7Kv7+LxTBYVzUcs2LgmP6sdxoER
+	Q4dwPewBxw/ZCi0dseuZi+arajIN5/itchn9xRGDiM8Y73t6kl0VqOFpvsJRVBtYcelLW1zgweE
+	Dzusx2vhw0wEdSCmND7+4NCklxGJtc4OWemnxO8uKxk6I1cWkBZ7hZsmWpCQx2HHUEJrKHfBqTo
+	53rxDJAFTFrPiRBOMyH+hYBCBUwqs7uvAz0BtIqICNbz4xNrFFZrO8eA9SU+2IeAOoI1XQTYb5O
+	4I=
+X-Received: by 2002:a17:90b:57c8:b0:382:1cf1:a0a6 with SMTP id 98e67ed59e1d1-3829f5eadf7mr2306393a91.24.1783144694449;
+        Fri, 03 Jul 2026 22:58:14 -0700 (PDT)
 Received: from dtor-ws.sjc.corp.google.com ([2a00:79e0:2ebe:8:880:86f9:3b00:6746])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-30f0b813cd9sm26262412eec.8.2026.07.03.22.58.14
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-30f0b813cd9sm26262412eec.8.2026.07.03.22.58.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Jul 2026 22:58:15 -0700 (PDT)
+        Fri, 03 Jul 2026 22:58:13 -0700 (PDT)
 From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Date: Fri, 03 Jul 2026 22:57:49 -0700
-Subject: [PATCH 26/26] Input: maple_keyb - remove redundant 'new' buffer
- from struct dc_kbd
+Date: Fri, 03 Jul 2026 22:57:48 -0700
+Subject: [PATCH 25/26] Input: maplecontrol - fix style issues
 MIME-Version: 1.0
-Message-Id: <20260703-b4-maple-cleanup-v1-26-41e424964da5@gmail.com>
+Message-Id: <20260703-b4-maple-cleanup-v1-25-41e424964da5@gmail.com>
 References: <20260703-b4-maple-cleanup-v1-0-41e424964da5@gmail.com>
 In-Reply-To: <20260703-b4-maple-cleanup-v1-0-41e424964da5@gmail.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, 
@@ -89,8 +87,9 @@ Cc: Florian Fuchs <fuchsfl@gmail.com>,
  linux-mtd@lists.infradead.org, linux-sh@vger.kernel.org
 X-Mailer: b4 0.16-dev-6911d
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260703_225817_335731_628FBC91 
-X-CRM114-Status: GOOD (  14.11  )
+X-CRM114-CacheID: sfid-20260703_225816_972939_F1D270ED 
+X-CRM114-Status: UNSURE (   9.20  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,92 +106,62 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The 'new' buffer in struct dc_kbd is only ever used as a temporary
-staging area during dc_kbd_callback() to pass the received hardware
-packet to dc_scan_kbd().
-
-Remove 'new' from struct dc_kbd entirely and pass the received buffer
-pointer directly to dc_scan_kbd(). This saves 8 bytes in struct dc_kbd
-and avoids an unnecessary 8-byte memcpy on every keyboard poll cycle.
+Fix coding style and formatting issues reported by checkpatch.pl and
+switch to using BIT(). When reporting D-PAD events avoid conditionals.
 
 Assisted-by: Antigravity:gemini-3.5-flash
 Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 ---
- drivers/input/keyboard/maple_keyb.c | 23 ++++++++++-------------
- 1 file changed, 10 insertions(+), 13 deletions(-)
+ drivers/input/joystick/maplecontrol.c | 25 ++++++++++++-------------
+ 1 file changed, 12 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/input/keyboard/maple_keyb.c b/drivers/input/keyboard/maple_keyb.c
-index 1d99ed5bad1e..5b10c6ba7bd5 100644
---- a/drivers/input/keyboard/maple_keyb.c
-+++ b/drivers/input/keyboard/maple_keyb.c
-@@ -23,8 +23,7 @@ MODULE_LICENSE("GPL");
- struct dc_kbd {
- 	struct input_dev *dev;
- 	unsigned short keycode[NR_SCANCODES];
--	unsigned char new[8];
--	unsigned char old[8];
-+	u8 old[8];
- };
+diff --git a/drivers/input/joystick/maplecontrol.c b/drivers/input/joystick/maplecontrol.c
+index 3ef6652d40cb..457a73d91239 100644
+--- a/drivers/input/joystick/maplecontrol.c
++++ b/drivers/input/joystick/maplecontrol.c
+@@ -35,22 +35,22 @@ static void dc_pad_callback(struct mapleq *mq)
+ 	buttons = ~le16_to_cpup((__le16 *)(res + 8));
  
- static const unsigned short dc_kbd_keycode[NR_SCANCODES] = {
-@@ -75,7 +74,7 @@ static const unsigned short dc_kbd_keycode[NR_SCANCODES] = {
- 	KEY_CALC, KEY_RESERVED, KEY_RESERVED, KEY_RESERVED, KEY_RESERVED
- };
+ 	input_report_abs(dev, ABS_HAT0Y,
+-		(buttons & 0x0010 ? -1 : 0) + (buttons & 0x0020 ? 1 : 0));
++			 !!(buttons & BIT(5)) - !!(buttons & BIT(4)));
+ 	input_report_abs(dev, ABS_HAT0X,
+-		(buttons & 0x0040 ? -1 : 0) + (buttons & 0x0080 ? 1 : 0));
++			 !!(buttons & BIT(7)) - !!(buttons & BIT(6)));
+ 	input_report_abs(dev, ABS_HAT1Y,
+-		(buttons & 0x1000 ? -1 : 0) + (buttons & 0x2000 ? 1 : 0));
++			 !!(buttons & BIT(13)) - !!(buttons & BIT(12)));
+ 	input_report_abs(dev, ABS_HAT1X,
+-		(buttons & 0x4000 ? -1 : 0) + (buttons & 0x8000 ? 1 : 0));
++			 !!(buttons & BIT(15)) - !!(buttons & BIT(14)));
  
--static void dc_scan_kbd(struct dc_kbd *kbd)
-+static void dc_scan_kbd(struct dc_kbd *kbd, const u8 *new)
- {
- 	struct input_dev *dev = kbd->dev;
- 	void *ptr;
-@@ -86,11 +85,11 @@ static void dc_scan_kbd(struct dc_kbd *kbd)
- 		code = i + 224;
- 		keycode = kbd->keycode[code];
- 		input_event(dev, EV_MSC, MSC_SCAN, code);
--		input_report_key(dev, keycode, (kbd->new[0] >> i) & 1);
-+		input_report_key(dev, keycode, (new[0] >> i) & 1);
- 	}
+-	input_report_key(dev, BTN_C,      buttons & 0x0001);
+-	input_report_key(dev, BTN_B,      buttons & 0x0002);
+-	input_report_key(dev, BTN_A,      buttons & 0x0004);
+-	input_report_key(dev, BTN_START,  buttons & 0x0008);
+-	input_report_key(dev, BTN_Z,      buttons & 0x0100);
+-	input_report_key(dev, BTN_Y,      buttons & 0x0200);
+-	input_report_key(dev, BTN_X,      buttons & 0x0400);
+-	input_report_key(dev, BTN_SELECT, buttons & 0x0800);
++	input_report_key(dev, BTN_C,      buttons & BIT(0));
++	input_report_key(dev, BTN_B,      buttons & BIT(1));
++	input_report_key(dev, BTN_A,      buttons & BIT(2));
++	input_report_key(dev, BTN_START,  buttons & BIT(3));
++	input_report_key(dev, BTN_Z,      buttons & BIT(8));
++	input_report_key(dev, BTN_Y,      buttons & BIT(9));
++	input_report_key(dev, BTN_X,      buttons & BIT(10));
++	input_report_key(dev, BTN_SELECT, buttons & BIT(11));
  
- 	for (i = 2; i < 8; i++) {
--		ptr = memchr(kbd->new + 2, kbd->old[i], 6);
-+		ptr = memchr(new + 2, kbd->old[i], 6);
- 		code = kbd->old[i];
- 		if (code > 3 && !ptr) {
- 			keycode = kbd->keycode[code];
-@@ -103,8 +102,8 @@ static void dc_scan_kbd(struct dc_kbd *kbd)
- 					code);
- 			}
- 		}
--		ptr = memchr(kbd->old + 2, kbd->new[i], 6);
--		code = kbd->new[i];
-+		ptr = memchr(kbd->old + 2, new[i], 6);
-+		code = new[i];
- 		if (code > 3 && !ptr) {
- 			keycode = kbd->keycode[code];
- 			if (keycode) {
-@@ -118,19 +117,17 @@ static void dc_scan_kbd(struct dc_kbd *kbd)
- 		}
- 	}
- 	input_sync(dev);
--	memcpy(kbd->old, kbd->new, 8);
-+	memcpy(kbd->old, new, 8);
+ 	input_report_abs(dev, ABS_GAS,    res[10]);
+ 	input_report_abs(dev, ABS_BRAKE,  res[11]);
+@@ -138,7 +138,6 @@ static int probe_maple_controller(struct maple_device *mdev)
+ 		return error;
+ 
+ 	return 0;
+-
  }
  
- static void dc_kbd_callback(struct mapleq *mq)
- {
- 	struct maple_device *mapledev = mq->dev;
- 	struct dc_kbd *kbd = maple_get_drvdata(mapledev);
--	unsigned long *buf = (unsigned long *)(mq->recvbuf->buf);
-+	unsigned long *buf = mq->recvbuf->buf;
- 
--	if (buf[1] == mapledev->function) {
--		memcpy(kbd->new, buf + 2, 8);
--		dc_scan_kbd(kbd);
--	}
-+	if (buf[1] == mapledev->function)
-+		dc_scan_kbd(kbd, mq->recvbuf->buf + 8);
- }
- 
- static int dc_kbd_open(struct input_dev *dev)
+ static struct maple_driver dc_pad_driver = {
 
 -- 
 2.55.0.rc0.799.gd6f94ed593-goog
