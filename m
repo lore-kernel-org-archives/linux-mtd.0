@@ -4,79 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25D42C43458
-	for <linux-mtd@archiver.kernel.org>; Sat,  4 Jul 2026 05:58:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9207C43602
+	for <linux-mtd@archiver.kernel.org>; Sat,  4 Jul 2026 05:58:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=YtpLdopRm6XFcznjeVojqzpkrMQh4u8kLBFeS16bnII=; b=V9guNNSjOwz6PG
-	sd/rnLdIw/BUcK1kLKrU8NJp2xBxv6JYXzDlJlp4ola/iLmeWwHUv5cLLen0sxvGTUs3DAUiY7FP9
-	wnP9fV2a8lfckGNQjk/n9az6Jwgk93HJGcapk0X4JDfrqrpjqPcFopNKEKz2yoGJGn1hsCLIP1n8Z
-	6P6v7LMPcvwqYKLshVaWYZkhh9073fVwKSWk64TPc18G//PoV2Pnfi/9C/4jvQ2O5Te5oQK8yJicU
-	6U6KSkANCV1t9XP0RLPSn15m6gmIQMern4zfhotIwIl/F0h/sf7iY2R6dP6uJBCMC9kDbU3xhMdBf
-	a06UOxk75srS9CldZljA==;
+	List-Owner; bh=PIPv0YX9SiOpOLltbQJpJ1z0tse08drLsxzSQKg2CNc=; b=s/5LVhCjbq2Eet
+	ClMrurtmcGR78uB2JWfTVHr1VK/Hw5W7Ez8z+EZ78DL4CBAmS+urUEKpgt/fSixVqydXDfd6CVGoR
+	yVMvXdVT+v2V87Sjt+jRzKo/ztbHTJhsY4PnFuZrNEXjPXt9B2CbXQgyRJQIpcnNdAYY8GpumiVkg
+	HxV+CBcLR/jSvCCEOZM2VpzOV/s2EibH5z3S/F83gTgb5U3clXymo0EpFF6h4W60pyswxcF9jwx3I
+	w7T5XjTSMM8CrPdYvw/46cw6K7seJrbWF5Mh8k4Z6bkv/9+Z4eihcLVJ4jKDvJdT1I98RBTjosjxm
+	vOnzCBBdkCeV95dlqYHg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wftO3-00000008Bss-1m6c;
-	Sat, 04 Jul 2026 05:57:59 +0000
-Received: from mail-pj1-x1032.google.com ([2607:f8b0:4864:20::1032])
+	id 1wftO4-00000008BuZ-2I7s;
+	Sat, 04 Jul 2026 05:58:00 +0000
+Received: from mail-pg1-x534.google.com ([2607:f8b0:4864:20::534])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wftNz-00000008Bll-1USk
+	id 1wftO1-00000008BoF-04Q6
 	for linux-mtd@lists.infradead.org;
-	Sat, 04 Jul 2026 05:57:56 +0000
-Received: by mail-pj1-x1032.google.com with SMTP id 98e67ed59e1d1-3811074a8c5so885671a91.1
-        for <linux-mtd@lists.infradead.org>; Fri, 03 Jul 2026 22:57:55 -0700 (PDT)
+	Sat, 04 Jul 2026 05:57:58 +0000
+Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-c96b08cdd1cso852946a12.0
+        for <linux-mtd@lists.infradead.org>; Fri, 03 Jul 2026 22:57:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1783144674; x=1783749474; darn=lists.infradead.org;
+        d=gmail.com; s=20251104; t=1783144676; x=1783749476; darn=lists.infradead.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :content-type:mime-version:subject:date:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=Z5F7LxDsRkHtfo4eJ/PQP5nz/gnv4TgKb2uK7bw1iEA=;
-        b=hmCHl5Me8vjWgA9IkKd9ZG0goFIGyTQhWeXI3z5A7FK42JrPD4bg7sL9y2PS2lVl8x
-         +HmhWECssrrhKOLrWoi2da8jPTzUUQvqUoH3EJ2v6zoGLuYsc0C2g1UqRKgkT5MNJ9yA
-         V5P72y6ljPiGztBkRG1WLGB9ExBCx69k4nIFqitj9WU0MyAKqYY1GYovS4bRHgvHYQZq
-         o1V5eYXKdZTxbqPKVj2YB023qkaXvIUnxw/ofoNcUP+i/51rqRf2j3C9nJDT/yP1f4+f
-         uQ5k+Cam5Kt//Jh1XOcWyb8X1ReoxqAepm1EpPxDIM3UOC7iIv8PtI1HK4UhSRS7Ctbh
-         533A==
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mdTmxlQdCLPDy6vLV7fvg2daIcNL2JqaHKiT0xd47mo=;
+        b=jLu9JVWVtEOeUIF2Qphl4cg6ELKD3/evueWNQo6fLe3j1wfKQGGnZZpvcQZqP+2fhy
+         TiQcg9KNUGxulErAmOqQRReXrJmQLBsFCUoXKz/KDpbCfsCkFf5bEWybE5LrGsG3dBua
+         d9H/gzwU8tnwNeLo8fzcD1PCO+SY9krPSAIaeTtdVnxbEcSfM1B89nX8GM6KRi5dHGYH
+         E1jPoHPE3s/fQlfGcjzRJWsZvoxf6rHdP2zOyWhN6OkBShK00ikZr+5O9CA1Lz6j80Ls
+         uriHUUht3UW+1gHgJfLRtZiRtpdbOsapFyG111PmJ1ys/3KFM1ynpYUiqRUoLgTwkkVu
+         zB+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783144674; x=1783749474;
+        d=1e100.net; s=20251104; t=1783144676; x=1783749476;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :content-type:mime-version:subject:date:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=Z5F7LxDsRkHtfo4eJ/PQP5nz/gnv4TgKb2uK7bw1iEA=;
-        b=FcFtmUHEKTByMLgVnyhMANzNouysX4IY2307ArkdMr2ml0LSO5/4As4NK8AuuPglza
-         xUGdmB2lECRvp6qp+PRJUiune+qw7ucnLs1s1aQXiiAdWqmvIROM9ROfoC7vousECPjp
-         Lz1ykIsm+hik0Ucsoqtrdh2IMRcH5rD1b2uNA89onsibuIOvqSlyuAOfCd8sDB49BYtj
-         w+qkUd0fGcG25GfPIDnvO1S5HEKH9uXyYc+KkmR1rVRjGmIKzssYGP77BLRqCowinWP3
-         CuPPwc77tTS759nDwEwPoKAzPKgrS7pydMB+2lKtlhIORgaYSxnNlWkXfYvQltMCDTdi
-         EDug==
-X-Forwarded-Encrypted: i=1; AHgh+RqGRrLny7deuS1VIKt7p9fMqohYeoagVDLLXUD+C0+QehHXUJeyNitoDox9jmIu/JX7KWN5VlRaVGE=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yyc0jogESklr4daNk+pRHb7FrFbfuJZ36akyP7JulqIzvCdi0i7
-	gonECbbqImWJ7z+Llg9lfZvtRBpyzebAFvrcoUXxpA9NEbyrM79TZyfV
-X-Gm-Gg: AfdE7clz2MEIpgqItTC8cPKUBgXnHekvSLKI2v309D+ZW8Ol3VRuikbAL5aUUBbqE25
-	Pooz0LUEUZEK8VKWN+EN2ERCSPblUojmU6lTAfilGtJoGPb2WXKL5ejnoqKVRetAjrDDLPLPZCV
-	OHLzSClfkjFT9X+7sqG3UP8TFH2mT8/90pjd3tvtQYrRKe4/u6CGWzQX9qCBBCa7IWkuxvrVX3V
-	mqiohRbawRsrCX4tGzyQx0Lt1apdWJ+8yljN4GHIxd/SvvAap1rJoZ8HMlRR04iYwpXbosKzHVT
-	v8RxjmqsuEt5dTAazN2U3JcgqLgcElE4A483P1ynSmKY7c7jugj8wQDxQB/b8nHbBRZwyjqi1nE
-	KabT4guZmwUjc1u7ULI+DyZbKh88+3VXLxcBnC+H5ZqLYIePJFoNln6oNtgUdsuhiFiPEOLK0Cr
-	pIytT1jhwYLYpAgh2cDUoeFt4B9fwg3PNhQgTVZ2QBXzyuQqbvBy++KYl6YPrIOJaZloLpLacaj
-	wc=
-X-Received: by 2002:a17:90b:1850:b0:37f:9ce1:735c with SMTP id 98e67ed59e1d1-3829f5ea616mr2372239a91.29.1783144674303;
-        Fri, 03 Jul 2026 22:57:54 -0700 (PDT)
+         :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=mdTmxlQdCLPDy6vLV7fvg2daIcNL2JqaHKiT0xd47mo=;
+        b=SLlnBxa0dycWs3Jh6xj5LLXruPH0wtpbzfuoIePaJNibxaZUGHDlZJCVRD290CmKc/
+         ZjQTtPAsIZLWCTENUqeJrdRQbunaKI1zcpowDzQ4IC+RHK/pTNfIvlNa6tVmx/FeERLh
+         ohmfiHKMNt/daTVL8U1qBgBAauSPI8Hwp3GnLgbYgnQf/YdaquvT9bxKfJNx6ag/JWJt
+         2TKServkmHG3tOnhsRT3FBeAn+pgGMTgBlR+OjNFwgYThUTilBEGQLqUQunz5Co/wl4S
+         WyM1yjf2x0gV5KnbgD/vC0vzBOQQPVmcysxprh02WJkMaxwJs8W6z6amG9o5JfDM7Ueq
+         F+GA==
+X-Forwarded-Encrypted: i=1; AFNElJ9X4wvZBbOGrqhmtYhYvzWgu+Job7d4Q/CWfF9eUYhkF7MHVefrZSBQGn0D3bnF8GRNpjblToAIHKk=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yz/sQ8CZF00o5C248GwMqUwR6B9wQC5xzivkweEZMCqWzk+lBQ5
+	X08ms27A8ZqnfwatxtLt8OAj9i+fVwpCre9PcWWVQ7As8fg84GZM/nk1
+X-Gm-Gg: AfdE7cncEEShRU8ty6yTJiqquiKFvQUFumkxjGPhTJzt1/V1FC9xJgharxnnvWt6Hrm
+	6yQfWSNnBQTpDV3MfCtbjZgjS7KC8hGZRNkXhUXPM5BizVXOxW49Wz43Vrwm63VNQhXRni+Dwa+
+	snlY64sVVxblo7cURIzCB5GZWFuLnr1hX0gLEv8yXQ3C7tOxhFOe+K2dHzgzgVGsxGGuazIq/RZ
+	qxhiecappXg8U8EtwECgt8IqxuZKweIH4QJLPonTXU1MnZ7cCgTZXuxKstbfSAEFW6yQ5ZfVziT
+	Driz4yCZsAW4cHBc7PJgkgurpoy9u+Z24RWY24u4TYZ9u+tobyxGeUYCGxF5uZ8/U48CwIFZj52
+	NMi1wPSg8Nq0+62JTmKHbww3JRdn63gdRiZRfKDXveNv6uAoacrZLyGvipmW5xPVtIIwdYOOSt7
+	AIv7Yied7r5qjL69ESLZyONzk5XMEBIHsfmzL/MEukhj75sdEnfalf97ilfw1o6B2H6Y380EtS0
+	g4=
+X-Received: by 2002:a05:6a21:1bc3:b0:3bf:7c02:c46f with SMTP id adf61e73a8af0-3c03e21c2e6mr2608163637.14.1783144676040;
+        Fri, 03 Jul 2026 22:57:56 -0700 (PDT)
 Received: from dtor-ws.sjc.corp.google.com ([2a00:79e0:2ebe:8:880:86f9:3b00:6746])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-30f0b813cd9sm26262412eec.8.2026.07.03.22.57.52
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-30f0b813cd9sm26262412eec.8.2026.07.03.22.57.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Jul 2026 22:57:53 -0700 (PDT)
+        Fri, 03 Jul 2026 22:57:55 -0700 (PDT)
 From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Date: Fri, 03 Jul 2026 22:57:36 -0700
-Subject: [PATCH 13/26] Input: maple_keyb - remove unused mdev->driver
+Date: Fri, 03 Jul 2026 22:57:37 -0700
+Subject: [PATCH 14/26] mtd: maps: vmu-flash: remove unused mdev->driver
  assignment
 MIME-Version: 1.0
-Message-Id: <20260703-b4-maple-cleanup-v1-13-41e424964da5@gmail.com>
+Message-Id: <20260703-b4-maple-cleanup-v1-14-41e424964da5@gmail.com>
 References: <20260703-b4-maple-cleanup-v1-0-41e424964da5@gmail.com>
 In-Reply-To: <20260703-b4-maple-cleanup-v1-0-41e424964da5@gmail.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, 
@@ -89,7 +88,7 @@ Cc: Florian Fuchs <fuchsfl@gmail.com>,
  linux-mtd@lists.infradead.org, linux-sh@vger.kernel.org
 X-Mailer: b4 0.16-dev-6911d
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260703_225755_404861_EB0CC759 
+X-CRM114-CacheID: sfid-20260703_225757_064438_564423AC 
 X-CRM114-Status: GOOD (  10.53  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -112,42 +111,30 @@ commit 1795cf48b322 ("sh/maple: clean maple bus code") which removed
 the reading of this field.
 
 Remove the unused assignment to mdev->driver and the now unused
-mdrv variable in probe_maple_kbd.
+mdrv variable in probe_maple_vmu.
 
 Assisted-by: Antigravity:gemini-3.5-flash
 Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 ---
- drivers/input/keyboard/maple_keyb.c | 5 -----
- 1 file changed, 5 deletions(-)
+ drivers/mtd/maps/vmu-flash.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/input/keyboard/maple_keyb.c b/drivers/input/keyboard/maple_keyb.c
-index 0c92138bcc77..e277b929a375 100644
---- a/drivers/input/keyboard/maple_keyb.c
-+++ b/drivers/input/keyboard/maple_keyb.c
-@@ -161,13 +161,11 @@ static void dc_kbd_close(struct input_dev *dev)
- static int probe_maple_kbd(struct device *dev)
+diff --git a/drivers/mtd/maps/vmu-flash.c b/drivers/mtd/maps/vmu-flash.c
+index 10244e6731d0..8f7028ac1b56 100644
+--- a/drivers/mtd/maps/vmu-flash.c
++++ b/drivers/mtd/maps/vmu-flash.c
+@@ -772,11 +772,9 @@ static void vmu_file_error(struct maple_device *mdev, void *recvbuf)
+ static int probe_maple_vmu(struct device *dev)
  {
- 	struct maple_device *mdev;
--	struct maple_driver *mdrv;
- 	int i, error;
- 	struct dc_kbd *kbd;
- 	struct input_dev *idev;
+ 	struct maple_device *mdev = to_maple_dev(dev);
+-	struct maple_driver *mdrv = to_maple_driver(dev->driver);
  
- 	mdev = to_maple_dev(dev);
--	mdrv = to_maple_driver(dev->driver);
- 
- 	kbd = kzalloc_obj(*kbd);
- 	if (!kbd) {
-@@ -206,9 +204,6 @@ static int probe_maple_kbd(struct device *dev)
- 	error = input_register_device(idev);
- 	if (error)
- 		goto fail_register;
--
+ 	mdev->can_unload = vmu_can_unload;
+ 	mdev->fileerr_handler = vmu_file_error;
 -	mdev->driver = mdrv;
--
- 	return error;
  
- fail_register:
+ 	return vmu_connect(mdev);
+ }
 
 -- 
 2.55.0.rc0.799.gd6f94ed593-goog
