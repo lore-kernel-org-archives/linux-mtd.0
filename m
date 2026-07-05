@@ -4,106 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF573C43458
-	for <linux-mtd@archiver.kernel.org>; Sun,  5 Jul 2026 19:29:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 290AFC43458
+	for <linux-mtd@archiver.kernel.org>; Sun,  5 Jul 2026 20:26:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=iaYRwBO292iu+57mVkVZt5q/E4VPMd4EFMFDUaGcQTs=; b=i8jkUjhET3dMiQ
-	h9MrDLpQqDO3BZrZ7EtXBophkImNY8trHFsjh8nApXQ360N/Etz0SygNnwLL1XlG2jngoKz/qIUcG
-	nl2Y1WfT7T/9Jg3ALdwWxHdhwkfkVZEnH+14hjVG3JhZa/uv6PQ8jO4rlhIfIBfkUpABJGaJyw/V8
-	yQSGjjWq/PvKfHeGicqK0B/xMFzBhs9J6ueanUbwNglQIbBEYIcjbzs0Kk2flSDWcDfSq8OZzKKeu
-	ih3sIAzG8s15VJjBdbqNyLm0bUjTcEtRMtV8v8uQVCnVK0QNNO5MQWPB/MKXyUx5nYkm3l3tx4CBN
-	lUccDJwCNVFo0uj3u9Dg==;
+	List-Owner; bh=3EJAkOkNSKfGOyZiGPsGTkHKyY2KCPiyhkCQu5t3uWM=; b=0M8yE1xE5tQJLy
+	viX8bU3+u9+/TtC55qADoH0jzRtq1r2QZLaVkAMuHKQ67QJ+6NN/YLSyb1Mj5HaiBHGIw8xMDb7e7
+	KLb9jwwoMOkr85YrPJZCDnHVsecMkMdK1VjHG7EcNRtOhM/0z8hfKctY+SZ7Ex+5Vn/veW9GUmdNB
+	MzB07LreOdPMyx/nOlVSA+E0Hs38BtjxvEBY299vtEuvkpolYU1ayNMBPKDFjPwEMcnSweQe6Gp60
+	N5LiP2yyd3nx9J4hWdXzuRnw2abB+F1xV4VvTokuEfvheLi8W7skzj9ilpdWTJi+Rge5PEn2d0Byg
+	wBHGv4HahT4ZtOiA+m0Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wgSWQ-00000009cx6-2p0z;
-	Sun, 05 Jul 2026 19:28:58 +0000
-Received: from mail-ed1-x536.google.com ([2a00:1450:4864:20::536])
+	id 1wgTQJ-00000009hWn-4Bni;
+	Sun, 05 Jul 2026 20:26:44 +0000
+Received: from mail-pj1-x1031.google.com ([2607:f8b0:4864:20::1031])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wgSWK-00000009cwj-3M23
+	id 1wgTQH-00000009hWI-3AcY
 	for linux-mtd@lists.infradead.org;
-	Sun, 05 Jul 2026 19:28:54 +0000
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-698bf7a1a2dso3831210a12.0
-        for <linux-mtd@lists.infradead.org>; Sun, 05 Jul 2026 12:28:51 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1783279730; cv=none;
-        d=google.com; s=arc-20260327;
-        b=Gsix098QWZJRCaJ7qB+LH1czkorqXK5Fs7HjNqxdkeKfZXpIobSp6VEOdEEGk+/twU
-         j6FtzP/A9MhUyFEWVazYCm4aVLrq3FlIqq9pbwNBn/rqtOPI3wvld099m5s1t0HVcA8L
-         BlbIoZ/ljX1TUgRj4GhqyJAvCr0fB2SO76sb6GysI7QAzgtdeRCP13adWKOFM6/ieEWU
-         eseKBU4rgmKsnDE7tkGLDMZbsgNtxXmK1tRUzP7QizjgVYZi6GJGDNEExS7QDEU1QrTl
-         E5K60we8o5Ex/jSyDNiUlsYI6ww5Ie63489JXXDPwk730sFWnVDTlW4ycTxf8tQf2Uln
-         JpyQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:dkim-signature;
-        bh=6JUnRCM2Qxk6xap+InmsyC5JjApM9odZFBQkppiWmYI=;
-        fh=/ABpP/kJe1Hq2aIS4S+FrCjVJkIUMxrFwIDNDNhYJu4=;
-        b=AXTRyVOREAJJXNGmhp8QAGyOAtn/GhXO+FFLKb4mLqDMD0oOm+a8PO1AMex7bvDNtk
-         RSB3k0fbZUzeEIADrwkIFEbnv6YXQkN3nWp2bwTHkQfofFdXl9knaoGqwKy42LA+W5zW
-         8/vFOfVkw0AybN8dwlcHLOS2iIXrbMKSthgyScGXoqAaKhdxrQRpLiYWNYs0+4oYmsI5
-         P2oQuK5OshRukbOOo4l4yGFlW43XvfIzvtCsIejDNqdxldae+ZoWpPyIDnJ2tmr59dJg
-         6TOHdUE3drGSbmEATbu42CUYi8y18U3kwAffa1CdgdPqvMjhqm8V64E4dcSTOY4RUx2N
-         pm0w==;
-        darn=lists.infradead.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
+	Sun, 05 Jul 2026 20:26:43 +0000
+Received: by mail-pj1-x1031.google.com with SMTP id 98e67ed59e1d1-380cda7f00cso1818843a91.0
+        for <linux-mtd@lists.infradead.org>; Sun, 05 Jul 2026 13:26:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1783279730; x=1783884530; darn=lists.infradead.org;
-        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
-         :references:mime-version:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=6JUnRCM2Qxk6xap+InmsyC5JjApM9odZFBQkppiWmYI=;
-        b=Kd5tJBuhYBXXwvTLBkrrEWntC7pgi+6RYp9uaj0zdmhUf92VLJ3iX07uJGxux59izF
-         4OG2cd0EoOt0/ODz1GFMc9lguez45Cmnw/BROcjDsMLvijrK+v/MPfWP6VJdZ4APvqDx
-         fPq9gv0iUUA9YOgUDJnYgepmdsPFjcggbHPbecds0JfeMxU/wK7lnaovxIkXYRgaof5e
-         yej2XmOywmozWQb9mKqDmf6Gzc8oVjaoz6zLcJafDUZnVj5VaK/VRY8VRnFYpMhFyACq
-         rw1IibTQHDdZOV9JUGQRcTELc69XCCnljc+w9QBa1Ta7sTb2eVR1D66U759IFF3FGCZu
-         rvcQ==
+        d=gmail.com; s=20251104; t=1783283200; x=1783888000; darn=lists.infradead.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=GsgfJZ0NjzP8ZPKGtPWCLANSMMngsdofAxBSh+8zVRQ=;
+        b=q6we0jF/9+rdFGTvPid35bihM2OPTNxPE8DLSaIrUX+y1ooKYhyAOhWWG1YyPc5JX9
+         w+Ry91qHns5Uopvm3p66oD2r6qeW9FJhApxfky6e2z8FmMHDrJ+rl2dSPkLoXEFJwBCL
+         /PUGKN4R+NXN49J0yfBKJNgY5VNlJzzqtmelpYq6XCuxnvZs0Y5MBpkJWJD2n4VNDeCf
+         HkejssUVJFWpQI5Vprwrau0nKFiLvJEDdEAEcOfB5lwlWbIG4OwdKASc3RZ9hofkqWpG
+         lG5TpzJS+y7sKeuGDY6oQWWm0Ob97P0pROF+1UQIducxKRdQ+aRH8YujEy6RG0nNBq82
+         kp5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783279730; x=1783884530;
-        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
-         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=6JUnRCM2Qxk6xap+InmsyC5JjApM9odZFBQkppiWmYI=;
-        b=XXQ3j7o/zk68gxjeNDp7vKHYFFPm280srz7fuTnW+s3nTxz35szQxfpX1gZZx5bQLI
-         YywuJI8qxmcxL11uyRE8KrRvfBMAA+Y+N34SMUqnlK7sxb4yMWaTmbkzxFbKV0tKjgjh
-         wcQRl9mY23iG3HyfJupw7/Aecs8cqJV9EznnF9FwqhfyI7e0f1Ta3DTIsaxV+udmyPXc
-         qaPNmzYUr+FJXF0x+75l3+kZTafYzOypzuGv6e+MwOE/19RTsBFwR9LVYXfZlg2G9UrM
-         ZezKSmk1JNRsBrlncizlGH2ucswr+2rUMkflHlYMg9erdFvSzvQGRQSywECp/JMDT++v
-         SHWQ==
-X-Forwarded-Encrypted: i=1; AHgh+RqA/F00L0GCjxSeegEOWPzacscdKL8bQSTRpUTY06kiRYugDV7OS43teyEd/YKkDVVlLV666V/FrZQ=@lists.infradead.org
-X-Gm-Message-State: AOJu0YyjJeXszlZ8mCTXBabYsO2gqxHf+I9xC1EcbfQuBSJvVL4nlfpb
-	alSTyGolOnqhukgRbBMBvkvVp9Kb+XJRjgdt2nyCkgmNbn9cZZKqUcIWIVP5WIEZdm4x9ClLirH
-	32OFyX+luAjhDmH4IGT3jmZHvugT8qO0=
-X-Gm-Gg: AfdE7cnDn2MFJpt719/6WAiqy+aM41qduqEhUq4cllsa4VBv1y63fc50aKxhSHKceNK
-	n6z3BnSbs3idpiLg4TDj+yAx8Anex8sBpGIQg3czrMGcjVlTi0kDTgGe1DhLi4XLCarD1cZIfNa
-	A50NuE2B+MJxgkH9VTX6izuvfNjsfM4htyAoP3dKigIn1rJUxQSVIelyEwNG5eLcL3i6ZYU5O6w
-	mDRCo8PAWNlNEtNb4Y02X75mppbC/jgqDJBnERpYedsMPCQbReswf/FwermQs3T4FBWZcaRR4fB
-	C+gO6s7TTXGeEw3zHbTTwv3DvZLex24j02WDeEyYtXfzT5dXEWAmHnk=
-X-Received: by 2002:a05:6402:1911:b0:697:5140:a146 with SMTP id
- 4fb4d7f45d1cf-69a1a24e2b0mr2111550a12.5.1783279730260; Sun, 05 Jul 2026
- 12:28:50 -0700 (PDT)
-MIME-Version: 1.0
-References: <20260703-b4-maple-cleanup-v1-0-41e424964da5@gmail.com> <20260703-b4-maple-cleanup-v1-25-41e424964da5@gmail.com>
-In-Reply-To: <20260703-b4-maple-cleanup-v1-25-41e424964da5@gmail.com>
-From: Adrian McMenamin <adrianmcmenamin@gmail.com>
-Date: Sun, 5 Jul 2026 20:28:39 +0100
-X-Gm-Features: AVVi8Cd4RsxuBCDMTegUym6Q-WwoYX7kLkcoRLuTn30KplUiorM2f_4ETnTctuU
-Message-ID: <CACwZE5RfhwhOoVSPqibM9+XaPJCf-TdnJxi_UT7Dgv71OJPsFQ@mail.gmail.com>
+        d=1e100.net; s=20251104; t=1783283200; x=1783888000;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GsgfJZ0NjzP8ZPKGtPWCLANSMMngsdofAxBSh+8zVRQ=;
+        b=Q1i3Z8dknGkkiTczrDUUHJytBMsYsEu3WddME/FwSEeZ7uboFm8mVIcJ60gqum+COd
+         1zyr8+jegijSYaeudn8u3NqUKC7N4loBFlzsDianh2olIPIMX4PS6Tx8a0PZl9dc7zl2
+         3TL3aCLb+vljqLdxkxx5XBeXVVBtaRDc0hl/7DVcRWJibm713Iy9Xp+nSQtsiy2NYG1O
+         zVkh7LFkU6M2uz4twq6Q+jG4WxbGIKx/E47kOc6iuq0o+tfvPpgmcQjsAXKcenwLMfeF
+         1X5vB5mUCvjjrQ/48Uxxm6EGrgjeCB3YtQklCaQB7T2X+jthXPUUSRF6Rv4tICJ62S30
+         QcaA==
+X-Forwarded-Encrypted: i=1; AHgh+Rp+jxdEWO02uSRF1/zKoQkIltGlI3NpuL0ZKiYCQ1zbDVJ5nf/VoPjjrjz4tuGV+nKmn0FSfO33u6A=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yy7Iw1wxME6hzXYBDx9ge4z2JDW9eZdu4xiB93oW5G+BC6a0r2L
+	2yn22PfElwsV8a2cvuzQ/TCiKqdALQ2wP7LHZnzEXFhG+gyQi7y6pV4q
+X-Gm-Gg: AfdE7cnI7FTGe2HafXibmPoNmzvp69dP3/nDNHTtgHlGb4rYI6lCdUg7t26Ozt5CEj4
+	hGZd9vb+ZqVBkyBzpbIujIcrtPJSN66PByhnN4P32DI5HUNTLW78Hou2EYWvkQjGHBYMNf76l1E
+	nexgP008qtMSa71af5ZQnZuyRZKubsmjZUJxDYQzlYu3KQLtpTdZytsNMnu1YUha1DIFm2XUb7v
+	DchWHVRTOr2x43trlRuaEJIjRklFjARad1s7+R/fHxIVJH9tRlgYDeB5fcZvLo3tHiRxgsC7BdN
+	zTTJK52aPsS5JDSzq+9/An5P22dWh1dNuliH6kvoOqSY/6Iinkq6AZjL6dk8VQTgs8/rr6qwb6/
+	S4SiRNG3j9XBWCmWGaAFtZvFcGSqV5r/8MgVE0UDabcuK7jUD5hqZ2lppDVieMnukjx9nthoP9A
+	sCheFmgRYd2a/k2XxPLbK20yCyGSqzFimEDWU2AZQLC/7p1MORU5lLCw==
+X-Received: by 2002:a17:90b:1c81:b0:37f:9cdf:f03a with SMTP id 98e67ed59e1d1-3829f4e8836mr6779812a91.29.1783283200446;
+        Sun, 05 Jul 2026 13:26:40 -0700 (PDT)
+Received: from google.com ([2a00:79e0:2ebe:8:480e:1643:32ae:124b])
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-30f38ee1333sm29592829eec.24.2026.07.05.13.26.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 05 Jul 2026 13:26:39 -0700 (PDT)
+Date: Sun, 5 Jul 2026 13:26:36 -0700
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To: Adrian McMenamin <adrianmcmenamin@gmail.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, 
+	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+	Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, 
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Florian Fuchs <fuchsfl@gmail.com>, linux-kernel@vger.kernel.org, 
+	linux-input@vger.kernel.org, linux-mtd@lists.infradead.org, linux-sh@vger.kernel.org
 Subject: Re: [PATCH 25/26] Input: maplecontrol - fix style issues
-To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
-	Vignesh Raghavendra <vigneshr@ti.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, 
-	Rich Felker <dalias@libc.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
-	Florian Fuchs <fuchsfl@gmail.com>, linux-kernel@vger.kernel.org, 
-	Dmitry Torokhov <dtor@mail.ru>, linux-input@vger.kernel.org, linux-mtd@lists.infradead.org, 
-	linux-sh@vger.kernel.org
+Message-ID: <akq9m7oDV0y_sWzx@google.com>
+References: <20260703-b4-maple-cleanup-v1-0-41e424964da5@gmail.com>
+ <20260703-b4-maple-cleanup-v1-25-41e424964da5@gmail.com>
+ <CACwZE5RfhwhOoVSPqibM9+XaPJCf-TdnJxi_UT7Dgv71OJPsFQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <CACwZE5RfhwhOoVSPqibM9+XaPJCf-TdnJxi_UT7Dgv71OJPsFQ@mail.gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260705_122852_873740_B732DE9B 
-X-CRM114-Status: GOOD (  13.53  )
+X-CRM114-CacheID: sfid-20260705_132641_829176_0F466F22 
+X-CRM114-Status: GOOD (  16.13  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -120,35 +103,40 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sat, 4 Jul 2026 at 06:58, Dmitry Torokhov <dmitry.torokhov@gmail.com> wrote:
->
-> Fix coding style and formatting issues reported by checkpatch.pl and
-> switch to using BIT(). When reporting D-PAD events avoid conditionals.
->
-> Assisted-by: Antigravity:gemini-3.5-flash
-> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> ---
->  drivers/input/joystick/maplecontrol.c | 25 ++++++++++++-------------
->  1 file changed, 12 insertions(+), 13 deletions(-)
->
-> diff --git a/drivers/input/joystick/maplecontrol.c b/drivers/input/joystick/maplecontrol.c
-> index 3ef6652d40cb..457a73d91239 100644
-> --- a/drivers/input/joystick/maplecontrol.c
-> +++ b/drivers/input/joystick/maplecontrol.c
-> @@ -35,22 +35,22 @@ static void dc_pad_callback(struct mapleq *mq)
->         buttons = ~le16_to_cpup((__le16 *)(res + 8));
->
->         input_report_abs(dev, ABS_HAT0Y,
-> -               (buttons & 0x0010 ? -1 : 0) + (buttons & 0x0020 ? 1 : 0));
-> +                        !!(buttons & BIT(5)) - !!(buttons & BIT(4)));
->         input_report_abs(dev, ABS_HAT0X,
-> -               (buttons & 0x0040 ? -1 : 0) + (buttons & 0x0080 ? 1 : 0));
-> +                        !!(buttons & BIT(7)) - !!(buttons & BIT(6)));
+On Sun, Jul 05, 2026 at 08:28:39PM +0100, Adrian McMenamin wrote:
+> On Sat, 4 Jul 2026 at 06:58, Dmitry Torokhov <dmitry.torokhov@gmail.com> wrote:
+> >
+> > Fix coding style and formatting issues reported by checkpatch.pl and
+> > switch to using BIT(). When reporting D-PAD events avoid conditionals.
+> >
+> > Assisted-by: Antigravity:gemini-3.5-flash
+> > Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> > ---
+> >  drivers/input/joystick/maplecontrol.c | 25 ++++++++++++-------------
+> >  1 file changed, 12 insertions(+), 13 deletions(-)
+> >
+> > diff --git a/drivers/input/joystick/maplecontrol.c b/drivers/input/joystick/maplecontrol.c
+> > index 3ef6652d40cb..457a73d91239 100644
+> > --- a/drivers/input/joystick/maplecontrol.c
+> > +++ b/drivers/input/joystick/maplecontrol.c
+> > @@ -35,22 +35,22 @@ static void dc_pad_callback(struct mapleq *mq)
+> >         buttons = ~le16_to_cpup((__le16 *)(res + 8));
+> >
+> >         input_report_abs(dev, ABS_HAT0Y,
+> > -               (buttons & 0x0010 ? -1 : 0) + (buttons & 0x0020 ? 1 : 0));
+> > +                        !!(buttons & BIT(5)) - !!(buttons & BIT(4)));
+> >         input_report_abs(dev, ABS_HAT0X,
+> > -               (buttons & 0x0040 ? -1 : 0) + (buttons & 0x0080 ? 1 : 0));
+> > +                        !!(buttons & BIT(7)) - !!(buttons & BIT(6)));
+> 
+> 
+> Maybe I have missed something but what is this !! operator?
 
+Double negation to coerce the value to [0, 1] range avoiding
+conditional/branching?
 
-Maybe I have missed something but what is this !! operator?
-
-Adrian
+-- 
+Dmitry
 
 ______________________________________________________
 Linux MTD discussion mailing list
