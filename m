@@ -4,68 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F660C43458
-	for <linux-mtd@archiver.kernel.org>; Mon,  6 Jul 2026 13:18:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CFD7BC43458
+	for <linux-mtd@archiver.kernel.org>; Mon,  6 Jul 2026 13:26:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=csL7rdfA6wWnK+zvq6kfN7AXy2Vy1qyc1fJGwPg1KWY=; b=JYnD8PwXA0oo1H
-	KEqjNqd/9Umsyl0wyknxjtLEj1QVmAc5zevotTSVSSbqxaGARaEftNo7dB/yt6htQq1/Y+G1m43bG
-	eZIOdiSNJMoSI0heo8In7HIrItFFDJoJtZ/Kwg0n3QUtVhECZcG2FyGV8wZQik39DtzD7K62v9lgy
-	G6CmsxmVbttXb6RjV/gPXMGm8hATatwZrE2lVp/3bqhDLWyPY4ArR9m/ipmG5vlGPiY+bi5CkSKdj
-	9tMIPt/IsVwAOUM3rH3Vfico+gEf+eeV0qK7hdRdiyP5ksORcdo9o2aGkUP7YLTl2afeQW+7HigNF
-	bbk34r+/8TcxVSKPDQuA==;
+	List-Owner; bh=qOWlAAoSlhJFGiakWZW/DH0O7GuZgiFga6JCZr+zAhI=; b=GfC0yVyuNvtjFe
+	i0J3DwVcpRl47gVTeeQiM2nVMB54lnG+sVSbvigfxfBPHSOvpeyDSWe6aeU9G1yiR8rIQ+NiGXziB
+	iTRdfEYzvnA54wKdghLM8JsIHpRiDGqnyHzw1cfdx+4XHDoU+WOkSJyYirvvgWznZ3zlknxOka8aL
+	kzOzR0uh46kQdJmhLPu/++OGwJYt/fonj7YPoiahlrKIqdr7gMc3XNWKN2NgGuqPtgPd3s7+R98k2
+	aBcBPV9elfU1haKKNuuIkoGboeZGMfShudECbWf91fOBKVjgl2ZUE+sDG5aALX7PSuX4/whrfFkF3
+	RQxcgd3ayVc4qYYFxp5A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wgjDk-0000000CYMe-0zKh;
-	Mon, 06 Jul 2026 13:18:48 +0000
-Received: from smtpout-02.galae.net ([185.246.84.56])
+	id 1wgjLA-0000000Cb2Q-2bkY;
+	Mon, 06 Jul 2026 13:26:28 +0000
+Received: from mail-wm1-x331.google.com ([2a00:1450:4864:20::331])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wgjDc-0000000CYKd-1yc0
+	id 1wgjL8-0000000Cb1d-0YSm
 	for linux-mtd@lists.infradead.org;
-	Mon, 06 Jul 2026 13:18:45 +0000
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id 9B4991A0E90;
-	Mon,  6 Jul 2026 13:18:22 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 66252601A2;
-	Mon,  6 Jul 2026 13:18:22 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id C780C11BB817F;
-	Mon,  6 Jul 2026 15:18:18 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1783343901; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=U0UUTPXYOIMUbfKiPj5WyHNGQxtCYRhMQN2tHOjGjGI=;
-	b=cSoSugduSkj26OSLyr0eg4z0X07uDcmEPgzzCoZ4G5miflrsmGdrvIOatE6BgNtt0iiJG6
-	WzZpJnWsVmaHT/XKbJvTYwstnmDNVbAQIbbye7xFfNThHAc/4DCIe7/4VWXaHPv7mYD8LI
-	8tvomJnUel812gpqO7ixkDOfIEjlPHZvFfr7+1u0OBmkL0DKLzqiAGDYNpUUuCR37CUEdl
-	2u6zoFIvF6O6NOfT0AJvy41LYQ9MlvJdeK2JuT8wX+DWqzJDyM+w19IfLUxDqCBEpIDMTs
-	vf7X/F247KGIweN/KPkCdGoAjLG/zvWHvtjsW72LkuiRzQrCA+4jXNzVPJhoOA==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Stephan Gerhold <stephan.gerhold@linaro.org>
-Cc: Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
- <vigneshr@ti.com>,  Rob Herring <robh@kernel.org>,  Krzysztof Kozlowski
- <krzk+dt@kernel.org>,  Conor Dooley <conor+dt@kernel.org>,
-  linux-mtd@lists.infradead.org,  linux-arm-msm@vger.kernel.org,
-  devicetree@vger.kernel.org,  linux-kernel@vger.kernel.org,  Manivannan
- Sadhasivam <mani@kernel.org>
+	Mon, 06 Jul 2026 13:26:27 +0000
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-493d3135f62so10244355e9.2
+        for <linux-mtd@lists.infradead.org>; Mon, 06 Jul 2026 06:26:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1783344384; x=1783949184; darn=lists.infradead.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=VewHMeV2HgLnExdf3eHCgLjBbEBUzVfCGkn2dqN19pw=;
+        b=LHATyHXUcIMBNeoo2RMRnnsJAyK32XhdiJsLWhGPpqfpfDGLurfhOK1UGYrFw47bvt
+         ZuXInGNQdHrnNEAIfPIluTLx0uAPsFjAMNV/NFqo9yI5KKcdENDoqiV6i21U5mEaFVNN
+         HtnlEeSNtTaZh2wIR5a8hWFRlKyTuwBdqiDko7vAAYl1y8XqPgs9ihjeRfUEPqwPbOT8
+         j26+Z7KKfZZaLuCK6TqeZCq3O7JcOyuc5i8thmGsTMIi1BFzwzq4sSDOAD7Vo9lZZRz3
+         W0tGX+CUgPzpyOnCq5EeQ2+d3QTSv7ibf6br/jUgCZiF+819gPDBrANNkMv3kL1dHHsR
+         ikcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1783344384; x=1783949184;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VewHMeV2HgLnExdf3eHCgLjBbEBUzVfCGkn2dqN19pw=;
+        b=peus0J2GWyDz2czPBuxcrIIHtWmebkWzsUALz3GnmzZACvWd3UoDMuoCDV64JFUsPF
+         62KGTpRmGopyWPbpXHGgLANkrEdRxMUKXpBGvaQpgDGAIUQtgf6bOQlIh1+zupa7RrFF
+         0rm7urHwVDn/JBhS3xlX1c0B5j6WHQnY2VWmAuyj80CzS8Im9FcQ2h4djdIyV4TIZFMT
+         /IjSBMxp474pxJwPiwvLBWtxjhL8rznUAyMV0zYVionIk5hE4UqbZrkXgrq0zHIfm5nN
+         OyM+01wBi5gRe/K6BzVNCmJlOquzV/uCfv30ds1At8B4TUY7DOtakPqU4UiqcSVNQAV/
+         oGmQ==
+X-Forwarded-Encrypted: i=1; AHgh+Rr4dEWqcChxk7lIN5V8/Qgqf/u6VG7IuKSEJeezKMWyfjJhnGV6mX2l/mMupyzg3eC5P5EBT35Jii0=@lists.infradead.org
+X-Gm-Message-State: AOJu0YzZC6iIaI7otks4T5I/WySPCmWdDbztjekPlZgKfRkatyszS4XC
+	MYu1XaUrbsGtRgaqUV9eN4s2Q4+eAFiCvIt/2/VbyQdeCMko6lmuCDfwnduDeQdDf+0=
+X-Gm-Gg: AfdE7cmxuqcvZtEv8XJAGMJQsnr50q+JQqH8Rwe4l6aTMReDi1HmE3uVMydJpVNF2nb
+	t0v6BZmdEPzRtcpm3+w3ijeEfnuJFoGSusoPYNlQehic2TOUFnl2ImVT4DidfYGq7CmFSyr9t/u
+	Mc4P/x9uxCmWwnls1NLJrQqnrOzXBxRLX9wjACtZpzDMToZAZvbEZPV4r0jpVF7O6bYWqqH8RoX
+	Pn6yD/5niCGo/OFRNe6xRlB3CxP+UmE/RwDomSbxmb0y5HOeJPt/y7gao58Hmp5xB6erF4PIcxy
+	SsgL3yLiNn96SOjohcbhtbuaAgUuaVcR3hXzXUs9FQkriQcSh5O72B6Fe7m3E81yIaPBC3EAGSO
+	a1JwtvYnKuKCcAeKy/qJxvbDdRyRRrxvOQgSOK6Mmw2sT5TIaGheKQXIj85gpVaXHQ0sSRmcHw4
+	5OO2pPZGkV577HM4XTQ+UcStA65PJGBVeYWgU=
+X-Received: by 2002:a05:600c:6a0d:b0:493:bc4a:fb51 with SMTP id 5b1f17b1804b1-493df077ef6mr3952495e9.39.1783344384207;
+        Mon, 06 Jul 2026 06:26:24 -0700 (PDT)
+Received: from linaro.org ([2a02:2454:ff24:7210:1bb5:914d:5d25:d048])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-493be4a343csm326732325e9.0.2026.07.06.06.26.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Jul 2026 06:26:23 -0700 (PDT)
+Date: Mon, 6 Jul 2026 15:26:18 +0200
+From: Stephan Gerhold <stephan.gerhold@linaro.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Manivannan Sadhasivam <mani@kernel.org>
+Cc: Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-mtd@lists.infradead.org,
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
 Subject: Re: [PATCH 0/4] mtd: rawnand: qcom: Add MDM9607
-In-Reply-To: <akult0UUSSwKQ8F5@linaro.org> (Stephan Gerhold's message of "Mon,
-	6 Jul 2026 14:55:26 +0200")
+Message-ID: <akus-hN7-yf4Y6XU@linaro.org>
 References: <20260608-qcom-nandc-mdm9607-v1-0-4639a0492274@linaro.org>
-	<4kdjxrn3bxg7rhkdovidxv2b2f6evnknng7gjtbz7pahyqaakh@qkgxaz6xlav2>
-	<akult0UUSSwKQ8F5@linaro.org>
-User-Agent: mu4e 1.12.7; emacs 30.2
-Date: Mon, 06 Jul 2026 15:18:18 +0200
-Message-ID: <875x2smf39.fsf@bootlin.com>
+ <4kdjxrn3bxg7rhkdovidxv2b2f6evnknng7gjtbz7pahyqaakh@qkgxaz6xlav2>
+ <akult0UUSSwKQ8F5@linaro.org>
+ <875x2smf39.fsf@bootlin.com>
 MIME-Version: 1.0
-X-Last-TLS-Session-Version: TLSv1.3
+Content-Disposition: inline
+In-Reply-To: <875x2smf39.fsf@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260706_061841_071594_541C09B2 
-X-CRM114-Status: GOOD (  26.51  )
+X-CRM114-CacheID: sfid-20260706_062626_207523_E69F71F1 
+X-CRM114-Status: GOOD (  36.41  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,55 +102,75 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgU3RlcGhhbiwKCk9uIDA2LzA3LzIwMjYgYXQgMTQ6NTU6MjYgKzAyLCBTdGVwaGFuIEdlcmhv
-bGQgPHN0ZXBoYW4uZ2VyaG9sZEBsaW5hcm8ub3JnPiB3cm90ZToKCj4gSGkgTWlxdcOobCwKPgo+
-IE9uIE1vbiwgSnVuIDI5LCAyMDI2IGF0IDA1OjQ2OjU3UE0gKzAyMDAsIE1hbml2YW5uYW4gU2Fk
-aGFzaXZhbSB3cm90ZToKPj4gT24gTW9uLCBKdW4gMDgsIDIwMjYgYXQgMDM6MjA6MjFQTSArMDIw
-MCwgU3RlcGhhbiBHZXJob2xkIHdyb3RlOgo+PiA+IE1ETTk2MDcgaGFzIFFQSUMgdjEuNSB0aGF0
-IHN1cHBvcnRzIHRoZSBPUF9QQUdFX1JFQURfT05GSV9SRUFEIGNvbW1hbmQsIGJ1dAo+PiA+IGlz
-IG1pc3NpbmcgdGhlIHJlc3Qgb2YgdGhlIGhhcmR3YXJlIGNoYW5nZXMgaW4gUVBJQyB2Mi4gVGhl
-cmUgaXMgYWxzbyBvbmx5Cj4+ID4gYSBzaW5nbGUgY2xvY2sgdGhhdCBjYW4gYmUgY29udHJvbGxl
-ZCB1c2luZyB0aGUgUlBNIGZpcm13YXJlLiBEb2N1bWVudCBhbmQKPj4gPiBhZGQgdGhlIG5ldyBx
-Y29tLG1kbTk2MDctbmFuZCBjb21wYXRpYmxlIGZvciB0aGlzIHNldHVwLgo+PiA+IAo+PiA+IFNp
-Z25lZC1vZmYtYnk6IFN0ZXBoYW4gR2VyaG9sZCA8c3RlcGhhbi5nZXJob2xkQGxpbmFyby5vcmc+
-Cj4+IAo+PiBZb3UgY291bGQgYW1tZW5kIHBhdGNoIDEncyBjb21taXQgbWVzc2FnZSB3aXRoIHRo
-ZSBpbmZvcm1hdGlvbiBJIHNoYXJlZCBpbiB0aGUKPj4gcmVwbHkuIEJ1dCBuZXZlcnRoZWxlc3M6
-Cj4+IAo+PiBSZXZpZXdlZC1ieTogTWFuaXZhbm5hbiBTYWRoYXNpdmFtIDxtYW5pQGtlcm5lbC5v
-cmc+Cj4+IAo+Cj4gRG8geW91IHdhbnQgbWUgdG8gcmVzZW5kIHRoZSBzZXJpZXMgd2l0aCBwYXRj
-aCAxIGNvbW1pdCBtZXNzYWdlCj4gYWRqdXN0ZWQ/IFRoZXJlIHdlcmUgbm8gb3RoZXIgY2hhbmdl
-cyByZXF1ZXN0ZWQgYXMgZmFyIGFzIEkgY2FuIHRlbGwuCgpJIHdhcyBtb3N0bHkgd2FpdGluZyBm
-b3IgYW5zd2VycyBvbiBteSBxdWVzdGlvbnMgZnJvbSB0aGUgRFQgYmluZGluZwptYWludGFpbmVy
-cywgYnV0IEkgdW5kZXJzdGFuZCB0aGV5IG11c3QgYmUgdG9vIGxvYWRlZCBhdCB0aGUgbW9tZW50
-LgoKPiBJIHRoaW5rIHRoZSBjdXJyZW50IGNvbW1pdCBtZXNzYWdlIHRoZXJlIGlzIGZpbmUsIGVz
-cGVjaWFsbHkgaWYgeW91IGFkZAo+IHRoZSBMaW5rOiB0YWcgZHVyaW5nIGFwcGx5aW5nLiBUaGUg
-ZXh0cmEgY29udGV4dCB3aWxsIGJlIHRoZXJlLgo+Cj4gSWYgeW91IHdhbnQgbWUgdG8gcmVzZW5k
-LCBJIHdvdWxkIGp1c3QgcmVwbGFjZSB0aGUgc2Vjb25kIHBhcmFncmFwaCBpbgo+IHBhdGNoIDEg
-d2l0aCB0aGUgZm9sbG93aW5nOgo+Cj4gLS0tCj4gT24gTURNOTYwNyBhbmQgb3RoZXIgcmVjZW50
-IFNvQ3MsIHRoZSBRUElDIGhhcmR3YXJlIHJlcXVpcmVzIDMgY2xvY2tzCj4gKGFoYiwgY29yZSwg
-YW9uKS4gSG93ZXZlciwgdGhlIGFjY2VzcyB0byB0aGVzZSBjbG9ja3MgaXMgcmVzdHJpY3RlZCB0
-bwo+IHRoZSBSUE0gZmlybXdhcmUgdGhhdCBjb250cm9scyB0aGUgc2hhcmVkIHBvd2VyIHJlc291
-cmNlcyBmb3IgdGhlIHdob2xlCj4gU29DLiBUaGUgY2xvY2tzIGNhbm5vdCBiZSBjb250cm9sbGVk
-IHNlcGFyYXRlbHksIHRoZXJlIGlzIG9ubHkgYSBzaW5nbGUKPiBSUE1fU01EX1FQSUNfQ0xLIGNs
-b2NrIHRoYXQgaW1wbGljaXRseSBlbmFibGVzIGFsbCBvZiB0aGUgMyBjbG9ja3MuCj4gVGhlIG9u
-bHkgZXhjZXB0aW9uIHRvIHRoaXMgYXJlIHNvbWUgSVBRKiBTb0MgdGhhdCBhcmUgbm90IHVzaW5n
-IFJQTSwKPiB0aGVyZSB0aGUgY2xvY2tzIGFyZSBkaXJlY3RseSBjb250cm9sbGVkIGJ5IHRoZSBr
-ZXJuZWwgdmlhIHRoZSBjbG9jawo+IGNvbnRyb2xsZXIgKEdDQykuIFJlcXVpcmUgb25seSBvbmUg
-Y2xvY2sgaW4gdGhlIGR0LWJpbmRpbmdzIGZvciBNRE05NjA3Cj4gdG8gYXZvaWQgaGF2aW5nIHRv
-IGRlZmluZSBkdW1teSBjbG9jayBlbnRyaWVzLgoKSSBhbSBzb3JyeSBidXQgdGhpcyBpcyBzdGls
-bCBpbmNvcnJlY3QuIFlvdSBkb24ndCBoYXZlIHRvIGRlZmluZSAyIGR1bW15CmNsb2Nrcy4gWW91
-IHdvdWxkIGhhdmUgdG8gZGVmaW5lIDMgdGltZXMgdGhlIHNhbWUgY2xvY2sgKGFuZCB0aGF0J3Mg
-bm90CmEgcHJvYmxlbSkuIEkgaGF2ZSBiZWVuIHdvcmtpbmcgb24gdGhlIGNvbmNlcHQgb2YgY2xv
-Y2sgbmV4dXMgd2hpY2gKbWF5IHNvbHZlIHRoaXMga2luZCBvZiBpc3N1ZSBpbiBhIHJhdGhlciBl
-bGVnYW50IHdheSBidXQgdGhhdCdzIG5vdApyZWFkeSB5ZXQuCgpJbiBteSBvcGluaW9uIHRoZSBi
-aW5kaW5nIHRoYXQgeW91IHdhbnQgdG8gcHVzaCAoYSBzaW5nbGUgY2xvY2spIGlzCndyb25nLCBi
-dXQgc2luY2UgSSd2ZSBiZWVuIGV4cGxhaW5pbmcgdGhpcyBmb3Igc2V2ZXJhbCB3ZWVrcyBhbHJl
-YWR5LApwbGVhc2UgYXQgbGVhc3QgZml4IHRoZSBjb21taXQgbWVzc2FnZSBhbmQgSSB3aWxsIHRh
-a2UgaXQgYXMgeW91IHdhbnQuCgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBt
-YWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9s
-aW51eC1tdGQvCg==
+On Mon, Jul 06, 2026 at 03:18:18PM +0200, Miquel Raynal wrote:
+> On 06/07/2026 at 14:55:26 +02, Stephan Gerhold <stephan.gerhold@linaro.org> wrote:
+> > On Mon, Jun 29, 2026 at 05:46:57PM +0200, Manivannan Sadhasivam wrote:
+> >> On Mon, Jun 08, 2026 at 03:20:21PM +0200, Stephan Gerhold wrote:
+> >> > MDM9607 has QPIC v1.5 that supports the OP_PAGE_READ_ONFI_READ command, but
+> >> > is missing the rest of the hardware changes in QPIC v2. There is also only
+> >> > a single clock that can be controlled using the RPM firmware. Document and
+> >> > add the new qcom,mdm9607-nand compatible for this setup.
+> >> > 
+> >> > Signed-off-by: Stephan Gerhold <stephan.gerhold@linaro.org>
+> >> 
+> >> You could ammend patch 1's commit message with the information I shared in the
+> >> reply. But nevertheless:
+> >> 
+> >> Reviewed-by: Manivannan Sadhasivam <mani@kernel.org>
+> >> 
+> >
+> > Do you want me to resend the series with patch 1 commit message
+> > adjusted? There were no other changes requested as far as I can tell.
+> 
+> I was mostly waiting for answers on my questions from the DT binding
+> maintainers, but I understand they must be too loaded at the moment.
+> 
+> > I think the current commit message there is fine, especially if you add
+> > the Link: tag during applying. The extra context will be there.
+> >
+> > If you want me to resend, I would just replace the second paragraph in
+> > patch 1 with the following:
+> >
+> > ---
+> > On MDM9607 and other recent SoCs, the QPIC hardware requires 3 clocks
+> > (ahb, core, aon). However, the access to these clocks is restricted to
+> > the RPM firmware that controls the shared power resources for the whole
+> > SoC. The clocks cannot be controlled separately, there is only a single
+> > RPM_SMD_QPIC_CLK clock that implicitly enables all of the 3 clocks.
+> > The only exception to this are some IPQ* SoC that are not using RPM,
+> > there the clocks are directly controlled by the kernel via the clock
+> > controller (GCC). Require only one clock in the dt-bindings for MDM9607
+> > to avoid having to define dummy clock entries.
+> 
+> I am sorry but this is still incorrect. You don't have to define 2 dummy
+> clocks. You would have to define 3 times the same clock (and that's not
+> a problem). I have been working on the concept of clock nexus which
+> may solve this kind of issue in a rather elegant way but that's not
+> ready yet.
+> 
+> In my opinion the binding that you want to push (a single clock) is
+> wrong, but since I've been explaining this for several weeks already,
+> please at least fix the commit message and I will take it as you want.
+> 
+
+Thanks for your feedback!
+
+Either way works for me personally, but now we have a conflict between
+your requested changes and the feedback from Mani, who maintains this
+driver. :-)
+
+@Mani: Would you also be fine with defining all 3 clocks in the DT
+("ahb", "core", "aon") and then assigning the RPM_SMD_QPIC_CLK to all of
+them?
+
+Thanks,
+Stephan
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
