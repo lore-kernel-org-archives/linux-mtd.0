@@ -4,59 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA6C7C44500
-	for <linux-mtd@archiver.kernel.org>; Mon,  6 Jul 2026 14:27:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF122C43458
+	for <linux-mtd@archiver.kernel.org>; Mon,  6 Jul 2026 14:34:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
 	In-Reply-To:References:To:From:Cc:Subject:Message-Id:Date:Mime-Version:
 	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
 	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=0XYmqGTHeK2GamD8hc4gZNB1r+r+DYH4pdZcXBJ8d5U=; b=0obcGvHcpgpfpJRfq1vx1dbxdd
-	Jm9b8P1TDBWpvuvkl+Tf8+4ii1ZnJCBGzKYfR5l39TIUBqeCeaBki4wmDEVEikfwJid9ikN7dNFbB
-	6T8skT0im/CjHeFPeEiMF1clsPcoRJ2t2TqXuptjsIIzz0MpoDMbx3akyUOaLeYMXpei+lbGWTxYy
-	0/z7QED3EDe5Tfq3wQwl6Aaee3hfVsg1XxhHFa+QzC8JYavYMX6wC+OgtGoKOlY29FwM4U5dLUteS
-	2LOetSLkNVNjhglTqiT2WB9P+GDhTqbxUI9WkXF4HDqItvDDfOhRSK85Yc7zmAFjUb+5+qvEUjuHD
-	zrSlmCug==;
+	bh=h2nPjFpuDZV6jViXXqZRD3y+D3jJKKoK+envdcZss9Q=; b=mX5H0g7+U2FBMrbuVDy9hEBxvY
+	Bc+hW2qE6wbMnnBAVHmL7FceCz5eR3sVtjEg1R21RQcPdUF2A8fHhWGavsRTALW99ZcXvXYy6OAAx
+	9TcW3JF5LSrsv+an5lkAikAKuWMtNn427vKLQt8YzE3yDYQN1qdpHeenNQA9xAm+Xef8Kz80w0u6A
+	tn1dYluuIoye0/VOFudPFtV6S4lJAZ69hF7YWoysP8YwrmNzzfbkR7SxaMSW8/pcMjk9aAMaju2Hj
+	fTqN0HaGr55ZCKMC9EN0mXMIqj6jhdP98LUwwwCzuMP69xUUSyqqc6Y6Kw9YJ2MqoK24s9RFOldsn
+	d8NkQKxw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wgkIN-0000000CkWw-022x;
-	Mon, 06 Jul 2026 14:27:39 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1wgkOw-0000000ClBd-1Kzz;
+	Mon, 06 Jul 2026 14:34:26 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wgkIL-0000000CkWZ-0uuH
+	id 1wgkOv-0000000ClB1-0wYO
 	for linux-mtd@lists.infradead.org;
-	Mon, 06 Jul 2026 14:27:37 +0000
+	Mon, 06 Jul 2026 14:34:25 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with UTF8SMTP id E5760436E1;
-	Mon,  6 Jul 2026 14:27:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id 50CD81F000E9;
-	Mon,  6 Jul 2026 14:27:36 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with UTF8SMTP id 884B660098;
+	Mon,  6 Jul 2026 14:34:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id B03DA1F000E9;
+	Mon,  6 Jul 2026 14:34:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783348056;
-	bh=NttK9ZzHdYlv9SqL/WI5i9mHFRr8Mo/ogLNc/4DVFt4=;
+	s=k20260515; t=1783348464;
+	bh=YxRrCXlWN9ARPXX/Q3oLuamYQn0AXB/KIJFWqLuNswY=;
 	h=Date:Subject:Cc:From:To:References:In-Reply-To;
-	b=V1b9OZVp0Tzg6flkee5G4e/F4ppXVJfmItYgEy7nzKRZF7OzP/SlJzB7WqZ+UH4cv
-	 eLao/7ZVfV4+NUthe1wBmNO6wf10UJ5NZtkLNwz5AqIiqDgYot0ef3FggZ6S92qfuX
-	 VBQCEslh8LAeatKti+MPVRF27lj2xaI2gYcu4RruHEJ05KbfKdFY7KL262uiYPN7qf
-	 01Lu1aN+r0xFvRp4b5myxPZPK3nAy3RpL81RzPZ4j745pGWAX/DjgOoq4KPwAp4TO2
-	 sNYsaG/c2INs7wkJkB1zWsAjQyT7KflD+h5R94MVRMsyEU7edcoqIcgHvEdKsVN26e
-	 MNomXHTwqUx0w==
+	b=XE9/Xt1KJmK+ku8BM/Ll6WvmBhsV/o7VxOrubaxBtpbhA+vB1Q63KHE9tSYUKpSyp
+	 wEZ1QGxUZWWFTrlMxXHd6/IB1OA20tnB8HQDKNA+XW/Ieo6ZGw3O9YnrKR+MelqTCr
+	 P2Hb8vIo00qIbd5oji4hZJKWqRxA09mWRsEdIlQmWoNqbG9NzKnWM+CSGljzxxK8+v
+	 imeMaPYEPVG+5twOlz1DxnIx8IGyNd1bOVo7HwpjlXwSqIwaL13T862C5E09Tz4C+O
+	 f3RgoqYHDrK1zf5YdhNLZRkN1Kg3oUyPa5zmH2hTnKiQBcUzLIcBH02WeW3JItSPUM
+	 bzegLGNZ4vN8w==
 Mime-Version: 1.0
-Date: Mon, 06 Jul 2026 16:27:33 +0200
-Message-Id: <DJRK4HNYJ2LP.KDV5AMR7FCE4@kernel.org>
-Subject: Re: [PATCH 00/30] mtd: spi-nor: Clean Winbond W25QxxJV family
-Cc: "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>, "Steam Lin"
- <STLin2@winbond.com>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>
+Date: Mon, 06 Jul 2026 16:34:20 +0200
+Message-Id: <DJRK9ORBDZH8.1YM083YAEDN62@kernel.org>
+Subject: Re: [PATCH v1 7/8] mtd: spi-nor: push the rollback mechanism into
+ the sfdp module
+Cc: "Pratyush Yadav" <pratyush@kernel.org>, "Takahiro Kuwano"
+ <takahiro.kuwano@infineon.com>, "Richard Weinberger" <richard@nod.at>,
+ "Vignesh Raghavendra" <vigneshr@ti.com>, "Tudor Ambarus"
+ <tudor.ambarus@linaro.org>, <linux-mtd@lists.infradead.org>, "Cheng Ming
+ Lin" <chengminglin@mxic.com.tw>, <linux-kernel@vger.kernel.org>
 From: "Michael Walle" <mwalle@kernel.org>
-To: "Miquel Raynal" <miquel.raynal@bootlin.com>, "Pratyush Yadav"
- <pratyush@kernel.org>, "Takahiro Kuwano" <takahiro.kuwano@infineon.com>,
- "Richard Weinberger" <richard@nod.at>, "Vignesh Raghavendra"
- <vigneshr@ti.com>
+To: "Miquel Raynal" <miquel.raynal@bootlin.com>
 X-Mailer: aerc 0.20.0
-References: <20260529-winbond-v7-1-spi-nor-jv-cleanup-v1-0-87e5d3122244@bootlin.com>
-In-Reply-To: <20260529-winbond-v7-1-spi-nor-jv-cleanup-v1-0-87e5d3122244@bootlin.com>
+References: <20260703143003.1809579-1-mwalle@kernel.org>
+ <20260703143003.1809579-8-mwalle@kernel.org> <874iickxki.fsf@bootlin.com>
+In-Reply-To: <874iickxki.fsf@bootlin.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -68,126 +69,67 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8482214695099052316=="
+Content-Type: multipart/mixed; boundary="===============8601875053641500989=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============8482214695099052316==
+--===============8601875053641500989==
 Content-Type: multipart/signed;
- boundary=897cfef71d9ed790e54b1bea0c56aac9f8b791818ea4d4ae46b0a36e96fc;
+ boundary=e18ae1c96ffc1fa382f365316a0edf4ab68d498cab596b2ef6f08fc6ab07;
  micalg=pgp-sha384; protocol="application/pgp-signature"
 
---897cfef71d9ed790e54b1bea0c56aac9f8b791818ea4d4ae46b0a36e96fc
+--e18ae1c96ffc1fa382f365316a0edf4ab68d498cab596b2ef6f08fc6ab07
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
 
-On Fri May 29, 2026 at 5:22 PM CEST, Miquel Raynal wrote:
-> Thanks to Winbond collaboration, I was able to test almost the entire JV
-> SPI NOR family. A few chips could not be sourced, I decided to apply the
-> very same logic than the other chips, all of them behave identically as
-> shown in all the logs that I am sharing in each and every commit.
+On Mon Jul 6, 2026 at 4:22 PM CEST, Miquel Raynal wrote:
+> On 03/07/2026 at 16:29:18 +02, Michael Walle <mwalle@kernel.org> wrote:
 >
-> This series is pretty straightforward, it is here to cleanup the JV
-> entries by:
-> - Removing the useless part names (which are going to become a problem)
-> - Aligning the comments and "fixing" the chip names in them
-> - Reordering the chips by density and family
-> - Testing and showing all the SFDP content and passing all the SPI NOR
->   tests to ensure a good level of support.
-> - Describing only what needs to be described, parsing the SFDP tables
->   otherwise.
-> - Adding all the locking information when it is missing.
+>> Right now, the core is handling the rollback of the parameters. But it
+>> doesn't have the knowledge what has to be rolled back. And in fact,
+>> havent rolled back everything. Push it down to the called function and
+>> make it mandatory, that this function has no side effects if it fails.
+>>
+>> Funny enough, there is a comment in the SFDP table handing code that
 >
-> This work is necessary because I am about to propose the addition of the
-> W25QxxRV family, whose IDs actually collide with the JV chips. The chips
-> are similar, they have been "improved" (especially the silicon/engraving
-> smoothness) and we have a way to differentiate them based on their SFDP
-> content, but that will be for a following series.
+> handling?                                                ^
 
-Why do you need to remove the no_sfdp_flags? I have only looked at
-some of the patches, but overall it seems we'd be dropping support
-for older chips - which we don't know if they are in use or not.
+yeah ;)
 
-So although the comment might only point to one chip, there can be
-many more with that very same id. And now.. with the RV family even
-more. Ugh.
+>> each table parser is responsible to roll back any changes. But none of
+>> them did. So while add it, expand the logic to that and roll it back for
+>> them. There is one simple rule though:
+>>
+>>   SFDP parsing and fixups may only modify the spi_nor_flash_parameters.
+>
+> Ok.
+>
+> Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+
+Btw Sashiko found a problem with the new rollback logic [1]. So
+expect that there will be at least a v2.
 
 -michael
 
-> NB: There is one collision with a Spansion chip as well (S25FL064K). On
-> my side I commented out the Spansion entry to make sure the core was
-> taking the Winbond entry (by alphabetical order) but it is due to an old
-> joint agreement and is a legitimate ID duplication. We haven't found a
-> good way to differentiate them so far, so I am keeping this aside for
-> the moment and just assume we will have a solution later. In all cases,
-> the colliding Winbond ID exist and is already fulfilled, so let's make
-> sure the definition is accurate.
->
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> ---
-> Miquel Raynal (30):
->       mtd: spi-nor: winbond: Move W25Q01NW to its right place
->       mtd: spi-nor: winbond: Normalize names
->       mtd: spi-nor: winbond: Stop filling the .name entry
->       mtd: spi-nor: winbond: Make the RDCR fixup Winbond wide
->       mtd: spi-nor: winbond: W25Q32JV-Q/N: Drop redundant data
->       mtd: spi-nor: winbond: W25Q64JV-Q/N: Drop redundant data
->       mtd: spi-nor: winbond: W25Q512JV-Q/N: Drop redundant data
->       mtd: spi-nor: winbond: W25Q32JV-Q/N: Add quad page program capabili=
-ty
->       mtd: spi-nor: winbond: W25Q64JV-Q/N: Add quad page program capabili=
-ty
->       mtd: spi-nor: winbond: W25Q128JV-Q/N: Add quad page program capabil=
-ity
->       mtd: spi-nor: winbond: W25Q32JV-Q/N: Fill locking information
->       mtd: spi-nor: winbond: W25Q64JV-Q/N: Fill locking information
->       mtd: spi-nor: winbond: W25Q128JV-Q/N: Fill locking information
->       mtd: spi-nor: winbond: W25Q512JV-Q/N: Fill locking information
->       mtd: spi-nor: winbond: W25Q01JV-Q/N: Fill locking information
->       mtd: spi-nor: winbond: W25Q32JV-M: Drop redundant data
->       mtd: spi-nor: winbond: W25Q64JV-M: Drop redundant data
->       mtd: spi-nor: winbond: W25Q128JV-M: Drop redundant data
->       mtd: spi-nor: winbond: W25Q32JV-M: Add quad page program capability
->       mtd: spi-nor: winbond: W25Q64JV-M: Add quad page program capability
->       mtd: spi-nor: winbond: W25Q128JV-M: Add quad page program capabilit=
-y
->       mtd: spi-nor: winbond: W25Q32JV-M: Fill locking information
->       mtd: spi-nor: winbond: W25Q64JV-M: Fill locking information
->       mtd: spi-nor: winbond: W25Q128JV-M: Fill locking information
->       mtd: spi-nor: winbond: W25Q02JV-M: Fill locking information
->       mtd: spi-nor: winbond: W25Q512JV-M: New chip
->       mtd: spi-nor: winbond: W25Q01JV-M: New chip
->       mtd: spi-nor: winbond: W25QxxJV-Q/N/M: Drop redundant data
->       mtd: spi-nor: winbond: W25QxxJV-Q/N/M: Add quad page program capabi=
-lity
->       mtd: spi-nor: winbond: W25QxxJV-Q/N/M: Fill locking information
->
->  drivers/mtd/spi-nor/winbond.c | 147 +++++++++++++++++++++---------------=
-------
->  1 file changed, 73 insertions(+), 74 deletions(-)
-> ---
-> base-commit: 361a4eb81d0bb23dd27919f969e14a4a372af6e2
-> change-id: 20260529-winbond-v7-1-spi-nor-jv-cleanup-817889edd1f7
->
-> Best regards,
+[1] https://sashiko.dev/#/patchset/20260703143003.1809579-1-mwalle%40kernel=
+.org
 
-
---897cfef71d9ed790e54b1bea0c56aac9f8b791818ea4d4ae46b0a36e96fc
+--e18ae1c96ffc1fa382f365316a0edf4ab68d498cab596b2ef6f08fc6ab07
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCaku7VRIcbXdhbGxlQGtl
-cm5lbC5vcmcACgkQEic87j4CH/heYgF/QwpRPL/l9UinII/Ypje8P/i42l4AwZIR
-hWjbuWQXjF2iiyvwnf7g4EFgTVA4MWamAX9gXaoyIRfxfkYeNwafqyNUhwsl46Kz
-w4LlcUg7olboMcBDLETiPMIcaR6/AWrQIK8=
-=UoxH
+iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCaku87BIcbXdhbGxlQGtl
+cm5lbC5vcmcACgkQEic87j4CH/gWGwGAh0RJ2eLKgbbbse46YPQft8AK3TXMwDxk
+UhRdx3r2MCtpprB4l9rbWQjRbDnzlGstAYClTn+s8IIaRo/TM7xkh2KphHBJ2ep1
+Wo5X6OoN0jFbY1+65rkLYYuRi1J+HYBHBzg=
+=MkP+
 -----END PGP SIGNATURE-----
 
---897cfef71d9ed790e54b1bea0c56aac9f8b791818ea4d4ae46b0a36e96fc--
+--e18ae1c96ffc1fa382f365316a0edf4ab68d498cab596b2ef6f08fc6ab07--
 
 
---===============8482214695099052316==
+--===============8601875053641500989==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -197,5 +139,5 @@ ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
---===============8482214695099052316==--
+--===============8601875053641500989==--
 
