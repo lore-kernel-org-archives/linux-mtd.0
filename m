@@ -4,62 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 89562C43458
-	for <linux-mtd@archiver.kernel.org>; Mon,  6 Jul 2026 14:19:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 18D1FC43458
+	for <linux-mtd@archiver.kernel.org>; Mon,  6 Jul 2026 14:22:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=f6rfyOrPNyJYxVGD2aFnzwU9nQYlYfu1RSxpn5CP3Rs=; b=tzhm8ZPy/6qlTT
-	6VWCoy2YpiGLbFOauC+6YrkR/gKrsnMCcN+CBfd2DVmoKIcuo8nzb+EscjoV0wpEgjym25s+aB8wV
-	/pcpnvbd7ZQq623g8A41l/CoKeqbjf/0dLe3hg5AaKUC6lHPbrOl+N1fkbwjcQI+YedK4O50OqrEs
-	aWzQ7upbe7uiMltEpzIyB9GsWwjQaFoM/s+Cn9j74FCvS+4WSi2E3f4WEbJu//5p4StVAkgUsddgu
-	NmorIBSP9r1iC2JIyTmUkYeuPLNdMhFCdz33N4fCuIZy5VfK2Gms5ueAIqqbs1xrKnzqD/9FpP5Jd
-	Y0I5EBd9MRzS9gC/zg4Q==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:References:To:From:Cc:Subject:Message-Id:Date:Mime-Version:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=zjL98d1WGqWts7YDQGdEVaA55ofY1JE31ZZPByfaeUw=; b=FL2eDsflFLihEIv4KkYCBimr/t
+	b/ICDfl9s8vHzDaffoDDfFfS3vqQ1Ic42E6P6xWF80fjXLeCwj6WWxU945Km/OdoRmyyqzqOGMUSg
+	wsCbpQw5eTDO2dyKUngdGKGQFknXTm+ud7LyRLz74+KS1g+s1edbozNpFqhy1wBoKEln/FFzLwE7R
+	XzSgmg6zndyXbSJwlK7U+7gciuMVEYfTwDjRaeUeTAAcdmV390J5Z3Fc/4IPV+NiPjKe6fDHp7p8f
+	FpSVpiRU/wCdFb+mcLBXRPt799w40NaCyyQ72ZDYgswBbdpC1KzaH34jRVhl+UbKHgmrVMPPhBM6N
+	ACALbyiA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wgkAF-0000000CjSY-214O;
-	Mon, 06 Jul 2026 14:19:15 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1wgkCt-0000000Cjm6-3RPr;
+	Mon, 06 Jul 2026 14:21:59 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wgkAE-0000000CjSD-1JgI
+	id 1wgkCs-0000000CjlU-45kH
 	for linux-mtd@lists.infradead.org;
-	Mon, 06 Jul 2026 14:19:14 +0000
+	Mon, 06 Jul 2026 14:21:59 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id D183641573;
-	Mon,  6 Jul 2026 14:19:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DAE6C1F000E9;
-	Mon,  6 Jul 2026 14:19:09 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with UTF8SMTP id 21E9760098;
+	Mon,  6 Jul 2026 14:21:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id 535C31F000E9;
+	Mon,  6 Jul 2026 14:21:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783347553;
-	bh=mSQGYf1wIcLWiE+3fh68hTcZOuZaxhAvbB4DHw85q/o=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=MCCi5ZmtpWENqe2Y+8JEZ9VZWwNfvJEhHqjk41Yrwk6GAj+rb8HVJoK9PbVDPprZn
-	 3qGIpwDZUmAfbvwsKnKTUrEMLBfuQF6p7/wiqOP+ITfygDUnT3wQ0rkGQ2LR+pSRvK
-	 Py3aoLrFRJqED06ilkm67BGELccqkx3bYkddzPQeAeEZI+tKOf5GjuQg+7SVgb5bA5
-	 IH3c6+/NDc3Mp0+8is7kPjBjLdV+MGmJ4DbVLYfVD4jqbfFjCZiBB1uo7q4q/vuu1b
-	 P8zGxPJf5vsdO62PxD/3Sdqw3QtlYBRLWGx/pUrbRLKMCF/vxoGr6imSBc625/zmfg
-	 Vlkw2Z8HpwJcQ==
-Date: Mon, 6 Jul 2026 16:19:04 +0200
-From: Manivannan Sadhasivam <mani@kernel.org>
-To: Stephan Gerhold <stephan.gerhold@linaro.org>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, 
-	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
-	Conor Dooley <conor+dt@kernel.org>, linux-mtd@lists.infradead.org, linux-arm-msm@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/4] mtd: rawnand: qcom: Add MDM9607
-Message-ID: <v4wc36d5slcbq6vsubrpzdoz6x7iq2t2xxlg7onak7fq3bcpjz@kxoqbvi734pp>
-References: <20260608-qcom-nandc-mdm9607-v1-0-4639a0492274@linaro.org>
- <4kdjxrn3bxg7rhkdovidxv2b2f6evnknng7gjtbz7pahyqaakh@qkgxaz6xlav2>
- <akult0UUSSwKQ8F5@linaro.org>
- <875x2smf39.fsf@bootlin.com>
- <akus-hN7-yf4Y6XU@linaro.org>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <akus-hN7-yf4Y6XU@linaro.org>
+	s=k20260515; t=1783347717;
+	bh=qPIWZFoGipoSJO4LwovW46jO0+IIbbxHU15whaypgqs=;
+	h=Date:Subject:Cc:From:To:References:In-Reply-To;
+	b=Lf+YGLoubA1xusTHRZTAOvUXN8AnUj+0OexAwXZKoMvYeEuKSwayqbfPFvQ7Ob6aF
+	 E0Z/3/Zf67l5Y+ICgf8mujfqd/z1gM5LscMvP//On6rYQWqYQQ0Vbd1ShmyOyqGeGx
+	 B8VWu+ATce9ShCse2fnKBk/ia/Q8TcZcNjoLtzeo0F9gwRf8HruXbaKLzlTUZk1kj2
+	 FZindN+JAItssXIPk1Qhuw5x2+tRLNGPXOeAVmOkN/HhUzZDwDhEz4fFx72Wk+njOz
+	 r+8nnSCuO7Ww4f19hNj4G+hFr3jc8tjcyXRfap7RMvvAQa13unG3W5DhXZOzUWmSTc
+	 7cQqdq+eRk29w==
+Mime-Version: 1.0
+Date: Mon, 06 Jul 2026 16:21:54 +0200
+Message-Id: <DJRK05XL4ONU.MM3VQ61CQJ6I@kernel.org>
+Subject: Re: [PATCH 11/30] mtd: spi-nor: winbond: W25Q32JV-Q/N: Fill locking
+ information
+Cc: "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>, "Steam Lin"
+ <STLin2@winbond.com>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>
+From: "Michael Walle" <mwalle@kernel.org>
+To: "Miquel Raynal" <miquel.raynal@bootlin.com>, "Pratyush Yadav"
+ <pratyush@kernel.org>, "Takahiro Kuwano" <takahiro.kuwano@infineon.com>,
+ "Richard Weinberger" <richard@nod.at>, "Vignesh Raghavendra"
+ <vigneshr@ti.com>
+X-Mailer: aerc 0.20.0
+References: <20260529-winbond-v7-1-spi-nor-jv-cleanup-v1-0-87e5d3122244@bootlin.com> <20260529-winbond-v7-1-spi-nor-jv-cleanup-v1-11-87e5d3122244@bootlin.com>
+In-Reply-To: <20260529-winbond-v7-1-spi-nor-jv-cleanup-v1-11-87e5d3122244@bootlin.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,92 +69,187 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============3465690620485893142=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gTW9uLCBKdWwgMDYsIDIwMjYgYXQgMDM6MjY6MThQTSArMDIwMCwgU3RlcGhhbiBHZXJob2xk
-IHdyb3RlOgo+IE9uIE1vbiwgSnVsIDA2LCAyMDI2IGF0IDAzOjE4OjE4UE0gKzAyMDAsIE1pcXVl
-bCBSYXluYWwgd3JvdGU6Cj4gPiBPbiAwNi8wNy8yMDI2IGF0IDE0OjU1OjI2ICswMiwgU3RlcGhh
-biBHZXJob2xkIDxzdGVwaGFuLmdlcmhvbGRAbGluYXJvLm9yZz4gd3JvdGU6Cj4gPiA+IE9uIE1v
-biwgSnVuIDI5LCAyMDI2IGF0IDA1OjQ2OjU3UE0gKzAyMDAsIE1hbml2YW5uYW4gU2FkaGFzaXZh
-bSB3cm90ZToKPiA+ID4+IE9uIE1vbiwgSnVuIDA4LCAyMDI2IGF0IDAzOjIwOjIxUE0gKzAyMDAs
-IFN0ZXBoYW4gR2VyaG9sZCB3cm90ZToKPiA+ID4+ID4gTURNOTYwNyBoYXMgUVBJQyB2MS41IHRo
-YXQgc3VwcG9ydHMgdGhlIE9QX1BBR0VfUkVBRF9PTkZJX1JFQUQgY29tbWFuZCwgYnV0Cj4gPiA+
-PiA+IGlzIG1pc3NpbmcgdGhlIHJlc3Qgb2YgdGhlIGhhcmR3YXJlIGNoYW5nZXMgaW4gUVBJQyB2
-Mi4gVGhlcmUgaXMgYWxzbyBvbmx5Cj4gPiA+PiA+IGEgc2luZ2xlIGNsb2NrIHRoYXQgY2FuIGJl
-IGNvbnRyb2xsZWQgdXNpbmcgdGhlIFJQTSBmaXJtd2FyZS4gRG9jdW1lbnQgYW5kCj4gPiA+PiA+
-IGFkZCB0aGUgbmV3IHFjb20sbWRtOTYwNy1uYW5kIGNvbXBhdGlibGUgZm9yIHRoaXMgc2V0dXAu
-Cj4gPiA+PiA+IAo+ID4gPj4gPiBTaWduZWQtb2ZmLWJ5OiBTdGVwaGFuIEdlcmhvbGQgPHN0ZXBo
-YW4uZ2VyaG9sZEBsaW5hcm8ub3JnPgo+ID4gPj4gCj4gPiA+PiBZb3UgY291bGQgYW1tZW5kIHBh
-dGNoIDEncyBjb21taXQgbWVzc2FnZSB3aXRoIHRoZSBpbmZvcm1hdGlvbiBJIHNoYXJlZCBpbiB0
-aGUKPiA+ID4+IHJlcGx5LiBCdXQgbmV2ZXJ0aGVsZXNzOgo+ID4gPj4gCj4gPiA+PiBSZXZpZXdl
-ZC1ieTogTWFuaXZhbm5hbiBTYWRoYXNpdmFtIDxtYW5pQGtlcm5lbC5vcmc+Cj4gPiA+PiAKPiA+
-ID4KPiA+ID4gRG8geW91IHdhbnQgbWUgdG8gcmVzZW5kIHRoZSBzZXJpZXMgd2l0aCBwYXRjaCAx
-IGNvbW1pdCBtZXNzYWdlCj4gPiA+IGFkanVzdGVkPyBUaGVyZSB3ZXJlIG5vIG90aGVyIGNoYW5n
-ZXMgcmVxdWVzdGVkIGFzIGZhciBhcyBJIGNhbiB0ZWxsLgo+ID4gCj4gPiBJIHdhcyBtb3N0bHkg
-d2FpdGluZyBmb3IgYW5zd2VycyBvbiBteSBxdWVzdGlvbnMgZnJvbSB0aGUgRFQgYmluZGluZwo+
-ID4gbWFpbnRhaW5lcnMsIGJ1dCBJIHVuZGVyc3RhbmQgdGhleSBtdXN0IGJlIHRvbyBsb2FkZWQg
-YXQgdGhlIG1vbWVudC4KPiA+IAo+ID4gPiBJIHRoaW5rIHRoZSBjdXJyZW50IGNvbW1pdCBtZXNz
-YWdlIHRoZXJlIGlzIGZpbmUsIGVzcGVjaWFsbHkgaWYgeW91IGFkZAo+ID4gPiB0aGUgTGluazog
-dGFnIGR1cmluZyBhcHBseWluZy4gVGhlIGV4dHJhIGNvbnRleHQgd2lsbCBiZSB0aGVyZS4KPiA+
-ID4KPiA+ID4gSWYgeW91IHdhbnQgbWUgdG8gcmVzZW5kLCBJIHdvdWxkIGp1c3QgcmVwbGFjZSB0
-aGUgc2Vjb25kIHBhcmFncmFwaCBpbgo+ID4gPiBwYXRjaCAxIHdpdGggdGhlIGZvbGxvd2luZzoK
-PiA+ID4KPiA+ID4gLS0tCj4gPiA+IE9uIE1ETTk2MDcgYW5kIG90aGVyIHJlY2VudCBTb0NzLCB0
-aGUgUVBJQyBoYXJkd2FyZSByZXF1aXJlcyAzIGNsb2Nrcwo+ID4gPiAoYWhiLCBjb3JlLCBhb24p
-LiBIb3dldmVyLCB0aGUgYWNjZXNzIHRvIHRoZXNlIGNsb2NrcyBpcyByZXN0cmljdGVkIHRvCj4g
-PiA+IHRoZSBSUE0gZmlybXdhcmUgdGhhdCBjb250cm9scyB0aGUgc2hhcmVkIHBvd2VyIHJlc291
-cmNlcyBmb3IgdGhlIHdob2xlCj4gPiA+IFNvQy4gVGhlIGNsb2NrcyBjYW5ub3QgYmUgY29udHJv
-bGxlZCBzZXBhcmF0ZWx5LCB0aGVyZSBpcyBvbmx5IGEgc2luZ2xlCj4gPiA+IFJQTV9TTURfUVBJ
-Q19DTEsgY2xvY2sgdGhhdCBpbXBsaWNpdGx5IGVuYWJsZXMgYWxsIG9mIHRoZSAzIGNsb2Nrcy4K
-PiA+ID4gVGhlIG9ubHkgZXhjZXB0aW9uIHRvIHRoaXMgYXJlIHNvbWUgSVBRKiBTb0MgdGhhdCBh
-cmUgbm90IHVzaW5nIFJQTSwKPiA+ID4gdGhlcmUgdGhlIGNsb2NrcyBhcmUgZGlyZWN0bHkgY29u
-dHJvbGxlZCBieSB0aGUga2VybmVsIHZpYSB0aGUgY2xvY2sKPiA+ID4gY29udHJvbGxlciAoR0ND
-KS4gUmVxdWlyZSBvbmx5IG9uZSBjbG9jayBpbiB0aGUgZHQtYmluZGluZ3MgZm9yIE1ETTk2MDcK
-PiA+ID4gdG8gYXZvaWQgaGF2aW5nIHRvIGRlZmluZSBkdW1teSBjbG9jayBlbnRyaWVzLgo+ID4g
-Cj4gPiBJIGFtIHNvcnJ5IGJ1dCB0aGlzIGlzIHN0aWxsIGluY29ycmVjdC4gWW91IGRvbid0IGhh
-dmUgdG8gZGVmaW5lIDIgZHVtbXkKPiA+IGNsb2Nrcy4gWW91IHdvdWxkIGhhdmUgdG8gZGVmaW5l
-IDMgdGltZXMgdGhlIHNhbWUgY2xvY2sgKGFuZCB0aGF0J3Mgbm90Cj4gPiBhIHByb2JsZW0pLiBJ
-IGhhdmUgYmVlbiB3b3JraW5nIG9uIHRoZSBjb25jZXB0IG9mIGNsb2NrIG5leHVzIHdoaWNoCj4g
-PiBtYXkgc29sdmUgdGhpcyBraW5kIG9mIGlzc3VlIGluIGEgcmF0aGVyIGVsZWdhbnQgd2F5IGJ1
-dCB0aGF0J3Mgbm90Cj4gPiByZWFkeSB5ZXQuCj4gPiAKPiA+IEluIG15IG9waW5pb24gdGhlIGJp
-bmRpbmcgdGhhdCB5b3Ugd2FudCB0byBwdXNoIChhIHNpbmdsZSBjbG9jaykgaXMKPiA+IHdyb25n
-LCBidXQgc2luY2UgSSd2ZSBiZWVuIGV4cGxhaW5pbmcgdGhpcyBmb3Igc2V2ZXJhbCB3ZWVrcyBh
-bHJlYWR5LAo+ID4gcGxlYXNlIGF0IGxlYXN0IGZpeCB0aGUgY29tbWl0IG1lc3NhZ2UgYW5kIEkg
-d2lsbCB0YWtlIGl0IGFzIHlvdSB3YW50Lgo+ID4gCj4gCj4gVGhhbmtzIGZvciB5b3VyIGZlZWRi
-YWNrIQo+IAo+IEVpdGhlciB3YXkgd29ya3MgZm9yIG1lIHBlcnNvbmFsbHksIGJ1dCBub3cgd2Ug
-aGF2ZSBhIGNvbmZsaWN0IGJldHdlZW4KPiB5b3VyIHJlcXVlc3RlZCBjaGFuZ2VzIGFuZCB0aGUg
-ZmVlZGJhY2sgZnJvbSBNYW5pLCB3aG8gbWFpbnRhaW5zIHRoaXMKPiBkcml2ZXIuIDotKQo+IAo+
-IEBNYW5pOiBXb3VsZCB5b3UgYWxzbyBiZSBmaW5lIHdpdGggZGVmaW5pbmcgYWxsIDMgY2xvY2tz
-IGluIHRoZSBEVAo+ICgiYWhiIiwgImNvcmUiLCAiYW9uIikgYW5kIHRoZW4gYXNzaWduaW5nIHRo
-ZSBSUE1fU01EX1FQSUNfQ0xLIHRvIGFsbCBvZgo+IHRoZW0/Cj4gCgpBRkFJVSwgZGV2aWNldHJl
-ZSBiaW5kaW5nIHNob3VsZCBkZXNjcmliZSB0aGUgIk9TIHZpZXcgb2YgdGhlIGhhcmR3YXJlIiwg
-bm90IHRoZQpoYXJkd2FyZSBpdHNlbGYuIFdlIGhhdmUgbWFueSBwcmVkZWNlbnRzIHRvIHRoaXMg
-cnVsZS4gT25lIG9mIHRoZW0gaXMgdGhlIFNDTUkKYmFzZWQgcmVzb3VyY2UgY29udHJvbCBpbiBR
-Y29tIEF1dG9tb3RpdmUgU29Dcywgd2hlcmUgY2xvY2tzL3JlZ3VsYXRvcnMgdG8KaW5kaXZpZHVh
-bCBJUHMgYXJlIGNvbnRyb2xsZWQgYnkgdGhlIFNDTUkgc2VydmVyIGFuZCBPUyBqdXN0IHNlZXMg
-YSBzaW5nbGUgU0NNSQpwb3dlci1kb21haW4gZm9yIHRoZSBJUC4gU28gd2Ugb25seSBkZXNjcmli
-ZSB0aGUgU0NNSSBwb3dlci1kb21haW4gaW4gdGhlCmJpbmRpbmcgYW5kIG5vdCB0aGUgcGh5c2lj
-YWwgY2xvY2tzL3JlZ3VsYXRvcnMgcmVjZWl2ZWQgYnkgdGhlIElQIGluIGhhcmR3YXJlLgoKV2Ug
-aGFkIGEgcmVjZW50IGRpc2N1c3Npb24gYXJvdW5kIHRoZSBzYW1lIHRvcGljIGFuZCB5b3UgY2Fu
-IHNlZSB0aGUgcmVwbHkgZnJvbQpLcnprIGhlcmU6IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2Fs
-bC9jODNjYTQ4NS0xZTJlLTQ2YmEtYmQxNS0xMTY4YWE4OTU1ZDNAa2VybmVsLm9yZwoKU28gaGVy
-ZSBhbHNvLCB0aGUgaGFyZHdhcmUgcmVjZWl2ZXMgMyBjbG9ja3MgcGh5c2ljYWxseSwgYnV0IE9T
-IGNhbm5vdCBjb250cm9sCmFsbCAzIG9mIHRoZW0sIGJ1dCBqdXN0IGEgc2luZ2xlIGNsb2NrIGZy
-b20gUlBNaCB3aGljaCBjb250cm9scyB0aGUgMyByZWFsCmNsb2Nrcy4gTW9yZW92ZXIsIGFzc2ln
-bmluZyB0aGUgc2FtZSBjbG9jayB0byAzIGRpZmZlcmVudCBjbG9jayBzb3VyY2VzIGRvZXNuJ3QK
-YWNjdXJhdGVseSBkZXNjcmliZSB0aGUgaGFyZHdhcmUgZWl0aGVyLCBiZWNhdXNlIHRob3NlIDMg
-Y2xvY2tzIG9wZXJhdGUgb24KZGlmZmVyZW50IGZyZXF1ZW5jaWVzIGFuZCBpZiB0aGUgZHJpdmVy
-IHF1ZXJpZXMgdGhlIGZyZXF1ZW5jeSBvZgpSUE1fU01EX1FQSUNfQ0xLLCBpdCB3b3VsZCBqdXN0
-IHJldHVybiB0aGUgc2FtZSBmcmVxdWVuY3kuIFRoaXMgaXMgd2hlcmUgdGhlCmR1bW15IGNsb2Nr
-IGNvbWVzIGhhbmR5IGFzIGl0IGF0bGVhc3QgcHJvdmlkZXMgYSB2YWxpZCBjbG9jayBmcmVxdWVu
-Y3kgdG8gdGhlCmRyaXZlci4gQnV0IEknbSBub3QgYWR2b2NhdGluZyBmb3IgaXRzIHVzYWdlIGhl
-cmUgYW55bW9yZS4KCkhlbmNlIElNTywgYXNzaWduaW5nIHRoZSBzYW1lIFJQTV9TTURfUVBJQ19D
-TEsgdG8gYWxsIDMgY2xvY2tzIGlzIG5vdCB0aGUgcmlnaHQKYXBwcm9hY2ggYW5kIHdlIHNob3Vs
-ZCBiZSBhc3NpZ25pbmcgYSBzaW5nbGUgUlBNX1NNRF9RUElDX0NMSyB0byAnY29yZScgY2xrLgoK
-QGtyems6IENhbiB5b3Ugc2hhcmUgeW91ciBvcGluaW9uPwoKLSBNYW5pCgotLSAK4K6u4K6j4K6/
-4K614K6j4K+N4K6j4K6p4K+NIOCumuCupOCuvuCumuCuv+CuteCuruCvjQoKX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNj
-dXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2xpbnV4LW10ZC8K
+--===============3465690620485893142==
+Content-Type: multipart/signed;
+ boundary=2727a3d7c76515e8d5a1fbcf946f12b78f86351a9e714cf339ba6b9dd00b;
+ micalg=pgp-sha384; protocol="application/pgp-signature"
+
+--2727a3d7c76515e8d5a1fbcf946f12b78f86351a9e714cf339ba6b9dd00b
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+
+On Fri May 29, 2026 at 5:22 PM CEST, Miquel Raynal wrote:
+> The SFDP table does not advertize the locking capabilities of the
+> device, flag these capabilities.
+>
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> ---
+> $ alias show_sectors=3D'grep -A4 "locked sectors" /sys/kernel/debug/spi-n=
+or/spi0.0
+> /params'
+> $ flash_lock -u /dev/mtd0
+> $ flash_lock -i /dev/mtd0
+> Device: /dev/mtd0
+> Start: 0
+> Len: 0x400000
+> Lock status: unlocked
+> Return code: 0
+> $ mtd_debug erase /dev/mtd0 0 2097152
+> Erased 2097152 bytes from address 0x00000000 in flash
+> $ mtd_debug write /dev/mtd0 0 2097152 spi_test
+> Copied 2097152 bytes from spi_test to address 0x00000000 in flash
+> $ mtd_debug read /dev/mtd0 0 2097152 spi_read
+> Copied 2097152 bytes from address 0x00000000 in flash to spi_read
+> $ sha256sum spi*
+> 6d7c114421890dfa12e1824aa351d4490815a9c0ceb9c2e7981073106a11fc71  spi_rea=
+d
+> 6d7c114421890dfa12e1824aa351d4490815a9c0ceb9c2e7981073106a11fc71  spi_tes=
+t
+> $ show_sectors
+> locked sectors
+>  region (in hex)   | status   | #sectors
+>  ------------------+----------+---------
+>  00000000-003fffff | unlocked | 64
+> $ flash_lock -l /dev/mtd0
+> $ flash_lock -i /dev/mtd0
+> Device: /dev/mtd0
+> Start: 0
+> Len: 0x400000
+> Lock status: locked
+> Return code: 1
+> $ mtd_debug erase /dev/mtd0 0 2097152
+> Erased 2097152 bytes from address 0x00000000 in flash
+> $ mtd_debug read /dev/mtd0 0 2097152 spi_read
+> Copied 2097152 bytes from address 0x00000000 in flash to spi_read
+> $ sha256sum spi*
+> 6d7c114421890dfa12e1824aa351d4490815a9c0ceb9c2e7981073106a11fc71  spi_rea=
+d
+> 6d7c114421890dfa12e1824aa351d4490815a9c0ceb9c2e7981073106a11fc71  spi_tes=
+t
+> $ dd if=3D/dev/urandom of=3D./spi_test2 bs=3D1M count=3D2
+> 2+0 records in
+> 2+0 records out
+> $ mtd_debug write /dev/mtd0 0 2097152 spi_test2
+> Copied 2097152 bytes from spi_test2 to address 0x00000000 in flash
+> $ mtd_debug read /dev/mtd0 0 2097152 spi_read2
+> Copied 2097152 bytes from address 0x00000000 in flash to spi_read2
+> $ sha256sum spi*
+> 6d7c114421890dfa12e1824aa351d4490815a9c0ceb9c2e7981073106a11fc71  spi_rea=
+d
+> 6d7c114421890dfa12e1824aa351d4490815a9c0ceb9c2e7981073106a11fc71  spi_rea=
+d2
+> 6d7c114421890dfa12e1824aa351d4490815a9c0ceb9c2e7981073106a11fc71  spi_tes=
+t
+> 5b69b16c88c3ae48213c359d2f9fd7f0583e513dabb224b3404bc93a5e173253  spi_tes=
+t2
+> $ show_sectors
+> locked sectors
+>  region (in hex)   | status   | #sectors
+>  ------------------+----------+---------
+>  00000000-003fffff |   locked | 64
+> $ flash_lock -u /dev/mtd0
+> $ size=3D$(cat /sys/class/mtd/mtd0/size)
+> $ nblocks=3D$(grep unlocked /sys/kernel/debug/spi-nor/spi0.0/params | sed=
+ -e 's/.*
+> unlocked | //')
+> $
+> $ bs=3D$(($size / $nblocks))
+> $ flash_lock -u /dev/mtd0
+> $ flash_lock -l /dev/mtd0 $(($size - (2 * $bs))) 2 # last two
+> $ show_sectors
+> locked sectors
+>  region (in hex)   | status   | #sectors
+>  ------------------+----------+---------
+>  00000000-003dffff | unlocked | 62
+>  003e0000-003fffff |   locked | 2
+> $ flash_lock -u /dev/mtd0 $(($size - (2 * $bs))) 1 # last one
+> $ show_sectors
+> locked sectors
+>  region (in hex)   | status   | #sectors
+>  ------------------+----------+---------
+>  00000000-003effff | unlocked | 63
+>  003f0000-003fffff |   locked | 1
+> $ flash_lock -u /dev/mtd0
+> $ all_but_one=3D$((($size / $bs) - 1))
+> $ flash_lock -l /dev/mtd0 $bs $all_but_one # all but the first
+> $ show_sectors
+> locked sectors
+>  region (in hex)   | status   | #sectors
+>  ------------------+----------+---------
+>  00000000-0000ffff | unlocked | 1
+>  00010000-003fffff |   locked | 63
+> $ flash_lock -u /dev/mtd0 $bs 1 # all but the two first
+> $ show_sectors
+> locked sectors
+>  region (in hex)   | status   | #sectors
+>  ------------------+----------+---------
+>  00000000-0001ffff | unlocked | 2
+>  00020000-003fffff |   locked | 62
+> $ flash_lock -u /dev/mtd0
+> $ flash_lock -l /dev/mtd0 0 $all_but_one # same from the other side
+> $ show_sectors
+> locked sectors
+>  region (in hex)   | status   | #sectors
+>  ------------------+----------+---------
+>  00000000-003effff |   locked | 63
+>  003f0000-003fffff | unlocked | 1
+> $ flash_lock -u /dev/mtd0 $(($size - (2 * $bs))) 1 # all but two
+> $ show_sectors
+> locked sectors
+>  region (in hex)   | status   | #sectors
+>  ------------------+----------+---------
+>  00000000-003dffff |   locked | 62
+>  003e0000-003fffff | unlocked | 2
+> ---
+>  drivers/mtd/spi-nor/winbond.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.=
+c
+> index 07ab66a9e6c0..e6dca2493357 100644
+> --- a/drivers/mtd/spi-nor/winbond.c
+> +++ b/drivers/mtd/spi-nor/winbond.c
+> @@ -200,7 +200,7 @@ static const struct flash_info winbond_nor_parts[] =
+=3D {
+>  	}, {
+>  		/* W25Q32JV-Q/N */
+>  		.id =3D SNOR_ID(0xef, 0x40, 0x16),
+> -		.flags =3D SPI_NOR_QUAD_PP,
+> +		.flags =3D SPI_NOR_QUAD_PP | SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_N=
+OR_HAS_CMP,
+
+The original W25Q32 doesn't have the CMP bit.
+
+-michael
+
+--2727a3d7c76515e8d5a1fbcf946f12b78f86351a9e714cf339ba6b9dd00b
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCaku6AhIcbXdhbGxlQGtl
+cm5lbC5vcmcACgkQEic87j4CH/hnMAF/QrRLS8DOTUvZmld0Rd4uDgq6574/tVyq
+i6xxKnk6MwZy5kHjDuO7tnCxWVEHMCAtAX9j3SMytDu9YRyhmZLO1bmVmm6as2vG
+HR2vcTkExEgDzkAgQIENF10RYuIVh+zflNc=
+=tzDW
+-----END PGP SIGNATURE-----
+
+--2727a3d7c76515e8d5a1fbcf946f12b78f86351a9e714cf339ba6b9dd00b--
+
+
+--===============3465690620485893142==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============3465690620485893142==--
+
