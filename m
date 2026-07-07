@@ -4,76 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92E00C44501
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jul 2026 11:56:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EEF32C44503
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jul 2026 11:56:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=o88arVTMpMX7MBMLMarc6H1SUyfHL19nxdCjomoj4b4=; b=amTx/+qY2/7ywa
-	dKEK6ZDPPS8SiksypWf/Brh7T7LRQ/CKHWsiwBj/QJt6EF06kPzFZtzSvthrCGSZLWKXQGs3n9LZF
-	Fi6fMpk/HBJVEW65abhhKlrcyV87snMNKMXjNVn8Y8EcZVyfyb6TomvwYQEW1E9mgHfakYSy4EmIS
-	RjFxM7rU572PONVMaz799tPPw9Xlys09IluWieBORBJoxbn7NCryEcM9OoqReXs6pMQCc+QZoM9+h
-	anR6r3FDCh6NlUReTn8XzlQWOhrlpP2jO52vHKUy+q/LvNyi0QvibxGiJVv6dFH19RGegfZxyDnhA
-	1LtQ5xzle7ITN3D2q4zQ==;
+	List-Owner; bh=yc3fqOElyyG7kISfWPO6aEODZ5+USjBkZyIy2WA8WsA=; b=f4dconw9nETNzL
+	0zS3bLr2sVR7P/wHLS5PmB7++fnkPQqOTlBH1WqYk/5rEtWI+7UvIXCfFqOI06E89/iysaGOtDl4q
+	Y0/Q7efkwe9qhuLjBZnvdkY+dgd+HTqxj3wqfWFq5au3rC9E/YSZSTr8UxbE0DO9VhOi1Ok2ZVTAb
+	7PK4aDpGhYIhQGGAT/A5ea8m8u/CuFnTiKS4O8WIt1t3voYFUvogyy8h7VTE2zFAyXMP/fDZtYcoA
+	ayEw8stUZ0MaWjQRUVb9rp7QOzFiP2zTdz4cNG/14SsA/DgT32vFT3Mt+R4oDsETiQv7PhBGllvdk
+	KGQjeO8CvWGt1k9cI4Tg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wh4Pd-0000000Eti6-2dia;
-	Tue, 07 Jul 2026 11:56:29 +0000
-Received: from mail-wm1-x32e.google.com ([2a00:1450:4864:20::32e])
+	id 1wh4Pg-0000000EtkU-31do;
+	Tue, 07 Jul 2026 11:56:32 +0000
+Received: from mail-wm1-x32f.google.com ([2a00:1450:4864:20::32f])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wh4PZ-0000000EtfS-1mOd
+	id 1wh4Pa-0000000Etfu-2XPp
 	for linux-mtd@lists.infradead.org;
-	Tue, 07 Jul 2026 11:56:28 +0000
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-493b1710405so25942545e9.2
-        for <linux-mtd@lists.infradead.org>; Tue, 07 Jul 2026 04:56:25 -0700 (PDT)
+	Tue, 07 Jul 2026 11:56:29 +0000
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-4921eed3fa2so28409715e9.0
+        for <linux-mtd@lists.infradead.org>; Tue, 07 Jul 2026 04:56:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1783425384; x=1784030184; darn=lists.infradead.org;
+        d=linaro.org; s=google; t=1783425385; x=1784030185; darn=lists.infradead.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=+BRFTSXmxEyf0zn6J40dawyzSU98C1I44YPIDxQ+qYw=;
-        b=RdH8/t0ezmRqJwT95Y5BVvx0OzW/MlamaTXXLA0XoTl1Sep8PCAMaiCUqAQPIE5D9A
-         7MMoniSX75lWWHxZmhw4kMQy3QcOg9S61t9IL8hRXc3Hbx86WWjgsUJSdwucbu3evFUD
-         A0m5aLVljGRn58vloN5vdyh7q5GVuFwkHKUNuvEuE/egEU5v/APK9o9uGy8HTXRbiTlG
-         7DM4/pBfRnyH3CRD43aY2fdc5pCYKJSSMryvgYYxEM+gIN6uINdtWRqW7PO4AZNaYg8F
-         mV+U3Ongz9B/1t0X1SLp+K3S37pms6RGOMNFrZHJOiob4jn5H9+3Aoox4P2bukJff2+f
-         8psw==
+        bh=pYUWRJnW/MhZHFw3RjZknhHWFzNTW5ezdgGfJXL4swE=;
+        b=kyfQjXWpliqUw5c73bPXo3cGmv+yyPaYJl2c1ZHWY3d58lo5fPsNEFAu1TkiVDGsTm
+         ieHqkcjUkUfbdWWFog48BzyYGBBsN1c9Yz2DCrJVESKCg1y5rFnVXTP8jt2sDudst7IQ
+         31O+hHRw4ZHbCpNxVnIik9/r7D8h28mpHfnKyDbRuEXQGOKbcJHyrqvRi8zZOFNMxYE9
+         LZ40JeAUJQgbRur+4a3naZshT+EEl+A5L3sAxwmFcxwmRC8gvZM11sDFVnLx5NEitqN/
+         po1O6mEih/q8+GVwzZCb2oz3k5iFcLovbkIX+V1Bxg/bh+i6zdSmOa/cRWkAa/q20EYR
+         p9Tw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783425384; x=1784030184;
+        d=1e100.net; s=20251104; t=1783425385; x=1784030185;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=+BRFTSXmxEyf0zn6J40dawyzSU98C1I44YPIDxQ+qYw=;
-        b=OidkcCLc4jgzLqB90MSAEIDE1U1onUZbEyz3Cxp/X2s8smwQWG9L785QHLxgyeL1+I
-         2hxIyhYpvPfh7DNaqqBnmSc3JRCZXKL4x2dQQb5EC1iFIi6i7YfNZJZyGLvZs5hhZEQt
-         00mXHGW/yQVdZBIgs1Fs9j+a4RKb2rP72LRgAaHTN0gk5mT3P2WmfXYm6jhBxwnxuekm
-         eEhiuLQEEI2Pb7BmsvHmiXa63UQj9gIqe7hmi2SbYYR4iIvsGwjv4ux/t94pUVqgxVF7
-         rhA6oFRiVFk8b//o7vGGbRmcBOAdskkN+kwHM1wSD+AUjg5TptjBeAQdoIahHnSz3188
-         spHQ==
-X-Forwarded-Encrypted: i=1; AHgh+RqPj8t28lXsaKRIsRP2aWdAopoueD5S2UWAFGPnUQ98vwlkeJWw69sDOjmnBYsI1hwE6oTEXXKtgNM=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yz04aRuzIyHTZqttSIsZg5IEsNRhAGiPdeV15dsM/eYUMQ6l1db
-	oYoqjxCdVh003skgw0TtIvkjz71B0WjfxMCnZQrCO/A0JugvcdLN8fnXWeap1yWcBqg=
-X-Gm-Gg: AfdE7ck2JKvuGwKWTcxKoT68teFW3V/hCvsHFm+9DDtOFUs25ZiTD82LySMm43MTYuD
-	drNSESdP23kUJjSJsvFLao+UNndX5c+eMD+MPF7X1d5X5ore6hhFSnOlMUZDQ3nagOTI2ST5eHG
-	UVBWJU+/nrlBNSj7LQoqYg0vHiP34fSzyJpewDloqsQs9yzB48wCG7slBF06GAInKwK2XzvojDq
-	Q65fsCTazx90tXLYdlfTRMgI4lTc8bODTeaVtcmqh9roS2iEiNhc+YwfGz+lWJAXQLTea51EonI
-	QCbtJBbTR2WZBBi44I+OfIhCrQ3MobbYlWBvOs1W/KZIS93advkbNgO7aPkFj2RPOH5QHMat5aS
-	6xymb/9o2FPrK5QJMGuCiSwa9UUA8AIeAh0/wCnYRK7JvRWbLMy3aVae/NgfvcNwwq1qqhVzr6S
-	TDaYalRGOWS45Bqskjs+0zjok4nQ==
-X-Received: by 2002:a05:600c:548d:b0:493:c76a:2363 with SMTP id 5b1f17b1804b1-493df062bbfmr53504795e9.6.1783425383827;
-        Tue, 07 Jul 2026 04:56:23 -0700 (PDT)
+        bh=pYUWRJnW/MhZHFw3RjZknhHWFzNTW5ezdgGfJXL4swE=;
+        b=jWjgIzxG//cYXljCGAuwpg818ZF/D8suak06LUtAZLWcGAWZ74yMs09bsI7cpVGfRI
+         awwgobp9TMfq/GTAScrzGHovHl/oKuB7GpNXfMwYG4Iv+xhG67vGSXqmR+IJ+bYd4+k5
+         z6AOSI0bFpFCXJlfXDohHGe8i+UTOwSzsLR8CGFqRUComsRBympszJH8DG3jEfZG1weO
+         72fSqLL7evD5dCbZHHpTXqhEIH9tFvNIkiYBpcXWLBZ5TvhqIWZaiAJTiTSpIgPKxxss
+         2KDXivn/ctfpvtpwVXAtgZU/ej2WFZ2t91pmDs4k3QLn+2HvnVBLYYYtpbj1ZbOb5P43
+         QFFg==
+X-Forwarded-Encrypted: i=1; AHgh+RojRlfQGDi6etGFEpBxNlA2dH+A/7JychP3JPP2z87r/uzqL9Vq7pXkJXgDg+MVRnBjT16XuCX25f0=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yz+3FdwxVy5Io5MyjWM5M9sQYEeQ0J8xTh7YFQKE7abqhURrcEe
+	Yttxq4sh1dBfokf7nb6dRczDZ6or4i8voiCk0ZkwAOEo4TZI4ncJnDESxiwSK99eYuA=
+X-Gm-Gg: AfdE7cmYWqzdYoy0Movtw2pufZ5O+iHJYcC7q6WvoGnYGCnfVfefcEywFU3Fc+Swk+K
+	yrpQaj2CK+x/nGN/sjHYI7rTptVi51j4DfTf1OQ+pegzBFYY2cXSlHJGMYnTuUexveI+U7tE8u1
+	E8Msm8Ll17WQ/BgOrOzSJ6SbJBWA2eusIxvYz5hLMRrixgo41mY8UC+pjLfSLGMsKPizYCauHw9
+	6WfpLNXfp7uePtwXR3DdYukTDJ0hHdVLplWeK0hEXmC2Uy3ei73p8Roh/NAStYoNo6VBQHhAYk7
+	GZ75tjNCMEoRw5iU7q1AfhfF5YQCNZTm3a4aS00LDfYW1PE2k2RujqTZwqXYJipFQSZ/RIFdWuy
+	sfAB1eh8ZxRuHcHmhhyjNomPdgmkJmMAi1hMuiTtdeKPQJ7zAsOkRp+dhAF8iOwkR4h9BKIfK5h
+	t7keTZuDN0paeCvsWlh+waWisRfA==
+X-Received: by 2002:a7b:c00b:0:b0:493:bdaf:83a7 with SMTP id 5b1f17b1804b1-493df06cffcmr37309825e9.28.1783425384758;
+        Tue, 07 Jul 2026 04:56:24 -0700 (PDT)
 Received: from [127.0.0.2] ([2a02:2454:ff24:7210:adab:817c:53a0:8f31])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-493e0f5ca1fsm55401235e9.15.2026.07.07.04.56.22
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-493e0f5ca1fsm55401235e9.15.2026.07.07.04.56.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jul 2026 04:56:23 -0700 (PDT)
+        Tue, 07 Jul 2026 04:56:24 -0700 (PDT)
 From: Stephan Gerhold <stephan.gerhold@linaro.org>
-Date: Tue, 07 Jul 2026 13:56:02 +0200
-Subject: [PATCH v2 2/4] mtd: rawnand: qcom: Make "aon" clock optional
+Date: Tue, 07 Jul 2026 13:56:03 +0200
+Subject: [PATCH v2 3/4] mtd: rawnand: qcom: Make has_onfi_read_op separate
+ from qpic_version2
 MIME-Version: 1.0
-Message-Id: <20260707-qcom-nandc-mdm9607-v2-2-d906f7e8b814@linaro.org>
+Message-Id: <20260707-qcom-nandc-mdm9607-v2-3-d906f7e8b814@linaro.org>
 References: <20260707-qcom-nandc-mdm9607-v2-0-d906f7e8b814@linaro.org>
 In-Reply-To: <20260707-qcom-nandc-mdm9607-v2-0-d906f7e8b814@linaro.org>
 To: Manivannan Sadhasivam <mani@kernel.org>, 
@@ -84,12 +85,11 @@ Cc: Richard Weinberger <richard@nod.at>,
  Conor Dooley <conor+dt@kernel.org>, linux-mtd@lists.infradead.org, 
  linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
  linux-kernel@vger.kernel.org, 
- Konrad Dybcio <konrad.dybcio@oss.qualcomm.com>, 
- Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
+ Konrad Dybcio <konrad.dybcio@oss.qualcomm.com>
 X-Mailer: b4 0.15.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260707_045625_502962_AEE4C20C 
-X-CRM114-Status: GOOD (  15.77  )
+X-CRM114-CacheID: sfid-20260707_045627_949828_37D0C3C3 
+X-CRM114-Status: GOOD (  17.17  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -106,36 +106,115 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Some SoCs (e.g. MDM9607, SDX55) have only a single separately controllable
-clock for the NAND controller. The actual clocks in the hardware are
-managed by the firmware and turned on all together when needed. In this
-case, there is no separate "aon" clock that can be described in the device
-tree from the OS point of view.
+QPIC v1.5 requires using the OP_PAGE_READ_ONFI_READ command, but is missing
+the rest of the hardware changes that are currently covered by the QPIC v2
+(qpic_version2) check in the driver. Split that into an extra
+has_onfi_read_op feature flag so it can be separately enabled.
 
-Make the second "aon" clock optional to avoid an error when it is missing.
-For platforms that really need it, the dt-bindings are responsible for
-validating that.
+No functional change.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
 Reviewed-by: Manivannan Sadhasivam <mani@kernel.org>
 Signed-off-by: Stephan Gerhold <stephan.gerhold@linaro.org>
 ---
- drivers/mtd/nand/raw/qcom_nandc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/nand/raw/qcom_nandc.c    | 15 ++++++++-------
+ include/linux/mtd/nand-qpic-common.h |  2 ++
+ 2 files changed, 10 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-index 4b80ce084d9a..0251dd591d40 100644
+index 0251dd591d40..9217e8de5512 100644
 --- a/drivers/mtd/nand/raw/qcom_nandc.c
 +++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -2280,7 +2280,7 @@ static int qcom_nandc_probe(struct platform_device *pdev)
- 	if (IS_ERR(nandc->core_clk))
- 		return PTR_ERR(nandc->core_clk);
+@@ -1564,7 +1564,7 @@ static int qcom_op_cmd_mapping(struct nand_chip *chip, u8 opcode,
+ 		cmd = OP_FETCH_ID;
+ 		break;
+ 	case NAND_CMD_PARAM:
+-		if (nandc->props->qpic_version2)
++		if (nandc->props->has_onfi_read_op)
+ 			cmd = OP_PAGE_READ_ONFI_READ;
+ 		else
+ 			cmd = OP_PAGE_READ;
+@@ -1903,7 +1903,7 @@ static int qcom_param_page_type_exec(struct nand_chip *chip,  const struct nand_
+ 		nandc->regs->ecc_buf_cfg = cpu_to_le32(ECC_CFG_ECC_DISABLE);
  
--	nandc->aon_clk = devm_clk_get(dev, "aon");
-+	nandc->aon_clk = devm_clk_get_optional(dev, "aon");
- 	if (IS_ERR(nandc->aon_clk))
- 		return PTR_ERR(nandc->aon_clk);
+ 	/* configure CMD1 and VLD for ONFI param probing in QPIC v1 */
+-	if (!nandc->props->qpic_version2) {
++	if (!nandc->props->has_onfi_read_op) {
+ 		nandc->regs->vld = cpu_to_le32((nandc->vld & ~READ_START_VLD));
+ 		nandc->regs->cmd1 = cpu_to_le32((nandc->cmd1 & ~READ_ADDR_MASK) |
+ 						FIELD_PREP(READ_ADDR_MASK, NAND_CMD_PARAM));
+@@ -1911,7 +1911,7 @@ static int qcom_param_page_type_exec(struct nand_chip *chip,  const struct nand_
  
+ 	nandc->regs->exec = cpu_to_le32(1);
+ 
+-	if (!nandc->props->qpic_version2) {
++	if (!nandc->props->has_onfi_read_op) {
+ 		nandc->regs->orig_cmd1 = cpu_to_le32(nandc->cmd1);
+ 		nandc->regs->orig_vld = cpu_to_le32(nandc->vld);
+ 	}
+@@ -1925,7 +1925,7 @@ static int qcom_param_page_type_exec(struct nand_chip *chip,  const struct nand_
+ 	else
+ 		nandc_set_read_loc_first(chip, reg_base, 0, len, 1);
+ 
+-	if (!nandc->props->qpic_version2) {
++	if (!nandc->props->has_onfi_read_op) {
+ 		qcom_write_reg_dma(nandc, &nandc->regs->vld, NAND_DEV_CMD_VLD, 1, 0);
+ 		qcom_write_reg_dma(nandc, &nandc->regs->cmd1, NAND_DEV_CMD1, 1, NAND_BAM_NEXT_SGL);
+ 	}
+@@ -1939,7 +1939,7 @@ static int qcom_param_page_type_exec(struct nand_chip *chip,  const struct nand_
+ 			   nandc->buf_count, 0);
+ 
+ 	/* restore CMD1 and VLD regs */
+-	if (!nandc->props->qpic_version2) {
++	if (!nandc->props->has_onfi_read_op) {
+ 		qcom_write_reg_dma(nandc, &nandc->regs->orig_cmd1, NAND_DEV_CMD1_RESTORE, 1, 0);
+ 		qcom_write_reg_dma(nandc, &nandc->regs->orig_vld, NAND_DEV_CMD_VLD_RESTORE, 1,
+ 				   NAND_BAM_NEXT_SGL);
+@@ -2041,7 +2041,7 @@ static int qcom_nandc_setup(struct qcom_nand_controller *nandc)
+ 	if (!nandc->props->nandc_part_of_qpic)
+ 		nandc_write(nandc, SFLASHC_BURST_CFG, 0);
+ 
+-	if (!nandc->props->qpic_version2)
++	if (!nandc->props->has_onfi_read_op)
+ 		nandc_write(nandc, dev_cmd_reg_addr(nandc, NAND_DEV_CMD_VLD),
+ 			    NAND_DEV_CMD_VLD_VAL);
+ 
+@@ -2063,7 +2063,7 @@ static int qcom_nandc_setup(struct qcom_nand_controller *nandc)
+ 	}
+ 
+ 	/* save the original values of these registers */
+-	if (!nandc->props->qpic_version2) {
++	if (!nandc->props->has_onfi_read_op) {
+ 		nandc->cmd1 = nandc_read(nandc, dev_cmd_reg_addr(nandc, NAND_DEV_CMD1));
+ 		nandc->vld = NAND_DEV_CMD_VLD_VAL;
+ 	}
+@@ -2385,6 +2385,7 @@ static const struct qcom_nandc_props sdx55_nandc_props = {
+ 	.ecc_modes = (ECC_BCH_4BIT | ECC_BCH_8BIT),
+ 	.supports_bam = true,
+ 	.nandc_part_of_qpic = true,
++	.has_onfi_read_op = true,
+ 	.qpic_version2 = true,
+ 	.dev_cmd_reg_start = 0x7000,
+ 	.bam_offset = 0x30000,
+diff --git a/include/linux/mtd/nand-qpic-common.h b/include/linux/mtd/nand-qpic-common.h
+index 006ca8c978a9..437448995187 100644
+--- a/include/linux/mtd/nand-qpic-common.h
++++ b/include/linux/mtd/nand-qpic-common.h
+@@ -443,6 +443,7 @@ struct qcom_nand_controller {
+  * @dev_cmd_reg_start - NAND_DEV_CMD_* registers starting offset
+  * @supports_bam - whether NAND controller is using BAM
+  * @nandc_part_of_qpic - whether NAND controller is part of qpic IP
++ * @has_onfi_read_op - whether ONFI param page read command is supported
+  * @qpic_version2 - flag to indicate QPIC IP version 2
+  * @use_codeword_fixup - whether NAND has different layout for boot partitions
+  */
+@@ -452,6 +453,7 @@ struct qcom_nandc_props {
+ 	u32 bam_offset;
+ 	bool supports_bam;
+ 	bool nandc_part_of_qpic;
++	bool has_onfi_read_op;
+ 	bool qpic_version2;
+ 	bool use_codeword_fixup;
+ };
 
 -- 
 2.54.0
