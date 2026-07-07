@@ -4,80 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A6ACC43458
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8F8ABC44500
 	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jul 2026 11:56:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
-	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=sY9cikniri6H/i08bfKBI2OILdP3y4LIr9kWm4RmgN4=; b=cibVT8Eimlh2Zm
-	oi5QuHFyCHu3zgjmRSA72kmKQ9uxQ3KXOMfHypptjtBfm5Yl0me7F0o6BG0ZOw4FwHuOJjWWPqVcC
-	xfb1zpK8wpFn6+PGKUBqVI8wY+14QfobVbzMUSpRT3oBarllrg17A7GY1qxnnXOt0Nue9Jwjh3vY9
-	KxWBacvEcsDaTOVnsAMA3yjJT4oKHK2NEWrMbr11hQsKtKlInJ3ohvxPo9wJfncpX6Hy/fSgoBBFG
-	VIhjUmiJXHzdJRWKYwJQHS6PczmCxsRHtaI77/tEyldt8AXD0+rSW7n6PJSSMLnadPm6rOWMEhn82
-	Phacu1JFym1lJsTj6BNA==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id:Date:
+	Subject:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=TEt87RnfaLLym5gr6xL5XFvQ/xahk01krYKmh0iXgrs=; b=a8AROx/gzLldDh
+	zKtRihUvhQTnL0Bbg8g1dvl8mo32aVteT21q8rX4TZSppAcSenw5/gxmvyPVsry1IVsV0PthUccOF
+	OwRNFkVpgItpfVvKu2YMsfX2xWxpVeoAuCJbjYXpo0n/QXJCRi5bX1NTJSoC99qD6WtXgcs7WbU1y
+	iTGAz0EJH05S5sdJI5FzbTUR02rnW3sOiiIBMSL60k8Nlz/6tz6dWrZxYTg4u1G6lrd/51hAH3Tv1
+	dCZ4U3M7x2O/doGcD5DKqWvXxBVVRWr9g6qWSh5kTKc7y8Gq2n1d8UhKlAjgPt5m4CHbhsXI2WPzl
+	qUzog3tEbj5foKTUg3pg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wh4Pd-0000000Eti0-2JDc;
-	Tue, 07 Jul 2026 11:56:29 +0000
-Received: from mail-wr1-x435.google.com ([2a00:1450:4864:20::435])
+	id 1wh4Pc-0000000Ethc-1vkD;
+	Tue, 07 Jul 2026 11:56:28 +0000
+Received: from mail-wm1-x32e.google.com ([2a00:1450:4864:20::32e])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wh4PY-0000000EtfD-37xC
+	id 1wh4PX-0000000Etf3-2q3x
 	for linux-mtd@lists.infradead.org;
-	Tue, 07 Jul 2026 11:56:27 +0000
-Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-47de0093c42so2157035f8f.3
-        for <linux-mtd@lists.infradead.org>; Tue, 07 Jul 2026 04:56:24 -0700 (PDT)
+	Tue, 07 Jul 2026 11:56:25 +0000
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-493d28b1930so31065665e9.0
+        for <linux-mtd@lists.infradead.org>; Tue, 07 Jul 2026 04:56:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1783425383; x=1784030183; darn=lists.infradead.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :content-type:mime-version:subject:date:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=lgMT9Upuh5KVAe4sPSM1sPIhFZuI5vEjoVoPpztrNMM=;
-        b=Nc2Z8hB/wqJjo5nqiAQQUI18g5ZIO1Z/cQtrTAF/ubzEP51rG7ovmMjTsywZV4Own8
-         +PyjuvWrYVjvZ0l7z00bqIL7s1avXstf5dSzfvQNmLFu1sOEbZHY73zwNcVKAHvaC3T8
-         B9D5Pc7V12+UgmOSSzxVAp69OA+bsRyZM+EslbCX2/I2jIMY6nAC/34+/hs0+bJNnE+W
-         K2jBfTtfBu75eM05FjX5lwY4LD3YE11Ep+4n2vBDd2pF/cz+wYbHQp9wMWQVRFkzzkbA
-         d3MG3PXlIEjq+3rZ1+Dq3Tb6d1fHdcb03qLPX2HWTk+ateGXHdXdxnb35Q8LWCi94jDN
-         FjfA==
+        d=linaro.org; s=google; t=1783425382; x=1784030182; darn=lists.infradead.org;
+        h=cc:to:content-transfer-encoding:content-type:mime-version
+         :message-id:date:subject:from:from:to:cc:subject:date:message-id
+         :reply-to:content-type;
+        bh=L9RDGbpt0X65W5NYkJywTfGuzuPW4bNvD1G1EfFxluo=;
+        b=YR2zokhrvZxVETnyMDqxnlSYShhGTroYmtMfPawV2xJHxFYo/lKOANWzK83Qgv11sH
+         /70SfGhphn6iAn1BSAys7rE25rP/0YgbND3PbO9WDTBJIwPVCtpSLUbvf6R/dt/wOKvg
+         1+8gPdV1ZyUARVprH7OgxJiekehyZcP28Nagb/p+/XqT5cWSDOP+474XUjtsyXmUmthS
+         X1iv9meIW48mhmepc232on2tkc6Oji9y99WDIPlv++0rhpQQr4NxtEE6CmOrhtgFa7nD
+         4vjI5oaQS50yVh3ULOyYGRntKjxHD0YeMDkFJVSTCe6G0nro/BJswIQoc6uXgdfheFwN
+         5WSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783425383; x=1784030183;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :content-type:mime-version:subject:date:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=lgMT9Upuh5KVAe4sPSM1sPIhFZuI5vEjoVoPpztrNMM=;
-        b=D8PPDQk1bmPLE8S7JPEoacKDgNK8drC2hvBzfEZiwKZ+RScvCkuutcu2IJ1IjJ6k3N
-         rvSva5wHicId9d7XodpOgpCT0knql0vsrMyXInCDSaMV1Eja9FToIchE35LdKSzyp1An
-         HGwI1ISdeOUWfUuz00tfKS5ejpmHDxvdQn0xsUNesIebeQ0D7NsquIFdMgeF0LQdJSjJ
-         QgyB7pCZgyQFboSksdFFavml43io8EejVuqqYSNb5FoM8czS1AKjnv1qWRM3NLAFN6aB
-         PkKG89GW7dCaJMy4zzzB23xKHk4fgA5NKvse4xrdLnu0LMmBu89kQSqRZ5ob8vRilX4J
-         8Uyw==
-X-Forwarded-Encrypted: i=1; AHgh+RowHe83u1N0ySQwMdzY+ShX3DpCLqGvtLGRha4GBEKs8i8jMju6Y/kVcLyBYhgiKSG2MQSljVedqzY=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxOAgTZX0/rm7t5waiLgxqHRNXpSEyHCrjZdfcmT18laCybrbdq
-	AQUdhveqZw2Bwu6JyuPc8M1PGfqMA9Y89ojODE75wJqawEVE0xJgaYOiziUqNURu7Cc=
-X-Gm-Gg: AfdE7cnDank3zftZkEEYKXPqOkLscGqhRJPe+r1/KzC9+KP5b5tfK7oesT8zO1igrkr
-	C9LWJrHRF2AXydSbdGdGUS2iT6g15jg5QyoTSVzkjvxTg8OdTTWyS7u0g4wqK9aFnb8scZeGyH1
-	n/PLUIoxH2iD8kUqA+XhKxBG0YyE/aJWV5Jv/1EdyNMIIX/7iyQ3AP1cvL0UyD+GIuGzApsnabw
-	PGHRV3v2GUn1whGVp+xEUGwSlTw7X/j10sWHx1ouTtmBfwA/Ia1tOnEDCr7aTYOXWxQb2Y4dclB
-	SdN7c3uXKspmwtUgwEE+g9xAyY8y7q0H8ZwL8Cu7NG0WpYBtr9hP0M5Rn94yHj/zK/rc+HTRK+i
-	oSIrLCKM6UnOfgVgaGSZYjd5XmFFhL8n9sAJoTNpuARTESCnjQqxul71u8zlB1e8yLH8yiB9IEp
-	p88w1kZDm5xHkwcKW0wLhGf+LwNg==
-X-Received: by 2002:a05:600c:1d0c:b0:493:bed9:b53d with SMTP id 5b1f17b1804b1-493df09b330mr53502095e9.31.1783425382814;
-        Tue, 07 Jul 2026 04:56:22 -0700 (PDT)
+        d=1e100.net; s=20251104; t=1783425382; x=1784030182;
+        h=cc:to:content-transfer-encoding:content-type:mime-version
+         :message-id:date:subject:from:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to:content-type;
+        bh=L9RDGbpt0X65W5NYkJywTfGuzuPW4bNvD1G1EfFxluo=;
+        b=Xq32xoN1eKXF7Hq5au+KlCCcbSRKfgaL6ICtck7Lppm5qLfzO2tB9Ea5qZmjmoLWVX
+         78wiZtO6yNfy140WyZJOISXtXJzwfNnM6IAoQssHY0xIROHjj2LNG2d9+Yr5LbIM4kPx
+         uT4NymPa50fCB//Pa/YnuUR2epHcNzKpisv/aKGsaJmUw3nNkxEDXw+NfChUy5qv81ue
+         eRIchlx/62kc1S3BAq5/1vNgLe3lYSMvdSfGFzdQcynGJXOOKX+bSP0vf9n0LU5caZ8S
+         qlB7dt72uB2hP0ZOEGj1ePUqeUFfkKCNkk3AW3Te0BE/BIZfAhUTeYvOIz9biG/Bi52p
+         4o4A==
+X-Forwarded-Encrypted: i=1; AHgh+Rr0jz2EJZOzgflnzMk4E5BB+Qz9uJFX5rPbbak2r1HM4/w/kPbgOHr45P2MbWowfqZPOZtaozvoBZw=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yy21IvSR/qYCEHCeqijFitD5ClAGVbIae8r8P2+KfKh1b43tesy
+	f9AVbC4ADpYGqjpEDnp2TGbj78tA/SG73s5vdZTNpZymXd3NtlwvO3hxQEfFsYzZJSA=
+X-Gm-Gg: AfdE7cmgRvK0kdPo03tMkS1ylXeqZmwKu4u3S4Blo4gziCV2vFqkLl07i3hFQudSk/7
+	UQV5JD5fQ9ITv0nZQPEpnsN31eGzkZT0nZ5Ja5X4LJOOlcQHVaC2yNeXDnIkBofiIAre7gN4Iti
+	yBzHZfwpkGo1AIASpVcroIy3eYAw98/0CMGJV7GQz588Y842a54EhjCtRQf4VPyPdZzzEYnrAJB
+	R2vkwEm8kl0rzYYUHS2V0Yp2WVakTdvZmJE62Oq0Z8lqwuRPf3eLlyxlhSda/MEgU7xLs2j/jxM
+	Ul67rJfslmHqVuxcO2/ZVXpO6YOWfvIuYUIVa4ClRLhnGqzdLLW8meIqJnB2o6nN1Ixqtc85uU4
+	Kj44guSMXUXYAXx3CE16NqknAUJSzV//aED1SZrbC+2PcvJq2uXqTMr42oFdpWzbSpW49eovNkm
+	JiZ1m4VyjsbJHzdzY6OlSMGVLmqThYVEKs3kXT
+X-Received: by 2002:a05:600c:474a:b0:493:c062:a533 with SMTP id 5b1f17b1804b1-493df0673f8mr58244645e9.17.1783425381754;
+        Tue, 07 Jul 2026 04:56:21 -0700 (PDT)
 Received: from [127.0.0.2] ([2a02:2454:ff24:7210:adab:817c:53a0:8f31])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-493e0f5ca1fsm55401235e9.15.2026.07.07.04.56.21
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-493e0f5ca1fsm55401235e9.15.2026.07.07.04.56.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jul 2026 04:56:22 -0700 (PDT)
+        Tue, 07 Jul 2026 04:56:20 -0700 (PDT)
 From: Stephan Gerhold <stephan.gerhold@linaro.org>
-Date: Tue, 07 Jul 2026 13:56:01 +0200
-Subject: [PATCH v2 1/4] dt-bindings: mtd: qcom,nandc: Add MDM9607 QPIC NAND
- controller
+Subject: [PATCH v2 0/4] mtd: rawnand: qcom: Add MDM9607
+Date: Tue, 07 Jul 2026 13:56:00 +0200
+Message-Id: <20260707-qcom-nandc-mdm9607-v2-0-d906f7e8b814@linaro.org>
 MIME-Version: 1.0
-Message-Id: <20260707-qcom-nandc-mdm9607-v2-1-d906f7e8b814@linaro.org>
-References: <20260707-qcom-nandc-mdm9607-v2-0-d906f7e8b814@linaro.org>
-In-Reply-To: <20260707-qcom-nandc-mdm9607-v2-0-d906f7e8b814@linaro.org>
+X-B4-Tracking: v=1; b=H4sIAFDpTGoC/32NQQ6CMBBFr0Jm7ZihkmJdeQ/DopQRxkirLRIN4
+ e4C7l2+5P33J0gchROcsgkij5Ik+AXULgPXWd8ySrMwKFKaNB3x6UKP3vrGYd/0RlOJV5UbzVz
+ r2hEsw0fkq7y36KX6cXrVN3bDWlqNTtIQ4md7HfPV+3sw5khY6IOxVBilyuJ8F29j2IfYQjXP8
+ xdb+GEmxwAAAA==
+X-Change-ID: 20260608-qcom-nandc-mdm9607-f2196eeb6bc0
 To: Manivannan Sadhasivam <mani@kernel.org>, 
  Miquel Raynal <miquel.raynal@bootlin.com>
 Cc: Richard Weinberger <richard@nod.at>, 
@@ -90,8 +91,9 @@ Cc: Richard Weinberger <richard@nod.at>,
  Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
 X-Mailer: b4 0.15.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260707_045624_804360_A84F73A2 
-X-CRM114-Status: GOOD (  13.06  )
+X-CRM114-CacheID: sfid-20260707_045623_742193_3143BF46 
+X-CRM114-Status: UNSURE (   9.96  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -108,90 +110,38 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add the qcom,mdm9607-nand compatible for the QPIC NAND controller used
-inside the MDM9607 SoC.
+MDM9607 has QPIC v1.5 that supports the OP_PAGE_READ_ONFI_READ command, but
+is missing the rest of the hardware changes in QPIC v2. There is also only
+a single clock that can be controlled using the RPM firmware. Document and
+add the new qcom,mdm9607-nand compatible for this setup.
 
-On MDM9607 and other recent SoCs, the QPIC hardware requires 3 clocks
-(core, aon, ahb). However, access to these clocks is restricted to the RPM
-firmware that controls the shared power resources for the whole SoC. The
-clocks cannot be controlled separately, for the OS view of the hardware
-there is only a single RPM_SMD_QPIC_CLK clock that implicitly enables all
-of the 3 clocks. The only exception to this are some IPQ* SoC that are not
-using RPM, there the clocks are directly controlled by the kernel via the
-clock controller (GCC). Require only one clock in the dt-bindings for
-MDM9607 to avoid having to define dummy clock entries.
-
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
-Reviewed-by: Manivannan Sadhasivam <mani@kernel.org>
 Signed-off-by: Stephan Gerhold <stephan.gerhold@linaro.org>
 ---
- .../devicetree/bindings/mtd/qcom,nandc.yaml        | 25 ++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+Changes in v2:
+- Pick up review tags (Mani, Krzysztof)
+- Clarify commit message/comments in PATCH 1 and 2 based on discussion.
+  The OS can only control one clock on these platforms.
+  (Krzysztof, Miquel, Konrad, Mani)
+- Link to v1: https://patch.msgid.link/20260608-qcom-nandc-mdm9607-v1-0-4639a0492274@linaro.org
 
-diff --git a/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml b/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
-index 5511389960f0..a916cac53af6 100644
---- a/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
-+++ b/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
-@@ -22,17 +22,20 @@ properties:
-               - qcom,ipq4019-nand
-               - qcom,ipq6018-nand
-               - qcom,ipq8074-nand
-+              - qcom,mdm9607-nand
-               - qcom,sdx55-nand
- 
-   reg:
-     maxItems: 1
- 
-   clocks:
-+    minItems: 1
-     items:
-       - description: Core Clock
-       - description: Always ON Clock
- 
-   clock-names:
-+    minItems: 1
-     items:
-       - const: core
-       - const: aon
-@@ -101,6 +104,27 @@ allOf:
-           items:
-             - const: rxtx
- 
-+  # On MDM9607, the OS can only control a single clock.
-+  # The 3 hardware clocks (core, aon, ahb) are invisible to the OS.
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - qcom,mdm9607-nand
-+    then:
-+      properties:
-+        clocks:
-+          maxItems: 1
-+        clock-names:
-+          maxItems: 1
-+    else:
-+      properties:
-+        clocks:
-+          minItems: 2
-+        clock-names:
-+          minItems: 2
-+
-   - if:
-       properties:
-         compatible:
-@@ -121,6 +145,7 @@ allOf:
-               - qcom,ipq4019-nand
-               - qcom,ipq6018-nand
-               - qcom,ipq8074-nand
-+              - qcom,mdm9607-nand
-               - qcom,sdx55-nand
- 
-     then:
+---
+Stephan Gerhold (4):
+      dt-bindings: mtd: qcom,nandc: Add MDM9607 QPIC NAND controller
+      mtd: rawnand: qcom: Make "aon" clock optional
+      mtd: rawnand: qcom: Make has_onfi_read_op separate from qpic_version2
+      mtd: rawnand: qcom: Add MDM9607 compatible
 
--- 
-2.54.0
+ .../devicetree/bindings/mtd/qcom,nandc.yaml        | 25 ++++++++++++++++++
+ drivers/mtd/nand/raw/qcom_nandc.c                  | 30 ++++++++++++++++------
+ include/linux/mtd/nand-qpic-common.h               |  2 ++
+ 3 files changed, 49 insertions(+), 8 deletions(-)
+---
+base-commit: adfc275b317c02cd043b0cf28b8cfb7459b041f0
+change-id: 20260608-qcom-nandc-mdm9607-f2196eeb6bc0
+
+Best regards,
+--  
+Stephan Gerhold <stephan.gerhold@linaro.org>
 
 
 ______________________________________________________
