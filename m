@@ -4,69 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B4C9C43458
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 Jul 2026 01:49:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98314C43458
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 Jul 2026 14:34:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=2xHjRW9DyfxpccXhvEc11CAuRizqoqtQDsfSgzRvcEE=; b=KvAGVDVXizeQRm
-	dS/RQ3sk5Ygwu4Ub+lgGfvAx7aNC/7EZ5S/fBTyCpjoo54UacKQC7zqfMrDZwlfHZPAhFZ7JaLlTo
-	uaoVrk2PBqFshpgOtSZuyl02Nprp/G7wyIHa2TWb73s2ux6RGTnQ5uEpjsgtcFwjXeixHMQ+cZDtp
-	xNOLW5Dz+kya8pOgTgHEYUnP/z4Xn1yY6zsxKf+AcqQpL9613uVzahlq0RhRR+Qnl5rLAulpUzboQ
-	8inPBr6vcCLi81SnUfHLE3fphd65kok0XbYeahbYttxMvvJQZmjLdF4FIcSB4Zbpkc5jgCOobVjui
-	CM/q4g1vhG4rCVge/n+A==;
+	List-Owner; bh=WPEyPcI+/nN9fFIh1AE/8GdFeWd72gY/iqD8+gTnFUU=; b=ZLBqnyWfpJEo2B
+	ZfmaHDbKcbIzYU9idMjHTkFsPesRwvO2bX5q8l/ieZ33fnVV+dUtl8E2IadQQP/+AROYNNlonq14q
+	RcoPR85MULnr9eg38S8m17q3EmAcjZXFFZf3YW9LxxUhNyIYAkLMcXFzmbJP1vm1u00FAkIO0wZEU
+	I4w0qZ6i2xnVlZ9q5NhYIVtzLlgG4/CWmYGC7lnzJQJgJeu7fFGnxAPwqYzuNWcrzqTLhP+qrbiah
+	3QPnDSK5xhuu5Mse+PjSFRlf8+bJEjUDzpGCpsKaEXq+woc8pG2lmgMNvtMzdIH3mfuS9myygM3Wc
+	Ywi9RHW/ZJEqXoXSqWsQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1whHPd-0000000G7hU-3qDq;
-	Wed, 08 Jul 2026 01:49:21 +0000
-Received: from smtp81.cstnet.cn ([159.226.251.81] helo=cstnet.cn)
+	id 1whTLh-0000000HMJQ-3NqP;
+	Wed, 08 Jul 2026 14:34:05 +0000
+Received: from mail-pf1-x430.google.com ([2607:f8b0:4864:20::430])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1whHPa-0000000G7h1-2SU9
+	id 1whTLd-0000000HMJ5-3IVf
 	for linux-mtd@lists.infradead.org;
-	Wed, 08 Jul 2026 01:49:20 +0000
-Received: from localhost.localdomain (unknown [111.196.245.140])
-	by APP-03 (Coremail) with SMTP id rQCowACXapGZrE1qqIIiFw--.45497S2;
-	Wed, 08 Jul 2026 09:49:13 +0800 (CST)
-From: Pengpeng Hou <pengpeng@iscas.ac.cn>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Pengpeng Hou <pengpeng@iscas.ac.cn>,
-	Linus Walleij <linusw@kernel.org>,
-	Liviu Dudau <liviu.dudau@arm.com>,
+	Wed, 08 Jul 2026 14:34:02 +0000
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-84832ec2615so843396b3a.1
+        for <linux-mtd@lists.infradead.org>; Wed, 08 Jul 2026 07:34:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1783521241; x=1784126041; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=ZoQxphKgZy9acTkfjSIslanryVBCy+SJQZkIKGsyR7c=;
+        b=GDq+f2kRRuYn+8mwhsOUCIs4gE7AS+PhzJtoSTY1X7u5xF/KLKYqDRp7f5B1TH9x3P
+         TbLP8O7nQjP6SVsHJhQpMTq0HMqLbpCAKPGhbOMgvLkz9XWFHNBIapqWNPnGJ8ZCbzVe
+         B/dxdyUVxjzxtVT6/6HnfFcIf+3M6tg07py/nX2tyEKxRYYcGM4iDAKJiXKc8nZ5guku
+         xTdRpbco2FMNbXGuSt6YGrHyz64sCZQ4gLKWxc9zxgs5VIq/ahOmrGWLacPLtlJ30Q60
+         h9ljvo4bS6/7DzS8+kc+UZD5mqw+dgN9WGtDfp61x4m8W4Hm75U4eHdouamQQLKcOWoG
+         iJ6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1783521241; x=1784126041;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=ZoQxphKgZy9acTkfjSIslanryVBCy+SJQZkIKGsyR7c=;
+        b=jZd5En6OrtRQNZ3ZJar1UIj54qokc7nTuLNbQ4PlS7LFb2ksD2yX4DJRd8Fi5G57hk
+         hsAA9y/t2helhOZ2BAfYYBG2l9FmIBOignEo8gsV8yGS/J9A/ECvAIWO3+WEKYnuYf9a
+         DwrfFdyZUQIQB2zSlmpjq/T3rmk9M3HvsAOncPpSMayGk4XzM9TXPwD9z+e5hsoAoUvK
+         zhM9M3mZnizxMeD37Bl4xmdwJ8IcVdSzYAbXllcsoBMANEODZPZdvMOp5o45curLnsuT
+         0+auRTSWTZ6WrkBMtVw7ooodHL9CrwmxZgFGEjhwKuPrJ3F9z/SzDHtav3hOqjC5lKN4
+         j2kA==
+X-Forwarded-Encrypted: i=1; AHgh+Roio3gq/Rqx1N4CuB87goxsjtFMW3gpVuNSIDkdQOkEuBUce9kMFiGB0NvTl+GFfflEVnGCtdpddiY=@lists.infradead.org
+X-Gm-Message-State: AOJu0YyNPTiR3IPddiIkaQhaqBGhrR0ai2IyppFXuQb8EflnKOr4nkrH
+	Lrk6/sYPmzfvq9Sm2QPcgknvDDqlqVpL0VoCe3Yubvk7ResDLHn1wr2/BRrpfbT2f5o=
+X-Gm-Gg: AfdE7ckDfXNB6b817A/8hSXi9PvHLINSh2sTXcKZTahXeYJENZRiDy4KXLjYZAXYKfu
+	Yk8g/NBeW5FOl4nJheBmtRrjH9rMroA/DcVM5kEQSDCPyGlQqxUB7+rP7F1S7yhNaIzRF266ug3
+	vnCz8j0ziGHPm0gwpLRTqYLsd4ixn1CQP9mNuHGcClfnaipLVuxCECFDVnIkDDME8pZ6tXFJo6d
+	stdEEqEc5l6hZoUbKTuApzeX2gvg50j+NqwYFVIveVGo5nquTm+MrgHsSHLTiW7iysG11NDYSZ0
+	u12IYeq4I/RFlGRDQv0KPrwBVo8Tuwscl8HI05m9bKFwqbtycu7MS7ieNcikBMNg5uXCl2QpFGa
+	zmJrP+OfGa58M+yBawXHkccTFFbL2x2qZL9xKdLahZsc/SFdZtwCJKIjTqDa89PRnhrNWwj5j+L
+	ze0j90Qi+7pomTpNAXWV0Y6i9cDEQbFRTj
+X-Received: by 2002:a05:6a00:440d:b0:845:e9e5:cdec with SMTP id d2e1a72fcca58-8484302bad3mr2991228b3a.62.1783521240860;
+        Wed, 08 Jul 2026 07:34:00 -0700 (PDT)
+Received: from haichao.tail057a43.ts.net ([2001:da8:e000:1206:1b95:b995:f60c:5c67])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-847f6bcf03bsm7122862b3a.26.2026.07.08.07.33.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Jul 2026 07:34:00 -0700 (PDT)
+From: Ruoyu Wang <ruoyuw560@gmail.com>
+To: miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com
+Cc: mrugiero@gmail.com,
+	computersforpeace@gmail.com,
+	bbrezillon@kernel.org,
 	linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: [PATCH v2 RESEND] mtd: afs: validate v2 image info bounds
-Date: Wed,  8 Jul 2026 09:49:06 +0800
-Message-ID: <20260708014906.1463-1-pengpeng@iscas.ac.cn>
-X-Mailer: git-send-email 2.50.1
+	Ruoyu Wang <ruoyuw560@gmail.com>
+Subject: [PATCH] mtd: mtdswap: Avoid freeing registered blktrans device twice
+Date: Wed,  8 Jul 2026 22:33:55 +0800
+Message-ID: <20260708143355.3166755-1-ruoyuw560@gmail.com>
+X-Mailer: git-send-email 2.51.0
 MIME-Version: 1.0
-X-CM-TRANSID: rQCowACXapGZrE1qqIIiFw--.45497S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7tw13CFy5JFWxGF1Utw45GFg_yoW8uw4Upa
-	1jgay7tw4kJa109F4kAws7W3ZxGwn5JFW7Ga9rX34DAFZ3Cr98WayFkry0vr4Skr47WrnF
-	vrs8ta4rZF9rurJanT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkE14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-	6F4UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gr
-	1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
-	7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r
-	1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY1x0262kKe7AK
-	xVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
-	0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFyl
-	IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
-	AFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j
-	6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUpwZ
-	cUUUUU=
-X-Originating-IP: [111.196.245.140]
-X-CM-SenderInfo: pshqw1xhqjqxpvfd2hldfou0/
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260707_184919_027143_0206D37E 
-X-CRM114-Status: GOOD (  11.08  )
+X-CRM114-CacheID: sfid-20260708_073402_135720_F6D832D8 
+X-CRM114-Status: GOOD (  11.13  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,64 +102,42 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The AFS v2 parser uses footer[8] to locate the image information block
-inside the current erase block, then uses the image information
-region_count to walk entries from a fixed local array. The footer offset
-and region count come from flash contents and are not checked against the
-erase block or the local image-info array before use.
+In mtdswap_add_mtd(), debugfs setup failure after successful blktrans
+registration can free mbd_dev twice.
 
-Reject v2 entries whose image information offset would underflow the
-erase block calculation, and reject region counts that cannot fit in the
-local image-info array before walking region entries.
+add_mtd_blktrans_dev() initializes the blktrans device reference and
+publishes the disk. Once that succeeds, del_mtd_blktrans_dev() tears the
+disk down and drops the blktrans reference; when that reference reaches
+zero, blktrans_dev_release() frees the mtd_blktrans_dev.
 
-Fixes: b7cf5e2830bb ("mtd: afs: add v2 partition parsing")
-Cc: stable@vger.kernel.org
-Signed-off-by: Pengpeng Hou <pengpeng@iscas.ac.cn>
+The debugfs failure path called del_mtd_blktrans_dev(mbd_dev), then fell
+through the common cleanup label and called kfree(mbd_dev) again. Clear
+the local pointer after deregistration so the common cleanup can still
+release the mtdswap state without freeing the blktrans object twice.
+
+This issue was found by a static analysis checker and confirmed by
+manual source review.
+
+Fixes: e8e3edb95ce6 ("mtd: create per-device and module-scope debugfs entries")
+Signed-off-by: Ruoyu Wang <ruoyuw560@gmail.com>
 ---
-Changes since v1:
-- v1: https://lore.kernel.org/r/20260706094059.82323-1-pengpeng@iscas.ac.cn/
-- add Fixes and Cc stable tags
+ drivers/mtd/mtdswap.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Resend note:
-- resend with the complete Cc list; no patch changes
-
- drivers/mtd/parsers/afs.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/drivers/mtd/parsers/afs.c b/drivers/mtd/parsers/afs.c
-index 26116694c821..7ab3d50f565e 100644
---- a/drivers/mtd/parsers/afs.c
-+++ b/drivers/mtd/parsers/afs.c
-@@ -235,6 +235,9 @@ static int afs_parse_v2_partition(struct mtd_info *mtd,
- 	pr_debug("Parsing v2 partition @%08x-%08x\n",
- 		 off, off + mtd->erasesize);
+diff --git a/drivers/mtd/mtdswap.c b/drivers/mtd/mtdswap.c
+index 866933fc84265..533b8948918cb 100644
+--- a/drivers/mtd/mtdswap.c
++++ b/drivers/mtd/mtdswap.c
+@@ -1450,6 +1450,7 @@ static void mtdswap_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
  
-+	if (mtd->erasesize < sizeof(footer))
-+		return -EINVAL;
-+
- 	/* First read the footer */
- 	ptr = off + mtd->erasesize - sizeof(footer);
- 	ret = mtd_read(mtd, ptr, sizeof(footer), &sz, (u_char *)footer);
-@@ -245,6 +248,8 @@ static int afs_parse_v2_partition(struct mtd_info *mtd,
- 	}
- 	name = (char *) &footer[0];
- 	version = footer[9];
-+	if (footer[8] > mtd->erasesize - sizeof(footer))
-+		return -EINVAL;
- 	ptr = off + mtd->erasesize - sizeof(footer) - footer[8];
+ debugfs_failed:
+ 	del_mtd_blktrans_dev(mbd_dev);
++	mbd_dev = NULL;
  
- 	pr_debug("found image \"%s\", version %08x, info @%08x\n",
-@@ -278,6 +283,8 @@ static int afs_parse_v2_partition(struct mtd_info *mtd,
- 	entrypoint = imginfo[pad];
- 	attributes = imginfo[pad+1];
- 	region_count = imginfo[pad+2];
-+	if (region_count > (ARRAY_SIZE(imginfo) - pad - 3) / 4)
-+		return -EINVAL;
- 	block_start = imginfo[20];
- 	block_end = imginfo[21];
- 
+ cleanup:
+ 	mtdswap_cleanup(d);
 -- 
-2.53.0
+2.51.0
 
 
 ______________________________________________________
