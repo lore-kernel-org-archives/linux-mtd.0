@@ -4,66 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08F7AC43458
-	for <linux-mtd@archiver.kernel.org>; Thu,  9 Jul 2026 21:48:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66F62C43458
+	for <linux-mtd@archiver.kernel.org>; Fri, 10 Jul 2026 02:22:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=5OzNBftDt0Xs9ZNcjT4/bXBqn+afRLU84wFs1GGt8+s=; b=Y399N2AsmHyWEg
-	PXkAf0GXca6ODaas8VcOLgDhGQMNjm1RHiIsADJB5qMof53tucpaV4uhY+gXOa1AXxuy3Cas9xh6c
-	WTqahkCKol7x7QnMNwvBB6qvVWoDmArhLyq0YTn9R1K8Jok+Dj6EyOrZCB/aEZKvN222SnJlEYVjT
-	gWzRiLaVnbZIXxWshjC81eBEJMRUMk4ygw5hlrYtdOW7WF/WqGjDkOWJ+kadAEmxF+cwzNhOtk7/R
-	MgrNsgYmvh2KpQ5FMll7NNECvhm2DC1mPSyyaZz/IxddbBRgkjGj1qGMCMGJpENkWZuydN38Mpe77
-	Zmf34S+p50/9BXAtul9Q==;
+	List-Owner; bh=A1AGUEUwC66Km7fi/3VFcj552YQDoBcbvnnDBhnyV/U=; b=LuMvcosWLH0vPw
+	wMdetUua9+IZSVtEgdOzdwGekh1MU9kWTYqj+PXApcHPFYU4agz48XAqPxrpI1BLQByIE3CrScjF3
+	dOgcNrEvUyT8cUxL55LDt6GHbBjsEwYpEwZziN1kz4Y4/kzhccGHauamDWlO7tORuQ8StNujiWuvS
+	Z38kWhHG3j5yZT4GaCscWgroz6ae8IecdlgJwp1LoxBDmqvLw76xmg3EEtPcrZnrvxfucFvOJEzum
+	hrjhDFSQblEbb1+hRH86jR8EYg2G9rtu2xIN8NPwi13ITSyAzOW0E9X7B4B4CONYhRVzYtsl0TpQx
+	p5nRzAF7meswyNlmebvg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1whwbe-00000003iq6-2Mfl;
-	Thu, 09 Jul 2026 21:48:30 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1wi0sm-00000003xFl-2LUp;
+	Fri, 10 Jul 2026 02:22:28 +0000
+Received: from smtp2.infineon.com ([2a00:18f0:1e00:4::4])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1whwba-00000003ipz-2QAh
+	id 1wi0sj-00000003xFF-01iG
 	for linux-mtd@lists.infradead.org;
-	Thu, 09 Jul 2026 21:48:26 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 102CC44046
-	for <linux-mtd@lists.infradead.org>; Thu,  9 Jul 2026 21:48:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8F2A1F00AC4
-	for <linux-mtd@lists.infradead.org>; Thu,  9 Jul 2026 21:48:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783633705;
-	bh=TSwvbr/Jelw6UpvbFFiYWu/jPh3uNqSrRLawIqCIhKY=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc;
-	b=Y6uSA/rxD8VTRC35MwZC+L9Xhws/ZXvbFF1dL2GZk/4478nQeuovmSEpwYQMqPS28
-	 DU6v3Ig3IdBv71VHzrfYQuciuTvbnc7Pu0p5LpTQSVNlFjAgCLY418taVmykzq/6BB
-	 pWtdtqTEAEwxSSEG7FCINEK8YSmOyl9xjLkLi4RRDosvZOPbt4OT/vnb3XUQymGxxS
-	 oXygfv4F2NZibckymSDQTmmxyM0PCxbh4HxBa5If4sfUBVmgYvtSSVVeg0U51B+NgF
-	 C1MfbwnNebk5PgFqtM9jMvnNU+LakRJfKQePPIBUgp4vtBeSGLgFxOYaUAbdINnDbK
-	 knb1jmcADbRog==
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-5b015b2d792so227488e87.3
-        for <linux-mtd@lists.infradead.org>; Thu, 09 Jul 2026 14:48:25 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AHgh+Rpyeqyj9BrjenzReskx5aoQ8Qv5Z+mEffTWdszW7ZQdyloV6GkcxLCyu6zMUEe4gcwFMHtPddLbY1Y=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxKK2ETfrawKc4PjP/au3C/jCEhYWH9lIbqbH3i1sTKe6kkpggw
-	1qvd1f7IkHXme49Eoy9MMtTjY9/K2bLATe/t+uQ875lsrmGTO55k+USINWJ1euoAH8YZ5HALLHl
-	PSdgq/ol+LXfbsmXEtsVwO5xIuBTvLrg=
-X-Received: by 2002:a05:6512:318c:b0:5b0:1ace:3bc7 with SMTP id
- 2adb3069b0e04-5b01ace3dffmr580054e87.31.1783633704667; Thu, 09 Jul 2026
- 14:48:24 -0700 (PDT)
+	Fri, 10 Jul 2026 02:22:26 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=infineon.com; i=@infineon.com; q=dns/txt; s=IFXMAIL;
+  t=1783650145; x=1815186145;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=JbDNeJ7bRv/XOKpmwCL4w9vOzeh575lyUJeila34R2g=;
+  b=YnGgKRfLTZ5VU+RKiPG77O40BdhuhffG7HchlLpjw/nH8XvasA7pPzIT
+   QInzydNTQhJp0HCc7IqM2T3L5JU/Zz4wiZ0wTq+76SCyIrRZzrRkccWdc
+   c5rCUiydHlWkyMEFYumxtkZcWO+soya2pK0ZZnqPKpj0VcmdU0fMfEKrx
+   w=;
+X-CSE-ConnectionGUID: +EF5AJzFQfK/Iywwy2mVWw==
+X-CSE-MsgGUID: Y6n8gbYISA6Vd2ylQKGqDQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11841"; a="166868194"
+X-IronPort-AV: E=Sophos;i="6.25,154,1779141600"; 
+   d="scan'208";a="166868194"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO MUCSE822.infineon.com) ([172.23.29.53])
+  by smtp2.infineon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jul 2026 04:22:16 +0200
+Received: from MUCSE811.infineon.com (172.23.29.37) by MUCSE822.infineon.com
+ (172.23.29.53) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.43; Fri, 10 Jul
+ 2026 04:22:15 +0200
+Received: from MUCSE815.infineon.com (172.23.29.41) by MUCSE811.infineon.com
+ (172.23.29.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.43; Fri, 10 Jul
+ 2026 04:22:15 +0200
+Received: from MUCSE815.infineon.com ([fe80::b54c:c0bd:546c:c9be]) by
+ MUCSE815.infineon.com ([fe80::b54c:c0bd:546c:c9be%12]) with mapi id
+ 15.02.2562.043; Fri, 10 Jul 2026 04:22:15 +0200
+From: <Takahiro.Kuwano@infineon.com>
+To: <mwalle@kernel.org>, <pratyush@kernel.org>, <miquel.raynal@bootlin.com>,
+	<richard@nod.at>, <vigneshr@ti.com>, <tudor.ambarus@linaro.org>
+CC: <linux-mtd@lists.infradead.org>, <chengminglin@mxic.com.tw>,
+	<linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v1 6/8] mtd: spi-nor: spansion: s25fs256t: move ARCFN
+ check into .late_init
+Thread-Topic: [PATCH v1 6/8] mtd: spi-nor: spansion: s25fs256t: move ARCFN
+ check into .late_init
+Thread-Index: AQHdCviYt5PKND7i80GLCykdpBu8K7ZmDxMw
+Date: Fri, 10 Jul 2026 02:22:15 +0000
+Message-ID: <d23de34853cc4029b6f314e9808c3283@infineon.com>
+References: <20260703143003.1809579-1-mwalle@kernel.org>
+ <20260703143003.1809579-7-mwalle@kernel.org>
+In-Reply-To: <20260703143003.1809579-7-mwalle@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.161.6.196]
 MIME-Version: 1.0
-References: <20260708014906.1463-1-pengpeng@iscas.ac.cn>
-In-Reply-To: <20260708014906.1463-1-pengpeng@iscas.ac.cn>
-From: Linus Walleij <linusw@kernel.org>
-Date: Thu, 9 Jul 2026 23:48:11 +0200
-X-Gmail-Original-Message-ID: <CAD++jL=APPmdAg1y6igZ5qxihUAMkjvRUZ26gmCBGdoA-N5edg@mail.gmail.com>
-X-Gm-Features: AUfX_mzze3LGN8VuT0AKhPa0bBlZvUodRHQlRxCB10Wpn3l9wDY7boYKzGK9nS0
-Message-ID: <CAD++jL=APPmdAg1y6igZ5qxihUAMkjvRUZ26gmCBGdoA-N5edg@mail.gmail.com>
-Subject: Re: [PATCH v2 RESEND] mtd: afs: validate v2 image info bounds
-To: Pengpeng Hou <pengpeng@iscas.ac.cn>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
-	Vignesh Raghavendra <vigneshr@ti.com>, Liviu Dudau <liviu.dudau@arm.com>, linux-mtd@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260709_192225_642698_B7C22431 
+X-CRM114-Status: UNSURE (   8.86  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,50 +92,26 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgUGVuZ3BlbmcsCgp0aGFua3MgZm9yIHlvdXIgcGF0Y2ghCgpPbiBXZWQsIEp1bCA4LCAyMDI2
-IGF0IDM6NDnigK9BTSBQZW5ncGVuZyBIb3UgPHBlbmdwZW5nQGlzY2FzLmFjLmNuPiB3cm90ZToK
-Cj4gVGhlIEFGUyB2MiBwYXJzZXIgdXNlcyBmb290ZXJbOF0gdG8gbG9jYXRlIHRoZSBpbWFnZSBp
-bmZvcm1hdGlvbiBibG9jawo+IGluc2lkZSB0aGUgY3VycmVudCBlcmFzZSBibG9jaywgdGhlbiB1
-c2VzIHRoZSBpbWFnZSBpbmZvcm1hdGlvbgo+IHJlZ2lvbl9jb3VudCB0byB3YWxrIGVudHJpZXMg
-ZnJvbSBhIGZpeGVkIGxvY2FsIGFycmF5LiBUaGUgZm9vdGVyIG9mZnNldAo+IGFuZCByZWdpb24g
-Y291bnQgY29tZSBmcm9tIGZsYXNoIGNvbnRlbnRzIGFuZCBhcmUgbm90IGNoZWNrZWQgYWdhaW5z
-dCB0aGUKPiBlcmFzZSBibG9jayBvciB0aGUgbG9jYWwgaW1hZ2UtaW5mbyBhcnJheSBiZWZvcmUg
-dXNlLgo+Cj4gUmVqZWN0IHYyIGVudHJpZXMgd2hvc2UgaW1hZ2UgaW5mb3JtYXRpb24gb2Zmc2V0
-IHdvdWxkIHVuZGVyZmxvdyB0aGUKPiBlcmFzZSBibG9jayBjYWxjdWxhdGlvbiwgYW5kIHJlamVj
-dCByZWdpb24gY291bnRzIHRoYXQgY2Fubm90IGZpdCBpbiB0aGUKPiBsb2NhbCBpbWFnZS1pbmZv
-IGFycmF5IGJlZm9yZSB3YWxraW5nIHJlZ2lvbiBlbnRyaWVzLgo+Cj4gRml4ZXM6IGI3Y2Y1ZTI4
-MzBiYiAoIm10ZDogYWZzOiBhZGQgdjIgcGFydGl0aW9uIHBhcnNpbmciKQo+IENjOiBzdGFibGVA
-dmdlci5rZXJuZWwub3JnCgpJIGRvbid0IGtub3cgaWYgdGhpcyBpcyBzdGFibGUgbWF0ZXJpYWwu
-IE5vLW9uZSBpcyBydW5uaW5nIGludG8gYW55CnJlZ3Jlc3Npb25zLCBJIHRoaW5rIHRoaXMgd2Fz
-IGRpc2NvdmVyZWQgYnkgY29kZSBhbmFseXNpcyBhbmQKaXMgbW9zdGx5IHRoZW9yZXRpY2FsIHBy
-b2JsZW1zLgoKPiBTaWduZWQtb2ZmLWJ5OiBQZW5ncGVuZyBIb3UgPHBlbmdwZW5nQGlzY2FzLmFj
-LmNuPgoKPiArICAgICAgIGlmIChtdGQtPmVyYXNlc2l6ZSA8IHNpemVvZihmb290ZXIpKQo+ICsg
-ICAgICAgICAgICAgICByZXR1cm4gLUVJTlZBTDsKCllvdSBhcmUgYXdhcmUgdGhhdCBubyBzeXN0
-ZW0gaGFzIGFuIGVyYXNlIGJsb2NrIHNpemUgbGVzcyB0aGFuCjY0S0IgaW4gcHJhY3RpY2UsIGFu
-ZCBzaXplb2YoZm9vdGVyKSBpcyA0OCBieXRlcz8KVGhpcyBpcyB3aHkgSSBzYXkgdGhpcyBraW5k
-IG9mICJidWdzIiBhcmUgcHJldHR5CnRoZW9yZXRpY2FsLgoKPiAgICAgICAgIG5hbWUgPSAoY2hh
-ciAqKSAmZm9vdGVyWzBdOwo+ICAgICAgICAgdmVyc2lvbiA9IGZvb3Rlcls5XTsKPiArICAgICAg
-IGlmIChmb290ZXJbOF0gPiBtdGQtPmVyYXNlc2l6ZSAtIHNpemVvZihmb290ZXIpKQo+ICsgICAg
-ICAgICAgICAgICByZXR1cm4gLUVJTlZBTDsKClRoZSBzYW1lIHRoZW9yZXRpY2FsIHRoaW5nIGhl
-cmUuIGZvb3Rlcls4XSBpcyAwLi4yNTUgYnV0CmVyYXNlc2l6ZSBpcyBhdCBsZWFzdCA2NTUzNSBh
-bmQgc2l6ZW9mKGZvb3RlcikgaXMgNDggYnl0ZXMuCgpJbiBlc3NlbmNlIHRoaXMgY29kZSB0cmFu
-c2xhdGVzIHRvOgoKaXMgc29tZXRoaW5nIGJldHdlZW4gMCBhbmQgMjU1IG1vcmUgdGhhbiA2NTUz
-NSAob3IgbW9yZSkgLSA0OD8KClRoZSBjb21waWxlciB3aWxsIG9mIGNvdXJzZSBqdXN0IG9wdGlt
-aXplIHRoaXMgb3V0LCBidXQgSSdtIGp1c3QKcG9pbnRpbmcgaXQgb3V0LgoKSSB1bmRlcnN0YW5k
-IHRoaXMga2luZCBvZiBmaXhlcyBhcmUgYWVzdGhldGljYWxseSBwbGVhc2luZwpidXQgdGhleSBh
-cmUgbm90IGJ1Z3MuIE1vcmUgbGlrZSBvcm5hbWVudHMgZm9yIGNvZGVycy4KCj4gQEAgLTI3OCw2
-ICsyODMsOCBAQCBzdGF0aWMgaW50IGFmc19wYXJzZV92Ml9wYXJ0aXRpb24oc3RydWN0IG10ZF9p
-bmZvICptdGQsCj4gICAgICAgICBlbnRyeXBvaW50ID0gaW1naW5mb1twYWRdOwo+ICAgICAgICAg
-YXR0cmlidXRlcyA9IGltZ2luZm9bcGFkKzFdOwo+ICAgICAgICAgcmVnaW9uX2NvdW50ID0gaW1n
-aW5mb1twYWQrMl07Cj4gKyAgICAgICBpZiAocmVnaW9uX2NvdW50ID4gKEFSUkFZX1NJWkUoaW1n
-aW5mbykgLSBwYWQgLSAzKSAvIDQpCj4gKyAgICAgICAgICAgICAgIHJldHVybiAtRUlOVkFMOwoK
-VGhpcyBpcyB2YWxpZCBzYW5pdGl6YXRpb24gb2YgcmVnaW9uX2NvdW50IGhvd2V2ZXIhCgpBY2tl
-ZC1ieTogTGludXMgV2FsbGVpaiA8bGludXN3QGtlcm5lbC5vcmc+CgpZb3VycywKTGludXMgV2Fs
-bGVpagoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFk
-ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+> The SFPD parsing is optional. It not meant to fail if something is wrong
+> with the chip (except for the SFDP itself). Thus it doesn't make any
+> sense to return -ENODEV.
+> 
+> Move that check to late_init(), which might fail and abort the flash
+> probing.
+> 
+> Cc: Takahiro Kuwano <takahiro.kuwano@infineon.com>
+> Signed-off-by: Michael Walle <mwalle@kernel.org>
+
+Tested-by: Takahiro Kuwano <takahiro.kuwano@infineon.com>
+
+Thanks!
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
