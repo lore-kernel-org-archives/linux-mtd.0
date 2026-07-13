@@ -4,79 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A817FC44506
-	for <linux-mtd@archiver.kernel.org>; Fri, 10 Jul 2026 02:57:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3344DC43458
+	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jul 2026 05:22:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4LbSsXfhya2ld407Nxl0VyaICMYHTTDFkuvSVZLSwpg=; b=axLY5PnH4p1gcq
-	FcdBsW1OlhfAx0UFBQ8E3UnMShMsmk2sXJmPftpN0DgnW2LNsyw9z9pL7K0LEswQ7eaXlmU8tp4p0
-	leHYXsLIp7EoYzroNW46XNHSojGFfsRl3GtGuEHR2tzvtZu5RK5oPJg+sQdPojfAddpd+Y0aCFOG0
-	OFj3cmBvswZ/PLOkwiXNp1fWrnXxJrXV9yReHw0XUuHObLlMN8DkLBptOdNITPpDSsi/4zAYxdcEs
-	WYDH39qJAaHaeTz/i3W1TReoGvyudmc/dCJ8yrg75qSpO0HJ14g7KLNPEY3yEu3ohulcoUUjrQSKR
-	IfMKx0asBf5AKcsTL8Jg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=f1cQmLUIKv5qElEbZBkkpSI7Gr0fgs0erdFAv8pSB8I=; b=QJYoNSUKTlFV9Z
+	qRnnW8Eky58H/X0Mb2clzoQvmrvMRxUYaSMq50xwM4e7A9H4l1geU8Lb31B0fH3TLk8fyauVvNKDW
+	u0QhVByZVqWZk8O3LYeKrmr0SwT26HkPDP3Mu9sUDcNZa7Wldr2WCAm+a/z1PcF6MSd2Pnh1o4cNT
+	4JrWp2DZyK5dJlQ01MzLbDj/F9rEyuOxiF7rezH22KTp/R7xKc0KkSUwmKVGqrcDR259aHotuFM2K
+	3EVdTlFeW+Tpj5xXZZLdsZSnqNZl/L09BhrlQb1pICvIoE1qAYi9XqJw7CnARlyi2upmZgHKql/xl
+	Bg/zck65YyP7PU9tQ9AA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wi1QH-000000040fQ-0YRB;
-	Fri, 10 Jul 2026 02:57:05 +0000
-Received: from smtp9.infineon.com ([217.10.52.204])
+	id 1wj97n-000000089Rx-2PBh;
+	Mon, 13 Jul 2026 05:22:39 +0000
+Received: from smtpbguseast2.qq.com ([54.204.34.130])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wi1QD-000000040ez-30ob
+	id 1wj97i-000000089Qs-3dNR
 	for linux-mtd@lists.infradead.org;
-	Fri, 10 Jul 2026 02:57:03 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=infineon.com; i=@infineon.com; q=dns/txt; s=IFXMAIL;
-  t=1783652222; x=1815188222;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=Gyq1qOWvljfJQdlrHQ7yHWyNU8IHLJa8f/3GJWzfl2g=;
-  b=kHMRcPXYEKtA8MPVwgwWGjH1G9gp2qoWnuzlYVoN5/S8NS1ySDx+RCEy
-   kOdsggfDJAQCC1gboMgNrwTAiMFzmHr//tUjTIwiv/pXi95ld1RfolKqB
-   k1Rs/5QoDHqGWq1h5i+giAI1IZ6f6YPC6JZLxmsLk78wKsFMqAc5MmxTA
-   0=;
-X-CSE-ConnectionGUID: 9ar2FVaIS26DIRQJ9JK4hA==
-X-CSE-MsgGUID: bTDbh0HZTYiscX2PdGFdIQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11841"; a="100411348"
-X-IronPort-AV: E=Sophos;i="6.25,154,1779141600"; 
-   d="scan'208";a="100411348"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO MUCSE812.infineon.com) ([172.23.29.38])
-  by smtp9.infineon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jul 2026 04:56:00 +0200
-Received: from MUCSE811.infineon.com (172.23.29.37) by MUCSE812.infineon.com
- (172.23.29.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.43; Fri, 10 Jul
- 2026 04:55:59 +0200
-Received: from MUCSE815.infineon.com (172.23.29.41) by MUCSE811.infineon.com
- (172.23.29.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.43; Fri, 10 Jul
- 2026 04:55:58 +0200
-Received: from MUCSE815.infineon.com ([fe80::b54c:c0bd:546c:c9be]) by
- MUCSE815.infineon.com ([fe80::b54c:c0bd:546c:c9be%12]) with mapi id
- 15.02.2562.043; Fri, 10 Jul 2026 04:55:58 +0200
-From: <Takahiro.Kuwano@infineon.com>
-To: <mwalle@kernel.org>, <miquel.raynal@bootlin.com>
-CC: <pratyush@kernel.org>, <richard@nod.at>, <vigneshr@ti.com>,
-	<linux-mtd@lists.infradead.org>
-Subject: RE: Sashiko to track linux-mtd
-Thread-Topic: Sashiko to track linux-mtd
-Thread-Index: AQHdA6z+zQDJzP5BH0+i5EcNLx8rzbZNZ7CNgAhEU1WAAoKYgIAN9y/A
-Date: Fri, 10 Jul 2026 02:55:58 +0000
-Message-ID: <b224c6938e084763b017c63e0aa3fa3f@infineon.com>
-References: <875x38mlk7.fsf@bootlin.com> <2vxz4iismi2m.fsf@kernel.org>
- <87pl19s7ng.fsf@bootlin.com> <0fe3140096bc48a8e71838362220d9f8@kernel.org>
-In-Reply-To: <0fe3140096bc48a8e71838362220d9f8@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.161.6.196]
+	Mon, 13 Jul 2026 05:22:36 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uniontech.com;
+	s=onoh2408; t=1783920131;
+	bh=fM8Q1SD7XfugxOcJgMLQxjpqmZ4SQOJLImfo/tMCzlA=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version;
+	b=RQzHJEJklgJsNetIRAk63Iq6MonT4XksBMG3i59t/aFxDvoBlzTQmwAooXEy/GvLx
+	 xFDag2eidAx/l87DZ/JKMo6Zp8Pm6kGAJZtkEyeOCEa03DdKaGjLGVVyLz9S628LWP
+	 s85PTc+quhMjwAbVMnGRiMigpzQRxsjmInGPZ4eY=
+X-QQ-mid: zesmtpgz6t1783920126tc35ffb0f
+X-QQ-Originating-IP: VPaKhDxv5lrTk04FFn2/VRP/TWvfOBAM+q2sqajFpoE=
+Received: from PEN202512010004 ( [113.57.152.160])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Mon, 13 Jul 2026 13:22:04 +0800 (CST)
+X-QQ-SSF: 0000000000000000000000000000000
+X-QQ-GoodBg: 1
+X-BIZMAIL-ID: 14185114708170478530
+EX-QQ-RecipientCnt: 7
+From: raoxu <raoxu@uniontech.com>
+To: miquel.raynal@bootlin.com
+Cc: richard@nod.at,
+	vigneshr@ti.com,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	raoxu@uniontech.com,
+	stable@vger.kernel.org
+Subject: [PATCH] mtd: mtdoops: free page bitmap when the backing MTD is removed
+Date: Mon, 13 Jul 2026 13:22:03 +0800
+Message-ID: <11D80ECD6F2BBA62+20260713052203.3130998-1-raoxu@uniontech.com>
+X-Mailer: git-send-email 2.50.1
 MIME-Version: 1.0
+X-QQ-SENDSIZE: 520
+Feedback-ID: zesmtpgz:uniontech.com:qybglogicsvrgz:qybglogicsvrgz6b-0
+X-QQ-XMAILINFO: M+fRGLN47oKLNN+1WT3o4y7kGNRtG6QWTN1Ahd3yrvE76c6k+8+VOgUX
+	DdQn4+oV1tgSIZxRhI0RSP8mG2WUb22HHPh50tEWJY/tYLIpwPWF3pAdITZ6YJIooKBsKrd
+	unr8ZBiGxxd1fuD7tmW3mffv5sT1wCitI7lAFBLoH8bQvorsfjfW8DAuEGqcBTrDga/ffl3
+	yDcGmbbceavLIeDIhbYLmK1qTj8x7PIkMoL67YHnxy1qai2CuFk81b5mpinHmM7UuFkgI5o
+	8VsHLcUELzCYsEUSkn1mcrEDKujRzeh0ZSb2cKqyDvm20D/nb2NwutmH+KAIcpyMiS449Oz
+	gRVfdRhC0pOC97nGCUx60Scilgn5LW8pPlY5K3cc++rLPa8UOYByYaFlhz8mn0pa6meEVcp
+	0ZxugGq/wrtYu6Ieaei6u99zAsjbLChwtnEiHneHjaL2HJWAFkEPtcqZrxH7l1uvNK9OghB
+	0dpr9piaemlqJCv1vkzU0I8dIK8ntKNBtUZz9Gu6KL3lHG93Lkv6r1f6kmrsCRroAXNSJ1z
+	KBtUAOvDeAPds5DI3TCbmEPVdHKtCEEqXPBlpufMTqDHSB7LdV7CIL40Wv+QG83vYsO3A0x
+	ipZLdpvYEn7gkguyA7WXigmLBgC36NbNhz0TP3uZGMZ0cb7dWR2Cb6uHzp/GpVqLgoToC1F
+	lFXXw+iXjo4qHdsrohDZ9qKQiiVv+OQ5FMqiBuFSDyexuZixZNfO8OpztC+TGBLLxXoHvtg
+	Qx6hIKj6P6NfJ4hJ8un1bveht+b3d/A92yW5ltn1MR3kdJUNy6rGumrhu94XQGaA70aCNok
+	ZeAGr+1v1Up44eiMMYb7t7Peo3HN0e07mn5seXmH9Qo9S0pESVhc4mRasVAsjNL7SqUVOwr
+	94HpnKgFCdRPEWQzSDfYsmlwqFAjAU/NJEIZ1qlfj71KkCE8VX2C0W2li6kDCp7KfkRQ/za
+	qXvFob5xuMPTjQki8CrmdzLh2ejLfbQYcSNONm+PK0L+PtG1dqgdqux95BMND3HzBVz3Vbk
+	BMu1aEyfmTXoGc0NfH+ZmqMMFHXXRAx+vomqHGntxXR2uHHkTo
+X-QQ-XMRINFO: MSVp+SPm3vtSI1QTLgDHQqIV1w2oNKDqfg==
+X-QQ-RECHKSPAM: 0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260709_195702_107172_88EA42ED 
-X-CRM114-Status: GOOD (  13.56  )
+X-CRM114-CacheID: sfid-20260712_222235_400220_E7F2B13D 
+X-CRM114-Status: UNSURE (   9.84  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,44 +96,46 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
+From: Xu Rao <raoxu@uniontech.com>
 
-> Hi,
-> 
-> >>> https://github.com/sashiko-dev/sashiko/blob/main/MAINTAINERS_GUIDE.md
-> >
-> > There are a couple more questions we should answer regarding e-mail
-> > delivery:
-> >
-> > - Shall Sashiko reply to all/just the author/a list of individuals?
-> >
-> >   If we go for e-mails, I'd answer to the thread, so "reply_all". But
-> >   I'm open.
-> 
-> I'd go to let it only reply to us, which will review the comments
-> and forward them (or mention them with a link to the webinterface).
+mtdoops_notify_add() allocates oops_page_used when the configured MTD
+device is registered.  mtdoops_notify_remove() detaches from that device
+but leaves the bitmap allocated.  If the same MTD device is later
+registered again, the add path allocates a new bitmap and overwrites the
+old pointer, leaking one vmalloc allocation per remove/add cycle.
 
-I'd lean toward 'only reply to us'.
+This is only visible when the backing MTD device can disappear and be
+registered again while mtdoops remains loaded, so the usual static MTD
+case does not expose it.
 
-> But I'm open to just use reply_all, I just fear that a submitter will
-> reply to useless/wrong suggestions.
-> 
-> > - Shall we set an embargo?
-> >
-> >   I'd be tempted to say "no").
-> 
-> Whatever that is and how it will work with the reply_all option?
-> 
-> > - Shall Sashiko send a positive review in case nothing was spot?
-> >
-> >   If we enable e-mails, I'd be tempted to say "yes".
-> 
-> yeah probably.
-> 
-> -michael
+Free the bitmap after unregistering the dumper and flushing the pending
+workers, then clear the pointer and page count before a later attach can
+allocate fresh state.  Clearing the pointer also keeps the module exit
+path from freeing the same bitmap a second time after a remove event.
 
-Thanks,
-Takahiro
+Fixes: be95745f0167 ("mtd: mtdoops: keep track of used/unused pages in an array")
+Cc: stable@vger.kernel.org
+Signed-off-by: Xu Rao <raoxu@uniontech.com>
+---
+ drivers/mtd/mtdoops.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/mtd/mtdoops.c b/drivers/mtd/mtdoops.c
+index 39df7ce8f55f..1da7ef06a7a9 100644
+--- a/drivers/mtd/mtdoops.c
++++ b/drivers/mtd/mtdoops.c
+@@ -392,6 +392,9 @@ static void mtdoops_notify_remove(struct mtd_info *mtd)
+ 	cxt->mtd = NULL;
+ 	flush_work(&cxt->work_erase);
+ 	flush_work(&cxt->work_write);
++	vfree(cxt->oops_page_used);
++	cxt->oops_page_used = NULL;
++	cxt->oops_pages = 0;
+ }
+
+
+--
+2.50.1
 
 
 ______________________________________________________
