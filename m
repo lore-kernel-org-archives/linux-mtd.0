@@ -4,62 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC20CC44501
-	for <linux-mtd@archiver.kernel.org>; Thu, 16 Jul 2026 13:23:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0ACE3C44512
+	for <linux-mtd@archiver.kernel.org>; Thu, 16 Jul 2026 13:32:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=RR5005nqpbdHSc0wop6Q3Sd7Srod7kd49nkt40MXVdU=; b=PQla4Qx80KMPNp
-	AIt4bkaRgXwxTgVdYOs70jwROHp6kXHXqKV6HheFZ33Af0S9U61PwNMhJylrm2wKL2Ox8Y5mhYc62
-	RxQTjFrS/XsyaMrKQ6jNNSWjLJLPmNiwMqh47GHUMnMMwrzpWyG995LDCU86xFwXaO46c6q/Af21e
-	7Iz7NNBQMkqL78E53uwT8VhbItViIMA0JI6siIsTO3VFOTkzHBkMUzz6lbhPYlNdaRUkPoLIgdknG
-	UGXHGovXJvYILziImDULKkPzQnC/E5P6lg8glIpSzHPuvUPSO8UD2F35xtES3qDvayQ3wAW19rQf8
-	/EHZPTWQ9Wtx7QQ+ib/A==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=L58csx2AT0LzA/Aixn66qC9NNh/v3vNLKXuxqInOnyg=; b=bW3ObGvG9kZxXWabTbHyUuQ7je
+	CnEC0DtTeIha5QDhp2oDCFKCYRz2ljNY/z+Kr+9IJ5BiH2B2J/02QNfWd8yQm3iMLl4BcOlMmZco/
+	e0uix18NM5ufKdedWO6tKfOKKamINMOlrIrYhR0mu1v5D8Ra2tW715+C99AgIYBewpomEzE88ID+E
+	99bqedV8BTyE0Vo3N7Nd5aDlfko46M+XSKM8mCTQchXuvJ5UEPjrzrWgYuBO/eyWf8dQ2rjXk+8oc
+	UVa3VarM4Ige9xAF6nRrTUqilEdCEzh299u6tTrYrDE1xCwOvXOM4aHmYWPqdEMh/JEIoCECtz4P7
+	fCIJ4eJw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wkM3T-0000000HNWh-3Nf8;
-	Thu, 16 Jul 2026 13:23:11 +0000
-Received: from canpmsgout03.his.huawei.com ([113.46.200.218])
+	id 1wkMC6-0000000HOLt-1RaX;
+	Thu, 16 Jul 2026 13:32:06 +0000
+Received: from canpmsgout11.his.huawei.com ([113.46.200.226])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wkM3P-0000000HNUg-1SFQ
+	id 1wkMC2-0000000HOKJ-421K
 	for linux-mtd@lists.infradead.org;
-	Thu, 16 Jul 2026 13:23:10 +0000
+	Thu, 16 Jul 2026 13:32:04 +0000
 dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
 	c=relaxed/relaxed; q=dns/txt;
 	h=From;
-	bh=4UzHivmPv4sGDOdOPE7VyO5rahWexPUdRRxBAZUmcC0=;
-	b=KdHy22eQ10zKrthqbPhl6DL1SHyYt5WEbE92vv8W0rEGaQw1Ojicnb/0UWk6NSDfIwjmfbnzA
-	bHd4wPq01D78rLCT8gf38ZZlC9cqwhCXcQIflDIa7K03F77o4VdpQGu4QHCvNR9t1zrK8BlEg91
-	xeM4NjJnBZjgRAkAdOzwRpE=
-Received: from mail.maildlp.com (unknown [172.19.163.104])
-	by canpmsgout03.his.huawei.com (SkyGuard) with ESMTPS id 4h1D5S66GSzpT0h;
-	Thu, 16 Jul 2026 21:14:04 +0800 (CST)
-Received: from kwepemg100005.china.huawei.com (unknown [7.202.181.23])
-	by mail.maildlp.com (Postfix) with ESMTPS id 7A91C4058C;
-	Thu, 16 Jul 2026 21:22:59 +0800 (CST)
-Received: from huawei.com (10.50.85.155) by kwepemg100005.china.huawei.com
- (7.202.181.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.36; Thu, 16 Jul
- 2026 21:22:58 +0800
-From: zhouminqiang <zhouminqiang2@huawei.com>
-To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-	<Artem.Bityutskiy@nokia.com>, <lumag@kernel.org>
+	bh=cR6v39GwN2FtvxiI4Ocw284F8Ll4ovAOvUUd0k6wOoI=;
+	b=M85DbeYodJNQo8awsFXH07LXVkLcspjU1igxnma94gOm5A85O5AIomJGV7iicA1hU+5vfd5pS
+	s5i49yf1Q4tYnAnMRdBrhH7LalXINpidBKfMEHrvMW5RTuSdcimADb7PDNIUFCv314WH7+pjCvW
+	Mc09DNEyt9tgqU4va3JBMCA=
+Received: from mail.maildlp.com (unknown [172.19.163.127])
+	by canpmsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4h1DH10Pg1zKm52;
+	Thu, 16 Jul 2026 21:22:21 +0800 (CST)
+Received: from whupemo200011.china.huawei.com (unknown [7.152.185.179])
+	by mail.maildlp.com (Postfix) with ESMTPS id 97E43402AB;
+	Thu, 16 Jul 2026 21:31:42 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ whupemo200011.china.huawei.com (7.152.185.179) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Thu, 16 Jul 2026 21:31:41 +0800
+Subject: Re: [PATCH] mtd: part: reject MTDPART_OFS_RETAIN in
+ mtd_add_partition()
+To: zhouminqiang <zhouminqiang2@huawei.com>, <miquel.raynal@bootlin.com>,
+	<richard@nod.at>, <vigneshr@ti.com>, <Artem.Bityutskiy@nokia.com>,
+	<lumag@kernel.org>
 CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<chengzhihao1@huawei.com>, <yangerkun@huawei.com>, <yi.zhang@huawei.com>
-Subject: [PATCH] mtd: part: reject MTDPART_OFS_RETAIN in mtd_add_partition()
-Date: Thu, 16 Jul 2026 21:14:32 +0800
-Message-ID: <20260716131432.2355777-1-zhouminqiang2@huawei.com>
-X-Mailer: git-send-email 2.52.0
+	<yangerkun@huawei.com>, <yi.zhang@huawei.com>
+References: <20260716131432.2355777-1-zhouminqiang2@huawei.com>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <3789ac0c-d9b0-99f8-4e5e-e10820e6518d@huawei.com>
+Date: Thu, 16 Jul 2026 21:31:40 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-X-Originating-IP: [10.50.85.155]
-X-ClientProxiedBy: kwepems200001.china.huawei.com (7.221.188.67) To
- kwepemg100005.china.huawei.com (7.202.181.23)
+In-Reply-To: <20260716131432.2355777-1-zhouminqiang2@huawei.com>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: kwepems100001.china.huawei.com (7.221.188.238) To
+ whupemo200011.china.huawei.com (7.152.185.179)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260716_062308_021701_D3AEB1FC 
-X-CRM114-Status: GOOD (  13.28  )
+X-CRM114-CacheID: sfid-20260716_063203_328332_30D84106 
+X-CRM114-Status: GOOD (  22.01  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,74 +76,58 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="gbk"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-mtd_add_partition() does not reject the special offset value
-MTDPART_OFS_RETAIN (-3), which leads to a WARN_ON in
-add_mtd_device() when called through the BLKPG ioctl on NAND
-devices. The RETAIN value depends on cur_offset being the end of
-the previous partition, but in the dynamic partition path
-cur_offset equals the offset argument itself, causing undefined
-behavior.
-
-Commit 5daa7b21496a ("mtd: prepare partition add and del functions
-for ioctl requests") introduced mtd_add_partition() and correctly
-rejected MTDPART_OFS_APPEND (-1) and MTDPART_OFS_NXTBLK (-2),
-since those special offsets rely on cur_offset tracking the
-previous partition's end. However, commit 1a31368bf92e ("mtd: add a flags
-for partitions which should just leave smth. after them")
-later added MTDPART_OFS_RETAIN (-3) for the static
-partition table path without updating mtd_add_partition() to
-also reject this value.
-
-With offset=-3 passed via BLKPG, the RETAIN size calculation in
-allocate_partition() underflows (parent_size - 0xFFFFFFFFFFFFFFFD
-= parent_size + 3). If the underflow result does not appear to
-leave enough space, allocate_partition() jumps to out_register via
-goto, skipping erasesize initialization. This results in
-erasesize=0, which triggers:
-
-WARN_ON((!mtd->erasesize || !master->_erase) &&
-		!(mtd->flags & MTD_NO_ERASE))
-
-in add_mtd_device(). If the underflow result appears to leave
-enough space, a bogus partition size is calculated, but the
-"out of reach" sanity check catches the invalid offset and
-creates a disabled empty partition (offset=0, size=0) instead
-of returning an error.
-
-Fix this by adding MTDPART_OFS_RETAIN to the rejection list in
-mtd_add_partition(), consistent with the existing handling of
-APPEND and NXTBLK.
-
-Fixes: 1a31368bf92e ("mtd: add a flags for partitions which should just leave smth. after them")
-
-Signed-off-by: zhouminqiang <zhouminqiang2@huawei.com>
----
- drivers/mtd/mtdpart.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 795a94e6b482..11cab777a1ac 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -255,7 +255,8 @@ int mtd_add_partition(struct mtd_info *parent, const char *name,
- 
- 	/* the direct offset is expected */
- 	if (offset == MTDPART_OFS_APPEND ||
--	    offset == MTDPART_OFS_NXTBLK)
-+	    offset == MTDPART_OFS_NXTBLK ||
-+	    offset == MTDPART_OFS_RETAIN)
- 		return -EINVAL;
- 
- 	if (length == MTDPART_SIZ_FULL)
--- 
-2.52.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+1NogMjAyNi83LzE2IDIxOjE0LCB6aG91bWlucWlhbmcg0LS1wDoKPiBtdGRfYWRkX3BhcnRpdGlv
+bigpIGRvZXMgbm90IHJlamVjdCB0aGUgc3BlY2lhbCBvZmZzZXQgdmFsdWUKPiBNVERQQVJUX09G
+U19SRVRBSU4gKC0zKSwgd2hpY2ggbGVhZHMgdG8gYSBXQVJOX09OIGluCj4gYWRkX210ZF9kZXZp
+Y2UoKSB3aGVuIGNhbGxlZCB0aHJvdWdoIHRoZSBCTEtQRyBpb2N0bCBvbiBOQU5ECj4gZGV2aWNl
+cy4gVGhlIFJFVEFJTiB2YWx1ZSBkZXBlbmRzIG9uIGN1cl9vZmZzZXQgYmVpbmcgdGhlIGVuZCBv
+Zgo+IHRoZSBwcmV2aW91cyBwYXJ0aXRpb24sIGJ1dCBpbiB0aGUgZHluYW1pYyBwYXJ0aXRpb24g
+cGF0aAo+IGN1cl9vZmZzZXQgZXF1YWxzIHRoZSBvZmZzZXQgYXJndW1lbnQgaXRzZWxmLCBjYXVz
+aW5nIHVuZGVmaW5lZAo+IGJlaGF2aW9yLgo+IAo+IENvbW1pdCA1ZGFhN2IyMTQ5NmEgKCJtdGQ6
+IHByZXBhcmUgcGFydGl0aW9uIGFkZCBhbmQgZGVsIGZ1bmN0aW9ucwo+IGZvciBpb2N0bCByZXF1
+ZXN0cyIpIGludHJvZHVjZWQgbXRkX2FkZF9wYXJ0aXRpb24oKSBhbmQgY29ycmVjdGx5Cj4gcmVq
+ZWN0ZWQgTVREUEFSVF9PRlNfQVBQRU5EICgtMSkgYW5kIE1URFBBUlRfT0ZTX05YVEJMSyAoLTIp
+LAo+IHNpbmNlIHRob3NlIHNwZWNpYWwgb2Zmc2V0cyByZWx5IG9uIGN1cl9vZmZzZXQgdHJhY2tp
+bmcgdGhlCj4gcHJldmlvdXMgcGFydGl0aW9uJ3MgZW5kLiBIb3dldmVyLCBjb21taXQgMWEzMTM2
+OGJmOTJlICgibXRkOiBhZGQgYSBmbGFncwo+IGZvciBwYXJ0aXRpb25zIHdoaWNoIHNob3VsZCBq
+dXN0IGxlYXZlIHNtdGguIGFmdGVyIHRoZW0iKQo+IGxhdGVyIGFkZGVkIE1URFBBUlRfT0ZTX1JF
+VEFJTiAoLTMpIGZvciB0aGUgc3RhdGljCj4gcGFydGl0aW9uIHRhYmxlIHBhdGggd2l0aG91dCB1
+cGRhdGluZyBtdGRfYWRkX3BhcnRpdGlvbigpIHRvCj4gYWxzbyByZWplY3QgdGhpcyB2YWx1ZS4K
+PiAKPiBXaXRoIG9mZnNldD0tMyBwYXNzZWQgdmlhIEJMS1BHLCB0aGUgUkVUQUlOIHNpemUgY2Fs
+Y3VsYXRpb24gaW4KPiBhbGxvY2F0ZV9wYXJ0aXRpb24oKSB1bmRlcmZsb3dzIChwYXJlbnRfc2l6
+ZSAtIDB4RkZGRkZGRkZGRkZGRkZGRAo+ID0gcGFyZW50X3NpemUgKyAzKS4gSWYgdGhlIHVuZGVy
+ZmxvdyByZXN1bHQgZG9lcyBub3QgYXBwZWFyIHRvCj4gbGVhdmUgZW5vdWdoIHNwYWNlLCBhbGxv
+Y2F0ZV9wYXJ0aXRpb24oKSBqdW1wcyB0byBvdXRfcmVnaXN0ZXIgdmlhCj4gZ290bywgc2tpcHBp
+bmcgZXJhc2VzaXplIGluaXRpYWxpemF0aW9uLiBUaGlzIHJlc3VsdHMgaW4KPiBlcmFzZXNpemU9
+MCwgd2hpY2ggdHJpZ2dlcnM6Cj4gCj4gV0FSTl9PTigoIW10ZC0+ZXJhc2VzaXplIHx8ICFtYXN0
+ZXItPl9lcmFzZSkgJiYKPiAJCSEobXRkLT5mbGFncyAmIE1URF9OT19FUkFTRSkpCj4gCj4gaW4g
+YWRkX210ZF9kZXZpY2UoKS4gSWYgdGhlIHVuZGVyZmxvdyByZXN1bHQgYXBwZWFycyB0byBsZWF2
+ZQo+IGVub3VnaCBzcGFjZSwgYSBib2d1cyBwYXJ0aXRpb24gc2l6ZSBpcyBjYWxjdWxhdGVkLCBi
+dXQgdGhlCj4gIm91dCBvZiByZWFjaCIgc2FuaXR5IGNoZWNrIGNhdGNoZXMgdGhlIGludmFsaWQg
+b2Zmc2V0IGFuZAo+IGNyZWF0ZXMgYSBkaXNhYmxlZCBlbXB0eSBwYXJ0aXRpb24gKG9mZnNldD0w
+LCBzaXplPTApIGluc3RlYWQKPiBvZiByZXR1cm5pbmcgYW4gZXJyb3IuCj4gCj4gRml4IHRoaXMg
+YnkgYWRkaW5nIE1URFBBUlRfT0ZTX1JFVEFJTiB0byB0aGUgcmVqZWN0aW9uIGxpc3QgaW4KPiBt
+dGRfYWRkX3BhcnRpdGlvbigpLCBjb25zaXN0ZW50IHdpdGggdGhlIGV4aXN0aW5nIGhhbmRsaW5n
+IG9mCj4gQVBQRU5EIGFuZCBOWFRCTEsuCj4gCj4gRml4ZXM6IDFhMzEzNjhiZjkyZSAoIm10ZDog
+YWRkIGEgZmxhZ3MgZm9yIHBhcnRpdGlvbnMgd2hpY2ggc2hvdWxkIGp1c3QgbGVhdmUgc210aC4g
+YWZ0ZXIgdGhlbSIpCj4gCj4gU2lnbmVkLW9mZi1ieTogemhvdW1pbnFpYW5nIDx6aG91bWlucWlh
+bmcyQGh1YXdlaS5jb20+Cj4gLS0tCj4gICBkcml2ZXJzL210ZC9tdGRwYXJ0LmMgfCAzICsrLQo+
+ICAgMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQoKUmV2aWV3
+ZWQtYnk6IFpoaWhhbyBDaGVuZyA8Y2hlbmd6aGloYW8xQGh1YXdlaS5jb20+Cj4gCj4gZGlmZiAt
+LWdpdCBhL2RyaXZlcnMvbXRkL210ZHBhcnQuYyBiL2RyaXZlcnMvbXRkL210ZHBhcnQuYwo+IGlu
+ZGV4IDc5NWE5NGU2YjQ4Mi4uMTFjYWI3NzdhMWFjIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbXRk
+L210ZHBhcnQuYwo+ICsrKyBiL2RyaXZlcnMvbXRkL210ZHBhcnQuYwo+IEBAIC0yNTUsNyArMjU1
+LDggQEAgaW50IG10ZF9hZGRfcGFydGl0aW9uKHN0cnVjdCBtdGRfaW5mbyAqcGFyZW50LCBjb25z
+dCBjaGFyICpuYW1lLAo+ICAgCj4gICAJLyogdGhlIGRpcmVjdCBvZmZzZXQgaXMgZXhwZWN0ZWQg
+Ki8KPiAgIAlpZiAob2Zmc2V0ID09IE1URFBBUlRfT0ZTX0FQUEVORCB8fAo+IC0JICAgIG9mZnNl
+dCA9PSBNVERQQVJUX09GU19OWFRCTEspCj4gKwkgICAgb2Zmc2V0ID09IE1URFBBUlRfT0ZTX05Y
+VEJMSyB8fAo+ICsJICAgIG9mZnNldCA9PSBNVERQQVJUX09GU19SRVRBSU4pCj4gICAJCXJldHVy
+biAtRUlOVkFMOwo+ICAgCj4gICAJaWYgKGxlbmd0aCA9PSBNVERQQVJUX1NJWl9GVUxMKQo+IAoK
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpM
+aW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
