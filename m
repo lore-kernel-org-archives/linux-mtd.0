@@ -4,91 +4,167 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A54CC4451C
-	for <linux-mtd@archiver.kernel.org>; Fri, 17 Jul 2026 17:34:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DDE7FC4451C
+	for <linux-mtd@archiver.kernel.org>; Fri, 17 Jul 2026 18:52:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
-	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=u2KhdxgUR+D1n59/PLPMIUZMs+uv9OImJensadgCuz0=; b=rbq4VeQJYjnj8u
-	Y1Rm2zFExa1Rtc4XDB9ynAnlVnxI5EdT1NxN3710/bLt8oLm0A43VJSmhRVmAlM66z53kDtZagH4A
-	UyOzrXaeZTRHiwVBi7HyOGsjuh7Hk+kTvQ9bN81gI1B0KXuk9eLo8kZfG75UEJGeIj8TiNorC8pvX
-	UwyFIeR+USmrEqA/U3SAI47+HlHimUyGu3MDVYQDb2ySXOQvYeAcnsjcRWIbr171e1XqFqsHRunD5
-	uNBbZmowlvHJ6AvhcKLJk5dstHCtDD2cS2auo8nZrjzdQ9TWTdTrBYEo170v9bi+MCJUBejUpd6lj
-	vcwQOM+YvPFVnkEPqNEg==;
+	List-Owner; bh=ufPCJou9z/yNKKuWmXOrOUm6IXjr3rPVX0xVV/mxUn4=; b=tUOYIQjtvhXDNa
+	VFwCei1Q8awfxvdUERnQWK3Ytm6qpqRfnvlz4u2HaKEgcCK0apMcb7Yb19hzElQvIqwd21QmTwvsT
+	w8uWBI/bI4if4I8spXYzS5drPDQ21hukFJNtnRqnWjsQ+i3oG7fPaVOex9E2mbG+fVFpzFNmgsrn9
+	1vp0s27w7LaD+c1gmXVUZ7U4pB0HlCvt3fjjgmiGuqrJVln3PWSoXSbSGk/RwABqFrNMPB1cJ+HQB
+	3iFHePR1JKULySUJr5ga0xHyk2YEb2SGxXMfojXELNQgNAsj9sjnq2MLWtkJptjaOExLyOpkBKn4A
+	+O4t6n6e2s9ToPctfILw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wkmSJ-00000002tkP-3SRp;
-	Fri, 17 Jul 2026 17:34:35 +0000
-Received: from mail-ot1-x333.google.com ([2607:f8b0:4864:20::333])
+	id 1wknfF-000000033Nd-1nsn;
+	Fri, 17 Jul 2026 18:52:01 +0000
+Received: from mx0b-0002e601.pphosted.com ([148.163.154.28])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wkmSG-00000002tgF-1mQN
+	id 1wknfD-000000033My-0JOc
 	for linux-mtd@lists.infradead.org;
-	Fri, 17 Jul 2026 17:34:34 +0000
-Received: by mail-ot1-x333.google.com with SMTP id 46e09a7af769-7eb61bbeb25so2791933a34.1
-        for <linux-mtd@lists.infradead.org>; Fri, 17 Jul 2026 10:34:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1784309671; x=1784914471; darn=lists.infradead.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :content-type:mime-version:subject:date:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=sBTwbiP2C8OFdHLB83ZBc1RdHRd7b7uHmQhCjRYWMAk=;
-        b=K6t8CjEjimW/0154Saa0kltLr5eZdgsKpjdZ4R3AkdxXV00DCaR/YMD70ZEdGxpmrq
-         GzRiA+PtHF4uvEuSB2b85HsaNoyY7yC32vdCANdKUFSFhX8ZjhOAzMy5J6GC5eGGUNJo
-         CmKv50ZyqQIjvgzkuZMyU/YDNeCPZQytX3yHYUq39SD0DKq+hxFk6UCNzur8hEMEG2SX
-         F/kgKBIVcA5ZjevJbUClUGwlie6ROhc9TOBDobV0WbvOohBKpYPU32BT/W0nLxuMMv/B
-         9Hx2oao/xZDu8EltuXIssXO8H5sPyqlVUfxEWvIMP16xQSism5xjnbs16w8d+HKZq9Em
-         8B9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1784309671; x=1784914471;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :content-type:mime-version:subject:date:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=sBTwbiP2C8OFdHLB83ZBc1RdHRd7b7uHmQhCjRYWMAk=;
-        b=s7G8DkAico7JIUnXQpFzc8Qv7rPpAo4pEu28FVJq/Xsy/V8IbjbzHp2OuIIRlpXMNm
-         E9VOqa77GtUvJp8JOJ0mRL/JG0W7N+KqnCalI2JuQ9VLNjtH3ec+UGWPya68vmBTA19p
-         XbBWhBM+nF21JjtFfOn6HOwrBTEKbhBFjPFzJpfewp2f2ph0FPaDwInXNxbhhUNRgmVI
-         8E0w3+vPuLMjJkKoOHZP/OZ+qhZRh06xRajuaI1yc1MdBPOgRjYhyHA0HP5t6ZdK4EA6
-         kGWc1s/dOCOYJCSlbhtxnyiLo0Z3imesBkntryVVAURCz5KMCjtVc70lVIxBpIsPqprT
-         pgWw==
-X-Gm-Message-State: AOJu0YwzA+G8Irf+OMo3kAnRfv4Fl41dTIkE1UVIFVLj5wfbNyxZxQHy
-	IaCQw8SIRT0TYSoZ1qI+E8e/NQ8EtQ12wTJJW7JBx8DPf3LH05IXBL/5
-X-Gm-Gg: AfdE7cnSoBXIMF2YWYckQ7C2JqJ/6kVrH/LClfm+SoGqpV1SgFb2Hww8b+zuSl44omX
-	rumwoZpmQRVnmV1SPVd0G6SmK10ODD8s7pllMJoKgTFmIvpNuP2pHLZfzezD+t6gZC9qZdGil4F
-	+OzazinZ9BXTJSeyQJ4UcEHQ8ipq79RNP/nR+/Zy5v1pj40dJk3ZWnUD1WaLRZJMBK1yGZM8LqF
-	f9qxeCcrlUtinNutkmj1/cgORI3NWyiXBTHiOvFZcw82MwQA3KhafBWQOQaNP/UYTgF7byIxTXn
-	fqkTHWc/cG6bHYBqP08hJgawCqatIddLJHEiWEXDmKeS/XMr44k43kVw9rFRozulIVg9iaeloiZ
-	E6wCQz+XSuCOuJwUEQCrusobUFO9WOUV8kbtQyFv3C4/HBFmyF6PyhJcAM6ve2jG1O8UL66Ac8h
-	qQDkvIlmSA1cW5Z+k3rmBsb4qDX+8fxNZYqlw2D7bfvQxVLpTVmIxgQJi3HBamI8UVIzmS6o8zb
-	rTNigKiEf7WUVPUA1zhSPWeSYZOaG1PZ86vlIbs+Ul8EWTjZ4vuZA==
-X-Received: by 2002:a05:6830:2a0e:b0:7e7:571:114e with SMTP id 46e09a7af769-7eda08eb88cmr1835909a34.20.1784309671288;
-        Fri, 17 Jul 2026 10:34:31 -0700 (PDT)
-Received: from [127.0.1.1] (174-29-11-8.hlrn.qwest.net. [174.29.11.8])
-        by smtp.gmail.com with ESMTPSA id 46e09a7af769-7edad965130sm1677212a34.11.2026.07.17.10.34.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jul 2026 10:34:29 -0700 (PDT)
-From: James Hilliard <james.hilliard1@gmail.com>
-Date: Fri, 17 Jul 2026 11:33:59 -0600
-Subject: [PATCH v2 3/3] mtd: rawnand: sunxi: fix H6/H616 controller timings
+	Fri, 17 Jul 2026 18:52:00 +0000
+Received: from pps.filterd (m0374956.ppops.net [127.0.0.1])
+	by mx0b-0002e601.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 66HIlFO63222589;
+	Fri, 17 Jul 2026 13:51:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=
+	proofpoint-05-2026; bh=tAR7iq+VvMXykEbHa93yZVIqmDwvMwzOdF8NwxZut
+	BE=; b=Rz5unEAmS3SqmL2OB05y7r47QHIEBGykO/r6ESHUTVqsVHpNJ4MPJt6Q3
+	PhIj60NIVgfbqf0CrsnGfKqbqysQP5xV3cO2BWlCbp/AQbTctHcgGU83OJ90PnB8
+	ak0P9CbhO0HxmfyNFMGvYM3UHmPpi1fsZMSKrPbrlT6zSWKPZlrOa1/oKHcC4fnN
+	vTSAUqUL2V7zRsfFrSFwgvJNbBs763ksFK8dK4NG1H7CYE7HqFWQ+Q2KMA1Kin92
+	J28kUKKvV2YP/vAXIw7dxCC+HA8x22Upxffey80llQPv459oksx2EyR7PepFXG6x
+	rLve5TrJkJWN5Da0SpHsxD2dBsc7w==
+Received: from sn4pr2101cu001.outbound.protection.outlook.com (mail-southcentralusazon11012001.outbound.protection.outlook.com [40.93.195.1])
+	by mx0b-0002e601.pphosted.com (PPS) with ESMTPS id 4ffkc3jtvn-1
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+	Fri, 17 Jul 2026 13:51:47 -0500 (CDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=D5JhMLBwPVJ14+fulfIC2NtRt4MlwxH+AHUhEFhTGPqGwOTuTYH71OyoIVZYSkkZAPYRA5mjnKHRSoG8eeYiW9DSWJuvzuOuox5ca4+F5heBrx/drEBl5vnh0IQ2A+Swz5imvwdsAZj+QMDvtaP0IrPm+u6JLNu3q+y5j2KPv7WZsTBBouPcfxgMXtntO2YqF1IWqP536IEVelz83j68FqRLYOaL7q1hy+SpK8n/V+F2dgADynbAesaz01hI4SQSxQOmB8tWpsu8Df9uG9Lpn5hS/zKxwxSAx5be+hg8IGj0mCTAGbTt9WHWmR+IMnFCRvJU+PH9TEbauCRjM9DVRA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=tAR7iq+VvMXykEbHa93yZVIqmDwvMwzOdF8NwxZutBE=;
+ b=bJx4/N6YT4mys0MeTO5Ug1zb1YoSFRIpmg9jRnuI/hP2/51Al1t5/dccxVnDVNutIqaO0ClfqzlXH7Z/0i6TB6qS2ryYriU/5Z262sqDyKj6aKMcmJz5IoLeWBswvJPt1Lwsb1WZECYbr0IVRJDscPmFBGR3kAg/CDA6xE5avUtzMK1OLe+Zc0lCGBXzIY6c9ydx/21oAaAkoLPDJhemT1SCbgXI/IoBGr17oQMS7/KPLmL8xZMIxsfVamoqr9GtmWvD6prwUdNpyHF1XuedI3sxEgpbF5E9WFFYjFncrb9RJXRK2qmZSAKRi12TOWHtSyeLbLwbFJz3YxLD+FMNSg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 198.47.21.194) smtp.rcpttodomain=microchip.com smtp.mailfrom=ti.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=ti.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tAR7iq+VvMXykEbHa93yZVIqmDwvMwzOdF8NwxZutBE=;
+ b=onFda8xzEa+3viDXxDuzBNL8hhMT4VNc/ZpmGBXfDfS4Srg5SPcrLqGcWVhiI8fFliyWM0vIW2306HsW4eOL6L3bKZENGt0shYAJTSwVGnFHHY2mie8FWTnQ8+JEzFMJ5leAjxOpOOs+9YEMBD64ocL3eOGlPi9nm6MtOuekcdk=
+Received: from BN9PR03CA0201.namprd03.prod.outlook.com (2603:10b6:408:f9::26)
+ by LV3PR10MB8108.namprd10.prod.outlook.com (2603:10b6:408:28b::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.223.12; Fri, 17 Jul
+ 2026 18:51:44 +0000
+Received: from BN1PEPF00005FFC.namprd05.prod.outlook.com
+ (2603:10b6:408:f9:cafe::8c) by BN9PR03CA0201.outlook.office365.com
+ (2603:10b6:408:f9::26) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.21.223.13 via Frontend Transport; Fri,
+ 17 Jul 2026 18:51:44 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 198.47.21.194)
+ smtp.mailfrom=ti.com; dkim=none (message not signed) header.d=none;dmarc=pass
+ action=none header.from=ti.com;
+Received-SPF: Pass (protection.outlook.com: domain of ti.com designates
+ 198.47.21.194 as permitted sender) receiver=protection.outlook.com;
+ client-ip=198.47.21.194; helo=flwvzet200.ext.ti.com; pr=C
+Received: from flwvzet200.ext.ti.com (198.47.21.194) by
+ BN1PEPF00005FFC.mail.protection.outlook.com (10.167.243.228) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.21.245.5 via Frontend Transport; Fri, 17 Jul 2026 18:51:42 +0000
+Received: from DFLE208.ent.ti.com (10.64.6.66) by flwvzet200.ext.ti.com
+ (10.248.192.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.37; Fri, 17 Jul
+ 2026 13:51:40 -0500
+Received: from DFLE211.ent.ti.com (10.64.6.69) by DFLE208.ent.ti.com
+ (10.64.6.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.37; Fri, 17 Jul
+ 2026 13:51:40 -0500
+Received: from lelvem-mr05.itg.ti.com (10.180.75.9) by DFLE211.ent.ti.com
+ (10.64.6.69) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.37 via Frontend
+ Transport; Fri, 17 Jul 2026 13:51:40 -0500
+Received: from santhoshkumark.dhcp.ti.com (santhoshkumark.dhcp.ti.com [10.24.52.55])
+	by lelvem-mr05.itg.ti.com (8.18.1/8.18.1) with ESMTP id 66HIpU4l240969;
+	Fri, 17 Jul 2026 13:51:35 -0500
+From: Santhosh Kumar K <s-k6@ti.com>
+To: <broonie@kernel.org>, <robh@kernel.org>, <krzk+dt@kernel.org>,
+        <conor+dt@kernel.org>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
+        <vigneshr@ti.com>, <pratyush@kernel.org>, <mwalle@kernel.org>,
+        <takahiro.kuwano@infineon.com>
+CC: <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+        <praneeth@ti.com>, <u-kumar1@ti.com>, <a-dutta@ti.com>, <s-k6@ti.com>,
+        "Conor
+ Dooley" <conor.dooley@microchip.com>
+Subject: [PATCH v5 01/17] spi: dt-bindings: add spi-max-post-config-frequency-hz property
+Date: Sat, 18 Jul 2026 00:21:00 +0530
+Message-ID: <20260717185116.2065505-2-s-k6@ti.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20260717185116.2065505-1-s-k6@ti.com>
+References: <20260717185116.2065505-1-s-k6@ti.com>
 MIME-Version: 1.0
-Message-Id: <20260717-submit-sunxi-nand-h6-h616-timings-v2-3-225515107640@gmail.com>
-References: <20260717-submit-sunxi-nand-h6-h616-timings-v2-0-225515107640@gmail.com>
-In-Reply-To: <20260717-submit-sunxi-nand-h6-h616-timings-v2-0-225515107640@gmail.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, 
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
- Chen-Yu Tsai <wens@kernel.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
- Samuel Holland <samuel@sholland.org>, 
- Richard Genoud <richard.genoud@bootlin.com>
-Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
- linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org, 
- James Hilliard <james.hilliard1@gmail.com>, stable@vger.kernel.org
-X-Mailer: b4 0.15.2
+X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN1PEPF00005FFC:EE_|LV3PR10MB8108:EE_
+X-MS-Office365-Filtering-Correlation-Id: c85c9f5e-63b1-4af2-1289-08dee43471ac
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|36860700016|82310400026|1800799024|7416014|376014|23010399003|22082099003|18002099003|6133799003|56012099006|10067099003|921020;
+X-Microsoft-Antispam-Message-Info: lvHRnrhN98I3m5hxRwdLuM4q0+aQh6hkCOBT2gTzBrlZAYEBVBnHgq+U+sLdnkbnW83lvlySag3/B20lDS9A9yqdJQcVT4MvcwTAwg8A+mq/GMYWF0EqtbKCj6uKYGqFZJvW6gmdujuL8UUKbX9zTNOjeUjuiVUIRIHf4HHx+YfHJzaf3JBXA7e5Qsy3Uwn5kKr87GNMNZ9huz0S8zCE1jBdf/suZwsWDSbY11pU1ubTPK/aOYd3pXiCbAuofGymUWuQdQMhWBncR/CPnMBC+s2OUyNSc1LXCk8Bw2f5uOvBcXK2zuMfEg9+CNFJS/Z1XmHvvvTPIZjD+qGfMwSlPb+r2PLYdJEg5rbolwZwp1YKXgffGRCDdk8KHGM6QpD3N1qHDIS7Mrm19R2lqL/E15LYkvWRruqbxSwUzKmT+Dkkqiym77xquqGHMwcrordWJS9Msqm7ObvtCgYuXKIf7RlMLplkCOZ4J71VlydDUBSeZXSl7aU02zxfxQHp/97htzAVJJe//G9JQHkgkLQkQ9TIe2+fSFAjqSfYt6bL826Pun3GRCt0xxecdm8h+pnjY7f+4xe/veBj0rVeuMIxc+ruSfBc+I9+DVZCng/VLnXc6tpgwT3cusL9zHj+lLKtGoaURD8g1Vd+qtjcdRQnkyeyqLURuZUvBhBX1zSJSWSjEfHuM00jGJ8CfPLkbqOOKAb8PnE5RROdmZBEwzaQ3sHYSQBq4JPWiHC4VT/EyYnvb0I2We3bmwxVaxNIXz6A
+X-Forefront-Antispam-Report: CIP:198.47.21.194;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:flwvzet200.ext.ti.com;PTR:ErrorRetry;CAT:NONE;SFS:(13230040)(36860700016)(82310400026)(1800799024)(7416014)(376014)(23010399003)(22082099003)(18002099003)(6133799003)(56012099006)(10067099003)(921020);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: nl+kqrFyC6qg/cCJMXhDnklPScsL7VO+3X3qLEkK4EQKBtbkerHKTsT7TFizndN2Xy9BIEh900zc17PZuMd3P/IGDDylRSFcCprQQbNulh7Y9+uPfzbYAVNIAt4E+Q0Xx8L8ZW5o2IOZcoQeT6OmNLvJvFLExHu5mZzT0ZilYTqi4T7TnOSZo+ur3BQQWDnUuA+GPmznRk9devTgwfebPpoKUlmCkZCczJ9doWvfn9ZOpHnFrqC4DNRyD7ApUSz1tCOYj3RBSF5TsLN2LCtkL/KB3SBIpdtsIJk1OIDzJinXa/r5vph2JCdxid44SwJwn4RHUVCbCaC0Kr/kSzKSlERpcFoMsHOVDJotprDcMwxmKF3rTuobMeW+EUEkmFreYaHnf6SRNJiEiDyCCggCj4DMfy6HDc36TsUvay/6XvzsJTl87wMcXCHNlhYuNJfO
+X-Exchange-RoutingPolicyChecked: Sbhp8cQJGDIMQw9LsHya2TQsZZcqje11qlWvNm5zHY8pVbD1BYnVVC+8fuEHLWEHdU4nVoOnD2L3pPlMwATmqnMl5YGIdRjsPIXhHoN/pA4O5wAFVBAbzlaLx4nCzlqdKY6GQzogRZ6UHLDXUk1tl+GkrZgERc5SmBZmiLujHUxRXSWDQ2eZKq5JfyeHoS6qkyUyrnAOUf0urGve4InN2TyMfb7sBsvUy36Qsn6tkBAc/d+EGwpso8eCimrQffMpdIDQ2akhzFyhDHSxATFjuGmPAQxvZPHydOgTFjvzn94CNdiWY+eMizeDgDsJ1I27CFCHFN+CdOvLpaDWhua+zg==
+X-OriginatorOrg: ti.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jul 2026 18:51:42.8461
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: c85c9f5e-63b1-4af2-1289-08dee43471ac
+X-MS-Exchange-CrossTenant-Id: e5b49634-450b-4709-8abb-1e2b19b982b7
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=e5b49634-450b-4709-8abb-1e2b19b982b7;Ip=[198.47.21.194];Helo=[flwvzet200.ext.ti.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN1PEPF00005FFC.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR10MB8108
+X-Proofpoint-Spam-Info: AW1haW4tMjYwNzE3MDE5MiBTYWx0ZWRfX0WQV1NlgJYHR
+ r14v0P/WDWBS01Xe8A2gTk2kjrzrU6IvQvoA00SrvektMf7Jj5dKruEkFm0U+ANoc7WpA2UXEhS
+ AHgwazFPL3IyA9s7pd4pp4XkZX+zAcI=
+X-Proofpoint-GUID: WP_yUjVogvD60RezVV3vpRqalJ2yOdPS
+X-Authority-Analysis: v=2.4 cv=M7F97Sws c=1 sm=1 tr=0 ts=6a5a79c3 cx=c_pps
+ a=Zn3nEQaGnpTLJDFXYNee2g==:117 a=iwqwCZQqcuTv3JOpYdM7/Q==:17
+ a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=RAioF0-LDSMA:10 a=V5UXEbMT0ywA:10
+ a=VkNPw1HP01LnGYTKEx00:22 a=Z8NIEmU8O1QQgoT56wFK:22 a=jwouBfj2j3NM8CExmVVE:22
+ a=XYAwZIGsAAAA:8 a=sozttTNsAAAA:8 a=skPbNTvFiSR7kuR3s9sA:9
+ a=E8ToXWR_bxluHZ7gmE-Z:22
+X-Proofpoint-ORIG-GUID: WP_yUjVogvD60RezVV3vpRqalJ2yOdPS
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNzE3MDE5MiBTYWx0ZWRfXzz9g71ojn6A2
+ 0a2Md3d29yGVKmorJh31IJWQXbPExtcpD1J7ew/cvA+Aw4YjQQ7gssZaLXpyNY60Uc5Xm9eww99
+ v0VjpOHQpqIIBaWP9EqvZJJ2tZtrgsYIBw9Nf8AhyQbKKwORUll2Z11Y4+SF1deZ8Upsy/EHxY8
+ uly8mf34JWbaaL1ejCtO2MdprE90MDso7qch+32r1NY0eS8lqYflNbj5gKOCxKswqI3LhAvjAr4
+ ZEbUgN3TKjMexyXlMS13uMkXiW+2lUBasqnCvRg8RAIVSy6xgtbfQZDXApZ3oIS78tVsEiiPg2c
+ XbTor9HNTGpfLEqXqP9+EjYCXxu89SE5gp/rIxo0I9NlXggEUPL4TPkAdfS37idgx7HiRTPrpE4
+ JOO+I7gypCx7PodtlTPWFdHzrPm9RIvSm6xIf0pu9XJU0CuEO8vET1Hns8Xs9IEbcRoLJpoj92k
+ mGuH3/KjlDqIseD6iqg==
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.134,FMLib:17.12.100.49
+ definitions=2026-07-17_05,2026-07-17_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ clxscore=1011 priorityscore=1501 bulkscore=0 adultscore=0 spamscore=0
+ lowpriorityscore=0 malwarescore=0 impostorscore=0 phishscore=0 suspectscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2606150000 definitions=main-2607170192
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260717_103432_468687_D8EB2E40 
-X-CRM114-Status: GOOD (  14.22  )
+X-CRM114-CacheID: sfid-20260717_115159_229240_8DDAD9CB 
+X-CRM114-Status: UNSURE (   8.63  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -105,132 +181,39 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The NAND timing calculation assumes that command and address setup and
-hold intervals T1-T4, T7 and T11 each take one controller clock. It also
-uses the original A10 delay encodings for tWB, tADL, tWHR and tRHW.
+Add spi-max-post-config-frequency-hz, a generic property for SPI
+peripherals that operate at two distinct clock rates: a conservative
+rate always reachable without controller configuration, and a higher
+rate achievable only after controller-side configuration.
 
-The H6/H616 NDFC defines the setup and hold intervals as two internal
-clock cycles and uses different delay encodings. Add the H616 timing
-characteristics and select them through the controller capability data so
-the clock solver and timing fields match the hardware.
+When both properties are present, spi-max-frequency gives the
+conservative pre-configuration rate and spi-max-post-config-frequency-hz
+gives the higher post-configuration target.
 
-Fixes: 88fd4e4deae8 ("mtd: rawnand: sunxi: Add support for H616 nand controller")
-Cc: stable@vger.kernel.org
-Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Signed-off-by: Santhosh Kumar K <s-k6@ti.com>
 ---
- drivers/mtd/nand/raw/sunxi_nand.c | 49 ++++++++++++++++++++++++++++-----------
- 1 file changed, 36 insertions(+), 13 deletions(-)
+ .../devicetree/bindings/spi/spi-peripheral-props.yaml        | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/mtd/nand/raw/sunxi_nand.c b/drivers/mtd/nand/raw/sunxi_nand.c
-index 791f495f6e82..3d91533a9f13 100644
---- a/drivers/mtd/nand/raw/sunxi_nand.c
-+++ b/drivers/mtd/nand/raw/sunxi_nand.c
-@@ -241,6 +241,8 @@ struct sunxi_nand_hw_ecc {
+diff --git a/Documentation/devicetree/bindings/spi/spi-peripheral-props.yaml b/Documentation/devicetree/bindings/spi/spi-peripheral-props.yaml
+index 880a9f624566..12211f8c9f7d 100644
+--- a/Documentation/devicetree/bindings/spi/spi-peripheral-props.yaml
++++ b/Documentation/devicetree/bindings/spi/spi-peripheral-props.yaml
+@@ -45,6 +45,11 @@ properties:
+     description:
+       Maximum SPI clocking speed of the device in Hz.
  
- /* Delay arrays contain internal NDFC clock cycles for field values 0 to 3. */
- struct sunxi_nfc_timings {
-+	/* Internal clock cycles used by T1-T4, T7 and T11. */
-+	u8 setup_cycles;
- 	s32 tWB[SUNXI_NFC_TIMING_STEPS];
- 	s32 tADL[SUNXI_NFC_TIMING_STEPS];
- 	s32 tWHR[SUNXI_NFC_TIMING_STEPS];
-@@ -1680,12 +1682,21 @@ static int sunxi_nfc_hw_ecc_write_oob(struct nand_chip *nand, int page)
- }
- 
- static const struct sunxi_nfc_timings sun4i_a10_nfc_timings = {
-+	.setup_cycles = 1,
- 	.tWB = { 6, 12, 16, 20 },
- 	.tADL = { 7, 15, 23, 31 },
- 	.tWHR = { 7, 15, 23, 31 },
- 	.tRHW = { 4, 8, 12, 20 },
- };
- 
-+static const struct sunxi_nfc_timings sun50i_h616_nfc_timings = {
-+	.setup_cycles = 2,
-+	.tWB = { 28, 44, 60, 76 },
-+	.tADL = { 0, 12, 28, 44 },
-+	.tWHR = { 0, 12, 28, 44 },
-+	.tRHW = { 8, 24, 40, 56 },
-+};
++  spi-max-post-config-frequency-hz:
++    description:
++      Maximum SPI clock frequency in Hz achievable after controller-side
++      configuration.
 +
- static int _sunxi_nand_lookup_timing(const s32 *lut, int lut_size, u32 duration,
- 		u32 clk_period)
- {
-@@ -1720,20 +1731,28 @@ static int sunxi_nfc_setup_interface(struct nand_chip *nand, int csline,
- 		return -ENOTSUPP;
- 
- 	/* T1 <=> tCLS */
--	if (timings->tCLS_min > min_clk_period)
--		min_clk_period = timings->tCLS_min;
-+	if (timings->tCLS_min >
-+	    min_clk_period * nfc_timings->setup_cycles)
-+		min_clk_period = DIV_ROUND_UP(timings->tCLS_min,
-+					nfc_timings->setup_cycles);
- 
- 	/* T2 <=> tCLH */
--	if (timings->tCLH_min > min_clk_period)
--		min_clk_period = timings->tCLH_min;
-+	if (timings->tCLH_min >
-+	    min_clk_period * nfc_timings->setup_cycles)
-+		min_clk_period = DIV_ROUND_UP(timings->tCLH_min,
-+					nfc_timings->setup_cycles);
- 
- 	/* T3 <=> tCS */
--	if (timings->tCS_min > min_clk_period)
--		min_clk_period = timings->tCS_min;
-+	if (timings->tCS_min >
-+	    min_clk_period * nfc_timings->setup_cycles)
-+		min_clk_period = DIV_ROUND_UP(timings->tCS_min,
-+					nfc_timings->setup_cycles);
- 
- 	/* T4 <=> tCH */
--	if (timings->tCH_min > min_clk_period)
--		min_clk_period = timings->tCH_min;
-+	if (timings->tCH_min >
-+	    min_clk_period * nfc_timings->setup_cycles)
-+		min_clk_period = DIV_ROUND_UP(timings->tCH_min,
-+					nfc_timings->setup_cycles);
- 
- 	/* T5 <=> tWP */
- 	if (timings->tWP_min > min_clk_period)
-@@ -1744,8 +1763,10 @@ static int sunxi_nfc_setup_interface(struct nand_chip *nand, int csline,
- 		min_clk_period = timings->tWH_min;
- 
- 	/* T7 <=> tALS */
--	if (timings->tALS_min > min_clk_period)
--		min_clk_period = timings->tALS_min;
-+	if (timings->tALS_min >
-+	    min_clk_period * nfc_timings->setup_cycles)
-+		min_clk_period = DIV_ROUND_UP(timings->tALS_min,
-+					nfc_timings->setup_cycles);
- 
- 	/* T8 <=> tDS */
- 	if (timings->tDS_min > min_clk_period)
-@@ -1760,8 +1781,10 @@ static int sunxi_nfc_setup_interface(struct nand_chip *nand, int csline,
- 		min_clk_period = DIV_ROUND_UP(timings->tRR_min, 3);
- 
- 	/* T11 <=> tALH */
--	if (timings->tALH_min > min_clk_period)
--		min_clk_period = timings->tALH_min;
-+	if (timings->tALH_min >
-+	    min_clk_period * nfc_timings->setup_cycles)
-+		min_clk_period = DIV_ROUND_UP(timings->tALH_min,
-+					nfc_timings->setup_cycles);
- 
- 	/* T12 <=> tRP */
- 	if (timings->tRP_min > min_clk_period)
-@@ -2670,7 +2693,7 @@ static const struct sunxi_nfc_caps sunxi_nfc_h616_caps = {
- 	.nuser_data_tab = ARRAY_SIZE(sunxi_user_data_len_h6),
- 	.max_ecc_steps = 32,
- 	.sram_size = 8192,
--	.timings = &sun4i_a10_nfc_timings,
-+	.timings = &sun50i_h616_nfc_timings,
- };
- 
- static const struct of_device_id sunxi_nfc_ids[] = {
-
+   spi-cs-setup-delay-ns:
+     description:
+       Delay in nanoseconds to be introduced by the controller after CS is
 -- 
-2.53.0
+2.34.1
 
 
 ______________________________________________________
