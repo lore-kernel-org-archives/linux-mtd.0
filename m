@@ -4,134 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5854BC44507
-	for <linux-mtd@archiver.kernel.org>; Fri, 17 Jul 2026 09:39:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC5F0C44507
+	for <linux-mtd@archiver.kernel.org>; Fri, 17 Jul 2026 09:43:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=L5c8OeO7Ca2ztGxPqzBp9dJnrTPKBJrjb942fytVYkg=; b=cqEe1CyNxXqq3h
-	zR2LNdo8JEjeKipZzioTeF6ETp4OHnyom6ANPW7Abuv50XSBh/RHEBKOtgWJgD9fqClxxejJwgw9o
-	B9DiFDdS+turKbjGjdM2Dv/iyvENOD0fEMifmM1baRykF++Y7jbg6RpmbPN0Sqii49kyfb4CwSWvU
-	vXFjHBs50Mlv0SFPs3YX6AKARPcDLgSoDmQ1AmPd8gu7ozBt/HAOOa9AD4NPLJOl9QlO/FYHYsdJ7
-	V2jM4XYsa+bIN8ZKzizcMVIhvhvtEbEkP72/D8DraaFVZU2WSn8YizsyKdaWBQrQcoIFTChkSSEMF
-	lT9y+8S4bjS1H0WUNaGg==;
+	List-Owner; bh=BXhYGsEUJNysFeZhoyuTojnY5cLLzDi6gsttuyVJKME=; b=1NJY7PrSB/cn0e
+	BDQyu3x6ZE5odq6I0/UfLLDRE1i6hhUyZ0C1FhjoVvb5gd4NNndL6vXLpZVZlYd2ETCm7sW0aVWXF
+	r0O8SPT4Y+vktkhdgb7hjdLAHQZh6NKK4I/zGuyAtJGUBUy1Xrq5nzEFIge4UqFe9NN5YR20Y10eg
+	b+8dVr5XeMzL0o284LH7TPvy6HUgTcgVPHMxEevUYzGvPv4YfaJg7I3JtTpKAKyLNkq51hvNi2aqb
+	gkecBz4Tb2w+aB7m34hfiPGGUW4xRGjMpS+eVmOlXpxUXF5E8SpPnNNoN0JFap8AZsz+rI0LJVh1x
+	duBpww9HELkxKU57jaxw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wkf2E-00000001qxL-10c4;
-	Fri, 17 Jul 2026 09:39:10 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1wkf61-00000001rnY-1V5F;
+	Fri, 17 Jul 2026 09:43:05 +0000
+Received: from smtpout-03.galae.net ([185.246.85.4])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wkf2B-00000001qwl-3s3d;
-	Fri, 17 Jul 2026 09:39:08 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id B88A660A5E;
-	Fri, 17 Jul 2026 09:39:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 583FD1F00A3A;
-	Fri, 17 Jul 2026 09:38:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1784281146;
-	bh=+qglHjGyDrUKXlad/2R3jZv9/pC2LefY+KO7XkEkSko=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=SjJUoV11rwuT+5AizqR6Ts6eoKb6FIGre1Dux163GhMlqZlyOXajtWZ4fayfgVpH9
-	 m9cgU5vVhldyF6Xw1Kb8rVhViKflUSonqgQ1XE4NCnm2BVJY+TnbSkh9Z3rIVPhd6s
-	 zU7mHk1ONLaADnjIxp+I5dcB3ZX2ynHffnRRVYklEoaeIIz/ZSYdwAkj3wzibEUx9o
-	 HnS12bG6z8ihRuFocqmHyHuXUYtM9fOcbFkvkQ/W/8UHnOkWe7OeZRKXrCxZZCA9nQ
-	 s6WCpg4YrH/mKvwpz01fi9YDCJ3Uu05lBNYlNAvTtCCufAR6IHv/1e4r2yoFLfOqhY
-	 leqJTK6WbuRqA==
-Date: Fri, 17 Jul 2026 11:38:45 +0200
-From: Ingo Molnar <mingo@kernel.org>
-To: Juergen Gross <jgross@suse.com>
-Cc: Sean Christopherson <seanjc@google.com>, Arnd Bergmann <arnd@arndb.de>,
-	linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-	"linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-	x86@kernel.org, linux-acpi@vger.kernel.org, kvm@vger.kernel.org,
-	linux-coco@lists.linux.dev, linux-pci@vger.kernel.org,
-	virtualization@lists.linux.dev, linux-ide@vger.kernel.org,
-	dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-	linux-crypto@vger.kernel.org,
-	"open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-	linux-hyperv@vger.kernel.org, linux-hwmon@vger.kernel.org,
-	linux-perf-users@vger.kernel.org, linux-mtd@lists.infradead.org,
-	platform-driver-x86@vger.kernel.org,
-	"Rafael J . Wysocki" <rafael@kernel.org>,
-	Daniel Lezcano <daniel.lezcano@kernel.org>,
-	Zhang Rui <rui.zhang@intel.com>,
-	"lukasz.luba@arm.com" <lukasz.luba@arm.com>,
-	Jason Baron <jbaron@akamai.com>, Borislav Petkov <bp@alien8.de>,
-	Tony Luck <tony.luck@intel.com>,
-	Yazen Ghannam <yazen.ghannam@amd.com>, Len Brown <lenb@kernel.org>,
-	Pavel Machek <pavel@kernel.org>, Thomas Gleixner <tglx@kernel.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	"Kirill A. Shutemov" <kas@kernel.org>,
-	Rick Edgecombe <rick.p.edgecombe@intel.com>,
-	Pu Wen <puwen@hygon.cn>, Bjorn Helgaas <bhelgaas@google.com>,
-	Ajay Kaher <ajay.kaher@broadcom.com>,
-	Alexey Makhalov <alexey.makhalov@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	Viresh Kumar <viresh.kumar@linaro.org>,
-	Reinette Chatre <reinette.chatre@intel.com>,
-	Dave Martin <Dave.Martin@arm.com>,
-	James Morse <james.morse@arm.com>, Babu Moger <babu.moger@amd.com>,
-	Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Niklas Cassel <cassel@kernel.org>, Dave Airlie <airlied@redhat.com>,
-	Helge Deller <deller@gmx.de>, linux-geode@lists.infradead.org,
-	Olivia Mackall <olivia@selenic.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Linus Walleij <linusw@kernel.org>,
-	Bartosz Golaszewski <brgl@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"K. Y. Srinivasan" <kys@microsoft.com>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-	Long Li <longli@microsoft.com>, Guenter Roeck <linux@roeck-us.net>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	James Clark <james.clark@linaro.org>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-	Vitaly Kuznetsov <vkuznets@redhat.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-	Huang Rui <ray.huang@amd.com>,
-	Mario Limonciello <mario.limonciello@amd.com>,
-	Perry Yuan <perry.yuan@amd.com>,
-	K Prateek Nayak <kprateek.nayak@amd.com>,
-	"srinivas.pandruvada@linux.intel.com" <srinivas.pandruvada@linux.intel.com>,
-	Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
-	Artem Bityutskiy <dedekind1@gmail.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Ashok Raj <ashok.raj.linux@gmail.com>,
-	Hans de Goede <hansg@kernel.org>,
-	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
-	David E Box <david.e.box@intel.com>, xen-devel@lists.xenproject.org
-Subject: Re: [PATCH 00/32] x86/msr: Drop 32-bit MSR interfaces
-Message-ID: <aln4JYxRgdpC3Wse@gmail.com>
-References: <20260629060526.3638272-1-jgross@suse.com>
- <d7c1db52-529a-43cc-ac7d-38b52627e8bc@app.fastmail.com>
- <c1608c48-13c2-4290-826b-28b5ca51eaf7@suse.com>
- <7332feff-2649-496c-8e49-b0a19eb54a32@app.fastmail.com>
- <akJUz0kYkEBdLSZ3@gmail.com>
- <akQR9YMtMHReJTfB@google.com>
- <akY4U0jUZm4HOGZ_@gmail.com>
- <99228803-b8b7-47a3-b77c-6fdf3b785730@suse.com>
+	id 1wkf5w-00000001rmg-2Ish
+	for linux-mtd@lists.infradead.org;
+	Fri, 17 Jul 2026 09:43:03 +0000
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-03.galae.net (Postfix) with ESMTPS id 05CD94E40E17;
+	Fri, 17 Jul 2026 09:42:59 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id CBB0F60361;
+	Fri, 17 Jul 2026 09:42:58 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 6AD1111BD03DD;
+	Fri, 17 Jul 2026 11:42:55 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1784281378; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=wDA7PH6SG+1IbJdVpWIYnNVXI6eysPHFkoxwDGzOMF8=;
+	b=RMKxXvhHqCyFi8shz1mt3PWQBGeeER7Fz63dXsty2lJq9WFTgV+UppFmeBRyFTM1jgSX23
+	dlA6ZLOzvmha37E6UpGdJB3A119HyfzvdI1ZqH9+7LX/UstQaJ8W/IwKooNM/fbpslfux/
+	Jh5L9npxcSw3UUDG9t35gEaTOM3TSrCbk8B5QhcMWcd6vwtzc1wMa5Jt44+xti8j8pSf6P
+	Dm3Isj+PTvNjQqgHJ7nIMbpzVxzfFZWDMmiSDnJ45dBOOCLDguLfeKLcOpWh9okoQRklkm
+	vCdnSp/IPYT1hBoV4xzIQVSyIgu02dEPeoHpGLjjKKP/odSR0OLpLEpzEgId0Q==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Alexander Usyskin <alexander.usyskin@intel.com>
+Cc: Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
+ <vigneshr@ti.com>,  Matthew Brost <matthew.brost@intel.com>,  Thomas
+ =?utf-8?Q?Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,  Rodrigo
+ Vivi
+ <rodrigo.vivi@intel.com>,  David Airlie <airlied@gmail.com>,  Simona
+ Vetter <simona@ffwll.ch>,  linux-mtd@lists.infradead.org,
+  linux-kernel@vger.kernel.org,  intel-xe@lists.freedesktop.org,
+  dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 1/2] mtd: mtd_intel_dg: add survivability partition
+In-Reply-To: <20260715-cri_surviv-v1-1-61763a6f1076@intel.com> (Alexander
+	Usyskin's message of "Wed, 15 Jul 2026 16:45:29 +0300")
+References: <20260715-cri_surviv-v1-0-61763a6f1076@intel.com>
+	<20260715-cri_surviv-v1-1-61763a6f1076@intel.com>
+User-Agent: mu4e 1.12.7; emacs 30.2
+Date: Fri, 17 Jul 2026 11:42:54 +0200
+Message-ID: <87qzl2j6jl.fsf@bootlin.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <99228803-b8b7-47a3-b77c-6fdf3b785730@suse.com>
+X-Last-TLS-Session-Version: TLSv1.3
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260717_024300_729155_BD4899B0 
+X-CRM114-Status: UNSURE (   7.23  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -143,47 +79,23 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-* Juergen Gross <jgross@suse.com> wrote:
-
-> On 02.07.26 12:07, Ingo Molnar wrote:
-> > 
-> > * Sean Christopherson <seanjc@google.com> wrote:
-> > 
-> > > > Note that the individual patches are IMO significantly easier to review
-> > > > through the actual 32-bit => 64-bit variable assignment changes done
-> > > > in isolation (which sometimes include minor cleanups), while
-> > > > the Coccinelle semantic patch:
-> > > > 
-> > > >     { a(b,c) => c = a(b) }
-> > > > 
-> > > > which changes both the function signature and the order of terms as
-> > > > well, is just a single add-on treewide patch.
-> > > 
-> > > Is the plan for subsystem maintainers to pick up the relevant patches,
-> > > and then do the treewide change one release cycle later?
-> > 
-> > I'll try to keep the patches in a single tree (tip:x86/msr)
-> > in the hope of not prolonging the pain two cycles - but it's
-> > of course fine for maintainers to pick up the patches too
-> > (most of them are standalone), we'll sort it all out in the end.
-> 
-> Ingo, would you be fine with me posting patch updates just as replies to the
-> original patch emails? This would speed things up, as I wouldn't need to wait
-> for more review input of all the patches before sending out new versions.
-
-Sure, that works for me too. I've picked up a couple of -v2 patches
-already.
-
-Thanks,
-
-	Ingo
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGVsbG8gQWxleGFuZGVyLAoKT24gMTUvMDcvMjAyNiBhdCAxNjo0NToyOSArMDMsIEFsZXhhbmRl
+ciBVc3lza2luIDxhbGV4YW5kZXIudXN5c2tpbkBpbnRlbC5jb20+IHdyb3RlOgoKPiBBZGQgb3B0
+aW9uIHRvIGV4cG9zZSBhZGRpdGlvbmFsIGZpeGVkLXNpemVkIHBhcnRpdGlvbiBzdGFydGluZwo+
+IGZyb20gdGhlIGJlZ2lubmluZyBvZiBzdG9yYWdlLgo+IFhlIGRyaXZlciBjYW4gcmVxdWVzdCB0
+aGlzIHBhcnRpdGlvbiBleHBvc3VyZSBpZiBmaXJtd2FyZSBvciBoYXJkd2FyZQo+IGhhdmUgZGV0
+ZWN0ZWQgZmFpbHVyZSB0aGF0IG1heSBpbnZvbHZlIGNvcnJ1cHRlZCBwYXJ0aXRpb24gdGFibGUu
+Cj4gRml4ZWQtc2l6ZWQgcGFydGl0aW9uIGFsbG93cyBmdWxsIHN0b3JhZ2UgcmUtd3JpdGUgaW4g
+dGhpcyBzaXR1YXRpb24uCj4KPiBTaWduZWQtb2ZmLWJ5OiBBbGV4YW5kZXIgVXN5c2tpbiA8YWxl
+eGFuZGVyLnVzeXNraW5AaW50ZWwuY29tPgoKQWNrZWQtYnk6IE1pcXVlbCBSYXluYWwgPG1pcXVl
+bC5yYXluYWxAYm9vdGxpbi5jb20+CgpJJ20gbm90IHN1cmUgSSBmb2xsb3cgdGhlIGV4YWN0IHVz
+ZSBjYXNlLCBidXQgSSBkb24ndCBzZWUgYW55IG1ham9yIHNob3cKc3RvcHBlciBmcm9tIGFuIE1U
+RCBzdGFuZHBvaW50LCBzbyBmZWVsIGZyZWUgdG8gdGFrZSB0aGlzIHRocm91Z2ggZHJtLgoKVGhh
+bmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0
+cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
