@@ -4,64 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D8E2C44516
-	for <linux-mtd@archiver.kernel.org>; Fri, 17 Jul 2026 13:10:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 402C5C4451B
+	for <linux-mtd@archiver.kernel.org>; Fri, 17 Jul 2026 15:19:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
 	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=eHVWWSFeaadyxagQwEEf3BEavwdK0hD4tWoNWI6bBh4=; b=YEPjDQvhxjVeud
-	GR9jvoB+5G7dXuiSFzX3wOcz0G/ncmNaJyvM63WI/kQrKVZlfelf22PN26jyOnATEvmFy3q0uLJKE
-	TH54z9V4zfXpva3Dn56o/K4uE+X5odlLy9gHBil4/upkuBB8h9Lua31m9PniJTdMWNSe6wE5smShU
-	t1ywQnJsU3gRVew4HjEjbHxYS0GvuVHKmo5Nts0plLLx9MDi55wWwiWApNR7B1EEghgwFam5XwD83
-	AXJIFpBVlpKLqjjhZcwBSWAsWXDYl4TamV5PvT1Du2uoxBoG6vmdGkKNCd6OEcd2O2Hbquzh1p83O
-	OVcaNOp4XFwU+800kjkw==;
+	List-Owner; bh=5Dbo7+N97Na0dFqT+LpB6j/av27ez7fLP7h33WhHbLg=; b=4L83y5uuhajSZZ
+	LB4iFNxycsMzZjK5gluKeMwWcqPgiDQD4LWRK4bjxLsJcJeZV4uovI6dhHPJYg2RQZ0GhtA/C0lns
+	ZsrbFKXwhxWOaLATjHDIWxK3FkQAE8lPn3ZLjYdKk/4t3LFcAI0V1e0tfOS3W8uftvSI4tp6tL2bP
+	UewZDgw5xl4JJCiRZaMaYBkbfHU0mfS7aWSLK112Aap3P/ob/Ej0j6DuBlc2Yv4a6+VfMPo/5zRDj
+	i1+TJ1luTR0fgh2FNWyxlwTpNrrPczjmBPTMlmzH4ioNJJVxKoc1c1Zw6WHbNi7eKznjvr+UOQ8Aw
+	jgHV9CMRmIFaMob0mRpA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wkiKp-00000002NX2-1BI4;
-	Fri, 17 Jul 2026 13:10:35 +0000
+	id 1wkkLi-00000002aik-26SI;
+	Fri, 17 Jul 2026 15:19:38 +0000
 Received: from smtpout-03.galae.net ([185.246.85.4])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wkiKk-00000002NWC-1mkV
+	id 1wkkLf-00000002aiM-0oOd
 	for linux-mtd@lists.infradead.org;
-	Fri, 17 Jul 2026 13:10:34 +0000
+	Fri, 17 Jul 2026 15:19:37 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id EAF5A4E40E0E;
-	Fri, 17 Jul 2026 13:10:28 +0000 (UTC)
+	by smtpout-03.galae.net (Postfix) with ESMTPS id 2A3154E40E1F;
+	Fri, 17 Jul 2026 15:19:32 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id B815660361;
-	Fri, 17 Jul 2026 13:10:28 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id ECD9911BD0158;
-	Fri, 17 Jul 2026 15:10:26 +0200 (CEST)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id D975D60361;
+	Fri, 17 Jul 2026 15:19:31 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id F077E11BD0007;
+	Fri, 17 Jul 2026 17:19:28 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1784293828; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1784301571; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=ZA5A1RfyXw1NcBcIE6GQxTFOitqcRCcOtZAix7uUu8I=;
-	b=T56X3ZEp6kjp8s5bdSWKrXi8BFivp/bxG232PAvB7Jzzi3xZSCN/PJPd9ppxuyRzTbuZvZ
-	HG/jq9OqRhJFrWmgXvLTIKyDKQTd8WLq8nltp+zTdGTxtbut7V1em045SC4rCJqtMPjfJS
-	RoYUPFlHGeJbposcOLoDUylHilVmrryWHkGJQycbLdTbxLXNfCV684NMvsQJjpj8Rs+bB+
-	NABWLhlwqx3cDG4Vk663BLr0+2M1DqHNA2ZgKYDQxpDGJh9aUCyzSbSgd9WiKVJrogyuMY
-	6aICRLbGUV9rx85r6IRkQBPoOmWsVUHEl+y/n6GeqyL93PILTlV5bUd0RDlDmg==
+	bh=V2XjwLdFWw9nN68U+TmN+qUlrAWuoUqwH1z1OqQWIoQ=;
+	b=UCkCll8yC5qvw1/4uJL5hRysuAoa+cfNboL+gXgwcmGz/J4O0sFcPlu9teLLBT9s6zltHW
+	ihu/rmEUBfPoUA7cZKbIMb/RbUrn/qVvwsTvA0SKucUbnNTGK7mbB0fcdK4xUtHkIBOBew
+	U2kYLa/oEIw4Ak7DbIApw/hRMBy1DeXEvafOemTc9V9iog31G4P1qcU/BWoOr4fblCy/zs
+	dI3l6g1YBVKxuqofnnq2xTzbh4hGjOgu7Ve6LU5v7rY2nGDP5FwrA0G8QvAs3zR4pas5/p
+	xUZLIeF3HdlzoZy27GytkWpYv8JkOp+fDknE1GvpOK3jiJslrWmjx73LsGbVmw==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Aleksandr Mineev <sanderrrs@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
- <vigneshr@ti.com>,  linux-mtd@lists.infradead.org,
-  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: spinand: fmsh: fix FM25G01B/FM25G02B Quad I/O read
- dummy cycles
-In-Reply-To: <20260715203602.1462-1-sanderrrs@gmail.com> (Aleksandr Mineev's
-	message of "Wed, 15 Jul 2026 23:36:02 +0300")
-References: <20260715203602.1462-1-sanderrrs@gmail.com>
+To: <Takahiro.Kuwano@infineon.com>
+Cc: <mwalle@kernel.org>,  <pratyush@kernel.org>,  <richard@nod.at>,
+  <vigneshr@ti.com>,  <linux-mtd@lists.infradead.org>
+Subject: Re: Sashiko to track linux-mtd
+In-Reply-To: <8733xikmb9.fsf@bootlin.com> (Miquel Raynal's message of "Fri, 17
+	Jul 2026 11:16:58 +0200")
+References: <875x38mlk7.fsf@bootlin.com> <2vxz4iismi2m.fsf@kernel.org>
+	<87pl19s7ng.fsf@bootlin.com>
+	<0fe3140096bc48a8e71838362220d9f8@kernel.org>
+	<b224c6938e084763b017c63e0aa3fa3f@infineon.com>
+	<8733xikmb9.fsf@bootlin.com>
 User-Agent: mu4e 1.12.7; emacs 30.2
-Date: Fri, 17 Jul 2026 15:10:26 +0200
-Message-ID: <87pl0liwxp.fsf@bootlin.com>
+Date: Fri, 17 Jul 2026 17:19:28 +0200
+Message-ID: <8733xhiqyn.fsf@bootlin.com>
 MIME-Version: 1.0
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260717_061030_747055_A81603B9 
-X-CRM114-Status: UNSURE (   6.69  )
+X-CRM114-CacheID: sfid-20260717_081935_376103_B8505503 
+X-CRM114-Status: UNSURE (   2.56  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -79,21 +81,10 @@ Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgQWxla3NhbmRyLAoKT24gMTUvMDcvMjAyNiBhdCAyMzozNjowMiArMDMsIEFsZWtzYW5kciBN
-aW5lZXYgPHNhbmRlcnJyc0BnbWFpbC5jb20+IHdyb3RlOgoKPiBUaGUgRk0yNUcwMUIvRk0yNUcw
-MkIgZGF0YXNoZWV0cyBzcGVjaWZ5IGEgc2luZ2xlIGR1bW15IGJ5dGUgZm9yIHRoZQo+IDB4RUIg
-UXVhZCBJL08gcmVhZC1mcm9tLWNhY2hlIG9wZXJhdGlvbiwgYnV0IHRoZSBnZW5lcmljCj4gcmVh
-ZF9jYWNoZV92YXJpYW50cyBzZXQgdXNlcyB0d28gZHVtbXkgYnl0ZXMgZm9yIHRoZSAxUy00Uy00
-UyB2YXJpYW50Lgo+IFRoZSBleHRyYSBkdW1teSBieXRlIHNoaWZ0cyB0aGUgZGF0YSBwaGFzZSBh
-bmQgcmV0dXJucyBjb3JydXB0ZWQgZGF0YQo+IHdpdGggbm8gRUNDIGVycm9yLCBicmVha2luZyBi
-b290IG9uIGJvYXJkcyB1c2luZyB0aGVzZSBjaGlwcy4KPgo+IFVzZSBhIGRlZGljYXRlZCByZWFk
-LWZyb20tY2FjaGUgdmFyaWFudCBzZXQgd2l0aCBuZHVtbXk9MSBmb3IgdGhlCj4gMVMtNFMtNFMg
-KDB4RUIpIG9wZXJhdGlvbi4KPgo+IEZNMjVHMDFCIGRhdGFzaGVldDogaHR0cHM6Ly93d3cuZm1z
-aC5jb20vbnZtL0ZNMjVHMDFCX2RzX2VuZy5wZGYKPiBGTTI1RzAyQiBkYXRhc2hlZXQ6IGh0dHBz
-Oi8vd3d3LmZtc2guY29tL252bS9GTTI1RzAyQl9kc19lbmcucGRmCj4KPiBGaXhlczogZDVhNWM5
-ZWIyZWU5ICgibXRkOiBzcGluYW5kOiBmbXNoOiBhZGQgc3VwcG9ydCBmb3IgRk0yNUd7MDEsMDJ9
-QiIpCgpNaXNzaW5nIENjOiBzdGFibGUgdGFnLgoKPiBTaWduZWQtb2ZmLWJ5OiBBbGVrc2FuZHIg
-TWluZWV2IDxzYW5kZXJycnNAZ21haWwuY29tPgoKT3RoZXJ3aXNlIExHVE0uCgpUaGFua3MsCk1p
-cXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJh
-ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+SGVsbG8gZm9sa3MsCgo+IFNvIEkgd2lsbCBtYWtlIGEgUFIgZm9yIGVuYWJsaW5nIGl0LCBidXQg
+bGV0J3Mga2VlcCBpbiBtaW5kIHRoYXQgdGhpcyBpcwo+IGV4cGVyaW1lbnRhbCBhbmQgY2FuIGJl
+IHJlLWRpc2N1c3NlZCBhdCBhbnkgdGltZS4KCkZZSTogaHR0cHM6Ly9naXRodWIuY29tL3Nhc2hp
+a28tZGV2L3Nhc2hpa28vcHVsbC8zMzYKClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNz
+aW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2xpbnV4LW10ZC8K
