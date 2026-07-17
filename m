@@ -4,92 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D197C44515
-	for <linux-mtd@archiver.kernel.org>; Fri, 17 Jul 2026 16:42:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9FAB9C44515
+	for <linux-mtd@archiver.kernel.org>; Fri, 17 Jul 2026 17:34:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=k3AepM6kt6YFJESzTGvIPkuG6VqqJSQfwpBSg1j2iEg=; b=H+uQH8YR9wc58V
-	f0m/VEyEXn4RCXsrvd1B5ZOpc5f8+StcEnOqPYuwGP5HEN8dEf4JgvQCt0YoF5c/mzcBFSF5OkCsz
-	wJOsuB0OYNeIjWsWIw0baHdEytFtdWz8Jewdbu9fTfbqY95sLaWqWIe2M4YvUJ646UbmailBFd2j9
-	4oYnJoCioZi+9iSitLLS5exSAVGiH+LlcAoi1NtTdS2tlgRiRF9ZAW2vtqfbfQXakgxHaJVvfQAvU
-	0deiZotbDYVBKprxBEz2X//nneUCqxVJ/dhV7bw1poPONqvKTlVlowbibCuBm9QCzmZOeuIOnr4hz
-	YiIpXE+UratQoTnSRMog==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
+	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=xNecFs0KNXyw0QVTm0xNp3vxB/il377AlVJwfznu154=; b=vKPyNZMl263LSv
+	ny16MLl7Av7ivlj3Sh7zRhAS3bxMRwJIiGpcYkEFQc0B0Rwd6BebGpXKOvEu22ZfZGZ2tVfwyPuSm
+	TmmyqRxZyPsuWSnVRN7mhFofXbk8rGvRrQ65wFoMjEKxLVOr130jI5PjkGeJrk9dheFWfgyC73xzO
+	+OK2MNhPTyAFjpRAe4x7KXdzbNC97GrS4+/gaZlWgiryQ13msYO6sJ4IaO/Gj3VI6eYeJl04TvD5L
+	DZYf9MArXdd2/p/peXDLgXluhlZX75zXhD76kkfhwQIfAmJfJpdYsvRwgDV6i1vrmqNh8I6fkV0Dp
+	NJ/sfjQT36poIckZSZqg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wkldl-00000002lfN-3JlB;
-	Fri, 17 Jul 2026 16:42:21 +0000
-Received: from mail-ot1-x332.google.com ([2607:f8b0:4864:20::332])
+	id 1wkmSF-00000002tfw-0Of6;
+	Fri, 17 Jul 2026 17:34:31 +0000
+Received: from mail-ot1-x336.google.com ([2607:f8b0:4864:20::336])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wklde-00000002lVM-3zyH
+	id 1wkmSC-00000002tdc-44VX
 	for linux-mtd@lists.infradead.org;
-	Fri, 17 Jul 2026 16:42:16 +0000
-Received: by mail-ot1-x332.google.com with SMTP id 46e09a7af769-7eb4d8a21a8so3001133a34.2
-        for <linux-mtd@lists.infradead.org>; Fri, 17 Jul 2026 09:42:14 -0700 (PDT)
+	Fri, 17 Jul 2026 17:34:30 +0000
+Received: by mail-ot1-x336.google.com with SMTP id 46e09a7af769-7ec1e9d3359so3580995a34.0
+        for <linux-mtd@lists.infradead.org>; Fri, 17 Jul 2026 10:34:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1784306533; x=1784911333; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=zBmmy8W22qacqO6CsFuVEthSgchjWOCosdpbxtawDI0=;
-        b=Z8rtwrYZsRTfCnNfgooUXJI1xLdZCqlG+P0veeN9f3A3GzcWJ2hvyfUUpRW102iMdp
-         2BHgOgIvuCBHM0J2Z0A1Req+9Ahj7OGVMtgrtfkoxk1V1wFycOewm5+Gpv2CrXFxbVlI
-         RIveK0KRRqzWS5xCBT+ivEkR5lg1sTdVOd8aEOcCnHQgd1Nq4whrQPsP2gutTXd0TFvZ
-         GMdhdysXuHMeHqpcBg1PSn0358UmpOxQa1t6+h6ZontUUAFim6ltnTnd/ucCYvtt8Crc
-         s/KhcxnTjdXJ/HEnu0oQ1357sy2F+IVrUgyMYVYSy3ZAF0UGpmiYtR98MRqqBjA4bTQN
-         bAoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1784306533; x=1784911333;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20251104; t=1784309668; x=1784914468; darn=lists.infradead.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :content-type:mime-version:subject:date:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=zBmmy8W22qacqO6CsFuVEthSgchjWOCosdpbxtawDI0=;
-        b=COsb7iLDEs+yeqA3Lu+ueenTlqTIrIVv07HEDdss/+HxOWvHDvvxmDvPHvI4/2mt5K
-         Whl7OXhge9DhNs0rPJkpBbRyHER0ObovR72+fKbNe9ezMqanRUmo0fnPCCb0+DVM7FQC
-         JG93AZVA6NENyG7i0YnmkivK2oFFe1fFVa05CRHGCPx/pWUsJ6Jp1C8/kGAEqgEfQdVu
-         c0ELWrFeNnULLPp7hdlGlzkZFWDcSWnmjMIIYvdiMeBPLC5xgaMm8xWGx/ps3F3wgtbm
-         IJPhstakBJMrgwuKCxRbbSLkhI3C7jXEVzUG76FmHsydJxWEfH97Tbdc8kshEcSE4MHW
-         ydqg==
-X-Gm-Message-State: AOJu0Yz890/kPEsVKkqrBj0eHrVdfkFYpd/FBXtZrCa2hXjd81Pb4hLE
-	DRjbJUe0vOZ3lbNv92AIQkxqCgCWr7sdt44dkXzVT8XFRvarYC3+NMrxWMf62f3VlEc=
-X-Gm-Gg: AfdE7cmbf0NKHNZ0nzt5btdLokTK1KP4puW1m074RxCiX9N2oOqNNKmJnpL0Md7AoxR
-	K3rMi8OC9qFezF9PAyKChNMOw0/DLMEwZR8o9i947HMoQ2EhJeD732Q7lqHC+vcg1X8/r+Ketje
-	ClvA864i6kxlbZDqQAtfvDgCAqL2iXFm08fLp//nI9D/YVuuClRKHHReZ27GG+c5PFcgivHGHO/
-	UmUgPHAreBLB54YpBAJdSCo/s3XYptmqdNeGrOYQp/usXLCY0l4bSh1qcoAWZCu5ZhgZx9/hRWE
-	uwRNrPAV5Clk94k8LB7mrK0mtdkZfyPs0WUQGQg8dV07kJs4W0V1GKxLsAWqlCjgKuIGcoip8+p
-	iM3yBYytPKr3yX6O8DLjX5RiFHoZfcdlNsltVwP8CTIP0LF0Y4VQR0QdgbpSQKnUbBGu5TyUaxB
-	2PiNYIUJZnsF9TQ7C2j6r1euicw6PESZahPlQ4mqBs7haWpvWAYQitciSvoO7Y4049kbjELgaMq
-	921+p4atMyItcge9Qpz2XQtGhMhGKTN5nGwQpzsQ5Bu+JhhNzuzN6fO8PiBmJBFgJMY36xYwOE=
-X-Received: by 2002:a05:6830:4901:b0:7e6:f2ef:e231 with SMTP id 46e09a7af769-7ed9a7ca72emr1789456a34.2.1784306533242;
-        Fri, 17 Jul 2026 09:42:13 -0700 (PDT)
-Received: from james-x399.tailafd1a.ts.net (174-29-11-8.hlrn.qwest.net. [174.29.11.8])
-        by smtp.gmail.com with ESMTPSA id 46e09a7af769-7edad9576a5sm1563536a34.9.2026.07.17.09.42.11
+        bh=VlsKLWHzuG2ZqAxSmlNnrAEdRDdQeGiW44cbYcWz6fU=;
+        b=LtuGkxqHv8nwq/HhF06/Etw8EYrVuJ+q2hRK10g1MhZftNnn/0N132kdvybCOPlmlz
+         Ep2/ZPmHUq1jvsnjH50SreZITs1UskObjnyzZNSn52iQYU8DYoO8WAnw0az6m8OpbYTf
+         6rCYSRbzNBYgdoANcL3AYTEqDrcbGUJAyYawB9ZYd6yU6oS2yS/hjBEEn2heZDmiSXKM
+         NLGW5d9egC4wFbXG9axiyuWqpa3yxPOPbePZJp2gVRSIf2w3CVpHxPsBaob48Y18q69c
+         sg4xe67dx9/1MRQ5e3jBMTZDcmxDJ3D4mzt9gReYacBQPNoCIGl+/sbKxsLLQpgB1/63
+         V5Xw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1784309668; x=1784914468;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :content-type:mime-version:subject:date:from:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=VlsKLWHzuG2ZqAxSmlNnrAEdRDdQeGiW44cbYcWz6fU=;
+        b=iFEDMhq2GIhZnjz93g7XhE8OBXNHk6wX7qrhtWG7xtraxJm8TqY89JOhu+q1u+idM+
+         jQs4e1RPH6VFFB/B8+rdhMX1CrlJxDQElOqwiino9VPKsV1dVEGj4d4mN+GyrA/XIldB
+         7eFhwzISSmb31l4zzzqXUZML0cIzHZqyXIUuVh8ryC/0AAvFJoEK0poF0cd9z4pcvrrB
+         WquG14yxCZhjDNMd9W+gOZx8MS/y6GFOLqIGFa6kZgk29HQKDT8U13LhNPUIzGegVpyN
+         ToXJIBAHJAHcYOqY7OekSZFaRT5L7GOOeoVPjk+1bqSTkLHsa+zYNPj9vf/XW7OVQzh3
+         pLRg==
+X-Gm-Message-State: AOJu0Yz3cnkBBRw3hi4PDQWn2NTmINBu4Mct7vhAVLxcbZFu5lMuOFdM
+	weBs/wabCXEdEa8ub+4TcRiTVrsGt+gG237Ss5+EDAgWo0MctW2PdbHK
+X-Gm-Gg: AfdE7cllr8sEgu7BVm74ajvn8jgPP3v+cQA7nsdEhYW6OiR12ZOptaWgcCar6DcaURQ
+	TdQWrqb4E2UvCW25sedjJGM7SUZNiVconsE+INSqFjw0AgdD4XmFoaT9UhB8Wyw5XYw8UC0ejHk
+	ZcgmILdCU1Z5iiACDf8iB5mG/Ru90lq30NmsTgqlj6jT7IuYzqhlbofDTBPA0XTK9Jx3YYP8kwv
+	AIIQqyu/pH7oQajDqKLvIgJl1UKG3RmdnI3MnqtC7LcbZkLwIRyfirakK3TE6/0tlV2oCYLGpUS
+	zA3H6zYDcPKP6JhgUAIocaAPWb/XWTgaZPg8Avt8qCImwJs+cxbI4gvQ9ZiFOYowW/foBms0r8z
+	nujH11zNbhaikGIZyFMCATu8aq5s8R6OxIGFr6HoI6rdTOjFkS1T4kb3rx9pdPgfwiUMqHK0PV3
+	7MoHCc52lX4a4bsqoY6zaGMCFif6KfeMqNLio0u6GDdAn4uq9RUSX8ExAXZjiczRhAIEJIHjoZp
+	H6E1rVUFcU6djkizsGu294yWMoIxLTTNaefpy09J12f6a0C8Zjp/Q==
+X-Received: by 2002:a05:6830:6afa:b0:7e6:f4a3:1df5 with SMTP id 46e09a7af769-7eda08ae511mr1817637a34.1.1784309667752;
+        Fri, 17 Jul 2026 10:34:27 -0700 (PDT)
+Received: from [127.0.1.1] (174-29-11-8.hlrn.qwest.net. [174.29.11.8])
+        by smtp.gmail.com with ESMTPSA id 46e09a7af769-7edad965130sm1677212a34.11.2026.07.17.10.34.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jul 2026 09:42:11 -0700 (PDT)
+        Fri, 17 Jul 2026 10:34:25 -0700 (PDT)
 From: James Hilliard <james.hilliard1@gmail.com>
-To: linux-mtd@lists.infradead.org,
-	linux-sunxi@lists.linux.dev
-Cc: James Hilliard <james.hilliard1@gmail.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Chen-Yu Tsai <wens@kernel.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	Richard Genoud <richard.genoud@bootlin.com>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2] mtd: rawnand: sunxi: add H616 MBUS DMA support
-Date: Fri, 17 Jul 2026 10:41:58 -0600
-Message-ID: <20260717164202.3099982-1-james.hilliard1@gmail.com>
-X-Mailer: git-send-email 2.53.0
+Date: Fri, 17 Jul 2026 11:33:57 -0600
+Subject: [PATCH v2 1/3] mtd: rawnand: sunxi: group controller delay tables
 MIME-Version: 1.0
+Message-Id: <20260717-submit-sunxi-nand-h6-h616-timings-v2-1-225515107640@gmail.com>
+References: <20260717-submit-sunxi-nand-h6-h616-timings-v2-0-225515107640@gmail.com>
+In-Reply-To: <20260717-submit-sunxi-nand-h6-h616-timings-v2-0-225515107640@gmail.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+ Chen-Yu Tsai <wens@kernel.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
+ Samuel Holland <samuel@sholland.org>, 
+ Richard Genoud <richard.genoud@bootlin.com>
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
+ linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org, 
+ James Hilliard <james.hilliard1@gmail.com>, stable@vger.kernel.org
+X-Mailer: b4 0.15.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260717_094215_026829_0B355283 
-X-CRM114-Status: GOOD (  26.42  )
+X-CRM114-CacheID: sfid-20260717_103429_039289_A6BEFDAF 
+X-CRM114-Status: GOOD (  15.45  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -106,296 +105,144 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The H616 NAND controller uses a descriptor-based internal MBUS DMA
-engine instead of the direct address and count registers used by the
-A23/A33 controller. Since the driver does not support these descriptors,
-it currently attempts to request an external rxtx DMA channel and falls
-back to PIO when none is provided.
+The tWB and tRHW timing field encodings are controller properties, but
+they currently live in standalone lookup tables.
 
-Add a single-descriptor backend to the existing ECC page DMA paths.
-Allocate the descriptor coherently, constrain data mappings to the
-controller's 32-bit address range, program the H6-style data block mask,
-and request an interrupt for both command and DMA completion. Keep the
-existing external DMA and legacy MBUS DMA paths unchanged, and fall back
-to PIO if the descriptor cannot be allocated.
+Group them in a timing descriptor selected through the controller
+capability data. Point every existing controller at the legacy values so
+this is a pure preparation change.
 
-With identical kernels except for this patch, running
-flash_speed -d -b 1906 -c 100 /dev/mtd6 on an H616 board with 2 KiB-page
-SLC NAND reported:
-
-                         PIO          descriptor DMA
-eraseblock write        3365 KiB/s       4192 KiB/s
-eraseblock read         6454 KiB/s      16040 KiB/s
-page write              3254 KiB/s       4021 KiB/s
-page read               6419 KiB/s      15686 KiB/s
-
+Cc: stable@vger.kernel.org
 Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
 ---
-Changes v1 -> v2:
-  - Make descriptor layout and alignment explicit  (suggested by Miquel)
-  - Track active internal MBUS DMA state consistently  (suggested by Miquel)
-  - Clarify the block mask and completion bit names  (suggested by Miquel)
-  - Let the 32-bit DMA mask constrain mappings  (suggested by Miquel)
-  - Explain DMA descriptor endian conversion
-  - Add flash_speed PIO/DMA results  (suggested by Miquel)
----
- drivers/mtd/nand/raw/sunxi_nand.c | 120 ++++++++++++++++++++++++++----
- 1 file changed, 104 insertions(+), 16 deletions(-)
+ drivers/mtd/nand/raw/sunxi_nand.c | 36 ++++++++++++++++++++++++++++--------
+ 1 file changed, 28 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/sunxi_nand.c b/drivers/mtd/nand/raw/sunxi_nand.c
-index 02647565c8ba..6e22d82a77ea 100644
+index 02647565c8ba..d12cbb3c813c 100644
 --- a/drivers/mtd/nand/raw/sunxi_nand.c
 +++ b/drivers/mtd/nand/raw/sunxi_nand.c
-@@ -79,6 +79,12 @@
- #define NFC_REG_H6_MDMA_BUF_ADDR 0x0210
- #define NFC_REG_H6_MDMA_CNT	0x0214
+@@ -237,6 +237,14 @@ struct sunxi_nand_hw_ecc {
+ 	u32 ecc_ctl;
+ };
  
-+#define NFC_H6_MDMA_STA_DESC0_COMPLETE	BIT(0)
++#define SUNXI_NFC_TIMING_STEPS	4
 +
-+#define NFC_MDMA_DESC_LAST	BIT(2)
-+#define NFC_MDMA_DESC_FIRST	BIT(3)
-+#define NFC_MDMA_DESC_SIZE_MASK	GENMASK(15, 0)
++/* Delay arrays contain internal NDFC clock cycles for field values 0 to 3. */
++struct sunxi_nfc_timings {
++	s32 tWB[SUNXI_NFC_TIMING_STEPS];
++	s32 tRHW[SUNXI_NFC_TIMING_STEPS];
++};
 +
- #define NFC_RAM0_BASE		0x0400
- #define NFC_RAM1_BASE		0x0800
- 
-@@ -267,12 +273,19 @@ static inline struct sunxi_nand_chip *to_sunxi_nand(struct nand_chip *nand)
- 	return container_of(nand, struct sunxi_nand_chip, nand);
- }
- 
-+struct sunxi_nfc_mdma_desc {
-+	__le32 config;
-+	__le32 size;
-+	__le32 buf;
-+	__le32 next;
-+} __packed __aligned(4);
-+
- /*
-  * NAND Controller capabilities structure: stores NAND controller capabilities
-  * for distinction between compatible strings.
+ /**
+  * struct sunxi_nand_chip - stores NAND chip device related information
   *
-- * @has_mdma:		Use mbus dma mode, otherwise general dma
-- *			through MBUS on A23/A33 needs extra configuration.
-+ * @has_mdma:		Use A23/A33-style MBUS DMA registers
-+ * @has_mdma_desc:	MBUS DMA uses H6-style descriptors
-  * @has_ecc_block_512:	If the ECC can handle 512B or only 1024B chunks
-  * @has_ecc_clk:	If the controller needs an ECC clock.
-  * @has_mbus_clk:	If the controller needs a mbus clock.
-@@ -304,6 +317,7 @@ static inline struct sunxi_nand_chip *to_sunxi_nand(struct nand_chip *nand)
+@@ -301,6 +309,7 @@ static inline struct sunxi_nand_chip *to_sunxi_nand(struct nand_chip *nand)
+  *			bytes to write
+  * @nuser_data_tab:	Size of @user_data_len_tab
+  * @sram_size:		Size of the NAND controller SRAM
++ * @timings:		Controller timing characteristics
   */
  struct sunxi_nfc_caps {
  	bool has_mdma;
-+	bool has_mdma_desc;
- 	bool has_ecc_block_512;
- 	bool has_ecc_clk;
- 	bool has_mbus_clk;
-@@ -346,6 +360,9 @@ struct sunxi_nfc_caps {
-  *	   controller
-  * @complete: a completion object used to wait for NAND controller events
-  * @dmac: the DMA channel attached to the NAND controller
-+ * @use_mdma: use an internal MBUS DMA backend
-+ * @mdma_desc: H6-style MBUS DMA descriptor
-+ * @mdma_desc_dma: DMA address of @mdma_desc
-  * @caps: NAND Controller capabilities
-  */
- struct sunxi_nfc {
-@@ -362,6 +379,9 @@ struct sunxi_nfc {
- 	struct list_head chips;
- 	struct completion complete;
- 	struct dma_chan *dmac;
-+	bool use_mdma;
-+	struct sunxi_nfc_mdma_desc *mdma_desc;
-+	dma_addr_t mdma_desc_dma;
- 	const struct sunxi_nfc_caps *caps;
+@@ -327,6 +336,7 @@ struct sunxi_nfc_caps {
+ 	unsigned int nuser_data_tab;
+ 	unsigned int max_ecc_steps;
+ 	int sram_size;
++	const struct sunxi_nfc_timings *timings;
  };
  
-@@ -466,7 +486,10 @@ static int sunxi_nfc_dma_op_prepare(struct sunxi_nfc *nfc, const void *buf,
- {
- 	struct dma_async_tx_descriptor *dmad;
- 	enum dma_transfer_direction tdir;
-+	dma_addr_t buf_dma;
- 	dma_cookie_t dmat;
-+	int len = chunksize * nchunks;
-+	u32 data_blocks = nchunks;
- 	int ret;
- 
- 	if (ddir == DMA_FROM_DEVICE)
-@@ -474,12 +497,21 @@ static int sunxi_nfc_dma_op_prepare(struct sunxi_nfc *nfc, const void *buf,
- 	else
- 		tdir = DMA_MEM_TO_DEV;
- 
--	sg_init_one(sg, buf, nchunks * chunksize);
-+	sg_init_one(sg, buf, len);
- 	ret = dma_map_sg(nfc->dev, sg, 1, ddir);
- 	if (!ret)
- 		return -ENOMEM;
- 
--	if (!nfc->caps->has_mdma) {
-+	buf_dma = sg_dma_address(sg);
-+
-+	if (nfc->mdma_desc &&
-+	    (len > NFC_MDMA_DESC_SIZE_MASK || !IS_ALIGNED(len, 8) ||
-+	     !IS_ALIGNED(buf_dma, 4))) {
-+		ret = -EINVAL;
-+		goto err_unmap_buf;
-+	}
-+
-+	if (!nfc->use_mdma) {
- 		dmad = dmaengine_prep_slave_sg(nfc->dmac, sg, 1, tdir, DMA_CTRL_ACK);
- 		if (!dmad) {
- 			ret = -EINVAL;
-@@ -489,14 +521,35 @@ static int sunxi_nfc_dma_op_prepare(struct sunxi_nfc *nfc, const void *buf,
- 
- 	writel(readl(nfc->regs + NFC_REG_CTL) | NFC_RAM_METHOD,
- 	       nfc->regs + NFC_REG_CTL);
--	writel(nchunks, nfc->regs + NFC_REG_SECTOR_NUM);
-+
-+	/* H6/H616 use one enable bit per ECC data block. */
-+	if (nfc->caps->has_mdma_desc)
-+		data_blocks = GENMASK(nchunks - 1, 0);
-+	writel(data_blocks, nfc->regs + NFC_REG_SECTOR_NUM);
- 	writel(chunksize, nfc->regs + NFC_REG_CNT);
- 
--	if (nfc->caps->has_mdma) {
-+	if (nfc->use_mdma)
- 		writel(readl(nfc->regs + NFC_REG_CTL) & ~NFC_DMA_TYPE_NORMAL,
- 		       nfc->regs + NFC_REG_CTL);
--		writel(chunksize * nchunks, nfc->regs + NFC_REG_MDMA_CNT);
--		writel(sg_dma_address(sg), nfc->regs + NFC_REG_MDMA_ADDR);
-+
-+	if (nfc->mdma_desc) {
-+		struct sunxi_nfc_mdma_desc *desc = nfc->mdma_desc;
-+
-+		desc->config = cpu_to_le32(NFC_MDMA_DESC_FIRST |
-+					   NFC_MDMA_DESC_LAST);
-+		desc->size = cpu_to_le32(len);
-+		/* Descriptor words are little-endian DMA memory, not MMIO. */
-+		desc->buf = cpu_to_le32(buf_dma);
-+		desc->next = cpu_to_le32(nfc->mdma_desc_dma);
-+
-+		writel(NFC_H6_MDMA_STA_DESC0_COMPLETE,
-+		       nfc->regs + NFC_REG_H6_MDMA_STA);
-+		dma_wmb();
-+		writel(nfc->mdma_desc_dma,
-+		       nfc->regs + NFC_REG_H6_MDMA_DLBA_REG);
-+	} else if (nfc->caps->has_mdma) {
-+		writel(len, nfc->regs + NFC_REG_MDMA_CNT);
-+		writel(buf_dma, nfc->regs + NFC_REG_MDMA_ADDR);
- 	} else {
- 		dmat = dmaengine_submit(dmad);
- 
-@@ -525,6 +578,14 @@ static void sunxi_nfc_dma_op_cleanup(struct sunxi_nfc *nfc,
- 	       nfc->regs + NFC_REG_CTL);
+ /**
+@@ -1667,8 +1677,10 @@ static int sunxi_nfc_hw_ecc_write_oob(struct nand_chip *nand, int page)
+ 	return nand_prog_page_end_op(nand);
  }
  
-+static void sunxi_nfc_dma_op_abort(struct sunxi_nfc *nfc)
-+{
-+	if (nfc->use_mdma)
-+		sunxi_nfc_rst(nfc);
-+	else
-+		dmaengine_terminate_all(nfc->dmac);
-+}
-+
- static void sunxi_nfc_select_chip(struct nand_chip *nand, unsigned int cs)
+-static const s32 tWB_lut[] = {6, 12, 16, 20};
+-static const s32 tRHW_lut[] = {4, 8, 12, 20};
++static const struct sunxi_nfc_timings sun4i_a10_nfc_timings = {
++	.tWB = { 6, 12, 16, 20 },
++	.tRHW = { 4, 8, 12, 20 },
++};
+ 
+ static int _sunxi_nand_lookup_timing(const s32 *lut, int lut_size, u32 duration,
+ 		u32 clk_period)
+@@ -1693,6 +1705,7 @@ static int sunxi_nfc_setup_interface(struct nand_chip *nand, int csline,
  {
- 	struct mtd_info *mtd = nand_to_mtd(nand);
-@@ -1202,7 +1263,7 @@ static int sunxi_nfc_hw_ecc_read_chunks_dma(struct nand_chip *nand, uint8_t *buf
+ 	struct sunxi_nand_chip *sunxi_nand = to_sunxi_nand(nand);
+ 	struct sunxi_nfc *nfc = to_sunxi_nfc(sunxi_nand->nand.controller);
++	const struct sunxi_nfc_timings *nfc_timings = nfc->caps->timings;
+ 	const struct nand_sdr_timings *timings;
+ 	u32 min_clk_period = 0;
+ 	s32 tWB, tADL, tWHR, tRHW, tCAD;
+@@ -1763,8 +1776,10 @@ static int sunxi_nfc_setup_interface(struct nand_chip *nand, int csline,
+ 		min_clk_period = DIV_ROUND_UP(timings->tWC_min, 2);
  
- 	wait = NFC_CMD_INT_FLAG;
+ 	/* T16 - T19 + tCAD */
+-	if (timings->tWB_max > (min_clk_period * 20))
+-		min_clk_period = DIV_ROUND_UP(timings->tWB_max, 20);
++	if (timings->tWB_max >
++	    (min_clk_period * nfc_timings->tWB[SUNXI_NFC_TIMING_STEPS - 1]))
++		min_clk_period = DIV_ROUND_UP(timings->tWB_max,
++				nfc_timings->tWB[SUNXI_NFC_TIMING_STEPS - 1]);
  
--	if (nfc->caps->has_mdma)
-+	if (nfc->use_mdma)
- 		wait |= NFC_DMA_INT_FLAG;
- 	else
- 		dma_async_issue_pending(nfc->dmac);
-@@ -1211,8 +1272,8 @@ static int sunxi_nfc_hw_ecc_read_chunks_dma(struct nand_chip *nand, uint8_t *buf
- 	       nfc->regs + NFC_REG_CMD);
+ 	if (timings->tADL_min > (min_clk_period * 32))
+ 		min_clk_period = DIV_ROUND_UP(timings->tADL_min, 32);
+@@ -1772,8 +1787,10 @@ static int sunxi_nfc_setup_interface(struct nand_chip *nand, int csline,
+ 	if (timings->tWHR_min > (min_clk_period * 32))
+ 		min_clk_period = DIV_ROUND_UP(timings->tWHR_min, 32);
  
- 	ret = sunxi_nfc_wait_events(nfc, wait, false, 0);
--	if (ret && !nfc->caps->has_mdma)
--		dmaengine_terminate_all(nfc->dmac);
-+	if (ret)
-+		sunxi_nfc_dma_op_abort(nfc);
+-	if (timings->tRHW_min > (min_clk_period * 20))
+-		min_clk_period = DIV_ROUND_UP(timings->tRHW_min, 20);
++	if (timings->tRHW_min >
++	    (min_clk_period * nfc_timings->tRHW[SUNXI_NFC_TIMING_STEPS - 1]))
++		min_clk_period = DIV_ROUND_UP(timings->tRHW_min,
++				nfc_timings->tRHW[SUNXI_NFC_TIMING_STEPS - 1]);
  
- 	sunxi_nfc_randomizer_disable(nand);
- 	sunxi_nfc_hw_ecc_disable(nand);
-@@ -1613,7 +1674,7 @@ static int sunxi_nfc_hw_ecc_write_page_dma(struct nand_chip *nand,
+ 	/*
+ 	 * In non-EDO, tREA should be less than tRP to guarantee that the
+@@ -1789,7 +1806,7 @@ static int sunxi_nfc_setup_interface(struct nand_chip *nand, int csline,
+ 	if (timings->tREA_max > min_clk_period && !timings->tRLOH_min)
+ 		min_clk_period = timings->tREA_max;
  
- 	wait = NFC_CMD_INT_FLAG;
+-	tWB  = sunxi_nand_lookup_timing(tWB_lut, timings->tWB_max,
++	tWB  = sunxi_nand_lookup_timing(nfc_timings->tWB, timings->tWB_max,
+ 					min_clk_period);
+ 	if (tWB < 0) {
+ 		dev_err(nfc->dev, "unsupported tWB\n");
+@@ -1808,7 +1825,7 @@ static int sunxi_nfc_setup_interface(struct nand_chip *nand, int csline,
+ 		return -EINVAL;
+ 	}
  
--	if (nfc->caps->has_mdma)
-+	if (nfc->use_mdma)
- 		wait |= NFC_DMA_INT_FLAG;
- 	else
- 		dma_async_issue_pending(nfc->dmac);
-@@ -1623,8 +1684,8 @@ static int sunxi_nfc_hw_ecc_write_page_dma(struct nand_chip *nand,
- 	       nfc->regs + NFC_REG_CMD);
+-	tRHW = sunxi_nand_lookup_timing(tRHW_lut, timings->tRHW_min,
++	tRHW = sunxi_nand_lookup_timing(nfc_timings->tRHW, timings->tRHW_min,
+ 					min_clk_period);
+ 	if (tRHW < 0) {
+ 		dev_err(nfc->dev, "unsupported tRHW\n");
+@@ -2595,6 +2612,7 @@ static const struct sunxi_nfc_caps sunxi_nfc_a10_caps = {
+ 	.nstrengths = ARRAY_SIZE(sunxi_ecc_strengths_a10),
+ 	.max_ecc_steps = 16,
+ 	.sram_size = 1024,
++	.timings = &sun4i_a10_nfc_timings,
+ };
  
- 	ret = sunxi_nfc_wait_events(nfc, wait, false, 0);
--	if (ret && !nfc->caps->has_mdma)
--		dmaengine_terminate_all(nfc->dmac);
-+	if (ret)
-+		sunxi_nfc_dma_op_abort(nfc);
- 
- 	sunxi_nfc_randomizer_disable(nand);
- 	sunxi_nfc_hw_ecc_disable(nand);
-@@ -2073,11 +2134,13 @@ static int sunxi_nand_hw_ecc_ctrl_init(struct nand_chip *nand,
- 	ecc->write_oob = sunxi_nfc_hw_ecc_write_oob;
- 	mtd_set_ooblayout(mtd, &sunxi_nand_ooblayout_ops);
- 
--	if (nfc->dmac || nfc->caps->has_mdma) {
-+	if (nfc->dmac || nfc->use_mdma) {
- 		ecc->read_page = sunxi_nfc_hw_ecc_read_page_dma;
- 		ecc->read_subpage = sunxi_nfc_hw_ecc_read_subpage_dma;
- 		ecc->write_page = sunxi_nfc_hw_ecc_write_page_dma;
- 		nand->options |= NAND_USES_DMA;
-+		if (nfc->mdma_desc)
-+			nand->buf_align = 4;
- 	} else {
- 		ecc->read_page = sunxi_nfc_hw_ecc_read_page;
- 		ecc->read_subpage = sunxi_nfc_hw_ecc_read_subpage;
-@@ -2426,8 +2489,32 @@ static int sunxi_nfc_dma_init(struct sunxi_nfc *nfc, struct resource *r)
- {
- 	int ret;
- 
--	if (nfc->caps->has_mdma)
-+	if (nfc->caps->has_mdma_desc) {
-+		ret = dma_set_mask_and_coherent(nfc->dev, DMA_BIT_MASK(32));
-+		if (ret) {
-+			dev_warn(nfc->dev,
-+				 "failed to set MBUS DMA mask, using PIO: %d\n",
-+				 ret);
-+			return 0;
-+		}
-+
-+		nfc->mdma_desc =
-+			dmam_alloc_coherent(nfc->dev, sizeof(*nfc->mdma_desc),
-+					    &nfc->mdma_desc_dma, GFP_KERNEL);
-+		if (!nfc->mdma_desc) {
-+			dev_warn(nfc->dev,
-+				 "failed to allocate MBUS DMA descriptor, using PIO\n");
-+			return 0;
-+		}
-+
-+		nfc->use_mdma = true;
- 		return 0;
-+	}
-+
-+	if (nfc->caps->has_mdma) {
-+		nfc->use_mdma = true;
-+		return 0;
-+	}
- 
- 	nfc->dmac = dma_request_chan(nfc->dev, "rxtx");
- 	if (IS_ERR(nfc->dmac)) {
-@@ -2620,6 +2707,7 @@ static const struct sunxi_nfc_caps sunxi_nfc_a23_caps = {
+ static const struct sunxi_nfc_caps sunxi_nfc_a23_caps = {
+@@ -2617,6 +2635,7 @@ static const struct sunxi_nfc_caps sunxi_nfc_a23_caps = {
+ 	.nstrengths = ARRAY_SIZE(sunxi_ecc_strengths_a10),
+ 	.max_ecc_steps = 16,
+ 	.sram_size = 1024,
++	.timings = &sun4i_a10_nfc_timings,
  };
  
  static const struct sunxi_nfc_caps sunxi_nfc_h616_caps = {
-+	.has_mdma_desc = true,
- 	.has_ecc_clk = true,
- 	.has_mbus_clk = true,
- 	.reg_io_data = NFC_REG_A23_IO_DATA,
+@@ -2641,6 +2660,7 @@ static const struct sunxi_nfc_caps sunxi_nfc_h616_caps = {
+ 	.nuser_data_tab = ARRAY_SIZE(sunxi_user_data_len_h6),
+ 	.max_ecc_steps = 32,
+ 	.sram_size = 8192,
++	.timings = &sun4i_a10_nfc_timings,
+ };
+ 
+ static const struct of_device_id sunxi_nfc_ids[] = {
+
 -- 
 2.53.0
 
