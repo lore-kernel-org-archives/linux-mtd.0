@@ -4,88 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52BD7C4450A
-	for <linux-mtd@archiver.kernel.org>; Sat, 18 Jul 2026 21:39:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36E3AC44523
+	for <linux-mtd@archiver.kernel.org>; Sun, 19 Jul 2026 01:08:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=UDbvyEbmLszvXEdKvWy3+7GWVvCwMQK38NZyV1ZWav8=; b=FyB68/sE6eu/vS
-	ylRYzXn466NQSw3DVU+mBMwYRnRuWyw1oaxHogEU3b1meM3TbCcdZAYrJzFTU8M69vVwVRJLT4tqY
-	XPWxCnBKF1Imgwu8kV3YhwG0FF3AFXZvv/MEvGGewnT4JLbvEl27thc/SKRNNGmAZV7pHdZ6WGfji
-	m2WriUrvKvrRmqrAdBzIphOqlCaMZuQ/MjFrQ0nKoBqsB2t5OKduax+Je+70ZKvKOlYWw5pkuelLa
-	r9kouyI41bDwKAro4jo1MJ/PKnUcf8uCnROWOmhG0wSVDKdnyV0wZx5qc/fPOOs3yDu60Xrha4se6
-	Vi0KGLvmDVbrK4mi+cJg==;
+	List-Owner; bh=F90ur9KIFt+zOm8Rzec7FSbKC9LbR3UWq+Bx7a9vnzg=; b=DR/ycbKjHNPp8Y
+	i7gGceiz76RpxWB3r1SE2xsFT1pAKT9mqkhlcd2EnpsLKddHvueF6s+RRiL6neuprqg2obBXHcYpR
+	SKaNUay51MUJVkHgr0fRrk7sCQb5piZwEfrMgOJw2MOStCSoT2boyWqA66JgUYZhS2nzAKqJzm2E5
+	pKnifVKkMT+lz1DaoxI0/tACXrPxxEMo6f+T7duJYTrobAAhIAUlk3ow9SdncmkWdfPra/NzZ/K77
+	i13yNkIr7unr9xPsndBJN//jHcfw83VLWlDOGD2zaxS50hnUVcChb8wo6R35tp8s6Yg8oJQGeEN62
+	kybhUPp9u2In1IVbra6w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wlCkG-00000004XxG-1arr;
-	Sat, 18 Jul 2026 21:38:52 +0000
-Received: from mail-vk1-xa36.google.com ([2607:f8b0:4864:20::a36])
+	id 1wlG1A-00000004fDL-0R4k;
+	Sun, 19 Jul 2026 01:08:32 +0000
+Received: from mail-pf1-x42c.google.com ([2607:f8b0:4864:20::42c])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wlCkC-00000004Xwt-2GhW
+	id 1wlG17-00000004fCx-04l7
 	for linux-mtd@lists.infradead.org;
-	Sat, 18 Jul 2026 21:38:49 +0000
-Received: by mail-vk1-xa36.google.com with SMTP id 71dfb90a1353d-5bfa4c51c2aso3090385e0c.0
-        for <linux-mtd@lists.infradead.org>; Sat, 18 Jul 2026 14:38:45 -0700 (PDT)
+	Sun, 19 Jul 2026 01:08:30 +0000
+Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-84862b0d5f8so4639694b3a.3
+        for <linux-mtd@lists.infradead.org>; Sat, 18 Jul 2026 18:08:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1784410724; x=1785015524; darn=lists.infradead.org;
+        d=gmail.com; s=20251104; t=1784423307; x=1785028107; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=vYIBuBrwfJUsCzNCzNz/dUN+3+R7rxSdNYOcgrLuLlQ=;
-        b=Z53nZIGkE6jOpqk74v7VzjAwBcC1YqxatFxTtVg2grtPIdjHR0frRbdwOlWY9/H7EC
-         asIzwbcA4mfepSw8V9a2jNNbJBwyFxJQBP7MXci3TOwRtn+arBmJx4MnUjxYVGxU/gzb
-         9jED5LPL2gwj5nlKaGMmZCxw5KxfakIT5D6oLV08dSFxC6W7F6pqRbTGjW52PhZpUDSw
-         8GwnzZC71MeED0REtpw5LcuJkAeVMAYIWKhOuBxZ1kRo+gLqmixbrtR1R2ZWkMBgjLmS
-         NHmg3efNFZltfGX5j2YsXwNRlQNMdy3woIZUl+6x/+nWoNRmtosYm1XYZbZYe3zfCuo9
-         cEBg==
+        bh=DIdLJQoDNc4JYvLBvL2oNFaPJGBiZwdyTA21ZB8ViqM=;
+        b=HqqKQftNtLNCNIuduJo3IXfqZZb7mMFsey6ZP1Yzno+hcMIQOKhzIoG127KdGbMk/j
+         y3vGE+IAiDo8BRbYPZPO6hqXqSdRYsXfhaP4y57T7teeKETU7H0O7QEx94XR7xAlOxyQ
+         Rq54mAuL4nHIEOR7M1obp+avUY8d5fQ0NET6p8mSvVFD0n1PGfTNxR1wfU4Nu5TDQGXQ
+         /ujSEO6ekgoLQKVz4Uy0nxAWbxGHrazFwNy1CWWz9qDMVPxY76mm5PM4XbhbMJE5Kbez
+         F6MchCIIm7UX0DJvHkF2w70x9ewsg5+54QBQvwTVeraVlrme3tHOKVifVxIfWMhyfLbA
+         pmUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1784410724; x=1785015524;
+        d=1e100.net; s=20251104; t=1784423307; x=1785028107;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=vYIBuBrwfJUsCzNCzNz/dUN+3+R7rxSdNYOcgrLuLlQ=;
-        b=hA3c+9D55s4w4GCpkeC3w+oi1sfVJgf8u4QFUcewV3afnYzovUGh3aahfVRTcJ0ml/
-         ZO686REsNgI5jlLLHnatv5JCN32pwBVVGGomtbHsjV0+3SHGCPDT9VDvIAI6ohria5Ec
-         I2fHk1g8qSE1YQtviFOj/i4b+e3OXPyptEj3nHHtb7zrMve4jIMXidJC04kZMAGByk+h
-         PrHSIdikRFntmnsZHMXmT84UZFr9YeVkn9meJH2njMOR7Z6prWw8DULIwcF56v1JQaZa
-         B68WQaB57cIGZShavEtiR7HhBquJAadgwj7NiSTiAOmCtKoDUoRkLth/9yXVhbipiwwI
-         ZzpQ==
-X-Forwarded-Encrypted: i=1; AHgh+Rpm8MCFCzgobqYDdTHzfJXhGU9rT1Nk7/6Pzkz0oOU6sPOiZQQOiOv7q4j7uviozsDw/YOZmkWgKlA=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxKPtUK+rzj4ljR8uu9najkpzOFkmWft7I8JFzWgXK+6r1DMwz8
-	nWUrqSsMUBJw0EoXDr6YcUsMNF+W0OkphLzW0cz2cJwf9oi4NGjSSU51
-X-Gm-Gg: AfdE7cnNGGNm0qKDHXxSjE+ks5gaXSOPNVuywXrE0DV4ksExH9isVJTKjG8XJ+W/XTI
-	3YG9J+T+iDowRVps4hHYiz3B3AmzsXpgG/6Ar2ivEUPeNWz3tXtTGSOAO2HJbMi3IR1y6wZ96tR
-	aBTiMy0FoaF4pW3mFzmwLmcsFRxwE/74soqe7Nit4zBPcKwxKQzZeZXXwm6vp8GWw1n1jYE1z1t
-	6cXxOdF2LExe2sZJsc5ev7NB6D9nq5wXoFCxQ9EcWDRDGKZOy0636Z0UecFAs9EmUZCOnfACOsv
-	uSOYlgjzmiUpl6iyus1ICqwh0gAnP2aR2UVQxuxlIGXzUpwUr2B12+wjVdhFMeZ/UtoDA7gD7GD
-	cr26aV/eYK3SOicSuvk6OJ0Rss/khTuHjI273QLbzxtEiHJoK62I8RRiO0ptnpoE8fomooyU3FS
-	RaXGDhVhd1xrkHeiXd2uFhemoRjGALLUC7hgQSxhmnurPUXh8=
-X-Received: by 2002:a05:6122:6592:b0:5a0:5805:c8ba with SMTP id 71dfb90a1353d-5c1ca8c3f5emr1475118e0c.11.1784410724441;
-        Sat, 18 Jul 2026 14:38:44 -0700 (PDT)
-Received: from fabio-Precision-3551.. ([2804:1b3:a801:a24:e0c9:d661:5aa2:2eb5])
-        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-5c1eecca4f7sm3660639e0c.3.2026.07.18.14.38.40
+        bh=DIdLJQoDNc4JYvLBvL2oNFaPJGBiZwdyTA21ZB8ViqM=;
+        b=PVvjaqeXYkkZWvRo43EpV+9yfozMACRyKQdaypyQ4TgNU/051l2kpAprTlK86r0wUJ
+         RJuxJXFgLvtf7IEbZQhrgmdlF69E+P2yC+FKcfJowC7KppvDJEQujW2gH5QDXk9QQChM
+         RAj3aRZ2p6VUbV1kzHR24NLwWx04rbtl8M4gAidOnTOq0jaO8ZCJcYo45e/rB5tIqokq
+         MBzGwUdOrHtb4ZlC84B34G6RXmMeMAM09dHW7t5XKZ86Qty2UzSeyDFL2qDot75PKU6q
+         +HzktKdd2MXvuWlaC+jE2SuqURCpGAdKIiMvXauEUKI6en5oXMooj4GfHw2+VXJ6+5RP
+         heZw==
+X-Forwarded-Encrypted: i=1; AHgh+RoiCAq1oXoTT+Y1gXszveCfkQrdCsec5TPAsR/C4Bo0FYeTgQ5o+CoKz/HjGco6jBmXfyoaDCcdVQk=@lists.infradead.org
+X-Gm-Message-State: AOJu0YygF5+W6x4wFgS3q/Jz68dJ+NmqEW1TY4yuLm2M8s/9khy+7LCs
+	ljC7jix/TdLkiTRaPdtPYsN3dEXX0SZGPfFSSBAmkK+X2wLxEuJioyr5
+X-Gm-Gg: AfdE7clbNna021C9NV4C2BmXBNEPkbIMY0D2mZT4UXmcIu0yU576iGbYB9lpODGx1hv
+	uw4m8Z2A3tJNsg4wlo1H0z+m8yA2C80+I2+tNq9ErtyKT70OJizVN+bsaVUkAdZneShoIOs00f/
+	BEM4k/J+sSRinOK9aZaEecm6tyQmsLckCp7iIS/YXM/uFVuK9jJU/vk/WWIxyG3Xjeml9BuLggR
+	JykwkxYlFGK/G0JODuTD6m5NOTd8LRAsxBbl+KbSUHS760B8+4i1gpb7ZjLkkuEIOpyMXYsApRc
+	ilpR1ZtQOAlQPdGy5G0dmZcv+CEUQ9sD1kTKwuP1t9OosKluAkYCYqcOmwytsOIExuHlsG8fEb+
+	NpJSM7KBiLvKdpxA5NkYk+NunX47Hj8fhTsftWFEfwdrWMjUM8C1q6RUbQsD66MZWd/YQ2lv9b6
+	SJI6gT7ZYhPOYXslmNQm7PNqoVCjY1S9dt/MGfDFid751b1aS9RVS8l4MknBJT3fB1gt8=
+X-Received: by 2002:a05:6a00:887:b0:847:8d2d:713c with SMTP id d2e1a72fcca58-84c295016f5mr8267340b3a.50.1784423307388;
+        Sat, 18 Jul 2026 18:08:27 -0700 (PDT)
+Received: from nugod-NUC15CRHU5.tail9f095a.ts.net ([218.237.104.87])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-84c2af9af73sm3446544b3a.53.2026.07.18.18.08.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Jul 2026 14:38:43 -0700 (PDT)
-From: Fabio Estevam <festevam@gmail.com>
-To: pratyush@kernel.org
-Cc: mwalle@kernel.org,
-	takahiro.kuwano@infineon.com,
-	miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com,
-	heiko@sntech.de,
+        Sat, 18 Jul 2026 18:08:26 -0700 (PDT)
+From: HyeongJun An <sammiee5311@gmail.com>
+To: Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <mwalle@kernel.org>,
+	Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Takahiro Kuwano <takahiro.kuwano@infineon.com>,
 	linux-mtd@lists.infradead.org,
-	Fabio Estevam <festevam@nabladev.com>
-Subject: [PATCH] mtd: spi-nor: xmc: Add XM25QH128C identification
-Date: Sat, 18 Jul 2026 18:38:27 -0300
-Message-ID: <20260718213827.701787-1-festevam@gmail.com>
+	linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org,
+	HyeongJun An <sammiee5311@gmail.com>
+Subject: [PATCH 0/2] mtd: spi-nor: sfdp: bound two optional parameter tables
+Date: Sun, 19 Jul 2026 10:08:18 +0900
+Message-ID: <20260719010820.1924739-1-sammiee5311@gmail.com>
 X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260718_143848_593679_3010AA88 
-X-CRM114-Status: GOOD (  10.89  )
+X-CRM114-CacheID: sfid-20260718_180829_082608_1C265673 
+X-CRM114-Status: GOOD (  11.08  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,63 +104,36 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Fabio Estevam <festevam@nabladev.com>
+Two of the optional SFDP parameter table parsers allocate a bounce buffer
+from the table length the flash reports, then index it at fixed offsets
+without checking the table is long enough to hold them.
 
-The XMC XM25QH128C is a 128-Mbit SPI NOR flash with JEDEC ID
-20 40 18.
+  spi_nor_parse_profile1()  reads up to DWORD5,  never checks the length
+  spi_nor_parse_sccr()      reads up to DWORD22, never checks the length
 
-Add its identification entry. The device provides valid SFDP data, so
-its parameters continue to be initialized entirely from SFDP.
+The length is a u8 supplied by the flash, so a device that advertises
+either table with a shorter length makes the read run past the
+allocation, and a length of zero makes kmalloc() hand back
+ZERO_SIZE_PTR, which the parsers then dereference.
 
-The flash is populated on the Firefly ROC-RK3399-PC Plus board.
+spi_nor_parse_4bait() already guards its table this way with
+SFDP_4BAIT_DWORD_MAX, so both patches just apply the same check.
+spi_nor_parse_sccr_mc() is left alone: it derives its highest index from
+the length it allocated with, so it stays in bounds.
 
-Signed-off-by: Fabio Estevam <festevam@nabladev.com>
----
-Tested on a Firefly ROC-RK3399-PC Plus using the
-"rockchip,rk3399-spi" controller at 30 MHz.
+The two parsers were added at different times, so they carry different
+Fixes tags and are split into one patch each.
 
-root@rk3399-station-p1:~# cat /sys/bus/spi/devices/spi1.0/spi-nor/partname
-XM25QH128C
-root@rk3399-station-p1:~# cat /sys/bus/spi/devices/spi1.0/spi-nor/jedec_id
-204018
-root@rk3399-station-p1:~# cat /sys/bus/spi/devices/spi1.0/spi-nor/manufacturer
-xmc
-root@rk3399-station-p1:~# hexdump -Cv /sys/bus/spi/devices/spi1.0/spi-nor/sfdp
-00000000  53 46 44 50 06 01 02 ff  00 06 01 10 30 00 00 ff  |SFDP........0...|
-00000010  20 00 01 04 d0 00 00 ff  84 00 01 02 c0 00 00 ff  | ...............|
-00000020  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  |................|
-00000030  e5 20 f1 ff ff ff ff 07  44 eb 08 6b 08 3b 42 bb  |. ......D..k.;B.|
-00000040  fe ff ff ff ff ff 00 ff  ff ff 40 eb 0c 20 0f 52  |..........@.. .R|
-00000050  10 d8 00 ff 24 02 06 01  82 a7 03 cd cc a1 06 35  |....$..........5|
-00000060  7a 75 7a 75 f7 a9 d5 5c  19 f6 4d ff e9 10 c0 80  |zuzu...\..M.....|
-00000070  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  |................|
-00000080  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  |................|
-00000090  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  |................|
-000000a0  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  |................|
-000000b0  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  |................|
-000000c0  00 00 f0 ff ff ff ff ff  ff ff ff ff ff ff ff ff  |................|
-000000d0  00 36 00 23 9f f9 77 64  00 e8 ff ff ff ff ff ff  |.6.#..wd........|
-000000e0
-root@rk3399-station-p1:~# sha256sum /sys/bus/spi/devices/spi1.0/spi-nor/sfdp
-c027b82ebfdf18e455c6366a9d57602b36f2956d4307b770954544918102d9b3  /sys/bus/spi/devices/spi1.0/spi-nor/sfdp
+Found by code inspection; I have no xSPI or multi-die part to reproduce
+this on, so this is not runtime tested.
 
- drivers/mtd/spi-nor/xmc.c | 3 +++
- 1 file changed, 3 insertions(+)
+HyeongJun An (2):
+  mtd: spi-nor: sfdp: check the length of the xSPI Profile 1.0 table
+  mtd: spi-nor: sfdp: check the length of the SCCR map
 
-diff --git a/drivers/mtd/spi-nor/xmc.c b/drivers/mtd/spi-nor/xmc.c
-index d5a06054b0dd..06bb8caf8927 100644
---- a/drivers/mtd/spi-nor/xmc.c
-+++ b/drivers/mtd/spi-nor/xmc.c
-@@ -19,6 +19,9 @@ static const struct flash_info xmc_nor_parts[] = {
- 		.name = "XM25QH128A",
- 		.size = SZ_16M,
- 		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
-+	}, {
-+		.id = SNOR_ID(0x20, 0x40, 0x18),
-+		.name = "XM25QH128C",
- 	},
- };
- 
+ drivers/mtd/spi-nor/sfdp.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
 -- 
 2.43.0
 
