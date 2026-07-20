@@ -4,174 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90A93C44527
-	for <linux-mtd@archiver.kernel.org>; Mon, 20 Jul 2026 10:35:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE50FC44515
+	for <linux-mtd@archiver.kernel.org>; Mon, 20 Jul 2026 11:57:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=l2Hv+ukCSn81qX8v6Prnh+2rsRD/TxQHMYxEsAzpcXM=; b=4vHCtUGt9x5UuK
-	NcIkSkvODFccNgOc56sLzE8G8i2T0WJCp/sVEUlFRzjLE4cDix3LDLcfzWswunxSST2UB5lwV2vt6
-	n+VA3XeOfbnjbyadO2FKbfoRyVGTOmw1Cb1ySmPQGqvriYoM/QSpoO8gPasldOaEoFJHlT4U4MrOf
-	82OJ6OZWyE3HWWxhOLq6/zmFn29ePsZDXvyYCjYNS03E9CKjEAiIEh7wIHEnuMbi3PmxWj7iWA1ac
-	cDKTHCAqKFHinjT/bnfxQRyMM/FD7An4NLhlZ6wtvzTdzztwgb+omtGJ4g5LvOKGQzwX7C7qRN1r4
-	2GGZQUXSDwA9MTPuL+2Q==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=8VhR7enBUkdimL20XUnQZp2Llb7QAFPs/sDkgnYBr30=; b=mOXRNq8NW+4u1k
+	kucAY14+X53Qjd0ShsWxhZOjHwTzGdONWBdcBWma76gL8ZzqAENA8FxcgU0OwKEBiKW8R+kd6hv24
+	mkjSva6zzYSPz/rSEeFrjKOjx23Ey3c7eVRUslVdfXowPvY2e2K55DGFKA/ef8U+wglI8pNZx0AxE
+	KXe/n0CHH5HOJ+2ICMlp+3XoEZoOH0bThP3OinXWaDkycJxZr6hxoxwcnDpORz4E5WiZldZ67M3DS
+	lQPwPS206dewVcGTBTyc/tdXnqoq2KfIT28kdiC8ibEC8oIBEg4X1bgQfMDzWVQAIw6k1urb2av6U
+	0+NWkG85uT1xnuLvaPsg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wllKu-00000006Upj-1vtz;
-	Mon, 20 Jul 2026 10:35:00 +0000
-Received: from mx0b-0002e601.pphosted.com ([148.163.154.28])
+	id 1wlmcl-00000006e9s-0LNI;
+	Mon, 20 Jul 2026 11:57:31 +0000
+Received: from smtp25.cstnet.cn ([159.226.251.25] helo=cstnet.cn)
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wllKs-00000006Up8-0VKG
+	id 1wlmci-00000006e9G-0Fm9
 	for linux-mtd@lists.infradead.org;
-	Mon, 20 Jul 2026 10:34:59 +0000
-Received: from pps.filterd (m0374956.ppops.net [127.0.0.1])
-	by mx0b-0002e601.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 66K9vNUd1859646;
-	Mon, 20 Jul 2026 05:34:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=
-	proofpoint-05-2026; bh=009hu5qVL3bUFSWkgvvrGkskBkP330BpIvb1ujQIQ
-	7I=; b=GSmL4ZLJ4llYfcKoOju3loqtwcMB1SOWvIOQ28VnlI8Nmc1YIYrTL7qV4
-	jOXBOg8dEbJt6jRJfrmaVmNR2Q4H3l1FSy48pzChuAIe+i9scavMAqOA7xApoiX/
-	SjWdVIHcsWPk1hDOKaVwAwjrUhVmx7UyFxtbFglynqivBaSlbCYPDm/c8OgfCym7
-	nZpJC5T4wcfJYgMade933Ajg/VswZe8DktaFaqp0BYfCwFL8hhpg/xdmyVNOIyh3
-	JEhoxZGbvE02Ir2Gs34loUJ7bXGA+iqpBgF1iyRD/RtIHgq7fWCzBw69pPxYIjtz
-	6uGEjFkpFsvjkPBQm+4TBWu5IrMeQ==
-Received: from byapr05cu005.outbound.protection.outlook.com (mail-westusazon11010024.outbound.protection.outlook.com [52.101.85.24])
-	by mx0b-0002e601.pphosted.com (PPS) with ESMTPS id 4fgrmkwhew-1
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-	Mon, 20 Jul 2026 05:34:49 -0500 (CDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=VbVNp5Res58AqF8kEhU2uDWdoCRwOL3gBY/w5x2+NmmZNngsVTIFRuFp1jngIm4JFNwKR2WwvbhnSoVidZDa1CyTj012/x3DM4gmmf7SU129gn0oMU2mjR3JEMv0hJFRb53xvOEAQXLuU3Ejtg4zHTLTCBjB333FCp4OzKN0f1xqoFN6lBJaQ1i+XT7hz96de+8czs5ShT/SPWzeY9IrwhlNc8Ujpkrz4BLfZ1Y60jfxPRxejsKgrZr2bdGtorwW2Rafs6kSaF8nNqu7uiQdAW81ycrKzEWZ2C1ydzgZF2TRgjZjPeSCcIiS7Yd2hPkMw13AKJ5oGi0E0a1hU724Gw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=009hu5qVL3bUFSWkgvvrGkskBkP330BpIvb1ujQIQ7I=;
- b=MfqO/5EWSwUj3ynsWBpuJc+5Rfh692FWhiexm7sbTqEG5nV0amgLUDlcXfT2S42PPTo3/P1TAtjveLoXLisdoEThpmDj3PJ/onmFysD9vjehLGcekrZ8GQGUsITgcYrn1UvKZ14szY7IYzO99IRMOeuG04z1RBw8UjwkbpJZiHkjVz/MchrhngtPBIIzCiwfp7bw3mrRp9nGCxsGgfAeTwKoNNAvx2xf0i3tOTpRascmcYIYmtgJ3X26UzLnDZYEj879yo457D4LLnYaBR5vEVt9O88hKnRWxSCZDbE6WUAD7yWM7cEPruFnN6/QyjEK52cq9jVA+c/7UoPOP+fJyQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 198.47.23.195) smtp.rcpttodomain=microchip.com smtp.mailfrom=ti.com;
- dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=ti.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=009hu5qVL3bUFSWkgvvrGkskBkP330BpIvb1ujQIQ7I=;
- b=IM871ERkr3l0TEUzZ5Nm5cPhNmOveaDqAqwGtGG1YybGn5OI7m9QMifaoD7Dp0TfWW5xHyxu2nMGNIxh6IpH3XFB32seeqoIbo5dujwxYCe72uTdkWBG8dlEjnWIjGmmkaXniluTDuayHB5HEwKorWa2vHRGBuj6zS3eWB5mh7M=
-Received: from SJ0PR13CA0006.namprd13.prod.outlook.com (2603:10b6:a03:2c0::11)
- by DM4PR10MB6038.namprd10.prod.outlook.com (2603:10b6:8:8f::8) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.223.16; Mon, 20 Jul 2026 10:34:44 +0000
-Received: from MWH0EPF000A6730.namprd04.prod.outlook.com
- (2603:10b6:a03:2c0:cafe::76) by SJ0PR13CA0006.outlook.office365.com
- (2603:10b6:a03:2c0::11) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.21.245.10 via Frontend Transport; Mon,
- 20 Jul 2026 10:34:44 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 198.47.23.195)
- smtp.mailfrom=ti.com; dkim=none (message not signed) header.d=none;dmarc=pass
- action=none header.from=ti.com;
-Received-SPF: Pass (protection.outlook.com: domain of ti.com designates
- 198.47.23.195 as permitted sender) receiver=protection.outlook.com;
- client-ip=198.47.23.195; helo=lewvzet201.ext.ti.com; pr=C
-Received: from lewvzet201.ext.ti.com (198.47.23.195) by
- MWH0EPF000A6730.mail.protection.outlook.com (10.167.249.22) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.245.5 via Frontend Transport; Mon, 20 Jul 2026 10:34:44 +0000
-Received: from DLEE214.ent.ti.com (157.170.170.117) by lewvzet201.ext.ti.com
- (10.4.14.104) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.37; Mon, 20 Jul
- 2026 05:34:43 -0500
-Received: from DLEE208.ent.ti.com (157.170.170.97) by DLEE214.ent.ti.com
- (157.170.170.117) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.37; Mon, 20 Jul
- 2026 05:34:43 -0500
-Received: from lelvem-mr05.itg.ti.com (10.180.75.9) by DLEE208.ent.ti.com
- (157.170.170.97) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.37 via Frontend
- Transport; Mon, 20 Jul 2026 05:34:43 -0500
-Received: from [10.24.52.55] (santhoshkumark.dhcp.ti.com [10.24.52.55])
-	by lelvem-mr05.itg.ti.com (8.18.1/8.18.1) with ESMTP id 66KAYb2T2762196;
-	Mon, 20 Jul 2026 05:34:38 -0500
-Message-ID: <2aa827c7-afc0-4edd-8ecc-786ff96913ca@ti.com>
-Date: Mon, 20 Jul 2026 16:04:36 +0530
+	Mon, 20 Jul 2026 11:57:29 +0000
+Received: from localhost.localdomain (unknown [111.196.245.140])
+	by APP-05 (Coremail) with SMTP id zQCowADHNUAlDV5qCNuIAA--.52364S2;
+	Mon, 20 Jul 2026 19:57:25 +0800 (CST)
+From: Pengpeng Hou <pengpeng@iscas.ac.cn>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Huang Shijie <b32955@freescale.com>,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org,
+	Pengpeng Hou <pengpeng@iscas.ac.cn>
+Subject: [PATCH v2] mtd: rawnand: validate ONFI extended parameter page sections
+Date: Mon, 20 Jul 2026 19:57:25 +0800
+Message-ID: <20260720115725.10096-1-pengpeng@iscas.ac.cn>
+X-Mailer: git-send-email 2.50.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 01/17] spi: dt-bindings: add
- spi-max-post-config-frequency-hz property
-To: Krzysztof Kozlowski <krzk@kernel.org>
-CC: <broonie@kernel.org>, <robh@kernel.org>, <krzk+dt@kernel.org>,
-        <conor+dt@kernel.org>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
-        <vigneshr@ti.com>, <pratyush@kernel.org>, <mwalle@kernel.org>,
-        <takahiro.kuwano@infineon.com>, <linux-spi@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mtd@lists.infradead.org>, <praneeth@ti.com>, <u-kumar1@ti.com>,
-        <a-dutta@ti.com>, Conor Dooley <conor.dooley@microchip.com>,
-        <s-k6@ti.com>
-References: <20260717185116.2065505-1-s-k6@ti.com>
- <20260717185116.2065505-2-s-k6@ti.com>
- <20260719-camouflaged-unyielding-sawfish-b6fd09@quoll>
- <3d470ec8-870a-4e14-90e8-6c7444950192@ti.com>
- <fba1531e-e416-4817-848e-94e9b3f3b501@kernel.org>
- <d6b3c768-bff2-40b1-b767-f17219281fb7@ti.com>
- <1a681388-5ffe-4df9-83bf-a7622ee489bf@kernel.org>
-Content-Language: en-US
-From: Santhosh Kumar K <s-k6@ti.com>
-In-Reply-To: <1a681388-5ffe-4df9-83bf-a7622ee489bf@kernel.org>
-X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MWH0EPF000A6730:EE_|DM4PR10MB6038:EE_
-X-MS-Office365-Filtering-Correlation-Id: e0823a98-e9e4-4904-d2dd-08dee64a839d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|82310400026|23010399003|7416014|376014|36860700016|22082099003|18002099003|3023799007|56012099006|4143699003|10067099003|6133799003;
-X-Microsoft-Antispam-Message-Info: NF906+tO0zYNboo8YczJV08mS70JVzSuzfka9nX68vgRATU5OJoe3z+4GtA2pa8HBBgZyQipedipzzvTXfMbo8xzd7bLRvlsoW8gz+XN+TVYOdMbUp1d5bOl5PGi1xujm8yZ07u4NpuCoEvwWaZfjHeW+OOaFEpXiR1XY2NWuT3M43b2eNbi0r/+/FGPevlRQ04+nSKWWB4D5YHUnpfkanhF7VExgiXoZWfLeYv2F8T6FZUodVSRx04V5/NPW9sZ7bvGUIMNF6fIj3y0pxy7lCiqqH+v2lGK24dseLqho9T4tMHJW/6Esk3XpEZT3KlLGyIUfYJwx5W9bq+98hJlVDE2tF5mavwHcVx9Cxac5zVA2HWXhypcXgeMmv+8hs5AtYGZtfNns/UMtYtG8zW19Z46cvXdJAmrQ5sTB7AoVjDWdybr4RGjt82clE3F42nmn43GQUfWfyZPQrbPZMKBdtyJ1PRJkEeZdweziOAKwYHml/Rto6WFnsqNL3z21apBFMIY3GBzfC/VGUCoWk4sOo5HzfpvQDDH60Fl9nIImif9OaUCWC/r4xKqwe9TVtQos5AykhQMLUUEHTm36s+63v+p9KBL6GquqEMX5XBOZwyjEm/QZ+iUeefPJe/GRZRz23Re5nSvdMwKSW6LFOhmGgxG8nobJmymIn0fhM3HLC3lBpHKyRNpZeubUtyvmbMYLxntTHXU76xuzkS30Jea3g==
-X-Forefront-Antispam-Report: CIP:198.47.23.195;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:lewvzet201.ext.ti.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(1800799024)(82310400026)(23010399003)(7416014)(376014)(36860700016)(22082099003)(18002099003)(3023799007)(56012099006)(4143699003)(10067099003)(6133799003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: yvtCulGs7K95DL3DxMIBy8AItyvY/MqGO+zv7xvn5uAO7iAs7AVub55lZg1KR4H54V/INY5l+SqEJsLwh0PetXhCh8zsZHG8WUVq5nxSnFOv9p55pZXh6BN2WrC0FxTd9NdLfxwEA8z55OoyInnTPMNsz9EFUhmt+oOlVWc7enY400lFEt4E4Nbg3Zn3GiwNt3O66EfK3C30yTqSHsmJg65detO23kRwPGYiAld7XzrrG0fPS8cb6dZdZZAt0U7kKmAr63MW1FQVBiXOE7TAe2/cP5CZDmt2jl0wIFIHrk5QjypwNCU2ccRupvS/L0luVc8GFdNmpSWsf2I8HLTRV+DjWOni3yo6wn6sN8/dRVEzjztQdF1ZOWGwPJWpwJaQiMz05d7wGx5Rsaz4R12ykPtYCo1H1iGnqZooSFrWJuppGNNVcQphH/iBbx0iso9l
-X-Exchange-RoutingPolicyChecked: oEc6lMiV3sIrJBdZ8y7AFIKDIIIKrB7f5ijpDNKyj/tQt/qpMaA2CpVKeOH4VeWikA9m+AXMuy6eToi/lVw+vGddNQj4+cBSQiY6xhjkA3RnpCcw3rbuy3h/TslLeHKNHqtRCbsizfCvQ4MiGP+dQ0Wc9q0bZisHFjVWsVQsc/UcUFWUjaukIHKUNfoIitd0U1fVKm+4fA0BiKlvv5k3BgioMR2YEhiKpS7xm03sTUgQuBr9deJkfblB4A5yhWxS9gLFW4yYWzBw9ubxyGO/SEao+C5+IjoWdYnr5tyygh6uHLt/E3oUxO90CUy8DrriLomiYvhmz0a7sfEKpUFlRQ==
-X-OriginatorOrg: ti.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jul 2026 10:34:44.1955
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e0823a98-e9e4-4904-d2dd-08dee64a839d
-X-MS-Exchange-CrossTenant-Id: e5b49634-450b-4709-8abb-1e2b19b982b7
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=e5b49634-450b-4709-8abb-1e2b19b982b7;Ip=[198.47.23.195];Helo=[lewvzet201.ext.ti.com]
-X-MS-Exchange-CrossTenant-AuthSource: MWH0EPF000A6730.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR10MB6038
-X-Proofpoint-GUID: OE0b6d_uCZG9XxVubdOQH_8s5GEernRx
-X-Proofpoint-Spam-Info: AW1haW4tMjYwNzIwMDExOCBTYWx0ZWRfXxraGhrhtumV9
- xDuZtqxuUii+GcoN3hUot6kWTyhB7JfQPJVAkVSY8WXFVeHGpfgc2rRib30SUi8vch8trILKFc9
- Qg8ccoy5ZpInc0fYmVES8Nqg+OUS2H4=
-X-Proofpoint-ORIG-GUID: OE0b6d_uCZG9XxVubdOQH_8s5GEernRx
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNzIwMDExOCBTYWx0ZWRfX8XFKKpwUkckE
- E+TaMxvMeY//RA0oDBYbxCdPttFqWcm3eop81tsZbwIa1faGQ8I2uxHEXnK6Xm3PBGZ18hocfY3
- kibPOVqLDnSySj0wzi09HgKe1zRZwMSeppYrxvzLjnGzOVK0iG9KcuVqZxbaUrEc1nnQb3z7gNo
- 6O955FQ9R8rHdKvAswkYMyYcEuaLF5B6rcQaIRI9FywWn0mg53kQyZibCSqxMzLa3hvVGpXcKfo
- jt/AnRNGpPb2eKT1wWUvfSG83uqXt8bnRTQyFt3EXzs/yuqoAjCMenhkaIkMSPbfApKNNd2r2Qw
- PSUCOTZpDovMK4pAzGlyGgJ9TarENWpnS5yIDt1kdtVXXPiheI0aherULuQq5vk0gwUQL06hfaa
- vWIaaqmxwl6ySk2LBA8Idk7bFrhtb6plA0i4si7qRYb39FoAKSadjBqlX+N7CZamd3AExVc5CzT
- Df50+7AqtmJbal1mjIw==
-X-Authority-Analysis: v=2.4 cv=KIJqylFo c=1 sm=1 tr=0 ts=6a5df9c9 cx=c_pps
- a=N6jWaT6qAb3kxWP2Z7atcw==:117 a=f+v6EHfkeJbVwR46tk4DMg==:17
- a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=IkcTkHD0fZMA:10 a=RAioF0-LDSMA:10
- a=s63m1ICgrNkA:10 a=V5UXEbMT0ywA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=Z8NIEmU8O1QQgoT56wFK:22 a=jwouBfj2j3NM8CExmVVE:22 a=MiX5mLSNAeYTziVGc1cA:9
- a=QEXdDO2ut3YA:10
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.134,FMLib:17.12.100.49
- definitions=2026-07-20_02,2026-07-17_01,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- lowpriorityscore=0 priorityscore=1501 malwarescore=0 adultscore=0
- phishscore=0 impostorscore=0 clxscore=1015 bulkscore=0 suspectscore=0
- spamscore=0 classifier=typeunknown authscore=0 authtc= authcc= route=outbound
- adjust=0 reason=mlx scancount=1 engine=8.22.0-2606150000
- definitions=main-2607200118
+X-CM-TRANSID: zQCowADHNUAlDV5qCNuIAA--.52364S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxWr15ur4xKr1rJry5KF4DJwb_yoW5WryDpF
+	4F934akws8J3W7Z3sFka1DCFyFy395GFW8GFyfu34Yk3ZFvr1vkas8Kr1jvFnrKay8Cry8
+	Xrsrt3Z5C3W5Ca7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkC14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+	6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUtVWrXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY1x0262kKe7AKxVWU
+	AVWUtwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
+	v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
+	c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW8JVW5JwCI42IY6xIIjxv20xvEc7CjxVAFwI
+	0_Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWx
+	JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUnGQDUU
+	UUU
+X-Originating-IP: [111.196.245.140]
+X-CM-SenderInfo: pshqw1xhqjqxpvfd2hldfou0/
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260720_033458_455155_741280E1 
-X-CRM114-Status: GOOD (  15.45  )
+X-CRM114-CacheID: sfid-20260720_045728_478232_CC294980 
+X-CRM114-Status: GOOD (  14.77  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -183,81 +77,93 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+nand_flash_detect_ext_param_page() allocates the length declared by the
+ONFI parameter page, then treats the data as a fixed header followed by
+variable-length sections. It reads that header and advances over sections
+without first proving that the fixed page and each current section fit in
+the allocation.
 
+Reject pages shorter than the fixed header, track the remaining variable
+area while walking sections, and require the ECC section to contain every
+field read from struct onfi_ext_ecc_info. Use device-scoped diagnostics
+that identify the malformed ONFI section.
 
-On 20/07/26 15:39, Krzysztof Kozlowski wrote:
-> On 20/07/2026 10:48, Santhosh Kumar K wrote:
->>
->>
->> On 20/07/26 13:10, Krzysztof Kozlowski wrote:
->>> On 20/07/2026 09:38, Santhosh Kumar K wrote:
->>>>>> diff --git a/Documentation/devicetree/bindings/spi/spi-peripheral-props.yaml b/Documentation/devicetree/bindings/spi/spi-peripheral-props.yaml
->>>>>> index 880a9f624566..12211f8c9f7d 100644
->>>>>> --- a/Documentation/devicetree/bindings/spi/spi-peripheral-props.yaml
->>>>>> +++ b/Documentation/devicetree/bindings/spi/spi-peripheral-props.yaml
->>>>>> @@ -45,6 +45,11 @@ properties:
->>>>>>         description:
->>>>>>           Maximum SPI clocking speed of the device in Hz.
->>>>>>     
->>>>>> +  spi-max-post-config-frequency-hz:
->>>>>> +    description:
->>>>>> +      Maximum SPI clock frequency in Hz achievable after controller-side
->>>>>> +      configuration.
->>>>>
->>>>> How did you implement my feedback?
->>>>
->>>> Three points from your feedback:
->>>>
->>>> 1. -hz suffix: added
->>>>
->>>> 2. Array property: I still lean towards keeping this as a scalar for
->>>> now, as we don't have a concrete use case for multiple values today, and
->>>> supporting two frequencies should be sufficient for the foreseeable
->>>> future. I had responded to this in the v4 discussion as well, you may
->>>> have missed that response.
->>>>
->>>> 3. maxItems: Since the property remains a scalar, I have not added maxItems.
->>>
->>> So how did you make this property scalar?
->>
->> The -hz suffix constraints the property to a uint32 scalar through the
->> DT schema framework's property-units.yaml.
-> 
-> Hm, where? I completely missed that, can you point me to the specific
-> line? I see clearly that it is not a scalar.
-> 
-> 
->>
->> Adding an explicit $ref or maxItems for a unit-suffixed property is
->> rejected by dtbs_check with:
->>    - "Standard unit suffix properties don't need a type $ref"
-> 
-> This I did not propose - the type is fixed.
-> 
->>    - "Scalar properties should not have array keywords"
-> 
-> Cannot reproduce it.
+Fixes: 6dcbe0cdd83f ("mtd: get the ECC info from the Extended Parameter Page")
+Cc: stable@vger.kernel.org
+Signed-off-by: Pengpeng Hou <pengpeng@iscas.ac.cn>
+---
+Changes since v1: https://lore.kernel.org/all/20260715084226.38336-1-pengpeng@iscas.ac.cn/
+- replace generic pr_debug() messages with ONFI-specific dev_dbg() diagnostics
+- keep the low-cost bounds hardening conservative because the page is
+  CRC-protected
+- rebase onto v7.2-rc4
 
-I overlooked this. You are right, and I apologize for the incorrect
-explanation.
+ drivers/mtd/nand/raw/nand_onfi.c | 27 +++++++++++++++++++++++++--
+ 1 file changed, 25 insertions(+), 2 deletions(-)
 
-The -hz suffix maps to uint32-matrix in property-units.yaml, not a
-scalar. Without 'maxItems: 1', the property can accept multiple values.
-I should have verified this before responding. Sorry again!
-
-I'll add 'maxItems: 1' in the next version.
-
-Thanks,
-Santhosh.
-
-> 
-> Best regards,
-> Krzysztof
+diff --git a/drivers/mtd/nand/raw/nand_onfi.c b/drivers/mtd/nand/raw/nand_onfi.c
+index cd3ad373883e..b5e304c35738 100644
+--- a/drivers/mtd/nand/raw/nand_onfi.c
++++ b/drivers/mtd/nand/raw/nand_onfi.c
+@@ -35,16 +35,21 @@ static int nand_flash_detect_ext_param_page(struct nand_chip *chip,
+ 					    struct nand_onfi_params *p)
+ {
+ 	struct nand_device *base = &chip->base;
++	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	struct nand_ecc_props requirements;
+ 	struct onfi_ext_param_page *ep;
+ 	struct onfi_ext_section *s;
+ 	struct onfi_ext_ecc_info *ecc;
++	size_t remaining, section_len;
+ 	uint8_t *cursor;
+ 	int ret;
+ 	int len;
+ 	int i;
+ 
+ 	len = le16_to_cpu(p->ext_param_page_length) * 16;
++	if (len < sizeof(*ep))
++		return -EINVAL;
++
+ 	ep = kmalloc(len, GFP_KERNEL);
+ 	if (!ep)
+ 		return -ENOMEM;
+@@ -77,11 +82,29 @@ static int nand_flash_detect_ext_param_page(struct nand_chip *chip,
+ 
+ 	/* find the ECC section. */
+ 	cursor = (uint8_t *)(ep + 1);
++	remaining = len - sizeof(*ep);
+ 	for (i = 0; i < ONFI_EXT_SECTION_MAX; i++) {
+ 		s = ep->sections + i;
+-		if (s->type == ONFI_SECTION_TYPE_2)
++		section_len = s->length * 16;
++		if (section_len > remaining) {
++			dev_dbg(&mtd->dev,
++				"ONFI extended parameter section %d exceeds page\n",
++				i);
++			goto ext_out;
++		}
++
++		if (s->type == ONFI_SECTION_TYPE_2) {
++			if (section_len < sizeof(*ecc)) {
++				dev_dbg(&mtd->dev,
++					"ONFI extended parameter ECC section %d is too short\n",
++					i);
++				goto ext_out;
++			}
+ 			break;
+-		cursor += s->length * 16;
++		}
++
++		cursor += section_len;
++		remaining -= section_len;
+ 	}
+ 	if (i == ONFI_EXT_SECTION_MAX) {
+ 		pr_debug("We can not find the ECC section.\n");
 
 
 ______________________________________________________
