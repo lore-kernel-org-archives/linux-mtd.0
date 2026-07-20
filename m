@@ -4,55 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A3DCC44520
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8F5CBC44515
 	for <linux-mtd@archiver.kernel.org>; Mon, 20 Jul 2026 15:13:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:
-	Message-Id:MIME-Version:Subject:Date:From:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=/nDo6WTGS00NV1EyewFvJG4PcPARMuMYPhkhysK76NI=; b=iS1CF7W2EFcige
-	VMe5t0eWsyGf5Hqzkexg5z24MXq1vn+WaODfAi4+F2mlVv6SF5BdsjV/J1gVSMSStKZUq6XZz71su
-	76HbkRKNiz25eUBmtOcjDbAOzMn5aRm+pvwjIJc79NkURLa/c7bXCDG+N/9ki+/5257yAjRYBviZ+
-	OzOEEcMZB8vk2JnPGblar9fc+YHCr+uMM8EPygLsKzzdwFP3m4CVlHo6jiCnPAb3CoTau712IDzTd
-	qa5mWb5PNblFl+S8R9LToAc67EvrM4MDTt9QPolbB3KaCcxWuAsOSqvjqaBPAPGTjf01Qm8AQcnX5
-	9BTHKOsERGeO799FhAFQ==;
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id
+	:Date:Subject:From:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=44nYRkyBuUOGfUN1EjVT1IC8TyoD9g+XlQpWE4aStPo=; b=bf8WHit6vtL4j8
+	H++Ctsn8A1U5JSPqU5bz4p7w+qlAn54ebvObhKOvjwP3UrTGKF7vwtN2kaXOJn+QAaPdi1gMOcEC6
+	jv8LQNNsmt/NP2luHBgHRNEce/Ftk53ca/yoyzRklp5npic2KbGZ4pz/KQZV0HAQroNJ/OZLX9VL7
+	uGmvNRROx3GMSYZTKnyYzGZ5yyFOq+NaUFc8huiEyWUinTPk2qK/q5dZOmY37HrCvda75RLvzfx0V
+	KtkBu9Jtc3IiYzI59t1oSQTXy/OIhqmFZHNlixcKyhIFOlEFWrMTtJxfD7o+lT+QhTOGj/VM6IfvG
+	A3da5TP8/xPMPRNA5Liw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wlpgi-000000078qV-2UFf;
+	id 1wlpgi-000000078qc-2yY2;
 	Mon, 20 Jul 2026 15:13:48 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wlpgf-000000078oj-07zY
+	id 1wlpgf-000000078ol-1STS
 	for linux-mtd@lists.infradead.org;
 	Mon, 20 Jul 2026 15:13:45 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 8537543CF8;
+	by tor.source.kernel.org (Postfix) with ESMTP id 8A43D601DE;
 	Mon, 20 Jul 2026 15:13:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 5CEFBC2BCFB;
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 37A6DC2BCB8;
 	Mon, 20 Jul 2026 15:13:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1784560424;
-	bh=habTF8okM0Zg3QpK/5bI+/p5G+6G/orapw6aQ+0Ip2U=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=Vxj7z1bK+QWGEiTuQ0p3VvO3iG9BCW2rNPRccS46q8S+bw5PJK9FG5aPZzXq+1yy+
-	 ltnHf5Ilsq9fbon3KrE1Q+cvX9595r0B8ahmLD0mtr3N8AH/PhzXQSTMb2rLIiVrtm
-	 zBt28eGKX+6HwS8hQoApzSX3SJnzkIlt5FUNDqFdWIxauTb9Uul5M/7Vlxj097BEM+
-	 +QKUDwoRh4pjOKWzxAjDhNJbgqHvcuMp1NOwF0q05RZEGr2hwGTIgqsWBf2nQG7DUZ
-	 m3pDNZ3W8qa4g82TnF2CxRB9Zby/thkofHjrkYt0mJzMtyBAvoBEauyJhEYCRde+hi
-	 P6QfOJbMG91IA==
+	bh=6wOusxj+XRYlBiC+sGkaeefQm/+5jioo6ge9/BEVVpY=;
+	h=From:Subject:Date:To:Cc:Reply-To:From;
+	b=nxeb6NG9S0Do/3CeyUPxLd5od1lKhKjeBTg/j4EdY67tZjDeUlEk5xtke59PJnemm
+	 OHR4eoy7B+E14ALkeRqY1kskONWD4IhtIXMkATDVgmd3r30jhPWYAlrQJ4IOV25rf5
+	 0ZaFv3OxCosAe1v7hNyT/CKKvIoQfAo6rVYIv7S736VaJzCQficChbvX7tWCYkglJo
+	 trwYYLuNNgQN3WwBuCMWWWGIUeRjFJLSbSUWGWQXBfpP6ggdbnHeDpx5rJg6TQiBPb
+	 HhypwJoJKDZ1GbncjK2NfeMaN1hUmzgF4aARRerGq7eyFGCCPslG6UfxQjMpqDFUMG
+	 GWHMAZdRD/zHQ==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 41C87C44515;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 13B19C44520;
 	Mon, 20 Jul 2026 15:13:44 +0000 (UTC)
 From: Mateusz Litwin via B4 Relay <devnull+mateusz.litwin.nokia.com@kernel.org>
-Date: Mon, 20 Jul 2026 17:12:40 +0200
-Subject: [PATCH RFC 3/3] mtd: spi-nor: skip erase type search in uniform
- bulk erase
+Subject: [PATCH RFC 0/3] mtd: spi-nor: allow multiple erase sizes on
+ uniform flashes
+Date: Mon, 20 Jul 2026 17:12:37 +0200
+Message-Id: <20260720-spi_nor_multisize_erase-v1-0-38d719bfe77b@nokia.com>
 MIME-Version: 1.0
-Message-Id: <20260720-spi_nor_multisize_erase-v1-3-38d719bfe77b@nokia.com>
-References: <20260720-spi_nor_multisize_erase-v1-0-38d719bfe77b@nokia.com>
-In-Reply-To: <20260720-spi_nor_multisize_erase-v1-0-38d719bfe77b@nokia.com>
+X-B4-Tracking: v=1; b=H4sIAOU6XmoC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIzMDcyMD3eKCzPi8/KL43NKcEqDqqtT41KLE4lTdFDMTk+S0FJNE07QkJaD
+ ugqLUtMwKsMnRSkFuzkqxtbUA0Bza/W4AAAA=
+X-Change-ID: 20260720-spi_nor_multisize_erase-d644cfd4a5fb
 To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
  Takahiro Kuwano <takahiro.kuwano@infineon.com>, 
  Miquel Raynal <miquel.raynal@bootlin.com>, 
@@ -60,11 +62,11 @@ To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>,
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
  Mateusz Litwin <mateusz.litwin@nokia.com>
 X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1784560422; l=2899;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1784560422; l=5636;
  i=mateusz.litwin@nokia.com; s=20251217; h=from:subject:message-id;
- bh=JccJSJOGyqps8s+o8d+1DpyuMp97oOREt9SAuUTfY14=;
- b=lbQ4Fmof4KLiT5h9lWgbbmm1rJJWMIM8tx9ke27GMzCKVFiY+AqQey+s0Lf2iCgYuCg2nhF5u
- d0ntNlWgMC2BDwYUNuZg0qrbs2FqQRLPCqJ7yQmGOWJKm3s6Dzwwt6g
+ bh=6wOusxj+XRYlBiC+sGkaeefQm/+5jioo6ge9/BEVVpY=;
+ b=t/840G3ZyvXGj6ZT/PGBjHLiPZd7BPqBSGEqBfUFI9fhmGTJkruhaQskaGaYb9D2YWZmlOe4y
+ TC1tDFoP1UuAh2J8Qhp6xV3fgkfCctgwr+pe74YJkNwhhQnhKRW0i7+
 X-Developer-Key: i=mateusz.litwin@nokia.com; a=ed25519;
  pk=9NV76cwWrtwYUektOrK/ht9GTzmhtkqSvghr3Td4hM4=
 X-Endpoint-Received: by B4 Relay for mateusz.litwin@nokia.com/20251217 with
@@ -87,87 +89,113 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Mateusz Litwin <mateusz.litwin@nokia.com>
+Most SPI NOR flashes advertise several erase sizes (e.g. 4 KiB, 32 KiB and
+64 KiB) even when the erase map is uniform across the whole device.  The
+spi-nor driver currently collapses such flashes to a single erase size and
+uses only that size for every erase request.
 
-spi_nor_erase_uniform() calls spi_nor_find_best_erase_type() on every
-erase step when CONFIG_MTD_SPI_NOR_MULTI_ERASE_SIZE is enabled.  For
-large requests whose middle is aligned to the largest supported erase
-size, that lookup always returns the same type.
+This is a problem on platforms that need a small exposed erasesize for
+partition alignment (for example u-boot-env, RouterBoot soft_config, or
+boot header partitions) while still wanting fast bulk erases.  Today the
+usual workaround is to enable MTD_SPI_NOR_USE_4K_SECTORS, which forces 4 KiB
+erases for the entire device and hurts erase performance on large regions.
 
-Find the largest supported uniform erase type once at the start of the
-request, then use it directly while the remaining length is still large
-enough and the current address stays aligned.  Fall back to
-spi_nor_find_best_erase_type() only at the head or tail of the range,
-where a smaller erase type may be required.
+This series introduces MTD_SPI_NOR_MULTI_ERASE_SIZE.  When enabled, uniform
+flashes keep multiple erase sizes in the driver erase map and pick the
+largest suitable erase size for each step of an erase operation, similar to
+what non-uniform flashes already do.  Userspace still sees a single
+mtd->erasesize (4 KiB when MTD_SPI_NOR_USE_4K_SECTORS is also enabled), but
+large aligned portions of an erase request can use 32 KiB or 64 KiB erase
+commands internally.
 
-This has no effect on erase behavior; it only avoids redundant type
-selection work in the bulk-aligned case.
+The series also converts all erase-type opcodes to their 4-byte-address
+variants on uniform flashes, so multi-size erases work correctly on devices
+larger than 16 MiB.
+
+This is an RFC series. Feedback is especially welcome on whether to merge
+patch 1 alone, patches 1+2, or the full series including the patch 3 PoC.
+
+The series is stacked so maintainers can choose how much to take:
+
+  - Patch 1 adds the Kconfig option, keeps multiple erase types in the
+    uniform region mask, and converts all erase-type opcodes for 4-byte
+    addressing.  On its own it routes multi-size uniform erases through
+    spi_nor_erase_multi_sectors().
+  - Patch 2 replaces that routing with a dedicated uniform erase flow
+    (spi_nor_erase_uniform()), reducing CPU and memory overhead.
+  - Patch 3 is a proof-of-concept optimization on top of patch 2: it
+    caches the largest uniform erase type per request to skip redundant
+    spi_nor_find_best_erase_type() calls in bulk-aligned regions.
+
+Patch 1 follows an OpenWrt pending patch already used in production:
+
+https://github.com/openwrt/openwrt/blob/main/target/linux/generic/pending-6.12/402-mtd-spi-nor-write-support-for-minor-aligned-partitions.patch
+
+MTD_SPI_NOR_MULTI_ERASE_SIZE defaults to N, so existing configurations are
+unaffected.
+
+Tested: backported to a 6.6-based tree on Micron MT25QU02G with
+MTD_SPI_NOR_MULTI_ERASE_SIZE enabled and MTD_SPI_NOR_USE_4K_SECTORS
+disabled (mtd->erasesize reports 64 KiB).  librsu erases the flash with
+the MEMERASE ioctl on the MTD character device, issuing erase requests
+smaller than mtd->erasesize (e.g. a 32 KiB boot header region).
+mtd_erase() does not enforce erasesize alignment, so these requests reach
+the driver, where the previous uniform path rejected them; they now
+succeed through spi_nor_is_uniform_erasable() and the multi-size erase
+path.  Verified writes and erases on the 32 KiB region.
+
+A few implementation details are worth discussing:
+
+1. The previous uniform erase path only required the length to be a
+   multiple of mtd->erasesize.  With MTD_SPI_NOR_MULTI_ERASE_SIZE enabled,
+   spi_nor_is_uniform_erasable() instead checks the address and length
+   against the smallest supported uniform erase size.  Requests aligned to
+   mtd->erasesize still pass (it is a multiple of that size), while
+   callers may now issue erases smaller than mtd->erasesize, as the tested
+   librsu path does.  Misaligned requests are rejected rather than
+   relying on undefined behavior; please report any regressions.
+
+2. Patch 3 addresses per-step spi_nor_find_best_erase_type() overhead.
+   As a PoC it may be dropped, revised, or split out depending on
+   maintainer feedback.
+
+3. Patch 3 calculates the largest erase size on every request.  This could
+   be done once at init.  The same applies to the smallest erase size used
+   for request validation.  Where to store that data is open for
+   discussion if such a change is needed.
+
+4. spansion_nor_late_init() overrides nor->erase_opcode (and mtd->erasesize)
+   for flashes larger than 16 MiB.  With MTD_SPI_NOR_MULTI_ERASE_SIZE enabled,
+   spi_nor_erase_uniform() sets nor->erase_opcode before each erase, so the
+   late_init value is not used on the erase path.  If the SFDP table masks
+   unsupported erase types in 4-byte-address mode, this is not an issue;
+   otherwise late_init() or erase-type masking may need changes for
+   Cypress/Spansion parts.
+
+5. Some flashes do not support every erase type with 4-byte-address opcodes.
+   Unsupported types are masked by clearing erase_type[].size, but the
+   corresponding erase_mask bit is not cleared.  Erases work correctly, but
+   debugfs can show a set bit in the sector-map erase mask for a type that is
+   not listed under "erase commands".  Fixing that is probably best done in
+   a separate patch.
 
 Signed-off-by: Mateusz Litwin <mateusz.litwin@nokia.com>
 ---
- drivers/mtd/spi-nor/core.c | 37 +++++++++++++++++++++++++++++++++----
- 1 file changed, 33 insertions(+), 4 deletions(-)
+Mateusz Litwin (3):
+      mtd: spi-nor: allow multiple erase sizes on uniform flash
+      mtd: spi-nor: add dedicated multi-size uniform erase path
+      mtd: spi-nor: skip erase type search in uniform bulk erase
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 4e13919d238a..31839dc2705d 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -1689,8 +1689,8 @@ static int spi_nor_erase_uniform(struct spi_nor *nor, u64 addr, u32 len)
- {
- 	const struct spi_nor_erase_map *map = &nor->params->erase_map;
- 	const struct spi_nor_erase_region *region = &map->uniform_region;
--	const struct spi_nor_erase_type *erase;
--	int ret;
-+	const struct spi_nor_erase_type *erase, *largest = NULL;
-+	int i, ret;
- 	/*
- 	 * When CONFIG_MTD_SPI_NOR_MULTI_ERASE_SIZE is disabled, erase_size is
- 	 * mtd->erasesize and nor->erase_opcode was set once at init by
-@@ -1698,10 +1698,39 @@ static int spi_nor_erase_uniform(struct spi_nor *nor, u64 addr, u32 len)
- 	 */
- 	u32 erase_size = nor->mtd.erasesize;
- 
-+	if (IS_ENABLED(CONFIG_MTD_SPI_NOR_MULTI_ERASE_SIZE)) {
-+		u8 erase_mask = map->uniform_region.erase_mask;
-+
-+		for (i = SNOR_ERASE_TYPE_MAX - 1; i >= 0; i--) {
-+			if (!(erase_mask & BIT(i)))
-+				continue;
-+			if (!map->erase_type[i].size)
-+				continue;
-+
-+			largest = &map->erase_type[i];
-+			break;
-+		}
-+
-+		if (unlikely(!largest))
-+			return -EINVAL;
-+	}
-+
- 	while (len) {
- 		if (IS_ENABLED(CONFIG_MTD_SPI_NOR_MULTI_ERASE_SIZE)) {
--			erase = spi_nor_find_best_erase_type(map, region, addr,
--							     len);
-+			/*
-+			 * For large aligned ranges, every step in the middle
-+			 * picks the same largest erase type. Skip
-+			 * spi_nor_find_best_erase_type() there and use
-+			 * @largest directly when @addr is aligned to it and
-+			 * @len is still large enough. Fall back to the full
-+			 * search only at the head or tail, where a smaller
-+			 * erase type may be required.
-+			 */
-+			if (len >= largest->size && !(addr & largest->size_mask))
-+				erase = largest;
-+			else
-+				erase = spi_nor_find_best_erase_type(map, region,
-+								     addr, len);
- 			if (unlikely(!erase))
- 				return -EINVAL;
- 
+ drivers/mtd/spi-nor/Kconfig |  25 +++++
+ drivers/mtd/spi-nor/core.c  | 247 +++++++++++++++++++++++++++++++++-----------
+ 2 files changed, 213 insertions(+), 59 deletions(-)
+---
+base-commit: df415c5e1de0f1aeefacb4e6252ff98d38c04437
+change-id: 20260720-spi_nor_multisize_erase-d644cfd4a5fb
 
+Best regards,
 -- 
-2.43.0
+Mateusz Litwin <mateusz.litwin@nokia.com>
 
 
 
