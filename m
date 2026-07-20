@@ -4,57 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8F5CBC44515
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9530C4452E
 	for <linux-mtd@archiver.kernel.org>; Mon, 20 Jul 2026 15:13:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id
-	:Date:Subject:From:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=44nYRkyBuUOGfUN1EjVT1IC8TyoD9g+XlQpWE4aStPo=; b=bf8WHit6vtL4j8
-	H++Ctsn8A1U5JSPqU5bz4p7w+qlAn54ebvObhKOvjwP3UrTGKF7vwtN2kaXOJn+QAaPdi1gMOcEC6
-	jv8LQNNsmt/NP2luHBgHRNEce/Ftk53ca/yoyzRklp5npic2KbGZ4pz/KQZV0HAQroNJ/OZLX9VL7
-	uGmvNRROx3GMSYZTKnyYzGZ5yyFOq+NaUFc8huiEyWUinTPk2qK/q5dZOmY37HrCvda75RLvzfx0V
-	KtkBu9Jtc3IiYzI59t1oSQTXy/OIhqmFZHNlixcKyhIFOlEFWrMTtJxfD7o+lT+QhTOGj/VM6IfvG
-	A3da5TP8/xPMPRNA5Liw==;
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:
+	Message-Id:MIME-Version:Subject:Date:From:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=ElP1iKIja5ZUmayM2qtB1GVHYBHhNK9PJVgzBlQUna8=; b=yLcDnDoriGblX7
+	d+9+mRCHFeTBIDuiK9oEvMM8jNgAgHRdiX/kTBwYdgg4yxDMoAjyNgkcotwYaa1vdIH4OjwHNEo2w
+	0FAlxCmJLHhZ3ECqQwpgA20cAO67CF/VHBYTOLOIFtH1jrrVIXltwsIV3MacbysGrNlQmnpNA3tar
+	FrSvK3K9OpZR5Bcnd6rQrUZsLz1hV2ZWS+pIrObHYy9vsTMtcxYxpjw6Vpoh2vgaQ41B7Q++vfER8
+	mLUI4belG53AbxCUXMv1jkxBlucNgR0K6No1p4XfEWGIcwmqp6FanzdiNJcpMOvYrK7/5pcO2dXPH
+	tHSQP8MlxCaxRW++wgXw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wlpgi-000000078qc-2yY2;
-	Mon, 20 Jul 2026 15:13:48 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1wlpgg-000000078pa-1iP1;
+	Mon, 20 Jul 2026 15:13:46 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wlpgf-000000078ol-1STS
+	id 1wlpge-000000078og-3EpN
 	for linux-mtd@lists.infradead.org;
-	Mon, 20 Jul 2026 15:13:45 +0000
+	Mon, 20 Jul 2026 15:13:44 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 8A43D601DE;
+	by sea.source.kernel.org (Postfix) with ESMTP id 705804081B;
 	Mon, 20 Jul 2026 15:13:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 37A6DC2BCB8;
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 49013C2BCF7;
 	Mon, 20 Jul 2026 15:13:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1784560424;
-	bh=6wOusxj+XRYlBiC+sGkaeefQm/+5jioo6ge9/BEVVpY=;
-	h=From:Subject:Date:To:Cc:Reply-To:From;
-	b=nxeb6NG9S0Do/3CeyUPxLd5od1lKhKjeBTg/j4EdY67tZjDeUlEk5xtke59PJnemm
-	 OHR4eoy7B+E14ALkeRqY1kskONWD4IhtIXMkATDVgmd3r30jhPWYAlrQJ4IOV25rf5
-	 0ZaFv3OxCosAe1v7hNyT/CKKvIoQfAo6rVYIv7S736VaJzCQficChbvX7tWCYkglJo
-	 trwYYLuNNgQN3WwBuCMWWWGIUeRjFJLSbSUWGWQXBfpP6ggdbnHeDpx5rJg6TQiBPb
-	 HhypwJoJKDZ1GbncjK2NfeMaN1hUmzgF4aARRerGq7eyFGCCPslG6UfxQjMpqDFUMG
-	 GWHMAZdRD/zHQ==
+	bh=kZOelfT1oQ41rQ99CFWXu/9dIJh5KGjwHWSuOwfrbNc=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
+	b=dHjhPnN/lJVIz0RnjpHCrrrNr+XxlkY7L8NxSaRSZznzV54tKib0oKu5fkXB7yYcm
+	 GAH1+WPF0fvW/mYLieROXWdx+CN3oPKNsJYCUPloppFQTHZNfIVNwJL0H6EUtGjST4
+	 zlyDQUVbtt0wam++sUmDXw19iWHTzpVJTe2l08wroXrpYvRyko0dm/cxPhn4tjQwq5
+	 r7gxKHN6ZO6zqwlD+D+Uw6Wqkay611VOWBboxbfzC/a4WV/LCqQJ7yrbzwOd3tHx8r
+	 bwOIxH7ZT6TBQSEl8h4WM9Md7VjmsEfbpyw+X1KYphpr2IJobE6tSsEGkSQLXBeZRb
+	 JLjOofdYCwq8Q==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 13B19C44520;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2431DC4452B;
 	Mon, 20 Jul 2026 15:13:44 +0000 (UTC)
 From: Mateusz Litwin via B4 Relay <devnull+mateusz.litwin.nokia.com@kernel.org>
-Subject: [PATCH RFC 0/3] mtd: spi-nor: allow multiple erase sizes on
- uniform flashes
-Date: Mon, 20 Jul 2026 17:12:37 +0200
-Message-Id: <20260720-spi_nor_multisize_erase-v1-0-38d719bfe77b@nokia.com>
+Date: Mon, 20 Jul 2026 17:12:38 +0200
+Subject: [PATCH RFC 1/3] mtd: spi-nor: allow multiple erase sizes on
+ uniform flash
 MIME-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAOU6XmoC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIzMDcyMD3eKCzPi8/KL43NKcEqDqqtT41KLE4lTdFDMTk+S0FJNE07QkJaD
- ugqLUtMwKsMnRSkFuzkqxtbUA0Bza/W4AAAA=
-X-Change-ID: 20260720-spi_nor_multisize_erase-d644cfd4a5fb
+Message-Id: <20260720-spi_nor_multisize_erase-v1-1-38d719bfe77b@nokia.com>
+References: <20260720-spi_nor_multisize_erase-v1-0-38d719bfe77b@nokia.com>
+In-Reply-To: <20260720-spi_nor_multisize_erase-v1-0-38d719bfe77b@nokia.com>
 To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
  Takahiro Kuwano <takahiro.kuwano@infineon.com>, 
  Miquel Raynal <miquel.raynal@bootlin.com>, 
@@ -62,11 +60,11 @@ To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>,
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
  Mateusz Litwin <mateusz.litwin@nokia.com>
 X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1784560422; l=5636;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1784560422; l=8038;
  i=mateusz.litwin@nokia.com; s=20251217; h=from:subject:message-id;
- bh=6wOusxj+XRYlBiC+sGkaeefQm/+5jioo6ge9/BEVVpY=;
- b=t/840G3ZyvXGj6ZT/PGBjHLiPZd7BPqBSGEqBfUFI9fhmGTJkruhaQskaGaYb9D2YWZmlOe4y
- TC1tDFoP1UuAh2J8Qhp6xV3fgkfCctgwr+pe74YJkNwhhQnhKRW0i7+
+ bh=0dMbUh0MFcxU9fENYEnsMbteWVGEkbGRMmTcYB3mrzE=;
+ b=AAeWi5EgBol80Toz675Takkpkffc16C3UKCYCaK8A8idh15AKWtYElqIFjc42LOvZ4Pp9GpN4
+ +Jg4J3ohRhjAinzyDY42cTMsr+hqzsHIhxyeuvuxLu95IbcfALM7XXt
 X-Developer-Key: i=mateusz.litwin@nokia.com; a=ed25519;
  pk=9NV76cwWrtwYUektOrK/ht9GTzmhtkqSvghr3Td4hM4=
 X-Endpoint-Received: by B4 Relay for mateusz.litwin@nokia.com/20251217 with
@@ -84,121 +82,150 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Reply-To: mateusz.litwin@nokia.com
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Most SPI NOR flashes advertise several erase sizes (e.g. 4 KiB, 32 KiB and
-64 KiB) even when the erase map is uniform across the whole device.  The
-spi-nor driver currently collapses such flashes to a single erase size and
-uses only that size for every erase request.
-
-This is a problem on platforms that need a small exposed erasesize for
-partition alignment (for example u-boot-env, RouterBoot soft_config, or
-boot header partitions) while still wanting fast bulk erases.  Today the
-usual workaround is to enable MTD_SPI_NOR_USE_4K_SECTORS, which forces 4 KiB
-erases for the entire device and hurts erase performance on large regions.
-
-This series introduces MTD_SPI_NOR_MULTI_ERASE_SIZE.  When enabled, uniform
-flashes keep multiple erase sizes in the driver erase map and pick the
-largest suitable erase size for each step of an erase operation, similar to
-what non-uniform flashes already do.  Userspace still sees a single
-mtd->erasesize (4 KiB when MTD_SPI_NOR_USE_4K_SECTORS is also enabled), but
-large aligned portions of an erase request can use 32 KiB or 64 KiB erase
-commands internally.
-
-The series also converts all erase-type opcodes to their 4-byte-address
-variants on uniform flashes, so multi-size erases work correctly on devices
-larger than 16 MiB.
-
-This is an RFC series. Feedback is especially welcome on whether to merge
-patch 1 alone, patches 1+2, or the full series including the patch 3 PoC.
-
-The series is stacked so maintainers can choose how much to take:
-
-  - Patch 1 adds the Kconfig option, keeps multiple erase types in the
-    uniform region mask, and converts all erase-type opcodes for 4-byte
-    addressing.  On its own it routes multi-size uniform erases through
-    spi_nor_erase_multi_sectors().
-  - Patch 2 replaces that routing with a dedicated uniform erase flow
-    (spi_nor_erase_uniform()), reducing CPU and memory overhead.
-  - Patch 3 is a proof-of-concept optimization on top of patch 2: it
-    caches the largest uniform erase type per request to skip redundant
-    spi_nor_find_best_erase_type() calls in bulk-aligned regions.
-
-Patch 1 follows an OpenWrt pending patch already used in production:
-
-https://github.com/openwrt/openwrt/blob/main/target/linux/generic/pending-6.12/402-mtd-spi-nor-write-support-for-minor-aligned-partitions.patch
-
-MTD_SPI_NOR_MULTI_ERASE_SIZE defaults to N, so existing configurations are
-unaffected.
-
-Tested: backported to a 6.6-based tree on Micron MT25QU02G with
-MTD_SPI_NOR_MULTI_ERASE_SIZE enabled and MTD_SPI_NOR_USE_4K_SECTORS
-disabled (mtd->erasesize reports 64 KiB).  librsu erases the flash with
-the MEMERASE ioctl on the MTD character device, issuing erase requests
-smaller than mtd->erasesize (e.g. a 32 KiB boot header region).
-mtd_erase() does not enforce erasesize alignment, so these requests reach
-the driver, where the previous uniform path rejected them; they now
-succeed through spi_nor_is_uniform_erasable() and the multi-size erase
-path.  Verified writes and erases on the 32 KiB region.
-
-A few implementation details are worth discussing:
-
-1. The previous uniform erase path only required the length to be a
-   multiple of mtd->erasesize.  With MTD_SPI_NOR_MULTI_ERASE_SIZE enabled,
-   spi_nor_is_uniform_erasable() instead checks the address and length
-   against the smallest supported uniform erase size.  Requests aligned to
-   mtd->erasesize still pass (it is a multiple of that size), while
-   callers may now issue erases smaller than mtd->erasesize, as the tested
-   librsu path does.  Misaligned requests are rejected rather than
-   relying on undefined behavior; please report any regressions.
-
-2. Patch 3 addresses per-step spi_nor_find_best_erase_type() overhead.
-   As a PoC it may be dropped, revised, or split out depending on
-   maintainer feedback.
-
-3. Patch 3 calculates the largest erase size on every request.  This could
-   be done once at init.  The same applies to the smallest erase size used
-   for request validation.  Where to store that data is open for
-   discussion if such a change is needed.
-
-4. spansion_nor_late_init() overrides nor->erase_opcode (and mtd->erasesize)
-   for flashes larger than 16 MiB.  With MTD_SPI_NOR_MULTI_ERASE_SIZE enabled,
-   spi_nor_erase_uniform() sets nor->erase_opcode before each erase, so the
-   late_init value is not used on the erase path.  If the SFDP table masks
-   unsupported erase types in 4-byte-address mode, this is not an issue;
-   otherwise late_init() or erase-type masking may need changes for
-   Cypress/Spansion parts.
-
-5. Some flashes do not support every erase type with 4-byte-address opcodes.
-   Unsupported types are masked by clearing erase_type[].size, but the
-   corresponding erase_mask bit is not cleared.  Erases work correctly, but
-   debugfs can show a set bit in the sector-map erase mask for a type that is
-   not listed under "erase commands".  Fixing that is probably best done in
-   a separate patch.
-
-Signed-off-by: Mateusz Litwin <mateusz.litwin@nokia.com>
----
-Mateusz Litwin (3):
-      mtd: spi-nor: allow multiple erase sizes on uniform flash
-      mtd: spi-nor: add dedicated multi-size uniform erase path
-      mtd: spi-nor: skip erase type search in uniform bulk erase
-
- drivers/mtd/spi-nor/Kconfig |  25 +++++
- drivers/mtd/spi-nor/core.c  | 247 +++++++++++++++++++++++++++++++++-----------
- 2 files changed, 213 insertions(+), 59 deletions(-)
----
-base-commit: df415c5e1de0f1aeefacb4e6252ff98d38c04437
-change-id: 20260720-spi_nor_multisize_erase-d644cfd4a5fb
-
-Best regards,
--- 
-Mateusz Litwin <mateusz.litwin@nokia.com>
-
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+RnJvbTogTWF0ZXVzeiBMaXR3aW4gPG1hdGV1c3oubGl0d2luQG5va2lhLmNvbT4KCkludHJvZHVj
+ZSBNVERfU1BJX05PUl9NVUxUSV9FUkFTRV9TSVpFLCB3aGljaCBhbGxvd3MgYW4gU1BJIE5PUiBN
+VEQgZGV2aWNlCnRvIHVzZSBtdWx0aXBsZSBlcmFzZSBzaXplcyBvbiB1bmlmb3JtIGZsYXNoZXMu
+ICBXaGVuIGVuYWJsZWQsIHRoZSBkcml2ZXIKa2VlcHMgYWxsIHN1cHBvcnRlZCBlcmFzZSB0eXBl
+cyBpbiB0aGUgdW5pZm9ybSByZWdpb24gbWFzayBpbnN0ZWFkIG9mCmNvbGxhcHNpbmcgdG8gYSBz
+aW5nbGUgc2l6ZSwgYW5kIHJvdXRlcyBtdWx0aS1zaXplIHVuaWZvcm0gZXJhc2VzIHRocm91Z2gK
+c3BpX25vcl9lcmFzZV9tdWx0aV9zZWN0b3JzKCkuCgpUaGlzIGlzIHVzZWZ1bCB3aGVyZSB3cml0
+ZSBhY2Nlc3MgaXMgbmVlZGVkIG9uIGEgbWlub3ItYWxpZ25lZCBwYXJ0aXRpb24KKGZvciBleGFt
+cGxlIHUtYm9vdC1lbnYsIFJvdXRlckJvb3Qgc29mdF9jb25maWcsIG9yIGEgYm9vdCBoZWFkZXIK
+cGFydGl0aW9uKSB3aGlsZSBzdGlsbCBiZW5lZml0aW5nIGZyb20gbGFyZ2VyIGVyYXNlIGNvbW1h
+bmRzIG9uIGJ1bGsKcmVnaW9ucywgaW5zdGVhZCBvZiBmb3JjaW5nIENPTkZJR19NVERfU1BJX05P
+Ul9VU0VfNEtfU0VDVE9SUyBmb3IgdGhlCmVudGlyZSBkZXZpY2UuCgpBbHNvIGNvbnZlcnQgYWxs
+IGVyYXNlLXR5cGUgb3Bjb2RlcyB0byB0aGVpciA0LWJ5dGUtYWRkcmVzcyB2YXJpYW50cyBvbgp1
+bmlmb3JtIGZsYXNoZXMsIHNvIG11bHRpLXNpemUgZXJhc2VzIHdvcmsgY29ycmVjdGx5IG9uIGRl
+dmljZXMgYWJvdmUKMTYgTWlCLgoKV2hlbiBwYXRjaCAyIGlzIGFwcGxpZWQgb24gdG9wLCB0aGUg
+bXVsdGlfc2VjdG9ycyByb3V0aW5nIGludHJvZHVjZWQgaGVyZQppcyByZXBsYWNlZCBieSBhIGRl
+ZGljYXRlZCBzcGlfbm9yX2VyYXNlX3VuaWZvcm0oKSBwYXRoLgoKU2lnbmVkLW9mZi1ieTogTWF0
+ZXVzeiBMaXR3aW4gPG1hdGV1c3oubGl0d2luQG5va2lhLmNvbT4KLS0tCiBkcml2ZXJzL210ZC9z
+cGktbm9yL0tjb25maWcgfCAyNSArKysrKysrKysrKysrKysrKysrCiBkcml2ZXJzL210ZC9zcGkt
+bm9yL2NvcmUuYyAgfCA2MCArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0t
+LS0tLS0KIDIgZmlsZXMgY2hhbmdlZCwgNjggaW5zZXJ0aW9ucygrKSwgMTcgZGVsZXRpb25zKC0p
+CgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvc3BpLW5vci9LY29uZmlnIGIvZHJpdmVycy9tdGQv
+c3BpLW5vci9LY29uZmlnCmluZGV4IGZkMDVhMjRkNjRhOS4uYjJmOTcxMTdhMDU3IDEwMDY0NAot
+LS0gYS9kcml2ZXJzL210ZC9zcGktbm9yL0tjb25maWcKKysrIGIvZHJpdmVycy9tdGQvc3BpLW5v
+ci9LY29uZmlnCkBAIC0xOSwxMCArMTksMzUgQEAgY29uZmlnIE1URF9TUElfTk9SX1VTRV80S19T
+RUNUT1JTCiAJICBDaGFuZ2luZyBhIHNtYWxsIHBhcnQgb2YgdGhlIGZsYXNoJ3MgY29udGVudHMg
+aXMgdXN1YWxseSBmYXN0ZXIgd2l0aAogCSAgc21hbGwgc2VjdG9ycy4gT24gdGhlIG90aGVyIGhh
+bmQgZXJhc2luZyBzaG91bGQgYmUgZmFzdGVyIHdoZW4gdXNpbmcKIAkgIDY0IEtpQiBibG9jayBp
+bnN0ZWFkIG9mIDE2IMOXIDQgS2lCIHNlY3RvcnMuCisJICBJZiBNVERfU1BJX05PUl9NVUxUSV9F
+UkFTRV9TSVpFIGlzIGFsc28gZW5hYmxlZCwgdGhlIGZsYXNoIGVyYXNlc2l6ZQorCSAgaXMgcmVw
+b3J0ZWQgYXMgNDA5NiBCLCBidXQgbGFyZ2UgZXJhc2UgcmVxdWVzdHMgbWF5IHN0aWxsIHVzZSBs
+YXJnZXIKKwkgIGVyYXNlIHNpemVzIGludGVybmFsbHkgdG8gaW1wcm92ZSBwZXJmb3JtYW5jZS4K
+IAogCSAgUGxlYXNlIG5vdGUgdGhhdCBzb21lIHRvb2xzL2RyaXZlcnMvZmlsZXN5c3RlbXMgbWF5
+IG5vdCB3b3JrIHdpdGgKIAkgIDQwOTYgQiBlcmFzZSBzaXplIChlLmcuIFVCSUZTIHJlcXVpcmVz
+IDE1IEtpQiBhcyBhIG1pbmltdW0pLgogCitjb25maWcgTVREX1NQSV9OT1JfTVVMVElfRVJBU0Vf
+U0laRQorCWJvb2wgIlVzZSBtdWx0aXBsZSBlcmFzZSBzaXplcyBvbiB1bmlmb3JtIGZsYXNoZXMi
+CisJZGVmYXVsdCBuCisJaGVscAorCSAgVW5pZm9ybSBTUEkgTk9SIGZsYXNoZXMgKHdob3NlIGVy
+YXNlIG1hcCBzcGFucyB0aGUgd2hvbGUgZGV2aWNlKSBtYXkKKwkgIHN0aWxsIGFkdmVydGlzZSBz
+ZXZlcmFsIGVyYXNlIHNpemVzLCBlLmcuIDQgS2lCLCAzMiBLaUIgYW5kIDY0IEtpQi4KKwkgIEJ5
+IGRlZmF1bHQgdGhlIGRyaXZlciBjb2xsYXBzZXMgc3VjaCBhIGZsYXNoIHRvIGEgc2luZ2xlIGVy
+YXNlIHNpemUKKwkgIGFuZCB1c2VzIHRoYXQgb25lIHNpemUgZm9yIGV2ZXJ5IGVyYXNlIHJlcXVl
+c3QuCisKKwkgIFNheSBZIGhlcmUgdG8gbGV0IHRob3NlIGZsYXNoZXMgdXNlIG11bHRpcGxlIGVy
+YXNlIHNpemVzIGZvciBhIHNpbmdsZQorCSAgZXJhc2UgcmVxdWVzdCwgZXhhY3RseSBsaWtlIG5v
+bi11bmlmb3JtIGZsYXNoZXMgYWxyZWFkeSBkbzogbGFyZ2VyCisJICBibG9ja3MgYXJlIHVzZWQg
+Zm9yIHRoZSBhbGlnbmVkIGJ1bGsgb2YgdGhlIHJhbmdlLCB3aGlsZSBzbWFsbGVyCisJICBibG9j
+a3MgYXJlIHVzZWQgZm9yIHRoZSB1bmFsaWduZWQgaGVhZCBhbmQgdGFpbC4gVGhpcyBpbXByb3Zl
+cyBlcmFzZQorCSAgcGVyZm9ybWFuY2Ugd2hlbiBhIHNtYWxsZXIgZXJhc2VzaXplIGlzIGV4cG9z
+ZWQgdG8gdXNlcnNwYWNlLgorCisJICBUaGlzIG9wdGlvbiBpbnRlcmFjdHMgd2l0aCBNVERfU1BJ
+X05PUl9VU0VfNEtfU0VDVE9SUzogd2hlbiBib3RoIGFyZQorCSAgZW5hYmxlZCwgdGhlIDQwOTYg
+QiBlcmFzZSBzaXplIGlzIGV4cG9zZWQgdGhyb3VnaCBtdGQtPmVyYXNlc2l6ZSwgYnV0CisJICB0
+aGUgZHJpdmVyIHN0aWxsIHVzZXMgbXVsdGlwbGUgZXJhc2Ugc2l6ZXMgaW50ZXJuYWxseSB0byBp
+bXByb3ZlCisJICBwZXJmb3JtYW5jZS4KKworCSAgSWYgdW5zdXJlLCBzYXkgTi4KKwogY2hvaWNl
+CiAJcHJvbXB0ICJTb2Z0d2FyZSB3cml0ZSBwcm90ZWN0aW9uIGF0IGJvb3QiCiAJZGVmYXVsdCBN
+VERfU1BJX05PUl9TV1BfRElTQUJMRV9PTl9WT0xBVElMRQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9t
+dGQvc3BpLW5vci9jb3JlLmMgYi9kcml2ZXJzL210ZC9zcGktbm9yL2NvcmUuYwppbmRleCBiMjVk
+MWE4NzBhMjIuLjgwYzVhNzk0MGZhZSAxMDA2NDQKLS0tIGEvZHJpdmVycy9tdGQvc3BpLW5vci9j
+b3JlLmMKKysrIGIvZHJpdmVycy9tdGQvc3BpLW5vci9jb3JlLmMKQEAgLTcsNiArNyw3IEBACiAg
+KiBDb3B5cmlnaHQgKEMpIDIwMTQsIEZyZWVzY2FsZSBTZW1pY29uZHVjdG9yLCBJbmMuCiAgKi8K
+IAorI2luY2x1ZGUgPGxpbnV4L2JpdG9wcy5oPgogI2luY2x1ZGUgPGxpbnV4L2NsZWFudXAuaD4K
+ICNpbmNsdWRlIDxsaW51eC9kZWxheS5oPgogI2luY2x1ZGUgPGxpbnV4L2RldmljZS5oPgpAQCAt
+MTIyNSwyMiArMTIyNiwzNCBAQCBzdGF0aWMgYm9vbCBzcGlfbm9yX2hhc191bmlmb3JtX2VyYXNl
+KGNvbnN0IHN0cnVjdCBzcGlfbm9yICpub3IpCiAJcmV0dXJuICEhbm9yLT5wYXJhbXMtPmVyYXNl
+X21hcC51bmlmb3JtX3JlZ2lvbi5lcmFzZV9tYXNrOwogfQogCitzdGF0aWMgYm9vbCBzcGlfbm9y
+X2hhc19tdWx0aXBsZV91bmlmb3JtX2VyYXNlX3NpemVzKGNvbnN0IHN0cnVjdCBzcGlfbm9yICpu
+b3IpCit7CisJcmV0dXJuIGh3ZWlnaHQ4KG5vci0+cGFyYW1zLT5lcmFzZV9tYXAudW5pZm9ybV9y
+ZWdpb24uZXJhc2VfbWFzaykgPiAxOworfQorCiBzdGF0aWMgdm9pZCBzcGlfbm9yX3NldF80Ynl0
+ZV9vcGNvZGVzKHN0cnVjdCBzcGlfbm9yICpub3IpCiB7CisJc3RydWN0IHNwaV9ub3JfZXJhc2Vf
+bWFwICptYXAgPSAmbm9yLT5wYXJhbXMtPmVyYXNlX21hcDsKKwlzdHJ1Y3Qgc3BpX25vcl9lcmFz
+ZV90eXBlICplcmFzZTsKKwlpbnQgaTsKKwogCW5vci0+cmVhZF9vcGNvZGUgPSBzcGlfbm9yX2Nv
+bnZlcnRfM3RvNF9yZWFkKG5vci0+cmVhZF9vcGNvZGUpOwogCW5vci0+cHJvZ3JhbV9vcGNvZGUg
+PSBzcGlfbm9yX2NvbnZlcnRfM3RvNF9wcm9ncmFtKG5vci0+cHJvZ3JhbV9vcGNvZGUpOwogCW5v
+ci0+ZXJhc2Vfb3Bjb2RlID0gc3BpX25vcl9jb252ZXJ0XzN0bzRfZXJhc2Uobm9yLT5lcmFzZV9v
+cGNvZGUpOwogCi0JaWYgKCFzcGlfbm9yX2hhc191bmlmb3JtX2VyYXNlKG5vcikpIHsKLQkJc3Ry
+dWN0IHNwaV9ub3JfZXJhc2VfbWFwICptYXAgPSAmbm9yLT5wYXJhbXMtPmVyYXNlX21hcDsKLQkJ
+c3RydWN0IHNwaV9ub3JfZXJhc2VfdHlwZSAqZXJhc2U7Ci0JCWludCBpOwotCi0JCWZvciAoaSA9
+IDA7IGkgPCBTTk9SX0VSQVNFX1RZUEVfTUFYOyBpKyspIHsKLQkJCWVyYXNlID0gJm1hcC0+ZXJh
+c2VfdHlwZVtpXTsKLQkJCWVyYXNlLT5vcGNvZGUgPQotCQkJCXNwaV9ub3JfY29udmVydF8zdG80
+X2VyYXNlKGVyYXNlLT5vcGNvZGUpOwotCQl9CisJLyoKKwkgKiBDb252ZXJ0IHRoZSBvcGNvZGUg
+b2YgZXZlcnkgZXJhc2UgdHlwZSwgaW5jbHVkaW5nIGZvciB1bmlmb3JtCisJICogZmxhc2hlcy4g
+Rm9yIGEgdW5pZm9ybSBmbGFzaCBkcml2ZW4gd2l0aCBhIHNpbmdsZSBlcmFzZSB0eXBlCisJICog
+dGhlIGNvbnZlcnRlZCBlcmFzZV90eXBlIG9wY29kZSBtYXRjaGVzIHRoZSBub3ItPmVyYXNlX29w
+Y29kZQorCSAqIGNvbnZlcnRlZCBqdXN0IGFib3ZlIChzcGlfbm9yX3NlbGVjdF9lcmFzZSgpIGNv
+cGllZCBpdCBmcm9tIHRoZSBzYW1lCisJICogZXJhc2UgdHlwZSksIHNvID4xNiBNaUIgdW5pZm9y
+bSBmbGFzaGVzIGtlZXAgZXJhc2luZyBjb3JyZWN0bHkuCisJICogVGhlIGVyYXNlIG1hcCBpcyBh
+bHdheXMgaW5pdGlhbGl6ZWQsIHNvIHdlIGNhbiBzYWZlbHkgY29udmVydCBhbGwKKwkgKiBlcmFz
+ZSB0eXBlcywgdG8ga2VlcCB0aGUgZXJhc2UgbWFwIGluIGEgY29uc2lzdGVudCBzdGF0ZSB0byBm
+bGFzaAorCSAqIG1vZGUuCisJICovCisJZm9yIChpID0gMDsgaSA8IFNOT1JfRVJBU0VfVFlQRV9N
+QVg7IGkrKykgeworCQllcmFzZSA9ICZtYXAtPmVyYXNlX3R5cGVbaV07CisJCWVyYXNlLT5vcGNv
+ZGUgPSBzcGlfbm9yX2NvbnZlcnRfM3RvNF9lcmFzZShlcmFzZS0+b3Bjb2RlKTsKIAl9CiB9CiAK
+QEAgLTE3MTAsNyArMTcyMyw3IEBAIHN0YXRpYyBpbnQgc3BpX25vcl9pbml0X2VyYXNlX2NtZF9s
+aXN0KHN0cnVjdCBzcGlfbm9yICpub3IsCiB9CiAKIC8qKgotICogc3BpX25vcl9lcmFzZV9tdWx0
+aV9zZWN0b3JzKCkgLSBwZXJmb3JtIGEgbm9uLXVuaWZvcm0gZXJhc2UKKyAqIHNwaV9ub3JfZXJh
+c2VfbXVsdGlfc2VjdG9ycygpIC0gcGVyZm9ybSBhIG11bHRpLXNpemUgZXJhc2UKICAqIEBub3I6
+CXBvaW50ZXIgdG8gYSAnc3RydWN0IHNwaV9ub3InCiAgKiBAYWRkcjoJb2Zmc2V0IGluIHRoZSBz
+ZXJpYWwgZmxhc2ggbWVtb3J5CiAgKiBAbGVuOgludW1iZXIgb2YgYnl0ZXMgdG8gZXJhc2UKQEAg
+LTE4MzAsNyArMTg0Myw4IEBAIHN0YXRpYyBpbnQgc3BpX25vcl9lcmFzZShzdHJ1Y3QgbXRkX2lu
+Zm8gKm10ZCwgc3RydWN0IGVyYXNlX2luZm8gKmluc3RyKQogCWRldl9kYmcobm9yLT5kZXYsICJh
+dCAweCVsbHgsIGxlbiAlbGxkXG4iLCAobG9uZyBsb25nKWluc3RyLT5hZGRyLAogCQkJKGxvbmcg
+bG9uZylpbnN0ci0+bGVuKTsKIAotCWlmIChzcGlfbm9yX2hhc191bmlmb3JtX2VyYXNlKG5vcikp
+IHsKKwlpZiAoc3BpX25vcl9oYXNfdW5pZm9ybV9lcmFzZShub3IpICYmCisJICAgICFzcGlfbm9y
+X2hhc19tdWx0aXBsZV91bmlmb3JtX2VyYXNlX3NpemVzKG5vcikpIHsKIAkJZGl2X3U2NF9yZW0o
+aW5zdHItPmxlbiwgbXRkLT5lcmFzZXNpemUsICZyZW0pOwogCQlpZiAocmVtKQogCQkJcmV0dXJu
+IC1FSU5WQUw7CkBAIC0xODY0LDcgKzE4NzgsOCBAQCBzdGF0aWMgaW50IHNwaV9ub3JfZXJhc2Uo
+c3RydWN0IG10ZF9pbmZvICptdGQsIHN0cnVjdCBlcmFzZV9pbmZvICppbnN0cikKIAkgKi8KIAog
+CS8qICJzZWN0b3IiLWF0LWEtdGltZSBlcmFzZSAqLwotCX0gZWxzZSBpZiAoc3BpX25vcl9oYXNf
+dW5pZm9ybV9lcmFzZShub3IpKSB7CisJfSBlbHNlIGlmIChzcGlfbm9yX2hhc191bmlmb3JtX2Vy
+YXNlKG5vcikgJiYKKwkJICAgIXNwaV9ub3JfaGFzX211bHRpcGxlX3VuaWZvcm1fZXJhc2Vfc2l6
+ZXMobm9yKSkgewogCQl3aGlsZSAobGVuKSB7CiAJCQlyZXQgPSBzcGlfbm9yX2xvY2tfZGV2aWNl
+KG5vcik7CiAJCQlpZiAocmV0KQpAQCAtMjY1Miw4ICsyNjY3LDkgQEAgc3RhdGljIGludCBzcGlf
+bm9yX3NlbGVjdF9wcChzdHJ1Y3Qgc3BpX25vciAqbm9yLAogICogc3BpX25vcl9zZWxlY3RfdW5p
+Zm9ybV9lcmFzZSgpIC0gc2VsZWN0IG9wdGltdW0gdW5pZm9ybSBlcmFzZSB0eXBlCiAgKiBAbWFw
+OgkJdGhlIGVyYXNlIG1hcCBvZiB0aGUgU1BJIE5PUgogICoKLSAqIE9uY2UgdGhlIG9wdGltdW0g
+dW5pZm9ybSBzZWN0b3IgZXJhc2UgY29tbWFuZCBpcyBmb3VuZCwgZGlzYWJsZSBhbGwgdGhlCi0g
+KiBvdGhlci4KKyAqIFNlbGVjdCB0aGUgb3B0aW11bSB1bmlmb3JtIHNlY3RvciBlcmFzZSB0eXBl
+LiBXaGVuCisgKiBDT05GSUdfTVREX1NQSV9OT1JfTVVMVElfRVJBU0VfU0laRSBpcyBkaXNhYmxl
+ZCwgZGlzYWJsZSBhbGwgb3RoZXIgZXJhc2UKKyAqIHR5cGVzIGluIHRoZSB1bmlmb3JtIHJlZ2lv
+biBlcmFzZSBtYXNrLgogICoKICAqIFJldHVybjogcG9pbnRlciB0byBlcmFzZSB0eXBlIG9uIHN1
+Y2Nlc3MsIE5VTEwgb3RoZXJ3aXNlLgogICovCkBAIC0yNzAwLDggKzI3MTYsMTIgQEAgc3BpX25v
+cl9zZWxlY3RfdW5pZm9ybV9lcmFzZShzdHJ1Y3Qgc3BpX25vcl9lcmFzZV9tYXAgKm1hcCkKIAlp
+ZiAoIWVyYXNlKQogCQlyZXR1cm4gTlVMTDsKIAotCS8qIERpc2FibGUgYWxsIG90aGVyIFNlY3Rv
+ciBFcmFzZSBjb21tYW5kcy4gKi8KLQltYXAtPnVuaWZvcm1fcmVnaW9uLmVyYXNlX21hc2sgPSBC
+SVQoZXJhc2UgLSBtYXAtPmVyYXNlX3R5cGUpOworCS8qCisJICogRGlzYWJsZSBhbGwgb3RoZXIg
+U2VjdG9yIEVyYXNlIGNvbW1hbmRzIG9ubHkgd2hlbgorCSAqIENPTkZJR19NVERfU1BJX05PUl9N
+VUxUSV9FUkFTRV9TSVpFIGlzIGRpc2FibGVkLgorCSAqLworCWlmICghSVNfRU5BQkxFRChDT05G
+SUdfTVREX1NQSV9OT1JfTVVMVElfRVJBU0VfU0laRSkpCisJCW1hcC0+dW5pZm9ybV9yZWdpb24u
+ZXJhc2VfbWFzayA9IEJJVChlcmFzZSAtIG1hcC0+ZXJhc2VfdHlwZSk7CiAJcmV0dXJuIGVyYXNl
+OwogfQogCkBAIC0yNzE5LDYgKzI3MzksMTIgQEAgc3RhdGljIGludCBzcGlfbm9yX3NlbGVjdF9l
+cmFzZShzdHJ1Y3Qgc3BpX25vciAqbm9yKQogCSAqIFNvIHRvIGJlIGJhY2t3YXJkIGNvbXBhdGli
+bGUsIHRoZSBuZXcgaW1wbGVtZW50YXRpb24gYWxzbyB0cmllcyB0bwogCSAqIG1hbmFnZSB0aGUg
+U1BJIGZsYXNoIG1lbW9yeSBhcyB1bmlmb3JtIHdpdGggYSBzaW5nbGUgZXJhc2Ugc2VjdG9yCiAJ
+ICogc2l6ZSwgd2hlbiBwb3NzaWJsZS4KKwkgKiBFeGNlcHRpb24gaXMgd2hlbiBDT05GSUdfTVRE
+X1NQSV9OT1JfTVVMVElfRVJBU0VfU0laRSBpcyBlbmFibGVkLgorCSAqIFdlIHVzZSBtdWx0aXBs
+ZSBlcmFzZSBzaXplcyBmb3IgdGhlIFNQSSBmbGFzaCBtZW1vcnksIGJ1dCB3ZSBzdGlsbAorCSAq
+IG5lZWQgdG8gc2VsZWN0IG9uZSBvZiB0aGUgc3VwcG9ydGVkIGVyYXNlIHNpemVzIHRvIHNldAor
+CSAqIG10ZC0+ZXJhc2VzaXplLiBUaGUgc2VsZWN0ZWQgZXJhc2Ugc2l6ZSB3aWxsIGJlIGV4cG9z
+ZWQgYXMgdGhlCisJICogdW5pZm9ybSBlcmFzZSBzaXplIGJ1dCBhbGwgb3RoZXIgZXJhc2Ugc2l6
+ZXMgYXJlIHN0aWxsIGF2YWlsYWJsZQorCSAqIGZvciB1c2UuCiAJICovCiAJaWYgKHNwaV9ub3Jf
+aGFzX3VuaWZvcm1fZXJhc2Uobm9yKSkgewogCQllcmFzZSA9IHNwaV9ub3Jfc2VsZWN0X3VuaWZv
+cm1fZXJhc2UobWFwKTsKCi0tIAoyLjQzLjAKCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcg
+bGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10
+ZC8K
