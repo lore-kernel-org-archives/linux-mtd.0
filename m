@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9530C4452E
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A94FDC4452B
 	for <linux-mtd@archiver.kernel.org>; Mon, 20 Jul 2026 15:13:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,45 +12,45 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:
 	Message-Id:MIME-Version:Subject:Date:From:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ElP1iKIja5ZUmayM2qtB1GVHYBHhNK9PJVgzBlQUna8=; b=yLcDnDoriGblX7
-	d+9+mRCHFeTBIDuiK9oEvMM8jNgAgHRdiX/kTBwYdgg4yxDMoAjyNgkcotwYaa1vdIH4OjwHNEo2w
-	0FAlxCmJLHhZ3ECqQwpgA20cAO67CF/VHBYTOLOIFtH1jrrVIXltwsIV3MacbysGrNlQmnpNA3tar
-	FrSvK3K9OpZR5Bcnd6rQrUZsLz1hV2ZWS+pIrObHYy9vsTMtcxYxpjw6Vpoh2vgaQ41B7Q++vfER8
-	mLUI4belG53AbxCUXMv1jkxBlucNgR0K6No1p4XfEWGIcwmqp6FanzdiNJcpMOvYrK7/5pcO2dXPH
-	tHSQP8MlxCaxRW++wgXw==;
+	List-Owner; bh=uf1A5jUYc62h42muDQDyTsKKwQyEppKhgqWoKturrfk=; b=atxsbD8Tmr1xsZ
+	LLRyEs/3dnXo5horh+leFO4KTAs9J6HrtGX+0l+6dhr4/Sk6txEpWzHIJ7eGG/akemcaTBVRaJq5W
+	7DhpkCDufoMPIQL4ABP5/LOjy0BQdXm85wcogbWlbFJeHVoHT21XmBbAqpjQTIoekVsMmlis/stZQ
+	3omn9XunBrMdX41FRDHw34+PYWe9bS4oEUZe2irTt6YiW8wgrcfRgzKdnci2cL7pZqORznMp/jAA3
+	xB66NRwYQiNiawk2GQkpNd3piq68yPUOQyNkFA4lPRmXhu5bi+1FRM7eiFBuxq3U8QJQQYbmBs9v/
+	IPJxlRTV1D7uB6LN9f9Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wlpgg-000000078pa-1iP1;
+	id 1wlpgg-000000078pf-21v4;
 	Mon, 20 Jul 2026 15:13:46 +0000
 Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wlpge-000000078og-3EpN
+	id 1wlpge-000000078oh-3JhY
 	for linux-mtd@lists.infradead.org;
 	Mon, 20 Jul 2026 15:13:44 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 705804081B;
+	by sea.source.kernel.org (Postfix) with ESMTP id 7BE2343950;
 	Mon, 20 Jul 2026 15:13:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 49013C2BCF7;
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 51220C2BCC9;
 	Mon, 20 Jul 2026 15:13:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1784560424;
-	bh=kZOelfT1oQ41rQ99CFWXu/9dIJh5KGjwHWSuOwfrbNc=;
+	bh=6yLNeKMHGdQxrGTjRv/adjQdu5KfwGWP8L/InLeKYv0=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=dHjhPnN/lJVIz0RnjpHCrrrNr+XxlkY7L8NxSaRSZznzV54tKib0oKu5fkXB7yYcm
-	 GAH1+WPF0fvW/mYLieROXWdx+CN3oPKNsJYCUPloppFQTHZNfIVNwJL0H6EUtGjST4
-	 zlyDQUVbtt0wam++sUmDXw19iWHTzpVJTe2l08wroXrpYvRyko0dm/cxPhn4tjQwq5
-	 r7gxKHN6ZO6zqwlD+D+Uw6Wqkay611VOWBboxbfzC/a4WV/LCqQJ7yrbzwOd3tHx8r
-	 bwOIxH7ZT6TBQSEl8h4WM9Md7VjmsEfbpyw+X1KYphpr2IJobE6tSsEGkSQLXBeZRb
-	 JLjOofdYCwq8Q==
+	b=m1jVbko9OiUvqJjmTwGCa475uAk+/R0of5/waTJ4H4UZp0MIxqGJe2bXE10SEr6Vd
+	 qEqSbbinHAGLIOfgib5FKSU2yxAfaPCG8g/9kS3/ehOfIF+dEd0OsxuzQbTBSfUrsZ
+	 +p7P/Ny3Gxat0/9HJB5wV7IWqLsY2Cn3czodZ/j/N19xzClPLHSJLTfUVgY62paNpP
+	 1WtLPyxvRtdOaszC7t1jTR2U+B4BAZMI3hqQ5cwVYRdHNcplztZI4/DEXB13Uhq8u/
+	 zYlLPtpA26cmyqEhRJf3Wa0hnGLGd1UdWjpAcKCdwmapm7Jpd4g7chM+bPNDYhYCUT
+	 OOd9X8sd4bgEQ==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2431DC4452B;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 33A0CC4452D;
 	Mon, 20 Jul 2026 15:13:44 +0000 (UTC)
 From: Mateusz Litwin via B4 Relay <devnull+mateusz.litwin.nokia.com@kernel.org>
-Date: Mon, 20 Jul 2026 17:12:38 +0200
-Subject: [PATCH RFC 1/3] mtd: spi-nor: allow multiple erase sizes on
- uniform flash
+Date: Mon, 20 Jul 2026 17:12:39 +0200
+Subject: [PATCH RFC 2/3] mtd: spi-nor: add dedicated multi-size uniform
+ erase path
 MIME-Version: 1.0
-Message-Id: <20260720-spi_nor_multisize_erase-v1-1-38d719bfe77b@nokia.com>
+Message-Id: <20260720-spi_nor_multisize_erase-v1-2-38d719bfe77b@nokia.com>
 References: <20260720-spi_nor_multisize_erase-v1-0-38d719bfe77b@nokia.com>
 In-Reply-To: <20260720-spi_nor_multisize_erase-v1-0-38d719bfe77b@nokia.com>
 To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
@@ -60,11 +60,11 @@ To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>,
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
  Mateusz Litwin <mateusz.litwin@nokia.com>
 X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1784560422; l=8038;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1784560422; l=10478;
  i=mateusz.litwin@nokia.com; s=20251217; h=from:subject:message-id;
- bh=0dMbUh0MFcxU9fENYEnsMbteWVGEkbGRMmTcYB3mrzE=;
- b=AAeWi5EgBol80Toz675Takkpkffc16C3UKCYCaK8A8idh15AKWtYElqIFjc42LOvZ4Pp9GpN4
- +Jg4J3ohRhjAinzyDY42cTMsr+hqzsHIhxyeuvuxLu95IbcfALM7XXt
+ bh=3dVnZER5+S/Zzb3IHLlukQyLRWdKKcKIEqJEBQYJD5Y=;
+ b=77IgsA9QMuajC3iBRPFvm+vxGOeGnjJCI7RzQ45v8l0ZJnZcBcLZzbzm55grYfQXK3Uyyh6gp
+ zoi/a4EoTKcCBDwD/xHHXbpNICdSUQtwiQBaO+J+pvf9ow5CVbxfYpH
 X-Developer-Key: i=mateusz.litwin@nokia.com; a=ed25519;
  pk=9NV76cwWrtwYUektOrK/ht9GTzmhtkqSvghr3Td4hM4=
 X-Endpoint-Received: by B4 Relay for mateusz.litwin@nokia.com/20251217 with
@@ -82,150 +82,327 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Reply-To: mateusz.litwin@nokia.com
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-RnJvbTogTWF0ZXVzeiBMaXR3aW4gPG1hdGV1c3oubGl0d2luQG5va2lhLmNvbT4KCkludHJvZHVj
-ZSBNVERfU1BJX05PUl9NVUxUSV9FUkFTRV9TSVpFLCB3aGljaCBhbGxvd3MgYW4gU1BJIE5PUiBN
-VEQgZGV2aWNlCnRvIHVzZSBtdWx0aXBsZSBlcmFzZSBzaXplcyBvbiB1bmlmb3JtIGZsYXNoZXMu
-ICBXaGVuIGVuYWJsZWQsIHRoZSBkcml2ZXIKa2VlcHMgYWxsIHN1cHBvcnRlZCBlcmFzZSB0eXBl
-cyBpbiB0aGUgdW5pZm9ybSByZWdpb24gbWFzayBpbnN0ZWFkIG9mCmNvbGxhcHNpbmcgdG8gYSBz
-aW5nbGUgc2l6ZSwgYW5kIHJvdXRlcyBtdWx0aS1zaXplIHVuaWZvcm0gZXJhc2VzIHRocm91Z2gK
-c3BpX25vcl9lcmFzZV9tdWx0aV9zZWN0b3JzKCkuCgpUaGlzIGlzIHVzZWZ1bCB3aGVyZSB3cml0
-ZSBhY2Nlc3MgaXMgbmVlZGVkIG9uIGEgbWlub3ItYWxpZ25lZCBwYXJ0aXRpb24KKGZvciBleGFt
-cGxlIHUtYm9vdC1lbnYsIFJvdXRlckJvb3Qgc29mdF9jb25maWcsIG9yIGEgYm9vdCBoZWFkZXIK
-cGFydGl0aW9uKSB3aGlsZSBzdGlsbCBiZW5lZml0aW5nIGZyb20gbGFyZ2VyIGVyYXNlIGNvbW1h
-bmRzIG9uIGJ1bGsKcmVnaW9ucywgaW5zdGVhZCBvZiBmb3JjaW5nIENPTkZJR19NVERfU1BJX05P
-Ul9VU0VfNEtfU0VDVE9SUyBmb3IgdGhlCmVudGlyZSBkZXZpY2UuCgpBbHNvIGNvbnZlcnQgYWxs
-IGVyYXNlLXR5cGUgb3Bjb2RlcyB0byB0aGVpciA0LWJ5dGUtYWRkcmVzcyB2YXJpYW50cyBvbgp1
-bmlmb3JtIGZsYXNoZXMsIHNvIG11bHRpLXNpemUgZXJhc2VzIHdvcmsgY29ycmVjdGx5IG9uIGRl
-dmljZXMgYWJvdmUKMTYgTWlCLgoKV2hlbiBwYXRjaCAyIGlzIGFwcGxpZWQgb24gdG9wLCB0aGUg
-bXVsdGlfc2VjdG9ycyByb3V0aW5nIGludHJvZHVjZWQgaGVyZQppcyByZXBsYWNlZCBieSBhIGRl
-ZGljYXRlZCBzcGlfbm9yX2VyYXNlX3VuaWZvcm0oKSBwYXRoLgoKU2lnbmVkLW9mZi1ieTogTWF0
-ZXVzeiBMaXR3aW4gPG1hdGV1c3oubGl0d2luQG5va2lhLmNvbT4KLS0tCiBkcml2ZXJzL210ZC9z
-cGktbm9yL0tjb25maWcgfCAyNSArKysrKysrKysrKysrKysrKysrCiBkcml2ZXJzL210ZC9zcGkt
-bm9yL2NvcmUuYyAgfCA2MCArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0t
-LS0tLS0KIDIgZmlsZXMgY2hhbmdlZCwgNjggaW5zZXJ0aW9ucygrKSwgMTcgZGVsZXRpb25zKC0p
-CgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvc3BpLW5vci9LY29uZmlnIGIvZHJpdmVycy9tdGQv
-c3BpLW5vci9LY29uZmlnCmluZGV4IGZkMDVhMjRkNjRhOS4uYjJmOTcxMTdhMDU3IDEwMDY0NAot
-LS0gYS9kcml2ZXJzL210ZC9zcGktbm9yL0tjb25maWcKKysrIGIvZHJpdmVycy9tdGQvc3BpLW5v
-ci9LY29uZmlnCkBAIC0xOSwxMCArMTksMzUgQEAgY29uZmlnIE1URF9TUElfTk9SX1VTRV80S19T
-RUNUT1JTCiAJICBDaGFuZ2luZyBhIHNtYWxsIHBhcnQgb2YgdGhlIGZsYXNoJ3MgY29udGVudHMg
-aXMgdXN1YWxseSBmYXN0ZXIgd2l0aAogCSAgc21hbGwgc2VjdG9ycy4gT24gdGhlIG90aGVyIGhh
-bmQgZXJhc2luZyBzaG91bGQgYmUgZmFzdGVyIHdoZW4gdXNpbmcKIAkgIDY0IEtpQiBibG9jayBp
-bnN0ZWFkIG9mIDE2IMOXIDQgS2lCIHNlY3RvcnMuCisJICBJZiBNVERfU1BJX05PUl9NVUxUSV9F
-UkFTRV9TSVpFIGlzIGFsc28gZW5hYmxlZCwgdGhlIGZsYXNoIGVyYXNlc2l6ZQorCSAgaXMgcmVw
-b3J0ZWQgYXMgNDA5NiBCLCBidXQgbGFyZ2UgZXJhc2UgcmVxdWVzdHMgbWF5IHN0aWxsIHVzZSBs
-YXJnZXIKKwkgIGVyYXNlIHNpemVzIGludGVybmFsbHkgdG8gaW1wcm92ZSBwZXJmb3JtYW5jZS4K
-IAogCSAgUGxlYXNlIG5vdGUgdGhhdCBzb21lIHRvb2xzL2RyaXZlcnMvZmlsZXN5c3RlbXMgbWF5
-IG5vdCB3b3JrIHdpdGgKIAkgIDQwOTYgQiBlcmFzZSBzaXplIChlLmcuIFVCSUZTIHJlcXVpcmVz
-IDE1IEtpQiBhcyBhIG1pbmltdW0pLgogCitjb25maWcgTVREX1NQSV9OT1JfTVVMVElfRVJBU0Vf
-U0laRQorCWJvb2wgIlVzZSBtdWx0aXBsZSBlcmFzZSBzaXplcyBvbiB1bmlmb3JtIGZsYXNoZXMi
-CisJZGVmYXVsdCBuCisJaGVscAorCSAgVW5pZm9ybSBTUEkgTk9SIGZsYXNoZXMgKHdob3NlIGVy
-YXNlIG1hcCBzcGFucyB0aGUgd2hvbGUgZGV2aWNlKSBtYXkKKwkgIHN0aWxsIGFkdmVydGlzZSBz
-ZXZlcmFsIGVyYXNlIHNpemVzLCBlLmcuIDQgS2lCLCAzMiBLaUIgYW5kIDY0IEtpQi4KKwkgIEJ5
-IGRlZmF1bHQgdGhlIGRyaXZlciBjb2xsYXBzZXMgc3VjaCBhIGZsYXNoIHRvIGEgc2luZ2xlIGVy
-YXNlIHNpemUKKwkgIGFuZCB1c2VzIHRoYXQgb25lIHNpemUgZm9yIGV2ZXJ5IGVyYXNlIHJlcXVl
-c3QuCisKKwkgIFNheSBZIGhlcmUgdG8gbGV0IHRob3NlIGZsYXNoZXMgdXNlIG11bHRpcGxlIGVy
-YXNlIHNpemVzIGZvciBhIHNpbmdsZQorCSAgZXJhc2UgcmVxdWVzdCwgZXhhY3RseSBsaWtlIG5v
-bi11bmlmb3JtIGZsYXNoZXMgYWxyZWFkeSBkbzogbGFyZ2VyCisJICBibG9ja3MgYXJlIHVzZWQg
-Zm9yIHRoZSBhbGlnbmVkIGJ1bGsgb2YgdGhlIHJhbmdlLCB3aGlsZSBzbWFsbGVyCisJICBibG9j
-a3MgYXJlIHVzZWQgZm9yIHRoZSB1bmFsaWduZWQgaGVhZCBhbmQgdGFpbC4gVGhpcyBpbXByb3Zl
-cyBlcmFzZQorCSAgcGVyZm9ybWFuY2Ugd2hlbiBhIHNtYWxsZXIgZXJhc2VzaXplIGlzIGV4cG9z
-ZWQgdG8gdXNlcnNwYWNlLgorCisJICBUaGlzIG9wdGlvbiBpbnRlcmFjdHMgd2l0aCBNVERfU1BJ
-X05PUl9VU0VfNEtfU0VDVE9SUzogd2hlbiBib3RoIGFyZQorCSAgZW5hYmxlZCwgdGhlIDQwOTYg
-QiBlcmFzZSBzaXplIGlzIGV4cG9zZWQgdGhyb3VnaCBtdGQtPmVyYXNlc2l6ZSwgYnV0CisJICB0
-aGUgZHJpdmVyIHN0aWxsIHVzZXMgbXVsdGlwbGUgZXJhc2Ugc2l6ZXMgaW50ZXJuYWxseSB0byBp
-bXByb3ZlCisJICBwZXJmb3JtYW5jZS4KKworCSAgSWYgdW5zdXJlLCBzYXkgTi4KKwogY2hvaWNl
-CiAJcHJvbXB0ICJTb2Z0d2FyZSB3cml0ZSBwcm90ZWN0aW9uIGF0IGJvb3QiCiAJZGVmYXVsdCBN
-VERfU1BJX05PUl9TV1BfRElTQUJMRV9PTl9WT0xBVElMRQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9t
-dGQvc3BpLW5vci9jb3JlLmMgYi9kcml2ZXJzL210ZC9zcGktbm9yL2NvcmUuYwppbmRleCBiMjVk
-MWE4NzBhMjIuLjgwYzVhNzk0MGZhZSAxMDA2NDQKLS0tIGEvZHJpdmVycy9tdGQvc3BpLW5vci9j
-b3JlLmMKKysrIGIvZHJpdmVycy9tdGQvc3BpLW5vci9jb3JlLmMKQEAgLTcsNiArNyw3IEBACiAg
-KiBDb3B5cmlnaHQgKEMpIDIwMTQsIEZyZWVzY2FsZSBTZW1pY29uZHVjdG9yLCBJbmMuCiAgKi8K
-IAorI2luY2x1ZGUgPGxpbnV4L2JpdG9wcy5oPgogI2luY2x1ZGUgPGxpbnV4L2NsZWFudXAuaD4K
-ICNpbmNsdWRlIDxsaW51eC9kZWxheS5oPgogI2luY2x1ZGUgPGxpbnV4L2RldmljZS5oPgpAQCAt
-MTIyNSwyMiArMTIyNiwzNCBAQCBzdGF0aWMgYm9vbCBzcGlfbm9yX2hhc191bmlmb3JtX2VyYXNl
-KGNvbnN0IHN0cnVjdCBzcGlfbm9yICpub3IpCiAJcmV0dXJuICEhbm9yLT5wYXJhbXMtPmVyYXNl
-X21hcC51bmlmb3JtX3JlZ2lvbi5lcmFzZV9tYXNrOwogfQogCitzdGF0aWMgYm9vbCBzcGlfbm9y
-X2hhc19tdWx0aXBsZV91bmlmb3JtX2VyYXNlX3NpemVzKGNvbnN0IHN0cnVjdCBzcGlfbm9yICpu
-b3IpCit7CisJcmV0dXJuIGh3ZWlnaHQ4KG5vci0+cGFyYW1zLT5lcmFzZV9tYXAudW5pZm9ybV9y
-ZWdpb24uZXJhc2VfbWFzaykgPiAxOworfQorCiBzdGF0aWMgdm9pZCBzcGlfbm9yX3NldF80Ynl0
-ZV9vcGNvZGVzKHN0cnVjdCBzcGlfbm9yICpub3IpCiB7CisJc3RydWN0IHNwaV9ub3JfZXJhc2Vf
-bWFwICptYXAgPSAmbm9yLT5wYXJhbXMtPmVyYXNlX21hcDsKKwlzdHJ1Y3Qgc3BpX25vcl9lcmFz
-ZV90eXBlICplcmFzZTsKKwlpbnQgaTsKKwogCW5vci0+cmVhZF9vcGNvZGUgPSBzcGlfbm9yX2Nv
-bnZlcnRfM3RvNF9yZWFkKG5vci0+cmVhZF9vcGNvZGUpOwogCW5vci0+cHJvZ3JhbV9vcGNvZGUg
-PSBzcGlfbm9yX2NvbnZlcnRfM3RvNF9wcm9ncmFtKG5vci0+cHJvZ3JhbV9vcGNvZGUpOwogCW5v
-ci0+ZXJhc2Vfb3Bjb2RlID0gc3BpX25vcl9jb252ZXJ0XzN0bzRfZXJhc2Uobm9yLT5lcmFzZV9v
-cGNvZGUpOwogCi0JaWYgKCFzcGlfbm9yX2hhc191bmlmb3JtX2VyYXNlKG5vcikpIHsKLQkJc3Ry
-dWN0IHNwaV9ub3JfZXJhc2VfbWFwICptYXAgPSAmbm9yLT5wYXJhbXMtPmVyYXNlX21hcDsKLQkJ
-c3RydWN0IHNwaV9ub3JfZXJhc2VfdHlwZSAqZXJhc2U7Ci0JCWludCBpOwotCi0JCWZvciAoaSA9
-IDA7IGkgPCBTTk9SX0VSQVNFX1RZUEVfTUFYOyBpKyspIHsKLQkJCWVyYXNlID0gJm1hcC0+ZXJh
-c2VfdHlwZVtpXTsKLQkJCWVyYXNlLT5vcGNvZGUgPQotCQkJCXNwaV9ub3JfY29udmVydF8zdG80
-X2VyYXNlKGVyYXNlLT5vcGNvZGUpOwotCQl9CisJLyoKKwkgKiBDb252ZXJ0IHRoZSBvcGNvZGUg
-b2YgZXZlcnkgZXJhc2UgdHlwZSwgaW5jbHVkaW5nIGZvciB1bmlmb3JtCisJICogZmxhc2hlcy4g
-Rm9yIGEgdW5pZm9ybSBmbGFzaCBkcml2ZW4gd2l0aCBhIHNpbmdsZSBlcmFzZSB0eXBlCisJICog
-dGhlIGNvbnZlcnRlZCBlcmFzZV90eXBlIG9wY29kZSBtYXRjaGVzIHRoZSBub3ItPmVyYXNlX29w
-Y29kZQorCSAqIGNvbnZlcnRlZCBqdXN0IGFib3ZlIChzcGlfbm9yX3NlbGVjdF9lcmFzZSgpIGNv
-cGllZCBpdCBmcm9tIHRoZSBzYW1lCisJICogZXJhc2UgdHlwZSksIHNvID4xNiBNaUIgdW5pZm9y
-bSBmbGFzaGVzIGtlZXAgZXJhc2luZyBjb3JyZWN0bHkuCisJICogVGhlIGVyYXNlIG1hcCBpcyBh
-bHdheXMgaW5pdGlhbGl6ZWQsIHNvIHdlIGNhbiBzYWZlbHkgY29udmVydCBhbGwKKwkgKiBlcmFz
-ZSB0eXBlcywgdG8ga2VlcCB0aGUgZXJhc2UgbWFwIGluIGEgY29uc2lzdGVudCBzdGF0ZSB0byBm
-bGFzaAorCSAqIG1vZGUuCisJICovCisJZm9yIChpID0gMDsgaSA8IFNOT1JfRVJBU0VfVFlQRV9N
-QVg7IGkrKykgeworCQllcmFzZSA9ICZtYXAtPmVyYXNlX3R5cGVbaV07CisJCWVyYXNlLT5vcGNv
-ZGUgPSBzcGlfbm9yX2NvbnZlcnRfM3RvNF9lcmFzZShlcmFzZS0+b3Bjb2RlKTsKIAl9CiB9CiAK
-QEAgLTE3MTAsNyArMTcyMyw3IEBAIHN0YXRpYyBpbnQgc3BpX25vcl9pbml0X2VyYXNlX2NtZF9s
-aXN0KHN0cnVjdCBzcGlfbm9yICpub3IsCiB9CiAKIC8qKgotICogc3BpX25vcl9lcmFzZV9tdWx0
-aV9zZWN0b3JzKCkgLSBwZXJmb3JtIGEgbm9uLXVuaWZvcm0gZXJhc2UKKyAqIHNwaV9ub3JfZXJh
-c2VfbXVsdGlfc2VjdG9ycygpIC0gcGVyZm9ybSBhIG11bHRpLXNpemUgZXJhc2UKICAqIEBub3I6
-CXBvaW50ZXIgdG8gYSAnc3RydWN0IHNwaV9ub3InCiAgKiBAYWRkcjoJb2Zmc2V0IGluIHRoZSBz
-ZXJpYWwgZmxhc2ggbWVtb3J5CiAgKiBAbGVuOgludW1iZXIgb2YgYnl0ZXMgdG8gZXJhc2UKQEAg
-LTE4MzAsNyArMTg0Myw4IEBAIHN0YXRpYyBpbnQgc3BpX25vcl9lcmFzZShzdHJ1Y3QgbXRkX2lu
-Zm8gKm10ZCwgc3RydWN0IGVyYXNlX2luZm8gKmluc3RyKQogCWRldl9kYmcobm9yLT5kZXYsICJh
-dCAweCVsbHgsIGxlbiAlbGxkXG4iLCAobG9uZyBsb25nKWluc3RyLT5hZGRyLAogCQkJKGxvbmcg
-bG9uZylpbnN0ci0+bGVuKTsKIAotCWlmIChzcGlfbm9yX2hhc191bmlmb3JtX2VyYXNlKG5vcikp
-IHsKKwlpZiAoc3BpX25vcl9oYXNfdW5pZm9ybV9lcmFzZShub3IpICYmCisJICAgICFzcGlfbm9y
-X2hhc19tdWx0aXBsZV91bmlmb3JtX2VyYXNlX3NpemVzKG5vcikpIHsKIAkJZGl2X3U2NF9yZW0o
-aW5zdHItPmxlbiwgbXRkLT5lcmFzZXNpemUsICZyZW0pOwogCQlpZiAocmVtKQogCQkJcmV0dXJu
-IC1FSU5WQUw7CkBAIC0xODY0LDcgKzE4NzgsOCBAQCBzdGF0aWMgaW50IHNwaV9ub3JfZXJhc2Uo
-c3RydWN0IG10ZF9pbmZvICptdGQsIHN0cnVjdCBlcmFzZV9pbmZvICppbnN0cikKIAkgKi8KIAog
-CS8qICJzZWN0b3IiLWF0LWEtdGltZSBlcmFzZSAqLwotCX0gZWxzZSBpZiAoc3BpX25vcl9oYXNf
-dW5pZm9ybV9lcmFzZShub3IpKSB7CisJfSBlbHNlIGlmIChzcGlfbm9yX2hhc191bmlmb3JtX2Vy
-YXNlKG5vcikgJiYKKwkJICAgIXNwaV9ub3JfaGFzX211bHRpcGxlX3VuaWZvcm1fZXJhc2Vfc2l6
-ZXMobm9yKSkgewogCQl3aGlsZSAobGVuKSB7CiAJCQlyZXQgPSBzcGlfbm9yX2xvY2tfZGV2aWNl
-KG5vcik7CiAJCQlpZiAocmV0KQpAQCAtMjY1Miw4ICsyNjY3LDkgQEAgc3RhdGljIGludCBzcGlf
-bm9yX3NlbGVjdF9wcChzdHJ1Y3Qgc3BpX25vciAqbm9yLAogICogc3BpX25vcl9zZWxlY3RfdW5p
-Zm9ybV9lcmFzZSgpIC0gc2VsZWN0IG9wdGltdW0gdW5pZm9ybSBlcmFzZSB0eXBlCiAgKiBAbWFw
-OgkJdGhlIGVyYXNlIG1hcCBvZiB0aGUgU1BJIE5PUgogICoKLSAqIE9uY2UgdGhlIG9wdGltdW0g
-dW5pZm9ybSBzZWN0b3IgZXJhc2UgY29tbWFuZCBpcyBmb3VuZCwgZGlzYWJsZSBhbGwgdGhlCi0g
-KiBvdGhlci4KKyAqIFNlbGVjdCB0aGUgb3B0aW11bSB1bmlmb3JtIHNlY3RvciBlcmFzZSB0eXBl
-LiBXaGVuCisgKiBDT05GSUdfTVREX1NQSV9OT1JfTVVMVElfRVJBU0VfU0laRSBpcyBkaXNhYmxl
-ZCwgZGlzYWJsZSBhbGwgb3RoZXIgZXJhc2UKKyAqIHR5cGVzIGluIHRoZSB1bmlmb3JtIHJlZ2lv
-biBlcmFzZSBtYXNrLgogICoKICAqIFJldHVybjogcG9pbnRlciB0byBlcmFzZSB0eXBlIG9uIHN1
-Y2Nlc3MsIE5VTEwgb3RoZXJ3aXNlLgogICovCkBAIC0yNzAwLDggKzI3MTYsMTIgQEAgc3BpX25v
-cl9zZWxlY3RfdW5pZm9ybV9lcmFzZShzdHJ1Y3Qgc3BpX25vcl9lcmFzZV9tYXAgKm1hcCkKIAlp
-ZiAoIWVyYXNlKQogCQlyZXR1cm4gTlVMTDsKIAotCS8qIERpc2FibGUgYWxsIG90aGVyIFNlY3Rv
-ciBFcmFzZSBjb21tYW5kcy4gKi8KLQltYXAtPnVuaWZvcm1fcmVnaW9uLmVyYXNlX21hc2sgPSBC
-SVQoZXJhc2UgLSBtYXAtPmVyYXNlX3R5cGUpOworCS8qCisJICogRGlzYWJsZSBhbGwgb3RoZXIg
-U2VjdG9yIEVyYXNlIGNvbW1hbmRzIG9ubHkgd2hlbgorCSAqIENPTkZJR19NVERfU1BJX05PUl9N
-VUxUSV9FUkFTRV9TSVpFIGlzIGRpc2FibGVkLgorCSAqLworCWlmICghSVNfRU5BQkxFRChDT05G
-SUdfTVREX1NQSV9OT1JfTVVMVElfRVJBU0VfU0laRSkpCisJCW1hcC0+dW5pZm9ybV9yZWdpb24u
-ZXJhc2VfbWFzayA9IEJJVChlcmFzZSAtIG1hcC0+ZXJhc2VfdHlwZSk7CiAJcmV0dXJuIGVyYXNl
-OwogfQogCkBAIC0yNzE5LDYgKzI3MzksMTIgQEAgc3RhdGljIGludCBzcGlfbm9yX3NlbGVjdF9l
-cmFzZShzdHJ1Y3Qgc3BpX25vciAqbm9yKQogCSAqIFNvIHRvIGJlIGJhY2t3YXJkIGNvbXBhdGli
-bGUsIHRoZSBuZXcgaW1wbGVtZW50YXRpb24gYWxzbyB0cmllcyB0bwogCSAqIG1hbmFnZSB0aGUg
-U1BJIGZsYXNoIG1lbW9yeSBhcyB1bmlmb3JtIHdpdGggYSBzaW5nbGUgZXJhc2Ugc2VjdG9yCiAJ
-ICogc2l6ZSwgd2hlbiBwb3NzaWJsZS4KKwkgKiBFeGNlcHRpb24gaXMgd2hlbiBDT05GSUdfTVRE
-X1NQSV9OT1JfTVVMVElfRVJBU0VfU0laRSBpcyBlbmFibGVkLgorCSAqIFdlIHVzZSBtdWx0aXBs
-ZSBlcmFzZSBzaXplcyBmb3IgdGhlIFNQSSBmbGFzaCBtZW1vcnksIGJ1dCB3ZSBzdGlsbAorCSAq
-IG5lZWQgdG8gc2VsZWN0IG9uZSBvZiB0aGUgc3VwcG9ydGVkIGVyYXNlIHNpemVzIHRvIHNldAor
-CSAqIG10ZC0+ZXJhc2VzaXplLiBUaGUgc2VsZWN0ZWQgZXJhc2Ugc2l6ZSB3aWxsIGJlIGV4cG9z
-ZWQgYXMgdGhlCisJICogdW5pZm9ybSBlcmFzZSBzaXplIGJ1dCBhbGwgb3RoZXIgZXJhc2Ugc2l6
-ZXMgYXJlIHN0aWxsIGF2YWlsYWJsZQorCSAqIGZvciB1c2UuCiAJICovCiAJaWYgKHNwaV9ub3Jf
-aGFzX3VuaWZvcm1fZXJhc2Uobm9yKSkgewogCQllcmFzZSA9IHNwaV9ub3Jfc2VsZWN0X3VuaWZv
-cm1fZXJhc2UobWFwKTsKCi0tIAoyLjQzLjAKCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcg
-bGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10
-ZC8K
+From: Mateusz Litwin <mateusz.litwin@nokia.com>
+
+Implement a dedicated uniform erase path for flashes with multiple erase
+sizes, instead of reusing the non-uniform erase path introduced in patch 1.
+
+The non-uniform path allocates an erase command list and walks the region
+tree on every request.  For uniform flashes that work is unnecessary.
+The dedicated flow iterates the range directly and selects the erase type
+per step, which lowers CPU and memory overhead.
+
+Refactor the single-sector erase sequence into spi_nor_erase_one(),
+shared with spi_nor_erase_multi_sectors().  Validate multi-size uniform
+requests through spi_nor_is_uniform_erasable() before locking the device:
+address and length must be aligned to the smallest supported uniform erase
+size.  This allows erase requests smaller than mtd->erasesize (e.g. a
+32 KiB boot header region) while still using larger erase commands for
+aligned bulk portions.
+
+When CONFIG_MTD_SPI_NOR_MULTI_ERASE_SIZE is disabled, the legacy
+single-size uniform behavior is unchanged: only the length is checked
+against mtd->erasesize and address alignment is not validated.
+
+Signed-off-by: Mateusz Litwin <mateusz.litwin@nokia.com>
+---
+ drivers/mtd/spi-nor/core.c | 208 ++++++++++++++++++++++++++++++---------------
+ 1 file changed, 141 insertions(+), 67 deletions(-)
+
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 80c5a7940fae..4e13919d238a 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -7,7 +7,6 @@
+  * Copyright (C) 2014, Freescale Semiconductor, Inc.
+  */
+ 
+-#include <linux/bitops.h>
+ #include <linux/cleanup.h>
+ #include <linux/delay.h>
+ #include <linux/device.h>
+@@ -1226,11 +1225,6 @@ static bool spi_nor_has_uniform_erase(const struct spi_nor *nor)
+ 	return !!nor->params->erase_map.uniform_region.erase_mask;
+ }
+ 
+-static bool spi_nor_has_multiple_uniform_erase_sizes(const struct spi_nor *nor)
+-{
+-	return hweight8(nor->params->erase_map.uniform_region.erase_mask) > 1;
+-}
+-
+ static void spi_nor_set_4byte_opcodes(struct spi_nor *nor)
+ {
+ 	struct spi_nor_erase_map *map = &nor->params->erase_map;
+@@ -1243,13 +1237,9 @@ static void spi_nor_set_4byte_opcodes(struct spi_nor *nor)
+ 
+ 	/*
+ 	 * Convert the opcode of every erase type, including for uniform
+-	 * flashes. For a uniform flash driven with a single erase type
+-	 * the converted erase_type opcode matches the nor->erase_opcode
+-	 * converted just above (spi_nor_select_erase() copied it from the same
+-	 * erase type), so >16 MiB uniform flashes keep erasing correctly.
+-	 * The erase map is always initialized, so we can safely convert all
+-	 * erase types, to keep the erase map in a consistent state to flash
+-	 * mode.
++	 * flashes. The erase map is always initialized, so we can safely
++	 * convert all erase types, even if they are not used, to keep the
++	 * erase map in a consistent state with address mode.
+ 	 */
+ 	for (i = 0; i < SNOR_ERASE_TYPE_MAX; i++) {
+ 		erase = &map->erase_type[i];
+@@ -1550,6 +1540,35 @@ int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
+ 						nor->bouncebuf, nor->addr_nbytes);
+ }
+ 
++/**
++ * spi_nor_erase_one() - erase a single sector at the given address
++ * @nor:	pointer to a 'struct spi_nor'
++ * @addr:	offset in the serial flash memory
++ *
++ * Return: 0 on success, -errno otherwise.
++ */
++static int spi_nor_erase_one(struct spi_nor *nor, u32 addr)
++{
++	int ret;
++
++	ret = spi_nor_lock_device(nor);
++	if (ret)
++		return ret;
++
++	ret = spi_nor_write_enable(nor);
++	if (ret) {
++		spi_nor_unlock_device(nor);
++		return ret;
++	}
++
++	ret = spi_nor_erase_sector(nor, addr);
++	spi_nor_unlock_device(nor);
++	if (ret)
++		return ret;
++
++	return spi_nor_wait_till_ready(nor);
++}
++
+ /**
+  * spi_nor_div_by_erase_size() - calculate remainder and update new dividend
+  * @erase:	pointer to a structure that describes a SPI NOR erase type
+@@ -1566,6 +1585,47 @@ static u64 spi_nor_div_by_erase_size(const struct spi_nor_erase_type *erase,
+ 	return dividend >> erase->size_shift;
+ }
+ 
++/**
++ * spi_nor_is_uniform_erasable() - check if a uniform erase request is valid
++ * @nor:	pointer to a 'struct spi_nor'
++ * @instr:	pointer to 'struct erase_info'
++ *
++ * When multiple erase sizes are enabled on a uniform flash, verify that the
++ * requested address and length are aligned to the smallest supported erase
++ * size in the uniform region.
++ *
++ * Return: true if the range can be erased, false otherwise.
++ */
++static bool spi_nor_is_uniform_erasable(const struct spi_nor *nor,
++					struct erase_info *instr)
++{
++	const struct spi_nor_erase_map *map = &nor->params->erase_map;
++	u8 erase_mask = map->uniform_region.erase_mask;
++	const struct spi_nor_erase_type *erase = NULL;
++	int i;
++	u32 rem;
++
++	for (i = 0; i < SNOR_ERASE_TYPE_MAX; i++) {
++		if (erase_mask & BIT(i) && map->erase_type[i].size) {
++			erase = &map->erase_type[i];
++			break;
++		}
++	}
++
++	if (unlikely(!erase))
++		return false;
++
++	spi_nor_div_by_erase_size(erase, instr->addr, &rem);
++	if (rem)
++		return false;
++
++	div_u64_rem(instr->len, erase->size, &rem);
++	if (rem)
++		return false;
++
++	return true;
++}
++
+ /**
+  * spi_nor_find_best_erase_type() - find the best erase type for the given
+  *				    offset in the serial flash memory and the
+@@ -1617,6 +1677,49 @@ spi_nor_find_best_erase_type(const struct spi_nor_erase_map *map,
+ 	return NULL;
+ }
+ 
++/**
++ * spi_nor_erase_uniform() - erase a range on a uniform flash
++ * @nor:	pointer to a 'struct spi_nor'
++ * @addr:	offset in the serial flash memory
++ * @len:	number of bytes to erase
++ *
++ * Return: 0 on success, -errno otherwise.
++ */
++static int spi_nor_erase_uniform(struct spi_nor *nor, u64 addr, u32 len)
++{
++	const struct spi_nor_erase_map *map = &nor->params->erase_map;
++	const struct spi_nor_erase_region *region = &map->uniform_region;
++	const struct spi_nor_erase_type *erase;
++	int ret;
++	/*
++	 * When CONFIG_MTD_SPI_NOR_MULTI_ERASE_SIZE is disabled, erase_size is
++	 * mtd->erasesize and nor->erase_opcode was set once at init by
++	 * spi_nor_select_erase().
++	 */
++	u32 erase_size = nor->mtd.erasesize;
++
++	while (len) {
++		if (IS_ENABLED(CONFIG_MTD_SPI_NOR_MULTI_ERASE_SIZE)) {
++			erase = spi_nor_find_best_erase_type(map, region, addr,
++							     len);
++			if (unlikely(!erase))
++				return -EINVAL;
++
++			nor->erase_opcode = erase->opcode;
++			erase_size = erase->size;
++		}
++
++		ret = spi_nor_erase_one(nor, addr);
++		if (ret)
++			return ret;
++
++		addr += erase_size;
++		len -= erase_size;
++	}
++
++	return 0;
++}
++
+ /**
+  * spi_nor_init_erase_cmd() - initialize an erase command
+  * @region:	pointer to a structure that describes a SPI NOR erase region
+@@ -1749,22 +1852,7 @@ static int spi_nor_erase_multi_sectors(struct spi_nor *nor, u64 addr, u32 len)
+ 			dev_vdbg(nor->dev, "erase_cmd->size = 0x%08x, erase_cmd->opcode = 0x%02x, erase_cmd->count = %u\n",
+ 				 cmd->size, cmd->opcode, cmd->count);
+ 
+-			ret = spi_nor_lock_device(nor);
+-			if (ret)
+-				goto destroy_erase_cmd_list;
+-
+-			ret = spi_nor_write_enable(nor);
+-			if (ret) {
+-				spi_nor_unlock_device(nor);
+-				goto destroy_erase_cmd_list;
+-			}
+-
+-			ret = spi_nor_erase_sector(nor, addr);
+-			spi_nor_unlock_device(nor);
+-			if (ret)
+-				goto destroy_erase_cmd_list;
+-
+-			ret = spi_nor_wait_till_ready(nor);
++			ret = spi_nor_erase_one(nor, addr);
+ 			if (ret)
+ 				goto destroy_erase_cmd_list;
+ 
+@@ -1843,11 +1931,20 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 	dev_dbg(nor->dev, "at 0x%llx, len %lld\n", (long long)instr->addr,
+ 			(long long)instr->len);
+ 
+-	if (spi_nor_has_uniform_erase(nor) &&
+-	    !spi_nor_has_multiple_uniform_erase_sizes(nor)) {
+-		div_u64_rem(instr->len, mtd->erasesize, &rem);
+-		if (rem)
+-			return -EINVAL;
++	if (spi_nor_has_uniform_erase(nor)) {
++		if (IS_ENABLED(CONFIG_MTD_SPI_NOR_MULTI_ERASE_SIZE)) {
++			if (!spi_nor_is_uniform_erasable(nor, instr))
++				return -EINVAL;
++		} else {
++			/*
++			 * Legacy uniform validation: only the length must be
++			 * a multiple of mtd->erasesize. Address alignment is
++			 * not checked here for backward compatibility.
++			 */
++			div_u64_rem(instr->len, mtd->erasesize, &rem);
++			if (rem)
++				return -EINVAL;
++		}
+ 	}
+ 
+ 	addr = instr->addr;
+@@ -1877,34 +1974,12 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 	 * to use "small sector erase", but that's not always optimal.
+ 	 */
+ 
+-	/* "sector"-at-a-time erase */
+-	} else if (spi_nor_has_uniform_erase(nor) &&
+-		   !spi_nor_has_multiple_uniform_erase_sizes(nor)) {
+-		while (len) {
+-			ret = spi_nor_lock_device(nor);
+-			if (ret)
+-				goto erase_err;
+-
+-			ret = spi_nor_write_enable(nor);
+-			if (ret) {
+-				spi_nor_unlock_device(nor);
+-				goto erase_err;
+-			}
+-
+-			ret = spi_nor_erase_sector(nor, addr);
+-			spi_nor_unlock_device(nor);
+-			if (ret)
+-				goto erase_err;
+-
+-			ret = spi_nor_wait_till_ready(nor);
+-			if (ret)
+-				goto erase_err;
+-
+-			addr += mtd->erasesize;
+-			len -= mtd->erasesize;
+-		}
++	} else if (spi_nor_has_uniform_erase(nor)) {
++		ret = spi_nor_erase_uniform(nor, addr, len);
++		if (ret)
++			goto erase_err;
+ 
+-	/* erase multiple sectors */
++	/* erase multiple sectors on non-uniform flashes */
+ 	} else {
+ 		ret = spi_nor_erase_multi_sectors(nor, addr, len);
+ 		if (ret)
+@@ -2739,12 +2814,11 @@ static int spi_nor_select_erase(struct spi_nor *nor)
+ 	 * So to be backward compatible, the new implementation also tries to
+ 	 * manage the SPI flash memory as uniform with a single erase sector
+ 	 * size, when possible.
+-	 * Exception is when CONFIG_MTD_SPI_NOR_MULTI_ERASE_SIZE is enabled.
+-	 * We use multiple erase sizes for the SPI flash memory, but we still
+-	 * need to select one of the supported erase sizes to set
+-	 * mtd->erasesize. The selected erase size will be exposed as the
+-	 * uniform erase size but all other erase sizes are still available
+-	 * for use.
++	 *
++	 * When CONFIG_MTD_SPI_NOR_MULTI_ERASE_SIZE is enabled, multiple erase
++	 * sizes are used internally, but mtd->erasesize still reflects the
++	 * selected uniform erase size exposed to userspace. The other erase
++	 * sizes remain available in the uniform region erase mask.
+ 	 */
+ 	if (spi_nor_has_uniform_erase(nor)) {
+ 		erase = spi_nor_select_uniform_erase(map);
+
+-- 
+2.43.0
+
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
