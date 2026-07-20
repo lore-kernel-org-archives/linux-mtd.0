@@ -4,72 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A94FDC4452B
-	for <linux-mtd@archiver.kernel.org>; Mon, 20 Jul 2026 15:13:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA498C44515
+	for <linux-mtd@archiver.kernel.org>; Mon, 20 Jul 2026 18:43:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:
-	Message-Id:MIME-Version:Subject:Date:From:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Subject:Message-ID:MIME-Version:To:Cc:
+	Date:References:In-Reply-To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=uf1A5jUYc62h42muDQDyTsKKwQyEppKhgqWoKturrfk=; b=atxsbD8Tmr1xsZ
-	LLRyEs/3dnXo5horh+leFO4KTAs9J6HrtGX+0l+6dhr4/Sk6txEpWzHIJ7eGG/akemcaTBVRaJq5W
-	7DhpkCDufoMPIQL4ABP5/LOjy0BQdXm85wcogbWlbFJeHVoHT21XmBbAqpjQTIoekVsMmlis/stZQ
-	3omn9XunBrMdX41FRDHw34+PYWe9bS4oEUZe2irTt6YiW8wgrcfRgzKdnci2cL7pZqORznMp/jAA3
-	xB66NRwYQiNiawk2GQkpNd3piq68yPUOQyNkFA4lPRmXhu5bi+1FRM7eiFBuxq3U8QJQQYbmBs9v/
-	IPJxlRTV1D7uB6LN9f9Q==;
+	List-Owner; bh=/UFD6om8K3wDpiGgNaaOG2K4N8X7S/HWUS1KVADgmo8=; b=ScqXY7oMvXfYI2
+	cOj0lsgxc6W3DGdP/gh+OeOKdRhLrwufulS4o/dOtbhQx4NlghqygNRzJWfRL164LFeJfAU6r39+L
+	1MKfRbD2ihr5QXn4oOZKX2bCmN1IYLyc/6qUowIpGnPDb8ZvrGfxqFyOGjqqtwPoY6Wj13s2k040G
+	kutZy+D90Thoo5SgExiFu/JQduqpo5gFJNvTEzdTzA+7ansustJxJ6WL0rI+a8A2aXiETq1fdUu0/
+	SF75IrmirCLYvg5sFZU+Vtg5WZTuX+H3lnSfoKKI0vJBGp/o7DYBZ3zG9UG8IRibKMZRz8LgsNKJ8
+	0HpH41mQ5FgbkZ9dvpCA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wlpgg-000000078pf-21v4;
-	Mon, 20 Jul 2026 15:13:46 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1wlsxu-00000007gJa-1fAY;
+	Mon, 20 Jul 2026 18:43:46 +0000
+Received: from mx.nabladev.com ([178.251.229.89])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wlpge-000000078oh-3JhY
+	id 1wlsxr-00000007gIH-0BRz
 	for linux-mtd@lists.infradead.org;
-	Mon, 20 Jul 2026 15:13:44 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 7BE2343950;
-	Mon, 20 Jul 2026 15:13:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 51220C2BCC9;
-	Mon, 20 Jul 2026 15:13:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1784560424;
-	bh=6yLNeKMHGdQxrGTjRv/adjQdu5KfwGWP8L/InLeKYv0=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=m1jVbko9OiUvqJjmTwGCa475uAk+/R0of5/waTJ4H4UZp0MIxqGJe2bXE10SEr6Vd
-	 qEqSbbinHAGLIOfgib5FKSU2yxAfaPCG8g/9kS3/ehOfIF+dEd0OsxuzQbTBSfUrsZ
-	 +p7P/Ny3Gxat0/9HJB5wV7IWqLsY2Cn3czodZ/j/N19xzClPLHSJLTfUVgY62paNpP
-	 1WtLPyxvRtdOaszC7t1jTR2U+B4BAZMI3hqQ5cwVYRdHNcplztZI4/DEXB13Uhq8u/
-	 zYlLPtpA26cmyqEhRJf3Wa0hnGLGd1UdWjpAcKCdwmapm7Jpd4g7chM+bPNDYhYCUT
-	 OOd9X8sd4bgEQ==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 33A0CC4452D;
-	Mon, 20 Jul 2026 15:13:44 +0000 (UTC)
-From: Mateusz Litwin via B4 Relay <devnull+mateusz.litwin.nokia.com@kernel.org>
-Date: Mon, 20 Jul 2026 17:12:39 +0200
-Subject: [PATCH RFC 2/3] mtd: spi-nor: add dedicated multi-size uniform
- erase path
+	Mon, 20 Jul 2026 18:43:44 +0000
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPA id 68FD511A717;
+	Mon, 20 Jul 2026 20:43:31 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nabladev.com;
+	s=dkim; t=1784573014;
+	h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=NcTuLyhrb1waCwhbHOWB9uuAijaDbkAfMULNnNW122k=;
+	b=PoR1D0NruHbRcRi+jsp8s89cC7XK7JDyv35aeGISBVrTvVVUQrvUEeBYp7JPdovFW+c83Z
+	fatev5eYJx2/KI6NjF/54rQvmqKMHYZg4qX7jkCThVG3EU8HoazklXRI2vGvbplk6K7i3B
+	yPztrhvM0cDvmjwo35tLDNqPvnqP71o9X372DMU7OUfOLOirPFJIapvhSU1OQ+Ke6LRNTY
+	lhMZDllv36sEi2Op8pZpFTT0dUw9DJUx4fNBiBmxCaHcPQ18hjVVZX2kImY0dFAik9zcBc
+	txPKQPYEEO9ScIsK0PdTCFkw4/tEOSm2Wl2rpvLESfd5rJ3GyYF3UAymRVaTTA==
+From: "Fabio Estevam" <festevam@nabladev.com>
+In-Reply-To: <DK372KBK7E8X.383DA8L7J4JIX@kernel.org>
+References: <20260718213827.701787-1-festevam@gmail.com> <DK372KBK7E8X.383DA8L7J4JIX@kernel.org>
+Date: Mon, 20 Jul 2026 20:43:31 +0200
+Cc: "Fabio Estevam" <festevam@gmail.com>, pratyush@kernel.org, takahiro.kuwano@infineon.com, miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com, heiko@sntech.de, linux-mtd@lists.infradead.org
+To: "Michael Walle" <mwalle@kernel.org>
 MIME-Version: 1.0
-Message-Id: <20260720-spi_nor_multisize_erase-v1-2-38d719bfe77b@nokia.com>
-References: <20260720-spi_nor_multisize_erase-v1-0-38d719bfe77b@nokia.com>
-In-Reply-To: <20260720-spi_nor_multisize_erase-v1-0-38d719bfe77b@nokia.com>
-To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
- Takahiro Kuwano <takahiro.kuwano@infineon.com>, 
- Miquel Raynal <miquel.raynal@bootlin.com>, 
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
- Mateusz Litwin <mateusz.litwin@nokia.com>
-X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1784560422; l=10478;
- i=mateusz.litwin@nokia.com; s=20251217; h=from:subject:message-id;
- bh=3dVnZER5+S/Zzb3IHLlukQyLRWdKKcKIEqJEBQYJD5Y=;
- b=77IgsA9QMuajC3iBRPFvm+vxGOeGnjJCI7RzQ45v8l0ZJnZcBcLZzbzm55grYfQXK3Uyyh6gp
- zoi/a4EoTKcCBDwD/xHHXbpNICdSUQtwiQBaO+J+pvf9ow5CVbxfYpH
-X-Developer-Key: i=mateusz.litwin@nokia.com; a=ed25519;
- pk=9NV76cwWrtwYUektOrK/ht9GTzmhtkqSvghr3Td4hM4=
-X-Endpoint-Received: by B4 Relay for mateusz.litwin@nokia.com/20251217 with
- auth_id=579
-X-Original-From: Mateusz Litwin <mateusz.litwin@nokia.com>
+Message-ID: <12de54ff-0f0f-a101-4f63-c0b72fd81cf4@nabladev.com>
+Subject: =?utf-8?q?Re=3A?= [PATCH] =?utf-8?q?mtd=3A?==?utf-8?q?_spi-nor=3A?=
+ =?utf-8?q?_xmc=3A?= Add XM25QH128C identification
+User-Agent: SOGoMail 5.12.9
+X-Last-TLS-Session-Version: None
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260720_114343_308816_B1358642 
+X-CRM114-Status: UNSURE (   4.27  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,326 +66,37 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: mateusz.litwin@nokia.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Mateusz Litwin <mateusz.litwin@nokia.com>
+On Monday, July 20, 2026 03:45 -03, "Michael Walle" <mwalle@kernel.org> wrote:
 
-Implement a dedicated uniform erase path for flashes with multiple erase
-sizes, instead of reusing the non-uniform erase path introduced in patch 1.
+> So why do you need an entry? We don't add .names on new entries.
 
-The non-uniform path allocates an erase command list and walks the region
-tree on every request.  For uniform flashes that work is unnecessary.
-The dedicated flow iterates the range directly and selects the erase type
-per step, which lowers CPU and memory overhead.
+Currently, I see:
 
-Refactor the single-sector erase sequence into spi_nor_erase_one(),
-shared with spi_nor_erase_multi_sectors().  Validate multi-size uniform
-requests through spi_nor_is_uniform_erasable() before locking the device:
-address and length must be aligned to the smallest supported uniform erase
-size.  This allows erase requests smaller than mtd->erasesize (e.g. a
-32 KiB boot header region) while still using larger erase commands for
-aligned bulk portions.
+root@rk3399-station-p1:~# cat /sys/bus/spi/devices/spi1.0/spi-nor/partname
+spi-nor-generic
+root@rk3399-station-p1:~# cat /sys/bus/spi/devices/spi1.0/spi-nor/jedec_id
+204018204018
+root@rk3399-station-p1:~# cat /sys/bus/spi/devices/spi1.0/spi-nor/manufacturer
+cat: /sys/bus/spi/devices/spi1.0/spi-nor/manufacturer: No such file or directory
+root@rk3399-station-p1:~# 
 
-When CONFIG_MTD_SPI_NOR_MULTI_ERASE_SIZE is disabled, the legacy
-single-size uniform behavior is unchanged: only the length is checked
-against mtd->erasesize and address alignment is not validated.
+After this patch:
 
-Signed-off-by: Mateusz Litwin <mateusz.litwin@nokia.com>
----
- drivers/mtd/spi-nor/core.c | 208 ++++++++++++++++++++++++++++++---------------
- 1 file changed, 141 insertions(+), 67 deletions(-)
+root@rk3399-station-p1:~# cat /sys/bus/spi/devices/spi1.0/spi-nor/partname
+XM25QH128C
+root@rk3399-station-p1:~# cat /sys/bus/spi/devices/spi1.0/spi-nor/jedec_id
+204018
+root@rk3399-station-p1:~# cat /sys/bus/spi/devices/spi1.0/spi-nor/manufacturer
+xmc
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 80c5a7940fae..4e13919d238a 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -7,7 +7,6 @@
-  * Copyright (C) 2014, Freescale Semiconductor, Inc.
-  */
- 
--#include <linux/bitops.h>
- #include <linux/cleanup.h>
- #include <linux/delay.h>
- #include <linux/device.h>
-@@ -1226,11 +1225,6 @@ static bool spi_nor_has_uniform_erase(const struct spi_nor *nor)
- 	return !!nor->params->erase_map.uniform_region.erase_mask;
- }
- 
--static bool spi_nor_has_multiple_uniform_erase_sizes(const struct spi_nor *nor)
--{
--	return hweight8(nor->params->erase_map.uniform_region.erase_mask) > 1;
--}
--
- static void spi_nor_set_4byte_opcodes(struct spi_nor *nor)
- {
- 	struct spi_nor_erase_map *map = &nor->params->erase_map;
-@@ -1243,13 +1237,9 @@ static void spi_nor_set_4byte_opcodes(struct spi_nor *nor)
- 
- 	/*
- 	 * Convert the opcode of every erase type, including for uniform
--	 * flashes. For a uniform flash driven with a single erase type
--	 * the converted erase_type opcode matches the nor->erase_opcode
--	 * converted just above (spi_nor_select_erase() copied it from the same
--	 * erase type), so >16 MiB uniform flashes keep erasing correctly.
--	 * The erase map is always initialized, so we can safely convert all
--	 * erase types, to keep the erase map in a consistent state to flash
--	 * mode.
-+	 * flashes. The erase map is always initialized, so we can safely
-+	 * convert all erase types, even if they are not used, to keep the
-+	 * erase map in a consistent state with address mode.
- 	 */
- 	for (i = 0; i < SNOR_ERASE_TYPE_MAX; i++) {
- 		erase = &map->erase_type[i];
-@@ -1550,6 +1540,35 @@ int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
- 						nor->bouncebuf, nor->addr_nbytes);
- }
- 
-+/**
-+ * spi_nor_erase_one() - erase a single sector at the given address
-+ * @nor:	pointer to a 'struct spi_nor'
-+ * @addr:	offset in the serial flash memory
-+ *
-+ * Return: 0 on success, -errno otherwise.
-+ */
-+static int spi_nor_erase_one(struct spi_nor *nor, u32 addr)
-+{
-+	int ret;
-+
-+	ret = spi_nor_lock_device(nor);
-+	if (ret)
-+		return ret;
-+
-+	ret = spi_nor_write_enable(nor);
-+	if (ret) {
-+		spi_nor_unlock_device(nor);
-+		return ret;
-+	}
-+
-+	ret = spi_nor_erase_sector(nor, addr);
-+	spi_nor_unlock_device(nor);
-+	if (ret)
-+		return ret;
-+
-+	return spi_nor_wait_till_ready(nor);
-+}
-+
- /**
-  * spi_nor_div_by_erase_size() - calculate remainder and update new dividend
-  * @erase:	pointer to a structure that describes a SPI NOR erase type
-@@ -1566,6 +1585,47 @@ static u64 spi_nor_div_by_erase_size(const struct spi_nor_erase_type *erase,
- 	return dividend >> erase->size_shift;
- }
- 
-+/**
-+ * spi_nor_is_uniform_erasable() - check if a uniform erase request is valid
-+ * @nor:	pointer to a 'struct spi_nor'
-+ * @instr:	pointer to 'struct erase_info'
-+ *
-+ * When multiple erase sizes are enabled on a uniform flash, verify that the
-+ * requested address and length are aligned to the smallest supported erase
-+ * size in the uniform region.
-+ *
-+ * Return: true if the range can be erased, false otherwise.
-+ */
-+static bool spi_nor_is_uniform_erasable(const struct spi_nor *nor,
-+					struct erase_info *instr)
-+{
-+	const struct spi_nor_erase_map *map = &nor->params->erase_map;
-+	u8 erase_mask = map->uniform_region.erase_mask;
-+	const struct spi_nor_erase_type *erase = NULL;
-+	int i;
-+	u32 rem;
-+
-+	for (i = 0; i < SNOR_ERASE_TYPE_MAX; i++) {
-+		if (erase_mask & BIT(i) && map->erase_type[i].size) {
-+			erase = &map->erase_type[i];
-+			break;
-+		}
-+	}
-+
-+	if (unlikely(!erase))
-+		return false;
-+
-+	spi_nor_div_by_erase_size(erase, instr->addr, &rem);
-+	if (rem)
-+		return false;
-+
-+	div_u64_rem(instr->len, erase->size, &rem);
-+	if (rem)
-+		return false;
-+
-+	return true;
-+}
-+
- /**
-  * spi_nor_find_best_erase_type() - find the best erase type for the given
-  *				    offset in the serial flash memory and the
-@@ -1617,6 +1677,49 @@ spi_nor_find_best_erase_type(const struct spi_nor_erase_map *map,
- 	return NULL;
- }
- 
-+/**
-+ * spi_nor_erase_uniform() - erase a range on a uniform flash
-+ * @nor:	pointer to a 'struct spi_nor'
-+ * @addr:	offset in the serial flash memory
-+ * @len:	number of bytes to erase
-+ *
-+ * Return: 0 on success, -errno otherwise.
-+ */
-+static int spi_nor_erase_uniform(struct spi_nor *nor, u64 addr, u32 len)
-+{
-+	const struct spi_nor_erase_map *map = &nor->params->erase_map;
-+	const struct spi_nor_erase_region *region = &map->uniform_region;
-+	const struct spi_nor_erase_type *erase;
-+	int ret;
-+	/*
-+	 * When CONFIG_MTD_SPI_NOR_MULTI_ERASE_SIZE is disabled, erase_size is
-+	 * mtd->erasesize and nor->erase_opcode was set once at init by
-+	 * spi_nor_select_erase().
-+	 */
-+	u32 erase_size = nor->mtd.erasesize;
-+
-+	while (len) {
-+		if (IS_ENABLED(CONFIG_MTD_SPI_NOR_MULTI_ERASE_SIZE)) {
-+			erase = spi_nor_find_best_erase_type(map, region, addr,
-+							     len);
-+			if (unlikely(!erase))
-+				return -EINVAL;
-+
-+			nor->erase_opcode = erase->opcode;
-+			erase_size = erase->size;
-+		}
-+
-+		ret = spi_nor_erase_one(nor, addr);
-+		if (ret)
-+			return ret;
-+
-+		addr += erase_size;
-+		len -= erase_size;
-+	}
-+
-+	return 0;
-+}
-+
- /**
-  * spi_nor_init_erase_cmd() - initialize an erase command
-  * @region:	pointer to a structure that describes a SPI NOR erase region
-@@ -1749,22 +1852,7 @@ static int spi_nor_erase_multi_sectors(struct spi_nor *nor, u64 addr, u32 len)
- 			dev_vdbg(nor->dev, "erase_cmd->size = 0x%08x, erase_cmd->opcode = 0x%02x, erase_cmd->count = %u\n",
- 				 cmd->size, cmd->opcode, cmd->count);
- 
--			ret = spi_nor_lock_device(nor);
--			if (ret)
--				goto destroy_erase_cmd_list;
--
--			ret = spi_nor_write_enable(nor);
--			if (ret) {
--				spi_nor_unlock_device(nor);
--				goto destroy_erase_cmd_list;
--			}
--
--			ret = spi_nor_erase_sector(nor, addr);
--			spi_nor_unlock_device(nor);
--			if (ret)
--				goto destroy_erase_cmd_list;
--
--			ret = spi_nor_wait_till_ready(nor);
-+			ret = spi_nor_erase_one(nor, addr);
- 			if (ret)
- 				goto destroy_erase_cmd_list;
- 
-@@ -1843,11 +1931,20 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
- 	dev_dbg(nor->dev, "at 0x%llx, len %lld\n", (long long)instr->addr,
- 			(long long)instr->len);
- 
--	if (spi_nor_has_uniform_erase(nor) &&
--	    !spi_nor_has_multiple_uniform_erase_sizes(nor)) {
--		div_u64_rem(instr->len, mtd->erasesize, &rem);
--		if (rem)
--			return -EINVAL;
-+	if (spi_nor_has_uniform_erase(nor)) {
-+		if (IS_ENABLED(CONFIG_MTD_SPI_NOR_MULTI_ERASE_SIZE)) {
-+			if (!spi_nor_is_uniform_erasable(nor, instr))
-+				return -EINVAL;
-+		} else {
-+			/*
-+			 * Legacy uniform validation: only the length must be
-+			 * a multiple of mtd->erasesize. Address alignment is
-+			 * not checked here for backward compatibility.
-+			 */
-+			div_u64_rem(instr->len, mtd->erasesize, &rem);
-+			if (rem)
-+				return -EINVAL;
-+		}
- 	}
- 
- 	addr = instr->addr;
-@@ -1877,34 +1974,12 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
- 	 * to use "small sector erase", but that's not always optimal.
- 	 */
- 
--	/* "sector"-at-a-time erase */
--	} else if (spi_nor_has_uniform_erase(nor) &&
--		   !spi_nor_has_multiple_uniform_erase_sizes(nor)) {
--		while (len) {
--			ret = spi_nor_lock_device(nor);
--			if (ret)
--				goto erase_err;
--
--			ret = spi_nor_write_enable(nor);
--			if (ret) {
--				spi_nor_unlock_device(nor);
--				goto erase_err;
--			}
--
--			ret = spi_nor_erase_sector(nor, addr);
--			spi_nor_unlock_device(nor);
--			if (ret)
--				goto erase_err;
--
--			ret = spi_nor_wait_till_ready(nor);
--			if (ret)
--				goto erase_err;
--
--			addr += mtd->erasesize;
--			len -= mtd->erasesize;
--		}
-+	} else if (spi_nor_has_uniform_erase(nor)) {
-+		ret = spi_nor_erase_uniform(nor, addr, len);
-+		if (ret)
-+			goto erase_err;
- 
--	/* erase multiple sectors */
-+	/* erase multiple sectors on non-uniform flashes */
- 	} else {
- 		ret = spi_nor_erase_multi_sectors(nor, addr, len);
- 		if (ret)
-@@ -2739,12 +2814,11 @@ static int spi_nor_select_erase(struct spi_nor *nor)
- 	 * So to be backward compatible, the new implementation also tries to
- 	 * manage the SPI flash memory as uniform with a single erase sector
- 	 * size, when possible.
--	 * Exception is when CONFIG_MTD_SPI_NOR_MULTI_ERASE_SIZE is enabled.
--	 * We use multiple erase sizes for the SPI flash memory, but we still
--	 * need to select one of the supported erase sizes to set
--	 * mtd->erasesize. The selected erase size will be exposed as the
--	 * uniform erase size but all other erase sizes are still available
--	 * for use.
-+	 *
-+	 * When CONFIG_MTD_SPI_NOR_MULTI_ERASE_SIZE is enabled, multiple erase
-+	 * sizes are used internally, but mtd->erasesize still reflects the
-+	 * selected uniform erase size exposed to userspace. The other erase
-+	 * sizes remain available in the uniform region erase mask.
- 	 */
- 	if (spi_nor_has_uniform_erase(nor)) {
- 		erase = spi_nor_select_uniform_erase(map);
+The advantage of this patch is to provide the partname and manufacturer entries for userspace.
 
--- 
-2.43.0
-
+If this is not wanted, feel free to discard this change.
 
 
 ______________________________________________________
