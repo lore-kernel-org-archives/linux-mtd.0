@@ -4,57 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA498C44515
-	for <linux-mtd@archiver.kernel.org>; Mon, 20 Jul 2026 18:43:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 213B1C44529
+	for <linux-mtd@archiver.kernel.org>; Tue, 21 Jul 2026 05:29:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Subject:Message-ID:MIME-Version:To:Cc:
-	Date:References:In-Reply-To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=/UFD6om8K3wDpiGgNaaOG2K4N8X7S/HWUS1KVADgmo8=; b=ScqXY7oMvXfYI2
-	cOj0lsgxc6W3DGdP/gh+OeOKdRhLrwufulS4o/dOtbhQx4NlghqygNRzJWfRL164LFeJfAU6r39+L
-	1MKfRbD2ihr5QXn4oOZKX2bCmN1IYLyc/6qUowIpGnPDb8ZvrGfxqFyOGjqqtwPoY6Wj13s2k040G
-	kutZy+D90Thoo5SgExiFu/JQduqpo5gFJNvTEzdTzA+7ansustJxJ6WL0rI+a8A2aXiETq1fdUu0/
-	SF75IrmirCLYvg5sFZU+Vtg5WZTuX+H3lnSfoKKI0vJBGp/o7DYBZ3zG9UG8IRibKMZRz8LgsNKJ8
-	0HpH41mQ5FgbkZ9dvpCA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=1FoJAKmGrw6AOxVBnksQ6Wx5+cMl1+Zx/50NMBAKO7s=; b=Uf7B5bU//39/md
+	QITuCYm6RmiWPVUZ8WzD4H9/Q9aAzn8RIYk8AaoHN1KxGmfa4Rox2S3Uuac1cN/ZBEdSMXNgCIwV3
+	6Z44i6R8IyNNnDQGhDKitwmnlvf1BrGxUZIxeqaKf47LTG377v4WdcC5iBn74cOwX2gMz+ywI5kaR
+	hbciPIhT691azeAl+Jd63828pYDCvoDf5cKcZv5daJ/YiikozeMqesCSOKJ9/UgeVqMgU6NqKzhOR
+	+WDJCKGcl1eOY5E1tWa33rJJ67Nh4N59gyGAx6V4XJQSFYaoQLqt/DlVF79aevau5CIAqeDNwAG3N
+	7lZYCcaP5L0huT9VEDIg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wlsxu-00000007gJa-1fAY;
-	Mon, 20 Jul 2026 18:43:46 +0000
-Received: from mx.nabladev.com ([178.251.229.89])
+	id 1wm32k-00000008R4K-3hZY;
+	Tue, 21 Jul 2026 05:29:26 +0000
+Received: from esa.microchip.iphmx.com ([68.232.153.233])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wlsxr-00000007gIH-0BRz
-	for linux-mtd@lists.infradead.org;
-	Mon, 20 Jul 2026 18:43:44 +0000
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPA id 68FD511A717;
-	Mon, 20 Jul 2026 20:43:31 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nabladev.com;
-	s=dkim; t=1784573014;
-	h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=NcTuLyhrb1waCwhbHOWB9uuAijaDbkAfMULNnNW122k=;
-	b=PoR1D0NruHbRcRi+jsp8s89cC7XK7JDyv35aeGISBVrTvVVUQrvUEeBYp7JPdovFW+c83Z
-	fatev5eYJx2/KI6NjF/54rQvmqKMHYZg4qX7jkCThVG3EU8HoazklXRI2vGvbplk6K7i3B
-	yPztrhvM0cDvmjwo35tLDNqPvnqP71o9X372DMU7OUfOLOirPFJIapvhSU1OQ+Ke6LRNTY
-	lhMZDllv36sEi2Op8pZpFTT0dUw9DJUx4fNBiBmxCaHcPQ18hjVVZX2kImY0dFAik9zcBc
-	txPKQPYEEO9ScIsK0PdTCFkw4/tEOSm2Wl2rpvLESfd5rJ3GyYF3UAymRVaTTA==
-From: "Fabio Estevam" <festevam@nabladev.com>
-In-Reply-To: <DK372KBK7E8X.383DA8L7J4JIX@kernel.org>
-References: <20260718213827.701787-1-festevam@gmail.com> <DK372KBK7E8X.383DA8L7J4JIX@kernel.org>
-Date: Mon, 20 Jul 2026 20:43:31 +0200
-Cc: "Fabio Estevam" <festevam@gmail.com>, pratyush@kernel.org, takahiro.kuwano@infineon.com, miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com, heiko@sntech.de, linux-mtd@lists.infradead.org
-To: "Michael Walle" <mwalle@kernel.org>
+	id 1wm32h-00000008R3q-0FR9;
+	Tue, 21 Jul 2026 05:29:25 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1784611766; x=1816147766;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=eJMieyDV3EZzwKIlHI9vHv7je1D8dJwnhudfFu9FrzE=;
+  b=QtuNgPmd894KL84sSE9491TSO0cVu1AHZr6+YjUHNKLFT9FdhZihZc2K
+   Ay2tX/ZtZ14G+7UqhUQRNJaOlPO08kx4nBT/3op8lmfrTxdLAWfmw7OVg
+   Ndbi7sB9Yvjfq4A9OMaPk/nM2dGi+pobZq5Nqhrv+eFQUkanLg2aNucAi
+   VoUNrtFvjjUt1OP4Sg6Kk2/MBABXF690YAqYLmfjB4nGqXReMXXS9lmBU
+   426gtFWQspvihLMNzr30I7Qy5St4XafddjsdR4ilhwrq19yQ1TmvnIYHH
+   W6OukZDlQIX9lCB7wcDIJAWoNPXgH2ndhYuaGkxWLqviikC5YTsN0cWb+
+   w==;
+X-CSE-ConnectionGUID: Mxsn5rdUR4CIeUZSSNpL3Q==
+X-CSE-MsgGUID: Zzt9BG4zTIiQHT9bve7zfA==
+X-IronPort-AV: E=Sophos;i="6.25,176,1779174000"; 
+   d="scan'208";a="292305099"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2026 22:29:23 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.87.152) by
+ chn-vm-ex3.mchp-main.com (10.10.87.32) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.2562.43; Mon, 20 Jul 2026 22:29:19 -0700
+Received: from che-ll-i67131.microchip.com (10.10.85.11) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.2507.58 via Frontend Transport; Mon, 20 Jul 2026 22:29:11 -0700
+From: Manikandan Muralidharan <manikandan.m@microchip.com>
+To: <pratyush@kernel.org>, <mwalle@kernel.org>,
+	<takahiro.kuwano@infineon.com>, <miquel.raynal@bootlin.com>,
+	<richard@nod.at>, <vigneshr@ti.com>, <robh@kernel.org>, <krzk+dt@kernel.org>,
+	<conor+dt@kernel.org>, <srini@kernel.org>, <nicolas.ferre@microchip.com>,
+	<alexandre.belloni@bootlin.com>, <claudiu.beznea@tuxon.dev>,
+	<linux@armlinux.org.uk>, <richardcochran@gmail.com>, <linusw@kernel.org>,
+	<arnd@arndb.de>, <michael@walle.cc>, <linux-mtd@lists.infradead.org>,
+	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <netdev@vger.kernel.org>
+CC: Manikandan Muralidharan <manikandan.m@microchip.com>
+Subject: [PATCH v5 0/7] Read MAC address from SST vendor specific SFDP region
+Date: Tue, 21 Jul 2026 10:58:52 +0530
+Message-ID: <20260721052859.171341-1-manikandan.m@microchip.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-Message-ID: <12de54ff-0f0f-a101-4f63-c0b72fd81cf4@nabladev.com>
-Subject: =?utf-8?q?Re=3A?= [PATCH] =?utf-8?q?mtd=3A?==?utf-8?q?_spi-nor=3A?=
- =?utf-8?q?_xmc=3A?= Add XM25QH128C identification
-User-Agent: SOGoMail 5.12.9
-X-Last-TLS-Session-Version: None
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260720_114343_308816_B1358642 
-X-CRM114-Status: UNSURE (   4.27  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260720_222923_384676_EFF097E3 
+X-CRM114-Status: GOOD (  15.48  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,32 +88,88 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Monday, July 20, 2026 03:45 -03, "Michael Walle" <mwalle@kernel.org> wrote:
+Some Microchip/SST QSPI flashes (e.g. the SST26VF064BEUI) are factory
+programmed with globally unique, write-protected EUI-48 and EUI-64
+identifiers stored in a vendor-specific SFDP parameter table. On boards
+that have no on-board EEPROM (sama5d27_wlsom1, sama5d29 curiosity,
+sam9x75 curiosity) this is a reliable source for an Ethernet MAC address,
+instead of relying on a U-Boot-provided or random address.
 
-> So why do you need an entry? We don't add .names on new entries.
+This v5 reworks the approach into a generic NVMEM framework with no vendor
+code in the SPI NOR core:
+ - The SPI NOR core now exposes the entire SFDP as a generic read-only
+   NVMEM device, rooted at a new "sfdp" child node of the flash.
+ - A new NVMEM layout driver (drivers/nvmem/layouts/) locates the
+   Microchip vendor parameter table at runtime and presents the EUI-48 as
+   a "mac-address" cell.
+ - Arbitrary parameters can be read with a standard fixed-layout
+   (known offset) or with an nvmem-layout parser (location discovered at runtime).
 
-Currently, I see:
+Changes in v5:
+ - 1/7 and 5/7 - Add R-b tags
+ - 3/7- Rework the comments, function name and commit message.Check all the nodes
+        (for_each_available_child) for the right compatible "jedec,sfdp" instead
+		of node name.
 
-root@rk3399-station-p1:~# cat /sys/bus/spi/devices/spi1.0/spi-nor/partname
-spi-nor-generic
-root@rk3399-station-p1:~# cat /sys/bus/spi/devices/spi1.0/spi-nor/jedec_id
-204018204018
-root@rk3399-station-p1:~# cat /sys/bus/spi/devices/spi1.0/spi-nor/manufacturer
-cat: /sys/bus/spi/devices/spi1.0/spi-nor/manufacturer: No such file or directory
-root@rk3399-station-p1:~# 
+Changes in v4:
+ - Rework per v3 review: remove the vendor-specific SFDP handling from the
+   SPI NOR core; expose the whole SFDP as a generic read-only NVMEM device
+   and move the EUI extraction into an nvmem-layout driver.
+ - Introduce a new nvmem-layout driver to discover the vendor-table location
+   at runtime; no offset hardcoded in the device tree.
+ - Describe the SFDP via a dedicated "sfdp" subnode (compatible
+   "jedec,sfdp"), which also resolves the v3 dtbs_check "Unevaluated
+   properties ('nvmem-layout')" warning.
+ - Reverse the stored EUI bytes into canonical MAC order.
+ - Enable the layout in sama5_defconfig.
 
-After this patch:
+ Changes in v3:
+ - 2/3 - add support to update the QSPI partition into 'fixed-partition'
+   binding in sama5d27_wlsom1
+ - 3/3 - add nvmem-layout in qspi node for EUI48 MAC Address and nvmem cell
+   properties for macb node in sama5d27_wlsom1
 
-root@rk3399-station-p1:~# cat /sys/bus/spi/devices/spi1.0/spi-nor/partname
-XM25QH128C
-root@rk3399-station-p1:~# cat /sys/bus/spi/devices/spi1.0/spi-nor/jedec_id
-204018
-root@rk3399-station-p1:~# cat /sys/bus/spi/devices/spi1.0/spi-nor/manufacturer
-xmc
+Changes in v2:
+ - 1/3 - parse the SST vendor table, read and store the addresses
+  into a resource - managed space. Register the addresses
+  into NVMEM framework
+ - 2/3 - add support to update the QSPI partition into 'fixed-partition'
+  binding
 
-The advantage of this patch is to provide the partname and manufacturer entries for userspace.
+v4: https://lore.kernel.org/linux-devicetree/20260630092406.150587-1-manikandan.m@microchip.com/
 
-If this is not wanted, feel free to discard this change.
+Manikandan Muralidharan (7):
+  dt-bindings: mtd: jedec,spi-nor: allow the SFDP to be exposed via
+    NVMEM
+  dt-bindings: nvmem: layouts: add Microchip/SST SFDP EUI layout
+  mtd: spi-nor: sfdp: expose the SFDP as a read-only NVMEM device
+  nvmem: layouts: add Microchip/SST SFDP EUI layout driver
+  ARM: dts: microchip: sama5d27_wlsom1: use fixed-partitions for QSPI
+    flash
+  ARM: dts: microchip: sama5d27_wlsom1: read MAC address from QSPI SFDP
+  ARM: configs: sama5: enable Microchip/SST SFDP EUI NVMEM layout
+
+ .../bindings/mtd/jedec,spi-nor.yaml           |  18 ++
+ .../layouts/microchip,sst26vf-sfdp-eui.yaml   |  60 ++++++
+ .../bindings/nvmem/layouts/nvmem-layout.yaml  |   1 +
+ MAINTAINERS                                   |   6 +
+ .../dts/microchip/at91-sama5d27_wlsom1.dtsi   |  61 +++---
+ .../dts/microchip/at91-sama5d27_wlsom1_ek.dts |   2 +
+ arch/arm/configs/sama5_defconfig              |   1 +
+ drivers/mtd/spi-nor/core.c                    |   8 +
+ drivers/mtd/spi-nor/core.h                    |   1 +
+ drivers/mtd/spi-nor/sfdp.c                    |  86 +++++++++
+ drivers/nvmem/layouts/Kconfig                 |  10 +
+ drivers/nvmem/layouts/Makefile                |   1 +
+ drivers/nvmem/layouts/sst26vf-sfdp-eui.c      | 182 ++++++++++++++++++
+ 13 files changed, 415 insertions(+), 22 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/nvmem/layouts/microchip,sst26vf-sfdp-eui.yaml
+ create mode 100644 drivers/nvmem/layouts/sst26vf-sfdp-eui.c
+
+
+base-commit: b95f03f04d475aa6719d15a636ddf32222d55657
+-- 
+2.43.0
 
 
 ______________________________________________________
