@@ -4,72 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 252BAC4451C
-	for <linux-mtd@archiver.kernel.org>; Tue, 21 Jul 2026 07:50:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78088C4451C
+	for <linux-mtd@archiver.kernel.org>; Tue, 21 Jul 2026 08:47:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WqJmyKVjmd7LLDEXB/pb9oii+oUi5vhIhOABI5pPa7I=; b=n+xw7UNqChZHXb
-	q9tTKuamKDmfVz2xpjYhrK2BeUaHN9e61eO5dAZqEo+osLAZbIznmcRJugC29dWorixgYvixOIfcF
-	mEdVPKiohHoMz7EE5UAsDi8sIqMl+wGHRB4nP3kRcWzQ52M4QqXWbc44CGrv3VofCTl/XlHgOM3iy
-	2bfumTF3AjZntKo4evr0k6LdB9XmpWxJpJmiqZL9rp54Bb7KE/5zp3j+7taTA4imV7OSdbsbcfGVs
-	XpfoZnZXwOrD8hyQ7G7cV6mss1BFVwOoAgSQ0d+CvnipC4oqGnWDpMLCswPDjV06XLiF0uEZ1YS7n
-	zYww8jPSxCnzZiI6b4eA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:References:Cc:Subject:To:From:Message-Id:Date:Mime-Version:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=yIzWZuo8L5tGfncaMxWp7xQ78kip+jKpVN+pWJ858E8=; b=zcyFvZ0koan+pRYvfDgbg5MSBE
+	i5mBW5uHJxUynhPxLggkIvsmt8WrUvFIIUydu8OIUarOLtvpIHZvpFh/ybGT6yBVGPdZpdPPPkfgW
+	USbjJDA22dl13om6aEyAz+Zvk+HrW5GH8+wtIH4FKl/B6jqvbRjkLuWaFGl/2tt2WB89/aJ5hncZs
+	2Jqy7mWoyYrEbhzjGCXeaaT4dX3zBjOYeLod4XHjmEltig2wR2pGFUhsKCR06Hk0udlg664KFjkaH
+	L/YdUCf5Swwzf+8bXcXaZfzur1MXISTX+GdmqkpdMz0qJo08mOUmuVUvnbpvNEwlwOysp/Uy3nqq/
+	tsaWk3JA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wm5Ey-00000008gnm-0jaw;
-	Tue, 21 Jul 2026 07:50:12 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1wm68O-00000008sKF-1hzZ;
+	Tue, 21 Jul 2026 08:47:28 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wm5Ew-00000008gmT-24L6
+	id 1wm68M-00000008sJz-38Pz
 	for linux-mtd@lists.infradead.org;
-	Tue, 21 Jul 2026 07:50:10 +0000
+	Tue, 21 Jul 2026 08:47:26 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id CE02060AA1
-	for <linux-mtd@lists.infradead.org>; Tue, 21 Jul 2026 07:50:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85FA71F0155A
-	for <linux-mtd@lists.infradead.org>; Tue, 21 Jul 2026 07:50:09 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with UTF8SMTP id 723E141195;
+	Tue, 21 Jul 2026 08:47:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id C06F31F000E9;
+	Tue, 21 Jul 2026 08:47:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1784620209;
-	bh=xkJHITvqX1FWX4L63OpNnz2Qb0aVsri/wXqI3fsoexw=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc;
-	b=eoFPW2OD7s35Azw47YLLuikvix+UDF0w3sqdGWpfkJOeyiK09Fda4d0fyk9jUl7si
-	 OWojPo2DlQjfjcU4fw+RMJIn4/Mp/2FOQKFNrEZPr8Bs8aZ5Fi1z4v3Z0lR2IdXJnO
-	 eInAya/5/1oriC49/F1qvT5uA17CEP+nNEKuPD+czMZp574V2gfluiK1GzowZK9mxu
-	 FJVRlvUdYUGS1VVhGR4beeQ0F0qvp2AB+hVkTh5Pvs4d1kfmIM7mBCD6gPVQTUJI/a
-	 kh5kYFcyTFomZrO4NCQNzhcExq7n+5tplAkoF7WuocSAUoEgJsX6J2BzGVcfGyTqce
-	 ltFpvhJfr/xUA==
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-5b159850b16so7284960e87.3
-        for <linux-mtd@lists.infradead.org>; Tue, 21 Jul 2026 00:50:09 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AHgh+RoY5c/pq9+v87EhUFJe3s3YF4fgFyQeQTY33FdhL7931C/mSyh+vb/H2lnYHLJ1B1fe0odpHMPTcZo=@lists.infradead.org
-X-Gm-Message-State: AOJu0YzowYuHkLm9+9tb4AcPxXzJmoqWFv4YhnX5anGLa7Mf6nO139RZ
-	qzgujYOdEu+ZoJZA5UuJ8smeUW7XmTZA9mjbHr4dd7brltf/+nKtfh2LV8wzpMHDWYI5NFl5OKl
-	DASlTNtHBct8WoVS0/XqOsWUM1EYPWtc=
-X-Received: by 2002:a05:6512:b83:b0:5ae:b5bd:5e72 with SMTP id
- 2adb3069b0e04-5b28fabb816mr3793719e87.59.1784620208288; Tue, 21 Jul 2026
- 00:50:08 -0700 (PDT)
-MIME-Version: 1.0
-References: <20260721052859.171341-1-manikandan.m@microchip.com> <20260721052859.171341-8-manikandan.m@microchip.com>
-In-Reply-To: <20260721052859.171341-8-manikandan.m@microchip.com>
-From: Linus Walleij <linusw@kernel.org>
-Date: Tue, 21 Jul 2026 09:49:56 +0200
-X-Gmail-Original-Message-ID: <CAD++jLkzDDC66KjyMGommrC7T0L5KW3TA+JLKUmNf_psF-eRuw@mail.gmail.com>
-X-Gm-Features: AUfX_myAPX-Fx-YYXrqqVAT9emnPnmjb3E1aTj_6ToEx3OEbZBmyyuGAfe7f9n4
-Message-ID: <CAD++jLkzDDC66KjyMGommrC7T0L5KW3TA+JLKUmNf_psF-eRuw@mail.gmail.com>
-Subject: Re: [PATCH v5 7/7] ARM: configs: sama5: enable Microchip/SST SFDP EUI
- NVMEM layout
-To: Manikandan Muralidharan <manikandan.m@microchip.com>
-Cc: pratyush@kernel.org, mwalle@kernel.org, takahiro.kuwano@infineon.com, 
-	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com, robh@kernel.org, 
-	krzk+dt@kernel.org, conor+dt@kernel.org, srini@kernel.org, 
-	nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com, 
-	claudiu.beznea@tuxon.dev, linux@armlinux.org.uk, richardcochran@gmail.com, 
-	arnd@arndb.de, michael@walle.cc, linux-mtd@lists.infradead.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org
+	s=k20260515; t=1784623646;
+	bh=xVmKfH/jK57T3H0AU3g6NhFxkqK9zdRK/CucNScwoAw=;
+	h=Date:From:To:Subject:Cc:References:In-Reply-To;
+	b=WWpzEvQVqyv0LS8lQocPqER0lrtDvLoUKelAadpKd/32KmAv2mv45uvujhChS9G3O
+	 xsZtp9kLBQQFBDMBCKYNz/k6gPP0KTW18sof8NN4annn26ZN6SIhAmZpfFq7ChjTNC
+	 AeAVWKkD2QmLGrSwjR+NpgiktwtINwvwQHF5zgWlngM5R/lzc8Zgl57CNFDSqsQeaT
+	 UO9+uXD8Hw4yzNMn4insaL8vxD3vZQOWskGTT34OwoHkpphREox4DlWzDrrA9O0hSV
+	 rjIRL+gDB3C3eyaR101+8l5mpJhRc2wgpPX5VyxXAbp1bv8GQ1wYPMSHvk6GdsFO+z
+	 S1TD21co7sg2g==
+Mime-Version: 1.0
+Date: Tue, 21 Jul 2026 10:47:22 +0200
+Message-Id: <DK44A7A87AGB.U01P9983P29J@kernel.org>
+From: "Michael Walle" <mwalle@kernel.org>
+To: "Fabio Estevam" <festevam@nabladev.com>
+Subject: Re: [PATCH] mtd: spi-nor: xmc: Add XM25QH128C identification
+Cc: "Fabio Estevam" <festevam@gmail.com>, <pratyush@kernel.org>,
+ <takahiro.kuwano@infineon.com>, <miquel.raynal@bootlin.com>,
+ <richard@nod.at>, <vigneshr@ti.com>, <heiko@sntech.de>,
+ <linux-mtd@lists.infradead.org>
+X-Mailer: aerc 0.20.0
+References: <20260718213827.701787-1-festevam@gmail.com>
+ <DK372KBK7E8X.383DA8L7J4JIX@kernel.org>
+ <12de54ff-0f0f-a101-4f63-c0b72fd81cf4@nabladev.com>
+In-Reply-To: <12de54ff-0f0f-a101-4f63-c0b72fd81cf4@nabladev.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,18 +68,92 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============2963010445394613472=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gVHVlLCBKdWwgMjEsIDIwMjYgYXQgNzozMeKAr0FNIE1hbmlrYW5kYW4gTXVyYWxpZGhhcmFu
-CjxtYW5pa2FuZGFuLm1AbWljcm9jaGlwLmNvbT4gd3JvdGU6Cgo+IEVuYWJsZSBDT05GSUdfTlZN
-RU1fTEFZT1VUX1NTVDI2VkZfU0ZEUF9FVUkgc28gdGhlIGZhY3RvcnkgRVVJLTQ4IHN0b3JlZAo+
-IGluIHRoZSBTU1QyNlZGIFFTUEkgZmxhc2ggU0ZEUCBjYW4gYmUgdXNlZCBhcyBhIE1BQyBhZGRy
-ZXNzIG9uIGJvYXJkcwo+IHN1Y2ggYXMgdGhlIHNhbWE1ZDI3X3dsc29tMS4KPgo+IFNpZ25lZC1v
-ZmYtYnk6IE1hbmlrYW5kYW4gTXVyYWxpZGhhcmFuIDxtYW5pa2FuZGFuLm1AbWljcm9jaGlwLmNv
-bT4KClJldmlld2VkLWJ5OiBMaW51cyBXYWxsZWlqIDxsaW51c3dAa2VybmVsLm9yZz4KCllvdXJz
-LApMaW51cyBXYWxsZWlqCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9s
-aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+--===============2963010445394613472==
+Content-Type: multipart/signed;
+ boundary=15ddd975892464ec2512ad69e1d711e7c4c28f4c1d5f4535782946b14ef8;
+ micalg=pgp-sha384; protocol="application/pgp-signature"
+
+--15ddd975892464ec2512ad69e1d711e7c4c28f4c1d5f4535782946b14ef8
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+
+Hi Fabio,
+
+On Mon Jul 20, 2026 at 8:43 PM CEST, Fabio Estevam wrote:
+> On Monday, July 20, 2026 03:45 -03, "Michael Walle" <mwalle@kernel.org> w=
+rote:
+>
+>> So why do you need an entry? We don't add .names on new entries.
+>
+> Currently, I see:
+>
+> root@rk3399-station-p1:~# cat /sys/bus/spi/devices/spi1.0/spi-nor/partnam=
+e
+> spi-nor-generic
+> root@rk3399-station-p1:~# cat /sys/bus/spi/devices/spi1.0/spi-nor/jedec_i=
+d
+> 204018204018
+> root@rk3399-station-p1:~# cat /sys/bus/spi/devices/spi1.0/spi-nor/manufac=
+turer
+> cat: /sys/bus/spi/devices/spi1.0/spi-nor/manufacturer: No such file or di=
+rectory
+> root@rk3399-station-p1:~#=20
+>
+> After this patch:
+>
+> root@rk3399-station-p1:~# cat /sys/bus/spi/devices/spi1.0/spi-nor/partnam=
+e
+> XM25QH128C
+> root@rk3399-station-p1:~# cat /sys/bus/spi/devices/spi1.0/spi-nor/jedec_i=
+d
+> 204018
+> root@rk3399-station-p1:~# cat /sys/bus/spi/devices/spi1.0/spi-nor/manufac=
+turer
+> xmc
+>
+> The advantage of this patch is to provide the partname and manufacturer e=
+ntries for userspace.
+
+Yeah I get that, but since vendors tend to reuse their flash ids for
+different parts, the part name is useless (and probably wrong) most
+of the time. The idea was to just expose the id nowadays and if you
+really need the flash part name, it's the duty of an userspace
+application to figure that out.
+
+-michael
+
+>
+> If this is not wanted, feel free to discard this change.
+
+
+--15ddd975892464ec2512ad69e1d711e7c4c28f4c1d5f4535782946b14ef8
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCal8yGhIcbXdhbGxlQGtl
+cm5lbC5vcmcACgkQEic87j4CH/ixmQGAlPRrfEuceAX1KmTF4RRDvsUB1LYaTtWv
+xBGay4FLxNAInBMxKszTnLIcALxmKsnbAX9XSgdk3zZyt1ACJjkBJcN6SgIotQq7
+w6ngOjZHVGaCMwN5Fp8EpAmpfq6qVEeU25s=
+=Xe/u
+-----END PGP SIGNATURE-----
+
+--15ddd975892464ec2512ad69e1d711e7c4c28f4c1d5f4535782946b14ef8--
+
+
+--===============2963010445394613472==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============2963010445394613472==--
+
