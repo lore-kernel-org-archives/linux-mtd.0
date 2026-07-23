@@ -4,52 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7455CC531D4
-	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jul 2026 13:41:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7F4BC531D3
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jul 2026 13:41:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=qnR4q8h7N6G6YXPS3V7Q6hnvWgzIJyeRjBsGzJP9krQ=; b=yeSggo6cBdY1XR
-	YuzFRaUIaHnDJ3JaXIbRQUa3kGKh+kSuwG6ckvXTlHVez7oEkaiNIOY5jcyx90efXd248CIr9b0dL
-	/8XqX4cR3exCmnC7YsibaW273Qp3xvLNnumnbSltTNSdZ4qXAlk8PURHnS2cKtPcb5+SWpFusXu+k
-	2TSDpIQqtP7sYJhpAM7KG/+mfPw6YbPLkLEgS212kmmUyTrAIU0kESlJi0zOCoTDq9y/pDli/s5Lh
-	6N+44pbO1hCH1Na+NEB/s3NPNrAEXa+6owwiRsjVRyKFaySsIGAjR0e08hjozHzYrhb6aNMjtUAiD
-	D+ItQvmbADDFfqgmLVGA==;
+	List-Owner; bh=RYCKcgCSghVOoNM0qn899lqIOq32q/DbK3UbjYNaGAY=; b=OLric+Yi3Sj8mz
+	KIYlImbOnbhumX9URhQJULIcCqiJBh6ytoBUaJaG15wxJ8hkvjOmA55rTJgl2oyfaGSU62lUU4P9e
+	TTCPm3KPa6Kawbrr1s1QizFz1y1KG2Guop/+y4WZJYnavxDcECRnOBOOxjTySf2kyd8eMHJoTuBFL
+	ogLlbjj3dSBeq2rVlpIfkJBct/NA+cswAdxnZD+UVcvURtDaGzXGadKrQJLlLXkQNtVKf5aqsb6NR
+	zCNjaQX3IDvHOnUDbLw9cfBXl7tau8GB+Aby4cW5HKlocv1B0CX9g5z1vlM6ifm8UUBavP06AqH0P
+	4Oigcc617UiJAf4GmUIA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wmtfu-0000000EOxJ-0SsV;
-	Thu, 23 Jul 2026 13:41:22 +0000
-Received: from smtpout-03.galae.net ([185.246.85.4])
-	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wmtfk-0000000EOtY-3J5Q
-	for linux-mtd@lists.infradead.org;
+	id 1wmtfo-0000000EOvI-1SSk;
 	Thu, 23 Jul 2026 13:41:16 +0000
+Received: from smtpout-02.galae.net ([185.246.84.56])
+	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
+	id 1wmtfk-0000000EOtW-3QOG
+	for linux-mtd@lists.infradead.org;
+	Thu, 23 Jul 2026 13:41:15 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id 5ADDF4E40F0E;
-	Thu, 23 Jul 2026 13:41:08 +0000 (UTC)
+	by smtpout-02.galae.net (Postfix) with ESMTPS id 05D621A11AC;
+	Thu, 23 Jul 2026 13:41:07 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 2A432602B8;
-	Thu, 23 Jul 2026 13:41:08 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 8076F11C10E94;
-	Thu, 23 Jul 2026 15:41:06 +0200 (CEST)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id C87D3602B8;
+	Thu, 23 Jul 2026 13:41:06 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id A37DE11C10CF7;
+	Thu, 23 Jul 2026 15:41:05 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1784814067; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1784814066; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=6C/oeJlxlhroVeY4J/H0jgbBKM8DwwJyzWPAp0mGJr4=;
-	b=em3KKgEr2xK4JYRVZqojT8G7n5BSOEeaF8ntS/SjdejUDyrDRUvQ8jNr881WACpbWMO/is
-	fAcGju93yA+S995sdAn/uP6d73Qa9knO8GFNi0GpFtOfdLJbDYfFS1c/QTQBYIMqVgQA5Q
-	ZMs1RZoxWgdwTV8iQYoBRLZrxaqCWSMUzeMsRiBwG5gfjz0qEup05Tfkgyyy3Yiigamz42
-	E4lbBTlvnFiRG470BNUs6HFlfFr2fhK2eXpQDjDGXJmXjMeoQcmvxYXaBXIbvqWBfhXLFq
-	NFmO96HR+dOhYi2jsU6xyE4qt/cXTQltl78/eWEtsHCxLeyyxPYoiMQ3LjHxug==
+	bh=aJe6iIBz31HfN24k+/q6gdaOXkqI9N3Yg0L4GhhIx5k=;
+	b=Sa9Tbf5Dlr9rlVG9ompl70COm9vEHYUMtJ/cbJ5wgq1OMmTrsM48hCP+VMuvizBjHtgjpG
+	IojY5FwQEiHL4aoqHi6XDt9F4dYWD7fjh7Ovf/pHXjngfmK/davJsqRUm9B+w4SdUGVjsb
+	2bJ8KS5D1byMo1uYczb5NnuMv+DUfIS1U/mOfAkyjn+XHNTVrFAP8iAywAbeTW3Xp9mDpK
+	v32ADMY2uQwAEe+YSCAfuHgjqwGTrd64yX944hUbWrrHbyxHh6ORPqUbyNeMh2eOiAO3zZ
+	hsX8bgw07kR074beEkrLtPk22dxEbvjyth4U7TiToF3NaT8G6kzgQ/mp62FhAw==
 From: Bastien Curutchet <bastien.curutchet@bootlin.com>
-Date: Thu, 23 Jul 2026 15:41:02 +0200
-Subject: [PATCH 2/4] nand: hamming: Add support for the PL35x ECC bit
- ordering
+Date: Thu, 23 Jul 2026 15:41:01 +0200
+Subject: [PATCH 1/4] nand: hamming: Replace sm_order boolean with enum
 MIME-Version: 1.0
-Message-Id: <20260723-mix-ecc-v1-2-7361c3baeb07@bootlin.com>
+Message-Id: <20260723-mix-ecc-v1-1-7361c3baeb07@bootlin.com>
 References: <20260723-mix-ecc-v1-0-7361c3baeb07@bootlin.com>
 In-Reply-To: <20260723-mix-ecc-v1-0-7361c3baeb07@bootlin.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, 
@@ -61,8 +60,8 @@ Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260723_064113_117081_1ED347F1 
-X-CRM114-Status: GOOD (  26.81  )
+X-CRM114-CacheID: sfid-20260723_064113_004839_1804B5D9 
+X-CRM114-Status: GOOD (  16.85  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,259 +78,202 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The PL353's HW-ECC engine is broken and fails to report some errors
-on reading (cf errata 721059 in [1]). So, to still benefit a bit from the
-HW acceleration, a mixed approach has to be used: where writes are
-performed by the HW-ECC engine and reads by software. To do so, the
-software part has to use the same bit ordering than the hardware engine.
+The ECC bit ordering with Hamming code isn't standardized so we
+can find several kind of ordering. So far two ordering are handled: the
+'regular' one and the 'smart media' one. The 'smart media' ordering is
+selected through the sm_order boolean. Using a boolean to choose the bit
+ordering prevents from supporting more than two ECC bit orderings.
 
-Add support for the PL35x bit ordering in the generic hamming helpers.
-Create a new option flag to enable this bit ordering. For consistency
-this new flag is put next to the SM_ORDER flag which shifts the CACHEPRG
-one bit away.
+Create a new enum to represent the supported ECC bit ordering for
+Hamming code.
+Replace the sm_order boolean with this enum.
 
-[1] : https://developer.arm.com/documentation/rlnc000227/a
 Signed-off-by: Bastien Curutchet <bastien.curutchet@bootlin.com>
 ---
- drivers/mtd/nand/ecc-sw-hamming.c       | 150 ++++++++++++++++++++++----------
- drivers/mtd/nand/raw/nand_base.c        |   2 +
- include/linux/mtd/nand-ecc-sw-hamming.h |   1 +
- include/linux/mtd/rawnand.h             |   5 +-
- 4 files changed, 111 insertions(+), 47 deletions(-)
+ drivers/mtd/nand/ecc-sw-hamming.c       | 29 ++++++++++++++++++-----------
+ drivers/mtd/nand/raw/nand_base.c        |  4 +++-
+ include/linux/mtd/nand-ecc-sw-hamming.h | 19 +++++++++++++------
+ 3 files changed, 34 insertions(+), 18 deletions(-)
 
 diff --git a/drivers/mtd/nand/ecc-sw-hamming.c b/drivers/mtd/nand/ecc-sw-hamming.c
-index d4127e30726e..40f453299c7a 100644
+index 460acc1029c3..d4127e30726e 100644
 --- a/drivers/mtd/nand/ecc-sw-hamming.c
 +++ b/drivers/mtd/nand/ecc-sw-hamming.c
-@@ -320,6 +320,24 @@ int ecc_sw_hamming_calculate(const unsigned char *buf, unsigned int step_size,
+@@ -113,7 +113,7 @@ static const char addressbits[256] = {
+ };
+ 
+ int ecc_sw_hamming_calculate(const unsigned char *buf, unsigned int step_size,
+-			     unsigned char *code, bool sm_order)
++			     unsigned char *code, enum ecc_hamming_order ecc_order)
+ {
+ 	const u32 *bp = (uint32_t *)buf;
+ 	const u32 eccsize_mult = (step_size == 256) ? 1 : 2;
+@@ -309,7 +309,8 @@ int ecc_sw_hamming_calculate(const unsigned char *buf, unsigned int step_size,
+ 	 * possible, but benchmarks showed that on the system this is developed
+ 	 * the code below is the fastest
+ 	 */
+-	if (sm_order) {
++	switch (ecc_order) {
++	case ECC_HAMMING_SM_ORDER:
+ 		code[0] = (invparity[rp7] << 7) | (invparity[rp6] << 6) |
+ 			  (invparity[rp5] << 5) | (invparity[rp4] << 4) |
+ 			  (invparity[rp3] << 3) | (invparity[rp2] << 2) |
+@@ -318,7 +319,8 @@ int ecc_sw_hamming_calculate(const unsigned char *buf, unsigned int step_size,
+ 			  (invparity[rp13] << 5) | (invparity[rp12] << 4) |
  			  (invparity[rp11] << 3) | (invparity[rp10] << 2) |
  			  (invparity[rp9] << 1) | (invparity[rp8]);
- 		break;
-+	case ECC_HAMMING_PL35X_ORDER:
-+		code[1] = (invparity[rp0] << 7) |
-+			  (invparity[par & 0x0f] << 6) |
-+			  (invparity[par & 0x33] << 5) |
-+			  (invparity[par & 0x55] << 4) |
-+			  (invparity[rp17] << 3) |
-+			  (invparity[rp15] << 2) |
-+			  (invparity[rp13] << 1) |
-+			  (invparity[rp11] << 0);
-+		code[0] = (invparity[rp9] << 7) |
-+			  (invparity[rp7] << 6) |
-+			  (invparity[rp5] << 5) |
-+			  (invparity[rp3] << 4) |
-+			  (invparity[rp1] << 3) |
-+			  (invparity[par & 0xf0] << 2) |
-+			  (invparity[par & 0xcc] << 1) |
-+			  (invparity[par & 0xaa] << 0);
-+		break;
- 	case ECC_HAMMING_REGULAR_ORDER:
- 		code[1] = (invparity[rp7] << 7) | (invparity[rp6] << 6) |
- 			  (invparity[rp5] << 5) | (invparity[rp4] << 4) |
-@@ -332,25 +350,38 @@ int ecc_sw_hamming_calculate(const unsigned char *buf, unsigned int step_size,
- 		break;
- 	}
- 
--	if (eccsize_mult == 1)
--		code[2] =
--		    (invparity[par & 0xf0] << 7) |
--		    (invparity[par & 0x0f] << 6) |
--		    (invparity[par & 0xcc] << 5) |
--		    (invparity[par & 0x33] << 4) |
--		    (invparity[par & 0xaa] << 3) |
--		    (invparity[par & 0x55] << 2) |
--		    3;
--	else
--		code[2] =
--		    (invparity[par & 0xf0] << 7) |
--		    (invparity[par & 0x0f] << 6) |
--		    (invparity[par & 0xcc] << 5) |
--		    (invparity[par & 0x33] << 4) |
--		    (invparity[par & 0xaa] << 3) |
--		    (invparity[par & 0x55] << 2) |
--		    (invparity[rp17] << 1) |
--		    (invparity[rp16] << 0);
-+	switch (ecc_order) {
-+	case ECC_HAMMING_PL35X_ORDER:
-+		code[2] = (invparity[rp16] << 7) |
-+			  (invparity[rp14] << 6) |
-+			  (invparity[rp12] << 5) |
-+			  (invparity[rp10] << 4) |
-+			  (invparity[rp8] << 3) |
-+			  (invparity[rp6] << 2) |
-+			  (invparity[rp4] << 1) |
-+			  (invparity[rp2] << 0);
+-	} else {
 +		break;
 +	case ECC_HAMMING_REGULAR_ORDER:
-+	case ECC_HAMMING_SM_ORDER:
-+		if (eccsize_mult == 1)
-+			code[2] = (invparity[par & 0xf0] << 7) |
-+				  (invparity[par & 0x0f] << 6) |
-+				  (invparity[par & 0xcc] << 5) |
-+				  (invparity[par & 0x33] << 4) |
-+				  (invparity[par & 0xaa] << 3) |
-+				  (invparity[par & 0x55] << 2) |
-+				  3;
-+		else
-+			code[2] = (invparity[par & 0xf0] << 7) |
-+				  (invparity[par & 0x0f] << 6) |
-+				  (invparity[par & 0xcc] << 5) |
-+				  (invparity[par & 0x33] << 4) |
-+				  (invparity[par & 0xaa] << 3) |
-+				  (invparity[par & 0x55] << 2) |
-+				  (invparity[rp17] << 1) |
-+				  (invparity[rp16] << 0);
+ 		code[1] = (invparity[rp7] << 7) | (invparity[rp6] << 6) |
+ 			  (invparity[rp5] << 5) | (invparity[rp4] << 4) |
+ 			  (invparity[rp3] << 3) | (invparity[rp2] << 2) |
+@@ -327,6 +329,7 @@ int ecc_sw_hamming_calculate(const unsigned char *buf, unsigned int step_size,
+ 			  (invparity[rp13] << 5) | (invparity[rp12] << 4) |
+ 			  (invparity[rp11] << 3) | (invparity[rp10] << 2) |
+ 			  (invparity[rp9] << 1) | (invparity[rp8]);
 +		break;
-+	}
+ 	}
  
- 	return 0;
+ 	if (eccsize_mult == 1)
+@@ -364,15 +367,16 @@ int nand_ecc_sw_hamming_calculate(struct nand_device *nand,
+ {
+ 	struct nand_ecc_sw_hamming_conf *engine_conf = nand->ecc.ctx.priv;
+ 	unsigned int step_size = nand->ecc.ctx.conf.step_size;
+-	bool sm_order = engine_conf ? engine_conf->sm_order : false;
++	enum ecc_hamming_order order = engine_conf ? engine_conf->ecc_order :
++				       ECC_HAMMING_REGULAR_ORDER;
+ 
+-	return ecc_sw_hamming_calculate(buf, step_size, code, sm_order);
++	return ecc_sw_hamming_calculate(buf, step_size, code, order);
  }
-@@ -380,6 +411,7 @@ int ecc_sw_hamming_correct(unsigned char *buf, unsigned char *read_ecc,
+ EXPORT_SYMBOL(nand_ecc_sw_hamming_calculate);
+ 
+ int ecc_sw_hamming_correct(unsigned char *buf, unsigned char *read_ecc,
+ 			   unsigned char *calc_ecc, unsigned int step_size,
+-			   bool sm_order)
++			   enum ecc_hamming_order ecc_order)
  {
  	const u32 eccsize_mult = step_size >> 8;
  	unsigned char b0, b1, b2, bit_addr;
-+	bool single_bit_err = false;
- 	unsigned int byte_addr;
- 
- 	/*
-@@ -388,6 +420,7 @@ int ecc_sw_hamming_correct(unsigned char *buf, unsigned char *read_ecc,
+@@ -383,14 +387,16 @@ int ecc_sw_hamming_correct(unsigned char *buf, unsigned char *read_ecc,
+ 	 * we might need the xor result  more than once,
  	 * so keep them in a local var
  	*/
- 	switch (ecc_order) {
-+	case ECC_HAMMING_PL35X_ORDER:
- 	case ECC_HAMMING_SM_ORDER:
- 		b0 = read_ecc[0] ^ calc_ecc[0];
- 		b1 = read_ecc[1] ^ calc_ecc[1];
-@@ -407,33 +440,60 @@ int ecc_sw_hamming_correct(unsigned char *buf, unsigned char *read_ecc,
- 	if ((b0 | b1 | b2) == 0)
- 		return 0;	/* no error */
- 
--	if ((((b0 ^ (b0 >> 1)) & 0x55) == 0x55) &&
--	    (((b1 ^ (b1 >> 1)) & 0x55) == 0x55) &&
--	    ((eccsize_mult == 1 && ((b2 ^ (b2 >> 1)) & 0x54) == 0x54) ||
--	     (eccsize_mult == 2 && ((b2 ^ (b2 >> 1)) & 0x55) == 0x55))) {
- 	/* single bit error */
--		/*
--		 * rp17/rp15/13/11/9/7/5/3/1 indicate which byte is the faulty
--		 * byte, cp 5/3/1 indicate the faulty bit.
--		 * A lookup table (called addressbits) is used to filter
--		 * the bits from the byte they are in.
--		 * A marginal optimisation is possible by having three
--		 * different lookup tables.
--		 * One as we have now (for b0), one for b2
--		 * (that would avoid the >> 1), and one for b1 (with all values
--		 * << 4). However it was felt that introducing two more tables
--		 * hardly justify the gain.
--		 *
--		 * The b2 shift is there to get rid of the lowest two bits.
--		 * We could also do addressbits[b2] >> 1 but for the
--		 * performance it does not make any difference
--		 */
--		if (eccsize_mult == 1)
--			byte_addr = (addressbits[b1] << 4) + addressbits[b0];
--		else
--			byte_addr = (addressbits[b2 & 0x3] << 8) +
--				    (addressbits[b1] << 4) + addressbits[b0];
--		bit_addr = addressbits[b2 >> 2];
-+	/*
-+	 * rp17/rp15/13/11/9/7/5/3/1 indicate which byte is the faulty
-+	 * byte, cp 5/3/1 indicate the faulty bit.
-+	 */
+-	if (sm_order) {
 +	switch (ecc_order) {
 +	case ECC_HAMMING_SM_ORDER:
+ 		b0 = read_ecc[0] ^ calc_ecc[0];
+ 		b1 = read_ecc[1] ^ calc_ecc[1];
+-	} else {
++		break;
 +	case ECC_HAMMING_REGULAR_ORDER:
-+		if ((((b0 ^ (b0 >> 1)) & 0x55) == 0x55) &&
-+		    (((b1 ^ (b1 >> 1)) & 0x55) == 0x55) &&
-+		    ((eccsize_mult == 1 && ((b2 ^ (b2 >> 1)) & 0x54) == 0x54) ||
-+		     (eccsize_mult == 2 && ((b2 ^ (b2 >> 1)) & 0x55) == 0x55))) {
-+			single_bit_err = true;
-+			/*
-+			 * A lookup table (called addressbits) is used to filter
-+			 * the bits from the byte they are in.
-+			 * A marginal optimisation is possible by having three
-+			 * different lookup tables.
-+			 * One as we have now (for b0), one for b2
-+			 * (that would avoid the >> 1), and one for b1 (with all values
-+			 * << 4). However it was felt that introducing two more tables
-+			 * hardly justify the gain.
-+			 *
-+			 * The b2 shift is there to get rid of the lowest two bits.
-+			 * We could also do addressbits[b2] >> 1 but for the
-+			 * performance it does not make any difference
-+			 */
-+			if (eccsize_mult == 1)
-+				byte_addr = (addressbits[b1] << 4) + addressbits[b0];
-+			else
-+				byte_addr = (addressbits[b2 & 0x3] << 8) +
-+					    (addressbits[b1] << 4) + addressbits[b0];
-+			bit_addr = addressbits[b2 >> 2];
-+		}
+ 		b0 = read_ecc[1] ^ calc_ecc[1];
+ 		b1 = read_ecc[0] ^ calc_ecc[0];
 +		break;
-+	case ECC_HAMMING_PL35X_ORDER:
-+		if (((((b0 >> 4) ^ b2) & 0xF) == 0xF) &&
-+		    ((((b1 >> 4) ^ b0) & 0xF) == 0xF) &&
-+		    ((((b2 >> 4) ^ b1) & 0xF) == 0xF)) {
-+			single_bit_err = true;
-+			/*
-+			 * We can't use the addressbits table here because the
-+			 * bit ordering in the ECC bytes has nothing to do with
-+			 * the other ordering
-+			 */
-+			byte_addr = (b0 >> 3) & 0xF;
-+			byte_addr |= (b0 >> 7) & 0x10;
-+			byte_addr |= (b1 << 5) & 0x1e0;
-+			bit_addr = b0 & 0x7;
-+		}
-+		break;
-+	}
-+
-+	if (single_bit_err) {
- 		/* flip the bit */
- 		buf[byte_addr] ^= (1 << bit_addr);
- 		return 1;
+ 	}
+-
+ 	b2 = read_ecc[2] ^ calc_ecc[2];
+ 
+ 	/* check if there are any bitfaults */
+@@ -457,10 +463,11 @@ int nand_ecc_sw_hamming_correct(struct nand_device *nand, unsigned char *buf,
+ {
+ 	struct nand_ecc_sw_hamming_conf *engine_conf = nand->ecc.ctx.priv;
+ 	unsigned int step_size = nand->ecc.ctx.conf.step_size;
+-	bool sm_order = engine_conf ? engine_conf->sm_order : false;
++	enum ecc_hamming_order ecc_order = engine_conf ? engine_conf->ecc_order :
++					   ECC_HAMMING_REGULAR_ORDER;
+ 
+ 	return ecc_sw_hamming_correct(buf, read_ecc, calc_ecc, step_size,
+-				      sm_order);
++				      ecc_order);
+ }
+ EXPORT_SYMBOL(nand_ecc_sw_hamming_correct);
+ 
 diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index f6b6a4fa2b1f..c04c3e74f661 100644
+index a5b278ab9384..f6b6a4fa2b1f 100644
 --- a/drivers/mtd/nand/raw/nand_base.c
 +++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -5658,6 +5658,8 @@ int rawnand_sw_hamming_init(struct nand_chip *chip)
+@@ -5657,7 +5657,9 @@ int rawnand_sw_hamming_init(struct nand_chip *chip)
+ 	engine_conf = base->ecc.ctx.priv;
  
  	if (chip->ecc.options & NAND_ECC_SOFT_HAMMING_SM_ORDER)
- 		engine_conf->ecc_order = ECC_HAMMING_SM_ORDER;
-+	else if (chip->ecc.options & NAND_ECC_SOFT_HAMMING_PL35X_ORDER)
-+		engine_conf->ecc_order = ECC_HAMMING_PL35X_ORDER;
- 	else
- 		engine_conf->ecc_order = ECC_HAMMING_REGULAR_ORDER;
+-		engine_conf->sm_order = true;
++		engine_conf->ecc_order = ECC_HAMMING_SM_ORDER;
++	else
++		engine_conf->ecc_order = ECC_HAMMING_REGULAR_ORDER;
  
+ 	chip->ecc.size = base->ecc.ctx.conf.step_size;
+ 	chip->ecc.strength = base->ecc.ctx.conf.strength;
 diff --git a/include/linux/mtd/nand-ecc-sw-hamming.h b/include/linux/mtd/nand-ecc-sw-hamming.h
-index ac6f28f35f77..4a0e08dc7f04 100644
+index 2aa2f8ef68d2..ac6f28f35f77 100644
 --- a/include/linux/mtd/nand-ecc-sw-hamming.h
 +++ b/include/linux/mtd/nand-ecc-sw-hamming.h
-@@ -15,6 +15,7 @@
- enum ecc_hamming_order {
- 	ECC_HAMMING_REGULAR_ORDER = 0,
- 	ECC_HAMMING_SM_ORDER,
-+	ECC_HAMMING_PL35X_ORDER,
+@@ -12,6 +12,11 @@
+ 
+ #include <linux/mtd/nand.h>
+ 
++enum ecc_hamming_order {
++	ECC_HAMMING_REGULAR_ORDER = 0,
++	ECC_HAMMING_SM_ORDER,
++};
++
+ /**
+  * struct nand_ecc_sw_hamming_conf - private software Hamming ECC engine structure
+  * @req_ctx: Save request context and tweak the original request to fit the
+@@ -19,14 +24,14 @@
+  * @code_size: Number of bytes needed to store a code (one code per step)
+  * @calc_buf: Buffer to use when calculating ECC bytes
+  * @code_buf: Buffer to use when reading (raw) ECC bytes from the chip
+- * @sm_order: Smart Media special ordering
++ * @ecc_order: ECC ordering
+  */
+ struct nand_ecc_sw_hamming_conf {
+ 	struct nand_ecc_req_tweak_ctx req_ctx;
+ 	unsigned int code_size;
+ 	u8 *calc_buf;
+ 	u8 *code_buf;
+-	unsigned int sm_order;
++	enum ecc_hamming_order ecc_order;
  };
  
- /**
-diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index 5c70e7bd3ed5..3658315752bf 100644
---- a/include/linux/mtd/rawnand.h
-+++ b/include/linux/mtd/rawnand.h
-@@ -113,10 +113,11 @@ struct gpio_desc;
-  * When using software implementation of Hamming, we can specify which byte
-  * ordering should be used.
-  */
--#define NAND_ECC_SOFT_HAMMING_SM_ORDER	BIT(2)
-+#define NAND_ECC_SOFT_HAMMING_SM_ORDER		BIT(2)
-+#define NAND_ECC_SOFT_HAMMING_PL35X_ORDER	BIT(3)
+ #if IS_ENABLED(CONFIG_MTD_NAND_ECC_SW_HAMMING)
+@@ -34,13 +39,13 @@ struct nand_ecc_sw_hamming_conf {
+ int nand_ecc_sw_hamming_init_ctx(struct nand_device *nand);
+ void nand_ecc_sw_hamming_cleanup_ctx(struct nand_device *nand);
+ int ecc_sw_hamming_calculate(const unsigned char *buf, unsigned int step_size,
+-			     unsigned char *code, bool sm_order);
++			     unsigned char *code, enum ecc_hamming_order ecc_order);
+ int nand_ecc_sw_hamming_calculate(struct nand_device *nand,
+ 				  const unsigned char *buf,
+ 				  unsigned char *code);
+ int ecc_sw_hamming_correct(unsigned char *buf, unsigned char *read_ecc,
+ 			   unsigned char *calc_ecc, unsigned int step_size,
+-			   bool sm_order);
++			   enum ecc_hamming_order ecc_order);
+ int nand_ecc_sw_hamming_correct(struct nand_device *nand, unsigned char *buf,
+ 				unsigned char *read_ecc,
+ 				unsigned char *calc_ecc);
+@@ -56,7 +61,8 @@ static inline void nand_ecc_sw_hamming_cleanup_ctx(struct nand_device *nand) {}
  
- /* Chip has cache program function */
--#define NAND_CACHEPRG		BIT(3)
-+#define NAND_CACHEPRG		BIT(4)
- /* Options valid for Samsung large page devices */
- #define NAND_SAMSUNG_LP_OPTIONS NAND_CACHEPRG
- 
+ static inline int ecc_sw_hamming_calculate(const unsigned char *buf,
+ 					   unsigned int step_size,
+-					   unsigned char *code, bool sm_order)
++					   unsigned char *code,
++					   enum ecc_hamming_order ecc_order)
+ {
+ 	return -ENOTSUPP;
+ }
+@@ -71,7 +77,8 @@ static inline int nand_ecc_sw_hamming_calculate(struct nand_device *nand,
+ static inline int ecc_sw_hamming_correct(unsigned char *buf,
+ 					 unsigned char *read_ecc,
+ 					 unsigned char *calc_ecc,
+-					 unsigned int step_size, bool sm_order)
++					 unsigned int step_size,
++					 enum ecc_hamming_order ecc_order)
+ {
+ 	return -ENOTSUPP;
+ }
 
 -- 
 2.55.0
