@@ -4,100 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7F4BC4453E
-	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jul 2026 06:31:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5AA19C44524
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jul 2026 07:20:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Subject:References:In-Reply-To:
-	Message-Id:Cc:To:From:Date:MIME-Version:Reply-To:Content-ID:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
+	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=3WUX9Pt2nOq+A/hXzJPyiZurS8tNyK2QwBiYxltazZE=; b=loTzhny9YKgBYImY9ZysvLtl5o
-	jRz0pd1903OJ2VyEeR7m/oEmbFl78KIjI3Tuu+VQ2E9PdzjYWnQheBiCGhH7iV4Xp84W2hp4zzk7L
-	iDb397Apm3XrJtcp2Hzr1Yo6M+THLpwuYBAn1emlNlhZZ4CcBLvWDS8HxS6chKU0IO8/nzdahH6w0
-	Pz6Sqc+f6XvBMYfjuyiepdoch2xdXHAews3ZRfhq5gS9Ru2UNCZVc5B+DOq/Sw3UxHiV2vDkAlwkz
-	Ad14/no5/tPnjb9mgtS1ip96vgjch0sTfvc+bK13oocb/pBnfcNNs6hiLDlqFbaFc29uMHTnMtj11
-	GopXg22Q==;
+	bh=mxjvT8mMKoA2WDCI5CzkXhOdQdZB3DyrCSsNNiKnh1E=; b=1NJC7/l0AZ8so9zADY+akb+nf4
+	5k2Y/5mZ9KL6oa8yC7xh4AghWQRLYjYl9n5Yfhni6EBPDP1GuK+21O1Le7Gl7mWPS7l28UgDxUOub
+	k3GaQXQJ9k2qpARJSROoc5LuOhtbWcByERydPbgBLsDpHoOEWycl6ioHjPzKrMmc6jQmxG+E1xj9l
+	U1KS/6GrL1BSSdP816qxAe9Ja+yCCZVJF5HjxJQb36XQ1fWxqOkt2qALMzNhxSRJQRhJkLogZr7HD
+	GdO5njBC1HBn6FZpcT0SNdxCsJt+GE9KrQwl7GrEMRq44TtRgpt9tC4BkHWsm9WWa3IIVuhadIyef
+	41wt7M8A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wmmxt-0000000DY1H-3dH7;
-	Thu, 23 Jul 2026 06:31:29 +0000
-Received: from fhigh-a7-smtp.messagingengine.com ([103.168.172.158])
+	id 1wmnj3-0000000DcyA-1ZAb;
+	Thu, 23 Jul 2026 07:20:13 +0000
+Received: from mailout.nod.at ([116.203.167.152] helo=lithops.sigma-star.at)
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wmmxq-0000000DY0p-29hX
+	id 1wmniy-0000000DcxE-2rqQ
 	for linux-mtd@lists.infradead.org;
-	Thu, 23 Jul 2026 06:31:28 +0000
-Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id 0A661140005A;
-	Thu, 23 Jul 2026 02:31:25 -0400 (EDT)
-Received: from phl-imap-05 ([10.202.2.95])
-  by phl-compute-04.internal (MEProxy); Thu, 23 Jul 2026 02:31:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1784788285;
-	 x=1784874685; bh=+Tyyk6wZkkn5XeAQSb15AWSXSrRXsXr4FgJ3e9kkydM=; b=
-	qDcHXomoW6GxXwPCwSaZ7mslvrnPi+d9Vnt1oXpJZPuNO1Zgpi2cr3zTcp3Aw7My
-	yz6j/uisfBuqby7Te3rJyRkHyJQj7/PF4C/4plXi0tYzbztfYK/JJdBraxQwSCeA
-	ENTB3ut6JBce680V2RJhfjZmzbtpWB6yw7dS8dlwoCjnh7RKOHAalbJHXJDcHvol
-	L9N3RGdI7T+OiiJCwcFbkKul0QzyIigwdM/pd2OvWF3R9RijLRFZYJXHCw/99xcG
-	kb7hOlPNV3H9+5XFEg1kDa8/LUX1FYLsOH2nRU19SkHbB7V2pIFpRK6yKMO+rAzj
-	G96IMyQD5fdYuvtpxNGPaQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1784788285; x=
-	1784874685; bh=+Tyyk6wZkkn5XeAQSb15AWSXSrRXsXr4FgJ3e9kkydM=; b=R
-	dWCX38394DE6ny7V//05q1OR2sDOj/ZgRjW72rg07wSTiu4bC90tknkx7Nn4HL/R
-	Xx0+nzJHxDYjAI46Pcoe5CrKUSMPHDZQRDTYaoUbQqzWRP52pZuHgqoNubrJw6mb
-	u4hDs8ZulcqfcaRM26zsvQZYSqDS7OMyLT0jFl2Jr7fBL7/B06PZr1FuyWIctlge
-	EafIOAj6adarprBHz+OsIVNAzTl5T0beI/B+w5AgJldHnls6OOnmE6J1sN1b1AK/
-	YZuOvFgeULacqQYsomMpUxNhTzGUfk5iX5kYyiEErNsQgKPbFfKjGdvU+qbi3k09
-	STfnga5Xs9uNqu69ZJX0A==
-X-ME-Sender: <xms:PLVhatnOehgH41mYJlH8dqcEvM3tZkFjj9x33WwNIFSFl08LFzJLlA>
-    <xme:PLVhajrcu3s4BxiKFMdlnN83NvXYIScGFt4xUcNSY4RpBAV3ac0KQ-wVbV6BQNIvP
-    47wAITB7lxfRWbBkDR9rEutn-gsoq2obsvhZB5axgqp-ZoF-1K4lV4>
-X-ME-Proxy-Cause: dmFkZTGTxVBehZ+5Ixq/zxpufnulYumW8nhs1iqx7HrBkvvHTjjTGCnqbS0ggF+hvKzzZX
-    rTblhUfdUJ3DBLyS9LCfDzvj/OEe5IiudoTlQehP/SeePu89Mzfka3blCmWu2FQSSkXeSC
-    MGcVs8rbg540NAjZFM+twqem7RZA8dMoWtjzkHjhb6XhA1EmdeISOUo/eUEXuR1olaaTp2
-    ARHsZHO9rzF9daSvl4KrUH+pRrnl0MQRcyeuz+2UchsBuvysFNSt+HcUbxXt9yzm9fD/xH
-    jWArH1vL3EWyp4Av4mTFGF0VsaDS0U1eeevxor32EgJik+rInyJ3bOEHlC0X/0oF5NLGkR
-    Hn5s2u6PTPwR6Ar0TE9AknBNUxl/dyHeaVjuUG8XnGxNaHHnA0JQjjayVq1ypGzBNmqqCJ
-    8Vj7mg4g5WLaOpXnZieeLWD3SferAfwsbjGtxYENpHJak3Bp8p0lEsfzokw6sDMXVmFaG0
-    i981Iv8nYTR92rVmtBt6GNf+krxygWc0ITy2ZdlnTv2cT89qw5q7DzQ6ycMvfpDbM25skK
-    5eijTJaBdHj24JlgGaAmvyx0FVnaMVzcco57LQaztsA8CA8AiEnD3ZbAai3Roe/X6Wyc9t
-    lOrvVXK/5VRYnAkV1xT+VlicFvUwiQTfnlnW2Pj6U1Mk8ZZgfEVeUkOuxB+g
-X-ME-Proxy: <xmx:PLVhamljw6eq7EWVz_HQh54_ab1InYbX-6ErOUq-okphJR478D-gnw>
-    <xmx:PLVhaqaQGSQrr3JOGiewepvzEnRcjtAzVaN38Uy7_SzSa5qF3WQ7DA>
-    <xmx:PLVhapHzhRdLw6GJUexWN83GHwnJnC2zocvj8oAj_yn7V13SNAkJ3Q>
-    <xmx:PLVhahb8_dR_H6RMuD_ifZAvhN_YiVcr-dzBflZ0OVPMFLsT724tqw>
-    <xmx:PbVharp6QjVFwONkPNKA3AuvIiB1e6KMIp5tc-yDezKy5Uv5cmqMMeGi>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 089DA182007E; Thu, 23 Jul 2026 02:31:23 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	Thu, 23 Jul 2026 07:20:11 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 2E1082698C0;
+	Thu, 23 Jul 2026 09:19:57 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id O4k9vO5OiKkS; Thu, 23 Jul 2026 09:19:56 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 5D6AA2698C1;
+	Thu, 23 Jul 2026 09:19:56 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id fcGjQHi4rVoz; Thu, 23 Jul 2026 09:19:56 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 1F9262698C0;
+	Thu, 23 Jul 2026 09:19:56 +0200 (CEST)
+Date: Thu, 23 Jul 2026 09:19:55 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+To: Ran Hongyun <ranhongyun1@huawei.com>
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>, 
+	chengzhihao1 <chengzhihao1@huawei.com>, 
+	linux-kernel <linux-kernel@vger.kernel.org>, 
+	linux-mtd <linux-mtd@lists.infradead.org>, 
+	Miquel Raynal <miquel.raynal@bootlin.com>, vapier@gentoo.org, 
+	Vignesh Raghavendra <vigneshr@ti.com>, 
+	yangerkun <yangerkun@huawei.com>, yi zhang <yi.zhang@huawei.com>
+Message-ID: <181744126.6546.1784791195864.JavaMail.zimbra@nod.at>
+In-Reply-To: <20260723060643.2939964-1-ranhongyun1@huawei.com>
+References: <20260723020233.3079997-3-ranhongyun1@huawei.com> <20260723060643.2939964-1-ranhongyun1@huawei.com>
+Subject: Re: [PATCH 2/2] UBI: support per-device wear-leveling threshold
 MIME-Version: 1.0
-X-ThreadId: A7pgEavHG_z3
-Date: Thu, 23 Jul 2026 08:31:03 +0200
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Julian Braha" <julianbraha@gmail.com>,
- "Miquel Raynal" <miquel.raynal@bootlin.com>,
- "Richard Weinberger" <richard@nod.at>,
- "Vignesh Raghavendra" <vigneshr@ti.com>
-Cc: "Sean Young" <sean@mess.org>,
- "Andy Shevchenko" <andriy.shevchenko@linux.intel.com>,
- "Randy Dunlap" <rdunlap@infradead.org>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Message-Id: <93d93d97-f1ed-4b85-8360-ee4f4a656ee7@app.fastmail.com>
-In-Reply-To: <20260722220618.198164-1-julianbraha@gmail.com>
-References: <20260722220618.198164-1-julianbraha@gmail.com>
-Subject: Re: [PATCH v2] mtd: maps: remove dead select of MTD_CFI_BE_BYTE_SWAP
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF152 (Linux)/8.8.12_GA_3809)
+Thread-Topic: support per-device wear-leveling threshold
+Thread-Index: fL2RXOEzzr1fO9RvcvvQOXYzAwqdjg==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260722_233127_111386_F94EF234 
-X-CRM114-Status: UNSURE (   9.05  )
+X-CRM114-CacheID: sfid-20260723_002008_877057_24292AED 
+X-CRM114-Status: UNSURE (   3.40  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -110,26 +77,28 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Jul 23, 2026, at 00:06, Julian Braha wrote:
-> 'select' does not work on config options in a 'choice', so currently it is
-> possible to enable MTD_PHYSMAP_IXP4XX without MTD_CFI_BE_BYTE_SWAP.
->
-> From a previous conversation, it was decided to remove the select 
-> entirely:
-> https://lore.kernel.org/all/c6268184-4904-49d9-b14f-0e11dce8bdad@app.fastmail.com/
->
-> This dead select was found by kconfirm, a static analysis tool for Kconfig.
->
-> Signed-off-by: Julian Braha <julianbraha@gmail.com>
-> ---
-
-Acked-by: Arnd Bergmann <arnd@arndb.de>
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIlJhbiBIb25neXVuIiA8cmFu
+aG9uZ3l1bjFAaHVhd2VpLmNvbT4KPiBBbjogcmFuaG9uZ3l1bjFAaHVhd2VpLmNvbQo+IENDOiAi
+QXJ0ZW0gQml0eXV0c2tpeSIgPGFydGVtLmJpdHl1dHNraXlAbGludXguaW50ZWwuY29tPiwgImNo
+ZW5nemhpaGFvMSIgPGNoZW5nemhpaGFvMUBodWF3ZWkuY29tPiwgImxpbnV4LWtlcm5lbCIKPiA8
+bGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZz4sICJsaW51eC1tdGQiIDxsaW51eC1tdGRAbGlz
+dHMuaW5mcmFkZWFkLm9yZz4sICJNaXF1ZWwgUmF5bmFsIgo+IDxtaXF1ZWwucmF5bmFsQGJvb3Rs
+aW4uY29tPiwgInJpY2hhcmQiIDxyaWNoYXJkQG5vZC5hdD4sIHZhcGllckBnZW50b28ub3JnLCAi
+VmlnbmVzaCBSYWdoYXZlbmRyYSIgPHZpZ25lc2hyQHRpLmNvbT4sCj4gInlhbmdlcmt1biIgPHlh
+bmdlcmt1bkBodWF3ZWkuY29tPiwgInlpIHpoYW5nIiA8eWkuemhhbmdAaHVhd2VpLmNvbT4KPiBH
+ZXNlbmRldDogRG9ubmVyc3RhZywgMjMuIEp1bGkgMjAyNiAwODowNjo0Mwo+IEJldHJlZmY6IFJl
+OiBbUEFUQ0ggMi8yXSBVQkk6IHN1cHBvcnQgcGVyLWRldmljZSB3ZWFyLWxldmVsaW5nIHRocmVz
+aG9sZAoKPiBSZXBseSB0byB0aGUgaXNzdWVzIHJhaXNlZCBieSBzYXNoaWtvOiBUaGUgc3RydWN0
+IHNpemUgaXMgdW5jaGFuZ2VkLAo+IGFuZCBhbGwgZXhpc3RpbmcgdXNlcnNwYWNlIHByb2dyYW1z
+IHplcm8taW5pdGlhbGl6ZSB0aGUgc3RydWN0Cj4gdWJpX2F0dGFjaF9yZXEsIHNvIHdsX3RocmVz
+aG9sZCByZWFkcyBhcyB6ZXJvIGFuZCBmYWxscyBiYWNrIHRvCj4gQ09ORklHX01URF9VQklfV0xf
+VEhSRVNIT0xELiBObyBiYWNrd2FyZCBjb21wYXRpYmlsaXR5IGlzc3VlLgoKSSBkb24ndCBzZWUg
+U2FzaGlrbydzIG1haWwuIFdoZXJlIHdhcyBpdCBzZW50IHRvPwoKVGhhbmtzLAovL3JpY2hhcmQK
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpM
+aW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
