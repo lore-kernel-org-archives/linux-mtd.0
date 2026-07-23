@@ -4,66 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E14DC531CF
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9EC7C531D1
 	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jul 2026 13:41:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id:Date:
-	Subject:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=Zj5j1AV4YirvXxMRClEIEWLLplWvlKdkFThY9GhaypM=; b=4lnrXx8vOmKx0F
-	WzOoP2Ej25ECwMvknUiTH4cUqGNBG3mJn1y5newELywRmd/SdbPHaKrVCW6wkC6nhbNY0mjEi7wxI
-	EhFNgzXElFjGseTmh9soytFTJFcKZ3kN2c7semSkNMEHRe9G304XBM9cmki3mPvdoxDw/9oNopycH
-	DTRdwDCH5QawMwRwguEA9ZiC7AZaQ9uGkbfWIAkGZ2Sr/M6LtptJpjawm4rkcQu9gN5YNnsf5OZNc
-	PPw3skgLfDDo21UD57fu+7aBj6zwVLRTVmU/U2H+duYWMQYJOphh9rR4yNTkSsz/q7RglIi9QY3Z3
-	SSIsjJkVt9Z0syssiUng==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
+	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=17eZtQly7HkiTdVV4OvkyQ4KJIpMibKp3dOm5mXkZXA=; b=NaC8J/JD3I0wHv
+	hNYjaF+qYSq/Kz/FS+r8NmOhvmypywIfA/jdVaWbbbmEtVdLQhFroF8+Qu4WJwoqKusZ/fU+eogf2
+	xu6f0llsNecpY0FqWu8K60+1tiAigtqrTjANIjmEKnYeKM09EU6/978cIsKR5zviuyDu2n6znphXs
+	ZZCwvFSAd2ivWpDPlbpWAJP3CD/g5A7W6hLAohirVm3gk9AkWjNW7wVVBl7b9RA/PCKGOaz2ARh65
+	IctjOYM6CizyUJtgRDpkGVeIctMNcnE015HtEFKLWlqv7PgSFiFK1hpJR+VJluvhwS0MkOsvguidM
+	PBrra0WJ4Eek0fAGMv2A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wmtfp-0000000EOve-3AXH;
+	id 1wmtfp-0000000EOvk-3ULp;
 	Thu, 23 Jul 2026 13:41:17 +0000
 Received: from smtpout-03.galae.net ([185.246.85.4])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wmtfk-0000000EOtT-3PIw
+	id 1wmtfk-0000000EOta-3PZs
 	for linux-mtd@lists.infradead.org;
-	Thu, 23 Jul 2026 13:41:15 +0000
+	Thu, 23 Jul 2026 13:41:16 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id 1F1254E40F0C;
-	Thu, 23 Jul 2026 13:41:06 +0000 (UTC)
+	by smtpout-03.galae.net (Postfix) with ESMTPS id B9C624E40EBE;
+	Thu, 23 Jul 2026 13:41:10 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id E7FF4602B8;
-	Thu, 23 Jul 2026 13:41:05 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 8450011C10CEE;
-	Thu, 23 Jul 2026 15:41:03 +0200 (CEST)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 8ED96602B8;
+	Thu, 23 Jul 2026 13:41:10 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id C68F511C10E96;
+	Thu, 23 Jul 2026 15:41:07 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1784814065; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding; bh=9Q185pF0DA/CFN6GHNn6AhfxIhuntfnhwSs6ZtpfhwU=;
-	b=ajaOA+TpwOeT+/XVAyCAoZx5FLcgWMgaRocWAZKT/k2mFm6Q7CBoeMbon6X6oh+yoFE/zH
-	g2n5avmiYgHPHvzVCwMK8UtQgNoov4EJVMJoo+yhSmJg1WaG1junlh7tveQ+rMQM0RK5YC
-	419rvydyNrzvgbyT+SviqfuXEbAGuuoqfYA3z7rDpl8iawpqRSqpr/OLR6k58Be3KnqxUI
-	m9xbN9P0PT8xi5wFr0NiPwbhFvQ4oMDOZOaQxQOUWN9I12gSBNRe9UDNb0eRyykkovR2aV
-	buawn7YmpzX61CeoOzwTE01w9N24RKP0Qr/1QmMA0dGEmntyWP9Rk9b/4SqD8Q==
+	t=1784814069; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=XWe+Pt54+26aQCE30XaKKDodsWuXQQjhkt3Geccg33s=;
+	b=Oan5aCAzlTDX987vYi/UkPlQpdAHJQimS4Kk1sKKU82Dg6o474a9qGN/ab/2qDP9VQ/rs4
+	bXumAwdjL4V8sSGHRqsS6s2GOW6lDWnQ8j+uKPr0E0481iS8GczCvvnQd2fNGi/hKCDsp8
+	Dvo9q8w+0exCvFi9J3+7pdZQR1CW9Vp1mJTVIIf3fcZiom7UixAB94D2jB1jzK7TK8T+SM
+	hQSqJe4dBEC7A5ZbjFkfT08MymdV1NlS92WwwMVE+3BQVgg58xjBUvuG+WZT7NCaN3Zehq
+	Mt5stZE9d+f8oWNJ0ji3+UVvAwFm2ndxSB+J5axLcz0AumXGnWSVJCREAMQ/8Q==
 From: Bastien Curutchet <bastien.curutchet@bootlin.com>
-Subject: [PATCH 0/4] rawnand: pl35x: Implement mixed ECC
-Date: Thu, 23 Jul 2026 15:41:00 +0200
-Message-Id: <20260723-mix-ecc-v1-0-7361c3baeb07@bootlin.com>
+Date: Thu, 23 Jul 2026 15:41:03 +0200
+Subject: [PATCH 3/4] rawnand: base: Export nand_read_page_swecc
 MIME-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAAAAAAAC/yXMwQ6CMBCE4Vdp9uwm0CBSXsVwKNtB91DQFg0J4
- d1t5PhNJv9OGUmRqTc7JXw16zIX1BdD8vTzA6yhmGxl2+pqHUfdGCLctOhEQgPnQeX9Sph0+5f
- uw+mE96cE13Ok0WewLDHq2pvJ3cYgHaQOQsNx/ADtSlmQiQAAAA==
-X-Change-ID: 20260529-mix-ecc-46e8ccd4e9ae
+Message-Id: <20260723-mix-ecc-v1-3-7361c3baeb07@bootlin.com>
+References: <20260723-mix-ecc-v1-0-7361c3baeb07@bootlin.com>
+In-Reply-To: <20260723-mix-ecc-v1-0-7361c3baeb07@bootlin.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, 
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
  Michal Simek <michal.simek@amd.com>
 Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
  linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
- Bastien Curutchet <bastien.curutchet@bootlin.com>, stable@vger.kernel.org
+ Bastien Curutchet <bastien.curutchet@bootlin.com>
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260723_064113_006824_00AC4250 
-X-CRM114-Status: UNSURE (   8.36  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260723_064113_014355_18579FA9 
+X-CRM114-Status: GOOD (  11.43  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,47 +78,70 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi all,
+nand_read_page_swecc() isn't exported while it could be used from the
+drivers for the mixed case where ECC writes are done by the hardware and
+ECC reads are done by software.
 
-This series addresses the PL353 errata "SLC ECC misses single error to
-bit0 byte0 and fails to detect some double error cases" (see 721059 in
-[1]).
-
-The ECC HW engine is known to be broken on this chip, it fails to detect
-some bitflips on reads.
-
-This series implements a mixed-ECC where the HW engine is used on writes
-and reads are done by software. To make it work, the software ECC has to
-use the same layout for the ECC bits than the HW engine. Patches 1 & 2
-add the PL35x ordering to the available orderings for soft ECC. Patches
-3 & 4 make use of this ordering to implement the mixed-ECC for the PL353
-controller.
-
-Note that this series is based on top of nand/next.
-
-[1]: https://developer.arm.com/documentation/rlnc000227/a
+Export nand_read_page_swecc() to make it usable by drivers.
 
 Signed-off-by: Bastien Curutchet <bastien.curutchet@bootlin.com>
 ---
-Bastien Curutchet (4):
-      nand: hamming: Replace sm_order boolean with enum
-      nand: hamming: Add support for the PL35x ECC bit ordering
-      rawnand: base: Export nand_read_page_swecc
-      rawnand: pl35x: Implement mixed ECC computing
+ drivers/mtd/nand/raw/nand_base.c             | 5 +++--
+ drivers/mtd/nand/raw/pl35x-nand-controller.c | 1 +
+ include/linux/mtd/rawnand.h                  | 2 ++
+ 3 files changed, 6 insertions(+), 2 deletions(-)
 
- drivers/mtd/nand/ecc-sw-hamming.c            | 179 ++++++++++++++++++---------
- drivers/mtd/nand/raw/nand_base.c             |  11 +-
- drivers/mtd/nand/raw/pl35x-nand-controller.c | 173 ++------------------------
- include/linux/mtd/nand-ecc-sw-hamming.h      |  20 ++-
- include/linux/mtd/rawnand.h                  |   7 +-
- 5 files changed, 161 insertions(+), 229 deletions(-)
----
-base-commit: f97bdc8ec1dc7b33781a702eeba55326c206be56
-change-id: 20260529-mix-ecc-46e8ccd4e9ae
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index c04c3e74f661..950c079aa27b 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -2941,8 +2941,8 @@ static int nand_read_page_raw_syndrome(struct nand_chip *chip, uint8_t *buf,
+  * @oob_required: caller requires OOB data read to chip->oob_poi
+  * @page: page number to read
+  */
+-static int nand_read_page_swecc(struct nand_chip *chip, uint8_t *buf,
+-				int oob_required, int page)
++int nand_read_page_swecc(struct nand_chip *chip, uint8_t *buf,
++			 int oob_required, int page)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	int i, eccsize = chip->ecc.size, ret;
+@@ -2979,6 +2979,7 @@ static int nand_read_page_swecc(struct nand_chip *chip, uint8_t *buf,
+ 	}
+ 	return max_bitflips;
+ }
++EXPORT_SYMBOL_GPL(nand_read_page_swecc);
+ 
+ /**
+  * nand_read_subpage - [REPLACEABLE] ECC based sub-page read function
+diff --git a/drivers/mtd/nand/raw/pl35x-nand-controller.c b/drivers/mtd/nand/raw/pl35x-nand-controller.c
+index bd89aaadd1b2..d61eba938311 100644
+--- a/drivers/mtd/nand/raw/pl35x-nand-controller.c
++++ b/drivers/mtd/nand/raw/pl35x-nand-controller.c
+@@ -21,6 +21,7 @@
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
+ #include <linux/mtd/mtd.h>
++#include <linux/mtd/nand-ecc-sw-hamming.h>
+ #include <linux/mtd/rawnand.h>
+ #include <linux/mtd/partitions.h>
+ #include <linux/of.h>
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index 3658315752bf..5539e96b2cac 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -1578,6 +1578,8 @@ int nand_write_data_op(struct nand_chip *chip, const void *buf,
+ 		       unsigned int len, bool force_8bit);
+ int nand_read_page_hwecc_oob_first(struct nand_chip *chip, uint8_t *buf,
+ 				   int oob_required, int page);
++int nand_read_page_swecc(struct nand_chip *chip, uint8_t *buf,
++			 int oob_required, int page);
+ 
+ /* Scan and identify a NAND device */
+ int nand_scan_with_ids(struct nand_chip *chip, unsigned int max_chips,
 
-Best regards,
 -- 
-Bastien Curutchet <bastien.curutchet@bootlin.com>
+2.55.0
 
 
 ______________________________________________________
