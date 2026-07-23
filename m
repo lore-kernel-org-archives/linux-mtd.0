@@ -4,63 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5588BC531C9
-	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jul 2026 02:12:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9FC3C4453A
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jul 2026 02:40:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=0z2HhO/0toEue1V5Vdx8zUDDG+OGXg+cG0R19YXpBtI=; b=i97cR0XLx0Kr9s
-	tDLr5uC+Na9ZzZyRs1tbAlmsxPOyzPzOu2PvhtUh+Ho3JSg0TvP/QA2HqWC//M0LJ69CqGGy/9Ccc
-	JyZOFliFHu6KSEHefNogvFr9h+1bWqmdLMXDwswuuYXnqIVq9eSqdtzK8dwNBdser+ZQoZGjoUqAo
-	+OZLvgqm/HajhUsyrD+cqoKwE8cXTsSZI9BcUyDgCvpOzTBF/WmlIstF5ui/ij8al65TBZhhvMm6P
-	u71xoTiWo4SEaTkIhrvlbHJXe/jF4YnC9+S2yg29vulYmUA7QQMpM5E5Y4Ffr74JsIk4gX36XyVRC
-	Y5byRuUgnDq3wJJPYLAg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=LhYn+w7DULVssg0DJosCBwUt0oBEwSCwYW1CSzbEd8A=; b=kaK13dfygCSn1dmIn4oY/8n18v
+	XseAv4h9PwpNTWtVl9AWkuBN0uyaSEnAXE0TtTuGzFc3UNtTvOd84DH+03oqOSt6Q1GnandgAEzYt
+	1AuaZrmPZClIB0wr74gr/7Afq0+7AwI7zvHKMzOcTNFD4335N5ThpOtyVai2VDOHY3KAnnh8ev49o
+	FCxrVz+Jv0dt0UA5ETWPgsF6d9GBSB+xFSOFUF1TfLLkRLlsrqSCiSZfwNUqLWaonsOR2gAamLj0L
+	BnIEyD+sxo/tlJwc3KWMbc9FPcO66Hdz2CDKp0uMQWsaWeXDO2GhWp4vLfF9Ui3toqoos4/uy8QNq
+	AKkodi2w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wmius-0000000DCLo-3izf;
-	Thu, 23 Jul 2026 02:12:06 +0000
-Received: from canpmsgout05.his.huawei.com ([113.46.200.220])
+	id 1wmjMf-0000000DFPX-0GX6;
+	Thu, 23 Jul 2026 02:40:49 +0000
+Received: from canpmsgout06.his.huawei.com ([113.46.200.221])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wmium-0000000DCJU-0qgR
+	id 1wmjMb-0000000DFNH-18QZ
 	for linux-mtd@lists.infradead.org;
-	Thu, 23 Jul 2026 02:12:05 +0000
+	Thu, 23 Jul 2026 02:40:47 +0000
 dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
 	c=relaxed/relaxed; q=dns/txt;
 	h=From;
-	bh=qoEAz0O377RHYFEBFeemHDjRbCWq/pk3mlrg1Wq9+3k=;
-	b=OsROysVcyFjeR7wCVWeo+LCB9Xh7ovf1v7LnX3QuV+1w6QNituKMJRCcaUtuOkq1qyNbEKb4D
-	MlXh6nd9bMNWrWAn0DFtDl1v7gQM21qOks2JxT+WKRCU1cvb23q4SyZQMcq0y+wTOdtNFi4h/M3
-	kVZFGnoIareTvwTrezvQI0Y=
+	bh=9M7yYSN0bYnlZIH0mun3H5de7bnSDCfsTagPaRh3GQ4=;
+	b=4cYtb9/qH8x94qteEZLx+iXyytW8VklXKQUzFwqSyC2QxvBYTq16xTKy+lk6S+a2pLz4quFhg
+	kapR3BjUAWYZMjSUyYUIBTlVyuTf3F1gU+N5Yd0KGbfWnFZzm0fuPRUoZLoWmeWSJD4YMyCy6cb
+	Zrmx5Yqu1AMms74Up8hUsz8=
 Received: from mail.maildlp.com (unknown [172.19.162.140])
-	by canpmsgout05.his.huawei.com (SkyGuard) with ESMTPS id 4h5Ds718Nqz12LFy;
-	Thu, 23 Jul 2026 10:02:19 +0800 (CST)
-Received: from dggpemr200001.china.huawei.com (unknown [7.185.36.96])
-	by mail.maildlp.com (Postfix) with ESMTPS id 94FA92025F;
-	Thu, 23 Jul 2026 10:11:52 +0800 (CST)
-Received: from huawei.com (10.50.85.155) by dggpemr200001.china.huawei.com
- (7.185.36.96) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Thu, 23 Jul
- 2026 10:11:51 +0800
-From: Ran Hongyun <ranhongyun1@huawei.com>
-To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>,
-	<vapier@gentoo.org>, <artem.bityutskiy@linux.intel.com>
+	by canpmsgout06.his.huawei.com (SkyGuard) with ESMTPS id 4h5FVR2PqrzRhVH;
+	Thu, 23 Jul 2026 10:31:11 +0800 (CST)
+Received: from whupemo200011.china.huawei.com (unknown [7.152.185.179])
+	by mail.maildlp.com (Postfix) with ESMTPS id 379F72025F;
+	Thu, 23 Jul 2026 10:40:33 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ whupemo200011.china.huawei.com (7.152.185.179) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Thu, 23 Jul 2026 10:40:31 +0800
+Subject: Re: [PATCH 1/2] UBI: fix two issues in the ubi.mtd MODULE_PARM_DESC
+To: Ran Hongyun <ranhongyun1@huawei.com>, <richard@nod.at>,
+	<miquel.raynal@bootlin.com>, <vigneshr@ti.com>, <vapier@gentoo.org>,
+	<artem.bityutskiy@linux.intel.com>
 CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<chengzhihao1@huawei.com>, <yangerkun@huawei.com>, <yi.zhang@huawei.com>
-Subject: [PATCH 0/2] UBI: fix ubi.mtd MODULE_PARM_DESC issues and add per-device wear-leveling threshold
-Date: Thu, 23 Jul 2026 10:02:31 +0800
-Message-ID: <20260723020233.3079997-1-ranhongyun1@huawei.com>
-X-Mailer: git-send-email 2.52.0
+	<yangerkun@huawei.com>, <yi.zhang@huawei.com>
+References: <20260723020233.3079997-1-ranhongyun1@huawei.com>
+ <20260723020233.3079997-2-ranhongyun1@huawei.com>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <bdf4872f-cd25-252e-25ab-f34366909f33@huawei.com>
+Date: Thu, 23 Jul 2026 10:40:31 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-X-Originating-IP: [10.50.85.155]
-X-ClientProxiedBy: kwepems500002.china.huawei.com (7.221.188.17) To
- dggpemr200001.china.huawei.com (7.185.36.96)
+In-Reply-To: <20260723020233.3079997-2-ranhongyun1@huawei.com>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: kwepems100001.china.huawei.com (7.221.188.238) To
+ whupemo200011.china.huawei.com (7.152.185.179)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260722_191200_394069_164C779D 
-X-CRM114-Status: UNSURE (   7.94  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260722_194045_939258_6D684C40 
+X-CRM114-Status: GOOD (  17.55  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,41 +76,66 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="gbk"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This series adds a per-device wear-leveling threshold for UBI devices,
-with a preparatory fix to the MODULE_PARM_DESC.
-
-Patch 1 fixes two pre-existing issues in the ubi.mtd MODULE_PARM_DESC:
-the parameter format string was missing the enable_fm and need_resv_pool
-tokens, and the bad-block reservation note was misplaced after Example 5
-instead of after Example 3.
-
-Patch 2 extends struct ubi_attach_req with a __s32 wl_threshold field, 
-plumbs it through the ioctl and module parameter paths, and replaces 
-the compile-time macros UBI_WL_THRESHOLD and WL_FREE_MAX_DIFF with p
-er-device fields across wl.c and fastmap-wl.c. 0 means "use the kernel 
-default", the accepted range is 2-65536.
-
-Ran Hongyun (2):
-  UBI: fix two issues in the ubi.mtd MODULE_PARM_DESC
-  UBI: support per-device wear-leveling threshold
-
- drivers/mtd/ubi/build.c      | 43 ++++++++++++++++++++++++++++++------
- drivers/mtd/ubi/cdev.c       |  2 +-
- drivers/mtd/ubi/fastmap-wl.c |  8 +++----
- drivers/mtd/ubi/ubi.h        | 21 +++++++++++++++++-
- drivers/mtd/ubi/wl.c         | 39 ++++++++------------------------
- include/uapi/mtd/ubi-user.h  | 10 ++++++++-
- 6 files changed, 79 insertions(+), 44 deletions(-)
-
--- 
-2.52.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+1NogMjAyNi83LzIzIDEwOjAyLCBSYW4gSG9uZ3l1biDQtLXAOgo+IEZpeCB0d28gaXNzdWVzIGlu
+dHJvZHVjZWQgYmVmb3JlOgo+IAo+ICAgLSBUaGUgcGFyYW1ldGVyIGZvcm1hdCBzdHJpbmcgd2Fz
+IG1pc3NpbmcgdGhlIGVuYWJsZV9mbSBhbmQKPiAgICAgIG5lZWRfcmVzdl9wb29sIHRva2VucyBp
+bnRyb2R1Y2VkIGluIGFuIGVhcmxpZXIgY29tbWl0Lgo+IAo+ICAgLSBUaGUgYmFkLWJsb2NrIHJl
+c2VydmF0aW9uIG5vdGUgd2FzIG1pc3BsYWNlZCBhZnRlciBFeGFtcGxlIDUKPiAgICAgIGluc3Rl
+YWQgb2YgYWZ0ZXIgRXhhbXBsZSAzLiBJdCB3YXMgbWlzcGxhY2VkIGR1ZSB0byBhbiBlYXJsaWVy
+IHBhdGNoLgo+IAo+IEZpeGVzOiA4M2ZmNTlhMDY2NjMgKCJVQkk6IHN1cHBvcnQgdWJpX251bSBv
+biBtdGQudWJpIGNvbW1hbmQgbGluZSIpCj4gU2lnbmVkLW9mZi1ieTogUmFuIEhvbmd5dW4gPHJh
+bmhvbmd5dW4xQGh1YXdlaS5jb20+Cj4gLS0tCj4gICBkcml2ZXJzL210ZC91YmkvYnVpbGQuYyB8
+IDYgKysrLS0tCj4gICAxIGZpbGUgY2hhbmdlZCwgMyBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9u
+cygtKQo+IAoKUmV2aWV3ZWQtYnk6IFpoaWhhbyBDaGVuZyA8Y2hlbmd6aGloYW8xQGh1YXdlaS5j
+b20+Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL3ViaS9idWlsZC5jIGIvZHJpdmVycy9tdGQv
+dWJpL2J1aWxkLmMKPiBpbmRleCA2NzRhZDg3ODA5ZGYuLjhlNWYxNzgxNjhjYiAxMDA2NDQKPiAt
+LS0gYS9kcml2ZXJzL210ZC91YmkvYnVpbGQuYwo+ICsrKyBiL2RyaXZlcnMvbXRkL3ViaS9idWls
+ZC5jCj4gQEAgLTE1NzQsNyArMTU3NCw3IEBAIHN0YXRpYyBpbnQgdWJpX210ZF9wYXJhbV9wYXJz
+ZShjb25zdCBjaGFyICp2YWwsIGNvbnN0IHN0cnVjdCBrZXJuZWxfcGFyYW0gKmtwKQo+ICAgfQo+
+ICAgCj4gICBtb2R1bGVfcGFyYW1fY2FsbChtdGQsIHViaV9tdGRfcGFyYW1fcGFyc2UsIE5VTEws
+IE5VTEwsIDA0MDApOwo+IC1NT0RVTEVfUEFSTV9ERVNDKG10ZCwgIk1URCBkZXZpY2VzIHRvIGF0
+dGFjaC4gUGFyYW1ldGVyIGZvcm1hdDogbXRkPTxuYW1lfG51bXxwYXRoPlssPHZpZF9oZHJfb2Zm
+cz5bLG1heF9iZWJfcGVyMTAyNFssdWJpX251bV1dXS5cbiIKPiArTU9EVUxFX1BBUk1fREVTQyht
+dGQsICJNVEQgZGV2aWNlcyB0byBhdHRhY2guIFBhcmFtZXRlciBmb3JtYXQ6IG10ZD08bmFtZXxu
+dW18cGF0aD5bLDx2aWRfaGRyX29mZnM+WyxtYXhfYmViX3BlcjEwMjRbLHViaV9udW1bLGVuYWJs
+ZV9mbVssbmVlZF9yZXN2X3Bvb2xdXV1dXS5cbiIKPiAgIAkJICAgICAgIk11bHRpcGxlIFwibXRk
+XCIgcGFyYW1ldGVycyBtYXkgYmUgc3BlY2lmaWVkLlxuIgo+ICAgCQkgICAgICAiTVREIGRldmlj
+ZXMgbWF5IGJlIHNwZWNpZmllZCBieSB0aGVpciBudW1iZXIsIG5hbWUsIG9yIHBhdGggdG8gdGhl
+IE1URCBjaGFyYWN0ZXIgZGV2aWNlIG5vZGUuXG4iCj4gICAJCSAgICAgICJPcHRpb25hbCBcInZp
+ZF9oZHJfb2Zmc1wiIHBhcmFtZXRlciBzcGVjaWZpZXMgVUJJIFZJRCBoZWFkZXIgcG9zaXRpb24g
+dG8gYmUgdXNlZCBieSBVQkkuIChkZWZhdWx0IHZhbHVlIGlmIDApXG4iCj4gQEAgLTE1ODcsOSAr
+MTU4Nyw5IEBAIE1PRFVMRV9QQVJNX0RFU0MobXRkLCAiTVREIGRldmljZXMgdG8gYXR0YWNoLiBQ
+YXJhbWV0ZXIgZm9ybWF0OiBtdGQ9PG5hbWV8bnVtfHBhCj4gICAJCSAgICAgICJFeGFtcGxlIDE6
+IG10ZD0vZGV2L210ZDAgLSBhdHRhY2ggTVREIGRldmljZSAvZGV2L210ZDAuXG4iCj4gICAJCSAg
+ICAgICJFeGFtcGxlIDI6IG10ZD1jb250ZW50LDE5ODQgbXRkPTQgLSBhdHRhY2ggTVREIGRldmlj
+ZSB3aXRoIG5hbWUgXCJjb250ZW50XCIgdXNpbmcgVklEIGhlYWRlciBvZmZzZXQgMTk4NCwgYW5k
+IE1URCBkZXZpY2UgbnVtYmVyIDQgd2l0aCBkZWZhdWx0IFZJRCBoZWFkZXIgb2Zmc2V0LlxuIgo+
+ICAgCQkgICAgICAiRXhhbXBsZSAzOiBtdGQ9L2Rldi9tdGQxLDAsMjUgLSBhdHRhY2ggTVREIGRl
+dmljZSAvZGV2L210ZDEgdXNpbmcgZGVmYXVsdCBWSUQgaGVhZGVyIG9mZnNldCBhbmQgcmVzZXJ2
+ZSAyNSpuYW5kX3NpemVfaW5fYmxvY2tzLzEwMjQgZXJhc2UgYmxvY2tzIGZvciBiYWQgYmxvY2sg
+aGFuZGxpbmcuXG4iCj4gKwkJICAgICAgIlx0KGUuZy4gaWYgdGhlIE5BTkQgKmNoaXBzZXQqIGhh
+cyA0MDk2IFBFQiwgMTAwIHdpbGwgYmUgcmVzZXJ2ZWQgZm9yIHRoaXMgVUJJIGRldmljZSkuXG4i
+Cj4gICAJCSAgICAgICJFeGFtcGxlIDQ6IG10ZD0vZGV2L210ZDEsMCwwLDUgLSBhdHRhY2ggTVRE
+IGRldmljZSAvZGV2L210ZDEgdG8gVUJJIDUgYW5kIHVzaW5nIGRlZmF1bHQgdmFsdWVzIGZvciB0
+aGUgb3RoZXIgZmllbGRzLlxuIgo+IC0JCSAgICAgICJleGFtcGxlIDU6IG10ZD0xLDAsMCw1IG10
+ZD0yLDAsMCw2LDEgLSBhdHRhY2ggTVREIGRldmljZSAvZGV2L210ZDEgdG8gVUJJIDUgYW5kIGRp
+c2FibGUgZmFzdG1hcDsgYXR0YWNoIE1URCBkZXZpY2UgL2Rldi9tdGQyIHRvIFVCSSA2IGFuZCBl
+bmFibGUgZmFzdG1hcC4ob25seSB3b3JrcyB3aGVuIGZhc3RtYXAgaXMgZW5hYmxlZCBhbmQgZm1f
+YXV0b2NvbnZlcnQ9WSkuXG4iCj4gLQkJICAgICAgIlx0KGUuZy4gaWYgdGhlIE5BTkQgKmNoaXBz
+ZXQqIGhhcyA0MDk2IFBFQiwgMTAwIHdpbGwgYmUgcmVzZXJ2ZWQgZm9yIHRoaXMgVUJJIGRldmlj
+ZSkuIik7Cj4gKwkJICAgICAgImV4YW1wbGUgNTogbXRkPTEsMCwwLDUgbXRkPTIsMCwwLDYsMSAt
+IGF0dGFjaCBNVEQgZGV2aWNlIC9kZXYvbXRkMSB0byBVQkkgNSBhbmQgZGlzYWJsZSBmYXN0bWFw
+OyBhdHRhY2ggTVREIGRldmljZSAvZGV2L210ZDIgdG8gVUJJIDYgYW5kIGVuYWJsZSBmYXN0bWFw
+Lihvbmx5IHdvcmtzIHdoZW4gZmFzdG1hcCBpcyBlbmFibGVkIGFuZCBmbV9hdXRvY29udmVydD1Z
+KS5cbiIpOwo+ICAgI2lmZGVmIENPTkZJR19NVERfVUJJX0ZBU1RNQVAKPiAgIG1vZHVsZV9wYXJh
+bShmbV9hdXRvY29udmVydCwgYm9vbCwgMDY0NCk7Cj4gICBNT0RVTEVfUEFSTV9ERVNDKGZtX2F1
+dG9jb252ZXJ0LCAiU2V0IHRoaXMgcGFyYW1ldGVyIHRvIGVuYWJsZSBmYXN0bWFwIGF1dG9tYXRp
+Y2FsbHkgb24gaW1hZ2VzIHdpdGhvdXQgYSBmYXN0bWFwLiIpOwo+IAoKCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vz
+c2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0
+aW5mby9saW51eC1tdGQvCg==
