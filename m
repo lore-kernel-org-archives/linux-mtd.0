@@ -4,90 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 363D9C44536
-	for <linux-mtd@archiver.kernel.org>; Wed, 22 Jul 2026 22:06:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 543EFC531C8
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jul 2026 02:12:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=XMI1i91m2RoKyoCQhURNYTa6QXJQHZH7awOU27TFzks=; b=00v5xjfRYBU+sA
-	/FfiWkNMPMFIbeotQTtbrDcumdn56S4UyGE+SctkYfnClR6Iwy79BdpX2cr8xAektiOdkS0pbDpBf
-	meYlOVwjXHOqlKB8BWt1EkJm8afxVipzWqRs8z1yBUEJJrF5kCvvp+SCakv3A7dPNvyRrTw7EJU3t
-	sr4m0F5Q/V5JTG1NYfKP1fyKr/dhsbNrJSaBq+c6zyRH1mgc0gnxYQHuVu0/EcdY8QgqPflEmDYNh
-	z/ONuiE7+pAUQmviQXIPJBooj67QZ/fwPBoo8xR8Z/sBuvm32rXxx/jqOfjlbWJbVdl5oknXu6f/+
-	jwEoVSz2XoQ/7KcConOg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=NiypE7wy/R3+PkOz9zN2nDbVaBblgjhxuXQp7FNKqvo=; b=h/fRQhx9NhaezJ
+	G5uT1jeBQN1dwkMKD9hgNBogHyzWS4H6R9nEHow9WFgYUX2JSk2XNiyI2wY3/hh0AutAvHx3uYUK7
+	jkNAHJB7KaQybPSG3eyGb81Ku/R5OEceir/tPQ9Fo3KT8eOz5iihWWw4h57O/n9HXl81tjZWuiDjv
+	PF3PzfHQFwx5NZcJyw3tr30pwoKu8BPYcByHumebK2oxzV729jUULbqliHDcJnExe+V4McAaU7Uq6
+	7/Zhq+wDbWqJGoCJZn4llRWgX8X6c2fJ7WB8Ks5komc1e+l3X1aYll/cbgPPSQthcVTlF42JQ56fm
+	dF0AX6MQJL8YqyGYDauA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wmf5B-0000000Csmi-296k;
-	Wed, 22 Jul 2026 22:06:29 +0000
-Received: from mail-wm1-x32b.google.com ([2a00:1450:4864:20::32b])
+	id 1wmiuw-0000000DCMT-03D7;
+	Thu, 23 Jul 2026 02:12:10 +0000
+Received: from canpmsgout02.his.huawei.com ([113.46.200.217])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wmf59-0000000CsmJ-0F7t
+	id 1wmium-0000000DCKB-25BD
 	for linux-mtd@lists.infradead.org;
-	Wed, 22 Jul 2026 22:06:28 +0000
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-495437bb891so55399595e9.1
-        for <linux-mtd@lists.infradead.org>; Wed, 22 Jul 2026 15:06:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1784757985; x=1785362785; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=gTPm2m44GtFRGq66+iN2n68o+5+YpQyJo9uF1nvFQA4=;
-        b=kC6/rtvnbJYx0BbKxdkx4E7QWOCsUrPa5hHRMQAxqYbYGMpwnk1UviO6h8B50djrjJ
-         kZ0QTrak87tu4vFIe6KUH6bVm64nubU72v5DDsMryVKyCcmrNmLLHrc4Gtln1mH0a5qp
-         quIEoHnPwXVXxI2+JRH1EoMmfrbhcyp/Kci+iyc18rS+6j2hJJ4lXLx8Fk0ODfI7/+vI
-         0AHvlaSW1k1rHUa76caGbK2xt3WQXJleOFGiK9niP+iYNN5Zgn1zycn/5et+xby+dbao
-         kLiqC67nlcQklrr4LXN2HaZ/c0BgKwceAqW8mazGGnr0rseOaESTslj5lfBHpAS8+rgu
-         iV8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1784757985; x=1785362785;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=gTPm2m44GtFRGq66+iN2n68o+5+YpQyJo9uF1nvFQA4=;
-        b=FSozrizMjNyLP8jQTWdMb3OkrKV7NkHMCQnwnI56cGX2xm79XrkIK5uF8ThyP8UXFy
-         AMBhnO9knGeFLHcKkd59/zpvdzbNrutmq1OuFyfFCHpeXAtO5o8lnkAHIrWxSNRNeZq0
-         xTaVpUT5oRBrJnhbE24nmM/ezd6HangPZX9J15JMNgezsCnbXlV3hqW2q5yhOSNsgQgd
-         pJvBrckcQzJyfnYe6O+l6Cj4gqAQnxvVv2u9h2NpQHu9X+/MrOxbCaLvmgqwcLEB5N4N
-         CvVhYzc8NJEHZMpZphS7qi8wn6jk3qcz/gWM02wcToricpJ2oXPGloZbJBwZrqTAm4qQ
-         np7g==
-X-Forwarded-Encrypted: i=1; AHgh+RqmBXAHAfL2XINUVZ9PvXalFYue7STnmZtWPia9g6MLc45G6gX69UPbwbn5Gk5AqxWpqeAQw9lkz80=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yy46NIXkWNkYdngo7Fx53Xywz6TKPeEsYBIL10DO13jnfRlaVV7
-	j90J5ZMlixodgFZuaGC7/upy3va3EWDstnb4+daFrm0+wSEkX02jFrDL
-X-Gm-Gg: AR+sD12bu9b+thV1tDTR+W2Dcx7dk4pOagzRqgZBd5i96R7ZEmyn/+ZYeGorSY2KV99
-	48lb/L+jWhNalFrC+NADSNMmURHgMQmNll9W29yArD4C00aKlau4wLC1o7V68eYFHH9LOKJwfAy
-	takiQZe6+IRGRegOXzu+rbUDDdmdbYmpwyX9T9TGzjgG/BInM292ghOTmV4xw52usoBbTe9defc
-	ddSgdM3u820Gzxw+tCE5TUB/yaDkOKNfxzzQerMmU6BCR83Lj44pleMMDCZzAFChbJ4qg7Z/dFT
-	YbGeL8qhpo6XbV4kGNrX2DMPsF238BRVMBy8TkY1gDesyXJ+0GecH48bKfchiY6/ahJ98llf9h9
-	UGjPopHN9uOIX3pkoMuPv3Sga8qSfy7+RWsmHaPKJb0uE9G0hs/Q1JepBTC6m5rjI7qO/qlAtXM
-	EjO7pIGdkuIg6uGRXQmHhsKDTI+jZCGGf2u86mPOryA6KXyYoNPB8O4gL9bG9nShqfPw==
-X-Received: by 2002:a05:600c:321a:b0:495:58fe:88e5 with SMTP id 5b1f17b1804b1-495745579cbmr487415e9.2.1784757984580;
-        Wed, 22 Jul 2026 15:06:24 -0700 (PDT)
-Received: from nixos-office (195-23-151-163.net.novis.pt. [195.23.151.163])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-47f85b9a60asm9562718f8f.3.2026.07.22.15.06.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Jul 2026 15:06:23 -0700 (PDT)
-From: Julian Braha <julianbraha@gmail.com>
-To: miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com
-Cc: arnd@arndb.de,
-	sean@mess.org,
-	andriy.shevchenko@linux.intel.com,
-	rdunlap@infradead.org,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Julian Braha <julianbraha@gmail.com>
-Subject: [PATCH v2] mtd: maps: remove dead select of MTD_CFI_BE_BYTE_SWAP
-Date: Wed, 22 Jul 2026 23:06:18 +0100
-Message-ID: <20260722220618.198164-1-julianbraha@gmail.com>
-X-Mailer: git-send-email 2.54.0
+	Thu, 23 Jul 2026 02:12:06 +0000
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=aYzr/QN7359G6aEH8C6fQiSsse3OttAwNAwOTYdQiIM=;
+	b=DCbElVirdxLeX9orDR9zhZr6j3gJlNI2mKEpN8IP3clA6nUMJLEjM+uWh3vPIrnBzuS7T0Rau
+	e6BrLtMjWTnWB52Td1I0XVohsWD8AdTMXlNDE6+qWBj707WDkcH9HwpycShq+JSywS+q3QWXVjn
+	zJhAM0RJ4ZJqZ6kv4VZQWh4=
+Received: from mail.maildlp.com (unknown [172.19.162.197])
+	by canpmsgout02.his.huawei.com (SkyGuard) with ESMTPS id 4h5DsC1rQbzcZyH;
+	Thu, 23 Jul 2026 10:02:23 +0800 (CST)
+Received: from dggpemr200001.china.huawei.com (unknown [7.185.36.96])
+	by mail.maildlp.com (Postfix) with ESMTPS id 4EAEC4057D;
+	Thu, 23 Jul 2026 10:11:53 +0800 (CST)
+Received: from huawei.com (10.50.85.155) by dggpemr200001.china.huawei.com
+ (7.185.36.96) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Thu, 23 Jul
+ 2026 10:11:52 +0800
+From: Ran Hongyun <ranhongyun1@huawei.com>
+To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>,
+	<vapier@gentoo.org>, <artem.bityutskiy@linux.intel.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<chengzhihao1@huawei.com>, <yangerkun@huawei.com>, <yi.zhang@huawei.com>
+Subject: [PATCH 1/2] UBI: fix two issues in the ubi.mtd MODULE_PARM_DESC
+Date: Thu, 23 Jul 2026 10:02:32 +0800
+Message-ID: <20260723020233.3079997-2-ranhongyun1@huawei.com>
+X-Mailer: git-send-email 2.52.0
+In-Reply-To: <20260723020233.3079997-1-ranhongyun1@huawei.com>
+References: <20260723020233.3079997-1-ranhongyun1@huawei.com>
 MIME-Version: 1.0
+X-Originating-IP: [10.50.85.155]
+X-ClientProxiedBy: kwepems500002.china.huawei.com (7.221.188.17) To
+ dggpemr200001.china.huawei.com (7.185.36.96)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260722_150627_144102_C8EE2A40 
-X-CRM114-Status: GOOD (  11.09  )
+X-CRM114-CacheID: sfid-20260722_191205_448635_B195D07F 
+X-CRM114-Status: GOOD (  12.83  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -104,37 +78,47 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-'select' does not work on config options in a 'choice', so currently it is
-possible to enable MTD_PHYSMAP_IXP4XX without MTD_CFI_BE_BYTE_SWAP.
+Fix two issues introduced before:
 
-From a previous conversation, it was decided to remove the select entirely:
-https://lore.kernel.org/all/c6268184-4904-49d9-b14f-0e11dce8bdad@app.fastmail.com/
+ - The parameter format string was missing the enable_fm and
+    need_resv_pool tokens introduced in an earlier commit.
 
-This dead select was found by kconfirm, a static analysis tool for Kconfig.
+ - The bad-block reservation note was misplaced after Example 5
+    instead of after Example 3. It was misplaced due to an earlier patch.
 
-Signed-off-by: Julian Braha <julianbraha@gmail.com>
+Fixes: 83ff59a06663 ("UBI: support ubi_num on mtd.ubi command line")
+Signed-off-by: Ran Hongyun <ranhongyun1@huawei.com>
 ---
-Changes since v1: remove 'select' instead of using 'depends on'
-Link:
-https://lore.kernel.org/all/20260722001003.36598-1-julianbraha@gmail.com/
----
- drivers/mtd/maps/Kconfig | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/mtd/ubi/build.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
-index f447902d707e..1bb3dba2631d 100644
---- a/drivers/mtd/maps/Kconfig
-+++ b/drivers/mtd/maps/Kconfig
-@@ -101,7 +101,6 @@ config MTD_PHYSMAP_IXP4XX
- 	depends on MTD_PHYSMAP_OF
- 	depends on ARM
- 	select MTD_COMPLEX_MAPPINGS
--	select MTD_CFI_BE_BYTE_SWAP if CPU_BIG_ENDIAN
- 	default ARCH_IXP4XX
- 	help
- 	  This provides some extra DT physmap parsing for the Intel IXP4xx
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index 674ad87809df..8e5f178168cb 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -1574,7 +1574,7 @@ static int ubi_mtd_param_parse(const char *val, const struct kernel_param *kp)
+ }
+ 
+ module_param_call(mtd, ubi_mtd_param_parse, NULL, NULL, 0400);
+-MODULE_PARM_DESC(mtd, "MTD devices to attach. Parameter format: mtd=<name|num|path>[,<vid_hdr_offs>[,max_beb_per1024[,ubi_num]]].\n"
++MODULE_PARM_DESC(mtd, "MTD devices to attach. Parameter format: mtd=<name|num|path>[,<vid_hdr_offs>[,max_beb_per1024[,ubi_num[,enable_fm[,need_resv_pool]]]]].\n"
+ 		      "Multiple \"mtd\" parameters may be specified.\n"
+ 		      "MTD devices may be specified by their number, name, or path to the MTD character device node.\n"
+ 		      "Optional \"vid_hdr_offs\" parameter specifies UBI VID header position to be used by UBI. (default value if 0)\n"
+@@ -1587,9 +1587,9 @@ MODULE_PARM_DESC(mtd, "MTD devices to attach. Parameter format: mtd=<name|num|pa
+ 		      "Example 1: mtd=/dev/mtd0 - attach MTD device /dev/mtd0.\n"
+ 		      "Example 2: mtd=content,1984 mtd=4 - attach MTD device with name \"content\" using VID header offset 1984, and MTD device number 4 with default VID header offset.\n"
+ 		      "Example 3: mtd=/dev/mtd1,0,25 - attach MTD device /dev/mtd1 using default VID header offset and reserve 25*nand_size_in_blocks/1024 erase blocks for bad block handling.\n"
++		      "\t(e.g. if the NAND *chipset* has 4096 PEB, 100 will be reserved for this UBI device).\n"
+ 		      "Example 4: mtd=/dev/mtd1,0,0,5 - attach MTD device /dev/mtd1 to UBI 5 and using default values for the other fields.\n"
+-		      "example 5: mtd=1,0,0,5 mtd=2,0,0,6,1 - attach MTD device /dev/mtd1 to UBI 5 and disable fastmap; attach MTD device /dev/mtd2 to UBI 6 and enable fastmap.(only works when fastmap is enabled and fm_autoconvert=Y).\n"
+-		      "\t(e.g. if the NAND *chipset* has 4096 PEB, 100 will be reserved for this UBI device).");
++		      "example 5: mtd=1,0,0,5 mtd=2,0,0,6,1 - attach MTD device /dev/mtd1 to UBI 5 and disable fastmap; attach MTD device /dev/mtd2 to UBI 6 and enable fastmap.(only works when fastmap is enabled and fm_autoconvert=Y).\n");
+ #ifdef CONFIG_MTD_UBI_FASTMAP
+ module_param(fm_autoconvert, bool, 0644);
+ MODULE_PARM_DESC(fm_autoconvert, "Set this parameter to enable fastmap automatically on images without a fastmap.");
 -- 
-2.54.0
+2.52.0
 
 
 ______________________________________________________
