@@ -4,65 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B140C531CC
-	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jul 2026 08:25:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3063C531C7
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jul 2026 08:30:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8nIFHC1RZrZQH4SZ1EJ63mjgXfoCvZ6aF1FBW3h+mBY=; b=GRZMeXbynp5yFn
-	hoWxdii93b5rfFkoLHbszioXY+FGP1lP2DZEBJY8KwDLhhk2WjKHJKDBM7lAK1G4LVvEEzdHleoa0
-	SjCcedBf2DgMAVQGKtWQZOslzZrJtc50V8la9rEwkooN/Qvuwim3uotpmLMZW/AQuNNowec5RjNLd
-	/M8cfOUOgguXk1wVXG2uwTHKwTFf0PShw6sjipV2deWeFquq6d4vLF2RTNyXmpnRjkgDF0XcaP3ru
-	YZZWpyIf0nKDSGUEXa2UHPepxDZWc+9aKwlwAHWYxXU6OUQHpB4B4B1li+fkIKR7zX8LByq9jBhq0
-	2dRGFybS6zpHEGgIQrdw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
+	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=YkP4uxpasJdog0Q1EwT+dBTmzJ/SqCKKmBr3B0/5LAc=; b=uEGYa5XM3CeZh8pMaB9dPgL4YN
+	zUJ8pzJBzueESWewYoifF/6CGvxJu8M7V4mdM95yuU2oALTAQnEq/YUuxM3kBhoeVtD51T9jDG1Vk
+	AK0j5sGJ247l+jjoLxzqga8XmQFjZn9lpUtfIeJnIyFfi8m+ANjIhg6rTs0QnIcK24UUwr656KpfQ
+	VRdXzl9StOcS0ot4uHhwqVeIg4JRESpIpoJCUv/jVNNCbeLVgW1gi6oN0KudWeOSyyNW/3Hyqp7m3
+	2I+O6PdFlPpjRPKlJb1t1kEMvMmDvgI3woJjBpqVUMAc1cFQ69zR1H8d3T+PNtnVPEFJjnW3t1A2H
+	IH6sQNMA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wmokU-0000000DiwQ-2EfG;
-	Thu, 23 Jul 2026 08:25:46 +0000
-Received: from canpmsgout01.his.huawei.com ([113.46.200.216])
+	id 1wmop4-0000000DjgB-2Er5;
+	Thu, 23 Jul 2026 08:30:30 +0000
+Received: from mailout.nod.at ([116.203.167.152] helo=lithops.sigma-star.at)
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wmokO-0000000DivO-48mA
+	id 1wmop0-0000000Djew-4A2F
 	for linux-mtd@lists.infradead.org;
-	Thu, 23 Jul 2026 08:25:43 +0000
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=q7HPNQ2t8lDNN4zINFYU+eZaaXvZCOEtC2pH1AtpVRY=;
-	b=aXRWBlbd9v8XinpFmWj8I4JtSDm8gA7MeoiHFDS0dPRo1mgstrSxYcr+QzT/U/SqyokCoCd+z
-	pKZ27W561sIwEe82KqX7NwIIvVKjVv21XFG/vJsu1w3xURJsGwA+Hmk8EXWoOBDQF2byHTavBbt
-	E/zN3oj9hQOlO5Xic63VGNE=
-Received: from mail.maildlp.com (unknown [172.19.162.144])
-	by canpmsgout01.his.huawei.com (SkyGuard) with ESMTPS id 4h5P8N2JRrz1T4Hh;
-	Thu, 23 Jul 2026 16:16:04 +0800 (CST)
-Received: from dggpemr200001.china.huawei.com (unknown [7.185.36.96])
-	by mail.maildlp.com (Postfix) with ESMTPS id 378B140538;
-	Thu, 23 Jul 2026 16:25:26 +0800 (CST)
-Received: from huawei.com (10.50.85.155) by dggpemr200001.china.huawei.com
- (7.185.36.96) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Thu, 23 Jul
- 2026 16:25:25 +0800
-From: Ran Hongyun <ranhongyun1@huawei.com>
-To: <ranhongyun1@huawei.com>
-CC: <artem.bityutskiy@linux.intel.com>, <chengzhihao1@huawei.com>,
-	<linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
-	<miquel.raynal@bootlin.com>, <richard@nod.at>, <vapier@gentoo.org>,
-	<vigneshr@ti.com>, <yangerkun@huawei.com>, <yi.zhang@huawei.com>
+	Thu, 23 Jul 2026 08:30:29 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 08EFF2ABFA3;
+	Thu, 23 Jul 2026 10:30:24 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id RJd0bD4mgOSD; Thu, 23 Jul 2026 10:30:23 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 4AA522A3C71;
+	Thu, 23 Jul 2026 10:30:23 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id MweoLfcWDj-A; Thu, 23 Jul 2026 10:30:23 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 1AC35298569;
+	Thu, 23 Jul 2026 10:30:23 +0200 (CEST)
+Date: Thu, 23 Jul 2026 10:30:22 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+To: Ran Hongyun <ranhongyun1@huawei.com>
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>, 
+	chengzhihao1 <chengzhihao1@huawei.com>, 
+	linux-kernel <linux-kernel@vger.kernel.org>, 
+	linux-mtd <linux-mtd@lists.infradead.org>, 
+	Miquel Raynal <miquel.raynal@bootlin.com>, 
+	vapier <vapier@gentoo.org>, Vignesh Raghavendra <vigneshr@ti.com>, 
+	yangerkun <yangerkun@huawei.com>, yi zhang <yi.zhang@huawei.com>
+Message-ID: <1232942703.6876.1784795422933.JavaMail.zimbra@nod.at>
+In-Reply-To: <20260723081639.3651721-1-ranhongyun1@huawei.com>
+References: <20260723020233.3079997-3-ranhongyun1@huawei.com> <20260723081639.3651721-1-ranhongyun1@huawei.com>
 Subject: Re: [PATCH 2/2] UBI: support per-device wear-leveling threshold
-Date: Thu, 23 Jul 2026 16:16:39 +0800
-Message-ID: <20260723081639.3651721-1-ranhongyun1@huawei.com>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <20260723020233.3079997-3-ranhongyun1@huawei.com>
-References: <20260723020233.3079997-3-ranhongyun1@huawei.com>
 MIME-Version: 1.0
-X-Originating-IP: [10.50.85.155]
-X-ClientProxiedBy: kwepems200001.china.huawei.com (7.221.188.67) To
- dggpemr200001.china.huawei.com (7.185.36.96)
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF152 (Linux)/8.8.12_GA_3809)
+Thread-Topic: support per-device wear-leveling threshold
+Thread-Index: k5R/VO/ADEbyvvoapeIHuOvka4q0Uw==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260723_012541_498431_A27E869F 
-X-CRM114-Status: UNSURE (   3.84  )
+X-CRM114-CacheID: sfid-20260723_013027_188797_9469C063 
+X-CRM114-Status: UNSURE (   3.93  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -75,16 +77,26 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Here is the link to Sashiko's comments https://sashiko.dev/#/message/20260723020233.3079997-3-ranhongyun1%40huawei.com
-
-Thanks,
-Ran Hongyun
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIlJhbiBIb25neXVuIiA8cmFu
+aG9uZ3l1bjFAaHVhd2VpLmNvbT4KPiBBbjogIlJhbiBIb25neXVuIiA8cmFuaG9uZ3l1bjFAaHVh
+d2VpLmNvbT4KPiBDQzogIkFydGVtIEJpdHl1dHNraXkiIDxhcnRlbS5iaXR5dXRza2l5QGxpbnV4
+LmludGVsLmNvbT4sICJjaGVuZ3poaWhhbzEiIDxjaGVuZ3poaWhhbzFAaHVhd2VpLmNvbT4sICJs
+aW51eC1rZXJuZWwiCj4gPGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc+LCAibGludXgtbXRk
+IiA8bGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc+LCAiTWlxdWVsIFJheW5hbCIKPiA8bWlx
+dWVsLnJheW5hbEBib290bGluLmNvbT4sICJyaWNoYXJkIiA8cmljaGFyZEBub2QuYXQ+LCAidmFw
+aWVyIiA8dmFwaWVyQGdlbnRvby5vcmc+LCAiVmlnbmVzaCBSYWdoYXZlbmRyYSIKPiA8dmlnbmVz
+aHJAdGkuY29tPiwgInlhbmdlcmt1biIgPHlhbmdlcmt1bkBodWF3ZWkuY29tPiwgInlpIHpoYW5n
+IiA8eWkuemhhbmdAaHVhd2VpLmNvbT4KPiBHZXNlbmRldDogRG9ubmVyc3RhZywgMjMuIEp1bGkg
+MjAyNiAxMDoxNjozOQo+IEJldHJlZmY6IFJlOiBbUEFUQ0ggMi8yXSBVQkk6IHN1cHBvcnQgcGVy
+LWRldmljZSB3ZWFyLWxldmVsaW5nIHRocmVzaG9sZAoKPiBIZXJlIGlzIHRoZSBsaW5rIHRvIFNh
+c2hpa28ncyBjb21tZW50cwo+IGh0dHBzOi8vc2FzaGlrby5kZXYvIy9tZXNzYWdlLzIwMjYwNzIz
+MDIwMjMzLjMwNzk5OTctMy1yYW5ob25neXVuMSU0MGh1YXdlaS5jb20KCkkgc2F3IHRoYXQgYnV0
+IEkgZXhwZWN0ZWQgaXQgdG8gc2VuZCBhIG1haWwgOi0pCgpUaGFua3MsCi8vcmljaGFyZAoKX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4
+IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
