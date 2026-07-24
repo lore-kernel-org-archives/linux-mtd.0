@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58126C531FA
-	for <linux-mtd@archiver.kernel.org>; Fri, 24 Jul 2026 07:43:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CDCE5C531F9
+	for <linux-mtd@archiver.kernel.org>; Fri, 24 Jul 2026 09:14:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=HFi+q4oyOxMPl8wNpyhm/zaGew/fjla1uqji1oG+ktw=; b=lMh1EARX7a0dSw
-	YGcMEH6Xz/iu2P6ZdcSbXrcUel21YoECiIIsiZpIai+CkmY+7lwVD5rYhFp31emgHJgxQzpejByhp
-	i238vrP4WkSa0YsrnSpGnxWaWcK5tLEYN5F7C+gyOHQ4ySksPoWahN+28yCu//RaFCTCnz00WLyNX
-	vd8FhfEy/ABPBAZliFYfnmlD8JyzudXpDzW7IkP9DZg42fNnAAcQgl5NKcQztVwKPO1fAWvGESAzf
-	RC8JA0by2Aeoony+7uP3ycaqppc92PnMwgScIzPvIUuhiIMdQQRNmKi+aToir/Et6gw12i6mAHOZy
-	x6R+6f5orWOlbefFiQpg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
+	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=3jBxjSLBdBj9ZW97ECghoM5R+2ka2vbqw+JBJ/6H1I8=; b=4W2p0H1NKEvELOW6IinC39Omoq
+	YQ54zAjzg012vLxzMvecNIbzTT6ZT6OJiJ6Uj2LEfU1Xz1ZTFsAIol7WxdFIR5sPv45BWMKTXURks
+	HSvyroN/zU3gFGQ6Cv/n47RzkGs2VxL5tJJvuSFr7amWvTgkScNx4DmEiFrcyl+rC+nXZJUyttt2T
+	xVYKdZO+OFzthkDsXkJEoi/QzT4s1dAHnqAPsT3OOHQD5Ps5CP86EWEFXfxMa8KvnZc8uabRom2P+
+	K2nFqKUu/vX2E2HNQEAjupLjG2XSVauWxCpM1XPNf4918SId7cUadsXGTd4vEb6r7nE9BsEOgITUT
+	8BJmRkqA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wnAZM-0000000Fiaf-3IsH;
-	Fri, 24 Jul 2026 07:43:44 +0000
-Received: from sender-op-o17.zoho.eu ([136.143.169.17])
+	id 1wnBzP-0000000FwMM-37hf;
+	Fri, 24 Jul 2026 09:14:43 +0000
+Received: from mailout.nod.at ([116.203.167.152] helo=lithops.sigma-star.at)
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wnAZJ-0000000Fia7-0nmy
+	id 1wnBzL-0000000FwJy-2Rn3
 	for linux-mtd@lists.infradead.org;
-	Fri, 24 Jul 2026 07:43:42 +0000
-ARC-Seal: i=1; a=rsa-sha256; t=1784879012; cv=none; 
-	d=zohomail.eu; s=zohoarc; 
-	b=RWY5rkGircPIX2yy+6nv2kZ86tnH3h+dR++mgplKTCpsT2pghkLia61TU4ifbKdM4NfSUcAdx1AIXrwrL8iHyGP6GReXvyD7ng1F54LLClmwfwtDzybsIYUjbhrxcwU7sOuwa7pb7Lkm6ZLPOOHDsllVNj6OGmG2mwRmBRcX3O8=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.eu; s=zohoarc; 
-	t=1784879012; h=Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:MIME-Version:Message-ID:Subject:Subject:To:To:Message-Id:Reply-To; 
-	bh=Le4ZX6sba4Tq7M3OLf/DlGvQrpsIeXOzElaPQnzU+cA=; 
-	b=J4ouml5levgbf/onIJg0le/XpnS3F0ZdOHYRU5QIKqezIUIFEhTFxYfLEZBtkQ7SKNV5BRtyVxbKCa8p6CVZoj4Ul8K3CFNt13aHhsKUDJm3NXjeHiBqlrxfhCQREJu0E0K6lsnquhNo7dPBKafHBOyyoQw6VO5T7xe+OhevBnI=
-ARC-Authentication-Results: i=1; mx.zohomail.eu;
-	dkim=pass  header.i=auditcode.ai;
-	spf=pass  smtp.mailfrom=security@auditcode.ai;
-	dmarc=pass header.from=<security@auditcode.ai>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1784879012;
-	s=zmail; d=auditcode.ai; i=security@auditcode.ai;
-	h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-ID:MIME-Version:Content-Transfer-Encoding:Message-Id:Reply-To;
-	bh=Le4ZX6sba4Tq7M3OLf/DlGvQrpsIeXOzElaPQnzU+cA=;
-	b=NhDGjhSsOZ2vmX3Z+Qs2x1kiD/dWLMZAsnB94sWKJvdm0TdJfbucEIW8YPuAnE8e
-	LTrkEuykY1AsHy1puLGxxqfLgKXV5VEdHSUcHpgmQ1B+U5A3RZpo64EAlGrBB+0Tz6s
-	8pYfuuW/bvXqjJiwkkzm4hj7Xniea1fHHBKZrU3I=
-Received: by mx.zoho.eu with SMTPS id 1784879009962307.0625662205176;
-	Fri, 24 Jul 2026 09:43:29 +0200 (CEST)
-From: Ibrahim Hashimov <security@auditcode.ai>
-To: richard@nod.at
-Cc: chengzhihao1@huawei.com,
-	s.hauer@pengutronix.de,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: [PATCH] ubifs: fix out-of-bounds read in signature length check
-Date: Fri, 24 Jul 2026 09:43:27 +0200
-Message-ID: <20260724074327.73582-1-security@auditcode.ai>
-X-Mailer: git-send-email 2.50.1
+	Fri, 24 Jul 2026 09:14:41 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 27EDD2698C0;
+	Fri, 24 Jul 2026 11:14:28 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id g_ZBn1QBkE1U; Fri, 24 Jul 2026 11:14:27 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 933E02698C1;
+	Fri, 24 Jul 2026 11:14:27 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id dwFqY_7lNOrD; Fri, 24 Jul 2026 11:14:27 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 6D6092698C0;
+	Fri, 24 Jul 2026 11:14:27 +0200 (CEST)
+Date: Fri, 24 Jul 2026 11:14:27 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+To: Ibrahim Hashimov <security@auditcode.ai>
+Cc: chengzhihao1 <chengzhihao1@huawei.com>, 
+	Sascha Hauer <s.hauer@pengutronix.de>, 
+	linux-mtd <linux-mtd@lists.infradead.org>, 
+	linux-kernel <linux-kernel@vger.kernel.org>, 
+	stable <stable@vger.kernel.org>
+Message-ID: <699752101.3017.1784884467138.JavaMail.zimbra@nod.at>
+In-Reply-To: <20260724074327.73582-1-security@auditcode.ai>
+References: <20260724074327.73582-1-security@auditcode.ai>
+Subject: Re: [PATCH] ubifs: fix out-of-bounds read in signature length check
 MIME-Version: 1.0
-X-ZohoMailClient: External
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF152 (Linux)/8.8.12_GA_3809)
+Thread-Topic: ubifs: fix out-of-bounds read in signature length check
+Thread-Index: nlmEpwFRuXKq6ooMPkH0R8BSJLkErw==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260724_004341_556372_42E1DAFC 
-X-CRM114-Status: GOOD (  12.96  )
+X-CRM114-CacheID: sfid-20260724_021439_767248_47B559AA 
+X-CRM114-Status: GOOD (  13.38  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,61 +74,48 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-ubifs_sb_verify_signature() bounds the on-disk ubifs_sig_node->len field
-before handing the signature payload to verify_pkcs7_signature(), but the
-check has the wrong sign:
-
-	if (le32_to_cpu(signode->len) > snod->len + sizeof(struct ubifs_sig_node))
-
-The signature bytes start sizeof(struct ubifs_sig_node) (UBIFS_SIG_NODE_SZ,
-64 bytes) into the node, so the payload is at most
-
-	snod->len - sizeof(struct ubifs_sig_node)
-
-bytes long. Adding the header size instead of subtracting it accepts a
-declared length up to 2 * UBIFS_SIG_NODE_SZ larger than the node actually
-holds -- past the end of c->sbuf, which is vmalloc(c->leb_size).
-verify_pkcs7_signature() -> pkcs7_parse_message() -> asn1_ber_decoder()
-is then handed that inflated length and reads beyond the allocation while
-walking the DER headers. The node length comes straight from the mounted
-image, so a crafted signed UBIFS image reaches this via
-ubifs_read_superblock() before the signature is cryptographically checked.
-
-snod->len is guaranteed to be >= UBIFS_SIG_NODE_SZ by the node scanner
-(c->ranges[UBIFS_SIG_NODE].min_len == UBIFS_SIG_NODE_SZ), so the corrected
-subtraction cannot underflow. Legitimately signed images are unaffected: a
-correct superblock never declares a signature longer than the node it is
-embedded in.
-
-Fixes: 817aa094842d ("ubifs: support offline signed images")
-Cc: stable@vger.kernel.org
-Signed-off-by: Ibrahim Hashimov <security@auditcode.ai>
-Assisted-by: AuditCode-AI:2026.07
----
- fs/ubifs/auth.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/ubifs/auth.c b/fs/ubifs/auth.c
-index a4a0158f712d..1f770795ee70 100644
---- a/fs/ubifs/auth.c
-+++ b/fs/ubifs/auth.c
-@@ -217,7 +217,7 @@ int ubifs_sb_verify_signature(struct ubifs_info *c,
-
- 	signode = snod->node;
-
--	if (le32_to_cpu(signode->len) > snod->len + sizeof(struct ubifs_sig_node)) {
-+	if (le32_to_cpu(signode->len) > snod->len - sizeof(struct ubifs_sig_node)) {
- 		ubifs_err(c, "invalid signature len %d", le32_to_cpu(signode->len));
- 		err = -EINVAL;
- 		goto out_destroy;
---
-2.50.1 (Apple Git-155)
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIklicmFoaW0gSGFzaGltb3Yi
+IDxzZWN1cml0eUBhdWRpdGNvZGUuYWk+Cj4gQW46ICJyaWNoYXJkIiA8cmljaGFyZEBub2QuYXQ+
+Cj4gQ0M6ICJjaGVuZ3poaWhhbzEiIDxjaGVuZ3poaWhhbzFAaHVhd2VpLmNvbT4sICJTYXNjaGEg
+SGF1ZXIiIDxzLmhhdWVyQHBlbmd1dHJvbml4LmRlPiwgImxpbnV4LW10ZCIKPiA8bGludXgtbXRk
+QGxpc3RzLmluZnJhZGVhZC5vcmc+LCAibGludXgta2VybmVsIiA8bGludXgta2VybmVsQHZnZXIu
+a2VybmVsLm9yZz4sICJzdGFibGUiIDxzdGFibGVAdmdlci5rZXJuZWwub3JnPgo+IEdlc2VuZGV0
+OiBGcmVpdGFnLCAyNC4gSnVsaSAyMDI2IDA5OjQzOjI3Cj4gQmV0cmVmZjogW1BBVENIXSB1Ymlm
+czogZml4IG91dC1vZi1ib3VuZHMgcmVhZCBpbiBzaWduYXR1cmUgbGVuZ3RoIGNoZWNrCgo+IHVi
+aWZzX3NiX3ZlcmlmeV9zaWduYXR1cmUoKSBib3VuZHMgdGhlIG9uLWRpc2sgdWJpZnNfc2lnX25v
+ZGUtPmxlbiBmaWVsZAo+IGJlZm9yZSBoYW5kaW5nIHRoZSBzaWduYXR1cmUgcGF5bG9hZCB0byB2
+ZXJpZnlfcGtjczdfc2lnbmF0dXJlKCksIGJ1dCB0aGUKPiBjaGVjayBoYXMgdGhlIHdyb25nIHNp
+Z246Cj4gCj4JaWYgKGxlMzJfdG9fY3B1KHNpZ25vZGUtPmxlbikgPiBzbm9kLT5sZW4gKyBzaXpl
+b2Yoc3RydWN0IHViaWZzX3NpZ19ub2RlKSkKPiAKPiBUaGUgc2lnbmF0dXJlIGJ5dGVzIHN0YXJ0
+IHNpemVvZihzdHJ1Y3QgdWJpZnNfc2lnX25vZGUpIChVQklGU19TSUdfTk9ERV9TWiwKPiA2NCBi
+eXRlcykgaW50byB0aGUgbm9kZSwgc28gdGhlIHBheWxvYWQgaXMgYXQgbW9zdAo+IAo+CXNub2Qt
+PmxlbiAtIHNpemVvZihzdHJ1Y3QgdWJpZnNfc2lnX25vZGUpCj4gCj4gYnl0ZXMgbG9uZy4gQWRk
+aW5nIHRoZSBoZWFkZXIgc2l6ZSBpbnN0ZWFkIG9mIHN1YnRyYWN0aW5nIGl0IGFjY2VwdHMgYQo+
+IGRlY2xhcmVkIGxlbmd0aCB1cCB0byAyICogVUJJRlNfU0lHX05PREVfU1ogbGFyZ2VyIHRoYW4g
+dGhlIG5vZGUgYWN0dWFsbHkKPiBob2xkcyAtLSBwYXN0IHRoZSBlbmQgb2YgYy0+c2J1Ziwgd2hp
+Y2ggaXMgdm1hbGxvYyhjLT5sZWJfc2l6ZSkuCj4gdmVyaWZ5X3BrY3M3X3NpZ25hdHVyZSgpIC0+
+IHBrY3M3X3BhcnNlX21lc3NhZ2UoKSAtPiBhc24xX2Jlcl9kZWNvZGVyKCkKPiBpcyB0aGVuIGhh
+bmRlZCB0aGF0IGluZmxhdGVkIGxlbmd0aCBhbmQgcmVhZHMgYmV5b25kIHRoZSBhbGxvY2F0aW9u
+IHdoaWxlCj4gd2Fsa2luZyB0aGUgREVSIGhlYWRlcnMuIFRoZSBub2RlIGxlbmd0aCBjb21lcyBz
+dHJhaWdodCBmcm9tIHRoZSBtb3VudGVkCj4gaW1hZ2UsIHNvIGEgY3JhZnRlZCBzaWduZWQgVUJJ
+RlMgaW1hZ2UgcmVhY2hlcyB0aGlzIHZpYQo+IHViaWZzX3JlYWRfc3VwZXJibG9jaygpIGJlZm9y
+ZSB0aGUgc2lnbmF0dXJlIGlzIGNyeXB0b2dyYXBoaWNhbGx5IGNoZWNrZWQuCj4gCj4gc25vZC0+
+bGVuIGlzIGd1YXJhbnRlZWQgdG8gYmUgPj0gVUJJRlNfU0lHX05PREVfU1ogYnkgdGhlIG5vZGUg
+c2Nhbm5lcgo+IChjLT5yYW5nZXNbVUJJRlNfU0lHX05PREVdLm1pbl9sZW4gPT0gVUJJRlNfU0lH
+X05PREVfU1opLCBzbyB0aGUgY29ycmVjdGVkCj4gc3VidHJhY3Rpb24gY2Fubm90IHVuZGVyZmxv
+dy4gTGVnaXRpbWF0ZWx5IHNpZ25lZCBpbWFnZXMgYXJlIHVuYWZmZWN0ZWQ6IGEKPiBjb3JyZWN0
+IHN1cGVyYmxvY2sgbmV2ZXIgZGVjbGFyZXMgYSBzaWduYXR1cmUgbG9uZ2VyIHRoYW4gdGhlIG5v
+ZGUgaXQgaXMKPiBlbWJlZGRlZCBpbi4KPiAKPiBGaXhlczogODE3YWEwOTQ4NDJkICgidWJpZnM6
+IHN1cHBvcnQgb2ZmbGluZSBzaWduZWQgaW1hZ2VzIikKPiBDYzogc3RhYmxlQHZnZXIua2VybmVs
+Lm9yZwo+IFNpZ25lZC1vZmYtYnk6IElicmFoaW0gSGFzaGltb3YgPHNlY3VyaXR5QGF1ZGl0Y29k
+ZS5haT4KPiBBc3Npc3RlZC1ieTogQXVkaXRDb2RlLUFJOjIwMjYuMDcKPiAtLS0KPiBmcy91Ymlm
+cy9hdXRoLmMgfCAyICstCj4gMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0
+aW9uKC0pCgpSZXZpZXdlZC1ieTogUmljaGFyZCBXZWluYmVyZ2VyIDxyaWNoYXJkQG5vZC5hdD4K
+ClRoYW5rcywKLy9yaWNoYXJkCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6
+Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
