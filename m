@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5ACEC53200
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 Jul 2026 04:31:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3BF3AC53200
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 Jul 2026 04:31:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=PhwdpF/EzUag0+XVP4OckfyMaxjOMe9KJL4L5WYF8uU=; b=M3ZlpSFcBNsYrA
-	7PhKWuXiDp/ffavDWnrS2mJ7+/dHDWFZP4BLJHX4rNQObz3W2OBQvOueF36UqKQZSPqjeOMuA5Ux+
-	+lGKOZm77toBRPS5rHD0A6ZN0S4NyfeYw11V2eVSaAOIRwt2ihqJ+Jd5kFyb/xZTb7hbT09W8xuNC
-	LBbY1y6qRG12TrH5rvn1bbkAqwkkNfHrkHSfvcw6A7slPCo8GLQTg6aBlflyeXXcy38QbzwrPrhKA
-	yFxYRNyPgqiuemoeEHb5TmVwmhqTf5LNsHJrEuTB+ULJQUkLt4gJk9jEX9FF34YbJZfvvXKYzcK7i
-	jO+S3u4aRkFXewfvNQeA==;
+	List-Owner; bh=H6xXgXaG4jXv4ZGcLKoso/oZ5RfVUtyi+chQxD1IN6s=; b=SD8oaQ6Nk78aM5
+	HJEOBsJ1z3kFcIF77aQNRuKxDoye5PE3aV7Ct0G7sK3ENwngepKCimEHJ/nw0aTDTe2kuDqxZ+ifn
+	r6lbyyAjjX3xA/MnUPCARMpiXZyOH7oMlna+VNjOJoZVlcumCcoKwJ9WezUGwWpBzOjcMmoGSrQGZ
+	gtuFgsUSsLmB4GHjoz+69kAWNUmR+LWJWZlh4iE6bBpaJAxBOb6Ytj4mQJMIGNz9r9MLyojkRCeEE
+	7pMS9CKoEVZFT/C/joGLvdcojaZpmB1ZtzdFnKRbX0zLYehlrHGphyyj/Jpq/AAxVtqB9ZvG1H4VD
+	6g6W2jwt+hBrE/Doa5lw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wovxI-00000006pu5-1Re5;
-	Wed, 29 Jul 2026 04:31:44 +0000
-Received: from esa.microchip.iphmx.com ([68.232.153.233])
+	id 1wovxR-00000006q20-0ImP;
+	Wed, 29 Jul 2026 04:31:53 +0000
+Received: from esa.microchip.iphmx.com ([68.232.154.123])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wovxD-00000006pqk-42ao;
-	Wed, 29 Jul 2026 04:31:43 +0000
+	id 1wovxM-00000006pxR-3NJO;
+	Wed, 29 Jul 2026 04:31:51 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1785299502; x=1816835502;
+  t=1785299508; x=1816835508;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=u07TJeDCCVaXR3QuNiyHWuVEekradh6f6nrwnIgoJZY=;
-  b=t6pMqaJ7MNNwjdelikzwLobscHXsinSRIJ9tYsoPvetnEejQWXrd7pH0
-   GTV9B5KvUvWrEJPifokAAcefBgkc67CsgYVwiQX95ySJXeSDA0ETICZxR
-   InvJGXOdblRlbf6gwdvG1MAQ4FT2BS+ILe3Z8raVw7Du0ACap/v8TTbzH
-   4gV+z0zxpEJSX76/5Nx4Wy4nPnZ1doE3zA8JwhbRoRJbCWchv+XTtFoR0
-   Yfh3DzWeHFR8Ra5m/aZUMzklUobzon2LYHa4zCSfUjJw4yLeBRZJc6ieC
-   aRZaqP342tiETMbGMhx/AygC3GuGDAuqapQ8rAMGhqEQkJI8iUmDEuu74
+  bh=1XJw3ZIVNLVIjUuPwE5g/7zUOaAo2PmxEW3WdYarUvQ=;
+  b=EnpX1KAaDjVvgxW1xWsYdb617oJZJqO4lnCYIHSzL5e/eAEdrJsd/XnF
+   2gjQBL7qMPhNMm2AWTFhLIznWGSKP7fBJfBDAlJxcP2Q/qUnwZsryQAQh
+   taPtxi7Ug0U8G+ym4ofp+RbIatZxF4BzGvv2s5FMm2zMntM2icTaGPiT8
+   qY/bxxe6QxES02GanwlRr1NprxuzrjPVMIUlj6iVKtM9OShg1IIvBJdsD
+   8lERMf3Hh64y4GE+DSfo+uwBYjKPMHO0ZBQw/1VKaVmrFTnP6ZrBIifO2
+   66+yPAUppqkogf8EJ7Fmy+qIF0b46pYu+FeG9vyKTg7Tw2hcYmtVv5GrO
    Q==;
-X-CSE-ConnectionGUID: ni5imx0OTlSyOvf2qThVDg==
-X-CSE-MsgGUID: EVhjFy5dQkeuaEA64k3AeA==
+X-CSE-ConnectionGUID: vBF/dsqGSWm2aw29QQ0F+Q==
+X-CSE-MsgGUID: /T6vL0QaSEWiieDVb5wq3g==
 X-IronPort-AV: E=Sophos;i="6.25,191,1779174000"; 
-   d="scan'208";a="292693777"
+   d="scan'208";a="60446960"
 X-Amp-Result: SKIPPED(no attachment in message)
 Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2026 21:31:42 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.87.152) by
- chn-vm-ex3.mchp-main.com (10.10.87.32) with Microsoft SMTP Server
+  by esa4.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 28 Jul 2026 21:31:47 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.2562.43; Tue, 28 Jul 2026 21:31:38 -0700
+ 15.1.2507.58; Tue, 28 Jul 2026 21:31:47 -0700
 Received: from che-ll-i67131.microchip.com (10.10.85.11) by
  chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.2507.58 via Frontend Transport; Tue, 28 Jul 2026 21:31:30 -0700
+ 15.1.2507.58 via Frontend Transport; Tue, 28 Jul 2026 21:31:39 -0700
 From: Manikandan Muralidharan <manikandan.m@microchip.com>
 To: <pratyush@kernel.org>, <mwalle@kernel.org>,
 	<takahiro.kuwano@infineon.com>, <miquel.raynal@bootlin.com>,
@@ -64,16 +64,17 @@ To: <pratyush@kernel.org>, <mwalle@kernel.org>,
 	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
 	<linux-arm-kernel@lists.infradead.org>, <netdev@vger.kernel.org>
 CC: Manikandan Muralidharan <manikandan.m@microchip.com>
-Subject: [PATCH v6 6/7] ARM: dts: microchip: sama5d27_wlsom1: read MAC address from QSPI SFDP
-Date: Wed, 29 Jul 2026 10:00:25 +0530
-Message-ID: <20260729043026.1811147-7-manikandan.m@microchip.com>
+Subject: [PATCH v6 7/7] ARM: configs: sama5: enable Microchip/SST SFDP EUI NVMEM layout
+Date: Wed, 29 Jul 2026 10:00:26 +0530
+Message-ID: <20260729043026.1811147-8-manikandan.m@microchip.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20260729043026.1811147-1-manikandan.m@microchip.com>
 References: <20260729043026.1811147-1-manikandan.m@microchip.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260728_213140_132231_FDF6C688 
-X-CRM114-Status: GOOD (  10.03  )
+X-CRM114-CacheID: sfid-20260728_213148_921827_FFF3F8C3 
+X-CRM114-Status: UNSURE (   8.92  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,54 +91,28 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Describe the QSPI flash SFDP as an NVMEM provider with the
-microchip,sst26vf-sfdp-eui layout, which exposes the factory-programmed
-EUI-48 as a "mac-address" cell, and point macb0 at it through
-nvmem-cells. This yields a stable MAC address on boards where U-Boot does
-not program one, instead of falling back to a random address.
+Enable CONFIG_NVMEM_LAYOUT_SST26VF_SFDP_EUI so the factory EUI-48 stored
+in the SST26VF QSPI flash SFDP can be used as a MAC address on boards
+such as the sama5d27_wlsom1.
 
 Reviewed-by: Linus Walleij <linusw@kernel.org>
 Signed-off-by: Manikandan Muralidharan <manikandan.m@microchip.com>
 ---
- arch/arm/boot/dts/microchip/at91-sama5d27_wlsom1.dtsi | 11 +++++++++++
- .../boot/dts/microchip/at91-sama5d27_wlsom1_ek.dts    |  2 ++
- 2 files changed, 13 insertions(+)
+ arch/arm/configs/sama5_defconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/boot/dts/microchip/at91-sama5d27_wlsom1.dtsi b/arch/arm/boot/dts/microchip/at91-sama5d27_wlsom1.dtsi
-index 062aa02a98ed..6016d7f2a39c 100644
---- a/arch/arm/boot/dts/microchip/at91-sama5d27_wlsom1.dtsi
-+++ b/arch/arm/boot/dts/microchip/at91-sama5d27_wlsom1.dtsi
-@@ -240,6 +240,17 @@ qspi1_flash: flash@0 {
- 		m25p,fast-read;
- 		status = "disabled";
- 
-+		sfdp {
-+			compatible = "jedec,sfdp";
-+
-+			nvmem-layout {
-+				compatible = "microchip,sst26vf-sfdp-eui";
-+
-+				mac_address_eui48: mac-address {
-+				};
-+			};
-+		};
-+
- 		partitions {
- 			compatible = "fixed-partitions";
- 			#address-cells = <1>;
-diff --git a/arch/arm/boot/dts/microchip/at91-sama5d27_wlsom1_ek.dts b/arch/arm/boot/dts/microchip/at91-sama5d27_wlsom1_ek.dts
-index 35a933eec573..5e87bf04bc47 100644
---- a/arch/arm/boot/dts/microchip/at91-sama5d27_wlsom1_ek.dts
-+++ b/arch/arm/boot/dts/microchip/at91-sama5d27_wlsom1_ek.dts
-@@ -97,6 +97,8 @@ uart6: serial@200 {
- 
- &macb0 {
- 	status = "okay";
-+	nvmem-cells = <&mac_address_eui48>;
-+	nvmem-cell-names = "mac-address";
- };
- 
- &pioA {
+diff --git a/arch/arm/configs/sama5_defconfig b/arch/arm/configs/sama5_defconfig
+index bd7f0b5f7d66..14dda4b0cfd0 100644
+--- a/arch/arm/configs/sama5_defconfig
++++ b/arch/arm/configs/sama5_defconfig
+@@ -220,6 +220,7 @@ CONFIG_PWM=y
+ CONFIG_PWM_ATMEL=y
+ CONFIG_PWM_ATMEL_HLCDC_PWM=y
+ CONFIG_PWM_ATMEL_TCB=y
++CONFIG_NVMEM_LAYOUT_SST26VF_SFDP_EUI=y
+ CONFIG_EXT4_FS=y
+ CONFIG_FANOTIFY=y
+ CONFIG_AUTOFS_FS=m
 -- 
 2.43.0
 
