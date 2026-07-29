@@ -4,67 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27069C53219
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 Jul 2026 07:40:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4887FC54F51
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 Jul 2026 08:02:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Op5fNfnkAIv9c/SM3deT8Sre+saKf+BP4eySEIdeyv4=; b=0LjeREb3CLzJ8w
-	xPqxvM0bpJjdt9YsFA8cK4aqeThAyxmCxPTChwC+TsjzfNEN6cOM/zN9I/wScgNMJm7eIdv6+sTwQ
-	RDpfkEcpYTlLklumEEtSMB/FEYKIqd+P+KCL6Y5i82JJ5IJxHlnKvsvtF/VKYmuyoG0GvDOsr9BUM
-	GVb3XoL5Wia67//3ERJdbrhOnTz9WguBBg1Oplzn9QeCMasf/fyrPhtNfu/U22AqDrupP5rBJg7dI
-	EaORVOE4+4Oxs1YCaVnnBshPteT/UkXYUulVuumbN/kih3kHmDvsb3bv3YmySNxthyepxmFRgklrC
-	sSFejnRLnuduiy7Ctgjw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:References:From:Subject:To:Message-Id:Date:Mime-Version:Reply-To:
+	Cc:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=aXP768eeLd9gTlLJ/wLXCSNLd5unJ8CoZEtWslyh1mE=; b=Uo9I3wqY56eWpmUxFXUvVXn+6K
+	f4PiIYxUhwPwqHqt33ZjUr8VJvmJVXliVpVWzYzyWwsJ7D/wrkghEreu15P8REBXxYRtSEmkpRgtF
+	IEFo93q/YsNlrDTYsIlbYNT+eI+gJXiKux8q90vfW3jRpjZDv3S99vjizXSLHyFNQohxunxcCva24
+	sJZyX2UJpTAOwxiDwxFd0gYGG82QKv3sybGhtPREOrCX79dNQZwNI23bq7G3j6VAuj5H5VpjXZkl3
+	tLftAFzviteGAw2tSiduXtwfroG3JO8+bBbbybjoOJu16pfMLWngsSlwP8tlyuyoLqYYyHB/NYmEt
+	a8ck3v5w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1woyuC-0000000794B-3TRT;
-	Wed, 29 Jul 2026 07:40:44 +0000
-Received: from smtpout-02.galae.net ([185.246.84.56])
+	id 1wozEr-00000007BXQ-0c47;
+	Wed, 29 Jul 2026 08:02:05 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1woyu9-0000000793e-22IN
-	for linux-mtd@lists.infradead.org;
-	Wed, 29 Jul 2026 07:40:44 +0000
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id 6E6A51A12EC;
-	Wed, 29 Jul 2026 07:40:36 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 3D2426039A;
-	Wed, 29 Jul 2026 07:40:36 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 4835F11C14A49;
-	Wed, 29 Jul 2026 09:40:28 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1785310831; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=hE2Ha2ZiGQjrOGDovN/QBZqFu9ljpsNoifwSJ88Vyfk=;
-	b=gj0T2ZqihuRHkM04gRYJjNy1Juv7BSmKFzqgepYpYKvn/+8dT2rVpWCF8x0R13/+RjFu+X
-	SKdw1C/L0O8qa6ZlWTDJuzsuFNEbihbHP0IydOzJatJiMHRSn95I6f1m5LNQjiR17n4UDL
-	xIPmnTRWBRIZRkLEfOW0JZlLaVY/m7fAcFxA2XUHF5aPKTpx/WMWHEZJm1de7j0Xvkcax7
-	bFcJd20pVhOLoe+LBltdHIGFLpo2eXpYUeSREn3MsX86VBNUZKHQgiimPQjBnDRvp+zPNR
-	Zu0NleDpYPdXR3m3m/825zM3ykro4jX41JiVXhVNw4iN4vZ7H2G/TEw4wEP0bw==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Mark Brown <broonie@kernel.org>
-Cc: Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
- <vigneshr@ti.com>,  Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-  praneeth@ti.com,  u-kumar1@ti.com,  p-mantena@ti.com,  a-dutta@ti.com,
-  s-k6@ti.com,  linux-spi@vger.kernel.org,  linux-kernel@vger.kernel.org,
-  linux-mtd@lists.infradead.org
-Subject: Re: [PATCH RFC 1/4] spi: spi-mem: Flag DQS capability
-In-Reply-To: <9aaeca54-292a-42f7-90d6-a533ff1f5022@sirena.org.uk> (Mark
-	Brown's message of "Thu, 5 Feb 2026 19:11:45 +0000")
-References: <20260205-winbond-nand-next-phy-tuning-v1-0-5e7d3976f0f1@bootlin.com>
-	<20260205-winbond-nand-next-phy-tuning-v1-1-5e7d3976f0f1@bootlin.com>
-	<9aaeca54-292a-42f7-90d6-a533ff1f5022@sirena.org.uk>
-User-Agent: mu4e 1.12.12; emacs 30.2
-Date: Wed, 29 Jul 2026 09:40:27 +0200
-Message-ID: <87ik5yp7kk.fsf@bootlin.com>
-MIME-Version: 1.0
-X-Last-TLS-Session-Version: TLSv1.3
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260729_004041_662358_4A1104DE 
-X-CRM114-Status: GOOD (  12.35  )
+	id 1wozEp-00000007BWp-2YIf;
+	Wed, 29 Jul 2026 08:02:03 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with UTF8SMTP id 45789407A8;
+	Wed, 29 Jul 2026 08:02:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id A2DA01F000E9;
+	Wed, 29 Jul 2026 08:02:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1785312123;
+	bh=AB5HMFb5Ze0rWihKOGGWtd3NJzKOYTViPUGmV8IbG6s=;
+	h=Date:To:Subject:From:References:In-Reply-To;
+	b=n/kHgj/9nbxsgT5ELgKoxSwW7yZ+m7ueHe8STjaH4ll3CMeD+A42uqK/VLI2tTtHt
+	 zbYl/Oe+MTochKh7lIbuxvcy2TxEgJ7bOscmWVQAaH2zLaN+yC+Hyw+23YASOh1mJu
+	 TxKYkFVW6vHRoEzm/Mnmyd8lQBifvA5ERhT7NNUzMlgu7sIpvWSVoNsvR7ogxdLQ/H
+	 bBvNLUdpHH4iFyznAr+GJBsYq3D9WI22buXifcY3tb32qEDDCX3b8fnK5w0RWVRlGH
+	 GjXCpC/i3iMwjUPTO0ka3pl2JHGpHWSExKmLj+jIf7ju034caZQuTTqtGXbrJ3CWc+
+	 kZyQ2VnWpSPBw==
+Mime-Version: 1.0
+Date: Wed, 29 Jul 2026 10:01:59 +0200
+Message-Id: <DKAWBT1F1VM2.1LA8AKQ6B17AE@kernel.org>
+To: "Manikandan Muralidharan" <manikandan.m@microchip.com>,
+ <pratyush@kernel.org>, <mwalle@kernel.org>, <takahiro.kuwano@infineon.com>,
+ <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+ <robh@kernel.org>, <krzk+dt@kernel.org>, <conor+dt@kernel.org>,
+ <srini@kernel.org>, <nicolas.ferre@microchip.com>,
+ <alexandre.belloni@bootlin.com>, <claudiu.beznea@tuxon.dev>,
+ <linux@armlinux.org.uk>, <richardcochran@gmail.com>, <arnd@arndb.de>,
+ <linusw@kernel.org>, <linux-mtd@lists.infradead.org>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <linux-arm-kernel@lists.infradead.org>, <netdev@vger.kernel.org>
+Subject: Re: [PATCH v6 3/7] mtd: spi-nor: sfdp: expose the SFDP as a
+ read-only NVMEM device
+From: "Michael Walle" <mwalle@kernel.org>
+X-Mailer: aerc 0.20.0
+References: <20260729043026.1811147-1-manikandan.m@microchip.com>
+ <20260729043026.1811147-4-manikandan.m@microchip.com>
+In-Reply-To: <20260729043026.1811147-4-manikandan.m@microchip.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,30 +72,129 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============7165828398680673433=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8gTWFyaywKCk9uIDA1LzAyLzIwMjYgYXQgMTk6MTE6NDUgR01ULCBNYXJrIEJyb3duIDxi
-cm9vbmllQGtlcm5lbC5vcmc+IHdyb3RlOgoKPiBPbiBUaHUsIEZlYiAwNSwgMjAyNiBhdCAwODow
-Njo1OFBNICswMTAwLCBNaXF1ZWwgUmF5bmFsIHdyb3RlOgo+PiBEUVMgaXMgYSB0eXBpY2FsIFNQ
-SSBtZW1vcnkgc2lnbmFsIHVzZWQgdG8gaGVscCB3aXRoIHJlYWRpbmcgdGhlIGRhdGEgb24KPj4g
-dGhlIGJ1cyBhdCBoaWdoIHNwZWVkcyAoZXNwZWNpYWxseSBpbiBEVFIgbW9kZSkgYnkgYXZvaWRp
-bmcgY2xvY2sKPj4gc2tld3MuIFRoZSBjaGlwIGdlbmVyYXRlcyBhIGNsb2NrIHNpZ25hbCBzeW5j
-aHJvbml6ZWQgd2l0aCBpdHMgZGF0YQo+PiBvdXRwdXQgZnJvbnRzLCBhbHNvIGNhbGxlZCBkYXRh
-IHN0cm9iZS4KPgo+IEFja2VkLWJ5OiBNYXJrIEJyb3duIDxicm9vbmllQGtlcm5lbC5vcmc+Cj4K
-PiBUaGlzIHNlZW1zIGZpbmUgaWYgdGhlIHJlc3Qgb2YgdGhlIHNlcmllcyBpcyBmaW5lOyBpZiBw
-ZW9wbGUgbGlrZSB0aGlzCj4gYXBwcm9hY2ggdGhlbiBpdCdzIHByb2JhYmx5IHNlbnNpYmxlIHRv
-IG1lcmdlIGFsb25nIHdpdGggdGhlIE1URCBwYXRjaGVzCj4gdXNpbmcgaXQgYW5kIHRoZW4gc2Vu
-ZCBtZSBhIHRhZyB3aXRoIHRoZSBTUEkgYml0IGZvciBtZSB0byBhcHBseSB0aGUKPiBTUEkgZHJp
-dmVyIGNoYW5nZXMuCgpBZnRlciByZXZpZXdpbmcgYWdhaW4gdGhlIHNlcmllcyBmcm9tIFNhbnRo
-b3NoLCBJIGZlZWwgbGlrZSB0aGlzIHdpbGwgaW4KdGhlIGVuZCBiZSBuZWVkZWQuIFNpbmNlIHRo
-ZXJlIGhhcyBiZWVuIG5vIG5lZ2F0aXZlIGZlZWRiYWNrIG9uIGl0LAp3b3VsZCB5b3UgbWluZCB0
-YWtpbmcganVzdCBwYXRjaCAxIG9mIHRoaXMgc2VyaWVzICh0aGUgc3BpLW1lbSBwYXRjaCk/IEkK
-d2lsbCBub3QgYXBwbHkgdGhlIHJlc3Qgb2YgdGhlIHNlcmllcyBmb3IgdGhpcyBjeWNsZSwgSSB3
-aWxsIHdhaXQgZm9yCnRoZSBuZXh0IG9uZSAoYW5kIHdlIHN0aWxsIG5lZWQgdG8gZmluZCBhbiBh
-Z3JlZW1lbnQgb24gcGF0Y2ggNC80KS4KClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNz
-aW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2xpbnV4LW10ZC8K
+--===============7165828398680673433==
+Content-Type: multipart/signed;
+ boundary=a369d9f282471ab4613f2d34b9edebaf16481b78715d95de6253cba98872;
+ micalg=pgp-sha384; protocol="application/pgp-signature"
+
+--a369d9f282471ab4613f2d34b9edebaf16481b78715d95de6253cba98872
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+
+On Wed Jul 29, 2026 at 6:30 AM CEST, Manikandan Muralidharan wrote:
+..
+
+> +static void spi_nor_sfdp_nvmem_put_np(void *data)
+> +{
+> +	of_node_put(data);
+> +}
+> +
+> +/**
+> + * spi_nor_register_sfdp_nvmem() - expose the SFDP as a read-only NVMEM =
+device
+> + * @nor:	pointer to a 'struct spi_nor'
+> + *
+> + * Expose the whole SFDP, in on-flash byte order, as a read-only NVMEM d=
+evice
+> + * rooted at the flash's SFDP child node (compatible "jedec,sfdp"). This=
+ lets
+> + * generic (fixed-layout) or vendor (nvmem-layout) cells reference any S=
+FDP
+> + * data. The device is only registered when a child node with the "jedec=
+,sfdp"
+> + * compatible is described in the device tree.
+> + *
+> + * Return: 0 on success or if there is nothing to do, -errno otherwise.
+> + */
+> +static int spi_nor_register_sfdp_nvmem(struct spi_nor *nor)
+> +{
+> +	struct device *dev =3D nor->dev;
+> +	struct nvmem_config config =3D { };
+> +	struct nvmem_device *nvmem;
+> +	struct device_node *np;
+> +	int ret;
+> +
+> +	if (!nor->sfdp)
+> +		return 0;
+> +
+> +	np =3D of_get_compatible_child(dev_of_node(dev), "jedec,sfdp");
+> +	if (!np)
+> +		return 0;
+> +
+> +	/*
+> +	 * Register the put before devm_nvmem_register() so it runs last on
+> +	 * detach, after the NVMEM device that uses the node is gone.
+> +	 */
+> +	ret =3D devm_add_action_or_reset(dev, spi_nor_sfdp_nvmem_put_np, np);
+> +	if (ret)
+> +		return ret;
+
+Sorry I've missed that in the previous version. I guess we do that
+because we hand the device_node to nvmem. But shouldn't it be part
+of the NVMEM framework to do a of_node_get()?
+
+> +
+> +	config.dev =3D dev;
+> +	config.of_node =3D np;
+> +	config.name =3D "sfdp";
+> +	config.id =3D NVMEM_DEVID_AUTO;
+> +	config.owner =3D THIS_MODULE;
+> +	config.read_only =3D true;
+> +	config.word_size =3D 1;
+> +	config.stride =3D 1;
+> +	config.size =3D (int)(nor->sfdp->num_dwords * sizeof(*nor->sfdp->dwords=
+));
+> +	config.reg_read =3D spi_nor_sfdp_reg_read;
+> +	config.priv =3D nor;
+> +
+> +	nvmem =3D devm_nvmem_register(dev, &config);
+> +	if (IS_ERR(nvmem)) {
+> +		/* NVMEM support is optional. */
+> +		if (PTR_ERR(nvmem) =3D=3D -EOPNOTSUPP)
+> +			return 0;
+> +		return dev_err_probe(dev, PTR_ERR(nvmem),
+> +				     "failed to register SFDP NVMEM device\n");
+> +	}
+> +
+
+so we can do a of_node_put() here?
+
+-michael
+
+> +	dev_dbg(dev, "exposed %d-byte SFDP as an NVMEM device\n", config.size);
+> +
+> +	return 0;
+> +}
+> +
+
+--a369d9f282471ab4613f2d34b9edebaf16481b78715d95de6253cba98872
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCammzdxIcbXdhbGxlQGtl
+cm5lbC5vcmcACgkQEic87j4CH/it6gF/V3GubkwpHoS9P9IU244sBsKtytRavuvh
+hXPhPMqXriH2cB1f70x+LBiHYBye74L+AYDkK5z86ahoo8Muf+vFJGWwpFHZziaa
+0bbnosqgeVloCl0urxpv75kT0JbgJEHN8es=
+=fp/9
+-----END PGP SIGNATURE-----
+
+--a369d9f282471ab4613f2d34b9edebaf16481b78715d95de6253cba98872--
+
+
+--===============7165828398680673433==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============7165828398680673433==--
+
