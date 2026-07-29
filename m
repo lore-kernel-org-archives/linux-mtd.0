@@ -4,77 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3BF3AC53200
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 Jul 2026 04:31:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27069C53219
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 Jul 2026 07:40:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=H6xXgXaG4jXv4ZGcLKoso/oZ5RfVUtyi+chQxD1IN6s=; b=SD8oaQ6Nk78aM5
-	HJEOBsJ1z3kFcIF77aQNRuKxDoye5PE3aV7Ct0G7sK3ENwngepKCimEHJ/nw0aTDTe2kuDqxZ+ifn
-	r6lbyyAjjX3xA/MnUPCARMpiXZyOH7oMlna+VNjOJoZVlcumCcoKwJ9WezUGwWpBzOjcMmoGSrQGZ
-	gtuFgsUSsLmB4GHjoz+69kAWNUmR+LWJWZlh4iE6bBpaJAxBOb6Ytj4mQJMIGNz9r9MLyojkRCeEE
-	7pMS9CKoEVZFT/C/joGLvdcojaZpmB1ZtzdFnKRbX0zLYehlrHGphyyj/Jpq/AAxVtqB9ZvG1H4VD
-	6g6W2jwt+hBrE/Doa5lw==;
+	List-Owner; bh=Op5fNfnkAIv9c/SM3deT8Sre+saKf+BP4eySEIdeyv4=; b=0LjeREb3CLzJ8w
+	xPqxvM0bpJjdt9YsFA8cK4aqeThAyxmCxPTChwC+TsjzfNEN6cOM/zN9I/wScgNMJm7eIdv6+sTwQ
+	RDpfkEcpYTlLklumEEtSMB/FEYKIqd+P+KCL6Y5i82JJ5IJxHlnKvsvtF/VKYmuyoG0GvDOsr9BUM
+	GVb3XoL5Wia67//3ERJdbrhOnTz9WguBBg1Oplzn9QeCMasf/fyrPhtNfu/U22AqDrupP5rBJg7dI
+	EaORVOE4+4Oxs1YCaVnnBshPteT/UkXYUulVuumbN/kih3kHmDvsb3bv3YmySNxthyepxmFRgklrC
+	sSFejnRLnuduiy7Ctgjw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wovxR-00000006q20-0ImP;
-	Wed, 29 Jul 2026 04:31:53 +0000
-Received: from esa.microchip.iphmx.com ([68.232.154.123])
+	id 1woyuC-0000000794B-3TRT;
+	Wed, 29 Jul 2026 07:40:44 +0000
+Received: from smtpout-02.galae.net ([185.246.84.56])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wovxM-00000006pxR-3NJO;
-	Wed, 29 Jul 2026 04:31:51 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1785299508; x=1816835508;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=1XJw3ZIVNLVIjUuPwE5g/7zUOaAo2PmxEW3WdYarUvQ=;
-  b=EnpX1KAaDjVvgxW1xWsYdb617oJZJqO4lnCYIHSzL5e/eAEdrJsd/XnF
-   2gjQBL7qMPhNMm2AWTFhLIznWGSKP7fBJfBDAlJxcP2Q/qUnwZsryQAQh
-   taPtxi7Ug0U8G+ym4ofp+RbIatZxF4BzGvv2s5FMm2zMntM2icTaGPiT8
-   qY/bxxe6QxES02GanwlRr1NprxuzrjPVMIUlj6iVKtM9OShg1IIvBJdsD
-   8lERMf3Hh64y4GE+DSfo+uwBYjKPMHO0ZBQw/1VKaVmrFTnP6ZrBIifO2
-   66+yPAUppqkogf8EJ7Fmy+qIF0b46pYu+FeG9vyKTg7Tw2hcYmtVv5GrO
-   Q==;
-X-CSE-ConnectionGUID: vBF/dsqGSWm2aw29QQ0F+Q==
-X-CSE-MsgGUID: /T6vL0QaSEWiieDVb5wq3g==
-X-IronPort-AV: E=Sophos;i="6.25,191,1779174000"; 
-   d="scan'208";a="60446960"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 28 Jul 2026 21:31:47 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.58; Tue, 28 Jul 2026 21:31:47 -0700
-Received: from che-ll-i67131.microchip.com (10.10.85.11) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.2507.58 via Frontend Transport; Tue, 28 Jul 2026 21:31:39 -0700
-From: Manikandan Muralidharan <manikandan.m@microchip.com>
-To: <pratyush@kernel.org>, <mwalle@kernel.org>,
-	<takahiro.kuwano@infineon.com>, <miquel.raynal@bootlin.com>,
-	<richard@nod.at>, <vigneshr@ti.com>, <robh@kernel.org>, <krzk+dt@kernel.org>,
-	<conor+dt@kernel.org>, <srini@kernel.org>, <nicolas.ferre@microchip.com>,
-	<alexandre.belloni@bootlin.com>, <claudiu.beznea@tuxon.dev>,
-	<linux@armlinux.org.uk>, <richardcochran@gmail.com>, <arnd@arndb.de>,
-	<linusw@kernel.org>, <michael@walle.cc>, <linux-mtd@lists.infradead.org>,
-	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <netdev@vger.kernel.org>
-CC: Manikandan Muralidharan <manikandan.m@microchip.com>
-Subject: [PATCH v6 7/7] ARM: configs: sama5: enable Microchip/SST SFDP EUI NVMEM layout
-Date: Wed, 29 Jul 2026 10:00:26 +0530
-Message-ID: <20260729043026.1811147-8-manikandan.m@microchip.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260729043026.1811147-1-manikandan.m@microchip.com>
-References: <20260729043026.1811147-1-manikandan.m@microchip.com>
+	id 1woyu9-0000000793e-22IN
+	for linux-mtd@lists.infradead.org;
+	Wed, 29 Jul 2026 07:40:44 +0000
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-02.galae.net (Postfix) with ESMTPS id 6E6A51A12EC;
+	Wed, 29 Jul 2026 07:40:36 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 3D2426039A;
+	Wed, 29 Jul 2026 07:40:36 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 4835F11C14A49;
+	Wed, 29 Jul 2026 09:40:28 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1785310831; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=hE2Ha2ZiGQjrOGDovN/QBZqFu9ljpsNoifwSJ88Vyfk=;
+	b=gj0T2ZqihuRHkM04gRYJjNy1Juv7BSmKFzqgepYpYKvn/+8dT2rVpWCF8x0R13/+RjFu+X
+	SKdw1C/L0O8qa6ZlWTDJuzsuFNEbihbHP0IydOzJatJiMHRSn95I6f1m5LNQjiR17n4UDL
+	xIPmnTRWBRIZRkLEfOW0JZlLaVY/m7fAcFxA2XUHF5aPKTpx/WMWHEZJm1de7j0Xvkcax7
+	bFcJd20pVhOLoe+LBltdHIGFLpo2eXpYUeSREn3MsX86VBNUZKHQgiimPQjBnDRvp+zPNR
+	Zu0NleDpYPdXR3m3m/825zM3ykro4jX41JiVXhVNw4iN4vZ7H2G/TEw4wEP0bw==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
+ <vigneshr@ti.com>,  Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+  praneeth@ti.com,  u-kumar1@ti.com,  p-mantena@ti.com,  a-dutta@ti.com,
+  s-k6@ti.com,  linux-spi@vger.kernel.org,  linux-kernel@vger.kernel.org,
+  linux-mtd@lists.infradead.org
+Subject: Re: [PATCH RFC 1/4] spi: spi-mem: Flag DQS capability
+In-Reply-To: <9aaeca54-292a-42f7-90d6-a533ff1f5022@sirena.org.uk> (Mark
+	Brown's message of "Thu, 5 Feb 2026 19:11:45 +0000")
+References: <20260205-winbond-nand-next-phy-tuning-v1-0-5e7d3976f0f1@bootlin.com>
+	<20260205-winbond-nand-next-phy-tuning-v1-1-5e7d3976f0f1@bootlin.com>
+	<9aaeca54-292a-42f7-90d6-a533ff1f5022@sirena.org.uk>
+User-Agent: mu4e 1.12.12; emacs 30.2
+Date: Wed, 29 Jul 2026 09:40:27 +0200
+Message-ID: <87ik5yp7kk.fsf@bootlin.com>
 MIME-Version: 1.0
+X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260728_213148_921827_FFF3F8C3 
-X-CRM114-Status: UNSURE (   8.92  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260729_004041_662358_4A1104DE 
+X-CRM114-Status: GOOD (  12.35  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,37 +76,30 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Enable CONFIG_NVMEM_LAYOUT_SST26VF_SFDP_EUI so the factory EUI-48 stored
-in the SST26VF QSPI flash SFDP can be used as a MAC address on boards
-such as the sama5d27_wlsom1.
-
-Reviewed-by: Linus Walleij <linusw@kernel.org>
-Signed-off-by: Manikandan Muralidharan <manikandan.m@microchip.com>
----
- arch/arm/configs/sama5_defconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/arm/configs/sama5_defconfig b/arch/arm/configs/sama5_defconfig
-index bd7f0b5f7d66..14dda4b0cfd0 100644
---- a/arch/arm/configs/sama5_defconfig
-+++ b/arch/arm/configs/sama5_defconfig
-@@ -220,6 +220,7 @@ CONFIG_PWM=y
- CONFIG_PWM_ATMEL=y
- CONFIG_PWM_ATMEL_HLCDC_PWM=y
- CONFIG_PWM_ATMEL_TCB=y
-+CONFIG_NVMEM_LAYOUT_SST26VF_SFDP_EUI=y
- CONFIG_EXT4_FS=y
- CONFIG_FANOTIFY=y
- CONFIG_AUTOFS_FS=m
--- 
-2.43.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGVsbG8gTWFyaywKCk9uIDA1LzAyLzIwMjYgYXQgMTk6MTE6NDUgR01ULCBNYXJrIEJyb3duIDxi
+cm9vbmllQGtlcm5lbC5vcmc+IHdyb3RlOgoKPiBPbiBUaHUsIEZlYiAwNSwgMjAyNiBhdCAwODow
+Njo1OFBNICswMTAwLCBNaXF1ZWwgUmF5bmFsIHdyb3RlOgo+PiBEUVMgaXMgYSB0eXBpY2FsIFNQ
+SSBtZW1vcnkgc2lnbmFsIHVzZWQgdG8gaGVscCB3aXRoIHJlYWRpbmcgdGhlIGRhdGEgb24KPj4g
+dGhlIGJ1cyBhdCBoaWdoIHNwZWVkcyAoZXNwZWNpYWxseSBpbiBEVFIgbW9kZSkgYnkgYXZvaWRp
+bmcgY2xvY2sKPj4gc2tld3MuIFRoZSBjaGlwIGdlbmVyYXRlcyBhIGNsb2NrIHNpZ25hbCBzeW5j
+aHJvbml6ZWQgd2l0aCBpdHMgZGF0YQo+PiBvdXRwdXQgZnJvbnRzLCBhbHNvIGNhbGxlZCBkYXRh
+IHN0cm9iZS4KPgo+IEFja2VkLWJ5OiBNYXJrIEJyb3duIDxicm9vbmllQGtlcm5lbC5vcmc+Cj4K
+PiBUaGlzIHNlZW1zIGZpbmUgaWYgdGhlIHJlc3Qgb2YgdGhlIHNlcmllcyBpcyBmaW5lOyBpZiBw
+ZW9wbGUgbGlrZSB0aGlzCj4gYXBwcm9hY2ggdGhlbiBpdCdzIHByb2JhYmx5IHNlbnNpYmxlIHRv
+IG1lcmdlIGFsb25nIHdpdGggdGhlIE1URCBwYXRjaGVzCj4gdXNpbmcgaXQgYW5kIHRoZW4gc2Vu
+ZCBtZSBhIHRhZyB3aXRoIHRoZSBTUEkgYml0IGZvciBtZSB0byBhcHBseSB0aGUKPiBTUEkgZHJp
+dmVyIGNoYW5nZXMuCgpBZnRlciByZXZpZXdpbmcgYWdhaW4gdGhlIHNlcmllcyBmcm9tIFNhbnRo
+b3NoLCBJIGZlZWwgbGlrZSB0aGlzIHdpbGwgaW4KdGhlIGVuZCBiZSBuZWVkZWQuIFNpbmNlIHRo
+ZXJlIGhhcyBiZWVuIG5vIG5lZ2F0aXZlIGZlZWRiYWNrIG9uIGl0LAp3b3VsZCB5b3UgbWluZCB0
+YWtpbmcganVzdCBwYXRjaCAxIG9mIHRoaXMgc2VyaWVzICh0aGUgc3BpLW1lbSBwYXRjaCk/IEkK
+d2lsbCBub3QgYXBwbHkgdGhlIHJlc3Qgb2YgdGhlIHNlcmllcyBmb3IgdGhpcyBjeWNsZSwgSSB3
+aWxsIHdhaXQgZm9yCnRoZSBuZXh0IG9uZSAoYW5kIHdlIHN0aWxsIG5lZWQgdG8gZmluZCBhbiBh
+Z3JlZW1lbnQgb24gcGF0Y2ggNC80KS4KClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNz
+aW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2xpbnV4LW10ZC8K
