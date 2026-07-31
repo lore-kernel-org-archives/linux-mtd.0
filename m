@@ -4,52 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3716EC54F54
-	for <linux-mtd@archiver.kernel.org>; Fri, 31 Jul 2026 12:03:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC57CC5516D
+	for <linux-mtd@archiver.kernel.org>; Fri, 31 Jul 2026 12:03:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=0ivjIQwINfbOgDB06pKi6HUMj5DBb6UjnFfCRBMj2oA=; b=irk2ZT7GxZgwWR
-	hO2GfUhFIi96ptNGH3FWfL6aIz9SDRVLPG+TwZE4Ryr5479OiM1/zfx/Xx5sth8yKcouRhb1RjJMD
-	VEL9KN5S3wPG90tIL1VzPe7HJ5ZiOCP3AdFLtWM0p/r04MffRHABUFx5rlZ/ZMqToXc6Ad9e3DEBi
-	rqHZ7DG4OpzuGK5El3auFS5MSU0zWr9gSmpfMueh+mKtdDTWsdoxdY0IBNhJvEABjwudK+0qpxi+E
-	ow5OpLZdCaAJvdi6sTHPQkENqFbAkaWMMaRU0mQe/Qa0vsSRwovVMr994F0IPX2vKpnt5y7l+RAO2
-	Kil8wDNmXPnaNv2vkUdQ==;
+	List-Owner; bh=y2kcEEujlJW7W6QJzIMOaKUZU2RWTiO3s4SRuRWSUDY=; b=0kogJsp1rkxNYA
+	KfX7N+UzAR/VfULfk8VKCcZJ2gpu3PM4nrN/0+FYv00142mqHmoZVDmP1BdPjIkO2earQUlKWDWyY
+	NJ8SRPDatfvF8J62RJbae0sR8MfxpGurAcy/A3VfYBgsEfgXsNCADHDEnHzWr5UOQgMqIEIIIr8UW
+	kIdktrpn9jtY7Dv/idoxvhbVD7VlFDj5jGrL4EulfalhzBM+ouIOSx3dey5dp57VhDQQRWUiwG2Fb
+	4BBsZStyQDyc1eXzcC61qxzCY6OPlJygKdyR6U+WA0hNBaKlnGHylEI98XipXNEhshFmjWAafT68l
+	U7nnfz1RRMapW0/eG+5g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wplx4-0000000CR5H-3Nvu;
-	Fri, 31 Jul 2026 12:02:58 +0000
+	id 1wplx8-0000000CR8w-03hp;
+	Fri, 31 Jul 2026 12:03:02 +0000
 Received: from smtpout-02.galae.net ([185.246.84.56])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wplx1-0000000CR1m-3bEt
+	id 1wplx5-0000000CR52-2FoM
 	for linux-mtd@lists.infradead.org;
-	Fri, 31 Jul 2026 12:02:57 +0000
+	Fri, 31 Jul 2026 12:03:00 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id 650B01A135B;
-	Fri, 31 Jul 2026 12:02:54 +0000 (UTC)
+	by smtpout-02.galae.net (Postfix) with ESMTPS id 19AF71A135B;
+	Fri, 31 Jul 2026 12:02:58 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 39F446039A;
-	Fri, 31 Jul 2026 12:02:54 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 78F7811C167A4;
-	Fri, 31 Jul 2026 14:02:52 +0200 (CEST)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id E2F4B6039A;
+	Fri, 31 Jul 2026 12:02:57 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id EDC7211C167A5;
+	Fri, 31 Jul 2026 14:02:55 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1785499373; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1785499376; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=h1XyQBzqcsTgQhxjDV5LHt4WXEapx17bKUFuzVktxDA=;
-	b=W8XH/naJOFYcWekaY7JiJtRD/84YXdEItNIonhq3cHkJf3Cme0XnXYjBNyrcmd6taBI98T
-	mszuLQgQS1LURT8z9Qm+JwyNJBnPQTzTHhHxV2Oh4fJ9+3jIrhRR/AqUqCqOjjJssa85GM
-	rndko1xX2tuSb7fqhbh709R+i8kT30D6Qr8Mz17oDylTWLiYfGkGFoPtmn9ThOY/iRnE+Z
-	itHUB/QA7jdJsClfYa2OuqaqeQ/IjouN4gcSBHoWNm/97NPTkITCFaaOnLeosL3Hc4brTf
-	/wP5ta/9BIY0uHRua89XhtKFfJR/e1cUDXtRyI8Veg8epxYv+LYBDBKgZcx5yQ==
+	bh=XRms+hYES57u6Us9x2O3s2QZInrDYJog55FBiHONdBA=;
+	b=C/bIax7vbpKXAEZjP5pSae9vvNg8jrTWW0gb4Ea+izxC6YFm8qt5EF5fdrwEYAraJ6r1Yg
+	zJ47J55dNM4DZ+Qr8mvvS8jmf3T+gdsbxk8nmf7lEU8HeAoyg7yMp/UQQ+EWWkGIvtdUB3
+	xFQSsS1E+iL129OtDH+nhcC2YK8gL9XjS4KgGibTXB2LqnLq+69tWn1sNVavxmKqnFcPMe
+	KnspWCVVLqCfPhMPhjYiZ63HyRWCtLTjxOJw38lJNnVD6yFcP1ixsGREvr9jWTxtMaBfk/
+	L6pmli5w6QMSs4PgAdiW3s3afCkwqHQBcOpbKBtd0BZQZsixjDNPm2Om2GedGg==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Fri, 31 Jul 2026 14:01:59 +0200
-Subject: [PATCH v2 06/23] mtd: spi-nor: winbond: W25Q64JV-Q/N: Add quad
- page program capability
+Date: Fri, 31 Jul 2026 14:02:01 +0200
+Subject: [PATCH v2 08/23] mtd: spi-nor: winbond: W25Q32JV-M: Add quad page
+ program capability
 MIME-Version: 1.0
-Message-Id: <20260731-winbond-v7-1-spi-nor-jv-cleanup-v2-6-2549ef1b1af8@bootlin.com>
+Message-Id: <20260731-winbond-v7-1-spi-nor-jv-cleanup-v2-8-2549ef1b1af8@bootlin.com>
 References: <20260731-winbond-v7-1-spi-nor-jv-cleanup-v2-0-2549ef1b1af8@bootlin.com>
 In-Reply-To: <20260731-winbond-v7-1-spi-nor-jv-cleanup-v2-0-2549ef1b1af8@bootlin.com>
 To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
@@ -61,8 +61,8 @@ Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260731_050256_045263_7B1B4BD7 
-X-CRM114-Status: GOOD (  11.46  )
+X-CRM114-CacheID: sfid-20260731_050259_738618_270393E0 
+X-CRM114-Status: GOOD (  10.91  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,102 +79,46 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The benefit is not massive @25MHz, yet it is a supported feature
-of the chip which is already handled by a flag, so let's enable it and
-earn that little 1% write throughput.
+This chip does not advertise it correctly but it supports 1-1-4 page
+programs.
 
 Before:
-$ flash_speed /dev/mtd0 -dc10
-eraseblock write speed is 539 KiB/s
-page write speed is 535 KiB/s
-2 page write speed is 536 KiB/s
+
+$ flash_speed /dev/mtd0 -d -c10
+eraseblock write speed is 2612 KiB/s
+page write speed is 2509 KiB/s
+2 page write speed is 2560 KiB/s
 
 After:
-$ flash_speed /dev/mtd0 -dc10
-eraseblock write speed is 556 KiB/s
-page write speed is 549 KiB/s
-2 page write speed is 552 KiB/s
 
-The QUAD_PP capability was historically not supported by non-SFDP chips,
-so a Winbond wide late hook already makes sure the capability remains
-disabled for them, for backward compatiblity reasons.
+$ flash_speed /dev/mtd0 -c10 -d
+eraseblock write speed is 3033 KiB/s
+page write speed is 2895 KiB/s
+2 page write speed is 2976 KiB/s
+
+The CMP capability was historically not supported by non-SFDP chips, so
+a Winbond wide late hook already makes sure the bit remains disabled for
+them, for backward compatiblity reasons.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
-$ cat /sys/kernel/debug/spi-nor/spi0.0/params
-name		(null)
-id		ef 40 17 00 00 00
-size		8.00 MiB
-write size	1
-page size	256
-address nbytes	3
-flags		HAS_16BIT_SR | SOFT_RESET | NO_WP
-
-opcodes
- read		0xeb
-  dummy cycles	6
- erase		0xd8
- program	0x32
- 8D extension	none
-
-protocols
- read		1S-4S-4S
- write		1S-1S-4S
- register	1S-1S-1S
-
-erase commands
- 20 (4.00 KiB) [1]
- 52 (32.0 KiB) [2]
- d8 (64.0 KiB) [3]
- c7 (8.00 MiB)
-
-sector map
- region (in hex)   | erase mask | overlaid
- ------------------+------------+---------
- 00000000-007fffff |     [   3] | no
-$ dd if=/dev/urandom of=./spi_test bs=1M count=2
-2+0 records in
-2+0 records out
-$ mtd_debug erase /dev/mtd0 0 2097152
-mtd_debug read /dev/mtd0 0 2097152 spi_readErased 2097152 bytes from address 0x00000000 in flash
-$ mtd_debug read /dev/mtd0 0 2097152 spi_read
-Copied 2097152 bytes from address 0x00000000 in flash to spi_read
-$ hexdump spi_read
-0000000 ffff ffff ffff ffff ffff ffff ffff ffff
-*
-0200000
-$ sha256sum spi_read
-4bda3a28f4ffe603c0ec1258c0034d65a1a0d35ab7bd523a834608adabf03cc5  spi_read
-$ mtd_debug write /dev/mtd0 0 2097152 spi_test
-Copied 2097152 bytes from spi_test to address 0x00000000 in flash
-$ mtd_debug read /dev/mtd0 0 2097152 spi_read
-Copied 2097152 bytes from address 0x00000000 in flash to spi_read
-$ sha256sum spi*
-36667197a637b731cc2068022138e6963a9499ce9b0ddda1a1585f7f5ebe66ff  spi_read
-36667197a637b731cc2068022138e6963a9499ce9b0ddda1a1585f7f5ebe66ff  spi_test
-$ mtd_debug erase /dev/mtd0 0 2097152
-Erased 2097152 bytes from address 0x00000000 in flash
-$ mtd_debug read /dev/mtd0 0 2097152 spi_read
-Copied 2097152 bytes from address 0x00000000 in flash to spi_read
-$ sha256sum spi*
-4bda3a28f4ffe603c0ec1258c0034d65a1a0d35ab7bd523a834608adabf03cc5  spi_read
-36667197a637b731cc2068022138e6963a9499ce9b0ddda1a1585f7f5ebe66ff  spi_test
----
- drivers/mtd/spi-nor/winbond.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/mtd/spi-nor/winbond.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
-index a391efb926ab..2114674de3dc 100644
+index be8cc67eb72f..239944d8a37d 100644
 --- a/drivers/mtd/spi-nor/winbond.c
 +++ b/drivers/mtd/spi-nor/winbond.c
-@@ -210,6 +210,7 @@ static const struct flash_info winbond_nor_parts[] = {
- 		.name = "w25q64",
- 		.size = SZ_8M,
+@@ -307,8 +307,8 @@ static const struct flash_info winbond_nor_parts[] = {
+ 		.id = SNOR_ID(0xef, 0x70, 0x16),
+ 		.name = "w25q32jv",
+ 		.size = SZ_4M,
+-		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB,
  		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
-+		.flags = SPI_NOR_QUAD_PP,
++		.flags = SPI_NOR_QUAD_PP | SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB,
  	}, {
- 		/* W25Q128JV-Q/N */
- 		.id = SNOR_ID(0xef, 0x40, 0x18),
+ 		/* W25Q64JV-M */
+ 		.id = SNOR_ID(0xef, 0x70, 0x17),
 
 -- 
 2.54.0
