@@ -4,81 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EDB93C55167
-	for <linux-mtd@archiver.kernel.org>; Fri, 31 Jul 2026 08:03:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 787B2C55167
+	for <linux-mtd@archiver.kernel.org>; Fri, 31 Jul 2026 09:38:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=wlb3Dvp7qAhk7G/3Q9I5a4v6HLd+kIj4KJzD/X52ukA=; b=vpxdO7dqEDGFpB
-	7woM0oYHZO/HPv9q9tiqX49p2LE1Kn7v76+pRRazgsZQxjseKqaCxI+V84XA4dPq92zBqLuEbviB+
-	hLKzYz5TbJ3kPhXyIMJQ0+8eMbWq266EWo72kTvoUgcYrOGw7nDE77t+enwefZVsOZsz3BXxf9x48
-	+rRcjr0pNrN8JRVK/YWf+YC5glLEDYnemMOUE0ZLuQpvbHL82tZMR9TCVa+p7rI/f6+ZmK/56f9XU
-	Mt+jJOpJLAbixhfiKJ7a1UL/b5x4WB2sPIdnVIbJ4+stqVJKeFUxzLYQAC074WR/ZNaIeK1cFkpGs
-	AbnMRW5uvChCZtm+MSPA==;
+	List-Owner; bh=9jzE9DQpqV7xlYXVGhD554dz7cnHYW2c+w2OhE3mqD0=; b=fH3vJe5ojpyFDm
+	D1qK9qM03RqvJ2LzxZ5dL+t2y8lj3pd7E9nBt924Na5hmRGdHwuSRZFbu9auYta1d71vZblsNW0bA
+	e+qhprWVyK7sKynJgzMbRKhwgVEseJnnSnMBhJ2JkM0nzo05gRofA39n3u1jIZve0u+zx5vPJN8On
+	7mYi7pPT39mjEFAZMdqb2LYoam9u78EqZDIP0FT61RjQ1Sjqw4pKUjjdUF2H7rDfKZapr+FH/LY24
+	Y1dKn8jqF3Uj0+pn7HDO8Lzd9SUWPk9LBueLn1GM3sL6ZmNk6MCPFXGiAtVIPFYIi4S54HibsBfAK
+	VQfZ2sXLt/dZ0DzUS1NQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wpiDH-0000000C0gl-3HRI;
-	Fri, 31 Jul 2026 08:03:27 +0000
-Received: from smtp9.infineon.com ([217.10.52.204])
+	id 1wpjhM-0000000CCQ9-3M0D;
+	Fri, 31 Jul 2026 09:38:36 +0000
+Received: from smtpout-03.galae.net ([185.246.85.4])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wpiDF-0000000C0fn-1qVM
+	id 1wpjhJ-0000000CCOh-3KiG
 	for linux-mtd@lists.infradead.org;
-	Fri, 31 Jul 2026 08:03:27 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=infineon.com; i=@infineon.com; q=dns/txt; s=IFXMAIL;
-  t=1785485006; x=1817021006;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=Nlc0tXMJGdhGv2yJQszfCLy9faTw1TEQdO83VsRnfSQ=;
-  b=mUdkvyF3l8hn3Cg84xYBipkcwfF7OJMy7tOKHlF8rjsfOupnp7973NR7
-   li49T6qEQ/JNF35n05+hu3JZ1iuOx9G3ioC6ldCCeYPJe789wm1mtbL18
-   n4MdS+3WnnyUYpYsiJDitv5ha1tXY8CljbsnTxVVIWVD2NCN65pvYW4+m
-   I=;
-X-CSE-ConnectionGUID: +4xXzzUmTkuXLL1FatdGAg==
-X-CSE-MsgGUID: NgU9INIhS5OE5kM4VvMyRA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11860"; a="102969134"
-X-IronPort-AV: E=Sophos;i="6.25,196,1779141600"; 
-   d="scan'208";a="102969134"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO MUCSE803.infineon.com) ([172.23.29.29])
-  by smtp9.infineon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2026 10:02:21 +0200
-Received: from KLUSE816.infineon.com (172.28.156.170) by MUCSE803.infineon.com
- (172.23.29.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.45; Fri, 31 Jul
- 2026 10:02:20 +0200
-Received: from KLUSE816.infineon.com (172.28.156.170) by KLUSE816.infineon.com
- (172.28.156.170) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.45; Fri, 31 Jul
- 2026 10:02:19 +0200
-Received: from KLUSE816.infineon.com ([fe80::4a3d:fdb5:843:3451]) by
- KLUSE816.infineon.com ([fe80::4a3d:fdb5:843:3451%19]) with mapi id
- 15.02.2562.045; Fri, 31 Jul 2026 10:02:19 +0200
-From: <Takahiro.Kuwano@infineon.com>
-To: <tudor.ambarus@linaro.org>, <tkuw584924@gmail.com>, <pratyush@kernel.org>,
-	<mwalle@kernel.org>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
-	<vigneshr@ti.com>
-CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2] mtd: spi-nor: remove unused NO_OP_CHIP_ERASE flag
-Thread-Topic: [PATCH v2] mtd: spi-nor: remove unused NO_OP_CHIP_ERASE flag
-Thread-Index: AQHczjpjWSeEpeRBG0a79SZUVhzMtbXjP1aAgKSpkkA=
-Date: Fri, 31 Jul 2026 08:02:19 +0000
-Message-ID: <5e4ed0fe6e17459782478f08ad71741f@infineon.com>
-References: <20260417-die-erase-fix-v2-1-73bb7004ebad@infineon.com>
- <e3529aa2-9372-4b5f-b87d-c236cce11947@linaro.org>
-In-Reply-To: <e3529aa2-9372-4b5f-b87d-c236cce11947@linaro.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.161.6.196]
+	Fri, 31 Jul 2026 09:38:35 +0000
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-03.galae.net (Postfix) with ESMTPS id 54BC64E41047;
+	Fri, 31 Jul 2026 09:38:28 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 27D176039A;
+	Fri, 31 Jul 2026 09:38:28 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id C43BD11C16612;
+	Fri, 31 Jul 2026 11:38:19 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1785490703; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=eagIojVHgWT+H7k3TNqXh8GEjAI5dJTnFxCgsrPlEHY=;
+	b=W5ztKtP1gTQCzfooqVs0s0UFs36u9r9nOtOVOwUCN3cNUDbeNwRRlvxIfqf8nGQOmXdBCg
+	7rT/YSIqwPxZ0OiIkoHMmz6aP93quIwkcX/0H83j9nhv5e4C0l7hltdrPEyOJ8nnyDbMsa
+	1rSXZT94F9aKHodQrq0jsTMspBlkqTACMwk4xxJy8RNMnPnQGftODF03BsXJmfsM58Qypy
+	Sc/B2RBRu36VVw+Ljjxu+Igp2yn67YDWOStAtMYkxSRUQ4hKY3PfOk2ozO0PwNOM3E/4qS
+	MZeZ3X5vA/6RIPFGwyuQKkTj6/2TP+HWKdceS+qnRpdJESr4PqMO/gCCWbEK5A==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: "Michael Walle" <mwalle@kernel.org>
+Cc: "Pratyush Yadav" <pratyush@kernel.org>,  "Takahiro Kuwano"
+ <takahiro.kuwano@infineon.com>,  "Richard Weinberger" <richard@nod.at>,
+  "Vignesh Raghavendra" <vigneshr@ti.com>,  "Thomas Petazzoni"
+ <thomas.petazzoni@bootlin.com>,  "Steam Lin" <STLin2@winbond.com>,
+  <linux-mtd@lists.infradead.org>,  <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 04/30] mtd: spi-nor: winbond: Make the RDCR fixup
+ Winbond wide
+In-Reply-To: <DJRJS82LPRIZ.2NG59E6DSDTHM@kernel.org> (Michael Walle's message
+	of "Mon, 06 Jul 2026 16:11:31 +0200")
+References: <20260529-winbond-v7-1-spi-nor-jv-cleanup-v1-0-87e5d3122244@bootlin.com>
+	<20260529-winbond-v7-1-spi-nor-jv-cleanup-v1-4-87e5d3122244@bootlin.com>
+	<DJRJS82LPRIZ.2NG59E6DSDTHM@kernel.org>
+User-Agent: mu4e 1.12.12; emacs 30.2
+Date: Fri, 31 Jul 2026 11:38:19 +0200
+Message-ID: <874ihfjy7o.fsf@bootlin.com>
 MIME-Version: 1.0
+X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260731_010325_802173_1EDC317B 
-X-CRM114-Status: UNSURE (   8.69  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260731_023833_984677_5ED2F98F 
+X-CRM114-Status: GOOD (  13.41  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,30 +77,36 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
-
-> On 4/17/26 10:17 AM, tkuw584924@gmail.com wrote:
-> > - Copy to <linux-kernel@vger.kernel.org>
-> 
-> cool, thanks.
-> 
-> see what sashiko discovered:
-> https://sashiko.dev/#/patchset/20260417-die-erase-fix-v2-1-73bb7004ebad%40infineon.com
-> 
-> and the patch
-> https://lore.kernel.org/linux-mtd/20260417-fix-oob-read-spi-nor-v1-1-2132e61a684a@linaro.org/T/#u
-
-I forgot to follow this up after the fix.
-Rebased and sent v3.
-
-Thanks,
-Takahiro
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gMDYvMDcvMjAyNiBhdCAxNjoxMTozMSArMDIsICJNaWNoYWVsIFdhbGxlIiA8bXdhbGxlQGtl
+cm5lbC5vcmc+IHdyb3RlOgoKPiBPbiBGcmkgTWF5IDI5LCAyMDI2IGF0IDU6MjIgUE0gQ0VTVCwg
+TWlxdWVsIFJheW5hbCB3cm90ZToKPj4gVGhlIHRvcCBsZXZlbCBwYXJhZ3JhcGggb2YgdGhlIFFF
+UiBmaWVsZCBpbiB0aGUgSkVTRDIxNkIgbWVudGlvbnM6Cj4+Cj4+ICJJbiB0aGlzIHN0YW5kYXJk
+LCBbLi4uXSAgU3RhdHVzIHJlZ2lzdGVyIDIgcmVmZXJzIHRvIHRoZSBieXRlIHJlYWQKPj4gdXNp
+bmcgaW5zdHJ1Y3Rpb24gMzVoLiBTdGF0dXMgcmVnaXN0ZXIgMiBpcyB0aGUgc2Vjb25kIGJ5dGUg
+dHJhbnNmZXJyZWQKPj4gaW4gYSBXcml0ZSBTdGF0dXMgKDAxaCkgY29tbWFuZC4gWy4uLl0iCj4+
+Cj4+IFZhbHVlIDEwMGIsIG5hbWVkIGluIExpbnV4IEJGUFRfRFdPUkQxNV9RRVJfU1IyX0JJVDFf
+Tk9fUkQsIGRvZXMgbm90Cj4+IG1lbnRpb24gYW55dGhpbmcgYWJvdXQgcmVhZHMgYW5kIG9ubHkg
+YnJpbmdzIGRldGFpbHMgYWJvdXQgd3JpdGVzLgo+Pgo+PiBUaGlzIGhhcyBiZWVuIGludGVycHJl
+dGVkIGluIHRoZSBzcGktbm9yIGNvcmUgYnkgdGhlIGFic2VuY2Ugb2YgcmVhZAo+PiBjYXBhYmls
+aXR5LCBidXQgdGhlcmUgaXMgbm8gZXhwbGljaXQgcmVhc29uIGZvciB0aGF0LCBleGNlcHQgdGhh
+dCB0aGVyZQo+PiB3ZXJlIHByb2JhYmx5IHNvbWUgdmVyeSBvbGQgY2hpcHMgd2hpY2ggZGlkbid0
+IHN1cHBvcnQgY29tbWFuZCAzNWguCj4KPiBJIGFncmVlLiBCdXQgbWFraW5nIGl0IGEgdmVuZG9y
+IGRlZmF1bHQgd2UgYWx3YXlzIGhhdmUgdG8gaGF2ZSBhbgo+IGVudHJ5LiBTbyBpZiB0aGlzIGlz
+IHJlYWxseSBmb3IgYWxsIHdpbmJvbmQgY2hpcHMsIHdlIHNoYWxsIGRvIGEKPiBjYXRjaCBhbGwg
+ZW50cnkgKGxpa2UgaW4gbWFjcm9uaXguYykuCgpHb29kIGNhdGNoLCBJIGRpZG4ndCB0aGluayBh
+Ym91dCB0aGF0LiBBZGRlZC4KClsuLi5dCgo+PiArCWlmIChub3ItPmluZm8tPmlkLT5ieXRlc1sw
+XSA9PSAweGVmICYmCj4+ICsJICAgIG5vci0+aW5mby0+aWQtPmJ5dGVzWzFdID4gMHgzMCkKPj4g
+KwkJbm9yLT5mbGFncyAmPSB+U05PUl9GX05PX1JFQURfQ1I7Cj4KPiBUaGlzIGlzIHNvbWV3aGF0
+IGhhcmQgdG8gcmVhZCBhbmQgdGhlIGJ5dGVbMF0gaXMgcmVkdW5kYW50IGhlcmUuCj4gTWF5YmUg
+eW91IGNhbiBjb21lIHVwIHdpdGggc29tZSBtYWNybyBtYWdpYyBzdWdhciA6KQoKSSBkcm9wcGVk
+IHRoZSBmaXJzdCBjb25kaXRpb24gaW4gdGhlIGlmIHdoaWNoIGluZGVlZCBpcwpyZWR1bmRhbnQu
+IEhvd2V2ZXIgSSBkb24ndCBrbm93IGhvdyB0byBtYWtlIHRoZSByZW1haW5kZXIgbW9yZQpleHBs
+YW5hdG9yeSwgdGhlcmUgaXMgYWxyZWFkeSBhIGJpZyBjb21tZW50IHRlbGxpbmcgd2h5IHdlIGRv
+IGl0LgoKVGhhbmtzIQpNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0
+dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
