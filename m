@@ -4,152 +4,167 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BF5CEC55179
-	for <linux-mtd@archiver.kernel.org>; Sat,  1 Aug 2026 02:17:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CBA35C55175
+	for <linux-mtd@archiver.kernel.org>; Mon,  3 Aug 2026 09:07:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Cc:To:In-Reply-To:
-	References:Message-Id:Subject:Date:From:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=4oNi1fsdVNTpZ/znjz/AQ3DzspiPkuLIX3P+GuzO9ss=; b=z6IaiqHxvEImjRi57kO6nT39Ox
-	Wj19gHD/2FWIaBF+7o4mRkJUfLsvC54xWRnfvqKvYmlSdYq7BQ51KmL9C0Yr/Q4YbKRo/PJTapkfh
-	jhyGz9nSjTrkA4cqm+nxCk+zUarAfCSqtqHxp9NT/lF1LC+8HiOaTmojtWHmqgUgVRvq+bGjUzSLn
-	JWiIabdB9nGb3WVkFNXJqABJ97se3ZyLQP+xSPjelg+f5kTsKB7vG5JlVzU5fFeT2THIk0dhhWG8M
-	W5yto3z9k5Y2N4AxjQJnPQhp+JOIes4QaNT0UlQPbwikqcWIrw0eGh+Q27YImGxP2ECsXyRAv9a1h
-	WBHI/CFg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=ZTkbXDAKX4kt+Aj8M+pnhqZ9WJiOphVRk8nBgi90S7s=; b=JsC1dql55l87pYIpPL4oIGYlDg
+	vozNUheIZqrBV2NqEKyixeoIPCwVeQkKZ5PGB1z09AEnUB8Nw0ruprEfT4qah+mC24502WEJuh7GG
+	9oga7EmiKG4R2j7D24LLxjPuSMjmLZMCgCT+49gaGFxd2OGt9M7PaX3XcntOQUtXMtbQZFwxXqFQk
+	xC31v93SaMZxKIKAoiGURj8er5s9Nk+JVYuecmbpGry/ZV2f0mpcdK/CnN3P1Ivj97Nouwqu5kgFJ
+	1SYgAZA0lW0N+wygZm91r7ql+VBIpCEy3nBRj73/a4M9zBII9D1Nj7dDuBtvvqBbhI7oAW6hGhkrz
+	vDoHLg4g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wpzI1-0000000DpLU-2NPc;
-	Sat, 01 Aug 2026 02:17:29 +0000
-Received: from mail-southcentralusazon11013040.outbound.protection.outlook.com ([40.93.196.40] helo=SA9PR02CU001.outbound.protection.outlook.com)
+	id 1wqoeD-0000000Gel4-1DsP;
+	Mon, 03 Aug 2026 09:07:49 +0000
+Received: from mail-ej1-x62b.google.com ([2a00:1450:4864:20::62b])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wpzHz-0000000DpKa-094o
+	id 1wqoe8-0000000Geio-0t9n
 	for linux-mtd@lists.infradead.org;
-	Sat, 01 Aug 2026 02:17:28 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=I7l9fgb+NuvuD+R5anVs9JYMUi9a35IiDvgs/M65huGyuB4XSkdcBFj96Qsd4fQvL+LYnCokcXI6YGNTMlUR0kRWAJcIqrrVFxwK1GqQbBT4G9mkU2Rtpb+gn3tfpqHFukVs+XDyiDlcfFXpgM6SfqhEKNEeMH8odAUvqlly9le4c5AAxlWKeJRxAwj5Gnn8e4oQP/kEpiJ8THYPCLFJNFAEis4FQ3uqsLh7sfktPtylKAhNuVq566pkwHsggmeS9yGNlWqyichD7oEh3WCkdI/EWxpxh5be4NNvmHAbubTIlg3U8hBOvdgGZKAOptr9V2j1Adpw2ZK1njjfNDT93g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/N0f4pNTjlrvvsqDiA7ch3Ptmh4hKaDn1JOzG+v4I3A=;
- b=otux9MDqIdxHs+pCSiXtdqclJAYl+aMcQIF2miG1l8auumH8RAVQU45YSDDmdqPlBbRrKdGXePSBT47PY96SIUaKZoQAFHE6QsPHY/lxVFiPMXwFD7WtzHN2BkunjPTJ3GjhlIT6bSxw5/QpY8JZQqcPo89uSXkMoW/G6IoLetO44duPs2nJ0WHB15KS17gY04/9adoKp0Q9fJG0XSXA2obOWIWuOjb0Fsey2qeXVPEpvIrvimLa9ejG3l9ArcW79Yw8kOixwaTKjA23ZUTMoCR4lF9SldsS69a3r1Gf1arnPyKmXGySPDW/2sm+PtB6hr8w4HKEkJctyJZ6e0MIrw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/N0f4pNTjlrvvsqDiA7ch3Ptmh4hKaDn1JOzG+v4I3A=;
- b=bQtJCjRcuc2HBPbuaVO6OGBKCBrhVaAsY8lmE7Ex1778BBK+IMVFgysRjbdvIzrFCaRgzn/qbt3MShUxgoiBRXklSIW+UCoAFsug+YoZ9y0O+vr3gBCzirSzNoQ2oEdnwYo8VbYvNpkI7Z0QRlfXFvxXLEkWOD5nMfIB5CbXCYbKyN8g9/Syo9+3EhGFsfZTED9pkxmvZIzyYoVpol+fDs572bq2BSRYUkcxPKDDlrdOxrOyE+JdAdHLO4OcDbwFg6RhJ5T39fdew36thYM0bD8bsjVlGiUVXTYicIv60i+Rt9ugM99iXTtLs9cc5jbSaIpcvhH0cP12p9ZTmp/gGw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from IA0PR12MB8374.namprd12.prod.outlook.com (2603:10b6:208:40e::7)
- by PH8PR12MB7373.namprd12.prod.outlook.com (2603:10b6:510:217::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.270.16; Sat, 1 Aug
- 2026 02:17:19 +0000
-Received: from IA0PR12MB8374.namprd12.prod.outlook.com
- ([fe80::d85f:4c87:ae84:3f16]) by IA0PR12MB8374.namprd12.prod.outlook.com
- ([fe80::d85f:4c87:ae84:3f16%5]) with mapi id 15.21.0270.015; Sat, 1 Aug 2026
- 02:17:19 +0000
-From: Zi Yan <ziy@nvidia.com>
-Date: Fri, 31 Jul 2026 22:13:36 -0400
-Subject: [PATCH RFC 13/14] treewide: adjust comments on PagePrivate and
- PG_private
-Message-Id: <20260731-remove-pg_private-v1-13-142c97ba3562@nvidia.com>
-References: <20260731-remove-pg_private-v1-0-142c97ba3562@nvidia.com>
-In-Reply-To: <20260731-remove-pg_private-v1-0-142c97ba3562@nvidia.com>
-To: David Hildenbrand <david@kernel.org>, 
- "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
- Andrew Morton <akpm@linux-foundation.org>, 
- Muchun Song <muchun.song@linux.dev>, Lorenzo Stoakes <ljs@kernel.org>, 
- "Liam R. Howlett" <liam@infradead.org>, Vlastimil Babka <vbabka@kernel.org>, 
- Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>, 
- Michal Hocko <mhocko@suse.com>, Baolin Wang <baolin.wang@linux.alibaba.com>, 
- Nico Pache <nico.pache@linux.dev>, Ryan Roberts <ryan.roberts@arm.com>, 
- Dev Jain <dev.jain@arm.com>, Barry Song <baohua@kernel.org>, 
- Lance Yang <lance.yang@linux.dev>, Usama Arif <usama.arif@linux.dev>, 
- Gregory Price <gourry@gourry.net>, 
- Ying Huang <ying.huang@linux.alibaba.com>, 
- Alistair Popple <apopple@nvidia.com>, Johannes Weiner <hannes@cmpxchg.org>, 
- Qi Zheng <qi.zheng@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
- Kairui Song <kasong@tencent.com>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
- Zi Yan <ziy@nvidia.com>, Ilya Dryomov <idryomov@gmail.com>, 
- Alex Markuze <amarkuze@redhat.com>, Viacheslav Dubeyko <slava@dubeyko.com>, 
- Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, 
- Richard Weinberger <richard@nod.at>, Zhihao Cheng <chengzhihao1@huawei.com>, 
- ceph-devel@vger.kernel.org, linux-nfs@vger.kernel.org, 
- linux-mtd@lists.infradead.org
-X-Mailer: b4 0.14.3
-X-ClientProxiedBy: YQBPR0101CA0267.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:c01:68::27) To IA0PR12MB8374.namprd12.prod.outlook.com
- (2603:10b6:208:40e::7)
+	Mon, 03 Aug 2026 09:07:46 +0000
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-c197eaaab00so507728866b.0
+        for <linux-mtd@lists.infradead.org>; Mon, 03 Aug 2026 02:07:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1785748061; x=1786352861; darn=lists.infradead.org;
+        h=content-type:in-reply-to:autocrypt:from:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from:to:cc
+         :subject:date:message-id:reply-to:content-type;
+        bh=b16T4GW68hAFFc0osm9lAVRPnORne6TE2Xjz+8jsFek=;
+        b=WxAJWg3EUm4zLplJorb2nb5Nnsc1F2KtF9YgTJy3MaFdGFuSZeQ3lgr5MnWjcjUfXP
+         cfJRz3HYNZv5i8qjJcA4SjYTXXJoInuX7TtQ0MUywv8TNbtoVyGKqQS6YVhGka4yUNIO
+         NUSLtxkVN4/WR2dpkJRG5Hn5gTBQwFOGckb/frnO7YbH74YG3hv4aat+RyG1g05GPpgC
+         E4697nX/TD6uxb+EOs1lvxQ8AXR0o3cimUH6lJQmf3PSeXF7kF+UpoDBJmXfpBbJgCiK
+         877cWa66/7l5ecraNbCL6hANzmns5IZ6sarLnwP2SkXEIlfPQUpkcZ/r1j/9aJ3gPdst
+         IDoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1785748061; x=1786352861;
+        h=content-type:in-reply-to:autocrypt:from:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=b16T4GW68hAFFc0osm9lAVRPnORne6TE2Xjz+8jsFek=;
+        b=jhfemK3PLPAMPv42L3our9QKTf3vdkIDmtgayFVezDmQ6BR7OVtr/9QKdMDdfd3oPz
+         xthER6WQQrYGpZrncZVGl/ohlW/iKDt54sIhXCtLgxv4pCXjn0BtVQzbcOrcDQLF7bZe
+         4W1+GBA05P1D8vr/vlT1Gtix0olodYoqRWbXKtIegjTyjfWjLhrZML5qcS6HbTracC1h
+         IfmXS7LOPvxguTUzmeTRa7lAdbbcS/K+6GmEuD18aZfeq6eEDA6jwa5q+gkMKZLjrAyg
+         qYRpmPSyqhtFPGTix2lOfMAx3UVWtMeVeurzZKbiRa1NgB6pUQ9cPFIXPJ484gMzOO61
+         HB2w==
+X-Forwarded-Encrypted: i=1; AHgh+RqcCq89SeykG5NehxPAnMtpu8xY57p9ImbGjNTQHYwV77n91XzXdGZ9jydamArt3e4KTSBXwr/PfYY=@lists.infradead.org
+X-Gm-Message-State: AOJu0YwEnRexnOxt6NyodPv685G5bNbaXgRi8qqgHkpgcXMMDE0RNs4T
+	ktQN8bF17u+i0qLZs5Uhs5tcB0MYBD7whkFPohb+/CYyiEfHP/756ZnY9L4Vgg3WF4g=
+X-Gm-Gg: AR+sD12mqT4UpNNAPGaeUT4+cmiLgKUvdfKSZ0KY/6OH9VkE2PVOVbsfKtqWB50owD/
+	+gl/xmcyvhrgLcJ15Ktu7GTGuQZzsitK5i9zEm7a0GzqtrBNJbLQjaxkJCYOe7O9RzZEhCCj5NC
+	nLUid3cxMLwdSPEff6QA6LGskCwKhQ5zQC4cYkodElvZSdRCcKADJMy+K9xZaXuYwhrgt3LNupS
+	gYmdYl6PnDdNVhlrTtO9gohyUIU6r1icdgx0CKhdR+WjNfBF5Ahzc0cIP7TzG5k6Yq4GgPDUi+e
+	g4xzlWYpZHSiiLE4tF5XiJTYUGoknIXh9nJ6BCtjraE86QYElcPiXoBoO0hOJnFktrVy5kcD6/Y
+	6z1mcalpP461EC14hNqxxbuYW+23lewlKpdwP8MxFOyz3f/Tbm3nSXrTbsxJIMkyfRNCzwtA3Dy
+	e9Jhc7UAaB0LMFG5py0HiU7YDobDJNS1VkAEmzt2TITYGgMWezcPBQyxS+ljLoor2ti9QmsBRPh
+	xHKQKk9nrS1tXVr/vIAbdTtTtsF5Cqj25s7RYTQ2xDmTdZ8fIXSvFABf04esgoMSQsX1o5t/+ob
+	BMsAuZJ2m91ofHk=
+X-Received: by 2002:a17:907:76fa:b0:c19:fb6e:5ff0 with SMTP id a640c23a62f3a-c1fe81a5d9fmr582774266b.15.1785748061532;
+        Mon, 03 Aug 2026 02:07:41 -0700 (PDT)
+Received: from ?IPV6:2a00:12d0:af5d:ad01:5d3f:14e6:9bcb:5112? (2a00-12d0-af5d-ad01-5d3f-14e6-9bcb-5112.ip.tng.de. [2a00:12d0:af5d:ad01:5d3f:14e6:9bcb:5112])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-c1fd445432dsm507440166b.41.2026.08.03.02.07.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 03 Aug 2026 02:07:41 -0700 (PDT)
+Message-ID: <5ca4d0e4-1747-45a7-a916-a7516bb1692b@suse.com>
+Date: Mon, 3 Aug 2026 11:07:39 +0200
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA0PR12MB8374:EE_|PH8PR12MB7373:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6e22c095-4377-4be3-2299-08deef730352
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|7416014|376014|1800799024|23010399003|366016|11063799006|56012099006|10067099003|18002099003|22082099003|6133799003|921020;
-X-Microsoft-Antispam-Message-Info: OoYjSdhMB5/FfsvCLddwvHB3YtSqnSfRwAi2zUiLB3su4ahtVUwmwZpCFMxQd4VdnBKSiNSc/SztlIWSIGBg79kFjjGjBqNKL3942KARlODfOpGbrpIRfo+q2j/V7OwXX+KowJFPKGZd7wD62ww7NWgY7oY2gW0N8n0AGrs55SFHExmPgCLS4NExcTmjDFnaqe9lU659BDghGWhgVj5Zy5eqIleeFyopNPKNH0N7Tk4GpqxYWV4s5FTqTRsOGujCs9CdqtP8O9e482a48Jplnn+P+RWxDVMpRLp8QJ9cVG+6aCjDbaj/Xi3Li/cXLSRCuy75tW56lefPqC8QlruEpD7vpq2jIMBHxyz4dtnP8xCPe9ae/P2v+OEl90R14Z51vi6FWuCm0TyHS11233FRvyeNAK6FeFxn8ooz2YWMQS5STzBSJeslpXLSpJ7HXWnTTSw6oxsvPIvtNseb3B1mL9dRcssOMbqGXEKGfAZiUFrHBGX2VbR7G7mPJK/dskgRY+IEZnCvqha4ujE6bJvtYqksSsgiRfyRX+rDQzQzjOy5PAUkCF99pMfSv9V2DYJ+RNY6V1/kkDweSd+Z0AEJebIE5AmewKabCHJnac2l00cONWwKU44AoNqXel1wkqSYSmNF1JchPRWXn0bhrZ5mbX1pRK6Mafy74mJ7zLkmDVbG1GtMze2JrpjIMJ2WuyX2DFNf5Wa40SR1DlxVe8DJlA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA0PR12MB8374.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(1800799024)(23010399003)(366016)(11063799006)(56012099006)(10067099003)(18002099003)(22082099003)(6133799003)(921020);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VFM3bzBmNVZ1WE15SmtDV004UFVkc0E5MDNqQ0Z4NEpVU3FUdTVndXQ4RVJr?=
- =?utf-8?B?RFc4eU1GY1dSY2U4ZndQVVFhSWZsSnZlelFXbWUvdkxGQXN0Z0ZRQjc1cENn?=
- =?utf-8?B?S25UVkNHQXZ0VDBxL2lmQW9Zd0NRdjI2RjY1NTRiTUxxcFZLNE1zTkRDdFVz?=
- =?utf-8?B?Ujh0WnpuQ2c0WFJrQURrTHdYWnE3NWFHMzhib3ZIKys0TnpTQ1ZvNlZ5ZEZT?=
- =?utf-8?B?OGYzU2JzdWJUQXBpbDdQajR4bkd0dGp0emFuTmR6eVdMeS9ESjhmeTdQRC9L?=
- =?utf-8?B?NU4xM3pvMXR3d2JOaGhaVER1MDRsRVo2cTRpTHFRdGdNbExqZnl0YWdqRFY5?=
- =?utf-8?B?TGJpeHYxNk10SE51NklHLzlKSWZQdTFsTkl5KzNydlV2QUlLcmYxSFpHMzY3?=
- =?utf-8?B?YlhvbWdwU3VCM3NoKyszc2JMcFZRL1hFK0JTQ1RGaU1tbEVualVHRDBaNzRx?=
- =?utf-8?B?SEtpcEhoYjB0TUd0VnNQckpqNUtCc2UrR2xPN2FlZFlDUzZSWlB2NHRWWHJL?=
- =?utf-8?B?anUyRzFRTmJoYklEZXR3T1FUQnFIcU1XZkxTeEVuYVEvU2JKVVFVSG9qY0gr?=
- =?utf-8?B?S3hlSGh1dzIrYTVucURtYU9HVXdMRnd0YVNGTVVVMnNoQk9QRHhITGZNZmx0?=
- =?utf-8?B?VmNHY2FYRTlWNm1FVWtVT0NuU3NtdUxHMDl1eDZOYTZPempRbDhvWXZJSWxC?=
- =?utf-8?B?c2gwanNKbnpNemM5UklxNmdhOGxLbDg3SitiWmIzbk5kaDc3dmFhWjU3d0hY?=
- =?utf-8?B?ejRLVmVuei8vTGpKdURleDBzSU9XV3BmdGI4dnhVWFBoaXFlUk9Nb0JRR0R4?=
- =?utf-8?B?b0FQYnJrdXRSM2dqN0k2TGE0T1hRa3pNMUo5V0VLNlpoZkVWVHYybjNsZWxk?=
- =?utf-8?B?K3JqYlA2UXlHbU9oZjNHOVcwdzRYVnBuTmNWaVU1eDNnUUc1V1JKS0RDTWFE?=
- =?utf-8?B?WWxWUHFnZjhxU0EvQTUrYm9QMFAxOFRZdmpIY1ZWUmJtTHEwRVNXS2NqWFV6?=
- =?utf-8?B?dWo1eTh1MlltenpQYlpyYlV5czJnMHdzQzljTGx4R0V5ODljUFIrc3RnYzFt?=
- =?utf-8?B?M0QrYktVbU8zRVJuK05ObFJ6NEtITngrUS9SUGxSZDhZSWl0MU5DYkhVb25p?=
- =?utf-8?B?REsyTStFZWhITUR6ajU2UmsvR0xNNk9EY3B5NFZlMkoxM3R4VE5hbDBQYTcz?=
- =?utf-8?B?QS9LRkVheUdWc0hvbzFycXlZTDRhNDd2L0x5cldoblNmL1VtbDJzNUE4d3hv?=
- =?utf-8?B?d1IwT0EvRkNnemxLOUg2NW03cFJaT00xV0pPQ0hKcHZzRkFKNEFUYlAraWhP?=
- =?utf-8?B?RmQzWTY5djRadVk5WXE4Zi80Qm1IVVhLTjVLWklxbGN4RE1hQThTQUN0YUNX?=
- =?utf-8?B?QlJxWCtMOHZHdU91ZE1vWGQwV0U5c1g1aXdpaFl5TlQ3UUZLNWQvMG9kRTZv?=
- =?utf-8?B?VkV5cXdrUUVySlAvdEliMXBrZjU0a1hITU5ka1piMUNUcGl2VG5DZXZQa3Ay?=
- =?utf-8?B?ZzFPSU51NkJNYW51eUoyUXhMT2JoMU9CaEpmRFliMXVtRXV2T3hIQndWOXpu?=
- =?utf-8?B?VnlyZWRva1FZZklmcVpieGpPN0R4dExMclI2K25rS3I5MnZ5NnFPM1lpVnB1?=
- =?utf-8?B?OWJjandxWkNtcVI4cFJqeFZBVXd0dldOSnc5Y0dya0UwRUhWckZDM1ErN2hR?=
- =?utf-8?B?N0dnOHg2Qm9BRGcxc2lyZDFtQTZTYmpoK0xFYlpBVk9zdnJtU3QrN3U3MXl6?=
- =?utf-8?B?dFRaSjlBWEJENm9iSUQ2NVdUNERMWTdZT1JWMllDMFBtSHY3WFJiY0NGQmZh?=
- =?utf-8?B?ejJTNGZKN2ZMeGFqOWJOdkpzTnZUakVJaHQ5OFEwb2VQQm9PZXFNcGNET1lD?=
- =?utf-8?B?MHJYWkRiUDU5UHRYdkFaYmcxUENmYzVGZUp0L1puZ2tObFpxaDJFQWtzMGJn?=
- =?utf-8?B?YVB5bStNTHVER3Z1M3M2QXovWlFrdmJ1WUNTMTV4VFE1RXVTZkpVNFVtV1pH?=
- =?utf-8?B?d08vQ2paQjI4cEYwZ2lQVFZoYUgxMVNnbEc2U1lXWGZyOWRVWXZ5T2hWcXpw?=
- =?utf-8?B?T2ZWTEtVVDNFK2ZQbVVVZ1hIajdVUlJ1WGg3K09yQ0crY0UxYVkveTQ4MmhN?=
- =?utf-8?B?WTFOL1lRYm5lWWpucE5qWTZVdDVaUGdORGJXaENkUGFiY2Q0aFdHcHozQzNM?=
- =?utf-8?B?WWN0YVVFRDNiNGlyaytXN29wNFpYU3JTd3l0aU9ZMHRaZm1hRHU1Ly9FTEZr?=
- =?utf-8?B?L1FRYUI5UHJmNDFuOWcrTzVhMEkrR1VWQzJBNlZpNHQvOTlvRmxydnVDajB4?=
- =?utf-8?Q?VLdTzrwyJUPM9wnHtc?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6e22c095-4377-4be3-2299-08deef730352
-X-MS-Exchange-CrossTenant-AuthSource: IA0PR12MB8374.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Aug 2026 02:17:19.0090
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ZQcx0wEAAgsbUx6XDbEcd5FLzcwsmT5S3CHB9eIdlHDg8VSDseD9ewnL8NjsLF5S
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB7373
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC 00/14] Remove PG_private by using page/folio->private
+ checks instead
+To: Zi Yan <ziy@nvidia.com>, David Hildenbrand <david@kernel.org>,
+ "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Muchun Song <muchun.song@linux.dev>, Lorenzo Stoakes <ljs@kernel.org>,
+ "Liam R. Howlett" <liam@infradead.org>, Vlastimil Babka <vbabka@kernel.org>,
+ Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>,
+ Michal Hocko <mhocko@suse.com>, Baolin Wang <baolin.wang@linux.alibaba.com>,
+ Nico Pache <nico.pache@linux.dev>, Ryan Roberts <ryan.roberts@arm.com>,
+ Dev Jain <dev.jain@arm.com>, Barry Song <baohua@kernel.org>,
+ Lance Yang <lance.yang@linux.dev>, Usama Arif <usama.arif@linux.dev>,
+ Gregory Price <gourry@gourry.net>, Ying Huang
+ <ying.huang@linux.alibaba.com>, Alistair Popple <apopple@nvidia.com>,
+ Johannes Weiner <hannes@cmpxchg.org>, Qi Zheng <qi.zheng@linux.dev>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Kairui Song <kasong@tencent.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ Minchan Kim <minchan@kernel.org>,
+ Sergey Senozhatsky <senozhatsky@chromium.org>,
+ Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Namhyung Kim <namhyung@kernel.org>, Thomas Gleixner <tglx@kernel.org>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ x86@kernel.org, Mark Rutland <mark.rutland@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, James Clark
+ <james.clark@linaro.org>, "H. Peter Anvin" <hpa@zytor.com>,
+ linux-perf-users@vger.kernel.org, Stefano Stabellini
+ <sstabellini@kernel.org>,
+ Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+ xen-devel@lists.xenproject.org, Eric Biggers <ebiggers@kernel.org>,
+ "Theodore Y. Ts'o" <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>,
+ linux-fscrypt@vger.kernel.org, Oscar Salvador <osalvador@suse.de>,
+ Chao Yu <chao@kernel.org>, linux-f2fs-devel@lists.sourceforge.net,
+ Gao Xiang <xiang@kernel.org>, Jan Kara <jack@suse.cz>,
+ Yue Hu <zbestahu@gmail.com>, Jeffle Xu <jefflexu@linux.alibaba.com>,
+ Sandeep Dhavale <dhavale@google.com>, Hongbo Li <hongbohbli@tencent.com>,
+ Chunhai Guo <guochunhai@vivo.com>, linux-erofs@lists.ozlabs.org,
+ linux-fsdevel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+ Masami Hiramatsu <mhiramat@kernel.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Matthew Brost <matthew.brost@intel.com>,
+ Joshua Hahn <joshua.hahnjy@gmail.com>, Rakie Kim <rakie.kim@sk.com>,
+ Byungchul Park <byungchul@sk.com>, Axel Rasmussen
+ <axelrasmussen@google.com>, Yuanchu Xie <yuanchu@google.com>,
+ Wei Xu <weixugc@google.com>, linux-trace-kernel@vger.kernel.org,
+ Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>,
+ linux-nfs@vger.kernel.org, Song Liu <song@kernel.org>,
+ Yu Kuai <yukuai@fygo.io>, Ilya Dryomov <idryomov@gmail.com>,
+ Alex Markuze <amarkuze@redhat.com>, Viacheslav Dubeyko <slava@dubeyko.com>,
+ Li Nan <magiclinan@didiglobal.com>, Xiao Ni <xiao@kernel.org>,
+ linux-raid@vger.kernel.org, ceph-devel@vger.kernel.org,
+ Richard Weinberger <richard@nod.at>, Zhihao Cheng <chengzhihao1@huawei.com>,
+ linux-mtd@lists.infradead.org, Baoquan He <baoquan.he@linux.dev>,
+ Pasha Tatashin <pasha.tatashin@soleen.com>,
+ Pratyush Yadav <pratyush@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+ Dave Young <ruirui.yang@linux.dev>, Shuah Khan <skhan@linuxfoundation.org>,
+ kexec@lists.infradead.org, linux-doc@vger.kernel.org
+References: <20260731-remove-pg_private-v1-0-142c97ba3562@nvidia.com>
+Content-Language: en-US
+From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Autocrypt: addr=jgross@suse.com; keydata=
+ xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOB
+ ycWxw3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJve
+ dYm8Of8Zd621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJ
+ NwQpd369y9bfIhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvx
+ XP3FAp2pkW0xqG7/377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEB
+ AAHNH0p1ZXJnZW4gR3Jvc3MgPGpncm9zc0BzdXNlLmNvbT7CwHkEEwECACMFAlOMcK8CGwMH
+ CwkIBwMCAQYVCAIJCgsEFgIDAQIeAQIXgAAKCRCw3p3WKL8TL8eZB/9G0juS/kDY9LhEXseh
+ mE9U+iA1VsLhgDqVbsOtZ/S14LRFHczNd/Lqkn7souCSoyWsBs3/wO+OjPvxf7m+Ef+sMtr0
+ G5lCWEWa9wa0IXx5HRPW/ScL+e4AVUbL7rurYMfwCzco+7TfjhMEOkC+va5gzi1KrErgNRHH
+ kg3PhlnRY0Udyqx++UYkAsN4TQuEhNN32MvN0Np3WlBJOgKcuXpIElmMM5f1BBzJSKBkW0Jc
+ Wy3h2Wy912vHKpPV/Xv7ZwVJ27v7KcuZcErtptDevAljxJtE7aJG6WiBzm+v9EswyWxwMCIO
+ RoVBYuiocc51872tRGywc03xaQydB+9R7BHPzsBNBFOMcBYBCADLMfoA44MwGOB9YT1V4KCy
+ vAfd7E0BTfaAurbG+Olacciz3yd09QOmejFZC6AnoykydyvTFLAWYcSCdISMr88COmmCbJzn
+ sHAogjexXiif6ANUUlHpjxlHCCcELmZUzomNDnEOTxZFeWMTFF9Rf2k2F0Tl4E5kmsNGgtSa
+ aMO0rNZoOEiD/7UfPP3dfh8JCQ1VtUUsQtT1sxos8Eb/HmriJhnaTZ7Hp3jtgTVkV0ybpgFg
+ w6WMaRkrBh17mV0z2ajjmabB7SJxcouSkR0hcpNl4oM74d2/VqoW4BxxxOD1FcNCObCELfIS
+ auZx+XT6s+CE7Qi/c44ibBMR7hyjdzWbABEBAAHCwF8EGAECAAkFAlOMcBYCGwwACgkQsN6d
+ 1ii/Ey9D+Af/WFr3q+bg/8v5tCknCtn92d5lyYTBNt7xgWzDZX8G6/pngzKyWfedArllp0Pn
+ fgIXtMNV+3t8Li1Tg843EXkP7+2+CQ98MB8XvvPLYAfW8nNDV85TyVgWlldNcgdv7nn1Sq8g
+ HwB2BHdIAkYce3hEoDQXt/mKlgEGsLpzJcnLKimtPXQQy9TxUaLBe9PInPd+Ohix0XOlY+Uk
+ QFEx50Ki3rSDl2Zt2tnkNYKUCvTJq7jvOlaPd6d/W0tZqpyy7KVay+K4aMobDsodB3dvEAs6
+ ScCnh03dDAFgIq5nsB11j3KPKdVoPlfucX2c7kGNH+LUMbzqV6beIENfNexkOfxHfw==
+In-Reply-To: <20260731-remove-pg_private-v1-0-142c97ba3562@nvidia.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260731_191727_167026_AF531152 
-X-CRM114-Status: GOOD (  25.53  )
+X-CRM114-CacheID: sfid-20260803_020744_397129_CC04C905 
+X-CRM114-Status: GOOD (  14.32  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -161,163 +176,203 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1678755545364218384=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-PG_private is going to be deleted. Adjust related comments to refer to
-page/folio->private instead.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--===============1678755545364218384==
+Content-Language: en-US
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------Vg9NJvq3ine0Gyx1IX0BEzQC"
 
-Assisted-by: Claude:claude-opus-4-8
-Assisted-by: Codex:gpt-5
-Signed-off-by: Zi Yan <ziy@nvidia.com>
-To: Ilya Dryomov <idryomov@gmail.com>
-To: Alex Markuze <amarkuze@redhat.com>
-To: Viacheslav Dubeyko <slava@dubeyko.com>
-To: Trond Myklebust <trondmy@kernel.org>
-To: Anna Schumaker <anna@kernel.org>
-To: Richard Weinberger <richard@nod.at>
-To: Andrew Morton <akpm@linux-foundation.org>
-To: David Hildenbrand <david@kernel.org>
-Cc: Zhihao Cheng <chengzhihao1@huawei.com>
-Cc: Lorenzo Stoakes <ljs@kernel.org>
-Cc: "Liam R. Howlett" <liam@infradead.org>
-Cc: Vlastimil Babka <vbabka@kernel.org>
-Cc: Mike Rapoport <rppt@kernel.org>
-Cc: Suren Baghdasaryan <surenb@google.com>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: ceph-devel@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-nfs@vger.kernel.org
-Cc: linux-mtd@lists.infradead.org
-Cc: linux-mm@kvack.org
----
- fs/ceph/addr.c           | 4 ++--
- fs/nfs/file.c            | 4 ++--
- fs/ubifs/file.c          | 6 +++---
- include/linux/mm.h       | 6 +++---
- include/linux/mm_types.h | 4 ++--
- 5 files changed, 12 insertions(+), 12 deletions(-)
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------Vg9NJvq3ine0Gyx1IX0BEzQC
+Content-Type: multipart/mixed; boundary="------------1XNOHvG0ftKOzuceeKWaT2Id";
+ protected-headers="v1"
+From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+To: Zi Yan <ziy@nvidia.com>, David Hildenbrand <david@kernel.org>,
+ "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Muchun Song <muchun.song@linux.dev>, Lorenzo Stoakes <ljs@kernel.org>,
+ "Liam R. Howlett" <liam@infradead.org>, Vlastimil Babka <vbabka@kernel.org>,
+ Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>,
+ Michal Hocko <mhocko@suse.com>, Baolin Wang <baolin.wang@linux.alibaba.com>,
+ Nico Pache <nico.pache@linux.dev>, Ryan Roberts <ryan.roberts@arm.com>,
+ Dev Jain <dev.jain@arm.com>, Barry Song <baohua@kernel.org>,
+ Lance Yang <lance.yang@linux.dev>, Usama Arif <usama.arif@linux.dev>,
+ Gregory Price <gourry@gourry.net>, Ying Huang
+ <ying.huang@linux.alibaba.com>, Alistair Popple <apopple@nvidia.com>,
+ Johannes Weiner <hannes@cmpxchg.org>, Qi Zheng <qi.zheng@linux.dev>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Kairui Song <kasong@tencent.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ Minchan Kim <minchan@kernel.org>,
+ Sergey Senozhatsky <senozhatsky@chromium.org>,
+ Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Namhyung Kim <namhyung@kernel.org>, Thomas Gleixner <tglx@kernel.org>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ x86@kernel.org, Mark Rutland <mark.rutland@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, James Clark
+ <james.clark@linaro.org>, "H. Peter Anvin" <hpa@zytor.com>,
+ linux-perf-users@vger.kernel.org, Stefano Stabellini
+ <sstabellini@kernel.org>,
+ Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+ xen-devel@lists.xenproject.org, Eric Biggers <ebiggers@kernel.org>,
+ "Theodore Y. Ts'o" <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>,
+ linux-fscrypt@vger.kernel.org, Oscar Salvador <osalvador@suse.de>,
+ Chao Yu <chao@kernel.org>, linux-f2fs-devel@lists.sourceforge.net,
+ Gao Xiang <xiang@kernel.org>, Jan Kara <jack@suse.cz>,
+ Yue Hu <zbestahu@gmail.com>, Jeffle Xu <jefflexu@linux.alibaba.com>,
+ Sandeep Dhavale <dhavale@google.com>, Hongbo Li <hongbohbli@tencent.com>,
+ Chunhai Guo <guochunhai@vivo.com>, linux-erofs@lists.ozlabs.org,
+ linux-fsdevel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+ Masami Hiramatsu <mhiramat@kernel.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Matthew Brost <matthew.brost@intel.com>,
+ Joshua Hahn <joshua.hahnjy@gmail.com>, Rakie Kim <rakie.kim@sk.com>,
+ Byungchul Park <byungchul@sk.com>, Axel Rasmussen
+ <axelrasmussen@google.com>, Yuanchu Xie <yuanchu@google.com>,
+ Wei Xu <weixugc@google.com>, linux-trace-kernel@vger.kernel.org,
+ Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>,
+ linux-nfs@vger.kernel.org, Song Liu <song@kernel.org>,
+ Yu Kuai <yukuai@fygo.io>, Ilya Dryomov <idryomov@gmail.com>,
+ Alex Markuze <amarkuze@redhat.com>, Viacheslav Dubeyko <slava@dubeyko.com>,
+ Li Nan <magiclinan@didiglobal.com>, Xiao Ni <xiao@kernel.org>,
+ linux-raid@vger.kernel.org, ceph-devel@vger.kernel.org,
+ Richard Weinberger <richard@nod.at>, Zhihao Cheng <chengzhihao1@huawei.com>,
+ linux-mtd@lists.infradead.org, Baoquan He <baoquan.he@linux.dev>,
+ Pasha Tatashin <pasha.tatashin@soleen.com>,
+ Pratyush Yadav <pratyush@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+ Dave Young <ruirui.yang@linux.dev>, Shuah Khan <skhan@linuxfoundation.org>,
+ kexec@lists.infradead.org, linux-doc@vger.kernel.org
+Message-ID: <5ca4d0e4-1747-45a7-a916-a7516bb1692b@suse.com>
+Subject: Re: [PATCH RFC 00/14] Remove PG_private by using page/folio->private
+ checks instead
+References: <20260731-remove-pg_private-v1-0-142c97ba3562@nvidia.com>
+In-Reply-To: <20260731-remove-pg_private-v1-0-142c97ba3562@nvidia.com>
 
-diff --git a/fs/ceph/addr.c b/fs/ceph/addr.c
-index 92074db8732ac..a4a463a9cef0a 100644
---- a/fs/ceph/addr.c
-+++ b/fs/ceph/addr.c
-@@ -122,8 +122,8 @@ static bool ceph_dirty_folio(struct address_space *mapping, struct folio *folio)
- 	spin_unlock(&ci->i_ceph_lock);
- 
- 	/*
--	 * Reference snap context in folio->private.  Also set
--	 * PagePrivate so that we get invalidate_folio callback.
-+	 * Reference snap context in folio->private. folio_attach_private()
-+	 * triggers invalidate_folio callback.
- 	 */
- 	VM_WARN_ON_FOLIO(folio->private, folio);
- 	folio_attach_private(folio, snapc);
-diff --git a/fs/nfs/file.c b/fs/nfs/file.c
-index 851d93a099889..fa3389d766d52 100644
---- a/fs/nfs/file.c
-+++ b/fs/nfs/file.c
-@@ -485,7 +485,7 @@ static int nfs_write_end(const struct kiocb *iocb,
-  * Partially or wholly invalidate a page
-  * - Release the private state associated with a page if undergoing complete
-  *   page invalidation
-- * - Called if either PG_private or PG_fscache is set on the page
-+ * - Called if either folio->private or PG_fscache is set on the page
-  * - Caller holds page lock
-  */
- static void nfs_invalidate_folio(struct folio *folio, size_t offset,
-@@ -556,7 +556,7 @@ static void nfs_check_dirty_writeback(struct folio *folio,
-  * Attempt to clear the private state associated with a page when an error
-  * occurs that requires the cached contents of an inode to be written back or
-  * destroyed
-- * - Called if either PG_private or fscache is set on the page
-+ * - Called if either page->private or fscache is set on the page
-  * - Caller holds page lock
-  * - Return 0 if successful, -error otherwise
-  */
-diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-index e73c28b12f97f..61d6a56b8c8a4 100644
---- a/fs/ubifs/file.c
-+++ b/fs/ubifs/file.c
-@@ -12,14 +12,14 @@
-  * This file implements VFS file and inode operations for regular files, device
-  * nodes and symlinks as well as address space operations.
-  *
-- * UBIFS uses 2 page flags: @PG_private and @PG_checked. @PG_private is set if
-+ * UBIFS uses folio->private and page flag @PG_checked. folio->private is set if
-  * the page is dirty and is used for optimization purposes - dirty pages are
-  * not budgeted so the flag shows that 'ubifs_write_end()' should not release
-  * the budget for this page. The @PG_checked flag is set if full budgeting is
-  * required for the page e.g., when it corresponds to a file hole or it is
-  * beyond the file size. The budgeting is done in 'ubifs_write_begin()', because
-  * it is OK to fail in this function, and the budget is released in
-- * 'ubifs_write_end()'. So the @PG_private and @PG_checked flags carry
-+ * 'ubifs_write_end()'. So the folio->private and @PG_checked flags carry
-  * information about how the page was budgeted, to make it possible to release
-  * the budget properly.
-  *
-@@ -1509,7 +1509,7 @@ static vm_fault_t ubifs_vm_page_mkwrite(struct vm_fault *vmf)
- 	 *
- 	 * At the moment we do not know whether the folio is dirty or not, so we
- 	 * assume that it is not and budget for a new folio. We could look at
--	 * the @PG_private flag and figure this out, but we may race with write
-+	 * folio->private and figure this out, but we may race with write
- 	 * back and the folio state may change by the time we lock it, so this
- 	 * would need additional care. We do not bother with this at the
- 	 * moment, although it might be good idea to do. Instead, we allocate
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index a93eaf7aae545..fc33cc1914273 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -2073,8 +2073,8 @@ vm_fault_t finish_fault(struct vm_fault *vmf);
-  *
-  * A pagecache page contains an opaque `private' member, which belongs to the
-  * page's address_space. Usually, this is the address of a circular list of
-- * the page's disk buffers. PG_private must be set to tell the VM to call
-- * into the filesystem to release these pages.
-+ * the page's disk buffers. It tells the VM to call into the filesystem to
-+ * release these pages.
-  *
-  * A folio may belong to an inode's memory mapping. In this case,
-  * folio->mapping points to the inode, and folio->index is the file
-@@ -2085,7 +2085,7 @@ vm_fault_t finish_fault(struct vm_fault *vmf);
-  * case PG_swapcache is set, and page->private is an offset into the swapcache.
-  *
-  * In either case (swapcache or inode backed), the pagecache itself holds one
-- * reference to the page. Setting PG_private should also increment the
-+ * reference to the page. Setting page->private should also increment the
-  * refcount. The each user mapping also has a reference to the page.
-  *
-  * The pagecache pages are stored in a per-mapping radix tree, which is
-diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-index b5d4cd3b067bf..f15290dde16d3 100644
---- a/include/linux/mm_types.h
-+++ b/include/linux/mm_types.h
-@@ -108,7 +108,7 @@ struct page {
- 			};
- 			/**
- 			 * @private: Mapping-private opaque data.
--			 * Usually used for buffer_heads if PagePrivate.
-+			 * Usually used for buffer_heads.
- 			 * Used for swp_entry_t if swapcache flag set.
- 			 * Indicates order in the buddy system if PageBuddy
- 			 * or on pcp_llist.
-@@ -675,7 +675,7 @@ static inline void ptdesc_pmd_pts_init(struct ptdesc *ptdesc)
- #define STRUCT_PAGE_MAX_SHIFT	(order_base_2(sizeof(struct page)))
- 
- /*
-- * page_private can be used on tail pages.  However, PagePrivate is only
-+ * page_private can be used on tail pages.  However, it is only
-  * checked by the VM on the head page.  So page_private on the tail pages
-  * should be used for data that's ancillary to the head page (eg attaching
-  * buffer heads to tail pages after attaching buffer heads to the head page)
+--------------1XNOHvG0ftKOzuceeKWaT2Id
+Content-Type: multipart/mixed; boundary="------------emnYBJyIfA0mAuf1FBk0JrWD"
 
--- 
-2.53.0
+--------------emnYBJyIfA0mAuf1FBk0JrWD
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
+T24gMDEuMDguMjYgMDQ6MTMsIFppIFlhbiB3cm90ZToNCj4gSGkgYWxsLA0KPiANCj4gVGhp
+cyBwYXRjaHNldCByZW1vdmVzIFBHX3ByaXZhdGUgdG8gbWFrZSBzcGFjZSBmb3IgdXBjb21p
+bmcgUEdfZm9saW8NCj4gKHJlc2VydmVkIGFzIF9fUEdfZm9saW8pIGZvciBpZGVudGlmeWlu
+ZyBwYWdlcyBmcm9tIGEgZm9saW8gKG1vcmUgZGV0YWlscw0KPiBpbiBOb3RlIGJlbG93KS4g
+SW5zdGVhZCBvZiBjaGVja2luZyBQR19wcml2YXRlLCBhbGwgY29kZSBpcyBjaGFuZ2VkIHRv
+DQo+IGNoZWNrIHBhZ2UvZm9saW8tPnByaXZhdGUgIT0gTlVMTCBpbnN0ZWFkLg0KDQpJJ20g
+YSBsaXR0bGUgYml0IHdvcnJpZWQgdGhhdCBwYWdlL2ZvbGlvLT5wcml2YXRlIGlzIGluIGEg
+dW5pb24sIHNvIHRvZGF5DQppdCBjb3VsZCAoaW4gdGhlb3J5KSBiZSAhPSBOVUxMIHdoaWxl
+IFBHX3ByaXZhdGUgaXNuJ3Qgc2V0Lg0KDQpJcyBpdCByZWFsbHkgbm90IHBvc3NpYmxlIHRv
+IGVudGVyIGEgcGF0aCB3aGVyZSBQR19wcml2YXRlIGlzIHRlc3RlZCB3aGlsZQ0KcGFnZS9m
+b2xpby0+cHJpdmF0ZSAhPSBOVUxMIGR1ZSB0byB0aGUgdW5pb24gYmVpbmcgdXNlZCBvdGhl
+cndpc2UgKFBHX3ByaXZhdGUNCm5vdCBzZXQpPw0KDQoNCkp1ZXJnZW4NCg==
+--------------emnYBJyIfA0mAuf1FBk0JrWD
+Content-Type: application/pgp-keys; name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Disposition: attachment; filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Description: OpenPGP public key
+Content-Transfer-Encoding: quoted-printable
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+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
+kt+z4drzFUyEjLM1vVvIMjkUoJs=3D
+=3DeeAB
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------emnYBJyIfA0mAuf1FBk0JrWD--
+
+--------------1XNOHvG0ftKOzuceeKWaT2Id--
+
+--------------Vg9NJvq3ine0Gyx1IX0BEzQC
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmpwWlsFAwAAAAAACgkQsN6d1ii/Ey/i
+jgf/ZwJPxlL37xKWgHvTpcOyxx9OjPwR5NnmxhKYC+qK1G+dCKRR2aNsNRd92IvtuR/zlwoSK3Bz
+7Knn/QAX+Sr8+MzzkoSZZy4464mITxuVnjBsYOy1wmVfTRA9xJ5kPDsLcow9h9fba5YWY5JKjJEr
+fuIk59vC3iZC8TXbrwFnUB118QfIzPMfnHvl18ioDjqN/X6ooFJudXLB3hTrlpzsxtdu1OFI+TsY
+0FUiNapbbcLYtM5X9v/bo7LSqQNdjZKmfV2DVQHs8Vj2bH/TyrIG+SvEggEztdqBgec9T7Ix66uU
+FOasApx6jWOz0UmYAKKBF0iBOhSZaPnQhSA6xqkzCw==
+=lraB
+-----END PGP SIGNATURE-----
+
+--------------Vg9NJvq3ine0Gyx1IX0BEzQC--
+
+
+--===============1678755545364218384==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============1678755545364218384==--
+
