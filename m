@@ -4,79 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BCF2AC55184
-	for <linux-mtd@archiver.kernel.org>; Tue,  4 Aug 2026 11:00:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 795C2C55838
+	for <linux-mtd@archiver.kernel.org>; Tue,  4 Aug 2026 12:09:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
-	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=6GNKnzVM67d8RpjeuHYVmFJPz9wnkKAEsFZmcuR0N60=; b=kQ0AhucCxPzduL
-	FQkIcrrWJpLGoXa0qmB9KuCAaawqPd6XN+pH8Kxd8Q61U/Jgi2W1o2gEeocKzF7bl5Bw+B9ABRZTr
-	dfvnnxCsrTbj/w3A4uhBji8tLoneto7nCFWNKeTxXNuDDfcxC0xNHCkoLWrYcAbcq3yC1KiSf3Zft
-	6O1cTp/B9puISg9tbmfRNJFvyqRRwWbQRS+682ngW/7EJPn4YtPOo61TPOLkFwo47peEPWF2jT5Dy
-	pvUzQSiZRNFp6gJ8hkEh9Z38KVAAHN5khbh5/yITqaUNvA6BSAGBa0kfrghfpCuFjUPiXUOqlnfyz
-	YhDd2XSA6lQJo8/3iJ+A==;
+	List-Owner; bh=8R2Ujgo1tC4EU58BPYxAuY266Upg12D61QVq9BSRs0w=; b=jfKbo5fAaKFCkd
+	XbLKvuItwZR5ndZjag7dJg1jDjRyFMqiQlFQZ4ke8meIyZ7s7fFAZ/C0sLxVbmJZDOSrKHpGfm/Wl
+	QLABkfz8EQBj8ma/zQWSXtQ2xG6EPHJJi5kdAwWm4BYyJuCCT9Wb60irtUq5E4lomEP0hfNbXoBir
+	Ny8t5tse8HDHucbzwJlC8naKjxGi3pUU7TJSTF/CuwfobcLdtYQaf+lORjeLxYr4fNA6l4MUvnBFq
+	pguBwSzPXV4YplridA4hhxq0G99FfRbpUgVQAkSXzs8HamTy+2VoPXVEZbUCSrLX/mqnEU2kIOcGQ
+	5EX8Ve4MCtbDXOOMeufg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wrCsv-00000001clY-1jA0;
-	Tue, 04 Aug 2026 11:00:37 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1wrDxe-00000001lrt-0gB8;
+	Tue, 04 Aug 2026 12:09:34 +0000
+Received: from mgamail.intel.com ([198.175.65.18])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wrCst-00000001cgt-3FcO
-	for linux-mtd@bombadil.infradead.org;
-	Tue, 04 Aug 2026 11:00:35 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Cc:To:In-Reply-To:References:
-	Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
-	From:Sender:Reply-To:Content-ID:Content-Description;
-	bh=hzGiCJaRp391t6EBI/8hziqp4TPU24QahmGmlRZFapI=; b=dw/Kl8OgQKuRrbI80WgSv2nmlB
-	FVvcyi4QkQbsQNHQyM23mMl2nuJUzMatHl+w7M5+/anol97BiNt9dY6GRSHZVT0Y/1Hf8diIMhLTt
-	lAtWvEkWCyvSzGeJGaRa4e6qetS2J1MOvWg+vEvsYDGpSUjsCUq4h0oBerIkSVQcVZHLeNIjlMHaC
-	rQCX6lkPBWlsP4Cz2rF6lHB0MlgCdG5XIILWW34hgrkvK7Cbt3NGnT0bQk8FoX1sEw2eq0Oy2RLpi
-	PrkP+qqkrKIN1/dy9sox4TCzlEYtclaAV8REZlg27qv421lz3f2VKbdgq9phucV8AzGqmqyEPJ7rI
-	BU8yxzBQ==;
-Received: from smtpout-03.galae.net ([185.246.85.4])
-	by desiato.infradead.org with esmtps (Exim 4.99.2 #2 (Red Hat Linux))
-	id 1wrCsn-00000009odL-3arG
+	id 1wrDxb-00000001lrD-0uUg
 	for linux-mtd@lists.infradead.org;
-	Tue, 04 Aug 2026 11:00:34 +0000
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id 3C13F4E410DB;
-	Tue,  4 Aug 2026 11:00:29 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 11F7E6029E;
-	Tue,  4 Aug 2026 11:00:29 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 8B36E11C32B42;
-	Tue,  4 Aug 2026 13:00:26 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1785841227; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=hzGiCJaRp391t6EBI/8hziqp4TPU24QahmGmlRZFapI=;
-	b=ou7HKLWjNuK52m4MlvTbgFJssCVX7kAnYwh06ZAudog4vlC5RAbNqindbZC4AGkAt1opX3
-	YhkniR31Y91U/wc9YEsEguOjw0lOBH/3IgYLju/ocTkKbh3jEhIKT5OIdKVkao51PqvIWD
-	GYEaZ/3oDIJuo0D9SP4nJCz8IKsDr8DiXxqoVamOqJED5KnuBNaJAbKt0Q8hqkoXKtMhrT
-	S70iMUzqwt1tvdGk6xSMNVUoEXdBykBZwmuZPiXsD8/Yf2oEYcMWARR30rTpPNKFH2bKBi
-	xlwrv7rjtDt5Xg2zHrA0+xXadimV1Rg4zMOM4YpfCQcOWWa6xjMv9jUJpO73fQ==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Tue, 04 Aug 2026 12:59:24 +0200
-Subject: [PATCH v3 26/27] mtd: spi-nor: winbond: W25Q512JV-M: New chip
+	Tue, 04 Aug 2026 12:09:33 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1785845372; x=1817381372;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=rtf8eOvMTeEuXHCn6euqEu9sv+RpPXAaVU3t/v7ajfA=;
+  b=TkxU/xFbIo8JtfslyI9ExJwhzYc2kASxBmlwIA6K3690+9+afOtgtVCd
+   QnzAAkGO5TDgg1TpPppbN9qLm8pQSfQwPjKHboIpbt6lPpfRX2NvUgldH
+   AJhBp/FLPXF9aJplWdu2IxmZIJ2pJvJGUOgoMhdRUcqkf8jyaAMi3cpyH
+   VXuPt2yMEEb0MOXEny0BHTFKwmhg3fNdVFxsNmxJ4q3cLcZwklVktGpK1
+   xtu6EVw1e9rRVFV777mUpw3q/Ccz735e603x6zQehajA9bIwDQNTKxS7C
+   qekMDX5TwTqwhmbJ4k3YmfvSocJj7vibSq9KhzjDEXiQZpdUTkROYxd7C
+   g==;
+X-CSE-ConnectionGUID: keEdpjiwQ2yG9SkBAtPETw==
+X-CSE-MsgGUID: okkXB7nXTT25z/nDFz5zIQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11864"; a="86473203"
+X-IronPort-AV: E=Sophos;i="6.25,204,1779174000"; 
+   d="scan'208";a="86473203"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2026 05:09:29 -0700
+X-CSE-ConnectionGUID: DzESDmdjRqualZ63CWDICw==
+X-CSE-MsgGUID: j+glKxV4RuqTXi106Zq07Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.25,204,1779174000"; 
+   d="scan'208";a="284871641"
+Received: from lkp-server01.sh.intel.com (HELO 6eda058d650d) ([10.239.97.150])
+  by fmviesa002.fm.intel.com with ESMTP; 04 Aug 2026 05:07:38 -0700
+Received: from kbuild by 6eda058d650d with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1wrDvi-000000009pl-3tN2;
+	Tue, 04 Aug 2026 12:07:34 +0000
+Date: Tue, 4 Aug 2026 20:06:57 +0800
+From: kernel test robot <lkp@intel.com>
+To: Jeffrey Yu <jeyu@issi.com>,
+	"marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+	"tudor.ambarus@microchip.com" <tudor.ambarus@microchip.com>
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	"dwmw2@infradead.org" <dwmw2@infradead.org>,
+	"computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+	"bbrezillon@kernel.org" <bbrezillon@kernel.org>,
+	"richard@nod.at" <richard@nod.at>,
+	open list <linux-kernel@vger.kernel.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH] Add JEDEC ID table entries for additional ISSI SPI-NOR
+   devices. Additionally added several structs to support ISSI octal flash
+  functionality. (Octal SPI 2026 revised)
+Message-ID: <202608041903.oQQ0fMx3-lkp@intel.com>
+References: <LV8PR19MB85976C665A59A0DEBAF4F285B6EF2@LV8PR19MB8597.namprd19.prod.outlook.com>
 MIME-Version: 1.0
-Message-Id: <20260804-winbond-v7-1-spi-nor-jv-cleanup-v3-26-542ce107bc92@bootlin.com>
-References: <20260804-winbond-v7-1-spi-nor-jv-cleanup-v3-0-542ce107bc92@bootlin.com>
-In-Reply-To: <20260804-winbond-v7-1-spi-nor-jv-cleanup-v3-0-542ce107bc92@bootlin.com>
-To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
- Takahiro Kuwano <takahiro.kuwano@infineon.com>, 
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
- Steam Lin <STLin2@winbond.com>, linux-mtd@lists.infradead.org, 
- linux-kernel@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>
-X-Mailer: b4 0.14.3
-X-Last-TLS-Session-Version: TLSv1.3
+Content-Disposition: inline
+In-Reply-To: <LV8PR19MB85976C665A59A0DEBAF4F285B6EF2@LV8PR19MB8597.namprd19.prod.outlook.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260804_120030_123820_95E601E8 
-X-CRM114-Status: GOOD (  14.33  )
+X-CRM114-CacheID: sfid-20260804_050931_339410_5CC4E231 
+X-CRM114-Status: GOOD (  15.94  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,322 +97,274 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add support for W25Q512JV-M. It is a 3.3V chip with usual dual/quad
-capabilities.
+Hi Jeffrey,
 
-The SFDP table is pretty complete except for the locking capabilities
-which must be filled manually.
+kernel test robot noticed the following build errors:
 
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
-+ cat /sys/bus/spi/devices/spi0.0/spi-nor/partname
-cat: can't open '/sys/bus/spi/devices/spi0.0/spi-nor/partname': No such file or directory
-+ cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
-ef7020
-+ cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
-winbond
-+ xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-53464450060101ff00060110800000ff84000102d00000ff03000102f000
-00ffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffe520fbffffffff1f44eb086b083b42bbfeffffffffff
-0000ffff40eb0c200f5210d800003602a60082ea14e2e96376337a757a75
-f7a2d55c19f74dffe970f9a5ffffffffffffffffffffffffffffffffff0a
-f0ff21ffdcff
-+ sha256sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-f41674a6c3742a42d31d3007d4d4b725c166ddb4e4566d1c347d29ed29855ef0  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-+ cat /sys/kernel/debug/spi-nor/spi0.0/capabilities
-Supported read modes by the flash
- 1S-1S-1S
-  opcode	0x13
-  mode cycles	0
-  dummy cycles	0
- 1S-1S-2S
-  opcode	0x3c
-  mode cycles	0
-  dummy cycles	8
- 1S-2S-2S
-  opcode	0xbc
-  mode cycles	2
-  dummy cycles	2
- 1S-1S-4S
-  opcode	0x6c
-  mode cycles	0
-  dummy cycles	8
- 1S-4S-4S
-  opcode	0xec
-  mode cycles	2
-  dummy cycles	4
- 4S-4S-4S
-  opcode	0xec
-  mode cycles	2
-  dummy cycles	0
+[auto build test ERROR on mtd/spi-nor/next]
+[also build test ERROR on linus/master v7.2-rc6 next-20260803]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Supported page program modes by the flash
- 1S-1S-1S
-  opcode	0x12
- 1S-1S-4S
-  opcode	0x34
-+ cat /sys/kernel/debug/spi-nor/spi0.0/params
-name		(null)
-id		ef 70 20 00 00 00
-size		64.0 MiB
-write size	1
-page size	256
-address nbytes	4
-flags		HAS_SR_TB | 4B_OPCODES | HAS_4BAIT | HAS_LOCK | HAS_16BIT_SR | HAS_SR_TB_BIT6 | HAS_4BIT_BP | SOFT_RESET | NO_WP | HAS_SR2_CMP_BIT6
+url:    https://github.com/intel-lab-lkp/linux/commits/Jeffrey-Yu/Add-JEDEC-ID-table-entries-for-additional-ISSI-SPI-NOR-devices-Additionally-added-several-structs-to-support-ISSI-octal-/20260804-122036
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git spi-nor/next
+patch link:    https://lore.kernel.org/r/LV8PR19MB85976C665A59A0DEBAF4F285B6EF2%40LV8PR19MB8597.namprd19.prod.outlook.com
+patch subject: [PATCH] Add JEDEC ID table entries for additional ISSI SPI-NOR   devices. Additionally added several structs to support ISSI octal flash  functionality. (Octal SPI 2026 revised)
+config: hexagon-randconfig-002-20260804 (https://download.01.org/0day-ci/archive/20260804/202608041903.oQQ0fMx3-lkp@intel.com/config)
+compiler: clang version 24.0.0git (https://github.com/llvm/llvm-project bacfe2950f8218268fcc0a8765644ea0c15f0360)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260804/202608041903.oQQ0fMx3-lkp@intel.com/reproduce)
 
-opcodes
- read		0xec
-  dummy cycles	6
- erase		0xdc
- program	0x34
- 8D extension	none
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202608041903.oQQ0fMx3-lkp@intel.com/
 
-protocols
- read		1S-4S-4S
- write		1S-1S-4S
- register	1S-1S-1S
+All errors (new ones prefixed by >>):
 
-erase commands
- 21 (4.00 KiB) [1]
- dc (64.0 KiB) [3]
- c7 (64.0 MiB)
+>> drivers/mtd/spi-nor/issi.c:22:12: error: use of undeclared identifier 'SPINOR_IS_EXSPI'
+      22 |                 buf[0] = SPINOR_IS_EXSPI;
+         |                          ^~~~~~~~~~~~~~~
+>> drivers/mtd/spi-nor/issi.c:25:31: error: use of undeclared identifier 'SPINOR_OP_IS_WR_ANY_REG'
+      25 |                                 SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_IS_WR_ANY_REG, 1),
+         |                                                           ^~~~~~~~~~~~~~~~~~~~~~~
+>> drivers/mtd/spi-nor/issi.c:26:24: error: use of undeclared identifier 'SPINOR_REG_IS_CFR0V'
+      26 |                                 SPI_MEM_OP_ADDR(4, SPINOR_REG_IS_CFR0V, 1),
+         |                                                    ^~~~~~~~~~~~~~~~~~~
+>> drivers/mtd/spi-nor/issi.c:36:42: error: use of undeclared identifier 'SPI_CONTROLLER_SDR_PHY'
+      36 |                 nor->spimem->spi->controller->flags |= SPI_CONTROLLER_SDR_PHY;
+         |                                                        ^~~~~~~~~~~~~~~~~~~~~~
+   drivers/mtd/spi-nor/issi.c:55:43: error: use of undeclared identifier 'SPI_CONTROLLER_SDR_PHY'
+      55 |                 nor->spimem->spi->controller->flags &= ~SPI_CONTROLLER_SDR_PHY;
+         |                                                         ^~~~~~~~~~~~~~~~~~~~~~
+   drivers/mtd/spi-nor/issi.c:73:31: error: use of undeclared identifier 'SPINOR_OP_IS_WR_ANY_REG'
+      73 |                                 SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_IS_WR_ANY_REG, 1),
+         |                                                           ^~~~~~~~~~~~~~~~~~~~~~~
+>> drivers/mtd/spi-nor/issi.c:74:25: error: use of undeclared identifier 'SPINOR_REG_IS_CFR1V'
+      74 |                                         SPI_MEM_OP_ADDR(3, SPINOR_REG_IS_CFR1V, 1),
+         |                                                            ^~~~~~~~~~~~~~~~~~~
+>> drivers/mtd/spi-nor/issi.c:92:11: error: use of undeclared identifier 'SPINOR_IS_OCT_DTR'
+      92 |                         *buf = SPINOR_IS_OCT_DTR;
+         |                                ^~~~~~~~~~~~~~~~~
+   drivers/mtd/spi-nor/issi.c:94:11: error: use of undeclared identifier 'SPINOR_IS_EXSPI'
+      94 |                         *buf = SPINOR_IS_EXSPI;
+         |                                ^~~~~~~~~~~~~~~
+   drivers/mtd/spi-nor/issi.c:97:30: error: use of undeclared identifier 'SPINOR_OP_IS_WR_ANY_REG'
+      97 |                         SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_IS_WR_ANY_REG, 1),
+         |                                                   ^~~~~~~~~~~~~~~~~~~~~~~
+   drivers/mtd/spi-nor/issi.c:99:8: error: use of undeclared identifier 'SPINOR_REG_IS_CFR0V'
+      99 |                                                         SPINOR_REG_IS_CFR0V, 1),
+         |                                                         ^~~~~~~~~~~~~~~~~~~
+>> drivers/mtd/spi-nor/issi.c:110:21: error: use of undeclared identifier 'SNOR_F_HAS_STACKED'; did you mean 'SNOR_F_HAS_LOCK'?
+     110 |                 if ((nor->flags & SNOR_F_HAS_STACKED) && nor->spimem->spi->cs_index_mask == 1)
+         |                                   ^~~~~~~~~~~~~~~~~~
+         |                                   SNOR_F_HAS_LOCK
+   drivers/mtd/spi-nor/core.h:131:2: note: 'SNOR_F_HAS_LOCK' declared here
+     131 |         SNOR_F_HAS_LOCK         = BIT(5),
+         |         ^
+>> drivers/mtd/spi-nor/issi.c:151:44: error: call to undeclared function 'spi_nor_get_params'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+     151 |                 struct spi_nor_flash_parameter *params = spi_nor_get_params(nor, 0);
+         |                                                          ^
+>> drivers/mtd/spi-nor/issi.c:151:35: error: incompatible integer to pointer conversion initializing 'struct spi_nor_flash_parameter *' with an expression of type 'int' [-Wint-conversion]
+     151 |                 struct spi_nor_flash_parameter *params = spi_nor_get_params(nor, 0);
+         |                                                 ^        ~~~~~~~~~~~~~~~~~~~~~~~~~~
+>> drivers/mtd/spi-nor/issi.c:155:11: error: no member named 'phy_enable' in 'struct spi_nor_flash_parameter'
+     155 |                 params->phy_enable = spi_nor_issi_phy_enable;
+         |                 ~~~~~~  ^
+   drivers/mtd/spi-nor/issi.c:160:44: error: call to undeclared function 'spi_nor_get_params'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+     160 |                 struct spi_nor_flash_parameter *params = spi_nor_get_params(nor, 0);
+         |                                                          ^
+   drivers/mtd/spi-nor/issi.c:160:35: error: incompatible integer to pointer conversion initializing 'struct spi_nor_flash_parameter *' with an expression of type 'int' [-Wint-conversion]
+     160 |                 struct spi_nor_flash_parameter *params = spi_nor_get_params(nor, 0);
+         |                                                 ^        ~~~~~~~~~~~~~~~~~~~~~~~~~~
+>> drivers/mtd/spi-nor/issi.c:165:16: error: use of undeclared identifier 'SPINOR_OP_IS_DTR_RD'
+     165 |                                                                 0, 20, SPINOR_OP_IS_DTR_RD,
+         |                                                                        ^~~~~~~~~~~~~~~~~~~
+>> drivers/mtd/spi-nor/issi.c:314:16: error: use of undeclared identifier 'USE_FSR'
+     314 |                 .mfr_flags = USE_FSR,
+         |                              ^~~~~~~
+   fatal error: too many errors emitted, stopping now [-ferror-limit=]
+   20 errors generated.
 
-sector map
- region (in hex)   | erase mask | overlaid
- ------------------+------------+---------
- 00000000-03ffffff |     [   3] | no
 
-locked sectors
- region (in hex)   | status   | #sectors
- ------------------+----------+---------
- 00000000-03ffffff | unlocked | 1024
-+ dd 'if=/dev/urandom' 'of=./spi_test' 'bs=1M' 'count=2'
-[   53.198369] random: crng init done
-2+0 records in
-2+0 records out
-+ mtd_debug erase /dev/mtd0 0 2097152
-Erased 2097152 bytes from address 0x00000000 in flash
-+ mtd_debug read /dev/mtd0 0 2097152 spi_read
-Copied 2097152 bytes from address 0x00000000 in flash to spi_read
-+ hexdump spi_read
-0000000 ffff ffff ffff ffff ffff ffff ffff ffff
-*
-0200000
-+ sha256sum spi_read
-4bda3a28f4ffe603c0ec1258c0034d65a1a0d35ab7bd523a834608adabf03cc5  spi_read
-+ mtd_debug write /dev/mtd0 0 2097152 spi_test
-Copied 2097152 bytes from spi_test to address 0x00000000 in flash
-+ mtd_debug read /dev/mtd0 0 2097152 spi_read
-Copied 2097152 bytes from address 0x00000000 in flash to spi_read
-+ sha256sum spi_read spi_test
-f27c6b54ce92a46104f2fd43fc2d6d1353099a6a125591b47a615d3d61171a86  spi_read
-f27c6b54ce92a46104f2fd43fc2d6d1353099a6a125591b47a615d3d61171a86  spi_test
-+ mtd_debug erase /dev/mtd0 0 2097152
-Erased 2097152 bytes from address 0x00000000 in flash
-+ mtd_debug read /dev/mtd0 0 2097152 spi_read
-Copied 2097152 bytes from address 0x00000000 in flash to spi_read
-+ sha256sum spi_read spi_test
-4bda3a28f4ffe603c0ec1258c0034d65a1a0d35ab7bd523a834608adabf03cc5  spi_read
-f27c6b54ce92a46104f2fd43fc2d6d1353099a6a125591b47a615d3d61171a86  spi_test
-+ mtd_debug info /dev/mtd0
-mtd.type = MTD_NORFLASH
-mtd.flags = MTD_CAP_NORFLASH
-mtd.size = 67108864 (64M)
-mtd.erasesize = 65536 (64K)
-mtd.writesize = 1
-mtd.oobsize = 0
-regions = 0
+vim +/SPINOR_IS_EXSPI +22 drivers/mtd/spi-nor/issi.c
 
-+ alias 'show_sectors=grep -A4 "locked sectors" /sys/kernel/debug/spi-nor/spi0.0/params'
-+ flash_lock -u /dev/mtd0
-+ flash_lock -i /dev/mtd0
-Device: /dev/mtd0
-Start: 0
-Len: 0x4000000
-Lock status: unlocked
-Return code: 0
-+ mtd_debug erase /dev/mtd0 0 2097152
-Erased 2097152 bytes from address 0x00000000 in flash
-+ mtd_debug write /dev/mtd0 0 2097152 spi_test
-Copied 2097152 bytes from spi_test to address 0x00000000 in flash
-+ mtd_debug read /dev/mtd0 0 2097152 spi_read
-Copied 2097152 bytes from address 0x00000000 in flash to spi_read
-+ sha256sum spi_read spi_test
-f27c6b54ce92a46104f2fd43fc2d6d1353099a6a125591b47a615d3d61171a86  spi_read
-f27c6b54ce92a46104f2fd43fc2d6d1353099a6a125591b47a615d3d61171a86  spi_test
-+ grep -A4 'locked sectors' /sys/kernel/debug/spi-nor/spi0.0/params
-locked sectors
- region (in hex)   | status   | #sectors
- ------------------+----------+---------
- 00000000-03ffffff | unlocked | 1024
-+ flash_lock -l /dev/mtd0
-+ flash_lock -i /dev/mtd0
-Device: /dev/mtd0
-Start: 0
-Len: 0x4000000
-Lock status: locked
-Return code: 1
-+ mtd_debug erase /dev/mtd0 0 2097152
-Erased 2097152 bytes from address 0x00000000 in flash
-+ mtd_debug read /dev/mtd0 0 2097152 spi_read
-Copied 2097152 bytes from address 0x00000000 in flash to spi_read
-+ sha256sum spi_read spi_test
-f27c6b54ce92a46104f2fd43fc2d6d1353099a6a125591b47a615d3d61171a86  spi_read
-f27c6b54ce92a46104f2fd43fc2d6d1353099a6a125591b47a615d3d61171a86  spi_test
-+ dd 'if=/dev/urandom' 'of=./spi_test2' 'bs=1M' 'count=2'
-2+0 records in
-2+0 records out
-+ mtd_debug write /dev/mtd0 0 2097152 spi_test2
-Copied 2097152 bytes from spi_test2 to address 0x00000000 in flash
-+ mtd_debug read /dev/mtd0 0 2097152 spi_read2
-Copied 2097152 bytes from address 0x00000000 in flash to spi_read2
-+ sha256sum spi_read spi_read2 spi_test spi_test2
-f27c6b54ce92a46104f2fd43fc2d6d1353099a6a125591b47a615d3d61171a86  spi_read
-f27c6b54ce92a46104f2fd43fc2d6d1353099a6a125591b47a615d3d61171a86  spi_read2
-f27c6b54ce92a46104f2fd43fc2d6d1353099a6a125591b47a615d3d61171a86  spi_test
-44db7586d798437868d29ea31ac1fa1e64d1b81337721d0d811776dad47110f3  spi_test2
-+ grep -A4 'locked sectors' /sys/kernel/debug/spi-nor/spi0.0/params
-locked sectors
- region (in hex)   | status   | #sectors
- ------------------+----------+---------
- 00000000-03ffffff |   locked | 1024
-+ flash_lock -u /dev/mtd0
-+ cat /sys/class/mtd/mtd0/size
-+ size=67108864
-+ cat /sys/class/mtd/mtd0/erasesize
-+ bs=65536
-+ grep unlocked /sys/kernel/debug/spi-nor/spi0.0/params
-+ sed -e 's/.*unlocked | //'
-+ nsectors=1024
-+ ss=65536
-+ bps=1
-+ flash_lock -u /dev/mtd0
-+ flash_lock -l /dev/mtd0 66977792 2
-+ grep -A4 'locked sectors' /sys/kernel/debug/spi-nor/spi0.0/params
-locked sectors
- region (in hex)   | status   | #sectors
- ------------------+----------+---------
- 00000000-03fdffff | unlocked | 1022
- 03fe0000-03ffffff |   locked | 2
-+ flash_lock -u /dev/mtd0 66977792 1
-+ grep -A4 'locked sectors' /sys/kernel/debug/spi-nor/spi0.0/params
-locked sectors
- region (in hex)   | status   | #sectors
- ------------------+----------+---------
- 00000000-03feffff | unlocked | 1023
- 03ff0000-03ffffff |   locked | 1
-+ flash_lock -u /dev/mtd0
-+ flash_lock -l /dev/mtd0 58720256 128
-+ grep -A4 'locked sectors' /sys/kernel/debug/spi-nor/spi0.0/params
-locked sectors
- region (in hex)   | status   | #sectors
- ------------------+----------+---------
- 00000000-037fffff | unlocked | 896
- 03800000-03ffffff |   locked | 128
-+ flash_lock -u /dev/mtd0
-+ flash_lock -l /dev/mtd0 0 2
-+ grep -A4 'locked sectors' /sys/kernel/debug/spi-nor/spi0.0/params
-locked sectors
- region (in hex)   | status   | #sectors
- ------------------+----------+---------
- 00000000-0001ffff |   locked | 2
- 00020000-03ffffff | unlocked | 1022
-+ flash_lock -u /dev/mtd0 65536 1
-+ grep -A4 'locked sectors' /sys/kernel/debug/spi-nor/spi0.0/params
-locked sectors
- region (in hex)   | status   | #sectors
- ------------------+----------+---------
- 00000000-0000ffff |   locked | 1
- 00010000-03ffffff | unlocked | 1023
-+ all_but_one=1023
-+ flash_lock -u /dev/mtd0
-+ flash_lock -l /dev/mtd0 65536 1023
-+ grep -A4 'locked sectors' /sys/kernel/debug/spi-nor/spi0.0/params
-locked sectors
- region (in hex)   | status   | #sectors
- ------------------+----------+---------
- 00000000-0000ffff | unlocked | 1
- 00010000-03ffffff |   locked | 1023
-+ flash_lock -u /dev/mtd0 65536 1
-+ grep -A4 'locked sectors' /sys/kernel/debug/spi-nor/spi0.0/params
-locked sectors
- region (in hex)   | status   | #sectors
- ------------------+----------+---------
- 00000000-0001ffff | unlocked | 2
- 00020000-03ffffff |   locked | 1022
-+ flash_lock -u /dev/mtd0
-+ flash_lock -l /dev/mtd0 0 1023
-+ grep -A4 'locked sectors' /sys/kernel/debug/spi-nor/spi0.0/params
-locked sectors
- region (in hex)   | status   | #sectors
- ------------------+----------+---------
- 00000000-03feffff |   locked | 1023
- 03ff0000-03ffffff | unlocked | 1
-+ flash_lock -u /dev/mtd0 66977792 1
-+ grep -A4 'locked sectors' /sys/kernel/debug/spi-nor/spi0.0/params
-locked sectors
- region (in hex)   | status   | #sectors
- ------------------+----------+---------
- 00000000-03fdffff |   locked | 1022
- 03fe0000-03ffffff | unlocked | 2
-+ flash_speed /dev/mtd0 -dc10
-not NAND flash, assume page size is 512 bytes.
-scanning for bad eraseblocks
-scanned 10 eraseblocks, 0 are bad
-testing eraseblock write speed
-eraseblock write speed is 437 KiB/s
-testing eraseblock read speed
-eraseblock read speed is 1560 KiB/s
-testing page write speed
-page write speed is 434 KiB/s
-testing page read speed
-page read speed is 1457 KiB/s
-testing 2 page write speed
-2 page write speed is 435 KiB/s
-testing 2 page read speed
-2 page read speed is 1498 KiB/s
-Testing erase speed
-erase speed is 257 KiB/s
-Testing 2x multi-block erase speed
-2x multi-block erase speed is 257 KiB/s
-Testing 4x multi-block erase speed
-4x multi-block erase speed is 257 KiB/s
-Testing 8x multi-block erase speed
-8x multi-block erase speed is 254 KiB/s
-Testing 16x multi-block erase speed
-16x multi-block erase speed is 255 KiB/s
-Testing 32x multi-block erase speed
-32x multi-block erase speed is 255 KiB/s
-Testing 64x multi-block erase speed
-64x multi-block erase speed is 253 KiB/s
-finished
----
- drivers/mtd/spi-nor/winbond.c | 5 +++++
- 1 file changed, 5 insertions(+)
+    10	
+    11	
+    12	static int spi_nor_issi_phy_enable(struct spi_nor *nor)
+    13	{
+    14			struct spi_mem_op op;
+    15			u8 *buf = nor->bouncebuf;
+    16			int ret;
+    17	
+    18			ret = spi_nor_write_enable(nor);
+    19			if (ret)
+    20				goto ret;
+    21	
+  > 22			buf[0] = SPINOR_IS_EXSPI;
+    23	
+    24			op = (struct spi_mem_op)
+  > 25					SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_IS_WR_ANY_REG, 1),
+  > 26					SPI_MEM_OP_ADDR(4, SPINOR_REG_IS_CFR0V, 1),
+    27					SPI_MEM_OP_NO_DUMMY,
+    28					SPI_MEM_OP_DATA_OUT(1, buf, 1));
+    29	
+    30			spi_nor_spimem_setup_op(nor, &op, SNOR_PROTO_1_1_1);
+    31	
+    32			ret = spi_mem_exec_op(nor->spimem, &op);
+    33			if (ret)
+    34				goto ret;
+    35	
+  > 36			nor->spimem->spi->controller->flags |= SPI_CONTROLLER_SDR_PHY;
+    37			/* Read flash ID to make sure the switch was successful. */
+    38			op = (struct spi_mem_op)
+    39					SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RDID, 1),
+    40							SPI_MEM_OP_NO_ADDR,
+    41							SPI_MEM_OP_DUMMY(0, 1),
+    42							SPI_MEM_OP_DATA_IN(nor->info->id->len, buf, 1));
+    43	
+    44			spi_nor_spimem_setup_op(nor, &op, SNOR_PROTO_1_1_1);
+    45	
+    46			ret = spi_mem_exec_op(nor->spimem, &op);
+    47			if (ret)
+    48				goto ret;
+    49	
+    50			if (memcmp(buf, nor->info->id->bytes, nor->info->id->len))
+    51				goto ret;
+    52	
+    53			return 0;
+    54	ret:
+    55			nor->spimem->spi->controller->flags &= ~SPI_CONTROLLER_SDR_PHY;
+    56			return 0;
+    57	}
+    58	
+    59	static int spi_nor_issi_octal_dtr_enable(struct spi_nor *nor, bool enable)
+    60	{
+    61			struct spi_mem_op op;
+    62			u8 *buf = nor->bouncebuf;
+    63			int ret;
+    64	
+    65			if (enable) {
+    66				/* Use 20 dummy cycles for memory array reads. */
+    67				ret = spi_nor_write_enable(nor);
+    68				if (ret)
+    69					return ret;
+    70	
+    71				*buf = 20;
+    72				op = (struct spi_mem_op)
+    73					SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_IS_WR_ANY_REG, 1),
+  > 74						SPI_MEM_OP_ADDR(3, SPINOR_REG_IS_CFR1V, 1),
+    75						SPI_MEM_OP_NO_DUMMY,
+    76						SPI_MEM_OP_DATA_OUT(1, buf, 1));
+    77	
+    78				ret = spi_mem_exec_op(nor->spimem, &op);
+    79				if (ret)
+    80					return ret;
+    81	
+    82				ret = spi_nor_wait_till_ready(nor);
+    83				if (ret)
+    84					return ret;
+    85			}
+    86	
+    87			ret = spi_nor_write_enable(nor);
+    88			if (ret)
+    89				return ret;
+    90	
+    91			if (enable)
+  > 92				*buf = SPINOR_IS_OCT_DTR;
+    93			else
+    94				*buf = SPINOR_IS_EXSPI;
+    95	
+    96			op = (struct spi_mem_op)
+    97				SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_IS_WR_ANY_REG, 1),
+    98						SPI_MEM_OP_ADDR(enable ? 3 : 4,
+    99								SPINOR_REG_IS_CFR0V, 1),
+   100						SPI_MEM_OP_NO_DUMMY,
+   101						SPI_MEM_OP_DATA_OUT(1, buf, 1));
+   102	
+   103			if (!enable)
+   104				spi_nor_spimem_setup_op(nor, &op, SNOR_PROTO_8_8_8_DTR);
+   105	
+   106			ret = spi_mem_exec_op(nor->spimem, &op);
+   107			if (ret)
+   108				return ret;
+   109	
+ > 110			if ((nor->flags & SNOR_F_HAS_STACKED) && nor->spimem->spi->cs_index_mask == 1)
+   111				return 0;
+   112	
+   113			/* Read flash ID to make sure the switch was successful. */
+   114			op = (struct spi_mem_op)
+   115				SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RDID, 1),
+   116						SPI_MEM_OP_NO_ADDR,
+   117						SPI_MEM_OP_DUMMY(enable ? 8 : 0, 1),
+   118						SPI_MEM_OP_DATA_IN(round_up(nor->info->id->len, 2),
+   119										buf, 1));
+   120	
+   121			if (enable)
+   122				spi_nor_spimem_setup_op(nor, &op, SNOR_PROTO_8_8_8_DTR);
+   123	
+   124			ret = spi_mem_exec_op(nor->spimem, &op);
+   125			if (ret)
+   126				return ret;
+   127	
+   128			if (memcmp(buf, nor->info->id->bytes, nor->info->id->len))
+   129				return -EINVAL;
+   130	
+   131			return 0;
+   132	}
+   133	
+   134	static int is25wx256_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
+   135	{
+   136			int ret;
+   137	
+   138			ret = spi_nor_write_enable(nor);
+   139			if (ret)
+   140				return ret;
+   141	
+   142			ret = spi_nor_set_4byte_addr_mode(nor, enable);
+   143			if (ret)
+   144				return ret;
+   145	
+   146			return spi_nor_write_disable(nor);
+   147	}
+   148	
+   149	static void is25wx256_default_init(struct spi_nor *nor)
+   150	{
+ > 151			struct spi_nor_flash_parameter *params = spi_nor_get_params(nor, 0);
+   152	
+   153			params->set_octal_dtr = spi_nor_issi_octal_dtr_enable;
+   154			params->set_4byte_addr_mode = is25wx256_set_4byte_addr_mode;
+ > 155			params->phy_enable = spi_nor_issi_phy_enable;
+   156	}
+   157	
+   158	static int is25wx256_post_sfdp_fixup(struct spi_nor *nor)
+   159	{
+   160			struct spi_nor_flash_parameter *params = spi_nor_get_params(nor, 0);
+   161	
+   162			/* Set the Fast Read settings. */
+   163			params->hwcaps.mask |= SNOR_HWCAPS_READ_8_8_8_DTR;
+   164			spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_8_8_8_DTR],
+ > 165									0, 20, SPINOR_OP_IS_DTR_RD,
+   166									SNOR_PROTO_8_8_8_DTR);
+   167	
+   168			nor->cmd_ext_type = SPI_NOR_EXT_REPEAT;
+   169			params->rdsr_dummy = 8;
+   170			params->rdsr_addr_nbytes = 0;
+   171	
+   172			/*
+   173			 * The BFPT quad enable field is set to a reserved value so the quad
+   174			 * enable function is ignored by spi_nor_parse_bfpt(). Make sure we
+   175			 * disable it.
+   176			 */
+   177			params->quad_enable = NULL;
+   178	
+   179			return 0;
+   180	}
+   181	
 
-diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
-index 6b21fed74f4e..980c437f1951 100644
---- a/drivers/mtd/spi-nor/winbond.c
-+++ b/drivers/mtd/spi-nor/winbond.c
-@@ -335,6 +335,11 @@ static const struct flash_info winbond_nor_parts[] = {
- 		.name = "w25q256jvm",
- 		.flags = SPI_NOR_QUAD_PP | SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB |
- 			 SPI_NOR_TB_SR_BIT6 | SPI_NOR_4BIT_BP | SPI_NOR_HAS_CMP,
-+	}, {
-+		/* W25Q512JV-M */
-+		.id = SNOR_ID(0xef, 0x70, 0x20),
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6 |
-+			 SPI_NOR_4BIT_BP | SPI_NOR_HAS_CMP,
- 	}, {
- 		/* W25Q02JV-M */
- 		.id = SNOR_ID(0xef, 0x70, 0x22),
-
--- 
-2.54.0
-
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
 ______________________________________________________
 Linux MTD discussion mailing list
