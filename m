@@ -4,71 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29C46C55ABA
-	for <linux-mtd@archiver.kernel.org>; Wed,  5 Aug 2026 14:05:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE019C55ABA
+	for <linux-mtd@archiver.kernel.org>; Wed,  5 Aug 2026 17:12:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=YtcX+znmijxDCf0OXcP+hROdqhRAKIRhPQ4Z62BPcNw=; b=r01877yBDmPouE
-	NDNmYYHecUxLmZs1YzaunQmexXZVUBGHdBnfWJwDNiA7fXi9+lyPhCYLmrOavslSbw1TSX6uTwtUj
-	WKw8bgJDToHGbMkeFV6Dwg3h1PqPYtEwuikp8xOMZePaf35Idu9CrkmEkXcM2qCGe9VG5z629ARPF
-	qPJbhbBiiJKBTuxxVptZof7w2UfRo4ovSjiQtAXXM8W3rw0wJawa0o38xYh2nIwQCqgLs7BV9rK/h
-	30ENGGOAwz9nZeICd2ESwUW5toiZyWnxZoNMKonJV6LWCpzVJnxTXjL0rybvH+TKW23EqVT5Lg53V
-	QS+QlLPerEkyU5zcqatw==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:Cc:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=2nTDnrZovJje5s9x6gQl4jnI6uF6wr/JKfEpT9RC3Eo=; b=2yyf2QmXveYYT5
+	vBvOdKwbN0/GCOGaPs7scdi6fHlMkwSmHuN2zPH81I3Bs8YFcqKvBmOQxysrWYS8d90WUKjrWvdGN
+	MESM1vzFQJ22zD18jgE4as9PuI4sz++WK2OYDHI7IMWVc3gsPQ9cLrb2SqdLj5faoUUv2t8OJ7MbC
+	kz9MJ/7/v1+SHPyVFzbPDjjQ1oybdKWsV+oR6rrGHulVbgg/vM5zk2Ectc1iL6iq5Po01bfO5oefX
+	2nPpfeDHpNPGSvfTNYTQdDQoX6657ueloFGrA0P3eS41b0al+6umi9XvY3VDqArnNyTR5dAV79fmr
+	Pl3wpyFeAWO94ntZotjw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wrcF9-000000042dD-0W69;
-	Wed, 05 Aug 2026 14:05:15 +0000
-Received: from smtpout-02.galae.net ([185.246.84.56])
+	id 1wrfAJ-00000004Jph-2jOD;
+	Wed, 05 Aug 2026 17:12:27 +0000
+Received: from mail-pf1-x432.google.com ([2607:f8b0:4864:20::432])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wrcF4-000000042cT-2Lak;
-	Wed, 05 Aug 2026 14:05:12 +0000
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id C09AE1A143D;
-	Wed,  5 Aug 2026 14:05:04 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 933BF602AB;
-	Wed,  5 Aug 2026 14:05:04 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 1F3A711C34B9D;
-	Wed,  5 Aug 2026 16:04:53 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1785938699; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=8QHlmUCfRMDCYm4XCbQfPD+NoA9p8cr7Dg0SwC6Cnx0=;
-	b=XGJPsma+bnubqu0Y6npEobey93rSQjtfyKimTrfqnFkKWCI2D55QBPmGtJlUEIf7u79HA3
-	wXEsV9K45d5Uqe5XaUZHhHHNz1icvH6uAqIRawZ22GeMVzoYNLvhHIwmrQzy7AN3Ewmjex
-	24WPVMllDLyiQs93uqmL+okucUPonNeWIaNSusxLbf5hwcKeVjO1Qd24zzUyzVwbu0r96l
-	AS5FOYEOmR/kEGmCqXy5ZiSar8yxCtv75Qr8ZJDHbePj2MRZyttApLe/mzveURS7plHeb3
-	YsCDBAqds8pkCOAyO7J7a9lIvORf0x1UZtwfeJl+oEF5B+b97QDpGK5eskUHJQ==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: "Michael Walle" <mwalle@kernel.org>
-Cc: "Pratyush Yadav" <pratyush@kernel.org>,  "Takahiro Kuwano"
- <takahiro.kuwano@infineon.com>,  "Richard Weinberger" <richard@nod.at>,
-  "Vignesh Raghavendra" <vigneshr@ti.com>,  "Nicolas Ferre"
- <nicolas.ferre@microchip.com>,  "Alexandre Belloni"
- <alexandre.belloni@bootlin.com>,  "Claudiu Beznea"
- <claudiu.beznea@tuxon.dev>,  "Steam Lin" <STLin2@winbond.com>,  "Hsin-Yi
- Wang" <hsinyi@chromium.org>,  "Thomas Petazzoni"
- <thomas.petazzoni@bootlin.com>,  <linux-mtd@lists.infradead.org>,
-  <linux-arm-kernel@lists.infradead.org>,  <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/5] mtd: spi-nor: Refactor Read Status/Write Status
- support
-In-Reply-To: <87mrv2exwp.fsf@bootlin.com> (Miquel Raynal's message of "Tue, 04
-	Aug 2026 16:57:26 +0200")
-References: <20260529-winbond-v7-1-spi-nor-rv-addition-v1-0-f3ae18502d5a@bootlin.com>
-	<20260529-winbond-v7-1-spi-nor-rv-addition-v1-1-f3ae18502d5a@bootlin.com>
-	<DJS8PQ5HZZG5.2YT956NCDX8MG@kernel.org> <87mrv2exwp.fsf@bootlin.com>
-User-Agent: mu4e 1.12.12; emacs 30.2
-Date: Wed, 05 Aug 2026 16:04:52 +0200
-Message-ID: <87y0ekek8r.fsf@bootlin.com>
-MIME-Version: 1.0
-X-Last-TLS-Session-Version: TLSv1.3
+	id 1wrfAH-00000004Jp7-1RRo
+	for linux-mtd@lists.infradead.org;
+	Wed, 05 Aug 2026 17:12:26 +0000
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-84e3007a2b7so1198434b3a.0
+        for <linux-mtd@lists.infradead.org>; Wed, 05 Aug 2026 10:12:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1785949944; x=1786554744; darn=lists.infradead.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=zV1YJBwBh7VFqsi0VhIfkuHjfukVLMdGCKVOgvti+e8=;
+        b=bqcOmkE9DXz1b6SOLbVQSQQe15SW0g0GyNJboPmVqnYgHYOeV2+j7coak7h76ZIlcz
+         /n96m37SG2p1RNpMbYDVuau7HMige+Ld4zHkVLmK5N/7npqAWj50dn6WdIMKQSUTShvh
+         RZ/yH1zmfM+9pSqc1pJP/wJldtfO6YeChOZ1+VmPSTQ1oeh7Z70kaARlgHn56eoITgEp
+         P66GbvemFjOIt9wXdO62mne+0XzYgreDyi0/1BRKobHSYfxz0aMaLxgtwTXg/faTGSKf
+         +pAInbZc4mJolNe+C1Gd/9N98MWPUDXbJRQ4JdL6dPuOH9t6QMsbPqq2Tw0204rWeJ+R
+         uIOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1785949944; x=1786554744;
+        h=message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to:content-type;
+        bh=zV1YJBwBh7VFqsi0VhIfkuHjfukVLMdGCKVOgvti+e8=;
+        b=AkpLXRq16Jb11ykNpf+dNB7nzb2mdEfTLwqBx6eCpb8qGBEWqeOpuRp9Ue0qNiuceO
+         ujtIPKjO5BOyDWsSR/hGi+PezWUjw5Mm6fWSHogf1zXg5L0ecYEuTyrTyGxr3pNJI80z
+         vdRBlK2RVswdyy+sC/fiJ2XTY2d9PXuHE0Kd1LL3pIh/MGDv4cE8fsgbNttRYbMN8gCP
+         kOURlXm1H5DTl4Gejs0xYg5y0aeGPWgWueu/5UbO4huHpb+HCvq0K+Q10Gde+p7WXMLL
+         CXeEfDEFGDJAagsdpL0v/urVEUJSgE5TphO/jl23DCrxjeZJmXGeBw11Kai5vKz6KhP5
+         k1rA==
+X-Forwarded-Encrypted: i=1; AHgh+RrCE/33boy/ALNxEDPtCdJPvIMf536khg2XaNRUfhtb1N6Mo8Bu1pqbyDIOTY5Vwmlhc51Tt4Wzb2w=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yx9LN6uanapFE+HPQuADCJzGxYzFiC07haUPGN07sZe9cZsGRRM
+	wRzFXPdVq5IIRMIdBWhonYbMUpVUq5D6tM4HoeC7t9bj+RaWzoRhxkyP
+X-Gm-Gg: AR+sD10PTwSmKWpwCzHgMHR7xJgLDmTY2cxi1MVNp0eQEVhKWVGBv59wXXPFyOzAdZq
+	PMyA77LPtMMsZXt34ubkOHR3rVZyTAa4PrCMH69DTtQ3FhQqjxJlFl83BcwTifa56Femm41k99E
+	bFm+cL1U0Wd9XyufSlfeO3x3j3M3jIVzbzTHf4SiKki2RJPVqd8rjqvyk12CTsXYpVJ5delfsGl
+	g6yAHY4455hW6Pwh4uu01mWBR0FKqPX9ya02sVe0aWP9orlgT3YKbjCw8vTjuBAR1uTwqE4Eu2M
+	89xmxrWpwmXsz3Yhg2PgNHl2sIuHMR6iPNDRSLsq7L3PoC5lPafXEAj/dXFzz1O8beb3yWRBreG
+	r9T9/VPVs/aWGchxTeguPo96WfDY0xVMpjta5Lit/Wz1mVDuLwB4Rnb4a677nn9R1y48N/YTZve
+	x9KXLNiv8c5RtVOIxghExg/Qrt4fwMdlyc+SmA3fkgHF33zi+1zKHg5Ik=
+X-Received: by 2002:a05:6a00:450b:b0:848:76af:db37 with SMTP id d2e1a72fcca58-84f2e0147e9mr9509161b3a.7.1785949943906;
+        Wed, 05 Aug 2026 10:12:23 -0700 (PDT)
+Received: from SC-GAME.lan ([104.28.243.105])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-84f2e2e06a6sm1222932b3a.15.2026.08.05.10.12.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Aug 2026 10:12:22 -0700 (PDT)
+From: Chen Minqiang <ptpt52@gmail.com>
+To: Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <mwalle@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Takahiro Kuwano <takahiro.kuwano@infineon.com>,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Chen Minqiang <ptpt52@gmail.com>
+Subject: [PATCH] mtd: spi-nor: allow force unlocking via DT property
+Date: Thu,  6 Aug 2026 01:12:14 +0800
+Message-Id: <20260805171214.2934-1-ptpt52@gmail.com>
+X-Mailer: git-send-email 2.17.1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260805_070510_832406_8C79F9F0 
-X-CRM114-Status: GOOD (  10.04  )
+X-CRM114-CacheID: sfid-20260805_101225_382360_27C9E374 
+X-CRM114-Status: GOOD (  13.76  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,37 +95,75 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8gTWljaGFlbCwKCj4+PiAraW50IHNwaV9ub3JfcmVhZF9zcnMoc3RydWN0IHNwaV9ub3Ig
-Km5vciwgdTggKnNyMSwgdTggKnNyMikKPj4KPj4gbml0cGljaywgaSB0aGluayB0aGlzIGlzIGEg
-d2VpcmQgbmFtZS4gQnV0IG1heWJlIGl0J3MganVzdCBtZS4KPj4KPj4gV2hhdCBpZiB3ZSdkIGp1
-c3QgbWFrZSB0aGUgb25lIHN0YXR1cyByZWdpc3RlciBhcyB1MzI/IEkgbWVhbiBpbiB0aGUKPj4g
-d2luYm9uZCBkYXRhc2hlZXQgaXQncyBjYWxsZWQgUzctUzAgYW5kIFMxNS1TOC4gVGhhdCB3YXkg
-d2UgYWxzbwo+PiBkb24ndCBuZWVkIGEgdHdvIGJ5dGUgcWVfbWFzay4gVG8gb3B0aW1pemUgdGhl
-IHN0YW5kYXJkIHVzZWNhc2UgdG8KPj4gcG9sbCB0aGUgV0lQIGJpdCwgd2UgY291bGQgYWRkIGEg
-Ynl0ZSBtYXNrLgoKSSBleHBlcmltZW50ZWQgYSBiaXQgdGhlIHUzMiBzdGF0dXMgcmVnaXN0ZXIs
-IEkgZG9uJ3QgdGhpbmsgaXQgaXMgYSBnb29kCmlkZWEuCgpNeSB0YXJnZXQgb2YgaW1wcm92aW5n
-IHRoZSByZWFkYWJpbGl0eSBpcyBjb21wbGV0ZWx5IGRlZmVhdGVkIGJ5IHRoZQpmYWN0IHRoYXQ6
-Ci0gYWxsIHRoZSBjYWxsZXJzIG5lZWQgdG8gYWRkIGV4dHJhIG1hdGhzIHRvIGV4cGxhaW4gd2hh
-dCBTUgogIHRoZXkgd2FudAotIGVuZGlhbm5lc3Mgc2hhbGwgYmUgaGFuZGxlZCwgcGVvcGxlIGFs
-d2F5cyBnZXQgaXQgd3JvbmcgKGluY2x1ZGluZwogIG1lKSwgc28gd2h5IGJvdGhlciBpZiBhbiBh
-cnJheSBqdXN0IG1ha2VzIHRoZSB3aG9sZSB0aGluZyBzaW1wbGVyPwotIDE2LWJpdCBhY2Nlc3Nl
-cyBnZXQgbW9yZSBjb252b2x1dGVkLCB3ZSBuZWVkIGV4dHJhCiAgZ2V0Xy9wdXRfdW5hbGlnbmVk
-X2xlMzIoKSBjYWxscyBhbmQgcGFjay91bnBhY2sgYnl0ZXMgaW4gdGhlIGhvdCBwYXRoCi0gOC1i
-aXQgYWNjZXNzZXMgaW1wbHkgYW4gZXh0ZW5zaXZlIHVzZSBvZiBGSUVMRF9HRVQoR0VOTUFTSygp
-LCkgbWFjcm9zLAogIHdoaWNoIG1ha2UgdGhlIHdob2xlIGZvbmN0aW9uIHRvdGFsbHkgbm9uIG9i
-dmlvdXMgYW55bW9yZS4KCldoZXJlYXMsIGEgc2ltcGxlOgoKICAgICAgICBpZiAoc3IyKQogICAg
-ICAgICAgICAgICAgKnNyMiA9IGZvbzsKCmlzIHNlbGYgZXhwbGFuYXRvcnkuIEkgYWxzbyBkbyBu
-b3QgcmVhbGx5IGdldCB0aGUgd2lzaCBmb3IgYSBRRSBtYXNrCmluc3RlYWQgb2YgYSB0d28gYnl0
-ZXMgYXJyYXkuCgpTbyBJIHdpbGwgcmVuYW1lIHRoZSAic3JzIiBuYW1pbmcgdGhhdCB5b3UgZGlz
-bGlrZSwgSSB3aWxsIGdyb3VwIHRoZQpvcGNvZGVzIGluIGEgYmlnIHN0cnVjdHVyZSwgY2hhbmdl
-IHRoZSBiYXNlbGluZSBkZWZhdWx0IHRvIG1hdGNoIHlvdXIKc3VnZ2VzdGlvbiBhbmQgZm9sbG93
-LXVwIHdpdGggdGhlIG90aGVyIG1pbm9yIGNvbW1lbnRzLCBidXQgSSBiZWxpZXZlCkknbSBnb2lu
-ZyB0byBhdm9pZCB0aGUgdTMyIHN3aXRjaC4KClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNj
-dXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2xpbnV4LW10ZC8K
+Some SPI NOR flash chips (such as generic or unlisted chips used in vendor
+devices like Tenda AX12L Pro) have Block Protection (BP) bits set in the
+Status Register by bootloaders or factory settings, locking flash blocks.
+
+Because vendors frequently switch between various generic SPI NOR flash
+chips ("Flash Lottery"), it is impractical to upstream explicit chip ID
+flags (SNOR_F_HAS_LOCK) for every possible generic chip variant.
+
+This patch introduces support for the "linux,force-sr-unlock" Device Tree
+property:
+1. In spi_nor_init(), trigger spi_nor_try_unlock_all() if "linux,force-sr-unlock"
+   is present in the flash DT node, even when CONFIG_MTD_SPI_NOR_SWP_DISABLE_ON_VOLATILE
+   is active and the chip is non-volatile.
+2. In spi_nor_try_unlock_all(), bypass the SNOR_F_HAS_LOCK flag check when
+   "linux,force-sr-unlock" is specified, ensure locking_ops are initialized,
+   and invoke Linux kernel's native spi_nor_unlock() mechanism.
+
+Signed-off-by: Chen Minqiang <ptpt52@gmail.com>
+---
+ drivers/mtd/spi-nor/core.c | 3 ++-
+ drivers/mtd/spi-nor/swp.c  | 7 ++++++-
+ 2 files changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index ccf4396cdcd0..ef0bdc1254bb 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -3332,7 +3332,8 @@ static int spi_nor_init(struct spi_nor *nor)
+ 	spi_nor_cache_sr_lock_bits(nor, NULL);
+ 	if (IS_ENABLED(CONFIG_MTD_SPI_NOR_SWP_DISABLE) ||
+ 	    (IS_ENABLED(CONFIG_MTD_SPI_NOR_SWP_DISABLE_ON_VOLATILE) &&
+-	     nor->flags & SNOR_F_SWP_IS_VOLATILE)) {
++	     nor->flags & SNOR_F_SWP_IS_VOLATILE) ||
++	    of_property_read_bool(spi_nor_get_flash_node(nor), "linux,force-sr-unlock")) {
+ 		spi_nor_try_unlock_all(nor);
+ 	}
+ 
+diff --git a/drivers/mtd/spi-nor/swp.c b/drivers/mtd/spi-nor/swp.c
+index 235070b215d1..a190d10c1630 100644
+--- a/drivers/mtd/spi-nor/swp.c
++++ b/drivers/mtd/spi-nor/swp.c
+@@ -628,11 +628,16 @@ static int spi_nor_is_locked(struct mtd_info *mtd, loff_t ofs, u64 len)
+  */
+ void spi_nor_try_unlock_all(struct spi_nor *nor)
+ {
++	struct device_node *np = spi_nor_get_flash_node(nor);
++	bool force_unlock = of_property_read_bool(np, "linux,force-sr-unlock");
+ 	int ret;
+ 
+-	if (!(nor->flags & SNOR_F_HAS_LOCK))
++	if (!(nor->flags & SNOR_F_HAS_LOCK) && !force_unlock)
+ 		return;
+ 
++	if (!nor->params->locking_ops)
++		spi_nor_init_default_locking_ops(nor);
++
+ 	dev_dbg(nor->dev, "Unprotecting entire flash array\n");
+ 
+ 	ret = spi_nor_unlock(&nor->mtd, 0, nor->params->size);
+-- 
+2.17.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
