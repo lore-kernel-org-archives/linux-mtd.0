@@ -4,66 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CEC99C2A09B
-	for <linux-mtd@archiver.kernel.org>; Fri,  7 Aug 2026 14:47:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6416AC5AC7A
+	for <linux-mtd@archiver.kernel.org>; Fri,  7 Aug 2026 15:39:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
-	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=tT3REcE2BLvbTFANWbTdCGlopJ6daBAej0+BG1p4x1s=; b=IK6oEK8vGp02UF
-	6nxa4ujzT/jIksjB4E/KS8aiNAt9n54cwGfyyEX1K4AwfNBuEghLxiHA7VWIbeQijVVQUILUgXrBQ
-	J4aObiWl3330WTXBOSvapvt/9Tu95mmJl0CFH8G5XHAwhLnIajdrM1UKBcuL/2ONvQVRktGY1B3eI
-	+n19t5GyobzQ54Aj2kY4iDIcHx5cjSkF1rtKMY6cXTaJZbWMGFx/+z6UEIhKIoDsE0yYJCLHyqzGb
-	LhZkJS5Ukf/qciKIws/iA87cCYAnoPXjr2UjfESEG7otoxC8V5V57fE5GyWf3WCBUOe9nC9OvyPBS
-	KSMmNjsKHYAhZzmxxcYg==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id:Date:
+	Subject:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=Lm3ffpepmrA2e2jLG+qrdGvN1lu3AkT5dlNp+eD6fHY=; b=U92ZTUrds5SuJF
+	OHV8Mwym9tHy3vQ1YLDcvgyAOPVFq4CYn3AR37dAqYd+dMgRFlbEKNDejfUXZtUenpVmI+IeulJOJ
+	IQrm2Zex3vtOnnyY5fMsknlXD75p13IQJol/d56o7Rz37PTCvQuHpdxdT8GLXLjHzbasyJQNgh1FI
+	BQtigeyYmI9ulksrmVzKOkjDINiFyIFxlC1pY65fzelSgUHUNlDwkCoIudOgDPjfvSBqgo6ykwjOy
+	BOCJyjogsYiOj2eSNiea4hV1euDlzxeZgrig42LyVCwUSUzlSZ3VyKpfxTP1vWtYJ/1a2RdCW+cAD
+	g+SqYhxlwqabRem1Ultg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wsLqo-00000008Hy6-2ICp;
-	Fri, 07 Aug 2026 14:47:10 +0000
-Received: from smtpout-02.galae.net ([185.246.84.56])
+	id 1wsMfB-00000008M1J-218Q;
+	Fri, 07 Aug 2026 15:39:13 +0000
+Received: from mail-oi1-x22d.google.com ([2607:f8b0:4864:20::22d])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wsLqm-00000008HxB-2mjv
+	id 1wsMf8-00000008Lys-2PlO
 	for linux-mtd@lists.infradead.org;
-	Fri, 07 Aug 2026 14:47:09 +0000
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id 315001A14B1;
-	Fri,  7 Aug 2026 14:47:07 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 07FCC603F0;
-	Fri,  7 Aug 2026 14:47:07 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 1A64E11C37A5D;
-	Fri,  7 Aug 2026 16:47:01 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1786114022; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=Zn32rgRm94l4EzfC6PqAkGOthXJmT/0MRbdxmTrZ2XE=;
-	b=qkTjnvftG3/KC9ag4s9GYcRqH+2v/QHeK2dBr3m8xdcOnzAEunpKcc1I6VBIyWbYaTiBB4
-	vEOHjXcD6WDcZ1A41FKVUpK1w12v8P0+okm8GNYihESdP1Wc6rdhVKSZwdQK4qMmRABBuD
-	Lq7yPUCqN7Rw9H0aiGsCt7MZoYdpGB3UXfr+FxqrYUoc2ydLDeHCSaCFxEkc0aU2mta5XU
-	Qp5toZI6sPzqNSY58bERZqi+GCfaisuDF1r2ei/pNsf6L9BoA9vWHWJbGLhK6C3RDX7qGq
-	0T9wJP1AX2NC3baIZsg1ghFC2Wz9TKu7zwdPWvol8XXsUFFuaPkPz5AvgHN6OA==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Fri, 07 Aug 2026 16:46:49 +0200
-Subject: [PATCH v2 3/3] mtd: spi-nand: winbond: Enable the DQS pin on
- W35N**JW series
+	Fri, 07 Aug 2026 15:39:12 +0000
+Received: by mail-oi1-x22d.google.com with SMTP id 5614622812f47-4a40bcc8d69so2244342b6e.3
+        for <linux-mtd@lists.infradead.org>; Fri, 07 Aug 2026 08:39:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1786117149; x=1786721949; darn=lists.infradead.org;
+        h=cc:to:content-transfer-encoding:content-type:mime-version
+         :message-id:date:subject:from:from:to:cc:subject:date:message-id
+         :reply-to:content-type;
+        bh=VbFL1A0jNYqmUoipY6MPyQje52bmNUS3I6T9M1FZoRI=;
+        b=Xvw+tWcGogWedD5xmOCWXhbP26Ermbs5+AgQX/DPkpvnPIrGqmBICHbL9K3LdnsR/1
+         il9g6gOtqEo6hTN0vqXxikKWll7IKejZrOJDeankejqeG53p/zHFsKpdLcxckqOo82OK
+         JVeEnQOkYJ6a4QgnPz+RDaZ5HvfXCrI4SubXZjyN6p2U3StTfWPdv6I+Z7eP2s3bjtnz
+         4Psu/Q5F/O8/L6Svc6y3xF4WurW2EbuOv3XoZXpc9v2TbTel7WiNUDxuzTEpJ/+QqfJY
+         Ci4p6wkyfP2E0nMjpZfpYeMbnVFea0zbItO7guLVAkswqu2mp4yYGAo+C8Kjum7ydEQg
+         zdjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1786117149; x=1786721949;
+        h=cc:to:content-transfer-encoding:content-type:mime-version
+         :message-id:date:subject:from:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to:content-type;
+        bh=VbFL1A0jNYqmUoipY6MPyQje52bmNUS3I6T9M1FZoRI=;
+        b=jfmWgQdby+OuIt3Y3qm96v3/zeGorExDWyuU8yoTRJURNFicePXDTQFOKDVWieZuQl
+         ARHyogBDACEH5EKmu3aCUGhQkqdf1Z1cpXGx0gRTNIL/WDSoCRnlEgPrOoTV+B4GpRrC
+         neqvirn8FVdTX9tNpeqP2eyEGO/v4jBbTWAPf9KhCdtacmT36js+xNufK1nDHhcEeUAY
+         RvS9N4dwKxlkFVXQZnHiQah56qGzrKaJiUktjaAtEP8tbEXNPs8y/LIfPsOhpg3mzcAU
+         +zN696lrGy2fLPbRseQJGeDhvgrIz4i5cNZ0pAL/GuyJVqEIPvwZzc0ZNwMr0bhg/AK4
+         YogQ==
+X-Gm-Message-State: AOJu0YxCSl0Sy7VKRt2ax9rZ/1k9LG5cTktToSVW89Bi/WlDtuttBuUc
+	Msfp8YEZEOi7C1z9QwfxJniOV2ThrKDREO6yDDVm05Wsa8t3UIsB1Ony
+X-Gm-Gg: AR+sD11oxWiB5QPDC3WFW34+9JizG1JK+mN0/OdeHF65cUpSzPtEnL8M98IO4y1ZTqt
+	+CV1RVl6ysSSVGqG9na1NxOKnxRL5x0XEmfPsYnGUXlUAmWX6/4ERxL8ST5Qi2ZuZhI9vPT4FqZ
+	79r0xBhG/BjEqSgtdQAGKQA2wTU77sLScXYwfYq8erz8gkcmFJbjHuvDck9mmJ2scrWzXk8MqRl
+	5C07alW09eUWNvLVMxZjuOVDfwbqi3im+XLJVUaRduB1NDXqAaDkjyDt6o/lhUcinCsbUJQv9F3
+	LWvogseN7yO6COjY4iaAhQsJKf+WrAGKVxx/b8eM78140VPVTuFi3uDJppUmPJSrJ/lytwkZ6Hi
+	5zV6hvPuuj60p115x60VdpOBgEkqRMb/CLlH+HJxOxlvANkirGQuz5wSIdemSVbGlf5uAtzRQvT
+	9hPDKsc6O1pc3UQDGIr0iMxzTJqBkoNWuqxbnMKcsbeSb7+BaameR50k+sL9L0KV6UPZGnzImp3
+	boBGlER6DUetlrkzzaYUDprWSvCN6pCrFY7si2hPAjMUiw6U8P0b5cmC81UbbiTLN5nDtUk8jqP
+	2CgLlDJKw7l3sTuUkF3abczUxl1CiixUMwI/6OcAhASYsyIFv0QhTMnUlHMB5eL7wB4fbrydQON
+	/X2R97csRLDn2Rxx7
+X-Received: by 2002:a05:6808:1910:b0:495:f519:70f0 with SMTP id 5614622812f47-4afae01bf6emr13779508b6e.19.1786117149136;
+        Fri, 07 Aug 2026 08:39:09 -0700 (PDT)
+Received: from [127.0.1.1] (184-96-154-59.hlrn.qwest.net. [184.96.154.59])
+        by smtp.gmail.com with ESMTPSA id 5614622812f47-4afae706cd5sm7353485b6e.11.2026.08.07.08.39.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 Aug 2026 08:39:08 -0700 (PDT)
+From: James Hilliard <james.hilliard1@gmail.com>
+Subject: [PATCH v3 0/3] mtd: rawnand: sunxi: fix H6/H616 controller timings
+Date: Fri, 07 Aug 2026 09:38:58 -0600
+Message-Id: <20260807-submit-sunxi-nand-h6-h616-timings-v3-0-91287b543f41@gmail.com>
 MIME-Version: 1.0
-Message-Id: <20260807-winbond-nand-next-phy-tuning-v2-3-73595e89d6e3@bootlin.com>
-References: <20260807-winbond-nand-next-phy-tuning-v2-0-73595e89d6e3@bootlin.com>
-In-Reply-To: <20260807-winbond-nand-next-phy-tuning-v2-0-73595e89d6e3@bootlin.com>
-To: Mark Brown <broonie@kernel.org>, Richard Weinberger <richard@nod.at>, 
- Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, praneeth@ti.com, 
- u-kumar1@ti.com, p-mantena@ti.com, a-dutta@ti.com, s-k6@ti.com, 
- linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>
-X-Mailer: b4 0.14.3
-X-Last-TLS-Session-Version: TLSv1.3
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/5WOQQqDMBBFryKz7pRkqgl21XsUF6mmOqWJJUnFI
+ t690Z6gMPB58Hl/Fog2sI1wLhYIduLIo89wOhTQDsb3FrnLDCRICS01xvfNccrhZ0ZvfIeDyic
+ VJnbs+4i6Lg3VdUlKd5A9r2DvPO8b1+bHWfKwbdrEW2PgmMbw2Z+YaOv9szcRCiSqKllJoVUpL
+ r0z/Dy2o4NmXdcvhh8QOuQAAAA=
+X-Change-ID: 20260717-submit-sunxi-nand-h6-h616-timings-794a2994267d
+To: Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+ Chen-Yu Tsai <wens@kernel.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
+ Samuel Holland <samuel@sholland.org>, 
+ Richard Genoud <richard.genoud@bootlin.com>
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
+ linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org, 
+ James Hilliard <james.hilliard1@gmail.com>, stable@vger.kernel.org
+X-Mailer: b4 0.15.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260807_074708_860798_84658294 
-X-CRM114-Status: UNSURE (   9.25  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260807_083910_647119_FEAC98EF 
+X-CRM114-Status: GOOD (  10.63  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,62 +109,62 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-These chips have a DQS pin, enable it by default in DTR mode because
-there is apparently no issue in setting it for lower frequencies, and
-the extra power consumption seems very low compared to the current drawn
-by the NAND array itself while operating.
+The sunxi NAND timing solver currently applies the original A10 NDFC
+timing characteristics to every supported controller. The H6/H616 NDFC
+uses two internal cycles for several setup and hold intervals and has
+different delay-field encodings, so the resulting clock and timing
+register values do not match the hardware.
 
-This setting will be required for high speed I/O transfers (with PHY
-tuning).
+Prepare for per-controller timing data in two behaviorally focused
+patches, then add and select the H616 characteristics in the final fix.
+Legacy controllers retain their existing setup-cycle behavior and delay
+encodings.
 
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Tested on an H616 board with Toshiba TC58NVG1S3H NAND.
+
+Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
 ---
- drivers/mtd/nand/spi/winbond.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Changes v1 -> v2:
+  - Split legacy timing setup from the H616 fix  (suggested by Miquel)
+  - Move tADL/tWHR encodings to a separate patch  (suggested by Miquel)
+  - Keep the timing lookup helper unchanged  (suggested by Miquel)
+  - Drop the minimum-period helper  (suggested by Miquel)
+  - Align H616 timing-data and capability names  (suggested by Miquel)
+  - Add Cc: stable to all three patches  (suggested by Miquel)
 
-diff --git a/drivers/mtd/nand/spi/winbond.c b/drivers/mtd/nand/spi/winbond.c
-index 9b78c1e6cbc9..8209b214e594 100644
---- a/drivers/mtd/nand/spi/winbond.c
-+++ b/drivers/mtd/nand/spi/winbond.c
-@@ -607,7 +607,7 @@ static int w35n0xjw_vcr_cfg(struct spinand_device *spinand,
- 	else if (!single && !dtr)
- 		io_mode = W35N01JW_VCR_IO_MODE_OCTAL_SDR;
- 	else if (!single && dtr)
--		io_mode = W35N01JW_VCR_IO_MODE_OCTAL_DDR;
-+		io_mode = W35N01JW_VCR_IO_MODE_OCTAL_DDR_DS;
- 	else
- 		return -EINVAL;
- 
-@@ -689,7 +689,7 @@ static const struct spinand_info winbond_spinand_table[] = {
- 							&write_cache_octal_variants,
- 							&update_cache_octal_variants,
- 							&cont_read_cache_octal_variants),
--		     0,
-+		     SPINAND_HAS_DQS,
- 		     SPINAND_INFO_VENDOR_OPS(&winbond_w35_ops),
- 		     SPINAND_ECCINFO(&w35n01jw_ooblayout, w25w35nxxjw_ecc_get_status),
- 		     SPINAND_CONFIGURE_CHIP(w35n0xjw_vcr_cfg),
-@@ -744,7 +744,7 @@ static const struct spinand_info winbond_spinand_table[] = {
- 							&write_cache_octal_variants,
- 							&update_cache_octal_variants,
- 							&cont_read_cache_octal_variants),
--		     SPINAND_ODTR_PACKED_PAGE_READ,
-+		     SPINAND_ODTR_PACKED_PAGE_READ | SPINAND_HAS_DQS,
- 		     SPINAND_INFO_VENDOR_OPS(&winbond_w35_ops),
- 		     SPINAND_ECCINFO(&w35n01jw_ooblayout, w25w35nxxjw_ecc_get_status),
- 		     SPINAND_CONFIGURE_CHIP(w35n0xjw_vcr_cfg),
-@@ -776,7 +776,7 @@ static const struct spinand_info winbond_spinand_table[] = {
- 							&write_cache_octal_variants,
- 							&update_cache_octal_variants,
- 							&cont_read_cache_octal_variants),
--		     SPINAND_ODTR_PACKED_PAGE_READ,
-+		     SPINAND_ODTR_PACKED_PAGE_READ | SPINAND_HAS_DQS,
- 		     SPINAND_INFO_VENDOR_OPS(&winbond_w35_ops),
- 		     SPINAND_ECCINFO(&w35n01jw_ooblayout, w25w35nxxjw_ecc_get_status),
- 		     SPINAND_CONFIGURE_CHIP(w35n0xjw_vcr_cfg),
+Changes v2 -> v3:
+  - Rebase onto current nand/next
+  - Fix strict checkpatch diagnostics  (suggested by Miquel)
+  - Add Fixes tags to the two stable preparatory patches
+- Link to v2: https://patch.msgid.link/20260717-submit-sunxi-nand-h6-h616-timings-v2-0-225515107640@gmail.com
 
--- 
-2.54.0
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Richard Weinberger <richard@nod.at>
+To: Vignesh Raghavendra <vigneshr@ti.com>
+To: Chen-Yu Tsai <wens@kernel.org>
+To: Jernej Skrabec <jernej.skrabec@gmail.com>
+To: Samuel Holland <samuel@sholland.org>
+To: Richard Genoud <richard.genoud@bootlin.com>
+Cc: linux-mtd@lists.infradead.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-sunxi@lists.linux.dev
+Cc: linux-kernel@vger.kernel.org
+
+---
+James Hilliard (3):
+      mtd: rawnand: sunxi: group controller delay tables
+      mtd: rawnand: sunxi: describe tADL and tWHR delays
+      mtd: rawnand: sunxi: fix H6/H616 controller timings
+
+ drivers/mtd/nand/raw/sunxi_nand.c | 119 +++++++++++++++++++++++++++-----------
+ 1 file changed, 86 insertions(+), 33 deletions(-)
+---
+base-commit: f97bdc8ec1dc7b33781a702eeba55326c206be56
+change-id: 20260717-submit-sunxi-nand-h6-h616-timings-794a2994267d
+
+Best regards,
+--  
+James Hilliard <james.hilliard1@gmail.com>
 
 
 ______________________________________________________
