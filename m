@@ -4,109 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 31C4BC5AC82
-	for <linux-mtd@archiver.kernel.org>; Fri,  7 Aug 2026 16:57:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F271C2A09B
+	for <linux-mtd@archiver.kernel.org>; Fri,  7 Aug 2026 20:46:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+GD8dDWdc4Czu63iaDZw/kwL+dBVgas6ii7LmaFt9qM=; b=2D/b+4UaIkJAvk
-	m83xyRcgFLqHpMCNTf6WpN3UkdkVLWn+Moh/hYIyKV7W9MTktg9zn3r39SMplYY3Mz3lqa4p7e3Ra
-	2qiITj/5TXLkFktrwP+Fk9e73NaDTPoySs33ywTGF7678UsGYrrmC93Tlz4if7UFf15rml9PCY2Kh
-	hHTsAp9LCl3hgnD0HZ1r+rui6QlKpFGSv14ePCy3S9cOhwyqBC6n38um9zb5gAk7Gi1Fj7avSb/Fn
-	LNtbN2A1oYojPcEPQjwyCh5z45V4T1iTrVuRKC/vVdqkiIE2r2LgzpW6zAWGPbC4JXisyTyCwEOrp
-	EHegWgTMr8RrMfxvaLcg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=LVwEmWJ4g1HOePXUT2JPvoMfsn0sXBdzaFd11Vnkm38=; b=vT/GmmyWjWH7hx
+	T2trmPZrV2FEX6hhDU7zILNnUAUQBy4frJoy/UA5lTd4vVJilhDR3zqmsB7ZHQUI3xL1R9r1oXw3Z
+	yGyysnt6/uCZj3i0oKXVc3UEBaZkE7WHqDyOVrqtPbvqpPpWoE3Q5wpmv1jVPcx7AtSA/D9osXBht
+	tfYyViorfhk92J0Hn0Nd1VZITT4/xyIyp7B3NUsodkYKjxEHeP9iJjizBXFNB9MoJ6o3WrqahNTWu
+	mBKPJSBUs5o/O8ZWuxZOZoSISEs7tICEPtEGe7UgLwVv/K8BglppRdRukUX/KbfcpRp/tJPvUOnYd
+	xBnEJc7QOfVSq6guG5+g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wsNt0-00000008UJ3-41bo;
-	Fri, 07 Aug 2026 16:57:34 +0000
-Received: from mail-vs1-xe30.google.com ([2607:f8b0:4864:20::e30])
+	id 1wsRS1-00000008jff-3EOD;
+	Fri, 07 Aug 2026 20:45:57 +0000
+Received: from mail-qv1-xf2a.google.com ([2607:f8b0:4864:20::f2a])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wsNsx-00000008UHX-2tsi
+	id 1wsRRz-00000008jfM-28Yr
 	for linux-mtd@lists.infradead.org;
-	Fri, 07 Aug 2026 16:57:33 +0000
-Received: by mail-vs1-xe30.google.com with SMTP id ada2fe7eead31-754acc61e10so1444525137.2
-        for <linux-mtd@lists.infradead.org>; Fri, 07 Aug 2026 09:57:31 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1786121850; cv=none;
-        d=google.com; s=arc-20260327;
-        b=gyawZ8EncBOC9uk7q8WVeUwrXVXHm7J+YdekGyUzIDx3JbkKanAfkG1EM4e7czpO6A
-         7HMavoNI99E/yBkY9zMmCEk6MPvg352z4Rkahq9rYU6Av/fDOxIQsERYptNshmRlQRa1
-         C1MBHDjhLFwaPYPKFUT+Qtm3Wl0oGGw9Q8FVPkgoqbsOWiWptSVp2o5ANzWZq6W+VYTr
-         bvTkg8ggKEeWQ2Gx4JoHIfFD/7zv0w55Y0Pl97UlcRDs+tvarH0C0UfjpiqCuDI+Z0D6
-         +cWAKw8dol+ZxQBf2dB47nQWrSMQXt1sIHMH/jjzMWcyUKXe4MRQqkcThEZyptTeA5Z3
-         G3QA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=Hq8X/4Xg0Ta1JBUv3CIgDq4vQ920HdWsgV3I1NkcJTQ=;
-        fh=bR1xZR6/jOWT5LIhfTNBwJtnv/TsKR+I8ZqM6ntW628=;
-        b=h72KJIxl+BhbH5OB3FqGPt4kT6iaDNNoDc4nhvJFTXEG507JEZFxAC8uRibjANasKC
-         Lploq1OjFKM8zsd6peep4T4sT5AbWzPsb64VN4LtRKXglTrYntD3cbaafBNQ7F8dYUSA
-         /m1yrAS1eEQPeCfEb1FEaqj8DMa+K1lnoycoO28JFuSDsi0PtbULyY7LfY2VqRIhp1W4
-         1Sz1t6ocjHn/3t4YZyOEvCN1JFLE7KM+9o+AOYcVZbf9FH1nBcdpLezf/i3jFke2Ua88
-         eIEi82cmC2/RN3IHVTMaLX0Swa+xsDBU8v/uRs+XlxJZAGLyxfDNvQuIiIOrt/e8Z+pD
-         7yLA==;
-        darn=lists.infradead.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
+	Fri, 07 Aug 2026 20:45:56 +0000
+Received: by mail-qv1-xf2a.google.com with SMTP id 6a1803df08f44-8f1e274ccb9so21469796d6.2
+        for <linux-mtd@lists.infradead.org>; Fri, 07 Aug 2026 13:45:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1786121850; x=1786726650; darn=lists.infradead.org;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=Hq8X/4Xg0Ta1JBUv3CIgDq4vQ920HdWsgV3I1NkcJTQ=;
-        b=bZ3mX8aCF1SXGPk/anz7izYzDp0wJaGUgSr8+xzcWyQwdFx4s/DNkVdQPQ8Hx7oxrv
-         twWNitNlcRDTGo6vaR5wxrPpvN4vUVnunOc51ml9zwSPZ0PLVI6sTBrsyRrwlArT6qq7
-         QT6cb9RqK8gE0kLm8pNyjFJCIWNbES5i6rCQ01cocnc+iCq406NqfpM/d+vjGh8OYQym
-         h0hNcNkU9z3vczPPI6kuzlrEY4yKeqelIFLslGU7nzYiLGb9X7cNpuW40SycUaC90qgM
-         lVFvy1bkNshUsLtNUyyRjQhBYOaARUGIMN7qe2xXSBJcxobHkN+aYtSvM9Mi4P5tS+b6
-         PKEQ==
+        d=gmail.com; s=20251104; t=1786135553; x=1786740353; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=Q7/TzG19dQMDabhaRtUh/yPQ9FO/UIWoBDpgtREKn1g=;
+        b=nk6J3Im8m+fjMFUhbBcz+Vx+DyoFRRQ0xuAxy/zQ2/QRNQl1YkqAA9QlUzNLcY42zv
+         xB305sGf2lmCAsBL7xIMsSRdhRlLoFsHBJ+RfQB7pl9zgbO4B7Cs8ckxWUc5fp/MN9pN
+         j1dLWFQIp6w/LfjSLuNt/NKULm5NJfQZyOYAfK9Ay4lm9zBx6LwddYgtUmuRejxwVRck
+         eSet6fSD7kyliRn+njaOC43XXfntOOKOIZ+IQ4A+vAN3KD20vJ2OO894YNV8Y7fR3LNP
+         fXxtj3/JY9hgEJiww+tfzUsrFptLIPEZRPjZCc1l7+qjRsY2CpTy/VIWd/VifQ/IbN5E
+         5k0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1786121850; x=1786726650;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=Hq8X/4Xg0Ta1JBUv3CIgDq4vQ920HdWsgV3I1NkcJTQ=;
-        b=AArh5UuZcV3i8mDnHQZLivHXsGkF1qB0SfVERY3hGlOBumPXQioqzkm2blCjlRvLiG
-         Txwi3Jp7cwTimhDlP9TpjnvDoY8aMui0ogrjYH00jGVbM2iyA99TJLLuIzKOntLt1vzH
-         PoKL7HrgaAIeu00Svlj4Nh+Eah9MZ6wfQkKUF+bqmCtvl+sULrCsg6ePK5bA6LBgG/aT
-         ZeFSzFWvdQ7bQwbi1i23Ew6zxdr7N+NK+0gUOlkZB2+Qhebyjfe1LgYhlzIzZFmtaEEa
-         IENUNUr+LvQslV7iTvPsIHA87+8sL1pBijnbpwVtfHLBm7n+kP9Gs/l/YZbHwAV0U3KA
-         t9xA==
-X-Forwarded-Encrypted: i=1; AHgh+RrEN/ScHR/J85gd2n7u+Ak4rSVVo6dpr3KELH7SioSAa7DJQ8z6a9NN0KF6G5cgzpK8SJSmb/He3B0=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxoCZbeeh/n7qHWdOKOI/L54d2c0Xjt4b+xqV/F8y4hRh2Zw/r1
-	GPCw3cASKE17qo1EZYKpj2evBsUqWnbqyUbyAmq3k5gL1kS1A0YB1xzBonLSI87Jtl/Pwx51HOj
-	jDGyg55S6ApQ8MlMuIs7x2Q3kfSu6uYg=
-X-Gm-Gg: AR+sD114b1q92Jz/+Ju6fol3DaS6g3hhM0w5HcV7t4/kDLaZk5Pf6fkR+2q4uyRuPJX
-	7sWX+1xgPku0N1nReY3FMHzhgVBDwO4mGKKeUjguvAXVXdCw6+XW69/q9O/+g5mBiOxCaLn6nOA
-	5c2fcenW4jaliqA4YPbGjPMZlDa2QbuJDYtK9qY7ANczA/r26BYma83pJD7I6WKcHTMLXZ+vl6V
-	1XMfXBXsZH0a73edESPxRzuiN+O2vV+i45yxdCLqI5M7TFAhZaFI+AjmUOUdqvlg9iBuempeHgm
-	ltkOihXkg+pjOZ6Gg3QXF+BgxnfEOLTbrhKxGHylWS0yZAmEfATqylQBwGBRqlHreAHqIgy9p8d
-	7gF5WO1aq1sFDdxY8VJd2z3Mj2rLXasaCfi718hGd27ntagUvrcShgQRAYLgfDDl3qA+Krbpp/a
-	NTnmJdq4TFMKQHeUHJ06lmfT4nrzOQqOicFiMH
-X-Received: by 2002:a05:6102:390f:b0:744:d1a6:b11d with SMTP id
- ada2fe7eead31-764e4f2985dmr717652137.3.1786121850298; Fri, 07 Aug 2026
- 09:57:30 -0700 (PDT)
+        d=1e100.net; s=20251104; t=1786135553; x=1786740353;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=Q7/TzG19dQMDabhaRtUh/yPQ9FO/UIWoBDpgtREKn1g=;
+        b=MVBdeJDupzsT2zgjnAdK+ZBJ+//MaffCGiCTCuO8OTPxn3ySaupHaYk2ZHQyvxQyOR
+         uLf1GySBs64eRAxeqAOU+g7M3aHppzvrh/8LdeleqiMiXtYh7I7BW/287RsWTT2sn5/s
+         dJiWfWTiQHvDEm8DKEsUFspzeMyVpXScmSMe7uVDfPwB80KYfszUw9RB2AJpuchS2OQh
+         aJexrN/djV4Ug54/iyYO0paMinGcyaBNHu+0eRNrlkLoKBhGMG3IwtE2I0PaA7VdWktv
+         9XEyYaA4xL6wB6YvwAcFFOd4D3GL/I58l7dEcLtQCNECBTo3PNf/oXLVXBhAF8V3E4Sq
+         cvbQ==
+X-Forwarded-Encrypted: i=1; AHgh+RqycT4vOtDcBAN8BpTsxwwzjUK8EXbmjwUMxOEZc2pwbNH3uPSp5Rm6TRE6ZFBYA3/SZfKwLnj7y/U=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yynx1h/I3zPkxkCUD4yZHaI7iXsdiV3shsYVhD4USXL63yV/MAE
+	CXpi6+050Hh8ZZ1qQmAOU2nshaVwFE70ml7e8XkFymATDZpOwde4NJbM
+X-Gm-Gg: AR+sD139HDIy3vLCo0AGIDZJDV5B0cssnq8VL5IvgAJ9+myWlanBaiW3t+igNL8i6Tm
+	u4AZQOzYnTEfHJN6ZWZlz93ngcuBSmeL4HQEX9cbnLAsfjDKkQCacQd6x4tdD+ReaHW+5rdhHDB
+	GkidHKhLXLYr9iWS09zjAud3vF3GxaTo3etqxC9l86FXGeYuipgR4CKkzO1EVFMeLKQ1ElOTymD
+	q1JWL2ybWmi5QwZTooY9RTDS4VBnz+RhWRplqWcXYfGqbxKStvFX0WHK9vw24kzNSxflvYAGpB4
+	vijH9JJoDXJwq1FF0kPUZzfJzs8yxBsgVTUCZFBlXCE5WLsjhfsKkX4GeYOmBQ5fiskB07Eb+44
+	96AzsxiYQ06cB5QEWusJBk1TH8TGHgDSmZmojQdHovzVPZIOQDoc+xmYGosmVLojcIdDU3zLF/x
+	njYdA71GGIqstUxP9u4V9xhmWs6f4Fu5VYUuYu/DAsTJdVwfJFzCh3RF7f5LsBz5DNK8n+GWBrI
+	7KeIsLhSckPrT+4ujhjsbyAxsYx8i+dfTSw2vb33dRs6SSpNkZ8utTeQFvwlsEA5WsfaSaqpg==
+X-Received: by 2002:a05:6214:f2e:b0:8a0:d08c:a720 with SMTP id 6a1803df08f44-90a34675d70mr38903586d6.17.1786135553553;
+        Fri, 07 Aug 2026 13:45:53 -0700 (PDT)
+Received: from i4-gl-tmk5904.ad.psu.edu ([130.203.156.186])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-908a918ecbesm16865366d6.9.2026.08.07.13.45.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 Aug 2026 13:45:52 -0700 (PDT)
+From: Yuho Choi <dbgh9129@gmail.com>
+To: richard@nod.at
+Cc: chengzhihao1@huawei.com,
+	miquel.raynal@bootlin.com,
+	vigneshr@ti.com,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Yuho Choi <dbgh9129@gmail.com>
+Subject: [PATCH v1] mtd: ubi: Release device reference on busy detach
+Date: Fri,  7 Aug 2026 16:45:50 -0400
+Message-ID: <20260807204550.1016755-1-dbgh9129@gmail.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-References: <20260717-submit-sunxi-nand-h6-h616-timings-v2-0-225515107640@gmail.com>
- <87ik5mav6x.fsf@bootlin.com>
-In-Reply-To: <87ik5mav6x.fsf@bootlin.com>
-From: James Hilliard <james.hilliard1@gmail.com>
-Date: Fri, 7 Aug 2026 10:57:19 -0600
-X-Gm-Features: AUfX_myfeWEyYh7Y2JNZ3tcJ-zpan6IsdJA8dIqxxvbXvmFsYYO1pP5EnmrWVAg
-Message-ID: <CADvTj4pHOpKfNCoVcfDmtCuHh2F0H8e+_AhCwcSKG8xosLpbzA@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] mtd: rawnand: sunxi: fix H6/H616 controller timings
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Chen-Yu Tsai <wens@kernel.org>, 
-	Jernej Skrabec <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, 
-	Richard Genoud <richard.genoud@bootlin.com>, linux-mtd@lists.infradead.org, 
-	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260807_095731_738314_B9D16FF1 
-X-CRM114-Status: GOOD (  15.69  )
+X-CRM114-CacheID: sfid-20260807_134555_550860_AB27E526 
+X-CRM114-Status: UNSURE (   8.68  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -118,32 +97,40 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gRnJpLCBBdWcgNywgMjAyNiBhdCA3OjU44oCvQU0gTWlxdWVsIFJheW5hbCA8bWlxdWVsLnJh
-eW5hbEBib290bGluLmNvbT4gd3JvdGU6Cj4KPiBIaSBKYW1lcywKPgo+IE9uIDE3LzA3LzIwMjYg
-YXQgMTE6MzM6NTYgLTA2LCBKYW1lcyBIaWxsaWFyZCA8amFtZXMuaGlsbGlhcmQxQGdtYWlsLmNv
-bT4gd3JvdGU6Cj4KPiA+IFRoZSBzdW54aSBOQU5EIHRpbWluZyBzb2x2ZXIgY3VycmVudGx5IGFw
-cGxpZXMgdGhlIG9yaWdpbmFsIEExMCBOREZDCj4gPiB0aW1pbmcgY2hhcmFjdGVyaXN0aWNzIHRv
-IGV2ZXJ5IHN1cHBvcnRlZCBjb250cm9sbGVyLiBUaGUgSDYvSDYxNiBOREZDCj4gPiB1c2VzIHR3
-byBpbnRlcm5hbCBjeWNsZXMgZm9yIHNldmVyYWwgc2V0dXAgYW5kIGhvbGQgaW50ZXJ2YWxzIGFu
-ZCBoYXMKPiA+IGRpZmZlcmVudCBkZWxheS1maWVsZCBlbmNvZGluZ3MsIHNvIHRoZSByZXN1bHRp
-bmcgY2xvY2sgYW5kIHRpbWluZwo+ID4gcmVnaXN0ZXIgdmFsdWVzIGRvIG5vdCBtYXRjaCB0aGUg
-aGFyZHdhcmUuCj4gPgo+ID4gUHJlcGFyZSBmb3IgcGVyLWNvbnRyb2xsZXIgdGltaW5nIGRhdGEg
-aW4gdHdvIGJlaGF2aW9yYWxseSBmb2N1c2VkCj4gPiBwYXRjaGVzLCB0aGVuIGFkZCBhbmQgc2Vs
-ZWN0IHRoZSBINjE2IGNoYXJhY3RlcmlzdGljcyBpbiB0aGUgZmluYWwgZml4Lgo+ID4gTGVnYWN5
-IGNvbnRyb2xsZXJzIHJldGFpbiB0aGVpciBleGlzdGluZyBzZXR1cC1jeWNsZSBiZWhhdmlvciBh
-bmQgZGVsYXkKPiA+IGVuY29kaW5ncy4KPiA+Cj4gPiBUZXN0ZWQgb24gYW4gSDYxNiBib2FyZCB3
-aXRoIFRvc2hpYmEgVEM1OE5WRzFTM0ggTkFORC4KPiA+Cj4gPiBTaWduZWQtb2ZmLWJ5OiBKYW1l
-cyBIaWxsaWFyZCA8amFtZXMuaGlsbGlhcmQxQGdtYWlsLmNvbT4KPgo+IFRoZXJlIGFyZSBhIG51
-bWJlciBvZiBjaGVja3BhdGNoIGlzc3VlLiBDYW4geW91IHBsZWFzZSBmaXggdGhlbT8gKGV4Y2Vw
-dAo+IHRoZSBjYW1lbGNhc2Ugb25lIHdoaWNoIGlzIGZpbmUgd2l0aCB0aW1pbmcgbmFtZXMgY29t
-aW5nIGZyb20gdGhlIE9ORkkKPiBzcGVjKS4KClNob3VsZCBiZSBmaXhlZCBpbiBteSB2MzoKaHR0
-cHM6Ly9sb3JlLmtlcm5lbC5vcmcvYWxsLzIwMjYwODA3LXN1Ym1pdC1zdW54aS1uYW5kLWg2LWg2
-MTYtdGltaW5ncy12My0wLTkxMjg3YjU0M2Y0MUBnbWFpbC5jb20vCgo+Cj4gVGhhbmtzLAo+IE1p
-cXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJh
-ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+ubi_detach_mtd_dev() obtains a device reference through ubi_get_device()
+before checking whether the UBI device is busy. The busy return path drops
+ubi->ref_count but leaves the device reference held, so the device object
+cannot be released after a later detach.
+
+Drop the device reference before returning -EBUSY.
+
+Fixes: 7e84c961b2eb ("mtd: ubi: introduce pre-removal notification for UBI volumes")
+Signed-off-by: Yuho Choi <dbgh9129@gmail.com>
+---
+ drivers/mtd/ubi/build.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index 674ad87809df..ee6ce4471b25 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -1105,6 +1105,7 @@ int ubi_detach_mtd_dev(int ubi_num, int anyway)
+ 	ubi->ref_count -= 1;
+ 	if (ubi->ref_count) {
+ 		if (!anyway) {
++			put_device(&ubi->dev);
+ 			spin_unlock(&ubi_devices_lock);
+ 			return -EBUSY;
+ 		}
+-- 
+2.43.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
