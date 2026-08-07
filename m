@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 660E2C5ACD1
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60E30C5AC82
 	for <linux-mtd@archiver.kernel.org>; Fri,  7 Aug 2026 15:39:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,71 +12,71 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4wVQkUOo3lQT3fQCrHfEuKpd/AXOnVBT7k+HXhANLbE=; b=IbgeGg/rZFOsJS
-	V3uRW+IMGSlPvPhsuTD+2qdNbGzuWepmX8jhb/gf6xqGminoZ1gklw1SCbcNP2uj0ToP23OglkIyM
-	1iNw5OqIWJ4dA4tSSL3XTUVknvUhRNhJz/XCTswV9FPtGyOaXgDAZf6clnsHsl35VCZ8tqOpC7ygG
-	7sSlpolNtSzxeRQfijc5PjnX8DEshrRSIqT9u7IXOl19w/untpr9jjpo2fnRhZjUzL/juNKxuQUHv
-	X8WEwpshcJDmZXEsOzFF2Wf8sb9pC8vITuQZ00syVhI2tQu/oU6pW2CvkDaX6rTvDBStIoSEuhnRZ
-	UyC3pmbFpJNH+jZEhmtQ==;
+	List-Owner; bh=ElXO0rY4CDzWeuqWsBbWR9JhbQ06LrsnaGo6LMkpm2M=; b=aRCSZduSUmIUjO
+	VIQLm4rGNLXlsAiIgn5cztmoNp88U/Daw8NBH26doffPCkyRb9l7HcZNxvZ2f6ty596sKXLsWc/q5
+	WBQkR6qLwQJGzZM6GREWiyVaEBNz7lwUkeea3/zS29KuZnaxzYdcNXK6QB85xOnFVDaSK9xq2KmvC
+	SBNQzdTfe9dujxcFxYEBy55pMwumlR47yVHbJxv5obGvrxK4syMsbyimkg0n3WV93GY1TrkF5jMIg
+	FN+qP0k0GtYTr+W/1XVcAiqddUYOAyBg4YvN2buBGw7VKXL49OI3BQ3E5hmJSgwEsmcHClzosgm+r
+	cZekQiAEN5JCQK4jJsug==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wsMfC-00000008M29-3DA5;
+	id 1wsMfC-00000008M1l-2SZa;
 	Fri, 07 Aug 2026 15:39:14 +0000
-Received: from mail-oa1-x29.google.com ([2001:4860:4864:20::29])
+Received: from mail-oi1-x22d.google.com ([2607:f8b0:4864:20::22d])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wsMfA-00000008Lzo-0RVz
+	id 1wsMf8-00000008Lyu-3qAR
 	for linux-mtd@lists.infradead.org;
-	Fri, 07 Aug 2026 15:39:13 +0000
-Received: by mail-oa1-x29.google.com with SMTP id 586e51a60fabf-4569e871502so1051735fac.1
-        for <linux-mtd@lists.infradead.org>; Fri, 07 Aug 2026 08:39:11 -0700 (PDT)
+	Fri, 07 Aug 2026 15:39:12 +0000
+Received: by mail-oi1-x22d.google.com with SMTP id 5614622812f47-4ab47c40e7eso1472002b6e.3
+        for <linux-mtd@lists.infradead.org>; Fri, 07 Aug 2026 08:39:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1786117151; x=1786721951; darn=lists.infradead.org;
+        d=gmail.com; s=20251104; t=1786117150; x=1786721950; darn=lists.infradead.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=4LVBJaFomYnqSqtZwNfhU1nsKV+qCjSwKc3i+p0HPzM=;
-        b=koMLZmWk8W4+o9W29pnf5M+yDRfwN9WRFOgOIQRep1mPLX3Qv+j47q35zq2OKt2xFy
-         FBPBVi1mK9CH7Eogoe9FpBjd4lKJq+ztLZkRsxuByiaXZ0VVkGyxCRz0nHOuZrquDdos
-         DcfejYT0vjUG13P54TBYJ10trWqaUBY43zAq14jezp/IV1YxeQh4+G5d807ywM8RXEul
-         rD4Z82YzEVxBiEqkueh5572gumJaSjHp2RezYugfFoYaLIEtgDhthwSvUaC4ZIcPND0I
-         3zlcr+5p6EU5N6+XRMYmuQ0eKmfWyQMCZz5kQrnp6l+Q9S7Ow7k1a6lRk+z0bg3qn/GW
-         WJng==
+        bh=BH5d83nxZVwUU/yrlx0wCDcJDqfJzuP8B2aoypwvUDg=;
+        b=pgiKQ6nDwPrKPsTuYYPmzAPSmsIG7DjMbUD7vzCdqjp/ZdnCCLf+qQ7bZm9yuaSC1X
+         q11T6H3cUW8bPH+iRclPU/Inzw+np4/6hipD4K7emNAko6PoCfW66ZqyXLGYLU5xVTr9
+         q0+yhUXLzD7QUlEzd5QUq/YHD3cAbWracZDKgi8W7MVK/SO2sWBpq2YsBWu+6trRBfIf
+         dXPH0n8CuErtgyjWysLqSgs9BKeuE3uNhQgfxhngShjlhSFQsRq3+UqBuVoQNGcTIaBB
+         JEbbo2TCO6wxJWuvNrm+88jnjdoxeQbfumllLL1cTDFxZajakTgp70co3KLDRu9Pzffe
+         ifQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1786117151; x=1786721951;
+        d=1e100.net; s=20251104; t=1786117150; x=1786721950;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=4LVBJaFomYnqSqtZwNfhU1nsKV+qCjSwKc3i+p0HPzM=;
-        b=AP7WLv/tvgsYbRNvnnw+oOmmEkt0NaL4k1i9mSPCdB8pT7o6aD3GV6m+6jang51W8A
-         MMj2ncCEZEpHh2CE/7u+Vp/fvKJ6ptvsVzmHhAAgltRaFEhHIeBDbt1Hpc7Bj4iy8qOZ
-         5/dhzgCcMaHHcZUSNNGUGoj+jvuCnzCC2xN/+Dcuu6LOOGHtbWl0htTaa00/+29RdI1o
-         Yv2mYQDA73AgfafyEVWycaSLnwhG2OZ4V/pDuSJw4djC40P9cavaKhysWgBnTXcH49bV
-         47lShPrPZWnzI9/8qBX7VtIAQa+y4MB1bKoRC9u1/1l3o+/Ha49qyUiOYgkblNm28Clz
-         eRbg==
-X-Gm-Message-State: AOJu0YxlOG+DnkefgX34aV5OA1I3X+T0dbooAopMuC0J/XHKIhqNMt4G
-	YFBFnEcXEU9aQEsFvQWftzh6StDKVHS+DisX/WvXPZuq7QGeJtzKBrv0aqEEPW4u
-X-Gm-Gg: AR+sD12do02yF/hyQ4EHZTS/hnA1iiED6eMgmoAQBMldxeBZGHZJ6/7I+gb0nfNuNYK
-	bjrBLUpfJNRjk7XEVdhjK8puX6ZeASIEQOPI3BEJb0dXf93pG0XfH//Wezcb+uJ6YPF9O6fZdRi
-	NtAmnC7Css6grg/gxZsuNqhPMIx0EimiKzmB0PkitrGHspm6GPZIDInTuJVNxYJ0i2UlIYYvn5H
-	32VseNbhPucq8m7eZQJJg4r9Vh58f11n6twPOzKZwwFEa8P7dnmr/u44jfJoqd6isvmPQKenFCG
-	dar3G1bvn7FjTKD4TYBJR1Z7jFRNb8S79kQOBF427k0Lv6pDStHfTqXdF0fRxK1oYy5yuTObObO
-	Io9nFzdgV6wzKsVWoy2mqUh+BEYOQ7kIBuAdjknW0+af4biAfSSSufRHYdkclCt04HrZbiqYUJV
-	BDH6Y9nLWlZZ3eVD3nK2wnW44FwNDtcctFxQop7z4nr0J8OnS83cO1qRa2+0Hr1MtQPc1jVc9zx
-	z7jm1AyAVSC766nGqF0f1MMQBOlSdry7Ded/jOd5d2W2ub0HA7tbOuq/GAwPJVcEL7g/DIfcMoR
-	6SNQumv1O9gKdtOk/S7Vd6YZ+yKCOG6CZEQgog4zVZ9ly/8/jh6E5Mt3gRrGQH12vxjqmxK+54F
-	t5nOZZVYWjYC7Qo9m
-X-Received: by 2002:a05:6808:c1ba:b0:48a:ddd4:d36f with SMTP id 5614622812f47-4afadf16e3fmr12514228b6e.8.1786117150933;
+        bh=BH5d83nxZVwUU/yrlx0wCDcJDqfJzuP8B2aoypwvUDg=;
+        b=tQcbFNjTf1lTBfU9j0KYbbUSq4T+qU1ln6JrPk18oJ4SctTgMp7Q/FBBdsbfi910hp
+         GwSN2m5ExociCENafuWjBj21J9UODj4okrPUCdVdX10holhbkidm0Gj/U6JrZ9fSHlOu
+         pgapZdCa/MuvCK1aTdWLIhp3V5kXLmyC4idh9aQs4DLF2akhLHstWDZ4FG+qsbnZUbxr
+         CETe3Eh5pKgkXxng/nLW+NOip2QN8TLe4zgREYpwhmUkiBXY1HJTbi6G50BmjKkTPtu6
+         MH8LeY+HaMG2kMaLDR58DkRExwcwn8386lPyYZvcgkAMqzRpRTvTGX7zbJ8ySJGO4ple
+         H74Q==
+X-Gm-Message-State: AOJu0YzydYarjS1gRpd0pa8Kn89GZLznzvje2nu5eBcWEAT1JBH4VDt6
+	YiWnOKDvkyQoeKIQUGJ4549vHnBlYP89ZvcCEcvN7DI9aV42ce5DCiYz
+X-Gm-Gg: AR+sD12EwyxB7AThqEPYm0o3x5xMKt8mQfbSkTFXv0aIyBLukp+5qR8ERVor4Gpfy9y
+	07sGnvKr3xgA2BnVMvS2+EUK/zDryPX7tPr+S2BAv/BGept8rbb+K43ZbyK7ZR7m65nrt/fD5aI
+	PeJxOxv4GO41ZGM4BnHh4CjBHBXkuvI+KbM4ygjV0knhnSKUhEPeoiAYLXVB+NJc1WA30jEEdJA
+	K7YqBPskVmmggd67tuLGkPMhahP67Jl6jc/WgbYXsYA+1fsxIUPtWJBW6Z+Nt5aBfWb9iPrcuov
+	vhItNbF2XDid+icDT4dNReEqw6J6W96f8OSepQ2/LyxBkSR9nYof//TfJ4j42WuOXtJCXK0nCC2
+	sO+d1DpNAoAPcQ21idOD1ERqxAj03HmmmTP+3X5j4uT+8sjDQYDQWVEiYyl6P8odrMw9vtXwg34
+	7odjBvpeTOs1fX4cOuseu1s1M4Y635NxfQDD7EfZWgB/kw4CnGLYglGk4HGw8z9KHS38PYwWS9h
+	J3u6BIkMeXD6bHwbsbjDLzZcDGWn1jHuSTpSePc9Dgee85/fdDdfge2n7fT64ZHmV/d4DctJwFF
+	8asL3lsrT/FqZlQIjejBNmKFAAXhIeRd5Ndwvq8i3j/GvDBcAfV6LxG5S3qsI7WMPAQ43Y7H1iw
+	cGEiXSK9BDNcXv/DM
+X-Received: by 2002:a05:6808:ec3:b0:4a4:a693:9d87 with SMTP id 5614622812f47-4afadf0e523mr11310972b6e.5.1786117150060;
         Fri, 07 Aug 2026 08:39:10 -0700 (PDT)
 Received: from [127.0.1.1] (184-96-154-59.hlrn.qwest.net. [184.96.154.59])
-        by smtp.gmail.com with ESMTPSA id 5614622812f47-4afae706cd5sm7353485b6e.11.2026.08.07.08.39.10
+        by smtp.gmail.com with ESMTPSA id 5614622812f47-4afae706cd5sm7353485b6e.11.2026.08.07.08.39.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 Aug 2026 08:39:10 -0700 (PDT)
+        Fri, 07 Aug 2026 08:39:09 -0700 (PDT)
 From: James Hilliard <james.hilliard1@gmail.com>
-Date: Fri, 07 Aug 2026 09:39:00 -0600
-Subject: [PATCH v3 2/3] mtd: rawnand: sunxi: describe tADL and tWHR delays
+Date: Fri, 07 Aug 2026 09:38:59 -0600
+Subject: [PATCH v3 1/3] mtd: rawnand: sunxi: group controller delay tables
 MIME-Version: 1.0
-Message-Id: <20260807-submit-sunxi-nand-h6-h616-timings-v3-2-91287b543f41@gmail.com>
+Message-Id: <20260807-submit-sunxi-nand-h6-h616-timings-v3-1-91287b543f41@gmail.com>
 References: <20260807-submit-sunxi-nand-h6-h616-timings-v3-0-91287b543f41@gmail.com>
 In-Reply-To: <20260807-submit-sunxi-nand-h6-h616-timings-v3-0-91287b543f41@gmail.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, 
@@ -89,8 +89,8 @@ Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
  James Hilliard <james.hilliard1@gmail.com>, stable@vger.kernel.org
 X-Mailer: b4 0.15.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260807_083912_181762_0B57E5D0 
-X-CRM114-Status: GOOD (  13.36  )
+X-CRM114-CacheID: sfid-20260807_083910_985567_18C0384E 
+X-CRM114-Status: GOOD (  15.63  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,89 +107,144 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The tADL and tWHR timing fields use four encoded delays, but the driver
-currently derives their values with a shift. This hides the actual
-controller timing characteristics and lets the clock solver select a
-32-cycle delay that the fields cannot encode.
+The tWB and tRHW timing field encodings are controller properties, but
+they currently live in standalone lookup tables.
 
-Describe the legacy 7, 15, 23 and 31 cycle thresholds explicitly and use
-the tables for both clock selection and field lookup. This prepares the
-driver for controllers with different encodings.
+Group them in a timing descriptor selected through the controller
+capability data. Point every existing controller at the legacy values so
+this is a pure preparation change.
 
 Fixes: 88fd4e4deae8 ("mtd: rawnand: sunxi: Add support for H616 nand controller")
 Cc: stable@vger.kernel.org
 Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
 ---
- drivers/mtd/nand/raw/sunxi_nand.c | 30 ++++++++++++++++++++----------
- 1 file changed, 20 insertions(+), 10 deletions(-)
+ drivers/mtd/nand/raw/sunxi_nand.c | 36 ++++++++++++++++++++++++++++--------
+ 1 file changed, 28 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/sunxi_nand.c b/drivers/mtd/nand/raw/sunxi_nand.c
-index 9885248c9b85..df52501c1285 100644
+index 02647565c8ba..9885248c9b85 100644
 --- a/drivers/mtd/nand/raw/sunxi_nand.c
 +++ b/drivers/mtd/nand/raw/sunxi_nand.c
-@@ -242,6 +242,8 @@ struct sunxi_nand_hw_ecc {
- /* Delay arrays contain internal NDFC clock cycles for field values 0 to 3. */
- struct sunxi_nfc_timings {
- 	s32 tWB[SUNXI_NFC_TIMING_STEPS];
-+	s32 tADL[SUNXI_NFC_TIMING_STEPS];
-+	s32 tWHR[SUNXI_NFC_TIMING_STEPS];
- 	s32 tRHW[SUNXI_NFC_TIMING_STEPS];
+@@ -237,6 +237,14 @@ struct sunxi_nand_hw_ecc {
+ 	u32 ecc_ctl;
  };
  
-@@ -1679,6 +1681,8 @@ static int sunxi_nfc_hw_ecc_write_oob(struct nand_chip *nand, int page)
- 
- static const struct sunxi_nfc_timings sun4i_a10_nfc_timings = {
- 	.tWB = { 6, 12, 16, 20 },
-+	.tADL = { 7, 15, 23, 31 },
-+	.tWHR = { 7, 15, 23, 31 },
- 	.tRHW = { 4, 8, 12, 20 },
++#define SUNXI_NFC_TIMING_STEPS	4
++
++/* Delay arrays contain internal NDFC clock cycles for field values 0 to 3. */
++struct sunxi_nfc_timings {
++	s32 tWB[SUNXI_NFC_TIMING_STEPS];
++	s32 tRHW[SUNXI_NFC_TIMING_STEPS];
++};
++
+ /**
+  * struct sunxi_nand_chip - stores NAND chip device related information
+  *
+@@ -301,6 +309,7 @@ static inline struct sunxi_nand_chip *to_sunxi_nand(struct nand_chip *nand)
+  *			bytes to write
+  * @nuser_data_tab:	Size of @user_data_len_tab
+  * @sram_size:		Size of the NAND controller SRAM
++ * @timings:		Controller timing characteristics
+  */
+ struct sunxi_nfc_caps {
+ 	bool has_mdma;
+@@ -327,6 +336,7 @@ struct sunxi_nfc_caps {
+ 	unsigned int nuser_data_tab;
+ 	unsigned int max_ecc_steps;
+ 	int sram_size;
++	const struct sunxi_nfc_timings *timings;
  };
  
-@@ -1781,11 +1785,15 @@ static int sunxi_nfc_setup_interface(struct nand_chip *nand, int csline,
- 		min_clk_period = DIV_ROUND_UP(timings->tWB_max,
- 					      nfc_timings->tWB[SUNXI_NFC_TIMING_STEPS - 1]);
+ /**
+@@ -1667,8 +1677,10 @@ static int sunxi_nfc_hw_ecc_write_oob(struct nand_chip *nand, int page)
+ 	return nand_prog_page_end_op(nand);
+ }
  
--	if (timings->tADL_min > (min_clk_period * 32))
--		min_clk_period = DIV_ROUND_UP(timings->tADL_min, 32);
-+	if (timings->tADL_min >
-+	    (min_clk_period * nfc_timings->tADL[SUNXI_NFC_TIMING_STEPS - 1]))
-+		min_clk_period = DIV_ROUND_UP(timings->tADL_min,
-+					      nfc_timings->tADL[SUNXI_NFC_TIMING_STEPS - 1]);
+-static const s32 tWB_lut[] = {6, 12, 16, 20};
+-static const s32 tRHW_lut[] = {4, 8, 12, 20};
++static const struct sunxi_nfc_timings sun4i_a10_nfc_timings = {
++	.tWB = { 6, 12, 16, 20 },
++	.tRHW = { 4, 8, 12, 20 },
++};
  
--	if (timings->tWHR_min > (min_clk_period * 32))
--		min_clk_period = DIV_ROUND_UP(timings->tWHR_min, 32);
-+	if (timings->tWHR_min >
-+	    (min_clk_period * nfc_timings->tWHR[SUNXI_NFC_TIMING_STEPS - 1]))
-+		min_clk_period = DIV_ROUND_UP(timings->tWHR_min,
-+					      nfc_timings->tWHR[SUNXI_NFC_TIMING_STEPS - 1]);
+ static int _sunxi_nand_lookup_timing(const s32 *lut, int lut_size, u32 duration,
+ 		u32 clk_period)
+@@ -1693,6 +1705,7 @@ static int sunxi_nfc_setup_interface(struct nand_chip *nand, int csline,
+ {
+ 	struct sunxi_nand_chip *sunxi_nand = to_sunxi_nand(nand);
+ 	struct sunxi_nfc *nfc = to_sunxi_nfc(sunxi_nand->nand.controller);
++	const struct sunxi_nfc_timings *nfc_timings = nfc->caps->timings;
+ 	const struct nand_sdr_timings *timings;
+ 	u32 min_clk_period = 0;
+ 	s32 tWB, tADL, tWHR, tRHW, tCAD;
+@@ -1763,8 +1776,10 @@ static int sunxi_nfc_setup_interface(struct nand_chip *nand, int csline,
+ 		min_clk_period = DIV_ROUND_UP(timings->tWC_min, 2);
  
- 	if (timings->tRHW_min >
- 	    (min_clk_period * nfc_timings->tRHW[SUNXI_NFC_TIMING_STEPS - 1]))
-@@ -1813,16 +1821,18 @@ static int sunxi_nfc_setup_interface(struct nand_chip *nand, int csline,
- 		return tWB;
+ 	/* T16 - T19 + tCAD */
+-	if (timings->tWB_max > (min_clk_period * 20))
+-		min_clk_period = DIV_ROUND_UP(timings->tWB_max, 20);
++	if (timings->tWB_max >
++	    (min_clk_period * nfc_timings->tWB[SUNXI_NFC_TIMING_STEPS - 1]))
++		min_clk_period = DIV_ROUND_UP(timings->tWB_max,
++					      nfc_timings->tWB[SUNXI_NFC_TIMING_STEPS - 1]);
+ 
+ 	if (timings->tADL_min > (min_clk_period * 32))
+ 		min_clk_period = DIV_ROUND_UP(timings->tADL_min, 32);
+@@ -1772,8 +1787,10 @@ static int sunxi_nfc_setup_interface(struct nand_chip *nand, int csline,
+ 	if (timings->tWHR_min > (min_clk_period * 32))
+ 		min_clk_period = DIV_ROUND_UP(timings->tWHR_min, 32);
+ 
+-	if (timings->tRHW_min > (min_clk_period * 20))
+-		min_clk_period = DIV_ROUND_UP(timings->tRHW_min, 20);
++	if (timings->tRHW_min >
++	    (min_clk_period * nfc_timings->tRHW[SUNXI_NFC_TIMING_STEPS - 1]))
++		min_clk_period = DIV_ROUND_UP(timings->tRHW_min,
++					      nfc_timings->tRHW[SUNXI_NFC_TIMING_STEPS - 1]);
+ 
+ 	/*
+ 	 * In non-EDO, tREA should be less than tRP to guarantee that the
+@@ -1789,7 +1806,7 @@ static int sunxi_nfc_setup_interface(struct nand_chip *nand, int csline,
+ 	if (timings->tREA_max > min_clk_period && !timings->tRLOH_min)
+ 		min_clk_period = timings->tREA_max;
+ 
+-	tWB  = sunxi_nand_lookup_timing(tWB_lut, timings->tWB_max,
++	tWB  = sunxi_nand_lookup_timing(nfc_timings->tWB, timings->tWB_max,
+ 					min_clk_period);
+ 	if (tWB < 0) {
+ 		dev_err(nfc->dev, "unsupported tWB\n");
+@@ -1808,7 +1825,7 @@ static int sunxi_nfc_setup_interface(struct nand_chip *nand, int csline,
+ 		return -EINVAL;
  	}
  
--	tADL = DIV_ROUND_UP(timings->tADL_min, min_clk_period) >> 3;
--	if (tADL > 3) {
-+	tADL = sunxi_nand_lookup_timing(nfc_timings->tADL,
-+					timings->tADL_min, min_clk_period);
-+	if (tADL < 0) {
- 		dev_err(nfc->dev, "unsupported tADL\n");
--		return -EINVAL;
-+		return tADL;
- 	}
+-	tRHW = sunxi_nand_lookup_timing(tRHW_lut, timings->tRHW_min,
++	tRHW = sunxi_nand_lookup_timing(nfc_timings->tRHW, timings->tRHW_min,
+ 					min_clk_period);
+ 	if (tRHW < 0) {
+ 		dev_err(nfc->dev, "unsupported tRHW\n");
+@@ -2595,6 +2612,7 @@ static const struct sunxi_nfc_caps sunxi_nfc_a10_caps = {
+ 	.nstrengths = ARRAY_SIZE(sunxi_ecc_strengths_a10),
+ 	.max_ecc_steps = 16,
+ 	.sram_size = 1024,
++	.timings = &sun4i_a10_nfc_timings,
+ };
  
--	tWHR = DIV_ROUND_UP(timings->tWHR_min, min_clk_period) >> 3;
--	if (tWHR > 3) {
-+	tWHR = sunxi_nand_lookup_timing(nfc_timings->tWHR,
-+					timings->tWHR_min, min_clk_period);
-+	if (tWHR < 0) {
- 		dev_err(nfc->dev, "unsupported tWHR\n");
--		return -EINVAL;
-+		return tWHR;
- 	}
+ static const struct sunxi_nfc_caps sunxi_nfc_a23_caps = {
+@@ -2617,6 +2635,7 @@ static const struct sunxi_nfc_caps sunxi_nfc_a23_caps = {
+ 	.nstrengths = ARRAY_SIZE(sunxi_ecc_strengths_a10),
+ 	.max_ecc_steps = 16,
+ 	.sram_size = 1024,
++	.timings = &sun4i_a10_nfc_timings,
+ };
  
- 	tRHW = sunxi_nand_lookup_timing(nfc_timings->tRHW, timings->tRHW_min,
+ static const struct sunxi_nfc_caps sunxi_nfc_h616_caps = {
+@@ -2641,6 +2660,7 @@ static const struct sunxi_nfc_caps sunxi_nfc_h616_caps = {
+ 	.nuser_data_tab = ARRAY_SIZE(sunxi_user_data_len_h6),
+ 	.max_ecc_steps = 32,
+ 	.sram_size = 8192,
++	.timings = &sun4i_a10_nfc_timings,
+ };
+ 
+ static const struct of_device_id sunxi_nfc_ids[] = {
 
 -- 
 2.53.0
