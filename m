@@ -4,64 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D4C64C5AD05
-	for <linux-mtd@archiver.kernel.org>; Sat,  8 Aug 2026 01:51:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F712C5AC80
+	for <linux-mtd@archiver.kernel.org>; Sun,  9 Aug 2026 08:43:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=jNwkpwFMqGV4F8usWz+qrVdozXutnDDnMUOD+gW1Lik=; b=XtSgZScw9SYXOh+C/0wG8KqDcZ
-	GpsLeV6YRFmzRJvH1dcXB7KUHGALLTIG5HS1GV4MF0dJCKAW3rn+cr/IQEhwpKpVYT/SRU915T4rD
-	LnFJKNjN0V/kP8TTHnwvA+rsDMA8b5Mak+Fg5qRZVIJXWt/2qNoJsbzgIfqYa61AszIm9Uu8DeEwW
-	Fg/HjhftqNm8vbznozrAe+MkzW7kGHrv6OCUD6/k46IYhTBHmgB9wPJbc/hdmxfqhF6y0FpwSDUzC
-	GthqWVbITQrE6jqPtWNZPdeTlN8dxRjilCOOwtIfCZScxjwWMk7QX3YVX4bxZwngzWx/HU627Nw6T
-	4mGH3Qug==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=iLoaM8nz5P3qkZKnkoqVRoJmdQkcz7KauvSGKFklkDI=; b=phyVGGOLypM2mq
+	OBi2aosRqNRtTtsQVRSuKRJ3JZKS83nT6MnMioR+Jl3Q2c/XO44qI/e3iTLCwQ4sLK33YBiTt1RQ2
+	SKU8cKTeBMG5ZrO7PT29FDr/UWZCMfQcEVgpZUTlmUDdwcO4BQ4AsTPJGpcJJGCoiscvfiBasN0bv
+	FXX6O0pJ+9wdsXWDLB+4DgY8DfngRshJnaI06p9/psoDzFgWYbGYC509HZCdURPx+0gveTki3RDOe
+	OQG2srJ1RwQdvZtUvniYuty8P5db63aUtsYcCfxhz/PuvhliKyzMzGHGGxIZlu/CTuLA1PuaX9O9z
+	ZEyEezqGiIyW2Bv4QQvA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wsWDB-00000008yZl-16Ck;
-	Sat, 08 Aug 2026 01:50:57 +0000
-Received: from [113.46.200.217] (helo=canpmsgout02.his.huawei.com)
+	id 1wsz7t-0000000A6UH-19SC;
+	Sun, 09 Aug 2026 08:43:25 +0000
+Received: from mail-m155101.qiye.163.com ([101.71.155.101])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wsWD8-00000008yYv-06IX
+	id 1wsz7p-0000000A6Tb-2L7P
 	for linux-mtd@lists.infradead.org;
-	Sat, 08 Aug 2026 01:50:56 +0000
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=FYEubiyYr6zS1fRSlm+uizseM6hbxeSSR9TZ4jFwLPE=;
-	b=ijjjCSWbHGYQo4l4UiFOlOVbMe57x1p34SCgZlF6yO2U3072qNOL/fOt7RrzN4585vPYsuP/e
-	J6ZGgMB6Pd3jgwc0qwH3GVTxKPCfOcakF0KxblByiYn0bNmmtw3oqhvUMzyMmpChiGJX8fwg1UP
-	pj7cqEJd84SXdUkLRm0gPbs=
-Received: from mail.maildlp.com (unknown [172.19.162.144])
-	by canpmsgout02.his.huawei.com (SkyGuard) with ESMTPS id 4hH3cP0cdKzcb0T;
-	Sat,  8 Aug 2026 09:40:21 +0800 (CST)
-Received: from whupemo200011.china.huawei.com (unknown [7.152.185.179])
-	by mail.maildlp.com (Postfix) with ESMTPS id 59D884056D;
-	Sat,  8 Aug 2026 09:50:20 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- whupemo200011.china.huawei.com (7.152.185.179) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Sat, 8 Aug 2026 09:50:19 +0800
-Subject: Re: [PATCH v1] mtd: ubi: Release device reference on busy detach
-To: Yuho Choi <dbgh9129@gmail.com>, <richard@nod.at>
-CC: <miquel.raynal@bootlin.com>, <vigneshr@ti.com>,
-	<linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-References: <20260807204550.1016755-1-dbgh9129@gmail.com>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <27eaa6d4-cae1-2e44-6b46-a753c2475c50@huawei.com>
-Date: Sat, 8 Aug 2026 09:50:18 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	Sun, 09 Aug 2026 08:43:23 +0000
+Received: from PC-202605011814.localdomain (unknown [222.191.246.242])
+	by smtp.qiye.163.com (Hmail) with ESMTP id 494c177b7;
+	Sun, 9 Aug 2026 16:43:06 +0800 (GMT+08:00)
+From: Runyu Xiao <runyu.xiao@seu.edu.cn>
+To: tudor.ambarus@linaro.org
+Cc: pratyush@kernel.org,
+	mwalle@kernel.org,
+	miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	runyu.xiao@seu.edu.cn,
+	jianhao.xu@seu.edu.cn,
+	stable@vger.kernel.org
+Subject: [PATCH] mtd: spi-nor: scope the exclusive RWW lock
+Date: Sun,  9 Aug 2026 16:42:23 +0800
+Message-Id: <20260809084223.3596259-1-runyu.xiao@seu.edu.cn>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-In-Reply-To: <20260807204550.1016755-1-dbgh9129@gmail.com>
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: kwepems100002.china.huawei.com (7.221.188.206) To
- whupemo200011.china.huawei.com (7.152.185.179)
+X-HM-Tid: 0a9fe5b0a38f03a1kunm5a5ec2c57af50
+X-HM-MType: 10
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFITzdXWRgWCB1ZQUpXWS1ZQUlXWQ8JGhUIEh9ZQVlDHhpJVk9NGk1OThpCSxlNT1YeHw
+	5VEwETFhoSFyQUDg9ZV1kYEgtZQVlJSUlVSkJKVUlPTVVJT0lZV1kWGg8SFR0UWUFZT0tIVUpLSE
+	pPSExVSktLVUpCS0tZBg++
+DKIM-Signature: a=rsa-sha256;
+	b=ZZF7O/oJRpUbMlkTsjS+9Cws+AZc4q8oCLYw9BpYB1OO2IN4uY2uYYYnN7HG4iZ7dFPtzJu/XZM6Cgg0GMnKkvO77koKaFU9KIrxw3Mfcvh9zieWvagBeqpzdS+AjFMKSrq2oZnS76MT7Z5wkZpaYSz5TLQT7dKfBl5x01abusQ=; s=default; c=relaxed/relaxed; d=seu.edu.cn; v=1;
+	bh=/HLUWOYWl3NIuNetNvUqiUL58b1bFtzurpO33MPK5T4=;
+	h=date:mime-version:subject:message-id:from;
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260807_185054_555893_D72E1800 
-X-CRM114-Status: GOOD (  13.46  )
+X-CRM114-CacheID: sfid-20260809_014321_769840_4B728F80 
+X-CRM114-Status: GOOD (  10.26  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,31 +71,55 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="gbk"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-1NogMjAyNi84LzggNDo0NSwgWXVobyBDaG9pINC0tcA6Cj4gdWJpX2RldGFjaF9tdGRfZGV2KCkg
-b2J0YWlucyBhIGRldmljZSByZWZlcmVuY2UgdGhyb3VnaCB1YmlfZ2V0X2RldmljZSgpCj4gYmVm
-b3JlIGNoZWNraW5nIHdoZXRoZXIgdGhlIFVCSSBkZXZpY2UgaXMgYnVzeS4gVGhlIGJ1c3kgcmV0
-dXJuIHBhdGggZHJvcHMKPiB1YmktPnJlZl9jb3VudCBidXQgbGVhdmVzIHRoZSBkZXZpY2UgcmVm
-ZXJlbmNlIGhlbGQsIHNvIHRoZSBkZXZpY2Ugb2JqZWN0Cj4gY2Fubm90IGJlIHJlbGVhc2VkIGFm
-dGVyIGEgbGF0ZXIgZGV0YWNoLgo+IAo+IERyb3AgdGhlIGRldmljZSByZWZlcmVuY2UgYmVmb3Jl
-IHJldHVybmluZyAtRUJVU1kuCj4gCj4gRml4ZXM6IDdlODRjOTYxYjJlYiAoIm10ZDogdWJpOiBp
-bnRyb2R1Y2UgcHJlLXJlbW92YWwgbm90aWZpY2F0aW9uIGZvciBVQkkgdm9sdW1lcyIpCj4gU2ln
-bmVkLW9mZi1ieTogWXVobyBDaG9pIDxkYmdoOTEyOUBnbWFpbC5jb20+Cj4gLS0tCj4gICBkcml2
-ZXJzL210ZC91YmkvYnVpbGQuYyB8IDEgKwo+ICAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9u
-KCspCgpJIHRoaW5rIHlvdSBoYXZlIHNlbnQgdGhpcyBwYXRjaCBiZWZvcmU/Cmh0dHBzOi8vbG9y
-ZS5rZXJuZWwub3JnL2xpbnV4LW10ZC8yNmM5Yzk1OS1hM2I2LWUxZGUtMTIxNS04ODc5OTBhNDY4
-NzBAaHVhd2VpLmNvbS8KPiAKPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvdWJpL2J1aWxkLmMg
-Yi9kcml2ZXJzL210ZC91YmkvYnVpbGQuYwo+IGluZGV4IDY3NGFkODc4MDlkZi4uZWU2Y2U0NDcx
-YjI1IDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbXRkL3ViaS9idWlsZC5jCj4gKysrIGIvZHJpdmVy
-cy9tdGQvdWJpL2J1aWxkLmMKPiBAQCAtMTEwNSw2ICsxMTA1LDcgQEAgaW50IHViaV9kZXRhY2hf
-bXRkX2RldihpbnQgdWJpX251bSwgaW50IGFueXdheSkKPiAgIAl1YmktPnJlZl9jb3VudCAtPSAx
-Owo+ICAgCWlmICh1YmktPnJlZl9jb3VudCkgewo+ICAgCQlpZiAoIWFueXdheSkgewo+ICsJCQlw
-dXRfZGV2aWNlKCZ1YmktPmRldik7Cj4gICAJCQlzcGluX3VubG9jaygmdWJpX2RldmljZXNfbG9j
-ayk7Cj4gICAJCQlyZXR1cm4gLUVCVVNZOwo+ICAgCQl9Cj4gCgoKX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9u
-IG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2xpbnV4LW10ZC8K
+spi_nor_rww_start_exclusive() is used as a wait_event_killable()
+condition. The raw mutex_lock() leaves nor->lock held when the busy
+condition returns false, so the waiter can block the active operation that
+must clear the RWW state.
+
+Use the same scoped mutex guard as the other RWW start helpers so the
+mutex is released on both the busy and successful condition paths. The
+state flags remain the handoff to the caller, while
+spi_nor_rww_end_exclusive() continues
+to acquire the mutex when clearing them.
+
+The change was checked by comparing the original and patched source.
+
+A source-level check of the original wait condition found that it takes
+`nor->lock` and returns false while an RWW operation is still active. The
+patched source was checked for a scoped mutex guard that releases
+`nor->lock` before the wait condition returns. A user-space pthread model
+held `nor->lock` on the false-condition path and showed that the
+operation-ending path then blocks when it needs the same mutex. No live
+SPI-NOR test was run.
+
+Fixes: 03e7bb864d9a ("mtd: spi-nor: use scope-based mutex cleanup helpers")
+Cc: stable@vger.kernel.org
+Signed-off-by: Runyu Xiao <runyu.xiao@seu.edu.cn>
+---
+ drivers/mtd/spi-nor/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index ccf4396cdcd0..8bc117b46e02 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -1310,7 +1310,7 @@ static bool spi_nor_rww_start_exclusive(struct spi_nor *nor)
+ {
+ 	struct spi_nor_rww *rww = &nor->rww;
+ 
+-	mutex_lock(&nor->lock);
++	guard(mutex)(&nor->lock);
+ 
+ 	if (rww->ongoing_io || rww->ongoing_rd || rww->ongoing_pe)
+ 		return false;
+-- 
+2.34.1
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
