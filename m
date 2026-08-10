@@ -4,63 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0654C5AD7B
-	for <linux-mtd@archiver.kernel.org>; Mon, 10 Aug 2026 18:03:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F2EDC5B572
+	for <linux-mtd@archiver.kernel.org>; Mon, 10 Aug 2026 18:36:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Z+gRR5gOOELUlVmU5500s8fPzzQUGu52HgxJW1H58VM=; b=pZ3DKNUpfi78fr
-	UvepBo1V13lsOIC3IjCFFXojJoA2pKIH21x7yJb845Yw70a87pOfNxmTDzvU9/niQJMbGWoARMORI
-	j8HupgY1I+RFOzZZTI9m0OD1qtP2+UoauzMhNw4kxJ9wXq7GwpztwhftXwmfBxf1E/APgEE5Z77N8
-	L1Xs6aPDAfCNEgWajaIPpRxljcc2aRHAWO6lFIeMgXlVJLsuNVDd1IVoVcLfcwA6Y/P/+dIRAobwY
-	mJyRyDoG2+aDl00v6BHkaGx/I0phKmaf+Kz2hGGQTmUPCKKSQO+iaeeOIIju+uNVNbiRxh0te9uTP
-	fhD64Iicxiw4IZncXHmA==;
+	List-Owner; bh=OwPQ0YtoRMBjEEZKKCN/24S4tHIIoQgtOXx9jxp4l7k=; b=3CmRK66mgeqRKC
+	FWV2UmqEEjKgjCjss6w6kN4eCs9m8i2XRJFAqxrrx/AtDUH036smdm98a1KzGDeaw46u0Mx+T7od8
+	AWFIZogD4WK25T7+r/ytfOeR+BwbRJN2H1WIgV1Qx/ySSDI0hjlgKfVWrrIdw15eKzC1Hsf7Hc6Yi
+	6Dq16gYthmfQ/cRV40JV2g8n6s04Z6Cyf0pyQ+U4cN+PYE5pazrGAW8ibpyLWCxvr8OprofYoBIYc
+	StO9k+lxNLGUDT2Z36fmu0q+5TyEjR1SsjbLx0C/yELUNlfkRBGOArUOxNz/OFCSuRE/V/Ijuapww
+	2MLuZJH2Bh2XJ8o1LLlQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wtULP-0000000Ca6W-3gN9;
-	Mon, 10 Aug 2026 18:03:27 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1wtUqW-0000000Cdst-117q;
+	Mon, 10 Aug 2026 18:35:36 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wtULO-0000000Ca69-2CXh;
-	Mon, 10 Aug 2026 18:03:26 +0000
+	id 1wtUqU-0000000CdsK-3bD9;
+	Mon, 10 Aug 2026 18:35:34 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id E5B8843760;
-	Mon, 10 Aug 2026 18:03:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A08F21F000E9;
-	Mon, 10 Aug 2026 18:03:25 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id E355D600C8;
+	Mon, 10 Aug 2026 18:35:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 757FF1F000E9;
+	Mon, 10 Aug 2026 18:35:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1786385005;
-	bh=+47nB+ymVQpumJdoiL7i0y+0QEYSSwSbPBEdZ3OfrBg=;
+	s=k20260515; t=1786386933;
+	bh=tnho4rrrB5eB1gkI1817NuCvPB/07wS2vcTVe6IMdjg=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=E5SrZ72VDXJbAtd0U9iOidzNeHCawXN+u5dsLBP7qBo2pJzTegMWiPiO/SjD33Dl0
-	 0s7LAwspsNl+NzMXa2B+Seg1OtoD/Hc0tN3twuQ/GTBUjfV8v8N6PnY3lKuTXpYQPf
-	 HfS9exE/RtVdAcJW8p30pJpDeQN88wOINYcwDqZR4jhKNTRShG/aYTsGrqptP909RK
-	 2yXqp0EHNeyHRkyOMJfP5FlGajUUj/AFHG3l5XnWP8/Mdlvn4c5MObzjufaSxi6uv/
-	 M5ojLqlXtohKQzlRWmJlxd1HHLiXIP18Ituk5+RVZ7VjHFWDnBGekuLRko6lnDMHo7
-	 d2qz0ZNuIsIyQ==
-Date: Mon, 10 Aug 2026 13:03:24 -0500
-From: Rob Herring <robh@kernel.org>
+	b=aYmWygaBYAucXKZxr787sYh3qGARvpJY86Je5DMJbNxZnDYa7l4yTzD28oj2EN7My
+	 o16ZB4rA22AlKYA1iX9FaZmrfdsNTTCRTV/WPlPJ+6NU/tSdl9trogupy27ac8akVw
+	 W1jOqDlWA8sH77vJPHLrtw6E86dVQl2szMWzkz/N+Pn21+3nd0BYPRu0vrADgp1aZR
+	 mXeB39csRtttxUctgTLpcq4/b+87TcJ/JiL/l+vE1aoILzVQeZ/fJMzc9+zpd+N2bC
+	 1U/Rz+ddRw9ycDmW3gcRoKL/nZYv4fIDIb3qawaUhEkTHEwMD8kW9Lya/1AXaY6amD
+	 XXQqwkfHzAXJw==
+Date: Mon, 10 Aug 2026 13:35:32 -0500
+From: "Rob Herring (Arm)" <robh@kernel.org>
 To: Manikandan Muralidharan <manikandan.m@microchip.com>
-Cc: pratyush@kernel.org, mwalle@kernel.org, takahiro.kuwano@infineon.com,
-	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-	krzk+dt@kernel.org, conor+dt@kernel.org, srini@kernel.org,
-	nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
-	claudiu.beznea@tuxon.dev, linux@armlinux.org.uk,
-	richardcochran@gmail.com, arnd@arndb.de, linusw@kernel.org,
-	michael@walle.cc, linux-mtd@lists.infradead.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org
-Subject: Re: [PATCH v6 1/7] dt-bindings: mtd: jedec,spi-nor: allow the SFDP
- to be exposed via NVMEM
-Message-ID: <20260810180324.GA2352629-robh@kernel.org>
+Cc: conor+dt@kernel.org, mwalle@kernel.org, richardcochran@gmail.com,
+	richard@nod.at, linux-mtd@lists.infradead.org, pratyush@kernel.org,
+	nicolas.ferre@microchip.com, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	takahiro.kuwano@infineon.com, miquel.raynal@bootlin.com,
+	alexandre.belloni@bootlin.com, claudiu.beznea@tuxon.dev,
+	linusw@kernel.org, vigneshr@ti.com, srini@kernel.org,
+	linux-arm-kernel@lists.infradead.org, michael@walle.cc,
+	krzk+dt@kernel.org, linux@armlinux.org.uk, arnd@arndb.de
+Subject: Re: [PATCH v6 2/7] dt-bindings: nvmem: layouts: add Microchip/SST
+ SFDP EUI layout
+Message-ID: <178638693216.2623305.17648873474456731679.robh@kernel.org>
 References: <20260729043026.1811147-1-manikandan.m@microchip.com>
- <20260729043026.1811147-2-manikandan.m@microchip.com>
+ <20260729043026.1811147-3-manikandan.m@microchip.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260729043026.1811147-2-manikandan.m@microchip.com>
+In-Reply-To: <20260729043026.1811147-3-manikandan.m@microchip.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,45 +77,24 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Jul 29, 2026 at 10:00:20AM +0530, Manikandan Muralidharan wrote:
-> Add an optional "sfdp" child node (compatible "jedec,sfdp") that
-> describes the SFDP as a read-only NVMEM provider via nvmem.yaml, so its
-> contents (e.g. a vendor EUI-48/EUI-64) can be read through NVMEM cells.
+
+On Wed, 29 Jul 2026 10:00:21 +0530, Manikandan Muralidharan wrote:
+> Add a binding for the NVMEM layout that exposes the factory-programmed
+> EUI-48 identifier from the Microchip/SST vendor-specific SFDP parameter
+> table (e.g. SST26VF064BEUI) as a "mac-address" NVMEM cell, and reference
+> it from nvmem-layout.yaml.
 > 
 > Reviewed-by: Linus Walleij <linusw@kernel.org>
 > Signed-off-by: Manikandan Muralidharan <manikandan.m@microchip.com>
 > ---
->  .../devicetree/bindings/mtd/jedec,spi-nor.yaml | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
+>  .../layouts/microchip,sst26vf-sfdp-eui.yaml   | 60 +++++++++++++++++++
+>  .../bindings/nvmem/layouts/nvmem-layout.yaml  |  1 +
+>  2 files changed, 61 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/nvmem/layouts/microchip,sst26vf-sfdp-eui.yaml
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> index 587af4968255..98fd954598ab 100644
-> --- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> +++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> @@ -103,6 +103,20 @@ properties:
->    spi-cpol: true
->    spi-cpha: true
->  
-> +  sfdp:
-> +    $ref: /schemas/nvmem/nvmem.yaml#
-> +    unevaluatedProperties: false
-> +    description:
-> +      The Serial Flash Discoverable Parameters (SFDP) tables exposed as a
-> +      read-only NVMEM device. This allows standard or vendor-specific SFDP
-> +      data (for example a factory-programmed EUI-48/EUI-64 identifier) to be
-> +      consumed through NVMEM cells.
-
-blank line
-
-> +    properties:
-> +      compatible:
-> +        const: jedec,sfdp
-
-blank line
-
-With that,
 
 Reviewed-by: Rob Herring (Arm) <robh@kernel.org>
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
