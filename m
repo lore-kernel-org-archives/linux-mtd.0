@@ -4,64 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F230C5AC82
-	for <linux-mtd@archiver.kernel.org>; Mon, 10 Aug 2026 07:58:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85046C5AC82
+	for <linux-mtd@archiver.kernel.org>; Mon, 10 Aug 2026 08:25:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=JHKP/GcinwXsM/aLh/TFqXtCcIAx45YDpx37S6oOYQw=; b=G/1X1/8kEQB+g8
-	KVjSOfZN9vk62v/URBezbjYv8fm/4BKxiv6SKS5i+eL6R66wj9oafs1XoFIzS9894rGGehOlbbloe
-	2EYe6OiaL6rAV/Hi3MeqMt/fluDggWAW2nOdyE6r/kt0y8EVbKoODneqciqJEnyB5VCaSvHgA4/mo
-	z/YzZPAl2GMADfKk+eVojleIfmxyoEKmmiLHsf3H0m/eTI39Ql57cqBiiij8JCc3PF+vxZA6JYf9a
-	+diBAWizCPs/+Uo78vzmo0o3F1C0tM8J1YNsm8z94teBjgF+JI2GUZPCXjVovEfWw/vxLsfYIwwoh
-	jDd4vFo9f/4AvCfFV+AA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:References:Cc:Subject:To:From:Message-Id:Date:Mime-Version:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=j9aXx/0sMHuAU6SFa3adH1jspG63v3ROhYVzvUg+LIQ=; b=UicblTcZuCJzxLtw1D59/FVeZu
+	Og0BZ7LYFvOT7+dEtu3hB+rDCHOcj2tT7O6KCZfNk8MiFDWebKX/8JTWMglCRoqCSPPS4xRWHrg/F
+	sycWNPDZGn9hZLDkF7Z36L3/7jAQrjmpwFrrmDPSIsNeCdRSs5yoIKlakx1JW5v6IYLEgVTkxDH4G
+	ZsnFjT2/eT1GtNI58LyzoL48uxT4fCvPNTjs4GgbVmHuZT+q7E9yrfSWdOAb982RuZCfd1ljueHg4
+	hgH+bqN8SGpZ6l/vpVJ+tKI84crEqMhO1P3k0kf1TNboeh6DuRVkjbOjg4H1SQClHVixmg5xANv6C
+	J7zQNmaQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wtKu5-0000000BEDv-4Bcv;
-	Mon, 10 Aug 2026 07:58:38 +0000
-Received: from smtpout-03.galae.net ([185.246.85.4])
+	id 1wtLK9-0000000BHXJ-1VHv;
+	Mon, 10 Aug 2026 08:25:33 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wtKu2-0000000BECd-0t0j
+	id 1wtLK8-0000000BHXD-1Cxp
 	for linux-mtd@lists.infradead.org;
-	Mon, 10 Aug 2026 07:58:36 +0000
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id 511F04E4119C;
-	Mon, 10 Aug 2026 07:58:29 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 1040E6033B;
-	Mon, 10 Aug 2026 07:58:29 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id EE47C11C49CA4;
-	Mon, 10 Aug 2026 09:58:20 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1786348704; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=AgtKz8mbEXrrynBzyJW+mHxmZTV0nQNNdf/m3uMU3oM=;
-	b=fVk62MPi/+BWpwsj8e/pI4iiIYIE7W81BsStg9ymkbagMoWXmjTrxTZEiXl8Y/pAMjo1Ja
-	hLOhlyW+wi3i4QsATMYZw4YNmn+vJQj5fUxxfIlnsrJbxAG8BTtrVtd3rwqVXAISwALi4I
-	uhGf6F11a30bOWzstKDwJeeLWFOO0yW+R4cwi8GflHYOLFdAwAQ+lWIPLtD9i72y3xExNX
-	44TNfAmMvnZgfsfbbKET6Rx8UpmtLzq2Aiz1J3O8O/QDENdDEWxt8eURxG/5l/PFO2MZXj
-	T4XArYNrS7Lsb4FKbmp9XkeLAQ+HLPgjRNcguhhZOOtij8j/QGGGXcTch/0n6Q==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: han.xu@oss.nxp.com
-Cc: Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
- <vigneshr@ti.com>,  Peter Pan <peterpandong@micron.com>,  Boris Brezillon
- <bbrezillon@kernel.org>,  linux-mtd@lists.infradead.org,
-  linux-kernel@vger.kernel.org,  Han Xu <han.xu@nxp.com>
-Subject: Re: [PATCH] mtd: spinand: Enable QE on all dies
-In-Reply-To: <20260807-spinand_qe-v1-1-c102c79834a3@nxp.com> (han xu's message
-	of "Fri, 07 Aug 2026 18:11:27 -0500")
-References: <20260807-spinand_qe-v1-1-c102c79834a3@nxp.com>
-User-Agent: mu4e 1.12.12; emacs 30.2
-Date: Mon, 10 Aug 2026 09:58:20 +0200
-Message-ID: <87qzk6s8yr.fsf@bootlin.com>
-MIME-Version: 1.0
-X-Last-TLS-Session-Version: TLSv1.3
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260810_005834_411703_1513A0A2 
-X-CRM114-Status: GOOD (  19.82  )
+	Mon, 10 Aug 2026 08:25:32 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with UTF8SMTP id E8B5040734;
+	Mon, 10 Aug 2026 08:25:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id 529FB1F000E9;
+	Mon, 10 Aug 2026 08:25:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1786350331;
+	bh=C2KZh8MLQ/aOgrMaNoHpKoAfAoY2VLfamQaMJSU87yk=;
+	h=Date:From:To:Subject:Cc:References:In-Reply-To;
+	b=XviqKGfNPfm7Qer6+2P1NYk0t8MzZS37lhaaINtkKjzYaqqLLrWqtdu4Bj2Ee4qXE
+	 F02ZwcJBKEOHxr3pYVZT7J1xHWbIMJagymStlq2u0kNr/V3Yl09ZOpVjcHjOhqwy6L
+	 4YsYncCxc7Xc4WkNX2I3SoNChdoOnRZucFwbeyh/XGKQtLMFd203N3MX/kWmFEo9Ds
+	 Eg5nDHlCa+MVbwD0emlXUKzjdhx/Y4/dDWMTa1V5OpPnycv+8d7Z6iy2zuP/BlNQBO
+	 BgdX8uR3tm/4SRpTkjEF/FRIu2avZRmGdg+t7cxPupnSUp5X/q8xvt1EbjU6jNgdOM
+	 jcE+upt+VkniA==
+Mime-Version: 1.0
+Date: Mon, 10 Aug 2026 10:25:28 +0200
+Message-Id: <DKL4CBQNKCO2.3NAZ6S25Q60XN@kernel.org>
+From: "Michael Walle" <mwalle@kernel.org>
+To: "Runyu Xiao" <runyu.xiao@seu.edu.cn>, <tudor.ambarus@linaro.org>
+Subject: Re: [PATCH] mtd: spi-nor: scope the exclusive RWW lock
+Cc: <pratyush@kernel.org>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
+ <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>, <jianhao.xu@seu.edu.cn>,
+ <stable@vger.kernel.org>
+X-Mailer: aerc 0.20.0
+References: <20260809084223.3596259-1-runyu.xiao@seu.edu.cn>
+In-Reply-To: <20260809084223.3596259-1-runyu.xiao@seu.edu.cn>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,49 +66,103 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============4131293160045580764=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8gSGFuLAoKT24gMDcvMDgvMjAyNiBhdCAxODoxMToyNyAtMDUsIGhhbi54dUBvc3Mubnhw
-LmNvbSB3cm90ZToKCj4gRnJvbTogSGFuIFh1IDxoYW4ueHVAbnhwLmNvbT4KPgo+IFRoZSBRVUFE
-IEVOQUJMRSAoUUUpIGJpdCBpcyBzdG9yZWQgaW4gYSBwZXItZGllIGNvbmZpZ3VyYXRpb24KPiBy
-ZWdpc3RlciBvbiBzb21lIFNQSS1OQU5EIGRldmljZXMuIFdoZW4gYSBkZXZpY2UgY29udGFpbnMg
-bXVsdGlwbGUKPiBkaWVzLCB1cGRhdGluZyB0aGUgUUUgYml0IG9ubHkgb24gdGhlIGN1cnJlbnRs
-eSBzZWxlY3RlZCBkaWUgY2FuCj4gbGVhdmUgdGhlIHJlbWFpbmluZyBkaWVzIG9wZXJhdGluZyBp
-biBub24tcXVhZCBtb2RlLgo+IMKgCj4gSXRlcmF0ZSBvdmVyIGFsbCB0YXJnZXRzIGFuZCB1cGRh
-dGUgdGhlIFFFIHNldHRpbmcgb24gZWFjaCBkaWUKPiBkdXJpbmcgaW5pdGlhbGl6YXRpb24gdG8g
-ZW5zdXJlIGNvbnNpc3RlbnQgcXVhZCBJL08gb3BlcmF0aW9uCj4gYWNyb3NzIHRoZSBlbnRpcmUg
-ZGV2aWNlLgo+Cj4gVGVzdGVkIG9uIElTU0kgSVMzOFNNVzA0RzhCLgo+Cj4gRml4ZXM6IDc1Mjlk
-ZjQ2NTI0OCAoIm10ZDogbmFuZDogQWRkIGNvcmUgaW5mcmFzdHJ1Y3R1cmUgdG8gc3VwcG9ydAo+
-IFNQSSBOQU5EcyIpCgpUaGVyZSB3YXMgbm8gSVNTSSBkZXZpY2UgYmFjayB0aGVuLCBidXQgSSBn
-dWVzcyB0aGlzIGNhbiBiZSB1c2VmdWwgZm9yCm90aGVyIGRldmljZXMuIEhvd2V2ZXIgdGhpcyBz
-aGFsbCBiZSBiYWNrcG9ydGVkLCBzbyBDYzogc3RhYmxlLgoKPiBTaWduZWQtb2ZmLWJ5OiBIYW4g
-WHUgPGhhbi54dUBueHAuY29tPgo+IC0tLQo+ICBkcml2ZXJzL210ZC9uYW5kL3NwaS9jb3JlLmMg
-fCAyMiArKysrKysrKysrKysrKysrKysrKy0tCj4gIDEgZmlsZSBjaGFuZ2VkLCAyMCBpbnNlcnRp
-b25zKCspLCAyIGRlbGV0aW9ucygtKQo+Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQv
-c3BpL2NvcmUuYyBiL2RyaXZlcnMvbXRkL25hbmQvc3BpL2NvcmUuYwo+IGluZGV4IDM1MzY1YjY3
-ZGQ4ZS4uNzQ0NjYyNTMzZjM3IDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQvc3BpL2Nv
-cmUuYwo+ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQvc3BpL2NvcmUuYwo+IEBAIC0yODEsOCArMjgx
-LDI2IEBAIHN0YXRpYyBpbnQgc3BpbmFuZF9pbml0X2NmZ19jYWNoZShzdHJ1Y3Qgc3BpbmFuZF9k
-ZXZpY2UgKnNwaW5hbmQpCj4gIHN0YXRpYyBpbnQgc3BpbmFuZF9pbml0X3F1YWRfZW5hYmxlKHN0
-cnVjdCBzcGluYW5kX2RldmljZSAqc3BpbmFuZCwKPiAgCQkJCSAgICBib29sIGVuYWJsZSkKPiAg
-ewo+IC0JcmV0dXJuIHNwaW5hbmRfdXBkX2NmZyhzcGluYW5kLCBDRkdfUVVBRF9FTkFCTEUsCj4g
-LQkJCSAgICAgICBlbmFibGUgPyBDRkdfUVVBRF9FTkFCTEUgOiAwKTsKPiArCXN0cnVjdCBuYW5k
-X2RldmljZSAqbmFuZCA9IHNwaW5hbmRfdG9fbmFuZChzcGluYW5kKTsKPiArCXVuc2lnbmVkIGlu
-dCB0YXJnZXQ7Cj4gKwlpbnQgcmV0Owo+ICsKPiArCS8qCj4gKwkgKiBRRSBpcyBhIHBlci1kaWUg
-c2V0dGluZyBvbiBzb21lIGRldmljZXMuIFByb2dyYW0gZWFjaCB0YXJnZXQKPiArCSAqIGluZGl2
-aWR1YWxseSB3aGVuIGVuYWJsaW5nIG9yIGRpc2FibGluZyBxdWFkIEkvTyBtb2RlLgo+ICsJICov
-Cj4gKwlmb3IgKHRhcmdldCA9IDA7IHRhcmdldCA8IG5hbmQtPm1lbW9yZy5udGFyZ2V0czsgdGFy
-Z2V0KyspIHsKPiArCQlyZXQgPSBzcGluYW5kX3NlbGVjdF90YXJnZXQoc3BpbmFuZCwgdGFyZ2V0
-KTsKPiArCQlpZiAocmV0KQo+ICsJCQlyZXR1cm4gcmV0Owo+ICsKPiArCQlyZXQgPSBzcGluYW5k
-X3VwZF9jZmcoc3BpbmFuZCwgQ0ZHX1FVQURfRU5BQkxFLAo+ICsJCQkJICAgICAgZW5hYmxlID8g
-Q0ZHX1FVQURfRU5BQkxFIDogMCk7Cj4gKwkJaWYgKHJldCkKPiArCQkJcmV0dXJuIHJldDsKCklm
-IHRoZXJlIGlzIGFuIGlzc3VlIGluIHRoZSBtaWRkbGUgb2YgdGhlIGxvb3AsIHRoZSBjaGlwIHdp
-bGwgYmVjb21lCnVudXNhYmxlLiBQZXJoYXBzIHdlIHNob3VsZCByZXNldCB0aGUgZGllcyB0byB0
-aGUgIVFFIHN0YXRlIGFuZCByZXR1cm4KYW4gZXJyb3IgdG8gY29udGludWUgaW4gZGVncmFkZWQg
-KHNpbmdsZSkgbW9kZSBpZiB0aGF0IGhhcHBlbnM/CgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQg
-ZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9saW51eC1tdGQvCg==
+--===============4131293160045580764==
+Content-Type: multipart/signed;
+ boundary=21f07eccd79721a84a7dde8db6b46a9390e37f79785d731da48d2cee5dad;
+ micalg=pgp-sha384; protocol="application/pgp-signature"
+
+--21f07eccd79721a84a7dde8db6b46a9390e37f79785d731da48d2cee5dad
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+
+On Sun Aug 9, 2026 at 10:42 AM CEST, Runyu Xiao wrote:
+> spi_nor_rww_start_exclusive() is used as a wait_event_killable()
+> condition. The raw mutex_lock() leaves nor->lock held when the busy
+> condition returns false, so the waiter can block the active operation tha=
+t
+> must clear the RWW state.
+>
+> Use the same scoped mutex guard as the other RWW start helpers so the
+> mutex is released on both the busy and successful condition paths. The
+> state flags remain the handoff to the caller, while
+> spi_nor_rww_end_exclusive() continues
+> to acquire the mutex when clearing them.
+>
+> The change was checked by comparing the original and patched source.
+
+What do you mean? Was this AI assisted?
+
+> A source-level check of the original wait condition found that it takes
+> `nor->lock` and returns false while an RWW operation is still active. The
+> patched source was checked for a scoped mutex guard that releases
+> `nor->lock` before the wait condition returns. A user-space pthread model
+> held `nor->lock` on the false-condition path and showed that the
+> operation-ending path then blocks when it needs the same mutex. No live
+> SPI-NOR test was run.
+
+What do you mean by "user-space pthread model"? Ported this into
+user-space and tried it there? Please keep the commit message
+precise and don't use any AI gibberish. Please, explain what's going
+on with your own sentences. That way, it shows at least some
+understanding what you are trying to change here.
+
+That being said, there is something odd about that commit. Tudor, do
+you know why you've omitted the guard() in spi_nor_rww_start_exclusive()?
+
+-michael
+
+> Fixes: 03e7bb864d9a ("mtd: spi-nor: use scope-based mutex cleanup helpers=
+")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Runyu Xiao <runyu.xiao@seu.edu.cn>
+> ---
+>  drivers/mtd/spi-nor/core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> index ccf4396cdcd0..8bc117b46e02 100644
+> --- a/drivers/mtd/spi-nor/core.c
+> +++ b/drivers/mtd/spi-nor/core.c
+> @@ -1310,7 +1310,7 @@ static bool spi_nor_rww_start_exclusive(struct spi_=
+nor *nor)
+>  {
+>  	struct spi_nor_rww *rww =3D &nor->rww;
+> =20
+> -	mutex_lock(&nor->lock);
+> +	guard(mutex)(&nor->lock);
+> =20
+>  	if (rww->ongoing_io || rww->ongoing_rd || rww->ongoing_pe)
+>  		return false;
+
+
+--21f07eccd79721a84a7dde8db6b46a9390e37f79785d731da48d2cee5dad
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCanmK+BIcbXdhbGxlQGtl
+cm5lbC5vcmcACgkQEic87j4CH/h98gGAgzRVKT7YydU2Ap86SZdq4kL1YHee8oiH
+DukMY7ja3eIL8iGSZO/dqSZvORbENsmKAYCSOOx268ogFrjUgCZJOYEH/rt9Pe9r
+8L49MubPKoYyR4tGnFPaONgUF7n7mQvlhUg=
+=0O61
+-----END PGP SIGNATURE-----
+
+--21f07eccd79721a84a7dde8db6b46a9390e37f79785d731da48d2cee5dad--
+
+
+--===============4131293160045580764==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============4131293160045580764==--
+
