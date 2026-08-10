@@ -4,89 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 470EEC5AD7B
-	for <linux-mtd@archiver.kernel.org>; Mon, 10 Aug 2026 16:27:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0654C5AD7B
+	for <linux-mtd@archiver.kernel.org>; Mon, 10 Aug 2026 18:03:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WfZBkrzRvIpuw7gGy+8HHmVotb46wIzUWyAHcmMF1t4=; b=ScVQXBENrY8Obv
-	vkDlvIAidLDo0UbQP/F1NGcLC/0BKFeEf04OoqCkkXR2qVSWpHyxKGU5W+P8TEy0RlVAL5LdhKN2i
-	dUCVfcFOitp/ZUZbMhz6qS7h9LYODEtDYl7r4XhRqq4VelKX4eDAEpGpqNNzUeRQ12AWzbSKhddab
-	mKwe+ShhgjFSegUti6xAsf0VO+lnDsZmpyGfj7Yb+UXD1QD0uVfp/889AUviSu0Qzn4J3TU0NVCBG
-	6dZq/DxDG0yeCJuI58YG/5ky51NFZSi/8ybpz7XSbj92GVfFxx/KXLmQpUcvTI06BlNDRP4KhngnS
-	3RfRg57g2Hx0bBDWuDvA==;
+	List-Owner; bh=Z+gRR5gOOELUlVmU5500s8fPzzQUGu52HgxJW1H58VM=; b=pZ3DKNUpfi78fr
+	UvepBo1V13lsOIC3IjCFFXojJoA2pKIH21x7yJb845Yw70a87pOfNxmTDzvU9/niQJMbGWoARMORI
+	j8HupgY1I+RFOzZZTI9m0OD1qtP2+UoauzMhNw4kxJ9wXq7GwpztwhftXwmfBxf1E/APgEE5Z77N8
+	L1Xs6aPDAfCNEgWajaIPpRxljcc2aRHAWO6lFIeMgXlVJLsuNVDd1IVoVcLfcwA6Y/P/+dIRAobwY
+	mJyRyDoG2+aDl00v6BHkaGx/I0phKmaf+Kz2hGGQTmUPCKKSQO+iaeeOIIju+uNVNbiRxh0te9uTP
+	fhD64Iicxiw4IZncXHmA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wtSqM-0000000COBX-3uEq;
-	Mon, 10 Aug 2026 16:27:18 +0000
-Received: from mx01.bremer-it.com ([85.215.132.167])
+	id 1wtULP-0000000Ca6W-3gN9;
+	Mon, 10 Aug 2026 18:03:27 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wtSqJ-0000000CO9v-1wSM
-	for linux-mtd@lists.infradead.org;
-	Mon, 10 Aug 2026 16:27:17 +0000
-Received: from cashel.logfs.org (c-98-33-96-243.hsd1.ca.comcast.net [98.33.96.243])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature ECDSA (secp384r1) server-digest SHA384)
-	(No client certificate requested)
-	by mx01.bremer-it.com (Postfix) with ESMTPSA id 36C262CEED;
-	Mon, 10 Aug 2026 18:27:08 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=barelysecure.org;
-	s=dkim68; t=1786379230;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LO13ef2TxdO/styNqou6d7A1gNqNOKIeD9RlfWxP/ic=;
-	b=ij4wMgzBD8dgGbE7KRAuQge0Q64I8oSLDT/+ZNmU3Hk4e6RKEZ3FePoPdqLLHWxMHcP+QH
-	juBF/MlYTPVzh4r+vg2dxcg3m+r6wTKI0yRi88aMwgoQmJlQ4IG8MArwmaJ4jC7Q6Z8Ltq
-	A8HxUpaBO8lSsHkH3JS3AfP3uYZAEEpGePnzJ6peyDonRQFFyXVAIphwJVKxdRPpHr5geX
-	DXzZLAsPE7ALDJVTId0M17ryNfBDS4MtzREP9n9yOfkpBP1m1gJK1r24+z3aKWTJIHMwA7
-	fiNbg0kzQRFJqtwGkYpsvQMNy2CtP/sKB2oEGslf4gnFiXZGfYGbrAyr4ZfPQg==
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=joern@lazybastard.org smtp.mailfrom=joern@barelysecure.org
-Date: Mon, 10 Aug 2026 09:27:03 -0700
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@barelysecure.org>
-To: syzbot <syzbot+b320a4d5f65a61dbbf89@syzkaller.appspotmail.com>
-Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-	miquel.raynal@bootlin.com, richard@nod.at,
-	syzkaller-bugs@googlegroups.com, vigneshr@ti.com,
-	Fabian Frederick <fabf@skynet.be>
-Subject: Re: [syzbot] [mtd?] divide error in block2mtd_setup2
-Message-ID: <ann719YIqopUBCv5@cashel.logfs.org>
-References: <6a791c94.01d0871a.3a0d52.009b.GAE@google.com>
- <ankxaiwtTltL0xMj@cashel.logfs.org>
+	id 1wtULO-0000000Ca69-2CXh;
+	Mon, 10 Aug 2026 18:03:26 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id E5B8843760;
+	Mon, 10 Aug 2026 18:03:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A08F21F000E9;
+	Mon, 10 Aug 2026 18:03:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1786385005;
+	bh=+47nB+ymVQpumJdoiL7i0y+0QEYSSwSbPBEdZ3OfrBg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=E5SrZ72VDXJbAtd0U9iOidzNeHCawXN+u5dsLBP7qBo2pJzTegMWiPiO/SjD33Dl0
+	 0s7LAwspsNl+NzMXa2B+Seg1OtoD/Hc0tN3twuQ/GTBUjfV8v8N6PnY3lKuTXpYQPf
+	 HfS9exE/RtVdAcJW8p30pJpDeQN88wOINYcwDqZR4jhKNTRShG/aYTsGrqptP909RK
+	 2yXqp0EHNeyHRkyOMJfP5FlGajUUj/AFHG3l5XnWP8/Mdlvn4c5MObzjufaSxi6uv/
+	 M5ojLqlXtohKQzlRWmJlxd1HHLiXIP18Ituk5+RVZ7VjHFWDnBGekuLRko6lnDMHo7
+	 d2qz0ZNuIsIyQ==
+Date: Mon, 10 Aug 2026 13:03:24 -0500
+From: Rob Herring <robh@kernel.org>
+To: Manikandan Muralidharan <manikandan.m@microchip.com>
+Cc: pratyush@kernel.org, mwalle@kernel.org, takahiro.kuwano@infineon.com,
+	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+	krzk+dt@kernel.org, conor+dt@kernel.org, srini@kernel.org,
+	nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
+	claudiu.beznea@tuxon.dev, linux@armlinux.org.uk,
+	richardcochran@gmail.com, arnd@arndb.de, linusw@kernel.org,
+	michael@walle.cc, linux-mtd@lists.infradead.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v6 1/7] dt-bindings: mtd: jedec,spi-nor: allow the SFDP
+ to be exposed via NVMEM
+Message-ID: <20260810180324.GA2352629-robh@kernel.org>
+References: <20260729043026.1811147-1-manikandan.m@microchip.com>
+ <20260729043026.1811147-2-manikandan.m@microchip.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <ankxaiwtTltL0xMj@cashel.logfs.org>
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [1.40 / 14.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	MIME_GOOD(-0.10)[text/plain];
-	ARC_NA(0.00)[];
-	TAGGED_RCPT(0.00)[b320a4d5f65a61dbbf89];
-	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:7922, ipnet:98.32.0.0/11, country:US];
-	MIME_TRACE(0.00)[0:+];
-	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_ZERO(0.00)[0];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	ALIAS_RESOLVED(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_DN_SOME(0.00)[];
-	LOCAL_OUTBOUND(0.00)[];
-	DKIM_SIGNED(0.00)[barelysecure.org:s=dkim68];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	SUBJECT_HAS_QUESTION(0.00)[]
-X-Rspamd-Server: server01
-X-Rspamd-Queue-Id: 36C262CEED
-X-Spamd-Bar: +
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260810_092715_647166_E35A5D77 
-X-CRM114-Status: UNSURE (   7.41  )
-X-CRM114-Notice: Please train this message.
+In-Reply-To: <20260729043026.1811147-2-manikandan.m@microchip.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,30 +72,50 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sun, Aug 09, 2026 at 07:03:22PM -0700, J=F6rn Engel wrote:
-> =
+On Wed, Jul 29, 2026 at 10:00:20AM +0530, Manikandan Muralidharan wrote:
+> Add an optional "sfdp" child node (compatible "jedec,sfdp") that
+> describes the SFDP as a read-only NVMEM provider via nvmem.yaml, so its
+> contents (e.g. a vendor EUI-48/EUI-64) can be read through NVMEM cells.
+> 
+> Reviewed-by: Linus Walleij <linusw@kernel.org>
+> Signed-off-by: Manikandan Muralidharan <manikandan.m@microchip.com>
+> ---
+>  .../devicetree/bindings/mtd/jedec,spi-nor.yaml | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+> index 587af4968255..98fd954598ab 100644
+> --- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+> +++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+> @@ -103,6 +103,20 @@ properties:
+>    spi-cpol: true
+>    spi-cpha: true
+>  
+> +  sfdp:
+> +    $ref: /schemas/nvmem/nvmem.yaml#
+> +    unevaluatedProperties: false
+> +    description:
+> +      The Serial Flash Discoverable Parameters (SFDP) tables exposed as a
+> +      read-only NVMEM device. This allows standard or vendor-specific SFDP
+> +      data (for example a factory-programmed EUI-48/EUI-64 identifier) to be
+> +      consumed through NVMEM cells.
 
-> Best guess would be this:
-> =
+blank line
 
-> 	if ((long)size % erase_size) {
+> +    properties:
+> +      compatible:
+> +        const: jedec,sfdp
 
-While at it, what purpose does the cast to (long) serve?
+blank line
 
-As far as I can see, it is useless and should be removed.  Fabian, do
-you remember why it was necessary?
+With that,
 
-J=F6rn
-
---
-The real voyage of discovery consists not in seeking new landscapes,
-but in having new eyes.
--- Marcel Proust
+Reviewed-by: Rob Herring (Arm) <robh@kernel.org>
 
 ______________________________________________________
 Linux MTD discussion mailing list
