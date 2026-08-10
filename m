@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7331FC5AC82
-	for <linux-mtd@archiver.kernel.org>; Mon, 10 Aug 2026 06:50:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7026FC5AC82
+	for <linux-mtd@archiver.kernel.org>; Mon, 10 Aug 2026 07:18:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
 	In-Reply-To:References:To:From:Cc:Subject:Message-Id:Date:Mime-Version:
 	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
 	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=0PEY41/vGV2zuRvSDIbqtP/4BfO2LeMieWW1Lgjlj60=; b=sLleLPXZjMIzNlMwCCPbHxzyHi
-	rlxK//nrnUI+rOGfOvHAswgQaQmUvzB19DIuap0fWD5uWD8pBbKYFTSEz7zmMS27/oGYV0H623oNf
-	k12HtpP/9t4AXPpU1RGvlm+3HmYtWb8fBFtwDQPwmqIJImIOLyNZALgfmt+9iEM1/MoDq19gIOmdZ
-	ya8dHdQHCVXAWb1EiJVdcnCF+Mjd5PHc+vpB226Z7tSWcaq65ZEf7o3A9b7+f3lg0xLV+6Szg/MyL
-	zgK2nbgPwHoSD+izmFkFKoRlKbh4+BGed4pbC28Nlp0ekXnVz61H1YyImept4hF8HwzdGd3HRMlTX
-	0Kr+E39w==;
+	bh=HWp09sdU6bWz3dpiDSrjqrQNEUngddWomMXr+HFkUTE=; b=Pq8qEdROVSKmD7L8Ibt9VZsFsb
+	CLkINIZcPxPydkfkQFBZl7Ov26183IXHEqdgDFR6+A+nsoE+JeccS/Wxz4MX9k91y6119J/ZMoHwP
+	XmttapPtXdthrIhlDF4dwgLZbd2yWYX8o+6ruZyN9+hHnCYhcQGdq4HDnzm+EeMHL9hEpxXb8YK69
+	S6s9iSv+zIc+OHH/X2LJh+q0S4Hgf5Co1xMhtbuiynOjH6giDYTtRSgBtoKaD2xmT5MGkxzLzVwer
+	9CtfoAwRsLj3D4Cy0vY01G8NT5mYMGrBTEcQYAO909kuIu/jIzZ4GRPAAHZzvo04FQBGjEFttAfUL
+	LDFpteaQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wtJpy-0000000B9Fl-3H51;
-	Mon, 10 Aug 2026 06:50:18 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1wtKH0-0000000BBbo-1xn9;
+	Mon, 10 Aug 2026 07:18:14 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wtJpx-0000000B9FJ-16fO;
-	Mon, 10 Aug 2026 06:50:17 +0000
+	id 1wtKGx-0000000BBbK-46FI;
+	Mon, 10 Aug 2026 07:18:12 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with UTF8SMTP id E3E1140189;
-	Mon, 10 Aug 2026 06:50:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id 4EDC01F000E9;
-	Mon, 10 Aug 2026 06:50:16 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with UTF8SMTP id B926043723;
+	Mon, 10 Aug 2026 07:18:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id 213421F000E9;
+	Mon, 10 Aug 2026 07:18:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1786344616;
-	bh=iRILn+38sugb9sCfGv8f3KOltP+880VMJ26oWc9BZrc=;
+	s=k20260515; t=1786346291;
+	bh=/gyrSdskpslfusFBBfR73eDcHeyV8yjI2Q/eXGOuFuo=;
 	h=Date:Subject:Cc:From:To:References:In-Reply-To;
-	b=VRITQWpechHsALqUipsD1uqh/BAm+QiROkr+s2kGqoaGx+fJJhmj1bVfWUKOzyF1I
-	 243OUZsGNXX04mH8fn7bdPYV9S9yWZcHocjLO9uuiaqcn5bC9OrmtrPz8RwfmDLJO5
-	 NP2TCf9kqNEdQRxskvS3uU92IsQGmkwJkKv7QGOaJzLpThb/Wzajj/eDsgnhVnUdum
-	 DWmx1L5Oq6N9bmVAE16V5aah6pkjqOAPhCMzdRdB/UUtbqnU+Fk494+/fvFB/xbz3m
-	 FgjjnNr9bfav/5STasx4ebeR246CLSwSkZcPYn8z1Pk8I/0rsErH3Aa80FWhv//aGh
-	 4nQYwjMe+vmMg==
+	b=ht7YkR4ZQMhiuJVCRJDn0duFNcD4TJCESMzgU32zZNHz5zMYvtuzErso08vh2v8sx
+	 8xWTpcfN2kH+IgvxBmvJ/EG2LH41Ka3wqwoKtheX+fo4h5fjD2lME6m4w/nCwMml3P
+	 3QUXwU/Z7S2xwnTmSfQr5VfIItWmNjd7+0XoGo3Cv/R1PUJr5f+Zdtz7qINbg6hAOH
+	 ePttNkTC+3+98yR/CRhEXVU4xMBmqSzErHdPdkdZDrRN4daIHuiX0lpigo7izzHvdZ
+	 eLZgSsHsbgs2+e+eCn3mw7ieaTw1JDbyD8nixj7IMkuIDuUHk6WoN2sEBi229DPcT7
+	 KuipZFu+QyocA==
 Mime-Version: 1.0
-Date: Mon, 10 Aug 2026 08:50:13 +0200
-Message-Id: <DKL2BE8MZUQJ.7GKQF4IIQEJN@kernel.org>
+Date: Mon, 10 Aug 2026 09:18:07 +0200
+Message-Id: <DKL2WROHNLXJ.3239EBUTVXRQL@kernel.org>
 Subject: Re: [PATCH 1/5] mtd: spi-nor: Refactor Read Status/Write Status
  support
 Cc: "Pratyush Yadav" <pratyush@kernel.org>, "Takahiro Kuwano"
@@ -58,8 +58,8 @@ Cc: "Pratyush Yadav" <pratyush@kernel.org>, "Takahiro Kuwano"
 From: "Michael Walle" <mwalle@kernel.org>
 To: "Miquel Raynal" <miquel.raynal@bootlin.com>
 X-Mailer: aerc 0.20.0
-References: <20260529-winbond-v7-1-spi-nor-rv-addition-v1-0-f3ae18502d5a@bootlin.com> <20260529-winbond-v7-1-spi-nor-rv-addition-v1-1-f3ae18502d5a@bootlin.com> <DJS8PQ5HZZG5.2YT956NCDX8MG@kernel.org> <87mrv2exwp.fsf@bootlin.com> <87y0ekek8r.fsf@bootlin.com>
-In-Reply-To: <87y0ekek8r.fsf@bootlin.com>
+References: <20260529-winbond-v7-1-spi-nor-rv-addition-v1-0-f3ae18502d5a@bootlin.com> <20260529-winbond-v7-1-spi-nor-rv-addition-v1-1-f3ae18502d5a@bootlin.com> <DJS8PQ5HZZG5.2YT956NCDX8MG@kernel.org> <87mrv2exwp.fsf@bootlin.com> <87se4rem0l.fsf@bootlin.com>
+In-Reply-To: <87se4rem0l.fsf@bootlin.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,107 +71,79 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7960762591264583113=="
+Content-Type: multipart/mixed; boundary="===============0715494801093679116=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============7960762591264583113==
+--===============0715494801093679116==
 Content-Type: multipart/signed;
- boundary=108a668caa49fd7b7a3d2fdd1bfe3040e65f1c770867e6e200a50a6fd323;
+ boundary=13a01c95f75a3546217a7a3c753d9f94743043e10445b018a7b3a2b035cd;
  micalg=pgp-sha384; protocol="application/pgp-signature"
 
---108a668caa49fd7b7a3d2fdd1bfe3040e65f1c770867e6e200a50a6fd323
+--13a01c95f75a3546217a7a3c753d9f94743043e10445b018a7b3a2b035cd
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
 
-Hi,
-
-On Wed Aug 5, 2026 at 4:04 PM CEST, Miquel Raynal wrote:
+On Thu Aug 6, 2026 at 9:38 AM CEST, Miquel Raynal wrote:
 > Hello Michael,
 >
->>>> +int spi_nor_read_srs(struct spi_nor *nor, u8 *sr1, u8 *sr2)
->>>
->>> nitpick, i think this is a weird name. But maybe it's just me.
->>>
->>> What if we'd just make the one status register as u32? I mean in the
->>> winbond datasheet it's called S7-S0 and S15-S8. That way we also
->>> don't need a two byte qe_mask. To optimize the standard usecase to
->>> poll the WIP bit, we could add a byte mask.
->
-> I experimented a bit the u32 status register, I don't think it is a good
-> idea.
->
-> My target of improving the readability is completely defeated by the
-> fact that:
-> - all the callers need to add extra maths to explain what SR
->   they want
+>>> One thing that comes to mind is hardware write protection. If
+>>> there's nothing before that code which checks it, the verify might
+>>> fail if the hardware write protection is enabled. So we should
+>>> somehow check for that and drop the verify here.
+>>
+>> But how do you think we should handle it? Will the QE bit writing
+>> verification fail if HW WP is enabled?
 
-Actually, what I had i mind is that there is no more SR2 and so on.
-But just one SR (and the BIT macros will change of course). Some
-datasheets are already naming the bits B0 to B15.
+It should, because you cannot alter the SR.
 
-> - endianness shall be handled, people always get it wrong (including
->   me), so why bother if an array just makes the whole thing simpler?
+> Looking into this further: we shall return an error if the QE bit is not
+> set. It just tells the caller that quad mode cannot be used. Then up to
+> the caller to either hard fail or just degrade into single mode (maybe
+> because of a strapped WP). What we should do is to propose a DT property
+> to flag when WP is strapped in hardware, this would make the content of
+> the status registers immutable and we would just skip the entire write
+> operation in the first place, instead of deliberately trying and get a
+> 100% failure rate. Nevertheless, the changes introduced here are kind of
+> orthogonal and do not alter the current behaviour; we shall however
+> listen if people start complaining about this and perhaps implement the
+> solution proposed above.
 
-Where would you need endianess? If at all, just in the core, which
-will split the u32 into two u8.
+There is already a property in the DT, where you almost certainly
+know that quad mode is impossible. Iff there are four rx/tx lines
+(spi-{rx,tx}-bus-width). I haven't seen a flash (even in larger
+packages) where there is a dedicated WP# pin.
 
- sr1 =3D sr & 0xff;
- sr2 =3D (sr >> 8) & 0xff;
+What do you mean by a dt property? If (1) the flash is using the WP#
+pin? Or (2) if it is using the WP# pin and it's tied to low?
 
-> - 16-bit accesses get more convoluted, we need extra
->   get_/put_unaligned_le32() calls and pack/unpack bytes in the hot path
+For (1) you have the QE bit, if it's set, WP is turned off and vice
+versa.
 
-There is not really a hot path, is it. Not in a sense that it
-matters for performance though.
+For (2), that doesn't make sense, because that pin could be tied
+to some kind of logic which can change during runtime.
 
-> - 8-bit accesses imply an extensive use of FIELD_GET(GENMASK(),) macros,
->   which make the whole fonction totally non obvious anymore.
->
-> Whereas, a simple:
->
->         if (sr2)
->                 *sr2 =3D foo;
->
-> is self explanatory. I also do not really get the wish for a QE mask
-> instead of a two bytes array.
-
-Because IMHO an array of two u8 (which your qe mask is) is never
-self explanatory. While with
-
-#define SR1_QUAD_EN_BIT6 BIT(6)
-#define SR2_QUAD_EN_BIT1 BIT(9)
-#define SR2_QUAD_EN_BIT7 BIT(15)
-
-you can just use the macros as before.
+FWIW, I don't care too much, you've asked why there is a
+verification step, I've just answered :)
 
 -michael
 
-> So I will rename the "srs" naming that you dislike, I will group the
-> opcodes in a big structure, change the baseline default to match your
-> suggestion and follow-up with the other minor comments, but I believe
-> I'm going to avoid the u32 switch.
->
-> Thanks,
-> Miqu=C3=A8l
-
-
---108a668caa49fd7b7a3d2fdd1bfe3040e65f1c770867e6e200a50a6fd323
+--13a01c95f75a3546217a7a3c753d9f94743043e10445b018a7b3a2b035cd
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCanl0pRIcbXdhbGxlQGtl
-cm5lbC5vcmcACgkQEic87j4CH/iogAGA89cQMSlurX4IOjh5UXHyYxiP6nKXuPpu
-GnLfLbqgUNErNzI1KqDl8UBKymaldsIHAYDEvVfxfvBM80pcqQs5Jm3vLbPoN3Hc
-ukFhmMhuJQ1VYm5lbAnrW1Fa2FiGM15m5CU=
-=OrPb
+iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCanl7MBIcbXdhbGxlQGtl
+cm5lbC5vcmcACgkQEic87j4CH/ivEAGAsMkVRKvJLObfxSZr5iJJESQ9dSKn9XvY
+wPyG4uJZ60myy/AbG9iEgj1buZdMkYJDAYCEDIatGObn8EIuLcPWWQ17E+4Kn79A
+cn+VR068w1SOOat7Rz4UnYgMaQO4wLqYArE=
+=AWWR
 -----END PGP SIGNATURE-----
 
---108a668caa49fd7b7a3d2fdd1bfe3040e65f1c770867e6e200a50a6fd323--
+--13a01c95f75a3546217a7a3c753d9f94743043e10445b018a7b3a2b035cd--
 
 
---===============7960762591264583113==
+--===============0715494801093679116==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -181,5 +153,5 @@ ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
---===============7960762591264583113==--
+--===============0715494801093679116==--
 
