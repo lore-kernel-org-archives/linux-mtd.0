@@ -4,59 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F08C7C5AC82
-	for <linux-mtd@archiver.kernel.org>; Mon, 10 Aug 2026 06:30:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7331FC5AC82
+	for <linux-mtd@archiver.kernel.org>; Mon, 10 Aug 2026 06:50:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
 	In-Reply-To:References:To:From:Cc:Subject:Message-Id:Date:Mime-Version:
 	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
 	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Bs9vzdUA40xcior+mHCgN/t/kg0QOxsHe04VxEkWuGw=; b=D3hc3Z+e1+TYZt7M5XyFpXg6pe
-	HQXjGBDaie/DtkDVZrbXil3cVCh4+Rp088TbeOcCN308f7cB38zpu4CIIjFb5ot/sqN66rfAABNN4
-	G1urc+Kx76gO/Dc+QhoC0VpWbtvaVDAz7IMsQlvXk/jp232I3Z2wqvvi3Tcz+0KEQ04b+1V/CIeWK
-	9zjvfCbBOfcFNVl0rClVHgXI6XNtxUfRCutjBbGWlUURj8xDdQJiJ9Qhm/4Cqx9MkivZZlxAnRdJy
-	lnZbfUwAwlQsFDxJYY4sPcyTatvzTeYHugCNMXlv185pvMVYlfdAYbnu925Yp3afJtwkrAwtCStCo
-	+6rG075A==;
+	bh=0PEY41/vGV2zuRvSDIbqtP/4BfO2LeMieWW1Lgjlj60=; b=sLleLPXZjMIzNlMwCCPbHxzyHi
+	rlxK//nrnUI+rOGfOvHAswgQaQmUvzB19DIuap0fWD5uWD8pBbKYFTSEz7zmMS27/oGYV0H623oNf
+	k12HtpP/9t4AXPpU1RGvlm+3HmYtWb8fBFtwDQPwmqIJImIOLyNZALgfmt+9iEM1/MoDq19gIOmdZ
+	ya8dHdQHCVXAWb1EiJVdcnCF+Mjd5PHc+vpB226Z7tSWcaq65ZEf7o3A9b7+f3lg0xLV+6Szg/MyL
+	zgK2nbgPwHoSD+izmFkFKoRlKbh4+BGed4pbC28Nlp0ekXnVz61H1YyImept4hF8HwzdGd3HRMlTX
+	0Kr+E39w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wtJWd-0000000B5yz-1yb0;
-	Mon, 10 Aug 2026 06:30:19 +0000
+	id 1wtJpy-0000000B9Fl-3H51;
+	Mon, 10 Aug 2026 06:50:18 +0000
 Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wtJWc-0000000B5ys-0Axb
-	for linux-mtd@lists.infradead.org;
-	Mon, 10 Aug 2026 06:30:18 +0000
+	id 1wtJpx-0000000B9FJ-16fO;
+	Mon, 10 Aug 2026 06:50:17 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with UTF8SMTP id E69C34379F;
-	Mon, 10 Aug 2026 06:30:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id 778541F000E9;
-	Mon, 10 Aug 2026 06:30:15 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with UTF8SMTP id E3E1140189;
+	Mon, 10 Aug 2026 06:50:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id 4EDC01F000E9;
+	Mon, 10 Aug 2026 06:50:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1786343415;
-	bh=bMbqWLJ+xQ+0ueSURHl638U6qP2j2ips3hDRe4p2Etw=;
+	s=k20260515; t=1786344616;
+	bh=iRILn+38sugb9sCfGv8f3KOltP+880VMJ26oWc9BZrc=;
 	h=Date:Subject:Cc:From:To:References:In-Reply-To;
-	b=jSSVEqm3DTTfRBLdBkRpPfj2gkzmu5dPycNv1U4xsmRwep1lnTYAlP86PurPHDTdN
-	 YVzzJdAgDQdlktMZIZcNibY7NQBdMBspeYUkNvxAYL1Ru9fRr8QBeT5bJvSxYbiMy4
-	 /bHJmHxgTnscExcb1mW9eJVaQMsdzwH7oPgbrIHNWKnOpBnoohStQ7kImXriBvKur4
-	 +CgNo8cCrol4YgEpFuo9u4XhG1QFNalxckO1xVtAtIogA59jHxqk44BIWRMwc9a/Ta
-	 OTlow/ye+m+20rkUwMoWwPoIKYXUeAsI5Awc3k0/zFxIhSonNE4g8KWaW9pA90Nkwa
-	 6zvIi/uPVKaYA==
+	b=VRITQWpechHsALqUipsD1uqh/BAm+QiROkr+s2kGqoaGx+fJJhmj1bVfWUKOzyF1I
+	 243OUZsGNXX04mH8fn7bdPYV9S9yWZcHocjLO9uuiaqcn5bC9OrmtrPz8RwfmDLJO5
+	 NP2TCf9kqNEdQRxskvS3uU92IsQGmkwJkKv7QGOaJzLpThb/Wzajj/eDsgnhVnUdum
+	 DWmx1L5Oq6N9bmVAE16V5aah6pkjqOAPhCMzdRdB/UUtbqnU+Fk494+/fvFB/xbz3m
+	 FgjjnNr9bfav/5STasx4ebeR246CLSwSkZcPYn8z1Pk8I/0rsErH3Aa80FWhv//aGh
+	 4nQYwjMe+vmMg==
 Mime-Version: 1.0
-Date: Mon, 10 Aug 2026 08:30:11 +0200
-Message-Id: <DKL1W2D3OJ5J.2VW3B1VPH5LHF@kernel.org>
-Subject: Re: [PATCH] mtd: spi-nor: allow force unlocking via DT property
-Cc: "Takahiro Kuwano" <takahiro.kuwano@infineon.com>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Date: Mon, 10 Aug 2026 08:50:13 +0200
+Message-Id: <DKL2BE8MZUQJ.7GKQF4IIQEJN@kernel.org>
+Subject: Re: [PATCH 1/5] mtd: spi-nor: Refactor Read Status/Write Status
+ support
+Cc: "Pratyush Yadav" <pratyush@kernel.org>, "Takahiro Kuwano"
+ <takahiro.kuwano@infineon.com>, "Richard Weinberger" <richard@nod.at>,
+ "Vignesh Raghavendra" <vigneshr@ti.com>, "Nicolas Ferre"
+ <nicolas.ferre@microchip.com>, "Alexandre Belloni"
+ <alexandre.belloni@bootlin.com>, "Claudiu Beznea"
+ <claudiu.beznea@tuxon.dev>, "Steam Lin" <STLin2@winbond.com>, "Hsin-Yi
+ Wang" <hsinyi@chromium.org>, "Thomas Petazzoni"
+ <thomas.petazzoni@bootlin.com>, <linux-mtd@lists.infradead.org>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
 From: "Michael Walle" <mwalle@kernel.org>
-To: "Chen Minqiang" <ptpt52@gmail.com>, "Pratyush Yadav"
- <pratyush@kernel.org>, "Miquel Raynal" <miquel.raynal@bootlin.com>,
- "Richard Weinberger" <richard@nod.at>, "Vignesh Raghavendra"
- <vigneshr@ti.com>
+To: "Miquel Raynal" <miquel.raynal@bootlin.com>
 X-Mailer: aerc 0.20.0
-References: <2026-08-05171214.2934-1-ptpt52@gmail.com>
- <20260806112418.14695-1-ptpt52@gmail.com>
-In-Reply-To: <20260806112418.14695-1-ptpt52@gmail.com>
+References: <20260529-winbond-v7-1-spi-nor-rv-addition-v1-0-f3ae18502d5a@bootlin.com> <20260529-winbond-v7-1-spi-nor-rv-addition-v1-1-f3ae18502d5a@bootlin.com> <DJS8PQ5HZZG5.2YT956NCDX8MG@kernel.org> <87mrv2exwp.fsf@bootlin.com> <87y0ekek8r.fsf@bootlin.com>
+In-Reply-To: <87y0ekek8r.fsf@bootlin.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -68,106 +71,107 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============2616109741758266447=="
+Content-Type: multipart/mixed; boundary="===============7960762591264583113=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============2616109741758266447==
+--===============7960762591264583113==
 Content-Type: multipart/signed;
- boundary=0a6fe17bf19ad5a12e68b66b0165d1da9fb2afb6bb7e78bdaf4e15f2febd;
+ boundary=108a668caa49fd7b7a3d2fdd1bfe3040e65f1c770867e6e200a50a6fd323;
  micalg=pgp-sha384; protocol="application/pgp-signature"
 
---0a6fe17bf19ad5a12e68b66b0165d1da9fb2afb6bb7e78bdaf4e15f2febd
+--108a668caa49fd7b7a3d2fdd1bfe3040e65f1c770867e6e200a50a6fd323
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
 
-On Thu Aug 6, 2026 at 1:24 PM CEST, Chen Minqiang wrote:
-> Hi,
->
-> Thank you for your valuable insight!
->
-> You are completely right that for unlisted/generic chips that feature a 4=
--bit
-> BP layout (BP3 at bit 5 or bit 6) or a CMP (Complement Protect) bit in SR=
-2,
-> spi_nor_unlock() won't clear those extra bits without the corresponding f=
-lags
-> (SNOR_F_HAS_4BIT_BP / SNOR_F_HAS_SR2_CMP_BIT6) set by the ID database or =
-SFDP.
+Hi,
 
+On Wed Aug 5, 2026 at 4:04 PM CEST, Miquel Raynal wrote:
+> Hello Michael,
+>
+>>>> +int spi_nor_read_srs(struct spi_nor *nor, u8 *sr1, u8 *sr2)
+>>>
+>>> nitpick, i think this is a weird name. But maybe it's just me.
+>>>
+>>> What if we'd just make the one status register as u32? I mean in the
+>>> winbond datasheet it's called S7-S0 and S15-S8. That way we also
+>>> don't need a two byte qe_mask. To optimize the standard usecase to
+>>> poll the WIP bit, we could add a byte mask.
+>
+> I experimented a bit the u32 status register, I don't think it is a good
+> idea.
+>
+> My target of improving the readability is completely defeated by the
+> fact that:
+> - all the callers need to add extra maths to explain what SR
+>   they want
 
-Is this AI assisted?
+Actually, what I had i mind is that there is no more SR2 and so on.
+But just one SR (and the BIT macros will change of course). Some
+datasheets are already naming the bits B0 to B15.
 
-> However, in practice:
-> 1. The vast majority of 3.3V/1.8V generic SPI NOR flashes (e.g. 4MB-16MB =
-chips
->    commonly found in vendor devices like Tenda AX12L Pro) use the standar=
-d
->    3-bit BP (BP0-BP2, SR1 bits 2..4).
-> 2. The current main issue is that even for these standard 3-bit BP chips,=
- the
->    kernel currently skips spi_nor_try_unlock_all() completely at boot tim=
-e if
->    CONFIG_MTD_SPI_NOR_SWP_DISABLE_ON_VOLATILE is set (for non-volatile ch=
-ips)
->    or if SNOR_F_HAS_LOCK is not set in chip flags. As a result, status re=
-gisters
->    locked by factory bootloaders are never cleared.
->
-> `linux,force-sr-unlock` serves as a pragmatic DT override to force the un=
-lock
-> attempt at probe time.
->
-> To address your point regarding 4-bit BP and CMP bits for unlisted chips,=
- we
-> have two potential options:
->
-> Option A (Current Best-Effort):
-> Keep the patch as-is, treating `linux,force-sr-unlock` as a best-effort D=
-T
-> trigger to invoke standard spi_nor_unlock(). It successfully unlocks the =
-vast
-> majority of standard 3-bit BP generic chips. For rare unlisted chips with=
- 4-bit
-> BP or CMP bits, explicit entries can still be added to the ID database wh=
-en
-> discovered.
->
-> Option B (Aggressive Force-Clear):
-> When `linux,force-sr-unlock` is present in DT, enhance spi_nor_try_unlock=
-_all()
-> to perform a broader clear operation on SR1 (masking bits 2..6 to clear B=
-P0-BP3/TB)
-> and SR2 (clearing CMP bit if SR2 is readable).
->
-> Which approach would you prefer? I'd be happy to revise the patch based o=
-n your
-> guidance.
+> - endianness shall be handled, people always get it wrong (including
+>   me), so why bother if an array just makes the whole thing simpler?
 
-This patch won't fly as is. You're missing the dt-bindings patch
-(which I doubt will be accepted) and I really don't like this
-approach. First, why would you unlock a flash automatically? I've
-worked hard, to get rid of that anti-feature. Second, what if you
-still loose the flash "lottery"?
+Where would you need endianess? If at all, just in the core, which
+will split the u32 into two u8.
+
+ sr1 =3D sr & 0xff;
+ sr2 =3D (sr >> 8) & 0xff;
+
+> - 16-bit accesses get more convoluted, we need extra
+>   get_/put_unaligned_le32() calls and pack/unpack bytes in the hot path
+
+There is not really a hot path, is it. Not in a sense that it
+matters for performance though.
+
+> - 8-bit accesses imply an extensive use of FIELD_GET(GENMASK(),) macros,
+>   which make the whole fonction totally non obvious anymore.
+>
+> Whereas, a simple:
+>
+>         if (sr2)
+>                 *sr2 =3D foo;
+>
+> is self explanatory. I also do not really get the wish for a QE mask
+> instead of a two bytes array.
+
+Because IMHO an array of two u8 (which your qe mask is) is never
+self explanatory. While with
+
+#define SR1_QUAD_EN_BIT6 BIT(6)
+#define SR2_QUAD_EN_BIT1 BIT(9)
+#define SR2_QUAD_EN_BIT7 BIT(15)
+
+you can just use the macros as before.
 
 -michael
 
---0a6fe17bf19ad5a12e68b66b0165d1da9fb2afb6bb7e78bdaf4e15f2febd
+> So I will rename the "srs" naming that you dislike, I will group the
+> opcodes in a big structure, change the baseline default to match your
+> suggestion and follow-up with the other minor comments, but I believe
+> I'm going to avoid the u32 switch.
+>
+> Thanks,
+> Miqu=C3=A8l
+
+
+--108a668caa49fd7b7a3d2fdd1bfe3040e65f1c770867e6e200a50a6fd323
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCanlv9BIcbXdhbGxlQGtl
-cm5lbC5vcmcACgkQEic87j4CH/juFQF/dXsh8cSiNnGne85mZGpo+2JHGY8HXFhH
-uwWOpJgBxTcdNxegYfswC6XtkDhYH81iAX9JH42fJujdSujtuqXdTL48JVlIc7cm
-jllnaZj/VHKwOJSbycKZZV9Txkm86eAKJIw=
-=S1Jn
+iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCanl0pRIcbXdhbGxlQGtl
+cm5lbC5vcmcACgkQEic87j4CH/iogAGA89cQMSlurX4IOjh5UXHyYxiP6nKXuPpu
+GnLfLbqgUNErNzI1KqDl8UBKymaldsIHAYDEvVfxfvBM80pcqQs5Jm3vLbPoN3Hc
+ukFhmMhuJQ1VYm5lbAnrW1Fa2FiGM15m5CU=
+=OrPb
 -----END PGP SIGNATURE-----
 
---0a6fe17bf19ad5a12e68b66b0165d1da9fb2afb6bb7e78bdaf4e15f2febd--
+--108a668caa49fd7b7a3d2fdd1bfe3040e65f1c770867e6e200a50a6fd323--
 
 
---===============2616109741758266447==
+--===============7960762591264583113==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -177,5 +181,5 @@ ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
---===============2616109741758266447==--
+--===============7960762591264583113==--
 
