@@ -4,67 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 658C9C5AD55
-	for <linux-mtd@archiver.kernel.org>; Mon, 10 Aug 2026 14:43:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36265C5B56C
+	for <linux-mtd@archiver.kernel.org>; Mon, 10 Aug 2026 15:11:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=bVri7Kq+akFSjjKVFWAo+EZv6YiQzg1RT3U10864+Xw=; b=rB7IDQ+k3UIq7o
-	6C/c2ikCP6r0G0lrSnsOzOm2GYI/dpjik1N9X+5AFmNG07QKLok12rFF+Z4EGGcgcOC2wHe3+wIn8
-	n8zd3HPlJwien2g0yL0wcIsR6WUHckAkmIMIIJuZFv3+AybeNw7nWqduycbWBWx7t5C7hc2WwwzrE
-	BCk3M25pHHrSksduXUc50UgMtNOQZX6MH1gO0i604ZFVWD7I8G/mzD2wdnuA7TIAKJ9HuR6Yh7EFy
-	9ObuPj64TAV4vNZWQXx+UQ0HJqQWsY11dBL8WEu51NkQJZi1s1gjoMT0LqN+7JO8PacfsdpquCBuz
-	gbvXdPPOmT2lMgXgG2/w==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id:Date:
+	Subject:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=yiZw0o8skh4iBjmbbBBWpbLP1urqLd6+SAT2Cmtr2TM=; b=0Rd9MJDmSRCcid
+	4K62eYkuT8f6cTNdeFaz2HOWeC9x+72yFYaAq5TSWLs74dGkRstH1mFptYu0fb+zTHLm/v6IPng69
+	DOGrFiA9DhLex+zAwrx04kONil8CRS8CEmZfRN0jqaNGgaDa+CQOHLo51qCKxKys+hHPCJ/XZ3zT6
+	6C+Zm0ejms2IZLpL2P0jxrKy/YNHqG20fceySTmtek4CF6bSJ3KEabylKFwvF70n8YncPSTlJwQfk
+	YesI7OV61at8UBktcdFUcaeX7xTYBmFXi+Rg8IEKaBKUjh9YeroQQW+D6Gqgo+CJUSP0UfW/eI1zR
+	NM5IK0d3YucCo9HgOdgg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wtRDn-0000000C33O-32m9;
-	Mon, 10 Aug 2026 14:43:23 +0000
+	id 1wtRei-0000000C9lT-2Kf8;
+	Mon, 10 Aug 2026 15:11:12 +0000
 Received: from smtpout-03.galae.net ([185.246.85.4])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wtRDl-0000000C335-0z7a
+	id 1wtRef-0000000C9kY-04Ah
 	for linux-mtd@lists.infradead.org;
-	Mon, 10 Aug 2026 14:43:22 +0000
+	Mon, 10 Aug 2026 15:11:11 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id 10D874E411A7;
-	Mon, 10 Aug 2026 14:43:18 +0000 (UTC)
+	by smtpout-03.galae.net (Postfix) with ESMTPS id F283B4E411AA;
+	Mon, 10 Aug 2026 15:11:05 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id D0C586033B;
-	Mon, 10 Aug 2026 14:43:17 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 5C0DA11C4A92D;
-	Mon, 10 Aug 2026 16:43:10 +0200 (CEST)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id BEFA06033B;
+	Mon, 10 Aug 2026 15:11:05 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id B8FA211C4A9ED;
+	Mon, 10 Aug 2026 17:10:46 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1786372993; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=DFcmzTxcfvHvsND/GxU4BOG9tZi3TmHLVO3tfLXELVI=;
-	b=ixyRUP3VJdZ4Xt0yFsjWxqDi8+Dr492tC1T4SfoUVox5rNxOI5nQniHRkV8d7WEEhCr1da
-	c0RM1LdCGMi5VX67mf1kJQgzt5I9vRzqdxWHeP93senNma6CjswrsVYlPgJGNu8vSO3DN1
-	cpkQGTpmgWgyzMphNK8euhsT45LQWebCKOzIuZ/LImPJNZHP/Qz/XQt8+aGdI7CNOLfNYl
-	RQ0OZugTVj7K6OaCyLoJ2wHJoA+a0yn6AGiBconIdWqLEfBWdIfzHS/iPjeiORojKe0xZH
-	QPqOpXOcOxC0Q4KneUN84rlIuGWoqzqEtc6oLzovpeDt3heuZpGcfWKPEQvjDQ==
+	t=1786374654; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding; bh=AYZpRo8QZhMYf4x7YOSDEZsDXhhJ8EVY0i30yMilJOk=;
+	b=eBNMLc/duJnc6TnzbZ8bQ1kUtqiO/LiUXcrt31JmFMYAl2TXdxeKm12nIe4RdKiFJXOYUC
+	pg0sxfPWv7xzXU5z657/tUxT0aPoqCpnwU+II9gmEa9IswhZs6pOqoMI5qfhrJm9bziLcf
+	Z2KWDi2aEYuWQLx3ZASsusJSVj3zxYXrbdvIJikYu3rg1RhXpZLao1WUiuXVWsJ3IuXrgZ
+	OkSKt6TBAgbTtDOjetLTDEliKTWcl3CRYFG1yKZ0OQUkLvFBCc0Q/0aQJmCuKpHKZJEVty
+	uKp++9Tkq2Mp09NH4sB3Bc0EDBu3UHVS4+fPAK5UaRZpLMbodplgSynfhm0Rnw==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Mark Brown <broonie@kernel.org>
-Cc: Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
- <vigneshr@ti.com>,  Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-  praneeth@ti.com,  u-kumar1@ti.com,  p-mantena@ti.com,  a-dutta@ti.com,
-  s-k6@ti.com,  linux-spi@vger.kernel.org,  linux-kernel@vger.kernel.org,
-  linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v2 0/3] mtd/spi-mem: Enable DQS support
-In-Reply-To: <8a729209-3bf9-4f2e-8870-1cbb64a95184@sirena.org.uk> (Mark
-	Brown's message of "Fri, 7 Aug 2026 17:14:37 +0100")
-References: <20260807-winbond-nand-next-phy-tuning-v2-0-73595e89d6e3@bootlin.com>
-	<8a729209-3bf9-4f2e-8870-1cbb64a95184@sirena.org.uk>
-User-Agent: mu4e 1.12.12; emacs 30.2
-Date: Mon, 10 Aug 2026 16:43:09 +0200
-Message-ID: <87zeyuox36.fsf@bootlin.com>
+Subject: [PATCH v3 0/3] mtd/spi-mem: Enable DQS support
+Date: Mon, 10 Aug 2026 17:10:41 +0200
+Message-Id: <20260810-winbond-nand-next-phy-tuning-v3-0-a97c3a61e675@bootlin.com>
 MIME-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/43NsQ6CMBDG8Vcxna052pSCk+9hHApc4RK9EkCEE
+ N7dwmKcdLnkf8PvW0SPHWEvzodFdDhST4Fj6ONBlI3jGiVVsYUClYICI1/EReBKstsOToNsm1k
+ OTyaupXMF+hKSDLQSkWg79DTt/PUWu6F+CN28r43J9v0THhMJ0qCtdG5TDz65FCEMd+JTGR5io
+ 0f14TKwPzgVOatNbjDLqxT1N7eu6xujhfhuGQEAAA==
+X-Change-ID: 20260205-winbond-nand-next-phy-tuning-aabefc018032
+To: Mark Brown <broonie@kernel.org>, Richard Weinberger <richard@nod.at>, 
+ Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, praneeth@ti.com, 
+ u-kumar1@ti.com, p-mantena@ti.com, a-dutta@ti.com, s-k6@ti.com, 
+ linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>
+X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260810_074321_412494_00CA50CD 
-X-CRM114-Status: UNSURE (   7.14  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260810_081109_199074_7A20527D 
+X-CRM114-Status: GOOD (  14.11  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,19 +75,75 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGksCgo+PiBNYXJrLCBhcyBhZ3JlZWQsIHlvdSBjYW4gdGFrZSB0aGUgc3BpLW1lbSBwYXRjaCB0
-aHJvdWdoIHNwaSBmb3IgdGhpcwo+PiBjeWNsZSwgYW5kIEkgd2lsbCBwaWNrIHVwIHRoZSByZW1h
-aW5pbmcgc3BpLW5hbmQgcGF0Y2hlcyBhZnRlciB0aGUgbWVyZ2UKPj4gd2luZG93Lgo+Cj4gQXMg
-SSBzYWlkIG9uIHRoZSBwcmV2aW91cyB2ZXJzaW9uIGNhbiB5b3UgcGxlYXNlIHNlbmQgc29tZXRo
-aW5nIHRoYXQgY2FuCj4gYmUgYXBwbGllZD8gIFRoZSBNVEQgcGF0Y2hlcyBhcmUgZmFpbGluZyB0
-byBhcHBseS4KCkkgdGhvdWdoIHlvdSBoYWQgaXNzdWVzIHdpdGggdGhlIHNwaS1tZW0gcGF0Y2gu
-IFRoaXMgdmVyc2lvbiBzdGlsbApkZXBlbmRzIG9uIFNhbnRob3NoJ3Mgd29yay4gSSB3aWxsIHNl
-bmQgYW4gdXBkYXRlLgoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGlu
-ZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgt
-bXRkLwo=
+For his PHY tuning series on the Cadence QSPI controller embedded in TI
+SoCs, Santhosh initially needed to access the availability of the DQS
+(data strobe) signal. This is a chip dependent capability, which may
+sometimes be enabled.
+
+Create a SPI memory flag for it, let the SPI NAND core set this flag
+when it knows about the capability, and expect manufacturer drivers to
+enable it for octal needs when the chips are compatible.
+
+This is an alternative at needing a DT property. Please note that there
+are a few blind spots:
+- the line may not be wired (this would be surprising, but can be
+  flagged this time by a DT property)
+- manufacturer drivers must enable the feature if it is
+  available (especially for high speed DTR modes)
+- this implementation is proposed for SPI NANDs only, if this proposal
+  is accepted the same approach may be taken in SPI NOR.
+
+Here is the original thread which lead to this series:
+https://lore.kernel.org/linux-spi/87v7gbdwdh.fsf@bootlin.com/T/#ma79fc364d7b882a48dbdf47203dde75df4bb0ec4
+
+This series was compile tested only at this stage. As DDR tuning does
+not yet work on my board, I cannot make sure this change has a real
+impact.
+
+Mark, as agreed, you can take the spi-mem patch through spi for this
+cycle, and I will pick up the remaining spi-nand patches after the merge
+window.
+
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+---
+Changes in v3:
+- Rebased on top of linux-spi/for-7.3 and dopped all existing
+  dependencies on the MTD bits.
+- Link to v2: https://lore.kernel.org/r/20260807-winbond-nand-next-phy-tuning-v2-0-73595e89d6e3@bootlin.com
+
+Changes in v2:
+- Dropped the RFC prefix.
+- Rebased on top of v7.2-rc1.
+- Dropped the spi patch for now, just allowing to use DQS on a few
+  Winbond SPI NANDs (can be improved later).
+- Link to v1: https://lore.kernel.org/r/20260205-winbond-nand-next-phy-tuning-v1-0-5e7d3976f0f1@bootlin.com
+
+---
+Miquel Raynal (3):
+      spi: spi-mem: Flag DQS capability
+      mtd: spi-nand: Set the DQS spi-mem capability if available
+      mtd: spi-nand: winbond: Enable the DQS pin on W35N**JW series
+
+ drivers/mtd/nand/spi/core.c    |  4 ++++
+ drivers/mtd/nand/spi/winbond.c |  8 ++++----
+ drivers/spi/spi-mem.c          | 32 ++++++++++++++++++++++++++++++++
+ include/linux/mtd/spinand.h    |  1 +
+ include/linux/spi/spi-mem.h    |  4 ++++
+ 5 files changed, 45 insertions(+), 4 deletions(-)
+---
+base-commit: 1ec281b42ee249cfe9bad52a54149de29ed6aa78
+change-id: 20260205-winbond-nand-next-phy-tuning-aabefc018032
+
+Best regards,
+-- 
+Miquel Raynal <miquel.raynal@bootlin.com>
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
