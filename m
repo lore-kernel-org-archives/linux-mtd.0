@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 18136C5AD55
-	for <linux-mtd@archiver.kernel.org>; Mon, 10 Aug 2026 14:16:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D996AC5AE49
+	for <linux-mtd@archiver.kernel.org>; Mon, 10 Aug 2026 14:16:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
 	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=YtXndEqje7M7Fi3HeNuWqRIK21m+OpeRjlMTMslM0nc=; b=zGp3EDgjSi59WE
-	MWL4gbU/SPrprm27tNbELGR8o6HYrkJdmO44MNEIAIph7m25DgOO0M7JAMe1l88iLTRNei77Wvjo2
-	FBrYPj1p2qD9+SvIKhIhm+y8btK+eC8Ea5f3lOuy16RNcTC9OmfjlXdyDlOPzD9WqD4N03lFO7aGk
-	eO/RoYiMg3akfjJGiGXShblXxz8BqMmK8dYxfWtz2BLCS5A6CEQr6jizVQDBE+uXdpmYI0VZGe6az
-	ao7hzCtGh+LeGsMW7ABbyP6wCkpZ0vqrSXzHezsEv88fla/M9LINftoWpiGK8SmA4/pRKCCty/wlj
-	XzoKU0l///1WjtE/b9rA==;
+	List-Owner; bh=YtXndEqje7M7Fi3HeNuWqRIK21m+OpeRjlMTMslM0nc=; b=gwDsKLkslMs3E0
+	UwkJ0ecl2B33OUGqUZkPtmrax1CJfeIQnyKVZoXBsvfh0TI6q6UEVm3FIFgweGQzuyLjAa8lz+7qI
+	CN7lKbpLoPVm5AnlK4rrRfAgDTyBLllyJNCR9u8JLL9KGTIs5prm51lgMUSp1Gx6Y+zNRtVBaxkxV
+	hnYAWIbKPW2Bx1II5z/Du2pvxajeIm+4Xo22f8NyO8/hXDqfRZc4XTQt4kKxv7GPtk0q7+JsPbOS7
+	oe6hZD1Um67BRM85I+NKUlSIvZ6SOJBLpXujkTws/jA3aNviAvUM94gRnuFkb3Ow5CHBwuocWcZ71
+	XV/eyuhgnHv/kY6GvMLw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wtQna-0000000ByE7-49Lv;
-	Mon, 10 Aug 2026 14:16:18 +0000
-Received: from 5.mo581.mail-out.ovh.net ([178.32.120.239])
+	id 1wtQoB-0000000ByK2-0Ote;
+	Mon, 10 Aug 2026 14:16:55 +0000
+Received: from 6.mo584.mail-out.ovh.net ([188.165.36.253])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wtQnW-0000000ByBx-3SIk
+	id 1wtQo8-0000000ByIw-3SLB
 	for linux-mtd@lists.infradead.org;
-	Mon, 10 Aug 2026 14:16:17 +0000
-Received: from director6.ghost.mail-out.ovh.net (unknown [10.109.231.104])
-	by mo581.mail-out.ovh.net (Postfix) with ESMTP id 4hJcHP0HLhz5yxQ
-	for <linux-mtd@lists.infradead.org>; Mon, 10 Aug 2026 14:16:00 +0000 (UTC)
-Received: from ghost-submission-7d8d68f679-nv62s (unknown [10.111.182.119])
-	by director6.ghost.mail-out.ovh.net (Postfix) with ESMTPS id BCA8080474;
-	Mon, 10 Aug 2026 14:15:56 +0000 (UTC)
-Received: from m-works.net ([37.59.142.108])
-	by ghost-submission-7d8d68f679-nv62s with ESMTPSA
-	id PxmDHhzdeWoT+wUA+y4jow
-	(envelope-from <maciej.andrzejewski@m-works.net>); Mon, 10 Aug 2026 14:15:56 +0000
-Authentication-Results: garm.ovh; auth=pass (GARM-108S002b9938c9b-5063-437c-b380-4c4edae5ac1d,
+	Mon, 10 Aug 2026 14:16:54 +0000
+Received: from director5.ghost.mail-out.ovh.net (unknown [10.110.58.214])
+	by mo584.mail-out.ovh.net (Postfix) with ESMTP id 4hJcJK4yYCz8CjX
+	for <linux-mtd@lists.infradead.org>; Mon, 10 Aug 2026 14:16:49 +0000 (UTC)
+Received: from ghost-submission-7d8d68f679-m6tqn (unknown [10.110.164.42])
+	by director5.ghost.mail-out.ovh.net (Postfix) with ESMTPS id 5890C100149;
+	Mon, 10 Aug 2026 14:16:46 +0000 (UTC)
+Received: from m-works.net ([37.59.142.110])
+	by ghost-submission-7d8d68f679-m6tqn with ESMTPSA
+	id xxv+C07deWpnricAYgYEpQ
+	(envelope-from <maciej.andrzejewski@m-works.net>); Mon, 10 Aug 2026 14:16:46 +0000
+Authentication-Results: garm.ovh; auth=pass (GARM-110S004f5443822-10dd-4813-abb4-14c34041e314,
                     ED6AA3D647CD945153C5C800EF75597CE9F2D384) smtp.auth=maciej.andrzejewski@m-works.net
 X-OVh-ClientIp: 144.125.48.245
-Date: Mon, 10 Aug 2026 16:15:55 +0200
+Date: Mon, 10 Aug 2026 16:16:45 +0200
 From: Maciej Andrzejewski ICEYE <maciej.andrzejewski@m-works.net>
 To: Linus Walleij <linusw@kernel.org>,
 	Bartosz Golaszewski <brgl@kernel.org>, linux-gpio@vger.kernel.org,
@@ -60,17 +60,17 @@ Cc: linux-gpio@vger.kernel.org, Mark Brown <broonie@kernel.org>,
 	linux-kernel@vger.kernel.org,
 	Maciej Andrzejewski ICEYE <maciej.andrzejewski@m-works.net>
 Subject: [PATCH 0/2] gpiolib: of: Scope the legacy SPI CS quirk to SPI
-Message-ID: <20260810141555.70575-1-maciej.andrzejewski@m-works.net>
+Message-ID: <20260810141629.81650-1-maciej.andrzejewski@m-works.net>
 MIME-Version: 1.0
 Content-Disposition: inline
 X-Mailer: git-send-email 2.43.0
-x-ovh-tracer-id: 15933735482169893667
+x-ovh-tracer-id: 15947527757042492195
 X-VR-SPAMSTATE: OK
 X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: dmFkZTE4EN55RJhVq6HnQXjLgYEkeokzgdDSeWKywccT583QP2uOgrZ2gP0CI5iy25N4cv/oYhS23lcgNgG/WpLPLlz0xfCtuePGgIcZaM2AF/AktLbtaoN9SMhP3bGY0+JYJNBLx2r/r4ROrmDKZpcKTi6lq/Ajus7xRAGJr4X44p+mREyo1U6yK1gic3C2Z03zWD64G23zs1YhY56Kao4x3SGOXPMQaCqoKF9ZbvOu/z8SUkQ9Cf0CDeOMmanTBj4cj9+tK2yzq3eU08yGABdWaFFaw6vcPYHKbTt5K+b0sZMUQoXM1hCIxsG7E1PJQFfmFmN/zZW531uDTTQKnkCIahF0UxhOIvNOURM7pBeNCXMiHMi4iDQ6SwWIeA1XwYild7HiwWXgDJ3cCugl1chTssqbFzo2nPV2sWhnUc7fuQWLEMYu383o9BYcaVIJoAjzVUQG7MGQpiUxGIdlMPsg9MWiFxI6kX63IvCZJhW3X44/YowwF6f9nP2cJRI6fiCLNjtlVrzT8pceWS32ixoGc+7PGLBXOb8ZKjPia544Jy2qk0PigIEAZ7fzlcsJc6BG8ZleuKA3kFF4Ce03aj407cvGqgQ2EStto4bk1XWfmbtNYOrRu/sXIzfAT+mxBkLNc7kBJgNS2JNm8KQkfHImC0xZAH36CC9AJPYzFFj4h5m1ig
+X-VR-SPAMCAUSE: dmFkZTE4EN55RJhVq6HnQXjLgYEkeokzgdDSeWKywccT583QP2uOgrZ2gP0CI5iy25N4cv/oYhS23lcgNgG/WpLPLlz0xfCtuePGgIcZaM2AF/AktLbtaoN9SMhP3bGY0+JYJNBLx2r/r4ROrmDKZpcKTi6lq/Ajus7xRAGJr4X44p+mREyo1U6yK1gic3C2Z03zWD64G23zs1YhY56Kao4x3SGOXPMQaCqoKF9ZbvOu/z8SUkQ9Cf0CDeOMmanTBj4cj9+tK2yzq3eU08yGABdWaFFaw6vcPYHKbTt5K+b0sZMUQoXM1hCIxsG7E1PJQFfmFmN/zZW531uDTTQKnkCIahF0SBfU0WtInEplz/cbC6+IE8XmEAxVb+O1qwQ5LMbF/SGaEK6bl/pwMni6Go3rzGqGi3qZVvaa4tBN/tve2GlIiWg4D+wI2Kd0KeRhpem6iz6UKtXgkFnB4k1IjWZlgKvfNBpzK3PWNYNMw5SkU5aci9xTCwGe32Qpm5eowprv+bzzT1A3gFPGEt4qqRx0E6yVx+IdrmarGmBuhoSUsgh/azEbEKVudARn4HIPcnQ+mbjeH0w7Tu7nJHCEYcWL6ZGmA40tAHRV7niBwQojuKQiQNewsLcsQ1t1hF3qXBgfzBC5zx2Fhx8E3uOIxhd0fSAm/OGzZzvJBAHrFJXmPHmAFA
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260810_071615_007974_0DCD3754 
-X-CRM114-Status: GOOD (  15.71  )
+X-CRM114-CacheID: sfid-20260810_071653_001166_858408C5 
+X-CRM114-Status: GOOD (  15.62  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
