@@ -4,95 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF8ECC5AD7B
-	for <linux-mtd@archiver.kernel.org>; Mon, 10 Aug 2026 21:09:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45180C5AD7B
+	for <linux-mtd@archiver.kernel.org>; Mon, 10 Aug 2026 22:43:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=RqHs+fLLLnGrFsb7VzgzO4/3e+2es3Of/U3uwNqRvKM=; b=gTD
-	BlQqOUwvKnT5BdLjnpve3uxDrT/9bxMJ3T8QFb8/lLyu6drTdXhB6ktKRohdYHiIO+IZLFcArOiDD
-	YL2TiSazAo4YbG6L1DiRDmmDHDII5tGr5fVaqdEZIsW18PWsWhlD9GuG2k4g/LtD7H1WKgCvvG4qK
-	G1MO4GqrXOKwa1YyW6i71eb2z4Zzrba8XS1P0ZzJ7ou3hlEQcLjwBxDbixzXsgCi9LjkxPDgW0NZO
-	Ri+J+ZVcnYgbTz5waJ3iNrwaK8mZkTrqfHHYT/QWcji3ejKKCmp0Silzgkd6GK2YWLqyZ02K9NJAr
-	izgW9lWycA4Q457FlLpZJxBIrGBRcow==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
+	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=KwWUrPWDP3JEBeX1y4PsJUig6mjloes1mwwqSXNU8ko=; b=W08i5PqkrH4guq
+	+/EwiXtV5W6cQhM8QUMjraUL/ReaukDUBnupcN7NagWkQR996IDSVUVKGzIaS4aW0SpkfemMh6gw8
+	Qy+Ie92iMSK9WJCUZKfikv72O00pnOWLBpOUvPu62Urh0Qs3hxkZ6LeOyw+Z7HA6lQtVGGCXu8YCD
+	59MJmhVJgEBmO+FTYuUp8nL0zs6hs5vYKk3W1EGTzrre9OrQAvSHkx5yUdSaJvYMmHClSPVU3hvke
+	arkoI/IvimpcCiiLQeR/It0Bf8kKUe+/IOAbNnAt05J5ETWBpVEdNENuUHQNpIupL+ga1g5t/tpm3
+	vS+p5TFqVH49KR8civ9A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wtXFD-0000000Csmj-3PHG;
-	Mon, 10 Aug 2026 21:09:15 +0000
-Received: from mail-yx1-xb12f.google.com ([2607:f8b0:4864:20::b12f])
+	id 1wtYiF-0000000CyzR-437X;
+	Mon, 10 Aug 2026 22:43:19 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wtXFB-0000000CsmM-1FQ5
+	id 1wtYiE-0000000CyzL-1hia
 	for linux-mtd@lists.infradead.org;
-	Mon, 10 Aug 2026 21:09:14 +0000
-Received: by mail-yx1-xb12f.google.com with SMTP id 956f58d0204a3-6681e7911b0so3422557d50.0
-        for <linux-mtd@lists.infradead.org>; Mon, 10 Aug 2026 14:09:12 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1786396152; cv=none;
-        d=google.com; s=arc-20260327;
-        b=UxbkpiBYWj3B03lZOIXctJFUm2AMtXNu3AKun54Pn1Ae/Wp2/Gty6LOgJou03oRIFG
-         P5LgzOru/sbOF51cYnMcnFNAw+C7WFz4utFBBMYxBEuU6mb3BBiPt0y2wi+NPTdqcb9/
-         MH+JriuyEldvkeGSqIjnjH5PJfpOWLNo4uQdKoyCx/OIcI/0Mqkhrwf+D3zvRTGUY1fo
-         8olKTei9HDZCEiuLlyMb6hTx3v8AD7fthwEHKY067BFje9vZawk0g2G5TeWWgFOvVVA1
-         w+31U14i/gOkumnahzrlOkPmWUx+2rkhJcRZ/HbKIq7GEs8n+bRPk8ULaLpRG9TIjxlX
-         MlIg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=to:subject:message-id:date:from:mime-version:dkim-signature;
-        bh=O7+fA6nQxA55r1yu4tboOYLId14NXVmuuEexLRiMJDg=;
-        fh=Gd4kRfoyr9WvSS9M3j9+RFhdcaNG97fzsqYHZ6IIOZI=;
-        b=bJS9DL0zTyEyY3LWRKjgRylsvhfEX9fpVU5YIMdI7ex59u1828YvcUF5IYcSp5oose
-         0vzcS2wqAvtDDgHoraBNcgbvszFZY6ghZlR4BYZmmbWAjpj1b+Nh0k1J21YwrR82juJq
-         Wbzqqop4dIEAOdmDcKuzwu2Tce4mtHdoyaLxmINbf6ZiRX8AaGrQyTEbbATrPxRAgo7Q
-         SHXxApM4U7A9MLrmgfFp7B8CbEDv3RLfKpSv0wLtUJU/PSWFV1zH7t7ZxU6PZbWp1EMj
-         GKYMtXLWzIMwm2XR88NrAqxhrrXreLvYYWYRSPrVs/0PaPENiZ/JT9kcmtZ7Hd68acJd
-         EPEQ==;
-        darn=lists.infradead.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1786396152; x=1787000952; darn=lists.infradead.org;
-        h=content-type:to:subject:message-id:date:from:mime-version:from:to
-         :cc:subject:date:message-id:reply-to:content-type;
-        bh=O7+fA6nQxA55r1yu4tboOYLId14NXVmuuEexLRiMJDg=;
-        b=YD/V78ai9XIXSfveuoiVqepTnE33YfDY7eaZiGEHhthZ0mEGJJVt675BDm4JD8Z5gH
-         pBQrpMw5sKOHX1zbcJ4H7xayEA/TlP24B93jrc3NlBS8l+4b0msFpCy0iRSWf9t37AwI
-         RKRFO6vRmqOCUmstZGdQd6KJUa/neb0suJAz7kVCslqr1ld2xaxnttXqhnE9FlUhefFt
-         x1OLL+gP+3AZVCWMRXBxEF19UZBWTVOEWFhPUklGJkMUMKNV2t8YWEiB80imPZrpkb1q
-         gzk+tCK9uGI3MWeF7F7A4AsMhmj+xdyjrvROiDWuto2GUWMR5L7p0+TxNEki1NTPjX2s
-         bxmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1786396152; x=1787000952;
-        h=content-type:to:subject:message-id:date:from:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=O7+fA6nQxA55r1yu4tboOYLId14NXVmuuEexLRiMJDg=;
-        b=SOhHNOfSewMjEddlc2yx9qbPA6uLO3SGNs7NFZxiEkjSpRFL6x3YqfRCpImqBJDfR1
-         payUapJWg5opzyc9pe4BIz+vrGbSVV6s0lKb6pSPTwhqrLH3SHeVop1Y2JxozPbqQf2U
-         ufYd8R0LlfipAkBng3m31msYB98E4kdstYZnKxkCI40XPljHZ/FRKbHmh0vODOuVKR1G
-         s1EGZ5KRhJsJVk7/aWz6oiRkcr0RddRk6cirgxJ3pkDmL6/s1GL6K5YVid80Gnd4Qm3o
-         uBlovcUp/7LPo7tFawlS0hfgOdMSJAS7iFmLlY3UXr+VTYS5NgLY9alRpKJJoUuIgevo
-         kKgg==
-X-Gm-Message-State: AOJu0YyNNIEvFsu6GOpLLyWBoUlrvb6qK9dE8xsGahqK5TT/hhaJboXX
-	ognZwWUNEO8BDL3wypC6OhRZr9v8tyfGDxuibx968x2sdd5jyS3ZoTgvtDK9kYNGygMY6MQRWMq
-	eoXHpfs/yHT7hOVxNdc3imr/M8F1XckE/cQ==
-X-Gm-Gg: AR+sD12vXo1DKDT5FihFZF+4mUMjuRKnhSS9NF9bmTZHcQcVGXC233w0BBDuOT48LA0
-	VqaBzBszfRCoP9GTLLvyfell40ZvoilUYmlMqts3Ds3cHjFdEpYk5it6KP21ry8a9lwwOBWKXDi
-	6L66goDYQPw60u5u0gw8YGSGiVZp5hOuM+3DcxaZSopmO5B2fH+t4UHVlWtKrKGOgdNg0cG4//6
-	Vham7b449Ndi3Sdgr5zdEDngGO9+KfBzD3Dj+pZA4iBK4Vu7zDfLB2Kq0opOIXCcPKRZaBlqgo3
-	QJSlqrIMqXb7iWN74NSBpEbCgV446Yqd6IW+i0FiNIc=
-X-Received: by 2002:a05:690e:4551:20b0:668:8286:1123 with SMTP id
- 956f58d0204a3-6699aca4c54mr20445020d50.52.1786396152072; Mon, 10 Aug 2026
- 14:09:12 -0700 (PDT)
+	Mon, 10 Aug 2026 22:43:18 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id 78D8740A2E;
+	Mon, 10 Aug 2026 22:43:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4AB841F000E9;
+	Mon, 10 Aug 2026 22:43:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1786401797;
+	bh=S3Nx0KYGlbaQ5NYEXpDEi2n/Rdo9pkHGeCmFJ3YLfl8=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date;
+	b=BmBTx0m0bfoCv/H1nZjcSWYQvJIH5Yl5lwa7m1xWjmWIo/HmUFDWCU4hivj7EipuJ
+	 LRZ8a3EMEtXzsc/mtXtTn+oQ5jl6jtVDsc5pYPQkqTgpO1SsWFFpL3latQiFEcX2Lb
+	 mVUR7LdzocNT0kuT6GWUJKydG9lRN/2PLMJfseMD2EO9yfu586wziKKcWuJLJ8GJOk
+	 hVncBsH9LcRP59Lr2ori4liD1nm7sZlTSd3CoH3fdZh+safTgV/ujNGV6vyocLRFeW
+	 aZ0jpPJCwhhzo08j65xPKoeUx9iLV/xsx6PXrPRvuvd/UJ92/fk5xxV5jfGxVNy2J/
+	 TdcDpOjMPhO7w==
+From: Mark Brown <broonie@kernel.org>
+To: Richard Weinberger <richard@nod.at>, 
+ Vignesh Raghavendra <vigneshr@ti.com>, 
+ Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, praneeth@ti.com, 
+ u-kumar1@ti.com, p-mantena@ti.com, a-dutta@ti.com, s-k6@ti.com, 
+ linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-mtd@lists.infradead.org
+In-Reply-To: <20260810-winbond-nand-next-phy-tuning-v3-0-a97c3a61e675@bootlin.com>
+References: <20260810-winbond-nand-next-phy-tuning-v3-0-a97c3a61e675@bootlin.com>
+Subject: Re: (subset) [PATCH v3 0/3] mtd/spi-mem: Enable DQS support
+Message-Id: <178638127767.155010.4353834320826597950.b4-ty@b4>
+Date: Mon, 10 Aug 2026 18:01:17 +0100
 MIME-Version: 1.0
-From: Kyle Abramowitz <abramowitzk@gmail.com>
-Date: Mon, 10 Aug 2026 17:09:00 -0400
-X-Gm-Features: AUfX_mw9X1wWXaYDO2P6k0qfBQ-hwG4eJ3flMJXwpyqILMBI2KuX18jTl15dMqQ
-Message-ID: <CAAbNe083MrxKmSB4JN8WhO+Gjomgt46k4CLi1k0D8kQ0GpTVGQ@mail.gmail.com>
-Subject: UBI Static Volume CRC Corruption
-To: linux-mtd@lists.infradead.org
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260810_140913_344557_CF89B480 
-X-CRM114-Status: GOOD (  11.23  )
+X-Mailer: b4 0.17-dev
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1341; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=9NnheU22Odpz1y5Y2xIs9SQi9OreAJaEt6jPIy5crRE=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBqelQCRn02kb6ZYgBDmt++bfRr+a+9fws30hFSf
+ Np2DXuwY5aJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCanpUAgAKCRAk1otyXVSH
+ 0PWvB/4sjE9j1H3UUoHHc9S14oxHHOeqsGN/7mkNYcFWkCclbwLGhfyWunpAT6J8m4JRiQMUlxk
+ dS7RNEtwn5GJp0YwOryZW3Ino9C34NnzXYN+kOmAmA/5ZNUXcG7hsnY792a2FLtx+vrpzjzj3Rt
+ ccFHM1SVyAbE5gKGTwuW3rtMXQH6STRwecNG7vJbJGMlBSvvH6mTySdNmfk1PLyPJaRZVgvnMAe
+ Is6IZvACZOQGMPWbs/2gcZ2uknWlpyo2EKF3gFf7yRFoXg+f0MxFEafLzPvkAG4Z0ZyFv/VzWzl
+ i6fRbQBceE+50tV1gJNIbH4z3hy7ihF+KVJ3FFTAzp7cmDJs
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -109,37 +84,44 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello,
+On Mon, 10 Aug 2026 17:10:41 +0200, Miquel Raynal wrote:
+> mtd/spi-mem: Enable DQS support
+> 
+> For his PHY tuning series on the Cadence QSPI controller embedded in TI
+> SoCs, Santhosh initially needed to access the availability of the DQS
+> (data strobe) signal. This is a chip dependent capability, which may
+> sometimes be enabled.
+> 
+> [...]
 
-I am working on a NAND driver for an MT7620A and a Winbond W29N01HV
+Applied to
 
-Something unusual came up in testing. An erase block that is bad, but not
-yet marked bad is causing `ubiupdatevol` to report CRC corruption on its
-validation pass for static volumes. The write and erase functions do not return
-any errors as they do not do any sort of readback validation. This
-seems consistent
-with other drivers I see in the tree (Kernel 6.12).
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-7.3
 
-The issue we are running into is that we expected UBI to torture this block once
-it was discovered to have unrecoverable ECC errors. But after tracing
-through the
-code, we found that the scrubbing step is skipped in this case and no
-torture happens
-so this block never gets marked as bad.
+Thanks!
 
-My questions are: what is the proper way to handle this? What should
-happen on a freshly
-discovered bad block that has not been marked yet? Is it intended that
-scrubbing and torturing
-is skipped on crc failures in `ubi_eba_read_leb()`?
+[1/3] spi: spi-mem: Flag DQS capability
+      https://git.kernel.org/broonie/spi/c/391144742324
 
-My hope was that it would get marked bad eventually and remapped to a
-new PEB so a future
-write would succeed.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-Thank you!
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Kyle
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
