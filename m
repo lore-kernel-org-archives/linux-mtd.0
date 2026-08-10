@@ -4,88 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6079C5AD5A
-	for <linux-mtd@archiver.kernel.org>; Mon, 10 Aug 2026 02:03:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F08C7C5AC82
+	for <linux-mtd@archiver.kernel.org>; Mon, 10 Aug 2026 06:30:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=rCB596MBoQ/rcc0heqW0dB0fFfpn2sep2z3JFnWzehM=; b=tDrDsakUakgz85
-	aQc3qOs5uOu7I6cJf7p9jBVCJIaYgXvu4rxlwqJcdBtQLZjdj9mtpCQz4A3AKPUTsbdTyFemCoJJU
-	i9zADDe62kHr6anMpqp0/GXMGpUf0omNY+OSY1Hubnn2nhCagQ3wLKKR5dBmxyEF9ojx5IKHt0qbn
-	i3iAcRdVG+SILF3iN/FF8Saw4mqkh7halNBeHpbtm1BeikQAUT6YXgFhKf4ix+SVFxh4rjcPDNvvt
-	9U9kDuk+wkdRnWJVjeo6uT1qsr2YfRvqbXa90EC9OXL9P0NqZxJ+BriWMAGpV5+DHSyWc85nwuLU7
-	0yysjhaPDVZ+kGdRWNgg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:References:To:From:Cc:Subject:Message-Id:Date:Mime-Version:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=Bs9vzdUA40xcior+mHCgN/t/kg0QOxsHe04VxEkWuGw=; b=D3hc3Z+e1+TYZt7M5XyFpXg6pe
+	HQXjGBDaie/DtkDVZrbXil3cVCh4+Rp088TbeOcCN308f7cB38zpu4CIIjFb5ot/sqN66rfAABNN4
+	G1urc+Kx76gO/Dc+QhoC0VpWbtvaVDAz7IMsQlvXk/jp232I3Z2wqvvi3Tcz+0KEQ04b+1V/CIeWK
+	9zjvfCbBOfcFNVl0rClVHgXI6XNtxUfRCutjBbGWlUURj8xDdQJiJ9Qhm/4Cqx9MkivZZlxAnRdJy
+	lnZbfUwAwlQsFDxJYY4sPcyTatvzTeYHugCNMXlv185pvMVYlfdAYbnu925Yp3afJtwkrAwtCStCo
+	+6rG075A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wtFMj-0000000AtrS-43ca;
-	Mon, 10 Aug 2026 02:03:49 +0000
-Received: from mx01.bremer-it.com ([85.215.132.167])
+	id 1wtJWd-0000000B5yz-1yb0;
+	Mon, 10 Aug 2026 06:30:19 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wtFMg-0000000Atqg-2ubO
+	id 1wtJWc-0000000B5ys-0Axb
 	for linux-mtd@lists.infradead.org;
-	Mon, 10 Aug 2026 02:03:48 +0000
-Received: from cashel.logfs.org (c-98-33-96-243.hsd1.ca.comcast.net [98.33.96.243])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature ECDSA (secp384r1) server-digest SHA384)
-	(No client certificate requested)
-	by mx01.bremer-it.com (Postfix) with ESMTPSA id 061CA20B86;
-	Mon, 10 Aug 2026 04:03:25 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=barelysecure.org;
-	s=dkim68; t=1786327408;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cDIDTuliDDGgOAKpI245cMmyPRVVKxIWKH3GuXafqZA=;
-	b=HAaxkQ/6AawUqio6ZtZxsW0LqcdaN10B/vRSFk0TcWRBU45jxR+oipsFDUbLTtUrltNgoq
-	SUJTT9FHYYItqxPYvDw94jAGkuvJipWw3nalbM+Kl5az2K2VReh3w5eQsKr6sdoXp2TYzJ
-	R/1QaEGzKjPtOIK5qoT0bvc6jV/0DL6pI9DWuc6O6DxxGrPYGtwZo2mUmQAuO9Qnm4Snbc
-	xSJC10kazHhQLi5gnGRmMR3oz+JF66HhtQ+ApzYgkv3zty8o4P/Vk4Bj7YXV9UTiPwdcJq
-	HVIfjaeb2e+Z+Q1K56IpiPILzHBRAYt0tcFSf+P7vSEEBvoUD2BFobn0ZIvA2Q==
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=joern@lazybastard.org smtp.mailfrom=joern@barelysecure.org
-Date: Sun, 9 Aug 2026 19:03:22 -0700
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@barelysecure.org>
-To: syzbot <syzbot+b320a4d5f65a61dbbf89@syzkaller.appspotmail.com>
-Cc: joern@lazybastard.org, linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com,
-	richard@nod.at, syzkaller-bugs@googlegroups.com, vigneshr@ti.com
-Subject: Re: [syzbot] [mtd?] divide error in block2mtd_setup2
-Message-ID: <ankxaiwtTltL0xMj@cashel.logfs.org>
-References: <6a791c94.01d0871a.3a0d52.009b.GAE@google.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <6a791c94.01d0871a.3a0d52.009b.GAE@google.com>
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [1.40 / 14.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	MIME_GOOD(-0.10)[text/plain];
-	ARC_NA(0.00)[];
-	TAGGED_RCPT(0.00)[b320a4d5f65a61dbbf89];
-	RCVD_COUNT_ZERO(0.00)[0];
-	ASN(0.00)[asn:7922, ipnet:98.32.0.0/11, country:US];
-	MIME_TRACE(0.00)[0:+];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	FROM_HAS_DN(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	LOCAL_OUTBOUND(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_DN_SOME(0.00)[];
-	TO_MATCH_ENVRCPT_SOME(0.00)[];
-	DKIM_SIGNED(0.00)[barelysecure.org:s=dkim68];
-	URIBL_BLOCKED(0.00)[cashel.logfs.org:mid,cashel.logfs.org:helo];
-	SUBJECT_HAS_QUESTION(0.00)[]
-X-Rspamd-Server: server01
-X-Rspamd-Queue-Id: 061CA20B86
-X-Spamd-Bar: +
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260809_190347_209352_8FE0C036 
-X-CRM114-Status: UNSURE (   7.25  )
-X-CRM114-Notice: Please train this message.
+	Mon, 10 Aug 2026 06:30:18 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with UTF8SMTP id E69C34379F;
+	Mon, 10 Aug 2026 06:30:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id 778541F000E9;
+	Mon, 10 Aug 2026 06:30:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1786343415;
+	bh=bMbqWLJ+xQ+0ueSURHl638U6qP2j2ips3hDRe4p2Etw=;
+	h=Date:Subject:Cc:From:To:References:In-Reply-To;
+	b=jSSVEqm3DTTfRBLdBkRpPfj2gkzmu5dPycNv1U4xsmRwep1lnTYAlP86PurPHDTdN
+	 YVzzJdAgDQdlktMZIZcNibY7NQBdMBspeYUkNvxAYL1Ru9fRr8QBeT5bJvSxYbiMy4
+	 /bHJmHxgTnscExcb1mW9eJVaQMsdzwH7oPgbrIHNWKnOpBnoohStQ7kImXriBvKur4
+	 +CgNo8cCrol4YgEpFuo9u4XhG1QFNalxckO1xVtAtIogA59jHxqk44BIWRMwc9a/Ta
+	 OTlow/ye+m+20rkUwMoWwPoIKYXUeAsI5Awc3k0/zFxIhSonNE4g8KWaW9pA90Nkwa
+	 6zvIi/uPVKaYA==
+Mime-Version: 1.0
+Date: Mon, 10 Aug 2026 08:30:11 +0200
+Message-Id: <DKL1W2D3OJ5J.2VW3B1VPH5LHF@kernel.org>
+Subject: Re: [PATCH] mtd: spi-nor: allow force unlocking via DT property
+Cc: "Takahiro Kuwano" <takahiro.kuwano@infineon.com>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+From: "Michael Walle" <mwalle@kernel.org>
+To: "Chen Minqiang" <ptpt52@gmail.com>, "Pratyush Yadav"
+ <pratyush@kernel.org>, "Miquel Raynal" <miquel.raynal@bootlin.com>,
+ "Richard Weinberger" <richard@nod.at>, "Vignesh Raghavendra"
+ <vigneshr@ti.com>
+X-Mailer: aerc 0.20.0
+References: <2026-08-05171214.2934-1-ptpt52@gmail.com>
+ <20260806112418.14695-1-ptpt52@gmail.com>
+In-Reply-To: <20260806112418.14695-1-ptpt52@gmail.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,36 +68,114 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============2616109741758266447=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sun, Aug 09, 2026 at 05:34:28PM -0700, syzbot wrote:
-> =
+--===============2616109741758266447==
+Content-Type: multipart/signed;
+ boundary=0a6fe17bf19ad5a12e68b66b0165d1da9fb2afb6bb7e78bdaf4e15f2febd;
+ micalg=pgp-sha384; protocol="application/pgp-signature"
 
-> * 2a:	f7 f6                	div    %esi <-- trapping instruction
+--0a6fe17bf19ad5a12e68b66b0165d1da9fb2afb6bb7e78bdaf4e15f2febd
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
 
-Best guess would be this:
+On Thu Aug 6, 2026 at 1:24 PM CEST, Chen Minqiang wrote:
+> Hi,
+>
+> Thank you for your valuable insight!
+>
+> You are completely right that for unlisted/generic chips that feature a 4=
+-bit
+> BP layout (BP3 at bit 5 or bit 6) or a CMP (Complement Protect) bit in SR=
+2,
+> spi_nor_unlock() won't clear those extra bits without the corresponding f=
+lags
+> (SNOR_F_HAS_4BIT_BP / SNOR_F_HAS_SR2_CMP_BIT6) set by the ID database or =
+SFDP.
 
-	if ((long)size % erase_size) {
 
-Someone passing an erase_size of 0 would indeed trigger an exception.
-Fix would be something like this:
+Is this AI assisted?
 
--	if ((long)size % erase_size) {
-+	if (!erase_size || (long)size % erase_size) {
+> However, in practice:
+> 1. The vast majority of 3.3V/1.8V generic SPI NOR flashes (e.g. 4MB-16MB =
+chips
+>    commonly found in vendor devices like Tenda AX12L Pro) use the standar=
+d
+>    3-bit BP (BP0-BP2, SR1 bits 2..4).
+> 2. The current main issue is that even for these standard 3-bit BP chips,=
+ the
+>    kernel currently skips spi_nor_try_unlock_all() completely at boot tim=
+e if
+>    CONFIG_MTD_SPI_NOR_SWP_DISABLE_ON_VOLATILE is set (for non-volatile ch=
+ips)
+>    or if SNOR_F_HAS_LOCK is not set in chip flags. As a result, status re=
+gisters
+>    locked by factory bootloaders are never cleared.
+>
+> `linux,force-sr-unlock` serves as a pragmatic DT override to force the un=
+lock
+> attempt at probe time.
+>
+> To address your point regarding 4-bit BP and CMP bits for unlisted chips,=
+ we
+> have two potential options:
+>
+> Option A (Current Best-Effort):
+> Keep the patch as-is, treating `linux,force-sr-unlock` as a best-effort D=
+T
+> trigger to invoke standard spi_nor_unlock(). It successfully unlocks the =
+vast
+> majority of standard 3-bit BP generic chips. For rare unlisted chips with=
+ 4-bit
+> BP or CMP bits, explicit entries can still be added to the ID database wh=
+en
+> discovered.
+>
+> Option B (Aggressive Force-Clear):
+> When `linux,force-sr-unlock` is present in DT, enhance spi_nor_try_unlock=
+_all()
+> to perform a broader clear operation on SR1 (masking bits 2..6 to clear B=
+P0-BP3/TB)
+> and SR2 (clearing CMP bit if SR2 is readable).
+>
+> Which approach would you prefer? I'd be happy to revise the patch based o=
+n your
+> guidance.
 
-I haven't touched the code is nearly two decades.  If somebody else
-feels like sending a patch and gathering all the glory, please be my
-guest!
+This patch won't fly as is. You're missing the dt-bindings patch
+(which I doubt will be accepted) and I really don't like this
+approach. First, why would you unlock a flash automatically? I've
+worked hard, to get rid of that anti-feature. Second, what if you
+still loose the flash "lottery"?
 
-J=F6rn
+-michael
 
---
-Those who come seeking peace without a treaty are plotting.
--- Sun Tzu
+--0a6fe17bf19ad5a12e68b66b0165d1da9fb2afb6bb7e78bdaf4e15f2febd
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCanlv9BIcbXdhbGxlQGtl
+cm5lbC5vcmcACgkQEic87j4CH/juFQF/dXsh8cSiNnGne85mZGpo+2JHGY8HXFhH
+uwWOpJgBxTcdNxegYfswC6XtkDhYH81iAX9JH42fJujdSujtuqXdTL48JVlIc7cm
+jllnaZj/VHKwOJSbycKZZV9Txkm86eAKJIw=
+=S1Jn
+-----END PGP SIGNATURE-----
+
+--0a6fe17bf19ad5a12e68b66b0165d1da9fb2afb6bb7e78bdaf4e15f2febd--
+
+
+--===============2616109741758266447==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============2616109741758266447==--
+
