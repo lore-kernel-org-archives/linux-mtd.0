@@ -4,66 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69C59C5B56A
-	for <linux-mtd@archiver.kernel.org>; Tue, 11 Aug 2026 17:15:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6042C5B572
+	for <linux-mtd@archiver.kernel.org>; Tue, 11 Aug 2026 18:20:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:From:Subject:Message-ID:In-Reply-To:
-	Date:MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
-	List-Owner; bh=3iJkrpYZ2EpW/EJraZAIGwepZeUkNhpRE7h6WmxbIyU=; b=Hp3B8Spo9wEsil
-	AtwpyFCb6RHdXNruPErQ+nqwae6PSHgEphviBQhoK6ZW2XlrhTUGwx7J31qKq2U8iH9IetdQH77ex
-	g1JSC9ny7ydcbU/f8hIoFXzRbVcv7TqoxX2cpyPUDxxXGPU9MolNVtiwwdSdOP5PWY4oMJoB+Rl4p
-	ZqIEjP6h4jaXouIpSY1PU8WPxKwCkGSsC9Sov3tNzxEVXR1R8zFmFY9C1ihMiWmh0tqeZhEbuXi39
-	y5NwMvKOrvFZ7jPqzQBk4LujoCLXwkjzartWUr12JW4mxj9uTeEkWwijNKvpNMMfTR9lKaGFvp3nW
-	P/3rDTq4apQqUGpIB5/w==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=wn+F3X2c28jOUg5ap7DDbWbg0dmqyuOT0v3v8fh0mmU=; b=YLG0QssgBttNY5
+	tp/NNJoRrmzajf9O8Ho2fMlsaaEK+v1pqWfSpuxXVwsoSP2i8PWRcdGtKPRAdpbzOhPo4mebV7Eky
+	HXSdCaDNnU6DBR+dwNZ2vonAXp/gtyJ9MjkGUFgKSbXNyp37sHFR28xYGfLRMM8FuYMRAec2iN2k3
+	NAC87QNel2vJZZG7FJA8HOjuOvUZWZE7FQ05E6ER8eWsoWnSF9FeMIvF2QCdABApOW5J4UMyriKZt
+	E/qYXpR1RyVbZ5s6dGrF7xzVEi9WgoBtqVuf06NvD9D57zlnE4FGf+3f9uCA9OVnK85UwVEhcvWBT
+	eOpTzJNHUlnEeHKo5rnA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wtq4l-0000000EcOV-0spe;
-	Tue, 11 Aug 2026 17:15:43 +0000
-Received: from mail-oa1-f70.google.com ([209.85.160.70])
+	id 1wtr5H-0000000Ek9g-12vS;
+	Tue, 11 Aug 2026 18:20:19 +0000
+Received: from mx01.bremer-it.com ([85.215.132.167])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wtq4h-0000000EcNm-45AV
+	id 1wtr5E-0000000Ek7I-1jXW
 	for linux-mtd@lists.infradead.org;
-	Tue, 11 Aug 2026 17:15:41 +0000
-Received: by mail-oa1-f70.google.com with SMTP id 586e51a60fabf-456bbfa4cb3so3559738fac.1
-        for <linux-mtd@lists.infradead.org>; Tue, 11 Aug 2026 10:15:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1786468538; x=1787073338;
-        h=content-type:to:from:subject:message-id:in-reply-to:date
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to:content-type;
-        bh=AXfLTBt3QiphfYH21Xgm1enb28mlAdxrrXg76S/tXaY=;
-        b=VlwRr1bFIgylz7lZC42DZmi9uWNxhplWKIcBV6s+I5XB1Mcf/71u8jF1pP8BIb+5rE
-         9GuCRhwK/PPVPy0rwLSsbEJUn9qt9pHK0WYI3nj8GvdbUSSk2gNPU6Sy7bzPLdEPFFRj
-         IeGESh/+Cgy2YbsyFT+huHJ+ohwc2zzaJRGmD33zCrSTKD3691uuNX7mL0NaJ9VenDnW
-         VQIu9dApJ0XJvw/KPP5UqiH24qCNkw/8cAptrHJUNe8oTyKhz7rEBgFtkt6K+WzU4Gbs
-         lErTlrtmxevFT5ZWL/EdbnyWJBvfstJs5e94Bk51Ywwmsb1cP9E+1nVXPGVuL8nUTlzn
-         myJA==
-X-Forwarded-Encrypted: i=1; AHgh+RrPXYbkpRPwMdkGRe5kyaiSrmqcFjK4r8yZMok/P2lDdVw7yiUP3eRr6rGUEOxmMzgMsDqB/8Hxw2I=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yzu01uLuYFTRbfaKLYVSofFvN6Es0th4XsL1wFr+sCdVdbstVx5
-	XnE1M1ZPxYTgrhkASJ4Sgloc5uojl8Ywk/VomY4ULGlh1aI40NK+ZEedt3WR/PSTdTltz2nGgV5
-	+Xn2Xhpbw9fUqLmX+Ez+Wt7lFheRgJDVd0Ns7xFH9kSnCFe1OoTaupbazisg=
-MIME-Version: 1.0
-X-Received: by 2002:a05:6808:c1aa:b0:4a3:ec8e:2052 with SMTP id
- 5614622812f47-4b1fd67318bmr3873936b6e.8.1786468538231; Tue, 11 Aug 2026
- 10:15:38 -0700 (PDT)
-Date: Tue, 11 Aug 2026 10:15:38 -0700
-In-Reply-To: <6a791c94.01d0871a.3a0d52.009b.GAE@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6a7b58ba.ac361c09.22ff0a.0045.GAE@google.com>
+	Tue, 11 Aug 2026 18:20:18 +0000
+Received: from cashel.logfs.org (c-98-33-96-243.hsd1.ca.comcast.net [98.33.96.243])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature ECDSA (secp384r1) server-digest SHA384)
+	(No client certificate requested)
+	by mx01.bremer-it.com (Postfix) with ESMTPSA id 1B67A2CC76;
+	Tue, 11 Aug 2026 20:19:59 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=barelysecure.org;
+	s=dkim68; t=1786472402;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/9pS6KtHLQ6uFM7vzTJ4cHqsIGhzdLQpbeisSsi6mKg=;
+	b=r4l0P+uydX5qL+wKXianH+Y/pV+EJK32jDjwvm4k74mV09S6DXowJ72tytdNkZTPJaH72L
+	K8uaCuOhX4j1cyc58mFyzQRDQENOUnq8LgTsmhXOUOSUiCBO0QglYb56FM5UZFNuFrY3Mp
+	jsgGHHwAQrw9aGwjYVrfP8tvn+yXpbXaKlEuEpeGvydQ7UmOOawcIK4oezO3aEu1ANPTWL
+	omOV2fmeZfaTPelDdmeoDNuSfpgRGqnuhk6lmdOVZyIioOAAnkJa8W0mMsVjiY9jQ+Ohex
+	Pxg1otBcbgN/8RpvFz2GpN4gPxLPPNQ/CFA7XKtzBqUA86suiYwQVNoD1CUpww==
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=joern@lazybastard.org smtp.mailfrom=joern@barelysecure.org
+Date: Tue, 11 Aug 2026 11:19:54 -0700
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@barelysecure.org>
+To: Pei Xiao <xiaopei01@kylinos.cn>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+	syzbot <syzbot+b320a4d5f65a61dbbf89@syzkaller.appspotmail.com>,
+	joern@lazybastard.org, linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org, richard@nod.at,
+	syzkaller-bugs@googlegroups.com, vigneshr@ti.com
 Subject: Re: [syzbot] [mtd?] divide error in block2mtd_setup2
-From: syzbot <syzbot+b320a4d5f65a61dbbf89@syzkaller.appspotmail.com>
-To: fabf@skynet.be, joern@barelysecure.org, joern@lazybastard.org, 
-	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, 
-	miquel.raynal@bootlin.com, richard@nod.at, stable@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com, vigneshr@ti.com, xiaopei01@kylinos.cn
+Message-ID: <antnynHuZ2W8JmCc@cashel.logfs.org>
+References: <6a791c94.01d0871a.3a0d52.009b.GAE@google.com>
+ <ankxaiwtTltL0xMj@cashel.logfs.org>
+ <29397db9-7db4-4969-bb0e-5bb71f0c0303@kylinos.cn>
+ <87se4mqhc3.fsf@bootlin.com>
+ <bbbff0ba-09c4-49dc-9aac-371c0c7d6902@kylinos.cn>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <bbbff0ba-09c4-49dc-9aac-371c0c7d6902@kylinos.cn>
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [3.31 / 14.00];
+	BAYES_SPAM(1.91)[88.46%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	MIME_GOOD(-0.10)[text/plain];
+	ARC_NA(0.00)[];
+	TAGGED_RCPT(0.00)[b320a4d5f65a61dbbf89];
+	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:7922, ipnet:98.32.0.0/11, country:US];
+	MIME_TRACE(0.00)[0:+];
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_ZERO(0.00)[0];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	DKIM_SIGNED(0.00)[barelysecure.org:s=dkim68];
+	FROM_EQ_ENVFROM(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
+	LOCAL_OUTBOUND(0.00)[];
+	URIBL_BLOCKED(0.00)[barelysecure.org:from_mime,barelysecure.org:from_smtp,c-98-33-96-243.hsd1.ca.comcast.net:rdns,cashel.logfs.org:mid,cashel.logfs.org:helo];
+	TO_MATCH_ENVRCPT_SOME(0.00)[];
+	SUBJECT_HAS_QUESTION(0.00)[]
+X-Rspamd-Server: server01
+X-Rspamd-Queue-Id: 1B67A2CC76
+X-Spamd-Bar: +++
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260811_101540_023884_A85E2802 
-X-CRM114-Status: UNSURE (   7.58  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260811_112016_900330_45684F38 
+X-CRM114-Status: GOOD (  10.98  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,100 +103,59 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-syzbot has found a reproducer for the following issue on:
+On Tue, Aug 11, 2026 at 11:02:53AM +0800, Pei Xiao wrote:
+> > =
 
-HEAD commit:    f5bbbfec59b4 Merge tag 'probes-fixes-v7.2-rc7' of git://gi..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=13a31079580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c44651ea7dd2f307
-dashboard link: https://syzkaller.appspot.com/bug?extid=b320a4d5f65a61dbbf89
-compiler:       gcc (Debian 14.2.0-19) 14.2.0, GNU ld (GNU Binutils for Debian) 2.44
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16b76149580000
+> Thank you for your reply. I am waiting for a reply on whether the cast
+> on 'long' needs to be removed. Once that is confirmed, I would be happy
+> to do it. Thank you.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b320a4d5f65a61dbbf89@syzkaller.appspotmail.com
+It doesn't need to be removed, but it should be removed.  Any
+unnecessary code should be removed in general and unnecessary casts in
+particular should.
 
-Oops: divide error: 0000 [#1] SMP KASAN NOPTI
-CPU: 0 UID: 0 PID: 6029 Comm: syz-executor518 Not tainted syzkaller #0 PREEMPT(full) 
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
-RIP: 0010:add_device drivers/mtd/devices/block2mtd.c:296 [inline]
-RIP: 0010:block2mtd_setup2.isra.0+0x3c8/0xc70 drivers/mtd/devices/block2mtd.c:459
-Code: 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 2b 08 00 00 48 8b 6d 08 31 ff 48 89 e8 48 c1 e0 09 48 99 <49> f7 ff 48 89 d6 48 89 54 24 10 e8 98 d5 4d fb 48 8b 54 24 10 48
-RSP: 0018:ffffc90004ccf9f0 EFLAGS: 00010206
-RAX: 0000000000100000 RBX: 1ffff92000999f41 RCX: ffffffff86bc9838
-RDX: 0000000000000000 RSI: ffffffff86bc984a RDI: 0000000000000000
-RBP: 0000000000000800 R08: 0000000000000005 R09: 000000000000001f
-R10: 0000000000000007 R11: 0000000000000000 R12: ffffc90004ccfaa8
-R13: 0000000000000000 R14: ffff8880254fe000 R15: 0000000000000000
-FS:  000055558148e400(0000) GS:ffff8880d5dec000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055a8208cda78 CR3: 000000003ad58000 CR4: 0000000000352ef0
-Call Trace:
- <TASK>
- block2mtd_setup+0xbd/0xd0 drivers/mtd/devices/block2mtd.c:476
- param_attr_store+0x199/0x300 kernel/params.c:589
- module_attr_store+0x58/0x80 kernel/params.c:904
- sysfs_kf_write+0xf2/0x150 fs/sysfs/file.c:145
- kernfs_fop_write_iter+0x3e0/0x5f0 fs/kernfs/file.c:345
- new_sync_write fs/read_write.c:595 [inline]
- vfs_write+0x6ac/0x1050 fs/read_write.c:687
- ksys_write+0x12a/0x250 fs/read_write.c:739
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0x115/0x870 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f0b39a14737
-Code: 48 89 fa 4c 89 df e8 98 1d 00 00 8b 93 08 03 00 00 59 5e 48 83 f8 fc 74 1a 5b c3 0f 1f 84 00 00 00 00 00 48 8b 44 24 10 0f 05 <5b> c3 0f 1f 80 00 00 00 00 83 e2 39 83 fa 08 75 de e8 23 ff ff ff
-RSP: 002b:00007ffdcc22a9a0 EFLAGS: 00000202 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 000055558148e400 RCX: 00007f0b39a14737
-RDX: 000000000000000c RSI: 00007ffdcc22aa50 RDI: 0000000000000004
-RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000202 R12: 00007ffdcc22aa50
-R13: 00007ffdcc22aa10 R14: 00007ffdcc22a9f0 R15: 0000000000000002
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:add_device drivers/mtd/devices/block2mtd.c:296 [inline]
-RIP: 0010:block2mtd_setup2.isra.0+0x3c8/0xc70 drivers/mtd/devices/block2mtd.c:459
-Code: 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 2b 08 00 00 48 8b 6d 08 31 ff 48 89 e8 48 c1 e0 09 48 99 <49> f7 ff 48 89 d6 48 89 54 24 10 e8 98 d5 4d fb 48 8b 54 24 10 48
-RSP: 0018:ffffc90004ccf9f0 EFLAGS: 00010206
-RAX: 0000000000100000 RBX: 1ffff92000999f41 RCX: ffffffff86bc9838
-RDX: 0000000000000000 RSI: ffffffff86bc984a RDI: 0000000000000000
-RBP: 0000000000000800 R08: 0000000000000005 R09: 000000000000001f
-R10: 0000000000000007 R11: 0000000000000000 R12: ffffc90004ccfaa8
-R13: 0000000000000000 R14: ffff8880254fe000 R15: 0000000000000000
-FS:  000055558148e400(0000) GS:ffff8880d5dec000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055a8208cda78 CR3: 000000003ad58000 CR4: 0000000000352ef0
-----------------
-Code disassembly (best guess):
-   0:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
-   7:	fc ff df
-   a:	48 89 fa             	mov    %rdi,%rdx
-   d:	48 c1 ea 03          	shr    $0x3,%rdx
-  11:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1)
-  15:	0f 85 2b 08 00 00    	jne    0x846
-  1b:	48 8b 6d 08          	mov    0x8(%rbp),%rbp
-  1f:	31 ff                	xor    %edi,%edi
-  21:	48 89 e8             	mov    %rbp,%rax
-  24:	48 c1 e0 09          	shl    $0x9,%rax
-  28:	48 99                	cqto
-* 2a:	49 f7 ff             	idiv   %r15 <-- trapping instruction
-  2d:	48 89 d6             	mov    %rdx,%rsi
-  30:	48 89 54 24 10       	mov    %rdx,0x10(%rsp)
-  35:	e8 98 d5 4d fb       	call   0xfb4dd5d2
-  3a:	48 8b 54 24 10       	mov    0x10(%rsp),%rdx
-  3f:	48                   	rex.W
+One of better parts of the C language is that casts are hardly ever
+necessary.  Which means that any remaining necessary casts should
+immediately draw attention of the reader - something tricky and
+potentially dangerous is going on here.
+
+But you stop paying attention when things become too common.  Which
+means that unnecessary casts are not just noise, they actively do harm.
 
 
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+In this particular case, we can simply test whether the cast makes any
+difference:
+
+#include <assert.h>
+#include <stdio.h>
+
+int main(void)
+{
+	for (int i=3D0; i<=3D1<<16; i++) {
+		for (int k=3D1; k<=3D1<<16; k++) {
+			long long size =3D (long long)i << 32;
+			int erase_size =3D k;
+
+			long long a =3D size % erase_size;
+			long long b =3D (long)size % erase_size;
+			assert(a=3D=3Db);
+		}
+	}
+}
+
+Compile with optimizations and the compiler decides to remove the loop.
+Unless you suspect a compiler bug, I guess that settles the question. ;)
+
+J=F6rn
+
+--
+Semper ubi sub ubi ubique.
+-- latin pun
 
 ______________________________________________________
 Linux MTD discussion mailing list
