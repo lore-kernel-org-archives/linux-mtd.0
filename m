@@ -4,63 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48856C5AC67
-	for <linux-mtd@archiver.kernel.org>; Tue, 11 Aug 2026 04:14:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4791DC5AD7B
+	for <linux-mtd@archiver.kernel.org>; Tue, 11 Aug 2026 06:02:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
+	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=46PAZE3+GZQG2lz6vasVN0GDMu7R5PlU7oviIiYPVyg=; b=FRBl7Z4cuH0S7c
-	8p9SsxINzUvEmeBdsFzONMbKHmQUBIhZGbrzX/vQqgGhozw58TLAxHA+9B8lmrjLvSv8qy6pOpBSk
-	gs7tKNednqKAKeStQQNOGwgiqlGsJB+BbRoT4p9V0kAw0DlpVV77kKj9P4CzuOlO8n5iqJizUERCv
-	XIwdaR9TOJfJ4wC93IF7DmYBFn6dXbExE046IkDJblJ5YrGnxRfkCtRG148vqxn18V5jmhH2VaVR0
-	mW0jY4n2KcHduzNhAWN8Mep6i05cDSWN820gj+P0DOI21eyNMITo9nk8vtjacvU2hfGClUc1MIg7g
-	NeRsd6db1C4eqGhqdK9g==;
+	List-Owner; bh=DbXE/BgUlgKdxJRNbK1M6UzHRRni+jAVHiZjr2o0AB4=; b=kA31gjlqr9g1oG
+	0qPfqVSNqcUmjxQTbv3GBbX9rUGDkhbxwRqvb5r8azBGQkND21cpVIrJlP8lR19PKmpLDAOl8XUAC
+	gE/iBlpuFPgDgI8+b+iRFT0+P77GvhAyYgrib2Jd+88bL8LQq0Tx7o7M6dNCa0Uh6fcyZKU93VYPR
+	g1a2b5eMG8xwOXAEYRcSxZz4oEUjUc4lhE7QSGQGiVEwuSfIWI8Df3pM2dISGHjNKKtc0xf1k9V5L
+	pbMz5fYtp0kZz7CorvcVJB0ETNrCiylaYyn+YYeC1PKqc4iadru9HjTBfn/P3eEU19GkTOAenCZ6J
+	ujTVmNcQUmI4zlgjC9Ow==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wtdsU-0000000DFEa-1be0;
-	Tue, 11 Aug 2026 04:14:14 +0000
-Received: from mail-m49198.qiye.163.com ([45.254.49.198])
+	id 1wtfYy-0000000DMRA-15G9;
+	Tue, 11 Aug 2026 06:02:12 +0000
+Received: from mail-oo1-xc36.google.com ([2607:f8b0:4864:20::c36])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wtdsR-0000000DFDf-36ra
+	id 1wtfYv-0000000DMPq-2W03
 	for linux-mtd@lists.infradead.org;
-	Tue, 11 Aug 2026 04:14:13 +0000
-Received: from PC-202605011814.localdomain (unknown [223.112.146.162])
-	by smtp.qiye.163.com (Hmail) with ESMTP id 49839a3dd;
-	Tue, 11 Aug 2026 12:14:01 +0800 (GMT+08:00)
-From: Runyu Xiao <runyu.xiao@seu.edu.cn>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <mwalle@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org,
-	jianhao.xu@seu.edu.cn
-Subject: [PATCH v2] mtd: spi-nor: scope the exclusive RWW lock
-Date: Tue, 11 Aug 2026 12:13:49 +0800
-Message-Id: <20260811041349.333176-1-runyu.xiao@seu.edu.cn>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <DKL4CBQNKCO2.3NAZ6S25Q60XN@kernel.org>
-References: <DKL4CBQNKCO2.3NAZ6S25Q60XN@kernel.org>
+	Tue, 11 Aug 2026 06:02:10 +0000
+Received: by mail-oo1-xc36.google.com with SMTP id 006d021491bc7-6aea94f96c4so1516181eaf.2
+        for <linux-mtd@lists.infradead.org>; Mon, 10 Aug 2026 23:02:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1786428129; x=1787032929; darn=lists.infradead.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :content-type:mime-version:subject:date:from:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=nvW+vlkykLKhHUV+ggRmJqGjwZhBqy5a9qXoHb1/+wE=;
+        b=OcPl5cz+f4Xf6TvX7i0c+PRxnc/Sk35TiDRTziT2/j2yDq50JycaaqqtPDg9PmvswF
+         6CV3SFhYZ2wngKQOMzyEL9+92JMgQ5Tenmtj+/O7QGcCicDxmNKcjJfUzNX2BP7Xl0mt
+         /7MTgla5/JSG9pOePF9H9cLv4GguE5sTDx4DY0TeQxzaUy0mKruFipnZj0R7EdgkOh1M
+         bguuJoEwptzT5/0R90CO3wTtaMe81kIOPV2m38YzeIotK6wDk+OGahdyzRuHrHWiglm6
+         4j8gUXdocU8ddSwfV2AaPlpVp2jhi7mM7ST5Orjz/oThapBXRxsyPxePUXXHiboSH7Gj
+         ZY3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1786428129; x=1787032929;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :content-type:mime-version:subject:date:from:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=nvW+vlkykLKhHUV+ggRmJqGjwZhBqy5a9qXoHb1/+wE=;
+        b=m1jii2brjaub9DsNKfwLOccv0qv52jqB4NGHcf0LGsxpl51Qh4qQf5JGnIhv0ok4TR
+         CGzG55IeoOcoZCgZ1ePd1GCTiSzLD128tqL5hyoeOxQRVbl2b8DopI7MTaUBVbmDFF4b
+         rngbfRlvfbA/ksCykDiedsMFsAQY+H6mGh40ouOSmF4R6GGxQHs7haiJDVUG257sEpa1
+         Uy5kmxxOmxIKJwdLsffoPk8ux7zld7CYsqk0Yqt5zqMyBwdcYXLvwSUD4/6rMrHqzRpK
+         GT4tJRbfpIX7zhZfHXelrfBgi9lvLKzxZaf5p3DNM5XRyyW5qFECOs07UqOQKqVS0fhE
+         9Fhg==
+X-Gm-Message-State: AOJu0Yyv+COXoNmYiMOKcDY6gonjF4xNIIJSDxLYZKCuyakyZ7tTdnrA
+	Ti3tU+3Hs2k0JRN6pm6D628kgaXuuVZ+3wGIWTCDq9gFW0npkdq3+NYCxOQ/ug==
+X-Gm-Gg: AR+sD12ScGaSNcVKO+mf8CJXp1NvV7l03Km+39uRVEELQZyvuX1Uqe54fWIeSZjoOac
+	SKByghKXd+WykK9uU7l9IWYsr5NJ9wGMYlpZQEvYX6xh/oy92PZv3XySoIKd1vUJEGitWXfUmq4
+	sDznFmpQmUq1erMXAyv/4wZzoHc4Gy9ZO4JNYDHeHMsENMrLwykiD9bo4BVoR/o5WnSwoZILYZ0
+	ymvjK7KLHZwwxv2It7sDOf9PBnIhNSLKnCnjWu0d57o35EaSMD0kSRhtGNbjwURCwYpgwlUuMC7
+	/2SlWdwkOQdhM8osr7kbpaB/rHGIoq4fZI2Qm0tuz3gcdrKmD5+IAYolLS9aBwxvGjbr2wtpS0m
+	1oYHHk4BgVU4h+bocSZXFpEqviM+3v8TYlX16wYdsb5N2l07qayUY/n3uyEJK7WrhaI0v4HlLMz
+	kdqEO5TC8AH0VGnaUDBC83YIEoCkkRQd5ZURjPpbjXH66fR5ceFIqWCiG/fjiNLZA3etznWmdTN
+	Tqq8cEx7fcDe8d0FtElMecIYz2lXr+pmHgf1HrFu/IaAvzy87s73sO1vrNwVdrsbb98NDD7FwhK
+	jBDZBuZKxoDSoc2vmQLmfDgVMiao3ZGrswzWziuYlI+etQCJz1JGNXpdus7nJowIMffHB4thMAb
+	bjOO6uH9rIGJbm1ZUVuKvt9sZ1G4=
+X-Received: by 2002:a05:6820:2015:b0:6b0:4d2c:1bf1 with SMTP id 006d021491bc7-6b0a2ff070amr388872eaf.11.1786428128806;
+        Mon, 10 Aug 2026 23:02:08 -0700 (PDT)
+Received: from [127.0.1.1] (184-96-154-59.hlrn.qwest.net. [184.96.154.59])
+        by smtp.gmail.com with ESMTPSA id 006d021491bc7-6b09fa1ef9esm676004eaf.0.2026.08.10.23.02.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 Aug 2026 23:02:07 -0700 (PDT)
+From: James Hilliard <james.hilliard1@gmail.com>
+Date: Tue, 11 Aug 2026 00:01:59 -0600
+Subject: [PATCH 1/3] mtd: rawnand: sunxi: propagate user-data allocation
+ errors
 MIME-Version: 1.0
-X-HM-Tid: 0a9fef07002203a1kunm3038573ccf371
-X-HM-MType: 10
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-	tZV1koWUFITzdXWRgWCB1ZQUpXWS1ZQUlXWQ8JGhUIEh9ZQVkaHUsaVkNPS0IeHx0fHxhNSFYeHw
-	5VEwETFhoSFyQUDg9ZV1kYEgtZQVlJSUhVSkpJVUpPTVVKTUlZV1kWGg8SFR0UWUFZT0tIVUpLSU
-	hOQ0NVSktLVUtZBg++
-DKIM-Signature: a=rsa-sha256;
-	b=JFLZ96SdvX1KS98OSuUfXksu69enBfi9qs1wYdw3DXKqzr9kkoVdmKlKev29rnBK9sBv86s5RxYSbpbWcBjMhx3FFUg1JoMTBNLQ8Z7rpaLPq/1AYDsrURxqR+QOeH2PYqi5jpmHDXZ5jCwAINdV+/3YSE83Q2ETIQd22/b3Uh8=; s=default; c=relaxed/relaxed; d=seu.edu.cn; v=1;
-	bh=YBfIz6+uNJCCf9NNN7opXSjgJhc46dkV8CxB1hCFr7Y=;
-	h=date:mime-version:subject:message-id:from;
+Message-Id: <20260811-sunxi-nand-protected-oob-fixes-v1-1-412e50444673@gmail.com>
+References: <20260811-sunxi-nand-protected-oob-fixes-v1-0-412e50444673@gmail.com>
+In-Reply-To: <20260811-sunxi-nand-protected-oob-fixes-v1-0-412e50444673@gmail.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+ Chen-Yu Tsai <wens@kernel.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
+ Samuel Holland <samuel@sholland.org>, 
+ Richard Genoud <richard.genoud@bootlin.com>
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
+ linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org, 
+ James Hilliard <james.hilliard1@gmail.com>
+X-Mailer: b4 0.15.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260810_211411_959970_46570B70 
-X-CRM114-Status: GOOD (  11.43  )
+X-CRM114-CacheID: sfid-20260810_230209_646633_4401DC8F 
+X-CRM114-Status: GOOD (  13.87  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,43 +108,53 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-spi_nor_rww_start_exclusive() is used as the wait_event_killable()
-condition for RWW access. When RWW is busy, it can return false while
-still holding nor->lock, which blocks spi_nor_rww_end_exclusive() from
-clearing the RWW state.
+sunxi_nfc_maximize_user_data() returns -ENOMEM when its per-step
+length array cannot be allocated, but the caller ignores that error.
+The NULL array then makes sunxi_nfc_user_data_sz() report the fixed
+four-byte fallback, which is not the layout that the variable-length
+setup calculated.
 
-Use guard(mutex) here so nor->lock is released before the condition
-returns, while the state flags still hand off ownership to the caller.
-This keeps the mutex scope aligned with the other RWW start helpers.
+Return the setup error so an allocation failure cannot silently select
+and validate a different OOB layout.
 
-Fixes: 03e7bb864d9a ("mtd: spi-nor: use scope-based mutex cleanup helpers")
-Cc: stable@vger.kernel.org
-Signed-off-by: Runyu Xiao <runyu.xiao@seu.edu.cn>
+Fixes: 54dcd6aa69db ("mtd: rawnand: sunxi: introduce maximize variable user data length")
+Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
 ---
-Changes in v2:
-- Replace the analysis-style explanation with a short maintainer-facing
-  description of the busy-path lock hold.
-- Keep the fix focused on using guard(mutex) so the mutex is released on
-  both paths.
+ drivers/mtd/nand/raw/sunxi_nand.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-drivers/mtd/spi-nor/core.c | 2 +-
-1 file changed, 1 insertion(+), 1 deletion(-)
+diff --git a/drivers/mtd/nand/raw/sunxi_nand.c b/drivers/mtd/nand/raw/sunxi_nand.c
+index 45ccbce91551..108161fe10cb 100644
+--- a/drivers/mtd/nand/raw/sunxi_nand.c
++++ b/drivers/mtd/nand/raw/sunxi_nand.c
+@@ -2072,6 +2072,7 @@ static int sunxi_nand_hw_ecc_ctrl_init(struct nand_chip *nand,
+ 	int total_user_data_sz = 0;
+ 	int nsectors;
+ 	int ecc_mode;
++	int ret;
+ 	int i;
+ 
+ 	if (nanddev->ecc.user_conf.flags & NAND_ECC_MAXIMIZE_STRENGTH) {
+@@ -2169,9 +2170,12 @@ static int sunxi_nand_hw_ecc_ctrl_init(struct nand_chip *nand,
+ 	 * The rationale for variable data length is to prioritize maximum ECC
+ 	 * strength, and then use the remaining space for user data.
+ 	 */
+-	if (nfc->caps->reg_user_data_len)
+-		sunxi_nfc_maximize_user_data(nand, mtd->oobsize, ecc->bytes,
+-					     nsectors);
++	if (nfc->caps->reg_user_data_len) {
++		ret = sunxi_nfc_maximize_user_data(nand, mtd->oobsize,
++						   ecc->bytes, nsectors);
++		if (ret)
++			return ret;
++	}
+ 
+ 	if (total_user_data_sz == 0)
+ 		for (i = 0; i < nsectors; i++)
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index ccf4396cdcd0..8bc117b46e02 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -1310,7 +1310,7 @@ static bool spi_nor_rww_start_exclusive(struct spi_nor *nor)
- {
- 	struct spi_nor_rww *rww = &nor->rww;
- 
--	mutex_lock(&nor->lock);
-+	guard(mutex)(&nor->lock);
- 
- 	if (rww->ongoing_io || rww->ongoing_rd || rww->ongoing_pe)
- 		return false;
 -- 
-2.34.1
+2.53.0
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
