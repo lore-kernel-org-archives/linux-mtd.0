@@ -4,71 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 762DBC5B56A
-	for <linux-mtd@archiver.kernel.org>; Tue, 11 Aug 2026 18:34:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BBC55C5B572
+	for <linux-mtd@archiver.kernel.org>; Tue, 11 Aug 2026 18:34:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=0WeGriE1/St6YJqki9CZ1A45iXiVyq+BZikFxyEzLKQ=; b=pJ2MYV+0QJzmhf
-	akrR/s3DUq0RYX6Fwj0iIwdrdB7HsQSrcFycakITro0kaDVs+Ly9E7J+qRo2iTRWU+1o7ps7SBh3e
-	JE3YFQKZifFi9mu5qy8NPjetoVE48FP1AWGX53B4RO9B2Xy17VPFDM3NIkd4+2sSbbUwHvxiapS5G
-	4wz5OxQZrdRolTD3p5WlrSjlj0uLxvdQpRTN0k6WiNx3mLimfmwwXsX7BmCvsoSSKMofj4Co2R8/X
-	H23eW9XFHy/F91vMYoAak+Ji07L8rOj/3hjV76fdJemSMqTxench8Ww0hVFwOjYtvQ//pdee8RX40
-	V/v6N5RpNEYwkFfZVtTw==;
+	List-Owner; bh=rYwJ+s/3/OQlpPS9vHqwWCHO8EjYmUQoGOo0QWmuaMw=; b=Bj1ROilizY7Jet
+	EZlf4LyxTFo5V9cJBOHSBgOeMezrmPy8sYhZDWjG17O5g7rlBqi9DNUyyB5uLZSpeom1FjthYFEbS
+	CUM4c2M33FHvorzM6iBRKiY2P2qQDkFBcw9hqlcEfY0gBal5cmlODcKaTdjxKm++74jEqHkw/6Jie
+	FpyVb/3DVgvDULbJkIUEjju2lAa60Q2vAe1HdfCCPYmcw3MpUlLoLdFjFLQCn2rUHC7HKjom9hcDC
+	K6AOb0ctEci6n6KuVR18FJeWhD8ebLlyvOjFqk6ybG9wJXjXgU6b2GoogFiuJxpMHYkUPo3O3A2u+
+	66TFT2ntLe5XMkgll3ZA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wtrJ9-0000000EmAl-3xWw;
-	Tue, 11 Aug 2026 18:34:39 +0000
+	id 1wtrJG-0000000EmDp-0CfD;
+	Tue, 11 Aug 2026 18:34:46 +0000
 Received: from mx0b-0002e601.pphosted.com ([148.163.154.28])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wtrJ4-0000000Em8T-3dU3
+	id 1wtrJD-0000000EmCG-1kFo
 	for linux-mtd@lists.infradead.org;
-	Tue, 11 Aug 2026 18:34:38 +0000
-Received: from pps.filterd (m0374955.ppops.net [127.0.0.1])
-	by mx0b-0002e601.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 67BGMcJa2174910;
-	Tue, 11 Aug 2026 13:34:29 -0500
+	Tue, 11 Aug 2026 18:34:44 +0000
+Received: from pps.filterd (m0374956.ppops.net [127.0.0.1])
+	by mx0b-0002e601.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 67BGM8VH1823871;
+	Tue, 11 Aug 2026 13:34:38 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com; h=cc
 	:content-transfer-encoding:content-type:date:from:in-reply-to
 	:message-id:mime-version:references:subject:to; s=
-	proofpoint-05-2026; bh=L3r4+4BDkKDSVXfOUwFU3FkZBjUujBJu7lCtNDJ0T
-	so=; b=ZHYCwqkxmPg0ox+1UNP3WMaWkSFQWfJcm5v61NdaRaTjoUvv+GXVWS9O/
-	6iVyNhUP4YmUS01anX278s/Mia10N44r1Tq8AYPbKzkewW4VpvB5ocJRsLDq7to3
-	R5AG744S88E/OQL/Tccwc7gQ3Gle6RCn5QLRxVZmGhqjpIxYKIVEayGsG/2r9UqK
-	1HbZF7l0FvNMgPQsjkZB9feiDGilyd6F9g6kaZNLZT1WKrnbDTe+k14h1OqazLLG
-	05F2Zo8LyBM2qgCKpAzUgf+B42ffC5cKAetmkWwi7H/Mbxt1sUt166EnviZ/6pnL
-	eF6fInNhyMaxhDEHmCfM7ia8YT0fQ==
-Received: from mw6pr02cu001.outbound.protection.outlook.com (mail-westus2azon11012047.outbound.protection.outlook.com [52.101.48.47])
-	by mx0b-0002e601.pphosted.com (PPS) with ESMTPS id 4g00w4uj2e-1
+	proofpoint-05-2026; bh=8ugXXaYOACCqQhtO+XS/9SAqsz/zeF6YSVcc8SKLY
+	/0=; b=dIzHWIn6/SDPbjm7e/oyY7jN1v6QUd5nWHfEgyGGogzie8yNF7pXXcMZN
+	ql51h4b5ZFPcJb29Ry2R4pNbPwQxzxgIT5FBIoTL5A0Jj36ymwKiOgdQ7witmXp2
+	sRa8PbTt+SUPxEXI80+v3XWvvCi4SiDjE84AkPdbsT1XHZLUlkC8Fh3gryZqtCNv
+	4fyiPJZ9vSAAxKLHvJ+pIgoku+Sl2z0Fz7M3ublYzvupi+IcTEDLUU60QhtFX8un
+	wsssSokU7qD6XYtKA5B/lvq90u7xV6/REgMt04CFIaixxg4Df38Vwu9PZEk/nhI8
+	KVK6ErB5uo6+a8y3P94O2+ZTarGBA==
+Received: from sa9pr02cu001.outbound.protection.outlook.com (mail-southcentralusazon11013059.outbound.protection.outlook.com [40.93.196.59])
+	by mx0b-0002e601.pphosted.com (PPS) with ESMTPS id 4g00wnbk8g-1
 	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-	Tue, 11 Aug 2026 13:34:29 -0500 (CDT)
+	Tue, 11 Aug 2026 13:34:37 -0500 (CDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=kPnxhxBEXdBMVCG1z8ZeiiJNbnPmmuhFbgZ2lqAYdt2AyOn7I0Xi6mzgO+h4bCkcgcusViZsSW+7jeFt5fOlFqYMwk9VY4e1ptaAqnv4ovnXAwlSjugZwaVjKVA+EOCKMZ8zaWqOHSaNlOuV9J3VQbxdw+1rbP1VTKJ+1HBfBVYTAVD/ixrWFG/gZE9sOHZ0bFR3RuRNEIuVOdCeGsj+jhvPlfBu+ZMbcfLwPorAooXFygl7boZGcJMRaxuWAf/CDFrRJ5c+XBB1gKTaCa5FvfTGK/LU4+ttAo+eDvtTIETCt/KcOTe3rsOqkD5x8Twsm+ATZn3DBFLTbjpN/dKc0g==
+ b=Vs2S4CONmImGZzq8HPNvrPfZxOUKK4O9t2/cL7UAkk4qkVBn+sk8/w5QZOAwMcctvn/4HQnWFxRtFx+keypkqEhIDeuvgr330+6bdtbyg3KtxJEXeq+92kE0B6csZ3VAGMdO4q9CjNCW29t3l2Tvv1R0wfCc9YRSvQJZ13zH0H777XFReFkj6E0CKuv3gI1Y9aSj5msxAihPrk9Ue5oLoUYu1yb4LAGBe+7eCyJrcO1aJN9kSaX5ySqh8PrlsIRlKcweVPI2h854Is0GTSO4YvxrydYi06R+bxmtydKvDbAOj8VhVaOB8Jaad9EAP+0uDrBdkxcks8s5d29+Ae0P5w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=L3r4+4BDkKDSVXfOUwFU3FkZBjUujBJu7lCtNDJ0Tso=;
- b=Gug/MOXmc6MPid/ye3KAxpFqdH43FNFYbrs1hk3YAiKvEIX6EKxlxO7cfrS7yFvK0OhCmFkOEquPQn1MYc+lrh4LMwtGgpNrTvvQQzQA2d+Oaur7v4FLVQoUoET4FJ/xp3m3pQD0R0kzPI6I4CkSAcVoYJUAg8Fv1JwDvklIODdWWoYgYoh7aL/oAHD31+9B3VQxXDi74fzFqXwnzZIWIbecD4swAg7m51LdXsLu08MhWcNWKlbUYsnV/1Xim02OY49SQPBlE9CpiXMDDpD7v2Mel8l3XKshRY86NfwGsivem5INvBio2WIxWU0b3aLWgLwNBxSMmrfOTcWEyI9rlQ==
+ bh=8ugXXaYOACCqQhtO+XS/9SAqsz/zeF6YSVcc8SKLY/0=;
+ b=d7/q9QlKMPfREkZGdaLZlVO8VlqQeQT0CKKDIuMCzc2HNKIkcikxCaV6yqGJRPYNHSxTm78CjQn/n5zdUiL/PkkqTv5IhNz8F4TTtOyZ51pvExCaxuco6tTeiC+hsZzKFOxGzZcirpGCSUp5t4RmNoFbuEP1H5Kgpj7irlSh6HJMXwR6KS3CVRkkcvMgmSUDvuVXE4lWzG0G+3cz0kTVfbhrxYVS84BE1pohZJYl8nuLR5mMnJMChnsF2edP6I3OHUEoShE/1F2s8Qt4Bp/yWd92fyOm+bvdR29O3WnVGgz9XWofrLD5+kKlPMxrNBaFFPQ64I/OkrwdMLkZLppm8w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  198.47.23.195) smtp.rcpttodomain=lists.infradead.org smtp.mailfrom=ti.com;
  dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=ti.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=L3r4+4BDkKDSVXfOUwFU3FkZBjUujBJu7lCtNDJ0Tso=;
- b=lqL8+3N3SB2LRvICWGg88QIVSFX2ovJ8aquUiTZeqbAm8cISA5JOFPlmUmmCfYhx3QOam2ukXvfTEwn8/bNCLKaVA775IQV7yX0jKHyTjGm9Y8cg1oXFUC2qq/mQt47KJCk2LPaRfz9BQrRnDSlvuy/uYhKm5tOLvi0mrew7Pm4=
-Received: from BY3PR10CA0018.namprd10.prod.outlook.com (2603:10b6:a03:255::23)
- by CY5PR10MB6012.namprd10.prod.outlook.com (2603:10b6:930:27::18) with
+ bh=8ugXXaYOACCqQhtO+XS/9SAqsz/zeF6YSVcc8SKLY/0=;
+ b=OO52v4YOA/KjqKvxkoZK7U4R7tdUq8kDgTEainR0EaivV20Ck1QQhFJw8kPlYRWwuLRFNpKHf8/rukkKUJENzBWl6/JsKQxskNm3h2N2I6DmWIccQORh7fKr92MdtQdH3noa1hb4Y3i3c1QRc+BKvstTHBUEuO7onv8gV2uq+8M=
+Received: from SJ0PR05CA0004.namprd05.prod.outlook.com (2603:10b6:a03:33b::9)
+ by MN2PR10MB4302.namprd10.prod.outlook.com (2603:10b6:208:199::14) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.315.11; Tue, 11 Aug
- 2026 18:34:25 +0000
-Received: from SJ1PEPF000023D0.namprd02.prod.outlook.com
- (2603:10b6:a03:255:cafe::28) by BY3PR10CA0018.outlook.office365.com
- (2603:10b6:a03:255::23) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.292.25; Tue, 11 Aug
+ 2026 18:34:29 +0000
+Received: from SJ1PEPF000023CC.namprd02.prod.outlook.com
+ (2603:10b6:a03:33b:cafe::19) by SJ0PR05CA0004.outlook.office365.com
+ (2603:10b6:a03:33b::9) with Microsoft SMTP Server (version=TLS1_3,
  cipher=TLS_AES_256_GCM_SHA384) id 15.21.315.12 via Frontend Transport; Tue,
- 11 Aug 2026 18:34:24 +0000
+ 11 Aug 2026 18:34:29 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 198.47.23.195)
  smtp.mailfrom=ti.com; dkim=none (message not signed) header.d=none;dmarc=pass
  action=none header.from=ti.com;
@@ -76,24 +76,24 @@ Received-SPF: Pass (protection.outlook.com: domain of ti.com designates
  198.47.23.195 as permitted sender) receiver=protection.outlook.com;
  client-ip=198.47.23.195; helo=lewvzet201.ext.ti.com; pr=C
 Received: from lewvzet201.ext.ti.com (198.47.23.195) by
- SJ1PEPF000023D0.mail.protection.outlook.com (10.167.244.4) with Microsoft
+ SJ1PEPF000023CC.mail.protection.outlook.com (10.167.244.6) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.315.6 via Frontend Transport; Tue, 11 Aug 2026 18:34:24 +0000
-Received: from DLEE207.ent.ti.com (157.170.170.95) by lewvzet201.ext.ti.com
+ 15.21.315.6 via Frontend Transport; Tue, 11 Aug 2026 18:34:29 +0000
+Received: from DLEE205.ent.ti.com (157.170.170.85) by lewvzet201.ext.ti.com
  (10.4.14.104) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.45; Tue, 11 Aug
- 2026 13:34:08 -0500
-Received: from DLEE203.ent.ti.com (157.170.170.78) by DLEE207.ent.ti.com
- (157.170.170.95) with Microsoft SMTP Server (version=TLS1_2,
+ 2026 13:34:13 -0500
+Received: from DLEE207.ent.ti.com (157.170.170.95) by DLEE205.ent.ti.com
+ (157.170.170.85) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.37; Tue, 11 Aug
- 2026 13:34:08 -0500
-Received: from lelvem-mr06.itg.ti.com (10.180.75.8) by DLEE203.ent.ti.com
- (157.170.170.78) with Microsoft SMTP Server (version=TLS1_2,
+ 2026 13:34:13 -0500
+Received: from lelvem-mr06.itg.ti.com (10.180.75.8) by DLEE207.ent.ti.com
+ (157.170.170.95) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.37 via Frontend
- Transport; Tue, 11 Aug 2026 13:34:08 -0500
+ Transport; Tue, 11 Aug 2026 13:34:13 -0500
 Received: from santhoshkumark.dhcp.ti.com (santhoshkumark.dhcp.ti.com [10.24.52.55])
-	by lelvem-mr06.itg.ti.com (8.18.1/8.18.1) with ESMTP id 67BIXIe1659766;
-	Tue, 11 Aug 2026 13:34:03 -0500
+	by lelvem-mr06.itg.ti.com (8.18.1/8.18.1) with ESMTP id 67BIXIe2659766;
+	Tue, 11 Aug 2026 13:34:08 -0500
 From: Santhosh Kumar K <s-k6@ti.com>
 To: <broonie@kernel.org>, <robh@kernel.org>, <krzk+dt@kernel.org>,
         <conor+dt@kernel.org>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
@@ -102,9 +102,9 @@ To: <broonie@kernel.org>, <robh@kernel.org>, <krzk+dt@kernel.org>,
 CC: <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
         <praneeth@ti.com>, <u-kumar1@ti.com>, <a-dutta@ti.com>, <s-k6@ti.com>
-Subject: [PATCH v7 09/18] spi: cadence-quadspi: skip DDR PHY tuning for 2-byte-address ops (i2383)
-Date: Wed, 12 Aug 2026 00:03:04 +0530
-Message-ID: <20260811183313.1550425-10-s-k6@ti.com>
+Subject: [PATCH v7 10/18] spi: cadence-quadspi: refactor direct read path for PHY support
+Date: Wed, 12 Aug 2026 00:03:05 +0530
+Message-ID: <20260811183313.1550425-11-s-k6@ti.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20260811183313.1550425-1-s-k6@ti.com>
 References: <20260811183313.1550425-1-s-k6@ti.com>
@@ -112,56 +112,55 @@ MIME-Version: 1.0
 X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ1PEPF000023D0:EE_|CY5PR10MB6012:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8ec79d20-38c5-459c-9298-08def7d72b26
+X-MS-TrafficTypeDiagnostic: SJ1PEPF000023CC:EE_|MN2PR10MB4302:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7596eb46-11f1-493b-ac72-08def7d72dd4
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|36860700016|376014|7416014|23010399003|1800799024|82310400026|13003099007|921020|6133799003|56012099006|10067099003|18002099003|22082099003;
-X-Microsoft-Antispam-Message-Info: qhzlf51Y7Q8ukeGO9UoyZr19lV8koIFMFM//BMnofXzoE5dGR42v+j5j2BzyLVtggMYZeX9QsHy0h7JVZUutk8vGs+9pKOfYnEQGNrDyj9K0jgqgrJhlaGMRd9XdmtdyPYx2uMWKc+9BwfLgD/fAqTKImYgmhS/6IWm26+wJ+j4LPtYmogHETYQTxVxsaUhQ4n/vu7OrzWD9xi4NF9WCGQU7ytrEKMFShx20AsRgPKp44WY9LwynKbBxwEEPtabQAE4FK1HRHyQvcwq7ocvNufyKbyguBbQq9xWV/FhxeSxEYtsDsU8/aFoKLiA3vGwZpLyIVmwq2vofHvn2C+xTr/KfiAIblcG55uju36Hexq8W88dki+8AJZgXwMMyok8BW0DLixAibe7UxKcEH99wX8AauuZuuyT5t+k0cDdLeT20ikdt3nkgcynViH3Mkw7IPmCYRZUKN56yd00A47IU+ODHNr58TK+0q/qHmLIc2muqUcm9ukenwl42qXBWl5qfcCFvHjHLSqWprRt9M4ywH6ll/SKhdISItRDOEfp9RqmL/LL5WOhutRXEy94VJpLdheAd4RtRc8xbBz8d8eGOkemmCv//Jd9DtcgYvQtsUrq0NhpFNygXximJrWA3AG2iiWyrWx+Ro38oxRWUBg0ZVKkiyma4bs3s4Q5i4BWJb6Z0LStRk2IOUPEvWTx4tiKKHvwmUDdWlRlvo3RVHQYBuJMGQUX5iLJ8xoX40CNudyTopNbtLZLcbZwLf9seOxXL
-X-Forefront-Antispam-Report: CIP:198.47.23.195;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:lewvzet201.ext.ti.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(36860700016)(376014)(7416014)(23010399003)(1800799024)(82310400026)(13003099007)(921020)(6133799003)(56012099006)(10067099003)(18002099003)(22082099003);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|7416014|36860700016|1800799024|82310400026|23010399003|921020|6133799003|10067099003|56012099006|18002099003|22082099003|3023799007;
+X-Microsoft-Antispam-Message-Info: upfKuxHQQMnaw5IO6SQnSEbcRDOdoKRJotEAP1MxAYNMGSA6fvqiKHZlUXNGVuFclIClNG7D+/HZ+RaI+umVmOGPdA/m22MXM6WdR+gmvbxlwPex9Rso47l0pRAlt4kdM64pOAYT01kvcywaLACW/6OuxTu5Je4QX3YRckZC/9CURLqLypdGo65pS//emHQtLpPNjQUsn1gUcJSVvs3W7A4saOI9WbwSFxps3whQ5O09OqYEkn9Wb7Fkw5FM1aoxOKWP16gOnHk82BIN/j+qPQ7cPCYe6icOEf5r71H6S0Z7FnhC8scny7G2DNdJ9APIDwuYbumHOWkDzpqAC3VK4joySmYPkS+a/Z+X0na4zVXc0jl/14jRG3LTRKG3FpAIA7cVXucpT/uC5gP1ywm2QpPReNUptg3pGnb+6+Njo4gifiMJ6FeRSjIJ/lLzDSHWdKQVKBc5GVy/P/g/dfTBRYE7qxTX42xBjM5ecFbJ4MXrejZlO+vhWL74qR+EkPIMFTdkIe4i94Jnetlp7wksMyFZFEKIDb0CLBLvxvIY6MJwRfW0fQsqLcACm+HALNoDJnAUp1tTbz2bst/HuQz7seiP9kR5I+nTM6UmvnRWaUxhJKbe+WUjttGLvo4SVGa21bdYivlLA855YrDnd9LLH2XlH7ycITGoR4Emdfa2J74eQemDa1+Ce3tc6pU/EykEKnT53yUGfZGTFXrBOCPEkf/V9Prlvwcg9saOscsy0vwah8NSuIk77xIRIvoSue52
+X-Forefront-Antispam-Report: CIP:198.47.23.195;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:lewvzet201.ext.ti.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(376014)(7416014)(36860700016)(1800799024)(82310400026)(23010399003)(921020)(6133799003)(10067099003)(56012099006)(18002099003)(22082099003)(3023799007);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: f1u5PF+c8eFAetgK/HMvmeAJ20rOOgobX1GNH/PEZuyNbMmY98MSu8UDmgbQnI+iaaCYVMsbtJV7El6VAygzhhLwWbqSAVvkauYCMna/Y5skE7pJqs5TT/cqyLbDjKp2XUOjUEK+oMPllroa3wckkBtZ92dk9RYkxl5t20PgqjZ1b/Q1aKEyw2GxbLSBLlSGoE5YAzAgmkD1Hb3Tqq1yWRHQqI1DmumgHiiaGgRy0Bek8GGs/uzNM8/aouIwaHwqTcmeQz2D1OpOrrRJm1HKMcIRgXgawvxfJ8qgbuZcCFzhETZfCGi/u7kwUE6/OXXgzCgZuQqVLWm6mEnDvtFhsI5r9K4nlg/aqcubLGbrmUDmNe3jcRiQ2d/oXk7p+1MR+ed87s6k7Th33G5CunMvAM21VNBO5Ji2qP1KGGHbhaYPZq8arIeZek8kDbKuLIrt
-X-Exchange-RoutingPolicyChecked: kKWJiQUx/l5Ld+4QpuQiaILBt4dL677Ll2a7icrNgaKM39kDfByINi0dbWVdKCQmkSq/++gNB8kO8tOpjlyK2xiEjrHqGeZqUVeYpjh9JsIduqXVcXlvwLvXLUbK5qKmzngq6khHlMrzhbiBJqHcPLsovwykJtJ5TxB5uT8mgWL3S3sn2Z879bPKLoWBN5A5plvFVwHrCWSJEzHlzYDo60oTHC82fMwjKOuILQ9oxxbkO4hura8L48yGRA0SkxeNsxcElvUHUjx35YWZMDUQutf4SGBXboUkHzoZSHbq6ZE7/0qo9nwYkYtEz1piy7Qmkt3UvdVnQLuqQlfLykA4nw==
+X-MS-Exchange-AntiSpam-MessageData-0: /ASxL24InyrHXEd631SniDjSdKfUYrX4rWuPEs6BWoFP+xX2EytDOtbcEWw7zM0vOg0jbZZkIVPMA7fQkibi8OnajcoGV0QPfdAvPWRHZGkyv863F52lK66HZX2RUNYTaVEefN+YcoUFJ4hrAygQKJNXtpckU4pDEdpOsiLrSQatnsVBIQ8xRTvrAhj5DczW1D/VnUF7jp2shqWmdb8cyArTBf+bhvHErce7fFa7HXZEV8nPguimQn5ZcPDBQxTj8xfYn6J4RobcpTWCjdqMvoxjujCmwl6zCrYsOzrgp+PNN/sefPVWco58hYbppHWS/k4YQfzocA6Pk/1MXE+0yY5Ff5RipN4RKzkz9GLm9toSLCKbrWYVAVNrNLqQvQ0NqM5sOjb3kp0z55KFewyXpHSs3kNIo09KDfStxmXQvjQULKKh9lg9lhxT5vdh237u
+X-Exchange-RoutingPolicyChecked: tEvvNSKGxDZ3iTxOvGSYf+uSj68okSmUtB+QYYILMqJYg/VGpasmZqTUaeSwkCS5VG/wJ9V9F1hXWWwIQSMbeZvJegfiVUEmJUQFr/1BFUZXl3wkKKNnrZ8f/7GBCdxLpUkhy6MhUNzsIrHm6vzh1auHgV7wvo6i3/VWrA3NSdzaKIes/pf+/QQci+S/8gHLg5MQosoRzRS/ACu8BmXZsQcIaVoGab3VYmcT1czDSm73vi6gaSK05nqVV1sux5NV5aDCNzxD8VB8FNAnfCfSaAwgAWecyLZ0IvpL8OF9c/oeFdAptYGG7ozfU7sCH+Ud2HfdTtY51Bg6RpsjrGErBw==
 X-OriginatorOrg: ti.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Aug 2026 18:34:24.5821
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Aug 2026 18:34:29.0783
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8ec79d20-38c5-459c-9298-08def7d72b26
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7596eb46-11f1-493b-ac72-08def7d72dd4
 X-MS-Exchange-CrossTenant-Id: e5b49634-450b-4709-8abb-1e2b19b982b7
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=e5b49634-450b-4709-8abb-1e2b19b982b7;Ip=[198.47.23.195];Helo=[lewvzet201.ext.ti.com]
-X-MS-Exchange-CrossTenant-AuthSource: SJ1PEPF000023D0.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthSource: SJ1PEPF000023CC.namprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR10MB6012
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwODExMDE1NiBTYWx0ZWRfXyR48vf/J1E2s
- PEetTeI3Y+K9hHC2GSd8XhAZCAOE6ajpIXwsxRkRryRfiPaUq/9E+n4fn4mv7u5dPXuzZMt2Y4b
- YXt07VEhvPMMU/hQ30u3V9TZVM4bMi14zsATm4aN+rGOAUCkBv7m9Sa6/lIDiJ2Gf5/0tfv+lX7
- qGQRniNmFYxBXmwBIFvhqacxAXJzmcHkxrUbgKfk7QLVOzyOFWLgsi8z9wdZ1437ueTQ8LZT7wr
- Th71ka5ERY/CekjJQnc0zlbLClxI/4MtvNYjp1Oh5bvLEcHRTVxWnm/MsMn3JdwcgiaOgUgWhOn
- SgwiIg2ZR7kX2GXeQs5eAWdR3pBwvxhf9Dao6zrD8DXQLHp/4Zf8jreeXVmkC6zFinauOMra9+X
- lOhARPlMfsk58Yza/OYuAXUr9MoJachd+Pc8XEEGGxf/6DvbUr5QxDTnbEnJLCSkWOJtnc1pCvR
- rL/Jf7QPY39ww43hVcQ==
-X-Proofpoint-ORIG-GUID: q_px9SPIjT6WV43-rzl_K23qy8wat3wW
-X-Authority-Analysis: v=2.4 cv=KZ/idwYD c=1 sm=1 tr=0 ts=6a7b6b35 cx=c_pps
- a=nAh4yJc8K/mwxcjpRfPwJQ==:117 a=f+v6EHfkeJbVwR46tk4DMg==:17
- a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=IkcTkHD0fZMA:10 a=Sv0fKeRqtYgA:10
- a=s63m1ICgrNkA:10 a=V5UXEbMT0ywA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=Z8NIEmU8O1QQgoT56wFK:22 a=fPAWb5peG099m5CrUpKH:22 a=sozttTNsAAAA:8
- a=T-kh0MV4vbdY-aS4Zb4A:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
-X-Proofpoint-GUID: q_px9SPIjT6WV43-rzl_K23qy8wat3wW
-X-Proofpoint-Spam-Info: AW1haW4tMjYwODExMDE1NiBTYWx0ZWRfX+g6/uts+Oyze
- wGFfqyZS0m8mCuuKFce1vIfLGtwxUj6655ntQSA2PQBTChEnSiBn9gfhdKL18UGTlP4CVllkCOW
- G7LfmmQJSaACS17szPVGJrRWgot087I=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4302
+X-Proofpoint-Spam-Info: AW1haW4tMjYwODExMDE1NiBTYWx0ZWRfX+F2KThycuAVD
+ nub+v/zXcpnfEbV5iERgAB19pVxvCGkXsk/+J8h2EAFUl0MNdbX50zchwyDfqZgUjlnbqpl58nf
+ taMx1Pw5TGmeNczDBdCnzf3yoYZlO2c=
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwODExMDE1NiBTYWx0ZWRfX5gpQcMiffUbh
+ TNgMmVP0HHQZTDAwVKIsQuorp8KYr+iHXqpKWwL+maQ7ntVhixsWkLIm1KOxmh7UhK397WHjpWM
+ 9uPRVDbGVk9zt/ZlJZWJlqOmr1cwtbvqXUVUox90f4u2AP+vhOdv16/GC6J2AuCCkvMjQaoTrSN
+ Ju8VgsS4NtC5RbYNx0l1HATfKDYnAkzgp0UCvYY+GnVFz6GsbI8fU7ddhqN+UCHNMbSi0IVvN92
+ f5+uKMwzDqW9ggSNX1cLttDin04wXkTgvzflaacRQgH7H2l8SckCz0h5uePDP1To4sRLjwAVCda
+ U7sWbDgCfH+m7t3SH+3kXo/xwqz7GzYDmJpQZV7cD954vJszJ1wYmYR5eHeLweghQpwXUADEIkp
+ EVOwFtXsi2ZftXxdBIf0lRUI5SEkAlz6SC+wa4wLvv+UfafuVTq4AfFTzigzAV5oTgVrZliMssD
+ 76eoAwwHMsiM23ZT/nA==
+X-Proofpoint-GUID: yAXZEOhNEzMwtZ6Fq5bmXqqjtdnl0suS
+X-Authority-Analysis: v=2.4 cv=cYziaHDM c=1 sm=1 tr=0 ts=6a7b6b3d cx=c_pps
+ a=wUEmejkcrq5hT7YoMv924g==:117 a=f+v6EHfkeJbVwR46tk4DMg==:17
+ a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=Sv0fKeRqtYgA:10 a=s63m1ICgrNkA:10
+ a=V5UXEbMT0ywA:10 a=VkNPw1HP01LnGYTKEx00:22 a=Z8NIEmU8O1QQgoT56wFK:22
+ a=jwouBfj2j3NM8CExmVVE:22 a=sozttTNsAAAA:8 a=aauMkRGVHSVL3AvwFNMA:9
+X-Proofpoint-ORIG-GUID: yAXZEOhNEzMwtZ6Fq5bmXqqjtdnl0suS
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.134,FMLib:17.12.100.49
  definitions=2026-08-11_04,2026-08-10_03,2025-10-01_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- impostorscore=0 adultscore=0 spamscore=0 suspectscore=0 clxscore=1015
- phishscore=0 lowpriorityscore=0 malwarescore=0 priorityscore=1501 bulkscore=0
+ lowpriorityscore=0 bulkscore=0 priorityscore=1501 spamscore=0 suspectscore=0
+ impostorscore=0 malwarescore=0 phishscore=0 clxscore=1015 adultscore=0
  classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
  reason=mlx scancount=1 engine=8.22.0-2606150000 definitions=main-2608110156
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260811_113435_021975_0AE8AD1B 
-X-CRM114-Status: GOOD (  14.63  )
+X-CRM114-CacheID: sfid-20260811_113443_580879_2DCF742A 
+X-CRM114-Status: GOOD (  20.72  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -173,67 +172,164 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-RXJyYXR1bSBpMjM4MyBvbiBBTTY1NCBsb2NrcyB0aGUgYWRkcmVzcyBwaGFzZSBpbiBQSFkgRERS
-IG1vZGUgd2hlbiBhCjItYnl0ZSBjb2x1bW4gYWRkcmVzcyBpcyB1c2VkLiBERFIgUEhZIHR1bmlu
-ZyBtdXN0IG5vdCBiZSBhdHRlbXB0ZWQgZm9yCnN1Y2ggb3BlcmF0aW9uczsgbm9uLVBIWSBERFIg
-dXNhZ2UgaXMgdW5hZmZlY3RlZC4gWzBdCgpBZGQgQ1FTUElfTk9fUEhZX1RVTklOR19XSVRIX09E
-RFJfMkJfQUREUiBxdWlyayBhbmQgY2hlY2sgaXQgaW4KY3FzcGlfYW02NTRfb3NwaV9leGVjdXRl
-X3R1bmluZygpLiBXaGVuIHRoZSBlcnJhdHVtIGFwcGxpZXMsIHJldHVybiAwCndpdGggcmVhZF9v
-cC0+bWF4X2ZyZXEgY2xlYXJlZCDigJQgdGhlIG9wLXNraXAgc2lnbmFsIHRoYXQgdGVsbHMgdGhl
-CmNhbGxlciB0byB0cnkgYW5vdGhlciBvcCB2YXJpYW50LgoKWzBdIGh0dHBzOi8vd3d3LnRpLmNv
-bS9saXQvZXIvc3ByejU0NGMvc3ByejU0NGMucGRmCgpTaWduZWQtb2ZmLWJ5OiBTYW50aG9zaCBL
-dW1hciBLIDxzLWs2QHRpLmNvbT4KLS0tCiBkcml2ZXJzL3NwaS9zcGktY2FkZW5jZS1xdWFkc3Bp
-LmMgfCA0MyArKysrKysrKysrKysrKysrKysrKystLS0tLS0tLS0tCiAxIGZpbGUgY2hhbmdlZCwg
-MjkgaW5zZXJ0aW9ucygrKSwgMTQgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9z
-cGkvc3BpLWNhZGVuY2UtcXVhZHNwaS5jIGIvZHJpdmVycy9zcGkvc3BpLWNhZGVuY2UtcXVhZHNw
-aS5jCmluZGV4IDU2NTEzMjA0MjZiMS4uYTFhYWJhN2MxYTdlIDEwMDY0NAotLS0gYS9kcml2ZXJz
-L3NwaS9zcGktY2FkZW5jZS1xdWFkc3BpLmMKKysrIGIvZHJpdmVycy9zcGkvc3BpLWNhZGVuY2Ut
-cXVhZHNwaS5jCkBAIC0zNywxOSArMzcsMjAgQEAKIHN0YXRpY19hc3NlcnQoQ1FTUElfTUFYX0NI
-SVBTRUxFQ1QgPD0gU1BJX0RFVklDRV9DU19DTlRfTUFYKTsKIAogLyogUXVpcmtzICovCi0jZGVm
-aW5lIENRU1BJX05FRURTX1dSX0RFTEFZCQlCSVQoMCkKLSNkZWZpbmUgQ1FTUElfRElTQUJMRV9E
-QUNfTU9ERQkJQklUKDEpCi0jZGVmaW5lIENRU1BJX1NVUFBPUlRfRVhURVJOQUxfRE1BCUJJVCgy
-KQotI2RlZmluZSBDUVNQSV9OT19TVVBQT1JUX1dSX0NPTVBMRVRJT04JQklUKDMpCi0jZGVmaW5l
-IENRU1BJX1NMT1dfU1JBTQkJCUJJVCg0KQotI2RlZmluZSBDUVNQSV9ORUVEU19BUEJfQUhCX0hB
-WkFSRF9XQVIJQklUKDUpCi0jZGVmaW5lIENRU1BJX1JEX05PX0lSUQkJCUJJVCg2KQotI2RlZmlu
-ZSBDUVNQSV9ETUFfU0VUX01BU0sJCUJJVCg3KQotI2RlZmluZSBDUVNQSV9TVVBQT1JUX0RFVklD
-RV9SRVNFVAlCSVQoOCkKLSNkZWZpbmUgQ1FTUElfRElTQUJMRV9TVElHX01PREUJCUJJVCg5KQot
-I2RlZmluZSBDUVNQSV9ESVNBQkxFX1JVTlRJTUVfUE0JQklUKDEwKQotI2RlZmluZSBDUVNQSV9O
-T19JTkRJUkVDVF9NT0RFCQlCSVQoMTEpCi0jZGVmaW5lIENRU1BJX0hBU19XUl9QUk9URUNUCQlC
-SVQoMTIpCisjZGVmaW5lIENRU1BJX05FRURTX1dSX0RFTEFZCQkJQklUKDApCisjZGVmaW5lIENR
-U1BJX0RJU0FCTEVfREFDX01PREUJCQlCSVQoMSkKKyNkZWZpbmUgQ1FTUElfU1VQUE9SVF9FWFRF
-Uk5BTF9ETUEJCUJJVCgyKQorI2RlZmluZSBDUVNQSV9OT19TVVBQT1JUX1dSX0NPTVBMRVRJT04J
-CUJJVCgzKQorI2RlZmluZSBDUVNQSV9TTE9XX1NSQU0JCQkJQklUKDQpCisjZGVmaW5lIENRU1BJ
-X05FRURTX0FQQl9BSEJfSEFaQVJEX1dBUgkJQklUKDUpCisjZGVmaW5lIENRU1BJX1JEX05PX0lS
-UQkJCQlCSVQoNikKKyNkZWZpbmUgQ1FTUElfRE1BX1NFVF9NQVNLCQkJQklUKDcpCisjZGVmaW5l
-IENRU1BJX1NVUFBPUlRfREVWSUNFX1JFU0VUCQlCSVQoOCkKKyNkZWZpbmUgQ1FTUElfRElTQUJM
-RV9TVElHX01PREUJCQlCSVQoOSkKKyNkZWZpbmUgQ1FTUElfRElTQUJMRV9SVU5USU1FX1BNCQlC
-SVQoMTApCisjZGVmaW5lIENRU1BJX05PX0lORElSRUNUX01PREUJCQlCSVQoMTEpCisjZGVmaW5l
-IENRU1BJX0hBU19XUl9QUk9URUNUCQkJQklUKDEyKQorI2RlZmluZSBDUVNQSV9OT19QSFlfVFVO
-SU5HX1dJVEhfT0REUl8yQl9BRERSCUJJVCgxMykKIAogLyogQ2FwYWJpbGl0aWVzICovCiAjZGVm
-aW5lIENRU1BJX1NVUFBPUlRTX09DVEFMCQlCSVQoMCkKQEAgLTMyMTEsNiArMzIxMiwyMCBAQCBz
-dGF0aWMgaW50IGNxc3BpX2FtNjU0X29zcGlfZXhlY3V0ZV90dW5pbmcoc3RydWN0IHNwaV9tZW0g
-Km1lbSwKIAkJcmV0dXJuIC1FT1BOT1RTVVBQOwogCX0KIAorCS8qCisJICogRXJyYXR1bSBpMjM4
-MzogaW4gUEhZIEREUiBtb2RlLCBhIDItYnl0ZSBjb2x1bW4gYWRkcmVzcyBsb2NrcyB1cAorCSAq
-IHRoZSBhZGRyZXNzIHBoYXNlLiBTa2lwIEREUiBQSFkgdHVuaW5nIGZvciBzdWNoIG9wZXJhdGlv
-bnMuCisJICovCisJaWYgKChjcXNwaS0+ZGRhdGEtPnF1aXJrcyAmIENRU1BJX05PX1BIWV9UVU5J
-TkdfV0lUSF9PRERSXzJCX0FERFIpICYmCisJICAgIHJlYWRfb3AtPmFkZHIubmJ5dGVzID09IDIg
-JiYKKwkgICAgKHJlYWRfb3AtPmNtZC5kdHIgfHwgcmVhZF9vcC0+YWRkci5kdHIgfHwgcmVhZF9v
-cC0+ZHVtbXkuZHRyIHx8CisJICAgICByZWFkX29wLT5kYXRhLmR0cikpIHsKKwkJZGV2X2RiZyhk
-ZXYsCisJCQkiaTIzODM6IHNraXBwaW5nIEREUiBQSFkgdHVuaW5nICgyLWJ5dGUgYWRkcmVzcylc
-biIpOworCQlyZWFkX29wLT5tYXhfZnJlcSA9IDA7CisJCXJldHVybiAwOworCX0KKwogCWlmICh3
-cml0ZV9vcCkgewogCQkvKgogCQkgKiBGb3IgTkFORDogd3JpdGUgdGhlIGNhbGlicmF0aW9uIHBh
-dHRlcm4gdG8gdGhlIHBhZ2UgY2FjaGUuCkBAIC0zODQ5LDcgKzM4NjQsNyBAQCBzdGF0aWMgY29u
-c3Qgc3RydWN0IGNxc3BpX2RyaXZlcl9wbGF0ZGF0YSBrMmdfcXNwaSA9IHsKIAogc3RhdGljIGNv
-bnN0IHN0cnVjdCBjcXNwaV9kcml2ZXJfcGxhdGRhdGEgYW02NTRfb3NwaSA9IHsKIAkuaHdjYXBz
-X21hc2sgPSBDUVNQSV9TVVBQT1JUU19PQ1RBTCB8IENRU1BJX1NVUFBPUlRTX1FVQUQsCi0JLnF1
-aXJrcyA9IENRU1BJX05FRURTX1dSX0RFTEFZLAorCS5xdWlya3MgPSBDUVNQSV9ORUVEU19XUl9E
-RUxBWSB8IENRU1BJX05PX1BIWV9UVU5JTkdfV0lUSF9PRERSXzJCX0FERFIsCiAJLmV4ZWN1dGVf
-dHVuaW5nID0gY3FzcGlfYW02NTRfb3NwaV9leGVjdXRlX3R1bmluZywKIH07CiAKLS0gCjIuMzQu
-MQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVh
-ZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+Extract the DMA transfer code from cqspi_direct_read_execute() into a
+new cqspi_direct_read_dma() helper. Add cqspi_memcpy_fromio() to handle
+non-DMA transfers, using 2-byte-aligned I/O reads for 8D-8D-8D mode to
+satisfy the minimum 16-bit AHB transaction width required by the Cadence
+OSPI controller in that mode.
+
+Change cqspi_direct_read_execute() to take the full spi_mem_op and
+post_config_max_speed_hz instead of separate buf/from/len parameters,
+matching the interface needed by the PHY-aware version in the following
+patch. Thread post_config_max_speed_hz from cqspi_mem_process() through
+cqspi_read().
+
+Transfers shorter than CQSPI_PHY_MIN_DIRECT_READ_LEN bytes always use
+the memcpy path; longer transfers use DMA when available.
+
+Signed-off-by: Santhosh Kumar K <s-k6@ti.com>
+---
+ drivers/spi/spi-cadence-quadspi.c | 75 ++++++++++++++++++++++++++-----
+ 1 file changed, 65 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
+index a1aaba7c1a7e..99a0ec0e769c 100644
+--- a/drivers/spi/spi-cadence-quadspi.c
++++ b/drivers/spi/spi-cadence-quadspi.c
+@@ -30,6 +30,7 @@
+ #include <linux/spi/spi.h>
+ #include <linux/spi/spi-mem.h>
+ #include <linux/timer.h>
++#include <linux/unaligned.h>
+ 
+ #define CQSPI_NAME			"cadence-qspi"
+ #define CQSPI_MAX_CHIPSELECT		4
+@@ -154,6 +155,8 @@ struct cqspi_driver_platdata {
+ #define CQSPI_READ_TIMEOUT_MS			10
+ #define CQSPI_BUSYWAIT_TIMEOUT_US		500
+ #define CQSPI_DLL_TIMEOUT_US			300
++/* Minimum transfer length to use DMA for direct reads */
++#define CQSPI_PHY_MIN_DIRECT_READ_LEN		17
+ 
+ /* Runtime_pm autosuspend delay */
+ #define CQSPI_AUTOSUSPEND_TIMEOUT		2000
+@@ -1528,8 +1531,8 @@ static void cqspi_rx_dma_callback(void *param)
+ 	complete(&cqspi->rx_dma_complete);
+ }
+ 
+-static int cqspi_direct_read_execute(struct cqspi_flash_pdata *f_pdata,
+-				     u_char *buf, loff_t from, size_t len)
++static int cqspi_direct_read_dma(struct cqspi_flash_pdata *f_pdata, u_char *buf,
++				 loff_t from, size_t len)
+ {
+ 	struct cqspi_st *cqspi = f_pdata->cqspi;
+ 	struct device *dev = &cqspi->pdev->dev;
+@@ -1541,11 +1544,6 @@ static int cqspi_direct_read_execute(struct cqspi_flash_pdata *f_pdata,
+ 	dma_addr_t dma_dst;
+ 	struct device *ddev;
+ 
+-	if (!cqspi->rx_chan || !virt_addr_valid(buf)) {
+-		memcpy_fromio(buf, cqspi->ahb_base + from, len);
+-		return 0;
+-	}
+-
+ 	ddev = cqspi->rx_chan->device->dev;
+ 	dma_dst = dma_map_single(ddev, buf, len, DMA_FROM_DEVICE);
+ 	if (dma_mapping_error(ddev, dma_dst)) {
+@@ -1587,8 +1585,63 @@ static int cqspi_direct_read_execute(struct cqspi_flash_pdata *f_pdata,
+ 	return ret;
+ }
+ 
++static void cqspi_memcpy_fromio(const struct spi_mem_op *op, void *to,
++				const void __iomem *from, size_t count)
++{
++	if (op->data.buswidth == 8 && op->data.dtr) {
++		unsigned long from_addr = (unsigned long)from;
++
++		/* Handle unaligned start with 2-byte read */
++		if (count && !IS_ALIGNED(from_addr, 4)) {
++			put_unaligned_le16(__raw_readw(from), to);
++			from += 2;
++			to += 2;
++			count -= 2;
++		}
++
++		/*
++		 * Use an explicit 32-bit read loop for the bulk; this
++		 * guarantees the minimum 16-bit AHB transaction width required
++		 * in 8D-8D-8D mode on all architectures.
++		 */
++		while (count >= 4) {
++			put_unaligned_le32(__raw_readl(from), to);
++			from += 4;
++			to += 4;
++			count -= 4;
++		}
++
++		/* Handle remaining 2 bytes */
++		if (count)
++			put_unaligned_le16(__raw_readw(from), to);
++
++		return;
++	}
++
++	memcpy_fromio(to, from, count);
++}
++
++static int cqspi_direct_read_execute(struct cqspi_flash_pdata *f_pdata,
++				     const struct spi_mem_op *op,
++				     u32 post_config_max_speed_hz)
++{
++	struct cqspi_st *cqspi = f_pdata->cqspi;
++	loff_t from = op->addr.val;
++	size_t len = op->data.nbytes;
++	u_char *buf = op->data.buf.in;
++
++	if (!cqspi->rx_chan || !virt_addr_valid(buf) ||
++	    len < CQSPI_PHY_MIN_DIRECT_READ_LEN) {
++		cqspi_memcpy_fromio(op, buf, cqspi->ahb_base + from, len);
++		return 0;
++	}
++
++	return cqspi_direct_read_dma(f_pdata, buf, from, len);
++}
++
+ static ssize_t cqspi_read(struct cqspi_flash_pdata *f_pdata,
+-			  const struct spi_mem_op *op)
++			  const struct spi_mem_op *op,
++			  u32 post_config_max_speed_hz)
+ {
+ 	struct cqspi_st *cqspi = f_pdata->cqspi;
+ 	const struct cqspi_driver_platdata *ddata = cqspi->ddata;
+@@ -1604,7 +1657,8 @@ static ssize_t cqspi_read(struct cqspi_flash_pdata *f_pdata,
+ 
+ 	if ((cqspi->use_direct_mode && ((from + len) <= cqspi->ahb_size)) ||
+ 	    (cqspi->ddata && cqspi->ddata->quirks & CQSPI_NO_INDIRECT_MODE))
+-		return cqspi_direct_read_execute(f_pdata, buf, from, len);
++		return cqspi_direct_read_execute(f_pdata, op,
++						 post_config_max_speed_hz);
+ 
+ 	if (cqspi->use_dma_read && ddata && ddata->indirect_read_dma &&
+ 	    virt_addr_valid(buf) && ((dma_align & CQSPI_DMA_UNALIGN) == 0))
+@@ -1632,7 +1686,8 @@ static int cqspi_mem_process(struct spi_mem *mem, const struct spi_mem_op *op)
+ 		     !cqspi->disable_stig_mode))
+ 			return cqspi_command_read(f_pdata, op);
+ 
+-		return cqspi_read(f_pdata, op);
++		return cqspi_read(f_pdata, op,
++				  mem->spi->post_config_max_speed_hz);
+ 	}
+ 
+ 	if (!op->addr.nbytes || !op->data.buf.out)
+-- 
+2.34.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
