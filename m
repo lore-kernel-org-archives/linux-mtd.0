@@ -4,55 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A31EC5CFC1
-	for <linux-mtd@archiver.kernel.org>; Tue, 11 Aug 2026 21:48:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8780AC5AC67
+	for <linux-mtd@archiver.kernel.org>; Tue, 11 Aug 2026 22:10:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
 	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=cZIxbJwCblq5XkgBPkPJq87FNP8ohFQX40RLr3Gc5Fo=; b=Jg3mt6t3cyohgF
-	nH+0M7Hrp31zciPZ0os+drNQf+z1fhTL8iIU4biLdIo9ziuTrejU2NzRFO8CesTcUE2AnDeoz0YBs
-	3uZZMhiQ7iuFNPIVEt12jKWuaBdfp57Q7pjIhnV+o/+HMzQXOtF3wr+75fVBY4xmwpSIWs9YwYihw
-	6ke3cAHaPVQf5kmkEtVenFk6Md6jln+0ZcR4sNua1q759fNTvOX2dgTdaxMh1at1Gf8fWHo/33HCs
-	Au6D/jDqy94+mHpvzDIW74K52zeZtG2qk3D20z5J9B7Qfqgul0qTW9nkcIFcDznELfYKZnI8OGdkx
-	Hoo87sriK7hW99bV88BA==;
+	List-Owner; bh=QilYhwRsKsDKHdjafXsOCrkpHnh6sR05Rfi3x0EIdxs=; b=EPqiNk3EKeGIYg
+	OaCTOwMnCh242vf0rJu73zS/mgAHRd/WxUpr1L9T3s9jkUh3YmqwoyJl7vxpx0o9LIIMzPxD7z6CV
+	d7PHpyTCytFxwbDFMLqKHlBbePpnAZY9hklR3qE66JdDWjLeEkBw4RW2An3Z8+2FAZt21ocokcyO2
+	CKSEPGz6hETlaU1861FpxYdtmyzMorKdovePRepqzp8HuYXH4cfvMsUBwGttHDoCp8bURma9xW9o9
+	PhCzu8Fp6xfG/qF4cBBxjlt/6AhEV/Moc+oF149bAov9S4Vw2VDEV46y8beyPuSHAaPPoN6dyU4Bs
+	FGpxwEFn9T8+d9EfCCCA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wtuKK-0000000F0RV-3anu;
-	Tue, 11 Aug 2026 21:48:04 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1wtugN-0000000F1UF-3ggQ;
+	Tue, 11 Aug 2026 22:10:51 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wtuKI-0000000F0RB-32IO
+	id 1wtugL-0000000F1Th-1vyA
 	for linux-mtd@lists.infradead.org;
-	Tue, 11 Aug 2026 21:48:02 +0000
+	Tue, 11 Aug 2026 22:10:49 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id B2E4E600AE;
-	Tue, 11 Aug 2026 21:48:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 391861F000E9;
-	Tue, 11 Aug 2026 21:47:58 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id E02F140583;
+	Tue, 11 Aug 2026 22:10:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA3991F00A3A;
+	Tue, 11 Aug 2026 22:10:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1786484881;
-	bh=ldJUy+mzYfFP+vTdoeV8DvQmSIj2flUuiuA6smQkXlg=;
+	s=k20260515; t=1786486248;
+	bh=m6iQydEYR4RrBCcmznCQ8wFUNaNb/6XclH9jN5Hz96A=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date;
-	b=EAYrd1ZSyenBjwi+GTlIj0fT3POLmvwRPTT8Z5Agd8LitTYnULbzv4neyKZEIXf/G
-	 CECisP6uHKGFpl+T7DN5igAIXnZDhB8T/3gMciPbskwqGmvHfHFPpY4UNMcxICMXHr
-	 +p0iq7ntd6C0U0ic4qwSeHXk8C5H5QAestbIIX0jssm5vruTd4pvy9z9VKpm820deV
-	 SJVnxV0Au+qqELN9lKgxf4P4XNyF+3Z5U24W9ZGUZ/Pa6lRiqLfq+VxxG0FQn3Hq6z
-	 cEaubLv3FE6jYXgZBOzSCj2FDA48Cg8E3hg0yszAm43/ClAPyf9+/YHDVLxAld0VBa
-	 ZRfVPSVmOx4hg==
+	b=V8ZB+e6oJGlNB041d7jKm1YmDsBtLr2BXLgEtGCqUOlylsfNU3xjqlaa3WGTf1Aw/
+	 j9WqjtjcWJDUbJvmEs4bbfdMehSsaLS1n45PdeqdR5E0z3Do/gePWldHEkqvAjikkv
+	 /G9HTr6I93ZKTsIjGtKDOiDJMxqmMMEiXlYiphSTVtw3gue9rjddbhtPYyxuNBxqdA
+	 JbuNZQrSKwTqNwhACkM97xgmFTVkxEL1uPHlZipB2eXPCKcvfTQG4JU/enM7+YcfDB
+	 GnGH1BhGbpoSSgrMLYpuMd14iVri3tLm5CN4twoOoNaBBfC0Hz3u3xPUmDYb5S2+ze
+	 qOY/k2f9gxwNQ==
 From: Richard Weinberger <rw@kernel.org>
-To: richard@nod.at, Ibrahim Hashimov <security@auditcode.ai>
-Cc: chengzhihao1@huawei.com, s.hauer@pengutronix.de, 
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
- stable@vger.kernel.org
-In-Reply-To: <20260724074327.73582-1-security@auditcode.ai>
-References: <20260724074327.73582-1-security@auditcode.ai>
-Subject: Re: [PATCH] ubifs: fix out-of-bounds read in signature length
- check
-Message-Id: <178648487886.3958324.18328006518346578815.b4-ty@b4>
-Date: Tue, 11 Aug 2026 23:47:58 +0200
+To: richard@nod.at, miquel.raynal@bootlin.com, vigneshr@ti.com, 
+ vapier@gentoo.org, artem.bityutskiy@linux.intel.com, 
+ Ran Hongyun <ranhongyun1@huawei.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ chengzhihao1@huawei.com, yangerkun@huawei.com, yi.zhang@huawei.com
+In-Reply-To: <20260723020233.3079997-1-ranhongyun1@huawei.com>
+References: <20260723020233.3079997-1-ranhongyun1@huawei.com>
+Subject: Re: [PATCH 0/2] UBI: fix ubi.mtd MODULE_PARM_DESC issues and add
+ per-device wear-leveling threshold
+Message-Id: <178648624539.3963792.13357340650428197657.b4-ty@b4>
+Date: Wed, 12 Aug 2026 00:10:45 +0200
 MIME-Version: 1.0
 X-Mailer: b4 0.16.0
 X-BeenThere: linux-mtd@lists.infradead.org
@@ -71,22 +72,23 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 24 Jul 2026 09:43:27 +0200, Ibrahim Hashimov wrote:
-> ubifs_sb_verify_signature() bounds the on-disk ubifs_sig_node->len field
-> before handing the signature payload to verify_pkcs7_signature(), but the
-> check has the wrong sign:
+On Thu, 23 Jul 2026 10:02:31 +0800, Ran Hongyun wrote:
+> This series adds a per-device wear-leveling threshold for UBI devices,
+> with a preparatory fix to the MODULE_PARM_DESC.
 > 
-> 	if (le32_to_cpu(signode->len) > snod->len + sizeof(struct ubifs_sig_node))
-> 
-> The signature bytes start sizeof(struct ubifs_sig_node) (UBIFS_SIG_NODE_SZ,
-> 64 bytes) into the node, so the payload is at most
+> Patch 1 fixes two pre-existing issues in the ubi.mtd MODULE_PARM_DESC:
+> the parameter format string was missing the enable_fm and need_resv_pool
+> tokens, and the bad-block reservation note was misplaced after Example 5
+> instead of after Example 3.
 > 
 > [...]
 
 Applied, thanks!
 
-[1/1] ubifs: fix out-of-bounds read in signature length check
-      commit: d68851fbac230fabaeeae25b19fe60ece173da88
+[1/2] UBI: fix two issues in the ubi.mtd MODULE_PARM_DESC
+      commit: ff7937d14f5333ec7e6fb50d00a152d7974f4105
+[2/2] UBI: support per-device wear-leveling threshold
+      commit: a5e0055eac837a1168c781653943d4a0d9920af3
 
 
 ______________________________________________________
