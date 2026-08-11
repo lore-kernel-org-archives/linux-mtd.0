@@ -4,63 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 282A2C5B572
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8EB40C5B56A
 	for <linux-mtd@archiver.kernel.org>; Tue, 11 Aug 2026 16:14:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=PGnQRsYyKw7g0E+URgmHkXFzT+/ItkG7I87Sh/lZlaY=; b=aWVHowmgNAFz3o
-	+PIaGF49h/l4w9Fj4GOmGDS8A4F8I55Muzlmi669YlOC3wKNgJAzbNiiXlr1y4aUxvYX1YEM4VDz9
-	BzuguNF9JkShSTD8rZtBNtA2cw8/4naN6ZVV2KTUS+pxOuWBlgl7w+egYjNkfLYLSNLA7iFoEq2Yo
-	hLZ6O99KvZg+JjUmBYu3MybDnT+p2f1mRsIIWY/joknQHPtXt9f95AvlG1+9EnvTPkbAsPoVUn8q4
-	YdxhyZY1LldVeelPOwsrTkTe4L4Esa4dQetpsjQ7Yfd5g5irqDTisJGQw1ozeUy19K9e2tzqeABZ+
-	lW8GFJoEJZhrbWOCCKKQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=1irOfN15/knlUUWcgNTQLZfGVTUxz7c124LEw1mRNiw=; b=ApgFYHSgoVpaEb
+	UhlbFXf8SEFBeh0ZV947+J5Ssyv4O8zkNThyMYhbzNKOdn6dpbPywkBC/UZyfSnJm6LX2BPGys+FM
+	HYe3eUqd5EA7F0hmU+MQ1CphoKZtmRMW3/Mmtl0pKim6xu9Bo+pNeJ+nNQP3izETfmaGn06FfF/Ux
+	bxUeLK9fa7OhiIXDnGNDvi39F/4+XhwvPFyxy3557pvSKemlUuA+wBS70ipioWGLEJx0k6Ohg7V74
+	5CV7MC0G75evsMXxBc0mhYGwezmoKkdoUVgj3MtGaIc0hgpmVCXjnbT4deFP66NSoiLNnKy42Haah
+	VJz8btHo0s6qVMNMAt/g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wtp75-0000000ESMP-07xt;
-	Tue, 11 Aug 2026 16:14:03 +0000
+	id 1wtp76-0000000ESN9-1XmV;
+	Tue, 11 Aug 2026 16:14:04 +0000
 Received: from mail.fris.de ([116.203.77.234])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wtp71-0000000ESJ6-1e8Q
+	id 1wtp72-0000000ESIj-0dTf
 	for linux-mtd@lists.infradead.org;
-	Tue, 11 Aug 2026 16:14:01 +0000
+	Tue, 11 Aug 2026 16:14:02 +0000
 From: Frieder Schrempf <frieder@fris.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fris.de; s=mail;
-	t=1786464835;
+	t=1786464833;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=a29yc6HZhwWPN+sxY5uQGFTrpGPENuXFgdlITogn3PI=;
-	b=2BDPjDrU3f8zXBhPZ7lXvkPqeAOAXQzbjmFj9AgmUpJX3/774+T4mcOfM2/LR6teQlYcAX
-	G1DV6SYMLiFZPTstxrLO9WvfgEJ41W6zhHP/NIX5gatLqyQTFQxChTS3bMgpRUyFlKkRpR
-	ppJDBIBME3au3nflhUSBhHCvL/Y8wxwGdmAHlRQkGm6IP0yJ9F//4rEn4Mvf4SUk5/6JsO
-	DBhsm3QNza9P3coK1DQ6iKySGOwzmjZIlSTHebV6tcr232gRlODA3Iz6R/CwrbGwQuQwBc
-	OezsoPz7RRHSaVu/02y0mOl3ocxTTqrpDKh6e08KgfLagaDG66uMngLEyxTylg==
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=jmf1SJruZQUuZ/Dccv6+duhLwslNSx4256rGf8s5+3o=;
+	b=WRyuk2l6PDg6L0PyCxPWp1G3BRPQbVklwyf1wfRc+43bTvWu5r1lHkomqU9wutlHh//Qpl
+	7DpQMVjM+CGAm2oH+gzs5oGdlUl9sjKQ22v/NPJt7/sRXTqW4uEQEA/CJYpkUMU9Pu39h8
+	pFOhDJ5Vy3HUt5EgG8fv6zZ+RggHtM6Y61IekVcHWQ7CdE+leNZziH+CtLR9upJHCOeJIq
+	nIqa/jl7+hpx3HR/mRThI8rL9a5H3pDwRVTNTz2NfruZp0Wmjl3LDXy/tSj6RuZrDyMWIe
+	y87YdmgoELKRXV41AR0wFLziMsmcZnb0wmS0DtK9b6ZXXAuO0qgzCXpDxomqEg==
 To: linux-kernel@vger.kernel.org,
 	linux-mtd@lists.infradead.org,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Mikhail Kshevetskiy <mikhail.kshevetskiy@iopsys.eu>,
+Cc: Frieder Schrempf <frieder.schrempf@kontron.de>,
 	stable@vger.kernel.org,
-	Frieder Schrempf <frieder.schrempf@kontron.de>,
+	Mikhail Kshevetskiy <mikhail.kshevetskiy@iopsys.eu>,
 	David LaPorte <dalaport@amazon.com>,
 	Gabor Juhos <j4g8y7@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
 	Pratyush Yadav <pratyush@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.12.y 2/3] mtd: spinand: try a regular dirmap if creating a dirmap for continuous reading fails
-Date: Tue, 11 Aug 2026 18:13:37 +0200
-Message-ID: <20260811161342.533280-3-frieder@fris.de>
-In-Reply-To: <20260811161342.533280-1-frieder@fris.de>
-References: <20260811161342.533280-1-frieder@fris.de>
+Subject: [PATCH 6.12.y 0/3] Backport fixes for SPI NAND on i.MX6UL
+Date: Tue, 11 Aug 2026 18:13:35 +0200
+Message-ID: <20260811161342.533280-1-frieder@fris.de>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260811_091359_948218_CF81C12D 
-X-CRM114-Status: GOOD (  14.23  )
+X-CRM114-CacheID: sfid-20260811_091400_340353_0AFB211B 
+X-CRM114-Status: UNSURE (   5.86  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,109 +76,33 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Mikhail Kshevetskiy <mikhail.kshevetskiy@iopsys.eu>
+From: Frieder Schrempf <frieder.schrempf@kontron.de>
 
-[ Upstream commit 004f8ea0d9917398aabff7388b3bf62a84a4088b ]
+There are failures with our Kontron i.MX6UL boards using Macronix SPI NAND
+chips on i.MX6UL that originate in the introduction of the continuous read
+feature in 6.12 (631cfdd0520d19b7f4fc13b834fd9c8b46c6dbac) and the absence
+of later fixes introduced in 6.18 that were never backported.
 
-Continuous reading may result in multiple flash pages reading in one
-operation. Typically only one flash page has read/written (a little bit
-more than 2-4 Kb), but continuous reading requires the spi controller
-to read up to 512 Kb in one operation without toggling CS in beetween.
-
-Roughly speaking spi controllers can be divided on 2 categories:
- * spi controllers without dirmap acceleration support
- * spi controllers with dirmap acceleration support
-
-Firt of them will have issues with continuous reading if restriction on
-the transfer length is implemented in the adjust_op_size() handler.
-Second group often supports acceleration of single page only reading.
-Thus enabling of continuous reading can break flash reading.
-
-This patch tries to create dirmap for continuous reading first and
-fallback to regular reading if spi controller refuses to create it.
+This series contains these fixes picked from mainline, applying to stable 6.12
+cleanly.
 
 Cc: stable@vger.kernel.org
-Signed-off-by: Mikhail Kshevetskiy <mikhail.kshevetskiy@iopsys.eu>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
----
- drivers/mtd/nand/spi/core.c | 43 ++++++++++++++++++++++++++++++-------
- 1 file changed, 35 insertions(+), 8 deletions(-)
+Cc: Mikhail Kshevetskiy <mikhail.kshevetskiy@iopsys.eu>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: linux-mtd@lists.infradead.org
 
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index a480243385e2e..10339209e7322 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -1032,6 +1032,39 @@ static int spinand_mtd_block_isreserved(struct mtd_info *mtd, loff_t offs)
- 	return ret;
- }
- 
-+static struct spi_mem_dirmap_desc *spinand_create_rdesc(
-+					struct spinand_device *spinand,
-+					struct spi_mem_dirmap_info *info)
-+{
-+	struct nand_device *nand = spinand_to_nand(spinand);
-+	struct spi_mem_dirmap_desc *desc = NULL;
-+
-+	if (spinand->cont_read_possible) {
-+		/*
-+		 * spi controller may return an error if info->length is
-+		 * too large
-+		 */
-+		info->length = nanddev_eraseblock_size(nand);
-+		desc = devm_spi_mem_dirmap_create(&spinand->spimem->spi->dev,
-+						  spinand->spimem, info);
-+	}
-+
-+	if (IS_ERR_OR_NULL(desc)) {
-+		/*
-+		 * continuous reading is not supported by flash or
-+		 * its spi controller, use regular reading
-+		 */
-+		spinand->cont_read_possible = false;
-+
-+		info->length = nanddev_page_size(nand) +
-+			       nanddev_per_page_oobsize(nand);
-+		desc = devm_spi_mem_dirmap_create(&spinand->spimem->spi->dev,
-+						  spinand->spimem, info);
-+	}
-+
-+	return desc;
-+}
-+
- static int spinand_create_dirmap(struct spinand_device *spinand,
- 				 unsigned int plane)
- {
-@@ -1051,11 +1084,8 @@ static int spinand_create_dirmap(struct spinand_device *spinand,
- 
- 	spinand->dirmaps[plane].wdesc = desc;
- 
--	if (spinand->cont_read_possible)
--		info.length = nanddev_eraseblock_size(nand);
- 	info.op_tmpl = *spinand->op_templates.read_cache;
--	desc = devm_spi_mem_dirmap_create(&spinand->spimem->spi->dev,
--					  spinand->spimem, &info);
-+	desc = spinand_create_rdesc(spinand, &info);
- 	if (IS_ERR(desc))
- 		return PTR_ERR(desc);
- 
-@@ -1078,12 +1108,9 @@ static int spinand_create_dirmap(struct spinand_device *spinand,
- 
- 	spinand->dirmaps[plane].wdesc_ecc = desc;
- 
--	if (spinand->cont_read_possible)
--		info.length = nanddev_eraseblock_size(nand);
- 	info.op_tmpl = *spinand->op_templates.read_cache;
- 	info.op_tmpl.data.ecc = true;
--	desc = devm_spi_mem_dirmap_create(&spinand->spimem->spi->dev,
--					  spinand->spimem, &info);
-+	desc = spinand_create_rdesc(spinand, &info);
- 	if (IS_ERR(desc))
- 		return PTR_ERR(desc);
- 
+Mikhail Kshevetskiy (3):
+  mtd: spinand: fix direct mapping creation sizes
+  mtd: spinand: try a regular dirmap if creating a dirmap for continuous
+    reading fails
+  mtd: spinand: repeat reading in regular mode if continuous reading
+    fails
+
+ drivers/mtd/nand/spi/core.c | 74 +++++++++++++++++++++++++++++--------
+ 1 file changed, 59 insertions(+), 15 deletions(-)
+
 -- 
 2.55.0
-
 
 ______________________________________________________
 Linux MTD discussion mailing list
