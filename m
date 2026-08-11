@@ -4,91 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 293DCC5AC67
-	for <linux-mtd@archiver.kernel.org>; Tue, 11 Aug 2026 10:06:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8A0F1C5CFCF
+	for <linux-mtd@archiver.kernel.org>; Tue, 11 Aug 2026 10:11:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8dVrxM2amwxA2/6u6Jn390dGcufgMIJmeeNxtssCqm0=; b=4Aqn47NFElKrqQ
-	Cpz0X6BJsYb2o/luMY1IPO3XTCGUdwrVrYAkl6m9ScLyOH/tXS0EMLtj95Agz+OhloHFqCKODrE5S
-	2Z/l3HkmMME62ostFec84ooNuL/j1JmudUkN4oprFXiE4ECqIS2AAAcM1QlNgb9zkC0sGvkQ2YbhX
-	jsQ5yTgiaW3JY/VRY3QjzKiIxBcPOntlX8GvQGRPNkIIQio4J+5OQBjbAHG1F3pCCTJ30FmUSKPtz
-	dHyqFUrOmns7P8csy6C+8UuteiWz1nmprv1+AqwWwncbNlbjESfykf1nuvwhIbWXyfxmFfSdxWRKg
-	EbL+SbvNNdezBfKn3GFw==;
+	List-Owner; bh=URl3CrIRLFkZjsy6JsJS9umzBXDDj5P7OPWMfrJ89KQ=; b=U60tECF2ThkxWC
+	55BYO88m6xuEA8ceZ97YK9jgXzNQSu2SVRyOvXRWYb4/ko6+yxdp78UNSU465R2bCBKE+GWQuuKDm
+	eVw+ExdGw3LYtlhnRQLkXW17LFCzWGo2zjWh2UhTJb00AjI+Trzjo3aVEw1MUxSzlKpoTjmHPc2NO
+	/spXndJanGd3w342BPj0ivWDwIvzsdmTad463tQCVWbt8ElFsvT2EcVQg4FjrtMYUKPwW313UitIr
+	rFROcpt2nUhPwxzE1gXOOC861Y3Yt2t4KP7OHA/Jfl+pwh/V8LqE6SKgm/0yHoqY0K10CpanMpb5C
+	cNkBCq1XEmihvssulv9w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wtjMy-0000000DoLZ-3uGu;
-	Tue, 11 Aug 2026 10:06:04 +0000
-Received: from mail-wm1-x333.google.com ([2a00:1450:4864:20::333])
+	id 1wtjSX-0000000DosR-1q9t;
+	Tue, 11 Aug 2026 10:11:49 +0000
+Received: from mail-wm1-x335.google.com ([2a00:1450:4864:20::335])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wtjMu-0000000DoL0-1qvP
+	id 1wtjSU-0000000Dorb-3xZS
 	for linux-mtd@lists.infradead.org;
-	Tue, 11 Aug 2026 10:06:02 +0000
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-4994c49f588so7846875e9.0
-        for <linux-mtd@lists.infradead.org>; Tue, 11 Aug 2026 03:05:57 -0700 (PDT)
+	Tue, 11 Aug 2026 10:11:48 +0000
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-49553515a8bso45324315e9.1
+        for <linux-mtd@lists.infradead.org>; Tue, 11 Aug 2026 03:11:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1786442757; x=1787047557; darn=lists.infradead.org;
+        d=linaro.org; s=google; t=1786443105; x=1787047905; darn=lists.infradead.org;
         h=content-transfer-encoding:content-type:in-reply-to:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=5EFFhRqqKGCmLtFkk6nwPE5SfONW2zlZ18VqIKQ7ONs=;
-        b=LhIoLeSrFLmKElLN7EMGutoqQSuBNuHAzO7E2foR8abIE2xtvAiOOubNZpwrmJjEXB
-         /TBD/c13r3txeJoifxlBxGm9DKMJdu41TWB7rY7I1cCMfXOmxv9adE47g1/G4fDuzw6d
-         ICRHU9lVY7+myng5LSXnQxbS0hMqa2lGi7SPPTuC8CHHDHBXufE1QNqyg9cIny5V69l7
-         kDGPLGJDVM2nvqHxGVBSqulOFuPNY8/zAqi9ctwyychTS4mHHOn5kWtlcIwvHsxyovMK
-         LhNdw3CAulI+CpiFx0oe6aRi5rfG42I103n2un0plZYw/bYGXlAAF8dbvokmONBEd7UY
-         aZbw==
+        bh=9oGjBDmrMT1HdtDTd1zYF2GyNqQyxEZ7UjS4ThjuxXQ=;
+        b=jrjsBv21Yi0OHDu1jI0EEgcoFTQNFua1NmK4Uao1MsLyH49XqJKMm+iqGNpMxO0Lbp
+         3nfOva+1fjpnA9QvtLNn8LK0MNg1dfIqYlMtenlCLgkpRb8u5GE9ycyGIXCGorU3pBcA
+         1/uE7e1/d6EGiNW9K1ecLH2+xmyNw/s6ZAkwZbWOETwcRGxufCT4OmnNsTKgnzsnFn0J
+         LL3UJ0qB9cFPMxOva/JH0bNbK5hTnFnoP5RMgFVo9dkUfBem9/JWZ7Nf2MlpdE4cDIoW
+         wRPzd1i8SSXFonezjZqV16BoFvrvlvfHMUseDcxUminseRpD1sSjvGfuVdSW1haASTOj
+         q/ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1786442757; x=1787047557;
+        d=1e100.net; s=20251104; t=1786443105; x=1787047905;
         h=content-transfer-encoding:content-type:in-reply-to:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=5EFFhRqqKGCmLtFkk6nwPE5SfONW2zlZ18VqIKQ7ONs=;
-        b=EkRPSeZ5Z6C5gALqdcej8+O1FwZzgwwL+uPNWt6stI8N/OXvoYSbMgEY4GfyA+QAge
-         DbpjfFchSN0Xuq8Z9VI1xxkJkYcEEg5g3276TdEyJ7Dq+KmWYUVo5+hkXw7rPii+aKAC
-         1IYqZQoaHW4H5md6NDFXxxs+ujYeaK5NvkD3MU77NJ1vyMRhm/6WJyH9OCLhFperycBS
-         RTbWt9PXhN6e/vTv24fsYy2VPW/PSW4Mvfsdr6Vgaum/vpK4/FgLhEj40tY9Q14ZrUSJ
-         wWXimMNu1YRvzgjPy02vAROxM4FhIZlkndQ0ZeGCuKE26JU7XO7gKqrrOyCE51Oan2rU
-         wCjQ==
-X-Forwarded-Encrypted: i=1; AHgh+Rq/M2WhZVhhCZ3HsfiGgWYCWeu8NUIykQHiooLrmPnuVYgArdbi9L4+5U6daHkaZIGbSWXnlpvEXwc=@lists.infradead.org
-X-Gm-Message-State: AOJu0YykTJv+IR4/DnI3SDZyg4rjb48ZpQpeYjhn0lqvuvf/QztR5LCK
-	hH16WVq2XIaWDOKe83ToHGjNnWc16EKoHCBWpiQjPwsbi+tyxrZjHNemEJ00gSxgt14=
-X-Gm-Gg: AR+sD13kaeIeCIp9CpZBBDxU+cL9DzWgCMGVX4axCWjM2RSzRylDsd/89TUFJ0THjWf
-	OLoXG+VUz6oAquaiADerh4wKFRimB1DAhPTk+Lr8yV8zpPC81qxqRK9/FQaVgeP8ucjwq7ksZpH
-	MOnWjWVhw91o8VdI6lZ3BqIrTvM1gUq82WnaV/Sh7SdafFGz1QpPgKwk5B4tY/OddVJCNQf052i
-	ImSNJ1bPgsalsAkspUsYkbO5Me742p4aR1ZwfjdfPrTWAh5rLfOesbZn+3fnw1v6lecHoYNoRT7
-	0s1mkeN6mApk7V/X20CE/QXIGwwjXw7nuZCVIh450u03LlkTckLXqdoDJ4QjRz+fQeIN3xcvLMw
-	gznYXrRzcCl53YnDb9URhYM4ZcBWxQXEBGiE4gn22pHBYkuItJhaY8wCFi2EBdRaV9EsKspqD5o
-	GUj8wGeY1Yr/GPGQZv0ZJrpxvzSDaxUjCJfxTp9/9aunWhW/V76mkp+omEW6qZinOKbk/KWrQ=
-X-Received: by 2002:a05:600c:34c5:b0:495:5d6d:9cc1 with SMTP id 5b1f17b1804b1-49978e3f150mr26185875e9.0.1786442756530;
-        Tue, 11 Aug 2026 03:05:56 -0700 (PDT)
+        bh=9oGjBDmrMT1HdtDTd1zYF2GyNqQyxEZ7UjS4ThjuxXQ=;
+        b=QLZfpOGtJNbDNGaLxyzxxnyrC9u95Foif3ZeMIb5FGw1tWqvcdLndpXJ1yVSpLa6ni
+         ZPDL5STNu8o5TJHkj6RWtaRaemY16gvtHgLZDJ1mzjbbRylMQUNAgwwlmLtKr4I+/wtt
+         v25YYOMtOcnJzAGnM1GwqKrbtTcBJpJ/lnBuaBc7hB8cqgD2hJQ63yB0fMGRKRNL2N/Q
+         ZN9j7Dg4JHNPoj5kfqJE68/1WlZSJ43e9K2dCE04nJUvvWzXM5uaScpr3oxXbTN4wJp6
+         4FtmOC2QKW2Uz7XcOPRi7FKq44nXHIrdl8+pGWeXcF5LiClX353BS7qZ+aGUTt0YoF5B
+         MaNQ==
+X-Forwarded-Encrypted: i=1; AHgh+RqkS/TBVVVe4ZNnAe4ZfMteVxsqI87uUbm8AcKZQ0tk17Dgh+BAQdasLAy5svlmyKghmI20sb9W79s=@lists.infradead.org
+X-Gm-Message-State: AOJu0YxKfDqJ6g4ydWbgg/mbyoV4sZlEOfn0mxWuB9qMiN52pVNl219Q
+	KVb4qqsmko5M5SmLInJOFhoPlcuJhjyZ1eqk/cZI/VoAyv09x1E0MVUbGoMZOLyH/YU=
+X-Gm-Gg: AR+sD11Kh4HNu/NF5uqsrz1NdStMQ1xzkAMxAudMenZT7vreB0P2VftOhP7BP09gUAp
+	CCsJ91PGFC647I9DSVdGQ6XXmVdnsjr+hENcHOXTVhoJX5OXYPcsoH3A4hu8cuPaBFMRXpjg3x9
+	3G+1N85gJpQqIklqNmeU6364xsJ2Qh0cyQwlghswnF39XGktz+sOe31LbwUWmTk82gMKKvmPrEK
+	SshaOPC66PUzXYpZE/NxaZjG9pPKgTI/De8gLzx/3F+5fMAY1l2ExAThUglV1ZIlai9uJdykd3X
+	hN4iOOkgvn1D1NsFfs/Zn6w2oYy4SBR4KDvvxB5CIbh0I+KkBDT9gP1w38IfkHycBhvf5h2GOpN
+	MM2U1Sk6e3NMpl3vVOd5lZoYrwBxP0+KN/bCAun9WQpjchDZHWR/Xzf7xnef+Li7kUbAhLY2Nlr
+	xNrTHuCz94nc0URJXb6QblZy4bYvi5P1CaBTzoZW1mv1JLw0C1Pesh9S0SrGq1DAdhOQmzi24=
+X-Received: by 2002:a05:600c:8b4c:b0:499:593c:3384 with SMTP id 5b1f17b1804b1-49978434835mr35593495e9.6.1786443104947;
+        Tue, 11 Aug 2026 03:11:44 -0700 (PDT)
 Received: from [192.168.0.252] ([79.115.156.91])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-49977df9489sm59242995e9.1.2026.08.11.03.05.55
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-49977bab2f5sm23183255e9.0.2026.08.11.03.11.43
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 11 Aug 2026 03:05:56 -0700 (PDT)
-Message-ID: <6e208a8b-da11-4ba1-adfc-f1e80c891310@linaro.org>
-Date: Tue, 11 Aug 2026 13:05:52 +0300
+        Tue, 11 Aug 2026 03:11:44 -0700 (PDT)
+Message-ID: <0ff8afdc-7a11-4a6c-9f62-6f8ba712c4ac@linaro.org>
+Date: Tue, 11 Aug 2026 13:11:41 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mtd: spi-nor: scope the exclusive RWW lock
-To: Michael Walle <mwalle@kernel.org>, Runyu Xiao <runyu.xiao@seu.edu.cn>
-Cc: pratyush@kernel.org, miquel.raynal@bootlin.com, richard@nod.at,
- vigneshr@ti.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, jianhao.xu@seu.edu.cn, stable@vger.kernel.org
-References: <20260809084223.3596259-1-runyu.xiao@seu.edu.cn>
- <DKL4CBQNKCO2.3NAZ6S25Q60XN@kernel.org>
+Subject: Re: [PATCH v3] mtd: spi-nor: use guard() in
+ spi_nor_rww_start_exclusive
+To: Runyu Xiao <runyu.xiao@seu.edu.cn>
+Cc: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org, jianhao.xu@seu.edu.cn
+References: <20260811041349.333176-1-runyu.xiao@seu.edu.cn>
+ <20260811083111.403453-1-runyu.xiao@seu.edu.cn>
 Content-Language: en-US
 From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <DKL4CBQNKCO2.3NAZ6S25Q60XN@kernel.org>
+In-Reply-To: <20260811083111.403453-1-runyu.xiao@seu.edu.cn>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260811_030601_577835_38D1B332 
-X-CRM114-Status: UNSURE (   6.67  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260811_031147_023011_F91BA411 
+X-CRM114-Status: GOOD (  20.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,11 +109,62 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
 
-On 8/10/26 11:25 AM, Michael Walle wrote:
-> Tudor, do
-> you know why you've omitted the guard() in spi_nor_rww_start_exclusive()?
+On 8/11/26 11:31 AM, Runyu Xiao wrote:
+> Commit 03e7bb864d9a ("mtd: spi-nor: use scope-based mutex cleanup
+> helpers") converted the RWW start helpers to scoped mutex cleanup, but
+> left spi_nor_rww_start_exclusive() using a plain mutex_lock().
+> 
+> spi_nor_rww_start_exclusive() is used as a wait_event_killable()
+> condition. When it returns false on the busy path, the raw mutex_lock()
+> leaves nor->lock held and blocks the operation that must clear the RWW
+> state in spi_nor_rww_end_exclusive().
+> 
+> Use guard(mutex) here as well so this helper matches the other RWW
+> start helpers and releases nor->lock on the false return path.
+> 
+> Fixes: 03e7bb864d9a ("mtd: spi-nor: use scope-based mutex cleanup helpers")
 
-because using guard changes the behavior of the code.
+The fixes tag is wrong. The blamed commit did not change the functionality
+of the code, while yours does.
+
+You shall instead blame the commit that failed to release the lock in the
+first place. But then if you want to have this backported to stable kernels
+you may want to add 03e7bb864d9a ("mtd: spi-nor: use scope-based mutex
+cleanup helpers") as a prerequisite patch, as it includes <linux/cleanup.h>.
+
+Cheers,
+ta
+
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Runyu Xiao <runyu.xiao@seu.edu.cn>
+> ---
+> Changes in v3:
+> - Reframe the changelog around the scoped-helper conversion that missed
+>   spi_nor_rww_start_exclusive().
+> 
+> Changes in v2:
+> - Replace the analysis-style explanation with a short maintainer-facing
+>   description of the busy-path lock hold.
+> - Keep the fix focused on using guard(mutex) so the mutex is released on
+>   both paths.
+> 
+> drivers/mtd/spi-nor/core.c | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> index ccf4396cdcd0..8bc117b46e02 100644
+> --- a/drivers/mtd/spi-nor/core.c
+> +++ b/drivers/mtd/spi-nor/core.c
+> @@ -1310,7 +1310,7 @@ static bool spi_nor_rww_start_exclusive(struct spi_nor *nor)
+>  {
+>  	struct spi_nor_rww *rww = &nor->rww;
+>  
+> -	mutex_lock(&nor->lock);
+> +	guard(mutex)(&nor->lock);
+>  
+>  	if (rww->ongoing_io || rww->ongoing_rd || rww->ongoing_pe)
+>  		return false;
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
