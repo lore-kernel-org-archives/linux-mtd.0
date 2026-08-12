@@ -4,92 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC7CFC5AD5A
-	for <linux-mtd@archiver.kernel.org>; Wed, 12 Aug 2026 10:51:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B58FC5B572
+	for <linux-mtd@archiver.kernel.org>; Wed, 12 Aug 2026 12:34:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=H6xXgXaG4jXv4ZGcLKoso/oZ5RfVUtyi+chQxD1IN6s=; b=3ZTWvZ3c5btPBD
-	wFD5LRtEnEdXmIIPK+j6Zi6RuNNyy4m9gkvMDvpwxOjUP48CzmhKz9Bp1d7xGOtZoJXJVmzpEyyed
-	dGmJD1m+/vH+8p9AgQfDYGb7AzFBXhw82/G+2MGbI+dmaI/TOtzG2jkHToH8xOSrTHHPyK/WpdHX7
-	52R8IYQQi2+FDsSMbONL+ujpKEHd7dcyAcDalhP9FrCw7+O+I92y3iMEm6I9I9fztP/lP8CqvuytD
-	Yt+PGl+mcIrx52AQI2D88VtrKDF11t4kVyn56FBkoYkToFKTEYFoaon3MEJSuIBlF0Qpehaa2mwdP
-	IAO5d4CnW7Zz862suzQw==;
+	List-Owner; bh=D+u6m5fcNHmPDj2D6/LC/j4jgi04IjWTjFW9RNN42JI=; b=U0IbvY0K3o+Uzm
+	V3CKezhrOmusI5Jh6rINbrq7Rs1/ozIsIqDtQuAkE7Pc+Qic0hXoggShTCjzNM4FMpKDBu2rvLNGl
+	PT3lXWJ9HPP8Z/4Q8W/SfAtUMR9EtTiYsmgHC35uIryDMsAWsl2iaY1N1Ct6Cc+orGs8/BS1y5ahf
+	/w5mafN2OZCH0yNFsgp6VhqAofkI3HZzqqiu/SMw4VO7dwgjxkNoB2nCjaiKTQFrw+x3WB6z7eJhC
+	Lt09/TSM81iGuunUQhyAeIa79eykXYop2mC6fxl21GGtaC+bTXE60nTReRVien3coKgP72ZFE1z1E
+	nj9S5i69Tr8nPLj/o8BQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wu6Yo-0000000FxPC-49zE;
-	Wed, 12 Aug 2026 10:51:51 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1wu89v-0000000GCNw-0jXB;
+	Wed, 12 Aug 2026 12:34:15 +0000
+Received: from smtpout-03.galae.net ([185.246.85.4])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wu6Yj-0000000FxKm-2ZfI;
-	Wed, 12 Aug 2026 10:51:45 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Type:Content-Transfer-Encoding
-	:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=CO7HOu6bSH1oWMBDH3e84cNi6QIMSBzLU3gxwG2Zzko=; b=HRnhLw6cnbwyIkMnFUCqgPPZ0v
-	mjilY90m5yTUBwFXNkxFWq+317Lh1uS/qyL9ly2zklD7BiB709tYpBnD3fzMxmf4oqNFIPaPz0KbI
-	zTavU6ElrZLwcaJ/XZXDA3ETw3WtnAZ9p3SAh55djLrHSTrRFRRKp+isz1zM7aHq5gl3+Ur52iEwZ
-	LAXIl9bjD/RteUsnh8tCm9gnOCasfiTaSF8hkdVOxC+4+iZPM3hCoblVbNBzc5siSj6AK77ua2R1U
-	jt9Cf1IqquMxev4qEPo74eTqMuXAEHtB1Dxus0c0Q14cKFO8z3mqvRm8NY+WzEtbtwy0XrWQ8UUsA
-	mfSPNjmQ==;
-Received: from esa.microchip.iphmx.com ([68.232.153.233])
-	by desiato.infradead.org with esmtps (Exim 4.99.2 #2 (Red Hat Linux))
-	id 1wu6Yf-0000000FK3G-2WKq;
-	Wed, 12 Aug 2026 10:51:44 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1786531901; x=1818067901;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=1XJw3ZIVNLVIjUuPwE5g/7zUOaAo2PmxEW3WdYarUvQ=;
-  b=YQW9hagdLiF5004ySMnUMpk/4aX+JTV8/h4Ahhe4gIuTgLcFmyeMucQA
-   yLhKVi7oWvLmvZrPkc9gRn/xnXnzC8ULh48CXUA/qjZxLEEYnS1yxaHyO
-   2iX2dxGjqy3vs1uxhCl+4NypvuKySh604INLV1MF/vRtvCpKgKRP4ljeM
-   Olr1simYUieRkL86ENMgBOGy8lc8hwJwRFBjpQ/HXAR15HWHKuomjcdbt
-   IqpQGiQUPM9a+xs7rDSBTSxSE4//7bu6v+BaoY6axKlgCGfKbIFsIJ7Ow
-   EowvcT43Oz/Ypy9bLie+u/vIx6pVWdjdj4Ox+CAJGx0xNEzRi7G+ZIFPM
-   g==;
-X-CSE-ConnectionGUID: ZXSAxwFwTfufGD66zMQ6LQ==
-X-CSE-MsgGUID: jXelUdznTDmVXN8PJqotyQ==
-X-IronPort-AV: E=Sophos;i="6.25,219,1779174000"; 
-   d="scan'208";a="71673525"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2026 03:51:36 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.87.151) by
- chn-vm-ex4.mchp-main.com (10.10.87.33) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.2562.45; Wed, 12 Aug 2026 03:51:36 -0700
-Received: from che-ll-i67131.microchip.com (10.10.85.11) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2507.58 via Frontend Transport; Wed, 12 Aug 2026 03:51:25 -0700
-From: Manikandan Muralidharan <manikandan.m@microchip.com>
-To: <pratyush@kernel.org>, <mwalle@kernel.org>,
-	<takahiro.kuwano@infineon.com>, <miquel.raynal@bootlin.com>,
-	<richard@nod.at>, <vigneshr@ti.com>, <robh@kernel.org>, <krzk+dt@kernel.org>,
-	<conor+dt@kernel.org>, <srini@kernel.org>, <nicolas.ferre@microchip.com>,
-	<alexandre.belloni@bootlin.com>, <claudiu.beznea@tuxon.dev>,
-	<linux@armlinux.org.uk>, <richardcochran@gmail.com>, <arnd@arndb.de>,
-	<linusw@kernel.org>, <gregkh@linuxfoundation.org>,
-	<mathieu.dubois-briand@bootlin.com>, <michael@walle.cc>,
-	<linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<netdev@vger.kernel.org>
-CC: Manikandan Muralidharan <manikandan.m@microchip.com>
-Subject: [PATCH v7 7/7] ARM: configs: sama5: enable Microchip/SST SFDP EUI NVMEM layout
-Date: Wed, 12 Aug 2026 16:19:55 +0530
-Message-ID: <20260812104955.485667-8-manikandan.m@microchip.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260812104955.485667-1-manikandan.m@microchip.com>
-References: <20260812104955.485667-1-manikandan.m@microchip.com>
+	id 1wu89s-0000000GCN7-0nuE
+	for linux-mtd@lists.infradead.org;
+	Wed, 12 Aug 2026 12:34:13 +0000
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-03.galae.net (Postfix) with ESMTPS id 77FE44E411CE;
+	Wed, 12 Aug 2026 12:34:09 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 395236045E;
+	Wed, 12 Aug 2026 12:34:09 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 7DDE511C48FB2;
+	Wed, 12 Aug 2026 14:34:04 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1786538048; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=xuFjDi+sqwOiT9DOGhyCDzTUfQjl1AKPwxZGlAghHCs=;
+	b=YyhxBNCpAmrz7AsVZImu0Omgf9G2QK4rQCmlcz+11OnuKSb2zuruJNwhBDkxYtbx0f99V4
+	nutTl3TxMuC+RQpOBwMXfLIHVtW6bXNW0YVWxPTWFh6hprgvtnlsvJAi9oWTnE2OjF5UOs
+	AtUpHKS4Kl73uV5sWtJ1OPOBgReV4s83WUm5q7qS+s8rL1rAsJmzSG540NN3eMQP1O9MQY
+	neBGMDtYRAKPeZcMpVyZ46VHh7DI8ypQ9pbVicVcoeMKio6zXsHmokpQD29YSLdgA7xmf6
+	djdU59My1IqW/n0idurHxu0aAbE+UyA7a72NEFm2oKEckvmoaLwEat2QJxOhOg==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Pei Xiao <xiaopei01@kylinos.cn>
+Cc: joern@lazybastard.org,  richard@nod.at,  vigneshr@ti.com,
+  linux-mtd@lists.infradead.org,  linux-kernel@vger.kernel.org,
+  syzbot+b320a4d5f65a61dbbf89@syzkaller.appspotmail.com,  =?utf-8?Q?J?=
+ =?utf-8?Q?=C3=B6rn?= Engel
+ <joern@barelysecure.org>,  stable@vger.kernel.org
+Subject: Re: [PATCH v2] mtd: block2mtd: Fix divide error when erase_size is
+ zero
+In-Reply-To: <48230456575d27aa83ce8640de8fc07cc62e8efb.1786499433.git.xiaopei01@kylinos.cn>
+	(Pei Xiao's message of "Wed, 12 Aug 2026 09:52:42 +0800")
+References: <48230456575d27aa83ce8640de8fc07cc62e8efb.1786499433.git.xiaopei01@kylinos.cn>
+User-Agent: mu4e 1.12.12; emacs 30.2
+Date: Wed, 12 Aug 2026 14:34:04 +0200
+Message-ID: <871pc3msar.fsf@bootlin.com>
 MIME-Version: 1.0
+X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260812_115143_001607_A19FBC62 
-X-CRM114-Status: UNSURE (   9.23  )
+X-CRM114-CacheID: sfid-20260812_053412_428141_A66E09BF 
+X-CRM114-Status: UNSURE (   9.28  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -102,37 +76,40 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Enable CONFIG_NVMEM_LAYOUT_SST26VF_SFDP_EUI so the factory EUI-48 stored
-in the SST26VF QSPI flash SFDP can be used as a MAC address on boards
-such as the sama5d27_wlsom1.
-
-Reviewed-by: Linus Walleij <linusw@kernel.org>
-Signed-off-by: Manikandan Muralidharan <manikandan.m@microchip.com>
----
- arch/arm/configs/sama5_defconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/arm/configs/sama5_defconfig b/arch/arm/configs/sama5_defconfig
-index bd7f0b5f7d66..14dda4b0cfd0 100644
---- a/arch/arm/configs/sama5_defconfig
-+++ b/arch/arm/configs/sama5_defconfig
-@@ -220,6 +220,7 @@ CONFIG_PWM=y
- CONFIG_PWM_ATMEL=y
- CONFIG_PWM_ATMEL_HLCDC_PWM=y
- CONFIG_PWM_ATMEL_TCB=y
-+CONFIG_NVMEM_LAYOUT_SST26VF_SFDP_EUI=y
- CONFIG_EXT4_FS=y
- CONFIG_FANOTIFY=y
- CONFIG_AUTOFS_FS=m
--- 
-2.43.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gMTIvMDgvMjAyNiBhdCAwOTo1Mjo0MiArMDgsIFBlaSBYaWFvIDx4aWFvcGVpMDFAa3lsaW5v
+cy5jbj4gd3JvdGU6Cgo+IFRoZSBlcmFzZSBzaXplIGlzIHBhcnNlZCBmcm9tIHRoZSAiYmxvY2sy
+bXRkIiBtb2R1bGUgcGFyYW1ldGVyIGFuZCBjYW4KPiBiZSBzZXQgdG8gemVyby4gYWRkX2Rldmlj
+ZSgpIHRoZW4gZXZhbHVhdGVzCj4KPiAgICAgICAgIGlmIChzaXplICUgZXJhc2Vfc2l6ZSkKPgo+
+IHdpdGggYSB6ZXJvIGRpdmlzb3IsIHdoaWNoIHRyaWdnZXJzIGEgZGl2aWRlIGVycm9yOgo+Cj4g
+ICAgICAgICBkaXZpZGUgZXJyb3I6IDAwMDAgWyMxXSBQUkVFTVBUIFNNUCBQVEkKPiAgICAgICAg
+IFJJUDogMDAxMDphZGRfZGV2aWNlIGRyaXZlcnMvbXRkL2RldmljZXMvYmxvY2sybXRkLmM6Mjk2
+IFtpbmxpbmVdCj4gICAgICAgICBSSVA6IDAwMTA6YmxvY2sybXRkX3NldHVwMisweDU5Mi8weGRh
+MCBkcml2ZXJzL210ZC9kZXZpY2VzL2Jsb2NrMm10ZC5jOjQ1OQo+ICAgICAgICAgQ2FsbCBUcmFj
+ZToKPiAgICAgICAgICBibG9jazJtdGRfc2V0dXArMHgyNy8weGUwIGRyaXZlcnMvbXRkL2Rldmlj
+ZXMvYmxvY2sybXRkLmM6NDc2Cj4gICAgICAgICAgcGFyYW1fYXR0cl9zdG9yZSsweDIxNC8weDMx
+MCBrZXJuZWwvcGFyYW1zLmM6NTg5Cj4gICAgICAgICAgbW9kdWxlX2F0dHJfc3RvcmUrMHg2NS8w
+eDkwIGtlcm5lbC9wYXJhbXMuYzo5MDQKPiAgICAgICAgICBrZXJuZnNfZm9wX3dyaXRlX2l0ZXIr
+MHgzYTQvMHg1NDAgZnMva2VybmZzL2ZpbGUuYzozNDUKPiAgICAgICAgICAuLi4KPgo+IFJlamVj
+dCBhIHplcm8gZXJhc2Ugc2l6ZSBiZWZvcmUgcGVyZm9ybWluZyB0aGUgbW9kdWxvIG9wZXJhdGlv
+biBzbyB0aGUKPiBleGlzdGluZyAiZXJhc2VzaXplIG11c3QgYmUgYSBkaXZpc29yIG9mIGRldmlj
+ZSBzaXplIiBlcnJvciBwYXRoCj4gcmVwb3J0cyB0aGUgaW52YWxpZCBhcmd1bWVudCBhbmQgZnJl
+ZXMgdGhlIGRldmljZS4KPgo+IFdoaWxlIGF0IGl0LCBkcm9wIHRoZSB1bm5lY2Vzc2FyeSAobG9u
+ZykgY2FzdCBmcm9tIHRoZSBzaXplIG9wZXJhbmQgb2YKPiB0aGUgbW9kdWxvLgo+Cj4gRml4ZXM6
+IGVhNmQ4MzNhM2ZkZCAoIm10ZDogYmxvY2sybXRkOiBjaGVjayBkZXZpY2Ugc2l6ZSIpCj4gUmVw
+b3J0ZWQtYnk6IHN5emJvdCtiMzIwYTRkNWY2NWE2MWRiYmY4OUBzeXprYWxsZXIuYXBwc3BvdG1h
+aWwuY29tCj4gQ2xvc2VzOiBodHRwczovL2xvcmUua2VybmVsLm9yZy9sa21sLzZhN2I1OGJhLmFj
+MzYxYzA5LjIyZmYwYS4wMDQ1LkdBRUBnb29nbGUuY29tLwo+IFN1Z2dlc3RlZC1ieTogSsO2cm4g
+RW5nZWwgPGpvZXJuQGJhcmVseXNlY3VyZS5vcmc+Cj4gQ2M6IHN0YWJsZUB2Z2VyLmtlcm5lbC5v
+cmcKPiBTaWduZWQtb2ZmLWJ5OiBQZWkgWGlhbyA8eGlhb3BlaTAxQGt5bGlub3MuY24+CgpBcHBh
+cmVudGx5LCByZW1vdmluZyB0aGUgY2FzdCBsZWFkcyB0byBhbiB1bnN1cHBvcnRlZCBvcGVyYXRp
+b24gd2l0aCBhCjY0LWJpdCBvcGVyYW5kIG9uIDMyLWJpdCBhcmNoaXRlY3R1cmVzIChTZWUgU2Fz
+aGlrbyByZXBvcnQpLgoKSSBndWVzcyBpdCBpcyBiZXN0IHRvIGtlZXAgdGhhdCBjYXN0IGluIHRo
+ZSBlbmQuCgpTb3JyeSBmb3IgdGhlIGNoYW5nZXMgYmFjay1hbmQtZm9ydGguCgpNaXF1w6hsCgpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGlu
+dXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
+L21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
