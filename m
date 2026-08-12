@@ -4,130 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9162C5AD5A
-	for <linux-mtd@archiver.kernel.org>; Wed, 12 Aug 2026 04:14:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92698C5B567
+	for <linux-mtd@archiver.kernel.org>; Wed, 12 Aug 2026 05:00:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version:Subject:
-	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=NJcag2sk4wbc51gbLXk/vxZjtZUm51x2TU1d1Ru7AtY=; b=3RJeFMKXHDWM0p
-	QkhHPuEnBiP4Uo9MIfQ2NMc8soCAMBaWGcjzwyqslnbz8i+a7mdUoEO3/TtrYtsIACUIHa09Kj3Uu
-	99wcg4EQ8lODLD+Jo5w0NsAs4a7EOUsshuBKXWZnwqksif1BJoS2YIr7+s+xm4Gc8G1Y04Jf9I1ps
-	MheE1WWUhBqMY2qsZmdnRhEX1e+k1bAwV2i76g1u+eKCjNvRMu/KgDOFjk8WZsi4pp/dd2urjnf6n
-	l7FgW03zr3Syagh2pwojpQvvoCQk1UBIRDpheXRo7XWBBzif8SqCaa0fCZ/TIdMc5bMwjBPsrz01z
-	uSVRiY9t24L1sL878N6g==;
+	List-Archive:List-Unsubscribe:List-Id:To:From:Subject:Message-ID:Date:
+	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=899ia/M/SLSkbMQZyRUPZEzh72Zyw8qO+P56xtxbL/0=; b=DUG
+	oSw1Zjgo87lBI4PEwudp+y1W9dFTnpMEvlNlzXDxybZXOPFoeSgZgEmaGhKSWPcxCM8LhyXm5qyCG
+	S+dHjtvK9hUjuCL2hGiV0YrChttpOsx4iUGMU2NCN+Ydg54woYWamyDRdzLr+Y/utGQJyPkJw91xo
+	2XUsfFiDkeDFjM+3lrswP8rVUq6/+FVa8UIXBDI/DnqEbZiyFCgowopLgo3Dlhyl7CqqGkfqFQ3/5
+	pCgoj9pLR9lYy7yo+qdhjhE+qZvfaAeoSvzGQIuhocQ8oybnXawQT1TmryC77cpYXrWd0KfyxMD5M
+	cer+ctM26Sv7QNqZiSZoNUqmJo0IYRA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wu0M6-0000000FOKw-0C7M;
-	Wed, 12 Aug 2026 04:14:18 +0000
-Received: from gw2.atmark-techno.com ([35.74.137.57])
+	id 1wu154-0000000FPpa-3Uio;
+	Wed, 12 Aug 2026 05:00:46 +0000
+Received: from mail-oi1-f205.google.com ([209.85.167.205])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wu0M2-0000000FOKM-2XFu
+	id 1wu151-0000000FPow-2GZP
 	for linux-mtd@lists.infradead.org;
-	Wed, 12 Aug 2026 04:14:17 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=atmark-techno.com;
-	s=gw2_bookworm; t=1786508050;
-	bh=0ac+9ChYOT63TLmJE7muZgICUT8deNIQ8Yn5SX6y4Xw=;
-	h=From:Date:Subject:To:Cc:From;
-	b=EuTv3tEggJJcj6gI6JQItK68beIgS+LEgrIxf0WiSuGKIvSZM5xC8pLl2Jni2lvps
-	 zmyjR4JooMIZm4hVYBSSGh8jPtzcSb+p2CL8wSLklEnR82Fn3XSkPUhfG+r/tCtjkA
-	 XkkgHYZ/9jSXUBGw2UeACAuFrDJcdA2fAxzu1eJzu5bVjkadOE11BHR1/l2gV7ykvV
-	 se9KgVnyRaSns1RQtZ50QIThHaYiFRVXJXwFW7RP1TZxbUz+T55BjcpSmD8V1gemXr
-	 kBACRgN3RQji3AecpgvntC2t0r/ud/ufxoN/SGb9MgVW4/EFXvZ2mlThhKDrB/aXLc
-	 1XwYrScOXOIig==
-Received: from gw2.atmark-techno.com (localhost [127.0.0.1])
-	by gw2.atmark-techno.com (Postfix) with ESMTP id A7704444
-	for <linux-mtd@lists.infradead.org>; Wed, 12 Aug 2026 13:14:10 +0900 (JST)
-Authentication-Results: gw2.atmark-techno.com;
-	dkim=pass (2048-bit key; unprotected) header.d=atmark-techno.com header.i=@atmark-techno.com header.a=rsa-sha256 header.s=google header.b=XJ3TBKi+;
-	dkim-atps=neutral
-Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com [209.85.214.199])
-	by gw2.atmark-techno.com (Postfix) with ESMTPS id 71D2D444
-	for <linux-mtd@lists.infradead.org>; Wed, 12 Aug 2026 13:14:09 +0900 (JST)
-Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-2d02df2bf09so4539665ad.0
-        for <linux-mtd@lists.infradead.org>; Tue, 11 Aug 2026 21:14:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atmark-techno.com; s=google; t=1786508049; x=1787112849; darn=lists.infradead.org;
-        h=cc:to:message-id:content-transfer-encoding:content-type
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to:content-type;
-        bh=bVLNluNzT3CgQnEwDzhoLkRU7QTo/hyjSTd200GccGo=;
-        b=XJ3TBKi+VnZ2Vi0hDv9E23jjl2V8x92tk1if3g4Y5DQUFJ7zZbhlH8D9JxzeznpnYG
-         3tFpHIlhltsVJ5YX2ltLAR5vX4fMh1/7TDGQuo50HI2GdqiJ5/iixgoviBBpJPd1vCh9
-         upXwLq8vnBk26TIxdsxVhh2UtG4DrO9pFa8aMB3awVOqP0VVQR23f2N5CQbDfnx28uQN
-         2XuH3v3haKytgzFNAewB693B5uGq9jPAMtQ09XuplzppunMxgyBZcji0SEqfXG6uJUF4
-         9rPyuk4ldfivY2ts9I/LJp1VzsOpk5r57sewZ8J8Lqt27d46expwAYrPKKUtfTMS2DRv
-         CKOA==
+	Wed, 12 Aug 2026 05:00:44 +0000
+Received: by mail-oi1-f205.google.com with SMTP id 5614622812f47-49ce04870f8so485483b6e.0
+        for <linux-mtd@lists.infradead.org>; Tue, 11 Aug 2026 22:00:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1786508049; x=1787112849;
-        h=cc:to:message-id:content-transfer-encoding:content-type
-         :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to:content-type;
-        bh=bVLNluNzT3CgQnEwDzhoLkRU7QTo/hyjSTd200GccGo=;
-        b=mBLp4ROoC3ldmMx6waPHiJXrjkTUg8O0BmfDYJixUh76fJBlHwTCUZ6AQJNsHvgBou
-         L0REVKaDC8lQTgRI9hdJsgBktahOJs8YUIOWkK6ok455KsZMhQvOUD9D9mZ1u/DX+ONh
-         CUvjf+Wra7AW9INFN/mbXxxDql+9MHcEhRB+rNwcmFKwR32ruj1DWyJfjzHyg104Y+c8
-         fdSVaPMrXZ4IvyeHUlo7GuAenbdgUoWuJRH47k/RgiQfzc2K2Y3MaTBUNnfTyPV/+hse
-         NCuTMzJF/askeljY+DCBTx7uf5pjrKAEhJTT/LK4xemDTwn6RdW/B5wCBIZdFHSO4gm3
-         axhQ==
-X-Gm-Message-State: AOJu0YypCpFVm8axzbptnT8v6WB9Q6Rrwx6TXplXBQbSFDJncZCV99P5
-	Zbpn1m+x7rIzk8O6v6Nd0eZRYL3TeSxUGvgHdSiwA2TdN0UgKBvYS+/Cg7krmNlxjSe0zY7/PFU
-	kCis9HypBOFlvODYBw9S6M0YGAPbvxXxYg1DIizv8DuiuEo6bLbtOe1jHoWkUsZJKKEsXeJEhCT
-	/f
-X-Gm-Gg: AR+sD10GX/VlhIKSeAKIMp3cQ2xvOaId8P54L9Oh1KEInl/qJ+tszikoswP4JcO7syY
-	8NOF8tG3bmGu3R65EEAjYfGXZhO3p5H0cNm7dhXbnYTIpqod26MIoLdqWNNtl3GD0kHdvx866R3
-	PxgjlXfkqLsdLiPbRIbn6mNEPlwIVBRQOwwrexqipXI7h2u8Bp1VDcBkSHX/+2JweqsDMWAEeUc
-	RAGpr47ccg7CFWRph1h8J2eMkeARizH5TtGI+uRboJvCpwmpD/l2QFPf12FqmcPPfPCCgkgFQFF
-	lENlMKNBeGpyLl01075BgpX/o2fDB9y8N9OinNITKJQ8QMOnvLXwNnWrTl40KPduvyNaq78m5Oe
-	3+jcfj2MUcRo6ZitcTXI/HdavRHfi35Vnb94Zh1N4dmh6pK0a
-X-Received: by 2002:a17:902:fda3:b0:2ca:53e9:1277 with SMTP id d9443c01a7336-2d345359e86mr30818755ad.1.1786508048711;
-        Tue, 11 Aug 2026 21:14:08 -0700 (PDT)
-X-Received: by 2002:a17:902:fda3:b0:2ca:53e9:1277 with SMTP id d9443c01a7336-2d345359e86mr30818235ad.1.1786508048208;
-        Tue, 11 Aug 2026 21:14:08 -0700 (PDT)
-Received: from localhost (sodcd-04p2-40.ppp11.odn.ad.jp. [203.139.65.40])
-        by smtp.gmail.com with UTF8SMTPSA id d9443c01a7336-2d350fb0cd0sm990655ad.4.2026.08.11.21.14.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Aug 2026 21:14:07 -0700 (PDT)
-From: Dominique Martinet <dominique.martinet@atmark-techno.com>
-Date: Wed, 12 Aug 2026 04:14:02 +0000
-Subject: [PATCH RFC v2] mtd: spinand: winbond: add support for W25N04LW
+        d=1e100.net; s=20251104; t=1786510840; x=1787115640;
+        h=content-type:to:from:subject:message-id:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=whulqaPrA6Df/FKHJWt7zjRAPFi92MgfcdZDHlienVk=;
+        b=O/4RPnpjz3iACjeWxIc1jDEkA4195+STl4WmyCsJEjJnH/kZTJkdNj9FyLWIyY5snc
+         DQ6sMuiNcz52wCFUX3d3w5I8lXh3BT5xsw0E6Xz3KQuUWefiFqYrLLyMcATdaUL/6ZRu
+         hXMV3ufvvy23k7cc338dJ0M6Q9Swdi4aRZd5ZMI94I/OgnP5mJe3LEadrZVOWE7O6qF1
+         jypuvJBXg5QfBhrKV4rONrfX1TCzNHGj8IBJ8EJv5eM/CcUdTPmS2QdwJKTCiHFtXPlI
+         2XclGS28ojgWkKso/5SjW2OPgz4Tw6DFMUv0r+V2eOjhwavkmYLYsw2qYJAdpsbt4NBO
+         IvrQ==
+X-Forwarded-Encrypted: i=1; AHgh+RqG2KcMAqzPdrTDkhodpe2qjZQK3bMrTkSe7a87EK5v/VmlsAUV5ST/OsbTX4A9Ckdl9GZgoTC/tJM=@lists.infradead.org
+X-Gm-Message-State: AOJu0YxK/q8tMO6QDDTAOtFCjbi61OKsbL1GuW5J3H6f96RXKNd3hRqK
+	LGUuxgZcKjFCJbXdWh+S03eYW+NOxi3m1cF+tBypLMg+CIlv+CcsdIDXUbhADaJO/9jYF+XzIEg
+	/u9gIDiKhYqC5vcfSAlVJGmY6UQqMRryVZODMy8Mop3rx0PzOlxy4Kr9qSOk=
 MIME-Version: 1.0
-Message-Id: <20260812-w25n04lw-v2-1-deee97602fc4@atmark-techno.com>
-X-B4-Tracking: v=1; b=H4sIAAnze2oC/yWNSwuCQBhF/4p82xoZRxNrFRQtCoKCFhEuRh1zY
- h414yMR/3ujbS6cy+HeASwznFnYeAMY1nLLtXJAlh7kFVVPhnjhGAgmMU4CgjqyUjgSHQrZOoj
- iIgkjXILT34aV/DtPPeB62EH6L22TvVheTyOTVnFba9PPh20wy1TZ+02fT8d+f1nEJdlWDZIFF
- VSiTBj/01CRayl9F5CO4/gDvSGlXbUAAAA=
-X-Change-ID: 20260812-w25n04lw-3e9146d8340f
-To: Miquel Raynal <miquel.raynal@bootlin.com>, 
- Richard Weinberger <richard@nod.at>, 
- Md Sadre Alam <md.alam@oss.qualcomm.com>, 
- Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
- Daisuke Mizobuchi <mizo@atmark-techno.com>, 
- Dominique Martinet <dominique.martinet@atmark-techno.com>
-X-Mailer: b4 0.16-dev-a9e92
-X-Developer-Signature: v=1; a=openpgp-sha256; l=6435;
- i=dominique.martinet@atmark-techno.com; h=from:subject:message-id;
- bh=0ac+9ChYOT63TLmJE7muZgICUT8deNIQ8Yn5SX6y4Xw=;
- b=owEBbQKS/ZANAwAKAfKKYH/WjHEHAcsmYgBqe/MO3uG/4R7lc8o4s5xMilJwZEZPO3d/x24Xf
- bUZJRwoSYeJAjMEAAEKAB0WIQQoFSiLMD+txr0veJbyimB/1oxxBwUCanvzDgAKCRDyimB/1oxx
- B+7BD/9lRSSTHY2nEK+x8f5sf1BWpDbFadodXwVg2/h4dQG/qrmo+aaSc5UGuwfgxihFU50fA9n
- qXjUx2OmFv6BBybxHMe55mcVPtAnYmUV17Z3Izq3mQYDDTHnpbObgoiWpbTX9ZjxqaUwfENvAWt
- DqD0U9/FJkN96q7SQNUfBEJv6mwrp1RG0xPHvHtMvX7Pmjz+XaRfJ4NvsU3rmwViv9JW6rhy0WV
- 7oBSZmUofgZksIPnq/Z8TxsuS1pfMEcTWchhGqZOjknY5khn230WnvmvWcemHIdZEpsVOAquWCe
- tghliUcRzUJ5DjxhotcP7H4FMW8vbuI1sxWMCbpouO8TG3Q1N4DLDKsxKzZWLKMxd64iTIVf35+
- iXg5GtT8pmIrhJtl3wJcHnlmLOEQQgx9Qd7RwjNETsa4OodpWFib03mBt4W/2MnecqxUnHiEAJL
- dFOYKrkoyslM+qGqk2Eeo77vs/ujrQ4GGxQr/BiGUOSbTn9sOVk+0luTj1xi22ozNo9IxNLjik6
- MzIyUJDPjJUdXDJ3IFMQZhyhukM3QYc8J1A1raBI4hb99T4PqPyhbUOfbQXOf1qe2cH/d+rSvr/
- G1ho8tknGnL0rjJOUBgp/hAF8k04MJv1IrQ85FY6Oc1/5r2XRGWsz7p2fPatB3U1KNswtfq2dXl
- WdoueJamHmGGP6A==
-X-Developer-Key: i=dominique.martinet@atmark-techno.com; a=openpgp;
- fpr=2815288B303FADC6BD2F7896F28A607FD68C7107
+X-Received: by 2002:a05:6808:1a0b:b0:486:8a11:6e8b with SMTP id
+ 5614622812f47-4b21093a9f2mr2298203b6e.2.1786510839962; Tue, 11 Aug 2026
+ 22:00:39 -0700 (PDT)
+Date: Tue, 11 Aug 2026 22:00:39 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <6a7bfdf7.ed659fcc.23056a.007f.GAE@google.com>
+Subject: [syzbot] [jffs2?] KASAN: slab-use-after-free Read in jffs2_xattr_delete_inode
+From: syzbot <syzbot+3a8099322b09d8d073d1@syzkaller.appspotmail.com>
+To: dwmw2@infradead.org, linux-kernel@vger.kernel.org, 
+	linux-mtd@lists.infradead.org, richard@nod.at, 
+	syzkaller-bugs@googlegroups.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260811_211415_678538_A96BCEF8 
-X-CRM114-Status: GOOD (  31.24  )
+X-CRM114-CacheID: sfid-20260811_220043_622657_99B8BF26 
+X-CRM114-Status: UNSURE (   8.17  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -139,121 +73,213 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-QWRkIHN1cHBvcnQgZm9yIFdpbmJvbmQgVzI1TjA0TFcgNEdiaXQgU1BJLU5BTkQ6Cj4gMS44ViA0
-Ry1iaXQKPiBSYXcgc2VyaWFsIFNMQyBOQU5EIGZsYXNoIG1lbW9yeQo+IER1YWwvUXVhZCBTUEkg
-d2l0aCAxMDRNSHoKPiBidWZmZXIgcmVhZCwgY29udGludW91cyByZWFkICYgc2VxdWVudGlhbCBy
-ZWFkCgpIaWdobGlnaHRzIGNvcGllZCBmcm9tIGRhdGFzaGVldDoK4oCTIFBhZ2Ugc2l6ZTogNCwz
-NTIgQnl0ZXMgKDQwOTYgKyAyNTYgQnl0ZXMpCuKAkyBCbG9jayBzaXplOiA2NCBwYWdlcyAoMjU2
-SyArIDE2SyBCeXRlcykKLSBCdWlsdC1pbiA4LUJpdCBFQ0MgZm9yIG1lbW9yeSBhcnJheQrigJMg
-RUNDIHN0YXR1cyBiaXRzIGluZGljYXRlIEVDQyByZXN1bHRzCuKAkyBCYWQgQmxvY2sgTWFuYWdl
-bWVudCBhbmQgTFVUIGFjY2VzcwrigJMgU29mdHdhcmUgYW5kIEhhcmR3YXJlIFdyaXRlLVByb3Rl
-Y3QK4oCTIFBvd2VyIFN1cHBseSBMb2NrLURvd24gYW5kIE9UUCBwcm90ZWN0aW9uCuKAkyBVbmlx
-dWUgSUQgYW5kIFBhcmFtZXRlciBwYWdlCuKAkyBUZW4gNEtCIE9UUCBwYWdlcyBwZXIgZGllCuKA
-kyBSZWFkIExldmVsIFNldHRpbmcgZm9yIFJlYWQgUmV0cnkKClRoZSA0MDk2KzI1NiBieXRlIHBh
-Z2UgbGF5b3V0IGlzIGFzIGZvbGxvdzoKLSA0MDk2IGJ5dGVzIEVDQyBwcm90ZWN0ZWQgIm1haW4g
-bWVtb3J5IGFycmF5Iiwgc3ViZGl2aWRlZCBpbiA4CiAgNTEyIGJ5dGVzIHNlY3RvcnMKLSAxMjgg
-Ynl0ZXMgc3BhcmUgYXJyYXksIHN1YmRpdmlkZWQgaW4gOCAxNiBieXRlcyBzZWN0b3JzIGFzIGZv
-bGxvdzoKICAtIDIgYnl0ZXMgYmFkIGJsb2NrIG1hcmtlciAobm8gRUNDIHByb3RlY3Rpb24pCiAg
-LSAyIGJ5dGVzICJ1c2VyIGRhdGEgSUkiIChubyBFQ0MgcHJvdGVjdGlvbikKICAtIDEyIGJ5dGVz
-ICJ1c2VyIGRhdGEgSSIgKEVDQyBwcm90ZWN0ZWQpCi0gMTI4IGJ5dGVzIHBhcml0eSBhcnJheSwg
-c3ViZGl2aWRlZCBpbiA4IDE2IGJ5dGVzIHNlY3RvcnM6CiAgLSAxMyBieXRlcyBFQ0MgZm9yIG1h
-aW4gZGF0YSBhbmQgdXNlciBkYXRhCiAgLSAzIHVudXNlZCBieXRlcwoKVGhpcyBjb21taXQgZG9l
-cyBub3Qgc3VwcG9ydCBtb3N0IGFkdmFuY2VkIGZlYXR1cmVzIHN1Y2ggYXMgY29udGludW91cwpy
-ZWFkLCBMVVQgbWFuYWdlbWVudCBhbmQgT1RQIHBhZ2VzLCBhbmQgb25seSBwcm92aWRlcyBiYXNp
-YyB1c2FnZS4KCk9PQiBsYXlvdXQgd2FzIGRlZmluZWQgdG8gb25seSBzaG93IEVDQy1wcm90ZWN0
-ZWQgInVzZXIgZGF0YSBJIiwgbGVhdmluZwoidXNlciBkYXRhIElJIiB1bmF2YWlsYWJsZS4KClNp
-Z25lZC1vZmYtYnk6IERhaXN1a2UgTWl6b2J1Y2hpIDxtaXpvQGF0bWFyay10ZWNobm8uY29tPgpT
-aWduZWQtb2ZmLWJ5OiBEb21pbmlxdWUgTWFydGluZXQgPGRvbWluaXF1ZS5tYXJ0aW5ldEBhdG1h
-cmstdGVjaG5vLmNvbT4KLS0tCkNoYW5nZXMgaW4gdjI6Ci0gTGluayB0byB2MTogaHR0cHM6Ly9w
-YXRjaC5tc2dpZC5saW5rL2Fuc1lVb05LSnlEUSs2ZjJAaHUtbWRhbGFtLWJsci5xdWFsY29tbS5j
-b20KLSBmaXhlZCBvb2IgbGF5b3V0Ci0gZml4ZWQgTkFORF9NRU1PUkcgb29iIHNpemUKCkkndmUg
-dGVzdGVkIHRoZSBOQU5EIHdpdGggdmFyaW91cyBtdGQgdGVzdCB1dGlscyAobXRkX29vYnRlc3Qs
-Cm10ZF9wYWdldGVzdCwgbXRkX3N1YnBhZ2V0ZXN0LCBtdGRfbmFuZGJpdGVycnMgYW5kIHNvbWUg
-bXRkLXV0aWxzCnVzZXJzcGFjZSBjb3VudGVycGFydHMpIHdpdGggbm8gcHJvYmxlbSwgYnV0IEkn
-bSBub3Qgc3VyZSB3aGF0IHRvIGRvCndpdGggdGhlIG9vYmxheW91dCBmcmVlKCkgaW5mb3JtYXRp
-b25zOiBhcyB3cml0dGVuIGluIHRoZSBjb21taXQKbWVzc2FnZSwgdGhpcyBjaGlwIGhhcyAyKzEy
-IGJ5dGVzIG9mIHVzZXIgZGF0YSBwZXIgc2VjdG9yIHdoZXJlIHRoZQpmaXJzdCB0d28gYXJlIG5v
-dCBFQ0MgcHJvdGVjdGVkIGFuZCB0aGUgbGF0ZXIgMTIgYXJlLgoKSSBiZWxpZXZlIHVzZXIgc2hv
-dWxkIG1ha2UgdGhlIGNob2ljZSBvZiB3aGljaCBvb2IgYnl0ZXMgdGhleSB3YW50IHRvCnVzZSwg
-YnV0IGFmYWlrIHdlIGNhbid0IHNheSAidGhpcyBpcyBub3QgcHJvdGVjdGVkIiwgc28gd2UgY2Fu
-J3QgbGV0CnRoZW0gY2hvb3NlIGFuZCBtdXN0IGVpdGhlciBzYXkgYm90aCBhcmUgZnJlZSBvciBv
-bmx5IHByb3ZpZGUgb25lIGxpa2UgSQpkaWQgaGVyZS4KCkFzIGFuIGV4dHJhIGRhdGEgcG9pbnQs
-IHRoaXMgInVzZXIgYXJlYSBJIGFuZCBJSSIgZGlzdGluY3Rpb24gaXMgdGhlIHNhbWUKaW4gVzI1
-TjA0S1cgKHNhbWUgMisxMiksIGJ1dCB3MjVuMDJrdl9vb2JsYXlvdXRfZnJlZSgpIHVzZSB0aGVy
-ZSByZXR1cm5zCnRoZSB3aG9sZSAxNCBieXRlcyBhcyBhIHNpbmdsZSBjaHVuaywgc28gSSBleHBs
-aWNpdGx5IG1hZGUgYSBkaWZmZXJlbnQKY2hvaWNlIGhlcmUuCihJIGJlbGlldmUgdGhhdCdzIG5v
-dCBzb21ldGhpbmcgdGhhdCBjYW4gYmUgY2hhbmdlZCBlYXNpbHksIHNvIHdlIHNob3VsZApkaXNj
-dXNzIHRoaXMgYmVmb3JlIG1lcmdpbmcpCgpUaGF0IGFzaWRlOgotIEFsYW0sIHdvdWxkIHlvdSBs
-aWtlIHlvdXIgbmFtZSBzb21ld2hlcmUgaW4gdGhlIGNvbW1pdD8gSSBkaWRuJ3Qga2VlcAogIGFu
-eXRoaW5nIGZyb20geW91ciBjb21taXQgYmVjYXVzZSBJIGFscmVhZHkgaGFkIG9uZSwgYnV0IGhh
-cHB5IHRvIGFkZAogIGEgQ28tZGV2ZWxvcGVkLWJ5IG9yIHNvbWV0aGluZwotIEkga2VwdCBOQU5E
-X0VDQ1JFUSg4LCA1MTIpIGxpa2UgVzI1TjA0S1cgYnV0IHRoZSBkYXRhc2hlZXQgc2F5cyBpdCdz
-CiAgYmFzZWQgb24gOC1iaXRzLzU0NC1ieXRlcyBFQ0MsIHNvIEkgc2hvdWxkIHNldCBpdCBhcyAo
-OCwgNTQ0KT8KICAoc2luY2UgaXQncyBwcm90ZWN0aW5nIDUxMisxMiBieXRlcyBmb3IgdXAgdG8g
-OCBiaXRzIGNvcnJ1cHRpb24pCiAgSW4gcHJhY3RpY2UgRUNDIGlzIGRvbmUgYnkgaGFyZHdhcmUg
-YW5kIGxvb2tzIGxpa2UgaXQgaXMgY29ycmVjdGx5CiAgcmVwb3J0ZWQgKGUuZy4gbWFudWFsbHkg
-b3ZlcndyaXRpbmcgYSBjb3VwbGUgb2YgYml0cyB3aXRoIG5hbmR3cml0ZQogIGFuZCBjaGVja2lu
-ZyB3aXRoIG5hbmRkdW1wIHByb3Blcmx5IGNvcnJlY3RzIGFuZCByZXBvcnRzIG51bWJlciBvZgog
-IGNvcnJlY3RlZCBiaXRzKSwgYnV0IG1pZ2h0IGFzIHdlbGwgZ2V0IHRoaXMgcmlnaHQsIGV2ZW4g
-aWYgYXMgZmFyIGFzIEkKICB1bmRlcnN0YW5kIG5vdGhpbmcgYWN0dWFsbHkgdXNlcyB0aGUgRUND
-IG9vYiBkYXRhIHRvIGRvdWJsZS1jaGVjawogIGhhcmR3YXJlIHN0YXR1cz8KLSBJJ2xsIHNoYW1l
-ZnVsbHkgYWRtaXQgSSBkbyBub3QgdW5kZXJzdGFuZCB0aGUgcmVhZCAvIHdyaXRlIC8KICB1cGRh
-dGVfY2FjaGVfdmFyaWFudHMoKSBJIGNvcGllZCBmcm9tIEtXLAogIEFsYW0gaGFkIHRoZSBzYW1l
-IGJ1dCBpdCdkIGJlIGdyZWF0IHRvIGNvbmZpcm0gdXNpbmcgdGhlIHNhbWUKICBjYWxsYmFja3Mg
-bWFrZXMgc2Vuc2U/Ci0gKEkgd3JvdGUgYWJvdXQgT1RQIGluIHRoZSBjb21taXQgbWVzc2FnZSBi
-dXQgaGF2ZSBubyBwbGFuIG9mCiAgaW1wbGVtZW50aW5nIGl0IGF0IHRoaXMgcG9pbnQgYXMgd2Ug
-aGF2ZSBubyB1c2UgZm9yIGl0LCBJIHN0aWxsCiAgaW50ZW5kIHRvIGxvb2sgYXQgY29udGludW91
-cyByZWFkIGFmdGVyIHNvbWUgb3RoZXIgd29yaykKClRoYW5rcyEKCi1Eb21pbmlxdWUKLS0tCiBk
-cml2ZXJzL210ZC9uYW5kL3NwaS93aW5ib25kLmMgfCA0MiArKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKysKIDEgZmlsZSBjaGFuZ2VkLCA0MiBpbnNlcnRpb25zKCspCgpk
-aWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9zcGkvd2luYm9uZC5jIGIvZHJpdmVycy9tdGQv
-bmFuZC9zcGkvd2luYm9uZC5jCmluZGV4IDliNzhjMWU2Y2JjOS4uNWI4NmU1Y2IwNmEzIDEwMDY0
-NAotLS0gYS9kcml2ZXJzL210ZC9uYW5kL3NwaS93aW5ib25kLmMKKysrIGIvZHJpdmVycy9tdGQv
-bmFuZC9zcGkvd2luYm9uZC5jCkBAIC0zMzUsNiArMzM1LDM0IEBAIHN0YXRpYyBpbnQgdzI1bjAy
-a3Zfb29ibGF5b3V0X2ZyZWUoc3RydWN0IG10ZF9pbmZvICptdGQsIGludCBzZWN0aW9uLAogCXJl
-dHVybiAwOwogfQogCitzdGF0aWMgaW50IHcyNW4wNGx3X29vYmxheW91dF9lY2Moc3RydWN0IG10
-ZF9pbmZvICptdGQsIGludCBzZWN0aW9uLAorCQkJCSAgc3RydWN0IG10ZF9vb2JfcmVnaW9uICpy
-ZWdpb24pCit7CisJaWYgKHNlY3Rpb24gPiA3KQorCQlyZXR1cm4gLUVSQU5HRTsKKworCXJlZ2lv
-bi0+b2Zmc2V0ID0gMTI4ICsgKDE2ICogc2VjdGlvbik7CisJcmVnaW9uLT5sZW5ndGggPSAxMzsK
-KworCXJldHVybiAwOworfQorCitzdGF0aWMgaW50IHcyNW4wNGx3X29vYmxheW91dF9mcmVlKHN0
-cnVjdCBtdGRfaW5mbyAqbXRkLCBpbnQgc2VjdGlvbiwKKwkJCQkgICBzdHJ1Y3QgbXRkX29vYl9y
-ZWdpb24gKnJlZ2lvbikKK3sKKwlpZiAoc2VjdGlvbiA+IDcpCisJCXJldHVybiAtRVJBTkdFOwor
-CisJLy8gdGhlIFcyNU4wNExXIGNoaXAgYWN0dWFsbHkgaGFzIHR3byBmcmVlIHJhbmdlcyBwZXIg
-c2VjdGlvbjoKKwkvLyAiVXNlciBEYXRhIEkiIGF0ICgxNiAqIHNlY3Rpb24pICsgNCwgbGVuZ3Ro
-IDEyCisJLy8gIlVzZXIgRGF0YSBJSSIgYXQgKDE2ICogc2VjdGlvbikgKyAyLCBsZW5ndGggMgor
-CS8vIFRoZSBsYXRlciBpcyBub3QgRUNDIHByb3RlY3RlZCBzbyB0aGlzIG9ubHkgcmV0dXJucyBV
-c2VyIERhdGEgSQorCXJlZ2lvbi0+b2Zmc2V0ID0gKDE2ICogc2VjdGlvbikgKyA0OworCXJlZ2lv
-bi0+bGVuZ3RoID0gMTI7CisKKwlyZXR1cm4gMDsKK30KKwogc3RhdGljIGNvbnN0IHN0cnVjdCBt
-dGRfb29ibGF5b3V0X29wcyB3MjVuMDFrdl9vb2JsYXlvdXQgPSB7CiAJLmVjYyA9IHcyNW4wMWt2
-X29vYmxheW91dF9lY2MsCiAJLmZyZWUgPSB3MjVuMDJrdl9vb2JsYXlvdXRfZnJlZSwKQEAgLTM0
-NSw2ICszNzMsMTEgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBtdGRfb29ibGF5b3V0X29wcyB3MjVu
-MDJrdl9vb2JsYXlvdXQgPSB7CiAJLmZyZWUgPSB3MjVuMDJrdl9vb2JsYXlvdXRfZnJlZSwKIH07
-CiAKK3N0YXRpYyBjb25zdCBzdHJ1Y3QgbXRkX29vYmxheW91dF9vcHMgdzI1bjA0bHdfb29ibGF5
-b3V0ID0geworCS5lY2MgPSB3MjVuMDRsd19vb2JsYXlvdXRfZWNjLAorCS5mcmVlID0gdzI1bjA0
-bHdfb29ibGF5b3V0X2ZyZWUsCit9OworCiBzdGF0aWMgaW50IHcyNW4wMWp3X29vYmxheW91dF9l
-Y2Moc3RydWN0IG10ZF9pbmZvICptdGQsIGludCBzZWN0aW9uLAogCQkJCSAgc3RydWN0IG10ZF9v
-b2JfcmVnaW9uICpyZWdpb24pCiB7CkBAIC03NjgsNiArODAxLDE1IEBAIHN0YXRpYyBjb25zdCBz
-dHJ1Y3Qgc3BpbmFuZF9pbmZvIHdpbmJvbmRfc3BpbmFuZF90YWJsZVtdID0gewogCQkJCQkgICAg
-ICAmdXBkYXRlX2NhY2hlX3ZhcmlhbnRzKSwKIAkJICAgICAwLAogCQkgICAgIFNQSU5BTkRfRUND
-SU5GTygmdzI1bjAya3Zfb29ibGF5b3V0LCB3MjVuMDJrdl9lY2NfZ2V0X3N0YXR1cykpLAorCVNQ
-SU5BTkRfSU5GTygiVzI1TjA0TFciLCAvKiAxLjhWICovCisJCSAgICAgU1BJTkFORF9JRChTUElO
-QU5EX1JFQURJRF9NRVRIT0RfT1BDT0RFX0RVTU1ZLCAweGIyLCAweDIzKSwKKwkJICAgICBOQU5E
-X01FTU9SRygxLCA0MDk2LCAyNTYsIDY0LCAyMDQ4LCA0MCwgMSwgMSwgMSksCisJCSAgICAgTkFO
-RF9FQ0NSRVEoOCwgNTEyKSwKKwkJICAgICBTUElOQU5EX0lORk9fT1BfVkFSSUFOVFMoJnJlYWRf
-Y2FjaGVfdmFyaWFudHMsCisJCQkJCSAgICAgICZ3cml0ZV9jYWNoZV92YXJpYW50cywKKwkJCQkJ
-ICAgICAgJnVwZGF0ZV9jYWNoZV92YXJpYW50cyksCisJCSAgICAgMCwKKwkJICAgICBTUElOQU5E
-X0VDQ0lORk8oJncyNW4wNGx3X29vYmxheW91dCwgdzI1bjAya3ZfZWNjX2dldF9zdGF0dXMpKSwK
-IAlTUElOQU5EX0lORk8oIlczNU4wNEpXIiwgLyogMS44ViAqLwogCQkgICAgIFNQSU5BTkRfSUQo
-U1BJTkFORF9SRUFESURfTUVUSE9EX09QQ09ERV9EVU1NWSwgMHhkZiwgMHgyMyksCiAJCSAgICAg
-TkFORF9NRU1PUkcoMSwgNDA5NiwgMTI4LCA2NCwgNTEyLCAxMCwgMSwgNCwgMSksCgotLS0KYmFz
-ZS1jb21taXQ6IGRiMmRkYjg3MTQzNTE5ZTIwYTk1YWEzNmM2MGIzNjEwN2I3MzZhNTgKY2hhbmdl
-LWlkOiAyMDI2MDgxMi13MjVuMDRsdy0zZTkxNDZkODM0MGYKCkJlc3QgcmVnYXJkcywKLS0gIApE
-b21pbmlxdWUgTWFydGluZXQgPGRvbWluaXF1ZS5tYXJ0aW5ldEBhdG1hcmstdGVjaG5vLmNvbT4K
-CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFk
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    bcc44b6785f2 Merge tag 'drm-fixes-2026-08-08' of https://g..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=147d7e49580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=158601bb8cb292dd
+dashboard link: https://syzkaller.appspot.com/bug?extid=3a8099322b09d8d073d1
+compiler:       Debian clang version 22.1.8 (++20260613092233+e80beda6e255-1~exp1~20260613092250.77), Debian LLD 22.1.8
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/e4ca3ce763a0/disk-bcc44b67.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/face1dc3e618/vmlinux-bcc44b67.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/185a6a3df821/bzImage-bcc44b67.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+3a8099322b09d8d073d1@syzkaller.appspotmail.com
+
+RBP: 00007f5b86286090 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+R13: 00007f5b882b6038 R14: 00007f5b882b5fa0 R15: 00007ffe7e6b8828
+ </TASK>
+==================================================================
+BUG: KASAN: slab-use-after-free in jffs2_xattr_delete_inode+0x2c8/0x2d0 fs/jffs2/xattr.c:602
+Read of size 4 at addr ffff888029725ee8 by task syz.8.1428/17657
+
+CPU: 0 UID: 0 PID: 17657 Comm: syz.8.1428 Not tainted syzkaller #0 PREEMPT_{RT,(full)} 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/24/2026
+Call Trace:
+ <TASK>
+ dump_stack_lvl+0xe8/0x150 lib/dump_stack.c:120
+ print_address_description+0x55/0x1e0 mm/kasan/report.c:378
+ print_report+0x58/0x70 mm/kasan/report.c:482
+ kasan_report+0x117/0x150 mm/kasan/report.c:595
+ jffs2_xattr_delete_inode+0x2c8/0x2d0 fs/jffs2/xattr.c:602
+ jffs2_do_clear_inode+0x58/0x390 fs/jffs2/readinode.c:1418
+ evict+0x624/0xb50 fs/inode.c:825
+ jffs2_new_inode+0x49c/0xd00 fs/jffs2/fs.c:-1
+ jffs2_mkdir+0x192/0xeb0 fs/jffs2/dir.c:485
+ vfs_mkdir+0x402/0x620 fs/namei.c:5276
+ filename_mkdirat+0x289/0x520 fs/namei.c:5309
+ __do_sys_mkdirat fs/namei.c:5330 [inline]
+ __se_sys_mkdirat+0x35/0x150 fs/namei.c:5327
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0x174/0x580 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f5b8802e0d9
+Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 e8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f5b86286028 EFLAGS: 00000246 ORIG_RAX: 0000000000000102
+RAX: ffffffffffffffda RBX: 00007f5b882b5fa0 RCX: 00007f5b8802e0d9
+RDX: 0000000000000000 RSI: 0000200000000640 RDI: ffffffffffffff9c
+RBP: 00007f5b86286090 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+R13: 00007f5b882b6038 R14: 00007f5b882b5fa0 R15: 00007ffe7e6b8828
+ </TASK>
+
+Allocated by task 14460:
+ kasan_save_stack mm/kasan/common.c:57 [inline]
+ kasan_save_track+0x3e/0x80 mm/kasan/common.c:78
+ unpoison_slab_object mm/kasan/common.c:340 [inline]
+ __kasan_slab_alloc+0x6c/0x80 mm/kasan/common.c:366
+ kasan_slab_alloc include/linux/kasan.h:253 [inline]
+ slab_post_alloc_hook mm/slub.c:4584 [inline]
+ slab_alloc_node mm/slub.c:4917 [inline]
+ kmem_cache_alloc_noprof+0x355/0x650 mm/slub.c:4931
+ jffs2_scan_make_ino_cache+0x89/0x1d0 fs/jffs2/scan.c:978
+ jffs2_scan_dirent_node fs/jffs2/scan.c:1099 [inline]
+ jffs2_scan_eraseblock fs/jffs2/scan.c:831 [inline]
+ jffs2_scan_medium+0x2b58/0x70c0 fs/jffs2/scan.c:151
+ jffs2_build_filesystem fs/jffs2/build.c:112 [inline]
+ jffs2_do_mount_fs+0x775/0x22c0 fs/jffs2/build.c:416
+ jffs2_do_fill_super+0x555/0xc50 fs/jffs2/fs.c:574
+ mtd_get_sb+0x18a/0x410 drivers/mtd/mtdsuper.c:57
+ mtd_get_sb_by_nr drivers/mtd/mtdsuper.c:88 [inline]
+ get_tree_mtd+0x4bd/0x7d0 drivers/mtd/mtdsuper.c:158
+ vfs_get_tree+0x92/0x2a0 fs/super.c:1700
+ fc_mount fs/namespace.c:1198 [inline]
+ do_new_mount_fc fs/namespace.c:3765 [inline]
+ do_new_mount+0x319/0xdc0 fs/namespace.c:3841
+ do_mount fs/namespace.c:4174 [inline]
+ __do_sys_mount fs/namespace.c:4390 [inline]
+ __se_sys_mount+0x31d/0x420 fs/namespace.c:4367
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0x174/0x580 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+Freed by task 7915:
+ kasan_save_stack mm/kasan/common.c:57 [inline]
+ kasan_save_track+0x3e/0x80 mm/kasan/common.c:78
+ kasan_save_free_info+0x40/0x50 mm/kasan/generic.c:584
+ poison_slab_object mm/kasan/common.c:253 [inline]
+ __kasan_slab_free+0x5c/0x80 mm/kasan/common.c:285
+ kasan_slab_free include/linux/kasan.h:235 [inline]
+ slab_free_hook mm/slub.c:2677 [inline]
+ slab_free mm/slub.c:6377 [inline]
+ kmem_cache_free+0x187/0x6c0 mm/slub.c:6504
+ jffs2_free_ino_caches+0xec/0x1c0 fs/jffs2/nodelist.c:497
+ jffs2_put_super+0x6c/0x170 fs/jffs2/super.c:335
+ generic_shutdown_super+0x13d/0x2d0 fs/super.c:647
+ kill_mtd_super+0x23/0x70 drivers/mtd/mtdsuper.c:174
+ jffs2_kill_sb+0x96/0xb0 fs/jffs2/super.c:350
+ deactivate_locked_super+0xbc/0x130 fs/super.c:477
+ cleanup_mnt+0x3d3/0x460 fs/namespace.c:1317
+ task_work_run+0x1d9/0x270 kernel/task_work.c:233
+ resume_user_mode_work include/linux/resume_user_mode.h:50 [inline]
+ __exit_to_user_mode_loop kernel/entry/common.c:70 [inline]
+ exit_to_user_mode_loop+0x1fa/0x730 kernel/entry/common.c:101
+ __exit_to_user_mode_prepare include/linux/irq-entry-common.h:207 [inline]
+ syscall_exit_to_user_mode_prepare include/linux/irq-entry-common.h:230 [inline]
+ syscall_exit_to_user_mode include/linux/entry-common.h:318 [inline]
+ do_syscall_64+0x353/0x580 arch/x86/entry/syscall_64.c:100
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+The buggy address belongs to the object at ffff888029725ec0
+ which belongs to the cache jffs2_inode_cache of size 48
+The buggy address is located 40 bytes inside of
+ freed 48-byte region [ffff888029725ec0, ffff888029725ef0)
+
+The buggy address belongs to the physical page:
+page: refcount:0 mapcount:0 mapping:0000000000000000 index:0xffff888029725700 pfn:0x29725
+flags: 0x80000000000200(workingset|node=0|zone=1)
+page_type: f5(slab)
+raw: 0080000000000200 ffff888140435280 ffffea000085b790 ffff88801eb7ae88
+raw: ffff888029725700 000000080040001c 00000000f5000000 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 0, migratetype Unmovable, gfp_mask 0xd2cc0(GFP_KERNEL|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 5878, tgid 5877 (syz.2.27), ts 110407811516, free_ts 110388090000
+ set_page_owner include/linux/page_owner.h:32 [inline]
+ post_alloc_hook+0x1f9/0x250 mm/page_alloc.c:1859
+ prep_new_page mm/page_alloc.c:1867 [inline]
+ get_page_from_freelist+0x262a/0x26a0 mm/page_alloc.c:3946
+ __alloc_frozen_pages_noprof+0x18d/0x380 mm/page_alloc.c:5304
+ alloc_slab_page mm/slub.c:3266 [inline]
+ allocate_slab+0x79/0x5e0 mm/slub.c:3380
+ new_slab mm/slub.c:3426 [inline]
+ refill_objects+0x2d8/0x350 mm/slub.c:7310
+ refill_sheaf mm/slub.c:2804 [inline]
+ __pcs_replace_empty_main+0x330/0x690 mm/slub.c:4675
+ alloc_from_pcs mm/slub.c:4773 [inline]
+ slab_alloc_node mm/slub.c:4905 [inline]
+ kmem_cache_alloc_noprof+0x452/0x650 mm/slub.c:4931
+ jffs2_do_new_inode+0x27/0x500 fs/jffs2/write.c:28
+ jffs2_new_inode+0x46e/0xd00 fs/jffs2/fs.c:466
+ jffs2_create+0x87/0x320 fs/jffs2/dir.c:182
+ lookup_open fs/namei.c:4508 [inline]
+ open_last_lookups fs/namei.c:4608 [inline]
+ path_openat+0x1344/0x3850 fs/namei.c:4860
+ do_file_open+0x23e/0x4a0 fs/namei.c:4892
+ do_sys_openat2+0x115/0x200 fs/open.c:1368
+ do_sys_open fs/open.c:1374 [inline]
+ __do_sys_openat fs/open.c:1390 [inline]
+ __se_sys_openat fs/open.c:1385 [inline]
+ __x64_sys_openat+0x138/0x170 fs/open.c:1385
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0x174/0x580 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+page last free pid 20 tgid 20 stack trace:
+ reset_page_owner include/linux/page_owner.h:25 [inline]
+ __free_pages_prepare mm/page_alloc.c:1406 [inline]
+ __free_frozen_pages+0x10e7/0x11c0 mm/page_alloc.c:2950
+ rcu_do_batch kernel/rcu/tree.c:2645 [inline]
+ rcu_core kernel/rcu/tree.c:2897 [inline]
+ rcu_cpu_kthread+0x950/0x1480 kernel/rcu/tree.c:2985
+ smpboot_thread_fn+0x57c/0xa80 kernel/smpboot.c:160
+ kthread+0x388/0x470 kernel/kthread.c:436
+ ret_from_fork+0x514/0xb70 arch/x86/kernel/process.c:158
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+
+Memory state around the buggy address:
+ ffff888029725d80: fa fb fb fb fb fb fc fc fa fb fb fb fb fb fc fc
+ ffff888029725e00: fa fb fb fb fb fb fc fc fa fb fb fb fb fb fc fc
+>ffff888029725e80: fa fb fb fb fb fb fc fc fa fb fb fb fb fb fc fc
+                                                          ^
+ ffff888029725f00: fa fb fb fb fb fb fc fc fa fb fb fb fb fb fc fc
+ ffff888029725f80: fa fb fb fb fb fb fc fc fa fb fb fb fb fb fc fc
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
