@@ -4,67 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4562C5AD5A
-	for <linux-mtd@archiver.kernel.org>; Thu, 13 Aug 2026 02:48:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5FC74C5CFEB
+	for <linux-mtd@archiver.kernel.org>; Thu, 13 Aug 2026 06:49:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=sC85UxQIGO7RpMi2EAPqLTeExaji3IS7y1k8aH+M/Ck=; b=dmEAGFFl2vPvsr
-	yQsf6bvdsHH1NkB2nyFFhrEikX7rjf7PQsDiOCG4WYrmG2Rvw19lTTEEBJfUYq9S9IYVmQE4EnLlf
-	CJBIIy7fYLOfAOw2ZPhEBI+YF8t78JIwneb4TDwScDdxCgjPTgAe3Kqs+l7/tfHQMOIhLwTmNgzr3
-	n8/75W1QTQHdq8FCEd2XOhsUbCLfZov5sbo0pj4QOl9IuvaUqs/0d24+w0hGB5yvHELMyPPJQAObW
-	OiI6RaT4uP68AkJ5WrSM6TyKRPfbHcoFiHP601Dt+9v7SMPo+GEy5amP7JsSpWTBhNqYkj5+jD+XE
-	1ltFQZSryOR9/bR/kj6Q==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=ezApn1+ATJ87K7vemSU8JbSPYS0aJJkZNq7dBqre72g=; b=yEz6fE1+hPAMpB
+	+dBn66YFbt0Q4toA6BntBSKhUI1lr/v0/VJWjeEaxYr1/rJYBhBX6Dijr6ek8vZQdhEhSf0gL5yIo
+	uP638FKpw2MKzwk5XEZKUpfyXGpnrrJvnNlRa6vOMkGiziHeYjERWDCgeoumS49Q6Q/2FC9tXFxTf
+	RUsRjIRbLGaTKGoD+6x/mpx9eR2mduier+d9WG6w/8XxnlnpUB2vtXM0tJZk1t2G6LBXa6KnwsH1E
+	EKy4kaFs53hcXO9NotEFO0h7y5E6uJ/h8qrDL1Rr3kztXzwviJ9zq9VKUEBVdPoumHgAmc9MsfUJ0
+	qAkcdDD3zi5W1Td3hLkQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wuLUW-0000000HIEX-3t8G;
-	Thu, 13 Aug 2026 02:48:24 +0000
-Received: from mailgw.kylinos.cn ([124.126.103.232])
+	id 1wuPFP-0000000HW7u-482S;
+	Thu, 13 Aug 2026 06:49:03 +0000
+Received: from smtpout-02.galae.net ([185.246.84.56])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wuLUU-0000000HIE8-1qu7
+	id 1wuPFM-0000000HW7N-0ztg
 	for linux-mtd@lists.infradead.org;
-	Thu, 13 Aug 2026 02:48:24 +0000
-X-UUID: 6f0a086a96c111f1aa26b74ffac11d73-20260813
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.3.12,REQID:3ee9cb89-8f7e-4e34-8529-8b33a01c0c99,IP:0,U
-	RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:-25
-X-CID-META: VersionHash:e7bac3a,CLOUDID:fca12f24adbe9056790d6ab9c1a22647,BulkI
-	D:nil,BulkQuantity:0,Recheck:0,SF:102|136|850|865|898,TC:nil,Content:0|15|
-	50,EDM:-3|-100,IP:nil,URL:99|1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL
-	:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0,ARC:0
-X-CID-BVR: 2,SSN|SDN
-X-CID-BAS: 2,SSN|SDN,0,_
-X-CID-FACTOR: TF_CID_SPAM_ULS,TF_CID_SPAM_SNR
-X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
-X-UUID: 6f0a086a96c111f1aa26b74ffac11d73-20260813
-X-User: xiaopei01@kylinos.cn
-Received: from localhost.localdomain [(10.44.16.150)] by mailgw.kylinos.cn
-	(envelope-from <xiaopei01@kylinos.cn>)
-	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
-	with ESMTP id 1912808178; Thu, 13 Aug 2026 10:48:16 +0800
-From: Pei Xiao <xiaopei01@kylinos.cn>
-To: joern@lazybastard.org,
-	miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: Pei Xiao <xiaopei01@kylinos.cn>,
-	syzbot+b320a4d5f65a61dbbf89@syzkaller.appspotmail.com,
-	=?UTF-8?q?J=C3=B6rn=20Engel?= <joern@barelysecure.org>,
-	stable@vger.kernel.org
-Subject: [PATCH v3] mtd: block2mtd: Fix divide error when erase_size is zero
-Date: Thu, 13 Aug 2026 10:48:12 +0800
-Message-Id: <25ec7ba58facdf29b42ca43dcf11cd98e2089a5f.1786589041.git.xiaopei01@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
+	Thu, 13 Aug 2026 06:49:02 +0000
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-02.galae.net (Postfix) with ESMTPS id 227E61A15E9;
+	Thu, 13 Aug 2026 06:48:57 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id DD5D7602B8;
+	Thu, 13 Aug 2026 06:48:56 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 7A4BE11C4D998;
+	Thu, 13 Aug 2026 08:48:48 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1786603732; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 in-reply-to:references; bh=QztDvkrTOg0tEXWNbD2tiy7gnCiVPZ43TKonFLmn7bc=;
+	b=kHnbYAlS6UqhcwdOwgGOP74hfnHrXY2AsAMHvoze4HBxrKEvGcxVDI9kMCYpekCrovDO4e
+	kVyXuddoTiACTZZUmdhHbpihKi37X+ARnGVREMu21/UagqJPv36T9kin0Q5qPmt0LCJxbR
+	NZ72MhRr54qIMZhZNiVEUTUrHnf6XOFPTfF/L2Eb27rh3OUmDsPTY8LHF7d4qpVEg2Gski
+	t2kO0pYaJ4JFStDj5WAOEW7/rZSqHh37OarSzLa41sxDODcimZ+GDKnExP7CJ+03NsHm7m
+	I480TA8oeiESBt9/KBVVl78zdyvvWLh65c+WpSxshlTKOEBRerfZBvt38t9cfA==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: "han.xu" <han.xu@oss.nxp.com>
+Cc: Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
+ <vigneshr@ti.com>,  Peter Pan <peterpandong@micron.com>,  Boris Brezillon
+ <bbrezillon@kernel.org>,  linux-mtd@lists.infradead.org,
+  linux-kernel@vger.kernel.org,  Han Xu <han.xu@nxp.com>
+Subject: Re: [PATCH] mtd: spinand: Enable QE on all dies
+In-Reply-To: <anowMUOYurNYphfU@cozumel> (han xu's message of "Wed, 12 Aug 2026
+	11:34:26 -0500")
+References: <20260807-spinand_qe-v1-1-c102c79834a3@nxp.com>
+	<87qzk6s8yr.fsf@bootlin.com> <anowMUOYurNYphfU@cozumel>
+User-Agent: mu4e 1.12.12; emacs 30.2
+Date: Thu, 13 Aug 2026 08:48:47 +0200
+Message-ID: <87v79eldm8.fsf@bootlin.com>
 MIME-Version: 1.0
+X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260812_194822_774918_070D4BED 
-X-CRM114-Status: GOOD (  10.53  )
+X-CRM114-CacheID: sfid-20260812_234900_432295_8B32F10F 
+X-CRM114-Status: GOOD (  13.37  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,45 +73,39 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-VGhlIGVyYXNlIHNpemUgaXMgcGFyc2VkIGZyb20gdGhlICJibG9jazJtdGQiIG1vZHVsZSBwYXJh
-bWV0ZXIgYW5kIGNhbgpiZSBzZXQgdG8gemVyby4gYWRkX2RldmljZSgpIHRoZW4gZXZhbHVhdGVz
-CgogICAgICAgIGlmIChzaXplICUgZXJhc2Vfc2l6ZSkKCndpdGggYSB6ZXJvIGRpdmlzb3IsIHdo
-aWNoIHRyaWdnZXJzIGEgZGl2aWRlIGVycm9yOgoKZGl2aWRlIGVycm9yOiAwMDAwIFsjMV0gUFJF
-RU1QVCBTTVAgUFRJClJJUDogMDAxMDphZGRfZGV2aWNlIGRyaXZlcnMvbXRkL2RldmljZXMvYmxv
-Y2sybXRkLmM6Mjk2IFtpbmxpbmVdClJJUDogMDAxMDpibG9jazJtdGRfc2V0dXAyKzB4NTkyLzB4
-ZGEwIGRyaXZlcnMvbXRkL2RldmljZXMvYmxvY2sybXRkLmM6NDU5CkNhbGwgVHJhY2U6CmJsb2Nr
-Mm10ZF9zZXR1cCsweDI3LzB4ZTAgZHJpdmVycy9tdGQvZGV2aWNlcy9ibG9jazJtdGQuYzo0NzYK
-cGFyYW1fYXR0cl9zdG9yZSsweDIxNC8weDMxMCBrZXJuZWwvcGFyYW1zLmM6NTg5Cm1vZHVsZV9h
-dHRyX3N0b3JlKzB4NjUvMHg5MCBrZXJuZWwvcGFyYW1zLmM6OTA0Cmtlcm5mc19mb3Bfd3JpdGVf
-aXRlcisweDNhNC8weDU0MCBmcy9rZXJuZnMvZmlsZS5jOjM0NQouLi4KClJlamVjdCBhIHplcm8g
-ZXJhc2Ugc2l6ZSBiZWZvcmUgcGVyZm9ybWluZyB0aGUgbW9kdWxvIG9wZXJhdGlvbiBzbyB0aGUK
-ZXhpc3RpbmcgImVyYXNlc2l6ZSBtdXN0IGJlIGEgZGl2aXNvciBvZiBkZXZpY2Ugc2l6ZSIgZXJy
-b3IgcGF0aApyZXBvcnRzIHRoZSBpbnZhbGlkIGFyZ3VtZW50IGFuZCBmcmVlcyB0aGUgZGV2aWNl
-LgoKRml4ZXM6IGVhNmQ4MzNhM2ZkZCAoIm10ZDogYmxvY2sybXRkOiBjaGVjayBkZXZpY2Ugc2l6
-ZSIpClJlcG9ydGVkLWJ5OiBzeXpib3QrYjMyMGE0ZDVmNjVhNjFkYmJmODlAc3l6a2FsbGVyLmFw
-cHNwb3RtYWlsLmNvbQpDbG9zZXM6IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xrbWwvNmE3YjU4
-YmEuYWMzNjFjMDkuMjJmZjBhLjAwNDUuR0FFQGdvb2dsZS5jb20vClN1Z2dlc3RlZC1ieTogSsO2
-cm4gRW5nZWwgPGpvZXJuQGJhcmVseXNlY3VyZS5vcmc+CkNjOiBzdGFibGVAdmdlci5rZXJuZWwu
-b3JnClNpZ25lZC1vZmYtYnk6IFBlaSBYaWFvIDx4aWFvcGVpMDFAa3lsaW5vcy5jbj4KLS0tCmNo
-YW5nZXMgaW4gdjM6CjEucmVtb3ZlIChsb25nKSBjYXN0IGR1ZSB0byBidWlsZCBlcnJvcnMgaW4g
-MzJiaXQgY29uZmlnIHN5c3RlbXMKMi5jaGFuZ2VzIGdpdCBsb2cgYWJvdXQgKGxvbmcpIGNhc3QK
-CmNoYW5nbG9ncyBpbiB2MjoKMS5BZGQgU3VnZ2VzdGVkLWJ5IHRhZwoyLnJlbW92ZSB1bm5lY2Vz
-c2FyeSAobG9uZykgY2FzdCBmcm9tIHRoZSBzaXplCi0tLQogZHJpdmVycy9tdGQvZGV2aWNlcy9i
-bG9jazJtdGQuYyB8IDIgKy0KIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMSBkZWxl
-dGlvbigtKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL2RldmljZXMvYmxvY2sybXRkLmMgYi9k
-cml2ZXJzL210ZC9kZXZpY2VzL2Jsb2NrMm10ZC5jCmluZGV4IDAzZTgwYjJjNGY1YS4uMzQ5ZmEw
-N2JlMzE0IDEwMDY0NAotLS0gYS9kcml2ZXJzL210ZC9kZXZpY2VzL2Jsb2NrMm10ZC5jCisrKyBi
-L2RyaXZlcnMvbXRkL2RldmljZXMvYmxvY2sybXRkLmMKQEAgLTI5Myw3ICsyOTMsNyBAQCBzdGF0
-aWMgc3RydWN0IGJsb2NrMm10ZF9kZXYgKmFkZF9kZXZpY2UoY2hhciAqZGV2bmFtZSwgaW50IGVy
-YXNlX3NpemUsCiAJfQogCiAJc2l6ZSA9IGJkZXZfbnJfYnl0ZXMoYmRldik7Ci0JaWYgKChsb25n
-KXNpemUgJSBlcmFzZV9zaXplKSB7CisJaWYgKCFlcmFzZV9zaXplIHx8IChsb25nKXNpemUgJSBl
-cmFzZV9zaXplKSB7CiAJCXByX2VycigiZXJhc2VzaXplIG11c3QgYmUgYSBkaXZpc29yIG9mIGRl
-dmljZSBzaXplXG4iKTsKIAkJZ290byBlcnJfZnJlZV9ibG9jazJtdGQ7CiAJfQotLSAKMi4yNS4x
-CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFk
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+
+>> > +	/*
+>> > +	 * QE is a per-die setting on some devices. Program each target
+>> > +	 * individually when enabling or disabling quad I/O mode.
+>> > +	 */
+>> > +	for (target = 0; target < nand->memorg.ntargets; target++) {
+>> > +		ret = spinand_select_target(spinand, target);
+>> > +		if (ret)
+>> > +			return ret;
+>> > +
+>> > +		ret = spinand_upd_cfg(spinand, CFG_QUAD_ENABLE,
+>> > +				      enable ? CFG_QUAD_ENABLE : 0);
+>> > +		if (ret)
+>> > +			return ret;
+>> 
+>> If there is an issue in the middle of the loop, the chip will become
+>> unusable. Perhaps we should reset the dies to the !QE state and return
+>> an error to continue in degraded (single) mode if that happens?
+>
+>
+> Single-lane is the most basic op - if the QE set_feature write fails, the link
+> is broken and single-lane won't work anyway. And falling back needs the vendor's
+> own 1S op stored somewhere, but those variant tables are discarded after probe.
+> So it likely requires refactoring struct spinand_device to cache them. Given that,
+> maybe just keep the current return-error implementation.
+
+Ack.
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
