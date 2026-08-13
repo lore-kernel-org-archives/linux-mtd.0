@@ -4,51 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0E3BC5B572
-	for <linux-mtd@archiver.kernel.org>; Thu, 13 Aug 2026 15:20:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E9AFC5CFEB
+	for <linux-mtd@archiver.kernel.org>; Thu, 13 Aug 2026 15:20:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=te9NdDUMgMsON6WBDVSqyv3BD4nw0vvtRes8wtkJpvs=; b=DPT/6h22bj9hx0
-	XUw9IfeIHBU2yt62iOABp+K2/FK+jw4Q3dK1ingG1Dx2hFUd/WWaAq3pBUBd9uQCSJHv96Nmyf6Gd
-	vSsbV5kumo4xB0WwIR5vRnUCf76tqsP0ga/5DhNIM17o4cFZ8BKoeLGRx3y7IzOGOISVN59AlVXC7
-	WtKlK9H3k1l5U1eKGeAyyyRrtmMM48E6V1UA/2Y4oKPKZr+DlV3s+q26sZlN5ClUegmV6JgRoyUJD
-	zijqptKdtGWjBcXrDoS0ZYyvFIdoxx+VjbpEdhIVHE+olL4JKPsEK/Mwq2x91LPJkfrjlm7Eptitr
-	Jc1FqxmdEpImxzynaWgQ==;
+	List-Owner; bh=XqdLOmoHoQJy/9ISegL6Q5fXEnATZN2X0fYFvFBAXgA=; b=OTBLvrunORB4+0
+	pIEI+3hKnzrmsCNJBZ9hDiUAfZpZHLN+NVgJChTSeJYnSSKhhdeMa9Ikf33brxOklegqMYBb1gUUq
+	SE6yY7T3OG9HnIJfQWf8SVEopJJYV34Ohmej2mzYS5Z2LnoJjnUkKOoaXHJFgvpj0dy43/YKAGL/c
+	4PtVNwzbeNICMqmCp+ZsQp2hboCi4IxpPRGcVybAIQBewpX/fEB3WCCeCDIeVCcj8vq2UDbKxLO7S
+	/HKezOQYVNRVLgP/KjT1T36ODl8GL+bpBM+olVn9pF5o38T7Ykomqu5bzUD1uLHSAlN9utcDOe9N2
+	kKz1wjyOA1NtMt3ZdciA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wuXEg-00000000y8H-2JuI;
-	Thu, 13 Aug 2026 15:20:50 +0000
-Received: from smtpout-03.galae.net ([185.246.85.4])
+	id 1wuXEj-00000000yCq-2nX2;
+	Thu, 13 Aug 2026 15:20:53 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wuXEV-00000000xuq-1ZbE;
-	Thu, 13 Aug 2026 15:20:48 +0000
+	id 1wuXEi-00000000yAE-1SNn
+	for linux-mtd@bombadil.infradead.org;
+	Thu, 13 Aug 2026 15:20:52 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Cc:To:In-Reply-To:References:
+	Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
+	From:Sender:Reply-To:Content-ID:Content-Description;
+	bh=lYWdwpogwMkX70OdAlE9cD8p+EsgGjygnAtXsWu6Dpo=; b=g6avuOpKLiWB1NB6ty5MhVDoJQ
+	t8ngS9dd5IPqfcxvHGQzbLOrlLLKitdEPbOMpZnflTU1H54QVQEDvAOvwG4H/qJV6Xj7gDswnwhrA
+	NkWOj0ToTaFSaF2MFOHIHW+xqUmmsGFUVCPZUkCfo9FQlQTaYmmHmdp8dks8wTmJqGL3I8Xhte2Nl
+	nsOxRW1/GpNod5gYi+vNeVdqar4C61nZFwpRR9GoBMExczm39banFi5f5o75OAzOaaYnfVi1E6e/3
+	DPCC0n+fII436APJonMJ+qOL02zV2WHd1f75OQ7UI0ocH8d38NplqYtHqs9fQemkodaS8bA82tpL4
+	9hXxcqEQ==;
+Received: from smtpout-03.galae.net ([185.246.85.4])
+	by desiato.infradead.org with esmtps (Exim 4.99.2 #2 (Red Hat Linux))
+	id 1wuXEa-0000000GHFl-1XJp
+	for linux-mtd@lists.infradead.org;
+	Thu, 13 Aug 2026 15:20:51 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id B3D1B4E41208;
-	Thu, 13 Aug 2026 15:20:37 +0000 (UTC)
+	by smtpout-03.galae.net (Postfix) with ESMTPS id B1E8D4E41209;
+	Thu, 13 Aug 2026 15:20:43 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 87166602B8;
-	Thu, 13 Aug 2026 15:20:37 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id CBD8411C4E076;
-	Thu, 13 Aug 2026 17:20:30 +0200 (CEST)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 86206602B8;
+	Thu, 13 Aug 2026 15:20:43 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 15D7511C4E074;
+	Thu, 13 Aug 2026 17:20:36 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1786634432; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1786634438; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=Lq84wOrb0DwbbexggSQrb5Hy+0Y6vjOJj/bzqMRZ1A0=;
-	b=k4U6uur7kEOq6SWzuo3MqiQAUwsgUjYcNxaR2iHELgXM/duS5LqFWnluXI4OTvH/UsntXA
-	ZLeiieNiQ9DTypN4MTpCdhxtAipmvwtH3P4cpYhrAOpErmASsw/6pIc0wE0i9Bipvmp+fr
-	fFAmnP80gUj1xwwa37OnvKSy3LLI2IEUddT51R/5tLTahN/EYjYJxDaMmv5Ia/V8WJidso
-	TvmWX1+YZqf4a3+m1pDpS+BsNQt0/cLBIdyyOUDqf60V+bU4riC2r+To6pkm/rbmGyGsWv
-	Hlyq+hqSJa9/W3CeznOJqsHX8hELKTMuLzHSJRtYO2WyVq+x/5tvUpB57fj6+Q==
+	bh=lYWdwpogwMkX70OdAlE9cD8p+EsgGjygnAtXsWu6Dpo=;
+	b=ZkdQCn4Vx25majkxB42K8nj+XzRos6/hWHfPnIFeF1xUrscX6+8vtMyqd1V6qwhrq3RyN4
+	KrUOSUXFNlNP5ANtvfC2S0u8DzB+eJE3tuODF/tkPCAnj8lskd6PsPmh5lhydZ8TbCOoZU
+	WdX+t6bEmgcITWMbPw1qqKzdaarXWyj9HAWFv+COKEV40p4KEeDi0+qVHLQgZzaSpDIuQ0
+	h4y7Mk8bwsiB0Tj4TVtPrxaK/JO0gT6V5ch+GI6YtYA4TtnRN+6XZ2QS5eYB/zy4pq6LSB
+	8Gv6xLaCvgpVtlhs4ZSZf8Eb91lmARVwdzvUuCjiDKtX21cZCnmJ8mXZvkXlcQ==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Thu, 13 Aug 2026 17:19:12 +0200
-Subject: [PATCH v3 12/23] mtd: spi-nor: winbond: Add support for
- W25Q51RV-Q/N
+Date: Thu, 13 Aug 2026 17:19:13 +0200
+Subject: [PATCH v3 13/23] mtd: spi-nor: winbond: Add support for
+ W25Q01RV-Q/N
 MIME-Version: 1.0
-Message-Id: <20260813-winbond-v7-1-spi-nor-rv-addition-v3-12-b637cf120d5c@bootlin.com>
+Message-Id: <20260813-winbond-v7-1-spi-nor-rv-addition-v3-13-b637cf120d5c@bootlin.com>
 References: <20260813-winbond-v7-1-spi-nor-rv-addition-v3-0-b637cf120d5c@bootlin.com>
 In-Reply-To: <20260813-winbond-v7-1-spi-nor-rv-addition-v3-0-b637cf120d5c@bootlin.com>
 To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
@@ -66,8 +82,8 @@ Cc: Steam Lin <STLin2@winbond.com>, Hsin-Yi Wang <hsinyi@chromium.org>,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260813_082039_799429_F8884FE4 
-X-CRM114-Status: GOOD (  13.94  )
+X-CRM114-CacheID: sfid-20260813_162046_673720_F4F59D15 
+X-CRM114-Status: GOOD (  14.24  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -177,7 +193,6 @@ locked sectors
  ------------------+----------+---------
  00000000-03ffffff | unlocked | 1024
 + dd 'if=/dev/urandom' 'of=./spi_test' 'bs=1M' 'count=2'
-[   25.427347] random: crng init done
 2+0 records in
 2+0 records out
 + mtd_debug erase /dev/mtd0 0 2097152
@@ -195,15 +210,15 @@ Copied 2097152 bytes from spi_test to address 0x00000000 in flash
 + mtd_debug read /dev/mtd0 0 2097152 spi_read
 Copied 2097152 bytes from address 0x00000000 in flash to spi_read
 + sha256sum spi_read spi_test
-cd699acc82353b7769b98547efed68d5300854ed0bbc84bf831b07937bf941a5  spi_read
-cd699acc82353b7769b98547efed68d5300854ed0bbc84bf831b07937bf941a5  spi_test
+950cbc701e7f6ed69837b30bbf4145fe776e6c07a7bc5b8f346d42242bdd7a63  spi_read
+950cbc701e7f6ed69837b30bbf4145fe776e6c07a7bc5b8f346d42242bdd7a63  spi_test
 + mtd_debug erase /dev/mtd0 0 2097152
 Erased 2097152 bytes from address 0x00000000 in flash
 + mtd_debug read /dev/mtd0 0 2097152 spi_read
 Copied 2097152 bytes from address 0x00000000 in flash to spi_read
 + sha256sum spi_read spi_test
 4bda3a28f4ffe603c0ec1258c0034d65a1a0d35ab7bd523a834608adabf03cc5  spi_read
-cd699acc82353b7769b98547efed68d5300854ed0bbc84bf831b07937bf941a5  spi_test
+950cbc701e7f6ed69837b30bbf4145fe776e6c07a7bc5b8f346d42242bdd7a63  spi_test
 + mtd_debug info /dev/mtd0
 mtd.type = MTD_NORFLASH
 mtd.flags = MTD_CAP_NORFLASH
@@ -228,8 +243,8 @@ Copied 2097152 bytes from spi_test to address 0x00000000 in flash
 + mtd_debug read /dev/mtd0 0 2097152 spi_read
 Copied 2097152 bytes from address 0x00000000 in flash to spi_read
 + sha256sum spi_read spi_test
-cd699acc82353b7769b98547efed68d5300854ed0bbc84bf831b07937bf941a5  spi_read
-cd699acc82353b7769b98547efed68d5300854ed0bbc84bf831b07937bf941a5  spi_test
+950cbc701e7f6ed69837b30bbf4145fe776e6c07a7bc5b8f346d42242bdd7a63  spi_read
+950cbc701e7f6ed69837b30bbf4145fe776e6c07a7bc5b8f346d42242bdd7a63  spi_test
 + grep -A4 'locked sectors' /sys/kernel/debug/spi-nor/spi0.0/params
 locked sectors
  region (in hex)   | status   | #sectors
@@ -247,8 +262,8 @@ Erased 2097152 bytes from address 0x00000000 in flash
 + mtd_debug read /dev/mtd0 0 2097152 spi_read
 Copied 2097152 bytes from address 0x00000000 in flash to spi_read
 + sha256sum spi_read spi_test
-cd699acc82353b7769b98547efed68d5300854ed0bbc84bf831b07937bf941a5  spi_read
-cd699acc82353b7769b98547efed68d5300854ed0bbc84bf831b07937bf941a5  spi_test
+950cbc701e7f6ed69837b30bbf4145fe776e6c07a7bc5b8f346d42242bdd7a63  spi_read
+950cbc701e7f6ed69837b30bbf4145fe776e6c07a7bc5b8f346d42242bdd7a63  spi_test
 + dd 'if=/dev/urandom' 'of=./spi_test2' 'bs=1M' 'count=2'
 2+0 records in
 2+0 records out
@@ -257,10 +272,10 @@ Copied 2097152 bytes from spi_test2 to address 0x00000000 in flash
 + mtd_debug read /dev/mtd0 0 2097152 spi_read2
 Copied 2097152 bytes from address 0x00000000 in flash to spi_read2
 + sha256sum spi_read spi_read2 spi_test spi_test2
-cd699acc82353b7769b98547efed68d5300854ed0bbc84bf831b07937bf941a5  spi_read
-cd699acc82353b7769b98547efed68d5300854ed0bbc84bf831b07937bf941a5  spi_read2
-cd699acc82353b7769b98547efed68d5300854ed0bbc84bf831b07937bf941a5  spi_test
-f506020804f91fb750e8250e091fb2f732319221a645ed575e1b6ed3553d584c  spi_test2
+950cbc701e7f6ed69837b30bbf4145fe776e6c07a7bc5b8f346d42242bdd7a63  spi_read
+950cbc701e7f6ed69837b30bbf4145fe776e6c07a7bc5b8f346d42242bdd7a63  spi_read2
+950cbc701e7f6ed69837b30bbf4145fe776e6c07a7bc5b8f346d42242bdd7a63  spi_test
+643412dbe0f46c2780ec8d4f609d369923829945f4bc3d7842138b2fbbc86046  spi_test2
 + grep -A4 'locked sectors' /sys/kernel/debug/spi-nor/spi0.0/params
 locked sectors
  region (in hex)   | status   | #sectors
@@ -350,18 +365,18 @@ locked sectors
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
-index 568dc05d3c25..47a5c2cf71de 100644
+index 47a5c2cf71de..1c67a652ddcd 100644
 --- a/drivers/mtd/spi-nor/winbond.c
 +++ b/drivers/mtd/spi-nor/winbond.c
-@@ -273,7 +273,7 @@ static const struct flash_info winbond_nor_parts[] = {
- 		.flags = SPI_NOR_QUAD_PP | SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB |
- 			 SPI_NOR_TB_SR_BIT6 | SPI_NOR_4BIT_BP | SPI_NOR_HAS_CMP,
+@@ -281,7 +281,7 @@ static const struct flash_info winbond_nor_parts[] = {
+ 		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6 |
+ 			 SPI_NOR_4BIT_BP | SPI_NOR_HAS_CMP,
  	}, {
--		/* W25Q512JV-Q/N */
-+		/* W25Q512JV-Q/N, W25Q51RV-Q/N */
- 		.id = SNOR_ID(0xef, 0x40, 0x20),
- 		.name = "w25q512jvq",
- 		.size = SZ_64M,
+-		/* W25Q01JV-Q/N */
++		/* W25Q01JV-Q/N, W25Q01RV-Q/N */
+ 		.id = SNOR_ID(0xef, 0x40, 0x21),
+ 		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6 |
+ 			 SPI_NOR_4BIT_BP | SPI_NOR_HAS_CMP,
 
 -- 
 2.54.0
