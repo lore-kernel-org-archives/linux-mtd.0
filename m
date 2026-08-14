@@ -4,129 +4,127 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3AD27C5CFC1
-	for <linux-mtd@archiver.kernel.org>; Fri, 14 Aug 2026 08:12:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 218EBC5B572
+	for <linux-mtd@archiver.kernel.org>; Fri, 14 Aug 2026 08:16:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version:Subject:
 	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=jgJPoKxmV3AnllWve9nNUzplMCjLfKcMLNqSjNcoXBc=; b=kt9zzNO3i0PmHu
-	eJd00UqVDxVUMLuZjWSICdLHabOOFiiOTqb5HSDzCgIZbreTL1CYCe47KTilvQ6kyaNlAHCgm8re2
-	LqcerUGsYX3BYW3EmFUqGXevAR54kCd/rqHOmT7hy20HzIWALaBgy5lTkpmroecyPUyDcsJ0Gdkx9
-	Y9PWaidO4/d35sAVbRSJkuZ4raScGmBJnUdc48UyWBXPui51FX/yKVe30NTT0e7ZEQ/kH7PXmHNWJ
-	8OidMBNmVjvOUCwjdcaNsHEOTMJNLESgSDkCSg9blUZzqf5YgF47Oui28bPOMksjJ/HhQY5yOU281
-	B3caryAKktEJ8+PMrUNA==;
+	List-Owner; bh=TQbvUay42NbIcLUga/hoySqpo85kaHnCfwXA4WIdkiA=; b=ssqyzVrJ9CoSq3
+	YHtr1JT1m4VslZifRt/gw2hbyF3iFs44gBSO0dUYNUTSg6LN3CMX5DRhjMDf6c/EZ22gA9N6nMKP9
+	FexVLW8RvDjuWVzTbcMeoEeqa5PDEWrcii6oW06lGC+Fx+x7VxuOUWysEveLfHhkXDjBVRM+Y9Frv
+	PDSDhT4VBoKAd8tFkF6aHXnDQLkP9pX8sqTwMjk1oFahgqfdxpmZ9kc7m1X3FcASB2eicGRL/uh9O
+	Trtb7T9DqmvR0cGEeJVlPdPKSMopqdpVp+YiK3gyvjA28y+428uFVtPE2cHZlQmgFkwewpvKmLHbl
+	iJqsFfVkTkm5LYdHkmmg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wun1k-00000002Fk0-44BX;
-	Fri, 14 Aug 2026 08:12:32 +0000
+	id 1wun5T-00000002GEF-28nD;
+	Fri, 14 Aug 2026 08:16:23 +0000
 Received: from gw2.atmark-techno.com ([35.74.137.57])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wun1i-00000002FjZ-2nHv
+	id 1wun5P-00000002GDi-2n2l
 	for linux-mtd@lists.infradead.org;
-	Fri, 14 Aug 2026 08:12:32 +0000
+	Fri, 14 Aug 2026 08:16:22 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=atmark-techno.com;
-	s=gw2_bookworm; t=1786695148;
-	bh=A1sqORdZ9erEvAaMVf2iDTbB+8sg0glYgcA1SRT4wfc=;
+	s=gw2_bookworm; t=1786695377;
+	bh=SYk2jvmCIRtwNpXyEndM5dF0jL/F42Tf0xqZ49dKTPY=;
 	h=From:Date:Subject:To:Cc:From;
-	b=VIjI96hOW/vsGkjMylSpJwcKHqAxwpk+PU5VkypW70Wgn8TsraazDYO05Z6iNI2Ez
-	 KoGHzLX+0omS4/eaRalhGaFJOC5hiH2gynaciMf91EqGva8RI8TOTWTXZ/Q+z3HMDg
-	 lRLnbfilWirIrgkMjKFEMWi7IoYvB38A6Td/ttnAVUxW2UvY71QyHdPaebWzWWl+88
-	 wYdHfxPmEZGV98AeDg9OPv6+5G73v8pyAK4DnkXUv/Cw0axqpRePkqzoUW/zkdWvT2
-	 zi/nVxq29X2C/i48GCVuJJLo5FHzLUq6XHOUTHT36HLviLyY6IeeyBkCHc77yLHvpG
-	 L4eQ7rYZJPsIA==
+	b=ea5SuGEswGI80VKjhp/uX422ElLMLSLwOXg81RAWsMIJYh45OlXS8tkPZG9TA14I9
+	 hH0qcNc6TUylPHmzvMUBj5EqdsmNPp5NYqRc5EBXolwHSkwKxrnqcdt6eW74kz7OFF
+	 8vUWN6GCIft67XkLKzLymmpKepLBylen2GRqK2qvy75W7gLCOnR5XPrB+diLu3iH+u
+	 TihzVcvapGTQ6oVE+0ZJ4az3C/5xZUv2NKP6SlIq1/vp8gQG7ndCRebFT/tJ+KCZPx
+	 h+ZOOCjHmT8XEzUpOMNNPHYI7TGEt/+l/3Yhe8sJQwxMF4SBNr/oofNBmhf0WU93bU
+	 coiYA6AoFiaJA==
 Received: from gw2.atmark-techno.com (localhost [127.0.0.1])
-	by gw2.atmark-techno.com (Postfix) with ESMTP id 2ED046B8
-	for <linux-mtd@lists.infradead.org>; Fri, 14 Aug 2026 17:12:28 +0900 (JST)
+	by gw2.atmark-techno.com (Postfix) with ESMTP id 50EAF64E
+	for <linux-mtd@lists.infradead.org>; Fri, 14 Aug 2026 17:16:17 +0900 (JST)
 Authentication-Results: gw2.atmark-techno.com;
-	dkim=pass (2048-bit key; unprotected) header.d=atmark-techno.com header.i=@atmark-techno.com header.a=rsa-sha256 header.s=google header.b=ijGOz3Lw;
+	dkim=pass (2048-bit key; unprotected) header.d=atmark-techno.com header.i=@atmark-techno.com header.a=rsa-sha256 header.s=google header.b=dLaBmN3A;
 	dkim-atps=neutral
-Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com [209.85.214.199])
-	by gw2.atmark-techno.com (Postfix) with ESMTPS id 4E56F36C
-	for <linux-mtd@lists.infradead.org>; Fri, 14 Aug 2026 17:12:27 +0900 (JST)
-Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-2cceabd70f5so17939585ad.1
-        for <linux-mtd@lists.infradead.org>; Fri, 14 Aug 2026 01:12:27 -0700 (PDT)
+Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com [209.85.214.197])
+	by gw2.atmark-techno.com (Postfix) with ESMTPS id B080464E
+	for <linux-mtd@lists.infradead.org>; Fri, 14 Aug 2026 17:16:16 +0900 (JST)
+Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-2cca5e0a0c9so21089265ad.1
+        for <linux-mtd@lists.infradead.org>; Fri, 14 Aug 2026 01:16:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atmark-techno.com; s=google; t=1786695146; x=1787299946; darn=lists.infradead.org;
+        d=atmark-techno.com; s=google; t=1786695376; x=1787300176; darn=lists.infradead.org;
         h=cc:to:message-id:content-transfer-encoding:content-type
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to:content-type;
-        bh=T/aDf3HXh3DvsiSXqp1uIkHdGH2Zwyk40hOwXdkZteY=;
-        b=ijGOz3Lwx3nEPJy63lGcN/thMVWjWeBsLkJMrfmTKDjflEdgXY7LCPSXc9zNmid2xM
-         e4HDZpcp1y1p0HLktA3Pthwxab9kYgHRg5+bFgQEIQK0tCfgPpdjkkXdyV4qHK+OIj13
-         pIHh3XrT8CRXXTSER1RUEGkETHvqAcfUM3AIytPlBcxLAz4GGzcNQfMjkyZWsjw+FX7P
-         Wn9qmuQfR0lviPZrT2svIJVs3i1m86pQp2JKk5VogzvD0Q7ydvi85ny5s3oq1/L2PJ26
-         ymwcFj/sQG2SiFayFvB9d2SUUo9vNRuomKe5VAf5udFqUUuej7eOGiRCT+TqTTYOFt0E
-         0ZhQ==
+        bh=l+a1HHuceYnWDLRxnCKGr+NZPKuWd1/Y9/oQSG5Bpfs=;
+        b=dLaBmN3AYdIzaR39cYm+xgvW+lGwPd+efOkScgCugGuTr5mB04MbVsOg8LPOMLWAtZ
+         fTF5HRUL3ZDgv2crPk8EgEtXmD1yjEX6h8Meg9z/XfeD+J2f0bqCba3d3+ffd9SopTy5
+         NCT2ZIbe4XdQrelSPDjoMSVm9g6T+5iEzHNC2UcflvohzPeWUxvXxHrz/M22B9fUB1PH
+         zVx1mH2Rhc4G5yAv7745gntutwNUsRJ09xt6lAZ/lcFq+ZlXbp+6Si1uV5FHVGX4+Uf/
+         byzIGlF7YUPxY62v2ThSs7/RvdHt0WZ0s8Ln+8EHd8ZfvxA45KMYgofOKSB/oNiMG3Ol
+         B79w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1786695146; x=1787299946;
+        d=1e100.net; s=20251104; t=1786695376; x=1787300176;
         h=cc:to:message-id:content-transfer-encoding:content-type
          :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to:content-type;
-        bh=T/aDf3HXh3DvsiSXqp1uIkHdGH2Zwyk40hOwXdkZteY=;
-        b=QAH6BManE3EAxLQD73IMC+MJHtNnvieL+WoNvyxqKdYF/sJv4K1D0eWXA2QpfppR4D
-         Fuq66RJ8HhvsUOy0FrBuaETjIUrI+pUyhz5zez/EkSwaLUQgkKsZSQh4Awjpr9pG2PAN
-         ixP/utR+cpMCsbGTB5VnvxzGJ25u50Y4qVLcqdGKuv560otOK/1PNci7NyfODesNjuvk
-         0wuRK+vfw6RC+rEqMxTRH4rZhTpc/H/Koe7ohrbKuytaGTtaAS2dEX9G2gv1K+6SKom/
-         r2mGS+mUCKIrMijcBt4tPMjLXoNVnGuNHUf0gCyyyGa7UNCAIM2bslU8eAortV/L+6xU
-         xzkg==
-X-Gm-Message-State: AOJu0YzMzJ+XkR+8N35nMkw9I21ox/Y4Hi59FkA/mFyvzFhWTr5YdlNL
-	g4v1SJTExfP8vyVdHvee9luaAnoMov9hxcwzvfpkFMyVul3QfUe13y50Sz0o39FWgm4G55QXzQ0
-	bFUaEOa+/WwZ0q+Lb5EMTbGNlRMPjNc3U94VeRmrUr5GOQwshcNJjHrQI0fhAKeIGIdgr
-X-Gm-Gg: AR+sD10FbCs0ZJP862TSTqnuYFgr28MVw3C9bMZWMMNLjGFAAtzymBVBcD+vZOT6QOb
-	vGzE9dqE2qhWyYFtHqVIKK6VOyyEDI17tz6YtYHXO4ZrooTq6nUqNBl+euHsQfPd4ArJd27yWYx
-	Zge2w/38E8cTm5WXBPm7ETr7+iS4rYjMbOAQnrDk0LlaV81+7PHQ3h51NbVb7+WKe11/bL8Wpmg
-	64dTjVkZbA33AUTh4e4otGJBNxtbcUNGAzGKBvHx6glPzO4iA0mS0n03nSJlMuDiGNVwHupU+0S
-	BqRBCBuOmVO2NFYi156Cx9f5dspf61LvGV5me49+gBIlWOJibUAjXWikqM8ehJScSqUd8/R5Fog
-	RwURJKNhtl1foxRtDCLp9bQUBWGxzLEBNhY1Sl5VTd/ZYO6+B
-X-Received: by 2002:a17:902:c410:b0:2cf:ca89:4990 with SMTP id d9443c01a7336-2d3b0c9f12cmr46366035ad.17.1786695146269;
-        Fri, 14 Aug 2026 01:12:26 -0700 (PDT)
-X-Received: by 2002:a17:902:c410:b0:2cf:ca89:4990 with SMTP id d9443c01a7336-2d3b0c9f12cmr46365515ad.17.1786695145753;
-        Fri, 14 Aug 2026 01:12:25 -0700 (PDT)
+        bh=l+a1HHuceYnWDLRxnCKGr+NZPKuWd1/Y9/oQSG5Bpfs=;
+        b=SSfPoJqc7Imla2fVd2sUj/ntcK1e8yKhqYokerArKV7njN68HXwVsz90Z3T1I6ixG5
+         OZgMHRLoKLXetyWNP/0eTm160fxKpUi7uEwpIPArnff18NRN5XTn22EI/BGU3gL7TLif
+         BxXBhC4cak1ZYneWS6WUQEhuYzOOuMC/iyrmXW7YswetHghz1QQx1OVy+TvI39YVUR9G
+         0aWto5cziRbPQiVFSZSWafIR1REOuoADj8bsLi9gXkMBnBag8KrBeeE1ypuzTf4dzTDR
+         W6ScUMDMpnVyeY3tjp4e6Al8ofrYEm0nYmPRumk2cjmMpfVqOBJYCnW+Wiko8Le+3Np1
+         T1cw==
+X-Gm-Message-State: AOJu0YxqdqTQNAMeNmS4DQ7/jWXWKyEboIXOZuMdnd6jiS0g7exYegNT
+	meZVmdqYYkyslgw0RkrPpl/t9CYvCOjUPUey71c5zLa8MmwqJidmEuLh8Gc7NRIOvoc9bAb3lnH
+	Uz+lOWMR+gkF/RyPWAxt34KjQ4FTpZD6Jph0eeBbNq6H4HJJzXQ7wBIrGGWSJrzY+Azk3
+X-Gm-Gg: AR+sD10sPECVfCqCDzdZBrtUoEtT265qWTFG4P2/RMZF1MPzt6fNqW6UKAqqiIFylzL
+	msb1eIcJo7un0YvTBB3g88I9Z8C0iUvanDW2WRF9U5DCf++04Ink1Fi+HzDzyVU9KSXJfM6OoA/
+	3EBbvPmMlGLwC1JUxg0WllXUkF7hoqFvJdh7m/VQMh/O9qS4LFGKApx8PcpVpPLfSlHltp/xKDc
+	19lobfGXuLNxj2Q96giDBcV6VFCxvsq4GWTYqMpLe7hhSrou2CrPZnNUmfzX5n+EtZv1/rxgStS
+	A0aEUSmCrfC3vn/1830EAvIAawM/drqcv5n8Mr+CCwlt7kev2509ppu7WUy7GCHOVw4WlPchgSe
+	AvwB/OarxzEVmSIPYUh9NY/UjYzAFAZavWs9xOVkKl076Ke4V
+X-Received: by 2002:a17:903:1b23:b0:2c9:ff29:3f91 with SMTP id d9443c01a7336-2d3b08727e4mr49756235ad.6.1786695375606;
+        Fri, 14 Aug 2026 01:16:15 -0700 (PDT)
+X-Received: by 2002:a17:903:1b23:b0:2c9:ff29:3f91 with SMTP id d9443c01a7336-2d3b08727e4mr49755535ad.6.1786695375124;
+        Fri, 14 Aug 2026 01:16:15 -0700 (PDT)
 Received: from localhost (sodcd-04p2-40.ppp11.odn.ad.jp. [203.139.65.40])
-        by smtp.gmail.com with UTF8SMTPSA id d9443c01a7336-2d3aeb887aasm6205455ad.61.2026.08.14.01.12.25
+        by smtp.gmail.com with UTF8SMTPSA id d9443c01a7336-2d3ae7da3d8sm6380515ad.30.2026.08.14.01.16.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Aug 2026 01:12:25 -0700 (PDT)
+        Fri, 14 Aug 2026 01:16:14 -0700 (PDT)
 From: Dominique Martinet <dominique.martinet@atmark-techno.com>
-Date: Fri, 14 Aug 2026 08:12:11 +0000
-Subject: [PATCH v3] mtd: spinand: winbond: add support for W25N04LW
+Date: Fri, 14 Aug 2026 08:15:58 +0000
+Subject: [PATCH RFC] mtd: spinand: winbond: enable continuous read for
+ W25N04LW
 MIME-Version: 1.0
-Message-Id: <20260814-w25n04lw-v3-1-c6a7423ac7d0@atmark-techno.com>
-X-B4-Tracking: v=1; b=H4sIANrNfmoC/2WOOw+CMBSF/wrpqiWlIIITg5MmJg4OxjiUcpEqb
- bXlISH8d3mMLjf5ku+cc3tkwQiwaOf0yEAjrNBqBH/tIF4w9QAsspERJTQkkUdxSzeKBGWLfYi
- 9IMwiPyA5GvW3gVx856rbfWFbp0/g1ZSfjELYSptu3mq8yUNM2etFn46Hbn9ehTlNihrLjJVM4
- rQ07qdmJddSuuNBU2lD59j/Nw3FHs4AIN6GhOY8SFglmXnhCnih9FIwDMMPgOjAQPEAAAA=
-X-Change-ID: 20260812-w25n04lw-3e9146d8340f
+Message-Id: <20260814-w25n04lw-contread-v1-1-2968b07c962d@atmark-techno.com>
+X-B4-Tracking: v=1; b=H4sIAL3OfmoC/0WNywrCMBREf6XctYG8GmK3gh/gVrqoya1GJNUkb
+ YXSfzdq0OUZZuYsEDE4jNBUCwScXHSDz8A2FZhL589InM0MnHJFNZNk5rWn8jYTM/gUsLOECql
+ rVNRojZB394C9e34+j3DY76D9hnE8XdGk91upBXyM2ZhK9ydsqqLjf53ALZPKaiFp30wC2nV9A
+ XVUJf29AAAA
+X-Change-ID: 20260814-w25n04lw-contread-03485e60c88e
 To: Miquel Raynal <miquel.raynal@bootlin.com>, 
- Richard Weinberger <richard@nod.at>, 
- Md Sadre Alam <md.alam@oss.qualcomm.com>, 
- Vignesh Raghavendra <vigneshr@ti.com>
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
- Daisuke Mizobuchi <mizo@atmark-techno.com>, 
  Dominique Martinet <dominique.martinet@atmark-techno.com>
 X-Mailer: b4 0.16-dev-a9e92
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4880;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3706;
  i=dominique.martinet@atmark-techno.com; h=from:subject:message-id;
- bh=A1sqORdZ9erEvAaMVf2iDTbB+8sg0glYgcA1SRT4wfc=;
- b=owEBbQKS/ZANAwAKAfKKYH/WjHEHAcsmYgBqfs3o4/qP8LK071nWoP0yW60eAAIQH9VXFMKj2
- 1FzpRg/H62JAjMEAAEKAB0WIQQoFSiLMD+txr0veJbyimB/1oxxBwUCan7N6AAKCRDyimB/1oxx
- ByC7D/4zBOCf+4qC4KFHAHL1naBxcoeSq6fTk3KbFQikwBob23ZWcwi2D+zmOJowgiZf5iNkXmU
- Ed1rtoTOvTQ3VIPCnPM1UsycCXJ5GZEPs21errwzuS5bwh+YwBVUp5xBnSYx2g0azwKrlepH9gf
- LpWC9pimUQZqJNuuC3fx+EWNlE0fbaRRyriqRSgA6Nj8lYgDU0BLR6eRppZuZrmOi5oypvtLrNF
- kHn1kCAAOUKm9bAPS5cQILgSy7pwCzWVMdq8l4TyZB55y+3b8jzaEMRpMNGUoOy+mq8sZo93u9E
- yN0Mj5taOa6aBZkjBl5F9akPSFCruvqS5rY0k3SCEvtSZJki/wT5kckyQAhBFCf/8xLTNxbPjUC
- sD26Ylmho/bEIZDBl4qoCskvd43BHvD0TqJLPe0QSODjInuYAndKSgYW8RvmtJ8OdK4lpjGa+r+
- RwNcmrhB4RWb79eezcOcU3AY9ZiQj83i1xgxvdGtkjtByDesAGT3LcrGiqcZICp0Tq5LvwpM48i
- tQY2q4PTpFOhI2qrTn7OyRJrzRaGo0UjqaKRuodBQ1nljP0RPWmWh6egkM/U2NlltVg+aUTS7/b
- Tcn5ltpBaq0wBu/TwvsxYkM3bTwds//ZwMzr2i/QQgppsR7ZsWTT02aXKmvMs/ya9rg0X9IzztP
- w1jY4ojK9/1ecgg==
+ bh=SYk2jvmCIRtwNpXyEndM5dF0jL/F42Tf0xqZ49dKTPY=;
+ b=owEBbQKS/ZANAwAKAfKKYH/WjHEHAcsmYgBqfs7N8ZJymqdIHDBK3Th24JwLfVjEV6WH3g985
+ YkZOf9q8VCJAjMEAAEKAB0WIQQoFSiLMD+txr0veJbyimB/1oxxBwUCan7OzQAKCRDyimB/1oxx
+ B6I7D/40Iv0Wfp9s04/LUaxfpxm0ljaQrgrpsylPyi3MeDXK/Ha38dZGijMS9JXz+nyY/qV5qS2
+ zKNP7BjXL3pfFUZpzgOGqSYoaeIWBLBq0pjy2XPqXUf+ZTv0gLAJq0M3lw7IXIVjVRFwtlG8jYQ
+ jA0lqcUJCSqcLzKYcCChpFslFdtPvROkcLeVOZrZXcSyblJNk/1geIo1kQPB9SvfsTizlAMzEpk
+ 72YgmbGzofut627PIg1gF9bgn18z+ViPLO6EsVBAzNy+PDUlOXvM7f6zbb0HYZLCzrGh1Jt7Na/
+ inNFAAl92u59PE2XAz7WX7r3j7mTAu0SZF8DGQ3u2/JCCiM5QV/6SpdDds4eFyYbsVj9ic01SAm
+ YUOYQtqhL05uiQCotoajIRLnfnJxOlaM5uquERMQQVhfxX8/b1AHZakOcOQOq1kG1hwsBFQ2pkb
+ sJ1cLi94S89zqvfJjFdUSgwqzGaqLd+eXIa+TdfOmIahTFZwJtuL0EZndwXcRk63zinRBwcn+Ks
+ 0KsxBMicS32qy7lWswHiFtxbrYKi9nLNNSvbyZn8AF64RGoKlhfH7hhthA6nAtA0rtfLLVCI329
+ +xJbxCEitB4hka3pH7SZLSrKal8wHmRkj1aEmxZBXWgAlsZX/80sDRKD0vYcHQLdOad+emNbFPl
+ IauZeGr8CWRuieA==
 X-Developer-Key: i=dominique.martinet@atmark-techno.com; a=openpgp;
  fpr=2815288B303FADC6BD2F7896F28A607FD68C7107
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260814_011230_936630_1E69045A 
-X-CRM114-Status: GOOD (  22.03  )
+X-CRM114-CacheID: sfid-20260814_011621_622757_5368C005 
+X-CRM114-Status: GOOD (  14.06  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -138,94 +136,96 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-QWRkIHN1cHBvcnQgZm9yIFdpbmJvbmQgVzI1TjA0TFcgNEdiaXQgU1BJLU5BTkQ6Cj4gMS44ViA0
-Ry1iaXQKPiBSYXcgc2VyaWFsIFNMQyBOQU5EIGZsYXNoIG1lbW9yeQo+IER1YWwvUXVhZCBTUEkg
-d2l0aCAxMDRNSHoKPiBidWZmZXIgcmVhZCwgY29udGludW91cyByZWFkICYgc2VxdWVudGlhbCBy
-ZWFkCgpIaWdobGlnaHRzIGNvcGllZCBmcm9tIGRhdGFzaGVldDoK4oCTIFBhZ2Ugc2l6ZTogNCwz
-NTIgQnl0ZXMgKDQwOTYgKyAyNTYgQnl0ZXMpCuKAkyBCbG9jayBzaXplOiA2NCBwYWdlcyAoMjU2
-SyArIDE2SyBCeXRlcykKLSBCdWlsdC1pbiA4LUJpdCBFQ0MgZm9yIG1lbW9yeSBhcnJheQrigJMg
-RUNDIHN0YXR1cyBiaXRzIGluZGljYXRlIEVDQyByZXN1bHRzCuKAkyBCYWQgQmxvY2sgTWFuYWdl
-bWVudCBhbmQgTFVUIGFjY2VzcwrigJMgU29mdHdhcmUgYW5kIEhhcmR3YXJlIFdyaXRlLVByb3Rl
-Y3QK4oCTIFBvd2VyIFN1cHBseSBMb2NrLURvd24gYW5kIE9UUCBwcm90ZWN0aW9uCuKAkyBVbmlx
-dWUgSUQgYW5kIFBhcmFtZXRlciBwYWdlCuKAkyBUZW4gNEtCIE9UUCBwYWdlcyBwZXIgZGllCuKA
-kyBSZWFkIExldmVsIFNldHRpbmcgZm9yIFJlYWQgUmV0cnkKClRoZSA0MDk2KzI1NiBieXRlIHBh
-Z2UgbGF5b3V0IGlzIGFzIGZvbGxvdzoKLSA0MDk2IGJ5dGVzIEVDQyBwcm90ZWN0ZWQgIm1haW4g
-bWVtb3J5IGFycmF5Iiwgc3ViZGl2aWRlZCBpbiA4CiAgNTEyIGJ5dGVzIHNlY3RvcnMKLSAxMjgg
-Ynl0ZXMgc3BhcmUgYXJyYXksIHN1YmRpdmlkZWQgaW4gOCAxNiBieXRlcyBzZWN0b3JzIGFzIGZv
-bGxvdzoKICAtIDIgYnl0ZXMgYmFkIGJsb2NrIG1hcmtlciAobm8gRUNDIHByb3RlY3Rpb24pCiAg
-LSAyIGJ5dGVzICJ1c2VyIGRhdGEgSUkiIChubyBFQ0MgcHJvdGVjdGlvbikKICAtIDEyIGJ5dGVz
-ICJ1c2VyIGRhdGEgSSIgKEVDQyBwcm90ZWN0ZWQpCi0gMTI4IGJ5dGVzIHBhcml0eSBhcnJheSwg
-c3ViZGl2aWRlZCBpbiA4IDE2IGJ5dGVzIHNlY3RvcnM6CiAgLSAxMyBieXRlcyBFQ0MgZm9yIG1h
-aW4gZGF0YSBhbmQgdXNlciBkYXRhCiAgLSAzIHVudXNlZCBieXRlcwoKVGhpcyBjb21taXQgZG9l
-cyBub3Qgc3VwcG9ydCBtb3N0IGFkdmFuY2VkIGZlYXR1cmVzIHN1Y2ggYXMgY29udGludW91cwpy
-ZWFkLCBMVVQgbWFuYWdlbWVudCBhbmQgT1RQIHBhZ2VzLCBhbmQgb25seSBwcm92aWRlcyBiYXNp
-YyB1c2FnZS4KCk9PQiBsYXlvdXQgd2FzIGtlcHQgY29tcGF0aWJsZSB3aXRoIHByZXZpb3VzIG1v
-ZGVscyAoZXhwb3NpbmcgYm90aCB1c2VyCmRhdGEgSSBhbmQgSUkpLCBkZXBlbmRlbnQgb24gbXRk
-LT5vb2JzaXplLgoKQ28tZGV2ZWxvcGVkLWJ5OiBEYWlzdWtlIE1pem9idWNoaSA8bWl6b0BhdG1h
-cmstdGVjaG5vLmNvbT4KU2lnbmVkLW9mZi1ieTogRGFpc3VrZSBNaXpvYnVjaGkgPG1pem9AYXRt
-YXJrLXRlY2huby5jb20+ClNpZ25lZC1vZmYtYnk6IERvbWluaXF1ZSBNYXJ0aW5ldCA8ZG9taW5p
-cXVlLm1hcnRpbmV0QGF0bWFyay10ZWNobm8uY29tPgotLS0KQ2hhbmdlcyBpbiB2MzoKLSBGaXhl
-ZCBDby1hdXRob3JlZC1ieSAvIGNvbW1lbnQgc3R5bGUKLSBNZXJnZWQgb29ibGF5b3V0IGhlbHBl
-ciB3aXRoIHcyNW4wMmt2X29vYmxheW91dCwgdXNpbmcgbXRkLT5vb2JzaXplCih3aXRoIGFuIGV4
-dHJhIGNvbW1lbnQgZGVzY3JpYmluZyBVc2VyIERhdGEgSS9JSSwgYnV0IGtlZXBpbmcgY3VycmVu
-dApiZWhhdmlvdXIpCi0gTGluayB0byB2MjogaHR0cHM6Ly9wYXRjaC5tc2dpZC5saW5rLzIwMjYw
-ODEyLXcyNW4wNGx3LXYyLTEtZGVlZTk3NjAyZmM0QGF0bWFyay10ZWNobm8uY29tCgpDaGFuZ2Vz
-IGluIHYyOgotIExpbmsgdG8gdjE6IGh0dHBzOi8vcGF0Y2gubXNnaWQubGluay9hbnNZVW9OS0p5
-RFErNmYyQGh1LW1kYWxhbS1ibHIucXVhbGNvbW0uY29tCi0gZml4ZWQgb29iIGxheW91dAotIGZp
-eGVkIE5BTkRfTUVNT1JHIG9vYiBzaXplCgpUZXN0d2lzZToKLSBkZWJ1Z2ZzIG9vYmxheW91dF9l
-Y2Mvb29ibGF5b3V0X2ZyZWUgaXMgZmluZSB3aXRoIG5ldyB2ZXJzaW9uCi0gSSBzdGlsbCBuZWVk
-IHRvIGNoZWNrIGFib3V0IHRoZSBoaWdoIG51bWJlciBvZiBlY2MgZXJyb3JzIG5leHQgd2VlaywK
-YnV0IEkgZG9uJ3QgdGhpbmsgaXQncyBsaWtlbHkgdG8gYmUgcmVsYXRlZCB0byB0aGlzIHBhdGNo
-IHNvIHNlbmRpbmcKYWhlYWQuLi4gRmVlbCBmcmVlIHRvIHdhaXQgYSBiaXQgKHRoZXJlJ3Mgbm8g
-aHVycnkgb24gbXkgZW5kIGZvciB0aGlzIHRvCmdldCBpbnRvIDcuMzsgaXQncyBmaW5lIHRvIHNr
-aXAgYSBjeWNsZSBhcyB5b3Ugc2VlIGZpdCkKLSBJIGNoZWNrZWQgdGhlIFNQSU5BTkRfSU5GT19P
-UF9WQVJJQU5UUyBhbmQgdGhlcmUgaXMgbm8gcHJvYmxlbSB3aXRoCmN1cnJlbnQgdmFsdWVzIGZv
-ciB0aGlzIG1vZGVsLgoKVGhhbmtzIQoKLURvbWluaXF1ZQotLS0KIGRyaXZlcnMvbXRkL25hbmQv
-c3BpL3dpbmJvbmQuYyB8IDIzICsrKysrKysrKysrKysrKysrKysrLS0tCiAxIGZpbGUgY2hhbmdl
-ZCwgMjAgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9kcml2ZXJz
-L210ZC9uYW5kL3NwaS93aW5ib25kLmMgYi9kcml2ZXJzL210ZC9uYW5kL3NwaS93aW5ib25kLmMK
-aW5kZXggOWI3OGMxZTZjYmM5Li4xNzFmNGMyNjQyMjAgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvbXRk
-L25hbmQvc3BpL3dpbmJvbmQuYworKysgYi9kcml2ZXJzL210ZC9uYW5kL3NwaS93aW5ib25kLmMK
-QEAgLTMxNCwxMCArMzE0LDExIEBAIHN0YXRpYyBpbnQgdzI1bjAxa3Zfb29ibGF5b3V0X2VjYyhz
-dHJ1Y3QgbXRkX2luZm8gKm10ZCwgaW50IHNlY3Rpb24sCiBzdGF0aWMgaW50IHcyNW4wMmt2X29v
-YmxheW91dF9lY2Moc3RydWN0IG10ZF9pbmZvICptdGQsIGludCBzZWN0aW9uLAogCQkJCSAgc3Ry
-dWN0IG10ZF9vb2JfcmVnaW9uICpyZWdpb24pCiB7Ci0JaWYgKHNlY3Rpb24gPiAzKQorCS8qIDQg
-c2VjdGlvbnMgZm9yIDEyOCBieXRlcywgOCBmb3IgMjU2ICovCisJaWYgKHNlY3Rpb24gPj0gbXRk
-LT5vb2JzaXplIC8gMzIpCiAJCXJldHVybiAtRVJBTkdFOwogCi0JcmVnaW9uLT5vZmZzZXQgPSA2
-NCArICgxNiAqIHNlY3Rpb24pOworCXJlZ2lvbi0+b2Zmc2V0ID0gKG10ZC0+b29ic2l6ZSAvIDIp
-ICsgKDE2ICogc2VjdGlvbik7CiAJcmVnaW9uLT5sZW5ndGggPSAxMzsKIAogCXJldHVybiAwOwpA
-QCAtMzI2LDkgKzMyNywxNiBAQCBzdGF0aWMgaW50IHcyNW4wMmt2X29vYmxheW91dF9lY2Moc3Ry
-dWN0IG10ZF9pbmZvICptdGQsIGludCBzZWN0aW9uLAogc3RhdGljIGludCB3MjVuMDJrdl9vb2Js
-YXlvdXRfZnJlZShzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgaW50IHNlY3Rpb24sCiAJCQkJICAgc3Ry
-dWN0IG10ZF9vb2JfcmVnaW9uICpyZWdpb24pCiB7Ci0JaWYgKHNlY3Rpb24gPiAzKQorCWlmIChz
-ZWN0aW9uID49IG10ZC0+b29ic2l6ZSAvIDMyKQogCQlyZXR1cm4gLUVSQU5HRTsKIAorCS8qCisJ
-ICogRm9yIGF0IGxlYXN0IFcyNU4wNEtXIGFuZCBXMjVOMDRMVywgdGhpcyByZWdpb24gaXMgYWN0
-dWFsbHkKKwkgKiBzcGxpdCBpbiB0d286CisJICogRUNDLXByb3RlY3RlZCAiVXNlciBEYXRhIEki
-IGF0ICsgNCBvZmZzZXQsIGxlbmd0aCAxMgorCSAqIHVucHJvdGVjdGVkICJVc2VyIERhdGEgSUki
-IGF0ICsgMiBvZmZzZXQsIGxlbmd0aCAyCisJICogVGhpcyByZXR1cm5zIHRoZSBmdWxsIHJlZ2lv
-biBmb3IgYmFja3dhcmRzIGNvbXBhdGliaWxpdHkuCisJICovCiAJcmVnaW9uLT5vZmZzZXQgPSAo
-MTYgKiBzZWN0aW9uKSArIDI7CiAJcmVnaW9uLT5sZW5ndGggPSAxNDsKIApAQCAtNzY4LDYgKzc3
-NiwxNSBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IHNwaW5hbmRfaW5mbyB3aW5ib25kX3NwaW5hbmRf
-dGFibGVbXSA9IHsKIAkJCQkJICAgICAgJnVwZGF0ZV9jYWNoZV92YXJpYW50cyksCiAJCSAgICAg
-MCwKIAkJICAgICBTUElOQU5EX0VDQ0lORk8oJncyNW4wMmt2X29vYmxheW91dCwgdzI1bjAya3Zf
-ZWNjX2dldF9zdGF0dXMpKSwKKwlTUElOQU5EX0lORk8oIlcyNU4wNExXIiwgLyogMS44ViAqLwor
-CQkgICAgIFNQSU5BTkRfSUQoU1BJTkFORF9SRUFESURfTUVUSE9EX09QQ09ERV9EVU1NWSwgMHhi
-MiwgMHgyMyksCisJCSAgICAgTkFORF9NRU1PUkcoMSwgNDA5NiwgMjU2LCA2NCwgMjA0OCwgNDAs
-IDEsIDEsIDEpLAorCQkgICAgIE5BTkRfRUNDUkVRKDgsIDUxMiksCisJCSAgICAgU1BJTkFORF9J
-TkZPX09QX1ZBUklBTlRTKCZyZWFkX2NhY2hlX3ZhcmlhbnRzLAorCQkJCQkgICAgICAmd3JpdGVf
-Y2FjaGVfdmFyaWFudHMsCisJCQkJCSAgICAgICZ1cGRhdGVfY2FjaGVfdmFyaWFudHMpLAorCQkg
-ICAgIDAsCisJCSAgICAgU1BJTkFORF9FQ0NJTkZPKCZ3MjVuMDJrdl9vb2JsYXlvdXQsIHcyNW4w
-Mmt2X2VjY19nZXRfc3RhdHVzKSksCiAJU1BJTkFORF9JTkZPKCJXMzVOMDRKVyIsIC8qIDEuOFYg
-Ki8KIAkJICAgICBTUElOQU5EX0lEKFNQSU5BTkRfUkVBRElEX01FVEhPRF9PUENPREVfRFVNTVks
-IDB4ZGYsIDB4MjMpLAogCQkgICAgIE5BTkRfTUVNT1JHKDEsIDQwOTYsIDEyOCwgNjQsIDUxMiwg
-MTAsIDEsIDQsIDEpLAoKLS0tCmJhc2UtY29tbWl0OiBkYjJkZGI4NzE0MzUxOWUyMGE5NWFhMzZj
-NjBiMzYxMDdiNzM2YTU4CmNoYW5nZS1pZDogMjAyNjA4MTItdzI1bjA0bHctM2U5MTQ2ZDgzNDBm
-CgpCZXN0IHJlZ2FyZHMsCi0tICAKRG9taW5pcXVlIE1hcnRpbmV0IDxkb21pbmlxdWUubWFydGlu
-ZXRAYXRtYXJrLXRlY2huby5jb20+CgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QK
-aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+This enables continuous read for W25N04LW:
+- The ops are basically the same as cont_read_cache_dual_quad_dtr_variants
+without the speed limit (this chip has no HFREQ flag that would change
+the required delays) and without DTR ops (not supported)
+- w25n0xjw_set_cont_read() can be reused
+
+Unfortunately on my system (i.MX 8ULP LPSPI) the first time continuous
+read is used spinand_read_from_cache_op() falls into this if and
+disables continuous read, so this didn't go any further:
+     /*
+      * Dirmap accesses are allowed to toggle the CS.
+      * Toggling the CS during a continuous read is forbidden.
+      */
+     if (nbytes && req->continuous) {
+             /*
+              * Spi controller with broken support of continuous
+              * reading was detected. Disable future use of
+              * continuous reading and return -EAGAIN to retry
+              * reading within regular mode.
+              */
+             spinand->cont_read_possible = false;
+             return -EAGAIN;
+     }
+
+I'm leaving this patch for anyone who could have hardware for this (or
+eventually myself after I have time to check the SPI driver...)
+
+Fun fact:
+nanddump -C is about 9% faster than nanddump on large data (tried 10MB)
+even if continuous read is not supported.
+
+Signed-off-by: Dominique Martinet <dominique.martinet@atmark-techno.com>
+---
+ drivers/mtd/nand/spi/winbond.c | 17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/mtd/nand/spi/winbond.c b/drivers/mtd/nand/spi/winbond.c
+index 171f4c264220..ad735f73945b 100644
+--- a/drivers/mtd/nand/spi/winbond.c
++++ b/drivers/mtd/nand/spi/winbond.c
+@@ -203,6 +203,13 @@ static SPINAND_OP_VARIANTS(cont_read_cache_dual_quad_dtr_variants,
+ 		/* The 1S_1D_1D variant would require 4.5 dummy bytes, this is not possible */
+ 		WINBOND_CONT_READ_FROM_CACHE_FAST_1S_1S_1S_OP(4, NULL, 0, 0));
+ 
++static SPINAND_OP_VARIANTS(cont_read_cache_variants,
++		WINBOND_CONT_READ_FROM_CACHE_1S_4S_4S_OP(6, NULL, 0, 0),
++		WINBOND_CONT_READ_FROM_CACHE_1S_1S_4S_OP(4, NULL, 0, 0),
++		WINBOND_CONT_READ_FROM_CACHE_1S_2S_2S_OP(4, NULL, 0, 0),
++		WINBOND_CONT_READ_FROM_CACHE_1S_1S_2S_OP(4, NULL, 0, 0),
++		WINBOND_CONT_READ_FROM_CACHE_FAST_1S_1S_1S_OP(4, NULL, 0, 0));
++
+ static SPINAND_OP_VARIANTS(read_cache_variants,
+ 		SPINAND_PAGE_READ_FROM_CACHE_1S_4S_4S_OP(0, 2, NULL, 0, 0),
+ 		SPINAND_PAGE_READ_FROM_CACHE_1S_1S_4S_OP(0, 1, NULL, 0, 0),
+@@ -780,11 +787,13 @@ static const struct spinand_info winbond_spinand_table[] = {
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xb2, 0x23),
+ 		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
+ 		     NAND_ECCREQ(8, 512),
+-		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+-					      &write_cache_variants,
+-					      &update_cache_variants),
++		     SPINAND_INFO_OP_VARIANTS_WITH_CONT(&read_cache_variants,
++							&write_cache_variants,
++							&update_cache_variants,
++							&cont_read_cache_variants),
+ 		     0,
+-		     SPINAND_ECCINFO(&w25n02kv_ooblayout, w25n02kv_ecc_get_status)),
++		     SPINAND_ECCINFO(&w25n02kv_ooblayout, w25n02kv_ecc_get_status),
++		     SPINAND_CONT_READ(w25n0xjw_set_cont_read)),
+ 	SPINAND_INFO("W35N04JW", /* 1.8V */
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xdf, 0x23),
+ 		     NAND_MEMORG(1, 4096, 128, 64, 512, 10, 1, 4, 1),
+
+---
+base-commit: 0f1b5abff55b580facccc16324ede60b048bd23c
+change-id: 20260814-w25n04lw-contread-03485e60c88e
+prerequisite-change-id: 20260812-w25n04lw-3e9146d8340f:v3
+prerequisite-patch-id: 3fbc1f74bfc7bbcd5dd7ecf62a7e5b0352cacbb2
+
+Best regards,
+--  
+Dominique Martinet <dominique.martinet@atmark-techno.com>
+
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
