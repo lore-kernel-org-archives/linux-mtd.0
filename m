@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4EF02C5B572
-	for <linux-mtd@archiver.kernel.org>; Fri, 14 Aug 2026 09:52:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6EC6C5CFC1
+	for <linux-mtd@archiver.kernel.org>; Fri, 14 Aug 2026 09:53:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
 	In-Reply-To:References:To:From:Cc:Subject:Message-Id:Date:Mime-Version:
 	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
 	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=lLc2tqHO1v42p30NkC82FX2W0/Hch/wFH+H0f/hQbLI=; b=41eU45qdhk0k53MhCKa6Ni9SVH
-	hs6zt2gPYSobFH82eLPbkgnBvrHtHEvPwrlpyw+uax/CaDjE4dL1pVsZ8qYT5lIMT56/RfCRrh7kA
-	dFYf9MGVXcs90XNdE59dFy/bd6ziLccWqDGnYqIWqI1gO2Zld5/aRrylB3v4nrZTqQmU2DPiKc987
-	lXHoh7gX2fdyf+110FMuESgvojc9ONriD84qzxK3bNHE1E2jlZDnl/Pqf+AhDG+Tj8kkrSRugd31u
-	YeThZkOEsj7cAyFtjPfG/93jTv0XSIpWiyIMIQu+iqRL/bv0ebdHt9TkQ8uNDldtvzMt9HRry8vYY
-	6pKIDdlg==;
+	bh=IJHYEGUF/luzlb5RnXqAGR4BcEv9LPSP+N0h82DdBVc=; b=hT5KqMuXTU1zk55Gy9zU1Ur7Z+
+	YrcYEXXlOianYTBEEpSPU75210gv1Nmquj9qV9eGlAxFOY17c0tnDIxJxYuuL5N6wItTt09vUgmWL
+	ICkxF0u2fgohiuC0eJpVO3YSYc1nkm9s2lzelHHWqG41go7fbpO5JAbb/4+KwSJjdr1mgCghD/VoZ
+	MWKLse/NmVitZ4fro6R36WTQTyhpbX9QJwpGptZjsjKHj3Yh3pwOqej9aWV6lfsBkpaM1L48yYUe8
+	y6hCF+QgtyEyWRwXuaG4nrStHd5J5Sn+SAcDJJbOXhKHaMWRyMVeUF5eYovmEkeITJdrPYYtI08sS
+	sOoMP0ew==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wuoab-00000002Sjz-0Kiw;
-	Fri, 14 Aug 2026 09:52:37 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1wuobB-00000002Syq-1gkP;
+	Fri, 14 Aug 2026 09:53:13 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wuoaZ-00000002Siw-0j1Q;
-	Fri, 14 Aug 2026 09:52:35 +0000
+	id 1wuob9-00000002Sy0-3Fpr;
+	Fri, 14 Aug 2026 09:53:11 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with UTF8SMTP id E72B7411AF;
-	Fri, 14 Aug 2026 09:52:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id 4BD681F000E9;
-	Fri, 14 Aug 2026 09:52:34 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with UTF8SMTP id 3CB81600C3;
+	Fri, 14 Aug 2026 09:53:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id 6183C1F000E9;
+	Fri, 14 Aug 2026 09:53:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1786701154;
-	bh=qXatzOtSlObI1NaAKiBYiFr18AMUInQma+wQu46aI+8=;
+	s=k20260515; t=1786701190;
+	bh=bAXGcyr62NKtmgcYXABYv7zy7fLE4WFMwMzbW7IRjrs=;
 	h=Date:Subject:Cc:From:To:References:In-Reply-To;
-	b=Kq37hFZT37KvXVkykLgDLlfoZpndrH8BENgvyImP2krHLEG1GxkMrhaoGsKcB6IML
-	 49Ice9PCjHufQVfEpcGmOSl2gbElD2mGQlhHrb5ogatXwEnUghI4w7umohOcO08eUB
-	 NiSW7ofCaGOGXOkbrOsbyw6ry+/4q0IWxNUk6CSw9N+YS+Y74esubopZBDsRn8mViZ
-	 Pe3a56m2/vjaSsfhfeuFa+9ehJvw2QdXs9wkBHEkIRBv1gaiE9IhST22kiNvB8nl/N
-	 r4MK8YxJpRYMZgYsqTRt5+7gvPw53nrqRA/aq5qwaUeNCQJjWRVRVdbGFYA8G+LGXK
-	 BY5UiKBfhQa5g==
+	b=AN1gpVVakaagM/Z3Jzlba6UgmkWSCBDYKD4gAov8q2QiEMV8xFOMwyvluWCaPZw99
+	 CWa0QGXAqNAK6HfGDiHVb6TlhtvdyMrUnBywzfclJ6+RP0+VEURKQyKYwjbIIVrzSV
+	 AnGaRM0Dr6/ouEVOnq5EqaZv/+pVDVdRH1KbhaioIm2KLb1qNRZllZtgSKNsHUoVDS
+	 Y5WG6Wi9gZfjOPHoPleR/82hkyGObaOsjs7uGZJpJN/K3HMWs/Os6DGEGUgX7wUxa1
+	 fjjOhG672ZH5YtilASJu+Nx9DRd+D6Fqv/RI5j/x6n+76moZrDitNAS42H5qJm5b3l
+	 JyMK9jWUSRTBQ==
 Mime-Version: 1.0
-Date: Fri, 14 Aug 2026 11:52:31 +0200
-Message-Id: <DKOKP5L9W231.2DH3ODA0MGU8Y@kernel.org>
-Subject: Re: [PATCH v3 21/23] mtd: spi-nor: winbond: Add support for
- W25Q02RV-M
+Date: Fri, 14 Aug 2026 11:53:07 +0200
+Message-Id: <DKOKPM4GS867.1EU3SKAU14NLG@kernel.org>
+Subject: Re: [PATCH v3 22/23] mtd: spi-nor: winbond: Add support for
+ W25Q51RV-Q/N/M
 Cc: "Steam Lin" <STLin2@winbond.com>, "Hsin-Yi Wang" <hsinyi@chromium.org>,
  "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>,
  <linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
@@ -59,8 +59,8 @@ To: "Miquel Raynal" <miquel.raynal@bootlin.com>, "Pratyush Yadav"
  <claudiu.beznea@tuxon.dev>, "Jonathan Corbet" <corbet@lwn.net>, "Shuah
  Khan" <skhan@linuxfoundation.org>
 X-Mailer: aerc 0.20.0
-References: <20260813-winbond-v7-1-spi-nor-rv-addition-v3-0-b637cf120d5c@bootlin.com> <20260813-winbond-v7-1-spi-nor-rv-addition-v3-21-b637cf120d5c@bootlin.com>
-In-Reply-To: <20260813-winbond-v7-1-spi-nor-rv-addition-v3-21-b637cf120d5c@bootlin.com>
+References: <20260813-winbond-v7-1-spi-nor-rv-addition-v3-0-b637cf120d5c@bootlin.com> <20260813-winbond-v7-1-spi-nor-rv-addition-v3-22-b637cf120d5c@bootlin.com>
+In-Reply-To: <20260813-winbond-v7-1-spi-nor-rv-addition-v3-22-b637cf120d5c@bootlin.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,49 +72,46 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7851756967056399518=="
+Content-Type: multipart/mixed; boundary="===============1784310636310495872=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============7851756967056399518==
+--===============1784310636310495872==
 Content-Type: multipart/signed;
- boundary=bb679c07f9943f5c7f886e60545fdeb95be8ce31037ff00d619209bef2cb;
+ boundary=98cf7b1d1e452ec1706c2a26c20583123b5d65d3478fd36a5214653605af;
  micalg=pgp-sha384; protocol="application/pgp-signature"
 
---bb679c07f9943f5c7f886e60545fdeb95be8ce31037ff00d619209bef2cb
+--98cf7b1d1e452ec1706c2a26c20583123b5d65d3478fd36a5214653605af
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
 
 On Thu Aug 13, 2026 at 5:19 PM CEST, Miquel Raynal wrote:
-> There is an ID collision with the chip of same density from the JV
-> family. Both chips are very similar in practice, it is mostly a matter
-> of electrical differences (mostly power consumption being lower).
->
-> As a significant difference, RV chips identify themselves as supporting
-> the new SFDP (rev F) field which forces an alternate write SR2
-> opcode (0x31).
+> I currently do not have access to any chips from the W25Q25RV
+> density. Yet, I successfully tested the entire JV family and all other
+> chips from the RV family. They all behaved strictly identically, so I
+> propose to nevertheless add the missing comments for the sake of clarity
+> and completeness.
 >
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
 Reviewed-by: Michael Walle <mwalle@kernel.org>
 
-
---bb679c07f9943f5c7f886e60545fdeb95be8ce31037ff00d619209bef2cb
+--98cf7b1d1e452ec1706c2a26c20583123b5d65d3478fd36a5214653605af
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCan7lXxIcbXdhbGxlQGtl
-cm5lbC5vcmcACgkQEic87j4CH/hqdwGA40nA8+hyOwt2ZBmiYFgGwfUj94KADxtB
-2d2+GTXqoSZJS7CAN2kZjFfSlY0kHY1uAX0eMi7n0NtTlXvkyOMGIzQpoZ+gB4Es
-3lMDVv8rbRd93MlFg78w1q8HlNU647vWQjY=
-=3J0s
+iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCan7lgxIcbXdhbGxlQGtl
+cm5lbC5vcmcACgkQEic87j4CH/j4JQF/YHpRbiRbgPvXL2wC3ddX1BhUDUPTmRge
+K9EROeaUmG7Xrxd44kHGLMA7Ow9UPZz6AX9f1X7fLl40ZAyVk7oGsiZdO4cQaX9R
+acapbzyzCQFACvUxdZpTPKjKvqlRozpQGrQ=
+=A5R1
 -----END PGP SIGNATURE-----
 
---bb679c07f9943f5c7f886e60545fdeb95be8ce31037ff00d619209bef2cb--
+--98cf7b1d1e452ec1706c2a26c20583123b5d65d3478fd36a5214653605af--
 
 
---===============7851756967056399518==
+--===============1784310636310495872==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -124,5 +121,5 @@ ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
---===============7851756967056399518==--
+--===============1784310636310495872==--
 
