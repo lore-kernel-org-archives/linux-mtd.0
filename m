@@ -4,96 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C54EC5AD5A
-	for <linux-mtd@archiver.kernel.org>; Sat, 15 Aug 2026 10:48:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 53849C5DF66
+	for <linux-mtd@archiver.kernel.org>; Sun, 16 Aug 2026 09:31:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=rW0yTH4xj36lykTdCSECoDZzgKZ4JSTFfDGPWRHTItI=; b=mrq
-	7lyieWEWiq60QXYSanNTARBXe0SLmvGrIZStA0vV71QZiubE10+lKFgIA5yN2ubIhSnwiXpg31Sje
-	0eBCWZsZoCTB5fCOXq2ipOs4+czfN195H1aCAj3pOsRRcGKujZ4NCkuobxYLtAhW2XisC6LmTSafr
-	ioEzapt+U+5oqQEYRTf715kTbp47pZCuS476bm4jyCMtVSgQtBDXuKPgbvWarhS6ACmTW9KWjrPXa
-	woteCUwNM1OZK2UM0aet8ontFIg60pyIF0I9GDMxE84nbUbg3vLdrWM51iD4fYPqWPt36OcmbZvNN
-	Nuq0JNxrfyX7Sz8KwcwMTqGKi/5PoSw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=iSL9ByR7kxDYNWP4Zlg9gUUQoJVSA3lFChGB75pn+A0=; b=HakZcs6B77zKQR
+	Ji0bUpUWKaJCHHFIWhQ7DGozMRnng2m3NQ7BXgP0jc9CJLZfWh+qUQqFNMr+34UciUvdPOG8ZQ6x4
+	m96KwrM7XxdmP7AGvVKlW5ImD38Ej1T1pGO3T/XhewUQs4h0e0c1piNOOMXJ9ERxAlT8UyGVRxOF4
+	G/nzOHyDnpY/NdbqFqdnZ/FcgamJFtdi1cYgM7nQmPsB5u8NZLANoFbnTXmCqfKPjxdY0hdo2ztJ5
+	ig4gec82wEzGXxCMXvtdrxUfVd3pn1r0wF00dXotLc7oGhewBQBfGniutK0m2B+F2Pyf+Q4eZFwYb
+	fJRTKlTrhahI293k21Kg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wvBw5-00000003lBa-07pc;
-	Sat, 15 Aug 2026 10:48:21 +0000
-Received: from mail-qv1-xf32.google.com ([2607:f8b0:4864:20::f32])
+	id 1wvXDM-00000004c8h-3R2v;
+	Sun, 16 Aug 2026 09:31:36 +0000
+Received: from mail-pf1-x42f.google.com ([2607:f8b0:4864:20::42f])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wvBvz-00000003lBB-3iWq
+	id 1wvXDI-00000004c8M-06sz
 	for linux-mtd@lists.infradead.org;
-	Sat, 15 Aug 2026 10:48:20 +0000
-Received: by mail-qv1-xf32.google.com with SMTP id 6a1803df08f44-8efbafa1bacso10126106d6.1
-        for <linux-mtd@lists.infradead.org>; Sat, 15 Aug 2026 03:48:14 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1786790894; cv=none;
-        d=google.com; s=arc-20260327;
-        b=FT+LgiXmuFwc/5xcCu4OdO3k/Z9K3fd8FFyZQjLTKlBLZrOwkPwswCCn47aCSDLhNw
-         JGTRSUSrqBCVgtBnE/rgMpNKP6g+p+vSRjOB35tsp9Yomk0MaK0PGIfALBfc+r3GiiwX
-         OAWgrEO7NMpaaE1UmWrsCReIVzmxpgXaW62Jjm4e6UrDF7YsmDlySFHyw7Pkajo3QskE
-         9sOqG9tEbG9CRkv84uF4zWk6K/f4sNV+gsayTYXPFldv9md4PioyJ9ZWTagWEgt73Qnb
-         FFkFOZCJvJ+R3TgzDwy+15CB+36I33UNx3orjpTkxWrbGoK+YvKFv779tGAhWP00TKx0
-         LCJg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=to:subject:message-id:date:from:mime-version:dkim-signature;
-        bh=8S2S9ZihBbRikQyq9YljByMIzuIobbfXFBRM+b3mynI=;
-        fh=Gd4kRfoyr9WvSS9M3j9+RFhdcaNG97fzsqYHZ6IIOZI=;
-        b=PAGmdVf085JjujD1mn76MtLsf11WZ33aPfPuJysV2i790LY94vafdk6ATsJ2HjDalT
-         bvnNMMcs8iqDxA/Uum5YvI+4ezTGHTVas85RI/v3538EwCOfH0RP2lit8ZEcrqwV/VKz
-         k2W+6lCINT5G9QS0Z/FauyYAx9Jv3XEV5OCcb4jYxrAoHos9lb2UgVhrQsaEJASlTaFj
-         pWzNdvIwSwBwow8SToKd08OtgEmFb9VS2RBxbWho1J2rALMWoc8lo2m14rLOSWHXgqWQ
-         OcCNPIH1yJBXjwWNkmsNqpLaGe0Npwz6YtTwnlr+cmhc50Qc7vBBiG8PItZxmzq614Qi
-         f0OA==;
-        darn=lists.infradead.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
+	Sun, 16 Aug 2026 09:31:33 +0000
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-84867f07d63so2413533b3a.2
+        for <linux-mtd@lists.infradead.org>; Sun, 16 Aug 2026 02:31:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=personaltelco-net.20251104.gappssmtp.com; s=20251104; t=1786790894; x=1787395694; darn=lists.infradead.org;
-        h=content-type:to:subject:message-id:date:from:mime-version:from:to
-         :cc:subject:date:message-id:reply-to:content-type;
-        bh=8S2S9ZihBbRikQyq9YljByMIzuIobbfXFBRM+b3mynI=;
-        b=m4veI0ycD53ZmTQUTeIKfWU8tmzt+x6KW3zMaqkZ/rprGY5x+VAFFHUD1ilQ3ccIaM
-         P0+wzWjjKtLoqbxZsQ/k/pVDZDrk2T/BYJQcWo57xNUBDxsmBHCCMZYKn9A1n2ArLoBY
-         KTbJMGPLGS58/UBd/6jM0fBlglk77DKiKev1It3pBXMZu3q3aQ3Dh9abLv1v/cGnLA5e
-         2s9oQIjXqw027lsUeDAFBATYP5tDrleUx1QOEUyvK4HhGPDqk5xWZJJKTpQz/p7QkFqf
-         mnCHnoPu8vC/5bR6jIWw0RQIs99zcXHySIfhNQx+EFG9eTKBXcF+yDF4Oh5jiZazEgqy
-         kJgQ==
+        d=gmail.com; s=20251104; t=1786872690; x=1787477490; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=3sow89GSV5jpBqPfbfCrprpxv/6mc7o1Uw/7hLLW1qg=;
+        b=VryTYICINBDUuPIBkrz8Kq3r9VK98EcGK3SYthwkR6mqhim8Qtq/N8DGcP5YMJPWYJ
+         55nu93LncTKcsP75d9U5jmJqrBGUKj4QRBnI1XpMkCrTK8QE3h2jCJQGlNx+Jqp8lMY2
+         9J+7rgGdjvI14Nb/ej6PQh5hEGA+fMAApxf8QwC9Twtlh5iJseR7nv2dm6JVoxLBTdqQ
+         1DlO+bOzAdJUQ1BD3zJAzq26Rfdr5gEBC1wBot0Nzkd87oLDgsrLvBnu7FaMDXDCqEyM
+         9lrRZsATr/EJeCReKSCAE2bPO+lmENg0TyXkK+J7+b3rjDaIK3QfdGNcsR1HUkmqRQAA
+         B82A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1786790894; x=1787395694;
-        h=content-type:to:subject:message-id:date:from:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=8S2S9ZihBbRikQyq9YljByMIzuIobbfXFBRM+b3mynI=;
-        b=NBjYHly9/tDZ9BYXo8nqRoVzOovW1TZPJ7elhfbxelyO30i7VxJVTYLAvRi+VpEG44
-         DpbhyOGXikMEm/CsYZ3bD+pUMeXtf0la1DmHceF0c//id8hAU32OS4hisyvMcqvyd2Pg
-         tZJwLRDKWevftIOKTHv2FJEtO3Q2Q9hufouMtqlte5rvsU37z+NUb2Xwdntfp1R7E0tr
-         JEDVF6jPY4+7IKsHwxgGm9gvb7WPr+anH8rpcXuOhQSH/z9hw96UJYxXS0vlyAqFVtVG
-         /PY5b8+HUBCnUvN+HRiPaF1UsVkZqYFXovhPfh/lTrXA8kTGvNIyziGQdMwX0x0ewPsL
-         NIXA==
-X-Gm-Message-State: AOJu0YzyBsBiE3JuJ3a4uNBH2Wy4/IYQBBxJ1XQPzgbTPAQ5aWWoZYrM
-	9lNqarGgcCCVQjceURNz2bHDAAaL971uK+WOEgP5zlqHoojxZBFGrzu3122ivOS1JEQt87aYshN
-	EFGE9UKwAqecufCRrirvxDib0HNCLWn6yXdj0x0nicOrHyyBoXtrHETLZ
-X-Gm-Gg: AR+sD12wOLCxT5xmiQnkQyS1gRHjMLm0JpapNgyXgcYgNXcvUwRP1v+7U0kZviqIPog
-	rzTcdLoEL/JgW1GtZMqrdm9Jr8Zv/4CzuL1h6x2YBAmADXZLx+l1W5DBYaCv0mzlQqQS3PO+UB1
-	X8L2HENVn3njHyLc1c6lx8maSMo/7LbYTwebD8c+xEFipEJiszjoxPzyr0JMw7VprbzbiW0vsvO
-	S0JtoG2PtHf19+qwoJDVwDmO2sXV6tgv4aJSZPQqbgSSJ9VGbGts/k4U7p0EZU/xucCsg1kEgbF
-	A6qlcdK1wfZ1SmlZ3vqG+UplU8HQNXm9/on5TDooVn1ELoLGVClKGt1+Z5fQxxpsILKyPSYz0u7
-	8TENd/hp/GXlJl38oPVMCHGPoPB9wEVp4bWuMN7EbQYer+5S/MAXoRzPNdZZMzxWRBtbcILFq
-X-Received: by 2002:a05:620a:398f:b0:92e:d7c7:7de9 with SMTP id
- af79cd13be357-936d1fddc37mr811582285a.8.1786790893719; Sat, 15 Aug 2026
- 03:48:13 -0700 (PDT)
+        d=1e100.net; s=20251104; t=1786872690; x=1787477490;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=3sow89GSV5jpBqPfbfCrprpxv/6mc7o1Uw/7hLLW1qg=;
+        b=IbeWCOlqAIUsvmlHJq/5WFftBo1mtOzqtSvSbkPNNAsFovmmWh5zWZAViNt25NIJOg
+         h0aHm1IoNuffwLPjhhNhdKi8tzRvz87hNhR/8TIE9XECzQHpOjzId9YLLH9mszMZYM7e
+         6CNJL6m1A0TYffyWEJjc9+z9yw7e3M1rCU10Bux3kaGsFKO2+xpyNRsPtvZ0/ktC07Yu
+         ZwxGOh/n6TQDdyFBrWTYA47LjhasH6pv4uJMIndJ2P6VMklWH6a3BwpcOciVYkgS1lVH
+         VzimQDs6V2+ZNYDpbtllmU9c4AS313nX4DhHsvZAc3IuD4q6w/UY5OZ8D0FPrpTiq2NB
+         zyNA==
+X-Forwarded-Encrypted: i=1; AHgh+Rq7UfPvKXuNycT/tDu5Z7FAHcZq+gNRkzygvAo3Gfwn+B0JD+tk4EfwP3mI0dOUHiLC3hKtdywvaIo=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yw01GeNVS2dzqUVEyOBzn8fyQ2Uyr2a6nkFyihVnYnYzN7jyv4/
+	YiW+QvjZvtGXKHI1xoSPwON+zMUAjB8QJkEO+E6+EyC1B9PopsYZKf2V
+X-Gm-Gg: AR+sD13TnFZRFCRvc0x9X4odf60O9JZ+te6sy2T3AFhliGCbpcwxPvzBJRtSmGSu6hF
+	270NIX93lSDXDphgQyqctJNJCfHZ1JpEt8gx4GFewkpQGlkhY1sRaJoQv+6iSinT79p2p9HZ0S7
+	Z9Z4FJh2xs9a/oA7xrECQSZHea6TvZImsUo9mXL8FqSPyDGB8lVVDwHOO2ywBZfxA65OLH69TC0
+	MhHkY4GTsEUJFra3h9+mcjV14zPKeB2AT+/USoa3mO6PkfIFRJdjhA3X6voYyYiFVduYKHcoYpI
+	mdT3uNsnAl+Ki9WZKbnwSklC7+yE9FQ/v3+PU764xYII8Xn5UfCyqHXw3R3lZw71IaTsMdIpmSP
+	+GlBATITm8jqCmsRpUmK3s7wYa/61ErxpBaOSSxYDC5SvWdLnqSmZqtlAZHDmSSwcyU2ja5cLxl
+	psV/S4u9z7tEB6pLdZ7UiORu2mpNHZuB/7KGJXKQD+wN/Rt7zpRoFB4OdZodWUfuQyr0j5P+yMv
+	puHj4GVUpFfUXMtBwTYCu/Iy5iMOGf2kXmR59LX1zJQPid+5wIMbd9V4JxaxlE1YRgnAaNGXJaO
+	/Q==
+X-Received: by 2002:a05:6a00:2da3:b0:845:cdc1:a803 with SMTP id d2e1a72fcca58-84fddfe09a8mr16917458b3a.11.1786872690269;
+        Sun, 16 Aug 2026 02:31:30 -0700 (PDT)
+Received: from localhost (2001-b400-e339-d3d2-5062-d98b-71d5-8271.emome-ip6.hinet.net. [2001:b400:e339:d3d2:5062:d98b:71d5:8271])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-8517d22a341sm1718052b3a.36.2026.08.16.02.31.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 16 Aug 2026 02:31:29 -0700 (PDT)
+From: Huasin Liao <huasinliao@gmail.com>
+To: miquel.raynal@bootlin.com,
+	vigneshr@ti.com
+Cc: richard@nod.at,
+	tudor.ambarus@linaro.org,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	huasin.liao@airoha.com,
+	Huasin Liao <huasinliao@gmail.com>
+Subject: [PATCH] mtd: spinand: winbond: add support for W25N04LV
+Date: Sun, 16 Aug 2026 17:31:24 +0800
+Message-Id: <20260816093124.12325-1-huasinliao@gmail.com>
+X-Mailer: git-send-email 2.39.3 (Apple Git-146)
 MIME-Version: 1.0
-From: Russell Senior <russell@personaltelco.net>
-Date: Sat, 15 Aug 2026 03:48:02 -0700
-X-Gm-Features: AUfX_mxuz0AD-NptO5yKHtEQSocRiVI8CqcPOecjACy05uzXlTghvmgv1nT0XHw
-Message-ID: <CAHP3WfMMK8GU3jpwxv4=C=Pc_9H4ZkmqAJqxZ0gN_rYqPDU3XQ@mail.gmail.com>
-Subject: Regression: mx25l12845e stops working on my device after commit 947c86e481a
-To: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260815_034816_194495_DB495E25 
-X-CRM114-Status: GOOD (  14.41  )
+X-CRM114-CacheID: sfid-20260816_023132_071399_0194AD86 
+X-CRM114-Status: GOOD (  10.12  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -110,85 +103,76 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-I am running OpenWrt (master branch) on a Buffalo WZR600DHP. This
-particular instance has MX25L12845E SPI NOR chips (I have another
-WZR600DHP with Winbond W25Q128BVFG, but haven't tested there, just to
-say they don't all necessarily use the same flash).
+Add support for the Winbond W25N04LV. Tested on an Airoha
+AN7581-based board with the on-board W25N04LV, verified
+erase/read/write.
 
-I just built a new firmware version last night, and it started
-unhappily boot looping. The most recent previous build I had done was
-from June. Boot looping messages look like this:
+Link: https://www.winbond.com/hq/product/code-storage-flash-memory/qspinand-flash/?__locale=en&partNo=W25N04LV
+Cc: huasin.liao@airoha.com
+Signed-off-by: Huasin Liao <huasinliao@gmail.com>
+---
+ drivers/mtd/nand/spi/winbond.c | 38 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 38 insertions(+)
 
-[...]
-[    0.752843] printk: legacy bootconsole [early0] disabled
-[    0.778756] spi-nor spi0.0: supply vcc not found, using dummy regulator
-[    0.785909] spi-nor spi0.0: BFPT parsing failed. Please consider
-using SPI_NOR_SKIP_SFDP when declaring the flash
-[    0.796238] spi-nor spi0.0: probe with driver spi-nor failed with error -22
-[    0.804457] spi-nor spi0.1: supply vcc not found, using dummy regulator
-[    0.824085] i2c_dev: i2c /dev entries driver
-[    0.830852] NET: Registered PF_INET6 protocol family
-[    0.872875] Segment Routing with IPv6
-[    0.876671] In-situ OAM (IOAM) with IPv6
-[    0.880798] NET: Registered PF_PACKET protocol family
-[    0.886278] 8021q: 802.1Q VLAN Support v1.8
-[    0.921429] clk: Disabling unused clocks
-[    0.925661] check access for rdinit=/init failed: -2, ignoring
-[    0.932181] MTD: Couldn't look up '': -22
-[    0.936335] /dev/root: Can't open blockdev
-[    0.940520] VFS: Cannot open root device "" or unknown-block(0,0): error -6
-[    0.947472] Please append a correct "root=" boot option; here are
-the available partitions:
-[    0.955831] 1f00           16384 mtdblock0
-[    0.955843]  (driver?)
-[    0.962379] List of all bdev filesystems:
-[    0.966374]  squashfs
-[    0.966379]
-[    0.970139] Kernel panic - not syncing: VFS: Unable to mount root
-fs on unknown-block(0,0)
-[    0.978392] Rebooting in 1 seconds..
-
-Between June and last night, OpenWrt had switched their kernel from a
-6.12.x to a 6.18.x, so I immediately suspected something in that
-transition was the culprit and demonstrated that by building the last
-commit before the change to the 6.18.x kernel, and it worked. Then
-tested the commit of the change to the 6.18.x kernel and it
-bootlooped.
-
-Then I started looking through the mtd changes between 6.12.x and
-6.18.x and spotted 947c86e481a.
-
-  commit 947c86e481a027ed5948434096e506f307bd7114
-  Author: Cheng Ming Lin <chengminglin@mxic.com.tw>
-  Date:   Mon Apr 7 15:53:58 2025 +0800
-
-      mtd: spi-nor: macronix: Drop the redundant flash info fields
-
-The following revert of just the part that affected my chip made the
-bootloop vanish:
-
-diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-index e97f5cbd9aad2..3524ed08ff85d 100644
---- a/drivers/mtd/spi-nor/macronix.c
-+++ b/drivers/mtd/spi-nor/macronix.c
-@@ -132,7 +132,10 @@ static const struct flash_info macronix_nor_parts[] = {
-        }, {
-                /* MX25L12805D */
-                .id = SNOR_ID(0xc2, 0x20, 0x18),
-+               .name = "mx25l12805d",
-+               .size = SZ_16M,
-                .flags = SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP,
-+               .no_sfdp_flags = SECT_4K,
-        }, {
-                /* MX25L25635E, MX25L25645G */
-                .id = SNOR_ID(0xc2, 0x20, 0x19),
+diff --git a/drivers/mtd/nand/spi/winbond.c b/drivers/mtd/nand/spi/winbond.c
+index 9b78c1e6cbc9..892220a12b22 100644
+--- a/drivers/mtd/nand/spi/winbond.c
++++ b/drivers/mtd/nand/spi/winbond.c
+@@ -345,6 +345,35 @@ static const struct mtd_ooblayout_ops w25n02kv_ooblayout = {
+ 	.free = w25n02kv_ooblayout_free,
+ };
+ 
++static int w25n04lv_ooblayout_ecc(struct mtd_info *mtd, int section,
++				  struct mtd_oob_region *region)
++{
++	if (section > 7)
++		return -ERANGE;
++
++	region->offset = 128 + (16 * section);
++	region->length = 13;
++
++	return 0;
++}
++
++static int w25n04lv_ooblayout_free(struct mtd_info *mtd, int section,
++				   struct mtd_oob_region *region)
++{
++	if (section > 7)
++		return -ERANGE;
++
++	region->offset = (16 * section) + 2;
++	region->length = 14;
++
++	return 0;
++}
++
++static const struct mtd_ooblayout_ops w25n04lv_ooblayout = {
++	.ecc = w25n04lv_ooblayout_ecc,
++	.free = w25n04lv_ooblayout_free,
++};
++
+ static int w25n01jw_ooblayout_ecc(struct mtd_info *mtd, int section,
+ 				  struct mtd_oob_region *region)
+ {
+@@ -759,6 +788,15 @@ static const struct spinand_info winbond_spinand_table[] = {
+ 					      &update_cache_variants),
+ 		     0,
+ 		     SPINAND_ECCINFO(&w25n02kv_ooblayout, w25n02kv_ecc_get_status)),
++	SPINAND_INFO("W25N04LV", /* 3.3V */
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x8b, 0x23),
++		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     0,
++		     SPINAND_ECCINFO(&w25n04lv_ooblayout, w25n02kv_ecc_get_status)),
+ 	SPINAND_INFO("W25N04KW", /* 1.8V */
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xba, 0x23),
+ 		     NAND_MEMORG(1, 2048, 128, 64, 4096, 40, 1, 1, 1),
 -- 
-2.55.0
+2.39.3 (Apple Git-146)
 
-
--- 
-Russell Senior
-russell@personaltelco.net
 
 ______________________________________________________
 Linux MTD discussion mailing list
