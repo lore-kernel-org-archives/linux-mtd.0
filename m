@@ -4,70 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2CC74C5DF7E
-	for <linux-mtd@archiver.kernel.org>; Tue, 18 Aug 2026 11:42:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BB04FC5DF7E
+	for <linux-mtd@archiver.kernel.org>; Tue, 18 Aug 2026 11:42:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=dhAAc3htKe6/39tws4xTEqT9mh3wXr8z457yFn4xb8s=; b=V5VKD0XKBr4PPX
-	kc3M7RBQ+I3GZkSs7FiuGAlvCJpyO9mdGnw33WzGRZMx2hhIMB3ZQgfcTn9IHPsFKG4V8fSBAbxwr
-	97vQMRfurY0tkrFyeNyPv6eos+NqvLhwxS0Vqa6wwDePqVYOAZ2jCaZfO/+lD31ZeWAteuSE2CaGj
-	DZhtE5Ak80cVcNAQah/oK0zV9oDT7ahbsQ5gapyPh8n+Qj+fnX9t5x+/x9V076cZjJUHmwbn+j1K5
-	FOoLf0WlrziYH5rB4AeIyLO+rOxAortyjhRheK4SRl9xEBkvqPFhw5Berdqs0DLRG3O5usOWx+Zi5
-	ok2bk4Z/5gG5RaMwFH+g==;
+	List-Owner; bh=n5LQeyVwOaNXQxAhNQ2eNrvwoti+OIDA20zbZ6p4TyQ=; b=RFGXdETitEt6fw
+	/7MyRyXyJmbZ137YIHDo6KUeDp0yknkj2o5KvNqloZH60GUzIf07G6Tqi0628lk8gKtHzMeAEUmJP
+	xVQw+mOZ9tqr4Q2WRHndb8ljlEPAFteLfgP+0WdA3mJBXTMFsZTS/osp1F7TFgCGULoS38E2/FdOL
+	thccacNEuT2Zxg5KCubO3pkWU4/m7EyexN33sMBPNgEBi+02NG+NRcQpGggJ3taga2CimiZth6hlh
+	CiOmwC1SAw/Tl+w3TAi9sDx50cv7D57c2OZhUi/3QDnKMwMMB4VsUUoDLEmmI7QG6dORUVqZOFevV
+	J3Zn4XQqtp/OGv9Gw7Ww==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wwICv-00000007rjF-0zUC;
-	Tue, 18 Aug 2026 11:42:17 +0000
-Received: from mail-wm1-x334.google.com ([2a00:1450:4864:20::334])
+	id 1wwID8-00000007rn2-1O8N;
+	Tue, 18 Aug 2026 11:42:30 +0000
+Received: from mail-wr1-x434.google.com ([2a00:1450:4864:20::434])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wwICs-00000007rid-3xUI
+	id 1wwID6-00000007rm5-0UV5
 	for linux-mtd@lists.infradead.org;
-	Tue, 18 Aug 2026 11:42:16 +0000
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-49800c6a846so52916895e9.3
-        for <linux-mtd@lists.infradead.org>; Tue, 18 Aug 2026 04:42:14 -0700 (PDT)
+	Tue, 18 Aug 2026 11:42:29 +0000
+Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-481412f1828so1518320f8f.1
+        for <linux-mtd@lists.infradead.org>; Tue, 18 Aug 2026 04:42:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1787053333; x=1787658133; darn=lists.infradead.org;
+        d=gmail.com; s=20251104; t=1787053346; x=1787658146; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=3tMfNTzrnv95v9YWomQJOjZXq4ObY0ENOn5OxxBG6Ow=;
-        b=iUbxdcitdovXfAwH8+EYL2tSKvf9byy+mkO+P/JdQKbxZBRfxdgdJHveCpc9ItlJK5
-         YlboB6QyZGuQPQWxkjpaBylNjgW7BC1O2PbrzpNTXy6QOrsl0SninVlMom3YXXE2R16V
-         SHFbv6m2UTS0rRALlVLKneABeFg0fktgy623zNlLukr79GLvgLjuUPntUTHJxzArfqdj
-         6kxMVx41mlYCQYyjUdAyER+2jdKxA1Wd2ci8ToYPuw3gxnjFAbezKY7GZqTNYztbaXpE
-         504uuXrKPc9vQI0p+pIBexX9lIu5yuyOyG7rOH/dy72EFkVzclwmAKiofL0NwYy1Z77n
-         yPTg==
+        bh=C0Lkar/FZUF71jSh3gVWEuj9Qdc3ucoRXfitsWLZ7XY=;
+        b=g8E6ePrijIpWmEcQAry7UfndwsJq2czIsOkbVm2l8d/iVWX9f9/HEsmkrSb+j07yEu
+         Pnz5Y3oBP280Q3ife7Zt+8qx3+3aZp+64KXxw4PjLy6ZfN0JCew2dcE1jSpZyQb2XmuO
+         kD7bPVCI66LdqvGWYvjcUSd6GgSALLn8MWey1oRuw6ucopQJaAY/qBm4q4M/NF+Nonjo
+         8+dy63Lddt2U7eGR+y9O3kNE756nz3xK9trps9mkFnDUF+wOzNp+O+XYx/ZQRIF0B8lj
+         mLidbHIp2GTOtvXrMt1WT1dj7glJvTr/9dUGIohbrea+Cf/ldNvCdLUy702Kb5oo4u5A
+         ExJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1787053333; x=1787658133;
+        d=1e100.net; s=20251104; t=1787053346; x=1787658146;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=3tMfNTzrnv95v9YWomQJOjZXq4ObY0ENOn5OxxBG6Ow=;
-        b=rXNcHDwUcsVtOaf67koe2X8Jnqhd9wawJyd/yrhqSL3uZeMVP7S5g8XdfAryaO95rV
-         dha2D/q2sWV+w63kv7yCJNQoTMFZ2DtcEDWwKUs6q1RRlcBHoH57ueGQcoaPtaqwMcFK
-         REvVz3WtFrPFZiN7fXkfMcap6YYGlQaJhGKaFYUtndFDZgP2YEfdtliLAKQBJE8V0XPt
-         t7nYtEHOvi3Ur7t0ijjma9RMnfNBbRlvKae+cLznx1xPaNDTkKil14/dsJRUCoxA8jbx
-         txGH2xS57a/NmTZk4r6gjRhQw8X95ELfogszh0KGJIrLaxD4c+qJMO+Yf+YdQFNlfhvN
-         3xeg==
-X-Forwarded-Encrypted: i=1; AHgh+Ro+MGl5CIKovP4v8SjmlEPBoM8lju/tmO39zj78G6mcmxmOLZK2KeRp//RTIDdMp03Y6FLWnrJ0TlE=@lists.infradead.org
-X-Gm-Message-State: AOJu0YzgLiN8+KXPYhm3wicztAe7M3YfdUYlkJoOaUnE6lDq4wOslk+p
-	/9zkUE1Km5jAcMmvHXPZGC9BwhB+bmvh2bEW0QATQMkDy15dl1lEekqX
-X-Gm-Gg: AR+sD11sQVm2T5saHexBqi7BhJAox78P/qnTLgkaeEXm8RYwLYgI7OBRcMsLbG7ujqA
-	peMHJzFXo4S7q7onmXFUGeZs/4rj0UfKJuFHCl3MmlmSMBVBtB8Reu6r515uuFs7GgY5TF/Zeuf
-	j6eOOkM7DIdwG74hRniw2zEuMWADgLK6emsWKG3S8TOr16+OlYFr87T+/LOI9jVUHNY/x/d7rsl
-	1vN0s5ARZHNZ/QZ/MLd3JacrlnNd70j+oxC7Q1CaJGxkQFZULx5BJuc3hydEFjIW2jpUbV+JMr2
-	n6MRsZFMQz//6T6R03gCt2hI56v38AxALNDUu8HUx+JWZtIl6FX1KXpafshQFQXIih7csdEaEkV
-	UnWzNiW9g63lNhsTIufdZ8/eKJtSYoBkfoa3dceyId2kZ4Encw9gxUOXJ7VpUgwLkGs19p7zKKa
-	gSgL1nndvYjOc0b7tRUNWzVhty9Hi753jErf1lNFUvatc+uuVEe/q7kZUGXekJfA/yOLsxMf91z
-	d0K
-X-Received: by 2002:a05:600d:8489:20b0:499:8b13:3a98 with SMTP id 5b1f17b1804b1-4998b133b3dmr329338725e9.4.1787053332437;
-        Tue, 18 Aug 2026 04:42:12 -0700 (PDT)
+        bh=C0Lkar/FZUF71jSh3gVWEuj9Qdc3ucoRXfitsWLZ7XY=;
+        b=fLVqulxuitdFbi7WZhZuap5ctDjrTno/oUtUxnNsTM6ghH+dov7Hs+sCFV7eGUXEkS
+         VqKK464bhmRoaiU3Nx47hjh1GROpBbgUSdqJc9ajq6+yrIzDzpdSODRPULSRCvHBthPa
+         jHMEp7WDwYLXYeN3AhksxMb4pCNqDF9C7/6d9GhMlt1/d2aXnJg2s5tzwlRagni6S4CJ
+         ZyLD5Vq+IR3SgtpLiYnAg1kOUloz7mCG/ac1GUmA5XYEzipKMWCmaCQUIMDBQ49twJkC
+         Cwm8t5nVvPQGewx6RWY1Wt8maXVBewf1u4DKUyy0x/zZMyclgc5vhuqUBZrOF3+71GIV
+         xdqQ==
+X-Forwarded-Encrypted: i=1; AHgh+RohVicT6IInSu8QUhehvwqF+WHLfP8ZHYJDp0bnQJPORIhphsG3fh+PfNd8le7tskmwHtnFWnd8vas=@lists.infradead.org
+X-Gm-Message-State: AOJu0YwQB2Gj2LSp0etX9pGoZU04GQyVpnbkQHd6s6N2xOTJYCSEUyoU
+	Sf9e9/HjBkpvaHPaRlWXtK8jbW5qobCZnkov+g9HFeUJR/ptnhT8LLdF
+X-Gm-Gg: AR+sD12MQVrnzjQwG606UlWvMi5vGNsvpKeqTu2P4m/Xl1sPoY6z5MCkKJ7LPpIhOmT
+	4LmbqiSNOk+vg+v/Le9wdwRjJshq2AGTjTO/OZymJHD8UwFV9h06o47Jy1F2obiD1YdtlSgW/3t
+	+BVLB5YQ9NaHqHGxB2rQ0CK4TM3jo6OQrQc7O3pzStTVjAx5V2zqu3NZGLZZQLZ+mx8t6rszVyq
+	AZE3kWS6omTnLIjDjB/oJh1lA+kDIC9PE8W5gwIGFWQl2VceoFWtKk5pGw2y3Lz/SMIj05y0CZu
+	/x7b3NPTYBhzayiCAKNi604cA0bY6Xo6RBTh76uP3AmTxC8nn42URnFX5PNTt9Y/G3WQtjCACy6
+	pA4L9ksR5bgEcV2dE5ol7WJ03y/fR4aZVdMXDo9RY9djcizfFcpM5ov5UHXLP1go+n9uwHd65oX
+	lREuJiLG8m9N82NDRjsZrRZq2Oc4LJAl8qPFD1YBGjzwzMjQbHx/S8mVlUSBCsevKDWg==
+X-Received: by 2002:a05:6000:290e:b0:47f:776f:3838 with SMTP id ffacd0b85a97d-481606f682dmr48887208f8f.6.1787053331518;
+        Tue, 18 Aug 2026 04:42:11 -0700 (PDT)
 Received: from deb05.proceq.com ([213.160.61.66])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4998780397esm28680785e9.3.2026.08.18.04.42.11
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4998780397esm28680785e9.3.2026.08.18.04.42.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Tue, 18 Aug 2026 04:42:11 -0700 (PDT)
 From: Mehmet Fide <mehmet.fide@gmail.com>
@@ -80,17 +79,18 @@ Cc: Mehmet Fide <mehmet.fide@screeningeagle.com>,
 	Frieder Schrempf <frieder.schrempf@kontron.de>,
 	Edward Karpicz <webmaster@toradex.com>,
 	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] mtd: rawnand: vf610_nfc: fix false bitflips on reads of erased pages
-Date: Tue, 18 Aug 2026 13:42:08 +0200
-Message-ID: <20260818114208.2780311-3-mehmet.fide@gmail.com>
+	linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: [PATCH 1/2] mtd: rawnand: vf610_nfc: fix reads on chips with more than 64 bytes of OOB
+Date: Tue, 18 Aug 2026 13:42:07 +0200
+Message-ID: <20260818114208.2780311-2-mehmet.fide@gmail.com>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260818114208.2780311-1-mehmet.fide@gmail.com>
 References: <20260818114208.2780311-1-mehmet.fide@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260818_044215_020472_18DE63BA 
-X-CRM114-Status: GOOD (  20.16  )
+X-CRM114-CacheID: sfid-20260818_044228_183124_EA671333 
+X-CRM114-Status: GOOD (  18.38  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -109,73 +109,61 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Mehmet Fide <mehmet.fide@screeningeagle.com>
 
-When the ECC engine fails to decode a page, the driver re-reads the OOB
-area with the engine bypassed, but runs the erased-page check for the
-data area on the buffer left in the controller SRAM by the failed
-transfer.
+The driver only implements the 64-byte OOB layout, so attach_chip()
+shrinks mtd->oobsize when the chip provides more. That clamp does not
+survive: nand_scan_tail() runs nanddev_init() after ->attach_chip(), and
+it restores mtd->oobsize from the memory organization, which still holds
+the value detected from the chip.
 
-That buffer does not hold what is on the flash: the failing engine
-writes a bogus single-bit "correction" into it. In the 60-byte ECC mode
-the all-0xff content of an erased page always decodes to the same error
-location, so every erased page shows one stale zero bit at data offset
-0x5FD, which the erased-page check then reports as a corrected bitflip.
+The driver therefore transfers writesize + the chip's full OOB size, so
+the hardware ECC parity ends up at a different offset than the layout the
+controller was set up for, and every ECC-protected read fails with
+-EBADMSG.
 
-Edward Karpicz discovered this behaviour and identified the offset on a
-Colibri VF61; the analysis and the fix build on his finding. Measured
-with an instrumented driver on a Colibri VF50 (MX30LF1G18AC, 32-bit
-ECC): reading a 126 MiB partition with nanddump increased the corrected
-counter by 18035, exactly one per erased page, while raw reads of the
-same pages return clean 0xff. A v4.4 kernel on the VF61 (MX30LF4G28AC)
-accumulates the same false counts, so the behaviour follows the
-controller rather than the chip or the driver generation. Neither the
-Vybrid reference manual nor the published mask set errata (VFXXX_2N02G)
-document it. The 45-byte ECC mode is not affected.
+Measured on a Colibri VF61 (MX30LF4G28AC, 2048-byte pages, 112 bytes of
+OOB): with the clamp lost, UBI cannot read the erase counter headers of
+the pages U-Boot has just written, and the on-flash bad block table
+written by an older kernel reads back with ECC errors, so the board does
+not boot. Kernels before commit a7ab085d7c16 ("mtd: rawnand: Initialize
+the nand_device object") are not affected because nothing overwrote the
+clamp there, which is why the same chip works with a v4.4 kernel and
+with U-Boot, whose copy of this driver has no memory organization to
+restore the value from. Edward Karpicz reported that the clamp no longer
+takes effect on this chip; see the link below.
 
-Restoring the known byte is not enough: on pages that fail to decode
-with content other than all-0xff the engine writes its correction
-wherever the syndrome points (measured at a different offset on such a
-page), so the check has to run on what the flash holds. Re-read the data
-area with the ECC engine bypassed, exactly as already done for the OOB
-area. The corrected counter then stays at zero on both boards.
+Clamp the memory organization as well so the driver's 64-byte layout
+stays in effect, and log the truncation once, as it decides which
+on-flash layout the system uses.
 
 Reported-by: Edward Karpicz <webmaster@toradex.com>
 Link: https://community.toradex.com/t/colibri-vf50-vf61-on-the-current-bsp-mainline-u-boot-v2026-07-and-linux-6-18-lts/30735
+Fixes: a7ab085d7c16 ("mtd: rawnand: Initialize the nand_device object")
+Cc: stable@vger.kernel.org
 Signed-off-by: Mehmet Fide <mehmet.fide@screeningeagle.com>
 ---
- drivers/mtd/nand/raw/vf610_nfc.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ drivers/mtd/nand/raw/vf610_nfc.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/nand/raw/vf610_nfc.c b/drivers/mtd/nand/raw/vf610_nfc.c
-index f27ef2b0884d..d41750a4352c 100644
+index 9940681810cf..f27ef2b0884d 100644
 --- a/drivers/mtd/nand/raw/vf610_nfc.c
 +++ b/drivers/mtd/nand/raw/vf610_nfc.c
-@@ -514,6 +514,7 @@ static inline int vf610_nfc_correct_data(struct nand_chip *chip, uint8_t *dat,
- 	u8 ecc_status;
- 	u8 ecc_count;
- 	int flips_threshold = nfc->chip.ecc.strength / 2;
-+	int ret;
+@@ -771,8 +771,14 @@ static int vf610_nfc_attach_chip(struct nand_chip *chip)
+ 	}
  
- 	ecc_status = vf610_nfc_read(nfc, ecc_status_off) & 0xff;
- 	ecc_count = ecc_status & ECC_STATUS_ERR_COUNT;
-@@ -521,9 +522,17 @@ static inline int vf610_nfc_correct_data(struct nand_chip *chip, uint8_t *dat,
- 	if (!(ecc_status & ECC_STATUS_MASK))
- 		return ecc_count;
+ 	/* Only 64 byte ECC layouts known */
+-	if (mtd->oobsize > 64)
++	if (mtd->oobsize > 64) {
++		dev_info(nfc->dev,
++			 "using 64 of %d OOB bytes, ECC layout is unchanged\n",
++			 mtd->oobsize);
+ 		mtd->oobsize = 64;
++		/* nand_scan_tail() restores mtd->oobsize from the memorg */
++		nanddev_get_memorg(&chip->base)->oobsize = 64;
++	}
  
-+	/*
-+	 * The failed decode leaves a bogus "correction" in the SRAM buffer,
-+	 * so re-read the data without ECC too, as already done for the OOB.
-+	 */
- 	nfc->data_access = true;
--	nand_read_oob_op(&nfc->chip, page, 0, oob, mtd->oobsize);
-+	ret = nand_read_page_op(&nfc->chip, page, 0, dat, nfc->chip.ecc.size);
-+	if (!ret)
-+		ret = nand_read_oob_op(&nfc->chip, page, 0, oob, mtd->oobsize);
- 	nfc->data_access = false;
-+	if (ret)
-+		return ret;
- 
- 	/*
- 	 * On an erased page, bit count (including OOB) should be zero or
+ 	/* Use default large page ECC layout defined in NAND core */
+ 	mtd_set_ooblayout(mtd, nand_get_large_page_ooblayout());
 -- 
 2.54.0
 
