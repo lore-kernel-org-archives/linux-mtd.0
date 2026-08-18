@@ -4,95 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83144C5DF7D
-	for <linux-mtd@archiver.kernel.org>; Tue, 18 Aug 2026 10:49:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42CCBC5DF7D
+	for <linux-mtd@archiver.kernel.org>; Tue, 18 Aug 2026 11:42:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=hoct9LHYVBvunUthaaSR5cx5/nIS8aq+Pe54rO9lRho=; b=Pojj/KME6RYrdA
-	vb9Zh5bQLYI07RagjdWSr2a6sQXzNp83byXgUrZbSqYMgTdSRDxE70zlkFbxCAcvYxGkp9JvpGceB
-	5z1sChQuOhdV80c4r/N1GnPMUNoMZhEywjAOxRnmgrbNDvYYEd7eOeIcVOJovVOX1RhKkNih4Zfll
-	C4KGn+b7nS6DeRrb/tN/cKWVgPHYK6ySbk0rbGU+l6qWoj7HE2L545/pH2qGYx4ne1M+SU7I4nJIz
-	OPBbregs6d7R4EhFmss8krn+wFUi6eI1YjfEKMHmlLKq9nVLyGPp/BfHKLreLqFz+JD1qHbCDdAog
-	Lv0MPmqPhoh9laJJxlCA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=Hj5niq18K0S8Y6ag6cjxDDnOw85/80F76dgoCF2ZpVs=; b=I/jSghQC9q9niF
+	w8R4Z3N7RZylTq+bmoWNvYPpA8t0AC7SWiILi1YeRlam188IO5wV0DUnWG5E+kLOj3Duspc4SRJmf
+	AOFVEGakPZBBJMPicz0f2zkD49vp54zAVJN98/XQaTQ2Ey3C8dM245YQfBxOfaFxMATAtDZQrQ5Qk
+	IB7DPaoD1RKlreeW7b9fEWKlNKg2+yNBW7/+GFJTtbvzkvJl6SlrKow9D4qRsc5YggNrSLgw5h8Dd
+	6dURRcZol30rCW8Mms7FktGHTq3BzlSEsjOWki0Uz8KdTwT0Voi1EWyr0tK9woK/UVd+CFpn7CYGM
+	CWJd2T7MDRJpa1DIu8jQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wwHNr-00000007mpW-0bq4;
-	Tue, 18 Aug 2026 10:49:31 +0000
-Received: from mail-pj1-x1034.google.com ([2607:f8b0:4864:20::1034])
+	id 1wwICu-00000007rj0-0fSa;
+	Tue, 18 Aug 2026 11:42:16 +0000
+Received: from mail-wm1-x32a.google.com ([2a00:1450:4864:20::32a])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wwHNn-00000007mp0-3Vu5
+	id 1wwICr-00000007riO-1P5G
 	for linux-mtd@lists.infradead.org;
-	Tue, 18 Aug 2026 10:49:29 +0000
-Received: by mail-pj1-x1034.google.com with SMTP id 98e67ed59e1d1-38125cebfdaso6455923a91.1
-        for <linux-mtd@lists.infradead.org>; Tue, 18 Aug 2026 03:49:27 -0700 (PDT)
+	Tue, 18 Aug 2026 11:42:14 +0000
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-4954d29264cso22749275e9.2
+        for <linux-mtd@lists.infradead.org>; Tue, 18 Aug 2026 04:42:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=personaltelco-net.20251104.gappssmtp.com; s=20251104; t=1787050167; x=1787654967; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=5KNbePICYaBlGAnqPiRhGNA1nIoFAhNae06i5DJPQgU=;
-        b=A+DG4qL9DNUf31ivJWEbKjCEMV1fxCidmpyKKQmMe4oDPSwIOdG19dvZaVEWiC5IG9
-         IzWdhLVpFryGsWob9zNCVgc6GJH7Q9D6Ug3n89+zJn8X7h7zeBvWRYMbMPYexi37hR7A
-         MvVFfVQgAqn42JTWmUfPSh2IVMShnCuq0AD7BCzPxw/kH7wTUHGkGIWviVNdE42e7iqv
-         oZ4VBMidITC2M2FHSQP/MnUrUpclMT+aWWGLZYZVMcv8tMrr3oFSR17KUfMxvdsJWa8t
-         J1Yo/mxXorm54dLyBatRMZotfP4nDmxCcMs7UdLoduHa39922/Z5yIkt0z3F4yKyq7sy
-         sXHg==
+        d=gmail.com; s=20251104; t=1787053331; x=1787658131; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=fpOCTRUPBCSHF1oBT87WmDv+DZlXUVAuN1PJVFdEcnk=;
+        b=qlFXKKHsdXwMYo+9rixj4iRIGT6AGtrjkb2DKg+tJJsPibd3oDNQwGBFM+vLAOGUcf
+         P4cov4HDA1nM3+a/yXD1gO6y8ImlqnxRbtOyOh+0m5a1wit9pMBbBiMLy4wDsP2B0OM1
+         To+fnECHw7WUkl78WJKe8ntyri+ofekUwiuQAjhfzTQJ3zq8FckV8LjX7GlyqYsLJLBg
+         ZzEDuwKIaN60ROfrdixdmOgk9jXQIYDVr3iJl2jih4uRoujId+f2xsE+RD4FY+31J9zI
+         Rvdxj3MW4vstv/pznBE7zCosVPiZbwnu25UvzpADh+ErEmtzTN9fGpi7fyOrLgEKMnD1
+         bxEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1787050167; x=1787654967;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=5KNbePICYaBlGAnqPiRhGNA1nIoFAhNae06i5DJPQgU=;
-        b=sD4/45RH+nbWBoVTBnw3g1/ATxYIgAsiygTOFeC27XUSJaileDRLjCLRsGfhC0aSOI
-         ArF59vBAwGJwrEsHo3M2L6hQY0yezC+rzM5RFJH3xLWfrqTbG8GyqzvpysLvZgmrJ64z
-         Xlr8mHBc0qcBc0Gial6VTX20a/GSLhKBri1iIUr3R3EeEZ2bcIPHxqplh28Be1TO/rE9
-         u4FnBHkKbByF0CtYJcPnYsP76Z+uwLLcof07qbDQXrIW8z8VoQNaJYTtaTZYTKNPNrru
-         8l29FAZd2kZNOq8g/ZJAsC9chi4WqLz7MVJC9Ov4PqfQDnu+Y5LMMhMnlv7XvH4l6Zpq
-         W8QQ==
-X-Forwarded-Encrypted: i=1; AHgh+Rr8+J2HZA8PBWca7VjTW6IS76UvLCgEbantPfQFVreSm52ymvf11oClYqFvy9U++keBg1X+RHzhxJM=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yzn0Uzm6wzpbjGD7tTurrWTo/qkL6z0o/9Mgx/NLIDE3VRNonkw
-	74yA7qTKrFONLHD6G+NXJLOdlQDyYnYqzOnBZwf/D8g33hyVvmoPzyn55YROoOoNkQ==
-X-Gm-Gg: AR+sD10VBNh6YfisjRxw2xEDd/h1ZImetQoS2zRD5iZOpbanq36Mqccao24Ia+kzn0G
-	zDAf52FekD4st/g/7nC7LZqnIdaN6B2D9tFj/F9f8eU8VCw15grJGFCXWCuzpDY9IRIfnqED+jd
-	6e9jv2edFMuMyBTVD6dUvwnr5hz8yTLp43Z35+jlsaPXlh4VcrRWIN7PfHiBf4qb0Vdq6oKDMyl
-	wYqHTZ9BYvDA9i0hSMgBDRtPd9SMJJ3zlcsj3+z2JPkD0pgB+Cu80GKtQnRYjqcHOHAzKFl21Ho
-	2euYlz/SfvyW7raOue/Gz71tiIdwxZcaXwycnB5Jmf9TNAN9YHojyoStsY3pg7qkMsqU1LD5zq8
-	VN0lNgkLJBN+Wq9Vom6qcG7pksbMd0GzvqekrY40UH7hcHTkyNR1R/9TppjeU1TNqpiO0wi4U0J
-	OVQx9ZO6VTyc1mZR75DmgYgIz+g05wj6Nlhtg7v1zarcEZI+HYCncuRK9a0GqhIf9ogQFp/75jy
-	PbV5Rx80ULXxVwbB3CD5/BliTwbxWSf6Y6l9cgU1zAS8VpWNpGzUmQ=
-X-Received: by 2002:a17:90b:4405:b0:381:792d:f993 with SMTP id 98e67ed59e1d1-3933b8c4cf1mr29967767a91.17.1787050166522;
-        Tue, 18 Aug 2026 03:49:26 -0700 (PDT)
-Received: from hawg.ptp ([2602:3f:e4ac:bf01:3162:4332:e1bf:a4c2])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-39531e8418bsm8427768a91.7.2026.08.18.03.49.25
+        d=1e100.net; s=20251104; t=1787053331; x=1787658131;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=fpOCTRUPBCSHF1oBT87WmDv+DZlXUVAuN1PJVFdEcnk=;
+        b=ChF7WzJ1pOEaZFYDgsGffZAkduDlGOAqe2AYQx/GH9MXJdkCLz++OqPJ7SoU9Tft+p
+         YLy7GQ/tcvlgb1AeSXaGDV+BghwqmHudoRbiYGHkP7TExA5SDiCfUCef+uPsCaNu/PyS
+         qMzRwCTcOoA4uEMWFlZNJo82ZkFnACoF1rzXcgzaBVctdWrH0BOOgVrfuxh/i404vcub
+         5mYRTr1ODDy8/aifr7PaCFa+qSLFmQtva1IpGRjr3FwUBWybLdJnDWradp584xCXGA+E
+         fU1bDeOs+v64MyxdLRtLYDAsUMQoa1oDJHdZCuFPQua1AyeRn/T7FTQAjP53FaRCJOlo
+         JyEA==
+X-Forwarded-Encrypted: i=1; AHgh+RrEuIXEdB/WCCJX5HfMwEpJ0B+r8ICuaCACBYYK3RwOE4qN7hRgPEgcir43EIIg+qR8ygPB+JwY6QM=@lists.infradead.org
+X-Gm-Message-State: AOJu0YwEsMnk2gfX96+LiLjsAHB51B6dCuzVRkcq27vKU6EsHNrPXLoj
+	G162TROv5dqqFfeCtKSwS/eWjP1V/mS1MzNu2uQfJxkezVgoTpSZtio3
+X-Gm-Gg: AR+sD12lgySzaaDJrGXqF8FEX1HAgaVXyxvBrfnULZJfZ0w6A8nwhTD0spJTBwbSpi4
+	P46SPXBLAlcfZva1fMj5CMW3jeSSSXDpQDf9owrkhKDLB00RpsycFkdxtx9DgVYWjKlu7ndQCG/
+	OoeioRykVt79QeVKLEAVV52ditfBt4ugojY/5CFpKGDMK0fO7pZZnmZcCRwut3c2Fbxh7/yX1Kv
+	OmH4hMiGNbhOebYzqSpNHhlB3lU7ZFbzG9UZ0kr6TgU1VoTc3kdIrbynzN5eFkyrqzE3yDL253o
+	5QwSKTorgoyBdX7agyMfY4SnQCPA1jjl++L3CjxVwOUi8Gbno+V1pSADNbN1ZCUUthZmKtVOxyC
+	FCanufR7PIkqTv2Shw/cV89nwNZpR3y+8/Y/NHBhrVn1Yf3V3rd/FJowd+PalQH6K0HEvxVBY7j
+	4BbXdwMhBJIuYWPchObOhqG4ozzZG1TM8Pii3cgC1DOUiH/3kG3ntwjJ1BDLuKQhURMA==
+X-Received: by 2002:a05:600c:46cf:b0:499:8807:345f with SMTP id 5b1f17b1804b1-4999fb8a0f0mr110873035e9.13.1787053330565;
+        Tue, 18 Aug 2026 04:42:10 -0700 (PDT)
+Received: from deb05.proceq.com ([213.160.61.66])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4998780397esm28680785e9.3.2026.08.18.04.42.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Aug 2026 03:49:25 -0700 (PDT)
-From: Russell Senior <russell@personaltelco.net>
-To: linchengming884@gmail.com
-Cc: alvinzhou@mxic.com.tw,
-	chengminglin@mxic.com.tw,
-	linux-kernel@vger.kernel.org,
+        Tue, 18 Aug 2026 04:42:09 -0700 (PDT)
+From: Mehmet Fide <mehmet.fide@gmail.com>
+To: Stefan Agner <stefan@agner.ch>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Mehmet Fide <mehmet.fide@screeningeagle.com>,
+	Boris Brezillon <bbrezillon@kernel.org>,
+	Frieder Schrempf <frieder.schrempf@kontron.de>,
+	Edward Karpicz <webmaster@toradex.com>,
 	linux-mtd@lists.infradead.org,
-	miquel.raynal@bootlin.com,
-	mwalle@kernel.org,
-	pratyush@kernel.org,
-	richard@nod.at,
-	takahiro.kuwano@infineon.com,
-	vigneshr@ti.com,
-	Russell Senior <russell@personaltelco.net>
-Subject: [PATCH v3 0/2] mtd: spi-nor: macronix: Add support for MX25L12833F and MX25L12845G
-Date: Tue, 18 Aug 2026 03:48:27 -0700
-Message-ID: <20260818104827.1869620-1-russell@personaltelco.net>
-X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20260605084837.1875896-1-linchengming884@gmail.com>
-References: <20260605084837.1875896-1-linchengming884@gmail.com>
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] mtd: rawnand: vf610_nfc: two fixes for chips with large OOB and for erased pages
+Date: Tue, 18 Aug 2026 13:42:06 +0200
+Message-ID: <20260818114208.2780311-1-mehmet.fide@gmail.com>
+X-Mailer: git-send-email 2.54.0
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260818_034928_123600_B7BF4BC3 
-X-CRM114-Status: GOOD (  10.32  )
+X-CRM114-CacheID: sfid-20260818_044213_392692_331A71F7 
+X-CRM114-Status: GOOD (  21.45  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -109,16 +103,73 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-I noticed a few days ago that a Buffalo WZR600DHP running OpenWrt
-started boot looping.
+From: Mehmet Fide <mehmet.fide@screeningeagle.com>
 
-I traced the problem to the transition from a v6.12.x kernel to a
-v6.18.x kernel, and from there, noticed the change in the mx25l128
-support. After reporting the regression, I was directed to this patch
-series and just tested it on top of the master branch of OpenWrt,
-with linux kernel 6.18.44, and the boot looping problem is resolved.
+Two independent fixes for the Vybrid NAND flash controller, both found
+while bringing a Colibri VF61 up on mainline and both verified on
+hardware.
 
-Tested-by: Russell Senior <russell@personaltelco.net>
+Patch 1 is a regression. The driver clamps mtd->oobsize to the 64 bytes
+its ECC layout uses, but since commit a7ab085d7c16 ("mtd: rawnand:
+Initialize the nand_device object") nand_scan_tail() restores the value
+from the memory organization right after ->attach_chip(), so the clamp
+is silently lost. On a chip with more than 64 bytes of OOB every
+ECC-protected read then fails and the board does not boot. Clamping the
+memory organization as well is what the rest of the tree does when a
+driver has to change the OOB size (nand_samsung.c, nand_onfi.c,
+nand_jedec.c and denali.c all write memorg->oobsize); mpc5121_nfc.c
+touches mtd->oobsize directly but does so before nand_scan(), so it is
+not affected.
+
+Doing this in ->attach_chip() is deliberate: the chip really does have
+112 spare bytes, it is this controller that can only use 64, and
+->attach_chip() is where a controller adapts to the detected chip. The
+patch also touches the memory organization because nanddev_init(), which
+runs later in nand_scan_tail(), re-derives mtd->{erasesize, writesize,
+writebufsize, oobsize, size} from it, so an adjustment made only in mtd
+does not survive. If you would rather have the core preserve what
+->attach_chip() set up, or a dedicated way for a driver to declare that
+it uses fewer OOB bytes than the chip provides, I am happy to respin; I
+went with the minimal form because this is a regression fix that should
+be backportable.
+
+Patch 2 makes the erased-page check look at the flash instead of at the
+controller buffer. When the ECC engine fails to decode a page it leaves
+a bogus single-bit "correction" in that buffer, which the check counts
+as a real bitflip; on the 60-byte ECC mode every erased page is
+reported with one corrected bitflip, which renders the MTD statistics
+useless for flash health monitoring.
+
+Testing, all booting from NAND on an Iris carrier with Linux 6.18.44 and
+U-Boot 2026.07:
+
+  0010 Colibri VF50 128MB V1.2A     Macronix MX30LF1G08AA, 64-byte OOB
+  0013 Colibri VF50 128MB IT V1.2B  Macronix MX30LF1G18AC, 64-byte OOB
+  0012 Colibri VF61 256MB IT V1.2B  Macronix MX30LF4G28AC, 112-byte OOB
+
+Without patch 1 the VF61 cannot attach UBI at all. With the series all
+three boot, mtd oobsize stays 64, the bad block table written by an
+older kernel reads back without ECC errors and the corrected-bitflip
+counter stays at zero over a full-partition nanddump. The clamp only
+triggers on the VF61 chip, so both patches are a no-op on the two VF50
+revisions, which is what I wanted to confirm before sending them.
+
+The credit for spotting both problems goes to Edward Karpicz, who
+reported them on the Toradex community forum.
+
+Mehmet Fide (2):
+  mtd: rawnand: vf610_nfc: fix reads on chips with more than 64 bytes of
+    OOB
+  mtd: rawnand: vf610_nfc: fix false bitflips on reads of erased pages
+
+ drivers/mtd/nand/raw/vf610_nfc.c | 19 +++++++++++++++++--
+ 1 file changed, 17 insertions(+), 2 deletions(-)
+
+
+base-commit: 15a3cbce32994141252bb4ecfe3ff3a5d22d0b4f
+-- 
+2.54.0
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
