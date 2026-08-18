@@ -4,94 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7DB0EC5DF67
-	for <linux-mtd@archiver.kernel.org>; Tue, 18 Aug 2026 05:29:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2FF3FC5DF70
+	for <linux-mtd@archiver.kernel.org>; Tue, 18 Aug 2026 06:44:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:To:From:Cc:
+	Subject:Message-Id:Date:Mime-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=cfkQi8mAQjdLksjLnaML+7WoIeJO+5hyro/ecgijNTw=; b=EHETGn9Xi7ris2
-	HXSA+51tbhYukGdrh1oU2l3CUC4immKSO3q0Ky2cHbY57xvmo7PBndpI6jUBkLEwrcnVPolsnX6DU
-	BYjye5Q53ro0cQyBrYCtDDzPK45ODJDKIPkPaM3pLG/l6Evq/op36/eFIg4rUClcBYRSkRVccIyJl
-	rtI4nmq2ASH7/gNibMdl4q4bF8sMFB5A2OafmPGgIRV+jmJAAuUbj+OCprVa3hmpZAt126lS//6lz
-	fvcUjecEEy2qQA4MzFrDpOWnb9SNUYw5Hum/6cn83+PjxHJOf/ItHCM+6vJNqKYcaHYMcNPxgHX0h
-	b9veTAHvlbuNE0dZZFBw==;
+	List-Owner; bh=BfmNeyjLbL/byFg8x3ZzbjFkivWaoNS+XzfdwbJRrd4=; b=IJpeAeX3lD8GVg
+	8lQgHS5lQdHoZ/gF2Kmz0ulvOYqWdeMYAttpdHls2RHEk1yUFmiq76iEN4TX0whk+BFgM2pLMtEHb
+	XgRf9g9+ZZriHCZqACL4sIS8OPpICPN0uQMKm4XziiZ6cedDtns1RfVhRTOpMgU8+D1+rYW/jsil9
+	Pp+/b5nPtAdECfNlbKF5GZNKuPOzsO8wICBdN1d6CADMfFppx8i+fx+pUvlzdabYYdcmfdAKWwofc
+	o19e0dgZe+ABS2yz0eDhK51q5JrThrX2uu1bp0nsd0cMyAhrvkDmOMyFaEq2jqxFjeP3Xvseb1Pvn
+	LQcCszTGNHWpxQ6ALx3g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wwCO9-00000007LZ8-2YyF;
-	Tue, 18 Aug 2026 05:29:29 +0000
-Received: from mail-pj1-x102f.google.com ([2607:f8b0:4864:20::102f])
+	id 1wwDYU-00000007Q1G-0j1e;
+	Tue, 18 Aug 2026 06:44:14 +0000
+Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wwCO7-00000007LYg-0ZeE
+	id 1wwDYP-00000007Q08-0gIj
 	for linux-mtd@lists.infradead.org;
-	Tue, 18 Aug 2026 05:29:28 +0000
-Received: by mail-pj1-x102f.google.com with SMTP id 98e67ed59e1d1-38e3efab7e0so534690a91.0
-        for <linux-mtd@lists.infradead.org>; Mon, 17 Aug 2026 22:29:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1787030966; x=1787635766; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=gwo7izKlDdLv61ZfO6XjTuwjicNuk/bFE3AW2yim+4M=;
-        b=KZob5ar/e0qdmT164xW/ixu0hA6+v7KUCYUmR32As0w7TWcv4iCwF7tXMVvfCjfbv7
-         59LwwXuaOj3MraBF83AHsfRGWwpitT7eyXI+HSKgvF3Y7sNM9eat3djHUhjempwTZrd0
-         su9soW3R9luDqB0b96A/T3VQVXT+vL126WIsPtC2kq818EuUTN2V/i01r7Bfo6HFi1Dz
-         L3GmmPF7VqC1kDUWL68OqAexZpYg2HVLV5aX400XRh1LycPHI3aDOWmswDBS8MqQR7sb
-         7VKNlWhL7ahfnjaUFy1fj8Rjz1C45cjo11g4gKBL8dog55eyyRbXAgWiZYdtBH6b3Zon
-         XqUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1787030966; x=1787635766;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=gwo7izKlDdLv61ZfO6XjTuwjicNuk/bFE3AW2yim+4M=;
-        b=Q9jKxcvFCaues/iroDVKGpoUmm7a5wr8WMYKb1dt27bp96W97zztH61rsUQpSem35U
-         R4NqO0JX5wbGVWDBxKRtD0pDxGkfCkahbBs87kuO3C+ET9qA3iK3u4SlmEp5R0/2+Ii6
-         8VDHHIjE9NDPzKclD5UgSxWWJAx83Trcld+KUOPx2TYiLx6m5CJziY4iSR4sLMEoILqA
-         buwyXRurQW6JJELU2+ffPh/ybR7qpm8aERs8M0DeOpLVHKApGTJw2VRAVxojieU4wure
-         UERtyFxfxMSnAA8ckTlxTdyLaxxOb/riJ7AdbZkJvgJiZmMyNeIzJM22mdm+5vDfmmgG
-         ZPzQ==
-X-Gm-Message-State: AOJu0YyVYYbf/Z2e0VTx7skq7JxyKLeqK4k+I8nqJL6FVcp6X5hje2FJ
-	xCLtQg9BjtGPfXpklUJHSho8btUYQTVyTmEJQ+dCV+UTTW/XaRADglp9
-X-Gm-Gg: AR+sD13xQwgPyTpqDgtzECSf2rtUL0MppRec3EpOqMhmfOmJj2zwRw308/K6C6Q3Fe9
-	95x8xFONuhJRm/wAWh56UEpNXGX/Upo7lr2CXdikL21lZz08kF7Dg4gJTknnkIjfz6T/341dh2B
-	3rBFdDnRTTjEpfhV8uLPqrnoiyn+DN0aFp6sYgB3jRkqOLZAjZjsYlp4fFpK0wW1ed0+ZIXPy0I
-	DbqFuuZKqCTCn9avvx0QhUoBN5eFghMdTeyqEqcjI7lS5HaDMH19r1DQGo67ihDjjwOXsHJCF9w
-	O6rogH2BUeKq3vMzNiFTULRCdSkA/syGnhHIxFPkihQH93TrnawNjbcgXwtYDbGeKmc4P9sjfNr
-	TUw2FjR5MR0/FnhOJ2WebXT0xoxKzOux2lzR/pgpVDeMz+hx9NacAHWWbr2ZZu27ggSUyOGKBzg
-	38EZvEtsjk++ZNvbqgGRrdPVYgexgxBnAjuJ/IHpKjPcznIP7T/0k7KYbstdAnqJRu1e3qq0N0F
-	7TDATUrLA==
-X-Received: by 2002:a17:90b:51c4:b0:38e:7297:a92e with SMTP id 98e67ed59e1d1-395638cbd63mr2766728a91.9.1787030965696;
-        Mon, 17 Aug 2026 22:29:25 -0700 (PDT)
-Received: from twhmp6px (mxsmtp211.mxic.com.tw. [211.75.127.162])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-39532026f7esm7386651a91.16.2026.08.17.22.29.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Aug 2026 22:29:25 -0700 (PDT)
-From: Cheng Ming Lin <linchengming884@gmail.com>
-X-Google-Original-From: Cheng Ming Lin <chengminglin@mxic.com.tw>
-Received: from hqs-appsw-a2o.mp600.macronix.com (unknown [172.17.236.67])
-	by twhmp6px (Postfix) with ESMTPS id 34ECC4163B73;
-	Tue, 18 Aug 2026 13:29:23 +0800 (CST)
-To: Russell Senior <russell@personaltelco.net>
-Cc: linux-mtd@lists.infradead.org,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <mwalle@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Takahiro Kuwano <takahiro.kuwano@infineon.com>
-Subject: Re: Regression: mx25l12845e stops working on my device after commit 947c86e481a
-Date: Tue, 18 Aug 2026 13:29:16 +0800
-Message-Id: <20260818052916.135931-1-chengminglin@mxic.com.tw>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <CAHP3WfMMK8GU3jpwxv4=C=Pc_9H4ZkmqAJqxZ0gN_rYqPDU3XQ@mail.gmail.com>
+	Tue, 18 Aug 2026 06:44:10 +0000
+Received: from localhost (unknown [IPv6:2a02:810b:4320:1000:4685:ff:fe12:5967])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.3ffe.de (Postfix) with ESMTPSA id 16D49103;
+	Tue, 18 Aug 2026 08:43:56 +0200 (CEST)
+Mime-Version: 1.0
+Date: Tue, 18 Aug 2026 08:43:55 +0200
+Message-Id: <DKRV6XPSSU73.1VF5FG13NPGWE@kernel.org>
+Subject: Re: Regression: mx25l12845e stops working on my device after commit
+ 947c86e481a
+Cc: "Pratyush Yadav" <pratyush@kernel.org>, "Michael Walle"
+ <mwalle@kernel.org>, "Takahiro Kuwano" <takahiro.kuwano@infineon.com>,
+ "Miquel Raynal" <miquel.raynal@bootlin.com>, "Richard Weinberger"
+ <richard@nod.at>, "Vignesh Raghavendra" <vigneshr@ti.com>,
+ <linux-mtd@lists.infradead.org>, "Cheng Ming Lin"
+ <linchengming884@gmail.com>, <linux-kernel@vger.kernel.org>
+From: "Michael Walle" <mwalle@kernel.org>
+To: "Russell Senior" <russell@personaltelco.net>
+X-Mailer: aerc 0.20.0
 References: <CAHP3WfMMK8GU3jpwxv4=C=Pc_9H4ZkmqAJqxZ0gN_rYqPDU3XQ@mail.gmail.com>
-MIME-Version: 1.0
+In-Reply-To: <CAHP3WfMMK8GU3jpwxv4=C=Pc_9H4ZkmqAJqxZ0gN_rYqPDU3XQ@mail.gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260817_222927_183271_F17F18B5 
-X-CRM114-Status: GOOD (  12.61  )
+X-CRM114-CacheID: sfid-20260817_234409_350101_43B3FB11 
+X-CRM114-Status: GOOD (  31.16  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -110,49 +70,110 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Hi Russell,
 
-Thanks for the report, and for narrowing it down to that commit.
+Thanks for testing and reporting! Did you know
 
-Some background on commit 947c86e481a0 ("mtd: spi-nor: macronix: Drop
-the redundant flash info fields"): it dropped .name/.size/.no_sfdp_flags
-from that entry, because from that point on all of those parameters are
-supposed to come from the flash's SFDP tables. spi_nor_needs_sfdp() keys
-off .size being zero:
+ ./scripts/get_maintainer.pl -f drivers/mtd/spi-nor/macronix.c
 
-  static inline bool spi_nor_needs_sfdp(const struct spi_nor *nor)
-  {
-          return !nor->info->size;
-  }
+That way you get all mail addresses of the maintainers you can add
+to your mail. Not everyone is subscribed to the mailinglist.
 
-so once .size is gone, SFDP parsing becomes mandatory and any failure is
-fatal (-EINVAL) instead of silently falling back to the legacy values.
-That is exactly the path you are hitting:
+On Sat Aug 15, 2026 at 12:48 PM CEST, Russell Senior wrote:
+> I am running OpenWrt (master branch) on a Buffalo WZR600DHP. This
+> particular instance has MX25L12845E SPI NOR chips (I have another
+> WZR600DHP with Winbond W25Q128BVFG, but haven't tested there, just to
+> say they don't all necessarily use the same flash).
 
-  spi-nor spi0.0: BFPT parsing failed. Please consider using
-  SPI_NOR_SKIP_SFDP when declaring the flash
-  spi-nor spi0.0: probe with driver spi-nor failed with error -22
+Did you actually look at the chip or do you just know because linux
+is printing the name? FWIW, the name linux is printing isn't always
+correct due to flash ID reuse. I'm just curious.
 
-MX25L12845E does have an SFDP table, so in principle the entry without
-.size should work. Please see the datasheet:
+> I just built a new firmware version last night, and it started
+> unhappily boot looping. The most recent previous build I had done was
+> from June. Boot looping messages look like this:
+>
+> [...]
+> [    0.752843] printk: legacy bootconsole [early0] disabled
+> [    0.778756] spi-nor spi0.0: supply vcc not found, using dummy regulator
+> [    0.785909] spi-nor spi0.0: BFPT parsing failed. Please consider
+> using SPI_NOR_SKIP_SFDP when declaring the flash
+> [    0.796238] spi-nor spi0.0: probe with driver spi-nor failed with error -22
+> [    0.804457] spi-nor spi0.1: supply vcc not found, using dummy regulator
+> [    0.824085] i2c_dev: i2c /dev entries driver
+> [    0.830852] NET: Registered PF_INET6 protocol family
+> [    0.872875] Segment Routing with IPv6
+> [    0.876671] In-situ OAM (IOAM) with IPv6
+> [    0.880798] NET: Registered PF_PACKET protocol family
+> [    0.886278] 8021q: 802.1Q VLAN Support v1.8
+> [    0.921429] clk: Disabling unused clocks
+> [    0.925661] check access for rdinit=/init failed: -2, ignoring
+> [    0.932181] MTD: Couldn't look up '': -22
+> [    0.936335] /dev/root: Can't open blockdev
+> [    0.940520] VFS: Cannot open root device "" or unknown-block(0,0): error -6
+> [    0.947472] Please append a correct "root=" boot option; here are
+> the available partitions:
+> [    0.955831] 1f00           16384 mtdblock0
+> [    0.955843]  (driver?)
+> [    0.962379] List of all bdev filesystems:
+> [    0.966374]  squashfs
+> [    0.966379]
+> [    0.970139] Kernel panic - not syncing: VFS: Unable to mount root
+> fs on unknown-block(0,0)
+> [    0.978392] Rebooting in 1 seconds..
+>
+> Between June and last night, OpenWrt had switched their kernel from a
+> 6.12.x to a 6.18.x, so I immediately suspected something in that
+> transition was the culprit and demonstrated that by building the last
+> commit before the change to the 6.18.x kernel, and it worked. Then
+> tested the commit of the change to the 6.18.x kernel and it
+> bootlooped.
+>
+> Then I started looking through the mtd changes between 6.12.x and
+> 6.18.x and spotted 947c86e481a.
+>
+>   commit 947c86e481a027ed5948434096e506f307bd7114
+>   Author: Cheng Ming Lin <chengminglin@mxic.com.tw>
+>   Date:   Mon Apr 7 15:53:58 2025 +0800
+>
+>       mtd: spi-nor: macronix: Drop the redundant flash info fields
+>
+> The following revert of just the part that affected my chip made the
+> bootloop vanish:
+>
+> diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
+> index e97f5cbd9aad2..3524ed08ff85d 100644
+> --- a/drivers/mtd/spi-nor/macronix.c
+> +++ b/drivers/mtd/spi-nor/macronix.c
+> @@ -132,7 +132,10 @@ static const struct flash_info macronix_nor_parts[] = {
+>         }, {
+>                 /* MX25L12805D */
+>                 .id = SNOR_ID(0xc2, 0x20, 0x18),
+> +               .name = "mx25l12805d",
+> +               .size = SZ_16M,
+>                 .flags = SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP,
+> +               .no_sfdp_flags = SECT_4K,
+>         }, {
+>                 /* MX25L25635E, MX25L25645G */
+>                 .id = SNOR_ID(0xc2, 0x20, 0x19),
 
-Link: https://www.mxic.com.tw/Lists/Datasheet/Attachments/8693/MX25L12845E,%203V,%20128Mb,%20v1.9.pdf
+Yeah, that commit removed the size assuming there will only be parts
+with SFDP for that ID.
 
-section "(33) Read SFDP Mode (RDSFDP)". It documents SFDP as per JEDEC
-JESD216 v1.0: signature "SFDP" (50444653h) at offset 00h, two parameter
-headers (the JEDEC Basic Flash Parameter Table, 9 DWORDs at PTP 30h, and
-a Macronix vendor table, 4 DWORDs at PTP 60h), and the flash density
-field at 37h:34h reads 07FFFFFFh, i.e. 128Mb / 16MB. So a part that
-answers RDSFDP correctly should get its size discovered just fine.
+There is already a patch series which addresses that issue, but it
+wasn't picked up yet.
 
-This makes me suspect that the part on your board is not returning a
-valid SFDP table, so the driver ends up with no flash size at all and
-bails out.
+  https://lore.kernel.org/all/20260605084837.1875896-1-linchengming884@gmail.com/
 
-In my opinion the best way forward here is a local patch for the single
-flash that is affected: just add the size back in your own tree, and
-your board will boot again.
+Russell, could you try to apply that series to your tree and try
+again? If it works, give that series a Tested-by tag?
+
+If you didn't know, there is a tool called b4
+(https://b4.docs.kernel.org/en/latest/), which can be used to fetch
+the patches from the mailingist (b4 am). Also, if you want to reply
+to that patches, you can import the thread into your mailbox using
+the "lei" (https://korg.docs.kernel.org/lore-lei.html).
 
 Thanks,
-Cheng Ming Lin
+-michael
 
 ______________________________________________________
 Linux MTD discussion mailing list
