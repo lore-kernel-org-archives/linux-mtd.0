@@ -4,129 +4,130 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9729BC5DF74
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A54DC5DF7F
 	for <linux-mtd@archiver.kernel.org>; Tue, 18 Aug 2026 02:10:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
-	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=aYMlLDKnspUzx5MZ5sImNw2tFFekj5WYx1o8NBsuC+M=; b=zcSj3n+KDsVHT5
-	GD9ckYRSPR205NgDdZnTN0QOilC9z/RugYrvr6LWBtqJ92ny96dlxHA9IhBGnjuzy1IWJK9azW/zD
-	YekX81Iw6PbhgN4oNHjpZszEX2AEiHV33fXstjBiAx/WPsEwoRymOmNGiSDSkXEjBxiXT299ndVrb
-	2csDJ/9ITaFX0jsSyqWbhoKliT+Y/hgxuzN/YZsnSkEUaF+MtAIHUKraCRijEECCkFWPErhm52ZqY
-	Z19Rklv2mUPueWaFG6CUl5KrIZHyutDZ+8/gkY1MoIfUZkJLdx21ryiZYBAPn90gidjMUkcl4ykl3
-	67Jp8bCLvLd77mud0vuw==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id:Date:
+	Subject:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=r9wyRK7QajPsc7Fb/n2iIQrd5b8ueiTXUEBADupHmHU=; b=uBmcUMlhMs8OdM
+	pKy4TxWxnVVaTH5iWGs/qJkcxvT4GK02Fw1c5qtoJ94kMIHpeiE/bM0loOMs3SmNAF0lrJy+fvXRs
+	stpFwskcabdky9QH3gLU5Iwc4a2UfWidkOCURgjIFLrHSriTcwNufH5mvIP6dyYsvAXBcPjPpxGUp
+	SwW8gAd14E3jLWbcZucqXVurn6LZLPkhxPn8jzVN6xjKRsOUapXb7tYDb35S2adZBFOt+NH1NoKBl
+	IV+gI7QSp16dXMF779P0rFfFa0sAb4fzLGL6p42IV0gB7IiwITh17Tj3UF7VDj+g8xeiqbCtMJaLV
+	EfSjihKKvJys7UhdOjgg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1ww9HR-000000075ID-3u0G;
+	id 1ww9HR-000000075I5-3WXG;
 	Tue, 18 Aug 2026 02:10:21 +0000
 Received: from gw2.atmark-techno.com ([35.74.137.57])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1ww9HN-000000075H3-1Tnl
+	id 1ww9HN-000000075H2-1TYs
 	for linux-mtd@lists.infradead.org;
-	Tue, 18 Aug 2026 02:10:19 +0000
+	Tue, 18 Aug 2026 02:10:18 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=atmark-techno.com;
-	s=gw2_bookworm; t=1787019015;
-	bh=R7ClDPED5fZAM18u5fygTm93ZxEhU7uCx11V791hrQ8=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=EORos9mrakUPaNFszQxJ4bjPi+bBtBukE8p4IwP5/GXIUyuo/H4QAn/9J/j3HMRK8
-	 f+emRH04+5kfsO9HFo52CkqL9Lf7pl2Y1uDiHbYSLP6mGmtsF+OnvS7Ppb+s9kvdVs
-	 1Mjzhtb1ED9Pd+U/2YUoM2sOBOL0/BeZFXr35MNuPbZWRpcV68lIaWAekgPLEenf4G
-	 MG+w0caMw2xI3FwmOtpRuXy4k8mPRkn/vh/tTHWDN0pdS7V+kZm0SAY5iBoXXWS4nh
-	 beSTTJ6MvbeEtVp//3WVldKn+XamX+TOgi9WDvABiQi5Lw5GpfXmHhnjbc3m5cZC8C
-	 TlNcKusDrWjLw==
+	s=gw2_bookworm; t=1787019013;
+	bh=cA9WlMYoxFTZK4iF8Acv03xZwGQZkOeymCDFeNB9gRI=;
+	h=From:Subject:Date:To:Cc:From;
+	b=s4nibJhyforM80XUBFegshhkex7nQijmPAj+zyBCpQGTMFDY+nuTDhaE+tYGlV+Ay
+	 PypuJVKDd2kGDOlcYfzb77rKkyWiHHp5pmg8Vsm/iAW8IqC+QFglsy5XQXt9Ft25jM
+	 ahLDUNjdMgAUX/Uwg9PyGPIUR6b7yISdMiJUgnAKO6vzavVczFOsEFI6sO3kwtzCts
+	 QdhWEBWFusv3ONe8b+/CfAYoF1ibvVhhuM6wQuU3E9whUQR2JLnGXWEfkiSxxSw3R1
+	 e1vpkkfRVnfLDCsXiJKA+9hx1ReXYHYtqr3oRtzQLD7/JBpPXps88VeqSSq0pVCMzC
+	 DKpz0RfRHNq0g==
 Received: from gw2.atmark-techno.com (localhost [127.0.0.1])
-	by gw2.atmark-techno.com (Postfix) with ESMTP id F1B461F0
-	for <linux-mtd@lists.infradead.org>; Tue, 18 Aug 2026 11:10:15 +0900 (JST)
+	by gw2.atmark-techno.com (Postfix) with ESMTP id BE218836
+	for <linux-mtd@lists.infradead.org>; Tue, 18 Aug 2026 11:10:13 +0900 (JST)
 Authentication-Results: gw2.atmark-techno.com;
-	dkim=pass (2048-bit key; unprotected) header.d=atmark-techno.com header.i=@atmark-techno.com header.a=rsa-sha256 header.s=google header.b=ZBh5VC8Y;
+	dkim=pass (2048-bit key; unprotected) header.d=atmark-techno.com header.i=@atmark-techno.com header.a=rsa-sha256 header.s=google header.b=GhC5NzUL;
 	dkim-atps=neutral
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com [209.85.216.72])
-	by gw2.atmark-techno.com (Postfix) with ESMTPS id 582538CC
-	for <linux-mtd@lists.infradead.org>; Tue, 18 Aug 2026 11:10:14 +0900 (JST)
-Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-38ea32e57e2so7679266a91.1
-        for <linux-mtd@lists.infradead.org>; Mon, 17 Aug 2026 19:10:14 -0700 (PDT)
+Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com [209.85.210.199])
+	by gw2.atmark-techno.com (Postfix) with ESMTPS id A47B4836
+	for <linux-mtd@lists.infradead.org>; Tue, 18 Aug 2026 11:10:12 +0900 (JST)
+Received: by mail-pf1-f199.google.com with SMTP id d2e1a72fcca58-84eee2147ffso5121391b3a.0
+        for <linux-mtd@lists.infradead.org>; Mon, 17 Aug 2026 19:10:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atmark-techno.com; s=google; t=1787019013; x=1787623813; darn=lists.infradead.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :content-type:mime-version:subject:date:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=blAtEYI9MivA6nQmBBbGkLtbWjRSXRisfP4s1nyOg10=;
-        b=ZBh5VC8YxR1OJ6QiJUX7F0XRtUkh8Q2YhMEmO2ehz0g7z1Az9xOlSBZTkug6T3VzvL
-         +7VCfjWnB2bi+61D2CAXypdIHBe1Pb4v5YEkt0103yRYwPk0lOBEcI7PUUQ+WL3/BPVI
-         iptTlY8gXm4NZCndnLKnEo+Sw9CsCc6i8eFfs6Tjv8S4F74g37LHgLgUdEbZYHD3giGm
-         u8Ci/F/LYJOz7uOoEwD6t44t4n3NsKZ8hImsePPSjskc1lBsNmNaF2g0CSpsq32JiMTQ
-         ZxZX7YGcJHNG5CzvTwQZEW90Jk9b23GS1cpQFTazEc6FWOnbm2f7dMaRZYTOWdUMrJRT
-         OB+g==
+        d=atmark-techno.com; s=google; t=1787019011; x=1787623811; darn=lists.infradead.org;
+        h=cc:to:content-transfer-encoding:content-type:mime-version
+         :message-id:date:subject:from:from:to:cc:subject:date:message-id
+         :reply-to:content-type;
+        bh=kkzuUIkcjhrbl+NLRbOh+awbahBdDgYrrv/qyvkX3fg=;
+        b=GhC5NzUL2eGNNS/7xmgZ9F5J53wRo+dnwl8PxFnY0agp8IbmeWpgFWbptWvalVCstU
+         5hXhhkYGD/N5Mv3YirmA2AjSd70i9aHPr3fjdFknsAPmQ1avimXfbdE6bHIm/UDnBH/t
+         fTP+Ja+jA896E0WD6hpJWudwnyq4hBU74M76BSm+ltkOKIGDkCP1bl7SZi9JMoqO1tu3
+         D/X0Q0u5pOUVfnHbVGwkFGcdjWOUhFAbe2nCW8heRBrovhYYkxRnZ++GYn15RcTgE/WB
+         D7wDWEYMm3n9668A5urG6Sj3U6aaOBtQvOG33r0jX+SHaSF0+SZFkYbgErxwcYYl2hps
+         6/PQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1787019013; x=1787623813;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :content-type:mime-version:subject:date:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=blAtEYI9MivA6nQmBBbGkLtbWjRSXRisfP4s1nyOg10=;
-        b=CLryYNTE81C3H0uO95CtsmHnGFK4800IyjqthX0tMTYeKysGuednHrvwFbqc1Uptdi
-         4slNnYn4ErPnuQtTwKVu2Ow47k6+DaNEaZTzDsku73bRBkZL2tu5QjyrsuGvydioze/J
-         NF4Ot4G+gcbLsYmZzTcIsEdZLT5rp/mmfK5/32Ylm10L5lwbazqG6LwuT0W9HKSb1gli
-         DiAWBzou6d77SycZb4ZeIIGoGLmnUAPYQSmqsP/zSoYdvo6i8R9Upmgrk4/tOOnnic8/
-         +fEp0IhkF/wy9fRO2m5uOfrhRQGQ1SCRjcacNmMtEUoIMmCdttD9pQaFV46EQTAGZWxh
-         lLGg==
-X-Forwarded-Encrypted: i=1; AHgh+RotWH4uqO0TiDBPpaKuYiAhx4qBLEJltxIDQYQZ1ATtFU9b1n7nQoTbJYh05GKnRtJCtBhvTFuBvl8=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yx9wmYG9CiNk3AnXFAkF00iaRCeop9cO23Ko8p+lDLQyI/b2lHD
-	3wHuj3pX/s3dG/JM9CIbf0vfTwl8/mO6DehDOrzUgpP8H1hNbY60+xy8hknUCydVbnSYjEvB0oK
-	OhdCP14522E12qCImzWqerf39UpS60EMnTfFbtF6g5UVSKjAV/CpO0F6vvG4aeTiuzk+T
-X-Gm-Gg: AR+sD120/iSkKcGJSeybNhAYZcPnSNnr9TbacfLca/0BCB7ljjFLJ4YKOUJeClmG7NL
-	SBtwWL648qSt3mG2TG/httH5RyHy01zPTPdQpDeAJ7kgtbtvKOg7mVNbqpwvcjtOXAYBHbxyZ/+
-	ojEGdd6wu227/1oFL1BuYpkgMAvDkVRs8FpgJ1ZiNgDkAR8SLv46RJpIOUuwUIHCO9BmKNu0+Kd
-	2SN55kj4vzPDddj42rwgj5myqkIHWo70OsqLEQqpItBl6PD9y+/QKyuAG/Iuf1seCNk9EeEtzAM
-	ZcmnTTil0Rzho9qrrsr+pMvfIcMmJ5rSkh4Z3PKPbu3q9G7J0xTwxbWi1n4q0RdsvyQzqxJhzAW
-	KYt/z5SYz0lLWOJZzy+ZMPQiWTH2fsIM/A8Eeu0tcjbUybPeJ
-X-Received: by 2002:a17:90b:58e5:b0:381:a766:efc9 with SMTP id 98e67ed59e1d1-3933caf3a05mr31691935a91.7.1787019013228;
-        Mon, 17 Aug 2026 19:10:13 -0700 (PDT)
-X-Received: by 2002:a17:90b:58e5:b0:381:a766:efc9 with SMTP id 98e67ed59e1d1-3933caf3a05mr31691826a91.7.1787019012676;
-        Mon, 17 Aug 2026 19:10:12 -0700 (PDT)
+        d=1e100.net; s=20251104; t=1787019011; x=1787623811;
+        h=cc:to:content-transfer-encoding:content-type:mime-version
+         :message-id:date:subject:from:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to:content-type;
+        bh=kkzuUIkcjhrbl+NLRbOh+awbahBdDgYrrv/qyvkX3fg=;
+        b=K+ZdnloABfc2eUQirW1u41HaIF7+/y8VxCQlToTMqXkFaDxIDGIBSDpHvsXSFFSVM/
+         JISOIdH6piRUxBVFCxFOnl5RxuycqvGnskIBm6LefIuyNYZ4C5RtGEMr9AbeaR89nAaq
+         1Rxr+rPhDUP0+FbBIUlTxg10Ujab3/WzmcOVmBa9CdMFkH9ObdSacd/sdLmJu941HtXw
+         LswuL0RNFGCgPH0L6z6fb/ZE9FGoqEAeZE0EBD6mH1G9kWLGIWplTRW6bdtzzbj6NyBD
+         y+11ZQf9rDH78n8NxkldfwW2hsXUAe/tYdFlbOMd2zUoGeRu9KwX1Q34Zs/idSuTLHNq
+         xZRA==
+X-Forwarded-Encrypted: i=1; AHgh+RodU0ghjS6zazwvs9mYY6FFUx1ftY6yi1FBcfOg32kRuw1APFQ5W5Yj4/w1z4tyC1QNU15KTaGDbEU=@lists.infradead.org
+X-Gm-Message-State: AOJu0YxsTp+jl6pNqkzMlmUh85hylEJqAHc8OwZulZ1pDOsOd7mlEcC1
+	6m0GRRx3RzF1M2EgWGZoHavP2/zAXFHnmyeNtVPuWRaiymjGuLWj+C4kABWGMzcmIsk+OaYkAgt
+	N65t8UDcJGuBGUGXILIL4buObgE9N8Mbyd1660bW5V/CUmQZAy8yghenD7bNRtfb1fsFT
+X-Gm-Gg: AR+sD12vq9oYK6kz2NJ8fZaUS+koWYQ0NixRkhtk9GPjWRQASOa5jbUqpdSQNob6Y68
+	Q/mrQz/Nsn1e7xrmzGkt1h1DqGFUQbZmotqpE+NsP1qHhRHa3CxvVN2DqYtnUqWdfsCt1viC2qS
+	KzvxZZa4RXRWQyzWueYkntVMWL1zxPQ4plLIqninpBs0xuvixManJQFkMOsJqbFB/4zkCYF2xBh
+	wHPdUczJuFEyxUeRwJd5oSe4DiZBSlfy8unCRqZ6FvcqHALmEp/c0oknLBhk3J02a0jsHx4SAXY
+	Nd9RDTZc80+ybEc+wRkPbGRlIiOPFFK+CR/ti7e3y/RICgoR8W7Glfzi7upKdr/+ptsgvmNrYri
+	L2IU7lNv0XIYVrr76ojTKddkRtc8BBO8O+tFQUuhiAkaPoE8f
+X-Received: by 2002:a05:6a00:c94:b0:845:dde9:ab62 with SMTP id d2e1a72fcca58-84fde2e8fb0mr29085195b3a.19.1787019011518;
+        Mon, 17 Aug 2026 19:10:11 -0700 (PDT)
+X-Received: by 2002:a05:6a00:c94:b0:845:dde9:ab62 with SMTP id d2e1a72fcca58-84fde2e8fb0mr29085143b3a.19.1787019011034;
+        Mon, 17 Aug 2026 19:10:11 -0700 (PDT)
 Received: from localhost (sodcd-04p2-40.ppp11.odn.ad.jp. [203.139.65.40])
-        by smtp.gmail.com with UTF8SMTPSA id 98e67ed59e1d1-3954d3b40basm4255804a91.14.2026.08.17.19.10.12
+        by smtp.gmail.com with UTF8SMTPSA id d2e1a72fcca58-851b404f349sm1175062b3a.24.2026.08.17.19.10.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Aug 2026 19:10:12 -0700 (PDT)
+        Mon, 17 Aug 2026 19:10:10 -0700 (PDT)
 From: Dominique Martinet <dominique.martinet@atmark-techno.com>
-Date: Tue, 18 Aug 2026 02:09:34 +0000
-Subject: [PATCH v6.12.y 1/2] mtd: ubi: skip programming unused bits in ubi
- headers
+Subject: [PATCH 0/2] Backport fixes for UBI
+Date: Tue, 18 Aug 2026 02:09:33 +0000
+Message-Id: <20260818-ubi-backports-v1-0-324d6816d2ae@atmark-techno.com>
 MIME-Version: 1.0
-Message-Id: <20260818-ubi-backports-v1-1-324d6816d2ae@atmark-techno.com>
-References: <20260818-ubi-backports-v1-0-324d6816d2ae@atmark-techno.com>
-In-Reply-To: <20260818-ubi-backports-v1-0-324d6816d2ae@atmark-techno.com>
+X-B4-Tracking: v=1; b=H4sIAN6+g2oC/yWMwQqDMBAFf0XeuRETaJT+SunBZNe6CipZlRbx3
+ 5u2x2GYOaCchBW34kDiXVTmKYO9FIh9Oz3ZCGWGq5yvGtuYLYgJbRyXOa1qXHel2hNTYEJulsS
+ dvH6/O3ZfWle+8fgL3cLAcf3ecJ4flDnwzHoAAAA=
+X-Change-ID: 20260818-ubi-backports-2f5d76dedbed
 To: stable@vger.kernel.org
 Cc: Richard Weinberger <richard@nod.at>, 
  Zhihao Cheng <chengzhihao1@huawei.com>, 
  Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org, 
  linux-kernel@vger.kernel.org, 
  Dominique Martinet <dominique.martinet@atmark-techno.com>, 
- Cheng Ming Lin <chengminglin@mxic.com.tw>
+ Cheng Ming Lin <chengminglin@mxic.com.tw>, 
+ Liyuan Pang <pangliyuan1@huawei.com>
 X-Mailer: b4 0.16-dev-a9e92
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2537;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=879;
  i=dominique.martinet@atmark-techno.com; h=from:subject:message-id;
- bh=HJvhoiOjIe9nNu2RlsGRExOAzZRI5eQ3mmYZZFbmpC8=;
- b=owEBbQKS/ZANAwAKAfKKYH/WjHEHAcsmYgBqg78Aze2trKQWuMUsy+egLC2N65QMVPDv0JLYk
- Ku9l/EaYquJAjMEAAEKAB0WIQQoFSiLMD+txr0veJbyimB/1oxxBwUCaoO/AAAKCRDyimB/1oxx
- B1SBD/4+WmZjfcNBAm4smlV1jtTsrwmhFLvWXUO0TYKQTEwOdlAls43b8TSVhWWqbwsTN27Mwsr
- 5HTdMQr7k6W/vYMfFiEzFCxszmPK5bRGyn8gEC2VMImlF7d3pjUpzKZLJ/bvN9uAuAz/uynL8z1
- VcwpI+KZ2GTzqLy7kjDC3+FtOr78VOoUTYK3yl7yG9Hw+fcFekgkvNLWWVdDnY1rf+21WC1brbB
- Gg/rqSXUCEHHd7nZDLyjxL+P8Nalm3tPJJ58PzJc8S2CyRa9r1RUV0ZYHxutbgPTW51bQpEmJHl
- du7ezOT+PY06mqj5x5POXbH7qUNDnm8yAG6Fjw49o+uSU5Hs6x0XeHa+8fgbVz9iuajLRv6A7l9
- F3BgnEVx8OQIxQrNASwajS70HbJsMvtQP2WgeZtpH/Zw6ECyDsfUyNG+Z3S8TlJGGI/rzsYFuPa
- Xb4NFnmptcFRuhDonOJtyT+cDHKO5Dbvu6I7l4i24JWvImNhpf+LSR9fqPAoiZn83Bs9aFT58vl
- cgiXJg3M7CtdlRKTv4ZpZ/n2FDhCuNuR8JZgcq8NN13MIbxo3kuoFfuNKyuYct7qcASoi5xH/vX
- EJsU+NXr/a2kF0a0pBhDKi2F9DIerkcM8MH6II3I3esuHLzlqrhWuKNyO2bLaUyb4ZhrIsp4G/y
- 3aOh2DJqpbhhZXA==
+ bh=cA9WlMYoxFTZK4iF8Acv03xZwGQZkOeymCDFeNB9gRI=;
+ b=owEBbQKS/ZANAwAKAfKKYH/WjHEHAcsmYgBqg78AdXyHPIvw96F/8CArO9a8ZxlKEIfjDxv87
+ 8V3HsusQ4mJAjMEAAEKAB0WIQQoFSiLMD+txr0veJbyimB/1oxxBwUCaoO/AAAKCRDyimB/1oxx
+ B4NDD/0SRC5VCr0hPJCtUU8ccD5oT57yYjDX+m7VCGw4GmpEseeDC66N82/iM1yNI8AAL5wFhAm
+ 03qWXI6wMKxmi6zHyV6rhOZ9kst2ZxwU3mCzEdy/3oDQrKD5j9UAO5OMpW5e3GnY3h32Uh88z62
+ 8mHmloTWQgY/pt+VQRkRuVLhwBq5kRjKUkEc+XpDjDFrpyg8q5/gbD3hbbp7UzqaoR3DGVsFhEG
+ +IJvi6Bqi+hH2uuRe8vTuQ9qdX1nC2XwD/I5N87cekN5jZFIwwjXJNzqHJ3QHGqr2zyKdSuG+VW
+ yKcO6ovhkkS4Sa5UmqrfVm1lgFIsffqZsHGEaDtCEb74yjOBDQaqfBWeSYyU8JiEFGTAEbQVz/5
+ AHVmYdy4uMD/8+XIV0LP82Dxtgc9MCpt2Sm8763e+kS5Ldz9Tu44FkAzLbheenTR5V4cKnQ/gwo
+ Zs9XexEUxrkHHSs5xA+DetRK1R+oQZjTJdtU2w0czlLCQPM5NkJWG/OQ9lgXpkphq/sOAfM7hpm
+ b/jFuBYaW4PBCcKEZXSWsk7pxMivIzdPZC/YWTEeOg0TEyE5DfSpfWMrkihR8gMbJeNrvKbRQ2j
+ +Swibt82y2bew4cjADQH/9Ynh3cNbFpKTA+CDsUsFPE6tl5By68WVQrVSqVICEJyadzTsJgtmap
+ FSH/1NsTVCbFtxQ==
 X-Developer-Key: i=dominique.martinet@atmark-techno.com; a=openpgp;
  fpr=2815288B303FADC6BD2F7896F28A607FD68C7107
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260817_191017_627206_8DD4D806 
-X-CRM114-Status: GOOD (  14.07  )
+X-CRM114-CacheID: sfid-20260817_191017_626986_BF3C2EA4 
+X-CRM114-Status: GOOD (  10.39  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -143,69 +144,34 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Cheng Ming Lin <chengminglin@mxic.com.tw>
+While looking at recent UBI patches I found these two commits that I
+believe are worth backporting.
 
-This patch prevents unnecessary programming of bits in ec_hdr and
-vid_hdr that are not used or read during normal UBI operation. These
-unused bits are typcially already set to 1 in erased flash and do not
-need to be explicitly programmed to 0 if they are not used.
+We're not using fastmap so I don't care much about the leak there, but
+reducing wear is always good to take
 
-Programming such unused areas offers no functional benefit and may
-result in unnecessary flash wear, reducing the overall lifetime of the
-device. By skipping these writes, we preserve the flash state as much as
-possible and minimize wear caused by redundant operations.
+Thanks!
 
-This change ensures that only necessary fields are written when preparing
-UBI headers, improving flash efficiency without affecting functionality.
-
-Additionally, the Kioxia TC58NVG1S3HTA00 datasheet (page 63) also notes
-that continuous program/erase cycling with a high percentage of '0' bits
-in the data pattern can accelerate block endurance degradation.
-This further supports avoiding large 0x00 patterns.
-
-Link: https://europe.kioxia.com/content/dam/kioxia/newidr/productinfo/datasheet/201910/DST_TC58NVG1S3HTA00-TDE_EN_31442.pdf
-
-Signed-off-by: Cheng Ming Lin <chengminglin@mxic.com.tw>
-Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
-(cherry picked from commit 77530d1a78ca5c274e37d6494a965223672630b2)
 Signed-off-by: Dominique Martinet <dominique.martinet@atmark-techno.com>
 ---
- drivers/mtd/ubi/io.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+Cheng Ming Lin (1):
+      mtd: ubi: skip programming unused bits in ubi headers
 
-diff --git a/drivers/mtd/ubi/io.c b/drivers/mtd/ubi/io.c
-index a4999bce435f..915eb64cb001 100644
---- a/drivers/mtd/ubi/io.c
-+++ b/drivers/mtd/ubi/io.c
-@@ -868,6 +868,8 @@ int ubi_io_write_ec_hdr(struct ubi_device *ubi, int pnum,
- 		return -EROFS;
- 	}
- 
-+	memset((char *)ec_hdr + UBI_EC_HDR_SIZE, 0xFF, ubi->ec_hdr_alsize - UBI_EC_HDR_SIZE);
-+
- 	err = ubi_io_write(ubi, ec_hdr, pnum, 0, ubi->ec_hdr_alsize);
- 	return err;
- }
-@@ -1150,6 +1152,14 @@ int ubi_io_write_vid_hdr(struct ubi_device *ubi, int pnum,
- 		return -EROFS;
- 	}
- 
-+	if (ubi->vid_hdr_shift) {
-+		memset((char *)p, 0xFF, ubi->vid_hdr_shift);
-+		memset((char *)p + ubi->vid_hdr_shift + UBI_VID_HDR_SIZE, 0xFF,
-+		       ubi->vid_hdr_alsize - (ubi->vid_hdr_shift + UBI_VID_HDR_SIZE));
-+	} else {
-+		memset((char *)p + UBI_VID_HDR_SIZE, 0xFF, ubi->vid_hdr_alsize - UBI_VID_HDR_SIZE);
-+	}
-+
- 	err = ubi_io_write(ubi, p, pnum, ubi->vid_hdr_aloffset,
- 			   ubi->vid_hdr_alsize);
- 	return err;
+Liyuan Pang (1):
+      ubi: fastmap: fix ubi->fm memory leak
 
--- 
-2.55.0.dirty
+ drivers/mtd/ubi/attach.c     |  4 +++-
+ drivers/mtd/ubi/fastmap-wl.c |  8 +-------
+ drivers/mtd/ubi/io.c         | 10 ++++++++++
+ drivers/mtd/ubi/ubi.h        | 12 ++++++++++++
+ 4 files changed, 26 insertions(+), 8 deletions(-)
+---
+base-commit: 98c5a5b9f23ede08be1dcd8be0a13b32fbe2b462
+change-id: 20260818-ubi-backports-2f5d76dedbed
+
+Best regards,
+--  
+Dominique Martinet <dominique.martinet@atmark-techno.com>
 
 
 
