@@ -4,54 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2FF3FC5DF70
-	for <linux-mtd@archiver.kernel.org>; Tue, 18 Aug 2026 06:44:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83144C5DF7D
+	for <linux-mtd@archiver.kernel.org>; Tue, 18 Aug 2026 10:49:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:To:From:Cc:
-	Subject:Message-Id:Date:Mime-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=BfmNeyjLbL/byFg8x3ZzbjFkivWaoNS+XzfdwbJRrd4=; b=IJpeAeX3lD8GVg
-	8lQgHS5lQdHoZ/gF2Kmz0ulvOYqWdeMYAttpdHls2RHEk1yUFmiq76iEN4TX0whk+BFgM2pLMtEHb
-	XgRf9g9+ZZriHCZqACL4sIS8OPpICPN0uQMKm4XziiZ6cedDtns1RfVhRTOpMgU8+D1+rYW/jsil9
-	Pp+/b5nPtAdECfNlbKF5GZNKuPOzsO8wICBdN1d6CADMfFppx8i+fx+pUvlzdabYYdcmfdAKWwofc
-	o19e0dgZe+ABS2yz0eDhK51q5JrThrX2uu1bp0nsd0cMyAhrvkDmOMyFaEq2jqxFjeP3Xvseb1Pvn
-	LQcCszTGNHWpxQ6ALx3g==;
+	List-Owner; bh=hoct9LHYVBvunUthaaSR5cx5/nIS8aq+Pe54rO9lRho=; b=Pojj/KME6RYrdA
+	vb9Zh5bQLYI07RagjdWSr2a6sQXzNp83byXgUrZbSqYMgTdSRDxE70zlkFbxCAcvYxGkp9JvpGceB
+	5z1sChQuOhdV80c4r/N1GnPMUNoMZhEywjAOxRnmgrbNDvYYEd7eOeIcVOJovVOX1RhKkNih4Zfll
+	C4KGn+b7nS6DeRrb/tN/cKWVgPHYK6ySbk0rbGU+l6qWoj7HE2L545/pH2qGYx4ne1M+SU7I4nJIz
+	OPBbregs6d7R4EhFmss8krn+wFUi6eI1YjfEKMHmlLKq9nVLyGPp/BfHKLreLqFz+JD1qHbCDdAog
+	Lv0MPmqPhoh9laJJxlCA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wwDYU-00000007Q1G-0j1e;
-	Tue, 18 Aug 2026 06:44:14 +0000
-Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1])
+	id 1wwHNr-00000007mpW-0bq4;
+	Tue, 18 Aug 2026 10:49:31 +0000
+Received: from mail-pj1-x1034.google.com ([2607:f8b0:4864:20::1034])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wwDYP-00000007Q08-0gIj
+	id 1wwHNn-00000007mp0-3Vu5
 	for linux-mtd@lists.infradead.org;
-	Tue, 18 Aug 2026 06:44:10 +0000
-Received: from localhost (unknown [IPv6:2a02:810b:4320:1000:4685:ff:fe12:5967])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id 16D49103;
-	Tue, 18 Aug 2026 08:43:56 +0200 (CEST)
-Mime-Version: 1.0
-Date: Tue, 18 Aug 2026 08:43:55 +0200
-Message-Id: <DKRV6XPSSU73.1VF5FG13NPGWE@kernel.org>
-Subject: Re: Regression: mx25l12845e stops working on my device after commit
- 947c86e481a
-Cc: "Pratyush Yadav" <pratyush@kernel.org>, "Michael Walle"
- <mwalle@kernel.org>, "Takahiro Kuwano" <takahiro.kuwano@infineon.com>,
- "Miquel Raynal" <miquel.raynal@bootlin.com>, "Richard Weinberger"
- <richard@nod.at>, "Vignesh Raghavendra" <vigneshr@ti.com>,
- <linux-mtd@lists.infradead.org>, "Cheng Ming Lin"
- <linchengming884@gmail.com>, <linux-kernel@vger.kernel.org>
-From: "Michael Walle" <mwalle@kernel.org>
-To: "Russell Senior" <russell@personaltelco.net>
-X-Mailer: aerc 0.20.0
-References: <CAHP3WfMMK8GU3jpwxv4=C=Pc_9H4ZkmqAJqxZ0gN_rYqPDU3XQ@mail.gmail.com>
-In-Reply-To: <CAHP3WfMMK8GU3jpwxv4=C=Pc_9H4ZkmqAJqxZ0gN_rYqPDU3XQ@mail.gmail.com>
+	Tue, 18 Aug 2026 10:49:29 +0000
+Received: by mail-pj1-x1034.google.com with SMTP id 98e67ed59e1d1-38125cebfdaso6455923a91.1
+        for <linux-mtd@lists.infradead.org>; Tue, 18 Aug 2026 03:49:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=personaltelco-net.20251104.gappssmtp.com; s=20251104; t=1787050167; x=1787654967; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=5KNbePICYaBlGAnqPiRhGNA1nIoFAhNae06i5DJPQgU=;
+        b=A+DG4qL9DNUf31ivJWEbKjCEMV1fxCidmpyKKQmMe4oDPSwIOdG19dvZaVEWiC5IG9
+         IzWdhLVpFryGsWob9zNCVgc6GJH7Q9D6Ug3n89+zJn8X7h7zeBvWRYMbMPYexi37hR7A
+         MvVFfVQgAqn42JTWmUfPSh2IVMShnCuq0AD7BCzPxw/kH7wTUHGkGIWviVNdE42e7iqv
+         oZ4VBMidITC2M2FHSQP/MnUrUpclMT+aWWGLZYZVMcv8tMrr3oFSR17KUfMxvdsJWa8t
+         J1Yo/mxXorm54dLyBatRMZotfP4nDmxCcMs7UdLoduHa39922/Z5yIkt0z3F4yKyq7sy
+         sXHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1787050167; x=1787654967;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to:content-type;
+        bh=5KNbePICYaBlGAnqPiRhGNA1nIoFAhNae06i5DJPQgU=;
+        b=sD4/45RH+nbWBoVTBnw3g1/ATxYIgAsiygTOFeC27XUSJaileDRLjCLRsGfhC0aSOI
+         ArF59vBAwGJwrEsHo3M2L6hQY0yezC+rzM5RFJH3xLWfrqTbG8GyqzvpysLvZgmrJ64z
+         Xlr8mHBc0qcBc0Gial6VTX20a/GSLhKBri1iIUr3R3EeEZ2bcIPHxqplh28Be1TO/rE9
+         u4FnBHkKbByF0CtYJcPnYsP76Z+uwLLcof07qbDQXrIW8z8VoQNaJYTtaTZYTKNPNrru
+         8l29FAZd2kZNOq8g/ZJAsC9chi4WqLz7MVJC9Ov4PqfQDnu+Y5LMMhMnlv7XvH4l6Zpq
+         W8QQ==
+X-Forwarded-Encrypted: i=1; AHgh+Rr8+J2HZA8PBWca7VjTW6IS76UvLCgEbantPfQFVreSm52ymvf11oClYqFvy9U++keBg1X+RHzhxJM=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yzn0Uzm6wzpbjGD7tTurrWTo/qkL6z0o/9Mgx/NLIDE3VRNonkw
+	74yA7qTKrFONLHD6G+NXJLOdlQDyYnYqzOnBZwf/D8g33hyVvmoPzyn55YROoOoNkQ==
+X-Gm-Gg: AR+sD10VBNh6YfisjRxw2xEDd/h1ZImetQoS2zRD5iZOpbanq36Mqccao24Ia+kzn0G
+	zDAf52FekD4st/g/7nC7LZqnIdaN6B2D9tFj/F9f8eU8VCw15grJGFCXWCuzpDY9IRIfnqED+jd
+	6e9jv2edFMuMyBTVD6dUvwnr5hz8yTLp43Z35+jlsaPXlh4VcrRWIN7PfHiBf4qb0Vdq6oKDMyl
+	wYqHTZ9BYvDA9i0hSMgBDRtPd9SMJJ3zlcsj3+z2JPkD0pgB+Cu80GKtQnRYjqcHOHAzKFl21Ho
+	2euYlz/SfvyW7raOue/Gz71tiIdwxZcaXwycnB5Jmf9TNAN9YHojyoStsY3pg7qkMsqU1LD5zq8
+	VN0lNgkLJBN+Wq9Vom6qcG7pksbMd0GzvqekrY40UH7hcHTkyNR1R/9TppjeU1TNqpiO0wi4U0J
+	OVQx9ZO6VTyc1mZR75DmgYgIz+g05wj6Nlhtg7v1zarcEZI+HYCncuRK9a0GqhIf9ogQFp/75jy
+	PbV5Rx80ULXxVwbB3CD5/BliTwbxWSf6Y6l9cgU1zAS8VpWNpGzUmQ=
+X-Received: by 2002:a17:90b:4405:b0:381:792d:f993 with SMTP id 98e67ed59e1d1-3933b8c4cf1mr29967767a91.17.1787050166522;
+        Tue, 18 Aug 2026 03:49:26 -0700 (PDT)
+Received: from hawg.ptp ([2602:3f:e4ac:bf01:3162:4332:e1bf:a4c2])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-39531e8418bsm8427768a91.7.2026.08.18.03.49.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Aug 2026 03:49:25 -0700 (PDT)
+From: Russell Senior <russell@personaltelco.net>
+To: linchengming884@gmail.com
+Cc: alvinzhou@mxic.com.tw,
+	chengminglin@mxic.com.tw,
+	linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	miquel.raynal@bootlin.com,
+	mwalle@kernel.org,
+	pratyush@kernel.org,
+	richard@nod.at,
+	takahiro.kuwano@infineon.com,
+	vigneshr@ti.com,
+	Russell Senior <russell@personaltelco.net>
+Subject: [PATCH v3 0/2] mtd: spi-nor: macronix: Add support for MX25L12833F and MX25L12845G
+Date: Tue, 18 Aug 2026 03:48:27 -0700
+Message-ID: <20260818104827.1869620-1-russell@personaltelco.net>
+X-Mailer: git-send-email 2.55.0
+In-Reply-To: <20260605084837.1875896-1-linchengming884@gmail.com>
+References: <20260605084837.1875896-1-linchengming884@gmail.com>
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260817_234409_350101_43B3FB11 
-X-CRM114-Status: GOOD (  31.16  )
+X-CRM114-CacheID: sfid-20260818_034928_123600_B7BF4BC3 
+X-CRM114-Status: GOOD (  10.32  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -68,112 +109,16 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Russell,
+I noticed a few days ago that a Buffalo WZR600DHP running OpenWrt
+started boot looping.
 
-Thanks for testing and reporting! Did you know
+I traced the problem to the transition from a v6.12.x kernel to a
+v6.18.x kernel, and from there, noticed the change in the mx25l128
+support. After reporting the regression, I was directed to this patch
+series and just tested it on top of the master branch of OpenWrt,
+with linux kernel 6.18.44, and the boot looping problem is resolved.
 
- ./scripts/get_maintainer.pl -f drivers/mtd/spi-nor/macronix.c
-
-That way you get all mail addresses of the maintainers you can add
-to your mail. Not everyone is subscribed to the mailinglist.
-
-On Sat Aug 15, 2026 at 12:48 PM CEST, Russell Senior wrote:
-> I am running OpenWrt (master branch) on a Buffalo WZR600DHP. This
-> particular instance has MX25L12845E SPI NOR chips (I have another
-> WZR600DHP with Winbond W25Q128BVFG, but haven't tested there, just to
-> say they don't all necessarily use the same flash).
-
-Did you actually look at the chip or do you just know because linux
-is printing the name? FWIW, the name linux is printing isn't always
-correct due to flash ID reuse. I'm just curious.
-
-> I just built a new firmware version last night, and it started
-> unhappily boot looping. The most recent previous build I had done was
-> from June. Boot looping messages look like this:
->
-> [...]
-> [    0.752843] printk: legacy bootconsole [early0] disabled
-> [    0.778756] spi-nor spi0.0: supply vcc not found, using dummy regulator
-> [    0.785909] spi-nor spi0.0: BFPT parsing failed. Please consider
-> using SPI_NOR_SKIP_SFDP when declaring the flash
-> [    0.796238] spi-nor spi0.0: probe with driver spi-nor failed with error -22
-> [    0.804457] spi-nor spi0.1: supply vcc not found, using dummy regulator
-> [    0.824085] i2c_dev: i2c /dev entries driver
-> [    0.830852] NET: Registered PF_INET6 protocol family
-> [    0.872875] Segment Routing with IPv6
-> [    0.876671] In-situ OAM (IOAM) with IPv6
-> [    0.880798] NET: Registered PF_PACKET protocol family
-> [    0.886278] 8021q: 802.1Q VLAN Support v1.8
-> [    0.921429] clk: Disabling unused clocks
-> [    0.925661] check access for rdinit=/init failed: -2, ignoring
-> [    0.932181] MTD: Couldn't look up '': -22
-> [    0.936335] /dev/root: Can't open blockdev
-> [    0.940520] VFS: Cannot open root device "" or unknown-block(0,0): error -6
-> [    0.947472] Please append a correct "root=" boot option; here are
-> the available partitions:
-> [    0.955831] 1f00           16384 mtdblock0
-> [    0.955843]  (driver?)
-> [    0.962379] List of all bdev filesystems:
-> [    0.966374]  squashfs
-> [    0.966379]
-> [    0.970139] Kernel panic - not syncing: VFS: Unable to mount root
-> fs on unknown-block(0,0)
-> [    0.978392] Rebooting in 1 seconds..
->
-> Between June and last night, OpenWrt had switched their kernel from a
-> 6.12.x to a 6.18.x, so I immediately suspected something in that
-> transition was the culprit and demonstrated that by building the last
-> commit before the change to the 6.18.x kernel, and it worked. Then
-> tested the commit of the change to the 6.18.x kernel and it
-> bootlooped.
->
-> Then I started looking through the mtd changes between 6.12.x and
-> 6.18.x and spotted 947c86e481a.
->
->   commit 947c86e481a027ed5948434096e506f307bd7114
->   Author: Cheng Ming Lin <chengminglin@mxic.com.tw>
->   Date:   Mon Apr 7 15:53:58 2025 +0800
->
->       mtd: spi-nor: macronix: Drop the redundant flash info fields
->
-> The following revert of just the part that affected my chip made the
-> bootloop vanish:
->
-> diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-> index e97f5cbd9aad2..3524ed08ff85d 100644
-> --- a/drivers/mtd/spi-nor/macronix.c
-> +++ b/drivers/mtd/spi-nor/macronix.c
-> @@ -132,7 +132,10 @@ static const struct flash_info macronix_nor_parts[] = {
->         }, {
->                 /* MX25L12805D */
->                 .id = SNOR_ID(0xc2, 0x20, 0x18),
-> +               .name = "mx25l12805d",
-> +               .size = SZ_16M,
->                 .flags = SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP,
-> +               .no_sfdp_flags = SECT_4K,
->         }, {
->                 /* MX25L25635E, MX25L25645G */
->                 .id = SNOR_ID(0xc2, 0x20, 0x19),
-
-Yeah, that commit removed the size assuming there will only be parts
-with SFDP for that ID.
-
-There is already a patch series which addresses that issue, but it
-wasn't picked up yet.
-
-  https://lore.kernel.org/all/20260605084837.1875896-1-linchengming884@gmail.com/
-
-Russell, could you try to apply that series to your tree and try
-again? If it works, give that series a Tested-by tag?
-
-If you didn't know, there is a tool called b4
-(https://b4.docs.kernel.org/en/latest/), which can be used to fetch
-the patches from the mailingist (b4 am). Also, if you want to reply
-to that patches, you can import the thread into your mailbox using
-the "lei" (https://korg.docs.kernel.org/lore-lei.html).
-
-Thanks,
--michael
+Tested-by: Russell Senior <russell@personaltelco.net>
 
 ______________________________________________________
 Linux MTD discussion mailing list
