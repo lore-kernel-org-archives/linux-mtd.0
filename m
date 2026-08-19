@@ -4,67 +4,168 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B890C5B572
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 Aug 2026 14:08:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78BC0C5DF81
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 Aug 2026 14:40:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=EFqag9ucNofS8xwDzL7+vmSLPOC835RPGRr53tkuzzk=; b=Ag9xmJrrhw5mmJ
-	RzO0ny4xCst57XYXz/b5mABif4otf3fXuaQFuxfCS1ueyCnIeT1xLSkupQk4M8/lp+KuneqxS5LDK
-	dSQL9gifB+LDsyQatWIwO2GooC90bUW62FWUrUQrILpTbXVMe0Irr2vJ6EDkX38pOBIThqYHz0Qie
-	UP1KzQpVKBMewtnAxG2J7bocfVCehFYrgXglN6GE3OVJukxXQPHoTpFKsySEtM8a79I/FrpdX8tVG
-	G2xiIQfVqy5HaDSnvdVE0fdRdYoQrXNIgKYp2n5jAlD5tFbSSo5Wvm7ka4UAjCdzLDgw+AEnLUC9p
-	hfqRv3pkxQ6/VcDFBn+g==;
+	List-Owner; bh=2hrenrR0DKcVX9wJbhRtv4qNGyjsHcKAZrDg2FgOUYY=; b=are+EaSDgz6Koi
+	05ADI6x5ta2bkDOuKoy/w9bJSIASG8gKSNJ4nViZSKFOWUE6ahxK2V8A2+fbkg3it5Pdq04AR2mDA
+	HBqodo2I1elb4joHPdjWHJV+6FDtqcyVmNfIcO1i/CL5vEPjSNrXsD5KKTKFEb9+ciqahZhv7wT3P
+	19TBiXaN5qgNuI/nx6TlB//R1zGhbIdaMtEgNviray2WMlKfalSsUJ5CTW5ls4VlyG6qu4YOHwie8
+	Wx48Qq/q922m6urng5MhBySPrCozyVtZ6026Jk8YXyJ/8WLL83TXQvmo5Fa+dsCaUZHdJNeMDa4ce
+	Ks9Hh7UMKoCd8K/0dx+w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wwgyO-00000009wVo-45oV;
-	Wed, 19 Aug 2026 14:08:56 +0000
-Received: from mail-m49197.qiye.163.com ([45.254.49.197])
+	id 1wwhSj-0000000A0AT-1aPI;
+	Wed, 19 Aug 2026 14:40:17 +0000
+Received: from mgamail.intel.com ([192.198.163.18])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wwgyL-00000009wUl-2tRk
-	for linux-mtd@lists.infradead.org;
-	Wed, 19 Aug 2026 14:08:55 +0000
-Received: from PC-202605011814.localdomain (unknown [58.241.16.34])
-	by smtp.qiye.163.com (Hmail) with ESMTP id 4a93dedec;
-	Wed, 19 Aug 2026 22:03:47 +0800 (GMT+08:00)
-From: Runyu Xiao <runyu.xiao@seu.edu.cn>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <mwalle@kernel.org>,
-	Takahiro Kuwano <takahiro.kuwano@infineon.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org,
-	Runyu Xiao <runyu.xiao@seu.edu.cn>,
-	Jianhao Xu <jianhao.xu@seu.edu.cn>
-Subject: [PATCH v4 1/2] mtd: spi-nor: core: Fix mutex leak in spi_nor_rww_start_exclusive()
-Date: Wed, 19 Aug 2026 22:03:36 +0800
-Message-Id: <20260819140337.36775-2-runyu.xiao@seu.edu.cn>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20260819140337.36775-1-runyu.xiao@seu.edu.cn>
-References: <0a15f6e8-f1ca-4945-9bd5-2b64a2802a58@linaro.org>
- <20260819140337.36775-1-runyu.xiao@seu.edu.cn>
+	id 1wwhSg-0000000A09V-3qyE;
+	Wed, 19 Aug 2026 14:40:16 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1787150415; x=1818686415;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=vymarJZh4YqC2L7NKmpGaLSs+LwWBnjm4Ga1t8pq/Yg=;
+  b=PewjlzfqVvICmM3Y+gzYqT+lnKBDTWNxA6c9IwR+UDi+JCRZq1z+j+xD
+   P6lG4HNHEBpxJo7kqN0SOguxmpKEMbKs6BSEPnlG6Aew8wE6LZ40bh8t6
+   kLMJ2sHoFSg0kOQcb7BCa0gFCbMMs26iJPINMsoliGpXIjNt7blZvuKmy
+   FnOYYjAGi74sn6qeuQgecxWIrC1gH1fJt0snFLRh4G8KKgxdER8lxAcat
+   RkLBPtsnntifFsGsRppmdZuM0wNZfM/S0QLzY39hgxHQ6elMYhHKF2Srl
+   JVhHJnBM8i3f2Dl61S5rOxwxt3A9xLO8Vy9j/U6AvBy7q3XLNduYerUIB
+   g==;
+X-CSE-ConnectionGUID: dzomHoD3Sp+tUGJ0F1BT/Q==
+X-CSE-MsgGUID: dU6rD5qISf6k4ShHktL/Pw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11880"; a="86787563"
+X-IronPort-AV: E=Sophos;i="6.25,231,1779174000"; 
+   d="scan'208";a="86787563"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2026 07:40:14 -0700
+X-CSE-ConnectionGUID: DLD05uXOSQS3eQ3eQ3POPA==
+X-CSE-MsgGUID: nBdVyMTXSn+BXYA1OEkKQA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.25,231,1779174000"; 
+   d="scan'208";a="261366363"
+Received: from bradocaj-mobl.ger.corp.intel.com (HELO [10.125.111.233]) ([10.125.111.233])
+  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2026 07:40:10 -0700
+Message-ID: <bd9e5b6e-07f2-459d-bca6-e290585060aa@intel.com>
+Date: Wed, 19 Aug 2026 07:40:09 -0700
 MIME-Version: 1.0
-X-HM-Tid: 0aa01a55d45203a1kunm0db6d2d0140e28
-X-HM-MType: 10
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-	tZV1koWUFITzdXWRgWCB1ZQUpXWS1ZQUlXWQ8JGhUIEh9ZQVlDTU9KVh5KTkJNQ0wYTB9NTVYeHw
-	5VEwETFhoSFyQUDg9ZV1kYEgtZQVlOQ1VJT0pVSk1VSE9ZV1kWGg8SFR0UWUFZT0tIVUpLSEpPSE
-	xVSktLVUpCS0tZBg++
-DKIM-Signature: a=rsa-sha256;
-	b=ayrdjv61Na3LInCrwmOcPR3ii9Z02YiD3rL6lpx3+MK79et/zGZ25xqpw0oR1x2SsB9Cuu7QI/kIFz/H9C7LWVnFQXT/PX/c+nndU2yl85LOmK+rA4L+x2j60822tVC1F2quh7fABvLbfIYQQFEzrbW9JMs5rUFEsfaoy8//paQ=; c=relaxed/relaxed; s=default; d=seu.edu.cn; v=1;
-	bh=zGCg9rLuHCXctyeYGSM1cLTpJ4wS8crEseTBz4E8UT0=;
-	h=date:mime-version:subject:message-id:from;
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 00/13] x86/msr: Drop 32-bit MSR interfaces
+To: Juergen Gross <jgross@suse.com>, linux-kernel@vger.kernel.org,
+ x86@kernel.org, virtualization@lists.linux.dev, linux-ide@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+ linux-crypto@vger.kernel.org, linux-gpio@vger.kernel.org,
+ linux-perf-users@vger.kernel.org, linux-hyperv@vger.kernel.org,
+ kvm@vger.kernel.org, linux-edac@vger.kernel.org, linux-pci@vger.kernel.org,
+ linux-pm@vger.kernel.org, linux-coco@lists.linux.dev,
+ linux-acpi@vger.kernel.org, linux-hwmon@vger.kernel.org,
+ linux-mtd@lists.infradead.org, platform-driver-x86@vger.kernel.org
+Cc: Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ "H. Peter Anvin" <hpa@zytor.com>, Ajay Kaher <ajay.kaher@broadcom.com>,
+ Alexey Makhalov <alexey.makhalov@broadcom.com>,
+ Broadcom internal kernel review list
+ <bcm-kernel-feedback-list@broadcom.com>, Damien Le Moal
+ <dlemoal@kernel.org>, Niklas Cassel <cassel@kernel.org>,
+ David Airlie <airlied@redhat.com>, Helge Deller <deller@gmx.de>,
+ linux-geode@lists.infradead.org, Olivia Mackall <olivia@selenic.com>,
+ Herbert Xu <herbert@gondor.apana.org.au>, Linus Walleij <linusw@kernel.org>,
+ Bartosz Golaszewski <brgl@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Peter Zijlstra <peterz@infradead.org>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, James Clark
+ <james.clark@linaro.org>, "K. Y. Srinivasan" <kys@microsoft.com>,
+ Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
+ Dexuan Cui <decui@microsoft.com>, Long Li <longli@microsoft.com>,
+ Sean Christopherson <seanjc@google.com>, Paolo Bonzini
+ <pbonzini@redhat.com>, Josh Poimboeuf <jpoimboe@kernel.org>,
+ Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, Pu Wen <puwen@hygon.cn>,
+ Tony Luck <tony.luck@intel.com>, Reinette Chatre
+ <reinette.chatre@intel.com>, Dave Martin <Dave.Martin@arm.com>,
+ James Morse <james.morse@arm.com>, Babu Moger <babu.moger@amd.com>,
+ Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>,
+ Vitaly Kuznetsov <vkuznets@redhat.com>, Andy Lutomirski <luto@kernel.org>,
+ Bjorn Helgaas <bhelgaas@google.com>, "Rafael J. Wysocki"
+ <rafael@kernel.org>, Pavel Machek <pavel@kernel.org>,
+ Kiryl Shutsemau <kas@kernel.org>, Rick Edgecombe
+ <rick.p.edgecombe@intel.com>, Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+ Len Brown <lenb@kernel.org>, Viresh Kumar <viresh.kumar@linaro.org>,
+ Huang Rui <ray.huang@amd.com>, Mario Limonciello
+ <mario.limonciello@amd.com>, Perry Yuan <perry.yuan@amd.com>,
+ K Prateek Nayak <kprateek.nayak@amd.com>,
+ Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+ Yazen Ghannam <yazen.ghannam@amd.com>, Guenter Roeck <linux@roeck-us.net>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Ashok Raj <ashok.raj.linux@gmail.com>, Hans de Goede <hansg@kernel.org>,
+ =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+ Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
+ David E Box <david.e.box@intel.com>,
+ Daniel Lezcano <daniel.lezcano@kernel.org>, Zhang Rui <rui.zhang@intel.com>,
+ Lukasz Luba <lukasz.luba@arm.com>, xen-devel@lists.xenproject.org
+References: <20260819102314.1499258-1-jgross@suse.com>
+From: Dave Hansen <dave.hansen@intel.com>
+Content-Language: en-US
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <20260819102314.1499258-1-jgross@suse.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260819_070853_967168_FBFED12B 
-X-CRM114-Status: UNSURE (   9.71  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260819_074015_013358_75078FCC 
+X-CRM114-Status: GOOD (  10.89  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,158 +182,22 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The RWW wait helpers must not block while evaluating the condition.
-spi_nor_rww_start_exclusive() used mutex_lock() directly and could return
-with nor->lock still held.
+Hey Juergen,
 
-Switch the four RWW start helpers to conditional scoped mutex guards so
-the wait condition never sleeps and nor->lock is released before return.
+These look great. Thanks for doing it!
 
-Fixes: 74df43b3f626 ("mtd: spi-nor: Enhance locking to support reads while writes")
-Cc: stable@vger.kernel.org
-Signed-off-by: Runyu Xiao <runyu.xiao@seu.edu.cn>
+The only wonky thing is how we're going to actually merge it. We
+obviously can't do patches 10-11 until all the "stop using" patches have
+been applied.
 
-Changes in v4:
-- Use the original RWW locking commit in Fixes and update the subject.
-- Apply the locking fix to all RWW start helpers used as wait conditions.
-- Keep commit 03e7bb864d9a ("mtd: spi-nor: use scope-based mutex
-  cleanup helpers") as a stable prerequisite because it adds cleanup.h.
----
- drivers/mtd/spi-nor/core.c | 84 ++++++++++++++++++++------------------
- 1 file changed, 45 insertions(+), 39 deletions(-)
+I obviously 100% realize that it's during the merge window, but any acks
+that the maintainers of 5-9 provide in the next few weeks would be super
+helpful. Or, if any of those maintainers want to cherry pick their
+subsystem's stuff out of this series and apply it, that would be great too.
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index ccf4396cdcd0..d5c6a925862e 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -1273,14 +1273,15 @@ static bool spi_nor_rww_start_io(struct spi_nor *nor)
- {
- 	struct spi_nor_rww *rww = &nor->rww;
- 
--	guard(mutex)(&nor->lock);
--
--	if (rww->ongoing_io)
--		return false;
-+	scoped_guard(mutex_try, &nor->lock) {
-+		if (rww->ongoing_io)
-+			return false;
- 
--	rww->ongoing_io = true;
-+		rww->ongoing_io = true;
-+		return true;
-+	}
- 
--	return true;
-+	return false;
- }
- 
- static void spi_nor_rww_end_io(struct spi_nor *nor)
-@@ -1310,16 +1311,17 @@ static bool spi_nor_rww_start_exclusive(struct spi_nor *nor)
- {
- 	struct spi_nor_rww *rww = &nor->rww;
- 
--	mutex_lock(&nor->lock);
--
--	if (rww->ongoing_io || rww->ongoing_rd || rww->ongoing_pe)
--		return false;
-+	scoped_guard(mutex_try, &nor->lock) {
-+		if (rww->ongoing_io || rww->ongoing_rd || rww->ongoing_pe)
-+			return false;
- 
--	rww->ongoing_io = true;
--	rww->ongoing_rd = true;
--	rww->ongoing_pe = true;
-+		rww->ongoing_io = true;
-+		rww->ongoing_rd = true;
-+		rww->ongoing_pe = true;
-+		return true;
-+	}
- 
--	return true;
-+	return false;
- }
- 
- static void spi_nor_rww_end_exclusive(struct spi_nor *nor)
-@@ -1369,23 +1371,25 @@ static bool spi_nor_rww_start_pe(struct spi_nor *nor, loff_t start, size_t len)
- 	u8 first, last;
- 	int bank;
- 
--	guard(mutex)(&nor->lock);
-+	scoped_guard(mutex_try, &nor->lock) {
-+		if (rww->ongoing_io || rww->ongoing_rd || rww->ongoing_pe)
-+			return false;
- 
--	if (rww->ongoing_io || rww->ongoing_rd || rww->ongoing_pe)
--		return false;
-+		spi_nor_offset_to_banks(nor->params->bank_size, start, len,
-+					&first, &last);
-+		for (bank = first; bank <= last; bank++) {
-+			if (rww->used_banks & BIT(bank))
-+				return false;
- 
--	spi_nor_offset_to_banks(nor->params->bank_size, start, len, &first, &last);
--	for (bank = first; bank <= last; bank++) {
--		if (rww->used_banks & BIT(bank))
--			return false;
-+			used_banks |= BIT(bank);
-+		}
- 
--		used_banks |= BIT(bank);
-+		rww->used_banks |= used_banks;
-+		rww->ongoing_pe = true;
-+		return true;
- 	}
- 
--	rww->used_banks |= used_banks;
--	rww->ongoing_pe = true;
--
--	return true;
-+	return false;
- }
- 
- static void spi_nor_rww_end_pe(struct spi_nor *nor, loff_t start, size_t len)
-@@ -1440,24 +1444,26 @@ static bool spi_nor_rww_start_rd(struct spi_nor *nor, loff_t start, size_t len)
- 	u8 first, last;
- 	int bank;
- 
--	guard(mutex)(&nor->lock);
-+	scoped_guard(mutex_try, &nor->lock) {
-+		if (rww->ongoing_io || rww->ongoing_rd)
-+			return false;
- 
--	if (rww->ongoing_io || rww->ongoing_rd)
--		return false;
-+		spi_nor_offset_to_banks(nor->params->bank_size, start, len,
-+					&first, &last);
-+		for (bank = first; bank <= last; bank++) {
-+			if (rww->used_banks & BIT(bank))
-+				return false;
- 
--	spi_nor_offset_to_banks(nor->params->bank_size, start, len, &first, &last);
--	for (bank = first; bank <= last; bank++) {
--		if (rww->used_banks & BIT(bank))
--			return false;
-+			used_banks |= BIT(bank);
-+		}
- 
--		used_banks |= BIT(bank);
-+		rww->used_banks |= used_banks;
-+		rww->ongoing_io = true;
-+		rww->ongoing_rd = true;
-+		return true;
- 	}
- 
--	rww->used_banks |= used_banks;
--	rww->ongoing_io = true;
--	rww->ongoing_rd = true;
--
--	return true;
-+	return false;
- }
- 
- static void spi_nor_rww_end_rd(struct spi_nor *nor, loff_t start, size_t len)
--- 
-2.34.1
+But, the last time we did some MSR function munging, the tip tree
+carried most of the patches. I would expect we'll have a repeat of that
+here too. I'll pencil in the idea of just merging the lot around -rc1 time.
 
 ______________________________________________________
 Linux MTD discussion mailing list
