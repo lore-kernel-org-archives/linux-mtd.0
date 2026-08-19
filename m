@@ -4,64 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93D59C5B572
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 Aug 2026 05:46:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3A27C5DF6D
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 Aug 2026 05:56:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=9T+pCghLAY0B91hEHP4u/LxmCr1pSae9dXgAi4Trjxc=; b=Mqvgs8vWZoSPmq
-	O5rV08Hf5k7QabfjZGC0oX/ALlAohwiSh1SSULcpc5yg2Nnxrhm7AthLL9+5HbNR9HNgpcgJeDcOS
-	7Oh2P8QupAbaL8TSOXwOqRcJDGm7oHZOXm7LJEBWvRTTIWTNBpo2/2LkZyfejw5ZpTC3zs8IYANF/
-	DauaU444cicvQh1XG8Uonaa8zg4o4s+K/QPIk841ZdDlKu8USge9ay+iHKk5CIIbImgTCfKiYK6Gd
-	o8BsMt05/6Phv7bDS21aBzbZpp4u/NhSRc8qYMdPqmeLxvmMKj5ZzwVTyCTGH2ygbE0szj8e5pBRR
-	bNk6YTFAQvgyV+EDkmJA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=sepTlJ5cXhBx6JlfoshLG+VFbx1a+nQqInQYDy+CZLA=; b=w5TJ3t4Yg1j6h7
+	S1n2Iolhbe4filaNbr9t7hZcHelRaNmd57fKIdgrkTXI1j9z1cVoQCSTA+TeHgG4WnBAykar2Io3I
+	Mju0xDpPN9RvUgTnfXQnF/+A9IuIqtvz4LEiq+rjubNzugfMZWssvybsz5DfREE9hJ4bDtBTXneza
+	WdTSTQb1Dpj0zYNDUp6+ZARFssjd7LaRRuTMY7H2ruf5CLQh5aEYj43CmD9WoR4G528D3qyWixf5n
+	ceUKg3fnmDFeZ4Lww+gdnrXseF8DRSQ4lbDCZ43NbsJJ1N2b6V3IacjI0SY7U7F61AzESUfqbDvqU
+	Tvgo3wETZSbE3HyiAqKA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wwZ7z-000000092Us-3oFp;
-	Wed, 19 Aug 2026 05:46:19 +0000
-Received: from mailgw.kylinos.cn ([124.126.103.232])
+	id 1wwZIC-000000093Go-0FBC;
+	Wed, 19 Aug 2026 05:56:52 +0000
+Received: from mail-wm1-x32d.google.com ([2a00:1450:4864:20::32d])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wwZ7v-000000092Tc-14cn
+	id 1wwZI9-000000093G0-2bER
 	for linux-mtd@lists.infradead.org;
-	Wed, 19 Aug 2026 05:46:19 +0000
-X-UUID: 405dd3469b9111f19a56ed5b684f684d-20260819
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.3.19,REQID:943e49de-a050-4a7d-84eb-b0ba1e38e7f1,IP:0,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:0
-X-CID-META: VersionHash:7db8b62,CLOUDID:c9ae4c6940793613cf6a0b79a0ab56f2,BulkI
-	D:nil,BulkQuantity:0,SF:80|81|82|83|102|136|865|898,TC:nil,Content:0|15|52
-	,EDM:-3|-100,IP:nil,URL:99|1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0
-	,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0,ARC:0
-X-CID-BVR: 2,SSN|SDN
-X-CID-BAS: 2,SSN|SDN,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULS
-X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
-X-UUID: 405dd3469b9111f19a56ed5b684f684d-20260819
-X-User: xiaopei01@kylinos.cn
-Received: from [10.42.12.251] [(10.44.16.150)] by mailgw.kylinos.cn
-	(envelope-from <xiaopei01@kylinos.cn>)
-	(Generic MTA with TLSv1.3 TLS_AES_128_GCM_SHA256 128/128)
-	with ESMTP id 87162550; Wed, 19 Aug 2026 13:45:57 +0800
-Message-ID: <cc164348-2b5a-45a8-8322-7efa9a392248@kylinos.cn>
-Date: Wed, 19 Aug 2026 13:45:55 +0800
+	Wed, 19 Aug 2026 05:56:50 +0000
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-4957eefd361so4325015e9.1
+        for <linux-mtd@lists.infradead.org>; Tue, 18 Aug 2026 22:56:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1787119007; x=1787723807; darn=lists.infradead.org;
+        h=content-disposition:content-type:mime-version:message-id:subject:cc
+         :to:from:date:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=BWWT6Y+7n6aqb1ZdhCg1wzuPPwCJp/t5bh6V7Joa01U=;
+        b=kNSGKbI88YYDTF9XJO3/6c02aE3dL5RWQwyGECKbHyQfhXURYzqCxuITTLCCrneTKG
+         Sm1EL3DCJAEllX/BFdh4D13U82YYqQuuBeRbdoEYOhJakoIZQAOFIN8FCTBOieLvoUks
+         tnUWORPO0QiPm/kp4hmIWPFjZxZ4kD5qe0YPMhTrsNIOH6OH9vwxsn4Bhi+zX/3cZuAA
+         V1kaYcgi7eU+eOPImiTntF7Ehy7vh5ej7rlEExDv1i0pg4naGFr/4ZeDqQL2Eg+hOOcl
+         PA+yrDLGCeBEFzqt/YNBJxVIeKzFfvm4DPkEdPen/8O3BKlyOnZaqAs+9+VkEOFZwPtw
+         x0ug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1787119007; x=1787723807;
+        h=content-disposition:content-type:mime-version:message-id:subject:cc
+         :to:from:date:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=BWWT6Y+7n6aqb1ZdhCg1wzuPPwCJp/t5bh6V7Joa01U=;
+        b=MCInUtyyWyBdMiOLPy3iY6EtBRRDKm+tSXMTwmITiUkiM+ZwdIHaGC7Q6hDDjsZ1wK
+         ZslPZ/Tqu957Y5PjQ820LDck9uQ7F4zJHPF/JnTbrGbVaY5Uovyl5AwjIdEZEZGErFKO
+         ncP/R6h5NNMuwcIJUYaH+pgn7iVVRqultqqJpY6efpnnu6+yk4RS0m19OsHigLFmLyyR
+         FV026jdDYL7f3BZzN9K4zHiqrhKZSCsF2KOkoTpPm2MPHwnXhZ3zxfJymIXPufvR7HfL
+         5IDNqiQRFKiM7NJuwK6D1hCiKq3UJ+wMTMYn0xoVldcCKooZoFHKpuQu0yOmu91qsAd4
+         P30Q==
+X-Gm-Message-State: AOJu0YzcmyLhXLBf/zU494BSmkKA+u83PapA3q1tNN3JphdBoPrRt2T9
+	HFfJScUf7ZI+uSCoo1vIp8g05lWY9PUAgSa+xzcaBEJ0/qVaUTcRJ3qAOFJOu+/wfqKtDgcd
+X-Gm-Gg: AR+sD10o0XX5RQS6WSR3r74poM4WMB6C29UMa68+QaDLa2WghtkxKPhkHIf1FT2GB9d
+	B4ag9Eqf6iiwUGLsfprU6liLzIRTNaeuLeQIcMsNsbHgSw4r3lbcNMhGAd8yZ1vVvmdJo0hiJfI
+	1Vp0JWQj1030X6N52lAwtMz5Fm3zZmU5rQ3rx0ao7vrVZMkT//rtDY+Ir9WRYguqVD1e4RDk9QL
+	n/E2/kDSsLHASc9FGqt/693eTDPZAITd3lo25J1LXiTGNmOPQ0Ss93RzMfbhGw+hs7z21tTWXH7
+	ctXvnUWm+prQKQRFlORvpjwzHtKVqdPH481DsUIIpt9BotNe+NCHAcWG9kFxZ+CBdLeKaWQ3o/2
+	rLCUCiQ0d0k9B4vWynp4nLrZty1srp1T6MHPCloi8NElrI5aHnCr09JUpM6O0xPQNW8Vm7pm8d8
+	0vqHW09Aw3Z/OyU2QQzCF1ktVaYhH9yep/HNPeVbtl4vaRSsGzX9uOaRqZBmwBJle8pqJ3
+X-Received: by 2002:a05:600c:37c6:b0:499:858f:2653 with SMTP id 5b1f17b1804b1-499aa14b457mr36256255e9.2.1787119007066;
+        Tue, 18 Aug 2026 22:56:47 -0700 (PDT)
+Received: from localhost ([2c0f:3d00:6be:8900:ce5e:9212:ea4b:f30])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-499aa0fd728sm48089655e9.3.2026.08.18.22.56.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Aug 2026 22:56:46 -0700 (PDT)
+Date: Wed, 19 Aug 2026 08:56:42 +0300
+From: Dan Carpenter <error27@gmail.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: [bug report] mtd: rawnand: ndfc: Stop using nand_release()
+Message-ID: <aoVFmrEnQcDuI1fQ@stanley.mountain>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] mtd: block2mtd: Fix divide error when erase_size is
- zero
-To: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- brauner@kernel.org, jack@suse.cz, hch@lst.de
-Cc: syzbot+b320a4d5f65a61dbbf89@syzkaller.appspotmail.com,
- stable@vger.kernel.org
-References: <25ec7ba58facdf29b42ca43dcf11cd98e2089a5f.1786589041.git.xiaopei01@kylinos.cn>
-From: Pei Xiao <xiaopei01@kylinos.cn>
-In-Reply-To: <25ec7ba58facdf29b42ca43dcf11cd98e2089a5f.1786589041.git.xiaopei01@kylinos.cn>
+Content-Disposition: inline
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260818_224616_520326_1AB2EC0A 
-X-CRM114-Status: GOOD (  16.24  )
+X-CRM114-CacheID: sfid-20260818_225649_673129_D7A61229 
+X-CRM114-Status: UNSURE (   8.49  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,48 +91,52 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-CgrlnKggMjAyNi84LzEzIDEwOjQ4LCBQZWkgWGlhbyDlhpnpgZM6Cj4gVGhlIGVyYXNlIHNpemUg
-aXMgcGFyc2VkIGZyb20gdGhlICJibG9jazJtdGQiIG1vZHVsZSBwYXJhbWV0ZXIgYW5kIGNhbgo+
-IGJlIHNldCB0byB6ZXJvLiBhZGRfZGV2aWNlKCkgdGhlbiBldmFsdWF0ZXMKPiAKPiAgICAgICAg
-IGlmIChzaXplICUgZXJhc2Vfc2l6ZSkKPiAKPiB3aXRoIGEgemVybyBkaXZpc29yLCB3aGljaCB0
-cmlnZ2VycyBhIGRpdmlkZSBlcnJvcjoKPiAKPiBkaXZpZGUgZXJyb3I6IDAwMDAgWyMxXSBQUkVF
-TVBUIFNNUCBQVEkKPiBSSVA6IDAwMTA6YWRkX2RldmljZSBkcml2ZXJzL210ZC9kZXZpY2VzL2Js
-b2NrMm10ZC5jOjI5NiBbaW5saW5lXQo+IFJJUDogMDAxMDpibG9jazJtdGRfc2V0dXAyKzB4NTky
-LzB4ZGEwIGRyaXZlcnMvbXRkL2RldmljZXMvYmxvY2sybXRkLmM6NDU5Cj4gQ2FsbCBUcmFjZToK
-PiBibG9jazJtdGRfc2V0dXArMHgyNy8weGUwIGRyaXZlcnMvbXRkL2RldmljZXMvYmxvY2sybXRk
-LmM6NDc2Cj4gcGFyYW1fYXR0cl9zdG9yZSsweDIxNC8weDMxMCBrZXJuZWwvcGFyYW1zLmM6NTg5
-Cj4gbW9kdWxlX2F0dHJfc3RvcmUrMHg2NS8weDkwIGtlcm5lbC9wYXJhbXMuYzo5MDQKPiBrZXJu
-ZnNfZm9wX3dyaXRlX2l0ZXIrMHgzYTQvMHg1NDAgZnMva2VybmZzL2ZpbGUuYzozNDUKPiAuLi4K
-PiAKPiBSZWplY3QgYSB6ZXJvIGVyYXNlIHNpemUgYmVmb3JlIHBlcmZvcm1pbmcgdGhlIG1vZHVs
-byBvcGVyYXRpb24gc28gdGhlCj4gZXhpc3RpbmcgImVyYXNlc2l6ZSBtdXN0IGJlIGEgZGl2aXNv
-ciBvZiBkZXZpY2Ugc2l6ZSIgZXJyb3IgcGF0aAo+IHJlcG9ydHMgdGhlIGludmFsaWQgYXJndW1l
-bnQgYW5kIGZyZWVzIHRoZSBkZXZpY2UuCj4gCj4gRml4ZXM6IGVhNmQ4MzNhM2ZkZCAoIm10ZDog
-YmxvY2sybXRkOiBjaGVjayBkZXZpY2Ugc2l6ZSIpCj4gUmVwb3J0ZWQtYnk6IHN5emJvdCtiMzIw
-YTRkNWY2NWE2MWRiYmY4OUBzeXprYWxsZXIuYXBwc3BvdG1haWwuY29tCj4gQ2xvc2VzOiBodHRw
-czovL2xvcmUua2VybmVsLm9yZy9sa21sLzZhN2I1OGJhLmFjMzYxYzA5LjIyZmYwYS4wMDQ1LkdB
-RUBnb29nbGUuY29tLwo+IFN1Z2dlc3RlZC1ieTogSsO2cm4gRW5nZWwgPGpvZXJuQGJhcmVseXNl
-Y3VyZS5vcmc+Cj4gQ2M6IHN0YWJsZUB2Z2VyLmtlcm5lbC5vcmcKPiBTaWduZWQtb2ZmLWJ5OiBQ
-ZWkgWGlhbyA8eGlhb3BlaTAxQGt5bGlub3MuY24+CkFkZCBjYyBNYWludGFpbmVycy4KPiAtLS0K
-PiBjaGFuZ2VzIGluIHYzOgo+IDEucmVtb3ZlIChsb25nKSBjYXN0IGR1ZSB0byBidWlsZCBlcnJv
-cnMgaW4gMzJiaXQgY29uZmlnIHN5c3RlbXMKPiAyLmNoYW5nZXMgZ2l0IGxvZyBhYm91dCAobG9u
-ZykgY2FzdAo+IAo+IGNoYW5nbG9ncyBpbiB2MjoKPiAxLkFkZCBTdWdnZXN0ZWQtYnkgdGFnCj4g
-Mi5yZW1vdmUgdW5uZWNlc3NhcnkgKGxvbmcpIGNhc3QgZnJvbSB0aGUgc2l6ZQo+IC0tLQo+ICBk
-cml2ZXJzL210ZC9kZXZpY2VzL2Jsb2NrMm10ZC5jIHwgMiArLQo+ICAxIGZpbGUgY2hhbmdlZCwg
-MSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkKPiAKPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9t
-dGQvZGV2aWNlcy9ibG9jazJtdGQuYyBiL2RyaXZlcnMvbXRkL2RldmljZXMvYmxvY2sybXRkLmMK
-PiBpbmRleCAwM2U4MGIyYzRmNWEuLjM0OWZhMDdiZTMxNCAxMDA2NDQKPiAtLS0gYS9kcml2ZXJz
-L210ZC9kZXZpY2VzL2Jsb2NrMm10ZC5jCj4gKysrIGIvZHJpdmVycy9tdGQvZGV2aWNlcy9ibG9j
-azJtdGQuYwo+IEBAIC0yOTMsNyArMjkzLDcgQEAgc3RhdGljIHN0cnVjdCBibG9jazJtdGRfZGV2
-ICphZGRfZGV2aWNlKGNoYXIgKmRldm5hbWUsIGludCBlcmFzZV9zaXplLAo+ICAJfQo+ICAKPiAg
-CXNpemUgPSBiZGV2X25yX2J5dGVzKGJkZXYpOwo+IC0JaWYgKChsb25nKXNpemUgJSBlcmFzZV9z
-aXplKSB7Cj4gKwlpZiAoIWVyYXNlX3NpemUgfHwgKGxvbmcpc2l6ZSAlIGVyYXNlX3NpemUpIHsK
-PiAgCQlwcl9lcnIoImVyYXNlc2l6ZSBtdXN0IGJlIGEgZGl2aXNvciBvZiBkZXZpY2Ugc2l6ZVxu
-Iik7Cj4gIAkJZ290byBlcnJfZnJlZV9ibG9jazJtdGQ7Cj4gIAl9CgoKX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNz
-aW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2xpbnV4LW10ZC8K
+Hello Miquel Raynal,
+
+Commit a9384f95fe77 ("mtd: rawnand: ndfc: Stop using nand_release()")
+from May 19, 2020 (linux-next), leads to the following Smatch static
+checker warning:
+
+	drivers/mtd/nand/raw/ndfc.c:254 ndfc_remove()
+	error: dereferencing freed memory 'mtd' (line 251)
+
+drivers/mtd/nand/raw/ndfc.c
+    244 static void ndfc_remove(struct platform_device *ofdev)
+    245 {
+    246         struct ndfc_controller *ndfc = dev_get_drvdata(&ofdev->dev);
+    247         struct nand_chip *chip = &ndfc->chip;
+    248         struct mtd_info *mtd = nand_to_mtd(chip);
+    249         int ret;
+    250 
+    251         ret = mtd_device_unregister(mtd);
+    252         WARN_ON(ret);
+
+This WARN_ON() would trigger if the use after free were a real issue...
+
+Smatch is complaining that the mtd_virt_concat_destroy() function frees
+mtd->name and mtd.
+
+    253         nand_cleanup(chip);
+--> 254         kfree(mtd->name);
+                      ^^^^^^^^^
+So this is a use after free double free.
+
+I feel like the free in mtd_virt_concat_destroy() is done at the wrong
+layer and should just be removed.  But I haven't looked at it very
+closely.
+
+    255 }
+
+This email is a free service from the Smatch-CI project [smatch.sf.net].
+
+regards,
+dan carpenter
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
