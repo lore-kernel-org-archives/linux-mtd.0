@@ -4,82 +4,112 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25E66C5DF82
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 Aug 2026 06:05:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 260BCC5DF81
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 Aug 2026 06:06:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Lo6tNthr+mLZK/CO2+Y5z0lyFV+F7wc8skduINZf8U4=; b=NHuOf2AmslwGgT
-	vfd9pA2JiIqHsJWgaUY0oj9EKQPRKMyfKl/8HL/xyTvcUQrKjiT0LwAGkra680HUXr4ax2MaX4ekB
-	EEb8nOdQKaCC3VjSzPXCcDZ2HWGig5F/txP+TOBtPqORIVqBuaVJik4xzBChTrRjVRJIZ8rr/VeaD
-	S2dxxFX+30RkKqJPEAn9bR4DzINsJbb3ZuLQXuO7U+z1wIxX9tpl15DfBzSEH9n8omE3KsrJ+YHyF
-	+HTNiASROJSsOm8weziw1XB7cVxMfm26PpqNIiryTNeovVAGVkXXR75Orda2Rp+roBuvbFx+0rjB4
-	RSKKiUYAsB0ouxEwafiQ==;
+	List-Owner; bh=SP9jkkJ2Ky6CMOa6OwywJjwxYm9fGxyrcYRkB58+t5U=; b=mS1y0wxdnoDSmD
+	7H1Qvp8cfxWrK8RTwXZZYmdvnjd4Md+AwhAC0wbG4xTsGVl0W8fRfK8s4+NLRIGh//evRJU2HRyFV
+	AoRChHBm1HCr0TIyccBuaFcDCM+8ho1eLaH3R70PpTbQeMIqi5OzZcdeVwCPaddv7GbySaOxsaid7
+	fWB73a/Uy0PYEMB5a8Ho2IRK7no1Ltwqy2o3f3/2apHyCWNfVWr/ugRvGUW7ib4mBYhYXe3JaxzWW
+	uL+e97sAisoWDAeyJW6r9D3HtHc89yEwKgUmWh6GxFeiwVBtN/Kd51YVCAPsGs1JDRSzR7ozgUIeV
+	i+qzhlYzmBLk/dUq/LuA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wwvts-0000000AuIQ-0K7P;
-	Thu, 20 Aug 2026 06:05:16 +0000
-Received: from smtp9.infineon.com ([217.10.52.204])
+	id 1wwvv2-0000000AuXy-0hpX;
+	Thu, 20 Aug 2026 06:06:28 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wwvtp-0000000AuGq-0AKw;
-	Thu, 20 Aug 2026 06:05:14 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=infineon.com; i=@infineon.com; q=dns/txt; s=IFXMAIL;
-  t=1787205913; x=1818741913;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=u6nnStvPEFbyY7Htslo0ENX4rktquD6YXC5DcbylmnQ=;
-  b=WsV0RLI4JyDfI7g+YOGQV7SPJyIHVBitPfKZlBxruqsEK0hNWgAOQMHh
-   9t5B5dGYgXG15pH2Xv3FEIRDgJCIRh0ZlpqCIuPI1L4yo0DZUD+oA69h/
-   NaEB4tCw03PrUJIv5D6UJV+DTWJyaThhh87HnifEdeF0EfM3bCYZqzG5M
-   Q=;
-X-CSE-ConnectionGUID: bReYDedRRoWRB8kInbFdAg==
-X-CSE-MsgGUID: H62G2pimStinys5SXy3Y5A==
-X-IronPort-AV: E=McAfee;i="6800,10657,11880"; a="105418331"
-X-IronPort-AV: E=Sophos;i="6.25,232,1779141600"; 
-   d="scan'208";a="105418331"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO MUCSE814.infineon.com) ([172.23.29.40])
-  by smtp9.infineon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2026 08:03:52 +0200
-Received: from MUCSE815.infineon.com (172.23.29.41) by MUCSE814.infineon.com
- (172.23.29.40) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.45; Thu, 20 Aug
- 2026 08:03:51 +0200
-Received: from MUCSE815.infineon.com ([fe80::ed10:a720:3031:ca14]) by
- MUCSE815.infineon.com ([fe80::ed10:a720:3031:ca14%12]) with mapi id
- 15.02.2562.045; Thu, 20 Aug 2026 08:03:51 +0200
-From: <Takahiro.Kuwano@infineon.com>
-To: <miquel.raynal@bootlin.com>, <pratyush@kernel.org>, <mwalle@kernel.org>,
-	<richard@nod.at>, <vigneshr@ti.com>, <nicolas.ferre@microchip.com>,
-	<alexandre.belloni@bootlin.com>, <claudiu.beznea@tuxon.dev>,
-	<corbet@lwn.net>, <skhan@linuxfoundation.org>
-CC: <STLin2@winbond.com>, <hsinyi@chromium.org>,
-	<thomas.petazzoni@bootlin.com>, <linux-mtd@lists.infradead.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<linux-doc@vger.kernel.org>
-Subject: RE: [PATCH v3 10/23] mtd: spi-nor: winbond: Add support for
- W25Q64RV-Q/N
-Thread-Topic: [PATCH v3 10/23] mtd: spi-nor: winbond: Add support for
- W25Q64RV-Q/N
-Thread-Index: AQHdKzdFbZaaaDmxmEagAmRtxzCY87amfMDQ
-Date: Thu, 20 Aug 2026 06:03:51 +0000
-Message-ID: <5d1cbf4b2a414b15be60832fc4be6025@infineon.com>
-References: <20260813-winbond-v7-1-spi-nor-rv-addition-v3-0-b637cf120d5c@bootlin.com>
- <20260813-winbond-v7-1-spi-nor-rv-addition-v3-10-b637cf120d5c@bootlin.com>
-In-Reply-To: <20260813-winbond-v7-1-spi-nor-rv-addition-v3-10-b637cf120d5c@bootlin.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.161.6.196]
+	id 1wwvv0-0000000AuXl-0YmI;
+	Thu, 20 Aug 2026 06:06:26 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with ESMTP id 4954360A84;
+	Thu, 20 Aug 2026 06:06:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 106F71F000E9;
+	Thu, 20 Aug 2026 06:06:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1787205985;
+	bh=8Ul4LcNKNGu0Z584PICkjX7+P+obMk+pMAEdlAEtBLc=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=n7FFTwj85oHM8+Z0bncLFNY9/eW5UxEc3LeFSPwVmM/J0yU3NCrZjNz2zCIEYZwLE
+	 VkUDYV1ptH6tax/0F1oXiJjDiE4SC7hgcWjk/xP+EHEssecT4QfZMP4aTD2PVsDkB/
+	 PHZc88roAXGNSFiQUibZJ0cNvxEnz09z/agN4p5AbkwKKXMWc8TIrdxjcPbruKZSKu
+	 3OPsCjNo23WGFwZ6ajg3ye5CpkwpwGndpwB3CJOPi5MYLZRxkxBpTyt0laVyIVRSIA
+	 t9R0jcmDR/EPUk7IXvEelvCevQFSUrNEUzW4iSTQEsCRum1JwmrzWQUfF/uSY/YiLe
+	 LHO1ski2SQNRg==
+Message-ID: <21d31639-4d16-4ee2-8ff3-18877636aa8b@kernel.org>
+Date: Thu, 20 Aug 2026 15:06:10 +0900
 MIME-Version: 1.0
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260819_230513_402186_950050E5 
-X-CRM114-Status: UNSURE (   8.58  )
-X-CRM114-Notice: Please train this message.
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 12/13] treewide: convert rdmsrq() from a macro to an
+ inline function
+To: Juergen Gross <jgross@suse.com>, linux-kernel@vger.kernel.org,
+ x86@kernel.org, linux-perf-users@vger.kernel.org,
+ linux-hyperv@vger.kernel.org, kvm@vger.kernel.org,
+ virtualization@lists.linux.dev, linux-edac@vger.kernel.org,
+ linux-pci@vger.kernel.org, linux-pm@vger.kernel.org,
+ linux-coco@lists.linux.dev, linux-acpi@vger.kernel.org,
+ linux-ide@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-crypto@vger.kernel.org, linux-gpio@vger.kernel.org,
+ linux-hwmon@vger.kernel.org, linux-mtd@lists.infradead.org,
+ platform-driver-x86@vger.kernel.org, linux-fbdev@vger.kernel.org
+Cc: Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ "H. Peter Anvin" <hpa@zytor.com>, Peter Zijlstra <peterz@infradead.org>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, James Clark
+ <james.clark@linaro.org>, "K. Y. Srinivasan" <kys@microsoft.com>,
+ Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
+ Dexuan Cui <decui@microsoft.com>, Long Li <longli@microsoft.com>,
+ Sean Christopherson <seanjc@google.com>, Paolo Bonzini
+ <pbonzini@redhat.com>, Ajay Kaher <ajay.kaher@broadcom.com>,
+ Alexey Makhalov <alexey.makhalov@broadcom.com>,
+ Broadcom internal kernel review list
+ <bcm-kernel-feedback-list@broadcom.com>, Josh Poimboeuf
+ <jpoimboe@kernel.org>, Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+ Pu Wen <puwen@hygon.cn>, Tony Luck <tony.luck@intel.com>,
+ Reinette Chatre <reinette.chatre@intel.com>,
+ Dave Martin <Dave.Martin@arm.com>, James Morse <james.morse@arm.com>,
+ Babu Moger <babu.moger@amd.com>, Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>,
+ Vitaly Kuznetsov <vkuznets@redhat.com>, Andy Lutomirski <luto@kernel.org>,
+ Bjorn Helgaas <bhelgaas@google.com>, "Rafael J. Wysocki"
+ <rafael@kernel.org>, Pavel Machek <pavel@kernel.org>,
+ Kiryl Shutsemau <kas@kernel.org>, Rick Edgecombe
+ <rick.p.edgecombe@intel.com>, Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+ Len Brown <lenb@kernel.org>, Niklas Cassel <cassel@kernel.org>,
+ David Airlie <airlied@redhat.com>, Olivia Mackall <olivia@selenic.com>,
+ Herbert Xu <herbert@gondor.apana.org.au>,
+ Viresh Kumar <viresh.kumar@linaro.org>, Huang Rui <ray.huang@amd.com>,
+ Mario Limonciello <mario.limonciello@amd.com>,
+ Perry Yuan <perry.yuan@amd.com>, K Prateek Nayak <kprateek.nayak@amd.com>,
+ Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+ Yazen Ghannam <yazen.ghannam@amd.com>, Linus Walleij <linusw@kernel.org>,
+ Bartosz Golaszewski <brgl@kernel.org>, Guenter Roeck <linux@roeck-us.net>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Ashok Raj <ashok.raj.linux@gmail.com>, Hans de Goede <hansg@kernel.org>,
+ =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+ Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
+ David E Box <david.e.box@intel.com>,
+ Daniel Lezcano <daniel.lezcano@kernel.org>, Zhang Rui <rui.zhang@intel.com>,
+ Lukasz Luba <lukasz.luba@arm.com>, Helge Deller <deller@gmx.de>,
+ xen-devel@lists.xenproject.org, linux-geode@lists.infradead.org
+References: <20260819102314.1499258-1-jgross@suse.com>
+ <20260819102314.1499258-13-jgross@suse.com>
+Content-Language: en-US
+From: Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <20260819102314.1499258-13-jgross@suse.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,17 +126,36 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-> There is an ID collision with the chip of same density from the JV
-> family. Both chips are very similar in practice, it is mostly a matter
-> of electrical differences (mostly power consumption being lower).
+On 8/19/26 19:23, Juergen Gross wrote:
+> Today rdmsrq() is a macro using its second parameter as the target for
+> storing the read MSR value.
 > 
-> As a significant difference, RV chips identify themselves as supporting
-> the new SFDP (rev F) field which forces an alternate write SR2
-> opcode (0x31).
+> Convert rdmsrq() to an inline function returning the MSR value.
 > 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> The users have been converted using the following semantic patch:
+> 
+>   // Options: --include-headers
+> 
+>   virtual patch
+>   virtual report
+> 
+>   @@
+>   expression msr, val;
+>   @@
+>   (
+>   - rdmsrq(msr,val)
+>   + val = rdmsrq(msr)
+>   )
+> 
+> Signed-off-by: Juergen Gross <jgross@suse.com>
 
-Reviewed-by: Takahiro Kuwano <takahiro.kuwano@infineon.com>
+For the ata bits,
+
+Acked-by: Damien Le Moal <dlemoal@kernel.org>
+
+-- 
+Damien Le Moal
+Western Digital Research
 
 ______________________________________________________
 Linux MTD discussion mailing list
