@@ -4,65 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5829AC5B572
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 Aug 2026 21:03:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A902C5B572
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 Aug 2026 00:58:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
-	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=P4DAp9P2PY4YetBY5zQt7YUsTUd43y5RiW+IU/R5hMw=; b=Q2KSdpIFbsLaChQFQo1uDaVvkk
-	enf2xvVNpUncyGIV8AH0xaB3SD7ycO3yZKrRDQy43RqgcbMkWu2VmSIU8NKsBTMDxRsVArRbztUus
-	kYW3agyWEKTkN8LWjNdkvorvc/9JoQNE1cJ8cFkanvdZkdhN1VeFpszvBCcF+EGqr1lKlzMsiZtXn
-	PcyeLuE/vkzdX39muMPqz5lBUILga6YPGIE44bs9WsqRAJ/6fqYD4LgrOnenimrvGgQsmYiu0WLDY
-	ApO6YBqzjb8CBFOdKg0nD/nZg7Qr+IjM8luLkzaKIL9yfsieDW4KFOId9goGtyBNgRgO8DstQbtNu
-	4YWcNvTA==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=AUU9TDvJ7tMPAKG/zXLuhbAVtyV59yGErKgB/m0WA1Q=; b=1EHjjZOYXlerUE
+	ZWG31SXFTe0jGz805SYRTo28lt5Qu4IipOWvb5NQJVd3o1bwLkoKYsQQuGy3OM01gIB4YvWOujyly
+	3mkzQAO1SAuspfxdc8yfrAsFoh926JLCeOjEADBa18FGKniOCASbY/LOhWaQ1eX9Pfk9W1FM2YRj6
+	LEQQZ40OU460/ZeSU2ojciI61cWPBhWARf9YKoWiH7yAFtIRYl/sn77mbGJWbO4UlXVipWqpYi/Eq
+	GAoJgYAQJxK3r+qmOMEN4VrMI55zJJb3xJqeBoxhTd6ukrNP8EBLQs/DttXoCpBctceJAX7mGJa+B
+	Hbb1Kkbs0h39shOZP3Ag==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wwnRm-0000000AXe1-0u3z;
-	Wed, 19 Aug 2026 21:03:42 +0000
-Received: from mailout.nod.at ([116.203.167.152] helo=lithops.sigma-star.at)
+	id 1wwr6M-0000000Ai9h-0R7i;
+	Thu, 20 Aug 2026 00:57:50 +0000
+Received: from gw2.atmark-techno.com ([35.74.137.57])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wwnRi-0000000AXdd-3LwO
+	id 1wwr6J-0000000Ai9J-38eS
 	for linux-mtd@lists.infradead.org;
-	Wed, 19 Aug 2026 21:03:40 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id EDED92ABFA3;
-	Wed, 19 Aug 2026 23:03:34 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-	with ESMTP id Bl6s-4N6wTwH; Wed, 19 Aug 2026 23:03:33 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 8FEDE2A3C71;
-	Wed, 19 Aug 2026 23:03:33 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id eVdQFwria_v5; Wed, 19 Aug 2026 23:03:33 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 622C51012EE;
-	Wed, 19 Aug 2026 23:03:33 +0200 (CEST)
-Date: Wed, 19 Aug 2026 23:03:33 +0200 (CEST)
-From: Richard Weinberger <richard@nod.at>
-To: Jaeyoung Chung <jjy600901@snu.ac.kr>
-Cc: David Woodhouse <dwmw2@infradead.org>, 
-	linux-mtd <linux-mtd@lists.infradead.org>, 
-	Kees Cook <kees@kernel.org>, 
-	linux-kernel <linux-kernel@vger.kernel.org>, eulgyukim@snu.ac.kr
-Message-ID: <849183271.921.1787173413104.JavaMail.zimbra@nod.at>
-In-Reply-To: <20260819182805.4020838-1-jjy600901@snu.ac.kr>
-References: <20260819182805.4020838-1-jjy600901@snu.ac.kr>
-Subject: Re: [BUG] general protection fault in jffs2_xattr_delete_inode
+	Thu, 20 Aug 2026 00:57:49 +0000
+Authentication-Results: gw2.atmark-techno.com;
+	dkim=pass (2048-bit key; unprotected) header.d=atmark-techno.com header.i=@atmark-techno.com header.a=rsa-sha256 header.s=google header.b=Y9NMoEum;
+	dkim-atps=neutral
+Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com [209.85.214.199])
+	by gw2.atmark-techno.com (Postfix) with ESMTPS id EBBD773F
+	for <linux-mtd@lists.infradead.org>; Thu, 20 Aug 2026 09:57:40 +0900 (JST)
+Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-2ce7dff6253so4282145ad.1
+        for <linux-mtd@lists.infradead.org>; Wed, 19 Aug 2026 17:57:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=atmark-techno.com; s=google; t=1787187460; x=1787792260; darn=lists.infradead.org;
+        h=in-reply-to:content-disposition:content-type:mime-version
+         :references:message-id:subject:cc:to:from:date:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=xZ6vy4VTfKURcQxXwGAZYevGuvbsABfheCK7MjM4YOw=;
+        b=Y9NMoEumknSOgAtrmr464guruE8e4hs94fL480ekxoIckYH65iXU4xj4qB2LNdDWkp
+         Y0M9dlXVATQbYMxifGl9jPLy6PcF93vRHQayAhKCLEQjiv4yoewWaJvrF/iUPlmTkx1h
+         ZOqFCXq1PyzPSqrute277rDVvraxiXi5abOMRHcW7msoHFcYhvpUHWrBtG6wkhtjTyGC
+         95PqbmKoN8Ia5XhuPuZoqerCAJaSuy31ArOixisa4Kvwxuh+nTfEsXboFLyZvkOegr7W
+         tNImuyBSjGaHOWr9VZQdDrsz/YtJYBnkjF3EVeDI1pmpWDDZlkWkcoymfU9bJQeVFkXL
+         wpHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1787187460; x=1787792260;
+        h=in-reply-to:content-disposition:content-type:mime-version
+         :references:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=xZ6vy4VTfKURcQxXwGAZYevGuvbsABfheCK7MjM4YOw=;
+        b=V6B30hw0l8W3VUP4WqEtl8k7dIKqU8mqeaintV9s2KDnDmAu9ojrQv2PPE2P0IitXu
+         l2iZvyDYWfCOGUhJnTmo/rfUhtPxUYeOac1kmmmfrq1Hd+fKpokoRoyOGKvl+gjfwHNK
+         JJ9QKOVkK5kDV+CvWgmIO4ngYGiQNZqoYdkGG5PLUwz7vXzqaKgICchj5KEDYnSDTfj8
+         Bz38Mz2Yoy8GhTiA3bnXgbx8AugMJ1L4+Dpe38zKaHFGB9aTKOFHSomVDW6svkXe5+4m
+         IWpyTpf3/6TLRd1c+04aJuW+nKeAvPwIVGc3z7OyOiOvaquAqr0jIgJKwlvtL3CT7T1x
+         20oA==
+X-Forwarded-Encrypted: i=1; AHgh+RqhLJj2wMDY9NZxOX0BtSvWZ88H8fjIUC7Q/mVe1EF6XaWBxUWIZVcKWgCr+6zEw08/qRxFGpxKmxQ=@lists.infradead.org
+X-Gm-Message-State: AFuF++k+vElt8M5nvrejrr8R+Efml1tBClKUmKUbjrHbDR/sdf0rPP9u
+	WtQeF9Droysw2RjjqmibHr+qkXcTRieVH0IFQRL2miKpBWvQpP86jph+R5t4eIPEleyeAMWYSCz
+	tXj8pvanJYCDrGavzgmI8bLsUMD30dcK3d/GsKrXp7440DHPTkImE8UimBsNA6BaBhjC3
+X-Gm-Gg: AR+sD10d1ESTAq6WfpXUU6JJ9+5MQNRM+z8/WFIlnmoL+2oHR0ABjdOlln2PahBHrxV
+	p3ipuTkSM5kP2qi2il7Nq8dP6DhuyInfDWjyhQBCU1EG6cjs7KN1SzWa1HoRxW1qZhvm9oStWDn
+	zdm/3kMRrBkPFsrRX6UO8yBYSjO/kPFxxRxAtHzDvym+1jC//S7vcSzFRYghG1XZUBg7VAd71kR
+	xtcElUILVFx5rRt0diiGSEnhJhoFw/TB7RUWG8731IIv1ujpCvnlSo2y3naIXiAR6EEjw1vr7yu
+	G7bnyTYBDVm8Z9ylkWkxVB0TJ+G/DUzV71rFnwdPXNDC5fX+V7MyOHznV2H6y/vy0/A5RWU3wqG
+	ubFMjChQlVrEVzwD1cbUD7p5JJFIv3BevfZnd42JSpDDXS92P
+X-Received: by 2002:a17:902:c944:b0:2d2:72b6:556b with SMTP id d9443c01a7336-2d61a1a54f5mr33599515ad.13.1787187459831;
+        Wed, 19 Aug 2026 17:57:39 -0700 (PDT)
+X-Received: by 2002:a17:902:c944:b0:2d2:72b6:556b with SMTP id d9443c01a7336-2d61a1a54f5mr33599065ad.13.1787187459368;
+        Wed, 19 Aug 2026 17:57:39 -0700 (PDT)
+Received: from localhost (sodcd-04p2-40.ppp11.odn.ad.jp. [203.139.65.40])
+        by smtp.gmail.com with UTF8SMTPSA id d9443c01a7336-2d62d588035sm499445ad.23.2026.08.19.17.57.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Aug 2026 17:57:38 -0700 (PDT)
+Date: Thu, 20 Aug 2026 09:57:27 +0900
+From: Dominique Martinet <dominique.martinet@atmark-techno.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: stable <stable@vger.kernel.org>, chengzhihao1 <chengzhihao1@huawei.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	linux-mtd <linux-mtd@lists.infradead.org>,
+	linux-kernel <linux-kernel@vger.kernel.org>,
+	Cheng Ming Lin <chengminglin@mxic.com.tw>,
+	Liyuan Pang <pangliyuan1@huawei.com>
+Subject: Re: [PATCH 0/2] Backport fixes for UBI
+Message-ID: <aoZQ90HBGlM-SL8K@atmark-techno.com>
+References: <20260818-ubi-backports-v1-0-324d6816d2ae@atmark-techno.com>
+ <1200997805.161072.1787136508436.JavaMail.zimbra@nod.at>
 MIME-Version: 1.0
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF153 (Linux)/8.8.12_GA_3809)
-Thread-Topic: general protection fault in jffs2_xattr_delete_inode
-Thread-Index: 4sAwvj/mwoU3BVMs8GishbLzzlie7Q==
+Content-Disposition: inline
+In-Reply-To: <1200997805.161072.1787136508436.JavaMail.zimbra@nod.at>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260819_140338_991016_EC85DCB9 
-X-CRM114-Status: UNSURE (   6.39  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260819_175748_040677_E925754E 
+X-CRM114-Status: GOOD (  16.01  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,49 +108,57 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIkphZXlvdW5nIENodW5nIiA8
-amp5NjAwOTAxQHNudS5hYy5rcj4KClsuLi5dCgo+IFJJUDogMDAxMDpqZmZzMl94YXR0cl9kZWxl
-dGVfaW5vZGUrMHgzOC8weDMwMCBmcy9qZmZzMi94YXR0ci5jOjYwMgo+IENvZGU6IDQxIDU1IDQx
-IDU0IDUzIDQ4IDgzIGVjIDUwIDQ4IDg5IDNjIDI0IDQ4IDg1IGY2IDc0IDJhIDQ5IDg5IGY2IDQ5
-IGJkIDAwIDAwCj4gMDAgMDAgMDAgZmMgZmYgZGYgNDggOGQgNWUgMjggNDggODkgZDggNDggYzEg
-ZTggMDMgPDQyPiAwZiBiNiAwNCAyOCA4NCBjMCAwZiA4NQo+IDkwIDAyIDAwIDAwIDgzIDNiIDAw
-IDc0IDE0IDQ4IDgzIGM0IDUwCj4gUlNQOiAwMDE4OmZmZmY4ODgxMDRhZDc5MTggRUZMQUdTOiAw
-MDAxMDIwMwo+IFJBWDogMGM4YzhjOGM4YzhjOGM5MSBSQlg6IDY0NjQ2NDY0NjQ2NDY0OGMgUkNY
-OiAwMDAwMDAwMDAwMDAwMDAxCj4gUkRYOiAwMDAwMDAwMDAwMDAwMDAxIFJTSTogNjQ2NDY0NjQ2
-NDY0NjQ2NCBSREk6IGZmZmY4ODgxMDgyNjAwMDAKPiBSQlA6IGRmZmZmYzAwMDAwMDAwMDAgUjA4
-OiBmZmZmODg4MTA0YWQ3OTg3IFIwOTogMWZmZmYxMTAyMDk1YWYzMAo+IFIxMDogZGZmZmZjMDAw
-MDAwMDAwMCBSMTE6IGZmZmZlZDEwMjA5NWFmMzEgUjEyOiAxZmZmZjExMDIyMzQ5Y2ZjCj4gUjEz
-OiBkZmZmZmMwMDAwMDAwMDAwIFIxNDogNjQ2NDY0NjQ2NDY0NjQ2NCBSMTU6IDFmZmZmMTEwMjIz
-NDljZTgKPiBGUzogIDAwMDA3ODYzNjI3MTg2YzAoMDAwMCkgR1M6ZmZmZjg4ODE1ZThhYzAwMCgw
-MDAwKSBrbmxHUzowMDAwMDAwMDAwMDAwMDAwCj4gQ1M6ICAwMDEwIERTOiAwMDAwIEVTOiAwMDAw
-IENSMDogMDAwMDAwMDA4MDA1MDAzMwo+IENSMjogMDAwMDc4NjM2MjcxN2Y3OCBDUjM6IDAwMDAw
-MDAxMDc5NWMwMDAgQ1I0OiAwMDAwMDAwMDAwMDAwNmYwCj4gQ2FsbCBUcmFjZToKPiA8VEFTSz4K
-PiBqZmZzMl9kb19jbGVhcl9pbm9kZSsweDRkLzB4MmYwIGZzL2pmZnMyL3JlYWRpbm9kZS5jOjE0
-MTgKPiBldmljdCsweDM1My8weDcwMCBmcy9pbm9kZS5jOjgyNQo+IGpmZnMyX25ld19pbm9kZSsw
-eDQ0My8weGNlMCBmcy9qZmZzMi9mcy5jOi0xCj4gamZmczJfY3JlYXRlKzB4ODcvMHgzMDAgZnMv
-amZmczIvZGlyLmM6MTgyCj4gbG9va3VwX29wZW4gZnMvbmFtZWkuYzo0NTA4IFtpbmxpbmVdCj4g
-b3Blbl9sYXN0X2xvb2t1cHMgZnMvbmFtZWkuYzo0NjA4IFtpbmxpbmVdCj4gcGF0aF9vcGVuYXQr
-MHhlM2MvMHgyOWIwIGZzL25hbWVpLmM6NDg2MAo+IGRvX2ZpbGVfb3BlbisweDE5ZC8weDM2MCBm
-cy9uYW1laS5jOjQ4OTIKPiBkb19zeXNfb3BlbmF0MisweDlhLzB4MTAwIGZzL29wZW4uYzoxMzY4
-Cj4gZG9fc3lzX29wZW4gZnMvb3Blbi5jOjEzNzQgW2lubGluZV0KPiBfX2RvX3N5c19vcGVuYXQg
-ZnMvb3Blbi5jOjEzOTAgW2lubGluZV0KPiBfX3NlX3N5c19vcGVuYXQgZnMvb3Blbi5jOjEzODUg
-W2lubGluZV0KPiBfX3g2NF9zeXNfb3BlbmF0KzB4ZjgvMHgxMzAgZnMvb3Blbi5jOjEzODUKPiBk
-b19zeXNjYWxsX3g2NCBhcmNoL3g4Ni9lbnRyeS9zeXNjYWxsXzY0LmM6NjMgW2lubGluZV0KPiBk
-b19zeXNjYWxsXzY0KzB4ZjcvMHgzNzAgYXJjaC94ODYvZW50cnkvc3lzY2FsbF82NC5jOjk0Cj4g
-ZW50cnlfU1lTQ0FMTF82NF9hZnRlcl9od2ZyYW1lKzB4NzYvMHg3ZQo+IFJJUDogMDAzMzoweDc4
-NjM2MzAxZTgyOQoKU28sIHRoZSBwYXJ0aWFsbHkgY3JlYXRlZCBpbm9kZSBpcyBldmljdGVkIGlu
-IHRoZSBjcmVhdGUgcGF0aC4KRG9lcyB0aGlzIGNoYW5nZSBoZWxwPwoKZGlmZiAtLWdpdCBhL2Zz
-L2pmZnMyL29zLWxpbnV4LmggYi9mcy9qZmZzMi9vcy1saW51eC5oCmluZGV4IDg2YWIwMTRhMzQ5
-Yy4uYTk5MDZmOWUzNjM4IDEwMDY0NAotLS0gYS9mcy9qZmZzMi9vcy1saW51eC5oCisrKyBiL2Zz
-L2pmZnMyL29zLWxpbnV4LmgKQEAgLTU3LDYgKzU3LDcgQEAgc3RhdGljIGlubGluZSB2b2lkIGpm
-ZnMyX2luaXRfaW5vZGVfaW5mbyhzdHJ1Y3QgamZmczJfaW5vZGVfaW5mbyAqZikKIAlmLT50YXJn
-ZXQgPSBOVUxMOwogCWYtPmZsYWdzID0gMDsKIAlmLT51c2VyY29tcHIgPSAwOworCWYtPmlub2Nh
-Y2hlID0gTlVMTDsKIH0KIApUaGFua3MsCi8vcmljaGFyZAoKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1h
-aWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xp
-bnV4LW10ZC8K
+Richard Weinberger wrote on Wed, Aug 19, 2026 at 12:48:28PM +0200:
+> While porting these back is not wrong, I have a hard time to see how the
+> current stables rules apply here.
+
+Thank you for looking into this!
+
+I'm honestly fuzzy on stable backport "rules", but in practice I see all
+sort of things get in (admitely sometimes new features/refactor just
+because it makes an actual fix easier to backport, but also quite a few
+leaks on failures like the second patch and other general improvements),
+so after noticing someone else submitted 6.12 contiguous read
+improvements recently[1] so I assumed such backports would be welcome...
+But ultimately I think it's up to you, so happy to see the patches
+dropped if you prefer.
+
+[1] https://lore.kernel.org/r/20260811161342.533280-1-frieder@fris.de
+
+> "mtd: ubi: skip programming unused bits in ubi headers" does not fix anything.
+> It's a pure optimization for future flashes, UBI worked since ever without this
+> change.
+
+I might have misunderstood something about this patch, but while UBI
+works fine I believe this would increase the longevity of more than just
+"future flashes"
+
+I've burned out 2 times 1MB (4 erase blocks) from the NAND I have on
+hand (winbond W25N04LW) using either random data + erase (nandtest) or a
+patched version writing zeroes + erase, and writing many zeroes failed
+the erase blocks about 40-50% faster (85 thousands cycles vs 132
+thousands until the first erase failure, 121/175 until erase stopped
+working with many retries)
+
+This obviously is a tiny sample size and not concrete proof, and this
+patch won't have such a big impact because the area is small, but I
+believe this patch will still improve the endurance a tiny bit for at
+least our model, which was the motivation for me to pick this up.
+
+Of course, there's also a chance that something breaks from it so I
+can perfectly understand if you prefer not to backport it; you're in a
+much better place than me to draw the line.
+
+
+Thanks,
+-- 
+Dominique Martinet | Asmadeus
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
