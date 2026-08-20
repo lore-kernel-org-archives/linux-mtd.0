@@ -4,53 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 887E6C5DF89
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 Aug 2026 10:57:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E708C5DF87
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 Aug 2026 10:59:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=UjXCLvmT8CfcWEYI4cs8TN8sZKnSj6LESLVTGSs9NrM=; b=XcEibLcHo5dROn
-	9xjCFKjYZNoDAYJt5r3ARmBSGoY9morBRYxsi4UzlnXYt4HhCobYHEwDD/HiQI9PiGwt9+nfAj50t
-	YlXywytah6rP8msVwkpFwk5K892eS6/0CUSbd2ZrFQVl1t150KAixu7uZcubEgyaCNilFNM1/rU9v
-	qWKVL7ZsJ8yjglb2R7mfiNA/DiaZDPcg6lYc4CNA52fkapXzm/h2dJrSithGSp98Ytst2Mq1C2DFT
-	17LkxcgwwsqFCYj1AP9szcw4VGOG8nQjbHPoPSPg6xD8yn+seFwgv1WCn1Crsy49TS3QTkvGY/VXT
-	W42V1WJUU8dg3e8x6VZA==;
+	List-Owner; bh=LOxCpqefVJzaXnJ4+CTjcRzZN9/dWzp52RvFenbm9DU=; b=cOlH5jGqVQ1RIR
+	eczOHMjgxQw2W/L9W9jEcN2ML7S4six4tPeomeDOA2BNiAGK9u7I3Q9KHY75s1MkgF43PI74WjHWx
+	CenMw5U0Ip1WSt01cy4DUZvXZbqidfOnRB0CyflFN7LauO0lNYHAkYqY2qs5/j4RacM5csoSui8Au
+	yGfSTHLnGTbps06KcWc08lEg0YqKgocrxNIimMaTmnKxd3iv24aL96Zj2GGLsRRhxOuYHud3VE9cB
+	u/Jq7DEEdr4Yu75FBMKM68tiJHxSZiElwbCNiSBU/GbnnNSN+3goLTFmYIR/paIpeDR2WYmh3Tfgx
+	dwLFyo+wIQi4QJWrdaGg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wx0SN-0000000BOc1-1LGw;
-	Thu, 20 Aug 2026 10:57:11 +0000
-Received: from canpmsgout03.his.huawei.com ([113.46.200.218])
+	id 1wx0UH-0000000BP0H-2zLh;
+	Thu, 20 Aug 2026 10:59:09 +0000
+Received: from canpmsgout12.his.huawei.com ([113.46.200.227])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wx0SJ-0000000BOYC-1c35
+	id 1wx0UF-0000000BOYX-011p
 	for linux-mtd@lists.infradead.org;
-	Thu, 20 Aug 2026 10:57:09 +0000
+	Thu, 20 Aug 2026 10:59:08 +0000
 dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
 	c=relaxed/relaxed; q=dns/txt;
 	h=From;
-	bh=7L0QcGcokJqrXi4agQNPP9tmzIEptjTM0q6SvndD1xI=;
-	b=pHfltcAGC4jhg9CRuD5NTSdjGSwvr7m0U0qeMEKuhHmPA4rJdwmYjLx28zCVRigj7CEgL13qt
-	JkmgJWQycskn3HiaQS6AFEd9uZl0K9xFg8L/bbON1Fq3mD1pnYRXcCGeXVP5wQumjXnxWQ7K3QL
-	Y+CmAjmW47XhV20DoENuay0=
-Received: from mail.maildlp.com (unknown [172.19.163.104])
-	by canpmsgout03.his.huawei.com (SkyGuard) with ESMTPS id 4hQg8S3fKhzpT0s;
-	Thu, 20 Aug 2026 18:46:00 +0800 (CST)
+	bh=qm8fKtYZiI5YPRB/KYaBj55w3BQ38qaKiejE53UxzIg=;
+	b=29kIScDFsvD4rJOEgQYOVB22ZfF5TK2nQ7o0w7xEHGmEo6M7nuNA+h+sLhHJf5t5rYx1PFdhC
+	FCPmXFcPyDHJWBOmTveu1lfiTNYR7e3jxFi9kfgLKIpzSinEJcREhK3/zQLOf+igzRiwjs3hu25
+	FBAwG2/K+9wdARSthkjnziM=
+Received: from mail.maildlp.com (unknown [172.19.163.163])
+	by canpmsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4hQg9F4kwpznTVd;
+	Thu, 20 Aug 2026 18:46:41 +0800 (CST)
 Received: from dggpemr100018.china.huawei.com (unknown [7.185.36.64])
-	by mail.maildlp.com (Postfix) with ESMTPS id 687724057F;
-	Thu, 20 Aug 2026 18:56:58 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 89C7A4048B;
+	Thu, 20 Aug 2026 18:56:59 +0800 (CST)
 Received: from huawei.com (10.50.85.155) by dggpemr100018.china.huawei.com
  (7.185.36.64) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.36; Thu, 20 Aug
- 2026 18:56:57 +0800
+ 2026 18:56:58 +0800
 From: zhouminqiang <zhouminqiang2@huawei.com>
 To: <dwmw2@infradead.org>, <richard@nod.at>
 CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
 	<chengzhihao1@huawei.com>, <yangerkun@huawei.com>, <yi.zhang@huawei.com>
-Subject: [PATCH 2/6] jffs2: write verify: replace memcmp with byte-by-byte comparison
-Date: Thu, 20 Aug 2026 18:49:58 +0800
-Message-ID: <20260820105003.2525647-3-zhouminqiang2@huawei.com>
+Subject: [PATCH 4/6] jffs2: add write verification to NOR direct write paths
+Date: Thu, 20 Aug 2026 18:50:00 +0800
+Message-ID: <20260820105003.2525647-5-zhouminqiang2@huawei.com>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <20260820105003.2525647-1-zhouminqiang2@huawei.com>
 References: <20260820105003.2525647-1-zhouminqiang2@huawei.com>
@@ -59,8 +59,8 @@ X-Originating-IP: [10.50.85.155]
 X-ClientProxiedBy: kwepems200002.china.huawei.com (7.221.188.68) To
  dggpemr100018.china.huawei.com (7.185.36.64)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260820_035707_785430_0EEAD3CE 
-X-CRM114-Status: GOOD (  14.41  )
+X-CRM114-CacheID: sfid-20260820_035907_374062_439D6B06 
+X-CRM114-Status: GOOD (  19.37  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,76 +77,184 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-jffs2_verify_write() uses memcmp() to compare the write buffer
-against data read back from flash. While memcmp() compares byte
-by byte internally, it only reports equal or not-equal without
-identifying the mismatch offset.
+NOR Flash and other non-writebuffered devices write directly through
+jffs2_flash_direct_writev() and jffs2_flash_direct_write() without
+any write-back verification. If mtd_write() succeeds but the readable
+medium differs from JFFS2's source buffer, a later node CRC failure
+cannot distinguish transport/program-time corruption from post-commit
+media damage.
 
-To pinpoint the exact mismatch offset, replace this with the
-approach used by UBI's self_check_write(): compare byte by byte
-and, on mismatch, report the first differing offset and dump up
-to 128 bytes of both the source and read-back data.
+Move jffs2_verify_write() from wbuf.c to writev.c so it can be
+shared by both writebuffered and direct write paths. Add
+jffs2_verify_writev() to iterate over kvec entries and verify each
+one individually. In both direct write functions, add mtd_write()
+return value and retlen checks, and invoke verification after
+a successful complete write.
 
 Signed-off-by: zhouminqiang <zhouminqiang2@huawei.com>
 ---
- fs/jffs2/wbuf.c | 53 +++++++++++++++++++++++++++++--------------------
- 1 file changed, 31 insertions(+), 22 deletions(-)
+ fs/jffs2/os-linux.h |  11 ++++
+ fs/jffs2/wbuf.c     |  69 -------------------------
+ fs/jffs2/writev.c   | 122 ++++++++++++++++++++++++++++++++++++++++++--
+ 3 files changed, 130 insertions(+), 72 deletions(-)
 
+diff --git a/fs/jffs2/os-linux.h b/fs/jffs2/os-linux.h
+index 86ab014a349c..e73ef643fd97 100644
+--- a/fs/jffs2/os-linux.h
++++ b/fs/jffs2/os-linux.h
+@@ -192,6 +192,17 @@ int jffs2_flash_direct_writev(struct jffs2_sb_info *c, const struct kvec *vecs,
+ int jffs2_flash_direct_write(struct jffs2_sb_info *c, loff_t ofs, size_t len,
+ 			size_t *retlen, const u_char *buf);
+ 
++#ifdef CONFIG_JFFS2_FS_WBUF_VERIFY
++int jffs2_verify_write(struct jffs2_sb_info *c, const unsigned char *buf,
++		       uint32_t ofs, size_t len);
++int jffs2_verify_writev(struct jffs2_sb_info *c,
++		       const struct kvec *vecs,
++		       unsigned long count, loff_t to);
++#else
++#define jffs2_verify_write(c, b, o, l) (0)
++#define jffs2_verify_writev(c, v, cnt, t) (0)
++#endif
++
+ #endif /* __JFFS2_OS_LINUX_H__ */
+ 
+ 
 diff --git a/fs/jffs2/wbuf.c b/fs/jffs2/wbuf.c
-index 7e4608b43a4e..da6da813a4ef 100644
+index 3e99587f40e4..493be5765c47 100644
 --- a/fs/jffs2/wbuf.c
 +++ b/fs/jffs2/wbuf.c
-@@ -231,8 +231,8 @@ static struct jffs2_raw_node_ref **jffs2_incore_replace_raw(struct jffs2_sb_info
- static int jffs2_verify_write(struct jffs2_sb_info *c, unsigned char *buf,
- 			      uint32_t ofs)
- {
--	int ret;
--	size_t retlen;
-+	int ret = 0;
-+	size_t retlen, i;
- 	char *eccstr;
- 	void *verify_buf;
+@@ -15,7 +15,6 @@
  
-@@ -246,37 +246,46 @@ static int jffs2_verify_write(struct jffs2_sb_info *c, unsigned char *buf,
- 	ret = mtd_read(c->mtd, ofs, c->wbuf_pagesize, &retlen, verify_buf);
- 	if (ret && ret != -EUCLEAN && ret != -EBADMSG) {
- 		pr_warn("%s(): Read back of page at %08x failed: %d\n",
--			__func__, c->wbuf_ofs, ret);
-+			__func__, ofs, ret);
- 		goto out_free;
- 	} else if (retlen != c->wbuf_pagesize) {
--		pr_warn("%s(): Read back of page at %08x gave short read: %zd not %d\n",
-+		pr_warn("%s(): Read back of page at %08x gave short read: %zu not %d\n",
- 			__func__, ofs, retlen, c->wbuf_pagesize);
- 		ret = -EIO;
- 		goto out_free;
- 	}
--	if (!memcmp(buf, verify_buf, c->wbuf_pagesize)) {
--		ret = 0;
+ #include <linux/kernel.h>
+ #include <linux/slab.h>
+-#include <linux/vmalloc.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/crc32.h>
+ #include <linux/mtd/rawnand.h>
+@@ -227,74 +226,6 @@ static struct jffs2_raw_node_ref **jffs2_incore_replace_raw(struct jffs2_sb_info
+ 	return NULL;
+ }
+ 
+-#ifdef CONFIG_JFFS2_FS_WBUF_VERIFY
+-static int jffs2_verify_write(struct jffs2_sb_info *c, unsigned char *buf,
+-			      uint32_t ofs, size_t len)
+-{
+-	int ret = 0;
+-	size_t retlen, i;
+-	char *eccstr;
+-	void *verify_buf;
+-
+-	verify_buf = __vmalloc(len, GFP_NOFS);
+-	if (!verify_buf) {
+-		pr_warn("%s(): verify buffer allocation failed, skipping verification\n",
+-			__func__);
+-		return 0;
+-	}
+-
+-	ret = mtd_read(c->mtd, ofs, len, &retlen, verify_buf);
+-	if (ret && ret != -EUCLEAN && ret != -EBADMSG) {
+-		pr_warn("%s(): Read back of page at %08x failed: %d\n",
+-			__func__, ofs, ret);
+-		goto out_free;
+-	} else if (retlen != len) {
+-		pr_warn("%s(): Read back of page at %08x gave short read: %zu not %zu\n",
+-			__func__, ofs, retlen, len);
+-		ret = -EIO;
 -		goto out_free;
 -	}
+-
+-	for (i = 0; i < len; i++) {
+-		uint8_t c1 = ((uint8_t *)buf)[i];
+-		uint8_t c2 = ((uint8_t *)verify_buf)[i];
+-		int dump_len;
+-
+-		if (c1 == c2)
+-			continue;
+-
+-		if (ret == -EUCLEAN)
+-			eccstr = "corrected";
+-		else if (ret == -EBADMSG)
+-			eccstr = "correction failed";
+-		else
+-			eccstr = "OK or unused";
+-
+-		dump_len = min_t(int, 128, len - i);
+-		pr_warn("Write verify error (ECC %s) at %08x (+%zu/%zu). Wrote:\n",
+-			eccstr, ofs, i, len);
+-		print_hex_dump(KERN_WARNING, "", DUMP_PREFIX_OFFSET, 16, 1,
+-			       buf + i, dump_len, 0);
+-
+-		pr_warn("Read back:\n");
+-		print_hex_dump(KERN_WARNING, "", DUMP_PREFIX_OFFSET, 16, 1,
+-			       verify_buf + i, dump_len, 0);
+-
+-		ret = -EIO;
+-		goto out_free;
+-	}
+-
+-	vfree(verify_buf);
+-	return 0;
+-
+-out_free:
+-	vfree(verify_buf);
+-	return ret;
+-}
+-#else
+-#define jffs2_verify_write(c,b,o,l) (0)
+-#endif
+-
+ /* Recover from failure to write wbuf. Recover the nodes up to the
+  * wbuf, not the one which we were starting to try to write. */
  
--	if (ret == -EUCLEAN)
--		eccstr = "corrected";
--	else if (ret == -EBADMSG)
--		eccstr = "correction failed";
--	else
--		eccstr = "OK or unused";
-+	for (i = 0; i < c->wbuf_pagesize; i++) {
+diff --git a/fs/jffs2/writev.c b/fs/jffs2/writev.c
+index a1bda9dab3f8..39adc15ffd69 100644
+--- a/fs/jffs2/writev.c
++++ b/fs/jffs2/writev.c
+@@ -10,12 +10,100 @@
+  */
+ 
+ #include <linux/kernel.h>
++#include <linux/vmalloc.h>
+ #include <linux/mtd/mtd.h>
+ #include "nodelist.h"
+ 
++#ifdef CONFIG_JFFS2_FS_WBUF_VERIFY
++int jffs2_verify_write(struct jffs2_sb_info *c, const unsigned char *buf,
++			      uint32_t ofs, size_t len)
++{
++	int ret = 0;
++	size_t retlen, i;
++	char *eccstr;
++	void *verify_buf;
++
++	verify_buf = __vmalloc(len, GFP_NOFS);
++	if (!verify_buf) {
++		pr_warn("%s(): verify buffer allocation failed, skipping verification\n",
++			__func__);
++		return 0;
++	}
++
++	ret = mtd_read(c->mtd, ofs, len, &retlen, verify_buf);
++	if (ret && ret != -EUCLEAN && ret != -EBADMSG) {
++		pr_warn("%s(): Read back of page at %08x failed: %d\n",
++			__func__, ofs, ret);
++		goto out_free;
++	} else if (retlen != len) {
++		pr_warn("%s(): Read back of page at %08x gave short read: %zu not %zu\n",
++			__func__, ofs, retlen, len);
++		ret = -EIO;
++		goto out_free;
++	}
++
++	for (i = 0; i < len; i++) {
 +		uint8_t c1 = ((uint8_t *)buf)[i];
 +		uint8_t c2 = ((uint8_t *)verify_buf)[i];
 +		int dump_len;
- 
--	pr_warn("Write verify error (ECC %s) at %08x. Wrote:\n",
--		eccstr, c->wbuf_ofs);
--	print_hex_dump(KERN_WARNING, "", DUMP_PREFIX_OFFSET, 16, 1,
--		       c->wbuf, c->wbuf_pagesize, 0);
++
 +		if (c1 == c2)
 +			continue;
- 
--	pr_warn("Read back:\n");
--	print_hex_dump(KERN_WARNING, "", DUMP_PREFIX_OFFSET, 16, 1,
--		       verify_buf, c->wbuf_pagesize, 0);
++
 +		if (ret == -EUCLEAN)
 +			eccstr = "corrected";
 +		else if (ret == -EBADMSG)
@@ -154,9 +262,9 @@ index 7e4608b43a4e..da6da813a4ef 100644
 +		else
 +			eccstr = "OK or unused";
 +
-+		dump_len = min_t(int, 128, c->wbuf_pagesize - i);
-+		pr_warn("Write verify error (ECC %s) at %08x (+%zu/%d). Wrote:\n",
-+			eccstr, ofs, i, c->wbuf_pagesize);
++		dump_len = min_t(int, 128, len - i);
++		pr_warn("Write verify error (ECC %s) at %08x (+%zu/%zu). Wrote:\n",
++			eccstr, ofs, i, len);
 +		print_hex_dump(KERN_WARNING, "", DUMP_PREFIX_OFFSET, 16, 1,
 +			       buf + i, dump_len, 0);
 +
@@ -167,13 +275,96 @@ index 7e4608b43a4e..da6da813a4ef 100644
 +		ret = -EIO;
 +		goto out_free;
 +	}
- 
- 	vfree(verify_buf);
--	return -EIO;
++
++	vfree(verify_buf);
 +	return 0;
++
++out_free:
++	vfree(verify_buf);
++	return ret;
++}
++
++int jffs2_verify_writev(struct jffs2_sb_info *c,
++			const struct kvec *vecs,
++			unsigned long count, loff_t to)
++{
++	loff_t ofs = to;
++	unsigned long i;
++	int ret;
++
++	for (i = 0; i < count; i++) {
++		if (!vecs[i].iov_len)
++			continue;
++		ret = jffs2_verify_write(c, vecs[i].iov_base, ofs,
++					 vecs[i].iov_len);
++		if (ret)
++			return ret;
++		ofs += vecs[i].iov_len;
++	}
++	return 0;
++}
++#endif /* CONFIG_JFFS2_FS_WBUF_VERIFY */
++
+ int jffs2_flash_direct_writev(struct jffs2_sb_info *c, const struct kvec *vecs,
+ 			      unsigned long count, loff_t to, size_t *retlen)
+ {
++	int ret;
+ 	if (!jffs2_is_writebuffered(c)) {
+ 		if (jffs2_sum_active()) {
+ 			int res;
+@@ -26,15 +114,31 @@ int jffs2_flash_direct_writev(struct jffs2_sb_info *c, const struct kvec *vecs,
+ 		}
+ 	}
  
- out_free:
- 	vfree(verify_buf);
+-	return mtd_writev(c->mtd, vecs, count, to, retlen);
++	ret = mtd_writev(c->mtd, vecs, count, to, retlen);
++
++	if (ret) {
++		pr_warn("%s(): Write failed with %d\n", __func__, ret);
++	} else {
++		size_t totlen = 0;
++		unsigned long i;
++
++		for (i = 0; i < count; i++)
++			totlen += vecs[i].iov_len;
++		if (*retlen != totlen) {
++			pr_warn("%s(): Write was short: %zu instead of %zu\n",
++				__func__, *retlen, totlen);
++			ret = -EIO;
++		} else
++			ret = jffs2_verify_writev(c, vecs, count, to);
++	}
++
++	return ret;
+ }
+ 
+ int jffs2_flash_direct_write(struct jffs2_sb_info *c, loff_t ofs, size_t len,
+ 			size_t *retlen, const u_char *buf)
+ {
+ 	int ret;
+-	ret = mtd_write(c->mtd, ofs, len, retlen, buf);
+-
+ 	if (jffs2_sum_active()) {
+ 		struct kvec vecs[1];
+ 		int res;
+@@ -47,5 +151,17 @@ int jffs2_flash_direct_write(struct jffs2_sb_info *c, loff_t ofs, size_t len,
+ 			return res;
+ 		}
+ 	}
++
++	ret = mtd_write(c->mtd, ofs, len, retlen, buf);
++
++	if (ret) {
++		pr_warn("%s(): Write failed with %d\n", __func__, ret);
++	} else if (*retlen != len) {
++		pr_warn("%s(): Write was short: %zu instead of %zu\n",
++			__func__, *retlen, len);
++		ret = -EIO;
++	} else
++		ret = jffs2_verify_write(c, buf, ofs, len);
++
+ 	return ret;
+ }
 -- 
 2.52.0
 
