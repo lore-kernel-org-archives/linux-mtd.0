@@ -4,57 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 821D3C5DF82
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 Aug 2026 07:04:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8770C5DF81
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 Aug 2026 07:33:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=d6u76E5cns6PE3Z1NOrgwVDokYbyrG1h7ElFC5Y97kE=; b=TmAMTTS5vCGqxX
-	ccRLWr6XDfQ+7F+VJzuJsSsmm1FEdjrl1APYigxLCkqbH7TqqdGOiZ3UJu2vVvCVsbIQuqUGOmHKr
-	scVaJMpDbPqlj7RpYjVb0MAGXDLIy+WXsLjc/fXrJxo6rMyQVcRS15zC3PfIx7JEzMSa+aHZtKcbS
-	mC0TGHiHjw1c4OIQsmntfScbpoL5NMHuOh6A5unkS3n9o/MNAGKKlKibI6rhw/rrXVwv2nSBuaYaT
-	WSq+GHSOUEGNkQp6h2h1xxnSV92Fymc1zo4f8OhJ42H39smYYzRxw9QsUXrbaU+Y6ppR3NVoSuDU8
-	Cj+b1M8wUKybNYTt2bMA==;
+	List-Owner; bh=Yi/j7xqAgKwgvQP+aWquVmMqsDbcKwDIo5AE/+WGtIg=; b=iE6i81yBqw7D1O
+	xkEjZyVcSPuw813eHm1phHa+dToRV/FlSUfwy9NNHBugkhXqBDmh8MD+ytn9jINchZD8jkAOT8pGI
+	mrwfXNr59kRoyszA7vUmtVN0/1weP2kSRISE9+lpaQbXzrqYqJrXh/6kuv1SnXdwhmPMxXMzSmi1P
+	8EImzHq+KqlDH+1AQgNvRHZq/HEIVtm8P8xyC63MGXniTGH2WrudrIoJV/su6EAQZSfVYJcs2Atpg
+	gPYrsAGoK08cJasYpJTlXZvzjoslFfOkPSJXMEWkQx0fRjGizaw2czMqX3LmfXegZuwWyN5vU9yMf
+	kufF6pwcWBhxMX6cnWOA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wwwpX-0000000B064-1lGM;
-	Thu, 20 Aug 2026 07:04:51 +0000
+	id 1wwxHA-0000000B4GG-3MP6;
+	Thu, 20 Aug 2026 07:33:24 +0000
 Received: from smtp9.infineon.com ([217.10.52.204])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wwwpU-0000000B04r-0FKl;
-	Thu, 20 Aug 2026 07:04:49 +0000
+	id 1wwxH8-0000000B4FM-0bZA;
+	Thu, 20 Aug 2026 07:33:23 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=infineon.com; i=@infineon.com; q=dns/txt; s=IFXMAIL;
-  t=1787209488; x=1818745488;
+  t=1787211202; x=1818747202;
   h=from:to:cc:subject:date:message-id:references:
    in-reply-to:content-transfer-encoding:mime-version;
-  bh=8uBJ8Mta62b6RmQf7dtw94ndHIb5OKy4XaY6DIy9lLw=;
-  b=N9+2Bv5Za0EZW/RX277qdyaVR4NFCV+uGKbrV0f9h73xrUaxxAnDr8Nm
-   Dy7/E2LTX+iaR9ovIX6KIHKaZDzhUOYQ8y6Jr9blLdAlS9ne1U8GBeAyx
-   jJ4pwcwDzP7IseIWm8Cm2CaUcHgliGnD+KK5kUdtQXLtKJmCBmkpbBP5W
-   g=;
-X-CSE-ConnectionGUID: ABJj3vDsQVOZ22lUpvgejQ==
-X-CSE-MsgGUID: wBy2RtI/QkmwESO3DyWbYA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11880"; a="105427185"
+  bh=HOkJzEkBMETe+uT6f45jBqKDjwjsvVCYVg1kvaxa8sw=;
+  b=d/QT1f/U6D2jrwKMKfqfKaxrgYq3dbGIEAh2bkDKHiutWzy555zE4Fs9
+   rysbh173wjwmkgdVTvJipdUieBDI/wYqrI8+kiXVEtTso7DBbFKXyKW3A
+   4buZmxKjblvCCyPpf82fd0JA+JfQ7QjEXSA7t6L/nSNumvbesbtUR2/Uv
+   E=;
+X-CSE-ConnectionGUID: j5L/wBpHQm+iPmq6mVyOIg==
+X-CSE-MsgGUID: OgU14aDxQ9yeSY++Kpgprw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11880"; a="105431057"
 X-IronPort-AV: E=Sophos;i="6.25,232,1779141600"; 
-   d="scan'208";a="105427185"
+   d="scan'208";a="105431057"
 X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO MUCSE805.infineon.com) ([172.23.29.31])
-  by smtp9.infineon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2026 09:03:45 +0200
-Received: from MUCSE818.infineon.com (172.23.29.44) by MUCSE805.infineon.com
- (172.23.29.31) with Microsoft SMTP Server (version=TLS1_2,
+Received: from unknown (HELO MUCSE803.infineon.com) ([172.23.29.29])
+  by smtp9.infineon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2026 09:32:20 +0200
+Received: from MUCSE811.infineon.com (172.23.29.37) by MUCSE803.infineon.com
+ (172.23.29.29) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.45; Thu, 20 Aug
- 2026 09:03:44 +0200
-Received: from MUCSE815.infineon.com (172.23.29.41) by MUCSE818.infineon.com
- (172.23.29.44) with Microsoft SMTP Server (version=TLS1_2,
+ 2026 09:32:19 +0200
+Received: from MUCSE815.infineon.com (172.23.29.41) by MUCSE811.infineon.com
+ (172.23.29.37) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.45; Thu, 20 Aug
- 2026 09:03:44 +0200
+ 2026 09:32:19 +0200
 Received: from MUCSE815.infineon.com ([fe80::ed10:a720:3031:ca14]) by
  MUCSE815.infineon.com ([fe80::ed10:a720:3031:ca14%12]) with mapi id
- 15.02.2562.045; Thu, 20 Aug 2026 09:03:44 +0200
+ 15.02.2562.045; Thu, 20 Aug 2026 09:32:19 +0200
 From: <Takahiro.Kuwano@infineon.com>
 To: <miquel.raynal@bootlin.com>, <pratyush@kernel.org>, <mwalle@kernel.org>,
 	<richard@nod.at>, <vigneshr@ti.com>, <nicolas.ferre@microchip.com>,
@@ -64,16 +64,16 @@ CC: <STLin2@winbond.com>, <hsinyi@chromium.org>,
 	<thomas.petazzoni@bootlin.com>, <linux-mtd@lists.infradead.org>,
 	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
 	<linux-doc@vger.kernel.org>
-Subject: RE: [PATCH v3 23/23] mtd: spi-nor: debugfs: Expose SR opcodes and QE
- mask
-Thread-Topic: [PATCH v3 23/23] mtd: spi-nor: debugfs: Expose SR opcodes and QE
- mask
-Thread-Index: AQHdKzdfZ2b8fOyMyk+wKDEcGW2sy7amjJxQ
-Date: Thu, 20 Aug 2026 07:03:44 +0000
-Message-ID: <2bf142b04caf4c578cfbc57740490632@infineon.com>
+Subject: RE: [PATCH v3 11/23] mtd: spi-nor: winbond: Add support for
+ W25Q12RV-Q/N
+Thread-Topic: [PATCH v3 11/23] mtd: spi-nor: winbond: Add support for
+ W25Q12RV-Q/N
+Thread-Index: AQHdKzdIpVH7yibg9keh3oZJFvnnIbamkPWw
+Date: Thu, 20 Aug 2026 07:32:19 +0000
+Message-ID: <cc933d88b77b4fb5ad8f22720f08bb19@infineon.com>
 References: <20260813-winbond-v7-1-spi-nor-rv-addition-v3-0-b637cf120d5c@bootlin.com>
- <20260813-winbond-v7-1-spi-nor-rv-addition-v3-23-b637cf120d5c@bootlin.com>
-In-Reply-To: <20260813-winbond-v7-1-spi-nor-rv-addition-v3-23-b637cf120d5c@bootlin.com>
+ <20260813-winbond-v7-1-spi-nor-rv-addition-v3-11-b637cf120d5c@bootlin.com>
+In-Reply-To: <20260813-winbond-v7-1-spi-nor-rv-addition-v3-11-b637cf120d5c@bootlin.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -81,8 +81,8 @@ X-MS-TNEF-Correlator:
 x-originating-ip: [10.161.6.196]
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260820_000448_429987_1A0A832A 
-X-CRM114-Status: UNSURE (   9.67  )
+X-CRM114-CacheID: sfid-20260820_003322_538316_96BB86C7 
+X-CRM114-Status: UNSURE (   9.57  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -102,81 +102,34 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Hi Miquel,
 
-> Expose Status Register opcodes based on the flash capabilities
-> discovered while parsing the SFDP QER field.
+> There is an ID collision with the chip of same density from the JV
+> family. Both chips are very similar in practice, it is mostly a matter
+> of electrical differences (mostly power consumption being lower).
 > 
-> Value '0' indicates an absence of opcode (non supported), we do not
-> print anything in that case.
-> 
-> The QE bit is also displayed.
-> 
-> Example on a W25Q02JV-M:
-> 
-> $ grep opcodes -A10 /sys/kernel/debug/spi-nor/spi0.0/params
-> opcodes
->  read           0xec
->   dummy cycles  6
->  erase          0xdc
->  program        0x34
->  SR1 read       0x05
->  SR2 read       0x35
->  SR1+SR2 write  0x01
->  QE             SR2 bit 1
->  8D extension   none
+> As a significant difference, RV chips identify themselves as supporting
+> the new SFDP (rev F) field which forces an alternate write SR2
+> opcode (0x31).
 > 
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> ---
+> + cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
+> ef4018
+> + cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
+> winbond
+> + xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+> 534644500a0100ff00080117800000ffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffe520f9ffffffff0344eb086b083b42bbfeffffffffff
+                          ^^^^^^^^
+Just noticed size is wrong like patch #18.
+BFPT DWORD2 advertises memory density in bits (0-based).
+In 128Mb parts, this should be 0x07FFFFFF.
+Need post_bfpt_fixup.
 
-S25HL512T:
-opcodes
- read           0xec
-  dummy cycles  10
- erase          0xd8
- program        0x12
- SR1 read       0x05
- SR2 read       0x35
- SR1+SR2 write  0x01
- QE             SR2 bit 1
- 8D extension   repeat
-
-S25FS512S:
-opcodes
- read           0xec
-  dummy cycles  10
- erase          0xdc
- program        0x12
- SR1 read       0x05
- SR2 read       0x35
- SR1+SR2 write  0x01
- QE             SR2 bit 1
- 8D extension   none
-
-S25FL256S (no SFDP):
-opcodes
- read           0x6c
-  dummy cycles  8
- erase          0xdc
- program        0x12
- SR1 read       0x05
- SR2 read       0x35
- SR1+SR2 write  0x01
- QE             SR2 bit 1
- 8D extension   none
-
-S28HS512T (Octal, no QE):
-opcodes
- read           0xee
-  dummy cycles  24
- erase          0xd8
- program        0x12
- SR1 read       0x05
- SR2 read       0x35
- SR1 write      0x01
- SR1+SR2 write  0x01
- 8D extension   repeat
-
-Tested-by: Takahiro Kuwano <takahiro.kuwano@infineon.com>
-
-
+Thanks,
+Takahiro
 
 ______________________________________________________
 Linux MTD discussion mailing list
