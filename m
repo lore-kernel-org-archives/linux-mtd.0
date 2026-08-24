@@ -4,90 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 46189C5DF94
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2026 07:56:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E919C5DF81
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2026 13:50:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=PCaNPH3DGmxVeIMrVZwitoSDX42Qb1R/QQkQPraI2Q8=; b=xD0oLyaCOHY0p2
-	R9MjrwjSZLFp4XT25GXJbBJVGxlR42/yhLQaCuE9W4qoB7RPi9gZ02oUsQVN5uy9cADh/2pgz/4u5
-	F89rNYYDS2LjxPLgJpAWpH+50F0LrxxctF6zy5YDaZpouYjfaj/wvjEuaexNlUc2ADKYLnbrIjLAP
-	cO/wQnziLBZuHzfuiSifnfzltiNyVXzb4EQawDnBV5ml/A3Br6YkvP/jd8vDllSrRVAc0UmtliBZf
-	jitVGZnjTOTNuhhGdM7GCXGNRDqIFMEak+43jzRaaDOHvFaYR+JKraw0BU0HfJkhMbdxFCG/q9ANu
-	aYA7JjVzMfVQrlupiH1g==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version:Subject:
+	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=NjdDJN4L72v6BfbuLmemUpGaGJJJwCxrYVPYO+GPznA=; b=bogfOL4atSr3+n
+	04Nh/JZJM5MqRS8WlEH/udvbI84YzkcvwXQO1ZkQC4G7OSLz2L53uVJOLKpuy7IKj3uD9I3c0A8Y9
+	4we/a/QyZ059A6Nbnub7JdQqoA6cfHmrg8Trlf6OoUfMVAsdx1dZuA8w1oOSX08oPwpwo1wR0bvr5
+	EFVP+Moue9AIsnCyFztqnbxMAq9e979z8W25qSnPgCCntMNH9bxPWKBq2Q9pngkZ2HFPdfPuX9COa
+	UfW9xt0DfL2OVswbxDXCdt6dHVJ4JOcdynM70OlHIFbtS0cTh8kFc6venyjjRW7BO+1WP5auBJ59+
+	q9PJSamGjRcdOQsfLrdQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wyPXt-0000000GA3L-0OnY;
-	Mon, 24 Aug 2026 07:56:41 +0000
-Received: from mail-wm1-x336.google.com ([2a00:1450:4864:20::336])
+	id 1wyV4a-0000000GjLq-1P1E;
+	Mon, 24 Aug 2026 13:50:48 +0000
+Received: from fhigh-b3-smtp.messagingengine.com ([202.12.124.154])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wyPXq-0000000GA2l-1rMB
+	id 1wyV4S-0000000GjL6-1laz
 	for linux-mtd@lists.infradead.org;
-	Mon, 24 Aug 2026 07:56:40 +0000
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-499b0eefa61so17282465e9.2
-        for <linux-mtd@lists.infradead.org>; Mon, 24 Aug 2026 00:56:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1787558195; x=1788162995; darn=lists.infradead.org;
-        h=content-transfer-encoding:content-type:mime-version:references
-         :in-reply-to:message-id:subject:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=IE8kFIz49p9hLyGen3p2a/60iDUMeHiZ+R4qjtbPgPM=;
-        b=jjcdKJ7Ae7rY3XBxV4Ek6IQmFvZPNnjFAOIq/0oMUFw5peOHFKIx4O/S/CWN5cwKyZ
-         dH4SRcIdJXrog4GaiDSRD5hBHrvULf/N5L5TcDDK5kTHwOalN8Ir6fraceSTm+LrmHUK
-         JTSwMmg/yiaV6HIySrrQ+5XU9jDwIc7OXQL1PIOpOrgIJyXf1viMX8PTXxEBUKVb58gt
-         WH2USqYnfHoy1o0rq+BNBokgTaUV8o1k/+qyGaxA/HKZZeEXIKMSNvoexLJtg/lxDuNB
-         3QGMRtKRgvw96PUnYA1GO8nMkr7J+D5w5phUhOPOMcWBqgJ6D7MgMacA3ea03EpPKCsb
-         mRFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1787558195; x=1788162995;
-        h=content-transfer-encoding:content-type:mime-version:references
-         :in-reply-to:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=IE8kFIz49p9hLyGen3p2a/60iDUMeHiZ+R4qjtbPgPM=;
-        b=PSDVMM3mFaBKmPCjyiF2YCi/ccCDrg+BG4Zb1sx+qGnrofLxLHZnNQrkAlhTsLrB9+
-         8gQCmJf+VmSrzKUsBHtjeavuXXm2QkKEMkDe5oCtczOKAjrCes92v+blgZjZFuCWX6M4
-         mXX8TL+/UWqut+jQxaQE86M4iYjMqb14e/Al4ihGm/bsdWCA3JPnR1OTF/EEG7cJQEsj
-         K2ahZTQx7tmL6lCswuxDG/PK2uNuE5WKKQoEuPcH60VN6O1hPA34+EHIqXDgWC2Xau9S
-         86gwZD5Vjro0N2rhqHKc2oGICttIAYomGUi5Fi/sU3wOLH5PaaRx41jVjxOfE0mh4qBV
-         rtqQ==
-X-Forwarded-Encrypted: i=1; AHgh+Rr/efari5kyS+HWCJ2gsuSfRgs8nwk0zfs0bV3UltCqhlqry7Sz3a6G/ounLqkS6KrBglAAAJWeB5I=@lists.infradead.org
-X-Gm-Message-State: AFuF++l3ERvCetlr/gfnOdDnKSLdMUetRU34v4TBee8dlBGU3HNhcjpS
-	X8yZmnnxziWdMt4IGme+evxzCJHhIOlLDg9+buH5IoeRdDG02wPWXUPA
-X-Gm-Gg: AR+sD10uSYJKgjzCrolBjB+BZXn3r9d16/1hm6UFpfkEw95yE3MY7aRf3WQQbMt3CnC
-	84aEIamLCVSshyLe5rhv7gZ9ZC4QIutSJJPd/RnNARUfxT6HYOT6wLilqMadxeF7bsFbKXRwsgh
-	aIgOZUbG8i8g+b/Cg98Wh3h+/cyCaTjFfSnGlg3AISNaDiYCjMlTn0LDeVBpzgWUi+/6kTWBuJf
-	X6UAXdVkeWxsg16whh92RS9nKfpUdSpmIEMIZIU554HoQ36RWAKNbDXm5M50kgnTymvgUOUOHK+
-	57kFJbcV/3FyZYODrQXL/bke+1F8j1KrbO3r+C645I2RLk+8Qfki9VL4o2soYW6nsIU6R23h8pW
-	wyMXTIGEqL37Dg32KHGNw7DBqF3/2fZG3GwxaQnDgsLsueU2p6ojU4XnEXjNX94zmORbkydC579
-	vUpNLudDwXnMMj8v4p0RT6vCq6Ru6ZKtgC8tgs468nj8TMz5hHo4QX4mvqYQlj9UZ+YSH+xUTfq
-	oLXzheNbFTs7gp7wsY6ReQb3A==
-X-Received: by 2002:a05:600c:1914:b0:499:7a19:408b with SMTP id 5b1f17b1804b1-499c3302280mr147710725e9.11.1787558195033;
-        Mon, 24 Aug 2026 00:56:35 -0700 (PDT)
-Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-499b914bfcbsm114555395e9.9.2026.08.24.00.56.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Aug 2026 00:56:34 -0700 (PDT)
-Date: Mon, 24 Aug 2026 08:56:32 +0100
-From: David Laight <david.laight.linux@gmail.com>
-To: Karl Mehltretter <kmehltretter@gmail.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
- <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Andy Shevchenko
- <andriy.shevchenko@linux.intel.com>, Lukas Wunner <lukas@wunner.de>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: cfi_cmdset_0001: shrink do_write_buffer() stack
- frame
-Message-ID: <20260824085632.2dd08ba9@pumpkin>
-In-Reply-To: <20260824014703.56502-1-kmehltretter@gmail.com>
-References: <20260824014703.56502-1-kmehltretter@gmail.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
+	Mon, 24 Aug 2026 13:50:45 +0000
+Received: from phl-compute-01.internal (phl-compute-01.internal [10.202.2.41])
+	by mailfhigh.stl.internal (Postfix) with ESMTP id 4FB837A0115;
+	Mon, 24 Aug 2026 09:50:35 -0400 (EDT)
+Received: from phl-frontend-04 ([10.202.2.163])
+  by phl-compute-01.internal (MEProxy); Mon, 24 Aug 2026 09:50:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:message-id:mime-version:reply-to
+	:subject:subject:to:to; s=fm3; t=1787579435; x=1787665835; bh=nv
+	unR9QZ6DCxhKVpGLRl/WP8zFCI1YRX0wksIa+vhlY=; b=KGHBr7hDwMPWReuLYd
+	Xm9zWboAoPODc4ApJpw98fSjLwrFhYKgQFX5IAaDlprmp7zrk7y/uV6nTd7FWUCn
+	Ad3M7NxlueeNqHVZ0ZJ6fJ7UTfmbVMrx3WOtdtfsvpwlNNGlOl4VD+yZexKPFR8z
+	zeKDZJaY8VcdyKCWo6L+OYg3HNzs/JkaAsASZC0n33duVQw1WGlXD+ViVMzWn6L9
+	Q5vOeD21RBsr4Yoq2K7JVbOSmyjHH+TzMVzTT+X01H5LthTOKDN1DqzsB8C6G73t
+	yCpuJlE5anECY/JyTZmPcIufDw6xJhUNFAEfsk/YDxa9YOFHFJkh9a8e+wseXXWT
+	tb2A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:message-id:mime-version:reply-to:subject
+	:subject:to:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1787579435; x=1787665835; bh=nvunR9QZ6DCxhKVpGLRl/WP8zFCI
+	1YRX0wksIa+vhlY=; b=CzHjPkw/ob0f+1X7JDBnUlhZSW48sMCYCymcPSIJ0zFl
+	xcIexS5nBgzmEIuAwnJjMj+TOcvxnh6A0DRpufwUG/R2oaPIm+eA7plTJ+AJPd/V
+	eBDOzpS1184feQfYnLQzTIgi9dZ0wLm32krlT3q68iDNRRmu4kh0zrSUePDPeAMP
+	3BTYUdQszxSA1YfaJ/arxFz+UjXHojqVjW1qxuqCE2cuFsQ5XG/9OWsYZi88/28h
+	HGaZWJEzqTWRUy5qHgV0lTsNEJl8ShNzpZBnW28i/vx5VbQSFn26IfVGBdZ7skkd
+	r9QRL1y7xg05LeIUhCvfuV6+a3A4IS3gFVUAW8Y4ag==
+X-ME-Sender: <xms:KkyMasWvOXadDjQDmMuZn1olL_3P_HE4kPMVxz1-5ZXoF7m0299BYw>
+    <xme:KkyMap5EBO43B2YICPINfHb7Gh1g6MRnWV11MeIufkpwNmRig7GZHAZp7fKdt11fM
+    r7jwuCwfSQ38Bh47hg6-m8rP4OFDnwJRGwAW6TKrIDrm0STOrZR>
+X-ME-Received: <xmr:KkyManr6lNlxJUag5oWjvAz5IUi1Qc5ESSOfX2GPlAyJrznM0OaQI8sY2SsHjdxZFUaiYe9so-jODVZXJ4bv2GGFRG1G7bWikvegkSdU_k8KscvCKP0>
+X-ME-Proxy-Cause: dmFkZTG1QvCBI00aswX29U7GkNWSh6lvm7BbVcIApheAQEbmKQK9lhXaTyeUapNH2O6zXz
+    eXsqJxCbKf/riX7OKbmYfWpJ5ohS00kegtAz5r6OvqSu3EafFj7BsqMvDZCpAyyvX8Y8Ho
+    jpweOzI9txN5NU3gukm9VbsZ1eKEPW0HI82fsP8XHfGERaFuPnKSFjA7Fuf9CIGX9Y5g4K
+    DmRuOTviQtCvZk9hp9mnsIwpXIugVSiHFaG2MNuHsDJjDFNhUdtTXzciPYk2O1n1LxbrJW
+    MOh7jBw9n3uTkwvDGohiw5iGYEno3JKU1U1wzqz5UKzxUy8sWZLE/Lii23BbI7TiJ9KrJ1
+    9/ZKkxnofIRjhpZYdI9h7OeNrg67Kj8ZR+CRlxQDnkVqxQsbg+wL9BUyrmB3UKd7tJyYP1
+    ev/j73GSENYwXnFOZ6f3D0TbVadhuYL7AF3Ee/CTcs1lEqE5gMCkb0cRLEKvo75XeV2Y+/
+    vi6mrH2lahKdZxK0bXSE5GGzsvSZiDLhGcxQF2PEB/MUiG3NUYfYR/dfHyv182VcawmWMu
+    EifHaGl7iLG0sYQaFmdDqZkdpJ1i86kwK3H29UXSdQ3MFdI+jZLVBfV/LIry+j1G6DAGmn
+    iuSYGpf44jPw80XIohqzn3e5W9XPBg8B9OF78bb3uuZjni4EuwWmSMZXrnaA
+X-ME-Proxy: <xmx:KkyMaslgIMEzkG5UhiuV_ijRjnDPqjUvtbJK4PSnnKsb2jPZe07noA>
+    <xmx:KkyMajNCEufkMcB5UC4mJNsMWEAl3dJW2Ri0Upfc81VZYpjlyyAgww>
+    <xmx:KkyMagMGEgqCf_e8uTMEQgrt118QDhKjXeAgM4LMHgSIMR8gAmqUdA>
+    <xmx:KkyMakgdG4tWyGCHxR8iWmhKlImpQLBB9RaEtawS7K68XbFTo2hQ4A>
+    <xmx:K0yMaiCMHC2Vi4TmW0iAN0iLoilUMngKIWUshzppMfERBhog-ZI3Izs7>
+Feedback-ID: i1d2843be:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 24 Aug 2026 09:50:32 -0400 (EDT)
+From: Griffin Kroah-Hartman <griffin@kroah.com>
+Date: Mon, 24 Aug 2026 15:50:27 +0200
+Subject: [PATCH] mtd: parsers: afs: add size check to v2 partition
 MIME-Version: 1.0
+Message-Id: <20260824-mtd_break_looper-v1-1-e46d7f02faab@kroah.com>
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIzMDCyMT3dySlPikotTE7Pic/PyC1CJdEyPLFPPkNNNE82QDJaC2gqLUtMw
+ KsJHRsRB+cWlSVmpyCcgcpdpaAEAbJbZ0AAAA
+X-Change-ID: 20260824-mtd_break_looper-429d7cf5a7c0
+To: Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ Griffin Kroah-Hartman <griffin@kroah.com>
+X-Mailer: b4 0.15.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1787579433; l=1406;
+ i=griffin@kroah.com; s=20260706; h=from:subject:message-id;
+ bh=Dz+JYr+QZ7EnxzLpFcu4z+F/syS0AOky+wc+UgMTk/g=;
+ b=SBfukzCqg0rm7JzeS5cp8PaEl7xQyZNOt5K+9AR1/h706sFUYDGJoiA7zMNhQPE6AUolKX4+d
+ xt1z829+dxaCcEphgnWjgwfusK5kRWH1A6TvUmIkkSC0v/kFvdgg2qm
+X-Developer-Key: i=griffin@kroah.com; a=ed25519;
+ pk=Hy1TuVHERdQhLAWwjmxLFNtGj7eEEjaZWPXehAlic5M=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260824_005638_528149_7A11EF42 
-X-CRM114-Status: GOOD (  29.82  )
+X-CRM114-CacheID: sfid-20260824_065040_508859_347B716F 
+X-CRM114-Status: UNSURE (   9.80  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -104,175 +118,50 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 24 Aug 2026 03:47:03 +0200
-Karl Mehltretter <kmehltretter@gmail.com> wrote:
+Add a size check to the loop in afs_parse_v2_partition(), avoiding
+walking out of the imginfo[] array bounds if a malicious packet fakes a
+large region count.
 
-> arm32 allmodconfig fails to build with gcc:
-> 
->   drivers/mtd/chips/cfi_cmdset_0001.c:1883:1: error: the frame size of 1296
->   bytes is larger than 1280 bytes [-Werror=frame-larger-than=]
-> 
-> With MTD_MAP_BANK_WIDTH_32 a map_word is 32 bytes, and with KASAN_STACK
-> every temporary gets its own redzoned slot.  do_write_buffer() builds a
-> map_word for each of the twelve commands it issues, and those temporaries
-> dominate its frame.
+Assisted-by: gkh_clanker_t1000
+Signed-off-by: Griffin Kroah-Hartman <griffin@kroah.com>
+---
+ drivers/mtd/parsers/afs.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-Looks to me like pretty much all of mtd/map.h should be real functions
-and not #defines or inlines.
+diff --git a/drivers/mtd/parsers/afs.c b/drivers/mtd/parsers/afs.c
+index 26116694c821..2c6f8768312c 100644
+--- a/drivers/mtd/parsers/afs.c
++++ b/drivers/mtd/parsers/afs.c
+@@ -287,12 +287,18 @@ static int afs_parse_v2_partition(struct mtd_info *mtd,
+ 		 block_start, block_end);
+ 
+ 	for (i = 0; i < region_count; i++) {
+-		u32 region_load_addr = imginfo[pad + 3 + i*4];
+-		u32 region_size = imginfo[pad + 4 + i*4];
+-		u32 region_offset = imginfo[pad + 5 + i*4];
++		u32 region_load_addr;
++		u32 region_size;
++		u32 region_offset;
+ 		u32 region_start;
+ 		u32 region_end;
+ 
++		if (pad + 5 + i*4 >= ARRAY_SIZE(imginfo))
++			break;
++		region_load_addr = imginfo[pad + 3 + i*4];
++		region_size = imginfo[pad + 4 + i*4];
++		region_offset = imginfo[pad + 5 + i*4];
++
+ 		pr_debug("  region %d: address: %08x, size: %08x, "
+ 			 "offset: %08x\n",
+ 			 i,
 
-The bloat from all those expansions is going to be significant.
-They only time they get optimised to anything small is when only
-CONFIG_MTD_MAP_BANK_WIDTH_1 is set.
+---
+base-commit: 8d3ae59288f1e7d58d76558a6ee96d533bc5019f
+change-id: 20260824-mtd_break_looper-429d7cf5a7c0
 
-The execution time of all those that do real io (especially reads)
-will be dominated by the io access itself.
-
-David
-
-> 
-> Issue the commands through a small noinline helper that takes the
-> command as a plain value and builds the map_word in its own frame.  The
-> sequence of reads and writes to the chip is unchanged.
-> 
-> The helper must not be inlined, and reusing one map_word local is not
-> enough: clang cannot assume the callee does not observe the local, so it
-> still returns each CMD() into a per-call-site temporary, and the frame
-> grows (1760 -> 1824 bytes in cfi_intelext_writev(), into which clang
-> inlines do_write_buffer()).
-> 
-> Frame sizes with MTD_MAP_BANK_WIDTH_32 and KASAN_STACK:
-> 
->   gcc 15.2   do_write_buffer()      1296 -> 520
->   clang 21   cfi_intelext_writev()  1760 -> 896
-> 
-> The helper itself takes 168 (gcc) / 160 (clang) bytes.
-> 
-> Reported-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Closes: https://lore.kernel.org/all/20260408211407.2295175-1-andriy.shevchenko@linux.intel.com/
-> Suggested-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> Link: https://lore.kernel.org/all/87ik9cfm6g.fsf@bootlin.com/
-> Assisted-by: LLM
-> Signed-off-by: Karl Mehltretter <kmehltretter@gmail.com>
-> ---
->  drivers/mtd/chips/cfi_cmdset_0001.c | 42 ++++++++++++++++++-----------
->  1 file changed, 26 insertions(+), 16 deletions(-)
-> 
-> diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
-> index b73596a8e021..a7c77c4e76ae 100644
-> --- a/drivers/mtd/chips/cfi_cmdset_0001.c
-> +++ b/drivers/mtd/chips/cfi_cmdset_0001.c
-> @@ -1716,12 +1716,24 @@ static int cfi_intelext_write_words (struct mtd_info *mtd, loff_t to , size_t le
->  }
->  
->  
-> +/*
-> + * Keep noinline: inlined, the map_word temporaries put do_write_buffer() over
-> + * the frame-size limit with MTD_MAP_BANK_WIDTH_32 and KASAN_STACK.
-> + */
-> +static noinline void __xipram cfi_write_cmd(struct map_info *map,
-> +					    unsigned long cmd, unsigned long adr)
-> +{
-> +	struct cfi_private *cfi = map->fldrv_priv;
-> +
-> +	map_write(map, CMD(cmd), adr);
-> +}
-> +
->  static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
->  				    unsigned long adr, const struct kvec **pvec,
->  				    unsigned long *pvec_seek, int len)
->  {
->  	struct cfi_private *cfi = map->fldrv_priv;
-> -	map_word status, write_cmd, datum;
-> +	map_word status, datum;
->  	unsigned long cmd_adr;
->  	int ret, wbufsize, word_gap, words;
->  	const struct kvec *vec;
-> @@ -1740,9 +1752,6 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
->  	if (is_LH28F640BF(cfi))
->  		cmd_adr = adr;
->  
-> -	/* Let's determine this according to the interleave only once */
-> -	write_cmd = (cfi->cfiq->P_ID != P_ID_INTEL_PERFORMANCE) ? CMD(0xe8) : CMD(0xe9);
-> -
->  	mutex_lock(&chip->mutex);
->  	ret = get_chip(map, chip, cmd_adr, FL_WRITING);
->  	if (ret) {
-> @@ -1759,7 +1768,7 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
->  	   So we must check here and reset those bits if they're set. Otherwise
->  	   we're just pissing in the wind */
->  	if (chip->state != FL_STATUS) {
-> -		map_write(map, CMD(0x70), cmd_adr);
-> +		cfi_write_cmd(map, 0x70, cmd_adr);
->  		chip->state = FL_STATUS;
->  	}
->  	status = map_read(map, cmd_adr);
-> @@ -1767,21 +1776,22 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
->  		xip_enable(map, chip, cmd_adr);
->  		printk(KERN_WARNING "SR.4 or SR.5 bits set in buffer write (status %lx). Clearing.\n", status.x[0]);
->  		xip_disable(map, chip, cmd_adr);
-> -		map_write(map, CMD(0x50), cmd_adr);
-> -		map_write(map, CMD(0x70), cmd_adr);
-> +		cfi_write_cmd(map, 0x50, cmd_adr);
-> +		cfi_write_cmd(map, 0x70, cmd_adr);
->  	}
->  
->  	chip->state = FL_WRITING_TO_BUFFER;
-> -	map_write(map, write_cmd, cmd_adr);
-> +	cfi_write_cmd(map, (cfi->cfiq->P_ID != P_ID_INTEL_PERFORMANCE) ? 0xe8 : 0xe9,
-> +		      cmd_adr);
->  	ret = WAIT_TIMEOUT(map, chip, cmd_adr, 0, 0);
->  	if (ret) {
->  		/* Argh. Not ready for write to buffer */
->  		map_word Xstatus = map_read(map, cmd_adr);
-> -		map_write(map, CMD(0x70), cmd_adr);
-> +		cfi_write_cmd(map, 0x70, cmd_adr);
->  		chip->state = FL_STATUS;
->  		status = map_read(map, cmd_adr);
-> -		map_write(map, CMD(0x50), cmd_adr);
-> -		map_write(map, CMD(0x70), cmd_adr);
-> +		cfi_write_cmd(map, 0x50, cmd_adr);
-> +		cfi_write_cmd(map, 0x70, cmd_adr);
->  		xip_enable(map, chip, cmd_adr);
->  		printk(KERN_ERR "%s: Chip not ready for buffer write. Xstatus = %lx, status = %lx\n",
->  				map->name, Xstatus.x[0], status.x[0]);
-> @@ -1800,7 +1810,7 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
->  	}
->  
->  	/* Write length of data to come */
-> -	map_write(map, CMD(words), cmd_adr );
-> +	cfi_write_cmd(map, words, cmd_adr);
->  
->  	/* Write data */
->  	vec = *pvec;
-> @@ -1837,7 +1847,7 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
->  	*pvec_seek = vec_seek;
->  
->  	/* GO GO GO */
-> -	map_write(map, CMD(0xd0), cmd_adr);
-> +	cfi_write_cmd(map, 0xd0, cmd_adr);
->  	chip->state = FL_WRITING;
->  
->  	ret = INVAL_CACHE_AND_WAIT(map, chip, cmd_adr,
-> @@ -1845,7 +1855,7 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
->  				   chip->buffer_write_time,
->  				   chip->buffer_write_time_max);
->  	if (ret) {
-> -		map_write(map, CMD(0x70), cmd_adr);
-> +		cfi_write_cmd(map, 0x70, cmd_adr);
->  		chip->state = FL_STATUS;
->  		xip_enable(map, chip, cmd_adr);
->  		printk(KERN_ERR "%s: buffer write error (status timeout)\n", map->name);
-> @@ -1858,8 +1868,8 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
->  		unsigned long chipstatus = MERGESTATUS(status);
->  
->  		/* reset status */
-> -		map_write(map, CMD(0x50), cmd_adr);
-> -		map_write(map, CMD(0x70), cmd_adr);
-> +		cfi_write_cmd(map, 0x50, cmd_adr);
-> +		cfi_write_cmd(map, 0x70, cmd_adr);
->  		xip_enable(map, chip, cmd_adr);
->  
->  		if (chipstatus & 0x02) {
+Best regards,
+--  
+Griffin Kroah-Hartman <griffin@kroah.com>
 
 
 ______________________________________________________
