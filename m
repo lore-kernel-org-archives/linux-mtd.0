@@ -4,76 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B7AEC5DF81
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2026 19:15:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63F66C5DF81
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2026 20:21:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=jS1O/w4f/HaMXe6D+OtAaggLCvTQChJK/mEHPo20NpM=; b=msiPrMJ+WkYakp
-	oLE8hygNepC9myIrDHERyfwHeki5j+NqLnmosnDJuOeklUGuETot7HMvxJjxuplm9HzQ9Jtc46dR1
-	bnxkzWDSFsmpiBMssdqY92YOnl1hgmue2E98TeWOpTIIafRLdmHIshulUC3zWazrj/9ZS6qhrRt4T
-	ZJNcECf/o+bYqd2RkbOV7/elxFU7HTgequA6+RCTGCUaj14/I4Kbih3NjW8EMXtyloyldnEuTEcHU
-	rJBG7O8ORVj16f+1smASXgLxMxTxlGV7CuimFnPhTtl29CiMBwDgRkV0rxIPt8aJNz/6qEcKY1D+V
-	tMylU2zFVunVRY3j2yaA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=WaArplvYfNoZUoXEKv8gh7/nBsmgQf+4oCO+T526vnA=; b=dU0N7PJs4HlN0N
+	W92omZMiUDHr3x3tuwbkyF85s8gB2u7ddYDmtbjltvNxV/MCq9b79folohBH3PkIw846jpfhw5pSB
+	Bz9xN/+XAh0iI1501W/11E1JcUPCp4uXUlr5fTppswujoLg55yf8a+As7F58yW5u4QZpSzxMeu6HR
+	LlYXw2gCQti/7U3/Woqk7O5ddqjLaTsFY6MW4oW0PvS98UZPkHfcYPNwCptmUgTAETrskHKYBc3wH
+	QjMKAvNYfT7u26M9P3eOnnHaKNUEHEZtKJjVoyLhsLLYrg/bAZB7eOoLA8ZgJVwVywRGNMKvOQZlq
+	fLflJq5ipOFtp3kGZHIw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wya8k-0000000HIcK-1WLO;
-	Mon, 24 Aug 2026 19:15:26 +0000
-Received: from mgamail.intel.com ([198.175.65.17])
+	id 1wybAh-0000000HMFq-0BAo;
+	Mon, 24 Aug 2026 20:21:31 +0000
+Received: from mail-pf1-x430.google.com ([2607:f8b0:4864:20::430])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wya8h-0000000HIbi-1HyK
+	id 1wybAZ-0000000HMEX-2Fak
 	for linux-mtd@lists.infradead.org;
-	Mon, 24 Aug 2026 19:15:24 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1787598923; x=1819134923;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=gsekJprGaXKAM7tM8FJNjyQjNV/9Z4HuwtcP34Q5/4s=;
-  b=hQECpapcAxqCHtXzzcgjraP0LIv1kneGGbhKh9oHWrcStJgMoXX6nojX
-   juZu9IniiKsklureDXd9UvoPMcYlprnH9/+QaZa6gZxjv56mcDW/W1Jh6
-   GHhxey7pE+oCI/qNiG7rgVoiEZSj4AsgE7juFVe6PCZWZt97U1HsupsJn
-   lzeZJdVAz39ynO2Wt4R5rseB4FZ1ME+dxMC5+1rK8xRIzkEY7GVNMUUkL
-   c4EsWuIOVFyGe+BA7+Sz6m8TogtBDJtejUKTqeXwr4pthfrpZq55kDB+6
-   TSmP4m958Ey7fKwPnfMD9p9f93XYvZqakxnc1eCVxLKD+JK1hLeqgN4kd
-   A==;
-X-CSE-ConnectionGUID: xVWxYne4Tw2i58Rez35nlg==
-X-CSE-MsgGUID: 1cfaOj2SRd2hk4/jfxzGoQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11885"; a="88073494"
-X-IronPort-AV: E=Sophos;i="6.25,241,1779174000"; 
-   d="scan'208";a="88073494"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2026 12:15:22 -0700
-X-CSE-ConnectionGUID: ff27bxXkSEGswYxlha5lvA==
-X-CSE-MsgGUID: 7baDVX3rR8q/oa5sf18GTQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.25,241,1779174000"; 
-   d="scan'208";a="265771432"
-Received: from lkp-server01.sh.intel.com (HELO 3532383e6126) ([10.239.97.150])
-  by orviesa010.jf.intel.com with ESMTP; 24 Aug 2026 12:15:21 -0700
-Received: from kbuild by 3532383e6126 with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1wya8V-000000003rX-1Wm7;
-	Mon, 24 Aug 2026 19:15:13 +0000
-Date: Tue, 25 Aug 2026 03:12:13 +0800
-From: kernel test robot <lkp@intel.com>
-To: Rosen Penev <rosenp@gmail.com>, linux-mtd@lists.infradead.org
-Cc: oe-kbuild-all@lists.linux.dev,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Mon, 24 Aug 2026 20:21:27 +0000
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-848643382fcso4067649b3a.1
+        for <linux-mtd@lists.infradead.org>; Mon, 24 Aug 2026 13:21:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1787602883; x=1788207683; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=gNp5G+obRtae82vOvBIyYYK4Xe2jxDTBbOvoR67emq8=;
+        b=F/39jhO6HwBIVmR3VFhOHIMOUd+fJXNSt4MHDO5EldgXdjI5EL8diFxXo+dB/OobBI
+         AWjnG9QJUxINVpQttdwOs/N1WhYbtZFZpA1DmFpR2AA7zE7T02qfaWteFxCC0nCCUdOh
+         1M8F9fEg801FoOrofy8uwOnFcYYz8gtRzw+rj8BBVMv3z9n/XThI7CtiZmoqrxj1Txdi
+         EMP9QmYYDwD6fpjWHy/qy1OjeCQhMKwsyfGIxwzVrSt/ZKG1UEMtQF8N9pYUmMrCTQG4
+         K2ZdwT0Lb/Bh+20sLaK5WJ7VuBMCPx/PQ5m3q/3tRRQt7vxK8/4DyD06OPXR/chr8fSO
+         XX3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1787602883; x=1788207683;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=gNp5G+obRtae82vOvBIyYYK4Xe2jxDTBbOvoR67emq8=;
+        b=oslOU2YYnVlBAlbGYyDMw/Uk0bWPKvc2tc4ejaGLxDuY6cFDOcdgyut0fMfNcz4Zy1
+         kLBNnbSqzDxTaMFmfVw4bfEDPy2fNFRkAtJcOdwKhsjcvUtLK8zeRxsjgZ7ALMTpV6OA
+         c0kiXMEJM+XUUmJ0PjVqiXd5UsdH/MPp4z9vAa6gWtNiy7VpRlRC+Npc+3fSB18bwsJ9
+         Ir+bbOM9p59zpUFNRVNRPATPQbV3HkkC66BbJ+uzZyg9vGHWL+CyJVXER0V+rV4HqVun
+         Dg+bxtNpPNREtsQN5bKs/acWDms8mujOxWTbFQhQMb9EyevQ70wr4SIdlHkr/siYMJqG
+         +Qiw==
+X-Gm-Message-State: AFuF++mQZ+CyY+hLmYJQajVAKPIjsVXPuZuGrf+5iWufax2gfmEUOR8P
+	quMrqJezT6DHls+tBruGgKAE9y7w6AinI0dlSjAjf5c6MnkYkuCVJVve2X/MZA==
+X-Gm-Gg: AR+sD13sGLDUjYhJv9dBbwTWKvb2z+JfMNX34NPY6WhTXeaB+ygmdifspb6IcWGzA5j
+	etexDHiN9WUD/6KJiDBvKQlU9dDbSNHWj5CLvEHOzaoO6JL1fWWPsr4F6SJcOeXKFDtE/ubG3Y0
+	FsGbPswPL+xV+QUyr9yAqxX5QY3z/yJ0tOlOkVTRFHBgc30EjWjoQPe7sVS9fwTfQfU43P3y4DH
+	Lz3+LIwQNM1n+HIN1AVIx4kfPr0hcaoEKG2FfuxNwd46oHZeQ+0w1IYSRM9tR//qiHFUXTmw7pS
+	GkDOGQe5bTyMFFNwM7g9ymfUpyKMIfBdOOR+vH3y1XQT1jxXVIhyQYI9WxwWxhQRG1eXeNXNi9S
+	H3QtL4lRlj03ag2RvnhFQQOXm8cZ22R8sei1U8p72L0KMiaiJP3tkToInIkwMH/NKkFxxqQGGun
+	HgnKmmNuFDsXlGLmNqujf3OIWnFi3z6wAkWWhnpfVIs8W9F9W3ut/PIHnLfn/1m9f5ISFEz8KOZ
+	GK0BI1nZ1q+7gvw/27XWagc87dlsAlJMv+KDCSo9Qy5XnotK2TXOo9XdUvt1BgnKT4yTgeVAxDO
+	gp2rszwHSZChkUpDxcxaW/HuLZ/sZ6rwEWCCmHRBLNQ=
+X-Received: by 2002:a05:6a00:2d26:b0:848:5cf5:5040 with SMTP id d2e1a72fcca58-851f9f4ba99mr46085836b3a.10.1787602882600;
+        Mon, 24 Aug 2026 13:21:22 -0700 (PDT)
+Received: from ryzen.lan ([2601:644:8000:7a86::e34])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-8520f16a9ccsm2330961b3a.58.2026.08.24.13.21.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Aug 2026 13:21:22 -0700 (PDT)
+From: Rosen Penev <rosenp@gmail.com>
+To: linux-mtd@lists.infradead.org
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: rawnand: ndfc: use devm_platform_ioremap_resource
-Message-ID: <202608250359.cFwVUqgE-lkp@intel.com>
-References: <20260822224150.198749-1-rosenp@gmail.com>
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	David Woodhouse <David.Woodhouse@intel.com>,
+	Sean MacLennan <smaclennan@pikatech.com>,
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCHv2] mtd: rawnand: ndfc: use devm_platform_ioremap_resource()
+Date: Mon, 24 Aug 2026 13:21:20 -0700
+Message-ID: <20260824202120.12280-1-rosenp@gmail.com>
+X-Mailer: git-send-email 2.55.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260822224150.198749-1-rosenp@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260824_121523_414105_C92DB6EC 
-X-CRM114-Status: GOOD (  13.79  )
+X-CRM114-CacheID: sfid-20260824_132125_446853_5A822731 
+X-CRM114-Status: GOOD (  13.46  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,99 +101,79 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Rosen,
+Replace the open-coded of_iomap()/iounmap() with the managed
+devm_platform_ioremap_resource() helper. This fixes a mapping leak on
+driver remove (the old code never called iounmap()) and simplifies the
+error path by dropping the manual cleanup in ndfc_probe().
 
-kernel test robot noticed the following build warnings:
+There is no overlapping memory-region concern introduced by this
+change: each supported board DT describes a single ndfc node with a
+unique 0x2000 register region, and the EBC parent uses dcr-reg rather
+than a MEM reg resource, so the newly added request_mem_region() cannot
+conflict with an existing reservation. Distinct chip selects map to
+distinct 64-bit physical addresses, so CS instances do not overlap.
 
-[auto build test WARNING on v7.2]
-[also build test WARNING on linus/master next-20260821]
-[cannot apply to mtd/nand/next]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Fixes: a808ad3b0d28 ("[MTD] [NAND] ndfc driver")
+Cc: stable@vger.kernel.org
+Assisted-by: opencode:hy3-free
+Signed-off-by: Rosen Penev <rosenp@gmail.com>
+---
+ v2: add Fixes: and Cc: tags
+ drivers/mtd/nand/raw/ndfc.c | 21 ++++++++-------------
+ 1 file changed, 8 insertions(+), 13 deletions(-)
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Rosen-Penev/mtd-rawnand-ndfc-use-devm_platform_ioremap_resource/20260822-154150
-base:   v7.2
-patch link:    https://lore.kernel.org/r/20260822224150.198749-1-rosenp%40gmail.com
-patch subject: [PATCH] mtd: rawnand: ndfc: use devm_platform_ioremap_resource
-config: nios2-allmodconfig (https://download.01.org/0day-ci/archive/20260825/202608250359.cFwVUqgE-lkp@intel.com/config)
-compiler: nios2-linux-gcc (GCC) 11.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260825/202608250359.cFwVUqgE-lkp@intel.com/reproduce)
+diff --git a/drivers/mtd/nand/raw/ndfc.c b/drivers/mtd/nand/raw/ndfc.c
+index a48274297d3b..d6db04d48c45 100644
+--- a/drivers/mtd/nand/raw/ndfc.c
++++ b/drivers/mtd/nand/raw/ndfc.c
+@@ -185,10 +185,15 @@ static int ndfc_chip_init(struct ndfc_controller *ndfc,
+ static int ndfc_probe(struct platform_device *ofdev)
+ {
+ 	struct ndfc_controller *ndfc;
++	void __iomem *ndfcbase;
+ 	const __be32 *reg;
+ 	u32 ccr;
+ 	u32 cs;
+-	int err, len = 0;
++	int len = 0;
++
++	ndfcbase = devm_platform_ioremap_resource(ofdev, 0);
++	if (IS_ERR(ndfcbase))
++		return PTR_ERR(ndfcbase);
+ 
+ 	/* Read the reg property to get the chip select */
+ 	reg = of_get_property(ofdev->dev.of_node, "reg", &len);
+@@ -210,11 +215,7 @@ static int ndfc_probe(struct platform_device *ofdev)
+ 	ndfc->ofdev = ofdev;
+ 	dev_set_drvdata(&ofdev->dev, ndfc);
+ 
+-	ndfc->ndfcbase = of_iomap(ofdev->dev.of_node, 0);
+-	if (!ndfc->ndfcbase) {
+-		dev_err(&ofdev->dev, "failed to get memory\n");
+-		return -EIO;
+-	}
++	ndfc->ndfcbase = ndfcbase;
+ 
+ 	ccr = NDFC_CCR_BS(ndfc->chip_select);
+ 
+@@ -232,13 +233,7 @@ static int ndfc_probe(struct platform_device *ofdev)
+ 		iowrite32be(be32_to_cpup(reg), ndfc->ndfcbase + offset);
+ 	}
+ 
+-	err = ndfc_chip_init(ndfc, ofdev->dev.of_node);
+-	if (err) {
+-		iounmap(ndfc->ndfcbase);
+-		return err;
+-	}
+-
+-	return 0;
++	return ndfc_chip_init(ndfc, ofdev->dev.of_node);
+ }
+ 
+ static void ndfc_remove(struct platform_device *ofdev)
+-- 
+2.55.0
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202608250359.cFwVUqgE-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   drivers/mtd/nand/raw/ndfc.c: In function 'ndfc_probe':
->> drivers/mtd/nand/raw/ndfc.c:192:13: warning: unused variable 'err' [-Wunused-variable]
-     192 |         int err, len = 0;
-         |             ^~~
-
-
-vim +/err +192 drivers/mtd/nand/raw/ndfc.c
-
-ce4c61f1848649 drivers/mtd/nand/ndfc.c     Thomas Gleixner 2006-05-23  184  
-06f25510692385 drivers/mtd/nand/ndfc.c     Bill Pemberton  2012-11-19  185  static int ndfc_probe(struct platform_device *ofdev)
-ce4c61f1848649 drivers/mtd/nand/ndfc.c     Thomas Gleixner 2006-05-23  186  {
-410fe2f02630fa drivers/mtd/nand/ndfc.c     Felix Radensky  2011-04-26  187  	struct ndfc_controller *ndfc;
-dcd80db3efa82b drivers/mtd/nand/raw/ndfc.c Rosen Penev     2026-08-22  188  	void __iomem *ndfcbase;
-766f271a63d1ee drivers/mtd/nand/ndfc.c     Ian Munsie      2010-10-01  189  	const __be32 *reg;
-a808ad3b0d2841 drivers/mtd/nand/ndfc.c     Sean MacLennan  2008-12-10  190  	u32 ccr;
-5828c60826e942 drivers/mtd/nand/ndfc.c     Dan Carpenter   2014-07-31  191  	u32 cs;
-cceca8cb776b03 drivers/mtd/nand/raw/ndfc.c Rosen Penev     2026-06-13 @192  	int err, len = 0;
-a808ad3b0d2841 drivers/mtd/nand/ndfc.c     Sean MacLennan  2008-12-10  193  
-dcd80db3efa82b drivers/mtd/nand/raw/ndfc.c Rosen Penev     2026-08-22  194  	ndfcbase = devm_platform_ioremap_resource(ofdev, 0);
-dcd80db3efa82b drivers/mtd/nand/raw/ndfc.c Rosen Penev     2026-08-22  195  	if (IS_ERR(ndfcbase))
-dcd80db3efa82b drivers/mtd/nand/raw/ndfc.c Rosen Penev     2026-08-22  196  		return PTR_ERR(ndfcbase);
-dcd80db3efa82b drivers/mtd/nand/raw/ndfc.c Rosen Penev     2026-08-22  197  
-a808ad3b0d2841 drivers/mtd/nand/ndfc.c     Sean MacLennan  2008-12-10  198  	/* Read the reg property to get the chip select */
-61c7a080a5a061 drivers/mtd/nand/ndfc.c     Grant Likely    2010-04-13  199  	reg = of_get_property(ofdev->dev.of_node, "reg", &len);
-a808ad3b0d2841 drivers/mtd/nand/ndfc.c     Sean MacLennan  2008-12-10  200  	if (reg == NULL || len != 12) {
-a808ad3b0d2841 drivers/mtd/nand/ndfc.c     Sean MacLennan  2008-12-10  201  		dev_err(&ofdev->dev, "unable read reg property (%d)\n", len);
-a808ad3b0d2841 drivers/mtd/nand/ndfc.c     Sean MacLennan  2008-12-10  202  		return -ENOENT;
-a808ad3b0d2841 drivers/mtd/nand/ndfc.c     Sean MacLennan  2008-12-10  203  	}
-410fe2f02630fa drivers/mtd/nand/ndfc.c     Felix Radensky  2011-04-26  204  
-410fe2f02630fa drivers/mtd/nand/ndfc.c     Felix Radensky  2011-04-26  205  	cs = be32_to_cpu(reg[0]);
-410fe2f02630fa drivers/mtd/nand/ndfc.c     Felix Radensky  2011-04-26  206  	if (cs >= NDFC_MAX_CS) {
-410fe2f02630fa drivers/mtd/nand/ndfc.c     Felix Radensky  2011-04-26  207  		dev_err(&ofdev->dev, "invalid CS number (%d)\n", cs);
-410fe2f02630fa drivers/mtd/nand/ndfc.c     Felix Radensky  2011-04-26  208  		return -EINVAL;
-410fe2f02630fa drivers/mtd/nand/ndfc.c     Felix Radensky  2011-04-26  209  	}
-410fe2f02630fa drivers/mtd/nand/ndfc.c     Felix Radensky  2011-04-26  210  
-410fe2f02630fa drivers/mtd/nand/ndfc.c     Felix Radensky  2011-04-26  211  	ndfc = &ndfc_ctrl[cs];
-410fe2f02630fa drivers/mtd/nand/ndfc.c     Felix Radensky  2011-04-26  212  	ndfc->chip_select = cs;
-410fe2f02630fa drivers/mtd/nand/ndfc.c     Felix Radensky  2011-04-26  213  
-7da45139d264f3 drivers/mtd/nand/raw/ndfc.c Miquel Raynal   2018-07-17  214  	nand_controller_init(&ndfc->ndfc_control);
-410fe2f02630fa drivers/mtd/nand/ndfc.c     Felix Radensky  2011-04-26  215  	ndfc->ofdev = ofdev;
-410fe2f02630fa drivers/mtd/nand/ndfc.c     Felix Radensky  2011-04-26  216  	dev_set_drvdata(&ofdev->dev, ndfc);
-a808ad3b0d2841 drivers/mtd/nand/ndfc.c     Sean MacLennan  2008-12-10  217  
-dcd80db3efa82b drivers/mtd/nand/raw/ndfc.c Rosen Penev     2026-08-22  218  	ndfc->ndfcbase = ndfcbase;
-ce4c61f1848649 drivers/mtd/nand/ndfc.c     Thomas Gleixner 2006-05-23  219  
-a808ad3b0d2841 drivers/mtd/nand/ndfc.c     Sean MacLennan  2008-12-10  220  	ccr = NDFC_CCR_BS(ndfc->chip_select);
-ce4c61f1848649 drivers/mtd/nand/ndfc.c     Thomas Gleixner 2006-05-23  221  
-a808ad3b0d2841 drivers/mtd/nand/ndfc.c     Sean MacLennan  2008-12-10  222  	/* It is ok if ccr does not exist - just default to 0 */
-61c7a080a5a061 drivers/mtd/nand/ndfc.c     Grant Likely    2010-04-13  223  	reg = of_get_property(ofdev->dev.of_node, "ccr", NULL);
-a808ad3b0d2841 drivers/mtd/nand/ndfc.c     Sean MacLennan  2008-12-10  224  	if (reg)
-766f271a63d1ee drivers/mtd/nand/ndfc.c     Ian Munsie      2010-10-01  225  		ccr |= be32_to_cpup(reg);
-ce4c61f1848649 drivers/mtd/nand/ndfc.c     Thomas Gleixner 2006-05-23  226  
-4f2692a5383e4b drivers/mtd/nand/raw/ndfc.c Rosen Penev     2026-06-01  227  	iowrite32be(ccr, ndfc->ndfcbase + NDFC_CCR);
-ce4c61f1848649 drivers/mtd/nand/ndfc.c     Thomas Gleixner 2006-05-23  228  
-a808ad3b0d2841 drivers/mtd/nand/ndfc.c     Sean MacLennan  2008-12-10  229  	/* Set the bank settings if given */
-61c7a080a5a061 drivers/mtd/nand/ndfc.c     Grant Likely    2010-04-13  230  	reg = of_get_property(ofdev->dev.of_node, "bank-settings", NULL);
-a808ad3b0d2841 drivers/mtd/nand/ndfc.c     Sean MacLennan  2008-12-10  231  	if (reg) {
-a808ad3b0d2841 drivers/mtd/nand/ndfc.c     Sean MacLennan  2008-12-10  232  		int offset = NDFC_BCFG0 + (ndfc->chip_select << 2);
-4f2692a5383e4b drivers/mtd/nand/raw/ndfc.c Rosen Penev     2026-06-01  233  		iowrite32be(be32_to_cpup(reg), ndfc->ndfcbase + offset);
-a808ad3b0d2841 drivers/mtd/nand/ndfc.c     Sean MacLennan  2008-12-10  234  	}
-a808ad3b0d2841 drivers/mtd/nand/ndfc.c     Sean MacLennan  2008-12-10  235  
-dcd80db3efa82b drivers/mtd/nand/raw/ndfc.c Rosen Penev     2026-08-22  236  	return ndfc_chip_init(ndfc, ofdev->dev.of_node);
-ce4c61f1848649 drivers/mtd/nand/ndfc.c     Thomas Gleixner 2006-05-23  237  }
-ce4c61f1848649 drivers/mtd/nand/ndfc.c     Thomas Gleixner 2006-05-23  238  
-
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
 ______________________________________________________
 Linux MTD discussion mailing list
