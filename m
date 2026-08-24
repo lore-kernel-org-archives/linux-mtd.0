@@ -4,90 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3310AC5DF8C
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2026 01:47:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 667CFC5DF8C
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2026 05:25:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=2UyFCe3oJhwiBnjylzKaMyusQ+cf9dyO5i2vxrtzti8=; b=FbfMI99h9bQv0D
-	d3mZ9sbLOsbjlPi8JZ7LQs1nHwR9Rd0i0rhWcvLU70dVjteXPn3Jnqoa+9mPTRSvDX5DP0IQJnirP
-	wlSFgg34GfNkdQZMqkw1NJMC/NESBuAIWpsvUORC02YFliDlXUqhb5HjYvyPkAOoiCFB7T7JRpWnF
-	Et6q5VeqgFh7YmUhl9m1u0bmb+XkZIS+TXBeww/0/W/HJ8WpPApGIpIHkqC4Ci47AQF5x3gFEMG5I
-	vPGs77WwjBdaa/zQkl6GswzRUYei5t52Nvn6qOmgiBT3S+HvTbOokIAGQckD+kjjusDziZg3Xix+1
-	BNvCOf2Idg0yY0nZYNCA==;
+	List-Archive:List-Unsubscribe:List-Id:To:From:Subject:Message-ID:Date:
+	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=N+qG4EdLbhZDxiqo+1kSII1Qxpl92+BzG3k2NLWcQMY=; b=eq0
+	9kx2QBU/oGT9GHAWFMo2Ies/mxQHUUwLbTAPoQJ01js9W0QJSrK3nC9GVLDZS5gRc76ehBvd4ugoh
+	zoc3hI3au/IAS1gGTJJ8JpKUsHY5QhZSdRDpehypX1DVCIdbgBWey23w91lDMPyzM4m9dGNNlOsom
+	QVeJbbOMepoXJzYeiICLU13WqtEePLjnj622Xlg+hpVqEpvU0ZAyt58FBHepZLOhtBiFzumGnDDPo
+	GQPxbhBV8/nNzLDFchT3BA8/uDnjl8XZPkzlbLsrsjBBn7SHNxwWzOqkKy+OgHZT3Q9ZSS452alCj
+	JvK4b5yV5BmSCUw8Nc273MUHBHu8teA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wyJmb-0000000FkWd-21Zm;
-	Mon, 24 Aug 2026 01:47:29 +0000
-Received: from mail-ej1-x62a.google.com ([2a00:1450:4864:20::62a])
+	id 1wyNBl-0000000FwAM-2nZI;
+	Mon, 24 Aug 2026 05:25:41 +0000
+Received: from mail-oa1-f78.google.com ([209.85.160.78])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wyJmY-0000000FkVy-0MHR
+	id 1wyNBj-0000000FwA3-1JpX
 	for linux-mtd@lists.infradead.org;
-	Mon, 24 Aug 2026 01:47:27 +0000
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-c15d111ca99so340696166b.0
-        for <linux-mtd@lists.infradead.org>; Sun, 23 Aug 2026 18:47:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1787536043; x=1788140843; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=7rz8dgykUp+ozQhFiKOeiCPVDIWYM2DLnaQT/Ow0S90=;
-        b=ShmDkYOUc+EmFX24NIaXdA382SW6t83DgL/33akJXYzuyyJAxa1m/4UHZEevrN5Cy/
-         GwF8glr1ZgpsG6rF2wR++2QG89QB4SYZK+SYnr0q29jb66xbNMJp/NaxrjeKIBoBZp8h
-         ut8jKKw2YIXLftqkn6rYWOeytgyWaCXwmzIELGk8ysl8F4rKANaEc2FMznZDrbek1cIJ
-         SgdkLQle71CDE+n72r4y/XFehv5fUnTtkHPfajFKTc5inVdw8H2Slue49Thk3E3kQaYF
-         9J8v8eDRGRa00UIs75Czv2icSri4/KkNeC7NUMX8WsqJYWMFM3HqYOrI5YzDa+q8Ryjf
-         XiGg==
+	Mon, 24 Aug 2026 05:25:40 +0000
+Received: by mail-oa1-f78.google.com with SMTP id 586e51a60fabf-43cd2d12617so7537092fac.3
+        for <linux-mtd@lists.infradead.org>; Sun, 23 Aug 2026 22:25:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1787536043; x=1788140843;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=7rz8dgykUp+ozQhFiKOeiCPVDIWYM2DLnaQT/Ow0S90=;
-        b=gcYT9lIOhYQNCA2BnB0VA9nEr7jFCzxKDT9HGKHRuwYPIedniLo+0aHRFRkYAfGqG+
-         yE5YFY2xQorq3CPfOyDyU0uUqpgtK4CEgrutFH9ZBKMXcMWi/+/3PlMFZALPwEx7GsnQ
-         JjDfVIQVd0sIM7jSliOa4p3DeVbNLvcupnjQpjQXVHZWt7xOzCLXeScK6+FLzhA6iDfb
-         +VN81R7oJP1JukkHN6bYcYh4EKH8zPGykBxWNTiRM+DMLBEmUwyKiHZJVRyO2Dlfd5sP
-         wsC15GzSiYvoW6Ue/Sjg62wJvfHVYw38TccO32JudOTGgb9/kDZv1ha72SeUTdlGv2n9
-         SqfA==
-X-Forwarded-Encrypted: i=1; AHgh+Rq6VMUKLFtdO+kySS1/vRUAkFThxyNDevFj4NrOZ/JOGwMRQ5OOUfnKnuiDLLtUxtmiA9IV2NdsftA=@lists.infradead.org
-X-Gm-Message-State: AFuF++k+/ADpzNaDA6ntaEVq0TqVqd9WTTAp8VmLYlF5HTloAOxGpi1z
-	ztdRMEgp1w49z69+gTqMf9GwqBj5/+5FeZqevskJ1VwOU+Yyqy2Sfftj
-X-Gm-Gg: AR+sD10YDoi8MhQWeUzWH/TuFjP25ZtWq7awuLiiHPBl2f+WRDfDx3zpp0QUxI2R+qo
-	MKc1gh3qThn9W/VkTfAteaQNGbTCi+CEDUp71MpOmWT5VqbfQpbWlkEJIfWPtM5CoIlFbFFGTIs
-	jx4GQOCWiQ4dOdZXGXgT4mcAPUEtSdwfix+ivaneuKHTRsvBYNWf2cOTpMhLu4CyKqSepWohmSH
-	HCvB8r4FF+6KeGn1gLyiP4t4PtPNaX9vfYcjYzWYJN/ircdqEFgj1ytlvIBgsKzdMEZPqozmqBd
-	JI6FlpG4w8H50m8fGbt9go9yerG0hsdUx/kT+My5RJDwJ4QLg0t1Mr+BKHOnWrNYWKN7fI0QGzL
-	C/uZMDiqoJ4zyz447AOegl+KoNT77VBA0z00YxwyMdwEWS7Cbp4/yKh+ODCxANfSsSgKevZ7cEs
-	lpk7i8vwn2+hzDfEK74JJR8NyUviyw9skz8tPIXTJEZ0J46jO5Pu+Bka+jXe6M47NJa5lPDQMwB
-	uRfVLGPf6dbKCXLgikbaJFde50k2WW9u8t3kBt0EM4C5nDedJx4AEP4eI6iHW9tkc6b8/JwWg0+
-	gsMwHkcHZNV9zXLYuJ9UGtKs5CJ/L+LqlWG1bhEoi0S5LVejQLgY5KyDoH6NV+ayoav3
-X-Received: by 2002:a17:907:9999:b0:c20:fda7:1856 with SMTP id a640c23a62f3a-c24925a76f8mr1728156366b.8.1787536042970;
-        Sun, 23 Aug 2026 18:47:22 -0700 (PDT)
-Received: from localhost.localdomain (dynamic-2a02-3100-b027-cd01-554a-ffde-5279-f351.310.pool.telefonica.de. [2a02:3100:b027:cd01:554a:ffde:5279:f351])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-c24966f6b48sm1006377166b.33.2026.08.23.18.47.21
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Sun, 23 Aug 2026 18:47:22 -0700 (PDT)
-From: Karl Mehltretter <kmehltretter@gmail.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Karl Mehltretter <kmehltretter@gmail.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	David Laight <david.laight.linux@gmail.com>,
-	Lukas Wunner <lukas@wunner.de>,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: cfi_cmdset_0001: shrink do_write_buffer() stack frame
-Date: Mon, 24 Aug 2026 03:47:03 +0200
-Message-Id: <20260824014703.56502-1-kmehltretter@gmail.com>
-X-Mailer: git-send-email 2.39.5 (Apple Git-154)
+        d=1e100.net; s=20251104; t=1787549137; x=1788153937;
+        h=content-type:to:from:subject:message-id:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=xZWUSFu9h8BHYi5GnVA0uVVbLkbhCP0/H8ChgVHNS8Y=;
+        b=qv97K6TB9MfTIxsqQzCD/tygcFINIHkNJjAyvDmLrwYdjYQGZWYbYNNvX3mldLL/KQ
+         x2wxtWtn9Y1RVV4vs8nF8vz0zq7ImmSZmyJPdx3B34lURWB/+NRyS093Kb1dekkuNzpO
+         fqVhtLoavxU1LpUyZfvY6YHG4GDq1fH2nEfneTkaJz29Rvz4H/8/lwczAMfAswSGMebP
+         FRJwxhL41lpyyVPYWf2LOp2OU9fz3Tm5J9BDQ17qtw21ZQ9yNRCKWjKwYLDyHtZSTgMO
+         G9mBwBUa6LYSde0K+HnY+Nt1Y4rH8GgKRdVUHJIajPn8vnTgpfd4iKUiMG9FUqjDiKsA
+         afvw==
+X-Forwarded-Encrypted: i=1; AHgh+RpAJ+8r0IKxBvxNojeBMGKQdbXt5pcN2bm/MdodHC+Gqj3YDnQiMN4IBfUQVbHSfQDLX6NBxNf60T8=@lists.infradead.org
+X-Gm-Message-State: AFuF++lzQVMWb0roOrBudanttV/+Uyb0JBanszpxzNU1wFrzuLbeEy62
+	VJHRYWh5Dzo2TwP6nQgGDWnuan8JiD8i6+zyYNsG9sducaFsRgDmrbaNH1piOYDRjoSdw10+0zu
+	/z2Ianb84AfCtpbfkI4u+9w/a0eNH8qX1gGzkKek6BBIucCx7z3uX/E7fJFE=
 MIME-Version: 1.0
+X-Received: by 2002:a05:6820:f024:b0:6ae:84e6:2de0 with SMTP id
+ 006d021491bc7-6b1593b93fcmr22935292eaf.26.1787549137632; Sun, 23 Aug 2026
+ 22:25:37 -0700 (PDT)
+Date: Sun, 23 Aug 2026 22:25:37 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <6a8bd5d1.ae6ddae5.3da009.0076.GAE@google.com>
+Subject: [syzbot] [jffs2?] kernel BUG in jffs2_link_node_ref
+From: syzbot <syzbot+860303c982ac004f74f5@syzkaller.appspotmail.com>
+To: dwmw2@infradead.org, linux-kernel@vger.kernel.org, 
+	linux-mtd@lists.infradead.org, richard@nod.at, 
+	syzkaller-bugs@googlegroups.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260823_184726_183974_2A7DE03D 
-X-CRM114-Status: GOOD (  15.86  )
+X-CRM114-CacheID: sfid-20260823_222539_361197_325866E3 
+X-CRM114-Status: UNSURE (   7.83  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -104,162 +78,117 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-arm32 allmodconfig fails to build with gcc:
+Hello,
 
-  drivers/mtd/chips/cfi_cmdset_0001.c:1883:1: error: the frame size of 1296
-  bytes is larger than 1280 bytes [-Werror=frame-larger-than=]
+syzbot found the following issue on:
 
-With MTD_MAP_BANK_WIDTH_32 a map_word is 32 bytes, and with KASAN_STACK
-every temporary gets its own redzoned slot.  do_write_buffer() builds a
-map_word for each of the twelve commands it issues, and those temporaries
-dominate its frame.
+HEAD commit:    bd5f485f3f02 Merge tag 'soc-arm-7.3' of git://git.kernel.o..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=17f4ee79580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e4131490469a78a3
+dashboard link: https://syzkaller.appspot.com/bug?extid=860303c982ac004f74f5
+compiler:       gcc (Debian 14.2.0-19) 14.2.0, GNU ld (GNU Binutils for Debian) 2.44
+userspace arch: i386
 
-Issue the commands through a small noinline helper that takes the
-command as a plain value and builds the map_word in its own frame.  The
-sequence of reads and writes to the chip is unchanged.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-The helper must not be inlined, and reusing one map_word local is not
-enough: clang cannot assume the callee does not observe the local, so it
-still returns each CMD() into a per-call-site temporary, and the frame
-grows (1760 -> 1824 bytes in cfi_intelext_writev(), into which clang
-inlines do_write_buffer()).
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/d900f083ada3/non_bootable_disk-bd5f485f.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/147156575815/vmlinux-bd5f485f.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/f8c1c266e68c/bzImage-bd5f485f.xz
 
-Frame sizes with MTD_MAP_BANK_WIDTH_32 and KASAN_STACK:
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+860303c982ac004f74f5@syzkaller.appspotmail.com
 
-  gcc 15.2   do_write_buffer()      1296 -> 520
-  clang 21   cfi_intelext_writev()  1760 -> 896
+block2mtd: error: cannot open device /dev/loop0
+Flash size not aligned to erasesize, reducing to 2043KiB
+jffs2: Eep. ofs 0x00000041 not word-aligned!
+------------[ cut here ]------------
+kernel BUG at fs/jffs2/nodelist.c:614!
+Oops: invalid opcode: 0000 [#1] SMP KASAN NOPTI
+CPU: 0 UID: 0 PID: 16927 Comm: syz.6.2727 Tainted: G             L      syzkaller #0 PREEMPT(full) 
+Tainted: [L]=SOFTLOCKUP
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:jffs2_link_node_ref+0x4a1/0x940 fs/jffs2/nodelist.c:614
+Code: 08 44 89 ee 49 8d 6c 24 28 83 e0 fc 89 c7 89 44 24 0c e8 52 e8 89 fe 8b 44 24 0c 44 39 e8 0f 84 cd fd ff ff e8 90 ee 89 fe 90 <0f> 0b e8 88 ee 89 fe 49 8d be 64 01 00 00 48 b8 00 00 00 00 00 fc
+RSP: 0018:ffffc90002db77c8 EFLAGS: 00010287
+RAX: 000000000001adff RBX: ffff888073efe260 RCX: ffffc9000bc04000
+RDX: 0000000000080000 RSI: ffffffff83800bc0 RDI: ffff888020fb8000
+RBP: ffffc900066c1070 R08: 0000000000000004 R09: 0000000000000040
+R10: 0000000000000041 R11: 0000000000000000 R12: ffffc900066c1048
+R13: 0000000000000041 R14: ffff8880251a8000 R15: ffff888073efe268
+FS:  0000000000000000(0000) GS:ffff8880969db000(0063) knlGS:00000000f541db40
+CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
+CR2: 000000000c3fd7fc CR3: 0000000051e89000 CR4: 0000000000352ef0
+Call Trace:
+ <TASK>
+ jffs2_scan_dirty_space+0x162/0x270 fs/jffs2/nodelist.c:685
+ jffs2_scan_eraseblock fs/jffs2/scan.c:736 [inline]
+ jffs2_scan_medium+0x189d/0x59d0 fs/jffs2/scan.c:151
+ jffs2_build_filesystem fs/jffs2/build.c:112 [inline]
+ jffs2_do_mount_fs+0x8a0/0x2300 fs/jffs2/build.c:416
+ jffs2_do_fill_super+0x3d4/0xa50 fs/jffs2/fs.c:574
+ jffs2_fill_super+0x283/0x370 fs/jffs2/super.c:290
+ mtd_get_sb+0x2f0/0x4c0 drivers/mtd/mtdsuper.c:57
+ mtd_get_sb_by_nr drivers/mtd/mtdsuper.c:88 [inline]
+ get_tree_mtd+0x6f9/0x8a0 drivers/mtd/mtdsuper.c:141
+ vfs_get_tree+0x92/0x320 fs/super.c:1947
+ fc_mount fs/namespace.c:1198 [inline]
+ do_new_mount_fc fs/namespace.c:3772 [inline]
+ do_new_mount fs/namespace.c:3848 [inline]
+ path_mount+0x7d0/0x24c0 fs/namespace.c:4168
+ do_mount fs/namespace.c:4181 [inline]
+ __do_sys_mount fs/namespace.c:4397 [inline]
+ __se_sys_mount fs/namespace.c:4374 [inline]
+ __ia32_sys_mount+0x292/0x310 fs/namespace.c:4374
+ do_syscall_32_irqs_on arch/x86/entry/syscall_32.c:79 [inline]
+ __do_fast_syscall_32+0x13a/0x8b0 arch/x86/entry/syscall_32.c:291
+ do_fast_syscall_32+0x32/0x70 arch/x86/entry/syscall_32.c:316
+ entry_SYSENTER_compat_after_hwframe+0x84/0x8e
+RIP: 0023:0xf702efec
+Code: Unable to access opcode bytes at 0xf702efc2.
+RSP: 002b:00000000f541d50c EFLAGS: 00000292 ORIG_RAX: 0000000000000015
+RAX: ffffffffffffffda RBX: 0000000080000900 RCX: 0000000080000800
+RDX: 0000000080000a00 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000292 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:jffs2_link_node_ref+0x4a1/0x940 fs/jffs2/nodelist.c:614
+Code: 08 44 89 ee 49 8d 6c 24 28 83 e0 fc 89 c7 89 44 24 0c e8 52 e8 89 fe 8b 44 24 0c 44 39 e8 0f 84 cd fd ff ff e8 90 ee 89 fe 90 <0f> 0b e8 88 ee 89 fe 49 8d be 64 01 00 00 48 b8 00 00 00 00 00 fc
+RSP: 0018:ffffc90002db77c8 EFLAGS: 00010287
+RAX: 000000000001adff RBX: ffff888073efe260 RCX: ffffc9000bc04000
+RDX: 0000000000080000 RSI: ffffffff83800bc0 RDI: ffff888020fb8000
+RBP: ffffc900066c1070 R08: 0000000000000004 R09: 0000000000000040
+R10: 0000000000000041 R11: 0000000000000000 R12: ffffc900066c1048
+R13: 0000000000000041 R14: ffff8880251a8000 R15: ffff888073efe268
+FS:  0000000000000000(0000) GS:ffff8880969db000(0063) knlGS:00000000f541db40
+CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
+CR2: 00000000f729ea66 CR3: 0000000051e89000 CR4: 0000000000352ef0
 
-The helper itself takes 168 (gcc) / 160 (clang) bytes.
 
-Reported-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Closes: https://lore.kernel.org/all/20260408211407.2295175-1-andriy.shevchenko@linux.intel.com/
-Suggested-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/all/87ik9cfm6g.fsf@bootlin.com/
-Assisted-by: LLM
-Signed-off-by: Karl Mehltretter <kmehltretter@gmail.com>
 ---
- drivers/mtd/chips/cfi_cmdset_0001.c | 42 ++++++++++++++++++-----------
- 1 file changed, 26 insertions(+), 16 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
-index b73596a8e021..a7c77c4e76ae 100644
---- a/drivers/mtd/chips/cfi_cmdset_0001.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0001.c
-@@ -1716,12 +1716,24 @@ static int cfi_intelext_write_words (struct mtd_info *mtd, loff_t to , size_t le
- }
- 
- 
-+/*
-+ * Keep noinline: inlined, the map_word temporaries put do_write_buffer() over
-+ * the frame-size limit with MTD_MAP_BANK_WIDTH_32 and KASAN_STACK.
-+ */
-+static noinline void __xipram cfi_write_cmd(struct map_info *map,
-+					    unsigned long cmd, unsigned long adr)
-+{
-+	struct cfi_private *cfi = map->fldrv_priv;
-+
-+	map_write(map, CMD(cmd), adr);
-+}
-+
- static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
- 				    unsigned long adr, const struct kvec **pvec,
- 				    unsigned long *pvec_seek, int len)
- {
- 	struct cfi_private *cfi = map->fldrv_priv;
--	map_word status, write_cmd, datum;
-+	map_word status, datum;
- 	unsigned long cmd_adr;
- 	int ret, wbufsize, word_gap, words;
- 	const struct kvec *vec;
-@@ -1740,9 +1752,6 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
- 	if (is_LH28F640BF(cfi))
- 		cmd_adr = adr;
- 
--	/* Let's determine this according to the interleave only once */
--	write_cmd = (cfi->cfiq->P_ID != P_ID_INTEL_PERFORMANCE) ? CMD(0xe8) : CMD(0xe9);
--
- 	mutex_lock(&chip->mutex);
- 	ret = get_chip(map, chip, cmd_adr, FL_WRITING);
- 	if (ret) {
-@@ -1759,7 +1768,7 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
- 	   So we must check here and reset those bits if they're set. Otherwise
- 	   we're just pissing in the wind */
- 	if (chip->state != FL_STATUS) {
--		map_write(map, CMD(0x70), cmd_adr);
-+		cfi_write_cmd(map, 0x70, cmd_adr);
- 		chip->state = FL_STATUS;
- 	}
- 	status = map_read(map, cmd_adr);
-@@ -1767,21 +1776,22 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
- 		xip_enable(map, chip, cmd_adr);
- 		printk(KERN_WARNING "SR.4 or SR.5 bits set in buffer write (status %lx). Clearing.\n", status.x[0]);
- 		xip_disable(map, chip, cmd_adr);
--		map_write(map, CMD(0x50), cmd_adr);
--		map_write(map, CMD(0x70), cmd_adr);
-+		cfi_write_cmd(map, 0x50, cmd_adr);
-+		cfi_write_cmd(map, 0x70, cmd_adr);
- 	}
- 
- 	chip->state = FL_WRITING_TO_BUFFER;
--	map_write(map, write_cmd, cmd_adr);
-+	cfi_write_cmd(map, (cfi->cfiq->P_ID != P_ID_INTEL_PERFORMANCE) ? 0xe8 : 0xe9,
-+		      cmd_adr);
- 	ret = WAIT_TIMEOUT(map, chip, cmd_adr, 0, 0);
- 	if (ret) {
- 		/* Argh. Not ready for write to buffer */
- 		map_word Xstatus = map_read(map, cmd_adr);
--		map_write(map, CMD(0x70), cmd_adr);
-+		cfi_write_cmd(map, 0x70, cmd_adr);
- 		chip->state = FL_STATUS;
- 		status = map_read(map, cmd_adr);
--		map_write(map, CMD(0x50), cmd_adr);
--		map_write(map, CMD(0x70), cmd_adr);
-+		cfi_write_cmd(map, 0x50, cmd_adr);
-+		cfi_write_cmd(map, 0x70, cmd_adr);
- 		xip_enable(map, chip, cmd_adr);
- 		printk(KERN_ERR "%s: Chip not ready for buffer write. Xstatus = %lx, status = %lx\n",
- 				map->name, Xstatus.x[0], status.x[0]);
-@@ -1800,7 +1810,7 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
- 	}
- 
- 	/* Write length of data to come */
--	map_write(map, CMD(words), cmd_adr );
-+	cfi_write_cmd(map, words, cmd_adr);
- 
- 	/* Write data */
- 	vec = *pvec;
-@@ -1837,7 +1847,7 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
- 	*pvec_seek = vec_seek;
- 
- 	/* GO GO GO */
--	map_write(map, CMD(0xd0), cmd_adr);
-+	cfi_write_cmd(map, 0xd0, cmd_adr);
- 	chip->state = FL_WRITING;
- 
- 	ret = INVAL_CACHE_AND_WAIT(map, chip, cmd_adr,
-@@ -1845,7 +1855,7 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
- 				   chip->buffer_write_time,
- 				   chip->buffer_write_time_max);
- 	if (ret) {
--		map_write(map, CMD(0x70), cmd_adr);
-+		cfi_write_cmd(map, 0x70, cmd_adr);
- 		chip->state = FL_STATUS;
- 		xip_enable(map, chip, cmd_adr);
- 		printk(KERN_ERR "%s: buffer write error (status timeout)\n", map->name);
-@@ -1858,8 +1868,8 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
- 		unsigned long chipstatus = MERGESTATUS(status);
- 
- 		/* reset status */
--		map_write(map, CMD(0x50), cmd_adr);
--		map_write(map, CMD(0x70), cmd_adr);
-+		cfi_write_cmd(map, 0x50, cmd_adr);
-+		cfi_write_cmd(map, 0x70, cmd_adr);
- 		xip_enable(map, chip, cmd_adr);
- 
- 		if (chipstatus & 0x02) {
--- 
-2.39.5 (Apple Git-154)
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
 ______________________________________________________
 Linux MTD discussion mailing list
