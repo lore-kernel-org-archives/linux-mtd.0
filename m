@@ -4,63 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA172C61DBE
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 Aug 2026 13:43:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D903FC61DB9
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 Aug 2026 14:05:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Qf/r9RuA6w+acNXUjspNX2aX+kLSUBaRxZYCZvts9zo=; b=Y420o9lFUtQFHP
-	eeFM0cUALfm0ttqAhdYrTNeLgrzLJ76Z6/eA9ojpoVtJI67XCuCm3S41HVt9vn8LF2QOKP2ogc83Y
-	nVQcME1xPC6Z+ycMB+d71mZ4lxTr49CWv5mccXghI6enVLNEZdXhqV+gp/CF6q3B5/X8mrjmeFnXc
-	5tazRmrinSbqeuGVq0I6lzkoXWDgZKNuz0UOMIVziqBTZ3G/9T3EU1stArGdi1b3dO/GSjDfy5UiT
-	41jvh4+r7tHwq4DF5m5Xh4P7U6rnVChrwVx08wRONbUmsBaWSEKtGxncRj65EMT7nvngpWTQQ6uxA
-	BjMxBvwDv5B1PCmuIDAA==;
+	List-Owner; bh=FAcYMpz6A8f/BDEXBTZ7M+YNF8MIgWGA7AC8L+f7R4I=; b=vCng3kf+5vYrcU
+	WMFurfOYC+Gyb9zelidsxZ2VbYH/GPGCY/ILAsKXeaOUHFB3I3ITIFRLen4+86RdCv38iccXCel2k
+	GcrAfqev73wbJK2tBo+Swh+hoNA34srynxKvGHLafHVDj3Jt+LE68yMcT+ieB8Gn5S+ewcqghE/+V
+	py2MNLsMv5MUHMpPCi7qFjiInMUWStrYxEM3fW7ujp6x95pY/NbL+eNQllEbzw1oL/OmrG+9pN0N+
+	JFJScMZV3HLqVpBICWcvu/o9CMH4q3mhYPQE9SB4y3SAWNM21Dli37QpMC9o3kQBYB/lODN5dlqLr
+	lZPAJRQpIFY/oeVmjl0A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wyrQW-00000000svE-0p9h;
-	Tue, 25 Aug 2026 13:42:56 +0000
-Received: from smtpout-02.galae.net ([185.246.84.56])
+	id 1wyrmA-00000000vUB-01nH;
+	Tue, 25 Aug 2026 14:05:18 +0000
+Received: from fhigh-b6-smtp.messagingengine.com ([202.12.124.157])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wyrQT-00000000suV-2kMv
+	id 1wyrm4-00000000vT0-0SaK
 	for linux-mtd@lists.infradead.org;
-	Tue, 25 Aug 2026 13:42:55 +0000
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id 1624C1A1816;
-	Tue, 25 Aug 2026 13:42:50 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id D7634604C4;
-	Tue, 25 Aug 2026 13:42:49 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 4864F11C7A0D5;
-	Tue, 25 Aug 2026 15:42:36 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1787665365; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=IyGOw4U4ix5P0wWcI0DA7kOT20fFy32UpdeDywIjYwA=;
-	b=dGCzR00m9UIpEy5m7VlUEVwJdxrJnrQ+CrWjVndRowk/uUUXXg3pBKqXZNXccj48IH0YvJ
-	dzbZDs9RE2dOBwLcSqs725Trr6vV9p/KeIVJM4nxFvqJMHMnGsmE/9hkDw3rCYqwXBZOOr
-	Gq4ngQkcPJXqQXqqbWoRnbeuxo9EzXmHZXLivj6y+t5Bw9U0nldC++JSJl7Bdt8XYbxTR7
-	cxvYC5HCYi5ale2ogffV1bwiWhLD0wRsM+NgRzcH8yUB+LqyTtqHgkPrCOtXYA5XfnkA1U
-	jLa1ed52EwcN/+vjtXW5mCskKLIZVqKEAgYMO7Shf6TmN8SPS2CTzdMsjGrfFw==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Griffin Kroah-Hartman <griffin@kroah.com>
-Cc: Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
- <vigneshr@ti.com>,  linux-mtd@lists.infradead.org,
-  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: parsers: afs: add size check to v2 partition
-In-Reply-To: <20260824-mtd_break_looper-v1-1-e46d7f02faab@kroah.com> (Griffin
-	Kroah-Hartman's message of "Mon, 24 Aug 2026 15:50:27 +0200")
-References: <20260824-mtd_break_looper-v1-1-e46d7f02faab@kroah.com>
-User-Agent: mu4e 1.12.12; emacs 30.2
-Date: Tue, 25 Aug 2026 15:42:35 +0200
-Message-ID: <87cxv6gvuc.fsf@bootlin.com>
+	Tue, 25 Aug 2026 14:05:14 +0000
+Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
+	by mailfhigh.stl.internal (Postfix) with ESMTP id 7AAD77A0114;
+	Tue, 25 Aug 2026 10:05:06 -0400 (EDT)
+Received: from phl-frontend-04 ([10.202.2.163])
+  by phl-compute-04.internal (MEProxy); Tue, 25 Aug 2026 10:05:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1787666706;
+	 x=1787753106; bh=ucX7NLr9HW0KkTqU7iBrbPlFt2gxW2dOPH97NEKPbKU=; b=
+	WZ8vCk5T13W3psoAdmZXSbu81UFlG2e2JI63RWWMrmUvt5qFBQfBbV+2jZfYOTL0
+	SU4CXOaub5gMcxs2z4f4ip33mP0X6waclmT65h21xRbwGSeNRi6OD9bQKPEBlzeA
+	fovrftfFucP7FS1go/MQsvfCOHDgFxDGJzsL3mCZH6NET6x1+iI0neqUTaLsRIdC
+	k6WE5N6BrruwUn2Q0OaUNqnRhpj6SwzgUx4fyLfjOqrvyECY1QgPt0sa8BY5NkZz
+	vZug8z/aQF3PsUPY6wMd7L1rPDp8jxGZJhhIb+728wdQq0cNIqpEX+UJHgsN3Gud
+	0dhd1OSI/BuCIET/CxafQg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1787666706; x=
+	1787753106; bh=ucX7NLr9HW0KkTqU7iBrbPlFt2gxW2dOPH97NEKPbKU=; b=F
+	gfy/xSmyBp29hh+S4gEddNfuL/RlbA2F2s64aZJvvm5Lroq1rMjLS+xQP37bpi4e
+	8Tze8gyR2nGXV/Q0/ADWnOXsldvzs4R9ex2lU/XUC/o9j1ienywdySucz1Qy/Vej
+	4AwquHqtMm2IdDXRgf4JX0V2cjH7bsGyS9+JXUgRSwaH4SzXfbDrSp7/q+drgaue
+	Qd3BBVr3PsZy2eEY65vBDp+CgHciFTBre1nqvxy8HDGtt+5RgG1n5JdIaJWIWjNJ
+	poXME/tFBp8Za7RSc7NscrcQ4HCSgu03x0d69xpyofNS2eexOiQlj5mzoTMxW8iO
+	hbxNgI0Vsmlx3ysWx0Mng==
+X-ME-Sender: <xms:EaGNapZy2sa4TOHHFi26Rh21CEPOaDmWIgiZD1v-kc1g-PneeSciDg>
+    <xme:EaGNathKU9nxl4cxvVMJR6ZCHjdyrF4_PVnLA_YYMZ3J2INAK-1OpmPgnhZhmne2X
+    DpSvQvAt0mBLM03zCgUREsFGZgvvEQZZKkQwLJjT5gqq7ZM8y4>
+X-ME-Received: <xmr:EaGNaq9H0bDADemljMFv1BDgJ27T2pCfIt784cay2q2AFo4fIKdcsjRdgJjwvVnihzsArYimdm-UAW_-Ly9EqbpEJ5xb-5Wm1-STrfPXuNvleIdPDZU>
+X-ME-Proxy-Cause: dmFkZTGhrtdVch8QdM5Vdv2WRheNpHzKWyr+RhuNdGJa6+gO7LgYYke4cc27gT0LwiWtpK
+    2GyCJCLEA1lgo0ZCBvbOe8vKWw1OijLmnbam96gP8dIdeEIW7V2ouwMVZVhxx0pvaFQw8k
+    4tn6kjm2btNTOM/CiAc1LChX3TCtysPb+m0ELFcQtgF+F8orw88GgtoFOE3OMg/6qg7dZw
+    leKkL4e6pV2w6BHZtZM3viZO8iZ+vXWZiFgj3C9XwuQbdjGgGtR5vhLwF9IPmLmdBLdVQt
+    laZjoxgP+19P1Do8/8tXqEXHeO08ll5J1jt/UkYA33xBDdCz30SqZa8NMTIy2kpco2GKY1
+    nNorBJhU89LhCb7zgmRQQ9IA8nPRPECThvlcmkgCD80x9oBm8uEmujLEdXKGXRKvHsVBqH
+    qCwvfoIf8314y+xGIF1CrcHDaOI01lfr/xWW4yZqssfxNDw21ocwYa5gX1Bkbue1lVd8/x
+    /IpvgXcuCqcOQYOYZLknsaHhvw/K1ocUXVDIjVf0ttfY5vtlrQ+eAszHKqW397p/qmZ8DT
+    WDDR7p6OHLYzpchrOUdsqWRIL5N/xTMBO6MmLmWNC1awdSGRhjDdhHtDNVz10yhOt1Lcih
+    GtQg7JFAiPTvE7R4M0wgrYfw2dmc4UHy60hAwmqFxDFLGxZ12/3+jco6bE9Q
+X-ME-Proxy: <xmx:EaGNaooHEH0VObuwp-Kuk1FBdwnUOVuibjDh-s_rwRvEXluYuspVNw>
+    <xmx:EaGNaiVzQj0ruvvEkqi4bjKMIfCJ6xgx7ajRqgSI4XlFxaz-MA_GTQ>
+    <xmx:EaGNanCfnU2g8kbL9gOJMZEZDhz7Ut0eHh-G-wgx7z5-FBzACh1Jmg>
+    <xmx:EaGNam3yiKi6S5-FBtn9kq94x4jNg7SONYR-o16jlWBs_rEy7EUCbw>
+    <xmx:EqGNan1_eqFFZhEROkvFv4STWRAJufBO9KEXk3nmrt87jqG-nTeUC2os>
+Feedback-ID: i1d2843be:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 25 Aug 2026 10:05:04 -0400 (EDT)
+Message-ID: <d7915536-ec56-4fd1-9a29-d0275687d47f@kroah.com>
+Date: Tue, 25 Aug 2026 16:05:02 +0200
 MIME-Version: 1.0
-X-Last-TLS-Session-Version: TLSv1.3
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mtd: parsers: afs: add size check to v2 partition
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+ <vigneshr@ti.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20260824-mtd_break_looper-v1-1-e46d7f02faab@kroah.com>
+ <87cxv6gvuc.fsf@bootlin.com>
+Content-Language: en-US
+From: Griffin Kroah-Hartman <griffin@kroah.com>
+In-Reply-To: <87cxv6gvuc.fsf@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260825_064253_840504_F9F9A39F 
-X-CRM114-Status: GOOD (  19.90  )
+X-CRM114-CacheID: sfid-20260825_070512_199347_D155EA94 
+X-CRM114-Status: GOOD (  21.44  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,53 +106,67 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8gR3JpZmZpbiwKClRoYW5rcyBmb3IgdGhlIHBhdGNoIQoKT24gMjQvMDgvMjAyNiBhdCAx
-NTo1MDoyNyArMDIsIEdyaWZmaW4gS3JvYWgtSGFydG1hbiA8Z3JpZmZpbkBrcm9haC5jb20+IHdy
-b3RlOgoKPiBBZGQgYSBzaXplIGNoZWNrIHRvIHRoZSBsb29wIGluIGFmc19wYXJzZV92Ml9wYXJ0
-aXRpb24oKSwgYXZvaWRpbmcKPiB3YWxraW5nIG91dCBvZiB0aGUgaW1naW5mb1tdIGFycmF5IGJv
-dW5kcyBpZiBhIG1hbGljaW91cyBwYWNrZXQgZmFrZXMgYQoKInBhY2tldCIgcmVmZXJzIHRvIG5l
-dHdvcmsgd29yZGluZywgd2hlcmVhcyBoZXJlLCBpbiB0aGUgTVREIHdvcmxkLCB3ZQp3b3VsZCBy
-YXRoZXIgdGFsayBhYm91dCBhIG1hbGljaW91cyBpbWFnZS4KCj4gbGFyZ2UgcmVnaW9uIGNvdW50
-Lgo+Cj4gQXNzaXN0ZWQtYnk6IGdraF9jbGFua2VyX3QxMDAwCj4gU2lnbmVkLW9mZi1ieTogR3Jp
-ZmZpbiBLcm9haC1IYXJ0bWFuIDxncmlmZmluQGtyb2FoLmNvbT4KCkkgZ3Vlc3Mgc3VjaCBhIGZp
-eCB3b3VsZCByZXF1aXJlIGEgRml4ZXMgdGFnLCBhcyB3ZWxsIGFzIENjJ2luZyB0aGUKc3RhYmxl
-QHZnZXIua2VybmVsLm9yZyBhbGlhcy4KCj4gLS0tCj4gIGRyaXZlcnMvbXRkL3BhcnNlcnMvYWZz
-LmMgfCAxMiArKysrKysrKystLS0KPiAgMSBmaWxlIGNoYW5nZWQsIDkgaW5zZXJ0aW9ucygrKSwg
-MyBkZWxldGlvbnMoLSkKPgo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9wYXJzZXJzL2Fmcy5j
-IGIvZHJpdmVycy9tdGQvcGFyc2Vycy9hZnMuYwo+IGluZGV4IDI2MTE2Njk0YzgyMS4uMmM2Zjg3
-NjgzMTJjIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbXRkL3BhcnNlcnMvYWZzLmMKPiArKysgYi9k
-cml2ZXJzL210ZC9wYXJzZXJzL2Fmcy5jCj4gQEAgLTI4NywxMiArMjg3LDE4IEBAIHN0YXRpYyBp
-bnQgYWZzX3BhcnNlX3YyX3BhcnRpdGlvbihzdHJ1Y3QgbXRkX2luZm8gKm10ZCwKPiAgCQkgYmxv
-Y2tfc3RhcnQsIGJsb2NrX2VuZCk7Cj4gIAo+ICAJZm9yIChpID0gMDsgaSA8IHJlZ2lvbl9jb3Vu
-dDsgaSsrKSB7Cj4gLQkJdTMyIHJlZ2lvbl9sb2FkX2FkZHIgPSBpbWdpbmZvW3BhZCArIDMgKyBp
-KjRdOwo+IC0JCXUzMiByZWdpb25fc2l6ZSA9IGltZ2luZm9bcGFkICsgNCArIGkqNF07Cj4gLQkJ
-dTMyIHJlZ2lvbl9vZmZzZXQgPSBpbWdpbmZvW3BhZCArIDUgKyBpKjRdOwo+ICsJCXUzMiByZWdp
-b25fbG9hZF9hZGRyOwo+ICsJCXUzMiByZWdpb25fc2l6ZTsKPiArCQl1MzIgcmVnaW9uX29mZnNl
-dDsKPiAgCQl1MzIgcmVnaW9uX3N0YXJ0Owo+ICAJCXUzMiByZWdpb25fZW5kOwo+ICAKPiArCQlp
-ZiAocGFkICsgNSArIGkqNCA+PSBBUlJBWV9TSVpFKGltZ2luZm8pKQo+ICsJCQlicmVhazsKPiAr
-CQlyZWdpb25fbG9hZF9hZGRyID0gaW1naW5mb1twYWQgKyAzICsgaSo0XTsKPiArCQlyZWdpb25f
-c2l6ZSA9IGltZ2luZm9bcGFkICsgNCArIGkqNF07Cj4gKwkJcmVnaW9uX29mZnNldCA9IGltZ2lu
-Zm9bcGFkICsgNSArIGkqNF07Cj4gKwoKTG9va2luZyBhdCB0aGUgY29kZSwgSSBzZWUgdGhhdCBq
-dXN0IGFib3ZlIHRoZSBsb29wIHRoZXJlIGlzIGFuIGFjdHVhbApjaGVjayBiYWlsaW5nIG91dCBl
-YXJseSBpbiBjYXNlIHRoZSByZWdpb24gY291bnQgaXMgb3Zlcmx5IGJpZy4gSW4KcHJhY3RpY2U6
-Ci0gcGFkIGNhbiBvbmx5IGJlIDAsIDEgb3IgMgotIGltZ2luZm8gYXJyYXkgc2l6ZSBpcyAzNgoK
-VGhlIGNoZWNrIGlzOgoKICAgICAgICBpZiAocmVnaW9uX2NvdW50ID4gKEFSUkFZX1NJWkUoaW1n
-aW5mbykgLSBwYWQgLSAzKSAvIDQpCiAgICAgICAgICAgICAgICByZXR1cm4gLUVJTlZBTDsKCkFu
-ZCB0aGUgbG9vcCBnb2VzIGF0IG1vc3QgdGhyb3VnaDoKCiAgICAgICAgcGFkICsgNSArIChyZWdp
-b25fY291bnQgLSAxKSAqIDQKClNvIHRoZSBvbmx5IHBvc3NpYmlsaXRpZXMgYXJlOgoKICAgICAg
-ICBwYWQgfCBtYXgocmVnaW9uX2NvdW50KSB8IG1heChpbmRleCkKICAgICAgICAtLS0tKy0tLS0t
-LS0tLS0tLS0tLS0tLS0rLS0tLS0tLS0tLS0KICAgICAgICAwICAgfCA4ICAgICAgICAgICAgICAg
-ICB8IDMzCiAgICAgICAgMSAgIHwgOCAgICAgICAgICAgICAgICAgfCAzNAogICAgICAgIDIgICB8
-IDcgICAgICAgICAgICAgICAgIHwgMzEKCkl0IHNlZW1zIGxpa2Ugbm9uZSBvZiB0aG9zZSBzaXR1
-YXRpb25zIGNvdWxkIGFjdHVhbGx5IGxlYWQgdG8gYQpyZWFjaGFibGUvZXhwbG9pdGFibGUgYnVn
-LiBTbyB3aGlsZSBJIHVuZGVyc3RhbmQgdGhlIHdpc2ggZm9yIGEgbW9yZQpkZWZlbnNpdmUgaGFy
-ZGVuaW5nLCB0aGUgY2hlY2sgeW91IGFkZCBzZWVtcyByZWR1bmRhbnQuIEkgd291bGQKdGhlcmVm
-b3JlIHN1Z2dlc3QgdG8ganVzdCBrZWVwIHRoZSBkcml2ZXIgYXMtaXMuCgpUaGFua3MsCk1pcXXD
-qGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVh
-ZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+
+On 8/25/26 3:42 PM, Miquel Raynal wrote:
+> Hello Griffin,
+>
+> Thanks for the patch!
+>
+> On 24/08/2026 at 15:50:27 +02, Griffin Kroah-Hartman <griffin@kroah.com> wrote:
+>
+>> Add a size check to the loop in afs_parse_v2_partition(), avoiding
+>> walking out of the imginfo[] array bounds if a malicious packet fakes a
+> "packet" refers to network wording, whereas here, in the MTD world, we
+> would rather talk about a malicious image.
+Good to know! thanks for clarifying.
+>> ---
+>>   drivers/mtd/parsers/afs.c | 12 +++++++++---
+>>   1 file changed, 9 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/mtd/parsers/afs.c b/drivers/mtd/parsers/afs.c
+>> index 26116694c821..2c6f8768312c 100644
+>> --- a/drivers/mtd/parsers/afs.c
+>> +++ b/drivers/mtd/parsers/afs.c
+>> @@ -287,12 +287,18 @@ static int afs_parse_v2_partition(struct mtd_info *mtd,
+>>   		 block_start, block_end);
+>>   
+>>   	for (i = 0; i < region_count; i++) {
+>> -		u32 region_load_addr = imginfo[pad + 3 + i*4];
+>> -		u32 region_size = imginfo[pad + 4 + i*4];
+>> -		u32 region_offset = imginfo[pad + 5 + i*4];
+>> +		u32 region_load_addr;
+>> +		u32 region_size;
+>> +		u32 region_offset;
+>>   		u32 region_start;
+>>   		u32 region_end;
+>>   
+>> +		if (pad + 5 + i*4 >= ARRAY_SIZE(imginfo))
+>> +			break;
+>> +		region_load_addr = imginfo[pad + 3 + i*4];
+>> +		region_size = imginfo[pad + 4 + i*4];
+>> +		region_offset = imginfo[pad + 5 + i*4];
+>> +
+> Looking at the code, I see that just above the loop there is an actual
+> check bailing out early in case the region count is overly big. In
+> practice:
+> - pad can only be 0, 1 or 2
+> - imginfo array size is 36
+>
+> The check is:
+>
+>          if (region_count > (ARRAY_SIZE(imginfo) - pad - 3) / 4)
+>                  return -EINVAL;
+Sorry, I was not using linux-next, so I did not see that this was 
+already checked.
+Thank you for the review!
+
+Griffin
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
