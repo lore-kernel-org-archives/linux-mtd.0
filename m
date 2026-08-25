@@ -4,163 +4,143 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C1B5C61DBD
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 Aug 2026 17:20:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1DD59C61DB9
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 Aug 2026 22:32:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=RJTfM5MWI0ssuTq7PXBlGofq7G8APpBgdmowvd0s0aM=; b=LMfI2TTVfe343z
-	axK+moh7LfmyoJ845VVAcPdmERcRwk4OPe9PgSTVPvitWiYN4i8UdSMp6gDTUJzCja4+kTmyO1VTb
-	wbudAJm6MfmvaeDJdEiLEwVR7umUc+m1p4u+DUXEVXQgEAkZpaZkKBqEDdrHFhOanEZrwtZdxOgEa
-	0GdhvDh3bnbySwamU4YEqfrAfoSrUq70RJYOGz4bFghc07A4+9RSQ49UH7X3o7XfyX/ru8Mbr9OEV
-	XPKZ6ll7gBpRD3j+AEPMUN/XlFY9qnPVXFygKQEGRt/7fcx1XCj3nr/HIiLozZDeEyqqabUPH/iTy
-	ICHHSdHYx0vO7+qhGcpg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Cc:To:Message-Id:Subject:
+	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=+S/27THCZ0k6esLVoWomHulwlgYd+tBtqKV8sQj0A60=; b=oR+CUrLOB/Vf2v
+	OVawLMeAfRIEQKc8TPzb5/Ym00Jzkna4iKwQAWCBVLtyftwVIOdKqsPXL4DPl2/DgcJUqbqldXoEz
+	Z1h8pgeY1CDUMIvCms8tU70wYip76UQGrdqSYCoyEzn16QLFHvioLicyjaL/ETCYncRoXgy+bPndi
+	qsv5TSaCIWwUZ/6/YrKxsyTCCSHmWzp6QL5xcwXL9y448ztUiAPdLvtMRGrrlmwpwTIlrT+lfniOi
+	pmzrKXzyBa3Mog31f5EhnHfXSncSy/X35q/xfZIJK5Tabuf0TCkIuKLz7DBRpY8+0kf6kIeHKSe+z
+	auViEDEDqba0wBxDG/2w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wyuow-00000001CXR-2vMh;
-	Tue, 25 Aug 2026 17:20:22 +0000
-Received: from mx0b-0002e601.pphosted.com ([148.163.154.28])
+	id 1wyzgh-00000001cn8-2fuc;
+	Tue, 25 Aug 2026 22:32:11 +0000
+Received: from mail-westeuropeazon11011069.outbound.protection.outlook.com ([52.101.70.69] helo=AS8PR04CU009.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wyuos-00000001CVy-2n2g
+	id 1wyzge-00000001cmS-0l11
 	for linux-mtd@lists.infradead.org;
-	Tue, 25 Aug 2026 17:20:20 +0000
-Received: from pps.filterd (m0374955.ppops.net [127.0.0.1])
-	by mx0b-0002e601.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 67PEVbZ92046023;
-	Tue, 25 Aug 2026 12:20:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=
-	proofpoint-05-2026; bh=NjiltEpWKo8+XGVIPeclBhOkyH3dhzzS6Rxspq0yy
-	U4=; b=Dnmp1Fmbk4Q4dVKJ4U1pZKTwxIcn2AR54t0lh9MUtOhwLtY5Iue7D0xP/
-	xHreHA7VJE35UegK3WpOEz8ns5Tb6CST4+0b/TBNesOoBVQING06hBemuSRNmAEd
-	T2zDymB+KvGEP+EacjwBLE8VSdHq1QpWYxcDl2ohg/8Y2v2E2HUkyAy+Ts6LYvfU
-	2RG8MyVapp+ob34y3YG01mF4cOMG6m+fy5IerN12q33AZbUWxTfUqmts4WQBy3yf
-	fsh3khxJHsTCDOP7lqNmxG+7aj2lkZ4zfZDh7YTKLOgNyCmFI9aTeFu9r6i23YS7
-	iGzsbN+wUQJe0ia6YjX97CBppVR4g==
-Received: from dm1pr04cu001.outbound.protection.outlook.com (mail-centralusazon11010026.outbound.protection.outlook.com [52.101.61.26])
-	by mx0b-0002e601.pphosted.com (PPS) with ESMTPS id 4g92xnm9n8-1
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-	Tue, 25 Aug 2026 12:20:13 -0500 (CDT)
+	Tue, 25 Aug 2026 22:32:10 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=cd6axpU23IgZ52MNZ+/icW9rKmgOWok+SOzOjLfSDGa2bfQoEiAvyJ36hZbtcjGFfXJFEKCto3t8frtCXBKQCKbgi3AdJ4n+qNvZ5kuFe5OKgPWIICCiKlIsbDYXiSl0Z5/elc1rmB0iKrqJ8S9S36Cs+z0+vCOS+GzuWnqVRisMQLwC3ej8bRAJ9JSWOZabCvseCf+/8Bl4yocKyuh3YNfFdvJdMmVHDb/qgH4UVA2rLWePmKOqu/cgH5sskdc/rPOpwuE8U7VU/6AGwXpXOj4CeXDh+lbRkZEhtTKQ7j74wlo6dUZC18OynLJ+iw/HZd1gLK1pClMDoOoyKZ1OUw==
+ b=ZAvMnoqk/NE6/9FmMBrQi8eB7idFeNtXBUa/TP74J4Ctlce1BHlABFQ93gBlTobx0SsatYGICg/JlbJmeYCPhQXJyf4MIEarQtOZ2hDwAWAQF/11LJ0FEkNSImdSjPyo5136Jmx6nDFBy/svQRH7eGNUD65dFQpYxe5D3rq6oX8vtopViPxAkr9LL7MPsLwS4/x+st8VcPM+AsfOCzx1/8/LTCNiGQeRR0pCv7j4EOh29Ggs/ZjX66SaHH/mBjXD0/rAVpyfq/Tg8fyp1OnX2OCWfq2eVlk6U/Y+/cvy+Dqe9AL1rJ/cRa6L2xJW9xkgJiJcMJjo7dYiV4XQZmSoTg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=NjiltEpWKo8+XGVIPeclBhOkyH3dhzzS6Rxspq0yyU4=;
- b=JXdgJmbTAeOjEMbk45LyorJytb/a4lJOaV7Hhgtr8ppEHAF3xFhSzWbU8p65dijuqTUL+PlMWgqGX87WLMdE1qry5PiZZredPiSGLvwBJrEAugr9ma9wSkJP0LNlGq4TrLE4guunlXpSD11qYybuGTrVfJhnrkN3LgpplYExCVTyGLTMpn5ICiivdFaGxDwDrX6qehutKfuhikzTuC/rd9Cjy75qeXyThW754YDIYjvETYsu6gjWp/34nEall+DV8eG4fldS0wwOOWWXDk73aJ3Zkf1kVVYx5xIK/+NuX/8PY7f1PIO6KsB25+3+hKbwHvXF0GvfzHhev8neYezEjA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 198.47.21.194) smtp.rcpttodomain=lists.infradead.org smtp.mailfrom=ti.com;
- dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=ti.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com; s=selector1;
+ bh=aA68o/34toAyW4c8YW0BuWQ1XQkrDBExOZQ8wkljDZY=;
+ b=WfqW5I5/Hm58YMKJvgWt5KPJg0ts1Z4HkmV2f5e98MicedPsctJp772jShHz+8cthPSrU3GjNbzcnJT2pMFAuMqlK9Y7eMxM5cGSuXPIfo8qgD4KSFzJZL23kMQ7zIwOYdzruo6pWIYHzd3r5qWEUsL7MwGUhN1XEvQZ050+WCNN6o9eJqMOpuwQ81eQd+3Qs1BG+BZ1tP5vfna+7PBtEn2Po+1xQCmBdbsQcurRdNyw+OyS/dvf0maWJ1GELEwhC6Kz8KLPggSBY7HETndfZ0AMV3gab+tFKuioX8Lq5tq2DN3IKpcCBAtGKnO0EUmDA2at862n7QNjmQajwR0s8A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector1-NXP1-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NjiltEpWKo8+XGVIPeclBhOkyH3dhzzS6Rxspq0yyU4=;
- b=uRicLuN2LjkKeQSCF1tExmcXGKrfTZ6FHuHieuYK5TvNxU20rVtTC3bwsRTevmCvnEXeFjeebIep2iCmngpmGAIFVrjKSJb+nA2+ixTpQSbiRb7CNkfNo5+cD/p9MgVKzEUugXN5EP4A/zWJKp2e+uMfz4gfbSdM9LWEOloBfRI=
-Received: from MW4PR04CA0210.namprd04.prod.outlook.com (2603:10b6:303:86::35)
- by IA3PR10MB8020.namprd10.prod.outlook.com (2603:10b6:208:50d::18) with
+ bh=aA68o/34toAyW4c8YW0BuWQ1XQkrDBExOZQ8wkljDZY=;
+ b=dwwwKiRgUwyRcZ6kXSXosyfu6vbq3Xj4v8Q/2phHUhI8ajUax5zVnmI74GPs1nu1d6wzfK0+pxy5j0XRAtXV6CoOFDkDJAZxHUTJSZtw9BtNRkwY5vkgl0V4GqmfwEIJ5rWBqRiM3JbbyAyyod2ZTZ01+c6kBSTYdrFX6NnUcRM1IC4K/7ZYtBOrZLMWE4TQfgkh09wRKXZRxFoteoglsmH+s0OUEsWQXrJEtF9u+asthtvyLHHSoCwWoyUh79vMc6iHpr4xu2YK9f/y1Vs5FuLS2huoDIw7TU76guybRy4RTYXuPjEfqbk2lhtsvw9u4qwpqjN0QIiSqP8YMOajrg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=oss.nxp.com;
+Received: from GV1PR04MB9088.eurprd04.prod.outlook.com (2603:10a6:150:23::20)
+ by DU4PR04MB10837.eurprd04.prod.outlook.com (2603:10a6:10:58f::22) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.360.6; Tue, 25 Aug
- 2026 17:20:09 +0000
-Received: from MWH0EPF000C618F.namprd02.prod.outlook.com
- (2603:10b6:303:86:cafe::70) by MW4PR04CA0210.outlook.office365.com
- (2603:10b6:303:86::35) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.21.360.8 via Frontend Transport; Tue, 25
- Aug 2026 17:20:08 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 198.47.21.194)
- smtp.mailfrom=ti.com; dkim=none (message not signed) header.d=none;dmarc=pass
- action=none header.from=ti.com;
-Received-SPF: Pass (protection.outlook.com: domain of ti.com designates
- 198.47.21.194 as permitted sender) receiver=protection.outlook.com;
- client-ip=198.47.21.194; helo=flwvzet200.ext.ti.com; pr=C
-Received: from flwvzet200.ext.ti.com (198.47.21.194) by
- MWH0EPF000C618F.mail.protection.outlook.com (10.167.249.103) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.360.3 via Frontend Transport; Tue, 25 Aug 2026 17:20:07 +0000
-Received: from DFLE206.ent.ti.com (10.64.6.64) by flwvzet200.ext.ti.com
- (10.248.192.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.45; Tue, 25 Aug
- 2026 12:19:22 -0500
-Received: from DFLE205.ent.ti.com (10.64.6.63) by DFLE206.ent.ti.com
- (10.64.6.64) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.45; Tue, 25 Aug
- 2026 12:19:22 -0500
-Received: from lelvem-mr06.itg.ti.com (10.180.75.8) by DFLE205.ent.ti.com
- (10.64.6.63) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.45 via Frontend
- Transport; Tue, 25 Aug 2026 12:19:22 -0500
-Received: from santhoshkumark.dhcp.ti.com (santhoshkumark.dhcp.ti.com [10.24.52.55])
-	by lelvem-mr06.itg.ti.com (8.18.1/8.18.1) with ESMTP id 67PHHf3g1436664;
-	Tue, 25 Aug 2026 12:19:17 -0500
-From: Santhosh Kumar K <s-k6@ti.com>
-To: <broonie@kernel.org>, <robh@kernel.org>, <krzk+dt@kernel.org>,
-        <conor+dt@kernel.org>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
-        <vigneshr@ti.com>, <pratyush@kernel.org>, <mwalle@kernel.org>,
-        <takahiro.kuwano@infineon.com>
-CC: <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
-        <praneeth@ti.com>, <sebin.francis@ti.com>, <u-kumar1@ti.com>,
-        <a-dutta@ti.com>, <s-k6@ti.com>
-Subject: [PATCH v9 17/18] mtd: spi-nor: extract read op template construction into helper
-Date: Tue, 25 Aug 2026 22:47:36 +0530
-Message-ID: <20260825171737.776052-18-s-k6@ti.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20260825171737.776052-1-s-k6@ti.com>
-References: <20260825171737.776052-1-s-k6@ti.com>
+ 2026 22:32:01 +0000
+Received: from GV1PR04MB9088.eurprd04.prod.outlook.com
+ ([fe80::c401:89ab:8905:1abc]) by GV1PR04MB9088.eurprd04.prod.outlook.com
+ ([fe80::c401:89ab:8905:1abc%5]) with mapi id 15.21.0360.005; Tue, 25 Aug 2026
+ 22:32:01 +0000
+From: han.xu@oss.nxp.com
+Date: Tue, 25 Aug 2026 17:30:48 -0500
+Subject: [PATCH] mtd: spinand: add support for ISSI SPI NAND flash
+Message-Id: <20260825-spinand_issi-v1-1-d81bdd7c212d@nxp.com>
+X-B4-Tracking: v=1; b=H4sIAJcXjmoC/yXMTQ5AMBBA4avIrDWpit+riEi1g7Eo6SAScXfF8
+ lu8dwGjJ2Soows8HsS0uIAkjsBM2o0oyAaDkiqXpcoEr+S0sx0xk7DVUFRoZWpQQkhWjwOd365
+ pf/Pez2i29wH3/QBfyjcIcAAAAA==
+X-Change-ID: 20260825-spinand_issi-d9f79ed03ce0
+To: Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, 
+ Bill Lee <blee@issi.com>, Jeff Kim <jekim@issi.com>, 
+ Han Xu <han.xu@nxp.com>
+X-Mailer: b4 0.15.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1787697116; l=13266;
+ i=han.xu@nxp.com; s=20240131; h=from:subject:message-id;
+ bh=xygnEoQSwhPYAJvpHmZOui/6hO/e3x9YSWbUovI7lY8=;
+ b=YOor9NhCOI/v6EX7W0fFdMEiMCK+F4DbjYPH0PYy+nRA8mrqRSV72HNMAV3ff8tvxpCMELfzT
+ 3tDZ6Hnpb4mA6n0NAKiHNJKVEjwaAAult7x7x8REn62qGmA3bl/Ww4A
+X-Developer-Key: i=han.xu@nxp.com; a=ed25519;
+ pk=XSryOlQ4EKXqt7ZHz2D+BcDu1AWYF0m5bX48xQOVF5A=
+X-ClientProxiedBy: SA9P221CA0014.NAMP221.PROD.OUTLOOK.COM
+ (2603:10b6:806:25::19) To GV1PR04MB9088.eurprd04.prod.outlook.com
+ (2603:10a6:150:23::20)
 MIME-Version: 1.0
-X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MWH0EPF000C618F:EE_|IA3PR10MB8020:EE_
-X-MS-Office365-Filtering-Correlation-Id: ab2882d0-ffd9-401f-b074-08df02cd1c4c
+X-MS-TrafficTypeDiagnostic: GV1PR04MB9088:EE_|DU4PR04MB10837:EE_
+X-MS-Office365-Filtering-Correlation-Id: f124bbc3-70a2-4a41-4a25-08df02f8ae5e
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|7416014|376014|82310400026|1800799024|36860700016|23010399003|921020|3023799007|10067099003|56012099006|22082099003|18002099003;
-X-Microsoft-Antispam-Message-Info: Qj6OX1AXU9aa6ixMng6/8ffE9uORwLw9sE4jGSwcJGWg3rU4LB+2P4RfBVSggu3SB6RNaviEOi4EpJ70u2bxliswKASN0hlEdD3oKA5FpRGA7p+52n9aqDVq/FgFrLV15twNV6PgHx2sBlX26BtLsRBSK0fvtMoP0z1t6Jz9f64kY4zOY7FLm2QuButB5cxHcEHlywPyFIpIsUBsJXWvtBPO1s8cWd+4xlHg/cGUBKu5FOVPPiM3b5Ta3g+BPosCHfTDx58HC9xRufZ6kRhjVSbywOlltQBqwHV0YFkHwWoQmVSSRkxh2K+oQI20yeCsDWYWOdQp7hPCKzgkX3sKgde+LDOeH69vjP5GB4OUZyTy7X3x3921l2m5l6RPiSi0tXzaLv71H/N1/L1ZUdWL5SgS+dCfcXlugP+S9Ipc2910ztiXs97vbMiC/ncMg3zcs8z0MB43+VrTMOJO86GUe/yvOfKJjTyZt5HDRvNgv/OqQi261opJ6wZQ7paEfsUkFo8ElSbwyrYh7U8f2t0ZIDDRwl03lspwqI8f5o+OK2GPAkJ/4ftXDbWZ45lKa1krqJeplet717dMjhkdOSW7ETVPrtZvhuAh9fm0wORAI40FWvYZ2KxHwu8EteFjZRGFk1XKbZ2z/T+O8P6g8UZcbOR2QEzGAwXZqtnws5YvAS84p400DB46ZJ3A84ZsrKVO29jj3gi0qkQbwVM8jEvMDbXjbJR957aTTQIHCYaCytjJcLlMuTMMXP/g7OOGaz65
-X-Forefront-Antispam-Report: CIP:198.47.21.194;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:flwvzet200.ext.ti.com;PTR:ErrorRetry;CAT:NONE;SFS:(13230040)(7416014)(376014)(82310400026)(1800799024)(36860700016)(23010399003)(921020)(3023799007)(10067099003)(56012099006)(22082099003)(18002099003);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam: BCL:0;ARA:13230040|23010399003|376014|19092799006|1800799024|366016|6133799003|10067099003|56012099006|11063799006|18002099003;
+X-Microsoft-Antispam-Message-Info: ShPa7rWwql+uwpfdtUUnKtzaRTPlYr3Fboit5IElesUQlsgsEa2FxCs7lW7kXpah8U+0laI3wUJyJXbQm/lk9i80uF7ajlZDq8MRQq3S6rmg4rFuPvAGub3dmcscit0XbG8mc1tNOSgDW78Jxx9iubtQ1Sxjg8TE/DFJG+/lNxgI0iwI8f60bRSHH/vjisMd5RUBupImIUHYrA7WOK3uS1g/jTOglcpCdvhII9cLjkneQqAiIhXFPgiHngodM2QBb+LbaJzg4W8imsaPerV9Ss1vgxLZ7k7qSSp+IIMzJE14YXL0ge9r6Ec6KsDeqY5yFxIvktiXFaBVwiFvLrD9Kwtwh6MZ4QcO70OLLD0U8erxU4GnKj1REILdsNDZwPE+HAWymzQX1I59gd+CDjQSW2bM7P/t22wIqOIff7zIPVyPKu7OIFpL999hSWxg3XMjbGIcNqyJ4C4MsWu3LZXunrT4meH7m3U4dGdLXEkrv9Rlq1HjLdgI4QmGN+ZGso9leUBrTRpunsAzQagGyxT2dDdeg1AI7s1Cuq1VPM3peuGi+EerBjHkTrYf6HniEC0DO0UHNiYZKfmoTnS3vc/fKJonqjgmzJ0Gf33Qc7lATFQtE8op0OPo5F+qbP0x5kx4PEv8kw++kRsm64ICPAvx4HGkDt4CFnKiashLHsBWR6o=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:GV1PR04MB9088.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(23010399003)(376014)(19092799006)(1800799024)(366016)(6133799003)(10067099003)(56012099006)(11063799006)(18002099003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 9zMtYhupqeneMNz9edySMFl3N3WiI6bEAYc4PMunGGk1XAS/w+bllxy+R6GcogdYL4qxQF8K9Lm0Te+14POGXcezMi+DjMQ2KX98Gu+23nHoVmeg/p6wt3Ar9S/LPGTWtixSKb4ExCccw28fO+xF/rVDjFtWxmn3xPwnQVVbKQFp8tlknlwyLlqVCOkbB9RVOKBhdryPSv5xbca7QtlcuVruGPbfvuLeTqY6yQ2sUR+IW3JGJxhxG+bW9jZ49Y9zuEIbgY8s42OCLvvO3zurY0Q9g381P11jMBpJjskMliJ68wRKzmY9UZALBvjGHm4Dto2+kawY18ORVtJVl+u0a+Tp5vy1kD+PstEeqAtCiJbvhYFCr+uxJzvWpIa7OpMF8UFw+ZZ1GyjN5Lt0cBSdcJH+2iCE/f5td41tbhmoknUZVNdpOCQpHT3lJvHBWRnj
-X-Exchange-RoutingPolicyChecked: P1re1VUydztpJ+90BdTr/O2T1n1INp8V5q6jt920e1xAP7V6cUmQJ2yzoa07E9qR0Pop/1s2NVuJErDCvgAhuoPt7S4WFw+6mEb+TLaCBOySkqdWHe0JbA60BPL0PRkrrDHBRaAa7JEfAVIlFOQXWy5dvzEkPfMgAK2wREiV4wuYDeyz6veJ2b+H8N7GS0DsekIKfG9ZcmeKGrTmF44xMaCwFQ6eaqxVV0rKDQ+2WIwumHrXO1zrgHJgJ+Z/rBKFa38j7R/sLR6apYs6cLxIgEC52NXQp51+iFuKY8qNNa7fj5/SkExWl00v2x3GCOMjVBugV/5VyRj+ssGhb1bRdw==
-X-OriginatorOrg: ti.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Aug 2026 17:20:07.4907
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aFduSUU1Zk5uc1Bqd2orZWxuUC9iOWJ4ZWRtOXI5NDF0aDl4eFJGL0tYclVM?=
+ =?utf-8?B?TDlNY3dlbmFnYXdyKzlVdU1NbDVRd1RRKzBxNWU2aHNhVzhyUHhrUGU3QUdr?=
+ =?utf-8?B?RFQ2QWxPMVVLejd1dWU1QmNtZDZyaEx4UGlFMUJyTW9uaUN3TVh5OWtoOS84?=
+ =?utf-8?B?MmJTa2NXTS9iaDV2VHFkQnlUV3NMcGNWYWFaYmRFd3dSY2JCY3VpWHpjZGJv?=
+ =?utf-8?B?Y1BqczNXY2tERXFSRUppZU5WWGRSSkNlUzc2Zjh4T2ozdndWR25STTNhay9U?=
+ =?utf-8?B?ODFNcHVtZmlGVlRYdzdLbkE1bUZtaHJRdUwyb1k4N1dOQVNaV3I2VkZNTzZa?=
+ =?utf-8?B?dk5ENksrKzFLR1NndXMxTk5VN0VNc0w1ZFkyTndwY3FuZE0xQmIya3NTUmxV?=
+ =?utf-8?B?ZUkybC9jMVcvNkE1T1NiUnF4QnZRd2NFelZWWmVvYkNtdjRYcVZmcjlVb1RB?=
+ =?utf-8?B?SjFuVDBEejk4S3BYdUJ1LzAxQ3c3aTUyeCtVQ3NFU0JySXRhQkpPOGhvWTJH?=
+ =?utf-8?B?ZXhrWXNpaTQ3cnREVUt4TzVCQWJKZWtRMlRuQzUvSktJaU9tRFVLTVAzdjRu?=
+ =?utf-8?B?TWt3V0FWbVJ4MGM1dHcxTThldWVFUXNzWENOZ05HbVJaY3pEd09aSkRVMTFY?=
+ =?utf-8?B?emVNeStSYTFnUEJURXBiQ3pyK2YwZUE2VzNrdVgzQVJpTDhhMTJjQllsZFdh?=
+ =?utf-8?B?YnVnRTh2NitZQnZ6d0RNTWdRTENQeFE5WVZEL1dMZXN6MXpsbUtTMlUzU1ZB?=
+ =?utf-8?B?Z0trRHBYVjNIbXhCV0QxcW9YYjVKOCtBSWtWUWljZy9XQkdNaWd1eHgyYnJD?=
+ =?utf-8?B?WjlOWVA4MG9xWElFa3hUYldEcG5vQjlsdkFXcUMrdkdudC9TQTIxSmNUeS9u?=
+ =?utf-8?B?QkVoZnErMThCaWNncDJobTB2clZrVFNVL0dKN3lyQlNSSS8zMUdWVjA3YW4w?=
+ =?utf-8?B?SVhINkdSb3lsYmhiR1I3Y2ZvMjJQSlM0TG1WTXh5V0F0Mnl2UjRNMFZTKy93?=
+ =?utf-8?B?WEVUT0Q1NXdEdUNKd0hyM3B4MGt0cEt6eFhyK0VLd3E5Ly9qVG1QYmVzSnVl?=
+ =?utf-8?B?cmsrRTdKa1JWWlFpRFovSmxuMEU5MTliMy9ybFJqWjlmc1V2VmpHQklmK2Z2?=
+ =?utf-8?B?VytCZ0FaR0hPR1czdXpFSWdibGJzS1RXQ3NaNGVaY3paeHVTbWNHaVRvMDBM?=
+ =?utf-8?B?VWdadzZqb0Q5Zm0vcFVRZWtobnMrTEo5QkR5aTh4ZGVoRlNibEJDbStneHJI?=
+ =?utf-8?B?dGUzei9oV2ZQbzZvVlVqbG85UEhHaFJFMFV1UHRoa08vNWlHT3BBMUozc0RG?=
+ =?utf-8?B?UG96eEo2UG5NdzlrMVJPdllZdDE2V0lpSnNsMDR2SEZGYmJtNXlid2VSWG8z?=
+ =?utf-8?B?dTNHRUFmUE1PeU50U0RFZitDdW9kc0hKWVp1QzBydklqTUVsTnBPTmlBZlhO?=
+ =?utf-8?B?UkhtemFqblhJTlFOeWNIQy9QRklkUkM0a2JCaXpVVTNtT3FwU0lrTTJ6c25R?=
+ =?utf-8?B?TlhVaEFjVzBqWStqMFdlQTlUSjFnTDdxQm00R2tJMUtYL0dCWWNHUUY1S3Iy?=
+ =?utf-8?B?dkg0ZlZGb0dqNWc1M2J2TzRreHhwOW1SNmZSKzY3SHgyQUJtZFUxLzBSSTJL?=
+ =?utf-8?B?a3VINlBmZ2ZOMW9GWXlObjUrL3ZoTGhnbEpuaDNKZzh1R2NaRFp0emFZMGNW?=
+ =?utf-8?B?Zk1sdUZIc3pKK3NYUFgwSWd2UWRCSjEwcDZnRytlRXpSWkxhUS9qQlR6Y2w4?=
+ =?utf-8?B?bTR4dVR5alVhOVg0NVR0clNabWlFNkc1MDNEbGxUUzFRbFlYR00xaVRZUWI3?=
+ =?utf-8?B?bUhWVzZTeVZncjJ6M0dhc3dESXpWZGJZTmxUd0VMcnUxd3d1WUU3WFI0UEZ0?=
+ =?utf-8?B?TjlvRGpTa0R5eFJlQTRmU3VqWHAyVjlCQUtsajhJSW5zYkVxYWxERG9uL1lp?=
+ =?utf-8?B?SDhVTWMxTXpHMmFSZ3V5V3ZvTnFpQmZ6U2U4SmQydmRFREpuZlk3NjlEM1Jn?=
+ =?utf-8?B?SkpmYkZaek1wbUtjNTZJM2lncEdNQVV0M0syYmpzZnphMk9GUE0rQjFNR2xY?=
+ =?utf-8?B?QTBNTGYybHNteENNUnd6QmVjV3JHNGhpZnZrS0hMZUZ6cXVxVDZ6Z0R0SzQ5?=
+ =?utf-8?B?ZTNhTWt0bm1ZQmhwM1V2dWJEK2F6MjFEcHZ2TjFoUWhkYm1xRkxjSEFqV0J6?=
+ =?utf-8?B?U0loVnZQMHd5SDNsNW5YQzFMNmx3ZGRhNW4zd3Bxb0lEY3NEcVBod2lWRVl3?=
+ =?utf-8?B?L3VzQVNTc1M5Y2MvTU1OMUQ1K2R2K3ZnR1dIdS9kcEM3ZEZMVXE1RUo5cnBm?=
+ =?utf-8?B?c1kwNEQ0dTRReFZHZU53cDBSRFFKY0lrM0cwc2JOaGVFVkhQWDlVWGtzZGh5?=
+ =?utf-8?Q?5x49ZnSMSqFTYZTo=3D?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f124bbc3-70a2-4a41-4a25-08df02f8ae5e
+X-MS-Exchange-CrossTenant-AuthSource: GV1PR04MB9088.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Aug 2026 22:32:01.3098
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ab2882d0-ffd9-401f-b074-08df02cd1c4c
-X-MS-Exchange-CrossTenant-Id: e5b49634-450b-4709-8abb-1e2b19b982b7
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=e5b49634-450b-4709-8abb-1e2b19b982b7;Ip=[198.47.21.194];Helo=[flwvzet200.ext.ti.com]
-X-MS-Exchange-CrossTenant-AuthSource: MWH0EPF000C618F.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA3PR10MB8020
-X-Proofpoint-Spam-Info: AW1haW4tMjYwODI1MDE0NyBTYWx0ZWRfX9GoJNqsUgPai
- DW6AslgGbotH+m7yPpkFuh5DyQubvq3ulgN9JT8SuNK4shoDn9B2CzhrHgcK65B/AO6q6ArPjf1
- ei5mIGERQSYxBTxoeyaytBkfzRfbIQk=
-X-Proofpoint-GUID: _-2dlYaMrYLmNe0iT_GHLbDUGdH8_3Lm
-X-Proofpoint-ORIG-GUID: _-2dlYaMrYLmNe0iT_GHLbDUGdH8_3Lm
-X-Authority-Analysis: v=2.4 cv=PsijqQM3 c=1 sm=1 tr=0 ts=6a8dcecd cx=c_pps
- a=MBvOscNZ4ImqL1nQClNoCg==:117 a=iwqwCZQqcuTv3JOpYdM7/Q==:17
- a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=Sv0fKeRqtYgA:10 a=V5UXEbMT0ywA:10
- a=VkNPw1HP01LnGYTKEx00:22 a=Z8NIEmU8O1QQgoT56wFK:22 a=fPAWb5peG099m5CrUpKH:22
- a=VwQbUJbxAAAA:8 a=sozttTNsAAAA:8 a=XAftrYwPDLqUVEEHSKEA:9
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwODI1MDE0NyBTYWx0ZWRfXydZ5eqU/rRTr
- QYlTb6VeTJ8jDADpZOVGcCyJb+F7CD0FgltXjEYzftfVfonMR5jP5YGCQCBnm9l/GHPldTu/JQR
- Ik+YQnFnNvFB+nTfr74smeyS6sa96MWOIklMcqTyHgbF3w26HfvQc4P5CwZHyVmXr/EDlGAH5go
- ijrhMa0j2u4r1v5dk+JAIVUcxWobpe/WOvWazdxEVxt2M54vZkm5D2CUnIeHyUU75KbGyC70Z6W
- xByBPCAaubgZwa+CzcBJOP5u2TZkP8vfD2OblrrrV6DElPVLHRiCMgKQqZhOPNNFGypgmRezT0X
- 3HxUFYa2aluMv0pC7lJjETeu7AXyQ+yGKXr8X+YbTNMcRGN6+OP6LkaX/QBtsRtUoMSnWuhiOrt
- V6JitYmlUHddaT4oc4WJwpPwksUP6+uVFrlBo6mCJ2LjRPQZuo/LdUCLSOi7xkOJueHPcH+ohkK
- T9xrZ3zVhtYaMaNvI1g==
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.134,FMLib:17.12.100.49
- definitions=2026-08-25_04,2026-08-24_01,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- lowpriorityscore=0 malwarescore=0 adultscore=0 spamscore=0 impostorscore=0
- suspectscore=0 clxscore=1015 priorityscore=1501 bulkscore=0 phishscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2606150000 definitions=main-2608250147
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: d8i6HnL1MQSmH6m7Ls0zAlgYKbDmtuQq0mex3xSv4q7ZlrE4qYAD2zJZv1wXxhx3UiQX/t1GCAQQxj+wliG4Vy723rJ3z7L73OPv7Pk5EGw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU4PR04MB10837
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260825_102018_814880_8E30B746 
-X-CRM114-Status: GOOD (  15.93  )
+X-CRM114-CacheID: sfid-20260825_153208_380931_D5C52550 
+X-CRM114-Status: GOOD (  19.31  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -177,123 +157,347 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Pratyush Yadav <pratyush@kernel.org>
+From: Bill Lee <blee@issi.com>
 
-Extract spi_nor_spimem_get_read_op() from the duplicated op-template
-construction in spi_nor_spimem_read_data() and
-spi_nor_create_read_dirmap().
+Add a new manufacturer driver for ISSI SPI NAND devices (manufacturer
+ID 0x9d). The driver supports the IS37/IS38SMW01/02G8B family (1Gb and
+2Gb, 1.8V) including the 4Gb 2-die stacked variants.
 
-Using data.nbytes = 2 as a non-zero placeholder lets
-spi_nor_spimem_setup_op() configure the data buswidth without a separate
-override; callers replace data.nbytes with the actual transfer length
-before use. No functional change.
+Register the new driver by adding issi.o to the spinand Makefile,
+declaring issi_spinand_manufacturer in spinand.h, and adding it to the
+spinand_manufacturers[] table in core.c.
 
-Signed-off-by: Pratyush Yadav <pratyush@kernel.org>
-Signed-off-by: Santhosh Kumar K <s-k6@ti.com>
+Signed-off-by: Bill Lee <blee@issi.com>
+Signed-off-by: Jeff Kim <jekim@issi.com>
+Signed-off-by: Han Xu <han.xu@nxp.com>
 ---
- drivers/mtd/spi-nor/core.c | 66 +++++++++++++++++++++-----------------
- 1 file changed, 36 insertions(+), 30 deletions(-)
+ drivers/mtd/nand/spi/Makefile |   2 +-
+ drivers/mtd/nand/spi/core.c   |   1 +
+ drivers/mtd/nand/spi/issi.c   | 272 ++++++++++++++++++++++++++++++++++++++++++
+ include/linux/mtd/spinand.h   |   1 +
+ 4 files changed, 275 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index ccf4396cdcd0..b683c077a233 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -188,6 +188,37 @@ static int spi_nor_controller_ops_erase(struct spi_nor *nor, loff_t offs)
- 	return nor->controller_ops->erase(nor, offs);
- }
- 
-+/**
-+ * spi_nor_spimem_get_read_op() - build a configured read op template
-+ * @nor:	the spi-nor device
+diff --git a/drivers/mtd/nand/spi/Makefile b/drivers/mtd/nand/spi/Makefile
+index b5ccb44860df..f6b2a094fafc 100644
+--- a/drivers/mtd/nand/spi/Makefile
++++ b/drivers/mtd/nand/spi/Makefile
+@@ -1,5 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0
+ spinand-objs := core.o otp.o
+ spinand-objs += alliancememory.o ato.o dosilicon.o esmt.o fmsh.o foresee.o gigadevice.o heyangtek.o
+-spinand-objs += macronix.o micron.o paragon.o skyhigh.o toshiba.o winbond.o xtx.o
++spinand-objs += issi.o macronix.o micron.o paragon.o skyhigh.o toshiba.o winbond.o xtx.o
+ obj-$(CONFIG_MTD_SPI_NAND) += spinand.o
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index 35365b67dd8e..c11d74450257 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -1360,6 +1360,7 @@ static const struct spinand_manufacturer *spinand_manufacturers[] = {
+ 	&foresee_spinand_manufacturer,
+ 	&gigadevice_spinand_manufacturer,
+ 	&heyangtek_spinand_manufacturer,
++	&issi_spinand_manufacturer,
+ 	&macronix_spinand_manufacturer,
+ 	&micron_spinand_manufacturer,
+ 	&paragon_spinand_manufacturer,
+diff --git a/drivers/mtd/nand/spi/issi.c b/drivers/mtd/nand/spi/issi.c
+new file mode 100644
+index 000000000000..ddcbb6aae72e
+--- /dev/null
++++ b/drivers/mtd/nand/spi/issi.c
+@@ -0,0 +1,272 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (c) 2026 ISSI
 + *
-+ * Returns a spi_mem_op with the command, address format, dummy cycles,
-+ * and data buswidth configured for @nor. For direct reads, the caller
-+ * must fill in addr.val, data.nbytes, and data.buf.in before use.
++ * Authors:
++ *	Bill Lee <blee@issi.com>
++ *	Jeff Kim <jekim@issi.com>
++ * Co-Author:
++ *	Han Xu <han.xu@nxp.com>
 + */
-+static struct spi_mem_op spi_nor_spimem_get_read_op(struct spi_nor *nor)
++
++#include <linux/device.h>
++#include <linux/kernel.h>
++#include <linux/mtd/spinand.h>
++
++#define SPINAND_MFR_ISSI 0x9d
++
++/*
++ * ___________________________________________________________________________________________
++ * |       ISSI SPI NAND Flash ECC Status Register Bit Descriptions(Refer status register)     |
++ * |------|------|------|----------------------------------------------------------------------|
++ * | Bit6 | Bit5 | Bit4 | ECC Status                                                           |
++ * |------|------|------|----------------------------------------------------------------------|
++ * | 0    | 0    | 0    | No bit error detected during the previous read algorithm.            |
++ * | 0    | 0    | 1    | 1-3 bit errors detected and corrected; no data refreshment required. |
++ * | 0    | 1    | 0    | >8 bit errors detected and NOT corrected.                            |
++ * | 0    | 1    | 1    | 4-6 bit errors detected and corrected; refresh recommended.          |
++ * | 1    | 0    | 0    | Reserved                                                             |
++ * | 1    | 0    | 1    | 7-8 bit errors detected and corrected; refresh must be done.         |
++ * | 1    | 1    | 0    | Reserved                                                             |
++ * | 1    | 1    | 1    | Invalid state                                                        |
++ * |------|------|------|----------------------------------------------------------------------|
++ */
++#define ISSI_STATUS_ECC_MASK GENMASK(6, 4)
++#define ISSI_STATUS_ECC_NO_BITFLIPS (0 << 4)
++#define ISSI_STATUS_ECC_1TO3_BITFLIPS (1 << 4)
++#define ISSI_STATUS_ECC_UNCOR_ERROR (2 << 4)
++#define ISSI_STATUS_ECC_4TO6_BITFLIPS (3 << 4)
++#define ISSI_STATUS_ECC_7TO8_BITFLIPS (5 << 4)
++
++/*
++ * As per datasheet, die selection is done by the 7th bit of Drive
++ * Strength Register (Address 0xD0).
++ */
++#define ISSI_DIE_SELECT_REG 0xD0
++#define ISSI_SELECT_DIE_MASK BIT(7)
++#define ISSI_SELECT_DIE(x) ((x) << 7)
++
++static SPINAND_OP_VARIANTS(
++	quadio_read_cache_variants,
++	SPINAND_PAGE_READ_FROM_CACHE_1S_1S_4S_OP(0, 1, NULL, 0, 0),
++	SPINAND_PAGE_READ_FROM_CACHE_1S_1S_2S_OP(0, 1, NULL, 0, 0),
++	SPINAND_PAGE_READ_FROM_CACHE_FAST_1S_1S_1S_OP(0, 1, NULL, 0, 0),
++	SPINAND_PAGE_READ_FROM_CACHE_1S_1S_1S_OP(0, 1, NULL, 0, 0));
++
++static SPINAND_OP_VARIANTS(x4_write_cache_variants,
++			   SPINAND_PROG_LOAD_1S_1S_4S_OP(true, 0, NULL,
++							 0), // 0x32 quad io
++			   SPINAND_PROG_LOAD_1S_1S_1S_OP(true, 0, NULL,
++							 0)); // 0x02 single io
++
++static SPINAND_OP_VARIANTS(
++	x4_update_cache_variants,
++	SPINAND_PROG_LOAD_1S_1S_4S_OP(false, 0, NULL, 0), // 0x34 random quad io
++	SPINAND_PROG_LOAD_1S_1S_1S_OP(false, 0, NULL,
++				      0)); // 0x84 random single io
++
++/*
++ * ISSI - 8 bit ECC per 544 - bytes Spare Area Mapping
++ *  ________________________________________________________________________
++ * |________________________________________________________________________|
++ * | Max Addr | Min Addr | ECC Prot | Area     | Description                |
++ * |----------|----------|----------|----------|----------------------------|
++ * | 0x01FF   | 0x0000   | Yes      | Main 0   | User data 0                |
++ * | 0x03FF   | 0x0200   | Yes      | Main 1   | User data 1                |
++ * | 0x05FF   | 0x0400   | Yes      | Main 2   | User data 2                |
++ * | 0x07FF   | 0x0600   | Yes      | Main 3   | User data 3                |
++ * -------------------------------------------------------------------------|
++ * | 0x080F   | 0x0800   | Yes      | Spare 0  | Spare 0                    |
++ * | 0x081F   | 0x0810   | Yes      | Spare 1  | Spare 1                    |
++ * | 0x082F   | 0x0820   | Yes      | Spare 2  | Spare 2                    |
++ * | 0x083F   | 0x0830   | Yes      | Spare 3  | Spare 3                    |
++ * -------------------------------------------------------------------------|
++ * | 0x084F   | 0x0840   | Yes      | Parity 0 | ECC for main/spare 0       |
++ * | 0x085F   | 0x0850   | Yes      | Parity 1 | ECC for main/spare 1       |
++ * | 0x086F   | 0x0860   | Yes      | Parity 2 | ECC for main/spare 2       |
++ * | 0x087F   | 0x0870   | Yes      | Parity 3 | ECC for main/spare 3       |
++ * |________________________________________________________________________|
++ */
++static int issi_8_ooblayout_ecc(struct mtd_info *mtd, int section,
++				struct mtd_oob_region *region)
 +{
-+	/*
-+	 * data.nbytes must be non-zero so spi_nor_spimem_setup_op()
-+	 * configures the data buswidth; callers replace it with the
-+	 * actual transfer length.
-+	 */
-+	struct spi_mem_op op =
-+		SPI_MEM_OP(SPI_MEM_OP_CMD(nor->read_opcode, 0),
-+			   SPI_MEM_OP_ADDR(nor->addr_nbytes, 0, 0),
-+			   SPI_MEM_OP_DUMMY(nor->read_dummy, 0),
-+			   SPI_MEM_OP_DATA_IN(2, NULL, 0));
++	if (section)
++		return -ERANGE;
 +
-+	spi_nor_spimem_setup_op(nor, &op, nor->read_proto);
++	region->offset = mtd->oobsize / 2;
++	region->length = mtd->oobsize / 2;
 +
-+	/* convert the dummy cycles to the number of bytes */
-+	op.dummy.nbytes = (nor->read_dummy * op.dummy.buswidth) / 8;
-+	if (spi_nor_protocol_is_dtr(nor->read_proto))
-+		op.dummy.nbytes *= 2;
-+
-+	return op;
++	return 0;
 +}
 +
- /**
-  * spi_nor_spimem_read_data() - read data from flash's memory region via
-  *                              spi-mem
-@@ -201,21 +232,14 @@ static int spi_nor_controller_ops_erase(struct spi_nor *nor, loff_t offs)
- static ssize_t spi_nor_spimem_read_data(struct spi_nor *nor, loff_t from,
- 					size_t len, u8 *buf)
- {
--	struct spi_mem_op op =
--		SPI_MEM_OP(SPI_MEM_OP_CMD(nor->read_opcode, 0),
--			   SPI_MEM_OP_ADDR(nor->addr_nbytes, from, 0),
--			   SPI_MEM_OP_DUMMY(nor->read_dummy, 0),
--			   SPI_MEM_OP_DATA_IN(len, buf, 0));
-+	struct spi_mem_op op = spi_nor_spimem_get_read_op(nor);
- 	bool usebouncebuf;
- 	ssize_t nbytes;
- 	int error;
- 
--	spi_nor_spimem_setup_op(nor, &op, nor->read_proto);
--
--	/* convert the dummy cycles to the number of bytes */
--	op.dummy.nbytes = (nor->read_dummy * op.dummy.buswidth) / 8;
--	if (spi_nor_protocol_is_dtr(nor->read_proto))
--		op.dummy.nbytes *= 2;
-+	op.addr.val = from;
-+	op.data.nbytes = len;
-+	op.data.buf.in = buf;
- 
- 	usebouncebuf = spi_nor_spimem_bounce(nor, &op);
- 
-@@ -3712,28 +3736,10 @@ static int spi_nor_create_read_dirmap(struct spi_nor *nor)
- {
- 	struct spi_mem_dirmap_info info = {
- 		.op_tmpl = &info.primary_op_tmpl,
--		.primary_op_tmpl = SPI_MEM_OP(SPI_MEM_OP_CMD(nor->read_opcode, 0),
--					      SPI_MEM_OP_ADDR(nor->addr_nbytes, 0, 0),
--					      SPI_MEM_OP_DUMMY(nor->read_dummy, 0),
--					      SPI_MEM_OP_DATA_IN(0, NULL, 0)),
-+		.primary_op_tmpl = spi_nor_spimem_get_read_op(nor),
- 		.offset = 0,
- 		.length = nor->params->size,
- 	};
--	struct spi_mem_op *op = info.op_tmpl;
--
--	spi_nor_spimem_setup_op(nor, op, nor->read_proto);
--
--	/* convert the dummy cycles to the number of bytes */
--	op->dummy.nbytes = (nor->read_dummy * op->dummy.buswidth) / 8;
--	if (spi_nor_protocol_is_dtr(nor->read_proto))
--		op->dummy.nbytes *= 2;
--
--	/*
--	 * Since spi_nor_spimem_setup_op() only sets buswidth when the number
--	 * of data bytes is non-zero, the data buswidth won't be set here. So,
--	 * do it explicitly.
--	 */
--	op->data.buswidth = spi_nor_get_protocol_data_nbits(nor->read_proto);
- 
- 	nor->dirmap.rdesc = devm_spi_mem_dirmap_create(nor->dev, nor->spimem,
- 						       &info);
--- 
-2.34.1
++static int issi_8_ooblayout_free(struct mtd_info *mtd, int section,
++				 struct mtd_oob_region *region)
++{
++	if (section)
++		return -ERANGE;
++
++	/* Reserve 2 bytes for the BBM. */
++	region->offset = 2;
++	region->length = (mtd->oobsize / 2) - 2;
++
++	return 0;
++}
++
++static const struct mtd_ooblayout_ops issi_8_ooblayout = {
++	.ecc = issi_8_ooblayout_ecc,
++	.free = issi_8_ooblayout_free,
++};
++
++static int issi_select_target(struct spinand_device *spinand,
++			      unsigned int target)
++{
++	int ret;
++	u8 regval;
++
++	if (target > 1)
++		return -EINVAL;
++
++	/* Read the current value of the register */
++	ret = spinand_read_reg_op(spinand, ISSI_DIE_SELECT_REG, &regval);
++	if (ret)
++		return ret;
++
++	/* Update only the die select bit (bit 7) */
++	regval &= ~ISSI_SELECT_DIE_MASK;
++	regval |= ISSI_SELECT_DIE(target);
++
++	/* Write back the updated value */
++	return spinand_write_reg_op(spinand, ISSI_DIE_SELECT_REG, regval);
++}
++
++static int issi_8_ecc_get_status(struct spinand_device *spinand, u8 status)
++{
++	switch (status & ISSI_STATUS_ECC_MASK) {
++	case ISSI_STATUS_ECC_NO_BITFLIPS:
++		return 0;
++
++	case ISSI_STATUS_ECC_UNCOR_ERROR:
++		return -EBADMSG;
++
++	case ISSI_STATUS_ECC_1TO3_BITFLIPS:
++		return 3;
++
++	case ISSI_STATUS_ECC_4TO6_BITFLIPS:
++		return 6;
++
++	case ISSI_STATUS_ECC_7TO8_BITFLIPS:
++		return 8;
++
++	default:
++		break;
++	}
++
++	return -EINVAL;
++}
++
++static const struct spinand_info issi_spinand_table[] = {
++	/* IS37/38SMW01G8B 1Gb 1.8V */
++	SPINAND_INFO("IS37/38SMW01G8B",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x15),
++		     /*
++		      * - Memory Cell: 1bit/Memory Cell
++		      * - Page Size: 2176 bytes (2048 + 128) bytes
++		      * - Block Size: 64 pages (128K + 8K) bytes
++		      * - Plane Size:
++		      *   1Gb: 1024 blocks per plane
++		      * - Device Size:
++		      *   1Gb: 1 plane = 1024 blocks
++		      */
++		     NAND_MEMORG(1, 2048, 128, 64, 1024, 40, 1, 1, 1),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&quadio_read_cache_variants,
++					      &x4_write_cache_variants,
++					      &x4_update_cache_variants),
++		     SPINAND_HAS_QE_BIT,
++		     SPINAND_ECCINFO(&issi_8_ooblayout, issi_8_ecc_get_status),
++		     SPINAND_SELECT_TARGET(issi_select_target)),
++
++	/* IS37/38SMW02G8B 2Gb 1.8V */
++	SPINAND_INFO("IS37/38SMW02G8B",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x25),
++		     /*
++		      * - Memory Cell: 1bit/Memory Cell
++		      * - Page Size: 2176 bytes (2048 + 128) bytes
++		      * - Block Size: 64 pages (128K + 8K) bytes
++		      * - Plane Size:
++		      *   2Gb: 2048 blocks per plane
++		      * - Device Size:
++		      *   2Gb: 1 plane = 2048 blocks
++		      */
++		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&quadio_read_cache_variants,
++					      &x4_write_cache_variants,
++					      &x4_update_cache_variants),
++		     SPINAND_HAS_QE_BIT,
++		     SPINAND_ECCINFO(&issi_8_ooblayout, issi_8_ecc_get_status),
++		     SPINAND_SELECT_TARGET(issi_select_target)),
++
++	/* IS37/38SML04G8 4Gb 3.3V */
++	SPINAND_INFO("IS37/38SML04G8",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x34),
++		     /*
++		      * Architecture
++		      * - Memory Cell: 1bit/Memory Cell
++		      * - Page Size: 2176 bytes (2048 + 128) bytes
++		      * - Block Size: 64 pages (128K + 8K) bytes
++		      * - Plane Size: 2048 blocks per plane
++		      * - Die Size: 2Gb with 2048 blocks
++		      * - Device Size: 4Gb with 2-die stacks
++		      */
++		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 2),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&quadio_read_cache_variants,
++					      &x4_write_cache_variants,
++					      &x4_update_cache_variants),
++		     SPINAND_HAS_QE_BIT,
++		     SPINAND_ECCINFO(&issi_8_ooblayout, issi_8_ecc_get_status),
++		     SPINAND_SELECT_TARGET(issi_select_target)),
++
++	/* IS37/38SMW04G8B 4Gb 1.8V */
++	SPINAND_INFO("IS37/38SMW04G8B",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x35),
++		     /*
++		      * Architecture
++		      * - Memory Cell: 1bit/Memory Cell
++		      * - Page Size: 2176 bytes (2048 + 128) bytes
++		      * - Block Size: 64 pages (128K + 8K) bytes
++		      * - Plane Size: 2048 blocks per plane
++		      * - Die Size: 2Gb with 2048 blocks
++		      * - Device Size: 4Gb with 2-die stacks
++		      */
++		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 2),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&quadio_read_cache_variants,
++					      &x4_write_cache_variants,
++					      &x4_update_cache_variants),
++		     SPINAND_HAS_QE_BIT,
++		     SPINAND_ECCINFO(&issi_8_ooblayout, issi_8_ecc_get_status),
++		     SPINAND_SELECT_TARGET(issi_select_target)),
++};
++
++static int issi_spinand_init(struct spinand_device *spinand)
++{
++	/*
++	 * manufacturer specific initialization can be done here
++	 */
++
++	return 0;
++}
++
++static const struct spinand_manufacturer_ops issi_spinand_manuf_ops = {
++	.init = issi_spinand_init,
++};
++
++const struct spinand_manufacturer issi_spinand_manufacturer = {
++	.id = SPINAND_MFR_ISSI,
++	.name = "ISSI",
++	.chips = issi_spinand_table,
++	.nchips = ARRAY_SIZE(issi_spinand_table),
++	.ops = &issi_spinand_manuf_ops,
++};
+diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+index 5f4c00ae72a7..b42407b69db3 100644
+--- a/include/linux/mtd/spinand.h
++++ b/include/linux/mtd/spinand.h
+@@ -438,6 +438,7 @@ extern const struct spinand_manufacturer fmsh_spinand_manufacturer;
+ extern const struct spinand_manufacturer foresee_spinand_manufacturer;
+ extern const struct spinand_manufacturer gigadevice_spinand_manufacturer;
+ extern const struct spinand_manufacturer heyangtek_spinand_manufacturer;
++extern const struct spinand_manufacturer issi_spinand_manufacturer;
+ extern const struct spinand_manufacturer macronix_spinand_manufacturer;
+ extern const struct spinand_manufacturer micron_spinand_manufacturer;
+ extern const struct spinand_manufacturer paragon_spinand_manufacturer;
+
+---
+base-commit: 15a3cbce32994141252bb4ecfe3ff3a5d22d0b4f
+change-id: 20260825-spinand_issi-d9f79ed03ce0
+
+Best regards,
+--  
+Han Xu <han.xu@nxp.com>
 
 
 ______________________________________________________
