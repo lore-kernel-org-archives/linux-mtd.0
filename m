@@ -4,59 +4,165 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6851C5DF81
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 Aug 2026 01:39:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 537B4C5B572
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 Aug 2026 05:06:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=mSmFno75omDfWYGhHrjYdxwvsI/GhuBBs7x2ZevZGnw=; b=AWFVLblAV2L2R1
-	15IbgCB7K2I6t2IQA+liLT12UssejhrzRA/Nn6acji0AFJe2gHG3kUJ3ia9/R2ABzkeMnmrOBYUmP
-	MZ+FdG1gdUBWDIkd3UtbPnvlRPi52k6Qdq4NZI5fuKrtf1u1mizK8Br+VTEyS1h0fUlTY13tXvqAV
-	HY1XPg0flb01tf3zUQJltN//7wwpRUyV8sI5u+Qu7RidX/GFnLhEr7sQa/gtqVNuZm1ZHHvZAiqIN
-	2/ZJhvYnE0qTdG4BYVu2qA+5/AlwYIOn5d02WiVYZgpzT/3vtB0w7hJhdtScW2lq12/ltzAzgLzEF
-	c2nB1ZW9fval56mTA2xw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=2CTvC/gqmVgmiS5+ywhGmhdqUYbCWLWQNmJBfnir2/M=; b=B+WEa9keOSWewI
+	96p/ZqceyizLPYf1B5MZygkLjNriCatXgCQMFcYrQ+pvY35fWz+YxK7PuRbU/BVvYWoBvVafs9Z8K
+	8KPtlg1As9FSh1qMCecCH0tiNo2lHx7Ut2WlJOL+sUd7ymW7t2TD32fb7+XDlZJQscmxdSIG7uDrm
+	1DS8TyZkbbyPNDqEQTL/n+CczFup+JpydLS38tBN5NPIXCYrOqD6wzehk+65DgqaoedJqiZFX1Nem
+	BDwsCuRjNCOaFAIhNLphzWAwnjMQDLqtg3D+zwmn/EM9X2xA9n+8OkxVznWj6lJhefdfjbZohIjG4
+	kCNsbZUUNjH+0ggc/doA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wyg8X-000000001GP-3lwt;
-	Tue, 25 Aug 2026 01:39:37 +0000
-Received: from sendmail.purelymail.com ([34.202.193.197])
+	id 1wyjMI-000000009mB-3Bs7;
+	Tue, 25 Aug 2026 05:06:02 +0000
+Received: from mx0a-0002e601.pphosted.com ([148.163.150.75])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wyg8Q-000000001Fj-31e1
+	id 1wyjM8-000000009kY-1qWj
 	for linux-mtd@lists.infradead.org;
-	Tue, 25 Aug 2026 01:39:36 +0000
-DKIM-Signature: a=rsa-sha256; b=e01QFpG9Gq3786qtZIww7tX6T1Ihw9j1szgJSJhkyyw2oFtXg7DTeSV7KNzgSTsdbhr3kPiVsgMZMRv9qbUrLsjoeRgEMmudMiXzYxKfZDn7yJcZAMpph+10eg16xHtEXAXnMWthmQfN9BV7ZBye6jLNJmpYkcjGQditZ2sz5xrlI41J6knNY/DHp7MsKbnjDjCzWMI5AljOOKghyBpkF/IpQXfzyoALqrOZduz+C8MU+RaMa2kVNRmoWiVYFCcXdHeAC3HA2us/G2WQLRBV7jdxnNp6C6p9X4dbNDcyegHYd895I5qg8VFtyZxLT/48C2Ieu2Sq4vlgeeBtyE2S9Q==; s=purelymail1; d=c127.dev; v=1; bh=S41ebfT7xo/qZtIIIBZyOORVT3DUlpSqNwSmIUKtTl0=; h=Received:From:To:Subject:Date;
-DKIM-Signature: a=rsa-sha256; b=LPJQDrx/fajOg6CYdhAOYtztRZMC3ueqX9+tgZk1ZEbzKPbE0vJjjSLtgLUEwzbYbLasHIUGo+veK6dFFJhtTHhlc7hPxvXYRss2OkTIysm+iou2onk40qcpTXEaVKbVwWr699e4Tqw6jRWRfthWO1YOAmu1O+EUYFcWUEyu/BVGj5j3yzXDvbzh0UAP3qHCXxnnXy4zTW3rLeUOKMZbQLuIqobqHXsNnT3Gh8nkKaZ0SuGpGVD6XcdOSSDXPtI7QdKZnfGblpNDbqURBHu7LbHNCIdl44s3gyzTcxEiaZc+g0rQ7bhRTx/ai4Yf53NmF4YZuFwo4igsaytn5WlZ+w==; s=purelymail1; d=purelymail.com; v=1; bh=S41ebfT7xo/qZtIIIBZyOORVT3DUlpSqNwSmIUKtTl0=; h=Feedback-ID:Received:From:To:Subject:Date;
-Feedback-ID: 1017243:43747:null:purelymail
-X-Pm-Original-To: linux-mtd@lists.infradead.org
-Received: by smtp.purelymail.com (Purelymail SMTP) with ESMTPSA id 936311042;
-          (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384);
-          Tue, 25 Aug 2026 01:38:52 +0000 (UTC)
-From: Johan Alvarado <contact@c127.dev>
-To: broonie@kernel.org,
-	md.alam@oss.qualcomm.com
-Cc: konradybcio@kernel.org,
-	pengpeng@iscas.ac.cn,
-	miquel.raynal@bootlin.com,
-	j4g8y7@gmail.com,
-	quic_varada@quicinc.com,
-	quic_srichara@quicinc.com,
-	linux-spi@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Johan Alvarado <contact@c127.dev>
-Subject: [PATCH] spi: spi-qpic-snand: publish the ECC context to snandc->qspi
-Date: Mon, 24 Aug 2026 20:38:48 -0500
-Message-ID: <20260825013848.1056946-1-contact@c127.dev>
-X-Mailer: git-send-email 2.55.0
+	Tue, 25 Aug 2026 05:06:01 +0000
+Received: from pps.filterd (m0384305.ppops.net [127.0.0.1])
+	by m0384305.ppops.net (8.18.1.11/8.18.1.11) with ESMTP id 67P2Q4RM3999458;
+	Tue, 25 Aug 2026 00:05:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=
+	proofpoint-05-2026; bh=BoQMMEm584LPkJQ60L6haVe0J7ucmpJEIicBYAJb4
+	zM=; b=hxmzEK/wt54q9rmpSQlWqdWP65s67o6qIfaCvS5eBuoUZwnOZlOcQ2OvI
+	PSaxl1Ng4g/cCZbmQj6oMPFlSAPBH/1WA2Qh1iOxyIRNlGf48LNdqjDYu29aIhvK
+	6jxh+SB6DFD/fWVdrYQ0HIdf3JjpP6suw6xAmtLHrWjinHavwqgcybbs9k4oqFqm
+	JvnFj2p+5i5rCe2V6BANTlneDynxqwteFDw93XmvZ6YHPriABag5/Xv/ohS/3H0P
+	wWpWX87UQHkfaWOKvcqlsHys5EZWEGqoJUW6Rujm4LlnhyS64o/4wMwVItyy3Fi1
+	wxUBadtIhMwMxdtp12ihm8LKJMpXA==
+Received: from ch1pr05cu001.outbound.protection.outlook.com (mail-northcentralusazon11010040.outbound.protection.outlook.com [52.101.193.40])
+	by m0384305.ppops.net (PPS) with ESMTPS id 4g91sxgrr5-1
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+	Tue, 25 Aug 2026 00:05:37 -0500 (CDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=vMmhGVi/mj85Y2dwyxo3DAB3uYkuee5EXa1QwHbbIRRqOiwfuDbTT8cNbkhBabw+f4sbtshWDzb7iAIFq6wzI5kvktmHa677WrBbYyZdXnbMMLi1PnDqk31fAH2vtAefIavCp81t+1qw+m2kXHqSjJ/a2cyKD7j0FoV5VGa2qvMz+ewmyMAWb5+YKAbbUn3LPsqwEe9O9mFo/DqQ76Hbciiao4WxMXhmSlnPbfLhf4kEkYetEw4Wsbn3ltSxRc8UccC5KQoZtHzo5DR7kIWDXeGY3XvEErUKtehk1Q8GyJUzDSv3kc++i41xZfux2DpUD+yz08QV92xV56+tzSlZFg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=BoQMMEm584LPkJQ60L6haVe0J7ucmpJEIicBYAJb4zM=;
+ b=OoWJh/0TM7cGaPJNTZgqzIKKLuz+I9rHgNq9TFQQxEmW0nIGjOsZx8DTE0h4jDzyo0hponSuvj2ps08J7bbIgjK0Zhge79Iizn5U+d1JqBKuacnT1/g+1djV7ifZKHYKreH9lIX2yiNJzZ1FDVElx4WoJUFKsSJp9EwGcwrrvEDI9Za24+ZIWJDLdobjyWgclSBtZzsZj3Pxl8jCi3sQchf3qCfipM9lnxxdiYUd5CyQVI+OsoLZDMK4fl0Rmia6WUAk7DbmjJgoIi2GWj7ZSdH4CnpSX39snEHYuQucGvCVfIv1SgC58v9fPYs0WXtPzK8fpJGKJnSs+kGtgRI2hg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 198.47.21.195) smtp.rcpttodomain=lists.infradead.org smtp.mailfrom=ti.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=ti.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BoQMMEm584LPkJQ60L6haVe0J7ucmpJEIicBYAJb4zM=;
+ b=KIw6QUuiZ32lyAwqvCbkUQYrcMMrSGQ+2IjMPvwHEgjflFnCujQlnxbgH/hvYcXtiO/J1eF4n/mkhSGSyEahts4J4l+1Y2Sgrr7B6WW5rZ5mOOY7sixEu4MDCZwLDlx2wWLNC723kLGMYD0XRtWU2ASgvybrfkSOEssd/YBfSsQ=
+Received: from SJ0PR03CA0337.namprd03.prod.outlook.com (2603:10b6:a03:39c::12)
+ by SJ0PR10MB6432.namprd10.prod.outlook.com (2603:10b6:a03:486::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.339.12; Tue, 25 Aug
+ 2026 05:05:32 +0000
+Received: from SJ1PEPF000026C6.namprd04.prod.outlook.com
+ (2603:10b6:a03:39c:cafe::82) by SJ0PR03CA0337.outlook.office365.com
+ (2603:10b6:a03:39c::12) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.21.339.12 via Frontend Transport; Tue,
+ 25 Aug 2026 05:05:31 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 198.47.21.195)
+ smtp.mailfrom=ti.com; dkim=none (message not signed) header.d=none;dmarc=pass
+ action=none header.from=ti.com;
+Received-SPF: Pass (protection.outlook.com: domain of ti.com designates
+ 198.47.21.195 as permitted sender) receiver=protection.outlook.com;
+ client-ip=198.47.21.195; helo=flwvzet201.ext.ti.com; pr=C
+Received: from flwvzet201.ext.ti.com (198.47.21.195) by
+ SJ1PEPF000026C6.mail.protection.outlook.com (10.167.244.103) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.21.360.3 via Frontend Transport; Tue, 25 Aug 2026 05:05:29 +0000
+Received: from DFLE208.ent.ti.com (10.64.6.66) by flwvzet201.ext.ti.com
+ (10.248.192.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.45; Tue, 25 Aug
+ 2026 00:05:04 -0500
+Received: from DFLE206.ent.ti.com (10.64.6.64) by DFLE208.ent.ti.com
+ (10.64.6.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.45; Tue, 25 Aug
+ 2026 00:05:04 -0500
+Received: from lelvem-mr06.itg.ti.com (10.180.75.8) by DFLE206.ent.ti.com
+ (10.64.6.64) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.45 via Frontend
+ Transport; Tue, 25 Aug 2026 00:05:04 -0500
+Received: from [10.24.52.55] (santhoshkumark.dhcp.ti.com [10.24.52.55])
+	by lelvem-mr06.itg.ti.com (8.18.1/8.18.1) with ESMTP id 67P54whv333804;
+	Tue, 25 Aug 2026 00:04:59 -0500
+Message-ID: <505cb8e2-2660-40a8-8533-3335cfab5b7e@ti.com>
+Date: Tue, 25 Aug 2026 10:34:58 +0530
 MIME-Version: 1.0
-X-MIME-Autoconverted: from 8bit to quoted-printable by Purelymail
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 00/18] spi: cadence-quadspi: add PHY tuning support
+To: <broonie@kernel.org>, <robh@kernel.org>, <krzk+dt@kernel.org>,
+        <conor+dt@kernel.org>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
+        <vigneshr@ti.com>, <pratyush@kernel.org>, <mwalle@kernel.org>,
+        <takahiro.kuwano@infineon.com>
+CC: <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+        <praneeth@ti.com>, <sebin.francis@ti.com>, <u-kumar1@ti.com>,
+        <a-dutta@ti.com>, <s-k6@ti.com>
+References: <20260821114822.4040338-1-s-k6@ti.com>
+Content-Language: en-US
+From: Santhosh Kumar K <s-k6@ti.com>
+In-Reply-To: <20260821114822.4040338-1-s-k6@ti.com>
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ1PEPF000026C6:EE_|SJ0PR10MB6432:EE_
+X-MS-Office365-Filtering-Correlation-Id: 48fde79d-39b7-4e4a-a46c-08df02667bfb
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|82310400026|23010399003|36860700016|7416014|1800799024|376014|921020|10067099003|56012099006|18002099003|22082099003;
+X-Microsoft-Antispam-Message-Info: Vnw3oMP/tYPraSAdFVY1OOEnImVAGJ6JzkkvOY8exO/fMVskMBTGbGrM9+wLkvw7PXMjwIMDGu/n+Jb25vRBQsRsp133V8K32jJ15bNKnZhg4/AoZV9SeYdd9hpHHnPBpVGPCbjNqhfmQpkLexc+SsPLGNm4fB1gkm7HJqhmzqN6qHZI01Nnvo1/qGMGSkOsqYs6hzAvdhQOSv8jCk+4yS7g+1ZTN1dhyVzVhSuQUcfeGDH0RUmGh5deZMCiS0cmNpteZtdLYv/GHM6UDoMZnHY4ZDKrcFoWJUj2InofNmEmP6rJf3C1OYgFXzAJLCeIGfQfK6MaMBCUUEJo7rUo1Li+MhdhOXW+pT77SeiqQGU13woSEEEEFhoxeMyfoYWmiIv0ijU0p5SDjiuBBrtH2nD82WJPO3lKTydseOxd+jDPvU11jX/HocweWzfOkVdf+Tejv7nm2mZIQrne5tyl9ncore1o/329BCLPHqaZVWFeINLlcDhRNnWFCMpY3kSS0OtzUUNFB+opSjD3FgTM81da0sdVTX0YlSp4wftuhOer77FHBjAotqbwEKj2ZE1H5Een735G5zIesijx5hAecd5hNGILDiWLD8Onfmg4VCoX4lRV7x03D60rcjSRn1Zn0HQg2lrrtFi4W/vvnvrSE5PPwmW1XYBV5tWOyB4+tIg/HnAd1fow+oa1d+WdMr4bNaaKu9aRbs7HYluw9wqTSY6Bd+Gn1qNSk9l37kS+CBu1acl+9p7Z1tmfLbjNBqXL
+X-Forefront-Antispam-Report: CIP:198.47.21.195;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:flwvzet201.ext.ti.com;PTR:ErrorRetry;CAT:NONE;SFS:(13230040)(82310400026)(23010399003)(36860700016)(7416014)(1800799024)(376014)(921020)(10067099003)(56012099006)(18002099003)(22082099003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: XyynGZ411nx7VcnJZO1klLUVX1xbo346nI+YsF8XjPMcsFNzflQn4nJ2TVhfYzuq3TCeKtWd+cdAShy4rtP9Z0P3zbTDd4NqGzmOzkciczr0CCS5OvMirKJUFEI1x7/nQGDCSMiZm8fR0qBGqe3YnrBjKxoz/yqzpdgqksvP1Hu/3vU/BGYYUN9mXD6PzA5HV2Sv5WFfxJSR8m4oi/UOhGEri2hCl1oVEGdh2kTKzHbr3QrWenuj97HfnGRHIJO2ul1MQB1VpEItsz5qvmzxYlDtXY3+HizNnlmBJaANyELL3OMv2oO2/0EgBwEFOumOg2iO76RMRN4JAPbDjJ+6glQk9hq4kI0DZBZJpwL8gBCJkKYNuwvoqupO2mbh16DflIXPlvFfvRtdThBm3R6vF+Ajm/75a9K84Qo0o3gNejOJnCC1IBwTqDjjaISejykG
+X-Exchange-RoutingPolicyChecked: p3xe2qF7ELgCSog0L3rsygFCxMvJzXXKLGVQnsMEaf9m5JDYIKjpgvYqydh6rLfjEJVGL7GAWvkda9AGClH54nNsOF69+/8uYIf5KMQKgAcwrhB9dIXI1oOEILxCk+QqzohV3UAbnA1o3nRt+vTTpljWo/RJtyoy5b6e1tylUBZEbOK/3s0oVHF17u/IjnuOgrTaIF0Tkc8UveThhUSmDe6+TuB4jhzp39jOthklQmyeyl1ldz6sn8UJJ+7ndColnM/s0M41rofxL2+AfTii/ftMtNXuT3gKsoJKtEVxy4aDyIsZJfCVfJnOfhVFcdlhDQnlf0UfJ1/SChlmmkqySg==
+X-OriginatorOrg: ti.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Aug 2026 05:05:29.8546
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 48fde79d-39b7-4e4a-a46c-08df02667bfb
+X-MS-Exchange-CrossTenant-Id: e5b49634-450b-4709-8abb-1e2b19b982b7
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=e5b49634-450b-4709-8abb-1e2b19b982b7;Ip=[198.47.21.195];Helo=[flwvzet201.ext.ti.com]
+X-MS-Exchange-CrossTenant-AuthSource: SJ1PEPF000026C6.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB6432
+X-Proofpoint-Spam-Info: AW1haW4tMjYwODI1MDA0MSBTYWx0ZWRfX+Y/n2EVocIL/
+ pJLsQ1NX6Ay2Woaxth66lneWaQYYxMDqyRlMpbrHip1HZDppsHjifaC3YlD532GmqaHIRmsZx1h
+ aLcZ929iB0tP++j9lCix2CpBZ7+kCV8=
+X-Authority-Analysis: v=2.4 cv=HackiCE8 c=1 sm=1 tr=0 ts=6a8d22a1 cx=c_pps
+ a=2d9FbaPwie0YXhWIRYJR4A==:117 a=tJyPKKxUohctrY4NYmUjkA==:17
+ a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=IkcTkHD0fZMA:10 a=Sv0fKeRqtYgA:10
+ a=V5UXEbMT0ywA:10 a=VkNPw1HP01LnGYTKEx00:22 a=Z8NIEmU8O1QQgoT56wFK:22
+ a=taLDd7a_hP9WKsMzeGRc:22 a=m1Myg4UaESxdR228leQA:9 a=QEXdDO2ut3YA:10
+X-Proofpoint-GUID: D1Dm6gBFVPCt2UVz415IbZFoagbPSujJ
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwODI1MDA0MSBTYWx0ZWRfX8WTbMi7vPWjC
+ k5zyuoOwBxOFi1c2ZzokTp4zgWIH/fAz7c3DnlrLEhKn6VuMC/5CjLVLyuTiYOL8ZqVV5hq5vfF
+ CsmIc0tpAgCrZxbKNNp9kb595284xxmUYkFqvsP4/LC0G5xkU8nk85mrqUZMsR15TU47jWzTn96
+ 2ctDibgxmTymQhbc0aPWwBd4NObyU2MIhzBdpW5k1y5F+PFMQp/ss5ddhIkRLutC1hHBySHkFIe
+ 68Gq3+bJJc6GtTb6MRhwOm4EDoUePHM5vDYxmUga4Q6SKEMdFxw24yXR3ZFLMhUFspTFm9Me4Ln
+ Q3/egQZYLhqv4BegH+KG3mOJrDGTBwf1Ya2pIHSUM14X5gqtRbl/FgPmKo5SVw59/0EC9az15Z7
+ wJGJgB0ATXdMxj4mmCeT7eMbphfEywU7nYW6naQjWXcmeI5TB2/p6OfUJyT4JP3qXUuGsrA/ikr
+ kuB2LXN4di39SMiJRgw==
+X-Proofpoint-ORIG-GUID: D1Dm6gBFVPCt2UVz415IbZFoagbPSujJ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.134,FMLib:17.12.100.49
+ definitions=2026-08-25_01,2026-08-24_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ clxscore=1015 suspectscore=0 phishscore=0 spamscore=0 lowpriorityscore=0
+ adultscore=0 malwarescore=0 bulkscore=0 priorityscore=1501 impostorscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2606150000 definitions=main-2608250041
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260824_183935_370404_E3393F67 
-X-CRM114-Status: GOOD (  15.84  )
+X-CRM114-CacheID: sfid-20260824_220552_634387_FC87F485 
+X-CRM114-Status: UNSURE (   7.07  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -68,96 +174,26 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-qcom_spi_ooblayout_ecc() and qcom_spi_ooblayout_free() read the ECC
-configuration through snandc->qspi->ecc. qcom_spi_probe() points it at a
-zeroed scratch struct and only qcom_spi_ecc_prepare_io_req_pipelined(),
-which runs on page I/O, ever updates it. qcom_spi_ecc_init_ctx_pipelined()
-installs the ooblayout but does not publish the context it just
-allocated, and qcom_spi_ecc_cleanup_ctx_pipelined() frees that context
-without clearing the pointer.
+Hello all,
 
-spinand_init() calls mtd_ooblayout_count_freebytes() right after the ECC
-context is created and before any page I/O, so the ooblayout always runs
-against a pointer that does not describe the current context:
+On 21/08/26 17:18, Santhosh Kumar K wrote:
+> This series implements PHY tuning support for the Cadence QSPI controller
+> to enable reliable high-speed operations. Without PHY tuning, controllers
+> use conservative timing that limits performance. PHY tuning calibrates
+> RX/TX delay lines to find optimal data capture timing windows, enabling
+> operation up to the controller's maximum frequency.
+> 
 
-  - On a first probe it reads the zeroed struct from qcom_spi_probe(),
-    so steps, bytes and bbm_size are 0. The count then returns 0 rather
-    than an error, so the probe continues with mtd->oobavail set to 0.
+A few of the issues reported by sashiko-bot are valid. I'll address
+those fixes and respin the series shortly.
 
-  - On a probe retry it reads the ecc_cfg the previous attempt freed.
-
-A retry is easy to hit. On IPQ5018 with the qcom,smem-part parser the
-partition parse returns -EPROBE_DEFER until SMEM has probed, so the
-first spi-nand probe defers. It defers inside
-mtd_device_parse_register(), after mtd_otp_nvmem_add() has already read
-the factory OTP - that read goes through prepare_io_req and leaves
-snandc->qspi->ecc pointing at the context that spinand_cleanup() then
-frees. The second probe allocates a new context, never publishes it, and
-computes the OOB layout from the freed one. Once the slab has been
-reused, qecc->steps holds garbage and
-
-  oobregion->length = qecc->steps * 4;
-
-goes negative. qcom_spi_ooblayout_free() only reports -ERANGE for
-section 1 and later, so mtd_ooblayout_count_bytes() sums the regions and
-returns that negative length as the byte count. The -512 below is
-steps * 4 with steps == -128. It is a byte count that happens to
-collide with -ERESTARTSYS, not an error the driver returned.
-spinand_init() takes it as an error, and because it is not
--EPROBE_DEFER the driver core never retries and the NAND never appears:
-
-  spi-nand spi0.0: ESMT SPI NAND was found.
-  spi-nand spi0.0: probe with driver spi-nand failed with error -512
-  UBI error: cannot open mtd rootfs, error -2
-  Waiting for root device /dev/ubiblock0_1...
-
-On a Mercusys MR80X (IPQ5018, ESMT F50D1G41LB) about half of the boots
-failed to mount the rootfs, the outcome depending on whether the freed
-memory had been overwritten yet.
-
-Publish the context when it is created and clear the pointer when it is
-destroyed. Clearing leaves snandc->qspi->ecc NULL after cleanup, which
-is safe: the mtd is unregistered before cleanup_ctx runs, so no
-ooblayout callback can follow.
-
-Fixes: 7304d1909080 ("spi: spi-qpic: add driver for QCOM SPI NAND flash Interface")
-Cc: stable@vger.kernel.org
-Signed-off-by: Johan Alvarado <contact@c127.dev>
----
-Tested on a Mercusys MR80X (IPQ5018, ESMT F50D1G41LB) running 6.18.44
-with the equivalent change; mainline build-tested with W=1, no warnings.
-
- drivers/spi/spi-qpic-snand.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/spi/spi-qpic-snand.c b/drivers/spi/spi-qpic-snand.c
-index 61b1f2eb19ce..0d0ae93ad4bf 100644
---- a/drivers/spi/spi-qpic-snand.c
-+++ b/drivers/spi/spi-qpic-snand.c
-@@ -411,6 +411,8 @@ static int qcom_spi_ecc_init_ctx_pipelined(struct nand_device *nand)
- 	dev_dbg(snandc->dev, "ECC strength: %u bits per %u bytes\n",
- 		ecc_cfg->strength, ecc_cfg->step_size);
- 
-+	snandc->qspi->ecc = ecc_cfg;
-+
- 	return 0;
- 
- err_free_ecc_cfg:
-@@ -427,6 +429,7 @@ static void qcom_spi_ecc_cleanup_ctx_pipelined(struct nand_device *nand)
- 
- 	kfree(snandc->qspi->oob_buf);
- 	snandc->qspi->oob_buf = NULL;
-+	snandc->qspi->ecc = NULL;
- 	kfree(ecc_cfg);
- }
- 
--- 
-2.55.0
+Thanks,
+Santhosh.
 
 
 ______________________________________________________
