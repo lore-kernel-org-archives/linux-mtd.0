@@ -4,87 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63F66C5DF81
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Aug 2026 20:21:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6851C5DF81
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 Aug 2026 01:39:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=WaArplvYfNoZUoXEKv8gh7/nBsmgQf+4oCO+T526vnA=; b=dU0N7PJs4HlN0N
-	W92omZMiUDHr3x3tuwbkyF85s8gB2u7ddYDmtbjltvNxV/MCq9b79folohBH3PkIw846jpfhw5pSB
-	Bz9xN/+XAh0iI1501W/11E1JcUPCp4uXUlr5fTppswujoLg55yf8a+As7F58yW5u4QZpSzxMeu6HR
-	LlYXw2gCQti/7U3/Woqk7O5ddqjLaTsFY6MW4oW0PvS98UZPkHfcYPNwCptmUgTAETrskHKYBc3wH
-	QjMKAvNYfT7u26M9P3eOnnHaKNUEHEZtKJjVoyLhsLLYrg/bAZB7eOoLA8ZgJVwVywRGNMKvOQZlq
-	fLflJq5ipOFtp3kGZHIw==;
+	List-Owner; bh=mSmFno75omDfWYGhHrjYdxwvsI/GhuBBs7x2ZevZGnw=; b=AWFVLblAV2L2R1
+	15IbgCB7K2I6t2IQA+liLT12UssejhrzRA/Nn6acji0AFJe2gHG3kUJ3ia9/R2ABzkeMnmrOBYUmP
+	MZ+FdG1gdUBWDIkd3UtbPnvlRPi52k6Qdq4NZI5fuKrtf1u1mizK8Br+VTEyS1h0fUlTY13tXvqAV
+	HY1XPg0flb01tf3zUQJltN//7wwpRUyV8sI5u+Qu7RidX/GFnLhEr7sQa/gtqVNuZm1ZHHvZAiqIN
+	2/ZJhvYnE0qTdG4BYVu2qA+5/AlwYIOn5d02WiVYZgpzT/3vtB0w7hJhdtScW2lq12/ltzAzgLzEF
+	c2nB1ZW9fval56mTA2xw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wybAh-0000000HMFq-0BAo;
-	Mon, 24 Aug 2026 20:21:31 +0000
-Received: from mail-pf1-x430.google.com ([2607:f8b0:4864:20::430])
+	id 1wyg8X-000000001GP-3lwt;
+	Tue, 25 Aug 2026 01:39:37 +0000
+Received: from sendmail.purelymail.com ([34.202.193.197])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wybAZ-0000000HMEX-2Fak
+	id 1wyg8Q-000000001Fj-31e1
 	for linux-mtd@lists.infradead.org;
-	Mon, 24 Aug 2026 20:21:27 +0000
-Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-848643382fcso4067649b3a.1
-        for <linux-mtd@lists.infradead.org>; Mon, 24 Aug 2026 13:21:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1787602883; x=1788207683; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=gNp5G+obRtae82vOvBIyYYK4Xe2jxDTBbOvoR67emq8=;
-        b=F/39jhO6HwBIVmR3VFhOHIMOUd+fJXNSt4MHDO5EldgXdjI5EL8diFxXo+dB/OobBI
-         AWjnG9QJUxINVpQttdwOs/N1WhYbtZFZpA1DmFpR2AA7zE7T02qfaWteFxCC0nCCUdOh
-         1M8F9fEg801FoOrofy8uwOnFcYYz8gtRzw+rj8BBVMv3z9n/XThI7CtiZmoqrxj1Txdi
-         EMP9QmYYDwD6fpjWHy/qy1OjeCQhMKwsyfGIxwzVrSt/ZKG1UEMtQF8N9pYUmMrCTQG4
-         K2ZdwT0Lb/Bh+20sLaK5WJ7VuBMCPx/PQ5m3q/3tRRQt7vxK8/4DyD06OPXR/chr8fSO
-         XX3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1787602883; x=1788207683;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=gNp5G+obRtae82vOvBIyYYK4Xe2jxDTBbOvoR67emq8=;
-        b=oslOU2YYnVlBAlbGYyDMw/Uk0bWPKvc2tc4ejaGLxDuY6cFDOcdgyut0fMfNcz4Zy1
-         kLBNnbSqzDxTaMFmfVw4bfEDPy2fNFRkAtJcOdwKhsjcvUtLK8zeRxsjgZ7ALMTpV6OA
-         c0kiXMEJM+XUUmJ0PjVqiXd5UsdH/MPp4z9vAa6gWtNiy7VpRlRC+Npc+3fSB18bwsJ9
-         Ir+bbOM9p59zpUFNRVNRPATPQbV3HkkC66BbJ+uzZyg9vGHWL+CyJVXER0V+rV4HqVun
-         Dg+bxtNpPNREtsQN5bKs/acWDms8mujOxWTbFQhQMb9EyevQ70wr4SIdlHkr/siYMJqG
-         +Qiw==
-X-Gm-Message-State: AFuF++mQZ+CyY+hLmYJQajVAKPIjsVXPuZuGrf+5iWufax2gfmEUOR8P
-	quMrqJezT6DHls+tBruGgKAE9y7w6AinI0dlSjAjf5c6MnkYkuCVJVve2X/MZA==
-X-Gm-Gg: AR+sD13sGLDUjYhJv9dBbwTWKvb2z+JfMNX34NPY6WhTXeaB+ygmdifspb6IcWGzA5j
-	etexDHiN9WUD/6KJiDBvKQlU9dDbSNHWj5CLvEHOzaoO6JL1fWWPsr4F6SJcOeXKFDtE/ubG3Y0
-	FsGbPswPL+xV+QUyr9yAqxX5QY3z/yJ0tOlOkVTRFHBgc30EjWjoQPe7sVS9fwTfQfU43P3y4DH
-	Lz3+LIwQNM1n+HIN1AVIx4kfPr0hcaoEKG2FfuxNwd46oHZeQ+0w1IYSRM9tR//qiHFUXTmw7pS
-	GkDOGQe5bTyMFFNwM7g9ymfUpyKMIfBdOOR+vH3y1XQT1jxXVIhyQYI9WxwWxhQRG1eXeNXNi9S
-	H3QtL4lRlj03ag2RvnhFQQOXm8cZ22R8sei1U8p72L0KMiaiJP3tkToInIkwMH/NKkFxxqQGGun
-	HgnKmmNuFDsXlGLmNqujf3OIWnFi3z6wAkWWhnpfVIs8W9F9W3ut/PIHnLfn/1m9f5ISFEz8KOZ
-	GK0BI1nZ1q+7gvw/27XWagc87dlsAlJMv+KDCSo9Qy5XnotK2TXOo9XdUvt1BgnKT4yTgeVAxDO
-	gp2rszwHSZChkUpDxcxaW/HuLZ/sZ6rwEWCCmHRBLNQ=
-X-Received: by 2002:a05:6a00:2d26:b0:848:5cf5:5040 with SMTP id d2e1a72fcca58-851f9f4ba99mr46085836b3a.10.1787602882600;
-        Mon, 24 Aug 2026 13:21:22 -0700 (PDT)
-Received: from ryzen.lan ([2601:644:8000:7a86::e34])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-8520f16a9ccsm2330961b3a.58.2026.08.24.13.21.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Aug 2026 13:21:22 -0700 (PDT)
-From: Rosen Penev <rosenp@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	David Woodhouse <David.Woodhouse@intel.com>,
-	Sean MacLennan <smaclennan@pikatech.com>,
-	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCHv2] mtd: rawnand: ndfc: use devm_platform_ioremap_resource()
-Date: Mon, 24 Aug 2026 13:21:20 -0700
-Message-ID: <20260824202120.12280-1-rosenp@gmail.com>
+	Tue, 25 Aug 2026 01:39:36 +0000
+DKIM-Signature: a=rsa-sha256; b=e01QFpG9Gq3786qtZIww7tX6T1Ihw9j1szgJSJhkyyw2oFtXg7DTeSV7KNzgSTsdbhr3kPiVsgMZMRv9qbUrLsjoeRgEMmudMiXzYxKfZDn7yJcZAMpph+10eg16xHtEXAXnMWthmQfN9BV7ZBye6jLNJmpYkcjGQditZ2sz5xrlI41J6knNY/DHp7MsKbnjDjCzWMI5AljOOKghyBpkF/IpQXfzyoALqrOZduz+C8MU+RaMa2kVNRmoWiVYFCcXdHeAC3HA2us/G2WQLRBV7jdxnNp6C6p9X4dbNDcyegHYd895I5qg8VFtyZxLT/48C2Ieu2Sq4vlgeeBtyE2S9Q==; s=purelymail1; d=c127.dev; v=1; bh=S41ebfT7xo/qZtIIIBZyOORVT3DUlpSqNwSmIUKtTl0=; h=Received:From:To:Subject:Date;
+DKIM-Signature: a=rsa-sha256; b=LPJQDrx/fajOg6CYdhAOYtztRZMC3ueqX9+tgZk1ZEbzKPbE0vJjjSLtgLUEwzbYbLasHIUGo+veK6dFFJhtTHhlc7hPxvXYRss2OkTIysm+iou2onk40qcpTXEaVKbVwWr699e4Tqw6jRWRfthWO1YOAmu1O+EUYFcWUEyu/BVGj5j3yzXDvbzh0UAP3qHCXxnnXy4zTW3rLeUOKMZbQLuIqobqHXsNnT3Gh8nkKaZ0SuGpGVD6XcdOSSDXPtI7QdKZnfGblpNDbqURBHu7LbHNCIdl44s3gyzTcxEiaZc+g0rQ7bhRTx/ai4Yf53NmF4YZuFwo4igsaytn5WlZ+w==; s=purelymail1; d=purelymail.com; v=1; bh=S41ebfT7xo/qZtIIIBZyOORVT3DUlpSqNwSmIUKtTl0=; h=Feedback-ID:Received:From:To:Subject:Date;
+Feedback-ID: 1017243:43747:null:purelymail
+X-Pm-Original-To: linux-mtd@lists.infradead.org
+Received: by smtp.purelymail.com (Purelymail SMTP) with ESMTPSA id 936311042;
+          (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384);
+          Tue, 25 Aug 2026 01:38:52 +0000 (UTC)
+From: Johan Alvarado <contact@c127.dev>
+To: broonie@kernel.org,
+	md.alam@oss.qualcomm.com
+Cc: konradybcio@kernel.org,
+	pengpeng@iscas.ac.cn,
+	miquel.raynal@bootlin.com,
+	j4g8y7@gmail.com,
+	quic_varada@quicinc.com,
+	quic_srichara@quicinc.com,
+	linux-spi@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Johan Alvarado <contact@c127.dev>
+Subject: [PATCH] spi: spi-qpic-snand: publish the ECC context to snandc->qspi
+Date: Mon, 24 Aug 2026 20:38:48 -0500
+Message-ID: <20260825013848.1056946-1-contact@c127.dev>
 X-Mailer: git-send-email 2.55.0
 MIME-Version: 1.0
+X-MIME-Autoconverted: from 8bit to quoted-printable by Purelymail
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260824_132125_446853_5A822731 
-X-CRM114-Status: GOOD (  13.46  )
+X-CRM114-CacheID: sfid-20260824_183935_370404_E3393F67 
+X-CRM114-Status: GOOD (  15.84  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,76 +73,89 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Replace the open-coded of_iomap()/iounmap() with the managed
-devm_platform_ioremap_resource() helper. This fixes a mapping leak on
-driver remove (the old code never called iounmap()) and simplifies the
-error path by dropping the manual cleanup in ndfc_probe().
+qcom_spi_ooblayout_ecc() and qcom_spi_ooblayout_free() read the ECC
+configuration through snandc->qspi->ecc. qcom_spi_probe() points it at a
+zeroed scratch struct and only qcom_spi_ecc_prepare_io_req_pipelined(),
+which runs on page I/O, ever updates it. qcom_spi_ecc_init_ctx_pipelined()
+installs the ooblayout but does not publish the context it just
+allocated, and qcom_spi_ecc_cleanup_ctx_pipelined() frees that context
+without clearing the pointer.
 
-There is no overlapping memory-region concern introduced by this
-change: each supported board DT describes a single ndfc node with a
-unique 0x2000 register region, and the EBC parent uses dcr-reg rather
-than a MEM reg resource, so the newly added request_mem_region() cannot
-conflict with an existing reservation. Distinct chip selects map to
-distinct 64-bit physical addresses, so CS instances do not overlap.
+spinand_init() calls mtd_ooblayout_count_freebytes() right after the ECC
+context is created and before any page I/O, so the ooblayout always runs
+against a pointer that does not describe the current context:
 
-Fixes: a808ad3b0d28 ("[MTD] [NAND] ndfc driver")
+  - On a first probe it reads the zeroed struct from qcom_spi_probe(),
+    so steps, bytes and bbm_size are 0. The count then returns 0 rather
+    than an error, so the probe continues with mtd->oobavail set to 0.
+
+  - On a probe retry it reads the ecc_cfg the previous attempt freed.
+
+A retry is easy to hit. On IPQ5018 with the qcom,smem-part parser the
+partition parse returns -EPROBE_DEFER until SMEM has probed, so the
+first spi-nand probe defers. It defers inside
+mtd_device_parse_register(), after mtd_otp_nvmem_add() has already read
+the factory OTP - that read goes through prepare_io_req and leaves
+snandc->qspi->ecc pointing at the context that spinand_cleanup() then
+frees. The second probe allocates a new context, never publishes it, and
+computes the OOB layout from the freed one. Once the slab has been
+reused, qecc->steps holds garbage and
+
+  oobregion->length = qecc->steps * 4;
+
+goes negative. qcom_spi_ooblayout_free() only reports -ERANGE for
+section 1 and later, so mtd_ooblayout_count_bytes() sums the regions and
+returns that negative length as the byte count. The -512 below is
+steps * 4 with steps == -128. It is a byte count that happens to
+collide with -ERESTARTSYS, not an error the driver returned.
+spinand_init() takes it as an error, and because it is not
+-EPROBE_DEFER the driver core never retries and the NAND never appears:
+
+  spi-nand spi0.0: ESMT SPI NAND was found.
+  spi-nand spi0.0: probe with driver spi-nand failed with error -512
+  UBI error: cannot open mtd rootfs, error -2
+  Waiting for root device /dev/ubiblock0_1...
+
+On a Mercusys MR80X (IPQ5018, ESMT F50D1G41LB) about half of the boots
+failed to mount the rootfs, the outcome depending on whether the freed
+memory had been overwritten yet.
+
+Publish the context when it is created and clear the pointer when it is
+destroyed. Clearing leaves snandc->qspi->ecc NULL after cleanup, which
+is safe: the mtd is unregistered before cleanup_ctx runs, so no
+ooblayout callback can follow.
+
+Fixes: 7304d1909080 ("spi: spi-qpic: add driver for QCOM SPI NAND flash Interface")
 Cc: stable@vger.kernel.org
-Assisted-by: opencode:hy3-free
-Signed-off-by: Rosen Penev <rosenp@gmail.com>
+Signed-off-by: Johan Alvarado <contact@c127.dev>
 ---
- v2: add Fixes: and Cc: tags
- drivers/mtd/nand/raw/ndfc.c | 21 ++++++++-------------
- 1 file changed, 8 insertions(+), 13 deletions(-)
+Tested on a Mercusys MR80X (IPQ5018, ESMT F50D1G41LB) running 6.18.44
+with the equivalent change; mainline build-tested with W=1, no warnings.
 
-diff --git a/drivers/mtd/nand/raw/ndfc.c b/drivers/mtd/nand/raw/ndfc.c
-index a48274297d3b..d6db04d48c45 100644
---- a/drivers/mtd/nand/raw/ndfc.c
-+++ b/drivers/mtd/nand/raw/ndfc.c
-@@ -185,10 +185,15 @@ static int ndfc_chip_init(struct ndfc_controller *ndfc,
- static int ndfc_probe(struct platform_device *ofdev)
- {
- 	struct ndfc_controller *ndfc;
-+	void __iomem *ndfcbase;
- 	const __be32 *reg;
- 	u32 ccr;
- 	u32 cs;
--	int err, len = 0;
-+	int len = 0;
+ drivers/spi/spi-qpic-snand.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/spi/spi-qpic-snand.c b/drivers/spi/spi-qpic-snand.c
+index 61b1f2eb19ce..0d0ae93ad4bf 100644
+--- a/drivers/spi/spi-qpic-snand.c
++++ b/drivers/spi/spi-qpic-snand.c
+@@ -411,6 +411,8 @@ static int qcom_spi_ecc_init_ctx_pipelined(struct nand_device *nand)
+ 	dev_dbg(snandc->dev, "ECC strength: %u bits per %u bytes\n",
+ 		ecc_cfg->strength, ecc_cfg->step_size);
+ 
++	snandc->qspi->ecc = ecc_cfg;
 +
-+	ndfcbase = devm_platform_ioremap_resource(ofdev, 0);
-+	if (IS_ERR(ndfcbase))
-+		return PTR_ERR(ndfcbase);
+ 	return 0;
  
- 	/* Read the reg property to get the chip select */
- 	reg = of_get_property(ofdev->dev.of_node, "reg", &len);
-@@ -210,11 +215,7 @@ static int ndfc_probe(struct platform_device *ofdev)
- 	ndfc->ofdev = ofdev;
- 	dev_set_drvdata(&ofdev->dev, ndfc);
+ err_free_ecc_cfg:
+@@ -427,6 +429,7 @@ static void qcom_spi_ecc_cleanup_ctx_pipelined(struct nand_device *nand)
  
--	ndfc->ndfcbase = of_iomap(ofdev->dev.of_node, 0);
--	if (!ndfc->ndfcbase) {
--		dev_err(&ofdev->dev, "failed to get memory\n");
--		return -EIO;
--	}
-+	ndfc->ndfcbase = ndfcbase;
- 
- 	ccr = NDFC_CCR_BS(ndfc->chip_select);
- 
-@@ -232,13 +233,7 @@ static int ndfc_probe(struct platform_device *ofdev)
- 		iowrite32be(be32_to_cpup(reg), ndfc->ndfcbase + offset);
- 	}
- 
--	err = ndfc_chip_init(ndfc, ofdev->dev.of_node);
--	if (err) {
--		iounmap(ndfc->ndfcbase);
--		return err;
--	}
--
--	return 0;
-+	return ndfc_chip_init(ndfc, ofdev->dev.of_node);
+ 	kfree(snandc->qspi->oob_buf);
+ 	snandc->qspi->oob_buf = NULL;
++	snandc->qspi->ecc = NULL;
+ 	kfree(ecc_cfg);
  }
  
- static void ndfc_remove(struct platform_device *ofdev)
 -- 
 2.55.0
 
