@@ -4,68 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8626C61DB4
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 Aug 2026 09:52:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1CE11C61DB4
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 Aug 2026 09:59:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:References:
+	In-Reply-To:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=t+CQV2PL0fW8Z41MUA1o+4x3mDxiVZMqicwJZ9bOrLA=; b=SVnSnZ5qcYQHEC
-	5H7dzMSqrNMt+5tQlmSJaCjGZhX+jj/qYv1+iuFp56hr/xil9UoKmYncsbd5zYuVHSUNScg6u+sY+
-	jY0kW6YBhw72UDG+H6tHozG1ni+qVOogxPF9plcww7QixwJvpzgaQy/zkowJvzbMfYjXJXF7uGogs
-	rJwnhN+XCiSigoXQoPPUrdxYLJwSHzrOs/DY48SnwdftbC0to8NfqgR9lDvXk/Wwgr05jShmcSmL8
-	O3AsmJg8z6XTis6txt7oHok0IqnK7X25hVIICUcxMWayZ2V/oo6m8+OChUzuJSc/CPOkAMJoMJfek
-	zMFJ0sR/0MWolIXKxplA==;
+	List-Owner; bh=639WmbL52g5cGj8dT+P/e0oMV9H/DSrq3OieK7+96sA=; b=CN3KRZS+D+knTi
+	x/GIVXALNzPcNzoSUGGW3H6qNnq8j6O70ShZZQy4wp+jYxI7/zec6bA/f7Ayek/nTMtM/mXgT38EP
+	0NpCiWDxAMdYy0TdVVWBDYamoCQJXqKSFtGsWoz+PGoF/WAKdGYt8J6rdM0NRUyZaRUIevHlZuCqx
+	EWxsfg1FuxFL+RY8OYQAEE3m6wPrRXJwGRT2u42ALS1Gb9IbpFx3BrXwE8lPn9bKCvxbfdTb39P7k
+	tXqaiiGapPW8LTGdR0ctN0zSduLIdPj6ocizCnyZXsF81Pk8gm6cCSIyaBwf1HQZKTjryrer5hlP7
+	sRNSY5sTGxCrCgsq33Pg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wynpi-00000000X7o-0tE0;
-	Tue, 25 Aug 2026 09:52:42 +0000
-Received: from smtpout-02.galae.net ([185.246.84.56])
+	id 1wynvy-00000000Xig-0IxA;
+	Tue, 25 Aug 2026 09:59:10 +0000
+Received: from 0001.3ffe.de ([159.69.201.130])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wynpf-00000000X7L-2bXJ
+	id 1wynvv-00000000Xg4-283g
 	for linux-mtd@lists.infradead.org;
-	Tue, 25 Aug 2026 09:52:41 +0000
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id 3BBB31A17E3;
-	Tue, 25 Aug 2026 09:52:36 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 0D410604C4;
-	Tue, 25 Aug 2026 09:52:36 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 327B911C7A36B;
-	Tue, 25 Aug 2026 11:52:28 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1787651551; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=qAfIO28YCM1SmDmdE3IhwfvU1TDo5r74vGdtxfX7ZvI=;
-	b=VY2F8g/iGVVqY7vf62k9QFFt5YfoEFmi/UUHQ0rdsl7993acOS0EVcvv2rKp+amOO2Hant
-	Aa9Jbdsrw4XgqrC2p008HyzM/xp+Nrf66Eixq2emwwRSNxYJqycu5PCngm5/1hXnjFXLpI
-	mkf9wtMN4Jjd2Nsba3W7g3QZo74Tb2PirZav0IIp0irWpmorQXPk76jz/N6FHvXO825hdd
-	a8T4g5thq938EzOn0NpiNnwqnU3WLwRxWW7ctS4KOBhYjleyWTwxh9NwW1vjZf6qd7rKdQ
-	GAe7ELolGFW9Ov0RvWTbZdGY+b+tDT1EUkzTj6sE3R3EbTtSC2LkX4FS0I+P9Q==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Mehmet Fide <mehmet.fide@gmail.com>
-Cc: Stefan Agner <stefan@agner.ch>,  Richard Weinberger <richard@nod.at>,
-  Vignesh Raghavendra <vigneshr@ti.com>,  Mehmet Fide
- <mehmet.fide@screeningeagle.com>,  Boris Brezillon
- <bbrezillon@kernel.org>,  Frieder Schrempf <frieder.schrempf@kontron.de>,
-  Edward Karpicz <webmaster@toradex.com>,  linux-mtd@lists.infradead.org,
-  linux-kernel@vger.kernel.org,  stable@vger.kernel.org
-Subject: Re: [PATCH 1/2] mtd: rawnand: vf610_nfc: fix reads on chips with
- more than 64 bytes of OOB
-In-Reply-To: <20260818114208.2780311-2-mehmet.fide@gmail.com> (Mehmet Fide's
-	message of "Tue, 18 Aug 2026 13:42:07 +0200")
-References: <20260818114208.2780311-1-mehmet.fide@gmail.com>
-	<20260818114208.2780311-2-mehmet.fide@gmail.com>
-User-Agent: mu4e 1.12.12; emacs 30.2
-Date: Tue, 25 Aug 2026 11:52:27 +0200
-Message-ID: <87mruail2c.fsf@bootlin.com>
+	Tue, 25 Aug 2026 09:59:08 +0000
+Received: from ehlo.thunderbird.net (unknown [IPv6:2a00:20:d234:bae8:a238:320e:c3e3:77c7])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.3ffe.de (Postfix) with ESMTPSA id 3D738103;
+	Tue, 25 Aug 2026 11:58:54 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
+	t=1787651934;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1VPB86GX6OCqmQcqxCJL58XknddeyBndznxbchDbXtk=;
+	b=aND/1m1fkGnQlGEq2eSJz8Xdlw+pv8qcOa2xuwXgUy8MGEWzW3b0FOIAtbNLTHKoVW0Jb/
+	t1JuxpNIYoELb77wivFhNVFNVdsRv0P9+PxXgOsC4rsITMVp5KADG+GS4cyb+FX3xZgIzf
+	mH8l9BLwQCHfZ6u5rJmZ+OEyhOMgzFXN/lFPAACo2hxNcyB7GCeGTFBLURrE/Tbd690VvA
+	GJnsX9WI0XclOgoVxjb1l/hLHM7QtO5k1tyY4dR5wdMdpW+gEAqnXdgpoN+FdoqJRfKblN
+	FUkbLxTLM/A+TZOEuM9ArmROn1C553YlEDjgmtm6bLdqtEr0ozCwayauYMQPeg==
+Date: Tue, 25 Aug 2026 11:58:53 +0200
+From: Michael Walle <michael@walle.cc>
+To: Miquel Raynal <miquel.raynal@bootlin.com>, Takahiro.Kuwano@infineon.com
+CC: mwalle@kernel.org, pratyush@kernel.org, richard@nod.at, vigneshr@ti.com,
+ linux-mtd@lists.infradead.org
+Subject: Re: Sashiko to track linux-mtd
+User-Agent: K-9 Mail for Android
+In-Reply-To: <87v78yimb1.fsf@bootlin.com>
+References: <875x38mlk7.fsf@bootlin.com> <2vxz4iismi2m.fsf@kernel.org> <87pl19s7ng.fsf@bootlin.com> <0fe3140096bc48a8e71838362220d9f8@kernel.org> <b224c6938e084763b017c63e0aa3fa3f@infineon.com> <8733xikmb9.fsf@bootlin.com> <8733xhiqyn.fsf@bootlin.com> <87v78yimb1.fsf@bootlin.com>
+Message-ID: <10CE8F35-D4FC-4CE8-B687-1154DF9915CF@walle.cc>
 MIME-Version: 1.0
-X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260825_025239_799839_F8465E59 
-X-CRM114-Status: GOOD (  22.40  )
+X-CRM114-CacheID: sfid-20260825_025907_714982_DF9C585D 
+X-CRM114-Status: GOOD (  11.59  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,63 +70,55 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWVobWV0LAoKT24gMTgvMDgvMjAyNiBhdCAxMzo0MjowNyArMDIsIE1laG1ldCBGaWRlIDxt
-ZWhtZXQuZmlkZUBnbWFpbC5jb20+IHdyb3RlOgoKPiBGcm9tOiBNZWhtZXQgRmlkZSA8bWVobWV0
-LmZpZGVAc2NyZWVuaW5nZWFnbGUuY29tPgo+Cj4gVGhlIGRyaXZlciBvbmx5IGltcGxlbWVudHMg
-dGhlIDY0LWJ5dGUgT09CIGxheW91dCwgc28gYXR0YWNoX2NoaXAoKQo+IHNocmlua3MgbXRkLT5v
-b2JzaXplIHdoZW4gdGhlIGNoaXAgcHJvdmlkZXMgbW9yZS4gCgpFaHIuLi4KCj4gVGhhdCBjbGFt
-cCBkb2VzIG5vdAo+IHN1cnZpdmU6IG5hbmRfc2Nhbl90YWlsKCkgcnVucyBuYW5kZGV2X2luaXQo
-KSBhZnRlciAtPmF0dGFjaF9jaGlwKCksIGFuZAo+IGl0IHJlc3RvcmVzIG10ZC0+b29ic2l6ZSBm
-cm9tIHRoZSBtZW1vcnkgb3JnYW5pemF0aW9uLCB3aGljaCBzdGlsbCBob2xkcwo+IHRoZSB2YWx1
-ZSBkZXRlY3RlZCBmcm9tIHRoZSBjaGlwLgoKSSBndWVzcyB0aGF0J3MgZXhwZWN0ZWQuCgo+IFRo
-ZSBkcml2ZXIgdGhlcmVmb3JlIHRyYW5zZmVycyB3cml0ZXNpemUgKyB0aGUgY2hpcCdzIGZ1bGwg
-T09CIHNpemUsIHNvCj4gdGhlIGhhcmR3YXJlIEVDQyBwYXJpdHkgZW5kcyB1cCBhdCBhIGRpZmZl
-cmVudCBvZmZzZXQgdGhhbiB0aGUgbGF5b3V0IHRoZQo+IGNvbnRyb2xsZXIgd2FzIHNldCB1cCBm
-b3IsIGFuZCBldmVyeSBFQ0MtcHJvdGVjdGVkIHJlYWQgZmFpbHMgd2l0aAo+IC1FQkFETVNHLgoK
-VGhpcyBpcyBjbGVhcmx5IHRoZSBjb3JyZWN04oSiIHdheSA6KQoKPiBNZWFzdXJlZCBvbiBhIENv
-bGlicmkgVkY2MSAoTVgzMExGNEcyOEFDLCAyMDQ4LWJ5dGUgcGFnZXMsIDExMiBieXRlcyBvZgo+
-IE9PQik6IHdpdGggdGhlIGNsYW1wIGxvc3QsIFVCSSBjYW5ub3QgcmVhZCB0aGUgZXJhc2UgY291
-bnRlciBoZWFkZXJzIG9mCj4gdGhlIHBhZ2VzIFUtQm9vdCBoYXMganVzdCB3cml0dGVuLCBhbmQg
-dGhlIG9uLWZsYXNoIGJhZCBibG9jayB0YWJsZQo+IHdyaXR0ZW4gYnkgYW4gb2xkZXIga2VybmVs
-IHJlYWRzIGJhY2sgd2l0aCBFQ0MgZXJyb3JzLCBzbyB0aGUgYm9hcmQgZG9lcwo+IG5vdCBib290
-LiBLZXJuZWxzIGJlZm9yZSBjb21taXQgYTdhYjA4NWQ3YzE2ICgibXRkOiByYXduYW5kOiBJbml0
-aWFsaXplCj4gdGhlIG5hbmRfZGV2aWNlIG9iamVjdCIpIGFyZSBub3QgYWZmZWN0ZWQgYmVjYXVz
-ZSBub3RoaW5nIG92ZXJ3cm90ZSB0aGUKPiBjbGFtcCB0aGVyZSwgd2hpY2ggaXMgd2h5IHRoZSBz
-YW1lIGNoaXAgd29ya3Mgd2l0aCBhIHY0LjQga2VybmVsIGFuZAo+IHdpdGggVS1Cb290LCB3aG9z
-ZSBjb3B5IG9mIHRoaXMgZHJpdmVyIGhhcyBubyBtZW1vcnkgb3JnYW5pemF0aW9uIHRvCj4gcmVz
-dG9yZSB0aGUgdmFsdWUgZnJvbS4gRWR3YXJkIEthcnBpY3ogcmVwb3J0ZWQgdGhhdCB0aGUgY2xh
-bXAgbm8gbG9uZ2VyCj4gdGFrZXMgZWZmZWN0IG9uIHRoaXMgY2hpcDsgc2VlIHRoZSBsaW5rIGJl
-bG93LgoKVGhpcyBjb21taXQgaXMgbm90IGluY29ycmVjdCwgd2hhdCB0aGUgZHJpdmVyIGRvZXMg
-aXMgaW5jb3JyZWN0LCBhbmQKaXMgbm93IHVuZm9ydHVuYXRlbHkgdmlzaWJsZS4KCj4gQ2xhbXAg
-dGhlIG1lbW9yeSBvcmdhbml6YXRpb24gYXMgd2VsbCBzbyB0aGUgZHJpdmVyJ3MgNjQtYnl0ZSBs
-YXlvdXQKPiBzdGF5cyBpbiBlZmZlY3QsIGFuZCBsb2cgdGhlIHRydW5jYXRpb24gb25jZSwgYXMg
-aXQgZGVjaWRlcyB3aGljaAo+IG9uLWZsYXNoIGxheW91dCB0aGUgc3lzdGVtIHVzZXMuCgpJdCBm
-aXhlcyB0aGUgcHJvYmxlbSwgYnV0IGhvbmVzdGx5IG1vZGlmeWluZyB0aGUgbWVtb3JnIGlzIG5v
-dApjb3JyZWN0LiBCcm9hZGNvbSBhbmQgbXBjNTEyMSBjb250cm9sbGVyIGRyaXZlcnMgZG8gaXQs
-IGJ1dCB0aGF0J3MKbGlrZWx5IHdyb25nLgoKV2hhdCB5b3UgcmVwb3J0IGhlcmUgaXMgYSBVLUJv
-b3QgaXNzdWUuIFRoZSBjaGlwcyBoYXMgbW9yZSB0aGFuIDY0IE9PQgpieXRlcywgVS1ib290IGNs
-YW1wcyB0aGF0IHZhbHVlLCBMaW51eCBkb2VzIG5vdC4gVS1ib290IGlzIHdyb25nLiBCdXQgSQpn
-dWVzcyBpdCdzIG5vdyB0b28gbGF0ZSBhbmQgeW91J2xsIHRlbGwgbWUgbWFueSBkZXZpY2VzIGlu
-IHRoZSBmaWVsZAphbHJlYWR5IHVzZSB0aGlzIGJyb2tlbiBsYXlvdXQ/CgpJbiB0aGlzIGNhc2Us
-IG1heWJlIHlvdSBzaG91bGQganVzdCBjaGFuZ2UgdGhlIGxheW91dCwgaW5zdGVhZCBvZgpmb3Jj
-aW5nIGFuIG9idmlvdXNseSBpbmNvcnJlY3QgbWVtb3J5IGxheW91dC4gSW4gdGhpcyBkcml2ZXIg
-dGhlIGxhcmdlCnBhZ2UgZ2VuZXJpYyBPT0IgbGF5b3V0ICh3aGljaCBwdXRzIHRoZSBFQ0MgYnl0
-ZXMgYXQgdGhlIGVuZCkgaXMgdXNlZC4gSQpndWVzcyBhIGJldHRlciBhcHByb2FjaCBjb3VsZCBi
-ZSB0byBtYWtlIHlvdXIgb3duIDY0LWJ5dGUgY2xhbXBlZCBPT0IKbGF5b3V0IGZvciBiYWNrd2Fy
-ZCBjb21wYXRpYmlsaXR5LiBZb3Ugc2hvdWxkIGRyb3AgdGhlIG9vYnNpemUKbW9kaWZpY2F0aW9u
-IGFzIHdlbGwuCgo+IFJlcG9ydGVkLWJ5OiBFZHdhcmQgS2FycGljeiA8d2VibWFzdGVyQHRvcmFk
-ZXguY29tPgo+IExpbms6IGh0dHBzOi8vY29tbXVuaXR5LnRvcmFkZXguY29tL3QvY29saWJyaS12
-ZjUwLXZmNjEtb24tdGhlLWN1cnJlbnQtYnNwLW1haW5saW5lLXUtYm9vdC12MjAyNi0wNy1hbmQt
-bGludXgtNi0xOC1sdHMvMzA3MzUKPiBGaXhlczogYTdhYjA4NWQ3YzE2ICgibXRkOiByYXduYW5k
-OiBJbml0aWFsaXplIHRoZSBuYW5kX2RldmljZSBvYmplY3QiKQo+IENjOiBzdGFibGVAdmdlci5r
-ZXJuZWwub3JnCj4gU2lnbmVkLW9mZi1ieTogTWVobWV0IEZpZGUgPG1laG1ldC5maWRlQHNjcmVl
-bmluZ2VhZ2xlLmNvbT4KClRoZXJlIGlzIGF0IGxlYXN0IG9uZSBsZWdpdGltYXRlIFNhc2hpa28g
-d2FybmluZyBvbiB0aGlzIHBhdGNoLCBjYW4geW91CnBsZWFzZSBhbHNvIGNoZWNrIGl0PwoKVGhh
-bmtzIQpNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0
-cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+Hi,
+
+Am 25. August 2026 11:25:38 MESZ schrieb Miquel Raynal <miquel.raynal@bootlin.com>:
+>Hello,
+>
+>On 17/07/2026 at 17:19:28 +02, Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+>
+>> Hello folks,
+>>
+>>> So I will make a PR for enabling it, but let's keep in mind that this is
+>>> experimental and can be re-discussed at any time.
+>>
+>> FYI: https://github.com/sashiko-dev/sashiko/pull/336
+>
+>I am partially satisfied about how Sashiko intervenes in my review
+>flow, here is my current feeling.
+>
+>About Sashiko itself:
+>+ many interesting findings, worth enabling for sure
+>+ most of the findings are correct, but not always worth another version
+>- no possible feedback loop (eg. "this is an hallucination, stop
+>  bothering us with this")
+>- pre-existing issues are flagged at the same "level" as new issues
+>
+>About our configuration of Sashiko:
+>- it takes more time to me to do the check, copy & paste dance every
+>  time there is something I find really needed
+>- I get Cc'ed on reviews of patches I did not receive (eg. jffs2 things)
+
+Yeah I noticed that, too.
+
+>In the end I would like to modify the current configuration in order for
+>Sashiko to act as a regular reviewer, ie. just answer to all recipients,
+>including the author:
+>
+>- cc = ...
+>+ reply_all = true
+>+ reply_to_author = true
+
+I'm fine with the change. Let's see how patch submitters will react.
+
+-michael
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
