@@ -4,73 +4,136 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB1A4C61DC6
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 Aug 2026 16:43:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4CC6C61DB9
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 Aug 2026 17:21:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=CztikfPYi8wNawrLDzLbIu97iezvGN4ASUoj7rCZFBQ=; b=TTHvA+VK9DkIOi
-	dX1yKGVhb0vlhTphrzkOw9yT2XeaPrmod8b2ViKiX+9MHPn44zLFpYg2uhC9B84hX1ShywnZ5nHtN
-	AMqsma2EYzvTa3wwC6wqEgj3uE8j2jHOXna25pj0GbPmCNU/ZAw52Hdl8z4zk2WuMvLbBiPPAOcA7
-	QzsMMVqcOv16c7GDnwiCn1gOCvJ9zVRlXPzt2uocH0ljIxxAmRRDyXAhVMxBHdUG1fb5UQVXgQ5+J
-	F1+mb11QLc76qb0DWIgmucntktwJegLBOTtVyFA8rwlRNngbhK8W4DcFyRP6Eh2Xv2uPvZZv9g5fI
-	ryYUzOAB2b+uRMAwxilw==;
+	List-Owner; bh=Y6rXKzpB3DZxFXDGqMySc8j2g9q50Xwd3it5fWfzE6A=; b=vIQYrcEdPcTO1X
+	UH/rKVjoc5O6XFlC+O+LwM3UUnmRnjukems6q56ffP+TUcjcdLnH5Oo51X7abMu2dfNIjv44H5T6Y
+	G0Ne9HhJ9+1tit+YbmErP0QEYVP1WxCzOgVAHpWZqsn05y5JKKYdHh1d3sHw8iBD4iHvkA1HQ/VGe
+	Hcu4ZgNKR263NhVbG/RiPz4/RWG30x8XLKNmUCA9cKucr92uJU9FIJgSNQygPaRchvFAM2f7K394o
+	iwE/nPfpJMO+6xRRsFxAmjZRWHPXIUT3hgYbFfVKe8xpS74gr4arq3rVnl+HJkp+X7Hav7eSrUHPi
+	wNpIVsBi09jRlly4c45g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wzdCI-00000004OCc-1Nck;
-	Thu, 27 Aug 2026 16:43:26 +0000
-Received: from smtpout-03.galae.net ([185.246.85.4])
+	id 1wzdn4-00000004SCV-0YIv;
+	Thu, 27 Aug 2026 17:21:26 +0000
+Received: from mail-canadacentralazlp170100001.outbound.protection.outlook.com ([2a01:111:f403:c103::1] helo=YT3PR01CU008.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wzdCC-00000004O9d-2DPP;
-	Thu, 27 Aug 2026 16:43:22 +0000
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id 98D204E413E1;
-	Thu, 27 Aug 2026 16:43:15 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 5F6D3604ED;
-	Thu, 27 Aug 2026 16:43:15 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 7C11511C780CB;
-	Thu, 27 Aug 2026 18:43:05 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1787848990; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=XxwcF+GEHxUG8bL+ir1yRXCJzX7aC3C+dEO4fpdt0sE=;
-	b=CtnZ5jljui7LdupirTQTWqUV0oYljGBVXGYVu4CKz7D7RrOdul50N1Vby2mU6FlWVMh7NP
-	pKStH9KHhko65mtJp6B9E3QC7MJSP8AhJlQ6HfGvHSwKQc3izf4qS4FUznX6lb7ORcjKDf
-	ADmbhhOI+hd2ATph44wfpEQu0d6amAUwbAW9VrA29F0/CnzYFkLcFfdeKBWIgCLBykfdC2
-	I1RQ9YcOVpEN4VABV9DjsBdrautKJkfwi3iFAk6gh29qq+nz5nCbSs/0utCAWw5QQlYJbJ
-	qKOx+G6BAh58Au/A9/qRftOK+XnMerXXvl6GkxrtsbkO2MrMa8tb4WjmgN0gdw==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: "Michael Walle" <mwalle@kernel.org>
-Cc: "Pratyush Yadav" <pratyush@kernel.org>,  "Takahiro Kuwano"
- <takahiro.kuwano@infineon.com>,  "Richard Weinberger" <richard@nod.at>,
-  "Vignesh Raghavendra" <vigneshr@ti.com>,  "Nicolas Ferre"
- <nicolas.ferre@microchip.com>,  "Alexandre Belloni"
- <alexandre.belloni@bootlin.com>,  "Claudiu Beznea"
- <claudiu.beznea@tuxon.dev>,  "Jonathan Corbet" <corbet@lwn.net>,  "Shuah
- Khan" <skhan@linuxfoundation.org>,  "Steam Lin" <STLin2@winbond.com>,
-  "Hsin-Yi Wang" <hsinyi@chromium.org>,  "Thomas Petazzoni"
- <thomas.petazzoni@bootlin.com>,  <linux-mtd@lists.infradead.org>,
-  <linux-arm-kernel@lists.infradead.org>,  <linux-kernel@vger.kernel.org>,
-  <linux-doc@vger.kernel.org>
-Subject: Re: [PATCH v3 05/23] mtd: spi-nor: Create the concept of fixup
- table with match function
-In-Reply-To: <DKOKFU8AD2U6.151AX0VOBX67H@kernel.org> (Michael Walle's message
-	of "Fri, 14 Aug 2026 11:40:21 +0200")
-References: <20260813-winbond-v7-1-spi-nor-rv-addition-v3-0-b637cf120d5c@bootlin.com>
-	<20260813-winbond-v7-1-spi-nor-rv-addition-v3-5-b637cf120d5c@bootlin.com>
-	<DKOKFU8AD2U6.151AX0VOBX67H@kernel.org>
-User-Agent: mu4e 1.12.12; emacs 30.2
-Date: Thu, 27 Aug 2026 18:43:04 +0200
-Message-ID: <87cxv3cy5j.fsf@bootlin.com>
+	id 1wzdmy-00000004SC4-2Qh0
+	for linux-mtd@lists.infradead.org;
+	Thu, 27 Aug 2026 17:21:23 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=X86NwsWBAYpFHTBJAm9PNER5sY7jhVNBIuFpf9SIMgM7N85q7A9efqEdLkmFIPe108uKGd2q8dohN6p6jR8SVj0moX2anh3JX+kZMvO6HMlvOAWJuMNsKS0I+JHwHPd6s1sb9O6Xlgm+Rug5Cye0VAikw40IKyJSWCt/JzHSDlsDuu/bBjhNuS6IBtNbarzUystPLUmmIIg+Lair1qNOl4vhJb2BUoWl3C4W6vWBCnisYJt9Mp++aaUybgduUsIGonaWBcYR5AaXsWiNIdfacCB2N9x/W5m3NThgOgxDp+9dDqCW7+bXtsaIC2+ITgioG1asLVbqA6rpJVTylGvwiA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=CtKfxgih7hRjy1Npa5/ZmHaKpD+Kvw3eaEkSsAKx15I=;
+ b=oz529/AtzcCefPuazcbeuhqrwhV2znjQRRzqiK2TMLYnskxzhpLAaU/Yykb+ecBP85cT0XbrMf28b4EZVnryEaG3HxqA+4NNobWHDBEmxRBbgb5L9sj/LETJL8eA4LSYgfqMCZbsmiDY/M7hR7HGd32rqkauljRZh0Vxni700xZCg0grSjm2PbAyUamm4WZ0YTdIsw6FD/7BC+E9lR6jf1GrKW/cSLL+hJE8isR0CKMXpd3v4Xw0MaCejPQsrZZ57KDJZxTQErUnLZ4dftn+iVljF5+XwBUHdCWIn9xBoN88gNrMnrtShg+Aas4UrpaKvXKbNa8tAN0O+VCNX7BRBA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=tantalus.com; dmarc=pass action=none header.from=tantalus.com;
+ dkim=pass header.d=tantalus.com; arc=none
+Received: from YT4P288MB1145.CANP288.PROD.OUTLOOK.COM (2603:10b6:b01:16c::22)
+ by YT5P288MB0519.CANP288.PROD.OUTLOOK.COM (2603:10b6:b01:130::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.360.10; Thu, 27 Aug
+ 2026 17:21:14 +0000
+Received: from YT4P288MB1145.CANP288.PROD.OUTLOOK.COM
+ ([fe80::76fb:67e5:79b2:e9ba]) by YT4P288MB1145.CANP288.PROD.OUTLOOK.COM
+ ([fe80::76fb:67e5:79b2:e9ba%4]) with mapi id 15.21.0360.008; Thu, 27 Aug 2026
+ 17:21:14 +0000
+From: Devin Armstrong <darmstrong@tantalus.com>
+To: Zhihao Cheng <chengzhihao1@huawei.com>, "linux-mtd@lists.infradead.org"
+	<linux-mtd@lists.infradead.org>
+CC: Junghum Park <jpark@tantalus.com>, Wolfgang Tolkien
+	<wtolkien@tantalus.com>
+Subject: Re: mtd-utils: [BUG] fsck.ubifs backwards compatibility issue wipes
+ ubi volume encryption information
+Thread-Topic: mtd-utils: [BUG] fsck.ubifs backwards compatibility issue wipes
+ ubi volume encryption information
+Thread-Index: AQHdNXmt/yhdS/7cJ0OAxrMRNzoS/7axJ6UAgAD+BtE=
+Date: Thu, 27 Aug 2026 17:21:13 +0000
+Message-ID: <YT4P288MB114596D4320D56D032E8EC32B8AD2@YT4P288MB1145.CANP288.PROD.OUTLOOK.COM>
+References: <YT4P288MB114509D5F1B6B114BABB5E93B8AE2@YT4P288MB1145.CANP288.PROD.OUTLOOK.COM>
+ <9a92cb19-5b14-bc3a-db1b-5fcd7a736722@huawei.com>
+In-Reply-To: <9a92cb19-5b14-bc3a-db1b-5fcd7a736722@huawei.com>
+Accept-Language: en-CA, en-US
+Content-Language: en-CA
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=tantalus.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: YT4P288MB1145:EE_|YT5P288MB0519:EE_
+x-ms-office365-filtering-correlation-id: ec8bfb6f-363c-44f7-4acd-08df045f98a4
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230040|376014|23010399003|1800799024|366016|10067099003|56012099006|59022699003|3023799007|4133799003|22082099003|18002099003|5023799004|4143699003|38070700021;
+x-microsoft-antispam-message-info: UNatrKz+OFgA1wGOGL+OFRW2js9Xixk9GxwS6ndpMWNAQcd6oEY+Zz6PAH7tQMWrgWOKc/IpTRsfReNeWbEQOwZBpoE+ocwBtD5i01dZgfbp1Hc2UyzRs55uBrccc4Kxs6+FHYDrY0VwYipphh71tFoPKp9EruUUGj+/63puEDJiPVZ5iGjuzirtT9sDuJJC3xBX6LZPp8UQI7mTOovfydMCEVwf+E7GsrsC22tJIToCXnPtzHP2K2zrRdtSHwI8gGIA1I3zmkMyc8LdWuqVZANtULkMbrHzTbFbhXNB1AkknR+UVRXeQUyrJLHwWcBxH9q2k7XaO8DK+Zrp0lEOpBIwpCVDHqeTUgbl2arLK991AXupTgta03B/6XPaI4hPlRujgjRwOssMVu4q4ZmEYEU2Fmb4y0lEdW/n0/aK0MPzbSGfY+bEd5kH8GqEbHOr4NGIb3qyQ8LPctvzE+nso2o9473NHxSa1z+uZG1HvwY2b9yEA0BrtdLfUhw0ly7bNQXA0jbhceCYrco3LYZbfyeDkMtCetug2GdioR7FEs48fNUF9TXkeU1cROVQU98S2mZNNDV8LZXfDZw0j9tZHvEaJA7NrkIn8lWJlf/CmWXfXqgH8S1YUt6bmLKf38g8huFXkHdQAXO3mrC0lvMuX50+/S0ur+tgpv2Rsq3R52I=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:ja;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:YT4P288MB1145.CANP288.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(376014)(23010399003)(1800799024)(366016)(10067099003)(56012099006)(59022699003)(3023799007)(4133799003)(22082099003)(18002099003)(5023799004)(4143699003)(38070700021);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-2022-jp?B?b0dSMWR6dEZSZW4xSGNSN2ExVStLdDg4bGxGcmJWTzEvZXkyVHd5Sy9p?=
+ =?iso-2022-jp?B?VGZhNnZVRHExRGZhNkpOeFhwYkdXZk9GaVJCblFjT3JndXNVcVJIaktr?=
+ =?iso-2022-jp?B?anlKMlNJMHAybnpjUUZYQ1dXNzEvS0E3QVpmSWpMUU1wWVh5UVlNQkJT?=
+ =?iso-2022-jp?B?bXdibHBDb09mUkJDQ3l3OWJNcEJxVFdKcGhiSWY1MFN5RGkvUklNeHc4?=
+ =?iso-2022-jp?B?TWpIeGo4WTQxWWtUUWtMTVZ0OHNxZGRYK2JrNWN2NTl4clcxNVpxMXpC?=
+ =?iso-2022-jp?B?eHN2UktKT0MvTEtJanUwV0hDMmk4SmxSVU01VXFPTDJXZnRqV29RZnov?=
+ =?iso-2022-jp?B?Q3had00vVDlCV04vYzRSNXVqSmRNKzhPQ2RwVGFINVlONmRtWEhHMUlw?=
+ =?iso-2022-jp?B?YmEwZHhPYngvc3FjQ2Zoektic1hSejgzY3p2dFVTWWY0UG9DM0lhY2dK?=
+ =?iso-2022-jp?B?bVNOM1U4cVVlUXN6T0FwT3BndGlTWFZNLzR2U0VaQ3drZHZ0enYyeUZM?=
+ =?iso-2022-jp?B?MHBWZnhtb1Q0eFRkNll2UkZlcHdXOTIrZjcrVnRvYU5MeitoWmZYQnhS?=
+ =?iso-2022-jp?B?TU9MaU1NdHMzN09TWTUvSmJPaVpXQVFDalg4aEZDeDBOckF0R1h0ODIz?=
+ =?iso-2022-jp?B?aS96VTF6ZG9XNXpVTXhtMmFJTllTMHYvUzFFc0dNeVhSbUhYaFhnc1pP?=
+ =?iso-2022-jp?B?b2JwaXlEa3FjUmhEQldFMXcwb20wU3B2SCtnbFNPSzRHOStnZ0IxVjhl?=
+ =?iso-2022-jp?B?V2pwTEpEMlRaejJFRk9XYyt0bXhhUzIxZDNLeTUrSFRBaHE3UjhHV2lu?=
+ =?iso-2022-jp?B?QzdobWo1OGlMYnRxWEd1MHZYTEdzSElZUC94U1l0Zk1OeXZDOTdCNURT?=
+ =?iso-2022-jp?B?Vm9YYkZEZEM0eXd3SkZqTWFHMyt4TWxQNjFCVkhib25wOTBpUnFUVkly?=
+ =?iso-2022-jp?B?Y3laRjFEM3hFbFBTNnhJQmU1TWtwYThmOHVyK1VMTzJtSHJGOUZLbVFi?=
+ =?iso-2022-jp?B?cnUycGJkRzZmQ2cwa0x4Z2pqSVdqTUlPVHFrTlF1OGZ4a09QdW4zb2lY?=
+ =?iso-2022-jp?B?V2tRYWI0Q1Q3RkpOUXdXWmkzalJubEo3M05UVlVwREZaRksrUVAvQ1Bv?=
+ =?iso-2022-jp?B?MERIanV3a2FkNkQ0MVFqNEFRV0ZsUUNveVVXS1E4MWdZSjJMTW1iWmNk?=
+ =?iso-2022-jp?B?ODIwaU5iNGhuTlY0NGVHMnF5TnVPQmFwY2pBM1o5dENVdGZnUHBVY1hP?=
+ =?iso-2022-jp?B?ZDh3WWNBTHlHc3N6Z3REUWU0RWZsN2VPRnVIWlhVSUM4QVBBUnNSOVcr?=
+ =?iso-2022-jp?B?UGk0SEMzNUFBTE1xdlNyVzNwY1RMUGhGYjFZVGdXY1Y5RytBTE1aYnAw?=
+ =?iso-2022-jp?B?cy8weFpjMVdGSHZPbE8wT0RvWDFvUDY1cG42TXlzY2s0czVNN3hQVmkx?=
+ =?iso-2022-jp?B?SEk4eTVBSndIU0ZadEZjNzViRXR1S3ZGVU1vaEdEajJ2R3J4NFJmeFNx?=
+ =?iso-2022-jp?B?SlJEVkZVUk1pSFEwUlJSL1NwVCt0U1ZnUHVnMENJbWtjSUl4dHpZcFJV?=
+ =?iso-2022-jp?B?R0VuelhVdVBLWGFpS25MQ3NYS0d0V2xrcjJZUDZYQSs4b3NRRkZMdzhN?=
+ =?iso-2022-jp?B?cXh0ek9Dci9EcFA1b2F6NCt4anlzaG15QWZJZEQ0QjdXOVBMSENtcmtH?=
+ =?iso-2022-jp?B?dTl1cFJUYW9VWnhGZzJRcTFSWG5JbmM5dVJTNDk5cWdibElibkZxV2s1?=
+ =?iso-2022-jp?B?RE81L3ZXaTROTnRJME9WLzlPa0FyUVNmbkc5WXUvVUxMODRZZFhOR1pm?=
+ =?iso-2022-jp?B?Tm1uN25JM3k0a2ZyWjQ0VXRycnA0Z3p1L1YzeXp6U2FiK21ONUFSRUNF?=
+ =?iso-2022-jp?B?OTdUZ1ZZVzk5Rm9ybllrSlJPaDJONlV3VkIwOU82QUhHd2xleWp0MVF2?=
+ =?iso-2022-jp?B?Nm01emJxYUFwS2kyUmswTjRQR3hRYTZKZW1sS3VnMFdQelNucGNtZldz?=
+ =?iso-2022-jp?B?VXZWRHZRUjRnNS9vdENsUVVhcU5oUFkzVkFnSnV2SmZ5eFU4dDlWd3B1?=
+ =?iso-2022-jp?B?blVjbWpxck16R0dzYjc0RnBvbFJyRk95SHRWTjA4UTJkdnNkdFZpalRt?=
+ =?iso-2022-jp?B?Uzdvakt1VVpsMzE0bUdHdXFwRWtsNW5Sd2QyYlk2VG1HQXRKeENabHRx?=
+ =?iso-2022-jp?B?WC9zMkNsbzB0WnU2R0JWcHNWWG14dis3d3A2R3VjR2x0Ni85M01QZE9u?=
+ =?iso-2022-jp?B?am5XaHRRaWo4QXIzSmpRRytXMWdwdm8veEFHQkNjajFRZjdWQjJrQk5X?=
+ =?iso-2022-jp?B?d213QmNBTXh1MDI0MjgxVHh3REV6aXQ4bGRObHpTamZjQWhxUTNTMmFK?=
+ =?iso-2022-jp?B?SnFpYmoxaUdRUmRJeW5WakJUZENrci8rSk5URlptOFVsb21sazVaMkh1?=
+ =?iso-2022-jp?B?SnUwdlovbUt3Q0VERVFmYWoyZ3VYYlRjU21EZjJvL1BzM0FrczUvZWx5?=
+ =?iso-2022-jp?B?NFBPN29rOXBDeG10cUdZZ0VlbklJd0N4MktjQT09?=
 MIME-Version: 1.0
-X-Last-TLS-Session-Version: TLSv1.3
+X-OriginatorOrg: tantalus.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: YT4P288MB1145.CANP288.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: ec8bfb6f-363c-44f7-4acd-08df045f98a4
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Aug 2026 17:21:13.8682
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84e23124-053c-4a39-bff4-5dbaf09fc80e
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: /sRI8Fh7BXIdQ11QB1sHqjBzweNbPu/4hPA2nXJN9aIIinHXzC8/bKElZs/Y+PkmbBbAXd98PQvbDVP3rcGduw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: YT5P288MB0519
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260827_094320_887531_325B3A86 
-X-CRM114-Status: GOOD (  46.23  )
+X-CRM114-CacheID: sfid-20260827_102120_707598_CCF151E8 
+X-CRM114-Status: GOOD (  23.83  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,152 +145,133 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWljaGFlbCwKCkkgdG9vayBtZSBhIGxvdCBvZiB0aW1lIHRvIGdvIHRocm91Z2ggYWxsIHlv
-dXIgcmVxdWVzdHMsIGluIHRoZSBlbmQgSQp3aWxsIG5vdCBpbXBsZW1lbnQgbW9zdCBvZiB5b3Vy
-IGZlZWRiYWNrIGJlY2F1c2UgZWl0aGVyIEkgZG8gbm90CnVuZGVyc3RhbmQgd2hhdCBpcyB0aGUg
-Z2Fpbiwgb3IgYmVjYXVzZSB0aGUgcmVzdWx0IGlzIG5vdCBiZXR0ZXIgYXQgYWxsCmZyb20gbXkg
-cG9pbnQgb2Ygdmlldy4gSSB0cnkgdG8gZXhwbGFpbiB0aGF0IGluIG15IGZlZWRiYWNrCmJlbG93
-LiBOZXZlcnRoZWxlc3MsIEkgdHJ1bHkgYXBwcmVjaWF0ZSB0aGUgZGVlcCByZXZpZXcgeW91IG1h
-ZGUuIEkKdGhpbmsgSSBtb3N0bHkgYWdyZWUgd2l0aCB0aGUgY29tbWVudHMgaW4gdGhlIG90aGVy
-IG1lc3NhZ2VzLgoKT24gMTQvMDgvMjAyNiBhdCAxMTo0MDoyMSArMDIsICJNaWNoYWVsIFdhbGxl
-IiA8bXdhbGxlQGtlcm5lbC5vcmc+IHdyb3RlOgoKPiBPbiBUaHUgQXVnIDEzLCAyMDI2IGF0IDU6
-MTkgUE0gQ0VTVCwgTWlxdWVsIFJheW5hbCB3cm90ZToKPj4gTWFudWZhY3R1cmVyIElEIHRhYmxl
-cyBpbmNyZWFzZSBhbmQgZml4dXAoKSBob29rcyBwcm9saWZlcmF0ZS4gSGF2aW5nCj4+IG9uZSBw
-b3NzaWJsZSBzdHJ1Y3R1cmUgcGVyIGNoaXAgd2FzIGZpbmUgdW50aWwgdGhlIGZpeHVwcyBzdGFy
-dGVkIGJlaW5nCj4+IG1vcmUgYW5kIG1vcmUgY29tbW9uIGFuZCBuZWVkZWQsIHRvIHNvbWUgZXh0
-ZW5kIGR1ZSB0byBJRCByZXVzZXMuIE1peGluZwo+PiBmaXh1cHMgYW5kIGNoaXBzIGJlY29tZXMg
-aGFyZCBhbmQgcmVxdWlyZXMgZXh0cmEgaGVscGVycyB0byBzb3J0IHdoaWNoCj4+IG9uZXMgYXJl
-IG5lZWRlZCBmb3IgYSBnaXZlbiBjaGlwLCB3aGljaCBldmVyeSB0aW1lIHRoaXMgaGFwcGVucyBy
-ZXF1aXJlcwo+PiBhIGxvdCBvZiByZXdvcmsuCj4KPiBUaGFua3MsIHRoaXMgcGF0Y2ggbG9va3Mg
-cmVhbGx5IHByb21pc2luZyEKPgo+PiBSZXBsYWNlIHRoZSB0d28tbGV2ZWwgZml4dXAgYXNzb2Np
-YXRpb24gKGEgbWFudWZhY3R1cmVyIHdpZGUgaG9vayBhbmQgYQo+PiBwZXIgZmxhc2hfaW5mbyBo
-b29rKSB3aXRoIGEgcGVyLW1hbnVmYWN0dXJlciBsaXN0IG9mIGZpeHVwcyB0aGF0IGNhbiBiZQo+
-PiBsb29rZWQgdXAgYnkgZmxhc2ggSUQgYW5kL29yIG1hdGNoIGZ1bmN0aW9uLgo+Pgo+PiBUaGUg
-bWF0Y2ggbG9naWMgd29ya3MgYXMgZm9sbG93czoKPj4gLSBJZiB0aGVyZSBpcyBhbiBJRCwgaXQg
-bXVzdCBtYXRjaAo+PiAtIElmIHRoZXJlIGlzIGEgbWF0Y2ggZnVuY3Rpb24sIGl0IG11c3QgbWF0
-Y2ggKGN1bXVsYXRpdmUpCj4+IC0gSWYgdGhlcmUgaXMgbm8gaWRlbnRpZmllciAobm8gSUQgbm9y
-IGFueSBtYXRjaCBmdW5jdGlvbiksIGl0J3MgYQo+PiAgIGNhdGNoLWFsbCBlbnRyeSB0eXBpY2Fs
-bHkgdXNlZCBmb3IgZmxhZ2dpbmcgbWFudWZhY3R1cmVyIGZpeHVwcy4KPgo+IFRoaXMgbWltaWNz
-LCBob3cgaXQncyBjdXJyZW50bHkgaGFuZGxlZC4gQnV0IHNpbmNlIHRoZSBmaXh1cHMgYXJlCj4g
-bm93IHRyZWF0ZWQgYXMgYSBzZXBhcmF0ZSBsaXN0LCBpLmUuIGl0IGhhcyBpdCdzIG93biBTTk9S
-X0lELCB3ZQo+IHNoYWxsIG1vdmUgYXdheSBmcm9tIHRoaXMgbWFudWZhY3R1cmVyIHRoaW5neSB0
-b28uCgpXaHkgc2hhbGwgd2U/IFNlZSBiZWxvdywgSSBkb24ndCBnZXQgdGhlIHBvaW50LiBJIGRy
-YWZ0ZWQgc29tZXRoaW5nIGl0CnRvb2sgbWUgdHdvIGZ1bGwgZGF5cyB0byB3b3JrIG9uIHRoYXQs
-IHRvIGV2ZW50dWFsbHkgcmVhbGl6ZSBJIGRpZCBub3QKc2VlICphbnkqIGJlbmVmaXQuCgo+IElN
-SE8gdGhhdCByZWFsbHkKPiBjbHV0dGVycyB0aGUgY29kZS4KCkNsZWFybHkgYW4gb3BpbmlvbiBJ
-IGRvIG5vdCBzaGFyZS4gTWF5YmUgSSBhbSBtaXNzaW5nIHNvbWV0aGluZy4KCj4gQXMgYSBmdW4g
-ZmFjdCwgc3BpX25vcl9tYXRjaF9pZCgpIHdpbGwgaGF2ZSB0aGUKPiB1bmV4cGVjdGVkIHNpZGUg
-ZWZmZWN0IG9mIHNldHRpbmcgbm9yLT5tYW51ZmFjdHVyZXIuCgpOb3Qgc3VyZSBJIGdldCB3aHkg
-dGhpcyBpcyB1bmV4cGVjdGVkPwoKPiBTbyBoZXJlJ3MgaG93IEknZCBkbyBpdDogCj4gKDEpIHJl
-bW92ZSBzcGlfbm9yX21hbnVmYWN0dXJlci4KPiAoMikgaGF2ZSBhIGxpc3Qgb2YgaW5pdGNhbGxz
-IGluIHRoZSBjb3JlIHRvIGNhbGwgaW50byB0aGUgaW5kaXZpZHVhbAo+ICAgICB2ZW5kb3IgbW9k
-dWxlcyAodGhhdCBjb3VsZCBsYXRlciBiZSByZXBsYWNlZCBieSBzb21ldGhpbmcgbW9yZQo+ICAg
-ICBzb3BoaXRpY2F0ZWQpCj4gKDMpIHRoYXQgaW5pdGNhbGwgd2lsbCB0aGVuIGNhbGwgc3BpX25v
-cl9yZWdpc3Rlcl9wYXJ0cyhjb25zdCBzdHJ1Y3QKPiAgICAgZmxhc2hfaW5mbyAqcGFydHMsIGlu
-dCBucGFydHMpCj4gKDQpIChvcHRpb25hbGx5KSBjYWxscyBzcGlfbm9yX3JlZ2lzdGVyX2ZpeHVw
-cyhjb25zdCBzdHJ1Y3QKPiAgICAgc3BpX25vcl9maXh1cCAqZml4dXBzLCBpbnQgbmZpeHVwcykK
-CkkndmUgYmVlbiB0cnlpbmcgaGFyZCB0byBmb2xsb3cgeW91ciBhcHByb2FjaCwgYnV0IHJlYWxs
-eSwgSSBkb24ndCBnZXQKdGhlIHBvaW50LiBJbml0Y2FsbHMgYXJlIG5vdCBwb3NzaWJsZSBoZXJl
-LCBvciBpdCB3b3VsZCBwcmV2ZW50CkNPTklGR19NVERfU1BJX05PUj1tIHNvIEkgd2VudCBmb3Ig
-YW4gYWx0ZXJuYXRpdmUgYXBwcm9hY2ggd2l0aCBhbiBpbml0CnJlZ2lzdHJhdGlvbiB3aGljaCBJ
-IGJlbGlldmUgbWF0Y2hlcyB5b3VyIGV4cGVjdGF0aW9ucy4gVGhpcyBpcyBub3QKYW4gYWN0dWFs
-IHByb2JsZW0uCgpCdXQgcmVnaXN0ZXJpbmcgcGFydHMgYW5kIGZpeHVwcyBpbmRlcGVuZGVudGx5
-LCBtYXliZSwgYnV0IGFnYWluLCB3aHk/CldoYXQgaXMgdGhlIGludGVuZGVkIGJlbmVmaXQ/IFdl
-IG5vdyBuZWVkIHRvIGdvIHRocm91Z2ggOTYgKHNwaS1ub3IKd2lkZSkgZml4dXBzLiBCdXQgd2hh
-dCBkbyB3ZSBnZXQgaW4gZXhjaGFuZ2U/IEZyb20gbXkgcG9pbnQgb2YgdmlldzoKZXh0cmEgY2h1
-cm4gYW5kIGJvaWxlcnBsYXRlLCBub3RoaW5nIHBhcnRpY3VsYXJseSBiZXR0ZXIgdGhhbiBiZWZv
-cmUuIEkKbXVzdCBhZG1pdCwgSSBkbyBub3QgdW5kZXJzdGFuZCB5b3VyIGF2ZXJzaW9uIGZvciB0
-aGUgbWFudWZhY3R1cmVyCnN0cnVjdHVyZS4gU28gd2hpbGUgSSBsaWtlIHRoZSBpZGVhIG9mIGEg
-Zmxhc2gtaW5mbyBpbmRlcGVuZGVudCBmaXh1cApsaXN0ICh3aGljaCBJIGltcGxlbWVudGVkIGlu
-IHYzKSwgSSBkbyBub3QgdW5kZXJzdGFuZCB0aGUgbmVlZCBmb3IgdGhpcwpleHRyYSBzdGVwLgoK
-U2luY2UgSSBkbyBub3QgZ2V0IHRoZSBwb2ludCBvZiB0aGlzIHJlcXVlc3QsIEkgcHJlZmVyIHRv
-IG5vdCBpbXBsZW1lbnQKaXQsIGJlY2F1c2UgSSB3aWxsIGFueXdheSBkbyBpdCB0aGUgd3Jvbmcg
-d2F5LiBJZiBzb21lb25lIHdhbnRzIHRvIG1ha2UKYSBwcm9wb3NhbCwgSSB3aWxsIGhhdmUgYSBs
-b29rLCBidXQgYXQgdGhpcyBwb2ludCBJIG5lZWQgdG8gYmFjawpvZmYuIFRoZXJlIGFyZSBhbHJl
-YWR5IH43MCBwYXRjaGVzIHBlbmRpbmcgd2hpY2ggSSBob3BlIHdpbGwgYmUgYXBwbGllZApBU0FQ
-IGFmdGVyIC1yYzEgZ2V0cyB0YWdnZWQgYW5kIHdlIGFncmVlIG9uIHRoZSByZW1haW5pbmcgcG9p
-bnRzICh0aGVyZQphcmUgb3RoZXIgY29tbWVudHMgZnJvbSB5b3UgYW5kIFRha2FoaXJvIHdoaWNo
-IEkgbmVlZCB0byBhZGRyZXNzKS4KCj4gQWxzbyBib3RoIGNvdWxkIGJlIGEgbWFjcm8sIHRoZW4g
-d2UgY2FuIGdldCByaWQgb2YgdGhlIHNpemUKPiBhcmd1bWVudC4KPgo+IFRoZSBjdXJyZW50IG1h
-bnVmYWN0dXJlciBmaXh1cHMgZ2V0cyByZWdpc3RlcmVkIHdpdGggYQo+ICJTTk9SX0lEKHZlbmRv
-cikiLiAKPgo+IFRoYXQgbGVhdmVzIHVzIHdpdGggdGhlIG1hbnVmYWN0dXJlciBuYW1lLCB3aGlj
-aCBzaG91bGQgYmUgc2V0IGJ5Cj4gdGhhdCB2ZW5kb3IgY2F0Y2ggYWxsIGZpeHVwLgo+Cj4gQnR3
-LCBJJ20gZmluZSB3aXRoIGRlcHJlY2F0aW5nIHRoZSBuYW1lIGFzIHdlbGwgYXMgdGhlIG1hbnVm
-YWN0dXJlcgo+IHN5c2ZzIGVudHJ5LCBidXQgaXQgc2hvdWxkbid0IGJlIGFzIGluICJpdCBqdXN0
-IGdvZXMgYXdheSIuCgpJIGhhdmUgbm8gc3Ryb25nIHdpc2ggdG8gZ2V0IHJpZCBvZiB0aG9zZSwg
-ZXNwZWNpYWxseSB0aGUgbWFudWZhY3R1cmVyCm5hbWUgd2hpY2ggaXMgbm90IHBhcnRpY3VsYXJs
-eSBwcm9ibGVtYXRpYyB0b2RheS4KClsuLi5dCgo+PiArCWZvciAoaSA9IDA7IGkgPCBub3ItPm1h
-bnVmYWN0dXJlci0+bmZpeHVwczsgaSsrKSB7Cj4+ICsJCWlmIChmaXh1cHNbaV0uZml4dXBzLT5w
-b3N0X2JmcHQgJiYKPj4gKwkJICAgIHNwaV9ub3JfZml4dXBfbWF0Y2gobm9yLCAmZml4dXBzW2ld
-KSkgewo+PiArCQkJcmV0ID0gZml4dXBzW2ldLmZpeHVwcy0+cG9zdF9iZnB0KG5vciwgYmZwdF9o
-ZWFkZXIsIGJmcHQpOwo+PiArCQkJaWYgKHJldCkKPj4gKwkJCQlyZXR1cm4gcmV0Owo+PiArCQl9
-Cj4KPiBUaGlzIGlzIHJlcGVhdGVkIHNldmVyYWwgdGltZXMsIGNhbiB3ZSBoYXZlIHNvbWV0aGlu
-ZyBsaWtlCj4KPiBzcGlfbm9yX2FwcGx5X2ZpeHVwcyhzdHJ1Y3Qgc3BpX25vciAqbm9yLCBpbnQg
-KCpmaXh1cF9mbiksIHZvaWQgKmZpeHVwX2FyZ3MpOwo+Cj4gaW50IHNwaV9ub3JfcG9zdF9iZnB0
-X2ZpeHVwKHN0cnVjdCBzcGlfbm9yICpub3IsIGNvbnN0IHN0cnVjdCBzcGlfbm9yX2ZpeHVwICpm
-aXh1cCwgdm9pZCAqX2FyZ3MpCj4gewo+IAlzdHJ1Y3QgcG9zdF9iZnB0X2ZpeHVwX2FyZ3MgKmFy
-Z3MgPSBfYXJnczsKPgo+IAlpZiAoIWZpeHVwLT5wb3N0X2JmcHQpCj4gCQlyZXR1cm4gMDsKPgo+
-IAlyZXR1cm4gZml4dXAtPnBvc3RfYmZwdChub3IsIGFyZ3MtPmJmcHRfaGVhZGVyLCBhcmdzLT5i
-ZnB0KTsKPiB9Cj4KPiB3aGljaCB0aGVuIHdpbGwgYmUgY2FsbGVkIHdpdGgKPiBzcGlfbm9yX2Fw
-cGx5X2ZpeHVwcyhub3IsIHNwaV9ub3JfcG9zdF9iZnB0X2ZpeHVwLCBhcmdzKTsKCkkgZHJhZnRl
-ZCBpdCwgYnV0IGFyZ3VtZW50cyBhcmUgZGlmZmVyZW50LCBhcmd1bWVudCBudW1iZXJzIGFyZQpk
-aWZmZXJlbnQsIHJldHVybiB2YWx1ZXMgYXJlIGRpZmZlcmVudCwgd2UgbmVlZCBzdHVicyBmb3Ig
-ZWFjaApmaXh1cC4uLiBOb3RoaW5nIGlzIGlkZW50aWNhbCwgd2UganVzdCBzYXZlIGEgY291cGxl
-IG9mIHNpbXBsZSBjaGVja3MKYW5kIGEgZm9yIGxvb3AuIE9uIHRoZSBvdGhlciBoYW5kLCBjb2Rl
-IGp1c3QgZ3Jvd3MsIGNvbXBsZXhpdHkgaXMKaGlnaGVyLCByZWFkYWJpbGl0eSBpcyBkZWZpbml0
-ZWx5IGxvd2VyLiBTb3JyeSwgYnV0IGFnYWluLCBJIGRvIG5vdCBzZWUKdGhlIGdhaW4gd2l0aCB0
-aGlzIGF0dGVtcHQsIGl0IGp1c3QgZGFya2VucyB3aGF0IHRoZSBjb3JlIGRvZXMuIEl0IHdvdWxk
-CmRlZmluaXRlbHkgd29yayB3aXRoIGFub3RoZXIgLW1vcmUgYWR2YW5jZWQtIGxhbmd1YWdlIHRo
-YW4gQywgdGhvdWdoLgoKPj4gKwlmb3IgKGkgPSAwOyBpIDwgbm9yLT5tYW51ZmFjdHVyZXItPm5m
-aXh1cHM7IGkrKykgewo+PiArCQlpZiAoZml4dXBzW2ldLmZpeHVwcy0+cG9zdF9iZnB0ICYmCj4+
-ICsJCSAgICBzcGlfbm9yX2ZpeHVwX21hdGNoKG5vciwgJmZpeHVwc1tpXSkpIHsKPj4gKwkJCXJl
-dCA9IGZpeHVwc1tpXS5maXh1cHMtPnBvc3RfYmZwdChub3IsIGJmcHRfaGVhZGVyLCBiZnB0KTsK
-Pj4gKwkJCWlmIChyZXQpCj4+ICsJCQkJcmV0dXJuIHJldDsKPj4gIAl9Cj4+ICAKClsuLi5dCgo+
-PiAtLS0gYS9kcml2ZXJzL210ZC9zcGktbm9yL2dpZ2FkZXZpY2UuYwo+PiArKysgYi9kcml2ZXJz
-L210ZC9zcGktbm9yL2dpZ2FkZXZpY2UuYwo+PiBAQCAtNjQsNyArNjQsNiBAQCBzdGF0aWMgY29u
-c3Qgc3RydWN0IGZsYXNoX2luZm8gZ2lnYWRldmljZV9ub3JfcGFydHNbXSA9IHsKPj4gIAkJLmlk
-ID0gU05PUl9JRCgweGM4LCAweDQwLCAweDE5KSwKPj4gIAkJLm5hbWUgPSAiZ2QyNXEyNTYiLAo+
-PiAgCQkuZmxhZ3MgPSBTUElfTk9SX0hBU19MT0NLIHwgU1BJX05PUl9IQVNfVEIgfCBTUElfTk9S
-X1RCX1NSX0JJVDYsCj4+IC0JCS5maXh1cHMgPSAmZ2QyNXEyNTZfZml4dXBzLAo+PiAgCQkuZml4
-dXBfZmxhZ3MgPSBTUElfTk9SXzRCX09QQ09ERVMsCj4KPiBUaGUgZml4dXBfZmxhZ3Mgc2hvdWxk
-IGFsc28gZ28gaW50byB0aGUgZml4dXBzIGxpc3QuCgpZZXMsIHdlIGNhbiB1c2UgYSBzaW1pbGFy
-IGxvZ2ljIGhlcmUuIEFjdHVhbGx5IGlmIGF0IHNvbWUgcG9pbnQgd2Ugd2FudAp0byBnZXQgcmlk
-IG9mIHRob3NlIGZsYWdzLCB3ZSBjb3VsZCB0cmFuc2Zvcm0gdGhlIGZsYWdzIGludG8gcHJvcGVy
-CmZpeHVwIGZ1bmN0aW9ucywgYnV0IEknbSBub3QgZ29pbmcgdG8gZG8gdGhhdCBub3cuCgpbLi4u
-XQoKPj4gKy8qIFBNMjVMViBwYXJ0cyBoYXZlIG5vIEpFREVDIElEIGFuZCBhcmUgbGlrZWx5IG1h
-dGNoZWQgYnkgbmFtZSAqLwo+PiArc3RhdGljIGJvb2wgaXNzaV9wbTI1bHZfbWF0Y2goY29uc3Qg
-c3RydWN0IHNwaV9ub3IgKm5vcikKPj4gK3sKPj4gKwljb25zdCBjaGFyICpuYW1lID0gbm9yLT5p
-bmZvID8gbm9yLT5pbmZvLT5uYW1lIDogTlVMTDsKPj4gKwo+PiArCXJldHVybiBuYW1lICYmICFz
-dHJuY21wKG5hbWUsICJwbTI1bHYiLCA2KTsKPgo+IFdvbid0IGp1c3Qgc3RyY21wKCJwbTI1bHYi
-LCBuYW1lKSBkbyBpdD8gQm90aCBhcmd1bWVudHMgYXJlCj4gZ3VhcmFudGVlZCB0byBiZSBOVUwg
-dGVybWluYXRlZC4gVGhlIGFib3ZlIHdvdWxkIGFsc28gbWF0Y2gKPiAicG0yNWx2ZXh0cmFieXRl
-cyIsIG5vLCBhbmQgd2UgZ2V0IHJpZCBvZiB0aGF0IHJlZHVuZGFudCBzaXplCj4gYXJndW1lbnQu
-CgpObyBpdCB3b24ndCwgYmVjYXVzZSB0aGF0IHdvdWxkIG5vIGxvbmdlciBiZSBhIG1hdGNoLCB5
-b3Ugd291bGQgY29tcGFyZQpwbTI1bHYgYWdhaW5zdCBwbTI1bHYwMTAgb3IgcG0yNWx2NTEyIC0+
-IG5vIG1hdGNoIGlmIHlvdSBkb24ndCBsaW1pdCB0bwp0aGUgZmlyc3QgNiBieXRlcy4gU2luY2Ug
-bmFtZXMgYXJlIHBhcnQgb2YgdGhlIHN5c2ZzIEFCSSwgd2UgY2Fubm90IGp1c3QKbW9kaWZ5IHRo
-ZSBuYW1lcyBmb3IgdGhhdC4gV2UgYWxzbyBuZWVkIHR3byBkaWZmZXJlbnQgZW50cmllcyAodHdv
-CmRpZmZlcmVudCBzaXplcykgc2luY2Ugd2UgZG8gbm90IGV2ZW4gbWF0Y2ggd2l0aCBhbiBJRC4K
-ClsuLi5dCgo+PiBAQCAtMjMzLDYgKzIzMCwxNyBAQCBzdGF0aWMgaW50IG10MjVxdTUxMmFfcG9z
-dF9iZnB0X2ZpeHVwKHN0cnVjdCBzcGlfbm9yICpub3IsCj4+ICAJcmV0dXJuIDA7Cj4+ICB9Cj4+
-ICAKPj4gKy8qCj4+ICsgKiBuMjVxMDBhIHBhcnRzIHNoYXJlIHRoZSBmaXJzdCBzYW1lIDMgSUQg
-Ynl0ZXMgd2l0aCBtdDI1cXUwMWcuCj4+ICsgKiBJbiBvcmRlciB0byBub3QgbWl4IHRoZSBmaXh1
-cHMsIGZ1cnRoZXIgZmlsdGVyIG91dCB1c2luZyB0aGUgcGFydCBuYW1lLgo+Cj4gSG93IHdvdWxk
-IHRoYXQgd29yaz8gVGhlIHBhcnQgbmFtZSBpcyBhbHNvIHNldCBieSB0aGUgZHVwbGljYXRlZCBJ
-RCwKPiBzbyB0aGUgZmlyc3Qgb25lIHdpbnMsIG5vPwoKLSBGaXJzdCBwYXJ0IChtdDI1cXUwMWcp
-IGlzIGNoZWNrZWQKICAtPiBJRCBtYXRjaAotIFRoZXJlIGlzIGEgbWF0Y2ggZnVuY3Rpb24gd2hl
-cmUgd2UgY29tcGFyZSB0aGUgbmFtZSB3aXRoIG4yNXEwMGEKICAtPiBubyBtYXRjaCwgbm90IGFw
-cGx5aW5nIHRoZSBmaXh1cAoKLSBTZWNvbmQgcGFydCAobjI1cTAwYSkgaXMgY2hlY2tlZAogIC0+
-IElEIG1hdGNoCi0gVGhlcmUgaXMgYSBtYXRjaCBmdW5jdGlvbiB3aGVyZSB3ZSBjb21wYXJlIHRo
-ZSBuYW1lIHdpdGggbjI1cTAwYQogIC0+IG5hbWUgbWF0Y2gKClRoZSBmaXh1cCBpcyBvbmx5IGFw
-cGxpZWQgZm9yIG4yNXEwMGEuCgpGb3IgdGhlIG90aGVyIGNoaXAgd2UgY2FuIGp1c3QgZ2l2ZSBt
-b3JlIElEIGJ5dGVzIGZvciB0aGUgbWF0Y2guCgpTbyBJIGJlbGlldmUgdGhlcmUgaXMgbm8gcHJv
-YmxlbSBoZXJlPwoKVGhhbmtzIQpNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBs
-aXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRk
-Lwo=
+Hi Zhihao,
+
+Thanks for the quick response. I agree, the type field in the old versions of mkfs.ubifs is wrong and rightly flagged by fsck.ubifs. However, I would like to push back about the way this type inconsistency is handled. The type difference between v2.1.1 and v2.3.1 does not mean the node is corrupted. This is a labelling change that is treated as corruption and the action that fsck.ubifs takes is to delete the node, which in our case is the encryption info. Do you think a more appropriate fix is to repair the node in place? i.e. have fsck.ubifs repair the node by changing the type from DIR to REG
+
+To try and give more context, we have a large number of embedded devices in the field that were formatted with mkfs.ubifs v2.1.1 and if fsck.ubifs were run against these non-upgradable partitions, it would wipe the encryption information from the ubi partition. And since encryption is paramount for our devices, the device would simply fail to boot due to an unencrypted partition, leaving the device permanently bricked.
+
+I believe fixing the type in place preserves your goal of not ignoring inconsistencies while also avoiding data loss where there isn't actually any corruption.
+
+Please let me know your thoughts,
+
+Best,
+Devin
+
+________________________________________
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Sent: August 26, 2026 7:10 PM
+To: Devin Armstrong; linux-mtd@lists.infradead.org
+Cc: Junghum Park; Wolfgang Tolkien
+Subject: Re: mtd-utils: [BUG] fsck.ubifs backwards compatibility issue wipes ubi volume encryption information
+
+[Caution] This email originated outside of Tantalus
+
+This is the first time you received an email from this sender (chengzhihao1@huawei.com). Exercise caution when clicking links, opening attachments or taking further action, before validating its authenticity.
+
+在 2026/8/27 0:44, Devin Armstrong 写道:
+> Hi,
+>
+> Description:
+> fsck.ubifs v2.3.1 will always detect fatal corruptions in a mkfs.ubifs v2.1.1 encrypted ubi volume. When fsck.ubifs is run with the -y option, it deletes the volume's encryption information and leaves the volume damaged.
+>
+> Steps to Reproduce:
+> I have attached a bash script to this email that can reproduce this issue reliably. Essentially, it:
+> 1. Builds mtd-utils v2.1.1 and v2.3.1
+> 2. uses mtdram to emulate an mtd device and attaches an ubi volume to it
+> 3. format and encrypt the ubi volume with mkfs.ubifs v2.1.1
+> 4. Run fsck.ubifs v2.3.1 against the encrypted ubi volume
+> The script also allows you to test an unencrypted ubi volume for comparison
+>
+> To run the script:
+> sudo ./https://linkprotect.cudasvc.com/url?a=https%3a%2f%2ffsck_ubifs_reproduce_bug.sh&c=E,1,HwWSNjxDb4Jyi6Svubv4_rU_XXblAM5sl-SGW5gnPWBkek9xx1RZkIdBVsnBUxLDjH_E4giHec_5fveXphcc48M7bQdBQizqd2-e4-8MMQ,,&typo=1 --encrypted /path/to/staging/dir --no-patch
+>
+> fsck.ubifs will output something like this:
+> fsck.ubifs[21612] (/dev/ubi0_0,danger mode): Read superblock
+> fsck.ubifs[21612] (/dev/ubi0_0,danger mode): Read master & init lpt
+> fsck.ubifs[21612] (/dev/ubi0_0,danger mode): Replay journal
+> fsck.ubifs[21612] (/dev/ubi0_0,danger mode): Handle orphan nodes
+> fsck.ubifs[21612] (/dev/ubi0_0,danger mode): Traverse TNC and construct files
+> fsck.ubifs[21612] (/dev/ubi0_0,danger mode): Check and handle invalid files
+> fsck.ubifs[21612] (/dev/ubi0_0,danger mode): problem: File has inconsistent type, ino 65, inode type file(xattr), dentry c has type dir(xattr)
+> fsck.ubifs[21612] (/dev/ubi0_0,danger mode): Remove dentry? y
+>
+
+Hi Devin,
+There was a wrong type assignment in old mkfs.ubifs. which introduced an
+inconsistent problem in ubifs image. The problem is fixed by [1]. Then,
+the fsck will detect the inconsistent problem from the ubifs image made
+by old mkfs.ubifs.
+
+[1]
+https://linkprotect.cudasvc.com/url?a=https%3a%2f%2fgit.infradead.org%2f%3fp%3dmtd-utils.git%3ba%3dcommit%3bh%3dd17b14d953b2ab56c938d6c7829b70b91c736efe&c=E,1,fSFm63jP5iXDZF6oguP_D6Dnsu-jSWIGtM0IU1q1M7Ks6IGRzpY4Q1MG_j0iqRWJIEIv5rOKZNFe8_f46iJ_DT7EuassTHgEodvrxN6a6pOKn8OV&typo=1
+
+> fsck.ubifs[21612] (/dev/ubi0_0,danger mode): problem: File has no dentries, ino 65 type file(xattr)
+> fsck.ubifs[21612] (/dev/ubi0_0,danger mode): Delete it? y
+>
+> fsck.ubifs[21612] (/dev/ubi0_0,danger mode): problem: Encrypted file has no encryption information, ino 1 type dir
+> fsck.ubifs[21612] (/dev/ubi0_0,danger mode): Delete it? y
+>
+> fsck.ubifs[21612] (/dev/ubi0_0,danger mode): Check and handle unreachable files
+> fsck.ubifs[21612] (/dev/ubi0_0,danger mode): Check and correct files
+> fsck.ubifs[21612] (/dev/ubi0_0,danger mode): Check whether the TNC is empty
+> fsck.ubifs[21612] (/dev/ubi0_0,danger mode): problem: TNC is empty
+> fsck.ubifs[21612] (/dev/ubi0_0,danger mode): inconsistent problem must be fixed
+> fsck.ubifs[21612] (/dev/ubi0_0,danger mode): ********** Filesystem was modified **********
+> fsck.ubifs[21612] (/dev/ubi0_0,danger mode): ********** WARNING: Filesystem still has errors **********
+> fsck.ubifs[21612] (/dev/ubi0_0,danger mode): FSCK failed, exit code 5
+>
+> The steps to reproduce should be agnostic to the linux kernel version, however for reference I am running this on an Ubuntu 24.04 with linux kernel version 7.0.0-30-generic
+>
+> I have done some digging and I believe this issue stems from the fsck.ubifs tool is doing a strict type check in the "file_is_valid" function of the extract_files.c source code file. A fix in v2.2.1 (git hash: d17b14d953b2ab56c938d6c7829b70b91c736efe) changed xent->type  from  "UBIFS_ITYPE_DIR"  to "UBIFS_ITYPE_REG". The fsck.ubifs tool does not account for this change.
+
+I think fsck.ubifs should not skip this inconsistency issue for the sake
+of compatibility, in case this issue was not introduced by the old
+version of the mkfs.ubifs tool.
+>
+> I have made and tested a patch which I have also attached to this email.
+>
+> With the patch applied fsck.ubifs outputs:
+> fsck.ubifs[24723] (/dev/ubi0_0,danger mode): Read superblock
+> fsck.ubifs[24723] (/dev/ubi0_0,danger mode): Read master & init lpt
+> fsck.ubifs[24723] (/dev/ubi0_0,danger mode): Replay journal
+> fsck.ubifs[24723] (/dev/ubi0_0,danger mode): Handle orphan nodes
+> fsck.ubifs[24723] (/dev/ubi0_0,danger mode): Traverse TNC and construct files
+> fsck.ubifs[24723] (/dev/ubi0_0,danger mode): Check and handle invalid files
+> fsck.ubifs[24723] (/dev/ubi0_0,danger mode): Check and handle unreachable files
+> fsck.ubifs[24723] (/dev/ubi0_0,danger mode): Check and correct files
+> fsck.ubifs[24723] (/dev/ubi0_0,danger mode): Check whether the TNC is empty
+> fsck.ubifs[24723] (/dev/ubi0_0,danger mode): Check and correct the space statistics
+> fsck.ubifs[24723] (/dev/ubi0_0,danger mode): Check and correct the index size
+> fsck.ubifs[24723] (/dev/ubi0_0,danger mode): Check and create root dir
+> fsck.ubifs[24723] (/dev/ubi0_0,danger mode): Final committing
+> fsck.ubifs[24723] (-): FSCK success!
+>
+> Best,
+> Devin Armstrong
+>
+>
+> Email: darmstrong@tantalus.com
+> https://linkprotect.cudasvc.com/url?a=https%3a%2f%2fwww.tantalus.com&c=E,1,KxYAgvOSYMOTWGdye0Adt1F048oGFXnOpJah8_YTqn3b6A4MQdT4tyIv9gQ6A00P9wFm02BvBnXB6i20P5tEBLReYmPYuPi7H9rGvJoKyw,,&typo=1
+>
+> CONFIDENTIALITY NOTICE.&nbsp; This documentation, including any attachments, transmitted by electronic mail is intended for the use of the individual to whom or the entity to which it is addressed, and may contain information which is proprietary, confidential, privileged and/or protected from disclosure by applicable laws. Confidentiality and privilege are not lost by this documentation having been sent to the wrong electronic mail address. If you are not the intended recipient (or the person responsible for delivering thereto) please immediately notify the sender and destroy this documentation and all copies (in any form and media); and note that any distribution, reproduction or other use of this documentation is strictly prohibited and may violate public and intellectual property laws.&nbsp; Thank you.
+>
+> -
+> CONFIDENTIALITY NOTICE. This documentation, including any attachments, transmitted by electronic mail is intended for the use of the individual to whom or the entity to which it is addressed, and may contain information which is proprietary, confidential, privileged and/or protected from disclosure by applicable laws. Confidentiality and privilege are not lost by this documentation having been sent to the wrong electronic mail address. If you are not the intended recipient (or the person responsible for delivering thereto) please immediately notify the sender and destroy this documentation and all copies (in any form and media); and note that any distribution, reproduction or other use of this documentation is strictly prohibited and may violate public and intellectual property laws. Thank you.
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> https://linkprotect.cudasvc.com/url?a=http%3a%2f%2flists.infradead.org%2fmailman%2flistinfo%2flinux-mtd%2f&c=E,1,Xh2NmZs7gefQx34TtrCEOwqEojHkrwcC4s3P8wZQAFW-F4oaZOFhE3eja3YeKpzd6xXRcGMSP66fqVHs7GNJ8E1BAmMNr9YJru9OI80OJrm0k08qiw,,&typo=1
+>
+
+CONFIDENTIALITY NOTICE. This documentation, including any attachments, transmitted by electronic mail is intended for the use of the individual to whom or the entity to which it is addressed, and may contain information which is proprietary, confidential, privileged and/or protected from disclosure by applicable laws. Confidentiality and privilege are not lost by this documentation having been sent to the wrong electronic mail address. If you are not the intended recipient (or the person responsible for delivering thereto) please immediately notify the sender and destroy this documentation and all copies (in any form and media); and note that any distribution, reproduction or other use of this documentation is strictly prohibited and may violate public and intellectual property laws. Thank you.
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
