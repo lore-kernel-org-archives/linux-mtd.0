@@ -4,56 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 80F2BC61DD3
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7DDADC61DCB
 	for <linux-mtd@archiver.kernel.org>; Sat, 29 Aug 2026 01:04:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id
-	:Date:Subject:From:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=N7hbCVIgiEqf0Wps0rG48FBWlWJyFARswWFH+kI17aQ=; b=e/rYuGgKED2ChO
-	0hZPa/N8n/WbNhVk1ivdyjUrYlr2bb5nfHIY0TvfNObSwWC1ZewDWKB81JQwHRib3STc7d+1LZ/sU
-	HQvUGV43bj1jNinhkeg9QNOZbGHp5NE8GqM88CmJXTTk8XxdbPTJU7tyLgbUUr3KzR8+vTTCdjrqa
-	yL3yNSz0vAba5ki4B+HWTSswOk3JZqHbl+2OJr2vYm3G4w4sIbD7qOzzIMAyfJJhdd/AotXxcKn5u
-	VUpbne9/vVlg8L+lPJmT9dclzQ4QCl5c7kDJamdAostvQADm4P4OZSH0eLURFRX2GdrabSf9eNgbC
-	mvWSQeE9wbDoAF6ZBh5A==;
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:
+	Message-Id:MIME-Version:Subject:Date:From:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=SYNdwgH3d1h0zCKen3zemculNQcM7yX5XnI1djmlZeg=; b=rd4/x1GrvtW3tt
+	AqTAZofMuYoUInqbLMYBa1Lw+uVUKcbnktpPQbZvOZRu0LvYkacebVsHWyh7j3GIck/cQcBjIHimH
+	rtKj8ebaFVNdL34xvNrKIDLg2vE/IVxKQV9rYOR++Np4qoFHgUNDJY6ujTzjMdM9L2KHhQrK916te
+	e0XuPe4boQZqUqdXogAUnleiD5MWQ7aJLzqVQzaKMRc7RNu13OE7NRNLAncXiB1CaxHVgwxf6Tgs8
+	NA/u2aZoU5lxt/PJChzxJ26FxfALgIEppuxZgCZPSaShAJkxBJEmbUbdcjLP0IpAOl8cPWCvkTXNE
+	SxDArVywU0XB+LIN+rSw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x07Uu-00000006ZBv-3VJW;
-	Sat, 29 Aug 2026 01:04:40 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1x07Uv-00000006ZC1-0dlL;
+	Sat, 29 Aug 2026 01:04:41 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x07Us-00000006ZBb-1xaG
+	id 1x07Us-00000006ZBc-2MZM
 	for linux-mtd@lists.infradead.org;
 	Sat, 29 Aug 2026 01:04:38 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id BB329429C5;
+	by sea.source.kernel.org (Postfix) with ESMTP id CDA8C447D4;
 	Sat, 29 Aug 2026 01:04:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 923CDC2BCF4;
+Received: by smtp.kernel.org (Postfix) with ESMTPS id A6D43C2BCF6;
 	Sat, 29 Aug 2026 01:04:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1787965477;
-	bh=PBI+LaNfGSxOirkJdYCxWZ8AJkmpI5XaPvy0YgrWEek=;
-	h=From:Subject:Date:To:Cc:Reply-To:From;
-	b=rZUB82B3Coy2oGC7Fs9xHghm7YhPSwqvN6pXej40bS0CpoSO/pYyulH6bZ2jz6nEd
-	 GUXnSlRtQN18hpFh20g9aH5WO0ujYrncEaGzSmJcgw+IbtFvucDaSgUy3CIwIBaVQ+
-	 Upn0EzfURGxY1GV8OO1tFeboWZIC1wvoY7QNr3xyIEq8nh+qgTeE7MGX1NffjMnYdk
-	 qM69jk5b201D1HLFN7JqG4kmRGuDvEuwwhWip3Pxg0rJx1lwND3y3UtGoBAItPL9fh
-	 +zT9Ngt3azRHu59vrDUsM5Fev4jCTBJdQ0/qX2X9P7mld9FKFO/pKFi9h1pjngDtc8
-	 RzBVPCl3/o7nQ==
+	bh=wnU3s+PY7ZNxdKFVmGRin9VkrUvIoJthhqJ8bKEVwTA=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
+	b=lO1Loyky1yafw/YKJFYgfsyow4GYg920D6keIGv/KY1zTWFveA6M9Rmxk9EuMbMGq
+	 wxHHvltYy+zhTbwnYX09mfPBF+nYvoMr0khAs6r2AUYTy9MB+4oR+rnQHcVExNT+7a
+	 sakP2Ah5SO80/pt+1xoJVi9nQp986IhoNDpqZCMjBm9WIBUbYMaNjyGZRhlNOIlNiI
+	 xBhuRltNs+gTRELygG/uXr/Q9YgrCsdvPAoBwwaVZdHMpW645+TokicpHHhc/smRSm
+	 unNYov79ykRv5frU62leR4vzJ42P1mfpMyWq3ZJ7aSoqDMODeojTB73uJe241h/HRz
+	 st1qk+zRsFOlw==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DDEFC61DB9;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 80986C61DD3;
 	Sat, 29 Aug 2026 01:04:37 +0000 (UTC)
 From: Tobias Jakobsen via B4 Relay <devnull+tjakobsen84.protonmail.com@kernel.org>
-Subject: [PATCH 0/2] Report platform enforced SPI flash write protection
-Date: Sat, 29 Aug 2026 03:04:31 +0200
-Message-Id: <20260829-spi-nor-platform-lock-v1-0-cd362d4914e2@protonmail.com>
+Date: Sat, 29 Aug 2026 03:04:32 +0200
+Subject: [PATCH 1/2] mtd: spi-nor: allow the platform to supply write
+ protection state
 MIME-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAAAAAAAC/x3MwQqDMAyA4VeRnA1oGK76KuIhtHEL07akMgbiu
- 694/A7/f0IRUykwNSeYfLVoihV924B/c3wJaqgG6mjoHI1YsmJMhnnjY02245b8BwPz6B6ByT0
- JaptNVv3d33m5rj9VYQJ2ZwAAAA==
-X-Change-ID: 20260829-spi-nor-platform-lock-daa984da2872
+Message-Id: <20260829-spi-nor-platform-lock-v1-1-cd362d4914e2@protonmail.com>
+References: <20260829-spi-nor-platform-lock-v1-0-cd362d4914e2@protonmail.com>
+In-Reply-To: <20260829-spi-nor-platform-lock-v1-0-cd362d4914e2@protonmail.com>
 To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
  Takahiro Kuwano <takahiro.kuwano@infineon.com>, 
  Miquel Raynal <miquel.raynal@bootlin.com>, 
@@ -63,11 +62,11 @@ Cc: Mika Westerberg <mika.westerberg@linux.intel.com>,
  linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
  linux-spi@vger.kernel.org, Tobias Jakobsen <tjakobsen84@protonmail.com>
 X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1787965476; l=2383;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1787965476; l=5341;
  i=tjakobsen84@protonmail.com; s=20260829; h=from:subject:message-id;
- bh=PBI+LaNfGSxOirkJdYCxWZ8AJkmpI5XaPvy0YgrWEek=;
- b=7ZRRI9GhC5gUJfBbhnYTWjPUeUAGrjglrB3dDPoLyZpLpokf/7UNQ5vB4Y0G7YLU3ZJmoZMxp
- B7ahFGi/8RNBGTPP72mHpraZqueZvF0feYTKz3aSM0hgPe6OTdWhbfH
+ bh=UHLaWTixtcU+k1LSS+E9v9r7hrQI/HQPhvP207K3ckc=;
+ b=Uc6lZZVF5l+oa1XBG2QK/BZpMBVQdT7Qg/6dqsmR7YyvjNV08simmoHiRb+3omLFJzKFQtWHc
+ Y/MO/PaaGykBXxyYOT5YnunkGFGSnmR9LQJng5ZjWBG3BLxnMaZuOfR
 X-Developer-Key: i=tjakobsen84@protonmail.com; a=ed25519;
  pk=UREd6cisfwsFIDP455nUH6Ysx+ZDGnAVE9nGmKzm1Ks=
 X-Endpoint-Received: by B4 Relay for tjakobsen84@protonmail.com/20260829
@@ -90,58 +89,148 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-MEMISLOCKED currently answers only from the flash chip's own block
-protection bits. On platforms where write protection is enforced
-elsewhere -- an Intel PCH SPI controller with protected range registers
-being the common case -- those bits say nothing about what is actually
-enforced, and are typically left clear.
+From: Tobias Jakobsen <tjakobsen84@protonmail.com>
 
-The result is that MEMISLOCKED either fails with -EOPNOTSUPP, or, once
-the chip gains SPI_NOR_HAS_LOCK, confidently reports a range as unlocked
-while the controller is refusing writes to it. As more chips gain lock
-flags over time, the second case replaces the first, so the wrong answer
-spreads rather than the missing one.
+Some flashes are write protected by the platform they are attached to
+rather than by their own block protection bits. An Intel PCH SPI
+controller programmed with protected range registers is one example: it
+refuses writes to a range regardless of what the chip's status register
+says, while the chip's block protection bits are typically left clear.
 
-Patch 1 lets a platform supply an is_locked() callback through struct
-flash_platform_data, which spi-nor prefers over the chip's own bits. It
-is inert on its own: nothing sets the callback, so every existing
-platform keeps the behaviour it has today, and the series stays
-bisectable.
+MEMISLOCKED therefore either fails with -EOPNOTSUPP, or, once the chip
+gains SPI_NOR_HAS_LOCK, reports a range as unlocked while writes to it
+are in fact being refused.
 
-Patch 2 adds the only user, spi-intel, which already computes protected
-range state at probe but has had no way to expose it since the SPI MEM
-conversion removed its visibility of the MTD device.
+Let the platform supply an optional is_locked() callback in struct
+flash_platform_data, alongside the partitions it can already supply, and
+prefer it over the chip's own block protection bits. This is independent
+of SPI_NOR_HAS_LOCK, so an answer is also given for chips that have no
+block protection support of their own.
 
-Full before/after numbers from a Coffee Lake NUC are in patch 2. Only
-the Intel PCH path is functionally tested; the flash.h change is an
-append-only addition and all existing users of that struct use
-designated initialisers, so they are unaffected.
+lock() and unlock() return -EOPNOTSUPP, as platform enforced protection
+is not expected to be changed at runtime.
 
-This came out of a discussion about fwupd reporting the BIOS region as
-unlocked on Intel PCH systems:
-https://bugzilla.kernel.org/show_bug.cgi?id=221927
+Platforms that do not supply the callback are unaffected.
 
-Question for the maintainers: this straddles MTD and SPI, so I do not
-know which tree it should go through. Happy to resend in whatever shape
-suits.
-
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=221927
 Signed-off-by: Tobias Jakobsen <tjakobsen84@protonmail.com>
 ---
-Tobias Jakobsen (2):
-      mtd: spi-nor: allow the platform to supply write protection state
-      spi: spi-intel: report controller enforced write protection
-
  drivers/mtd/spi-nor/core.c | 52 ++++++++++++++++++++++++++++++++++++++++++++--
- drivers/spi/spi-intel.c    | 46 ++++++++++++++++++++++++++++++++++++++++
  include/linux/spi/flash.h  | 12 +++++++++++
- 3 files changed, 108 insertions(+), 2 deletions(-)
----
-base-commit: 1b78070aaef63512688aebfbc82365ef9d6660f1
-change-id: 20260829-spi-nor-platform-lock-daa984da2872
+ 2 files changed, 62 insertions(+), 2 deletions(-)
 
-Best regards,
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index ccf4396cd..a5c37eea4 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -3001,6 +3001,50 @@ static void spi_nor_init_fixup_flags(struct spi_nor *nor)
+ 		nor->flags |= SNOR_F_IO_MODE_EN_VOLATILE;
+ }
+ 
++static int spi_nor_platform_lock(struct spi_nor *nor, loff_t ofs, u64 len)
++{
++	return -EOPNOTSUPP;
++}
++
++static int spi_nor_platform_unlock(struct spi_nor *nor, loff_t ofs, u64 len)
++{
++	return -EOPNOTSUPP;
++}
++
++static int spi_nor_platform_is_locked(struct spi_nor *nor, loff_t ofs, u64 len)
++{
++	struct flash_platform_data *data = dev_get_platdata(nor->dev);
++
++	return data->is_locked(nor->spimem->spi, ofs, len);
++}
++
++static const struct spi_nor_locking_ops spi_nor_platform_locking_ops = {
++	.lock = spi_nor_platform_lock,
++	.unlock = spi_nor_platform_unlock,
++	.is_locked = spi_nor_platform_is_locked,
++};
++
++/**
++ * spi_nor_init_platform_locking_ops() - Use the platform supplied write
++ *	protection query, if there is one.
++ * @nor:	pointer to a 'struct spi_nor'
++ *
++ * Some flashes are write protected by the platform they are attached to rather
++ * than by their own block protection bits, for example by an Intel PCH SPI
++ * controller programmed with protected range registers. In that case the chip's
++ * block protection bits are typically left clear and say nothing about what is
++ * actually enforced, so prefer the platform supplied query when available.
++ */
++static void spi_nor_init_platform_locking_ops(struct spi_nor *nor)
++{
++	struct flash_platform_data *data = dev_get_platdata(nor->dev);
++
++	if (!data || !data->is_locked || !nor->spimem)
++		return;
++
++	nor->params->locking_ops = &spi_nor_platform_locking_ops;
++}
++
+ /**
+  * spi_nor_late_init_params() - Late initialization of default flash parameters.
+  * @nor:	pointer to a 'struct spi_nor'
+@@ -3040,9 +3084,13 @@ static int spi_nor_late_init_params(struct spi_nor *nor)
+ 	spi_nor_init_fixup_flags(nor);
+ 
+ 	/*
+-	 * NOR protection support. When locking_ops are not provided, we pick
+-	 * the default ones.
++	 * NOR protection support. Platform enforced protection is preferred
++	 * over the chip's own, as the chip is not necessarily aware of it.
++	 * When locking_ops are not provided, we pick the default ones.
+ 	 */
++	if (!nor->params->locking_ops)
++		spi_nor_init_platform_locking_ops(nor);
++
+ 	if (nor->flags & SNOR_F_HAS_LOCK && !nor->params->locking_ops)
+ 		spi_nor_init_default_locking_ops(nor);
+ 
+diff --git a/include/linux/spi/flash.h b/include/linux/spi/flash.h
+index 2401a0887..f415e2c0b 100644
+--- a/include/linux/spi/flash.h
++++ b/include/linux/spi/flash.h
+@@ -2,7 +2,10 @@
+ #ifndef LINUX_SPI_FLASH_H
+ #define LINUX_SPI_FLASH_H
+ 
++#include <linux/types.h>
++
+ struct mtd_partition;
++struct spi_device;
+ 
+ /**
+  * struct flash_platform_data: board-specific flash data
+@@ -11,6 +14,13 @@ struct mtd_partition;
+  * @nr_parts: number of mtd_partitions for static partitioning
+  * @type: optional flash device type (e.g. m25p80 vs m25p64), for use
+  *	with chips that can't be queried for JEDEC or other IDs
++ * @is_locked: optional callback to query write protection enforced by the
++ *	platform rather than by the flash chip itself, for example a SPI
++ *	controller that gates writes to a range of the flash. Returns 1 if
++ *	the whole range is protected, 0 if it is not, or a negative errno.
++ *	When supplied it takes precedence over the chip's own block
++ *	protection bits, which do not necessarily reflect what is actually
++ *	being enforced.
+  *
+  * Board init code (in arch/.../mach-xxx/board-yyy.c files) can
+  * provide information about SPI flash parts (such as DataFlash) to
+@@ -26,6 +36,8 @@ struct flash_platform_data {
+ 
+ 	char		*type;
+ 
++	int		(*is_locked)(struct spi_device *spi, loff_t ofs, u64 len);
++
+ 	/* we'll likely add more ... use JEDEC IDs, etc */
+ };
+ 
+
 -- 
-Tobias Jakobsen <tjakobsen84@protonmail.com>
+2.53.0
 
 
 
