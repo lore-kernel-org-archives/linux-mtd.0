@@ -4,64 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00849C624D5
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 046ECC624D7
 	for <linux-mtd@archiver.kernel.org>; Tue,  1 Sep 2026 13:13:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=CMYh5j9L7wQIQCdug/d559rxY3nYpOd1LO3F2RENuAk=; b=ybnB7dFq9JZnB3
-	u39QlJk05QGePvHGMs4zyzlAqCV88ZSZDqxs7hWmRVlY6lBtTsflWr6yyb66bgkrQMKKSmx8611YK
-	/XsiBhm/edgDwLWhUusJ0PQlIy2QEfQuNXzk7orHlWa4kq6B6CHiNlWTfmfblAlAfICEBZPQPtNJl
-	pHMVD3txarWhwf9+VyKI09ePJCUr72s0K9NhZSU+6IqlkO0ro7Z0ghl5gbc40+uJ7cox4kKs5v6HC
-	nADBxFmFaDkoxdMqJO0KsXT+LbsmMNyd6Lw98trpFrdTxlld8+wvH9cpybfos/wKOIjO9NjrJmLKi
-	rnKCFzppiujXpwAAds9Q==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=KtGC05RDXebuWj99nPF6KGguCAPW/XbWeI580XG543E=; b=0EcPUJ3x1CuI5F
+	jP93FStamdQcF2kAbBa7GDqVtk9xtkOOmxvzJLVDXHPnjqI2z0MXtFb2V0CBwUjClUon1B/NHeTOX
+	WpoqASPAMSaT23FdwDe5wi/Jr2Bkvs9+82pBOFQEFQVg13976Ru3/9yTPYtAyD4lyPGlENmcI5g87
+	qBUZIumTcNFdtYdjyrbs4DBjSLY1p/B2DBuhHkjdxkRUV6kUeeoJMFqaRz19XdfF4uDm2WJW6T8jL
+	JOIWAUKDL6KyH1nRMiskItivWNl87arngEOd2Ck7cm2jeuJ0aCAxjhzipfR5FQR8zRi7BJOzv2WgU
+	fZSjTGT908iAtTdGVLoA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x1OIW-0000000CAau-1Lwo;
-	Tue, 01 Sep 2026 13:13:08 +0000
-Received: from canpmsgout07.his.huawei.com ([113.46.200.222])
-	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x1OIQ-0000000CAU1-0KUb;
+	id 1x1OIT-0000000CAYN-2oW7;
 	Tue, 01 Sep 2026 13:13:05 +0000
+Received: from canpmsgout05.his.huawei.com ([113.46.200.220])
+	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
+	id 1x1OIP-0000000CATy-2wOc;
+	Tue, 01 Sep 2026 13:13:04 +0000
 dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
 	c=relaxed/relaxed; q=dns/txt;
 	h=From;
-	bh=jmt8bfKaSGroqiOHkxuJ59AWSDBasbhKv+fimUwo2ec=;
-	b=SnOUKHK7srA5XzCvNruBLQJ8WsP61zC6VrSs0oTk/y2cy3kcOHaattF4xdIGxjEUtJdOgROK7
-	Je098/rXxtn4d8hc7wUdoJJ2NqX+573LFF4DDb7ttqU+D5QlKy46ZAWoHROcH9r1MfCejaz/rTt
-	owHk9qEkMapLh42wTEIs6a4=
-Received: from mail.maildlp.com (unknown [172.19.163.200])
-	by canpmsgout07.his.huawei.com (SkyGuard) with ESMTPS id 4hZ5by4lbJzLlXZ;
-	Tue,  1 Sep 2026 21:02:06 +0800 (CST)
+	bh=nsDA+LJTa+8iJxzcAgvgwajibeJnEaZQX0TzVUG51qE=;
+	b=FGaTAERYcpC87ItXdrTqGuODCClix2oEWW9MjTK2x1194qw4uZwKwiTybEnmXdNSCVxYf/WI9
+	Pv60W/lnQEMQmj3o2O/Zwn44MBVuzHagc7hUkhXJVW5y6EzbEwQ2y0nzBZlgLJnvai3vMWQY7eK
+	VYaR4XBnt0PSpVoYZj1aS7w=
+Received: from mail.maildlp.com (unknown [172.19.162.223])
+	by canpmsgout05.his.huawei.com (SkyGuard) with ESMTPS id 4hZ5bM32Tnz12LF7;
+	Tue,  1 Sep 2026 21:01:35 +0800 (CST)
 Received: from dggpemr100018.china.huawei.com (unknown [7.185.36.64])
-	by mail.maildlp.com (Postfix) with ESMTPS id 280A940563;
-	Tue,  1 Sep 2026 21:12:56 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 3D15B40561;
+	Tue,  1 Sep 2026 21:12:52 +0800 (CST)
 Received: from huawei.com (10.50.85.155) by dggpemr100018.china.huawei.com
  (7.185.36.64) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.36; Tue, 1 Sep
- 2026 21:12:55 +0800
+ 2026 21:12:51 +0800
 From: zhouminqiang <zhouminqiang2@huawei.com>
 To: <linux@armlinux.org.uk>, <vz@mleia.com>, <piotr.wojtaszczyk@timesys.com>,
 	<maddy@linux.ibm.com>, <dwmw2@infradead.org>, <richard@nod.at>
 CC: <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
 	<linuxppc-dev@lists.ozlabs.org>, <linux-mtd@lists.infradead.org>,
 	<chengzhihao1@huawei.com>, <yangerkun@huawei.com>, <yi.zhang@huawei.com>
-Subject: [PATCH v3 5/8] jffs2: add write verification to direct page writes in flash_writev
-Date: Tue, 1 Sep 2026 21:05:46 +0800
-Message-ID: <20260901130549.1761342-6-zhouminqiang2@huawei.com>
+Subject: [PATCH v3 0/8] jffs2: extend write verification to all write paths
+Date: Tue, 1 Sep 2026 21:05:41 +0800
+Message-ID: <20260901130549.1761342-1-zhouminqiang2@huawei.com>
 X-Mailer: git-send-email 2.52.0
-In-Reply-To: <20260901130549.1761342-1-zhouminqiang2@huawei.com>
-References: <20260901130549.1761342-1-zhouminqiang2@huawei.com>
 MIME-Version: 1.0
 X-Originating-IP: [10.50.85.155]
 X-ClientProxiedBy: kwepems100002.china.huawei.com (7.221.188.206) To
  dggpemr100018.china.huawei.com (7.185.36.64)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260901_061302_524216_D4D336C6 
-X-CRM114-Status: GOOD (  16.35  )
+X-CRM114-CacheID: sfid-20260901_061302_352342_B8C795E6 
+X-CRM114-Status: GOOD (  14.24  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,134 +76,109 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-jffs2_flash_writev() performs writes in three phases: phase 1 fills
-the write buffer and flushes it when full, phase 2 writes full pages
-directly via mtd_write() bypassing the buffer, and phase 3 fills the
-remaining data into the write buffer.
+When JFFS2 writes data to flash, corruption can occur during the
+write transfer (RAM failures, bus errors) or after commit to the
+medium (bit flips). To distinguish whether the corruption happened
+before or after the data reached the flash, commit a6bc432e296d
+("[JFFS2] Add support for write-buffer verification.") introduced
+CONFIG_JFFS2_FS_WBUF_VERIFY: reading the data back immediately
+after a successful write and comparing it with the in-memory
+source buffer provides the missing observation point for that
+diagnosis.
 
-Phases 1 and 3 both invoke __jffs2_flush_wbuf() when the buffer is
-full, which includes write-back verification when
-CONFIG_JFFS2_FS_WBUF_VERIFY is enabled. However phase 2, which
-handles the bulk of the write data, calls mtd_write() directly
-without any verification.
+However, the current implementation only performs read-back
+verification on write-buffer flush paths. NOR flash devices write
+directly through jffs2_flash_direct_write() and
+jffs2_flash_direct_writev(), with no equivalent check. Data
+corruption incidents have been observed on NOR-based devices in
+production environments, yet there is no quick diagnostic tool to
+isolate whether the corruption occurred during the write transfer
+or after commit to the medium. A significant number of deployed
+devices rely on JFFS2 on NOR flash, making this gap a practical
+concern.
 
-Phase 2 direct writes may span multiple wbuf_pagesize pages. Extend
-jffs2_verify_write() with a len parameter to specify the data length
-to verify, and add the verification call after the phase 2
-mtd_write() to cover this gap. Also add __GFP_NOWARN to the kmalloc
-in jffs2_verify_write() to suppress high-order allocation warnings
-when verifying summary writes on large-erasesize NAND.
+During the investigation of the NOR flash gap, code inspection also
+revealed that when the write data length exceeds wbuf_pagesize in
+jffs2_flash_writev(), the excess data bypasses the write buffer and
+is written directly to flash via mtd_write(), with no verification.
+Additionally, jffs2_wbuf_recover() does not clear c->wbuf_len on
+recovery failure, which can lead to BUG_ON in jffs2_link_node_ref()
+or deadlock in jffs2_flush_wbuf_pad() on a subsequent write.
 
-Signed-off-by: zhouminqiang <zhouminqiang2@huawei.com>
----
- fs/jffs2/wbuf.c | 35 +++++++++++++++++++++--------------
- 1 file changed, 21 insertions(+), 14 deletions(-)
+This series closes these gaps with the following changes:
 
-diff --git a/fs/jffs2/wbuf.c b/fs/jffs2/wbuf.c
-index a4cf1915b2bd..715cdb8df427 100644
---- a/fs/jffs2/wbuf.c
-+++ b/fs/jffs2/wbuf.c
-@@ -228,38 +228,38 @@ static struct jffs2_raw_node_ref **jffs2_incore_replace_raw(struct jffs2_sb_info
- 
- #ifdef CONFIG_JFFS2_FS_WBUF_VERIFY
- static int jffs2_verify_write(struct jffs2_sb_info *c, unsigned char *buf,
--			      uint32_t ofs)
-+			      uint32_t ofs, size_t len)
- {
- 	int ret;
- 	size_t retlen, i;
- 	char *eccstr;
- 	void *verify_buf;
- 
--	verify_buf = kmalloc(c->wbuf_pagesize, GFP_NOFS);
-+	verify_buf = kmalloc(len, GFP_NOFS | __GFP_NOWARN);
- 	if (!verify_buf) {
- 		pr_warn("%s(): verify buffer allocation failed, skipping verification\n",
- 			__func__);
- 		return 0;
- 	}
- 
--	ret = mtd_read(c->mtd, ofs, c->wbuf_pagesize, &retlen, verify_buf);
-+	ret = mtd_read(c->mtd, ofs, len, &retlen, verify_buf);
- 
- 	if (ret && ret != -EUCLEAN && ret != -EBADMSG) {
- 		pr_warn("%s(): Read back of page at %08x failed: %d\n",
- 			__func__, ofs, ret);
- 		goto out_free;
--	} else if (retlen != c->wbuf_pagesize) {
--		pr_warn("%s(): Read back of page at %08x gave short read: %zu not %d\n",
--			__func__, ofs, retlen, c->wbuf_pagesize);
-+	} else if (retlen != len) {
-+		pr_warn("%s(): Read back of page at %08x gave short read: %zu not %zu\n",
-+			__func__, ofs, retlen, len);
- 		ret = -EIO;
- 		goto out_free;
- 	}
--	if (!memcmp(buf, verify_buf, c->wbuf_pagesize)) {
-+	if (!memcmp(buf, verify_buf, len)) {
- 		ret = 0;
- 		goto out_free;
- 	}
- 
--	for (i = 0; i < c->wbuf_pagesize; i++) {
-+	for (i = 0; i < len; i++) {
- 		uint8_t c1 = ((uint8_t *)buf)[i];
- 		uint8_t c2 = ((uint8_t *)verify_buf)[i];
- 		int dump_len;
-@@ -274,9 +274,9 @@ static int jffs2_verify_write(struct jffs2_sb_info *c, unsigned char *buf,
- 		else
- 			eccstr = "OK or unused";
- 
--		dump_len = min_t(int, 128, c->wbuf_pagesize - i);
--		pr_warn("Write verify error (ECC %s) at %08x (+%zu/%d). Wrote:\n",
--			eccstr, ofs, i, c->wbuf_pagesize);
-+		dump_len = min_t(int, 128, len - i);
-+		pr_warn("Write verify error (ECC %s) at %08x (+%zu/%zu). Wrote:\n",
-+			eccstr, ofs, i, len);
- 		print_hex_dump(KERN_WARNING, "", DUMP_PREFIX_OFFSET, 16, 1,
- 			       buf + i, dump_len, 0);
- 
-@@ -293,7 +293,7 @@ static int jffs2_verify_write(struct jffs2_sb_info *c, unsigned char *buf,
- 	return ret;
- }
- #else
--#define jffs2_verify_write(c,b,o) (0)
-+#define jffs2_verify_write(c,b,o,l) (0)
- #endif
- 
- /* Recover from failure to write wbuf. Recover the nodes up to the
-@@ -458,7 +458,7 @@ static void jffs2_wbuf_recover(struct jffs2_sb_info *c)
- 			ret = mtd_write(c->mtd, ofs, towrite, &retlen,
- 					rewrite_buf);
- 
--		if (ret || retlen != towrite || jffs2_verify_write(c, rewrite_buf, ofs)) {
-+		if (ret || retlen != towrite || jffs2_verify_write(c, rewrite_buf, ofs, towrite)) {
- 			/* Argh. We tried. Really we did. */
- 			pr_crit("Recovery of wbuf failed due to a second write error. Data loss ensues.\n");
- 			kfree(buf);
-@@ -676,7 +676,10 @@ static int __jffs2_flush_wbuf(struct jffs2_sb_info *c, int pad)
- 			retlen, c->wbuf_pagesize);
- 		ret = -EIO;
- 		goto wfail;
--	} else if ((ret = jffs2_verify_write(c, c->wbuf, c->wbuf_ofs))) {
-+	}
-+
-+	ret = jffs2_verify_write(c, c->wbuf, c->wbuf_ofs, c->wbuf_pagesize);
-+	if (ret) {
- 	wfail:
- 		jffs2_wbuf_recover(c);
- 
-@@ -908,6 +911,10 @@ int jffs2_flash_writev(struct jffs2_sb_info *c, const struct kvec *invecs,
- 			if (ret < 0 || wbuf_retlen != PAGE_DIV(vlen))
- 				goto outfile;
- 
-+			ret = jffs2_verify_write(c, v, outvec_to, PAGE_DIV(vlen));
-+			if (ret)
-+				goto outfile;
-+
- 			vlen -= wbuf_retlen;
- 			outvec_to += wbuf_retlen;
- 			c->wbuf_ofs = outvec_to;
+- Patch 1: fix wbuf recovery failure exit paths to clear
+		   c->wbuf_len, preventing BUG_ON and deadlock
+
+- Patch 2: fix ref_totlen misuse in jffs2_wbuf_recover() failure path
+
+- Patch 3: replace pre-allocated per-superblock wbuf_verify
+		   buffer with on-demand allocation inside jffs2_verify_write()
+
+- Patch 4: add byte-by-byte comparison after memcmp() mismatch
+		   to pinpoint the exact mismatch offset
+
+- Patch 5: add verification in jffs2_flash_writev() for the
+		   mtd_write() path that bypasses the write buffer
+
+- Patch 6: add verification calls in jffs2_flash_direct_write() and
+		   jffs2_flash_direct_writev() for NOR flash devices
+
+- Patch 7: rename CONFIG_JFFS2_FS_WBUF_VERIFY to
+		   CONFIG_JFFS2_FS_WRITE_VERIFY and remove the Kconfig
+		   dependency on CONFIG_JFFS2_FS_WRITEBUFFER
+
+- Patch 8: add module parameter write_verify for runtime
+		   enable/disable of write verification
+
+This series extends the existing write verification mechanism to
+cover all write paths. It remains off by default and does not
+alter JFFS2's node CRC integrity checks.
+
+Changes in v3:
+- Add patch to fix incorrect ref_totlen usage in jffs2_wbuf_recover()
+  secondary write failure path, which could corrupt free_size accounting
+- Add __GFP_NOWARN to jffs2_verify_write() kmalloc to suppres
+  high-order allocation splats on large-erasesize NAND
+- Link to v2: https://lore.kernel.org/linux-mtd/20260829061658.306854-1-zhouminqiang2@huawei.com/T/#t
+
+Changes in v2:
+- Add patch to fix wbuf recovery failure exit paths not clearing
+  c->wbuf_len, preventing BUG_ON and deadlock on subsequent writes
+- Use kmalloc() instead of vmalloc() for verify buffer allocation
+- Keep memcmp() on the hotpath and add byte-by-byte comparison
+  only after a mismatch, rather than replacing memcmp() entirely
+- In jffs2_flash_direct_write() and jffs2_flash_direct_writev(),
+  call mtd_write() before jffs2_sum_add_kvec() to prevent
+  retlen from being uninitialized if jffs2_sum_add_kvec() causes
+  an early return
+- Update defconfig files to rename CONFIG_JFFS2_FS_WBUF_VERIFY to
+  CONFIG_JFFS2_FS_WRITE_VERIFY
+- Link to v1: https://lore.kernel.org/linux-mtd/20260820105003.2525647-1-zhouminqiang2@huawei.com/T/#t
+
+zhouminqiang (8):
+  jffs2: wbuf: clear wbuf on recovery failure paths
+  jffs2: wbuf: fix space accounting in recovery secondary write failure
+  jffs2: replace per-superblock verify buffer with per-write buffer
+  jffs2: write verify: add byte-by-byte comparison on mismatch
+  jffs2: add write verification to direct page writes in flash_writev
+  jffs2: add write verification to NOR direct write paths
+  jffs2: rename CONFIG_JFFS2_FS_WBUF_VERIFY to
+    CONFIG_JFFS2_FS_WRITE_VERIFY
+  jffs2: add runtime toggle for write verification
+
+ arch/arm/configs/keystone_defconfig     |   2 +-
+ arch/arm/configs/lpc32xx_defconfig      |   2 +-
+ arch/arm/configs/pxa3xx_defconfig       |   2 +-
+ arch/arm/configs/pxa_defconfig          |   2 +-
+ arch/powerpc/configs/44x/fsp2_defconfig |   2 +-
+ fs/jffs2/Kconfig                        |  31 ++++-
+ fs/jffs2/jffs2_fs_sb.h                  |   3 -
+ fs/jffs2/os-linux.h                     |  11 ++
+ fs/jffs2/wbuf.c                         |  93 +++------------
+ fs/jffs2/writev.c                       | 144 +++++++++++++++++++++++-
+ 10 files changed, 199 insertions(+), 93 deletions(-)
+
 -- 
 2.52.0
 
