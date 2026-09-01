@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3542C61DD3
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B110CC624D4
 	for <linux-mtd@archiver.kernel.org>; Tue,  1 Sep 2026 13:13:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,46 +12,46 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=vCIg80Q3aPdli80OWsU65iEsROAfln40csJ9mwKyq3M=; b=B1YfMqqI+POOh+
-	hgr4OWLvQRJNfmbGihAPEUx1UurZIvxeH+WceTFzjviw2waHKv4cmvo7lmvxQmzDeRWoYli5bdfuy
-	ON28RQG4dcwWVQ8cMot78Zg5JHxd2g+1f8ucjWGxFxO7uwW0y2/xTQXnGBnvBDCE0boJW+XqfThMn
-	wPjjSdyLz1Q9/sWcdkAQ5xMwewKBDMYhQglBxRDUPx7e0cqfb6QLQO1/FN3BslGJBLWH5qlpSNSmS
-	tlhFeESigHAmNtlXqu/uTQBPfJeHgZkOYDnBzC1BSB8TsegL4gpdibotFjZvUQ2wM5zHGCIjrF1l3
-	4qRFt1DATui62uIctaTA==;
+	List-Owner; bh=qb8IW6Ow+AwSZzdyWz+ZqBsUMWJg3pN3igeypqbRGvs=; b=dJnGKIIzrj1nTq
+	umYGohEWXQ96e+MB5n1dyJBcFJSulLWclKGe8OyBtrhQvv3e0sbgdEPu0+j64gqAZyjhf8j5IzO3o
+	Mra9hgl2SAa8lnTX4Gy5cv7qJN25JvZzJ6Cv6uRzgYpKp7SCxPGiDBQ6b0cNMJoxl/VlwrxxEAj4x
+	PE6UY9IUFF6yPG4brhgqQKl/qJiM4geMhoJj1i2yUfhG+rY841nX9nlDgqVTpI3VOQNrZElYbfY28
+	tWrNahBDncSQfOPDQKE27bJMiiEv62hdPBVnomsd1ZaABeXyTGi+67rlKBqtfdpkhZzV+eOEpNtg6
+	ei2bxtMcKIAClQ6yGPXA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x1OIX-0000000CAcS-3gei;
-	Tue, 01 Sep 2026 13:13:09 +0000
-Received: from canpmsgout04.his.huawei.com ([113.46.200.219])
-	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x1OIQ-0000000CAUZ-0ffV;
+	id 1x1OIT-0000000CAYY-3IYc;
 	Tue, 01 Sep 2026 13:13:05 +0000
+Received: from canpmsgout07.his.huawei.com ([113.46.200.222])
+	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
+	id 1x1OIQ-0000000CAU0-00Y1;
+	Tue, 01 Sep 2026 13:13:04 +0000
 dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
 	c=relaxed/relaxed; q=dns/txt;
 	h=From;
-	bh=bLJ7so2eQ04eUxA7uRgkuQiNgLyO0A/w5Eo0GY7ooL8=;
-	b=xTyBELc/cInYBPOUaTwt3ILOfZ8Pf1/HI1d647R/Wj1c7mrsUsFgGo6dMICOPm6/A2FvA1OPa
-	OLpDQ8pLDW77LCeJ/wMWwQZwTA8vs7oqYp02u/NAFMCA1JTKhXa+1DFZkbttwNYqEJRvMcS+5Dk
-	X8P9UZhgp21LbdrV9BHtios=
-Received: from mail.maildlp.com (unknown [172.19.162.197])
-	by canpmsgout04.his.huawei.com (SkyGuard) with ESMTPS id 4hZ5bz1vPzz1prLc;
-	Tue,  1 Sep 2026 21:02:07 +0800 (CST)
+	bh=uoYKoPZ7YKPmsCHG/kXIjc+wB00oulf3PAI6t9L7dXc=;
+	b=AjShkyBICAQG93Xx24uO5WkxiKPbiNgccEYEo+cH2GjESgyKEM//MZ278+F6XzwOlEUJ34IXR
+	gGLmLMCdZY+TwaKIQcratPL0uQrHHNhh3oTLFnFNjRlq5slRg6HK0rXoLect9UvacjQfXAPOIG/
+	AW3dbypsROzmFphzCRweR1I=
+Received: from mail.maildlp.com (unknown [172.19.163.214])
+	by canpmsgout07.his.huawei.com (SkyGuard) with ESMTPS id 4hZ5bw237xzLlXZ;
+	Tue,  1 Sep 2026 21:02:04 +0800 (CST)
 Received: from dggpemr100018.china.huawei.com (unknown [7.185.36.64])
-	by mail.maildlp.com (Postfix) with ESMTPS id 7E33440579;
-	Tue,  1 Sep 2026 21:12:58 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id C14E04057C;
+	Tue,  1 Sep 2026 21:12:53 +0800 (CST)
 Received: from huawei.com (10.50.85.155) by dggpemr100018.china.huawei.com
  (7.185.36.64) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.36; Tue, 1 Sep
- 2026 21:12:57 +0800
+ 2026 21:12:52 +0800
 From: zhouminqiang <zhouminqiang2@huawei.com>
 To: <linux@armlinux.org.uk>, <vz@mleia.com>, <piotr.wojtaszczyk@timesys.com>,
 	<maddy@linux.ibm.com>, <dwmw2@infradead.org>, <richard@nod.at>
 CC: <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
 	<linuxppc-dev@lists.ozlabs.org>, <linux-mtd@lists.infradead.org>,
 	<chengzhihao1@huawei.com>, <yangerkun@huawei.com>, <yi.zhang@huawei.com>
-Subject: [PATCH v3 8/8] jffs2: add runtime toggle for write verification
-Date: Tue, 1 Sep 2026 21:05:49 +0800
-Message-ID: <20260901130549.1761342-9-zhouminqiang2@huawei.com>
+Subject: [PATCH v3 2/8] jffs2: wbuf: fix space accounting in recovery secondary write failure
+Date: Tue, 1 Sep 2026 21:05:43 +0800
+Message-ID: <20260901130549.1761342-3-zhouminqiang2@huawei.com>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <20260901130549.1761342-1-zhouminqiang2@huawei.com>
 References: <20260901130549.1761342-1-zhouminqiang2@huawei.com>
@@ -60,8 +60,8 @@ X-Originating-IP: [10.50.85.155]
 X-ClientProxiedBy: kwepems100002.china.huawei.com (7.221.188.206) To
  dggpemr100018.china.huawei.com (7.185.36.64)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260901_061302_552664_D9CC72A0 
-X-CRM114-Status: GOOD (  12.43  )
+X-CRM114-CacheID: sfid-20260901_061302_352858_18A8EBD9 
+X-CRM114-Status: GOOD (  12.10  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,89 +78,42 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Write verification is a diagnostic facility that adds read-back
-overhead to every write. In production, this overhead is undesirable
-unless fault isolation is required.
+In jffs2_wbuf_recover(), when the recovery write to the new erase block
+also fails, the code marks the already-written portion as REF_OBSOLETE
+via jffs2_add_physical_node_ref(). However, the length passed is
+ref_totlen(c, jeb, first_raw), which is the length of a single node on
+the old block, not retlen which is the actual number of bytes written to
+the new block.
 
-Add a module parameter jffs2.write_verify (bool, 0644) that defaults
-to off when CONFIG_JFFS2_FS_WRITE_VERIFY is enabled. The verification
-entry checks READ_ONCE(jffs2_write_verify) and returns immediately
-when disabled, avoiding any overhead. The parameter can be toggled at
-runtime via /sys/module/jffs2/parameters/write_verify or set at
-boot/modprobe time.
+When the recovery buffer contains multiple nodes, ref_totlen only
+accounts for the first node's length, which can be much smaller than
+retlen. This under-deducts free_size, causing subsequent allocations to
+land on already-programmed NAND pages and silently corrupt data. When
+first_raw is the only node in the recovery range, ref_totlen equals the
+full unaligned data size and exceeds the page-aligned retlen,
+over-deducting free_size and wasting space.
+
+Use retlen so the new block's free_size accurately reflects which NAND
+pages have been programmed.
 
 Signed-off-by: zhouminqiang <zhouminqiang2@huawei.com>
 ---
- fs/jffs2/Kconfig  |  8 ++++++++
- fs/jffs2/writev.c | 23 +++++++++++++++++++++++
- 2 files changed, 31 insertions(+)
+ fs/jffs2/wbuf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/jffs2/Kconfig b/fs/jffs2/Kconfig
-index 556025a5d438..03dadbd003cd 100644
---- a/fs/jffs2/Kconfig
-+++ b/fs/jffs2/Kconfig
-@@ -61,6 +61,14 @@ config JFFS2_FS_WRITE_VERIFY
- 	  tell transport/program-time corruption from post-commit media
- 	  damage.
+diff --git a/fs/jffs2/wbuf.c b/fs/jffs2/wbuf.c
+index 61e3dbd4cd7b..360a291d9fd5 100644
+--- a/fs/jffs2/wbuf.c
++++ b/fs/jffs2/wbuf.c
+@@ -437,7 +437,7 @@ static void jffs2_wbuf_recover(struct jffs2_sb_info *c)
+ 			kfree(buf);
  
-+	  Verification defaults to off when this option is selected and can
-+	  be enabled at runtime via sysfs:
-+
-+	    /sys/module/jffs2/parameters/write_verify
-+
-+	  Write 0 to disable, 1 to enable.  Boot/modprobe parameter
-+	  jffs2.write_verify=0|1 is also supported.
-+
- 	  If unsure, say 'N'.
+ 			if (retlen)
+-				jffs2_add_physical_node_ref(c, ofs | REF_OBSOLETE, ref_totlen(c, jeb, first_raw), NULL);
++				jffs2_add_physical_node_ref(c, ofs | REF_OBSOLETE, retlen, NULL);
  
- config JFFS2_SUMMARY
-diff --git a/fs/jffs2/writev.c b/fs/jffs2/writev.c
-index 604a14bb5710..342c413be95c 100644
---- a/fs/jffs2/writev.c
-+++ b/fs/jffs2/writev.c
-@@ -9,12 +9,32 @@
-  *
-  */
- 
-+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-+
- #include <linux/kernel.h>
-+#include <linux/module.h>
- #include <linux/slab.h>
- #include <linux/mtd/mtd.h>
- #include "nodelist.h"
- 
- #ifdef CONFIG_JFFS2_FS_WRITE_VERIFY
-+/*
-+ * Optional read-back after writes.
-+ *
-+ * Catch cases where data is corrupted after node CRCs are calculated but
-+ * before it is correctly programmed -- e.g. in RAM or during DMA/bus
-+ * transfer to the flash controller -- so mtd_write() succeeds while the
-+ * medium does not match the in-memory image.
-+ *
-+ * Runtime toggle: /sys/module/jffs2/parameters/write_verify
-+ * (also boot/modprobe: jffs2.write_verify=0|1)
-+ */
-+static bool jffs2_write_verify;
-+module_param_named(write_verify, jffs2_write_verify, bool, 0644);
-+MODULE_PARM_DESC(write_verify,
-+		 "Verify flash writes by reading back (default: N)");
-+
-+
- int jffs2_verify_write(struct jffs2_sb_info *c, const unsigned char *buf,
- 			      uint32_t ofs, size_t len)
- {
-@@ -23,6 +43,9 @@ int jffs2_verify_write(struct jffs2_sb_info *c, const unsigned char *buf,
- 	char *eccstr;
- 	void *verify_buf;
- 
-+	if (!READ_ONCE(jffs2_write_verify))
-+		return 0;
-+
- 	verify_buf = kmalloc(len, GFP_NOFS | __GFP_NOWARN);
- 	if (!verify_buf) {
- 		pr_warn("%s(): verify buffer allocation failed, skipping verification\n",
+ 			c->wbuf_len = 0;
+ 			return;
 -- 
 2.52.0
 
