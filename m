@@ -4,99 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69287C61DFD
-	for <linux-mtd@archiver.kernel.org>; Mon, 31 Aug 2026 22:03:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DD15CC61DD3
+	for <linux-mtd@archiver.kernel.org>; Tue,  1 Sep 2026 07:39:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=7UZsvjFTNr0jyjf/MlmxIkllzCpKjfhnOiTKeh74img=; b=UO/
-	ilr2F1JabK4hZr36YIvtk59zgqoYlLCVLwagVouM5dpma20SGB6LdPP2bNqnCersWmTK6Id/kIWXQ
-	2HPHn/SXX7osFjE81K0CxVwHOHvPcLi/2R5qwuM1CINqQ9qCSuL7XUmwDevoCrgYa/3PVFwE/xKX/
-	YshNK76sZin8kFWXCPoB/xyURNcoocKB4UCBMSWC4mz4dCxf3WMUhaBeq+BkUdkwSr7PWigpx4o9r
-	Hgxs7o2kBkuIn93mOw8tdYeZ5g8g+B6nV+mw+RQJ4jgUD12WnGiw4cpuETgiRtx51mrGptL9D6ee8
-	1BPjYvf91HgDvQg00gCsmzQpKgwKzdg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=J38f5y+voTiyDgjckDRzydL/IESwVqjaRkHOUq+RXCc=; b=n08SXLONPny0Wl
+	h1JWWzkxDsT1+f6v4xIcYGTVeZLv5S48YwCLnBt4uARP8UKHqWEIWgWLzFJaEpBoSrYnDthjhcudf
+	l2+Y4xziCKp8R1/iuoQAlSolxTo7u7zi+Zd/UMuLdjqG6l/KaNYgH3rAFHOFSEqKVfyhwa188AfxR
+	bKEm83BxK0dRSq9RrGJGKfw5FklQ6ULqenEtwCopoRraUgoIpgmFJ7m/gMO9xbtkCkpM8j/9PXMau
+	ByRdDFJT+w4/w+EKf2DXmkTTnSaTOcZskFe3hbcqCmpGMemI7WYDgo2hTqTQxVCgUKC3cEX3KR3kq
+	+w7CffISMvxDmKBJXU8A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x1A6L-0000000AZPP-0Fgm;
-	Mon, 31 Aug 2026 22:03:37 +0000
-Received: from mail-lf1-x133.google.com ([2a00:1450:4864:20::133])
+	id 1x1J5O-0000000B90a-3nTl;
+	Tue, 01 Sep 2026 07:39:14 +0000
+Received: from mail-wr1-x42f.google.com ([2a00:1450:4864:20::42f])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x1A6I-0000000AZP3-1UcH
+	id 1x1J5M-0000000B8zF-2hDp
 	for linux-mtd@lists.infradead.org;
-	Mon, 31 Aug 2026 22:03:35 +0000
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-5b28c91fba5so432599e87.1
-        for <linux-mtd@lists.infradead.org>; Mon, 31 Aug 2026 15:03:32 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1788213811; cv=none;
-        d=google.com; s=arc-20260327;
-        b=Fm6XFk1fpV68Xbo1/QNGTxzB03Nc1FpX4Er7pZHvF4WEGS+Zyn3uDaKpot/A6TcNfr
-         Sw73zXRTrjN3tiwtzzNYY8L9bZw0pe1Ndki1gjODGCJZOBKk3EwkVe8JjkBIDmXm4PBr
-         iNeZy3IuebgalCXJDlW81/4mYvcQbo8JIutxLoa6eP2YjoWo1kI/RvzjJeyxK5CC5YtS
-         o31T5LYaJIQmiwQqlx99PaGPS5E0M+wPDPHnlBnFOsBkg7B086WkBvYI9iWZljhrOfYW
-         4c7Ram7bjyTvI0wqjiTjxqkpSlvvpsdRZsu3Y5xZfYCH5sazmAz4fGe85q2V0tD7s7ki
-         J6bw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :mime-version:dkim-signature;
-        bh=1b5E+SqFrK65m1AP3EJh+uCrb1XnomiFEEeKl3UH0rA=;
-        fh=YgdBs7Gv8tgWMYPE88pQEl5IFeTKLrUiXEK4sin15XI=;
-        b=KwWVL2FRS7qtze7w8Vuz2QSl4svIyqCQAMLCRzhMBhdaoy/5q1Nk7MLiNAQmfeaUaU
-         94XzxE8k7xyAF5VwxpPYuz4hpMUltdIjyWv6GkXpfgfNYLCcHuftLwX65pF5yUBdS+l5
-         kLPi3G5R1tG0DpzLN9cSxYpsE99P4Zjo5WbssPQM8jTBPnh43KeCzQwceXkMvQIgKgY4
-         SMRF5IeJN8y7fseaz69S7J6nOPWcqUG+zVpi1zPbwIRSGOCuVjeCm/cvBwj3E/oq/vep
-         IGDG7DxeSxVcxS/uvNOReFyr0sIl1jNmObJ2lbQdcOP4oaO1G0E3vhQ11vptkJjlMo4D
-         PaBw==;
-        darn=lists.infradead.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
+	Tue, 01 Sep 2026 07:39:13 +0000
+Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-48441a2ba1bso392948f8f.1
+        for <linux-mtd@lists.infradead.org>; Tue, 01 Sep 2026 00:39:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1788213811; x=1788818611; darn=lists.infradead.org;
-        h=content-transfer-encoding:content-type:to:subject:message-id:date
-         :from:mime-version:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=1b5E+SqFrK65m1AP3EJh+uCrb1XnomiFEEeKl3UH0rA=;
-        b=E5oLYjjzgsVF3kI1IRTfUEyHaDsCr0GvZ1Gd0vVwRC92L/YVq+dD1JRJq0FhhZbDwz
-         Fe04iU/1cuor7CCSLf2sJzz5OopFDbCijbGZUpgDK9XnuTmcj5GTKU9Ibek9aswH+wi0
-         TaYbhnJ6qV3XfJoLyOHnOOxL6TqUDZcNwvjpm5A5L/1iDqQrpckUEuTmWxJ05RuKLa03
-         h8QmrxanJXaabQCrxZSejNLfGvgOwEQOhloWcBSaI+/UvEYLt1IDD9ecLaZmYIodz18a
-         tHLbQVaCMK5qgJ25Ol5F9rZT5EPCRDWp51Gw5yDRJDdaO58OgvoKgF/BHoAoIhvd4YOT
-         IPUA==
+        d=gmail.com; s=20251104; t=1788248351; x=1788853151; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=uf8LcBflWgrQbjztzyHrlB9MgJL24SoJuvS1BisUWl0=;
+        b=KqSQKfEf6ftFHgbwyPXz+xiVbFib3Th4njH3pEp0q4rYE8qsBYWQj/Fajil0I+hQ/G
+         anTjJb5YtFfMby1oy6mF7jotLj4qvMPusyo3vKm2HvFNZjb+WIepnZdkTSII80ADwti2
+         LAf9fmYpwR6ytYZUBH32qSrqafxjLFVKFnAdylEb+9yvmv3Iw5zcufuFokkrAVuFZ97B
+         dR9oQNjxDyq4+ox6qq6SToHriQznUKgNUQqEzPr1ZoELoXoTmh9e9+6ywKcXBehPE6Ra
+         OqSXXxrUhYgKyh8X0dsTssfSdy/wY9MWA86VWNyuyovoCd9E1IWpvmhaliqNHZPBtYiR
+         e7+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1788213811; x=1788818611;
-        h=content-transfer-encoding:content-type:to:subject:message-id:date
-         :from:mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=1b5E+SqFrK65m1AP3EJh+uCrb1XnomiFEEeKl3UH0rA=;
-        b=nxduMrLJ0r82C+WzV+7o7fl2fgi3Y6EhuwSFZ0FyDjkl2YwLi4U7MXvFKBaqxIUNM1
-         Ee0a4lZOK/YHenXquS7sK7/J0HUAu7rtVXFpAfZUeAfYU2/NIt3OWwu7MBx+nJ4i5yOW
-         KOnrhnVPpj2MXw+yXe9HFGiyXhu1vM74YdC9Njfy3im3SM5twpVGiDEiQMyK+xXPILmn
-         CQdztf8NFKyBxjZO/3oT6YmvpU6sy3Ret3RPgX1FNdXrzsRVmeMG2cRI8izcc0Qzf3I0
-         vmHJuoctJRpXRuzbyK2Ev3cpoKSBdlmN0bbtaF5YCbzWO2PNpi+knQ/ECEoqWtIDSHIo
-         nQ8g==
-X-Gm-Message-State: AFuF++k5Dce1BDRQai+nTV21mZR4E7uNwLmPSphw2C3ebnnF8exKHLHH
-	7pm9xP3wZjMKYeDDn4851rkUB/wgEJUCweaT1cyp2eCoomY4K/dLnaE7i1x8YQXJRM4nWDw5pCb
-	s28HO42ens50lg66O3BtBVS+ikH8OiJAhW9y6CkU=
-X-Gm-Gg: AYBFou0WeUbleJN6BYbDwtAPO3POb9JrxfaKFG6GDLAZR2LRMmzq4Y8TAig0AYa10Is
-	+L/cJvKFn37L/93zWS7xsAXxAL+KSfGITb6SZI+SQ2r4BBjGJjzSyY9ALr5SiP8t7/xszlI2bVW
-	nxny0A0JHPSDMsX0LhFoKyskUnMCtfsA+NKDbXtTl+VlXzzM6E9S0SICENd86GmKIwMBFjirqXk
-	dpsM7Nmxg3Ee7O1aKkFkya3DMlbNlG/4dX+0hCzu5UWr3P1IqfLCSvEYz3Nt+WeyA4InVF+ExWr
-	EA8DuuFaK7Zb3CzYViEg8x3FgUCvac7mpQksqqr+lEiLEfIFskBjhObJqWp6A5uM3MEuh7ZqyPk
-	=
-X-Received: by 2002:a05:6512:3ba4:b0:5b4:7553:d017 with SMTP id
- 2adb3069b0e04-5b5ff4637d0mr299770e87.10.1788213811139; Mon, 31 Aug 2026
- 15:03:31 -0700 (PDT)
+        d=1e100.net; s=20251104; t=1788248351; x=1788853151;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to:content-type;
+        bh=uf8LcBflWgrQbjztzyHrlB9MgJL24SoJuvS1BisUWl0=;
+        b=D44CBJo5V4mNRwlkIfzIojgb33i/Ul3JKq28AjvMRD5qSVtzPZgJA42DMrGZ/ZgR8t
+         AyPisDp+Ut+oLnLRDhzD2Z0gLIctjm3Grs7jOop5izLlak87xqduT9BWgLO94Hi9oj4P
+         fZ83fUif59LnwDpZ9NK0nep8QDpwYqlw5xt/R6OOYY2avOiCGMI5JLTiTmPBv+YPMpwb
+         OIJszGr99pYB1H9mjkSpzCsmdHL7jKGlCtVAaNbNkEUzqeooC11YizrdTKSR/vJdeKwK
+         Kz0kC9PlhVCjjWhKYYeqyrmPKm3Yt6EbvjXJXQe89y1eDGJSk26edFhnRxLnYzmcjspJ
+         Jc2Q==
+X-Forwarded-Encrypted: i=1; AKwUvBwOTTviuHSYsZfMj8/wfm2p381eSFtyTv2qzgo05lWXxCRUK7Lbi+bUZhW08NfXnPkgwiRPvGpSqR0=@lists.infradead.org
+X-Gm-Message-State: AFuF++nYfJMmtyKwas86DTlVwGZWSHj9e0Gv83fpEID4QtkAhcv1Q5S8
+	KqvxHFBVNJax1MZJOaRel6kQepUrU752r41IcegM9CMmT1TXP4vdan6b
+X-Gm-Gg: AYBFou3OdLPkCnPcyv2y9N92SrYLPfw7+PUs4cz1VVZqpVWNpZc5fJ+LgmnHVOCv6xI
+	PEZqSUXsf4dmhYyIoEfqMfmf/Ua0U3IyWh0Nzcr6NhqMXOQMm6zmIrG5NYrWyH3NRV/lJHeoOyM
+	n1J9FHQXdFcnxrq/BgqnBQjqEiF8WljSEajiohwso5HpTA33QhehhkmpBn91H1kWdOkqHyYPefr
+	4/8u/GuQ67J9rZmlVeewCr1MQRCke/jpc6wAobgQmiAdtDSuOG05BKPzFCfxd4fREXQHUnYD8T2
+	LWHZ7RAUGNBLoA0XFA37Iu7SLq3x1Jz9qLuJi39DOACN2QXo0n84EelUNeGcRxqkFygPS48AW1w
+	MNQg9stT55K9u0Zk77lYAnicO5vsdvuFL5tqbbdstgp9w1RHGsKZUQp6RTH50PkR8LMQxFBWGyg
+	jFRXj2zize2e77oU+QdZtrA7yh/qupHJ3KdAI97BKssMDhKVDJ4FKmCF29T9j9nA/Dyg==
+X-Received: by 2002:a05:6000:22c9:b0:482:f2c1:c721 with SMTP id ffacd0b85a97d-482f798962cmr49380335f8f.5.1788248350669;
+        Tue, 01 Sep 2026 00:39:10 -0700 (PDT)
+Received: from deb05.proceq.com ([213.160.61.66])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-48442d3c460sm3014790f8f.13.2026.09.01.00.39.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Sep 2026 00:39:10 -0700 (PDT)
+From: Mehmet Fide <mehmet.fide@gmail.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Stefan Agner <stefan@agner.ch>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Boris Brezillon <bbrezillon@kernel.org>,
+	Frieder Schrempf <frieder.schrempf@kontron.de>,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Mehmet Fide <mehmet.fide@screeningeagle.com>,
+	Edward Karpicz <webmaster@toradex.com>
+Subject: [PATCH v3 2/2] mtd: rawnand: vf610_nfc: fix false bitflips on reads of erased pages
+Date: Tue,  1 Sep 2026 09:39:07 +0200
+Message-ID: <20260901073907.2443698-3-mehmet.fide@gmail.com>
+X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260901073907.2443698-1-mehmet.fide@gmail.com>
+References: <20260901073907.2443698-1-mehmet.fide@gmail.com>
 MIME-Version: 1.0
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Date: Tue, 1 Sep 2026 00:03:17 +0200
-X-Gm-Features: AcwNN1VHb8HrfDt8bEBK_ZIQrTTQlGxp2JbYXmYQlRlghgJcRfA22ueleMme-dw
-Message-ID: <CACna6ryrfMcsuYmC4VvJw+6HcueV34_65jEp79FYRagwwP0gSg@mail.gmail.com>
-Subject: ONFI parameters parser breaks reading S34ML04G200TF100 data from old kernels
-To: MTD Maling List <linux-mtd@lists.infradead.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260831_150334_415376_CA8E7DF8 
-X-CRM114-Status: UNSURE (   8.03  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260901_003912_708082_59A223FE 
+X-CRM114-Status: GOOD (  22.70  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -108,36 +100,102 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkhCgpJJ3ZlIEJyb2FkY29tIFNvQyB3aXRoIEJyb2FkY29tIE5BTkQgY29udHJvbGxlciB2Ny4x
-LiBJdCBoYXMgTkFORApmbGFzaCBTMzRNTDA0RzIwMFRGMTAwIGF0dGFjaGVkLiBEYXRhc2hlZXQg
-Zm9yIFMzNE1MMDRHMiB0aGF0IEkgZm91bmQKY2xhaW1zIHRoYXQgNCBHYml0ICg1MTIgTWlCKSB2
-ZXJzaW9uIGhhcyAxMjggQiBzcGFyZSBzcGFjZS4KClUtQm9vdCBhbmQga2VybmVscyA1LjQsIDUu
-MTUsIDYuNiBiZWxpZXZlIHRoYXQgYWJvdmUgY2hpcHMgaGFzIDY0IEIgT09COgpDb3VsZCBub3Qg
-ZmluZCBhIHZhbGlkIE9ORkkgcGFyYW1ldGVyIHBhZ2UsIHRyeWluZyBiaXQtd2lzZSBtYWpvcml0
-eQp0byByZWNvdmVyIGl0Ck9ORkkgcGFyYW1ldGVyIHJlY292ZXJ5IGZhaWxlZCwgYWJvcnRpbmcK
-bmFuZDogZGV2aWNlIGZvdW5kLCBNYW51ZmFjdHVyZXIgSUQ6IDB4MDEsIENoaXAgSUQ6IDB4ZGMK
-bmFuZDogQU1EL1NwYW5zaW9uIE5BTkQgNTEyTWlCIDMsM1YgOC1iaXQKbmFuZDogNTEyIE1pQiwg
-U0xDLCBlcmFzZSBzaXplOiAxMjggS2lCLCBwYWdlIHNpemU6IDIwNDgsIE9PQiBzaXplOiA2NAoK
-S2VybmVsIDYuMTIgaG93ZXZlciBkb2Vzbid0IGVyciBhYm91dCBPTkZJIGFuZCBkZXRlY3RzIDEy
-OCBNIE9PQjoKbmFuZDogZGV2aWNlIGZvdW5kLCBNYW51ZmFjdHVyZXIgSUQ6IDB4MDEsIENoaXAg
-SUQ6IDB4ZGMKbmFuZDogQU1EL1NwYW5zaW9uIFMzNE1MMDRHMgpuYW5kOiA1MTIgTWlCLCBTTEMs
-IGVyYXNlIHNpemU6IDEyOCBLaUIsIHBhZ2Ugc2l6ZTogMjA0OCwgT09CIHNpemU6IDEyOAp3aGlj
-aCByZXN1bHRzIGluOgpbICAgIDAuNzcyMDAyXSBiY21iY2FfbmFuZCBmZjgwMTgwMC5uYW5kLWNv
-bnRyb2xsZXI6IHVuY29ycmVjdGFibGUKZXJyb3IgYXQgMHgyMDAKWyAgICAwLjc4MDMzOV0gYmNt
-YmNhX25hbmQgZmY4MDE4MDAubmFuZC1jb250cm9sbGVyOiB1bmNvcnJlY3RhYmxlCmVycm9yIGF0
-IDB4YTAwClsgICAgMC43ODg2ODBdIGJjbWJjYV9uYW5kIGZmODAxODAwLm5hbmQtY29udHJvbGxl
-cjogdW5jb3JyZWN0YWJsZQplcnJvciBhdCAweDFmODAwClsgICAgMC43OTcyMDFdIGJjbWJjYV9u
-YW5kIGZmODAxODAwLm5hbmQtY29udHJvbGxlcjogdW5jb3JyZWN0YWJsZQplcnJvciBhdCAweDIw
-MDAwCgpJIGd1ZXNzIG5ld2VyIGtlcm5lbHMgZG8gdGhlIHJpZ2h0IGRpc2NvdmVyeSB0aGluZyBi
-dXQgYXQgdGhlIHNhbWUKdGltZSB0aGV5IGRvbid0IHdvcmsgd2l0aCBkYXRhIHdyaXR0ZW4gYnkg
-VS1Cb290IG9yIG9sZGVyIGtlcm5lbHMuCgpJJ20gd29uZGVyaW5nIGlmIHRoZXJlIGlzIHNvbWUg
-c2FuZSB3YXkgdG8gZGVhbCB3aXRoIHRoaXM/IEFzc3VtaW5nCnRoZXJlIGFyZSBkZXZpY2VzIGlu
-IHByb2R1Y3Rpb24gd2l0aCBkYXRhIHdyaXR0ZW4gd2l0aCBvbGQgVS1Cb290IGFuZApMaW51eCBr
-ZXJuZWxzPwoKLS0gClJhZmHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRw
-Oi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+From: Mehmet Fide <mehmet.fide@screeningeagle.com>
+
+When the ECC engine fails to decode a page, the driver re-reads the OOB
+area with the engine bypassed, but runs the erased-page check for the
+data area on the buffer left in the controller SRAM by the failed
+transfer.
+
+That buffer does not hold what is on the flash: the failing engine
+writes a bogus single-bit "correction" into it. In the 60-byte ECC mode
+the all-0xff content of an erased page always decodes to the same error
+location, so every erased page shows one stale zero bit at data offset
+0x5FD, which the erased-page check then reports as a corrected bitflip.
+
+Edward Karpicz discovered this behaviour and identified the offset on a
+Colibri VF61; the analysis and the fix build on his finding. Measured
+with an instrumented driver on a Colibri VF50 (MX30LF1G18AC, 32-bit
+ECC): reading a 126 MiB partition with nanddump increased the corrected
+counter by 18035, exactly one per erased page, while raw reads of the
+same pages return clean 0xff. A v4.4 kernel on the VF61 (MX30LF4G28AC)
+accumulates the same false counts, so the behaviour follows the
+controller rather than the chip or the driver generation. Neither the
+Vybrid reference manual nor the published mask set errata (VFXXX_2N02G)
+document it. The 45-byte ECC mode is not affected.
+
+Restoring the known byte is not enough: on pages that fail to decode
+with content other than all-0xff the engine writes its correction
+wherever the syndrome points (measured at a different offset on such a
+page), so the check has to run on what the flash holds. Re-read the data
+area with the ECC engine bypassed, exactly as already done for the OOB
+area. The corrected counter then stays at zero on both boards.
+
+Reported-by: Edward Karpicz <webmaster@toradex.com>
+Link: https://community.toradex.com/t/colibri-vf50-vf61-on-the-current-bsp-mainline-u-boot-v2026-07-and-linux-6-18-lts/30735
+Signed-off-by: Mehmet Fide <mehmet.fide@screeningeagle.com>
+---
+v3:
+ - read and check with mtd->writesize instead of chip.ecc.size; equal
+   on this controller, but clearer (Miquel)
+ - reword the erased-page threshold comment to match the code; the
+   threshold itself stays as is for this series (Miquel)
+v2:
+ - the no-ECC re-read and the erased-page check use the clamped spare
+   size instead of mtd->oobsize
+ - condense the re-read comment to one line
+ - Reported-by/Link trailer order fixed (checkpatch)
+
+ drivers/mtd/nand/raw/vf610_nfc.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/vf610_nfc.c b/drivers/mtd/nand/raw/vf610_nfc.c
+index 1c3e7b167e53..1b9b370adfab 100644
+--- a/drivers/mtd/nand/raw/vf610_nfc.c
++++ b/drivers/mtd/nand/raw/vf610_nfc.c
+@@ -519,6 +519,7 @@ static inline int vf610_nfc_correct_data(struct nand_chip *chip, uint8_t *dat,
+ 	u8 ecc_status;
+ 	u8 ecc_count;
+ 	int flips_threshold = nfc->chip.ecc.strength / 2;
++	int ret;
+ 
+ 	ecc_status = vf610_nfc_read(nfc, ecc_status_off) & 0xff;
+ 	ecc_count = ecc_status & ECC_STATUS_ERR_COUNT;
+@@ -526,15 +527,21 @@ static inline int vf610_nfc_correct_data(struct nand_chip *chip, uint8_t *dat,
+ 	if (!(ecc_status & ECC_STATUS_MASK))
+ 		return ecc_count;
+ 
++	/* The failed decode leaves a bogus correction in SRAM; re-read without ECC */
+ 	nfc->data_access = true;
+-	nand_read_oob_op(&nfc->chip, page, 0, oob, vf610_nfc_spare_size(mtd));
++	ret = nand_read_page_op(&nfc->chip, page, 0, dat, mtd->writesize);
++	if (!ret)
++		ret = nand_read_oob_op(&nfc->chip, page, 0, oob,
++				       vf610_nfc_spare_size(mtd));
+ 	nfc->data_access = false;
++	if (ret)
++		return ret;
+ 
+ 	/*
+-	 * On an erased page, bit count (including OOB) should be zero or
+-	 * at least less then half of the ECC strength.
++	 * Run the erased-page check with the driver's historic threshold
++	 * of half the ECC strength.
+ 	 */
+-	return nand_check_erased_ecc_chunk(dat, nfc->chip.ecc.size, oob,
++	return nand_check_erased_ecc_chunk(dat, mtd->writesize, oob,
+ 					   vf610_nfc_spare_size(mtd), NULL, 0,
+ 					   flips_threshold);
+ }
+-- 
+2.54.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
