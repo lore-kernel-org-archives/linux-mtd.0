@@ -4,51 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2CA64C624D4
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Sep 2026 17:00:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7B86C61DD6
+	for <linux-mtd@archiver.kernel.org>; Wed,  2 Sep 2026 17:00:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Ckp7jRxl1YualC3fRfy7Ofgu3wujLKHqb+uS+XmI5QU=; b=tk2e411BFUfm6G
-	L/aTkQXRH29r3WoHueT154LB23FegQIAPqBMNXFgDWD96WIS2kdMNGLhYRSHyjz3EJXREgj4fdihS
-	4hEwYJfj8ZKiaEPIS4Zfd+yf9JYqIJ4P0bq8zN5lBHfFGVRzi//H6EgRD3ZejxiFEslTaAi6fpx4i
-	EoPQrK8O0it1hFxqj8TA9KbtkZSf+Rhrn270mPZZZF1G3ExHKGQV875qrTi+wHpL6AcH9BdxJHEGj
-	SNI+FsU3/JaTNQO7ud1KpF6KtZTIlGeMjKHmdWUDpPCHZEBdziK9J5K8eOYNvrC7eItrfGwZGn9hL
-	jjQOmdDW2V5+F0exc9Yg==;
+	List-Owner; bh=TwQWp+3m7VO2jTsTpVfEx0zag5PFXJBEQH0p5mIWlyo=; b=WvwmNNNoiN/Uag
+	vhPDpeeal124GzCo2QBROe1TTznLSSON/YvKG9EHWsr8Rq564gSLO/V/2qSOe5YYIeKYHsYn0XncW
+	VAP2iT+K/Iy6uGp++b5/qnY7i2QbUX4AhqIuuSRcL8rwYwY41NigqVDCn2HQeDLCwbHt63mTFqgnU
+	JbQEMKFnPPWuymkG/MF4gpX3mSRc7q/JmMPcdVhC7nPnJgI06XoGJnctDWL6NdNAL74MpLKFz9h6H
+	M3GDwLV7C2vw291874WdzCsWBfSrVzg4dxgPCSmCH1WmVC0hE4VARHlDdquLw7Y56FlEdjqwIXCXs
+	d+qNxPtzrp9mpG5cGnrg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x1oJi-0000000FKYl-16vT;
-	Wed, 02 Sep 2026 17:00:06 +0000
+	id 1x1oJr-0000000FKkr-3Lt2;
+	Wed, 02 Sep 2026 17:00:15 +0000
 Received: from smtpout-03.galae.net ([185.246.85.4])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x1oJd-0000000FKSD-2us0;
-	Wed, 02 Sep 2026 17:00:04 +0000
+	id 1x1oJm-0000000FKck-0tbE;
+	Wed, 02 Sep 2026 17:00:14 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id 052B04E414EA;
-	Wed,  2 Sep 2026 17:00:00 +0000 (UTC)
+	by smtpout-03.galae.net (Postfix) with ESMTPS id 730984E414EB;
+	Wed,  2 Sep 2026 17:00:08 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id CD6506053C;
-	Wed,  2 Sep 2026 16:59:59 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 457BB11C79C04;
-	Wed,  2 Sep 2026 18:59:53 +0200 (CEST)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 47B4C6053C;
+	Wed,  2 Sep 2026 17:00:08 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 552B511C79D62;
+	Wed,  2 Sep 2026 19:00:05 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1788368394; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1788368407; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=DkSx7kQamRFfhTYZ/X2nGLiXG6hhazR6uS6y7d3Fb2o=;
-	b=WHq7ksvP/sCF4A0XzA2mkz7e6VaXNCm6VRD2sdrsIMD+Dq9S/9bg9on6LJKS8wlKXileHo
-	JaEVqr67mesbX6mY3niqi9z14bBAPxvIyhhMQaf2A9Bc+f1cy9iPpa41hohHs6Ga7zpwaO
-	L7t+QrOcU51+Rok3CKiR10rjV7UvGoK8TpbxG8udK04CKz9vJINPTKqf8bn6ZKctaFUZBu
-	cBJvc2DFlYWoJ6gLTeecNJ10zdyT1aHuqo75/0tGc8+DEuFm/+K3JMA1/SZlEdKGU3N9ar
-	sf4qR2R/ZqyGE/fCbbEwe7TyvxSq7qh5WrtDoaYqAw1p2Kf9wN/pXVhn1MQEqg==
+	bh=LGZwYBojvf6z6A3kSsqqOxznQcvg2kta/W2R0+OqU+I=;
+	b=JwDbN15jc6X++alUeVNGWxECEV7xs0qC3M1t+K0CP0N7sLzhJHcDjQsJH97WPOMhqnbme2
+	riiDEidWszJ7WfaQLHb0qkmEHOCujv9Uhz6qyAuYqZSdiUHYoRPF78tEnMSBS5BTZWN6tG
+	IW2KL7NuwCPgGieLTUcaEq+UdK7ngBHWSK+2moD+dGg5u9V8Ew0xnZdxjcTvsJSCOIKlhG
+	4KgRY1pfnxt8PuaSqcAIYE0DqqcrK3k68i3ctWhbdPlDuPiIcosn5nftYKgL/1/psWhVaj
+	SsCIHWblxytCh01m9ZRAAiWRF3WEDRtHsYVjgzPcdQB8TG4OgImjdPNqLoWDGg==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Wed, 02 Sep 2026 18:59:19 +0200
-Subject: [PATCH v4 05/25] mtd: spi-nor: Create the concept of fixup table
- with match function
+Date: Wed, 02 Sep 2026 18:59:21 +0200
+Subject: [PATCH v4 07/25] mtd: spi-nor: Create an indirection on the part
+ name
 MIME-Version: 1.0
-Message-Id: <20260902-winbond-v7-1-spi-nor-rv-addition-v4-5-779d35303dff@bootlin.com>
+Message-Id: <20260902-winbond-v7-1-spi-nor-rv-addition-v4-7-779d35303dff@bootlin.com>
 References: <20260902-winbond-v7-1-spi-nor-rv-addition-v4-0-779d35303dff@bootlin.com>
 In-Reply-To: <20260902-winbond-v7-1-spi-nor-rv-addition-v4-0-779d35303dff@bootlin.com>
 To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
@@ -66,8 +66,8 @@ Cc: Steam Lin <STLin2@winbond.com>, Hsin-Yi Wang <hsinyi@chromium.org>,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260902_100002_072361_10755EAA 
-X-CRM114-Status: GOOD (  24.57  )
+X-CRM114-CacheID: sfid-20260902_100010_427128_F6A97B5A 
+X-CRM114-Status: GOOD (  15.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,940 +84,96 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Manufacturer ID tables increase and fixup() hooks proliferate. Having
-one possible structure per chip was fine until the fixups started being
-more and more common and needed, to some extend due to ID reuses. Mixing
-fixups and chips becomes hard and requires extra helpers to sort which
-ones are needed for a given chip, which every time this happens requires
-a lot of rework.
+We currently print through sysfs and debugfs the name of the part if the
+.name field, which is legacy, has been filled in the ID table (otherwise
+"(null)" is printed). These IDs had an interest until manufacturers
+started re-using more and more extensively the so called unique JEDEC
+IDs. At this stage, a name that was tailored for a chip sold in 2016 may
+no longer be relevant for a chip sold in 2026. Still showing this name
+through the various filesystems may confuse people, removing these names
+cannot be done since they are now part of the user ABI (because of
+sysfs).
 
-Replace the two-level fixup association (a manufacturer wide hook and a
-per flash_info hook) with a per-manufacturer list of fixups that can be
-looked up by flash ID and/or match function.
+In order to allow overwriting the .name field (which is part of a
+read-only structure), let's create a spi-nor pointer which will by
+default point to that .name, but which can be cleared in fixup hooks to
+make sure the name is hidden on newer parts.
 
-The match logic works as follows:
-- If there is an ID, it must match
-- If there is a match function, it must match (cumulative)
-- If there is no identifier (no ID nor any match function), it's a
-  catch-all entry typically used for flagging manufacturer fixups.
-
-Suggested-by: Michael Walle <mwalle@kernel.org>
-Tested-by: Takahiro Kuwano <takahiro.kuwano@infineon.com>
+Reviewed-by: Takahiro Kuwano <takahiro.kuwano@infineon.com>
+Reviewed-by: Michael Walle <mwalle@kernel.org>
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/spi-nor/atmel.c      | 23 ++++++-----
- drivers/mtd/spi-nor/core.c       | 82 ++++++++++++++++++++++++++++------------
- drivers/mtd/spi-nor/core.h       | 23 +++++++++--
- drivers/mtd/spi-nor/everspin.c   |  7 +++-
- drivers/mtd/spi-nor/gigadevice.c |  7 +++-
- drivers/mtd/spi-nor/issi.c       | 22 ++++++++---
- drivers/mtd/spi-nor/macronix.c   | 23 ++++++-----
- drivers/mtd/spi-nor/micron-st.c  | 43 +++++++++++++++------
- drivers/mtd/spi-nor/sfdp.c       | 56 ++++++++++++++++++---------
- drivers/mtd/spi-nor/spansion.c   | 41 +++++++++++---------
- drivers/mtd/spi-nor/sst.c        | 11 ++++--
- drivers/mtd/spi-nor/winbond.c    | 17 ++++++---
- 12 files changed, 247 insertions(+), 108 deletions(-)
+ drivers/mtd/spi-nor/core.c    | 1 +
+ drivers/mtd/spi-nor/debugfs.c | 3 +--
+ drivers/mtd/spi-nor/sysfs.c   | 4 ++--
+ include/linux/mtd/spi-nor.h   | 1 +
+ 4 files changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/atmel.c b/drivers/mtd/spi-nor/atmel.c
-index 8741c0bda497..bccc702a2c4a 100644
---- a/drivers/mtd/spi-nor/atmel.c
-+++ b/drivers/mtd/spi-nor/atmel.c
-@@ -194,47 +194,40 @@ static const struct flash_info atmel_nor_parts[] = {
- 		.size = SZ_512K,
- 		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
- 		.no_sfdp_flags = SECT_4K,
--		.fixups = &atmel_nor_global_protection_fixups,
- 	}, {
- 		.id = SNOR_ID(0x1f, 0x45, 0x01),
- 		.name = "at26df081a",
- 		.size = SZ_1M,
- 		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
- 		.no_sfdp_flags = SECT_4K,
--		.fixups = &atmel_nor_global_protection_fixups
- 	}, {
- 		.id = SNOR_ID(0x1f, 0x46, 0x01),
- 		.name = "at26df161a",
- 		.size = SZ_2M,
- 		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
- 		.no_sfdp_flags = SECT_4K,
--		.fixups = &atmel_nor_global_protection_fixups
- 	}, {
- 		.id = SNOR_ID(0x1f, 0x47, 0x00),
- 		.name = "at25df321",
- 		.size = SZ_4M,
- 		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
- 		.no_sfdp_flags = SECT_4K,
--		.fixups = &atmel_nor_global_protection_fixups
- 	}, {
- 		.id = SNOR_ID(0x1f, 0x47, 0x01),
- 		.name = "at25df321a",
- 		.size = SZ_4M,
- 		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
- 		.no_sfdp_flags = SECT_4K,
--		.fixups = &atmel_nor_global_protection_fixups
- 	}, {
- 		.id = SNOR_ID(0x1f, 0x47, 0x08),
- 		.name = "at25ff321a",
- 		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
--		.fixups = &atmel_nor_global_protection_fixups
- 	}, {
- 		.id = SNOR_ID(0x1f, 0x48, 0x00),
- 		.name = "at25df641",
- 		.size = SZ_8M,
- 		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
- 		.no_sfdp_flags = SECT_4K,
--		.fixups = &atmel_nor_global_protection_fixups
- 	}, {
- 		.id = SNOR_ID(0x1f, 0x66, 0x01),
- 		.name = "at25fs010",
-@@ -242,14 +235,12 @@ static const struct flash_info atmel_nor_parts[] = {
- 		.size = SZ_128K,
- 		.flags = SPI_NOR_HAS_LOCK,
- 		.no_sfdp_flags = SECT_4K,
--		.fixups = &at25fs_nor_fixups
- 	}, {
- 		.id = SNOR_ID(0x1f, 0x66, 0x04),
- 		.name = "at25fs040",
- 		.size = SZ_512K,
- 		.flags = SPI_NOR_HAS_LOCK,
- 		.no_sfdp_flags = SECT_4K,
--		.fixups = &at25fs_nor_fixups
- 	}, {
- 		.id = SNOR_ID(0x1f, 0x87, 0x01),
- 		.size = SZ_4M,
-@@ -257,8 +248,22 @@ static const struct flash_info atmel_nor_parts[] = {
- 	},
- };
- 
-+static const struct spi_nor_fixup atmel_fixups[] = {
-+	{ .id = SNOR_ID(0x1f, 0x44, 0x01), .fixups = &atmel_nor_global_protection_fixups },
-+	{ .id = SNOR_ID(0x1f, 0x45, 0x01), .fixups = &atmel_nor_global_protection_fixups },
-+	{ .id = SNOR_ID(0x1f, 0x46, 0x01), .fixups = &atmel_nor_global_protection_fixups },
-+	{ .id = SNOR_ID(0x1f, 0x47, 0x00), .fixups = &atmel_nor_global_protection_fixups },
-+	{ .id = SNOR_ID(0x1f, 0x47, 0x01), .fixups = &atmel_nor_global_protection_fixups },
-+	{ .id = SNOR_ID(0x1f, 0x47, 0x08), .fixups = &atmel_nor_global_protection_fixups },
-+	{ .id = SNOR_ID(0x1f, 0x48, 0x00), .fixups = &atmel_nor_global_protection_fixups },
-+	{ .id = SNOR_ID(0x1f, 0x66, 0x01), .fixups = &at25fs_nor_fixups },
-+	{ .id = SNOR_ID(0x1f, 0x66, 0x04), .fixups = &at25fs_nor_fixups },
-+};
-+
- const struct spi_nor_manufacturer spi_nor_atmel = {
- 	.name = "atmel",
- 	.parts = atmel_nor_parts,
- 	.nparts = ARRAY_SIZE(atmel_nor_parts),
-+	.fixups = atmel_fixups,
-+	.nfixups = ARRAY_SIZE(atmel_fixups),
- };
 diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 020045c14c68..a9360998d34b 100644
+index 77d28c99c33b..1e8628da675b 100644
 --- a/drivers/mtd/spi-nor/core.c
 +++ b/drivers/mtd/spi-nor/core.c
-@@ -2357,19 +2357,24 @@ int spi_nor_post_bfpt_fixups(struct spi_nor *nor,
- 			     const struct sfdp_parameter_header *bfpt_header,
- 			     const struct sfdp_bfpt *bfpt)
- {
-+	const struct spi_nor_fixup *fixups;
- 	int ret;
-+	unsigned int i;
+@@ -3493,6 +3493,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+ 		return PTR_ERR(info);
  
--	if (nor->manufacturer && nor->manufacturer->fixups &&
--	    nor->manufacturer->fixups->post_bfpt) {
--		ret = nor->manufacturer->fixups->post_bfpt(nor, bfpt_header,
--							   bfpt);
--		if (ret)
--			return ret;
-+	if (!nor->manufacturer || !nor->manufacturer->fixups)
-+		return 0;
-+
-+	fixups = nor->manufacturer->fixups;
-+
-+	for (i = 0; i < nor->manufacturer->nfixups; i++) {
-+		if (fixups[i].fixups->post_bfpt &&
-+		    spi_nor_fixup_match(nor, &fixups[i])) {
-+			ret = fixups[i].fixups->post_bfpt(nor, bfpt_header, bfpt);
-+			if (ret)
-+				return ret;
-+		}
- 	}
+ 	nor->info = info;
++	nor->partname = info->name;
  
--	if (nor->info->fixups && nor->info->fixups->post_bfpt)
--		return nor->info->fixups->post_bfpt(nor, bfpt_header, bfpt);
--
- 	return 0;
- }
+ 	mutex_init(&nor->lock);
  
-@@ -2626,6 +2631,26 @@ static int spi_nor_setup(struct spi_nor *nor,
- 	return spi_nor_set_addr_nbytes(nor);
- }
- 
-+bool spi_nor_fixup_match(const struct spi_nor *nor,
-+			 const struct spi_nor_fixup *fixup)
-+{
-+	const struct spi_nor_id *id = nor->info ? nor->info->id : NULL;
-+
-+	/* Filter by ID first, if available */
-+	if (fixup->id) {
-+		if (!id || fixup->id->len > id->len ||
-+		    memcmp(id->bytes, fixup->id->bytes, fixup->id->len))
-+			return false;
-+	}
-+
-+	/* Further filter with the match callback, if provided */
-+	if (fixup->match)
-+		return fixup->match(nor);
-+
-+	/* Either there was an ID and it matched, or it is a catch-all entry */
-+	return true;
-+}
-+
- /**
-  * spi_nor_manufacturer_init_params() - Initialize the flash's parameters and
-  * settings based on MFR register and ->default_init() hook.
-@@ -2633,12 +2658,19 @@ static int spi_nor_setup(struct spi_nor *nor,
-  */
- static void spi_nor_manufacturer_init_params(struct spi_nor *nor)
- {
--	if (nor->manufacturer && nor->manufacturer->fixups &&
--	    nor->manufacturer->fixups->default_init)
--		nor->manufacturer->fixups->default_init(nor);
-+	const struct spi_nor_fixup *fixups;
-+	unsigned int i;
- 
--	if (nor->info->fixups && nor->info->fixups->default_init)
--		nor->info->fixups->default_init(nor);
-+	if (!nor->manufacturer || !nor->manufacturer->fixups)
-+		return;
-+
-+	fixups = nor->manufacturer->fixups;
-+
-+	for (i = 0; i < nor->manufacturer->nfixups; i++) {
-+		if (fixups[i].fixups->default_init &&
-+		    spi_nor_fixup_match(nor, &fixups[i]))
-+			fixups[i].fixups->default_init(nor);
-+	}
- }
- 
- /**
-@@ -2787,22 +2819,24 @@ static void spi_nor_init_fixup_flags(struct spi_nor *nor)
- static int spi_nor_late_init_params(struct spi_nor *nor)
- {
+diff --git a/drivers/mtd/spi-nor/debugfs.c b/drivers/mtd/spi-nor/debugfs.c
+index 512825c3fc85..275671222588 100644
+--- a/drivers/mtd/spi-nor/debugfs.c
++++ b/drivers/mtd/spi-nor/debugfs.c
+@@ -82,13 +82,12 @@ static int spi_nor_params_show(struct seq_file *s, void *data)
  	struct spi_nor_flash_parameter *params = nor->params;
-+	const struct spi_nor_fixup *fixups;
-+	unsigned int i;
- 	int ret;
+ 	struct spi_nor_erase_map *erase_map = &params->erase_map;
+ 	struct spi_nor_erase_region *region = erase_map->regions;
+-	const struct flash_info *info = nor->info;
+ 	char buf[16], *str;
+ 	loff_t lock_start;
+ 	u64 lock_length;
+ 	unsigned int i;
  
- 	/* Needed by some late_init hooks */
- 	spi_nor_init_flags(nor);
+-	seq_printf(s, "name\t\t%s\n", info->name);
++	seq_printf(s, "name\t\t%s\n", nor->partname);
+ 	seq_printf(s, "id\t\t%*ph\n", SPI_NOR_MAX_ID_LEN, nor->id);
+ 	string_get_size(params->size, 1, STRING_UNITS_2, buf, sizeof(buf));
+ 	seq_printf(s, "size\t\t%s\n", buf);
+diff --git a/drivers/mtd/spi-nor/sysfs.c b/drivers/mtd/spi-nor/sysfs.c
+index 643513ee891b..a2dabe4c6422 100644
+--- a/drivers/mtd/spi-nor/sysfs.c
++++ b/drivers/mtd/spi-nor/sysfs.c
+@@ -25,7 +25,7 @@ static ssize_t partname_show(struct device *dev,
+ 	struct spi_mem *spimem = spi_get_drvdata(spi);
+ 	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
  
--	if (nor->manufacturer && nor->manufacturer->fixups &&
--	    nor->manufacturer->fixups->late_init) {
--		ret = nor->manufacturer->fixups->late_init(nor);
--		if (ret)
--			return ret;
--	}
-+	if (nor->manufacturer && nor->manufacturer->fixups) {
-+		fixups = nor->manufacturer->fixups;
- 
--	if (nor->info->fixups && nor->info->fixups->late_init) {
--		ret = nor->info->fixups->late_init(nor);
--		if (ret)
--			return ret;
-+		for (i = 0; i < nor->manufacturer->nfixups; i++) {
-+			if (fixups[i].fixups->late_init &&
-+			    spi_nor_fixup_match(nor, &fixups[i])) {
-+				ret = fixups[i].fixups->late_init(nor);
-+				if (ret)
-+					return ret;
-+			}
-+		}
- 	}
- 
- 	if (!nor->params->opcodes.die_erase)
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 8b05371655f4..32a2d485d31d 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -445,6 +445,19 @@ struct spi_nor_fixups {
- 	int (*late_init)(struct spi_nor *nor);
- };
- 
-+/**
-+ * struct spi_nor_fixup - SPI NOR fixup registration.
-+ * @id:		(optional) flash ID this fixup applies to, may only match the
-+ *		ID prefix, eg. just the first few bytes to match a whole family
-+ * @match:	(optional) custom match function (can be used together with @id)
-+ * @fixups:	the fixup hooks to apply when this entry matches
-+ */
-+struct spi_nor_fixup {
-+	const struct spi_nor_id *id;
-+	bool (*match)(const struct spi_nor *nor);
-+	const struct spi_nor_fixups *fixups;
-+};
-+
- /**
-  * struct spi_nor_id - SPI NOR flash ID.
-  *
-@@ -560,7 +573,6 @@ struct flash_info {
- 	u8 mfr_flags;
- 
- 	const struct spi_nor_otp_organization *otp;
--	const struct spi_nor_fixups *fixups;
- };
- 
- #define SNOR_ID(...)							\
-@@ -582,13 +594,16 @@ struct flash_info {
-  * @name: manufacturer name
-  * @parts: array of parts supported by this manufacturer
-  * @nparts: number of entries in the parts array
-- * @fixups: hooks called at various points in time during spi_nor_scan()
-+ * @fixups: list of fixups, each matched by ID (or a custom match function),
-+ *          applied to any part of this manufacturer.
-+ * @nfixups: number of entries in the fixups array
-  */
- struct spi_nor_manufacturer {
- 	const char *name;
- 	const struct flash_info *parts;
- 	unsigned int nparts;
--	const struct spi_nor_fixups *fixups;
-+	const struct spi_nor_fixup *fixups;
-+	unsigned int nfixups;
- };
- 
- /**
-@@ -619,6 +634,8 @@ extern const struct spi_nor_manufacturer spi_nor_xmc;
- 
- extern const struct attribute_group *spi_nor_sysfs_groups[];
- 
-+bool spi_nor_fixup_match(const struct spi_nor *nor,
-+			 const struct spi_nor_fixup *fixup);
- void spi_nor_spimem_setup_op(const struct spi_nor *nor,
- 			     struct spi_mem_op *op,
- 			     const enum spi_nor_protocol proto);
-diff --git a/drivers/mtd/spi-nor/everspin.c b/drivers/mtd/spi-nor/everspin.c
-index add37104d673..864dffba0e9c 100644
---- a/drivers/mtd/spi-nor/everspin.c
-+++ b/drivers/mtd/spi-nor/everspin.c
-@@ -44,9 +44,14 @@ static const struct spi_nor_fixups everspin_nor_fixups = {
- 	.default_init = everspin_nor_default_init,
- };
- 
-+static const struct spi_nor_fixup everspin_fixups[] = {
-+	{ .fixups = &everspin_nor_fixups },
-+};
-+
- const struct spi_nor_manufacturer spi_nor_everspin = {
- 	.name = "everspin",
- 	.parts = everspin_nor_parts,
- 	.nparts = ARRAY_SIZE(everspin_nor_parts),
--	.fixups = &everspin_nor_fixups,
-+	.fixups = everspin_fixups,
-+	.nfixups = ARRAY_SIZE(everspin_fixups),
- };
-diff --git a/drivers/mtd/spi-nor/gigadevice.c b/drivers/mtd/spi-nor/gigadevice.c
-index 4070a692e968..f76fd0dedd0a 100644
---- a/drivers/mtd/spi-nor/gigadevice.c
-+++ b/drivers/mtd/spi-nor/gigadevice.c
-@@ -64,7 +64,6 @@ static const struct flash_info gigadevice_nor_parts[] = {
- 		.id = SNOR_ID(0xc8, 0x40, 0x19),
- 		.name = "gd25q256",
- 		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6,
--		.fixups = &gd25q256_fixups,
- 		.fixup_flags = SPI_NOR_4B_OPCODES,
- 	}, {
- 		.id = SNOR_ID(0xc8, 0x60, 0x16),
-@@ -87,8 +86,14 @@ static const struct flash_info gigadevice_nor_parts[] = {
- 	},
- };
- 
-+static const struct spi_nor_fixup gigadevice_fixups[] = {
-+	{ .id = SNOR_ID(0xc8, 0x40, 0x19), .fixups = &gd25q256_fixups },
-+};
-+
- const struct spi_nor_manufacturer spi_nor_gigadevice = {
- 	.name = "gigadevice",
- 	.parts = gigadevice_nor_parts,
- 	.nparts = ARRAY_SIZE(gigadevice_nor_parts),
-+	.fixups = gigadevice_fixups,
-+	.nfixups = ARRAY_SIZE(gigadevice_fixups),
- };
-diff --git a/drivers/mtd/spi-nor/issi.c b/drivers/mtd/spi-nor/issi.c
-index 04db42b5141e..7af850eea9ff 100644
---- a/drivers/mtd/spi-nor/issi.c
-+++ b/drivers/mtd/spi-nor/issi.c
-@@ -52,13 +52,11 @@ static const struct flash_info issi_nor_parts[] = {
- 		.sector_size = SZ_32K,
- 		.size = SZ_64K,
- 		.no_sfdp_flags = SECT_4K,
--		.fixups = &pm25lv_nor_fixups
- 	}, {
- 		.name = "pm25lv010",
- 		.sector_size = SZ_32K,
- 		.size = SZ_128K,
- 		.no_sfdp_flags = SECT_4K,
--		.fixups = &pm25lv_nor_fixups
- 	}, {
- 		.id = SNOR_ID(0x7f, 0x9d, 0x20),
- 		.name = "is25cd512",
-@@ -103,7 +101,6 @@ static const struct flash_info issi_nor_parts[] = {
- 	}, {
- 		.id = SNOR_ID(0x9d, 0x60, 0x19),
- 		.name = "is25lp256",
--		.fixups = &is25lp256_fixups,
- 		.fixup_flags = SPI_NOR_4B_OPCODES,
- 	}, {
- 		.id = SNOR_ID(0x9d, 0x70, 0x16),
-@@ -124,7 +121,6 @@ static const struct flash_info issi_nor_parts[] = {
- 		.id = SNOR_ID(0x9d, 0x70, 0x19),
- 		.name = "is25wp256",
- 		.flags = SPI_NOR_QUAD_PP,
--		.fixups = &is25lp256_fixups,
- 		.fixup_flags = SPI_NOR_4B_OPCODES,
- 	}
- };
-@@ -139,9 +135,25 @@ static const struct spi_nor_fixups issi_fixups = {
- 	.default_init = issi_nor_default_init,
- };
- 
-+/* PM25LV parts have no JEDEC ID and are likely matched by name */
-+static bool issi_pm25lv_match(const struct spi_nor *nor)
-+{
-+	const char *name = nor->info ? nor->info->name : NULL;
-+
-+	return name && strstarts(name, "pm25lv");
-+}
-+
-+static const struct spi_nor_fixup issi_fixup_list[] = {
-+	{ .fixups = &issi_fixups },
-+	{ .match = issi_pm25lv_match, .fixups = &pm25lv_nor_fixups },
-+	{ .id = SNOR_ID(0x9d, 0x60, 0x19), .fixups = &is25lp256_fixups },
-+	{ .id = SNOR_ID(0x9d, 0x70, 0x19), .fixups = &is25lp256_fixups },
-+};
-+
- const struct spi_nor_manufacturer spi_nor_issi = {
- 	.name = "issi",
- 	.parts = issi_nor_parts,
- 	.nparts = ARRAY_SIZE(issi_nor_parts),
--	.fixups = &issi_fixups,
-+	.fixups = issi_fixup_list,
-+	.nfixups = ARRAY_SIZE(issi_fixup_list),
- };
-diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-index 55612237c1ef..04b431bf5f13 100644
---- a/drivers/mtd/spi-nor/macronix.c
-+++ b/drivers/mtd/spi-nor/macronix.c
-@@ -137,20 +137,16 @@ static const struct flash_info macronix_nor_parts[] = {
- 	}, {
- 		/* MX25L25635E, MX25L25645G */
- 		.id = SNOR_ID(0xc2, 0x20, 0x19),
--		.fixups = &mx25l25635_fixups
- 	}, {
- 		/* MX66L51235F */
- 		.id = SNOR_ID(0xc2, 0x20, 0x1a),
- 		.fixup_flags = SPI_NOR_4B_OPCODES,
--		.fixups = &macronix_qpp4b_fixups,
- 	}, {
- 		/* MX66L1G45G */
- 		.id = SNOR_ID(0xc2, 0x20, 0x1b),
--		.fixups = &macronix_qpp4b_fixups,
- 	}, {
- 		/* MX66L2G45G */
- 		.id = SNOR_ID(0xc2, 0x20, 0x1c),
--		.fixups = &macronix_qpp4b_fixups,
- 	}, {
- 		.id = SNOR_ID(0xc2, 0x23, 0x14),
- 		.name = "mx25v8035f",
-@@ -189,15 +185,12 @@ static const struct flash_info macronix_nor_parts[] = {
- 	}, {
- 		/* MX25U51245G */
- 		.id = SNOR_ID(0xc2, 0x25, 0x3a),
--		.fixups = &macronix_qpp4b_fixups,
- 	}, {
- 		/* MX66U1G45G */
- 		.id = SNOR_ID(0xc2, 0x25, 0x3b),
--		.fixups = &macronix_qpp4b_fixups,
- 	}, {
- 		/* MX66U2G45G */
- 		.id = SNOR_ID(0xc2, 0x25, 0x3c),
--		.fixups = &macronix_qpp4b_fixups,
- 	}, {
- 		.id = SNOR_ID(0xc2, 0x26, 0x18),
- 		.name = "mx25l12855e",
-@@ -229,7 +222,6 @@ static const struct flash_info macronix_nor_parts[] = {
- 	}, {
- 		/* MX25L3255E */
- 		.id = SNOR_ID(0xc2, 0x9e, 0x16),
--		.fixups = &mx25l3255e_fixups,
- 	},
- 	/*
- 	 * This spares us of adding new flash entries for flashes that can be
-@@ -333,9 +325,22 @@ static const struct spi_nor_fixups macronix_nor_fixups = {
- 	.late_init = macronix_nor_late_init,
- };
- 
-+static const struct spi_nor_fixup macronix_fixups[] = {
-+	{ .fixups = &macronix_nor_fixups },
-+	{ .id = SNOR_ID(0xc2, 0x20, 0x19), .fixups = &mx25l25635_fixups },
-+	{ .id = SNOR_ID(0xc2, 0x20, 0x1a), .fixups = &macronix_qpp4b_fixups },
-+	{ .id = SNOR_ID(0xc2, 0x20, 0x1b), .fixups = &macronix_qpp4b_fixups },
-+	{ .id = SNOR_ID(0xc2, 0x20, 0x1c), .fixups = &macronix_qpp4b_fixups },
-+	{ .id = SNOR_ID(0xc2, 0x25, 0x3a), .fixups = &macronix_qpp4b_fixups },
-+	{ .id = SNOR_ID(0xc2, 0x25, 0x3b), .fixups = &macronix_qpp4b_fixups },
-+	{ .id = SNOR_ID(0xc2, 0x25, 0x3c), .fixups = &macronix_qpp4b_fixups },
-+	{ .id = SNOR_ID(0xc2, 0x9e, 0x16), .fixups = &mx25l3255e_fixups },
-+};
-+
- const struct spi_nor_manufacturer spi_nor_macronix = {
- 	.name = "macronix",
- 	.parts = macronix_nor_parts,
- 	.nparts = ARRAY_SIZE(macronix_nor_parts),
--	.fixups = &macronix_nor_fixups,
-+	.fixups = macronix_fixups,
-+	.nfixups = ARRAY_SIZE(macronix_fixups),
- };
-diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
-index 344539d2a36a..2aabd6d487ba 100644
---- a/drivers/mtd/spi-nor/micron-st.c
-+++ b/drivers/mtd/spi-nor/micron-st.c
-@@ -206,13 +206,11 @@ static const struct flash_info micron_nor_parts[] = {
- 		.id = SNOR_ID(0x2c, 0x5b, 0x1a),
- 		.mfr_flags = USE_FSR,
- 		.fixup_flags = SPI_NOR_IO_MODE_EN_VOLATILE,
--		.fixups = &mt35xu512aba_fixups,
- 	}, {
- 		/* MT35XU01GBBA */
- 		.id = SNOR_ID(0x2c, 0x5b, 0x1b),
- 		.mfr_flags = USE_FSR,
- 		.fixup_flags = SPI_NOR_IO_MODE_EN_VOLATILE,
--		.fixups = &mt35_two_die_fixups,
- 	}, {
- 		.id = SNOR_ID(0x2c, 0x5b, 0x1c),
- 		.name = "mt35xu02g",
-@@ -221,7 +219,6 @@ static const struct flash_info micron_nor_parts[] = {
- 		.no_sfdp_flags = SECT_4K | SPI_NOR_OCTAL_READ,
- 		.mfr_flags = USE_FSR,
- 		.fixup_flags = SPI_NOR_4B_OPCODES | SPI_NOR_IO_MODE_EN_VOLATILE,
--		.fixups = &mt35_two_die_fixups,
- 	},
- };
- 
-@@ -233,6 +230,17 @@ static int mt25qu512a_post_bfpt_fixup(struct spi_nor *nor,
- 	return 0;
+-	return sysfs_emit(buf, "%s\n", nor->info->name);
++	return sysfs_emit(buf, "%s\n", nor->partname);
  }
+ static DEVICE_ATTR_RO(partname);
  
-+/*
-+ * n25q00a parts share the first same 3 ID bytes with mt25qu01g.
-+ * In order to not mix the fixups, further filter out using the part name.
-+ */
-+static bool n25q00a_match(const struct spi_nor *nor)
-+{
-+	const char *name = nor->info ? nor->info->name : NULL;
-+
-+	return name && !strncmp(name, "n25q00a", 7);
-+}
-+
- static const struct spi_nor_fixups mt25qu512a_fixups = {
- 	.post_bfpt = mt25qu512a_post_bfpt_fixup,
- };
-@@ -426,14 +434,12 @@ static const struct flash_info st_nor_parts[] = {
- 			 SPI_NOR_BP3_SR_BIT6,
- 		.no_sfdp_flags = SECT_4K | SPI_NOR_QUAD_READ,
- 		.mfr_flags = USE_FSR,
--		.fixups = &n25q00_fixups,
- 	}, {
- 		.id = SNOR_ID(0x20, 0xba, 0x22),
- 		.name = "mt25ql02g",
- 		.size = SZ_256M,
- 		.no_sfdp_flags = SECT_4K | SPI_NOR_QUAD_READ,
- 		.mfr_flags = USE_FSR,
--		.fixups = &mt25q02_fixups,
- 	}, {
- 		.id = SNOR_ID(0x20, 0xbb, 0x15),
- 		.name = "n25q016a",
-@@ -480,7 +486,6 @@ static const struct flash_info st_nor_parts[] = {
- 		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_4BIT_BP |
- 			 SPI_NOR_BP3_SR_BIT6,
- 		.mfr_flags = USE_FSR,
--		.fixups = &mt25qu512a_fixups,
- 	}, {
- 		.id = SNOR_ID(0x20, 0xbb, 0x20),
- 		.name = "n25q512a",
-@@ -493,21 +498,18 @@ static const struct flash_info st_nor_parts[] = {
- 		.id = SNOR_ID(0x20, 0xbb, 0x21, 0x10, 0x44, 0x00),
- 		.name = "mt25qu01g",
- 		.mfr_flags = USE_FSR,
--		.fixups = &mt25q01_fixups,
- 	}, {
- 		.id = SNOR_ID(0x20, 0xbb, 0x21),
- 		.name = "n25q00a",
- 		.size = SZ_128M,
- 		.no_sfdp_flags = SECT_4K | SPI_NOR_QUAD_READ,
- 		.mfr_flags = USE_FSR,
--		.fixups = &n25q00_fixups,
- 	}, {
- 		.id = SNOR_ID(0x20, 0xbb, 0x22),
- 		.name = "mt25qu02g",
- 		.size = SZ_256M,
- 		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
- 		.mfr_flags = USE_FSR,
--		.fixups = &mt25q02_fixups,
- 	}
- };
+@@ -78,7 +78,7 @@ static umode_t spi_nor_sysfs_is_visible(struct kobject *kobj,
  
-@@ -657,16 +659,35 @@ static const struct spi_nor_fixups micron_st_nor_fixups = {
- 	.late_init = micron_st_nor_late_init,
- };
- 
-+static const struct spi_nor_fixup micron_fixups[] = {
-+	{ .fixups = &micron_st_nor_fixups },
-+	{ .id = SNOR_ID(0x2c, 0x5b, 0x1a), .fixups = &mt35xu512aba_fixups },
-+	{ .id = SNOR_ID(0x2c, 0x5b, 0x1b), .fixups = &mt35_two_die_fixups },
-+	{ .id = SNOR_ID(0x2c, 0x5b, 0x1c), .fixups = &mt35_two_die_fixups },
-+};
-+
-+static const struct spi_nor_fixup st_fixups[] = {
-+	{ .fixups = &micron_st_nor_fixups },
-+	{ .id = SNOR_ID(0x20, 0xba, 0x21), .fixups = &n25q00_fixups },
-+	{ .id = SNOR_ID(0x20, 0xba, 0x22), .fixups = &mt25q02_fixups },
-+	{ .id = SNOR_ID(0x20, 0xbb, 0x20, 0x10, 0x44, 0x00), .fixups = &mt25qu512a_fixups },
-+	{ .id = SNOR_ID(0x20, 0xbb, 0x21, 0x10, 0x44, 0x00), .fixups = &mt25q01_fixups },
-+	{ .id = SNOR_ID(0x20, 0xbb, 0x21), .match = n25q00a_match, .fixups = &n25q00_fixups },
-+	{ .id = SNOR_ID(0x20, 0xbb, 0x22), .fixups = &mt25q02_fixups },
-+};
-+
- const struct spi_nor_manufacturer spi_nor_micron = {
- 	.name = "micron",
- 	.parts = micron_nor_parts,
- 	.nparts = ARRAY_SIZE(micron_nor_parts),
--	.fixups = &micron_st_nor_fixups,
-+	.fixups = micron_fixups,
-+	.nfixups = ARRAY_SIZE(micron_fixups),
- };
- 
- const struct spi_nor_manufacturer spi_nor_st = {
- 	.name = "st",
- 	.parts = st_nor_parts,
- 	.nparts = ARRAY_SIZE(st_nor_parts),
--	.fixups = &micron_st_nor_fixups,
-+	.fixups = st_fixups,
-+	.nfixups = ARRAY_SIZE(st_fixups),
- };
-diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
-index 285ac781fba8..39cb8ac3a037 100644
---- a/drivers/mtd/spi-nor/sfdp.c
-+++ b/drivers/mtd/spi-nor/sfdp.c
-@@ -727,12 +727,19 @@ static u8 spi_nor_smpt_addr_nbytes(const struct spi_nor *nor, const u32 settings
- static void spi_nor_smpt_read_dummy_fixups(const struct spi_nor *nor,
- 					   u8 *read_dummy)
- {
--	if (nor->manufacturer && nor->manufacturer->fixups &&
--	    nor->manufacturer->fixups->smpt_read_dummy)
--		nor->manufacturer->fixups->smpt_read_dummy(nor, read_dummy);
-+	const struct spi_nor_fixup *fixups;
-+	unsigned int i;
- 
--	if (nor->info->fixups && nor->info->fixups->smpt_read_dummy)
--		nor->info->fixups->smpt_read_dummy(nor, read_dummy);
-+	if (!nor->manufacturer || !nor->manufacturer->fixups)
-+		return;
-+
-+	fixups = nor->manufacturer->fixups;
-+
-+	for (i = 0; i < nor->manufacturer->nfixups; i++) {
-+		if (fixups[i].fixups->smpt_read_dummy &&
-+		    spi_nor_fixup_match(nor, &fixups[i]))
-+			fixups[i].fixups->smpt_read_dummy(nor, read_dummy);
-+	}
- }
- 
- /**
-@@ -757,12 +764,19 @@ static u8 spi_nor_smpt_read_dummy(const struct spi_nor *nor, const u32 settings)
- 
- static void spi_nor_smpt_map_id_fixups(const struct spi_nor *nor, u8 *map_id)
- {
--	if (nor->manufacturer && nor->manufacturer->fixups &&
--	    nor->manufacturer->fixups->smpt_map_id)
--		nor->manufacturer->fixups->smpt_map_id(nor, map_id);
-+	const struct spi_nor_fixup *fixups;
-+	unsigned int i;
- 
--	if (nor->info->fixups && nor->info->fixups->smpt_map_id)
--		nor->info->fixups->smpt_map_id(nor, map_id);
-+	if (!nor->manufacturer || !nor->manufacturer->fixups)
-+		return;
-+
-+	fixups = nor->manufacturer->fixups;
-+
-+	for (i = 0; i < nor->manufacturer->nfixups; i++) {
-+		if (fixups[i].fixups->smpt_map_id &&
-+		    spi_nor_fixup_match(nor, &fixups[i]))
-+			fixups[i].fixups->smpt_map_id(nor, map_id);
-+	}
- }
- 
- /**
-@@ -1406,17 +1420,23 @@ static int spi_nor_parse_sccr_mc(struct spi_nor *nor,
-  */
- static int spi_nor_post_sfdp_fixups(struct spi_nor *nor)
- {
-+	const struct spi_nor_fixup *fixups;
-+	unsigned int i;
- 	int ret;
- 
--	if (nor->manufacturer && nor->manufacturer->fixups &&
--	    nor->manufacturer->fixups->post_sfdp) {
--		ret = nor->manufacturer->fixups->post_sfdp(nor);
--		if (ret)
--			return ret;
--	}
-+	if (!nor->manufacturer || !nor->manufacturer->fixups)
-+		return 0;
- 
--	if (nor->info->fixups && nor->info->fixups->post_sfdp)
--		return nor->info->fixups->post_sfdp(nor);
-+	fixups = nor->manufacturer->fixups;
-+
-+	for (i = 0; i < nor->manufacturer->nfixups; i++) {
-+		if (fixups[i].fixups->post_sfdp &&
-+		    spi_nor_fixup_match(nor, &fixups[i])) {
-+			ret = fixups[i].fixups->post_sfdp(nor);
-+			if (ret)
-+				return ret;
-+		}
-+	}
- 
- 	return 0;
- }
-diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-index ca2703a5a338..f3862eb1a23a 100644
---- a/drivers/mtd/spi-nor/spansion.c
-+++ b/drivers/mtd/spi-nor/spansion.c
-@@ -905,7 +905,6 @@ static const struct flash_info spansion_nor_parts[] = {
- 		.sector_size = SZ_256K,
- 		.no_sfdp_flags = SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
- 		.mfr_flags = USE_CLSR,
--		.fixups = &s25fs_s_nor_fixups,
- 	}, {
- 		.id = SNOR_ID(0x01, 0x20, 0x18, 0x03, 0x00),
- 		.name = "s25sl12800",
-@@ -941,7 +940,6 @@ static const struct flash_info spansion_nor_parts[] = {
- 		.size = SZ_16M,
- 		.no_sfdp_flags = SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
- 		.mfr_flags = USE_CLSR,
--		.fixups = &s25fs_s_nor_fixups,
- 	}, {
- 		.id = SNOR_ID(0x01, 0x20, 0x18, 0x4d, 0x01),
- 		.name = "s25fl129p1",
-@@ -1001,76 +999,61 @@ static const struct flash_info spansion_nor_parts[] = {
- 		.id = SNOR_ID(0x34, 0x2a, 0x1a, 0x0f, 0x03, 0x90),
- 		.name = "s25hl512t",
- 		.mfr_flags = USE_CLPEF,
--		.fixups = &s25hx_t_fixups
- 	}, {
- 		.id = SNOR_ID(0x34, 0x2a, 0x1b, 0x0f, 0x03, 0x90),
- 		.name = "s25hl01gt",
- 		.mfr_flags = USE_CLPEF,
--		.fixups = &s25hx_t_fixups
- 	}, {
- 		.id = SNOR_ID(0x34, 0x2a, 0x1c, 0x0f, 0x00, 0x90),
- 		.name = "s25hl02gt",
- 		.mfr_flags = USE_CLPEF,
--		.fixups = &s25hx_t_fixups
- 	}, {
- 		.id = SNOR_ID(0x34, 0x2b, 0x19, 0x0f, 0x08, 0x90),
- 		.name = "s25fs256t",
- 		.mfr_flags = USE_CLPEF,
--		.fixups = &s25fs256t_fixups
- 	}, {
- 		.id = SNOR_ID(0x34, 0x2b, 0x1a, 0x0f, 0x03, 0x90),
- 		.name = "s25hs512t",
- 		.mfr_flags = USE_CLPEF,
--		.fixups = &s25hx_t_fixups
- 	}, {
- 		.id = SNOR_ID(0x34, 0x2b, 0x1b, 0x0f, 0x03, 0x90),
- 		.name = "s25hs01gt",
- 		.mfr_flags = USE_CLPEF,
--		.fixups = &s25hx_t_fixups
- 	}, {
- 		.id = SNOR_ID(0x34, 0x2b, 0x1c, 0x0f, 0x00, 0x90),
- 		.name = "s25hs02gt",
- 		.mfr_flags = USE_CLPEF,
--		.fixups = &s25hx_t_fixups
- 	}, {
- 		/* S28HL256T */
- 		.id = SNOR_ID(0x34, 0x5a, 0x19),
- 		.mfr_flags = USE_CLPEF,
--		.fixups = &s28hx_t_fixups,
- 	}, {
- 		.id = SNOR_ID(0x34, 0x5a, 0x1a),
- 		.name = "s28hl512t",
- 		.mfr_flags = USE_CLPEF,
--		.fixups = &s28hx_t_fixups,
- 	}, {
- 		.id = SNOR_ID(0x34, 0x5a, 0x1b),
- 		.name = "s28hl01gt",
- 		.mfr_flags = USE_CLPEF,
--		.fixups = &s28hx_t_fixups,
- 	}, {
- 		/* S28HL02GT */
- 		.id = SNOR_ID(0x34, 0x5a, 0x1c),
- 		.mfr_flags = USE_CLPEF,
--		.fixups = &s28hx_t_fixups,
- 	}, {
- 		.id = SNOR_ID(0x34, 0x5b, 0x19),
- 		.mfr_flags = USE_CLPEF,
--		.fixups = &s28hx_t_fixups,
- 	}, {
- 		.id = SNOR_ID(0x34, 0x5b, 0x1a),
- 		.name = "s28hs512t",
- 		.mfr_flags = USE_CLPEF,
--		.fixups = &s28hx_t_fixups,
- 	}, {
- 		.id = SNOR_ID(0x34, 0x5b, 0x1b),
- 		.name = "s28hs01gt",
- 		.mfr_flags = USE_CLPEF,
--		.fixups = &s28hx_t_fixups,
- 	}, {
- 		.id = SNOR_ID(0x34, 0x5b, 0x1c),
- 		.name = "s28hs02gt",
- 		.mfr_flags = USE_CLPEF,
--		.fixups = &s28hx_t_fixups,
- 	}, {
- 		.id = SNOR_ID(0xef, 0x40, 0x13),
- 		.name = "s25fl004k",
-@@ -1170,9 +1153,31 @@ static const struct spi_nor_fixups spansion_nor_fixups = {
- 	.late_init = spansion_nor_late_init,
- };
- 
-+static const struct spi_nor_fixup spansion_fixups[] = {
-+	{ .fixups = &spansion_nor_fixups },
-+	{ .id = SNOR_ID(0x01, 0x02, 0x20, 0x4d, 0x00, 0x81), .fixups = &s25fs_s_nor_fixups },
-+	{ .id = SNOR_ID(0x01, 0x20, 0x18, 0x4d, 0x01, 0x81), .fixups = &s25fs_s_nor_fixups },
-+	{ .id = SNOR_ID(0x34, 0x2a, 0x1a, 0x0f, 0x03, 0x90), .fixups = &s25hx_t_fixups },
-+	{ .id = SNOR_ID(0x34, 0x2a, 0x1b, 0x0f, 0x03, 0x90), .fixups = &s25hx_t_fixups },
-+	{ .id = SNOR_ID(0x34, 0x2a, 0x1c, 0x0f, 0x00, 0x90), .fixups = &s25hx_t_fixups },
-+	{ .id = SNOR_ID(0x34, 0x2b, 0x19, 0x0f, 0x08, 0x90), .fixups = &s25fs256t_fixups },
-+	{ .id = SNOR_ID(0x34, 0x2b, 0x1a, 0x0f, 0x03, 0x90), .fixups = &s25hx_t_fixups },
-+	{ .id = SNOR_ID(0x34, 0x2b, 0x1b, 0x0f, 0x03, 0x90), .fixups = &s25hx_t_fixups },
-+	{ .id = SNOR_ID(0x34, 0x2b, 0x1c, 0x0f, 0x00, 0x90), .fixups = &s25hx_t_fixups },
-+	{ .id = SNOR_ID(0x34, 0x5a, 0x19), .fixups = &s28hx_t_fixups },
-+	{ .id = SNOR_ID(0x34, 0x5a, 0x1a), .fixups = &s28hx_t_fixups },
-+	{ .id = SNOR_ID(0x34, 0x5a, 0x1b), .fixups = &s28hx_t_fixups },
-+	{ .id = SNOR_ID(0x34, 0x5a, 0x1c), .fixups = &s28hx_t_fixups },
-+	{ .id = SNOR_ID(0x34, 0x5b, 0x19), .fixups = &s28hx_t_fixups },
-+	{ .id = SNOR_ID(0x34, 0x5b, 0x1a), .fixups = &s28hx_t_fixups },
-+	{ .id = SNOR_ID(0x34, 0x5b, 0x1b), .fixups = &s28hx_t_fixups },
-+	{ .id = SNOR_ID(0x34, 0x5b, 0x1c), .fixups = &s28hx_t_fixups },
-+};
-+
- const struct spi_nor_manufacturer spi_nor_spansion = {
- 	.name = "spansion",
- 	.parts = spansion_nor_parts,
- 	.nparts = ARRAY_SIZE(spansion_nor_parts),
--	.fixups = &spansion_nor_fixups,
-+	.fixups = spansion_fixups,
-+	.nfixups = ARRAY_SIZE(spansion_fixups),
- };
-diff --git a/drivers/mtd/spi-nor/sst.c b/drivers/mtd/spi-nor/sst.c
-index 77a0bc41d4e5..c460803b278b 100644
---- a/drivers/mtd/spi-nor/sst.c
-+++ b/drivers/mtd/spi-nor/sst.c
-@@ -152,14 +152,12 @@ static const struct flash_info sst_nor_parts[] = {
- 		.id = SNOR_ID(0xbf, 0x26, 0x42),
- 		.name = "sst26vf032b",
- 		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
--		.fixups = &sst26vf_nor_fixups,
- 	}, {
- 		.id = SNOR_ID(0xbf, 0x26, 0x43),
- 		.name = "sst26vf064b",
- 		.size = SZ_8M,
- 		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
- 		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
--		.fixups = &sst26vf_nor_fixups,
- 	}, {
- 		.id = SNOR_ID(0xbf, 0x26, 0x51),
- 		.name = "sst26wf016b",
-@@ -278,9 +276,16 @@ static const struct spi_nor_fixups sst_nor_fixups = {
- 	.late_init = sst_nor_late_init,
- };
- 
-+static const struct spi_nor_fixup sst_fixups[] = {
-+	{ .fixups = &sst_nor_fixups },
-+	{ .id = SNOR_ID(0xbf, 0x26, 0x42), .fixups = &sst26vf_nor_fixups },
-+	{ .id = SNOR_ID(0xbf, 0x26, 0x43), .fixups = &sst26vf_nor_fixups },
-+};
-+
- const struct spi_nor_manufacturer spi_nor_sst = {
- 	.name = "sst",
- 	.parts = sst_nor_parts,
- 	.nparts = ARRAY_SIZE(sst_nor_parts),
--	.fixups = &sst_nor_fixups,
-+	.fixups = sst_fixups,
-+	.nfixups = ARRAY_SIZE(sst_fixups),
- };
-diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
-index 01a693033448..583b1669270f 100644
---- a/drivers/mtd/spi-nor/winbond.c
-+++ b/drivers/mtd/spi-nor/winbond.c
-@@ -219,7 +219,6 @@ static const struct flash_info winbond_nor_parts[] = {
- 		.size = SZ_16M,
- 		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
- 		.flags = SPI_NOR_QUAD_PP | SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_HAS_CMP,
--		.fixups = &w25q128_fixups,
- 	}, {
- 		/* W25Q256JV-Q/N */
- 		.id = SNOR_ID(0xef, 0x40, 0x19),
-@@ -228,7 +227,6 @@ static const struct flash_info winbond_nor_parts[] = {
- 		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
- 		.flags = SPI_NOR_QUAD_PP | SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB |
- 			 SPI_NOR_TB_SR_BIT6 | SPI_NOR_4BIT_BP | SPI_NOR_HAS_CMP,
--		.fixups = &w25q256_fixups,
- 	}, {
- 		/* W25Q512JV-Q/N */
- 		.id = SNOR_ID(0xef, 0x40, 0x20),
-@@ -242,7 +240,6 @@ static const struct flash_info winbond_nor_parts[] = {
- 		.id = SNOR_ID(0xef, 0x40, 0x21),
- 		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6 |
- 			 SPI_NOR_4BIT_BP | SPI_NOR_HAS_CMP,
--		.fixups = &winbond_nor_multi_die_fixups,
- 	}, {
- 		.id = SNOR_ID(0xef, 0x50, 0x12),
- 		.name = "w25q20bw",
-@@ -345,13 +342,11 @@ static const struct flash_info winbond_nor_parts[] = {
- 		.id = SNOR_ID(0xef, 0x70, 0x21),
- 		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6 |
- 			 SPI_NOR_4BIT_BP | SPI_NOR_HAS_CMP,
--		.fixups = &winbond_nor_multi_die_fixups,
- 	}, {
- 		/* W25Q02JV-M */
- 		.id = SNOR_ID(0xef, 0x70, 0x22),
- 		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6 |
- 			 SPI_NOR_4BIT_BP | SPI_NOR_HAS_CMP,
--		.fixups = &winbond_nor_multi_die_fixups,
- 	}, {
- 		.id = SNOR_ID(0xef, 0x71, 0x19),
- 		.name = "w25m512jv",
-@@ -553,9 +548,19 @@ static const struct spi_nor_fixups winbond_nor_fixups = {
- 	.late_init = winbond_nor_late_init,
- };
- 
-+static const struct spi_nor_fixup winbond_fixups[] = {
-+	{ .fixups = &winbond_nor_fixups },
-+	{ .id = SNOR_ID(0xef, 0x40, 0x18), .fixups = &w25q128_fixups },
-+	{ .id = SNOR_ID(0xef, 0x40, 0x19), .fixups = &w25q256_fixups },
-+	{ .id = SNOR_ID(0xef, 0x40, 0x21), .fixups = &winbond_nor_multi_die_fixups },
-+	{ .id = SNOR_ID(0xef, 0x70, 0x21), .fixups = &winbond_nor_multi_die_fixups },
-+	{ .id = SNOR_ID(0xef, 0x70, 0x22), .fixups = &winbond_nor_multi_die_fixups },
-+};
-+
- const struct spi_nor_manufacturer spi_nor_winbond = {
- 	.name = "winbond",
- 	.parts = winbond_nor_parts,
- 	.nparts = ARRAY_SIZE(winbond_nor_parts),
--	.fixups = &winbond_nor_fixups,
-+	.fixups = winbond_fixups,
-+	.nfixups = ARRAY_SIZE(winbond_fixups),
- };
+ 	if (attr == &dev_attr_manufacturer.attr && !nor->manufacturer)
+ 		return 0;
+-	if (attr == &dev_attr_partname.attr && !nor->info->name)
++	if (attr == &dev_attr_partname.attr && !nor->partname)
+ 		return 0;
+ 	if (attr == &dev_attr_jedec_id.attr && !nor->info->id && !nor->id)
+ 		return 0;
+diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+index 3a55d76ea77d..b1e573367604 100644
+--- a/include/linux/mtd/spi-nor.h
++++ b/include/linux/mtd/spi-nor.h
+@@ -395,6 +395,7 @@ struct spi_nor {
+ 	u8			*id;
+ 	const struct flash_info	*info;
+ 	const struct spi_nor_manufacturer *manufacturer;
++	const char		*partname;
+ 	u8			addr_nbytes;
+ 	u8			erase_opcode;
+ 	u8			read_opcode;
 
 -- 
 2.54.0
