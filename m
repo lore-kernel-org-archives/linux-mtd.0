@@ -4,52 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CD60CC61DD6
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Sep 2026 17:00:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2DFB4C624D9
+	for <linux-mtd@archiver.kernel.org>; Wed,  2 Sep 2026 17:00:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=GOStjc7u2rAmNggMHlv0O1MzSS346+LOUr5itrIHR7o=; b=VqaxjgDw6ZXSm5
-	K3y3uUVx5vL4JGws6O8SMVZ8OqNJrh2wi8m2lmJoEHiW1lpKlGnQPpZLA0oxYvuNYLpPNiwqb1QCa
-	/gLyuR7c6H5wG6Nmis8sqa1VUT7YB0WoeVBXf6IiFfnUeD7dgdyTHeboENxGmdhF4whwbRaY61lkK
-	U8sg3nsoIVWEgkt3ePHpQcWcd45+MHw31u0F1gFDjfeXDb2UBmCi6lDaXvIHgSMP/FRGpnKYLgL98
-	pR/w0JFM5DErTatFBBQ+lyaiqiyFE9SLzf4lw44Y6tUVDzKvpHJAHb/t28a3mYb3aD4XO0kGqDRpX
-	Kz3F5+ZnGmiVaL+BWKjg==;
+	List-Owner; bh=jVF4e/Q0weKo+ZWYCQURN8ZqaRQ1J9PZzSxF9+r/INY=; b=IVvM9Ce+67dQ8M
+	/v31fIRzLez4woGOgKO2gl9Jrtq2xRFWZZAcouUncKsMCc3Vx2W8pUjIeUUB1fQW5bWtUSgDsPlZz
+	QvoVqfb9F9iEuUb7ZCMqtw/nt50HJdE9uSoAEPqUVm/PC0ZpPQxAd6hUmm72fkdnRpuwLALqVzf+u
+	o+f+Ovqg0hOrQotPLQr8+Yfc82dLr3tfHj0mmfI3ZOX22+BTnt/FxlqNhSsRF3RTHuqI5h4wRUkee
+	qNsyB7w8XzoNriKvdeyfDjKVHAFW8sx+ZWNebCJEadHx3pSnn285VLFq5luBUbeOMNqewJdgVMvlk
+	D33TnPBUvKRgLNOeoHzw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x1oKA-0000000FL62-169d;
-	Wed, 02 Sep 2026 17:00:34 +0000
-Received: from smtpout-03.galae.net ([185.246.85.4])
+	id 1x1oKH-0000000FLJL-46zv;
+	Wed, 02 Sep 2026 17:00:41 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x1oJw-0000000FKos-2uxO
-	for linux-mtd@lists.infradead.org;
-	Wed, 02 Sep 2026 17:00:27 +0000
+	id 1x1oKA-0000000FL5F-2TXg;
+	Wed, 02 Sep 2026 17:00:34 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Cc:To:In-Reply-To:References:
+	Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
+	From:Sender:Reply-To:Content-ID:Content-Description;
+	bh=pzX6nFA2wcrYKsG+4CqUFw+zxIGXPqyB6hIubZ3XSqA=; b=REX06moCaI05q1us1Ze+8ieObL
+	dr8Fude2BMjPR9tDeN6W6qhN6tJGkZixzggau0yt/H30PvSiLmz1PrHEVCkcd+40GW8b/KdBEQG8m
+	09I/4hM65N8DCoiA/z2640zs5FUmW4adugIVZX46kF+EHkB71w8B06hLWkOLLpp0uHz+FCYOJ+lco
+	0fqygp8toXlDR7PCyW9AWK5HJzgTs/v9qKxVmSamaC9tyh68EM6u6I4BlmO5e+V6MMP7fwuV8wnOM
+	/JFXK9tSBNLrWlEd2Lb16reYC/kz0uApJyo2ZM5KUtQbiKgnP+1cqJ75E4/ZUkyGeMlK23hxROTXV
+	Prza0Y1A==;
+Received: from smtpout-02.galae.net ([185.246.84.56])
+	by desiato.infradead.org with esmtps (Exim 4.99.2 #2 (Red Hat Linux))
+	id 1x1oK6-0000000CElf-19ob;
+	Wed, 02 Sep 2026 17:00:32 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id 1B91E4E414EA;
-	Wed,  2 Sep 2026 17:00:19 +0000 (UTC)
+	by smtpout-02.galae.net (Postfix) with ESMTPS id A218E1A1976;
+	Wed,  2 Sep 2026 17:00:29 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id DD05B6053C;
-	Wed,  2 Sep 2026 17:00:18 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id AD86C11C79B6F;
-	Wed,  2 Sep 2026 19:00:11 +0200 (CEST)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 6FB3F6053C;
+	Wed,  2 Sep 2026 17:00:29 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 7F4D711C79FAF;
+	Wed,  2 Sep 2026 19:00:25 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1788368413; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1788368427; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=f1TwlZZm0bg/r98GYSZeUDqynWGXWkIM82yW8yDu4rs=;
-	b=RdQXD0y3prniLUr8hEUFA36U8FRXK8LcxKm2cZbBvuoKBteOjhO74vviwduywbUKOdQ6S6
-	BNJRwEhNFj+gYVYNoKGdW5itZk2qsQgDitA5bb7Jy18KQkyAPJ4G6AtiJLjC4CLvjiAjqZ
-	AG14qfF0gEKGYtA8ae9rOjuY/+AgS3fWIlAomxrljjcvBTA80B198aaHsNp/eQ7oIVeJi9
-	H8D2PBVyv7D/Dfq6RD4sdgIqGFj5R4tMask7X2CsfKOM9KwfNjA9xWglTJFLZgGZ8bCYxY
-	g2asYsGzfydUxwJmf29idgxUX2ZKDajIRhWYlA8e+QOrV3+kiUoW8Q0xfpJXZw==
+	bh=pzX6nFA2wcrYKsG+4CqUFw+zxIGXPqyB6hIubZ3XSqA=;
+	b=TZ4zAU9xK6fOjIAGPMYf6UQOgLA4Th/o0Qhr89khnKLmjvu6ayYV4wVKeNwpZ2tO76qwDx
+	7VF4DPAUWsWDOA8G9FvUbbRHzGI1/vcih46pLQp03g/4wDyy4b1l7Xg8PiND/ZHo4Lkvif
+	xCONjSSl8EtAkzB97OEfkDufeidFgvEitc9pdJaFiRT6hnBfmiQ7ighfSyBwY2xjWUZpyv
+	Ppia164IIcfahEIW/OrfqXyLB5p1OhGaHTccEvSoGHvQbTfy/8+QOO6au2Paw0KX6+Rpob
+	ojGR7LmSSjxv9MOimu5n5dz57Yl2ftOASoL6PnBKVdUE33p8r2D6w9sZlsw/VQ==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Wed, 02 Sep 2026 18:59:24 +0200
-Subject: [PATCH v4 10/25] mtd: spi-nor: winbond: Add support for
- W25Q32RV-Q/N
+Date: Wed, 02 Sep 2026 18:59:26 +0200
+Subject: [PATCH v4 12/25] mtd: spi-nor: winbond: Add support for
+ W25Q12RV-Q/N
 MIME-Version: 1.0
-Message-Id: <20260902-winbond-v7-1-spi-nor-rv-addition-v4-10-779d35303dff@bootlin.com>
+Message-Id: <20260902-winbond-v7-1-spi-nor-rv-addition-v4-12-779d35303dff@bootlin.com>
 References: <20260902-winbond-v7-1-spi-nor-rv-addition-v4-0-779d35303dff@bootlin.com>
 In-Reply-To: <20260902-winbond-v7-1-spi-nor-rv-addition-v4-0-779d35303dff@bootlin.com>
 To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
@@ -67,8 +80,8 @@ Cc: Steam Lin <STLin2@winbond.com>, Hsin-Yi Wang <hsinyi@chromium.org>,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260902_100022_035367_C1CE1AD9 
-X-CRM114-Status: GOOD (  15.18  )
+X-CRM114-CacheID: sfid-20260902_180030_646022_B6B8467D 
+X-CRM114-Status: GOOD (  17.78  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,12 +106,15 @@ As a significant difference, RV chips identify themselves as supporting
 the new SFDP (rev F) field which forces an alternate write SR2
 opcode (0x31).
 
+This density wronly advertizes its size and requires a fixup for
+that.
+
 Reviewed-by: Takahiro Kuwano <takahiro.kuwano@infineon.com>
 Reviewed-by: Michael Walle <mwalle@kernel.org>
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
 + cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
-ef4016
+ef4018
 + cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
 winbond
 + xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
@@ -106,12 +122,12 @@ winbond
 ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
 ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
 ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffe520f9ffffffff0144eb086b083b42bbfeffffffffff
-0000ffff44eb0c200f5210d800001432010183e314c2e96376337a757a75
-f7a2d55c39f66dffe930f8800000000000002c0000000000f6f4ffff0f00
+ffffffffffffffffe520f9ffffffff0344eb086b083b42bbfeffffffffff
+0000ffff44eb0c200f5210d80000142a010186e114c1e96376337a757a75
+f7a2d55c39f66dffe930f880000000000000ac0000000000f7f5ffff0f00
 0000060d44bd27ed080d
 + sha256sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-2c0c54d6e360dae30b72615eac5f0faff59463aeb2237d46d08d6cfd77d6c9f6  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+94b52d6e903a2046e144eab0760384b6932c6fdbfec17eb7336f1778c3898daf  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
 + cat /sys/kernel/debug/spi-nor/spi0.0/capabilities
 Supported read modes by the flash
  1S-1S-1S
@@ -144,11 +160,10 @@ Supported page program modes by the flash
   opcode	0x02
  1S-1S-4S
   opcode	0x32
-+ cat /sys/kernel/debug/spi-nor/spi0.0/p[   84.112272] random: crng init done
-arams
++ cat /sys/kernel/debug/spi-nor/spi0.0/params
 name		(null)
-id		ef 40 16 00 00 00
-size		4.00 MiB
+id		ef 40 18 00 00 00
+size		16.0 MiB
 write size	1
 page size	256
 address nbytes	3
@@ -159,6 +174,11 @@ opcodes
   dummy cycles	6
  erase		0xd8
  program	0x32
+ SR1 read	0x05
+ SR2 read	0x35
+ SR1 write	0x01
+ SR2 write	0x31
+ QE		SR2 bit 1
  8D extension	repeat
 
 protocols
@@ -170,18 +190,19 @@ erase commands
  20 (4.00 KiB) [1]
  52 (32.0 KiB) [2]
  d8 (64.0 KiB) [3]
- c7 (4.00 MiB)
+ c7 (16.0 MiB)
 
 sector map
  region (in hex)   | erase mask | overlaid
  ------------------+------------+---------
- 00000000-003fffff |     [   3] | no
+ 00000000-007fffff |     [   3] | no
 
 locked sectors
  region (in hex)   | status   | #sectors
  ------------------+----------+---------
- 00000000-003fffff | unlocked | 64
+ 00000000-007fffff | unlocked | 64
 + dd 'if=/dev/urandom' 'of=./spi_test' 'bs=1M' 'count=2'
+[   15.791564] random: crng init done
 2+0 records in
 2+0 records out
 + mtd_debug erase /dev/mtd0 0 2097152
@@ -199,19 +220,19 @@ Copied 2097152 bytes from spi_test to address 0x00000000 in flash
 + mtd_debug read /dev/mtd0 0 2097152 spi_read
 Copied 2097152 bytes from address 0x00000000 in flash to spi_read
 + sha256sum spi_read spi_test
-9f76d5d40e1d8fc620967a019cc0cf223a3b11cf9c5bed9a02fb8e2c06b1c805  spi_read
-9f76d5d40e1d8fc620967a019cc0cf223a3b11cf9c5bed9a02fb8e2c06b1c805  spi_test
+b3260b68e0373cd253fc558fa9a5c89009d3edb2393f4110702318f69a6d74c2  spi_read
+b3260b68e0373cd253fc558fa9a5c89009d3edb2393f4110702318f69a6d74c2  spi_test
 + mtd_debug erase /dev/mtd0 0 2097152
 Erased 2097152 bytes from address 0x00000000 in flash
 + mtd_debug read /dev/mtd0 0 2097152 spi_read
 Copied 2097152 bytes from address 0x00000000 in flash to spi_read
 + sha256sum spi_read spi_test
 4bda3a28f4ffe603c0ec1258c0034d65a1a0d35ab7bd523a834608adabf03cc5  spi_read
-9f76d5d40e1d8fc620967a019cc0cf223a3b11cf9c5bed9a02fb8e2c06b1c805  spi_test
+b3260b68e0373cd253fc558fa9a5c89009d3edb2393f4110702318f69a6d74c2  spi_test
 + mtd_debug info /dev/mtd0
 mtd.type = MTD_NORFLASH
 mtd.flags = MTD_CAP_NORFLASH
-mtd.size = 4194304 (4M)
+mtd.size = 8388608 (8M)
 mtd.erasesize = 65536 (64K)
 mtd.writesize = 1
 mtd.oobsize = 0
@@ -222,7 +243,7 @@ regions = 0
 + flash_lock -i /dev/mtd0
 Device: /dev/mtd0
 Start: 0
-Len: 0x400000
+Len: 0x800000
 Lock status: unlocked
 Return code: 0
 + mtd_debug erase /dev/mtd0 0 2097152
@@ -232,18 +253,18 @@ Copied 2097152 bytes from spi_test to address 0x00000000 in flash
 + mtd_debug read /dev/mtd0 0 2097152 spi_read
 Copied 2097152 bytes from address 0x00000000 in flash to spi_read
 + sha256sum spi_read spi_test
-9f76d5d40e1d8fc620967a019cc0cf223a3b11cf9c5bed9a02fb8e2c06b1c805  spi_read
-9f76d5d40e1d8fc620967a019cc0cf223a3b11cf9c5bed9a02fb8e2c06b1c805  spi_test
+b3260b68e0373cd253fc558fa9a5c89009d3edb2393f4110702318f69a6d74c2  spi_read
+b3260b68e0373cd253fc558fa9a5c89009d3edb2393f4110702318f69a6d74c2  spi_test
 + grep -A4 'locked sectors' /sys/kernel/debug/spi-nor/spi0.0/params
 locked sectors
  region (in hex)   | status   | #sectors
  ------------------+----------+---------
- 00000000-003fffff | unlocked | 64
+ 00000000-007fffff | unlocked | 64
 + flash_lock -l /dev/mtd0
 + flash_lock -i /dev/mtd0
 Device: /dev/mtd0
 Start: 0
-Len: 0x400000
+Len: 0x800000
 Lock status: locked
 Return code: 1
 + mtd_debug erase /dev/mtd0 0 2097152
@@ -251,8 +272,8 @@ Erased 2097152 bytes from address 0x00000000 in flash
 + mtd_debug read /dev/mtd0 0 2097152 spi_read
 Copied 2097152 bytes from address 0x00000000 in flash to spi_read
 + sha256sum spi_read spi_test
-9f76d5d40e1d8fc620967a019cc0cf223a3b11cf9c5bed9a02fb8e2c06b1c805  spi_read
-9f76d5d40e1d8fc620967a019cc0cf223a3b11cf9c5bed9a02fb8e2c06b1c805  spi_test
+b3260b68e0373cd253fc558fa9a5c89009d3edb2393f4110702318f69a6d74c2  spi_read
+b3260b68e0373cd253fc558fa9a5c89009d3edb2393f4110702318f69a6d74c2  spi_test
 + dd 'if=/dev/urandom' 'of=./spi_test2' 'bs=1M' 'count=2'
 2+0 records in
 2+0 records out
@@ -261,103 +282,141 @@ Copied 2097152 bytes from spi_test2 to address 0x00000000 in flash
 + mtd_debug read /dev/mtd0 0 2097152 spi_read2
 Copied 2097152 bytes from address 0x00000000 in flash to spi_read2
 + sha256sum spi_read spi_read2 spi_test spi_test2
-9f76d5d40e1d8fc620967a019cc0cf223a3b11cf9c5bed9a02fb8e2c06b1c805  spi_read
-9f76d5d40e1d8fc620967a019cc0cf223a3b11cf9c5bed9a02fb8e2c06b1c805  spi_read2
-9f76d5d40e1d8fc620967a019cc0cf223a3b11cf9c5bed9a02fb8e2c06b1c805  spi_test
-831e9e5cc6efa7d3afe7b0584100549d93b9953d64ad237fd1df15f790f23ae6  spi_test2
+b3260b68e0373cd253fc558fa9a5c89009d3edb2393f4110702318f69a6d74c2  spi_read
+b3260b68e0373cd253fc558fa9a5c89009d3edb2393f4110702318f69a6d74c2  spi_read2
+b3260b68e0373cd253fc558fa9a5c89009d3edb2393f4110702318f69a6d74c2  spi_test
+884cedd0494868db17c609edc62e2471ef344025e30cd511fa28b41b9b50e50d  spi_test2
 + grep -A4 'locked sectors' /sys/kernel/debug/spi-nor/spi0.0/params
 locked sectors
  region (in hex)   | status   | #sectors
  ------------------+----------+---------
- 00000000-003fffff |   locked | 64
+ 00000000-007fffff |   locked | 64
 + flash_lock -u /dev/mtd0
 + cat /sys/class/mtd/mtd0/size
-+ size=4194304
++ size=8388608
 + cat /sys/class/mtd/mtd0/erasesize
 + bs=65536
 + grep unlocked /sys/kernel/debug/spi-nor/spi0.0/params
 + sed -e 's/.*unlocked | //'
 + nsectors=64
-+ ss=65536
-+ bps=1
++ ss=131072
++ bps=2
 + flash_lock -u /dev/mtd0
-+ flash_lock -l /dev/mtd0 4063232 2
++ flash_lock -l /dev/mtd0 8126464 4
 + grep -A4 'locked sectors' /sys/kernel/debug/spi-nor/spi0.0/params
 locked sectors
  region (in hex)   | status   | #sectors
  ------------------+----------+---------
- 00000000-003dffff | unlocked | 62
- 003e0000-003fffff |   locked | 2
-+ flash_lock -u /dev/mtd0 4063232 1
+ 00000000-007bffff | unlocked | 62
+ 007c0000-007fffff |   locked | 2
++ flash_lock -u /dev/mtd0 8126464 2
 + grep -A4 'locked sectors' /sys/kernel/debug/spi-nor/spi0.0/params
 locked sectors
  region (in hex)   | status   | #sectors
  ------------------+----------+---------
- 00000000-003effff | unlocked | 63
- 003f0000-003fffff |   locked | 1
+ 00000000-007dffff | unlocked | 63
+ 007e0000-007fffff |   locked | 1
 + flash_lock -u /dev/mtd0
-+ flash_lock -l /dev/mtd0 0 2
++ flash_lock -l /dev/mtd0 0 4
 + grep -A4 'locked sectors' /sys/kernel/debug/spi-nor/spi0.0/params
 locked sectors
  region (in hex)   | status   | #sectors
  ------------------+----------+---------
- 00000000-0001ffff |   locked | 2
- 00020000-003fffff | unlocked | 62
-+ flash_lock -u /dev/mtd0 65536 1
+ 00000000-0003ffff |   locked | 2
+ 00040000-007fffff | unlocked | 62
++ flash_lock -u /dev/mtd0 131072 2
 + grep -A4 'locked sectors' /sys/kernel/debug/spi-nor/spi0.0/params
 locked sectors
  region (in hex)   | status   | #sectors
  ------------------+----------+---------
- 00000000-0000ffff |   locked | 1
- 00010000-003fffff | unlocked | 63
-+ all_but_one=63
+ 00000000-0001ffff |   locked | 1
+ 00020000-007fffff | unlocked | 63
++ all_but_one=126
 + flash_lock -u /dev/mtd0
-+ flash_lock -l /dev/mtd0 65536 63
++ flash_lock -l /dev/mtd0 131072 126
 + grep -A4 'locked sectors' /sys/kernel/debug/spi-nor/spi0.0/params
 locked sectors
  region (in hex)   | status   | #sectors
  ------------------+----------+---------
- 00000000-0000ffff | unlocked | 1
- 00010000-003fffff |   locked | 63
-+ flash_lock -u /dev/mtd0 65536 1
+ 00000000-0001ffff | unlocked | 1
+ 00020000-007fffff |   locked | 63
++ flash_lock -u /dev/mtd0 131072 2
 + grep -A4 'locked sectors' /sys/kernel/debug/spi-nor/spi0.0/params
 locked sectors
  region (in hex)   | status   | #sectors
  ------------------+----------+---------
- 00000000-0001ffff | unlocked | 2
- 00020000-003fffff |   locked | 62
+ 00000000-0003ffff | unlocked | 2
+ 00040000-007fffff |   locked | 62
 + flash_lock -u /dev/mtd0
-+ flash_lock -l /dev/mtd0 0 63
++ flash_lock -l /dev/mtd0 0 126
 + grep -A4 'locked sectors' /sys/kernel/debug/spi-nor/spi0.0/params
 locked sectors
  region (in hex)   | status   | #sectors
  ------------------+----------+---------
- 00000000-003effff |   locked | 63
- 003f0000-003fffff | unlocked | 1
-+ flash_lock -u /dev/mtd0 4063232 1
+ 00000000-007dffff |   locked | 63
+ 007e0000-007fffff | unlocked | 1
++ flash_lock -u /dev/mtd0 8126464 2
 + grep -A4 'locked sectors' /sys/kernel/debug/spi-nor/spi0.0/params
 locked sectors
  region (in hex)   | status   | #sectors
  ------------------+----------+---------
- 00000000-003dffff |   locked | 62
- 003e0000-003fffff | unlocked | 2
+ 00000000-007bffff |   locked | 62
+ 007c0000-007fffff | unlocked | 2
 ---
- drivers/mtd/spi-nor/winbond.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/spi-nor/winbond.c | 26 ++++++++++++++++----------
+ 1 file changed, 16 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
-index 9f164c5a1de5..14ab26abe0eb 100644
+index 1864ad27e5e3..1ddc2ea1ad9c 100644
 --- a/drivers/mtd/spi-nor/winbond.c
 +++ b/drivers/mtd/spi-nor/winbond.c
-@@ -247,7 +247,7 @@ static const struct flash_info winbond_nor_parts[] = {
- 		.size = SZ_1M,
- 		.no_sfdp_flags = SECT_4K,
+@@ -43,6 +43,20 @@ static bool is_w25qxxrv(const struct spi_nor *nor)
+ 	return sfdp_h->minor >= SFDP_JESD216F_MINOR;
+ }
+ 
++static bool is_zd25q128c(const struct spi_nor *nor,
++			 const struct sfdp_parameter_header *bfpt_header)
++{
++	/*
++	 * Zetta ZD25Q128C is a clone of the Winbond device. But the encoded
++	 * size is really wrong. It seems that they confused Mbit with MiB.
++	 * Thus the flash is discovered as a 2MiB device.
++	 */
++	return bfpt_header->major == SFDP_JESD216_MAJOR &&
++	       bfpt_header->minor == SFDP_JESD216_MINOR &&
++	       nor->params->size == SZ_2M &&
++	       nor->params->erase_map.regions[0].size == SZ_2M;
++}
++
+ /*
+  * Since SFDP is populated after ->default_init(), the match functions using
+  * nor->sfdp as discriminant cannot be used for this specific early fixup.
+@@ -62,15 +76,7 @@ w25q128_post_bfpt_fixups(struct spi_nor *nor,
+ 			 const struct sfdp_parameter_header *bfpt_header,
+ 			 const struct sfdp_bfpt *bfpt)
+ {
+-	/*
+-	 * Zetta ZD25Q128C is a clone of the Winbond device. But the encoded
+-	 * size is really wrong. It seems that they confused Mbit with MiB.
+-	 * Thus the flash is discovered as a 2MiB device.
+-	 */
+-	if (bfpt_header->major == SFDP_JESD216_MAJOR &&
+-	    bfpt_header->minor == SFDP_JESD216_MINOR &&
+-	    nor->params->size == SZ_2M &&
+-	    nor->params->erase_map.regions[0].size == SZ_2M) {
++	if (is_zd25q128c(nor, bfpt_header) || winbond_rv_match(nor)) {
+ 		nor->params->size = SZ_16M;
+ 		nor->params->erase_map.regions[0].size = SZ_16M;
+ 	}
+@@ -261,7 +267,7 @@ static const struct flash_info winbond_nor_parts[] = {
+ 		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
+ 		.flags = SPI_NOR_QUAD_PP | SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_HAS_CMP,
  	}, {
--		/* W25Q32JV-Q/N */
-+		/* W25Q32JV-Q/N, W25Q32RV-Q/N */
- 		.id = SNOR_ID(0xef, 0x40, 0x16),
- 		.name = "w25q32",
- 		.size = SZ_4M,
+-		/* W25Q128JV-Q/N */
++		/* W25Q128JV-Q/N, W25Q12RV-Q/N */
+ 		.id = SNOR_ID(0xef, 0x40, 0x18),
+ 		/* Flavors w/ and w/o SFDP. */
+ 		.name = "w25q128",
 
 -- 
 2.54.0
