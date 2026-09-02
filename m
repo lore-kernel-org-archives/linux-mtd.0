@@ -4,83 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68D66C624D4
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Sep 2026 17:01:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9FB4FC61DD6
+	for <linux-mtd@archiver.kernel.org>; Wed,  2 Sep 2026 20:58:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
-	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=B17UrwuhfRyB8uRHoHlJlI3+/3kK1ihYueXroN0aSn4=; b=f+gCWH+edBKfop
-	3bxXMCI51tRCW5d3kmqCHiCjhiVScx/v4XFV2HJV32MKADh8ho433hmlIAanQcWDQ2W+UBNQnD571
-	OJepiTmXIsUFcpLRLrbNANfnKEa7vHxvIwPo7enYsbr5898TBnZJb9M2PNBmzdzf25NqgrKZM7D0O
-	0wQidwlIZ8ONpxEubiMqbDi9EjyeV+2lx8oTr89LDkYBMT1O5Xqfko9RTcryzY+B5bwm110LpJdxV
-	/hc8Z3vf2bWT/YhYKDnNbPDx1UP2q8jAfchAxDALukzVH0tuF0wT3RnIL6jTuBk++popCVMHh6kyj
-	CtqBlDUv8fmmVTDsssRg==;
+	List-Archive:List-Unsubscribe:List-Id:To:From:Subject:Message-ID:Date:
+	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=uMwXn4AQb052NISIvuFZeRKI7Nmdoymtz37KbMjCmgE=; b=AWj
+	bkIeJLztW86u7d+cx7iojg16Ufz3FF4n/WpkS28xdmYvIo9sg7BYZkoxnCZ8SR6c+7T7CpGuu5P6t
+	hPoOEdA0sz7iwN2Ftj6aHkxqPPZ4mUprXfFxhpbyRU5sThlMpwnFhRGFbSXgUnVFs4jpN9BxKABZY
+	Me++P81QgFZ7UHFyvPHI1eDfpQ4rCLgaknhMmI7pTq+79WWccP5qyL+GBPeWHMn3dTczPOuVYrnm1
+	o3nR4K0fZNd7HbipKO+mJHXG4H41ZTaMX54wrIvY+3dZngmx2J4NuumrClMIIPEsR7n+1m+u68SZR
+	OuNRd0wtRa41/R9RlZqyl4NYKzkVWwQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x1oKq-0000000FMbI-1268;
-	Wed, 02 Sep 2026 17:01:16 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1x1s2i-0000000Fts4-2OHG;
+	Wed, 02 Sep 2026 20:58:48 +0000
+Received: from mail-oa2-f8.google.com ([74.125.231.72])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x1oKm-0000000FMQQ-039w;
-	Wed, 02 Sep 2026 17:01:12 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=Cc:To:In-Reply-To:References:Message-Id
-	:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:From:Sender
-	:Reply-To:Content-ID:Content-Description;
-	bh=0nz2OKcWsx0xKj2ngwSDhLfSQ/jfd05HjurcqR8VlgI=; b=NJF+FRfuepRU9Ca4xJ8BLdQs9K
-	blSyYQjKOYvo8005bGBXOLoKOhKv6N1uDod71TQxZgNTmuF2tsb9F1xn84D/3a2+V5PTWYMUPvxcg
-	uzqZIEpn33dVx8RFHoLn7VIvej0vx7v/qZr+ygCr3J0igTVoIvFTXyIf9aZVXBUKOi03fWFDbQY2j
-	/JEAXTqA/Fu9Q++XaFaQsrfyV0M0AL0uZuT6FwAtVKdl25y/peDE1/+CsiF8OOH/Xjg8oyEN6cs7/
-	3KdpyATBgozHgx8Ta7qHC2pswUrBU8u7izSnDAf4UE4Rjq1RlovZkhJvbLjunWe3D13jmdL4R1YAF
-	Y4S3xMJQ==;
-Received: from smtpout-03.galae.net ([185.246.85.4])
-	by casper.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x1oKf-00000007RZO-21xG;
-	Wed, 02 Sep 2026 17:01:10 +0000
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id 2724B4E414E1;
-	Wed,  2 Sep 2026 17:00:59 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id E6C816053C;
-	Wed,  2 Sep 2026 17:00:58 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id BC21411C79A58;
-	Wed,  2 Sep 2026 19:00:55 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1788368457; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=0nz2OKcWsx0xKj2ngwSDhLfSQ/jfd05HjurcqR8VlgI=;
-	b=YbaSzuh+NprHwT1ArekK1vViq1ixMeFla3hJ4j8dFn7MYP15DDi3Q6X0j66U0zAbXo3yHa
-	XmelbnycQ1Kk2Dh0JR63AO/fXqGrlnWSGhkQFjDs0BYc433qha1+n4Dn0Jg9AHMyb+e24W
-	AQoTQzRymUbMH1NMIyT7oedkpbV7UQdMi449Zfh76weugX7rfnbmpBehkteUwL88vPqeNr
-	gOohIKRQpYq/AsnyVrrAzDK8fpYnLccawfVhthDU+cTeB7/48hHVikTbGSh0D1INntAvs6
-	IvyKRZ1HqddflOz3nxJNRzso1opUWp6W4LoSfZ6BljHhCT8rPPKXypCen47wUw==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Wed, 02 Sep 2026 18:59:37 +0200
-Subject: [PATCH v4 23/25] mtd: spi-nor: winbond: Add support for W25Q01RV-M
+	id 1x1s2f-0000000Ftrf-4Afh
+	for linux-mtd@lists.infradead.org;
+	Wed, 02 Sep 2026 20:58:47 +0000
+Received: by mail-oa2-f8.google.com with SMTP id 586e51a60fabf-46683b030d9so520325fac.0
+        for <linux-mtd@lists.infradead.org>; Wed, 02 Sep 2026 13:58:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1788382724; x=1788987524;
+        h=content-type:to:from:subject:message-id:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=I4xf6SGf5Dw7zSqon+8qknaaazPDfHXGyeR7C4/i2k8=;
+        b=oUkYYuYbDGPlDYX9d3tEtQHe6KEkkwnH13WwMLmU0W+lAeGse8Ukd1ebNinZjmuw+n
+         BUpWjhBAcliD+YO40D66xGyhXD6KNlCxB+it9vTLu+a6xFTsM958/ZMHdYdesgwJHo04
+         ZlUWD/Rwi1YbXBdkOuxRLtXeeGKTyk2vtk3R5+7Cj6Oa5JXSv7xQEtim4c+L/Sw/7tg/
+         +7TVvTfLUBbxA3wp3h4pAY1aFy+CDfEJTpyAbCBd/Y8K+7sTnETcis/ydqRR1UScm+ex
+         edYP2KWqMzbjmFbzLUH1thK8EthrWGCK+R6Jz6XdGwBO9A1QgdIn7zODw6fmzQdhdVEY
+         RKhQ==
+X-Forwarded-Encrypted: i=1; AHgh+RpX+eUOiQ8QjU1WTjeBc0DCbMHQI3OzGpEVSwQ6gV+nfUsN9I03qoACBpPg/fbarKv9wQ+VbwJH9eQ=@lists.infradead.org
+X-Gm-Message-State: AFuF++mplubHs2SMtsxO00Y+0x3Er7hH+t4PChjHFCPaKox9ayL83e13
+	9SS8DPEpQIHS+kaG2MaDfnnMFQbClzjTB94x5H2CHIDl7/R8Mdtzf+WJIiXgUjl9bzsMA3Xg/ED
+	Yp3BOP9gS1Lv9WvyjcXVf0Kyn42XY+TBG4CJyFI5wHt3hp5iNNn2EFwpVYFo=
 MIME-Version: 1.0
-Message-Id: <20260902-winbond-v7-1-spi-nor-rv-addition-v4-23-779d35303dff@bootlin.com>
-References: <20260902-winbond-v7-1-spi-nor-rv-addition-v4-0-779d35303dff@bootlin.com>
-In-Reply-To: <20260902-winbond-v7-1-spi-nor-rv-addition-v4-0-779d35303dff@bootlin.com>
-To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
- Takahiro Kuwano <takahiro.kuwano@infineon.com>, 
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
- Nicolas Ferre <nicolas.ferre@microchip.com>, 
- Alexandre Belloni <alexandre.belloni@bootlin.com>, 
- Claudiu Beznea <claudiu.beznea@tuxon.dev>, Jonathan Corbet <corbet@lwn.net>, 
- Shuah Khan <skhan@linuxfoundation.org>
-Cc: Steam Lin <STLin2@winbond.com>, Hsin-Yi Wang <hsinyi@chromium.org>, 
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
- Miquel Raynal <miquel.raynal@bootlin.com>
-X-Mailer: b4 0.14.3
-X-Last-TLS-Session-Version: TLSv1.3
+X-Received: by 2002:a05:6820:1789:b0:6b1:b23c:2142 with SMTP id
+ 006d021491bc7-6b47bcc15a6mr6859158eaf.1.1788382724074; Wed, 02 Sep 2026
+ 13:58:44 -0700 (PDT)
+Date: Wed, 02 Sep 2026 13:58:44 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <6a988e04.e163c37b.143a1.000c.GAE@google.com>
+Subject: [syzbot] [mtd?] possible deadlock in mtd_queue_rq
+From: syzbot <syzbot+e08e0a15269eefa87790@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, 
+	miquel.raynal@bootlin.com, richard@nod.at, syzkaller-bugs@googlegroups.com, 
+	vigneshr@ti.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260902_180105_633384_E894D8E8 
-X-CRM114-Status: GOOD (  15.39  )
+X-CRM114-CacheID: sfid-20260902_135846_055776_45123A1C 
+X-CRM114-Status: UNSURE (   6.93  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,289 +78,273 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-There is an ID collision with the chip of same density from the JV
-family. Both chips are very similar in practice, it is mostly a matter
-of electrical differences (mostly power consumption being lower).
+Hello,
 
-As a significant difference, RV chips identify themselves as supporting
-the new SFDP (rev F) field which forces an alternate write SR2
-opcode (0x31).
+syzbot found the following issue on:
 
-Reviewed-by: Takahiro Kuwano <takahiro.kuwano@infineon.com>
-Reviewed-by: Michael Walle <mwalle@kernel.org>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+HEAD commit:    45c13f3f9e3b Merge tag 'hwlock-v7.3' of git://git.kernel.o..
+git tree:       https://kernel.googlesource.com/pub/scm/linux/kernel/git/torvalds/linux master
+console output: https://syzkaller.appspot.com/x/log.txt?x=14f0ee25580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d6a4e008e57a0e64
+dashboard link: https://syzkaller.appspot.com/bug?extid=e08e0a15269eefa87790
+compiler:       aarch64-linux-gnu-gcc (Debian 14.2.0-19) 14.2.0, GNU ld (GNU Binutils for Debian) 2.44
+userspace arch: arm
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/fa3fbcfdac58/non_bootable_disk-45c13f3f.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/f88d9fecef79/vmlinux-45c13f3f.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/87ae79a5d86d/zImage-45c13f3f.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+e08e0a15269eefa87790@syzkaller.appspotmail.com
+
+======================================================
+WARNING: possible circular locking dependency detected
+syzkaller #0 Tainted: G        W    L     
+------------------------------------------------------
+kworker/0:0H/11 is trying to acquire lock:
+ffff800087b74020 (fs_reclaim){+.+.}-{0:0}, at: might_alloc include/linux/sched/mm.h:316 [inline]
+ffff800087b74020 (fs_reclaim){+.+.}-{0:0}, at: slab_pre_alloc_hook mm/slub.c:4636 [inline]
+ffff800087b74020 (fs_reclaim){+.+.}-{0:0}, at: slab_alloc_node mm/slub.c:4974 [inline]
+ffff800087b74020 (fs_reclaim){+.+.}-{0:0}, at: __kmalloc_cache_node_noprof+0x6c/0x634 mm/slub.c:5578
+
+but task is already holding lock:
+ffff000014f95080 (&new->lock){+.+.}-{4:4}, at: mtd_blktrans_work drivers/mtd/mtd_blkdevs.c:151 [inline]
+ffff000014f95080 (&new->lock){+.+.}-{4:4}, at: mtd_queue_rq+0x2a4/0x1694 drivers/mtd/mtd_blkdevs.c:179
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #4 (&new->lock){+.+.}-{4:4}:
+       lock_acquire kernel/locking/lockdep.c:5886 [inline]
+       lock_acquire+0x3d0/0x44c kernel/locking/lockdep.c:5843
+       __mutex_lock_common kernel/locking/mutex.c:646 [inline]
+       __mutex_lock+0x150/0x1530 kernel/locking/mutex.c:821
+       mutex_lock_nested+0x24/0x30 kernel/locking/mutex.c:874
+       mtd_blktrans_work drivers/mtd/mtd_blkdevs.c:151 [inline]
+       mtd_queue_rq+0x2a4/0x1694 drivers/mtd/mtd_blkdevs.c:179
+       blk_mq_dispatch_rq_list+0x2e0/0x177c block/blk-mq.c:2117
+       __blk_mq_do_dispatch_sched block/blk-mq-sched.c:168 [inline]
+       blk_mq_do_dispatch_sched block/blk-mq-sched.c:182 [inline]
+       __blk_mq_sched_dispatch_requests+0x830/0xe60 block/blk-mq-sched.c:307
+       blk_mq_sched_dispatch_requests+0x7c/0x114 block/blk-mq-sched.c:329
+       blk_mq_run_work_fn+0xf0/0x278 block/blk-mq.c:2531
+       process_one_work+0x830/0x1c00 kernel/workqueue.c:3387
+       process_scheduled_works kernel/workqueue.c:3470 [inline]
+       worker_thread+0x42c/0xc90 kernel/workqueue.c:3551
+       kthread+0x2ec/0x384 kernel/kthread.c:436
+       ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:854
+
+-> #3 (set->srcu){.+.+}-{0:0}:
+       lock_sync+0xf0/0x16c kernel/locking/lockdep.c:5934
+       srcu_lock_sync include/linux/srcu.h:210 [inline]
+       __synchronize_srcu+0xa8/0x280 kernel/rcu/srcutree.c:1462
+       synchronize_srcu_expedited kernel/rcu/srcutree.c:1502 [inline]
+       synchronize_srcu+0x168/0x7d0 kernel/rcu/srcutree.c:1558
+       blk_mq_wait_quiesce_done block/blk-mq.c:284 [inline]
+       blk_mq_wait_quiesce_done block/blk-mq.c:281 [inline]
+       blk_mq_quiesce_queue block/blk-mq.c:304 [inline]
+       blk_mq_quiesce_queue+0xf4/0x160 block/blk-mq.c:299
+       elevator_switch+0x118/0x430 block/elevator.c:576
+       elevator_change+0x294/0x420 block/elevator.c:681
+       elevator_set_default+0x210/0x2b8 block/elevator.c:754
+       blk_register_queue+0x36c/0x500 block/blk-sysfs.c:992
+       __add_disk+0x510/0xb48 block/genhd.c:524
+       add_disk_fwnode+0x110/0x3e0 block/genhd.c:593
+       device_add_disk+0x14/0x20 block/genhd.c:623
+       add_disk include/linux/blkdev.h:798 [inline]
+       nbd_dev_add+0x5f8/0x9b4 drivers/block/nbd.c:2026
+       nbd_init+0x190/0x1b0 drivers/block/nbd.c:2743
+       do_one_initcall+0x134/0xb20 init/main.c:1357
+       do_initcall_level init/main.c:1419 [inline]
+       do_initcalls init/main.c:1435 [inline]
+       do_basic_setup init/main.c:1455 [inline]
+       kernel_init_freeable+0x5ec/0x670 init/main.c:1670
+       kernel_init+0x2c/0x14c init/main.c:1560
+       ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:854
+
+-> #2 (&q->elevator_lock){+.+.}-{4:4}:
+       lock_acquire kernel/locking/lockdep.c:5886 [inline]
+       lock_acquire+0x3d0/0x44c kernel/locking/lockdep.c:5843
+       __mutex_lock_common kernel/locking/mutex.c:646 [inline]
+       __mutex_lock+0x150/0x1530 kernel/locking/mutex.c:821
+       mutex_lock_nested+0x24/0x30 kernel/locking/mutex.c:874
+       elevator_change+0x188/0x420 block/elevator.c:679
+       elevator_set_none+0x90/0xec block/elevator.c:769
+       blk_mq_elv_switch_none block/blk-mq.c:5102 [inline]
+       __blk_mq_update_nr_hw_queues block/blk-mq.c:5147 [inline]
+       blk_mq_update_nr_hw_queues+0x3c0/0x1020 block/blk-mq.c:5212
+       nbd_start_device+0x128/0xa28 drivers/block/nbd.c:1530
+       nbd_genl_connect+0xb50/0x1394 drivers/block/nbd.c:2310
+       genl_family_rcv_msg_doit+0x1c0/0x28c net/netlink/genetlink.c:1114
+       genl_family_rcv_msg net/netlink/genetlink.c:1194 [inline]
+       genl_rcv_msg+0x3f8/0x60c net/netlink/genetlink.c:1209
+       netlink_rcv_skb+0x1ac/0x360 net/netlink/af_netlink.c:2556
+       genl_rcv+0x38/0x54 net/netlink/genetlink.c:1218
+       netlink_unicast_kernel net/netlink/af_netlink.c:1319 [inline]
+       netlink_unicast+0x418/0x6e0 net/netlink/af_netlink.c:1345
+       netlink_sendmsg+0x638/0xa4c net/netlink/af_netlink.c:1900
+       sock_sendmsg_nosec net/socket.c:800 [inline]
+       __sock_sendmsg+0xc8/0x1a4 net/socket.c:815
+       ____sys_sendmsg+0x52c/0x76c net/socket.c:2713
+       ___sys_sendmsg+0x124/0x1a4 net/socket.c:2767
+       __sys_sendmsg+0x10c/0x198 net/socket.c:2799
+       __compat_sys_sendmsg net/compat.c:345 [inline]
+       __do_compat_sys_sendmsg net/compat.c:352 [inline]
+       __se_compat_sys_sendmsg net/compat.c:349 [inline]
+       __arm64_compat_sys_sendmsg+0x74/0xa4 net/compat.c:349
+       __invoke_syscall arch/arm64/kernel/syscall.c:35 [inline]
+       invoke_syscall+0x74/0x240 arch/arm64/kernel/syscall.c:49
+       el0_svc_common.constprop.0+0xac/0x230 arch/arm64/kernel/syscall.c:121
+       do_el0_svc_compat+0x40/0x58 arch/arm64/kernel/syscall.c:146
+       el0_svc_compat+0x54/0x264 arch/arm64/kernel/entry-common.c:909
+       el0t_32_sync_handler+0x88/0xac arch/arm64/kernel/entry-common.c:927
+       el0t_32_sync+0x19c/0x1a0 arch/arm64/kernel/entry.S:595
+
+-> #1 (&q->q_usage_counter(io)#33){++++}-{0:0}:
+       lock_acquire kernel/locking/lockdep.c:5886 [inline]
+       lock_acquire+0x3d0/0x44c kernel/locking/lockdep.c:5843
+       blk_alloc_queue+0x4e0/0x640 block/blk-core.c:504
+       blk_mq_alloc_queue+0x148/0x224 block/blk-mq.c:4420
+       __blk_mq_alloc_disk+0x20/0x120 block/blk-mq.c:4467
+       nbd_dev_add+0x3d0/0x9b4 drivers/block/nbd.c:1996
+       nbd_init+0x190/0x1b0 drivers/block/nbd.c:2743
+       do_one_initcall+0x134/0xb20 init/main.c:1357
+       do_initcall_level init/main.c:1419 [inline]
+       do_initcalls init/main.c:1435 [inline]
+       do_basic_setup init/main.c:1455 [inline]
+       kernel_init_freeable+0x5ec/0x670 init/main.c:1670
+       kernel_init+0x2c/0x14c init/main.c:1560
+       ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:854
+
+-> #0 (fs_reclaim){+.+.}-{0:0}:
+       check_prev_add+0x114/0xca0 kernel/locking/lockdep.c:3181
+       check_prevs_add kernel/locking/lockdep.c:3300 [inline]
+       validate_chain kernel/locking/lockdep.c:3924 [inline]
+       __lock_acquire+0x13f4/0x1a5c kernel/locking/lockdep.c:5253
+       lock_acquire kernel/locking/lockdep.c:5886 [inline]
+       lock_acquire+0x3d0/0x44c kernel/locking/lockdep.c:5843
+       __fs_reclaim_acquire mm/page_alloc.c:4375 [inline]
+       fs_reclaim_acquire+0x130/0x158 mm/page_alloc.c:4389
+       might_alloc include/linux/sched/mm.h:316 [inline]
+       slab_pre_alloc_hook mm/slub.c:4636 [inline]
+       slab_alloc_node mm/slub.c:4974 [inline]
+       __kmalloc_cache_node_noprof+0x6c/0x634 mm/slub.c:5578
+       _kmalloc_node_noprof include/linux/slab.h:1196 [inline]
+       __get_vm_area_node+0x118/0x2ec mm/vmalloc.c:3238
+       __vmalloc_node_range_noprof+0x198/0x1024 mm/vmalloc.c:4065
+       __vmalloc_node_noprof+0xe4/0x14c mm/vmalloc.c:4166
+       vmalloc_noprof+0x24/0x30 mm/vmalloc.c:4201
+       mtdblock_writesect+0x41c/0x5b8 drivers/mtd/mtdblock.c:242
+       do_blktrans_request drivers/mtd/mtd_blkdevs.c:88 [inline]
+       mtd_blktrans_work drivers/mtd/mtd_blkdevs.c:152 [inline]
+       mtd_queue_rq+0x744/0x1694 drivers/mtd/mtd_blkdevs.c:179
+       blk_mq_dispatch_rq_list+0x2e0/0x177c block/blk-mq.c:2117
+       __blk_mq_do_dispatch_sched block/blk-mq-sched.c:168 [inline]
+       blk_mq_do_dispatch_sched block/blk-mq-sched.c:182 [inline]
+       __blk_mq_sched_dispatch_requests+0x830/0xe60 block/blk-mq-sched.c:307
+       blk_mq_sched_dispatch_requests+0x7c/0x114 block/blk-mq-sched.c:329
+       blk_mq_run_work_fn+0xf0/0x278 block/blk-mq.c:2531
+       process_one_work+0x830/0x1c00 kernel/workqueue.c:3387
+       process_scheduled_works kernel/workqueue.c:3470 [inline]
+       worker_thread+0x42c/0xc90 kernel/workqueue.c:3551
+       kthread+0x2ec/0x384 kernel/kthread.c:436
+       ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:854
+
+other info that might help us debug this:
+
+Chain exists of:
+  fs_reclaim --> set->srcu --> &new->lock
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&new->lock);
+                               lock(set->srcu);
+                               lock(&new->lock);
+  lock(fs_reclaim);
+
+ *** DEADLOCK ***
+
+locks held by kworker/0:0H/11: 4, last CPU#0:
+ #0: ffff00000ed7c140 ((wq_completion)kblockd){+.+.}-{0:0}, at: process_one_work+0x12ec/0x1c00 kernel/workqueue.c:3362
+ #1: ffff80008dc97c70 ((work_completion)(&(&hctx->run_work)->work)){+.+.}-{0:0}, at: process_one_work+0x780/0x1c00 kernel/workqueue.c:3361
+ #2: ffff000014cce818 (set->srcu){.+.+}-{0:0}, at: srcu_read_lock include/linux/srcu.h:304 [inline]
+ #2: ffff000014cce818 (set->srcu){.+.+}-{0:0}, at: blk_mq_run_work_fn+0xc8/0x278 block/blk-mq.c:2531
+ #3: ffff000014f95080 (&new->lock){+.+.}-{4:4}, at: mtd_blktrans_work drivers/mtd/mtd_blkdevs.c:151 [inline]
+ #3: ffff000014f95080 (&new->lock){+.+.}-{4:4}, at: mtd_queue_rq+0x2a4/0x1694 drivers/mtd/mtd_blkdevs.c:179
+
+stack backtrace:
+CPU: 0 UID: 0 PID: 11 Comm: kworker/0:0H Tainted: G        W    L      syzkaller #0 PREEMPT 
+Tainted: [W]=WARN, [L]=SOFTLOCKUP
+Hardware name: linux,dummy-virt (DT)
+Workqueue: kblockd blk_mq_run_work_fn
+Call trace:
+ show_stack+0x18/0x24 arch/arm64/kernel/stacktrace.c:499 (C)
+ __dump_stack lib/dump_stack.c:94 [inline]
+ dump_stack_lvl+0x7c/0xb0 lib/dump_stack.c:120
+ dump_stack+0x1c/0x28 lib/dump_stack.c:129
+ print_circular_bug+0x23c/0x284 kernel/locking/lockdep.c:2059
+ check_noncircular+0x174/0x194 kernel/locking/lockdep.c:2191
+ check_prev_add+0x114/0xca0 kernel/locking/lockdep.c:3181
+ check_prevs_add kernel/locking/lockdep.c:3300 [inline]
+ validate_chain kernel/locking/lockdep.c:3924 [inline]
+ __lock_acquire+0x13f4/0x1a5c kernel/locking/lockdep.c:5253
+ lock_acquire kernel/locking/lockdep.c:5886 [inline]
+ lock_acquire+0x3d0/0x44c kernel/locking/lockdep.c:5843
+ __fs_reclaim_acquire mm/page_alloc.c:4375 [inline]
+ fs_reclaim_acquire+0x130/0x158 mm/page_alloc.c:4389
+ might_alloc include/linux/sched/mm.h:316 [inline]
+ slab_pre_alloc_hook mm/slub.c:4636 [inline]
+ slab_alloc_node mm/slub.c:4974 [inline]
+ __kmalloc_cache_node_noprof+0x6c/0x634 mm/slub.c:5578
+ _kmalloc_node_noprof include/linux/slab.h:1196 [inline]
+ __get_vm_area_node+0x118/0x2ec mm/vmalloc.c:3238
+ __vmalloc_node_range_noprof+0x198/0x1024 mm/vmalloc.c:4065
+ __vmalloc_node_noprof+0xe4/0x14c mm/vmalloc.c:4166
+ vmalloc_noprof+0x24/0x30 mm/vmalloc.c:4201
+ mtdblock_writesect+0x41c/0x5b8 drivers/mtd/mtdblock.c:242
+ do_blktrans_request drivers/mtd/mtd_blkdevs.c:88 [inline]
+ mtd_blktrans_work drivers/mtd/mtd_blkdevs.c:152 [inline]
+ mtd_queue_rq+0x744/0x1694 drivers/mtd/mtd_blkdevs.c:179
+ blk_mq_dispatch_rq_list+0x2e0/0x177c block/blk-mq.c:2117
+ __blk_mq_do_dispatch_sched block/blk-mq-sched.c:168 [inline]
+ blk_mq_do_dispatch_sched block/blk-mq-sched.c:182 [inline]
+ __blk_mq_sched_dispatch_requests+0x830/0xe60 block/blk-mq-sched.c:307
+ blk_mq_sched_dispatch_requests+0x7c/0x114 block/blk-mq-sched.c:329
+ blk_mq_run_work_fn+0xf0/0x278 block/blk-mq.c:2531
+ process_one_work+0x830/0x1c00 kernel/workqueue.c:3387
+ process_scheduled_works kernel/workqueue.c:3470 [inline]
+ worker_thread+0x42c/0xc90 kernel/workqueue.c:3551
+ kthread+0x2ec/0x384 kernel/kthread.c:436
+ ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:854
+
+
 ---
-+ cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
-ef7021
-+ cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
-winbond
-+ xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-534644500a0101ff00080117800000ff84010102e00000ffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffe520fbffffffff3f44eb086b083b42bbfeffffffffff
-0000ffff44eb0c200f5210d800001602a60081e214dde9e378477a757a75
-f7a4d55c39f66dffe970f9a50000000000002c0c000000006655ffff0f00
-0000060d44bd27ed080dffffffffff8a00fe21ffdcff
-+ sha256sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-f0ba26954c84f126916616ac4311057151ea46cae2eda1752709c3a5adfe4b55  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-+ cat /sys/kernel/debug/spi-nor/spi0.0/capabilities
-Supported read modes by the flash
- 1S-1S-1S
-  opcode	0x13
-  mode cycles	0
-  dummy cycles	0
- 1S-1S-2S
-  opcode	0x3c
-  mode cycles	0
-  dummy cycles	8
- 1S-2S-2S
-  opcode	0xbc
-  mode cycles	2
-  dummy cycles	2
- 1S-1S-4S
-  opcode	0x6c
-  mode cycles	0
-  dummy cycles	8
- 1S-4S-4S
-  opcode	0xec
-  mode cycles	2
-  dummy cycles	4
- 4S-4S-4S
-  opcode	0xec
-  mode cycles	2
-  dummy cycles	4
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Supported page program modes by the flash
- 1S-1S-1S
-  opcode	0x12
- 1S-1S-4S
-  opcode	0x34
-+ cat /sys/kernel/debug/spi-nor/spi0.0/params
-name		(null)
-id		ef 70 21 00 00 00
-size		128 MiB
-write size	1
-page size	256
-address nbytes	4
-flags		HAS_SR_TB | 4B_OPCODES | HAS_4BAIT | HAS_LOCK | HAS_SR_TB_BIT6 | HAS_4BIT_BP | SOFT_RESET | NO_WP | HAS_SR2_CMP_BIT6
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-opcodes
- read		0xec
-  dummy cycles	6
- erase		0xdc
- program	0x34
- 8D extension	repeat
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-protocols
- read		1S-4S-4S
- write		1S-1S-4S
- register	1S-1S-1S
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
-erase commands
- 21 (4.00 KiB) [1]
- dc (64.0 KiB) [3]
- c7 (128 MiB)
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
 
-sector map
- region (in hex)   | erase mask | overlaid
- ------------------+------------+---------
- 00000000-07ffffff |     [   3] | no
-
-locked sectors
- region (in hex)   | status   | #sectors
- ------------------+----------+---------
- 00000000-07ffffff | unlocked | 2048
-+ dd 'if=/dev/urandom' 'of=./spi_test' 'bs=1M' 'count=2'
-[   19.799786] random: crng init done
-2+0 records in
-2+0 records out
-+ mtd_debug erase /dev/mtd0 0 2097152
-Erased 2097152 bytes from address 0x00000000 in flash
-+ mtd_debug read /dev/mtd0 0 2097152 spi_read
-Copied 2097152 bytes from address 0x00000000 in flash to spi_read
-+ hexdump spi_read
-0000000 ffff ffff ffff ffff ffff ffff ffff ffff
-*
-0200000
-+ sha256sum spi_read
-4bda3a28f4ffe603c0ec1258c0034d65a1a0d35ab7bd523a834608adabf03cc5  spi_read
-+ mtd_debug write /dev/mtd0 0 2097152 spi_test
-Copied 2097152 bytes from spi_test to address 0x00000000 in flash
-+ mtd_debug read /dev/mtd0 0 2097152 spi_read
-Copied 2097152 bytes from address 0x00000000 in flash to spi_read
-+ sha256sum spi_read spi_test
-89d206670689b1bdd4688313bcc0ea3ac67a9ac055e75fd76220387c9e4fde3e  spi_read
-89d206670689b1bdd4688313bcc0ea3ac67a9ac055e75fd76220387c9e4fde3e  spi_test
-+ mtd_debug erase /dev/mtd0 0 2097152
-Erased 2097152 bytes from address 0x00000000 in flash
-+ mtd_debug read /dev/mtd0 0 2097152 spi_read
-Copied 2097152 bytes from address 0x00000000 in flash to spi_read
-+ sha256sum spi_read spi_test
-4bda3a28f4ffe603c0ec1258c0034d65a1a0d35ab7bd523a834608adabf03cc5  spi_read
-89d206670689b1bdd4688313bcc0ea3ac67a9ac055e75fd76220387c9e4fde3e  spi_test
-+ mtd_debug info /dev/mtd0
-mtd.type = MTD_NORFLASH
-mtd.flags = MTD_CAP_NORFLASH
-mtd.size = 134217728 (128M)
-mtd.erasesize = 65536 (64K)
-mtd.writesize = 1
-mtd.oobsize = 0
-regions = 0
-
-+ alias 'show_sectors=grep -A4 "locked sectors" /sys/kernel/debug/spi-nor/spi0.0/params'
-+ flash_lock -u /dev/mtd0
-+ flash_lock -i /dev/mtd0
-Device: /dev/mtd0
-Start: 0
-Len: 0x8000000
-Lock status: unlocked
-Return code: 0
-+ mtd_debug erase /dev/mtd0 0 2097152
-Erased 2097152 bytes from address 0x00000000 in flash
-+ mtd_debug write /dev/mtd0 0 2097152 spi_test
-Copied 2097152 bytes from spi_test to address 0x00000000 in flash
-+ mtd_debug read /dev/mtd0 0 2097152 spi_read
-Copied 2097152 bytes from address 0x00000000 in flash to spi_read
-+ sha256sum spi_read spi_test
-89d206670689b1bdd4688313bcc0ea3ac67a9ac055e75fd76220387c9e4fde3e  spi_read
-89d206670689b1bdd4688313bcc0ea3ac67a9ac055e75fd76220387c9e4fde3e  spi_test
-+ grep -A4 'locked sectors' /sys/kernel/debug/spi-nor/spi0.0/params
-locked sectors
- region (in hex)   | status   | #sectors
- ------------------+----------+---------
- 00000000-07ffffff | unlocked | 2048
-+ flash_lock -l /dev/mtd0
-+ flash_lock -i /dev/mtd0
-Device: /dev/mtd0
-Start: 0
-Len: 0x8000000
-Lock status: locked
-Return code: 1
-+ mtd_debug erase /dev/mtd0 0 2097152
-Erased 2097152 bytes from address 0x00000000 in flash
-+ mtd_debug read /dev/mtd0 0 2097152 spi_read
-Copied 2097152 bytes from address 0x00000000 in flash to spi_read
-+ sha256sum spi_read spi_test
-89d206670689b1bdd4688313bcc0ea3ac67a9ac055e75fd76220387c9e4fde3e  spi_read
-89d206670689b1bdd4688313bcc0ea3ac67a9ac055e75fd76220387c9e4fde3e  spi_test
-+ dd 'if=/dev/urandom' 'of=./spi_test2' 'bs=1M' 'count=2'
-2+0 records in
-2+0 records out
-+ mtd_debug write /dev/mtd0 0 2097152 spi_test2
-Copied 2097152 bytes from spi_test2 to address 0x00000000 in flash
-+ mtd_debug read /dev/mtd0 0 2097152 spi_read2
-Copied 2097152 bytes from address 0x00000000 in flash to spi_read2
-+ sha256sum spi_read spi_read2 spi_test spi_test2
-89d206670689b1bdd4688313bcc0ea3ac67a9ac055e75fd76220387c9e4fde3e  spi_read
-89d206670689b1bdd4688313bcc0ea3ac67a9ac055e75fd76220387c9e4fde3e  spi_read2
-89d206670689b1bdd4688313bcc0ea3ac67a9ac055e75fd76220387c9e4fde3e  spi_test
-792b00a5bf62350ee8f4868980820577046401c3e6f79075ea636034cff7cef2  spi_test2
-+ grep -A4 'locked sectors' /sys/kernel/debug/spi-nor/spi0.0/params
-locked sectors
- region (in hex)   | status   | #sectors
- ------------------+----------+---------
- 00000000-07ffffff |   locked | 2048
-+ flash_lock -u /dev/mtd0
-+ cat /sys/class/mtd/mtd0/size
-+ size=134217728
-+ cat /sys/class/mtd/mtd0/erasesize
-+ bs=65536
-+ grep unlocked /sys/kernel/debug/spi-nor/spi0.0/params
-+ sed -e 's/.*unlocked | //'
-+ nsectors=2048
-+ ss=65536
-+ bps=1
-+ flash_lock -u /dev/mtd0
-+ flash_lock -l /dev/mtd0 134086656 2
-+ grep -A4 'locked sectors' /sys/kernel/debug/spi-nor/spi0.0/params
-locked sectors
- region (in hex)   | status   | #sectors
- ------------------+----------+---------
- 00000000-07fdffff | unlocked | 2046
- 07fe0000-07ffffff |   locked | 2
-+ flash_lock -u /dev/mtd0 134086656 1
-+ grep -A4 'locked sectors' /sys/kernel/debbg//spi-nr/spi0.0/params
-locked sectors
- region (in hex)   | status   | #sectors
- ------------------+----------+---------
- 00000000-07feffff | unlocked | 2047
- 07ff0000-07ffffff |   locked | 1
-+ flash_lock -u /dev/mtd0
-+ flash_lock -l /dev/mtd0 125829120 128
-+ grep -A4 'locked sectors' /sys/kernel/debug/spi-nor/spi0.0/params
-locked sectors
- region (in hex)   | status   | #sectors
- ------------------+----------+---------
- 00000000-077fffff | unlocked | 1920
- 07800000-07ffffff |   locked | 128
-+ flash_lock -u /dev/mtd0
-+ flash_lock -l /dev/mtd0 0 2
-+ grep -A4 'locked sectors' /sys/kernel/debug/spi-nor/spi0.0/params
-locked sectors
- region (in hex)   | status   | #sectors
- ------------------+----------+---------
- 00000000-0001ffff |   locked | 2
- 00020000-07ffffff | unlocked | 2046
-+ flash_lock -u /dev/mtd0 65536 1
-+ grep -A4 'locked sectors' /sys/kernel/debug/spi-nor/spi0.0/params
-locked sectors
- region (in hex)   | status   | #sectors
- ------------------+----------+---------
- 00000000-0000ffff |   locked | 1
- 00010000-07ffffff | unlocked | 2047
-+ all_but_one=2047
-+ flash_lock -u /dev/mtd0
-+ flash_lock -l /dev/mtd0 65536 2047
-+ grep -A4 'locked sectors' /sys/kernel/debug/spi-nor/spi0.0/params
-locked sectors
- region (in hex)   | status   | #sectors
- ------------------+----------+---------
- 00000000-0000ffff | unlocked | 1
- 00010000-07ffffff |   locked | 2047
-+ flash_lock -u /dev/mtd0 65536 1
-+ grep -A4 'locked sectors' /sys/kernel/debug/spi-nor/spi0.0/params
-locked sectors
- region (in hex)   | status   | #sectors
- ------------------+----------+---------
- 00000000-0001ffff | unlocked | 2
- 00020000-07ffffff |   locked | 2046
-+ flash_lock -u /dev/mtd0
-+ flash_lock -l /dev/mtd0 0 2047
-+ grep -A4 'locked sectors' /sys/kernel/debug/spi-nor/spi0.0/params
-locked sectors
- region (in hex)   | status   | #sectors
- ------------------+----------+---------
- 00000000-07feffff |   locked | 2047
- 07ff0000-07ffffff | unlocked | 1
-+ flash_lock -u /dev/mtd0 134086656 1
-+ grep -A4 'locked sectors' /sys/kernel/debug/spi-nor/spi0.0/params
-locked sectors
- region (in hex)   | status   | #sectors
- ------------------+----------+---------
- 00000000-07fdffff |   locked | 2046
----
- drivers/mtd/spi-nor/winbond.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
-index 505140485bf3..0a59b024fa80 100644
---- a/drivers/mtd/spi-nor/winbond.c
-+++ b/drivers/mtd/spi-nor/winbond.c
-@@ -398,7 +398,7 @@ static const struct flash_info winbond_nor_parts[] = {
- 		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6 |
- 			 SPI_NOR_4BIT_BP | SPI_NOR_HAS_CMP,
- 	}, {
--		/* W25Q01JV-M */
-+		/* W25Q01JV-M, W25Q01RV-M */
- 		.id = SNOR_ID(0xef, 0x70, 0x21),
- 		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6 |
- 			 SPI_NOR_4BIT_BP | SPI_NOR_HAS_CMP,
-
--- 
-2.54.0
-
+If you want to undo deduplication, reply with:
+#syz undup
 
 ______________________________________________________
 Linux MTD discussion mailing list
