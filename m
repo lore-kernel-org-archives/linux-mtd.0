@@ -4,63 +4,126 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9FB4FC61DD6
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Sep 2026 20:58:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD026C61DD6
+	for <linux-mtd@archiver.kernel.org>; Thu,  3 Sep 2026 03:14:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:From:Subject:Message-ID:Date:
-	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=uMwXn4AQb052NISIvuFZeRKI7Nmdoymtz37KbMjCmgE=; b=AWj
-	bkIeJLztW86u7d+cx7iojg16Ufz3FF4n/WpkS28xdmYvIo9sg7BYZkoxnCZ8SR6c+7T7CpGuu5P6t
-	hPoOEdA0sz7iwN2Ftj6aHkxqPPZ4mUprXfFxhpbyRU5sThlMpwnFhRGFbSXgUnVFs4jpN9BxKABZY
-	Me++P81QgFZ7UHFyvPHI1eDfpQ4rCLgaknhMmI7pTq+79WWccP5qyL+GBPeWHMn3dTczPOuVYrnm1
-	o3nR4K0fZNd7HbipKO+mJHXG4H41ZTaMX54wrIvY+3dZngmx2J4NuumrClMIIPEsR7n+1m+u68SZR
-	OuNRd0wtRa41/R9RlZqyl4NYKzkVWwQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=sCworj7vOk07YCWsqFZLPH5WVJg6Dm4kNeR3EjIypM4=; b=BvHHoB/7GiqiWG
+	J4sNOC3busy4ZV/kCUKrHdN2x3Mm+NFPTW5BSBMBMl8RwJyYBZfd2XgQ/oU4YdxWQrTUbncpcRTLO
+	Gkj0TvasbOBrZEm0EMvsSOa1ZeZfk9dck1+vDs6j+5OR1/87NOdsdgAcXEGSZhyhpAnY5BISUwchi
+	6WEUNzo+t/fNImI+edpPnlzhhF7qiFAxzpBZ6YelLHwy1xSkTtnuSV0lHwsdbgHByGpuAl8UtLPpP
+	WtXfoNE0A85egls8E2RWl2sQCLpREGmcjHnZEKaZ+B2ds6McvvjuiAq5NfQp+im5mR67MOz1V8GkU
+	blMeJsza6dMU7IEhBmDA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x1s2i-0000000Fts4-2OHG;
-	Wed, 02 Sep 2026 20:58:48 +0000
-Received: from mail-oa2-f8.google.com ([74.125.231.72])
+	id 1x1xuY-0000000GGSH-2t8C;
+	Thu, 03 Sep 2026 03:14:46 +0000
+Received: from mail-eastusazlp170120007.outbound.protection.outlook.com ([2a01:111:f403:c101::7] helo=BL0PR03CU003.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x1s2f-0000000Ftrf-4Afh
+	id 1x1xuW-0000000GGQ8-00rT
 	for linux-mtd@lists.infradead.org;
-	Wed, 02 Sep 2026 20:58:47 +0000
-Received: by mail-oa2-f8.google.com with SMTP id 586e51a60fabf-46683b030d9so520325fac.0
-        for <linux-mtd@lists.infradead.org>; Wed, 02 Sep 2026 13:58:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1788382724; x=1788987524;
-        h=content-type:to:from:subject:message-id:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=I4xf6SGf5Dw7zSqon+8qknaaazPDfHXGyeR7C4/i2k8=;
-        b=oUkYYuYbDGPlDYX9d3tEtQHe6KEkkwnH13WwMLmU0W+lAeGse8Ukd1ebNinZjmuw+n
-         BUpWjhBAcliD+YO40D66xGyhXD6KNlCxB+it9vTLu+a6xFTsM958/ZMHdYdesgwJHo04
-         ZlUWD/Rwi1YbXBdkOuxRLtXeeGKTyk2vtk3R5+7Cj6Oa5JXSv7xQEtim4c+L/Sw/7tg/
-         +7TVvTfLUBbxA3wp3h4pAY1aFy+CDfEJTpyAbCBd/Y8K+7sTnETcis/ydqRR1UScm+ex
-         edYP2KWqMzbjmFbzLUH1thK8EthrWGCK+R6Jz6XdGwBO9A1QgdIn7zODw6fmzQdhdVEY
-         RKhQ==
-X-Forwarded-Encrypted: i=1; AHgh+RpX+eUOiQ8QjU1WTjeBc0DCbMHQI3OzGpEVSwQ6gV+nfUsN9I03qoACBpPg/fbarKv9wQ+VbwJH9eQ=@lists.infradead.org
-X-Gm-Message-State: AFuF++mplubHs2SMtsxO00Y+0x3Er7hH+t4PChjHFCPaKox9ayL83e13
-	9SS8DPEpQIHS+kaG2MaDfnnMFQbClzjTB94x5H2CHIDl7/R8Mdtzf+WJIiXgUjl9bzsMA3Xg/ED
-	Yp3BOP9gS1Lv9WvyjcXVf0Kyn42XY+TBG4CJyFI5wHt3hp5iNNn2EFwpVYFo=
+	Thu, 03 Sep 2026 03:14:45 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=WCzhe8R67wTFKp6Q3RRtJzungJxnsDNk4j4ulHl21EkJZ0kXD7WwIxLPRSKzR9IzzKk0SogxCTEQkvBe3puAi5fxnuxZf6Ac0Mg4aSxo0cLNpYxUGQB+SSYOfh58GBMdfFDvPJhdKNYFmZdwRAjieppQ/4zCuZwZ5HI2eFUK5GFcsp4YFqXtlxnuNKSc+aaaICxPHf8WQy8ZlYdHnOml8DB2vtcco9C314QVl5ptr3Po8G29+KUod+jXXfv+ykYVeNQMrvjhsgSsNfkv5nW3GyoB3czjbrf/XVOnSXhqhqwFp5l2XDxwFPqIRRK3/efsSWltsfisOnlwcsocxZWM5w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=pfUx3CQqSbQz+BR8yoM11FHZAACWDdzxG9fSJPbB7vI=;
+ b=hObf3EyCio5CEBzPnn/whqSFnrmjPCHeDqBzMom+TkFyUpIg5xkgNQitqRPxTfxW4lcJPATNQvKJ5LrRjl2XC02CO+G1ueFwcNDoWv4e6ZaCpQ62ZU63n3w4SBrkAn25Uha1NKvqW0ngFn6+X2OcjQIYnlccEomB1jC0oh46GuEvmYeGXsVqmjuiIYrbN0uI+nzIYtQgMxCY42m2t9hiKKDcWh8Sz+EL+PRSLy0B6Hlq35doOw2qP8+3DJJc/nngerDgiYhigUoUbo9083yQ47PLmmBjqiW4iiXyMrFVto6I2nF+KZQr7V3316egE6jBOwvgFk4Q7BLT1qoMZn6XgQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=altera.com; dmarc=pass action=none header.from=altera.com;
+ dkim=pass header.d=altera.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=altera.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pfUx3CQqSbQz+BR8yoM11FHZAACWDdzxG9fSJPbB7vI=;
+ b=hMWj7zqkIPRDUyJdtg8j0HFvLhxIuaOBqKEb1tPfAWW8r1sVcKNTzJYC1rqMjqNmBxlRxtJhvNOkQ6W84f93fQ7QwCMg1tAgAkRHaf5k9AOjDF9X4jd81XzkAKz5rSQiUh8hSoP9bwWcwph74wB9Wjq26PjCBHe8PTR2opNfl1FGGNDW9dPb7Xpedr/LKcXvZ+xgdAmGWR1etY8RPbb8yzN49gtAe+C/SkJ7AualMNR2hEwWpcn7KMnYHZOy/Xsoi1BXvW/b88o9O8s/bL3cSvlEqJN/0h7nI6a1ATHjIGpFxu6hYgrlrL5j/d87tK1iRl1eP7bE3SVtHZrP/YiUug==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=altera.com;
+Received: from SJ0PR03MB5950.namprd03.prod.outlook.com (2603:10b6:a03:2d3::20)
+ by LV3PR03MB7502.namprd03.prod.outlook.com (2603:10b6:408:19c::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.382.10; Thu, 3 Sep
+ 2026 03:14:37 +0000
+Received: from SJ0PR03MB5950.namprd03.prod.outlook.com
+ ([fe80::53a0:bf93:6b6b:de01]) by SJ0PR03MB5950.namprd03.prod.outlook.com
+ ([fe80::53a0:bf93:6b6b:de01%5]) with mapi id 15.21.0360.008; Thu, 3 Sep 2026
+ 03:14:37 +0000
+From: tze.yee.ng@altera.com
+To: Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <mwalle@kernel.org>,
+	Takahiro Kuwano <takahiro.kuwano@infineon.com>,
+	Tudor Ambarus <tudor.ambarus@linaro.org>,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] mtd: spi-nor: Fix deadlock in spi_nor_rww_start_exclusive()
+Date: Thu,  3 Sep 2026 11:14:28 +0800
+Message-ID: <46e4e2e31f051f64c120307216ce2766c004d9af.1788404586.git.tze.yee.ng@altera.com>
+X-Mailer: git-send-email 2.43.7
+In-Reply-To: <cover.1788404586.git.tze.yee.ng@altera.com>
+References: <cover.1788404586.git.tze.yee.ng@altera.com>
+X-ClientProxiedBy: BY5PR04CA0028.namprd04.prod.outlook.com
+ (2603:10b6:a03:1d0::38) To SJ0PR03MB5950.namprd03.prod.outlook.com
+ (2603:10b6:a03:2d3::20)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6820:1789:b0:6b1:b23c:2142 with SMTP id
- 006d021491bc7-6b47bcc15a6mr6859158eaf.1.1788382724074; Wed, 02 Sep 2026
- 13:58:44 -0700 (PDT)
-Date: Wed, 02 Sep 2026 13:58:44 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6a988e04.e163c37b.143a1.000c.GAE@google.com>
-Subject: [syzbot] [mtd?] possible deadlock in mtd_queue_rq
-From: syzbot <syzbot+e08e0a15269eefa87790@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, 
-	miquel.raynal@bootlin.com, richard@nod.at, syzkaller-bugs@googlegroups.com, 
-	vigneshr@ti.com
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ0PR03MB5950:EE_|LV3PR03MB7502:EE_
+X-MS-Office365-Filtering-Correlation-Id: b68305cc-f3d4-45ca-fdda-08df09697c1e
+X-MS-Exchange-AtpMessageProperties: SA
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|23010399003|366016|376014|10067099003|18002099003|22082099003|55112099003|56012099006|11063799006;
+X-Microsoft-Antispam-Message-Info: tvTRRWzfLbCdEv74H3I+KccqP2viP6mTTyg6V5kVBpXjAxqYm8TAwJe4Wl0QBsnfNwxFS4uN5KG+Z0VKxo8pyPo5Y46jacIqTqLCILXno51tEq3JXfhSe5wpf7toCSJeZlTkmCeJk4RuOXrTeAM619uFWltm/EeI/Mzl8BYKx2wa7cF7XlNQfxZTYYMLLdMzQ+nfqE1mNs0Kn0bdfHXiVB4oEiELANEQAi/kl5D26qFpq3zvbvdXlUGfWg3GaMXPyGyLRi8+t6hNLWQ4gGdbWznBgyrtbx7eioPj2MyluEHuMZql4Jgpn3iL3zV6/Rzu3/5QT32O9WW1g4lSmDpuwRmnaNE3PyCAzkl251KP9dc5YYVtFGOgRF2H31MigSGs3PJ+IbzK+4ajXttll2fTduDwlsKmXpTWJ0sGX8tGcMyoPKP0XtS5Ky1CV2T41DutYQH5hH9Tj8OwSo/n7PM8Rj9Ch0C8y2lFlUUGrZFCWtDzf0HPgSAlmyunZpdl0MNBwSp8G2aoiEpgMhBzG/vdUtHHqwSgCfqqW4JBdwbytLWVEh4oYgdzohgAXRehflj8XOLdUIUzbqraapTh5nlouwAzgQPlZIDFnR17aKrUZHb0C6xnQqUQGWDS3zcHi+HSuHTNHkin08FABacC4heTymgzRTr6JaC0PRdH3A0oliw=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR03MB5950.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(23010399003)(366016)(376014)(10067099003)(18002099003)(22082099003)(55112099003)(56012099006)(11063799006);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?5Irf+aTn6HTLT1HC/Vi2x9N/nxzGe2kj2tlCv/spEGlyWzqlLI5g+BXTl9C+?=
+ =?us-ascii?Q?uoJfJuBLSedsrUSOID63sSqvTN1NLezp/6vQL8vYLkG4Slt88bYXOWdP0o+P?=
+ =?us-ascii?Q?1Jm++PTn9/FrfiQY3+V2hzz2pMK+mBENAOztkENyGsY+kQQ8rwYGA3uacLM0?=
+ =?us-ascii?Q?c/Mj4LW9MEn6isHyxNOzc8NV6i4BLURNAr4Fij3bcFiz2ZXEIMSc7RNcJ/4f?=
+ =?us-ascii?Q?UyiabgfhRD6g/SKxHex36hILgsUCMeMhF95hPeXPVYbkL04VhVqLzQ9swLgd?=
+ =?us-ascii?Q?nK4xV4o29Muy99gEiGf0G/niUK1+gPQs3l+9bz7Shn59VN/rDeaeaj0iWRdx?=
+ =?us-ascii?Q?I4o110s5/zo6FUiCFjo8tcV6Tenlsjf2CShFvR0LxDm/x91KxGmb+IKjE0yj?=
+ =?us-ascii?Q?GbKxu5W+s5/H68yAgR5KO44JZUKDahVwQqr5EsOdzh4ZIsmBd63aUtOr4+fY?=
+ =?us-ascii?Q?HEApiYqLj3omaReOBdz6426C3AIn5WBD4lVTUgjpzuLvYME5j0aQplZhcylV?=
+ =?us-ascii?Q?8Kzbvvip3ooFK7WRO+H6UDLJHpJQ/9+fErAqc319W+MVMvLSWoKL3hdEYBd8?=
+ =?us-ascii?Q?+Es2sl5wKyjYGtMm5AqIDbpdFpWIvsQXxyFSL4qAGPFQ83WlAAZS+ElA/l8R?=
+ =?us-ascii?Q?Q3YUtJbT1/+OOLqDPiMr3SPt+SJUi79UnCWSg8rz4JJjWYo5vGuzZO+39XsE?=
+ =?us-ascii?Q?XZpubGInHnbK4cptvLGb5krsV0tuV/WdsOE3eGgykBwryrEEVhmOdVlAs2D2?=
+ =?us-ascii?Q?+NDagaHzK178CvXEotopZ+uh6JhqJfplF/9mAYi1wAckjpB9UHe8AqC9c/N+?=
+ =?us-ascii?Q?sC2sOl6w7l35enujtAKg7XGhOG+1WIrdyfJlrjwmoNipSfHOCG3hNAR5zMAn?=
+ =?us-ascii?Q?lS5in6Ezs69zcIPoW8LjF6oFaJfGSnl9Ela0MbEAz6R1pZSN15kM7RXlFpa5?=
+ =?us-ascii?Q?93Inrkn0VdR6NTTfOm1911gd0U+XHrnsZbYcQUxyj89jegtLNOUuAi+mBjzJ?=
+ =?us-ascii?Q?lq651jjkbrkFB3fttU4Wg24kumQZtOrssLpDKY4xiphR/0L2ec24FT41tk4s?=
+ =?us-ascii?Q?JAbgpDucdh2UsfRQQOIG5lrslvf5VvTh120rkKfbUv5v2ZYznSbZkWhE4vFZ?=
+ =?us-ascii?Q?xP0pQ1I2RMCV5fU5pLCzbVe9j2aOiwrBInNrJa/Htv8q0VAdQ19E1F+XCRnv?=
+ =?us-ascii?Q?5Q4d3336rDRex7xcAUgXndRrUpi3zeRYX39PBNv/UqLi2dCyjcoSYjYawEil?=
+ =?us-ascii?Q?Xg2cZREzDpvzDKw2rSDRortp3GUkZuJMIKRkA5wF0I4hAC5/2lrv7Zwjo2Fe?=
+ =?us-ascii?Q?gu1NW0C5zDebMO+Lgdid/0DUyOlfBsMkGERCuFkQaVdDn4q2X0KBmLPAE6Y5?=
+ =?us-ascii?Q?dt6Z0hVekYa95E1p8QWx22ZCHIsH7x1Cr5wp7Zkd1QwAsje/IFj95vIqEFoQ?=
+ =?us-ascii?Q?o8L5aBh1dtGTAuTX6kmqMrQF1TK4dTCPnXrOUBj3MzYGCbkSLipB50oktvoO?=
+ =?us-ascii?Q?rYg+aNw5IzQH/vcRNGib/qCbk0DVxdTrLnpk8QW4q9NbwhRXQoenIVHG8shQ?=
+ =?us-ascii?Q?T5HBYjPAbZ6sYo7MSmfzkp9Q+EGWYrGCj/jsixYwkehXFo96i8KBzzgi5mWa?=
+ =?us-ascii?Q?CFoGP0aKZMO0CLmY+Y80iZ8ImvqZTGO6alldOqrzn6D4BDpQNnGG/+h1MQTl?=
+ =?us-ascii?Q?93sgeIeODY+bSs9CZz2aXGgV+jJ7MrA6IIh/pRESs3Hy1Hm1nE4VWMd0oM1v?=
+ =?us-ascii?Q?7W0Wo+Nv5A=3D=3D?=
+X-OriginatorOrg: altera.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b68305cc-f3d4-45ca-fdda-08df09697c1e
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR03MB5950.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Sep 2026 03:14:37.2602
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: fbd72e03-d4a5-4110-adce-614d51f2077a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: xhWNaAfOtpHzg/YQR7PhZ+f+WDzNSzZwGOPdjeBCJoe51WyA3VTbSS4K9/WIr4FsZ8MCVl69iGYGDJIqMC/NBQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR03MB7502
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260902_135846_055776_45123A1C 
-X-CRM114-Status: UNSURE (   6.93  )
+X-CRM114-CacheID: sfid-20260902_201444_041130_CA49D5D2 
+X-CRM114-Status: UNSURE (   9.92  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -78,273 +141,40 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello,
+From: Tze Yee Ng <tze.yee.ng@altera.com>
 
-syzbot found the following issue on:
+spi_nor_rww_start_exclusive() takes nor->lock with a bare mutex_lock()
+and returns with it held, while its counterpart
+spi_nor_rww_end_exclusive() re-acquires nor->lock via guard(mutex). Any
+exclusive operation on a read-while-write (SNOR_F_RWW) part thus
+deadlocks against itself.
 
-HEAD commit:    45c13f3f9e3b Merge tag 'hwlock-v7.3' of git://git.kernel.o..
-git tree:       https://kernel.googlesource.com/pub/scm/linux/kernel/git/torvalds/linux master
-console output: https://syzkaller.appspot.com/x/log.txt?x=14f0ee25580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d6a4e008e57a0e64
-dashboard link: https://syzkaller.appspot.com/bug?extid=e08e0a15269eefa87790
-compiler:       aarch64-linux-gnu-gcc (Debian 14.2.0-19) 14.2.0, GNU ld (GNU Binutils for Debian) 2.44
-userspace arch: arm
+The exclusive section is serialized by the rww ongoing_io/rd/pe flags,
+so take nor->lock with guard(mutex) like the sibling start helpers.
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/fa3fbcfdac58/non_bootable_disk-45c13f3f.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/f88d9fecef79/vmlinux-45c13f3f.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/87ae79a5d86d/zImage-45c13f3f.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e08e0a15269eefa87790@syzkaller.appspotmail.com
-
-======================================================
-WARNING: possible circular locking dependency detected
-syzkaller #0 Tainted: G        W    L     
-------------------------------------------------------
-kworker/0:0H/11 is trying to acquire lock:
-ffff800087b74020 (fs_reclaim){+.+.}-{0:0}, at: might_alloc include/linux/sched/mm.h:316 [inline]
-ffff800087b74020 (fs_reclaim){+.+.}-{0:0}, at: slab_pre_alloc_hook mm/slub.c:4636 [inline]
-ffff800087b74020 (fs_reclaim){+.+.}-{0:0}, at: slab_alloc_node mm/slub.c:4974 [inline]
-ffff800087b74020 (fs_reclaim){+.+.}-{0:0}, at: __kmalloc_cache_node_noprof+0x6c/0x634 mm/slub.c:5578
-
-but task is already holding lock:
-ffff000014f95080 (&new->lock){+.+.}-{4:4}, at: mtd_blktrans_work drivers/mtd/mtd_blkdevs.c:151 [inline]
-ffff000014f95080 (&new->lock){+.+.}-{4:4}, at: mtd_queue_rq+0x2a4/0x1694 drivers/mtd/mtd_blkdevs.c:179
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #4 (&new->lock){+.+.}-{4:4}:
-       lock_acquire kernel/locking/lockdep.c:5886 [inline]
-       lock_acquire+0x3d0/0x44c kernel/locking/lockdep.c:5843
-       __mutex_lock_common kernel/locking/mutex.c:646 [inline]
-       __mutex_lock+0x150/0x1530 kernel/locking/mutex.c:821
-       mutex_lock_nested+0x24/0x30 kernel/locking/mutex.c:874
-       mtd_blktrans_work drivers/mtd/mtd_blkdevs.c:151 [inline]
-       mtd_queue_rq+0x2a4/0x1694 drivers/mtd/mtd_blkdevs.c:179
-       blk_mq_dispatch_rq_list+0x2e0/0x177c block/blk-mq.c:2117
-       __blk_mq_do_dispatch_sched block/blk-mq-sched.c:168 [inline]
-       blk_mq_do_dispatch_sched block/blk-mq-sched.c:182 [inline]
-       __blk_mq_sched_dispatch_requests+0x830/0xe60 block/blk-mq-sched.c:307
-       blk_mq_sched_dispatch_requests+0x7c/0x114 block/blk-mq-sched.c:329
-       blk_mq_run_work_fn+0xf0/0x278 block/blk-mq.c:2531
-       process_one_work+0x830/0x1c00 kernel/workqueue.c:3387
-       process_scheduled_works kernel/workqueue.c:3470 [inline]
-       worker_thread+0x42c/0xc90 kernel/workqueue.c:3551
-       kthread+0x2ec/0x384 kernel/kthread.c:436
-       ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:854
-
--> #3 (set->srcu){.+.+}-{0:0}:
-       lock_sync+0xf0/0x16c kernel/locking/lockdep.c:5934
-       srcu_lock_sync include/linux/srcu.h:210 [inline]
-       __synchronize_srcu+0xa8/0x280 kernel/rcu/srcutree.c:1462
-       synchronize_srcu_expedited kernel/rcu/srcutree.c:1502 [inline]
-       synchronize_srcu+0x168/0x7d0 kernel/rcu/srcutree.c:1558
-       blk_mq_wait_quiesce_done block/blk-mq.c:284 [inline]
-       blk_mq_wait_quiesce_done block/blk-mq.c:281 [inline]
-       blk_mq_quiesce_queue block/blk-mq.c:304 [inline]
-       blk_mq_quiesce_queue+0xf4/0x160 block/blk-mq.c:299
-       elevator_switch+0x118/0x430 block/elevator.c:576
-       elevator_change+0x294/0x420 block/elevator.c:681
-       elevator_set_default+0x210/0x2b8 block/elevator.c:754
-       blk_register_queue+0x36c/0x500 block/blk-sysfs.c:992
-       __add_disk+0x510/0xb48 block/genhd.c:524
-       add_disk_fwnode+0x110/0x3e0 block/genhd.c:593
-       device_add_disk+0x14/0x20 block/genhd.c:623
-       add_disk include/linux/blkdev.h:798 [inline]
-       nbd_dev_add+0x5f8/0x9b4 drivers/block/nbd.c:2026
-       nbd_init+0x190/0x1b0 drivers/block/nbd.c:2743
-       do_one_initcall+0x134/0xb20 init/main.c:1357
-       do_initcall_level init/main.c:1419 [inline]
-       do_initcalls init/main.c:1435 [inline]
-       do_basic_setup init/main.c:1455 [inline]
-       kernel_init_freeable+0x5ec/0x670 init/main.c:1670
-       kernel_init+0x2c/0x14c init/main.c:1560
-       ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:854
-
--> #2 (&q->elevator_lock){+.+.}-{4:4}:
-       lock_acquire kernel/locking/lockdep.c:5886 [inline]
-       lock_acquire+0x3d0/0x44c kernel/locking/lockdep.c:5843
-       __mutex_lock_common kernel/locking/mutex.c:646 [inline]
-       __mutex_lock+0x150/0x1530 kernel/locking/mutex.c:821
-       mutex_lock_nested+0x24/0x30 kernel/locking/mutex.c:874
-       elevator_change+0x188/0x420 block/elevator.c:679
-       elevator_set_none+0x90/0xec block/elevator.c:769
-       blk_mq_elv_switch_none block/blk-mq.c:5102 [inline]
-       __blk_mq_update_nr_hw_queues block/blk-mq.c:5147 [inline]
-       blk_mq_update_nr_hw_queues+0x3c0/0x1020 block/blk-mq.c:5212
-       nbd_start_device+0x128/0xa28 drivers/block/nbd.c:1530
-       nbd_genl_connect+0xb50/0x1394 drivers/block/nbd.c:2310
-       genl_family_rcv_msg_doit+0x1c0/0x28c net/netlink/genetlink.c:1114
-       genl_family_rcv_msg net/netlink/genetlink.c:1194 [inline]
-       genl_rcv_msg+0x3f8/0x60c net/netlink/genetlink.c:1209
-       netlink_rcv_skb+0x1ac/0x360 net/netlink/af_netlink.c:2556
-       genl_rcv+0x38/0x54 net/netlink/genetlink.c:1218
-       netlink_unicast_kernel net/netlink/af_netlink.c:1319 [inline]
-       netlink_unicast+0x418/0x6e0 net/netlink/af_netlink.c:1345
-       netlink_sendmsg+0x638/0xa4c net/netlink/af_netlink.c:1900
-       sock_sendmsg_nosec net/socket.c:800 [inline]
-       __sock_sendmsg+0xc8/0x1a4 net/socket.c:815
-       ____sys_sendmsg+0x52c/0x76c net/socket.c:2713
-       ___sys_sendmsg+0x124/0x1a4 net/socket.c:2767
-       __sys_sendmsg+0x10c/0x198 net/socket.c:2799
-       __compat_sys_sendmsg net/compat.c:345 [inline]
-       __do_compat_sys_sendmsg net/compat.c:352 [inline]
-       __se_compat_sys_sendmsg net/compat.c:349 [inline]
-       __arm64_compat_sys_sendmsg+0x74/0xa4 net/compat.c:349
-       __invoke_syscall arch/arm64/kernel/syscall.c:35 [inline]
-       invoke_syscall+0x74/0x240 arch/arm64/kernel/syscall.c:49
-       el0_svc_common.constprop.0+0xac/0x230 arch/arm64/kernel/syscall.c:121
-       do_el0_svc_compat+0x40/0x58 arch/arm64/kernel/syscall.c:146
-       el0_svc_compat+0x54/0x264 arch/arm64/kernel/entry-common.c:909
-       el0t_32_sync_handler+0x88/0xac arch/arm64/kernel/entry-common.c:927
-       el0t_32_sync+0x19c/0x1a0 arch/arm64/kernel/entry.S:595
-
--> #1 (&q->q_usage_counter(io)#33){++++}-{0:0}:
-       lock_acquire kernel/locking/lockdep.c:5886 [inline]
-       lock_acquire+0x3d0/0x44c kernel/locking/lockdep.c:5843
-       blk_alloc_queue+0x4e0/0x640 block/blk-core.c:504
-       blk_mq_alloc_queue+0x148/0x224 block/blk-mq.c:4420
-       __blk_mq_alloc_disk+0x20/0x120 block/blk-mq.c:4467
-       nbd_dev_add+0x3d0/0x9b4 drivers/block/nbd.c:1996
-       nbd_init+0x190/0x1b0 drivers/block/nbd.c:2743
-       do_one_initcall+0x134/0xb20 init/main.c:1357
-       do_initcall_level init/main.c:1419 [inline]
-       do_initcalls init/main.c:1435 [inline]
-       do_basic_setup init/main.c:1455 [inline]
-       kernel_init_freeable+0x5ec/0x670 init/main.c:1670
-       kernel_init+0x2c/0x14c init/main.c:1560
-       ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:854
-
--> #0 (fs_reclaim){+.+.}-{0:0}:
-       check_prev_add+0x114/0xca0 kernel/locking/lockdep.c:3181
-       check_prevs_add kernel/locking/lockdep.c:3300 [inline]
-       validate_chain kernel/locking/lockdep.c:3924 [inline]
-       __lock_acquire+0x13f4/0x1a5c kernel/locking/lockdep.c:5253
-       lock_acquire kernel/locking/lockdep.c:5886 [inline]
-       lock_acquire+0x3d0/0x44c kernel/locking/lockdep.c:5843
-       __fs_reclaim_acquire mm/page_alloc.c:4375 [inline]
-       fs_reclaim_acquire+0x130/0x158 mm/page_alloc.c:4389
-       might_alloc include/linux/sched/mm.h:316 [inline]
-       slab_pre_alloc_hook mm/slub.c:4636 [inline]
-       slab_alloc_node mm/slub.c:4974 [inline]
-       __kmalloc_cache_node_noprof+0x6c/0x634 mm/slub.c:5578
-       _kmalloc_node_noprof include/linux/slab.h:1196 [inline]
-       __get_vm_area_node+0x118/0x2ec mm/vmalloc.c:3238
-       __vmalloc_node_range_noprof+0x198/0x1024 mm/vmalloc.c:4065
-       __vmalloc_node_noprof+0xe4/0x14c mm/vmalloc.c:4166
-       vmalloc_noprof+0x24/0x30 mm/vmalloc.c:4201
-       mtdblock_writesect+0x41c/0x5b8 drivers/mtd/mtdblock.c:242
-       do_blktrans_request drivers/mtd/mtd_blkdevs.c:88 [inline]
-       mtd_blktrans_work drivers/mtd/mtd_blkdevs.c:152 [inline]
-       mtd_queue_rq+0x744/0x1694 drivers/mtd/mtd_blkdevs.c:179
-       blk_mq_dispatch_rq_list+0x2e0/0x177c block/blk-mq.c:2117
-       __blk_mq_do_dispatch_sched block/blk-mq-sched.c:168 [inline]
-       blk_mq_do_dispatch_sched block/blk-mq-sched.c:182 [inline]
-       __blk_mq_sched_dispatch_requests+0x830/0xe60 block/blk-mq-sched.c:307
-       blk_mq_sched_dispatch_requests+0x7c/0x114 block/blk-mq-sched.c:329
-       blk_mq_run_work_fn+0xf0/0x278 block/blk-mq.c:2531
-       process_one_work+0x830/0x1c00 kernel/workqueue.c:3387
-       process_scheduled_works kernel/workqueue.c:3470 [inline]
-       worker_thread+0x42c/0xc90 kernel/workqueue.c:3551
-       kthread+0x2ec/0x384 kernel/kthread.c:436
-       ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:854
-
-other info that might help us debug this:
-
-Chain exists of:
-  fs_reclaim --> set->srcu --> &new->lock
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&new->lock);
-                               lock(set->srcu);
-                               lock(&new->lock);
-  lock(fs_reclaim);
-
- *** DEADLOCK ***
-
-locks held by kworker/0:0H/11: 4, last CPU#0:
- #0: ffff00000ed7c140 ((wq_completion)kblockd){+.+.}-{0:0}, at: process_one_work+0x12ec/0x1c00 kernel/workqueue.c:3362
- #1: ffff80008dc97c70 ((work_completion)(&(&hctx->run_work)->work)){+.+.}-{0:0}, at: process_one_work+0x780/0x1c00 kernel/workqueue.c:3361
- #2: ffff000014cce818 (set->srcu){.+.+}-{0:0}, at: srcu_read_lock include/linux/srcu.h:304 [inline]
- #2: ffff000014cce818 (set->srcu){.+.+}-{0:0}, at: blk_mq_run_work_fn+0xc8/0x278 block/blk-mq.c:2531
- #3: ffff000014f95080 (&new->lock){+.+.}-{4:4}, at: mtd_blktrans_work drivers/mtd/mtd_blkdevs.c:151 [inline]
- #3: ffff000014f95080 (&new->lock){+.+.}-{4:4}, at: mtd_queue_rq+0x2a4/0x1694 drivers/mtd/mtd_blkdevs.c:179
-
-stack backtrace:
-CPU: 0 UID: 0 PID: 11 Comm: kworker/0:0H Tainted: G        W    L      syzkaller #0 PREEMPT 
-Tainted: [W]=WARN, [L]=SOFTLOCKUP
-Hardware name: linux,dummy-virt (DT)
-Workqueue: kblockd blk_mq_run_work_fn
-Call trace:
- show_stack+0x18/0x24 arch/arm64/kernel/stacktrace.c:499 (C)
- __dump_stack lib/dump_stack.c:94 [inline]
- dump_stack_lvl+0x7c/0xb0 lib/dump_stack.c:120
- dump_stack+0x1c/0x28 lib/dump_stack.c:129
- print_circular_bug+0x23c/0x284 kernel/locking/lockdep.c:2059
- check_noncircular+0x174/0x194 kernel/locking/lockdep.c:2191
- check_prev_add+0x114/0xca0 kernel/locking/lockdep.c:3181
- check_prevs_add kernel/locking/lockdep.c:3300 [inline]
- validate_chain kernel/locking/lockdep.c:3924 [inline]
- __lock_acquire+0x13f4/0x1a5c kernel/locking/lockdep.c:5253
- lock_acquire kernel/locking/lockdep.c:5886 [inline]
- lock_acquire+0x3d0/0x44c kernel/locking/lockdep.c:5843
- __fs_reclaim_acquire mm/page_alloc.c:4375 [inline]
- fs_reclaim_acquire+0x130/0x158 mm/page_alloc.c:4389
- might_alloc include/linux/sched/mm.h:316 [inline]
- slab_pre_alloc_hook mm/slub.c:4636 [inline]
- slab_alloc_node mm/slub.c:4974 [inline]
- __kmalloc_cache_node_noprof+0x6c/0x634 mm/slub.c:5578
- _kmalloc_node_noprof include/linux/slab.h:1196 [inline]
- __get_vm_area_node+0x118/0x2ec mm/vmalloc.c:3238
- __vmalloc_node_range_noprof+0x198/0x1024 mm/vmalloc.c:4065
- __vmalloc_node_noprof+0xe4/0x14c mm/vmalloc.c:4166
- vmalloc_noprof+0x24/0x30 mm/vmalloc.c:4201
- mtdblock_writesect+0x41c/0x5b8 drivers/mtd/mtdblock.c:242
- do_blktrans_request drivers/mtd/mtd_blkdevs.c:88 [inline]
- mtd_blktrans_work drivers/mtd/mtd_blkdevs.c:152 [inline]
- mtd_queue_rq+0x744/0x1694 drivers/mtd/mtd_blkdevs.c:179
- blk_mq_dispatch_rq_list+0x2e0/0x177c block/blk-mq.c:2117
- __blk_mq_do_dispatch_sched block/blk-mq-sched.c:168 [inline]
- blk_mq_do_dispatch_sched block/blk-mq-sched.c:182 [inline]
- __blk_mq_sched_dispatch_requests+0x830/0xe60 block/blk-mq-sched.c:307
- blk_mq_sched_dispatch_requests+0x7c/0x114 block/blk-mq-sched.c:329
- blk_mq_run_work_fn+0xf0/0x278 block/blk-mq.c:2531
- process_one_work+0x830/0x1c00 kernel/workqueue.c:3387
- process_scheduled_works kernel/workqueue.c:3470 [inline]
- worker_thread+0x42c/0xc90 kernel/workqueue.c:3551
- kthread+0x2ec/0x384 kernel/kthread.c:436
- ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:854
-
-
+Fixes: 03e7bb864d9a9 ("mtd: spi-nor: use scope-based mutex cleanup helpers")
+Cc: stable@vger.kernel.org
+Signed-off-by: Tze Yee Ng <tze.yee.ng@altera.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ drivers/mtd/spi-nor/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index ccf4396cdcd0..8bc117b46e02 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -1310,7 +1310,7 @@ static bool spi_nor_rww_start_exclusive(struct spi_nor *nor)
+ {
+ 	struct spi_nor_rww *rww = &nor->rww;
+ 
+-	mutex_lock(&nor->lock);
++	guard(mutex)(&nor->lock);
+ 
+ 	if (rww->ongoing_io || rww->ongoing_rd || rww->ongoing_pe)
+ 		return false;
+-- 
+2.43.7
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
 ______________________________________________________
 Linux MTD discussion mailing list
