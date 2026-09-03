@@ -4,53 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7324C61DD3
-	for <linux-mtd@archiver.kernel.org>; Thu,  3 Sep 2026 11:20:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4CEA1C624A4
+	for <linux-mtd@archiver.kernel.org>; Thu,  3 Sep 2026 11:24:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=25xam+QbdYH5GnpSPM32rhsOOPlOaNk20DwFBMtQPQE=; b=KdesXQ3uzkjiBl
-	H41x9abK3TkZpQvFCcMtmQd++nNDfAspG4Ytfdb6LQ4H4QpjobZdue6QQU5eCOHIlkApgMZ0z5cdC
-	xaA17T+2ESi/27sIiKvsHLp1vCt2bc38jdXcYiohDyJIxASJMunwyNtA7ZqS4ga0vonIsiYt6Q8M/
-	Mv4A3uo9RHgvbEQnMof2LExJAedPTjgS4anbY0hQHsTg07T8tjb4vmPB8pPJSu3UJuncPjLHUXzK2
-	f3/pCPvPIYdVXVvAMoQt6aNp0rbds35eFiJt4o+uimNaGU5nnGnYabvbw/nTyUPRKaTJgq1MifIt1
-	HwaveaMuR0b879XGbWqA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=cQDmUeK0ucj4oSI4CeRe4fwrgoiKcsbEytFNOH0moHg=; b=jmYZtv2Jx+kLW4
+	O96jeM0fxO1DglgY50KYMDtyPCT34+qFy5ASJE+xYEPVo1sklyAcr4H1wwysxL1Tk9ZB+angoW68U
+	oTbmn84Lf2DVYeP+CunDtteOHlVnokJhxOv/E7RDTgVIQfDSOeoF4+aONEnwGWIk7dxQYmc+axHil
+	hkFDtTc772mzQtQ0wrPyuQNrYRXgiAnSefDyCVZcGO3CyvBkpHvikuaKPQ2gKFXSFenW80B83yiVj
+	uM3UzVPumoKfZapWT9LatZNOpqgRM96JKju2k8dD2qeD+X6Qf1IWNXM25yWhIF6HWGXanNMsoJaB7
+	1SLzL+CxMmcC9G1zUjYA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x25UF-0000000HBfU-0xmv;
-	Thu, 03 Sep 2026 11:20:07 +0000
-Received: from out-152.mta1.migadu.com ([95.215.58.152] helo=mta1.migadu.com)
+	id 1x25Yq-0000000HC3C-42cr;
+	Thu, 03 Sep 2026 11:24:52 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x25UC-0000000HBdk-16kx
-	for linux-mtd@lists.infradead.org;
-	Thu, 03 Sep 2026 11:20:05 +0000
-X-Envelope-To: linux-mtd@lists.infradead.org
-X-Envelope-To: linux-mtd@lists.infradead.org
-Received: by mta11.migadu.com with ESMTPS id a78dcd8124518ee1;
-	Thu, 03 Sep 2026 11:19:59 +0000
-X-Mizu-Trace-ID: a78dcd8124518ee1
-X-Migadu-Flow: FLOW_OUT
-From: Baoquan He <hebaoquan@kylinos.cn>
-To: linux-mm@kvack.org
-Cc: akpm@linux-foundation.org,
-	hch@lst.de,
-	harry@kernel.org,
-	Baoquan He <hebaoquan@kylinos.cn>,
-	linux-mtd@lists.infradead.org
-Subject: [PATCH 12/13] mtd: rawnand: gpmi: Don't use GFP_DMA when calling dma_alloc_coherent()
-Date: Thu,  3 Sep 2026 19:18:35 +0800
-Message-ID: <20260903111836.1777265-13-hebaoquan@kylinos.cn>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260903111836.1777265-1-hebaoquan@kylinos.cn>
-References: <20260903111836.1777265-1-hebaoquan@kylinos.cn>
+	id 1x25Yp-0000000HC2s-1ZiM;
+	Thu, 03 Sep 2026 11:24:51 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id 9D53D43810;
+	Thu,  3 Sep 2026 11:24:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2EB71F000E9;
+	Thu,  3 Sep 2026 11:24:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1788434690;
+	bh=BP8fVbG5Ak6U2OEWE+JDGyj84FBkgh3GWou1LXrk2UE=;
+	h=From:To:Cc:Subject:Date;
+	b=Gy2rBH76iaSMXwWq+E+vlERjDGq4ih8uiKIEj7+y/WCtjNsosBcY8vNayBPmxuncX
+	 RyROw4qBnPDlYYUY+gAEK+iT4YQ80xqNLcALsB6QeoNzhvtvwartiglMLyRMJneBQM
+	 t8ow48Ud0OLmbj/NgWBYKha0Bc2ItKwjX8NMgOTw9ZtF55SxTxNu5qzum0SmTUevDQ
+	 QLYrny/EMIJQMTi6bvSGjgfmx3jGIXo34brdCkoSMKCJcwjOMX6yiGNntYOWWGeJQW
+	 akZbkZK/GtOR63yJZsruPqjel5/JsViQMptfKFPzWIfTOcmDkST1gtt6AQO0dCd7Bh
+	 cAUvX8zVA5Qiw==
+From: Vladimir Zapolskiy <vz@kernel.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>,
+	linux-mtd@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 0/2] mtd: rawnand: lpc32xx: Remove platform data support from drivers
+Date: Thu,  3 Sep 2026 14:24:22 +0300
+Message-ID: <20260903112425.1904748-1-vz@kernel.org>
+X-Mailer: git-send-email 2.51.0
 MIME-Version: 1.0
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260903_042004_451790_DD4BBE03 
-X-CRM114-Status: UNSURE (   9.40  )
-X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,33 +69,24 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-dma_alloc_coherent() allocates the DMA buffer with the device's
-addressing limitation in mind; the DMA core picks the zone from the
-device's coherent DMA mask and ignores GFP_DMA passed by the caller.
-Use GFP_KERNEL instead so the allocation may reclaim as usual for
-probe-time allocations.
+Since NXP LPC32xx SoC support in the Linux kernel strictly depends on
+device tree support, the unused platform data support can be removed
+from the LPC32xx NAND MLC and SLC drivers.
 
-Cc: linux-mtd@lists.infradead.org
-Signed-off-by: Baoquan He <hebaoquan@kylinos.cn>
----
- drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Vladimir Zapolskiy (2):
+  mtd: rawnand: lpc32xx_slc: Remove platform data support
+  mtd: rawnand: lpc32xx_mlc: Remove platform data support
 
-diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-index 527165ccc839..0d91950ae9fd 100644
---- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-@@ -1387,7 +1387,7 @@ static int gpmi_alloc_dma_buffer(struct gpmi_nand_data *this)
- 		goto error_alloc;
- 
- 	this->auxiliary_virt = dma_alloc_coherent(dev, geo->auxiliary_size,
--					&this->auxiliary_phys, GFP_DMA);
-+					&this->auxiliary_phys, GFP_KERNEL);
- 	if (!this->auxiliary_virt)
- 		goto error_alloc;
- 
+ drivers/mtd/nand/raw/lpc32xx_mlc.c | 21 ++-------------------
+ drivers/mtd/nand/raw/lpc32xx_slc.c | 21 ++-------------------
+ include/linux/mtd/lpc32xx_mlc.h    | 17 -----------------
+ include/linux/mtd/lpc32xx_slc.h    | 17 -----------------
+ 4 files changed, 4 insertions(+), 72 deletions(-)
+ delete mode 100644 include/linux/mtd/lpc32xx_mlc.h
+ delete mode 100644 include/linux/mtd/lpc32xx_slc.h
+
 -- 
-2.54.0
+2.51.0
 
 
 ______________________________________________________
