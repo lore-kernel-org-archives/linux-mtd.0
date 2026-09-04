@@ -4,82 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9652C79F80
-	for <linux-mtd@archiver.kernel.org>; Fri,  4 Sep 2026 09:07:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 379C6C624DE
+	for <linux-mtd@archiver.kernel.org>; Fri,  4 Sep 2026 11:28:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=dAJeEaJ4E/3p4fGzKCabB5Nfy3WqybYKyrfJH2UxBmI=; b=GquLxhxqSwolmE
-	iLB2775DGYpHlGecgos73yvmCCot0TTFVfS2IQkIDLcBsqck+c+dNp7xjP5vFO2pnUiW7ocCRhoA2
-	onx5E9ZHT4zbxO02IBIdSMazrfP3BcnH7BK/1RtT6x7A1kl3ZZD0QroLc6bl2CBy3hPjK+VmU2qSN
-	tFD4w6wR8K9lJaSrFcM+hr6efVu6XViu6pede2WOCTHS8eB1HJmc3ulF7Qqq+UZrBZ9F73Xboks5x
-	SDFUr2jRV7AZf3YXHaRPxcJ4JQgO6lZWMS6E1mPy3x+XCCLARLFeemDUjPfM+18IdObBIb8XvLbCZ
-	bQtdFRcgQVPCrDDCpUjA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=Q0vwG5xqInlygiOi3AzOtg2Ww++2sqiu5l8tCDG5J34=; b=f4lXWx/anyxuiF
+	tQ+aqh33rF4WQI/z2gnFRJuDEUq9wNg9CIH9MGcd6KqDz//saLyT61Xe53NfNenrQrcHYaMA/ar2T
+	3mcH5nk7cgSMd6r/4aopLPP7+FK6EFfcFp7UIaUNww0eUVHlAUvf+ebY2jXMLMdez9V461l/1L3f7
+	xC9faqGjzVmT34fCW2kVxGu/2d7PjHBdQb+rQuRCnsfbdLvtxN+Je4plqboT6NZ26LyRvWocIif4p
+	osOk7w/FpRbQCD1cAda60YazQkl9WWUzs/XOJW/xlTz0MTQtBKSkjSG294wUXzVLAB9tXjaQtRWYX
+	6RMyJkucWx/WgPh//8nA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x2PtU-00000001Ty5-1QBr;
-	Fri, 04 Sep 2026 09:07:32 +0000
-Received: from smtp14.infineon.com ([2a00:18f0:1e00:4::6])
+	id 1x2S5n-00000001ozK-2TTF;
+	Fri, 04 Sep 2026 11:28:23 +0000
+Received: from mail-pl1-x633.google.com ([2607:f8b0:4864:20::633])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x2PtR-00000001Twa-3Zov;
-	Fri, 04 Sep 2026 09:07:31 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=infineon.com; i=@infineon.com; q=dns/txt; s=IFXMAIL;
-  t=1788512850; x=1820048850;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=7MoKXvC6968eejIFP7iCwt2T4ExB49oBcRo4K3eSCKI=;
-  b=l9YYbmfTAf1yzAqAL27w4Iu95bRkULpD5NEV4W5yZJ2mh56J2Bd3VLcG
-   YZgWNQsA8EKw+u/bI+JfgjvZvXeIX1189YxTCXiJWGikPhX+7WUiyAWi1
-   MH3FdPWe/Zq0cY/2YZOEg4kOsOSMi9ifC3s9btu0Du3KorAi2kDls5aKO
-   M=;
-X-CSE-ConnectionGUID: uJTRJ/DhRNev+wUkTRcQKg==
-X-CSE-MsgGUID: 9jXa/FKoS4qX45ndJbitBA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11895"; a="145631225"
-X-IronPort-AV: E=Sophos;i="6.25,260,1779141600"; 
-   d="scan'208";a="145631225"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO MUCSE819.infineon.com) ([172.23.29.45])
-  by smtp14.infineon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2026 11:07:25 +0200
-Received: from MUCSE815.infineon.com (172.23.29.41) by MUCSE819.infineon.com
- (172.23.29.45) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.46; Fri, 4 Sep
- 2026 11:07:24 +0200
-Received: from MUCSE815.infineon.com ([fe80::b54c:c0bd:546c:c9be]) by
- MUCSE815.infineon.com ([fe80::b54c:c0bd:546c:c9be%12]) with mapi id
- 15.02.2562.046; Fri, 4 Sep 2026 11:07:24 +0200
-From: <Takahiro.Kuwano@infineon.com>
-To: <miquel.raynal@bootlin.com>, <pratyush@kernel.org>, <mwalle@kernel.org>,
-	<richard@nod.at>, <vigneshr@ti.com>, <nicolas.ferre@microchip.com>,
-	<alexandre.belloni@bootlin.com>, <claudiu.beznea@tuxon.dev>,
-	<corbet@lwn.net>, <skhan@linuxfoundation.org>
-CC: <STLin2@winbond.com>, <hsinyi@chromium.org>,
-	<thomas.petazzoni@bootlin.com>, <linux-mtd@lists.infradead.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<linux-doc@vger.kernel.org>
-Subject: RE: [PATCH v4 12/25] mtd: spi-nor: winbond: Add support for
- W25Q12RV-Q/N
-Thread-Topic: [PATCH v4 12/25] mtd: spi-nor: winbond: Add support for
- W25Q12RV-Q/N
-Thread-Index: AQHdOvyPDTQdnozUAk+qARRuXX3Ydba+Hwgw
-Date: Fri, 4 Sep 2026 09:07:24 +0000
-Message-ID: <a6f90df0e0f742ddbbaea48ec5c0cc59@infineon.com>
-References: <20260902-winbond-v7-1-spi-nor-rv-addition-v4-0-779d35303dff@bootlin.com>
- <20260902-winbond-v7-1-spi-nor-rv-addition-v4-12-779d35303dff@bootlin.com>
-In-Reply-To: <20260902-winbond-v7-1-spi-nor-rv-addition-v4-12-779d35303dff@bootlin.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.161.6.196]
+	id 1x2S5k-00000001oy5-1EhU
+	for linux-mtd@lists.infradead.org;
+	Fri, 04 Sep 2026 11:28:21 +0000
+Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-2d91518a63fso7027015ad.0
+        for <linux-mtd@lists.infradead.org>; Fri, 04 Sep 2026 04:28:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1788521299; x=1789126099; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=D+UaSlxxJLcYKsp2FD1tG5uc8a4SQbta1aiPoRmuIHg=;
+        b=c0KHuJ7tjuKygOm4GOkwpygMJKFMjj//V29fUSsvELnrQNCCEr9Rdt4Cektsymb+I9
+         jmQmVWXhSB2XLhmJ146O9uE5b1cN3Li60psA5LQhbr8UPWhOhyVxq3cNvETPyoge/Ct0
+         pVUcpRalZdx2wG/LBEfQm9yrWvhMCm6/Y0zExcoFSR8zmo44FCH27bn3V0/NDZ3XoIK5
+         Ee2VrJUjg8+3YnyAYu/Qc6B6xZpe+Y3RQ73bsly12AbhmNxQHjVqk+h5B0BOLTzsgFWj
+         0FyppaEGnl65nHByQ1zHXDnm2OEZ4eI5zCcQwqz7cs0J219OK1yPuK8wvgZ1QJzHJjVB
+         hYhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1788521299; x=1789126099;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=D+UaSlxxJLcYKsp2FD1tG5uc8a4SQbta1aiPoRmuIHg=;
+        b=YrJVyc3W4cdoSxNraZyK7cACsSG5jXhitODFmQvqTO57y079qKqK/licBvH04hVv50
+         6siemBMlT+P0q1fIARHugbFvOp6nnu+PPjUUuRo9Hr3QZnkADLDyUfaVihE4zJVLKIG/
+         eM9CxTPMEuN3Fnbubh8ke4PTDD0QymdqZh8g2fgPGNiBEnv3KFEGmQru4DHtVsMyxtwc
+         /ghyEqMa3CjShff5gFkztwIh685vPdGiNm8BeGPpx/ONeBWFnf6ZDyiqWCuBBvYkUe7r
+         39fLUbFVIlOBRRNDnjQN5WJncAeHyEwONIvBjkFdBZ3BLzQXK8OXe8AwffGLTcSXt3AY
+         Xl0Q==
+X-Forwarded-Encrypted: i=1; AKwUvBxKxF/5uXk8w/VACEdpkYq/fXFO1PblrTx4ZANbrILozivMebcAIlbAf8J5wvElF7bH44Rl+VSTCKE=@lists.infradead.org
+X-Gm-Message-State: AFuF++mgMhL58Bn/t9dR1sg8/5v6ZxzozGwlsJQdyLJ6l3NLPXcDMETC
+	UjKi7DZkq22SwmquCEQJnbaBiQdA3IOB7+FEB6pBH+MaP+q8Dge2kj/Z2xIiA5mR
+X-Gm-Gg: AYBFou1gD+e19e2SY4UL0oDWl/I0dGaVbl0OpAVAFaxcVgfDOlYP/Kr8QEcCNg3Hw11
+	rnghG+wnFUllLt7LNSqNiuovOmtXUOZJTQQ7RKmRDIhdauo1rZMTFBe9BaIKDRJJLgRKzB5gKYH
+	LLxz8sZDW60FPL1YxGjsN2nFkqizY7JPad7OARCaCrCiQ0c6Q+98eUSYlOUW+vEigvK8XYNkkwT
+	/s69YqirjZ7Q5bnhPRru9g13OGMkjm2+xDWAlENw+IlFhmWxIaufZaJu7yDZgM9l7i4F2qxrYWQ
+	fKGyNVnxGYicrJgwviF9xO67MMvZJJHuXfD5Vr4mFZJ/h2a5UWBmQVpWaCnhtPmyslzuRgAnlwd
+	IB3QwLjHOO4oduZKG0MAoQfYUdiQ5EJ65jB2/XswRkrtqUEj+fYWMkldqWOav3AcpvLp8M6deFU
+	5sg5dzhMZpPtqyteEOcxd4pABKi0LNBtMjhdFXGn0G8ikXHYiqVzCCxVjE1uEFtQpiEPXYRYDRz
+	oiiGLEAFGdbOOs=
+X-Received: by 2002:a17:90b:4c86:b0:395:5f43:4ec4 with SMTP id 98e67ed59e1d1-39b25f78ab8mr7839413a91.0.1788521299198;
+        Fri, 04 Sep 2026 04:28:19 -0700 (PDT)
+Received: from volcano9f6e-hostos.amd.com ([165.204.217.251])
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-143243a9388sm6005996c88.10.2026.09.04.04.28.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Sep 2026 04:28:18 -0700 (PDT)
+From: Hemanth Selam <hemanth.selam@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+	Richard Weinberger <richard@nod.at>
+Cc: linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org
+Subject: [PATCH] jffs2: fix typo "informations" in comments
+Date: Fri,  4 Sep 2026 16:58:13 +0530
+Message-ID: <20260904112814.6768-1-hemanth.selam@gmail.com>
+X-Mailer: git-send-email 2.48.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260904_020730_203094_9964C71B 
-X-CRM114-Status: UNSURE (   8.94  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260904_042820_332117_629B0246 
+X-CRM114-Status: GOOD (  13.44  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,31 +98,34 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Miquel,
+Correct "informations" to "information", reported by scripts/checkpatch.pl
+using the misspelling list in scripts/spelling.txt.  Only touches comments,
+no code changes.
 
-> There is an ID collision with the chip of same density from the JV
-> family. Both chips are very similar in practice, it is mostly a matter
-> of electrical differences (mostly power consumption being lower).
-> 
-> As a significant difference, RV chips identify themselves as supporting
-> the new SFDP (rev F) field which forces an alternate write SR2
-> opcode (0x31).
-> 
-> This density wronly advertizes its size and requires a fixup for
+Assisted-by: Cursor:claude-opus-5
+Signed-off-by: Hemanth Selam <hemanth.selam@gmail.com>
+---
+ fs/jffs2/xattr.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Typo? 'wrongly'
-Same in patch #20.
+diff --git a/fs/jffs2/xattr.c b/fs/jffs2/xattr.c
+index 6b4f68593c29..c91ade74c5a8 100644
+--- a/fs/jffs2/xattr.c
++++ b/fs/jffs2/xattr.c
+@@ -39,8 +39,8 @@
+  *   memory usage by cache is over c->xdatum_mem_threshold. Currently, this threshold
+  *   is hard coded as 32KiB.
+  * do_verify_xattr_datum(c, xd)
+- *   is used to load the xdatum informations without name/value pair from the medium.
+- *   It's necessary once, because those informations are not collected during mounting
++ *   is used to load the xdatum information without name/value pair from the medium.
++ *   It's necessary once, because those information are not collected during mounting
+  *   process when EBS is enabled.
+  *   0 will be returned, if success. An negative return value means recoverable error, and
+  *   positive return value means unrecoverable error. Thus, caller must remove this xdatum
+-- 
+2.48.1
 
-> [...]
-> + mtd_debug info /dev/mtd0
-> mtd.type = MTD_NORFLASH
-> mtd.flags = MTD_CAP_NORFLASH
-> mtd.size = 8388608 (8M)
-
-Is mtd0 a 8MB partition?
-
-Thanks,
-Takahiro
 
 ______________________________________________________
 Linux MTD discussion mailing list
