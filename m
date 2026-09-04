@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9DDD4C79F82
-	for <linux-mtd@archiver.kernel.org>; Fri,  4 Sep 2026 17:19:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE88AC79F88
+	for <linux-mtd@archiver.kernel.org>; Fri,  4 Sep 2026 17:19:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=rOeJqCQK1/eTkO+wIx1QQVG1/YzL2CQrqPcnmDGBHdI=; b=T+sOMOQny5JfrH
-	/PCs/TVM0d9V7t2UrUEPFR1m23Uc2jiuLZ7DWCu8B6OZo7Xf8r3vz+vAa0QhWo6v7jYHgmRLYEkA/
-	aVGadc8q9VVy4MRKxx5lYWEd455RXKpVBvCsQ45vyTuX0WCaxHF/MmNCVfB6R0CqYCFNLQVxEZzpW
-	WfJ3v3gefitpCtfgu11aCRSDY/Uu4mVOjQsM5XWZ2pdAdiECogVQg0SlrSjGgihBpukCwIc/8q2SG
-	we8MX7hMbvtdK0F04SbKjbMljO7bR3DpHHsrKPQr22rqDKdnoNpK1z5o9tjOelyZUo+q17zl3P4Sp
-	Oe/o57tpv+bh+T98JwhA==;
+	List-Owner; bh=XFPHuyZCyAmij5WBM7bNxU5Ql2CuCQh0jQoLaIrAn5g=; b=X22H8XBRe3Bglo
+	IYIGcK1Gis784DP1Q1f6zVwmh7TnrXYWYWEYeyZpSqXY2k1gDQDiErINanGs5cbLT5m2sflScTGcY
+	6JbJZ9VJ9J51cTdvmDPjJaIrPpImp34yLu/cHjL+X11o8ALETRWYskZkWoEsi2V/aPadRxQLpwLrE
+	5l4G4vcw62LgilRBaTmFZrYenR9TWwljJDzIsuO52Vm2d16aricAMH67RUFvegLWEP5AUhL0bXhOk
+	pK9GZH62ib07We7/C1ehVMes/rleKRnU/Z70TAMOMmCeGxcT3x4bAV+byqoQ8oMBvmhlrJVWK3JBI
+	GvplgkDUQ/zyTmBNsiUg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x2XZa-00000002qrh-426v;
-	Fri, 04 Sep 2026 17:19:30 +0000
+	id 1x2XZd-00000002qvz-1p97;
+	Fri, 04 Sep 2026 17:19:33 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x2XZX-00000002qn2-3cqH
+	id 1x2XZc-00000002qsj-01dQ
 	for linux-mtd@bombadil.infradead.org;
-	Fri, 04 Sep 2026 17:19:28 +0000
+	Fri, 04 Sep 2026 17:19:32 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=desiato.20200630; h=Cc:To:In-Reply-To:References:
 	Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
 	From:Sender:Reply-To:Content-ID:Content-Description;
-	bh=9Ce20Jfpvb9YhNbBbIHNXF9lv/kpDC0mkSZLA1+S3ks=; b=eoEnxkSsgMpISQnc3RUdgL3uNt
-	WjlNXE0gxMiytojy5TimJUQHSRVjLXGfCTftOrdddnq+wF8+nkt9sEcaotJgfEDtsDI0fkRVPZVxY
-	UiC4tFE9wfJVGLXSNI5RlsXh1DuW+fuAMz3yEunyFUh/XD0JBwWBQbjc5ntdWhVBkP1HrZbi6fHty
-	XYBz9SbZN4UAwWDsGL0MW4jf+VIewthaAKMly82QwMeUEXlB+XpxmuxP1MazKZGr5SUGfQYgxqO+l
-	3WYR4Dyph4XfdOQMgX0Z2OfqSlU2OA3e+XLS+GrpAlBJyMgim9Ol9xkJC1NPldoCcJohdO+Fl5vDu
-	9XE0L3sA==;
-Received: from smtpout-02.galae.net ([185.246.84.56])
+	bh=p+B8HG5wob0Ubn94ag6aB6Wy12VKO3+Q4akZR43R+tw=; b=lXmiOXL8S6r0BcqflW6UDD5+Za
+	dgqQm1efMqvFGUXSYGeYHYdFy76q8gwD6/wEt+losDG9YfNZ9xcW0miG47Ub+wEgYmToqACRBIyqI
+	LsBhrp5VqPH9q61Nl95G1TWSrnmPctmVQtJq2bnn8D/3+hwuHWhkXfz6+mPDcSAWCWDANFETZRHVM
+	OpxubAHmLxsjoC/l4uuhpDim+jRMU00W9goQmaasR48RZdCI8DU4Wbet5mJWHtwFWiuS4hW7nSl+0
+	1PEG46td+CA+FqbLkKyyAf3Iu6V2uPUWs7LTo2mLi6ogS1fTqSgRQPYEYaJXpKD8xjuArMOnEV7vs
+	e9DeVUFg==;
+Received: from smtpout-03.galae.net ([185.246.85.4])
 	by desiato.infradead.org with esmtps (Exim 4.99.2 #2 (Red Hat Linux))
-	id 1x2XZU-0000000EKrx-2SL2
+	id 1x2XZY-0000000EKtF-3oq1
 	for linux-mtd@lists.infradead.org;
-	Fri, 04 Sep 2026 17:19:26 +0000
+	Fri, 04 Sep 2026 17:19:30 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id 047F81A19B0;
-	Fri,  4 Sep 2026 17:19:24 +0000 (UTC)
+	by smtpout-03.galae.net (Postfix) with ESMTPS id 4A24C4E41516;
+	Fri,  4 Sep 2026 17:19:28 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id CD5146057F;
-	Fri,  4 Sep 2026 17:19:23 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 07D0811C78767;
-	Fri,  4 Sep 2026 19:19:21 +0200 (CEST)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 18B406057F;
+	Fri,  4 Sep 2026 17:19:28 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 5340911C79BD3;
+	Fri,  4 Sep 2026 19:19:26 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1788542363; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1788542367; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=9Ce20Jfpvb9YhNbBbIHNXF9lv/kpDC0mkSZLA1+S3ks=;
-	b=o6IivGG92hP8fUYcAiVo15f9FVagdtynTs0OlAxJ0hfQ0AK/P0r/Iycd9/IVMHKcuCg26L
-	hq0oA64AUsLL/U1b+0TrcDKJtGh/DjwjB5s7yR13IBFF0s/obHkOdVoD1yxcZegk3ytsY3
-	1pV4mHb1KWzDnJCa06Bvz1ID/jWNA/pYFl1wzhS90P7BRilx2f5oBXMHgd8Pi0najrzLJr
-	Jng+V+PMroNw7sQ1JLOYPZqdw1DFw4XCWtcY5HUxqbmLn1c7SEbM+fEmQqyFeTndm2aBUy
-	kGOY0rpJqzAeV1Y3y8w6XOJzB3A7268YROXZbj3NdCyujfNBOXk3LJXKMnz2yA==
+	bh=p+B8HG5wob0Ubn94ag6aB6Wy12VKO3+Q4akZR43R+tw=;
+	b=b9ZDdTGCRy/K4Eh7kW61WkFcqfHYaQXEGM02/Ta+/5a1HTl+nyq60GChR/Qc6oxj+V5OaO
+	H1nspBuDgFESLRExcBKHrF3988WlfclpJR1FTZ6Nx0TSiD4lMjfIictoxSydfOyBsDvnI3
+	by5uFkUpzvd63C75AZlEdAGz6Uo9XTRMQWXN1ernBxbe32DxAMi9lja70nzAABjHsx7fbb
+	m+BjyaRrkEZjsdSXysxu6GzphtpYbHPrOrrpMRvDnUYN9Dg/WM89/a2fG5OA87IcCgDULh
+	GW5miM08MvMLQ5REUzI51xn74a86SHnbZ34aiA8UfyNXP/QlU48RwccSGLB8fw==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Fri, 04 Sep 2026 19:19:00 +0200
-Subject: [PATCH v6 07/26] mtd: spi-nor: winbond: Make the RDCR fixup
- Winbond wide
+Date: Fri, 04 Sep 2026 19:19:03 +0200
+Subject: [PATCH v6 10/26] mtd: spi-nor: winbond: W25Q128JV-Q/N: Add quad
+ page program capability
 MIME-Version: 1.0
-Message-Id: <20260904-winbond-v7-1-spi-nor-jv-cleanup-v6-7-bdb282f42a47@bootlin.com>
+Message-Id: <20260904-winbond-v7-1-spi-nor-jv-cleanup-v6-10-bdb282f42a47@bootlin.com>
 References: <20260904-winbond-v7-1-spi-nor-jv-cleanup-v6-0-bdb282f42a47@bootlin.com>
 In-Reply-To: <20260904-winbond-v7-1-spi-nor-jv-cleanup-v6-0-bdb282f42a47@bootlin.com>
 To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
@@ -76,8 +76,8 @@ Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260904_181924_930218_CAD3AB0F 
-X-CRM114-Status: GOOD (  17.75  )
+X-CRM114-CacheID: sfid-20260904_181929_296212_A57D2EE8 
+X-CRM114-Status: GOOD (  12.61  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,112 +94,72 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The top level paragraph of the QER field in the JESD216B mentions:
+The benefit is not massive @25MHz, yet this feature is not advertized
+because these chips do not implement the 4BAIT table. Flag the quad page
+program capability manually and earn a few % of write throughput.
 
-"In this standard, [...]  Status register 2 refers to the byte read
-using instruction 35h. Status register 2 is the second byte transferred
-in a Write Status (01h) command. [...]"
+Before:
+$ flash_speed /dev/mtd0 -dc10
+eraseblock write speed is 536 KiB/s
+page write speed is 532 KiB/s
+2 page write speed is 532 KiB/s
 
-Value 100b, named in Linux BFPT_DWORD15_QER_SR2_BIT1_NO_RD, does not
-mention anything about reads and only brings details about writes.
+After:
+$ flash_speed /dev/mtd0 -dc10
+eraseblock write speed is 552 KiB/s
+page write speed is 547 KiB/s
+2 page write speed is 549 KiB/s
 
-This has been interpreted in the spi-nor core by the absence of read
-capability, but there is no explicit reason for that, except that there
-were probably some very old chips which didn't support command 35h.
-
-All quad capable Winbond chips carry a CMP SWP bit in SR2. SR2 is
-readable with command 35h. In practice, all Winbond families but the
-W25X family have support for this feature, so re-enable it Winbond-wide
-in a late vendor fixup, except for the {EF, 30, xx} family.
+The QUAD_PP capability was historically not supported by non-SFDP chips,
+so a Winbond wide late hook already makes sure the capability remains
+disabled for them, for backward compatibility reasons.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/spi-nor/winbond.c | 44 ++++++++++++++++++++-----------------------
- 1 file changed, 20 insertions(+), 24 deletions(-)
++ dd 'if=/dev/urandom' 'of=./spi_test' 'bs=1M' 'count=2'
+2+0 records in
+2+0 records out
++ mtd_debug erase /dev/mtd0 0 2097152
+Erased 2097152 bytes from address 0x00000000 in flash
++ mtd_debug read /dev/mtd0 0 2097152 spi_read
+Copied 2097152 bytes from address 0x00000000 in flash to spi_read
++ hexdump spi_read
+0000000 ffff ffff ffff ffff ffff ffff ffff ffff
+*
+0200000
++ sha256sum spi_read
+4bda3a28f4ffe603c0ec1258c0034d65a1a0d35ab7bd523a834608adabf03cc5  spi_read
++ mtd_debug write /dev/mtd0 0 2097152 spi_test
+Copied 2097152 bytes from spi_test to address 0x00000000 in flash
++ mtd_debug read /dev/mtd0 0 2097152 spi_read
+Copied 2097152 bytes from address 0x00000000 in flash to spi_read
++ sha256sum spi_read spi_test
+c2712b5617a588f8bba4b8fc7af62f6ca5e2356577681b23544d1a93540ecd1d  spi_read
+c2712b5617a588f8bba4b8fc7af62f6ca5e2356577681b23544d1a93540ecd1d  spi_test
++ mtd_debug erase /dev/mtd0 0 2097152
+Erased 2097152 bytes from address 0x00000000 in flash
++ mtd_debug read /dev/mtd0 0 2097152 spi_read
+Copied 2097152 bytes from address 0x00000000 in flash to spi_read
++ sha256sum spi_read spi_test
+4bda3a28f4ffe603c0ec1258c0034d65a1a0d35ab7bd523a834608adabf03cc5  spi_read
+c2712b5617a588f8bba4b8fc7af62f6ca5e2356577681b23544d1a93540ecd1d  spi_test
+---
+ drivers/mtd/spi-nor/winbond.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
-index 1fd05a3f743d..acd3c38ca2f4 100644
+index 2b0ec584f38f..78a4254357e6 100644
 --- a/drivers/mtd/spi-nor/winbond.c
 +++ b/drivers/mtd/spi-nor/winbond.c
-@@ -73,26 +73,6 @@ static const struct spi_nor_fixups w25q256_fixups = {
- 	.post_bfpt = w25q256_post_bfpt_fixups,
- };
- 
--static int
--winbond_rdcr_post_bfpt_fixup(struct spi_nor *nor,
--			     const struct sfdp_parameter_header *bfpt_header,
--			     const struct sfdp_bfpt *bfpt)
--{
--	/*
--	 * W25H02NW, unlike its W25H512NW nor W25H01NW cousins, improperly sets
--	 * the QE BFPT configuration bits, indicating a non readable CR. This is
--	 * both incorrect and impractical, as the chip features a CMP bit for its
--	 * locking scheme that lays in the Control Register, and needs to be read.
--	 */
--	nor->params->flags &= ~SNOR_F_NO_READ_CR;
--
--	return 0;
--}
--
--static const struct spi_nor_fixups winbond_rdcr_fixup = {
--	.post_bfpt = winbond_rdcr_post_bfpt_fixup,
--};
--
- /**
-  * winbond_nor_select_die() - Set active die.
-  * @nor:	pointer to 'struct spi_nor'.
-@@ -313,7 +293,6 @@ static const struct flash_info winbond_nor_parts[] = {
- 		.id = SNOR_ID(0xef, 0x60, 0x21),
- 		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6 |
- 			 SPI_NOR_4BIT_BP | SPI_NOR_HAS_CMP,
--		.fixups = &winbond_rdcr_fixup,
+@@ -217,7 +217,7 @@ static const struct flash_info winbond_nor_parts[] = {
+ 		/* Flavors w/ and w/o SFDP. */
+ 		.name = "w25q128",
+ 		.size = SZ_16M,
+-		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB,
++		.flags = SPI_NOR_QUAD_PP | SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB,
+ 		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
+ 		.fixups = &w25q128_fixups,
  	}, {
- 		/* W25Q16JV-M */
- 		.id = SNOR_ID(0xef, 0x70, 0x15),
-@@ -399,7 +378,6 @@ static const struct flash_info winbond_nor_parts[] = {
- 		.id = SNOR_ID(0xef, 0x80, 0x22),
- 		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6 |
- 			 SPI_NOR_4BIT_BP | SPI_NOR_HAS_CMP,
--		.fixups = &winbond_rdcr_fixup,
- 	}, {
- 		/* W25H512NW-M */
- 		.id = SNOR_ID(0xef, 0xa0, 0x20),
-@@ -415,8 +393,13 @@ static const struct flash_info winbond_nor_parts[] = {
- 		.id = SNOR_ID(0xef, 0xa0, 0x22),
- 		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6 |
- 			 SPI_NOR_4BIT_BP | SPI_NOR_HAS_CMP,
--		.fixups = &winbond_rdcr_fixup,
--	},
-+	}, {
-+		/*
-+		 * Catch all entry to make sure all chips solely relying
-+		 * on SFDP still go through the manufacturer hooks.
-+		 */
-+		.id = SNOR_ID(0xef),
-+	}
- };
- 
- /**
-@@ -508,6 +491,19 @@ static int winbond_nor_late_init(struct spi_nor *nor)
- 	 */
- 	params->set_4byte_addr_mode = winbond_nor_set_4byte_addr_mode;
- 
-+	/*
-+	 * All W25Q/W25H chips do set the BFPT_DWORD15_QER_SR2_BIT1_NO_RD bit in
-+	 * their SFDP tables. The historical spi-nor assumption in this case has
-+	 * been to declare CR reads as unsupported, whereas the Jedec
-+	 * specification doesn't clearly state that. In practice, all these
-+	 * chips do support reading back the CR, which is needed for SWP support,
-+	 * so make sure that capability remains enabled (needed for SWP).
-+	 * In practice, only exclude the old W25X family (JEDEC ID: EF 30 xx)
-+	 * which actually does not support this feature.
-+	 */
-+	if (nor->id[1] > 0x30)
-+		nor->params->flags &= ~SNOR_F_NO_READ_CR;
-+
- 	return 0;
- }
- 
 
 -- 
 2.54.0
