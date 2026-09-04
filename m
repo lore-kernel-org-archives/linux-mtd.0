@@ -4,79 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 80D08C624DE
-	for <linux-mtd@archiver.kernel.org>; Fri,  4 Sep 2026 17:38:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81847C79F82
+	for <linux-mtd@archiver.kernel.org>; Fri,  4 Sep 2026 17:38:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
 	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=deebuFT3Dcqox2FcuS6XnwsV49IxNDRt92eH+4SM6Vs=; b=32c8WNfrjKQV5n
-	8F35kXhmxCClmu/6sqwO2lJt6XA+bNs0CxWz94AAq7cHERakg92RcS6rdnpj/AqdBZba0ulL/sndL
-	fwz/93ycLwXszFAc/xPbmY1Jd8PDc/soGTakwLh6N9BK+SxYpTUz7TUXVW9139p3D8WpJ0Xv+oGyr
-	rdj9q6v0acxIQuSv67dZmmlPmlz5l4+eh/5ncBcdyQN1frjgO0ga1xo+/7oFJjRAdArlwVbcjm+2d
-	u6uKOXj/kPHt5s7SgvlUpJ0Kz/h8C38JAdTVP1FNg7qIzP1Fv7xrq3gwP1oQl5m5K9ii2I/IJnZft
-	gZL4/gtTs8feyGePDm1w==;
+	List-Owner; bh=zOlw6FinJs1K8aL3Rn/To3ztUTbSddVRUo8s30RaH0Y=; b=b4+dOcN2Ar1qcI
+	Hgb46J57dcpw6HFBb16sgiAmt45WxlYkBSBGf4rwP3tGbXM1D9HWvWotEW0akVsd2tIHgVy+BJrO/
+	Bz0d9qTfSE5UjDtQvrQF7Qjx+Xmh3qMR0/+wRsJaAbtBKIBoLIw4sebG7TFrxnZDr6fg/cbIGzXs5
+	iyfJVucWAG7xnrYGxjKprqkfVMVtNaNk7hXmOBrr3HVtHlTylxL05NmwxfxZS1/czpXeWjAGcRz1t
+	CIwGjqHa9R441KIs9aFYgWYsIMuNmp8oqniyfFwKOo0zr5NBdGmdn/rDOffRjQseqoZMtku3y0B6J
+	5HUsu9bRz0M3+r4mnCxg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x2Xs2-00000002u8X-02Sg;
-	Fri, 04 Sep 2026 17:38:34 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x2Xs1-00000002u7U-0bce
-	for linux-mtd@bombadil.infradead.org;
-	Fri, 04 Sep 2026 17:38:33 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-	:MIME-Version:Date:Message-Id:Subject:References:In-Reply-To:Cc:To:From:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=+11RD2VkhzWbJPSklHtMOUDZPRa5mUWSSSuUxHURdRo=; b=R1gpiZYhvnOeHg/LgiXURUKztw
-	3X9dE99rV3jEhw4Io1eo/VI3kWCQ35wE4WFDfKBty8lQBqSDJCUtSxUim2efPQAiy/n//zNJLBmkJ
-	26IW8hnRBBJXaXIMMueGgfFX3Hm0gJnfJTy/6+SuH//pGGd0AJtuiI4CnZZ9FarpU26u92N6UXK9n
-	B1cpX76aV8njOM7MIEsD9aDqcFOLVxkmD0FLnv4ntq4gMIZ+skkhJyPmtGv0LtNEopfORx1JOzTzF
-	tz0HNsItyNQsRUEqAJY9WEABEAxE94P+mWltMxNwqDeO91BGmKru9Rxz4chpEuQgOh4Ex9KC5HLkq
-	FFUFNA0A==;
+	id 1x2Xs5-00000002uBJ-0ug5;
+	Fri, 04 Sep 2026 17:38:37 +0000
 Received: from smtpout-03.galae.net ([185.246.85.4])
-	by desiato.infradead.org with esmtps (Exim 4.99.2 #2 (Red Hat Linux))
-	id 1x2Xry-0000000EM9F-0Mnp
+	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
+	id 1x2Xs1-00000002u7F-0z47
 	for linux-mtd@lists.infradead.org;
-	Fri, 04 Sep 2026 17:38:32 +0000
+	Fri, 04 Sep 2026 17:38:34 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id D5B324E4151A;
-	Fri,  4 Sep 2026 17:38:28 +0000 (UTC)
+	by smtpout-03.galae.net (Postfix) with ESMTPS id A43604E4151C;
+	Fri,  4 Sep 2026 17:38:31 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id AA6016057F;
-	Fri,  4 Sep 2026 17:38:28 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 7DD3D11C79AE2;
-	Fri,  4 Sep 2026 19:38:22 +0200 (CEST)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 798A66057F;
+	Fri,  4 Sep 2026 17:38:31 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 72B5B11C78158;
+	Fri,  4 Sep 2026 19:38:28 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1788543504; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1788543510; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=+11RD2VkhzWbJPSklHtMOUDZPRa5mUWSSSuUxHURdRo=;
-	b=NH5S48NA0wszJyBXRhzNNDfsawFbJvBHPOTKtt2Pflkp+LgdLzgr7Ce5NfzlbaELqLUYob
-	70E+z7KI0Huy/ZrU75B9RRY4z5mxs3RClOOZaL+OUFtiTGBvw0MGt74DXPnkQ94xfe6UcW
-	RK963upBrxsfzsGybnVxrlKaIWjT0zz4acv2SAzzw88LMrELHS1jNAoJzFIr8oC4J/7s3f
-	fdefzcFwQhwuvGCZKDx8ubtwgRuhwCbzzIuzr1Zm3r1/a/k9DPnVlOjco1L+SO7DqhlIua
-	lpT+GgQymHuPps/NS3cDLap8SyCq2hLQY8TiNW+37UWId2eT6Y/lynyn1IeZ6w==
+	bh=wl7EtZ/xRSHxa2NefH9pWoJDSQvxgnL59nCZrjBuwzo=;
+	b=jQ/pqsFh0aMETdA3THOo1MKS517bOJqynboLSv7CVCFJuH89ScruP0oUROXJeB0rzNb5Bs
+	RdbubpyeA3Wo0NxzFBqkWEuabKfrtyVAXiI8u2EXqy/nXOjKgilFq6dGDIBgkLjOpst4EI
+	h1VjVIgwchEvksFrBgNjB47iKFClW4CIYp7oNNxPW11xSn7eWzBOvN7fNpWJH7EA2DIryi
+	hE4rHcbNSEkou4FiBCkU9IXl7vhv1W3uwzcQW/oA5Gkn0JWoDekB/WWML1zd9WVYbDqDWu
+	0jSiL2UYwUJob4VQG7Fb66LrHujQz3awXIR+QhGvjO/MpbV8HoiOF5OV/GbmSQ==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Richard Weinberger <richard@nod.at>, 
+To: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ =?utf-8?q?Nuno_S=C3=A1?= <nuno.sa@analog.com>
+Cc: Richard Weinberger <richard@nod.at>, 
  Vignesh Raghavendra <vigneshr@ti.com>, 
- Alexander Usyskin <alexander.usyskin@intel.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
- Menachem Adin <menachem.adin@intel.com>, stable@vger.kernel.org
-In-Reply-To: <20260827-mtd_eraze_to_fix-v2-1-1395ae4fb795@intel.com>
-References: <20260827-mtd_eraze_to_fix-v2-1-1395ae4fb795@intel.com>
-Subject: Re: [PATCH v2] mtd: mtd_intel_dg: reset poll counter for each
- erase
-Message-Id: <178854350239.1467647.10362961851699895483.b4-ty@bootlin.com>
-Date: Fri, 04 Sep 2026 19:38:22 +0200
+ Boris Brezillon <boris.brezillon@collabora.com>, stable@vger.kernel.org
+In-Reply-To: <20260831-mtd-nand-no-ecc-fixes-v1-0-c2ec46641b90@analog.com>
+References: <20260831-mtd-nand-no-ecc-fixes-v1-0-c2ec46641b90@analog.com>
+Subject: Re: [PATCH 0/2] mtd: spinand: fix nand-no-ecc-engine support
+Message-Id: <178854350834.1467647.6353766361428985013.b4-ty@bootlin.com>
+Date: Fri, 04 Sep 2026 19:38:28 +0200
 MIME-Version: 1.0
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260904_183830_353348_F792EB8F 
-X-CRM114-Status: UNSURE (   5.73  )
+X-CRM114-CacheID: sfid-20260904_103833_443159_D5CFDC8E 
+X-CRM114-Status: UNSURE (   7.70  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -94,19 +78,21 @@ Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gVGh1LCAyNyBBdWcgMjAyNiAwODoxMTo1NiArMDMwMCwgQWxleGFuZGVyIFVzeXNraW4gd3Jv
-dGU6Cj4gVGhlIG5vbi1wb3N0ZWQgZXJhc2UgcG9sbGluZyBjb3VudGVyIGlzIGluaXRpYWxpemVk
-IG9ubHkgb25jZSBwZXIgTVRECj4gZXJhc2UgcmVxdWVzdC4gTGFyZ2UgcmVxdWVzdHMgdGhlcmVm
-b3JlIHNoYXJlIHRoZSBwb2xsaW5nIGJ1ZGdldCBhY3Jvc3MKPiBhbGwgNEsgZXJhc2UgY29tbWFu
-ZHMgYW5kIGNhbiBmYWlsIHdpdGggLUVUSU1FIGV2ZW4gdGhvdWdoIG5vIGluZGl2aWR1YWwKPiBj
-b21tYW5kIHRpbWVkIG91dC4KPiAKPiBSZXNldCB0aGUgY291bnRlciBmb3IgZWFjaCA0SyBlcmFz
-ZSBjb21tYW5kIHNvIGV2ZXJ5IG9wZXJhdGlvbiBnZXRzIHRoZQo+IGludGVuZGVkIGNvbXBsZXRp
-b24gdGltZW91dC4KPiAKPiBbLi4uXQoKQXBwbGllZCB0byBtdGQvZml4ZXMsIHRoYW5rcyEKClsx
-LzFdIG10ZDogbXRkX2ludGVsX2RnOiByZXNldCBwb2xsIGNvdW50ZXIgZm9yIGVhY2ggZXJhc2UK
-ICAgICAgY29tbWl0OiBlMGE4NGMyZmMyOWRjMjNmOTMzMWE0YTlmMjM2ZWY2MWM5NDFjM2E0CgpQ
-YXRjaGUocykgc2hvdWxkIGJlIGF2YWlsYWJsZSBvbiBtdGQvbGludXguZ2l0IGFuZCB3aWxsIGJl
-CnBhcnQgb2YgdGhlIG5leHQgUFIgKHByb3ZpZGVkIHRoYXQgbm8gcm9ib3QgY29tcGxhaW5zIGJ5
-IHRoZW4pLgoKS2luZCByZWdhcmRzLApNaXF1w6hsCgoKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxp
-bmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4
-LW10ZC8K
+T24gTW9uLCAzMSBBdWcgMjAyNiAxNjowNzoxNiArMDEwMCwgTnVubyBTw6Egd3JvdGU6Cj4gU2V0
+dGluZyAibmFuZC1uby1lY2MtZW5naW5lIiBpbiBEVCBjdXJyZW50bHkgb29wc2VzIGF0IHByb2Jl
+OiBTUEktTkFORAo+IGRlcmVmZXJlbmNlcyBuYW5kLT5lY2MuZW5naW5lIHVuY29uZGl0aW9uYWxs
+eSB0byB0ZXN0IGZvciBhIHBpcGVsaW5lZAo+IGVuZ2luZSwgYnV0IG5hbmRkZXZfZ2V0X2VjY19l
+bmdpbmUoKSBsZWF2ZXMgdGhhdCBwb2ludGVyIE5VTEwgd2hlbiBubwo+IGVuZ2luZSBpcyByZXF1
+ZXN0ZWQuIFBhdGNoIDEgYWRkcyBhIG5hbmRfZWNjX2lzX3BpcGVsaW5lZCgpIGhlbHBlciB0bwo+
+IHRoZSBOQU5EIGNvcmUgdGhhdCBmb2xkcyBpbiB0aGUgTlVMTCBjaGVjaywgYW5kIHVzZXMgaXQg
+YXQgdGhlIHRocmVlCj4gYWZmZWN0ZWQgc2l0ZXMuCj4gCj4gWy4uLl0KCkFwcGxpZWQgdG8gbXRk
+L2ZpeGVzLCB0aGFua3MhCgpbMS8yXSBtdGQ6IHNwaW5hbmQ6IGZpeCBOVUxMIHBvaW50ZXIgZGVy
+ZWZlcmVuY2Ugd2l0aCBubyBFQ0MgZW5naW5lCiAgICAgIGNvbW1pdDogZWE3NjVhZTFlZmIyNjY1
+ZGE4OTgxZWJhODJiOGE3MmUzMTRhZjg1NApbMi8yXSBtdGQ6IHNwaW5hbmQ6IGZpeCB6ZXJvIG9v
+YmF2YWlsIHdoZW4gbm8gRUNDIGVuZ2luZSBpcyB1c2VkCiAgICAgIGNvbW1pdDogYTAzOTk1OGYy
+Yjk1ZTZjYzdmMGU0NGQ0MDI5OGQxN2YxYzA4NTFjMAoKUGF0Y2hlKHMpIHNob3VsZCBiZSBhdmFp
+bGFibGUgb24gbXRkL2xpbnV4LmdpdCBhbmQgd2lsbCBiZQpwYXJ0IG9mIHRoZSBuZXh0IFBSIChw
+cm92aWRlZCB0aGF0IG5vIHJvYm90IGNvbXBsYWlucyBieSB0aGVuKS4KCktpbmQgcmVnYXJkcywK
+TWlxdcOobAoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmlu
+ZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
