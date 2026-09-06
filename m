@@ -4,36 +4,36 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08DF0C79FA1
-	for <linux-mtd@archiver.kernel.org>; Sun,  6 Sep 2026 03:13:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE5E0C79FA2
+	for <linux-mtd@archiver.kernel.org>; Sun,  6 Sep 2026 03:13:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=0t3f2fcJAyRH4WQlVEWJfJDLG+UD1l+eeoCcYXvcnTI=; b=ID7XRl4IN4cB0Y
-	fKgGQGNbNdGKF3MPx516bkKCmux+gD3s8zLk/MGqFIHy3cwONaSa2QOoOOSBpxWohuJvu6LFuM6Hy
-	g/g6NxGgO7suW3JxvyDr56KamOAQYwvBr276TzAtHlNynvWkWbUh5elkF+Jej3YCj5zrZQIJJJ3J3
-	L6241DhAX0DQmGKGum5EtR2bFP1eyC7+OF+xXVwn+mE2KMZcUllftHBid2EtJhx3V2sntJEbh958A
-	u/h+ttX8uZXl4kd3kTwJLtcDDSG+aukBFyWEHls+V+25eqleKHk3BmygvKU7KylbmhasaJB7FHLcN
-	JbYEDEfDbRZfex44ClOw==;
+	List-Owner; bh=nIRsyIqQIqrTNscMBJ6XFqC4TTxaWKNh5S4Zo8tqpg0=; b=DeP8Va07QCrvaR
+	INnmpug4TKnCUOOALlmbvIVqMD3lXLqVkRbpFJ7Cui0djnomyLn0PgQfFN/MSWBm4rJyxtbFUYLVC
+	uovIyJFdsHRkInUbpuM6atHNYq1pm9+fxM62rFXuGfW0BQV97U404JbnoXMK6QelKQB0+pAfbmocK
+	O3KMsFrpLeFRUGRSBz+Ot96WMiCGvvvgF3qXt9FfJOn4kxMgxELtuPenELJIgcda279QJm4H4kr/q
+	Gd1TAXZImiODNPu/Sexy79JHpZ8tqmQso87WdzE/UWwdm8tTAGoXaV8X6800Sl2KSdvziQoL+HQpr
+	eLOekRuOHl+BGAmAwgxA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x33JK-00000004alZ-1o1A;
-	Sun, 06 Sep 2026 03:12:50 +0000
+	id 1x33JW-00000004aw6-3Y4W;
+	Sun, 06 Sep 2026 03:13:02 +0000
 Received: from dggsgout12.his.huawei.com ([45.249.212.56])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x33JF-00000004aiX-2Mdp;
-	Sun, 06 Sep 2026 03:12:48 +0000
-Received: from mail.maildlp.com (unknown [172.19.163.177])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4hcwGK50hyzKHMRB;
+	id 1x33JI-00000004aib-1oPz;
+	Sun, 06 Sep 2026 03:12:50 +0000
+Received: from mail.maildlp.com (unknown [172.19.163.170])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4hcwGK5XsjzKHMRW;
 	Sun,  6 Sep 2026 11:11:37 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 99AB54058D;
+	by mail.maildlp.com (Postfix) with ESMTP id AE05C4056B;
 	Sun,  6 Sep 2026 11:12:35 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.50.85.155])
-	by APP1 (Coremail) with UTF8SMTPSA id cCh0CgBnUAsW2pxqmzytAw--.18069S6;
+	by APP1 (Coremail) with UTF8SMTPSA id cCh0CgBnUAsW2pxqmzytAw--.18069S7;
 	Sun, 06 Sep 2026 11:12:35 +0800 (CST)
 From: Zhou Minqiang <zhouminqiang2@huawei.com>
 To: linux@armlinux.org.uk,
@@ -50,35 +50,35 @@ Cc: linux-arm-kernel@lists.infradead.org,
 	yangerkun@huawei.com,
 	yi.zhang@huawei.com,
 	zhouminqiang <zhouminqiang2@huawei.com>
-Subject: [PATCH v4 2/8] jffs2: wbuf: fix OBSOLETE under-coverage on recovery failure
-Date: Sun,  6 Sep 2026 11:03:38 +0800
-Message-ID: <20260906030344.2448622-3-zhouminqiang2@huawei.com>
+Subject: [PATCH v4 3/8] jffs2: replace per-superblock verify buffer with per-write buffer
+Date: Sun,  6 Sep 2026 11:03:39 +0800
+Message-ID: <20260906030344.2448622-4-zhouminqiang2@huawei.com>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <20260906030344.2448622-1-zhouminqiang2@huawei.com>
 References: <20260906030344.2448622-1-zhouminqiang2@huawei.com>
 MIME-Version: 1.0
-X-CM-TRANSID: cCh0CgBnUAsW2pxqmzytAw--.18069S6
-X-Coremail-Antispam: 1UD129KBjvJXoWxArW3ZrykJry3Jw1kWrWruFg_yoW5Jw1Dpr
-	yfAry3Gr1DGFyrWFnrAFy5t345Cr4rGrWIqayfJryxX3ZYvr1Sga4qgFnYvry8A3yvqr4j
-	9r4UtFyUGF1UGFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUmlb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
+X-CM-TRANSID: cCh0CgBnUAsW2pxqmzytAw--.18069S7
+X-Coremail-Antispam: 1UD129KBjvJXoWxCr4UKry8KFyrGr45tr13Arb_yoWrtw45pF
+	sayF13Ar48JryxWrs5tFn5Cw15KrW8Gr1Igr47C348Xa18tr1Iqa4rtFy8ZrWrArZ7Wr1S
+	ka9Ikw1rXF1UX37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUmGb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWw
 	A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
 	w2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	WxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-	xVWxJr0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2
-	WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkE
-	bVWUJVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kIc2xKxwCY1x0262kKe7
-	AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCF04k20xvEw4C26cxK6c8Ij28IcwCFx2IqxVCF
-	s4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r
-	1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW8
-	JVW5JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rV
-	WUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4U
-	JbIYCTnIWIevJa73UjIFyTuYvjxUo8nYUUUUU
+	W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAF
+	wI0_Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7
+	xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Y
+	z7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2
+	AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l42xK82IY64kExVAvwVAq07x20xyl4I8I3I0E
+	4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGV
+	WUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_
+	Gr0_Xr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY6xAIw20EY4v20xvaj4
+	0_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8
+	JrUvcSsGvfC2KfnxnUUI43ZEXa7IUbdMaUUUUUU==
 X-CM-SenderInfo: 52kr3z5lqtxttqj6x35dzhxuhorxvhhfrp/
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260905_201245_984995_A5C8D0B1 
-X-CRM114-Status: GOOD (  13.15  )
+X-CRM114-CacheID: sfid-20260905_201248_841111_7E83806C 
+X-CRM114-Status: GOOD (  12.95  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,64 +97,165 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: zhouminqiang <zhouminqiang2@huawei.com>
 
-In jffs2_wbuf_recover(), when the recovery write to the new erase
-block also fails, the code marks the already-written portion as
-REF_OBSOLETE via jffs2_add_physical_node_ref(). However, the length
-passed is ref_totlen(c, jeb, first_raw), which is the length of a
-single node on the old block, rather than the full range of data
-that was attempted to be written to the new block.
+Subsequent patches will extend write verification to additional write
+paths that may execute concurrently. A shared per-superblock buffer
+would require a coarse lock to serialize all verification, hurting
+concurrency.
 
-On the recovery target block the layout is:
+To avoid this contention, remove the wbuf_verify field from
+jffs2_sb_info, along with the scattered kmalloc/kfree of wbuf_verify
+in jffs2_nand_flash_setup, jffs2_dataflash_setup,
+jffs2_nor_wbuf_flash_setup and their corresponding cleanup functions.
 
-        ref_totlen(first_raw)
-        |<------------->|
-    ofs +---------------+-------+-------+     +--------+
-        |     node 1    |node 2 |node 3 | ... |erased  |
-        +---------------+-------+-------+     +--------+
-        |    OBSOLETE   |                              |
-        |<-towrite (page-aligned)->|                   |
-        |<-------- end - start -------->|              |
-                                        |<-truly free->|
+Instead, allocate a temporary buffer inside jffs2_verify_write(),
+giving each invocation its own buffer and eliminating the shared state.
 
-When the recovery buffer contains multiple nodes, ref_totlen only
-accounts for the first node's length, which can be much smaller than
-the total range. This under-deducts free_size, so the next write
-lands at the start of node 2, which is already programmed on NAND,
-and the AND operation corrupts both the old and new data.
-
-With towrite as the OBSOLETE length, the next write lands right
-after towrite in truly free space. However, node 3's header has
-been written within the towrite region while its data extends beyond
-it due to page-alignment truncation. On remount, the scanner finds
-node 3's header, validates its CRC, and trusts its totlen -- skipping
-PAD(totlen_node3) bytes. This skip extends past towrite into the
-area where the subsequent write was placed, creating a shadow zone
-that causes the newly written data to be silently lost.
-
-Use end - start as the OBSOLETE length, which covers the full range
-of data that was attempted to be written to the new block, so that
-neither the NAND AND corruption nor the scanner shadow zone can
-occur.
-
-Fixes: b64335f2b740 ("[JFFS2] Add length argument to jffs2_add_physical_node_ref().")
 Signed-off-by: zhouminqiang <zhouminqiang2@huawei.com>
 ---
- fs/jffs2/wbuf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/jffs2/jffs2_fs_sb.h |  3 ---
+ fs/jffs2/wbuf.c        | 61 ++++++++++++++++--------------------------
+ 2 files changed, 23 insertions(+), 41 deletions(-)
 
+diff --git a/fs/jffs2/jffs2_fs_sb.h b/fs/jffs2/jffs2_fs_sb.h
+index 5a7091746f68..8a75870d3fc8 100644
+--- a/fs/jffs2/jffs2_fs_sb.h
++++ b/fs/jffs2/jffs2_fs_sb.h
+@@ -124,9 +124,6 @@ struct jffs2_sb_info {
+ 
+ 	uint32_t wbuf_pagesize; /* 0 for NOR and other flashes with no wbuf */
+ 
+-#ifdef CONFIG_JFFS2_FS_WBUF_VERIFY
+-	unsigned char *wbuf_verify; /* read-back buffer for verification */
+-#endif
+ #ifdef CONFIG_JFFS2_FS_WRITEBUFFER
+ 	unsigned char *wbuf; /* Write-behind buffer for NAND flash */
+ 	uint32_t wbuf_ofs;
 diff --git a/fs/jffs2/wbuf.c b/fs/jffs2/wbuf.c
-index 61e3dbd4cd7b..ab247117ec77 100644
+index ab247117ec77..7e52241de457 100644
 --- a/fs/jffs2/wbuf.c
 +++ b/fs/jffs2/wbuf.c
-@@ -437,7 +437,7 @@ static void jffs2_wbuf_recover(struct jffs2_sb_info *c)
- 			kfree(buf);
+@@ -233,19 +233,31 @@ static int jffs2_verify_write(struct jffs2_sb_info *c, unsigned char *buf,
+ 	int ret;
+ 	size_t retlen;
+ 	char *eccstr;
++	void *verify_buf;
++
++	verify_buf = kmalloc(c->wbuf_pagesize, GFP_NOFS);
++	if (!verify_buf) {
++		pr_warn("%s(): verify buffer allocation failed, skipping verification\n",
++			__func__);
++		return 0;
++	}
++
++	ret = mtd_read(c->mtd, ofs, c->wbuf_pagesize, &retlen, verify_buf);
  
- 			if (retlen)
--				jffs2_add_physical_node_ref(c, ofs | REF_OBSOLETE, ref_totlen(c, jeb, first_raw), NULL);
-+				jffs2_add_physical_node_ref(c, ofs | REF_OBSOLETE, end-start, NULL);
+-	ret = mtd_read(c->mtd, ofs, c->wbuf_pagesize, &retlen, c->wbuf_verify);
+ 	if (ret && ret != -EUCLEAN && ret != -EBADMSG) {
+ 		pr_warn("%s(): Read back of page at %08x failed: %d\n",
+ 			__func__, c->wbuf_ofs, ret);
+-		return ret;
++		goto out_free;
+ 	} else if (retlen != c->wbuf_pagesize) {
+ 		pr_warn("%s(): Read back of page at %08x gave short read: %zd not %d\n",
+ 			__func__, ofs, retlen, c->wbuf_pagesize);
+-		return -EIO;
++		ret = -EIO;
++		goto out_free;
++	}
++	if (!memcmp(buf, verify_buf, c->wbuf_pagesize)) {
++		ret = 0;
++		goto out_free;
+ 	}
+-	if (!memcmp(buf, c->wbuf_verify, c->wbuf_pagesize))
+-		return 0;
  
- 			c->wbuf_len = 0;
- 			return;
+ 	if (ret == -EUCLEAN)
+ 		eccstr = "corrected";
+@@ -261,9 +273,14 @@ static int jffs2_verify_write(struct jffs2_sb_info *c, unsigned char *buf,
+ 
+ 	pr_warn("Read back:\n");
+ 	print_hex_dump(KERN_WARNING, "", DUMP_PREFIX_OFFSET, 16, 1,
+-		       c->wbuf_verify, c->wbuf_pagesize, 0);
++		       verify_buf, c->wbuf_pagesize, 0);
+ 
++	kfree(verify_buf);
+ 	return -EIO;
++
++out_free:
++	kfree(verify_buf);
++	return ret;
+ }
+ #else
+ #define jffs2_verify_write(c,b,o) (0)
+@@ -1217,22 +1234,11 @@ int jffs2_nand_flash_setup(struct jffs2_sb_info *c)
+ 		return -ENOMEM;
+ 	}
+ 
+-#ifdef CONFIG_JFFS2_FS_WBUF_VERIFY
+-	c->wbuf_verify = kmalloc(c->wbuf_pagesize, GFP_KERNEL);
+-	if (!c->wbuf_verify) {
+-		kfree(c->oobbuf);
+-		kfree(c->wbuf);
+-		return -ENOMEM;
+-	}
+-#endif
+ 	return 0;
+ }
+ 
+ void jffs2_nand_flash_cleanup(struct jffs2_sb_info *c)
+ {
+-#ifdef CONFIG_JFFS2_FS_WBUF_VERIFY
+-	kfree(c->wbuf_verify);
+-#endif
+ 	kfree(c->wbuf);
+ 	kfree(c->oobbuf);
+ }
+@@ -1272,14 +1278,6 @@ int jffs2_dataflash_setup(struct jffs2_sb_info *c) {
+ 	if (!c->wbuf)
+ 		return -ENOMEM;
+ 
+-#ifdef CONFIG_JFFS2_FS_WBUF_VERIFY
+-	c->wbuf_verify = kmalloc(c->wbuf_pagesize, GFP_KERNEL);
+-	if (!c->wbuf_verify) {
+-		kfree(c->wbuf);
+-		return -ENOMEM;
+-	}
+-#endif
+-
+ 	pr_info("write-buffering enabled buffer (%d) erasesize (%d)\n",
+ 		c->wbuf_pagesize, c->sector_size);
+ 
+@@ -1287,9 +1285,6 @@ int jffs2_dataflash_setup(struct jffs2_sb_info *c) {
+ }
+ 
+ void jffs2_dataflash_cleanup(struct jffs2_sb_info *c) {
+-#ifdef CONFIG_JFFS2_FS_WBUF_VERIFY
+-	kfree(c->wbuf_verify);
+-#endif
+ 	kfree(c->wbuf);
+ }
+ 
+@@ -1309,20 +1304,10 @@ int jffs2_nor_wbuf_flash_setup(struct jffs2_sb_info *c) {
+ 	if (!c->wbuf)
+ 		return -ENOMEM;
+ 
+-#ifdef CONFIG_JFFS2_FS_WBUF_VERIFY
+-	c->wbuf_verify = kmalloc(c->wbuf_pagesize, GFP_KERNEL);
+-	if (!c->wbuf_verify) {
+-		kfree(c->wbuf);
+-		return -ENOMEM;
+-	}
+-#endif
+ 	return 0;
+ }
+ 
+ void jffs2_nor_wbuf_flash_cleanup(struct jffs2_sb_info *c) {
+-#ifdef CONFIG_JFFS2_FS_WBUF_VERIFY
+-	kfree(c->wbuf_verify);
+-#endif
+ 	kfree(c->wbuf);
+ }
+ 
 -- 
 2.52.0
 
