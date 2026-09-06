@@ -4,81 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4BB66C79F8C
-	for <linux-mtd@archiver.kernel.org>; Sun,  6 Sep 2026 03:13:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9CCEC79F85
+	for <linux-mtd@archiver.kernel.org>; Sun,  6 Sep 2026 12:10:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Qt5qdrelAa05W2ENT8Z7rhzuaisRxnWAn+95ND6pFjI=; b=i0XVFnnj71YS9k
-	+yxVPVFkJXmcu7tMrV/0V3fKVRHtD8aLzHvLDboDHPG5C6qOeKfTwc1mvyPj0XIcuG4uYEzDtYFCy
-	ZdblW92N7igk3x4DiUkpJzIz3U16kCWMNK82f+jRKG8+Dy7oZ/bPBOq3e0ABiy9Ap/au/ZCVeVuUV
-	1MPfREDmXBDOI7JwEQdJW5buVwjWF3GOoSgj6JBhWb3TEU3dWPUS8WRtjk6of+hlJz04JC/LpgDOD
-	RIeu8hsYv4+KpQXq4gLgtLE4FRKqygmjmgAkVxVoZgXz2Kalr3jCne9GhbL3ScPlRkrFmJ/c3LNdi
-	tpXWt8WeKgKwqr7OjePA==;
+	List-Archive:List-Unsubscribe:List-Id:To:From:Subject:Message-ID:Date:
+	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=HeyMVfwjIUNseV15sRr8yeDAwN4WpaH3uF97QATb4Ro=; b=XEh
+	rCp4GGpHBjVzTLQQ0kjxz6sevk91k3Qhk908NKar568vfOoeJ+iyj0YJPy1EaxxTBD4Nvxi8mc+qQ
+	HuD/lhkcxFO7l1VM0bMnaPrpQs2BRFnnQRXaS/o8tKALvRaw2EEY7p3pmG34BhlaFU5jnVKy1amCa
+	8H2UZoTBnVIwZdMOWSFbvR8UCRui9pX6hHXhvuviTLstq8LjI+ayBj6Dz9fHCRvZgW4ltScOaesmJ
+	91pyIqqzlqXWRdfooc5AAQT6Qu+qp25AdOKKMb7u+7wm4LagtjtTSWFA+s1NkcGAelcT07skGFKsU
+	o57PaDyhpnHP6C7UZCE0Ogyj+QeLTRQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x33Jf-00000004b97-3lnz;
-	Sun, 06 Sep 2026 03:13:11 +0000
-Received: from dggsgout12.his.huawei.com ([45.249.212.56])
+	id 1x3Bhi-000000050kg-2OUG;
+	Sun, 06 Sep 2026 12:10:34 +0000
+Received: from mail-oo2-f7.google.com ([74.125.231.135])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x33JK-00000004akW-1OMo;
-	Sun, 06 Sep 2026 03:12:52 +0000
-Received: from mail.maildlp.com (unknown [172.19.163.177])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4hcwGL1mQWzKHMS7;
-	Sun,  6 Sep 2026 11:11:38 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 2ED184058C;
-	Sun,  6 Sep 2026 11:12:36 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.50.85.155])
-	by APP1 (Coremail) with UTF8SMTPSA id cCh0CgBnUAsW2pxqmzytAw--.18069S12;
-	Sun, 06 Sep 2026 11:12:36 +0800 (CST)
-From: Zhou Minqiang <zhouminqiang2@huawei.com>
-To: linux@armlinux.org.uk,
-	vz@mleia.com,
-	piotr.wojtaszczyk@timesys.com,
-	maddy@linux.ibm.com,
-	dwmw2@infradead.org,
-	richard@nod.at
-Cc: linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-mtd@lists.infradead.org,
-	chengzhihao1@huawei.com,
-	yangerkun@huawei.com,
-	yi.zhang@huawei.com,
-	zhouminqiang <zhouminqiang2@huawei.com>
-Subject: [PATCH v4 8/8] jffs2: add runtime toggle for write verification
-Date: Sun,  6 Sep 2026 11:03:44 +0800
-Message-ID: <20260906030344.2448622-9-zhouminqiang2@huawei.com>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <20260906030344.2448622-1-zhouminqiang2@huawei.com>
-References: <20260906030344.2448622-1-zhouminqiang2@huawei.com>
+	id 1x3Bhg-000000050kL-0dEH
+	for linux-mtd@lists.infradead.org;
+	Sun, 06 Sep 2026 12:10:33 +0000
+Received: by mail-oo2-f7.google.com with SMTP id 006d021491bc7-6b1bebb3ae8so787644eaf.1
+        for <linux-mtd@lists.infradead.org>; Sun, 06 Sep 2026 05:10:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1788696630; x=1789301430;
+        h=content-type:to:from:subject:message-id:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=uodVNUfbRag88I5mELNLKqMsw2oq6XnMsWbte6N9A3A=;
+        b=Iih0TDKqiwquB3iHsFnOfyztShMr+/cWfj/rL3o3tkHF7sTi9gkIthB94PxUcnHz8Y
+         9iOAU1fU6I3Kv5NkLDVG0Vg3fgrY+hrqEDPEsCLXAqiiXp10poQJP9vncaA7SQ5XvTIp
+         Gb8K8qGH5BxxhJohNuDXgABN0QYnSfweKDe272MsyIZwtBJnfeLzGmIJRBRQnkPTZW+p
+         yVwF4CaVDM33IRDQRMtH3RY1XLQtTsDTuukIn3UxxPVYBx6btB18jxdh386tpmPBuPkK
+         EWkPETEo/cxdzyns7VweG2ahT7qm9ODIqyPtdBTjjL8nwNjbBIm70rBLZudMJ+wYyOzI
+         JQIw==
+X-Forwarded-Encrypted: i=1; AKwUvBwkLDiWbW09gQyH6AjiC25QW48MSBwSVO93Fa36OyZ1S8C7Y0d5sjDDqynOO35eyGSIDJoIl91anMM=@lists.infradead.org
+X-Gm-Message-State: AFuF++mh91PVzGKTEMwV/+N08uOU8jcwCeQYV+lN4C8BAFfeoe4GRqmQ
+	ZhMYPaHxHY4UUOMHobGejknu5+o8LP4yZNXPxkkKAilqsgIkpui8tsVSAuffmKFbEe2HfBicNHf
+	OPXdIhxS/2R4G7W3EHtKsyUTXNu2TJMf+/cbXh4tjd6kWHhe+fKT/9nBe3ho=
 MIME-Version: 1.0
-X-CM-TRANSID: cCh0CgBnUAsW2pxqmzytAw--.18069S12
-X-Coremail-Antispam: 1UD129KBjvJXoWxAF1rtr1kGw47GryUWr1kuFg_yoW5Ww1xpF
-	ZYvFnxK3sxtr12yrsxA3WFga45KaykGryIqrW3uw17X3WrK34qyFy8t345CF48XrWkKFyj
-	gF4Sk343Gr17JrJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUQjb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
-	Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
-	rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267
-	AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7Cj
-	xVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrV
-	C2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE
-	7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kIc2xKxwCY1x0262
-	kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCF04k20xvEw4C26cxK6c8Ij28IcwCFx2Iq
-	xVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r
-	106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AK
-	xVW8JVW5JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwCI42IY6xAIw20EY4v20x
-	vaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8
-	Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07UdCzZUUUUU=
-X-CM-SenderInfo: 52kr3z5lqtxttqj6x35dzhxuhorxvhhfrp/
+X-Received: by 2002:a05:6820:6ae7:b0:6b6:71f7:ecbe with SMTP id
+ 006d021491bc7-6b6fdfb58dfmr16537320eaf.18.1788696630381; Sun, 06 Sep 2026
+ 05:10:30 -0700 (PDT)
+Date: Sun, 06 Sep 2026 05:10:30 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <6a9d5836.a5e650b3.26d8a.001a.GAE@google.com>
+Subject: [syzbot] [jffs2?] kernel BUG in jffs2_sum_write_sumnode (2)
+From: syzbot <syzbot+0727f46a0571de01bf93@syzkaller.appspotmail.com>
+To: dwmw2@infradead.org, linux-kernel@vger.kernel.org, 
+	linux-mtd@lists.infradead.org, richard@nod.at, 
+	syzkaller-bugs@googlegroups.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260905_201250_779632_D2D0EDCB 
-X-CRM114-Status: GOOD (  11.04  )
+X-CRM114-CacheID: sfid-20260906_051032_200994_425CA726 
+X-CRM114-Status: UNSURE (   8.58  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,94 +78,116 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: zhouminqiang <zhouminqiang2@huawei.com>
+Hello,
 
-Write verification is a diagnostic facility that adds read-back
-overhead to every write. In production, this overhead is undesirable
-unless fault isolation is required.
+syzbot found the following issue on:
 
-Add a module parameter jffs2.write_verify (bool, 0644) that defaults
-to off when CONFIG_JFFS2_FS_WRITE_VERIFY is enabled. The verification
-entry checks READ_ONCE(jffs2_write_verify) and returns immediately
-when disabled, avoiding any overhead. The parameter can be toggled at
-runtime via /sys/module/jffs2/parameters/write_verify or set at
-boot/modprobe time.
+HEAD commit:    89a312991dc6 Merge tag 'cifs-fixes-7.3-rc2' of https://git..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=10266f79580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=19560cab9a915237
+dashboard link: https://syzkaller.appspot.com/bug?extid=0727f46a0571de01bf93
+compiler:       gcc (Debian 14.2.0-19) 14.2.0, GNU ld (GNU Binutils for Debian) 2.44
 
-Signed-off-by: zhouminqiang <zhouminqiang2@huawei.com>
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/8722ccd64272/disk-89a31299.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/bb121ca607c4/vmlinux-89a31299.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/7e8f64808c5e/bzImage-89a31299.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+0727f46a0571de01bf93@syzkaller.appspotmail.com
+
+jffs2: warning: (10801) jffs2_sum_write_sumnode: Empty summary info!!!
+------------[ cut here ]------------
+------------[ cut here ]------------
+kernel BUG at fs/jffs2/summary.c:868!
+Oops: invalid opcode: 0000 [#1] SMP KASAN NOPTI
+CPU: 0 UID: 0 PID: 10801 Comm: syz.9.661 Tainted: G             L      syzkaller #0 PREEMPT(full) 
+Tainted: [L]=SOFTLOCKUP
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/05/2026
+RIP: 0010:jffs2_sum_write_sumnode.cold+0x4e/0x174 fs/jffs2/summary.c:868
+Code: 0f b6 04 02 84 c0 74 08 3c 03 0f 8e 2c 01 00 00 8b b3 40 06 00 00 48 c7 c2 00 76 33 8c 48 c7 c7 00 72 33 8c e8 cd 73 f8 ff 90 <0f> 0b e8 45 f9 e1 00 65 4c 8b 3d 65 1a 62 13 b8 ff ff 37 00 48 c1
+RSP: 0018:ffffc90003a56d90 EFLAGS: 00010282
+RAX: 0000000000000046 RBX: ffff8880375f8000 RCX: 0000000000000000
+RDX: 0000000000000046 RSI: ffffffff81e9c5d9 RDI: fffff5200074ada3
+RBP: ffffc90003a56f10 R08: 0000000000000007 R09: 0000000000000000
+R10: 8000000000000000 R11: 0000000000000001 R12: ffff88807e062a00
+R13: 0000000000000000 R14: 0000000000000f40 R15: 0000000000000000
+FS:  00007f34bbf8d6c0(0000) GS:ffff888123b61000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000557616249078 CR3: 0000000074bae000 CR4: 0000000000350ef0
+Call Trace:
+ <TASK>
+ jffs2_do_reserve_space+0xb94/0xf70 fs/jffs2/nodemgmt.c:392
+ jffs2_reserve_space_gc+0x6b/0xf0 fs/jffs2/nodemgmt.c:226
+ jffs2_garbage_collect_pristine+0x103/0x870 fs/jffs2/gc.c:613
+ jffs2_garbage_collect_live+0x1471/0x36b0 fs/jffs2/gc.c:546
+ jffs2_garbage_collect_pass+0xb28/0x1b40 fs/jffs2/gc.c:464
+ jffs2_reserve_space+0x489/0xbb0 fs/jffs2/nodemgmt.c:171
+ jffs2_write_inode_range+0x275/0xb80 fs/jffs2/write.c:362
+ jffs2_write_end+0x72c/0xea0 fs/jffs2/file.c:299
+ generic_perform_write+0x513/0xa40 mm/filemap.c:4395
+ __generic_file_write_iter+0x1f7/0x240 mm/filemap.c:4491
+ generic_file_write_iter+0xe1/0x390 mm/filemap.c:4517
+ iter_file_splice_write+0x830/0x10b0 fs/splice.c:736
+ do_splice_from fs/splice.c:936 [inline]
+ direct_splice_actor+0x192/0x690 fs/splice.c:1159
+ splice_direct_to_actor+0x345/0xa30 fs/splice.c:1103
+ do_splice_direct_actor fs/splice.c:1202 [inline]
+ do_splice_direct+0x174/0x240 fs/splice.c:1228
+ do_sendfile+0xadc/0xe20 fs/read_write.c:1371
+ __do_sys_sendfile64 fs/read_write.c:1432 [inline]
+ __se_sys_sendfile64 fs/read_write.c:1418 [inline]
+ __x64_sys_sendfile64+0x1d8/0x220 fs/read_write.c:1418
+ do_syscall_x64 arch/x86/entry/syscall_64.c:61 [inline]
+ do_syscall_64+0x123/0x790 arch/x86/entry/syscall_64.c:84
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f34bb19e159
+Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 e8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f34bbf8d028 EFLAGS: 00000246 ORIG_RAX: 0000000000000028
+RAX: ffffffffffffffda RBX: 00007f34bb426090 RCX: 00007f34bb19e159
+RDX: 0000000000000000 RSI: 0000000000000008 RDI: 0000000000000009
+RBP: 00007f34bb235024 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000020000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007f34bb426128 R14: 00007f34bb426090 R15: 00007ffc4299d258
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:jffs2_sum_write_sumnode.cold+0x4e/0x174 fs/jffs2/summary.c:868
+Code: 0f b6 04 02 84 c0 74 08 3c 03 0f 8e 2c 01 00 00 8b b3 40 06 00 00 48 c7 c2 00 76 33 8c 48 c7 c7 00 72 33 8c e8 cd 73 f8 ff 90 <0f> 0b e8 45 f9 e1 00 65 4c 8b 3d 65 1a 62 13 b8 ff ff 37 00 48 c1
+RSP: 0018:ffffc90003a56d90 EFLAGS: 00010282
+RAX: 0000000000000046 RBX: ffff8880375f8000 RCX: 0000000000000000
+RDX: 0000000000000046 RSI: ffffffff81e9c5d9 RDI: fffff5200074ada3
+RBP: ffffc90003a56f10 R08: 0000000000000007 R09: 0000000000000000
+R10: 8000000000000000 R11: 0000000000000001 R12: ffff88807e062a00
+R13: 0000000000000000 R14: 0000000000000f40 R15: 0000000000000000
+FS:  00007f34bbf8d6c0(0000) GS:ffff888123c61000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fe398fd0000 CR3: 0000000074bae000 CR4: 0000000000350ef0
+
+
 ---
- fs/jffs2/Kconfig  |  8 ++++++++
- fs/jffs2/writev.c | 23 +++++++++++++++++++++++
- 2 files changed, 31 insertions(+)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/fs/jffs2/Kconfig b/fs/jffs2/Kconfig
-index 556025a5d438..03dadbd003cd 100644
---- a/fs/jffs2/Kconfig
-+++ b/fs/jffs2/Kconfig
-@@ -61,6 +61,14 @@ config JFFS2_FS_WRITE_VERIFY
- 	  tell transport/program-time corruption from post-commit media
- 	  damage.
- 
-+	  Verification defaults to off when this option is selected and can
-+	  be enabled at runtime via sysfs:
-+
-+	    /sys/module/jffs2/parameters/write_verify
-+
-+	  Write 0 to disable, 1 to enable.  Boot/modprobe parameter
-+	  jffs2.write_verify=0|1 is also supported.
-+
- 	  If unsure, say 'N'.
- 
- config JFFS2_SUMMARY
-diff --git a/fs/jffs2/writev.c b/fs/jffs2/writev.c
-index 604a14bb5710..342c413be95c 100644
---- a/fs/jffs2/writev.c
-+++ b/fs/jffs2/writev.c
-@@ -9,12 +9,32 @@
-  *
-  */
- 
-+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-+
- #include <linux/kernel.h>
-+#include <linux/module.h>
- #include <linux/slab.h>
- #include <linux/mtd/mtd.h>
- #include "nodelist.h"
- 
- #ifdef CONFIG_JFFS2_FS_WRITE_VERIFY
-+/*
-+ * Optional read-back after writes.
-+ *
-+ * Catch cases where data is corrupted after node CRCs are calculated but
-+ * before it is correctly programmed -- e.g. in RAM or during DMA/bus
-+ * transfer to the flash controller -- so mtd_write() succeeds while the
-+ * medium does not match the in-memory image.
-+ *
-+ * Runtime toggle: /sys/module/jffs2/parameters/write_verify
-+ * (also boot/modprobe: jffs2.write_verify=0|1)
-+ */
-+static bool jffs2_write_verify;
-+module_param_named(write_verify, jffs2_write_verify, bool, 0644);
-+MODULE_PARM_DESC(write_verify,
-+		 "Verify flash writes by reading back (default: N)");
-+
-+
- int jffs2_verify_write(struct jffs2_sb_info *c, const unsigned char *buf,
- 			      uint32_t ofs, size_t len)
- {
-@@ -23,6 +43,9 @@ int jffs2_verify_write(struct jffs2_sb_info *c, const unsigned char *buf,
- 	char *eccstr;
- 	void *verify_buf;
- 
-+	if (!READ_ONCE(jffs2_write_verify))
-+		return 0;
-+
- 	verify_buf = kmalloc(len, GFP_NOFS | __GFP_NOWARN);
- 	if (!verify_buf) {
- 		pr_warn("%s(): verify buffer allocation failed, skipping verification\n",
--- 
-2.52.0
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
 ______________________________________________________
 Linux MTD discussion mailing list
