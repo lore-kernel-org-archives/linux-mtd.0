@@ -4,64 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA546C79F89
-	for <linux-mtd@archiver.kernel.org>; Mon,  7 Sep 2026 13:01:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 43246C79FA0
+	for <linux-mtd@archiver.kernel.org>; Mon,  7 Sep 2026 20:15:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:References:To:From:Subject:Message-Id:Date:Mime-Version:Reply-To:
-	Cc:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Tnq5xl4v4xNRNWcU0iDML2WmEhG+xamQALP9flcKkr0=; b=nAIkkY7jv4cr4BfwHSp4ZskWlv
-	hxV+s2OkBU94EGGxQAY6GvquvdaefmqjnLn+RK27pAy7ZgHg95/ZQEf/LF365FBSBt80udQwvWJtE
-	ERmztwrqsVhalSOhuPJVEkYe4fQd50P9+8AJ/pMyoovItzPtmbE1AiDpro6+P6irh1zT786ewvvgD
-	9d9guoZL17Xz2RSp27aYoiRNiNTs0cSz4VUaV6uk+x+4V0qFYNB+YnWkeUZIXKRkEF8r2dwlbkdEM
-	5aRcdiTo/FFbkNQP7EZYSdMw5tK0FJx7K/aWZvtOBcotKgVkzmx2z5NYylu5D2YSfJKyIi531hmhY
-	EEAqTsVw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:To:From:Subject:Message-ID:In-Reply-To:
+	Date:MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
+	List-Owner; bh=YWJBfOMLj8+Juzp6m5NNhir9eW3AJsLkItUcDW/vAMg=; b=k3qiVoowHQsItH
+	xB3+E5gdHX/1vi/3ot/A3QCPo/nfraukGWM4IXxfOF1eNrK0Nar+Tod0hKGZzVpnDtKelLKnp2YL5
+	eXQiJ8D9QbEz2PUmO/3FB5BWKOdbKii1z+IUIAnTgm2V17u5ofTbCzXBcZ10pbU++pNQQeC5CyDvi
+	aMEcqF83GNMXUiI7vLG4VlYydlx5iE8GVAjuhkvvAogsBcEKVX690t3w3OJVrgIY7FBHja10grfRp
+	R6A0Ft/A43UV4VJhtAM+NfEfJt5s11dr9i8cdbMiKopQEFzvQQ1wxrhdCZPIEyZDRZH1Gc+m7yGc/
+	sC/Dd3cZpNFQwbEeEFLQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x3YyC-00000006sk6-1rNa;
-	Mon, 07 Sep 2026 13:01:08 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1x3fju-00000007gYx-0dtH;
+	Mon, 07 Sep 2026 20:14:50 +0000
+Received: from mail-oo2-f0.google.com ([74.125.231.128])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x3Yy5-00000006shd-2VUT;
-	Mon, 07 Sep 2026 13:01:01 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with UTF8SMTP id E584A44033;
-	Mon,  7 Sep 2026 13:01:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id 48E861F00A3E;
-	Mon,  7 Sep 2026 13:01:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1788786060;
-	bh=F4VPyTZ54caW5/2FxinE0de1h566CHchl8PU7RTCzwc=;
-	h=Date:Subject:From:To:References:In-Reply-To;
-	b=lXXFAFrMyZ9iKDuZFZc+3TX/Lq9T58AIoBg9QtiliUStbSJuHnH3Yra7cawchxONc
-	 O4kY5HVIfpMwr47rs4xxpDXqtpktWvgbvzG4EIsoU/GCNyr7J73CNyhrDtAV65us3e
-	 6vnJLJoU64Q4Ig23QTnsF6BAXMStV4cs9FmR3Il80hrD0E5D6plOYUWP4HD3J3eW2V
-	 6fl7sYBKhBdbOOavIU70LSIsaH1ublZBgOzdQ4JXqcVhooea+IZpPurqWGh/7o/xk6
-	 lEeOONnJcPoDBjBzw8ZJJQN8Q3jHPuEhOyes4E8fnutATQMJIaQdC3MzBx56TKDb1Z
-	 i3IYSINXbNXRw==
-Mime-Version: 1.0
-Date: Mon, 07 Sep 2026 15:00:56 +0200
-Message-Id: <DL93QHVC01B9.3U3K1G8NC0MZA@kernel.org>
-Subject: Re: [PATCH v7 3/7] mtd: spi-nor: sfdp: expose the SFDP as a
- read-only NVMEM device
-From: "Michael Walle" <mwalle@kernel.org>
-To: "Manikandan Muralidharan" <manikandan.m@microchip.com>,
- <pratyush@kernel.org>, <mwalle@kernel.org>, <takahiro.kuwano@infineon.com>,
- <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
- <robh@kernel.org>, <krzk+dt@kernel.org>, <conor+dt@kernel.org>,
- <srini@kernel.org>, <nicolas.ferre@microchip.com>,
- <alexandre.belloni@bootlin.com>, <claudiu.beznea@tuxon.dev>,
- <linux@armlinux.org.uk>, <richardcochran@gmail.com>, <arnd@arndb.de>,
- <linusw@kernel.org>, <gregkh@linuxfoundation.org>,
- <mathieu.dubois-briand@bootlin.com>, <linux-mtd@lists.infradead.org>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- <linux-arm-kernel@lists.infradead.org>, <netdev@vger.kernel.org>
-X-Mailer: aerc 0.20.0
-References: <20260812104955.485667-1-manikandan.m@microchip.com>
- <20260812104955.485667-4-manikandan.m@microchip.com>
-In-Reply-To: <20260812104955.485667-4-manikandan.m@microchip.com>
+	id 1x3fjq-00000007gYc-0LeM
+	for linux-mtd@lists.infradead.org;
+	Mon, 07 Sep 2026 20:14:47 +0000
+Received: by mail-oo2-f0.google.com with SMTP id 006d021491bc7-6a3900cb2b5so1581308eaf.0
+        for <linux-mtd@lists.infradead.org>; Mon, 07 Sep 2026 13:14:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1788812084; x=1789416884;
+        h=content-type:to:from:subject:message-id:in-reply-to:date
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to:content-type;
+        bh=KhEdS9RlguF9ZCBAEbbv2+cYvXUAPXxzyDvBl5gFfyo=;
+        b=rJA/IUJvR4lIgebW6/WJnQ0yb6vxOomP/ByrsvBU8JRx4LJWZXPXMddQoKws3YEZ1w
+         AUdUP7yXcVvJ/xqSbwPemCE+3xEHlSdYH/+XvM0l+rTL8bzTegtT1Roc7Rq9SkuF49al
+         bXbRYt+N/I1twAH8EMHxp4ofbu5dszDmC1SsJjnTYWCde2kwFm4rBoK2brlDne8rGsAc
+         09fgg11PF5I9AVRwtOOJvboJs9LVDSmAl8wIp5yeUUEPU1HaWVBQ5jCLataw+8Jj3TAR
+         gD/13CJXdYyKnq/2nvzVw90QD91tWO3XaWmHWy9uBy9xb1AeKQagZL3Eq/pG95BWOp+U
+         7cag==
+X-Forwarded-Encrypted: i=1; AKwUvBx+tqroCWHLzsmZDiyVJv2S9qFXpUE9GCaVZofWMQ1286pkI0E3C9jyQ+ZsNsexANaaf3uBAbH1Qhw=@lists.infradead.org
+X-Gm-Message-State: AFuF++mNUM4s0pUteJLQPwe6O0flHv/J6LlnMzasOZxNoeZG6sjZALw8
+	BBTiPvuIEMRcsMzfNWaKYwd9gBfDfca3BslzibNZi9WZjwF5BipC81riPFtzA5mTF2wWI4jADNu
+	ITYhUd4UGL9p5g/fKgH1lsRET2F34MmTp5o4AzGdoMMLvBabevHhTNptMDUs=
+MIME-Version: 1.0
+X-Received: by 2002:a05:6820:1c87:b0:6b3:6920:4ca0 with SMTP id
+ 006d021491bc7-6b6fabe1ff3mr13779461eaf.9.1788812084157; Mon, 07 Sep 2026
+ 13:14:44 -0700 (PDT)
+Date: Mon, 07 Sep 2026 13:14:44 -0700
+In-Reply-To: <6a752024.b50370da.49fe0.0017.GAE@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <6a9f1b34.2bb5a69c.24b23c.000b.GAE@google.com>
+Subject: Re: [syzbot] [jffs2?] possible deadlock in jffs2_do_clear_inode (2)
+From: syzbot <syzbot+743079a09058321247d8@syzkaller.appspotmail.com>
+To: dwmw2@infradead.org, linux-kernel@vger.kernel.org, 
+	linux-mtd@lists.infradead.org, richard@nod.at, 
+	syzkaller-bugs@googlegroups.com
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260907_131446_163112_3022786B 
+X-CRM114-Status: UNSURE (   6.17  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,192 +74,164 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1355014916414523073=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============1355014916414523073==
-Content-Type: multipart/signed;
- boundary=cfe8a98efb2086f550102e1210fdc67d01fd1cb7f4b563889cc6dc1396e2;
- micalg=pgp-sha384; protocol="application/pgp-signature"
+syzbot has found a reproducer for the following issue on:
 
---cfe8a98efb2086f550102e1210fdc67d01fd1cb7f4b563889cc6dc1396e2
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
+HEAD commit:    df2908090cda Linux 7.3-rc2
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=17c4f8d1580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=85bc5cc2fc7394d9
+dashboard link: https://syzkaller.appspot.com/bug?extid=743079a09058321247d8
+compiler:       gcc (Debian 14.2.0-19) 14.2.0, GNU ld (GNU Binutils for Debian) 2.44
+userspace arch: i386
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14824601580000
 
-Hi,
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/d900f083ada3/non_bootable_disk-df290809.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/a500bcdb2c4d/vmlinux-df290809.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/2b5c3e1aefa2/bzImage-df290809.xz
 
-On Wed Aug 12, 2026 at 12:49 PM CEST, Manikandan Muralidharan wrote:
-> The SPI NOR core already reads the SFDP tables during enumeration and
-> caches them in nor->sfdp->dwords (see spi_nor_parse_sfdp()). Re-expose
-> that cached data as a read-only NVMEM device, in on-flash byte order,
-> rooted at the flash's SFDP child node (compatible "jedec,sfdp").
->
-> This lets NVMEM cells reference any SFDP data: a fixed-layout for
-> parameters at a known offset, or an nvmem-layout parser for vendor data
-> whose location must be discovered at runtime. The device is only register=
-ed
-> when an "sfdp" node is present in the device tree.
->
-> Signed-off-by: Manikandan Muralidharan <manikandan.m@microchip.com>
-> ---
->  drivers/mtd/spi-nor/core.c | 78 ++++++++++++++++++++++++++++++++++++++
->  1 file changed, 78 insertions(+)
->
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index ccf4396cdcd0..0425af6e898f 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -17,6 +17,7 @@
->  #include <linux/mtd/mtd.h>
->  #include <linux/mtd/spi-nor.h>
->  #include <linux/mutex.h>
-> +#include <linux/nvmem-provider.h>
->  #include <linux/of.h>
->  #include <linux/regulator/consumer.h>
->  #include <linux/sched/task_stack.h>
-> @@ -3001,6 +3002,75 @@ static void spi_nor_init_fixup_flags(struct spi_no=
-r *nor)
->  		nor->flags |=3D SNOR_F_IO_MODE_EN_VOLATILE;
->  }
-> =20
-> +static int spi_nor_sfdp_reg_read(void *priv, unsigned int offset,
-> +				 void *val, size_t bytes)
-> +{
-> +	struct spi_nor *nor =3D priv;
-> +	struct sfdp *sfdp =3D nor->sfdp;
-> +	size_t sfdp_size =3D sfdp->num_dwords * sizeof(*sfdp->dwords);
-> +
-> +	if (offset >=3D sfdp_size || bytes > sfdp_size - offset)
-> +		return -EINVAL;
-> +
-> +	/* The cached SFDP is kept in on-flash (little-endian) byte order. */
-> +	memcpy(val, (u8 *)sfdp->dwords + offset, bytes);
-> +
-> +	return 0;
-> +}
-> +
-> +/**
-> + * spi_nor_register_sfdp_nvmem() - expose the SFDP as a read-only NVMEM =
-device
-> + * @nor:	pointer to a 'struct spi_nor'
-> + *
-> + * Expose the whole SFDP, in on-flash byte order, as a read-only NVMEM d=
-evice
-> + * rooted at the flash's SFDP child node (compatible "jedec,sfdp"). This=
- lets
-> + * generic (fixed-layout) or vendor (nvmem-layout) cells reference any S=
-FDP
-> + * data. The device is only registered when a child node with the "jedec=
-,sfdp"
-> + * compatible is described in the device tree.
-> + *
-> + * Return: 0 on success or if there is nothing to do, -errno otherwise.
-> + */
-> +static int spi_nor_register_sfdp_nvmem(struct spi_nor *nor)
-> +{
-> +	struct device *dev =3D nor->dev;
-> +	struct nvmem_config config =3D { };
-> +	struct nvmem_device *nvmem;
-> +	struct device_node *np;
-> +
-> +	if (!nor->sfdp)
-> +		return 0;
-> +
-> +	np =3D of_get_compatible_child(dev_of_node(dev), "jedec,sfdp");
-> +	if (!np)
-> +		return 0;
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+743079a09058321247d8@syzkaller.appspotmail.com
 
-What if there is no jedec,sfdp node? Should this be added anyways?
+======================================================
+WARNING: possible circular locking dependency detected
+syzkaller #0 Not tainted
+------------------------------------------------------
+kswapd0/113 is trying to acquire lock:
+ffff8880139810e0 (&f->sem){+.+.}-{4:4}, at: jffs2_do_clear_inode+0x5a/0x470 fs/jffs2/readinode.c:1419
 
-> +
-> +	config.dev =3D dev;
-> +	config.of_node =3D np;
+but task is already holding lock:
+ffffffff8efc9860 (fs_reclaim){+.+.}-{0:0}, at: balance_pgdat+0xbce/0x1f00 mm/vmscan.c:7292
 
-What about just:
-	config.of_node =3D of_get_compatible_child(dev_of_node(dev), "jedec,sfdp")=
-;
-
-> +	config.name =3D "sfdp";
-> +	config.id =3D NVMEM_DEVID_AUTO;
-> +	config.owner =3D THIS_MODULE;
-> +	config.read_only =3D true;
-> +	config.word_size =3D 1;
-> +	config.stride =3D 1;
-> +	config.size =3D (int)(nor->sfdp->num_dwords * sizeof(*nor->sfdp->dwords=
-));
-> +	config.reg_read =3D spi_nor_sfdp_reg_read;
-> +	config.priv =3D nor;
-> +
-> +	nvmem =3D devm_nvmem_register(dev, &config);
-> +	of_node_put(np);
-
-This now leaves the nvmem device with a dangling pointer. What I
-meant in my previous reply, was that you'll add an of_node_get() to
-the nvmem_register(), so the nvmem subsystem will have its own
-tracking.
-
--michael
-
-> +	if (IS_ERR(nvmem)) {
-> +		/* NVMEM support is optional. */
-> +		if (PTR_ERR(nvmem) =3D=3D -EOPNOTSUPP)
-> +			return 0;
-> +		return dev_err_probe(dev, PTR_ERR(nvmem),
-> +				     "failed to register SFDP NVMEM device\n");
-> +	}
-> +
-> +	dev_dbg(dev, "exposed %d-byte SFDP as an NVMEM device\n", config.size);
-> +
-> +	return 0;
-> +}
-> +
->  /**
->   * spi_nor_late_init_params() - Late initialization of default flash par=
-ameters.
->   * @nor:	pointer to a 'struct spi_nor'
-> @@ -3204,6 +3274,14 @@ static int spi_nor_init_params(struct spi_nor *nor=
-)
->  		spi_nor_init_params_deprecated(nor);
->  	}
-> =20
-> +	/*
-> +	 * Expose the SFDP table as an NVMEM device only when
-> +	 * the flash actually provides one
-> +	 */
-> +	ret =3D spi_nor_register_sfdp_nvmem(nor);
-> +	if (ret)
-> +		return ret;
-> +
->  	ret =3D spi_nor_late_init_params(nor);
->  	if (ret)
->  		return ret;
+which lock already depends on the new lock.
 
 
---cfe8a98efb2086f550102e1210fdc67d01fd1cb7f4b563889cc6dc1396e2
-Content-Type: application/pgp-signature; name="signature.asc"
+the existing dependency chain (in reverse order) is:
 
------BEGIN PGP SIGNATURE-----
+-> #1 (fs_reclaim){+.+.}-{0:0}:
+       lock_acquire kernel/locking/lockdep.c:5942 [inline]
+       lock_acquire+0x1d1/0x380 kernel/locking/lockdep.c:5899
+       __fs_reclaim_acquire mm/page_alloc.c:4375 [inline]
+       fs_reclaim_acquire+0xc4/0x100 mm/page_alloc.c:4389
+       might_alloc include/linux/sched/mm.h:316 [inline]
+       slab_pre_alloc_hook mm/slub.c:4636 [inline]
+       slab_alloc_node mm/slub.c:4974 [inline]
+       kmem_cache_alloc_noprof+0x63/0x6a0 mm/slub.c:5010
+       jffs2_do_read_inode+0x307/0x520 fs/jffs2/readinode.c:1372
+       jffs2_iget+0x32b/0xe30 fs/jffs2/fs.c:277
+       jffs2_do_fill_super+0x44b/0xa50 fs/jffs2/fs.c:578
+       jffs2_fill_super+0x283/0x370 fs/jffs2/super.c:290
+       mtd_get_sb+0x2f0/0x4c0 drivers/mtd/mtdsuper.c:57
+       mtd_get_sb_by_nr drivers/mtd/mtdsuper.c:88 [inline]
+       get_tree_mtd+0x6f9/0x8a0 drivers/mtd/mtdsuper.c:141
+       vfs_get_tree+0x92/0x320 fs/super.c:1947
+       fc_mount fs/namespace.c:1198 [inline]
+       do_new_mount_fc fs/namespace.c:3772 [inline]
+       do_new_mount fs/namespace.c:3848 [inline]
+       path_mount+0x7d0/0x24c0 fs/namespace.c:4168
+       do_mount fs/namespace.c:4181 [inline]
+       __do_sys_mount fs/namespace.c:4397 [inline]
+       __se_sys_mount fs/namespace.c:4374 [inline]
+       __ia32_sys_mount+0x292/0x310 fs/namespace.c:4374
+       do_syscall_32_irqs_on arch/x86/entry/syscall_32.c:79 [inline]
+       __do_fast_syscall_32+0x13a/0x8b0 arch/x86/entry/syscall_32.c:291
+       do_fast_syscall_32+0x32/0x70 arch/x86/entry/syscall_32.c:316
+       entry_SYSENTER_compat_after_hwframe+0x84/0x8e
 
-iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCap61iBIcbXdhbGxlQGtl
-cm5lbC5vcmcACgkQEic87j4CH/icDAF/VWHm4cvVi6eH69TujKUb5gNmCdX4yjPu
-yiP2Tou8p7PZd9X/jzhrqIfV0NcAs73vAX4yR4pFZ09gnQn+PF04tW9ejbu3Ytxe
-rKK0mE3hj2BhqFjwL4hmXUDfY7oWmgCUgvc=
-=u9Aa
------END PGP SIGNATURE-----
+-> #0 (&f->sem){+.+.}-{4:4}:
+       check_prev_add+0xeb/0xe60 kernel/locking/lockdep.c:3209
+       check_prevs_add kernel/locking/lockdep.c:3328 [inline]
+       validate_chain kernel/locking/lockdep.c:3952 [inline]
+       __lock_acquire+0x1528/0x1f40 kernel/locking/lockdep.c:5288
+       lock_acquire kernel/locking/lockdep.c:5942 [inline]
+       lock_acquire+0x1d1/0x380 kernel/locking/lockdep.c:5899
+       __mutex_lock_common kernel/locking/mutex.c:646 [inline]
+       __mutex_lock+0x1a4/0x1bd0 kernel/locking/mutex.c:821
+       jffs2_do_clear_inode+0x5a/0x470 fs/jffs2/readinode.c:1419
+       evict+0x3c2/0xad0 fs/inode.c:822
+       dispose_list+0x117/0x1e0 fs/inode.c:864
+       prune_icache_sb+0xea/0x150 fs/inode.c:1011
+       super_cache_scan+0x3ac/0x5c0 fs/super.c:240
+       do_shrink_slab+0x416/0x1200 mm/shrinker.c:443
+       shrink_slab_memcg mm/shrinker.c:560 [inline]
+       shrink_slab+0xa82/0x12e0 mm/shrinker.c:638
+       shrink_one+0x398/0x850 mm/vmscan.c:5119
+       shrink_many mm/vmscan.c:5180 [inline]
+       lru_gen_shrink_node mm/vmscan.c:5258 [inline]
+       shrink_node+0x2b20/0x4320 mm/vmscan.c:6247
+       kswapd_shrink_node mm/vmscan.c:7101 [inline]
+       balance_pgdat+0xb20/0x1f00 mm/vmscan.c:7279
+       kswapd+0x556/0xb50 mm/vmscan.c:7555
+       kthread+0x373/0x450 kernel/kthread.c:436
+       ret_from_fork+0x730/0xd60 arch/x86/kernel/process.c:158
+       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
 
---cfe8a98efb2086f550102e1210fdc67d01fd1cb7f4b563889cc6dc1396e2--
+other info that might help us debug this:
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(fs_reclaim);
+                               lock(&f->sem);
+                               lock(fs_reclaim);
+  lock(&f->sem);
+
+ *** DEADLOCK ***
+
+locks held by kswapd0/113: 2, last CPU#3:
+ #0: ffffffff8efc9860 (fs_reclaim){+.+.}-{0:0}, at: balance_pgdat+0xbce/0x1f00 mm/vmscan.c:7292
+ #1: ffff88806bdce0e8 (&type->s_umount_key#59){++++}-{4:4}, at: super_trylock_shared fs/super.c:688 [inline]
+ #1: ffff88806bdce0e8 (&type->s_umount_key#59){++++}-{4:4}, at: super_cache_scan+0x9b/0x5c0 fs/super.c:213
+
+stack backtrace:
+CPU: 3 UID: 0 PID: 113 Comm: kswapd0 Not tainted syzkaller #0 PREEMPT(full) 
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:94 [inline]
+ dump_stack_lvl+0x100/0x190 lib/dump_stack.c:120
+ print_circular_bug.cold+0x178/0x1be kernel/locking/lockdep.c:2087
+ check_noncircular+0x146/0x160 kernel/locking/lockdep.c:2219
+ check_prev_add+0xeb/0xe60 kernel/locking/lockdep.c:3209
+ check_prevs_add kernel/locking/lockdep.c:3328 [inline]
+ validate_chain kernel/locking/lockdep.c:3952 [inline]
+ __lock_acquire+0x1528/0x1f40 kernel/locking/lockdep.c:5288
+ lock_acquire kernel/locking/lockdep.c:5942 [inline]
+ lock_acquire+0x1d1/0x380 kernel/locking/lockdep.c:5899
+ __mutex_lock_common kernel/locking/mutex.c:646 [inline]
+ __mutex_lock+0x1a4/0x1bd0 kernel/locking/mutex.c:821
+ jffs2_do_clear_inode+0x5a/0x470 fs/jffs2/readinode.c:1419
+ evict+0x3c2/0xad0 fs/inode.c:822
+ dispose_list+0x117/0x1e0 fs/inode.c:864
+ prune_icache_sb+0xea/0x150 fs/inode.c:1011
+ super_cache_scan+0x3ac/0x5c0 fs/super.c:240
+ do_shrink_slab+0x416/0x1200 mm/shrinker.c:443
+ shrink_slab_memcg mm/shrinker.c:560 [inline]
+ shrink_slab+0xa82/0x12e0 mm/shrinker.c:638
+ shrink_one+0x398/0x850 mm/vmscan.c:5119
+ shrink_many mm/vmscan.c:5180 [inline]
+ lru_gen_shrink_node mm/vmscan.c:5258 [inline]
+ shrink_node+0x2b20/0x4320 mm/vmscan.c:6247
+ kswapd_shrink_node mm/vmscan.c:7101 [inline]
+ balance_pgdat+0xb20/0x1f00 mm/vmscan.c:7279
+ kswapd+0x556/0xb50 mm/vmscan.c:7555
+ kthread+0x373/0x450 kernel/kthread.c:436
+ ret_from_fork+0x730/0xd60 arch/x86/kernel/process.c:158
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+ </TASK>
 
 
---===============1355014916414523073==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============1355014916414523073==--
-
