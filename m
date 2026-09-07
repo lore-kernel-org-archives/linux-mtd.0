@@ -4,93 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12840C79F9E
-	for <linux-mtd@archiver.kernel.org>; Mon,  7 Sep 2026 05:34:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F7A3C79F89
+	for <linux-mtd@archiver.kernel.org>; Mon,  7 Sep 2026 06:31:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=9dF6D7uITXo/mIebSxbTiIA8GKsAPJPZLsVcBavFDIY=; b=a6osDFa70RQj77
-	RRKlk7iO3+P5w+jTDt6ugWogTsCrKyIt7SFsheswpXOb5FUtWAoCp0/+4SE5xNKMnUKKbqjXdGwc0
-	q6KW3hliXiOMwfr7E7bl3aCzE8rZXzoNnSg0qvFixXFbMnQ65XJh2beVjuWWaTRPlHuzraozB+i7i
-	6ucm/sCdVCIt2cxLWEJ1nifMtycZ9b7Zxo4V39e8JLGudK8t2NF3YHwlZLogTevsxn5rwvqUonPcA
-	gG9r07NAwCoBEgiwv1qhyRfb9COXnBegrzPRry19wFQ7pIeKQGkm0m0X0YuxZ0g63s3lMYK0nGs22
-	WCrK1iYXJZZyAR82lgeQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=IIEFbUoIiFYnuzj0+4uFyYlYBOSaDm1C3gaQUDDvZKg=; b=ksBHGuV07AhfmS
+	InWQrmZ+ZOtXwRVi4LU6yiV02LK8LG3XsxPeW9mt4rNeZKjzZD4wB1/Mt3hIL1ojtjNfUoz6NT9NO
+	AWQd8C8RkVLUxyApuJ/YMkzwMh2CVQyzy7OA1b2knh5QThia6Xhry6otogFjazvTBI5r94JEIeXWA
+	yoiC5rrXm1uINvoM1OV5VUABSp2Z5cYier+qUPEXfHpnQ+NY+wEgmtZ5083TMXPDqhx5+KqK0wvzY
+	/63ZGIOVAal3+8VljCiy5tWqqbq0zli/KK7FQv7GGcZQh6ZHF0sjZiugatFgjrh5qqEl1jNSFe4vh
+	Zznv4m5TEm+WO9Od1/ZA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x3S03-00000005wNT-2PSo;
-	Mon, 07 Sep 2026 05:34:35 +0000
-Received: from mail-wr1-x430.google.com ([2a00:1450:4864:20::430])
+	id 1x3Ssx-000000061Yg-2idd;
+	Mon, 07 Sep 2026 06:31:19 +0000
+Received: from mail-pj1-x102f.google.com ([2607:f8b0:4864:20::102f])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x3S00-00000005wMZ-23I1
+	id 1x3Ssv-000000061Xz-1n1e
 	for linux-mtd@lists.infradead.org;
-	Mon, 07 Sep 2026 05:34:33 +0000
-Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-47de0093c42so2855021f8f.3
-        for <linux-mtd@lists.infradead.org>; Sun, 06 Sep 2026 22:34:31 -0700 (PDT)
+	Mon, 07 Sep 2026 06:31:18 +0000
+Received: by mail-pj1-x102f.google.com with SMTP id 98e67ed59e1d1-38e58034d05so2519140a91.2
+        for <linux-mtd@lists.infradead.org>; Sun, 06 Sep 2026 23:31:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sigma-star.at; s=google; t=1788759270; x=1789364070; darn=lists.infradead.org;
-        h=content-transfer-encoding:content-type:in-reply-to:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=CJur2IfjilQLONY5G5zrL5mZc6JOIFn2Q5Eu4Xl5wj8=;
-        b=sDIJKYxuMv0fXyT0m2n9LylQuo/fzCZFcc/91g3VCLW7Es8Ztx6ww5LsJDzUytXEpn
-         7nCKKcKlEjmN8tF+0M2A/arwvJy6pMrJ9+HFLkttZ0OcifuIYH0d9Rn2bHxpp/Gf1AZE
-         KxG23ChPZQaNPzV7F50xXnD2Te/+F+568dVKqkNDQ4MH0ZbmweqP6bSD5TSh/z7fmrKP
-         o7Xqbd2ul+hXsDuon2mwACKYbW+oqahfq4HjYfuHi5AyldUshbUDMIpV3zWZ18km3Qpj
-         BSCa2CXTdYGoxwCJQNjFXHTgbnE2QAD2KxzT5Yfc/7IAncssfggJQ0rJu7CsGEhXQsOg
-         +VGQ==
+        d=gmail.com; s=20251104; t=1788762676; x=1789367476; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=Dq0SpKsLNqUdhZGKulcWkvLVKywODwI8oaC6/cTsqsk=;
+        b=F1NCdM//h2QjMxpo693EGBwSkB0fSHBSqdJHWdDv9ytWFuUwWUd585Di52ONIjYGTf
+         Yc2XAmGjj+FHlWrFUS5SdJC5UL5pTeiz3vlho0AhRI3/lVnyfXloKOLGbi2POhBfW03E
+         PhDMqSIs6LhR4tRj2pCsAolcnLxjeY2WLxNHed39pMEbvSaswy08dat+hZSZ9omCT7vE
+         nOabSjCjfgbhS8VrbVvZ40k+dXX1N+WIa8ctHI3HE3Cw/UKShlxJ3+FiWO5s7RMwB08O
+         aCckdtZFLSir6bNo5E7NKA8j0FUsuEaeqViBpqSiPnXeiFX9tpnXuQ+HHxhiH5VdqDGr
+         b4GA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1788759270; x=1789364070;
-        h=content-transfer-encoding:content-type:in-reply-to:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20251104; t=1788762676; x=1789367476;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=CJur2IfjilQLONY5G5zrL5mZc6JOIFn2Q5Eu4Xl5wj8=;
-        b=fE87sXgHfTbTkd9q4VNrZpb3gJT8C5OgCgXqGpUSZDVuQHtX2Hn0YLiw1BNi2KK0s8
-         Z7A5RyiqpR5nRBKh3LeSY3HCz4GAnrcF0Emnu0Knam+mhggZ7udOddYDcOOLt7d29hqa
-         ZJ/+IjuB5FU8PqMvo51sEgk1MzjObxKqOZhjQTzZduEXePABdvy2SpeWcJChyZ3w2Pin
-         1FrkWGqtHpafnM2QDZHGBOpvvi+Pg9mHcVRUejDDcyPeBECHe2SydtGGYcU2vFc67Lss
-         PBjC6+Y2ELVcaAb6WUzUKdBa2IVa8/kOyKTCBpez+CQB0t+iPnk0U8cc8wX6LSWRCSgj
-         fhdQ==
-X-Gm-Message-State: AFuF++kf+Ok+WZdhPRJHhOG/zvZLnrPYvTaLM+1kwaVX97H2jVK0usQv
-	2tiaPBbcEWq6m5zSFihbhfN2ISvDmdnavPCHIWp36rKFAAc8lkynxvwa46UE1hNKrB0=
-X-Gm-Gg: AYBFou2idoWsI+c+p5FVqxW6EphEDpvOFBJJRNLFl8Ztp3bCoJMobGy5nIOHHx7b+Eg
-	qBPARoBtT7KjUoJCqd7JpbakTU6XCWSP4CpoOhDFceL1kSvawXYIHuqq8e8FTTFEBnlzxd2FSnz
-	Vt08o+tlVlBPYUwWyhcZXx0nGXoV5R2YLbZZAwTmQBvyjabnlOfHCY8Ixnlo5m6xe9/vlL7vQKg
-	C1eJ+odqldPY0r4htbXJxHIzWy9iwS+b/V0tuY+2SomtN/jsrhvpxDStr/mcZLjk8H+gmNBAaD/
-	uCStp+mPDHuS0Xnz/ORJYc3tUQf0AhDBPB9k5S9Io/HAL5D05bD5pb34HaAwddMeB8A4z+wMLsB
-	xwU2uYR8voC7oyb2mdV5cWKg+wzMmhRCrOOgE3i7svMaUp/oqZYQouOKmYDiJUOHgfVb4Rvm/Rl
-	BMac3ZnLUszsokLR5lJr13d30owuzjNevQheAF+nA3LSoLIX0RxI94p2OizcxXudbsTrzqED+Tk
-	bRkXMZHi04=
-X-Received: by 2002:a05:6000:491a:b0:485:8c16:5efe with SMTP id ffacd0b85a97d-4858c16618emr16920019f8f.56.1788759270579;
-        Sun, 06 Sep 2026 22:34:30 -0700 (PDT)
-Received: from [10.115.255.165] ([82.150.214.1])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-485885be1c1sm25298650f8f.32.2026.09.06.22.34.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 06 Sep 2026 22:34:30 -0700 (PDT)
-Message-ID: <bdb23e20-348c-4223-9a1c-ae86af934dde@sigma-star.at>
-Date: Mon, 7 Sep 2026 07:34:29 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH mtd-www] doc/ubi.xml: clarify from the start that block
- device on UBI is read-only
+        bh=Dq0SpKsLNqUdhZGKulcWkvLVKywODwI8oaC6/cTsqsk=;
+        b=o+TWHUCk55W1hC2ZelWqZzbvImfv02KC5L0m6kusZvOFEVEDKy6ygdjmtbbg0Vji9T
+         u/3ER0wi6hb4BVewlt4cXFqsxKCiKRZFU3FruaUo7hICsXj1qKDaP8XM41xlNDSN7bnx
+         BW3g5pfDP9IsJHtRsfUAS7B0yymNXydo2oCjShDsvr12EmKRMyrNGhtp4HzkIAtYRRCU
+         wJuXicI08kDkfkL5LGsIyHzd6IW35m/EvrbxGClWs973QwmhKfzno15cUTcu4Mqr4W0F
+         JMtvjoGJZ461IAosGKjubkBNeCNP4NueFct1SnPz6beJHkfvoG1zne68m3JTt9PV1rCc
+         3Yjg==
+X-Gm-Message-State: AFuF++kNAiDGno8mjFLcvS20/jIe/R4Vg9YrHN/H8j5Xwfd0A4Zgf8aQ
+	MZmnHiTt0sS6bfAn3Bzwao3qMoz/Na5frVT1ysqSJTMT8A8KGNRLB7CO
+X-Gm-Gg: AYBFou0aQFhSStXbg7YlGT9Ly1bIiqSU8VxmjveEvb3DRIRd6Js3T4p0N9qTho4qbQe
+	7o9S7RYBKivmTqFfslyAympA3KdQdhBTio6jrvdpZq/okfk6bYfgTl5WmXDl1tjaJ4ojI4UH51Y
+	+TTdunX/EBHvYUs6EouCryxu7Am+dkFG53UDUxfTXDLC7Xac+yafgzowHzONoBmRztfLIzHpRe5
+	aM4aP/C549yJb9yw6V7Doke9EujMchAt/l2bPTPjUmwNqQtSxYRORuuSQ+4as1d4tbvCRymPtGp
+	Uh8dn6GLsnX6AsBTY9/ao/EnqA17j3L2tegli3Nbihac+Q0VWqO9vQ9stJb70o3yz13Rcyt9sSy
+	Iy9h/lLjDkPDunU4WnndD1CrX+4+deoj0b5ZVHIxTNgbTlSqXaD2j4h7cOVCIMcUfiVvy66jdMO
+	RJO4bWRGhy1grPBL1O3mvGmI7hwOiJSXcwJZ7OT27bcIjk6RjSNm2Qt+hQxRMwsAClJ6BOeTN/D
+	dftuo5N53gLj2XRG8r6YhiM
+X-Received: by 2002:a17:90b:2552:b0:398:e6b6:acc1 with SMTP id 98e67ed59e1d1-39b262728cdmr32640824a91.15.1788762676486;
+        Sun, 06 Sep 2026 23:31:16 -0700 (PDT)
+Received: from volcano9f6e-hostos.amd.com ([165.204.217.251])
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-3339885ca07sm28325245eec.1.2026.09.06.23.31.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 06 Sep 2026 23:31:16 -0700 (PDT)
+From: Hemanth Selam <hemanth.selam@gmail.com>
 To: Richard Weinberger <richard@nod.at>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Vignesh Raghavendra <vigneshr@ti.com>
-References: <20260723091728.1075673-1-thomas.petazzoni@bootlin.com>
- <669411046.7135.1784798864843.JavaMail.zimbra@nod.at>
-Content-Language: en-US
-From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-In-Reply-To: <669411046.7135.1784798864843.JavaMail.zimbra@nod.at>
+	Zhihao Cheng <chengzhihao1@huawei.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: ubi: fix typo "occured" in comment
+Date: Mon,  7 Sep 2026 12:01:11 +0530
+Message-ID: <20260907063111.19769-1-hemanth.selam@gmail.com>
+X-Mailer: git-send-email 2.48.1
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260906_223432_559902_796871D1 
-X-CRM114-Status: UNSURE (   4.72  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260906_233117_463761_E4220941 
+X-CRM114-Status: GOOD (  12.13  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,16 +94,37 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Applied to mtd-www.git master.
+Correct "occured" to "occurred", reported by scripts/checkpatch.pl using
+the misspelling list in scripts/spelling.txt.  Only touches comments, no
+code changes.
 
-Thanks,
+Assisted-by: Cursor:claude-opus-5
+Signed-off-by: Hemanth Selam <hemanth.selam@gmail.com>
+---
+ drivers/mtd/ubi/wl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-David
+diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+index 5a0db928a90e..44237de52250 100644
+--- a/drivers/mtd/ubi/wl.c
++++ b/drivers/mtd/ubi/wl.c
+@@ -1486,7 +1486,7 @@ static bool scrub_possible(struct ubi_device *ubi, struct ubi_wl_entry *e)
+  * @pnum: the physical eraseblock to schedule
+  * @force: don't read the block, assume bitflips happened and take action.
+  *
+- * This function reads the given eraseblock and checks if bitflips occured.
++ * This function reads the given eraseblock and checks if bitflips occurred.
+  * In case of bitflips, the eraseblock is scheduled for scrubbing.
+  * If scrubbing is forced with @force, the eraseblock is not read,
+  * but scheduled for scrubbing right away.
+-- 
+2.48.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
