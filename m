@@ -4,65 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69E30C79F9E
-	for <linux-mtd@archiver.kernel.org>; Mon,  7 Sep 2026 07:46:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1010C79F99
+	for <linux-mtd@archiver.kernel.org>; Mon,  7 Sep 2026 11:11:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
-	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4XHIHhQCbcGRRGCYflHBQoS5hF3mPLJdhvLe6T8DhoM=; b=QJIdaADqbeOh+b
-	7wQ2qMwN9lbrl30AijxZtth4NGfUMqKqlSpCsPak6INwHm4XmWFbGk0Wvcs+0lU3FcYD0cOD4zluG
-	OfWH2v3GlIu7U4H8eWSr+tG2tN97IizLjtqPoOJ0HJmnXONzH6gYPXJutxALoewZ6LLTixOGJDnON
-	HVs/VzkajromCm0wMrCOzdfuouRmACCDeeAu2gySwuv/uvtN6PXLhv5NHN0J7tYECW/W3lm93x2wi
-	5qHUn95BkgjrjkaWCiwB/FLOSBesNdDwtYNgdF7fOABkRrUPaZ9XUTH9gPU3z+stnAgTWQlQCFa2u
-	n1iB8jRa2h7s3n7kYmfw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Subject:Cc:To:From:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=xC2oswP9ATX9he6l3LyQHoM/7+UCBm3/xV4X2eweQ+Q=; b=R761Jkddec4awD
+	HPElO1/+CJYF3lqSM1oUsMxfWotUZ4/Nnr6Njtp7VJXZVVv/aU6C5H1t3oAn6DDx7RFyfx10Ioc+R
+	lsKATGrMHHrj24yeOv78mpoEPkKlh9uqQJoDwviQUBZwK5oYLNaqjFKJ5mOw9BM1etTZAKfoQmcvE
+	YTHYiuinYtw7ECW97tXC/BsaG6bA/PS3UtBqAVtgrmF5DrWYumQfxDeEAF2GzHdRg85hng+F7XXC3
+	JWBD41O0x7vvMX9zm+HCf87VpHKtMOfNpWJ+b8xUd91B7fH6SK2S+Pv8IrgJHRU26bxdit26fEY7Z
+	4fkDUw+D++3ZK0/2E1sw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x3U3u-00000006Bec-0LbM;
-	Mon, 07 Sep 2026 07:46:42 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1x3XFi-00000006bwx-0rht;
+	Mon, 07 Sep 2026 11:11:06 +0000
+Received: from out203-205-221-190.mail.qq.com ([203.205.221.190])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x3U3o-00000006BdT-3MYC;
-	Mon, 07 Sep 2026 07:46:39 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 0608760D8B;
-	Mon,  7 Sep 2026 07:46:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 919BA1F00A3D;
-	Mon,  7 Sep 2026 07:46:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1788767195;
-	bh=znofJdxAtEdOPXZO/tg6KzvuNnqq4TPuEDJXPclTxNM=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date;
-	b=HQpMUMwdPLv34W75NbtEM1pUYuB7OsuCRSD6oBYxinkIzHjGj/AdaUTK89imJJvn+
-	 UXRrz6kE9wMaMdq0t6jhN+2/AMVAUM78zXcmLxBuBtkVCtF+ARJ48kovQyEsQ8MBYd
-	 NQ2Rvq96073biWdJrUNct2UtH695+D0n4mpXfWZ8/wI4prwaxMibpERNcnqPIpeajW
-	 MX/MqVseEsBGXtCkJiDSL6kf/yi+CdjX4BCZ2kVhlWrNop05nPUm4Cc2u0Ijiccx9B
-	 pycSsaQ9fKICNHxj1W8NaW51PL/dh3Fqu094oa9TRu4tAYKAJFYbQLe5V3YcfBv3cc
-	 QtHHgcTdG6j+g==
-From: Michael Walle <mwalle@kernel.org>
-To: Pratyush Yadav <pratyush@kernel.org>, 
- Takahiro Kuwano <takahiro.kuwano@infineon.com>, 
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
- Nicolas Ferre <nicolas.ferre@microchip.com>, 
- Alexandre Belloni <alexandre.belloni@bootlin.com>, 
- Claudiu Beznea <claudiu.beznea@tuxon.dev>, Jonathan Corbet <corbet@lwn.net>, 
- Shuah Khan <skhan@linuxfoundation.org>, 
- Randy Dunlap <rdunlap@infradead.org>, 
- Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Steam Lin <STLin2@winbond.com>, Hsin-Yi Wang <hsinyi@chromium.org>, 
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-In-Reply-To: <20260904-winbond-v7-1-spi-nor-rv-addition-v5-0-2909a45fe4fa@bootlin.com>
-References: <20260904-winbond-v7-1-spi-nor-rv-addition-v5-0-2909a45fe4fa@bootlin.com>
-Subject: Re: [PATCH v5 00/25] mtd: spi-nor: QE handling cleanup + fixup
- reworks + Winbond RV chips addition
-Message-Id: <178876719232.3543902.14451625037676421254.b4-ty@b4>
-Date: Mon, 07 Sep 2026 09:46:32 +0200
+	id 1x3XFc-00000006bwY-1hwc
+	for linux-mtd@lists.infradead.org;
+	Mon, 07 Sep 2026 11:11:04 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1788779450; bh=fSVzpKS/YYyYMMxwPPQTSDGVAtpZRqUa8+PAUJd3p7k=;
+	h=From:To:Cc:Subject:Date;
+	b=a7r6C3dz4cgLak/OuBHA/VByXQnqogiWMonBSuaEpJkp8vdh6N7QhirVwnKm8wfA7
+	 qcH/jE3I0/HXxVADAxHl9Dxe6BS1ztK5cZ/CatebHeG56JVCAUU/fHriSW6DmMUsee
+	 7VKwH0PuELTFkk3lHC4IlXvTaWndfQfLbFA1UdF4=
+Received: from localhost.localdomain ([223.166.55.8])
+	by newxmesmtplogicsvrszb51-1.qq.com (NewEsmtp) with SMTP
+	id 2A9A9AD8; Mon, 07 Sep 2026 19:10:41 +0800
+X-QQ-mid: xmsmtpt1788779441tsoomyqxn
+Message-ID: <tencent_219EED44C45D6CEC1D6B6724343E13733005@qq.com>
+X-QQ-XMAILINFO: OVFdYp27KdlJA6P4cVAkZA6LcNH7n20/3XC+huFHXppZr3uXt/jzf5GJfzgxsS
+	 5Lypkzs9aujCfK+BAYwhnne7SByB8krRwAwgBTu67RPGojCJN4X3ZHzR+XL4Iv84mTWKOvJhDBBO
+	 PEAdX5DC6mgV6j/U66DM3v850TvI/pkbdrmElpwaYlaiYjAMaz+thlZx9ux/YTFIQm96L28XMxNm
+	 p0y+wTtOJJUyJajXhRdvNsiwObXIVvZOogeMvO+npgfhzI2rhVfMU0EuZZad9KWewax/O/EERI47
+	 8c4BhW1XGK6ZPr582H1Qr0beV0FrD+edPpXZMFtWKhOoR7KTf2RvNmOTRMDJRhS/qiAc6cPjb98W
+	 p0UX35Rfv7GEjRg8r92Q+iAFYbHvFoPg7Vvq4QQ+/xDg7AyXsRNDxDSD/nkCDhZ70ev9xDhATZ7S
+	 Oceuik5LFjpwoNBxQpWbFtPBnt2iMW0tdaowMVzTSsmvVy6vbZEkRoVvWgVKKZJJRoDtjbZXzblT
+	 yXRaoRtfPY8a3R1WkppdtOTBgKoCfJf84qGZ0ZmDLlHg2YFi35umOIUQ84+FOVI/0ydA62pMkKxD
+	 smlcnQEMCfQG5Yt2Us/rps0R9FmvyJuBEVMihLD0gZfJj8TeUTz0ZZEdoTULCpc/QTpju8sX/BYo
+	 cOrCFYgGs72FCSxipzVdFhs5ldkEr/AFQGJ89xpDbnlKDETPgVP9IJW0RD1UU3Tr94SPOt4iMpn6
+	 gJmeXL5KaMdVsqoPnif8QVJUsbMy664Ix/DdOipSL99v/G+hpd/MawS61gv4WIwg3gP2p5TmWCmb
+	 yNiJmD3ibU/OFaAp0k0pz4lvDIaxeKREIm8D9Boy/lknaLnSYW25T7KwdxjRp1JwtSp35LAduivE
+	 fVbi2QUJYTQtPMg/gdcvAVRqclyGeYQi9zdUugaVDOozG0C/1hmpAWNVXGV9UG3zOK3dnIUfw/ua
+	 4e+poXpssmuOSVGMlnItKL9dJk5UdIPmdWdScpQjdC7IRTWZ+5gMexnrgLpCw70OW0FX6P8Qg=
+X-QQ-XMRINFO: NS+P29fieYNwqS3WCnRCOn9D1NpZuCnCRA==
+From: fzz <1768315307@qq.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Richard Weinberger <richard@nod.at>,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	fzz <1768315307@qq.com>
+Subject: [PATCH] mtd: spinand: cache the last read page to avoid redundant SPI operations
+Date: Mon,  7 Sep 2026 19:10:40 +0800
+X-OQ-MSGID: <20260907111040.3305150-1-1768315307@qq.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Mailer: b4 0.16.0
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260907_041100_769871_0BFF91D7 
+X-CRM114-Status: GOOD (  17.62  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,78 +84,140 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+When squashfs reads files through mtdblock, the mtdblock layer
+splits I/O into 512-byte sectors. For a 4K-page SPI NAND, this
+means reading the same page 8 times (4096 / 512), generating 7x
+redundant SPI read-from-cache operations. Each such operation
+involves a full SPI bus transaction, significantly slowing down
+boot time and file access.
 
-On Fri, 04 Sep 2026 20:12:37 +0200, Miquel Raynal wrote:
-> Following my "software protection" enhancement series, there were
-> several comments about the need to simplify and reorganize the handling
-> of the QE bits, which is strongly impacted by the various read/write
-> status register capabilities.
-> 
-> The third patch is all about this. It is a massive cleanup, everything
-> is explained inside, the how and the why. This is a commit that must be
-> tested, so if you have a SPI NOR chip with one of the not yet tested
-> SFDP QER configuration, please consider applying that patch (just patch
-> 1 is enough) and boot. If your chip is recognized, it's probably all
-> good.
-> 
-> [...]
+Cache the last successfully read page in spinand_device to avoid
+these redundant operations. When the same {target, eraseblock,
+page} is requested consecutively, the data is served directly
+from the bounce buffer (databuf) via memcpy, skipping the SPI
+transaction entirely.
 
-Applied, thanks!
+The cache is invalidated on write and erase operations. RAW reads,
+OOB reads, and continuous reads are excluded from caching to
+maintain correctness.
 
-[01/25] mtd: spi-nor: Rename BFPT_DWORD15_QER_SR2_BIT1_BUGGY
-        commit: a885b694afb4acd914e4a9f94365d828432ca066
-[02/25] mtd: spi-nor: Create a structure containing the flash opcodes
-        commit: 01771ff25fec9d24663a0087723621e97e6d8484
-[03/25] mtd: spi-nor: Refactor Read Status/Write Status support
-        commit: 63489002d397ebf136548c79af68a8e05b30d45c
-[04/25] mtd: spi-nor: Add support for the new JESD216 rev F QER field
-        commit: 9f1feb4162387295b0d8de6c879f00357852609b
-[05/25] mtd: spi-nor: Create the concept of fixup table with match function
-        commit: af9bc9f9c5dcbc1a351ac00d9a4b86400bc442b8
-[06/25] mtd: spi-nor: Move the fixup flags into the fixup list
-        commit: e6dfda3c83eb8463bdf22289cfb42de9938446d0
-[07/25] mtd: spi-nor: Create an indirection on the part name
-        commit: 98b89d868a178d47277feede51314d8227d4cb56
-[08/25] mtd: spi-nor: Move the SFDP header structure to a C header
-        commit: aa0a09e0e99838ab9349b1958118c44e6db6737d
-[09/25] mtd: spi-nor: winbond: Prepare introduction of W25QxxRV-Q/N parts
-        commit: 7fdc105ff98d712e1e2f7e9f55e4ab2251e1344f
-[10/25] mtd: spi-nor: winbond: Add support for W25Q32RV-Q/N
-        commit: 7e896ca2fcf15066a6957120dfd9063820506cd2
-[11/25] mtd: spi-nor: winbond: Add support for W25Q64RV-Q/N
-        commit: 25949585ca2f31f39a5b116aee23ffa017281929
-[12/25] mtd: spi-nor: winbond: Add support for W25Q12RV-Q/N
-        commit: f84397a769c9aa45e9a6b6a6f1253c1f990c7c72
-[13/25] mtd: spi-nor: winbond: Add support for W25Q25RV-Q/N
-        commit: 7573a4edaae362fc0da3fc8996f1265a9dbace4c
-[14/25] mtd: spi-nor: winbond: Add support for W25Q51RV-Q/N
-        commit: 49c32f5b2c2ec8abfc97b8c0ea0c645568f65f8e
-[15/25] mtd: spi-nor: winbond: Add support for W25Q01RV-Q/N
-        commit: 4da2d59f3a6cc217399b7c106c36c2f3655106a7
-[16/25] mtd: spi-nor: winbond: Add support for W25Q02RV-Q/N
-        commit: 8d3298fd1d75011c2fa30e813cd280856ea86a2e
-[17/25] mtd: spi-nor: winbond: Prepare introduction of W25QxxRV-M parts
-        commit: 66d57b58c918a556d57bfab2d85ac1d33e21e1d9
-[18/25] mtd: spi-nor: winbond: Add support for W25Q32RV-M
-        commit: 650ee584cc52124a8ab51070d320d6752ea2f580
-[19/25] mtd: spi-nor: winbond: Add support for W25Q64RV-M
-        commit: 94460d091584f9032539a5c949e6e71fa812ad15
-[20/25] mtd: spi-nor: winbond: Add support for W25Q12RV-M
-        commit: 11484eb5458fd54b59f35c511819af9e4de27cd1
-[21/25] mtd: spi-nor: winbond: Add support for W25Q25RV-M
-        commit: 8eb8c80e59a3cde9fd7e4d730532668cb8ef7b0d
-[22/25] mtd: spi-nor: winbond: Add support for W25Q51RV-M
-        commit: 6397f5f8f8754218dd3a059d39eba6b57d04dc3d
-[23/25] mtd: spi-nor: winbond: Add support for W25Q01RV-M
-        commit: 677a0d6752eda1480eae3e187c5dfe7367f9d752
-[24/25] mtd: spi-nor: winbond: Add support for W25Q02RV-M
-        commit: 4094a2fd562453cac04e909688af6620fbd3203f
-[25/25] mtd: spi-nor: debugfs: Expose SR opcodes and QE mask
-        commit: 700bf34058ca7cd792236b1ba5caad3770d66208
+Signed-off-by: fzz <1768315307@qq.com>
+---
+ drivers/mtd/nand/spi/core.c | 36 +++++++++++++++++++++++++++++++++++-
+ include/linux/mtd/spinand.h |  9 +++++++++
+ 2 files changed, 44 insertions(+), 1 deletion(-)
 
-Best regards,
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index 8bf9301f25e7..fc082127bda8 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -557,7 +557,14 @@ static int spinand_read_from_cache_op(struct spinand_device *spinand,
+ 						    req->ooblen);
+ 		else
+ 			memcpy(req->oobbuf.in, spinand->oobbuf + req->ooboffs,
+-			       req->ooblen);
++				req->ooblen);
++	}
++
++	if (req->datalen && !req->continuous && !req->disable_ecc) {
++		spinand->cur_target_cache = req->pos.target;
++		spinand->cur_block_cache = req->pos.eraseblock;
++		spinand->cur_page_cache = req->pos.page;
++		spinand->cache_valid = true;
+ 	}
+ 
+ 	return 0;
+@@ -833,6 +840,20 @@ static int spinand_mtd_regular_page_read(struct mtd_info *mtd, loff_t from,
+ 		if (disable_ecc)
+ 			iter.req.mode = MTD_OPS_RAW;
+ 
++		if (spinand->cache_valid && !disable_ecc &&
++		    !iter.req.ooblen &&
++		    iter.req.pos.target == spinand->cur_target_cache &&
++		    iter.req.pos.eraseblock == spinand->cur_block_cache &&
++		    iter.req.pos.page == spinand->cur_page_cache) {
++			if (iter.req.datalen)
++				memcpy(iter.req.databuf.in,
++				       spinand->databuf + iter.req.dataoffs,
++				       iter.req.datalen);
++			ops->retlen += iter.req.datalen;
++			ops->oobretlen += iter.req.ooblen;
++			continue;
++		}
++
+ 		ret = spinand_select_target(spinand, iter.req.pos.target);
+ 		if (ret)
+ 			break;
+@@ -1064,6 +1085,12 @@ static int spinand_mtd_write(struct mtd_info *mtd, loff_t to,
+ 		if (ret)
+ 			break;
+ 
++		if (spinand->cache_valid &&
++		    iter.req.pos.target == spinand->cur_target_cache &&
++		    iter.req.pos.eraseblock == spinand->cur_block_cache &&
++		    iter.req.pos.page == spinand->cur_page_cache)
++			spinand->cache_valid = false;
++
+ 		ret = spinand_write_page(spinand, &iter.req);
+ 		if (ret)
+ 			break;
+@@ -1188,6 +1215,11 @@ static int spinand_erase(struct nand_device *nand, const struct nand_pos *pos)
+ 	if (!ret && (status & STATUS_ERASE_FAILED))
+ 		ret = -EIO;
+ 
++	if (!ret && spinand->cache_valid &&
++	    spinand->cur_target_cache == pos->target &&
++	    spinand->cur_block_cache == pos->eraseblock)
++		spinand->cache_valid = false;
++
+ 	return ret;
+ }
+ 
+@@ -2025,6 +2057,7 @@ static void spinand_cleanup(struct spinand_device *spinand)
+ 	nanddev_ecc_engine_cleanup(nand);
+ 	nanddev_cleanup(nand);
+ 	spinand_manufacturer_cleanup(spinand);
++	spinand->cache_valid = false;
+ 	kfree(spinand->databuf);
+ 	kfree(spinand->scratchbuf);
+ }
+@@ -2044,6 +2077,7 @@ static int spinand_probe(struct spi_mem *mem)
+ 	spi_mem_set_drvdata(mem, spinand);
+ 	spinand_set_of_node(spinand, mem->spi->dev.of_node);
+ 	mutex_init(&spinand->lock);
++	spinand->cache_valid = false;
+ 	mtd = spinand_to_mtd(spinand);
+ 	mtd->dev.parent = &mem->spi->dev;
+ 
+diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+index 5f4c00ae72a7..887ef6d34a41 100644
+--- a/include/linux/mtd/spinand.h
++++ b/include/linux/mtd/spinand.h
+@@ -757,6 +757,10 @@ struct spinand_mem_ops {
+  *		   a command addressing a page or an eraseblock embedded in
+  *		   this die. Only required if your chip exposes several dies
+  * @cur_target: currently selected target/die
++ * @cur_target_cache: target of the cached page
++ * @cur_block_cache: eraseblock of the cached page
++ * @cur_page_cache: page number of the cached page
++ * @cache_valid: whether the cached page is valid
+  * @eccinfo: on-die ECC information
+  * @cfg_cache: config register cache. One entry per die
+  * @databuf: bounce buffer for data
+@@ -798,6 +802,11 @@ struct spinand_device {
+ 			     unsigned int target);
+ 	unsigned int cur_target;
+ 
++	unsigned int cur_target_cache;
++	unsigned int cur_block_cache;
++	unsigned int cur_page_cache;
++	bool cache_valid;
++
+ 	struct spinand_ecc_info eccinfo;
+ 
+ 	u8 *cfg_cache;
 -- 
-Michael Walle <mwalle@kernel.org>
+2.25.1
 
 
 ______________________________________________________
