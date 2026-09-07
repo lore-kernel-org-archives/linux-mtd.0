@@ -4,85 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2DB33C79F9E
-	for <linux-mtd@archiver.kernel.org>; Mon,  7 Sep 2026 00:43:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02D72C79F8C
+	for <linux-mtd@archiver.kernel.org>; Mon,  7 Sep 2026 00:48:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=SY7SdlKdx3Jlr1Dq1wIbZ/hQB6CCwoiH5x7wKZGLxjw=; b=DXFoPsFrQF2Wm+
-	QASblYuYBYfBzLG/q+9nxqpMoPIO/y9Stv0lGtEaQpGMDdEDspYtH6cYHQP6nmjymP7+2Co0WZ2FU
-	Naqe+1/MnOBDFoDEP5rYttZClxZi/pOs3yAAplrYCoiAcmt8P+LZjQp4hGqHipwgiL5ST601pg/Rk
-	RC4v5YxxE6vXBhOEQIvWjeBSMj8zu5kLr9yE09F7unsVDoyike1kCQ+pXplXFwF2l+pXBMO9yfIh7
-	hA7kygtx+YMEcm1YkbkSvVorrESv+QEx0JCKSatoF7S3637Qadx5dqZsKICUlTvJLUSAvogZXRp8K
-	qZ0hZZxNIGfgDPmFtWNA==;
+	List-Owner; bh=1ooiMiMQ1NDhQeWVvtv2vEM1jMnYotlWvPS4J7fFHsQ=; b=NgkB4I5PxCJuSt
+	pwSiYLMR8lW0RNJ3v9ol5uI5Xbp52+P9+M6D8yUPA9A77VW/PMPhb+YyASZjQ0QHu6wKENsfmJLDG
+	hsQdVtcT7O21xnvdiJZbFyp70M1IGpEBS7JlGectwmH5C6efO2P+/eR91UHNxDJnStJWrj3Hi+6aX
+	8ZnUHVXp7ilW4ZXDyXWeqHViAMPU/No4nksQxWIln9/GTX0gsz0cLFk49TV9WAPFTWTs9I+r82e8t
+	njwvYhMnS+/+5dYCoObrKv5vlbAn1o3lV8uUfFjkLPSn8+BtIvBwToHKMb+Bja/yslXdyiIk79SQy
+	WrHEikvhIN265ITtfDOA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x3NSZ-00000005eQH-1lLK;
-	Mon, 07 Sep 2026 00:43:43 +0000
-Received: from mail-pj1-x102b.google.com ([2607:f8b0:4864:20::102b])
+	id 1x3NX9-00000005eWo-3qoh;
+	Mon, 07 Sep 2026 00:48:27 +0000
+Received: from mail-pg1-x52e.google.com ([2607:f8b0:4864:20::52e])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x3NSU-00000005ePv-3JNS
+	id 1x3NX6-00000005eWM-2WOd
 	for linux-mtd@lists.infradead.org;
-	Mon, 07 Sep 2026 00:43:40 +0000
-Received: by mail-pj1-x102b.google.com with SMTP id 98e67ed59e1d1-38dfe910e9dso3235837a91.3
-        for <linux-mtd@lists.infradead.org>; Sun, 06 Sep 2026 17:43:37 -0700 (PDT)
+	Mon, 07 Sep 2026 00:48:26 +0000
+Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-cc328b43a56so2417535a12.2
+        for <linux-mtd@lists.infradead.org>; Sun, 06 Sep 2026 17:48:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1788741817; x=1789346617; darn=lists.infradead.org;
+        d=gmail.com; s=20251104; t=1788742104; x=1789346904; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=x0x88oH7CrnZpFAXii2e1khx4b7zho7HKvH8FBEonEo=;
-        b=J7xXNc5KjegKxugdcLOqR2Y5Tuf104CXfvl7dmIO02NYeJ2XEAogyBLKST6ze4mqS9
-         Jgwjrmpl86xVf6HNqepHnoniq7eiw3GOQwUUhIL2wI30z8mPZewSEsQCSvov2E726VCR
-         4Cmo/1LQ3lW5/MIpcx+NdtlMaFbedAVB2kVnSV/PkOfNlYJ+Q7XNSRc8gca8ofFukeno
-         ameqOVPhTUobcUPNR9920NphaUO/RPGWUnMf80bR+s5sDuByBy4Tsa++rdh7lq87DxoD
-         +5omJVMWQ268tNkp8zTxoiNS2GlMy9MZQR4nK1qWz2jeYhk3PCfT0/yPQ6Am8qgfPpsC
-         9aqg==
+        bh=EjzyVrQd4HnZ/HqhVkU3Ug/THJKIvvL7NvTJ9zdzp98=;
+        b=qSzhNaNgo203vRhmU/8SXLPG/0MTHEpcH8ltacE6+dn/zt/MRkWyI4fh7xOMyAZRt3
+         M50AEIhgGCNtFSJOWeU33R+fPmUNUUcKjcexj4WuT1FVi981iS/ewUproTyUHwcTKOfc
+         deMOy0MInVVSwpKDFbU4jLZLVEwpGn3VLP16LO+VCntJ/cat4ke2BQ5Wi/Yh1ulzu1VS
+         Hr+pkowzaO7oBVAtWV9oxEd8AUERHKEvq85uvgAuf0AH20trNldckUwpyuKM9w7Qr5P7
+         8KL6PlGZo+hrNmJ1RBKwinfe8rYzXXMKGokIq7ruCBuAAfLf+z07uPIMv9mkHJV82JQH
+         ROpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1788741817; x=1789346617;
+        d=1e100.net; s=20251104; t=1788742104; x=1789346904;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=x0x88oH7CrnZpFAXii2e1khx4b7zho7HKvH8FBEonEo=;
-        b=Mx6TPm8JndnQZhRlXkTsvklLsB508onLP7l5Z0r10nyafePEGhF6lAo0ucTLMyM+bu
-         WnNF7ukSUziteRWTk5wNEtle0cZYFlMTGYgPxx5yfo5j8d6eonEfimi0FgzbEKra8Odt
-         KJQt63RO6/BVeXWRjDmmIwyuPou8+xBcOlpQeedKB8xkOPaoTevHP7AbCf1OA3IZRBQD
-         mFXuBffIHKtDUkkCjpXmwv3XYF4ijD64espVzU+XaonDk79xa1N1spToMJZi4VGVdAHi
-         TUeCMXZGDaqsOXw/ey6hI+PowwxDxKdls4gOHRlDVVKOmUlit3vmp5VG0+udmLNVNRye
-         h+HQ==
-X-Gm-Message-State: AFuF++keveXNr6a0Q3mn2V6qkrjKRsgfIFkyYaUcf7d0/Q7fCvN1Uufd
-	M9jvAicVqPmiaID7waRbNdhwS2RvLtnaU2oSKkpmQcA0WOGgH1Ve1hBpGWg0Pg==
-X-Gm-Gg: AYBFou3RsLjHzvBUnf7+a0bs2gveaAPcO2p6QED4wIiX2cm8wFDHAOq/8mpTymDCZ0W
-	49waNTs4bJk0Co6Kubqu88W562LMPgjB4WsjUZEwKOkcYGi3BPzqFUq/ertXbC0K1yhHHn3nnXC
-	GzRQTvItoJV6VzJq8ChRz+xNP79rX/jqfiStKXJOBO7O6DO7eYg76JvXeC0H7GqebLp7h1mnR0E
-	ShgMjPXidtWEL4FQCXsL4WoC8gBZDLWtPDjmJu507OSU7z3CDUnoiglMFFsUdE2asJcFsviKvia
-	QWM9bpo88fL+RUkcUTwiNhYVU0aBGRwuzDT9YahUPIDH4wm4ysyVAmeLkaUQKW/OITxo+E3XHgK
-	6TcwNL7EC/j3QGQmuYtvbCPBczYR/FozqC0C7JCZFeqLSfRQKziiXSf0jAAx1VwDRY6GcUG4uCR
-	JULB/KC+kt0ELrt3NPCUkpzMzei0QwAq4fGWnY2wgJuC/tlcCy3fFgEhjKiia92D0BewHm8cQYa
-	z99dKAU5ByQa6IT9o87wpj9jrEiS9E2mosOE2fIEQdeDyLaN6HoyQdQ0Ml3N23TGwnuyPpOnhVq
-	ONj81KFLsS2Zk1GCWlH3C8dziTAHTT70l/5ntA==
-X-Received: by 2002:a17:90b:390f:b0:398:de23:9af6 with SMTP id 98e67ed59e1d1-39b261b216dmr29493077a91.15.1788741817065;
-        Sun, 06 Sep 2026 17:43:37 -0700 (PDT)
+        bh=EjzyVrQd4HnZ/HqhVkU3Ug/THJKIvvL7NvTJ9zdzp98=;
+        b=pPNrm9Fo8lGy+iIiMhyfFWPjKmLAFBSCmWRAjAFnWhhWZR5dag+XoUPEssoAdx3DCe
+         3JQPiZhn9mvfZebrbVW3MGR7eQS5UkdIHUhihzC958AGqWNSLOpCdpY1o9ysZVuSLgc2
+         zbOV8IGCJUFCop3EQFjVeQY9jb5zwEY3NFqvTyBIidSL12dc3o52nLwTBA6HZgqTul9v
+         kfD06gZ+OKD/1DXYbIM63OCmdNZsTy5fqdv7riGGeLSNePtmkG4Hmd4WCly4+meX8jSG
+         hQWI2Ymqu62+53vIZUTNhxvpEOwbQtB6eYaKHJFktas2te7QDrWxDO2/zyXBvX12hC+e
+         PoDA==
+X-Gm-Message-State: AFuF++kJsh+56LpSuS/tGTsbNMgLgmZRjmMX8JtlH0Yn8xI5aGLdeoLr
+	m3d0UF1le2MUhld9PXB2APzCcqKQJkBBQTLQq8Wg9M0Lp51y1sBv1tnOPOqVqw==
+X-Gm-Gg: AYBFou1wBShWWwHT4nIz0Hs6vh0xOuUbj1qPwkdxa8xKLmOeDI4Cu/t92s+NqSYPBQu
+	lLIGr2utYmDYcx4Y91zaN5dUQ8pTBkcbZ2NfK7DFSDGGqObp96htHdD/Z0V9TsJAS7cahN9kbgk
+	N5Rm7eVfGkJCm5wHO1mRtqCv8VoiP5mSX9cvaWsxWklVLgym48d73lUQi97RR1nb10T4TNRMAn5
+	ouXTLYuVCrHkDeua+kKiMXeM8IDZ5xb/U3FrKbpJCM6n7YAE2lW3wjcaDg2BusxhxTYO72xZerh
+	0xChojXc4w3Cgwoqr8PPD55o0IfaxbCI16oMlYJ5Aqpk54bfNKMpsFYN952mEV5O9gSQwIw8+Bw
+	HdGV0G2B9jkKa/ZkYkAo5g74wFDN7l3MXGo/56Ktc0vLlq4I3TNguwGxAG1s9r0C6tZeiRZWU71
+	+sCA9Ph/Jx8EeWQXzVzsxe7uV+qVHFEdSy83JMmOGhOgIBS+ARWdCvOA+/sb62jo6OyCz2kheHM
+	lozyJlU36fyDBnGMQln/+ewQXd+ElttafhhjsH+RYN51fjwgN4hpAUbZQy8kmWkCl5J3sfNkoiB
+	G0yytYPrGVepubvPyVhq2N437X0k7qPKn4NH7g==
+X-Received: by 2002:a17:90b:4c03:b0:398:cb56:e92 with SMTP id 98e67ed59e1d1-39b26130698mr27921852a91.11.1788742103701;
+        Sun, 06 Sep 2026 17:48:23 -0700 (PDT)
 Received: from ryzen.lan ([2601:644:8000:7a86::e35])
-        by smtp.gmail.com with ESMTPSA id a92af1059eb24-14324356931sm33187839c88.4.2026.09.06.17.43.35
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-1432435ec2bsm20043166c88.3.2026.09.06.17.48.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Sep 2026 17:43:36 -0700 (PDT)
+        Sun, 06 Sep 2026 17:48:23 -0700 (PDT)
 From: Rosen Penev <rosenp@gmail.com>
 To: linux-mtd@lists.infradead.org
 Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
+	linuxppc-dev@lists.ozlabs.org (open list:LINUX FOR POWERPC (32-BIT AND 64-BIT)),
 	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] mtd: rawnand: fsl_ifc: use devm_platform_get_and_ioremap_resource
-Date: Sun,  6 Sep 2026 17:43:34 -0700
-Message-ID: <20260907004334.221683-1-rosenp@gmail.com>
+Subject: [PATCH] mtd: powernv_flash: fix kernel-doc for powernv_flash_release
+Date: Sun,  6 Sep 2026 17:48:21 -0700
+Message-ID: <20260907004821.225576-1-rosenp@gmail.com>
 X-Mailer: git-send-email 2.55.0
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260906_174338_865332_24181A3F 
-X-CRM114-Status: GOOD (  14.67  )
+X-CRM114-CacheID: sfid-20260906_174825_076812_D140EBBA 
+X-CRM114-Status: GOOD (  11.55  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,99 +104,32 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Replace the manual of_address_to_resource(), ioremap(), and iounmap()
-in the probe/remove paths with devm_platform_get_and_ioremap_resource()
-so the resource is managed and released automatically on probe failure
-and driver removal.
+The function is powernv_flash_release, not op_release. Update the
+kernel-doc comment to match.
 
-Assisted-by: opencode:big-pickle
+Fixes W=1 warning:
+
+Warning: drivers/mtd/devices/powernv_flash.c:271 expecting prototype for op_release(). Prototype was for powernv_flash_release() instead
+
+Assisted-by: Opencode:BigPickle
 Signed-off-by: Rosen Penev <rosenp@gmail.com>
 ---
- drivers/mtd/nand/raw/fsl_ifc_nand.c | 29 +++++++++--------------------
- 1 file changed, 9 insertions(+), 20 deletions(-)
+ drivers/mtd/devices/powernv_flash.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/raw/fsl_ifc_nand.c b/drivers/mtd/nand/raw/fsl_ifc_nand.c
-index b34524726dec..74db19e1d54f 100644
---- a/drivers/mtd/nand/raw/fsl_ifc_nand.c
-+++ b/drivers/mtd/nand/raw/fsl_ifc_nand.c
-@@ -969,9 +969,6 @@ static int fsl_ifc_chip_remove(struct fsl_ifc_mtd *priv)
+diff --git a/drivers/mtd/devices/powernv_flash.c b/drivers/mtd/devices/powernv_flash.c
+index a12427d9e20f..fe1d6684d0bd 100644
+--- a/drivers/mtd/devices/powernv_flash.c
++++ b/drivers/mtd/devices/powernv_flash.c
+@@ -263,7 +263,7 @@ static int powernv_flash_probe(struct platform_device *pdev)
+ }
  
- 	kfree(mtd->name);
- 
--	if (priv->vbase)
--		iounmap(priv->vbase);
--
- 	ifc_nand_ctrl->chips[priv->bank] = NULL;
- 
- 	return 0;
-@@ -996,12 +993,12 @@ static int fsl_ifc_nand_probe(struct platform_device *dev)
- 	struct fsl_ifc_ctrl *ctrl;
- 	struct fsl_ifc_runtime __iomem *ifc;
- 	struct fsl_ifc_mtd *priv;
--	struct resource res;
-+	struct resource *res;
-+	void __iomem *vbase;
- 	static const char *part_probe_types[]
- 		= { "cmdlinepart", "RedBoot", "ofpart", NULL };
- 	int ret;
- 	int bank;
--	struct device_node *node = dev->dev.of_node;
- 	struct mtd_info *mtd;
- 
- 	ctrl = dev_get_drvdata(dev->dev.parent);
-@@ -1010,15 +1007,13 @@ static int fsl_ifc_nand_probe(struct platform_device *dev)
- 	ifc = ctrl->rregs;
- 
- 	/* get, allocate and map the memory resource */
--	ret = of_address_to_resource(node, 0, &res);
--	if (ret) {
--		dev_err(&dev->dev, "%s: failed to get resource\n", __func__);
--		return ret;
--	}
-+	vbase = devm_platform_get_and_ioremap_resource(dev, 0, &res);
-+	if (IS_ERR(vbase))
-+		return PTR_ERR(vbase);
- 
- 	/* find which chip select it is connected to */
- 	for (bank = 0; bank < ctrl->banks; bank++) {
--		if (match_bank(ctrl, bank, res.start))
-+		if (match_bank(ctrl, bank, res->start))
- 			break;
- 	}
- 
-@@ -1055,13 +1050,7 @@ static int fsl_ifc_nand_probe(struct platform_device *dev)
- 	priv->bank = bank;
- 	priv->ctrl = ctrl;
- 	priv->dev = &dev->dev;
--
--	priv->vbase = ioremap(res.start, resource_size(&res));
--	if (!priv->vbase) {
--		dev_err(priv->dev, "%s: failed to map chip region\n", __func__);
--		ret = -ENOMEM;
--		goto err;
--	}
-+	priv->vbase = vbase;
- 
- 	dev_set_drvdata(priv->dev, priv);
- 
-@@ -1077,7 +1066,7 @@ static int fsl_ifc_nand_probe(struct platform_device *dev)
- 		  &ifc->ifc_nand.nand_evter_intr_en);
- 
- 	mtd = nand_to_mtd(&priv->chip);
--	mtd->name = kasprintf(GFP_KERNEL, "%llx.flash", (u64)res.start);
-+	mtd->name = kasprintf(GFP_KERNEL, "%llx.flash", (u64)res->start);
- 	if (!mtd->name) {
- 		ret = -ENOMEM;
- 		goto err;
-@@ -1099,7 +1088,7 @@ static int fsl_ifc_nand_probe(struct platform_device *dev)
- 		goto cleanup_nand;
- 
- 	dev_info(priv->dev, "IFC NAND device at 0x%llx, bank %d\n",
--		 (unsigned long long)res.start, priv->bank);
-+		 (unsigned long long)res->start, priv->bank);
- 
- 	return 0;
- 
+ /**
+- * op_release - Release the driver
++ * powernv_flash_release - Release the driver
+  * @pdev: the platform device
+  *
+  * Returns 0
 -- 
 2.55.0
 
