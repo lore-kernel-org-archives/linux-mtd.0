@@ -4,91 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF3D9C79F8C
-	for <linux-mtd@archiver.kernel.org>; Mon,  7 Sep 2026 00:49:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 968BFC79F8C
+	for <linux-mtd@archiver.kernel.org>; Mon,  7 Sep 2026 00:56:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=Z4AJW0PfPmset+rvUa7HjxvjeW6w8xNT6/OeV6ISIAg=; b=1vhjjP6E4NGXg7
-	gFAbmR/PCEQEog/EliW5UNd4n+aByMWab4Xw6OQGwR6ficChRmmz+i1jb0NzkQp0+muTOz+xIQyik
-	DPo0I0nRMInEAXBgOp8cBxaXwTtqT5u/Shil+QiIZAsqcqZw/R/b0A7kxZg+LTeOXSh4Qta+Xmy7e
-	vBvKGdm/qFSi2b5AeheYdIZ01D0r7q7rNhME9Uo80yFzJGDu8Ajn7kBk0/SkoaYf/JFYDlS3cKYu1
-	ZY0guDrMRGYxDUzLGoHvUy1GQUp+3aq91h5R0mhc/VzgaiGVCcgTwFz8/JqwL+FKqQWNEc0THEODU
-	EH9dRH2HObSsMOTh4//w==;
+	List-Owner; bh=5xbjW77i07pvOMgksg1Ty/7JIMsW0nxuab4FLAGIwNg=; b=vlrYtTdfx1NyFn
+	LqdKk7iI7AFfmrSyGFmo/pgBKmB4vfulSxMrtCZ6HIfE4nAnK9f0rikZbq7hxzBUUsU6aPoQnmNLi
+	cKFzDCLWTc6t22HZdS1lFlcY3sRsFLo+xHtiIl6GJdgAAdSvNk1oGQiU0n/X1AgwziR/RQN6pbq52
+	36wjR5DXxCYJ10UhiYUuE7PHa0xWNAZfCV0JMTAeNKmIq2UtkJjPPv19F0qU5r/GzlJzR629wgLpV
+	yjisNMEqtyX7HwDJErKd+TSjHjPDCaqStkPw52z0ws72uz6WEMpsOIg/+1NMOSPOHhWw1EzC65Evj
+	Dy2B3qeUOlKtglEbD3Bg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x3NXw-00000005eaf-0UNy;
-	Mon, 07 Sep 2026 00:49:16 +0000
-Received: from mail-pg1-x52e.google.com ([2607:f8b0:4864:20::52e])
+	id 1x3NeW-00000005ejt-3UPH;
+	Mon, 07 Sep 2026 00:56:04 +0000
+Received: from mail-pj1-x1032.google.com ([2607:f8b0:4864:20::1032])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x3NXt-00000005eaJ-0ml3
+	id 1x3NeT-00000005ejX-1Ufh
 	for linux-mtd@lists.infradead.org;
-	Mon, 07 Sep 2026 00:49:14 +0000
-Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-c9b373d5af0so2307138a12.2
-        for <linux-mtd@lists.infradead.org>; Sun, 06 Sep 2026 17:49:12 -0700 (PDT)
+	Mon, 07 Sep 2026 00:56:04 +0000
+Received: by mail-pj1-x1032.google.com with SMTP id 98e67ed59e1d1-3966791a6eeso3562414a91.3
+        for <linux-mtd@lists.infradead.org>; Sun, 06 Sep 2026 17:56:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1788742152; x=1789346952; darn=lists.infradead.org;
+        d=gmail.com; s=20251104; t=1788742560; x=1789347360; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=K2XV7N8oiIfPwNA3+WEAPB+6Qv6pN5TtTgVk3F9R8Ps=;
-        b=OWYQq/4YvtPlIZhOU95HUP/oaCVWON0+s7skjPOLDYn28MsXDx+lE68ExjTYB8BF4N
-         Nev6gA9yEo5aNv8wIHvyX6mDtxfxqJqGUn+EO1vwAasB4+Ep5AMRVE8loCCW7kEt5nVt
-         7VTKLLsxTyiuCic6VvJ7J8FmzZcWidUxnVTWyhEJf1C7ztSFUXQ7WFgdZ1RV7FwE7/L+
-         fEeny6VjJiFXCaH+oqkXSCM/TKR4FZ9sYlY5O/fwk3cdyxt0xLlDlOnKQ8sJuQBWQUl6
-         JmxpVATBiSLGTvAhyxOxjTRtoRRbXRbJ5HGVusgwT7+guCpY2ZScxCP7L5/bX+RBAnVQ
-         tYxg==
+        bh=sELXrw22H/IsIeG/7YwT9q2MiplIi3+BT1tFOGBMF6I=;
+        b=Ib+OOjp5W9dJO3FoImngq6dz5njhqu7haezfTOlpyeCarj1UwzfOFouoC6Ls+ZcSiT
+         m2T3dotVDAGcDTO0X84AovBFk5d/Qusqo4IHTagBbM510SVnuLcuFeolRByy6YZlYVzB
+         7G1rIycx74o83L9HxRZ1CrTHfU3c5ZO/SzJW+NELNJqKuK4srR4yxI7K4ObLk5Oa4A3E
+         057aPguWp/ziuQlHxOycThEkWZlYbat3ynV5k8wsixK60USTvay4WMMDI4gDw48+2req
+         yuOSaWA8xxk8mxC3sblAosdSdZ9WHQkp9bOB9fLSa6//xAxiVLIVlgdp8O+AM2ClksJU
+         zcYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1788742152; x=1789346952;
+        d=1e100.net; s=20251104; t=1788742560; x=1789347360;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=K2XV7N8oiIfPwNA3+WEAPB+6Qv6pN5TtTgVk3F9R8Ps=;
-        b=UcRNE23aCAS403i7pZvyHAVR2wg6fuWtF5OImT5QriyuFc+pkojWKuDHZhzpkO0sBx
-         H0fvgVHq8cDUAkIyQTjBJfw6n+hCTv6kvUpja7fe4Lcn5vE0IW1SBxxKOHHBlgTTJzMM
-         FR1ORcKaMaIRhQzfJfejeCuVKXkH22ghgZp3sPEBSKX1+rkGuLydanLmoGDVGBW+rIZz
-         Pxs4SZEb5iKH/VMZcHSm/ZmEXn/oC4+xgubxn4YYKZ9ijC5y6GxuoUSuMWFBqMcC5vnF
-         2MYjm1Meu6Iptc9RqAbVCt4H24QrbURtzcMZNEKzSOv5iy7LQigW+22LG1P5xgU39yht
-         c3yw==
-X-Gm-Message-State: AFuF++lUZ1dFSTKY4yY7pdaM6QJd7nG8qJYbv4HbRTL/R+Mwjn5IypIj
-	dbbLZD2M9ynNsKwyOOqSQzWNbxAptLJx4PCRZLGU+6jb7E41haPhCYAhVjZgRQ==
-X-Gm-Gg: AYBFou1RwGHUnkLP/LRuvp3nzJ8oRq/spSw9RP35QqRDLYoEreZ2aYNxyxfuPxaMFBM
-	aal/Mg43mM4SCszqQLzzU8HCLSBNyU52vwPmiJn+mgn8QjoFZhU9Vm3Mj4rBNrwt6vbfKhcw9rn
-	23it+IJMkQGJjwKQdK9pxufjOs255tYeBBYblm0LLAKiiJxTeVzMPZHf6UCDRRgLunAwxr2dqQD
-	HZVqdQ0eOGssUpY4dpvVaDlusdxFY7k8cTDa6X6EbHJwM69oVAh32cdA+S1vtAvnr7WgIYN1E9z
-	11r3z/GVUT6mgZNrnpfNH2GWh0KAzPKTMlqDqGLwUOfdC6dt0czzInMaR19k1OMaYrmg7VYPIHO
-	518xRh4Y0tVrAjZ+Cy8snXg/hPVkufyFeEGQZB2dDMZjMS1wdI75v34VqvRyrSxNsMrvYWNY1cd
-	9MsQIw1qWklFvOAYudRF/HQGvX9UIywmaQnErWq7Qr0VaCc666P2wA0x7I+4mfbBm/5cCkYktMV
-	/IlwqImT1EjcH40PLXezLOAV1bTQud2Pr23db8OJAdpVxAQlDSrQCG20/2O2x1Tq6iAdWDD+fmo
-	mYUwhjZchuiazGIYxQdUzhViztSJPury5i3Q/ac=
-X-Received: by 2002:a05:6a21:138c:b0:3d3:afd9:6040 with SMTP id adf61e73a8af0-3da3a1f77f2mr31242218637.27.1788742152360;
-        Sun, 06 Sep 2026 17:49:12 -0700 (PDT)
+        bh=sELXrw22H/IsIeG/7YwT9q2MiplIi3+BT1tFOGBMF6I=;
+        b=gsHFUzC/555OGLxJZJpqyIygufwn/gzjN6ZwPrfFGWBXqo+BLgB6vj94t6hg0r8ySB
+         8NC8Zuu1CEP9VZZSq/K2YDz7iEaME/BqK82sb8d90Hf91C865PYmWUHpb+2KwpZiJq7z
+         BHFUNb1sN02QZn0Y5ArRIp79YM+Fh+cY4+4K2aW13qYLb7rlSKwt3NGgdTJmf7RYrFJt
+         j7buNlbSC4k1kw8nxft3mCpCscjDOc9aV4GchZdkPZhn6t8O1xLmvtR8t/0cOaT7GI2A
+         unEUAN3EUWhZmh9OgfCsEvGUQ/293DBkAjjSjtLhTM2B9TVTwU+TGk1NvnK1/QXlfc8c
+         c7EQ==
+X-Gm-Message-State: AFuF++l/T4o9vI7GMTKFC4Mz5X+dMrUFWeYx9S5ofbecGBLhpkotKdsE
+	XdHqzhW47NqVxrqtGSz0aIjwGGM8oVreKyAi4ohgm+cgcA1MrHrFLnep1x65RQ==
+X-Gm-Gg: AYBFou0uqiSIgIIsbat0mrL4HfNy/lbxH3vY2Am4U4M6HQTQTy3XgvznvsZ7knlSi2/
+	VXmQlujmgaYPYU7KQaMnTOu2uFqJuCPSJGGmFTmuvDeAnSOEehEBPCbfS9R3WQVkqObgc3D2Y4b
+	G0t2MzX12O6roS/g6kRWzkMaHdkzoSlDZiTCMJRHFFfx/K0XW8CIe2aGJ+S3tlXYdEhIE2GT3C+
+	f0VbgGYONvkGn1+1T8aMscnOj2wbJbEh1n6RfTtxoLv6bjnVcIZzcsZ6+5suDtlo/tulGhXEpBM
+	TOFL3Db09hVssy1KGRnS4+D8OpPD8vCerC5p0d+14jLqw2y53lorTCs3CGBXgzPQ2+wx5ACVSFS
+	Lbo6HVS7jbw3dty5apmFW2vkTUZZ2aTBas7+VMGr0i5APFRwWVog/lo3qK1q+K1ljOi/01x/Jfn
+	zG6OUKq11/bAbm8iSboqtNV7UTHod9+q+O3IEbL2OsAJ9aVlBAY7rKeeG9yLGrjxJLZpv2Dq+xF
+	pByOa3Y3+9/v6RKRokrUIN7NWTev/AqX6HmjVxUDnfuueqp55eknbh3p0kY9k5I7gTC0+JJpUN9
+	cLzF1B3r/g/wVYGxzkbMrbx4J/OAF+PQ0ilAcQ==
+X-Received: by 2002:a17:90b:4c51:b0:38e:57a3:f218 with SMTP id 98e67ed59e1d1-39b26204e5bmr27718526a91.13.1788742560180;
+        Sun, 06 Sep 2026 17:56:00 -0700 (PDT)
 Received: from ryzen.lan ([2601:644:8000:7a86::e35])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-333c9db92b1sm22771048eec.9.2026.09.06.17.49.10
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-39b08ca63b3sm23328017a91.11.2026.09.06.17.55.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Sep 2026 17:49:11 -0700 (PDT)
+        Sun, 06 Sep 2026 17:55:59 -0700 (PDT)
 From: Rosen Penev <rosenp@gmail.com>
 To: linux-mtd@lists.infradead.org
-Cc: Robert Jarzmik <robert.jarzmik@free.fr>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	linux-kernel@vger.kernel.org (open list),
-	llvm@lists.linux.dev (open list:CLANG/LLVM BUILD SUPPORT:Keyword:\b(?i:clang|llvm)\b)
-Subject: [PATCH] mtd: docg3: use devm_platform_ioremap_resource()
-Date: Sun,  6 Sep 2026 17:49:10 -0700
-Message-ID: <20260907004910.226013-1-rosenp@gmail.com>
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] mtd: rawnand: fsl_ifc: allocate shared ctrl with devm_kzalloc
+Date: Sun,  6 Sep 2026 17:55:58 -0700
+Message-ID: <20260907005558.229187-1-rosenp@gmail.com>
 X-Mailer: git-send-email 2.55.0
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260906_174913_365378_5288217E 
-X-CRM114-Status: GOOD (  12.49  )
+X-CRM114-CacheID: sfid-20260906_175601_420838_8B1E3CF2 
+X-CRM114-Status: GOOD (  12.75  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -105,57 +99,64 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Replace the open-coded platform_get_resource(IORESOURCE_MEM, 0) plus
-devm_ioremap() sequence with devm_platform_ioremap_resource(), which folds
-the resource lookup, region reservation and mapping into one step and
-returns an ERR_PTR checked with IS_ERR()/PTR_ERR().
+Allocate the shared fsl_ifc_nand_ctrl structure against the controller
+device, which outlives all NAND child devices, so it is freed
+automatically.  This drops the manual kfree() and the broken chip
+counter that was decremented in remove() but never incremented
+anywhere, leaking the structure and leaving the freed pointer in
+ctrl->nand on re-probe.
 
-The canonical docg3 register window is DOC_IOSPACE_SIZE (0x2000), which is
-the size any platform provides for this device, so mapping the full
-resource is equivalent to the previous fixed-size devm_ioremap().
-
-Built for ARM (multi_v7_defconfig + CONFIG_MTD_DOCG3) with LLVM=1;
-drivers/mtd/devices/docg3.o compiles cleanly.
-
-Assisted-by: opencode:hy3-free
+Assisted-by: opencode:big-pickle
 Signed-off-by: Rosen Penev <rosenp@gmail.com>
 ---
- drivers/mtd/devices/docg3.c | 16 +++-------------
- 1 file changed, 3 insertions(+), 13 deletions(-)
+ drivers/mtd/nand/raw/fsl_ifc_nand.c | 15 ++-------------
+ 1 file changed, 2 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
-index 603fd0efc2ea..bbdf3bfb0e70 100644
---- a/drivers/mtd/devices/docg3.c
-+++ b/drivers/mtd/devices/docg3.c
-@@ -1971,25 +1971,15 @@ static int __init docg3_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
- 	struct mtd_info *mtd;
--	struct resource *ress;
- 	void __iomem *base;
- 	int ret, floor;
- 	struct docg3_cascade *cascade;
+diff --git a/drivers/mtd/nand/raw/fsl_ifc_nand.c b/drivers/mtd/nand/raw/fsl_ifc_nand.c
+index b34524726dec..db6bb0bb43e8 100644
+--- a/drivers/mtd/nand/raw/fsl_ifc_nand.c
++++ b/drivers/mtd/nand/raw/fsl_ifc_nand.c
+@@ -48,7 +48,6 @@ struct fsl_ifc_nand_ctrl {
+ 	unsigned int index;	/* Pointer to next byte to 'read'	*/
+ 	unsigned int oob;	/* Non zero if operating on OOB data	*/
+ 	unsigned int eccread;	/* Non zero for a full-page ECC read	*/
+-	unsigned int counter;	/* counter for the initializations	*/
+ 	unsigned int max_bitflips;  /* Saved during READ0 cmd		*/
+ };
  
--	ret = -ENXIO;
--	ress = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (!ress) {
--		dev_err(dev, "No I/O memory resource defined\n");
--		return ret;
--	}
-+	base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(base))
-+		return PTR_ERR(base);
+@@ -1034,15 +1033,13 @@ static int fsl_ifc_nand_probe(struct platform_device *dev)
  
- 	ret = -ENOMEM;
--	base = devm_ioremap(dev, ress->start, DOC_IOSPACE_SIZE);
--	if (!base) {
--		dev_err(dev, "devm_ioremap dev failed\n");
--		return ret;
--	}
+ 	mutex_lock(&fsl_ifc_nand_mutex);
+ 	if (!ctrl->nand) {
+-		ifc_nand_ctrl = kzalloc_obj(*ifc_nand_ctrl);
++		ifc_nand_ctrl = devm_kzalloc(ctrl->dev, sizeof(*ifc_nand_ctrl),
++					     GFP_KERNEL);
+ 		if (!ifc_nand_ctrl) {
+ 			mutex_unlock(&fsl_ifc_nand_mutex);
+ 			return -ENOMEM;
+ 		}
+ 
+-		ifc_nand_ctrl->read_bytes = 0;
+-		ifc_nand_ctrl->index = 0;
+-		ifc_nand_ctrl->addr = NULL;
+ 		ctrl->nand = ifc_nand_ctrl;
+ 
+ 		nand_controller_init(&ifc_nand_ctrl->controller);
+@@ -1122,14 +1119,6 @@ static void fsl_ifc_nand_remove(struct platform_device *dev)
+ 	nand_cleanup(chip);
+ 
+ 	fsl_ifc_chip_remove(priv);
 -
- 	cascade = devm_kcalloc(dev, DOC_MAX_NBFLOORS, sizeof(*cascade),
- 			       GFP_KERNEL);
- 	if (!cascade)
+-	mutex_lock(&fsl_ifc_nand_mutex);
+-	ifc_nand_ctrl->counter--;
+-	if (!ifc_nand_ctrl->counter) {
+-		priv->ctrl->nand = NULL;
+-		kfree(ifc_nand_ctrl);
+-	}
+-	mutex_unlock(&fsl_ifc_nand_mutex);
+ }
+ 
+ static const struct of_device_id fsl_ifc_nand_match[] = {
 -- 
 2.55.0
 
