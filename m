@@ -4,87 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4C62C79F9E
-	for <linux-mtd@archiver.kernel.org>; Mon,  7 Sep 2026 04:39:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE1B4C79F89
+	for <linux-mtd@archiver.kernel.org>; Mon,  7 Sep 2026 05:33:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=EQ0B0LeAFLyRsMeSyoShVoNlSM/KpGAz2ncL6/NxIfE=; b=QHi/1ymjSUKbXF
-	OB2/D5HZ7shW3GUH7x+jTDpcXoRqhFsYy/WkJH/eQ7tMHoprGn2j9TpXUpkI6KFLeX/Qm7QwZ3VeB
-	+GCi76s94XSXzZKrQmOrvXuHaYHAWMdn4to5YWQz0I/nzWCHAFlsSbHKoIm5wQtxrkO9kSHJkS45R
-	ucmkEX/raDsywhaqeehnlX6Eh9HBG7mDBYsq4v37PtzHqDwa3LFLLPuSbKVFpkwDQcLldiHyCEvpE
-	q0ueN7l9GSzOw7J58P21OmzZnMh6uFuQfGwNiE+j8nbS53FiXwvrw/YFr9VYCn48onuccPb/SdtmY
-	jMw3wwLZzQOuPI/OEDig==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:To:Subject:MIME-Version:
+	Date:Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=X4yLKP8nV1MWHh/4KtPOg+w1mcMDFKZJ3Z2VBVAwBbw=; b=TvFYReSWhe9N/9eWiihvsx3t+t
+	NBjSODLmr62VMq5XFmbGM5Lvk1+oAxxShr9NrttckO7kPtMKFOCM3W6Zs1N+4gryWeq6gznLjPnME
+	aWpXMeeJwai0BURpduGwlO92C4yauiQtwE4EMPwtfDWwgmYjNkDN7jArEgGN7ek13lXR4MnVFzlCK
+	IDFLR/zCo7UmUyDo4WVTtwSuXpIoqJr6lWZXFg8HMk0A9rD6e14QMsU6qCgkuESNq2sVTmaog27fS
+	Bc2u0u/imYt/n+8myOVTEK5hFTv/meYqBrn8ho7ddYX9AuFbWftJ3d20TcC6S5ygiNd42gBuxK0pZ
+	YJdBM1Tw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x3R8y-00000005rPD-2Tyn;
-	Mon, 07 Sep 2026 04:39:44 +0000
-Received: from mail-pg1-x530.google.com ([2607:f8b0:4864:20::530])
+	id 1x3Ryy-00000005wAJ-1l6R;
+	Mon, 07 Sep 2026 05:33:28 +0000
+Received: from mail-wm1-x331.google.com ([2a00:1450:4864:20::331])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x3R8w-00000005rNv-1hXg
+	id 1x3Ryv-00000005w9z-0uE5
 	for linux-mtd@lists.infradead.org;
-	Mon, 07 Sep 2026 04:39:43 +0000
-Received: by mail-pg1-x530.google.com with SMTP id 41be03b00d2f7-cc439aa0078so2506589a12.0
-        for <linux-mtd@lists.infradead.org>; Sun, 06 Sep 2026 21:39:42 -0700 (PDT)
+	Mon, 07 Sep 2026 05:33:26 +0000
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-49b0dd3c9a0so29206905e9.1
+        for <linux-mtd@lists.infradead.org>; Sun, 06 Sep 2026 22:33:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1788755981; x=1789360781; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=P0y4/I4pfeLNqTifvYLyA4YqwL2agDNSkV2NiZIcnoY=;
-        b=WTmtOBJcd8vkZEg/lmB7+hbCPFh95gpFqUf4kr1ud6RHdVxeboGiCsmxdhtJAYJZga
-         qoCnQn6hF1JqIYfEEKdRJohOw0OW9igq4hoUWXYv/TOiHGmCUfKJXUhxmuvKliEDAYI4
-         JJuc818vw0JjzoW3qre6Oe+51MmY3luPNtlFOo3ecIAxSwDk93OTmJsHIMcxqsi6DnKL
-         +SKL5blCuHiymqc3ZwWiwmjZoIwOH4/IrISXm+RmhqWhscnX3PBQPolvUx9KvZ8YH6py
-         Sm4AT7uF3HW23RoYA07lQpec8WX8bCyo68tlKvhg/GI8hAQu1pRw8Kcn/SeJfd9JdQeZ
-         t/5w==
+        d=sigma-star.at; s=google; t=1788759202; x=1789364002; darn=lists.infradead.org;
+        h=content-transfer-encoding:content-type:in-reply-to:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=MqSNiwa/UAtmNvnHHz2pJKBZRyVaTikg4qj3JO/V5O0=;
+        b=I+AWSWAUFtSemuoSvLFuimgIUGGoWclH16k56AIsTMC60smWkAhNnYanM+ViEkIsPN
+         G14Ah7Dn+NSPNh27ZIitutEvzoLAdLdFhQixlK8Y8vuWybqFvRRQrKS4sienTF3As3xW
+         cvDaXjoJ0GEGUhB8CCnh9o5E73IO6dA1Q88/nimppf0qmnp1FXEiW2yFCGZ5ffhUfkxM
+         RQ42iGlYFD0B+9YTEfBtRf1qDYFawhcjF2C+DigVkQS/CLPBeeLON3MqnqilX0/Wbm6f
+         XCHX87RgxujvP+05FZgOwyNYZ4IQAHXdzxtBmtam3e5sXdxtlZj0zpnWiyacKoxfTAUN
+         nJYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1788755981; x=1789360781;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=P0y4/I4pfeLNqTifvYLyA4YqwL2agDNSkV2NiZIcnoY=;
-        b=ORTs/Q6J2VD/OkWmu9EQQ6u8KYmR1JQomlhQadCVebgVoLMVQ5gZNcxninMJiyMYD1
-         0cMLxeKtf34VxZjaIZlbnEssZnvDu9xtynMGTPw7HW0+6tW6QTOLKdyTv5WTPmvRaF1c
-         xsqc7tZC3E6aHwj2Jc4ad09bWB3IWHS7J/hHeyfjj3KseQKSB/qiBZ2e9ZWmqhcbYkqX
-         6CpWJB7BLhRQiqGmEGMTVcGD1d3S7oiTZaCEBBoZmTTzMKLyWbjKSp3iCdZ3Pf/00s7m
-         r/QMSJgflq/1DpLJSg5SEbOAdIGL+gsfM8Kx9v1ywzhB2UneZyzHeySnSp1POL/9nPGz
-         bbvA==
-X-Forwarded-Encrypted: i=1; AKwUvBxN3GVy5rCOuQ6GLgi0N0baBwcY2JYeqRze+aILwBGzLrK7z2sYzqKTE/xpQXJaU3A86+E+/HsPy3M=@lists.infradead.org
-X-Gm-Message-State: AFuF++mkEPVWgXqpSkcVyFeroyngA2GPZO681tMvVyzYcRiIspoeDr0C
-	2jtBM6Mvw0K4rx1pH3S+EoAAjelpd7AjmgQSTjhXfPxQx3QQIHbrta3T
-X-Gm-Gg: AYBFou3mXzhqG8+X83mMfbMZ2pkkzM9qvf93OqgxZoWyYPl5Bos1W/y7TVcSdfA5fUe
-	hLf9Aw32mCxQvphQ+dIIWlV8uU9Yp4XBcOGDwA0WGJFvGkYutzlyD9hOCa41W/6Yf6JjfKS28ad
-	f1VjuJt/mo4+Fs/iaZ2sa7kioDxuTz6gHeNkmxCp8Bxtsujzs+e+eFFYgwemdb6M1lKKzsKVyA1
-	3nmac9y3T5v2xBi7B+SM4VSibnSocdJYSO1t2tuHxbPztfTZuuCaRVjrizukAKlpGlJLG+HL5KE
-	NKHEanJdR37pFn+eDOfqHjd28c7ZWpgtsHiCrXq7GamKtLXvy8xatams8mWKPQXea9CwyhUOI73
-	Nhx/nCAGVaFeM3qYcNQQkGSSEQG3Lw70Bflzqw74wkOCHWgrrBWv5pKLBpbqMBM4UagQ36GrGEa
-	90+lqOD581BXGo55Fq0cnfy18x0arpnWpxpfoK3wm18KqK5AsOWf8uECnQpYpn734s5sAibcEBB
-	tyYMHz1eqLcG3U=
-X-Received: by 2002:a05:6300:6708:b0:3cc:eea9:f757 with SMTP id adf61e73a8af0-3da3a00565emr29715382637.16.1788755981528;
-        Sun, 06 Sep 2026 21:39:41 -0700 (PDT)
-Received: from volcano9f6e-hostos.amd.com ([165.204.217.251])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-3339b123731sm22649867eec.18.2026.09.06.21.39.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Sep 2026 21:39:41 -0700 (PDT)
-From: Hemanth Selam <hemanth.selam@gmail.com>
-To: "Richard Weinberger" <richard@nod.at>
-Cc: "David Woodhouse" <dwmw2@infradead.org>,
-	linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org
-Subject: Re: AW: [PATCH] jffs2: fix typo "informations" in comments
-Date: Mon,  7 Sep 2026 10:09:31 +0530
-Message-ID: <20260907043933.33452-2-hemanth.selam@gmail.com>
-X-Mailer: git-send-email 2.48.1
-In-Reply-To: <mtmxcr3o.ee150fe6-3518-428c-9ca6-a554584ee6c7@nod.at>
-References: <mtmxcr3o.ee150fe6-3518-428c-9ca6-a554584ee6c7@nod.at>
+        d=1e100.net; s=20251104; t=1788759202; x=1789364002;
+        h=content-transfer-encoding:content-type:in-reply-to:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=MqSNiwa/UAtmNvnHHz2pJKBZRyVaTikg4qj3JO/V5O0=;
+        b=DfdeF1DGGiljljk3lTfJfrESH8ZQg44RaK5a/pGiKWOQdQtFZlNu6DfxAx0elDZAOq
+         Lm0G5GpBAQgUUv5CBtoVd4vIDAIcJvsHgXzS6BTHEGeWIBXrGhLLHP+HDMbEzmicCH7K
+         yx+0i+NxcF/OtreLY6gsw+QwH5CvYxd6mVRtO/ZCfWHC0W6S1xUKNZTg8Ve0c8Xa2j5N
+         m73rbkRN4Avm9xw4ZxfDqhw3h5DHgSkMw3RqjNdw9mRWfT6yi3qUy9GTcTWD3qG0S4dm
+         aHSn0v5oqoLAvTTAcT3YZKHVsef9L3z+83DQfHinsHbfrNujZo2TUyftJOepSzQm3QXR
+         mCsQ==
+X-Forwarded-Encrypted: i=1; AKwUvBxfm2zXz/EeVouJLWeas3+Oqg5ZAvDQuPac+nh9NLuVohlgECXWsdEZRMYAmptyzf8v+6ky7w5cR1g=@lists.infradead.org
+X-Gm-Message-State: AFuF++mjZeB03pOeXNViAlnW0/6BtGdbKr/gNVrGEk7qyaiczJoSc1ku
+	raqAbkYb7DW61DteZvPypmMn7WvWjR+C/N0x3IZlj5N7JA5DCekSW4UT1FAQq0OwYqUXjJLDdZA
+	3atx81J4=
+X-Gm-Gg: AYBFou1kBJuMQHeTtb4aPrSVh9zTvPbgBuO7gPlg0FzirtqjJHz7qDxhhF7yR5gLkwo
+	PLolfclIN4f69zj51vj5z5RPdijdv8+sKKUy7mktWcDcXq7xcDE3/MMGPr+A4UMTR3Qv8nK9hyN
+	LYQbRfsz0Nr+WIN2kkDivjoZJtC7jxp+UOrUMoA+OsvwZUpwuU6siC3MP7SUjuub0sOTiM2ZUNG
+	cq1KyvqLh+49wB8KTc3zdz6iUdjDCWAtbwsHYJ8wlDv7AALI1f48lWa5BQz9ABB+eEl8UNgf27/
+	BVC+vmEbLnHdfCB7QZApJqMwSBBU9Y81Sk7c/jpzlehWdE1PE+MeTwI3bZGB2GMCGRKscPYbYe0
+	9dJXsgQLBznRsbeua1ze7tItBXSbMLZHO/Jaluag6zivRlD/oSHx32g4sHpJk3s7vh0+H/UPaPc
+	c2vVRpSR7tj+ZJlRDsgaiU4sxYVjmIORGPD/ty6icEXtU9yB0GeAj7KFlh5Ng6/F+cCb58F0H9j
+	Sb5l5p9Ig==
+X-Received: by 2002:a05:600c:3b11:b0:49c:f7c4:dc54 with SMTP id 5b1f17b1804b1-49cf82512b9mr361311185e9.14.1788759202553;
+        Sun, 06 Sep 2026 22:33:22 -0700 (PDT)
+Received: from [10.115.255.165] ([82.150.214.1])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-49cfbdacc45sm252647005e9.11.2026.09.06.22.33.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 06 Sep 2026 22:33:22 -0700 (PDT)
+Message-ID: <056cb558-547c-4ed2-9341-b3adacba109c@sigma-star.at>
+Date: Mon, 7 Sep 2026 07:33:21 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mtd-utils: don't include features.h
+To: Rosen Penev <rosenp@gmail.com>, linux-mtd@lists.infradead.org
+References: <20260421011429.294896-1-rosenp@gmail.com>
+Content-Language: en-US
+From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+In-Reply-To: <20260421011429.294896-1-rosenp@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260906_213942_465879_6577266B 
-X-CRM114-Status: UNSURE (   8.24  )
+X-CRM114-CacheID: sfid-20260906_223325_580186_7E553FAA 
+X-CRM114-Status: UNSURE (   3.52  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -97,24 +97,17 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Thanks for the ack, and the criticism is fair.
+Applied to mtd-utils.git master.
 
-To answer it plainly rather than defend it: the typos were found by
-checkpatch and codespell, which need no model at all.  What I used the
-assistant for was the mechanical work around that - grouping several
-hundred one-line changes per subsystem, working out who to send each one
-to, and writing the changelogs.  That is not a good trade for the energy
-it costs, and running the two scanners directly would have produced the
-same patches.
+Thanks,
 
-The Assisted-by: tag is there because Documentation/process/coding-assistants.rst
-asks for it, and I would rather over-disclose than hide it.  But your point
-stands, and I am not going to keep feeding a model work that grep can do.
+David
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
