@@ -4,85 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6427C79F99
-	for <linux-mtd@archiver.kernel.org>; Tue,  8 Sep 2026 06:01:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D90FFC79FB1
+	for <linux-mtd@archiver.kernel.org>; Tue,  8 Sep 2026 06:03:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=AOsM94/FPn6chZCx64vjHoeZWSChH6JMXAz3DWrurjw=; b=IeSIkJ7vlAwGdt
-	CdX1EHnSysklBZtjAsHXUs1P6HMuiH+qwihH//jloQLT73O57GeC7ijP6Ellja97kq7Pu/ATxlsvE
-	8JBy+zi5WeSxyZa/SCHqqMqp21m/6RULG8gmMr49PwmNT7GwWgXrxectQqFvq4N4/5G4lCN2QCwHs
-	BbKZ2Os7j0jtdXDZorSbpK94ATRpfCTEUpxJA4qb4tVHyiRLejORbfH5o9Q+eZCBDcNmcm9U1lnBb
-	0dN7BR7Y2gl9Khg/trgjsl48/TKGO57m3zh6mlG9XPOgpuJEi0/NwAwtDvbDGcc9xRhG5U4xue09s
-	tiLQOejLHsrlVTrk+a1Q==;
+	List-Owner; bh=M5v5os9qIADJeux2pmmAuL4MeMfdGFdN5OphiGorDQE=; b=1TIybuaIXV1Tzy
+	9D9pOlEzMSA2ZZP6mtLJDYAzLifUEeXZL0XRsuW9tlD0OwwpDAJHDMEq+5fFX7e+M/x4jLHTapJYi
+	tD5e740k9KLNZ75MWqPa6PyG1ZE1wY9/w8gPhgQGuBBDz1vJAcwS3nLxgUzmIZ7XoO96KAjh7icoV
+	MNZpc8NBS+E9hQb5o0QWTspmxS9jXJpWIBppsc6Pc/tjASvwqwIkM8hXLsuqzsK8lJcnNMboFQPCa
+	NiHKLiFtsZ8cgp2gnb9EQCSCngy+5xwoKBEznHfBx5fsAOkUKsxNQDZtCJD7ApnxHvhxgQWXEisL5
+	JhtmW/v9x/wbng+VC9Ng==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x3otR-000000087M4-2ZgJ;
-	Tue, 08 Sep 2026 06:01:17 +0000
-Received: from mail-pf1-x429.google.com ([2607:f8b0:4864:20::429])
+	id 1x3ovc-000000087Rc-3hln;
+	Tue, 08 Sep 2026 06:03:32 +0000
+Received: from mail-pf1-x433.google.com ([2607:f8b0:4864:20::433])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x3otP-000000087Le-0XBU
+	id 1x3ova-000000087RH-19I3
 	for linux-mtd@lists.infradead.org;
-	Tue, 08 Sep 2026 06:01:16 +0000
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-84faf0fa17eso4292300b3a.2
-        for <linux-mtd@lists.infradead.org>; Mon, 07 Sep 2026 23:01:14 -0700 (PDT)
+	Tue, 08 Sep 2026 06:03:31 +0000
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-8535a9be75eso3096310b3a.2
+        for <linux-mtd@lists.infradead.org>; Mon, 07 Sep 2026 23:03:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1788847273; x=1789452073; darn=lists.infradead.org;
+        d=gmail.com; s=20251104; t=1788847409; x=1789452209; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=rud7AzWXfFmh/miZcM84Tl0yKLFLgZncbdvuv1vQA1g=;
-        b=e7QlR8ZE3DqQ6ag1OTeSYtWcQaR+RL0dp0BIsc0DRyMEmHIiFduFPhSLvbo3et+5ue
-         f5JDWdnCn+2B0/6ANXC5wEYcYeZAepiJlPqd6I1+ImBXjUoI9WVgFr8k2iwo20X/TSKU
-         pk+VpQSHNHmmX18YIxKiV9af4D0beGMpSm9LN9tyAT7DUaj4dNawHTBQBLWlgOzY2YkG
-         CwLI6DOcuEaMRDsLLnDvIe8qEcT5sD+9VRU7IFX1DkD0N3oeATAr/FzQ4BlSRVTNQP0q
-         kHSw9X0qjC2cQnSeiNesN+nkOMrQnU9zbaL2NF/a17AMIwFvUcY0o/IIHEDEXe2lPH6d
-         IcHQ==
+        bh=C4z6TM9f6LWcvEtLSVg7GWqirsSCBkLcI0Q+87lSZCw=;
+        b=Kf+K3ERU/AofLZ51E50lOmnMdjIRtRuWYa6LNckhR0Z2R2J15caSHKkrKaeBKOEoUP
+         BxbctBFdCMYwYTIzzpkgpfatBqBeaktJDgjnzGzISPdqKFUDzsjILNRic7AMCTO1Od70
+         4el8LM6oAiz04aOiuJQaz8Ah9q1mLzjJTKNyCP3kSE1+ZbaY0bpoUBfniz207bVd0gTE
+         wewm4UhCSZppiucv6h+UIzXu0CzW4UDwDDlSHQ/ZK3hAVcq5CDkj1hlI3vUodcCvQ/Yb
+         XyzyG869h3lna2lze817z95q6Io0y2Y5zbCbwM0fFXIxvFk7qHe3VkoEAvMhn9DXvgQg
+         O7Sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1788847273; x=1789452073;
+        d=1e100.net; s=20251104; t=1788847409; x=1789452209;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=rud7AzWXfFmh/miZcM84Tl0yKLFLgZncbdvuv1vQA1g=;
-        b=oIlQOulZ4GMnXiKQZoH5S+mwOmMU+zDLnBW/Qh1hINVmX8afyaU/AUaiawgIPPkfRo
-         ajQ8c8tsrD9vNSBda2l10zH3oiE84joHCLMiW9zIwbP8oNIHKKfSwrLoqryOXhT4MGWX
-         Wp9a0goEmet1PxPp1Stgs337E3MEQvrVeJhpUts6W2v7lTMawzs5wlt0letij5W+FSgG
-         Aht955QJLsenVMruDEvUcpvuurSAef+WIEua0UnB3MESWAeLzVxvHQskr9UrbPgBp3uv
-         69/lszcOk5zVWp9cYbB2gDBDgevGn7UbCs/OWozBDI8pQab2FK8Cvtixouckp1RaZSKw
-         DNEw==
-X-Gm-Message-State: AFuF++mpEvyMwPly3/JjFpCky7LWRGni1IDxsBUiC78Jfwii+/gmWtCq
-	cH4yenowgXME0XuJax7KsuLyQnzOKT0JW69P9Y7y489Lqy/QbTOEvlpGa4TrqQ==
-X-Gm-Gg: AYBFou2uNzLwThBR0UqtRG0PsJbWTHHssEg8Veccr59H4jfQ10Og7OCenXekK6NA+DT
-	g6M2kuDeszSOYIYuGD6Fi6Zz5cHK627E+SpSfVQ6H1JRFokLiYZxw/IxLM3XUCQv9115b+nTHiM
-	dXSyfy7Ez+9ywPtS5PCndWSKquZRAovldXyNJDu8wRkF8f59SWoqxBSgxBk+IclzKJk7OGIeXf/
-	FgdW4MHb/Rf7h/oc9KtPczzPcN2ciCZCA8SDKMrgDY3fBPi9wYmXV8LLP984WBh6rQ5UF58mBt9
-	/ngrZlQDqReHo0Ka+gL5ukG1VIOcNO1DsTLFedt9I8UguM3SK+HQDFgHCKzaVJ5Kit7bG9FUVnM
-	HEC6s9C/lYFw425ken9n8eXuNLSsoE8IjdhCqAtGWlSNC4uDTP5+ZNYtI0fV6jk13HP2BGAojH0
-	p98muRXIxz8uh1BQhm7qdcdHZ2t0ygZfk8unf05+aMdeYcihwZNGsAjmvQfnOOc2hupStJ9bKX4
-	MwZcVNGWkND/LNuB+vwYrf9UKj2wVlwBuRvcojNL/+wqJm6RquU/n/Fog+JrAWTWvRCVAVgejRu
-	qj2ru8ivZTv+E8qHhz5k7IKqUuDcCnD4ybw8X6z/0Dy4taOVyg==
-X-Received: by 2002:a05:6a21:d84:b0:3d2:2011:d184 with SMTP id adf61e73a8af0-3da3a096045mr45740365637.14.1788847273403;
-        Mon, 07 Sep 2026 23:01:13 -0700 (PDT)
+        bh=C4z6TM9f6LWcvEtLSVg7GWqirsSCBkLcI0Q+87lSZCw=;
+        b=C/cPt4Ph40Uxo+qBwg8WcuRmAJ6SDtgKTSDzVFjCzUErBQDZdnL65u9mTHd4Jjtk4k
+         JKmNwB972sCGTHDNvLtBQm/VKkaBl1nwC4toVVhIJxFwW40bVTHnSrFknR/FV6OIfdOs
+         WHFOkUiv0ofogwYnvXhOWSMi0aVooCHyp7BvgNqYgI6My0uABVhxxCq4TyU+vLwShHdu
+         psQnMPxYlp3csIqfuSmfxwEqwpFtt6S/jxJFY7MliuyG8vzFUf4VNF+eyh4QcC7IAqoh
+         JeJvXPwNH085oh5PfdoWEYp7cME38hH42fL33m1QviOfe1LdOFUWXUqwy2QWQPA+EcEW
+         Rx2w==
+X-Gm-Message-State: AFuF++mIGDAx12fcCKkbT14wb8m9U169gIEljV+u/80YcxOOb/rVq9No
+	rK19RxiZdDZZv7X3C4coPBX4Mar01sL3R0j8ROFzv/2DCCqIiuX6R0ejARQYQw==
+X-Gm-Gg: AYBFou0/rjMPR/k057HbSwDyHm6QYp/Z0dnoQw/pVHhB0gz1AAaXISSonWebYfNdmL0
+	IgESjhhSol0B2nE6GAerr3O8BAGnVV7dnWrLXJ4LhO5XpRGPUCyixQ9TmNhSaoUEGRGo+tYC0Rg
+	I4vGXbCmEPjZWlckzTK6y56LZh9CsEwIymSZYjnnXgSZkOeI/AoYdKEp72EA81aED8IAgDWOJ3B
+	woJRfFkdMXRD+/eH9aupy+vJA+2yJtoKH4aRNVBDQ9ZzK3WvVvHeeCeksCoX7GiOurmCdsZywU/
+	IzO4Y/zw6jhV8VCBtp3ST5b8AMbgrqxEQKg9yPhcQdJYLR37gVpvTAM3YK0W16JOUvimggfPqoI
+	TEHkhzCe/94eMrKNGo5DGKlL6XITDGHaeuIpNzb193TEbQqxNI67Fb9vvK8ju0gPrbcJXXKJl38
+	4kGc8RzE5FuUWxCigvitqnakaky4702oMthI8hqZ8r7yeWwyT33/085A9G5D6kjFds7BIVfNGRw
+	IsGhcpv+QWvbmj3AxlCR3QfdYYnW5yrvAZgahOe1Q8T/RV/XOCm6EFhKFKab9powmO5Rqdq44fN
+	C0NU8S9knOanEDMF+ztK1vNgxfeI7ivtGyCSNQ==
+X-Received: by 2002:a05:6a00:1915:b0:84a:60a4:2651 with SMTP id d2e1a72fcca58-861669c6dd1mr36166021b3a.6.1788847409045;
+        Mon, 07 Sep 2026 23:03:29 -0700 (PDT)
 Received: from ryzen.lan ([2601:644:8000:7a86::e34])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-cc455485c25sm4850041a12.26.2026.09.07.23.01.12
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-8614f872e0esm5049222b3a.4.2026.09.07.23.03.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Sep 2026 23:01:12 -0700 (PDT)
+        Mon, 07 Sep 2026 23:03:28 -0700 (PDT)
 From: Rosen Penev <rosenp@gmail.com>
 To: linux-mtd@lists.infradead.org
 Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
 	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCHv2] mtd: rawnand: fsl_ifc: allocate shared ctrl with devm_kzalloc
-Date: Mon,  7 Sep 2026 23:01:11 -0700
-Message-ID: <20260908060111.41244-1-rosenp@gmail.com>
+Subject: [PATCHv2] mtd: rawnand: fsl_ifc: use devm_platform_get_and_ioremap_resource
+Date: Mon,  7 Sep 2026 23:03:27 -0700
+Message-ID: <20260908060327.42775-1-rosenp@gmail.com>
 X-Mailer: git-send-email 2.55.0
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260907_230115_173114_3E62C537 
-X-CRM114-Status: GOOD (  13.22  )
+X-CRM114-CacheID: sfid-20260907_230330_344117_B69D993C 
+X-CRM114-Status: GOOD (  15.67  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,65 +99,108 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Allocate the shared fsl_ifc_nand_ctrl structure against the controller
-device, which outlives all NAND child devices, so it is freed
-automatically.  This drops the manual kfree() and the broken chip
-counter that was decremented in remove() but never incremented
-anywhere, leaking the structure and leaving the freed pointer in
-ctrl->nand on re-probe.
+Replace the manual of_address_to_resource(), ioremap(), and iounmap()
+in the probe/remove paths with devm_platform_get_and_ioremap_resource()
+so the resource is managed and released automatically on probe failure
+and driver removal.
 
 Assisted-by: opencode:big-pickle
 Signed-off-by: Rosen Penev <rosenp@gmail.com>
 ---
- v2: rebase.
- drivers/mtd/nand/raw/fsl_ifc_nand.c | 15 ++-------------
- 1 file changed, 2 insertions(+), 13 deletions(-)
+ v2: rebase and remove now unused header.
+ drivers/mtd/nand/raw/fsl_ifc_nand.c | 30 +++++++++--------------------
+ 1 file changed, 9 insertions(+), 21 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/fsl_ifc_nand.c b/drivers/mtd/nand/raw/fsl_ifc_nand.c
-index a88ac2cfaccd..4c2d95461c2e 100644
+index 4c2d95461c2e..469b233db73e 100644
 --- a/drivers/mtd/nand/raw/fsl_ifc_nand.c
 +++ b/drivers/mtd/nand/raw/fsl_ifc_nand.c
-@@ -50,7 +50,6 @@ struct fsl_ifc_nand_ctrl {
- 	unsigned int index;	/* Pointer to next byte to 'read'	*/
- 	unsigned int oob;	/* Non zero if operating on OOB data	*/
- 	unsigned int eccread;	/* Non zero for a full-page ECC read	*/
--	unsigned int counter;	/* counter for the initializations	*/
- 	unsigned int max_bitflips;  /* Saved during READ0 cmd		*/
- };
+@@ -12,7 +12,6 @@
+ #include <linux/platform_device.h>
+ #include <linux/types.h>
+ #include <linux/kernel.h>
+-#include <linux/of_address.h>
+ #include <linux/slab.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/rawnand.h>
+@@ -968,9 +967,6 @@ static int fsl_ifc_chip_remove(struct fsl_ifc_mtd *priv)
  
-@@ -1033,15 +1032,13 @@ static int fsl_ifc_nand_probe(struct platform_device *dev)
+ 	kfree(mtd->name);
  
- 	mutex_lock(&fsl_ifc_nand_mutex);
- 	if (!fsl_ifc_ctrl_dev->nand) {
--		ifc_nand_ctrl = kzalloc_obj(*ifc_nand_ctrl);
-+		ifc_nand_ctrl = devm_kzalloc(fsl_ifc_ctrl_dev->dev, sizeof(*ifc_nand_ctrl),
-+					     GFP_KERNEL);
- 		if (!ifc_nand_ctrl) {
- 			mutex_unlock(&fsl_ifc_nand_mutex);
- 			return -ENOMEM;
- 		}
- 
--		ifc_nand_ctrl->read_bytes = 0;
--		ifc_nand_ctrl->index = 0;
--		ifc_nand_ctrl->addr = NULL;
- 		fsl_ifc_ctrl_dev->nand = ifc_nand_ctrl;
- 
- 		nand_controller_init(&ifc_nand_ctrl->controller);
-@@ -1121,14 +1118,6 @@ static void fsl_ifc_nand_remove(struct platform_device *dev)
- 	nand_cleanup(chip);
- 
- 	fsl_ifc_chip_remove(priv);
+-	if (priv->vbase)
+-		iounmap(priv->vbase);
 -
--	mutex_lock(&fsl_ifc_nand_mutex);
--	ifc_nand_ctrl->counter--;
--	if (!ifc_nand_ctrl->counter) {
--		fsl_ifc_ctrl_dev->nand = NULL;
--		kfree(ifc_nand_ctrl);
--	}
--	mutex_unlock(&fsl_ifc_nand_mutex);
- }
+ 	ifc_nand_ctrl->chips[priv->bank] = NULL;
  
- static const struct of_device_id fsl_ifc_nand_match[] = {
+ 	return 0;
+@@ -995,12 +991,12 @@ static int fsl_ifc_nand_probe(struct platform_device *dev)
+ {
+ 	struct fsl_ifc_runtime __iomem *ifc;
+ 	struct fsl_ifc_mtd *priv;
+-	struct resource res;
++	struct resource *res;
++	void __iomem *vbase;
+ 	static const char *part_probe_types[]
+ 		= { "cmdlinepart", "RedBoot", "ofpart", NULL };
+ 	int ret;
+ 	int bank;
+-	struct device_node *node = dev->dev.of_node;
+ 	struct mtd_info *mtd;
+ 
+ 	if (!fsl_ifc_ctrl_dev || !fsl_ifc_ctrl_dev->rregs)
+@@ -1008,15 +1004,13 @@ static int fsl_ifc_nand_probe(struct platform_device *dev)
+ 	ifc = fsl_ifc_ctrl_dev->rregs;
+ 
+ 	/* get, allocate and map the memory resource */
+-	ret = of_address_to_resource(node, 0, &res);
+-	if (ret) {
+-		dev_err(&dev->dev, "%s: failed to get resource\n", __func__);
+-		return ret;
+-	}
++	vbase = devm_platform_get_and_ioremap_resource(dev, 0, &res);
++	if (IS_ERR(vbase))
++		return PTR_ERR(vbase);
+ 
+ 	/* find which chip select it is connected to */
+ 	for (bank = 0; bank < fsl_ifc_ctrl_dev->banks; bank++) {
+-		if (match_bank(fsl_ifc_ctrl_dev->gregs, bank, res.start))
++		if (match_bank(fsl_ifc_ctrl_dev->gregs, bank, res->start))
+ 			break;
+ 	}
+ 
+@@ -1051,13 +1045,7 @@ static int fsl_ifc_nand_probe(struct platform_device *dev)
+ 	priv->bank = bank;
+ 	priv->ctrl = fsl_ifc_ctrl_dev;
+ 	priv->dev = &dev->dev;
+-
+-	priv->vbase = ioremap(res.start, resource_size(&res));
+-	if (!priv->vbase) {
+-		dev_err(priv->dev, "%s: failed to map chip region\n", __func__);
+-		ret = -ENOMEM;
+-		goto err;
+-	}
++	priv->vbase = vbase;
+ 
+ 	dev_set_drvdata(priv->dev, priv);
+ 
+@@ -1073,7 +1061,7 @@ static int fsl_ifc_nand_probe(struct platform_device *dev)
+ 		  &ifc->ifc_nand.nand_evter_intr_en);
+ 
+ 	mtd = nand_to_mtd(&priv->chip);
+-	mtd->name = kasprintf(GFP_KERNEL, "%llx.flash", (u64)res.start);
++	mtd->name = kasprintf(GFP_KERNEL, "%llx.flash", (u64)res->start);
+ 	if (!mtd->name) {
+ 		ret = -ENOMEM;
+ 		goto err;
+@@ -1095,7 +1083,7 @@ static int fsl_ifc_nand_probe(struct platform_device *dev)
+ 		goto cleanup_nand;
+ 
+ 	dev_info(priv->dev, "IFC NAND device at 0x%llx, bank %d\n",
+-		 (unsigned long long)res.start, priv->bank);
++		 (unsigned long long)res->start, priv->bank);
+ 
+ 	return 0;
+ 
 -- 
 2.55.0
 
