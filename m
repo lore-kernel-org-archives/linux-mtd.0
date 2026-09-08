@@ -4,125 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81648C79F99
-	for <linux-mtd@archiver.kernel.org>; Tue,  8 Sep 2026 17:19:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 97DC3C79F9E
+	for <linux-mtd@archiver.kernel.org>; Tue,  8 Sep 2026 17:35:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=tLiwp6EG8gklkUinWy/ZGFwjwG/FnUozY93I5ampTsY=; b=LeDdSeeRKkJaJq
-	vJOt1GVq1Sdj2n5l1kRX5GMFy0LjDs3r7d1Gl73lsChC6yLolIzHJiYfbF3DFGsuM9YRWiLoXsnFo
-	dDWsSCXzegAvZK0FiqGR5xPSHBvwTpv+rS3I2JBwNYW8o82vV2+e+g3ckeFXogmEkPUatzTTX6wHi
-	8HwPH1tUlkH/RX+s0oWv81gzeAPslHROB8En+PgjZ0RRiWA+wZ44yTUr1k0I7D+GdgFMEwif66L0Y
-	iG4UixALnxyj9M9QJWCga64/xFQ0N2mxSJNkaFAiAtiZAJcfAP794Yrqwn6VieJXpz25vYfMWpzP5
-	dThqXBpoUoB9W3ofh6KQ==;
+	List-Owner; bh=2E7OJWw4xM7FIkJvVRWvnzYNYO9lPlHI8zEqXZSyHKM=; b=S5mYdXfvRu4TDz
+	OYww1ytuoVqz9sItTAt4bO5ea97uxfRJBis2Cp97f+2rp7cF1Ju0a5Pyh0XUYCC3nBZj/Dako0vbt
+	jLDi4BvhusoNIBZ5Ptb5lIzDT13+0q1m38FWHhFGnCnIjbH7qCKmeZynZUsy+RQTQ4yelzNzG6bvi
+	sWkedUjLrfZf5VjZ1CAdw62dTVgmyFS60VLhVTDnN+joL04P3DxYsCckY0YIOK2EiIG2A8dZily1D
+	oR5BcdujjR+QQy7cpbrs8h/HWUvkh92dSN24ddfiE1p409Hzn3FCrJiNd5GbQ89AVxrC6tYqEoXmM
+	PqlYbtrCGQfaEnkXqkeQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x3zTS-00000009nXq-1wmQ;
-	Tue, 08 Sep 2026 17:19:10 +0000
-Received: from lahtoruutu.iki.fi ([185.185.170.37])
+	id 1x3zjF-00000009qMm-3wcR;
+	Tue, 08 Sep 2026 17:35:29 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x3zTN-00000009nUP-1ume;
-	Tue, 08 Sep 2026 17:19:08 +0000
-Received: from darkstar.musicnaut.iki.fi (85-76-138-200-nat.elisa-mobile.fi [85.76.138.200])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange secp256r1 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: aaro.koskinen)
-	by lahtoruutu.iki.fi (Postfix) with ESMTPSA id 4hfVyj3s1Sz49Q5S;
-	Tue, 08 Sep 2026 20:18:37 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=lahtoruutu;
-	t=1788887928;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PO/N7p293WhZWOnEDuSy9gtwR4Cj1KkgRIMnOyAdkIo=;
-	b=RuEeEMW/lTLQi0I0YRvcxTIwqjW3vNe/zSCBmL/PGJcJBZCIMJydTjFu34u3aTjpaeBQp/
-	qlxsWAySlfMOjDBRxCvil5yr9Go9xiMyb3yHsgrHzpvjURsZDuC2J0VNoTCAzH9d50ohZ9
-	SZt4pd7ThrbA6qTlPwQRFXl85Go9ymb2mUnYH8zcdlBH8xKgdDG/aUdijBE6B91mHYsf/3
-	jHGxS5ZdtOAqcHIzQf8RLPi05/UAICgWjCa4RVxqPJrKEa4fpqAwol5EP2Mr/pyCO5XkJf
-	TvQHKUsuqJlrBKO1872gFYm514Sf7gAjW1wQgR4YUn/6wUUZCkdvej9fYv4iag==
-ARC-Seal: i=1; a=rsa-sha256; d=iki.fi; s=lahtoruutu; cv=none; t=1788887928;
-	b=SbNwL400m2OjexdcOokzSVLBXJYp5eFG2UrettS0xu6rLtPQAw0BoPf/Rha3nNm32X4n6N
-	pZhnu1IOhmA42K4eSL3KfjRee1wbSyxocwUHfDcWMWOHXj4ILLfIYj0jWl0C3v0shda8Cs
-	YtShuPaJjzTUQuyHUm+jWn6ClSqpo3i6e8bdD1Sy6wO5h9/gMFr72HuFxxQuuwAWWrwBjJ
-	Bvhd7kAL7qs2ZH5rUYZr3YJgdQLEkmeHK6NniKr8EnUhnI15MVz9pr297APC9kWFLR28Nd
-	gJE3miv9HUpHfPcdmHHFoGcNaVcJ+kap7WMST5SiQb1OOG5go9hAWHx3O2mZBA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
-	s=lahtoruutu; t=1788887928;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PO/N7p293WhZWOnEDuSy9gtwR4Cj1KkgRIMnOyAdkIo=;
-	b=PKxyd3l3jvpv/hX9vp8woYeZp39vkZDVbD7MEec2pYDL0IMXGYLnkm9tAwprnb+m4HisQ2
-	CW5kybZg+P7otj2oJtrIFVpdmVNtKUmS31fGV6YnREg1F9XRdbVjOZCdwPkB+jNi1dUtUI
-	7yL74o8J8adJHO9mTvoZjYN74doQp6+pmwVJQy8Vv4FXx5KqxhCn4/JS5JJmDwh/x0KBFz
-	RKjUDwmtYkvNckHVaeu/b+tTcKJKCccwev1BtIq7RW5wBTe5/NKaKTS+d0hIbqi3vontaO
-	eaNQzuBeoWECcyoUJmaDmeTAaq1rBu7nKsbJHhov2Dyhro3U1y7boF5omjgoAA==
-ARC-Authentication-Results: i=1;
-	ORIGINATING;
-	auth=pass smtp.auth=aaro.koskinen smtp.mailfrom=aaro.koskinen@iki.fi
-Date: Tue, 8 Sep 2026 20:18:35 +0300
-From: Aaro Koskinen <aaro.koskinen@iki.fi>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Krzysztof Kozlowski <krzk@kernel.org>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Linus Walleij <linusw@kernel.org>,
-	Russell King <linux@armlinux.org.uk>,
-	Drew Fustini <fustini@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-	Rob Herring <robh@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
-	Liviu Dudau <liviu.dudau@arm.com>,
-	Sudeep Holla <sudeep.holla@kernel.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Frank Li <Frank.Li@nxp.com>, Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	Vladimir Zapolskiy <vz@mleia.com>, Stefan Agner <stefan@agner.ch>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Andreas Kemnade <andreas@kemnade.info>,
-	Kevin Hilman <khilman@baylibre.com>,
-	Roger Quadros <rogerq@kernel.org>, Tony Lindgren <tony@atomide.com>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>,
-	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-	Gregory Clement <gregory.clement@bootlin.com>,
-	Robert Jarzmik <robert.jarzmik@free.fr>,
-	Kristoffer Ericson <kristoffer.ericson@gmail.com>,
-	Ethan Nelson-Moore <enelsonmoore@gmail.com>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Alexander Sverdlin <alexander.sverdlin@siemens.com>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Karl Mehltretter <kmehltretter@gmail.com>,
-	"David Hildenbrand (Arm)" <david@kernel.org>,
-	Nicolas Pitre <npitre@baylibre.com>, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	devicetree@vger.kernel.org, imx@lists.linux.dev,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-omap@vger.kernel.org, Paul Walmsley <paul@pwsan.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S. Miller" <davem@davemloft.net>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Kyungmin Park <kyungmin.park@samsung.com>,
-	Helge Deller <deller@gmx.de>, Tero Kristo <kristo@kernel.org>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	linux-clk@vger.kernel.org
-Subject: Re: [PATCH 06/13] ARM: omap2: remove omap24xx support
-Message-ID: <aqBDa2f__ZE5BQao@darkstar.musicnaut.iki.fi>
-References: <20260908152808.3928630-1-arnd@kernel.org>
- <20260908152808.3928630-7-arnd@kernel.org>
+	id 1x3zjF-00000009qMV-09GX
+	for linux-mtd@lists.infradead.org;
+	Tue, 08 Sep 2026 17:35:29 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id C765E43BB7
+	for <linux-mtd@lists.infradead.org>; Tue,  8 Sep 2026 17:35:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF1C11F00ADE
+	for <linux-mtd@lists.infradead.org>; Tue,  8 Sep 2026 17:35:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1788888928;
+	bh=zvjd/OzBfuPYT7BKbdMoiUi8iXO0iBXgZckMkZOu3PU=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc;
+	b=Qwshzapm39uXq2bVZZ9GfIJxkRheR3vOmylHbJtw3OxtcIqEw4JoMA7w+Tw/kgH4O
+	 1rCS4JS58AFDBjVvowhwlytP979SDLVjwHHeX8h/SjjynwzRGtIxITSyRESG7cOEvl
+	 3HtdMPZIJMUxw/VSwULMfZECLECqDa8XTzdlotHHLNl7Z18J9S91ysKJU/+rsSE3st
+	 zRG2A5Weif3rhmhHI0XD5iRES+YAIJcQ2wJO4+SOoBi8ErXXYJ7STnxRAwRPBCYu0W
+	 desQfa5d0YO4aFUsg16AnAqsoQKwbyDEOsvhbUJ1x0nYUQ/eNxL3zzmcUyeTMJuXyv
+	 Si2cRn1tsxNWA==
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-5b4ae3e201cso4257935e87.2
+        for <linux-mtd@lists.infradead.org>; Tue, 08 Sep 2026 10:35:28 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AKwUvByjEVThDGTSXJSXLHbWC+YcM2PbV2BVnKcnzOZaDZkuPbVG61BmidxnH6o3wXXl7Ps6VcGJoQdKADE=@lists.infradead.org
+X-Gm-Message-State: AFuF++nzx9J22dXccKWpcAAVSHdB3tkimderAFyHpDIPDgKhoyea+tSF
+	R/SNg5KBvqkokz/tamsBDO09Lt33YaLkAgptXximb0mc5vow1oXAKNTxeWbSbVfW+v3hQcGGvE2
+	axGrNEXq1TTt3e8p+0a4IPirw/SUwy48=
+X-Received: by 2002:a05:6512:3b2a:b0:5b6:1870:268a with SMTP id
+ 2adb3069b0e04-5b6187043cbmr4987140e87.59.1788888927352; Tue, 08 Sep 2026
+ 10:35:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
+References: <20260908152808.3928630-1-arnd@kernel.org> <20260908152808.3928630-7-arnd@kernel.org>
 In-Reply-To: <20260908152808.3928630-7-arnd@kernel.org>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260908_101905_687166_B150B80F 
-X-CRM114-Status: GOOD (  12.93  )
+From: Linus Walleij <linusw@kernel.org>
+Date: Tue, 8 Sep 2026 19:35:14 +0200
+X-Gmail-Original-Message-ID: <CAD++jLnPYmOre6_kZfftmOaWyNdDSTTNxsJn8PsnwA=KqoYXkg@mail.gmail.com>
+X-Gm-Features: AcwNN1Vy2Xn3FP6S0HerShzZSl6E63lIl1BsiI7kBkdVTNwbpJho60d2kWzYdwE
+Message-ID: <CAD++jLnPYmOre6_kZfftmOaWyNdDSTTNxsJn8PsnwA=KqoYXkg@mail.gmail.com>
+Subject: Re: [PATCH 06/13] ARM: omap2: remove omap24xx support
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: Krzysztof Kozlowski <krzk@kernel.org>, Alexandre Belloni <alexandre.belloni@bootlin.com>, 
+	Russell King <linux@armlinux.org.uk>, Drew Fustini <fustini@kernel.org>, 
+	Arnd Bergmann <arnd@arndb.de>, Rob Herring <robh@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Liviu Dudau <liviu.dudau@arm.com>, Sudeep Holla <sudeep.holla@kernel.org>, 
+	Lorenzo Pieralisi <lpieralisi@kernel.org>, Frank Li <Frank.Li@nxp.com>, 
+	Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
+	Fabio Estevam <festevam@gmail.com>, Vladimir Zapolskiy <vz@mleia.com>, Stefan Agner <stefan@agner.ch>, 
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+	Aaro Koskinen <aaro.koskinen@iki.fi>, Andreas Kemnade <andreas@kemnade.info>, 
+	Kevin Hilman <khilman@baylibre.com>, Roger Quadros <rogerq@kernel.org>, 
+	Tony Lindgren <tony@atomide.com>, Nicolas Ferre <nicolas.ferre@microchip.com>, 
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>, Andrew Lunn <andrew@lunn.ch>, 
+	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, 
+	Gregory Clement <gregory.clement@bootlin.com>, Robert Jarzmik <robert.jarzmik@free.fr>, 
+	Kristoffer Ericson <kristoffer.ericson@gmail.com>, Ethan Nelson-Moore <enelsonmoore@gmail.com>, 
+	Geert Uytterhoeven <geert@linux-m68k.org>, Alexander Sverdlin <alexander.sverdlin@siemens.com>, 
+	Shawn Guo <shawnguo@kernel.org>, Karl Mehltretter <kmehltretter@gmail.com>, 
+	"David Hildenbrand (Arm)" <david@kernel.org>, Nicolas Pitre <npitre@baylibre.com>, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	devicetree@vger.kernel.org, imx@lists.linux.dev, 
+	linux-stm32@st-md-mailman.stormreply.com, linux-omap@vger.kernel.org, 
+	Paul Walmsley <paul@pwsan.com>, Herbert Xu <herbert@gondor.apana.org.au>, 
+	"David S. Miller" <davem@davemloft.net>, Mauro Carvalho Chehab <mchehab@kernel.org>, 
+	Kyungmin Park <kyungmin.park@samsung.com>, Helge Deller <deller@gmx.de>, 
+	Tero Kristo <kristo@kernel.org>, Stephen Boyd <sboyd@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, linux-media@vger.kernel.org, 
+	linux-mtd@lists.infradead.org, linux-fbdev@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, linux-clk@vger.kernel.org
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -134,32 +100,39 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
-
-On Tue, Sep 08, 2026 at 05:27:56PM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> The omap24xx SoC platform was used in the Nokia N800 and N810 tablets
-> released on 2007 and was among the first ARMv6 CPUs in products that
-> made it into products.
-> 
-> Unfortunately the early ARM1136r0 CPU cores had a number of quirks that
-> caused a disproportionate amount of work to keep them compatible with
-> later ARMv6K/v7/v8 implementations.
-> 
-> Drop the support for this SoC in order to allow removing ARM1136r0.
-> 
-> Cc: Aaro Koskinen <aaro.koskinen@iki.fi>
-
-Acked-by: Aaro Koskinen <aaro.koskinen@iki.fi>
-
-A.
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gVHVlLCBTZXAgOCwgMjAyNiBhdCA1OjI54oCvUE0gQXJuZCBCZXJnbWFubiA8YXJuZEBrZXJu
+ZWwub3JnPiB3cm90ZToKCj4gRnJvbTogQXJuZCBCZXJnbWFubiA8YXJuZEBhcm5kYi5kZT4KPgo+
+IFRoZSBvbWFwMjR4eCBTb0MgcGxhdGZvcm0gd2FzIHVzZWQgaW4gdGhlIE5va2lhIE44MDAgYW5k
+IE44MTAgdGFibGV0cwo+IHJlbGVhc2VkIG9uIDIwMDcgYW5kIHdhcyBhbW9uZyB0aGUgZmlyc3Qg
+QVJNdjYgQ1BVcyBpbiBwcm9kdWN0cyB0aGF0Cj4gbWFkZSBpdCBpbnRvIHByb2R1Y3RzLgo+Cj4g
+VW5mb3J0dW5hdGVseSB0aGUgZWFybHkgQVJNMTEzNnIwIENQVSBjb3JlcyBoYWQgYSBudW1iZXIg
+b2YgcXVpcmtzIHRoYXQKPiBjYXVzZWQgYSBkaXNwcm9wb3J0aW9uYXRlIGFtb3VudCBvZiB3b3Jr
+IHRvIGtlZXAgdGhlbSBjb21wYXRpYmxlIHdpdGgKPiBsYXRlciBBUk12NksvdjcvdjggaW1wbGVt
+ZW50YXRpb25zLgo+Cj4gRHJvcCB0aGUgc3VwcG9ydCBmb3IgdGhpcyBTb0MgaW4gb3JkZXIgdG8g
+YWxsb3cgcmVtb3ZpbmcgQVJNMTEzNnIwLgo+Cj4gQ2M6IEFhcm8gS29za2luZW4gPGFhcm8ua29z
+a2luZW5AaWtpLmZpPgo+IENjOiBBbmRyZWFzIEtlbW5hZGUgPGFuZHJlYXNAa2VtbmFkZS5pbmZv
+Pgo+IENjOiBLZXZpbiBIaWxtYW4gPGtoaWxtYW5AYmF5bGlicmUuY29tPgo+IENjOiBSb2dlciBR
+dWFkcm9zIDxyb2dlcnFAa2VybmVsLm9yZz4KPiBDYzogVG9ueSBMaW5kZ3JlbiA8dG9ueUBhdG9t
+aWRlLmNvbT4KPiBDYzogUGF1bCBXYWxtc2xleSA8cGF1bEBwd3Nhbi5jb20+Cj4gQ2M6IEhlcmJl
+cnQgWHUgPGhlcmJlcnRAZ29uZG9yLmFwYW5hLm9yZy5hdT4KPiBDYzogIkRhdmlkIFMuIE1pbGxl
+ciIgPGRhdmVtQGRhdmVtbG9mdC5uZXQ+Cj4gQ2M6IE1hdXJvIENhcnZhbGhvIENoZWhhYiA8bWNo
+ZWhhYkBrZXJuZWwub3JnPgo+IENjOiBLeXVuZ21pbiBQYXJrIDxreXVuZ21pbi5wYXJrQHNhbXN1
+bmcuY29tPgo+IENjOiBIZWxnZSBEZWxsZXIgPGRlbGxlckBnbXguZGU+Cj4gQ2M6IFRlcm8gS3Jp
+c3RvIDxrcmlzdG9Aa2VybmVsLm9yZz4KPiBDYzogU3RlcGhlbiBCb3lkIDxzYm95ZEBrZXJuZWwu
+b3JnPgo+IENjOiBUaG9tYXMgWmltbWVybWFubiA8dHppbW1lcm1hbm5Ac3VzZS5kZT4KPiBDYzog
+bGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZwo+IENjOiBsaW51eC1vbWFwQHZnZXIua2VybmVs
+Lm9yZwo+IENjOiBkZXZpY2V0cmVlQHZnZXIua2VybmVsLm9yZwo+IENjOiBsaW51eC1tZWRpYUB2
+Z2VyLmtlcm5lbC5vcmcKPiBDYzogbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmcKPiBDYzog
+bGludXgtZmJkZXZAdmdlci5rZXJuZWwub3JnCj4gQ2M6IGRyaS1kZXZlbEBsaXN0cy5mcmVlZGVz
+a3RvcC5vcmcKPiBDYzogbGludXgtY2xrQHZnZXIua2VybmVsLm9yZwo+IFNpZ25lZC1vZmYtYnk6
+IEFybmQgQmVyZ21hbm4gPGFybmRAYXJuZGIuZGU+CgpTaW5jZSBBYXJvIHNheXMgaXQgY2FuIGdv
+LCBpdCBjYW4gZ28uCgpJZiB0aGUgbjgwMCBoYWQgYSBQb3N0bWFya2V0T1MgcG9ydCB0aGluZ3Mg
+d291bGQgYmUgZGlmZmVyZW50LApidXQgaXQgZG9lcyBub3QuCgpZb3VycywKTGludXMgV2FsbGVp
+agoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+CkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFk
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
