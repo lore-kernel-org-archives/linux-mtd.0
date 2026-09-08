@@ -4,152 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F8FCC79FAD
-	for <linux-mtd@archiver.kernel.org>; Tue,  8 Sep 2026 02:57:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D003DC79F82
+	for <linux-mtd@archiver.kernel.org>; Tue,  8 Sep 2026 03:26:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Cc:To:In-Reply-To:
-	References:Message-Id:Subject:Date:From:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=BuUF6W9NXy7EwH2hb1Pz+xn6Mw9zgAdPwVYHfwdQUgw=; b=z9E8Ik2JEkbVAdXRSBYSb777i/
-	7W51J+Bgl0cMK+6tYcQsUEw8K9o3uTPkfzbBmpJh/+6pe7IJzV/9Htu1tm5KOabbg1LW8mrGtwSz7
-	e7WX8R3yb0iXPj4VOEL/VR+4UUE2j0sT+NC0ag2xaEV25OadG6t9Yb+YayVDGccYt8VQc8FmGakPG
-	lDVq/E7SeLc1lgWb400VyVRB50qcrrF+0IbK5cT2r+GNX0iUL9szFGR7we31fc/AXLU3S7jPRJhgP
-	3j7t1LEm4q5AQagLkv5zomRpg3QEWYn7GGJWiq3UqUjkCO0LUkduBEQ6S9zkT+mq1dBiO6xVvWmOO
-	wIUkKpZQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Subject:Cc:To:From:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=NBgFNNtDX0Y9cXGy50PX3FZt0vSOozW9yNZGTs91b2U=; b=Yusn9ah0/Swg0w
+	ZYURUyKTqf6mDFIE9suh5pJMnRpy5xMFEw8l/a7rRncsERT73HkKKmP+13h/cipn5K52l+grEFUqc
+	e/Cuug5AQokCgPyoDEJY7eM/tnRlUnj2gYr9fux8FjhhDw6c1unyoNa9nVn1BIfTaZ5aQ5+mWWWl+
+	qsnr6nMLgUYm+0AVjdGDQDx/CTI4mkMH8jpZJSMpLV1xbqHmc+pCZXfZmhhHQvWVLLLOvGbJVvyF1
+	r8PGy4zZZht4Z1D4nG91FMLhdEkrm5s6+MNAMx+PIhkQys+y5qRRRL3Om/QMmEW9qXw99feskFP3t
+	SyYsJvbLOe8gTZa1or2w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x3m15-00000007ww5-20Eh;
-	Tue, 08 Sep 2026 02:56:59 +0000
-Received: from mail-westus2azlp170120002.outbound.protection.outlook.com ([2a01:111:f403:c007::2] helo=MW6PR02CU001.outbound.protection.outlook.com)
+	id 1x3mTJ-00000007yL1-0i9a;
+	Tue, 08 Sep 2026 03:26:09 +0000
+Received: from out203-205-221-221.mail.qq.com ([203.205.221.221])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x3m12-00000007wtO-3mzC
+	id 1x3mT5-00000007yKM-32zl
 	for linux-mtd@lists.infradead.org;
-	Tue, 08 Sep 2026 02:56:58 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=D89odFjd4J8fZYpZbtTTxSAQYM05otqtuD1VPTv27NrQ2HugI4DXv/f7GC7fms0U5Gs0t3R48/sYBfAEkjmALSkW5bXMXYaMn0VRpZtny7UF7v7ozPUK0vUJ/9cVbsjBA91FzpPbZVzMk7txjbJ9BiD1oqDF0P9b9096Ask5RoSanaUB3ZdQ7G/bGI2gCX0eTb1+gI2b92fWTil/TJd3NxLvEGm8spzVadtnD3eI5LwTR1jXeWA1o79rZLIKwG4WAMtLLvgFLhaW+SraYYn8UZ0r2b5Zr7IplCyIM/2z2+eapWidQz0D69g3yxdLOxYDFrsGyWR69vIK5vbHA3+Iog==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=nrSqr57luulPh6wG91+g+Vft/27AmtHC/vIs3/cRylA=;
- b=BdIWVY/L7Gj1DfLWxe5luuUjZv9hTwyOkA/VjUD+DrquSN/OtdrXTdhsu5LBvbRQfzCAYUfPkcPiWROj/Ju/40G1O2kjZ5hK2rvZqkPSGB9Lfw3f4Ku0zdrQcYaJsBNQvQKK5NHP8oDK7Hn9b8J6yZ6i8wBN7OHtiDTeGedpe3hVVcyJmatYiRLx0Ef4F0oZRJuEv9YUIZjFLm/TxHg8SD8086+RvwnmZY9eFe946NimYq/BHXU8G/k9qarRiUTYz9m9N9uMs+chGWr1kMvAm+gipXD2APDZqsvvvjYW3nGRwiSBB9moKBwpinJHxOCoyegFFrNrEA+54MXjLwDiSw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nrSqr57luulPh6wG91+g+Vft/27AmtHC/vIs3/cRylA=;
- b=cAiFdvpWKSRdW4w4EtAymInXpriM+MgZw3Z7ZnjBBXHrAF9NGoUeTt5gEMlDgz3e85kahrLY/VSQrUfT/uDXHXoSGf9BFF7Qto+3R9TGTVCYX7uyzyj6mOw/MYiEoN9mDriTLKex/azj7SPVCSZkCxcKeXPmPtxugYH1tOZXXXGvsTlWDYHZ7D6LXnCLxGg9tvzWqAfQUkG3nEJ0iDO3uamebJ6ixsl9RsxGaBe3Tj3yGM3Wq11YIJu1PmT0NwlBh+PMY5ec1Va3Vk58GyaHD+raee0DMLun2ui7zJmP3buGmvJPiZNwG0kC/trBBAo522V4PhDfoqh1b/fLPfr8JQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from IA0PR12MB8374.namprd12.prod.outlook.com (2603:10b6:208:40e::7)
- by DM6PR12MB4435.namprd12.prod.outlook.com (2603:10b6:5:2a6::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.382.15; Tue, 8 Sep
- 2026 02:56:46 +0000
-Received: from IA0PR12MB8374.namprd12.prod.outlook.com
- ([fe80::d85f:4c87:ae84:3f16]) by IA0PR12MB8374.namprd12.prod.outlook.com
- ([fe80::d85f:4c87:ae84:3f16%5]) with mapi id 15.21.0382.014; Tue, 8 Sep 2026
- 02:56:45 +0000
-From: Zi Yan <ziy@nvidia.com>
-Date: Mon, 07 Sep 2026 22:56:20 -0400
-Subject: [PATCH v3 13/14] treewide: adjust comments on PagePrivate and
- PG_private
-Message-Id: <20260907-remove-pg_private-v3-13-6ae22f9d9272@nvidia.com>
-References: <20260907-remove-pg_private-v3-0-6ae22f9d9272@nvidia.com>
-In-Reply-To: <20260907-remove-pg_private-v3-0-6ae22f9d9272@nvidia.com>
-To: David Hildenbrand <david@kernel.org>, 
- "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
- Andrew Morton <akpm@linux-foundation.org>, 
- Muchun Song <muchun.song@linux.dev>, Lorenzo Stoakes <ljs@kernel.org>, 
- "Liam R. Howlett" <liam@infradead.org>, Vlastimil Babka <vbabka@kernel.org>, 
- Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>, 
- Michal Hocko <mhocko@suse.com>, Baolin Wang <baolin.wang@linux.alibaba.com>, 
- Nico Pache <nico.pache@linux.dev>, Ryan Roberts <ryan.roberts@arm.com>, 
- Dev Jain <dev.jain@arm.com>, Barry Song <baohua@kernel.org>, 
- Lance Yang <lance.yang@linux.dev>, Usama Arif <usama.arif@linux.dev>, 
- Gregory Price <gourry@gourry.net>, 
- Ying Huang <ying.huang@linux.alibaba.com>, 
- Alistair Popple <apopple@nvidia.com>, Johannes Weiner <hannes@cmpxchg.org>, 
- Qi Zheng <qi.zheng@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
- Kairui Song <kasong@tencent.com>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
- Zi Yan <ziy@nvidia.com>, Ilya Dryomov <idryomov@gmail.com>, 
- Alex Markuze <amarkuze@redhat.com>, Viacheslav Dubeyko <slava@dubeyko.com>, 
- Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, 
- Richard Weinberger <richard@nod.at>, Zhihao Cheng <chengzhihao1@huawei.com>, 
- ceph-devel@vger.kernel.org, linux-nfs@vger.kernel.org, 
- linux-mtd@lists.infradead.org
-X-Mailer: b4 0.15.2
-X-ClientProxiedBy: YQ1P288CA0016.CANP288.PROD.OUTLOOK.COM
- (2603:10b6:c01:9e::21) To IA0PR12MB8374.namprd12.prod.outlook.com
- (2603:10b6:208:40e::7)
+	Tue, 08 Sep 2026 03:26:01 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1788837949; bh=RQhosnyt6aERtesI5svtuDxWAhd8P12cd7CiHkOvBTU=;
+	h=From:To:Cc:Subject:Date;
+	b=pg6K0tRVnCw3yPA7Yskb9BeB/0IiS6xrCmxlpJIVxTyWxWAkH+3oY7M3AWk4az//m
+	 SC/l+HoFZWNZaUrT/67Jrmd/UMMceiitocSG8KmBDLOzUWKfXdsqAKdItneJmSc5sS
+	 vSUOItENTXGBZVmlnJi97Cg3Xjh/Z/osysYEwxR4=
+Received: from localhost.localdomain ([223.166.55.8])
+	by newxmesmtplogicsvrszb51-0.qq.com (NewEsmtp) with SMTP
+	id 66039CB1; Tue, 08 Sep 2026 11:25:32 +0800
+X-QQ-mid: xmsmtpt1788837932t51o31uiw
+Message-ID: <tencent_4C47F17C98F6F164274CEE84638558D62308@qq.com>
+X-QQ-XMAILINFO: NHWsITUsYMGeIo9jtsaxRfEhMDZ0EUQn/MHOxKkLfED+rUDknmzcqdqV8w2CBD
+	 8KRpHtmF05mGbRPpz/84e+3Pvep1R2QyUacznuwc3lIxe8ecMmkLLkzzVD59ij8TZ6X5npd1uUqO
+	 D/WZaIY3ewl99tElBQZ7l69rz+9GmC3qxxsTAi4COHmp9CeGUtDIIOJLG9s/hZvA5ZOzRaF0CoeN
+	 BnGkVfrDUA84FBDhuq61ZhiWkPwYZP07uE7ru5g+TBhxNDtzsE/zFKdM/q+YETM73c35nkmHK1ba
+	 FO6QaXF4Ks++E4kpHZUpno+NF9Yfx6uLO8GGgW87fpy4AmWSwW+chD6qswqummClUmVXGok22nGa
+	 yeShV6uEdvYSMjHaDH237xZ82GThtyN8jJkYtYWuDP13cwbAzDX1pa6siKHVTsUeV67ONkajm1jM
+	 AkV74pOsGhh+lRFmku8XbzNsgasVmoYpx6lKroN3EzFXo6zn5n/EpPyHJHPi/VhWJofJXf5SuECP
+	 xbKu5wzaEvq3NcaYb/xDQkUqvJgXPlcPYllkEmecqQlguW8A0lKZ7pwOKXsV3soMOVTw7ZI8eH7w
+	 c8C69XBmDBXp1/zVCFFD2HWRdVdZm47Wf3sFX1SwdynL+SinHMnPwyagSdqJZn7kL6QYj2N8Jdaz
+	 gDCrL2S3AOEg3iA3d/mzseMVTKeruM6OBuWT/ydqb9DozRyhSQTw0/yQP9Kiq1srcG7fh2hcWTwA
+	 uhPRrDwh+cCFrNV2HC4+WLW/+anBmJkinWLmtHa6Kz9T/fZSnfLj1MSTwSReFrBJ+DO9hzxRcEf9
+	 ihDtPDsrAmjZ06edpD/9bieklsOVWvq+YcKthMf2UmA0uU9pUy7BdsOkJwtnCg66TnWerEqzuldL
+	 24N7zGzVbIoviwnZtG28ss8ej3oU8gPsxwl7Pn/GHnn4EgABXSghG8iUrNLfZWxcraTD2THvXrBo
+	 bcPi77auJ6QkJJgs22hSiJ6kA6wVFq9I07Q7CNAsYyQHy1vQDYxAFpxOvoZGRi4CPtbmC1DyfWMD
+	 9Cdvkn4qxLjwocQ5RPKoL1FpM9z57o9W6Uu1vIsWxu0ShUPHyk/hcpCcd5HAE=
+X-QQ-XMRINFO: OD9hHCdaPRBwH5bRRRw8tsiH4UAatJqXfg==
+From: fzz <1768315307@qq.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Richard Weinberger <richard@nod.at>,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Zongzhen Feng <1768315307@qq.com>
+Subject: [PATCH v2] mtd: spinand: cache the last read page to avoid redundant SPI operations
+Date: Tue,  8 Sep 2026 11:25:30 +0800
+X-OQ-MSGID: <20260908032530.3309746-1-1768315307@qq.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA0PR12MB8374:EE_|DM6PR12MB4435:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1050ba67-4793-448c-cfaa-08df0d54d1cb
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|7416014|366016|23010399003|1800799024|921020|10067099003|56012099006|11063799006|22082099003|18002099003;
-X-Microsoft-Antispam-Message-Info: IoLTX8IdzLuQ+qwI7J3xzQ3FIh536GTL0RI4DvxcQ8JoH90kpyNRSUDmgowv4Q8WizXNjOmVTbSAy4kPZgc+lLnygMW54vYgNb9VHwRA8c/p4s20Hj/fzDVJ5i6ZkaUKhhhamXMNHp8lY6VP/e2X0BhilhxMr634ky/4syC6qdSYD1QZ2geE3wrMqWaJSa/r//ogcfLPrCNO5JHhxOQz2pwWpBQbz9RNQAWYhcWkrDibIulzv7FhIeC+zDxM7JomXYwLO74rAU5XxJNjuIFn0kkeZMTMeb88C5ef5QeGdlk7D3njaaokK/4xBYvc3Dm7kaaZRdNa+9qskZ86SYoG/san8hgCRI60KC/XmwWXDprJwHFdoJ6UOE+NsPAVVnn0BvHxSnWSJ3RbYi3QzS38QwR8aOsEs/RdaHA9tRRB51fMOdRr1UorE9kssOVCCEUN4hAlQUT1h6TzJBk/9AFbNYKdWwtIrCwFZIC7airXXmeMb1HjgrMF/8ne1P2kMbEn75cVlvv8DmZnKjHLdoO/LRtado462Uambv8ul9JtszuHhNkWPX7f6e8dOxz9HADzbJVp/3GL6z2YZmNppIG3ZlQ6wPiVDFopI1Vhwiv/kkXp9xNWuwbvxFqEUOOwUr+B+33Bl3rG8PD9tFCh5lQnrtRYhz8wrGQFh/ML/bM4KEDfr51oOkbWXUhRZrlcaUScE5mU79zyHj0Mxlt1fD+rzA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA0PR12MB8374.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(366016)(23010399003)(1800799024)(921020)(10067099003)(56012099006)(11063799006)(22082099003)(18002099003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aWFuaGpCZ29EQUVWS2xKYzNlenVUWHd1N0hBRjZXRUw5R2dKcWV6cEdXSGJG?=
- =?utf-8?B?bUVYZ3N5MTAxNFhkYTNQa2NrVXVTeSs3aDBNam9qU1ZkcVJLM2ZvMUhkVzEy?=
- =?utf-8?B?cUpSd2diekFrSkxEVlJNVGphZ3NaWHkyMDhKQWE3QTZrcVpZYnAvREUxeUFX?=
- =?utf-8?B?cTBic2JtN0JaR29IQm9lemx0M1RLMitoY1E1SnpMSGl2b293aTA3RjRVQ1VF?=
- =?utf-8?B?Q1lWaUhpRjhIVzMwb2lseEZndGprQS9FdW5ROEltUHpqaFBHcW02Tk5rZGs1?=
- =?utf-8?B?Ti9DKytnd2JQUXBkNVJCOGUvSUN1Sjk0RUlqUFp6V3EzQzc1eXl6SkxRd0JP?=
- =?utf-8?B?eUMxZllRWVJSY2RVWlkwZ29lUTAvR1R4VlE3NnFtTGxqR0FMMGhQTHZxbWhv?=
- =?utf-8?B?bHI2WEEzR3lyMzQ2eVE0MHBOeGNOMzk2V0hDU0wyVnRDam16TTJKSGg0K0FU?=
- =?utf-8?B?WjVPNHRjTDlRQmNBZHpadHFkaHNLUmpwditPRTUxNjZxQUdMOVNSK2xyQjNW?=
- =?utf-8?B?V2hISDl6d2hmOXVEUkl2d3BwM0hnRS9JMUUxb3VHa01xd0Rka1JIMC9VNFVQ?=
- =?utf-8?B?YWw3cU5DL2xsQ2h4YWtWV0lmUEczRVVVZmxtVVhWTUJUZXBiMjVUeHQyUXlz?=
- =?utf-8?B?UTdnQ05wenVKQWtHUlJMcnBtb1R6N0V5N3RvM1g0cWE1YmllT1Z0S1ZocDMw?=
- =?utf-8?B?Y2IvcHBrYmw4aXpBSE5tWGpwVVhTdWtkdmR2RVpNNFVVWDNXTHVITElFTVJv?=
- =?utf-8?B?NXRORlNHZkU4SEl4L2xQL3p3K28xUERORzNSbzUxTkdxSlBHKytYRlN6bk5C?=
- =?utf-8?B?d2lvTWVHWnBGMlVwOFk3UFZaMnRkclVSNk1hZzhyQlBuVlJCZkx5MElFWjlO?=
- =?utf-8?B?aitqTG9WNnhINjdZMDdxNkxWb21TMUhIYWdXc240cGNLSnI2L1FyVUt6czZE?=
- =?utf-8?B?OHltbjdyNWxzc2M0RWtDZTdGT2dEQ1FSV0lUY1dKR0JSbVhBTkdJVVBsWGFs?=
- =?utf-8?B?dGI2cXV6YUlKQ1RaSUxHSkE1c0JhZG55WGtvQlMyNm4yQXplMEIyRDlPVHM4?=
- =?utf-8?B?OC9JdDNiNmtOb3hmTWJCeEI4Q1gxUzFZdTZJdEd4WDMyZWhWMkp1QzdCalph?=
- =?utf-8?B?RGkzRFJGTGJwaVVKZmNoN1BWQ1pFczFOTDA4Rm1vK0N6TEZScXlPc3BuYzRo?=
- =?utf-8?B?NkowQk9aQTdpU2xzZjVCaEIzNG13K0hsZktiU1ZIOUhIeVpyeEV5Z2g3LzEv?=
- =?utf-8?B?MjZxdzlMdEJvWENnelFhTVlLWkJ6Uyt1SDlkT3FsQTlBYitCR2lwYWg5T0Fp?=
- =?utf-8?B?ZmlUa09SRGlZaFBYaUprdTc3bUpwUHJZUkp5OGJGNWw5TVBCUG1Nb1JscVEv?=
- =?utf-8?B?S1pHNXBHWExvdC80aVR2WEVPOVE5SkRHckdOS2g0R0RtbnFDZ2FpZk1YWDc4?=
- =?utf-8?B?MFpWbmxZbG1kdGFCZEJPQUl4aElDWVBLaXBTWEF6RUVxdk5xUmVwTHgwQjg4?=
- =?utf-8?B?NHh0VGtrblJKanZJd05oaktsR2tEYkljU1Y4S0tsUVBkaFNISWs3dUN1cHhJ?=
- =?utf-8?B?d1VrV0hWSFZTbmhuUWlWMUxnWS9jZHA0Um8wMUU3VCt3c2xIV2poVHJqUkxF?=
- =?utf-8?B?YnRzS2wzU205c2lEbmhtemRBZko5Tm0rL3FHZDROWTdWUFJsVE0xeDYwSHpp?=
- =?utf-8?B?Z0Z2OFNtcXd4d216LzhvZFZVbXNhYXVySXlwMEVZUWNSOFYrbzNFcWpIMjlq?=
- =?utf-8?B?b29aTmtqY1oySUNvdG1tcWZEQk51V3V1ZXFIQXdVY0NCWHFjcW0zZ3NnZXJ3?=
- =?utf-8?B?bmRaUjByUnZuZ3A0VEFZWXBlNVl5b29pWDhGcW0vL3NjZzB1THhJcllQYlI1?=
- =?utf-8?B?VVBwcEUxb1FXT0l4YWJVSStJbFh0N1Rjc0MyanJHM3hBSklJTUp2K3YrU203?=
- =?utf-8?B?dmpDaTY0Ri9PalNlRFlpUmN1SUlSUVoxNWQ1bHpKbnVza2ZQODUvYk9OaURy?=
- =?utf-8?B?UWdFZkQrRFJscGZNRlU5dTJPSXdScFhhRlRaVXZxY0lvVDVNUGFNNzJJWTNj?=
- =?utf-8?B?aHA5MlFSemxtTVd3bTlObG9iYU4ybEZZeTgyMEhrVENqbkpZVjY2V2lOVWVt?=
- =?utf-8?B?U2xwZzlZOXQrM0cwSzg1ZDRnbHEvVG5OeHhiNlNMRzZUVGxaQ2U0R1BPNVVK?=
- =?utf-8?B?VldOeVBuZWpXK3ZLRjNHTVEvTjVCNVJZOS8zT0lmVTNubWtUR2Q2SkFEMW1Y?=
- =?utf-8?B?Yk9lQXl5RDlXdjZLOTdHb0VyWUk3SitRVGNuVXlhQUdxR2FkOWFaNk41VktC?=
- =?utf-8?Q?mZdMIQwqpU84cDxF/2?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1050ba67-4793-448c-cfaa-08df0d54d1cb
-X-MS-Exchange-CrossTenant-AuthSource: IA0PR12MB8374.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2026 02:56:45.8933
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Lb98meLRXOz3e82QtRLkkTWjxqnJdTLreyzHIPenqt2r/HtATMFMnE1WGn8Wi86w
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4435
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260907_195656_993386_13AC4C32 
-X-CRM114-Status: GOOD (  26.95  )
+X-CRM114-CacheID: sfid-20260907_202557_961673_F952C64F 
+X-CRM114-Status: GOOD (  17.42  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -166,166 +85,143 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-PG_private is going to be deleted. Adjust related comments to refer to
-page/folio->private instead.
+From: Zongzhen Feng <1768315307@qq.com>
 
-Assisted-by: Claude:claude-opus-4-8
-Assisted-by: Codex:gpt-5
-Signed-off-by: Zi Yan <ziy@nvidia.com>
-To: Ilya Dryomov <idryomov@gmail.com>
-To: Alex Markuze <amarkuze@redhat.com>
-To: Viacheslav Dubeyko <slava@dubeyko.com>
-To: Trond Myklebust <trondmy@kernel.org>
-To: Anna Schumaker <anna@kernel.org>
-To: Richard Weinberger <richard@nod.at>
-To: Andrew Morton <akpm@linux-foundation.org>
-To: David Hildenbrand <david@kernel.org>
-Cc: Zhihao Cheng <chengzhihao1@huawei.com>
-Cc: Lorenzo Stoakes <ljs@kernel.org>
-Cc: "Liam R. Howlett" <liam@infradead.org>
-Cc: Vlastimil Babka <vbabka@kernel.org>
-Cc: Mike Rapoport <rppt@kernel.org>
-Cc: Suren Baghdasaryan <surenb@google.com>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: ceph-devel@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-nfs@vger.kernel.org
-Cc: linux-mtd@lists.infradead.org
-Cc: linux-mm@kvack.org
+When squashfs reads files through mtdblock, the mtdblock layer
+splits I/O into 512-byte sectors. For a 4K-page SPI NAND, this
+means reading the same page 8 times (4096 / 512), generating 7x
+redundant SPI read-from-cache operations. Each such operation
+involves a full SPI bus transaction, significantly slowing down
+boot time and file access.
+
+Cache the last successfully read page in spinand_device to avoid
+these redundant operations. When the same {target, eraseblock,
+page} is requested consecutively, the data is served directly
+from the bounce buffer (databuf) via memcpy, skipping the SPI
+transaction entirely.
+
+The cache is invalidated on write and erase operations. RAW reads,
+OOB reads, and continuous reads are excluded from caching to
+maintain correctness.
+
+Signed-off-by: Zongzhen Feng <1768315307@qq.com>
 ---
- fs/ceph/addr.c           |  4 ++--
- fs/nfs/file.c            |  4 ++--
- fs/ubifs/file.c          |  8 ++++----
- include/linux/mm.h       | 15 ++++++++-------
- include/linux/mm_types.h |  4 ++--
- 5 files changed, 18 insertions(+), 17 deletions(-)
+v2: fix build error (use req->mode != MTD_OPS_RAW instead of
+    req->disable_ecc), fix whitespace noise, use real name
+---
+ drivers/mtd/nand/spi/core.c | 34 ++++++++++++++++++++++++++++++++++
+ include/linux/mtd/spinand.h |  9 +++++++++
+ 2 files changed, 43 insertions(+)
 
-diff --git a/fs/ceph/addr.c b/fs/ceph/addr.c
-index fad17df1d5082..f9b2ec9550481 100644
---- a/fs/ceph/addr.c
-+++ b/fs/ceph/addr.c
-@@ -122,8 +122,8 @@ static bool ceph_dirty_folio(struct address_space *mapping, struct folio *folio)
- 	spin_unlock(&ci->i_ceph_lock);
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index 8bf9301f25e7..21bc29ae62b8 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -560,6 +560,13 @@ static int spinand_read_from_cache_op(struct spinand_device *spinand,
+ 			       req->ooblen);
+ 	}
  
- 	/*
--	 * Reference snap context in folio->private.  Also set
--	 * PagePrivate so that we get invalidate_folio callback.
-+	 * Reference snap context in folio->private. Setting folio->private is
-+	 * what gets us the invalidate_folio callback.
- 	 */
- 	VM_WARN_ON_FOLIO(folio->private, folio);
- 	folio_attach_private(folio, snapc);
-diff --git a/fs/nfs/file.c b/fs/nfs/file.c
-index e1bdd10b35f10..38f830a6467c9 100644
---- a/fs/nfs/file.c
-+++ b/fs/nfs/file.c
-@@ -484,7 +484,7 @@ static int nfs_write_end(const struct kiocb *iocb,
-  * Partially or wholly invalidate a page
-  * - Release the private state associated with a page if undergoing complete
-  *   page invalidation
-- * - Called if either PG_private or PG_fscache is set on the page
-+ * - Called if either folio->private or PG_fscache is set on the page
-  * - Caller holds page lock
-  */
- static void nfs_invalidate_folio(struct folio *folio, size_t offset,
-@@ -555,7 +555,7 @@ static void nfs_check_dirty_writeback(struct folio *folio,
-  * Attempt to clear the private state associated with a page when an error
-  * occurs that requires the cached contents of an inode to be written back or
-  * destroyed
-- * - Called if either PG_private or fscache is set on the page
-+ * - Called if either page->private or fscache is set on the page
-  * - Caller holds page lock
-  * - Return 0 if successful, -error otherwise
-  */
-diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-index e73c28b12f97f..aa0298ce451ef 100644
---- a/fs/ubifs/file.c
-+++ b/fs/ubifs/file.c
-@@ -12,14 +12,14 @@
-  * This file implements VFS file and inode operations for regular files, device
-  * nodes and symlinks as well as address space operations.
-  *
-- * UBIFS uses 2 page flags: @PG_private and @PG_checked. @PG_private is set if
-+ * UBIFS uses folio->private and page flag @PG_checked. folio->private is set if
-  * the page is dirty and is used for optimization purposes - dirty pages are
-- * not budgeted so the flag shows that 'ubifs_write_end()' should not release
-+ * not budgeted so it shows that 'ubifs_write_end()' should not release
-  * the budget for this page. The @PG_checked flag is set if full budgeting is
-  * required for the page e.g., when it corresponds to a file hole or it is
-  * beyond the file size. The budgeting is done in 'ubifs_write_begin()', because
-  * it is OK to fail in this function, and the budget is released in
-- * 'ubifs_write_end()'. So the @PG_private and @PG_checked flags carry
-+ * 'ubifs_write_end()'. So the folio->private and the @PG_checked flag carry
-  * information about how the page was budgeted, to make it possible to release
-  * the budget properly.
-  *
-@@ -1509,7 +1509,7 @@ static vm_fault_t ubifs_vm_page_mkwrite(struct vm_fault *vmf)
- 	 *
- 	 * At the moment we do not know whether the folio is dirty or not, so we
- 	 * assume that it is not and budget for a new folio. We could look at
--	 * the @PG_private flag and figure this out, but we may race with write
-+	 * folio->private and figure this out, but we may race with write
- 	 * back and the folio state may change by the time we lock it, so this
- 	 * would need additional care. We do not bother with this at the
- 	 * moment, although it might be good idea to do. Instead, we allocate
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index c861525cda83f..0ceffe4f9ca02 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -2048,20 +2048,21 @@ vm_fault_t finish_fault(struct vm_fault *vmf);
-  *
-  * A pagecache page contains an opaque `private' member, which belongs to the
-  * page's address_space. Usually, this is the address of a circular list of
-- * the page's disk buffers. PG_private must be set to tell the VM to call
-- * into the filesystem to release these pages.
-+ * the page's disk buffers. It tells the VM to call into the filesystem to
-+ * release these pages.
-  *
-  * A folio may belong to an inode's memory mapping. In this case,
-  * folio->mapping points to the inode, and folio->index is the file
-  * offset of the folio, in units of PAGE_SIZE.
-  *
-- * If pagecache pages are not associated with an inode, they are said to be
-- * anonymous pages. These may become associated with the swapcache, and in that
-- * case PG_swapcache is set, and page->private is an offset into the swapcache.
-+ * If pagecache folios are not associated with an inode, they are said to be
-+ * anonymous folios. These may become associated with the swapcache, and in that
-+ * case PG_swapcache is set, and folio->private is an offset into the swapcache.
-  *
-  * In either case (swapcache or inode backed), the pagecache itself holds one
-- * reference to the page. Setting PG_private should also increment the
-- * refcount. The each user mapping also has a reference to the page.
-+ * reference to the folio. Attaching filesystem private data via
-+ * folio_attach_private() also increments the refcount. Each user mapping also
-+ * has a reference to the folio.
-  *
-  * The pagecache pages are stored in a per-mapping radix tree, which is
-  * rooted at mapping->i_pages, and indexed by offset.
-diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-index 5413bd10fff2c..9d6c945ba4104 100644
---- a/include/linux/mm_types.h
-+++ b/include/linux/mm_types.h
-@@ -108,7 +108,7 @@ struct page {
- 			};
- 			/**
- 			 * @private: Mapping-private opaque data.
--			 * Usually used for buffer_heads if PagePrivate.
-+			 * Usually used for buffer_heads.
- 			 * Used for swp_entry_t if swapcache flag set.
- 			 * Indicates order in the buddy system if PageBuddy
- 			 * or on pcp_llist.
-@@ -675,7 +675,7 @@ static inline void ptdesc_pmd_pts_init(struct ptdesc *ptdesc)
- #define STRUCT_PAGE_MAX_SHIFT	(order_base_2(sizeof(struct page)))
++	if (req->datalen && !req->continuous && req->mode != MTD_OPS_RAW) {
++		spinand->cur_target_cache = req->pos.target;
++		spinand->cur_block_cache = req->pos.eraseblock;
++		spinand->cur_page_cache = req->pos.page;
++		spinand->cache_valid = true;
++	}
++
+ 	return 0;
+ }
  
- /*
-- * page_private can be used on tail pages.  However, PagePrivate is only
-+ * page_private can be used on tail pages.  However, it is only
-  * checked by the VM on the head page.  So page_private on the tail pages
-  * should be used for data that's ancillary to the head page (eg attaching
-  * buffer heads to tail pages after attaching buffer heads to the head page)
-
+@@ -833,6 +840,20 @@ static int spinand_mtd_regular_page_read(struct mtd_info *mtd, loff_t from,
+ 		if (disable_ecc)
+ 			iter.req.mode = MTD_OPS_RAW;
+ 
++		if (spinand->cache_valid && !disable_ecc &&
++		    !iter.req.ooblen &&
++		    iter.req.pos.target == spinand->cur_target_cache &&
++		    iter.req.pos.eraseblock == spinand->cur_block_cache &&
++		    iter.req.pos.page == spinand->cur_page_cache) {
++			if (iter.req.datalen)
++				memcpy(iter.req.databuf.in,
++				       spinand->databuf + iter.req.dataoffs,
++				       iter.req.datalen);
++			ops->retlen += iter.req.datalen;
++			ops->oobretlen += iter.req.ooblen;
++			continue;
++		}
++
+ 		ret = spinand_select_target(spinand, iter.req.pos.target);
+ 		if (ret)
+ 			break;
+@@ -1064,6 +1085,12 @@ static int spinand_mtd_write(struct mtd_info *mtd, loff_t to,
+ 		if (ret)
+ 			break;
+ 
++		if (spinand->cache_valid &&
++		    iter.req.pos.target == spinand->cur_target_cache &&
++		    iter.req.pos.eraseblock == spinand->cur_block_cache &&
++		    iter.req.pos.page == spinand->cur_page_cache)
++			spinand->cache_valid = false;
++
+ 		ret = spinand_write_page(spinand, &iter.req);
+ 		if (ret)
+ 			break;
+@@ -1188,6 +1215,11 @@ static int spinand_erase(struct nand_device *nand, const struct nand_pos *pos)
+ 	if (!ret && (status & STATUS_ERASE_FAILED))
+ 		ret = -EIO;
+ 
++	if (!ret && spinand->cache_valid &&
++	    spinand->cur_target_cache == pos->target &&
++	    spinand->cur_block_cache == pos->eraseblock)
++		spinand->cache_valid = false;
++
+ 	return ret;
+ }
+ 
+@@ -2025,6 +2057,7 @@ static void spinand_cleanup(struct spinand_device *spinand)
+ 	nanddev_ecc_engine_cleanup(nand);
+ 	nanddev_cleanup(nand);
+ 	spinand_manufacturer_cleanup(spinand);
++	spinand->cache_valid = false;
+ 	kfree(spinand->databuf);
+ 	kfree(spinand->scratchbuf);
+ }
+@@ -2044,6 +2077,7 @@ static int spinand_probe(struct spi_mem *mem)
+ 	spi_mem_set_drvdata(mem, spinand);
+ 	spinand_set_of_node(spinand, mem->spi->dev.of_node);
+ 	mutex_init(&spinand->lock);
++	spinand->cache_valid = false;
+ 	mtd = spinand_to_mtd(spinand);
+ 	mtd->dev.parent = &mem->spi->dev;
+ 
+diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+index 5f4c00ae72a7..887ef6d34a41 100644
+--- a/include/linux/mtd/spinand.h
++++ b/include/linux/mtd/spinand.h
+@@ -757,6 +757,10 @@ struct spinand_mem_ops {
+  *		   a command addressing a page or an eraseblock embedded in
+  *		   this die. Only required if your chip exposes several dies
+  * @cur_target: currently selected target/die
++ * @cur_target_cache: target of the cached page
++ * @cur_block_cache: eraseblock of the cached page
++ * @cur_page_cache: page number of the cached page
++ * @cache_valid: whether the cached page is valid
+  * @eccinfo: on-die ECC information
+  * @cfg_cache: config register cache. One entry per die
+  * @databuf: bounce buffer for data
+@@ -798,6 +802,11 @@ struct spinand_device {
+ 			     unsigned int target);
+ 	unsigned int cur_target;
+ 
++	unsigned int cur_target_cache;
++	unsigned int cur_block_cache;
++	unsigned int cur_page_cache;
++	bool cache_valid;
++
+ 	struct spinand_ecc_info eccinfo;
+ 
+ 	u8 *cfg_cache;
 -- 
-2.53.0
+2.25.1
 
 
 ______________________________________________________
