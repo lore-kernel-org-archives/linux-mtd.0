@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 653D0C79FB6
-	for <linux-mtd@archiver.kernel.org>; Wed,  9 Sep 2026 14:20:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32FF9C79FB6
+	for <linux-mtd@archiver.kernel.org>; Wed,  9 Sep 2026 14:27:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ERg3Ouje3CEP0QY0MEl6vQwuu2ZL4FnDNSsZ3Oq98sM=; b=0L1QxV5BAjre1E
-	VLtaHLtWz4BhkzAnbzuXZuiAos+Vi8A4p1fXs7b/Oz220rr6rwVdSgVyfJE9kyFvP0Wc0QF0V8mwF
-	/ieXsBs/UV/fxgG3jZPTgA5lRcloi+Fahb1cBe4tsAcVDpg2VssrHSMhIiivNxJHjjVsU56Nhx3Xa
-	7Jsxr4x8ktxMRnI+Y4EaSVNs62xGFi6kYnq5+HoMNkpCE6g40v+JOkLizBaJAp03wOrT22H4B1PBp
-	zYZvMx6cpt+jubDlN+6IdU0+EIsJTXAvUF40npoI8bcBmhE8kdzU/gCopMUAtP2ijuzINF+bVpfoS
-	xvXK9FSw/ZfI9cPsMAfg==;
+	List-Owner; bh=fmT34maD08Hf4hn0qdnnoAdeTpZGehz4qqjuwim6ORA=; b=y3m4ByWLCdGR5Q
+	EiPbYhfl3EkRz8wZFCS0y8zKzWFOTsxvIFGUfLaVZ0DySzc5ZFYxdPEzVgs5REyzxmoygWE6+41uA
+	iF1hiqCpZAz2SLba3SpFp1cSbOxwzhd8xLvm7sa+ryVRgOtBiUmR9xea6I4Qt6hHI/uml8IJ9S9oy
+	Dx/8DsrqJPQnaKAcuR4tSjLb/KQQ4HfD9vJxcGBA1/H+DOPDdZlldROmHrkCySHaMWemmI0t1Y93b
+	2NWu1mS92U8d4Hrj37YEBhiLK+KPGz3C/JMfVqfVCBWCfZwzxcEbgv1itomq0SJ+euuxQkt3cPb5b
+	hg0i8gypwJUjJzR3PLZg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x4JAL-0000000Bx2z-3oOD;
-	Wed, 09 Sep 2026 14:20:45 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1x4JH2-0000000ByGN-2jva;
+	Wed, 09 Sep 2026 14:27:40 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x4JAK-0000000Bx2Z-10AH
+	id 1x4JH1-0000000ByFx-0ezH
 	for linux-mtd@lists.infradead.org;
-	Wed, 09 Sep 2026 14:20:44 +0000
+	Wed, 09 Sep 2026 14:27:39 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 8CDC240BD9;
-	Wed,  9 Sep 2026 14:20:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 844AF1F00A3D;
-	Wed,  9 Sep 2026 14:20:32 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 5C2876020A;
+	Wed,  9 Sep 2026 14:27:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8AE051F00A3A;
+	Wed,  9 Sep 2026 14:27:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1788963643;
-	bh=pNa+R32oRzIlggZcI4nA479nmzN6Ja3e5lLkInWTr24=;
+	s=k20260515; t=1788964058;
+	bh=3fyzwBci/JI68L7GwljQF21lnUjBdIooTvCklPk/4zM=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=lnHLaMAopxlt4KS67LLWDWspk5zG17ntY3H9Pe2yIVsiFSE2BRoYW00yJg+xHoh10
-	 vuNVVQC2bfNK0nyBX1v9GN1Psf3WbkOKPt/kAIud/e0yPLkq0JCsdntmOD5i+4fY/Y
-	 Ml2/4whKkbL2iUhms0DZo9w4Hej2h47PsPoV74ZUvFvumYQzyJ4Z8ZXNQSLwcAc2a7
-	 kcdfu2aCv2kKeEPe/X0okGepxzVjumyPE0sHnCzfrTf8KARGjVRH66h7+/8ZjOKTGa
-	 kk2sXnk6fjbWqOFkprZPu77oQxxro0cxZu5khxthAUAiRK9hcw7Lb8/S3rgn407qQ6
-	 2GycK1VAQOOXA==
-Message-ID: <e31d07a6-52b3-46bd-8a1e-03238428a0d0@kernel.org>
-Date: Wed, 9 Sep 2026 16:20:30 +0200
+	b=n6q/LoUS3HGC8qKWePM8SnXWE0lNaHny4wIGqHSjRoyNo0zUqlsiOuyWi2K9bEt1t
+	 oG8G4YvYN+SmaNv6lebTPFdeADBRq30olOOE5SMDG9x7RoHZuvpjDkM92fX/qOHFCo
+	 wZrrM8xsnKc957fBPsH3qd492I9+/MUfrm7e7o0wkSF3veqh2D3BBzNrYgdxx7Rhru
+	 DM5XqE/t+kWc9+vFnMPdLZgPR9SOCvb7UAdEwRYBBOZqzuFwubxWFQoK7oSL3nfZss
+	 9FCL5PAVYeWd96n3cuX8xbXyrmRlsgP5Ix+XzxCjGW2sgeR5llV4n0JYK/gkvIE1ks
+	 j+2Ca2K0ybKgg==
+Message-ID: <54a48bae-aa0e-4833-91a2-5b5908356255@kernel.org>
+Date: Wed, 9 Sep 2026 16:27:25 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v3 13/14] treewide: adjust comments on PagePrivate and
@@ -137,8 +137,11 @@ On 9/8/26 04:56, Zi Yan wrote:
 > PG_private is going to be deleted. Adjust related comments to refer to
 > page/folio->private instead.
 
+Thinking again, I think this is misleading.
 
-Acked-by: David Hildenbrand (Arm) <david@kernel.org>
+PG_private is defectively already unused for all of these cases, no? In that
+case it's rather a documentation fix. (could some of that go into patches that
+convert away from PagePrivate, like in the previous patch?)
 
 -- 
 Cheers,
