@@ -4,67 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 88016C79FAA
-	for <linux-mtd@archiver.kernel.org>; Wed,  9 Sep 2026 07:46:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 650DCC79F8C
+	for <linux-mtd@archiver.kernel.org>; Wed,  9 Sep 2026 07:55:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
+	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=hMVYkD3AACf7E1mEqSnHDR0V1FEYzkWULOU9d5OZcfE=; b=YAnQKiQjyr4S1c
-	W5YqILzPv29+/Kaor36ittpstMPRsdNc5OCkw+O1mO2KbWkPa6EeZ9yQWVYPsDexy+kwHWSXEPEu2
-	7S1vTPmukTMKzUieayRyrbsC0geWGN6XRAqv0dr+DlNYuttw01nK7MZNAbFOMlnrhC9MAUS+nhVRK
-	dCSeQ+DqJieO4T9w8Oep6yc/5p1SYywtH3Sc9xRr8Fc95Xk4jrnhOMXdJL/2H7WNzRILqLpwrBzYx
-	JcB4XKwe6i+ggCVBEXuK0cVSa+hqZC7KJIgrzbgN6uMUlQyQK9WZ12KunIvSKVJcwG6LBXH7TZBab
-	DKRsw1cn5pYkvcM2rc8w==;
+	List-Owner; bh=oEt1DctY5Qw9dPBWzGr+dHYBHCWdeuWWcqYK5H1JEKA=; b=hvaoKKLX/qPQIv
+	1aFBYy2U2Nsn4ynDSvQt4N25uSPXuXHd5sZrTLNBwauUoByRg7BIUArtHymyGyNZJQFHP/0xC+f7X
+	rvKsiVAKKqaneyOZ25fguQJQVT+MnUOLrdhgOUwe0C3inN3OsS6bPfEoxRymgeNogUsG04xQdpTqD
+	mAJLcY87nyG4NBZiTvTnG02ejC+Rq6RnOUklk7dk2XJ9WqCZ7V98kKs60brB+l9CxzCyp0RszKp/g
+	lKIhj82PT1Pesya/dcNce3JwCIuZ89SFYM6EcWULKFqDT3UXPpzehSNEw0ZAYels3xpNRvoFnNXr5
+	fhsIBgFl9wjpy5OG2ntw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x4D0n-0000000B15n-2j2X;
-	Wed, 09 Sep 2026 07:46:29 +0000
+	id 1x4D9S-0000000B2U8-1lCX;
+	Wed, 09 Sep 2026 07:55:26 +0000
 Received: from smtpout-02.galae.net ([185.246.84.56])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x4D0k-0000000B14a-0SGS
+	id 1x4D9L-0000000B2T1-2blT
 	for linux-mtd@lists.infradead.org;
-	Wed, 09 Sep 2026 07:46:28 +0000
+	Wed, 09 Sep 2026 07:55:24 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id 3F4241A199A;
-	Wed,  9 Sep 2026 07:46:22 +0000 (UTC)
+	by smtpout-02.galae.net (Postfix) with ESMTPS id 271121A1A73;
+	Wed,  9 Sep 2026 07:55:18 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id ECE1760448;
-	Wed,  9 Sep 2026 07:46:21 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 9FCC811C7AF4A;
-	Wed,  9 Sep 2026 09:46:16 +0200 (CEST)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id E7F1260448;
+	Wed,  9 Sep 2026 07:55:17 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 1E59911C7AF61;
+	Wed,  9 Sep 2026 09:55:16 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1788939981; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1788940517; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=4bHYeciqDBDa9Wdfig0XVA+s1YwYjHmxZcY82nNnXvE=;
-	b=ZHxpMQ+fkqEP9y3OM95fJD32bXOY3nttdySL1Pl8wGQ+Upqoz/gqRSWspRNCA4JzzroUqL
-	aW37lW70dIz3eXQc9MCBENQjzrCq+bm5/68rDQEXJk9FRES2P3cPaP8I1igZPWT9y+KaIZ
-	PUaCxwhX5CMerhJ1cZ6FTt+Upd55mHn1YaVKfrvKSbjGVPlZCfBfCQ7NVeBoOIc3zzn+lR
-	cKlZqTH6HZZp9FYH2s/7nDDAkXtgc+TJVWsqc6xiCMpduWdfic6imkk1qmu9RXcnf2O5Wf
-	7JxFgT0uDtRzne+CEvGpQduskcbjR6qAPCiGvaIBZzvIdILLhqR+++EqhPZrcA==
+	bh=flG4RjL+uIFYiYsr5qUG4/1bgE5w16n8plol/VAROVk=;
+	b=sUy8RLpJcYuax4ObN3RW54k3M/E6bQilqOSpE3nsPQ0hrw3kBcYFu7O9yribE3NPiLLY1Q
+	Q3FVcwPsJAz0MP6k1vwrGCDxfxg3OWNIf3x6Dzhr/5JBOqDHXIs4cJ6W5Poikw5rqVBusK
+	2AQzj6WYbXHoPua00VewQNjD/ELzy7SF7oAIMo/QE3B9qFy+wGQv6aXcSsd5JqSlfck8m+
+	QEyR3sxTaoH0K0w38tpQWaEpz08EgypajjYWzy9P+iUKsLfbfffpTwhXnpsN1SIJw5DJgz
+	U9vne6cUxUMwJCql1qpMWrQHAA/CM51WYDjHTWBreyEi4FYA9OdxBP00PlYkSQ==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: "Zongzhen Feng" <1768315307@qq.com>
-Cc: "linux-mtd" <linux-mtd@lists.infradead.org>,  "linux-kernel"
- <linux-kernel@vger.kernel.org>,  "richard" <richard@nod.at>,  "vigneshr"
- <vigneshr@ti.com>
-Subject: Re: [PATCH v3] mtd: spinand: cache the last read page to avoid
- redundant SPI operations
-In-Reply-To: <tencent_ADBE12933F3EE6A4DFBD640C15CB67442305@qq.com> (Zongzhen
-	Feng's message of "Wed, 9 Sep 2026 14:29:21 +0800")
-References: <tencent_4C47F17C98F6F164274CEE84638558D62308@qq.com>
-	<tencent_E818586423F2F16D98DEF1EC2723EE4A6308@qq.com>
-	<87o6e7u8jt.fsf@bootlin.com>
-	<tencent_ADBE12933F3EE6A4DFBD640C15CB67442305@qq.com>
-User-Agent: mu4e 1.12.12; emacs 30.2
-Date: Wed, 09 Sep 2026 09:46:16 +0200
-Message-ID: <87se3isw8n.fsf@bootlin.com>
+To: linux-mtd@lists.infradead.org, Rosen Penev <rosenp@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>, 
+ Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org
+In-Reply-To: <20260908060327.42775-1-rosenp@gmail.com>
+References: <20260908060327.42775-1-rosenp@gmail.com>
+Subject: Re: [PATCHv2] mtd: rawnand: fsl_ifc: use
+ devm_platform_get_and_ioremap_resource
+Message-Id: <178894051597.2042218.12032619584274014703.b4-ty@bootlin.com>
+Date: Wed, 09 Sep 2026 09:55:15 +0200
 MIME-Version: 1.0
+X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260909_004626_292204_9BD7F738 
-X-CRM114-Status: GOOD (  10.26  )
+X-CRM114-CacheID: sfid-20260909_005523_682277_70E4D137 
+X-CRM114-Status: UNSURE (   5.83  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,19 +77,17 @@ Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8sCgpPbiAwOS8wOS8yMDI2IGF0IDE0OjI5OjIxICswOCwgIlpvbmd6aGVuIEZlbmciIDwx
-NzY4MzE1MzA3QHFxLmNvbT4gd3JvdGU6Cgo+IEhpIE1pcXVlbCwKPgo+IFRoYW5rcyBmb3IgdGhl
-IGZlZWRiYWNrLiBJIGNoZWNrZWQgdGhlIGVtYWlsIHRocmVhZCBhbmQgcGF0Y2h3b3JrLCBidXQK
-PiBjb3VsZG4ndCBmaW5kIHRoZSBTYXNoaWtvIHJldmlldyBjb21tZW50cyBmb3IgdjMuIFRoZSB2
-MiBTYXNoaWtvCj4gY29tcGxhaW50cyBhYm91dDoKPgo+IDEuIENhY2hlIG5vdCBpbnZhbGlkYXRl
-ZCB3aGVuIGRhdGFidWYgaXMgb3ZlcndyaXR0ZW4gYnkgbm9uLWNhY2hlYWJsZQo+ICAgIHJlYWRz
-IChSQVcsIGNvbnRpbnVvdXMsIE9PQi1vbmx5KQo+IDIuIFBhZ2VzIHdpdGggdW5jb3JyZWN0YWJs
-ZSBFQ0MgZXJyb3JzIGJlaW5nIGNhY2hlZAo+Cj4gaGF2ZSBhbHJlYWR5IGJlZW4gYWRkcmVzc2Vk
-IGluIHYzLgo+Cj4gQ291bGQgeW91IHBsZWFzZSBmb3J3YXJkIHRoZSByZW1haW5pbmcgU2FzaGlr
-byBjb21wbGFpbnRzIG9yIHBvaW50IG1lCj4gdG8gd2hlcmUgSSBjYW4gZmluZCB0aGVtPyBJJ2Qg
-bGlrZSB0byBhZGRyZXNzIHRoZW0gYmVmb3JlIHlvdXIgaHVtYW4KPiByZXZpZXcuCgpMaW5rOiBo
-dHRwczovL3Nhc2hpa28uZGV2LyMvcGF0Y2hzZXQvdGVuY2VudF9FODE4NTg2NDIzRjJGMTZEOThE
-RUYxRUMyNzIzRUU0QTYzMDhAcXEuY29tP3BhcnQ9MQoKQ2hlZXJzLApNaXF1w6hsCgpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVRE
-IGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
-YW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+T24gTW9uLCAwNyBTZXAgMjAyNiAyMzowMzoyNyAtMDcwMCwgUm9zZW4gUGVuZXYgd3JvdGU6Cj4g
+UmVwbGFjZSB0aGUgbWFudWFsIG9mX2FkZHJlc3NfdG9fcmVzb3VyY2UoKSwgaW9yZW1hcCgpLCBh
+bmQgaW91bm1hcCgpCj4gaW4gdGhlIHByb2JlL3JlbW92ZSBwYXRocyB3aXRoIGRldm1fcGxhdGZv
+cm1fZ2V0X2FuZF9pb3JlbWFwX3Jlc291cmNlKCkKPiBzbyB0aGUgcmVzb3VyY2UgaXMgbWFuYWdl
+ZCBhbmQgcmVsZWFzZWQgYXV0b21hdGljYWxseSBvbiBwcm9iZSBmYWlsdXJlCj4gYW5kIGRyaXZl
+ciByZW1vdmFsLgo+IAo+IAoKQXBwbGllZCB0byBuYW5kL25leHQsIHRoYW5rcyEKClsxLzFdIG10
+ZDogcmF3bmFuZDogZnNsX2lmYzogdXNlIGRldm1fcGxhdGZvcm1fZ2V0X2FuZF9pb3JlbWFwX3Jl
+c291cmNlCiAgICAgIGNvbW1pdDogMmI3ZTE2ZDU2NWFmMmI0NzE1MjkwZDlkZTUxMzE4N2E3Mzc0
+YjJlZAoKUGF0Y2hlKHMpIHNob3VsZCBiZSBhdmFpbGFibGUgb24gbXRkL2xpbnV4LmdpdCBhbmQg
+d2lsbCBiZQpwYXJ0IG9mIHRoZSBuZXh0IFBSIChwcm92aWRlZCB0aGF0IG5vIHJvYm90IGNvbXBs
+YWlucyBieSB0aGVuKS4KCktpbmQgcmVnYXJkcywKTWlxdcOobAoKCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lv
+biBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9saW51eC1tdGQvCg==
