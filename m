@@ -4,82 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19458C88E41
-	for <linux-mtd@archiver.kernel.org>; Fri, 11 Sep 2026 02:27:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 31142C88E40
+	for <linux-mtd@archiver.kernel.org>; Fri, 11 Sep 2026 02:27:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
 	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:References:In-Reply-To:
 	Message-Id:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=zPwWH4myzjHgj1xqZ9+dkZt9GAa3RfrSY377NXSwWIo=; b=V4GhXVfJ4OvyJl
-	kLzxjThIflacS6linqUfDl4DpQlsWWmQ/xQrmFrRl2mR0e0z0AuUqkmTsr1urQiqP198iVhySOulb
-	oGCuuuuWTa7zfqNeViuIx174iy9GYBggVgMsJypO7hCVXKOGQFY6MSH9iHLiHpormsaOsjkWC7pJx
-	bskH3dpl/RBhBG0IJJ7X57z7Ii6qgrZIKqt6KMXUqfGXo2WcgLtKt5BgnsqxR/Mc74Ebbruxq0lyZ
-	R8BIKkcv6Z6Z9wnQs7wDbOlMWSSPItaxaO199rIj4Haw9GJ63Kt1WzxOE9Gu50OIYBbT2k9USfyY6
-	xaPI6Ubko8LMFUs7vEsQ==;
+	List-Owner; bh=usI2Y8W8zJsB7JFUrjRFyP3tvTCXDclv/7zPKF0ODVI=; b=05dZ8kKWitUJNh
+	Fo+l9UqkUi9NLKC2paPNmLz/fan4ZgRUEhNmbBBsYzjrBoYauORuY9MMu+VqY4PKrM+WM7Mk1xuFh
+	i1YtA06olQQpfy7Mqds4FPHDgxGFr7GoceRkU95O4vGSstQ/HUlwprzBsVpudKBN8wIWN6wQTmtq6
+	EZkliTTxyRyH/UflZpqCO0QIhVY+XBvI4YRHx7P6ToqU3pXdUrIYB/174mZIYQprWul8TaxHrIzxO
+	iXH/9Y3PjmSnE0eh4bpWYlZiFGU+l81wNHDdfvy2sr9nfw4pxYZ++nBHXMsH6sUjLzzR5cBK39oI0
+	du7HHpoCPzRZDEXCkppw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x4qzR-0000000FiEv-2sh8;
-	Fri, 11 Sep 2026 02:27:45 +0000
-Received: from mail-pf1-x432.google.com ([2607:f8b0:4864:20::432])
+	id 1x4qzW-0000000FiGd-0Kdf;
+	Fri, 11 Sep 2026 02:27:50 +0000
+Received: from mail-pf1-x433.google.com ([2607:f8b0:4864:20::433])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x4qzO-0000000FiDe-1mVG
+	id 1x4qzT-0000000FiF9-0YYk
 	for linux-mtd@lists.infradead.org;
-	Fri, 11 Sep 2026 02:27:44 +0000
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-869d181419bso355397b3a.2
-        for <linux-mtd@lists.infradead.org>; Thu, 10 Sep 2026 19:27:42 -0700 (PDT)
+	Fri, 11 Sep 2026 02:27:48 +0000
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-86265451beeso267825b3a.0
+        for <linux-mtd@lists.infradead.org>; Thu, 10 Sep 2026 19:27:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1789093661; x=1789698461; darn=lists.infradead.org;
+        d=gmail.com; s=20251104; t=1789093666; x=1789698466; darn=lists.infradead.org;
         h=cc:to:references:in-reply-to:message-id:subject:date:from:from:to
          :cc:subject:date:message-id:reply-to:content-type;
-        bh=3lmdlQmsV4QlcZ1SGbhbtZhPWxxj3RbthJvaopDsCp0=;
-        b=nvR98iDLoOeCZYv8BmmXx5SWt/kjCTCcZSKWVBupaIOVsbW6OUE370NXjVD9BMEjY0
-         wmTg9eDj5o7vZxQmUSt/84A257XHfdPEJeNXLev3ExiOCTctpeHcK7Pn346aspD80mcv
-         eAyfHQL6Xkw+9/qbG70+bN+1SMoWkm3WMHjCPjoWnJHhTxukkHPsTNRKt9ggLhZ1fSYx
-         8nHBfZVwadm/Gfe/VuHQ62kJmRNW/Ki+TdawFBYahRy3y8XhjClRvWuu8ETAFwZFAjXQ
-         OX63T/bOUrURp3HPffypIpY8NbwBDuFSI6lpWpMrnU+aK5Re4OxWWBSLtElGjr0j1fgx
-         hySA==
+        bh=jrRmtzgJrhcnTyWN4ddzwpfMPQykj+K/5w8UnPOxI8g=;
+        b=FPpoJ9kf929W2cTu2UueRwAQ28E2TOlPHnXXcfT639POHFG3moVOZOLa9YbRt3ENdw
+         y8PAaV81z13VX9MEFh7RYtHlDDPlPWSn/oZIfreJCqBy+R6waXv0B/6fSgVMOf/BYIvw
+         Xw7JOr0RN0jp7ZfGE+H5Y0WoxegrbrNqEyD5yTN1NPMIvurAA8lt8j99NE9FSeGSdUP7
+         IXyp5LgjAfSvTd6Uo71f3ZxP0ZOSus9TmlAyQcGSH3xafPt43olro/OKeWxCAKHTJ6Rq
+         h2MK5ViOojpiCsNI36GpkfAtdDu9S2CiobboAhaG3UJTLz341V92LHUHXtUpwwyIP8C9
+         8eaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1789093661; x=1789698461;
+        d=1e100.net; s=20251104; t=1789093666; x=1789698466;
         h=cc:to:references:in-reply-to:message-id:subject:date:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=3lmdlQmsV4QlcZ1SGbhbtZhPWxxj3RbthJvaopDsCp0=;
-        b=AbfA5yvSzQAMRvEm07fa02RQVU6jf2Q3m0NgDAxP+vI3tGdUoajtQXAtR0EAMlU/Yj
-         aUpCq8xbpErlmWMd5cqV30tBfUkiZKfnDES9OeEVbTviBaPV8SfMv4yeqJGXRY17Lj6i
-         gJhHiiRMvVI84revt5N3eNcbh4V49qYk+YCsakA/dKSDRLoBzoDZIfSVBKCUpW2gHV2Z
-         RK5LW6RM/5HZitxYGQf0tfSo3Pdzi6ktepdZcXBUlBoSYiAj/xrNmrM8IG5HVwaSkBZu
-         OSe9HckKrHbfOBF+0aUzV42W9w33rCfiTcp7lK7JkEz01nOeFE0Gwgrau1CV0lfVdMbw
-         g3cg==
-X-Forwarded-Encrypted: i=1; AKwUvBwUtFpE26J6reSnmYErlNkNkr7fEPk096+Q/13xEsdUjl8gJh3SnQyvvOz36IsNBJW2Xh1n2123scY=@lists.infradead.org
-X-Gm-Message-State: AFuF++nepkX1T9uAk9tU9Mu4SRK62Hi+MAubx6ZKgrQepkf4oj1DBD9D
-	uimVcsIpnb5WaSpp8i8a8AFE6TMPR2W0SY2hLk3PNOU1owmbCde4/SBq
-X-Gm-Gg: AYBFou1lV80//etYcwjSJzVOjQqGOz/MMpks6MfSxundPTT7NRZYI7W/USErqc/Ouqc
-	7XYRrZWP9xBxtBJ70UqyOl9wCUf7j1rBZspSuqDvYzRhO6Jl1YLYsHHtvDXAe+Gv2jpTUzcplvA
-	HuC8GGYyn8uqXoJgknhApyyuXuCf29dmPdwNBCCdJFMojLUU5O3ieFhQ74XrsBOX2ImL/VGh954
-	EWbBYiwWDIzWaPsYdFeBnn+Ho2o02hBcSqvXJYFiVFfypLEFklZMaocImiQiV6Je7nDBnormrTi
-	tUi5dlkqpNi5OjvLg/fx3lvHzW/TEK1aTks7+ORKc8x0Xox+wIaDaO4KnOPTIINvWiUrBOiH8OT
-	PthRko1n7oh8uJwdrQOCfkNb9PqCl9a+vHVRcxy078QMa0/AR/HsY4eoajziQNaV1C5VjheAawH
-	TzJCo+bsd8eWMuqxmXDIfg9Ph6BagikRcQJf/wPM99MLCP+hbw01yB//hr8zzIXBbygv62Oe0kK
-	dWQRmLgxA==
-X-Received: by 2002:a05:6a00:ad3:b0:864:cbc5:b8c1 with SMTP id d2e1a72fcca58-86b2f2fdf96mr2926809b3a.2.1789093660984;
-        Thu, 10 Sep 2026 19:27:40 -0700 (PDT)
+        bh=jrRmtzgJrhcnTyWN4ddzwpfMPQykj+K/5w8UnPOxI8g=;
+        b=Tiz1yq2+bARjhEA3NkJAyFm+kJS9SkJnKBT19dnRWyXamyy8E9VZY5Pi4gg29id3Xg
+         WGDyhMpdgrbR+M4mOY6OB0XvgWiE1mOyQ6aeG+DTtwhfnSP4mY6mnI6u6a7W5absY/ZN
+         fv0sE/BD7MKQon36L3n2dC+t5wFOOaOxSvmaw/va6YEJ2v8dBQXA8Wk49WThAaDsisuW
+         AVw2zfmp/w2mhwjyOqRuj+UASdGij94Wb/aOzjNyGmYTPBpx51RFVSkjibazpPNOMBzo
+         e/O/QmlOaCT0h5oNlabp4QKTijFfWCFdzFqwjs7tjBsKnOgyxdOiALCfRbCkxaTCfs0n
+         L50g==
+X-Forwarded-Encrypted: i=1; AKwUvBzzHwgUFVtn4dAazUq8oCxCXsb6n8ivotkTDTbTJKaXKL9y3hbgYyyd7hBluF1929grOF2VdRTS/jA=@lists.infradead.org
+X-Gm-Message-State: AFuF++lXcrI8FgVIEqat3zHv4/m3hD7RtmimLFn7KUbvUDgt3bftML+X
+	RJKsA/OXeR6oJ9PQV/JOKXXWc/dvvkt65FTA6CT+9tyAUeeZqYNKNMIC98WkNKo7
+X-Gm-Gg: AYBFou30qYbt/LWKb6hsaWsOgpVKb3u80IGh0bGifbzfen/3NtAiY1PSmZXGnbKV9GS
+	+9TGd6gbjr+edpQzEICk0TIq+wZgXsu95Fzr/toTMa77WjAICfJKP4PaTdWWFNJejaYW2IpOj8O
+	cha52/36N53FoJYjFOhV6iuEtmjh7ST3/DIp3Bi715n15wYRZ9fMmOY8KphFwF+0iMzfBqY9WNy
+	s2uQ0R0MyLzUiPpzEJ7hVqlBt0ZD/wcYx9drUvKQ2tNkyvacBJLfXpfaJEl91tlo6zzLZaaOxtE
+	gnk9Y4omloAk0bMUijE7UTtZEgLgrLpnr5/zLXb1RVrknul3iiXGvZ/xc/Rt0D61ihVEV4B9Js9
+	zQggBpnuyMrwFoxYV4OuAaoAXKVQtCkO+CuVPUYM2E7C9FwWbSMUFYwslUf0l2lLfuYqj//pLH0
+	+uwiphjWQHcUatSLqSyAVuRuLK1ZX3JRlFJaTBADYYhWphEo+1X1ahtok3nntNwzC3AKXpdAAOO
+	7NZTyiV7WdiTb8k6edT
+X-Received: by 2002:a05:6a00:2da8:b0:853:59ed:5539 with SMTP id d2e1a72fcca58-86b3031c937mr2803613b3a.16.1789093665981;
+        Thu, 10 Sep 2026 19:27:45 -0700 (PDT)
 Received: from smtp.gmail.com ([185.151.146.146])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-86b286c3f70sm377098b3a.18.2026.09.10.19.27.38
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-86b286c3f70sm377098b3a.18.2026.09.10.19.27.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Sep 2026 19:27:40 -0700 (PDT)
+        Thu, 10 Sep 2026 19:27:45 -0700 (PDT)
 From: "lichen.wang" <wanglichen9110@gmail.com>
-Date: Thu, 10 Sep 2026 22:10:38 +0800
-Subject: [PATCH 1/2] ubifs: add KUnit test scaffolding for scan.c
-Message-Id: <178909365090.247910.2202926583850439589.p1-of-2@gmail.com>
+Date: Thu, 10 Sep 2026 22:10:55 +0800
+Subject: [PATCH 2/2] ubifs: add KUnit tests for key helpers
+Message-Id: <178909365090.247910.18065335763055144004.p2-of-2@gmail.com>
 In-Reply-To: <178909365090.247910.11265261850560199708.p0-of-2@gmail.com>
 References: <178909365090.247910.11265261850560199708.p0-of-2@gmail.com>
 To: Richard Weinberger <richard@nod.at>, Zhihao Cheng <chengzhihao1@huawei.com>, linux-mtd@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260910_192742_519948_E5D98117 
-X-CRM114-Status: GOOD (  33.43  )
+X-CRM114-CacheID: sfid-20260910_192747_203027_8DD1ED9D 
+X-CRM114-Status: GOOD (  20.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,318 +97,49 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add KUnit tests for the UBIFS scan path so that the node parsing code
-can be validated offline, without an MTD device, a UBI volume or a
-development board.
+Add KUnit coverage for the key.h helpers: on-flash encoding and
+decoding, comparison, the key constructors and the hash handling. These
+are pure functions, so the whole set runs in the same offline KUnit
+environment as the scan tests.
 
-The tests are built into the ubifs module itself (ubifs-y) so that they
-can call the non-exported ubifs_scan_a_node(), ubifs_check_node(),
-ubifs_add_snod() and ubifs_end_scan() directly, without adding
-EXPORT_SYMBOL() to production code. A new CONFIG_UBIFS_FS_KUNIT_TEST
-option gates the build and defaults to KUNIT_ALL_TESTS.
-
-kunit_helpers.h provides a minimal fake struct ubifs_info, allocated
-with kunit_kzalloc() and initialised only with the fields read by the
-tested paths. The node length ranges mirror init_constants_early() in
-super.c, because a zeroed range means "fixed length" for
-ubifs_check_node() and would make the length checks pass for the wrong
-reason. The node constructor fills the common header and payload first
-and computes the CRC last, over exactly the bytes that the kernel
-checksums.
-
-scan_kunit.c covers the ubifs_scan_a_node() branch table, the length
-and CRC checks in ubifs_check_node(), the scanned node bookkeeping in
-ubifs_add_snod() and the LEB end pointer update in ubifs_end_scan().
-All cases pass quiet = 1 except one that explicitly documents the
-corrupt-node logging path.
+The tests reuse the fake struct ubifs_info from kunit_helpers.h, and
+key_kunit.o is built into the ubifs module for the same reason as
+scan_kunit.o: key.h needs no exported symbols, but the suite is kept
+next to the code it tests.
 
 Signed-off-by: lichen.wang <wanglichen9110@gmail.com>
 ---
- fs/ubifs/Kconfig               |  16 +
- fs/ubifs/Makefile              |   1 +
- fs/ubifs/tests/kunit_helpers.h | 222 ++++++++
- fs/ubifs/tests/scan_kunit.c    | 980 +++++++++++++++++++++++++++++++++
- 4 files changed, 1219 insertions(+)
- create mode 100644 fs/ubifs/tests/kunit_helpers.h
- create mode 100644 fs/ubifs/tests/scan_kunit.c
+ fs/ubifs/Makefile          |   2 +-
+ fs/ubifs/tests/key_kunit.c | 555 +++++++++++++++++++++++++++++++++++++
+ 2 files changed, 556 insertions(+), 1 deletion(-)
+ create mode 100644 fs/ubifs/tests/key_kunit.c
 
-diff --git a/fs/ubifs/Kconfig b/fs/ubifs/Kconfig
-index 45d3d207f..c103d391b 100644
---- a/fs/ubifs/Kconfig
-+++ b/fs/ubifs/Kconfig
-@@ -99,3 +99,19 @@ config UBIFS_FS_AUTHENTICATION
- 	  different options.
- 
- endif # UBIFS_FS
-+
-+config UBIFS_FS_KUNIT_TEST
-+	bool "KUnit tests for UBIFS" if !KUNIT_ALL_TESTS
-+	depends on UBIFS_FS && KUNIT
-+	default KUNIT_ALL_TESTS
-+	help
-+	  This builds unit tests for the UBIFS file system. The tests are
-+	  linked into the UBIFS module itself so that they can call
-+	  non-exported functions.
-+
-+	  KUnit tests run during boot and output the results to the debug log
-+	  in TAP format (https://testanything.org/). Only useful for kernel
-+	  developers running the KUnit test harness, and not intended for
-+	  inclusion into a production build.
-+
-+	  If unsure, say N.
 diff --git a/fs/ubifs/Makefile b/fs/ubifs/Makefile
-index 314c80b24..4a83b822c 100644
+index 4a83b822c..96e277611 100644
 --- a/fs/ubifs/Makefile
 +++ b/fs/ubifs/Makefile
-@@ -6,6 +6,7 @@ ubifs-y += tnc.o master.o scan.o replay.o log.o commit.o gc.o orphan.o
+@@ -6,7 +6,7 @@ ubifs-y += tnc.o master.o scan.o replay.o log.o commit.o gc.o orphan.o
  ubifs-y += budget.o find.o tnc_commit.o compress.o lpt.o lprops.o
  ubifs-y += recovery.o ioctl.o lpt_commit.o tnc_misc.o debug.o
  ubifs-y += misc.o sysfs.o
-+ubifs-$(CONFIG_UBIFS_FS_KUNIT_TEST) += tests/scan_kunit.o
+-ubifs-$(CONFIG_UBIFS_FS_KUNIT_TEST) += tests/scan_kunit.o
++ubifs-$(CONFIG_UBIFS_FS_KUNIT_TEST) += tests/scan_kunit.o tests/key_kunit.o
  ubifs-$(CONFIG_FS_ENCRYPTION) += crypto.o
  ubifs-$(CONFIG_UBIFS_FS_XATTR) += xattr.o
  ubifs-$(CONFIG_UBIFS_FS_AUTHENTICATION) += auth.o
-diff --git a/fs/ubifs/tests/kunit_helpers.h b/fs/ubifs/tests/kunit_helpers.h
+diff --git a/fs/ubifs/tests/key_kunit.c b/fs/ubifs/tests/key_kunit.c
 new file mode 100644
-index 000000000..295e7742d
+index 000000000..71d4fba70
 --- /dev/null
-+++ b/fs/ubifs/tests/kunit_helpers.h
-@@ -0,0 +1,222 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Shared helpers for the UBIFS KUnit tests.
-+ *
-+ * The tests exercise the UBIFS scanning and key helpers against a minimal
-+ * fake &struct ubifs_info: no UBI device is involved and none of the tested
-+ * functions dereference any other field. The fake object is allocated with
-+ * kunit_kzalloc() so that KUnit frees it automatically after the test, and it
-+ * is fully zeroed because some of the fields read by the tested code (for
-+ * example assert_action) are bit-fields which must not contain garbage.
-+ */
-+
-+#ifndef __UBIFS_TESTS_KUNIT_HELPERS_H__
-+#define __UBIFS_TESTS_KUNIT_HELPERS_H__
-+
-+#include <kunit/test.h>
-+#include <linux/crc32.h>
-+#include <linux/fscrypt.h>
-+
-+#include "../ubifs.h"
-+
-+/* Typical NAND LEB size; large enough for any node. */
-+#define UBIFS_TEST_LEB_SIZE	131072
-+#define UBIFS_TEST_LEB_CNT	8
-+#define UBIFS_TEST_MIN_IO_SIZE	8
-+
-+/* Arbitrary sequence number, distinct from the all-ones empty space. */
-+#define UBIFS_TEST_SQNUM	0x0123456789ABCDEFULL
-+
-+/**
-+ * ubifs_test_crc() - compute the checksum covered by a UBIFS node CRC.
-+ * @buf: node buffer
-+ * @len: node length as stored in the common header
-+ *
-+ * This is exactly the calculation ubifs_check_node() performs: the checksum
-+ * covers everything but the magic and the CRC field itself. Note that the
-+ * kernel CRC is a plain crc32_le() without the final inversion, so zlib's
-+ * crc32() must never be used to compute expected values.
-+ *
-+ * Return: the checksum over bytes @buf[8 .. len - 1].
-+ */
-+static inline u32 ubifs_test_crc(const void *buf, int len)
-+{
-+	return crc32(UBIFS_CRC32_INIT, buf + 8, len - 8);
-+}
-+
-+/**
-+ * ubifs_test_info() - allocate a fake UBIFS file-system object.
-+ * @test: KUnit test context
-+ *
-+ * The object is zeroed and only the fields read on the tested code paths are
-+ * set: the LEB geometry, the node length ranges exactly as
-+ * init_constants_early() in super.c sets them, and the key helpers used by
-+ * struct fscrypt_name based key constructors.
-+ *
-+ * Return: the fake object, or %NULL on allocation failure.
-+ */
-+static inline struct ubifs_info *ubifs_test_info(struct kunit *test)
-+{
-+	struct ubifs_info *c;
-+
-+	c = kunit_kzalloc(test, sizeof(*c), GFP_KERNEL);
-+	if (!c)
-+		return NULL;
-+
-+	c->leb_size = UBIFS_TEST_LEB_SIZE;
-+	c->leb_cnt = UBIFS_TEST_LEB_CNT;
-+	c->min_io_size = UBIFS_TEST_MIN_IO_SIZE;
-+	c->key_fmt = UBIFS_SIMPLE_KEY_FMT;
-+	c->key_hash = key_test_hash;
-+
-+	/*
-+	 * Mirror init_constants_early(). The zeroed object is *not* a safe
-+	 * default: max_len == 0 means "fixed length", so every type must be
-+	 * given an explicit range before ubifs_check_node() is called.
-+	 */
-+	c->ranges[UBIFS_PAD_NODE].len = UBIFS_PAD_NODE_SZ;
-+	c->ranges[UBIFS_SB_NODE].len = UBIFS_SB_NODE_SZ;
-+	c->ranges[UBIFS_MST_NODE].len = UBIFS_MST_NODE_SZ;
-+	c->ranges[UBIFS_REF_NODE].len = UBIFS_REF_NODE_SZ;
-+	c->ranges[UBIFS_TRUN_NODE].len = UBIFS_TRUN_NODE_SZ;
-+	c->ranges[UBIFS_CS_NODE].len = UBIFS_CS_NODE_SZ;
-+	c->ranges[UBIFS_AUTH_NODE].min_len = UBIFS_AUTH_NODE_SZ;
-+	c->ranges[UBIFS_AUTH_NODE].max_len = UBIFS_AUTH_NODE_SZ +
-+					     UBIFS_MAX_HMAC_LEN;
-+	c->ranges[UBIFS_SIG_NODE].min_len = UBIFS_SIG_NODE_SZ;
-+	c->ranges[UBIFS_SIG_NODE].max_len = c->leb_size - UBIFS_SB_NODE_SZ;
-+	c->ranges[UBIFS_INO_NODE].min_len = UBIFS_INO_NODE_SZ;
-+	c->ranges[UBIFS_INO_NODE].max_len = UBIFS_MAX_INO_NODE_SZ;
-+	c->ranges[UBIFS_ORPH_NODE].min_len = UBIFS_ORPH_NODE_SZ +
-+					     sizeof(__le64);
-+	c->ranges[UBIFS_ORPH_NODE].max_len = c->leb_size;
-+	c->ranges[UBIFS_DENT_NODE].min_len = UBIFS_DENT_NODE_SZ;
-+	c->ranges[UBIFS_DENT_NODE].max_len = UBIFS_MAX_DENT_NODE_SZ;
-+	c->ranges[UBIFS_XENT_NODE].min_len = UBIFS_XENT_NODE_SZ;
-+	c->ranges[UBIFS_XENT_NODE].max_len = UBIFS_MAX_XENT_NODE_SZ;
-+	c->ranges[UBIFS_DATA_NODE].min_len = UBIFS_DATA_NODE_SZ;
-+	c->ranges[UBIFS_DATA_NODE].max_len = UBIFS_MAX_DATA_NODE_SZ;
-+	c->ranges[UBIFS_IDX_NODE].min_len = UBIFS_IDX_NODE_SZ + UBIFS_BRANCH_SZ;
-+	c->ranges[UBIFS_IDX_NODE].max_len = INT_MAX;
-+
-+	return c;
-+}
-+
-+/**
-+ * ubifs_test_scan_leb() - allocate an initialized scanning object.
-+ * @test: KUnit test context
-+ *
-+ * Return: an empty &struct ubifs_scan_leb, or %NULL on allocation failure.
-+ */
-+static inline struct ubifs_scan_leb *ubifs_test_scan_leb(struct kunit *test)
-+{
-+	struct ubifs_scan_leb *sleb;
-+
-+	sleb = kunit_kzalloc(test, sizeof(*sleb), GFP_KERNEL);
-+	if (!sleb)
-+		return NULL;
-+
-+	INIT_LIST_HEAD(&sleb->nodes);
-+	return sleb;
-+}
-+
-+/**
-+ * ubifs_test_node_init() - fill in the common header of a node.
-+ * @buf: node buffer
-+ * @type: node type
-+ * @len: full node length stored in the header
-+ *
-+ * The payload (including any key or pad_len field) has to be filled in by
-+ * the caller, and ubifs_test_node_sign() has to be called last.
-+ */
-+static inline void ubifs_test_node_init(void *buf, u8 type, int len)
-+{
-+	struct ubifs_ch *ch = buf;
-+
-+	ch->magic = cpu_to_le32(UBIFS_NODE_MAGIC);
-+	ch->sqnum = cpu_to_le64(UBIFS_TEST_SQNUM);
-+	ch->len = cpu_to_le32(len);
-+	ch->node_type = type;
-+	ch->group_type = UBIFS_NO_NODE_GROUP;
-+	ch->padding[0] = 0;
-+	ch->padding[1] = 0;
-+}
-+
-+/**
-+ * ubifs_test_node_sign() - compute and store the CRC of a node.
-+ * @buf: node buffer
-+ * @len: full node length stored in the header
-+ */
-+static inline void ubifs_test_node_sign(void *buf, int len)
-+{
-+	struct ubifs_ch *ch = buf;
-+
-+	ch->crc = cpu_to_le32(ubifs_test_crc(buf, len));
-+}
-+
-+/**
-+ * ubifs_test_make_node() - allocate a valid node with a zeroed payload.
-+ * @test: KUnit test context
-+ * @buf_size: size of the buffer to allocate, must be >= @len
-+ * @type: node type
-+ * @len: full node length stored in the header
-+ *
-+ * Return: the node, or %NULL if @buf_size < @len or on allocation failure.
-+ */
-+static inline void *ubifs_test_make_node(struct kunit *test, size_t buf_size,
-+					 u8 type, int len)
-+{
-+	void *buf;
-+
-+	if (buf_size < (size_t)len)
-+		return NULL;
-+
-+	buf = kunit_kzalloc(test, buf_size, GFP_KERNEL);
-+	if (!buf)
-+		return NULL;
-+
-+	ubifs_test_node_init(buf, type, len);
-+	ubifs_test_node_sign(buf, len);
-+
-+	return buf;
-+}
-+
-+/**
-+ * ubifs_test_make_pad_node() - allocate a valid padding node.
-+ * @test: KUnit test context
-+ * @pad_len: value of the pad_len field (may be negative)
-+ *
-+ * Return: the padding node, or %NULL on allocation failure.
-+ */
-+static inline struct ubifs_pad_node *
-+ubifs_test_make_pad_node(struct kunit *test, int pad_len)
-+{
-+	struct ubifs_pad_node *pad;
-+
-+	pad = kunit_kzalloc(test, sizeof(*pad), GFP_KERNEL);
-+	if (!pad)
-+		return NULL;
-+
-+	ubifs_test_node_init(pad, UBIFS_PAD_NODE, UBIFS_PAD_NODE_SZ);
-+	pad->pad_len = cpu_to_le32((u32)pad_len);
-+	ubifs_test_node_sign(pad, UBIFS_PAD_NODE_SZ);
-+
-+	return pad;
-+}
-+
-+/**
-+ * ubifs_test_node_set_key() - store an on-flash key in a keyed node.
-+ * @buf: node buffer
-+ * @inum: value of the first key word (inode number)
-+ * @val: value of the second key word (key type and block/hash)
-+ */
-+static inline void ubifs_test_node_set_key(void *buf, u32 inum, u32 val)
-+{
-+	union ubifs_key *key = (union ubifs_key *)
-+			       ((char *)buf + UBIFS_KEY_OFFSET);
-+
-+	key->j32[0] = cpu_to_le32(inum);
-+	key->j32[1] = cpu_to_le32(val);
-+}
-+
-+#endif /* __UBIFS_TESTS_KUNIT_HELPERS_H__ */
-diff --git a/fs/ubifs/tests/scan_kunit.c b/fs/ubifs/tests/scan_kunit.c
-new file mode 100644
-index 000000000..6871339cb
---- /dev/null
-+++ b/fs/ubifs/tests/scan_kunit.c
-@@ -0,0 +1,980 @@
++++ b/fs/ubifs/tests/key_kunit.c
+@@ -0,0 +1,555 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +/*
-+ * KUnit tests for fs/ubifs/scan.c
++ * KUnit tests for fs/ubifs/key.h
 + *
-+ * The tests build UBIFS nodes in memory and feed them to the scanner; no UBI
-+ * device is involved. They all pass quiet = 1 unless the logging behaviour is
-+ * the thing under test, so that ubifs_dump_node() cannot flood the kernel log.
++ * The tested helpers are self-contained, so they only need a zeroed fake
++ * struct ubifs_info; the ones which call c->key_hash use the test hash
++ * function installed by ubifs_test_info().
 + */
 +
 +#include <kunit/test.h>
@@ -416,972 +147,547 @@ index 000000000..6871339cb
 +#include "kunit_helpers.h"
 +
 +/*
-+ * LEB number and offset used by the scanner tests; both satisfy the
-+ * ubifs_assert() checks at the beginning of ubifs_check_node().
++ * Check that @buf holds the little-endian on-flash form of the key word pair
++ * (@v0, @v1).
 + */
-+#define TEST_LNUM	0
-+#define TEST_OFFS	0
-+
-+/* Data nodes are the simplest variable length nodes. */
-+#define TEST_DATA_SZ	UBIFS_DATA_NODE_SZ
-+
-+/*
-+ * Allocate a buffer of exactly @len bytes and fill it with a valid node of
-+ * type @type. The buffer is never smaller than the length recorded in the
-+ * common header, as ubifs_check_node() reads the CRC over @ch->len bytes.
-+ */
-+static void *make_node(struct kunit *test, u8 type, int len)
++static void expect_le_key(struct kunit *test, const void *buf, u32 v0, u32 v1)
 +{
-+	return ubifs_test_make_node(test, len, type, len);
-+}
++	__le32 expected[2];
 +
-+/*
-+ * Check that a node with a corrupted payload is reported as corrupt by the
-+ * scanner and rejected by ubifs_check_node() with the given error code.
-+ */
-+static void expect_corrupt(struct kunit *test, void *node, int len, int err)
-+{
-+	struct ubifs_info *c = ubifs_test_info(test);
-+
-+	KUNIT_ASSERT_NOT_NULL(test, c);
-+
-+	KUNIT_EXPECT_EQ(test, ubifs_check_node(c, node, len, TEST_LNUM,
-+					       TEST_OFFS, 1, 1), err);
-+	KUNIT_EXPECT_EQ(test, ubifs_scan_a_node(c, node, len, TEST_LNUM,
-+						TEST_OFFS, 1),
-+			SCANNED_A_CORRUPT_NODE);
++	expected[0] = cpu_to_le32(v0);
++	expected[1] = cpu_to_le32(v1);
++	KUNIT_EXPECT_MEMEQ(test, buf, expected, sizeof(expected));
 +}
 +
 +/* ------------------------------------------------------------------------- */
-+/* ubifs_scan_a_node(): the node path                                         */
++/* key_write() / key_read() / key_write_idx()                                 */
 +/* ------------------------------------------------------------------------- */
 +
-+static void scan_a_node_valid_data_node_returns_a_node(struct kunit *test)
++static void key_write_encodes_key_and_zeroes_tail(struct kunit *test)
 +{
 +	struct ubifs_info *c = ubifs_test_info(test);
-+	void *node;
++	union ubifs_key key = { .u32 = { 0x12345678, 0x89ABCDEF } };
++	const u8 zero[UBIFS_MAX_KEY_LEN - 8] = { 0 };
++	u8 buf[UBIFS_MAX_KEY_LEN];
 +
 +	KUNIT_ASSERT_NOT_NULL(test, c);
-+	node = make_node(test, UBIFS_DATA_NODE, TEST_DATA_SZ);
-+	KUNIT_ASSERT_NOT_NULL(test, node);
 +
-+	KUNIT_EXPECT_EQ(test, ubifs_check_node(c, node, TEST_DATA_SZ,
-+					       TEST_LNUM, TEST_OFFS, 1, 1), 0);
-+	KUNIT_EXPECT_EQ(test, ubifs_scan_a_node(c, node, TEST_DATA_SZ,
-+						TEST_LNUM, TEST_OFFS, 1),
-+			SCANNED_A_NODE);
++	memset(buf, 0xaa, sizeof(buf));
++	key_write(c, &key, buf);
++
++	expect_le_key(test, buf, key.u32[0], key.u32[1]);
++	KUNIT_EXPECT_MEMEQ(test, buf + 8, zero, sizeof(zero));
 +}
 +
-+static void scan_a_node_crc_covers_byte_8(struct kunit *test)
-+{
-+	void *node;
-+
-+	node = make_node(test, UBIFS_DATA_NODE, TEST_DATA_SZ);
-+	KUNIT_ASSERT_NOT_NULL(test, node);
-+
-+	/* The first byte covered by the CRC is the first sqnum byte. */
-+	((u8 *)node)[8] ^= 0xff;
-+	expect_corrupt(test, node, TEST_DATA_SZ, -EUCLEAN);
-+}
-+
-+static void scan_a_node_crc_covers_last_byte(struct kunit *test)
-+{
-+	void *node;
-+
-+	node = make_node(test, UBIFS_DATA_NODE, TEST_DATA_SZ);
-+	KUNIT_ASSERT_NOT_NULL(test, node);
-+
-+	((u8 *)node)[TEST_DATA_SZ - 1] ^= 0xff;
-+	expect_corrupt(test, node, TEST_DATA_SZ, -EUCLEAN);
-+}
-+
-+static void scan_a_node_crc_field_not_covered_by_crc(struct kunit *test)
-+{
-+	struct ubifs_ch *ch;
-+	void *node;
-+
-+	node = make_node(test, UBIFS_DATA_NODE, TEST_DATA_SZ);
-+	KUNIT_ASSERT_NOT_NULL(test, node);
-+
-+	/* magic and crc themselves are outside the CRC coverage. */
-+	ch = node;
-+	ch->crc = cpu_to_le32(le32_to_cpu(ch->crc) ^ 1);
-+	expect_corrupt(test, node, TEST_DATA_SZ, -EUCLEAN);
-+}
-+
-+static void scan_a_node_crc_covers_whole_payload(struct kunit *test)
-+{
-+	void *node;
-+
-+	node = make_node(test, UBIFS_DATA_NODE, TEST_DATA_SZ);
-+	KUNIT_ASSERT_NOT_NULL(test, node);
-+
-+	((u8 *)node)[UBIFS_CH_SZ] ^= 0xff;
-+	expect_corrupt(test, node, TEST_DATA_SZ, -EUCLEAN);
-+}
-+
-+static void scan_a_node_data_len_below_min_returns_corrupt(struct kunit *test)
-+{
-+	void *node;
-+
-+	node = make_node(test, UBIFS_DATA_NODE, TEST_DATA_SZ - 1);
-+	KUNIT_ASSERT_NOT_NULL(test, node);
-+
-+	expect_corrupt(test, node, TEST_DATA_SZ - 1, -EINVAL);
-+}
-+
-+static void scan_a_node_data_len_at_min_returns_a_node(struct kunit *test)
++static void key_write_stays_within_sixteen_bytes(struct kunit *test)
 +{
 +	struct ubifs_info *c = ubifs_test_info(test);
-+	void *node;
++	union ubifs_key key = { .u32 = { 0xDEADBEEF, 0xCAFEBABE } };
++	const u8 zero[8] = { 0 };
++	u8 guard[8];
++	u8 buf[32];
 +
 +	KUNIT_ASSERT_NOT_NULL(test, c);
-+	node = make_node(test, UBIFS_DATA_NODE, UBIFS_DATA_NODE_SZ);
-+	KUNIT_ASSERT_NOT_NULL(test, node);
 +
-+	KUNIT_EXPECT_EQ(test, ubifs_scan_a_node(c, node, UBIFS_DATA_NODE_SZ,
-+						TEST_LNUM, TEST_OFFS, 1),
-+			SCANNED_A_NODE);
++	memset(guard, 0xaa, sizeof(guard));
++	memset(buf, 0xaa, sizeof(buf));
++	key_write(c, &key, buf + 8);
++
++	/* Nothing before the 16-byte key and nothing after it is written. */
++	KUNIT_EXPECT_MEMEQ(test, buf, guard, sizeof(guard));
++	KUNIT_EXPECT_MEMEQ(test, buf + 24, guard, sizeof(guard));
++	expect_le_key(test, buf + 8, key.u32[0], key.u32[1]);
++	KUNIT_EXPECT_MEMEQ(test, buf + 16, zero, sizeof(zero));
 +}
 +
-+static void scan_a_node_data_len_at_max_returns_a_node(struct kunit *test)
++static void key_read_reads_only_first_eight_bytes(struct kunit *test)
 +{
 +	struct ubifs_info *c = ubifs_test_info(test);
-+	void *node;
++	const u8 src[UBIFS_MAX_KEY_LEN] = {
++		0x78, 0x56, 0x34, 0x12, 0xef, 0xcd, 0xab, 0x89,
++		0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa,
++	};
++	union ubifs_key key;
 +
 +	KUNIT_ASSERT_NOT_NULL(test, c);
-+	node = make_node(test, UBIFS_DATA_NODE, UBIFS_MAX_DATA_NODE_SZ);
-+	KUNIT_ASSERT_NOT_NULL(test, node);
 +
-+	KUNIT_EXPECT_EQ(test, ubifs_scan_a_node(c, node,
-+						UBIFS_MAX_DATA_NODE_SZ,
-+						TEST_LNUM, TEST_OFFS, 1),
-+			SCANNED_A_NODE);
++	key_read(c, src, &key);
++	KUNIT_EXPECT_EQ(test, key.u32[0], 0x12345678);
++	KUNIT_EXPECT_EQ(test, key.u32[1], 0x89ABCDEF);
 +}
 +
-+static void scan_a_node_data_len_above_max_returns_corrupt(struct kunit *test)
++static void key_write_read_roundtrip(struct kunit *test)
 +{
-+	void *node;
-+
-+	node = make_node(test, UBIFS_DATA_NODE, UBIFS_MAX_DATA_NODE_SZ + 1);
-+	KUNIT_ASSERT_NOT_NULL(test, node);
-+
-+	expect_corrupt(test, node, UBIFS_MAX_DATA_NODE_SZ + 1, -EINVAL);
-+}
-+
-+static void scan_a_node_crossing_leb_end_returns_corrupt(struct kunit *test)
-+{
++	static const u32 keys[][2] = {
++		{ 0x00000000, 0x00000000 },
++		{ 0x00000001, 0x00000000 },
++		{ 0xffffffff, 0xffffffff },
++		{ 0x12345678, 0x9abcdef0 },
++		{ 0xdeadbeaf, UBIFS_INVALID_KEY },
++	};
 +	struct ubifs_info *c = ubifs_test_info(test);
-+	const int offs = UBIFS_TEST_LEB_SIZE - 40;
-+	void *node;
-+
-+	KUNIT_ASSERT_NOT_NULL(test, c);
-+	node = make_node(test, UBIFS_DATA_NODE, TEST_DATA_SZ);
-+	KUNIT_ASSERT_NOT_NULL(test, node);
-+
-+	/* offs + node_len == leb_size + 8, which is past the LEB end. */
-+	KUNIT_EXPECT_EQ(test, ubifs_check_node(c, node, TEST_DATA_SZ,
-+					       TEST_LNUM, offs, 1, 1),
-+			-EINVAL);
-+	KUNIT_EXPECT_EQ(test, ubifs_scan_a_node(c, node, TEST_DATA_SZ,
-+						TEST_LNUM, offs, 1),
-+			SCANNED_A_CORRUPT_NODE);
-+}
-+
-+static void scan_a_node_fixed_len_below_size_returns_corrupt(struct kunit *test)
-+{
-+	const int len = UBIFS_PAD_NODE_SZ - 1;
-+	void *node;
-+
-+	node = make_node(test, UBIFS_PAD_NODE, len);
-+	KUNIT_ASSERT_NOT_NULL(test, node);
-+
-+	expect_corrupt(test, node, len, -EINVAL);
-+}
-+
-+static void scan_a_node_fixed_len_above_size_returns_corrupt(struct kunit *test)
-+{
-+	const int len = UBIFS_PAD_NODE_SZ + 1;
-+	void *node;
-+
-+	node = make_node(test, UBIFS_PAD_NODE, len);
-+	KUNIT_ASSERT_NOT_NULL(test, node);
-+
-+	expect_corrupt(test, node, len, -EINVAL);
-+}
-+
-+static void scan_a_node_bad_type_returns_corrupt(struct kunit *test)
-+{
-+	struct ubifs_info *c = ubifs_test_info(test);
-+	struct ubifs_stats_info *stats;
-+	void *node;
-+
-+	KUNIT_ASSERT_NOT_NULL(test, c);
-+	stats = kunit_kzalloc(test, sizeof(*stats), GFP_KERNEL);
-+	KUNIT_ASSERT_NOT_NULL(test, stats);
-+	c->stats = stats;
-+
-+	node = make_node(test, UBIFS_NODE_TYPES_CNT, TEST_DATA_SZ);
-+	KUNIT_ASSERT_NOT_NULL(test, node);
-+
-+	KUNIT_EXPECT_EQ(test, ubifs_check_node(c, node, TEST_DATA_SZ,
-+					       TEST_LNUM, TEST_OFFS, 1, 1),
-+			-EINVAL);
-+	KUNIT_EXPECT_EQ(test, stats->node_errors, 1);
-+
-+	KUNIT_EXPECT_EQ(test, ubifs_scan_a_node(c, node, TEST_DATA_SZ,
-+						TEST_LNUM, TEST_OFFS, 1),
-+			SCANNED_A_CORRUPT_NODE);
-+	KUNIT_EXPECT_EQ(test, stats->node_errors, 2);
-+}
-+
-+static void scan_a_node_valid_trun_node_returns_a_node(struct kunit *test)
-+{
-+	struct ubifs_info *c = ubifs_test_info(test);
-+	void *node;
-+
-+	KUNIT_ASSERT_NOT_NULL(test, c);
-+	node = make_node(test, UBIFS_TRUN_NODE, UBIFS_TRUN_NODE_SZ);
-+	KUNIT_ASSERT_NOT_NULL(test, node);
-+
-+	/* Any valid node which is not a padding node is SCANNED_A_NODE. */
-+	KUNIT_EXPECT_EQ(test, ubifs_scan_a_node(c, node, UBIFS_TRUN_NODE_SZ,
-+						TEST_LNUM, TEST_OFFS, 1),
-+			SCANNED_A_NODE);
-+}
-+
-+/* ------------------------------------------------------------------------- */
-+/* ubifs_scan_a_node(): padding and empty space                               */
-+/* ------------------------------------------------------------------------- */
-+
-+static void expect_padding(struct kunit *test, int count, int len,
-+			   int expected)
-+{
-+	struct ubifs_info *c = ubifs_test_info(test);
-+	u8 *buf;
-+
-+	KUNIT_ASSERT_NOT_NULL(test, c);
-+	buf = kunit_kzalloc(test, 64, GFP_KERNEL);
-+	KUNIT_ASSERT_NOT_NULL(test, buf);
-+
-+	memset(buf, UBIFS_PADDING_BYTE, count);
-+	KUNIT_EXPECT_EQ(test, ubifs_scan_a_node(c, buf, len, TEST_LNUM,
-+						TEST_OFFS, 1),
-+			expected);
-+}
-+
-+static void scan_a_node_padding_8_returns_8(struct kunit *test)
-+{
-+	expect_padding(test, 8, 64, 8);
-+}
-+
-+static void scan_a_node_padding_16_returns_16(struct kunit *test)
-+{
-+	expect_padding(test, 16, 64, 16);
-+}
-+
-+static void scan_a_node_padding_24_returns_24(struct kunit *test)
-+{
-+	expect_padding(test, 24, 64, 24);
-+}
-+
-+static void scan_a_node_padding_short_count_returns_garbage(struct kunit *test)
-+{
++	union ubifs_key in, out;
++	u8 buf[UBIFS_MAX_KEY_LEN];
 +	int i;
 +
-+	for (i = 1; i <= 7; i++)
-+		expect_padding(test, i, 64, SCANNED_GARBAGE);
-+}
-+
-+static void scan_a_node_padding_28_or_more_returns_garbage(struct kunit *test)
-+{
-+	expect_padding(test, 28, 64, SCANNED_GARBAGE);
-+	expect_padding(test, 32, 64, SCANNED_GARBAGE);
-+	expect_padding(test, 64, 64, SCANNED_GARBAGE);
-+}
-+
-+static void scan_a_node_padding_limited_by_len(struct kunit *test)
-+{
-+	expect_padding(test, 32, 8, 8);
-+	expect_padding(test, 32, 16, 16);
-+	expect_padding(test, 32, 24, 24);
-+	expect_padding(test, 32, 28, SCANNED_GARBAGE);
-+	expect_padding(test, 32, 7, SCANNED_GARBAGE);
-+	expect_padding(test, 32, 4, SCANNED_GARBAGE);
-+}
-+
-+static void
-+scan_a_node_bad_magic_without_padding_returns_garbage(struct kunit *test)
-+{
-+	struct ubifs_info *c = ubifs_test_info(test);
-+	u8 *buf;
-+
 +	KUNIT_ASSERT_NOT_NULL(test, c);
-+	buf = kunit_kzalloc(test, 64, GFP_KERNEL);
-+	KUNIT_ASSERT_NOT_NULL(test, buf);
 +
-+	/* A zeroed buffer has magic 0 and starts with a non-padding byte. */
-+	KUNIT_EXPECT_EQ(test, ubifs_scan_a_node(c, buf, 64, TEST_LNUM,
-+						TEST_OFFS, 1),
-+			SCANNED_GARBAGE);
-+
-+	/*
-+	 * The padding count starts at byte 0, so a bogus magic followed by
-+	 * padding bytes is still reported as garbage.
-+	 */
-+	*(__le32 *)buf = cpu_to_le32(0xDEADBEEF);
-+	memset(buf + 4, UBIFS_PADDING_BYTE, 8);
-+	KUNIT_EXPECT_EQ(test, ubifs_scan_a_node(c, buf, 64, TEST_LNUM,
-+						TEST_OFFS, 1),
-+			SCANNED_GARBAGE);
-+}
-+
-+static void scan_a_node_empty_space_returns_empty(struct kunit *test)
-+{
-+	struct ubifs_info *c = ubifs_test_info(test);
-+	u8 *buf;
-+
-+	KUNIT_ASSERT_NOT_NULL(test, c);
-+	buf = kunit_kzalloc(test, 64, GFP_KERNEL);
-+	KUNIT_ASSERT_NOT_NULL(test, buf);
-+	memset(buf, 0xff, 64);
-+
-+	/* Empty space is detected before the header length is checked. */
-+	KUNIT_EXPECT_EQ(test, ubifs_scan_a_node(c, buf, 64, TEST_LNUM,
-+						TEST_OFFS, 1),
-+			SCANNED_EMPTY_SPACE);
-+	KUNIT_EXPECT_EQ(test, ubifs_scan_a_node(c, buf, 4, TEST_LNUM,
-+						TEST_OFFS, 1),
-+			SCANNED_EMPTY_SPACE);
-+}
-+
-+static void scan_a_node_short_header_returns_garbage(struct kunit *test)
-+{
-+	struct ubifs_info *c = ubifs_test_info(test);
-+	void *node;
-+
-+	KUNIT_ASSERT_NOT_NULL(test, c);
-+	node = make_node(test, UBIFS_DATA_NODE, TEST_DATA_SZ);
-+	KUNIT_ASSERT_NOT_NULL(test, node);
-+
-+	/* A valid magic but fewer than UBIFS_CH_SZ readable bytes. */
-+	KUNIT_EXPECT_EQ(test, ubifs_scan_a_node(c, node, UBIFS_CH_SZ - 1,
-+						TEST_LNUM, TEST_OFFS, 1),
-+			SCANNED_GARBAGE);
-+}
-+
-+/* ------------------------------------------------------------------------- */
-+/* ubifs_scan_a_node(): padding nodes                                         */
-+/* ------------------------------------------------------------------------- */
-+
-+static void expect_pad(struct kunit *test, int pad_len, int offs, int expected)
-+{
-+	struct ubifs_info *c = ubifs_test_info(test);
-+	struct ubifs_pad_node *pad;
-+
-+	KUNIT_ASSERT_NOT_NULL(test, c);
-+	pad = ubifs_test_make_pad_node(test, pad_len);
-+	KUNIT_ASSERT_NOT_NULL(test, pad);
-+
-+	KUNIT_EXPECT_EQ(test, ubifs_scan_a_node(c, pad, UBIFS_PAD_NODE_SZ,
-+						TEST_LNUM, offs, 1),
-+			expected);
-+}
-+
-+static void
-+scan_a_node_pad_len_beyond_leb_returns_bad_pad(struct kunit *test)
-+{
-+	expect_pad(test, UBIFS_TEST_LEB_SIZE, TEST_OFFS,
-+		   SCANNED_A_BAD_PAD_NODE);
-+}
-+
-+static void
-+scan_a_node_pad_len_crossing_leb_end_returns_bad_pad(struct kunit *test)
-+{
-+	expect_pad(test, UBIFS_TEST_LEB_SIZE - UBIFS_PAD_NODE_SZ, 8,
-+		   SCANNED_A_BAD_PAD_NODE);
-+}
-+
-+static void scan_a_node_pad_len_negative_returns_bad_pad(struct kunit *test)
-+{
-+	expect_pad(test, -1, TEST_OFFS, SCANNED_A_BAD_PAD_NODE);
-+}
-+
-+static void
-+scan_a_node_pad_len_not_aligned_returns_bad_pad(struct kunit *test)
-+{
-+	static const int pad_lens[] = { 0, 1, 5, 7 };
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(pad_lens); i++)
-+		expect_pad(test, pad_lens[i], TEST_OFFS,
-+			   SCANNED_A_BAD_PAD_NODE);
-+}
-+
-+static void scan_a_node_valid_pad_returns_skip_len(struct kunit *test)
-+{
-+	static const int pad_lens[] = { 4, 12, 20 };
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(pad_lens); i++)
-+		expect_pad(test, pad_lens[i], TEST_OFFS,
-+			   UBIFS_PAD_NODE_SZ + pad_lens[i]);
-+}
-+
-+static void scan_a_node_pad_len_reaching_leb_end_is_ok(struct kunit *test)
-+{
-+	/* offs + node_len + pad_len == leb_size is still a valid pad node. */
-+	expect_pad(test, UBIFS_TEST_LEB_SIZE - UBIFS_PAD_NODE_SZ, TEST_OFFS,
-+		   UBIFS_TEST_LEB_SIZE);
-+}
-+
-+static void
-+scan_a_node_corrupt_node_quiet_off_returns_corrupt(struct kunit *test)
-+{
-+	struct ubifs_info *c = ubifs_test_info(test);
-+	struct ubifs_ch *ch;
-+	void *node;
-+
-+	KUNIT_ASSERT_NOT_NULL(test, c);
-+	node = make_node(test, UBIFS_DATA_NODE, TEST_DATA_SZ);
-+	KUNIT_ASSERT_NOT_NULL(test, node);
-+
-+	ch = node;
-+	ch->crc = cpu_to_le32(le32_to_cpu(ch->crc) ^ 1);
-+
-+	/* quiet = 0 only enables the error messages and ubifs_dump_node(). */
-+	KUNIT_EXPECT_EQ(test, ubifs_scan_a_node(c, node, TEST_DATA_SZ,
-+						TEST_LNUM, TEST_OFFS, 0),
-+			SCANNED_A_CORRUPT_NODE);
-+}
-+
-+/* ------------------------------------------------------------------------- */
-+/* ubifs_check_node()                                                         */
-+/* ------------------------------------------------------------------------- */
-+
-+static void check_node_valid_data_node_returns_zero(struct kunit *test)
-+{
-+	struct ubifs_info *c = ubifs_test_info(test);
-+	void *node;
-+
-+	KUNIT_ASSERT_NOT_NULL(test, c);
-+	node = make_node(test, UBIFS_DATA_NODE, TEST_DATA_SZ);
-+	KUNIT_ASSERT_NOT_NULL(test, node);
-+
-+	KUNIT_EXPECT_EQ(test, ubifs_check_node(c, node, TEST_DATA_SZ,
-+					       TEST_LNUM, TEST_OFFS, 1, 1), 0);
-+}
-+
-+static void check_node_does_not_validate_len_argument(struct kunit *test)
-+{
-+	struct ubifs_info *c = ubifs_test_info(test);
-+	void *node;
-+
-+	KUNIT_ASSERT_NOT_NULL(test, c);
-+	node = make_node(test, UBIFS_DATA_NODE, TEST_DATA_SZ);
-+	KUNIT_ASSERT_NOT_NULL(test, node);
-+
-+	/* The CRC is read according to ch->len, len is only used for dumps. */
-+	KUNIT_EXPECT_EQ(test, ubifs_check_node(c, node, UBIFS_CH_SZ,
-+					       TEST_LNUM, TEST_OFFS, 1, 1), 0);
-+}
-+
-+static void check_node_bad_magic_returns_euclean(struct kunit *test)
-+{
-+	struct ubifs_info *c = ubifs_test_info(test);
-+	struct ubifs_ch *ch;
-+	void *node;
-+
-+	KUNIT_ASSERT_NOT_NULL(test, c);
-+	node = make_node(test, UBIFS_DATA_NODE, TEST_DATA_SZ);
-+	KUNIT_ASSERT_NOT_NULL(test, node);
-+
-+	ch = node;
-+	ch->magic = cpu_to_le32(0xDEADBEEF);
-+
-+	KUNIT_EXPECT_EQ(test, ubifs_check_node(c, node, TEST_DATA_SZ,
-+					       TEST_LNUM, TEST_OFFS, 1, 1),
-+			-EUCLEAN);
-+}
-+
-+static void check_node_bad_type_returns_einval(struct kunit *test)
-+{
-+	struct ubifs_info *c = ubifs_test_info(test);
-+	void *node;
-+
-+	KUNIT_ASSERT_NOT_NULL(test, c);
-+	node = make_node(test, UBIFS_NODE_TYPES_CNT, TEST_DATA_SZ);
-+	KUNIT_ASSERT_NOT_NULL(test, node);
-+
-+	KUNIT_EXPECT_EQ(test, ubifs_check_node(c, node, TEST_DATA_SZ,
-+					       TEST_LNUM, TEST_OFFS, 1, 1),
-+			-EINVAL);
-+}
-+
-+static void check_node_data_len_below_min_returns_einval(struct kunit *test)
-+{
-+	struct ubifs_info *c = ubifs_test_info(test);
-+	void *node;
-+
-+	KUNIT_ASSERT_NOT_NULL(test, c);
-+	node = make_node(test, UBIFS_DATA_NODE, TEST_DATA_SZ - 1);
-+	KUNIT_ASSERT_NOT_NULL(test, node);
-+
-+	KUNIT_EXPECT_EQ(test, ubifs_check_node(c, node, TEST_DATA_SZ - 1,
-+					       TEST_LNUM, TEST_OFFS, 1, 1),
-+			-EINVAL);
-+}
-+
-+static void check_node_data_len_at_min_returns_zero(struct kunit *test)
-+{
-+	struct ubifs_info *c = ubifs_test_info(test);
-+	void *node;
-+
-+	KUNIT_ASSERT_NOT_NULL(test, c);
-+	node = make_node(test, UBIFS_DATA_NODE, UBIFS_DATA_NODE_SZ);
-+	KUNIT_ASSERT_NOT_NULL(test, node);
-+
-+	KUNIT_EXPECT_EQ(test, ubifs_check_node(c, node, UBIFS_DATA_NODE_SZ,
-+					       TEST_LNUM, TEST_OFFS, 1, 1), 0);
-+}
-+
-+static void check_node_data_len_at_max_returns_zero(struct kunit *test)
-+{
-+	struct ubifs_info *c = ubifs_test_info(test);
-+	void *node;
-+
-+	KUNIT_ASSERT_NOT_NULL(test, c);
-+	node = make_node(test, UBIFS_DATA_NODE, UBIFS_MAX_DATA_NODE_SZ);
-+	KUNIT_ASSERT_NOT_NULL(test, node);
-+
-+	KUNIT_EXPECT_EQ(test, ubifs_check_node(c, node, UBIFS_MAX_DATA_NODE_SZ,
-+					       TEST_LNUM, TEST_OFFS, 1, 1), 0);
-+}
-+
-+static void check_node_data_len_above_max_returns_einval(struct kunit *test)
-+{
-+	struct ubifs_info *c = ubifs_test_info(test);
-+	void *node;
-+
-+	KUNIT_ASSERT_NOT_NULL(test, c);
-+	node = make_node(test, UBIFS_DATA_NODE, UBIFS_MAX_DATA_NODE_SZ + 1);
-+	KUNIT_ASSERT_NOT_NULL(test, node);
-+
-+	KUNIT_EXPECT_EQ(test, ubifs_check_node(c, node,
-+					       UBIFS_MAX_DATA_NODE_SZ + 1,
-+					       TEST_LNUM, TEST_OFFS, 1, 1),
-+			-EINVAL);
-+}
-+
-+static void
-+check_node_data_crc_skipped_with_no_chk_data_crc(struct kunit *test)
-+{
-+	struct ubifs_info *c = ubifs_test_info(test);
-+	void *node;
-+
-+	KUNIT_ASSERT_NOT_NULL(test, c);
-+	node = make_node(test, UBIFS_DATA_NODE, TEST_DATA_SZ);
-+	KUNIT_ASSERT_NOT_NULL(test, node);
-+	((u8 *)node)[TEST_DATA_SZ - 1] ^= 0xff;
-+
-+	c->no_chk_data_crc = 1;
-+	KUNIT_EXPECT_EQ(test, ubifs_check_node(c, node, TEST_DATA_SZ,
-+					       TEST_LNUM, TEST_OFFS, 1, 0), 0);
-+}
-+
-+static void check_node_data_crc_checked_while_mounting(struct kunit *test)
-+{
-+	struct ubifs_info *c = ubifs_test_info(test);
-+	void *node;
-+
-+	KUNIT_ASSERT_NOT_NULL(test, c);
-+	node = make_node(test, UBIFS_DATA_NODE, TEST_DATA_SZ);
-+	KUNIT_ASSERT_NOT_NULL(test, node);
-+	((u8 *)node)[TEST_DATA_SZ - 1] ^= 0xff;
-+
-+	c->no_chk_data_crc = 1;
-+	c->mounting = 1;
-+	KUNIT_EXPECT_EQ(test, ubifs_check_node(c, node, TEST_DATA_SZ,
-+					       TEST_LNUM, TEST_OFFS, 1, 0),
-+			-EUCLEAN);
-+}
-+
-+static void
-+check_node_data_crc_checked_while_remounting_rw(struct kunit *test)
-+{
-+	struct ubifs_info *c = ubifs_test_info(test);
-+	void *node;
-+
-+	KUNIT_ASSERT_NOT_NULL(test, c);
-+	node = make_node(test, UBIFS_DATA_NODE, TEST_DATA_SZ);
-+	KUNIT_ASSERT_NOT_NULL(test, node);
-+	((u8 *)node)[TEST_DATA_SZ - 1] ^= 0xff;
-+
-+	c->no_chk_data_crc = 1;
-+	c->remounting_rw = 1;
-+	KUNIT_EXPECT_EQ(test, ubifs_check_node(c, node, TEST_DATA_SZ,
-+					       TEST_LNUM, TEST_OFFS, 1, 0),
-+			-EUCLEAN);
-+}
-+
-+static void
-+check_node_data_crc_checked_with_must_chk_crc(struct kunit *test)
-+{
-+	struct ubifs_info *c = ubifs_test_info(test);
-+	void *node;
-+
-+	KUNIT_ASSERT_NOT_NULL(test, c);
-+	node = make_node(test, UBIFS_DATA_NODE, TEST_DATA_SZ);
-+	KUNIT_ASSERT_NOT_NULL(test, node);
-+	((u8 *)node)[TEST_DATA_SZ - 1] ^= 0xff;
-+
-+	c->no_chk_data_crc = 1;
-+	KUNIT_EXPECT_EQ(test, ubifs_check_node(c, node, TEST_DATA_SZ,
-+					       TEST_LNUM, TEST_OFFS, 1, 1),
-+			-EUCLEAN);
-+}
-+
-+static void check_node_non_data_crc_is_never_skipped(struct kunit *test)
-+{
-+	struct ubifs_info *c = ubifs_test_info(test);
-+	struct ubifs_pad_node *pad;
-+
-+	KUNIT_ASSERT_NOT_NULL(test, c);
-+	pad = ubifs_test_make_pad_node(test, 4);
-+	KUNIT_ASSERT_NOT_NULL(test, pad);
-+	pad->ch.crc = cpu_to_le32(le32_to_cpu(pad->ch.crc) ^ 1);
-+
-+	c->no_chk_data_crc = 1;
-+	KUNIT_EXPECT_EQ(test, ubifs_check_node(c, pad, UBIFS_PAD_NODE_SZ,
-+					       TEST_LNUM, TEST_OFFS, 1, 0),
-+			-EUCLEAN);
-+}
-+
-+static void check_node_updates_stats_counters(struct kunit *test)
-+{
-+	struct ubifs_info *c = ubifs_test_info(test);
-+	struct ubifs_stats_info *stats;
-+	struct ubifs_ch *ch;
-+	void *node;
-+
-+	KUNIT_ASSERT_NOT_NULL(test, c);
-+	stats = kunit_kzalloc(test, sizeof(*stats), GFP_KERNEL);
-+	KUNIT_ASSERT_NOT_NULL(test, stats);
-+	c->stats = stats;
-+
-+	/* A wrong magic number. */
-+	node = make_node(test, UBIFS_DATA_NODE, TEST_DATA_SZ);
-+	KUNIT_ASSERT_NOT_NULL(test, node);
-+	ch = node;
-+	ch->magic = 0;
-+	KUNIT_EXPECT_EQ(test, ubifs_check_node(c, node, TEST_DATA_SZ,
-+					       TEST_LNUM, TEST_OFFS, 1, 1),
-+			-EUCLEAN);
-+	KUNIT_EXPECT_EQ(test, stats->magic_errors, 1);
-+
-+	/* An unknown node type. */
-+	node = make_node(test, UBIFS_NODE_TYPES_CNT, TEST_DATA_SZ);
-+	KUNIT_ASSERT_NOT_NULL(test, node);
-+	KUNIT_EXPECT_EQ(test, ubifs_check_node(c, node, TEST_DATA_SZ,
-+					       TEST_LNUM, TEST_OFFS, 1, 1),
-+			-EINVAL);
-+	KUNIT_EXPECT_EQ(test, stats->node_errors, 1);
-+
-+	/* A wrong CRC. */
-+	node = make_node(test, UBIFS_DATA_NODE, TEST_DATA_SZ);
-+	KUNIT_ASSERT_NOT_NULL(test, node);
-+	((u8 *)node)[TEST_DATA_SZ - 1] ^= 0xff;
-+	KUNIT_EXPECT_EQ(test, ubifs_check_node(c, node, TEST_DATA_SZ,
-+					       TEST_LNUM, TEST_OFFS, 1, 1),
-+			-EUCLEAN);
-+	KUNIT_EXPECT_EQ(test, stats->crc_errors, 1);
-+}
-+
-+/* ------------------------------------------------------------------------- */
-+/* ubifs_add_snod()                                                           */
-+/* ------------------------------------------------------------------------- */
-+
-+static void free_scanned_nodes(struct ubifs_scan_leb *sleb)
-+{
-+	struct ubifs_scan_node *node, *tmp;
-+
-+	list_for_each_entry_safe(node, tmp, &sleb->nodes, list) {
-+		list_del(&node->list);
-+		kfree(node);
++	for (i = 0; i < ARRAY_SIZE(keys); i++) {
++		in.u32[0] = keys[i][0];
++		in.u32[1] = keys[i][1];
++		key_write(c, &in, buf);
++		key_read(c, buf, &out);
++		KUNIT_EXPECT_EQ(test, out.u32[0], in.u32[0]);
++		KUNIT_EXPECT_EQ(test, out.u32[1], in.u32[1]);
 +	}
 +}
 +
-+static void expect_snod_keyed(struct kunit *test, u8 type, int len)
++static void key_write_idx_does_not_zero_tail(struct kunit *test)
 +{
 +	struct ubifs_info *c = ubifs_test_info(test);
-+	struct ubifs_scan_leb *sleb;
-+	struct ubifs_scan_node *snod;
-+	const u32 inum = 0x11223344;
-+	const u32 val = 0x55667788;
-+	void *node;
++	union ubifs_key key = { .u32 = { 0x01020304, 0x05060708 } };
++	const u8 zero[8] = { 0 };
++	const u8 guard[8] = { 0xaa, 0xaa, 0xaa, 0xaa,
++			      0xaa, 0xaa, 0xaa, 0xaa };
++	u8 idx[UBIFS_MAX_KEY_LEN];
++	u8 full[UBIFS_MAX_KEY_LEN];
 +
 +	KUNIT_ASSERT_NOT_NULL(test, c);
-+	sleb = ubifs_test_scan_leb(test);
-+	KUNIT_ASSERT_NOT_NULL(test, sleb);
-+	node = ubifs_test_make_node(test, len, type, len);
-+	KUNIT_ASSERT_NOT_NULL(test, node);
-+	ubifs_test_node_set_key(node, inum, val);
 +
-+	KUNIT_EXPECT_EQ(test, ubifs_add_snod(c, sleb, node, 0x40), 0);
-+	KUNIT_EXPECT_EQ(test, sleb->nodes_cnt, 1);
-+	KUNIT_ASSERT_FALSE(test, list_empty(&sleb->nodes));
++	memset(idx, 0xaa, sizeof(idx));
++	memset(full, 0xaa, sizeof(full));
++	key_write_idx(c, &key, idx);
++	key_write(c, &key, full);
 +
-+	snod = list_first_entry(&sleb->nodes, struct ubifs_scan_node, list);
-+	KUNIT_EXPECT_EQ(test, snod->type, type);
-+	KUNIT_EXPECT_EQ(test, snod->offs, 0x40);
-+	KUNIT_EXPECT_EQ(test, snod->len, len);
-+	KUNIT_EXPECT_EQ(test, snod->sqnum, UBIFS_TEST_SQNUM);
-+	KUNIT_EXPECT_EQ(test, snod->key.u32[0], inum);
-+	KUNIT_EXPECT_EQ(test, snod->key.u32[1], val);
-+
-+	free_scanned_nodes(sleb);
++	expect_le_key(test, idx, key.u32[0], key.u32[1]);
++	KUNIT_EXPECT_MEMEQ(test, idx, full, 8);
++	KUNIT_EXPECT_MEMEQ(test, idx + 8, guard, sizeof(guard));
++	KUNIT_EXPECT_MEMEQ(test, full + 8, zero, sizeof(zero));
 +}
 +
-+static void add_snod_extracts_key_from_ino_node(struct kunit *test)
-+{
-+	expect_snod_keyed(test, UBIFS_INO_NODE, UBIFS_INO_NODE_SZ);
-+}
-+
-+static void add_snod_extracts_key_from_dent_node(struct kunit *test)
-+{
-+	expect_snod_keyed(test, UBIFS_DENT_NODE, UBIFS_DENT_NODE_SZ);
-+}
-+
-+static void add_snod_extracts_key_from_xent_node(struct kunit *test)
-+{
-+	expect_snod_keyed(test, UBIFS_XENT_NODE, UBIFS_XENT_NODE_SZ);
-+}
-+
-+static void add_snod_extracts_key_from_data_node(struct kunit *test)
-+{
-+	expect_snod_keyed(test, UBIFS_DATA_NODE, UBIFS_DATA_NODE_SZ);
-+}
-+
-+static void add_snod_pad_node_gets_invalid_key(struct kunit *test)
++static void key_copy_copies_whole_key(struct kunit *test)
 +{
 +	struct ubifs_info *c = ubifs_test_info(test);
-+	struct ubifs_scan_leb *sleb;
-+	struct ubifs_scan_node *snod;
-+	struct ubifs_pad_node *pad;
++	union ubifs_key from = { .u32 = { 0x11223344, 0x55667788 } };
++	union ubifs_key to;
 +
 +	KUNIT_ASSERT_NOT_NULL(test, c);
-+	sleb = ubifs_test_scan_leb(test);
-+	KUNIT_ASSERT_NOT_NULL(test, sleb);
-+	pad = ubifs_test_make_pad_node(test, 4);
-+	KUNIT_ASSERT_NOT_NULL(test, pad);
 +
-+	KUNIT_EXPECT_EQ(test, ubifs_add_snod(c, sleb, pad, 0x40), 0);
-+	KUNIT_EXPECT_EQ(test, sleb->nodes_cnt, 1);
-+
-+	snod = list_first_entry(&sleb->nodes, struct ubifs_scan_node, list);
-+	KUNIT_EXPECT_EQ(test, snod->type, UBIFS_PAD_NODE);
-+	KUNIT_EXPECT_EQ(test, snod->key.u32[0], 0xDEADBEAF);
-+	KUNIT_EXPECT_EQ(test, snod->key.u32[1], UBIFS_INVALID_KEY);
-+
-+	free_scanned_nodes(sleb);
-+}
-+
-+static void add_snod_trun_node_gets_invalid_key(struct kunit *test)
-+{
-+	struct ubifs_info *c = ubifs_test_info(test);
-+	struct ubifs_scan_leb *sleb;
-+	struct ubifs_scan_node *snod;
-+	void *node;
-+
-+	KUNIT_ASSERT_NOT_NULL(test, c);
-+	sleb = ubifs_test_scan_leb(test);
-+	KUNIT_ASSERT_NOT_NULL(test, sleb);
-+	node = make_node(test, UBIFS_TRUN_NODE, UBIFS_TRUN_NODE_SZ);
-+	KUNIT_ASSERT_NOT_NULL(test, node);
-+
-+	KUNIT_EXPECT_EQ(test, ubifs_add_snod(c, sleb, node, 0), 0);
-+
-+	snod = list_first_entry(&sleb->nodes, struct ubifs_scan_node, list);
-+	KUNIT_EXPECT_EQ(test, snod->type, UBIFS_TRUN_NODE);
-+	KUNIT_EXPECT_EQ(test, snod->key.u32[0], 0xDEADBEAF);
-+	KUNIT_EXPECT_EQ(test, snod->key.u32[1], UBIFS_INVALID_KEY);
-+
-+	free_scanned_nodes(sleb);
-+}
-+
-+static void add_snod_appends_nodes_in_order(struct kunit *test)
-+{
-+	struct ubifs_info *c = ubifs_test_info(test);
-+	struct ubifs_scan_leb *sleb;
-+	struct ubifs_scan_node *first, *second;
-+	void *node1, *node2;
-+
-+	KUNIT_ASSERT_NOT_NULL(test, c);
-+	sleb = ubifs_test_scan_leb(test);
-+	KUNIT_ASSERT_NOT_NULL(test, sleb);
-+	node1 = make_node(test, UBIFS_DATA_NODE, TEST_DATA_SZ);
-+	KUNIT_ASSERT_NOT_NULL(test, node1);
-+	node2 = make_node(test, UBIFS_INO_NODE, UBIFS_INO_NODE_SZ);
-+	KUNIT_ASSERT_NOT_NULL(test, node2);
-+
-+	KUNIT_EXPECT_EQ(test, ubifs_add_snod(c, sleb, node1, 0), 0);
-+	KUNIT_EXPECT_EQ(test, ubifs_add_snod(c, sleb, node2, 64), 0);
-+	KUNIT_EXPECT_EQ(test, sleb->nodes_cnt, 2);
-+
-+	first = list_first_entry(&sleb->nodes, struct ubifs_scan_node, list);
-+	second = list_next_entry(first, list);
-+	KUNIT_EXPECT_PTR_EQ(test, first->node, node1);
-+	KUNIT_EXPECT_PTR_EQ(test, second->node, node2);
-+	KUNIT_EXPECT_EQ(test, first->offs, 0);
-+	KUNIT_EXPECT_EQ(test, second->offs, 64);
-+
-+	free_scanned_nodes(sleb);
++	to.u64[0] = 0;
++	key_copy(c, &from, &to);
++	KUNIT_EXPECT_EQ(test, to.u32[0], from.u32[0]);
++	KUNIT_EXPECT_EQ(test, to.u32[1], from.u32[1]);
++	KUNIT_EXPECT_EQ(test, keys_eq(c, &from, &to), 1);
 +}
 +
 +/* ------------------------------------------------------------------------- */
-+/* ubifs_end_scan()                                                           */
++/* keys_cmp() / keys_eq()                                                     */
 +/* ------------------------------------------------------------------------- */
 +
-+static void end_scan_aligned_offset_sets_endpt(struct kunit *test)
++static void keys_cmp_orders_by_inum_first(struct kunit *test)
 +{
 +	struct ubifs_info *c = ubifs_test_info(test);
-+	struct ubifs_scan_leb *sleb;
++	union ubifs_key k1 = { .u32 = { 1, 0xffffffff } };
++	union ubifs_key k2 = { .u32 = { 2, 0x00000000 } };
 +
 +	KUNIT_ASSERT_NOT_NULL(test, c);
-+	sleb = ubifs_test_scan_leb(test);
-+	KUNIT_ASSERT_NOT_NULL(test, sleb);
 +
-+	ubifs_end_scan(c, sleb, TEST_LNUM, 16);
-+	KUNIT_EXPECT_EQ(test, sleb->endpt, 16);
++	KUNIT_EXPECT_EQ(test, keys_cmp(c, &k1, &k2), -1);
++	KUNIT_EXPECT_EQ(test, keys_cmp(c, &k2, &k1), 1);
 +}
 +
-+static void end_scan_zero_offset_sets_endpt(struct kunit *test)
++static void keys_cmp_orders_by_second_word(struct kunit *test)
 +{
 +	struct ubifs_info *c = ubifs_test_info(test);
-+	struct ubifs_scan_leb *sleb;
++	union ubifs_key k1 = { .u32 = { 7, 0x00000000 } };
++	union ubifs_key k2 = { .u32 = { 7, 0x00000001 } };
 +
 +	KUNIT_ASSERT_NOT_NULL(test, c);
-+	sleb = ubifs_test_scan_leb(test);
-+	KUNIT_ASSERT_NOT_NULL(test, sleb);
 +
-+	ubifs_end_scan(c, sleb, TEST_LNUM, 0);
-+	KUNIT_EXPECT_EQ(test, sleb->endpt, 0);
++	KUNIT_EXPECT_EQ(test, keys_cmp(c, &k1, &k2), -1);
++	KUNIT_EXPECT_EQ(test, keys_cmp(c, &k2, &k1), 1);
++	KUNIT_EXPECT_EQ(test, keys_cmp(c, &k1, &k1), 0);
 +}
 +
-+static void
-+end_scan_unaligned_offset_is_reported_but_aligns(struct kunit *test)
++static void keys_cmp_and_keys_eq_agree(struct kunit *test)
 +{
++	static const u32 pairs[][4] = {
++		{ 0x00000000, 0x00000000, 0x00000000, 0x00000000 },
++		{ 0x00000001, 0x00000000, 0x00000001, 0x00000001 },
++		{ 0x00000001, 0x00000001, 0x00000001, 0x00000000 },
++		{ 0xffffffff, 0x00000000, 0x00000000, 0xffffffff },
++		{ 0x00000005, 0x40000000, 0x00000005, 0x40000000 },
++	};
 +	struct ubifs_info *c = ubifs_test_info(test);
-+	struct ubifs_scan_leb *sleb;
++	int i;
 +
 +	KUNIT_ASSERT_NOT_NULL(test, c);
-+	sleb = ubifs_test_scan_leb(test);
-+	KUNIT_ASSERT_NOT_NULL(test, sleb);
 +
-+	/*
-+	 * This trips ubifs_assert(); with the zeroed assert_action the failure
-+	 * is only reported (and a stack trace dumped).
-+	 */
-+	ubifs_end_scan(c, sleb, TEST_LNUM, 12);
-+	KUNIT_EXPECT_EQ(test, sleb->endpt, 16);
++	for (i = 0; i < ARRAY_SIZE(pairs); i++) {
++		union ubifs_key a = { .u32 = { pairs[i][0], pairs[i][1] } };
++		union ubifs_key b = { .u32 = { pairs[i][2], pairs[i][3] } };
++		int cmp = keys_cmp(c, &a, &b);
++
++		KUNIT_EXPECT_EQ(test, cmp, -keys_cmp(c, &b, &a));
++		KUNIT_EXPECT_EQ(test, keys_eq(c, &a, &b), cmp == 0);
++	}
++}
++
++/* ------------------------------------------------------------------------- */
++/* Key constructors                                                           */
++/* ------------------------------------------------------------------------- */
++
++static void ino_key_init_sets_type_and_inum(struct kunit *test)
++{
++	struct ubifs_info *c = ubifs_test_info(test);
++	const ino_t inum = 0x12345678;
++	union ubifs_key key;
++
++	KUNIT_ASSERT_NOT_NULL(test, c);
++
++	ino_key_init(c, &key, inum);
++	KUNIT_EXPECT_EQ(test, key.u32[0], inum);
++	KUNIT_EXPECT_EQ(test, key.u32[1], UBIFS_INO_KEY <<
++			UBIFS_S_KEY_BLOCK_BITS);
++	KUNIT_EXPECT_EQ(test, key_type(c, &key), UBIFS_INO_KEY);
++	KUNIT_EXPECT_EQ(test, key_inum(c, &key), inum);
++	KUNIT_EXPECT_EQ(test, key_block(c, &key), 0);
++}
++
++static void ino_key_init_flash_zeroes_tail_and_roundtrips(struct kunit *test)
++{
++	struct ubifs_info *c = ubifs_test_info(test);
++	const u8 zero[UBIFS_MAX_KEY_LEN - 8] = { 0 };
++	const ino_t inum = 0x12345678;
++	union ubifs_key key, out;
++	u8 flash[UBIFS_MAX_KEY_LEN];
++
++	KUNIT_ASSERT_NOT_NULL(test, c);
++
++	memset(flash, 0xaa, sizeof(flash));
++	ino_key_init_flash(c, flash, inum);
++	KUNIT_EXPECT_MEMEQ(test, flash + 8, zero, sizeof(zero));
++
++	key_read(c, flash, &out);
++	ino_key_init(c, &key, inum);
++	KUNIT_EXPECT_EQ(test, keys_eq(c, &key, &out), 1);
++}
++
++static void dent_key_init_sets_type_and_hash(struct kunit *test)
++{
++	struct ubifs_info *c = ubifs_test_info(test);
++	struct fscrypt_name nm = { .disk_name = FSTR_INIT("abc", 3) };
++	const u32 hash = 0x00000005;
++	union ubifs_key key;
++	u32 expected;
++
++	KUNIT_ASSERT_NOT_NULL(test, c);
++
++	expected = c->key_hash(fname_name(&nm), fname_len(&nm));
++	KUNIT_EXPECT_LE(test, expected, UBIFS_S_KEY_HASH_MASK);
++
++	dent_key_init(c, &key, 0x1234, &nm);
++	KUNIT_EXPECT_EQ(test, key.u32[0], 0x1234);
++	KUNIT_EXPECT_EQ(test, key.u32[1], expected |
++			(UBIFS_DENT_KEY << UBIFS_S_KEY_HASH_BITS));
++	KUNIT_EXPECT_EQ(test, key_type(c, &key), UBIFS_DENT_KEY);
++	KUNIT_EXPECT_EQ(test, key_hash(c, &key), expected);
++
++	dent_key_init_hash(c, &key, 0x1234, hash);
++	KUNIT_EXPECT_EQ(test, key.u32[1], 0x40000005);
++	KUNIT_EXPECT_EQ(test, key_hash(c, &key), hash);
++}
++
++static void dent_key_init_flash_zeroes_tail_and_roundtrips(struct kunit *test)
++{
++	struct ubifs_info *c = ubifs_test_info(test);
++	struct fscrypt_name nm = { .disk_name = FSTR_INIT("abc", 3) };
++	const u8 zero[UBIFS_MAX_KEY_LEN - 8] = { 0 };
++	union ubifs_key key, out;
++	u8 flash[UBIFS_MAX_KEY_LEN];
++
++	KUNIT_ASSERT_NOT_NULL(test, c);
++
++	memset(flash, 0xaa, sizeof(flash));
++	dent_key_init_flash(c, flash, 0x20, &nm);
++	KUNIT_EXPECT_MEMEQ(test, flash + 8, zero, sizeof(zero));
++
++	key_read(c, flash, &out);
++	dent_key_init(c, &key, 0x20, &nm);
++	KUNIT_EXPECT_EQ(test, keys_eq(c, &key, &out), 1);
++	KUNIT_EXPECT_EQ(test, key_type(c, &out), UBIFS_DENT_KEY);
++}
++
++static void xent_key_init_sets_type_and_hash(struct kunit *test)
++{
++	struct ubifs_info *c = ubifs_test_info(test);
++	struct fscrypt_name nm = { .disk_name = FSTR_INIT("abc", 3) };
++	union ubifs_key key;
++	u32 expected;
++
++	KUNIT_ASSERT_NOT_NULL(test, c);
++
++	expected = c->key_hash(fname_name(&nm), fname_len(&nm));
++	xent_key_init(c, &key, 0x1234, &nm);
++	KUNIT_EXPECT_EQ(test, key.u32[0], 0x1234);
++	KUNIT_EXPECT_EQ(test, key.u32[1], expected |
++			(UBIFS_XENT_KEY << UBIFS_S_KEY_HASH_BITS));
++	KUNIT_EXPECT_EQ(test, key_type(c, &key), UBIFS_XENT_KEY);
++	KUNIT_EXPECT_EQ(test, key_hash(c, &key), expected);
++}
++
++static void xent_key_init_flash_zeroes_tail_and_roundtrips(struct kunit *test)
++{
++	struct ubifs_info *c = ubifs_test_info(test);
++	struct fscrypt_name nm = { .disk_name = FSTR_INIT("abc", 3) };
++	const u8 zero[UBIFS_MAX_KEY_LEN - 8] = { 0 };
++	union ubifs_key key, out;
++	u8 flash[UBIFS_MAX_KEY_LEN];
++
++	KUNIT_ASSERT_NOT_NULL(test, c);
++
++	memset(flash, 0xaa, sizeof(flash));
++	xent_key_init_flash(c, flash, 0x20, &nm);
++	KUNIT_EXPECT_MEMEQ(test, flash + 8, zero, sizeof(zero));
++
++	key_read(c, flash, &out);
++	xent_key_init(c, &key, 0x20, &nm);
++	KUNIT_EXPECT_EQ(test, keys_eq(c, &key, &out), 1);
++	KUNIT_EXPECT_EQ(test, key_type(c, &out), UBIFS_XENT_KEY);
++}
++
++static void data_key_init_sets_type_and_block(struct kunit *test)
++{
++	struct ubifs_info *c = ubifs_test_info(test);
++	union ubifs_key key;
++
++	KUNIT_ASSERT_NOT_NULL(test, c);
++
++	data_key_init(c, &key, 0x77, 0x12345);
++	KUNIT_EXPECT_EQ(test, key.u32[0], 0x77);
++	KUNIT_EXPECT_EQ(test, key.u32[1], 0x12345 |
++			(UBIFS_DATA_KEY << UBIFS_S_KEY_BLOCK_BITS));
++	KUNIT_EXPECT_EQ(test, key_type(c, &key), UBIFS_DATA_KEY);
++	KUNIT_EXPECT_EQ(test, key_block(c, &key), 0x12345);
++}
++
++static void trun_key_init_sets_truncation_type(struct kunit *test)
++{
++	struct ubifs_info *c = ubifs_test_info(test);
++	union ubifs_key key;
++
++	KUNIT_ASSERT_NOT_NULL(test, c);
++
++	trun_key_init(c, &key, 0x77);
++	KUNIT_EXPECT_EQ(test, key.u32[0], 0x77);
++	KUNIT_EXPECT_EQ(test, key.u32[1], UBIFS_TRUN_KEY <<
++			UBIFS_S_KEY_BLOCK_BITS);
++	KUNIT_EXPECT_EQ(test, key.u32[1], 0x80000000);
++	KUNIT_EXPECT_EQ(test, key_type(c, &key), UBIFS_TRUN_KEY);
++}
++
++static void invalid_key_init_sets_invalid_marker(struct kunit *test)
++{
++	struct ubifs_info *c = ubifs_test_info(test);
++	union ubifs_key key;
++
++	KUNIT_ASSERT_NOT_NULL(test, c);
++
++	invalid_key_init(c, &key);
++	KUNIT_EXPECT_EQ(test, key.u32[0], 0xDEADBEAF);
++	KUNIT_EXPECT_EQ(test, key.u32[1], UBIFS_INVALID_KEY);
++	KUNIT_EXPECT_EQ(test, key.u32[1], 0x00000004);
++	/* UBIFS_INVALID_KEY is not shifted, unlike UBIFS_TRUN_KEY. */
++	KUNIT_EXPECT_EQ(test, key_type(c, &key), UBIFS_INO_KEY);
++}
++
++static void lowest_and_highest_keys_are_bounds(struct kunit *test)
++{
++	struct ubifs_info *c = ubifs_test_info(test);
++	union ubifs_key lino, hino, ldent, lxent, hdata, dzero;
++
++	KUNIT_ASSERT_NOT_NULL(test, c);
++
++	lowest_ino_key(c, &lino, 1);
++	highest_ino_key(c, &hino, 1);
++	lowest_dent_key(c, &ldent, 1);
++	lowest_xent_key(c, &lxent, 1);
++	highest_data_key(c, &hdata, 1);
++	data_key_init(c, &dzero, 1, 0);
++
++	KUNIT_EXPECT_EQ(test, lino.u32[1], 0x00000000);
++	KUNIT_EXPECT_EQ(test, hino.u32[1], 0xffffffff);
++	KUNIT_EXPECT_EQ(test, ldent.u32[1], 0x40000000);
++	KUNIT_EXPECT_EQ(test, lxent.u32[1], 0x60000000);
++	KUNIT_EXPECT_EQ(test, hdata.u32[1], 0x3fffffff);
++
++	KUNIT_EXPECT_EQ(test, keys_cmp(c, &lino, &dzero), -1);
++	KUNIT_EXPECT_EQ(test, keys_cmp(c, &dzero, &hdata), -1);
++	KUNIT_EXPECT_EQ(test, keys_cmp(c, &hdata, &ldent), -1);
++	KUNIT_EXPECT_EQ(test, keys_cmp(c, &ldent, &lxent), -1);
++}
++
++/* ------------------------------------------------------------------------- */
++/* Key accessors                                                              */
++/* ------------------------------------------------------------------------- */
++
++static void key_accessors_roundtrip(struct kunit *test)
++{
++	struct ubifs_info *c = ubifs_test_info(test);
++	union ubifs_key key;
++	u8 flash[UBIFS_MAX_KEY_LEN];
++
++	KUNIT_ASSERT_NOT_NULL(test, c);
++
++	data_key_init(c, &key, 0x77, 0x12345);
++	KUNIT_EXPECT_EQ(test, key_type(c, &key), UBIFS_DATA_KEY);
++	KUNIT_EXPECT_EQ(test, key_inum(c, &key), 0x77);
++	KUNIT_EXPECT_EQ(test, key_hash(c, &key), 0x12345);
++	KUNIT_EXPECT_EQ(test, key_block(c, &key), 0x12345);
++
++	key_write(c, &key, flash);
++	KUNIT_EXPECT_EQ(test, key_type_flash(c, flash), UBIFS_DATA_KEY);
++	KUNIT_EXPECT_EQ(test, key_inum_flash(c, flash), 0x77);
++	KUNIT_EXPECT_EQ(test, key_hash_flash(c, flash), 0x12345);
++	KUNIT_EXPECT_EQ(test, key_block_flash(c, flash), 0x12345);
++}
++
++static void highest_ino_key_type_is_out_of_range(struct kunit *test)
++{
++	struct ubifs_info *c = ubifs_test_info(test);
++	union ubifs_key key;
++
++	KUNIT_ASSERT_NOT_NULL(test, c);
++
++	highest_ino_key(c, &key, 1);
++	/* 7 is the sorting upper bound, not a valid key type. */
++	KUNIT_EXPECT_EQ(test, key_type(c, &key), 7);
++	KUNIT_EXPECT_GT(test, key_type(c, &key), UBIFS_KEY_TYPES_CNT - 1);
++}
++
++static void is_hash_key_identifies_hashed_keys(struct kunit *test)
++{
++	struct ubifs_info *c = ubifs_test_info(test);
++	struct fscrypt_name nm = { .disk_name = FSTR_INIT("abc", 3) };
++	union ubifs_key key;
++
++	KUNIT_ASSERT_NOT_NULL(test, c);
++
++	ino_key_init(c, &key, 1);
++	KUNIT_EXPECT_EQ(test, is_hash_key(c, &key), 0);
++	data_key_init(c, &key, 1, 0);
++	KUNIT_EXPECT_EQ(test, is_hash_key(c, &key), 0);
++	dent_key_init_hash(c, &key, 1, 3);
++	KUNIT_EXPECT_EQ(test, is_hash_key(c, &key), 1);
++	xent_key_init(c, &key, 1, &nm);
++	KUNIT_EXPECT_EQ(test, is_hash_key(c, &key), 1);
++	trun_key_init(c, &key, 1);
++	KUNIT_EXPECT_EQ(test, is_hash_key(c, &key), 0);
++}
++
++/* ------------------------------------------------------------------------- */
++/* Hash helpers                                                               */
++/* ------------------------------------------------------------------------- */
++
++static void key_mask_hash_maps_reserved_values(struct kunit *test)
++{
++	KUNIT_EXPECT_EQ(test, key_mask_hash(0), 3);
++	KUNIT_EXPECT_EQ(test, key_mask_hash(1), 4);
++	KUNIT_EXPECT_EQ(test, key_mask_hash(2), 5);
++	KUNIT_EXPECT_EQ(test, key_mask_hash(3), 3);
++	KUNIT_EXPECT_EQ(test, key_mask_hash(0x1fffffff), 0x1fffffff);
++	KUNIT_EXPECT_EQ(test, key_mask_hash(0xffffffff), 0x1fffffff);
++	KUNIT_EXPECT_EQ(test, key_mask_hash(0x20000002), 5);
++}
++
++static void key_r5_hash_invariants(struct kunit *test)
++{
++	static const char *const names[] = { "", "a", "abc", "file", "name" };
++	int i;
++
++	/* An empty name hashes to the first non-reserved value. */
++	KUNIT_EXPECT_EQ(test, key_r5_hash("", 0), 3);
++
++	for (i = 0; i < ARRAY_SIZE(names); i++) {
++		const char *name = names[i];
++		int len = strlen(name);
++		u32 h = key_r5_hash(name, len);
++
++		KUNIT_EXPECT_GE(test, h, 3);
++		KUNIT_EXPECT_LE(test, h, UBIFS_S_KEY_HASH_MASK);
++		KUNIT_EXPECT_EQ(test, h, key_r5_hash(name, len));
++	}
++}
++
++static void key_test_hash_invariants(struct kunit *test)
++{
++	KUNIT_EXPECT_EQ(test, key_test_hash("", 0), 3);
++	KUNIT_EXPECT_GE(test, key_test_hash("abc", 3), 3);
++	KUNIT_EXPECT_LE(test, key_test_hash("abc", 3),
++			UBIFS_S_KEY_HASH_MASK);
++
++	/* Only the first four bytes of the name are read. */
++	KUNIT_EXPECT_EQ(test, key_test_hash("abcd", 100),
++			key_test_hash("abcd", 4));
++	KUNIT_EXPECT_EQ(test, key_test_hash("abcd", 100),
++			key_test_hash("abcd", 5));
++}
++
++static void key_max_inode_size_depends_on_key_fmt(struct kunit *test)
++{
++	struct ubifs_info *c = ubifs_test_info(test);
++
++	KUNIT_ASSERT_NOT_NULL(test, c);
++
++	KUNIT_EXPECT_EQ(test, key_max_inode_size(c), 2199023255552ULL);
++	KUNIT_EXPECT_EQ(test, key_max_inode_size(c),
++			(1ULL << UBIFS_S_KEY_BLOCK_BITS) * UBIFS_BLOCK_SIZE);
++
++	/* An unknown key format has no size limit to report. */
++	c->key_fmt = 1;
++	KUNIT_EXPECT_EQ(test, key_max_inode_size(c), 0);
 +}
 +
 +/* ------------------------------------------------------------------------- */
 +/* Test suite registration                                                    */
 +/* ------------------------------------------------------------------------- */
 +
-+static struct kunit_case ubifs_scan_test_cases[] = {
-+	KUNIT_CASE(scan_a_node_valid_data_node_returns_a_node),
-+	KUNIT_CASE(scan_a_node_crc_covers_byte_8),
-+	KUNIT_CASE(scan_a_node_crc_covers_last_byte),
-+	KUNIT_CASE(scan_a_node_crc_field_not_covered_by_crc),
-+	KUNIT_CASE(scan_a_node_crc_covers_whole_payload),
-+	KUNIT_CASE(scan_a_node_data_len_below_min_returns_corrupt),
-+	KUNIT_CASE(scan_a_node_data_len_at_min_returns_a_node),
-+	KUNIT_CASE(scan_a_node_data_len_at_max_returns_a_node),
-+	KUNIT_CASE(scan_a_node_data_len_above_max_returns_corrupt),
-+	KUNIT_CASE(scan_a_node_crossing_leb_end_returns_corrupt),
-+	KUNIT_CASE(scan_a_node_fixed_len_below_size_returns_corrupt),
-+	KUNIT_CASE(scan_a_node_fixed_len_above_size_returns_corrupt),
-+	KUNIT_CASE(scan_a_node_bad_type_returns_corrupt),
-+	KUNIT_CASE(scan_a_node_valid_trun_node_returns_a_node),
-+	KUNIT_CASE(scan_a_node_padding_8_returns_8),
-+	KUNIT_CASE(scan_a_node_padding_16_returns_16),
-+	KUNIT_CASE(scan_a_node_padding_24_returns_24),
-+	KUNIT_CASE(scan_a_node_padding_short_count_returns_garbage),
-+	KUNIT_CASE(scan_a_node_padding_28_or_more_returns_garbage),
-+	KUNIT_CASE(scan_a_node_padding_limited_by_len),
-+	KUNIT_CASE(scan_a_node_bad_magic_without_padding_returns_garbage),
-+	KUNIT_CASE(scan_a_node_empty_space_returns_empty),
-+	KUNIT_CASE(scan_a_node_short_header_returns_garbage),
-+	KUNIT_CASE(scan_a_node_pad_len_beyond_leb_returns_bad_pad),
-+	KUNIT_CASE(scan_a_node_pad_len_crossing_leb_end_returns_bad_pad),
-+	KUNIT_CASE(scan_a_node_pad_len_negative_returns_bad_pad),
-+	KUNIT_CASE(scan_a_node_pad_len_not_aligned_returns_bad_pad),
-+	KUNIT_CASE(scan_a_node_valid_pad_returns_skip_len),
-+	KUNIT_CASE(scan_a_node_pad_len_reaching_leb_end_is_ok),
-+	KUNIT_CASE(scan_a_node_corrupt_node_quiet_off_returns_corrupt),
++static struct kunit_case ubifs_key_test_cases[] = {
++	KUNIT_CASE(key_write_encodes_key_and_zeroes_tail),
++	KUNIT_CASE(key_write_stays_within_sixteen_bytes),
++	KUNIT_CASE(key_read_reads_only_first_eight_bytes),
++	KUNIT_CASE(key_write_read_roundtrip),
++	KUNIT_CASE(key_write_idx_does_not_zero_tail),
++	KUNIT_CASE(key_copy_copies_whole_key),
++	KUNIT_CASE(keys_cmp_orders_by_inum_first),
++	KUNIT_CASE(keys_cmp_orders_by_second_word),
++	KUNIT_CASE(keys_cmp_and_keys_eq_agree),
++	KUNIT_CASE(ino_key_init_sets_type_and_inum),
++	KUNIT_CASE(ino_key_init_flash_zeroes_tail_and_roundtrips),
++	KUNIT_CASE(dent_key_init_sets_type_and_hash),
++	KUNIT_CASE(dent_key_init_flash_zeroes_tail_and_roundtrips),
++	KUNIT_CASE(xent_key_init_sets_type_and_hash),
++	KUNIT_CASE(xent_key_init_flash_zeroes_tail_and_roundtrips),
++	KUNIT_CASE(data_key_init_sets_type_and_block),
++	KUNIT_CASE(trun_key_init_sets_truncation_type),
++	KUNIT_CASE(invalid_key_init_sets_invalid_marker),
++	KUNIT_CASE(lowest_and_highest_keys_are_bounds),
++	KUNIT_CASE(key_accessors_roundtrip),
++	KUNIT_CASE(highest_ino_key_type_is_out_of_range),
++	KUNIT_CASE(is_hash_key_identifies_hashed_keys),
++	KUNIT_CASE(key_mask_hash_maps_reserved_values),
++	KUNIT_CASE(key_r5_hash_invariants),
++	KUNIT_CASE(key_test_hash_invariants),
++	KUNIT_CASE(key_max_inode_size_depends_on_key_fmt),
 +	{}
 +};
 +
-+static struct kunit_case ubifs_check_node_test_cases[] = {
-+	KUNIT_CASE(check_node_valid_data_node_returns_zero),
-+	KUNIT_CASE(check_node_does_not_validate_len_argument),
-+	KUNIT_CASE(check_node_bad_magic_returns_euclean),
-+	KUNIT_CASE(check_node_bad_type_returns_einval),
-+	KUNIT_CASE(check_node_data_len_below_min_returns_einval),
-+	KUNIT_CASE(check_node_data_len_at_min_returns_zero),
-+	KUNIT_CASE(check_node_data_len_at_max_returns_zero),
-+	KUNIT_CASE(check_node_data_len_above_max_returns_einval),
-+	KUNIT_CASE(check_node_data_crc_skipped_with_no_chk_data_crc),
-+	KUNIT_CASE(check_node_data_crc_checked_while_mounting),
-+	KUNIT_CASE(check_node_data_crc_checked_while_remounting_rw),
-+	KUNIT_CASE(check_node_data_crc_checked_with_must_chk_crc),
-+	KUNIT_CASE(check_node_non_data_crc_is_never_skipped),
-+	KUNIT_CASE(check_node_updates_stats_counters),
-+	{}
++static struct kunit_suite ubifs_key_test_suite = {
++	.name = "ubifs-key",
++	.test_cases = ubifs_key_test_cases,
 +};
 +
-+static struct kunit_case ubifs_add_snod_test_cases[] = {
-+	KUNIT_CASE(add_snod_extracts_key_from_ino_node),
-+	KUNIT_CASE(add_snod_extracts_key_from_dent_node),
-+	KUNIT_CASE(add_snod_extracts_key_from_xent_node),
-+	KUNIT_CASE(add_snod_extracts_key_from_data_node),
-+	KUNIT_CASE(add_snod_pad_node_gets_invalid_key),
-+	KUNIT_CASE(add_snod_trun_node_gets_invalid_key),
-+	KUNIT_CASE(add_snod_appends_nodes_in_order),
-+	{}
-+};
-+
-+static struct kunit_case ubifs_end_scan_test_cases[] = {
-+	KUNIT_CASE(end_scan_aligned_offset_sets_endpt),
-+	KUNIT_CASE(end_scan_zero_offset_sets_endpt),
-+	KUNIT_CASE(end_scan_unaligned_offset_is_reported_but_aligns),
-+	{}
-+};
-+
-+static struct kunit_suite ubifs_scan_test_suite = {
-+	.name = "ubifs-scan",
-+	.test_cases = ubifs_scan_test_cases,
-+};
-+
-+static struct kunit_suite ubifs_check_node_test_suite = {
-+	.name = "ubifs-check-node",
-+	.test_cases = ubifs_check_node_test_cases,
-+};
-+
-+static struct kunit_suite ubifs_add_snod_test_suite = {
-+	.name = "ubifs-add-snod",
-+	.test_cases = ubifs_add_snod_test_cases,
-+};
-+
-+static struct kunit_suite ubifs_end_scan_test_suite = {
-+	.name = "ubifs-end-scan",
-+	.test_cases = ubifs_end_scan_test_cases,
-+};
-+
-+kunit_test_suites(&ubifs_scan_test_suite, &ubifs_check_node_test_suite,
-+		  &ubifs_add_snod_test_suite, &ubifs_end_scan_test_suite);
++kunit_test_suite(ubifs_key_test_suite);
 -- 
 2.43.0
 
