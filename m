@@ -4,69 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2FA21C79FB9
-	for <linux-mtd@archiver.kernel.org>; Thu, 10 Sep 2026 12:42:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17589C79FB9
+	for <linux-mtd@archiver.kernel.org>; Thu, 10 Sep 2026 13:38:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=vyuTV0P5aqIsvFOpWJAO7KxB4SX/6w38OSkf9sI/CUE=; b=kqfiLXlnTg5ylB
-	kRQ6wmFpzQjCrkeoQ4k/K3756zSwN9dE4UxNgHLwPue4GqtxlqLqFTmziV3ZBx80B1sY11s1muvEV
-	qpd70QJgdceOa/pMyJWUxbuzF7KGZWnvkzSo/u9b/EPq+9NpSvjeGQVIVXoEcoNR1yKeLQJI5pjC9
-	cTNNq3aIgoPzfSdl4V9u9G3S7HAyxRVNfsC4DMdP9kbDl2vBHjnHb5h+b8j4KHQQcOW4zkrOfaH9o
-	0SD40Yho50N9yh/YN5jh3TQ4RE3uBQGWkmLx6FoLu8Qa9WIpZ7gTTcs79ddXny+mv1MhqHbH05tmv
-	amkIgUiqz6OYZ0XyjVjA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=B+GgP4gwyAUw4KCktaMFb43tzSa3gl6lqjPTD9xHZVQ=; b=ikVtXougSG8aGv
+	5ur47e5uYfIHMOmMGVgRwskI7F36ZELRNhLXzOlN8xNOO0RupBm6rH3Fyj+UPfOU7enJRKmfNOOdC
+	d9h6xi1mEMTHIl+K28erUIbQTmXKT84apjYxD+znwFsDuDn04+CZzZ+ssqQYFMnHp1DEQNbY5UVYr
+	xyGZOEXCyhDwHkZMMGCCvjinG/gsY5Ul8OszKeQ45eCElFGRuCB2P4p8fdmcfbKjjYUWjxkJMnRBV
+	JBuQdVZGZz77+QeWhjlym/7GADKixSkxnQI50b4vQtRkJhKHP6MZyV4uv3LNNGllQBGRmNcUekVnv
+	GZsRZm9M3/G4P30d3kDA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x4e6l-0000000EMX7-1TNi;
-	Thu, 10 Sep 2026 12:42:27 +0000
-Received: from smtpout-04.galae.net ([185.171.202.116])
+	id 1x4eyw-0000000EW2g-0bAG;
+	Thu, 10 Sep 2026 13:38:26 +0000
+Received: from canpmsgout04.his.huawei.com ([113.46.200.219])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x4e6h-0000000EMWY-4BWk
+	id 1x4eys-0000000EW0z-0oi5
 	for linux-mtd@lists.infradead.org;
-	Thu, 10 Sep 2026 12:42:26 +0000
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id DECBBC653DD;
-	Thu, 10 Sep 2026 12:43:01 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 8C21E5FA2F;
-	Thu, 10 Sep 2026 12:42:20 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id C18A611C7942F;
-	Thu, 10 Sep 2026 14:42:15 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1789044140; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=emRs8TVGLp7CDj6L8UUWJbEMGYVcjNGljr4x5y1Fbqc=;
-	b=0dmmUG203ziZOKhEZV0GqNJbH1k9/jQkyT1pomwJQ8GEBIqfbUHEzuhqzjv3u6j3bNxgjT
-	MFPxsxtBFR5vHUKBkE3HJbnlTXnU6vaIuwm/tbNPhuvtl81x9zionvOm7Qy2MlzCruDo8z
-	Ou4upUUzzXb6YpUtw/vDJ4CBNT1qYjrwvorE9JNkoqQGCloESLzdTTZDbcVQ1Mo6UMBbR/
-	bmzvlrFPvhPNs1eeoE8Z9oeC/2/uIoLYJMkPMwIdvlQYWOSzn8XH4pbRYbgNkNCz6VDx8P
-	8UZPpg5zF0j1kfQOSrn6ulI67IYFo49xNwjXN5JDJsf2z43TGpoeq87avrFcbA==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: sashiko-bot@kernel.org
-Cc: "Zongzhen Feng" <1768315307@qq.com>,  "Vignesh Raghavendra"
- <vigneshr@ti.com>,  sashiko-reviews@lists.linux.dev,
-  linux-kernel@vger.kernel.org,  linux-mtd@lists.infradead.org,  "Richard
- Weinberger" <richard@nod.at>
-Subject: Re: [PATCH v4] mtd: spinand: cache the last read page to avoid
- redundant SPI operations
-In-Reply-To: <20260910042619.2A3731F000FF@smtp.kernel.org>
-	(sashiko-bot@kernel.org's message of "Thu, 10 Sep 2026 04:26:18
-	+0000")
-References: <tencent_E818586423F2F16D98DEF1EC2723EE4A6308@qq.com>
-	<tencent_522792EE6F63A5581C238FF17E9862F10A08@qq.com>
-	<20260910042619.2A3731F000FF@smtp.kernel.org>
-User-Agent: mu4e 1.12.12; emacs 30.2
-Date: Thu, 10 Sep 2026 14:42:15 +0200
-Message-ID: <8733vhs2fs.fsf@bootlin.com>
+	Thu, 10 Sep 2026 13:38:24 +0000
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=OAXvvf5bBfGy7Tjd5JmbGY2Dey5h8lYm1afhEjpKROg=;
+	b=e0QtZafvVZaDlPFRUy9aIemWklE3yItrmhvC5K45BcvNiwFNmvNPVaIQAIAktYJkPorehkFLC
+	yZXtKNyZ+7M3iGTkEaewypXhrFb9MX+TV8ZMGlfITk0O6dZFsf4kIPIAiz/ZwqhJmh2wCYUk1nV
+	whEq1TmBrlqexQlzW7N3Hfk=
+Received: from mail.maildlp.com (unknown [172.19.162.197])
+	by canpmsgout04.his.huawei.com (SkyGuard) with ESMTPS id 4hgdkg2yf4z1prMy;
+	Thu, 10 Sep 2026 21:27:07 +0800 (CST)
+Received: from whupemo200011.china.huawei.com (unknown [7.152.185.179])
+	by mail.maildlp.com (Postfix) with ESMTPS id 0441D4057D;
+	Thu, 10 Sep 2026 21:38:04 +0800 (CST)
+Received: from huawei.com (10.50.85.155) by whupemo200011.china.huawei.com
+ (7.152.185.179) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.45; Thu, 10 Sep
+ 2026 21:38:02 +0800
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>,
+	<dedekind@linutronix.de>, <haver@vnet.ibm.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<chengzhihao1@huawei.com>, <yangerkun@huawei.com>, <yi.zhang@huawei.com>
+Subject: [PATCH] ubi: try_recover_peb: Don't torture the new PEB if there is no write operation
+Date: Thu, 10 Sep 2026 21:30:27 +0800
+Message-ID: <20260910133027.2738498-1-chengzhihao1@huawei.com>
+X-Mailer: git-send-email 2.52.0
 MIME-Version: 1.0
-X-Last-TLS-Session-Version: TLSv1.3
+X-Originating-IP: [10.50.85.155]
+X-ClientProxiedBy: kwepems100002.china.huawei.com (7.221.188.206) To
+ whupemo200011.china.huawei.com (7.152.185.179)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260910_054224_200462_FDB4B953 
-X-CRM114-Status: UNSURE (   4.98  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260910_063822_739144_9768EFE5 
+X-CRM114-Status: GOOD (  12.45  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,23 +71,63 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgWm9uZ3poZW4sCgpPbiAxMC8wOS8yMDI2IGF0IDA0OjI2OjE4IEdNVCwgc2FzaGlrby1ib3RA
-a2VybmVsLm9yZyB3cm90ZToKCj4gVGhhbmsgeW91IGZvciB5b3VyIGNvbnRyaWJ1dGlvbiEgU2Fz
-aGlrbyBBSSByZXZpZXcgZm91bmQgNCBwb3RlbnRpYWwgaXNzdWUocykgdG8gY29uc2lkZXI6Cj4g
-LSBbQ3JpdGljYWxdIFBhcnRpYWwgcGFnZSByZWFkcyB3aXRoIHNvZnR3YXJlL2hvc3QgRUNDIGNh
-dXNlIHNpbGVudCBkYXRhIGNvcnJ1cHRpb24gb24gc3Vic2VxdWVudCBjYWNoZSBoaXRzIGR1ZSB0
-byBpbmNvbXBsZXRlIGNhY2hlIHVwZGF0ZXMuCj4gLSBbQ3JpdGljYWxdIENhY2hlIGhpdCBsb2dp
-YyBmYWlscyB0byBjaGVjayB0aGUgTG9naWNhbCBVbml0IE51bWJlciAoTFVOKSwgbGVhZGluZyB0
-byBjcm9zcy1MVU4gY2FjaGUgYWxpYXNpbmcuCj4gLSBbSGlnaF0gTWlzc2luZyBjYWNoZSBpbnZh
-bGlkYXRpb24gb24gT09CL09UUCB3cml0ZXMgY2F1c2VzIGNhY2hlZCByZWFkcyB0byByZXR1cm4g
-Y2xvYmJlcmVkIGRhdGEuCj4gLSBbSGlnaF0gRXJyb3IgaGFuZGxpbmcgbGVhdmVzIGNhY2hlIHZh
-bGlkIHdpdGggdW5jb3JyZWN0ZWQgZGF0YSBvbgo+IG5vbi1FQkFETVNHIGVycm9ycy4KClRoZXNl
-IHN0aWxsIHNlZW0gdmFsaWQgOi0pCgpNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGlu
-ZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgt
-bXRkLwo=
+The new peb is put always with torture flag even there is no write
+operation. For example, ubi_io_read_vid_hdr failure can lead a torture
+operation during the erasing of new PEB, which brings meaningless and
+life-wearing torture verification.
+
+Fix by adding a torture state value to identify whether the write
+operation happens on new PEB. BTW, let ubi write failure warnning be
+printed only when a write operation fails.
+
+Fixes: 801c135ce73d5d ("UBI: Unsorted Block Images")
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+---
+ drivers/mtd/ubi/eba.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
+index f0c549e62c55..509c90304ab8 100644
+--- a/drivers/mtd/ubi/eba.c
++++ b/drivers/mtd/ubi/eba.c
+@@ -805,7 +805,7 @@ static int try_recover_peb(struct ubi_volume *vol, int pnum, int lnum,
+ {
+ 	struct ubi_device *ubi = vol->ubi;
+ 	struct ubi_vid_hdr *vid_hdr;
+-	int new_pnum, err, vol_id = vol->vol_id, data_size;
++	int new_pnum, err, vol_id = vol->vol_id, data_size, torture = 0;
+ 	uint32_t crc;
+ 
+ 	*retry = false;
+@@ -843,6 +843,7 @@ static int try_recover_peb(struct ubi_volume *vol, int pnum, int lnum,
+ 
+ 	memcpy(ubi->peb_buf + offset, buf, len);
+ 
++	torture = 1;
+ 	data_size = offset + len;
+ 	crc = crc32(UBI_CRC32_INIT, ubi->peb_buf, data_size);
+ 	vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
+@@ -872,8 +873,9 @@ static int try_recover_peb(struct ubi_volume *vol, int pnum, int lnum,
+ 		 * Bad luck? This physical eraseblock is bad too? Crud. Let's
+ 		 * try to get another one.
+ 		 */
+-		ubi_wl_put_peb(ubi, vol_id, lnum, new_pnum, 1);
+-		ubi_warn(ubi, "failed to write to PEB %d", new_pnum);
++		ubi_wl_put_peb(ubi, vol_id, lnum, new_pnum, torture);
++		if (torture)
++			ubi_warn(ubi, "failed to write to PEB %d", new_pnum);
+ 	}
+ 
+ 	return err;
+-- 
+2.52.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
