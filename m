@@ -4,73 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ED638C79FB9
-	for <linux-mtd@archiver.kernel.org>; Thu, 10 Sep 2026 04:08:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45235C79FB9
+	for <linux-mtd@archiver.kernel.org>; Thu, 10 Sep 2026 04:26:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Date:Subject:Cc:To:From:Message-ID:Reply-To:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Reply-To:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
+	References:In-Reply-To:Cc:To:Subject:From:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=xtdxErQyQ4FPJfO2kKiv7rXDlAceE70vuwzNJ8TsbSQ=; b=vUd7fMz19WOIvp
-	tv8QMt18qBxgW+4WV36BCC5L5HnGkkhsPUb8CZ5BtZxw+ZWMHdMAiDHvkYC84DpzFXkOG3GXEMSWd
-	9cb4glnuVAjA8l9vEWABSEOJvQYXWZqVISGOXxTvPCONzhzkCA6VSC6Se0VBaCtH3yymdWOY/7Cnp
-	qUf0nzL+YF4mC3it0tvgkIMI6QSOw2YEU6L0llFsWBkS8c7HrnefXjFQWXciPHp98kNyPAwMpOUdo
-	fI0hiq6kpxb4Zypq/7dw1NKXi4//gdYEbh5G7GrDnbIiJV+HgJ6zT8ppkF0IwHMVO+e7ToAfhFZIL
-	QyuM+bNPX9b/7sMZ5MOA==;
+	List-Owner; bh=n/GKTgzMPRH7ioysrG3EQzfALl7rbyIi0MPUMnYewtk=; b=sxGV2X7ujcpVep
+	PNTTS/AoVlM7LCkvt5lp/+aQZzJKwX5Ssm1MvQEYloqb+NmPfxaKl3BzLukjdUbjlYNBZPYdTdddc
+	XBorcQSwD4vzwbmTp+6pYtbgKG5IWd+EzaDZIGCtbkMJg8dSMgx4EEpoj5cS72tpD76IdzpqlNaK4
+	B3isZaMQj99Krj5OeBuCfYWDPm41kok4Pvoa6KPnOyW1SBbvT//ICgarcjOZMgMLrq/JZnf6TWFK4
+	wDdvJnhZCVl44pFcj+BvDoBS8hUHveC44EqWgp5ZHXi5/iTg7qGvXe5bXi7YxsUOnQYHfWHBjUQmv
+	Me4RgambHYnVp2hIJiSg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x4W5f-0000000DLFd-39JG;
-	Thu, 10 Sep 2026 04:08:47 +0000
-Received: from out162-62-57-137.mail.qq.com ([162.62.57.137])
+	id 1x4WMg-0000000DMgl-0xzb;
+	Thu, 10 Sep 2026 04:26:22 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x4W5b-0000000DLEz-2WtD
+	id 1x4WMe-0000000DMga-3MkN
 	for linux-mtd@lists.infradead.org;
-	Thu, 10 Sep 2026 04:08:45 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1789013314; bh=eGaa7WtGesoGkfLmGYd8BfggAGGhj1AGgS2FEmEHT8U=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=EHwfRofdYxwiJpI13iQkDuuhtqsxlEFkcFMYMzrw6dncMPsmth7uENlYBHmVKUAkO
-	 EczT6gbH2mRmdXLRfSZB7rB6m+Yzhu8C1t963J71fVWVXJcqszD9tWDte963/XXQ0g
-	 RigdqwQFqHIV3xkrDrqj7EiPwGZmfJpSEOLrGcZo=
-Received: from localhost.localdomain ([223.166.55.8])
-	by newxmesmtplogicsvrszc43-0.qq.com (NewEsmtp) with SMTP
-	id 21594CA8; Thu, 10 Sep 2026 12:08:21 +0800
-X-QQ-mid: xmsmtpt1789013301t9mnxf2fv
-Message-ID: <tencent_522792EE6F63A5581C238FF17E9862F10A08@qq.com>
-X-QQ-XMAILINFO: OVFdYp27KdlJmZ/WDLySmntYhGyGLrPDWyuXyhl5s3x3LO88e4L7Ce1O77Wv6S
-	 X7PqKcq2G5G3ciQxsiUu/4ma+81yGGDO38CEIY7B9s+vXy86lADfQVXs6J14fHy9It+NcdTBJ3Dq
-	 tOD18/zelcN7WtnqOx1pkZX9xt6USnQz/QlERh4gWLwg/jdyKOx4ydezWPYsR7DEvlnLrpT1BRJP
-	 Unl5yWMC3AfM9MOf6XXtpgAp3viFnS+RV6Qe+P8HjULJcjfAoHlvmchBjgF/SgJ88Q0uYGkjGsQj
-	 NN6suMgkbtCBDDgb+qDcqHfX19H2Kn+M2hyPqckCOdoPYVy8bNJVjGcQ2O5XnPdHbwK1oZ7QNuyk
-	 3rNaUcuOvMcm+qJwxdBI038Da2gOKvzoyvPq0p3kUt1GLvnWyMtiHL5eNpd2P+mHiHbFzd/5sLED
-	 ZbnzOlW7JdeOobOz/tp3GloFTwBUpVUHoz1wnlEvh9LLHEmQyPLJUXQorU+em/Yhzr5uE+yzsqRu
-	 F/uXkkbBKtwzCCY4WhxLTyuXmfeemqCf0cUB5cAy9smR0w2PK8ZAfQXsjDX9KWwYZbCwXiftOnUP
-	 wNbyGlKdBNPYetiGbgIuxTo7Xtj9W3gIrTYeBBamy89qObVuF08pmcMFIqy/JrBINJBatV3MuDDX
-	 xllEhKk8HEwWNtSoN88F+Mp0Jbz0sw998M1Mam81raOcjuB9quGMTNFLh+rnYKNWDQKZ1pmEI0O4
-	 bIW7kQ39tkbYKeBQn5KjsfDRLk+XJom7/tsDXyDDm2aNLZSBMyC6m38M5Mcf4Xge3fgtKdj4sK1c
-	 gXmMTfMFVZv42NhoSL0PExfKOIaFoypN166/oTAAQM9bh223OJqdKgwnfcIWILBpynTD5cwvttZY
-	 sSJY6YtgdtiJKum/J4bmn8xrYCPzPfXKdzzdaZSjRoMwMlYtVxXGWGnIJRrbLuF8YOSeB5kgUP1f
-	 jxaucFAlaTgKBU4hMrK1vbUM4LOYnT5bnB/1JLMkFstmdImi9J0SnirjKidOkg8cdP6Arf6prHS/
-	 kzyYVdS526evzr+ywjYvCEgAvTKu/Ahooh5tfmpw==
-X-QQ-XMRINFO: NS+P29fieYNwqS3WCnRCOn9D1NpZuCnCRA==
-From: Zongzhen Feng <1768315307@qq.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Richard Weinberger <richard@nod.at>,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Zongzhen Feng <1768315307@qq.com>
-Subject: [PATCH v4] mtd: spinand: cache the last read page to avoid redundant SPI operations
-Date: Thu, 10 Sep 2026 12:08:14 +0800
-X-OQ-MSGID: <20260910040814.3342560-1-1768315307@qq.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <tencent_E818586423F2F16D98DEF1EC2723EE4A6308@qq.com>
+	Thu, 10 Sep 2026 04:26:20 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with ESMTP id DDB30600CB;
+	Thu, 10 Sep 2026 04:26:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A3731F000FF;
+	Thu, 10 Sep 2026 04:26:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1789014379;
+	bh=bDcKLcxvVz5jOSgqx4gz4DvfE/OssiYpCZIPKOjIx0o=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=PExRhWUNzCVae33RzxiWAVbydHGHhUgpEI5j8UnFkOweIb3szOTqIBXqgILowg8Ly
+	 PJeS0MAzyto8lIspWJ/xKgN8xAZegnnGp4bZQpE97DwXieF26zRMiltUXJ249beJq8
+	 W/H6mwSOt8GQsVr+Iex6gbhVHUdovBJpniVQ7Hd2UFeFtJ9mnQT05+uoB3OpRlfj7t
+	 40Ug2Led+waMW3O+/oumKc3nJaPu+xERBkWj4vTx58O/rwkZeKgDHdbmd2BtajcTdX
+	 /3TFjFhN+HvjryJLGbPDvt2x24n/n+3vNQothfpOSkKquCMo/kmUwLM6fLH62nG2TH
+	 vCr2l2y5TpGGQ==
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH v4] mtd: spinand: cache the last read page to avoid
+ redundant SPI operations
+To: "Zongzhen Feng" <1768315307@qq.com>, "Vignesh Raghavendra" <vigneshr@ti.com>, "Miquel
+ Raynal" <miquel.raynal@bootlin.com>
+Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, "Richard
+ Weinberger" <richard@nod.at>
+In-Reply-To: <tencent_522792EE6F63A5581C238FF17E9862F10A08@qq.com>
 References: <tencent_E818586423F2F16D98DEF1EC2723EE4A6308@qq.com>
-MIME-Version: 1.0
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260909_210844_214830_ED0637EF 
-X-CRM114-Status: GOOD (  22.21  )
+ <tencent_522792EE6F63A5581C238FF17E9862F10A08@qq.com>
+Date: Thu, 10 Sep 2026 04:26:18 +0000
+Message-Id: <20260910042619.2A3731F000FF@smtp.kernel.org>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,193 +65,112 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Reply-To: sashiko-reviews@lists.linux.dev
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-When squashfs reads files through mtdblock, the mtdblock layer
-splits I/O into 512-byte sectors. For a 4K-page SPI NAND, this
-means reading the same page 8 times (4096 / 512), generating 7x
-redundant SPI read-from-cache operations. Each such operation
-involves a full SPI bus transaction, significantly slowing down
-boot time and file access.
-
-Cache the last successfully read page in spinand_device to avoid
-these redundant operations. When the same {target, eraseblock,
-page} is requested consecutively, the data is served directly
-from the bounce buffer (databuf) via memcpy, skipping the SPI
-transaction entirely.
-
-The cache is invalidated on write, erase, ECC errors, and
-non-cacheable reads.
-
-Signed-off-by: Zongzhen Feng <1768315307@qq.com>
----
-v4:
-- Invalidate cache before writing to databuf in spinand_read_from_cache_op
-  to prevent serving stale data on SPI read errors.
-- Copy ECC-corrected data back to spinand->databuf in spinand_read_page
-  to ensure cache serves corrected data for software ECC engines.
-- Invalidate cache on any write, not just writes to the cached page,
-  since spinand_write_to_cache_op unconditionally overwrites databuf.
-- Invalidate cache on erase even if the operation fails, to prevent
-  serving stale data from a potentially corrupted block.
-
-v3:
-- Invalidate cache when databuf is overwritten by a non-cacheable
-  read (RAW, continuous, OOB-only) to prevent stale cache hits.
-- Invalidate cache on uncorrectable ECC errors to prevent
-  subsequent reads from bypassing ECC checks.
-
-v2:
-- Fix compilation error: req->disable_ecc -> req->mode != MTD_OPS_RAW
-- Remove spurious indentation change
-- Use real name instead of pseudonym
----
- drivers/mtd/nand/spi/core.c | 41 ++++++++++++++++++++++++++++++++++++-
- include/linux/mtd/spinand.h |  9 ++++++++
- 2 files changed, 49 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index 8bf9301f25e7..7f66de5af171 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -485,6 +485,7 @@ static int spinand_read_from_cache_op(struct spinand_device *spinand,
- 
- 	if (req->datalen) {
- 		buf = spinand->databuf;
-+		spinand->cache_valid = false;
- 		if (!req->continuous)
- 			nbytes = nanddev_page_size(nand);
- 		else
-@@ -560,6 +561,13 @@ static int spinand_read_from_cache_op(struct spinand_device *spinand,
- 			       req->ooblen);
- 	}
- 
-+	if (req->datalen && !req->continuous && req->mode != MTD_OPS_RAW) {
-+		spinand->cur_target_cache = req->pos.target;
-+		spinand->cur_block_cache = req->pos.eraseblock;
-+		spinand->cur_page_cache = req->pos.page;
-+		spinand->cache_valid = true;
-+	}
-+
- 	return 0;
- }
- 
-@@ -764,7 +772,12 @@ int spinand_read_page(struct spinand_device *spinand,
- 	if (ret)
- 		return ret;
- 
--	return nand_ecc_finish_io_req(nand, (struct nand_page_io_req *)req);
-+	ret = nand_ecc_finish_io_req(nand, (struct nand_page_io_req *)req);
-+	if (ret > 0 && req->datalen && !req->continuous && req->mode != MTD_OPS_RAW)
-+		memcpy(spinand->databuf + req->dataoffs, req->databuf.in,
-+		       req->datalen);
-+
-+	return ret;
- }
- 
- /**
-@@ -833,6 +846,20 @@ static int spinand_mtd_regular_page_read(struct mtd_info *mtd, loff_t from,
- 		if (disable_ecc)
- 			iter.req.mode = MTD_OPS_RAW;
- 
-+		if (spinand->cache_valid && !disable_ecc &&
-+		    !iter.req.ooblen &&
-+		    iter.req.pos.target == spinand->cur_target_cache &&
-+		    iter.req.pos.eraseblock == spinand->cur_block_cache &&
-+		    iter.req.pos.page == spinand->cur_page_cache) {
-+			if (iter.req.datalen)
-+				memcpy(iter.req.databuf.in,
-+				       spinand->databuf + iter.req.dataoffs,
-+				       iter.req.datalen);
-+			ops->retlen += iter.req.datalen;
-+			ops->oobretlen += iter.req.ooblen;
-+			continue;
-+		}
-+
- 		ret = spinand_select_target(spinand, iter.req.pos.target);
- 		if (ret)
- 			break;
-@@ -842,6 +869,9 @@ static int spinand_mtd_regular_page_read(struct mtd_info *mtd, loff_t from,
- 		if (ret < 0 && ret != -EBADMSG)
- 			break;
- 
-+		if (ret == -EBADMSG)
-+			spinand->cache_valid = false;
-+
- 		if (ret == -EBADMSG && spinand->set_read_retry) {
- 			if (spinand->read_retries && (++retry_mode <= spinand->read_retries)) {
- 				ret = spinand->set_read_retry(spinand, retry_mode);
-@@ -1064,6 +1094,8 @@ static int spinand_mtd_write(struct mtd_info *mtd, loff_t to,
- 		if (ret)
- 			break;
- 
-+		spinand->cache_valid = false;
-+
- 		ret = spinand_write_page(spinand, &iter.req);
- 		if (ret)
- 			break;
-@@ -1188,6 +1220,11 @@ static int spinand_erase(struct nand_device *nand, const struct nand_pos *pos)
- 	if (!ret && (status & STATUS_ERASE_FAILED))
- 		ret = -EIO;
- 
-+	if (spinand->cache_valid &&
-+	    spinand->cur_target_cache == pos->target &&
-+	    spinand->cur_block_cache == pos->eraseblock)
-+		spinand->cache_valid = false;
-+
- 	return ret;
- }
- 
-@@ -2025,6 +2062,7 @@ static void spinand_cleanup(struct spinand_device *spinand)
- 	nanddev_ecc_engine_cleanup(nand);
- 	nanddev_cleanup(nand);
- 	spinand_manufacturer_cleanup(spinand);
-+	spinand->cache_valid = false;
- 	kfree(spinand->databuf);
- 	kfree(spinand->scratchbuf);
- }
-@@ -2044,6 +2082,7 @@ static int spinand_probe(struct spi_mem *mem)
- 	spi_mem_set_drvdata(mem, spinand);
- 	spinand_set_of_node(spinand, mem->spi->dev.of_node);
- 	mutex_init(&spinand->lock);
-+	spinand->cache_valid = false;
- 	mtd = spinand_to_mtd(spinand);
- 	mtd->dev.parent = &mem->spi->dev;
- 
-diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
-index 5f4c00ae72a7..887ef6d34a41 100644
---- a/include/linux/mtd/spinand.h
-+++ b/include/linux/mtd/spinand.h
-@@ -757,6 +757,10 @@ struct spinand_mem_ops {
-  *		   a command addressing a page or an eraseblock embedded in
-  *		   this die. Only required if your chip exposes several dies
-  * @cur_target: currently selected target/die
-+ * @cur_target_cache: target of the cached page
-+ * @cur_block_cache: eraseblock of the cached page
-+ * @cur_page_cache: page number of the cached page
-+ * @cache_valid: whether the cached page is valid
-  * @eccinfo: on-die ECC information
-  * @cfg_cache: config register cache. One entry per die
-  * @databuf: bounce buffer for data
-@@ -798,6 +802,11 @@ struct spinand_device {
- 			     unsigned int target);
- 	unsigned int cur_target;
- 
-+	unsigned int cur_target_cache;
-+	unsigned int cur_block_cache;
-+	unsigned int cur_page_cache;
-+	bool cache_valid;
-+
- 	struct spinand_ecc_info eccinfo;
- 
- 	u8 *cfg_cache;
--- 
-2.25.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+VGhhbmsgeW91IGZvciB5b3VyIGNvbnRyaWJ1dGlvbiEgU2FzaGlrbyBBSSByZXZpZXcgZm91bmQg
+NCBwb3RlbnRpYWwgaXNzdWUocykgdG8gY29uc2lkZXI6Ci0gW0NyaXRpY2FsXSBQYXJ0aWFsIHBh
+Z2UgcmVhZHMgd2l0aCBzb2Z0d2FyZS9ob3N0IEVDQyBjYXVzZSBzaWxlbnQgZGF0YSBjb3JydXB0
+aW9uIG9uIHN1YnNlcXVlbnQgY2FjaGUgaGl0cyBkdWUgdG8gaW5jb21wbGV0ZSBjYWNoZSB1cGRh
+dGVzLgotIFtDcml0aWNhbF0gQ2FjaGUgaGl0IGxvZ2ljIGZhaWxzIHRvIGNoZWNrIHRoZSBMb2dp
+Y2FsIFVuaXQgTnVtYmVyIChMVU4pLCBsZWFkaW5nIHRvIGNyb3NzLUxVTiBjYWNoZSBhbGlhc2lu
+Zy4KLSBbSGlnaF0gTWlzc2luZyBjYWNoZSBpbnZhbGlkYXRpb24gb24gT09CL09UUCB3cml0ZXMg
+Y2F1c2VzIGNhY2hlZCByZWFkcyB0byByZXR1cm4gY2xvYmJlcmVkIGRhdGEuCi0gW0hpZ2hdIEVy
+cm9yIGhhbmRsaW5nIGxlYXZlcyBjYWNoZSB2YWxpZCB3aXRoIHVuY29ycmVjdGVkIGRhdGEgb24g
+bm9uLUVCQURNU0cgZXJyb3JzLgotLQoKY29tbWl0IDVlNDY2MzNlNGNkZjcyZjNmYjExMmYyODQ3
+OWVmZTBjMmU1ZWQ1ZDgKQXV0aG9yOiBab25nemhlbiBGZW5nIDwxNzY4MzE1MzA3QHFxLmNvbT4K
+Cm10ZDogc3BpbmFuZDogY2FjaGUgdGhlIGxhc3QgcmVhZCBwYWdlIHRvIGF2b2lkIHJlZHVuZGFu
+dCBTUEkgb3BlcmF0aW9ucwoKVGhpcyBwYXRjaCBjYWNoZXMgdGhlIGxhc3Qgc3VjY2Vzc2Z1bGx5
+IHJlYWQgcGFnZSBpbiB0aGUgU1BJIE5BTkQgZHJpdmVyIHRvCmF2b2lkIHJlZHVuZGFudCBTUEkg
+cmVhZCBvcGVyYXRpb25zIHdoZW4gYWNjZXNzaW5nIHNtYWxsZXIgc2VjdG9ycyAobGlrZSA1MTIK
+Ynl0ZXMpIHdpdGhpbiBhIGxhcmdlciBwYWdlLiBJdCBzZXJ2ZXMgcmVwZWF0ZWQgcmVhZHMgZGly
+ZWN0bHkgZnJvbSBhIGJvdW5jZQpidWZmZXIgYW5kIGF0dGVtcHRzIHRvIGludmFsaWRhdGUgdGhl
+IGNhY2hlIGR1cmluZyB3cml0ZXMsIGVyYXNlcywgYW5kCmVycm9ycy4KCj4gZGlmZiAtLWdpdCBh
+L2RyaXZlcnMvbXRkL25hbmQvc3BpL2NvcmUuYyBiL2RyaXZlcnMvbXRkL25hbmQvc3BpL2NvcmUu
+Ywo+IGluZGV4IDQzYmJlMjYyOWI4NWIuLmE3NDJhMWNiNTcyYTQgMTAwNjQ0Cj4gLS0tIGEvZHJp
+dmVycy9tdGQvbmFuZC9zcGkvY29yZS5jCj4gKysrIGIvZHJpdmVycy9tdGQvbmFuZC9zcGkvY29y
+ZS5jClsgLi4uIF0KPiBAQCAtNTc3LDYgKzU3OCwxMyBAQCBzdGF0aWMgaW50IHNwaW5hbmRfcmVh
+ZF9mcm9tX2NhY2hlX29wKHN0cnVjdCBzcGluYW5kX2RldmljZSAqc3BpbmFuZCwKPiAgCQkJICAg
+ICAgIHJlcS0+b29ibGVuKTsKPiAgCX0KPiAgCj4gKwlpZiAocmVxLT5kYXRhbGVuICYmICFyZXEt
+PmNvbnRpbnVvdXMgJiYgcmVxLT5tb2RlICE9IE1URF9PUFNfUkFXKSB7Cj4gKwkJc3BpbmFuZC0+
+Y3VyX3RhcmdldF9jYWNoZSA9IHJlcS0+cG9zLnRhcmdldDsKPiArCQlzcGluYW5kLT5jdXJfYmxv
+Y2tfY2FjaGUgPSByZXEtPnBvcy5lcmFzZWJsb2NrOwo+ICsJCXNwaW5hbmQtPmN1cl9wYWdlX2Nh
+Y2hlID0gcmVxLT5wb3MucGFnZTsKPiArCQlzcGluYW5kLT5jYWNoZV92YWxpZCA9IHRydWU7Cj4g
+Kwl9Cj4gKwoKW1NldmVyaXR5OiBDcml0aWNhbF0KSXMgaXQgbmVjZXNzYXJ5IHRvIGluY2x1ZGUg
+dGhlIExvZ2ljYWwgVW5pdCBOdW1iZXIgKExVTikgaW4gdGhpcyBjYWNoZSBsb2dpYz8KClRoZSBT
+UEkgTkFORCBzdWJzeXN0ZW0gc3VwcG9ydHMgZGV2aWNlcyB3aXRoIG11bHRpcGxlIExVTnMgcGVy
+IHRhcmdldC4gVGhlCm5hbmRfcG9zIHN0cnVjdHVyZSBpbmNsdWRlcyBhIGx1biBmaWVsZCB0byBh
+ZGRyZXNzIHRoZXNlLCBidXQgdGhpcyBtZWNoYW5pc20KdHJhY2tzIGlkZW50aXR5IHVzaW5nIG9u
+bHkgdGhlIHRhcmdldCwgZXJhc2VibG9jaywgYW5kIHBhZ2UuCgpDb3VsZCB0aGlzIGNhdXNlIGEg
+cmVhZCBmcm9tIG9uZSBMVU4gdG8gZmFsc2VseSBoaXQgdGhlIGNhY2hlIGFuZCBzZXJ2ZSBkYXRh
+CmZyb20gYSBkaWZmZXJlbnQgTFVOIHdoZW4gYWNjZXNzaW5nIHRoZSBleGFjdCBzYW1lIGVyYXNl
+YmxvY2sgYW5kIHBhZ2UgaW5kZXg/Cgo+ICAJcmV0dXJuIDA7Cj4gIH0KPiAgCj4gQEAgLTc4MCw3
+ICs3ODgsMTIgQEAgaW50IHNwaW5hbmRfcmVhZF9wYWdlKHN0cnVjdCBzcGluYW5kX2RldmljZSAq
+c3BpbmFuZCwKPiAgCWlmIChyZXQpCj4gIAkJcmV0dXJuIHJldDsKPiAgCj4gLQlyZXR1cm4gbmFu
+ZF9lY2NfZmluaXNoX2lvX3JlcShuYW5kLCAoc3RydWN0IG5hbmRfcGFnZV9pb19yZXEgKilyZXEp
+Owo+ICsJcmV0ID0gbmFuZF9lY2NfZmluaXNoX2lvX3JlcShuYW5kLCAoc3RydWN0IG5hbmRfcGFn
+ZV9pb19yZXEgKilyZXEpOwo+ICsJaWYgKHJldCA+IDAgJiYgcmVxLT5kYXRhbGVuICYmICFyZXEt
+PmNvbnRpbnVvdXMgJiYgcmVxLT5tb2RlICE9IE1URF9PUFNfUkFXKQo+ICsJCW1lbWNweShzcGlu
+YW5kLT5kYXRhYnVmICsgcmVxLT5kYXRhb2ZmcywgcmVxLT5kYXRhYnVmLmluLAo+ICsJCSAgICAg
+ICByZXEtPmRhdGFsZW4pOwo+ICsKPiArCXJldHVybiByZXQ7Cj4gIH0KCltTZXZlcml0eTogQ3Jp
+dGljYWxdCkFyZSBwYXJ0aWFsIHBhZ2UgcmVhZHMgaGFuZGxlZCBjb3JyZWN0bHkgaGVyZT8KCldo
+ZW4gYSBwYXJ0aWFsIHBhZ2UgcmVhZCBvY2N1cnMsIHRoZSBmdWxsIHBhZ2UgaXMgbG9hZGVkIGlu
+dG8gdGhlIGNhY2hlIGFuZAptYXJrZWQgdmFsaWQsIGJ1dCBvbmx5IHRoZSByZXF1ZXN0ZWQgcmVx
+LT5kYXRhbGVuIGJ5dGVzIGFyZSBjb3JyZWN0ZWQgYnkgdGhlCkVDQyBlbmdpbmUgYW5kIGV4cGxp
+Y2l0bHkgY29waWVkIGJhY2sgdG8gc3BpbmFuZC0+ZGF0YWJ1Zi4gVGhlIHJlbWFpbmRlciBvZgp0
+aGUgY2FjaGVkIHBhZ2UgcmVtYWlucyByYXcgYW5kIHVuY29ycmVjdGVkLgoKV2lsbCBzdWJzZXF1
+ZW50IHJlYWRzIHJlcXVlc3RpbmcgYSBkaWZmZXJlbnQgY2h1bmsgb2YgdGhlIHNhbWUgcGFnZSBo
+aXQgdGhlCmNhY2hlLCBieXBhc3MgdGhlIFNQSSByZWFkIGFuZCBFQ0MgY29ycmVjdGlvbiwgYW5k
+IHJldHVybiB1bmNvcnJlY3RlZCBkYXRhPwoKWyAuLi4gXQo+IEBAIC04NDksNiArODYyLDIwIEBA
+IHN0YXRpYyBpbnQgc3BpbmFuZF9tdGRfcmVndWxhcl9wYWdlX3JlYWQoc3RydWN0IG10ZF9pbmZv
+ICptdGQsIGxvZmZfdCBmcm9tLAo+ICAJCWlmIChkaXNhYmxlX2VjYykKPiAgCQkJaXRlci5yZXEu
+bW9kZSA9IE1URF9PUFNfUkFXOwo+ICAKPiArCQlpZiAoc3BpbmFuZC0+Y2FjaGVfdmFsaWQgJiYg
+IWRpc2FibGVfZWNjICYmCj4gKwkJICAgICFpdGVyLnJlcS5vb2JsZW4gJiYKPiArCQkgICAgaXRl
+ci5yZXEucG9zLnRhcmdldCA9PSBzcGluYW5kLT5jdXJfdGFyZ2V0X2NhY2hlICYmCj4gKwkJICAg
+IGl0ZXIucmVxLnBvcy5lcmFzZWJsb2NrID09IHNwaW5hbmQtPmN1cl9ibG9ja19jYWNoZSAmJgo+
+ICsJCSAgICBpdGVyLnJlcS5wb3MucGFnZSA9PSBzcGluYW5kLT5jdXJfcGFnZV9jYWNoZSkgewo+
+ICsJCQlpZiAoaXRlci5yZXEuZGF0YWxlbikKPiArCQkJCW1lbWNweShpdGVyLnJlcS5kYXRhYnVm
+LmluLAo+ICsJCQkJICAgICAgIHNwaW5hbmQtPmRhdGFidWYgKyBpdGVyLnJlcS5kYXRhb2ZmcywK
+PiArCQkJCSAgICAgICBpdGVyLnJlcS5kYXRhbGVuKTsKPiArCQkJb3BzLT5yZXRsZW4gKz0gaXRl
+ci5yZXEuZGF0YWxlbjsKPiArCQkJb3BzLT5vb2JyZXRsZW4gKz0gaXRlci5yZXEub29ibGVuOwo+
+ICsJCQljb250aW51ZTsKPiArCQl9Cj4gKwo+ICAJCXJldCA9IHNwaW5hbmRfc2VsZWN0X3Rhcmdl
+dChzcGluYW5kLCBpdGVyLnJlcS5wb3MudGFyZ2V0KTsKPiAgCQlpZiAocmV0KQo+ICAJCQlicmVh
+azsKPiBAQCAtODU4LDYgKzg4NSw5IEBAIHN0YXRpYyBpbnQgc3BpbmFuZF9tdGRfcmVndWxhcl9w
+YWdlX3JlYWQoc3RydWN0IG10ZF9pbmZvICptdGQsIGxvZmZfdCBmcm9tLAo+ICAJCWlmIChyZXQg
+PCAwICYmIHJldCAhPSAtRUJBRE1TRykKPiAgCQkJYnJlYWs7Cj4gIAo+ICsJCWlmIChyZXQgPT0g
+LUVCQURNU0cpCj4gKwkJCXNwaW5hbmQtPmNhY2hlX3ZhbGlkID0gZmFsc2U7Cj4gKwoKW1NldmVy
+aXR5OiBIaWdoXQpDb3VsZCB0aGUgY2FjaGUgYmUgbGVmdCB2YWxpZCB3aXRoIHVuY29ycmVjdGVk
+IGRhdGEgaWYgYSBub24tRUJBRE1TRyBlcnJvcgpvY2N1cnM/CgpJbiBzcGluYW5kX3JlYWRfZnJv
+bV9jYWNoZV9vcCgpLCByYXcgZGF0YSBpcyBsb2FkZWQgaW50byB0aGUgY2FjaGUgYnVmZmVyIGFu
+ZApzcGluYW5kLT5jYWNoZV92YWxpZCBpcyBwcmVtYXR1cmVseSBzZXQgdG8gdHJ1ZS4gSWYgdGhl
+IHN1YnNlcXVlbnQKbmFuZF9lY2NfZmluaXNoX2lvX3JlcSgpIGZhaWxzIHdpdGggYSBub24tRUJB
+RE1TRyBlcnJvciAoc3VjaCBhcyAtRVJBTkdFIGZyb20Kc29mdHdhcmUgQkNIIEVDQyBsYXlvdXQg
+cGFyc2luZywgb3IgLUVUSU1FRE9VVCBmcm9tIGEgaGFyZHdhcmUgZW5naW5lKSwKc3BpbmFuZF9y
+ZWFkX3BhZ2UoKSBwcm9wYWdhdGVzIHRoaXMgZXJyb3IuCgpXaGVuIHRoZSBsb29wIGJyZWFrcyBo
+ZXJlIG9uIHJldCA8IDAgJiYgcmV0ICE9IC1FQkFETVNHLCB0aGUgY2FjaGUgaXMgbm90CmludmFs
+aWRhdGVkLgoKV2lsbCBhIHN1YnNlcXVlbnQgYWNjZXNzIHRvIHRoZSBzYW1lIHBhZ2UgaW5jb3Jy
+ZWN0bHkgaGl0IHRoZSBjYWNoZSBhbmQgcmV0dXJuCnRoZSB1bmNvcnJlY3RlZCBkYXRhIGFzIGEg
+c3VjY2Vzcz8KClsgLi4uIF0KPiBAQCAtMTA4MCw2ICsxMTEwLDggQEAgc3RhdGljIGludCBzcGlu
+YW5kX210ZF93cml0ZShzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgbG9mZl90IHRvLAo+ICAJCWlmIChy
+ZXQpCj4gIAkJCWJyZWFrOwo+ICAKPiArCQlzcGluYW5kLT5jYWNoZV92YWxpZCA9IGZhbHNlOwo+
+ICsKPiAgCQlyZXQgPSBzcGluYW5kX3dyaXRlX3BhZ2Uoc3BpbmFuZCwgJml0ZXIucmVxKTsKPiAg
+CQlpZiAocmV0KQo+ICAJCQlicmVhazsKCltTZXZlcml0eTogSGlnaF0KQXJlIG90aGVyIHdyaXRl
+IHBhdGhzIG1pc3NpbmcgY2FjaGUgaW52YWxpZGF0aW9uPwoKV2hpbGUgdGhpcyBwYXRjaCBjb3Jy
+ZWN0bHkgaW52YWxpZGF0ZXMgdGhlIGNhY2hlIGluIHNwaW5hbmRfbXRkX3dyaXRlKCkgYW5kCnNw
+aW5hbmRfZXJhc2UoKSwgb3RoZXIgd3JpdGUgcGF0aHMgbGlrZSBzcGluYW5kX21hcmtiYWQoKSBh
+bmQKc3BpbmFuZF9vdHBfcncoKSBhbHNvIGludm9rZSBzcGluYW5kX3dyaXRlX3BhZ2UoKS4KCkJl
+Y2F1c2Ugc3BpbmFuZF93cml0ZV90b19jYWNoZV9vcCgpIHVuY29uZGl0aW9uYWxseSBvdmVyd3Jp
+dGVzIHRoZSBzaGFyZWQKZGF0YSBidWZmZXIgKHNwaW5hbmQtPmRhdGFidWYpIHdpdGggMHhGRnMg
+ZHVyaW5nIGFueSB3cml0ZSBvcGVyYXRpb24sIHRoaXMKY2FuIGNhdXNlIHRoZSBjYWNoZSBidWZm
+ZXIgdG8gYmUgY2xvYmJlcmVkIHdoaWxlIHNwaW5hbmQtPmNhY2hlX3ZhbGlkCnJlbWFpbnMgdHJ1
+ZS4KCldpbGwgc3Vic2VxdWVudCByZWFkcyB0byB0aGUgY2FjaGVkIGNvb3JkaW5hdGVzIGZhbHNl
+bHkgaGl0IHRoZSBjYWNoZSBhbmQKcmV0dXJuIGNsb2JiZXJlZCBkYXRhIGluc3RlYWQgb2YgdGhl
+IGFjdHVhbCBwYWdlIGNvbnRlbnRzPwoKLS0gClNhc2hpa28gQUkgcmV2aWV3IMK3IGh0dHBzOi8v
+c2FzaGlrby5kZXYvIy9wYXRjaHNldC90ZW5jZW50XzUyMjc5MkVFNkY2M0E1NTgxQzIzOEZGMTdF
+OTg2MkYxMEEwOEBxcS5jb20/cGFydD0xCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0
+Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
