@@ -4,92 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B39E8C79F9F
-	for <linux-mtd@archiver.kernel.org>; Thu, 10 Sep 2026 18:45:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04AEEC79FBF
+	for <linux-mtd@archiver.kernel.org>; Thu, 10 Sep 2026 19:01:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Reply-To:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
+	References:In-Reply-To:Cc:To:Subject:From:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=nUD5eb25L3kA34ELWS0ax5GgfoyROpBZjYdKScq1GGs=; b=NC5nUEq++9+nao
-	+Ken+vkxA1ilOz/BAgGUGG/C6T1aB6Kn8jDUToo/n/XbPnv8CD+hYMA7ZtYifb7dgWG+tl+PbKLTN
-	J4oTCKgLjF5WQEwY8NJwA61Qimtmb4BAIylnN+ySKbZWfwlhJwJ3QHDhc9dcAQUoeqXcpylHwcPqI
-	CwOAVH5OOthRIUYp7oRYPFNaTSFISJnzoLJ3ezqKplsgkvtM9yhDOmaF6YDsSSeyKgM2FeuFEEE0z
-	o+Bu3eeKXW5924TIc4qcv3DbKr3pDimaxeoKMHqqnBT7ckiHuXOJsZKGXDeYcpc7iyJ/RGL7w+/Rr
-	6ZSf1djAGyZAy+51CJYA==;
+	List-Owner; bh=BEdavyrGofQplZo4AvE50eZ2vWFMcYXGMeW1Qtc/EYc=; b=OZhl9cjE2vir4o
+	9hq5sUNWqSIJXI1il/pMTvP5Gk1J4V313MdP6TYXG4St8eN/1VeGrg3hSxrjWjp7f4CpH/mMnfDXy
+	984uSuDpcaQTv5+eFkAJJZvan/uo2CoUFF3NO9m6ec9Ei4GqRWXWMXZUKNsJqv3U3DDMc1Zf2SQNk
+	5Q+PubCQWDJ/KJvFARTBDzo4+PbmUnKxpNZ4pYrvbwzHSCi8YCdq4r22vILgP+UnKQ3/kkXCLy0RG
+	Bpc51fhIga0e5xKo3YJ5ckdBOuIfx9wxf3fnnWiMkGtvv6nVp4TPLupoTbRdOaS59i46aREPf6i3t
+	8Zt5Vza3M5EJnHsXJQwA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x4jmT-0000000FB7z-1dKT;
-	Thu, 10 Sep 2026 18:45:53 +0000
-Received: from mail-wm2-x10.google.com ([2a00:1450:4864:31::10])
+	id 1x4k1m-0000000FE1j-3tR1;
+	Thu, 10 Sep 2026 19:01:42 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x4jmR-0000000FB68-1eVZ
+	id 1x4k1l-0000000FE1Y-0o0a
 	for linux-mtd@lists.infradead.org;
-	Thu, 10 Sep 2026 18:45:52 +0000
-Received: by mail-wm2-x10.google.com with SMTP id 5b1f17b1804b1-49c5a927a1fso212535e9.2
-        for <linux-mtd@lists.infradead.org>; Thu, 10 Sep 2026 11:45:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1789065950; x=1789670750; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=xlX1xFkfC7DC5AceUSqJtuVKq5LOsuWpndKOpYXkAdI=;
-        b=OEg3i3g55qJ/Nhhoxg2ZZnaMLv6608zuvtVXgKiXGMcUb6aDYdVb74OLku4oKmrD/2
-         11qdJxXXJnF6G1x8t2ahm9nmDZEMUvxd5UBSrOtUiWGrIgEFEPedpII/+8VIsIvU8RUg
-         UYotRZqvJVko+svpHaV99Y4BFEK+WrldQFo0E8WCwEE5TwsatLTvMYkWNagflttN0bAf
-         4wTxjIrjCASwabkY/D83Cz2mZED8Dp4V3yi2W8Or9Q1jRgxQs0pH8lvSkTE6y93hRsZT
-         CopfQC/3MN/2ySMSsaeKCouQ6raC3ll4ziPHkuisetPtjJaGztPitW1TH2PciujZyMY8
-         vG/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1789065950; x=1789670750;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=xlX1xFkfC7DC5AceUSqJtuVKq5LOsuWpndKOpYXkAdI=;
-        b=BrUTjFM+7nsDl9dFvJWkx5UQhuxDw919X+AhxfvADQcoRPbL3UYMwkQu4vyDxq6KGf
-         AbYzCMRcpFj60JRbmnEicBnzI/viJqIkFgUtSOjgWZJmrRBcy4ApyoZgduQof+3mPbj6
-         KpzJPFFgtooWs9yoXWLiUv919GjmUjOETtFXuY2ut8dmcP4PkqtWy5Mj1+wSrZBv4GHl
-         vWxnWndw5AsaQQp/+r93xAEbScykIECF+VzfKHq2Da1YcqbRmHigyeMXh7umE+6WJYOC
-         OxZaE5xUWWnfVREkspKd00Syi+mXOhCklnfI05fpqe+Xp+lZKXoSnECIZXxGo8kx4036
-         SYbw==
-X-Forwarded-Encrypted: i=1; AKwUvByzfm/EUOj+DSOS/qBi/+jSl2ygFypIT7dPcqia70LRgd8PryLnGUNhgoNZfLDaPP6XPYFrBhy3aAw=@lists.infradead.org
-X-Gm-Message-State: AFuF++lUdpwg6Bt+YAWL42S6HzHUd93u7TpHSWUj/pEpGbpMfr5OrHEH
-	Od7acqcA9L64xpbIphHZ/kF8nS/RdfEfyRiRasXTJ2Dn5ABJVGXUnSoL
-X-Gm-Gg: AYBFou0N7k/zoX8/+Nyc+o3QWZ7gJhfNtDSgslKAEPFk566J3OvDifIl2oQG1RaGtPD
-	dNzCdrb1QvQmKt+xQLnOffamMyzuVEJE7ym7DtHpZQ8X0zPSBke/BvqlvXDVTi5Hgv6nic4ED/P
-	HuEKuZh63bv/gL6rpB1HHafxmuSk6Eo4KiirAlukr1z7E/FxwojHTwSk280QHLDyXhJIBFfMOEV
-	J64RDsMxgHko4PVlpaoyajN/TQwK2+LgbxmM0zvuaCFlBWjYMVtRblOChA2jQGiDhwLkcU9eSZw
-	hX3o+jxMT//y5rwPhpo5lle65KAfoWHR/D6wEPLl5GroQn104f8o+cZGuANJz/pE/eA4joUMGcU
-	nWdu5dgd6q4GV8rGrBmxLb9w3h4Hh6jOkTzJAZXDXr4av9CARso9PyyPJaUgVxw2zVp/+wL88a+
-	nQg3HbbCxw8SIzkP+JAB1KvjUkZa16x9EwyrhuJt6TSAlSlZ1nCCjLZLzZpHkQxK31ORxDQkix5
-	Q1iisu5tIb85fvbgnA=
-X-Received: by 2002:a05:600c:4712:b0:499:d95a:41f with SMTP id 5b1f17b1804b1-49e61643939mr4500135e9.0.1789065949382;
-        Thu, 10 Sep 2026 11:45:49 -0700 (PDT)
-Received: from L-P-ITAIH2-L-RF.rf.local ([193.169.70.108])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-49e60adaee4sm18760055e9.14.2026.09.10.11.45.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Sep 2026 11:45:48 -0700 (PDT)
-From: Itai Handler <itai.handler@gmail.com>
-To: mwalle@kernel.org,
-	pratyush@kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	vigneshr@ti.com,
-	richard@nod.at,
-	miquel.raynal@bootlin.com,
-	takahiro.kuwano@infineon.com,
-	Itai Handler <itai.handler@gmail.com>
-Subject: [PATCH 2/2] mtd: spi-nor: take the flash lock in spi_nor_remove()
-Date: Thu, 10 Sep 2026 21:44:52 +0300
-Message-Id: <20260910184452.895485-3-itai.handler@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20260910184452.895485-1-itai.handler@gmail.com>
+	Thu, 10 Sep 2026 19:01:41 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with ESMTP id 9B68E6025B;
+	Thu, 10 Sep 2026 19:01:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF6231F000FF;
+	Thu, 10 Sep 2026 19:01:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1789066900;
+	bh=o/aJgC7/v4Ab0Ev6JyLQT1mN8r2uNaekGe8w0Q8Fi4k=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=K9kDcbfrBDWRVngAIGGKwdtDSajfbjWd5JjJtsPDjlQZxCUNjMzw01/5bP9X80uKF
+	 lHzIUUriCuZerdqhq/yVaYD76SA2MC8dTZGLC/gqIK6nc+xYROXN6vI3a6nd13UkuI
+	 mTzSCpnC6FiOa6PoTKWU0gn+yeVP5z8j90WI77F4LAB3lxIdpGGGtLqB7YSiBH/v1e
+	 S1vhNjaH0rPBcQYtlEnQisISaxXMp5wiG1AeOlUlyau57RDlln7Sd5w2XfCI4HhVZP
+	 zUbSIehwFt0tJXxIpFHQrB1ePpaL3CyzUui++f405FmO3J8p8GikOB6wpOiaxKzFj1
+	 0JDwNz23IO70A==
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH 1/2] mtd: spi-nor: take the flash lock in
+ spi_nor_shutdown()
+To: mwalle@kernel.org, "Itai Handler" <itai.handler@gmail.com>, pratyush@kernel.org
+Cc: linux-kernel@vger.kernel.org, takahiro.kuwano@infineon.com, richard@nod.at, stable@vger.kernel.org, miquel.raynal@bootlin.com, linux-mtd@lists.infradead.org, vigneshr@ti.com
+In-Reply-To: <20260910184452.895485-2-itai.handler@gmail.com>
 References: <20260910184452.895485-1-itai.handler@gmail.com>
-MIME-Version: 1.0
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260910_114551_452333_C481C417 
-X-CRM114-Status: GOOD (  17.80  )
+ <20260910184452.895485-2-itai.handler@gmail.com>
+Date: Thu, 10 Sep 2026 19:01:39 +0000
+Message-Id: <20260910190139.BF6231F000FF@smtp.kernel.org>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,57 +63,68 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Reply-To: sashiko-reviews@lists.linux.dev
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-spi_nor_remove() restores the addressing mode with the same unlocked
-call to spi_nor_restore() that spi_nor_shutdown() used before the
-previous patch, and it is exposed the same way: the MTD device is still
-registered at that point, so an unbind can run the restore while another
-thread is in the middle of an operation. A busy flash silently ignores
-the restore, and a restore that lands between two chunks of a read
-switches the chip to 3-byte addressing while the driver keeps sending
-4 address bytes.
-
-Moving the restore after mtd_device_unregister() would not fix this.
-Since commit 19bfa9ebebb5 ("mtd: use refcount to prevent corruption")
-del_mtd_device() drops a reference instead of refusing with -EBUSY when
-the device is in use, so unregistering returns right away and does not
-wait for an operation that is already running.
-
-Take nor->lock for the restore, as spi_nor_shutdown() now does. The
-unregister stays unconditional, so a flash whose restore had to be
-skipped is still torn down.
-
-Fixes: 59b356ffd0b0 ("mtd: m25p80: restore the status of SPI flash when exiting")
-Signed-off-by: Itai Handler <itai.handler@gmail.com>
----
- drivers/mtd/spi-nor/core.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 96dd6ae6d619..51128c94d1ce 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -3852,8 +3852,14 @@ static int spi_nor_probe(struct spi_mem *spimem)
- static int spi_nor_remove(struct spi_mem *spimem)
- {
- 	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
-+	int ret;
- 
--	spi_nor_restore(nor);
-+	/* As in spi_nor_shutdown(), do not restore under an operation. */
-+	ret = spi_nor_prep_and_lock(nor);
-+	if (!ret) {
-+		spi_nor_restore(nor);
-+		spi_nor_unlock_and_unprep(nor);
-+	}
- 
- 	/* Clean up MTD stuff. */
- 	return mtd_device_unregister(&nor->mtd);
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+VGhhbmsgeW91IGZvciB5b3VyIGNvbnRyaWJ1dGlvbiEgU2FzaGlrbyBBSSByZXZpZXcgZm91bmQg
+MyBwb3RlbnRpYWwgaXNzdWUocykgdG8gY29uc2lkZXI6CgpOZXcgaXNzdWVzOgotIFtIaWdoXSBV
+bnNhZmUgS2lsbGFibGUgV2FpdCBpbiBTaHV0ZG93bi9SZW1vdmUgc2tpcHMgaGFyZHdhcmUgcmVz
+dG9yYXRpb24KClByZS1leGlzdGluZyBpc3N1ZXM6Ci0gW0NyaXRpY2FsXSBSYWNlIGNvbmRpdGlv
+biBsZWFkaW5nIHRvIGRhdGEgY29ycnVwdGlvbiBhZnRlciBzaHV0ZG93biByZXN0b3JlCi0gW0hp
+Z2hdIFJlc291cmNlIGxlYWsgaW4gbG9ja2luZyBoZWxwZXJzIG9uIGZhdGFsIHNpZ25hbCBpbnRl
+cnJ1cHRpb24KLS0KCmNvbW1pdCA3ZDdiMDMyZDYzY2U5YjQwMDlmN2Q4ODZlODIxMjYxZDI5ZmI3
+YzJhCkF1dGhvcjogSXRhaSBIYW5kbGVyIDxpdGFpLmhhbmRsZXJAZ21haWwuY29tPgoKbXRkOiBz
+cGktbm9yOiB0YWtlIHRoZSBmbGFzaCBsb2NrIGluIHNwaV9ub3Jfc2h1dGRvd24oKQoKVGhpcyBj
+b21taXQgbW9kaWZpZXMgc3BpX25vcl9zaHV0ZG93bigpIHRvIGFjcXVpcmUgdGhlIGRldmljZSBs
+b2NrIGJlZm9yZQpyZXN0b3JpbmcgdGhlIGZsYXNoIGFkZHJlc3NpbmcgbW9kZS4gVGhpcyBzZXJp
+YWxpemVzIHRoZSByZXN0b3JlIG9wZXJhdGlvbgphZ2FpbnN0IG9wZXJhdGlvbnMgYWxyZWFkeSBp
+biBmbGlnaHQgZHVyaW5nIHN5c3RlbSBzaHV0ZG93bi4KCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMv
+bXRkL3NwaS1ub3IvY29yZS5jIGIvZHJpdmVycy9tdGQvc3BpLW5vci9jb3JlLmMKPiBpbmRleCBj
+Y2Y0Mzk2Y2RjZDA0Li45NmRkNmFlNmQ2MTkxIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbXRkL3Nw
+aS1ub3IvY29yZS5jCj4gKysrIGIvZHJpdmVycy9tdGQvc3BpLW5vci9jb3JlLmMKPiBAQCAtMzg2
+Miw4ICszODYyLDIxIEBAIHN0YXRpYyBpbnQgc3BpX25vcl9yZW1vdmUoc3RydWN0IHNwaV9tZW0g
+KnNwaW1lbSkKPiAgc3RhdGljIHZvaWQgc3BpX25vcl9zaHV0ZG93bihzdHJ1Y3Qgc3BpX21lbSAq
+c3BpbWVtKQo+ICB7Cj4gIAlzdHJ1Y3Qgc3BpX25vciAqbm9yID0gc3BpX21lbV9nZXRfZHJ2ZGF0
+YShzcGltZW0pOwo+ICsJaW50IHJldDsKPiArCj4gKwkvKgo+ICsJICogV2FpdCBmb3IgYW4gb3Bl
+cmF0aW9uIHN0YXJ0ZWQgYnkgYW5vdGhlciB0aHJlYWQgdG8gZmluaXNoLgo+ICsJICogZGV2aWNl
+X3NodXRkb3duKCkgcnVucyB3aXRoIE1URCB1c2VycyBzdGlsbCBhY3RpdmU6IGEgYnVzeSBmbGFz
+aAo+ICsJICogaWdub3JlcyB0aGUgY29tbWFuZHMgc3BpX25vcl9yZXN0b3JlKCkgaXNzdWVzLCBs
+ZWF2aW5nIGl0IGluCj4gKwkgKiA0LWJ5dGUgYWRkcmVzcyBtb2RlLCBhbmQgYSByZXN0b3JlIGxh
+bmRpbmcgbWlkLXJlYWQgY2hhbmdlcyB0aGUKPiArCSAqIGNoaXAncyBhZGRyZXNzIHdpZHRoIHVu
+ZGVyIHRoZSB0cmFuc2Zlci4KPiArCSAqLwo+ICsJcmV0ID0gc3BpX25vcl9wcmVwX2FuZF9sb2Nr
+KG5vcik7CgpbU2V2ZXJpdHk6IEhpZ2hdClRoaXMgaXMgYSBwcmUtZXhpc3RpbmcgaXNzdWUsIGJ1
+dCBkb2VzIHNwaV9ub3JfcHJlcF9hbmRfbG9jaygpIGxlYWsgZGV2aWNlCnByZXBhcmF0aW9uIHJl
+c291cmNlcyBpZiBpbnRlcnJ1cHRlZCBieSBhIGZhdGFsIHNpZ25hbD8KCklmIGEgcHJvY2VzcyBp
+cyBraWxsZWQgd2hpbGUgd2FpdGluZyBvbiB3YWl0X2V2ZW50X2tpbGxhYmxlKCkgaW5zaWRlCnNw
+aV9ub3JfcHJlcF9hbmRfbG9jaygpLCBpdCByZXR1cm5zIC1FUkVTVEFSVFNZUyBidXQgZmFpbHMg
+dG8gaW52b2tlCnNwaV9ub3JfdW5wcmVwKCkgdG8gcm9sbCBiYWNrIHRoZSBlYXJsaWVyIHNwaV9u
+b3JfcHJlcCgpIGNhbGwuIERvZXMgdGhpcwphbHNvIGFwcGx5IHRvIHRoZSBvdGhlciBsb2NraW5n
+IGhlbHBlcnMgbGlrZSBzcGlfbm9yX3ByZXBfYW5kX2xvY2tfcGUoKSBhbmQKc3BpX25vcl9wcmVw
+X2FuZF9sb2NrX3JkKCk/Cgo+ICsJaWYgKHJldCkKPiArCQlyZXR1cm47CgpbU2V2ZXJpdHk6IEhp
+Z2hdCklmIGEgZmF0YWwgc2lnbmFsIGlzIHBlbmRpbmcgZHVyaW5nIHRoZSByZWJvb3QgcHJvY2Vz
+cywgc3VjaCBhcyBmcm9tIHRoZSBPT00Ka2lsbGVyIG9yIGEgbWFudWFsIFNJR0tJTEwsIHdhaXRf
+ZXZlbnRfa2lsbGFibGUoKSBpbiBzcGlfbm9yX3ByZXBfYW5kX2xvY2soKQp3aWxsIGltbWVkaWF0
+ZWx5IHJldHVybiAtRVJFU1RBUlRTWVMuCgpXaWxsIHRoaXMgZWFybHkgcmV0dXJuIHNraXAgdGhl
+IHNwaV9ub3JfcmVzdG9yZSgpIGhhcmR3YXJlIHN0YXRlIHJlc2V0PyBTaW5jZQp0aGlzIHNraXBz
+IHJlc3RvcmluZyB0aGUgMy1ieXRlIGFkZHJlc3NpbmcgbW9kZSwgY291bGQgdGhlIGJvb3Rsb2Fk
+ZXIgcmVhZApnYXJiYWdlIG9uIHRoZSBuZXh0IGJvb3QsIGxlYXZpbmcgdGhlIGRldmljZSB1bmJv
+b3RhYmxlIHVudGlsIGEgcG93ZXIgY3ljbGU/Cgo+ICAKPiAgCXNwaV9ub3JfcmVzdG9yZShub3Ip
+Owo+ICsJc3BpX25vcl91bmxvY2tfYW5kX3VucHJlcChub3IpOwoKW1NldmVyaXR5OiBDcml0aWNh
+bF0KVGhpcyBpcyBhIHByZS1leGlzdGluZyBpc3N1ZSwgYnV0IGNvdWxkIHJlbGVhc2luZyB0aGUg
+bG9jayB3aGlsZSB0aGUgTVRECmRldmljZSByZW1haW5zIGFjdGl2ZSBleHBvc2UgdGhlIGZsYXNo
+J3MgbW9kaWZpZWQgMy1ieXRlIGFkZHJlc3Npbmcgc3RhdGUKdG8gY29uY3VycmVudCBvcGVyYXRp
+b25zPwoKSWYgYSBjb25jdXJyZW50IHRocmVhZCBhY3F1aXJlcyB0aGUgbG9jayBpbW1lZGlhdGVs
+eSBhZnRlciBzcGlfbm9yX3NodXRkb3duKCkKZmluaXNoZXMgYW5kIGlzc3VlcyBhIHdyaXRlIGNv
+bW1hbmQsIHRoZSBkcml2ZXIgd2lsbCBhc3N1bWUgNC1ieXRlIG1vZGUKYW5kIHNlbmQgNCBhZGRy
+ZXNzIGJ5dGVzLiBDb3VsZCB0aGUgaGFyZHdhcmUgbWlzaW50ZXJwcmV0IHRoZSA0dGggYWRkcmVz
+cwpieXRlIGFzIGRhdGEsIHJlc3VsdGluZyBpbiBwZXJtYW5lbnQgZGF0YSBjb3JydXB0aW9uIGJ5
+IHNoaWZ0aW5nIHRoZQpkZXN0aW5hdGlvbiBhZGRyZXNzPwoKPiAgfQoKLS0gClNhc2hpa28gQUkg
+cmV2aWV3IMK3IGh0dHBzOi8vc2FzaGlrby5kZXYvIy9wYXRjaHNldC8yMDI2MDkxMDE4NDQ1Mi44
+OTU0ODUtMS1pdGFpLmhhbmRsZXJAZ21haWwuY29tP3BhcnQ9MQoKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9u
+IG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2xpbnV4LW10ZC8K
