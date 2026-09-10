@@ -4,64 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7594DC79FBF
-	for <linux-mtd@archiver.kernel.org>; Thu, 10 Sep 2026 16:46:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A3C8C79FBF
+	for <linux-mtd@archiver.kernel.org>; Thu, 10 Sep 2026 16:54:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Reply-To:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
+	References:In-Reply-To:Cc:To:Subject:From:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=HgB3zChdKXstH2OcjOCoapRLPp04JypocXGra8zhkRw=; b=Ou2Yw4eFkMrmB/
-	s2192+VUU8kySnQ7Sa7IwJRRc4gi6Ry5EoZWuXhNsDDrFrU804rkD7/fzMj5uqhirKCtaJLVCsg2T
-	zeMHKR5EBMF6lo3L5F0t2jNNRa3h3I/O9Z9V/6110BEeLQGItK4XXgByOP1KdBCGeRXxk5LS5MCpo
-	fXX+HMy4u6BPE/o5TVYoJ7n3rzGzFCW4i0yG1kz8iDa336xgXtE1salk3ouuDcjQdYq+o5sdO6fSX
-	taTm/heH6iD9Zu1GTWP7HHVy3dWj+PGXxL2knS1VO3syFC4DAvDH41OLXaLZM73Q99R787QqWvvCN
-	xj6JXiDh5hmAQE6swsrw==;
+	List-Owner; bh=j6FDTICYwY93hczagFyN3HMp0xeKa/iqph2WnWuWxuA=; b=fGIZbr9AWYOBkH
+	+zPYth8s4AlRRXbiQnKQW3NVPQ2FYQAEVMEKF9Kt9R1X3hHoq0mupUrlnw8YX134Lk0v0llmetehU
+	JyDgpoqytbzeEGa/hjb/6V3m8H/qt/a0GnB/O7DOMLSasKtynJehOhGpv9ZQfvnbTVtqG0jdCbI3R
+	ypWpdqd7o6qhSQrN7n2P5U64bUhgs2L3PPlOsm78wjpIDVKZdsfXKXm1BFqdHxq5SA3wX4Tr3JZfS
+	ho1YYBHCS7zZBkZok9MCgU6LE0FbLwNrE6B9oYU88L5eOj+kJByq7XWPQr0F+FXMCcLSbWBZMwYSU
+	TGtMTrwUXBu7TXLI0JTg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x4hvG-0000000EzPi-2eyy;
-	Thu, 10 Sep 2026 16:46:50 +0000
-Received: from b224-1.smtp-out.eu-central-1.amazonses.com ([69.169.224.1])
+	id 1x4i2T-0000000F0PJ-0Eyd;
+	Thu, 10 Sep 2026 16:54:17 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x4hvE-0000000EzOr-0h97
+	id 1x4i2S-0000000F0P4-1EQo
 	for linux-mtd@lists.infradead.org;
-	Thu, 10 Sep 2026 16:46:49 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-	s=hi6pntjfnmhxrdkbpi4sl3ndfqswqs3i; d=sagnik.me; t=1789058804;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding;
-	bh=iQkPZUSu5QWYmK5BMUGn5RN8QWahDFyWb9DjqGJqkn8=;
-	b=lrUuQlMSprZa8++GPrUUKsWC/KdxSgPI3IRa9P7I7oMuTctxj1PUTpJK6G3rw/MZ
-	aEEGcCgKJaIh9runijL6DNxDB+PYAuH2I+sLAf5E8WgZm3vicSeXIznx9wRJ7wDbWzh
-	i8zuYQVKk2oOPJ23Df9rG9avMFme4O1LIJG2inYtPDQWvMdWNjuQvMTjG8y58ZVtqku
-	TIFAHNXvwF3Nn7dCFTZbRWF4I+WLK4DeIeTinLJ7rv15Oq2pEdSeSI4SeEqZ6YHiUbU
-	aclpS0zPykpy1Dr0szkEww7oweAFUO1oClq3mAG2eeHflIoG2yx9P+YjJRhzWVAJAys
-	9VhJSAIOPw==
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-	s=sokbgaaqhfgd6qjht2wmdajpuuanpimv; d=amazonses.com; t=1789058804;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:Feedback-ID;
-	bh=iQkPZUSu5QWYmK5BMUGn5RN8QWahDFyWb9DjqGJqkn8=;
-	b=Zu4Uyclab4nZH8g2mEzsd0iwpPqr9GCSBuRDjZW63nKziiJwylM1Y0Tfb5KidoNN
-	4u1yZfp1Bh1CqKFN5vePKdHSFdSsC5GQJ7ngQt8KtevNLM022LewrTQHkbxfBZ328kX
-	/BJ0x+uEi7GPluKySk+zdTMJAkqD7aCR0fTscRPw=
-From: Sagnik Sasmal <sagnik@sagnik.me>
-To: miquel.raynal@bootlin.com
-Cc: richard@nod.at, vigneshr@ti.com, tudor.ambarus@linaro.org, 
-	mikhail.kshevetskiy@iopsys.eu, linux-mtd@lists.infradead.org, 
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2] mtd: spinand: Do not update the QE bit on devices without one
-Date: Thu, 10 Sep 2026 16:46:44 +0000
-Message-ID: <010701a08c36e962-eb595dbe-b80b-44eb-858d-c1033f8a86a1-000000@eu-central-1.amazonses.com>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <878q59s2iv.fsf@bootlin.com>
+	Thu, 10 Sep 2026 16:54:16 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with ESMTP id 6B1D860202;
+	Thu, 10 Sep 2026 16:54:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7BCD1F000FF;
+	Thu, 10 Sep 2026 16:54:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1789059255;
+	bh=5GI8suLmLX0X8AuwQVVSjbap4BDzNlVQVLu6TfgyQVI=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=OpzUPq5xMQ37fahQOcL/f/B0zfr9B+XXAJhvNTALr0u71KgQU8d5eDeJ2dD8B622Q
+	 i0KSk8B3kRDugxaIreFbdwK8yEOVfEoxgb1sWeH1QE5iWfc85xSbvQh95GIwOJmW84
+	 UZMxlerPD0V6d9cJA1to0uJkZm1Mtmv1yII1Vk+0CHX4F6eWTbqKADE53iNEitGij8
+	 WzkkCdpTDGf2UtT5Pi1ymHOmwlnjJfL+yZdkyTz5JQBGOiyxazgwK5zAiFOTkiNU5g
+	 j88U7KDwJ36na7qR3Af7ttRsEDe8lmp29Fuvn9uWPUineuzL/IbqMtjQRVYlBAvjZ8
+	 nJOkwc38qJ3vA==
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH v2] mtd: spinand: Do not update the QE bit on devices
+ without one
+To: "Sagnik Sasmal" <sagnik@sagnik.me>, miquel.raynal@bootlin.com
+Cc: vigneshr@ti.com, richard@nod.at, linux-mtd@lists.infradead.org, mikhail.kshevetskiy@iopsys.eu, linux-kernel@vger.kernel.org, tudor.ambarus@linaro.org
+In-Reply-To: <010701a08c36e962-eb595dbe-b80b-44eb-858d-c1033f8a86a1-000000@eu-central-1.amazonses.com>
 References: <878q59s2iv.fsf@bootlin.com>
-MIME-Version: 1.0
-X-Last-TLS-Session-Version: TLSv1.3
-Feedback-ID: ::1.eu-central-1.PI0qW2sOnv0WHLkqY53RTxXQVzstwFEIoB04n7YZrig=:AmazonSES
-X-SES-Outgoing: 2026.09.10-69.169.224.1
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260910_094648_396910_9178801C 
-X-CRM114-Status: GOOD (  14.09  )
+ <010701a08c36e962-eb595dbe-b80b-44eb-858d-c1033f8a86a1-000000@eu-central-1.amazonses.com>
+Date: Thu, 10 Sep 2026 16:54:14 +0000
+Message-Id: <20260910165414.A7BCD1F000FF@smtp.kernel.org>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,78 +63,53 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Reply-To: sashiko-reviews@lists.linux.dev
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Commit be0b86c648bf ("mtd: spinand: Gather all the bus interface
-steps in one single function") moved quad-enable setup into
-spinand_configure_chip(). The new code only determines whether quad
-mode is needed when SPINAND_HAS_QE_BIT is set, but calls
-spinand_init_quad_enable() unconditionally. This clears configuration
-register bit 0 on devices without a QE bit.
-
-That bit is not universally a QE bit. On the Winbond W25N02KV it is
-H-DIS, which disables the active-low HOLD function. Clearing H-DIS
-enables HOLD during single and dual I/O operations. If IO3 is not kept
-high, the flash can pause a command and ignore clock and data.
-
-H-DIS is not restored by the FFh reset command, allowing the incorrect
-state to survive an SoC warm reboot while the flash remains powered.
-
-Before the refactoring, spinand_init_quad_enable() returned without
-touching the configuration register on devices without
-SPINAND_HAS_QE_BIT. Restore that behavior by only calling the helper
-when the flag is set.
-
-The regression was reproduced on a JioRouter JIDU6401 with an MT7986
-SoC and a W25N02KV. With Linux 6.18.44, sysupgrade failed and the
-following warm reboot hung in BL2. With this change applied, both
-sysupgrade and warm reboot completed successfully.
-
-Fixes: be0b86c648bf ("mtd: spinand: Gather all the bus interface steps in one single function")
-Cc: stable@vger.kernel.org
-Suggested-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Assisted-by: LLM
-Signed-off-by: Sagnik Sasmal <sagnik@sagnik.me>
----
-I really appreciate the prompt review and your suggestion for a cleaner
-approach. Thank you.
-
-Changes in v2:
-- Call spinand_init_quad_enable() only inside the
-  SPINAND_HAS_QE_BIT condition, as suggested by Miquel.
-- Retested on a JioRouter JIDU6401; sysupgrade and the following warm
-  reboot completed successfully.
-
- drivers/mtd/nand/spi/core.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index 43bbe2629..e59581d35 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -1813,11 +1813,11 @@ static int spinand_configure_chip(struct spinand_device *spinand)
- 		    spinand->ssdr_op_templates.write_cache->data.buswidth == 4 ||
- 		    spinand->ssdr_op_templates.update_cache->data.buswidth == 4)
- 			quad_enable = true;
--	}
- 
--	ret = spinand_init_quad_enable(spinand, quad_enable);
--	if (ret)
--		return ret;
-+		ret = spinand_init_quad_enable(spinand, quad_enable);
-+		if (ret)
-+			return ret;
-+	}
- 
- 	if (spinand->configure_chip) {
- 		ret = spinand->configure_chip(spinand, SSDR);
--- 
-2.53.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+VGhhbmsgeW91IGZvciB5b3VyIGNvbnRyaWJ1dGlvbiEgU2FzaGlrbyBBSSByZXZpZXcgZm91bmQg
+MSBwb3RlbnRpYWwgaXNzdWUocykgdG8gY29uc2lkZXI6Ci0gW0hpZ2hdIFVuaW5pdGlhbGl6ZWQg
+cmV0dXJuIHZhbHVlIGluIGBzcGluYW5kX2NvbmZpZ3VyZV9jaGlwKClgIGNhbiBjYXVzZSBkZXZp
+Y2UgcHJvYmUgZmFpbHVyZS4KLS0KCmNvbW1pdCAyNWFmZWFmMjA4NjRkNGY3OWZlOWEzMTRjMTI1
+MTkwMTE5OTMwOTY1CkF1dGhvcjogU2FnbmlrIFNhc21hbCA8c2FnbmlrQHNhZ25pay5tZT4KCm10
+ZDogc3BpbmFuZDogRG8gbm90IHVwZGF0ZSB0aGUgUUUgYml0IG9uIGRldmljZXMgd2l0aG91dCBv
+bmUKClRoaXMgcGF0Y2ggbW92ZXMgdGhlIGNhbGwgdG8gc3BpbmFuZF9pbml0X3F1YWRfZW5hYmxl
+KCkgaW5zaWRlIHRoZQpTUElOQU5EX0hBU19RRV9CSVQgY29uZGl0aW9uIHRvIGF2b2lkIGNsZWFy
+aW5nIGNvbmZpZ3VyYXRpb24gcmVnaXN0ZXIgYml0IDAKb24gZGV2aWNlcyB3aXRob3V0IGEgUUUg
+Yml0LgoKPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9zcGkvY29yZS5jIGIvZHJpdmVy
+cy9tdGQvbmFuZC9zcGkvY29yZS5jCj4gaW5kZXggNDNiYmUyNjI5Yjg1Yi4uZTU5NTgxZDM1OTZi
+NyAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL210ZC9uYW5kL3NwaS9jb3JlLmMKPiArKysgYi9kcml2
+ZXJzL210ZC9uYW5kL3NwaS9jb3JlLmMKPiBAQCAtMTgxMywxMSArMTgxMywxMSBAQCBzdGF0aWMg
+aW50IHNwaW5hbmRfY29uZmlndXJlX2NoaXAoc3RydWN0IHNwaW5hbmRfZGV2aWNlICpzcGluYW5k
+KQo+ICAJCSAgICBzcGluYW5kLT5zc2RyX29wX3RlbXBsYXRlcy53cml0ZV9jYWNoZS0+ZGF0YS5i
+dXN3aWR0aCA9PSA0IHx8Cj4gIAkJICAgIHNwaW5hbmQtPnNzZHJfb3BfdGVtcGxhdGVzLnVwZGF0
+ZV9jYWNoZS0+ZGF0YS5idXN3aWR0aCA9PSA0KQo+ICAJCQlxdWFkX2VuYWJsZSA9IHRydWU7Cj4g
+LQl9Cj4gIAo+IC0JcmV0ID0gc3BpbmFuZF9pbml0X3F1YWRfZW5hYmxlKHNwaW5hbmQsIHF1YWRf
+ZW5hYmxlKTsKPiAtCWlmIChyZXQpCj4gLQkJcmV0dXJuIHJldDsKPiArCQlyZXQgPSBzcGluYW5k
+X2luaXRfcXVhZF9lbmFibGUoc3BpbmFuZCwgcXVhZF9lbmFibGUpOwo+ICsJCWlmIChyZXQpCj4g
+KwkJCXJldHVybiByZXQ7Cj4gKwl9Cj4gIAo+ICAJaWYgKHNwaW5hbmQtPmNvbmZpZ3VyZV9jaGlw
+KSB7Cj4gIAkJcmV0ID0gc3BpbmFuZC0+Y29uZmlndXJlX2NoaXAoc3BpbmFuZCwgU1NEUik7Cgpb
+U2V2ZXJpdHk6IEhpZ2hdCkRvZXMgdGhpcyBjb2RlIGxlYXZlICdyZXQnIHVuaW5pdGlhbGl6ZWQg
+aWYgdGhlIGRldmljZSBsYWNrcyBib3RoIHRoZQpTUElOQU5EX0hBU19RRV9CSVQgZmxhZyBhbmQg
+YSBjb25maWd1cmVfY2hpcCBjYWxsYmFjaz8KCkxvb2tpbmcgYXQgdGhlIHJlc3Qgb2Ygc3BpbmFu
+ZF9jb25maWd1cmVfY2hpcCgpIGluIGRyaXZlcnMvbXRkL25hbmQvc3BpL2NvcmUuYzoKCnN0YXRp
+YyBpbnQgc3BpbmFuZF9jb25maWd1cmVfY2hpcChzdHJ1Y3Qgc3BpbmFuZF9kZXZpY2UgKnNwaW5h
+bmQpCnsKCWJvb2wgb2R0ciA9IGZhbHNlLCBxdWFkX2VuYWJsZSA9IGZhbHNlOwoJaW50IHJldDsK
+CgkuLi4KCnRyeV9zc2RyOgoJaWYgKHNwaW5hbmQtPmZsYWdzICYgU1BJTkFORF9IQVNfUUVfQklU
+KSB7CgkJLi4uCgkJcmV0ID0gc3BpbmFuZF9pbml0X3F1YWRfZW5hYmxlKHNwaW5hbmQsIHF1YWRf
+ZW5hYmxlKTsKCQlpZiAocmV0KQoJCQlyZXR1cm4gcmV0OwoJfQoKCWlmIChzcGluYW5kLT5jb25m
+aWd1cmVfY2hpcCkgewoJCXJldCA9IHNwaW5hbmQtPmNvbmZpZ3VyZV9jaGlwKHNwaW5hbmQsIFNT
+RFIpOwoJCWlmIChyZXQpCgkJCXJldHVybiByZXQ7Cgl9CgoJcmV0dXJuIHJldDsKfQoKSWYgbmVp
+dGhlciBjb25kaXRpb24gaXMgbWV0LCBpdCBhcHBlYXJzIHRoZSBmdW5jdGlvbiB3aWxsIHJldHVy
+biBhbgp1bmluaXRpYWxpemVkIHN0YWNrIHZhcmlhYmxlLiBJZiB0aGlzIHN0YWNrIG1lbW9yeSBo
+b2xkcyBhIG5vbi16ZXJvIHZhbHVlLAp0aGUgY2FsbGVyIHNwaW5hbmRfaW5pdF9mbGFzaCgpIG1h
+eSB0cmVhdCBpdCBhcyBhIGZhaWx1cmUgYW5kIGFib3J0IGRldmljZQppbml0aWFsaXphdGlvbi4K
+Ci0tIApTYXNoaWtvIEFJIHJldmlldyDCtyBodHRwczovL3Nhc2hpa28uZGV2LyMvcGF0Y2hzZXQv
+MDEwNzAxYTA4YzM2ZTk2Mi1lYjU5NWRiZS1iODBiLTQ0ZWItODU4ZC1jMTAzM2Y4YTg2YTEtMDAw
+MDAwQGV1LWNlbnRyYWwtMS5hbWF6b25zZXMuY29tP3BhcnQ9MQoKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9u
+IG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2xpbnV4LW10ZC8K
