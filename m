@@ -4,62 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27D78C79FB9
-	for <linux-mtd@archiver.kernel.org>; Thu, 10 Sep 2026 11:33:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3F38C79FB9
+	for <linux-mtd@archiver.kernel.org>; Thu, 10 Sep 2026 12:40:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=vy5DBhDJEVeeyvbTICAFAvht5qXjt+I2ghvfPv698KA=; b=YkW3aT2c0LM6jc
-	t5TCMhmDZDo/qfrV6hilDs9Zt0PdEnZe1AoracJitieR3bZohRC80MzVO1ozuoiaXZivzPtJRPCLD
-	/ZaCZC+mDbat0vQybWLSqVhppCRYy95YpDWnDtMmehRlBnbikNkagNqI7t+aX/3aZYuVyID3QJ3VA
-	1Si51o8pQqGyom95aBvUufuOUexvEJyM5UcEOT1drhghAekuiIZfTao9POHL21EUyv9QoEwphUYxx
-	rAgZEkHF5LIf9GqeJyJPSh7GU9D3AuQSGvXjI9VeH8B/mDdH6J7wq3ASNW7foZuqI5eKs5Zw6vrMn
-	1yXjMQo6Px3N21KYNHxg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=NAQhvZuUPM7U1QS4w+0OG5EhNMHoBlDENv47yOi8GIA=; b=IqThBEyJBmniZS
+	rPXJ3CjY/WLR1wFtt8cth7+lK94QGu/D1fuKkLX2wCjyWC2LCG0xuQp21DOCggG8bPjDU+tzGkRMN
+	DOYVXBW+fCd5IWDz3o5TCoj6pCo5ZmdHAGxWAX4XxpeAI5lzc1GyJPz0vZXB8zJsoFbU7MP+1nqR3
+	J8RBgQ0VSrgKf2uOlP9hoCX8WR+x0KdLpEl8hdGchnhR60+SDugDckoMdH8yfUBlYAoP4+OP5aYaI
+	va+qfY+4vIm3w04nYkAm0iH//XmtBVxvUYMqvsO3gx7L6r8LD57cUJNoV+zIoSXx1agJVbKDzKMZi
+	0Sp/VUmETCCD3z1sJwmA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x4d22-0000000EDjj-3Ktt;
-	Thu, 10 Sep 2026 11:33:30 +0000
-Received: from b224-5.smtp-out.eu-central-1.amazonses.com ([69.169.224.5])
+	id 1x4e4x-0000000EMLS-3rd1;
+	Thu, 10 Sep 2026 12:40:35 +0000
+Received: from smtpout-02.galae.net ([185.246.84.56])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x4d1z-0000000EDix-3axh
+	id 1x4e4u-0000000EMKT-1hKE
 	for linux-mtd@lists.infradead.org;
-	Thu, 10 Sep 2026 11:33:29 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-	s=hi6pntjfnmhxrdkbpi4sl3ndfqswqs3i; d=sagnik.me; t=1789040003;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Transfer-Encoding;
-	bh=gU+TosqF0bmNRmsn9m+cbxl0ah+pcAiVRzQfc5xFUoI=;
-	b=qRUbXAh2X0f+DDinEefav43TE67elGf1HnusH7qJpcXuh4NTNE/gTvANWG4Pa6z5
-	5c45KDU2kuizYrcaqFNTfrcpEHgjOBNuFvB2b5ukcr86Ns9yNr4NAQXqpkLIzZynk4e
-	/GuCrRwsdm7y/zhs9nyxbpveHM39PcSJTySG/fRofbeFwOWsGWbkBHLkZmJXm1J+sp9
-	Fj88fjrPsVCaw9K8PgcRNj5aLllwZoNddG0ZugIK/afwry7sdb0yiaQP7Hf4R/3MMJ/
-	a6+hqvgf+4jhUmaA3lPNDVVAu2TU9YuUDKcO98kNNJl4I2BdH4hoqOUAxzoUQZHiGxB
-	DQLyFD4m4Q==
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-	s=sokbgaaqhfgd6qjht2wmdajpuuanpimv; d=amazonses.com; t=1789040003;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Transfer-Encoding:Feedback-ID;
-	bh=gU+TosqF0bmNRmsn9m+cbxl0ah+pcAiVRzQfc5xFUoI=;
-	b=S5jf2uWeUej6tj1l06lHggDCo8vY+YHmqUkTCAOBowju0eI9sZ2OXy2kmqgih+6l
-	I0bOyz5/cwi/kBrpJfPW6fFJZWNUbGCY//ypo0oEEP0f8BldRh9wHj0jQBxJzDzILtI
-	e296s5L+myPiRv4jbjMduZUFSh/Py4G6UMkUFvt0=
-From: Sagnik Sasmal <sagnik@sagnik.me>
-To: miquel.raynal@bootlin.com
-Cc: richard@nod.at, vigneshr@ti.com, tudor.ambarus@linaro.org, 
-	mikhail.kshevetskiy@iopsys.eu, linux-mtd@lists.infradead.org, 
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: spinand: Do not update the QE bit on devices without one
-Date: Thu, 10 Sep 2026 11:33:23 +0000
-Message-ID: <010701a08b180a21-f4b7e929-ff1c-494e-99ec-c563bf7c92f4-000000@eu-central-1.amazonses.com>
-X-Mailer: git-send-email 2.53.0
+	Thu, 10 Sep 2026 12:40:34 +0000
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-02.galae.net (Postfix) with ESMTPS id 8522F1A010B;
+	Thu, 10 Sep 2026 12:40:28 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 5863E5FA2F;
+	Thu, 10 Sep 2026 12:40:28 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 2E72711C78654;
+	Thu, 10 Sep 2026 14:40:25 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1789044027; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=Q4jTORQ7x029cF9PeX8n/NioDl8L2Yhv88fNsnF4ayc=;
+	b=Kx4zpCyOG53XEf3HMLST7rKS+mfAVaNUO3fvyS/l7cJ83O5PSzos9Yfs2Hbnc4vTat2Knf
+	HELym89Lqk4ji+WaBzwMvwnlNKMyP1XAQCch7ngiNsBPrrMGrVQ0YR85e/FNJimAR5sAg2
+	olufmZtFuYMLlg9Zqlf5NROxAqlgpHLMrJlFOjajCjWWLoHW+iCUCuFwapYw6fG9ehy+5e
+	zGnNY0hScJ6XUlow0RmeORodkqkqkEhI6EGgMUOEZiST0eIrPQkL43VVE4y1CYMnqzK38i
+	tQKfU9umBXVPvwsctGQLi53i0p9LpLUMV5y4TuxNegr30iWCLTlVR88xa6ykhg==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Sagnik Sasmal <sagnik@sagnik.me>
+Cc: richard@nod.at,  vigneshr@ti.com,  tudor.ambarus@linaro.org,
+  mikhail.kshevetskiy@iopsys.eu,  linux-mtd@lists.infradead.org,
+  linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: spinand: Do not update the QE bit on devices
+ without one
+In-Reply-To: <010701a08b180a21-f4b7e929-ff1c-494e-99ec-c563bf7c92f4-000000@eu-central-1.amazonses.com>
+	(Sagnik Sasmal's message of "Thu, 10 Sep 2026 11:33:23 +0000")
+References: <010701a08b180a21-f4b7e929-ff1c-494e-99ec-c563bf7c92f4-000000@eu-central-1.amazonses.com>
+User-Agent: mu4e 1.12.12; emacs 30.2
+Date: Thu, 10 Sep 2026 14:40:24 +0200
+Message-ID: <878q59s2iv.fsf@bootlin.com>
 MIME-Version: 1.0
 X-Last-TLS-Session-Version: TLSv1.3
-Feedback-ID: ::1.eu-central-1.PI0qW2sOnv0WHLkqY53RTxXQVzstwFEIoB04n7YZrig=:AmazonSES
-X-SES-Outgoing: 2026.09.10-69.169.224.5
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260910_043328_081302_4ABBD3B1 
-X-CRM114-Status: GOOD (  11.62  )
+X-CRM114-CacheID: sfid-20260910_054032_587809_4BE82EA8 
+X-CRM114-Status: GOOD (  17.48  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,61 +73,57 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Commit be0b86c648bf ("mtd: spinand: Gather all the bus interface
-steps in one single function") moved quad-enable setup into
-spinand_configure_chip(). The new code only determines whether quad
-mode is needed when SPINAND_HAS_QE_BIT is set, but calls
-spinand_init_quad_enable() unconditionally. This clears configuration
-register bit 0 on devices without a QE bit.
-
-That bit is not universally a QE bit. On the Winbond W25N02KV it is
-H-DIS, which disables the active-low HOLD function. Clearing H-DIS
-enables HOLD during single and dual I/O operations. If IO3 is not kept
-high, the flash can pause a command and ignore clock and data.
-
-H-DIS is not restored by the FFh reset command, allowing the incorrect
-state to survive an SoC warm reboot while the flash remains powered.
-
-Before the refactoring, spinand_init_quad_enable() returned without
-touching the configuration register when SPINAND_HAS_QE_BIT was not
-set. Restore that behavior.
-
-The regression was reproduced on a Jio JIDU6401 with an MT7986 SoC and
-a W25N02KV. With Linux 6.18.44, sysupgrade failed and the following warm
-reboot hung in BL2. With this change applied, both sysupgrade and warm
-reboot completed successfully.
-
-Fixes: be0b86c648bf ("mtd: spinand: Gather all the bus interface steps in one single function")
-Cc: stable@vger.kernel.org
-Assisted-by: LLM
-Signed-off-by: Sagnik Sasmal <sagnik@sagnik.me>
----
- drivers/mtd/nand/spi/core.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index 8bf9301f25e7..89e9f5410cfa 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -281,6 +281,9 @@ static int spinand_init_cfg_cache(struct spinand_device *spinand)
- static int spinand_init_quad_enable(struct spinand_device *spinand,
- 				    bool enable)
- {
-+	if (!(spinand->flags & SPINAND_HAS_QE_BIT))
-+		return 0;
-+
- 	return spinand_upd_cfg(spinand, CFG_QUAD_ENABLE,
- 			       enable ? CFG_QUAD_ENABLE : 0);
- }
--- 
-2.53.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGVsbG8sCgpPbiAxMC8wOS8yMDI2IGF0IDExOjMzOjIzIEdNVCwgU2FnbmlrIFNhc21hbCA8c2Fn
+bmlrQHNhZ25pay5tZT4gd3JvdGU6Cgo+IENvbW1pdCBiZTBiODZjNjQ4YmYgKCJtdGQ6IHNwaW5h
+bmQ6IEdhdGhlciBhbGwgdGhlIGJ1cyBpbnRlcmZhY2UKPiBzdGVwcyBpbiBvbmUgc2luZ2xlIGZ1
+bmN0aW9uIikgbW92ZWQgcXVhZC1lbmFibGUgc2V0dXAgaW50bwo+IHNwaW5hbmRfY29uZmlndXJl
+X2NoaXAoKS4gVGhlIG5ldyBjb2RlIG9ubHkgZGV0ZXJtaW5lcyB3aGV0aGVyIHF1YWQKPiBtb2Rl
+IGlzIG5lZWRlZCB3aGVuIFNQSU5BTkRfSEFTX1FFX0JJVCBpcyBzZXQsIGJ1dCBjYWxscwo+IHNw
+aW5hbmRfaW5pdF9xdWFkX2VuYWJsZSgpIHVuY29uZGl0aW9uYWxseS4gVGhpcyBjbGVhcnMgY29u
+ZmlndXJhdGlvbgo+IHJlZ2lzdGVyIGJpdCAwIG9uIGRldmljZXMgd2l0aG91dCBhIFFFIGJpdC4K
+Pgo+IFRoYXQgYml0IGlzIG5vdCB1bml2ZXJzYWxseSBhIFFFIGJpdC4gT24gdGhlIFdpbmJvbmQg
+VzI1TjAyS1YgaXQgaXMKPiBILURJUywgd2hpY2ggZGlzYWJsZXMgdGhlIGFjdGl2ZS1sb3cgSE9M
+RCBmdW5jdGlvbi4gQ2xlYXJpbmcgSC1ESVMKPiBlbmFibGVzIEhPTEQgZHVyaW5nIHNpbmdsZSBh
+bmQgZHVhbCBJL08gb3BlcmF0aW9ucy4gSWYgSU8zIGlzIG5vdCBrZXB0Cj4gaGlnaCwgdGhlIGZs
+YXNoIGNhbiBwYXVzZSBhIGNvbW1hbmQgYW5kIGlnbm9yZSBjbG9jayBhbmQgZGF0YS4KPgo+IEgt
+RElTIGlzIG5vdCByZXN0b3JlZCBieSB0aGUgRkZoIHJlc2V0IGNvbW1hbmQsIGFsbG93aW5nIHRo
+ZSBpbmNvcnJlY3QKPiBzdGF0ZSB0byBzdXJ2aXZlIGFuIFNvQyB3YXJtIHJlYm9vdCB3aGlsZSB0
+aGUgZmxhc2ggcmVtYWlucyBwb3dlcmVkLgo+Cj4gQmVmb3JlIHRoZSByZWZhY3RvcmluZywgc3Bp
+bmFuZF9pbml0X3F1YWRfZW5hYmxlKCkgcmV0dXJuZWQgd2l0aG91dAo+IHRvdWNoaW5nIHRoZSBj
+b25maWd1cmF0aW9uIHJlZ2lzdGVyIHdoZW4gU1BJTkFORF9IQVNfUUVfQklUIHdhcyBub3QKPiBz
+ZXQuIFJlc3RvcmUgdGhhdCBiZWhhdmlvci4KPgo+IFRoZSByZWdyZXNzaW9uIHdhcyByZXByb2R1
+Y2VkIG9uIGEgSmlvIEpJRFU2NDAxIHdpdGggYW4gTVQ3OTg2IFNvQyBhbmQKPiBhIFcyNU4wMktW
+LiBXaXRoIExpbnV4IDYuMTguNDQsIHN5c3VwZ3JhZGUgZmFpbGVkIGFuZCB0aGUgZm9sbG93aW5n
+IHdhcm0KPiByZWJvb3QgaHVuZyBpbiBCTDIuIFdpdGggdGhpcyBjaGFuZ2UgYXBwbGllZCwgYm90
+aCBzeXN1cGdyYWRlIGFuZCB3YXJtCj4gcmVib290IGNvbXBsZXRlZCBzdWNjZXNzZnVsbHkuCj4K
+PiBGaXhlczogYmUwYjg2YzY0OGJmICgibXRkOiBzcGluYW5kOiBHYXRoZXIgYWxsIHRoZSBidXMg
+aW50ZXJmYWNlIHN0ZXBzIGluIG9uZSBzaW5nbGUgZnVuY3Rpb24iKQo+IENjOiBzdGFibGVAdmdl
+ci5rZXJuZWwub3JnCj4gQXNzaXN0ZWQtYnk6IExMTQo+IFNpZ25lZC1vZmYtYnk6IFNhZ25payBT
+YXNtYWwgPHNhZ25pa0BzYWduaWsubWU+CgpUaGFua3MgZm9yIHRoZSByZXBvcnQsIGFuZCB0aGUg
+ZGVidWcgYW5kIHRoZSBwcm9wb3NhbC4gU29ycnkgZm9yIHRoZQpicmVha2FnZS4KCldoaWxlIHlv
+dXIgc29sdXRpb24gd29ya3MsIEkgYmVsaWV2ZSBpdCB3b3VsZCBiZSBjbGVhbmVyIGRvIGl0IHRo
+aXMgd2F5OgoKLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9zcGkvY29yZS5jCisrKyBiL2RyaXZlcnMv
+bXRkL25hbmQvc3BpL2NvcmUuYwpAQCAtMTc5NywxMSArMTc5NywxMSBAQCBzdGF0aWMgaW50IHNw
+aW5hbmRfY29uZmlndXJlX2NoaXAoc3RydWN0IHNwaW5hbmRfZGV2aWNlICpzcGluYW5kKQogICAg
+ICAgICAgICAgICAgICAgIHNwaW5hbmQtPnNzZHJfb3BfdGVtcGxhdGVzLndyaXRlX2NhY2hlLT5k
+YXRhLmJ1c3dpZHRoID09IDQgfHwKICAgICAgICAgICAgICAgICAgICBzcGluYW5kLT5zc2RyX29w
+X3RlbXBsYXRlcy51cGRhdGVfY2FjaGUtPmRhdGEuYnVzd2lkdGggPT0gNCkKICAgICAgICAgICAg
+ICAgICAgICAgICAgcXVhZF9lbmFibGUgPSB0cnVlOwotICAgICAgIH0KIAotICAgICAgIHJldCA9
+IHNwaW5hbmRfaW5pdF9xdWFkX2VuYWJsZShzcGluYW5kLCBxdWFkX2VuYWJsZSk7Ci0gICAgICAg
+aWYgKHJldCkKLSAgICAgICAgICAgICAgIHJldHVybiByZXQ7CisgICAgICAgICAgICAgICByZXQg
+PSBzcGluYW5kX2luaXRfcXVhZF9lbmFibGUoc3BpbmFuZCwgcXVhZF9lbmFibGUpOworICAgICAg
+ICAgICAgICAgaWYgKHJldCkKKyAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIHJldDsKKyAg
+ICAgICB9CiAKICAgICAgICBpZiAoc3BpbmFuZC0+Y29uZmlndXJlX2NoaXApIHsKICAgICAgICAg
+ICAgICAgIHJldCA9IHNwaW5hbmQtPmNvbmZpZ3VyZV9jaGlwKHNwaW5hbmQsIFNTRFIpOwoKRG8g
+eW91IG1pbmQgdmFsaWRhdGluZyB0aGlzIGFuZCB1c2luZyBzb21ldGhpbmcgbGlrZSB0aGlzIGlu
+IHlvdXIgdjI/ClRoaXMgd291bGQgYXZvaWQgdG8gY2hlY2sgdGhlIHNhbWUgZmxhZyBpbiB0d28g
+ZGlmZmVyZW50IHBsYWNlcy4gSXQgYWxzbwprZWVwcyB0aGUgc3BpbmFuZF9pbml0X3F1YWRfZW5h
+YmxlKCkgbWluaW1hbC4KClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxp
+bmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4
+LW10ZC8K
