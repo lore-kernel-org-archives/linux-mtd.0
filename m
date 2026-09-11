@@ -4,57 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41C5BC79FA1
-	for <linux-mtd@archiver.kernel.org>; Fri, 11 Sep 2026 08:09:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE279C88E4C
+	for <linux-mtd@archiver.kernel.org>; Fri, 11 Sep 2026 08:55:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:References:Cc:Subject:To:From:Message-Id:Date:Mime-Version:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=NFxg3YVhbWwVIjiXD3x4vEf/Wu2feyvWXnfRA+HWZn0=; b=e/Kkb0eIwUzujgJgpgL4YWLQ7B
-	IYSueMnOMRGZmx60NgweAJnvCU8hcXq6W07z/uifdAZypZSe2g5DsOSv0iQ53uhMFEG8ixKSYNtc4
-	7swrgl6BbDekKTXXTfZR+sw9+xFLiOEmSgxc4iM2m/Aw3xYxf81ebOcfWfG6DWcirCXANhDYY1Mxe
-	cXCW2ZyThbkm/jCYqT5Td+thznpaOSVk79JrKX1Pyg8jLCCWnUnijHEBrjjVoqd20taszmPBsHYMn
-	msOm5pK1NdcgKoN6e/PNlGY4S1SsEqwXuWWrObt1df2hgLr6H/ouLsbGWNfDta2BaDaNbY1D0tMUs
-	INVV8fng==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version:Subject:
+	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=vZd3coN2rnO9rTlBS/da9x1x7+ndsarHvSSbrpirdYE=; b=wyQ3WUs+2WPuWz
+	kyGhhrZjpRMpLiMJuO3GU4LXPgaEH0bsDRblaw1gWPz1Mg6w7xkI2cSMnGNk0xsnImNsWR3JWvRJ0
+	OaHiTwWsEfLDNttOahAFObYrY1jkZBGhHVGIPbp5pVAZz6v4amJBmRLnzYOUialpG9y/4RB5YqId3
+	O43W7b/dD2L6pG5eyzABV/j2TPwrLVDy/5uVZVzD+38ft7AceSBh3bIzQMU/BNs2BKQezrc37aEKP
+	uSKLWiG68Nf3gvSW1cUKQxy9r2EqOp1uvIPB2Hlo2a58UOfs3blvo7RdTBvbIM+CbcfUq1pVmaAZq
+	kvSAPcKBTz4tgHkkW5SQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x4wKD-0000000G66c-29Xq;
-	Fri, 11 Sep 2026 08:09:33 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1x4x30-0000000GBpT-3b9u;
+	Fri, 11 Sep 2026 08:55:50 +0000
+Received: from smtpout-03.galae.net ([185.246.85.4])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x4wKB-0000000G66J-3GZQ
+	id 1x4x2u-0000000GBmd-16qr
 	for linux-mtd@lists.infradead.org;
-	Fri, 11 Sep 2026 08:09:31 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with UTF8SMTP id 2C45143C7F;
-	Fri, 11 Sep 2026 08:09:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id 891FE1F000FF;
-	Fri, 11 Sep 2026 08:09:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789114171;
-	bh=C/bSmY3dussktX4XXEfGa3xLo4YHGuzrmx2ufGQXu50=;
-	h=Date:From:To:Subject:Cc:References:In-Reply-To;
-	b=ABkeFsR8RRtD+1Vun7xe2fHSqIREw+siG1VKDK5hpnMUXpt1K7U6LtxHk5CemAhUL
-	 LdL0DB/Pr1jruWSxvsbxvmZWj5AmCUKL02hbBfNzBeh+e1rQV+HbJptlmWsEleWIuK
-	 v0imTqdKQOPCLlEzh9ydJEuhI+n3MUvuddeDz4oRoC4Op3yn9mYITdPiwnIXOXkMbD
-	 7fsL5gnZsdWi+lAPXOz/okxISoYki7JaaiqvToDp+A59tKocMGyJOIi5dbZ92Oc2Rk
-	 wlKDjLC+fqA/35sVoiXCVSqgGp+Il4WMNupgM6z3l6hqW/Y++9U/ol/lYM1dvm9Bie
-	 rskzWyquJKolA==
-Mime-Version: 1.0
-Date: Fri, 11 Sep 2026 10:09:27 +0200
-Message-Id: <DLCC1HX0HX8Z.1X4CEDDDVRQ58@kernel.org>
-From: "Michael Walle" <mwalle@kernel.org>
-To: "Sanjaikumar V S" <sanjaikumarvs@gmail.com>, <pratyush@kernel.org>
-Subject: Re: [PATCH v5] mtd: spi-nor: Fix SST AAI write mode opcode handling
-Cc: <hd@os-cillation.de>, <linux-kernel@vger.kernel.org>,
- <linux-mtd@lists.infradead.org>, <miquel.raynal@bootlin.com>,
- <richard@nod.at>, <sanjaikumar.vs@dicortech.com>, <stable@vger.kernel.org>,
- <tudor.ambarus@linaro.org>, <vigneshr@ti.com>
-X-Mailer: aerc 0.20.0
-References: <20260331095026.38-1-sanjaikumarvs@gmail.com>
-In-Reply-To: <20260331095026.38-1-sanjaikumarvs@gmail.com>
+	Fri, 11 Sep 2026 08:55:46 +0000
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-03.galae.net (Postfix) with ESMTPS id 4822A4E40180;
+	Fri, 11 Sep 2026 08:55:38 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 1A8CA601DE;
+	Fri, 11 Sep 2026 08:55:38 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 823EF11C7AFA0;
+	Fri, 11 Sep 2026 10:55:32 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1789116936; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding; bh=kkhMf+HVfBqPHLHRY3DS0z3ZcaxJJxytx6vWDhyBIRA=;
+	b=FcwwU6FBl4R1YrHe7j1PqJLYspUCd5fqct5/Zpmkom9q20gFpgF+ibcvGnekXcIj8z9CKk
+	JRmF2ehAbSCawFQMPnJsP3Xvh2auFn3XhkBIscZ9Mqr+GroNsDEI2vJ5M0v1dK3VCMRBg4
+	yrNHQ1bYjDxfHOfUIecyrH0NVjp1KR0pPsk2Au6Di6iHXwrZRJl4sdglCXLy/eqDlC2lg/
+	VWgRwgcfOqONba/LN+ZrGpQLSS3xZqmmh/gLEJVwSFCoIGO4ekIzDZcRZOoV+jd5rrEttm
+	bMDim/FN+YMJNK/ij92lGkcWqF6NeKWYnwv8FBo0y47ugA+zUMAT1pY2dt5bGw==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+Date: Fri, 11 Sep 2026 10:55:25 +0200
+Subject: [PATCH] mtd: spi-nor: Fix quad-enable for flashes with QER bit in
+ SR1
+MIME-Version: 1.0
+Message-Id: <20260911-perso-fix-spi-nor-qe-mxic-v1-1-fd6d91416a2a@bootlin.com>
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/x2MSQqAMAwAvyI5G2jqAvoV8SAaNQfbmoAI4t8tH
+ gdm5gFjFTboiweULzGJIQOVBcz7FDZGWTKDd751HREmVou4yo2WBENUPBmPW2ZcXEMVd2tde4L
+ cJ+Ws/e9hfN8PR2jLHmsAAAA=
+X-Change-ID: 20260911-perso-fix-spi-nor-qe-mxic-d0513e9f4421
+To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
+ Takahiro Kuwano <takahiro.kuwano@infineon.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Jon Hunter <jonathanh@nvidia.com>, Steam Lin <STLin2@winbond.com>, 
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ Miquel Raynal <miquel.raynal@bootlin.com>
+X-Mailer: b4 0.14.3
+X-Last-TLS-Session-Version: TLSv1.3
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260911_015544_458247_AB0F2FF5 
+X-CRM114-Status: GOOD (  11.54  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,74 +76,56 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7455821755215704912=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============7455821755215704912==
-Content-Type: multipart/signed;
- boundary=450039049a878f99262beedcb50f43df13d2c89635805f68d2b59f1390f8;
- micalg=pgp-sha384; protocol="application/pgp-signature"
+Some flashes (eg. from Macronix) do set BFPT_DWORD15_QER_SR1_BIT6, which
+means they do not have an SR2 to read from/write to. The new generic QE
+helper was supposed to accommodate this situation but in the last version
+that got merged, parts of that specific handling has been moved to a
+more contained location, swp.c (which needed most of the extra code),
+yet the Macronix case has been forgotten about in that generic QE
+handling helper. Booting with such flashes will always fail probing.
 
---450039049a878f99262beedcb50f43df13d2c89635805f68d2b59f1390f8
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
+Fix the situation by making sure we do not attempt to read SR2 if the QE
+bit is in SR1.
 
-On Tue Mar 31, 2026 at 11:50 AM CEST, Sanjaikumar V S wrote:
-> From: Sanjaikumar V S <sanjaikumar.vs@dicortech.com>
->
-> When the SPI controller lacks direct mapping support, the fallback path
-> in spi_nor_spimem_write_data() uses nor->write_proto based operation
-> template. However, this template uses the standard page program opcode
-> set during probe, not the AAI opcode required for SST flash.
+Reported-by: Jon Hunter <jonathanh@nvidia.com>
+Closes: https://lore.kernel.org/linux-mtd/178876719232.3543902.14451625037676421254.b4-ty@b4/T/#m5bc4ba6776436f2870ced0eb5789d229037ad840
+Fixes: 63489002d397 ("mtd: spi-nor: Refactor Read Status/Write Status support")
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+---
+ drivers/mtd/spi-nor/core.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-So it looks like that mtd->_write override in sst.c is rather
-hacky..
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index e2b6efafdd8d..ac909dfb9657 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -985,7 +985,10 @@ static int spi_nor_generic_quad_enable(struct spi_nor *nor)
+ 	if (!qe_mask[0] && !qe_mask[1])
+ 		return 0;
+ 
+-	ret = spi_nor_read_sr1_and_sr2(nor, sr);
++	if (qe_mask[0])
++		ret = spi_nor_read_sr1(nor, sr);
++	else
++		ret = spi_nor_read_sr1_and_sr2(nor, sr);
+ 	if (ret)
+ 		return ret;
+ 
 
-> Additionally, controllers that do support direct mapping will also use
-> the wrong opcode since the dirmap template is created at probe time
-> with the standard page program opcode.
->
-> Fix this by:
-> 1. Checking the nodirmap flag in spi_nor_spimem_write_data() to ensure
->    the code falls through to spi_nor_spimem_exec_op() path which builds
->    the operation at runtime with the correct program_opcode.
-> 2. Setting nodirmap=3Dtrue for SST AAI devices in sst_nor_late_init() to
->    disable dirmap and force the runtime opcode path.
+---
+base-commit: 700bf34058ca7cd792236b1ba5caad3770d66208
+change-id: 20260911-perso-fix-spi-nor-qe-mxic-d0513e9f4421
 
-I'd be fine with disabling dirmap support as a workaround. But I'm
-not sure if we are supposed to change the nodirmap property as that
-is a property owned/set by the controller.
+Best regards,
+-- 
+Miquel Raynal <miquel.raynal@bootlin.com>
 
-Could we just compare the mtd->_write =3D=3D spi_nor_write and then skip
-the dirmap support? With a big here be dragons warning.
-
--michael
-
---450039049a878f99262beedcb50f43df13d2c89635805f68d2b59f1390f8
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCaqO3NxIcbXdhbGxlQGtl
-cm5lbC5vcmcACgkQEic87j4CH/gjMwGA5E7TquopeYXl0SpjG/PWzgt0kUtU/ZoQ
-uzs6pbnl1rGqJR84IXbMXDJGThX4Udh8AYDu9tBGaN9gWgZdAdaYkjYte1mBv8w4
-uvUdV+6z5WEYqoZDxG/J67/LhpXNUcHEdi8=
-=4Zdr
------END PGP SIGNATURE-----
-
---450039049a878f99262beedcb50f43df13d2c89635805f68d2b59f1390f8--
-
-
---===============7455821755215704912==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============7455821755215704912==--
-
