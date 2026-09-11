@@ -4,68 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16CFEC88E4D
-	for <linux-mtd@archiver.kernel.org>; Fri, 11 Sep 2026 17:23:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1BDEEC88E53
+	for <linux-mtd@archiver.kernel.org>; Fri, 11 Sep 2026 18:44:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version:Subject:
-	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=jT3Y5Yel6pzvX3QlTqSJrWOROHy3Aftyd+fyTemjF7A=; b=v/2k7GIvMMc92q
-	U/b1bgkR6fKag1mbDLvM5kSVRHFi17buQX0v4RSv+1Zdhbl343Eb1kIsXPAUaF92TYy5/PMy/XHb2
-	Jx+cN6qSyhVgMKWoxEaMbUtOrPVgtgXT12ANRyMqiwSnKfDJEjV4ootiWBooDYUq12iKG4gg+DSxg
-	dunHUzCV7sLXOcbA6nAslml/ELDXiC1lT1tm5+tYUIjuB894ufEOqq5zBu9IEdfCv3bERJlcfdSHJ
-	iVWYWvAJB0vF6lYUgThLQtekBeIRjqfcAAIeUpZ7Skxm8tw/m63yXd944ov7Y7yBzXkWkWg5Ihr/6
-	HuBnxyESBGkWSfNg8tuQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=6wpnviy764PLxl7+fkMQDakUTcEMVpVhPBmOdezBGwc=; b=SbRE7bYxn+O3iM
+	SIQmlzT9d1EunZ416JWEl5rO5A/29qExq7K5dycfGfxOnX0LNF+yRhzlBYaT9R8/Ibe58dvqc06NP
+	Utye5Zg5fDx8sESuS+MaUYDvERx9/btwIUS5ql9W8lHE9yDHuWYTjKobnuAsVR9RJmVJU6KMxpmbX
+	Nhvi3KMQYgC/3cftKfZcjnbnN7QlhXCvS5pJsZpctIyvLSw1RmjlVM+f6YxluaOg7D6nj29Wxqud0
+	Uyz8agbgBknCiljsYC34x88gRrZem3ElCoD2dZ9c4wA+o8Cjj35rvNZ3d2aChpEyDfracU52trMHq
+	9IT4SV4pBcJs23J+/OMg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x54xt-0000000HKZO-4939;
-	Fri, 11 Sep 2026 17:23:05 +0000
-Received: from smtpout-04.galae.net ([185.171.202.116])
+	id 1x56F2-0000000HT0N-1NeM;
+	Fri, 11 Sep 2026 18:44:52 +0000
+Received: from sendmail.purelymail.com ([34.202.193.197])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x54xq-0000000HKYd-11qc
+	id 1x56Ez-0000000HSzU-2f03
 	for linux-mtd@lists.infradead.org;
-	Fri, 11 Sep 2026 17:23:04 +0000
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id 68351C63A0D;
-	Fri, 11 Sep 2026 17:23:40 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 673C4601A3;
-	Fri, 11 Sep 2026 17:22:58 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 0473111C7A9DC;
-	Fri, 11 Sep 2026 19:22:49 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1789147373; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding; bh=nVEQywkHWgTFcB5dj1gTRbzq3fF/jQKEVnEtk7cJTT0=;
-	b=g+ZuitOrIEL6URmzye3fJ9qvLvulzMeaFsDq+x3XT2Bc1JBvC7YCwugIDptkX/KFThUAeg
-	BZ9Onvf78saOiTR5PO9x/2Y5f7wR+vGQAK1vvS7wXUoi1jnBsdQFx0C8ZDaHk1cG5zyHZe
-	BFLCIKYicYJMgtKPAJwaGNOPxEgVktSjr//yCRw/RTOBg9SVOgPBRY3AX7jWcL3fRVsW3A
-	gcIIfs5x0P/1ktb6+dQC47ztMkkmbSvYGaBj18yN7EqRE+adbPwfhV9q2T1Xm8ZiB/4WxG
-	QitJOmyzd6TBCfrOSMpvk2CJWNNIJr03PGkr6Jxx55pE6RuBL3CvOWMBPQR7CQ==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Fri, 11 Sep 2026 19:22:45 +0200
-Subject: [PATCH v4] mtd: spi-nor: Fix quad-enable for flashes with QER bit
- in SR1
+	Fri, 11 Sep 2026 18:44:50 +0000
+DKIM-Signature: a=rsa-sha256; b=fu24JMu2LMFoXk897ztzdTR8oGDiO9ShsCIYIcrA7O8us1CEVIy8+8v4f8nFE17tZMHMA6ARJywOj3/k7WJfk9gakGG4BIOlUp/zn2N+4bj8cErE2Z2YDs6G2UR4fa7vi4sVRxDe7l6t5h41zC6puBCLNBTOgCTm2+X0O1knSgXpgJUr6jM0i+1a64RCmUkrFyUIvtdXKCR4J4TSPCW5O7MbW6F+vZpnYftARjXgRFCb1HYki4aW85I6uRHD1tqi3hrr9ecJORcLhnVkzhzB9MA0igMYCeyieAzTEvN0cWBzLxBnz1UZ3kmR7dOWEqLQItkUSC5AJE4pTRoolnie9A==; s=purelymail1; d=c127.dev; v=1; bh=OdyIaFHTfKbXWj6XRC6rk9Un0vCTcVZlLONiQQ35BAk=; h=Received:From:To:Subject:Date;
+DKIM-Signature: a=rsa-sha256; b=mB02m2EH728+49IdiolSZCE4m+rrnEqTmoxFjva7xhjSTyrIfBF12YAw/WHwXpmQwjiSYB3M+gfwijn5d2O2deQIRdJEXe/EGeUWz5ejGhqXU+3BMqwMcZ1DPUArS2BmC8D12Nh5QlY43VWSP0AwkiXK9Tkb3sL/lK2LrmD+AzZHUPKx541UBtM2v4Hb/HDd24HOdrCfDmjAdPFEC+4fPHN1QbiKlrnsNea1calnNh+/72YOMgb3+t4eYog15ndEwxJ/reEwmdXXojh+Vh2ouy6ZNDIEpLov2dqVKq0cjoEVsF5RIhplrSO9eZizIv+ISnLh7/ZVmglJmwpWh/iPnQ==; s=purelymail1; d=purelymail.com; v=1; bh=OdyIaFHTfKbXWj6XRC6rk9Un0vCTcVZlLONiQQ35BAk=; h=Feedback-ID:Received:From:To:Subject:Date;
+Feedback-ID: 1017243:43747:null:purelymail
+X-Pm-Original-To: linux-mtd@lists.infradead.org
+Received: by smtp.purelymail.com (Purelymail SMTP) with ESMTPSA id -1066090597;
+          (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384);
+          Fri, 11 Sep 2026 18:44:22 +0000 (UTC)
+From: Johan Alvarado <contact@c127.dev>
+To: broonie@kernel.org,
+	md.alam@oss.qualcomm.com
+Cc: konradybcio@kernel.org,
+	pengpeng@iscas.ac.cn,
+	miquel.raynal@bootlin.com,
+	j4g8y7@gmail.com,
+	quic_varada@quicinc.com,
+	quic_srichara@quicinc.com,
+	linux-spi@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Johan Alvarado <contact@c127.dev>
+Subject: [PATCH v2 1/2] spi: spi-qpic-snand: publish the ECC context to snandc->qspi
+Date: Fri, 11 Sep 2026 13:44:15 -0500
+Message-ID: <20260911184416.109790-2-contact@c127.dev>
+X-Mailer: git-send-email 2.55.0
+In-Reply-To: <20260911184416.109790-1-contact@c127.dev>
+References: <20260911184416.109790-1-contact@c127.dev>
 MIME-Version: 1.0
-Message-Id: <20260911-perso-fix-spi-nor-qe-mxic-v4-1-5da8a25b9579@bootlin.com>
-X-B4-Tracking: v=1; b=H4sIAAAAAAAC/43OwQ6CMAwG4FcxO1uzdhODJ9/DeIDRSRNhuBmiI
- by7g5vxwvFv+n/tpBJH4aTOu0lFHiVJ6HOw+51ybdXfGaTJWZGmQpeIMHBMAby8IQ0CfYjwZOj
- e4qDRRzRcemsJVe4PkfPaal9vObeSXiF+1lMjLtMt6oiA4JuiKdFiUVF1qUN4PaQ/uNCpxR1ps
- 0XZOmlnyOY/jeZ/y2y2TLaIXcW+Jvbkfq15nr+/IWiVXAEAAA==
-X-Change-ID: 20260911-perso-fix-spi-nor-qe-mxic-d0513e9f4421
-To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
- Takahiro Kuwano <takahiro.kuwano@infineon.com>, 
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
- Jon Hunter <jonathanh@nvidia.com>, Steam Lin <STLin2@winbond.com>, 
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
- Miquel Raynal <miquel.raynal@bootlin.com>
-X-Mailer: b4 0.14.3
-X-Last-TLS-Session-Version: TLSv1.3
+X-MIME-Autoconverted: from 8bit to quoted-printable by Purelymail
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260911_102302_614474_38FA218B 
-X-CRM114-Status: GOOD (  16.14  )
+X-CRM114-CacheID: sfid-20260911_114449_787666_1762A562 
+X-CRM114-Status: GOOD (  16.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,110 +75,92 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Some flashes (eg. from Macronix) do set BFPT_DWORD15_QER_SR1_BIT6, which
-means they do not have an SR2 to read from/write to. The new generic QE
-helper was supposed to accommodate this situation but in the last version
-that got merged, parts of that specific handling has been moved to a
-more contained location, swp.c (which needed most of the extra code),
-yet the Macronix case has been forgotten about in that generic QE
-handling helper. Booting with such flashes will always fail probing.
+qcom_spi_ooblayout_ecc() and qcom_spi_ooblayout_free() read the ECC
+configuration through snandc->qspi->ecc. qcom_spi_probe() points it at a
+zeroed scratch struct and only qcom_spi_ecc_prepare_io_req_pipelined(),
+which runs on page I/O, ever updates it. qcom_spi_ecc_init_ctx_pipelined()
+installs the ooblayout but does not publish the context it just
+allocated, and qcom_spi_ecc_cleanup_ctx_pipelined() frees that context
+without clearing the pointer.
 
-Fix the situation by making sure SR2 reads just return 0 if
-unsupported. This is safe since there is no chip with a write SR2 path
-but no read SR2 path (which is now enforced in the SFDP parsing step).
+spinand_init() calls mtd_ooblayout_count_freebytes() right after the ECC
+context is created and before any page I/O, so the ooblayout always runs
+against a pointer that does not describe the current context:
 
-This way, callers still do not have to care about the internal device
-capabilities. Calling sr1_and_sr2 read/write helpers is safe in both
-directions (not risk to get a spurious error). The behavior for SR1-only
-chips is respected, the complexity in the core kept to its minimum.
+  - On a first probe it reads the zeroed struct from qcom_spi_probe(),
+    so steps, bytes and bbm_size are 0. The count then returns 0 rather
+    than an error, so the probe continues with mtd->oobavail set to 0.
 
-Reported-by: Jon Hunter <jonathanh@nvidia.com>
-Closes: https://lore.kernel.org/linux-mtd/178876719232.3543902.14451625037676421254.b4-ty@b4/T/#m5bc4ba6776436f2870ced0eb5789d229037ad840
-Fixes: 63489002d397 ("mtd: spi-nor: Refactor Read Status/Write Status support")
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+  - On a probe retry it reads the ecc_cfg the previous attempt freed.
+
+A retry is easy to hit. On IPQ5018 with the qcom,smem-part parser the
+partition parse returns -EPROBE_DEFER until SMEM has probed, so the
+first spi-nand probe defers. It defers inside
+mtd_device_parse_register(), after mtd_otp_nvmem_add() has already read
+the factory OTP - that read goes through prepare_io_req and leaves
+snandc->qspi->ecc pointing at the context that spinand_cleanup() then
+frees. The second probe allocates a new context, never publishes it, and
+computes the OOB layout from the freed one. Once the slab has been
+reused, qecc->steps holds garbage and
+
+  oobregion->length = qecc->steps * 4;
+
+goes negative. qcom_spi_ooblayout_free() only reports -ERANGE for
+section 1 and later, so mtd_ooblayout_count_bytes() sums the regions and
+returns that negative length as the byte count. The -512 below is
+steps * 4 with steps == -128. It is a byte count that happens to
+collide with -ERESTARTSYS, not an error the driver returned.
+spinand_init() takes it as an error, and because it is not
+-EPROBE_DEFER the driver core never retries and the NAND never appears:
+
+  spi-nand spi0.0: ESMT SPI NAND was found.
+  spi-nand spi0.0: probe with driver spi-nand failed with error -512
+  UBI error: cannot open mtd rootfs, error -2
+  Waiting for root device /dev/ubiblock0_1...
+
+On a Mercusys MR80X (IPQ5018, ESMT F50D1G41LB) about half of the boots
+failed to mount the rootfs, the outcome depending on whether the freed
+memory had been overwritten yet.
+
+Publish the context when it is created and clear the pointer when it is
+destroyed. Clearing leaves snandc->qspi->ecc NULL after cleanup, which
+is safe: the mtd is unregistered before cleanup_ctx runs, so no
+ooblayout callback can follow.
+
+Fixes: 7304d1909080 ("spi: spi-qpic: add driver for QCOM SPI NAND flash Interface")
+Cc: stable@vger.kernel.org
+Tested-by: Gabor Juhos <j4g8y7@gmail.com>
+Signed-off-by: Johan Alvarado <contact@c127.dev>
 ---
-Changes in v4:
-- Make sure we perfom the "_and_check" over SR2 only if SR2 can be read
-  back, otherwise it does not make much sense to do it.
-- Link to v3: https://lore.kernel.org/r/20260911-perso-fix-spi-nor-qe-mxic-v3-1-2ecaefb2ef2c@bootlin.com
+Unchanged from v1. Both hunks are untouched by 44d39535cd4f, so this
+applies to v7.3-rc2 and to spi/for-next alike.
 
-Changes in v3:
-- Make sure the read helper returns a "valid" SR2 in the sense that it
-  cannot be random data by returning 0 for chips that do not feature a
-  read_sr2 opcode. The major thread was to get a wrong comparison
-  (against the tmp variable) in the _and_check() helper.
-- Link to v2: https://lore.kernel.org/r/20260911-perso-fix-spi-nor-qe-mxic-v2-1-70c324e9f30e@bootlin.com
+ drivers/spi/spi-qpic-snand.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Changes in v2:
-- Change the approach, see v1 thread below.
-- Link to v1: https://lore.kernel.org/r/20260911-perso-fix-spi-nor-qe-mxic-v1-1-fd6d91416a2a@bootlin.com
----
- drivers/mtd/spi-nor/core.c | 15 ++++++++++++---
- drivers/mtd/spi-nor/sfdp.c |  3 ++-
- 2 files changed, 14 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index e2b6efafdd8d..4377b73e57fb 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -849,7 +849,8 @@ int spi_nor_read_sr2(struct spi_nor *nor, u8 *sr2)
+diff --git a/drivers/spi/spi-qpic-snand.c b/drivers/spi/spi-qpic-snand.c
+index 9eafaea74f6b..20045d4a46fa 100644
+--- a/drivers/spi/spi-qpic-snand.c
++++ b/drivers/spi/spi-qpic-snand.c
+@@ -411,6 +411,8 @@ static int qcom_spi_ecc_init_ctx_pipelined(struct nand_device *nand)
+ 	dev_dbg(snandc->dev, "ECC strength: %u bits per %u bytes\n",
+ 		ecc_cfg->strength, ecc_cfg->step_size);
  
- /**
-  * spi_nor_read_sr1_and_sr2() - Read SR1 then SR2
-- * General purpose helper.
-+ * General purpose helper, always safe to call. Will expectedly ignore
-+ * SR2 on certain chips.
-  *
-  * @nor: the spi_nor structure
-  * @sr: pointer to a valid 2-byte array
-@@ -864,7 +865,12 @@ int spi_nor_read_sr1_and_sr2(struct spi_nor *nor, u8 *sr)
- 	if (ret)
- 		return ret;
- 
--	return spi_nor_read_sr2(nor, &sr[1]);
-+	if (nor->params->opcodes.read_sr2)
-+		ret = spi_nor_read_sr2(nor, &sr[1]);
-+	else
-+		sr[1] = 0;
++	snandc->qspi->ecc = ecc_cfg;
 +
-+	return ret;
+ 	return 0;
+ 
+ err_free_ecc_cfg:
+@@ -427,6 +429,7 @@ static void qcom_spi_ecc_cleanup_ctx_pipelined(struct nand_device *nand)
+ 
+ 	kfree(snandc->qspi->oob_buf);
+ 	snandc->qspi->oob_buf = NULL;
++	snandc->qspi->ecc = NULL;
+ 	kfree(ecc_cfg);
  }
  
- /**
-@@ -960,7 +966,10 @@ int spi_nor_write_sr1_and_sr2_and_check(struct spi_nor *nor, const u8 *sr)
- 	if (ret)
- 		return ret;
- 
--	if (sr[0] != tmp[0] || sr[1] != tmp[1])
-+	if (sr[0] != tmp[0])
-+		return -EIO;
-+
-+	if (nor->params->opcodes.read_sr2 && sr[1] != tmp[1])
- 		return -EIO;
- 
- 	return 0;
-diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
-index c21a6953db96..641f17ad51a0 100644
---- a/drivers/mtd/spi-nor/sfdp.c
-+++ b/drivers/mtd/spi-nor/sfdp.c
-@@ -656,7 +656,8 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
- 
- 	/* opcodes sanity check */
- 	WARN_ON(!params->opcodes.read_sr1 ||
--		(!params->opcodes.write_sr1 && !params->opcodes.write_sr1_and_sr2));
-+		(!params->opcodes.write_sr1 && !params->opcodes.write_sr1_and_sr2) ||
-+		(!params->opcodes.read_sr2 && params->opcodes.write_sr2));
- 
- 	dword = bfpt.dwords[SFDP_DWORD(16)] & BFPT_DWORD16_4B_ADDR_MODE_MASK;
- 	if (SFDP_MASK_CHECK(dword, BFPT_DWORD16_4B_ADDR_MODE_BRWR))
-
----
-base-commit: 700bf34058ca7cd792236b1ba5caad3770d66208
-change-id: 20260911-perso-fix-spi-nor-qe-mxic-d0513e9f4421
-
-Best regards,
 -- 
-Miquel Raynal <miquel.raynal@bootlin.com>
+2.55.0
 
 
 ______________________________________________________
