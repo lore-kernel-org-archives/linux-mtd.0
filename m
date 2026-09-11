@@ -4,65 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2D7C5C88E4A
-	for <linux-mtd@archiver.kernel.org>; Fri, 11 Sep 2026 00:57:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7FEFBC88E40
+	for <linux-mtd@archiver.kernel.org>; Fri, 11 Sep 2026 02:27:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:From:Subject:Message-ID:In-Reply-To:
-	Date:MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
-	List-Owner; bh=6Ad9wAtWNycaWEqn3tfCLLIAG7eOWhV+tM7wlHtz0Vo=; b=SMJn/nDSiECsO+
-	at/dcxPyeJhB588+0f8mzkQaaLhHX8Y2pPKWSFLKxNz9R4KVbH5NuMPTtErcQlgJ3onXj5ZtSfudK
-	gAc19h4QMOp79t30noqu9GwL+Xhnqu0cZ+hPitEYNkt8EFX7T3vXB5y9uCN7nRiKbaF8EDsGvSJF1
-	vaeQlcOjKFF5IEBMv6WqwyebNEJyU+JC3ioJa684ub7jCWfsyq3Uqs7K/3zQmdpr0h8rhSn3/8Tuv
-	yviL2pLiT9J1LxtIM+EOnZAh0FD/bxkNUBTAlBEi6lLbrhDGdoYL78f5dXgYDwmlu9KreUtiqQnRR
-	9bewtfx9GDtyqWbGa+GA==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:Subject:Date
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=0Gx1MQU67cpzZbLbzciGISTU5Aq4TDRBfJe5rO/wAUc=; b=uJcvmU/gJmsyAo
+	MbMqvpwgz8qe2mnHL+PAkK+9AJ0iuTh/sE+tffQ3EfEc4h9IbS1/gOmIDejJK204PR+05Z2vYNBJj
+	8V20azK+LBNpcJwFUWFG4LQrRXLO31hNFChKK89+J1RJArn8lEBq3n56HOiL8UG8maiFAtpzhVAoN
+	lIC6JmH4uGrSCR943RFXf2dgHQiKmIsZ20kd7WIrOeNO4RI+y/Mq2FG4zWNdxrFcmpuBJGB5+OcmD
+	5W/OOSXOicaYfw3P3WIuwHxu0rgW9h3WyBksFVqXri0gOgzTdeo/wKIZH3V6lVRHAHBC67qm6sWSo
+	o58WaILxs+l6+Hjyf6zQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x4pa4-0000000FeDx-34MT;
-	Fri, 11 Sep 2026 00:57:28 +0000
-Received: from mail-oo2-f8.google.com ([74.125.231.136])
+	id 1x4qzM-0000000FiDY-2Nl5;
+	Fri, 11 Sep 2026 02:27:40 +0000
+Received: from mail-pz2-x10.google.com ([2607:f8b0:4864:3b::10])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x4pa1-0000000FeD9-3Txk
+	id 1x4qzJ-0000000FiCf-2N0T
 	for linux-mtd@lists.infradead.org;
-	Fri, 11 Sep 2026 00:57:27 +0000
-Received: by mail-oo2-f8.google.com with SMTP id 006d021491bc7-6b12d30261cso133833eaf.0
-        for <linux-mtd@lists.infradead.org>; Thu, 10 Sep 2026 17:57:24 -0700 (PDT)
+	Fri, 11 Sep 2026 02:27:39 +0000
+Received: by mail-pz2-x10.google.com with SMTP id d2e1a72fcca58-8692a856865so379078b3a.2
+        for <linux-mtd@lists.infradead.org>; Thu, 10 Sep 2026 19:27:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1789093656; x=1789698456; darn=lists.infradead.org;
+        h=cc:to:message-id:subject:date:from:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=XTZufsgY5jIPStSEuwAUSbEj1W0xSX3oqSzNV/+6YeY=;
+        b=i9ero7pRQ1RmK+s5TqakIHOvr4u4HyCzmWLTKdaCTXyUdu9PeXrIbIZ3wB8iyb7GGX
+         MWLywyRwEI3JiYobEBHvI/9PKbprDauSCbQpzd07kt+80n0vcZjxpChYWj6qyOdgh/ui
+         bf/OceCJ8CuPKlrfsQyZofbSlvq7J7xd3CJP7m4lXneIducTarrV1NqjJ9glMZR/G/yH
+         ycp7e9w/INGmJ5c3Uj5Wo7KKLbVG6Nrmb7QPsBMYPkf58hxvBVdNRYn4i11+DDfB6D5u
+         MN032eb+UuGCI0a96grcmSQtJ5gYsHxU35XtZoc2B2tlkcTVHRLhRT7NlG2hLw2rq+gc
+         gDCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1789088244; x=1789693044;
-        h=content-type:to:from:subject:message-id:in-reply-to:date
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to:content-type;
-        bh=a4O61vwT858MfHLIWbfEORPBBAynu4EIXTC714u5D4U=;
-        b=Ze7NSbubi4FQGnlAVcJ8c2QFSSojK/x9eUa3gQFpFaRT4jFCCHYLcRufBih6Xrv8NC
-         QfxENZSHyN4OvCrVKX1dT4sxWYCfryjH+0OejKKAkculn9ehl6dDUT9dZnfiZcfbZ4ll
-         aDYYbqhdyxqbNvVBYbsiegyqu6SmQFXJxYs0q+8mEQnR5mqBGmo9/yf4o0ldbR/+NtGv
-         v1KGHnVhMwj+bZiFevKHUwTzLVBHadCt2KZJ04TAHDREwLVRC0W9s8uApbpEGbwyrdHp
-         YQSL/zctyDLNoh+PmmlDmyN4oEoLF+bPqLAslsp/zGdO9db/bdvUNFZcQpe4wO0NBvuZ
-         xu4A==
-X-Forwarded-Encrypted: i=1; AKwUvByIRdplqVS6BouBjLSCdbNiEyc2w/WSZajkw6GfWVXECWtuTouB/J5DcO+jWx+aNI7pwsbMkfSxyvI=@lists.infradead.org
-X-Gm-Message-State: AFuF++l+PT1t6yTsymm7pPIIvQqmw7Cm1xMm2MV0aS4KBWLR+xiwj3C6
-	5xErVwQTt4//iVxHNmhFngDh2AEyQnEfRlQvT1pJVR3vp1mO7UEuHZTA3WdeX4zVBlnCvxRJyXg
-	A/qcWM6AkeNXjBJbunCnxqeHPjnylS7db2TkQLCY8GW5dIs3/h/1kRZQ0Ie8=
-MIME-Version: 1.0
-X-Received: by 2002:a05:6820:806:b0:6a1:4507:3544 with SMTP id
- 006d021491bc7-6c0bb3fd453mr1134957eaf.28.1789088244056; Thu, 10 Sep 2026
- 17:57:24 -0700 (PDT)
-Date: Thu, 10 Sep 2026 17:57:24 -0700
-In-Reply-To: <6a752024.b50370da.49fe0.0017.GAE@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6aa351f4.6e6c5f9e.28f11f.003b.GAE@google.com>
-Subject: Re: [syzbot] [jffs2?] possible deadlock in jffs2_do_clear_inode (2)
-From: syzbot <syzbot+743079a09058321247d8@syzkaller.appspotmail.com>
-To: dwmw2@infradead.org, linux-kernel@vger.kernel.org, 
-	linux-mtd@lists.infradead.org, richard@nod.at, 
-	syzkaller-bugs@googlegroups.com
+        d=1e100.net; s=20251104; t=1789093656; x=1789698456;
+        h=cc:to:message-id:subject:date:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to:content-type;
+        bh=XTZufsgY5jIPStSEuwAUSbEj1W0xSX3oqSzNV/+6YeY=;
+        b=JcZsWk7Ig6Vsa9aXvRbOWbpRUx/vfiYGjP+eiu40MA24rcEV4xpAodj4VbA5smj9ti
+         sGkswu6RXulw+FJlOf1UQJsEHxQw5J6jD45qEp7TjduhzP52KUsPb0140ogb0p85LR0l
+         Ln92TBXHAqAPHr9l0BIw8OPQ4AZrJB7Kt6DEs6myPUeVn0H3YOOI8lM9aCpD+l/mVSMP
+         RwGjhcnvCKkHbu5SYmtUPTerkzrbSik/zJa/mSoE/nLwy07o6axGEKUeXXyQEQEzWFYi
+         AzOEd53ItnCjnv/f8ZC+ugsDJfoKLgjZshskENLkdUjLovVjQoxDIFggY7cV8rDy2LKF
+         NuyA==
+X-Forwarded-Encrypted: i=1; AKwUvBzmIM6CgGZZRr4nmXi1tL4mHjXWO/A4OGnC3h9B2XiKS/dabPgohS/vQ8tNr7sOHtJWHf4NpyPhr28=@lists.infradead.org
+X-Gm-Message-State: AFuF++mdRFLcleotiA8bBtHU8GXivSJLKWbibDQFuC42BTEHsi0JVn8C
+	P7O/I/FMVRxldIxT7dQZSQOGXE5zsuhoLZNtCTzsw4D3fk3Om1JYuq4h
+X-Gm-Gg: AYBFou0nJcBJA376Rgvaiv8cu4XTNeOti73cMguYdkKCiGEPsxDHWXgxtZKG5Ps/hsG
+	Te4Q91EKngU+652IwgUxvStH9MIqHcz9fA1ceSKnndi5m1lZg77F+9828HkeTR/AO/pUNHZVNs5
+	XXpZg+TdKpLKmUn5ApmC6kiqOQTzw956QK8ML3ADvAbm2KmKWQKKk7Lj3klOmFF0lnEDnwCfvEc
+	fUso/1mAOwEJJhlTJbkxA7+rVXTCKlZx4ukGBncUC3GjYuaZfAbJ3u3sKxPImOOcW11f8xd1PZN
+	zIPbogVmLW4WVzFIwoh6b2sJI2XMmBilFIkhUfkYKqAtq9FtQTnYaer38mEsRlfSuJnX7yEfvYX
+	3tnrZgsVgzYcCa3Rbi5jOWJO1Jx1kgpSqx3qJlrnA2rNQeOGEt2UPRPV6WJJzPvadQp11ekeAqB
+	0fPAcJQdsNffnaEzi9vSQh2hUwL/RHb4ItL90AVNYLcQcgXr49XVepUivDyvAt71EcVpv2MraZx
+	pY1JMyf8A==
+X-Received: by 2002:a05:6a00:448c:b0:86a:5a9b:32a with SMTP id d2e1a72fcca58-86b31706dbemr3550402b3a.9.1789093655991;
+        Thu, 10 Sep 2026 19:27:35 -0700 (PDT)
+Received: from smtp.gmail.com ([185.151.146.146])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-86b286c3f70sm377098b3a.18.2026.09.10.19.27.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Sep 2026 19:27:35 -0700 (PDT)
+From: "lichen.wang" <wanglichen9110@gmail.com>
+Date: Fri, 11 Sep 2026 09:23:09 +0800
+Subject: [PATCH 0/2] ubifs: add KUnit tests for scan and key helpers
+Message-Id: <178909365090.247910.11265261850560199708.p0-of-2@gmail.com>
+To: Richard Weinberger <richard@nod.at>, Zhihao Cheng <chengzhihao1@huawei.com>, linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260910_175725_908286_1EFB5693 
-X-CRM114-Status: UNSURE (   6.12  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260910_192737_610282_F03A1BD4 
+X-CRM114-Status: GOOD (  19.65  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,164 +88,110 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-syzbot has found a reproducer for the following issue on:
+This series adds KUnit tests for fs/ubifs/scan.c and for the helpers in
+fs/ubifs/key.h, so that the node parsing code can be validated offline
+without an MTD device, a UBI volume or a development board.
 
-HEAD commit:    50d05c7c76c9 Merge tag 'landlock-7.3-rc3' of git://git.ker..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=152c679e580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=85bc5cc2fc7394d9
-dashboard link: https://syzkaller.appspot.com/bug?extid=743079a09058321247d8
-compiler:       gcc (Debian 14.2.0-19) 14.2.0, GNU ld (GNU Binutils for Debian) 2.44
-userspace arch: i386
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10ec21f9580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16715ef9580000
+Baseline:
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/d900f083ada3/non_bootable_disk-50d05c7c.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/303a0ade8f9e/vmlinux-50d05c7c.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/70b8ca71442b/bzImage-50d05c7c.xz
+  commit df2908090cda368b01ff43709f51890076c56157 ("Linux 7.3-rc2")
+  git describe --always of that commit: v7.3-rc2
+  (the describe string is that of the base commit itself; the patch
+  commits sit on top of it, so a describe run at their tip reports
+  v7.3-rc2-2-gaf7a59658 instead)
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+743079a09058321247d8@syzkaller.appspotmail.com
+Motivation:
 
-======================================================
-WARNING: possible circular locking dependency detected
-syzkaller #0 Not tainted
-------------------------------------------------------
-kswapd0/113 is trying to acquire lock:
-ffff888013732c60 (&f->sem){+.+.}-{4:4}, at: jffs2_do_clear_inode+0x5a/0x470 fs/jffs2/readinode.c:1419
+UBIFS has no test coverage for its on-flash parsing code: checking a
+change to scan.c or key.h currently means bringing up a real NAND
+device, a UBI volume and a board. KUnit makes the same checks run in a
+plain QEMU boot within seconds, and it is the established in-tree
+framework for this kind of unit testing, so the tests are reusable by
+anyone touching this code.
 
-but task is already holding lock:
-ffffffff8efc9a20 (fs_reclaim){+.+.}-{0:0}, at: balance_pgdat+0xbce/0x1f00 mm/vmscan.c:7292
+Approach:
 
-which lock already depends on the new lock.
+ - The tests are compiled into the ubifs module itself (ubifs-y) so
+   that they can call the non-exported ubifs_scan_a_node(),
+   ubifs_check_node(), ubifs_add_snod() and ubifs_end_scan() directly.
+   No EXPORT_SYMBOL() is added to production code.
+ - kunit_helpers.h builds a minimal fake struct ubifs_info with
+   kunit_kzalloc(); only the fields read by the tested paths are
+   initialised. The node length ranges mirror init_constants_early()
+   in super.c, because a zeroed range means "fixed length" for
+   ubifs_check_node() and would make the length checks pass for the
+   wrong reason.
+ - The node constructor fills the common header and payload first and
+   computes the CRC last with the kernel crc32(), over exactly the
+   bytes that ubifs_check_node() checksums.
 
+Testing:
 
-the existing dependency chain (in reverse order) is:
+The whole suite runs with a single command:
 
--> #1 (fs_reclaim){+.+.}-{0:0}:
-       lock_acquire kernel/locking/lockdep.c:5942 [inline]
-       lock_acquire+0x1d1/0x380 kernel/locking/lockdep.c:5899
-       __fs_reclaim_acquire mm/page_alloc.c:4375 [inline]
-       fs_reclaim_acquire+0xc4/0x100 mm/page_alloc.c:4389
-       might_alloc include/linux/sched/mm.h:316 [inline]
-       slab_pre_alloc_hook mm/slub.c:4636 [inline]
-       slab_alloc_node mm/slub.c:4974 [inline]
-       kmem_cache_alloc_noprof+0x63/0x6a0 mm/slub.c:5010
-       jffs2_do_read_inode+0x307/0x520 fs/jffs2/readinode.c:1372
-       jffs2_iget+0x32b/0xe30 fs/jffs2/fs.c:277
-       jffs2_do_fill_super+0x44b/0xa50 fs/jffs2/fs.c:578
-       jffs2_fill_super+0x283/0x370 fs/jffs2/super.c:290
-       mtd_get_sb+0x2f0/0x4c0 drivers/mtd/mtdsuper.c:57
-       mtd_get_sb_by_nr drivers/mtd/mtdsuper.c:88 [inline]
-       get_tree_mtd+0x6f9/0x8a0 drivers/mtd/mtdsuper.c:141
-       vfs_get_tree+0x92/0x320 fs/super.c:1947
-       fc_mount fs/namespace.c:1198 [inline]
-       do_new_mount_fc fs/namespace.c:3772 [inline]
-       do_new_mount fs/namespace.c:3848 [inline]
-       path_mount+0x7d0/0x24c0 fs/namespace.c:4168
-       do_mount fs/namespace.c:4181 [inline]
-       __do_sys_mount fs/namespace.c:4397 [inline]
-       __se_sys_mount fs/namespace.c:4374 [inline]
-       __ia32_sys_mount+0x292/0x310 fs/namespace.c:4374
-       do_syscall_32_irqs_on arch/x86/entry/syscall_32.c:79 [inline]
-       __do_fast_syscall_32+0x13a/0x8b0 arch/x86/entry/syscall_32.c:291
-       do_fast_syscall_32+0x32/0x70 arch/x86/entry/syscall_32.c:316
-       entry_SYSENTER_compat_after_hwframe+0x84/0x8e
+  ./tools/testing/kunit/kunit.py run --arch=x86_64 --timeout=300 'ubifs*'
 
--> #0 (&f->sem){+.+.}-{4:4}:
-       check_prev_add+0xeb/0xe60 kernel/locking/lockdep.c:3209
-       check_prevs_add kernel/locking/lockdep.c:3328 [inline]
-       validate_chain kernel/locking/lockdep.c:3952 [inline]
-       __lock_acquire+0x1528/0x1f40 kernel/locking/lockdep.c:5288
-       lock_acquire kernel/locking/lockdep.c:5942 [inline]
-       lock_acquire+0x1d1/0x380 kernel/locking/lockdep.c:5899
-       __mutex_lock_common kernel/locking/mutex.c:646 [inline]
-       __mutex_lock+0x1a4/0x1bd0 kernel/locking/mutex.c:821
-       jffs2_do_clear_inode+0x5a/0x470 fs/jffs2/readinode.c:1419
-       evict+0x3c2/0xad0 fs/inode.c:822
-       dispose_list+0x117/0x1e0 fs/inode.c:864
-       prune_icache_sb+0xea/0x150 fs/inode.c:1011
-       super_cache_scan+0x3ac/0x5c0 fs/super.c:240
-       do_shrink_slab+0x416/0x1200 mm/shrinker.c:443
-       shrink_slab_memcg mm/shrinker.c:560 [inline]
-       shrink_slab+0xa82/0x12e0 mm/shrinker.c:638
-       shrink_one+0x398/0x850 mm/vmscan.c:5119
-       shrink_many mm/vmscan.c:5180 [inline]
-       lru_gen_shrink_node mm/vmscan.c:5258 [inline]
-       shrink_node+0x2b20/0x4320 mm/vmscan.c:6247
-       kswapd_shrink_node mm/vmscan.c:7101 [inline]
-       balance_pgdat+0xb20/0x1f00 mm/vmscan.c:7279
-       kswapd+0x556/0xb50 mm/vmscan.c:7555
-       kthread+0x373/0x450 kernel/kthread.c:436
-       ret_from_fork+0x730/0xd60 arch/x86/kernel/process.c:158
-       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+Two consecutive runs of the final tree reported 5 suites and 80 cases,
+all passing:
 
-other info that might help us debug this:
+  Testing complete. Ran 80 tests: passed: 80
 
- Possible unsafe locking scenario:
+with zero "not ok" lines in the KTAP output. The archived logs are
+reports/round-1.md, reports/round-2.md, reports/ktap-20260910-220005.txt
+and reports/ktap-20260910-220802.txt; they live in the project tree
+only and are deliberately not part of this series.
 
-       CPU0                    CPU1
-       ----                    ----
-  lock(fs_reclaim);
-                               lock(&f->sem);
-                               lock(fs_reclaim);
-  lock(&f->sem);
+The fake ubifs_info environment was additionally checked against the
+real stack: a nandsim smoke test booted the same kernel over a complete
+MTD -> UBI -> UBIFS stack, attached mtd0, created and mounted the
+volume and wrote and read back a file successfully (SMOKE: PASS). The
+report is reports/smoke.md and the raw serial log is
+reports/smoke-qemu.log.
 
- *** DEADLOCK ***
+Known limitations:
 
-locks held by kswapd0/113: 2, last CPU#0:
- #0: ffffffff8efc9a20 (fs_reclaim){+.+.}-{0:0}, at: balance_pgdat+0xbce/0x1f00 mm/vmscan.c:7292
- #1: ffff88802553c0e8 (&type->s_umount_key#58){++++}-{4:4}, at: super_trylock_shared fs/super.c:688 [inline]
- #1: ffff88802553c0e8 (&type->s_umount_key#58){++++}-{4:4}, at: super_cache_scan+0x9b/0x5c0 fs/super.c:213
+ - ubifs_scan() and ubifs_start_scan() are not covered: they read from
+   a real UBI volume through ubi_leb_read() and are exercised by the
+   nandsim smoke test instead.
+ - The tests build nodes in memory, so they cannot catch bugs in the
+   on-media layout itself; they only pin down the behaviour of the
+   parsing code for the layouts that UBIFS currently writes.
 
-stack backtrace:
-CPU: 0 UID: 0 PID: 113 Comm: kswapd0 Not tainted syzkaller #0 PREEMPT(full) 
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:94 [inline]
- dump_stack_lvl+0x100/0x190 lib/dump_stack.c:120
- print_circular_bug.cold+0x178/0x1be kernel/locking/lockdep.c:2087
- check_noncircular+0x146/0x160 kernel/locking/lockdep.c:2219
- check_prev_add+0xeb/0xe60 kernel/locking/lockdep.c:3209
- check_prevs_add kernel/locking/lockdep.c:3328 [inline]
- validate_chain kernel/locking/lockdep.c:3952 [inline]
- __lock_acquire+0x1528/0x1f40 kernel/locking/lockdep.c:5288
- lock_acquire kernel/locking/lockdep.c:5942 [inline]
- lock_acquire+0x1d1/0x380 kernel/locking/lockdep.c:5899
- __mutex_lock_common kernel/locking/mutex.c:646 [inline]
- __mutex_lock+0x1a4/0x1bd0 kernel/locking/mutex.c:821
- jffs2_do_clear_inode+0x5a/0x470 fs/jffs2/readinode.c:1419
- evict+0x3c2/0xad0 fs/inode.c:822
- dispose_list+0x117/0x1e0 fs/inode.c:864
- prune_icache_sb+0xea/0x150 fs/inode.c:1011
- super_cache_scan+0x3ac/0x5c0 fs/super.c:240
- do_shrink_slab+0x416/0x1200 mm/shrinker.c:443
- shrink_slab_memcg mm/shrinker.c:560 [inline]
- shrink_slab+0xa82/0x12e0 mm/shrinker.c:638
- shrink_one+0x398/0x850 mm/vmscan.c:5119
- shrink_many mm/vmscan.c:5180 [inline]
- lru_gen_shrink_node mm/vmscan.c:5258 [inline]
- shrink_node+0x2b20/0x4320 mm/vmscan.c:6247
- kswapd_shrink_node mm/vmscan.c:7101 [inline]
- balance_pgdat+0xb20/0x1f00 mm/vmscan.c:7279
- kswapd+0x556/0xb50 mm/vmscan.c:7555
- kthread+0x373/0x450 kernel/kthread.c:436
- ret_from_fork+0x730/0xd60 arch/x86/kernel/process.c:158
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
- </TASK>
+Notes:
+
+checkpatch.pl --strict reports 0 errors for both patches. Each patch
+also carries the generic "added, moved or deleted file(s), does
+MAINTAINERS need updating?" warning; that reminder is emitted for every
+patch that adds a file, and the new files live under fs/ubifs/, which
+is already covered by the "UBI FILE SYSTEM (UBIFS)" entry in
+MAINTAINERS ("F: fs/ubifs/"), so no MAINTAINERS change is needed.
+
+Signed-off-by: lichen.wang <wanglichen9110@gmail.com>
+
+lichen.wang (2):
+  ubifs: add KUnit test scaffolding for scan.c
+  ubifs: add KUnit tests for key helpers
+
+ fs/ubifs/Kconfig               |  16 +
+ fs/ubifs/Makefile              |   1 +
+ fs/ubifs/tests/key_kunit.c     | 555 +++++++++++++++++++
+ fs/ubifs/tests/kunit_helpers.h | 222 ++++++++
+ fs/ubifs/tests/scan_kunit.c    | 980 +++++++++++++++++++++++++++++++++
+ 5 files changed, 1774 insertions(+)
+ create mode 100644 fs/ubifs/tests/key_kunit.c
+ create mode 100644 fs/ubifs/tests/kunit_helpers.h
+ create mode 100644 fs/ubifs/tests/scan_kunit.c
+
+--
+2.43.0
 
 
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
 
 ______________________________________________________
 Linux MTD discussion mailing list
