@@ -4,64 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B8C4C79FBB
-	for <linux-mtd@archiver.kernel.org>; Thu, 10 Sep 2026 22:44:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2D7C5C88E4A
+	for <linux-mtd@archiver.kernel.org>; Fri, 11 Sep 2026 00:57:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=9q2qBKs+mLvRr/ei8qNCYlRWe+Mp4sEdAdpZJL+C0xE=; b=jWJOwdEkOgM+QJ
-	Zk1rNydXAXLS4kOpQDSb4xMN49vCHmeH/pXkbj1yIk6R82oTG2IRB0ffu3CyifFFQZpn+Dx9csKhl
-	QuxWHW4UjCTp3bbSNBUGDXd16o1L6WZasvbGOIhzNu/SUvmv8hMfFyBoirSyHlMBcq/rHBIHKpwCJ
-	NjDTV0dQnQqL+d47p+fQwwlO34dqKwPe5j2u8vcpAyMY8BwTFFP9/H/1MdP1JnYNCPUAvMMNJXtjb
-	LLQlN6I8WqvlcPT7GOkdIEh2PI5ZTzWFxmarBF5oQrMJHrNrDO0XAKd2wgNUeYCdczxxxjLehrgGR
-	/cdg6whJwDWCwaPoejxA==;
+	List-Archive:List-Unsubscribe:List-Id:To:From:Subject:Message-ID:In-Reply-To:
+	Date:MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
+	List-Owner; bh=6Ad9wAtWNycaWEqn3tfCLLIAG7eOWhV+tM7wlHtz0Vo=; b=SMJn/nDSiECsO+
+	at/dcxPyeJhB588+0f8mzkQaaLhHX8Y2pPKWSFLKxNz9R4KVbH5NuMPTtErcQlgJ3onXj5ZtSfudK
+	gAc19h4QMOp79t30noqu9GwL+Xhnqu0cZ+hPitEYNkt8EFX7T3vXB5y9uCN7nRiKbaF8EDsGvSJF1
+	vaeQlcOjKFF5IEBMv6WqwyebNEJyU+JC3ioJa684ub7jCWfsyq3Uqs7K/3zQmdpr0h8rhSn3/8Tuv
+	yviL2pLiT9J1LxtIM+EOnZAh0FD/bxkNUBTAlBEi6lLbrhDGdoYL78f5dXgYDwmlu9KreUtiqQnRR
+	9bewtfx9GDtyqWbGa+GA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x4nV6-0000000FVAb-0De2;
-	Thu, 10 Sep 2026 22:44:12 +0000
-Received: from b224-5.smtp-out.eu-central-1.amazonses.com ([69.169.224.5])
+	id 1x4pa4-0000000FeDx-34MT;
+	Fri, 11 Sep 2026 00:57:28 +0000
+Received: from mail-oo2-f8.google.com ([74.125.231.136])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x4nV3-0000000FVAE-3GrC
+	id 1x4pa1-0000000FeD9-3Txk
 	for linux-mtd@lists.infradead.org;
-	Thu, 10 Sep 2026 22:44:11 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-	s=hi6pntjfnmhxrdkbpi4sl3ndfqswqs3i; d=sagnik.me; t=1789080246;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding;
-	bh=nCzSdtDWzC4sEJUp51PV43H20jePBNMZ4BprgO78mu0=;
-	b=VQQXG/zZ2jh93hv/YB6qM1ps3ZJl8Utz69iddAQlberDieJgU3YLCNHcqhsKaNwW
-	yctuFFNjvcfuAP6kxVBmf0MoQjwnzjeX66SSXsqUfJmAXj15IS9XG/ZNKC45qTe68c5
-	9tTaMgquZpb+uv+WcajITSNCeA4+qzkDaUn7/H/q61KG7oGGesWe6/qxDq9Hy0lwK13
-	WTUzQSREfp1zJn8hbdKTVBoj1N6WfyDc+4hiJ3H4GGVVWkBx9rLpeMW9iUHV8Sk7rj9
-	FAbkk2OcTp2rMvR//fgV+Eotx83Y24p1vPjk7e75UVoEhqBNyoXJF7a/mQFiLtil9a0
-	yhX/+kP6LA==
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-	s=sokbgaaqhfgd6qjht2wmdajpuuanpimv; d=amazonses.com; t=1789080246;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:Feedback-ID;
-	bh=nCzSdtDWzC4sEJUp51PV43H20jePBNMZ4BprgO78mu0=;
-	b=NWtWuMgrVnKCLUaOLiyK3NSJ0hCKHkcjggaplhiHqJAI1evUmZHuyhcmk3sCnF1p
-	43oxLFSOSzgfea0L0FVUcuRVwDD8BPFWDOpjAgGZno1RuX14WyxAOBJIF68r5C9XNlz
-	Fp320qAErJ+8nlc7OVsg3DugxmjtqHDPPzgDru2A=
-From: Sagnik Sasmal <sagnik@sagnik.me>
-To: miquel.raynal@bootlin.com
-Cc: richard@nod.at, vigneshr@ti.com, tudor.ambarus@linaro.org, 
-	mikhail.kshevetskiy@iopsys.eu, linux-mtd@lists.infradead.org, 
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v3] mtd: spinand: Do not update the QE bit on devices without one
-Date: Thu, 10 Sep 2026 22:44:05 +0000
-Message-ID: <010701a08d7e1638-79aaf1ea-cc8c-49e8-ba74-cba028aaa183-000000@eu-central-1.amazonses.com>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <010701a08c36e962-eb595dbe-b80b-44eb-858d-c1033f8a86a1-000000@eu-central-1.amazonses.com>
-References: <010701a08c36e962-eb595dbe-b80b-44eb-858d-c1033f8a86a1-000000@eu-central-1.amazonses.com>
+	Fri, 11 Sep 2026 00:57:27 +0000
+Received: by mail-oo2-f8.google.com with SMTP id 006d021491bc7-6b12d30261cso133833eaf.0
+        for <linux-mtd@lists.infradead.org>; Thu, 10 Sep 2026 17:57:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1789088244; x=1789693044;
+        h=content-type:to:from:subject:message-id:in-reply-to:date
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to:content-type;
+        bh=a4O61vwT858MfHLIWbfEORPBBAynu4EIXTC714u5D4U=;
+        b=Ze7NSbubi4FQGnlAVcJ8c2QFSSojK/x9eUa3gQFpFaRT4jFCCHYLcRufBih6Xrv8NC
+         QfxENZSHyN4OvCrVKX1dT4sxWYCfryjH+0OejKKAkculn9ehl6dDUT9dZnfiZcfbZ4ll
+         aDYYbqhdyxqbNvVBYbsiegyqu6SmQFXJxYs0q+8mEQnR5mqBGmo9/yf4o0ldbR/+NtGv
+         v1KGHnVhMwj+bZiFevKHUwTzLVBHadCt2KZJ04TAHDREwLVRC0W9s8uApbpEGbwyrdHp
+         YQSL/zctyDLNoh+PmmlDmyN4oEoLF+bPqLAslsp/zGdO9db/bdvUNFZcQpe4wO0NBvuZ
+         xu4A==
+X-Forwarded-Encrypted: i=1; AKwUvByIRdplqVS6BouBjLSCdbNiEyc2w/WSZajkw6GfWVXECWtuTouB/J5DcO+jWx+aNI7pwsbMkfSxyvI=@lists.infradead.org
+X-Gm-Message-State: AFuF++l+PT1t6yTsymm7pPIIvQqmw7Cm1xMm2MV0aS4KBWLR+xiwj3C6
+	5xErVwQTt4//iVxHNmhFngDh2AEyQnEfRlQvT1pJVR3vp1mO7UEuHZTA3WdeX4zVBlnCvxRJyXg
+	A/qcWM6AkeNXjBJbunCnxqeHPjnylS7db2TkQLCY8GW5dIs3/h/1kRZQ0Ie8=
 MIME-Version: 1.0
-X-Last-TLS-Session-Version: TLSv1.3
-Feedback-ID: ::1.eu-central-1.PI0qW2sOnv0WHLkqY53RTxXQVzstwFEIoB04n7YZrig=:AmazonSES
-X-SES-Outgoing: 2026.09.10-69.169.224.5
+X-Received: by 2002:a05:6820:806:b0:6a1:4507:3544 with SMTP id
+ 006d021491bc7-6c0bb3fd453mr1134957eaf.28.1789088244056; Thu, 10 Sep 2026
+ 17:57:24 -0700 (PDT)
+Date: Thu, 10 Sep 2026 17:57:24 -0700
+In-Reply-To: <6a752024.b50370da.49fe0.0017.GAE@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <6aa351f4.6e6c5f9e.28f11f.003b.GAE@google.com>
+Subject: Re: [syzbot] [jffs2?] possible deadlock in jffs2_do_clear_inode (2)
+From: syzbot <syzbot+743079a09058321247d8@syzkaller.appspotmail.com>
+To: dwmw2@infradead.org, linux-kernel@vger.kernel.org, 
+	linux-mtd@lists.infradead.org, richard@nod.at, 
+	syzkaller-bugs@googlegroups.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260910_154410_011452_14ACA108 
-X-CRM114-Status: GOOD (  15.06  )
+X-CRM114-CacheID: sfid-20260910_175725_908286_1EFB5693 
+X-CRM114-Status: UNSURE (   6.12  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,88 +79,159 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Commit be0b86c648bf ("mtd: spinand: Gather all the bus interface
-steps in one single function") moved quad-enable setup into
-spinand_configure_chip(). The new code only determines whether quad
-mode is needed when SPINAND_HAS_QE_BIT is set, but calls
-spinand_init_quad_enable() unconditionally. This clears configuration
-register bit 0 on devices without a QE bit.
+syzbot has found a reproducer for the following issue on:
 
-That bit is not universally a QE bit. On the Winbond W25N02KV it is
-H-DIS, which disables the active-low HOLD function. Clearing H-DIS
-enables HOLD during single and dual I/O operations. If IO3 is not kept
-high, the flash can pause a command and ignore clock and data.
+HEAD commit:    50d05c7c76c9 Merge tag 'landlock-7.3-rc3' of git://git.ker..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=152c679e580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=85bc5cc2fc7394d9
+dashboard link: https://syzkaller.appspot.com/bug?extid=743079a09058321247d8
+compiler:       gcc (Debian 14.2.0-19) 14.2.0, GNU ld (GNU Binutils for Debian) 2.44
+userspace arch: i386
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10ec21f9580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16715ef9580000
 
-H-DIS is not restored by the FFh reset command, allowing the incorrect
-state to survive an SoC warm reboot while the flash remains powered.
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/d900f083ada3/non_bootable_disk-50d05c7c.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/303a0ade8f9e/vmlinux-50d05c7c.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/70b8ca71442b/bzImage-50d05c7c.xz
 
-Before the refactoring, spinand_init_quad_enable() returned without
-touching the configuration register on devices without
-SPINAND_HAS_QE_BIT. Restore that behavior by only calling the helper
-when the flag is set.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+743079a09058321247d8@syzkaller.appspotmail.com
 
-Return zero explicitly once SSDR configuration completes, as all errors
-are returned immediately. This avoids returning an uninitialized value
-when neither optional configuration step runs.
+======================================================
+WARNING: possible circular locking dependency detected
+syzkaller #0 Not tainted
+------------------------------------------------------
+kswapd0/113 is trying to acquire lock:
+ffff888013732c60 (&f->sem){+.+.}-{4:4}, at: jffs2_do_clear_inode+0x5a/0x470 fs/jffs2/readinode.c:1419
 
-The regression was reproduced on a JioRouter JIDU6401 with an MT7986
-SoC and a W25N02KV. With Linux 6.18.44, sysupgrade failed and the
-following warm reboot hung in BL2. With this change applied, both
-sysupgrade and warm reboot completed successfully.
+but task is already holding lock:
+ffffffff8efc9a20 (fs_reclaim){+.+.}-{0:0}, at: balance_pgdat+0xbce/0x1f00 mm/vmscan.c:7292
 
-Fixes: be0b86c648bf ("mtd: spinand: Gather all the bus interface steps in one single function")
-Cc: stable@vger.kernel.org
-Suggested-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Assisted-by: LLM
-Signed-off-by: Sagnik Sasmal <sagnik@sagnik.me>
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #1 (fs_reclaim){+.+.}-{0:0}:
+       lock_acquire kernel/locking/lockdep.c:5942 [inline]
+       lock_acquire+0x1d1/0x380 kernel/locking/lockdep.c:5899
+       __fs_reclaim_acquire mm/page_alloc.c:4375 [inline]
+       fs_reclaim_acquire+0xc4/0x100 mm/page_alloc.c:4389
+       might_alloc include/linux/sched/mm.h:316 [inline]
+       slab_pre_alloc_hook mm/slub.c:4636 [inline]
+       slab_alloc_node mm/slub.c:4974 [inline]
+       kmem_cache_alloc_noprof+0x63/0x6a0 mm/slub.c:5010
+       jffs2_do_read_inode+0x307/0x520 fs/jffs2/readinode.c:1372
+       jffs2_iget+0x32b/0xe30 fs/jffs2/fs.c:277
+       jffs2_do_fill_super+0x44b/0xa50 fs/jffs2/fs.c:578
+       jffs2_fill_super+0x283/0x370 fs/jffs2/super.c:290
+       mtd_get_sb+0x2f0/0x4c0 drivers/mtd/mtdsuper.c:57
+       mtd_get_sb_by_nr drivers/mtd/mtdsuper.c:88 [inline]
+       get_tree_mtd+0x6f9/0x8a0 drivers/mtd/mtdsuper.c:141
+       vfs_get_tree+0x92/0x320 fs/super.c:1947
+       fc_mount fs/namespace.c:1198 [inline]
+       do_new_mount_fc fs/namespace.c:3772 [inline]
+       do_new_mount fs/namespace.c:3848 [inline]
+       path_mount+0x7d0/0x24c0 fs/namespace.c:4168
+       do_mount fs/namespace.c:4181 [inline]
+       __do_sys_mount fs/namespace.c:4397 [inline]
+       __se_sys_mount fs/namespace.c:4374 [inline]
+       __ia32_sys_mount+0x292/0x310 fs/namespace.c:4374
+       do_syscall_32_irqs_on arch/x86/entry/syscall_32.c:79 [inline]
+       __do_fast_syscall_32+0x13a/0x8b0 arch/x86/entry/syscall_32.c:291
+       do_fast_syscall_32+0x32/0x70 arch/x86/entry/syscall_32.c:316
+       entry_SYSENTER_compat_after_hwframe+0x84/0x8e
+
+-> #0 (&f->sem){+.+.}-{4:4}:
+       check_prev_add+0xeb/0xe60 kernel/locking/lockdep.c:3209
+       check_prevs_add kernel/locking/lockdep.c:3328 [inline]
+       validate_chain kernel/locking/lockdep.c:3952 [inline]
+       __lock_acquire+0x1528/0x1f40 kernel/locking/lockdep.c:5288
+       lock_acquire kernel/locking/lockdep.c:5942 [inline]
+       lock_acquire+0x1d1/0x380 kernel/locking/lockdep.c:5899
+       __mutex_lock_common kernel/locking/mutex.c:646 [inline]
+       __mutex_lock+0x1a4/0x1bd0 kernel/locking/mutex.c:821
+       jffs2_do_clear_inode+0x5a/0x470 fs/jffs2/readinode.c:1419
+       evict+0x3c2/0xad0 fs/inode.c:822
+       dispose_list+0x117/0x1e0 fs/inode.c:864
+       prune_icache_sb+0xea/0x150 fs/inode.c:1011
+       super_cache_scan+0x3ac/0x5c0 fs/super.c:240
+       do_shrink_slab+0x416/0x1200 mm/shrinker.c:443
+       shrink_slab_memcg mm/shrinker.c:560 [inline]
+       shrink_slab+0xa82/0x12e0 mm/shrinker.c:638
+       shrink_one+0x398/0x850 mm/vmscan.c:5119
+       shrink_many mm/vmscan.c:5180 [inline]
+       lru_gen_shrink_node mm/vmscan.c:5258 [inline]
+       shrink_node+0x2b20/0x4320 mm/vmscan.c:6247
+       kswapd_shrink_node mm/vmscan.c:7101 [inline]
+       balance_pgdat+0xb20/0x1f00 mm/vmscan.c:7279
+       kswapd+0x556/0xb50 mm/vmscan.c:7555
+       kthread+0x373/0x450 kernel/kthread.c:436
+       ret_from_fork+0x730/0xd60 arch/x86/kernel/process.c:158
+       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+
+other info that might help us debug this:
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(fs_reclaim);
+                               lock(&f->sem);
+                               lock(fs_reclaim);
+  lock(&f->sem);
+
+ *** DEADLOCK ***
+
+locks held by kswapd0/113: 2, last CPU#0:
+ #0: ffffffff8efc9a20 (fs_reclaim){+.+.}-{0:0}, at: balance_pgdat+0xbce/0x1f00 mm/vmscan.c:7292
+ #1: ffff88802553c0e8 (&type->s_umount_key#58){++++}-{4:4}, at: super_trylock_shared fs/super.c:688 [inline]
+ #1: ffff88802553c0e8 (&type->s_umount_key#58){++++}-{4:4}, at: super_cache_scan+0x9b/0x5c0 fs/super.c:213
+
+stack backtrace:
+CPU: 0 UID: 0 PID: 113 Comm: kswapd0 Not tainted syzkaller #0 PREEMPT(full) 
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:94 [inline]
+ dump_stack_lvl+0x100/0x190 lib/dump_stack.c:120
+ print_circular_bug.cold+0x178/0x1be kernel/locking/lockdep.c:2087
+ check_noncircular+0x146/0x160 kernel/locking/lockdep.c:2219
+ check_prev_add+0xeb/0xe60 kernel/locking/lockdep.c:3209
+ check_prevs_add kernel/locking/lockdep.c:3328 [inline]
+ validate_chain kernel/locking/lockdep.c:3952 [inline]
+ __lock_acquire+0x1528/0x1f40 kernel/locking/lockdep.c:5288
+ lock_acquire kernel/locking/lockdep.c:5942 [inline]
+ lock_acquire+0x1d1/0x380 kernel/locking/lockdep.c:5899
+ __mutex_lock_common kernel/locking/mutex.c:646 [inline]
+ __mutex_lock+0x1a4/0x1bd0 kernel/locking/mutex.c:821
+ jffs2_do_clear_inode+0x5a/0x470 fs/jffs2/readinode.c:1419
+ evict+0x3c2/0xad0 fs/inode.c:822
+ dispose_list+0x117/0x1e0 fs/inode.c:864
+ prune_icache_sb+0xea/0x150 fs/inode.c:1011
+ super_cache_scan+0x3ac/0x5c0 fs/super.c:240
+ do_shrink_slab+0x416/0x1200 mm/shrinker.c:443
+ shrink_slab_memcg mm/shrinker.c:560 [inline]
+ shrink_slab+0xa82/0x12e0 mm/shrinker.c:638
+ shrink_one+0x398/0x850 mm/vmscan.c:5119
+ shrink_many mm/vmscan.c:5180 [inline]
+ lru_gen_shrink_node mm/vmscan.c:5258 [inline]
+ shrink_node+0x2b20/0x4320 mm/vmscan.c:6247
+ kswapd_shrink_node mm/vmscan.c:7101 [inline]
+ balance_pgdat+0xb20/0x1f00 mm/vmscan.c:7279
+ kswapd+0x556/0xb50 mm/vmscan.c:7555
+ kthread+0x373/0x450 kernel/kthread.c:436
+ ret_from_fork+0x730/0xd60 arch/x86/kernel/process.c:158
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+ </TASK>
+
+
 ---
-Changes in v3:
-- Return zero explicitly after successful SSDR configuration, avoiding an
-  uninitialized return value on devices with neither SPINAND_HAS_QE_BIT
-  nor a configure_chip callback, as reported by sashiko-bot.
-- Compile-tested for arm64 with W=1.
-
-Changes in v2:
-- Call spinand_init_quad_enable() only inside the
-  SPINAND_HAS_QE_BIT condition, as suggested by Miquel.
-- Retested on a JioRouter JIDU6401; sysupgrade and the following warm
-  reboot completed successfully.
-
- drivers/mtd/nand/spi/core.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index 43bbe2629..95353777d 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -1813,11 +1813,11 @@ static int spinand_configure_chip(struct spinand_device *spinand)
- 		    spinand->ssdr_op_templates.write_cache->data.buswidth == 4 ||
- 		    spinand->ssdr_op_templates.update_cache->data.buswidth == 4)
- 			quad_enable = true;
--	}
- 
--	ret = spinand_init_quad_enable(spinand, quad_enable);
--	if (ret)
--		return ret;
-+		ret = spinand_init_quad_enable(spinand, quad_enable);
-+		if (ret)
-+			return ret;
-+	}
- 
- 	if (spinand->configure_chip) {
- 		ret = spinand->configure_chip(spinand, SSDR);
-@@ -1825,7 +1825,7 @@ static int spinand_configure_chip(struct spinand_device *spinand)
- 			return ret;
- 	}
- 
--	return ret;
-+	return 0;
- }
- 
- static int spinand_init_flash(struct spinand_device *spinand)
--- 
-2.53.0
-
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
 ______________________________________________________
 Linux MTD discussion mailing list
