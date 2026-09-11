@@ -4,128 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4A45C88E50
-	for <linux-mtd@archiver.kernel.org>; Fri, 11 Sep 2026 09:38:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78739C88E4C
+	for <linux-mtd@archiver.kernel.org>; Fri, 11 Sep 2026 10:00:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-ID:Content-Type:
-	MIME-Version:References:Message-ID:In-Reply-To:Subject:cc:To:Date:From:
-	Reply-To:Content-Transfer-Encoding:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=xh/E2s7jcQkYhnr3MVXoNvjtU/b0KliCd+rQDMt/jKc=; b=yvoCT6jg6ihX+v5yT7Fbjb/3Kj
-	/DIqFwA7tUVWtAZhYEyYE/HFpN/zAQ4zESJvthgaWNw5XQXmHc4N+F+OKUJn6iKBP0MfKiwzASIY6
-	fKyHs+vUxK8HBOSWBx+fOyDL2X9s4nxglcmsD7qN3XW7GJ//0UlmvvZksbA9t/p8bPi6pe14fZxV/
-	n/jFrT3l+vDanbFW7xIbv6RxP+uLy1RttZq1Vca0sjNQo2vj7cN0RH7x5iwsKKo2R1ZlcGoCyNJdw
-	FBoaCv4MYOBJvoEgp9c0dBF0n6zV34g9Bo+GYJBZOt8c0zHa/tRtvSPt84icDMfGh7+HqkE/wo4/6
-	/8xt3TKQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:References:To:From:Cc:Subject:Message-Id:Date:Mime-Version:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=ZgrDvSigXxzfR8vYuIf/R6ctBws3zeZtFZpZfZAv7kQ=; b=wDVYIc7aeFdeyblYEYFwL14QjA
+	5NXneKFtcLti6UbDumujXMNjjO5Owhm2r/BQIH76ZocHYYWyGd5N1TSPpR9c7Vbdbx1+EDi2ZqTwD
+	qj/PKQ3TJ2KpCIdTstyRKPxV1WocBxabzswHSwJCY0rv2l2JcUbxJWTzncYy5E3VizP6otqGrYFZT
+	7p3gmx5NohwvAIw8tOAj2XIISiiz9mWdh/9UyUItvDbPrd1AyPy7vcdqeU4XidOd0Gaot0V32ogPN
+	mXXzqDrJ9oWWoV89faqP9f5P2sAvjqkapleD9oEF+RVMuW8DlkYmXZMsRHaIvhHY3smvagcH0xB0V
+	zdJAO0YA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x4xhy-0000000GHnl-0edw;
-	Fri, 11 Sep 2026 09:38:10 +0000
-Received: from mgamail.intel.com ([192.198.163.7])
+	id 1x4y3Q-0000000GJi9-3emg;
+	Fri, 11 Sep 2026 10:00:20 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x4xhw-0000000GHnI-0nxx;
-	Fri, 11 Sep 2026 09:38:09 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1789119488; x=1820655488;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version:content-id;
-  bh=sb6ClNqSQhPq2ZVhuU+8klKUwkLjODKU96QOOaqi6Cw=;
-  b=DM9yb6wkIw6H/4OUaxjgfsWqnlyifFSzuJm4auThBBtBwc0mV354yWRx
-   XtVaPKQt14wWQTHxwmAuXrNtLuI74H7+XGOopmobWMGCbssTFCTgK70GN
-   xPc/0fvgWUsW06yKDHuGJmgGIjUvm1V7dS7+MPTBjbLpMhgWAOSeQFKK8
-   CXvQwBVdRUh7PB3vVnm8I4Hbb6wYWM1MRgDUtsgLsesnWkjK2NOk6/5wg
-   tMkfigA95OrdDDeQGjA0+DXpjVm+sYk7WNYD5sMczGNu5j/1W9HF8+vvK
-   A11b1psKdcGb9tZV65ASr1A+m9roMLitbGJqHxiKH0mDnGtQeJfczTkfU
-   w==;
-X-CSE-ConnectionGUID: bGvsjxZpQPWVy5x+r32gnA==
-X-CSE-MsgGUID: jY2Yaha/ROaLbPUwef+bQQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11901"; a="115120628"
-X-IronPort-AV: E=Sophos;i="6.27,97,1787036400"; 
-   d="scan'208";a="115120628"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2026 02:38:07 -0700
-X-CSE-ConnectionGUID: SRo+o97pTgCUDHnSfx1bsQ==
-X-CSE-MsgGUID: d5IlSxrWQfGb/hpk+vV9Sw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.27,97,1787036400"; 
-   d="scan'208";a="296857533"
-Received: from ijarvine-mobl1.ger.corp.intel.com (HELO localhost) ([10.245.244.158])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2026 02:37:41 -0700
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Fri, 11 Sep 2026 12:37:38 +0300 (EEST)
-To: Juergen Gross <jgross@suse.com>
-cc: LKML <linux-kernel@vger.kernel.org>, x86@kernel.org, 
-    linux-perf-users@vger.kernel.org, linux-hyperv@vger.kernel.org, 
-    kvm@vger.kernel.org, virtualization@lists.linux.dev, 
-    linux-edac@vger.kernel.org, linux-pci@vger.kernel.org, 
-    linux-pm@vger.kernel.org, linux-coco@lists.linux.dev, 
-    linux-acpi@vger.kernel.org, linux-ide@vger.kernel.org, 
-    dri-devel@lists.freedesktop.org, linux-crypto@vger.kernel.org, 
-    linux-gpio@vger.kernel.org, linux-hwmon@vger.kernel.org, 
-    linux-mtd@lists.infradead.org, platform-driver-x86@vger.kernel.org, 
-    linux-fbdev@vger.kernel.org, Thomas Gleixner <tglx@kernel.org>, 
-    Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-    Dave Hansen <dave.hansen@linux.intel.com>, 
-    "H. Peter Anvin" <hpa@zytor.com>, Peter Zijlstra <peterz@infradead.org>, 
-    Arnaldo Carvalho de Melo <acme@kernel.org>, 
-    Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-    Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
-    Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>, 
-    Adrian Hunter <adrian.hunter@intel.com>, 
-    James Clark <james.clark@linaro.org>, 
-    "K. Y. Srinivasan" <kys@microsoft.com>, 
-    Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>, 
-    Dexuan Cui <decui@microsoft.com>, Long Li <longli@microsoft.com>, 
-    Sean Christopherson <seanjc@google.com>, 
-    Paolo Bonzini <pbonzini@redhat.com>, Ajay Kaher <ajay.kaher@broadcom.com>, 
-    Alexey Makhalov <alexey.makhalov@broadcom.com>, 
-    Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, 
-    Josh Poimboeuf <jpoimboe@kernel.org>, 
-    Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, Pu Wen <puwen@hygon.cn>, 
-    Tony Luck <tony.luck@intel.com>, 
-    Reinette Chatre <reinette.chatre@intel.com>, 
-    Dave Martin <Dave.Martin@arm.com>, James Morse <james.morse@arm.com>, 
-    Babu Moger <babu.moger@amd.com>, Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>, 
-    Vitaly Kuznetsov <vkuznets@redhat.com>, Andy Lutomirski <luto@kernel.org>, 
-    Bjorn Helgaas <bhelgaas@google.com>, 
-    "Rafael J. Wysocki" <rafael@kernel.org>, Pavel Machek <pavel@kernel.org>, 
-    Kiryl Shutsemau <kas@kernel.org>, 
-    Rick Edgecombe <rick.p.edgecombe@intel.com>, 
-    Boris Ostrovsky <boris.ostrovsky@oracle.com>, Len Brown <lenb@kernel.org>, 
-    Damien Le Moal <dlemoal@kernel.org>, Niklas Cassel <cassel@kernel.org>, 
-    David Airlie <airlied@redhat.com>, Olivia Mackall <olivia@selenic.com>, 
-    Herbert Xu <herbert@gondor.apana.org.au>, 
-    Viresh Kumar <viresh.kumar@linaro.org>, Huang Rui <ray.huang@amd.com>, 
-    Mario Limonciello <mario.limonciello@amd.com>, 
-    Perry Yuan <perry.yuan@amd.com>, K Prateek Nayak <kprateek.nayak@amd.com>, 
-    Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>, 
-    Yazen Ghannam <yazen.ghannam@amd.com>, Linus Walleij <linusw@kernel.org>, 
-    Bartosz Golaszewski <brgl@kernel.org>, Guenter Roeck <linux@roeck-us.net>, 
-    Artem Bityutskiy <artem.bityutskiy@linux.intel.com>, 
-    Artem Bityutskiy <dedekind1@gmail.com>, Arnd Bergmann <arnd@arndb.de>, 
-    Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-    Miquel Raynal <miquel.raynal@bootlin.com>, 
-    Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
-    Ashok Raj <ashok.raj.linux@gmail.com>, Hans de Goede <hansg@kernel.org>, 
-    Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>, 
-    Xi Pardee <xi.pardee@linux.intel.com>, 
-    Daniel Lezcano <daniel.lezcano@kernel.org>, 
-    Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>, 
-    Helge Deller <deller@gmx.de>, xen-devel@lists.xenproject.org, 
-    linux-geode@lists.infradead.org, Michael Kelley <mhklinux@outlook.com>
-Subject: Re: [PATCH v3 12/13] treewide: convert rdmsrq() from a macro to an
- inline function
-In-Reply-To: <20260911074530.3140830-13-jgross@suse.com>
-Message-ID: <b2baa471-0f6b-84e8-bda1-ae0964b72b04@linux.intel.com>
-References: <20260911074530.3140830-1-jgross@suse.com> <20260911074530.3140830-13-jgross@suse.com>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="8323328-1162080221-1789119116=:1171"
-Content-ID: <b9134b99-a885-4c62-2abd-7195415a52e3@linux.intel.com>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260911_023808_243773_8306B6BA 
-X-CRM114-Status: GOOD (  12.93  )
+	id 1x4y3O-0000000GJhx-41h5
+	for linux-mtd@lists.infradead.org;
+	Fri, 11 Sep 2026 10:00:19 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with UTF8SMTP id 27CC560231;
+	Fri, 11 Sep 2026 10:00:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id 500A71F000FF;
+	Fri, 11 Sep 2026 10:00:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1789120817;
+	bh=yvZ8dPhqGtyqFlpdNYVTdyZOJ9BDsEyogEtTmfqIXWc=;
+	h=Date:Subject:Cc:From:To:References:In-Reply-To;
+	b=gRuUZf5CAAkJtUt3NQVwF2rXGWEnMFFUob1UpAyPa4ij1oOsU1XZg9TYMM5ZUckYR
+	 u8IPVHVXMMdDIyrEYCPgifgqoZX3azdcfzByB8Ozi/ORgvA8+m59kKEMb9XQOd84n4
+	 BToJE5aGlY7VAUkoxF4vrVXkCXNb4kFMmhF4LFaIZCroBnEPdGEhju8NQYY/lrD0TR
+	 KBtiSfGcXPRUBg6/cAnHZVtoFBpUwNqAAYutJkNi0AQFYvQesACZcmrmB9SFubTtnk
+	 GZgPKuL65YpUF2pFkrGVX9JcI4hF02Yo3IA1ul8bUghmca2JGF5jP4iPmKoT9ZBHav
+	 Vxt4kGyKI7zAg==
+Mime-Version: 1.0
+Date: Fri, 11 Sep 2026 12:00:08 +0200
+Message-Id: <DLCEE908FEIF.380PG73T1SQXV@kernel.org>
+Subject: Re: [PATCH] mtd: spi-nor: Fix quad-enable for flashes with QER bit
+ in SR1
+Cc: "Pratyush Yadav" <pratyush@kernel.org>, "Takahiro Kuwano"
+ <takahiro.kuwano@infineon.com>, "Richard Weinberger" <richard@nod.at>,
+ "Vignesh Raghavendra" <vigneshr@ti.com>, "Thomas Petazzoni"
+ <thomas.petazzoni@bootlin.com>, "Jon Hunter" <jonathanh@nvidia.com>, "Steam
+ Lin" <STLin2@winbond.com>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>
+From: "Michael Walle" <mwalle@kernel.org>
+To: "Miquel Raynal" <miquel.raynal@bootlin.com>
+X-Mailer: aerc 0.20.0
+References: <20260911-perso-fix-spi-nor-qe-mxic-v1-1-fd6d91416a2a@bootlin.com> <DLCD7NN2IW82.33ISZCKO1E7UY@kernel.org> <87o6e4qh5g.fsf@bootlin.com> <87ik4cqgha.fsf@bootlin.com>
+In-Reply-To: <87ik4cqgha.fsf@bootlin.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -137,51 +69,95 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: multipart/mixed; boundary="===============7772454851727203209=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+--===============7772454851727203209==
+Content-Type: multipart/signed;
+ boundary=39481b63a0729147b8301f18eb1d5038e0f8869c5a211f854b1d65c8f357;
+ micalg=pgp-sha384; protocol="application/pgp-signature"
+Content-Transfer-Encoding: quoted-printable
 
---8323328-1162080221-1789119116=:1171
-Content-Type: text/plain; CHARSET=ISO-8859-15
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Content-ID: <085b47bf-864b-9802-2915-a51186e45c40@linux.intel.com>
+--39481b63a0729147b8301f18eb1d5038e0f8869c5a211f854b1d65c8f357
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
 
-On Fri, 11 Sep 2026, Juergen Gross wrote:
+On Fri Sep 11, 2026 at 11:34 AM CEST, Miquel Raynal wrote:
+> On 11/09/2026 at 11:19:39 +02, Miquel Raynal <miquel.raynal@bootlin.com> =
+wrote:
+>
+>>>> -	ret =3D spi_nor_read_sr1_and_sr2(nor, sr);
+>>>> +	if (qe_mask[0])
+>>>> +		ret =3D spi_nor_read_sr1(nor, sr);
+>>>> +	else
+>>>> +		ret =3D spi_nor_read_sr1_and_sr2(nor, sr);
+>>>
+>>> Shouldn't that be the other way around?
+>>>
+>>> +	if (qe_mask[1])
+>>> +		ret =3D spi_nor_read_sr1_and_sr2(nor, sr);
+>>> +	else
+>>> +		ret =3D spi_nor_read_sr1(nor, sr);
+>>>
+>>> I know qe_mask won't be spread across two SRs. Just to be
+>>> correct and make it easier to grok.
+>>
+>> Why is the second version easier to parse? First version is maybe more
+>> future proof since we are treating a specific case. Because either it is
+>> a specific chip (Mxic) or we end up in the more common case. There is
+>> only one QER entry for qe_mask[0], many for qe_mask[1], and chances are
+>> that in the future we will mostly see new chips only using a qe_mask[1]
+>> mask. So having this in the else doesn't sound so strange to me? I also
+>> don't think we will ever see masks spanning the two registers.
+>
+> The problem still persists because there is the check which also fails
+> reading SR2.
 
-> Today rdmsrq() is a macro using its second parameter as the target for
-> storing the read MSR value.
->=20
-> Convert rdmsrq() to an inline function returning the MSR value.
->=20
-> The users have been converted using the following semantic patch:
->=20
->   // Options: --include-headers
->=20
->   virtual patch
->   virtual report
->=20
->   @@
->   expression msr, val;
->   @@
->   (
->   - rdmsrq(msr,val)
->   + val =3D rdmsrq(msr)
->   )
->=20
-> Signed-off-by: Juergen Gross <jgross@suse.com>
-> Acked-by: Damien Le Moal <dlemoal@kernel.org>      # ATA
+I don't get it. Why would you read SR2 if bit6 is set in qe_mask[0]?
+Or do you mean in the spi_nor_write_sr1_and_sr2_and_check(). Yeah
+that should also probably only write SR1 if qe_mask[1] =3D=3D 0, no?
 
-Acked-by: Ilpo J=E4rvinen <ilpo.jarvinen@linux.intel.com>=09=09# pdx86
+> Michael, we moved to swp.c that handling, introducing a "careful"
+> revision, was this actually relevant?
 
-What is the plan for merging this?
+Yes, because I eventually want to get rid of that sr2 QE bit
+guessing. I really can't imagine that this is necessary.
 
-> Reviewed-by: Michael Kelley <mhklinux@outlook.com> # Hyper-V
+> the lack of SR2 read back into the main core like before?
+>
+> Possible steps forward:
+> 1- Add extra logic in the "and_check" helper, kind of duplicating what
+>    is in the swp.c file (not my favourite)
+> 2- Move the "careful" handling (which does not return errors when a
+>    register read is absent) back from swp.c into core.c.
+>
+> What do you prefer?
 
---=20
- i.
---8323328-1162080221-1789119116=:1171
+3- make the generic_quad_enable differentiate between "qe bit is in
+SR1" or "qe bit is in SR2". If it's in SR1, just use
+spi_nor_{read,write}_sr1. if it's in SR2, keep the current handling.
+
+Do I miss something?
+
+-michael
+
+--39481b63a0729147b8301f18eb1d5038e0f8869c5a211f854b1d65c8f357
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCaqPRKRIcbXdhbGxlQGtl
+cm5lbC5vcmcACgkQEic87j4CH/hM2wGA8L5BzBBDrm4P0kYjQ9rJiyR0ih4hK7e7
+z6rp9lniW5kHwuNp6AN+Po3XiV9FtJi4AX4vrAdvX9IwSvnJ4IyLJ1nIB1X5g0hi
+C0OeK2aLyL3u4i3GmlW2pMd9xuHJhEmRbow=
+=rTO+
+-----END PGP SIGNATURE-----
+
+--39481b63a0729147b8301f18eb1d5038e0f8869c5a211f854b1d65c8f357--
+
+
+--===============7772454851727203209==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -191,5 +167,5 @@ ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
---8323328-1162080221-1789119116=:1171--
+--===============7772454851727203209==--
 
