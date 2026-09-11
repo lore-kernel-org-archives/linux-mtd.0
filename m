@@ -4,62 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B363C88E59
-	for <linux-mtd@archiver.kernel.org>; Fri, 11 Sep 2026 18:44:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C546C88E53
+	for <linux-mtd@archiver.kernel.org>; Fri, 11 Sep 2026 19:10:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Reply-To:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
+	References:In-Reply-To:Cc:To:Subject:From:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=EvYvgGG3z8didrGUliqYO07MgGqCRDWy1+M6eg3Jd0o=; b=qzfmJ3K1M58OU3
-	ZZufLPFdLxly8Inq3v1OvKIZvZ9cva6fAFO7YTCrG+2ksc6ePYuGOHrCI0Ts1iQwror3ZAr+QS+MK
-	XhlnzYqlAqqtRXLAes/4zXu3cRZAP+TjleeckjmPlj8J8B4Dfy/jEiWfGbA7R44BWIny5eViWJrfu
-	xx9+3oWdT0PIU08lKo6KNEvbtio8PcVRisLZkpCWYpgJgNrprwJN6xEqPoNv8m952YPiT1sb7Jug/
-	jvWalhyxGGVAhga/Y9eJYD5Gg2YxwWjsZIwk1rPpohDIeYzGCWKgVNz5Z05lVNqqm+TvBXGN8bs3E
-	Ghayrg/xOIB8vXF8hX1Q==;
+	List-Owner; bh=ZOI8bGPz4amrX+EBQe4445CBIuKhH+r+9678pSWHxi4=; b=jGx2k+00byMdKo
+	lbZbxgRvyKtZyUH53kC1Vn+KRyUQvWrJlVl10wovKL394vfT5w2KYIbORRJm+z9ArQV6o25tm3f2Y
+	N69deCIkbOiJjWm1tvKkHk8hc11hvicnylgXn+WXWFpZHn8D8gaWjiWTND0YIg16OwYbV3NDTioeK
+	uBoXEmTo/W9+pE1OI6A8n8j7oZwJezzVdjMOWHUXAL0w2JRjZ7NqRevXga0gCsYaPldvsZ8m+VDjw
+	xb+3BNTtFcyXhjjq5Lb1CeoJFaMhuyWVTawcWIuARWEfThyj6W3YNS/1/SNsj0XscioGWFIA5tpEA
+	h36ZR7j3sjPIfaoyf/VA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x56F4-0000000HT0l-2FnF;
-	Fri, 11 Sep 2026 18:44:54 +0000
-Received: from sendmail.purelymail.com ([34.202.193.197])
+	id 1x56dZ-0000000HViq-2wem;
+	Fri, 11 Sep 2026 19:10:13 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x56F1-0000000HSzx-18Lq
+	id 1x56dY-0000000HVih-1S2N
 	for linux-mtd@lists.infradead.org;
-	Fri, 11 Sep 2026 18:44:52 +0000
-DKIM-Signature: a=rsa-sha256; b=JpgbrNCeSQJBslh55Wk08xA5t9JT6G7+2iKRF09Hd+iX9MZVTpqU03GGjOf3OrwJV6rlRQIUYaO8r4y3ZboOj5FIK3CrPqA0ZQ4OWNOLmioH/tFi7jWQvw18vNJluwbW7kym1zyqImrRkf3SASnpVmdto/Elv//sjw8G6jtSSVz7TBvy7dg7OgvrFGdI83/kjg7+ROAlSgG6lRktRN19hPIyYLXzTjnTj/ZgkMj74P+IxSlZTpsvJaOToSLv6aRoRBSJ8Ki4Has1F3l2RV1t9897O+OXbFZESPF1w09sPrIa3yH/uqhHjqWlfF/8vOq9qlNzpgqrxCAJaGtcVzvrbw==; s=purelymail1; d=c127.dev; v=1; bh=evRXY1mk5e/9hRx/q9vBneumWgfTsFpYy53xJcSfcZs=; h=Received:From:To:Subject:Date;
-DKIM-Signature: a=rsa-sha256; b=QjbhosZZiZABYiEvmMoAGwKXFzDrVx0xFKjSg7XEXUepn8k4P6d8vaPL5YpcYE96uGjPKyUO1TNqj4Z4i3vaS5jztnM94GbbyrcLeviMy0w6lPoSiBSktM6zgJlRCEF13qgeWKkr3ooO75Mqq0aqRwnq+gyHKhDyr3iC0GJSTdOV/5yYya7WcW8Jep19PlOOqnowEKTnVGDN9vW5U9hRzLU0aQ5lzrHcp5c30BAMpyW76L2L5ijpQTeVnhqtVcG8euzCIn7bJx03GAAiaO559Bjv9daCe19Zfjuq173t/3t3NaDi5ChQWC6E0K7Y+XWanUEWc4si6KRcodvt85Io9g==; s=purelymail1; d=purelymail.com; v=1; bh=evRXY1mk5e/9hRx/q9vBneumWgfTsFpYy53xJcSfcZs=; h=Feedback-ID:Received:From:To:Subject:Date;
-Feedback-ID: 1017243:43747:null:purelymail
-X-Pm-Original-To: linux-mtd@lists.infradead.org
-Received: by smtp.purelymail.com (Purelymail SMTP) with ESMTPSA id -894114220;
-          (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384);
-          Fri, 11 Sep 2026 18:44:24 +0000 (UTC)
-From: Johan Alvarado <contact@c127.dev>
-To: broonie@kernel.org,
-	md.alam@oss.qualcomm.com
-Cc: konradybcio@kernel.org,
-	pengpeng@iscas.ac.cn,
-	miquel.raynal@bootlin.com,
-	j4g8y7@gmail.com,
-	quic_varada@quicinc.com,
-	quic_srichara@quicinc.com,
-	linux-spi@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Johan Alvarado <contact@c127.dev>
-Subject: [PATCH v2 2/2] spi: spi-qpic-snand: drop the redundant ECC context handling
-Date: Fri, 11 Sep 2026 13:44:16 -0500
-Message-ID: <20260911184416.109790-3-contact@c127.dev>
-X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20260911184416.109790-1-contact@c127.dev>
+	Fri, 11 Sep 2026 19:10:12 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with ESMTP id 91F8460142;
+	Fri, 11 Sep 2026 19:10:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 990EE1F000FF;
+	Fri, 11 Sep 2026 19:10:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1789153811;
+	bh=x8PF0Dw7B9WOGI0dgKC/lQ6SFx581HVewAv+WudZApk=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=ZgfwXFn0n86BydycMzknxcPJhdXE8VTJA5js5hebUm8GFRpG7Z+JgIMKyUznMIkr0
+	 42hSx1+db7cX6H/GFI23hksucKuXhCJF3qwqyqZW7l9xEJxRO+rrDBezl1ti8yLsM7
+	 XRRWahOkZhpZbT7hDSXLvW2WzWO/rKJZs+3m0UC1BMnt02Jd2mwpGty4Z4Mak30Lft
+	 fAwE8BwoFIqCz6XKMUlY7YnQ+fBIcJaapWbsDDhMjBWl7u94qKvs901ed85hrrS2ru
+	 jyPCvlqOmgJxTrdjaBmp6E6OsoRLztzdgZTj4ZpuS+8+6mreUnlIP+OJDVDPU0Iowd
+	 0cU1wtElUb90A==
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH v2 2/2] spi: spi-qpic-snand: drop the redundant ECC
+ context handling
+To: md.alam@oss.qualcomm.com, broonie@kernel.org, "Johan Alvarado" <contact@c127.dev>
+Cc: j4g8y7@gmail.com, quic_varada@quicinc.com, linux-arm-msm@vger.kernel.org, linux-spi@vger.kernel.org, miquel.raynal@bootlin.com, pengpeng@iscas.ac.cn, linux-kernel@vger.kernel.org, quic_srichara@quicinc.com, linux-mtd@lists.infradead.org, konradybcio@kernel.org
+In-Reply-To: <20260911184416.109790-3-contact@c127.dev>
 References: <20260911184416.109790-1-contact@c127.dev>
-MIME-Version: 1.0
-X-MIME-Autoconverted: from 8bit to quoted-printable by Purelymail
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260911_114451_375024_90531EA1 
-X-CRM114-Status: UNSURE (   9.43  )
-X-CRM114-Notice: Please train this message.
+ <20260911184416.109790-3-contact@c127.dev>
+Date: Fri, 11 Sep 2026 19:10:10 +0000
+Message-Id: <20260911191010.990EE1F000FF@smtp.kernel.org>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,82 +63,60 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Reply-To: sashiko-reviews@lists.linux.dev
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-qcom_spi_ecc_init_ctx_pipelined() now publishes the ECC context to
-snandc->qspi->ecc, so the assignment in
-qcom_spi_ecc_prepare_io_req_pipelined() repeats what the pointer already
-holds, and the zeroed struct qpic_ecc that qcom_spi_probe() allocates is
-never read.
-
-The pointer is non-NULL only between context creation and destruction,
-and every reader runs inside that window. The ooblayout callbacks are
-installed by init_ctx. The page read, write and program helpers run only
-when prepare_io_req has set page_rw or oob_rw. qcom_spi_block_erase()
-runs only while the mtd is registered, which happens after init_ctx and
-ends before cleanup_ctx. The controller drives a single chip select, so
-the per-controller pointer and the per-chip context cannot disagree.
-
-Remove both. No functional change.
-
-Suggested-by: Gabor Juhos <j4g8y7@gmail.com>
-Signed-off-by: Johan Alvarado <contact@c127.dev>
----
-Tested on a Mercusys MR80X (IPQ5018, ESMT F50D1G41LB) with both patches
-backported to 6.18.44. Five boots, rootfs mounted every time, mtd
-reported 0 ECC failures and 0 corrected bits, and a 4 MiB file on the
-UBIFS overlay kept its sha256 across the reboots. Overlay churn raised
-the UBI maximum erase counter from 13 to 15, so qcom_spi_block_erase()
-ran repeatedly. Build-tested on this base with W=1 and sparse, no
-warnings, patch 1 alone and both patches applied.
-
- drivers/spi/spi-qpic-snand.c | 8 --------
- 1 file changed, 8 deletions(-)
-
-diff --git a/drivers/spi/spi-qpic-snand.c b/drivers/spi/spi-qpic-snand.c
-index 20045d4a46fa..760ee1c29402 100644
---- a/drivers/spi/spi-qpic-snand.c
-+++ b/drivers/spi/spi-qpic-snand.c
-@@ -437,9 +437,7 @@ static int qcom_spi_ecc_prepare_io_req_pipelined(struct nand_device *nand,
- 						 struct nand_page_io_req *req)
- {
- 	struct qcom_nand_controller *snandc = nand_to_qcom_snand(nand);
--	struct qpic_ecc *ecc_cfg = nand_to_ecc_ctx(nand);
- 
--	snandc->qspi->ecc = ecc_cfg;
- 	snandc->qspi->raw_rw = false;
- 	snandc->qspi->oob_rw = false;
- 	snandc->qspi->page_rw = false;
-@@ -1586,14 +1584,9 @@ static int qcom_spi_probe(struct platform_device *pdev)
- 	struct spi_controller *ctlr;
- 	struct qcom_nand_controller *snandc;
- 	struct qpic_spi_nand *qspi;
--	struct qpic_ecc *ecc;
- 	struct resource *res;
- 	int ret;
- 
--	ecc = devm_kzalloc(dev, sizeof(*ecc), GFP_KERNEL);
--	if (!ecc)
--		return -ENOMEM;
--
- 	qspi = devm_kzalloc(dev, sizeof(*qspi), GFP_KERNEL);
- 	if (!qspi)
- 		return -ENOMEM;
-@@ -1613,7 +1606,6 @@ static int qcom_spi_probe(struct platform_device *pdev)
- 	snandc->dev = dev;
- 	snandc->qspi = qspi;
- 	snandc->qspi->ctlr = ctlr;
--	snandc->qspi->ecc = ecc;
- 
- 	snandc->props = of_device_get_match_data(dev);
- 	if (!snandc->props) {
--- 
-2.55.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+VGhhbmsgeW91IGZvciB5b3VyIGNvbnRyaWJ1dGlvbiEgU2FzaGlrbyBBSSByZXZpZXcgZm91bmQg
+MSBwb3RlbnRpYWwgaXNzdWUocykgdG8gY29uc2lkZXI6Ci0gW0hpZ2hdIERldGVybWluaXN0aWMg
+a2VybmVsIHBhbmljIGluIHFjb21fc3BpX2Jsb2NrX2VyYXNlKCkgd2hlbiB0aGUgaG9zdCBFQ0Mg
+ZW5naW5lIGlzIGJ5cGFzc2VkIChlLmcuLCB2aWEgbm9uLU5BTkQgU1BJIG1lbW9yeSBkcml2ZXJz
+IGxpa2Ugc3BpLW5vciwgb3IgT04tRElFL3NvZnR3YXJlIEVDQykuCi0tCgpjb21taXQgYTk3YTA3
+MWQ3OTEyNWJiNWRiNGQ1NWM3ZDAzYTVmOTQ1ZmE5MmFlZgpBdXRob3I6IEpvaGFuIEFsdmFyYWRv
+IDxjb250YWN0QGMxMjcuZGV2PgoKICAgIHNwaTogc3BpLXFwaWMtc25hbmQ6IGRyb3AgdGhlIHJl
+ZHVuZGFudCBFQ0MgY29udGV4dCBoYW5kbGluZwogICAgCiAgICBxY29tX3NwaV9lY2NfaW5pdF9j
+dHhfcGlwZWxpbmVkKCkgbm93IHB1Ymxpc2hlcyB0aGUgRUNDIGNvbnRleHQgdG8KICAgIHNuYW5k
+Yy0+cXNwaS0+ZWNjLCBzbyB0aGUgYXNzaWdubWVudCBpbgogICAgcWNvbV9zcGlfZWNjX3ByZXBh
+cmVfaW9fcmVxX3BpcGVsaW5lZCgpIHJlcGVhdHMgd2hhdCB0aGUgcG9pbnRlciBhbHJlYWR5CiAg
+ICBob2xkcywgYW5kIHRoZSB6ZXJvZWQgc3RydWN0IHFwaWNfZWNjIHRoYXQgcWNvbV9zcGlfcHJv
+YmUoKSBhbGxvY2F0ZXMgaXMKICAgIG5ldmVyIHJlYWQuCgo+IFRoZSBwb2ludGVyIGlzIG5vbi1O
+VUxMIG9ubHkgYmV0d2VlbiBjb250ZXh0IGNyZWF0aW9uIGFuZCBkZXN0cnVjdGlvbiwKPiBhbmQg
+ZXZlcnkgcmVhZGVyIHJ1bnMgaW5zaWRlIHRoYXQgd2luZG93LiBUaGUgb29ibGF5b3V0IGNhbGxi
+YWNrcyBhcmUKPiBpbnN0YWxsZWQgYnkgaW5pdF9jdHguIFRoZSBwYWdlIHJlYWQsIHdyaXRlIGFu
+ZCBwcm9ncmFtIGhlbHBlcnMgcnVuIG9ubHkKPiB3aGVuIHByZXBhcmVfaW9fcmVxIGhhcyBzZXQg
+cGFnZV9ydyBvciBvb2JfcncuIHFjb21fc3BpX2Jsb2NrX2VyYXNlKCkKPiBydW5zIG9ubHkgd2hp
+bGUgdGhlIG10ZCBpcyByZWdpc3RlcmVkLCB3aGljaCBoYXBwZW5zIGFmdGVyIGluaXRfY3R4IGFu
+ZAo+IGVuZHMgYmVmb3JlIGNsZWFudXBfY3R4LgoKSXMgdGhpcyBhc3N1bXB0aW9uIGFjY3VyYXRl
+IGZvciBhbGwgY29uZmlndXJhdGlvbnM/CgpJZiB0aGUgZGV2aWNlIHRyZWUgc3BlY2lmaWVzIE9O
+LURJRSBvciBzb2Z0d2FyZSBFQ0MgKG5hbmQsZWNjLWVuZ2luZSA9CiJvbi1kaWUiKSwgb3IgaWYg
+YSBub24tTkFORCBTUEkgbWVtb3J5IGRldmljZSAobGlrZSBzcGktbm9yKSBpcyBhdHRhY2hlZCB0
+bwp0aGlzIGNvbnRyb2xsZXIsIHdvbid0IHRoZSBob3N0J3MgaW5pdF9jdHggYmUgYnlwYXNzZWQ/
+Cgo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3NwaS9zcGktcXBpYy1zbmFuZC5jIGIvZHJpdmVycy9z
+cGkvc3BpLXFwaWMtc25hbmQuYwo+IGluZGV4IDIwMDQ1ZDRhNDZmYWQuLjc2MGVlMWMyOTQwMmYg
+MTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9zcGkvc3BpLXFwaWMtc25hbmQuYwo+ICsrKyBiL2RyaXZl
+cnMvc3BpL3NwaS1xcGljLXNuYW5kLmMKWyAuLi4gXQo+IEBAIC0xNTg2LDE0ICsxNTg0LDkgQEAg
+c3RhdGljIGludCBxY29tX3NwaV9wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQo+
+ICAJc3RydWN0IHNwaV9jb250cm9sbGVyICpjdGxyOwo+ICAJc3RydWN0IHFjb21fbmFuZF9jb250
+cm9sbGVyICpzbmFuZGM7Cj4gIAlzdHJ1Y3QgcXBpY19zcGlfbmFuZCAqcXNwaTsKPiAtCXN0cnVj
+dCBxcGljX2VjYyAqZWNjOwo+ICAJc3RydWN0IHJlc291cmNlICpyZXM7Cj4gIAlpbnQgcmV0Owo+
+ICAKPiAtCWVjYyA9IGRldm1fa3phbGxvYyhkZXYsIHNpemVvZigqZWNjKSwgR0ZQX0tFUk5FTCk7
+Cj4gLQlpZiAoIWVjYykKPiAtCQlyZXR1cm4gLUVOT01FTTsKPiAtCgpbU2V2ZXJpdHk6IEhpZ2hd
+CklmIGluaXRfY3R4IGlzIGJ5cGFzc2VkIGFzIGRlc2NyaWJlZCBhYm92ZSwgd2lsbCByZW1vdmlu
+ZyB0aGlzIGFsbG9jYXRpb24KbGVhZCB0byBhIE5VTEwgcG9pbnRlciBkZXJlZmVyZW5jZSBpbiBx
+Y29tX3NwaV9ibG9ja19lcmFzZSgpPwoKSWYgc25hbmRjLT5xc3BpLT5lY2MgcmVtYWlucyBOVUxM
+LCBhIHN0YW5kYXJkIGJsb2NrIGVyYXNlIG9wZXJhdGlvbgpkZWxlZ2F0ZWQgdGhyb3VnaCBxY29t
+X3NwaV9leGVjX29wKCkgdG8gcWNvbV9zcGlfYmxvY2tfZXJhc2UoKSB3b3VsZCBhcHBlYXIKdG8g
+ZGVyZWZlcmVuY2UgaXQ6Cgpkcml2ZXJzL3NwaS9zcGktcXBpYy1zbmFuZC5jOnFjb21fc3BpX2Js
+b2NrX2VyYXNlKCkgewoJc3RydWN0IHFwaWNfZWNjICplY2NfY2ZnID0gc25hbmRjLT5xc3BpLT5l
+Y2M7CgkuLi4KCXNuYW5kYy0+cmVncy0+Y2ZnMCA9IGNwdV90b19sZTMyKChlY2NfY2ZnLT5jZmcw
+X3JhdyAmIH5DV19QRVJfUEFHRV9NQVNLKSB8CgkJCQkJIEZJRUxEX1BSRVAoQ1dfUEVSX1BBR0Vf
+TUFTSywgMCkpOwp9Cgo+ICAJcXNwaSA9IGRldm1fa3phbGxvYyhkZXYsIHNpemVvZigqcXNwaSks
+IEdGUF9LRVJORUwpOwo+ICAJaWYgKCFxc3BpKQo+ICAJCXJldHVybiAtRU5PTUVNOwoKLS0gClNh
+c2hpa28gQUkgcmV2aWV3IMK3IGh0dHBzOi8vc2FzaGlrby5kZXYvIy9wYXRjaHNldC8yMDI2MDkx
+MTE4NDQxNi4xMDk3OTAtMS1jb250YWN0QGMxMjcuZGV2P3BhcnQ9MgoKX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNz
+aW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2xpbnV4LW10ZC8K
