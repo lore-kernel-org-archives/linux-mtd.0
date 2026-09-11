@@ -4,60 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9637DC88E50
-	for <linux-mtd@archiver.kernel.org>; Fri, 11 Sep 2026 12:06:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6DCAFC88E4D
+	for <linux-mtd@archiver.kernel.org>; Fri, 11 Sep 2026 12:45:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:References:To:From:Cc:Subject:Message-Id:Date:Mime-Version:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=w3jF/41M9dwIIVAYJdf4/YxYU/dIcmqw41b2ROyhL9I=; b=ecQQhuMAL+z+HrQ1k/0yDWRCV1
-	gAPeEr3gXytRoMiXgxFsdnxgmkdQJ9QLFl5yKOX/RPsk+Ah9KaIrTfztHbKY2QUPrmjZF3aU0GhoI
-	aNrR9lie6TzOzx8mM//CeGgzd3WX0+wFLvXuVdA5Ar96IedlLQkV786Do1otCupG4y4uivVm+JrEY
-	gPB4KJRv+S7oifES4xk9Nri00mFp7smpKRWm8yWkZ4OjSDEQMBgh5MViGFi4xHjYtBukiQaqQei9y
-	kNlx8devhkW1A+02HznRlCkGldNQ7ReMA/UTRWXGVzpBU7TvPpmbEvUCznIagrFWvuryq9xvmRJ8V
-	ll5MnwqA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=tsc2TOAxGPR19vDVtCCT0M/ncIdlacP4VgpPlsPn5EE=; b=1HnW+e2ojBu4pE
+	k/vd6H2rfmg5TpPMHUem8bMO9g3t4uWVgwryyY0ObQ00KyQvi6FYc93QGGD8BevTtRGjdtdmysvHl
+	4JgO1oxlEKj8cwcxS/4Lg8RWgzXKIqm/ILMKW0rXpQlFmD9vzn2NpMRyPKLPSyl+braiFpLCGB0bl
+	UQ57AY6Uvohi4wa5YSW2dkCBnt4hxnFbiVAafNg/QwgYwlzlXwSs0nL8Gng7so0Vlwcy2x4Gtem0s
+	Dw564pDRcR/ihB6LbE3xsL68kOcUpxV/js33pC1UwVSXsyS5thJ4JdfSgXzS3QrkmqamkfPOt1Zsp
+	GNR+v3XMoTu6Uc7/pVmw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x501g-0000000GZnL-0gMs;
-	Fri, 11 Sep 2026 12:06:40 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1x50dR-0000000GeWp-1fsL;
+	Fri, 11 Sep 2026 12:45:41 +0000
+Received: from smtpout-03.galae.net ([185.246.85.4])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x501e-0000000GZn9-22WL
+	id 1x50dM-0000000GeW6-1eQd
 	for linux-mtd@lists.infradead.org;
-	Fri, 11 Sep 2026 12:06:38 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with UTF8SMTP id DEB1343F36;
-	Fri, 11 Sep 2026 12:06:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id 35B3A1F000FF;
-	Fri, 11 Sep 2026 12:06:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789128397;
-	bh=rQk8H8XNPNF9GDtCSo4fzrpYj34vcGV2wYZRP68vo0w=;
-	h=Date:Subject:Cc:From:To:References:In-Reply-To;
-	b=nXa2ZxrURe2DgvwTpfN+X/GKtfXRFe7Fu7Kk50+CERIlAW9M39fSFdcrvLN/6g5Vd
-	 24jHMUJ33/29ECU6QBcIqGeXRR9Mpnvp9jzde7cv2A0RDW0QiwbMZJcUZ0nabhEY3y
-	 uQOvcCGZeJM59CuWxxpumxV4JnZwp382riciCV0X1w/3sABUlCzEHNSOnHZSJT/uVt
-	 LUu6UL277yV6evM+kf0g+znBCfdmwi67+W27rupNVwsjuzejH2GNlWAkiCnIBqtVNm
-	 B1VnuewKaQodbheWwTmLuSonq9yKdyifAgQtqSsdIDyvotasKGqRN8CSC6fakkwxsD
-	 MaSrhVTu+eSAg==
-Mime-Version: 1.0
-Date: Fri, 11 Sep 2026 14:06:33 +0200
-Message-Id: <DLCH314FE40X.3R6WPHTKXK5AG@kernel.org>
-Subject: Re: [PATCH] mtd: spi-nor: Fix quad-enable for flashes with QER bit
- in SR1
-Cc: "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>, "Steam Lin"
- <STLin2@winbond.com>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>
-From: "Michael Walle" <mwalle@kernel.org>
-To: "Jon Hunter" <jonathanh@nvidia.com>, "Miquel Raynal"
- <miquel.raynal@bootlin.com>, "Pratyush Yadav" <pratyush@kernel.org>,
- "Takahiro Kuwano" <takahiro.kuwano@infineon.com>, "Richard Weinberger"
- <richard@nod.at>, "Vignesh Raghavendra" <vigneshr@ti.com>
-X-Mailer: aerc 0.20.0
-References: <20260911-perso-fix-spi-nor-qe-mxic-v1-1-fd6d91416a2a@bootlin.com> <79b104a2-a76d-415b-b98c-6833d8cd298f@nvidia.com>
-In-Reply-To: <79b104a2-a76d-415b-b98c-6833d8cd298f@nvidia.com>
+	Fri, 11 Sep 2026 12:45:40 +0000
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-03.galae.net (Postfix) with ESMTPS id D9AA94E401EF;
+	Fri, 11 Sep 2026 12:45:32 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 9DF20601DE;
+	Fri, 11 Sep 2026 12:45:32 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 3C7F211C7AF8E;
+	Fri, 11 Sep 2026 14:45:20 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1789130731; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=KjBGGwR20vQiI0jIm/6+LCpumwMENqAyvKhaULfuQBM=;
+	b=JWnIE9R2695Os1cP34Ko1AFn6UyQ7adbR0kCQmuqHK99TUwEHndhQoniIsuTsCQeoY3Dtk
+	NZxAOZLcJofMGXQA+bH0EiLOOhYRkREe5Y1gCeuG8XCxtgzDhi7XWsMtcB9pg8lyFsTqSX
+	hKfVDZGvXIyp+7mcOBDSEY5EqFy/plyJvN34ZxCs+0z/xyPm3fqzlp/m942xkrUw73xFk7
+	7yBh1Qn9QNJ4gzOYPCYM+BkxR5ocyNozj4uQFf+spHEO2mMp4rJVkDtcHdpvnYnMD8vmQz
+	WdUR5OZM069m6/6nP1mLEwbvDQgCqdU295YqcCaF5hJhe8ywD6awR3ErwU4DHw==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: sashiko-bot@kernel.org
+Cc: "Vignesh Raghavendra" <vigneshr@ti.com>,  "Pratyush Yadav"
+ <pratyush@kernel.org>,  "Michael Walle" <mwalle@kernel.org>,  "Takahiro
+ Kuwano" <takahiro.kuwano@infineon.com>,  "Richard Weinberger"
+ <richard@nod.at>,  sashiko-reviews@lists.linux.dev,  "Thomas Petazzoni"
+ <thomas.petazzoni@bootlin.com>,  linux-kernel@vger.kernel.org,  "Steam
+ Lin" <STLin2@winbond.com>,  linux-mtd@lists.infradead.org,  "Jon Hunter"
+ <jonathanh@nvidia.com>
+Subject: Re: [PATCH v2] mtd: spi-nor: Fix quad-enable for flashes with QER
+ bit in SR1
+In-Reply-To: <20260911105245.408171F00893@smtp.kernel.org>
+	(sashiko-bot@kernel.org's message of "Fri, 11 Sep 2026 10:52:44
+	+0000")
+References: <20260911-perso-fix-spi-nor-qe-mxic-v2-1-70c324e9f30e@bootlin.com>
+	<20260911105245.408171F00893@smtp.kernel.org>
+User-Agent: mu4e 1.12.12; emacs 30.2
+Date: Fri, 11 Sep 2026 14:45:19 +0200
+Message-ID: <877bksq7mo.fsf@bootlin.com>
+MIME-Version: 1.0
+X-Last-TLS-Session-Version: TLSv1.3
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260911_054538_104806_FA315384 
+X-CRM114-Status: UNSURE (   7.46  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,96 +80,29 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5540411242008567675=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============5540411242008567675==
-Content-Type: multipart/signed;
- boundary=52aecf1dfe91a47d5b608b4c4d5b3e6c6d85cb35ad279bc6e716a1a45d57;
- micalg=pgp-sha384; protocol="application/pgp-signature"
-
---52aecf1dfe91a47d5b608b4c4d5b3e6c6d85cb35ad279bc6e716a1a45d57
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-
-On Fri Sep 11, 2026 at 12:33 PM CEST, Jon Hunter wrote:
->
-> On 11/09/2026 09:55, Miquel Raynal wrote:
->> Some flashes (eg. from Macronix) do set BFPT_DWORD15_QER_SR1_BIT6, which
->> means they do not have an SR2 to read from/write to. The new generic QE
->> helper was supposed to accommodate this situation but in the last versio=
-n
->> that got merged, parts of that specific handling has been moved to a
->> more contained location, swp.c (which needed most of the extra code),
->> yet the Macronix case has been forgotten about in that generic QE
->> handling helper. Booting with such flashes will always fail probing.
->>=20
->> Fix the situation by making sure we do not attempt to read SR2 if the QE
->> bit is in SR1.
->>=20
->> Reported-by: Jon Hunter <jonathanh@nvidia.com>
->> Closes: https://lore.kernel.org/linux-mtd/178876719232.3543902.144516250=
-37676421254.b4-ty@b4/T/#m5bc4ba6776436f2870ced0eb5789d229037ad840
->> Fixes: 63489002d397 ("mtd: spi-nor: Refactor Read Status/Write Status su=
-pport")
->> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
->> ---
->>   drivers/mtd/spi-nor/core.c | 5 ++++-
->>   1 file changed, 4 insertions(+), 1 deletion(-)
->>=20
->> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
->> index e2b6efafdd8d..ac909dfb9657 100644
->> --- a/drivers/mtd/spi-nor/core.c
->> +++ b/drivers/mtd/spi-nor/core.c
->> @@ -985,7 +985,10 @@ static int spi_nor_generic_quad_enable(struct spi_n=
-or *nor)
->>   	if (!qe_mask[0] && !qe_mask[1])
->>   		return 0;
->>  =20
->> -	ret =3D spi_nor_read_sr1_and_sr2(nor, sr);
->> +	if (qe_mask[0])
->> +		ret =3D spi_nor_read_sr1(nor, sr);
->> +	else
->> +		ret =3D spi_nor_read_sr1_and_sr2(nor, sr);
->>   	if (ret)
->>   		return ret;
->
-> I know that there is still some discussion going on about this
-> patch, but FWIW this does fix the issue I was seeing.
-
-Thanks, could you give the new version [1] a quick test and a
-Tested-by tag?
-
--michael
-
-[1] https://lore.kernel.org/r/20260911-perso-fix-spi-nor-qe-mxic-v2-1-70c32=
-4e9f30e@bootlin.com/
-
---52aecf1dfe91a47d5b608b4c4d5b3e6c6d85cb35ad279bc6e716a1a45d57
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCaqPuyRIcbXdhbGxlQGtl
-cm5lbC5vcmcACgkQEic87j4CH/ge0gF/T98FSz+QIb/WQ95yaiw93I/691kqZ5KV
-KswMGkEoxMY7zdQhXA5vDmLpWY4c4t8gAYCArU+ldBxMbP+gp5JuR+iZ+rf6KnCe
-Lhg2SkRjC/Xm+CLHS82gLP6sGdhsqNfBuMA=
-=b+wG
------END PGP SIGNATURE-----
-
---52aecf1dfe91a47d5b608b4c4d5b3e6c6d85cb35ad279bc6e716a1a45d57--
-
-
---===============5540411242008567675==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============5540411242008567675==--
-
+SGVsbG8gTWljaGFlbCwKCk9uIDExLzA5LzIwMjYgYXQgMTA6NTI6NDQgR01ULCBzYXNoaWtvLWJv
+dEBrZXJuZWwub3JnIHdyb3RlOgoKPiBUaGFuayB5b3UgZm9yIHlvdXIgY29udHJpYnV0aW9uISBT
+YXNoaWtvIEFJIHJldmlldyBmb3VuZCAxIHBvdGVudGlhbCBpc3N1ZShzKSB0byBjb25zaWRlcjoK
+PiAtIFtIaWdoXSBzcGlfbm9yX3JlYWRfc3IxX2FuZF9zcjIoKSBsZWF2ZXMgc3JbMV0gdW5pbml0
+aWFsaXplZCB3aGVuCj4gcmVhZF9zcjIgaXMgdW5zdXBwb3J0ZWQsIGxlYWRpbmcgdG8gdW5pbml0
+aWFsaXplZCBzdGFjayBtZW1vcnkgdXNlIGluCj4gY2FsbGVycyBhbmQgc3B1cmlvdXMgLUVJTyBl
+cnJvcnMuCgpUaGUgYW5ub3lpbmdseSByaWdodCBTYXNoaWtvIHJvYm90IGlzIGNvcnJlY3QgOi0p
+CgpUaGUgYmVzdCB3YXkgSSBzZWUgdG8gbWFrZSBzdXJlIHRoaXMgZG9lcyBub3QgYXBwZWFyLCBp
+cyB0byBqdXN0IGFkZAp0aGlzIGZhbGxiYWNrIHRvIG1ha2Ugc3VyZSB3aGVuIHdlIHJlYWQgYm90
+aCByZWdpc3RlcnMgd2UganVzdCBnZXQgemVybwppbnN0ZWFkIG9mIHJhbmRvbSBkYXRhIGluIHRo
+ZSBidWZmZXIuIEFnYWluLCB0aGUgaWRlYSBpcyB0byBtYWtlIHN1cmUKY2FsbGVycyBkbyBub3Qg
+bmVlZCB0byBiZSAiUUVSIGF3YXJlIi4KCi0tLSBhL2RyaXZlcnMvbXRkL3NwaS1ub3IvY29yZS5j
+CisrKyBiL2RyaXZlcnMvbXRkL3NwaS1ub3IvY29yZS5jCkBAIC04NjcsNiArODY3LDggQEAgaW50
+IHNwaV9ub3JfcmVhZF9zcjFfYW5kX3NyMihzdHJ1Y3Qgc3BpX25vciAqbm9yLCB1OCAqc3IpCiAK
+ICAgICAgICBpZiAobm9yLT5wYXJhbXMtPm9wY29kZXMucmVhZF9zcjIpCiAgICAgICAgICAgICAg
+ICByZXQgPSBzcGlfbm9yX3JlYWRfc3IyKG5vciwgJnNyWzFdKTsKKyAgICAgICBlbHNlCisgICAg
+ICAgICAgICAgICBzclsxXSA9IDA7CiAKICAgICAgICByZXR1cm4gcmV0OwogfQoKV2hhdCBkbyB5
+b3UgdGhpbms/CgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxp
+c3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQv
+Cg==
