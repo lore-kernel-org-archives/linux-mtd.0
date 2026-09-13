@@ -4,80 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2D00CC88E40
-	for <linux-mtd@archiver.kernel.org>; Sun, 13 Sep 2026 04:05:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B0ACC88E56
+	for <linux-mtd@archiver.kernel.org>; Sun, 13 Sep 2026 04:05:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Eupl2wNQE00LsAuY0FbvPMIJILrb519ch621480P9pc=; b=457jt9Vbic8rQL
-	RZYT39au3+2tSuBGykqRZhOMl2OKIJrpODiOm1gT5VGvX9nHaedcSR+cPMTggWbi+ZU4jIzKf2DdE
-	ln5ezsYo9zLO7Qi2QQ32zrTBzM57MQVYwB14w7DDHfMk2w32I66dAgPTqBXAaChNpeknrHKJLpG8T
-	MQiI8caHiza1S+1xlUyYLZooOJwo6AHDlm/3hd40TkiN1MKr9JE3x1JnBYlzA7YYjvp3F1npLDQW/
-	rYTv11JluisFz2wmJUUORi7tbbfHKgChBDbifpQlSfBsHvvSO3vgUIvmVNmRc0zvLkEEOFLf4KLFo
-	nMlb2yWftobkyQipHeKw==;
+	List-Owner; bh=XJF9ul8c4gzC3zHFIgXO16bDYELFtx5U4yn08aV6yqg=; b=JmTbYvehOMW+fp
+	Vp5u6kpVJx9Sqv4f42ou26YPyFoqikxWMK8IROZWCmxcMgrkg4LPmHQ+H3CEX6uFtw70nBavqaGny
+	F01AEfTefCIpG2yloSpIM6QzMGreP0diXaNYhNE2pG7mCTbMwr+WJ46YzO1k/rICX+pucsDEvdMKw
+	R36euHMV0khRUNAKZ6GmLyioNJiRSKVqlmEi65DsPYRwlpdgK7h/jJEejUTVxy6JXsCYZGYDhrjRw
+	YAgoRD2UIAqAUAL3jNTCY3ZHdDehS6V6EPa6ZQuUvos74Jh9OIfZ66CA95OSmW/bFxdOTEaW2zOQz
+	oF53rVd2+XgT2A4jL/VA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x5bTD-00000001MhX-2jwS;
-	Sun, 13 Sep 2026 04:05:35 +0000
-Received: from mail-oa1-x35.google.com ([2001:4860:4864:20::35])
+	id 1x5bTJ-00000001MoQ-082w;
+	Sun, 13 Sep 2026 04:05:41 +0000
+Received: from mail-oa2-x10.google.com ([2607:f8b0:4864:30::10])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x5bSx-00000001MFQ-0nRu
+	id 1x5bSy-00000001MIH-0PnJ
 	for linux-mtd@lists.infradead.org;
-	Sun, 13 Sep 2026 04:05:21 +0000
-Received: by mail-oa1-x35.google.com with SMTP id 586e51a60fabf-46f415ce6deso1178459fac.2
-        for <linux-mtd@lists.infradead.org>; Sat, 12 Sep 2026 21:05:18 -0700 (PDT)
+	Sun, 13 Sep 2026 04:05:22 +0000
+Received: by mail-oa2-x10.google.com with SMTP id 586e51a60fabf-46a63c34533so1170831fac.1
+        for <linux-mtd@lists.infradead.org>; Sat, 12 Sep 2026 21:05:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1789272318; x=1789877118; darn=lists.infradead.org;
+        d=gmail.com; s=20251104; t=1789272319; x=1789877119; darn=lists.infradead.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=hb1UAgJ8R3xqyuxnkYr/GKcQBuP99rDSmeFz/RErrU8=;
-        b=hcVN53PFvG3/avzDX6kvBgqj3PvsQ5a6rmQiyra2dm1p1jnBNF0fIf0xVUSQAkRwpD
-         7pYerR7tpQdqeqtlWQ++mkSOBZJrQwOAMkwOJHThJuaWiGL8KjeA0KM2iLwJydj1nQqk
-         PGWpcFKRYfg8hhDqN4fmGCQhiVCMoLqSpz6hZTdczacGokSl8eX2SNMMkoq71fPnJsa+
-         nleF5tO3tvfsdLeZCUZloL1fZEBhfrOuSN4aN2Fsu+KWMxSUcU8f/htiqG/eyslbr4Rc
-         mH1qT+eT54IqA6wUCFS65jsDIk2ZhFLDgcToxo406hyEFdylUN+rDGhSPl2YpSKWRQSa
-         w+ew==
+        bh=A0CrISCG3enxLUNERhlMVwT+4sBOgXXXdTBmRqqtC4g=;
+        b=OLdGp7oOiHHqYfnY+v2SUuaOKiUAxdSDlSGJwSsk29s+h8SKdRDtdNzHHXSRFPHVqj
+         P8Li2eTn6odGh7flFyXiJ+mG/rZ5fDsWzCQ44R1ErQ1MQJUSeNM5QIW11r8ho2C2l8PR
+         QUT3rYV4VmW0D90+HZ7oylzd8TjOVDwXdXrCZ+j//3OcsuqiLmVj4bezZGAVnWfwZS6K
+         ZMGxeh1o9pUBMCpl/WrWAjr4thdvypJkTlPYjvKau4udp5f+lmq3B73uUzkOXNFTNb9a
+         O+0w5oTt1+rzV26iMfuxdKSOuqgiuzzxPRdT+bWWkxyb3YhxtK3KlOL46fIsBfBEnoz9
+         h4Pw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1789272318; x=1789877118;
+        d=1e100.net; s=20251104; t=1789272319; x=1789877119;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=hb1UAgJ8R3xqyuxnkYr/GKcQBuP99rDSmeFz/RErrU8=;
-        b=DqMbKJHMnhWpKhgHaS3tY/UFZh7wHSGEhz96hi6906YHQLYtyrbnkWFwVz0Vea8aQW
-         JzNaUCqZ1iiMmdNpEs7c9mlcb4B0RZ4/QauvM0ynUaHz4J54pZDa8ziJjqJs/0U0wUJp
-         2lQehrf3Ed8rju5DpokFwZrXQ9+N5gISvISkkYErfAgCQT5rkHbv+W+loiVJOc0CWcUT
-         udkO2m7ypPWdKw4C3KThU993ltpnUY2TFYhM93IfZuFK8xGf2I1jLW4bDaQ99t7IL022
-         XlAEFD0hdVSlJnEXdriQiuSyOXuY0cZ1mFTcjyHAzccVX3Ti9ESYf0u9ZyxhqhT9OJMy
-         vwIQ==
-X-Gm-Message-State: AFuF++nfA9wfUld8Ay55fqHV8MFBvClR9MQeAzFlcqTM0GaKHjyZudRx
-	rs0D45S6K+0ps0Dl1cSyOzDs+SSzND5sS+zWrJ38xe1P3ms8ouxgBWPG
-X-Gm-Gg: AYBFou3TUFwJEoZyxmttzE7UyBrGQ0Msr5oxQv4MqY0dbeujBnGNwvrEbBBFM7yEPXk
-	DD31UuOEQdaGBMPT9HbUm8GR5vR2sfSz/8/bN4iUORmf6p/0zdbzivGA3rjWgmuVZVIlTBqKNPr
-	ywNeuTs7iTncr977yqiPVrAloTFuRqWyA7hqCgkLu9heLcrVHZnkpEsha/ZHVWC/NtdLV4TMqzm
-	UcDphWMgmZEKZzRMVZUke+tzpx3mO7dpVI8wkUPyAh/VYPbC5uIUcXXbxel++UB+LZInVU2k5c1
-	MVgWgGx1yWfXUYbeqvtAzYnRJgRf/a8Pdu/oU2j77WW7cHu2oN1t1SGr/8c2kVsYeZ2p/UACrLf
-	8oDNTu2kjSMbvqt4ihHCKTTA+J0g7s3l6WF5eEpWujA30be0g8uU70tDEW0AsUsv6OdUGRbkBTL
-	iv75k2NmfOn27ePEYh4blnbTmh3eMPyq40J6nxCzphDsAmf1rjW3NJYTGszhkj7CJtCKZEDcKqt
-	wVRgkvseVkbLew7Hq5vb3BYg3GNDNImX4B+nKAUoFXbZHJ3U/kJCE4OPiv8xsPyuw2QEuIMizuj
-	uE0xGchyJLGlqSwGaX+nbOvPgT6ycvsfpn0Znrqow3A/G17U+VkgmGEeuGgVL3TEbx/Vd7XQiDx
-	xUWg7Hc/6ueCZlPlQ5aAJYvPAxwiTiHDzzg0zO1tD
-X-Received: by 2002:a05:6870:8306:b0:469:fb51:b351 with SMTP id 586e51a60fabf-47de8fd0c3fmr7839424fac.17.1789272317809;
-        Sat, 12 Sep 2026 21:05:17 -0700 (PDT)
+        bh=A0CrISCG3enxLUNERhlMVwT+4sBOgXXXdTBmRqqtC4g=;
+        b=Nade3+kv/MHA/vKtpUhq8TRzJUDKWdBBtRW+7Md06cEHMYhOvPWk1kSRvMbif7+lAK
+         jYR3XqnuRCNj257+U8YjYPbT51kX2A4EJ8T6GUxbnETY+fGSWsurZSYgdzgcm9kpIstY
+         TDBVWQ0WmwJHzINfugjxIX/iypAJHMvF79VFgHI4LrFLK+pHcqnl4fopirmJqVjiW7DS
+         PNPdNxqsDiAgewKyPQGGau9n9RzxQPOtKcjxc8H3Pr+EZVxmME1R89qH75b065V2JsDm
+         uoR+9ulZl57YyPyLcNrGXD4ndJfw+shGmVj/xcMj5nf49WtJAj+oXgy4bsrI971NF2Qp
+         QEhQ==
+X-Gm-Message-State: AFuF++kyV5BmXzD3vQIW62qIUr8QdSGkNrpBb5vZHt94s85AOziR8g8X
+	HyjEs1fA8WOFX07pRtQgLi6Jl9EF9xEiDZkkcWG8EEKPAwezTbJcea5g
+X-Gm-Gg: AYBFou0dQzYvCpb9MG65UFCGkrt61icmWONPp0dMg1x9yKAYlW2h0kZhJ0zLwQN66FM
+	vRSTp11DlbwDDRyuS+0TzUmt1XRSpoJvs54MIO4ml87KUPnryerePTIUJt2BCfPWUq2Ns6Ypi7D
+	0oU0Jo22ZXEoFLGbtTwqdqcwOgMRJlojFnanT5NpBgrhYVe0Fnm5OqHXvEj1luVb6S0UdV/6DSU
+	meM1P/DHvdgieD/bJlorzObGwVvSGE1eUwPNlwJNe9w6Vw8jJanrLDaEdz7UGfmYh/V39qO7Qlo
+	Y/X3d0+D6hm9r06fSHH+5hhFhfR4nyfYwC7c4kVmkyDs1SDq8caSSCaImh7r0pdJvtLQZyrW17q
+	6gO4YOYnXHEcMDHF3KrMqNcS7EI/wjqvKSlAmg91krPpWYPPVvjWuJ2ccHgHUPgg5MneMFAc+gN
+	oKc02MCB398ynQ8wfl5/dlR9pVf5ZYhrj2rGJjnaGaTII8O6euMIgrL1NnB500ulNwCVXq+H4fR
+	GmMYVRPQstV//yBnyuVnd2CAxEm2nRY3cm+z63Qs5AOO1ymJ0zhM3f+WErMVmbY7G8YgoNHyPJk
+	gTNjcVKAwSbbcDb7iU5qQiHE/0k91ZpGni9Tcs2PUpCJ0A1OcgotTY+jF5X5plvj+0m0KExXkIs
+	XmmGhHEdU9AlgwBz7Pg94+jOaL4jWSeO0J00hb5Yb
+X-Received: by 2002:a05:6870:9386:b0:47b:7862:c1c6 with SMTP id 586e51a60fabf-47f59a2cc34mr2957205fac.23.1789272319247;
+        Sat, 12 Sep 2026 21:05:19 -0700 (PDT)
 Received: from [127.0.1.1] (184-96-157-145.hlrn.qwest.net. [184.96.157.145])
-        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-47df8699647sm6011535fac.5.2026.09.12.21.05.16
+        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-47df8699647sm6011535fac.5.2026.09.12.21.05.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 12 Sep 2026 21:05:17 -0700 (PDT)
+        Sat, 12 Sep 2026 21:05:18 -0700 (PDT)
 From: James Hilliard <james.hilliard1@gmail.com>
-Date: Sat, 12 Sep 2026 22:04:58 -0600
-Subject: [PATCH v4 07/17] mtd: rawnand: sunxi: avoid a second program
- confirm for OOB writes
+Date: Sat, 12 Sep 2026 22:04:59 -0600
+Subject: [PATCH v4 08/17] mtd: rawnand: sunxi: avoid redundant column
+ changes for extra OOB
 MIME-Version: 1.0
-Message-Id: <20260912-submit-sunxi-nand-vendor-oob-layout-v1-v4-7-4a64bed94229@gmail.com>
+Message-Id: <20260912-submit-sunxi-nand-vendor-oob-layout-v1-v4-8-4a64bed94229@gmail.com>
 References: <20260912-submit-sunxi-nand-vendor-oob-layout-v1-v4-0-4a64bed94229@gmail.com>
 In-Reply-To: <20260912-submit-sunxi-nand-vendor-oob-layout-v1-v4-0-4a64bed94229@gmail.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, 
@@ -95,8 +95,8 @@ Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, James Hilliard <james.hilliard1@gmail.com>
 X-Mailer: b4 0.15.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260912_210519_275966_02690211 
-X-CRM114-Status: GOOD (  12.89  )
+X-CRM114-CacheID: sfid-20260912_210520_233313_E2A4DCF0 
+X-CRM114-Status: GOOD (  15.42  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -113,43 +113,33 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The hardware-ECC OOB writer delegates to the page writer, which already
-issues PAGEPROG, waits for completion and checks the NAND status. The OOB
-wrapper then calls nand_prog_page_end_op() again, sending an extra program
-confirm without a corresponding program setup. An error on this redundant
-operation is returned even though the page writer has already succeeded.
+The PIO write loop tracks the absolute NAND column in cur_off, while the
+extra-OOB helper computes an offset relative to the start of OOB. Comparing
+these values directly always requests a column change, even when the last
+ECC step has already left the cursor at the start of the extra OOB bytes.
 
-Return the page writer's result directly. This leaves both PIO and DMA
-responsible for completing their own program operation and preserves their
-error results, including for bad-block-marker writes.
+Include the page size in the comparison, matching the extra-OOB read
+helper. Keep the explicit column change when the caller does not track the
+cursor, as in the DMA path, or when the current column differs.
 
-Fixes: 25f815f66a14 ("mtd: nand: force drivers to explicitly send READ/PROG commands")
 Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
 ---
- drivers/mtd/nand/raw/sunxi_nand.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+ drivers/mtd/nand/raw/sunxi_nand.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/nand/raw/sunxi_nand.c b/drivers/mtd/nand/raw/sunxi_nand.c
-index 72b79f893e29..41d6560d7df7 100644
+index 41d6560d7df7..13dc0af56eb3 100644
 --- a/drivers/mtd/nand/raw/sunxi_nand.c
 +++ b/drivers/mtd/nand/raw/sunxi_nand.c
-@@ -1843,15 +1843,10 @@ static int sunxi_nfc_hw_ecc_write_oob(struct nand_chip *nand, int page)
- {
- 	struct mtd_info *mtd = nand_to_mtd(nand);
- 	u8 *buf = nand_get_data_buf(nand);
--	int ret;
+@@ -1509,7 +1509,7 @@ static int sunxi_nfc_hw_ecc_write_extra_oob(struct nand_chip *nand,
+ 	if (len <= 0)
+ 		return 0;
  
- 	memset(buf, 0xff, mtd->writesize);
--	ret = nand->ecc.write_page(nand, buf, 1, page);
--	if (ret)
--		return ret;
- 
--	/* Send command to program the OOB data */
--	return nand_prog_page_end_op(nand);
-+	return nand->ecc.write_page(nand, buf, 1, page);
- }
- 
- static const struct sunxi_nfc_timings sun4i_a10_nfc_timings = {
+-	if (!cur_off || *cur_off != offset) {
++	if (!cur_off || *cur_off != (offset + mtd->writesize)) {
+ 		ret = nand_change_write_column_op(nand, offset + mtd->writesize,
+ 						  NULL, 0, false);
+ 		if (ret)
 
 -- 
 2.53.0
