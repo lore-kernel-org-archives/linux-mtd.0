@@ -4,54 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C24A4C88E75
-	for <linux-mtd@archiver.kernel.org>; Mon, 14 Sep 2026 15:31:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 973D4C88E79
+	for <linux-mtd@archiver.kernel.org>; Mon, 14 Sep 2026 15:31:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Date:
 	Message-Id:From:Subject:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=dGgNHidfY0THlJu0nxJZIG+z7uObHJ0MBofrny6W1Ik=; b=uNm3p5WHJgH+mQ
-	a499CuWk7HkMEsmx75u8Lf5msdgRyQed/IloItoNz4ycGQUq8pUVkbsH+g4Qsk59ESbUloWVc8kfW
-	8KeoSjbDHvGxU+t05HhYCMjloOsgwWSpWuBHYpMPCJPubb7KmskS6LcYbvQKZUC3g0pb02tAJi88t
-	lBsGD78OPLxEOj7tZ6WQjbA+rleLqtXpedbv8NRqz6szs+eaVay2Km0cYYZBtof/fSZL5/D5txiWc
-	oi7MJe59VJeoJELwrV+yssABqAvgYPmCWWpL+dH/QssE+bHf0leyenCMoI6NocoE1FoxIS7CiBuVa
-	0OkEjHYgycIltmNhAhSA==;
+	List-Owner; bh=v6ZDVGYRacWmEydlBcDUlDcwXR05n7WT65D3cqyIrIM=; b=35av4DVQgbdL5O
+	9GqSpUCspbQbVbwF+6V/IiUmga3y+rnB0LWcvIvngk/QzbE8xL4hzb6ikG/hFFwVkOg3JIiWZcSgN
+	w/qUzEVxB7PWc1vlrNrUllb5tSpAfGo5t1TOEvaxJkg3h/aQ/Fl2cJLeDr+YQHkATHlIc6RPsCy16
+	rRsOukGo+KlIruFRbyRt+ajxFejOWAsrvtgG66F2fUaNrnDPhk+Rw6M6d8ksPzMogrdRm9OWZqFTU
+	fnZ2dZfqtsNFkEOiH/PL6G04cx7Zfn/kQxZUT207HQN/X8n+XoPahjUfIVv9Uei/5Yeze53KHaw8t
+	bngGcxKdLfJ6vTcZ2BdA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x68eS-00000004AVx-0YPe;
-	Mon, 14 Sep 2026 15:31:24 +0000
+	id 1x68eU-00000004AXX-44fk;
+	Mon, 14 Sep 2026 15:31:26 +0000
 Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x68eQ-00000004AVJ-2KqA;
-	Mon, 14 Sep 2026 15:31:22 +0000
+	id 1x68eR-00000004AVl-3kjj;
+	Mon, 14 Sep 2026 15:31:23 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 2734740124;
-	Mon, 14 Sep 2026 15:31:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03D7F1F00893;
-	Mon, 14 Sep 2026 15:31:22 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 953F9408EA;
+	Mon, 14 Sep 2026 15:31:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73F361F0089A;
+	Mon, 14 Sep 2026 15:31:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789399882;
-	bh=6YNBDNqtv3G7fIIrCWxRo+R7rFxECIiWXZYEw0TsCm8=;
+	s=k20260515; t=1789399883;
+	bh=nR/vh4GvI0WOU5I3SDjzgrYVoTA8r4/N125W3zwVcoM=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc;
-	b=oafm7V4RKsPy/Q1nCVBWDqYf7CzIKQWwzaAUfYXO4K5blgVLNKT30EOhNjyiJ68b4
-	 EmE0pg7kCS+rsBO2hQhqAcC1jDNgaAjoHfS35HWN3j5jboLSqfna8lVYkkpRTOVBLm
-	 z7XrVJIhN7zqa0ZqIGC7moq0IJyRMgoMb82ImK4Ze2REEcVBWDrF/nBND+suW7cTj+
-	 wRFmHT2zlonTyo+1brM1i34j0QTrbmA5FknqN7kXJ9bimmAF15wqhMttnovE1K17hY
-	 mCHO/L8QQoVL9DoTMRTdTxGNm4LGmdWMH05qUrovm9ES8pb0mcHRy3YO183W8YwGVi
-	 tCv3P8ki+lNgA==
+	b=RbCEKtn4AO+w1y1Nm4+9OPjd3F5HeNMHAg3uez+4FdxFCGDSSpv7EiKf+nOYlAqRD
+	 WpbEgLLqAW4/l8pXzRAprjeTjPg5iYhCGnBEarYYppZgnkrHtBmnFS9mupbuYxw5uF
+	 9IaiI70goJcN/QHzRT88UUSpAI4Re7c2DETfrByKeR3s4TjTlq6nG8lVpXAeCBJkvv
+	 0JK4xXezKzgYlQ+Oc3bwKs3QN943NILxYGwTYwEDkh+jk8qAJukkZVAb2U57/OORtM
+	 maeohl2NdOmJIEX01jxCO7utzNVfC1W0jyXsjrJ+AH6xFXa9Zfjke3MaE5gkTOu/bL
+	 U9AI6BB36tibg==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 56B213924A79;
-	Mon, 14 Sep 2026 15:30:18 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id D092A3924A79;
+	Mon, 14 Sep 2026 15:30:19 +0000 (UTC)
 MIME-Version: 1.0
-Subject: Re: [f2fs-dev] [PATCH v3 00/14] Remove PG_private by using
+Subject: Re: [f2fs-dev] [PATCH v4 00/16] Remove PG_private by using
  page/folio->private checks instead
 From: patchwork-bot+f2fs@kernel.org
-Message-Id: <178939981687.647967.15609695091265022344.git-patchwork-notify@kernel.org>
-Date: Mon, 14 Sep 2026 15:30:16 +0000
-References: <20260907-remove-pg_private-v3-0-6ae22f9d9272@nvidia.com>
-In-Reply-To: <20260907-remove-pg_private-v3-0-6ae22f9d9272@nvidia.com>
+Message-Id: <178939981839.647967.9641554131485178993.git-patchwork-notify@kernel.org>
+Date: Mon, 14 Sep 2026 15:30:18 +0000
+References: <20260913-remove-pg_private-v4-0-848550f7574e@nvidia.com>
+In-Reply-To: <20260913-remove-pg_private-v4-0-848550f7574e@nvidia.com>
 To: Zi Yan <ziy@nvidia.com>
 Cc: david@kernel.org, willy@infradead.org, akpm@linux-foundation.org,
  muchun.song@linux.dev, ljs@kernel.org, liam@infradead.org, vbabka@kernel.org,
@@ -65,10 +65,11 @@ Cc: david@kernel.org, willy@infradead.org, akpm@linux-foundation.org,
  amarkuze@redhat.com, peterz@infradead.org, kexec@lists.infradead.org,
  dave.hansen@linux.intel.com, ruirui.yang@linux.dev, adrian.hunter@intel.com,
  linux-mm@kvack.org, hongbohbli@tencent.com, hpa@zytor.com,
- guochunhai@vivo.com, skhan@linuxfoundation.org, ceph-devel@vger.kernel.org,
+ guochunhai@vivo.com, skhan@linuxfoundation.org, tz2294@columbia.edu,
  baoquan.he@linux.dev, matthew.brost@intel.com, anna@kernel.org,
  sstabellini@kernel.org, zbestahu@gmail.com, rakie.kim@sk.com,
- minchan@kernel.org, richard@nod.at, x86@kernel.org, ebiggers@kernel.org,
+ minchan@kernel.org, richard@nod.at, x86@kernel.org,
+ ceph-devel@vger.kernel.org, ebiggers@kernel.org,
  alexander.shishkin@linux.intel.com, mingo@redhat.com, slava@dubeyko.com,
  weixugc@google.com, yukuai@fygo.io, xen-devel@lists.xenproject.org,
  xiang@kernel.org, magiclinan@didiglobal.com, mhiramat@kernel.org,
@@ -104,22 +105,24 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Hello:
 
-This patch was applied to jaegeuk/f2fs.git (dev)
+This series was applied to jaegeuk/f2fs.git (dev)
 by Jaegeuk Kim <jaegeuk@kernel.org>:
 
-On Mon, 07 Sep 2026 22:56:07 -0400 you wrote:
+On Sun, 13 Sep 2026 22:23:58 -0400 you wrote:
 > Hi all,
 > 
-> This patchset removes PG_private to make space for upcoming PG_folio
-> (reserved as __PG_folio) for identifying pages from a folio (more details
-> in Note below). Instead of checking PG_private, all code is changed to
-> check page/folio->private != NULL instead.
+> This patchset removes PG_private to make space for upcoming PG_folio for
+> identifying pages from a folio (more details in Note below). Instead of
+> checking PG_private, all code is changed to check page/folio->private !=
+> NULL instead.
 > 
 > [...]
 
 Here is the summary with links:
-  - [f2fs-dev,v3,06/14] f2fs: stop using PG_private
+  - [f2fs-dev,v4,06/16] f2fs: stop using PG_private
     https://git.kernel.org/jaegeuk/f2fs/c/60105162524e
+  - [f2fs-dev,v4,07/16] f2fs: convert the ->private flag helpers to folio-only
+    (no matching commit)
 
 You are awesome, thank you!
 -- 
