@@ -4,72 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CFDD9C88E64
-	for <linux-mtd@archiver.kernel.org>; Mon, 14 Sep 2026 08:12:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0496FC88E64
+	for <linux-mtd@archiver.kernel.org>; Mon, 14 Sep 2026 08:12:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Co829FYPYF2NecQNKRPVV1Eflvbmmx8//VZU9M+psfM=; b=EsFP7Wu2QfbtFB
-	KSuTgEUwPo3nvm5k7XUrUlC03mEVrgb4VfIRrxEjqPtKSc6DjfY2BuehRKSKu/sLumLX0w+/XJ3hY
-	jJBeajkU09wqOyw/h8evP72QWIA1n5kZsWfGbH1zhQvZpjgVBmRiNCdfyqsZtzXyJUZ5A7HFeH5Br
-	xH8DoMkoYZOu6yEvvbPVAIpTun5cLGLzZz3wHq6ZVHzhVec4qDsPrML+7Sddzq+Ln4c4tJiQ2g34m
-	XEbIhDroSjAM4FR5TqUIQOdxpySp8snWslmOv/DCPvsWyXwy+zxiYzLN/LwaP12HcshSd9eKYl3or
-	MC3of27prX/qSvtePTBg==;
+	List-Owner; bh=k/1SQJ4CJFnG9yGaDIkIGHUOk9ExgMCS/IQk0KW4MRA=; b=k+UCsws5/Z7BoJ
+	p05/RTLNWnxl9/XaamSHIDpd2dPS1THq03UQ/WxUH3ytlsd+0PLSqMmp+AqTxbsvrGa17HqipcV4u
+	3hqkURZ9La8cyd2hbusq6Ipd0XkFgGT2loyCzysYNqLNEa1qKGJ3hni38sxpp1tPI+sdzXNGtaS4k
+	T4qiRssJIpZ4f+Mbr7NCIKtMuIx5099b+FngbNEpLCsenk9usRyJ5pv3HtjkWvTTPc4LZy1fflVOU
+	cdIw6xnZlqBB1eZ3Kv07P+Q4oporwZz8VaexYKoxVoQ+9swks5+CuI99uDu4LPymdSPETalUtMI6R
+	3QKN2g+duxxKIUQIDQsw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x61np-00000002gQ6-1vro;
-	Mon, 14 Sep 2026 08:12:37 +0000
-Received: from mail-wr2-x10.google.com ([2a00:1450:4864:30::10])
+	id 1x61nv-00000002gSm-2TUf;
+	Mon, 14 Sep 2026 08:12:43 +0000
+Received: from mail-wm2-x11.google.com ([2a00:1450:4864:31::11])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x61nn-00000002gOY-1eur
+	id 1x61nr-00000002gQW-12tq
 	for linux-mtd@lists.infradead.org;
-	Mon, 14 Sep 2026 08:12:36 +0000
-Received: by mail-wr2-x10.google.com with SMTP id ffacd0b85a97d-4838dbf1bbeso231684f8f.0
-        for <linux-mtd@lists.infradead.org>; Mon, 14 Sep 2026 01:12:34 -0700 (PDT)
+	Mon, 14 Sep 2026 08:12:42 +0000
+Received: by mail-wm2-x11.google.com with SMTP id 5b1f17b1804b1-49e7c6dbc60so31715e9.3
+        for <linux-mtd@lists.infradead.org>; Mon, 14 Sep 2026 01:12:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1789373553; x=1789978353; darn=lists.infradead.org;
+        d=gmail.com; s=20251104; t=1789373557; x=1789978357; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=WvL+tll9z+rZiVIgsLmiJriXCowgjHq2TgUmvCdD0FM=;
-        b=M7cB7SQ+q54ud2tWkNMcabEmJXtqfZDjAb+Y0frMNPonBwpDZeEKLCmMwB0LXWMxmH
-         892FOGrrfECAr4vKSQ9QdaKLjzbV8k2TgqAWS2ouQgWqHJeZasCAcs2xLCMnWyoGmHsL
-         4hIAElliGSiLsKvJDFM4q05FxfSFrtTk3zuGbHtnoLkpdBO2jhuHHUsCFjhQmVkLb1NO
-         0HuHIx+QFAQyusMdbf4OednJp0WazZ4A4yTHJXw57zrixKCaduQs0YWwVYL1ekQxRj+t
-         5nL/n2/IzKtwsZQjN4C769W9vVznGjtJY6l0nbwQ0aUau9Wd82Vh2QkIZzdMFbfLiyU8
-         qpTw==
+        bh=Aj7IiomPonUj9qywT6/YurZdwlPYR2aG7U6PbbSw37I=;
+        b=SKDuwhYTPrHh+vMbxF8/iSvIdsdPXpaW+jWgj90n1lzG82WQPueHLWGJfy8KrcCADx
+         eKjfibZpsuc+Ch2OpMp7ln2I7gSIvusG3PFCPiU+Idhf+jWmtwxNG0PpC3Op9GrWFW7+
+         J0pHNAOe/l88cUvGnlXr/l171UL/lK+xZkJtWzbQWrKcHQ6RHjea/fzlO9PHjpyvNDkV
+         gRQPe90oOAYc3geo27fXvEY1p1UGHR5YAP+2Lnl725avCdMkXoEvQyR522bdJHB+3G4n
+         PTkLXLuwP0WDw8YC34G8v3TOm0bEDmX+13WrPOim/cYbayNdy1NdQhzWUc8/31P9Tu9u
+         lQ1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1789373553; x=1789978353;
+        d=1e100.net; s=20251104; t=1789373557; x=1789978357;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=WvL+tll9z+rZiVIgsLmiJriXCowgjHq2TgUmvCdD0FM=;
-        b=NJvXhShLL9Mof+dm5tuTPqy/9qs/KiPTRFiJIJAFil8pjwiEjxzS8quQsqHcWTOxOa
-         xOvrp79MEOVQncGOUvj8m3OiYyoVeP4fUSdwXrKhTn/IpVDryezQoKt8XlL1/K5zgEju
-         scAroDO9iacAN0sPx5r8LzLXOh/a/FZMLnCE1vPec8Kef1IZO+la/yFW+hI8El3Y0nQJ
-         qUssUlVVLohmksOl+y448KypG2DdAcgwRe6J32B2psLzNnF+dLGSFnYtOh7W/UERcPgL
-         6YaD8HDmoPgkjTgTtzlt5TEZsez+oyOX0gss7UMZRL6BJlLXHcDpzBZz9I0/jO3zj1dO
-         4nMQ==
-X-Forwarded-Encrypted: i=1; AKwUvBx/MjLLKo0V3DX/DjC9yWJgueg3BiDbYi7ue5S78stuywvATrtW178nRFOF1MiFPk8r8aeQepNrSwE=@lists.infradead.org
-X-Gm-Message-State: AFuF++mc07wxr6wJzwiZdXBGpedFdmrxnn7RUBYhN80KaTxMVCcPmDXv
-	YcgQ+LU5aLzf/Cqr2YxqbOQdOlpHTVREZxwZTGHx7Y1HRysp2g/0/zLT
-X-Gm-Gg: AYBFou1WOLPLAp91zyw2ON1UEWrymVfbnIMH2RS0Hr8/EpNdT6lEaoQgVSY5kWuyMJ7
-	fzpf4cNhXxfU1Z/WEKy0I+ZA8phjYM0wW9PU6gLC3gv0E74cH0Tmnbg9CNJbhktcx1LX7lEZMUJ
-	f6xUlCH644ddrPC5Y+oufHK9FIH9N5oT4suHVeFBImsT/cFOlhraQ8xXI/ioKxQE7nF75k6KM/N
-	M/aGcQqllTqe+senZg9fyoM9h1RReOXquDUB1XRV5VCJHiUE9YzTv+J7+wRTc5sNc/Q70nwb478
-	2UQfbtHW0JI1PjFdklV+gXBnEXnrdMtiRZM8mGQOGuqHjKoPh3QA8+COPpiAzRFiThJp6VL6oY8
-	UsRB8AyYa1OYwbM7Z9NDgsbp54diuq8d9Py1RN8A8R5hnRhq+QjTUw5ik6Y/o/ti6WwXYmIQnn+
-	GeeydWiBxyOj7YVUoJpQ9oUgcOQJo9oIZ4j5wFGJuom7/dev989KjCZ3U62AaHx0z+Imo0GbrNT
-	M3DXSbXWpM7TD+mX1M=
-X-Received: by 2002:a05:600c:4683:b0:49b:9241:7ff0 with SMTP id 5b1f17b1804b1-49e7a5ed9a7mr13611875e9.0.1789373553467;
-        Mon, 14 Sep 2026 01:12:33 -0700 (PDT)
+        bh=Aj7IiomPonUj9qywT6/YurZdwlPYR2aG7U6PbbSw37I=;
+        b=XQ2pLgVBWjAS3wmnASP+/IUR0Cv7CX3iRCbtQd0/VG9HWjIEr6x4IDjtnWHekytrR+
+         qhnV7HC1V0A3G0pTakLCKxh1ROgh+299IZ7WUH3keyRh7f7Ydka/LehB5bQABfbdvlXk
+         9dBcQgJVInBm5A0v6ODglYTOz9sjkyEqgubP/qk+jmPfIL0+kbKm+rCqHf4GnytWhbhR
+         +cMHwlesogvfd3mUh7XtS3szw5anLvyoR8iZHg9G10oHS3yl7QOHw6P6BZTYgcPtzWuR
+         8oJDNXPQFtZ1QzHBxme3R+OhoU2sSYRPHvV91jRzIareekgHEHryzhyheRkjw2lIbWQJ
+         gg3Q==
+X-Forwarded-Encrypted: i=1; AKwUvBwZKmLKdx22UmpfTdbH1daaW2GwUzU3Kx9qf0OijPsZKaREfXRl0+bAkZQY4Ee8Ewcc1uLa31Myrx8=@lists.infradead.org
+X-Gm-Message-State: AFuF++li0XjKVrefgQ8NtXHL8mRB325A2Fwjhh3/S/53D9/0/2e2bISx
+	gkrycw70ukYJ7SbSnnsGdtbUGtzM/oqVDWinRzWfa6q6N1dD1A14OUt4
+X-Gm-Gg: AYBFou0mGSDtXepkHhW5uyAhgrXxi9JBV8EEVt8S54hMLgYRgg7ntQ3ZB4zq5n5hm6f
+	nRY+A0V2SxwBx1PUCqHzmYiLWfTjKhjJo65SJIl8PEOI0PwvPxybjabefbtDmyMz32fzsAKq3Wo
+	CS9ctwlCn3drMs71wCesdUcMCKpJy1UWzOrbNjqVOvEWuEKg2xu6L1o5iRFub55J00/e8y4tRGB
+	DfLy5QgL7WDmMnRp4zABKuFPPKHGCivRuFTudOUHWmWJH0/92yPDrvelylZdEE/GwRh+DWzH760
+	L/9HkG0LvkbUabzdSsPtKbxOmRyXl2g1ksbAU+NYVXiL0/6pR2kRPp8084QpXZkq4XDENhyXHST
+	rzH2IXcbfLhEz9gbukSw1Z5tUWqPsi/fnBLEKaPqoHhbtbGNNsLZ5yASSO1QBqkYz/FERFHs3pn
+	raUEboDe+DJfCmGiM4KXbemfsV/9Ok0oKunaewJYdKL8/PRsHdaM/0bJvLJ62AUi3ltrsQvUH7w
+	j0GllcR3OYv1u6bg2c=
+X-Received: by 2002:a05:600c:3b9f:b0:49e:745d:5768 with SMTP id 5b1f17b1804b1-49e7a5f1f60mr19047885e9.0.1789373557305;
+        Mon, 14 Sep 2026 01:12:37 -0700 (PDT)
 Received: from L-P-ITAIH2-L-RF.rf.local ([193.169.70.108])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-49e60acff8bsm301434385e9.9.2026.09.14.01.12.32
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-49e60acff8bsm301434385e9.9.2026.09.14.01.12.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2026 01:12:33 -0700 (PDT)
+        Mon, 14 Sep 2026 01:12:36 -0700 (PDT)
 From: Itai Handler <itai.handler@gmail.com>
 To: mwalle@kernel.org,
 	pratyush@kernel.org
@@ -81,16 +81,16 @@ Cc: linux-kernel@vger.kernel.org,
 	takahiro.kuwano@infineon.com,
 	Itai Handler <itai.handler@gmail.com>,
 	stable@vger.kernel.org
-Subject: [PATCH v2 1/3] mtd: spi-nor: fix the lock left held by spi_nor_rww_start_exclusive()
-Date: Mon, 14 Sep 2026 11:11:47 +0300
-Message-Id: <20260914081149.1916589-2-itai.handler@gmail.com>
+Subject: [PATCH v2 2/3] mtd: spi-nor: take the flash lock in spi_nor_shutdown()
+Date: Mon, 14 Sep 2026 11:11:48 +0300
+Message-Id: <20260914081149.1916589-3-itai.handler@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20260914081149.1916589-1-itai.handler@gmail.com>
 References: <20260914081149.1916589-1-itai.handler@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260914_011235_500069_15FCBA20 
-X-CRM114-Status: GOOD (  15.75  )
+X-CRM114-CacheID: sfid-20260914_011239_315928_1099FAD9 
+X-CRM114-Status: GOOD (  19.52  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,58 +107,83 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-spi_nor_rww_start_exclusive() takes nor->lock and never drops it. It
-returns with the mutex held whether it hands out the exclusive claim or
-reports the flash busy, leaving the caller holding a lock it does not
-know it has.
+spi_nor_shutdown() calls spi_nor_restore() to put the flash back into
+3-byte addressing before the system reboots or kexecs. It does so
+without taking nor->lock, which every other path that talks to the chip
+acquires through spi_nor_prep_and_lock().
 
-Commit 03e7bb864d9a ("mtd: spi-nor: use scope-based mutex cleanup
-helpers") turned its "goto busy" into a plain "return false" and deleted
-the busy: label that did the mutex_unlock(), but kept the mutex_lock()
-at the top instead of replacing it with guard(mutex). It is now the only
-one of the ten spi_nor_rww_{start,end}_* helpers that does not use the
-guard.
+device_shutdown() does not freeze userspace and does not stop kernel
+threads; it walks the device list calling ->shutdown with all CPUs
+online. Another thread can therefore be in the middle of an operation,
+with the restore running concurrently with it. A write and a read are
+both damaged, in different ways.
 
-Its only caller is spi_nor_prep_and_lock(), so on a flash with
-SNOR_F_RWW set:
+A program or erase leaves the flash busy, and a busy flash accepts only
+status register reads and ignores everything else, including the EX4B
+that spi_nor_restore() sends. Neither spi_nor_write_enable() nor
+spi_nor_set_4byte_addr_mode() reads anything back, so the restore
+reports success while the flash is left in 4-byte addressing. The next
+boot stage then addresses it with 3 bytes and reads the wrong data,
+which is the failure commit 59b356ffd0b0 ("mtd: m25p80: restore the
+status of SPI flash when exiting") introduced this restore to prevent.
 
- - if the flash is idle it returns true with nor->lock held, and the
-   matching spi_nor_unlock_and_unprep() calls
-   spi_nor_rww_end_exclusive(), whose guard(mutex)(&nor->lock) then
-   deadlocks on the non-recursive mutex;
+A read, by contrast, does not ignore the restore - it is corrupted by
+it. spi_nor_read() holds the lock across a loop that issues one
+spi_nor_read_data() per chunk, each using nor->addr_nbytes.
+spi_nor_set_4byte_addr_mode() updates nor->params->addr_nbytes and not
+nor->addr_nbytes, so a restore landing between two chunks switches the
+chip to 3-byte addressing while the driver carries on sending 4 address
+bytes. The rest of the transfer is addressed wrongly and returns wrong
+data, and nothing reports an error. A restore may also soft reset the
+chip in the middle of that same read.
 
- - if the flash is busy it returns false with nor->lock held, and
-   wait_event_killable() sleeps holding it, so the operation that would
-   clear ongoing_* can never take the lock to do so.
+Take nor->lock for the restore, so it runs between operations instead of
+during one: a program or erase has finished waiting on the chip, and a
+read has issued its last chunk. This is a locking fix rather than a
+missing wait - each operation already waits for completion at the site
+that started it.
 
-Nothing reaches this today: the only flash with SPI_NOR_RWW is the
-MX25UW51245G, which has neither OTP nor locking ops, so none of the
-existing spi_nor_prep_and_lock() callers in otp.c, swp.c and sst.c apply
-to it. It becomes reachable as soon as any common path takes the
-exclusive lock.
+This narrows the race without closing it. The restore still runs while
+MTD users are attached, so an operation that starts after it has
+completed will address a chip that is now in 3-byte mode while
+nor->addr_nbytes is still 4. Closing that as well would mean having MTD
+stop accepting operations before ->shutdown runs, which is a larger
+change; serialising against the operations already in flight is what
+keeps the restore itself from being issued into a busy chip.
 
-Use guard(mutex) as the other helpers do.
-
-Fixes: 03e7bb864d9a ("mtd: spi-nor: use scope-based mutex cleanup helpers")
+Fixes: 59b356ffd0b0 ("mtd: m25p80: restore the status of SPI flash when exiting")
 Cc: stable@vger.kernel.org
 Signed-off-by: Itai Handler <itai.handler@gmail.com>
 ---
- drivers/mtd/spi-nor/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/spi-nor/core.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
 diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index ccf4396cdcd0..8bc117b46e02 100644
+index 8bc117b46e02..647bf8dce719 100644
 --- a/drivers/mtd/spi-nor/core.c
 +++ b/drivers/mtd/spi-nor/core.c
-@@ -1310,7 +1310,7 @@ static bool spi_nor_rww_start_exclusive(struct spi_nor *nor)
+@@ -3862,8 +3862,21 @@ static int spi_nor_remove(struct spi_mem *spimem)
+ static void spi_nor_shutdown(struct spi_mem *spimem)
  {
- 	struct spi_nor_rww *rww = &nor->rww;
+ 	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
++	int ret;
++
++	/*
++	 * Wait for an operation started by another thread to finish.
++	 * device_shutdown() runs with MTD users still active: a busy flash
++	 * ignores the commands spi_nor_restore() issues, leaving it in
++	 * 4-byte address mode, and a restore landing mid-read changes the
++	 * chip's address width under the transfer.
++	 */
++	ret = spi_nor_prep_and_lock(nor);
++	if (ret)
++		return;
  
--	mutex_lock(&nor->lock);
-+	guard(mutex)(&nor->lock);
+ 	spi_nor_restore(nor);
++	spi_nor_unlock_and_unprep(nor);
+ }
  
- 	if (rww->ongoing_io || rww->ongoing_rd || rww->ongoing_pe)
- 		return false;
+ /*
 -- 
 2.34.1
 
