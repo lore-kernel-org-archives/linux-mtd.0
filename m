@@ -4,64 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93F77C88E75
-	for <linux-mtd@archiver.kernel.org>; Tue, 15 Sep 2026 04:33:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32B45C88E75
+	for <linux-mtd@archiver.kernel.org>; Tue, 15 Sep 2026 06:14:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:From:Subject:Message-ID:Date:
-	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=Um2xbGLrRVPk33A9PQ3Rxhp/ONnX2U3Tttlpk/6LrQE=; b=ScK
-	BbWNwkw4R1/oiCXR08VdzrjaXX7ZwBphE/BqqtoVU8cpTmUVSZiBJGg4obCNzA4qOTUaU9EagtjnM
-	JyH0ureAMM+o8M67LrPFNZIoenjE8RTGbdlD68ZoRAVFkc0YqyZgwVm/ztGXOUum3sswnktr+6G40
-	LRftyFvq6QEW0Si/jewft7P9X1XKMF36sjZmqiKYafaqJHMeFsGVtlOh4L3tENpJj4TvWMrW7GwbD
-	8/GqyhlcTH7Jhl4IMADI7QQD2k7lfO8fIFbIfy1heqcElpf1sRYbd40KhwftgCepqJse8nllLdApM
-	1b9xgAfyKd8my71BEhVTkmKHzHSjfzA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=TigoLFnCNB4wluGHI+yQKE8CDInW2y8nG4xzWPB44c4=; b=laTWGfEnQyYcag
+	SU9RWqPz14a6Umeyd5ts05qzHSin1+ysN8DUvBUHVUnSpFiIL7mO4JdXJWxJwfFydhx3ZRHJIpyWl
+	saAkXYfA0O4hckA3EjTY4m9ZS9BhYOHTL5cSLdS56QdvSSs9kjOIOdya3MjiUrIPyJMElRUptzFqf
+	1PMcYOC5e6TpzSE0Uxe/uuyqbi3yJ3z8CUjnRlK0jf7XePyJYHdcEEWnEbQnX0XZFlhcApHdXYmEf
+	cwECmwHlGjsElidcNtd+cIBYZ4bndwXADDwfDL0YTOna51I9S36LzcDFfanXjBTB6RR1lCJ0bUrbt
+	aSfKcUCy4i5LXFau95Pw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x6KrM-00000005Bvo-2SCg;
-	Tue, 15 Sep 2026 04:33:32 +0000
-Received: from mail-ot1-f72.google.com ([209.85.210.72])
+	id 1x6MQd-00000005Krl-06Oa;
+	Tue, 15 Sep 2026 06:14:03 +0000
+Received: from smtp14.infineon.com ([2a00:18f0:1e00:4::6])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x6KrI-00000005BvP-28eY
+	id 1x6MQa-00000005KrH-19z2
 	for linux-mtd@lists.infradead.org;
-	Tue, 15 Sep 2026 04:33:29 +0000
-Received: by mail-ot1-f72.google.com with SMTP id 46e09a7af769-80139a2495aso7320182a34.3
-        for <linux-mtd@lists.infradead.org>; Mon, 14 Sep 2026 21:33:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1789446806; x=1790051606;
-        h=content-type:to:from:subject:message-id:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=kLO/IjQiB0f5Xdimriq4y9hQ5MQFsJJx6R3N+ei4KlY=;
-        b=QqZ5F6iodB5Pe0J02GiHnEc//3ODpWNuhxjbA+NRlZpgwMfKGuLdY4cLaLotl+MaTi
-         6zm2EAZAVghkUkHkJiIx48q8GiwA2bXJd4LLKDean5BZiKHNsam+C/z8HrDz9konWgE5
-         BYJwLucOVh/ks8miI+Om5p9zkxSuEF5Xrp99/QCaRs5IIGKd5YlTjKFaN+EBXI378ORM
-         /Tlxu3lRvT+v0g/JLWHAetYZirs0uNdO243x5jQ6Mp+AUCnn2KC681bBeVvM1ExOGwal
-         RpmHR/gLGWXkU8rJtY6CcJzPdEkdb2ZiMaNJ4zD89eu5bRupMHQXypMSkOa86JXi+/Ll
-         38Zw==
-X-Forwarded-Encrypted: i=1; AKwUvBxb1zjXd3CvtmrtPiTi+rfGVW+fl1JdLA6DB8hLRlvOXYM+Jw2ZIt/KzpdxrIbyPNsKPx4x/46UN0A=@lists.infradead.org
-X-Gm-Message-State: AFuF++m9xSSTKxnw65rc/UkbIODCK335r/VGEbW2TLGWnedg7C68AAU2
-	wS5VZwWeugLPDMmiywKwhyenSneEEl/mL6daX1ZFJ+4WpbXguFCPpzZX1mf2IR1ba/krGO0bnM9
-	P/U2134J+mxFeI3fFvyNCssWVSaZ7cTztv3XL5VIikpsfuyZ+cMKOBlAEWBc=
+	Tue, 15 Sep 2026 06:14:01 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=infineon.com; i=@infineon.com; q=dns/txt; s=IFXMAIL;
+  t=1789452840; x=1820988840;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=Iozr+iVqFM+0mU78oV100tjTbmjOLgKxjCBYX13fizk=;
+  b=KjFsY9ONyL3JAyo9tYXxVYvUkanF2OXv/sLusNz/odqAbjPNZfFvMgGI
+   ySyXKHd7IFLbfmWTuc+JkO4nolmEONaLYcAQKnUZTWuMkL9pU0eWGBEqR
+   1YhnSMYxlJOKQqlXSv6MtQnoX9KnsvfDNUmPyjvY8qP+Rl3bsexQ2VUcn
+   k=;
+X-CSE-ConnectionGUID: qnCh4kfCRdWxKBR6gOLfgA==
+X-CSE-MsgGUID: pFN8NOrMQ4OYyqrW4l8tIw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11905"; a="147058621"
+X-IronPort-AV: E=Sophos;i="6.27,103,1787004000"; 
+   d="scan'208";a="147058621"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO MUCSE814.infineon.com) ([172.23.29.40])
+  by smtp14.infineon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2026 08:13:58 +0200
+Received: from MUCSE813.infineon.com (172.23.29.39) by MUCSE814.infineon.com
+ (172.23.29.40) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.46; Tue, 15 Sep
+ 2026 08:13:57 +0200
+Received: from MUCSE815.infineon.com (172.23.29.41) by MUCSE813.infineon.com
+ (172.23.29.39) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.46; Tue, 15 Sep
+ 2026 08:13:57 +0200
+Received: from MUCSE815.infineon.com ([fe80::b54c:c0bd:546c:c9be]) by
+ MUCSE815.infineon.com ([fe80::b54c:c0bd:546c:c9be%12]) with mapi id
+ 15.02.2562.046; Tue, 15 Sep 2026 08:13:57 +0200
+From: <Takahiro.Kuwano@infineon.com>
+To: <mwalle@kernel.org>, <pratyush@kernel.org>, <miquel.raynal@bootlin.com>,
+	<richard@nod.at>, <vigneshr@ti.com>, <tudor.ambarus@linaro.org>,
+	<alex@sverdlin.org>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 2/2] mtd: spi-nor: spansion: Assign .fixups to s25fs256s1
+Thread-Topic: [PATCH 2/2] mtd: spi-nor: spansion: Assign .fixups to s25fs256s1
+Thread-Index: AQHdRASdQI/rAfbWgkienan9hYKZEbbNfGoAgAAmnTCAAAyXAIABdAOQ
+Date: Tue, 15 Sep 2026 06:13:57 +0000
+Message-ID: <e15daee278f346cd8dae030e2409445e@infineon.com>
+References: <20260914-s25fs256s-fixup-v1-0-e94019455c1e@infineon.com>
+ <20260914-s25fs256s-fixup-v1-2-e94019455c1e@infineon.com>
+ <DLETVUMUX3AN.3SSH7NN2CKAIU@kernel.org>
+ <fb4398e88939472eaa86cdc098a3d265@infineon.com>
+ <DLEXS5VCYB1P.1NJI7ZU6HYUHF@kernel.org>
+In-Reply-To: <DLEXS5VCYB1P.1NJI7ZU6HYUHF@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.161.6.196]
 MIME-Version: 1.0
-X-Received: by 2002:a05:6820:200e:b0:6c3:a421:5adc with SMTP id
- 006d021491bc7-6c54008a613mr3208941eaf.22.1789446806610; Mon, 14 Sep 2026
- 21:33:26 -0700 (PDT)
-Date: Mon, 14 Sep 2026 21:33:26 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6aa8ca96.a211d2ce.1a5198.02a5.GAE@google.com>
-Subject: [syzbot] Monthly jffs2 report (Sep 2026)
-From: syzbot <syzbot+list7c9a6d38f715693c2465@syzkaller.appspotmail.com>
-To: dwmw2@infradead.org, linux-kernel@vger.kernel.org, 
-	linux-mtd@lists.infradead.org, richard@nod.at, 
-	syzkaller-bugs@googlegroups.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260914_213328_550249_3D6CDDF0 
-X-CRM114-Status: UNSURE (   5.07  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260914_231400_634430_1AF95CB7 
+X-CRM114-Status: GOOD (  22.41  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,38 +97,103 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello jffs2 maintainers/developers,
+Hi Michael,
 
-This is a 31-day syzbot report for the jffs2 subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/jffs2
+> Hi Takahiro,
+> 
+> On Mon Sep 14, 2026 at 9:11 AM CEST, Takahiro.Kuwano wrote:
+> > Hi Michael,
+> >
+> >> On Mon Sep 14, 2026 at 6:50 AM CEST, Takahiro Kuwano via B4 Relay wrote:
+> >> > From: Takahiro Kuwano <takahiro.kuwano@infineon.com>
+> >> >
+> >> > s25fs256s1 has incorrect SFDP entries, like s25fs512s and s25fs128s1.
+> >> > Assign the common s25fs_s_nor_fixups to s25fs256s1 to fix its page size
+> >> > and sector map.
+> >>
+> >> Do you have an SFDP dump by chance? I haven't found one on the list
+> >> for this flash.
+> >>
+> >
+> > Yes, but param tables are located beyond PAGE_SIZE(1000h)...
+> 
+> Could you test the following patch if that helps?
+> 
+> --- a/drivers/mtd/spi-nor/sysfs.c
+> +++ b/drivers/mtd/spi-nor/sysfs.c
+> @@ -99,10 +99,26 @@ static umode_t spi_nor_sysfs_is_bin_visible(struct kobject *kobj,
+>  	return 0;
+>  }
+> 
+> +static size_t spi_nor_sysfs_bin_size(struct kobject *kobj, const struct bin_attribute *attr, int n)
+> +{
+> +	struct spi_device *spi = to_spi_device(kobj_to_dev(kobj));
+> +	struct spi_mem *spimem = spi_get_drvdata(spi);
+> +	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
+> +	struct sfdp *sfdp = nor->sfdp;
+> +	size_t sfdp_size = sfdp->num_dwords * sizeof(*sfdp->dwords);
+> +
+> +	if (attr == &bin_attr_sfdp)
+> +		return sfdp_size;
+> +
+> +	return 0;
+> +}
+> +
+> +
+>  static const struct attribute_group spi_nor_sysfs_group = {
+>  	.name		= "spi-nor",
+>  	.is_visible	= spi_nor_sysfs_is_visible,
+>  	.is_bin_visible	= spi_nor_sysfs_is_bin_visible,
+> +	.bin_size	= spi_nor_sysfs_bin_size,
+>  	.attrs		= spi_nor_sysfs_entries,
+>  	.bin_attrs	= spi_nor_sysfs_bin_entries,
+>  };
 
-During the period, 4 new issues were detected and 0 were fixed.
-In total, 10 issues are still open and 1 has already been fixed.
-There is also 1 low-priority issue.
+This didn't help as SFDP cache size is truncated to PAGE_SIZE in sfdp.c:
 
-Some of the still happening issues:
+	/*
+	 * Limit the total size to a reasonable value to avoid allocating too
+	 * much memory just of because the flash returned some insane values.
+	 */
+	if (sfdp_size > PAGE_SIZE) {
+		dev_dbg(dev, "SFDP data (%zu) too big, truncating\n",
+			 sfdp_size);
+		sfdp_size = PAGE_SIZE;
+	}
 
-Ref Crashes Repro Title
-<1> 3       No    kernel BUG in jffs2_sum_write_sumnode (2)
-                  https://syzkaller.appspot.com/bug?extid=0727f46a0571de01bf93
-<2> 6973    Yes   kernel BUG in jffs2_del_ino_cache
-                  https://syzkaller.appspot.com/bug?extid=44664704c1494ad5f7a0
-<3> 6       No    possible deadlock in jffs2_xattr_delete_inode
-                  https://syzkaller.appspot.com/bug?extid=fdfd8fdf716c90baef0f
+With skipping above part,
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+zynq> hexdump /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+0000000 4653 5044 0106 ff05 0000 0901 1090 ff00
+0000010 0500 1001 1090 ff00 0600 1001 1090 ff00
+0000020 0081 1a01 10d8 ff00 0084 0201 10d0 ff00
+0000030 0101 5001 1000 0100 ffff ffff ffff ffff
+0000040 ffff ffff ffff ffff ffff ffff ffff ffff
+*
+0001000 0201 4d19 8101 3030 ff84 ffff ffff ffff
+0001010 5251 0259 4000 5300 5146 1700 0019 0900
+0001020 0809 0211 0502 1903 0102 0008 0703 1000
+0001030 0000 8000 fe00 0001 ff01 ffff ffff ffff
+0001040 5250 3149 2133 0102 0800 0100 0003 0700
+0001050 4101 544c 3032 1000 3253 4635 3253 3635
+0001060 ff53 ffff ffff 3030 0180 84eb 7508 7a28
+0001070 7564 7a28 8864 0a04 0001 8c01 9606 2301
+0001080 2300 f000 ff09 ffff ffff ffff ffff b0a5
+0001090 ffe7 ffb2 ffff 0fff eb48 ffff ffff bb88
+00010a0 fffe ffff ffff ffff ffff eb48 200c d810
+00010b0 d812 ff00 72e2 ff1d 2691 dd07 83ec 4418
+00010c0 858a 757a bdf7 5cd5 f68c ff5d 30f0 a1f8
+00010d0 8e6b ffff dc21 ffdc 65fc 08ff 0004 0000
+00010e0 65fc 04ff 0002 0000 65fd 02ff 0004 0000
+00010f0 00fe ff02 7ff1 0000 7ff2 0000 fff2 01fe
+0001100 02fe ff02 fff2 01fe 7ff2 0000 7ff1 0000
+0001110 01fe ff02 7ff1 0000 7ff4 0003 fff4 01fb
+0001120 03fe ff02 fff4 01fb 7ff4 0003 7ff1 0000
+0001130 04fe ff00 fff2 01ff 05ff ff00 fff4 01ff
+0001140
 
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
-
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
+Thanks,
+Takahiro
 
 ______________________________________________________
 Linux MTD discussion mailing list
