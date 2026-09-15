@@ -4,54 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B05EEC88E75
-	for <linux-mtd@archiver.kernel.org>; Tue, 15 Sep 2026 06:40:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01CFEC88E53
+	for <linux-mtd@archiver.kernel.org>; Tue, 15 Sep 2026 07:13:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Message-ID:MIME-Version:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=H8WZ25wUKlgGgNzlsoyV4ZIu/3GKdueQudPkJFoq0jw=; b=Nkvma+H3hKWltD
-	zA7sEtwtKFwQhAa7AjRQQhYZwjX256EJ+1jA1NnT1SYr6dIf3U995VQ4mUemfZYmu6Gab2pyB6dq6
-	tIzaTctihEiw+bhudbUJiFahVrOgGfeAuCmKglSMTTHEmD+mHGNf3j2kT6XbMvfNrK0eHCdx9lCN/
-	m3X74x5ul4mD2tTSIIQJ9xweJE50CTVaYQJoS5N+VZo0JsXT5nLoWEGLF+Qwg0UpQ6cfwIlD8pEtN
-	umjY+m/BjuzeGsBDop6GkvkC6axdhyopl9P/659fxUxoQmk/fr7jm0nsA573BeEYNEzAH58YH18Ew
-	SvSQ81kmCcFUFC4mLXKg==;
+	List-Owner; bh=EIiLCAjIhIkfKIMHQkFZWpX8ybkmV4ig7W3EGQX1h5A=; b=rNb4B56XnmbQnD
+	mSRigEoQ5OOhlWVIt7aGHgmnYn9Gxkagksz3860AKi9g/wFtmwfz+XuMmsqbyzSWyraBFQx7lGviQ
+	CqwF3UytdZnhsA6SFHqSbjF9nI0foGOin8G+38PTc07TAeVTzKg+Y/gO/6Xmhp1cXvYoln3O8Smtc
+	VoLrcm9TINLLoAeJQSs4hcztPZ/Ubt6eyAryUKezxdPbvSpvjdBYdYfSxVKm0RbceafcItJgKtkXn
+	gv8KKTDzPvbIVKRuZ6rF719REUMm9sU0SrWkJV4KtwZLGir58lDKVVXSBDdav7abDpG4DNFIwEYma
+	NPlN3vpoAqDspgKC3pPg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x6Mpw-00000005Mn6-0alC;
-	Tue, 15 Sep 2026 06:40:12 +0000
-Received: from m16.mail.163.com ([117.135.210.5])
+	id 1x6NMR-00000005QyA-1Gz8;
+	Tue, 15 Sep 2026 07:13:47 +0000
+Received: from mail-wm1-x332.google.com ([2a00:1450:4864:20::332])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x6Mps-00000005Mln-2uCs
+	id 1x6NMP-00000005QxQ-08M5
 	for linux-mtd@lists.infradead.org;
-	Tue, 15 Sep 2026 06:40:10 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=Date:From:To:Subject:Content-Type:MIME-Version:
-	Message-ID; bh=unkA0ssih9z87yxpeGe0v6wkVWdw3JKhLGifgjgbCQE=; b=K
-	qGxrlaR/3tQwDIpeyKnfvT9G/+f3B4lLXNKrNgIbNEXwc2bKyBe0cuFw6W7aoJUf
-	r7aqDDhCE/8FE+8GmT+u01HIQq1KTBKZYMcB0W7j4RRqsS2t4oDM9vGfTZHXGVru
-	UGbZvXjTa+fXQgH47QNUYaFLSjoQ2CXGpfgPqAk6B0=
-Date: Tue, 15 Sep 2026 14:39:39 +0800 (CST)
-From: CJ <firefly0158@163.com>
-To: dwmw2@infradead.org, richard@nod.at
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [BUG] jffs2: kernel BUG in jffs2_del_ino_cache
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version 2023.4-cmXT build
- 20260511(2e539873) Copyright (c) 2002-2026 www.mailtech.cn 163com
-X-NTES-SC: AL_Qu2TC/ieu0ss7yeaYekdmEsTju82UcS4ufQl245Xc98Figbk+QAgeFpPNFDG1NiRKyuJkh+TdQFs6cJxc45/D9mcTQS6k5QcvGt6dplP9A==
+	Tue, 15 Sep 2026 07:13:46 +0000
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-49e6bad7b79so26303895e9.1
+        for <linux-mtd@lists.infradead.org>; Tue, 15 Sep 2026 00:13:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1789456422; x=1790061222; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=x7qaufosLZLxweL4OTJOiBy2CZI8aGJ/EJYf86wkdYM=;
+        b=MCYcEE7t3EchBaGMxvTZgtK3K1hknQZ5zKjNa0mRSWBqKWS5NH8z1t4wNAOl85cHSo
+         bmoeJr1UfnYiRGUws0XpfFh9hTl8tmqvtdcrmlnbjIYaGznX+YMwhYc642UP8JIwkk6w
+         paV4p6eSdcWLErWrgz2jQeH1vvIvtfh8LgSBrvCk17FPnlBDPal2x8SX7IpN0my6MyH/
+         +F8J0vjZc+n4SPz5m8uaQEAPT2a5ZKZZ684EyGSSUuAFjlm3xnRW+Wj8lb/NhXe5H3JP
+         NZBxbzCQv3Wtj+Q9F80wY66t3uE30k6mBK2fncup+6dWi+OZ9RORvqpJ5vsWMAsoFtjT
+         NjLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1789456422; x=1790061222;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=x7qaufosLZLxweL4OTJOiBy2CZI8aGJ/EJYf86wkdYM=;
+        b=kP4MeHgDDX26FtSpnJJ4mQVF7ydi1dOm5lR0+GCc6YYY/HxXWFrgkdAXBMi6Vdwc3Z
+         FqCLWB6AJUcd7Z1u/o+mocSJAHBs9nYWF4jMF7rG3uqGqRlpjio8LmFc4MU3oZYJjX4m
+         i8xYYTCUPlfo8yEH2JpJNl/GqFr8Cj9tn/prMJhRUghTBeVKWopoypCl1twCVLNomPX0
+         f06H89yf5I+5DiPIz9ABydfPDtAqMGlEb4zEZalc6X+l8Z2pDmxMRo78uVTXY2dzkgQf
+         gtCd2Zvo0UImfANP5udS2UcuV1uNqMyLB3Nn3jMt7U86sRRxn5S5P86KUAD09ByFKuzP
+         ZUaw==
+X-Gm-Message-State: AFuF++k+8QzpD1S0YcOLhkdgFLRNFtrot9kIe/tD+ftZFIiTFiz2Mfan
+	PGOO+JWz/68bhSezsVdK76SoczLxoSRdD6Kn3L3w122iSr8P1zecqJrm
+X-Gm-Gg: AYBFou0dXJRM3IKbv8+nfx4Hjo2zzNk4koiHY4suEbHM2r9MB5c9KVcvsiUOfYlpc8d
+	5ePVmk2oZrLAyxUNtuZv2t5w9BcxiXtmQIprADB1sGnqo3JzR2CWH7Y6iPKW9Ik+cHBzmdcZTFW
+	UUxK1+PM4mWjCqtrV0ADlu6MyxmFmkkH4knPbEA4Rit+VsWAwpcGyPXkTo4MHlCRyiE41MYQJt7
+	iPx1Gv2JLftxHTTWfqMqWTWx+/IJnQW5tSBHCAVi5v6Gslacfu5m+pXw9r1mMvsCF0ctYL2dPqM
+	W+ZzZ2KfMub+iE60kyX8a0Z5bGiQz4rPoiR44p1zf7/B9+jDuTkPejfHDvWdPSecUMEUHQdkK6w
+	p79LEGEPCONfIGWwr2Gh/j4IiVu1iRYwWEn97m6DlHkbhdpvEmTPx8F1gaLr6sGE69xqSfeKBsw
+	ijKiJHhZZNtx2rX/SK5rOe+QPr033gUzIRyjiZmAnnkUNtzXqMfJG6ryHlxwqq5ft6Hc4Rew2+f
+	+vgWttagU+XYDEjqw6Mk5eW1HTHgc83sBSzEy4c0hO7HSLVNb+pmYfpxhNPfpisFEa+08K/eYBf
+	JxJgiVGRCe7Q5qaH
+X-Received: by 2002:a05:600c:37c4:b0:49e:7862:c09e with SMTP id 5b1f17b1804b1-49e7a656db2mr84113715e9.14.1789456421649;
+        Tue, 15 Sep 2026 00:13:41 -0700 (PDT)
+Received: from center.jhjvjihww5qejoy14qwv1cc4td.frax.internal.cloudapp.net ([131.189.143.225])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-49e7d1f85desm38601675e9.0.2026.09.15.00.13.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2026 00:13:41 -0700 (PDT)
+From: Orgad Shaneh <orgads@gmail.com>
+To: miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com
+Cc: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: [PATCH] mtd: cfi_cmdset_0002: cap the write-buffer chunk at 256 bytes on an 8-bit bus
+Date: Tue, 15 Sep 2026 07:13:37 +0000
+Message-ID: <20260915071339.15172-1-orgads@gmail.com>
+X-Mailer: git-send-email 2.47.3
 MIME-Version: 1.0
-Message-ID: <23469bd6.56e9.1a0a3caead6.Coremail.firefly0158@163.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: hygvCgD3378r6KhqN+4PAA--.21301W
-X-CM-SenderInfo: piluvw1o1qikqy6rljoofrz/xtbC+QsJumqo6CtZKwAA3y
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260914_234009_236651_31D6BE5C 
-X-CRM114-Status: UNSURE (   9.24  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260915_001345_088951_906FFC44 
+X-CRM114-Status: GOOD (  13.88  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -68,57 +100,54 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+The word count of the Write to Buffer command is a single bus word, so
+on an 8-bit bus a chunk can hold at most 256 bytes regardless of the
+buffer size the chip advertises.
 
-Hi,
+A Micron M29EW (an x16 part wired in x8 mode) advertises a 512-byte
+write buffer. cfi_amdstd_write_buffers() used the full 512, CMD(511)
+truncated the count to 0xff on the way out, and the chip aborted the
+program on the 257th data byte. Every full-size chunk failed while the
+partial ones at the start of a write went through:
 
-I am reporting a kernel BUG in the jffs2 inode cache handling, triggered by a
-syzkaller reproducer.  The issue is reproducible with HEAD commit
-cee9395acd8043be0644b25c34bfa86623f2b935 (v7.3-rc1, Linux 7.3.0-rc1).
+  MTD do_write_buffer_wait(): software timeout, address:0x03278bff.
+  jffs2: Write of 4164 bytes at 0x02c789b4 failed. returned -5, retlen 68
+  jffs2: No space for garbage collection. Aborting GC thread
 
-The reproducer mounts devtmpfs, mounts the jffs2 filesystem found on
-/dev/mtdblock0, and then sets a trusted.overlay.redirect extended attribute on
-the mount point.  No crafted image is uploaded by the reproducer; the trigger is
-the attribute operation on the jffs2 mount.
+Clamp MaxBufWriteSize in the write-buffer fixup when the bank is one
+byte wide, and keep mtd->writebufsize (computed before the fixups run)
+consistent with it.
 
-The console shows "kernel BUG at fs/jffs2/nodelist.c:462!" with an
-invalid-opcode Oops and RIP in jffs2_del_ino_cache.  The path reaches it from
-jffs2_do_clear_inode during inode eviction, when the inode cache entry is being
-removed while the filesystem is still holding references related to the
-attribute operation.
+The bug predates the git history, so there is no Fixes: tag.
 
-One possible cause is that the extended-attribute operation leaves an inode with
-an unexpected cache state, so the removal path takes a branch that asserts the
-inode is present in the cache list when it is not (or is present twice).  This
-looks like a state-management problem in the jffs2 inode cache rather than a
-bounds error.  I am reporting the assertion and the path as observed.
+Cc: stable@vger.kernel.org
+Assisted-by: Claude:claude-opus-5
+Signed-off-by: Orgad Shaneh <orgads@gmail.com>
+---
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -283,6 +283,17 @@ static void fixup_use_write_buffers(struct mtd_info *mtd)
+ 		pr_debug("Using buffer write method\n");
+ 		mtd->_write = cfi_amdstd_write_buffers;
+ 	}
++
++	/*
++	 * The word count of the Write to Buffer command is a single bus
++	 * word, so on an 8-bit bus a chunk holds at most 256 bytes no
++	 * matter how large a buffer the chip advertises.
++	 */
++	if (map_bankwidth_is_1(map) && cfi->cfiq->MaxBufWriteSize > 8) {
++		cfi->cfiq->MaxBufWriteSize = 8;
++		mtd->writebufsize = cfi_interleave(cfi) <<
++				    cfi->cfiq->MaxBufWriteSize;
++	}
+ }
+ #endif /* !FORCE_WORD_WRITE */
+ 
+-- 
+2.47.0
 
-This appears to be a recurrence of the syzbot issue whose external id is
-93f6bfed6a4a702b48cc.  It remains reproducible on v7.3-rc1.
-
-Reproducer:
-
-syz reproducer:
-mkdirat(0xffffffffffffff9c, &(0x7f0000000000)='./dev\x00', 0x1ff)
-mount(0x0, &(0x7f0000000000)='./dev\x00', &(0x7f0000000100)='devtmpfs\x00', 0x0, 0x0)
-mkdirat(0xffffffffffffff9c, &(0x7f0000000200)='./mnt\x00', 0x1ff)
-mount(&(0x7f0000000300)=@filename='./dev/mtdblock0\x00', &(0x7f0000000200)='./mnt\x00', &(0x7f0000000400)='jffs2\x00', 0x0, 0x0)
-lsetxattr$trusted_overlay_redirect(&(0x7f0000000040)='./mnt\x00', &(0x7f0000000080), 0x0, 0x0, 0x0)
-
-console output: https://pastebin.com/raw/wfCKUiUY
-kernel config: https://pastebin.com/raw/1TiKKS9a
-
-Kernel:
-
-HEAD commit: cee9395acd8043be0644b25c34bfa86623f2b935
-git tree: upstream (linux.git), tested through the v7.3-rc1 annotated tag object
-           e5e04726cdd043e309677071ab1b65a4b18f422b
-kernel version: 7.3.0-rc1 #1 PREEMPT(full)
-tested tag: v7.3-rc1 (Linux 7.3-rc1, 2026-08-30)
-
-Let me know if you need more details or testing.
-
-Best regards,
-Changjian
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
