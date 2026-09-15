@@ -4,101 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 628ACC88E7B
-	for <linux-mtd@archiver.kernel.org>; Tue, 15 Sep 2026 12:56:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D2F6C88E75
+	for <linux-mtd@archiver.kernel.org>; Tue, 15 Sep 2026 13:37:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:
-	MIME-Version:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=l0vfpNVo12PowjOH8G9g9TWEbXfN2F1Y95TeQP0lfiI=; b=iVF
-	K784w5RGoV26Vf9qf3BG6URjw3Xaar+Pi+okhFClH1ttxiDJXAWUn4KzWu6uB7/FUzC4facrNlsbb
-	gZ5Mn4bJFs2dYC1JlN8faE6VSn5XR1wUhyYitFOq41C3iZ1fR1ba2DcW8QXGvhlToYB3Bx0GcU+9b
-	65WOj1RnXtEH6Bu9JVdWy51IfbpuZGZvhQSbfpjvzgXv7GQMIdVdNPVblvxMjNjeqK15WiE8ZXXwE
-	plHFwMZU9uPHhFGE4U5wspxAtEelarixiKDHHDsjT5yWlKSZpfRUUcuIe7JR32lXqU35rH0hKMr83
-	te4zCJKgRBmXRd1sPuc0yppofF6EgLA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=E45SbkpEo0PYJbyUHoJ8KElnrPRM4ONVTiP8/OoPyfg=; b=48533pfaMoOBtY
+	wTXjFHWz6Xp7RAZPmp0z3b6TKP/SWWIHiY89NNSdWzMVsTE2pyE/MAoaq4ld0AgaPVbgIn3xW56Lo
+	FYHyo2cEYb3yvm3Y82ccQXHTudGYopLDY3XAMPzokw6x6+iu/nOUrf9O9ZDads5CPZK99yNjO56Ws
+	HsKx6nxptGIVXcA+K4OkCxQndLqxdqRPa8VhVic3Exf9QYShI8y2SAFOTbZ8bSLD+9jYBxwoSA4ce
+	FKZD8KmdVTpjKZWNCyTI23yyC5O71CWp02wJhEd5OvB9mDuVMctfImQVJr0dSEaHt3oPQKPtaxPiY
+	VwVegVcDc1bxHDgU4/rA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x6Shg-00000006cx7-0r3x;
-	Tue, 15 Sep 2026 12:56:04 +0000
-Received: from mail-wr2-x10.google.com ([2a00:1450:4864:30::10])
+	id 1x6TLo-00000006l9A-1MFx;
+	Tue, 15 Sep 2026 13:37:32 +0000
+Received: from smtpout-04.galae.net ([185.171.202.116])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x6She-00000006cwI-08nv
+	id 1x6TLl-00000006l61-44qQ
 	for linux-mtd@lists.infradead.org;
-	Tue, 15 Sep 2026 12:56:03 +0000
-Received: by mail-wr2-x10.google.com with SMTP id ffacd0b85a97d-482f6351832so1805980f8f.3
-        for <linux-mtd@lists.infradead.org>; Tue, 15 Sep 2026 05:56:00 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1789476959; cv=none;
-        d=google.com; s=arc-20260327;
-        b=YbdrQge77oWfDiQ6z6JUkcaGV2bsQkbXAo71FLUS5unAKMOZxbq6zTox7CFz0ZII8G
-         K22gdSh0MrBDpcIO784h7MDE6Y4DhqphRBn83n6NWTwWLARecgBROllOoiVOKhpBi/k4
-         AN+CX8PKN6Qu2U/LpqIr/MOwV8KkUL2V6F+0QKbhSYcFnkiYLSNta+UVWhjSVZZBbXqj
-         g5t7lJT5qiWFhOtyrdCJwFgniom8DQX2nxlDyzfUC2EXVV1Q05DhAuIBd/w4FCjCAqGE
-         DIZ2yjPgLZwAQU2pXx6El1H2/4f6/kHJwZmHyTePG1ejeAvZghMTuDth16ccWbKV5Tm9
-         eUjA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=cc:to:subject:message-id:date:mime-version:from:dkim-signature;
-        bh=LG5h/iTLMj+UYuvATFs99oU1mCyX4FFNoe4oQ6uOrgk=;
-        fh=htGQ2/vytPFfRsgof4HWjdx+mjwwjvsvvhLjya6nGHM=;
-        b=J6se9v+J1oUH0BC2YJikEpm1sq1XvMpfxuYRrsflIxFJQbmunWlWcvNPiN1drPmpZA
-         rt5mWY2ockaHCmg/dTYUgMo7NO3bR2bvNq9kAHYsla46sJ3tncpQjBJV8Poe3gDNM633
-         wVkyG3e4pU5rzs9SPMtBrP2t9YRxyqqqIgzFKcJjPoCaS0JezpKwQglP4O0qxzTpuOS+
-         YHjeYurXl/xTMeH7CvpkPVI80SZJzKkmGSSb2bAwVsH0J246AnB8SaOAbjaL8nCO8pgd
-         Vj05FprIE9suKPQNAxK3qj3imTSR/XBa+uM+WaWvKJ2ILan4IEJMdQ7ih1wjEji7IfSv
-         QYWA==;
-        darn=lists.infradead.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1789476959; x=1790081759; darn=lists.infradead.org;
-        h=content-type:cc:to:subject:message-id:date:mime-version:from:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=LG5h/iTLMj+UYuvATFs99oU1mCyX4FFNoe4oQ6uOrgk=;
-        b=stlbF6BeOgsalJkIrePiemI4k8LzYPOKTZYQV2aaF+OPWSDK8O6+CEfA4BLSRlVVx+
-         FSHIvlojPR8IZRuCWvqqboPu/s9iGzuSDzFDNdQ3ua7nlUr6WcKMpEqaoqNuaPOgM7/2
-         sa+s3TOQHHXwti/BXzeCFwSTiAG2Xl8KgGZUFBWX/rpPkF27YfMIldHb3XpMEU2rBuut
-         4iGFQLCAbbULRe8+XuUN/YzeYH/hcceHNxK0znplxkt5AVKya+KWMVYCX76bl6dQy/e5
-         OKKd2Ydx1ncXL0mnNukCIXf1zGLdkoHqIYBAQQ8s93BcgHKFO1V7bmojrY6X7UTHGeR/
-         mB9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1789476959; x=1790081759;
-        h=content-type:cc:to:subject:message-id:date:mime-version:from
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to:content-type;
-        bh=LG5h/iTLMj+UYuvATFs99oU1mCyX4FFNoe4oQ6uOrgk=;
-        b=JoW8as+c3/VkxwwwYgNjPHuZWqybIgwl5uaBEGOxC9iTQcs1CPM6ds9SBi+hjMBR0e
-         1zvBDEVMG2oUxS44ypUNrnlcJPXSmEZi6bwVHLCPNSHHUPS4cYv9QIYe+8QxZ6MuU52d
-         DcuPXLkQXWl/93bQGm92hxCAP4nwpSDDVP1zQLL5Y8YnAgWcYQGaSpkbVfU0QN05lVn5
-         zYXLnQdlsnhg3kN1H5VzHgcflnOt60+AcsxMakOi2d1HoJ6djiqFSB7GnqS/TwyfbPVb
-         ZfvfpL8LYyuxMfS89QOnYxs79QVmjFbKDOzcmdz0VljcJZ2sWse6e/T+2PsgRyglBUXY
-         Lymg==
-X-Gm-Message-State: AFuF++kcnxXFJQWBR1fXYKm+hY62KqB8ph6lBPX+ydGyt5UWIEO66yP5
-	S1bvdmfwadK7KaHJbRh7rPKq7go+PHargs4njb7aywJnP4Dz7jMyry3xBk68DfVEO5aMol1zPHf
-	2tHnMlc+kEYhABZTqa5KQT5LiAHZnwlXJNPqVTc3gthfd
-X-Gm-Gg: AYBFou1cTweuMRMoUc4jAKqVZcEtYb3YZgKj8/Wli106jizb3Af8UNpj1Zd1R56QtGu
-	geCI+q6Q2s0+4GYEBpgQuTix4tsVvupb/4kLGsaZW/3RMFubzrNWrc7jKJPEL7zmYzecLO3xbk2
-	1mXKWpDPUiVuXnt6uyPhnNrfx513qyngVfB4fCnY3JrYoKrODCZ9GXo0jAM9xJ6agNKS+kWO9Ge
-	or51eQ7pEAbszWhu0TR2LCNXu3Dg2A68W6+u8HEX0MO1in0aly3kIte6pYyLXWV2LZ+UTVABIAd
-	6xaJZ/pL2w8pWcTO+j0kq4+xoiiTkMeIynDn3lpRS7wILPh5w061oQ==
-X-Received: by 2002:a5d:5889:0:b0:486:e9ab:2b86 with SMTP id
- ffacd0b85a97d-48702b139e7mr8348395f8f.39.1789476959401; Tue, 15 Sep 2026
- 05:55:59 -0700 (PDT)
-Received: from 830778650420 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 15 Sep 2026 05:55:58 -0700
-Received: from 830778650420 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 15 Sep 2026 05:55:58 -0700
-From: Ruslan Vagner <rusya92266@gmail.com>
+	Tue, 15 Sep 2026 13:37:32 +0000
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-04.galae.net (Postfix) with ESMTPS id 27C42C5CD44;
+	Tue, 15 Sep 2026 13:38:09 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 9AD3560498;
+	Tue, 15 Sep 2026 13:37:25 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id E4A6411C7AFEF;
+	Tue, 15 Sep 2026 15:37:21 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1789479444; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=RKb5raYH5jjg44l7lX7tk09hl1TxxM+EOthKDMqnefw=;
+	b=rJYS+GGOGKJDnkFEYwc5rjJq7ei4z5rkLCbLTzhsk8d087j7LjBZnO/99LP/hq5fEXQI46
+	aEsuCC9tT35rvp476F9GJZO9KTowL/EuCqr764OoQkL2k5jQTrEJVeTLUCWhs95SsW1SQK
+	/sjidzNIBpCQt3TfBTRV8Od2FBDMEgQVT8LgXgx6jShnJHRIlY7BTN72mwgmv27U8BDRrA
+	ZJ4IGE9A3WakazyW5nH1u9vrfPHiH3TqgcSUTmK1vWDw9z65PlOh7uePo18kJRnCbOmSpt
+	Ggmhe9eKq9eYQ03SZGNqmsF/8FxgBtHaWTTNWPQ3TNOgb02RLRpD50z05YcfVQ==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: <Takahiro.Kuwano@infineon.com>
+Cc: <mwalle@kernel.org>,  <pratyush@kernel.org>,  <richard@nod.at>,
+  <vigneshr@ti.com>,  <tudor.ambarus@linaro.org>,  <alex@sverdlin.org>,
+  <linux-mtd@lists.infradead.org>,  <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] mtd: spi-nor: spansion: Assign .fixups to s25fs256s1
+In-Reply-To: <e15daee278f346cd8dae030e2409445e@infineon.com> (Takahiro
+	Kuwano's message of "Tue, 15 Sep 2026 06:13:57 +0000")
+References: <20260914-s25fs256s-fixup-v1-0-e94019455c1e@infineon.com>
+	<20260914-s25fs256s-fixup-v1-2-e94019455c1e@infineon.com>
+	<DLETVUMUX3AN.3SSH7NN2CKAIU@kernel.org>
+	<fb4398e88939472eaa86cdc098a3d265@infineon.com>
+	<DLEXS5VCYB1P.1NJI7ZU6HYUHF@kernel.org>
+	<e15daee278f346cd8dae030e2409445e@infineon.com>
+User-Agent: mu4e 1.12.12; emacs 30.2
+Date: Tue, 15 Sep 2026 15:37:21 +0200
+Message-ID: <874ifqoctq.fsf@bootlin.com>
 MIME-Version: 1.0
-Date: Tue, 15 Sep 2026 05:55:58 -0700
-X-Gm-Features: AcwNN1WgWj-T3A0q9LI-vz14w95KMwSOzeQo-fLgK5DiDqH4l7XpdgcMlWDaB54
-Message-ID: <CAF9RqJ45HPa1HpJdZp3=G6QAxyNSFo4D1cpkPQhN5YmHbSdmSQ@mail.gmail.com>
-Subject: [PATCH] mtd: fix comment typos in UBI and NAND headers
-To: linux-mtd@lists.infradead.org
-Cc: miquel.raynal@bootlin.com, richard@nod.at, 
-	Ruslan Vagner <rusya92266@gmail.com>
+X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260915_055602_098963_9DB91116 
-X-CRM114-Status: GOOD (  12.26  )
+X-CRM114-CacheID: sfid-20260915_063730_172621_D7D1BC50 
+X-CRM114-Status: UNSURE (   7.11  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -110,63 +78,20 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Fix the spelling in comments. No functional change.
-
-Signed-off-by: Ruslan Vagner <rusya92266@gmail.com>
----
- drivers/mtd/ubi/wl.c         | 2 +-
- include/linux/mtd/rawnand.h  | 2 +-
- include/linux/mtd/sh_flctl.h | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-index 5a0db928a90e..44237de52250 100644
---- a/drivers/mtd/ubi/wl.c
-+++ b/drivers/mtd/ubi/wl.c
-@@ -1486,7 +1486,7 @@ static bool scrub_possible(struct ubi_device
-*ubi, struct ubi_wl_entry *e)
-  * @pnum: the physical eraseblock to schedule
-  * @force: don't read the block, assume bitflips happened and take action.
-  *
-- * This function reads the given eraseblock and checks if bitflips occured.
-+ * This function reads the given eraseblock and checks if bitflips occurred.
-  * In case of bitflips, the eraseblock is scheduled for scrubbing.
-  * If scrubbing is forced with @force, the eraseblock is not read,
-  * but scheduled for scrubbing right away.
-diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index 5c70e7bd3ed5..43fefff02025 100644
---- a/include/linux/mtd/rawnand.h
-+++ b/include/linux/mtd/rawnand.h
-@@ -1592,7 +1592,7 @@ void nand_wait_ready(struct nand_chip *chip);
-
- /*
-  * Free resources held by the NAND device, must be called on error after a
-- * sucessful nand_scan().
-+ * successful nand_scan().
-  */
- void nand_cleanup(struct nand_chip *chip);
-
-diff --git a/include/linux/mtd/sh_flctl.h b/include/linux/mtd/sh_flctl.h
-index 78fc2d4218c8..f3ce3253e8ec 100644
---- a/include/linux/mtd/sh_flctl.h
-+++ b/include/linux/mtd/sh_flctl.h
-@@ -61,7 +61,7 @@
-  * to control the clock divider used between the High-Speed Peripheral Clock
-  * and the FLCTL internal clock. If so, use CLK_8_BIT_xxx for connecting 8 bit
-  * and CLK_16_BIT_xxx for connecting 16 bit bus bandwith NAND chips. For the 16
-- * bit version the divider is seperate for the pulse width of high and low
-+ * bit version the divider is separate for the pulse width of high and low
-  * signals.
-  */
- #define PULSE3	(0x1 << 27)
--- 
-2.54.0.windows.1
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGVsbG8sCgo+IFRoaXMgZGlkbid0IGhlbHAgYXMgU0ZEUCBjYWNoZSBzaXplIGlzIHRydW5jYXRl
+ZCB0byBQQUdFX1NJWkUgaW4gc2ZkcC5jOgo+Cj4gCS8qCj4gCSAqIExpbWl0IHRoZSB0b3RhbCBz
+aXplIHRvIGEgcmVhc29uYWJsZSB2YWx1ZSB0byBhdm9pZCBhbGxvY2F0aW5nIHRvbwo+IAkgKiBt
+dWNoIG1lbW9yeSBqdXN0IG9mIGJlY2F1c2UgdGhlIGZsYXNoIHJldHVybmVkIHNvbWUgaW5zYW5l
+IHZhbHVlcy4KPiAJICovCj4gCWlmIChzZmRwX3NpemUgPiBQQUdFX1NJWkUpIHsKPiAJCWRldl9k
+YmcoZGV2LCAiU0ZEUCBkYXRhICglenUpIHRvbyBiaWcsIHRydW5jYXRpbmdcbiIsCj4gCQkJIHNm
+ZHBfc2l6ZSk7Cj4gCQlzZmRwX3NpemUgPSBQQUdFX1NJWkU7Cj4gCX0KClRoYXQgc2l6ZSBqdXN0
+IGJlaW5nIGEgc2FuaXR5IGNoZWNrLCBpZiBpdCBubyBsb25nZXIgZml0cyBvdXIgbmVlZHMgaXQK
+bXVzdCBiZSBpbmNyZWFzZWQuCgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBt
+YWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9s
+aW51eC1tdGQvCg==
