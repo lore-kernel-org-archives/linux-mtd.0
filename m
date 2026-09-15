@@ -4,86 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01CFEC88E53
-	for <linux-mtd@archiver.kernel.org>; Tue, 15 Sep 2026 07:13:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA892C88E7D
+	for <linux-mtd@archiver.kernel.org>; Tue, 15 Sep 2026 07:30:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=EIiLCAjIhIkfKIMHQkFZWpX8ybkmV4ig7W3EGQX1h5A=; b=rNb4B56XnmbQnD
-	mSRigEoQ5OOhlWVIt7aGHgmnYn9Gxkagksz3860AKi9g/wFtmwfz+XuMmsqbyzSWyraBFQx7lGviQ
-	CqwF3UytdZnhsA6SFHqSbjF9nI0foGOin8G+38PTc07TAeVTzKg+Y/gO/6Xmhp1cXvYoln3O8Smtc
-	VoLrcm9TINLLoAeJQSs4hcztPZ/Ubt6eyAryUKezxdPbvSpvjdBYdYfSxVKm0RbceafcItJgKtkXn
-	gv8KKTDzPvbIVKRuZ6rF719REUMm9sU0SrWkJV4KtwZLGir58lDKVVXSBDdav7abDpG4DNFIwEYma
-	NPlN3vpoAqDspgKC3pPg==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Reply-To:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
+	References:In-Reply-To:Cc:To:Subject:From:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=+iqkd/N4R1xecaBZhYBY/NWAROdJlrt3UNLN/jZRfQw=; b=yfoOQxMrG6eM5P
+	8D4KjLf5e/+JI/XOWO2323Rd9sHtdjEFNNv7lla+dhA9W+10IHB+NxBlH4/q6vPY+pC13ur8/Oz0/
+	yIKnCofadKsiqX4f8gMXUTB2d4Tq+BO9CZAPM7y7BQGINs02XYDoWMFBJl59oQC5qLHd1bUFUAZ90
+	Hu8fL7M0O9KeB+N7bc+5qf5Iqj/2TXdAjRnVEWCVim2d30pzK80+w6+/qz7KW2xpha7mKXjeOXOJw
+	dxAhthb2+7ms+ip52oYTst7SbLkg+uIRmQN04ai+Dt4wyE9bRrZzp1Kh5HnRUrlBF7R9XJ1+/jw55
+	a//dh568ILXJg8ZLxTyw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x6NMR-00000005QyA-1Gz8;
-	Tue, 15 Sep 2026 07:13:47 +0000
-Received: from mail-wm1-x332.google.com ([2a00:1450:4864:20::332])
+	id 1x6Nci-00000005TR6-3kyU;
+	Tue, 15 Sep 2026 07:30:36 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x6NMP-00000005QxQ-08M5
+	id 1x6Nch-00000005TQs-1Jpx
 	for linux-mtd@lists.infradead.org;
-	Tue, 15 Sep 2026 07:13:46 +0000
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-49e6bad7b79so26303895e9.1
-        for <linux-mtd@lists.infradead.org>; Tue, 15 Sep 2026 00:13:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1789456422; x=1790061222; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=x7qaufosLZLxweL4OTJOiBy2CZI8aGJ/EJYf86wkdYM=;
-        b=MCYcEE7t3EchBaGMxvTZgtK3K1hknQZ5zKjNa0mRSWBqKWS5NH8z1t4wNAOl85cHSo
-         bmoeJr1UfnYiRGUws0XpfFh9hTl8tmqvtdcrmlnbjIYaGznX+YMwhYc642UP8JIwkk6w
-         paV4p6eSdcWLErWrgz2jQeH1vvIvtfh8LgSBrvCk17FPnlBDPal2x8SX7IpN0my6MyH/
-         +F8J0vjZc+n4SPz5m8uaQEAPT2a5ZKZZ684EyGSSUuAFjlm3xnRW+Wj8lb/NhXe5H3JP
-         NZBxbzCQv3Wtj+Q9F80wY66t3uE30k6mBK2fncup+6dWi+OZ9RORvqpJ5vsWMAsoFtjT
-         NjLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1789456422; x=1790061222;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=x7qaufosLZLxweL4OTJOiBy2CZI8aGJ/EJYf86wkdYM=;
-        b=kP4MeHgDDX26FtSpnJJ4mQVF7ydi1dOm5lR0+GCc6YYY/HxXWFrgkdAXBMi6Vdwc3Z
-         FqCLWB6AJUcd7Z1u/o+mocSJAHBs9nYWF4jMF7rG3uqGqRlpjio8LmFc4MU3oZYJjX4m
-         i8xYYTCUPlfo8yEH2JpJNl/GqFr8Cj9tn/prMJhRUghTBeVKWopoypCl1twCVLNomPX0
-         f06H89yf5I+5DiPIz9ABydfPDtAqMGlEb4zEZalc6X+l8Z2pDmxMRo78uVTXY2dzkgQf
-         gtCd2Zvo0UImfANP5udS2UcuV1uNqMyLB3Nn3jMt7U86sRRxn5S5P86KUAD09ByFKuzP
-         ZUaw==
-X-Gm-Message-State: AFuF++k+8QzpD1S0YcOLhkdgFLRNFtrot9kIe/tD+ftZFIiTFiz2Mfan
-	PGOO+JWz/68bhSezsVdK76SoczLxoSRdD6Kn3L3w122iSr8P1zecqJrm
-X-Gm-Gg: AYBFou0dXJRM3IKbv8+nfx4Hjo2zzNk4koiHY4suEbHM2r9MB5c9KVcvsiUOfYlpc8d
-	5ePVmk2oZrLAyxUNtuZv2t5w9BcxiXtmQIprADB1sGnqo3JzR2CWH7Y6iPKW9Ik+cHBzmdcZTFW
-	UUxK1+PM4mWjCqtrV0ADlu6MyxmFmkkH4knPbEA4Rit+VsWAwpcGyPXkTo4MHlCRyiE41MYQJt7
-	iPx1Gv2JLftxHTTWfqMqWTWx+/IJnQW5tSBHCAVi5v6Gslacfu5m+pXw9r1mMvsCF0ctYL2dPqM
-	W+ZzZ2KfMub+iE60kyX8a0Z5bGiQz4rPoiR44p1zf7/B9+jDuTkPejfHDvWdPSecUMEUHQdkK6w
-	p79LEGEPCONfIGWwr2Gh/j4IiVu1iRYwWEn97m6DlHkbhdpvEmTPx8F1gaLr6sGE69xqSfeKBsw
-	ijKiJHhZZNtx2rX/SK5rOe+QPr033gUzIRyjiZmAnnkUNtzXqMfJG6ryHlxwqq5ft6Hc4Rew2+f
-	+vgWttagU+XYDEjqw6Mk5eW1HTHgc83sBSzEy4c0hO7HSLVNb+pmYfpxhNPfpisFEa+08K/eYBf
-	JxJgiVGRCe7Q5qaH
-X-Received: by 2002:a05:600c:37c4:b0:49e:7862:c09e with SMTP id 5b1f17b1804b1-49e7a656db2mr84113715e9.14.1789456421649;
-        Tue, 15 Sep 2026 00:13:41 -0700 (PDT)
-Received: from center.jhjvjihww5qejoy14qwv1cc4td.frax.internal.cloudapp.net ([131.189.143.225])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-49e7d1f85desm38601675e9.0.2026.09.15.00.13.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2026 00:13:41 -0700 (PDT)
-From: Orgad Shaneh <orgads@gmail.com>
-To: miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com
-Cc: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: [PATCH] mtd: cfi_cmdset_0002: cap the write-buffer chunk at 256 bytes on an 8-bit bus
-Date: Tue, 15 Sep 2026 07:13:37 +0000
-Message-ID: <20260915071339.15172-1-orgads@gmail.com>
-X-Mailer: git-send-email 2.47.3
-MIME-Version: 1.0
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260915_001345_088951_906FFC44 
-X-CRM114-Status: GOOD (  13.88  )
+	Tue, 15 Sep 2026 07:30:35 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id B2F4B4081A;
+	Tue, 15 Sep 2026 07:30:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 269261F000FF;
+	Tue, 15 Sep 2026 07:30:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1789457434;
+	bh=lKRIjL8U68hpYB4JrL02iKgw2lAfaABiPkDTv+XGsr8=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=ian72JLd0nsExFvCUXUX5ap90mqaVMjO+AQVR9GH3tiDjqjc3KOXZcKpqMTd+R5OV
+	 Faan1Qz/WR6RrfVSbI9ArEukF9DTn3VBfHJ1Edijm4K56UD0kbK3qo0nfKdqXiJTzm
+	 36Zyx9VENt+kU6ssvtKWZo8nkuXPgOt5xErQQlMXx7BeAdvClST0k42e3EXZHp+/GP
+	 OeXKnLIxmW6WaTQAqMHcO6RP5iKJo52No+4cAtf6Bghosh+Z505Fvrw4Vd02o6Bpqq
+	 wjSG1tCcyGvJWmvWbLy/eGbk94LT19q1UtkmOa1rQvQ+lOO6SFxB8RItW6NPREVreh
+	 tFT0Rw6wKJJBA==
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH] mtd: cfi_cmdset_0002: cap the write-buffer chunk at 256
+ bytes on an 8-bit bus
+To: "Orgad Shaneh" <orgads@gmail.com>, vigneshr@ti.com, miquel.raynal@bootlin.com, richard@nod.at
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, stable@vger.kernel.org
+In-Reply-To: <20260915071339.15172-1-orgads@gmail.com>
+References: <20260915071339.15172-1-orgads@gmail.com>
+Date: Tue, 15 Sep 2026 07:30:33 +0000
+Message-Id: <20260915073034.269261F000FF@smtp.kernel.org>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,59 +62,58 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Reply-To: sashiko-reviews@lists.linux.dev
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The word count of the Write to Buffer command is a single bus word, so
-on an 8-bit bus a chunk can hold at most 256 bytes regardless of the
-buffer size the chip advertises.
-
-A Micron M29EW (an x16 part wired in x8 mode) advertises a 512-byte
-write buffer. cfi_amdstd_write_buffers() used the full 512, CMD(511)
-truncated the count to 0xff on the way out, and the chip aborted the
-program on the 257th data byte. Every full-size chunk failed while the
-partial ones at the start of a write went through:
-
-  MTD do_write_buffer_wait(): software timeout, address:0x03278bff.
-  jffs2: Write of 4164 bytes at 0x02c789b4 failed. returned -5, retlen 68
-  jffs2: No space for garbage collection. Aborting GC thread
-
-Clamp MaxBufWriteSize in the write-buffer fixup when the bank is one
-byte wide, and keep mtd->writebufsize (computed before the fixups run)
-consistent with it.
-
-The bug predates the git history, so there is no Fixes: tag.
-
-Cc: stable@vger.kernel.org
-Assisted-by: Claude:claude-opus-5
-Signed-off-by: Orgad Shaneh <orgads@gmail.com>
----
-diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
---- a/drivers/mtd/chips/cfi_cmdset_0002.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -283,6 +283,17 @@ static void fixup_use_write_buffers(struct mtd_info *mtd)
- 		pr_debug("Using buffer write method\n");
- 		mtd->_write = cfi_amdstd_write_buffers;
- 	}
-+
-+	/*
-+	 * The word count of the Write to Buffer command is a single bus
-+	 * word, so on an 8-bit bus a chunk holds at most 256 bytes no
-+	 * matter how large a buffer the chip advertises.
-+	 */
-+	if (map_bankwidth_is_1(map) && cfi->cfiq->MaxBufWriteSize > 8) {
-+		cfi->cfiq->MaxBufWriteSize = 8;
-+		mtd->writebufsize = cfi_interleave(cfi) <<
-+				    cfi->cfiq->MaxBufWriteSize;
-+	}
- }
- #endif /* !FORCE_WORD_WRITE */
- 
--- 
-2.47.0
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+VGhhbmsgeW91IGZvciB5b3VyIGNvbnRyaWJ1dGlvbiEgU2FzaGlrbyBBSSByZXZpZXcgZm91bmQg
+MSBwb3RlbnRpYWwgaXNzdWUocykgdG8gY29uc2lkZXI6Ci0gW0hpZ2hdIG10ZDogaW5jb21wbGV0
+ZSB3cml0ZS1idWZmZXIgc2l6ZSBjbGFtcCBmb3IgaW50ZXJsZWF2ZWQgOC1iaXQgY2hpcHMKLS0K
+CmNvbW1pdCBlZmVmNjVjNmU4ZGUzMjNlNDI5NGZkMTU3ZjdmODY1ZDEyZTM1MjkyCkF1dGhvcjog
+T3JnYWQgU2hhbmVoIDxvcmdhZHNAZ21haWwuY29tPgoKbXRkOiBjZmlfY21kc2V0XzAwMDI6IGNh
+cCB0aGUgd3JpdGUtYnVmZmVyIGNodW5rIGF0IDI1NiBieXRlcyBvbiBhbiA4LWJpdCBidXMKClRo
+aXMgY29tbWl0IGxpbWl0cyB0aGUgd3JpdGUgYnVmZmVyIGNodW5rIHNpemUgdG8gMjU2IGJ5dGVz
+IHdoZW4gdGhlIGJhbmsKd2lkdGggaXMgZXhhY3RseSBvbmUgYnl0ZS4gSXQgcHJldmVudHMgcHJv
+Z3JhbSBhYm9ydHMgb24gOC1iaXQgYnVzZXMgd2hlcmUKdGhlIGNoaXAgYWR2ZXJ0aXNlcyBhIGxh
+cmdlciB3cml0ZSBidWZmZXIgdGhhbiB0aGUgc2luZ2xlIGJ1cyB3b3JkIGNhbiBob2xkLgoKPiBk
+aWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2NtZHNldF8wMDAyLmMgYi9kcml2ZXJz
+L210ZC9jaGlwcy9jZmlfY21kc2V0XzAwMDIuYwo+IGluZGV4IDUxN2RiMmYyNzA3ZjQuLjY0ZmRl
+ODExOTFkMTUgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2NtZHNldF8wMDAy
+LmMKPiArKysgYi9kcml2ZXJzL210ZC9jaGlwcy9jZmlfY21kc2V0XzAwMDIuYwo+IEBAIC0yODMs
+NiArMjgzLDE3IEBAIHN0YXRpYyB2b2lkIGZpeHVwX3VzZV93cml0ZV9idWZmZXJzKHN0cnVjdCBt
+dGRfaW5mbyAqbXRkKQpbIC4uLiBdCj4gKwkvKgo+ICsJICogVGhlIHdvcmQgY291bnQgb2YgdGhl
+IFdyaXRlIHRvIEJ1ZmZlciBjb21tYW5kIGlzIGEgc2luZ2xlIGJ1cwo+ICsJICogd29yZCwgc28g
+b24gYW4gOC1iaXQgYnVzIGEgY2h1bmsgaG9sZHMgYXQgbW9zdCAyNTYgYnl0ZXMgbm8KPiArCSAq
+IG1hdHRlciBob3cgbGFyZ2UgYSBidWZmZXIgdGhlIGNoaXAgYWR2ZXJ0aXNlcy4KPiArCSAqLwo+
+ICsJaWYgKG1hcF9iYW5rd2lkdGhfaXNfMShtYXApICYmIGNmaS0+Y2ZpcS0+TWF4QnVmV3JpdGVT
+aXplID4gOCkgewpbU2V2ZXJpdHk6IEhpZ2hdCkRvZXMgdGhpcyBjb25kaXRpb24gcHJvcGVybHkg
+aGFuZGxlIGludGVybGVhdmVkIGNvbmZpZ3VyYXRpb25zIHdoZXJlIG11bHRpcGxlCjgtYml0IGNo
+aXBzIGFyZSB1c2VkIG9uIGEgd2lkZXIgYnVzPwoKVGhlIG1hcF9iYW5rd2lkdGhfaXNfMSgpIG1h
+Y3JvIGNoZWNrcyBpZiB0aGUgdG90YWwgYWdncmVnYXRlIHN5c3RlbSBidXMgd2lkdGgKaXMgMSBi
+eXRlLiBJZiB0d28gOC1iaXQgY2hpcHMgYXJlIGludGVybGVhdmVkIG9uIGEgMTYtYml0IGJ1cywg
+dGhlIGFnZ3JlZ2F0ZQpidXMgd2lkdGggaXMgMiBieXRlcywgY2F1c2luZyBtYXBfYmFua3dpZHRo
+X2lzXzEoKSB0byBldmFsdWF0ZSB0byBmYWxzZSBhbmQKYnlwYXNzIHRoZSBjbGFtcC4KCldoZW4g
+d3JpdGluZyBhIGxhcmdlIGJ1ZmZlciBpbiBhbiBpbnRlcmxlYXZlZCBzZXR1cCAoZS5nLiwgTWF4
+QnVmV3JpdGVTaXplID0gOQphbmQgaW50ZXJsZWF2ZSA9IDIpLCBjZmlfYW1kc3RkX3dyaXRlX2J1
+ZmZlcnMoKSB3aWxsIHBhc3MgdXAgdG8gMTAyNCBieXRlcyB0bwpkb193cml0ZV9idWZmZXIoKS4g
+VGhlIGxvb3AgZGl2aWRlcyB0aGlzIGJ5IG1hcF9iYW5rd2lkdGggdG8gY29tcHV0ZSA1MTIgd29y
+ZHMuCgpJdCB3cml0ZXMgYSBjb21tYW5kIG9mIDUxMSAoMHgxRkYpIHRvIHRoZSBidXMsIHdoaWNo
+IGNmaV9idWlsZF9jbWQoKQpkdXBsaWNhdGVzIHRvIDB4MUZGRkYuIFRoaXMgZ2V0cyB0cnVuY2F0
+ZWQgdG8gMHhGRkZGIG9uIHRoZSAxNi1iaXQgYnVzLCBzbwplYWNoIDgtYml0IGNoaXAgcmVjZWl2
+ZXMgMHhGRiAoMjU1KSBhcyB0aGUgd29yZCBjb3VudC4gVGhleSB3aWxsIGV4cGVjdCBleGFjdGx5
+CjI1NiB3b3JkcyAoYnl0ZXMpLgoKSG93ZXZlciwgdGhlIHN1YnNlcXVlbnQgZGF0YSBsb29wIGlu
+IGRvX3dyaXRlX2J1ZmZlcigpIHdvdWxkIHdyaXRlIDUxMiB3b3Jkcwp0byBlYWNoIGNoaXAsIGNh
+dXNpbmcgdGhlbSB0byBhYm9ydCB0aGUgcHJvZ3JhbSBvbiB0aGUgMjU3dGggYnl0ZS4KClNob3Vs
+ZCB0aGlzIGNvbmRpdGlvbiBjaGVjayB0aGUgcGVyLWNoaXAgZGF0YSB3aWR0aCBpbnN0ZWFkIG9m
+IHRoZSBhZ2dyZWdhdGUKc3lzdGVtIGJ1cyB3aWR0aD8gRm9yIGV4YW1wbGUsIGNoZWNraW5nIGlm
+Cm1hcF9iYW5rd2lkdGgobWFwKSAvIGNmaV9pbnRlcmxlYXZlKGNmaSkgPT0gMT8KCj4gKwkJY2Zp
+LT5jZmlxLT5NYXhCdWZXcml0ZVNpemUgPSA4Owo+ICsJCW10ZC0+d3JpdGVidWZzaXplID0gY2Zp
+X2ludGVybGVhdmUoY2ZpKSA8PAo+ICsJCQkJICAgIGNmaS0+Y2ZpcS0+TWF4QnVmV3JpdGVTaXpl
+Owo+ICsJfQo+ICB9CgotLSAKU2FzaGlrbyBBSSByZXZpZXcgwrcgaHR0cHM6Ly9zYXNoaWtvLmRl
+di8jL3BhdGNoc2V0LzIwMjYwOTE1MDcxMzM5LjE1MTcyLTEtb3JnYWRzQGdtYWlsLmNvbT9wYXJ0
+PTEKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVh
+ZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
