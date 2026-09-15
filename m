@@ -4,53 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 163A8C88E75
-	for <linux-mtd@archiver.kernel.org>; Tue, 15 Sep 2026 19:04:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB728C88E77
+	for <linux-mtd@archiver.kernel.org>; Tue, 15 Sep 2026 19:42:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Reply-To:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
-	References:In-Reply-To:Cc:To:Subject:From:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+2J+TlHwJ4bwGRoE89Lm5dmfycZjyK2durFaL0bO4t0=; b=qHFtswCrjjulKR
-	J2vtwuSxvwMmth1sh/ySO3BlH1abliySXdgHGPOIeBdjjNQendQl+DMu8nfmqIpNKETj5UzetfR2f
-	R4I4QoTlvYJjZQ5pd6lB7yfuVu+XT1oh+v644K3cj5UlJlNrB9GBwjWzbK/kL2C2dK1KZm3XNMRMu
-	J6epdQ6vqWMKubfTaurO9ofdq1sqHy/zf20LDSQybnZ2borfHjEyO5243SULCpkz0+MyFXawEv9wb
-	wxyH1UW8CqkZEdI5nJUFfsTu73v/rmKvGT7luTZ5aFOC4ugcBMzHUIYjNq9iq/1H4NRrm1HWs18TE
-	VUauFKqyFzhNLQFPn5mg==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=O5DzTW5AI8LG0MpS8gcHzJnrlZOuKoNtev1KLivHQIk=; b=MqZJ79SHjj7gZE
+	IIcamiLfnGw8OUC3SmYj8l5ITDgf79qKwq12yPylI6O6yRl2hxFSvca2eaCuUdOc3ryOvg3TS4NQT
+	VJ2xonIq8i/exGSv9ItQ77u6Nr5BOLDT4rBIDSCrvsy3a9YbCMUeXXLMiYXsn3Btro/LXaEGzIPoC
+	9G3Vb9FbnNOSoOlXtHxNA5I+gNvhmmaY6EKkO+dJPxxUJ5cbgGABQqcR4VUq7B3FqK2fE0a5u/ghP
+	XMwjtoBQH0bv+rzctKR3LenREtvky+whZlHXGCLXf5ETgQUHYGGQf3GZ9NPDpqvxy+82le+iMZOy+
+	uy7195oMiZ6Ty3yMImBQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x6YRn-00000007p40-0Qvx;
-	Tue, 15 Sep 2026 19:04:03 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1x6Z2o-00000007sgA-0hRW;
+	Tue, 15 Sep 2026 19:42:18 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x6YRg-00000007p2z-1F10
+	id 1x6Z2l-00000007sfm-1iin
 	for linux-mtd@lists.infradead.org;
-	Tue, 15 Sep 2026 19:03:57 +0000
+	Tue, 15 Sep 2026 19:42:16 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id BFCDA40443;
-	Tue, 15 Sep 2026 19:03:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F4971F000FF;
-	Tue, 15 Sep 2026 19:03:54 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 7F70860008;
+	Tue, 15 Sep 2026 19:42:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DEEB41F000FF;
+	Tue, 15 Sep 2026 19:42:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789499035;
-	bh=CBDmgXdQdFqJ0tjm7XSPvBufBwtb41WTOjwQwNv4gEk=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=IoMUWUpMzWSFTiTunkhN8RAK1st3la+XxrqbAayFZmNtqoNvNHHsnnApWbwXTSziE
-	 rZNEG9+vjq+GHXwiurAj2+N39ZMo52HYtQAHV8jbsac8HZti8lFJEj2gT50+jlOVZu
-	 B6GWATzLUSYfLWQFI05YhzKz69ktH6fX0CbQH4r2ZU2RwZ4vZs7kbtBwL6Wi8yo925
-	 6Het8Z98IHz0MoLdeTFIseoj6vUBUmrc5l+8fQhow1gfPrtKyvMPX9TdbxwIGU/ny+
-	 mcwjJDU2dHqK1/4n7xTAlPiiJBgdZzhBssCsTmHIvHjMKFp8euqGOE68DX4Tj9M1lN
-	 4HHmtfqC/LjtA==
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH mtd] mtd: block2mtd: defer device open on module param
- write
-To: "Adarsh Das" <adarshdas950@gmail.com>, linux-mtd@lists.infradead.org
-Cc: joern@lazybastard.org, miquel.raynal@bootlin.com, vigneshr@ti.com, syzbot <syzbot+7cab6a19619f1b8efc00@syzkaller.appspotmail.com>, richard@nod.at
-In-Reply-To: <20260915184659.6939-1-adarshdas950@gmail.com>
-References: <20260915184659.6939-1-adarshdas950@gmail.com>
-Date: Tue, 15 Sep 2026 19:03:53 +0000
-Message-Id: <20260915190354.4F4971F000FF@smtp.kernel.org>
+	s=k20260515; t=1789501334;
+	bh=lRO8Hk7d0Iglr71vivK2TJOxKQ4BfQZPY0f0uOCf70A=;
+	h=From:To:Cc:Subject:Date;
+	b=OMpAiatROL25mc3V5Oa3jASlu12n9NRTmK8khclYKmw7Q/qhhd3StaLKttvbOsUjL
+	 ON9rV35hqshOLynoAmZ7P+w0hH3mWng57BYZ/RNQVrWFnZDVbFJrRLc+N/UCJ1b/R/
+	 sI7JJMcR0dvKx1V8/x6dBB70O0Atr5AINdUCh+oMGdrWlgNr3EujPnv63OQduhE066
+	 rKniqi4N3bGXOtFESjWV0iGrfyLS7OMK5ENKdZ4vvv0jL1I68lnJtiMXJlfoYlOyNi
+	 3i8SqCR9HhZdFTJQsPVT5AI1gB7Im7ifgF0qlPGjtgeohc4UqCc1bDmLodSJRnnu6V
+	 j1UZ8nkzLqMEA==
+From: Arnd Bergmann <arnd@kernel.org>
+To: Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <mwalle@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	Takahiro Kuwano <takahiro.kuwano@infineon.com>,
+	Tudor Ambarus <tudor.ambarus@linaro.org>,
+	HyeongJun An <sammiee5311@gmail.com>,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: spi-nor: reduce stack usage in spi_nor_parse_sfdp()
+Date: Tue, 15 Sep 2026 21:40:31 +0200
+Message-ID: <20260915194203.3511147-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.53.0
+MIME-Version: 1.0
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -62,79 +70,74 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: sashiko-reviews@lists.linux.dev
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-VGhhbmsgeW91IGZvciB5b3VyIGNvbnRyaWJ1dGlvbiEgU2FzaGlrbyBBSSByZXZpZXcgZm91bmQg
-NCBwb3RlbnRpYWwgaXNzdWUocykgdG8gY29uc2lkZXI6Ci0gW0hpZ2hdIG10ZDogYmxvY2sybXRk
-OiBsaXN0IGNvcnJ1cHRpb24gZHVlIHRvIG1pc3NpbmcgbG9jayBpbiBhZGRfZGV2aWNlKCkKLSBb
-SGlnaF0gbXRkOiBibG9jazJtdGQ6IGFzeW5jIGRldmljZSBjcmVhdGlvbiBicmVha3MgdXNlcnNw
-YWNlIEFCSSBleHBlY3RhdGlvbnMKLSBbSGlnaF0gbXRkOiBibG9jazJtdGQ6IFVBRiBvbiBtb2R1
-bGUgdW5sb2FkIGR1ZSB0byB1bnNhZmUgbW9kdWxlX3B1dCgpIGluIHdvcmtxdWV1ZQotIFtIaWdo
-XSBtdGQ6IGJsb2NrMm10ZDogVUFGIG9uIG1vZHVsZSBsb2FkIGZhaWx1cmUgZHVlIHRvIHVuY2Fu
-Y2VsbGVkIHdvcmsKLS0KCmNvbW1pdCAyZGZmOTY3OTE1ZDdmNGNiMzAxNTAzNjk2MTUyYjBmOWI1
-MzU2NDVmCkF1dGhvcjogQWRhcnNoIERhcyA8YWRhcnNoZGFzOTUwQGdtYWlsLmNvbT4KCm10ZDog
-YmxvY2sybXRkOiBkZWZlciBkZXZpY2Ugb3BlbiBvbiBtb2R1bGUgcGFyYW0gd3JpdGUKClRoaXMg
-Y29tbWl0IGRlZmVycyB0aGUgYmxvY2sybXRkIGRldmljZSBzZXR1cCB0byBydW4gYXN5bmNocm9u
-b3VzbHkgaW4gYQp3b3JrcXVldWUuIFRoaXMgYXZvaWRzIGhvbGRpbmcgdGhlIG1vZHVsZSBwYXJh
-bWV0ZXIgbG9jayB3aGlsZSBvcGVuaW5nIHRoZQpibG9jayBkZXZpY2UsIHdoaWNoIHByZXZpb3Vz
-bHkgbGVkIHRvIGEgY2lyY3VsYXIgbG9jayBkZXBlbmRlbmN5IHdpdGgKb3ZlcmxheWZzLgoKTGlu
-azogaHR0cHM6Ly9zeXprYWxsZXIuYXBwc3BvdC5jb20vYnVnP2lkPTNlNDIwMzAwZjZiMjMxYWE5
-MDY0MjVjYmI0YmQ1NWRkNjRmNDJkYTQKCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL2Rldmlj
-ZXMvYmxvY2sybXRkLmMgYi9kcml2ZXJzL210ZC9kZXZpY2VzL2Jsb2NrMm10ZC5jCj4gaW5kZXgg
-MzQ5ZmEwN2JlMzE0Yy4uNWVmMmMxNWE2YWExYSAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL210ZC9k
-ZXZpY2VzL2Jsb2NrMm10ZC5jCj4gKysrIGIvZHJpdmVycy9tdGQvZGV2aWNlcy9ibG9jazJtdGQu
-YwpbIC4uLiBdCj4gQEAgLTQ2MSwxMSArNDYzLDU0IEBAIHN0YXRpYyBpbnQgYmxvY2sybXRkX3Nl
-dHVwMihjb25zdCBjaGFyICp2YWwpCj4gIAlyZXR1cm4gMDsKPiAgfQo+ICAKPiArc3RydWN0IGJs
-b2NrMm10ZF9kZWZlcnJlZCB7Cj4gKwlzdHJ1Y3Qgd29ya19zdHJ1Y3Qgd29yazsKPiArCWNoYXIg
-KnZhbDsKPiArfTsKPiArCj4gK3N0YXRpYyB2b2lkIGJsb2NrMm10ZF9kZWZlcnJlZF93b3JrZm4o
-c3RydWN0IHdvcmtfc3RydWN0ICp3b3JrKQo+ICt7Cj4gKwlzdHJ1Y3QgYmxvY2sybXRkX2RlZmVy
-cmVkICpyZXEgPQo+ICsJCWNvbnRhaW5lcl9vZih3b3JrLCBzdHJ1Y3QgYmxvY2sybXRkX2RlZmVy
-cmVkLCB3b3JrKTsKPiArCj4gKwlibG9jazJtdGRfc2V0dXAyKHJlcS0+dmFsKTsKPiArCWtmcmVl
-KHJlcS0+dmFsKTsKPiArCWtmcmVlKHJlcSk7Cj4gKwltb2R1bGVfcHV0KFRISVNfTU9EVUxFKTsK
-CltTZXZlcml0eTogSGlnaF0KQ2FuIGRyb3BwaW5nIHRoZSBtb2R1bGUgcmVmZXJlbmNlIGhlcmUg
-Y3JlYXRlIGEgdXNlLWFmdGVyLWZyZWUgZHVyaW5nIG1vZHVsZQp1bmxvYWQ/CgpXaGVuIHRoZSBy
-ZWZjb3VudCBkcm9wcyB0byB6ZXJvLCBybW1vZCBwcm9jZWVkcyBhbmQgdW5tYXBzIHRoZSBtb2R1
-bGUgdGV4dC4KVGhlIHdvcmtlciB0aHJlYWQgaXMgc3RpbGwgcnVubmluZyBpbnNpZGUgdGhlIG1v
-ZHVsZSdzIGNvZGUgc3BhY2UgYW5kIHdpbGwKanVtcCB0byBmcmVlZCBtZW1vcnkgd2hlbiByZXR1
-cm5pbmcgZnJvbSB0aGUgZnVuY3Rpb24gZXBpbG9ndWUuCgo+ICt9Cj4gKwo+ICtzdGF0aWMgaW50
-IGJsb2NrMm10ZF9kZWZlcl9zZXR1cDIoY29uc3QgY2hhciAqdmFsKQo+ICt7Cj4gKwlzdHJ1Y3Qg
-YmxvY2sybXRkX2RlZmVycmVkICpyZXE7Cj4gKwo+ICsJaWYgKHN0cm5sZW4odmFsLCBCTE9DSzJN
-VERfUEFSQU1fTUFYTEVOKSA+PSBCTE9DSzJNVERfUEFSQU1fTUFYTEVOKQo+ICsJCXJldHVybiAt
-RUlOVkFMOwo+ICsKPiArCWlmICghdHJ5X21vZHVsZV9nZXQoVEhJU19NT0RVTEUpKQo+ICsJCXJl
-dHVybiAtRU5PREVWOwo+ICsKPiArCXJlcSA9IGttYWxsb2Nfb2JqKHN0cnVjdCBibG9jazJtdGRf
-ZGVmZXJyZWQsIEdGUF9LRVJORUwpOwo+ICsJaWYgKCFyZXEpIHsKPiArCQltb2R1bGVfcHV0KFRI
-SVNfTU9EVUxFKTsKPiArCQlyZXR1cm4gLUVOT01FTTsKPiArCX0KPiArCj4gKwlyZXEtPnZhbCA9
-IGtzdHJkdXAodmFsLCBHRlBfS0VSTkVMKTsKPiArCWlmICghcmVxLT52YWwpIHsKPiArCQlrZnJl
-ZShyZXEpOwo+ICsJCW1vZHVsZV9wdXQoVEhJU19NT0RVTEUpOwo+ICsJCXJldHVybiAtRU5PTUVN
-Owo+ICsJfQo+ICsKPiArCUlOSVRfV09SSygmcmVxLT53b3JrLCBibG9jazJtdGRfZGVmZXJyZWRf
-d29ya2ZuKTsKPiArCXNjaGVkdWxlX3dvcmsoJnJlcS0+d29yayk7CgpbU2V2ZXJpdHk6IEhpZ2hd
-CklmIG1vZHVsZSBpbml0aWFsaXphdGlvbiBmYWlscyBhZnRlciB0aGlzIHBvaW50LCBpcyB0aGVy
-ZSBhIG1lY2hhbmlzbSB0bwpjYW5jZWwgdGhpcyBzY2hlZHVsZWQgd29yaz8KCkZvciBpbnN0YW5j
-ZSwgaWYgYW4gaW52YWxpZCBwYXJhbWV0ZXIgaXMgcHJvdmlkZWQgYWZ0ZXIgYSB2YWxpZCBvbmUg
-ZHVyaW5nCm1vZHVsZSBsb2FkIChlLmcuLCBtb2Rwcm9iZSBibG9jazJtdGQgYmxvY2sybXRkPS9k
-ZXYvbG9vcDAgaW52YWxpZD0xKSwKdGhlIG1vZHVsZSBsb2FkZXIgbWlnaHQgZnJlZSB0aGUgbW9k
-dWxlIG1lbW9yeSB3aXRob3V0IHdhaXRpbmcgZm9yIHRoZQp3b3JrIGl0ZW0uIFdoZW4gdGhlIHdv
-cmsgZXhlY3V0ZXMsIGl0IHdvdWxkIGp1bXAgaW50byB1bm1hcHBlZCBtZW1vcnkuCgpbU2V2ZXJp
-dHk6IEhpZ2hdCkRvZXMgdGhpcyBpbnRyb2R1Y2UgYSByYWNlIGNvbmRpdGlvbiB3aXRoIGNvbmN1
-cnJlbnQgbW9kdWxlIHBhcmFtZXRlciB3cml0ZXM/CgpCeSBkZWZlcnJpbmcgc2V0dXAgdG8gYSBj
-b25jdXJyZW50IHdvcmtxdWV1ZSB3aXRob3V0IGFkZGluZyBzeW5jaHJvbml6YXRpb24sCm11bHRp
-cGxlIHdvcmsgaXRlbXMgY2FuIGV4ZWN1dGUgYWRkX2RldmljZSgpIGNvbmN1cnJlbnRseSBvbiBk
-aWZmZXJlbnQgQ1BVcwphbmQgcmFjZSB0byBtb2RpZnkgdGhlIGdsb2JhbCBibGttdGRfZGV2aWNl
-X2xpc3Q6Cgpkcml2ZXJzL210ZC9kZXZpY2VzL2Jsb2NrMm10ZC5jOmFkZF9kZXZpY2UoKSB7CiAg
-ICAuLi4KICAgIGxpc3RfYWRkKCZkZXYtPmxpc3QsICZibGttdGRfZGV2aWNlX2xpc3QpOwogICAg
-Li4uCn0KCltTZXZlcml0eTogSGlnaF0KRG9lcyBkZWZlcnJpbmcgdGhlIHNldHVwIHRvIGEgd29y
-a3F1ZXVlIGJyZWFrIHVzZXJzcGFjZSBBQkkgZXhwZWN0YXRpb25zPwoKQmVmb3JlIHRoaXMgcGF0
-Y2gsIGJsb2NrMm10ZF9zZXR1cDIoKSByYW4gc3luY2hyb25vdXNseS4gRGVmZXJyaW5nIGl0IG1h
-a2VzCnRoZSBzeXNmcyB3cml0ZSByZXR1cm4gYmVmb3JlIHRoZSBkZXZpY2UgaXMgY3JlYXRlZCwg
-d2hpY2ggbWlnaHQgc2lsZW50bHkKYnJlYWsgYmFja3dhcmRzIGNvbXBhdGliaWxpdHkgZm9yIGRl
-cGVuZGVudCB1c2Vyc3BhY2Ugd29ya2Zsb3dzLgoKPiArCXJldHVybiAwOwo+ICt9CgotLSAKU2Fz
-aGlrbyBBSSByZXZpZXcgwrcgaHR0cHM6Ly9zYXNoaWtvLmRldi8jL3BhdGNoc2V0LzIwMjYwOTE1
-MTg0NjU5LjY5MzktMS1hZGFyc2hkYXM5NTBAZ21haWwuY29tP3BhcnQ9MQoKX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNj
-dXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2xpbnV4LW10ZC8K
+From: Arnd Bergmann <arnd@arndb.de>
+
+Two large spi_nor_flash_parameter structures on a function stack
+is really too much, and this can exceed an otherwise reasonable
+frame limit:
+
+drivers/mtd/spi-nor/sfdp.c: In function 'spi_nor_parse_sfdp':
+drivers/mtd/spi-nor/sfdp.c:1717:1: error: the frame size of 1600 bytes is larger than 1536 bytes [-Werror=frame-larger-than=]
+
+Change one of them to a dynamic allocation to make this more reasonable.
+
+Fixes: d20029474a76 ("mtd: spi-nor: push the rollback mechanism into the sfdp module")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/mtd/spi-nor/sfdp.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
+index c21a6953db96..5d0901074f50 100644
+--- a/drivers/mtd/spi-nor/sfdp.c
++++ b/drivers/mtd/spi-nor/sfdp.c
+@@ -1520,7 +1520,7 @@ int spi_nor_parse_sfdp(struct spi_nor *nor)
+ {
+ 	const struct sfdp_parameter_header *param_header, *bfpt_header;
+ 	struct sfdp_parameter_header *param_headers = NULL;
+-	struct spi_nor_flash_parameter params, params2;
++	struct spi_nor_flash_parameter __free(kfree) *params = NULL;
+ 	struct sfdp_header header;
+ 	struct device *dev = nor->dev;
+ 	struct sfdp *sfdp;
+@@ -1532,7 +1532,9 @@ int spi_nor_parse_sfdp(struct spi_nor *nor)
+ 	 * Get a backup of all the parameter to roll back to in case of an
+ 	 * error.
+ 	 */
+-	memcpy(&params, nor->params, sizeof(params));
++	params = kmemdup(nor->params, sizeof(*params), GFP_KERNEL);
++	if (!params)
++		return -ENOMEM;
+ 
+ 	/* Get the SFDP header. */
+ 	err = spi_nor_read_sfdp_dma_unsafe(nor, 0, sizeof(header), &header);
+@@ -1652,6 +1654,8 @@ int spi_nor_parse_sfdp(struct spi_nor *nor)
+ 
+ 	/* Parse optional parameter tables. */
+ 	for (i = 0; i < header.nph; i++) {
++		struct spi_nor_flash_parameter params2;
++
+ 		memcpy(&params2, nor->params, sizeof(params2));
+ 		param_header = &param_headers[i];
+ 
+@@ -1711,7 +1715,7 @@ int spi_nor_parse_sfdp(struct spi_nor *nor)
+ free_param_headers:
+ 	kfree(param_headers);
+ 	if (err)
+-		memcpy(nor->params, &params, sizeof(*nor->params));
++		memcpy(nor->params, params, sizeof(*nor->params));
+ 
+ 	return err;
+ }
+-- 
+2.53.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
