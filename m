@@ -4,87 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15F57C88E75
-	for <linux-mtd@archiver.kernel.org>; Tue, 15 Sep 2026 01:07:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93F77C88E75
+	for <linux-mtd@archiver.kernel.org>; Tue, 15 Sep 2026 04:33:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=qZ/l6em5ZMexLI/AdR9vWyJFfXlpxTlZYedLOS7ELzQ=; b=3dODnPlJaGlVWF
-	mi9Twl05f2A0wYI24SpnN8jbenOa7V6TziwzeQ09XIMERHENKqGePk2F3rb5sRemj47ysQQ/dEjDZ
-	6d6+/EBk9QzCGIiPSN/tKy30jHTZuwUHIN2JPr6rofsk+GoO6i2At/yRYwUfpgUIrojvmxcYicLNT
-	kRmXWJx6DxszMstun41LHuhnQuKXEIcrsct35kEXyHc1yu44raMJ37SJsKeC5AWxbASV0q0D3mn5h
-	bfY5CApRADV5fjhobieXEdVx8COptTQbkFW6nMTmrD0gVuP1wpTxORXIJ8Cp2+RMHa05qBjIQ3/Dv
-	5dUnHIjVPWedrrtKTURQ==;
+	List-Archive:List-Unsubscribe:List-Id:To:From:Subject:Message-ID:Date:
+	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=Um2xbGLrRVPk33A9PQ3Rxhp/ONnX2U3Tttlpk/6LrQE=; b=ScK
+	BbWNwkw4R1/oiCXR08VdzrjaXX7ZwBphE/BqqtoVU8cpTmUVSZiBJGg4obCNzA4qOTUaU9EagtjnM
+	JyH0ureAMM+o8M67LrPFNZIoenjE8RTGbdlD68ZoRAVFkc0YqyZgwVm/ztGXOUum3sswnktr+6G40
+	LRftyFvq6QEW0Si/jewft7P9X1XKMF36sjZmqiKYafaqJHMeFsGVtlOh4L3tENpJj4TvWMrW7GwbD
+	8/GqyhlcTH7Jhl4IMADI7QQD2k7lfO8fIFbIfy1heqcElpf1sRYbd40KhwftgCepqJse8nllLdApM
+	1b9xgAfyKd8my71BEhVTkmKHzHSjfzA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x6HdW-00000004wEr-0G6q;
-	Tue, 15 Sep 2026 01:07:02 +0000
-Received: from mail-qk2-x11.google.com ([2607:f8b0:4864:34::11])
+	id 1x6KrM-00000005Bvo-2SCg;
+	Tue, 15 Sep 2026 04:33:32 +0000
+Received: from mail-ot1-f72.google.com ([209.85.210.72])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x6HdQ-00000004wES-29TO
+	id 1x6KrI-00000005BvP-28eY
 	for linux-mtd@lists.infradead.org;
-	Tue, 15 Sep 2026 01:07:01 +0000
-Received: by mail-qk2-x11.google.com with SMTP id d75a77b69052e-52fb76bcb1eso31415681cf.3
-        for <linux-mtd@lists.infradead.org>; Mon, 14 Sep 2026 18:06:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1789434415; x=1790039215; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=Z0NSuQEoXQJcg9ajYYVwURRCgxkdaWdgI2zUIGcducQ=;
-        b=MD1bJ7PIfIUsnGm8mwzhEp1kg7zVLCeTU5dg4J3BibWKyMQNoTQxlmFzm+hTLQ4egY
-         k2xdjPb9zP/Am8xiNc4ig2kPg07CQnbhgMcg3U4Ok84BOdSWUURVmG9Z6dr65FXLBhOv
-         KkmEgmxFh4b6ihwqFKVMTdBULYrgD3jIyP2uQzKvJnEVc3IF9m4hye6BrlPNxHu8cx6j
-         PAmL7uNewBmTgGaYzTvIM9ZKaXAme97TQpgms3vco6h+UBe6Z174P8zvdNr/ymH7H4Zv
-         KyGFOAykKiSwyUWo5IJgpaT+BzJfOgr69NgrRqCIIoYnjMui8Z5cEZNSgXJA3kmJikyj
-         10Vw==
+	Tue, 15 Sep 2026 04:33:29 +0000
+Received: by mail-ot1-f72.google.com with SMTP id 46e09a7af769-80139a2495aso7320182a34.3
+        for <linux-mtd@lists.infradead.org>; Mon, 14 Sep 2026 21:33:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1789434415; x=1790039215;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=Z0NSuQEoXQJcg9ajYYVwURRCgxkdaWdgI2zUIGcducQ=;
-        b=kzN5apNYzxnZy5IaMVgn4j3sRpuWy6EYmslUR43TmG0Ixe9PwfvutbO2W/NgNqr5nI
-         pJJ5FUroe0hQeWI9rfC40Zlq5QHAjdY+X4kEXAUGqN47IdqBWYFUfUJhnnnOKThtd8ZE
-         ePNeHE0iVHAX0TmDoLX5kZ72YxPIpqxMA1PtwPcdViaGj1Oqw+YdWJx2BFyJo0iYizb7
-         NTVDJSxI4sQ+nTgepMFCtRxWKSD7pan5+7GmgjDv8LJHBA6N5mVLji4bOauPZI0EAsCo
-         VmLzW1BGZp7D3Po40/3sBeww+SK3s65ZeEkOWGfx5608oh/oL/pl9+XgDf9rt0plRAKj
-         YvFw==
-X-Gm-Message-State: AFuF++lW23SEcYR+c2qKHJNw88SrNwIVr12Fk7JHbpZDtzhkeI9L0/jF
-	sjijge2SdG8LefWJatUTBLcTpWDg6x1vAtOkDiDXABnZw6lqDfMDlEqltPaM6rVibw==
-X-Gm-Gg: AYBFou22Y/7AFdSXuez9eyDVF9WW8sLCtfy5NGZUfIMygw2im0JPBzt/A1R+1a8mNpn
-	K7pXfX6wmuyXQKGAq8aCps3RB5csDfVpmdf6ca6gBXKvly8qx8SwQM+U6rdTQois73PAIO2QT36
-	Vj2JhE009FjtK7S14iFf68lfOF6d9O0BLTIgQPB6gHX9X6h1nhySt0D9osyiawkrhlxDZfVx55r
-	++dA4ub18oOnL9tLBewjXcRxxZL75roAd1nyHbgDuC9WPgTGLm7mVS6Li0RlXX1s8OgGQohRG4y
-	VxNsKlGAbt67d158Z3/2Vy6ZhK30jTf0k5o6UPmeXHKd9+21lzOhfRhiaVYDD5n1AulBhYwR9tN
-	mKZVmoxzRsO1mq3iH4x6p7ZpmD61Amzw11cfyWKZPoWPPteGv+E8PEmpoNybwV9q7PyBH1g0XY3
-	sKCbUMm3QoohDNYPK5Eh0WLX5vbSsxMhJt18UN+eboHwQywWxAYVw5lFGRD7R9onqd++V4gFvWR
-	5nw0KUzhEPlZApUv2PLLLPCBuguG1miTINkkVlDosJfbkSC6QQlrgF7WHsfRW9dxdu2ydtiHmdt
-	GEsUBt86PCmSbiT3Mu68bjLLVd9kl13ZIQxHpnExBe/7mc16svufK9weluNMyDWk76h4BmVuybB
-	igk/y
-X-Received: by 2002:a05:622a:4c8:b0:530:8853:1be5 with SMTP id d75a77b69052e-5310cf0d3fbmr79307801cf.10.1789434415206;
-        Mon, 14 Sep 2026 18:06:55 -0700 (PDT)
-Received: from 6e-wmo5420-02.ad.psu.edu.net (6e-wmo5420-02.ad.psu.edu. [104.39.213.233])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-9120f47a5e5sm108327076d6.19.2026.09.14.18.06.53
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Mon, 14 Sep 2026 18:06:54 -0700 (PDT)
-From: Myeonghun Pak <mhun512@gmail.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: [PATCH] mtd: maps: pci: balance PCI enable on cleanup
-Date: Mon, 14 Sep 2026 21:06:47 -0400
-Message-ID: <20260915010647.54099-1-mhun512@gmail.com>
-X-Mailer: git-send-email 2.47.1
+        d=1e100.net; s=20260707; t=1789446806; x=1790051606;
+        h=content-type:to:from:subject:message-id:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=kLO/IjQiB0f5Xdimriq4y9hQ5MQFsJJx6R3N+ei4KlY=;
+        b=QqZ5F6iodB5Pe0J02GiHnEc//3ODpWNuhxjbA+NRlZpgwMfKGuLdY4cLaLotl+MaTi
+         6zm2EAZAVghkUkHkJiIx48q8GiwA2bXJd4LLKDean5BZiKHNsam+C/z8HrDz9konWgE5
+         BYJwLucOVh/ks8miI+Om5p9zkxSuEF5Xrp99/QCaRs5IIGKd5YlTjKFaN+EBXI378ORM
+         /Tlxu3lRvT+v0g/JLWHAetYZirs0uNdO243x5jQ6Mp+AUCnn2KC681bBeVvM1ExOGwal
+         RpmHR/gLGWXkU8rJtY6CcJzPdEkdb2ZiMaNJ4zD89eu5bRupMHQXypMSkOa86JXi+/Ll
+         38Zw==
+X-Forwarded-Encrypted: i=1; AKwUvBxb1zjXd3CvtmrtPiTi+rfGVW+fl1JdLA6DB8hLRlvOXYM+Jw2ZIt/KzpdxrIbyPNsKPx4x/46UN0A=@lists.infradead.org
+X-Gm-Message-State: AFuF++m9xSSTKxnw65rc/UkbIODCK335r/VGEbW2TLGWnedg7C68AAU2
+	wS5VZwWeugLPDMmiywKwhyenSneEEl/mL6daX1ZFJ+4WpbXguFCPpzZX1mf2IR1ba/krGO0bnM9
+	P/U2134J+mxFeI3fFvyNCssWVSaZ7cTztv3XL5VIikpsfuyZ+cMKOBlAEWBc=
 MIME-Version: 1.0
+X-Received: by 2002:a05:6820:200e:b0:6c3:a421:5adc with SMTP id
+ 006d021491bc7-6c54008a613mr3208941eaf.22.1789446806610; Mon, 14 Sep 2026
+ 21:33:26 -0700 (PDT)
+Date: Mon, 14 Sep 2026 21:33:26 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <6aa8ca96.a211d2ce.1a5198.02a5.GAE@google.com>
+Subject: [syzbot] Monthly jffs2 report (Sep 2026)
+From: syzbot <syzbot+list7c9a6d38f715693c2465@syzkaller.appspotmail.com>
+To: dwmw2@infradead.org, linux-kernel@vger.kernel.org, 
+	linux-mtd@lists.infradead.org, richard@nod.at, 
+	syzkaller-bugs@googlegroups.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260914_180659_379648_CB680486 
-X-CRM114-Status: GOOD (  11.37  )
+X-CRM114-CacheID: sfid-20260914_213328_550249_3D6CDDF0 
+X-CRM114-Status: UNSURE (   5.07  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,37 +78,38 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-mtd_pci_probe() leaves the PCI device enabled on later probe failure and
-mtd_pci_remove() does not disable it either. Use pcim_enable_device() to
-release the enable reference after the existing map and region cleanup.
+Hello jffs2 maintainers/developers,
 
-The imbalance is already present in the initial Git import.
+This is a 31-day syzbot report for the jffs2 subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/jffs2
 
-This issue was identified during our ongoing static-analysis research
-while reviewing kernel code.
+During the period, 4 new issues were detected and 0 were fixed.
+In total, 10 issues are still open and 1 has already been fixed.
+There is also 1 low-priority issue.
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Cc: stable@vger.kernel.org
-Assisted-by: LLM
-Co-developed-by: Ijae Kim <ae878000@gmail.com>
-Signed-off-by: Ijae Kim <ae878000@gmail.com>
-Signed-off-by: Myeonghun Pak <mhun512@gmail.com>
+Some of the still happening issues:
+
+Ref Crashes Repro Title
+<1> 3       No    kernel BUG in jffs2_sum_write_sumnode (2)
+                  https://syzkaller.appspot.com/bug?extid=0727f46a0571de01bf93
+<2> 6973    Yes   kernel BUG in jffs2_del_ino_cache
+                  https://syzkaller.appspot.com/bug?extid=44664704c1494ad5f7a0
+<3> 6       No    possible deadlock in jffs2_xattr_delete_inode
+                  https://syzkaller.appspot.com/bug?extid=fdfd8fdf716c90baef0f
+
 ---
- drivers/mtd/maps/pci.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/mtd/maps/pci.c b/drivers/mtd/maps/pci.c
---- a/drivers/mtd/maps/pci.c
-+++ b/drivers/mtd/maps/pci.c
-@@ -250,7 +250,7 @@
- 	struct mtd_info *mtd = NULL;
- 	int err;
- 
--	err = pci_enable_device(dev);
-+	err = pcim_enable_device(dev);
- 	if (err)
- 		goto out;
- 
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
+
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
 
 ______________________________________________________
 Linux MTD discussion mailing list
