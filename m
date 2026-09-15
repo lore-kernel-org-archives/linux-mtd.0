@@ -4,200 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 900E2C88E77
-	for <linux-mtd@archiver.kernel.org>; Tue, 15 Sep 2026 17:16:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DD2B5C88E77
+	for <linux-mtd@archiver.kernel.org>; Tue, 15 Sep 2026 18:47:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=dN0V0dL3dj+PyWSqCOPR7ADa12s++6HRaA1g7K3RPYE=; b=MDwnD1uU6mY0ZN
-	IuCdz3fQpZrfrp3PSBj8o8BfRD5WUs/y9acwE9wXhIYrFUWesmrfC4pQORee5kGCWXFvSeEcPh7dN
-	03plWHdY6GYnHEKBgqtE0PzSJMIXvLX1txWWGRZNLHzzomYVtboulS4tYKuIsblCSSJbzxQ31Ksyo
-	Y45WHj5xwGxsWOLQcl3xmMnKENIBRHAeK9fjLT7b46G0oYzwSQuo6yg8T2Ntyb6FiOlsHPQeQQTSh
-	qdx0sL3cXS36rnxmC0EUHTNB2AeC7u/WODhp8LXyVtURiv/iwWFwa7+dD34ieCWqqDX5Dk9wn7Lrt
-	dqOD8eSUkifhJNgqxNmw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=0ip6VK5nEBXNvYzH86MQ9yAsew5Z35AKsSnoMghsHHE=; b=jAeSNTENVVs4Qe
+	Llprewwkxt7RrMJI0nvrzhXom7/XpyZ634bhEFj1knLQqMAnRGzwhz0gct4Mf+MVjBDiXUN1p2qEs
+	ZnwYysh+2+50kmgQzXebLk8Ahol1PCVQRDReYprjvfhG8MvrClnOFTOvQQTwUSTGNoQ/zRX2m5kQv
+	nMKHhoSncTWAnUyPu9ZauL869HmYsJuKPO1t/nc0Uv/aFaDSh2c56fN54PA3hx+oYKVsxA13oQwf5
+	FLMSqaaZktkWQKkm3wTS9w80ZXdP5SsEJEKSdJfFlZrlmd4phmfs4oodZLVsPRLyN24zjEdOCqPYp
+	a8j1qdtygCTcPmBCSpXA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x6Wm1-00000007Z1J-2CS1;
-	Tue, 15 Sep 2026 17:16:49 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1x6YBf-00000007nAw-36gE;
+	Tue, 15 Sep 2026 18:47:23 +0000
+Received: from mail-pj2-x10.google.com ([2607:f8b0:4864:39::10])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x6Wlz-00000007Z13-1mBc;
-	Tue, 15 Sep 2026 17:16:48 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=MIME-Version:Content-Transfer-Encoding
-	:Content-Type:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=gm4A0dC/cSIZYi95VVuBQCnE1WnlU3ZJPlPGzxqmmdc=; b=lSdYfuUWocDehcGeJSxUl+5L+R
-	rN5FBkqZjauv2uP0QzGPbWH4W/H1zTJNHzAFD+HKXZrokrMrqUzYovou7zmuF3v0aThFcXhCGBzcW
-	K27juhcjxs3nxToracaFaFkT4trCbO4f9dKYPA52W+F1kFAn8TkiELlbbWV8gfWBj9IBTbUt8nuGr
-	yUXnWkSPkec+LOcbfzq8co2ip9smhRBi8BeW9fsUVbm7L05+OTZrPZiZtkB0znddVzjqoJUqrMQGs
-	Sq3NJhujgWjZ6omxrBrAOaK1Q/4MtEaCKurS6H/W+CGuNS8nBEnRBts5zSZRKghwwX3+tHUnjM6Fa
-	yOIWSgBQ==;
-Received: from mail-centralusazon11010012.outbound.protection.outlook.com ([52.101.61.12] helo=DM1PR04CU001.outbound.protection.outlook.com)
-	by desiato.infradead.org with esmtps (Exim 4.99.2 #2 (Red Hat Linux))
-	id 1x6Wlw-000000074lY-0SEA;
-	Tue, 15 Sep 2026 17:16:46 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=iwwFsvFOloHx4altECsYutAjbApJwPPXiD6QFXUizuENJtzyIE8exaKrZDcNq5I7j1CLZzN3u3ISD6WbMfmpsUQmCJN4RckcRofY0QshFZrbmhoHbkvQRop+h5YKS4kEBvdfiak61L/wb9hjmyJeZtvcGY5jTfRGI+aULIZfGXZZgbhOIgFJ3Jo0saNgmRlfEd7RZFz3v9ZPsHti4brKICSnAb8UPjO1ocO8ZFz49Dd2j8K+ZJviXuuGfO78cqEl0vyoC0pMRQ0iUke1SRVEdlfpkGjgpoL5TUmVYOmDQUI/Rod8n93gL5h8XE6gRHEW1s66fNlcnu8KTVQAGxqagQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=gm4A0dC/cSIZYi95VVuBQCnE1WnlU3ZJPlPGzxqmmdc=;
- b=izs3jKvQd2SPtIHCbqSzFGoF/iXmI728U1Xlv4NuvE2aWCWp99y+/8UF7Z4R9btCS7XEV6S7MzB5QgrnbKYyDjDw4I22mF0e9yYLUWo6LsxQeAotR+60Ij38OCq8+Xxs9bPppAHUMkXoVgQtJLufv3wqxE/Q1NhsjkzA/WYubFdA+bGMA3TPA64vVgRIvjsPkXsQ4+qsoih20yCJz5VqC5FsmYVrVMuzBh42bO6fXBfbrwwwx5Vbn9AOUQ8vukhRFj86KXZuvZ5X3d85hIbyOAHQVN14MjH1edvzJfPG0QWrkK4uKQP3TT+UFB9yeLBGWXmT7WGnN2xRkrx9vaAV5w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gm4A0dC/cSIZYi95VVuBQCnE1WnlU3ZJPlPGzxqmmdc=;
- b=qdjnEuZm+PoCkspfNOFNWfGpWz5qPUaQuoTEkOpTbi+fqdQpJTQt+C4lxiilcFDnbfSiq+FGTV+fRSmCE/TCUpCLM6y/p2UBuSMu0zsZ3TVemN8SDX3CAV2s4+WZnt7LA6f2dTjX2Cyu/P/qopUr95wEH9C9IV+34J9UMfEdRrJ6BVu2Nuxo524O9pQxU/y5dJDMca7N0gyUn0b+XTcLZfM0vuag7Io98Q0jH5Ll6bqWVefpOdaDuKZvyIJkomyuTSTVq/N2StADM738facGw9b6wKIZeOjGvklwX1BS5eUtzGbKAADcRCCRvX30ruvmlVg4sgMNeiqiuzwDIZ++Lg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DS7PR12MB8371.namprd12.prod.outlook.com (2603:10b6:8:e9::18) by
- PH7PR12MB9102.namprd12.prod.outlook.com (2603:10b6:510:2f8::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.406.12; Tue, 15 Sep
- 2026 17:16:14 +0000
-Received: from DS7PR12MB8371.namprd12.prod.outlook.com
- ([fe80::23d7:9e07:1de8:d80a]) by DS7PR12MB8371.namprd12.prod.outlook.com
- ([fe80::23d7:9e07:1de8:d80a%3]) with mapi id 15.21.0406.007; Tue, 15 Sep 2026
- 17:16:14 +0000
-From: Zi Yan <ziy@nvidia.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: David Hildenbrand <david@kernel.org>,
- "Matthew Wilcox (Oracle)" <willy@infradead.org>,
- Muchun Song <muchun.song@linux.dev>, Lorenzo Stoakes <ljs@kernel.org>,
- "Liam R. Howlett" <liam@infradead.org>, Vlastimil Babka <vbabka@kernel.org>,
- Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>,
- Michal Hocko <mhocko@suse.com>, Baolin Wang <baolin.wang@linux.alibaba.com>,
- Nico Pache <nico.pache@linux.dev>, Ryan Roberts <ryan.roberts@arm.com>,
- Dev Jain <dev.jain@arm.com>, Barry Song <baohua@kernel.org>,
- Lance Yang <lance.yang@linux.dev>, Usama Arif <usama.arif@linux.dev>,
- Gregory Price <gourry@gourry.net>, Ying Huang <ying.huang@linux.alibaba.com>,
- Alistair Popple <apopple@nvidia.com>, Johannes Weiner <hannes@cmpxchg.org>,
- Qi Zheng <qi.zheng@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>,
- Kairui Song <kasong@tencent.com>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, Minchan Kim <minchan@kernel.org>,
- Sergey Senozhatsky <senozhatsky@chromium.org>,
- Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
- Arnaldo Carvalho de Melo <acme@kernel.org>,
- Namhyung Kim <namhyung@kernel.org>, Thomas Gleixner <tglx@kernel.org>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- x86@kernel.org, Mark Rutland <mark.rutland@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
- Adrian Hunter <adrian.hunter@intel.com>,
- James Clark <james.clark@linaro.org>, "H. Peter Anvin" <hpa@zytor.com>,
- linux-perf-users@vger.kernel.org, Juergen Gross <jgross@suse.com>,
- Stefano Stabellini <sstabellini@kernel.org>,
- Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
- xen-devel@lists.xenproject.org, Eric Biggers <ebiggers@kernel.org>,
- "Theodore Y. Ts'o" <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>,
- linux-fscrypt@vger.kernel.org, Oscar Salvador <osalvador@suse.de>,
- Chao Yu <chao@kernel.org>, linux-f2fs-devel@lists.sourceforge.net,
- Tal Zussman <tz2294@columbia.edu>, Gao Xiang <xiang@kernel.org>,
- Jan Kara <jack@suse.cz>, Yue Hu <zbestahu@gmail.com>,
- Jeffle Xu <jefflexu@linux.alibaba.com>, Sandeep Dhavale <dhavale@google.com>,
- Hongbo Li <hongbohbli@tencent.com>, Chunhai Guo <guochunhai@vivo.com>,
- linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
- Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Matthew Brost <matthew.brost@intel.com>,
- Joshua Hahn <joshua.hahnjy@gmail.com>, Rakie Kim <rakie.kim@sk.com>,
- Byungchul Park <byungchul@sk.com>, Axel Rasmussen <axelrasmussen@google.com>,
- Yuanchu Xie <yuanchu@google.com>, Wei Xu <weixugc@google.com>,
- linux-trace-kernel@vger.kernel.org, Trond Myklebust <trondmy@kernel.org>,
- Anna Schumaker <anna@kernel.org>, linux-nfs@vger.kernel.org,
- Ilya Dryomov <idryomov@gmail.com>, Alex Markuze <amarkuze@redhat.com>,
- Viacheslav Dubeyko <slava@dubeyko.com>, ceph-devel@vger.kernel.org,
- Song Liu <song@kernel.org>, Yu Kuai <yukuai@fygo.io>,
- Li Nan <magiclinan@didiglobal.com>, Xiao Ni <xiao@kernel.org>,
- linux-raid@vger.kernel.org, Richard Weinberger <richard@nod.at>,
- Zhihao Cheng <chengzhihao1@huawei.com>, linux-mtd@lists.infradead.org,
- Baoquan He <baoquan.he@linux.dev>,
- Pasha Tatashin <pasha.tatashin@soleen.com>,
- Pratyush Yadav <pratyush@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
- Dave Young <ruirui.yang@linux.dev>, Shuah Khan <skhan@linuxfoundation.org>,
- kexec@lists.infradead.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v4 00/16] Remove PG_private by using page/folio->private
- checks instead
-Date: Tue, 15 Sep 2026 13:16:07 -0400
-X-Mailer: MailMate (3.0r7032)
-Message-ID: <C87F746D-D3CD-4FB9-A50F-A2835DB750DF@nvidia.com>
-In-Reply-To: <20260913203959.6b46b0b5a052aec818a7f267@linux-foundation.org>
-References: <20260913-remove-pg_private-v4-0-848550f7574e@nvidia.com>
- <20260913203959.6b46b0b5a052aec818a7f267@linux-foundation.org>
-X-MS-Reactions: disallow
-X-ClientProxiedBy: BN9P220CA0024.NAMP220.PROD.OUTLOOK.COM
- (2603:10b6:408:13e::29) To DS7PR12MB8371.namprd12.prod.outlook.com
- (2603:10b6:8:e9::18)
+	id 1x6YBc-00000007nAB-1nv2
+	for linux-mtd@lists.infradead.org;
+	Tue, 15 Sep 2026 18:47:22 +0000
+Received: by mail-pj2-x10.google.com with SMTP id 98e67ed59e1d1-396ccd66bb4so82490a91.1
+        for <linux-mtd@lists.infradead.org>; Tue, 15 Sep 2026 11:47:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1789498039; x=1790102839; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=ym8I7ElasyVjMBfbiazIrYcHFFmlucKZerIF/2pMY/M=;
+        b=AXJWSn5rLep8aob52Ts4rMDDU+7ueqAmvGxUqn2azkOK0HHfRpIW5ojmOXdiVSsKZx
+         3f7Y88ue2wbx5WURxJjV6hA+xK/fpDC5zBjRlEFVR4U+JNEq0BtXbpjk0OrM7iJ0KQOH
+         g9nHuVNwsHDuTFDQQYZsddQmZjzAa84YrBznhzt7bZNRDlUi2oGCecnU+FEJruxSNBbN
+         8+xgbt4B37cUbI9yn/Q/cafa5J9JaW0X4rzpHUp39DD5d4uB1DvnVqBq70EvoG+50L2E
+         2fdlj+IRdcADbQ2PXrqYi98vdu6/DEgSTW0tms31iUQkd6ZYZFEah0G8lNTRVQkR+tE8
+         rvDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1789498039; x=1790102839;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=ym8I7ElasyVjMBfbiazIrYcHFFmlucKZerIF/2pMY/M=;
+        b=sxqq/fEIlBaAjB8VEd/K5ukL5nzseXOqYJ8HZuoOxn1Qw4S3uJLRwZmwlIy7qfOtW4
+         P/86dbPDv0X31L4nI78qZuwUQTs3Pedjb2bwks7amHpKKtLqOmpG1Af71gaB9C8Bv4WS
+         lIDOyKsxCbGyqPLjoSil0GNyqVI31G7UVjrsvbCJfxA+pTdYtSOerNkBLwMhEYY18IKd
+         ORtL+hJDgkNtpsNhL0LVBVcVKlor3Zl0qVXwmJvUTXsRS0yDjPx8DjV/01ELeSY3CDb6
+         odhqMs4x4idgHqLU7Oy95Hq7b927eU6v/XxpzGLAQP1EiZC+kfa1tZrAIm1WZCHM/MYp
+         qmEw==
+X-Gm-Message-State: AFuF++lcJG6CVr/RaeOz1/aDwsAZ/kM3mR6dOsAwcoxCfEYKGaFDqhzD
+	vsYYwKePQuk91zOQrofRvdv6J+FWexJBbrzGFIZ8uCRwbXGiES0h9jVKOj7QSUcl
+X-Gm-Gg: AYBFou3SEiQ2kc+AQgvFvxx2czSvFStsD5gGMHDW3PCQ4Ik776qqDNxIRAQ75KK1j7n
+	TWXxyWMywA9EVWpxmky/h/p+03WgoPuqP3ZjYTy51ep02tZKocfzdWJe+I8Y7ukXc6E+4o/HQde
+	gwRmS8zohEMVLnYzqSxRWH7gR1YRkjpEp5iwzphD+cYGCbN73maAp2pH4fIF2xA4h6Mx/LXOqua
+	jgpZceEfWTiwyhN4qXZGugQ+r/R5wF7uvczLh5eLHXxKYovr1rrTa095vOdnAtBJ0ztL4yfJUb3
+	8FiB67BnstAyqVISKZlVfa8sMKRZ8XcmlvXCnWkQDJ3TnM73Y1nDRUVImYxxlSMn/0BLswX7aLB
+	2r46leNOpaFnLAc7r/0oEBB+UYgFDRGvdUmmJK6K/TN+9Mzf3yddNUz3+tNSvRbFSud/PYcBF/0
+	F2h9KPHG85ytIS3K/F/TewPP1COzLErOeZLs379U5PLI2L0NA9pvHiSw4V+OYpr3mMyM6XlD+q9
+	g==
+X-Received: by 2002:a17:90b:3c92:b0:395:4de0:b78f with SMTP id 98e67ed59e1d1-39debf6f1ddmr14524014a91.1.1789498038935;
+        Tue, 15 Sep 2026 11:47:18 -0700 (PDT)
+Received: from archlinux ([2402:e280:411b:ec:aa93:b1ec:5a6b:5fce])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-39e1b69c756sm176804a91.3.2026.09.15.11.47.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2026 11:47:18 -0700 (PDT)
+From: Adarsh Das <adarshdas950@gmail.com>
+To: linux-mtd@lists.infradead.org
+Cc: joern@lazybastard.org,
+	miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com,
+	Adarsh Das <adarshdas950@gmail.com>,
+	syzbot <syzbot+7cab6a19619f1b8efc00@syzkaller.appspotmail.com>
+Subject: [PATCH mtd] mtd: block2mtd: defer device open on module param write
+Date: Wed, 16 Sep 2026 00:16:59 +0530
+Message-ID: <20260915184659.6939-1-adarshdas950@gmail.com>
+X-Mailer: git-send-email 2.55.0
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR12MB8371:EE_|PH7PR12MB9102:EE_
-X-MS-Office365-Filtering-Correlation-Id: 040b751e-5a2a-4578-d517-08df134d0be6
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|23010399003|376014|7416014|10067099003|4143699003|22082099003|18002099003|11063799006|56012099006;
-X-Microsoft-Antispam-Message-Info: EdmOT4SZggvXel11Uhh1H9mF8pJyToiZ4vo+EaL4dQpqpSiRPlv1r32Dgz69iVxRKeRQA2Ast0fMgp+dtSul+ssZ/kJs2D95hmspE8OQmcfALuUDnDqNeKbNVO83v2iXLX1TgKyRNG512daoHu/3lsvC7YFuT9syyAMKYcc8Cj7sRTVCwf7hiclEtUz9K+WYpQE60SsB9HMKu1aGNd+rOH4FuYpR0yN0pEZ9QMKTScul+Ork7mxnVj5Reie3mU3RZve/Igx+fzCyG74c/PU8IYeO3UC6228cv7SfuZEYjtTK3KsezbygJexMLYcjShKX3igAX2GXZzGSorl7Mi9BPwIm77+Sj1aax9f/Sy8vPMzVa8cLugoy5vYsGLC2OtrPq6Qpg8JuCZ2tbHicv6TteAmWCBgMe4ITXR/1Q2OTVdMrlua3hQfyZvShF0+Lt/pkcoExAwGghOwaNgsKpt68C3YDegf81smiqhANEWkXKOR/pLOE7NVTzz6IGCHYv0NPj0srvj9cGTgi+w88gmqAg0OWELisn+6fTDEmj3nFvk2ZKGneX4EdIAGOAHWtDBQTiEdFxiiQtE+G0uXNbgHPDiyTqEXJ97gGwJGOZSqGQ3tTkLHMw6dlf647AS9ptFS1i40d0Stx1d8ifCCWC48sIvnPF7yU5MgpaGtihLIlJP8=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB8371.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(23010399003)(376014)(7416014)(10067099003)(4143699003)(22082099003)(18002099003)(11063799006)(56012099006);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?V3VZVW84WlRLMThCTE10TGpMWXpHUEFQclpFRGgwYjJRQ1luV1BrS0dOcFRZ?=
- =?utf-8?B?a3ZtdnQ1YUNNdXJPSFZyOHY4UHhpRktvOUpXZEVqVVN6c1BoOU95RElsY1Iw?=
- =?utf-8?B?RGpRQXVCZy9Pd01tWDIrdXZnMlB2WEFYRDYvb01QRnViQW9nTmRtYUYvbDM2?=
- =?utf-8?B?dm11N2tIeGVTaFRpMk4xdzlnMFJpUjdoc2lCRlBVK29zdHBFbVNmekhXWHg2?=
- =?utf-8?B?cXRDbi9odVA4cTFWdjFHSURLWDhsamU3NWxtVmNFeUFvc3dNUGsrNHpVWjgy?=
- =?utf-8?B?bVRkWHFQTWdWVGQ4VTRTQTY5MG9reUpLU1RndEg1b0wyNW5aM1NnNVhicmJu?=
- =?utf-8?B?RWVQTytCNmZYSlYzVXkwcm85UDFMSnZrdmRMS2k2QWxIc1dkN2ovd2swNG5E?=
- =?utf-8?B?c01GRVRUcmdCWFhXRHo3UjlyN2Q1K0xLdTdkOFRocUpmMWRFdE5tcU5Tczho?=
- =?utf-8?B?QlNmYXVJd3NFeHliRjlZS3dQUDJYeGpEbk4xUmc5ZTZyb0tRWkVJNElJbHNa?=
- =?utf-8?B?UTZoa1YxWitOOS9lMFZoM0ErZS9ZQ0RjdU9tRHdadVZ6a2h2WVBqNVZudFhX?=
- =?utf-8?B?WEFiZkRsdVpuTStVT0J3bVZRcmt2OVdZa0JMQTY5cm5Yam9ObnVIVG14Tm5m?=
- =?utf-8?B?T05uLzBrQitWWElDdFViR0NiZkhUTExhZzBuV1R0MUVIdEVIY3dKclR0WmpU?=
- =?utf-8?B?SUlYUG1ZNnpMejRZUlVvQTZ2V2tqK0hxSTZFT25kdE5FaFdNZDNsS0dQZXlB?=
- =?utf-8?B?Z0hZeldiNzZDdDhoeWg2OXVUMHI2UWh3dmpmZC81c2hJcmdybHFTbk1PaFh6?=
- =?utf-8?B?elBuMm5LK2Zka0RoUnQraGdMb0hVN0JGUkRsU1RxdVJpWG1OU2VQemU0eTFC?=
- =?utf-8?B?V2pBYWJnSjQ3WlVMMnphQVN1ekQ2RmtuY3NZUWVpcytGSUMwUm5NeFAra2tC?=
- =?utf-8?B?eTcrZG9qVmlLbFM0SnVUdjc1WGIrMGZKVUlhNmg5U0N6ZkZuVzJpbktjSitk?=
- =?utf-8?B?ZWlXU1BKNE1OcDVySWFzcTRmY0pZak1JTWVMak13dzBCRjBuSGMzM3U1WDNM?=
- =?utf-8?B?ZENLQnlPVno1ZUpEMFRmRnh5a1YvMGFQc1E1Q1dTTEZ1QlUxSzI5d2dKM0Np?=
- =?utf-8?B?S3JrcnRpRTVKeDllbVhEK3h2U0Q0OGN1ZUQxOHZGWlcyZ2NFMHA4N0xJM0pm?=
- =?utf-8?B?empNendDUkI3d3J0TXQ2WnJBQm40dEw4dmFpMWNYd09RUXJ6MU9iZjBOOS9S?=
- =?utf-8?B?VHpCQXFVUE9iWXRnVW9ibDdRdDNBTGRncExmNjFBdkdrT3NOdGtDMUs5dzc1?=
- =?utf-8?B?SktIN0dhWXl3cGt3ejl6S2lST1I5KzVpNHlvSFZLaDlQa1NyWHhvS2NoQ1k1?=
- =?utf-8?B?ajVVUzNpcUpPZ0FGdlNSTXk1Y20rNmU5QjNFN1pzT1FuSzBycnhreGJpbmdJ?=
- =?utf-8?B?QVMzbnZ3anExa3J5aVJLK2RGYVFwUEZEUHE0aFJlQlpDYlZ6aWxCd2IreWYz?=
- =?utf-8?B?MnJxOTJsc21naEJjaG8wcWR1U2NJdUg3UERBZEpZbmlTS25TWlhaeExwTU5J?=
- =?utf-8?B?Ti94c2ZEa2VIWTNQS3dpck1zeGhRajlKQnNCSnhRS2Y1Vmo4SmVnd3FUNmcz?=
- =?utf-8?B?d3VZR3VtbFFRbU5JdTkycCtrMTc3SkEyc2tzSWhuYjh3ei9FWllkRUtKcUZj?=
- =?utf-8?B?VkVHRnBpZkprbTB6Q0Y5OWJsUThJcUg4b3hmejhoWkN2ZWFXK1FkM3V2djN4?=
- =?utf-8?B?SDN0bUdvd2h1NWVHZFgraU5leFVVMXR6UGxPVjA1ZzdjRGxycXNqTDQ3MlB6?=
- =?utf-8?B?MVBMWGxyTFF6RTk3SDBySmdvZ2dHRDBKK2lROWF0cGJYZnlteFpwOWIxVEtG?=
- =?utf-8?B?MWEydVdIc2hOLzlxaWQzTzhjck5zajVaSVhpcVU4QmtzV1VZb081Q0lUK2ht?=
- =?utf-8?B?Y0ozMnAzTDFMeWJzWDhwK2QwL1JjNkZONExrY2RFM3VpQkwzRzlYTG94amx4?=
- =?utf-8?B?RXhGZ3R3SzBFeGs1Z2F4dE5FZlh5WXIwQzJYNEw1L2JXU3FCYUQ2MkV4ODNl?=
- =?utf-8?B?cGkyWmxnbHh6R1B3K0krbzgvVHVWbHVwbXZDQzNWKy9TWjVacERyZjRxc0J0?=
- =?utf-8?B?VHBFUW9kNVFhUVZOTWVldlFkVjRQZjNVUjZBam9YM3dBKzViSGFmVEFkOTFs?=
- =?utf-8?B?QmlIZHVFdXcreUdIeWwrT0hma0oxOE1VNjVHeXFMMTJRYXlQUWJ1UStNOFdD?=
- =?utf-8?B?ek1Rd1YzbGxvM1lneHJWaC9UOEcxV0xjS1l5TUJ4V1hmTHM2d0lEUWNWMlMx?=
- =?utf-8?Q?1XlVQwkgpA6kYbW734?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 040b751e-5a2a-4578-d517-08df134d0be6
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB8371.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2026 17:16:14.4277
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: yP9mlXsqTt1fzeF09feTD+wBnvQ4TzeslAIXm2l/hTA0PyUaCtr/LSo5CBpsWAAX
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB9102
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260915_181644_349589_B9CB9C45 
-X-CRM114-Status: GOOD (  20.05  )
+X-CRM114-CacheID: sfid-20260915_114720_475667_FB4DBF26 
+X-CRM114-Status: GOOD (  18.04  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -209,37 +95,133 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gMTMgU2VwIDIwMjYsIGF0IDIzOjM5LCBBbmRyZXcgTW9ydG9uIHdyb3RlOgoKPiBPbiBTdW4s
-IDEzIFNlcCAyMDI2IDIyOjIzOjU4IC0wNDAwIFppIFlhbiA8eml5QG52aWRpYS5jb20+IHdyb3Rl
-Ogo+Cj4+IFRoaXMgcGF0Y2hzZXQgcmVtb3ZlcyBQR19wcml2YXRlIHRvIG1ha2Ugc3BhY2UgZm9y
-IHVwY29taW5nIFBHX2ZvbGlvIGZvcgo+PiBpZGVudGlmeWluZyBwYWdlcyBmcm9tIGEgZm9saW8g
-KG1vcmUgZGV0YWlscyBpbiBOb3RlIGJlbG93KS4gSW5zdGVhZCBvZgo+PiBjaGVja2luZyBQR19w
-cml2YXRlLCBhbGwgY29kZSBpcyBjaGFuZ2VkIHRvIGNoZWNrIHBhZ2UvZm9saW8tPnByaXZhdGUg
-IT0KPj4gTlVMTCBpbnN0ZWFkLgo+Pgo+PiBNTSBwZW9wbGUgYXJlIGNjJ2Qgb24gYWxsIHBhdGNo
-ZXMgYW5kIHN1YnN5c3RlbSBwZW9wbGUgYXJlIGNjJ2Qgb24gdGhlCj4+IGNvdmVyIGxldHRlciBh
-bmQgY29ycmVzcG9uZGluZyBwYXRjaGVzLgo+Pgo+PiBQYXRjaCA2IGlzIHBpY2tlZCB1cCBzZXBh
-cmF0ZWx5IGluIGYyZnMgdHJlZSwgYnV0IHNpbmNlIG1tLW5ldyBkb2VzIG5vdAo+PiBoYXZlIGl0
-IHlldCwgaXQgaXMgc2VudCBmb3IgTU0gdGVzdGluZy4KPgo+IEFJIHJldmlldyBjbGFpbXMgdG8g
-aGF2ZSBmb3VuZCBhIHByZS1leGlzdGluZyBjcml0aWNhbCBsZXZlbCBkZWFkbG9jawo+IGluIGYy
-ZnM6Cj4KPiAJaHR0cHM6Ly9zYXNoaWtvLmRldi8jL3BhdGNoc2V0LzIwMjYwOTEzLXJlbW92ZS1w
-Z19wcml2YXRlLXY0LTAtODQ4NTUwZjc1NzRlQG52aWRpYS5jb20KPgo+IGl0IGFsc28gaGFkIGEg
-ZmV3IHRoaW5ncyB0byBzYXkgYWJvdXQgdGhpcyBwYXRjaHNldCBhbmQsIGFzIGFsd2F5cywKPiBo
-dWdldGxiLmMuCgpJdCBzZWVtcyB0aGF0IFNhc2hpa28gb3Zlcndyb3RlIG15IHBhdGNoIHJldmll
-d3Mgd2l0aCB0aGUgcmV2aWV3cyB0bwpNYXR0aGV34oCZcyBtZCBwYXRjaGVzLiA6LyBJIHdvbmRl
-ciBpZiB0aGVyZSBpcyBhIHdheSBvZiByZWNvdmVyaW5nIHRoZW0uCgo+Cj4KPiBUaGFua3MsIFRo
-ZSBNTSBiaXRzIGFwcGVhciBhZGVxdWF0ZWx5IHJldmlld2VkIGFuZCByZXZpZXcgb2YgdGhlIG5v
-bi1NTQo+IGJpdHMgYXJlLCBhcyB1c3VhbDoKPgo+ICAgR3JlYXQgdG8gaGF2ZSBidXQgSSB3b24n
-dCBwZXJtaXQgbGFjayBvZiBvdGhlci10aGFuLU1NIHJldmlldyB0bwo+ICAgYmxvY2sgTU0gaW1w
-cm92ZW1lbnRzLgo+Cj4gU28gSSdsbCBxdWV1ZSBpdCBhbGwgdXAgYW5kIHNoYWxsIHB1c2ggaXQg
-aW50byAtbmV4dCBhZnRlciBhIGZldyBkYXlzLgo+Cj4gQWNrcyBmcm9tIG5vbi1NTSBtYWludGFp
-bmVycyBhcmUgYXBwcmVjaWF0ZWQuCj4KPiBJZiBhIG5vbi1NTSBwYXRjaCBhcHBlYXJzIGluIGxp
-bnV4LW5leHQgSSdsbCBhdXRvZHJvcCB0aGUgbW0uZ2l0IGNvcHkKPiBvZiB0aGF0IHBhdGNoLgoK
-VGhhbmtzLgoKQmVzdCBSZWdhcmRzLApZYW4sIFppCgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGlu
-ZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgt
-bXRkLwo=
+When you write to /sys/module/block2mtd/parameters/block2mtd, the kernel
+holds a module parameter lock for the whole callback. block2mtd was
+opening the block device path inside that callback. Opening by path can
+walk the filesystem and take overlayfs locks.
+
+syzbot found this can create a circular lock dependency with overlayfs
+(ovl_create_object). I was able to reproduce it with their C repro and
+lockdep.
+
+In this patch I applied the fix of copying the parameter string,
+returning from the callback, then calling
+block2mtd_setup2() from a work item so the device open happens after
+the parameter lock is released.
+
+Reported-by: syzbot <syzbot+7cab6a19619f1b8efc00@syzkaller.appspotmail.com>
+Link: https://syzkaller.appspot.com/bug?id=3e420300f6b231aa906425cbb4bd55dd64f42da4
+Tested-by: Adarsh Das <adarshdas950@gmail.com>
+Signed-off-by: Adarsh Das <adarshdas950@gmail.com>
+---
+ drivers/mtd/devices/block2mtd.c | 53 ++++++++++++++++++++++++++++++---
+ 1 file changed, 49 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/mtd/devices/block2mtd.c b/drivers/mtd/devices/block2mtd.c
+index 03e80b2c4f5a..35ce306ed8fb 100644
+--- a/drivers/mtd/devices/block2mtd.c
++++ b/drivers/mtd/devices/block2mtd.c
+@@ -18,6 +18,7 @@
+ 
+ #include <linux/module.h>
+ #include <linux/delay.h>
++#include <linux/workqueue.h>
+ #include <linux/fs.h>
+ #include <linux/blkdev.h>
+ #include <linux/backing-dev.h>
+@@ -33,6 +34,8 @@
+ 
+ /* Maximum number of comma-separated items in the 'block2mtd=' parameter */
+ #define BLOCK2MTD_PARAM_MAX_COUNT 3
++/* 80 for device, 12 for erase size, 80 for label, 8 for timeout */
++#define BLOCK2MTD_PARAM_MAXLEN (80 + 12 + 80 + 8)
+ 
+ /* Info for the block device */
+ struct block2mtd_dev {
+@@ -405,8 +408,7 @@ static char block2mtd_paramline[80 + 12];
+ 
+ static int block2mtd_setup2(const char *val)
+ {
+-	/* 80 for device, 12 for erase size, 80 for name, 8 for timeout */
+-	char buf[80 + 12 + 80 + 8];
++	char buf[BLOCK2MTD_PARAM_MAXLEN];
+ 	char *str = buf;
+ 	char *token[BLOCK2MTD_PARAM_MAX_COUNT];
+ 	char *name;
+@@ -461,11 +463,54 @@ static int block2mtd_setup2(const char *val)
+ 	return 0;
+ }
+ 
++struct block2mtd_deferred {
++	struct work_struct work;
++	char *val;
++};
++
++static void block2mtd_deferred_workfn(struct work_struct *work)
++{
++	struct block2mtd_deferred *req =
++		container_of(work, struct block2mtd_deferred, work);
++
++	block2mtd_setup2(req->val);
++	kfree(req->val);
++	kfree(req);
++	module_put(THIS_MODULE);
++}
++
++static int block2mtd_defer_setup2(const char *val)
++{
++	struct block2mtd_deferred *req;
++
++	if (strnlen(val, BLOCK2MTD_PARAM_MAXLEN) >= BLOCK2MTD_PARAM_MAXLEN)
++		return -EINVAL;
++
++	if (!try_module_get(THIS_MODULE))
++		return -ENODEV;
++
++	req = kmalloc_obj(struct block2mtd_deferred, GFP_KERNEL);
++	if (!req) {
++		module_put(THIS_MODULE);
++		return -ENOMEM;
++	}
++
++	req->val = kstrdup(val, GFP_KERNEL);
++	if (!req->val) {
++		kfree(req);
++		module_put(THIS_MODULE);
++		return -ENOMEM;
++	}
++
++	INIT_WORK(&req->work, block2mtd_deferred_workfn);
++	schedule_work(&req->work);
++	return 0;
++}
+ 
+ static int block2mtd_setup(const char *val, const struct kernel_param *kp)
+ {
+ #ifdef MODULE
+-	return block2mtd_setup2(val);
++	return block2mtd_defer_setup2(val);
+ #else
+ 	/* If more parameters are later passed in via
+ 	   /sys/module/block2mtd/parameters/block2mtd
+@@ -473,7 +518,7 @@ static int block2mtd_setup(const char *val, const struct kernel_param *kp)
+ 	   we can parse the argument now. */
+ 
+ 	if (block2mtd_init_called)
+-		return block2mtd_setup2(val);
++		return block2mtd_defer_setup2(val);
+ 
+ 	/* During early boot stage, we only save the parameters
+ 	   here. We must parse them later: if the param passed
+-- 
+2.55.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
