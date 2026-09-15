@@ -4,86 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DD2B5C88E77
-	for <linux-mtd@archiver.kernel.org>; Tue, 15 Sep 2026 18:47:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 163A8C88E75
+	for <linux-mtd@archiver.kernel.org>; Tue, 15 Sep 2026 19:04:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=0ip6VK5nEBXNvYzH86MQ9yAsew5Z35AKsSnoMghsHHE=; b=jAeSNTENVVs4Qe
-	Llprewwkxt7RrMJI0nvrzhXom7/XpyZ634bhEFj1knLQqMAnRGzwhz0gct4Mf+MVjBDiXUN1p2qEs
-	ZnwYysh+2+50kmgQzXebLk8Ahol1PCVQRDReYprjvfhG8MvrClnOFTOvQQTwUSTGNoQ/zRX2m5kQv
-	nMKHhoSncTWAnUyPu9ZauL869HmYsJuKPO1t/nc0Uv/aFaDSh2c56fN54PA3hx+oYKVsxA13oQwf5
-	FLMSqaaZktkWQKkm3wTS9w80ZXdP5SsEJEKSdJfFlZrlmd4phmfs4oodZLVsPRLyN24zjEdOCqPYp
-	a8j1qdtygCTcPmBCSpXA==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Reply-To:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
+	References:In-Reply-To:Cc:To:Subject:From:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=+2J+TlHwJ4bwGRoE89Lm5dmfycZjyK2durFaL0bO4t0=; b=qHFtswCrjjulKR
+	J2vtwuSxvwMmth1sh/ySO3BlH1abliySXdgHGPOIeBdjjNQendQl+DMu8nfmqIpNKETj5UzetfR2f
+	R4I4QoTlvYJjZQ5pd6lB7yfuVu+XT1oh+v644K3cj5UlJlNrB9GBwjWzbK/kL2C2dK1KZm3XNMRMu
+	J6epdQ6vqWMKubfTaurO9ofdq1sqHy/zf20LDSQybnZ2borfHjEyO5243SULCpkz0+MyFXawEv9wb
+	wxyH1UW8CqkZEdI5nJUFfsTu73v/rmKvGT7luTZ5aFOC4ugcBMzHUIYjNq9iq/1H4NRrm1HWs18TE
+	VUauFKqyFzhNLQFPn5mg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x6YBf-00000007nAw-36gE;
-	Tue, 15 Sep 2026 18:47:23 +0000
-Received: from mail-pj2-x10.google.com ([2607:f8b0:4864:39::10])
+	id 1x6YRn-00000007p40-0Qvx;
+	Tue, 15 Sep 2026 19:04:03 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x6YBc-00000007nAB-1nv2
+	id 1x6YRg-00000007p2z-1F10
 	for linux-mtd@lists.infradead.org;
-	Tue, 15 Sep 2026 18:47:22 +0000
-Received: by mail-pj2-x10.google.com with SMTP id 98e67ed59e1d1-396ccd66bb4so82490a91.1
-        for <linux-mtd@lists.infradead.org>; Tue, 15 Sep 2026 11:47:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1789498039; x=1790102839; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=ym8I7ElasyVjMBfbiazIrYcHFFmlucKZerIF/2pMY/M=;
-        b=AXJWSn5rLep8aob52Ts4rMDDU+7ueqAmvGxUqn2azkOK0HHfRpIW5ojmOXdiVSsKZx
-         3f7Y88ue2wbx5WURxJjV6hA+xK/fpDC5zBjRlEFVR4U+JNEq0BtXbpjk0OrM7iJ0KQOH
-         g9nHuVNwsHDuTFDQQYZsddQmZjzAa84YrBznhzt7bZNRDlUi2oGCecnU+FEJruxSNBbN
-         8+xgbt4B37cUbI9yn/Q/cafa5J9JaW0X4rzpHUp39DD5d4uB1DvnVqBq70EvoG+50L2E
-         2fdlj+IRdcADbQ2PXrqYi98vdu6/DEgSTW0tms31iUQkd6ZYZFEah0G8lNTRVQkR+tE8
-         rvDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1789498039; x=1790102839;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=ym8I7ElasyVjMBfbiazIrYcHFFmlucKZerIF/2pMY/M=;
-        b=sxqq/fEIlBaAjB8VEd/K5ukL5nzseXOqYJ8HZuoOxn1Qw4S3uJLRwZmwlIy7qfOtW4
-         P/86dbPDv0X31L4nI78qZuwUQTs3Pedjb2bwks7amHpKKtLqOmpG1Af71gaB9C8Bv4WS
-         lIDOyKsxCbGyqPLjoSil0GNyqVI31G7UVjrsvbCJfxA+pTdYtSOerNkBLwMhEYY18IKd
-         ORtL+hJDgkNtpsNhL0LVBVcVKlor3Zl0qVXwmJvUTXsRS0yDjPx8DjV/01ELeSY3CDb6
-         odhqMs4x4idgHqLU7Oy95Hq7b927eU6v/XxpzGLAQP1EiZC+kfa1tZrAIm1WZCHM/MYp
-         qmEw==
-X-Gm-Message-State: AFuF++lcJG6CVr/RaeOz1/aDwsAZ/kM3mR6dOsAwcoxCfEYKGaFDqhzD
-	vsYYwKePQuk91zOQrofRvdv6J+FWexJBbrzGFIZ8uCRwbXGiES0h9jVKOj7QSUcl
-X-Gm-Gg: AYBFou3SEiQ2kc+AQgvFvxx2czSvFStsD5gGMHDW3PCQ4Ik776qqDNxIRAQ75KK1j7n
-	TWXxyWMywA9EVWpxmky/h/p+03WgoPuqP3ZjYTy51ep02tZKocfzdWJe+I8Y7ukXc6E+4o/HQde
-	gwRmS8zohEMVLnYzqSxRWH7gR1YRkjpEp5iwzphD+cYGCbN73maAp2pH4fIF2xA4h6Mx/LXOqua
-	jgpZceEfWTiwyhN4qXZGugQ+r/R5wF7uvczLh5eLHXxKYovr1rrTa095vOdnAtBJ0ztL4yfJUb3
-	8FiB67BnstAyqVISKZlVfa8sMKRZ8XcmlvXCnWkQDJ3TnM73Y1nDRUVImYxxlSMn/0BLswX7aLB
-	2r46leNOpaFnLAc7r/0oEBB+UYgFDRGvdUmmJK6K/TN+9Mzf3yddNUz3+tNSvRbFSud/PYcBF/0
-	F2h9KPHG85ytIS3K/F/TewPP1COzLErOeZLs379U5PLI2L0NA9pvHiSw4V+OYpr3mMyM6XlD+q9
-	g==
-X-Received: by 2002:a17:90b:3c92:b0:395:4de0:b78f with SMTP id 98e67ed59e1d1-39debf6f1ddmr14524014a91.1.1789498038935;
-        Tue, 15 Sep 2026 11:47:18 -0700 (PDT)
-Received: from archlinux ([2402:e280:411b:ec:aa93:b1ec:5a6b:5fce])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-39e1b69c756sm176804a91.3.2026.09.15.11.47.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2026 11:47:18 -0700 (PDT)
-From: Adarsh Das <adarshdas950@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: joern@lazybastard.org,
-	miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com,
-	Adarsh Das <adarshdas950@gmail.com>,
-	syzbot <syzbot+7cab6a19619f1b8efc00@syzkaller.appspotmail.com>
-Subject: [PATCH mtd] mtd: block2mtd: defer device open on module param write
-Date: Wed, 16 Sep 2026 00:16:59 +0530
-Message-ID: <20260915184659.6939-1-adarshdas950@gmail.com>
-X-Mailer: git-send-email 2.55.0
-MIME-Version: 1.0
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260915_114720_475667_FB4DBF26 
-X-CRM114-Status: GOOD (  18.04  )
+	Tue, 15 Sep 2026 19:03:57 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id BFCDA40443;
+	Tue, 15 Sep 2026 19:03:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F4971F000FF;
+	Tue, 15 Sep 2026 19:03:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1789499035;
+	bh=CBDmgXdQdFqJ0tjm7XSPvBufBwtb41WTOjwQwNv4gEk=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=IoMUWUpMzWSFTiTunkhN8RAK1st3la+XxrqbAayFZmNtqoNvNHHsnnApWbwXTSziE
+	 rZNEG9+vjq+GHXwiurAj2+N39ZMo52HYtQAHV8jbsac8HZti8lFJEj2gT50+jlOVZu
+	 B6GWATzLUSYfLWQFI05YhzKz69ktH6fX0CbQH4r2ZU2RwZ4vZs7kbtBwL6Wi8yo925
+	 6Het8Z98IHz0MoLdeTFIseoj6vUBUmrc5l+8fQhow1gfPrtKyvMPX9TdbxwIGU/ny+
+	 mcwjJDU2dHqK1/4n7xTAlPiiJBgdZzhBssCsTmHIvHjMKFp8euqGOE68DX4Tj9M1lN
+	 4HHmtfqC/LjtA==
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH mtd] mtd: block2mtd: defer device open on module param
+ write
+To: "Adarsh Das" <adarshdas950@gmail.com>, linux-mtd@lists.infradead.org
+Cc: joern@lazybastard.org, miquel.raynal@bootlin.com, vigneshr@ti.com, syzbot <syzbot+7cab6a19619f1b8efc00@syzkaller.appspotmail.com>, richard@nod.at
+In-Reply-To: <20260915184659.6939-1-adarshdas950@gmail.com>
+References: <20260915184659.6939-1-adarshdas950@gmail.com>
+Date: Tue, 15 Sep 2026 19:03:53 +0000
+Message-Id: <20260915190354.4F4971F000FF@smtp.kernel.org>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,133 +62,79 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Reply-To: sashiko-reviews@lists.linux.dev
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-When you write to /sys/module/block2mtd/parameters/block2mtd, the kernel
-holds a module parameter lock for the whole callback. block2mtd was
-opening the block device path inside that callback. Opening by path can
-walk the filesystem and take overlayfs locks.
-
-syzbot found this can create a circular lock dependency with overlayfs
-(ovl_create_object). I was able to reproduce it with their C repro and
-lockdep.
-
-In this patch I applied the fix of copying the parameter string,
-returning from the callback, then calling
-block2mtd_setup2() from a work item so the device open happens after
-the parameter lock is released.
-
-Reported-by: syzbot <syzbot+7cab6a19619f1b8efc00@syzkaller.appspotmail.com>
-Link: https://syzkaller.appspot.com/bug?id=3e420300f6b231aa906425cbb4bd55dd64f42da4
-Tested-by: Adarsh Das <adarshdas950@gmail.com>
-Signed-off-by: Adarsh Das <adarshdas950@gmail.com>
----
- drivers/mtd/devices/block2mtd.c | 53 ++++++++++++++++++++++++++++++---
- 1 file changed, 49 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/mtd/devices/block2mtd.c b/drivers/mtd/devices/block2mtd.c
-index 03e80b2c4f5a..35ce306ed8fb 100644
---- a/drivers/mtd/devices/block2mtd.c
-+++ b/drivers/mtd/devices/block2mtd.c
-@@ -18,6 +18,7 @@
- 
- #include <linux/module.h>
- #include <linux/delay.h>
-+#include <linux/workqueue.h>
- #include <linux/fs.h>
- #include <linux/blkdev.h>
- #include <linux/backing-dev.h>
-@@ -33,6 +34,8 @@
- 
- /* Maximum number of comma-separated items in the 'block2mtd=' parameter */
- #define BLOCK2MTD_PARAM_MAX_COUNT 3
-+/* 80 for device, 12 for erase size, 80 for label, 8 for timeout */
-+#define BLOCK2MTD_PARAM_MAXLEN (80 + 12 + 80 + 8)
- 
- /* Info for the block device */
- struct block2mtd_dev {
-@@ -405,8 +408,7 @@ static char block2mtd_paramline[80 + 12];
- 
- static int block2mtd_setup2(const char *val)
- {
--	/* 80 for device, 12 for erase size, 80 for name, 8 for timeout */
--	char buf[80 + 12 + 80 + 8];
-+	char buf[BLOCK2MTD_PARAM_MAXLEN];
- 	char *str = buf;
- 	char *token[BLOCK2MTD_PARAM_MAX_COUNT];
- 	char *name;
-@@ -461,11 +463,54 @@ static int block2mtd_setup2(const char *val)
- 	return 0;
- }
- 
-+struct block2mtd_deferred {
-+	struct work_struct work;
-+	char *val;
-+};
-+
-+static void block2mtd_deferred_workfn(struct work_struct *work)
-+{
-+	struct block2mtd_deferred *req =
-+		container_of(work, struct block2mtd_deferred, work);
-+
-+	block2mtd_setup2(req->val);
-+	kfree(req->val);
-+	kfree(req);
-+	module_put(THIS_MODULE);
-+}
-+
-+static int block2mtd_defer_setup2(const char *val)
-+{
-+	struct block2mtd_deferred *req;
-+
-+	if (strnlen(val, BLOCK2MTD_PARAM_MAXLEN) >= BLOCK2MTD_PARAM_MAXLEN)
-+		return -EINVAL;
-+
-+	if (!try_module_get(THIS_MODULE))
-+		return -ENODEV;
-+
-+	req = kmalloc_obj(struct block2mtd_deferred, GFP_KERNEL);
-+	if (!req) {
-+		module_put(THIS_MODULE);
-+		return -ENOMEM;
-+	}
-+
-+	req->val = kstrdup(val, GFP_KERNEL);
-+	if (!req->val) {
-+		kfree(req);
-+		module_put(THIS_MODULE);
-+		return -ENOMEM;
-+	}
-+
-+	INIT_WORK(&req->work, block2mtd_deferred_workfn);
-+	schedule_work(&req->work);
-+	return 0;
-+}
- 
- static int block2mtd_setup(const char *val, const struct kernel_param *kp)
- {
- #ifdef MODULE
--	return block2mtd_setup2(val);
-+	return block2mtd_defer_setup2(val);
- #else
- 	/* If more parameters are later passed in via
- 	   /sys/module/block2mtd/parameters/block2mtd
-@@ -473,7 +518,7 @@ static int block2mtd_setup(const char *val, const struct kernel_param *kp)
- 	   we can parse the argument now. */
- 
- 	if (block2mtd_init_called)
--		return block2mtd_setup2(val);
-+		return block2mtd_defer_setup2(val);
- 
- 	/* During early boot stage, we only save the parameters
- 	   here. We must parse them later: if the param passed
--- 
-2.55.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+VGhhbmsgeW91IGZvciB5b3VyIGNvbnRyaWJ1dGlvbiEgU2FzaGlrbyBBSSByZXZpZXcgZm91bmQg
+NCBwb3RlbnRpYWwgaXNzdWUocykgdG8gY29uc2lkZXI6Ci0gW0hpZ2hdIG10ZDogYmxvY2sybXRk
+OiBsaXN0IGNvcnJ1cHRpb24gZHVlIHRvIG1pc3NpbmcgbG9jayBpbiBhZGRfZGV2aWNlKCkKLSBb
+SGlnaF0gbXRkOiBibG9jazJtdGQ6IGFzeW5jIGRldmljZSBjcmVhdGlvbiBicmVha3MgdXNlcnNw
+YWNlIEFCSSBleHBlY3RhdGlvbnMKLSBbSGlnaF0gbXRkOiBibG9jazJtdGQ6IFVBRiBvbiBtb2R1
+bGUgdW5sb2FkIGR1ZSB0byB1bnNhZmUgbW9kdWxlX3B1dCgpIGluIHdvcmtxdWV1ZQotIFtIaWdo
+XSBtdGQ6IGJsb2NrMm10ZDogVUFGIG9uIG1vZHVsZSBsb2FkIGZhaWx1cmUgZHVlIHRvIHVuY2Fu
+Y2VsbGVkIHdvcmsKLS0KCmNvbW1pdCAyZGZmOTY3OTE1ZDdmNGNiMzAxNTAzNjk2MTUyYjBmOWI1
+MzU2NDVmCkF1dGhvcjogQWRhcnNoIERhcyA8YWRhcnNoZGFzOTUwQGdtYWlsLmNvbT4KCm10ZDog
+YmxvY2sybXRkOiBkZWZlciBkZXZpY2Ugb3BlbiBvbiBtb2R1bGUgcGFyYW0gd3JpdGUKClRoaXMg
+Y29tbWl0IGRlZmVycyB0aGUgYmxvY2sybXRkIGRldmljZSBzZXR1cCB0byBydW4gYXN5bmNocm9u
+b3VzbHkgaW4gYQp3b3JrcXVldWUuIFRoaXMgYXZvaWRzIGhvbGRpbmcgdGhlIG1vZHVsZSBwYXJh
+bWV0ZXIgbG9jayB3aGlsZSBvcGVuaW5nIHRoZQpibG9jayBkZXZpY2UsIHdoaWNoIHByZXZpb3Vz
+bHkgbGVkIHRvIGEgY2lyY3VsYXIgbG9jayBkZXBlbmRlbmN5IHdpdGgKb3ZlcmxheWZzLgoKTGlu
+azogaHR0cHM6Ly9zeXprYWxsZXIuYXBwc3BvdC5jb20vYnVnP2lkPTNlNDIwMzAwZjZiMjMxYWE5
+MDY0MjVjYmI0YmQ1NWRkNjRmNDJkYTQKCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL2Rldmlj
+ZXMvYmxvY2sybXRkLmMgYi9kcml2ZXJzL210ZC9kZXZpY2VzL2Jsb2NrMm10ZC5jCj4gaW5kZXgg
+MzQ5ZmEwN2JlMzE0Yy4uNWVmMmMxNWE2YWExYSAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL210ZC9k
+ZXZpY2VzL2Jsb2NrMm10ZC5jCj4gKysrIGIvZHJpdmVycy9tdGQvZGV2aWNlcy9ibG9jazJtdGQu
+YwpbIC4uLiBdCj4gQEAgLTQ2MSwxMSArNDYzLDU0IEBAIHN0YXRpYyBpbnQgYmxvY2sybXRkX3Nl
+dHVwMihjb25zdCBjaGFyICp2YWwpCj4gIAlyZXR1cm4gMDsKPiAgfQo+ICAKPiArc3RydWN0IGJs
+b2NrMm10ZF9kZWZlcnJlZCB7Cj4gKwlzdHJ1Y3Qgd29ya19zdHJ1Y3Qgd29yazsKPiArCWNoYXIg
+KnZhbDsKPiArfTsKPiArCj4gK3N0YXRpYyB2b2lkIGJsb2NrMm10ZF9kZWZlcnJlZF93b3JrZm4o
+c3RydWN0IHdvcmtfc3RydWN0ICp3b3JrKQo+ICt7Cj4gKwlzdHJ1Y3QgYmxvY2sybXRkX2RlZmVy
+cmVkICpyZXEgPQo+ICsJCWNvbnRhaW5lcl9vZih3b3JrLCBzdHJ1Y3QgYmxvY2sybXRkX2RlZmVy
+cmVkLCB3b3JrKTsKPiArCj4gKwlibG9jazJtdGRfc2V0dXAyKHJlcS0+dmFsKTsKPiArCWtmcmVl
+KHJlcS0+dmFsKTsKPiArCWtmcmVlKHJlcSk7Cj4gKwltb2R1bGVfcHV0KFRISVNfTU9EVUxFKTsK
+CltTZXZlcml0eTogSGlnaF0KQ2FuIGRyb3BwaW5nIHRoZSBtb2R1bGUgcmVmZXJlbmNlIGhlcmUg
+Y3JlYXRlIGEgdXNlLWFmdGVyLWZyZWUgZHVyaW5nIG1vZHVsZQp1bmxvYWQ/CgpXaGVuIHRoZSBy
+ZWZjb3VudCBkcm9wcyB0byB6ZXJvLCBybW1vZCBwcm9jZWVkcyBhbmQgdW5tYXBzIHRoZSBtb2R1
+bGUgdGV4dC4KVGhlIHdvcmtlciB0aHJlYWQgaXMgc3RpbGwgcnVubmluZyBpbnNpZGUgdGhlIG1v
+ZHVsZSdzIGNvZGUgc3BhY2UgYW5kIHdpbGwKanVtcCB0byBmcmVlZCBtZW1vcnkgd2hlbiByZXR1
+cm5pbmcgZnJvbSB0aGUgZnVuY3Rpb24gZXBpbG9ndWUuCgo+ICt9Cj4gKwo+ICtzdGF0aWMgaW50
+IGJsb2NrMm10ZF9kZWZlcl9zZXR1cDIoY29uc3QgY2hhciAqdmFsKQo+ICt7Cj4gKwlzdHJ1Y3Qg
+YmxvY2sybXRkX2RlZmVycmVkICpyZXE7Cj4gKwo+ICsJaWYgKHN0cm5sZW4odmFsLCBCTE9DSzJN
+VERfUEFSQU1fTUFYTEVOKSA+PSBCTE9DSzJNVERfUEFSQU1fTUFYTEVOKQo+ICsJCXJldHVybiAt
+RUlOVkFMOwo+ICsKPiArCWlmICghdHJ5X21vZHVsZV9nZXQoVEhJU19NT0RVTEUpKQo+ICsJCXJl
+dHVybiAtRU5PREVWOwo+ICsKPiArCXJlcSA9IGttYWxsb2Nfb2JqKHN0cnVjdCBibG9jazJtdGRf
+ZGVmZXJyZWQsIEdGUF9LRVJORUwpOwo+ICsJaWYgKCFyZXEpIHsKPiArCQltb2R1bGVfcHV0KFRI
+SVNfTU9EVUxFKTsKPiArCQlyZXR1cm4gLUVOT01FTTsKPiArCX0KPiArCj4gKwlyZXEtPnZhbCA9
+IGtzdHJkdXAodmFsLCBHRlBfS0VSTkVMKTsKPiArCWlmICghcmVxLT52YWwpIHsKPiArCQlrZnJl
+ZShyZXEpOwo+ICsJCW1vZHVsZV9wdXQoVEhJU19NT0RVTEUpOwo+ICsJCXJldHVybiAtRU5PTUVN
+Owo+ICsJfQo+ICsKPiArCUlOSVRfV09SSygmcmVxLT53b3JrLCBibG9jazJtdGRfZGVmZXJyZWRf
+d29ya2ZuKTsKPiArCXNjaGVkdWxlX3dvcmsoJnJlcS0+d29yayk7CgpbU2V2ZXJpdHk6IEhpZ2hd
+CklmIG1vZHVsZSBpbml0aWFsaXphdGlvbiBmYWlscyBhZnRlciB0aGlzIHBvaW50LCBpcyB0aGVy
+ZSBhIG1lY2hhbmlzbSB0bwpjYW5jZWwgdGhpcyBzY2hlZHVsZWQgd29yaz8KCkZvciBpbnN0YW5j
+ZSwgaWYgYW4gaW52YWxpZCBwYXJhbWV0ZXIgaXMgcHJvdmlkZWQgYWZ0ZXIgYSB2YWxpZCBvbmUg
+ZHVyaW5nCm1vZHVsZSBsb2FkIChlLmcuLCBtb2Rwcm9iZSBibG9jazJtdGQgYmxvY2sybXRkPS9k
+ZXYvbG9vcDAgaW52YWxpZD0xKSwKdGhlIG1vZHVsZSBsb2FkZXIgbWlnaHQgZnJlZSB0aGUgbW9k
+dWxlIG1lbW9yeSB3aXRob3V0IHdhaXRpbmcgZm9yIHRoZQp3b3JrIGl0ZW0uIFdoZW4gdGhlIHdv
+cmsgZXhlY3V0ZXMsIGl0IHdvdWxkIGp1bXAgaW50byB1bm1hcHBlZCBtZW1vcnkuCgpbU2V2ZXJp
+dHk6IEhpZ2hdCkRvZXMgdGhpcyBpbnRyb2R1Y2UgYSByYWNlIGNvbmRpdGlvbiB3aXRoIGNvbmN1
+cnJlbnQgbW9kdWxlIHBhcmFtZXRlciB3cml0ZXM/CgpCeSBkZWZlcnJpbmcgc2V0dXAgdG8gYSBj
+b25jdXJyZW50IHdvcmtxdWV1ZSB3aXRob3V0IGFkZGluZyBzeW5jaHJvbml6YXRpb24sCm11bHRp
+cGxlIHdvcmsgaXRlbXMgY2FuIGV4ZWN1dGUgYWRkX2RldmljZSgpIGNvbmN1cnJlbnRseSBvbiBk
+aWZmZXJlbnQgQ1BVcwphbmQgcmFjZSB0byBtb2RpZnkgdGhlIGdsb2JhbCBibGttdGRfZGV2aWNl
+X2xpc3Q6Cgpkcml2ZXJzL210ZC9kZXZpY2VzL2Jsb2NrMm10ZC5jOmFkZF9kZXZpY2UoKSB7CiAg
+ICAuLi4KICAgIGxpc3RfYWRkKCZkZXYtPmxpc3QsICZibGttdGRfZGV2aWNlX2xpc3QpOwogICAg
+Li4uCn0KCltTZXZlcml0eTogSGlnaF0KRG9lcyBkZWZlcnJpbmcgdGhlIHNldHVwIHRvIGEgd29y
+a3F1ZXVlIGJyZWFrIHVzZXJzcGFjZSBBQkkgZXhwZWN0YXRpb25zPwoKQmVmb3JlIHRoaXMgcGF0
+Y2gsIGJsb2NrMm10ZF9zZXR1cDIoKSByYW4gc3luY2hyb25vdXNseS4gRGVmZXJyaW5nIGl0IG1h
+a2VzCnRoZSBzeXNmcyB3cml0ZSByZXR1cm4gYmVmb3JlIHRoZSBkZXZpY2UgaXMgY3JlYXRlZCwg
+d2hpY2ggbWlnaHQgc2lsZW50bHkKYnJlYWsgYmFja3dhcmRzIGNvbXBhdGliaWxpdHkgZm9yIGRl
+cGVuZGVudCB1c2Vyc3BhY2Ugd29ya2Zsb3dzLgoKPiArCXJldHVybiAwOwo+ICt9CgotLSAKU2Fz
+aGlrbyBBSSByZXZpZXcgwrcgaHR0cHM6Ly9zYXNoaWtvLmRldi8jL3BhdGNoc2V0LzIwMjYwOTE1
+MTg0NjU5LjY5MzktMS1hZGFyc2hkYXM5NTBAZ21haWwuY29tP3BhcnQ9MQoKX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNj
+dXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2xpbnV4LW10ZC8K
