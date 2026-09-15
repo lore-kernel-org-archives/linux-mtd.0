@@ -4,69 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D2F6C88E75
-	for <linux-mtd@archiver.kernel.org>; Tue, 15 Sep 2026 13:37:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23D88C88E7F
+	for <linux-mtd@archiver.kernel.org>; Tue, 15 Sep 2026 14:46:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=E45SbkpEo0PYJbyUHoJ8KElnrPRM4ONVTiP8/OoPyfg=; b=48533pfaMoOBtY
-	wTXjFHWz6Xp7RAZPmp0z3b6TKP/SWWIHiY89NNSdWzMVsTE2pyE/MAoaq4ld0AgaPVbgIn3xW56Lo
-	FYHyo2cEYb3yvm3Y82ccQXHTudGYopLDY3XAMPzokw6x6+iu/nOUrf9O9ZDads5CPZK99yNjO56Ws
-	HsKx6nxptGIVXcA+K4OkCxQndLqxdqRPa8VhVic3Exf9QYShI8y2SAFOTbZ8bSLD+9jYBxwoSA4ce
-	FKZD8KmdVTpjKZWNCyTI23yyC5O71CWp02wJhEd5OvB9mDuVMctfImQVJr0dSEaHt3oPQKPtaxPiY
-	VwVegVcDc1bxHDgU4/rA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=cFLTOt6ANLsbTYp+PWRyfqmEXaK4KtMwo2kA+LcFSNU=; b=ooxLgAL46T61G5
+	RnXAhX+wZvvD0is4LXLjPCvdBlg1C0xdSIcJqVyMaUpJBHaQGV2MuWQBWDePbMFx3pxiudJr9iunG
+	OxMUGWNObh3HDa5ljEqah9HajQrTtfI91Di05tdiu12UwsOvtdDNOS4rBXZXapW5cnYH5/PmsVG6O
+	9+eEWZm+GrCNyseMGD10hZuWKYEaB0H5Fs87EQrHqa0y7PdOxXf6aHUoDdhKVx3SiIq5dv111+Kh3
+	WGqBpnA/k+IblUwFIzxXad2NVjoRM7lS333rofXS2EmkvBwqIQhiA7B9AgqIw+qlw3XtbAayC9dmT
+	YxknN88KyrU4ZhWgYRKA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x6TLo-00000006l9A-1MFx;
-	Tue, 15 Sep 2026 13:37:32 +0000
-Received: from smtpout-04.galae.net ([185.171.202.116])
+	id 1x6UPy-00000006zv0-13EP;
+	Tue, 15 Sep 2026 14:45:54 +0000
+Received: from mail-m49197.qiye.163.com ([45.254.49.197])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x6TLl-00000006l61-44qQ
+	id 1x6UPv-00000006zse-1hWy
 	for linux-mtd@lists.infradead.org;
-	Tue, 15 Sep 2026 13:37:32 +0000
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id 27C42C5CD44;
-	Tue, 15 Sep 2026 13:38:09 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 9AD3560498;
-	Tue, 15 Sep 2026 13:37:25 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id E4A6411C7AFEF;
-	Tue, 15 Sep 2026 15:37:21 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1789479444; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=RKb5raYH5jjg44l7lX7tk09hl1TxxM+EOthKDMqnefw=;
-	b=rJYS+GGOGKJDnkFEYwc5rjJq7ei4z5rkLCbLTzhsk8d087j7LjBZnO/99LP/hq5fEXQI46
-	aEsuCC9tT35rvp476F9GJZO9KTowL/EuCqr764OoQkL2k5jQTrEJVeTLUCWhs95SsW1SQK
-	/sjidzNIBpCQt3TfBTRV8Od2FBDMEgQVT8LgXgx6jShnJHRIlY7BTN72mwgmv27U8BDRrA
-	ZJ4IGE9A3WakazyW5nH1u9vrfPHiH3TqgcSUTmK1vWDw9z65PlOh7uePo18kJRnCbOmSpt
-	Ggmhe9eKq9eYQ03SZGNqmsF/8FxgBtHaWTTNWPQ3TNOgb02RLRpD50z05YcfVQ==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: <Takahiro.Kuwano@infineon.com>
-Cc: <mwalle@kernel.org>,  <pratyush@kernel.org>,  <richard@nod.at>,
-  <vigneshr@ti.com>,  <tudor.ambarus@linaro.org>,  <alex@sverdlin.org>,
-  <linux-mtd@lists.infradead.org>,  <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] mtd: spi-nor: spansion: Assign .fixups to s25fs256s1
-In-Reply-To: <e15daee278f346cd8dae030e2409445e@infineon.com> (Takahiro
-	Kuwano's message of "Tue, 15 Sep 2026 06:13:57 +0000")
-References: <20260914-s25fs256s-fixup-v1-0-e94019455c1e@infineon.com>
-	<20260914-s25fs256s-fixup-v1-2-e94019455c1e@infineon.com>
-	<DLETVUMUX3AN.3SSH7NN2CKAIU@kernel.org>
-	<fb4398e88939472eaa86cdc098a3d265@infineon.com>
-	<DLEXS5VCYB1P.1NJI7ZU6HYUHF@kernel.org>
-	<e15daee278f346cd8dae030e2409445e@infineon.com>
-User-Agent: mu4e 1.12.12; emacs 30.2
-Date: Tue, 15 Sep 2026 15:37:21 +0200
-Message-ID: <874ifqoctq.fsf@bootlin.com>
+	Tue, 15 Sep 2026 14:45:53 +0000
+Received: from tju.edu.cn (gy-adaptive-ssl-proxy-1-entmail-virt204.gy.ntes [183.242.150.9])
+	by smtp.qiye.163.com (Hmail) with ESMTP id 4ddceb527;
+	Tue, 15 Sep 2026 22:45:46 +0800 (GMT+08:00)
+From: Yibo Tan <lhfff@tju.edu.cn>
+To: Maxim Levitsky <maximlevitsky@gmail.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v1] mtd: rawnand: r852: Prevent card work during removal
+Date: Tue, 15 Sep 2026 22:45:43 +0800
+Message-Id: <20260915144543.3466083-1-lhfff@tju.edu.cn>
 MIME-Version: 1.0
-X-Last-TLS-Session-Version: TLSv1.3
+X-HM-Tid: 0aa0a587f7f503a1kunm35bf4d8e2df843
+X-HM-MType: 10
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFITzdXWRgWCB1ZQUpXWS1ZQUlXWQ8JGhUIEh9ZQVkaQ01OVklOQhlMGU9JTUweH1YeHw
+	5VEwETFhoSFyQUDg9ZV1kYEgtZQVlKQ0hVSU9JVUpOS1VCWVdZFhoPEhUdFFlBWU9LSFVKS0lCQ0
+	NMVUpLS1VLWQY+
+DKIM-Signature: a=rsa-sha256;
+	b=tIDlp0VPgZQMucIua2E7MLzI6R6LiX+1z9YPWHvJ7a9waxd2T0Lv1dQ/rW8GarWFsyLaULnD/T61Vqt/uZoo8nWACQZEan/AWVCbW19rN1AFM+tTOP6+tYhZI9BDTHk7BpOXngKTFcKLIZ+dTF4k2RpVA3kl4kO2dDubvhK7XA8=; c=relaxed/relaxed; s=default; d=tju.edu.cn; v=1;
+	bh=BhOZe8NSRy2x4UKf+xHcg6ZlHNX3SVPP+kqzW3NooFQ=;
+	h=date:mime-version:subject:message-id:from;
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260915_063730_172621_D7D1BC50 
-X-CRM114-Status: UNSURE (   7.11  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260915_074551_670767_131BF23D 
+X-CRM114-Status: GOOD (  14.54  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,20 +65,76 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8sCgo+IFRoaXMgZGlkbid0IGhlbHAgYXMgU0ZEUCBjYWNoZSBzaXplIGlzIHRydW5jYXRl
-ZCB0byBQQUdFX1NJWkUgaW4gc2ZkcC5jOgo+Cj4gCS8qCj4gCSAqIExpbWl0IHRoZSB0b3RhbCBz
-aXplIHRvIGEgcmVhc29uYWJsZSB2YWx1ZSB0byBhdm9pZCBhbGxvY2F0aW5nIHRvbwo+IAkgKiBt
-dWNoIG1lbW9yeSBqdXN0IG9mIGJlY2F1c2UgdGhlIGZsYXNoIHJldHVybmVkIHNvbWUgaW5zYW5l
-IHZhbHVlcy4KPiAJICovCj4gCWlmIChzZmRwX3NpemUgPiBQQUdFX1NJWkUpIHsKPiAJCWRldl9k
-YmcoZGV2LCAiU0ZEUCBkYXRhICglenUpIHRvbyBiaWcsIHRydW5jYXRpbmdcbiIsCj4gCQkJIHNm
-ZHBfc2l6ZSk7Cj4gCQlzZmRwX3NpemUgPSBQQUdFX1NJWkU7Cj4gCX0KClRoYXQgc2l6ZSBqdXN0
-IGJlaW5nIGEgc2FuaXR5IGNoZWNrLCBpZiBpdCBubyBsb25nZXIgZml0cyBvdXIgbmVlZHMgaXQK
-bXVzdCBiZSBpbmNyZWFzZWQuCgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBt
-YWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9s
-aW51eC1tdGQvCg==
+r852_irq() queues card_detect_work when card state changes.  r852_remove()
+currently cancels that work and destroys its private workqueue before it
+disables and frees the IRQ.
+
+A card event in this interval can queue delayed work on the destroyed
+workqueue.  Its timer is part of struct r852_device, which is freed later
+in r852_remove().  KASAN reported a use-after-free in the timer code when
+the card interrupt occurred in this interval.  The same test completed
+without a kernel diagnostic after this change.
+
+Set a removal flag while holding irqlock before cancelling the work.  The
+IRQ handler still acknowledges and disables card events, but does not
+queue more card-detect work during removal.  The lock ensures that work
+queued before the flag is cancelled and later interrupts skip the queue.
+
+Fixes: 67e054e91924 ("mtd: nand: Add driver for Ricoh xD/SmartMedia reader")
+Cc: stable@vger.kernel.org
+Assisted-by: Codex:GPT-5
+Signed-off-by: Yibo Tan <lhfff@tju.edu.cn>
+---
+ drivers/mtd/nand/raw/r852.c | 7 +++++++
+ drivers/mtd/nand/raw/r852.h | 1 +
+ 2 files changed, 8 insertions(+)
+
+diff --git a/drivers/mtd/nand/raw/r852.c b/drivers/mtd/nand/raw/r852.c
+index 92c47d351c27..6170a481cb1f 100644
+--- a/drivers/mtd/nand/raw/r852.c
++++ b/drivers/mtd/nand/raw/r852.c
+@@ -747,6 +747,9 @@ static irqreturn_t r852_irq(int irq, void *data)
+ 		/* this will timeout DMA if active, but better that garbage */
+ 		r852_disable_irqs(dev);
+ 
++		if (dev->removing)
++			goto out;
++
+ 		if (dev->card_unstable)
+ 			goto out;
+ 
+@@ -977,6 +980,10 @@ static void r852_remove(struct pci_dev *pci_dev)
+ {
+ 	struct r852_device *dev = pci_get_drvdata(pci_dev);
+ 
++	spin_lock_irq(&dev->irqlock);
++	dev->removing = true;
++	spin_unlock_irq(&dev->irqlock);
++
+ 	/* Stop detect workqueue -
+ 		we are going to unregister the device anyway*/
+ 	cancel_delayed_work_sync(&dev->card_detect_work);
+diff --git a/drivers/mtd/nand/raw/r852.h b/drivers/mtd/nand/raw/r852.h
+index 96fe301d15da..5c931880c2f4 100644
+--- a/drivers/mtd/nand/raw/r852.h
++++ b/drivers/mtd/nand/raw/r852.h
+@@ -131,6 +131,7 @@ struct r852_device {
+ 	int card_detected;		/* card detected in slot */
+ 	int card_unstable;		/* whenever the card is inserted,
+ 					   is not known yet */
++	bool removing;			/* do not queue card work during removal */
+ 	int readonly;			/* card is readonly */
+ 	int sm;				/* Is card smartmedia */
+ 
+-- 
+2.39.5
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
