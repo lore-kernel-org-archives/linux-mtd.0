@@ -4,65 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9E20C88E5C
-	for <linux-mtd@archiver.kernel.org>; Wed, 16 Sep 2026 13:58:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1AFAFC982C7
+	for <linux-mtd@archiver.kernel.org>; Wed, 16 Sep 2026 13:58:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id:Date:
-	Subject:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=xddncYfHnMbI2O8nW6gRA6MrepNYt6Xeh9hEMt4hBj8=; b=SRfGfiH3Z1obnP
-	g3Bm0LfghCP0IjLwS+BO2Ohb8Du+dsp6okk0xXmMLms5zYGhd8MI3E+Lv1SEHcCJiyAhV/Ytfy+Ua
-	YKLMgnMVTCgIWsU5Kn4c8cnvhjcRgueC4+M9cXMy4HgXMtk0UPW2r9q+GJ1gjkrJk6V+V6BAWTeKz
-	n8s1qF3ABnFZLlEBHLol/KbssLztKenb/o+HsHUTL6XuIANqY36BP6LBMy2wdjMPR0LBdAH39e3PY
-	HNhWcB7cU9kZgwoYGG1AVdCAUa2AiHe1bltwnS9rDvro8nZQ1BAmM20Wr22eACUfY+856HkkKiF5L
-	L6dxngc3FnVs9UPNvb/g==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
+	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=OqkS2lVCkR+RRzYZK7tG4Fvjk0DFeQjDq3VT5XC2GzU=; b=1stdgroOa+ekbB
+	rylEE36HuEE0RgWpghOgqA6oW7AT+oMIhUgsud9Y1DJjKXc1qLap+KIJ5J6aUREjDLP4xd++VjO4M
+	VLiX/Qf+Yi5NXjokh1HA+U647kVEsBITiv5W3OY6hfAA5P65esBtsRKYhgylATMTGJIh1h54IOUPG
+	rED4QRBaA9KSYDy5deFasYbA69Ya/nRqFJbLQDQs7/tk7WG201O16xudLgUm95Lcc57mB4S4tZuxC
+	flIhBNOKDG1d4Sm7fcsYUnKds2pHpn9g1AvDzxHsMuewsfyYE3+cv3H8yM4ylwLj3hYJFj3JyX4Ya
+	aYRzHBTG9iQeXJx1NQjg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x6q9k-00000009LqF-49jb;
-	Wed, 16 Sep 2026 13:58:37 +0000
+	id 1x6q9s-00000009LsE-3Ulp;
+	Wed, 16 Sep 2026 13:58:44 +0000
 Received: from mgamail.intel.com ([198.175.65.19])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x6q9h-00000009LpT-15x7
+	id 1x6q9n-00000009Lqf-2MDb
 	for linux-mtd@lists.infradead.org;
-	Wed, 16 Sep 2026 13:58:34 +0000
+	Wed, 16 Sep 2026 13:58:41 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1789567113; x=1821103113;
-  h=from:subject:date:message-id:mime-version:
-   content-transfer-encoding:to:cc;
-  bh=OBrCFnlTEIjhGfk9QvWKZR2eOFWSEpqthqxToIFrvi8=;
-  b=OhZKY9oxoOdGHWFk9+xhsE+ME/t7js9ngt1eEEvzSkvAvFMNDrFWt0hg
-   DV0DOxQSA0EnTAwFMom5k8KzxcJdCGFchk4HQZiws+uHuLj0h0RP3IV/A
-   6ufWgT4ACyIimer4L6dG+YqTo1BKozV8Hr62iyDUYaFbAuXrDxbtQcEJU
-   /uRNreAfql5tTGaj1AQ3so7NnqfsdHMfJtca2IsiNwZvFEpuDRMlPv5Ha
-   x5s0LcR61Tw4YCN8YlIgwGKqHFQRmdx+M4l1HcNwvcPXA9rVVhpyvUaIe
-   aQ/frGtMrOVJ7JSAafOCAY1kXpzHrZBwZVvjzG0LMpOXczUjY1E+eP4UX
-   Q==;
-X-CSE-ConnectionGUID: YDSc4b8qQjqlU4T2FqihKg==
-X-CSE-MsgGUID: 8t8SodjZQKicYpb8QKg+Rg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11905"; a="89881924"
+  t=1789567119; x=1821103119;
+  h=from:date:subject:mime-version:content-transfer-encoding:
+   message-id:references:in-reply-to:to:cc;
+  bh=r6J6OMUuexc90xruyZevzc+hksoDZaaD+TsUNdnaTAg=;
+  b=KrvTzmVs34ieDy0NqKuW4lPNXKy4bSpkEhE9vqeb8nxZry2PpMUpVdRO
+   fv3v6CiniJjlz9SsWBhGeD0sY1CxSUn7MLy2EsmCV/X8GEkfNNK9ltkfV
+   QfSkQeMgLdjBc8DYOIu1Xv+ACsHwfIux7cBKPUudY1RR/sCBCWUzkgO+z
+   AYXc8aJMw9UC68FX2xGZAbeGb9I76omicDBoj66/g6w9vcWvAUsiIXaak
+   PnH3PK4nm0URoLvz34Uy8nOs0EKhkq96MTMu46FfeXxo4EGgEwdblcKgN
+   dJELE7fFi2zRXmc5oisCYbuKjWgxRM6NDWPiJkP6ybyhOiXBq4IDm2Te5
+   g==;
+X-CSE-ConnectionGUID: OF6OYgxiSOOyJGbXMkQFMQ==
+X-CSE-MsgGUID: FgQZRVMNTT2Jtku5sMcJeA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11905"; a="89881963"
 X-IronPort-AV: E=Sophos;i="6.27,103,1787036400"; 
-   d="scan'208";a="89881924"
+   d="scan'208";a="89881963"
 Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2026 06:58:32 -0700
-X-CSE-ConnectionGUID: oSCES6cPTaW5GTvUEWGfOA==
-X-CSE-MsgGUID: mNCRndabQdqBoNABN76Pew==
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2026 06:58:39 -0700
+X-CSE-ConnectionGUID: y+1ySo3ATyiH3qc3EjZNlg==
+X-CSE-MsgGUID: /8tjTf7vQxSpqBxablUU0Q==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.27,103,1787036400"; 
-   d="scan'208";a="277475747"
+   d="scan'208";a="277475774"
 Received: from sannilnx-dsk.jer.intel.com (HELO [127.0.1.1]) ([10.12.231.107])
-  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2026 06:58:29 -0700
+  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2026 06:58:36 -0700
 From: Alexander Usyskin <alexander.usyskin@intel.com>
-Subject: [PATCH v2 0/2] drm/xe/nvm: add survivabilty partiton
-Date: Wed, 16 Sep 2026 16:58:14 +0300
-Message-Id: <20260916-cri_surviv-v2-0-7de1b5328204@intel.com>
+Date: Wed, 16 Sep 2026 16:58:16 +0300
+Subject: [PATCH v2 2/2] drm/xe/nvm: define survivabilty partition
 MIME-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAAAAAAAC/23M0QoCIRCF4VdZ5jrDMdToqvdYlhAb24HS0E2Kx
- XfP9rrL/8D5ViiUmQqchhUyVS6cYg+1G8DPLt5I8LU3KKmMtKiFz3wpr1y5Cu1McMHqowkI/fD
- MFPi9YePUe+aypPzZ7Iq/9S9TUUhh0JpD91Bac+a40H3v0wOm1toXylX+YaQAAAA=
-X-Change-ID: 20260715-cri_surviv-5a6faf7586f1
+Message-Id: <20260916-cri_surviv-v2-2-7de1b5328204@intel.com>
+References: <20260916-cri_surviv-v2-0-7de1b5328204@intel.com>
+In-Reply-To: <20260916-cri_surviv-v2-0-7de1b5328204@intel.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, 
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
  Matthew Brost <matthew.brost@intel.com>, 
@@ -74,17 +72,16 @@ Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
  Menachem Adin <menachem.adin@intel.com>, 
  Alexander Usyskin <alexander.usyskin@intel.com>
 X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1789567108; l=1433;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1789567108; l=2014;
  i=alexander.usyskin@intel.com; s=20260315; h=from:subject:message-id;
- bh=OBrCFnlTEIjhGfk9QvWKZR2eOFWSEpqthqxToIFrvi8=;
- b=bSma6OrE6Kw7lv2dmBhNpnouKEamhknl8paaF2K1r4ItswUjA9xiLrZ5WTCErkC91Xwrr4LaO
- 6I+kFqlgQmbC6N2xAqROcoazoVeidahfgSRtri9lTAdD9Tf8/UpZyXA
+ bh=r6J6OMUuexc90xruyZevzc+hksoDZaaD+TsUNdnaTAg=;
+ b=Am8KStxYAynVDvH7dT+OdnRw/Ic6z/7dUnqsjX3cp/VW5kJv55QASSXI+waec1DbMiJwR2w1g
+ yfhsqlTE/qIAdqi8Y5Sh8/Wdv1VocbAeLjl7CKsBbvOIjv9FNnmWwWw
 X-Developer-Key: i=alexander.usyskin@intel.com; a=ed25519;
  pk=X+qoF/nFCdDOV04IForWSxnkyoCAbUE10egZi6PSfcU=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260916_065833_385734_EDABAB0A 
-X-CRM114-Status: UNSURE (   8.99  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260916_065840_390040_CEAC1838 
+X-CRM114-Status: GOOD (  11.03  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,42 +98,70 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-One of the reasons for the CRI to enter survivability mode
-is corrupted storage.
-A corrupted storage partition table can make recovery impossible.
-A new partition with a pre-defined size, covering the entire storage,
-should replace partitions detected from the storage when the card is
-in survivability mode to allow a full memory update.
-
-This series intended to be merged via drm tree for consistency
-and requires ack from MTD maintainer.
+Define 8M survivability partition for CRI when
+storage is open for write override.
 
 Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
 ---
-Changes in v2:
-- Replace usual partitions with survivability one instead of adding
-  addition partition to avoid problems with two partitons pointing to
-  the same memory area.
-- The change is in the mtd part; Miquel, I feel that this requires
-  re-review/ack from your side.
-- Link to v1: https://lore.kernel.org/r/20260715-cri_surviv-v1-0-61763a6f1076@intel.com
+ drivers/gpu/drm/xe/xe_nvm.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
----
-Alexander Usyskin (2):
-      mtd: mtd_intel_dg: add survivability partition
-      drm/xe/nvm: define survivabilty partition
+diff --git a/drivers/gpu/drm/xe/xe_nvm.c b/drivers/gpu/drm/xe/xe_nvm.c
+index 51a1a431ad85..783c3103a8a4 100644
+--- a/drivers/gpu/drm/xe/xe_nvm.c
++++ b/drivers/gpu/drm/xe/xe_nvm.c
+@@ -56,10 +56,11 @@ static bool xe_nvm_non_posted_erase(struct xe_device *xe)
+ 	}
+ }
+ 
+-static bool xe_nvm_writable_override(struct xe_device *xe)
++static bool xe_nvm_writable_override(struct xe_device *xe, size_t *survivability_size)
+ {
+ 	struct xe_mmio *mmio = xe_root_tile_mmio(xe);
+ 	bool writable_override;
++	size_t s_size = 0;
+ 	struct xe_reg reg;
+ 	u32 test_bit, test_val;
+ 
+@@ -68,6 +69,7 @@ static bool xe_nvm_writable_override(struct xe_device *xe)
+ 		reg = PCODE_SCRATCH(0);
+ 		test_bit = FDO_MODE;
+ 		test_val = FDO_MODE;
++		s_size = SZ_8M;
+ 		break;
+ 	case XE_BATTLEMAGE:
+ 		reg = HECI_FWSTS2(DG2_GSC_HECI2_BASE);
+@@ -91,12 +93,17 @@ static bool xe_nvm_writable_override(struct xe_device *xe)
+ 		break;
+ 	default:
+ 		drm_err(&xe->drm, "Unknown platform\n");
++		*survivability_size = 0;
+ 		return true;
+ 	}
+ 
+ 	writable_override = (xe_mmio_read32(mmio, reg) & test_bit) == test_val;
+-	if (writable_override)
++	if (writable_override) {
+ 		drm_info(&xe->drm, "NVM access overridden by jumper\n");
++		*survivability_size = s_size;
++	} else {
++		*survivability_size = 0;
++	}
+ 	return writable_override;
+ }
+ 
+@@ -143,7 +150,7 @@ int xe_nvm_init(struct xe_device *xe)
+ 	if (!nvm)
+ 		return -ENOMEM;
+ 
+-	nvm->writable_override = xe_nvm_writable_override(xe);
++	nvm->writable_override = xe_nvm_writable_override(xe, &nvm->survivability_size);
+ 	nvm->non_posted_erase = xe_nvm_non_posted_erase(xe);
+ 	nvm->bar.parent = &pdev->resource[0];
+ 	nvm->bar.start = GEN12_GUNIT_NVM_BASE + pdev->resource[0].start;
 
- drivers/gpu/drm/xe/xe_nvm.c        | 13 ++++++--
- drivers/mtd/devices/mtd_intel_dg.c | 66 +++++++++++++++++++++++++++++---------
- include/linux/intel_dg_nvm_aux.h   |  1 +
- 3 files changed, 61 insertions(+), 19 deletions(-)
----
-base-commit: baafc300cd079a5210c1e70e5ea3d93518e40b38
-change-id: 20260715-cri_surviv-5a6faf7586f1
-
-Best regards,
 -- 
-Alexander Usyskin <alexander.usyskin@intel.com>
+2.53.0
 
 
 ______________________________________________________
