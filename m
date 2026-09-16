@@ -4,84 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1AFAFC982C7
-	for <linux-mtd@archiver.kernel.org>; Wed, 16 Sep 2026 13:58:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13689C982C3
+	for <linux-mtd@archiver.kernel.org>; Wed, 16 Sep 2026 15:12:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
-	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=OqkS2lVCkR+RRzYZK7tG4Fvjk0DFeQjDq3VT5XC2GzU=; b=1stdgroOa+ekbB
-	rylEE36HuEE0RgWpghOgqA6oW7AT+oMIhUgsud9Y1DJjKXc1qLap+KIJ5J6aUREjDLP4xd++VjO4M
-	VLiX/Qf+Yi5NXjokh1HA+U647kVEsBITiv5W3OY6hfAA5P65esBtsRKYhgylATMTGJIh1h54IOUPG
-	rED4QRBaA9KSYDy5deFasYbA69Ya/nRqFJbLQDQs7/tk7WG201O16xudLgUm95Lcc57mB4S4tZuxC
-	flIhBNOKDG1d4Sm7fcsYUnKds2pHpn9g1AvDzxHsMuewsfyYE3+cv3H8yM4ylwLj3hYJFj3JyX4Ya
-	aYRzHBTG9iQeXJx1NQjg==;
+	List-Owner; bh=j68EkLTBNUp4l/Q/sc5HYghkLCFyG2jBkMO4kRQdF8g=; b=g9E4nIJYWvV6ui
+	tvgTRxh8Ssuxj2C8FFlFm/w7b8Q6iKw4MO+4aD45h3uXTGba5mh8zcVUBux+Pm01Tswuyc7kY9rNu
+	RK/LErfvRN5LHeYR1kyagPhlg4ta3jYvgCC4o9sibsr5mTDi+Mey/GuZio98KLCVMoQzKgeKjvoJf
+	7BUrmEdCZ4+pw1m5FImX8njZO3FdD19kPZRdn5x0AqDF+GAdZH7+r4Ll+HyNzCLcMr+dz85df+1bw
+	WVSUGTp6v6ejkZhcGZ9hnpIYf4Tr09qMbIVOx5a8DxEB19OxnQxmmkNFpscBpWRz0wuHKWzweJaYH
+	SsrLIfoOL3VQNlfYaGuA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x6q9s-00000009LsE-3Ulp;
-	Wed, 16 Sep 2026 13:58:44 +0000
-Received: from mgamail.intel.com ([198.175.65.19])
+	id 1x6rJ9-00000009XJp-3LSK;
+	Wed, 16 Sep 2026 15:12:23 +0000
+Received: from smtpout-04.galae.net ([185.171.202.116])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x6q9n-00000009Lqf-2MDb
+	id 1x6rJ6-00000009XIK-2SWY
 	for linux-mtd@lists.infradead.org;
-	Wed, 16 Sep 2026 13:58:41 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1789567119; x=1821103119;
-  h=from:date:subject:mime-version:content-transfer-encoding:
-   message-id:references:in-reply-to:to:cc;
-  bh=r6J6OMUuexc90xruyZevzc+hksoDZaaD+TsUNdnaTAg=;
-  b=KrvTzmVs34ieDy0NqKuW4lPNXKy4bSpkEhE9vqeb8nxZry2PpMUpVdRO
-   fv3v6CiniJjlz9SsWBhGeD0sY1CxSUn7MLy2EsmCV/X8GEkfNNK9ltkfV
-   QfSkQeMgLdjBc8DYOIu1Xv+ACsHwfIux7cBKPUudY1RR/sCBCWUzkgO+z
-   AYXc8aJMw9UC68FX2xGZAbeGb9I76omicDBoj66/g6w9vcWvAUsiIXaak
-   PnH3PK4nm0URoLvz34Uy8nOs0EKhkq96MTMu46FfeXxo4EGgEwdblcKgN
-   dJELE7fFi2zRXmc5oisCYbuKjWgxRM6NDWPiJkP6ybyhOiXBq4IDm2Te5
-   g==;
-X-CSE-ConnectionGUID: OF6OYgxiSOOyJGbXMkQFMQ==
-X-CSE-MsgGUID: FgQZRVMNTT2Jtku5sMcJeA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11905"; a="89881963"
-X-IronPort-AV: E=Sophos;i="6.27,103,1787036400"; 
-   d="scan'208";a="89881963"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2026 06:58:39 -0700
-X-CSE-ConnectionGUID: y+1ySo3ATyiH3qc3EjZNlg==
-X-CSE-MsgGUID: /8tjTf7vQxSpqBxablUU0Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.27,103,1787036400"; 
-   d="scan'208";a="277475774"
-Received: from sannilnx-dsk.jer.intel.com (HELO [127.0.1.1]) ([10.12.231.107])
-  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2026 06:58:36 -0700
-From: Alexander Usyskin <alexander.usyskin@intel.com>
-Date: Wed, 16 Sep 2026 16:58:16 +0300
-Subject: [PATCH v2 2/2] drm/xe/nvm: define survivabilty partition
+	Wed, 16 Sep 2026 15:12:22 +0000
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-04.galae.net (Postfix) with ESMTPS id F2A11C653E5;
+	Wed, 16 Sep 2026 15:12:58 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id CF7E060337;
+	Wed, 16 Sep 2026 15:12:14 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id D80FB11C7B02C;
+	Wed, 16 Sep 2026 17:12:11 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1789571534; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=quuIl1qQ1CatIDWdv+/finp0pmoVfonu/MDoOFq07A4=;
+	b=AimCvowfLlMvokrdjJX5e2YCiM28fEhNcPXWxmeWSB94JsYqVuHiSBLg7yjTCjvfK49btr
+	2bCB2l1AbcJoB7Ys8jM47/Uc6VuirvZ6/qmipEHIYv6Eh58gFgDWHIQEHoWPVnWbOWxSTf
+	IhF5SRLQQzzWHJMsdmkTqpRLkMpYpIX8FXH1eO4R6tjuFObwH1FBhPdJ0P76SCfQ99Yzom
+	RihUsUp6vhI99csxxGsER4VYINT7EB4p3qkVBbQtPJhgDw5+jOUstGsCgK1qmdqLMvRUiX
+	fIC+ccDGY4BqzrUWKfIZFsIKs1wxTExrENwQjWP4Q43PyRZlsiAwjy8c6yUtkA==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Orgad Shaneh <orgads@gmail.com>
+Cc: richard@nod.at,  vigneshr@ti.com,  linux-mtd@lists.infradead.org,
+  linux-kernel@vger.kernel.org,  stable@vger.kernel.org
+Subject: Re: [PATCH v2] mtd: cfi_cmdset_0002: cap the write-buffer chunk at
+ 256 bytes on an x8 device
+In-Reply-To: <20260915075028.21658-1-orgads@gmail.com> (Orgad Shaneh's message
+	of "Tue, 15 Sep 2026 07:50:03 +0000")
+References: <20260915071339.15172-1-orgads@gmail.com>
+	<20260915075028.21658-1-orgads@gmail.com>
+User-Agent: mu4e 1.12.12; emacs 30.2
+Date: Wed, 16 Sep 2026 17:12:11 +0200
+Message-ID: <8733v9mdro.fsf@bootlin.com>
 MIME-Version: 1.0
-Message-Id: <20260916-cri_surviv-v2-2-7de1b5328204@intel.com>
-References: <20260916-cri_surviv-v2-0-7de1b5328204@intel.com>
-In-Reply-To: <20260916-cri_surviv-v2-0-7de1b5328204@intel.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, 
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
- Matthew Brost <matthew.brost@intel.com>, 
- =?utf-8?q?Thomas_Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>, 
- Rodrigo Vivi <rodrigo.vivi@intel.com>, David Airlie <airlied@gmail.com>, 
- Simona Vetter <simona@ffwll.ch>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
- intel-xe@lists.freedesktop.org, dri-devel@lists.freedesktop.org, 
- Menachem Adin <menachem.adin@intel.com>, 
- Alexander Usyskin <alexander.usyskin@intel.com>
-X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1789567108; l=2014;
- i=alexander.usyskin@intel.com; s=20260315; h=from:subject:message-id;
- bh=r6J6OMUuexc90xruyZevzc+hksoDZaaD+TsUNdnaTAg=;
- b=Am8KStxYAynVDvH7dT+OdnRw/Ic6z/7dUnqsjX3cp/VW5kJv55QASSXI+waec1DbMiJwR2w1g
- yfhsqlTE/qIAdqi8Y5Sh8/Wdv1VocbAeLjl7CKsBbvOIjv9FNnmWwWw
-X-Developer-Key: i=alexander.usyskin@intel.com; a=ed25519;
- pk=X+qoF/nFCdDOV04IForWSxnkyoCAbUE10egZi6PSfcU=
+X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260916_065840_390040_CEAC1838 
-X-CRM114-Status: GOOD (  11.03  )
+X-CRM114-CacheID: sfid-20260916_081220_788368_6CD1BACC 
+X-CRM114-Status: GOOD (  22.69  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,77 +73,64 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Define 8M survivability partition for CRI when
-storage is open for write override.
-
-Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
----
- drivers/gpu/drm/xe/xe_nvm.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/gpu/drm/xe/xe_nvm.c b/drivers/gpu/drm/xe/xe_nvm.c
-index 51a1a431ad85..783c3103a8a4 100644
---- a/drivers/gpu/drm/xe/xe_nvm.c
-+++ b/drivers/gpu/drm/xe/xe_nvm.c
-@@ -56,10 +56,11 @@ static bool xe_nvm_non_posted_erase(struct xe_device *xe)
- 	}
- }
- 
--static bool xe_nvm_writable_override(struct xe_device *xe)
-+static bool xe_nvm_writable_override(struct xe_device *xe, size_t *survivability_size)
- {
- 	struct xe_mmio *mmio = xe_root_tile_mmio(xe);
- 	bool writable_override;
-+	size_t s_size = 0;
- 	struct xe_reg reg;
- 	u32 test_bit, test_val;
- 
-@@ -68,6 +69,7 @@ static bool xe_nvm_writable_override(struct xe_device *xe)
- 		reg = PCODE_SCRATCH(0);
- 		test_bit = FDO_MODE;
- 		test_val = FDO_MODE;
-+		s_size = SZ_8M;
- 		break;
- 	case XE_BATTLEMAGE:
- 		reg = HECI_FWSTS2(DG2_GSC_HECI2_BASE);
-@@ -91,12 +93,17 @@ static bool xe_nvm_writable_override(struct xe_device *xe)
- 		break;
- 	default:
- 		drm_err(&xe->drm, "Unknown platform\n");
-+		*survivability_size = 0;
- 		return true;
- 	}
- 
- 	writable_override = (xe_mmio_read32(mmio, reg) & test_bit) == test_val;
--	if (writable_override)
-+	if (writable_override) {
- 		drm_info(&xe->drm, "NVM access overridden by jumper\n");
-+		*survivability_size = s_size;
-+	} else {
-+		*survivability_size = 0;
-+	}
- 	return writable_override;
- }
- 
-@@ -143,7 +150,7 @@ int xe_nvm_init(struct xe_device *xe)
- 	if (!nvm)
- 		return -ENOMEM;
- 
--	nvm->writable_override = xe_nvm_writable_override(xe);
-+	nvm->writable_override = xe_nvm_writable_override(xe, &nvm->survivability_size);
- 	nvm->non_posted_erase = xe_nvm_non_posted_erase(xe);
- 	nvm->bar.parent = &pdev->resource[0];
- 	nvm->bar.start = GEN12_GUNIT_NVM_BASE + pdev->resource[0].start;
-
--- 
-2.53.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gMTUvMDkvMjAyNiBhdCAwNzo1MDowMyBHTVQsIE9yZ2FkIFNoYW5laCA8b3JnYWRzQGdtYWls
+LmNvbT4gd3JvdGU6Cgo+IFRoZSB3b3JkIGNvdW50IG9mIHRoZSBXcml0ZSB0byBCdWZmZXIgY29t
+bWFuZCBpcyBhIHNpbmdsZSBidXMgd29yZCBwZXIKPiBkZXZpY2UsIHNvIGFuIHg4IGRldmljZSBj
+YW4gYmUgdG9sZCB0byBwcm9ncmFtIGF0IG1vc3QgMjU2IGJ5dGVzCj4gcmVnYXJkbGVzcyBvZiB0
+aGUgYnVmZmVyIHNpemUgaXQgYWR2ZXJ0aXNlcy4KPgo+IEEgTWljcm9uIE0yOUVXIChhbiB4MTYg
+cGFydCB3aXJlZCBpbiB4OCBtb2RlKSBhZHZlcnRpc2VzIGEgNTEyLWJ5dGUKPiB3cml0ZSBidWZm
+ZXIuIGNmaV9hbWRzdGRfd3JpdGVfYnVmZmVycygpIHVzZWQgdGhlIGZ1bGwgNTEyLCBDTUQoNTEx
+KQo+IHRydW5jYXRlZCB0aGUgY291bnQgdG8gMHhmZiBvbiB0aGUgd2F5IG91dCwgYW5kIHRoZSBj
+aGlwIGFib3J0ZWQgdGhlCj4gcHJvZ3JhbSBvbiB0aGUgMjU3dGggZGF0YSBieXRlLgoKVGhpcyBz
+ZW50ZW5jZSBkb2VzIG5vdCBtZWFuIGFueXRoaW5nLCBJJ20gc29ycnkuCgo+IEV2ZXJ5IGZ1bGwt
+c2l6ZSBjaHVuayBmYWlsZWQgd2hpbGUgdGhlCgpmYWlsZWQ/IGRvIHlvdSBoYXZlIGhhcmR3YXJl
+IHRoYXQgYWN0dWFsbHkgdHJpZ2dlcmVkIHRoYXQgaXNzdWU/Cgo+IHBhcnRpYWwgb25lcyBhdCB0
+aGUgc3RhcnQgb2YgYSB3cml0ZSB3ZW50IHRocm91Z2g6Cj4KPiAgIE1URCBkb193cml0ZV9idWZm
+ZXJfd2FpdCgpOiBzb2Z0d2FyZSB0aW1lb3V0LCBhZGRyZXNzOjB4MDMyNzhiZmYuCj4gICBqZmZz
+MjogV3JpdGUgb2YgNDE2NCBieXRlcyBhdCAweDAyYzc4OWI0IGZhaWxlZC4gcmV0dXJuZWQgLTUs
+IHJldGxlbiA2OAo+ICAgamZmczI6IE5vIHNwYWNlIGZvciBnYXJiYWdlIGNvbGxlY3Rpb24uIEFi
+b3J0aW5nIEdDIHRocmVhZAo+Cj4gQ2xhbXAgTWF4QnVmV3JpdGVTaXplIGluIHRoZSB3cml0ZS1i
+dWZmZXIgZml4dXAgZm9yIHg4IGRldmljZXMsIGFuZCBrZWVwCj4gbXRkLT53cml0ZWJ1ZnNpemUg
+KGNvbXB1dGVkIGJlZm9yZSB0aGUgZml4dXBzIHJ1bikgY29uc2lzdGVudCB3aXRoIGl0Lgo+Cj4g
+VGhlIGJ1ZyBwcmVkYXRlcyB0aGUgZ2l0IGhpc3RvcnksIHNvIHRoZXJlIGlzIG5vIEZpeGVzOiB0
+YWcuCgpUaGF0J3MgaW5jb3JyZWN0LiBJdCBpbmRpY2F0ZXMgdW50aWwgd2hlbiB3ZSBuZWVkIHRv
+IGJhY2twb3J0IGl0LiBTbyBpZgppdCdzIHRoZSBmaXJzdCBHaXQgY29tbWl0LCBpdCdzIHRoZSBm
+aXJzdCBHaXQgY29tbWl0LgoKPiBDYzogc3RhYmxlQHZnZXIua2VybmVsLm9yZwo+IEFzc2lzdGVk
+LWJ5OiBDbGF1ZGU6Y2xhdWRlLW9wdXMtNQo+IFNpZ25lZC1vZmYtYnk6IE9yZ2FkIFNoYW5laCA8
+b3JnYWRzQGdtYWlsLmNvbT4KPiAtLS0KPgo+IHYyOiB0ZXN0IHRoZSBkZXZpY2Ugd2lkdGggKGNm
+aS0+ZGV2aWNlX3R5cGUpIGluc3RlYWQgb2YgdGhlIGFnZ3JlZ2F0ZSBidXMKPiAgICAgd2lkdGgu
+IG1hcF9iYW5rd2lkdGhfaXNfMSgpIGlzIGZhbHNlIGZvciB4OCBkZXZpY2VzIGludGVybGVhdmVk
+IG9uIGEKPiAgICAgd2lkZXIgYnVzLCB3aGljaCBoYXZlIHRoZSBzYW1lIDI1Ni1ieXRlIGNlaWxp
+bmc6IGRvX3dyaXRlX2J1ZmZlcigpCj4gICAgIHNlbmRzIENNRCh3b3JkcyAtIDEpLCBhbmQgQ01E
+KCkgcmVwbGljYXRlcyB0aGF0IGNvdW50IGludG8gZWFjaAo+ICAgICBkZXZpY2UncyBsYW5lLCB3
+aGVyZSBpdCBpcyB0cnVuY2F0ZWQgdG8gOCBiaXRzIC0gc28gdHdvIHg4IGNoaXBzIHdpdGgKPiAg
+ICAgYSA1MTItYnl0ZSBidWZmZXIgYXJlIHRvbGQgMjU1IHdvcmRzIGFuZCBhcmUgc3RpbGwgc2Vu
+dCA1MTIgYnl0ZXMKPiAgICAgZWFjaC4gZGV2aWNlX3R5cGUgaXMgYWxzbyBpbW11bmUgdG8gbWFw
+X2Jhbmt3aWR0aF9pc18xKCkgY29tcGlsaW5nIHRvCj4gICAgIGEgY29uc3RhbnQgMCB3aGVuIENP
+TkZJR19NVERfTUFQX0JBTktfV0lEVEhfMSBpcyBvZmYuIENhdWdodCBieSB0aGUKPiAgICAgU2Fz
+aGlrbyByZXZpZXcgYm90Lgo+Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL2NoaXBzL2NmaV9j
+bWRzZXRfMDAwMi5jIGIvZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2NtZHNldF8wMDAyLmMKPiAtLS0g
+YS9kcml2ZXJzL210ZC9jaGlwcy9jZmlfY21kc2V0XzAwMDIuYwo+ICsrKyBiL2RyaXZlcnMvbXRk
+L2NoaXBzL2NmaV9jbWRzZXRfMDAwMi5jCj4gQEAgLTI4Myw2ICsyODMsMjEgQEAgc3RhdGljIHZv
+aWQgZml4dXBfdXNlX3dyaXRlX2J1ZmZlcnMoc3RydWN0IG10ZF9pbmZvICptdGQpCj4gIAkJcHJf
+ZGVidWcoIlVzaW5nIGJ1ZmZlciB3cml0ZSBtZXRob2RcbiIpOwo+ICAJCW10ZC0+X3dyaXRlID0g
+Y2ZpX2FtZHN0ZF93cml0ZV9idWZmZXJzOwo+ICAJfQo+ICsKPiArCS8qCj4gKwkgKiBUaGUgd29y
+ZCBjb3VudCBvZiB0aGUgV3JpdGUgdG8gQnVmZmVyIGNvbW1hbmQgaXMgYSBzaW5nbGUgYnVzCj4g
+KwkgKiB3b3JkIHBlciBkZXZpY2UsIHNvIGFuIHg4IGRldmljZSBjYW4gYmUgdG9sZCB0byBwcm9n
+cmFtIGF0IG1vc3QKPiArCSAqIDI1NiBieXRlcyBob3dldmVyIGxhcmdlIGEgYnVmZmVyIGl0IGFk
+dmVydGlzZXMgLSBpbmNsdWRpbmcgd2hlbgo+ICsJICogc2V2ZXJhbCBvZiB0aGVtIGFyZSBpbnRl
+cmxlYXZlZCBvbiBhIHdpZGVyIGJ1cywgd2hlcmUgQ01EKCkKPiArCSAqIHJlcGxpY2F0ZXMgdGhl
+IGNvdW50IGludG8gZWFjaCBkZXZpY2UncyBsYW5lIGFuZCBpdCBpcyB0cnVuY2F0ZWQKPiArCSAq
+IHRoZXJlLgo+ICsJICovCj4gKwlpZiAoY2ZpLT5kZXZpY2VfdHlwZSA9PSBDRklfREVWSUNFVFlQ
+RV9YOCAmJgo+ICsJICAgIGNmaS0+Y2ZpcS0+TWF4QnVmV3JpdGVTaXplID4gOCkgewo+ICsJCWNm
+aS0+Y2ZpcS0+TWF4QnVmV3JpdGVTaXplID0gODsKPiArCQltdGQtPndyaXRlYnVmc2l6ZSA9IGNm
+aV9pbnRlcmxlYXZlKGNmaSkgPDwKPiArCQkJCSAgICBjZmktPmNmaXEtPk1heEJ1ZldyaXRlU2l6
+ZTsKCklkZWFsbHksIEknZCBsaWtlIGZlZWRiYWNrIGZyb20gVmlnbmVzaCBvbiB0aGlzLgoKVGhh
+bmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0
+cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
