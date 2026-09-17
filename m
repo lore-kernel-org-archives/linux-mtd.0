@@ -4,70 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA310C982D0
-	for <linux-mtd@archiver.kernel.org>; Thu, 17 Sep 2026 10:31:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EDD14C88E72
+	for <linux-mtd@archiver.kernel.org>; Thu, 17 Sep 2026 10:39:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=CXYV/BXrgSFnNI4vZ97MBT+PUVSv0x+OuHnU//vpVXA=; b=QlzyR/Cy54Qlxe
-	jnhjC9YFDd3IrSkp+nZP2LTcIeUdocHzz0qIQv0Ln5uBDB3dbah7FeJLROM5HGwDaUu62jhGAusDG
-	UKSfEr1NUF2R4ppvhDfAmr0YNq92A+vlj6DRrb0JEIdSyEgpHOdobozLIfKNyZoK8bXx1nHSI4vzA
-	nzc5aaJJuiaPXFmcIq7HAoMoJ/mEg+spP99Ph+jOSnFrit+Kk6kPjciq+XRYxTRcZW1OQvGX0JKij
-	eJhq/cj3moo7R9Sm/xIVlEMzAujk0XeloMpTKborFoO2sWAYvjlNDfL45RiBkd5IlBeeffHIF5zd4
-	WPMhhf1yalRnbSKounJQ==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Reply-To:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
+	References:In-Reply-To:Cc:To:Subject:From:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=gHtOYP93bVthwybu3jQBcNROjajACu09lptcOcoX0CQ=; b=xB/KPOkN+FwSjq
+	/ZSkTWhQKg5OBowK8e8hjGI1G9icczZM979rQnlcadgeduboNR/16KwxNbAfp/SjRzu1zBNzycumr
+	8j+7LO4M3YjSaDci5OKeytDwSEvYvCZuHeyECUTrzDRIAn14H2nEZPtYuhgp/UwNWzVhvS/iaZHIt
+	tornR0eU9rCC14/bkl79NHRt+qmQtZ752ddBO3qvz319KwqXhRIor7NAq7ngQoNBfMVjrdohRplv9
+	4786QhmJ7Ma1DXRymRps+zyKB2FJ5CL5HHBJBEG8XTQ3RU+N9sN7NEY/6SMWvxQBoYbpUbgwB7xaW
+	FDu5x6OZrQE+RimmBc3g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x79OW-0000000B6nk-1dNI;
-	Thu, 17 Sep 2026 10:31:08 +0000
-Received: from smtp25.cstnet.cn ([159.226.251.25] helo=cstnet.cn)
+	id 1x79W6-0000000B7K6-2KZD;
+	Thu, 17 Sep 2026 10:38:58 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x79OS-0000000B6nG-3fN5
-	for linux-mtd@lists.infradead.org;
-	Thu, 17 Sep 2026 10:31:06 +0000
-Received: from dfae2b116770.home.arpa (unknown [36.110.52.2])
-	by APP-05 (Coremail) with SMTP id zQCowAB3pkBmwatqG6p+CA--.644S2;
-	Thu, 17 Sep 2026 18:31:02 +0800 (CST)
-From: Wentao Liang <vulab@iscas.ac.cn>
-To: chengzhihao1@huawei.com
-Cc: daniel@makrotopia.org,
-	linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com,
-	Wentao Liang <vulab@iscas.ac.cn>,
-	stable@vger.kernel.org
-Subject: [PATCH] mtd: ubi: Fix UBI device reference leak in ubi_detach_mtd_dev()
-Date: Thu, 17 Sep 2026 10:31:02 +0000
-Message-Id: <20260917103102.2147038-1-vulab@iscas.ac.cn>
-X-Mailer: git-send-email 2.34.1
-MIME-Version: 1.0
-X-CM-TRANSID: zQCowAB3pkBmwatqG6p+CA--.644S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7Jry5XFyfXw1xArWxCF4DArb_yoWkGwbEgr
-	y7ur97XF1jgFyqka4ftr48Ar9ayFsIqrWI9F4Igwsa9a98WF9rXrZ8Crn8JFsruw40yF93
-	AayDZrWrXw43WjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbS8YjsxI4VWDJwAYFVCjjxCrM7CY07I20VC2zVCF04k26cxKx2IY
-	s7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4
-	kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_
-	Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26r
-	xl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
-	6xIIjxv20xvE14v26r126r1DMcIj6I8E87Iv67AKxVW8Jr0_Cr1UMcvjeVCFs4IE7xkEbV
-	WUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VAI37AI020EjII2zVCS5cI20VAGYxC7MxkF
-	7I0En4kS14v26r1q6r43MxAIw28IcxkI7VAKI48JMxAIw28IcVCjz48v1sIEY20_Gr43Wr
-	1UJr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
-	jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2I
-	x0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY6xAI
-	w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr1j6F4UJwCI42IY6I8E87Iv6x
-	kF7I0E14v26rxl6s0DYxBIdaVFxhVjvjDU0xZFpf9x07jbl19UUUUU=
-X-Originating-IP: [36.110.52.2]
-X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiBwANA2qrrRlG-wAAsF
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260917_033105_284011_161DE347 
-X-CRM114-Status: UNSURE (   9.28  )
-X-CRM114-Notice: Please train this message.
+	id 1x79W4-0000000B7Jb-3nsN;
+	Thu, 17 Sep 2026 10:38:56 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id 4D40E43604;
+	Thu, 17 Sep 2026 10:38:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 934A81F000FF;
+	Thu, 17 Sep 2026 10:38:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1789641536;
+	bh=GgiouULxaavrRvEyeFGZnpHW8o/taKt6WxSeZJbXgG0=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=WZZOmYDHsEtXapaWj6BjVYo0Egq6UJf0CFI9XwUTH/0eYaTz4mTdcF2MbSXQGd35U
+	 os/YSIJxati+HoBjFScUoJWKlIIxg62pWo1ux3sIdGM9TGBeZfAk9XUSop0SjFmMj8
+	 HZqMSbAXCdDy5rCvHnJxyFpHEk1xVMKfU55F7chtZ35w0jjJFIYgwEHb/jQ7/EP7n5
+	 obNutBYZxKY7GJG11PIC7YaEHuvjjyIflrt8nrHxQ/OQH14964wmRYaCbFgEckUnWl
+	 GBzHV6xw+JI5nrWC5vVf1U91z7fqSPN1np3uwU6z5QUXiq6AEUaiVqO9ZBvAgP4JnF
+	 MvwXFE+Ha9CFw==
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH] mtd: rawnand: atmel: Fix HSMC clock leak in legacy
+ controller init
+To: "Wentao Liang" <vulab@iscas.ac.cn>, alexandre.belloni@bootlin.com
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, vigneshr@ti.com, claudiu.beznea@tuxon.dev, stable@vger.kernel.org, linux-arm-kernel@lists.infradead.org, nicolas.ferre@microchip.com, bbrezillon@kernel.org, miquel.raynal@bootlin.com, richard@nod.at
+In-Reply-To: <20260917102804.2146887-1-vulab@iscas.ac.cn>
+References: <20260917102804.2146887-1-vulab@iscas.ac.cn>
+Date: Thu, 17 Sep 2026 10:38:55 +0000
+Message-Id: <20260917103855.934A81F000FF@smtp.kernel.org>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,43 +61,43 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Reply-To: sashiko-reviews@lists.linux.dev
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-ubi_detach_mtd_dev() takes a reference on the UBI device with
-ubi_get_device() and drops the matching kobject reference only after
-the shutdown notification has been sent.  When the device is still in
-use and a forced detach was not requested, the function returns -EBUSY
-before that put_device(), so the reference taken by ubi_get_device() is
-never released and the device is never freed.
-
-Drop the reference on the busy path as well.
-
-Fixes: 7e84c961b2eb ("mtd: ubi: introduce pre-removal notification for UBI volumes")
-Cc: stable@vger.kernel.org
-Signed-off-by: Wentao Liang <vulab@iscas.ac.cn>
----
- drivers/mtd/ubi/build.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-index 674ad87809df..d81f5e0395ac 100644
---- a/drivers/mtd/ubi/build.c
-+++ b/drivers/mtd/ubi/build.c
-@@ -1106,6 +1106,7 @@ int ubi_detach_mtd_dev(int ubi_num, int anyway)
- 	if (ubi->ref_count) {
- 		if (!anyway) {
- 			spin_unlock(&ubi_devices_lock);
-+			put_device(&ubi->dev);
- 			return -EBUSY;
- 		}
- 		/* This may only happen if there is a bug */
--- 
-2.34.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+VGhhbmsgeW91IGZvciB5b3VyIGNvbnRyaWJ1dGlvbiEgU2FzaGlrbyBBSSByZXZpZXcgZm91bmQg
+MSBwb3RlbnRpYWwgaXNzdWUocykgdG8gY29uc2lkZXI6Ci0gW0xvd10gbXRkOiBiYWNrd2FyZCBn
+b3RvIGluIGVycm9yIGhhbmRsaW5nIHBhdGggdmlvbGF0ZXMga2VybmVsIHN0eWxlCi0tCgpjb21t
+aXQgYWFkOTZlYzQ4ZjliMjcwNTk4ODExZjQwNjU4MjZjNzBmMzc4Njg3YwpBdXRob3I6IFdlbnRh
+byBMaWFuZyA8dnVsYWJAaXNjYXMuYWMuY24+CgptdGQ6IHJhd25hbmQ6IGF0bWVsOiBGaXggSFNN
+QyBjbG9jayBsZWFrIGluIGxlZ2FjeSBjb250cm9sbGVyIGluaXQKCmF0bWVsX2hzbWNfbmFuZF9j
+b250cm9sbGVyX2xlZ2FjeV9pbml0KCkgdGFrZXMgYSByZWZlcmVuY2UgdG8gdGhlCkhTTUMgY2xv
+Y2sgd2l0aCBvZl9jbGtfZ2V0KCkgYW5kIGVuYWJsZXMgaXQsIGJ1dCB0aGUgZXJyb3IgcGF0aHMK
+dGhhdCBmb2xsb3cgb25seSByZWxlYXNlIHRoZSBkZXZpY2Ugbm9kZSwgc28gYm90aCB0aGUgcmVm
+ZXJlbmNlIGFuZAp0aGUgZW5hYmxlIGFyZSBsZWFrZWQgd2hlbmV2ZXIgdGhlIGNvbnRyb2xsZXIg
+Y2Fubm90IGJlIGZ1bGx5CmluaXRpYWxpemVkLiBBZGQgYW4gZXJyX2Rpc2FibGVfY2xrIHBhdGgg
+dGhhdCBkaXNhYmxlcyBhbmQgcmVsZWFzZXMKdGhlIGNsb2NrIGJlZm9yZSBqdW1waW5nIHRvIHRo
+ZSBleGlzdGluZyBvdXQgcGF0aC4KCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvcmF3
+L2F0bWVsL25hbmQtY29udHJvbGxlci5jIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvYXRtZWwvbmFu
+ZC1jb250cm9sbGVyLmMKPiBpbmRleCA4YTE5NDA4YWJiNjM1Li5iYWZjOGM5OTVlMzc2IDEwMDY0
+NAo+IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L2F0bWVsL25hbmQtY29udHJvbGxlci5jCj4g
+KysrIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvYXRtZWwvbmFuZC1jb250cm9sbGVyLmMKWyAuLi4g
+XQo+IEBAIC0yMjYwLDYgKzIyNjEsMTIgQEAgYXRtZWxfaHNtY19uYW5kX2NvbnRyb2xsZXJfbGVn
+YWN5X2luaXQoc3RydWN0IGF0bWVsX2hzbWNfbmFuZF9jb250cm9sbGVyICpuYykKPiAgCW9mX25v
+ZGVfcHV0KG5mY19ucCk7Cj4gIAo+ICAJcmV0dXJuIHJldDsKPiArCj4gK2Vycl9kaXNhYmxlX2Ns
+azoKPiArCWNsa19kaXNhYmxlX3VucHJlcGFyZShuYy0+Y2xrKTsKPiArCWNsa19wdXQobmMtPmNs
+ayk7Cj4gKwo+ICsJZ290byBvdXQ7CgpbU2V2ZXJpdHk6IExvd10KRG9lcyB0aGlzIGJhY2t3YXJk
+IGp1bXAgdG8gdGhlIG91dCBsYWJlbCBpbnRyb2R1Y2UgYSByZWdyZXNzaW9uIGluIHN0YW5kYXJk
+Cmtlcm5lbCBjb252ZW50aW9ucyBmb3IgZXJyb3IgaGFuZGxpbmc/CgpXaGlsZSBmdW5jdGlvbmFs
+bHkgY29ycmVjdCwganVtcGluZyBiYWNrd2FyZHMgaW5zdGVhZCBvZiBzdHJ1Y3R1cmluZyBjYXNj
+YWRpbmcKZXJyb3IgbGFiZWxzIHNvIHRoYXQgdGhlIHN1Y2Nlc3MgcGF0aCBleGl0cyBvciBqdW1w
+cyBmb3J3YXJkIG92ZXIgdGhlIGVycm9yCmhhbmRsaW5nIGJsb2NrcyBpbnRyb2R1Y2VzIG5vbi1z
+dGFuZGFyZCBjb250cm9sIGZsb3cgaW4gdGhpcyBmdW5jdGlvbi4KCi0tIApTYXNoaWtvIEFJIHJl
+dmlldyDCtyBodHRwczovL3Nhc2hpa28uZGV2LyMvcGF0Y2hzZXQvMjAyNjA5MTcxMDI4MDQuMjE0
+Njg4Ny0xLXZ1bGFiQGlzY2FzLmFjLmNuP3BhcnQ9MQoKX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxp
+bmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4
+LW10ZC8K
