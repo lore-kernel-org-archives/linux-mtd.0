@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CCA9BC982CF
-	for <linux-mtd@archiver.kernel.org>; Thu, 17 Sep 2026 11:21:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A6F9C88E72
+	for <linux-mtd@archiver.kernel.org>; Thu, 17 Sep 2026 12:42:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=5ysbKBMhJPqoGcEeqn3jKxRdWwC4YiiMAckspsa7hK4=; b=Mw8v0oXszhRyy4Es9BG3GIdcJI
-	vzfWuiOaXKwyNpuLcQj9G2t5WpOmmpYoc+yma1LdwPbDAUQsclZohGVLrfZlJkCEdlhCZSJ1BF+Xi
-	MhCQYLueyLurMiOP+RGZXYr+Zr11aUvhvhai0I1yu6ePI8iQiyZrf0Ot8b6lVeDICqmQyWZ+2p4Ta
-	Cy9Wcf1AVD8p/c119XDa2dW8gI/D7PCFyt6ESGAp+3SwIwystamZd7/ivDdH7DbatbPvfu2r0C9YE
-	tfBoodIGCIVA1YzXxdB04eJAt22W9Nrwjz839E57hHjtdJJLMgugxwVzqPe0ZLhDcK/IYKjqK8JDo
-	PNSKt+Jw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=b5pFPGqe9fkXae+NNN8OM8XjwAwml0dL60Ifv45g+Io=; b=M1xV7yjZXcivkk
+	h7SVP6/TXrY4aDkhTsKUXtGAQVwpBC4w8YwXbk/qLWMLHaH2KnoJtyr1+aZKW0mHplCuerEBEWr44
+	MAJ7n7Qn0ZW0l+vhtjeZxPOfiW/HAzrGSGRi9nfderJ5EiO52GkxVcQOrJOlEqRwH4sGZUovxCK1I
+	zd/tO5p3RWaxtXJUlqZgz68zvZl8qphPIKGh7LeKfwQ7LRtEeGChFuk/U/f39+hA6uGn3DwyWz7UG
+	fMAOxmmMZvfOVPZrcL/JtuoG6HJd4z6lk7FPPH3Q49uCzMhAzjfg3wOe3QlJwaJQaxZlf2XnoubWW
+	JMdrwtzdB9JTjf2xLzsQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x7AAp-0000000BAyJ-1J6P;
-	Thu, 17 Sep 2026 11:21:03 +0000
-Received: from canpmsgout05.his.huawei.com ([113.46.200.220])
+	id 1x7BRa-0000000BJXp-3XaJ;
+	Thu, 17 Sep 2026 12:42:26 +0000
+Received: from smtpout-03.galae.net ([185.246.85.4])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x7AAl-0000000BAxH-2BDJ
+	id 1x7BRX-0000000BJXG-0Tuf
 	for linux-mtd@lists.infradead.org;
-	Thu, 17 Sep 2026 11:21:01 +0000
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=qBT9oEMuSH+QUhAv8dwdu6RDMpOUzUIuwB5dGjyEQHk=;
-	b=EjjPOXlRIweH68rSem4lpfEB0qXbK0kdZEsNtk7liGQLLdXcwCFIRzykehkn6T79Hnvxq7xNg
-	CNFcC9yCmgsnzg9xT5gBnHHFzL7gxqfJEOmnGmonN9p+Xp2vzl8lN2vPzxSHsh2HDLbHUH8dK40
-	0iTbAedqwtZkShJnTPnb1ho=
-Received: from mail.maildlp.com (unknown [172.19.162.197])
-	by canpmsgout05.his.huawei.com (SkyGuard) with ESMTPS id 4hltLk0LfJz12LHh;
-	Thu, 17 Sep 2026 19:09:34 +0800 (CST)
-Received: from whupemo200011.china.huawei.com (unknown [7.152.185.179])
-	by mail.maildlp.com (Postfix) with ESMTPS id 9599640591;
-	Thu, 17 Sep 2026 19:20:41 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- whupemo200011.china.huawei.com (7.152.185.179) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.45; Thu, 17 Sep 2026 19:20:40 +0800
-Subject: Re: [PATCH] mtd: ubi: Fix UBI device reference leak in
- ubi_detach_mtd_dev()
-To: Wentao Liang <vulab@iscas.ac.cn>
-CC: <daniel@makrotopia.org>, <linux-kernel@vger.kernel.org>,
-	<linux-mtd@lists.infradead.org>, <miquel.raynal@bootlin.com>,
-	<richard@nod.at>, <vigneshr@ti.com>, <stable@vger.kernel.org>
-References: <20260917103102.2147038-1-vulab@iscas.ac.cn>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <103ef14f-85e7-8f4d-4ba4-eab5e36ddfe2@huawei.com>
-Date: Thu, 17 Sep 2026 19:20:35 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	Thu, 17 Sep 2026 12:42:25 +0000
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-03.galae.net (Postfix) with ESMTPS id 7CDC14E40796;
+	Thu, 17 Sep 2026 12:42:19 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 4F8F25FAA3;
+	Thu, 17 Sep 2026 12:42:19 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 48A9711C7B02B;
+	Thu, 17 Sep 2026 14:42:12 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1789648934; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 in-reply-to:references; bh=PG9s/lQpyWWgyfajfquVuT6dwzIWQ6vycJmpjWt0HLY=;
+	b=LqJ4BvtD8bIdtKDNwHMo0d/OrXqlDOs0fVG1ddICEofuOn1fsTso7l/fYR0gWiq+0Xq9v1
+	9x9JRS9AibiILUK+iPiAkQxIzx6mgPYIz5asidtJfQJ5Noot658VFCazbUiwl9bbNVJ0Vs
+	J/Bxp9Ky9nc0OPWmGE4hvk0GcjgVlmRCWWPfMiTxL5/aQxQrE+O8TfrdVe4D4iT2hXcphe
+	Z5vEXWSSgSQGFlq10qo74xaO1W6ug0OYJUcxeRMu4HJ9zusmJ/0lF+Jdw/JbNc6yNCzJUv
+	7hyJRnfvojKeAMvAivZVlCEkDqrgI7CWMMFFCL6LD73R4ZEO50BRnG7rrhohdg==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Takahiro Kuwano via B4 Relay
+ <devnull+takahiro.kuwano.infineon.com@kernel.org>
+Cc: Pratyush Yadav <pratyush@kernel.org>,  Michael Walle
+ <mwalle@kernel.org>,  Richard Weinberger <richard@nod.at>,  Vignesh
+ Raghavendra <vigneshr@ti.com>,  takahiro.kuwano@infineon.com,
+  linux-mtd@lists.infradead.org,  linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: spi-nor: sfdp: Increase SFDP data size limit to 16
+ KiB
+In-Reply-To: <20260917-sfdp_size-v1-1-c1cdb1003f48@infineon.com> (Takahiro
+	Kuwano via's message of "Thu, 17 Sep 2026 14:02:15 +0900")
+References: <20260917-sfdp_size-v1-1-c1cdb1003f48@infineon.com>
+User-Agent: mu4e 1.12.12; emacs 30.2
+Date: Thu, 17 Sep 2026 14:42:11 +0200
+Message-ID: <87jyokjbh8.fsf@bootlin.com>
 MIME-Version: 1.0
-In-Reply-To: <20260917103102.2147038-1-vulab@iscas.ac.cn>
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: kwepems200001.china.huawei.com (7.221.188.67) To
- whupemo200011.china.huawei.com (7.152.185.179)
+X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260917_042100_025215_C44373C5 
-X-CRM114-Status: GOOD (  17.48  )
+X-CRM114-CacheID: sfid-20260917_054223_314621_A0B1EB9B 
+X-CRM114-Status: UNSURE (   6.52  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,35 +75,28 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="gbk"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-1NogMjAyNi85LzE3IDE4OjMxLCBXZW50YW8gTGlhbmcg0LS1wDoKPiB1YmlfZGV0YWNoX210ZF9k
-ZXYoKSB0YWtlcyBhIHJlZmVyZW5jZSBvbiB0aGUgVUJJIGRldmljZSB3aXRoCj4gdWJpX2dldF9k
-ZXZpY2UoKSBhbmQgZHJvcHMgdGhlIG1hdGNoaW5nIGtvYmplY3QgcmVmZXJlbmNlIG9ubHkgYWZ0
-ZXIKPiB0aGUgc2h1dGRvd24gbm90aWZpY2F0aW9uIGhhcyBiZWVuIHNlbnQuICBXaGVuIHRoZSBk
-ZXZpY2UgaXMgc3RpbGwgaW4KPiB1c2UgYW5kIGEgZm9yY2VkIGRldGFjaCB3YXMgbm90IHJlcXVl
-c3RlZCwgdGhlIGZ1bmN0aW9uIHJldHVybnMgLUVCVVNZCj4gYmVmb3JlIHRoYXQgcHV0X2Rldmlj
-ZSgpLCBzbyB0aGUgcmVmZXJlbmNlIHRha2VuIGJ5IHViaV9nZXRfZGV2aWNlKCkgaXMKPiBuZXZl
-ciByZWxlYXNlZCBhbmQgdGhlIGRldmljZSBpcyBuZXZlciBmcmVlZC4KPiAKPiBEcm9wIHRoZSBy
-ZWZlcmVuY2Ugb24gdGhlIGJ1c3kgcGF0aCBhcyB3ZWxsLgo+IAo+IEZpeGVzOiA3ZTg0Yzk2MWIy
-ZWIgKCJtdGQ6IHViaTogaW50cm9kdWNlIHByZS1yZW1vdmFsIG5vdGlmaWNhdGlvbiBmb3IgVUJJ
-IHZvbHVtZXMiKQo+IENjOiBzdGFibGVAdmdlci5rZXJuZWwub3JnCj4gU2lnbmVkLW9mZi1ieTog
-V2VudGFvIExpYW5nIDx2dWxhYkBpc2Nhcy5hYy5jbj4KPiAtLS0KPiAgIGRyaXZlcnMvbXRkL3Vi
-aS9idWlsZC5jIHwgMSArCj4gICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKykKCkhpLCBX
-ZW50YW8sIGl0IGhhcyBiZWVuIGZpeGVkIGJ5IFsxXS4KClsxXSAKaHR0cHM6Ly9naXQua2VybmVs
-Lm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdG9ydmFsZHMvbGludXguZ2l0L2NvbW1pdC9k
-cml2ZXJzL210ZC91YmkvYnVpbGQuYz9pZD0zMWRkNzEwY2Q4NGQ1ZGQ2M2M0OWY2NDBkM2E5ZjM2
-Yzk2OTljYTk1Cj4gCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL3ViaS9idWlsZC5jIGIvZHJp
-dmVycy9tdGQvdWJpL2J1aWxkLmMKPiBpbmRleCA2NzRhZDg3ODA5ZGYuLmQ4MWY1ZTAzOTVhYyAx
-MDA2NDQKPiAtLS0gYS9kcml2ZXJzL210ZC91YmkvYnVpbGQuYwo+ICsrKyBiL2RyaXZlcnMvbXRk
-L3ViaS9idWlsZC5jCj4gQEAgLTExMDYsNiArMTEwNiw3IEBAIGludCB1YmlfZGV0YWNoX210ZF9k
-ZXYoaW50IHViaV9udW0sIGludCBhbnl3YXkpCj4gICAJaWYgKHViaS0+cmVmX2NvdW50KSB7Cj4g
-ICAJCWlmICghYW55d2F5KSB7Cj4gICAJCQlzcGluX3VubG9jaygmdWJpX2RldmljZXNfbG9jayk7
-Cj4gKwkJCXB1dF9kZXZpY2UoJnViaS0+ZGV2KTsKPiAgIAkJCXJldHVybiAtRUJVU1k7Cj4gICAJ
-CX0KPiAgIAkJLyogVGhpcyBtYXkgb25seSBoYXBwZW4gaWYgdGhlcmUgaXMgYSBidWcgKi8KPiAK
-CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-TGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
-b3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+On 17/09/2026 at 14:02:15 +09, Takahiro Kuwano via B4 Relay <devnull+takahiro.kuwano.infineon.com@kernel.org> wrote:
+
+> From: Takahiro Kuwano <takahiro.kuwano@infineon.com>
+>
+> The size of SFDP data read and cached is limited to avoid allocating
+> too much memory. The current limit is PAGE_SIZE, but the Spansion S25FS256S
+> has parameter tables at offsets beyond 4 KiB.
+>
+> Increase the limit to 16 KiB to support such devices by introducing the
+> SFDP_MAX_SIZE macro.
+>
+> Suggested-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> Suggested-by: Michael Walle <mwalle@kernel.org>
+> Signed-off-by: Takahiro Kuwano <takahiro.kuwano@infineon.com>
+
+Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
