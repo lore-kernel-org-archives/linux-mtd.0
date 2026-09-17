@@ -4,72 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7295DC982D0
-	for <linux-mtd@archiver.kernel.org>; Thu, 17 Sep 2026 10:29:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA310C982D0
+	for <linux-mtd@archiver.kernel.org>; Thu, 17 Sep 2026 10:31:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=xqmZKYA55/H313rWr/1mPz4KbGcv76xLBzX77BsHjsU=; b=qFqRBEiTH53bOV
-	qdE/0uUgQ6n0ooLJuXaPSu/Kw7YBwLJMCkgyJ2XPaxl0RNISAm6AlPDxVMBx4T2eHJ+gPjbFvjRfD
-	VR/mfRwPwrQua7rnSbPy5Z6Do5ujG1XqKsuHiUJEjJeD2v7NVnvpVN62w7sQZb2JVkQOH5TDVI2XB
-	QU3aQnMfnKvrWRAAz6LJ4ggB9BMef0TDIP2uFFSgg3iyxoePLg0h05HEm//+LWA5LPJ8U4F3mVDHr
-	1ToDhQfkDkKr8IW5Aw5i00uLUpGXUjxNcDoFEVLi2QTbtzQc5nUyse17/cIQE69BVDVdv166S4yfC
-	1nQYUouMT3a95eeke5Zw==;
+	List-Owner; bh=CXYV/BXrgSFnNI4vZ97MBT+PUVSv0x+OuHnU//vpVXA=; b=QlzyR/Cy54Qlxe
+	jnhjC9YFDd3IrSkp+nZP2LTcIeUdocHzz0qIQv0Ln5uBDB3dbah7FeJLROM5HGwDaUu62jhGAusDG
+	UKSfEr1NUF2R4ppvhDfAmr0YNq92A+vlj6DRrb0JEIdSyEgpHOdobozLIfKNyZoK8bXx1nHSI4vzA
+	nzc5aaJJuiaPXFmcIq7HAoMoJ/mEg+spP99Ph+jOSnFrit+Kk6kPjciq+XRYxTRcZW1OQvGX0JKij
+	eJhq/cj3moo7R9Sm/xIVlEMzAujk0XeloMpTKborFoO2sWAYvjlNDfL45RiBkd5IlBeeffHIF5zd4
+	WPMhhf1yalRnbSKounJQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x79Mv-0000000B6bR-2gTe;
-	Thu, 17 Sep 2026 10:29:29 +0000
+	id 1x79OW-0000000B6nk-1dNI;
+	Thu, 17 Sep 2026 10:31:08 +0000
 Received: from smtp25.cstnet.cn ([159.226.251.25] helo=cstnet.cn)
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x79Ms-0000000B6aj-3IM5;
-	Thu, 17 Sep 2026 10:29:28 +0000
+	id 1x79OS-0000000B6nG-3fN5
+	for linux-mtd@lists.infradead.org;
+	Thu, 17 Sep 2026 10:31:06 +0000
 Received: from dfae2b116770.home.arpa (unknown [36.110.52.2])
-	by APP-05 (Coremail) with SMTP id zQCowACXAj0EwatqHKJ+CA--.635S2;
-	Thu, 17 Sep 2026 18:29:24 +0800 (CST)
+	by APP-05 (Coremail) with SMTP id zQCowAB3pkBmwatqG6p+CA--.644S2;
+	Thu, 17 Sep 2026 18:31:02 +0800 (CST)
 From: Wentao Liang <vulab@iscas.ac.cn>
-To: alexandre.belloni@bootlin.com
-Cc: bbrezillon@kernel.org,
-	claudiu.beznea@tuxon.dev,
-	linux-arm-kernel@lists.infradead.org,
+To: chengzhihao1@huawei.com
+Cc: daniel@makrotopia.org,
 	linux-kernel@vger.kernel.org,
 	linux-mtd@lists.infradead.org,
 	miquel.raynal@bootlin.com,
-	nicolas.ferre@microchip.com,
 	richard@nod.at,
 	vigneshr@ti.com,
 	Wentao Liang <vulab@iscas.ac.cn>,
 	stable@vger.kernel.org
-Subject: [PATCH] mtd: rawnand: atmel: Fix MCK clock leak in atmel_nand_controller_init()
-Date: Thu, 17 Sep 2026 10:29:24 +0000
-Message-Id: <20260917102924.2146959-1-vulab@iscas.ac.cn>
+Subject: [PATCH] mtd: ubi: Fix UBI device reference leak in ubi_detach_mtd_dev()
+Date: Thu, 17 Sep 2026 10:31:02 +0000
+Message-Id: <20260917103102.2147038-1-vulab@iscas.ac.cn>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-CM-TRANSID: zQCowACXAj0EwatqHKJ+CA--.635S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Kr4ruFW7urWxtF4DAry7Wrg_yoW8CF45pF
-	Wjqay7Xa1jyF43ZFsFkayxuFyfZa4kJF98C3ykXa4kZ3ZxWa4UXry5tr1IqFWkCFyxua15
-	Z3WUJ3WkZF1UGFUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUPvb7Iv0xC_Kw4lb4IE77IF4wAFc2x0x2IEx4CE42xK8VAvwI8I
-	cIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2
-	AK021l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v2
-	6F4j6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxV
-	W0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
-	7VC0I7IYx2IY67AKxVWUAVWUtwAv7VC2z280aVAFwI0_Gr1j6F4UJwAm72CE4IkC6x0Yz7
-	v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0E0s8F02x267IIx4CEVc8vx2IErcIFxwAC
-	I402YVCY1x02628vn2kIc2xKxwCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrw
-	CF04k20xvE74AGY7Cv6cx26r48ZrWUJr1UMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E
-	5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtV
-	W8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY
-	1x0267AKxVWxJVW8Jr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14
-	v26r4UJVWxJr1lIxAIcVC2z280aVCY1x0267AKxVW0oVCq3bIYCTnIWIevJa73UjIFyTuY
-	vjxUqdHjUUUUU
+X-CM-TRANSID: zQCowAB3pkBmwatqG6p+CA--.644S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7Jry5XFyfXw1xArWxCF4DArb_yoWkGwbEgr
+	y7ur97XF1jgFyqka4ftr48Ar9ayFsIqrWI9F4Igwsa9a98WF9rXrZ8Crn8JFsruw40yF93
+	AayDZrWrXw43WjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbS8YjsxI4VWDJwAYFVCjjxCrM7CY07I20VC2zVCF04k26cxKx2IY
+	s7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4
+	kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_
+	Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26r
+	xl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+	6xIIjxv20xvE14v26r126r1DMcIj6I8E87Iv67AKxVW8Jr0_Cr1UMcvjeVCFs4IE7xkEbV
+	WUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VAI37AI020EjII2zVCS5cI20VAGYxC7MxkF
+	7I0En4kS14v26r1q6r43MxAIw28IcxkI7VAKI48JMxAIw28IcVCjz48v1sIEY20_Gr43Wr
+	1UJr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
+	jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2I
+	x0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY6xAI
+	w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr1j6F4UJwCI42IY6I8E87Iv6x
+	kF7I0E14v26rxl6s0DYxBIdaVFxhVjvjDU0xZFpf9x07jbl19UUUUU=
 X-Originating-IP: [36.110.52.2]
-X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCRINA2qrq01RhQAAsm
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiBwANA2qrrRlG-wAAsF
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260917_032927_182889_56C795F7 
-X-CRM114-Status: GOOD (  10.09  )
+X-CRM114-CacheID: sfid-20260917_033105_284011_161DE347 
+X-CRM114-Status: UNSURE (   9.28  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,53 +84,34 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-atmel_nand_controller_init() takes a reference to the MCK clock with
-of_clk_get() and keeps it in nc->mck for the lifetime of the
-controller.  If the "atmel,smc" phandle is missing or the SMC regmap
-cannot be obtained afterwards, the error path jumps to out_release_dma
-which only releases the DMA channel, so the clock reference is leaked.
-The callers return the error directly and never run
-atmel_nand_controller_cleanup(), where the clock is normally put.
+ubi_detach_mtd_dev() takes a reference on the UBI device with
+ubi_get_device() and drops the matching kobject reference only after
+the shutdown notification has been sent.  When the device is still in
+use and a forced detach was not requested, the function returns -EBUSY
+before that put_device(), so the reference taken by ubi_get_device() is
+never released and the device is never freed.
 
-Release the reference on those error paths.  The path on which
-of_clk_get() itself fails keeps jumping to out_release_dma, as nc->mck
-only holds an error pointer there.
+Drop the reference on the busy path as well.
 
-Fixes: f9ce2eddf176 ("mtd: nand: atmel: Add ->setup_data_interface() hooks")
+Fixes: 7e84c961b2eb ("mtd: ubi: introduce pre-removal notification for UBI volumes")
 Cc: stable@vger.kernel.org
 Signed-off-by: Wentao Liang <vulab@iscas.ac.cn>
 ---
- drivers/mtd/nand/raw/atmel/nand-controller.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/mtd/ubi/build.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/mtd/nand/raw/atmel/nand-controller.c b/drivers/mtd/nand/raw/atmel/nand-controller.c
-index 87d9227f6ecc..d61e84b8bc60 100644
---- a/drivers/mtd/nand/raw/atmel/nand-controller.c
-+++ b/drivers/mtd/nand/raw/atmel/nand-controller.c
-@@ -2086,7 +2086,7 @@ static int atmel_nand_controller_init(struct atmel_nand_controller *nc,
- 	if (!np) {
- 		dev_err(dev, "Missing or invalid atmel,smc property\n");
- 		ret = -EINVAL;
--		goto out_release_dma;
-+		goto out_put_mck;
- 	}
- 
- 	nc->smc = syscon_node_to_regmap(np);
-@@ -2094,11 +2094,13 @@ static int atmel_nand_controller_init(struct atmel_nand_controller *nc,
- 	if (IS_ERR(nc->smc)) {
- 		ret = PTR_ERR(nc->smc);
- 		dev_err(dev, "Could not get SMC regmap (err = %d)\n", ret);
--		goto out_release_dma;
-+		goto out_put_mck;
- 	}
- 
- 	return 0;
- 
-+out_put_mck:
-+	clk_put(nc->mck);
- out_release_dma:
- 	if (nc->dmac)
- 		dma_release_channel(nc->dmac);
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index 674ad87809df..d81f5e0395ac 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -1106,6 +1106,7 @@ int ubi_detach_mtd_dev(int ubi_num, int anyway)
+ 	if (ubi->ref_count) {
+ 		if (!anyway) {
+ 			spin_unlock(&ubi_devices_lock);
++			put_device(&ubi->dev);
+ 			return -EBUSY;
+ 		}
+ 		/* This may only happen if there is a bug */
 -- 
 2.34.1
 
