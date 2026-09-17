@@ -4,85 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B3C7C982CC
-	for <linux-mtd@archiver.kernel.org>; Thu, 17 Sep 2026 01:21:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37FD6C982C1
+	for <linux-mtd@archiver.kernel.org>; Thu, 17 Sep 2026 05:02:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version
+	:Subject:Date:From:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=9Iu90LGBe6+giYBHVgG3v0Up+inqAlhIPonyD9S1CnQ=; b=IHG0ml/GZsgcOU
-	jpE+hPVHULV3flKL2WSVWR1/FJEQ0pW1nPwhMDbGOgHWTgbXwb5uaRqbVU/5Q3Nosn9R6g8ownHZa
-	NNbolaHNi8kFaCGwwODmBE24KF/VzE3kEGmWYRx3BsbTt4jQY/OszG5OLlN7EH/nCXTr7ZBzBcCVz
-	3Q6hzCwUzToFoxTj3dHKgFBw1VZZrUz5piu1T1wYgSmCHrEoHIY1+X7nIWIg14ACX53keNv1XS3dt
-	MeNCmJ6wAS1FcNOPBU0lc/eE6AbaBFCfRz9uD/SoOwwSQM/WVVtTw0NO2B1LNOS7MiuEjCiyYFEO/
-	3eGIb/+tKue4xE69qHhQ==;
+	List-Owner; bh=wB0EAQBjpCNNpaZVbmkVirt3wGOBS7fPmFtl/p5sNOo=; b=VBS9sPAdZ5Stis
+	Fn2PFUMAd8uVRNI+zbDA2Jd6A/e6Z/klikGAASjgU1FGSlfrLtkXe7u5A/HfdKreRZibXkZWISD9n
+	MBnp1lFCOu2cfmEt683Uc04eHSyisKv07mNBqQTUgI9onpW5xvWTrPY80JQ1435mfBPjvbJz0L5u1
+	tgo7otiAMLv/t64J+WWBqoACTLA9JLxEHGAvoUXSQVBMSKq5kYTMv/9YMN6E43Pg1lyFVlfA9C+be
+	YI9UN4BHyKHCrjAR44SZkuJU6uj2NWk1YHrDpllpHsMT6ImiJJskJbhczHS/E7eK5boGwYp38r8qM
+	jITnmWa1cXdiFhANuY6Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x70ol-0000000APDB-0MuM;
-	Thu, 17 Sep 2026 01:21:39 +0000
-Received: from mail-pj2-x0e.google.com ([2607:f8b0:4864:39::e])
+	id 1x74GV-0000000AaIX-1149;
+	Thu, 17 Sep 2026 05:02:31 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x70oi-0000000APCo-3Ett
+	id 1x74GT-0000000AaIE-3tyI
 	for linux-mtd@lists.infradead.org;
-	Thu, 17 Sep 2026 01:21:37 +0000
-Received: by mail-pj2-x0e.google.com with SMTP id 98e67ed59e1d1-396ccb65437so208621a91.3
-        for <linux-mtd@lists.infradead.org>; Wed, 16 Sep 2026 18:21:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1789608096; x=1790212896; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=tWcJvALC/G6slaVF+ZhqTbjSG1O1peV92vH1r64zREM=;
-        b=qLZ1CE0KNHaUTXH98KrEYsMsG3eA9NoPjBT0IFL2Lrlc/nSkeKup0ajTkXeqxl+SHR
-         rp5FJN20Cw2hmRpd4LYTnuRfQOSwkyANKQ5bxSVdYXpJ6zGJSP+sWarhYbtgODyOQOa8
-         E4FRj6DBoix97sdJcKZ/sX48i7EIEAkIOpveh8nXPQ28bReQdwR84WiyPGx9Yv+aVi++
-         xHh/lDl3u20sb7aC1L1xnRIfQhO7rl1nckx6NWkXkW+CFSyoc85Gkrv6BXtJgHotmzVT
-         V6PWY4mEvK28EcV5QejRXyUEk9yGSKEq0EzlJOKaUWZi7lC7kEsiLYiwe+Kh5qYxHcad
-         hIyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1789608096; x=1790212896;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=tWcJvALC/G6slaVF+ZhqTbjSG1O1peV92vH1r64zREM=;
-        b=wahG9JYWNAxu1QzeXnxDWPCZo2eYDk5EINZwl5PxJiGKpfCJI0Dae1r1MuOpuPnSIL
-         VEqyDln9VovvMI+xCe9+63rp2bEMfgbVrOFliW+mnNdYyriM879rZye/x7xck6nRt8U3
-         pAMefAGcJ/OqaVkzdV87T6Z1HRqOoUH1KgwyjIsVOlScOX+jg0MldzP096Yq1GifHof2
-         L3TSClWXoYB8mOGBnIKy6p931tOdpAhkPrbPMqL40+QGR0HHG51IDk2hHqdaYr+X/a40
-         H7IjtmCFMMCZwNDD8mVrBcFSPVXNIksOPaDn9Ii0z9QAde42+OVF9ayOu9AgWzf9aeGg
-         LumQ==
-X-Gm-Message-State: AFuF++kO89m7efeb6MWg9HoyleFbNdHZiLOdVE4ecMe1TL1cPl/crYcF
-	tiRBfVKHeEQXPEB22hUOeeRMsWaSaE6Jlm2RXBLiVLLVOOWnhlXXScWgGnpqeh0B
-X-Gm-Gg: AYBFou24G5YKQWd8iLcWiGKBT4YDqmyudt1I1iwrlERUNGFPDTeU3A1fyk84S6080U5
-	xY3UClWTKkSEIMorxaCYeJTHnV3itVAQmm6iDBa9skc5DclYd0B9zt37r4GxXA75QTNJ12CoX6g
-	/1Tuc8N/neH7OlcxL91lwXm6x5OKydy7KWwq643FAygR1ad9/Jeh68wZ55BqnqoFHsWiTmPHxMH
-	/J0pRiysynMGn593KtK4H6ZL0Yy9kTAiVaGYk5Bu0gfMVTHNfphfMJb/o0KMm2bRsZtlcs60uVB
-	FogfkND64rC6q0DOaUOTLnG263Qi3rABHaFGlXfv+Y7zP2W3tNDQb7Hu4lKcaUoXBuI8yU43uMY
-	94KGwb87stgwGn7YK2VrXr5U1TOL2FFfY38tkG+8k3Z0zS7i/0swi41Uec7MbvKbPNGVPOzlLqJ
-	I88fvFYitbTgDx8unVdeX3sE/SC5M/2u1oHfF0vcy/2PjURF0Nub6u15uJA+lLC2fq7Pci+V3g1
-	rhRYzykCaCGkmWWPtuDdgHzwoFSxFsprwE5ZwiYQFOdrdU5NcrbUym+1or5WrcUazixdlufhOow
-	XRTr7DABAjYiJStgn+sB
-X-Received: by 2002:a17:90b:2885:b0:398:d132:ba76 with SMTP id 98e67ed59e1d1-39e1e502f25mr11317761a91.21.1789608095564;
-        Wed, 16 Sep 2026 18:21:35 -0700 (PDT)
-Received: from Gracelands.reavernet (180-150-12-158.b4960c.syd.static.aussiebb.net. [180.150.12.158])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-39e36115cc8sm1870445a91.3.2026.09.16.18.21.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Sep 2026 18:21:34 -0700 (PDT)
-From: Stephen Bancroft <stevereaver@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com,
-	Stephen Bancroft <stevereaver@gmail.com>
-Subject: [PATCH v2] mtd: maps: add INT0800 firmware-flash map driver
-Date: Thu, 17 Sep 2026 11:21:23 +1000
-Message-ID: <20260917012123.33685-1-stevereaver@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	Thu, 17 Sep 2026 05:02:30 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id 05E6F60A54;
+	Thu, 17 Sep 2026 05:02:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id A5AC0C2BCB8;
+	Thu, 17 Sep 2026 05:02:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1789621348;
+	bh=b1ee6i6SmotwB95caa+DvKJNA5MPuT8KDx3JzIoVyF0=;
+	h=From:Date:Subject:To:Cc:Reply-To:From;
+	b=sPbiH2KNA6+i1SHQVXAUHje1Jo6pat8My9LGWk76CndSZDEtVw4BCX3MGmJW5D2mu
+	 s069SDzIdYyODHU8jPwMgS6ykVHFUMlHO95jg7HHWWIOQaZ2UgyDUqO5oZLtGN/Ehu
+	 F3ZRNsTXzXYZn8W0EoLxdXpYRAwum4YkkcahfBpO0lvTTSbEJQJOmtA7FzzW0OeNY/
+	 h66nqsovURw60z5KqQabniKJqAaP4BBteJR0DA4A/doyV3Z3khvM14qlHFv2u4I4Dd
+	 FHl99beWziMv2AHJnuz8N81txiGNxVG0/OFEfxhEODcdJEpIKuLMHCcCUv3vubo/g+
+	 n/yZYnmS3m5Ug==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 81E28C982D0;
+	Thu, 17 Sep 2026 05:02:28 +0000 (UTC)
+From: Takahiro Kuwano via B4 Relay <devnull+takahiro.kuwano.infineon.com@kernel.org>
+Date: Thu, 17 Sep 2026 14:02:15 +0900
+Subject: [PATCH] mtd: spi-nor: sfdp: Increase SFDP data size limit to 16
+ KiB
 MIME-Version: 1.0
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260916_182136_817841_1E26EE09 
-X-CRM114-Status: GOOD (  26.52  )
+Message-Id: <20260917-sfdp_size-v1-1-c1cdb1003f48@infineon.com>
+X-B4-Tracking: v=1; b=H4sIAFZ0q2oC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIzMDS0Nz3eK0lIL44syqVN00yxRTg+QUA1NjyxQloPqCotS0zAqwWdGxEH5
+ xaVJWanIJyACl2loAVFtAnm0AAAA=
+X-Change-ID: 20260917-sfdp_size-f9d50cd0539d
+To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
+ Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ Takahiro Kuwano <takahiro.kuwano@infineon.com>
+X-Mailer: b4 0.15.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1789621347; l=1832;
+ i=takahiro.kuwano@infineon.com; s=20250227; h=from:subject:message-id;
+ bh=jgdfCpo97xb3riAigqfD6paumJXjsCSiN5EBCeoaUd8=;
+ b=EYyWvTs7HkUROsN5diVtZwPfmb2LAcsPLbkL0iMzPO9AymQzBW+5TD0aj2cK07tiktx2QJBK/
+ f/1qsUw8CyaDgSVnWlSUe+PDsMRdrkst37+t75YXntzbuawrrFDhLtn
+X-Developer-Key: i=takahiro.kuwano@infineon.com; a=ed25519;
+ pk=aS8V9WLuMUkl0vmgD0xJU19ZajdJmuyFBnBfVj0dfDs=
+X-Endpoint-Received: by B4 Relay for takahiro.kuwano@infineon.com/20250227
+ with auth_id=566
+X-Original-From: Takahiro Kuwano <takahiro.kuwano@infineon.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,205 +82,71 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Reply-To: takahiro.kuwano@infineon.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add a read-only mapping driver that binds the ACPI INT0800 "Intel
-82802 firmware hub" device and exposes the system firmware flash as an
-MTD ROM device.
+From: Takahiro Kuwano <takahiro.kuwano@infineon.com>
 
-On x86 machines the boot flash is decoded into the physical address
-space below 4 GB, so a plain ioremap() of the declared resource window
-is sufficient for reads - no SPI or LPC controller access is needed.
-The window may be larger than the real flash; undecoded holes read as
-0xff.
+The size of SFDP data read and cached is limited to avoid allocating
+too much memory. The current limit is PAGE_SIZE, but the Spansion S25FS256S
+has parameter tables at offsets beyond 4 KiB.
 
-This gives userspace a clean, safe way to read firmware flash contents
-without flashrom or relaxed /dev/mem access - for firmware analysis,
-and for extracting option ROMs stored inside EFI firmware volumes
-(e.g. the NVIDIA VBIOS on EFI-booted Apple machines, which can then be
-fed to nouveau via nouveau.config=NvBios=). There is deliberately no
-write or erase support.
+Increase the limit to 16 KiB to support such devices by introducing the
+SFDP_MAX_SIZE macro.
 
-Tested on a MacBookPro4,1 (ICH8M): /dev/mtd0 reads are byte-identical
-to a flashrom dump of the 2 MiB SST25VF016B, except for live NVRAM
-variable-store regions.
-
-Signed-off-by: Stephen Bancroft <stevereaver@gmail.com>
+Suggested-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Suggested-by: Michael Walle <mwalle@kernel.org>
+Signed-off-by: Takahiro Kuwano <takahiro.kuwano@infineon.com>
 ---
-Changes in v2:
-- Per-device state via devm_kzalloc instead of globals (fixes shared
-  state corruption with multiple INT0800 devices)
-- Clean up map probe on mtd_device_register() failure (fixes
-  memory/mapping leak)
-- Use %pa for resource_size_t in dev_info (fixes format string on
-  32-bit)
-- Add missing Signed-off-by
+ drivers/mtd/spi-nor/sfdp.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
- drivers/mtd/maps/Kconfig   |  17 ++++++
- drivers/mtd/maps/Makefile  |   1 +
- drivers/mtd/maps/int0800.c | 108 +++++++++++++++++++++++++++++++++++++
- 3 files changed, 126 insertions(+)
- create mode 100644 drivers/mtd/maps/int0800.c
-
-diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
-index 1bb3dba2631d..649fd145e15d 100644
---- a/drivers/mtd/maps/Kconfig
-+++ b/drivers/mtd/maps/Kconfig
-@@ -161,6 +161,23 @@ config MTD_AMD76XROM
+diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
+index 641f17ad51a0..5d5bb6e587bf 100644
+--- a/drivers/mtd/spi-nor/sfdp.c
++++ b/drivers/mtd/spi-nor/sfdp.c
+@@ -115,6 +115,12 @@ struct sfdp_bfpt_erase {
  
- 	  BE VERY CAREFUL.
+ #define SFDP_4BAIT_DWORD_MAX	2
  
-+config MTD_INT0800
-+	tristate "Read-only BIOS/firmware flash via ACPI INT0800"
-+	depends on X86 && ACPI
-+	select MTD_ROM
-+	help
-+	  Support for reading the system firmware (BIOS/EFI) flash chip
-+	  through the memory window described by the ACPI INT0800
-+	  "82802 firmware hub" device, present on most x86 machines.
-+
-+	  The flash is exposed read-only via the ROM chip driver, e.g.
-+	  for firmware analysis or extracting option ROMs (such as
-+	  video BIOS images embedded in EFI firmware volumes). There is
-+	  no write or erase support.
-+
-+	  To compile this driver as a module, choose M here: the
-+	  module will be called int0800.
-+
- config MTD_ICHXROM
- 	tristate "BIOS flash chip on Intel Controller Hub 2/3/4/5"
- 	depends on X86 && MTD_JEDECPROBE
-diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
-index 01745eca1f73..2f1a7375e13c 100644
---- a/drivers/mtd/maps/Makefile
-+++ b/drivers/mtd/maps/Makefile
-@@ -14,6 +14,7 @@ obj-$(CONFIG_MTD_L440GX)	+= l440gx.o
- obj-$(CONFIG_MTD_AMD76XROM)	+= amd76xrom.o
- obj-$(CONFIG_MTD_ESB2ROM)	+= esb2rom.o
- obj-$(CONFIG_MTD_ICHXROM)	+= ichxrom.o
-+obj-$(CONFIG_MTD_INT0800)	+= int0800.o
- obj-$(CONFIG_MTD_CK804XROM)	+= ck804xrom.o
- obj-$(CONFIG_MTD_TSUNAMI)	+= tsunami_flash.o
- obj-$(CONFIG_MTD_PXA2XX)	+= pxa2xx-flash.o
-diff --git a/drivers/mtd/maps/int0800.c b/drivers/mtd/maps/int0800.c
-new file mode 100644
-index 000000000000..a32e1fcf8d8c
---- /dev/null
-+++ b/drivers/mtd/maps/int0800.c
-@@ -0,0 +1,108 @@
-+// SPDX-License-Identifier: GPL-2.0-only
 +/*
-+ * Read-only MTD access to the system firmware flash behind the ACPI
-+ * INT0800 "Intel 82802 firmware hub" device.
-+ *
-+ * On x86 systems the boot flash is decoded into the physical address
-+ * space below 4 GB, so a plain ioremap() is sufficient to read it -
-+ * no SPI or LPC controller access is required.  The declared _CRS
-+ * window may be larger than the real flash (the whole top-16MiB
-+ * decode range is commonly claimed); undecoded holes read as 0xff.
-+ *
-+ * The device is exposed read-only via the ROM chip driver; there is
-+ * deliberately no write or erase support.
++ * Limit the total size of SFDP to a reasonable value to avoid allocating too
++ * much memory just of because the flash returned some insane values.
 + */
++#define SFDP_MAX_SIZE	SZ_16K
 +
-+#include <linux/module.h>
-+#include <linux/acpi.h>
-+#include <linux/io.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/map.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
-+
-+/* top-of-4GB firmware decode, used when _CRS reports no window */
-+#define INT0800_DEFAULT_PHYS	0xffe00000UL
-+#define INT0800_DEFAULT_SIZE	SZ_2M
-+
-+struct int0800 {
-+	struct map_info		map;
-+	struct mtd_info		*mtd;
-+};
-+
-+static int int0800_probe(struct platform_device *pdev)
-+{
-+	struct resource *res;
-+	struct int0800 *fw;
-+	resource_size_t end;
-+	int ret;
-+
-+	fw = devm_kzalloc(&pdev->dev, sizeof(*fw), GFP_KERNEL);
-+	if (!fw)
-+		return -ENOMEM;
-+
-+	fw->map.name = dev_name(&pdev->dev);
-+	fw->map.bankwidth = 1;
-+
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (res) {
-+		fw->map.phys = res->start;
-+		fw->map.size = resource_size(res);
-+	} else {
-+		fw->map.phys = INT0800_DEFAULT_PHYS;
-+		fw->map.size = INT0800_DEFAULT_SIZE;
-+	}
-+
-+	/*
-+	 * Plain ioremap on purpose: the window is already claimed by the
-+	 * ACPI/pnp resource reservation, so devm_ioremap_resource() would
-+	 * fail with -EBUSY.
-+	 */
-+	fw->map.virt = devm_ioremap(&pdev->dev, fw->map.phys, fw->map.size);
-+	if (!fw->map.virt)
-+		return -ENOMEM;
-+
-+	simple_map_init(&fw->map);
-+	fw->mtd = do_map_probe("map_rom", &fw->map);
-+	if (!fw->mtd)
-+		return -ENODEV;
-+	fw->mtd->dev.parent = &pdev->dev;
-+	platform_set_drvdata(pdev, fw);
-+
-+	end = fw->map.phys + fw->map.size - 1;
-+	dev_info(&pdev->dev, "mapped firmware window %pa-%pa\n",
-+		 &fw->map.phys, &end);
-+
-+	ret = mtd_device_register(fw->mtd, NULL, 0);
-+	if (ret)
-+		map_destroy(fw->mtd);
-+	return ret;
-+}
-+
-+static void int0800_remove(struct platform_device *pdev)
-+{
-+	struct int0800 *fw = platform_get_drvdata(pdev);
-+
-+	mtd_device_unregister(fw->mtd);
-+	map_destroy(fw->mtd);
-+}
-+
-+static const struct acpi_device_id int0800_ids[] = {
-+	{ "INT0800", 0 },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(acpi, int0800_ids);
-+
-+static struct platform_driver int0800_driver = {
-+	.probe	= int0800_probe,
-+	.remove	= int0800_remove,
-+	.driver	= {
-+		.name		= "int0800",
-+		.acpi_match_table = int0800_ids,
-+	},
-+};
-+module_platform_driver(int0800_driver);
-+
-+MODULE_AUTHOR("Devin");
-+MODULE_DESCRIPTION("Read-only MTD map over the INT0800 firmware flash window");
-+MODULE_LICENSE("GPL");
--- 
-2.43.0
+ struct sfdp_4bait {
+ 	/* The hardware capability. */
+ 	u32		hwcaps;
+@@ -1594,14 +1600,10 @@ int spi_nor_parse_sfdp(struct spi_nor *nor)
+ 				  SFDP_PARAM_HEADER_PARAM_LEN(param_header));
+ 	}
+ 
+-	/*
+-	 * Limit the total size to a reasonable value to avoid allocating too
+-	 * much memory just of because the flash returned some insane values.
+-	 */
+-	if (sfdp_size > PAGE_SIZE) {
++	if (sfdp_size > SFDP_MAX_SIZE) {
+ 		dev_dbg(dev, "SFDP data (%zu) too big, truncating\n",
+ 			sfdp_size);
+-		sfdp_size = PAGE_SIZE;
++		sfdp_size = SFDP_MAX_SIZE;
+ 	}
+ 
+ 	sfdp = devm_kzalloc(dev, sizeof(*sfdp), GFP_KERNEL);
+
+---
+base-commit: a96edc3f0b4f036a5b6ebc9b1eca4273ef5ce2d0
+change-id: 20260917-sfdp_size-f9d50cd0539d
+
+Best regards,
+--  
+Takahiro Kuwano <takahiro.kuwano@infineon.com>
+
 
 
 ______________________________________________________
