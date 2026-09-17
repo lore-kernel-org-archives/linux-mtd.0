@@ -4,64 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 172BAC88E72
-	for <linux-mtd@archiver.kernel.org>; Thu, 17 Sep 2026 12:47:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 407C5C982CF
+	for <linux-mtd@archiver.kernel.org>; Thu, 17 Sep 2026 13:00:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:
+	Message-Id:MIME-Version:Subject:Date:From:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=GeQrLI6UMTMsMcXndYFzI4MK4IPLNFeArxPzXr7S2Os=; b=ppF2c5anE77mx+
-	0VexeLP0lnZrKxVUi54famh2lFm0dIwV59nLDEYSyUZ4GspTbiAfD03+Qd+dd2PFt13SH8ydDlHyg
-	LtAk/JmgJov1LV418F7/mvWCtbjGbqenAIOOzMvSZqjdRDWKQ6fOxzJHI6ZihT/Gm5GbQnmzt0J8j
-	n7aOQOc570oVvAcLEomyQyLuTxobiPzs8/pCs9/imUPot5GP8otpok/yhDFk0vztIY19G8waeLgxW
-	QRqUQ86/iM6Yt83SCVDEm5SgM0VXetOO8JxdgLNNRCy+xhmFPkENIWcXr6TGUnUiYxznU7a2eq0sN
-	9Rb9xAIrNqIXOgf4Kjhg==;
+	List-Owner; bh=KjagZNGp7crVu57crkTAgI3VKxX0/DNzvTIX02pwN08=; b=saEqIi+24NH1au
+	f5LFVWDoyRRA5UNQuYRpZ2206Y4vOeH6HFbTD92Er06lcls5J4epoojg8ZatZfG+0saY/EKlWx2du
+	CFXKeXbz3aKp5Nw/eMWBJ3XHD5gzqBPkxTikmoKhZA7vFJOWCThtqqvo5GkgEmSqTpG+Zwg3qBL4l
+	VQ12q2YNKyXMyUl3edITrbYEw6PB+H+vZ8LY7DEjxKaHCGosvkJGBrZwTOuAzXzx2YDbJbo7Sfgb7
+	Ny9ZcGpnX8yJeHlpfS+12VeASieSdWi+IyPDqqJO6Lc54IOi+nUxRMyzaUOG2KCg/2W8BGYT2oazv
+	X23vuwMQibqDzELl7nXQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x7BVz-0000000BKJQ-1q99;
-	Thu, 17 Sep 2026 12:46:59 +0000
-Received: from smtpout-03.galae.net ([185.246.85.4])
+	id 1x7BjQ-0000000BM9E-4Br4;
+	Thu, 17 Sep 2026 13:00:53 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x7BVw-0000000BKIu-3trp
+	id 1x7BjQ-0000000BM8o-1oxQ
 	for linux-mtd@lists.infradead.org;
-	Thu, 17 Sep 2026 12:46:58 +0000
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id 444AE4E40796;
-	Thu, 17 Sep 2026 12:46:54 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 120E55FAA3;
-	Thu, 17 Sep 2026 12:46:54 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 8CAF611C7A082;
-	Thu, 17 Sep 2026 14:46:52 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1789649213; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=gILUbaoT7fKQcvTHAlwvSON/RkpV2LxEuI0qJh2Jgms=;
-	b=x0CBO3Tksv36MnOcMm74cMyyRxyUhrNIirc1jJrZ2eU9h6YvfZOhrEsadWTw650LzfXJy/
-	OtcX5NRbEq5BHePRfhR9GVgmd3lgif0ROF56YDsTBpCsJ0/Z5DyS6MtLzi5Dvfjg3ctObc
-	RVBW8NkY2P+K4HyLrqhJcwAsHbJOHzs0QaSdSoCGynuswRw3ZrAFoyqBl3FsTUHwk51Sr9
-	3N4EATdeVmBY/Sj/9QivMNySqRykWsWejGnaIHpkb9CysakKayQqGMjMPQLi7P5tl7j1Kl
-	5jawGJ1Vzc3qV4Ic4nhgSniJPskklka3eDfr14zu9xh6r3s8g/k+Ru3pMXb9Fg==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Orgad Shaneh <orgads@gmail.com>
-Cc: linux-mtd@lists.infradead.org,  linux-kernel@vger.kernel.org,
-  richard@nod.at,  vigneshr@ti.com
-Subject: Re: [PATCH v2] mtd: cfi_cmdset_0002: cap the write-buffer chunk at
- 256 bytes on an x8 device
-In-Reply-To: <20260916162746.308008-1-orgads@gmail.com> (Orgad Shaneh's
-	message of "Wed, 16 Sep 2026 16:27:45 +0000")
-References: <8733v9mdro.fsf@bootlin.com>
-	<20260916162746.308008-1-orgads@gmail.com>
-User-Agent: mu4e 1.12.12; emacs 30.2
-Date: Thu, 17 Sep 2026 14:46:52 +0200
-Message-ID: <87ecesjb9f.fsf@bootlin.com>
+	Thu, 17 Sep 2026 13:00:52 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id D132540B51;
+	Thu, 17 Sep 2026 13:00:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id B441EC2BCFA;
+	Thu, 17 Sep 2026 13:00:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1789650051;
+	bh=M7K41bEmZRs8zEe7ciQ4rClIT6UHkTQUin6UUaJnqrw=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
+	b=DMbFsdVZryHSuLXAkoXUoHDyCQMI0m7RO0Gy7mcQbYVfmnlIm70l4NXQAbil9/nk+
+	 M7QHaxVcdN1K2T1Ekfq9rv+M3bRiC3DlNv0ltHd5kFfNgsdA9j6UNSm2SpNAKLLtD1
+	 tFkymnwkgxRwkoTQZVtJsI/5lZK0HN0R8Dk35bxW78e5HOdu0M8ZQW+cEBHtQN4RQb
+	 NcDWNIYYQ8/iSAIUiz5jFVR1UQp503DI4apgSHhkhiPbPvGqM4NDDqY0H+1iPV0DMS
+	 XuzBlwee9ITxeoz3NOsKZ/jM+9JunfnsqiErKr+SVLdw26DQ1mJyIKIk7L2ptnb2KV
+	 DTfqmvj0kxYZA==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B3F5C982D5;
+	Thu, 17 Sep 2026 13:00:51 +0000 (UTC)
+From: Peter-Simon Dieterich via B4 Relay <devnull+peter-simon.dieterich.vaillant-group.com@kernel.org>
+Date: Thu, 17 Sep 2026 15:00:43 +0200
+Subject: [PATCH 2/2] mtd: rawnand: Reflect that ESMT and GigaDevice share
+ ID 0xc8
 MIME-Version: 1.0
-X-Last-TLS-Session-Version: TLSv1.3
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260917_054657_111484_1D347998 
-X-CRM114-Status: GOOD (  13.47  )
+Message-Id: <20260917-esmt-gd9fu2g8f3a-v1-2-577c0ab2d31a@vaillant-group.com>
+References: <20260917-esmt-gd9fu2g8f3a-v1-0-577c0ab2d31a@vaillant-group.com>
+In-Reply-To: <20260917-esmt-gd9fu2g8f3a-v1-0-577c0ab2d31a@vaillant-group.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ Peter-Simon Dieterich <peter-simon.dieterich@vaillant-group.com>
+X-Mailer: b4 0.15.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1789650050; l=1759;
+ i=peter-simon.dieterich@vaillant-group.com; s=20260820;
+ h=from:subject:message-id;
+ bh=GVgrbaeNYYC74jEu4meBBZ7WRozFmcBvWG5whH/D0VM=;
+ b=l0SsMisYo5Dfq77I3F5DLjARmFARoNm+su+9JXxGB+DtQTaQrbkkGFRcVSCRzJQ4zmwFZdYYk
+ oLMu8xtFbkRASk2T/LZE2YjQ83lC8FgGTFHxMwqqWNHGT7upYXwwOT9
+X-Developer-Key: i=peter-simon.dieterich@vaillant-group.com; a=ed25519;
+ pk=YI8VL1pBCnAIu0GVWI3a6qn/SG0pMQhm9n/RZTI5KZg=
+X-Endpoint-Received: by B4 Relay for
+ peter-simon.dieterich@vaillant-group.com/20260820 with auth_id=965
+X-Original-From: Peter-Simon Dieterich <peter-simon.dieterich@vaillant-group.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,32 +80,60 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Reply-To: peter-simon.dieterich@vaillant-group.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gMTYvMDkvMjAyNiBhdCAxNjoyNzo0NSBHTVQsIE9yZ2FkIFNoYW5laCA8b3JnYWRzQGdtYWls
-LmNvbT4gd3JvdGU6Cgo+IEhpIE1pcXVlbCwKPgo+IFRoYW5rcyBmb3IgdGhlIHJldmlldy4gdjMg
-c2VudCBhcyBhIHJlcGx5IHRvIHYyLgo+Cj4+IFRoaXMgc2VudGVuY2UgZG9lcyBub3QgbWVhbiBh
-bnl0aGluZywgSSdtIHNvcnJ5Lgo+Cj4gUmV3cml0dGVuOiB0aGUgY291bnQgZ29lcyBvdXQgYXMg
-YSBzaW5nbGUgYnVzIHdvcmQsIENNRCgpIHJlcGxpY2F0ZXMgaXQKPiBpbnRvIGV2ZXJ5IGRldmlj
-ZSBsYW5lLCBhbmQgYW4geDggcGFydCByZWFkcyBpdCBvZmYgZWlnaHQgZGF0YSBsaW5lcywgc28K
-PiBhbnl0aGluZyBhYm92ZSAyNTUgaXMgdHJ1bmNhdGVkIHRoZXJlLgo+Cj4+IGZhaWxlZD8gZG8g
-eW91IGhhdmUgaGFyZHdhcmUgdGhhdCBhY3R1YWxseSB0cmlnZ2VyZWQgdGhhdCBpc3N1ZT8KPgo+
-IFllcyAtIGEgQ2F2aXVtIE9jdGVvbiBDTjYzMzUgYm9hcmQgd2hvc2UgTk9SIGlzIGFuIE0yOUVX
-IHN0cmFwcGVkIHRvIHg4Lgo+IFRoZSBsb2cgaW4gdGhlIGNvbW1pdCBtZXNzYWdlIGlzIGZyb20g
-aXQsIGFuZCB0aGUgY2xhbXAgZml4ZXMgaXQuIHYzCj4gbmFtZXMgdGhlIGJvYXJkLgoKT2ssIHRo
-aXMgbWF0dGVycyBhIGxvdCB0byBtZSB0b2RheSwgYmVjYXVzZSB3ZSBnZXQgZG96ZW5zIGFuZCBk
-b3plbnMgb2YKaGFyZGVuaW5nIGNoYW5nZXMgd2hpY2ggZG8gbm90IGFsd2F5cyBoYXZlIGFuIGFj
-dHVhbCByZWFsaXR5LiBJZiB5b3UgZml4CmEgcmVhbCBwcm9ibGVtIHlvdSBlbmNvdW50ZXJlZCwg
-dGhhdCdzIHJlbGV2YW50LgoKPgo+PiBUaGF0J3MgaW5jb3JyZWN0LiBJdCBpbmRpY2F0ZXMgdW50
-aWwgd2hlbiB3ZSBuZWVkIHRvIGJhY2twb3J0IGl0Lgo+Cj4gQWRkZWQuIEkgY2hlY2tlZCB0aGUg
-Y29kZSBpcyByZWFsbHkgdGhlcmU6IDFkYTE3N2U0YzNmNCBhbHJlYWR5IHNlbmRzCj4gQ01EKHdv
-cmRzIC0gMSkgYW5kIGFscmVhZHkgdGFrZXMgdGhlIGNodW5rIHNpemUgZnJvbSBNYXhCdWZXcml0
-ZVNpemUuCj4KPiBWaWduZXNoIGlzIG9uIFRvOiBmb3IgdjMuCgpZb3Ugc2hvdWxkIHVzZSBjaGVj
-a3BhdGNoLnBsIG9yIGI0J3Mgb3B0aW9uIC0tYXV0by10by1jYyB0byBjcmVhdGUgdGhlIENjCmxp
-c3QuCgpUaGFua3MgZm9yIHRoZSB2My4KCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWls
-aW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51
-eC1tdGQvCg==
+From: Peter-Simon Dieterich <peter-simon.dieterich@vaillant-group.com>
+
+JEDEC manufacturer ID 0xc8 is used by both ESMT and GigaDevice, so
+nand_esmt.c handles chips from both vendors. Chips from either
+vendor are currently reported as "ESMT", which is misleading when
+debugging a GigaDevice part.
+
+Rename the manufacturer entry to "ESMT/GigaDevice" and document the
+collision next to the NAND_MFR_ESMT definition. The only behavioural
+change is the manufacturer name printed at detection time.
+
+Signed-off-by: Peter-Simon Dieterich <peter-simon.dieterich@vaillant-group.com>
+---
+ drivers/mtd/nand/raw/internals.h | 1 +
+ drivers/mtd/nand/raw/nand_ids.c  | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/nand/raw/internals.h b/drivers/mtd/nand/raw/internals.h
+index b7162ced9efa..b8b29341b88c 100644
+--- a/drivers/mtd/nand/raw/internals.h
++++ b/drivers/mtd/nand/raw/internals.h
+@@ -19,6 +19,7 @@
+ #define NAND_MFR_AMD		0x01
+ #define NAND_MFR_ATO		0x9b
+ #define NAND_MFR_EON		0x92
++/* ESMT and GigaDevice share the same manufacturer ID. */
+ #define NAND_MFR_ESMT		0xc8
+ #define NAND_MFR_FUJITSU	0x04
+ #define NAND_MFR_HYNIX		0xad
+diff --git a/drivers/mtd/nand/raw/nand_ids.c b/drivers/mtd/nand/raw/nand_ids.c
+index 08707ce9d7c0..9b2dd246398f 100644
+--- a/drivers/mtd/nand/raw/nand_ids.c
++++ b/drivers/mtd/nand/raw/nand_ids.c
+@@ -185,7 +185,7 @@ static const struct nand_manufacturer_desc nand_manufacturer_descs[] = {
+ 	{NAND_MFR_AMD, "AMD/Spansion", &amd_nand_manuf_ops},
+ 	{NAND_MFR_ATO, "ATO"},
+ 	{NAND_MFR_EON, "Eon"},
+-	{NAND_MFR_ESMT, "ESMT", &esmt_nand_manuf_ops},
++	{NAND_MFR_ESMT, "ESMT/GigaDevice", &esmt_nand_manuf_ops},
+ 	{NAND_MFR_FUJITSU, "Fujitsu"},
+ 	{NAND_MFR_HYNIX, "Hynix", &hynix_nand_manuf_ops},
+ 	{NAND_MFR_INTEL, "Intel"},
+
+-- 
+2.55.0
+
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
