@@ -4,139 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BFEF9C88E72
-	for <linux-mtd@archiver.kernel.org>; Thu, 17 Sep 2026 20:47:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5E1FEC982DC
+	for <linux-mtd@archiver.kernel.org>; Fri, 18 Sep 2026 09:11:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=xqX636ubQw/ZJglL6YmLLzHhXAeZIH8Zbpkq8uQmZ6Y=; b=VKei1H1czqFXlU
-	t126pRdQKia575i2MYUeGLQs71YS/cw9xLn82I3Vxffmc76fwxD2OdOCob89t15fmFaxs+JW8/P/x
-	1CdVQGs5WRADmnQ/dy5rMm1+yhM/XSsIyYbtddypy0JpyXtfG9ZmThzm5wRYwmuv06aTQHB+WUANS
-	7wv7VJMudjogaq3CTL69o3rv6KAzacAsxA84dM/3GgxbbYTFPOJvRWCbLu48UmyKpwZfn6V/TGiVc
-	7Y7IpMTMMcO85bOc+uGH+VPLWcucoJBTzftk/9nhG8c6J/FhNq+TdkkvXueFu/qTpUVKF0EwRuUQb
-	xVPodZax5NixntLKT1lw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:References:Cc:Subject:To:From:Message-Id:Date:Mime-Version:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=BZ3QstVLhTfpJstjyCvOB3EWWoPdxudbIuQcxfQnTps=; b=zYBMXSCXwdP4W+pYsXi3TevVRR
+	+CDXwIElYLEUOBQdNWQUGY29tHLZ1FrNtuv20y+ws2q2nsepaQd6JHKyOhln9n4ld9StWFZNSfGpi
+	v6qYF1EvrzImhK7o3swzuSt4T7rOHq58g4KNypNkeLStaWP39JQI1DiBOWAfzN4r2vnDTrLlS/U1O
+	UDnZ78VKFuhsWVJ/BC3NwBxhVxDptExqwUlcj5WZG8jTNOfYNbNvAtWRIQtmIG2gmir7v6PMox7Rj
+	N8HNVJbwdOA1oslbzXMbHZavxmuhi4+DRv2QjvaAgIJINx9iDVjhHDllYo+g7nvKQx4rQLmJ6bknt
+	XBga6Glw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x7J17-0000000CSgD-3qo6;
-	Thu, 17 Sep 2026 20:47:37 +0000
-Received: from mail-northeuropeazlp170120005.outbound.protection.outlook.com ([2a01:111:f403:c200::5] helo=DUZPR83CU001.outbound.protection.outlook.com)
+	id 1x7Ucn-0000000Dtg9-2Wb0;
+	Fri, 18 Sep 2026 09:11:17 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x7J15-0000000CSbp-2vE7;
-	Thu, 17 Sep 2026 20:47:36 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=D3G5Fm9OvYfRT73GAmOjnruoVx1CB11fb1tkaQlEWURwwXHDJ95JID4hhMgE8KL0MPcYTdAX5IC3BbfJ91dBH8avBw0ERWU+xaoQKL1zr3i+Ss7sQKxkUtvmrDssnzAH4J/uu/K1Z7K53Gh+sbBvzwVPIILcMAc9B6tyBczTfm5p3xbsfKWZtQfFfsXoY5zDB8dgePvUQWbcLBe1qb9P1e4luBjfh7B+VJzr1NZk2Q3WWG0yf4BhdJ6XQ3y3ZSK/6zrKlgEp+Z2W+O2Or60SZ01Tk5uhPrdllTdmcCshA3Vz4p20CKgKSj5EmMy02GE7rFD2aiKGWCgX5/RB33DeGQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Kt3D8ki/DpuDlWlAYkz48wzwmfbJA7EbuWN/j0rt/i4=;
- b=cVfBef/zrlHz4jLByC2Cm9KeQAmvmrAHK6311hKnj0nqsTlLIIvHxI/lt2GZr6xb68J6Ag2U9UmTHnYuihkxK56uqSu+M7kbaIMdOE2CbO7ywcd5uLHUfZqX+lB3+DPIXJ36KnvZgwB7NNnw6P4GSPxzBvkV7Moy9rvzjuunyGj59RV0dvxpXMVg5VvJS0PlQYckxfTm63BHfcHsTNvsfqtYIDNmx9GQXEH08ERxUA7bshFFktyCRCTIuRZ6AQArSUi0uH36xuqcoWIJLoJYK4fEbwpx+UAsB3RkP6andbVJ3mG0pH7baTbmq6MSmUaLhbDzCoWbkQSGwqCbkHnr5g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector1-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Kt3D8ki/DpuDlWlAYkz48wzwmfbJA7EbuWN/j0rt/i4=;
- b=lTkVxHay/Xd2mLmON/njJY5q+fq/w/uc9uqA+4poD4864V7NtwH5T/ANC8WgNyhlyLtlabSonoSjGXoM8fug9SdcjCaOTa9mup1gk1LwVE3DHPJ1HxtkVeGk8KaJBX3sM9HjXvz+XLXYuRMkBI6f558P7kEdg7lQztiFCaCB5s4yr+kKtvPUxClB9lB6rW2lAFx5FROUVQCx+U/hjgbrABbQiNXA25eOFzhZJ4KP+4Yt5AyP1ZisR20IZ0URtSuVGjPm06yZvawtk7VgzJUPHWT6YIXigNxr/6qx3uhPAuMsAe30MBW5gYLw3wgCT4c3Y6qxNJdUEyK9cNN8KzYqNw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=oss.nxp.com;
-Received: from DU4PR04MB11791.eurprd04.prod.outlook.com (2603:10a6:10:623::11)
- by DB9PR04MB11511.eurprd04.prod.outlook.com (2603:10a6:10:5df::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.428.13; Thu, 17 Sep
- 2026 20:47:31 +0000
-Received: from DU4PR04MB11791.eurprd04.prod.outlook.com
- ([fe80::11ca:6b74:3234:d7de]) by DU4PR04MB11791.eurprd04.prod.outlook.com
- ([fe80::11ca:6b74:3234:d7de%5]) with mapi id 15.21.0428.011; Thu, 17 Sep 2026
- 20:47:31 +0000
-From: Frank.Li@oss.nxp.com
-To: Vignesh Raghavendra <vigneshr@ti.com>,
-	Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Keguang Zhang <keguang.zhang@gmail.com>,
-	Vladimir Zapolskiy <vz@mleia.com>,
-	Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>,
-	Niravkumar L Rabara <niravkumarlaxmidas.rabara@altera.com>,
-	Alok Tiwari <alok.a.tiwari@oracle.com>,
-	Chen Ni <nichen@iscas.ac.cn>,
-	Runyu Xiao <runyu.xiao@seu.edu.cn>,
-	Frank Li <Frank.Li@nxp.com>,
-	Pengpeng Hou <pengpeng@iscas.ac.cn>,
-	Haotian Zhang <vulab@iscas.ac.cn>,
-	Johan Hovold <johan@kernel.org>,
-	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig=20=28The=20Capable=20Hub=29?= <u.kleine-koenig@baylibre.com>,
-	Rosen Penev <rosenp@gmail.com>,
-	linux-mtd@lists.infradead.org (open list:HYPERBUS SUPPORT),
-	linux-kernel@vger.kernel.org (open list),
-	linux-mips@vger.kernel.org (open list:MIPS/LOONGSON1 ARCHITECTURE),
-	linux-arm-kernel@lists.infradead.org (moderated list:ARM/LPC32XX SOC SUPPORT)
-Cc: imx@lists.linux.dev,
-	vkoul@kernel.org
-Subject: [PATCH 1/1] mtd: use dmaengine_get_dma_device() instead of chan->device->dev
-Date: Thu, 17 Sep 2026 16:47:06 -0400
-Message-ID: <20260917204724.1289912-1-Frank.Li@oss.nxp.com>
-X-Mailer: git-send-email 2.43.0
-X-ClientProxiedBy: PH7P220CA0118.NAMP220.PROD.OUTLOOK.COM
- (2603:10b6:510:32d::18) To DU4PR04MB11791.eurprd04.prod.outlook.com
- (2603:10a6:10:623::11)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU4PR04MB11791:EE_|DB9PR04MB11511:EE_
-X-MS-Office365-Filtering-Correlation-Id: 095aa151-df94-424e-6a9f-08df14fce4af
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|19092799006|23010399003|1800799024|376014|7416014|366016|11063799006|56012099006|10067099003|921020|18002099003;
-X-Microsoft-Antispam-Message-Info: rn8eTc4yTEA2RZU3L9J3Ofkgo/zVAdDqjwmaVb16x8GuyoJ50ssgloLuu5rQNASM9niX5eIveGAAO2BV9rjdwBbh9ft7KRktIm123in9J16VkHZtubvxAPOX7Wu8ZI/6GDHwIe8VDLS5ADiY7DZuxRpy7XcluShpjG1ucV+EndZ5L5aYSSMFkdP9THmHXWKhm93uC5lodfiRb6GJNCEPvlwJxeVvaIMq8aDD/rO4sqKLwtFkgJQn0nheFGJBNdL5cbgdbL3zlHEpVEPkYMisLBfsvBl3cwuRYe3aUaFMv1ts3Talq89JFgeaskdukfb55+QWtDZJH0gi9xM48LqKSnlmKMBlqlScLU8/DI80zBsE0GLcJmSF+afFMj6LGfiL6MrWRGDCeeMu6U9wLioZFdc3MfaXlyJ9jhRXCLvmc9AYzoKyn9jSvNbq9PoiGIV1VklBYOETlYVauyANgEmdZZT778f4uGJMOI4uVg3I49q0pcdVUTkfmm7uIM3/89LL4ab1X5qvGS01BvhqtTPsa+BvXq3XbQS4oFywflHEe062Jmip3gqtnhvMiez/aUgV3WkXtd6502uYCa6W6SeOAHvTAJ8X79/YHAuDaW/1psVJjh5dmMaH0KNHkvmxj7S8HYj0qTNw2Rj2fXciLEgUhxqetlkPfVVip4aufaoNaNipDYINzTHJuDQ1oEYGoVW/BoNRdfDD3HGSwfOSPr+8rA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU4PR04MB11791.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(19092799006)(23010399003)(1800799024)(376014)(7416014)(366016)(11063799006)(56012099006)(10067099003)(921020)(18002099003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?oKPP9cLPKCXMuUqeTvybRa/VGYSetDi9r7kEmjwm2k1itBeBnUEHW+y+VmfP?=
- =?us-ascii?Q?+ycphQqOSr9OQJJepRIs7jwI492YH6tQV3WbsO14He5byX13NfWLuCHBd4QX?=
- =?us-ascii?Q?5D1jglJ4o5tgWKKjuDEp7KToa+vo9p7uly0rUgzgtYDXEEEEVSY52znEyyVA?=
- =?us-ascii?Q?ZQrxZxU6QZowNsSpWDVAIokP9H+/QEggIedypiKZRfUO3IXborn7XOmL3Qme?=
- =?us-ascii?Q?+kzTRc/TP/Um7kR4s45XQ6Gih0LxBRtGvHkELL/LNO3DP3EF/xsp/nKRbfzK?=
- =?us-ascii?Q?5nAwdWYWFxLbTexi6Uji94A5VHrabjjFAorjvAwYiCx6tJ3FZXC1aKuoBgYs?=
- =?us-ascii?Q?RDU6Nk+hw3hU9y8oRpmOWfEJzMcOvFs/VeP9Gwm4VBkRgnOjyuVj0GmrgU5t?=
- =?us-ascii?Q?jMTE4lU+DsT5g0eFecysiHkKd8IpZlVNYcFPHy3GHx+1Z9RKAeINRAbfPKc8?=
- =?us-ascii?Q?1Bi7M3+zIQq7KvQ8Oc3YPuj6x9cOmZR+9XtXDht/Comy6HRlas7ZT7oszseb?=
- =?us-ascii?Q?CNWhMx/sTskbRYdWNX/fRCdLOMTezX0McxL9Sox5ouMlBuVh1nR+4Y5xP8qw?=
- =?us-ascii?Q?5kuoVrhskMn23dWmjcN/baWwlLWOqdRPMW+oT4K3YlBgqQGCp9sQTtvAy2+Y?=
- =?us-ascii?Q?QnRMXWcGZkQDtl0bpt/Xeyr8cVff+gMqLaotucQLm5nxp6Bf6HrIx1pw+TL+?=
- =?us-ascii?Q?hCjlcxy7vXZbILRojh2H7MFEPU288SJBL/p29hdaNNzXLI8/mkCs3Zhygc3M?=
- =?us-ascii?Q?4msrrGyGDh7O6272zC1pFTP0XmoVl0uFrlVm3D4pASHGMBUV8V3Y7z3s9ZJh?=
- =?us-ascii?Q?1e6ZFDMGoXEmXhmP9KB5PN3dP1QUzQgT97qs7BykDY5ECW+5nvZfHTuJ+4VN?=
- =?us-ascii?Q?0Nou/mFXYWiKQXwc/DY4HjJc2pkAEwr/DHa4K3x+dlKlJ9LuOck9D9JtuwVr?=
- =?us-ascii?Q?G9+/VQZVCtUR7sSfIqAPAxTpnEvb+xrTYIhUXb/oEcibia7hZmH7HvTRImSQ?=
- =?us-ascii?Q?zHONnXSrPilQ9y2MuNSw6Ogw9J22hzeJ0VCgyvKNbEp7zqon97NfwWlOCyQ1?=
- =?us-ascii?Q?HPYFzM+ed0mnJuishhFogFotRmpquQ9o2v7k15lDLfDObc9DdPtT0C7v3nYO?=
- =?us-ascii?Q?TnfAmRdBvnReXm2xEjwAp2NT5cK+e2wcm3PKXVDNG8/M0FnmkchjgXz96NJw?=
- =?us-ascii?Q?UhefZyZ5Diimrs4TpAgWtgCMPectR3VDOr8qiQlPFgf9OEGqymf9Jc26oTd+?=
- =?us-ascii?Q?A5wAbeOVetKu91+FfO+0xGsKgMurBFE5Qe2qMxwJrzrxJlXppyjEvtVfEhoY?=
- =?us-ascii?Q?sc8rFEmRvz3hm3sjxmQZQXv7J4eoyZPB/dpV+tfotAgt1r/yQL6APiWKNZzx?=
- =?us-ascii?Q?q1VcjVXMHwbVICXrKjKlhrj7CFK3qICGB7QkYVgj+nfWveN45GJLYv/ewZgT?=
- =?us-ascii?Q?k3V7aDMCf7IE8hU8KGvVB6KEy5pjyKksVav8j36l1TdXEu2tOa7FDEMts2Fp?=
- =?us-ascii?Q?0ExjWZI2q4uxmGLXeDjre+/XzKaykhnU1ozv+5s8Jp9Hbrz3SYBlmkJMW81p?=
- =?us-ascii?Q?B+gkmlfqtQ0L50f9bW1/oY8eQR2KLssXKVggaDpp38tZYkKXhLaqzaKYVZAE?=
- =?us-ascii?Q?vU9sGOinGsD7cVA3PP2+HNu5G4loTBZCkgR1n9Szz40rj2u/L/vQ8rXXsUeJ?=
- =?us-ascii?Q?vCOtMgTowStRIo6qoyty9dt4/5/1Ji7pmwnw4UAX826YQ/R7VFFmMysBLoLL?=
- =?us-ascii?Q?1rw4PBLXbzjh36gzmLNvnYEN+Eh4dEvB6vPll02+i6wxzJBZ3mPe?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 095aa151-df94-424e-6a9f-08df14fce4af
-X-MS-Exchange-CrossTenant-AuthSource: DU4PR04MB11791.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Sep 2026 20:47:31.1881
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: FBDHCLyYlZrkntYV1cb1RewNWknrJs1p9AW3DLaZFv4mucv583IqOUL1jpPwTXD2ni4tStCYOE4aPSh2W/i4jMYOVS7Uu75y5v26RoyHC4pS431iwOhy+tutTBlXf7PR
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB11511
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260917_134735_891796_30162887 
-X-CRM114-Status: GOOD (  15.58  )
+	id 1x7Ucl-0000000Dtfk-0L4v
+	for linux-mtd@lists.infradead.org;
+	Fri, 18 Sep 2026 09:11:15 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with UTF8SMTP id D3E9E43FE7;
+	Fri, 18 Sep 2026 09:11:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id 3E89E1F00898;
+	Fri, 18 Sep 2026 09:11:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1789722674;
+	bh=//A6nFUT1fgpq48JhsGCVi6sK5GUd9rpMaDF4/M8Wx0=;
+	h=Date:From:To:Subject:Cc:References:In-Reply-To;
+	b=Z1HBNKwNnL+VznfivuiwGM6M1Xcx0DfMoCACjps4yaIMqU7+cFoYA7IPC0wsSl3Q3
+	 edGuJ0slgW2lnGD3+0B9vrjG7igsaf7/YAs/HD8Lvv3r4xzA+HAJ3BVkTf0SzFf+CC
+	 VHtWuEaFQEh6l7Xm+kLSbjcLUfK5swVok5GZJF/c/fSqWymaKGB7wBub4qATvxD5nW
+	 Zl5NuwQmrb+KX8JBTs+rQv/lEG2KWLjEc9gOXZGxrcokejQ9kUqlwMkZ6K9Rahom6z
+	 edZpSL4lV7XQCx3QN8pc5tvJQog1WR3VSuT/9f4MdI1k0LlWDSKtJ7EBvkZDGMpyuZ
+	 VyGTyuE3MGcnA==
+Mime-Version: 1.0
+Date: Fri, 18 Sep 2026 11:11:10 +0200
+Message-Id: <DLIBQKG04DIF.1FKAYOEZH6ZU0@kernel.org>
+From: "Michael Walle" <mwalle@kernel.org>
+To: "Miquel Raynal" <miquel.raynal@bootlin.com>, "Pratyush Yadav"
+ <pratyush@kernel.org>, "Takahiro Kuwano" <takahiro.kuwano@infineon.com>,
+ "Richard Weinberger" <richard@nod.at>, "Vignesh Raghavendra"
+ <vigneshr@ti.com>
+Subject: Re: [PATCH 16/25] mtd: spi-nor: winbond: Prepare introduction of
+ W25QxxPW-Q/N parts
+Cc: "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>, "Steam Lin"
+ <STLin2@winbond.com>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>
+X-Mailer: aerc 0.20.0
+References: <20260909-winbond-master-spi-nor-jw-cleanup-pw-addition-v1-0-c1b20c39dd1f@bootlin.com> <20260909-winbond-master-spi-nor-jw-cleanup-pw-addition-v1-16-c1b20c39dd1f@bootlin.com>
+In-Reply-To: <20260909-winbond-master-spi-nor-jw-cleanup-pw-addition-v1-16-c1b20c39dd1f@bootlin.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -148,321 +69,168 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8281996696989686002=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Frank Li <Frank.Li@nxp.com>
+--===============8281996696989686002==
+Content-Type: multipart/signed;
+ boundary=d80592fc061c79ef1f409235a484d6b7475357f9ff155bde2579abd6de22;
+ micalg=pgp-sha384; protocol="application/pgp-signature"
 
-Replace direct dma_chan::device::dev access with the proper
-dmaengine_get_dma_device() for consumer API.
+--d80592fc061c79ef1f409235a484d6b7475357f9ff155bde2579abd6de22
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
 
-chan->device->dev is not always the device used for DMA mapping.
-Some DMA engines support per-channel IOMMU mappings, so different
-channels may use different DMA devices.  dmaengine_get_dma_device()
-returns the correct device for each channel.
+On Wed Sep 9, 2026 at 5:25 PM CEST, Miquel Raynal wrote:
+> There is an ID collision between chips of same density from the JW
+> family (which it self conflicted with yet another family) with new PW
+> parts. Chips are very similar in practice, it is mostly a matter of
+> electrical differences (mostly power consumption being lower) as well as
+> the addition of inline ECC capability for the higher devices (> 32Mb).
+>
+> Chips with ECC capability protect 16 bytes chunks are against single
+> errors. In case a non-aligned write happens, ECC is locally disabled
+> until the next erase.
+>
+> Another significant difference is that PW chips identify themselves as
+> supporting the new SFDP (rev F) QER field which forces an alternate
+> write SR2 opcode (0x31).
+>
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> ---
+>  drivers/mtd/spi-nor/winbond.c | 55 +++++++++++++++++++++++++++++++++++++=
+++++++
+>  1 file changed, 55 insertions(+)
+>
+> diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.=
+c
+> index fbad9e408d7a..efa9de1f0f66 100644
+> --- a/drivers/mtd/spi-nor/winbond.c
+> +++ b/drivers/mtd/spi-nor/winbond.c
+> @@ -71,6 +71,41 @@ static bool winbond_rv_match(const struct spi_nor *nor=
+)
+>  	return nor->sfdp && is_w25qxxrv(nor);
+>  }
+> =20
+> +static bool is_w25qxxpw(const struct spi_nor *nor)
+> +{
+> +	struct sfdp_header *sfdp_h =3D spi_nor_sfdp_get_header(nor);
+> +
+> +	/*
+> +	 * W25QxxPW chips re-use the same ID as the W25QxxJW/NW family.
+> +	 *
+> +	 * Chips are very similar, W25QxxPW brings mostly performance and power
+> +	 * consumption improvements. One key difference in behaviour is the
+> +	 * automatic 16-byte based error correction.
+> +	 *
+> +	 * They can be distinguished based on their SFDP minor revision:
+> +	 * W25QxxJW:       JESD216B, minor revision =3D=3D 06h
+> +	 * W25Q51/01/02NW: JESD216B, minor revision =3D=3D 06h
+> +	 * W25QxxPW:       JESD216F, minor revision >=3D 0Ah
+> +	 */
+> +	return sfdp_h->minor >=3D SFDP_JESD216F_MINOR;
+> +}
+> +
+> +static bool winbond_pw_match(const struct spi_nor *nor)
+> +{
+> +	return nor->sfdp && is_w25qxxpw(nor);
+> +}
+> +
+> +static bool winbond_pw_with_ecc_match(const struct spi_nor *nor)
+> +{
+> +	const struct spi_nor_id *id =3D nor->info->id;
+> +
+> +	if (!winbond_pw_match(nor))
+> +		return false;
+> +
+> +	/* W25Q33PW chips (id[2] =3D=3D 0x16) do not have built-in ECC support =
+*/
 
-This also prepares for making the DMA engine provider data structures
-private. DMA consumers should not access DMA engine internals directly.
+The commit message mentions ECC is available for >=3D 32Mbit. Doesn't
+align with this comment. Also about the 8MBit and 16Mbit ones?
 
-Assisted-by: LLM
-Signed-off-by: Frank Li <Frank.Li@nxp.com>
----
-Cc: imx@lists.linux.dev
-Cc: vkoul@kernel.org
----
- drivers/mtd/hyperbus/hbmc-am654.c               |  7 ++++---
- drivers/mtd/nand/raw/cadence-nand-controller.c  |  2 +-
- drivers/mtd/nand/raw/intel-nand-controller.c    |  6 ++++--
- drivers/mtd/nand/raw/loongson-nand-controller.c |  4 ++--
- drivers/mtd/nand/raw/lpc32xx_mlc.c              | 10 ++++------
- drivers/mtd/nand/raw/lpc32xx_slc.c              | 10 ++++------
- drivers/mtd/nand/raw/marvell_nand.c             |  7 ++++---
- drivers/mtd/nand/raw/omap2.c                    | 10 +++++-----
- drivers/mtd/nand/raw/sh_flctl.c                 |  8 +++++---
- 9 files changed, 33 insertions(+), 31 deletions(-)
+"W25QxxPW chips smaller than 32MBit doesn't provide built-in ECC support"?
 
-diff --git a/drivers/mtd/hyperbus/hbmc-am654.c b/drivers/mtd/hyperbus/hbmc-am654.c
-index 9d31464046b22..8a14e908d0b53 100644
---- a/drivers/mtd/hyperbus/hbmc-am654.c
-+++ b/drivers/mtd/hyperbus/hbmc-am654.c
-@@ -78,14 +78,15 @@ static int am654_hbmc_dma_read(struct am654_hbmc_device_priv *priv, void *to,
- 	struct dma_chan *rx_chan = priv->rx_chan;
- 	struct dma_async_tx_descriptor *tx;
- 	dma_addr_t dma_dst, dma_src;
-+	struct device *rx_dev = dmaengine_get_dma_device(rx_chan);
- 	dma_cookie_t cookie;
- 	int ret;
- 
- 	if (!priv->rx_chan || !virt_addr_valid(to) || object_is_on_stack(to))
- 		return -EINVAL;
- 
--	dma_dst = dma_map_single(rx_chan->device->dev, to, len, DMA_FROM_DEVICE);
--	if (dma_mapping_error(rx_chan->device->dev, dma_dst)) {
-+	dma_dst = dma_map_single(rx_dev, to, len, DMA_FROM_DEVICE);
-+	if (dma_mapping_error(rx_dev, dma_dst)) {
- 		dev_dbg(priv->ctlr->dev, "DMA mapping failed\n");
- 		return -EIO;
- 	}
-@@ -117,7 +118,7 @@ static int am654_hbmc_dma_read(struct am654_hbmc_device_priv *priv, void *to,
- 	}
- 
- unmap_dma:
--	dma_unmap_single(rx_chan->device->dev, dma_dst, len, DMA_FROM_DEVICE);
-+	dma_unmap_single(rx_dev, dma_dst, len, DMA_FROM_DEVICE);
- 	return ret;
- }
- 
-diff --git a/drivers/mtd/nand/raw/cadence-nand-controller.c b/drivers/mtd/nand/raw/cadence-nand-controller.c
-index 2085632631c02..4f5e6d2b128c7 100644
---- a/drivers/mtd/nand/raw/cadence-nand-controller.c
-+++ b/drivers/mtd/nand/raw/cadence-nand-controller.c
-@@ -3229,7 +3229,7 @@ static void cadence_nand_remove(struct cdns_nand_ctrl *cdns_ctrl)
- {
- 	cadence_nand_chips_cleanup(cdns_ctrl);
- 	if (cdns_ctrl->dmac)
--		dma_unmap_resource(cdns_ctrl->dmac->device->dev,
-+		dma_unmap_resource(dmaengine_get_dma_device(cdns_ctrl->dmac),
- 				   cdns_ctrl->io.iova_dma, cdns_ctrl->io.size,
- 				   DMA_BIDIRECTIONAL, 0);
- 	cadence_nand_irq_cleanup(cdns_ctrl->irq, cdns_ctrl);
-diff --git a/drivers/mtd/nand/raw/intel-nand-controller.c b/drivers/mtd/nand/raw/intel-nand-controller.c
-index 01cefdaf115d1..0a4f5ff111334 100644
---- a/drivers/mtd/nand/raw/intel-nand-controller.c
-+++ b/drivers/mtd/nand/raw/intel-nand-controller.c
-@@ -290,6 +290,7 @@ static int ebu_dma_start(struct ebu_nand_controller *ebu_host, u32 dir,
- 	struct dma_async_tx_descriptor *tx;
- 	struct completion *dma_completion;
- 	dma_async_tx_callback callback;
-+	struct device *dma_dev;
- 	struct dma_chan *chan;
- 	dma_cookie_t cookie;
- 	unsigned long flags = DMA_CTRL_ACK | DMA_PREP_INTERRUPT;
-@@ -307,8 +308,9 @@ static int ebu_dma_start(struct ebu_nand_controller *ebu_host, u32 dir,
- 		callback = ebu_dma_tx_callback;
- 	}
- 
--	buf_dma = dma_map_single(chan->device->dev, (void *)buf, len, dir);
--	if (dma_mapping_error(chan->device->dev, buf_dma)) {
-+	dma_dev = dmaengine_get_dma_device(chan);
-+	buf_dma = dma_map_single(dma_dev, (void *)buf, len, dir);
-+	if (dma_mapping_error(dma_dev, buf_dma)) {
- 		dev_err(ebu_host->dev, "Failed to map DMA buffer\n");
- 		ret = -EIO;
- 		goto err_unmap;
-diff --git a/drivers/mtd/nand/raw/loongson-nand-controller.c b/drivers/mtd/nand/raw/loongson-nand-controller.c
-index 8490412d5be19..935f66602de97 100644
---- a/drivers/mtd/nand/raw/loongson-nand-controller.c
-+++ b/drivers/mtd/nand/raw/loongson-nand-controller.c
-@@ -391,7 +391,7 @@ static void loongson_nand_dma_callback(void *data)
- {
- 	struct loongson_nand_host *host = (struct loongson_nand_host *)data;
- 	struct dma_chan *chan = host->dma_chan;
--	struct device *dev = chan->device->dev;
-+	struct device *dev = dmaengine_get_dma_device(chan);
- 	enum dma_status status;
- 
- 	status = dmaengine_tx_status(chan, host->dma_cookie, NULL);
-@@ -407,7 +407,7 @@ static int loongson_nand_dma_transfer(struct loongson_nand_host *host, struct lo
- {
- 	struct nand_chip *chip = &host->chip;
- 	struct dma_chan *chan = host->dma_chan;
--	struct device *dev = chan->device->dev;
-+	struct device *dev = dmaengine_get_dma_device(chan);
- 	struct dma_async_tx_descriptor *desc;
- 	enum dma_data_direction data_dir = op->is_write ? DMA_TO_DEVICE : DMA_FROM_DEVICE;
- 	enum dma_transfer_direction xfer_dir = op->is_write ? DMA_MEM_TO_DEV : DMA_DEV_TO_MEM;
-diff --git a/drivers/mtd/nand/raw/lpc32xx_mlc.c b/drivers/mtd/nand/raw/lpc32xx_mlc.c
-index 8436015edcb4f..d03486dc41150 100644
---- a/drivers/mtd/nand/raw/lpc32xx_mlc.c
-+++ b/drivers/mtd/nand/raw/lpc32xx_mlc.c
-@@ -392,6 +392,7 @@ static int lpc32xx_xmit_dma(struct mtd_info *mtd, void *mem, int len,
- {
- 	struct nand_chip *chip = mtd_to_nand(mtd);
- 	struct lpc32xx_nand_host *host = nand_get_controller_data(chip);
-+	struct device *dma_dev = dmaengine_get_dma_device(host->dma_chan);
- 	struct dma_async_tx_descriptor *desc;
- 	int flags = DMA_CTRL_ACK | DMA_PREP_INTERRUPT;
- 	unsigned long time_left;
-@@ -399,8 +400,7 @@ static int lpc32xx_xmit_dma(struct mtd_info *mtd, void *mem, int len,
- 
- 	sg_init_one(&host->sgl, mem, len);
- 
--	res = dma_map_sg(host->dma_chan->device->dev, &host->sgl, 1,
--			 DMA_BIDIRECTIONAL);
-+	res = dma_map_sg(dma_dev, &host->sgl, 1, DMA_BIDIRECTIONAL);
- 	if (res != 1) {
- 		dev_err(mtd->dev.parent, "Failed to map sg list\n");
- 		return -ENXIO;
-@@ -428,12 +428,10 @@ static int lpc32xx_xmit_dma(struct mtd_info *mtd, void *mem, int len,
- 		goto out1;
- 	}
- 
--	dma_unmap_sg(host->dma_chan->device->dev, &host->sgl, 1,
--		     DMA_BIDIRECTIONAL);
-+	dma_unmap_sg(dma_dev, &host->sgl, 1, DMA_BIDIRECTIONAL);
- 	return 0;
- out1:
--	dma_unmap_sg(host->dma_chan->device->dev, &host->sgl, 1,
--		     DMA_BIDIRECTIONAL);
-+	dma_unmap_sg(dma_dev, &host->sgl, 1, DMA_BIDIRECTIONAL);
- 	return res;
- }
- 
-diff --git a/drivers/mtd/nand/raw/lpc32xx_slc.c b/drivers/mtd/nand/raw/lpc32xx_slc.c
-index b4d90afa92677..638267d44360d 100644
---- a/drivers/mtd/nand/raw/lpc32xx_slc.c
-+++ b/drivers/mtd/nand/raw/lpc32xx_slc.c
-@@ -425,6 +425,7 @@ static int lpc32xx_xmit_dma(struct mtd_info *mtd, dma_addr_t dma,
- {
- 	struct nand_chip *chip = mtd_to_nand(mtd);
- 	struct lpc32xx_nand_host *host = nand_get_controller_data(chip);
-+	struct device *dma_dev = dmaengine_get_dma_device(host->dma_chan);
- 	struct dma_async_tx_descriptor *desc;
- 	int flags = DMA_CTRL_ACK | DMA_PREP_INTERRUPT;
- 	int res;
-@@ -446,8 +447,7 @@ static int lpc32xx_xmit_dma(struct mtd_info *mtd, dma_addr_t dma,
- 
- 	sg_init_one(&host->sgl, mem, len);
- 
--	res = dma_map_sg(host->dma_chan->device->dev, &host->sgl, 1,
--			 DMA_BIDIRECTIONAL);
-+	res = dma_map_sg(dma_dev, &host->sgl, 1, DMA_BIDIRECTIONAL);
- 	if (res != 1) {
- 		dev_err(mtd->dev.parent, "Failed to map sg list\n");
- 		return -ENXIO;
-@@ -475,13 +475,11 @@ static int lpc32xx_xmit_dma(struct mtd_info *mtd, dma_addr_t dma,
- 		res = 0;
- 	}
- 
--	dma_unmap_sg(host->dma_chan->device->dev, &host->sgl, 1,
--		     DMA_BIDIRECTIONAL);
-+	dma_unmap_sg(dma_dev, &host->sgl, 1, DMA_BIDIRECTIONAL);
- 
- 	return res;
- out1:
--	dma_unmap_sg(host->dma_chan->device->dev, &host->sgl, 1,
--		     DMA_BIDIRECTIONAL);
-+	dma_unmap_sg(dma_dev, &host->sgl, 1, DMA_BIDIRECTIONAL);
- 	return -ENXIO;
- }
- 
-diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
-index 38b7eb5b992c8..e5fa5540e80a0 100644
---- a/drivers/mtd/nand/raw/marvell_nand.c
-+++ b/drivers/mtd/nand/raw/marvell_nand.c
-@@ -868,6 +868,7 @@ static int marvell_nfc_xfer_data_dma(struct marvell_nfc *nfc,
- 				     unsigned int len)
- {
- 	unsigned int dma_len = min_t(int, ALIGN(len, 32), MAX_CHUNK_SIZE);
-+	struct device *dma_dev = dmaengine_get_dma_device(nfc->dma_chan);
- 	struct dma_async_tx_descriptor *tx;
- 	struct scatterlist sg;
- 	dma_cookie_t cookie;
-@@ -876,7 +877,7 @@ static int marvell_nfc_xfer_data_dma(struct marvell_nfc *nfc,
- 	marvell_nfc_enable_dma(nfc);
- 	/* Prepare the DMA transfer */
- 	sg_init_one(&sg, nfc->dma_buf, dma_len);
--	ret = dma_map_sg(nfc->dma_chan->device->dev, &sg, 1, direction);
-+	ret = dma_map_sg(dma_dev, &sg, 1, direction);
- 	if (!ret) {
- 		dev_err(nfc->dev, "Could not map DMA S/G list\n");
- 		return -ENXIO;
-@@ -888,7 +889,7 @@ static int marvell_nfc_xfer_data_dma(struct marvell_nfc *nfc,
- 				     DMA_PREP_INTERRUPT);
- 	if (!tx) {
- 		dev_err(nfc->dev, "Could not prepare DMA S/G list\n");
--		dma_unmap_sg(nfc->dma_chan->device->dev, &sg, 1, direction);
-+		dma_unmap_sg(dma_dev, &sg, 1, direction);
- 		return -ENXIO;
- 	}
- 
-@@ -900,7 +901,7 @@ static int marvell_nfc_xfer_data_dma(struct marvell_nfc *nfc,
- 
- 	dma_async_issue_pending(nfc->dma_chan);
- 	ret = marvell_nfc_wait_cmdd(nfc->selected_chip);
--	dma_unmap_sg(nfc->dma_chan->device->dev, &sg, 1, direction);
-+	dma_unmap_sg(dma_dev, &sg, 1, direction);
- 	marvell_nfc_disable_dma(nfc);
- 	if (ret) {
- 		dev_err(nfc->dev, "Timeout waiting for DMA (status: %d)\n",
-diff --git a/drivers/mtd/nand/raw/omap2.c b/drivers/mtd/nand/raw/omap2.c
-index 4909e62dc11e9..4fa89aee934eb 100644
---- a/drivers/mtd/nand/raw/omap2.c
-+++ b/drivers/mtd/nand/raw/omap2.c
-@@ -380,8 +380,8 @@ static inline int omap_nand_dma_transfer(struct nand_chip *chip,
- {
- 	struct omap_nand_info *info = mtd_to_omap(nand_to_mtd(chip));
- 	struct dma_async_tx_descriptor *tx;
--	enum dma_data_direction dir = is_write ? DMA_TO_DEVICE :
--							DMA_FROM_DEVICE;
-+	enum dma_data_direction dir = is_write ? DMA_TO_DEVICE : DMA_FROM_DEVICE;
-+	struct device *dma_dev = dmaengine_get_dma_device(info->dma);
- 	struct scatterlist sg;
- 	unsigned long tim, limit;
- 	unsigned n;
-@@ -392,7 +392,7 @@ static inline int omap_nand_dma_transfer(struct nand_chip *chip,
- 		goto out_copy;
- 
- 	sg_init_one(&sg, addr, len);
--	n = dma_map_sg(info->dma->device->dev, &sg, 1, dir);
-+	n = dma_map_sg(dma_dev, &sg, 1, dir);
- 	if (n == 0) {
- 		dev_err(&info->pdev->dev,
- 			"Couldn't DMA map a %d byte buffer\n", len);
-@@ -434,11 +434,11 @@ static inline int omap_nand_dma_transfer(struct nand_chip *chip,
- 	/* disable and stop the PFPW engine */
- 	omap_prefetch_reset(info->gpmc_cs, info);
- 
--	dma_unmap_sg(info->dma->device->dev, &sg, 1, dir);
-+	dma_unmap_sg(dma_dev, &sg, 1, dir);
- 	return 0;
- 
- out_copy_unmap:
--	dma_unmap_sg(info->dma->device->dev, &sg, 1, dir);
-+	dma_unmap_sg(dma_dev, &sg, 1, dir);
- out_copy:
- 	is_write == 0 ? omap_nand_data_in(chip, (void *)addr, len, false)
- 		      : omap_nand_data_out(chip, addr, len, false);
-diff --git a/drivers/mtd/nand/raw/sh_flctl.c b/drivers/mtd/nand/raw/sh_flctl.c
-index 97f733e481ffc..0497801d7059f 100644
---- a/drivers/mtd/nand/raw/sh_flctl.c
-+++ b/drivers/mtd/nand/raw/sh_flctl.c
-@@ -378,6 +378,7 @@ static int flctl_dma_fifo0_transfer(struct sh_flctl *flctl, unsigned long *buf,
- 					int len, enum dma_data_direction dir)
- {
- 	struct dma_async_tx_descriptor *desc = NULL;
-+	struct device *dma_dev;
- 	struct dma_chan *chan;
- 	enum dma_transfer_direction tr_dir;
- 	dma_addr_t dma_addr;
-@@ -394,9 +395,10 @@ static int flctl_dma_fifo0_transfer(struct sh_flctl *flctl, unsigned long *buf,
- 		tr_dir = DMA_MEM_TO_DEV;
- 	}
- 
--	dma_addr = dma_map_single(chan->device->dev, buf, len, dir);
-+	dma_dev = dmaengine_get_dma_device(chan);
-+	dma_addr = dma_map_single(dma_dev, buf, len, dir);
- 
--	if (!dma_mapping_error(chan->device->dev, dma_addr))
-+	if (!dma_mapping_error(dma_dev, dma_addr))
- 		desc = dmaengine_prep_slave_single(chan, dma_addr, len,
- 			tr_dir, DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
- 
-@@ -440,7 +442,7 @@ static int flctl_dma_fifo0_transfer(struct sh_flctl *flctl, unsigned long *buf,
- 	reg &= ~DREQ0EN;
- 	writel(reg, FLINTDMACR(flctl));
- 
--	dma_unmap_single(chan->device->dev, dma_addr, len, dir);
-+	dma_unmap_single(dma_dev, dma_addr, len, dir);
- 
- 	/* ret == 0 is success */
- 	return ret;
--- 
-2.43.0
+If you like I could rewrite it as I'll apply it. The rest of this
+series looks good.
 
+> +	return id->len =3D=3D 3 && id->bytes[2] >=3D 0x17;
+
+Then this makes more sense.
+
+-michael
+
+> +}
+> +
+>  static int
+>  w25q128_post_bfpt_fixups(struct spi_nor *nor,
+>  			 const struct sfdp_parameter_header *bfpt_header,
+> @@ -201,6 +236,22 @@ static const struct spi_nor_fixups winbond_nor_partn=
+ame_fixups =3D {
+>  	.post_sfdp =3D winbond_nor_partname_post_sfdp_fixups,
+>  };
+> =20
+> +static int winbond_nor_ecc_configuration_post_sfdp_fixups(struct spi_nor=
+ *nor)
+> +{
+> +	/*
+> +	 * PW chips feature automatic error correction. Non 16-byte aligned
+> +	 * writes work, but disable error correction on the region until next e=
+rase.
+> +	 */
+> +	nor->params->writesize =3D 16;
+> +	nor->params->flags |=3D SNOR_F_ECC;
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct spi_nor_fixups winbond_nor_ecc_configuration_fixups =
+=3D {
+> +	.post_sfdp =3D winbond_nor_ecc_configuration_post_sfdp_fixups,
+> +};
+> +
+>  static const struct flash_info winbond_nor_parts[] =3D {
+>  	{
+>  		.id =3D SNOR_ID(0xef, 0x30, 0x10),
+> @@ -622,6 +673,10 @@ static const struct spi_nor_fixup winbond_fixups[] =
+=3D {
+>  	  .fixups =3D &winbond_nor_multi_die_fixups },
+>  	{ .id =3D SNOR_ID(0xef, 0x40, 0x22), .match =3D winbond_jv_match,
+>  	  .fixups =3D &winbond_nor_multi_die_fixups },
+> +	{ .id =3D SNOR_ID(0xef, 0x60), .match =3D winbond_pw_with_ecc_match,
+> +	  .fixups =3D &winbond_nor_ecc_configuration_fixups },
+> +	{ .id =3D SNOR_ID(0xef, 0x60), .match =3D winbond_pw_match,
+> +	  .fixups =3D &winbond_nor_partname_fixups },
+>  	{ .id =3D SNOR_ID(0xef, 0x70), .match =3D winbond_rv_match,
+>  	  .fixups =3D &winbond_nor_partname_fixups },
+>  	{ .id =3D SNOR_ID(0xef, 0x70, 0x18), .fixups =3D &w25q128_fixups },
+
+
+--d80592fc061c79ef1f409235a484d6b7475357f9ff155bde2579abd6de22
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCaq0ALhIcbXdhbGxlQGtl
+cm5lbC5vcmcACgkQEic87j4CH/iveQGAuJyWeW0wXUfXFLHPDows5VvT5IWhUubH
+H/e7kQt1ufblzGdN6udJUkpRU4G/pvlSAYDp8WCbbI2mwN0iGRXhVZM0XGIvj9fl
+5A6hzQuU71gIBz32tfEKn5iIYfyL31ueuVU=
+=xsj5
+-----END PGP SIGNATURE-----
+
+--d80592fc061c79ef1f409235a484d6b7475357f9ff155bde2579abd6de22--
+
+
+--===============8281996696989686002==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============8281996696989686002==--
+
