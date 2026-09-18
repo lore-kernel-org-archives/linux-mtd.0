@@ -4,60 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5E1FEC982DC
-	for <linux-mtd@archiver.kernel.org>; Fri, 18 Sep 2026 09:11:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E773C982D7
+	for <linux-mtd@archiver.kernel.org>; Fri, 18 Sep 2026 09:26:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:References:Cc:Subject:To:From:Message-Id:Date:Mime-Version:
+	In-Reply-To:References:From:Cc:Subject:To:Message-Id:Date:Mime-Version:
 	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
 	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=BZ3QstVLhTfpJstjyCvOB3EWWoPdxudbIuQcxfQnTps=; b=zYBMXSCXwdP4W+pYsXi3TevVRR
-	+CDXwIElYLEUOBQdNWQUGY29tHLZ1FrNtuv20y+ws2q2nsepaQd6JHKyOhln9n4ld9StWFZNSfGpi
-	v6qYF1EvrzImhK7o3swzuSt4T7rOHq58g4KNypNkeLStaWP39JQI1DiBOWAfzN4r2vnDTrLlS/U1O
-	UDnZ78VKFuhsWVJ/BC3NwBxhVxDptExqwUlcj5WZG8jTNOfYNbNvAtWRIQtmIG2gmir7v6PMox7Rj
-	N8HNVJbwdOA1oslbzXMbHZavxmuhi4+DRv2QjvaAgIJINx9iDVjhHDllYo+g7nvKQx4rQLmJ6bknt
-	XBga6Glw==;
+	bh=J+V4Id8yUU1pbiKYAI0GTDNQH/6QpyzNzz02/gsaB78=; b=C/zRkbxRmR7PFvztXY208ezILT
+	Po0keGQ76fGM1dKBjuhfB2hHCpeZmdfhihraz2hpY9CWaGk5/yVAN0m1Rz8v2LJQKXKAXeF2RbGjB
+	YG5Uolz8ld4zwMMzBpEdwyJOB4RAkha2nHH1qXwcdeO8T0P9zGMFBYsZXiNzt71iJ5wKF0neR76ZK
+	eOS5tajbHerjk5J0kSBr6jAvB58QHUKoChBOSSOo3uQKH88tAYkDgqeqxq2k3TQd8FGgLX5dt8wYG
+	IyPSmOXovbUJW0PvseCvWbKIjpyfYliNvs8342j6gU9wtIfbux0kPhhYndhji7J16VIbBfZpgTris
+	aF3qHYSw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x7Ucn-0000000Dtg9-2Wb0;
-	Fri, 18 Sep 2026 09:11:17 +0000
+	id 1x7Ur2-0000000DwPN-2MSC;
+	Fri, 18 Sep 2026 09:26:00 +0000
 Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x7Ucl-0000000Dtfk-0L4v
+	id 1x7Ur0-0000000DwP6-25Vr
 	for linux-mtd@lists.infradead.org;
-	Fri, 18 Sep 2026 09:11:15 +0000
+	Fri, 18 Sep 2026 09:25:58 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with UTF8SMTP id D3E9E43FE7;
-	Fri, 18 Sep 2026 09:11:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id 3E89E1F00898;
-	Fri, 18 Sep 2026 09:11:14 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with UTF8SMTP id DCDB941767;
+	Fri, 18 Sep 2026 09:25:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id 4A28D1F00893;
+	Fri, 18 Sep 2026 09:25:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789722674;
-	bh=//A6nFUT1fgpq48JhsGCVi6sK5GUd9rpMaDF4/M8Wx0=;
-	h=Date:From:To:Subject:Cc:References:In-Reply-To;
-	b=Z1HBNKwNnL+VznfivuiwGM6M1Xcx0DfMoCACjps4yaIMqU7+cFoYA7IPC0wsSl3Q3
-	 edGuJ0slgW2lnGD3+0B9vrjG7igsaf7/YAs/HD8Lvv3r4xzA+HAJ3BVkTf0SzFf+CC
-	 VHtWuEaFQEh6l7Xm+kLSbjcLUfK5swVok5GZJF/c/fSqWymaKGB7wBub4qATvxD5nW
-	 Zl5NuwQmrb+KX8JBTs+rQv/lEG2KWLjEc9gOXZGxrcokejQ9kUqlwMkZ6K9Rahom6z
-	 edZpSL4lV7XQCx3QN8pc5tvJQog1WR3VSuT/9f4MdI1k0LlWDSKtJ7EBvkZDGMpyuZ
-	 VyGTyuE3MGcnA==
+	s=k20260515; t=1789723557;
+	bh=YA3D7d7673ng+vCGSnDfbJ9kCQKY2wZxGLeBmg2P7TY=;
+	h=Date:To:Subject:Cc:From:References:In-Reply-To;
+	b=ccn64BYka7ATtK7+UUgxRAm1d59KpdPr5/XTRK7AHbFMfS2A3BF2W7DM8ganhNgBz
+	 U2Y4MPt5ucLzNhwAKDgIrEoxVOqG8Lhbe8iXjlzynnOJ3xS5S3NdcLv4ltAGn4iIhv
+	 qUutjqIIsZtp2c4ookfoaXpO6IUuzOvjhPngD2JdixRAv9HcGIcJlPHV0g7AYx9MsM
+	 PP3nafCC+m+aP8alJFs8DPFl5Kex94xm/AGRdz5Gpdr0zqRmx5/CjeN2RcV5d5Plae
+	 TAOIah3xIxX7Iqh/lyW79syanUaxLe1bnWiAGjgI7GyXRpvgZfVeeSmlXC31h6KJoO
+	 EAI2j3DaNoUTw==
 Mime-Version: 1.0
-Date: Fri, 18 Sep 2026 11:11:10 +0200
-Message-Id: <DLIBQKG04DIF.1FKAYOEZH6ZU0@kernel.org>
+Date: Fri, 18 Sep 2026 11:25:54 +0200
+Message-Id: <DLIC1UB6I4TK.20EG74BVIVUGC@kernel.org>
+To: =?utf-8?q?Nuno_S=C3=A1?= <nuno.sa@analog.com>
+Subject: Re: [PATCH v2 2/2] mtd: spi-nor: issi: Add support for is25wx01g
+Cc: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ "Pratyush Yadav" <pratyush@kernel.org>, "Takahiro Kuwano"
+ <takahiro.kuwano@infineon.com>, "Miquel Raynal"
+ <miquel.raynal@bootlin.com>, "Richard Weinberger" <richard@nod.at>,
+ "Vignesh Raghavendra" <vigneshr@ti.com>
 From: "Michael Walle" <mwalle@kernel.org>
-To: "Miquel Raynal" <miquel.raynal@bootlin.com>, "Pratyush Yadav"
- <pratyush@kernel.org>, "Takahiro Kuwano" <takahiro.kuwano@infineon.com>,
- "Richard Weinberger" <richard@nod.at>, "Vignesh Raghavendra"
- <vigneshr@ti.com>
-Subject: Re: [PATCH 16/25] mtd: spi-nor: winbond: Prepare introduction of
- W25QxxPW-Q/N parts
-Cc: "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>, "Steam Lin"
- <STLin2@winbond.com>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>
 X-Mailer: aerc 0.20.0
-References: <20260909-winbond-master-spi-nor-jw-cleanup-pw-addition-v1-0-c1b20c39dd1f@bootlin.com> <20260909-winbond-master-spi-nor-jw-cleanup-pw-addition-v1-16-c1b20c39dd1f@bootlin.com>
-In-Reply-To: <20260909-winbond-master-spi-nor-jw-cleanup-pw-addition-v1-16-c1b20c39dd1f@bootlin.com>
+References: <20260914-mtd-spi-nor-new-issi-chip-v2-0-3cd4d7e434b2@analog.com> <20260914-mtd-spi-nor-new-issi-chip-v2-2-3cd4d7e434b2@analog.com> <DLF3H41RCZJF.37WOY30CYJ4AY@kernel.org> <aqgRsP3cxzcLok5C@nsa> <DLGK0FH8L7PM.1JRX5777NZQQF@kernel.org> <aqpTO-5LTLtRXaY4@nsa>
+In-Reply-To: <aqpTO-5LTLtRXaY4@nsa>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,160 +67,180 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8281996696989686002=="
+Content-Type: multipart/mixed; boundary="===============0530782426459040872=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============8281996696989686002==
+--===============0530782426459040872==
 Content-Type: multipart/signed;
- boundary=d80592fc061c79ef1f409235a484d6b7475357f9ff155bde2579abd6de22;
+ boundary=070b8133b41b52338b365b906ef7a26c768052edd877178f524788085723;
  micalg=pgp-sha384; protocol="application/pgp-signature"
 
---d80592fc061c79ef1f409235a484d6b7475357f9ff155bde2579abd6de22
+--070b8133b41b52338b365b906ef7a26c768052edd877178f524788085723
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
 
-On Wed Sep 9, 2026 at 5:25 PM CEST, Miquel Raynal wrote:
-> There is an ID collision between chips of same density from the JW
-> family (which it self conflicted with yet another family) with new PW
-> parts. Chips are very similar in practice, it is mostly a matter of
-> electrical differences (mostly power consumption being lower) as well as
-> the addition of inline ECC capability for the higher devices (> 32Mb).
+On Wed Sep 16, 2026 at 10:44 AM CEST, Nuno S=C3=A1 wrote:
+> On Wed, Sep 16, 2026 at 09:14:52AM +0200, Michael Walle wrote:
+>> On Mon Sep 14, 2026 at 5:31 PM CEST, Nuno S=C3=A1 wrote:
+>> > On Mon, Sep 14, 2026 at 04:04:40PM +0200, Michael Walle wrote:
+>> >> On Mon Sep 14, 2026 at 3:42 PM CEST, Nuno S=C3=A1 wrote:
+>> >> > (*): I should note that the command actually failed with -EIO but i=
+t
+>> >> > actually unlocked the chip! And the reason is because the flash as =
+the same
+>> >> > FSR register than the micron-st flash. So WEL is set to 1 but can o=
+nly
+>> >> > be cleared when clearing the FSR register.
+>> >>=20
+>> >> Why doesn't this affect only the locking operation? WEL polling is
+>> >> used also during write and erase.
+>>=20
+>> Sorry I meant WIP.
+>>=20
+>> > Not sure if I fully understand. But AFAICT, the reason why erase and
+>> > write is silent is because the default spi_nor_sr_ready() only looks a=
+t
+>> > SR_WIP [1]:
+>>=20
+>> So usually, the WEL is cleared automatically by whatever needs the
+>> WEL in the first place, i.e. program or erase, write (status)
+>> register. That should also be the case for this flash.
+>>=20
+>> Now for this flash (as well as the st/micron ones), there is one
+>> peculiarity. Whenever there is an error bit set in the FSR, the WEL
+>> cannot be cleared by a write disable command. Which we shouldn't
+>> need anyway because it should be cleared automatically if nothing
+>> goes wrong.
+>>=20
+>> Also the write status register won't set the error bits if i read
+>> the datasheet correctly and it will always disable the WEL, see
+>> Table 29 ("WRITE REGISTER Operations") in the MT35XU512ABA datasheet
+>> and Table 8,8 ("WRITE REGISTER Operstaions") in the IS25WX01G
+>> datasheet.
+>>=20
+>> > OTOH, on the unlock path we do spi_nor_write_sr1_and_sr2_and_check() a=
+nd
+>> > give no special handling to WEL so I imagine that we try to set it as =
+0
+>> > but read it as 1 (given that it clears only with FSR) and hence I got
+>> > the -EIO in [2].
+>>=20
+>> We do a RMW, so my guess is that it's the other way around. We read
+>> it as 1, but then after writing the SR, it's 0 (see above). That
+>> actually assumes, that if the WEL and any error bit in the FSR is
+>> set, a write status register will clear the WEL anyways. Could you
+>> debug that so we are sure, this is what actually happens?
 >
-> Chips with ECC capability protect 16 bytes chunks are against single
-> errors. In case a non-aligned write happens, ECC is locally disabled
-> until the next erase.
+> Sure I'll do some debugging on the unlock path. The DS seems a bit
+> unclear. It also states (for the WRITE DISABLE)
 >
-> Another significant difference is that PW chips identify themselves as
-> supporting the new SFDP (rev F) QER field which forces an alternate
-> write SR2 opcode (0x31).
+> "...In case of a protection error, WRITE DISABLE will not
+> clear the bit. Instead, a CLEAR FLAG STATUS REGISTER command must be issu=
+ed to
+> clear both flags.
+> "
+
+Not sure, this contradicts each other. As I read it:
+
+ - Write (status) register will always clear a WEL, the only open
+   question is, does it also clear it if the protection bit in the
+   FSR is set
+ - Write disable won't clear the WEL if the protection bit in the
+   FSR is set.
+
+> But the truth is that the second unlock I did came without an error.
+
+Which might indicate that a write status will clear the WEL anyway.
+But then it might also be interesting to see if the PROT bit in FSR
+is still set. IOW, if a new write enable is sent, a write disable
+might fail even if there was no actual error.
+
 >
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> ---
->  drivers/mtd/spi-nor/winbond.c | 55 +++++++++++++++++++++++++++++++++++++=
-++++++
->  1 file changed, 55 insertions(+)
+>>=20
+>> But the question is who is setting the error bit in the first place.
+>> And I guess it's the testing sequence for the locking when you try
+>> to write to a locked range. So you could also actually test the
+>> locking/unlocking without writing any data to the flash just to see
+>> if that is the case.
 >
-> diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.=
-c
-> index fbad9e408d7a..efa9de1f0f66 100644
-> --- a/drivers/mtd/spi-nor/winbond.c
-> +++ b/drivers/mtd/spi-nor/winbond.c
-> @@ -71,6 +71,41 @@ static bool winbond_rv_match(const struct spi_nor *nor=
-)
->  	return nor->sfdp && is_w25qxxrv(nor);
->  }
-> =20
-> +static bool is_w25qxxpw(const struct spi_nor *nor)
-> +{
-> +	struct sfdp_header *sfdp_h =3D spi_nor_sfdp_get_header(nor);
-> +
-> +	/*
-> +	 * W25QxxPW chips re-use the same ID as the W25QxxJW/NW family.
-> +	 *
-> +	 * Chips are very similar, W25QxxPW brings mostly performance and power
-> +	 * consumption improvements. One key difference in behaviour is the
-> +	 * automatic 16-byte based error correction.
-> +	 *
-> +	 * They can be distinguished based on their SFDP minor revision:
-> +	 * W25QxxJW:       JESD216B, minor revision =3D=3D 06h
-> +	 * W25Q51/01/02NW: JESD216B, minor revision =3D=3D 06h
-> +	 * W25QxxPW:       JESD216F, minor revision >=3D 0Ah
-> +	 */
-> +	return sfdp_h->minor >=3D SFDP_JESD216F_MINOR;
-> +}
-> +
-> +static bool winbond_pw_match(const struct spi_nor *nor)
-> +{
-> +	return nor->sfdp && is_w25qxxpw(nor);
-> +}
-> +
-> +static bool winbond_pw_with_ecc_match(const struct spi_nor *nor)
-> +{
-> +	const struct spi_nor_id *id =3D nor->info->id;
-> +
-> +	if (!winbond_pw_match(nor))
-> +		return false;
-> +
-> +	/* W25Q33PW chips (id[2] =3D=3D 0x16) do not have built-in ECC support =
-*/
+> Pretty sure the above is the case! If you look at other tests after
+>
+> "Once we trust the debugfs output we can use it to test various
+> situations. Check top locking/unlocking (end of the device):"
+>
+> Everything worked nicely given we were just doing lock/unlock. The DS is
+> also clear about this (table 8.11):
+>
+> "...When a command is applied to a protected sector, the command is not e=
+xecuted,
+> the write enable latch bit remains set to 1, and flag status register bit=
+s 1 and 4 are set.=20
+> If the operation
+> "
 
-The commit message mentions ECC is available for >=3D 32Mbit. Doesn't
-align with this comment. Also about the 8MBit and 16Mbit ones?
+Ok.
 
-"W25QxxPW chips smaller than 32MBit doesn't provide built-in ECC support"?
+> I also did tested with basically the same code as in micron-st and then
+> ERASE and PROGRAM commands just return -EIO.
 
-If you like I could rewrite it as I'll apply it. The rest of this
-series looks good.
+But the unlocking does not return EIO anymore when it's executed
+successfully?
 
-> +	return id->len =3D=3D 3 && id->bytes[2] >=3D 0x17;
+>> >> > AFAICT, we should do something similar as micron so the writing to =
+an
+>> >> > actual protected region fails rather than being silently discarded =
+with
+>> >> > that status bit set. The question would be how to do it? The code i=
+s
+>> >> > pretty much identical to [1]. The masks, the opcoded... So should w=
+e
+>> >> > somehow handle this in the core (by having some common helper) that
+>> >> > could be set in .late_init() under a common MFR_FSR flag? Or just k=
+eep
+>> >> > both implementations separate for now?
+>> >>=20
+>> >> I'd like to keep that out of the core.c, but also like to avoid any
+>> >> code duplication esp. because there is already handling for the
+>> >> intel spi controller in there. So maybe move it it into a new
+>> >> common.c.
+>> >
+>> > Also don't like the dup tbh. Could that be a follow up or should it be
+>> > v3. From the top of my head I could think on a mfr_common.c kind of th=
+ing.
+>> > Don't thing this FSR register is standard?
+>>=20
+>> Not really.
+>>=20
+>> But (at least) parts of the datasheets are actually copied verbatim
+>> between micron and issi, I wonder if we shouldn't just put the ISSI
+>> part in micron-st.c. (Yes vendor will be wrong, but I plan on
+>> deprecating that sysfs property anyway).
+>
+> Also works for me. Say the word and I can send v3 with this in
+> micron-st.c.
 
-Then this makes more sense.
+Yes. But also please verify the our guesses about the root cause of
+this and what's the actual behavior of the write disable.
 
 -michael
 
-> +}
-> +
->  static int
->  w25q128_post_bfpt_fixups(struct spi_nor *nor,
->  			 const struct sfdp_parameter_header *bfpt_header,
-> @@ -201,6 +236,22 @@ static const struct spi_nor_fixups winbond_nor_partn=
-ame_fixups =3D {
->  	.post_sfdp =3D winbond_nor_partname_post_sfdp_fixups,
->  };
-> =20
-> +static int winbond_nor_ecc_configuration_post_sfdp_fixups(struct spi_nor=
- *nor)
-> +{
-> +	/*
-> +	 * PW chips feature automatic error correction. Non 16-byte aligned
-> +	 * writes work, but disable error correction on the region until next e=
-rase.
-> +	 */
-> +	nor->params->writesize =3D 16;
-> +	nor->params->flags |=3D SNOR_F_ECC;
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct spi_nor_fixups winbond_nor_ecc_configuration_fixups =
-=3D {
-> +	.post_sfdp =3D winbond_nor_ecc_configuration_post_sfdp_fixups,
-> +};
-> +
->  static const struct flash_info winbond_nor_parts[] =3D {
->  	{
->  		.id =3D SNOR_ID(0xef, 0x30, 0x10),
-> @@ -622,6 +673,10 @@ static const struct spi_nor_fixup winbond_fixups[] =
-=3D {
->  	  .fixups =3D &winbond_nor_multi_die_fixups },
->  	{ .id =3D SNOR_ID(0xef, 0x40, 0x22), .match =3D winbond_jv_match,
->  	  .fixups =3D &winbond_nor_multi_die_fixups },
-> +	{ .id =3D SNOR_ID(0xef, 0x60), .match =3D winbond_pw_with_ecc_match,
-> +	  .fixups =3D &winbond_nor_ecc_configuration_fixups },
-> +	{ .id =3D SNOR_ID(0xef, 0x60), .match =3D winbond_pw_match,
-> +	  .fixups =3D &winbond_nor_partname_fixups },
->  	{ .id =3D SNOR_ID(0xef, 0x70), .match =3D winbond_rv_match,
->  	  .fixups =3D &winbond_nor_partname_fixups },
->  	{ .id =3D SNOR_ID(0xef, 0x70, 0x18), .fixups =3D &w25q128_fixups },
-
-
---d80592fc061c79ef1f409235a484d6b7475357f9ff155bde2579abd6de22
+--070b8133b41b52338b365b906ef7a26c768052edd877178f524788085723
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCaq0ALhIcbXdhbGxlQGtl
-cm5lbC5vcmcACgkQEic87j4CH/iveQGAuJyWeW0wXUfXFLHPDows5VvT5IWhUubH
-H/e7kQt1ufblzGdN6udJUkpRU4G/pvlSAYDp8WCbbI2mwN0iGRXhVZM0XGIvj9fl
-5A6hzQuU71gIBz32tfEKn5iIYfyL31ueuVU=
-=xsj5
+iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCaq0DohIcbXdhbGxlQGtl
+cm5lbC5vcmcACgkQEic87j4CH/iaGwF+MoU+b1VgCkmAmyRW3et6lz82JxdRGJbb
+yjHLv71zW39zdHJYK3DSD23Cb294mrC3AX4u1bKHXzit2qgzCBjzfQ9wuiNijGgY
+KKpg9YblJlmVkTyPYbTQDZRILzaj6ygYCMc=
+=FEeo
 -----END PGP SIGNATURE-----
 
---d80592fc061c79ef1f409235a484d6b7475357f9ff155bde2579abd6de22--
+--070b8133b41b52338b365b906ef7a26c768052edd877178f524788085723--
 
 
---===============8281996696989686002==
+--===============0530782426459040872==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -232,5 +250,5 @@ ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
---===============8281996696989686002==--
+--===============0530782426459040872==--
 
