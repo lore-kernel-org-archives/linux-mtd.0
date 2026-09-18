@@ -4,69 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99108C982D7
-	for <linux-mtd@archiver.kernel.org>; Fri, 18 Sep 2026 09:33:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73CE0C982DA
+	for <linux-mtd@archiver.kernel.org>; Fri, 18 Sep 2026 09:35:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
-	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=PStAF/q/w6MIUmNlwq0I1YhgwTawzEQRYltKSM2i1JU=; b=N5kMOUoSKpk+6Q
-	LEUJC/YxkvuF7W1Uyu+wT+S9u40gYVnilmNdi2W4ttgHqUtXgps+5Rp7m3HU7FWu5WHf7lMHvMcpT
-	VtUFnfcZckd7S60eV1Ha5dNUQQAXepo8K30c0K+2WN4gFzGcthKmyBacr22my4QYUIOPQKacM5shI
-	UnADcnwxW36MHHGYsY2F/1gnz6YcR1Q+D778N3KKS679L1onrAE0uCxV2/I06D7nbAOF266Tz8UCw
-	/GavXTOGYHtKhQi3zJdPm5m+Q/tqzdKpoIGm6/tr0hsg0HRIIqJ37uigLsLwExyquMfMhr2RTZpGz
-	O/4nX0wv7PNfx0D1rYmQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:References:Cc:Subject:To:From:Message-Id:Date:Mime-Version:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=PyWesUXEPZP8CcQcF2LS0KFh5IqDpejdvkZBy7q30Hs=; b=SGrcqBYsSSVCuym15ogMXEXyFc
+	8LkTpFvrTWk1o0fhO4pMioUqBNyNcxcWzTuuWN5BFlT2t/NkwlMT4MNADT5uRJdPefMHhHh/LU2ww
+	opK5h2XsthZovUXMdlMOVj6rFlrkX3SWMnAqIUbuzwDiUpJrUE8HVehWN1H8XxUz+RIeR9u2euLtX
+	G1qS65Dqv5Uclq2K3N1RXrg78lYR6a+J3usnTT5D4RDWjS8waPwWHMKHOL6U4p1WI7pXEZv9PRJ8t
+	lS1upT5VF8ZXzqcj/OlRv659cGb8P6U3VeBXMH/DdPbpIhrAK2hWIbNLdpTbzLNbzDMEdCT8YKqW8
+	uob1zNfg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x7Uxm-0000000DxVQ-1AEL;
-	Fri, 18 Sep 2026 09:32:58 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1x7Uzi-0000000DxjU-21pU;
+	Fri, 18 Sep 2026 09:34:58 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x7Uxl-0000000DxUw-15Ju
+	id 1x7Uzg-0000000DxjE-2ztw
 	for linux-mtd@lists.infradead.org;
-	Fri, 18 Sep 2026 09:32:57 +0000
+	Fri, 18 Sep 2026 09:34:57 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 81EBE41A0B;
-	Fri, 18 Sep 2026 09:32:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D27A1F000FF;
-	Fri, 18 Sep 2026 09:32:54 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with UTF8SMTP id 390C860A59;
+	Fri, 18 Sep 2026 09:34:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id 675421F000FF;
+	Fri, 18 Sep 2026 09:34:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789723976;
-	bh=kZISdbIB8TZZ3TfxDB47me2kAn8nNXBGmtMZbJYMz1Y=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date;
-	b=GUcJJ6Tyn7vWxGTLzmXroGx5D74W+aG5SVIwsNxUOf1vqoG2PWz7zJnOpJQ1NUlEw
-	 LKhF/hwqcxodqSY5/zyCsjV9TMcw+2EVTK++P5RJ/1eu6O9pMeVuryLmTL6rMkvLRo
-	 cUddNj2en2tT52da2kBZiycp8EJ1KyWigsIrOzI0AZ7WVhF6K9u8HDp7qnDeQo0Pop
-	 V8UJBiL/ZHD4cuHCtebc+oOt7u4rS6wCG13HejafrZHK84At5tT9I/3e4FuT2YZmvp
-	 xHJh7hNhG2dJH552f8T+t2Je+MUQTQjyeNVs60xWze114A7GBOQ/Vo11vGGjuXNIPb
-	 5ON8A4M+VWmKg==
-From: Mark Brown <broonie@kernel.org>
-To: md.alam@oss.qualcomm.com, Johan Alvarado <contact@c127.dev>
-Cc: konradybcio@kernel.org, pengpeng@iscas.ac.cn, miquel.raynal@bootlin.com, 
- j4g8y7@gmail.com, quic_varada@quicinc.com, quic_srichara@quicinc.com, 
- linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org, 
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20260911184416.109790-1-contact@c127.dev>
-References: <20260911184416.109790-1-contact@c127.dev>
-Subject: Re: [PATCH v2 0/2] spi: spi-qpic-snand: fix the stale ECC context
- pointer
-Message-Id: <178965871023.285745.12128711183842663468.b4-ty@b4>
-Date: Thu, 17 Sep 2026 16:25:10 +0100
-MIME-Version: 1.0
-X-Mailer: b4 0.17-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1730; i=broonie@kernel.org;
- h=from:subject:message-id; bh=Zbc1GDm3o826G5XiQwmgTtJ5p1vRisvVJ2jF+Hjyl0c=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBqrQVD5DGJunsL1wCkmT9LZlVDRqw7LuON5fkBK
- ugStNQc3a2JATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCaq0FQwAKCRAk1otyXVSH
- 0DYnB/0eAGwNBYjqGdFy0Uo0/JpFvi7nrMeXEpd8FD+8HhHTS6AIivZp0IuI5wMADpU0+Wy7i+X
- VlnXWIgQiP3HjAQlsfuqnp+9BUoetp9Kq+YS+X5+4Lo/nyHzZF+wuN3WTDSkuQMn4OwL/8q9vvc
- zVE0PhBsKiRQI7tfRm4sYINBltVQD5jMQLq8qEhwL5bJJNsQtF5cvaDjPUa25pT96qsnYXj3C4F
- QawOvOqWeoP3xsMDek4p5p7rnqSUUvwKgwrfd0b7mZ/4Ph/konzDXT7uCI6BETDBDc06CwEa/Yg
- NrvD1NSdPAvl/HMTC1ATuLruMn9vwUCj5Y/DtZoPW+zS8/yj
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+	s=k20260515; t=1789724094;
+	bh=QPHM4C13uUGm9R4hEl1eSTnmriAUGxPz23GgFIjAtCc=;
+	h=Date:From:To:Subject:Cc:References:In-Reply-To;
+	b=NdgoCwwYKkR3ypH0YDmw8gy1EKRmBVG4VgG/GV/pXWOXDRoQGIarEI1mZLiMfxqP1
+	 73oOjm39Pu8r5EngSjEkB+I6ZX8hDi8Y7/wLycxfxuem5tan0OnNWx36l3xCJhpwQt
+	 pdYereCG6Svcnhjgdf9Eolzha5fSk96gJc/MSj8Nj6AASc+GV0fduCjFVRcvPMoudm
+	 QjjF0EMHuoeUHVnNvAwOkejn1p406zXPenCgzKLtNtaYlzTCA6V+rLim5kYqAsIDvW
+	 M59n0S4jjiURMgf1UG/ZFNRsZ17K2Zgw2OKBx/E0gatBTdvUSdk8y+igRwXz+yd3kE
+	 C9QE6NrttOAOQ==
+Mime-Version: 1.0
+Date: Fri, 18 Sep 2026 11:34:51 +0200
+Message-Id: <DLIC8P2V43E6.34ICV316K7HUK@kernel.org>
+From: "Michael Walle" <mwalle@kernel.org>
+To: <sashiko-reviews@lists.linux.dev>, "Itai Handler"
+ <itai.handler@gmail.com>, <pratyush@kernel.org>
+Subject: Re: [PATCH v3] mtd: spi-nor: take the flash lock around
+ spi_nor_restore()
+Cc: <linux-kernel@vger.kernel.org>, <vigneshr@ti.com>,
+ <linux-mtd@lists.infradead.org>, <takahiro.kuwano@infineon.com>,
+ <richard@nod.at>, <stable@vger.kernel.org>, <miquel.raynal@bootlin.com>
+X-Mailer: aerc 0.20.0
+References: <20260915113811.2429311-1-itai.handler@gmail.com>
+ <20260915115206.CCEE41F000FF@smtp.kernel.org>
+In-Reply-To: <20260915115206.CCEE41F000FF@smtp.kernel.org>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,55 +68,159 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8893594447682913981=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 11 Sep 2026 13:44:14 -0500, Johan Alvarado wrote:
-> spi: spi-qpic-snand: fix the stale ECC context pointer
-> 
-> qcom_spi_ecc_init_ctx_pipelined() installs the ooblayout but never
-> publishes the ECC context it allocates, so qcom_spi_ooblayout_ecc() and
-> qcom_spi_ooblayout_free() run against a pointer that describes something
-> else - a zeroed struct on a first probe, the previous attempt's freed
-> context on a retry. On IPQ5018 the qcom,smem-part parser makes that retry
-> routine, and like half the boots on a Mercusys MR80X failed to mount the
-> rootfs.
-> 
-> [...]
+--===============8893594447682913981==
+Content-Type: multipart/signed;
+ boundary=375f650e369e42fd6ad726978df45da2316eabb327bc1c8e1cde82126883;
+ micalg=pgp-sha384; protocol="application/pgp-signature"
 
-Applied to
+--375f650e369e42fd6ad726978df45da2316eabb327bc1c8e1cde82126883
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-7.4
+On Tue Sep 15, 2026 at 1:52 PM CEST, sashiko-bot wrote:
+> Thank you for your contribution! Sashiko AI review found 2 potential issu=
+e(s) to consider:
+> - [High] mtd: spi-nor: skipped flash restore on fatal signal breaks boot
+> - [High] mtd: spi-nor: shutdown hang due to ongoing erase operation
 
-Thanks!
+Does Sashiko have some valid points here?=20
 
-[1/2] spi: spi-qpic-snand: publish the ECC context to snandc->qspi
-      https://git.kernel.org/broonie/spi/c/f94c9b68bb5f
-[2/2] spi: spi-qpic-snand: drop the redundant ECC context handling
-      https://git.kernel.org/broonie/spi/c/8d6911645478
+-michael
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+> --
+>
+> commit c0578fac7581b63c39bfd99ac3a6f934256685d3
+> Author: Itai Handler <itai.handler@gmail.com>
+>
+> mtd: spi-nor: take the flash lock around spi_nor_restore()
+>
+> This commit changes spi_nor_shutdown() and spi_nor_remove() to acquire
+> nor->lock around spi_nor_restore(). It aims to prevent operations like
+> reads from overlapping with the restore, which could leave the chip in
+> 3-byte addressing mode.
+>
+>> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+>> index ccf4396cdcd04..c891197ffa5b3 100644
+>> --- a/drivers/mtd/spi-nor/core.c
+>> +++ b/drivers/mtd/spi-nor/core.c
+>> @@ -3849,11 +3849,26 @@ static int spi_nor_probe(struct spi_mem *spimem)
+>>  				   data ? data->nr_parts : 0);
+>>  }
+>> =20
+>> +/*
+>> + * Restore between operations, not during one. Removal and shutdown bot=
+h run
+>> + * with MTD users still attached: a busy flash silently ignores the com=
+mands
+>> + * spi_nor_restore() sends, and a restore landing inside a read changes=
+ the
+>> + * chip's address width under the transfer.
+>> + */
+>> +static void spi_nor_restore_locked(struct spi_nor *nor)
+>> +{
+>> +	if (spi_nor_prep_and_lock(nor))
+>> +		return;
+>
+> [Severity: High]
+> Does this code silently skip the flash restore if a fatal signal breaks t=
+he
+> lock acquisition?=20
+>
+> For example, if a privileged user runs rmmod while an erase or read opera=
+tion
+> is actively holding the RWW lock, and the rmmod process receives SIGKILL,
+> spi_nor_prep_and_lock() (via wait_event_killable()) will return -ERESTART=
+SYS:
+>
+> drivers/mtd/spi-nor/core.c:spi_nor_prep_and_lock() {
+>     ...
+>     if (!spi_nor_use_parallel_locking(nor))
+>         mutex_lock(&nor->lock);
+>     else
+>         ret =3D wait_event_killable(nor->rww.wait,
+>                                   spi_nor_rww_start_exclusive(nor));
+>
+>     return ret;
+> }
+>
+> Bypassing the hardware teardown path here leaves the flash in 4-byte addr=
+essing
+> mode. This might cause the bootloader to fail to read the kernel on the n=
+ext
+> reboot, soft-bricking the device until a power cycle.
+>
+>> +
+>> +	spi_nor_restore(nor);
+>> +	spi_nor_unlock_and_unprep(nor);
+>> +}
+>> +
+>
+> [ ... ]
+>
+>> @@ -3863,7 +3878,7 @@ static void spi_nor_shutdown(struct spi_mem *spime=
+m)
+>>  {
+>>  	struct spi_nor *nor =3D spi_mem_get_drvdata(spimem);
+>> =20
+>> -	spi_nor_restore(nor);
+>> +	spi_nor_restore_locked(nor);
+>
+> [Severity: High]
+> Could this hang the system indefinitely during shutdown if an erase opera=
+tion
+> is ongoing?
+>
+> Erase operations (like spi_nor_erase_multi_sectors) hold nor->lock
+> continuously for their entire duration, looping over spi_nor_wait_till_re=
+ady()
+> with cond_resched(). A large chip erase can take several minutes.
+>
+> Because device_shutdown() iterates devices synchronously without a timeou=
+t,
+> this synchronous wait for nor->lock could hang the reboot process until t=
+he
+> erase finishes, forcing the user to hard-reset the machine.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Also I'm not sure, what would be the actual expected behavior here.
+Cancel the erase? Wait until the erase is completed? Pratyush,
+Miquel, do you have any thoughts on that?
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+-michael
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+>
+>>  }
+>> =20
+>>  /*
 
-Thanks,
-Mark
 
+--375f650e369e42fd6ad726978df45da2316eabb327bc1c8e1cde82126883
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCaq0FuxIcbXdhbGxlQGtl
+cm5lbC5vcmcACgkQEic87j4CH/gw/QF/QsmvZhq/GNNoZGx0bFxmGzPhiNCF/Y7w
+NTO8T+aTZC/rVBA8f1tL2oEj+ItKRhIDAYDNbzuEV3wIexW+YcU6CLomaBd9NXbE
+ZlrX8iC8hHjxSWSH/4DENWbECuKJ03Ec4yU=
+=uqCV
+-----END PGP SIGNATURE-----
+
+--375f650e369e42fd6ad726978df45da2316eabb327bc1c8e1cde82126883--
+
+
+--===============8893594447682913981==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============8893594447682913981==--
+
