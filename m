@@ -4,106 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C632AC982DA
-	for <linux-mtd@archiver.kernel.org>; Fri, 18 Sep 2026 15:29:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C826FC982DD
+	for <linux-mtd@archiver.kernel.org>; Fri, 18 Sep 2026 19:53:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ephh4pFNbo86A7cQB2ToI0p7pZo8TiFl6IOBrcqiHFE=; b=zWCcGB9Ka8AMRk
-	WGj36Q/popK2BxCBKfIn1ByoKQjJK1A/lGiQAEs5iWOhArcSbqyTXxpTFk1JWiqaMACmf8z5SZYGn
-	/gnKiM52bv+UV/Ba2l07ZJxpmFiBB6SZIWVbO91J+c92otUbjb2v29k6a8buHCzqhOSdVn4MwjU/q
-	7iAL1BHneXnPJkpd9IWGZH818GcnPovVwJP7lhILkXTZ8EzmG/6dp0y08L5Rz6uz9XJy+FbXQSHkI
-	FknvtNG8IML7NF3vTMcw0nFFxj3w4mY+f7JPYb78AplZ0ssxOoL7YCJei/xihUV/XnM2Gm/np6SMB
-	tvOvmvehs0IJcaR5lh8g==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version:Subject:
+	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=7ipUP51gOQobxhLZpi7YG9Ram9uoVJPu2QV5jtxK1gQ=; b=HUyiHLUNvMYXOQ
+	o3ao5flsZxpHD+ZQRrk0woC9XgsrsnA0+ecDb+h42Owh+c6FNlwRv11y2FHholHOW2ujGX6+A9OYw
+	qM+oM2s3xnHwa2ivm6DOcQQpSYJ2SrSCIe1uHdFV85fdyIMqqB2EcTh5niz7yeybBJ0UjIJDOADRJ
+	YMGdMoN1CRcaAXt6TcagefkNZsVYuo361ieK4ks2E/wLnXTexH7px6GdyoQmSYRS2QxhWLOhKav2A
+	uyhZnLk1gF6sLaN32n7GDt+qcybgWw3MFZZt2lCDLrb00PSPEeFEP84m+lf3XggKCR21SUTiXktnC
+	jfSdf0CB3Mq9CBUQclPQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x7aWf-0000000Et1y-2HsM;
-	Fri, 18 Sep 2026 15:29:21 +0000
-Received: from mail-yx2-x11.google.com ([2607:f8b0:4864:41::11])
+	id 1x7ee7-0000000FSGB-01WH;
+	Fri, 18 Sep 2026 19:53:19 +0000
+Received: from mail-wr2-x10.google.com ([2a00:1450:4864:30::10])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x7aWc-0000000Et1M-1tVn
+	id 1x7ee5-0000000FSFa-1PQv
 	for linux-mtd@lists.infradead.org;
-	Fri, 18 Sep 2026 15:29:19 +0000
-Received: by mail-yx2-x11.google.com with SMTP id 956f58d0204a3-66d20c35ffcso148746d50.3
-        for <linux-mtd@lists.infradead.org>; Fri, 18 Sep 2026 08:29:17 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1789745357; cv=none;
-        d=google.com; s=arc-20260327;
-        b=LAkOgGTlxb9GejJaUaZdOZ/yTcrLIwN158IHOzS0+UwziQU7uxFgh57ujtg42IdWZD
-         Wz4zjrNFUV2fn1GZNq6Z1LPdGI4twarDis9BQR0ars03aUZkI8RFljBoUpPthNrq8tSq
-         rBwC/Mt55XfnTkUbbf3+r0xwQX0v5ap9ve8TnIwaboNr0seHxK1gLeJ8ukOuKAWKcJMo
-         /oMDirOvLtv9JFB0feRHVtE1bsMYf0ovFYUIx/Dofasvz0dkb2XHlzIgpzOWaWV9ZXX5
-         ys/nTQpT3/a9xKsCLvfGs5vC2lnbksGlx+cYN+dQfbVC5zrn3XSSKFw9NQjRMkX+RwMt
-         fm0A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=8XqNRBXt/qlgUXB2hfT5CeqtG8EouGcWeggFZCzuyw8=;
-        fh=DnLiAYPTkJr+uLBbUjZUcVn3nVLQmiB4NkyM2gZ5KME=;
-        b=cGeQYOWtDXXNE+wNYRoCNT4sDEYPI+EizUJFO2DW51r7ne29C0YzAVY2Ye578Xn3/A
-         /mAzgXqE42F6Pnl4LslW2yTk77zo/bog0jOrYOhIaUZp1Wno6KJ8P9PbIDT+GekHe+iZ
-         xEYF9n8O1NoxRAakNfekZnCbBQyh7nQqaGBik/132ymLysuegYM1KjXA+y1rymMFpkeN
-         UH3NzJ+BBYkHeWWFhCavw+x7mHE6+ch/0ZXXtKpvZNR21BS7dvAf8vDFz/XWX2M294BI
-         IL2l2NlfYEuO43wrJuwKA1ybw4TXOLRu0F2pT0djT/VzB7+QkuKLqepRDWSEXRXId694
-         m9lA==;
-        darn=lists.infradead.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
+	Fri, 18 Sep 2026 19:53:18 +0000
+Received: by mail-wr2-x10.google.com with SMTP id ffacd0b85a97d-485b1d2874fso401542f8f.0
+        for <linux-mtd@lists.infradead.org>; Fri, 18 Sep 2026 12:53:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1789745357; x=1790350157; darn=lists.infradead.org;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=8XqNRBXt/qlgUXB2hfT5CeqtG8EouGcWeggFZCzuyw8=;
-        b=mw2XhpIxu7UbZYlHYlN6G7kl/yVfjuDeDesb3q5PxUmoaJGRQtHFK85Gwsy3I8kOBM
-         rIMr+vmUk0fnOXT09FJDQgTcgUXk2LY8j6yz6Ps7MKdnZXToxdJA1qlKI0KSar0ncJpV
-         6KhsXBb72F7IuhGhAdW3JuEXKb22xNBlogLepwNPyOg3uQQHoHm74lYBQumNQp+xGORq
-         IJpTpNU0+dnoQPOwUfzYCm19qTnba3/UAUGmVwry6N4/b52YgTskuyLzVmzqi3IUlk5y
-         23ZHvgZpF09HZn8xjfoIovQkSrdEbwpi+jfFW/nyq+FC7CB29GEJggauTmfEXpTrzIi5
-         i6Ng==
+        d=gmail.com; s=20251104; t=1789761195; x=1790365995; darn=lists.infradead.org;
+        h=cc:to:message-id:content-transfer-encoding:content-type
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to:content-type;
+        bh=Djb0xkVRmjxoEZ1HgTSwJ708yN2LZl+WunF0a6oqDtU=;
+        b=rGaemcpnUm0rJ28vqQrVUWmcbzR+TmlXZFuIMKRWQ+uBnN3wvYWkATVxDWWERGSDT/
+         XsDM0AempxQ640tGExSJ+wlRP1H4gJZoqPlqRD4Yhe0npoHcF6DDBOAlukpNZoI154gI
+         LgA9FkEBrYWnS4QnG+s9AwDXO9vr1ud01TwWoVGZaEial+nU14Sn4NvYd0UcUhlBAzuJ
+         vHVeknhVg9VhN0EWoG25yBbh3F/XLXk1Yg2xJTqdWiQE4783C80U/tDF5e85GocMugGB
+         k67JnoPStW2s1p5J/gMw+zCv+/Lq0Y5gbU8+wPIFPulpS4frxZtDBWty53ZSIQrCQCFi
+         R7Xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1789745357; x=1790350157;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=8XqNRBXt/qlgUXB2hfT5CeqtG8EouGcWeggFZCzuyw8=;
-        b=RFa2CUB1h/pvjgx3LRm+uTyQ3VS/Sag4CmEG4FePr30nzPt2xIVZ5t8yBxPHOUzu5t
-         ivcqXnNlKohRpf0dSi3KjpL/JSo7UqimQETaMsB76KakY9Hsod1Hd7cSqgiSEmgTsffx
-         M1a1jX2S1jmGEJphQmM10k99ZS9w+W+Rs8NVL46cIGXRPdm6kPZyME1E3iAptTpqmcEp
-         01iKimZJ8GwxZRaRLDOWNX7RfbuJbJfhVpJhL0aojstPoecQ0blKUMH1kWpL5L3FG+ov
-         +Q3Sz4dflgjuqlvgM054PmAce9nwQMHRKkYqh22DZOYY8/F42V2HwQ+/54WSabVDymF4
-         2GfA==
-X-Forwarded-Encrypted: i=1; AKwUvBylIQnI7DuhABg/q6BOWGQb1oLKYSByEcjgH8oDDFG+KCRos0014jTB1Xf3Q/Lg4au2sjc5vGA1NBs=@lists.infradead.org
-X-Gm-Message-State: AFuF++m6jD1zodZwfOvtv/hADJfxtNivwHP9R+63YGaAb/MSzjpUfyd2
-	SqIBcJRh9oVnPBlSUjWB5N2fqXos6XbNTuI5ZHB/5qyR8vUT21r8NS16dQIieHe2n3GkqWW5SdI
-	BwvP65eg2QbGrsdKsB1DOJNS/A9JhyA8=
-X-Gm-Gg: AYBFou0Vv8DLGL0IxXNzwXzH2fpHJPXtTDRj+ns9o/DNXqpMDW6pUGWhkMw02Sc+RiF
-	uaTaBGkV4hXCFOIly8FsJ4Iz0GS/GanAnh7sHx/z6YdBvnj+I3G9NjxcMQMiijU2J9X3qUL/itX
-	YFzWyNUeLnd0S4UnilPKPshUdmD4GVKolnEYBqGv4YmST5URyD83plk2Bm1jyzdlz1xH5ccc8RT
-	ICg5wq9mM4ZFdPZ6CLMWooHW4xi5XcE1NkeAcHXf11+682Kf0Va9ODHltO8bzMdIwskWxLn0vTl
-	lzlyfuEkwzfxQlhIcsnSy+K+VquGH1GWGPx78qLNYS31AHpUiGGy4kN/ao9sJMNtTQ==
-X-Received: by 2002:a53:b10b:0:b0:668:9402:9938 with SMTP id
- 956f58d0204a3-6717fe09e2bmr1135076d50.4.1789745356692; Fri, 18 Sep 2026
- 08:29:16 -0700 (PDT)
+        d=1e100.net; s=20260707; t=1789761195; x=1790365995;
+        h=cc:to:message-id:content-transfer-encoding:content-type
+         :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to:content-type;
+        bh=Djb0xkVRmjxoEZ1HgTSwJ708yN2LZl+WunF0a6oqDtU=;
+        b=Qz2qtiu9bJfMKdaw0t+jMud+wrKZd00zMYdt8YjHJ/bfjG753hro2uplCTG7du1vq0
+         qf7ImFxfvFhSWhZmL7EFLQ0jJjTCT2JBX56DcB0go9fJef0XIvOXiAknOVWfGK4v7iQp
+         qGfuTDt4T6bBmu+PVhnh0JtGvhbWagladts86ykfC4F7j+h4e4GKvd8f5/thAKhHIT0q
+         klSlxN4jzjwHg9DhQ3VKS4I7XRZ8BFvF8+8Bb3x58NPC77Mfq/800fGUfArtPomWAc3g
+         4W87l5KJm+1e/Zh4AJdx5NYfHFDhpeE+Ub/ORPrTqpg8TSXvw61QxrjF0lqBVV0BY02H
+         lkow==
+X-Forwarded-Encrypted: i=1; AKwUvBx1NKf4uW0gcwvk4u2Fmwl0+DRK66n3UUvS0iJDFDcoQjjetOdosapG1Z/BOSGKTCVgx/ux2K5t7Yk=@lists.infradead.org
+X-Gm-Message-State: AFuF++naLZrzOOJF2t0JXfkijWTaTG2Kms0mOos/kPJlScwMzcGBSml5
+	/hUNc2ygQT91KF4P7yISHb3UuAdB+j87WkdHTT5TDWClJwI7qT5c6DKj
+X-Gm-Gg: AYBFou0GjeyPbBOUO/b7jjB74YUFyRMd8k6bMknZbu8JiWG39zFAFcJ++UMfT08X9EY
+	sZmkuAhl8yGQ1HKxgLcLms4KJxd7g0DanZNw+oPekfIuL4GpEjRX06Yp6ZMUBm+9ybljrBI4fHp
+	9HpYm4xncFMf1XHGaAnAzNkcRg2qqKFoYvut+m5oaBiPAPxiGEaGh8O5ql2lctvZzWxS3R7GipO
+	NU6mff1VjbNVeCfxCZ1NTDxDnGpw2r89KDVlRcgPg1wf0Nti1M5HyLpOzk09oH6oE/4nrBeFHeB
+	noszULCLWIblHIsMTrUCZacuCbnCRIo2r6q1hg0HV4Lg6EV1AwcTY5bs2gr8mhnsukQYtCglShC
+	xE5NBZnwwT2n3ICto0bvdOby4QErmnNEa4s5THlPviNU+5+9OCbczcv5eM8YxeyaifurD8efTMl
+	DgGpC8HMrzyuNiZSnJR+QwzUiX2TMp+3YvQ/4vq70ov97Sxo3KtlwzwnPuOkHpLaDX4wKRmJtJQ
+	sFVy+Yh2vPVkcMVy+nCGaLmsPOzzeOrP7WT1A==
+X-Received: by 2002:a05:6000:420b:b0:484:3147:49c9 with SMTP id ffacd0b85a97d-4871d98cfe0mr5479150f8f.2.1789761194562;
+        Fri, 18 Sep 2026 12:53:14 -0700 (PDT)
+Received: from [192.168.0.253] (5403F394.catv.pool.telekom.hu. [84.3.243.148])
+        by smtp.googlemail.com with ESMTPSA id ffacd0b85a97d-487244608a3sm1010447f8f.8.2026.09.18.12.53.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Sep 2026 12:53:14 -0700 (PDT)
+From: Gabor Juhos <j4g8y7@gmail.com>
+Date: Fri, 18 Sep 2026 21:53:08 +0200
+Subject: [PATCH] spi: spi-qpic-snand: add qcom_spi_config_page_read()
+ helper
 MIME-Version: 1.0
-References: <20260915113811.2429311-1-itai.handler@gmail.com>
- <20260915115206.CCEE41F000FF@smtp.kernel.org> <DLIC8P2V43E6.34ICV316K7HUK@kernel.org>
-In-Reply-To: <DLIC8P2V43E6.34ICV316K7HUK@kernel.org>
-From: Itai Handler <itai.handler@gmail.com>
-Date: Fri, 18 Sep 2026 18:29:04 +0300
-X-Gm-Features: AcwNN1XbHeUXrVqj5J_uyPI-friMh8cd1XJAXk3bkpBhx8iPzqwr-5cZFOaN8P4
-Message-ID: <CAFpOueRGN2TSNo+m3319qn00p-BYn8w7OQ6OPt4XTcVG63-uUA@mail.gmail.com>
-Subject: Re: [PATCH v3] mtd: spi-nor: take the flash lock around spi_nor_restore()
-To: Michael Walle <mwalle@kernel.org>
-Cc: sashiko-reviews@lists.linux.dev, pratyush@kernel.org, 
-	linux-kernel@vger.kernel.org, vigneshr@ti.com, linux-mtd@lists.infradead.org, 
-	takahiro.kuwano@infineon.com, richard@nod.at, stable@vger.kernel.org, 
-	miquel.raynal@bootlin.com
+Message-Id: <20260918-qpic-snand-config_page_read-v1-1-a686c4657857@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/y3NQQrCMBCF4auUWTuQFDXUq4iUOJnG2UzTSRWh9
+ O4Gdfm9xf82qGzCFS7dBsYvqTJrgz90QI+omVFSM/SuP7vBB1yKEFaNmpBmnSSPJWYejWNCdwq
+ UjsF5Gu7QCsV4kve3fr39bLw828n6H/f9A0Nr4g2CAAAA
+X-Change-ID: 20260917-qpic-snand-config_page_read-057cd4701c9b
+To: Mark Brown <broonie@kernel.org>
+Cc: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Varadarajan Narayanan <varadarajan.narayanan@oss.qualcomm.com>, 
+ Sricharan Ramabadhran <quic_srichara@quicinc.com>, 
+ Md Sadre Alam <md.alam@oss.qualcomm.com>, linux-spi@vger.kernel.org, 
+ linux-mtd@lists.infradead.org, linux-arm-msm@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Gabor Juhos <j4g8y7@gmail.com>
+X-Mailer: b4 0.14.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260918_082918_518811_5D806659 
-X-CRM114-Status: GOOD (  14.37  )
+X-CRM114-CacheID: sfid-20260918_125317_403902_A5A52C73 
+X-CRM114-Status: GOOD (  11.22  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -115,38 +102,115 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gRnJpLCBTZXAgMTgsIDIwMjYgYXQgMTI6MzTigK9QTSBNaWNoYWVsIFdhbGxlIDxtd2FsbGVA
-a2VybmVsLm9yZz4gd3JvdGU6Cj4KPiBPbiBUdWUgU2VwIDE1LCAyMDI2IGF0IDE6NTIgUE0gQ0VT
-VCwgc2FzaGlrby1ib3Qgd3JvdGU6Cj4gPiBUaGFuayB5b3UgZm9yIHlvdXIgY29udHJpYnV0aW9u
-ISBTYXNoaWtvIEFJIHJldmlldyBmb3VuZCAyIHBvdGVudGlhbCBpc3N1ZShzKSB0byBjb25zaWRl
-cjoKPiA+IC0gW0hpZ2hdIG10ZDogc3BpLW5vcjogc2tpcHBlZCBmbGFzaCByZXN0b3JlIG9uIGZh
-dGFsIHNpZ25hbCBicmVha3MgYm9vdAo+ID4gLSBbSGlnaF0gbXRkOiBzcGktbm9yOiBzaHV0ZG93
-biBoYW5nIGR1ZSB0byBvbmdvaW5nIGVyYXNlIG9wZXJhdGlvbgo+Cj4gRG9lcyBTYXNoaWtvIGhh
-dmUgc29tZSB2YWxpZCBwb2ludHMgaGVyZT8KCkhlcmUgaXMgbXkgcGVyc3BlY3RpdmUgb24gdGhl
-IHR3byBwb2ludHMgcmFpc2VkIGJ5IFNhc2hpa286CgpTaWduYWwgSW50ZXJydXB0aW9uIGR1cmlu
-ZyBMb2NrIEFjcXVpc2l0aW9uIChJc3N1ZSAxKToKU2FzaGlrbydzIHBvaW50IGlzIHZhbGlkLCB0
-aG91Z2ggdGhpcyBzY2VuYXJpbyBvbmx5IGFwcGxpZXMgdG8gUldXIGNoaXBzCndoZXJlIHNwaV9u
-b3JfcHJlcF9hbmRfbG9jaygpIHVzZXMgd2FpdF9ldmVudF9raWxsYWJsZSgpLiBUaGUgd2luZG93
-CmZvciB0aGlzIHRvIG9jY3VyIGlzIHF1aXRlIG5hcnJvdyAoZS5nLiwgc2VuZGluZyBTSUdLSUxM
-IHRvIHJtbW9kIHdoaWxlCmFuIG9wZXJhdGlvbiBpcyBpbiBwcm9ncmVzcykuCklmIGxvY2sgYWNx
-dWlzaXRpb24gaXMgaW50ZXJydXB0ZWQsIGNhbGxpbmcgc3BpX25vcl9yZXN0b3JlKCkgd2l0aG91
-dAp0aGUgbG9jayBhcyBhIGZhbGxiYWNrIHJpc2tzIGhhdmluZyB0aGUgY29tbWFuZCBzaWxlbnRs
-eSBpZ25vcmVkIGJ5CmEgYnVzeSBmbGFzaC4gSG93ZXZlciwgaXQgbWF5IHN0aWxsIGJlIHdvcnRo
-IGF0dGVtcHRpbmcgYXMgYQpiZXN0LWVmZm9ydCBmYWxsYmFjayBhbG9uZ3NpZGUgYSBrZXJuZWwg
-d2FybmluZyBsb2cgdG8gbm90aWZ5IHRoZSB1c2VyLgoKRXJhc2UgRHVyYXRpb24gZHVyaW5nIFNo
-dXRkb3duIChJc3N1ZSAyKToKV2FpdGluZyBmb3IgYWN0aXZlIG9wZXJhdGlvbnMgdG8gY29tcGxl
-dGUgYmVmb3JlIHJlc3RvcmluZyAzLWJ5dGUKbW9kZSBpcyBpbnRlbnRpb25hbC4gSW50ZXJydXB0
-aW5nIGFuIG9uZ29pbmcgZXJhc2Ugb3Igd3JpdGUgY3ljbGUKcmlza3MgY29ycnVwdGluZyB0aGUg
-Zmxhc2ggb3IgbGVhdmluZyB0aGUgY2hpcCBpbiBhbiB1bmRlZmluZWQgc3RhdGUuCkFsbG93aW5n
-IGFjdGl2ZSBvcGVyYXRpb25zIHRvIGZpbmlzaCBiZWZvcmUgdGVhcmRvd24gaXMgc3RhbmRhcmQK
-YmVoYXZpb3IgdG8gZ3VhcmFudGVlIGRhdGEgaW50ZWdyaXR5LgoKSWYgdGhpcyByYXRpb25hbGUg
-bWFrZXMgc2Vuc2UsIEkgY2FuIHNlbmQgYSB2NCB0aGF0IGFkZHMgYSBiZXN0LWVmZm9ydApzcGlf
-bm9yX3Jlc3RvcmUoKSBjYWxsIGFuZCBhIGtlcm5lbCB3YXJuaW5nIG9uIGxvY2sgYWNxdWlzaXRp
-b24gZmFpbHVyZS4KCkl0YWkKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDov
-L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+Move the register write sequence needed for configuring a page read
+into a separate function to reduce code duplication.
+
+No functional changes.
+
+Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
+---
+ drivers/spi/spi-qpic-snand.c | 45 +++++++++++++++-----------------------------
+ 1 file changed, 15 insertions(+), 30 deletions(-)
+
+diff --git a/drivers/spi/spi-qpic-snand.c b/drivers/spi/spi-qpic-snand.c
+index 9e626ffbe63a..aaa40753d274 100644
+--- a/drivers/spi/spi-qpic-snand.c
++++ b/drivers/spi/spi-qpic-snand.c
+@@ -501,6 +501,17 @@ static void qcom_spi_set_read_loc(struct qcom_nand_controller *snandc, int cw, i
+ 						   read_size, is_last_read_loc);
+ }
+ 
++static void qcom_spi_config_page_read(struct qcom_nand_controller *snandc)
++{
++	qcom_write_reg_dma(snandc, &snandc->regs->addr0, NAND_ADDR0, 2, 0);
++	qcom_write_reg_dma(snandc, &snandc->regs->cfg0, NAND_DEV0_CFG0, 3, 0);
++	qcom_write_reg_dma(snandc, &snandc->regs->erased_cw_detect_cfg_clr,
++			   NAND_ERASED_CW_DETECT_CFG, 1, 0);
++	qcom_write_reg_dma(snandc, &snandc->regs->erased_cw_detect_cfg_set,
++			   NAND_ERASED_CW_DETECT_CFG, 1,
++			   NAND_ERASED_CW_SET | NAND_BAM_NEXT_SGL);
++}
++
+ static void
+ qcom_spi_config_cw_read(struct qcom_nand_controller *snandc, bool use_ecc, int cw)
+ {
+@@ -564,13 +575,7 @@ static void qcom_spi_config_single_cw_page_read(struct qcom_nand_controller *sna
+ 	__le32 *reg = &snandc->regs->read_location0;
+ 	int num_cw = snandc->qspi->num_cw;
+ 
+-	qcom_write_reg_dma(snandc, &snandc->regs->addr0, NAND_ADDR0, 2, 0);
+-	qcom_write_reg_dma(snandc, &snandc->regs->cfg0, NAND_DEV0_CFG0, 3, 0);
+-	qcom_write_reg_dma(snandc, &snandc->regs->erased_cw_detect_cfg_clr,
+-			   NAND_ERASED_CW_DETECT_CFG, 1, 0);
+-	qcom_write_reg_dma(snandc, &snandc->regs->erased_cw_detect_cfg_set,
+-			   NAND_ERASED_CW_DETECT_CFG, 1,
+-			   NAND_ERASED_CW_SET | NAND_BAM_NEXT_SGL);
++	qcom_spi_config_page_read(snandc);
+ 
+ 	if (cw == (num_cw - 1)) {
+ 		reg = &snandc->regs->read_location_last0;
+@@ -763,14 +768,7 @@ static int qcom_spi_read_cw_raw(struct qcom_nand_controller *snandc, u8 *data_bu
+ 	snandc->regs->exec = cpu_to_le32(1);
+ 
+ 	qcom_spi_set_read_loc(snandc, raw_cw, 0, 0, ecc_cfg->cw_size, 1);
+-
+-	qcom_write_reg_dma(snandc, &snandc->regs->addr0, NAND_ADDR0, 2, 0);
+-	qcom_write_reg_dma(snandc, &snandc->regs->cfg0, NAND_DEV0_CFG0, 3, 0);
+-	qcom_write_reg_dma(snandc, &snandc->regs->erased_cw_detect_cfg_clr,
+-			   NAND_ERASED_CW_DETECT_CFG, 1, 0);
+-	qcom_write_reg_dma(snandc, &snandc->regs->erased_cw_detect_cfg_set,
+-			   NAND_ERASED_CW_DETECT_CFG, 1,
+-			   NAND_ERASED_CW_SET | NAND_BAM_NEXT_SGL);
++	qcom_spi_config_page_read(snandc);
+ 
+ 	data_size1 = mtd->writesize - ecc_cfg->cw_size * (num_cw - 1);
+ 	oob_size1 = ecc_cfg->bbm_size;
+@@ -875,14 +873,7 @@ static int qcom_spi_read_page_ecc(struct qcom_nand_controller *snandc,
+ 	snandc->regs->exec = cpu_to_le32(1);
+ 
+ 	qcom_clear_bam_transaction(snandc);
+-
+-	qcom_write_reg_dma(snandc, &snandc->regs->addr0, NAND_ADDR0, 2, 0);
+-	qcom_write_reg_dma(snandc, &snandc->regs->cfg0, NAND_DEV0_CFG0, 3, 0);
+-	qcom_write_reg_dma(snandc, &snandc->regs->erased_cw_detect_cfg_clr,
+-			   NAND_ERASED_CW_DETECT_CFG, 1, 0);
+-	qcom_write_reg_dma(snandc, &snandc->regs->erased_cw_detect_cfg_set,
+-			   NAND_ERASED_CW_DETECT_CFG, 1,
+-			   NAND_ERASED_CW_SET | NAND_BAM_NEXT_SGL);
++	qcom_spi_config_page_read(snandc);
+ 
+ 	for (i = 0; i < num_cw; i++) {
+ 		int data_size, oob_size;
+@@ -963,13 +954,7 @@ static int qcom_spi_read_page_oob(struct qcom_nand_controller *snandc,
+ 	snandc->regs->ecc_bch_cfg = cpu_to_le32(ecc_bch_cfg);
+ 	snandc->regs->exec = cpu_to_le32(1);
+ 
+-	qcom_write_reg_dma(snandc, &snandc->regs->addr0, NAND_ADDR0, 2, 0);
+-	qcom_write_reg_dma(snandc, &snandc->regs->cfg0, NAND_DEV0_CFG0, 3, 0);
+-	qcom_write_reg_dma(snandc, &snandc->regs->erased_cw_detect_cfg_clr,
+-			   NAND_ERASED_CW_DETECT_CFG, 1, 0);
+-	qcom_write_reg_dma(snandc, &snandc->regs->erased_cw_detect_cfg_set,
+-			   NAND_ERASED_CW_DETECT_CFG, 1,
+-			   NAND_ERASED_CW_SET | NAND_BAM_NEXT_SGL);
++	qcom_spi_config_page_read(snandc);
+ 
+ 	for (i = 0; i < num_cw; i++) {
+ 		int data_size, oob_size;
+
+---
+base-commit: ca01ebd9e2ed0ea7ed4a068bcd666b0f394581ac
+change-id: 20260917-qpic-snand-config_page_read-057cd4701c9b
+
+Best regards,
+-- 
+Gabor Juhos <j4g8y7@gmail.com>
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
