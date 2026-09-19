@@ -4,127 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F14AEC982CC
-	for <linux-mtd@archiver.kernel.org>; Sat, 19 Sep 2026 13:11:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D282C982D8
+	for <linux-mtd@archiver.kernel.org>; Sat, 19 Sep 2026 14:22:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=WzjrjBTZJeT0FhK0HbrpYDekjuuPEmaKx+vx/9GWSfw=; b=RpjeyDe904Y7Ms
-	5QqVp6KVhQjDpyJtC2pSTrJYsf79eiWC7nL4Xd4ZCkaGCE0UWsOPeRSDiBQh+GiJWd4rej2nTZ173
-	vBtNYCNHLJdCEQCWOK30yp+aoluYHttITf5J8QspomRH+v80WpWmfNMqiA9sOt3SQhQ0zOUKBa1i2
-	4ug/pu7F95FHAND9988fyfkaDCDXuP1yw7n19LoUCPyPzIKVQdZGSIiibOd1Akg0thwfujn1/apWm
-	jMa3Tr4uOzKVHMEsZ0uLWd+6l1JKtE0aKcNjegvcPwNuqILKmoeT3yzZkJC3qeduSx7GNAA6nrpiW
-	vHtcYJ70Aj6bQ9cblXwQ==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=N1ttWm2D60PjNxMKotLQF0RMTT38lzkzDzsBL9cSe7g=; b=4bn28eEuDlT4K6
+	Zg/fbjVQp4ezFaC0qZwjA1YUtmJl4H9mv3Gq1uugZPhPY72WAVnIYQpwSBqKyYvG9yzeqxZpfAE0g
+	xpFZ6yDC/F8noEPSz9A8o+VCLitnEs1s0qDxoPRhwekNNj7+xkBNhS5i994sjiVsTf+24nw+c4xgG
+	m1qEA4+d7pySDUEPg+My4L831LjKJzmhBPff08RziMmkKnVj1SZIxFhtNWQ+I7KkGftrhbnBMBepg
+	fZkCCa/lx43S+0jqKz8gqbhphYeHehtK+6hQgp+iytK4GKraH2qwka0WdzUcd1b60kkycXovbN4h0
+	Motr4057vJJE2tqcjHkQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x7uqA-0000000GIyK-1udz;
-	Sat, 19 Sep 2026 13:10:50 +0000
-Received: from mail-northeuropeazon11011033.outbound.protection.outlook.com ([52.101.65.33] helo=DU2PR03CU002.outbound.protection.outlook.com)
+	id 1x7vxE-0000000GMls-2F6A;
+	Sat, 19 Sep 2026 14:22:12 +0000
+Received: from mx01.bremer-it.com ([2a01:239:410:e00::1])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x7uq7-0000000GIxk-0q8X
+	id 1x7vxB-0000000GMj4-3FZ0
 	for linux-mtd@lists.infradead.org;
-	Sat, 19 Sep 2026 13:10:48 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=dMitY3NIYjCCPzjswJpHLeB+BMaBFL9ziFOotax17mc9VJZpdT/WDJpsMXXsmny0Tg0E65n+tC4eJcWL4msv2Le7Ywz4BmOmI7DcIyiS7c+3HDVtK25EnYJkoPi2gytuf8GyxHH6e9CsATHngXH3ivjhSvJHAk0oBClSFkP5WnKDW+AVB/L7PTwyUMxcTcKclWNYrzJB2DtglWS+kCN3bLuqIit912YXwMvmIB3fBQcTFzG3uBNxEi63cZ6l1HM+yHeT/wTxTiLQ/WjWcviX47mz4IdKQJfACQuRqTLXtv7ACDPPu3Hviyv7mxinYu9HRYZkX140n5wBeozpBnBP0w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=gda15FrxNEoeHFP98UEZcxPTfhHnlH+cXH+acVu7fUU=;
- b=sDq7pV42rGhvHjZMJPjK4g4NRrKDNAklaotRoeI0fZoEO7AHz2dsOH4uAtGU3mTnGD3BTOhug3HGWcCdW99Gasufww94f4CCkH80RQFNJhKXHX+mKimYG/9tIJQoT/DvWoij9L4UVWkFmbLMxGJffWwyK6KJlm6t4DXPgHFNnmrUDgyxyS8Hk3ILqG6ZPjfGV+4ugom1Ba18L0DRTZxOXD4XJ1sOHROm5RK/yNeKLQPpktlFoYt16Z76Si6QtXIpHqSkDUzSTRMeehszhT54KCXGjcKqHQ4372K1oGTvKL58UUIFJdf/ekwlU/MHcgm7+17ap86f6qG2Dy0uV5a8MQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector1-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gda15FrxNEoeHFP98UEZcxPTfhHnlH+cXH+acVu7fUU=;
- b=NFYscxnw9SfUIoukKbaV5SRm8LywITnuUiFmOP76U81em7tCZQzM5XhsxRnogMvd42eNrdVhUQRxfbD+//be5U+2yCY5E9D6pspKAb8GZ4HVsM7rpM+aiuQaljHrIdVAN0Bxbqo0HVwx2wojgjQqGId9gaOZlHNuVO0/EKG6Om3Qgt3Jv6R0zZekgd0w5p+1exCMAjT5ZZzVnYWDBsZn1+QAAenmMUifCE5lYfpenDZ7SKb7fkq8nby3sOiVhtQzs9GO+xfrdhfzb7z3Xt99kKhGx/mo65WxKxUB/vvZ/QD6B+faLg28n6LPKDVED7rZintL/1m+NcpTOUu3lElMOw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=oss.nxp.com;
-Received: from AM8PR04MB7874.eurprd04.prod.outlook.com (2603:10a6:20b:24d::9)
- by AS4PR04MB9507.eurprd04.prod.outlook.com (2603:10a6:20b:4ca::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.428.14; Sat, 19 Sep
- 2026 13:10:41 +0000
-Received: from AM8PR04MB7874.eurprd04.prod.outlook.com
- ([fe80::ac38:1699:6f18:c5d9]) by AM8PR04MB7874.eurprd04.prod.outlook.com
- ([fe80::ac38:1699:6f18:c5d9%6]) with mapi id 15.21.0428.014; Sat, 19 Sep 2026
- 13:10:41 +0000
-From: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Kees Cook <kees@kernel.org>,
-	Karl Mehltretter <kmehltretter@gmail.com>,
-	Peng Fan <peng.fan@nxp.com>,
-	Breno Leitao <leitao@debian.org>
-Cc: linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: cfi_cmdset_0001: use assign_bit() where applicable
-Date: Sat, 19 Sep 2026 21:08:06 +0800
-Message-ID: <20260919130811.3041516-1-peng.fan@oss.nxp.com>
-X-Mailer: git-send-email 2.51.0
-X-ClientProxiedBy: MA5PR01CA0130.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:a01:1d5::6) To AM8PR04MB7874.eurprd04.prod.outlook.com
- (2603:10a6:20b:24d::9)
+	Sat, 19 Sep 2026 14:22:11 +0000
+Received: from cashel.logfs.org (c-98-33-96-243.hsd1.ca.comcast.net [98.33.96.243])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature ECDSA (secp384r1) server-digest SHA384)
+	(No client certificate requested)
+	by mx01.bremer-it.com (Postfix) with ESMTPSA id 0C32020BD1;
+	Sat, 19 Sep 2026 16:21:52 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=barelysecure.org;
+	s=dkim68; t=1789827716;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dF0vvhSQmDb1GBoZeo34gbG9l05gqX6VJ3NyhVM0R2A=;
+	b=W6h9jXQcxIeA/cFgWioUmhHjg4orfTMF/v1oPeAHiBz/3WHjJWeRCYD4Sn1OgRfBVHb67D
+	2I+3lwcnWxV5UtLkWfuFF3FoYkdNJUgCR4qK9vt3IwZuK2O1/F2x4ngyIbTs7nr1jbyWbo
+	KU7Ynp2ZN3qQ9Uw01+NrtRkbdrxi9ILCEi0ZUv0EzO0+Iz87iigWYBESqjxuE5AvTAYl1M
+	nb9BeYxk6tNxmMafU3FwUUVYvllh7Dq80MjJjtvgozNGcjonE0YDKc6bjBwQ7D5sNamTyn
+	zX34VZzpRJkhTi9iqo8hGQTwAsdumqtUTtr8Ir55/1kjAsAazVpoKtqYQwhqOQ==
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=joern@lazybastard.org smtp.mailfrom=joern@barelysecure.org
+Date: Sat, 19 Sep 2026 07:21:50 -0700
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@barelysecure.org>
+To: Richard Weinberger <richard@nod.at>
+Cc: Chris Roy <iam@thechris.in>, Greg KH <gregkh@linuxfoundation.org>,
+	syzbot <syzbot+7cab6a19619f1b8efc00@syzkaller.appspotmail.com>,
+	dakr@kernel.org, driver-core@lists.linux.dev,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	rafael@kernel.org, syzkaller-bugs@googlegroups.com,
+	linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com,
+	vigneshr@ti.com, Adarsh Das <adarshdas950@gmail.com>
+Subject: Re: AW: [syzbot] [fs?] possible deadlock in ovl_create_object (2)
+Message-ID: <aq6afmdN5DYpuUa2@cashel.logfs.org>
+References: <CAE2Bdm3NuEHshrG6K2boKAnCQUvT5SX79cP9nPgS2s1afzY1hg@mail.gmail.com>
+ <6aab0f82.e91c2013.3bdb06.0009.GAE@google.com>
+ <CAE2Bdm2wzxj-J0TM8F+3SVnu0W3HeiROW97U4qvBeyHKdHJFmg@mail.gmail.com>
+ <2026091753-broadness-bootie-b683@gregkh>
+ <CAE2Bdm14hif17B8RTAE+PhWEps5Fzh=WPurZeSNp9C6TqCKumg@mail.gmail.com>
+ <aqwuWWMwdIcx3704@cashel.logfs.org>
+ <mu82xsi6.76ee613a-07fb-48b1-9336-99e8780e8b6e@nod.at>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM8PR04MB7874:EE_|AS4PR04MB9507:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3328e025-9ea7-49c8-0ddb-08df164f6842
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|19092799006|1800799024|23010399003|10067099003|11063799006|56012099006|18002099003;
-X-Microsoft-Antispam-Message-Info: 5MoTFvWGbqThpNWc98g/ZzUOs4w66Vkc50y2+O8I9eoolAOXweCCuKcNCpfP3zO3qxDKLdgomJjrWEh13SAn5wMI83+tx/FuDCCrQIUQLST0JfN4x+riBEa/JPIuMbeNVQiygAzc1HCOHX8K3iRLAU3DrDacXiFWrEtUZ8Sq33kKTOYTw8qFgQn5YF3B26Lc9KcXM3V2WXoYoX89aKbFMtD5wKuPkrMdWCgLTfhFWWcZu0wbF7uP7PH0ucWkwD5U9Zqb/d20SflPWIQjTbVav5p6KiSN3lu6I1DNdY+VjDZKj1GTfZjxOvLFkgo6sMKo+DB8mxjgRR4iNq3fQM4CBKCVLUn7204cI0/QWXfrRnHxkSR5S8K9tLDe6pVm6NznyUOA8Q5PIkCeSFpQPGUSLiRFuU0bVLLocYIinj9TP43hFu7JiauzIz46WlmZQghfm5/7rSnfvtDk8Cr7w9kfe+T9SV3x1I8SckUrXZWlhcq6yh8VX6WEcZ7arBy5Ffjy8R9YvY07UAjo3N3mospNCRBlg8SJfmwD594/W0EDCqlAnmxZdbhV8skzh75BIra14owwmSdDS6VJR5l4KJ5rJDaCFyRrYVxo77d+698BqJ7axB8nFBc2ooqnvcDctLGBoIHrqCmiRuocUKWy9yEiGP/TWpAKNy0YO8ZTSwNGlWA=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM8PR04MB7874.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(19092799006)(1800799024)(23010399003)(10067099003)(11063799006)(56012099006)(18002099003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?/1rVa9LKxdUA9iFfaxao+/4oTIbbJ6FRxtTp2pBhcal7LhKCizTwWxVrn+qz?=
- =?us-ascii?Q?hZiTyQvhh+QT3dW3dSBbTKuZzcW1ISz2CeTvdkR8fIGMGtzW3SrR8RG/ZWBp?=
- =?us-ascii?Q?kPGCdIEe+iOOYyV2ccrSayB+EfuiMmal6GyL++BSZpp5/w3lTGoY61fgt4qB?=
- =?us-ascii?Q?A6otXOlWJDHvxfmeXIqYyzZfXTfwVvjGx1l/dM/aasEbMfg0npNxoDjpSQkO?=
- =?us-ascii?Q?Phv2g9t2d7piNmAkeGEWvlCAQ98ay09GBXjY0XCWGRStlb/0yC7gbgzoiyqD?=
- =?us-ascii?Q?/0841494mv7S/bg9OWlOg40KQTt4NEWPO4dHxZ/khWRqSW/iYj0rKSqqIkCg?=
- =?us-ascii?Q?7EtxZOgy3TE95SBFGP7f4dpT0inbJXOuMVklhgNw4xbskbSPgX/h0Q8HJbE8?=
- =?us-ascii?Q?PeXZ9g/X5ZjFEZsPdddT5v+x374Ds3+/TFiXfOul0JD2evuxgwuzC+ceXH7U?=
- =?us-ascii?Q?jD+chJBunBilTzfft+FW2oCgYIWPjv/gPWAVOTNZycRF45zqqkvjsiz2OMgP?=
- =?us-ascii?Q?SNORdZJmdyPB6uvWv0yd1dPAfws/dDPqq/9zqb5S22Q6cNkqmfeUxbj+N4DF?=
- =?us-ascii?Q?FgTGm+fXLhx48UjDUyiuPaEc3SBOJemxzWmxfJg3Od+PKnZgYdI5ofLFnoPV?=
- =?us-ascii?Q?ft49tyuZzOMXedoVL8l4X7EkPT98bk4FRL11aycPGpo8TZuE1RRFAGstslU0?=
- =?us-ascii?Q?tg1TSs/DKNJj+vvBbSlSeZJ0AO3Yn1gfa3BEgCQqz9d3cKNff1H4kBlMz87v?=
- =?us-ascii?Q?KTBk78qFCQX2cNoPOybOYbvmkVuxlzVbEHqbRd0KWyruyYGrDErQuIuoETRe?=
- =?us-ascii?Q?/+Ml4SjFmGodeECjgPSeELZJ9ABm/NdVLO55bMfe1hbL759MDCVLiUC0gKgk?=
- =?us-ascii?Q?mUB8Y7nEe5ajWE0633JYTeG8WNdRwVulm/uGYwx/bbX/vSuQvbQhXbhb8/3Y?=
- =?us-ascii?Q?fRPif/NGoDEGwxm8es2HbSBM2a18Vby6pwJRjeLOMA5INdtDQ5uKd4p7gjU4?=
- =?us-ascii?Q?6rsbaMrbnhqGLq/FXpHLEexcQLyw+4dFI0vmIeHc6pUCNXt1g7Vg8vLhUZd5?=
- =?us-ascii?Q?J28sZJOKoakz5YXPFJmy0/3alDMDE8v/HXEdD1TrHe+nFl6mTGmcBJ22/QO/?=
- =?us-ascii?Q?loCj6Kqme8nBwGElaRvmsxDKiruDMUHF9x8jkUkIGWq4YzNrMTu2Dmte65Am?=
- =?us-ascii?Q?r4UTSxjpy/3AIbP1Yck0EF986mR27FPoS0KPuN+kfcPJ127nmjxhNnkbU5Hv?=
- =?us-ascii?Q?azzq/mYB+kopNxEl6VZ105g6KoafuiSq7n6n1PIW4yOrcxLXkf5Pz6dkJIeA?=
- =?us-ascii?Q?uKVYBvEZhWt6f1OgnTWx4de7plOapB2QgBqbEA8MJxTAuKbRcYe0XQu6pgwR?=
- =?us-ascii?Q?mm7A01gU5WpnfA9uWewXErxr9g7utcoM/Bev1X62mv6nEV0spUbpEPsBlzBe?=
- =?us-ascii?Q?MBve+MvTeM+j3C1Sz8UbL0OyaInoLmhPKYTGs5TK/7sBhn8GKNPZOc3l8Frd?=
- =?us-ascii?Q?A5xrKp9YpwFPdjIwae4kDUyA96RS3/RruTNWshdgaTggU85K2jUO2El7vlU0?=
- =?us-ascii?Q?hAsCmmX077s72Vvz/zt4D//8egWlY04SuEublGkGY+iA3zZ8AvgY7KLlCEG6?=
- =?us-ascii?Q?cc9HEYAUcDT/g28nf+yWiOHN3vxX8t2HwZ1XyoMTymIK3QRFtRl3vCtM8c8V?=
- =?us-ascii?Q?3gO3pVz8g1Pw6udAeUJvEwBBYQOxhlcwg7VcCetKIWd9Vs70grPfpHBYkRsa?=
- =?us-ascii?Q?KEfhAxoX7zY9CuXYjGwSNfFM13qiyuoZ2d/0m97nIFJVn4+TI3Ta?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3328e025-9ea7-49c8-0ddb-08df164f6842
-X-MS-Exchange-CrossTenant-AuthSource: AM8PR04MB7874.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Sep 2026 13:10:41.8260
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: CR/m6UCxlCP4iHWisiU4CMIycCpIlp1SQTmMcJeeGfFoSmlnP5C4jO2TBSyWB38Afkj0+Pr6NmwT8yphdAmxE93hCq3LqTElzrXKptpAlQUySufUrtO2Q7rhapSDgaWX
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS4PR04MB9507
+Content-Disposition: inline
+In-Reply-To: <mu82xsi6.76ee613a-07fb-48b1-9336-99e8780e8b6e@nod.at>
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [1.40 / 14.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	MIME_GOOD(-0.10)[text/plain];
+	BAYES_HAM(-0.00)[17.57%];
+	RCVD_COUNT_ZERO(0.00)[0];
+	ARC_NA(0.00)[];
+	TAGGED_RCPT(0.00)[7cab6a19619f1b8efc00];
+	ASN(0.00)[asn:7922, ipnet:98.32.0.0/11, country:US];
+	MIME_TRACE(0.00)[0:+];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	TO_DN_SOME(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[barelysecure.org:s=dkim68];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
+	LOCAL_OUTBOUND(0.00)[];
+	FREEMAIL_CC(0.00)[thechris.in,linuxfoundation.org,syzkaller.appspotmail.com,kernel.org,lists.linux.dev,vger.kernel.org,googlegroups.com,lists.infradead.org,bootlin.com,ti.com,gmail.com];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	URIBL_BLOCKED(0.00)[barelysecure.org:from_smtp,barelysecure.org:from_mime,c-98-33-96-243.hsd1.ca.comcast.net:rdns];
+	SUBJECT_HAS_QUESTION(0.00)[]
+X-Rspamd-Server: server01
+X-Rspamd-Queue-Id: 0C32020BD1
+X-Spamd-Bar: +
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260919_061047_266634_5A3F6A92 
-X-CRM114-Status: UNSURE (   9.23  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260919_072210_253268_693629BE 
+X-CRM114-Status: GOOD (  10.69  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -136,39 +109,41 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Peng Fan <peng.fan@nxp.com>
+I added Adarsh Das, who also attempted to fix this bug.
 
-Convert open-coded if/else with set_bit/clear_bit to the assign_bit API.
+On Sat, Sep 19, 2026 at 07:42:25AM +0000, Richard Weinberger wrote:
+> =
 
-Signed-off-by: Peng Fan <peng.fan@nxp.com>
----
- drivers/mtd/chips/cfi_cmdset_0001.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+> While we're here, maybe it's time to add a decent configfs interface to
+> this driver instead of configuring through module parameters.
+> That way also multiple instances are possible.
 
-diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
-index 60d82a1acb01..e5805eebeed6 100644
---- a/drivers/mtd/chips/cfi_cmdset_0001.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0001.c
-@@ -2520,10 +2520,7 @@ static void cfi_intelext_save_locks(struct mtd_info *mtd)
- 
- 			status = cfi_varsize_frob(mtd,
- 					do_getlockstatus_oneblock, adr, len, NULL);
--			if (status)
--				set_bit(block, region->lockmap);
--			else
--				clear_bit(block, region->lockmap);
-+			assign_bit(block, region->lockmap, status);
- 		}
- 	}
- }
--- 
-2.51.0
+I honestly wonder whether this driver has any production users.  It is
+somewhat useful for developers that want to simulate hardware they don't
+have.  But beyond that?
 
+Anyway, I have two deeper review questions as well.
+
+One, afaics block2mtd predates overlayfs.  If the bug requires the
+interaction of both, it is overlayfs that introduced the bug.  So why do
+we fix it by modifying block2mtd?  Is that really the appropriate way to
+fix it?
+
+Two, we fix the deadlock by adding a second thread (via workqueue).  But
+to keep synchronous behavior we end up blocking until the second thread
+has finished.  Does the blocking behavior recreate a circular dependency
+and therefore a deadlock?  If not, why not?
+
+J=F6rn
+
+--
+Prosperity makes friends, adversity tries them.
+-- Publilius Syrus
 
 ______________________________________________________
 Linux MTD discussion mailing list
