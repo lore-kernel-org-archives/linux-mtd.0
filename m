@@ -4,92 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6ABBC982DA
-	for <linux-mtd@archiver.kernel.org>; Sun, 20 Sep 2026 18:51:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32114C982D8
+	for <linux-mtd@archiver.kernel.org>; Sun, 20 Sep 2026 19:03:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Reply-To:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
+	References:In-Reply-To:Cc:To:Subject:From:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=qvVl0nI+BzDYba/1SBnqcjTYuhiPHcRJg3CpxCchyLc=; b=EnlvJYx1fhgCRt
-	X5uRSF/gKhGZjbVjYpIGU4v11ty6qG9X29t/I4JsMMQZro5Gi/aNyQsec1LbbNdqKwyQ29bQWkgxk
-	pPPJdYadudHTvLOwRlBNtrMQxO6wehn1ASO6fNbCQktc+spMUeHv5VmWf3c3hYFG0zU2KJGVKJEod
-	+LMjcOE/RfwGqQEU90O5EljsGjYC9KJao5wFfokAtYNjMCQYwNw3a7y9nX/0t7BH7ZXDV5gnHnJeH
-	M9gKw1j1/5Tfklb2blubLQZNuG0PtyKZswazEQHcM2cNxj8KtKbgLTWO+G8YFAGBU1lSP8rDS3jLI
-	0AXGJVw2oUlSFeO9pIFA==;
+	List-Owner; bh=P+J0mTgBgVtDxxp2DaXtKs7gHtiTudx32HRo4h0VIUE=; b=PiziEH1ne9J3kh
+	rJ6lD+OTKNzr18vuplr1sYZ5823NL1Ua+/G2ogDT000RzHlT39uYqrJqmO4ugqsbyUurFpou71V1I
+	DlxaeJiD/rpGCE/elFvpW0G40ehBiEjqfmzd2giKkQH0rSsL8NJzz37H8Um87/tzunVa10Vohoc+n
+	IRPTIWSW70VPr0FaSVn09JLKB4SYYR2SAhPF0H/l4H6cNO7BwSLMFPNMkfEmANtPRarlv4zWsdc4N
+	OffGritWVMw+19wMQCcUVyTq6Io8j2lX+W1u62+VWLvwnLH9Wjfi1mImMDQOQPgeEimlSUZHnAfF/
+	7lreIsaYwNE7+x8KmEbA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x8Mdh-00000000GVG-2Fa1;
-	Sun, 20 Sep 2026 18:51:49 +0000
-Received: from mail-pj2-x10.google.com ([2607:f8b0:4864:39::10])
+	id 1x8MpL-00000000HBF-2Cw4;
+	Sun, 20 Sep 2026 19:03:51 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x8Mdf-00000000GUk-1fhc
+	id 1x8MpK-00000000HB9-1Dsl
 	for linux-mtd@lists.infradead.org;
-	Sun, 20 Sep 2026 18:51:48 +0000
-Received: by mail-pj2-x10.google.com with SMTP id 98e67ed59e1d1-396cccbba92so2073567a91.0
-        for <linux-mtd@lists.infradead.org>; Sun, 20 Sep 2026 11:51:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=thechris.in; s=google; t=1789930306; x=1790535106; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=C3PcdtvDhtWk0resd1+mjtW2Liv65ZiOwtUfq+Snr3M=;
-        b=jQfWK9GTbwCTUfnR8ZTBN8LBP82+qa+Z9UKyVVC0pAuX+UPyTZW9zXLbRq+nRXJN94
-         dxHSd8UZgT8fogNMlJpYUpna/1FCgVppnj/2blPN2c+YyODsRuohgVFdCAWfchmN8ajp
-         ReHap6Q78J8dLGsdjB9C/+e6JmwrZ7q0VnwTCoYxGb/mhc7byFyW7j9YswP1dS1qGkxA
-         1VSswrV5oepo/hajfBDNMcg/ls4/vjR69p5ogGoqYGYjbxjLtKRw+pmsUXu0rH/kEI/W
-         /EOWd8GGrF0ge5ac4bgIY2o8QUXuaPhkqiiS+D/GSw3aumY57KnovQK8eg6Ul8rgTe48
-         AAcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1789930306; x=1790535106;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=C3PcdtvDhtWk0resd1+mjtW2Liv65ZiOwtUfq+Snr3M=;
-        b=aJ4WZHY4yYAV6UBwMRYUty4PXuURMa3BJLGNECuf7uDT+F8dVmLsmey14SVzqBCMr7
-         844/s6pCPpMxcODFem5TRXSeaQB+O9/2wlRZZl9KyeNFkJMp1uprV6S73HHoTIDRdlxp
-         IeC4kYlcWlXN1U/T+uzvewKjCYB6zaiqAvfm59C2UPrWjbZ7A8PCsJJW7ZZ18xcLW6zg
-         o+qLQBegNSMnknbDgVNonTNrxn8/Z/sppLU6HvXOtzfFXq1r4bEpz2AS4A2JM+cmN11C
-         OnT48zvuDyS5PszzzK/tWAZQFX9SSFbeliszXr4igj9T2B0G8JsPXZmt9061p57wugqY
-         vELA==
-X-Gm-Message-State: AFuF++l1Lk9ur2f7ppFCAKnWPRLS0r7nvfz3mnA1AHvub2VDRgfW0iXU
-	vLyQg3RxDzOwgDNwtCxlivY4LtYpNoWxSPAx7w7jn4ANM966wdn1KkvsRl72HuzRBnUH
-X-Gm-Gg: AYBFou3FjoCT028u2BQvr9hiOEkjdVipdUeu81Qa9kqQ3Lnf+viIZSa3NawEkUjiKWP
-	D5fncOgpG3i1oCcuzGZAc8mgew1XQGVSEkUjUlfK3Y4H+2AjGn1jrdbnwxz2r/myrMCuFc7/TB/
-	rjnT0Vj8EY2WQ4Q0/Y/JxQECvqNtGb1FF/lZclXqV8p03xGuBoaT3Y9GBOrax/xdVuAA+Zx+9ls
-	L6JPOLGIw4JOXgE8rwg605dLUDm5qkSkXeQfvwLP3oEdy4h7WfLatIac4+9zbq6pbJuRZ/dMpr4
-	pPpP+I97w1M9CkmuolkCpfFYLKlmcRLpoxQzHg/fOx26Sfx8KOHOILvOhkpmvYMoz4g7BW5f1aW
-	Y8JxnhKjQEpWWDN9uoDqnxE3lORchD3duqNyplReQHtg6jP+ps4V6M9RO14ypRwUGVb4DtH4lGS
-	HEY9nookyGPOmR/244yvBkiUcuyCLW6yOIW3evY2uhbn8UpD+Iq4cci4+aZlajNUHhip3aLDqZT
-	Mr+zee5WESisEn1RdraY8d8K8nuwVOp2en7lMOJH8gnV6W49SdKVqHkFBwBIq0HslHlzhtRbB0=
-X-Received: by 2002:a17:90b:4a85:b0:39e:6a80:dd9b with SMTP id 98e67ed59e1d1-39e6a810c53mr7579979a91.34.1789930306330;
-        Sun, 20 Sep 2026 11:51:46 -0700 (PDT)
-Received: from devils-dell.. ([2405:201:8004:88ab:1946:9b98:4be:3aba])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-39e6c3145dasm10240765a91.4.2026.09.20.11.51.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Sep 2026 11:51:45 -0700 (PDT)
-From: Chris Roy <iam@thechris.in>
-To: miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com
-Cc: linux-mtd@lists.infradead.org,
-	joern@barelysecure.org,
-	gregkh@linuxfoundation.org,
-	linux-kernel@vger.kernel.org,
-	syzbot+7cab6a19619f1b8efc00@syzkaller.appspotmail.com,
-	syzkaller-bugs@googlegroups.com,
-	Chris Roy <iam@thechris.in>
-Subject: [PATCH v4] mtd: block2mtd: defer device open out of param/sysfs write
-Date: Mon, 21 Sep 2026 00:21:32 +0530
-Message-Id: <20260920185132.1266699-1-iam@thechris.in>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <6aa178fc.f2639fcc.29487d.0008.GAE@google.com>
+	Sun, 20 Sep 2026 19:03:50 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id 6C4114024D;
+	Sun, 20 Sep 2026 19:03:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4D3B1F000FF;
+	Sun, 20 Sep 2026 19:03:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1789931029;
+	bh=uctREekJWe2tktIr51UN2v2iX/QbiRDqbdXt9T790Mo=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=ETvVvOkYral8ovAAwmT4vAbJd6JYEYV6Z9HLDw/lKsOINOvQChdECow0Cu3ESNnbM
+	 nkV8Rz5CCTlKXopFOPP54olYlEPqd9N0+IWJooL3nd0UpgebvaiRrU8HEgFQ6+fqUg
+	 XqYbm5UvSE9ee3tAPShA7P6C9PtTJcOj4qIM0xM1qdmEVKggARmL9FMO/19YeesCK5
+	 Vyheyv+/NDqPwNd7KxzkK0R1J763t0UwR5hMYjb1zJy1X7UpV7E4hmuidgN8KGIpD9
+	 tNyK7hUkAiHLqo7hqcEkRNWhOBt402eqVf1MPYz9DsRk/WZSHmTSAsTTIHFFZ9PMD+
+	 kbcXDqY90+/8Q==
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH v4] mtd: block2mtd: defer device open out of param/sysfs
+ write
+To: miquel.raynal@bootlin.com, richard@nod.at, "Chris Roy" <iam@thechris.in>, vigneshr@ti.com
+Cc: syzkaller-bugs@googlegroups.com, linux-mtd@lists.infradead.org, joern@barelysecure.org, linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org, syzbot+7cab6a19619f1b8efc00@syzkaller.appspotmail.com
+In-Reply-To: <20260920185132.1266699-1-iam@thechris.in>
 References: <6aa178fc.f2639fcc.29487d.0008.GAE@google.com>
-MIME-Version: 1.0
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260920_115147_594637_F42B241B 
-X-CRM114-Status: GOOD (  24.50  )
+ <20260920185132.1266699-1-iam@thechris.in>
+Date: Sun, 20 Sep 2026 19:03:48 +0000
+Message-Id: <20260920190348.B4D3B1F000FF@smtp.kernel.org>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,225 +63,66 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Reply-To: sashiko-reviews@lists.linux.dev
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-block2mtd_setup() opens the named block device while still under
-param_lock, and on the sysfs write path under kernfs (and possibly a
-splice pipe lock). That nests VFS locking the wrong way relative to
-overlayfs and trips lockdep.
-
-Drop param_lock and run setup on a dedicated ordered workqueue. Keep
-the call synchronous with wait_for_completion(). Allocate the work on
-the heap so DEBUG_OBJECTS_WORK stays quiet.
-
-Reported-by: syzbot+7cab6a19619f1b8efc00@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=7cab6a19619f1b8efc00
-Tested-by: syzbot+7cab6a19619f1b8efc00@syzkaller.appspotmail.com
-Assisted-by: Claude:claude-sonnet-5
-Signed-off-by: Chris Roy <iam@thechris.in>
----
-v4:
- - rename list_mutex / setup_wq to say what they are for
- - tidy new comments
- - fix Assisted-by tag format (checkpatch: AGENT_NAME:MODEL_VERSION)
- - drop redundant setup_wq check in block2mtd_setup_defer() (the sole
-   caller already gates on it)
- - claim Tested-by from syzbot (granted on v2, v3, and this content)
-v3:
- - rewrite the new comments to match the rest of the file
- - add Assisted-by
-v2:
- - heap-allocated work (v1 tripped DEBUG_OBJECTS_WORK)
- - dedicated ordered workqueue instead of system_wq
- - module reference across the deferred open
- - flush/destroy the workqueue before exit teardown
- - serialize setup2 on the worker under list_mutex
- - early-boot paramline updates under that mutex
-
-Not proposed for stable. block2mtd has no known production use (per
-Richard Weinberger, testing is the only real use case), so there is
-no backport trail worth chasing here.
-
- drivers/mtd/devices/block2mtd.c | 116 ++++++++++++++++++++++++++------
- 1 file changed, 95 insertions(+), 21 deletions(-)
-
-diff --git a/drivers/mtd/devices/block2mtd.c b/drivers/mtd/devices/block2mtd.c
-index 03e80b2..a540089 100644
---- a/drivers/mtd/devices/block2mtd.c
-+++ b/drivers/mtd/devices/block2mtd.c
-@@ -27,6 +27,8 @@
- #include <linux/init.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mutex.h>
-+#include <linux/workqueue.h>
-+#include <linux/completion.h>
- #include <linux/mount.h>
- #include <linux/slab.h>
- #include <linux/major.h>
-@@ -45,6 +47,9 @@ struct block2mtd_dev {
- 
- /* Static info about the MTD, used in cleanup_module */
- static LIST_HEAD(blkmtd_device_list);
-+/* Protects blkmtd_device_list and early-boot paramline updates */
-+static DEFINE_MUTEX(list_mutex);
-+static struct workqueue_struct *setup_wq;
- 
- 
- static struct page *page_read(struct address_space *mapping, pgoff_t index)
-@@ -461,31 +466,85 @@ static int block2mtd_setup2(const char *val)
- 	return 0;
- }
- 
-+struct block2mtd_setup_work {
-+	struct work_struct work;
-+	struct completion done;
-+	char *val;
-+	int ret;
-+};
-+
-+static void block2mtd_setup_workfn(struct work_struct *work)
-+{
-+	struct block2mtd_setup_work *w =
-+		container_of(work, struct block2mtd_setup_work, work);
-+
-+	mutex_lock(&list_mutex);
-+	w->ret = block2mtd_setup2(w->val);
-+	mutex_unlock(&list_mutex);
-+	complete(&w->done);
-+}
-+
-+/* Runs block2mtd_setup2() on setup_wq, blocking until it completes */
-+static int block2mtd_setup_defer(const char *val)
-+{
-+	struct block2mtd_setup_work *w;
-+	int ret;
-+
-+	w = kzalloc(sizeof(*w), GFP_KERNEL);
-+	if (!w)
-+		return -ENOMEM;
-+
-+	w->val = kstrdup(val, GFP_KERNEL);
-+	if (!w->val) {
-+		kfree(w);
-+		return -ENOMEM;
-+	}
-+
-+	init_completion(&w->done);
-+	INIT_WORK(&w->work, block2mtd_setup_workfn);
-+	queue_work(setup_wq, &w->work);
-+	wait_for_completion(&w->done);
-+
-+	ret = w->ret;
-+	kfree(w->val);
-+	kfree(w);
-+	return ret;
-+}
- 
- static int block2mtd_setup(const char *val, const struct kernel_param *kp)
- {
--#ifdef MODULE
--	return block2mtd_setup2(val);
--#else
--	/* If more parameters are later passed in via
--	   /sys/module/block2mtd/parameters/block2mtd
--	   and block2mtd_init() has already been called,
--	   we can parse the argument now. */
--
--	if (block2mtd_init_called)
--		return block2mtd_setup2(val);
--
--	/* During early boot stage, we only save the parameters
--	   here. We must parse them later: if the param passed
--	   from kernel boot command line, block2mtd_setup() is
--	   called so early that it is not possible to resolve
--	   the device (even kmalloc() fails). Deter that work to
--	   block2mtd_setup2(). */
--
--	strscpy(block2mtd_paramline, val, sizeof(block2mtd_paramline));
-+	int ret = 0;
- 
--	return 0;
-+	if (!try_module_get(kp->mod))
-+		return -ENODEV;
-+
-+	kernel_param_unlock(kp->mod);
-+
-+#ifndef MODULE
-+	mutex_lock(&list_mutex);
-+	if (!block2mtd_init_called) {
-+		/* Cannot resolve block devices this early */
-+		strscpy(block2mtd_paramline, val, sizeof(block2mtd_paramline));
-+		mutex_unlock(&list_mutex);
-+		kernel_param_lock(kp->mod);
-+		module_put(kp->mod);
-+		return 0;
-+	}
-+	mutex_unlock(&list_mutex);
- #endif
-+
-+	if (setup_wq) {
-+		ret = block2mtd_setup_defer(val);
-+	} else {
-+		/* Not yet deferred to setup_wq; safe to call setup2 directly */
-+		mutex_lock(&list_mutex);
-+		ret = block2mtd_setup2(val);
-+		mutex_unlock(&list_mutex);
-+	}
-+
-+	kernel_param_lock(kp->mod);
-+	module_put(kp->mod);
-+	return ret;
- }
- 
- 
-@@ -496,10 +555,17 @@ static int __init block2mtd_init(void)
- {
- 	int ret = 0;
- 
-+	setup_wq = alloc_ordered_workqueue("block2mtd", 0);
-+	if (!setup_wq)
-+		return -ENOMEM;
-+
- #ifndef MODULE
-+	mutex_lock(&list_mutex);
- 	if (strlen(block2mtd_paramline))
- 		ret = block2mtd_setup2(block2mtd_paramline);
-+	/* Avoid racing sysfs with the early paramline */
- 	block2mtd_init_called = 1;
-+	mutex_unlock(&list_mutex);
- #endif
- 
- 	return ret;
-@@ -510,9 +576,16 @@ static void block2mtd_exit(void)
- {
- 	struct list_head *pos, *next;
- 
--	/* Remove the MTD devices */
-+	if (setup_wq) {
-+		flush_workqueue(setup_wq);
-+		destroy_workqueue(setup_wq);
-+		setup_wq = NULL;
-+	}
-+
-+	mutex_lock(&list_mutex);
- 	list_for_each_safe(pos, next, &blkmtd_device_list) {
- 		struct block2mtd_dev *dev = list_entry(pos, typeof(*dev), list);
-+
- 		block2mtd_sync(&dev->mtd);
- 		mtd_device_unregister(&dev->mtd);
- 		mutex_destroy(&dev->write_mutex);
-@@ -522,6 +595,7 @@ static void block2mtd_exit(void)
- 		list_del(&dev->list);
- 		block2mtd_free_device(dev);
- 	}
-+	mutex_unlock(&list_mutex);
- }
- 
- late_initcall(block2mtd_init);
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+VGhhbmsgeW91IGZvciB5b3VyIGNvbnRyaWJ1dGlvbiEgU2FzaGlrbyBBSSByZXZpZXcgZm91bmQg
+MiBwb3RlbnRpYWwgaXNzdWUocykgdG8gY29uc2lkZXI6Ci0gW0hpZ2hdIG10ZDogYmxvY2sybXRk
+OiB1c2UtYWZ0ZXItZnJlZSBhbmQgcmVzb3VyY2UgbGVhayBvbiBpbml0IGZhaWx1cmUKLSBbSGln
+aF0gbXRkOiBibG9jazJtdGQ6IHN5c2ZzIGxvY2sgaW52ZXJzaW9uIGJ5cGFzc2VzIHdvcmtxdWV1
+ZSBkZWZlcnJhbAotLQoKY29tbWl0IGMzZjNlYmQ4NmVjYzYzZGQwN2U2YTIyZDg1MjdlYWRhZWI3
+NjE2MzMKQXV0aG9yOiBDaHJpcyBSb3kgPGlhbUB0aGVjaHJpcy5pbj4KCm10ZDogYmxvY2sybXRk
+OiBkZWZlciBkZXZpY2Ugb3BlbiBvdXQgb2YgcGFyYW0vc3lzZnMgd3JpdGUKClRoaXMgcGF0Y2gg
+ZGVmZXJzIGJsb2NrMm10ZF9zZXR1cCgpIGRldmljZSBvcGVuaW5nIHRvIGEgZGVkaWNhdGVkIG9y
+ZGVyZWQKd29ya3F1ZXVlIHRvIHByZXZlbnQgbG9ja2RlcC1kZXRlY3RlZCBsb2NrIGludmVyc2lv
+biBiZXR3ZWVuIFZGUyBhbmQKa2VybmZzL292ZXJsYXlmcyBkdXJpbmcgc3lzZnMgd3JpdGVzLiBU
+aGUgc2V0dXAgd29yayBpcyBleGVjdXRlZCB2aWEgYQpkeW5hbWljYWxseSBhbGxvY2F0ZWQgd29y
+ayBpdGVtLCBwcmVzZXJ2aW5nIHN5bmNocm9ub3VzIGJlaGF2aW9yIHdpdGgKd2FpdF9mb3JfY29t
+cGxldGlvbigpLgoKQ2xvc2VzOiBodHRwczovL3N5emthbGxlci5hcHBzcG90LmNvbS9idWc/ZXh0
+aWQ9N2NhYjZhMTk2MTlmMWI4ZWZjMDAKCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL2Rldmlj
+ZXMvYmxvY2sybXRkLmMgYi9kcml2ZXJzL210ZC9kZXZpY2VzL2Jsb2NrMm10ZC5jCj4gaW5kZXgg
+MzQ5ZmEwN2JlMzE0Yy4uMzBhYzkzMjViZGQyYiAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL210ZC9k
+ZXZpY2VzL2Jsb2NrMm10ZC5jCj4gKysrIGIvZHJpdmVycy9tdGQvZGV2aWNlcy9ibG9jazJtdGQu
+YwpbIC4uLiBdCj4gQEAgLTQ2MSwzMSArNDY2LDg1IEBAIHN0YXRpYyBpbnQgYmxvY2sybXRkX3Nl
+dHVwMihjb25zdCBjaGFyICp2YWwpClsgLi4uIF0KPiAgc3RhdGljIGludCBibG9jazJtdGRfc2V0
+dXAoY29uc3QgY2hhciAqdmFsLCBjb25zdCBzdHJ1Y3Qga2VybmVsX3BhcmFtICprcCkKPiAgewpb
+IC4uLiBdCj4gKwlpZiAoc2V0dXBfd3EpIHsKPiArCQlyZXQgPSBibG9jazJtdGRfc2V0dXBfZGVm
+ZXIodmFsKTsKPiArCX0gZWxzZSB7Cj4gKwkJLyogTm90IHlldCBkZWZlcnJlZCB0byBzZXR1cF93
+cTsgc2FmZSB0byBjYWxsIHNldHVwMiBkaXJlY3RseSAqLwo+ICsJCW11dGV4X2xvY2soJmxpc3Rf
+bXV0ZXgpOwo+ICsJCXJldCA9IGJsb2NrMm10ZF9zZXR1cDIodmFsKTsKPiArCQltdXRleF91bmxv
+Y2soJmxpc3RfbXV0ZXgpOwo+ICsJfQoKW1NldmVyaXR5OiBIaWdoXQpEb2VzIGV2YWx1YXRpbmcg
+c2V0dXBfd3EgaGVyZSBieXBhc3MgdGhlIHdvcmtxdWV1ZSBkZWZlcnJhbCBhbmQgcmUtaW50cm9k
+dWNlCnRoZSBzeXNmcyBsb2NrIGludmVyc2lvbj8KClNpbmNlIG1vZF9zeXNmc19zZXR1cCgpIGV4
+cG9zZXMgbW9kdWxlIHBhcmFtZXRlcnMgdG8gc3lzZnMgYmVmb3JlCmRvX2luaXRfbW9kdWxlKCkg
+Y2FsbHMgYmxvY2sybXRkX2luaXQoKSwgc2V0dXBfd3EgY2FuIGJlIE5VTEwgZHVyaW5nIGEKY29u
+Y3VycmVudCBzeXNmcyB3cml0ZS4KClRoaXMgd291bGQgY2F1c2UgdGhlIHN5c2ZzIHdyaXRlciB0
+byBleGVjdXRlIGJsb2NrMm10ZF9zZXR1cDIoKSBpbmxpbmUgdW5kZXIKdGhlIHN5c2ZzIGtlcm5m
+cyBsb2NrLgoKQWRkaXRpb25hbGx5LCBzaW5jZSBzZXR1cF93cSBpcyBhc3NpZ25lZCBpbiBibG9j
+azJtdGRfaW5pdCgpIHdpdGhvdXQgbWVtb3J5CmJhcnJpZXJzIChzdWNoIGFzIHNtcF9zdG9yZV9y
+ZWxlYXNlKCkgYW5kIHNtcF9sb2FkX2FjcXVpcmUoKSksIGNvbmN1cnJlbnQKc3lzZnMgd3JpdGVy
+cyBtaWdodCBvYnNlcnZlIGEgc3RhbGUgTlVMTCBwb2ludGVyIGV2ZW4gYWZ0ZXIgaW5pdGlhbGl6
+YXRpb24KY29tcGxldGVzLgoKPiArCj4gKwlrZXJuZWxfcGFyYW1fbG9jayhrcC0+bW9kKTsKPiAr
+CW1vZHVsZV9wdXQoa3AtPm1vZCk7Cj4gKwlyZXR1cm4gcmV0Owo+ICB9Cj4gIAo+ICAKPiBAQCAt
+NDk2LDEwICs1NTUsMTcgQEAgc3RhdGljIGludCBfX2luaXQgYmxvY2sybXRkX2luaXQodm9pZCkK
+PiAgewo+ICAJaW50IHJldCA9IDA7Cj4gIAo+ICsJc2V0dXBfd3EgPSBhbGxvY19vcmRlcmVkX3dv
+cmtxdWV1ZSgiYmxvY2sybXRkIiwgMCk7Cj4gKwlpZiAoIXNldHVwX3dxKQo+ICsJCXJldHVybiAt
+RU5PTUVNOwoKW1NldmVyaXR5OiBIaWdoXQpDYW4gcmV0dXJuaW5nIC1FTk9NRU0gaGVyZSBsZWFk
+IHRvIGEgdXNlLWFmdGVyLWZyZWUgYW5kIHJlc291cmNlIGxlYWs/CgpJZiBwYXJhbWV0ZXJzIGFy
+ZSBwcm92aWRlZCBkdXJpbmcgbW9kdWxlIGxvYWQKKGUuZy4sIGluc21vZCBibG9jazJtdGQua28g
+YmxvY2sybXRkPS4uLiksIGJsb2NrMm10ZF9zZXR1cCgpIGlzIGV4ZWN1dGVkCmJlZm9yZSBibG9j
+azJtdGRfaW5pdCgpLiBCZWNhdXNlIHNldHVwX3dxIGlzIE5VTEwgYXQgdGhhdCB0aW1lLCBpdApz
+eW5jaHJvbm91c2x5IHJlZ2lzdGVycyB0aGUgTVREIGRldmljZSBpbiB0aGUgYmxvY2sybXRkX3Nl
+dHVwKCkgZWxzZSBicmFuY2gKc2hvd24gYWJvdmUuCgpJZiBhbGxvY19vcmRlcmVkX3dvcmtxdWV1
+ZSgpIHN1YnNlcXVlbnRseSBmYWlscyBoZXJlLCBpdCByZXR1cm5zIC1FTk9NRU0gYW5kCmFib3J0
+cyB0aGUgbW9kdWxlIGxvYWQuCgpUaGUga2VybmVsIGZyZWVzIHRoZSBtb2R1bGUgbWVtb3J5IHdp
+dGhvdXQgY2FsbGluZyBibG9jazJtdGRfZXhpdCgpLCBsZWF2aW5nCnRoZSByZWdpc3RlcmVkIE1U
+RCBkZXZpY2UgaG9sZGluZyBkYW5nbGluZyBmdW5jdGlvbiBwb2ludGVycyB0byB0aGUgdW5sb2Fk
+ZWQKbW9kdWxlIHRleHQuCgotLSAKU2FzaGlrbyBBSSByZXZpZXcgwrcgaHR0cHM6Ly9zYXNoaWtv
+LmRldi8jL3BhdGNoc2V0LzIwMjYwOTIwMTg1MTMyLjEyNjY2OTktMS1pYW1AdGhlY2hyaXMuaW4/
+cGFydD0xCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZy
+YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
