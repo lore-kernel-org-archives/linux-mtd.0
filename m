@@ -4,38 +4,38 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5108AC982E1
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Sep 2026 09:38:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2DF5AC982EE
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Sep 2026 09:38:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=UWnn7T4kuP2XpSUGqRsXN49RT3Szx7mq2xSFqc3Aheo=; b=ctEif9nVUX+vzc
-	GU4UmdYqZRk+loMMmG1I3N5xDkvDS2bdawkJ1zn3VT9PMPznTjNcpA+1dAXUeo38sytJ+8Vys0nxp
-	aBXUTeLFD59XjA9ufoLRGjIWoaOLnsNxV8cy8I7Vukjxm6LeMdRtdIbQg+ne9tIEl6/SMsvaIGbiY
-	lO6TJ4/QLBsH1bPRxslXTCGRs+UCQqEyACdp7Qbie8YlVzbrw1+cFEcNqok/8AD3GQ5uwZhqJ9MQO
-	LAjVp0pw6+ky25Tj6GZQxdZYQAWQNxE0qRRWEwhQOnwOHsU31k+893bBJzNZAhYZXkTy4xx/uve2+
-	lSJXpN3ZdcTuiiNNpzFA==;
+	List-Owner; bh=Y/9HHCLTDXUsS9XSGupw/SsBiFEZXdAPMmgulluQT3g=; b=KPCWiNYMA5BllZ
+	fbVZ1pSYECL/qX+smRfQ3YyLJvPBZWb6JZzF3TE2/kaFUqWhCO3dimnartbBPpkxg/jNngM3K49Vu
+	110kUOskVqOrTTk5j6T6NIBOT/WkqWNV5azL4Vnqh5V+G+yRQXFLfMd3+Q9sC7zbEeRX28Q4TUUSz
+	aP1C7QG8FJ4YRt8nih+UH+80fCUs1u9l3NxLCZj+C7mIcdvHAj/Fcj7FEcS09E84lN7yYlpgqU6V/
+	XsuRDqkMxfLS3D+xjHPqN4+loxhTqAiL3/IX/dyV96gP7mfoH2Zb7dN3EaJDHZq3PJZTLI6pqhSEB
+	EQXIvfQCnTNlLBtlUK3w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x8aTy-00000001Xkg-1JUn;
-	Mon, 21 Sep 2026 09:38:42 +0000
+	id 1x8aU1-00000001XmU-1i0x;
+	Mon, 21 Sep 2026 09:38:45 +0000
 Received: from spam01.horizon.auto ([42.62.85.75])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x8aTv-00000001Xij-0uLk
+	id 1x8aTx-00000001XjB-1Zre
 	for linux-mtd@lists.infradead.org;
-	Mon, 21 Sep 2026 09:38:41 +0000
+	Mon, 21 Sep 2026 09:38:42 +0000
 Received: from spam01.horizon.auto (exchange003.hobot.cc [10.69.1.10])
-	by spam01.horizon.auto with ESMTPS id 68L9c36m068860
+	by spam01.horizon.auto with ESMTPS id 68L9c4Sh068891
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NO);
-	Mon, 21 Sep 2026 17:38:03 +0800 (+08)
+	Mon, 21 Sep 2026 17:38:04 +0800 (+08)
 	(envelope-from fei.xie@horizon.auto)
 Received: from server227.horizon.auto (10.9.0.252) by exchange003.hobot.cc
  (10.69.1.10) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2308.27; Mon, 21 Sep 2026
- 17:38:02 +0800
+ 17:38:04 +0800
 From: Fei Xie <fei.xie@horizon.auto>
 To: Mark Brown <broonie@kernel.org>
 CC: Miquel Raynal <miquel.raynal@bootlin.com>,
@@ -50,9 +50,9 @@ CC: Miquel Raynal <miquel.raynal@bootlin.com>,
         <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, "fei.xie"
 	<fei.xie@horizon.auto>
-Subject: [RFC PATCH 3/4] spi: cadence-xspi: factor out reusable ACMD helpers
-Date: Mon, 21 Sep 2026 17:37:00 +0800
-Message-ID: <20260921093701.1341766-4-fei.xie@horizon.auto>
+Subject: [RFC PATCH 4/4] spi: cadence-xspi: add ACMD support for SPI NOR
+Date: Mon, 21 Sep 2026 17:37:01 +0800
+Message-ID: <20260921093701.1341766-5-fei.xie@horizon.auto>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20260921093701.1341766-1-fei.xie@horizon.auto>
 References: <20260921093701.1341766-1-fei.xie@horizon.auto>
@@ -62,20 +62,20 @@ X-ClientProxiedBy: exchange004.hobot.cc (10.9.15.112) To exchange003.hobot.cc
  (10.69.1.10)
 X-DKIM-Results: exchange003.hobot.cc; dkim=none;
 X-DNSRBL: 
-X-MAIL: spam01.horizon.auto 68L9c36m068860
+X-MAIL: spam01.horizon.auto 68L9c4Sh068891
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=horizon.auto;
-	s=auto; t=1789983498;
-	bh=1b1haRp//ZE7fcCGYJ0hGUgE8n+xITtgL9GI45T07h8=;
+	s=auto; t=1789983503;
+	bh=NIDiqsVmgrS3EXwLeiz3kru1Gjw4BQlfnJkDij+iwqc=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=QWnT/mDeQvfT6OKpP2lYYoygkJByifjObIVo58BFETHmo1l4xdWt0U1fibOlWQc8P
-	 jkgi2JQMO90mP/H5wrA5hdErLtoQavAQSWNJLOZ2ilP0RtkpSGxQGHSEFCq13iBZmD
-	 ntrieEA9g4Q7y2Krtj9fofbniga0dEFCEBL8tAYsG06wHsERv9g6LOwdv8kvw7Hr1k
-	 SKLKoMIOHaoxrKFhXcOf0b9klaKRRfOqJZ7Qjqx/5lYsS32mAf5Q/pou17jgsUIwxn
-	 5qssNBpXhxZfDNJaq2pK7vsn1BaeEkXR+9Mi1yaxqFOG9kMnXpWwlAI26GArYbEpnR
-	 d/aAnPXa6zQuQ==
+	b=KsAgJfnv2QHpF9krCruijVPJsVP4w8IqeFqrHdu2P6xt531EdAhAsLhC4xkShNkgR
+	 jB9I1O8fnj7c48pfr4B8QvpnlQXAY6GRXG+iosKUEXhUSax0No5AkwYYMa11km4kUo
+	 /bAXS2XwbxLh3MbUT5q1CdiIJpLE1cY4opkBs9hvHLnmBuFOPkDMK3+M3ytzjgMuXa
+	 7EGLpMqfZ9oke1j2FWTYjV3dbNtQ+ZlV6tqQvlZDEObfFVNoj46lRkx4Y1s7T2Lj7w
+	 vn26aYMsKt4seFidU+9P8QzOnlZy0HB0mD1sTjq9ZVbRcr3fuRv3WDv2CJdB4Qr+j3
+	 i+whB+T3PycUA==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260921_023839_930597_BC0079B3 
-X-CRM114-Status: GOOD (  17.03  )
+X-CRM114-CacheID: sfid-20260921_023841_897753_80BDC4D1 
+X-CRM114-Status: GOOD (  15.11  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,356 +94,569 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: "fei.xie" <fei.xie@horizon.auto>
 
-Move DMA buffer allocation, XIP setup and PIO command execution into
-common helpers.
+Program the automatic command sequences from the SPI NOR operation
+templates.
 
-Keep SPI NAND address conversion and operation state handling in
-NAND-specific wrappers. This is a behavior-neutral preparation for
-sharing the ACMD PIO and MDMA path with other flash types.
+Use the PIO command path with MDMA data transfers for reads, page
+programs and erases. Unsupported command layouts continue to use STIG
+mode.
 
 Signed-off-by: fei.xie <fei.xie@horizon.auto>
 ---
- drivers/spi/spi-cadence-xspi.c | 223 ++++++++++++++++++++-------------
- 1 file changed, 136 insertions(+), 87 deletions(-)
+ drivers/spi/spi-cadence-xspi.c | 440 ++++++++++++++++++++++++++++++++-
+ 1 file changed, 433 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/spi/spi-cadence-xspi.c b/drivers/spi/spi-cadence-xspi.c
-index 0fedf6cd6a590..114c1e0fd79fb 100644
+index 114c1e0fd79fb..5900d4cbffb5c 100644
 --- a/drivers/spi/spi-cadence-xspi.c
 +++ b/drivers/spi/spi-cadence-xspi.c
-@@ -822,10 +822,35 @@ static void cdns_xspi_nand_reset_seq_init(struct cdns_xspi_dev *cdns_xspi)
- 	writel(cfg, cdns_xspi->iobase + CDNS_XSPI_RST_SEQ_CFG_0);
+@@ -12,11 +12,13 @@
+ #include <linux/iopoll.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
++#include <linux/mtd/spi-nor.h>
+ #include <linux/mtd/spinand.h>
+ #include <linux/overflow.h>
+ #include <linux/platform_device.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/property.h>
++#include <linux/sizes.h>
+ #include <linux/spi/spi.h>
+ #include <linux/spi/spi-mem.h>
+ #include <linux/bitfield.h>
+@@ -73,6 +75,7 @@
+ #define CDNS_XSPI_ACMD_ERASE_THREAD		5
+ #define CDNS_XSPI_ACMD_TIMEOUT_MS		1000
+ #define CDNS_XSPI_ACMD_MODE_PIO			1
++#define CDNS_XSPI_NOR_DMA_BUF_SIZE		SZ_32K
+ 
+ #define CDNS_XSPI_NAND_OP_GET_FEATURE		0x0f
+ #define CDNS_XSPI_NAND_OP_WRITE_ENABLE		0x06
+@@ -225,6 +228,7 @@
+ #define CDNS_XSPI_READ_SEQ_CFG_1			0x0434
+ #define CDNS_XSPI_READ_SEQ_P1_CMD_EXT_EN		BIT(0)
+ #define CDNS_XSPI_READ_SEQ_P1_CACHE_RANDOM_READ_EN	BIT(4)
++#define CDNS_XSPI_READ_SEQ_P1_CMD_EXT_VAL	GENMASK(15, 8)
+ #define CDNS_XSPI_READ_SEQ_CFG_2			0x0438
+ 
+ /* Write enable sequence config register */
+@@ -232,12 +236,22 @@
+ #define CDNS_XSPI_WE_SEQ_P1_CMD_VAL		GENMASK(7, 0)
+ #define CDNS_XSPI_WE_SEQ_P1_CMD_IOS		GENMASK(9, 8)
+ #define CDNS_XSPI_WE_SEQ_P1_CMD_EDGE		BIT(11)
++#define CDNS_XSPI_WE_SEQ_P1_CMD_EXT_EN		BIT(15)
++#define CDNS_XSPI_WE_SEQ_P1_CMD_EXT_VAL		GENMASK(23, 16)
+ #define CDNS_XSPI_WE_SEQ_P1_EN			BIT(24)
+ 
+ /* Status sequence config registers */
+ #define CDNS_XSPI_STAT_SEQ_CFG_0			0x0450
++#define CDNS_XSPI_STAT_SEQ_P1_CMD_IOS		GENMASK(1, 0)
++#define CDNS_XSPI_STAT_SEQ_P1_CMD_EDGE		BIT(4)
++#define CDNS_XSPI_STAT_SEQ_P1_CMD_EXT_EN	BIT(5)
+ #define CDNS_XSPI_STAT_SEQ_P1_ADDR_CNT			GENMASK(9, 8)
++#define CDNS_XSPI_STAT_SEQ_P1_ADDR_IOS		GENMASK(11, 10)
++#define CDNS_XSPI_STAT_SEQ_P1_ADDR_EDGE		BIT(12)
++#define CDNS_XSPI_STAT_SEQ_P1_DATA_IOS		GENMASK(21, 20)
++#define CDNS_XSPI_STAT_SEQ_P1_DATA_EDGE		BIT(22)
+ #define CDNS_XSPI_STAT_SEQ_CFG_1			0x0454
++#define CDNS_XSPI_STAT_SEQ_P1_DEV_RDY_DUMMY_CNT	GENMASK(5, 0)
+ #define CDNS_XSPI_P1_DEV_RDY_ADDR_EN		BIT(6)
+ #define CDNS_XSPI_P1_PROG_FAIL_ADDR_EN		BIT(22)
+ #define CDNS_XSPI_P1_ERS_FAIL_ADDR_EN		BIT(30)
+@@ -248,9 +262,11 @@
+ #define CDNS_XSPI_STAT_SEQ_P1_PROG_FAIL_CMD_VAL	GENMASK(31, 24)
+ 
+ #define CDNS_XSPI_STAT_SEQ_CFG_3			0x045c
++#define CDNS_XSPI_STAT_SEQ_P1_DEV_RDY_CMD_EXT_VAL	GENMASK(7, 0)
+ #define CDNS_XSPI_STAT_SEQ_CFG_4			0x0460
+ #define CDNS_XSPI_STAT_SEQ_CFG_5			0x0464
+ #define CDNS_XSPI_STAT_SEQ_DEV_RDY_IDX		GENMASK(3, 0)
++#define CDNS_XSPI_STAT_SEQ_DEV_RDY_SIZE		BIT(5)
+ #define CDNS_XSPI_STAT_SEQ_DEV_RDY_EN		BIT(6)
+ #define CDNS_XSPI_STAT_SEQ_ERS_FAIL_IDX		GENMASK(11, 8)
+ #define CDNS_XSPI_STAT_SEQ_ERS_FAIL_VAL		BIT(12)
+@@ -288,6 +304,7 @@
+ #define CDNS_XSPI_SEQ_PAGE_PER_BLOCK		GENMASK(26, 24)
+ #define CDNS_XSPI_SEQ_PAGE_CA_SIZE		BIT(16)
+ #define CDNS_XSPI_SEQ_PAGE_SIZE_EXT		GENMASK(8, 0)
++#define CDNS_XSPI_SEQ_SPI_NOR			0
+ 
+ #define CDNS_XSPI_XIP_MODE_CFG			0x0388
+ #define CDNS_XSPI_XIP_EN			BIT(0)
+@@ -476,7 +493,13 @@ struct cdns_xspi_acmd_info {
+ 	u64 row_addr;
+ 	u64 column_addr;
+ 	size_t data_nbytes;
++	u8 nor_status_buswidth;
++	u8 nor_write_enable_buswidth;
+ 	bool row_addr_valid;
++	bool nor_status_dtr;
++	bool nor_write_enable_dtr;
++	bool nor_status_initialized;
++	bool nor_write_enable_initialized;
+ 	bool initialized;
+ };
+ struct cdns_xspi_dev {
+@@ -592,6 +615,31 @@ static void cdns_xspi_set_interrupts(struct cdns_xspi_dev *cdns_xspi,
+ 	writel(intr_enable, cdns_xspi->iobase + CDNS_XSPI_INTR_ENABLE_REG);
  }
  
-+static int cdns_xspi_acmd_alloc_dma_buf(struct cdns_xspi_dev *cdns_xspi,
-+					size_t len)
++static u8 cdns_xspi_get_opcode(const struct spi_mem_op *op)
 +{
-+	cdns_xspi->dma_buf = dmam_alloc_coherent(cdns_xspi->dev, len,
-+						 &cdns_xspi->dma_addr,
-+						 GFP_KERNEL);
-+	if (!cdns_xspi->dma_buf)
-+		return -ENOMEM;
++	if (op->cmd.nbytes == 2)
++		return op->cmd.opcode >> 8;
 +
-+	cdns_xspi->dma_buf_len = len;
++	return op->cmd.opcode;
++}
++
++static u8 cdns_xspi_get_opcode_extension(const struct spi_mem_op *op)
++{
++	if (op->cmd.nbytes == 2)
++		return op->cmd.opcode;
 +
 +	return 0;
 +}
 +
-+static void cdns_xspi_acmd_disable_xip(struct cdns_xspi_dev *cdns_xspi)
++static u32 cdns_xspi_get_dummy_cycles(const struct spi_mem_op *op)
 +{
-+	u32 reg_val;
++	if (!op->dummy.nbytes || !op->dummy.buswidth)
++		return 0;
 +
-+	reg_val = readl(cdns_xspi->iobase + CDNS_XSPI_XIP_MODE_CFG);
-+	if (reg_val & CDNS_XSPI_XIP_EN) {
-+		reg_val &= ~CDNS_XSPI_XIP_EN;
-+		writel(reg_val, cdns_xspi->iobase + CDNS_XSPI_XIP_MODE_CFG);
-+	}
++	return op->dummy.nbytes * BITS_PER_BYTE /
++	       (op->dummy.buswidth * (op->dummy.dtr + 1));
 +}
 +
- static int cdns_xspi_nand_init(struct cdns_xspi_dev *cdns_xspi,
- 			       struct spinand_device *spinand)
+ static void cdns_xspi_nand_cfg_seq_init(struct cdns_xspi_dev *cdns_xspi,
+ 					struct spinand_device *spinand)
  {
--	u32 reg_val;
-+	int ret;
- 
- 	cdns_xspi_nand_cfg_seq_init(cdns_xspi, spinand);
- 	cdns_xspi_nand_read_seq_init(cdns_xspi, spinand);
-@@ -835,19 +860,12 @@ static int cdns_xspi_nand_init(struct cdns_xspi_dev *cdns_xspi,
- 	cdns_xspi_nand_status_seq_init(cdns_xspi);
- 	cdns_xspi_nand_erase_seq_init(cdns_xspi, spinand);
- 
--	reg_val = readl(cdns_xspi->iobase + CDNS_XSPI_XIP_MODE_CFG);
--	if (reg_val & CDNS_XSPI_XIP_EN) {
--		reg_val &= ~CDNS_XSPI_XIP_EN;
--		writel(reg_val, cdns_xspi->iobase + CDNS_XSPI_XIP_MODE_CFG);
--	}
--	cdns_xspi->dma_buf_len = spinand->base.memorg.pagesize +
--				 spinand->base.memorg.oobsize;
--	cdns_xspi->dma_buf = dmam_alloc_coherent(cdns_xspi->dev,
--						 cdns_xspi->dma_buf_len,
--						 &cdns_xspi->dma_addr,
--						 GFP_KERNEL);
--	if (!cdns_xspi->dma_buf)
--		return -ENOMEM;
-+	cdns_xspi_acmd_disable_xip(cdns_xspi);
-+	ret = cdns_xspi_acmd_alloc_dma_buf(cdns_xspi,
-+					   spinand->base.memorg.pagesize +
-+					   spinand->base.memorg.oobsize);
-+	if (ret)
-+		return ret;
- 
- 	cdns_xspi->acmd_info.initialized = true;
- 
-@@ -1070,12 +1088,10 @@ static u32 cdns_xspi_acmd_cmd(struct cdns_xspi_dev *cdns_xspi, u32 type,
- 	       FIELD_PREP(CDNS_XSPI_ACMD_CMD_TYPE, type);
+@@ -872,6 +920,268 @@ static int cdns_xspi_nand_init(struct cdns_xspi_dev *cdns_xspi,
+ 	return 0;
  }
  
--static int cdns_xspi_pio_mdma_erase(struct cdns_xspi_dev *cdns_xspi,
--				    struct spinand_device *spinand,
--				    const struct spi_mem_op *op)
-+static int cdns_xspi_pio_erase(struct cdns_xspi_dev *cdns_xspi,
-+			       u64 xspi_addr)
- {
- 	u32 cmd_regs[6] = { 0 };
--	u64 xspi_addr;
- 	int ret;
- 
- 	ret = cdns_xspi_wait_for_controller_idle(cdns_xspi);
-@@ -1085,10 +1101,6 @@ static int cdns_xspi_pio_mdma_erase(struct cdns_xspi_dev *cdns_xspi,
- 		return ret;
- 	}
- 
--	ret = cdns_xspi_nand_addr(spinand, op->addr.val, 0, &xspi_addr);
--	if (ret)
--		return ret;
--
- 	if (upper_32_bits(xspi_addr)) {
- 		dev_err(cdns_xspi->dev,
- 			"erase address 0x%llx exceeds the ACMD PIO range\n",
-@@ -1137,71 +1149,141 @@ static int cdns_xspi_pio_reset(struct cdns_xspi_dev *cdns_xspi)
- }
- 
- static int cdns_xspi_pio_mdma_program(struct cdns_xspi_dev *cdns_xspi,
--				      struct spinand_device *spinand,
--				      const struct spi_mem_op *op)
-+				      u64 xspi_addr, const void *buf,
-+				      size_t nbytes)
- {
- 	u32 cmd_regs[6] = { 0 };
--	u64 xspi_addr;
- 	int ret;
- 
--	if (!cdns_xspi->out_buffer || !cdns_xspi->acmd_info.data_nbytes) {
--		dev_err(cdns_xspi->dev, "missing program-load data\n");
--		ret = -EINVAL;
--		goto out_clear_program_state;
--	}
-+	if (!buf || !nbytes)
-+		return -EINVAL;
- 
--	if (cdns_xspi->acmd_info.data_nbytes > cdns_xspi->dma_buf_len) {
--		ret = -EMSGSIZE;
--		goto out_clear_program_state;
-+	if (nbytes > cdns_xspi->dma_buf_len)
-+		return -EMSGSIZE;
-+
-+	if (upper_32_bits(xspi_addr)) {
-+		dev_err(cdns_xspi->dev,
-+			"program address 0x%llx exceeds the ACMD PIO range\n",
-+			xspi_addr);
-+		return -ERANGE;
- 	}
- 
--	memcpy(cdns_xspi->dma_buf, cdns_xspi->out_buffer,
--	       cdns_xspi->acmd_info.data_nbytes);
-+	memcpy(cdns_xspi->dma_buf, buf, nbytes);
- 
- 	ret = cdns_xspi_wait_for_controller_idle(cdns_xspi);
- 	if (ret) {
- 		dev_err(cdns_xspi->dev,
- 			"controller did not become idle before program\n");
--		goto out_clear_program_state;
-+		return ret;
- 	}
- 
--	ret = cdns_xspi_nand_addr(spinand, op->addr.val,
--				  cdns_xspi->acmd_info.column_addr,
--				  &xspi_addr);
--	if (ret)
--		goto out_clear_program_state;
-+	cmd_regs[1] = lower_32_bits(xspi_addr);
-+	cmd_regs[2] = lower_32_bits(cdns_xspi->dma_addr);
-+	cmd_regs[3] = upper_32_bits(cdns_xspi->dma_addr);
-+	cmd_regs[4] = nbytes - 1;
-+	cmd_regs[0] = cdns_xspi_acmd_cmd(cdns_xspi,
-+					 CDNS_XSPI_ACMD_PROG_OP,
-+					 CDNS_XSPI_ACMD_DATA_THREAD, true);
-+
-+	return cdns_xspi_acmd_run(cdns_xspi, cmd_regs,
-+				  CDNS_XSPI_ACMD_DATA_THREAD);
-+}
-+
-+static int cdns_xspi_pio_mdma_read(struct cdns_xspi_dev *cdns_xspi,
-+				   u64 xspi_addr, void *buf, size_t nbytes)
++static int cdns_xspi_nor_cfg_seq_init(struct cdns_xspi_dev *cdns_xspi,
++				      struct spi_nor *nor)
 +{
-+	u32 cmd_regs[6] = { 0 };
-+	int ret;
++	unsigned int page_size;
++	u32 seq_cfg;
 +
-+	if (!buf || !nbytes)
-+		return -EINVAL;
++	if (!is_power_of_2(nor->mtd.writebufsize))
++		return -EOPNOTSUPP;
 +
-+	if (nbytes > cdns_xspi->dma_buf_len)
-+		return -EMSGSIZE;
++	page_size = ilog2(nor->mtd.writebufsize);
++	if (!FIELD_FIT(CDNS_XSPI_SEQ_PAGE_SIZE_PGM, page_size))
++		return -EOPNOTSUPP;
 +
-+	ret = cdns_xspi_wait_for_controller_idle(cdns_xspi);
-+	if (ret) {
-+		dev_err(cdns_xspi->dev,
-+			"controller did not become idle before read\n");
-+		return ret;
-+	}
- 
- 	if (upper_32_bits(xspi_addr)) {
- 		dev_err(cdns_xspi->dev,
--			"program address 0x%llx exceeds the ACMD PIO range\n",
-+			"read address 0x%llx exceeds the ACMD PIO range\n",
- 			xspi_addr);
--		ret = -ERANGE;
--		goto out_clear_program_state;
-+		return -ERANGE;
- 	}
- 
- 	cmd_regs[1] = lower_32_bits(xspi_addr);
- 	cmd_regs[2] = lower_32_bits(cdns_xspi->dma_addr);
- 	cmd_regs[3] = upper_32_bits(cdns_xspi->dma_addr);
--	cmd_regs[4] = cdns_xspi->acmd_info.data_nbytes - 1;
-+	cmd_regs[4] = nbytes - 1;
- 	cmd_regs[0] = cdns_xspi_acmd_cmd(cdns_xspi,
--					 CDNS_XSPI_ACMD_PROG_OP,
-+					 CDNS_XSPI_ACMD_READ_OP,
- 					 CDNS_XSPI_ACMD_DATA_THREAD, true);
- 
- 	ret = cdns_xspi_acmd_run(cdns_xspi, cmd_regs,
- 				 CDNS_XSPI_ACMD_DATA_THREAD);
-+	if (ret) {
-+		dev_err(cdns_xspi->dev, "ACMD read failed: %d\n", ret);
-+		return ret;
-+	}
-+
-+	memcpy(buf, cdns_xspi->dma_buf, nbytes);
++	seq_cfg = readl(cdns_xspi->iobase + CDNS_XSPI_GLOBAL_SEQ_CFG);
++	seq_cfg = u32_replace_bits(seq_cfg, CDNS_XSPI_SEQ_SPI_NOR,
++				   CDNS_XSPI_SEQ_TYPE);
++	seq_cfg = u32_replace_bits(seq_cfg, page_size,
++				   CDNS_XSPI_SEQ_PAGE_SIZE_PGM);
++	seq_cfg = u32_replace_bits(seq_cfg,
++				   ilog2(CDNS_XSPI_NOR_DMA_BUF_SIZE),
++				   CDNS_XSPI_SEQ_PAGE_SIZE_RD);
++	writel(seq_cfg, cdns_xspi->iobase + CDNS_XSPI_GLOBAL_SEQ_CFG);
++	writel(0, cdns_xspi->iobase + CDNS_XSPI_GLOBAL_SEQ_CFG_1);
 +
 +	return 0;
 +}
 +
-+static int cdns_xspi_nand_pio_erase(struct cdns_xspi_dev *cdns_xspi,
-+				    struct spinand_device *spinand,
++static int cdns_xspi_nor_read_seq_init(struct cdns_xspi_dev *cdns_xspi,
++				       const struct spi_mem_op *op)
++{
++	u32 dummy_cycles = cdns_xspi_get_dummy_cycles(op);
++	u32 cfg0;
++	u32 cfg1;
++
++	if (!FIELD_FIT(CDNS_XSPI_READ_SEQ_P1_ADDR_CNT, op->addr.nbytes) ||
++	    !FIELD_FIT(CDNS_XSPI_READ_SEQ_P1_DUMMY_CNT, dummy_cycles))
++		return -EOPNOTSUPP;
++
++	cfg0 = FIELD_PREP(CDNS_XSPI_READ_SEQ_P1_CMD_VAL,
++			  cdns_xspi_get_opcode(op)) |
++	       FIELD_PREP(CDNS_XSPI_READ_SEQ_P1_CMD_IOS,
++			  ilog2(op->cmd.buswidth)) |
++	       FIELD_PREP(CDNS_XSPI_READ_SEQ_P1_CMD_EDGE, op->cmd.dtr) |
++	       FIELD_PREP(CDNS_XSPI_READ_SEQ_P1_ADDR_CNT, op->addr.nbytes) |
++	       FIELD_PREP(CDNS_XSPI_READ_SEQ_P1_ADDR_IOS,
++			  ilog2(op->addr.buswidth)) |
++	       FIELD_PREP(CDNS_XSPI_READ_SEQ_P1_ADDR_EDGE, op->addr.dtr) |
++	       FIELD_PREP(CDNS_XSPI_READ_SEQ_P1_DATA_IOS,
++			  ilog2(op->data.buswidth)) |
++	       FIELD_PREP(CDNS_XSPI_READ_SEQ_P1_DATA_EDGE, op->data.dtr) |
++	       FIELD_PREP(CDNS_XSPI_READ_SEQ_P1_DUMMY_CNT, dummy_cycles);
++	cfg1 = FIELD_PREP(CDNS_XSPI_READ_SEQ_P1_CMD_EXT_EN,
++			  op->cmd.nbytes == 2) |
++	       FIELD_PREP(CDNS_XSPI_READ_SEQ_P1_CMD_EXT_VAL,
++			  cdns_xspi_get_opcode_extension(op));
++
++	writel(cfg0, cdns_xspi->iobase + CDNS_XSPI_READ_SEQ_CFG_0);
++	writel(cfg1, cdns_xspi->iobase + CDNS_XSPI_READ_SEQ_CFG_1);
++	writel(0, cdns_xspi->iobase + CDNS_XSPI_READ_SEQ_CFG_2);
++
++	return 0;
++}
++
++static int cdns_xspi_nor_program_seq_init(struct cdns_xspi_dev *cdns_xspi,
++					  const struct spi_mem_op *op)
++{
++	u32 dummy_cycles = cdns_xspi_get_dummy_cycles(op);
++	u32 cfg0;
++	u32 cfg1;
++
++	if (!FIELD_FIT(CDNS_XSPI_PROG_SEQ_P1_ADDR_CNT, op->addr.nbytes) ||
++	    !FIELD_FIT(CDNS_XSPI_PROG_SEQ_P1_DUMMY_CNT, dummy_cycles))
++		return -EOPNOTSUPP;
++
++	cfg0 = FIELD_PREP(CDNS_XSPI_PROG_SEQ_P1_CMD_VAL,
++			  cdns_xspi_get_opcode(op)) |
++	       FIELD_PREP(CDNS_XSPI_PROG_SEQ_P1_CMD_IOS,
++			  ilog2(op->cmd.buswidth)) |
++	       FIELD_PREP(CDNS_XSPI_PROG_SEQ_P1_CMD_EDGE, op->cmd.dtr) |
++	       FIELD_PREP(CDNS_XSPI_PROG_SEQ_P1_ADDR_CNT, op->addr.nbytes) |
++	       FIELD_PREP(CDNS_XSPI_PROG_SEQ_P1_ADDR_IOS,
++			  ilog2(op->addr.buswidth)) |
++	       FIELD_PREP(CDNS_XSPI_PROG_SEQ_P1_ADDR_EDGE, op->addr.dtr) |
++	       FIELD_PREP(CDNS_XSPI_PROG_SEQ_P1_DATA_IOS,
++			  ilog2(op->data.buswidth)) |
++	       FIELD_PREP(CDNS_XSPI_PROG_SEQ_P1_DATA_EDGE, op->data.dtr) |
++	       FIELD_PREP(CDNS_XSPI_PROG_SEQ_P1_DUMMY_CNT, dummy_cycles);
++	cfg1 = FIELD_PREP(CDNS_XSPI_PROG_SEQ_P1_CMD_EXT_EN,
++			  op->cmd.nbytes == 2) |
++	       FIELD_PREP(CDNS_XSPI_PROG_SEQ_P1_CMD_EXT_VAL,
++			  cdns_xspi_get_opcode_extension(op));
++
++	writel(cfg0, cdns_xspi->iobase + CDNS_XSPI_PROG_SEQ_CFG_0);
++	writel(cfg1, cdns_xspi->iobase + CDNS_XSPI_PROG_SEQ_CFG_1);
++	writel(0, cdns_xspi->iobase + CDNS_XSPI_PROG_SEQ_CFG_2);
++
++	return 0;
++}
++
++static int cdns_xspi_nor_erase_seq_init(struct cdns_xspi_dev *cdns_xspi,
++					struct spi_nor *nor,
++					const struct spi_mem_op *op)
++{
++	unsigned int erase_size;
++	u32 cfg0;
++
++	if (!is_power_of_2(nor->mtd.erasesize))
++		return -EOPNOTSUPP;
++
++	erase_size = ilog2(nor->mtd.erasesize);
++	if (!FIELD_FIT(CDNS_XSPI_ERSS_SEQ_P1_ADDR_CNT, op->addr.nbytes) ||
++	    !FIELD_FIT(CDNS_XSPI_ERSS_SEQ_P1_SECT_SIZE, erase_size))
++		return -EOPNOTSUPP;
++
++	cfg0 = FIELD_PREP(CDNS_XSPI_ERSS_SEQ_P1_CMD_VAL,
++			  cdns_xspi_get_opcode(op)) |
++	       FIELD_PREP(CDNS_XSPI_ERSS_SEQ_P1_CMD_IOS,
++			  ilog2(op->cmd.buswidth)) |
++	       FIELD_PREP(CDNS_XSPI_ERSS_SEQ_P1_CMD_EDGE, op->cmd.dtr) |
++	       FIELD_PREP(CDNS_XSPI_ERSS_SEQ_P1_ADDR_CNT, op->addr.nbytes) |
++	       FIELD_PREP(CDNS_XSPI_ERSS_SEQ_P1_CMD_EXT_EN,
++			  op->cmd.nbytes == 2) |
++	       FIELD_PREP(CDNS_XSPI_ERSS_SEQ_P1_CMD_EXT_VAL,
++			  cdns_xspi_get_opcode_extension(op)) |
++	       FIELD_PREP(CDNS_XSPI_ERSS_SEQ_P1_ADDR_IOS,
++			  ilog2(op->addr.buswidth)) |
++	       FIELD_PREP(CDNS_XSPI_ERSS_SEQ_P1_ADDR_EDGE, op->addr.dtr);
++
++	writel(cfg0, cdns_xspi->iobase + CDNS_XSPI_ERSS_SEQ_CFG_0);
++	writel(FIELD_PREP(CDNS_XSPI_ERSS_SEQ_P1_SECT_SIZE, erase_size),
++	       cdns_xspi->iobase + CDNS_XSPI_ERSS_SEQ_CFG_1);
++	writel(0, cdns_xspi->iobase + CDNS_XSPI_ERSS_SEQ_CFG_2);
++
++	return 0;
++}
++
++static int cdns_xspi_nor_status_seq_init(struct cdns_xspi_dev *cdns_xspi,
++					 const struct spi_mem_op *op)
++{
++	u32 dummy_cycles = cdns_xspi_get_dummy_cycles(op);
++	u32 addr_count = op->addr.nbytes ? op->addr.nbytes - 1 : 0;
++	u32 cfg0;
++	u32 cfg1;
++	u32 cfg5;
++
++	if (op->data.dir != SPI_MEM_DATA_IN || !op->data.nbytes ||
++	    !FIELD_FIT(CDNS_XSPI_STAT_SEQ_P1_ADDR_CNT, addr_count) ||
++	    !FIELD_FIT(CDNS_XSPI_STAT_SEQ_P1_DEV_RDY_DUMMY_CNT,
++		       dummy_cycles) || upper_32_bits(op->addr.val))
++		return -EOPNOTSUPP;
++
++	cfg0 = FIELD_PREP(CDNS_XSPI_STAT_SEQ_P1_CMD_IOS,
++			  ilog2(op->cmd.buswidth)) |
++	       FIELD_PREP(CDNS_XSPI_STAT_SEQ_P1_CMD_EDGE, op->cmd.dtr) |
++	       FIELD_PREP(CDNS_XSPI_STAT_SEQ_P1_CMD_EXT_EN,
++			  op->cmd.nbytes == 2) |
++	       FIELD_PREP(CDNS_XSPI_STAT_SEQ_P1_ADDR_CNT, addr_count) |
++	       FIELD_PREP(CDNS_XSPI_STAT_SEQ_P1_ADDR_IOS,
++			  op->addr.buswidth ? ilog2(op->addr.buswidth) : 0) |
++	       FIELD_PREP(CDNS_XSPI_STAT_SEQ_P1_ADDR_EDGE, op->addr.dtr) |
++	       FIELD_PREP(CDNS_XSPI_STAT_SEQ_P1_DATA_IOS,
++			  ilog2(op->data.buswidth)) |
++	       FIELD_PREP(CDNS_XSPI_STAT_SEQ_P1_DATA_EDGE, op->data.dtr);
++	cfg1 = FIELD_PREP(CDNS_XSPI_STAT_SEQ_P1_DEV_RDY_DUMMY_CNT,
++			  dummy_cycles) |
++	       (op->addr.nbytes ? CDNS_XSPI_P1_DEV_RDY_ADDR_EN : 0);
++	cfg5 = FIELD_PREP(CDNS_XSPI_STAT_SEQ_DEV_RDY_IDX, __ffs(SR_WIP)) |
++	       (op->data.dtr ? CDNS_XSPI_STAT_SEQ_DEV_RDY_SIZE : 0) |
++	       CDNS_XSPI_STAT_SEQ_DEV_RDY_EN;
++
++	writel(cfg0, cdns_xspi->iobase + CDNS_XSPI_STAT_SEQ_CFG_0);
++	writel(cfg1, cdns_xspi->iobase + CDNS_XSPI_STAT_SEQ_CFG_1);
++	writel(FIELD_PREP(CDNS_XSPI_STAT_SEQ_P1_DEV_RDY_CMD_VAL,
++			  cdns_xspi_get_opcode(op)),
++	       cdns_xspi->iobase + CDNS_XSPI_STAT_SEQ_CFG_2);
++	writel(FIELD_PREP(CDNS_XSPI_STAT_SEQ_P1_DEV_RDY_CMD_EXT_VAL,
++			  cdns_xspi_get_opcode_extension(op)),
++	       cdns_xspi->iobase + CDNS_XSPI_STAT_SEQ_CFG_3);
++	writel(0, cdns_xspi->iobase + CDNS_XSPI_STAT_SEQ_CFG_4);
++	writel(cfg5, cdns_xspi->iobase + CDNS_XSPI_STAT_SEQ_CFG_5);
++	writel(lower_32_bits(op->addr.val),
++	       cdns_xspi->iobase + CDNS_XSPI_STAT_SEQ_CFG_7);
++	writel(0, cdns_xspi->iobase + CDNS_XSPI_STAT_SEQ_CFG_8);
++	writel(0, cdns_xspi->iobase + CDNS_XSPI_STAT_SEQ_CFG_9);
++	writel(0, cdns_xspi->iobase + CDNS_XSPI_STAT_SEQ_CFG_10);
++
++	cdns_xspi->acmd_info.nor_status_initialized = true;
++	cdns_xspi->acmd_info.nor_status_buswidth = op->cmd.buswidth;
++	cdns_xspi->acmd_info.nor_status_dtr = op->cmd.dtr;
++
++	return 0;
++}
++
++static void
++cdns_xspi_nor_write_enable_seq_init(struct cdns_xspi_dev *cdns_xspi,
 +				    const struct spi_mem_op *op)
 +{
-+	u64 xspi_addr;
++	u32 cfg;
++
++	cfg = FIELD_PREP(CDNS_XSPI_WE_SEQ_P1_CMD_VAL,
++			 cdns_xspi_get_opcode(op)) |
++	      FIELD_PREP(CDNS_XSPI_WE_SEQ_P1_CMD_IOS,
++			 ilog2(op->cmd.buswidth)) |
++	      FIELD_PREP(CDNS_XSPI_WE_SEQ_P1_CMD_EDGE, op->cmd.dtr) |
++	      FIELD_PREP(CDNS_XSPI_WE_SEQ_P1_CMD_EXT_EN,
++			 op->cmd.nbytes == 2) |
++	      FIELD_PREP(CDNS_XSPI_WE_SEQ_P1_CMD_EXT_VAL,
++			 cdns_xspi_get_opcode_extension(op)) |
++	      CDNS_XSPI_WE_SEQ_P1_EN;
++	writel(cfg, cdns_xspi->iobase + CDNS_XSPI_WE_SEQ_CFG_0);
++	cdns_xspi->acmd_info.nor_write_enable_initialized = true;
++	cdns_xspi->acmd_info.nor_write_enable_buswidth = op->cmd.buswidth;
++	cdns_xspi->acmd_info.nor_write_enable_dtr = op->cmd.dtr;
++}
++
++static int cdns_xspi_nor_init(struct cdns_xspi_dev *cdns_xspi,
++			      struct spi_nor *nor)
++{
++	struct spi_mem_op status_op =
++		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RDSR, 1),
++			   SPI_MEM_OP_NO_ADDR,
++			   SPI_MEM_OP_NO_DUMMY,
++			   SPI_MEM_OP_DATA_IN(1, NULL, 1));
 +	int ret;
 +
-+	ret = cdns_xspi_nand_addr(spinand, op->addr.val, 0, &xspi_addr);
++	ret = cdns_xspi_nor_cfg_seq_init(cdns_xspi, nor);
 +	if (ret)
 +		return ret;
 +
-+	return cdns_xspi_pio_erase(cdns_xspi, xspi_addr);
-+}
++	cdns_xspi_acmd_disable_xip(cdns_xspi);
++	ret = cdns_xspi_acmd_alloc_dma_buf(cdns_xspi,
++					   CDNS_XSPI_NOR_DMA_BUF_SIZE);
++	if (ret)
++		return ret;
 +
-+static int cdns_xspi_nand_pio_program(struct cdns_xspi_dev *cdns_xspi,
-+				      struct spinand_device *spinand,
-+				      const struct spi_mem_op *op)
-+{
-+	u64 xspi_addr;
-+	int ret;
-+
-+	if (!cdns_xspi->out_buffer || !cdns_xspi->acmd_info.data_nbytes) {
-+		dev_err(cdns_xspi->dev, "missing program-load data\n");
-+		ret = -EINVAL;
-+		goto out_clear_program_state;
++	if (!spi_nor_protocol_is_dtr(nor->reg_proto) &&
++	    !cdns_xspi->acmd_info.nor_status_initialized) {
++		ret = cdns_xspi_nor_status_seq_init(cdns_xspi, &status_op);
++		if (ret)
++			return ret;
 +	}
 +
-+	ret = cdns_xspi_nand_addr(spinand, op->addr.val,
-+				  cdns_xspi->acmd_info.column_addr,
-+				  &xspi_addr);
-+	if (ret)
-+		goto out_clear_program_state;
++	cdns_xspi->acmd_info.initialized = true;
 +
-+	ret = cdns_xspi_pio_mdma_program(cdns_xspi, xspi_addr,
-+					 cdns_xspi->out_buffer,
-+					 cdns_xspi->acmd_info.data_nbytes);
- 
- out_clear_program_state:
- 	cdns_xspi->acmd_info.column_addr = 0;
- 	cdns_xspi->acmd_info.data_nbytes = 0;
- 	cdns_xspi->out_buffer = NULL;
++	return 0;
++}
 +
++static bool
++cdns_xspi_nor_helper_sequences_ready(const struct cdns_xspi_dev *cdns_xspi,
++				     const struct spi_nor *nor)
++{
++	u8 buswidth = spi_nor_get_protocol_inst_nbits(nor->reg_proto);
++	bool dtr = spi_nor_protocol_is_dtr(nor->reg_proto);
++
++	return cdns_xspi->acmd_info.nor_status_initialized &&
++	       cdns_xspi->acmd_info.nor_status_buswidth == buswidth &&
++	       cdns_xspi->acmd_info.nor_status_dtr == dtr &&
++	       cdns_xspi->acmd_info.nor_write_enable_initialized &&
++	       cdns_xspi->acmd_info.nor_write_enable_buswidth == buswidth &&
++	       cdns_xspi->acmd_info.nor_write_enable_dtr == dtr;
++}
++
+ static int cdns_xspi_controller_init(struct cdns_xspi_dev *cdns_xspi)
+ {
+ 	u32 ctrl_ver;
+@@ -1315,9 +1625,9 @@ static int cdns_xspi_nand_pio_read(struct cdns_xspi_dev *cdns_xspi,
  	return ret;
  }
  
--static int cdns_xspi_pio_mdma_read(struct cdns_xspi_dev *cdns_xspi,
-+static int cdns_xspi_nand_pio_read(struct cdns_xspi_dev *cdns_xspi,
- 				   struct spinand_device *spinand,
- 				   const struct spi_mem_op *op)
+-static int cdns_xspi_send_pio_command(struct cdns_xspi_dev *cdns_xspi,
+-				      struct spi_mem *mem,
+-				      const struct spi_mem_op *op)
++static int cdns_xspi_send_nand_pio_command(struct cdns_xspi_dev *cdns_xspi,
++					   struct spi_mem *mem,
++					   const struct spi_mem_op *op)
  {
--	u32 cmd_regs[6] = { 0 };
- 	u64 xspi_addr;
+ 	struct spinand_device *spinand;
+ 	const struct spi_mem_op *read_cache;
+@@ -1325,9 +1635,6 @@ static int cdns_xspi_send_pio_command(struct cdns_xspi_dev *cdns_xspi,
+ 	const struct spi_mem_op *update_cache;
  	int ret;
  
-@@ -1217,52 +1299,19 @@ static int cdns_xspi_pio_mdma_read(struct cdns_xspi_dev *cdns_xspi,
- 		goto out_clear_read_state;
- 	}
- 
--	if (op->data.nbytes > cdns_xspi->dma_buf_len) {
--		ret = -EMSGSIZE;
--		goto out_clear_read_state;
--	}
+-	if (cdns_xspi->flash_type != CDNS_XSPI_FLASH_TYPE_NAND)
+-		goto use_stig;
 -
--	ret = cdns_xspi_wait_for_controller_idle(cdns_xspi);
--	if (ret) {
--		dev_err(cdns_xspi->dev,
--			"controller did not become idle before read\n");
--		goto out_clear_read_state;
--	}
--
- 	ret = cdns_xspi_nand_addr(spinand,
- 				  cdns_xspi->acmd_info.row_addr,
- 				  op->addr.val, &xspi_addr);
- 	if (ret)
- 		goto out_clear_read_state;
- 
--	if (upper_32_bits(xspi_addr)) {
--		dev_err(cdns_xspi->dev,
--			"read address 0x%llx exceeds the ACMD PIO range\n",
--			xspi_addr);
--		ret = -ERANGE;
--		goto out_clear_read_state;
--	}
--
--	cmd_regs[1] = lower_32_bits(xspi_addr);
--	cmd_regs[2] = lower_32_bits(cdns_xspi->dma_addr);
--	cmd_regs[3] = upper_32_bits(cdns_xspi->dma_addr);
--	cmd_regs[4] = op->data.nbytes - 1;
--	cmd_regs[0] = cdns_xspi_acmd_cmd(cdns_xspi,
--					 CDNS_XSPI_ACMD_READ_OP,
--					 CDNS_XSPI_ACMD_DATA_THREAD, true);
--
--	ret = cdns_xspi_acmd_run(cdns_xspi, cmd_regs,
--				 CDNS_XSPI_ACMD_DATA_THREAD);
--	if (ret) {
--		dev_err(cdns_xspi->dev, "ACMD read failed: %d\n", ret);
--		goto out_clear_read_state;
--	}
--
--	memcpy(op->data.buf.in, cdns_xspi->dma_buf, op->data.nbytes);
-+	ret = cdns_xspi_pio_mdma_read(cdns_xspi, xspi_addr,
-+				      op->data.buf.in, op->data.nbytes);
- 
- out_clear_read_state:
- 	cdns_xspi->acmd_info.row_addr_valid = false;
- 	cdns_xspi->acmd_info.row_addr = 0;
-+
- 	return ret;
+ 	spinand = spi_mem_get_drvdata(mem);
+ 	if (!spinand || !spinand->op_templates ||
+ 	    !spinand->op_templates->read_cache ||
+@@ -1401,6 +1708,115 @@ static int cdns_xspi_send_pio_command(struct cdns_xspi_dev *cdns_xspi,
+ 					   op->data.dir != SPI_MEM_NO_DATA);
  }
  
-@@ -1334,17 +1383,17 @@ static int cdns_xspi_send_pio_command(struct cdns_xspi_dev *cdns_xspi,
- 		return cdns_xspi_pio_reset(cdns_xspi);
++static int cdns_xspi_send_nor_pio_command(struct cdns_xspi_dev *cdns_xspi,
++					  struct spi_mem *mem,
++					  const struct spi_mem_op *op)
++{
++	struct spi_nor *nor = spi_mem_get_drvdata(mem);
++	u8 opcode = cdns_xspi_get_opcode(op);
++	int ret;
++
++	if (!nor)
++		goto use_stig;
++
++	if (opcode == SPINOR_OP_WREN) {
++		cdns_xspi_nor_write_enable_seq_init(cdns_xspi, op);
++		goto use_stig;
++	}
++
++	if (opcode == SPINOR_OP_RDSR && op->data.dir == SPI_MEM_DATA_IN) {
++		cdns_xspi->acmd_info.nor_status_initialized = false;
++		ret = cdns_xspi_nor_status_seq_init(cdns_xspi, op);
++		if (ret)
++			dev_dbg(cdns_xspi->dev,
++				"cannot use RDSR operation for ACMD status: %d\n",
++				ret);
++		goto use_stig;
++	}
++
++	if (!nor->mtd.size || !nor->mtd.writebufsize)
++		goto use_stig;
++
++	if (opcode != nor->read_opcode && opcode != nor->program_opcode &&
++	    opcode != nor->erase_opcode)
++		goto use_stig;
++	if (upper_32_bits(op->addr.val))
++		goto use_stig;
++
++	if (!cdns_xspi->acmd_info.initialized) {
++		ret = cdns_xspi_nor_init(cdns_xspi, nor);
++		if (ret == -EOPNOTSUPP)
++			goto use_stig;
++		if (ret) {
++			dev_err(cdns_xspi->dev,
++				"failed to initialize NOR ACMD: %d\n", ret);
++			return ret;
++		}
++	}
++
++	if (opcode == nor->read_opcode && op->data.dir == SPI_MEM_DATA_IN) {
++		ret = cdns_xspi_nor_read_seq_init(cdns_xspi, op);
++		if (ret == -EOPNOTSUPP)
++			goto use_stig;
++		if (ret)
++			return ret;
++
++		return cdns_xspi_pio_mdma_read(cdns_xspi, op->addr.val,
++					      op->data.buf.in,
++					      op->data.nbytes);
++	}
++
++	if (opcode == nor->program_opcode &&
++	    op->data.dir == SPI_MEM_DATA_OUT) {
++		if (!cdns_xspi_nor_helper_sequences_ready(cdns_xspi, nor))
++			goto use_stig;
++
++		ret = cdns_xspi_nor_program_seq_init(cdns_xspi, op);
++		if (ret == -EOPNOTSUPP)
++			goto use_stig;
++		if (ret)
++			return ret;
++
++		return cdns_xspi_pio_mdma_program(cdns_xspi, op->addr.val,
++						 op->data.buf.out,
++						 op->data.nbytes);
++	}
++
++	if (opcode == nor->erase_opcode && op->data.dir == SPI_MEM_NO_DATA) {
++		if (nor->mtd.numeraseregions ||
++		    !cdns_xspi_nor_helper_sequences_ready(cdns_xspi, nor))
++			goto use_stig;
++
++		ret = cdns_xspi_nor_erase_seq_init(cdns_xspi, nor, op);
++		if (ret == -EOPNOTSUPP)
++			goto use_stig;
++		if (ret)
++			return ret;
++
++		return cdns_xspi_pio_erase(cdns_xspi, op->addr.val);
++	}
++
++use_stig:
++	return cdns_xspi_send_stig_command(cdns_xspi, op,
++					   op->data.dir != SPI_MEM_NO_DATA);
++}
++
++static int cdns_xspi_send_pio_command(struct cdns_xspi_dev *cdns_xspi,
++				      struct spi_mem *mem,
++				      const struct spi_mem_op *op)
++{
++	switch (cdns_xspi->flash_type) {
++	case CDNS_XSPI_FLASH_TYPE_NAND:
++		return cdns_xspi_send_nand_pio_command(cdns_xspi, mem, op);
++
++	case CDNS_XSPI_FLASH_TYPE_NOR:
++		return cdns_xspi_send_nor_pio_command(cdns_xspi, mem, op);
++
++	default:
++		return -EOPNOTSUPP;
++	}
++}
++
+ static int cdns_xspi_mem_op(struct cdns_xspi_dev *cdns_xspi,
+ 			    struct spi_mem *mem,
+ 			    const struct spi_mem_op *op)
+@@ -1484,8 +1900,18 @@ static int cdns_xspi_adjust_mem_op_size(struct spi_mem *mem, struct spi_mem_op *
+ {
+ 	struct cdns_xspi_dev *cdns_xspi =
+ 		spi_controller_get_devdata(mem->spi->controller);
++	size_t max_len = cdns_xspi->sdmasize;
++
++	if (cdns_xspi->work_mode == CDNS_XSPI_WORK_MODE_ACMD) {
++		if (cdns_xspi->acmd_info.initialized)
++			max_len = min_t(size_t, max_len,
++					cdns_xspi->dma_buf_len);
++		else if (cdns_xspi->flash_type == CDNS_XSPI_FLASH_TYPE_NOR)
++			max_len = min_t(size_t, max_len,
++					CDNS_XSPI_NOR_DMA_BUF_SIZE);
++	}
  
- 	case CDNS_XSPI_NAND_OP_BLOCK_ERASE:
--		return cdns_xspi_pio_mdma_erase(cdns_xspi, spinand, op);
-+		return cdns_xspi_nand_pio_erase(cdns_xspi, spinand, op);
+-	op->data.nbytes = clamp_val(op->data.nbytes, 0, cdns_xspi->sdmasize);
++	op->data.nbytes = min_t(size_t, op->data.nbytes, max_len);
  
- 	case CDNS_XSPI_NAND_OP_PROGRAM_EXECUTE:
--		return cdns_xspi_pio_mdma_program(cdns_xspi, spinand, op);
-+		return cdns_xspi_nand_pio_program(cdns_xspi, spinand, op);
- 
- 	default:
- 		break;
- 	}
- 
- 	if (read_cache && op->cmd.opcode == read_cache->cmd.opcode)
--		return cdns_xspi_pio_mdma_read(cdns_xspi, spinand, op);
-+		return cdns_xspi_nand_pio_read(cdns_xspi, spinand, op);
- 
- use_stig:
- 	/* ACMD does not consume this operation; execute it through STIG. */
+ 	return 0;
+ }
 -- 
 2.34.1
 
