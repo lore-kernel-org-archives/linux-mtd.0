@@ -4,52 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5EAEAC982DE
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Sep 2026 06:44:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7738BC982E1
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Sep 2026 06:44:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=tYfUdU3/vd+6ge6XUDEesyWwqufZ6h5EUnYITlrsJZw=; b=c4DlE52olpgRhW
-	a7G2Tqmtr1/MrqmmsHu/hJnqjpWRt7G4KSVCuNBr7CzXLTE/7p0JOkHG3rPG1C2M9w041i6fNRVyZ
-	fY4325IGay4FKQ07h6ahJnD6Qrq2j6LcdzM6m8EJ4bCeO8qu/BR8W+/tQVu2rYoVlnI+dyLfxjD6d
-	cElA7/HmjXdxwPCavBuLxD2bRjHGIq2W7OEb5/szUDJffATR1FCfRJfadOtIPQMQ/BNaIymM/XKsz
-	oMrJtvTssHuQp4EQFOBFQtsEj8s4H5guyz8t+ZYFmnV4HMmf1mA4irAUMJYWG7nQooH8Qs5U/6Srj
-	P9YzMHm7manPAkEq+D1w==;
+	List-Owner; bh=kqILLHKFRVs4PEDMMEayaTw/nvB6uuW8KFUvR1Ee1pA=; b=Bo0T6XUyhievlh
+	avj6Bl3j/c4Mx9F+KEbqkXZwa4Rf1hWbLEoHNcLr29PT2BpT8ImMhb3PF2V0HQd34UTuSSQ0L1wOf
+	htRQhDUOA1klugwDs5MECbBjjPekRHEe86wmP4AqZpPqenerZwFe5qDIH+u7UBj5zptkLjxJZ1u49
+	sSNGX5ReJyf1BOIqLgMh/eynQclveeVnkY45QI0WGSevp6hBgxBmpcf9qPbHqdrMBTBSFPTfc+ptb
+	gCzWpEw55iPQEtnk+5n6Vo8tCVNfl8H3rrScpe7qE/B8U1/IpXe6I5b3/qd0FyoIyQaH+NNGdybt0
+	8eGy8ZW1NtKZngJsBz7w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x8Xku-0000000154t-3uGC;
-	Mon, 21 Sep 2026 06:44:00 +0000
-Received: from smtpout-02.galae.net ([185.246.84.56])
+	id 1x8Xkx-0000000158b-0FYC;
+	Mon, 21 Sep 2026 06:44:03 +0000
+Received: from smtpout-03.galae.net ([185.246.85.4])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x8Xks-000000014yy-13iM
+	id 1x8Xku-0000000151u-0G3F
 	for linux-mtd@lists.infradead.org;
-	Mon, 21 Sep 2026 06:43:59 +0000
+	Mon, 21 Sep 2026 06:44:01 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id D11531A0DC9;
-	Mon, 21 Sep 2026 06:43:56 +0000 (UTC)
+	by smtpout-03.galae.net (Postfix) with ESMTPS id 81ADB4E40C54;
+	Mon, 21 Sep 2026 06:43:58 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id A543A60738;
-	Mon, 21 Sep 2026 06:43:56 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 353B6103290D9;
-	Mon, 21 Sep 2026 08:43:53 +0200 (CEST)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 563EE6073B;
+	Mon, 21 Sep 2026 06:43:58 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 13B7B103290DA;
+	Mon, 21 Sep 2026 08:43:55 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1789973035; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1789973037; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=frXjtGcAZpQcql/V7D+iPBfgcJtd5g29qKgYWby8tQU=;
-	b=YdmcOkSzFERfHH+/hb7GYE2NjlyURNqH85iUnk1kZZJWdvJ/oDv5t9vzPIVdP7qV65WqZs
-	NEqqBw2UEfDVP0wRIXJBL5/7Y+lNHbRMXojQdCL/aXzjFRe8kbfPbXSjT/5R66rmUEC7oc
-	oMSUOwDecCr2gIva8nnqq6+sVSRYCqNx1ic+6YcM44DjUU7FfKw67pl2ozTRSWqJVSsGmP
-	5ye0LvcQ5++vYJAvWRFVKsZyIqR3AmH89TWqY7oLEQG6IYBTdU87EqECCSYtB/lnrsIDGj
-	/GnpAqdsOBpHuVFe4Gi0vWuYV+1cwm5yc4YgH6C3jj4r4cCy73EDNNU3VWU6Eg==
+	bh=c+3fdx2ARTiDaPPzJ8iDrFDcas5hTARl2+3DCLbrTgo=;
+	b=T/ktjDZ4ezLcDp2l8yYNWlFbuvCyAFvNyGDtForhCLSf88ZTaecIuc6GZMZpjzgmXqQQ2h
+	koeip4HiYCVzIG8aFC7YeQBdOuHIrmzAOMHa49igZ5lEGNYg25Gj1iM74JKWrcCD70BNFQ
+	Tkj2egZ6q14qc028pyO6aFKTmDMuIv9q/ySy0id+SYfN2pdDBziZXpF0KisDFdFuZQLROh
+	60JmPlq3lEsT99bLOfgZU0Z+MjZqmLrADNLYbKqjwMKwaSN534EAa3Zs1yBLVxH5sz06Xq
+	Uc4YgCkTLtcRMAvPEIw0czj5z/l0QfMM++1eanwFMBXxpMuDMKwM+Gp8aJo5sQ==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Mon, 21 Sep 2026 08:43:40 +0200
-Subject: [PATCH v3 09/25] mtd: spi-nor: winbond: W25Q256JW-Q/N/M: Fill
- locking information
+Date: Mon, 21 Sep 2026 08:43:41 +0200
+Subject: [PATCH v3 10/25] mtd: spi-nor: winbond: W25Q32JW-Q/N: Add quad
+ page program capability
 MIME-Version: 1.0
-Message-Id: <20260921-winbond-master-spi-nor-jw-cleanup-pw-addition-v3-9-38eef3b6a7db@bootlin.com>
+Message-Id: <20260921-winbond-master-spi-nor-jw-cleanup-pw-addition-v3-10-38eef3b6a7db@bootlin.com>
 References: <20260921-winbond-master-spi-nor-jw-cleanup-pw-addition-v3-0-38eef3b6a7db@bootlin.com>
 In-Reply-To: <20260921-winbond-master-spi-nor-jw-cleanup-pw-addition-v3-0-38eef3b6a7db@bootlin.com>
 To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
@@ -61,8 +61,8 @@ Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260920_234358_459596_81DCED79 
-X-CRM114-Status: GOOD (  10.81  )
+X-CRM114-CacheID: sfid-20260920_234400_258592_EF567F05 
+X-CRM114-Status: GOOD (  10.94  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,41 +79,73 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-I do not have any W25Q256JW-Q/N/M in hand, but since all the other chips
-from this family have the same locking pattern, we can reasonably expect
-that these chips follow the exact same rules.
+The benefit is not massive @25MHz, yet it is a supported feature
+of the chip which is already handled by a flag, so let's enable it and
+earn a few % write throughput.
 
-Add the missing CMP flags.
+Before:
+$ flash_speed /dev/mtd0 -dc10
+eraseblock write speed is 393 KiB/s
+page write speed is 391 KiB/s
+2 page write speed is 391 KiB/s
+
+After:
+$ flash_speed /dev/mtd0 -dc10
+eraseblock write speed is 402 KiB/s
+page write speed is 400 KiB/s
+2 page write speed is 400 KiB/s
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/spi-nor/winbond.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
++ cat /sys/kernel/debug/spi-nor/spi0.0/capabilities
+Supported read modes by the flash
+ 1S-1S-1S
+  opcode	0x03
+  mode cycles	0
+  dummy cycles	0
+ 1S-1S-2S
+  opcode	0x3b
+  mode cycles	0
+  dummy cycles	8
+ 1S-2S-2S
+  opcode	0xbb
+  mode cycles	2
+  dummy cycles	2
+ 1S-1S-4S
+  opcode	0x6b
+  mode cycles	0
+  dummy cycles	8
+ 1S-4S-4S
+  opcode	0xeb
+  mode cycles	2
+  dummy cycles	4
+ 4S-4S-4S
+  opcode	0xeb
+  mode cycles	2
+  dummy cycles	0
+
+Supported page program modes by the flash
+ 1S-1S-1S
+  opcode	0x02
+ 1S-1S-4S
+  opcode	0x32
+---
+ drivers/mtd/spi-nor/winbond.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
-index 4ffc7a39ac6d..62f69e868d7d 100644
+index 62f69e868d7d..022fcfd05da2 100644
 --- a/drivers/mtd/spi-nor/winbond.c
 +++ b/drivers/mtd/spi-nor/winbond.c
-@@ -348,7 +348,8 @@ static const struct flash_info winbond_nor_parts[] = {
- 		.id = SNOR_ID(0xef, 0x60, 0x19),
- 		.name = "w25q256jw",
- 		.size = SZ_32M,
--		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6 | SPI_NOR_4BIT_BP,
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6 |
-+			 SPI_NOR_4BIT_BP | SPI_NOR_HAS_CMP,
+@@ -326,7 +326,7 @@ static const struct flash_info winbond_nor_parts[] = {
+ 		.id = SNOR_ID(0xef, 0x60, 0x16),
+ 		.name = "w25q32dw",
+ 		.size = SZ_4M,
+-		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_HAS_CMP,
++		.flags = SPI_NOR_QUAD_PP | SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_HAS_CMP,
  		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
+ 		.otp = SNOR_OTP(256, 3, 0x1000, 0x1000),
  	}, {
- 		/* W25Q512NW-Q/N */
-@@ -441,7 +442,8 @@ static const struct flash_info winbond_nor_parts[] = {
- 		.id = SNOR_ID(0xef, 0x80, 0x19),
- 		.name = "w25q256jwm",
- 		.size = SZ_32M,
--		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6 | SPI_NOR_4BIT_BP,
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6 |
-+			 SPI_NOR_4BIT_BP | SPI_NOR_HAS_CMP,
- 		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
- 	}, {
- 		/* W25Q512NW-M */
 
 -- 
 2.55.0
