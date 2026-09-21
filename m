@@ -4,52 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B388C982E6
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Sep 2026 15:11:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E72DAC982ED
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Sep 2026 15:13:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=56Tnil5JqDaUHOcfI7nAt7GvdjD5aT9YjpM/i95e6wE=; b=hSYpVopLvfjnde
-	UMR8tHpwU/ZqPrgciXrwgWu3/dk56KwIPiSMe/9gDRKhRw2CnAfeca/C0uPx7Mk53t0nWpAhsGfSh
-	Mf1oituUjoZncYBkjqVhw564udbKOI9tK4ffrh/iP0vWU5uKT2+Jm4X3fRfa0AWCCu3246/ZmgqpQ
-	oYxR2QgBLtRli3ihpNORP7rs3sTKe1FBKX3qXpOx1ynlI7WDjksNc6q2r5+KiYMS9lmxDRfXo6hri
-	YWVK+J1IwBqxySkXLwb58JWh1Nq1UZJa6zz7N2Nbg8TTvzVnvJwnLpFvmFfWEjEebktXpW6oA+5ai
-	9XYktpXN9VaJ0LHgHkDQ==;
+	List-Owner; bh=56Tnil5JqDaUHOcfI7nAt7GvdjD5aT9YjpM/i95e6wE=; b=om2VTrJ8jtu371
+	aVvU6JbAmoHiOZyOEkSBM3a9zBE+IQbzTVWaqBKJV1BkDtaWTVjY2cwbLQfk1qNgH6A6o9gUptDDE
+	XXQH9dTXMf921vUQdsoAR/+xP6p8cn7tBts1XVdb6c8VZmSA5ODaf7kdg4qcA+wgCG0JPC0FwlSfh
+	tJK8lOaRUDx7sI4qKPcKmf0gYatnFnVC2jVotp0nr4TWUq6cq0W3VIkCboX/cUNEsG4TOQoqYNw8b
+	9D2kt/m95oboedh//PO/ulqfaGAeD4eIZLgp8glmh7bGJ0dgLwIbHY/lezYCBjqZ4BC6TltUC8Sch
+	h/68r9F9eHxTp2tHiGqg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x8ffo-00000002Z6J-1raM;
-	Mon, 21 Sep 2026 15:11:16 +0000
+	id 1x8fiN-00000002ZXm-2bCK;
+	Mon, 21 Sep 2026 15:13:55 +0000
 Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x8ffn-00000002Z5y-0Qkg
+	id 1x8fiL-00000002ZXa-3RGh
 	for linux-mtd@lists.infradead.org;
-	Mon, 21 Sep 2026 15:11:15 +0000
+	Mon, 21 Sep 2026 15:13:53 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id D8888405F5;
-	Mon, 21 Sep 2026 15:11:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 048B71F000FF;
-	Mon, 21 Sep 2026 15:11:13 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 7A96440046;
+	Mon, 21 Sep 2026 15:13:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99BD31F000FF;
+	Mon, 21 Sep 2026 15:13:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790003474;
+	s=k20260515; t=1790003633;
 	bh=ZDRQ8N++1ApttUwT3N9xaoQfi3XlqZ/LvnDqiBydZrQ=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=L5gmCXegQUbpWwF/iOX7v/aMDnaqKZK/MMBosvdkNVGreWB98Pw5TVQjXjCJt76TQ
-	 BxGbp4OV5E0MOYWajMj/Lc4LAyv6CKFGPQK470CRf+2PTEY16nCux2ZBXxf13oyaMB
-	 ppvHyB+ugBCaM3PGxX3yQ5bVcQ7OkbCHZkat+YBrE8296bZL4aj6sql/0/aUNB1V5k
-	 TOIiLp8Udn5BwbyPscjSEYmqdaGNC9mgsVc7efJhVeCSebcCur37ICYcO5rNpCmRPX
-	 elxckYSupWrqDy96pCRpL5eRAqE/wN3ADr5v98Wz7867oWk/kjv4rI2zmLzhzUWbyo
-	 hx6hVKU5Nbcjw==
-Date: Mon, 21 Sep 2026 17:11:11 +0200
+	b=cc1hCmak9MnLVSyItvdYF19QPrqsY4ZANqMEsli5mCF1D/wouBXlfbJBRLXgsMN8d
+	 mXKE+hWDqXvxgduDPBHAvrEr1CCJFbKMIawi4wSxLtzF++qSLy33WQRglavpqQbv//
+	 czTJZ/5PuwE3ky01ofsn2ZaO90ZGtm3d+pMYhbQ/vpX21wzQZ2H0mvVmP1fmdTSMCI
+	 jOVRMTblUcTAD0KW6cRYiIVCratM1yr/zkPA27klgQySE0WtipE/kexJTaOb5s+LGP
+	 /sboowP4V7r+J5d9lp0hx9NqWN7GtDKjLEXH4RU3B/ph+nwOvrTf1OhpW2OWz5h3Gy
+	 AR9WQxLY2Ta3Q==
+Date: Mon, 21 Sep 2026 17:13:50 +0200
 From: krzk@kernel.org
 To: Guangshuo Li <lgs201920130244@gmail.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, stable@vger.kernel.org, 
-	Vignesh Raghavendra <vigneshr@ti.com>, linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>, Richard Weinberger <richard@nod.at>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>, stable@vger.kernel.org, 
+	Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
+	Martin Blumenstingl <martin.blumenstingl@googlemail.com>, linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 Subject: Re: [PATCH] mtd: rawnand: intel: fix OF node reference leak
-Message-ID: <arFJDKtpHSmxkhVG@quoll>
+Message-ID: <arFJrf7S7IvAR27Y@quoll>
 References: <20260915163407.2487869-1-lgs201920130244@gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
