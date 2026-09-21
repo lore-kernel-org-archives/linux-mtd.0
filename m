@@ -4,62 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38649C982DE
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Sep 2026 09:24:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 545DFC982ED
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Sep 2026 09:38:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:References:From:Cc:Subject:To:Message-Id:Date:Mime-Version:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=VRDxsrayleZm8pVS6O08OeDyQhATKLaR0IcyEAmiLPg=; b=glYaWG3UCMoXDWUHnzvi0Xrn+2
-	W+OFd43uK1xgt4AOOgappQUjjVj35XtMoBOSFGjmhazxFB1Bjk6z+88AKFaltp11FRzyezfp3ehGs
-	GK8msOw8imy3dIkud8JD9yGqIn0Gd61Ka0nDJEPnDpVxlx5LLKECb6JTaUuYsLNrqhgVQj2n4Cwgb
-	tNnZ1UzoJhHYqUXxC5ivKkkLTg9uRhvrtXT7SOrJCU+gZOMhOI9EQI54OXNzb9H5rWpm7pVhNHoT0
-	NI4s0eEai6kphHL5cM4vJi4pJUE96F2UFLZP3+TnpdTi3G+Cux1POyWwVzEANMNdb5QGqX9A+MSBd
-	6YecMoQw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=VFX/eDiiwo8VgqUmlU/Lv0qc2bx8rL5GzT5IC7VkAoQ=; b=gQ1wD5B3Xelk9G
+	/30Sd8jZVDOn2F2kmN5IKo1GA4VWu00hRW+sUXHMS86thOWwvUJT+iiJemoJ9rExgzUuaIqxWMiE+
+	qpriIhsRhdMMQ8VfkR2ufFABw1qeL+XMGjbYduuj63+ldMceBtImt3NoIctbpBKyDnYZwinB8x9Mb
+	9jeBTlY5y4CGEswpgshwdZJZ4aEiMvVF6JlFFNhOst8sjCQUomTh/t9915a9BheA+0Angkv9E6Fzf
+	D9jnr2J8lb68ucQkDOn7AA4pP4XeIdtK1AYncnrCmiL1/6d3872Dwi4WLaF6rCtgspkDC7R8ismB9
+	4jWHHBxgsletP0S8BC9g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x8aGO-00000001Uy1-0XWo;
-	Mon, 21 Sep 2026 09:24:40 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1x8aTy-00000001Xka-0wvA;
+	Mon, 21 Sep 2026 09:38:42 +0000
+Received: from spam01.horizon.auto ([42.62.85.75])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x8aGM-00000001Uxl-1vO5
+	id 1x8aTv-00000001Xie-12m5
 	for linux-mtd@lists.infradead.org;
-	Mon, 21 Sep 2026 09:24:38 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with UTF8SMTP id 0648B40A41;
-	Mon, 21 Sep 2026 09:24:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id 5B0E31F000FF;
-	Mon, 21 Sep 2026 09:24:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789982677;
-	bh=5MbD/mb2k5cZZYD/imnkofeHdbIdhHQWD75O5hW319E=;
-	h=Date:To:Subject:Cc:From:References:In-Reply-To;
-	b=KKIdwxCCsM1xE5UchyNeydDAF9tr1Tj3nHonTNI77ZA+KX6Gu5yDqp6iqResHub09
-	 /65h7cRKs9CWB4Q9CtFq3DJaEpBwRjzRWk1OJZz2bD0pKe1At9liY8jBy8HaeQAwf+
-	 vFtvwTigBWQGjS0FaJFOQ2Qtixl4j1dlYQr0oxXEPPQs9NbzpDtp+VfJiU6ZDUAhka
-	 Zm66/o2eTvxsqKNSW5GAgzivRPEOrjwc3XZboWRPjkKEqd1lyQ1Nm7TqJJ8nk4qGyk
-	 uDEzF/eN4p9Fdclxdg+bEJxPklRsK/sN6nlYMxUZyuLsKsLVBvmUoAQsRgIEf+mjzE
-	 aizzWqvC/HbUw==
-Mime-Version: 1.0
-Date: Mon, 21 Sep 2026 11:24:33 +0200
-Message-Id: <DLKVWGBO3B13.JQ0A04TWA66E@kernel.org>
-To: "David Laight" <david.laight.linux@gmail.com>
-Subject: Re: [PATCH] mtd: spi-nor: reduce stack usage in
- spi_nor_parse_sfdp()
-Cc: "Arnd Bergmann" <arnd@kernel.org>, "Pratyush Yadav"
- <pratyush@kernel.org>, "Miquel Raynal" <miquel.raynal@bootlin.com>,
- "Richard Weinberger" <richard@nod.at>, "Vignesh Raghavendra"
- <vigneshr@ti.com>, "Arnd Bergmann" <arnd@arndb.de>, "Takahiro Kuwano"
- <takahiro.kuwano@infineon.com>, "Tudor Ambarus" <tudor.ambarus@linaro.org>,
- "HyeongJun An" <sammiee5311@gmail.com>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>
-From: "Michael Walle" <mwalle@kernel.org>
-X-Mailer: aerc 0.20.0
-References: <20260915194203.3511147-1-arnd@kernel.org>
- <DLKU0CTP0OES.30VZXJXDXRLNW@kernel.org> <20260921095924.2f845215@pumpkin>
-In-Reply-To: <20260921095924.2f845215@pumpkin>
+	Mon, 21 Sep 2026 09:38:41 +0000
+Received: from spam01.horizon.auto (exchange003.hobot.cc [10.69.1.10])
+	by spam01.horizon.auto with ESMTPS id 68L9c19D068819
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NO);
+	Mon, 21 Sep 2026 17:38:01 +0800 (+08)
+	(envelope-from fei.xie@horizon.auto)
+Received: from server227.horizon.auto (10.9.0.252) by exchange003.hobot.cc
+ (10.69.1.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2308.27; Mon, 21 Sep 2026
+ 17:38:00 +0800
+From: Fei Xie <fei.xie@horizon.auto>
+To: Mark Brown <broonie@kernel.org>
+CC: Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger
+	<richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring
+	<robh@kernel.org>,
+        Krzysztof Kozlowski <krzk+dt@kernel.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Parshuram Thombare <pthombar@cadence.com>, <linux-spi@vger.kernel.org>,
+        <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, "fei.xie"
+	<fei.xie@horizon.auto>
+Subject: [RFC PATCH 1/4] dt-bindings: spi: cdns,xspi: add SPI NAND compatible
+Date: Mon, 21 Sep 2026 17:36:58 +0800
+Message-ID: <20260921093701.1341766-2-fei.xie@horizon.auto>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20260921093701.1341766-1-fei.xie@horizon.auto>
+References: <20260921093701.1341766-1-fei.xie@horizon.auto>
+MIME-Version: 1.0
+X-Originating-IP: [10.9.0.252]
+X-ClientProxiedBy: exchange004.hobot.cc (10.9.15.112) To exchange003.hobot.cc
+ (10.69.1.10)
+X-DKIM-Results: exchange003.hobot.cc; dkim=none;
+X-DNSRBL: 
+X-MAIL: spam01.horizon.auto 68L9c19D068819
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=horizon.auto;
+	s=auto; t=1789983488;
+	bh=SDAOlAC7vrik7PAuqLK16OWJ52qpC4QqixrLeIZyURc=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References;
+	b=ex9GAswmCgLRF5NDcgpinB+OXxMVKNfrg34uOzVtsFC0UDg3QYk7wHesTylkTmjEw
+	 YSTxxR1v/QTFwBhm/wsQNeFgxvL1lSdk1M4iFOfoBo0xYOJvQbovufHTO6640e6XZk
+	 9CHBNeXA9F949GpK6dUA4EPsQAtiBZC3EqOpG8E7lLD2thCW+U71YeN1b8Ff/C0YH+
+	 TyatVmcR3Wu+5QCRA0Xx9YJtKjQP7r32OX5VraB6ITNqziKwzrOP4H+ZtlRfdSQm04
+	 yeqKj4sfJGjRxDHJbaSXx+kkx+e9AybrQk3Q3E1MLEsZ5Tw6fvuNankwbVU6lPmvV+
+	 RlBcH76o6hWZw==
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260921_023839_930220_7A2F465F 
+X-CRM114-Status: UNSURE (   9.21  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,148 +88,42 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4076480550174593036=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============4076480550174593036==
-Content-Type: multipart/signed;
- boundary=81ddfdbab27d5c10a9c7c6d3785b90fcc3965ba71c3967c3081e3d33d28e;
- micalg=pgp-sha384; protocol="application/pgp-signature"
+From: "fei.xie" <fei.xie@horizon.auto>
 
---81ddfdbab27d5c10a9c7c6d3785b90fcc3965ba71c3967c3081e3d33d28e
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
+Document the Cadence XSPI controller compatible used with SPI NAND.
 
-On Mon Sep 21, 2026 at 10:59 AM CEST, David Laight wrote:
-> On Mon, 21 Sep 2026 09:55:37 +0200
-> "Michael Walle" <mwalle@kernel.org> wrote:
->
->> Hi Arnd,
->>=20
->> On Tue Sep 15, 2026 at 9:40 PM CEST, Arnd Bergmann wrote:
->> > From: Arnd Bergmann <arnd@arndb.de>
->> >
->> > Two large spi_nor_flash_parameter structures on a function stack
->> > is really too much, and this can exceed an otherwise reasonable
->> > frame limit:
->> >
->> > drivers/mtd/spi-nor/sfdp.c: In function 'spi_nor_parse_sfdp':
->> > drivers/mtd/spi-nor/sfdp.c:1717:1: error: the frame size of 1600 bytes=
- is larger than 1536 bytes [-Werror=3Dframe-larger-than=3D]
->> >
->> > Change one of them to a dynamic allocation to make this more reasonabl=
-e. =20
->>=20
->> Thanks for taking care of that. Will you respin the patch with what
->> David suggested?
->
-> This compiles...
-> David
->
-> diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
-> index 641f17ad51a0..cec699b52f27 100644
-> --- a/drivers/mtd/spi-nor/sfdp.c
-> +++ b/drivers/mtd/spi-nor/sfdp.c
-> @@ -1519,9 +1519,9 @@ int spi_nor_check_sfdp_signature(struct spi_nor *no=
-r)
->   */
->  int spi_nor_parse_sfdp(struct spi_nor *nor)
->  {
-> +       struct spi_nor_flash_parameter sv_params __free(kfree) =3D kmallo=
-c_objs(*sv_params, 2);
+Signed-off-by: fei.xie <fei.xie@horizon.auto>
+---
+ Documentation/devicetree/bindings/spi/cdns,xspi.yaml | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-What does sv_ stands for?
+diff --git a/Documentation/devicetree/bindings/spi/cdns,xspi.yaml b/Documentation/devicetree/bindings/spi/cdns,xspi.yaml
+index 38a5795589de2..3decf45d1b484 100644
+--- a/Documentation/devicetree/bindings/spi/cdns,xspi.yaml
++++ b/Documentation/devicetree/bindings/spi/cdns,xspi.yaml
+@@ -13,11 +13,12 @@ maintainers:
+ description: |
+   The XSPI controller allows SPI protocol communication in
+   single, dual, quad or octal wire transmission modes for
+-  read/write access to slaves such as SPI-NOR flash.
++  read/write access to slaves such as SPI-NOR and SPI-NAND flash.
+ 
+ properties:
+   compatible:
+     enum:
++      - cdns,xspi-nand
+       - cdns,xspi-nor
+       - marvell,cn10-xspi-nor
+ 
+-- 
+2.34.1
 
->         const struct sfdp_parameter_header *param_header, *bfpt_header;
->         struct sfdp_parameter_header *param_headers =3D NULL;
-> -       struct spi_nor_flash_parameter params, params2;
->         struct sfdp_header header;
->         struct device *dev =3D nor->dev;
->         struct sfdp *sfdp;
-> @@ -1533,7 +1533,9 @@ int spi_nor_parse_sfdp(struct spi_nor *nor)
->          * Get a backup of all the parameter to roll back to in case of a=
-n
->          * error.
->          */
-> -       memcpy(&params, nor->params, sizeof(params));
-> +       if (!sv_params)
-> +               return -ENOMEM
-> +       sv_params[0] =3D nor->params;
->
->         /* Get the SFDP header. */
->         err =3D spi_nor_read_sfdp_dma_unsafe(nor, 0, sizeof(header), &hea=
-der);
-> @@ -1653,7 +1655,7 @@ int spi_nor_parse_sfdp(struct spi_nor *nor)
->
->         /* Parse optional parameter tables. */
->         for (i =3D 0; i < header.nph; i++) {
-> -               memcpy(&params2, nor->params, sizeof(params2));
-> +               sv_params[1] nor->params;
-
-sv_params[1] =3D nor->params;
-
--michael
-
->                 param_header =3D &param_headers[i];
->
->                 switch (SFDP_PARAM_HEADER_ID(param_header)) {
-> @@ -1691,7 +1693,7 @@ int spi_nor_parse_sfdp(struct spi_nor *nor)
->                          * spi_nor_flash_parameter data.
->                          */
->                         err =3D 0;
-> -                       memcpy(nor->params, &params2, sizeof(*nor->params=
-));
-> +                       nor->params =3D sv_params[1];
->                 }
->         }
->
-> @@ -1712,7 +1714,7 @@ int spi_nor_parse_sfdp(struct spi_nor *nor)
->  free_param_headers:
->         kfree(param_headers);
->         if (err)
-> -               memcpy(nor->params, &params, sizeof(*nor->params));
-> +               nor->params =3D sv_params[0];
->
->         return err;
->  }
-> --
->
->>=20
->> -michael
->>=20
->> > Fixes: d20029474a76 ("mtd: spi-nor: push the rollback mechanism into t=
-he sfdp module")
->> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
->> > ---
->> >  drivers/mtd/spi-nor/sfdp.c | 10 +++++++---
->> >  1 file changed, 7 insertions(+), 3 deletions(-) =20
-
-
---81ddfdbab27d5c10a9c7c6d3785b90fcc3965ba71c3967c3081e3d33d28e
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCarD30hIcbXdhbGxlQGtl
-cm5lbC5vcmcACgkQEic87j4CH/hSbgF+OlwlmYBW5BJ479b1HeQQJYlpv3Eh3O9L
-GdP4f/bCdkveoO0B3/zWZmpZ59TY8ugLAYDztcQSZ373+Hvqzs2Ny6awAGjxBCbx
-CdzClYJca94KPS6XQjSI8AEZ3dN/oG77WQc=
-=MfCb
------END PGP SIGNATURE-----
-
---81ddfdbab27d5c10a9c7c6d3785b90fcc3965ba71c3967c3081e3d33d28e--
-
-
---===============4076480550174593036==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============4076480550174593036==--
-
