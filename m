@@ -4,78 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6BD3C98328
-	for <linux-mtd@archiver.kernel.org>; Thu, 24 Sep 2026 20:04:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0CA4EC98321
+	for <linux-mtd@archiver.kernel.org>; Thu, 24 Sep 2026 20:04:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ZLe5MWZH81Ed3XTiJePwN3JwKmxvEzK5hdHj5HB2jXQ=; b=LEIxdmDTLl0e7P
-	LcqCKoiH+RZavo3yzZcl/9xFnN1W3daxizywN1FUvO9O7RstUyNN+7zRAzo5Lu+QQJgC1YHBdUbj1
-	GdkU0UJq3q31D7+t8y89HeJ13rd0+fJV2pTpl3I6daypUCH1RmAnmq2fkTV6xz4j1kcAFKDNYPd9g
-	WPI5vovgz+BTZzrMD7GWvtyLGuAevh0WQpvNSG6h6hWiCQvxW5Bp3dSjAbxZZ4TBnvQdCx+OKxowU
-	OhbTkmfd83sh/AvU0XIJX5kSbYbczJCoRkDt/BLdZFTBMRJomhL7+imujuewZAs3MjWdxHMlbtutw
-	dG++/anWHRzD2KEggKZw==;
+	List-Owner; bh=GAZ0CrITd/kiFkoiTqsg1VgBN1W72+ZY408ZTPI6AUs=; b=qbnvnoD1hY2pP7
+	8c1IcCOdyhMaVUnUjjMtudsncg/AzHZlmJA3wQczb2bC+ISxuidfcjPP5ovYBu9zVRuaMw2EO6szC
+	RQx4J1gh6s1Vutf0aMklGqJOmT7udR2ru1O37DhLfmylT+ZZLwdnUq7Qyu0hN5vkG2mpBvSoQh07U
+	TsMrzLBZs5stPNCkxepm7JxZwJEiUcUqBvb7o522ThBsO0kXUp3RRaHcNCuYukEIvXdxqpCgPRIeY
+	/fZ93HOUle6RATYO+SJ8pRZDV07HfcTuwRGQr90kwh3P2OYFQ5mrnO6oIdEohxoSBBgl/jaCFkQjp
+	rX7uT8J/OBra6AXFu6aw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x9pgX-0000000C6LL-34mi;
-	Thu, 24 Sep 2026 20:04:49 +0000
+	id 1x9pgb-0000000C6P7-0Fr2;
+	Thu, 24 Sep 2026 20:04:53 +0000
 Received: from mail-wm2-x11.google.com ([2a00:1450:4864:31::11])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x9pgU-0000000C6H8-0DpS
+	id 1x9pgV-0000000C6Hy-21C4
 	for linux-mtd@lists.infradead.org;
-	Thu, 24 Sep 2026 20:04:47 +0000
-Received: by mail-wm2-x11.google.com with SMTP id 5b1f17b1804b1-49b912e64ccso1377245e9.0
-        for <linux-mtd@lists.infradead.org>; Thu, 24 Sep 2026 13:04:45 -0700 (PDT)
+	Thu, 24 Sep 2026 20:04:49 +0000
+Received: by mail-wm2-x11.google.com with SMTP id 5b1f17b1804b1-49e6c0fce17so1236255e9.1
+        for <linux-mtd@lists.infradead.org>; Thu, 24 Sep 2026 13:04:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1790280284; x=1790885084; darn=lists.infradead.org;
+        d=gmail.com; s=20251104; t=1790280286; x=1790885086; darn=lists.infradead.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=FR0y5oWVOEfEuW6A10hQnlv/3kONdwnVhlYIyafjNsQ=;
-        b=k7SHOGWNpmxIeKYYr9C3e60ItjAN2JF2z6Pfd2nGzL2BrdOu+jwK0HlRc2EhZg9FND
-         Rb8f6F4QhQHgjghcqaY5JSonqCl0t20HT31szR7KVuWQFdueX6FdDHTPYAaJ00FfR6IE
-         wxXCLoT6M4xrtLCaGjPO4ccZ8szrr4qEVGdeoVJN3SRxYP1gqyS1CUyKHwWtnqQduzfH
-         lZnG4vAiuZEIiZibUfx1Hfij63mXvo7CoeiXXjb5vsin9v3s1illztrIBUCqcivBfB4f
-         /ETfBEu7ErKvtQwQGK05c63HW4jAKGoxay6la5m45Fcj2ui2eEl3U3rv2ueT18IL4MvE
-         sP3Q==
+        bh=brmCNhyneEOagKuBVY37ScCGkg7oOLEAO4altKaW2BE=;
+        b=CIn2/zS6sBU+asHjw79Vg73GNaX3LOY50wiAEqjUAmXy1qZw7pnr5nRrqF8HYvK+ef
+         L/1NClRkJ70hVrXO76gy71VnXWvQjTjALU/KBwfwMiojLZhpqzuz8Cu9h6Btz+eUWtN1
+         HxAOrAkUfgzl8XjJpmVQE+BuoLqJ86REWEgvG3sT23Jq9bP8PHNWPBCYu2nHhJp2U7i4
+         RKTWI6lJ0bY+KJo9eYT094V5X3+B2L7YYufGN0KpXQM2ufCublf7HQxg7Dxf2KSKDXIs
+         SiR3fFXMl7MC8SYzO6ao5eKLUHVah0myWoV6DeWH8YkXVN/id1LC/Q3IBgbAd9qvtXWE
+         o1lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1790280284; x=1790885084;
+        d=1e100.net; s=20260707; t=1790280286; x=1790885086;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=FR0y5oWVOEfEuW6A10hQnlv/3kONdwnVhlYIyafjNsQ=;
-        b=cHjcW9nLD+GD1r9c8zX2VfgxqGLcWjRuE8KTz97iCa3CMzHYRolb9fFyAwOh4FiGux
-         2q8gnqyAOK0yS23EPuiPFoM1x5/YE2Ob8oETJb35wOyxVTcmb9Ue1fx75b5wDOKda/VT
-         1Xd5wnSNBtfyS1nMhYRrtFVSn0EjmyckGiAbPclZ2ThxsEnAgpz3YdhXkdWwlIX8/6yo
-         gDRsJl7Af5fmjmzu+gz266a2pOmZUY4vTaYxPEvuj1WcLU6k/V41rENFRjW2ykJVre7w
-         SPy4S1LV9QLdxuU4/Hjg+V7PbILJQj0cZjWteAqele9soAFUfRU/p7aq8K3iBde8/Z0v
-         KiiQ==
-X-Forwarded-Encrypted: i=1; AKwUvBxPHACcCf6avhau6zTTtii14FuJJWFmB42CWkytUfKJao1xwF+4glr2Ppb0aP+TCtmTbde0SvKV9ns=@lists.infradead.org
-X-Gm-Message-State: AFuF++l/BOwoQZ2NrCjh/aS3vb0K6u9nuPxK3tQrpZ0DdU/3gSH0XGyk
-	ThODmRp+5dU7lokGmJYlYBp5fvFPT134TzlBZCo3FTe5WKkZZVLY85sq
-X-Gm-Gg: AYBFou0MqwFVx4cOz/eR4WlB1cO8BXmoWcbaRlh0PjyOqAyIVIJwP79zU1hJbRUKQrE
-	7hgzeQ4j5iWRwLNnMLme+a5U5fENTRrRwAunGjvqNDAyEmP1dgBIyxmca+4dxnjuEbuzg6x5ImY
-	nMm2ogVg7EK5kmYEtDWgBZROixJ429+15sWRHpKInTrkhsPk3eQlKW4AxrlFi4RKVVXVHtvRWx4
-	aRrAUQu7ZmlPlRsOMTTZ2NOiICxzUL9JZPwhwhM6sD1/tQ8cZU4PLhUHvf+MrDl21rBnb+Hi/sh
-	5Oh7sehb+Y7yoYaMkx1N7dXGH89AEcQJE4i7S75+SBrTG0SeY4t2benImV7dSi+j5C2Sk9bKOuN
-	+MR3eE1XiHbVA2w+G49AXIEn6iSywWN1ZO4B+zQEpktEPMfpY0gwxMKLPoYY/8dUFA5FIURYSTZ
-	S3lA4bp6yE9AEQtENYeUA6myf1M1p7X1F2hmrg5fltHINknGYY2oWFL2zOEHdHNfaRqe4lPSCWc
-	Nah12uEWcH9j1mg9Wz/j2BNA8Lq
-X-Received: by 2002:a05:600c:a10d:b0:49f:e8bf:8f9b with SMTP id 5b1f17b1804b1-49fe8bf91bbmr39325455e9.4.1790280284310;
-        Thu, 24 Sep 2026 13:04:44 -0700 (PDT)
+        bh=brmCNhyneEOagKuBVY37ScCGkg7oOLEAO4altKaW2BE=;
+        b=ap+nInS37YGujIRBBFzPHErJQHV5ocOihP1MD45f985JNGdNlC0UKVaWlgomjW5Qo+
+         btAMMKyBv4mwQ6AgfZoyw5ZpkHVF3OM7ioCmBOeAfWpw1ZCsNvgmmVozXKUVZI5r5gVm
+         Pw9xhhAjIJayt91fDOyeV76rmCq1jQTEcpCxOSenqlt96WnNqJzP7budVb0nBrj9nlHh
+         vuolC3cDXtPvgQJqcEwA4l3YIBRbq9asIajmeYdoOSHi9Z/9M1gT0ALJBKh9iQPGExJX
+         ySsKGnITaXLnzCBhsMOnx8+nA9rvo9OuPGJ9vq0W2jYiIvByUjFOhyqYTvj30ykE/6cP
+         7I2A==
+X-Forwarded-Encrypted: i=1; AKwUvByv/DFaQSyWyUk9oNLO09AiTDbqupako+8859qQEuVmBo68uHbawZKWerZrX4X//CFkzgOt+OEDWFE=@lists.infradead.org
+X-Gm-Message-State: AFuF++mF0QbtTAmQHKxbt7Q6Uh/1wKG6TP9oKHDyPLjwuX72QJ4i3P75
+	04wSyVfXVBwftfD/67quVb6ATBoU5yTiZH5rG7oe4x3c5bU6VIhpmfD2
+X-Gm-Gg: AYBFou1OzwOrerv59gCdDqj3kqHFigGnHGPjNUh9EFMHtyDYMPpKMpJt5z9ghzFqvPr
+	/yDiuG/QOAvzMR9SkzpkQsIPClJM7sNRtOfArAd9rLjkDwAA92pQmsn0/7SyjDPuQ5Np5Y9e0Jv
+	WXANKDTMAiFVyrIKcK79AZezqKhKmPophGc3tD67AZDY84OHaZLZn5eMQkteJ3wdRWsWsKG9ZPj
+	/2r9jnc94GsDUfPhTif7pdq6rLS5AluRq0S5BI9bvsoMj4H5Ua3+wp1W9BgLpOftKrtx5uvzPvJ
+	DFk0q5wY8w2GKsdrgRpNeEpCWKuHFwPjvR9Cfcr2vuVBTAnyg0jPz4cTrTWXV7mNJwoRdwwEvy1
+	l8qQT3MrJz/l5eUBOXsZQ/piaBtkRYg1dV6Kd1w+CGFx/s5A3Xxgt5pOKrC1DHsz8ZVgMKRi9EU
+	pqD4D3Jy2hGsh61lhvLEpsiReWv3PbHxKMpkhIe0TlNp+6r1FFDwYrdgadEa8gPTjAIW/r/0za3
+	lHgy93B2+YnJdH23k2KChgbFF8=
+X-Received: by 2002:a05:600c:8411:b0:49c:fc6e:a3da with SMTP id 5b1f17b1804b1-49fe66ef334mr59626725e9.25.1790280285674;
+        Thu, 24 Sep 2026 13:04:45 -0700 (PDT)
 Received: from [192.168.0.253] (5403F394.catv.pool.telekom.hu. [84.3.243.148])
-        by smtp.googlemail.com with ESMTPSA id ffacd0b85a97d-4887a30b1dfsm1551603f8f.4.2026.09.24.13.04.43
+        by smtp.googlemail.com with ESMTPSA id ffacd0b85a97d-4887a30b1dfsm1551603f8f.4.2026.09.24.13.04.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2026 13:04:43 -0700 (PDT)
+        Thu, 24 Sep 2026 13:04:45 -0700 (PDT)
 From: Gabor Juhos <j4g8y7@gmail.com>
-Date: Thu, 24 Sep 2026 22:04:22 +0200
-Subject: [PATCH 7/8] mtd: rawnand: qcom: rename 'nand_stats' structure
+Date: Thu, 24 Sep 2026 22:04:23 +0200
+Subject: [PATCH 8/8] mtd: rawnand: qcom: move common code to the
+ 'qpic_common' module
 MIME-Version: 1.0
-Message-Id: <20260924-qcom_nandc-share-more-code-v1-7-f3012199b161@gmail.com>
+Message-Id: <20260924-qcom_nandc-share-more-code-v1-8-f3012199b161@gmail.com>
 References: <20260924-qcom_nandc-share-more-code-v1-0-f3012199b161@gmail.com>
 In-Reply-To: <20260924-qcom_nandc-share-more-code-v1-0-f3012199b161@gmail.com>
 To: Manivannan Sadhasivam <mani@kernel.org>, 
@@ -86,8 +87,8 @@ Cc: Md Sadre Alam <md.alam@oss.qualcomm.com>, linux-mtd@lists.infradead.org,
  Gabor Juhos <j4g8y7@gmail.com>
 X-Mailer: b4 0.14.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260924_130446_135366_F0938E30 
-X-CRM114-Status: GOOD (  14.10  )
+X-CRM114-CacheID: sfid-20260924_130447_849807_08B3563E 
+X-CRM114-Status: GOOD (  18.81  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -104,48 +105,358 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Give 'read_stats' structure a 'qcom_nandc' prefix to indicate that
-it corresponds to the Qualcomm NAND driver. The definition is going
-to be moved into a common header this helps to avoid global namespace
-pollution/collision.
+The 'qpic_common' module provides some generic functions which are
+usable by both the 'qcom_nandc' and by the 'spi-qpic-snand' driver.
+Move more code from the 'qcom_nandc' driver to there in order to
+allow using those also from the 'spi-qpic-snand' driver.
 
-No functional changes. This is in preparation of moving the declaration
-into the 'nand-qpic-common.h' header to allow reusing it from the
-'spi-qpic-snand' driver.
+No functional changes.
 
 Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
 ---
- drivers/mtd/nand/raw/qcom_nandc.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/mtd/nand/qpic_common.c       | 131 +++++++++++++++++++++++++++++++++++
+ drivers/mtd/nand/raw/qcom_nandc.c    | 131 -----------------------------------
+ include/linux/mtd/nand-qpic-common.h |  17 +++++
+ 3 files changed, 148 insertions(+), 131 deletions(-)
 
+diff --git a/drivers/mtd/nand/qpic_common.c b/drivers/mtd/nand/qpic_common.c
+index 4f3e4dd766da..91ae970734f8 100644
+--- a/drivers/mtd/nand/qpic_common.c
++++ b/drivers/mtd/nand/qpic_common.c
+@@ -775,5 +775,136 @@ int qcom_nandc_alloc(struct qcom_nand_controller *nandc)
+ }
+ EXPORT_SYMBOL(qcom_nandc_alloc);
+ 
++/* reads back FLASH_STATUS register set by the controller */
++int qcom_nandc_check_flash_errors(struct qcom_nand_controller *nandc,
++				  int cw_cnt)
++{
++	int i;
++
++	qcom_nandc_dev_to_mem(nandc, true);
++
++	for (i = 0; i < cw_cnt; i++) {
++		u32 flash = le32_to_cpu(nandc->reg_read_buf[i]);
++
++		if (flash & (FS_OP_ERR | FS_MPU_ERR))
++			return -EIO;
++	}
++
++	return 0;
++}
++EXPORT_SYMBOL(qcom_nandc_check_flash_errors);
++
++/*
++ * Helper to prepare DMA descriptors for configuring registers
++ * before reading a NAND page.
++ */
++void qcom_nandc_config_page_read(struct qcom_nand_controller *nandc)
++{
++	qcom_write_reg_dma(nandc, &nandc->regs->addr0, NAND_ADDR0, 2, 0);
++	qcom_write_reg_dma(nandc, &nandc->regs->cfg0, NAND_DEV0_CFG0, 3, 0);
++	if (!nandc->props->qpic_version2)
++		qcom_write_reg_dma(nandc, &nandc->regs->ecc_buf_cfg, NAND_EBI2_ECC_BUF_CFG, 1, 0);
++	qcom_write_reg_dma(nandc, &nandc->regs->erased_cw_detect_cfg_clr,
++			   NAND_ERASED_CW_DETECT_CFG, 1, 0);
++	qcom_write_reg_dma(nandc, &nandc->regs->erased_cw_detect_cfg_set,
++			   NAND_ERASED_CW_DETECT_CFG, 1, NAND_ERASED_CW_SET | NAND_BAM_NEXT_SGL);
++}
++EXPORT_SYMBOL(qcom_nandc_config_page_read);
++
++/*
++ * Helper to prepare DMA descriptors used to configure registers needed for
++ * before writing a NAND page.
++ */
++void qcom_nandc_config_page_write(struct qcom_nand_controller *nandc)
++{
++	qcom_write_reg_dma(nandc, &nandc->regs->addr0, NAND_ADDR0, 2, 0);
++	qcom_write_reg_dma(nandc, &nandc->regs->cfg0, NAND_DEV0_CFG0, 3, 0);
++	if (!nandc->props->qpic_version2)
++		qcom_write_reg_dma(nandc, &nandc->regs->ecc_buf_cfg, NAND_EBI2_ECC_BUF_CFG, 1,
++				   NAND_BAM_NEXT_SGL);
++}
++EXPORT_SYMBOL(qcom_nandc_config_page_write);
++
++/*
++ * Helper to prepare DMA descriptors for configuring registers
++ * before writing each codeword in NAND page.
++ */
++void qcom_nandc_config_cw_write(struct qcom_nand_controller *nandc)
++{
++	qcom_write_reg_dma(nandc, &nandc->regs->cmd, NAND_FLASH_CMD, 1, NAND_BAM_NEXT_SGL);
++	qcom_write_reg_dma(nandc, &nandc->regs->exec, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
++
++	qcom_read_reg_dma(nandc, NAND_FLASH_STATUS, 1, NAND_BAM_NEXT_SGL);
++
++	qcom_write_reg_dma(nandc, &nandc->regs->clrflashstatus, NAND_FLASH_STATUS, 1, 0);
++	qcom_write_reg_dma(nandc, &nandc->regs->clrreadstatus, NAND_READ_STATUS, 1,
++			   NAND_BAM_NEXT_SGL);
++}
++EXPORT_SYMBOL(qcom_nandc_config_cw_write);
++
++/**
++ * qcom_nandc_set_read_loc_first() - to set read location first register
++ * @nandc:		NAND controller's private data
++ * @reg_base:		location register base
++ * @cw_offset:		code word offset
++ * @read_size:		code word read length
++ * @is_last_read_loc:	is this the last read location
++ *
++ * This function will set location register value
++ */
++void qcom_nandc_set_read_loc_first(struct qcom_nand_controller *nandc,
++				   int reg_base, u32 cw_offset,
++				   u32 read_size, u32 is_last_read_loc)
++{
++	__le32 locreg_val;
++	u32 val = FIELD_PREP(READ_LOCATION_OFFSET_MASK, cw_offset) |
++		  FIELD_PREP(READ_LOCATION_SIZE_MASK, read_size) |
++		  FIELD_PREP(READ_LOCATION_LAST_MASK, is_last_read_loc);
++
++	locreg_val = cpu_to_le32(val);
++
++	if (reg_base == NAND_READ_LOCATION_0)
++		nandc->regs->read_location0 = locreg_val;
++	else if (reg_base == NAND_READ_LOCATION_1)
++		nandc->regs->read_location1 = locreg_val;
++	else if (reg_base == NAND_READ_LOCATION_2)
++		nandc->regs->read_location2 = locreg_val;
++	else if (reg_base == NAND_READ_LOCATION_3)
++		nandc->regs->read_location3 = locreg_val;
++}
++EXPORT_SYMBOL(qcom_nandc_set_read_loc_first);
++
++/**
++ * qcom_nandc_set_read_loc_last - to set read location last register
++ * @nandc:		NAND controller's private data
++ * @reg_base:		location register base
++ * @cw_offset:		code word offset
++ * @read_size:		code word read length
++ * @is_last_read_loc:	is this the last read location
++ *
++ * This function will set location last register value
++ */
++void qcom_nandc_set_read_loc_last(struct qcom_nand_controller *nandc,
++				  int reg_base, u32 cw_offset,
++				  u32 read_size, u32 is_last_read_loc)
++{
++	__le32 locreg_val;
++	u32 val = FIELD_PREP(READ_LOCATION_OFFSET_MASK, cw_offset) |
++		  FIELD_PREP(READ_LOCATION_SIZE_MASK, read_size) |
++		  FIELD_PREP(READ_LOCATION_LAST_MASK, is_last_read_loc);
++
++	locreg_val = cpu_to_le32(val);
++
++	if (reg_base == NAND_READ_LOCATION_LAST_CW_0)
++		nandc->regs->read_location_last0 = locreg_val;
++	else if (reg_base == NAND_READ_LOCATION_LAST_CW_1)
++		nandc->regs->read_location_last1 = locreg_val;
++	else if (reg_base == NAND_READ_LOCATION_LAST_CW_2)
++		nandc->regs->read_location_last2 = locreg_val;
++	else if (reg_base == NAND_READ_LOCATION_LAST_CW_3)
++		nandc->regs->read_location_last3 = locreg_val;
++}
++EXPORT_SYMBOL(qcom_nandc_set_read_loc_last);
++
+ MODULE_DESCRIPTION("QPIC controller common api");
+ MODULE_LICENSE("GPL");
 diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-index cc1e64ac4245..99fe2c434ce7 100644
+index 99fe2c434ce7..d65c0101f471 100644
 --- a/drivers/mtd/nand/raw/qcom_nandc.c
 +++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -438,7 +438,7 @@ static bool erased_chunk_check_and_fixup(u8 *data_buf, int data_len)
+@@ -149,68 +149,6 @@ static bool qcom_nandc_is_last_cw(struct nand_ecc_ctrl *ecc, int cw)
+ 	return cw == (ecc->steps - 1);
+ }
+ 
+-/**
+- * qcom_nandc_set_read_loc_first() - to set read location first register
+- * @nandc:		NAND controller's private data
+- * @reg_base:		location register base
+- * @cw_offset:		code word offset
+- * @read_size:		code word read length
+- * @is_last_read_loc:	is this the last read location
+- *
+- * This function will set location register value
+- */
+-static void qcom_nandc_set_read_loc_first(struct qcom_nand_controller *nandc,
+-					  int reg_base, u32 cw_offset,
+-					  u32 read_size, u32 is_last_read_loc)
+-{
+-	__le32 locreg_val;
+-	u32 val = FIELD_PREP(READ_LOCATION_OFFSET_MASK, cw_offset) |
+-		  FIELD_PREP(READ_LOCATION_SIZE_MASK, read_size) |
+-		  FIELD_PREP(READ_LOCATION_LAST_MASK, is_last_read_loc);
+-
+-	locreg_val = cpu_to_le32(val);
+-
+-	if (reg_base == NAND_READ_LOCATION_0)
+-		nandc->regs->read_location0 = locreg_val;
+-	else if (reg_base == NAND_READ_LOCATION_1)
+-		nandc->regs->read_location1 = locreg_val;
+-	else if (reg_base == NAND_READ_LOCATION_2)
+-		nandc->regs->read_location2 = locreg_val;
+-	else if (reg_base == NAND_READ_LOCATION_3)
+-		nandc->regs->read_location3 = locreg_val;
+-}
+-
+-/**
+- * qcom_nandc_set_read_loc_last - to set read location last register
+- * @nandc:		NAND controller's private data
+- * @reg_base:		location register base
+- * @cw_offset:		code word offset
+- * @read_size:		code word read length
+- * @is_last_read_loc:	is this the last read location
+- *
+- * This function will set location last register value
+- */
+-static void qcom_nandc_set_read_loc_last(struct qcom_nand_controller *nandc,
+-					 int reg_base, u32 cw_offset,
+-					 u32 read_size, u32 is_last_read_loc)
+-{
+-	__le32 locreg_val;
+-	u32 val = FIELD_PREP(READ_LOCATION_OFFSET_MASK, cw_offset) |
+-		  FIELD_PREP(READ_LOCATION_SIZE_MASK, read_size) |
+-		  FIELD_PREP(READ_LOCATION_LAST_MASK, is_last_read_loc);
+-
+-	locreg_val = cpu_to_le32(val);
+-
+-	if (reg_base == NAND_READ_LOCATION_LAST_CW_0)
+-		nandc->regs->read_location_last0 = locreg_val;
+-	else if (reg_base == NAND_READ_LOCATION_LAST_CW_1)
+-		nandc->regs->read_location_last1 = locreg_val;
+-	else if (reg_base == NAND_READ_LOCATION_LAST_CW_2)
+-		nandc->regs->read_location_last2 = locreg_val;
+-	else if (reg_base == NAND_READ_LOCATION_LAST_CW_3)
+-		nandc->regs->read_location_last3 = locreg_val;
+-}
+-
+ /* helper to configure location register values */
+ static void nandc_set_read_loc(struct nand_chip *chip, int cw, int reg,
+ 			       u32 cw_offset, u32 read_size, u32 is_last_read_loc)
+@@ -301,22 +239,6 @@ static void update_rw_regs(struct qcom_nand_host *host, int num_cw, bool read, i
+ 				   host->cw_data : host->cw_size, 1);
+ }
+ 
+-/*
+- * Helper to prepare DMA descriptors for configuring registers
+- * before reading a NAND page.
+- */
+-static void qcom_nandc_config_page_read(struct qcom_nand_controller *nandc)
+-{
+-	qcom_write_reg_dma(nandc, &nandc->regs->addr0, NAND_ADDR0, 2, 0);
+-	qcom_write_reg_dma(nandc, &nandc->regs->cfg0, NAND_DEV0_CFG0, 3, 0);
+-	if (!nandc->props->qpic_version2)
+-		qcom_write_reg_dma(nandc, &nandc->regs->ecc_buf_cfg, NAND_EBI2_ECC_BUF_CFG, 1, 0);
+-	qcom_write_reg_dma(nandc, &nandc->regs->erased_cw_detect_cfg_clr,
+-			   NAND_ERASED_CW_DETECT_CFG, 1, 0);
+-	qcom_write_reg_dma(nandc, &nandc->regs->erased_cw_detect_cfg_set,
+-			   NAND_ERASED_CW_DETECT_CFG, 1, NAND_ERASED_CW_SET | NAND_BAM_NEXT_SGL);
+-}
+-
+ /*
+  * Helper to prepare DMA descriptors for configuring registers
+  * before reading each codeword in NAND page.
+@@ -361,35 +283,6 @@ config_nand_single_cw_page_read(struct nand_chip *chip,
+ 	config_nand_cw_read(chip, use_ecc, cw);
+ }
+ 
+-/*
+- * Helper to prepare DMA descriptors used to configure registers needed for
+- * before writing a NAND page.
+- */
+-static void qcom_nandc_config_page_write(struct qcom_nand_controller *nandc)
+-{
+-	qcom_write_reg_dma(nandc, &nandc->regs->addr0, NAND_ADDR0, 2, 0);
+-	qcom_write_reg_dma(nandc, &nandc->regs->cfg0, NAND_DEV0_CFG0, 3, 0);
+-	if (!nandc->props->qpic_version2)
+-		qcom_write_reg_dma(nandc, &nandc->regs->ecc_buf_cfg, NAND_EBI2_ECC_BUF_CFG, 1,
+-				   NAND_BAM_NEXT_SGL);
+-}
+-
+-/*
+- * Helper to prepare DMA descriptors for configuring registers
+- * before writing each codeword in NAND page.
+- */
+-static void qcom_nandc_config_cw_write(struct qcom_nand_controller *nandc)
+-{
+-	qcom_write_reg_dma(nandc, &nandc->regs->cmd, NAND_FLASH_CMD, 1, NAND_BAM_NEXT_SGL);
+-	qcom_write_reg_dma(nandc, &nandc->regs->exec, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
+-
+-	qcom_read_reg_dma(nandc, NAND_FLASH_STATUS, 1, NAND_BAM_NEXT_SGL);
+-
+-	qcom_write_reg_dma(nandc, &nandc->regs->clrflashstatus, NAND_FLASH_STATUS, 1, 0);
+-	qcom_write_reg_dma(nandc, &nandc->regs->clrreadstatus, NAND_READ_STATUS, 1,
+-			   NAND_BAM_NEXT_SGL);
+-}
+-
+ /*
+  * when using BCH ECC, the HW flags an error in NAND_FLASH_STATUS if it read
+  * an erased CW, and reports an erased CW in NAND_ERASED_CW_DETECT_STATUS.
+@@ -438,30 +331,6 @@ static bool erased_chunk_check_and_fixup(u8 *data_buf, int data_len)
  	return true;
  }
  
--struct read_stats {
+-struct qcom_nandc_read_stats {
+-	__le32 flash;
+-	__le32 buffer;
+-	__le32 erased_cw;
+-};
+-
+-/* reads back FLASH_STATUS register set by the controller */
+-static int qcom_nandc_check_flash_errors(struct qcom_nand_controller *nandc,
+-					 int cw_cnt)
+-{
+-	int i;
+-
+-	qcom_nandc_dev_to_mem(nandc, true);
+-
+-	for (i = 0; i < cw_cnt; i++) {
+-		u32 flash = le32_to_cpu(nandc->reg_read_buf[i]);
+-
+-		if (flash & (FS_OP_ERR | FS_MPU_ERR))
+-			return -EIO;
+-	}
+-
+-	return 0;
+-}
+-
+ /* performs raw read for one codeword */
+ static int
+ qcom_nandc_read_cw_raw(struct mtd_info *mtd, struct nand_chip *chip,
+diff --git a/include/linux/mtd/nand-qpic-common.h b/include/linux/mtd/nand-qpic-common.h
+index 437448995187..87bf9f67b267 100644
+--- a/include/linux/mtd/nand-qpic-common.h
++++ b/include/linux/mtd/nand-qpic-common.h
+@@ -458,6 +458,12 @@ struct qcom_nandc_props {
+ 	bool use_codeword_fixup;
+ };
+ 
 +struct qcom_nandc_read_stats {
- 	__le32 flash;
- 	__le32 buffer;
- 	__le32 erased_cw;
-@@ -619,12 +619,12 @@ static int parse_read_errors(struct qcom_nand_host *host, u8 *data_buf,
- 	struct mtd_info *mtd = nand_to_mtd(chip);
- 	struct nand_ecc_ctrl *ecc = &chip->ecc;
- 	unsigned int max_bitflips = 0, uncorrectable_cws = 0;
--	struct read_stats *buf;
-+	struct qcom_nandc_read_stats *buf;
- 	bool flash_op_err = false, erased;
- 	int i;
- 	u8 *data_buf_start = data_buf, *oob_buf_start = oob_buf;
++	__le32 flash;
++	__le32 buffer;
++	__le32 erased_cw;
++};
++
+ void qcom_free_bam_transaction(struct qcom_nand_controller *nandc);
+ struct bam_transaction *qcom_alloc_bam_transaction(struct qcom_nand_controller *nandc);
+ void qcom_clear_bam_transaction(struct qcom_nand_controller *nandc);
+@@ -483,5 +489,16 @@ int qcom_submit_descs(struct qcom_nand_controller *nandc);
+ void qcom_clear_read_regs(struct qcom_nand_controller *nandc);
+ void qcom_nandc_unalloc(struct qcom_nand_controller *nandc);
+ int qcom_nandc_alloc(struct qcom_nand_controller *nandc);
++int qcom_nandc_check_flash_errors(struct qcom_nand_controller *nandc,
++				  int cw_cnt);
++void qcom_nandc_config_page_read(struct qcom_nand_controller *nandc);
++void qcom_nandc_config_page_write(struct qcom_nand_controller *nandc);
++void qcom_nandc_config_cw_write(struct qcom_nand_controller *nandc);
++void qcom_nandc_set_read_loc_first(struct qcom_nand_controller *nandc,
++				   int reg_base, u32 cw_offset,
++				   u32 read_size, u32 is_last_read_loc);
++void qcom_nandc_set_read_loc_last(struct qcom_nand_controller *nandc,
++				  int reg_base, u32 cw_offset,
++				  u32 read_size, u32 is_last_read_loc);
+ #endif
  
--	buf = (struct read_stats *)nandc->reg_read_buf;
-+	buf = (struct qcom_nandc_read_stats *)nandc->reg_read_buf;
- 	qcom_nandc_dev_to_mem(nandc, true);
- 
- 	for (i = 0; i < ecc->steps; i++, buf++) {
 
 -- 
 2.55.0
