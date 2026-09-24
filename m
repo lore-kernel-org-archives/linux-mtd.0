@@ -4,79 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9E34C98325
-	for <linux-mtd@archiver.kernel.org>; Thu, 24 Sep 2026 20:04:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E398C98327
+	for <linux-mtd@archiver.kernel.org>; Thu, 24 Sep 2026 20:04:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=O7taD9egZBsuHfFsXhKKJovhRzYcI09hMAzPmOIVEog=; b=KMxbvjtg2E7EW1
-	UigvxIy2qSndPsXLa7w8nTkyK8cxupMWqabWNV8CydLFmQsfoJmAnBbx32B3M4bTJrrHrVWZTpN6G
-	eNjz0K8me4kX6XbGsUhaK/KpH7zW7afi3OG+57bQeSODoug/sad7KzR6ZpHfw4iXCHSsHPOrW0tzk
-	KhkrWJ402oNXIwertPfdtaILbVTZxMQ/rN0lei1NLYh+OWY29hg8ITtQ4BWmvcZ6+NL9xVRBSpfxX
-	fNZTjExwQvNn517fBoGyAoRYGHDBzowVcn215FuAsux+In2No5ceawucOBXGLESVGDv7G1yzCeRDm
-	GgWS5vWOywpwxyYVzkpg==;
+	List-Owner; bh=MXerL11Dwme5ykrsLHZuZmLK/Y3u7ZU66XM8icRgtKM=; b=DrMuXdEjzWSY3a
+	TOLwaJyN35Bn3NjuZJE/kHGxBTwJvCDKUemELkncd3LfRRSJnHWyI/BTffPLfQZ/hqSJIqTGxg6g2
+	elRzFoVkjOf1yG45Zn0HXpQNOt3vIU+6kjL8R3hiE2BGk5yMwwrxcY9ukIfCzgaFyfLQ1r9a8FINT
+	bHgPZGnWaMToJbpYKRyYOmDiXMIMf1AwkYYEk0SuKUsrhMBb6pyZ529hwmFOntcGTZxJfBqwvGSVG
+	RnnytHmeTFVFtt18UEdjREhVEuHLCwzhgghXcGtJHbx9rPLh9ERd3zzZvaQUuHzhF/X4uYMtT6B46
+	SvVf81NswZbB3LRJFRXQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x9pgR-0000000C6GS-3VyY;
-	Thu, 24 Sep 2026 20:04:43 +0000
-Received: from mail-wm2-x11.google.com ([2a00:1450:4864:31::11])
+	id 1x9pgU-0000000C6HU-0Ai1;
+	Thu, 24 Sep 2026 20:04:46 +0000
+Received: from mail-wr2-x10.google.com ([2a00:1450:4864:30::10])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x9pgO-0000000C6EX-3uyX
+	id 1x9pgR-0000000C6Fi-1oGr
 	for linux-mtd@lists.infradead.org;
-	Thu, 24 Sep 2026 20:04:42 +0000
-Received: by mail-wm2-x11.google.com with SMTP id 5b1f17b1804b1-49b912d37b5so1185625e9.2
-        for <linux-mtd@lists.infradead.org>; Thu, 24 Sep 2026 13:04:40 -0700 (PDT)
+	Thu, 24 Sep 2026 20:04:44 +0000
+Received: by mail-wr2-x10.google.com with SMTP id ffacd0b85a97d-4843f22dcb8so151421f8f.0
+        for <linux-mtd@lists.infradead.org>; Thu, 24 Sep 2026 13:04:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1790280279; x=1790885079; darn=lists.infradead.org;
+        d=gmail.com; s=20251104; t=1790280282; x=1790885082; darn=lists.infradead.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=EvoJ+1SnGtHb1aER45OX4q+Sg7b0MJkGQf+G9BmIWik=;
-        b=fplNmTtfiPeDEJpEpKLu5Rbm+34e/PTFSw2v5hI6D81OTY+mYEBvIc+uL8ASGFWpNy
-         zrHyVjIMWwfsBjkTGWOgOOqA9BbqtU11Xq/Uv9OF4rrkCWWK9YEyRMfwzTN5itu5lp+C
-         28w8fokDXcJ4HlwcRaBP4Au9qZL/2NjqnRhB/YHH6jH10UaPgx3EGCAToiaL3aH6WvX5
-         3i+9S73Ty6cyBHLOuGYetkInw/ybsRUfYinURTL6nxoRmbNunFHSPk862VozYhZQOuCC
-         oK/yrxxzIHunSa4H+MYbjZh6LNWYAl5cT60WV5ejf/Hg4uFnJxXqOWwUxvSVtmYqBgcu
-         EjXA==
+        bh=MfE5jdaxQZ43i+myqwUtnFt8LRx/0Q0FXN2w5xiH2WY=;
+        b=Off8ZuPDgQYi5VypyjBIuzrQq9DURMhsDXiuCT16cG7fBC/+66wDiGJIZ9MUdwzy93
+         i/rEPiFpjijaw7DeuJzDWCzoAatVHnoEvxkit9ur+MPHjs6Cte9PJSPFo0QZ48tUdZko
+         ep5U5Fmz3QGrvbsxlL9PnPnjN9Gw6xFB0cQShi7VX2xINaqyJGc8KMoZqucr4OxXdHzJ
+         0DE4uVb6YGa4R9Be67+VTJwna7Zg1LJFwGya8pAzJbbkTMYUa3UGMLkbDT6wjgijMVai
+         D5IZ6/o2sdL6EPzIrs5fnHvKPiXVFO+frF4RvGrumh7qQ0ES+PUqJ6wK+MIgxEougKWg
+         MFGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1790280279; x=1790885079;
+        d=1e100.net; s=20260707; t=1790280282; x=1790885082;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=EvoJ+1SnGtHb1aER45OX4q+Sg7b0MJkGQf+G9BmIWik=;
-        b=R1XTEq3/gml80G9tXgClMH4G833/hjvWD/vIxh9QgkmBQm6OkzZm99VSWHx+m8cuD6
-         VZvYrhad/onqsDFt+lT8oqk2XMtzEdUmOhzkkR+47yNjM7qbuNF2G1z6A10htQV7SmQ+
-         MYijm81Vpck7Lz3O0vM2MQWGj/G7spcryLMwkwK0PAliD8CvOpIhTXL7cZMngUNZBk8p
-         WPkjpjJ6ze7BUssDTvA/syvX2zJxF1q2aXWCSCOJPASeyvWqT+wZOlD2xSyWUCUgZT/R
-         X5I/P/F/pIr/0xRpVZp8yCueHPY2znBFNXPVK5cuOLRg/kWGp8XFhnMBZ+OuUWLoDCa7
-         GzVQ==
-X-Forwarded-Encrypted: i=1; AKwUvByGgARMAvZgHYrV+ssWu2kl+NzpNfosee6FvlNkj9DzQfxOW/R8DBCtotUk+T7PqmNKi1pnbUS/czg=@lists.infradead.org
-X-Gm-Message-State: AFuF++mCwqWQlJpyO5L7IhOfyP+HdqdSmZphycp8660gFRiNLyPm6CrT
-	LQ4wTjVROQsXbawq55WIkTB+Qj2sMibHNz8g6RqkEAiUHnC1DDXTii5n
-X-Gm-Gg: AYBFou0zzJgnMxXJjwmPsgHZ0ENv9Jz78Tjd4EpZBVibMfNapbMw3VZhZaddZ1FjUVr
-	wejROHCRMdBmENYfPl/qpXmays1dZZqo/GRoWY2/hq0r5sCbCOCG8TXg8T23q5Y9+EErQsYDkip
-	t/2D2inTkUk3N5GnZZ3h7cRJYqwkwPsqg8JtQcbFfPoZdKMLLmKFl2qNzD5P/fYjwX94t2kBNmx
-	LH9VIdRC9HZN3v4NMaiYGG1Gw4rbrI0oPaYBZ5aVk5VKPQs8fXLB4PrEka8uZ0ZvcRwMRwZtsf4
-	ZRzViGkQfVlO59DvABDAC6dodB9eEaz9iYzzmiautwwWhXPezuXe5d9YGQE6tS033emIs8dvxZ9
-	2rkxs9iUPZGOpnikWdHDGASz1kNC/Lz5yAtwOGkZnCz9cQdZahbvoJEXR6C3XQSY17envVhwaYf
-	Z8GTKpITguYAnnY5TfJX8om4kDVyaFHujmHM+4LjVUlZ2tX8bUqZ73lGslnhbieev18agwscK5P
-	4IsOCzp5mwRJOq011IZ6u5Cuac=
-X-Received: by 2002:a05:600c:37c9:b0:49f:c2ef:cfb9 with SMTP id 5b1f17b1804b1-49fe66c897cmr55518965e9.4.1790280279053;
-        Thu, 24 Sep 2026 13:04:39 -0700 (PDT)
+        bh=MfE5jdaxQZ43i+myqwUtnFt8LRx/0Q0FXN2w5xiH2WY=;
+        b=2q9Vqnse6e3bNDhLSbHum4QCx3MmeKA2YMAnb+CadoJ/XhX3cn0fzsi8m4+GZnK1DO
+         ceah9T4cVL6pVWJiLnwa+4fl/jyCCWNB/OvWThL+06tRPKSNIHd5V4ulnYBYsjDjsaxb
+         XF0qtaMBJQ2UixDiOU72/olIQs5mt5fB+Hc/XUYEUN2vNOfkt4mT2Yj2vJIlMu1fh1Bn
+         fktZ5F4/gEMq2Zak9DFUw/stQWyjajU8P+ROzjQtIk0dVlneDmSM868oPEAPTgBuP4Tb
+         o2fYIq7K4m9geoESc+eVevB0/GM3c+P5w5kENIgcG8Y1Qj3fqxOFlQ40L6PV7ma3vsQg
+         p5Yg==
+X-Forwarded-Encrypted: i=1; AKwUvBwgue0T+l1Xu8QKLenUZBfeEDrKli7v/MXqds8nQz2I1dkUoJGo79oqhHu1oNESZAXHGB81sUpxBXg=@lists.infradead.org
+X-Gm-Message-State: AFuF++mmZ/QG3WeyZzL9b3g3zKPD0Qde5MCHhD5vKjXgezxYtZN9Ia0H
+	Er1/erg4q7SbHtSmRsfcX5VdRzhRBz9ipb+wyxTxE6b/kN/McuII3H8m
+X-Gm-Gg: AYBFou14KaEe7uLOLDQBml2ICcmkdTO2K4OQAoavZJZ6yIpjz/KIzXYsId2ew9LMutw
+	pB4QUfUCjU0cz7n4yCKp+8dr8XMUiAIlGudbr1meVoDyewW0DhPco28gbwN/NOG/6Qk3+YmBSUq
+	pOBp0SGpXaYl/x0L0tsw6Q/Stwyj7UnVDpSXvPyos6v+vldEnh3GNYcqoNSS0htRVxxEHDorEE2
+	FoeMP/Cnytb7y0wvw3g7TY0bqDEFsJO3z8I2PQsmLvjfH4RgijIhlGK2SNsgziJtkd4nFFyJwgG
+	HeLkWv6CBjVq+9J2cpYleSTZ3Ld9wkFbvC3d1OPSkWnLyJ2Czm5ePiZjjHL7M15jxdB/GnjmLgl
+	qW6pOrUtEPS64z6XPTpNA7xKuSl2LoGb8/plD+RE78UIvyGBpDIQ9SPZzs5VGcS9Zq6M3C3QEFQ
+	wFnAt98ERYFpFP/be2DTB+Aox8FWtexI4i3xIuF1uXZHRw0qFObeyrEjXjq1TOsoo7UMfJqg/2V
+	NC9DFjAym3RMisFLcX1DwASIIw=
+X-Received: by 2002:a5d:5e03:0:b0:487:370:c511 with SMTP id ffacd0b85a97d-488717147e2mr6198660f8f.8.1790280281764;
+        Thu, 24 Sep 2026 13:04:41 -0700 (PDT)
 Received: from [192.168.0.253] (5403F394.catv.pool.telekom.hu. [84.3.243.148])
-        by smtp.googlemail.com with ESMTPSA id ffacd0b85a97d-4887a30b1dfsm1551603f8f.4.2026.09.24.13.04.37
+        by smtp.googlemail.com with ESMTPSA id ffacd0b85a97d-4887a30b1dfsm1551603f8f.4.2026.09.24.13.04.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2026 13:04:38 -0700 (PDT)
+        Thu, 24 Sep 2026 13:04:41 -0700 (PDT)
 From: Gabor Juhos <j4g8y7@gmail.com>
-Date: Thu, 24 Sep 2026 22:04:18 +0200
-Subject: [PATCH 3/8] mtd: rawnand: qcom: make config_nand_page_write() more
- generic
+Date: Thu, 24 Sep 2026 22:04:20 +0200
+Subject: [PATCH 5/8] mtd: rawnand: qcom: make nandc_set_read_loc_first()
+ more generic
 MIME-Version: 1.0
-Message-Id: <20260924-qcom_nandc-share-more-code-v1-3-f3012199b161@gmail.com>
+Message-Id: <20260924-qcom_nandc-share-more-code-v1-5-f3012199b161@gmail.com>
 References: <20260924-qcom_nandc-share-more-code-v1-0-f3012199b161@gmail.com>
 In-Reply-To: <20260924-qcom_nandc-share-more-code-v1-0-f3012199b161@gmail.com>
 To: Manivannan Sadhasivam <mani@kernel.org>, 
@@ -87,8 +87,8 @@ Cc: Md Sadre Alam <md.alam@oss.qualcomm.com>, linux-mtd@lists.infradead.org,
  Gabor Juhos <j4g8y7@gmail.com>
 X-Mailer: b4 0.14.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260924_130440_997842_D4AB944A 
-X-CRM114-Status: GOOD (  14.73  )
+X-CRM114-CacheID: sfid-20260924_130443_521044_27177D15 
+X-CRM114-Status: GOOD (  14.22  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -120,61 +120,60 @@ the 'spi-qpic-snand' driver.
 
 Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
 ---
- drivers/mtd/nand/raw/qcom_nandc.c | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+ drivers/mtd/nand/raw/qcom_nandc.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-index c65a8416c3f5..1f3c00823309 100644
+index 99fbf5458083..96a1a5a03de8 100644
 --- a/drivers/mtd/nand/raw/qcom_nandc.c
 +++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -365,10 +365,8 @@ config_nand_single_cw_page_read(struct nand_chip *chip,
-  * Helper to prepare DMA descriptors used to configure registers needed for
-  * before writing a NAND page.
+@@ -150,8 +150,8 @@ static bool qcom_nandc_is_last_cw(struct nand_ecc_ctrl *ecc, int cw)
+ }
+ 
+ /**
+- * nandc_set_read_loc_first() - to set read location first register
+- * @chip:		NAND Private Flash Chip Data
++ * qcom_nandc_set_read_loc_first() - to set read location first register
++ * @nandc:		NAND controller's private data
+  * @reg_base:		location register base
+  * @cw_offset:		code word offset
+  * @read_size:		code word read length
+@@ -159,11 +159,10 @@ static bool qcom_nandc_is_last_cw(struct nand_ecc_ctrl *ecc, int cw)
+  *
+  * This function will set location register value
   */
--static void config_nand_page_write(struct nand_chip *chip)
-+static void qcom_nandc_config_page_write(struct qcom_nand_controller *nandc)
+-static void nandc_set_read_loc_first(struct nand_chip *chip,
+-				     int reg_base, u32 cw_offset,
+-				     u32 read_size, u32 is_last_read_loc)
++static void qcom_nandc_set_read_loc_first(struct qcom_nand_controller *nandc,
++					  int reg_base, u32 cw_offset,
++					  u32 read_size, u32 is_last_read_loc)
  {
 -	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
--
- 	qcom_write_reg_dma(nandc, &nandc->regs->addr0, NAND_ADDR0, 2, 0);
- 	qcom_write_reg_dma(nandc, &nandc->regs->cfg0, NAND_DEV0_CFG0, 3, 0);
- 	if (!nandc->props->qpic_version2)
-@@ -989,7 +987,7 @@ static int qcom_nandc_write_page(struct nand_chip *chip, const u8 *buf,
+ 	__le32 locreg_val;
+ 	u32 val = FIELD_PREP(READ_LOCATION_OFFSET_MASK, cw_offset) |
+ 		  FIELD_PREP(READ_LOCATION_SIZE_MASK, read_size) |
+@@ -230,8 +229,9 @@ static void nandc_set_read_loc(struct nand_chip *chip, int cw, int reg,
+ 		return nandc_set_read_loc_last(chip, reg_base, cw_offset,
+ 				read_size, is_last_read_loc);
+ 	else
+-		return nandc_set_read_loc_first(chip, reg_base, cw_offset,
+-				read_size, is_last_read_loc);
++		return qcom_nandc_set_read_loc_first(nandc, reg_base, cw_offset,
++						     read_size,
++						     is_last_read_loc);
+ }
  
- 	host->use_ecc = true;
- 	update_rw_regs(host, ecc->steps, false, 0);
--	config_nand_page_write(chip);
-+	qcom_nandc_config_page_write(nandc);
+ /* helper to configure address register values */
+@@ -1918,7 +1918,7 @@ static int qcom_param_page_type_exec(struct nand_chip *chip,  const struct nand_
+ 	if (nandc->props->qpic_version2)
+ 		nandc_set_read_loc_last(chip, reg_base, 0, len, 1);
+ 	else
+-		nandc_set_read_loc_first(chip, reg_base, 0, len, 1);
++		qcom_nandc_set_read_loc_first(nandc, reg_base, 0, len, 1);
  
- 	for (i = 0; i < ecc->steps; i++) {
- 		int data_size, oob_size;
-@@ -1059,7 +1057,7 @@ static int qcom_nandc_write_page_raw(struct nand_chip *chip,
- 
- 	host->use_ecc = false;
- 	update_rw_regs(host, ecc->steps, false, 0);
--	config_nand_page_write(chip);
-+	qcom_nandc_config_page_write(nandc);
- 
- 	for (i = 0; i < ecc->steps; i++) {
- 		int data_size1, data_size2, oob_size1, oob_size2;
-@@ -1143,7 +1141,7 @@ static int qcom_nandc_write_oob(struct nand_chip *chip, int page)
- 	set_address(host, host->cw_size * (ecc->steps - 1), page);
- 	update_rw_regs(host, 1, false, 0);
- 
--	config_nand_page_write(chip);
-+	qcom_nandc_config_page_write(nandc);
- 	qcom_write_data_dma(nandc, FLASH_BUF_ACC,
- 			    nandc->data_buffer, data_size + oob_size, 0);
- 	config_nand_cw_write(chip);
-@@ -1219,7 +1217,7 @@ static int qcom_nandc_block_markbad(struct nand_chip *chip, loff_t ofs)
- 	set_address(host, host->cw_size * (ecc->steps - 1), page);
- 	update_rw_regs(host, 1, false, ecc->steps - 1);
- 
--	config_nand_page_write(chip);
-+	qcom_nandc_config_page_write(nandc);
- 	qcom_write_data_dma(nandc, FLASH_BUF_ACC,
- 			    nandc->data_buffer, host->cw_size, 0);
- 	config_nand_cw_write(chip);
+ 	if (!nandc->props->has_onfi_read_op) {
+ 		qcom_write_reg_dma(nandc, &nandc->regs->vld, NAND_DEV_CMD_VLD, 1, 0);
 
 -- 
 2.55.0
