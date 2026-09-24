@@ -4,100 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17AC4C9830E
-	for <linux-mtd@archiver.kernel.org>; Thu, 24 Sep 2026 21:14:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3EFAC9830E
+	for <linux-mtd@archiver.kernel.org>; Thu, 24 Sep 2026 21:22:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=yKNTG4rB68kxx6QnqbqRcOD9/BTqPK03ZpXnhxehN4A=; b=DuXcmYzQ0kSJnj
-	2E9KTnCiN8E7wFbPArzLD5XzVIUnhT0Kkp/deecV2F381/rwp42GGMXzqTR8v8gRi++fuSRNBWp8O
-	VMKxgzZ9G54SknCC/GPJX4hnpUHgLy2YCV7Sx1i+GK5n7blJFSr7w1x2wDGD3XSkf1PtKid49ekv2
-	+WsrCnQvRh2k5a70nVEiHa4GgBDM7jKNon0KBeIjVIl7jcOx/pjrb2q+2a/FEcBbnOkgobRfKR9tx
-	EhejMwRxZ4Rl7vhPj2Ny2HYg5C4cBFb6RfY8HpGtsj0U7pl9hF37XKu+kT3swp6OIAYIo4noO12WV
-	/o8x7Bbw2LR6MdKh0Oig==;
+	List-Owner; bh=zwAoeRp635uWfOJvF7Qv6R1NPsAYWR4aCRxeFr66dMQ=; b=xQFvsjz+/CQwy1
+	8hwjUmnF8eHZtxW4E618JJletQEaCFfkgFLNAAH5VU1UneAU5VBA8z1EgtzIUAFbY5H6lBu1BNC3A
+	tyMs3wirVeReKxDyJ31oDTnqQYKIxiiBo6fOBoP68/hR9RlTBXiOGvMD2YDDbrYgReTiKcDBOvpeB
+	f16m1BvgktW1bxJbw8mTUeBodnKa2QTkZQbm9QYRLI8Bn1Nko46ITxAtR9OirOlDlyX1Zix2KhMvZ
+	warZr20n7QTe6WPRTwGn5BcrKDGbjxdQ2I7gqUOnx64ATZ6Oyyt6rcTD1rDwgkl9AJSv/ib85lYDy
+	Pl4GE67ZuUoeC9BcTgOQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x9qlz-0000000CD1c-1wUF;
-	Thu, 24 Sep 2026 21:14:31 +0000
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32])
+	id 1x9qty-0000000CDPv-2EWR;
+	Thu, 24 Sep 2026 21:22:46 +0000
+Received: from mail-pj2-x0f.google.com ([2607:f8b0:4864:39::f])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x9qlv-0000000CCzn-2Uph
+	id 1x9qtw-0000000CDPZ-2D4P
 	for linux-mtd@lists.infradead.org;
-	Thu, 24 Sep 2026 21:14:29 +0000
-Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 68OKN0Vw2048300;
-	Thu, 24 Sep 2026 21:14:17 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-transfer-encoding:date:from:message-id:mime-version
-	:subject:to; s=corp-2025-04-25; bh=Od8uxzFRcXn1dKpqU0OqpahPidb7/
-	qjJpGL+wca7Ewc=; b=ANDDhvCUKHFCQfrKPhvRVYRMyLmzfBvwW7DDJwyz7iKac
-	oZjC8uITxkljlY/I/0Kilnir5B93Jg1pecr3ZeuTpcSw5/35N3y/TwCAMRHpMvYQ
-	0o3qRh++LyHw7iruhGeP5CZ7fuhiZAxYW5yzVZleqifNaSxbaoGJFSl0PQwOPdXS
-	J7VFFwYmX4XlO77okcKkB2AlJHDXErrsAAqi0TKVhahv30QYtAaDO/fPbV6EQITM
-	kkyFeHJ1d+Q5p3HItrBy9yP8cwuOoGtceh6O1gT7OB1fNz1aiIvLCge0UAWJui0K
-	DmtjzLuwioiGCakLYuSLR+/+yC4wGQbCm/ZWC7B8g==
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4gsk1qggwj-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 24 Sep 2026 21:14:17 +0000 (GMT)
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.7/8.18.1.7) with ESMTP id 68OL5RfL015582;
-	Thu, 24 Sep 2026 21:14:16 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 4guf11wcb7-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 24 Sep 2026 21:14:15 +0000 (GMT)
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.18.1.12/8.18.1.12) with ESMTP id 68OLEF9X038867;
-	Thu, 24 Sep 2026 21:14:15 GMT
-Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.129.136.47])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 4guf11wcax-1;
-	Thu, 24 Sep 2026 21:14:15 +0000 (GMT)
-From: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>, linux-mtd@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org, error27@gmail.com,
-        harshit.m.mogalapalli@oracle.com,
-        Luca Ceresoli <luca.ceresoli@bootlin.com>
-Subject: [PATCH] mtd: concat: use container_of_const() in CONCAT()
-Date: Thu, 24 Sep 2026 14:14:11 -0700
-Message-ID: <20260924211412.896753-1-harshit.m.mogalapalli@oracle.com>
-X-Mailer: git-send-email 2.52.0
+	Thu, 24 Sep 2026 21:22:45 +0000
+Received: by mail-pj2-x0f.google.com with SMTP id 98e67ed59e1d1-396ccda24a3so242514a91.0
+        for <linux-mtd@lists.infradead.org>; Thu, 24 Sep 2026 14:22:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1790284963; x=1790889763; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=XNeX0VLmUYHcPXZxiAvv/hSZfqe9z0guoQ2EWN7NS/g=;
+        b=S6aqcMPB06HGYDb9/LHyKcuCjl1yDJcU5XMrgcJDhbUla9aFrB61ExnbEFMhqjWpod
+         S3ArXX52aVgJVoANtRu6XsDC1B8sFAJVtBrcPHFbhg67VqrIJ3WyMTm7a/mbMDfLTpDU
+         Y2cLuh5lZtRSv8R4wSSvaamkKzUZzaF7bZWy4zARpLs/LifmeYCnK7aNlfFucS6+HcRQ
+         ck2eBENBaPv4/583wphkjp4sR+cwBJdMmfdVXVIz/ocnAjCcUEnnrXdHrnMZfYLklwyC
+         Vrx2DOmd1Dwjv1isytaGWpKapKLPhtRMzv5eIcEQJtvDZxabpnI75RvKDdOrnVBF1Cft
+         ktlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1790284963; x=1790889763;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=XNeX0VLmUYHcPXZxiAvv/hSZfqe9z0guoQ2EWN7NS/g=;
+        b=tyVq4gB0GA9aOFx4rMqOfa/PbUii19L3Ziw02LGh16C2phpUwtcgT5nNudCQyRShxi
+         GXNG20reji6v9jEzkIU+Fm1Yb5PQBAx9jp61iW+/KEAG7+Psz6cGdGyA3QtmwRrr/kzI
+         It9BpB9AUSOgnMFPuH5NYOXUC+ICLKHoa0/t/rQmOvHbDwxiYN0rMm3+6yhPh9QlLV6A
+         GbZp2Y2F/M/WLKMZgUEn0O6E0szoM9B1wzWnZVfkzd+aApiREaNRHn4ZJpXS17+gDhWi
+         zF6sUFvG/93Hg6NTRMdp80zrD6hwHLjHMyBcqbsI2M1zzICI6vB4Ryx1TkhKlp7UpaVs
+         S8Sg==
+X-Forwarded-Encrypted: i=1; AKwUvBxVzDkMxsOQ24vZ5UE7tQmbMg9kwSCWsurX3eCloe7cXu5AqlsJNEQqqXrZxVLRN7uImZekaxz5KqU=@lists.infradead.org
+X-Gm-Message-State: AFuF++l+oHmjp/AWIh/91ohn/42yD+aWis13vV54TX67Ka4SdyST3Nvz
+	+sGXNfbgz99b4Q6j75nltG78gJ1P2c1/MbSRIhUSxESzu6jMLIlAjc4p
+X-Gm-Gg: AYBFou29gxtryc77t7MNh6OtTmuVQKsSEBhUwiDFEf915Jg91gqy/9ydCrWH2uO5f2h
+	IQLQ11n0VdkzpGmfh/xuikC20b7y+uwnvOfHRBkn+C/HEjRdtn6nyNDpU6tqCJhrtVv+KO9A5p3
+	upsLGSWcJBNKcfRsZWXZKko/L39UstEaf8ieN95jFuikBja7oH758xNysSKE0qJwqK+LnFmgTrx
+	1jrBM+VYyT6lhTTvWuva5LtOyMQorWIkfo1ZjGirJJ1neCZ8LgAK9qfyNHjwtnVuImGGjruODI8
+	51T+6vSgjlxdVRZJHxihuu0EnFyul4mR89F1h8OYWGYotFx/kfJC9xwKPkuFlLu2L9/if8JTOEF
+	LnkVMAcYnLpDZ+Y4jVahoEE/L3rH/Gqq7QaK19YynPJLPMyYvc129jFHJgnQlZNMR+F0S28ou+2
+	mr464UvH3sWTlsrk1VlZUcfpCHHUjEjjxznFn9F6GcDLmWE4ROmXVhZlRaONf3/qFtUm13xuThm
+	lrd8JDYjV8csrwkXAO5paLKGuFeB3L00T8HGnfqY0J3acpBFHAJik8wd+zOP3l22Ghhs6nSwu0g
+	ripEoXQV/15kZ1Bn6rhvFWyGzecDdFisCq6DFWb277Y54bWriNbHEgvGa+w=
+X-Received: by 2002:a17:90b:4e8f:b0:39e:6c68:1551 with SMTP id 98e67ed59e1d1-3a09896c4demr3131575a91.25.1790284962600;
+        Thu, 24 Sep 2026 14:22:42 -0700 (PDT)
+Received: from ryzen.lan ([2601:644:8000:7a86::e34])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3a0b99e5711sm461579a91.17.2026.09.24.14.22.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Sep 2026 14:22:42 -0700 (PDT)
+From: Rosen Penev <rosenp@gmail.com>
+To: devicetree@vger.kernel.org
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	linux-mtd@lists.infradead.org (open list:MEMORY TECHNOLOGY DEVICES (MTD)),
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCHv3] dt-bindings: mtd: convert IBM NDFC binding to YAML
+Date: Thu, 24 Sep 2026 14:22:40 -0700
+Message-ID: <20260924212240.81857-1-rosenp@gmail.com>
+X-Mailer: git-send-email 2.55.0
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.134,FMLib:17.12.100.49
- definitions=2026-09-24_05,2026-09-21_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0
- spamscore=0 bulkscore=0 lowpriorityscore=0 malwarescore=0 suspectscore=0
- mlxscore=0 mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2609040000 definitions=main-2609240086
-X-Proofpoint-Spam-Info: AW1haW4tMjYwOTI0MDA4NiBTYWx0ZWRfXypevihtfVMZa
- 06jAWhQxyf89229zVhBNU/XivNr3VdERq+QR+H5qydBMxeohcpwVr9YlM9cZA5b/mZmecdUkA0e
- sMzzeyIKEZoqgZoYp7VJMBfX6VVItueo/+ysZEZjzT91VXTC84SP
-X-Proofpoint-ORIG-GUID: UWOImZUVJdpuO9Z13whXJXXYakAk3_Eu
-X-Proofpoint-GUID: UWOImZUVJdpuO9Z13whXJXXYakAk3_Eu
-X-Authority-Analysis: v=2.4 cv=LIzz05W9 c=1 sm=1 tr=0 ts=6ab592a9 b=1 cx=c_pps
- a=zPCbziy225d3KhSqZt3L1A==:117 a=zPCbziy225d3KhSqZt3L1A==:17
- a=VdqzKS8jKosA:10 a=VkNPw1HP01LnGYTKEx00:22 a=jiCTI4zE5U7BLdzWsZGv:22
- a=x0eKOSpe3m1H3M0S9YoZ:22 a=P-IC7800AAAA:8 a=yPCof4ZbAAAA:8
- a=qdRr1Xr1hLVJPj8QfBgA:9 a=d3PnA9EDa4IxuAV0gXij:22 a=5yU3S35YU4bGjq-dph-N:22
- a=Bho9c0fBagfJEIQBS7DQ:22 cc=ntf awl=host:12106
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwOTI0MDA4NiBTYWx0ZWRfX/RYitdufrGa/
- Rdhj2soTuBl9uMdo0cYEy55sIFlyhl5i3YMgNN8EIpFux0d7kG9hB2PO4f5jQB8od9A9eZRRIpt
- UjzSFh1ByBKAtzst41Az4k0/82qHmfrAZcV6qssPGF9VmTSUxj0r6syUKiFN7XqOfpWlSWFNzMy
- 3j6l4xOKZ6ykQKoBrDjGaT8LypMUZc1PbjjMy4208Pb6Xe+zImkTWK3F0bIQlAA79kfxYWMw+kA
- gCR41A39oco2ZTpkeCcKsi48tIYH528bRmem/eL//QFNCGCElXDIxh0iEECp23c7SAvrkGK2QGb
- xgCZ5nDHUZaZAd25eRzLOTsyU8kP4nJJRpLpTJdUkdELyHDYO5Y6PFn6MWPaIHmpED+n/GTdYW7
- zJYboHQ1/SJlqNLATvVwf/zQBvD8IqlsercrvSVkfQnnFPMzBo7GWz9PapGg98QioPx/Qgdx5Iw
- AzOqOFSARkjSOPd9VcqOqae890zGmQLQRfPJc/Lc=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260924_141428_066296_3FE5DBE7 
-X-CRM114-Status: GOOD (  14.50  )
+X-CRM114-CacheID: sfid-20260924_142244_593842_266F7337 
+X-CRM114-Status: GOOD (  15.52  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -114,34 +104,168 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-CONCAT() currently recovers the enclosing struct mtd_concat by casting
-its embedded struct mtd_info pointer. This assumes mtd remains the first
-member of the structure.
+The NDFC NAND flash controller was only described in a legacy text file,
+so dtbs_check reported "failed to match any schema with compatible:
+['ibm,ndfc']" for the ndfc nodes of the bluestone, canyonlands, eiger,
+glacier, sequoia and warp device trees.
 
-Use container_of_const() with the named member to make the relationship
-explicit and preserve any const qualifier.
+Convert the binding to the YAML format so those nodes match the generic
+nand-controller-legacy schema.  Describe the node's reg, ccr and
+bank-settings properties, along with its "nand" chip node which carries
+the legacy partition layout.
 
-Suggested-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
-Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+Assisted-by: LLM
+Signed-off-by: Rosen Penev <rosenp@gmail.com>
 ---
- drivers/mtd/mtdconcat.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ v3: fix wrong regex
+ v2: fix reg value
+ .../devicetree/bindings/mtd/ibm,ndfc.txt      | 39 --------
+ .../devicetree/bindings/mtd/ibm,ndfc.yaml     | 88 +++++++++++++++++++
+ 2 files changed, 88 insertions(+), 39 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/mtd/ibm,ndfc.txt
+ create mode 100644 Documentation/devicetree/bindings/mtd/ibm,ndfc.yaml
 
-diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
-index d54d309c30a0..354cc71cd722 100644
---- a/drivers/mtd/mtdconcat.c
-+++ b/drivers/mtd/mtdconcat.c
-@@ -31,7 +31,7 @@
-  * Given a pointer to the MTD object in the mtd_concat structure,
-  * we can retrieve the pointer to that structure with this macro.
-  */
--#define CONCAT(x)  ((struct mtd_concat *)(x))
-+#define CONCAT(x)  container_of_const(x, struct mtd_concat, mtd)
- 
- /*
-  * MTD methods which look up the relevant subdevice, translate the
+diff --git a/Documentation/devicetree/bindings/mtd/ibm,ndfc.txt b/Documentation/devicetree/bindings/mtd/ibm,ndfc.txt
+deleted file mode 100644
+index 869f0b5f16e8..000000000000
+--- a/Documentation/devicetree/bindings/mtd/ibm,ndfc.txt
++++ /dev/null
+@@ -1,39 +0,0 @@
+-AMCC NDFC (NanD Flash Controller)
+-
+-Required properties:
+-- compatible : "ibm,ndfc".
+-- reg : should specify chip select and size used for the chip (0x2000).
+-
+-Optional properties:
+-- ccr : NDFC config and control register value (default 0).
+-- bank-settings : NDFC bank configuration register value (default 0).
+-
+-Notes:
+-- partition(s) - follows the OF MTD standard for partitions
+-
+-Example:
+-
+-ndfc@1,0 {
+-	compatible = "ibm,ndfc";
+-	reg = <0x00000001 0x00000000 0x00002000>;
+-	ccr = <0x00001000>;
+-	bank-settings = <0x80002222>;
+-	#address-cells = <1>;
+-	#size-cells = <1>;
+-
+-	nand {
+-		#address-cells = <1>;
+-		#size-cells = <1>;
+-
+-		partition@0 {
+-			label = "kernel";
+-			reg = <0x00000000 0x00200000>;
+-		};
+-		partition@200000 {
+-			label = "root";
+-			reg = <0x00200000 0x03E00000>;
+-		};
+-	};
+-};
+-
+-
+diff --git a/Documentation/devicetree/bindings/mtd/ibm,ndfc.yaml b/Documentation/devicetree/bindings/mtd/ibm,ndfc.yaml
+new file mode 100644
+index 000000000000..e614c5855b42
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/ibm,ndfc.yaml
+@@ -0,0 +1,88 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mtd/ibm,ndfc.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: IBM/AMCC NDFC (NAND Flash Controller)
++
++maintainers:
++  - Miquel Raynal <miquel.raynal@bootlin.com>
++  - Richard Weinberger <richard@nod.at>
++
++description: |
++  The NDFC is the NAND flash controller integrated into the IBM/AMCC
++  PowerPC 44x SoCs.
++
++allOf:
++  - $ref: nand-controller-legacy.yaml#
++
++properties:
++  compatible:
++    const: ibm,ndfc
++
++  reg:
++    description: Chip select and size used for the chip.
++    maxItems: 1
++
++  ccr:
++    description: NDFC config and control register value.
++    $ref: /schemas/types.yaml#/definitions/uint32
++
++  bank-settings:
++    description: NDFC bank configuration register value.
++    $ref: /schemas/types.yaml#/definitions/uint32
++
++  nand:
++    type: object
++    description: NAND chip attached to the controller.
++
++    properties:
++      "#address-cells":
++        const: 1
++      "#size-cells":
++        const: 1
++
++    patternProperties:
++      "^partition@[0-9a-f]+$":
++        $ref: /schemas/mtd/partitions/partition.yaml#/$defs/partition-node
++        deprecated: true
++
++    unevaluatedProperties: false
++
++required:
++  - compatible
++  - reg
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    ebc {
++        #address-cells = <2>;
++        #size-cells = <1>;
++
++        ndfc@1,0 {
++            compatible = "ibm,ndfc";
++            reg = <0x00000001 0x00000000 0x00002000>;
++            ccr = <0x00001000>;
++            bank-settings = <0x80002222>;
++            #address-cells = <1>;
++            #size-cells = <1>;
++
++            nand {
++                #address-cells = <1>;
++                #size-cells = <1>;
++
++                partition@0 {
++                    label = "kernel";
++                    reg = <0x00000000 0x00200000>;
++                };
++                partition@200000 {
++                    label = "root";
++                    reg = <0x00200000 0x03e00000>;
++                };
++            };
++        };
++    };
++...
 -- 
-2.52.0
+2.55.0
 
 
 ______________________________________________________
