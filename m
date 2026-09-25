@@ -4,71 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2097C9832A
-	for <linux-mtd@archiver.kernel.org>; Fri, 25 Sep 2026 16:38:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A72BC9830E
+	for <linux-mtd@archiver.kernel.org>; Fri, 25 Sep 2026 19:06:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=HofdMIYOADgs0efLiKZxEhA6tCFR+JjBkuTh6GaaPSE=; b=44jK1C6bQ2mDtmMfA4RMmumGm4
-	H4CAdoX/t/Up71eUIAIZnxRHuWCuC+auFBV3fbG3bYIIkX0GiEQd6PZS+M3ZjAUhaDC6Hyn5z/K3/
-	3Ubcr3bx8pdJ1hYPrSLEyMNHELu02MWqJ14mX/WH7uBjp0p+yULxMcx77YMNksbnMOgF9SoKp9wMz
-	UbwL4Py6MPkVzeVP9AS0VTn9nXiRuBPT7jxGpHUHPpBT/Gcv0LulW3ngH07KDXwmqWAolyLkhM+Cz
-	yKZTVrgpKQhg56cHhvuAwZzH7nV0KEs/pQLxxUAvS9UKRT//JN6mUhv9FBLjA907B10ZN3WqTQYzV
-	mcVnoXdQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id:Date:
+	Subject:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=sy8HfrQuY0iIbT05pi+naZde9LyMydhkDlWasQQsu1M=; b=47e8J8/We0WUru
+	/FDnY5iH2QsV5fby2UmfealgtpnWEwAUaoGDdTd+FlPfWioDdGjgV6mltbU5rYd6l1GqTATR94gUE
+	Qjws8OYDgInFDmNSOAFTRu8rxTm0nv6O8PVMEdI9nCM393B1dAJaqPyyGgjiaw2rAsUrpYvFwFG5D
+	454XjrVu0iziyXNnilcy2OXhazpNw1KoX9mh6kGdgz9WvMbYEDKS4CzsLHY7CXqb6BzfrQ/BtzJAY
+	9Q1sMiC70LSC8UacEg4RXkk45HiXK9Za3gPps8xl0fkxsgrDKsN1UU/fdqud7hEXjFUzXeGLF+XtJ
+	UrC5ExhIJ37oV4VV4tWA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xA8wZ-0000000DxUS-3ncq;
-	Fri, 25 Sep 2026 16:38:39 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1xABFi-0000000EDXg-2Ugk;
+	Fri, 25 Sep 2026 19:06:34 +0000
+Received: from mail-wr2-x0f.google.com ([2a00:1450:4864:30::f])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xA8wS-0000000DxQ2-2rkn
+	id 1xABFb-0000000EDVc-0Uyx
 	for linux-mtd@lists.infradead.org;
-	Fri, 25 Sep 2026 16:38:32 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id F11C660136;
-	Fri, 25 Sep 2026 16:38:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08FA11F000FF;
-	Fri, 25 Sep 2026 16:38:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790354311;
-	bh=+3ptMQHZioL0GyGzjw8mYJksnNJNd1gNgEW48A3+JCo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=OFBmO2pTQ9pyN6XN3mtT8SxQxFQw6RGKcjpfM7vn0X57HYAyB0zuHFlfdmi1vbHYb
-	 Z0Sa98UKxpt43/kf1PbTnOFjo3YcS8L8dQgY5rJTBEqC9VP3OEoOAav1nwFFxMG9uB
-	 gZUYbU96vzgXnZOo4yFeWJr/M79ZB5BXkNqiT+2eunJvxPrvZaZVFhdzuCUQnjCVPM
-	 P+MEBsGeF4FvJBexauDSb1nPe+U4g9CgAY9P3bvh5/G/iKUMUe32m27wI2jdMPskj0
-	 RYIpoYCBitJsDfWPiLeOlaMBHsj2lMJmCuSVEkzrQSkJZsLCFcTVdr+vaUA6ad3T+W
-	 4HdXFwO32p2wQ==
-Date: Fri, 25 Sep 2026 17:38:26 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
-	Fei Xie <fei.xie@horizon.auto>, Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Parshuram Thombare <pthombar@cadence.com>,
-	linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 2/4] spi: cadence-xspi: add ACMD support for SPI NAND
-Message-ID: <5600a2ce-0428-4f1c-af72-668a55ef6fce@sirena.org.uk>
-References: <20260921093701.1341766-1-fei.xie@horizon.auto>
- <20260921093701.1341766-3-fei.xie@horizon.auto>
- <arFEjzkHGMbecWWV@sirena.co.uk>
- <20260923061211.1608907-1-fei.xie@horizon.auto>
- <67f4e1a4-fc0e-4b2b-b41e-8dbb33227302@sirena.org.uk>
- <87pky1ll4g.fsf@bootlin.com>
- <arZHjbzUEFhydnHt@nsa>
- <87ecehljdy.fsf@bootlin.com>
- <85dc596e-4378-4d23-b48e-80053cb5166d@sirena.org.uk>
- <87qzihjxlo.fsf@bootlin.com>
+	Fri, 25 Sep 2026 19:06:30 +0000
+Received: by mail-wr2-x0f.google.com with SMTP id ffacd0b85a97d-48434392b02so996812f8f.3
+        for <linux-mtd@lists.infradead.org>; Fri, 25 Sep 2026 12:06:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1790363185; x=1790967985; darn=lists.infradead.org;
+        h=cc:to:content-transfer-encoding:content-type:mime-version
+         :message-id:date:subject:from:from:to:cc:subject:date:message-id
+         :reply-to:content-type;
+        bh=X/VTim21cUbONkR5xr0XPo1pElUY4th2lja5IDVOCpg=;
+        b=GdyZaL9ns290EVUtSvNDkyxTSwIIXgcDLJT+H7kEfjG9VCcJgxCAXhZXhzd9qO4Ot+
+         U7yPFRqpbVUKVu0BsQEJNj0BhKFeQ1wwmTPRyRNIbFwf+J+DanYmciO/XSZ3753m84eg
+         uSW/EG0TNNBbDT1EBUJVUkCStj2StKV8PJEurexyv6zJbRSLOl+4wk6yNNOVEoRj99HW
+         LlM0Xvz6ngISZ7kjSNzyoogrM6R0bbjxlPfzV8Uqe0g83xNcurUS86+M/Zcs4lM9m+O5
+         UmBFcJ1JPGNbriPL+x1sLqHJzcmOWEgO5Y9IY2O6rpy6hXY8hsY6TN3s7E4guUc94GKY
+         yltg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1790363185; x=1790967985;
+        h=cc:to:content-transfer-encoding:content-type:mime-version
+         :message-id:date:subject:from:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to:content-type;
+        bh=X/VTim21cUbONkR5xr0XPo1pElUY4th2lja5IDVOCpg=;
+        b=xLR1L1eqvPtwhL+V2a9XczObJrKUFI3hu45iVlUWzQcvBfabyFrxzvjDDmDyBhm6eQ
+         jISTXUdz+4SuuhhXyJme+YKijEXfAVNBZ9VXCE+iOTLpIj2xqOKglVGbfRHEhzA7XjuP
+         7BpElueYvCDY9bsbFHNoC69BAZAjDLsA9/8urB1tc0k3Wq+vlOGP7/fcw4dfD3Gl8Zba
+         UBh56ca3FLaFWwyq5qjL1fX/0y4hD8IDQj6MHrCrHD7WmhfXnI7Dj/K+PBmbCivt3AsB
+         FMtgVBqla7ijAUHAZHomlrbIZCAn7dTtTNKUHiJjFrEfxAGnhuS8jKChB3wMeUWjkHDd
+         JBCw==
+X-Forwarded-Encrypted: i=1; AKwUvBzYMr00iVyz2S/XtZvYwDR6x9G6CFQi8Gv3KlcTMtGASLVnfG8ixtQs1ia8cugKq/KBa1U+z2jANnQ=@lists.infradead.org
+X-Gm-Message-State: AFuF++kfaugus8sCu/ODDY4vlhbbCjJ+Tmtd/9VmQXqFUAZqvDNJiJKV
+	w1Rc5Cfsj3a+xhrxizhASbg4BUJbpGPoWGCq9hCpBx8vlOw8NDijQsYvuC8VtQ==
+X-Gm-Gg: AYBFou2+dPbZqFS+qoxrPDs9woBx3JCNEZLk3t4h+jwoTu6uTWlMvrnLv7pJC+LoBa8
+	Shw2WV3SCOqIk3H8kNRlKFugcWibMEleNZ5yNNxz5fCsUkd6soi4HsiS/yNwCbGv5qazX1n/pg0
+	ywMaVJsXUR2sxIMPsocPrkdl9sAb3HNbIc7gDwlke1sLsA7aKkOvQ0gX/srWuxQd9vhgapCF/zj
+	tMEPmrbVXcxpiulExW2efIjfPoxZ7sLryQYLQmvgpA7xByYnxxHCsDhhBRc3wbK998zxYfD2H7P
+	DJ0oip5/P3zXBaUjwt5IOkou7iyep28rETstOlo5ZC7zqcxZLQkkXEnqLKcOlWNepvd3m4FCQVV
+	TTun/q5bVbXuqgguiaAGy4whSce1PsPBugg2YhMBY958pBDhyMUiWLg/vv/WR3pGFcDxOt4MDBQ
+	GSZhxolV5trLLcYor+AxrkZCT18HO6nr27r3+jBTt9m03+UcRwGcMRN3llIlJkKSsAfv/gmCE8E
+	b7ct0at86GyQbVjZb7WW9fyYTqM/C/GZGlNFpo=
+X-Received: by 2002:a05:6000:41c9:b0:487:f31:8037 with SMTP id ffacd0b85a97d-488716c227cmr11887423f8f.14.1790363184973;
+        Fri, 25 Sep 2026 12:06:24 -0700 (PDT)
+Received: from [192.168.0.253] (5403F394.catv.pool.telekom.hu. [84.3.243.148])
+        by smtp.googlemail.com with ESMTPSA id ffacd0b85a97d-4887a30b1dfsm9467234f8f.4.2026.09.25.12.06.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Sep 2026 12:06:24 -0700 (PDT)
+From: Gabor Juhos <j4g8y7@gmail.com>
+Subject: [PATCH v2 0/8] mtd: rawnand: qcom: share more common code
+Date: Fri, 25 Sep 2026 21:06:09 +0200
+Message-Id: <20260925-qcom_nandc-share-more-code-v2-0-a1b088052d6a@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <87qzihjxlo.fsf@bootlin.com>
-X-Cookie: Love America -- or give it back.
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/32NwQrCMBBEf6Xs2ZUkarGe/A8pkqSbdsEmmkhQS
+ v7dWPDqZeANzJsFEkWmBKdmgUiZEwdfQW0asJP2IyEPlUEJ1YpOKXzYMF+99oPFNOlIOIcaNgy
+ EjoyxwhyMPhJUwT2S49cqv/SVJ07PEN/rV5bf9qfd/9NmiQLdTkglu87IVp7HWfNtWxfQl1I+y
+ pDnkMQAAAA=
+X-Change-ID: 20260922-qcom_nandc-share-more-code-febbc0b5ba8e
+To: Manivannan Sadhasivam <mani@kernel.org>, 
+ Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Md Sadre Alam <md.alam@oss.qualcomm.com>, linux-mtd@lists.infradead.org, 
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Gabor Juhos <j4g8y7@gmail.com>
+X-Mailer: b4 0.14.3
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260925_120629_111011_2E6B2AFF 
+X-CRM114-Status: GOOD (  11.60  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,66 +101,55 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7449352996284809786=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+In commit fdf3ee5c6e52 ("mtd: nand: Add qpic_common API file")
+lots of code has benn moved from the 'qcom_nandc' driver into
+the 'qpic_common' module to allow using that also from the 
+'spi-qpic-snand' driver. Yet, the 'qcom_nandc' driver contains
+more code which could be used by the other driver. 
 
---===============7449352996284809786==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="M4ifCx97cv0pZVcl"
-Content-Disposition: inline
+The patches in the series generalizes several functions and a
+simple structure then moves the generalized code into the 
+'qpic_common' module so it can be used by the two NAND drivers.
 
+There should be no functional impact in regard to the 'qcom_nandc'
+driver.
 
---M4ifCx97cv0pZVcl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
+---
+Changes in v2:
+  - Replace 'qpic_nandc' to 'qcom_nandc' in the commit messages of patches 1-6
+    to match the actual code (spotted by sashiko-bot) 
+  - Link to v1: https://lore.kernel.org/r/20260924-qcom_nandc-share-more-code-v1-0-f3012199b161@gmail.com
 
-On Fri, Sep 25, 2026 at 02:59:15PM +0200, Miquel Raynal wrote:
-> On 25/09/2026 at 12:59:49 +01, Mark Brown <broonie@kernel.org> wrote:
+---
+Gabor Juhos (8):
+      mtd: rawnand: qcom: make check_flash_errors() more generic
+      mtd: rawnand: qcom: make config_nand_page_read() more generic
+      mtd: rawnand: qcom: make config_nand_page_write() more generic
+      mtd: rawnand: qcom: make config_nand_cw_write() more generic
+      mtd: rawnand: qcom: make nandc_set_read_loc_first() more generic
+      mtd: rawnand: qcom: make nandc_set_read_loc_last() more generic
+      mtd: rawnand: qcom: rename 'nand_stats' structure
+      mtd: rawnand: qcom: move common code to the 'qpic_common' module
 
-> > It might potentially help a heavily loaded system if you can do fewer
-> > waits, the rest of the tasks running on the system will have more time
-> > if we're doing fewer waits for interrupts.  Not sure it'd be enough to
-> > write home about though.
+ drivers/mtd/nand/qpic_common.c       | 131 +++++++++++++++++++++++++
+ drivers/mtd/nand/raw/qcom_nandc.c    | 184 +++++------------------------------
+ include/linux/mtd/nand-qpic-common.h |  17 ++++
+ 3 files changed, 172 insertions(+), 160 deletions(-)
+---
+base-commit: 55c5b6d5f59f59a8c98a7effc3195226cc20175c
+change-id: 20260922-qcom_nandc-share-more-code-febbc0b5ba8e
 
-> Definitely, but this is already possible, one may implement
-> ctlr->mem_ops->poll_status. This way the core can leverage the hardware
-> to perform the polling. It is not directly visible on benchmarks,
-> because it won't reduce much the wait time, but the system load will
-> decrease.
+Best regards,
+-- 
+Gabor Juhos <j4g8y7@gmail.com>
 
-You'd still get a benefit from taking just one interrupt per sequence
-rather than one per operation, that can help when the system is heavily
-loaded.
-
---M4ifCx97cv0pZVcl
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmq2o4EACgkQJNaLcl1U
-h9CNHgf/cvBZ+GyYuwWHmdwSwoY03PKLi2c5ks2Bwn3dlZ+RRSJ3Prtp/wdxPYgZ
-3HFHtyKuIzWS1NGA6cKIEvBausOBN2Z5HQUIFXZ6Le3j54yIQqb+bVMB0H/AjGef
-LA/tDAokGoff0PhaGUQRlo05AokS2EOS13kMMdlC6DzrVHNgVGFV+k+kU7h42kt5
-xvxL8zHrZe1nVdtUkGvpvunV78AdVVyPcE6+/HzZnLeThoZcD0yVx6F/eqAQVbVr
-mPVqzKhPkDxMlRitiScWu2I3Ybg3NYABe9W5ElpK7GxE/FlURwlFmajiBdM1rnf0
-iE95xIyteW0awKr9ixhrLM78vnrNsg==
-=3DcM
------END PGP SIGNATURE-----
-
---M4ifCx97cv0pZVcl--
-
-
---===============7449352996284809786==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============7449352996284809786==--
-
