@@ -4,52 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70B6BCA5FA5
-	for <linux-mtd@archiver.kernel.org>; Tue, 29 Sep 2026 12:57:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5E81ECA5FA5
+	for <linux-mtd@archiver.kernel.org>; Tue, 29 Sep 2026 14:03:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:Subject:To:From:
-	Cc:Message-Id:Date:Mime-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:From:Cc:Subject:
+	To:Message-Id:Date:Mime-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=2m6BdqYmeRJH68yFwVpyExtdrful8INVndXmzYJC71o=; b=jJi8Fpv5qnuH5p
-	dI1JMSAqz/ApQvQW/oSuXBrZ/LN8ygUlQ+oJ2i/CTYfW0tGuurNrrqjKleS8eBhDdpACbHLkOSr6Z
-	nn8OnEOnlcmpPtiHYMjtxXg2Uj0Cj3sbljK+IcUxkVLEW80xKTSIUoZcFkF7SB/9A7aQX7h+MX1OF
-	el+XIcKZQVBlDGDgz7WJSuw47k4IWwBZwv4go+/+YHgxsx3xWyZOC1q20Rhd0gwTII67FqKcSbGu4
-	haHka+zJnNKMsNhZWeMf+r8ONeuucLRMaBw4adQRlhBK3LRZrRyVoHc1iHZrEMSF/xlSQQsfyRKJW
-	ufCdw1+Mgp+OdR/eOsMA==;
+	List-Owner; bh=7dGNoxE4d7excf9fA4rcWgBwsGy0k9W8vao1P1jNnDM=; b=Q0TZ3EWUgyzRib
+	6NnlFZ5iYNSHcuxojYCA41+7mQqj2RBlg3IqI7XFYy64mXVwBqCw6yJU0/UHZH1K7iT41Pp0nkbaE
+	W97f5o0GYpMyP0Px40Q3+6/Zwf9cR8L90ZqOKBteVoNO6IJSN1fUNqgiV0grHqr2gVQSIiZ/Avn8k
+	CSsyARF8HNWydYaes2en7ez+cuP6mboGu9GtGUdC6Mb8UaROJV9tZIaw8tmzU089OlVa0zQpbZq/m
+	xhs2NgrMD3ZlTPgs0bSUC8RzX/onXI5UrHX7JXF5TkB96nawgovv+LkT2y9XcPM2Tr9Hzm36bUipL
+	OKCBAkIZNRxLEKob4/DQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xBXON-00000003bUE-1JW6;
-	Tue, 29 Sep 2026 12:57:07 +0000
-Received: from 0001.3ffe.de ([159.69.201.130])
+	id 1xBYQC-00000003k0s-0cSA;
+	Tue, 29 Sep 2026 14:03:04 +0000
+Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xBXOL-00000003bRW-1iK3
+	id 1xBYQ9-00000003k02-0oMh
 	for linux-mtd@lists.infradead.org;
-	Tue, 29 Sep 2026 12:57:06 +0000
+	Tue, 29 Sep 2026 14:03:03 +0000
 Received: from localhost (unknown [IPv6:2a02:810b:4320:1000:4685:ff:fe12:5967])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id 3B51B72;
-	Tue, 29 Sep 2026 14:56:54 +0200 (CEST)
+	by mail.3ffe.de (Postfix) with ESMTPSA id E7169325;
+	Tue, 29 Sep 2026 16:02:56 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
+	t=1790690577;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HEyrhbB9+Ho+MuiqTam9bzcD6FBweD5Zjw6hJkXtby0=;
+	b=Ipi6+qnJA4bwFtnIR3FEYB8ZGw2A5xMV6tzQlDPqh7Goueya5nRdqhhxIKEc1GoAhHaU3D
+	jx4WRrX9vjhadSgZxTxxb96KStYeewuP10nsweOUIFjPpamWylXjiGaF7DNUvi+HmUvXFS
+	XhZgPT8nFijnzzJKm9IyVDevmNaLFGLAthLjOH+1EIJFYYoU5cKvB/JExF6F1NsMYZSfdI
+	zI4Pfm7Qr1myVCHNAVyBB/37UCI7mHggmlYuwI5AQGEErItTSRvPwyCdOTfwFnNWD5Y0xO
+	Pr8oUij6e3nJMPV+9eIMOughm1xVkAe3Ew+yzXmAUaG2tWslSAjJma5TdIPGeg==
 Mime-Version: 1.0
-Date: Tue, 29 Sep 2026 14:56:53 +0200
-Message-Id: <DLRTFDVTU3XS.2Z1O4PO8PBM1D@kernel.org>
-Cc: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- "Pratyush Yadav" <pratyush@kernel.org>, "Takahiro Kuwano"
- <takahiro.kuwano@infineon.com>, "Miquel Raynal"
- <miquel.raynal@bootlin.com>, "Richard Weinberger" <richard@nod.at>,
- "Vignesh Raghavendra" <vigneshr@ti.com>
-From: "Michael Walle" <mwalle@kernel.org>
-To: =?utf-8?q?Nuno_S=C3=A1?= <nuno.sa@analog.com>
-Subject: Re: [PATCH v2 2/2] mtd: spi-nor: issi: Add support for is25wx01g
+Date: Tue, 29 Sep 2026 16:02:56 +0200
+Message-Id: <DLRUTYCAPJW7.3KVEC5YRYF0HZ@walle.cc>
+To: "Miquel Raynal" <miquel.raynal@bootlin.com>, <haibo.chen@oss.nxp.com>
+Subject: Re: [PATCH v2] mtd: spi-nor: clear the default RDCR opcode when
+ entering Octal DTR
+Cc: "Pratyush Yadav" <pratyush@kernel.org>, "Michael Walle"
+ <mwalle@kernel.org>, "Takahiro Kuwano" <takahiro.kuwano@infineon.com>,
+ "Richard Weinberger" <richard@nod.at>, "Vignesh Raghavendra"
+ <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>, "Haibo Chen" <haibo.chen@nxp.com>
+From: "Michael Walle" <michael@walle.cc>
 X-Mailer: aerc 0.20.0
-References: <20260914-mtd-spi-nor-new-issi-chip-v2-0-3cd4d7e434b2@analog.com> <20260914-mtd-spi-nor-new-issi-chip-v2-2-3cd4d7e434b2@analog.com> <DLF3H41RCZJF.37WOY30CYJ4AY@kernel.org> <aqgRsP3cxzcLok5C@nsa> <DLGK0FH8L7PM.1JRX5777NZQQF@kernel.org> <aqpTO-5LTLtRXaY4@nsa> <DLIC1UB6I4TK.20EG74BVIVUGC@kernel.org> <arqBm7OpMHuVhzg0@nsa>
-In-Reply-To: <arqBm7OpMHuVhzg0@nsa>
+References: <20260929-spi-nor-fix-v2-1-75440cfe4e76@nxp.com>
+ <87zex05uvn.fsf@bootlin.com>
+In-Reply-To: <87zex05uvn.fsf@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260929_055705_630629_BA79A4DD 
-X-CRM114-Status: GOOD (  50.25  )
+X-CRM114-CacheID: sfid-20260929_070301_567246_A83127D3 
+X-CRM114-Status: GOOD (  18.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -61,124 +75,67 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGksCgpPbiBNb24gU2VwIDI4LCAyMDI2IGF0IDU6MDMgUE0gQ0VTVCwgTnVubyBTw6Egd3JvdGU6
-Cj4gT24gRnJpLCBTZXAgMTgsIDIwMjYgYXQgMTE6MjU6NTRBTSArMDIwMCwgTWljaGFlbCBXYWxs
-ZSB3cm90ZToKPj4gT24gV2VkIFNlcCAxNiwgMjAyNiBhdCAxMDo0NCBBTSBDRVNULCBOdW5vIFPD
-oSB3cm90ZToKPj4gPiBPbiBXZWQsIFNlcCAxNiwgMjAyNiBhdCAwOToxNDo1MkFNICswMjAwLCBN
-aWNoYWVsIFdhbGxlIHdyb3RlOgo+PiA+PiBPbiBNb24gU2VwIDE0LCAyMDI2IGF0IDU6MzEgUE0g
-Q0VTVCwgTnVubyBTw6Egd3JvdGU6Cj4+ID4+ID4gT24gTW9uLCBTZXAgMTQsIDIwMjYgYXQgMDQ6
-MDQ6NDBQTSArMDIwMCwgTWljaGFlbCBXYWxsZSB3cm90ZToKPj4gPj4gPj4gT24gTW9uIFNlcCAx
-NCwgMjAyNiBhdCAzOjQyIFBNIENFU1QsIE51bm8gU8OhIHdyb3RlOgo+PiA+PiA+PiA+ICgqKTog
-SSBzaG91bGQgbm90ZSB0aGF0IHRoZSBjb21tYW5kIGFjdHVhbGx5IGZhaWxlZCB3aXRoIC1FSU8g
-YnV0IGl0Cj4+ID4+ID4+ID4gYWN0dWFsbHkgdW5sb2NrZWQgdGhlIGNoaXAhIEFuZCB0aGUgcmVh
-c29uIGlzIGJlY2F1c2UgdGhlIGZsYXNoIGFzIHRoZSBzYW1lCj4+ID4+ID4+ID4gRlNSIHJlZ2lz
-dGVyIHRoYW4gdGhlIG1pY3Jvbi1zdCBmbGFzaC4gU28gV0VMIGlzIHNldCB0byAxIGJ1dCBjYW4g
-b25seQo+PiA+PiA+PiA+IGJlIGNsZWFyZWQgd2hlbiBjbGVhcmluZyB0aGUgRlNSIHJlZ2lzdGVy
-Lgo+PiA+PiA+PiAKPj4gPj4gPj4gV2h5IGRvZXNuJ3QgdGhpcyBhZmZlY3Qgb25seSB0aGUgbG9j
-a2luZyBvcGVyYXRpb24/IFdFTCBwb2xsaW5nIGlzCj4+ID4+ID4+IHVzZWQgYWxzbyBkdXJpbmcg
-d3JpdGUgYW5kIGVyYXNlLgo+PiA+PiAKPj4gPj4gU29ycnkgSSBtZWFudCBXSVAuCj4+ID4+IAo+
-PiA+PiA+IE5vdCBzdXJlIGlmIEkgZnVsbHkgdW5kZXJzdGFuZC4gQnV0IEFGQUlDVCwgdGhlIHJl
-YXNvbiB3aHkgZXJhc2UgYW5kCj4+ID4+ID4gd3JpdGUgaXMgc2lsZW50IGlzIGJlY2F1c2UgdGhl
-IGRlZmF1bHQgc3BpX25vcl9zcl9yZWFkeSgpIG9ubHkgbG9va3MgYXQKPj4gPj4gPiBTUl9XSVAg
-WzFdOgo+PiA+PiAKPj4gPj4gU28gdXN1YWxseSwgdGhlIFdFTCBpcyBjbGVhcmVkIGF1dG9tYXRp
-Y2FsbHkgYnkgd2hhdGV2ZXIgbmVlZHMgdGhlCj4+ID4+IFdFTCBpbiB0aGUgZmlyc3QgcGxhY2Us
-IGkuZS4gcHJvZ3JhbSBvciBlcmFzZSwgd3JpdGUgKHN0YXR1cykKPj4gPj4gcmVnaXN0ZXIuIFRo
-YXQgc2hvdWxkIGFsc28gYmUgdGhlIGNhc2UgZm9yIHRoaXMgZmxhc2guCj4+ID4+IAo+PiA+PiBO
-b3cgZm9yIHRoaXMgZmxhc2ggKGFzIHdlbGwgYXMgdGhlIHN0L21pY3JvbiBvbmVzKSwgdGhlcmUg
-aXMgb25lCj4+ID4+IHBlY3VsaWFyaXR5LiBXaGVuZXZlciB0aGVyZSBpcyBhbiBlcnJvciBiaXQg
-c2V0IGluIHRoZSBGU1IsIHRoZSBXRUwKPj4gPj4gY2Fubm90IGJlIGNsZWFyZWQgYnkgYSB3cml0
-ZSBkaXNhYmxlIGNvbW1hbmQuIFdoaWNoIHdlIHNob3VsZG4ndAo+PiA+PiBuZWVkIGFueXdheSBi
-ZWNhdXNlIGl0IHNob3VsZCBiZSBjbGVhcmVkIGF1dG9tYXRpY2FsbHkgaWYgbm90aGluZwo+PiA+
-PiBnb2VzIHdyb25nLgo+PiA+PiAKPj4gPj4gQWxzbyB0aGUgd3JpdGUgc3RhdHVzIHJlZ2lzdGVy
-IHdvbid0IHNldCB0aGUgZXJyb3IgYml0cyBpZiBpIHJlYWQKPj4gPj4gdGhlIGRhdGFzaGVldCBj
-b3JyZWN0bHkgYW5kIGl0IHdpbGwgYWx3YXlzIGRpc2FibGUgdGhlIFdFTCwgc2VlCj4+ID4+IFRh
-YmxlIDI5ICgiV1JJVEUgUkVHSVNURVIgT3BlcmF0aW9ucyIpIGluIHRoZSBNVDM1WFU1MTJBQkEg
-ZGF0YXNoZWV0Cj4+ID4+IGFuZCBUYWJsZSA4LDggKCJXUklURSBSRUdJU1RFUiBPcGVyc3RhaW9u
-cyIpIGluIHRoZSBJUzI1V1gwMUcKPj4gPj4gZGF0YXNoZWV0Lgo+PiA+PiAKPj4gPj4gPiBPVE9I
-LCBvbiB0aGUgdW5sb2NrIHBhdGggd2UgZG8gc3BpX25vcl93cml0ZV9zcjFfYW5kX3NyMl9hbmRf
-Y2hlY2soKSBhbmQKPj4gPj4gPiBnaXZlIG5vIHNwZWNpYWwgaGFuZGxpbmcgdG8gV0VMIHNvIEkg
-aW1hZ2luZSB0aGF0IHdlIHRyeSB0byBzZXQgaXQgYXMgMAo+PiA+PiA+IGJ1dCByZWFkIGl0IGFz
-IDEgKGdpdmVuIHRoYXQgaXQgY2xlYXJzIG9ubHkgd2l0aCBGU1IpIGFuZCBoZW5jZSBJIGdvdAo+
-PiA+PiA+IHRoZSAtRUlPIGluIFsyXS4KPj4gPj4gCj4+ID4+IFdlIGRvIGEgUk1XLCBzbyBteSBn
-dWVzcyBpcyB0aGF0IGl0J3MgdGhlIG90aGVyIHdheSBhcm91bmQuIFdlIHJlYWQKPj4gPj4gaXQg
-YXMgMSwgYnV0IHRoZW4gYWZ0ZXIgd3JpdGluZyB0aGUgU1IsIGl0J3MgMCAoc2VlIGFib3ZlKS4g
-VGhhdAo+PiA+PiBhY3R1YWxseSBhc3N1bWVzLCB0aGF0IGlmIHRoZSBXRUwgYW5kIGFueSBlcnJv
-ciBiaXQgaW4gdGhlIEZTUiBpcwo+PiA+PiBzZXQsIGEgd3JpdGUgc3RhdHVzIHJlZ2lzdGVyIHdp
-bGwgY2xlYXIgdGhlIFdFTCBhbnl3YXlzLiBDb3VsZCB5b3UKPj4gPj4gZGVidWcgdGhhdCBzbyB3
-ZSBhcmUgc3VyZSwgdGhpcyBpcyB3aGF0IGFjdHVhbGx5IGhhcHBlbnM/Cj4+ID4KPj4gPiBTdXJl
-IEknbGwgZG8gc29tZSBkZWJ1Z2dpbmcgb24gdGhlIHVubG9jayBwYXRoLiBUaGUgRFMgc2VlbXMg
-YSBiaXQKPj4gPiB1bmNsZWFyLiBJdCBhbHNvIHN0YXRlcyAoZm9yIHRoZSBXUklURSBESVNBQkxF
-KQo+PiA+Cj4+ID4gIi4uLkluIGNhc2Ugb2YgYSBwcm90ZWN0aW9uIGVycm9yLCBXUklURSBESVNB
-QkxFIHdpbGwgbm90Cj4+ID4gY2xlYXIgdGhlIGJpdC4gSW5zdGVhZCwgYSBDTEVBUiBGTEFHIFNU
-QVRVUyBSRUdJU1RFUiBjb21tYW5kIG11c3QgYmUgaXNzdWVkIHRvCj4+ID4gY2xlYXIgYm90aCBm
-bGFncy4KPj4gPiAiCj4+IAo+PiBOb3Qgc3VyZSwgdGhpcyBjb250cmFkaWN0cyBlYWNoIG90aGVy
-LiBBcyBJIHJlYWQgaXQ6Cj4+IAo+PiAgLSBXcml0ZSAoc3RhdHVzKSByZWdpc3RlciB3aWxsIGFs
-d2F5cyBjbGVhciBhIFdFTCwgdGhlIG9ubHkgb3Blbgo+PiAgICBxdWVzdGlvbiBpcywgZG9lcyBp
-dCBhbHNvIGNsZWFyIGl0IGlmIHRoZSBwcm90ZWN0aW9uIGJpdCBpbiB0aGUKPj4gICAgRlNSIGlz
-IHNldAo+PiAgLSBXcml0ZSBkaXNhYmxlIHdvbid0IGNsZWFyIHRoZSBXRUwgaWYgdGhlIHByb3Rl
-Y3Rpb24gYml0IGluIHRoZQo+PiAgICBGU1IgaXMgc2V0Lgo+PiAKPj4gPiBCdXQgdGhlIHRydXRo
-IGlzIHRoYXQgdGhlIHNlY29uZCB1bmxvY2sgSSBkaWQgY2FtZSB3aXRob3V0IGFuIGVycm9yLgo+
-PiAKPj4gV2hpY2ggbWlnaHQgaW5kaWNhdGUgdGhhdCBhIHdyaXRlIHN0YXR1cyB3aWxsIGNsZWFy
-IHRoZSBXRUwgYW55d2F5Lgo+PiBCdXQgdGhlbiBpdCBtaWdodCBhbHNvIGJlIGludGVyZXN0aW5n
-IHRvIHNlZSBpZiB0aGUgUFJPVCBiaXQgaW4gRlNSCj4+IGlzIHN0aWxsIHNldC4gSU9XLCBpZiBh
-IG5ldyB3cml0ZSBlbmFibGUgaXMgc2VudCwgYSB3cml0ZSBkaXNhYmxlCj4+IG1pZ2h0IGZhaWwg
-ZXZlbiBpZiB0aGVyZSB3YXMgbm8gYWN0dWFsIGVycm9yLgo+PiAKPj4gPgo+PiA+PiAKPj4gPj4g
-QnV0IHRoZSBxdWVzdGlvbiBpcyB3aG8gaXMgc2V0dGluZyB0aGUgZXJyb3IgYml0IGluIHRoZSBm
-aXJzdCBwbGFjZS4KPj4gPj4gQW5kIEkgZ3Vlc3MgaXQncyB0aGUgdGVzdGluZyBzZXF1ZW5jZSBm
-b3IgdGhlIGxvY2tpbmcgd2hlbiB5b3UgdHJ5Cj4+ID4+IHRvIHdyaXRlIHRvIGEgbG9ja2VkIHJh
-bmdlLiBTbyB5b3UgY291bGQgYWxzbyBhY3R1YWxseSB0ZXN0IHRoZQo+PiA+PiBsb2NraW5nL3Vu
-bG9ja2luZyB3aXRob3V0IHdyaXRpbmcgYW55IGRhdGEgdG8gdGhlIGZsYXNoIGp1c3QgdG8gc2Vl
-Cj4+ID4+IGlmIHRoYXQgaXMgdGhlIGNhc2UuCj4+ID4KPj4gPiBQcmV0dHkgc3VyZSB0aGUgYWJv
-dmUgaXMgdGhlIGNhc2UhIElmIHlvdSBsb29rIGF0IG90aGVyIHRlc3RzIGFmdGVyCj4+ID4KPj4g
-PiAiT25jZSB3ZSB0cnVzdCB0aGUgZGVidWdmcyBvdXRwdXQgd2UgY2FuIHVzZSBpdCB0byB0ZXN0
-IHZhcmlvdXMKPj4gPiBzaXR1YXRpb25zLiBDaGVjayB0b3AgbG9ja2luZy91bmxvY2tpbmcgKGVu
-ZCBvZiB0aGUgZGV2aWNlKToiCj4+ID4KPj4gPiBFdmVyeXRoaW5nIHdvcmtlZCBuaWNlbHkgZ2l2
-ZW4gd2Ugd2VyZSBqdXN0IGRvaW5nIGxvY2svdW5sb2NrLiBUaGUgRFMgaXMKPj4gPiBhbHNvIGNs
-ZWFyIGFib3V0IHRoaXMgKHRhYmxlIDguMTEpOgo+PiA+Cj4+ID4gIi4uLldoZW4gYSBjb21tYW5k
-IGlzIGFwcGxpZWQgdG8gYSBwcm90ZWN0ZWQgc2VjdG9yLCB0aGUgY29tbWFuZCBpcyBub3QgZXhl
-Y3V0ZWQsCj4+ID4gdGhlIHdyaXRlIGVuYWJsZSBsYXRjaCBiaXQgcmVtYWlucyBzZXQgdG8gMSwg
-YW5kIGZsYWcgc3RhdHVzIHJlZ2lzdGVyIGJpdHMgMSBhbmQgNCBhcmUgc2V0LiAKPj4gPiBJZiB0
-aGUgb3BlcmF0aW9uCj4+ID4gIgo+PiAKPj4gT2suCj4+IAo+PiA+IEkgYWxzbyBkaWQgdGVzdGVk
-IHdpdGggYmFzaWNhbGx5IHRoZSBzYW1lIGNvZGUgYXMgaW4gbWljcm9uLXN0IGFuZCB0aGVuCj4+
-ID4gRVJBU0UgYW5kIFBST0dSQU0gY29tbWFuZHMganVzdCByZXR1cm4gLUVJTy4KPj4gCj4+IEJ1
-dCB0aGUgdW5sb2NraW5nIGRvZXMgbm90IHJldHVybiBFSU8gYW55bW9yZSB3aGVuIGl0J3MgZXhl
-Y3V0ZWQKPj4gc3VjY2Vzc2Z1bGx5Pwo+PiAKPj4gPj4gPj4gPiBBRkFJQ1QsIHdlIHNob3VsZCBk
-byBzb21ldGhpbmcgc2ltaWxhciBhcyBtaWNyb24gc28gdGhlIHdyaXRpbmcgdG8gYW4KPj4gPj4g
-Pj4gPiBhY3R1YWwgcHJvdGVjdGVkIHJlZ2lvbiBmYWlscyByYXRoZXIgdGhhbiBiZWluZyBzaWxl
-bnRseSBkaXNjYXJkZWQgd2l0aAo+PiA+PiA+PiA+IHRoYXQgc3RhdHVzIGJpdCBzZXQuIFRoZSBx
-dWVzdGlvbiB3b3VsZCBiZSBob3cgdG8gZG8gaXQ/IFRoZSBjb2RlIGlzCj4+ID4+ID4+ID4gcHJl
-dHR5IG11Y2ggaWRlbnRpY2FsIHRvIFsxXS4gVGhlIG1hc2tzLCB0aGUgb3Bjb2RlZC4uLiBTbyBz
-aG91bGQgd2UKPj4gPj4gPj4gPiBzb21laG93IGhhbmRsZSB0aGlzIGluIHRoZSBjb3JlIChieSBo
-YXZpbmcgc29tZSBjb21tb24gaGVscGVyKSB0aGF0Cj4+ID4+ID4+ID4gY291bGQgYmUgc2V0IGlu
-IC5sYXRlX2luaXQoKSB1bmRlciBhIGNvbW1vbiBNRlJfRlNSIGZsYWc/IE9yIGp1c3Qga2VlcAo+
-PiA+PiA+PiA+IGJvdGggaW1wbGVtZW50YXRpb25zIHNlcGFyYXRlIGZvciBub3c/Cj4+ID4+ID4+
-IAo+PiA+PiA+PiBJJ2QgbGlrZSB0byBrZWVwIHRoYXQgb3V0IG9mIHRoZSBjb3JlLmMsIGJ1dCBh
-bHNvIGxpa2UgdG8gYXZvaWQgYW55Cj4+ID4+ID4+IGNvZGUgZHVwbGljYXRpb24gZXNwLiBiZWNh
-dXNlIHRoZXJlIGlzIGFscmVhZHkgaGFuZGxpbmcgZm9yIHRoZQo+PiA+PiA+PiBpbnRlbCBzcGkg
-Y29udHJvbGxlciBpbiB0aGVyZS4gU28gbWF5YmUgbW92ZSBpdCBpdCBpbnRvIGEgbmV3Cj4+ID4+
-ID4+IGNvbW1vbi5jLgo+PiA+PiA+Cj4+ID4+ID4gQWxzbyBkb24ndCBsaWtlIHRoZSBkdXAgdGJo
-LiBDb3VsZCB0aGF0IGJlIGEgZm9sbG93IHVwIG9yIHNob3VsZCBpdCBiZQo+PiA+PiA+IHYzLiBG
-cm9tIHRoZSB0b3Agb2YgbXkgaGVhZCBJIGNvdWxkIHRoaW5rIG9uIGEgbWZyX2NvbW1vbi5jIGtp
-bmQgb2YgdGhpbmcuCj4+ID4+ID4gRG9uJ3QgdGhpbmcgdGhpcyBGU1IgcmVnaXN0ZXIgaXMgc3Rh
-bmRhcmQ/Cj4+ID4+IAo+PiA+PiBOb3QgcmVhbGx5Lgo+PiA+PiAKPj4gPj4gQnV0IChhdCBsZWFz
-dCkgcGFydHMgb2YgdGhlIGRhdGFzaGVldHMgYXJlIGFjdHVhbGx5IGNvcGllZCB2ZXJiYXRpbQo+
-PiA+PiBiZXR3ZWVuIG1pY3JvbiBhbmQgaXNzaSwgSSB3b25kZXIgaWYgd2Ugc2hvdWxkbid0IGp1
-c3QgcHV0IHRoZSBJU1NJCj4+ID4+IHBhcnQgaW4gbWljcm9uLXN0LmMuIChZZXMgdmVuZG9yIHdp
-bGwgYmUgd3JvbmcsIGJ1dCBJIHBsYW4gb24KPj4gPj4gZGVwcmVjYXRpbmcgdGhhdCBzeXNmcyBw
-cm9wZXJ0eSBhbnl3YXkpLgo+PiA+Cj4+ID4gQWxzbyB3b3JrcyBmb3IgbWUuIFNheSB0aGUgd29y
-ZCBhbmQgSSBjYW4gc2VuZCB2MyB3aXRoIHRoaXMgaW4KPj4gPiBtaWNyb24tc3QuYy4KPj4gCj4+
-IFllcy4gQnV0IGFsc28gcGxlYXNlIHZlcmlmeSB0aGUgb3VyIGd1ZXNzZXMgYWJvdXQgdGhlIHJv
-b3QgY2F1c2Ugb2YKPj4gdGhpcyBhbmQgd2hhdCdzIHRoZSBhY3R1YWwgYmVoYXZpb3Igb2YgdGhl
-IHdyaXRlIGRpc2FibGUuCj4KPiBQaW5naW5nIHRoaXMgb25lIDopLiBJIHNlbnQgdGhlIGRlYnVn
-Z2luZyByZXN1bHRzIGluIGFub3RoZXIgbWVzc2FnZS4KCldoYXQgaXMgdGhpcyBvbmU/IEkgdGhv
-dWdodCB5b3UnbGwgc2VuZCBhIHYzIHdpdGggdGhlIGZsYXNoIGFkZGVkIHRvCnRoZSBtaWNyb24t
-c3QuYz8gSSBwcmVzdW1lIHRoZSBjb2RlIGZvciBjbGVhcmluZyB0aGUgRlNSIGluIHRoZXJlIGlz
-CndvcmtpbmcgZm9yIHRoaXMgZmxhc2gsIHRvby4KCi1taWNoYWVsCgoKX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNz
-aW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2xpbnV4LW10ZC8K
+On Tue Sep 29, 2026 at 10:23 AM CEST, Miquel Raynal wrote:
+> On 29/09/2026 at 14:53:07 +08, haibo.chen@oss.nxp.com wrote:
+>
+>> From: Haibo Chen <haibo.chen@nxp.com>
+>>
+>> The core defaults opcodes.read_sr2 to the legacy RDCR opcode (0x35). In
+>> 8D-8D-8D mode the opcode is extended to two bytes per cmd_ext_type, but
+>> the resulting command is not a valid SR2 read for these flashes, which
+>> access their status/config registers through a vendor-specific indirect
+>> register space. Since spi_nor_cache_sr_lock_bits() now reads SR2 during
+>> init, i.e. after the switch to Octal DTR, the extended RDCR gets no data
+>> back and the read times out (on i.MX FlexSPI: -ETIMEDOUT and a controller
+>> WARN() during probe with Micron MT35xU and Macronix octal parts).
+>>
+>> Clear read_sr2 when the switch to Octal DTR actually succeeds, so the SR2
+>> read is skipped (a cleared opcode already means "unsupported"). Doing it
+>> in spi_nor_set_octal_dtr() keys off the real runtime protocol: a flash
+>> that advertises Octal DTR but runs in (x)STR because the host lacks
+>> support keeps its usable RDCR.
+>>
+>> Assisted-by: LLM
+>> Fixes: b7b63475903c ("mtd: spi-nor: Create a local SR cache")
+>> Fixes: 63489002d397 ("mtd: spi-nor: Refactor Read Status/Write Status support")
+>> Signed-off-by: Haibo Chen <haibo.chen@nxp.com>
+>> ---
+>> Changes in v2:
+>> - Rework the fix following review: instead of guarding the read at runtime
+>>   in spi_nor_read_sr2(), clear the default RDCR opcode.read_sr2 once, at the
+>>   point the switch to Octal DTR succeeds (spi_nor_set_octal_dtr()).
+>
+> I don't get that choice. Why switching when Octal DTR succeeds only? SR2
+> is either supported or not supported, I don't think it is anyway
+> different when entering octal DTR mode, is it? So I would expect SR2 to
+> be cleared earlier than that, once we know the chip is octal DTR
+> capable. And this must be early enough so that manufacturer drivers can
+> still set their own value.
+>
+> I am wondering whether we should simply drop sr2 opcode in the QER SFDP
+> parsing entirely for octal DTR devices (Michael?).
+
+This should probably be put into spi_nor_parse_profile1() and check
+if command 15h (read configuration register according to JESD251D)
+is supported or not. Would that work, Haibo Chen?
+
+Honestly, I haven't done much with these high density NOR flashes,
+so my knowledge is rather sparse. I've just skimmed over the JEDEC
+docs.
+
+-michael
+
+>> - Key the clear off the real runtime protocol so a flash that advertises
+>>   Octal DTR but runs in (x)STR (host without 8D support) keeps its
+>>   RDCR.
+>
+> Are you sure this is a valid case?
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
