@@ -4,73 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F0D3CA5FA5
-	for <linux-mtd@archiver.kernel.org>; Tue, 29 Sep 2026 11:06:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70B6BCA5FA5
+	for <linux-mtd@archiver.kernel.org>; Tue, 29 Sep 2026 12:57:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=ZaOAGbZl7C3cmvzaGt/eQYPB/nlq6DTBsMgoEJ9HiQg=; b=zRgxfP+0uB/kMA
-	yOTuh7982uGTKtuIaMJDVzvlOvwJ4Mg3UsxMxQyZRuFTWIAZGE5Q3Hr5TP9hfJSP4G+x0S3EOxoOQ
-	8WPrGpLc7Iwf44fGZd5ciH2Jua8Pt8fqfR1E/3Pln5xNKrUdqXPzwgq5oUCOFp5uyrRQKQl9KA6IS
-	XpdMdOL4F8LqknTMNSi8Fa0+zlpTeNUeeHqpKRkJ+qBpDphtLvjtZrv0tnA5gy0ku3VRxSA1JVUDQ
-	dqlG/GgFSFDaHMmgZC6XUrFJ9A4RVKnDy3DUypOnsg2KRSzkVbeWlqo+4oOMmnr4LKYOVA4JiDPe4
-	RalQrzpJcNqgdgXfvL+Q==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:Subject:To:From:
+	Cc:Message-Id:Date:Mime-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=2m6BdqYmeRJH68yFwVpyExtdrful8INVndXmzYJC71o=; b=jJi8Fpv5qnuH5p
+	dI1JMSAqz/ApQvQW/oSuXBrZ/LN8ygUlQ+oJ2i/CTYfW0tGuurNrrqjKleS8eBhDdpACbHLkOSr6Z
+	nn8OnEOnlcmpPtiHYMjtxXg2Uj0Cj3sbljK+IcUxkVLEW80xKTSIUoZcFkF7SB/9A7aQX7h+MX1OF
+	el+XIcKZQVBlDGDgz7WJSuw47k4IWwBZwv4go+/+YHgxsx3xWyZOC1q20Rhd0gwTII67FqKcSbGu4
+	haHka+zJnNKMsNhZWeMf+r8ONeuucLRMaBw4adQRlhBK3LRZrRyVoHc1iHZrEMSF/xlSQQsfyRKJW
+	ufCdw1+Mgp+OdR/eOsMA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xBVey-00000003MSb-0gEc;
-	Tue, 29 Sep 2026 11:06:08 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1xBXON-00000003bUE-1JW6;
+	Tue, 29 Sep 2026 12:57:07 +0000
+Received: from 0001.3ffe.de ([159.69.201.130])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xBVev-00000003MSR-3rvM
-	for linux-mtd@bombadil.infradead.org;
-	Tue, 29 Sep 2026 11:06:06 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
-	:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-	Content-Description:In-Reply-To:References;
-	bh=QBEQM78Q0lpd+BWXfbu7jyyCFrPHGFRUJBbWz7Gkb10=; b=PvMx1kALYfbs8Cucb5QtZvOUv/
-	pzeiaF+hmj2lp/MSAfkJ12c41fGzkL1J4cSiGCR3U0mzJqigyoqOeKlKXRKFI+XESYs+uM+Ztxohu
-	F5zXq/KnCyQLVF6r8lTSyyxeKymuKXpiTvbIcQn0x+PtDjBE/THR6wrjV7Z+EsV5Srf5y/a5y2RIK
-	G42MJ0tGhEYVonl31ufGsM/JncbJOhkr+p8zzylI09IdxNyOlCxxvjSzDDIMMISkKe4OgdoyLE7a2
-	BQL5aOGc0WSzNTsgxvLhQ96sbUvsitid8hBQl2GTOqHOMgHJ8W0uOCNyZSho/vqUC2s4pnqd5HhR4
-	iu/Ql58Q==;
-Received: from m16.mail.163.com ([117.135.210.2])
-	by desiato.infradead.org with esmtps (Exim 4.99.2 #2 (Red Hat Linux))
-	id 1xBVep-00000002XRx-2UJO
+	id 1xBXOL-00000003bRW-1iK3
 	for linux-mtd@lists.infradead.org;
-	Tue, 29 Sep 2026 11:06:02 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=QB
-	EQM78Q0lpd+BWXfbu7jyyCFrPHGFRUJBbWz7Gkb10=; b=g2yvNmPaDcESO65VSD
-	QdKGJOEt6BaISf/r7Xx07zC98e65ipJatuwJD/3CDZem3qKL/Tml74DuAC+td2Dm
-	XEUOCi9tErq1ROlA0GNPfxjT0aFKhw9RPLbEBqCGviFIWseWAtpQL2m7caAANIv3
-	0vSOTjmn6dZfJE41HIijCCu8E=
-Received: from WIN-TOG0NDEIICD.localdomain (unknown [])
-	by gzsmtp1 (Coremail) with SMTP id PCgvCgC3hBWEm7tqit_tBg--.40624S2;
-	Tue, 29 Sep 2026 19:05:41 +0800 (CST)
-From: Shirong Zhao <shxzhaosr@163.com>
-To: David Woodhouse <dwmw2@infradead.org>,
-	Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: [PATCH] jffs2: fix wbuf_sem leak on summary failure in jffs2_flash_writev()
-Date: Tue, 29 Sep 2026 19:05:38 +0800
-Message-ID: <20260929110539.20-1-shxzhaosr@163.com>
-X-Mailer: git-send-email 2.53.0
-MIME-Version: 1.0
-X-CM-TRANSID: PCgvCgC3hBWEm7tqit_tBg--.40624S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxuF1fAr43Wr1UWF4xZry5Arb_yoW5KFyrpr
-	9Iqr13Kr1vqF18ArnFyF48ZryDC39xJFZIgr1rW34UZan5Xr1Sga97tFy09Fs8CrsavFy2
-	qF4kK3yjvayDZa7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jeksDUUUUU=
-X-CM-SenderInfo: hvk06xhdrv2qqrwthudrp/xtbCxgWRz2q7m4VWrAAA3o
+	Tue, 29 Sep 2026 12:57:06 +0000
+Received: from localhost (unknown [IPv6:2a02:810b:4320:1000:4685:ff:fe12:5967])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.3ffe.de (Postfix) with ESMTPSA id 3B51B72;
+	Tue, 29 Sep 2026 14:56:54 +0200 (CEST)
+Mime-Version: 1.0
+Date: Tue, 29 Sep 2026 14:56:53 +0200
+Message-Id: <DLRTFDVTU3XS.2Z1O4PO8PBM1D@kernel.org>
+Cc: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ "Pratyush Yadav" <pratyush@kernel.org>, "Takahiro Kuwano"
+ <takahiro.kuwano@infineon.com>, "Miquel Raynal"
+ <miquel.raynal@bootlin.com>, "Richard Weinberger" <richard@nod.at>,
+ "Vignesh Raghavendra" <vigneshr@ti.com>
+From: "Michael Walle" <mwalle@kernel.org>
+To: =?utf-8?q?Nuno_S=C3=A1?= <nuno.sa@analog.com>
+Subject: Re: [PATCH v2 2/2] mtd: spi-nor: issi: Add support for is25wx01g
+X-Mailer: aerc 0.20.0
+References: <20260914-mtd-spi-nor-new-issi-chip-v2-0-3cd4d7e434b2@analog.com> <20260914-mtd-spi-nor-new-issi-chip-v2-2-3cd4d7e434b2@analog.com> <DLF3H41RCZJF.37WOY30CYJ4AY@kernel.org> <aqgRsP3cxzcLok5C@nsa> <DLGK0FH8L7PM.1JRX5777NZQQF@kernel.org> <aqpTO-5LTLtRXaY4@nsa> <DLIC1UB6I4TK.20EG74BVIVUGC@kernel.org> <arqBm7OpMHuVhzg0@nsa>
+In-Reply-To: <arqBm7OpMHuVhzg0@nsa>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260929_120600_656415_3450D48B 
-X-CRM114-Status: GOOD (  15.29  )
+X-CRM114-CacheID: sfid-20260929_055705_630629_BA79A4DD 
+X-CRM114-Status: GOOD (  50.25  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,88 +61,124 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-When summary is enabled and jffs2_sum_add_kvec() fails (an allocation
-failure while recording a summary entry), jffs2_flash_writev() returns
-the error directly while still holding c->wbuf_sem write-locked.  No
-later path releases it, so every subsequent read, write and GC blocks
-on down_read()/down_write() and the filesystem becomes completely
-unresponsive until remount or reboot.
-
-Fix this the same way the wbuf recovery path already handles a lost
-summary: disable summary collecting for the eraseblock with
-jffs2_sum_disable_collecting() and let the write complete on the
-normal path below, which releases the semaphore.  The summary is only
-a mount-time optimization; the node data itself has already reached
-the flash or wbuf, and a missing summary merely forces a full scan of
-that eraseblock at the next mount.
-
-An early version of this fix returned the error after unlocking (via
-the shared outerr path).  That was rejected by runtime testing: with
-retlen reset to 0 the allocator makes no progress, the retried write
-lands on the same offset and trips the contiguity BUG() in
-jffs2_link_node_ref().  Swallowing the summary error instead matches
-the established recovery behavior and was verified clean.
-
-Test comparison, same guest and test program in both runs (QEMU,
-upstream 7.3.0-rc4, JFFS2 on nandsim, failslab fault injection
-window-limited to jffs2_sum_add_kvec, fault count taken from the
-failslab times counter):
-
-- Deterministic 20+1+20 protocol: 20 clean 15-byte writes, 1 write
-  with injection armed at probability 100, 20 clean writes, then
-  umount/remount and readback of all 41 markers.
-  - With this patch: exactly 1 fault fires during the armed write
-    (times 1000000 -> 999999); all three writers exit 0 with no
-    errors; file size 615 bytes and all 41 markers present both
-    before and after remount; no BUG, oops, hung task or hang.
-  - Pristine (unpatched) kernel: the same fault surfaces -ENOMEM
-    ("Write of 83 bytes ... failed. returned -12"), then writer:79
-    and kworker delayed_wbuf_sync both wedge in D state in
-    jffs2_flash_writev -> down_write (hung task reports at 122s and
-    245s, rw-semaphore "likely owned by task writer:79" itself);
-    the D-state writer is unkillable and the test never completes.
-- Endurance variant on the patched kernel (2 clean + 12 armed 256KiB
-  block writes at probability 15 + 2 clean): 6 faults absorbed, all
-  16 block markers present after remount, no anomalies.
-- The original hang was first reproduced on 6.13 and re-confirmed on
-  7.3.0-rc4 before the fix (writer + kworker D-state stacks in
-  jffs2_flash_writev, same self-owned semaphore signature).
-
-Fixes: e631ddba5887 ("[JFFS2] Add erase block summary support (mount time improvement)")
-Cc: stable@vger.kernel.org
-Signed-off-by: Shirong Zhao <shxzhaosr@163.com>
-Tested-by: Shirong Zhao <shxzhaosr@163.com>
----
-diff --git a/fs/jffs2/wbuf.c b/fs/jffs2/wbuf.c
-index 3b7803c75..7ed3fa2bf 100644
---- a/fs/jffs2/wbuf.c
-+++ b/fs/jffs2/wbuf.c
-@@ -904,8 +904,16 @@ int jffs2_flash_writev(struct jffs2_sb_info *c, const struct kvec *invecs,
-
- 	if (jffs2_sum_active()) {
- 		int res = jffs2_sum_add_kvec(c, invecs, count, (uint32_t) to);
--		if (res)
--			return res;
-+		if (res) {
-+			/*
-+			 * Summary recording failed (allocation failure).
-+			 * The node data already reached the flash or wbuf;
-+			 * disable summary for this eraseblock so the caller
-+			 * still sees a successful write.  The semaphore is
-+			 * released on the normal path below.
-+			 */
-+			jffs2_sum_disable_collecting(c->summary);
-+		}
- 	}
-
- 	if (c->wbuf_len && ino)
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGksCgpPbiBNb24gU2VwIDI4LCAyMDI2IGF0IDU6MDMgUE0gQ0VTVCwgTnVubyBTw6Egd3JvdGU6
+Cj4gT24gRnJpLCBTZXAgMTgsIDIwMjYgYXQgMTE6MjU6NTRBTSArMDIwMCwgTWljaGFlbCBXYWxs
+ZSB3cm90ZToKPj4gT24gV2VkIFNlcCAxNiwgMjAyNiBhdCAxMDo0NCBBTSBDRVNULCBOdW5vIFPD
+oSB3cm90ZToKPj4gPiBPbiBXZWQsIFNlcCAxNiwgMjAyNiBhdCAwOToxNDo1MkFNICswMjAwLCBN
+aWNoYWVsIFdhbGxlIHdyb3RlOgo+PiA+PiBPbiBNb24gU2VwIDE0LCAyMDI2IGF0IDU6MzEgUE0g
+Q0VTVCwgTnVubyBTw6Egd3JvdGU6Cj4+ID4+ID4gT24gTW9uLCBTZXAgMTQsIDIwMjYgYXQgMDQ6
+MDQ6NDBQTSArMDIwMCwgTWljaGFlbCBXYWxsZSB3cm90ZToKPj4gPj4gPj4gT24gTW9uIFNlcCAx
+NCwgMjAyNiBhdCAzOjQyIFBNIENFU1QsIE51bm8gU8OhIHdyb3RlOgo+PiA+PiA+PiA+ICgqKTog
+SSBzaG91bGQgbm90ZSB0aGF0IHRoZSBjb21tYW5kIGFjdHVhbGx5IGZhaWxlZCB3aXRoIC1FSU8g
+YnV0IGl0Cj4+ID4+ID4+ID4gYWN0dWFsbHkgdW5sb2NrZWQgdGhlIGNoaXAhIEFuZCB0aGUgcmVh
+c29uIGlzIGJlY2F1c2UgdGhlIGZsYXNoIGFzIHRoZSBzYW1lCj4+ID4+ID4+ID4gRlNSIHJlZ2lz
+dGVyIHRoYW4gdGhlIG1pY3Jvbi1zdCBmbGFzaC4gU28gV0VMIGlzIHNldCB0byAxIGJ1dCBjYW4g
+b25seQo+PiA+PiA+PiA+IGJlIGNsZWFyZWQgd2hlbiBjbGVhcmluZyB0aGUgRlNSIHJlZ2lzdGVy
+Lgo+PiA+PiA+PiAKPj4gPj4gPj4gV2h5IGRvZXNuJ3QgdGhpcyBhZmZlY3Qgb25seSB0aGUgbG9j
+a2luZyBvcGVyYXRpb24/IFdFTCBwb2xsaW5nIGlzCj4+ID4+ID4+IHVzZWQgYWxzbyBkdXJpbmcg
+d3JpdGUgYW5kIGVyYXNlLgo+PiA+PiAKPj4gPj4gU29ycnkgSSBtZWFudCBXSVAuCj4+ID4+IAo+
+PiA+PiA+IE5vdCBzdXJlIGlmIEkgZnVsbHkgdW5kZXJzdGFuZC4gQnV0IEFGQUlDVCwgdGhlIHJl
+YXNvbiB3aHkgZXJhc2UgYW5kCj4+ID4+ID4gd3JpdGUgaXMgc2lsZW50IGlzIGJlY2F1c2UgdGhl
+IGRlZmF1bHQgc3BpX25vcl9zcl9yZWFkeSgpIG9ubHkgbG9va3MgYXQKPj4gPj4gPiBTUl9XSVAg
+WzFdOgo+PiA+PiAKPj4gPj4gU28gdXN1YWxseSwgdGhlIFdFTCBpcyBjbGVhcmVkIGF1dG9tYXRp
+Y2FsbHkgYnkgd2hhdGV2ZXIgbmVlZHMgdGhlCj4+ID4+IFdFTCBpbiB0aGUgZmlyc3QgcGxhY2Us
+IGkuZS4gcHJvZ3JhbSBvciBlcmFzZSwgd3JpdGUgKHN0YXR1cykKPj4gPj4gcmVnaXN0ZXIuIFRo
+YXQgc2hvdWxkIGFsc28gYmUgdGhlIGNhc2UgZm9yIHRoaXMgZmxhc2guCj4+ID4+IAo+PiA+PiBO
+b3cgZm9yIHRoaXMgZmxhc2ggKGFzIHdlbGwgYXMgdGhlIHN0L21pY3JvbiBvbmVzKSwgdGhlcmUg
+aXMgb25lCj4+ID4+IHBlY3VsaWFyaXR5LiBXaGVuZXZlciB0aGVyZSBpcyBhbiBlcnJvciBiaXQg
+c2V0IGluIHRoZSBGU1IsIHRoZSBXRUwKPj4gPj4gY2Fubm90IGJlIGNsZWFyZWQgYnkgYSB3cml0
+ZSBkaXNhYmxlIGNvbW1hbmQuIFdoaWNoIHdlIHNob3VsZG4ndAo+PiA+PiBuZWVkIGFueXdheSBi
+ZWNhdXNlIGl0IHNob3VsZCBiZSBjbGVhcmVkIGF1dG9tYXRpY2FsbHkgaWYgbm90aGluZwo+PiA+
+PiBnb2VzIHdyb25nLgo+PiA+PiAKPj4gPj4gQWxzbyB0aGUgd3JpdGUgc3RhdHVzIHJlZ2lzdGVy
+IHdvbid0IHNldCB0aGUgZXJyb3IgYml0cyBpZiBpIHJlYWQKPj4gPj4gdGhlIGRhdGFzaGVldCBj
+b3JyZWN0bHkgYW5kIGl0IHdpbGwgYWx3YXlzIGRpc2FibGUgdGhlIFdFTCwgc2VlCj4+ID4+IFRh
+YmxlIDI5ICgiV1JJVEUgUkVHSVNURVIgT3BlcmF0aW9ucyIpIGluIHRoZSBNVDM1WFU1MTJBQkEg
+ZGF0YXNoZWV0Cj4+ID4+IGFuZCBUYWJsZSA4LDggKCJXUklURSBSRUdJU1RFUiBPcGVyc3RhaW9u
+cyIpIGluIHRoZSBJUzI1V1gwMUcKPj4gPj4gZGF0YXNoZWV0Lgo+PiA+PiAKPj4gPj4gPiBPVE9I
+LCBvbiB0aGUgdW5sb2NrIHBhdGggd2UgZG8gc3BpX25vcl93cml0ZV9zcjFfYW5kX3NyMl9hbmRf
+Y2hlY2soKSBhbmQKPj4gPj4gPiBnaXZlIG5vIHNwZWNpYWwgaGFuZGxpbmcgdG8gV0VMIHNvIEkg
+aW1hZ2luZSB0aGF0IHdlIHRyeSB0byBzZXQgaXQgYXMgMAo+PiA+PiA+IGJ1dCByZWFkIGl0IGFz
+IDEgKGdpdmVuIHRoYXQgaXQgY2xlYXJzIG9ubHkgd2l0aCBGU1IpIGFuZCBoZW5jZSBJIGdvdAo+
+PiA+PiA+IHRoZSAtRUlPIGluIFsyXS4KPj4gPj4gCj4+ID4+IFdlIGRvIGEgUk1XLCBzbyBteSBn
+dWVzcyBpcyB0aGF0IGl0J3MgdGhlIG90aGVyIHdheSBhcm91bmQuIFdlIHJlYWQKPj4gPj4gaXQg
+YXMgMSwgYnV0IHRoZW4gYWZ0ZXIgd3JpdGluZyB0aGUgU1IsIGl0J3MgMCAoc2VlIGFib3ZlKS4g
+VGhhdAo+PiA+PiBhY3R1YWxseSBhc3N1bWVzLCB0aGF0IGlmIHRoZSBXRUwgYW5kIGFueSBlcnJv
+ciBiaXQgaW4gdGhlIEZTUiBpcwo+PiA+PiBzZXQsIGEgd3JpdGUgc3RhdHVzIHJlZ2lzdGVyIHdp
+bGwgY2xlYXIgdGhlIFdFTCBhbnl3YXlzLiBDb3VsZCB5b3UKPj4gPj4gZGVidWcgdGhhdCBzbyB3
+ZSBhcmUgc3VyZSwgdGhpcyBpcyB3aGF0IGFjdHVhbGx5IGhhcHBlbnM/Cj4+ID4KPj4gPiBTdXJl
+IEknbGwgZG8gc29tZSBkZWJ1Z2dpbmcgb24gdGhlIHVubG9jayBwYXRoLiBUaGUgRFMgc2VlbXMg
+YSBiaXQKPj4gPiB1bmNsZWFyLiBJdCBhbHNvIHN0YXRlcyAoZm9yIHRoZSBXUklURSBESVNBQkxF
+KQo+PiA+Cj4+ID4gIi4uLkluIGNhc2Ugb2YgYSBwcm90ZWN0aW9uIGVycm9yLCBXUklURSBESVNB
+QkxFIHdpbGwgbm90Cj4+ID4gY2xlYXIgdGhlIGJpdC4gSW5zdGVhZCwgYSBDTEVBUiBGTEFHIFNU
+QVRVUyBSRUdJU1RFUiBjb21tYW5kIG11c3QgYmUgaXNzdWVkIHRvCj4+ID4gY2xlYXIgYm90aCBm
+bGFncy4KPj4gPiAiCj4+IAo+PiBOb3Qgc3VyZSwgdGhpcyBjb250cmFkaWN0cyBlYWNoIG90aGVy
+LiBBcyBJIHJlYWQgaXQ6Cj4+IAo+PiAgLSBXcml0ZSAoc3RhdHVzKSByZWdpc3RlciB3aWxsIGFs
+d2F5cyBjbGVhciBhIFdFTCwgdGhlIG9ubHkgb3Blbgo+PiAgICBxdWVzdGlvbiBpcywgZG9lcyBp
+dCBhbHNvIGNsZWFyIGl0IGlmIHRoZSBwcm90ZWN0aW9uIGJpdCBpbiB0aGUKPj4gICAgRlNSIGlz
+IHNldAo+PiAgLSBXcml0ZSBkaXNhYmxlIHdvbid0IGNsZWFyIHRoZSBXRUwgaWYgdGhlIHByb3Rl
+Y3Rpb24gYml0IGluIHRoZQo+PiAgICBGU1IgaXMgc2V0Lgo+PiAKPj4gPiBCdXQgdGhlIHRydXRo
+IGlzIHRoYXQgdGhlIHNlY29uZCB1bmxvY2sgSSBkaWQgY2FtZSB3aXRob3V0IGFuIGVycm9yLgo+
+PiAKPj4gV2hpY2ggbWlnaHQgaW5kaWNhdGUgdGhhdCBhIHdyaXRlIHN0YXR1cyB3aWxsIGNsZWFy
+IHRoZSBXRUwgYW55d2F5Lgo+PiBCdXQgdGhlbiBpdCBtaWdodCBhbHNvIGJlIGludGVyZXN0aW5n
+IHRvIHNlZSBpZiB0aGUgUFJPVCBiaXQgaW4gRlNSCj4+IGlzIHN0aWxsIHNldC4gSU9XLCBpZiBh
+IG5ldyB3cml0ZSBlbmFibGUgaXMgc2VudCwgYSB3cml0ZSBkaXNhYmxlCj4+IG1pZ2h0IGZhaWwg
+ZXZlbiBpZiB0aGVyZSB3YXMgbm8gYWN0dWFsIGVycm9yLgo+PiAKPj4gPgo+PiA+PiAKPj4gPj4g
+QnV0IHRoZSBxdWVzdGlvbiBpcyB3aG8gaXMgc2V0dGluZyB0aGUgZXJyb3IgYml0IGluIHRoZSBm
+aXJzdCBwbGFjZS4KPj4gPj4gQW5kIEkgZ3Vlc3MgaXQncyB0aGUgdGVzdGluZyBzZXF1ZW5jZSBm
+b3IgdGhlIGxvY2tpbmcgd2hlbiB5b3UgdHJ5Cj4+ID4+IHRvIHdyaXRlIHRvIGEgbG9ja2VkIHJh
+bmdlLiBTbyB5b3UgY291bGQgYWxzbyBhY3R1YWxseSB0ZXN0IHRoZQo+PiA+PiBsb2NraW5nL3Vu
+bG9ja2luZyB3aXRob3V0IHdyaXRpbmcgYW55IGRhdGEgdG8gdGhlIGZsYXNoIGp1c3QgdG8gc2Vl
+Cj4+ID4+IGlmIHRoYXQgaXMgdGhlIGNhc2UuCj4+ID4KPj4gPiBQcmV0dHkgc3VyZSB0aGUgYWJv
+dmUgaXMgdGhlIGNhc2UhIElmIHlvdSBsb29rIGF0IG90aGVyIHRlc3RzIGFmdGVyCj4+ID4KPj4g
+PiAiT25jZSB3ZSB0cnVzdCB0aGUgZGVidWdmcyBvdXRwdXQgd2UgY2FuIHVzZSBpdCB0byB0ZXN0
+IHZhcmlvdXMKPj4gPiBzaXR1YXRpb25zLiBDaGVjayB0b3AgbG9ja2luZy91bmxvY2tpbmcgKGVu
+ZCBvZiB0aGUgZGV2aWNlKToiCj4+ID4KPj4gPiBFdmVyeXRoaW5nIHdvcmtlZCBuaWNlbHkgZ2l2
+ZW4gd2Ugd2VyZSBqdXN0IGRvaW5nIGxvY2svdW5sb2NrLiBUaGUgRFMgaXMKPj4gPiBhbHNvIGNs
+ZWFyIGFib3V0IHRoaXMgKHRhYmxlIDguMTEpOgo+PiA+Cj4+ID4gIi4uLldoZW4gYSBjb21tYW5k
+IGlzIGFwcGxpZWQgdG8gYSBwcm90ZWN0ZWQgc2VjdG9yLCB0aGUgY29tbWFuZCBpcyBub3QgZXhl
+Y3V0ZWQsCj4+ID4gdGhlIHdyaXRlIGVuYWJsZSBsYXRjaCBiaXQgcmVtYWlucyBzZXQgdG8gMSwg
+YW5kIGZsYWcgc3RhdHVzIHJlZ2lzdGVyIGJpdHMgMSBhbmQgNCBhcmUgc2V0LiAKPj4gPiBJZiB0
+aGUgb3BlcmF0aW9uCj4+ID4gIgo+PiAKPj4gT2suCj4+IAo+PiA+IEkgYWxzbyBkaWQgdGVzdGVk
+IHdpdGggYmFzaWNhbGx5IHRoZSBzYW1lIGNvZGUgYXMgaW4gbWljcm9uLXN0IGFuZCB0aGVuCj4+
+ID4gRVJBU0UgYW5kIFBST0dSQU0gY29tbWFuZHMganVzdCByZXR1cm4gLUVJTy4KPj4gCj4+IEJ1
+dCB0aGUgdW5sb2NraW5nIGRvZXMgbm90IHJldHVybiBFSU8gYW55bW9yZSB3aGVuIGl0J3MgZXhl
+Y3V0ZWQKPj4gc3VjY2Vzc2Z1bGx5Pwo+PiAKPj4gPj4gPj4gPiBBRkFJQ1QsIHdlIHNob3VsZCBk
+byBzb21ldGhpbmcgc2ltaWxhciBhcyBtaWNyb24gc28gdGhlIHdyaXRpbmcgdG8gYW4KPj4gPj4g
+Pj4gPiBhY3R1YWwgcHJvdGVjdGVkIHJlZ2lvbiBmYWlscyByYXRoZXIgdGhhbiBiZWluZyBzaWxl
+bnRseSBkaXNjYXJkZWQgd2l0aAo+PiA+PiA+PiA+IHRoYXQgc3RhdHVzIGJpdCBzZXQuIFRoZSBx
+dWVzdGlvbiB3b3VsZCBiZSBob3cgdG8gZG8gaXQ/IFRoZSBjb2RlIGlzCj4+ID4+ID4+ID4gcHJl
+dHR5IG11Y2ggaWRlbnRpY2FsIHRvIFsxXS4gVGhlIG1hc2tzLCB0aGUgb3Bjb2RlZC4uLiBTbyBz
+aG91bGQgd2UKPj4gPj4gPj4gPiBzb21laG93IGhhbmRsZSB0aGlzIGluIHRoZSBjb3JlIChieSBo
+YXZpbmcgc29tZSBjb21tb24gaGVscGVyKSB0aGF0Cj4+ID4+ID4+ID4gY291bGQgYmUgc2V0IGlu
+IC5sYXRlX2luaXQoKSB1bmRlciBhIGNvbW1vbiBNRlJfRlNSIGZsYWc/IE9yIGp1c3Qga2VlcAo+
+PiA+PiA+PiA+IGJvdGggaW1wbGVtZW50YXRpb25zIHNlcGFyYXRlIGZvciBub3c/Cj4+ID4+ID4+
+IAo+PiA+PiA+PiBJJ2QgbGlrZSB0byBrZWVwIHRoYXQgb3V0IG9mIHRoZSBjb3JlLmMsIGJ1dCBh
+bHNvIGxpa2UgdG8gYXZvaWQgYW55Cj4+ID4+ID4+IGNvZGUgZHVwbGljYXRpb24gZXNwLiBiZWNh
+dXNlIHRoZXJlIGlzIGFscmVhZHkgaGFuZGxpbmcgZm9yIHRoZQo+PiA+PiA+PiBpbnRlbCBzcGkg
+Y29udHJvbGxlciBpbiB0aGVyZS4gU28gbWF5YmUgbW92ZSBpdCBpdCBpbnRvIGEgbmV3Cj4+ID4+
+ID4+IGNvbW1vbi5jLgo+PiA+PiA+Cj4+ID4+ID4gQWxzbyBkb24ndCBsaWtlIHRoZSBkdXAgdGJo
+LiBDb3VsZCB0aGF0IGJlIGEgZm9sbG93IHVwIG9yIHNob3VsZCBpdCBiZQo+PiA+PiA+IHYzLiBG
+cm9tIHRoZSB0b3Agb2YgbXkgaGVhZCBJIGNvdWxkIHRoaW5rIG9uIGEgbWZyX2NvbW1vbi5jIGtp
+bmQgb2YgdGhpbmcuCj4+ID4+ID4gRG9uJ3QgdGhpbmcgdGhpcyBGU1IgcmVnaXN0ZXIgaXMgc3Rh
+bmRhcmQ/Cj4+ID4+IAo+PiA+PiBOb3QgcmVhbGx5Lgo+PiA+PiAKPj4gPj4gQnV0IChhdCBsZWFz
+dCkgcGFydHMgb2YgdGhlIGRhdGFzaGVldHMgYXJlIGFjdHVhbGx5IGNvcGllZCB2ZXJiYXRpbQo+
+PiA+PiBiZXR3ZWVuIG1pY3JvbiBhbmQgaXNzaSwgSSB3b25kZXIgaWYgd2Ugc2hvdWxkbid0IGp1
+c3QgcHV0IHRoZSBJU1NJCj4+ID4+IHBhcnQgaW4gbWljcm9uLXN0LmMuIChZZXMgdmVuZG9yIHdp
+bGwgYmUgd3JvbmcsIGJ1dCBJIHBsYW4gb24KPj4gPj4gZGVwcmVjYXRpbmcgdGhhdCBzeXNmcyBw
+cm9wZXJ0eSBhbnl3YXkpLgo+PiA+Cj4+ID4gQWxzbyB3b3JrcyBmb3IgbWUuIFNheSB0aGUgd29y
+ZCBhbmQgSSBjYW4gc2VuZCB2MyB3aXRoIHRoaXMgaW4KPj4gPiBtaWNyb24tc3QuYy4KPj4gCj4+
+IFllcy4gQnV0IGFsc28gcGxlYXNlIHZlcmlmeSB0aGUgb3VyIGd1ZXNzZXMgYWJvdXQgdGhlIHJv
+b3QgY2F1c2Ugb2YKPj4gdGhpcyBhbmQgd2hhdCdzIHRoZSBhY3R1YWwgYmVoYXZpb3Igb2YgdGhl
+IHdyaXRlIGRpc2FibGUuCj4KPiBQaW5naW5nIHRoaXMgb25lIDopLiBJIHNlbnQgdGhlIGRlYnVn
+Z2luZyByZXN1bHRzIGluIGFub3RoZXIgbWVzc2FnZS4KCldoYXQgaXMgdGhpcyBvbmU/IEkgdGhv
+dWdodCB5b3UnbGwgc2VuZCBhIHYzIHdpdGggdGhlIGZsYXNoIGFkZGVkIHRvCnRoZSBtaWNyb24t
+c3QuYz8gSSBwcmVzdW1lIHRoZSBjb2RlIGZvciBjbGVhcmluZyB0aGUgRlNSIGluIHRoZXJlIGlz
+CndvcmtpbmcgZm9yIHRoaXMgZmxhc2gsIHRvby4KCi1taWNoYWVsCgoKX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNz
+aW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2xpbnV4LW10ZC8K
