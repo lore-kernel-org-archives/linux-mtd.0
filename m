@@ -4,97 +4,112 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD43EC9832A
-	for <linux-mtd@archiver.kernel.org>; Tue, 29 Sep 2026 06:36:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17038CA5FA7
+	for <linux-mtd@archiver.kernel.org>; Tue, 29 Sep 2026 06:36:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=6nt3YOMB9+SyQUsBbZEr6PYZwYz7DIR3v5N9gJZ3n44=; b=zQpFShJrziYNXP
-	C9jWHZydzLpYuqfCMG5CVtjSdZ+Hak4ItNFSMJFJIIpx0NkjYtbGgLYc4RvvcfftaZBJVWlmCjIwq
-	rIAP7acTaTaZDEB/Oyf6fuyCyNNg0Eog/OcxPbbVw5UIPcYHlJ78fDrnlzbJ7vukLpUwYwx6ahz7S
-	IyKF+OHRP58I/93sg3evs7h+7rI5F8A1dzX/zo6hgfRGg7KBwZ7vxxNWjBeM1fOoE2S8JnDHZpaDP
-	dFTe4oiy7aaQMWxLI87rPizaN8N+jBck9/UAFJE7pHBKHgt6ZLhWs5CvuY7Yd6DoTt7Z+yTleLBhI
-	ouH3CJ5EWCsNDd/4FC8Q==;
+	List-Owner; bh=sFzqMyXa7vsjwIBxNbbmzst+aWLZSNVeKHJYXt63mzg=; b=Fp7iRZkLSwAzcr
+	V1XQjSyPHvWNEh2gJkqCmvULKC2ct2/qZiq8wSAwgyMHTGeJflaqeIjFZzh1T7J9HcL8BfaNZ3XYs
+	8LVc02NbzDpKsCW9piSIyDC1kF7GcuCl8Bcj6RXm8W3Tu2ajl06QrlTrKN++KpMEqtElf4dSflKhS
+	EDU8L3/xWKPCWZIuNQD+oqfjUYBY2Pl7liJJERjwklA1jBNZCRKKtSWOqveXX7evlysuLLWBefDc3
+	VMbkX6N0FkQ3RM8gA3UEsO+65g5hsY1r4VZc5Z+GyGLA1dT7dBU870GosvGcPN8waXSumxawpSnO2
+	je3EH9Jl0yJ8kJOtsvcQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xBRSJ-00000002U7G-2iJY;
+	id 1xBRSJ-00000002U7x-3Zk6;
 	Tue, 29 Sep 2026 06:36:47 +0000
-Received: from mx0b-0002e601.pphosted.com ([148.163.154.28])
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xBRSA-00000002TxR-2Hyc
+	id 1xBRSG-00000002U19-3qCJ
+	for linux-mtd@bombadil.infradead.org;
+	Tue, 29 Sep 2026 06:36:45 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Content-Type:Content-Transfer-Encoding
+	:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=GZG5LkxyJzUfurkyhbpPubmisrMCEMUVigG4UnInPAw=; b=OpqtwHRV1UG0Hi00KIqd+RwXTK
+	D/wDiuXlGpNbgkhBBYXmVDN3p1E9EqIPKPsnA/TQrGu4mA6PXWXEFq/zQf7N+KC6DlkA1zbG2i58b
+	iOKj5qW1hWtmb6cB8WeXVFugcr6HmeKQY2Dryt4J4V76pALQBJ6+mjgeOboQ0pvNCcljhu8UmeH2d
+	fXBoYCOdakJYnHUq8+nip0CysdX57KDuHbnLx+MrqZ3wVuEVgQUN+PJI+9eJtyKrPFaN74Z/9LpIG
+	W6selv4hqyg/RC+A+IWGbpRPfpDJ+lnc2zT7Jvexax4fK0LvHJigHy0L+C3LWr3F07ScB+Tzbgf+u
+	EbzmnC6w==;
+Received: from mx0b-0002e601.pphosted.com ([148.163.154.28])
+	by desiato.infradead.org with esmtps (Exim 4.99.2 #2 (Red Hat Linux))
+	id 1xBRS9-00000002FdW-17Ft
 	for linux-mtd@lists.infradead.org;
 	Tue, 29 Sep 2026 06:36:41 +0000
 Received: from pps.filterd (m0374956.ppops.net [127.0.0.1])
-	by mx0b-0002e601.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 68T46T7b3284117;
-	Tue, 29 Sep 2026 01:36:33 -0500
+	by mx0b-0002e601.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 68T46XmF3284408;
+	Tue, 29 Sep 2026 01:36:29 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com; h=cc
 	:content-transfer-encoding:content-type:date:from:in-reply-to
 	:message-id:mime-version:references:subject:to; s=
-	proofpoint-05-2026; bh=G+P3Usk2AP+uxkP+rz7a2MIR5Sy/Ukw5hExwqlPFA
-	KY=; b=YCktdGOANzHsbxKB6N/v3nk0pShBKvl9W35hq+zexhkNIxt+kfxyJQFVg
-	TzHbUWUtTIk8MuebQHNbbAdATPxkohQtfNwlklcoFzX3TpIlA8AVvydFkoM/ylnM
-	Dd2JjiesP3LqPDGxp6pLQMJoLbLfDT4yEqxlxOererPG7kznvqixMtzG5OTLAYte
-	ZnhRzgro46R+5wNsnFAyCGZf+llr2sTLAYZKKxyLoOVZOizBNR7tciShLVCzDgJY
-	wmDQyUY0QHofhFarGIn8bK+L9SNr9DhZMmG7OeL+atI1sgA5b2MuBldziz8XNuyx
-	4/PFQclJSp/WHeG7N0y07yWr77iaQ==
-Received: from co1pr03cu002.outbound.protection.outlook.com (mail-westus2azon11010071.outbound.protection.outlook.com [52.101.46.71])
-	by mx0b-0002e601.pphosted.com (PPS) with ESMTPS id 4h03ad9q0k-1
+	proofpoint-05-2026; bh=GZG5LkxyJzUfurkyhbpPubmisrMCEMUVigG4UnInP
+	Aw=; b=oe7ErV0129xrXbePQM2mobE+0UvEOQNhozMaYsjaz/teT0o5RtyFDCI1w
+	68hM3zpcfMnuxC/8hnoxBHt683qafUllrBeb/PPZVuG+4QjPK7JNWS8zXmEz14qu
+	qjYb0+IQWUlGThubFiB9MGf0NXGliiyBm8UfTDbH5OAjR/GNCrqQL8jMuCU7ZzuA
+	3zk37PHir+ZvTxhH0QTPMRol6CLLPeL6bxUiaSvsBg/NEwsUEYF7UeEYNBNHIK9E
+	IafhM51TdyzGu208mQVnGHeoUpKvH7za9c6PvmBPkUaCa1XDPiSIIRZ1lV8KgjGL
+	1XrlhQo2UF9LXA/7Gpu9MSsiJCcMw==
+Received: from mw6pr02cu001.outbound.protection.outlook.com (mail-westus2azon11012001.outbound.protection.outlook.com [52.101.48.1])
+	by mx0b-0002e601.pphosted.com (PPS) with ESMTPS id 4h03ad9q09-1
 	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-	Tue, 29 Sep 2026 01:36:32 -0500 (CDT)
+	Tue, 29 Sep 2026 01:36:28 -0500 (CDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=cq+MelFkCmrNgeyj9A4hu58h1Qs6NrHW0LHd+M3j0LCQy5W+LzXZZOuS8DDEXalerumCmBEQrhlIOJToGHsznJ4IX0r160w2y7ZzbWBfXtYDJCsr98q7U5GdHHTOTryiYt/vLrjJQwBXdcw3Wd3EJ3iznwnairMfD0VmH933btWz6PafB98vjSjuE+Kntj/7rx7wqWc9Y8ddgbV8ot15lNs5kj2m6NFhfRiWmYxUvvPT5zh2IztWRuBFY2GC+46y37tF2ynykkXnacG2YGpOTPK1pE4x89MVUg7bKIuJxyh19QXRMu7bsJSQblR2OZsQ0RULuXX6F2RnYqpYzqTCMA==
+ b=h03e7UTManXi9PRJ6nmxvNqIRVOkYCAWIjM00cpqdQv1SCtRQm9I5+ikpShmEoBG42eRV4DSvisaLHWLwdeyvXaB93olRvlVYjqffIwRJMXY7UqfpaOQt5V19EpPU9qgrZFG/QEBJoj5TW+kCLtnCsUP3cY3zngplCE7hRA4Wjer2bwHenkjQoeKRSJl5G1qOiO2hs/XG3ixiDQSvhbmusv+8wAbd9EUC78owctgTIclXY9vKJsjcmjILRLItY62U3Es27ATxrNYtYm0r+xFngeE+xtVErXnjlYWMftmhNCfbG0mAkKqWBYI4nB7fPetzcd6WQCM9K5w/x5DvBzGhA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=G+P3Usk2AP+uxkP+rz7a2MIR5Sy/Ukw5hExwqlPFAKY=;
- b=wUPiuK6EIwWLI27exuY/lMM4fiMu7iY1pqrgIvFQL3IZ7UiCjs104T3HK3YiTUZf2I+MxpgcTX0tSAO/t+NQvn5ffefTO6aPV06lbLLDoHLoKj4c8m23al9dLfEs7FjENqlK/X2Dv3O5uKw9ZaZ00g44i6ulabEUHF/hA6maPM2j2yCbbfCQs8qSbGK3QsyP9c46V1/6/CcMD6o6ePrgDVpRg6riTvO3ydZnPh0KaMKIA2wd0r9A5mz+fOFkr2jvcV4Ze5TsYSeY8CFETPHI/quakmKyqJgjwsFnp08zoiyZAzOcJrEdCHgU4mk10t79s5KPvDFeSJ7cWgObvwE47A==
+ bh=GZG5LkxyJzUfurkyhbpPubmisrMCEMUVigG4UnInPAw=;
+ b=s9uCrZPYacahzlK5nRI+XRQs4rb3O0k3ImgyBmwLfB89SFnAMLoBFUgX9h+Bpm4p2vxrrUyuQtHRWVMNnWE5VZb+FQefSK1em0hOhcxRWMTym6DNIHEFOPG2cwp4jEZRdofTVz69RmONEga9n4aWHUMYrijKDUcdX/eFbrckH1BuqgJt3Le3l3hhF0EnHCm/VulH1DLcZHnXwCltqwQPhMzRGm7wzqacPrTYFD3QJRKDNWqfsRTCmDlnPBRjOPrhLUp2Qisjy7gvbAiyydtyN+FbxKGd+VUheYA4DR+L+4mFtNRbpsIpdQ3VSM10n0evKhRujU3w4O5HdDVfguTuqg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 198.47.21.195) smtp.rcpttodomain=lists.infradead.org smtp.mailfrom=ti.com;
+ 198.47.21.194) smtp.rcpttodomain=oss.qualcomm.com smtp.mailfrom=ti.com;
  dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=ti.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=ticloud.onmicrosoft.com; s=selector1-ticloud-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G+P3Usk2AP+uxkP+rz7a2MIR5Sy/Ukw5hExwqlPFAKY=;
- b=YXQzDZRmJiD13adJXQoCa/WIg3P+mQXUGfdac9889bU6HsmEt/GHoLLEE3FfqiELuSosljPndbhComwB9uPMuQ1yCagwy6IKG73y4sPXXhpS5lhhN3CNFUo8ywKVXcw9rAUpYF3syfy2cgBHQGGU3BqXdib269i1NpL/QI3B/wM=
-Received: from BY1P220CA0024.NAMP220.PROD.OUTLOOK.COM (2603:10b6:a03:5c3::9)
- by CO1PR10MB4740.namprd10.prod.outlook.com (2603:10b6:303:9d::17) with
+ bh=GZG5LkxyJzUfurkyhbpPubmisrMCEMUVigG4UnInPAw=;
+ b=JyJ9ONOebsz2ccDiQq4PhOjQZMHNug3yjpoUxMtjTrp81Uey8GPRc38ngijOZGU9jWszE0aOc/U+EevXsBsWY3ii+2JR6zj7jO+eIMJHpfG8b6XMy2/vQyVBaSfyyYjr3TMkLdIymdE5txuojibeElftEP5y+6sIcXnG433UJuc=
+Received: from SJ0PR13CA0035.namprd13.prod.outlook.com (2603:10b6:a03:2c2::10)
+ by PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.472.14; Tue, 29 Sep
- 2026 06:36:28 +0000
-Received: from SJ1PEPF000026C4.namprd04.prod.outlook.com
- (2603:10b6:a03:5c3:cafe::5f) by BY1P220CA0024.outlook.office365.com
- (2603:10b6:a03:5c3::9) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.21.451.24 via Frontend Transport; Tue,
- 29 Sep 2026 06:36:28 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.472.7; Tue, 29 Sep
+ 2026 06:36:23 +0000
+Received: from SJ1PEPF000023CC.namprd02.prod.outlook.com
+ (2603:10b6:a03:2c2:cafe::a2) by SJ0PR13CA0035.outlook.office365.com
+ (2603:10b6:a03:2c2::10) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.21.472.14 via Frontend Transport; Tue,
+ 29 Sep 2026 06:36:23 +0000
 X-MS-Exchange-Authentication-Results: mx.microsoft.com 1; spf=pass (sender IP
- is 198.47.21.195) smtp.mailfrom=ti.com; dkim=none (message not signed)
+ is 198.47.21.194) smtp.mailfrom=ti.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=ti.com;
 Received-SPF: Pass (protection.outlook.com: domain of ti.com designates
- 198.47.21.195 as permitted sender) receiver=protection.outlook.com;
- client-ip=198.47.21.195; helo=flwvzet201.ext.ti.com; pr=C
-Received: from flwvzet201.ext.ti.com (198.47.21.195) by
- SJ1PEPF000026C4.mail.protection.outlook.com (10.167.244.101) with Microsoft
+ 198.47.21.194 as permitted sender) receiver=protection.outlook.com;
+ client-ip=198.47.21.194; helo=flwvzet200.ext.ti.com; pr=C
+Received: from flwvzet200.ext.ti.com (198.47.21.194) by
+ SJ1PEPF000023CC.mail.protection.outlook.com (10.167.244.6) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.472.14 via Frontend Transport; Tue, 29 Sep 2026 06:36:27 +0000
-Received: from DFLE210.ent.ti.com (10.64.6.68) by flwvzet201.ext.ti.com
- (10.248.192.32) with Microsoft SMTP Server (version=TLS1_2,
+ 15.21.472.14 via Frontend Transport; Tue, 29 Sep 2026 06:36:21 +0000
+Received: from DFLE204.ent.ti.com (10.64.6.62) by flwvzet200.ext.ti.com
+ (10.248.192.31) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.45; Tue, 29 Sep
- 2026 01:35:58 -0500
-Received: from DFLE201.ent.ti.com (10.64.6.59) by DFLE210.ent.ti.com
- (10.64.6.68) with Microsoft SMTP Server (version=TLS1_2,
+ 2026 01:35:53 -0500
+Received: from DFLE205.ent.ti.com (10.64.6.63) by DFLE204.ent.ti.com
+ (10.64.6.62) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.45; Tue, 29 Sep
- 2026 01:35:58 -0500
-Received: from lelvem-mr05.itg.ti.com (10.180.75.9) by DFLE201.ent.ti.com
- (10.64.6.59) with Microsoft SMTP Server (version=TLS1_2,
+ 2026 01:35:53 -0500
+Received: from lelvem-mr05.itg.ti.com (10.180.75.9) by DFLE205.ent.ti.com
+ (10.64.6.63) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.45 via Frontend
- Transport; Tue, 29 Sep 2026 01:35:58 -0500
+ Transport; Tue, 29 Sep 2026 01:35:53 -0500
 Received: from santhoshkumark.dhcp.ti.com (santhoshkumark.dhcp.ti.com [10.24.52.55])
-	by lelvem-mr05.itg.ti.com (8.18.1/8.18.1) with ESMTP id 68T6ZZn31395904;
-	Tue, 29 Sep 2026 01:35:53 -0500
+	by lelvem-mr05.itg.ti.com (8.18.1/8.18.1) with ESMTP id 68T6ZZn21395904;
+	Tue, 29 Sep 2026 01:35:47 -0500
 From: Santhosh Kumar K <s-k6@ti.com>
 To: <broonie@kernel.org>, <robh@kernel.org>, <krzk+dt@kernel.org>,
         <conor+dt@kernel.org>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
@@ -103,55 +118,56 @@ To: <broonie@kernel.org>, <robh@kernel.org>, <krzk+dt@kernel.org>,
 CC: <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
         <praneeth@ti.com>, <sebin.francis@ti.com>, <u-kumar1@ti.com>,
-        <a-dutta@ti.com>, <s-k6@ti.com>
-Subject: [PATCH v10 03/19] spi: parse spi-max-post-config-frequency-hz into post_config_max_speed_hz
-Date: Tue, 29 Sep 2026 12:05:13 +0530
-Message-ID: <20260929063529.1235417-4-s-k6@ti.com>
+        <a-dutta@ti.com>, <s-k6@ti.com>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski@oss.qualcomm.com>
+Subject: [PATCH v10 02/19] spi: dt-bindings: add spi-phy-pattern-partition property
+Date: Tue, 29 Sep 2026 12:05:12 +0530
+Message-ID: <20260929063529.1235417-3-s-k6@ti.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20260929063529.1235417-1-s-k6@ti.com>
 References: <20260929063529.1235417-1-s-k6@ti.com>
 MIME-Version: 1.0
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ1PEPF000026C4:EE_|CO1PR10MB4740:EE_
-X-MS-Office365-Filtering-Correlation-Id: 52e5779e-f501-4da5-2822-08df1df3fd53
+X-MS-TrafficTypeDiagnostic: SJ1PEPF000023CC:EE_|PH0PR10MB5706:EE_
+X-MS-Office365-Filtering-Correlation-Id: b458857d-a4d3-46fd-f3ab-08df1df3f9ec
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|23010399003|376014|7416014|1800799024|36860700016|82310400026|18002099003|22082099003|921020|6133799003|3023799007|10067099003|56012099006;
-X-Microsoft-Antispam-Message-Info: E436SPHaGZt+prIiSynEc7xUxqlkSR9ESD/0ophdtx13c1Xy5Osx+dXeX86bpaEnkgV1/ewCaMwQOZ7HlIAEnyM11HmBvoM0blO/38i0fv6RsGB131RYsmdCw0Z7v0Piys04k9QVRnudZ89a9LJkIMV512CkA5jZuquwqLHqO90D00AVArmlp7aYA1ru1aWwue46UImcX5JT0CwrXFJYq4jkkM7ggsGl87LG2a4qV3V5/mqcDNOr4YuE6Yb6D5I2Bq4hKrWZL6T6Uz9Wpji4F+cmrzL3b+0xqMW40N4NEX8f6szzSQ3XT1z2SHSfDW9ObdkHSuqkgFbnuCzFueb/cloQ1YtYSFIjlXF6A+G/bn5Cctq5USU7bIRDs4UA8NEpHPRfIvZd+bfbffLmQU3rWYBKgs1HuVsIrsc3YbYKW3mUON8YT4kVzHCFNEJ80GXeSqWzjIJlR5bmtBeb/gTPgh7SlNY4vZtr73DU4/4s0Mo9oUFarJkO8PjmD4RqwRY4t0Z/BRBHmjxx1HrAntlr3cuDAera6VftcMrv3hEfbufl+KDwZoXYs5UdtxRr7NErDiwwi+JaETUUmBnovwrmiS1s/+tP8rQuDtcmZjyvCqNhikMdYMDI0AZLQKuIEcfgrdjNsFS+/NlZwcZZyl3IzvCTYwwfmG9y3+ZxcbzbtZWBH5FZIWq1ezsszojmstoP3spOSO+TggeHl4BdTgBsfg1GhW/SH5IX34i5rx4j15+Kk4Q9fIRiDVnM2mOrSwkg
-X-Forefront-Antispam-Report: CIP:198.47.21.195;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:flwvzet201.ext.ti.com;PTR:ErrorRetry;CAT:NONE;SFS:(13230040)(23010399003)(376014)(7416014)(1800799024)(36860700016)(82310400026)(18002099003)(22082099003)(921020)(6133799003)(3023799007)(10067099003)(56012099006);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam: BCL:0;ARA:13230040|36860700016|23010399003|82310400026|7416014|376014|1800799024|10067099003|3023799007|18002099003|22082099003|56012099006|921020;
+X-Microsoft-Antispam-Message-Info: h2VHMRwQCbs3I1zu+kMCIAzgPrGrEIW+8RpVjbJrcle/s9KAplmu1weWI0FkrmIf9uC0z04S4iXrIycVGDD6rvnMK6FjJBe2NKPk+6Dd/O+/O4Nz3r1sU4L/AZbi0DZdVeIo4pN/LA3XSrBTy+woPsKAIWBXtBL8q+qPz9aHo5cgllNiYtTkcuZ2WTbzCGgd/Y1r1XWCGKyKZJUg8a3QVyENLtUNbP5EDtRMdsooHH3g7TtCMjoQ88z9UPz8OR2rBr0QQTPnHRuf6+f0zxoi8K8iw8CFbG1hNkSRXkmsfLMEJUq9HZb1PFulMXpL5WYwAw6hrTBiwQ0RB1ZK4Om+HSKDLbA9jlbiBzH9oghEpJ0IFCDe6+M2RZPqSDNFxL0TM97+GPgWPG4Mjb/DdY5Em6dpIHErGx82c09sBP4SGY7GyEUKSLUFahV0I2OHT65wV6GjvD+zs3VKJiv3Vw1j944kXXoCgOq4vMi8T2iMQW/msMS03Kpe2lezREBw3psdjqSevD1EwIRHfYBo8sDljNl3B0Iii75w+AYjWKbt3KZjHosVM1+Dv/2ETv9/WighCnww4fcDm5veSZ4IaHaHZ5G8qV6uGvgVaqpxupKnMXDkyMSMechJZVFae3MZ7wZ4b72K+k6Ns5xWqPSpBmIvkV4Wr2/BsyD/4OEEkDiiPlvCSmbZAwgqWLZMbBPAvUkliu+giaiabOrxKidN8/Clv8AyYf40h951+TVLOZ2CEzT3T+thr4WWTefjUfkhYE3d
+X-Forefront-Antispam-Report: CIP:198.47.21.194;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:flwvzet200.ext.ti.com;PTR:ErrorRetry;CAT:NONE;SFS:(13230040)(36860700016)(23010399003)(82310400026)(7416014)(376014)(1800799024)(10067099003)(3023799007)(18002099003)(22082099003)(56012099006)(921020);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: N8zCQqok+CHIp9a4IZIfSozlN+MCML1Rm5AD4cG1Y2tsomISEQjwy3l1gkoDJPbYGwaNpYUqpFlu8k7JFhCw5d6lasyOPUWA4So/PljHrFdC4w7p7432GIWCcLFxamWA1sfJrFl/9KpN9wPiQlgNXmGvTYvDQ66qIXl2vE3rezYwJQyoJ4YBAIeU5qvTCJ5fw7malkC46qD8oBSrFRM6kv6rJgMVp2bSdPXSnJlRvscXC/ozoZbjWiVmNnp2gcJ1hs1sm+BERtGkqFTXCDqddRW9rRFx1/nUJuV6ozN+1WAarhHpXufIG3qo8/hlwMQnDd4oXFI+SFg+Sd9VoQgY2qP2ZTdlsAQ8cnhoX+LaW9dZLCmFkx0CtebsKVS7ybYG0La7la9JvLqjq14qPscSOyHprsmzQMKQF1tBqgCN4ElYrcThkkASpPiqoIpoZprm
-X-Exchange-RoutingPolicyChecked: UrTexiHO+R/xQE8nny75Se8Eo6jCnojkKy0LWYZQy2e3R2ZZEfFv7JjwmFWifuYtS6j3/clGixL4S5qPAEagsqK3ccDnr8xGIc59GA639wfYA29zGnym235B0V34yq+/AsfvrLzYmGmUK/hbe0Fqp8On/UAdmXsabQ6v58gYNM1LZuRHg4+L92Vi8xiqcPah37NzfP72KkUMkTEQxIe+mOL/TM1ls991gEGefuogOrQKxCRxSVIpsKiHasGcG6Wtcr5y6SHJ+y0tbCf622haz/HYl36DudEReUmBmeToLIusDrE0edEAcLA56EuYN4XGAqwh4P05h67R3zg8sDHR2A==
+X-MS-Exchange-AntiSpam-MessageData-0: IdE9v6KxgZVYZ273+EoztcqWDmVgI9z1/q7d79yUMl7yV3cIQ6aHNzZYcr8vLbV1VtpmTGrr47+yg45uTLXFXoZamTgQpRkxt3b40ecyOVZOvwVIeSXJTnm04f6TqHh4zV341ZdDSnqubStRA+urrB8jWUkNLHwRPyLrGxRAGME/+TxsITsFGDqY9CR4F6trCjHsX3DC9mu4cKR6BZ34USatgA0Rmk6O7z+Aw+6zCapxRGEgImQJqwjTNdrGPGyi7w8TXrsei1htDHsZ7BEFpNWIaeOBlTRgyUCsCuuAuIrkn2+st1VzpmMBB7OdqHEB/RhxEINLOoWgVBxD6muPoWEz703VKSailwxeR2MzkxGmWOvjJiQsYD4MFnT4nvDO/V2vmrAkiqXs31tm9IfD4zzbKmocExUbcO887o5Ptfgs5Sh1rvKI8h1lR05swXVv
+X-Exchange-RoutingPolicyChecked: GCMXU2XFf32btugAoReBi4GwzljcShj8MCzLkk9XSZ0DJ0NO60TiwFXEpRocQGv1RJ8LUQvvyRfW3TsAMDmNE9Xvkw2gMuLyY7uHx1Ywjp8tXGoCecnxFJrgjVAEtv7GtR7Alq3DnfMqCC50UwCarO+4OhzDSa7V7XjX+8WDgpuXrCCDqmV4NXltixQguSfkgxtc1zPzXKXUdjXhjf1X9CtOJn3ptrDcQCvfN996H6oc+xfL+HERf2Q8UPlKXxRE9YiDHu46KLwiRD04yxN7IzAPWbKYvzRCVUzADnnbM/1DwiBWfvkyXcRp3XFrTN2gzvIkrxRQUCiLFjTOtpFv2g==
 X-OriginatorOrg: ti.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2026 06:36:27.2920
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2026 06:36:21.5846
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 52e5779e-f501-4da5-2822-08df1df3fd53
+X-MS-Exchange-CrossTenant-Network-Message-Id: b458857d-a4d3-46fd-f3ab-08df1df3f9ec
 X-MS-Exchange-CrossTenant-Id: e5b49634-450b-4709-8abb-1e2b19b982b7
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=e5b49634-450b-4709-8abb-1e2b19b982b7;Ip=[198.47.21.195];Helo=[flwvzet201.ext.ti.com]
-X-MS-Exchange-CrossTenant-AuthSource: SJ1PEPF000026C4.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=e5b49634-450b-4709-8abb-1e2b19b982b7;Ip=[198.47.21.194];Helo=[flwvzet200.ext.ti.com]
+X-MS-Exchange-CrossTenant-AuthSource: SJ1PEPF000023CC.namprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4740
-X-Authority-Analysis: v=2.4 cv=c94+0h9l c=1 sm=1 tr=0 ts=6abb5c70 cx=c_pps
- a=YKnEkNs9mh/nosOxSBBx4Q==:117 a=tJyPKKxUohctrY4NYmUjkA==:17
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB5706
+X-Authority-Analysis: v=2.4 cv=c94+0h9l c=1 sm=1 tr=0 ts=6abb5c6c cx=c_pps
+ a=qHyJGWWDR7+eWeZXJqH6eg==:117 a=iwqwCZQqcuTv3JOpYdM7/Q==:17
  a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=VdqzKS8jKosA:10 a=AlMIdn_sM9wA:10
  a=VkNPw1HP01LnGYTKEx00:22 a=Z8NIEmU8O1QQgoT56wFK:22 a=jwouBfj2j3NM8CExmVVE:22
- a=P-IC7800AAAA:8 a=sozttTNsAAAA:8 a=2Gi1gDZmOG9PIfG5304A:9 a=O8hF6Hzn-FEA:10
- a=d3PnA9EDa4IxuAV0gXij:22
-X-Proofpoint-ORIG-GUID: hMlS2OEZPTxzceJwLgHUYvZpVa6UEGzV
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwOTI5MDAyNiBTYWx0ZWRfX5f0VhwPHEPVG
- gmISNjhLQrAR1RmSkWJRjVp7LT28QMAj1ICIKzjkFFk+d8AKpm/96aXsRxT9cGKS6ggXzPjX4/g
- uL9+3xPCkQbb6UQduh2W26g7agI17HJ9tv3Piz74OIseJ6DBs2YVmo+qNQjtbHy7bYex5typEcS
- rwMfpiv+JSrtCHX0uLh3jdFHu6JM1ZFnlMAa12Jyc1nMxPswFLZKz2xkMpPVCJ7lRwUdglDATnM
- BXDmoW7IO+SjTCLTmLhsetfjt/0pfyeKVZgWhIb0LM16N8175KNZTYy0LgpiBEkTe5Vagr7s0pX
- 7/LnJHYWTfXiJmoC2s3hUggo0h0+H9l1E4uNE0jMGLRfPprXPXSoS4NTN2jptrLPpNgZw4hJbyJ
- ZPPgn/yBUYqEA42jjyc6dedfOBI+ZblVujgWtZ7dwOoSqDN2cqyizMtQ6D/sarkNY/nH9C4KsOE
- 4edNYDWRfO+7+vNYaTQ==
-X-Proofpoint-Spam-Info: AW1haW4tMjYwOTI5MDAyNiBTYWx0ZWRfXxumy7rlkdUMc
- ugXkD9rWV1KY2syLsP9cXhC/FBlFr2cb8ByMqgTNh7rF8+ZzslVGjKfM/AITXkdCW6MIiJ5dv7D
- cq7xWP1TpclqLEdqorGVzFeB3Dhvcp8=
-X-Proofpoint-GUID: hMlS2OEZPTxzceJwLgHUYvZpVa6UEGzV
+ a=EUspDBNiAAAA:8 a=sozttTNsAAAA:8 a=aBuQwODoJmrdCVe4joYA:9
+X-Proofpoint-ORIG-GUID: uXqqGUAG89B4Sjb9g5ojGYfZv8P8ZHxy
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwOTI5MDAyNiBTYWx0ZWRfXxBqt6hD/7eUU
+ IGZoo+lBi59Zso5qFPtk6wEOxWT1ys/Yn8NWv2OZOEeoFli4E7YruQeTbRz2JtJ3vD10ZIAOdIt
+ rsH8xdKPTf5G6Ngdp3MRAwzZZMqkGry1hrXmwcsfOlWERNZTKqc9YNRaxUWUDE9c6y7j+A7B3Iy
+ HVUWsjD+/G8Euu3ob30G8HcfgoWmyXYhJeON327wWAMGkhER9Oq49HXS/A6Eo3qCuIKNQhI6Q5V
+ Jeaf2bNY/vIQ3ItKaDwpMoZfNhJLy0qCedzbUpbEK1FxjOKxkkNgxj10uNUzxutfcgHO6wKqY6B
+ qGxdlJN/6ztsgov7D0DP4JYtE2VyaZKYCeGRR+DOn+XwMHsxQgo1F4FUegPeRKmd+TP5I5rMkLg
+ Cg2t98aOA4ynHLDMWa/w4S24fev7wZWDVV2Zr4AjXUmS3idCx2hku0jaI6O1NHdvpbZIH6+P8Qi
+ +kWd6s0tLFqI1OJAxug==
+X-Proofpoint-Spam-Info: AW1haW4tMjYwOTI5MDAyNiBTYWx0ZWRfXxtxl6yL7YmHc
+ uoq4phL7ggHUxYg6Wb22Ufwega0dLC9FGCem+O+/BxtWLCB4AYNDvSkhQcSuKC+kGKU4hOHW1ya
+ 7jGKxw+dEKdsNJFgl2xJA6V7pQP2Fuw=
+X-Proofpoint-GUID: uXqqGUAG89B4Sjb9g5ojGYfZv8P8ZHxy
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.134,FMLib:17.12.100.49
  definitions=2026-09-29_02,2026-09-21_02,2025-10-01_01
@@ -161,8 +177,8 @@ X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
  classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
  reason=mlx scancount=1 engine=8.22.0-2609040000 definitions=main-2609290026
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260928_233639_633233_772D91A0 
-X-CRM114-Status: GOOD (  13.73  )
+X-CRM114-CacheID: sfid-20260929_073638_224383_1FFC7F94 
+X-CRM114-Status: GOOD (  14.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -179,59 +195,73 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add post_config_max_speed_hz to struct spi_device and parse it from
-the spi-max-post-config-frequency-hz DT property in of_spi_parse_dt().
+Add spi-phy-pattern-partition, a per-device phandle property on the
+flash sub-node that allows the DT author to directly reference the
+partition holding the SPI PHY tuning pattern. Used to locate the
+pattern data during PHY tuning when the device cannot load the
+pattern dynamically.
 
-This supports SPI devices that operate at two distinct clock rates: a
-conservative rate always reachable without controller configuration,
-and a higher rate achievable only after controller-side configuration
-such as PHY tuning. With both properties set, spi-max-frequency gives
-the conservative pre-configuration rate and post_config_max_speed_hz
-carries the post-configuration target for the SPI-MEM layer.
+PHY tuning works by reading a known data pattern from the device
+repeatedly while sweeping controller delay parameters until the
+capture window is stable. For SPI NAND, the driver loads the pattern
+into the page cache once using write-to-cache opcodes, then reads it
+during the sweep. SPI NOR devices have no equivalent opcode, so the
+pattern must be pre-programmed in a dedicated flash partition. One
+partition per device is required to keep the procedure unambiguous
+when multiple devices share a bus.
 
-Zero when not set, preserving existing behaviour.
-
-Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
 Signed-off-by: Santhosh Kumar K <s-k6@ti.com>
 ---
- drivers/spi/spi.c       | 2 ++
- include/linux/spi/spi.h | 3 +++
- 2 files changed, 5 insertions(+)
+ .../devicetree/bindings/spi/cdns,qspi-nor.yaml  | 17 +++++++++++++++++
+ .../bindings/spi/spi-peripheral-props.yaml      |  7 +++++++
+ 2 files changed, 24 insertions(+)
 
-diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-index 015d93680e5d..97bf58dacd06 100644
---- a/drivers/spi/spi.c
-+++ b/drivers/spi/spi.c
-@@ -2809,6 +2809,8 @@ static int of_spi_parse_dt(struct spi_controller *ctlr, struct spi_device *spi,
- 	/* Device speed */
- 	if (!of_property_read_u32(nc, "spi-max-frequency", &value))
- 		spi->max_speed_hz = value;
-+	if (!of_property_read_u32(nc, "spi-max-post-config-frequency-hz", &value))
-+		spi->post_config_max_speed_hz = value;
+diff --git a/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml b/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml
+index 891f578b5ac4..277dedcd4246 100644
+--- a/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml
++++ b/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml
+@@ -209,5 +209,22 @@ examples:
+             cdns,tsd2d-ns = <60>;
+             cdns,tchsh-ns = <60>;
+             cdns,tslch-ns = <60>;
++            spi-phy-pattern-partition = <&phy_pattern>;
++
++            partitions {
++                compatible = "fixed-partitions";
++                #address-cells = <1>;
++                #size-cells = <1>;
++
++                partition@0 {
++                    label = "data";
++                    reg = <0x0 0x3fc0000>;
++                };
++
++                phy_pattern: partition@3fc0000 {
++                    label = "phy-pattern";
++                    reg = <0x3fc0000 0x40000>;
++                };
++            };
+         };
+     };
+diff --git a/Documentation/devicetree/bindings/spi/spi-peripheral-props.yaml b/Documentation/devicetree/bindings/spi/spi-peripheral-props.yaml
+index dfc965500744..ee84a3c2b34b 100644
+--- a/Documentation/devicetree/bindings/spi/spi-peripheral-props.yaml
++++ b/Documentation/devicetree/bindings/spi/spi-peripheral-props.yaml
+@@ -131,6 +131,13 @@ properties:
+     description:
+       Delay, in microseconds, after a write transfer.
  
- 	/* Device CS delays */
- 	of_spi_parse_dt_cs_delay(nc, &spi->cs_setup, "spi-cs-setup-delay-ns");
-diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
-index fb4baa0d3398..a2c46cc7dafe 100644
---- a/include/linux/spi/spi.h
-+++ b/include/linux/spi/spi.h
-@@ -141,6 +141,8 @@ extern void spi_transfer_cs_change_delay_exec(struct spi_message *msg,
-  * @max_speed_hz: Maximum clock rate to be used with this chip
-  *	(on this board); may be changed by the device's driver.
-  *	The spi_transfer.speed_hz can override this for each transfer.
-+ * @post_config_max_speed_hz: Maximum clock rate achievable after controller
-+ *	configuration (e.g. PHY tuning); zero when not assigned.
-  * @bits_per_word: Data transfers involve one or more words; word sizes
-  *	like eight or 12 bits are common.  In-memory wordsizes are
-  *	powers of two bytes (e.g. 20 bit samples use 32 bits).
-@@ -201,6 +203,7 @@ struct spi_device {
- 	struct device		dev;
- 	struct spi_controller	*controller;
- 	u32			max_speed_hz;
-+	u32			post_config_max_speed_hz;
- 	u8			bits_per_word;
- 	bool			rt;
- #define SPI_NO_TX		BIT(31)		/* No transmit wire */
++  spi-phy-pattern-partition:
++    $ref: /schemas/types.yaml#/definitions/phandle
++    description:
++      Phandle to the flash partition holding the pre-programmed SPI PHY tuning
++      pattern. Used when the device cannot load the pattern dynamically during
++      PHY tuning.
++
+   stacked-memories:
+     description: Several SPI memories can be wired in stacked mode.
+       This basically means that either a device features several chip
 -- 
 2.34.1
 
