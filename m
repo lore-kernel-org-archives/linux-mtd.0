@@ -4,52 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 179EFCA5FE5
-	for <linux-mtd@archiver.kernel.org>; Fri,  2 Oct 2026 12:21:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C17DCCA5FE4
+	for <linux-mtd@archiver.kernel.org>; Fri,  2 Oct 2026 12:21:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=6aG6BGGeyExRryGxtH5fzd8qLV2YxfBjDukvbNiRXw8=; b=QB6lAtCXlXlViO
-	Uys1JG7K0Q4RevcTYQoCHK4o72eUNNSySVRX0RcuSEXnzdakC5Zn5X6ubE30b964WWBGTsp5TwXms
-	r9i3g/4XSjYMV3tkBvuGxn7kR7YHoox+QRkALGIxSF2BcBE/sp8b4qOe3K2w4r3bfsWp6Jk3rjNNM
-	fY1SAh2VYSoFP3DlSKgzPnA3fuVEB8bPgxSfqBkZtKVWlvjBIdaZuTre4pE/Jsw1bg5WZPem3LkmN
-	OoSDcAjVpIwDhg2MZ8JZRRYZ3DnCuvH7nHoh9oVASgya+tspjscnpi6vJZ2MXJrBCviH/Q2gevJMG
-	cgAKUINAc40uOr8SjjAA==;
+	List-Owner; bh=8l+Iv5OsQHh+MHzLDtRstEjERzLvA6AyJMz94nGrGS0=; b=dqnfmD5jekRbU4
+	0dHZ6sPi+h7yaUKjzM80jW4jlQP1bSE2FU70khFdu/IIM0AQwqr3/qzC/Uc0T8hXpImxsP6HjGm/Z
+	aniyV95mjO4LBoEl1aysOgP5y/schWfIGsvS42c2cj49R31QiCl084pggWyHIkZiZmgoUF1DgonJz
+	wo7uP9nIPQqD1Maq0+lK2ywdZtzGTM04247qUyDv/1LX1wqiMMvBMp7QEpRqf29+cdfuIZ8x7oPvp
+	IVk9qWkF/RxHou1AGOVHniSnCOIqkkGgaOD1surgp+8eJhodYqpa/y6ax3jbAofcubk+rRvkKGoTc
+	CgPnUO/UIgo2kRDnjLnw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xCcGh-0000000BYW2-15HR;
-	Fri, 02 Oct 2026 12:21:39 +0000
-Received: from smtpout-03.galae.net ([185.246.85.4])
+	id 1xCcGo-0000000BYao-3pXW;
+	Fri, 02 Oct 2026 12:21:46 +0000
+Received: from smtpout-02.galae.net ([185.246.84.56])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xCcGe-0000000BYUy-0Lxj
+	id 1xCcGm-0000000BYXh-1dxY
 	for linux-mtd@lists.infradead.org;
-	Fri, 02 Oct 2026 12:21:37 +0000
+	Fri, 02 Oct 2026 12:21:45 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id 9A22B4E4110F;
-	Fri,  2 Oct 2026 12:21:34 +0000 (UTC)
+	by smtpout-02.galae.net (Postfix) with ESMTPS id E3B4D1A10E3;
+	Fri,  2 Oct 2026 12:21:41 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 6DC06603DC;
-	Fri,  2 Oct 2026 12:21:34 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 4FE59103281E6;
-	Fri,  2 Oct 2026 14:21:28 +0200 (CEST)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id B7E3E603DC;
+	Fri,  2 Oct 2026 12:21:41 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id E0462103281F4;
+	Fri,  2 Oct 2026 14:21:39 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1790943689; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1790943700; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=0yk1JOJZFoVMiBC15xlQjxajHbRrIJKa+K6axnf23aY=;
-	b=T+wVkA72I5GbOceICvrba5oseecfJq+7FXlmLhT8jtKNCUiWMbTVA7fiaQyCPq6NYJ2tXH
-	/PUg6TWy+RPBFCKx3G5LVf51XF0/ZPaX/9ufuHLDN68U/7+gHg2jBkDeXKUv8AHRCrWEyj
-	LwRg5qVzFTdD2o7WrmkPqqoj5k89Nn5N7bHF6w4RxsRZnl9SCvWQQ/OL21U53hxr1PEUuP
-	qs4aBkYjrWTkY5H68ogTobTh0rDZfWiUdYiHjqX254PuntNLnboi0esIO5QuBnCRDti+7S
-	IdM2PBXi2iXjdFBkUMMctoaQGZ8s8suT9v6QPCKvCauVzzwao+bSKLuRoMC7wA==
+	bh=+2pH0Z17Ub41pMWE4R8R4Z0EeQ0P/zy8pfaxz32ykdg=;
+	b=EwbizyCmlOqkJoU8IePStuE+wdUZCplb8VZbR9wj2UpE+Ny5J9onfyUWYA3CUnhopHCjrx
+	2yxfzzb4C9H4D8XeGXaLK72U5vUyQXGNzCeXmhEcL/dUe++fo/r4HJQyoHPcRrlJk0zyom
+	TtyCFC8JQSZ49ROX7JuJBb0lFkWPtl5b7tR4Hc2o2l9la8XRFymNe2sZxbSxPqoZgr9Egd
+	+2FkS7ktdFIvxq9DY10mpvTUWpwMU4U+OtlrWyL34S606WQdQt7L9EGYAaiJZJJnsQFctr
+	49DwPNTvdoMd4Az1L1FAHjqdwyVzgNFKWwNA9U5eG2vrzgy2NMtfPdcoDUCJjg==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Fri, 02 Oct 2026 14:21:14 +0200
-Subject: [PATCH 01/15] mtd: spi-nor: Only switch to ODTR if the chip has a
- callback for it
+Date: Fri, 02 Oct 2026 14:21:19 +0200
+Subject: [PATCH 06/15] mtd: spi-nor: Fix WRSR with ODTR chips
 MIME-Version: 1.0
-Message-Id: <20261002-winbond-master-spi-nor-w35t-v1-1-a22a2f95c26e@bootlin.com>
+Message-Id: <20261002-winbond-master-spi-nor-w35t-v1-6-a22a2f95c26e@bootlin.com>
 References: <20261002-winbond-master-spi-nor-w35t-v1-0-a22a2f95c26e@bootlin.com>
 In-Reply-To: <20261002-winbond-master-spi-nor-w35t-v1-0-a22a2f95c26e@bootlin.com>
 To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
@@ -61,8 +60,9 @@ Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261002_052136_267299_A37181C7 
-X-CRM114-Status: GOOD (  15.11  )
+X-CRM114-CacheID: sfid-20261002_052144_579686_A9CBACA0 
+X-CRM114-Status: UNSURE (   9.81  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,121 +79,41 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Every manufacturer has its own way of entering ODTR mode. This is
-typically implemented by the nor->params->set_octal_dtr()
-callback. Without this callback the core cannot switch to ODTR. If it
-actually does, the chip will stay in SDR mode and none of the subsequent
-operations will succeed.
+The ODTR interface requires an even number of bytes in each section of
+the operation. spi_nor_spimem_setup_op() takes care of the opcode phase,
+but we have to adapt the rest of the operation ourself.
 
-As of today, any chip not listed in any manufacturer/fixups table will
-get parsed through SFDP and operated based on the best compromise the
-core can find. A chip advertizing ODTR support in its SFDP content, will
-therefore be operated in ODTR mode, leading to a 100% failure rate in
-operating the chip out of the box.
+Inspiration comes from the spi_nor_read_sr_ll() helper which faces a
+similar case.
 
-Make sure ODTR page reads and page programs are not enabled for chips
-without a ->set_octal_dtr() callback. If they support it, they will
-anyway work in octal mode, but with an SDR bus interface.
-
+Fixes: 63489002d397 ("mtd: spi-nor: Refactor Read Status/Write Status support")
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
-
-I faced this problem while operating a Winbond W35T01NW SPI NOR chip
-which supports ODTR and properly advertizes it in its SFDP data. However
-it was not expected that it would not be usable at all without a vendor
-fixup. This commit allows to use all the features available through SFDP
-without the IDs being listed. Basic SPI NOR tests then passed and speed
-was obviously better than when constraining the I/O lines in DT:
-
-Before:
-+ cat /sys/kernel/debug/spi-nor/spi0.0/capabilities
-Supported read modes by the flash
- 1S-1S-1S
-  opcode	0x13
-  mode cycles	0
-  dummy cycles	0
- 1S-1S-8S
-  opcode	0x7c
-  mode cycles	0
-  dummy cycles	8
- 1S-8S-8S
-  opcode	0xcc
-  mode cycles	0
-  dummy cycles	16
- 8D-8D-8D
-  opcode	0x0b
-  mode cycles	0
-  dummy cycles	22
-
-After:
-+ cat /sys/kernel/debug/spi-nor/spi0.0/capabilities
-Supported read modes by the flash
- 1S-1S-1S
-  opcode	0x13
-  mode cycles	0
-  dummy cycles	0
- 1S-1S-8S
-  opcode	0x7c
-  mode cycles	0
-  dummy cycles	8
- 1S-8S-8S
-  opcode	0xcc
-  mode cycles	0
-  dummy cycles	16
-
-+ flash_speed /dev/mtd0 -dc10
-not NAND flash, assume page size is 512 bytes.
-scanning for bad eraseblocks
-scanned 10 eraseblocks, 0 are bad
-testing eraseblock write speed
-eraseblock write speed is 802 KiB/s
-testing eraseblock read speed
-eraseblock read speed is 20000 KiB/s
-testing page write speed
-page write speed is 796 KiB/s
-testing page read speed
-page read speed is 9696 KiB/s
-testing 2 page write speed
-2 page write speed is 799 KiB/s
-testing 2 page read speed
-2 page read speed is 13333 KiB/s
-Testing erase speed
-erase speed is 445 KiB/s
----
- drivers/mtd/spi-nor/core.c | 16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+ drivers/mtd/spi-nor/core.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
 diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index e2b6efafdd8d..9c61ff4b93c3 100644
+index 2bbec3feda39..6e22342361c3 100644
 --- a/drivers/mtd/spi-nor/core.c
 +++ b/drivers/mtd/spi-nor/core.c
-@@ -2991,15 +2991,21 @@ static int spi_nor_set_octal_dtr(struct spi_nor *nor, bool enable)
- {
- 	int ret;
- 
--	if (!nor->params->set_octal_dtr)
--		return 0;
--
- 	if (!(nor->read_proto == SNOR_PROTO_8_8_8_DTR &&
- 	      nor->write_proto == SNOR_PROTO_8_8_8_DTR))
- 		return 0;
- 
--	if (!(nor->params->flags & SNOR_F_IO_MODE_EN_VOLATILE))
--		return 0;
-+	if (enable &&
-+	    (!nor->params->set_octal_dtr ||
-+	     !(nor->params->flags & SNOR_F_IO_MODE_EN_VOLATILE))) {
-+		struct spi_nor_hwcaps hwcaps = { .mask = SNOR_HWCAPS_ALL };
+@@ -791,6 +791,17 @@ static int spi_nor_write_sr_ll(struct spi_nor *nor, u8 opcode, const u8 *sr,
+ 	if (nor->spimem) {
+ 		struct spi_mem_op op = SPI_NOR_WRSR_OP(opcode,
+ 						       nor->bouncebuf, len);
++		if (nor->reg_proto == SNOR_PROTO_8_8_8_DTR) {
++			if (len != 1)
++				return -EOPNOTSUPP;
 +
-+		dev_err(nor->dev, "Cannot enter octal DTR mode\n");
-+		hwcaps.mask &= ~(SNOR_HWCAPS_READ_8_8_8_DTR |
-+				 SNOR_HWCAPS_PP_8_8_8_DTR);
-+
-+		return spi_nor_setup(nor, &hwcaps);
-+	}
++			/*
++			 * We don't want to write only one byte in DTR mode. So,
++			 * duplicate the buffer and write 2.
++			 */
++			op.data.nbytes = 2;
++			nor->bouncebuf[1] = nor->bouncebuf[0];
++		}
  
- 	ret = nor->params->set_octal_dtr(nor, enable);
- 	if (ret)
+ 		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
+ 
 
 -- 
 2.55.0
