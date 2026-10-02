@@ -4,66 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A77AECA5FD4
-	for <linux-mtd@archiver.kernel.org>; Fri,  2 Oct 2026 02:47:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A771ACA5FD4
+	for <linux-mtd@archiver.kernel.org>; Fri,  2 Oct 2026 06:49:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=MUeSXhzAv0PMQZckxh/CnpUhr2g8X4JeSbjln/DHoIg=; b=yiYZAa/pLW7lh/
-	6wz4whdjtuP3XiilI5WmQYWBOp2/ru+5odkLtY38cDkCivbCeub6ciL8c1yhyJZXzZM/VG9Sttfen
-	MaXNC9SMVbaSkY4aTm1H3wagRZgCzZxuVQVA7LHr7QV6jwGhNxFmzXggG3dwY71CMWeX1fJRY/O7G
-	mYCEWQmBBB3pfHaASzFEkTL8+h+ekpINVcI/wVSHmnKAtHLH1Gldbz1Ak/Nr/nIAOakD1Nl+lU3E4
-	dV27CQ5zxawZvb5SX6TPBXZIsQltOZ+XaeCo9cZbUQkim7ejWUVPLwq+/bpPdAkxUsmZm3Ev/WlNc
-	qjfsJhI3Nn2mE5otGH8Q==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:References:
+	In-Reply-To:Message-ID:Subject:Cc:To:From:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=5zYL/ZJivmST5IFJt1d6WGfTuPmE2ak4a8nNTy9CgZk=; b=1OaeaCyTcz4cNT+Lud0+wabpoh
+	DK7AGZwm+qMr+1Z2Ckfrp9Huij/CD9h9wRbPrnO+5mtbnRHlFK855CMlXm8uB0T6JDv/k57CgmC54
+	fUKNxQkedF0v3LAwmPExiAoMPdjwuIT7mucE06zxibFPEG6SB9A7GGZKAa0WxfFETXpiuruVnB+ls
+	8G9CVX13XiyVLYn09ELsO14nNOdCbx21RNaTmLj9y/KMrQgP4HOmpgVrgFLR4+cGyD/ulrvqOiJ+5
+	EOqN8scoc5yOUGKLkD8mUg0mrx9a4DDVonPEm8+NFSJCgulv2orDepn5O0qj+lpMQdzHXSZjFRII7
+	KwXY+1wA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xCTJ6-0000000AWbG-2Hbc;
-	Fri, 02 Oct 2026 02:47:32 +0000
-Received: from m16.mail.163.com ([220.197.31.2])
+	id 1xCX5I-0000000AkNU-3uCK;
+	Fri, 02 Oct 2026 06:49:32 +0000
+Received: from calculus.sigma-star.at ([188.245.196.96])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xCTJ3-0000000AWaq-3mbl
+	id 1xCX5F-0000000AkN9-004q
 	for linux-mtd@lists.infradead.org;
-	Fri, 02 Oct 2026 02:47:31 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:To:Subject:Date:Message-Id:MIME-Version; bh=Ig
-	PosaQZzzRdSuWu6GnBn41EP9uSuMfYZlnF4bOOBxI=; b=dJE1h+GfuqWnZhc/O1
-	HfBJM+SRP2C8JjgjrT42zfgVuXVJ3c2Czdgii845JPoHstG7H8vBs0dK090fjiw6
-	hWcB3YfR7dqzoW7zfbvije+mtLa7sVwIShNpR0hwZgmxU+ukLUHQ/4ZGndFMbp/3
-	qVs67c0TvrhEAeIEycbndWkPo=
-Received: from localhost.localdomain (unknown [])
-	by gzga-smtp-mtada-g0-2 (Coremail) with SMTP id _____wD3H4YvG79qL5ryBw--.20560S2;
-	Fri, 02 Oct 2026 10:47:12 +0800 (CST)
-From: wang wei <a929244872@163.com>
-To: sashiko-bot@kernel.org,
-	bbrezillon@kernel.org,
-	miquel.raynal@bootlin.com,
-	richard@nod.at,
-	sashiko-reviews@lists.linux.dev,
-	vigneshr@ti.com,
-	wenyou.yang@microchip.com,
-	yamada.masahiro@socionext.com
-Cc: linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	wang wei <a929244872@163.com>,
-	stable@vger.kernel.org
-Subject: [PATCH V3] drivers/mtd: rawnand: nandsim: Fix stale NAND_ROW_ADDR_3 with overridesize
-Date: Fri,  2 Oct 2026 10:47:09 +0800
-Message-Id: <20261002024709.16510-1-a929244872@163.com>
-X-Mailer: git-send-email 2.25.1
+	Fri, 02 Oct 2026 06:49:31 +0000
+DKIM-Signature: v=1; a=ed25519-sha256; s=v1-ed25519-20260901; d=nod.at; c=relaxed/relaxed; r=y;
+	h=Date:Message-ID:Subject:To:From; t=1790923727; bh=wHuTCO3Jc8e6MPxkCVOYFT+
+	fxRijmIByOGGlSNjEg4g=; b=HF5y9sLUwTHQhsdnolTtefKw1Zr51LcKQoFf4522gqzDAqn3xm
+	jrd8u+ViU6afbTKAqbUlFpGgunxuKhmohBDg==;
+DKIM-Signature: v=1; a=rsa-sha256; s=v1-rsa-20260901; d=nod.at; c=relaxed/relaxed; r=y;
+	h=Date:Message-ID:Subject:To:From; t=1790923727; bh=wHuTCO3Jc8e6MPxkCVOYFT+
+	fxRijmIByOGGlSNjEg4g=; b=TVqZw9qfxzLON+ZTDG2s/RE0X4RroB1wP5TradoASdWUlw09Qv
+	b8Oxh6ZMDHgbEpBtV6xEpFPNIxtDvI+IrIYKmWVbJlCJcHy5zF/FYjQFVE7J0rud/eSa58XNfF5
+	nfKijqqZIhsjYvB+4yAjpT4ckz/onOMqYY7MnzkLJQRKyHyM0Hf5VGyml39HWtmNN4Xptjoxmu4
+	7rCsYPmQlm/VvxJRVjQXNE6pAo0HIthcOjDELEdPKTZTxpmSCFA83XJdUFvoY+sf/mAFCpX4yjD
+	FNPoPmjpHWtFHvmRNwy17mtWTSyMPSCz9PlhEUIZDNQM4fnGrPUm5paRYY4uZm897hA==;
+From: "Richard Weinberger" <richard@nod.at>
+To: "wang wei" <a929244872@163.com>, <sashiko-bot@kernel.org>,
+ <bbrezillon@kernel.org>, <miquel.raynal@bootlin.com>,
+ <sashiko-reviews@lists.linux.dev>, <vigneshr@ti.com>,
+ <wenyou.yang@microchip.com>, <yamada.masahiro@socionext.com>
+Cc: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+ "wang wei" <a929244872@163.com>, <stable@vger.kernel.org>
+Subject: =?us-ascii?Q?AW:_[PATCH_V3]_drivers/mtd:_rawnand:_nandsim:_Fix_st?=
+ =?us-ascii?Q?ale_NAND=5FROW=5FADDR=5F3_with_overridesize?=
+Message-ID: <muqlqvvu.895affce-ffa5-46d3-a538-b190525cab98@nod.at>
+In-Reply-To: <20261002024709.16510-1-a929244872@163.com>
+References: <20261002024709.16510-1-a929244872@163.com>
+Date: Fri, 2 Oct 2026 06:48:47 +0000
 MIME-Version: 1.0
-X-CM-TRANSID: _____wD3H4YvG79qL5ryBw--.20560S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxWw13Aw4xuF4kurWfCFy3urg_yoWrWr4fpr
-	WUGayUKw4DGF9rurZrZ3Wru3WrJ3ZYya1j9FyfA34F93W5ury2va45KryYkF1UAF4rX3WY
-	vrs3XryDC3WYv3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0pREoGPUUUUU=
-X-Originating-IP: [240e:390:6a3:2fd0:6949:c003:e98d:1ea]
-X-CM-SenderInfo: jdzsmjiuuylji6rwjhhfrp/xtbCwhBdBGq-GzDAJwAA3S
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261001_194730_350591_9E875C07 
-X-CRM114-Status: GOOD (  17.58  )
+X-CRM114-CacheID: sfid-20261001_234929_195590_E7AE724B 
+X-CRM114-Status: UNSURE (   3.87  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,99 +73,15 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The overridesize module parameter changes the size of the simulated
-device after nand_scan() has completed. It updates nsmtd->size,
-memorg->eraseblocks_per_lun, chip->chip_shift and chip->pagemask to
-match the new geometry, but leaves the NAND_ROW_ADDR_3 option
-untouched, even though nand_scan_ident() set it from the geometry
-decoded out of the ID bytes.
+Am Fri, Oct 2, 2026, 04:47 schrieb wang wei <a929244872@163.com>:
+> The overridesize module parameter changes the size of the simulated
+> device after nand_scan() has completed. It updates nsmtd->size,
 
-When the ID bytes describe a device larger than 128 MiB and
-overridesize shrinks the simulation to 128 MiB or less, the stale
-option makes the core emit one extra row address byte (page >> 16,
-always zero given the reduced page count) in every read, program and
-erase operation, while the simulator state machine expects one byte
-less. All accesses then fail with:
+Do you actually use this feature?
+I suggest just dropping it. It's horrible.
 
-    nandsim: error: write_byte: address (0x0) isn't expected, expected
-    state is STATE_CMD_READSTART, switch to STATE_READY
-
-The opposite direction is equally broken: growing a small device past
-128 MiB keeps NAND_ROW_ADDR_3 cleared, so the third row address byte
-is dropped and the wrong pages are silently addressed.
-
-This used to work before commit 14157f861437 ("mtd: nand: introduce
-NAND_ROW_ADDR_3 flag"). Back then nandsim kept chip->chipsize in sync
-with the override, and nand_command_lp() decided at run time, per
-command, whether the third row address cycle was needed by testing
-chip->chipsize against 128 MiB. This code thus always saw the
-overridden size. The above commit moved the decision to
-nand_scan_ident(), which encodes it once into NAND_ROW_ADDR_3 at
-scan time -- before nandsim applies the override -- and the
-overridesize path was never taught to re-evaluate the flag. 
-
-Re-evaluate NAND_ROW_ADDR_3 right after overriding chip_shift, using
-the same test as nand_scan_ident().
-
-The core encodes the third row address cycle as "the row address is
-wider than 16 bits", ie. more than 65536 pages, regardless of the
-page size. ns_init() however derives its expectation from the total
-size with a hardcoded 128 MiB threshold, which is only equivalent
-for 2 KiB-page devices. For 4 KiB-page devices between 128 MiB and
-256 MiB (32768 < pgnum <= 65536) the row address still fits in two
-bytes, so the core drops the third byte while ns_init() keeps
-expecting it. Fix ns_init() to derive the row address width from the
-page count as well, which also matches the small-page branch (32 MiB
-of 512-byte pages is exactly 65536 pages).
-
-Fixes: 14157f861437 ("mtd: nand: introduce NAND_ROW_ADDR_3 flag")
-Cc: stable@vger.kernel.org
-Signed-off-by: wang wei <a929244872@163.com>
----
-Changes in v3:
-- Drop the comment block on the flag re-evaluation.
-- Also derive ns_init()'s pgaddrbytes/secaddrbytes from the page
-  count instead of the hardcoded 128 MiB threshold: re-evaluating
-  the flag alone would regress 4 KiB-page devices overridden into
-  the 128-256 MiB range, where the stale flag used to match
-  ns_init()'s (incorrect) 5-byte expectation serendipitously.
-  Reported by reviewer.
-  
-Changes in v2:
-  Remove unnecessary comments
-  
----
- drivers/mtd/nand/raw/nandsim.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/nand/raw/nandsim.c b/drivers/mtd/nand/raw/nandsim.c
-index fe96803..90dbb93 100644
---- a/drivers/mtd/nand/raw/nandsim.c
-+++ b/drivers/mtd/nand/raw/nandsim.c
-@@ -686,7 +686,7 @@ static int __init ns_init(struct mtd_info *mtd)
- 			ns->geom.secaddrbytes = 3;
- 		}
- 	} else {
--		if (ns->geom.totsz <= (128 << 20)) {
-+		if (ns->geom.pgnum <= (1 << 16)) {
- 			ns->geom.pgaddrbytes  = 4;
- 			ns->geom.secaddrbytes = 2;
- 		} else {
-@@ -2359,6 +2359,11 @@ static int __init ns_init_module(void)
- 		targetsize = nanddev_target_size(&chip->base);
- 		chip->chip_shift = ffs(nsmtd->erasesize) + overridesize - 1;
- 		chip->pagemask = (targetsize >> chip->page_shift) - 1;
-+
-+		if (chip->chip_shift - chip->page_shift > 16)
-+			chip->options |= NAND_ROW_ADDR_3;
-+		else
-+			chip->options &= ~NAND_ROW_ADDR_3;
- 	}
- 
- 	ret = ns_setup_wear_reporting(nsmtd);
--- 
-2.55.0.windows.3
-
+Thanks,
+//richard
 
 ______________________________________________________
 Linux MTD discussion mailing list
