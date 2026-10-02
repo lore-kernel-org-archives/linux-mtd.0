@@ -4,51 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6EC64CA5FC4
-	for <linux-mtd@archiver.kernel.org>; Fri,  2 Oct 2026 12:21:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27D9FCA5FD4
+	for <linux-mtd@archiver.kernel.org>; Fri,  2 Oct 2026 12:21:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=VRgCfD/J/4IL+VfzhclGWUfhdNOOlQokj0XqWIn9Ygw=; b=WLjqUYVxZcl7qt
-	2cE+K6fRfdxA/bVkEB4++VYb/MQks1kGNrkFZIBlKiQJZH7xqMdG8V8Iw2YroX6jOln0Yy7cyfRlJ
-	lDrT5dSmVTF7dszC7ZsCtx38X+yWtvrWzxgmxzBzRSag5kuwBUi2RgSUtvwu7fgLHI2B5Jwy9HSD6
-	h6y9uzy2iZDqoR/c7jhgHzt86eLrPh+BCpQD8kt9xJLi9KxjGmEge1/cusIZN+C0WP8CrwRDlvIhB
-	e/pgzw/e0k+N3of4qTk194YG3yQSx5UhK8Tjy0y/uxCVkzyXKmIJWVSw3G3r88DE10l3dWE5sOkG0
-	JWx5463v+acqpQQEt+NA==;
+	List-Owner; bh=1KOmV5Sjpvz7X+QSOBVDmB4+9Yk0GHJTLHpeTc98JO4=; b=YC0TdqVAuizYu6
+	HQWZcd5npoZxFMki8zGvXb3l/LeyR66Waw+7iKxCniay4wCglM/7/VVfs3h2SApCy8iBWsMw41Jkx
+	TKxapEbTPOzAr4wJvh4ZD7mseaAor8Ut0NbEn1pRLWk51sVGSlvX6uuSsxYm+lyHxkTTnvJVXoj7l
+	QQBJTnVGwNHyVogVhpPDsgDYu+x2FWmVWtN4PJqgcVWXJRM8zZ645pyVdO+W7Jv28fIG2dsLPTjXp
+	RkWvTD7xzpwGqo0Lh4u810d+eYOPusWzCrhOSGMp6GRNbBNwagTwgAMcr9JrPGfCcZO87BavKIVuH
+	C7btkeleLd+QbuBXzPag==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xCcGs-0000000BYeX-16Sz;
-	Fri, 02 Oct 2026 12:21:50 +0000
+	id 1xCcGu-0000000BYfw-0Ox3;
+	Fri, 02 Oct 2026 12:21:52 +0000
 Received: from smtpout-02.galae.net ([185.246.84.56])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xCcGo-0000000BYZl-3UrO
+	id 1xCcGq-0000000BYbQ-1NkJ
 	for linux-mtd@lists.infradead.org;
-	Fri, 02 Oct 2026 12:21:48 +0000
+	Fri, 02 Oct 2026 12:21:49 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id 5CAE11A10DF;
-	Fri,  2 Oct 2026 12:21:45 +0000 (UTC)
+	by smtpout-02.galae.net (Postfix) with ESMTPS id DE7C01A10E4;
+	Fri,  2 Oct 2026 12:21:46 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 31FF0603DC;
-	Fri,  2 Oct 2026 12:21:45 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 12A461032820F;
-	Fri,  2 Oct 2026 14:21:42 +0200 (CEST)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id B4072603DC;
+	Fri,  2 Oct 2026 12:21:46 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 935E310328212;
+	Fri,  2 Oct 2026 14:21:44 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1790943704; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1790943705; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=g5E971noNfwmosMia1C8bd4DCKd1mlhJxpuuFYZH8pA=;
-	b=Tb5cmBEFBOBxx+HWlBjz1xSY4WqML7yrFnb5F2iNT/ALLaYRJNbzlvGtFmx98IJJNbaKvo
-	pxlsGOBaQXmaQ7uLYo5pCodUa+uvfmRiY7UJRn0Bq/W/Hpuibs1fdbG9Oqis5yFKrrlcO/
-	uar4EtxMwQQeJIsx+aM7tWLNx9K1oF7LgKFN7/sglyN8PbSz7FxMF35bbEA8qHI6Z23lAt
-	lqYKj9ur9Xr2q2VZfw3RxcK+7ogiZXNLP61ncjw9fgtOGtBoS3AVp6C6+N8G22pfqHMgav
-	58Gen73z6iyXXbVnkcb6qrD+YIjD7lazw6qBxBKNnVoeDcjfS2pMlBLuAlA6qA==
+	bh=AaT3znXFijVQd6HLc4m25AzjKoF9zvFnQ5DPUBLXFCY=;
+	b=jWUZVb7ls+1smZO0srM+pT7lLVZnjNdO7SD5j7UZPnK+OfspDJFjnqZpnzP8pU/EQ7FQn9
+	Gj0XnDTAoN+Z/su6bABron0p/bxy2+cflklL8GViebGh46WgQD6JcV/UUDFkI7JXAvOtDw
+	cp3aE2aWMONWeBO2ZzGoDKhKl7LNCN1Z2y0xDxGAsLXM1Wg+r14Tc1ushoF+IE1RYqgfrz
+	JrhAk8uan/b58oT9ld6/bjWcgSSp6LgG0HZK4zq781VYIEBRv6cAnBx7diBx0MqlPIwBt7
+	BjPwMsoMeqTZC/KvQHBqVMbnf/D6l6sXQSpccKfehfIrYYPOoOj2bFXkHZrb4g==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Fri, 02 Oct 2026 14:21:21 +0200
-Subject: [PATCH 08/15] mtd: spi-nor: Fix SWP for octal DTR chips
+Date: Fri, 02 Oct 2026 14:21:22 +0200
+Subject: [PATCH 09/15] mtd: spi-nor: winbond: Prepare the introduction of
+ W35TxxNW parts
 MIME-Version: 1.0
-Message-Id: <20261002-winbond-master-spi-nor-w35t-v1-8-a22a2f95c26e@bootlin.com>
+Message-Id: <20261002-winbond-master-spi-nor-w35t-v1-9-a22a2f95c26e@bootlin.com>
 References: <20261002-winbond-master-spi-nor-w35t-v1-0-a22a2f95c26e@bootlin.com>
 In-Reply-To: <20261002-winbond-master-spi-nor-w35t-v1-0-a22a2f95c26e@bootlin.com>
 To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
@@ -60,8 +61,8 @@ Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261002_052147_025875_B3CE499D 
-X-CRM114-Status: GOOD (  13.14  )
+X-CRM114-CacheID: sfid-20261002_052148_521341_FD2F1E68 
+X-CRM114-Status: GOOD (  14.09  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,99 +79,149 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-During the recent rework of status registers handling, we mostly focused
-on quad capable devices, partially skipping ODTR devices in our mental
-model. It seems that many (if not all?) ODTR devices have no SR2 read
-opcode and have other control mechanisms. Because of that, the current
-support in swp.c is broken, because reading back the written value may
-or may not lead to the expected result.
+This is a new octal DTR family, they require:
+- a callback for enter octal DTR modes,
+- a callback to configure the number of dummy cycles (since the spi-nor
+  core picks up a variant for which the number of duty cycles does not
+  match the hardware default).
 
-Let's extend the _careful() suffix to the helper reading back the values
-and comparing them. Maybe this "carfulness" will have to be moved back
-to the core, it is a bit early to state it. For now, let's just make
-sure that we read back 0s without errors when virtually accessing SR2 on
-those chips.
+These chips have a flag regiter, but no SR2.
+
+They also feature automatic error correction (SECDEC).
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/spi-nor/core.c |  2 +-
- drivers/mtd/spi-nor/core.h |  1 +
- drivers/mtd/spi-nor/swp.c  | 23 +++++++++++++++++++++--
- 3 files changed, 23 insertions(+), 3 deletions(-)
+ drivers/mtd/spi-nor/winbond.c | 96 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 96 insertions(+)
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 152add3834fc..4926a3193891 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -927,7 +927,7 @@ int spi_nor_write_sr2(struct spi_nor *nor, const u8 *sr2)
-  *
-  * Return 0 or errno.
-  */
--static int spi_nor_write_sr1_and_sr2(struct spi_nor *nor, const u8 *sr)
-+int spi_nor_write_sr1_and_sr2(struct spi_nor *nor, const u8 *sr)
+diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
+index f2daab39ea57..d33e693ed711 100644
+--- a/drivers/mtd/spi-nor/winbond.c
++++ b/drivers/mtd/spi-nor/winbond.c
+@@ -11,6 +11,13 @@
+ #define WINBOND_NOR_OP_RDEAR	0xc8	/* Read Extended Address Register */
+ #define WINBOND_NOR_OP_WREAR	0xc5	/* Write Extended Address Register */
+ #define WINBOND_NOR_OP_SELDIE	0xc2	/* Select active die */
++#define WINBOND_NOR_OP_WR_VCR	0x81	/* Write VCR registers */
++#define   WINBOND_NOR_VCR_IO_MODE_CFG_REG 0x00 /* IO mode configuration address (VCR) */
++#define     WINBOND_NOR_VCR_IO_MODE_SSDR 0xFF
++#define     WINBOND_NOR_VCR_IO_MODE_ODDR 0xE7
++#define   WINBOND_NOR_VCR_DUMMY_CFG_REG 0x01 /* Dummy cycle configuration address (VCR) */
++#define WINBOND_NOR_OP_RD_FR	0x70	/* Read Flag registers */
++#define WINBOND_NOR_OP_CL_FR	0x50	/* Clear Flag registers */
+ 
+ #define WINBOND_NOR_WREAR_OP(buf)					\
+ 	SPI_MEM_OP(SPI_MEM_OP_CMD(WINBOND_NOR_OP_WREAR, 0),		\
+@@ -24,6 +31,12 @@
+ 		   SPI_MEM_OP_NO_DUMMY,					\
+ 		   SPI_MEM_OP_DATA_OUT(1, buf, 0))
+ 
++#define WINBOND_NOR_WR_VCR_OP(addr, buf)				\
++	SPI_MEM_OP(SPI_MEM_OP_CMD(WINBOND_NOR_OP_WR_VCR, 0),		\
++		   SPI_MEM_OP_ADDR(3, addr, 0),				\
++		   SPI_MEM_OP_NO_DUMMY,					\
++		   SPI_MEM_OP_DATA_OUT(1, buf, 0))
++
+ static bool is_w25qxxrv(const struct spi_nor *nor)
  {
- 	struct spi_nor_flash_parameter *params = nor->params;
- 	int ret;
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index b64f26b69c05..cee33ca18b04 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -664,6 +664,7 @@ int spi_nor_read_sr2(struct spi_nor *nor, u8 *sr2);
- int spi_nor_read_sr1_and_sr2(struct spi_nor *nor, u8 *sr);
- int spi_nor_write_sr1(struct spi_nor *nor, const u8 *sr1);
- int spi_nor_write_sr2(struct spi_nor *nor, const u8 *sr2);
-+int spi_nor_write_sr1_and_sr2(struct spi_nor *nor, const u8 *sr);
- int spi_nor_write_sr1_and_sr2_and_check(struct spi_nor *nor, const u8 *sr);
+ 	struct sfdp_header *sfdp_h = spi_nor_sfdp_get_header(nor);
+@@ -252,6 +265,87 @@ static const struct spi_nor_fixups winbond_nor_ecc_configuration_fixups = {
+ 	.post_sfdp = winbond_nor_ecc_configuration_post_sfdp_fixups,
+ };
  
- ssize_t spi_nor_read_data(struct spi_nor *nor, loff_t from, size_t len,
-diff --git a/drivers/mtd/spi-nor/swp.c b/drivers/mtd/spi-nor/swp.c
-index 7e667e4ca84d..e9cf2ca23234 100644
---- a/drivers/mtd/spi-nor/swp.c
-+++ b/drivers/mtd/spi-nor/swp.c
-@@ -240,6 +240,25 @@ static int spi_nor_read_sr1_and_sr2_careful(struct spi_nor *nor, u8 *sr)
- 	return spi_nor_read_sr2_careful(nor, &sr[1]);
- }
- 
-+static int spi_nor_write_sr1_and_sr2_and_check_careful(struct spi_nor *nor, const u8 *sr)
++static int winbond_w35txxnw_nor_write_vcr(struct spi_nor *nor, u8 addr, u8 val)
 +{
-+	u8 tmp[2];
++	u8 *buf = nor->bouncebuf;
++	struct spi_mem_op op;
 +	int ret;
 +
-+	ret = spi_nor_write_sr1_and_sr2(nor, sr);
++	if (!nor->spimem)
++		return -EOPNOTSUPP;
++
++	ret = spi_nor_write_enable(nor);
 +	if (ret)
 +		return ret;
 +
-+	ret = spi_nor_read_sr1_and_sr2_careful(nor, tmp);
++	buf[0] = val;
++	buf[1] = val;
++	op = (struct spi_mem_op)WINBOND_NOR_WR_VCR_OP(addr, buf);
++	spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
++	if (nor->reg_proto == SNOR_PROTO_8_8_8_DTR) {
++		op.addr.nbytes = 4;
++		op.data.nbytes = 2;
++	}
++
++	return spi_mem_exec_op(nor->spimem, &op);
++}
++
++static int winbond_w35txxnw_nor_set_dummy(struct spi_nor *nor, u8 dummy_cycles)
++{
++	return winbond_w35txxnw_nor_write_vcr(nor, WINBOND_NOR_VCR_DUMMY_CFG_REG,
++					      dummy_cycles);
++}
++
++static int winbond_w35txxnw_nor_set_octal_dtr(struct spi_nor *nor, bool enable)
++{
++	enum spi_nor_protocol proto_aft;
++	u8 *buf = nor->bouncebuf;
++	u8 rdid_dummy_aft, val;
++	int ret;
++
++	if (enable) {
++		val = WINBOND_NOR_VCR_IO_MODE_ODDR;
++		proto_aft = SNOR_PROTO_8_8_8_DTR;
++		rdid_dummy_aft = 16;
++	} else {
++		val = WINBOND_NOR_VCR_IO_MODE_SSDR;
++		proto_aft = SNOR_PROTO_1_1_1;
++		rdid_dummy_aft = 0;
++	}
++
++	ret = winbond_w35txxnw_nor_write_vcr(nor, WINBOND_NOR_VCR_IO_MODE_CFG_REG, val);
 +	if (ret)
 +		return ret;
 +
-+	if (sr[0] != tmp[0] || sr[1] != tmp[1])
-+		return -EIO;
++	/* Read flash ID to make sure the switch was successful */
++	ret = spi_nor_read_id(nor, 0, rdid_dummy_aft, buf, proto_aft);
++	if (ret) {
++		dev_err(nor->dev, "Cannot read JEDEC ID after %s 8D-8D-8D mode (%d)\n",
++			enable ? "enabling" : "disabling", ret);
++		return ret;
++	}
++
++	if (memcmp(buf, nor->info->id->bytes, nor->info->id->len))
++		return -EINVAL;
 +
 +	return 0;
 +}
 +
- /*
-  * Keep a local cache containing all lock-related bits for debugfs use only.
-  * This way, debugfs never needs to access the flash directly.
-@@ -407,7 +426,7 @@ static int spi_nor_sr_lock(struct spi_nor *nor, loff_t ofs, u64 len)
- 	    (ofs_old < ofs_new || (ofs_new + len_new) < (ofs_old + len_old)))
- 		return -EINVAL;
- 
--	ret = spi_nor_write_sr1_and_sr2_and_check(nor, best_status_new);
-+	ret = spi_nor_write_sr1_and_sr2_and_check_careful(nor, best_status_new);
- 	if (ret)
- 		return ret;
- 
-@@ -529,7 +548,7 @@ static int spi_nor_sr_unlock(struct spi_nor *nor, loff_t ofs, u64 len)
- 	    (ofs_new < ofs_old || (ofs_old + len_old) < (ofs_new + len_new)))
- 		return -EINVAL;
- 
--	ret = spi_nor_write_sr1_and_sr2_and_check(nor, best_status_new);
-+	ret = spi_nor_write_sr1_and_sr2_and_check_careful(nor, best_status_new);
- 	if (ret)
- 		return ret;
- 
++static int winbond_w35txxnw_nor_late_init(struct spi_nor *nor)
++{
++	nor->params->set_octal_dtr = winbond_w35txxnw_nor_set_octal_dtr;
++	nor->params->set_dummy = winbond_w35txxnw_nor_set_dummy;
++	nor->params->opcodes.read_sr2 = 0;
++	nor->params->opcodes.write_sr1_and_sr2 = 0;
++
++	return 0;
++}
++
++static const struct spi_nor_fixups winbond_w35txxnw_nor_fixups = {
++	.post_sfdp = winbond_nor_ecc_configuration_post_sfdp_fixups,
++	.late_init = winbond_w35txxnw_nor_late_init,
++};
++
+ static const struct flash_info winbond_nor_parts[] = {
+ 	{
+ 		.id = SNOR_ID(0xef, 0x30, 0x10),
+@@ -673,6 +767,8 @@ static const struct spi_nor_fixup winbond_fixups[] = {
+ 	  .fixups = &winbond_nor_multi_die_fixups },
+ 	{ .id = SNOR_ID(0xef, 0x40, 0x22), .match = winbond_jv_match,
+ 	  .fixups = &winbond_nor_multi_die_fixups },
++	{ .id = SNOR_ID(0xef, 0x5b), .fixup_flags = SPI_NOR_IO_MODE_EN_VOLATILE,
++	  .fixups = &winbond_w35txxnw_nor_fixups },
+ 	{ .id = SNOR_ID(0xef, 0x60), .match = winbond_pw_with_ecc_match,
+ 	  .fixups = &winbond_nor_ecc_configuration_fixups },
+ 	{ .id = SNOR_ID(0xef, 0x60), .match = winbond_pw_match,
 
 -- 
 2.55.0
