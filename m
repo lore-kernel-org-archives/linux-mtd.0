@@ -4,51 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 042D4CA5FE6
-	for <linux-mtd@archiver.kernel.org>; Fri,  2 Oct 2026 12:21:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E11A1CA5FDD
+	for <linux-mtd@archiver.kernel.org>; Fri,  2 Oct 2026 12:21:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=tRtzF0vuOLxdoLxYD6KY8OV+PsAggMkNlJ75vAnlUeo=; b=owdvTTjvaziG1F
-	FuGDJpmnMjjZHZklTfe+iBCJRIcgOfTib7WJ5R4aLPx36o5+RoCSTVA74GDgTUdlC3QR8+Xdd1aYV
-	04rOcZhIuIJKvjSS2CTkOMIYm0Jj8gnPD4Yg8PFUbKq3xT8aQvnIPrBAbL2Ss94vn3pCkvBFjX5/O
-	+wmOz/FYBWNngddhp2vqvN2Lx4JYN0CjxZXRlRHe/SXSipR9qRrzSze1g491AE0j2H3yanU3T+bl/
-	7jwb9glkzNUv9m5+7s33msIrbjr5hTk524C10Flz8DAD22Fvw7WUtnxJZTlqM8lE0BpxVFKJeKeNw
-	nokWhkaEWQVqkiYtE0LQ==;
+	List-Owner; bh=e/7yCxbK2z0UxOIFiyUHXg6eWHnGmRApq7soW5vTIYI=; b=TVp3y+RYYdvNye
+	ILg4taCMLCecdR5f6B1LvYFJdGjUHyLjMz8GZphvgntr7TQzlGVJ7BVT2Ry1fDuLGrtccMVCHa2f+
+	ZJJN/ejiEP50BZJ5hgzH8TnkgBtUul2QoPHhpCEaDWX47e+6foyFZWJjVhmU/cTlqUXuLa3+dVL60
+	HKBvbiBY/o94/tJKTnoZ4bqYwADc4UyGZntkiic8Dw7VPMV1zuxoyS0UHx53Lx6wG946s1Q7h/j3Z
+	fgcIBITGYtS9j7vXVRfUXV0MAlFRREBLEy0bK0b1sI0CNPIuDkERhWi9q0d6iAasjKjPAQ1/2kMU5
+	URWoaZnHH39bb30sB+zg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xCcGn-0000000BYZn-3PDh;
-	Fri, 02 Oct 2026 12:21:45 +0000
+	id 1xCcGi-0000000BYWh-1v5P;
+	Fri, 02 Oct 2026 12:21:40 +0000
 Received: from smtpout-03.galae.net ([185.246.85.4])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xCcGj-0000000BYWr-3gXE
+	id 1xCcGf-0000000BYVF-2e5M
 	for linux-mtd@lists.infradead.org;
-	Fri, 02 Oct 2026 12:21:43 +0000
+	Fri, 02 Oct 2026 12:21:38 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id 60AA64E4110E;
-	Fri,  2 Oct 2026 12:21:40 +0000 (UTC)
+	by smtpout-03.galae.net (Postfix) with ESMTPS id 198F04E41110;
+	Fri,  2 Oct 2026 12:21:36 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 343B4603DC;
-	Fri,  2 Oct 2026 12:21:40 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 8E383103281EC;
-	Fri,  2 Oct 2026 14:21:38 +0200 (CEST)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id E1E6C603DC;
+	Fri,  2 Oct 2026 12:21:35 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 0F70B103281D0;
+	Fri,  2 Oct 2026 14:21:33 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1790943699; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1790943695; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=vOHz17WNePLEEE9OMB3edY/QK4xTISPUZ92W5KwmCK0=;
-	b=fL2fj/g1CyEa8LiaAYYCKkHqQZ2AhkLho0RfRr7ceXNAS70OR0s9yiVp9vrDa87/QujGMb
-	nMb3sUeUoBv1gebsz5ihjmRB3jrHwuN32YQXf6+3U58MEGxS+ePHXcANtjdW1ZLMyzBs/c
-	YSWoHITqO4pXubQdc3fuG2SdNWe79MUqZ38waFU5eED0KWoAm8HNeZB+MaVnuGKbYsVj8S
-	O0G1kGq81ktsZp4Zq+h2B3LFWysSr+NryYEs66TAZavEp2DWRw2YBg2bMkpQ3/ttjtHXId
-	09M/BVbI2D5sDmr/Iccy1dXqswAT68c+Nbpu2paGu0s5fJc72He4zK/RRjBaYw==
+	bh=3rH+xtaEE72c/dMWl13TrWCqgtJCjAS6ZGNblkbLQAU=;
+	b=xeyxf4iXt3nbfBRYOCbX/iRVRaF/v7G6Bxr2i5BWBr3kzeJ5/Ung5uhGWmtg8PWpKr8DHF
+	T6t146fG/nQJTpQrzNJ4BdNhf0UGZNSFhxsA90ipGhzewvBBGk5FbGhoW9nKDaP6vc71W6
+	8M0FECULZp+y7+eTYeORGeZXFId/U6d987BHFIY7d6OjnJitcBz/9ZydkA4b1uy/wnAx97
+	3CzIog4kf5JYQ+LU4bUEVspjPoobIXie2g4EmaAJ7DBBRjQGIHbmFs9qRWuMKLlntLhJmb
+	UJVFX4pWgOY+sJDEsVc3qHYug4iFR8SvK55dZ4sm7BP3pH8t4cMSJIR5LZHwYQ==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Fri, 02 Oct 2026 14:21:18 +0200
-Subject: [PATCH 05/15] mtd: spi-nor: Drop stale values
+Date: Fri, 02 Oct 2026 14:21:15 +0200
+Subject: [PATCH 02/15] mtd: spi-nor: Fix spacing between arguments
 MIME-Version: 1.0
-Message-Id: <20261002-winbond-master-spi-nor-w35t-v1-5-a22a2f95c26e@bootlin.com>
+Message-Id: <20261002-winbond-master-spi-nor-w35t-v1-2-a22a2f95c26e@bootlin.com>
 References: <20261002-winbond-master-spi-nor-w35t-v1-0-a22a2f95c26e@bootlin.com>
 In-Reply-To: <20261002-winbond-master-spi-nor-w35t-v1-0-a22a2f95c26e@bootlin.com>
 To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
@@ -60,8 +60,8 @@ Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261002_052142_083470_9BB8FE62 
-X-CRM114-Status: UNSURE (   8.59  )
+X-CRM114-CacheID: sfid-20261002_052137_838428_6E273E20 
+X-CRM114-Status: UNSURE (   8.02  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -79,33 +79,26 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-These apparently Micron-specific flash opcodes are used nowhere. They
-are not exposed by a UAPI header either, so just drop them, they are
-stale definitions.
-
-I discovered them while working on Winbond VCR registers. For a
-moment I thought VCR registers were wide spread (but, no).
+A spurious tab got inserted there.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- include/linux/mtd/spi-nor.h | 4 ----
- 1 file changed, 4 deletions(-)
+ drivers/mtd/spi-nor/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index b3e3c6b10186..1a2f15d8426a 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -89,10 +89,6 @@
- /* Used for Spansion flashes only. */
- #define SPINOR_OP_BRWR		0x17	/* Bank register write */
- 
--/* Used for Micron flashes only. */
--#define SPINOR_OP_RD_EVCR      0x65    /* Read EVCR register */
--#define SPINOR_OP_WD_EVCR      0x61    /* Write EVCR register */
--
- /* Used for GigaDevices and Winbond flashes. */
- #define SPINOR_OP_ESECR		0x44	/* Erase Security registers */
- #define SPINOR_OP_PSECR		0x42	/* Program Security registers */
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 9c61ff4b93c3..4b9e0410f2f5 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -773,7 +773,7 @@ int spi_nor_read_sr_ll(struct spi_nor *nor, u8 opcode, u8 *sr,
+  *
+  * Return: 0 on success, -errno otherwise.
+  */
+-static int spi_nor_write_sr_ll(struct spi_nor *nor, u8 opcode,	const u8 *sr,
++static int spi_nor_write_sr_ll(struct spi_nor *nor, u8 opcode, const u8 *sr,
+ 			       unsigned int len)
+ {
+ 	int ret, i;
 
 -- 
 2.55.0
