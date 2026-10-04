@@ -4,56 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F880CA5FFD
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83826CA5FFE
 	for <linux-mtd@archiver.kernel.org>; Sun,  4 Oct 2026 21:31:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id:Date:
-	Subject:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=Sx/iPSNTED6AXIMUDllNMQaMTwVFVUOByBudivYCX+c=; b=zFNvV/T00K4501
-	d6yUX9lNIzzE7pqk207SZuums/u0isEcBEN6tZXezBKFPsHo8jSCtyrqSR7r4g/FkL/TJjPwLwN7/
-	fB8q4O8vcXunP98X9DmR+Ypw2auoNT/3i9YPMa3ZhRE22aZlxEI+a5R51iAfymscGh7EfzjhJCJGQ
-	SE+oosZ+xXQJMvAxQy7Fgbna3CVdkbOCWj2oGyRT58g9vK7Gw/+pjK/dKETzRasvF+Wh9sKemk4Fs
-	VteZcFLUoorMJRkQRrzpOyxoEgD3mDdOnC64V+4ZB7lCBuMI8aVZRMAtbhlHFii9mXUqe6gBN57mA
-	BAU+RPf1KW7KisYqkr8g==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
+	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=e/7yCxbK2z0UxOIFiyUHXg6eWHnGmRApq7soW5vTIYI=; b=JCjM17Wk9Tr4sM
+	MOY7M8b9eL3t0Ehu23iRNutVJqEtskyJYIY3Em0A8lWuTDnxlsOpWepm6+3zEQAUIS2yUFxlt41TB
+	cVizrOfhM7ZBSN8z24yjFNDqFfFvoX0Arj9fdRy9l0Yc4RbKEmuj3g9bNzxVTVd4CMbEq+bGw/BPi
+	/7nyFgZQKUCypDRCFeYnnJbid41geUHGsJ8yYa/Egf5q2UVMCVlJjnQHI5RPgOnmhAsTzJNXEj+qF
+	MPPpEJ4YdOaaTtHYI8EOks1IUNTNFBVsDqBighwbfAaqcpsNm2qqATUuG/b/8TYa2Y48xnR7GaRtf
+	8kDwNIwRudvEnF30+cdw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xDTo4-0000000FMaA-2dD5;
+	id 1xDTo4-0000000FMaJ-32N4;
 	Sun, 04 Oct 2026 21:31:40 +0000
 Received: from smtpout-02.galae.net ([185.246.84.56])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xDTnt-0000000FMXX-0WZM
+	id 1xDTo1-0000000FMZ2-2d6G
 	for linux-mtd@lists.infradead.org;
-	Sun, 04 Oct 2026 21:31:37 +0000
+	Sun, 04 Oct 2026 21:31:38 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id E54B91A113A;
-	Sun,  4 Oct 2026 21:31:25 +0000 (UTC)
+	by smtpout-02.galae.net (Postfix) with ESMTPS id 398F41A113D;
+	Sun,  4 Oct 2026 21:31:36 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id B66B2604FE;
-	Sun,  4 Oct 2026 21:31:25 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 52842103283EB;
-	Sun,  4 Oct 2026 23:31:21 +0200 (CEST)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 0DF41604FE;
+	Sun,  4 Oct 2026 21:31:36 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 7E46A103283ED;
+	Sun,  4 Oct 2026 23:31:31 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1791149485; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding; bh=/K1byAs4VG3cDSQTISVjiCosUfEDZD4lfEHkeBgebIk=;
-	b=dvoQ4dS/o1hPIG8Lp+Hr5v71GdHnlzhLeGeLEV9dFHYRD4R+Ourh3FCe7hIjD4QC2ZZHoH
-	Nf2j/0BrbMkE+QZJYI2uHS6gV1tIeSnZrnSW73P84lfBeDBfjPDrDR6a6mv/17DOOYUiTI
-	thaHI/6TkqCrjtxVMGWkHeykXs6UCuj4NZgCdtLde3reUU82IJLL+ohwUMJBjEMJMswcL4
-	MOdiWyLD3Xl1WQtfiMoK3w0kILjWmntTBSqyQ4lKbG8u7tbXS+wMR4GQDpEDtC0nr/tuqQ
-	sGJMY6aC/nI7su4wkVeguDh+Pvrfhz/mEVSnk0/0wQAyG0C6eC7cwS8kYFVgoQ==
+	t=1791149495; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=3rH+xtaEE72c/dMWl13TrWCqgtJCjAS6ZGNblkbLQAU=;
+	b=0EnWPPD3ggBKGvFs6CgKb2aHwY9etiPuWzufJrr9D/dox9WIxjt7YeH4d5oegxMeSWLxnR
+	65uccEclUTA9sA2V5jMhu5MVagsEa8xj4yY72dlsrbjCVym2NO6phHDEesGU9OPkW++m3V
+	wxMv+RSC0ahfQZT5Asfy6tU2cxz3FkQx7sSl59kurbUHaPSwVA9cQlJbbLl9grUY7+Gzl2
+	UW2bcnfzhy+3tIN3Lt+hwVNSusJZVilVMsMzv0GqkifG6v3LMEjCXfxmD8En0M4GWDdDA8
+	kov8uHVUFj+KpvIzLfU99KU1tq4OV1CgiPR+z+81PZ49xxAJmaIH09zsjDD50g==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v2 00/17] mtd: spi-nor: winbond: Add support for the
- W35TxxNW family
-Date: Sun, 04 Oct 2026 23:31:14 +0200
-Message-Id: <20261004-winbond-master-spi-nor-w35t-v2-0-592f3300a70f@bootlin.com>
+Date: Sun, 04 Oct 2026 23:31:17 +0200
+Subject: [PATCH v2 03/17] mtd: spi-nor: Fix spacing between arguments
 MIME-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAAAAAAAC/33NQQ6CMBCF4auQrh3TDgFTV97DsCgwyCTSIW0DG
- sLdrSRuXf5v8b1NRQpMUV2LTQVaOLL4HHgqVDc6/yDgPrdCjbXR2sDKvhXfw+RiogBxZvASYC2
- rBGgu1pbaIvVGZWEONPDr0O9N7pFjkvA+zhbzXX8u/nUXAxocosPBVh3WdGtF0pP9uZNJNfu+f
- wAICk+ayAAAAA==
-X-Change-ID: 20261001-winbond-master-spi-nor-w35t-217993092ed1
+Message-Id: <20261004-winbond-master-spi-nor-w35t-v2-3-592f3300a70f@bootlin.com>
+References: <20261004-winbond-master-spi-nor-w35t-v2-0-592f3300a70f@bootlin.com>
+In-Reply-To: <20261004-winbond-master-spi-nor-w35t-v2-0-592f3300a70f@bootlin.com>
 To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
  Takahiro Kuwano <takahiro.kuwano@infineon.com>, 
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
@@ -63,8 +60,9 @@ Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261004_143129_315855_28E96B03 
-X-CRM114-Status: GOOD (  10.73  )
+X-CRM114-CacheID: sfid-20261004_143137_807232_DABEB87D 
+X-CRM114-Status: UNSURE (   7.46  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,60 +79,29 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-First patches are misc fixes.
-
-Then there are core enhancements to support ODTR chips.
-
-Last set of patches is Winbond specific, where I add the bulk of the
-changes for supporting the new Winbond Octal-DTR SPI NOR chips in the
-winbond manufacturer driver, and then sparkle the ID table with the new
-IDs and their respective testing logs.
+A spurious tab got inserted there.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
-Changes in v2:
-- Fix the _careful() read helper in swp.c to make sure the buffer is
-  initialized (zeroed).
-- Fix the location of spi_nor_set_dummy() in order to be called at
-  resume. This solves numerous problems reported by Sashiko.
-- I am on purpose ignoring two comments from Sashiko, for which I have
-  answered over the mailing list. Let me know if someone disagrees.
-- Link to v1: https://lore.kernel.org/r/20261002-winbond-master-spi-nor-w35t-v1-0-a22a2f95c26e@bootlin.com
+ drivers/mtd/spi-nor/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
----
-Miquel Raynal (17):
-      mtd: spi-nor: Only switch to ODTR if the chip has a callback for it
-      mtd: spi-nor: swp: Fix SR2 initialization
-      mtd: spi-nor: Fix spacing between arguments
-      mtd: spi-nor: Fix comment indentation to clarify the intent
-      mtd: spi-nor: sfdp: Enhance a comment
-      mtd: spi-nor: Drop stale values
-      mtd: spi-nor: Fix WRSR with ODTR chips
-      mtd: spi-nor: Allow configuring the actual number of dummy cycles
-      mtd: spi-nor: Fix SWP for octal DTR chips
-      mtd: spi-nor: winbond: Prepare the introduction of W35TxxNW parts
-      mtd: spi-nor: winbond: Add support for W35T64NW-C
-      mtd: spi-nor: winbond: Add support for W35T12NW-C
-      mtd: spi-nor: winbond: Add support for W35T25NW-C/E
-      mtd: spi-nor: winbond: Add support for W35T51NW-C/E
-      mtd: spi-nor: winbond: Add support for W35T01NW-C/E
-      mtd: spi-nor: winbond: Add support for W35T02NW-C/E
-      mtd: spi-nor: Fix the meaning of a comment
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 9c61ff4b93c3..4b9e0410f2f5 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -773,7 +773,7 @@ int spi_nor_read_sr_ll(struct spi_nor *nor, u8 opcode, u8 *sr,
+  *
+  * Return: 0 on success, -errno otherwise.
+  */
+-static int spi_nor_write_sr_ll(struct spi_nor *nor, u8 opcode,	const u8 *sr,
++static int spi_nor_write_sr_ll(struct spi_nor *nor, u8 opcode, const u8 *sr,
+ 			       unsigned int len)
+ {
+ 	int ret, i;
 
- drivers/mtd/spi-nor/core.c    |  58 +++++++++++++++++---
- drivers/mtd/spi-nor/core.h    |   3 +
- drivers/mtd/spi-nor/sfdp.c    |   4 +-
- drivers/mtd/spi-nor/swp.c     |  25 ++++++++-
- drivers/mtd/spi-nor/winbond.c | 124 ++++++++++++++++++++++++++++++++++++++++++
- include/linux/mtd/spi-nor.h   |   4 --
- 6 files changed, 200 insertions(+), 18 deletions(-)
----
-base-commit: c1775ba88cd08853e3f401d725b2ad94e783c5ec
-change-id: 20261001-winbond-master-spi-nor-w35t-217993092ed1
-
-Best regards,
 -- 
-Miquel Raynal <miquel.raynal@bootlin.com>
+2.55.0
 
 
 ______________________________________________________
