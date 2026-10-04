@@ -4,52 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 826CFCA5FF0
-	for <linux-mtd@archiver.kernel.org>; Sun,  4 Oct 2026 21:32:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06692CA5FEC
+	for <linux-mtd@archiver.kernel.org>; Sun,  4 Oct 2026 21:32:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=VTowxAF1HkQxtFSab0Io9cFZFOEWgnRGWbfhqTU61pM=; b=juENPswyyJbAFs
-	lcjkUIXhEA+I5HkqQETi2N+vnnyDsSLlJyU6Se4bnNKf7Q1vA3LUZAdlknYfDECubFnUj/3Y3rkHh
-	naVFDYSRzwBu13z9s1846Mqmvy0fydl5gorbk3IZts19PYDtse1cba3/B+W6lpJ0BME/axALXQlPZ
-	rkvCSQVe0DS2DKWZ77/T8x9H4vbHIbICQXQIHoZ2LxlxWNgxDfpK1CWH32CFzp1+AklPDhoBH9Fse
-	r+TurUf5xl97G4Q9l1AhK8rYOiEiY2S6hiouuc3FqTgXPJHf6SafMfmGeASVTsaoiwzHmdOWmVcx/
-	hichsROyWwexkJA8I45Q==;
+	List-Owner; bh=xTF0ysW/ztqFUgE39an/vwJdhE4ZkVko4vfYQP2A+l8=; b=2WaNhdWHE/LR9f
+	GkSdsO4aKqXDpFlDdw3cBmyMbYMwRidCkc6alVo/61fhWJfKHGcGVPc7Ot191zcOkYxhTVgW8V58k
+	mpzw1zEHjoW5b4DvHITQyy68+uNTYuoFCodg+53AY63hRo2F6MzBWKHRrUN0+zwBzWPLqaNgd1gD1
+	wZLe96nqMRAKWidL8gvqYMAgnSqR+tQfWpNvIp0bB2Z2usVtNgEh9nnBAPULwefDJ7HlgwMo0lgQF
+	qy9zq4TuX1ssKPyuX+e6xUrKYxEnCw1tMQNlunL92JCaGrqkuQu2URyaK2J4qLe4cNyPEu7DZWX41
+	iHJab/7/efY69ftx3fDg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xDToO-0000000FMsS-2krP;
+	id 1xDToO-0000000FMso-45Cq;
 	Sun, 04 Oct 2026 21:32:00 +0000
 Received: from smtpout-02.galae.net ([185.246.84.56])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xDToG-0000000FMkF-1rvp
+	id 1xDToK-0000000FMor-0kVV
 	for linux-mtd@lists.infradead.org;
-	Sun, 04 Oct 2026 21:31:58 +0000
+	Sun, 04 Oct 2026 21:32:00 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id E6EC11A113A;
-	Sun,  4 Oct 2026 21:31:50 +0000 (UTC)
+	by smtpout-02.galae.net (Postfix) with ESMTPS id B94EF1A113B;
+	Sun,  4 Oct 2026 21:31:54 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id BBC92604FE;
-	Sun,  4 Oct 2026 21:31:50 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 953441032820F;
-	Sun,  4 Oct 2026 23:31:47 +0200 (CEST)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 8EEFB604FE;
+	Sun,  4 Oct 2026 21:31:54 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id C9F04103283EB;
+	Sun,  4 Oct 2026 23:31:50 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1791149510; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1791149513; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=Bn7MzMTlkcOXD7N3ZVZLc4yFMI6vN6F+0M97YqOBEZM=;
-	b=l/YfZO/n51TiS08pZ0PL9HzMUBaBxsB6CKbaPeB0UFYLyBsSiWzxe6hOpFOGRVykBmM3gG
-	xeqRpdf02eFK2AmW7gy/e1p+5yXcRY6z4fLP7efcDi8yQigK3bF0STHjTHGvSY6OayrUAu
-	Q7B0+VGfv/wQazRgqvz51S77niTR3knpBmuBhaSnkSDNBevxwzAAyni3lcUb6R+3s4r92B
-	BBprysG4BTWM84oqt7Wknl2iz9vUmsHJK+ajOd4A/yXqfCMiBKuAlb+xl+rkHM8ug53NM8
-	inJ6mK75eKyvOfYLRlw821RM2e7IRwH6wvT+7Ej4GkjKES4wjfz5fXncJ9IsFw==
+	bh=BYKk4QEoZj6Wd5oTQc/D3R0N7adeKzTLP9m4X52GpDg=;
+	b=jhrShWVekTT4RNAKwASzAPYuaBoi7JBGlC8EFgwtcutt7BxKT84JkEjxHQiwtiUU5Ddh/Y
+	0qYDAh7ajSQBNTZ5e9t9TC/HN13+AFOv8Z8kw1C77YLVLIAgXbtQiycwrOdjBHwtnCe921
+	Erb6nBsTWOIqgD/TS8ZSrKYNwBeM2U8/xe+GL4Y5QJe23ybVr/zreBD9pudzD3CjTa3IJQ
+	0ffigxSldcjjOLZVJ5w7Q8le4CGHobIxi1xxR1GQXeWCRyYBlD+jCkjhzAFr6Z5Bdx+8LL
+	ZmtKo6rEqeY+3ny2ngM1Ir3QEjdi/FFnYQNluMR1+QQ9VpfW4P5fQH5mJ5wEwA==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Sun, 04 Oct 2026 23:31:22 +0200
-Subject: [PATCH v2 08/17] mtd: spi-nor: Allow configuring the actual number
- of dummy cycles
+Date: Sun, 04 Oct 2026 23:31:23 +0200
+Subject: [PATCH v2 09/17] mtd: spi-nor: Fix SWP for octal DTR chips
 MIME-Version: 1.0
-Message-Id: <20261004-winbond-master-spi-nor-w35t-v2-8-592f3300a70f@bootlin.com>
+Message-Id: <20261004-winbond-master-spi-nor-w35t-v2-9-592f3300a70f@bootlin.com>
 References: <20261004-winbond-master-spi-nor-w35t-v2-0-592f3300a70f@bootlin.com>
 In-Reply-To: <20261004-winbond-master-spi-nor-w35t-v2-0-592f3300a70f@bootlin.com>
 To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
@@ -61,8 +60,8 @@ Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261004_143152_665401_B7E374CC 
-X-CRM114-Status: GOOD (  16.11  )
+X-CRM114-CacheID: sfid-20261004_143157_990969_B72A620B 
+X-CRM114-Status: GOOD (  12.88  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,97 +78,99 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The SPI NOR core selects the fastest read variant advertised by the SFDP
-tables. This may or may not be a wise choice but at least it is simpler
-as any bus frequency will just work. There is however a downside: the
-number of dummy cycles is maximized (in case the bus frequency is really
-fast, this is how the chip enforces a sufficient delay). Maximizing the
-number of dummy cycles means that, if the amount of cycles is
-configurable in the chip, we might not take its default value. When this
-happens, we need to make sure that the chip is configured accordingly.
+During the recent rework of status registers handling, we mostly focused
+on quad capable devices, partially skipping ODTR devices in our mental
+model. It seems that many (if not all?) ODTR devices have no SR2 read
+opcode and have other control mechanisms. Because of that, the current
+support in swp.c is broken, because reading back the written value may
+or may not lead to the expected result.
 
-Create a callback to configure the chip for a specific number of dummy
-cycles. This callback is used:
-- after deciding how to communicate with the device,
-- in case of error when switching into ODTR mode, we shall negociate
-  another configuration,
-- upon resume.
+Let's extend the _careful() suffix to the helper reading back the values
+and comparing them. Maybe this "carfulness" will have to be moved back
+to the core, it is a bit early to state it. For now, let's just make
+sure that we read back 0s without errors when virtually accessing SR2 on
+those chips.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/spi-nor/core.c | 24 +++++++++++++++++++++++-
- drivers/mtd/spi-nor/core.h |  2 ++
- 2 files changed, 25 insertions(+), 1 deletion(-)
+ drivers/mtd/spi-nor/core.c |  2 +-
+ drivers/mtd/spi-nor/core.h |  1 +
+ drivers/mtd/spi-nor/swp.c  | 23 +++++++++++++++++++++--
+ 3 files changed, 23 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 6e22342361c3..56d8f95da0d4 100644
+index 56d8f95da0d4..0757e5a7cf2b 100644
 --- a/drivers/mtd/spi-nor/core.c
 +++ b/drivers/mtd/spi-nor/core.c
-@@ -2993,6 +2993,20 @@ static int spi_nor_init_params(struct spi_nor *nor)
- 	return 0;
- }
- 
-+/**
-+ * spi_nor_set_dummy() - configure chip for a given number of dummy cycles
-+ * @nor:                pointer to a 'struct spi_nor'
-+ *
-+ * Return: 0 on success, -errno otherwise.
-+ */
-+static int spi_nor_set_dummy(struct spi_nor *nor)
-+{
-+	if (!nor->params->set_dummy)
-+		return 0;
-+
-+	return nor->params->set_dummy(nor, nor->read_dummy);
-+}
-+
- /** spi_nor_set_octal_dtr() - enable or disable Octal DTR I/O.
-  * @nor:                 pointer to a 'struct spi_nor'
-  * @enable:              whether to enable or disable Octal DTR
-@@ -3016,7 +3030,11 @@ static int spi_nor_set_octal_dtr(struct spi_nor *nor, bool enable)
- 		hwcaps.mask &= ~(SNOR_HWCAPS_READ_8_8_8_DTR |
- 				 SNOR_HWCAPS_PP_8_8_8_DTR);
- 
--		return spi_nor_setup(nor, &hwcaps);
-+		ret = spi_nor_setup(nor, &hwcaps);
-+		if (ret)
-+			return ret;
-+
-+		return spi_nor_set_dummy(nor);
- 	}
- 
- 	ret = nor->params->set_octal_dtr(nor, enable);
-@@ -3093,6 +3111,10 @@ static int spi_nor_init(struct spi_nor *nor)
+@@ -927,7 +927,7 @@ int spi_nor_write_sr2(struct spi_nor *nor, const u8 *sr2)
+  *
+  * Return 0 or errno.
+  */
+-static int spi_nor_write_sr1_and_sr2(struct spi_nor *nor, const u8 *sr)
++int spi_nor_write_sr1_and_sr2(struct spi_nor *nor, const u8 *sr)
+ {
  	struct spi_nor_flash_parameter *params = nor->params;
- 	int err;
- 
-+	err = spi_nor_set_dummy(nor);
-+	if (err)
-+		return err;
-+
- 	err = spi_nor_set_octal_dtr(nor, true);
- 	if (err) {
- 		dev_dbg(nor->dev, "octal mode not supported\n");
+ 	int ret;
 diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 670182b3c2ad..b64f26b69c05 100644
+index b64f26b69c05..cee33ca18b04 100644
 --- a/drivers/mtd/spi-nor/core.h
 +++ b/drivers/mtd/spi-nor/core.h
-@@ -377,6 +377,7 @@ struct spi_nor_opcodes {
-  *                      Table.
-  * @otp:		SPI NOR OTP info.
-  * @set_octal_dtr:	enables or disables SPI NOR octal DTR mode.
-+ * @set_dummy:		configure the number of read dummy cycles.
-  * @quad_enable:	enables SPI NOR quad mode.
-  * @qe_mask:		two bytes mask used to set/clear the QE bit
-  * @set_4byte_addr_mode: puts the SPI NOR in 4 byte addressing mode.
-@@ -410,6 +411,7 @@ struct spi_nor_flash_parameter {
- 	struct spi_nor_otp		otp;
+@@ -664,6 +664,7 @@ int spi_nor_read_sr2(struct spi_nor *nor, u8 *sr2);
+ int spi_nor_read_sr1_and_sr2(struct spi_nor *nor, u8 *sr);
+ int spi_nor_write_sr1(struct spi_nor *nor, const u8 *sr1);
+ int spi_nor_write_sr2(struct spi_nor *nor, const u8 *sr2);
++int spi_nor_write_sr1_and_sr2(struct spi_nor *nor, const u8 *sr);
+ int spi_nor_write_sr1_and_sr2_and_check(struct spi_nor *nor, const u8 *sr);
  
- 	int (*set_octal_dtr)(struct spi_nor *nor, bool enable);
-+	int (*set_dummy)(struct spi_nor *nor, u8 dummy_cycles);
- 	int (*quad_enable)(struct spi_nor *nor);
- 	u8				qe_mask[2];
- 	int (*set_4byte_addr_mode)(struct spi_nor *nor, bool enable);
+ ssize_t spi_nor_read_data(struct spi_nor *nor, loff_t from, size_t len,
+diff --git a/drivers/mtd/spi-nor/swp.c b/drivers/mtd/spi-nor/swp.c
+index 6c56fda3913e..bc733df203f3 100644
+--- a/drivers/mtd/spi-nor/swp.c
++++ b/drivers/mtd/spi-nor/swp.c
+@@ -240,6 +240,25 @@ static int spi_nor_read_sr1_and_sr2_careful(struct spi_nor *nor, u8 *sr)
+ 	return spi_nor_read_sr2_careful(nor, &sr[1]);
+ }
+ 
++static int spi_nor_write_sr1_and_sr2_and_check_careful(struct spi_nor *nor, const u8 *sr)
++{
++	u8 tmp[2];
++	int ret;
++
++	ret = spi_nor_write_sr1_and_sr2(nor, sr);
++	if (ret)
++		return ret;
++
++	ret = spi_nor_read_sr1_and_sr2_careful(nor, tmp);
++	if (ret)
++		return ret;
++
++	if (sr[0] != tmp[0] || sr[1] != tmp[1])
++		return -EIO;
++
++	return 0;
++}
++
+ /*
+  * Keep a local cache containing all lock-related bits for debugfs use only.
+  * This way, debugfs never needs to access the flash directly.
+@@ -407,7 +426,7 @@ static int spi_nor_sr_lock(struct spi_nor *nor, loff_t ofs, u64 len)
+ 	    (ofs_old < ofs_new || (ofs_new + len_new) < (ofs_old + len_old)))
+ 		return -EINVAL;
+ 
+-	ret = spi_nor_write_sr1_and_sr2_and_check(nor, best_status_new);
++	ret = spi_nor_write_sr1_and_sr2_and_check_careful(nor, best_status_new);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -529,7 +548,7 @@ static int spi_nor_sr_unlock(struct spi_nor *nor, loff_t ofs, u64 len)
+ 	    (ofs_new < ofs_old || (ofs_old + len_old) < (ofs_new + len_new)))
+ 		return -EINVAL;
+ 
+-	ret = spi_nor_write_sr1_and_sr2_and_check(nor, best_status_new);
++	ret = spi_nor_write_sr1_and_sr2_and_check_careful(nor, best_status_new);
+ 	if (ret)
+ 		return ret;
+ 
 
 -- 
 2.55.0
