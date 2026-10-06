@@ -4,59 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4CF5FCA5FFC
-	for <linux-mtd@archiver.kernel.org>; Tue,  6 Oct 2026 15:40:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D33DCA5FED
+	for <linux-mtd@archiver.kernel.org>; Tue,  6 Oct 2026 20:01:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ddUDl/606PNjomNi4OvYGgsdK6LMwgyyPfGGs5NuV3k=; b=f3zuoNr44UIj+r
-	Au4IpBY1jL5wPG9NtwcQrkZh2rtK18f6+auhZURQNqabZPAhOuPLv1piUGc7kPz/YI3TDY0zlqU1e
-	offQg8xniUBmIvjf3TldRDtBb8mAqKGL8IUmS2e+tAetihOoL+dHoRcntBKgFtRe4JdYj7DdkLLup
-	1O4SDU2Pz/jxAiJijv4d9epg/PMUYg87ZNcDaMIgd9UzdFYPOkVhPh0lV6ZEpH8s4dCRqaKeSYAxp
-	+9SmJopP5mn9lyKSEVb+QEVIhiItAKLdK9v+cJz5lUdvIuZqni9nhyc0sXZo8J7VZNsQCXu0dJy47
-	7yxAd3Prxn8UiVu7kB0g==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version:Subject:
+	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=f3Xk4rRSiaYBi7ESD0WCscTbUe0OoW20i5sV3IVWvd4=; b=F+POLuQZaU2SuU
+	hwEKxnJ1vh+Ntgy5a1VnsjrfH4sumI6Aju26srcg+C8dObuNKYY845sKFQZyPUI/NjMejFbgd60C9
+	y6jfON4dcjfSAmtdRFKDoqXW4ZTGVRe/dBgDZUzRbOLWyZlb6+zBz8FcWbMb1RFO1H0kXY5F38DAC
+	ChkDPN6A8wJQKBHkJ6IMPvD7B+7S4DJx6IvnGtNiaoLyUocP6xHd7kvNq2z3xe14MpqqqQuJBQDdu
+	gFDKHOhjdg2rS6OjKbSvrTpRT+F3OdwXaZO0es9TJmdpuJwIbblP46CX7kj7LFxuXsR+FGg3Czw8P
+	shlUglugTbVaiwhkMXnQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xE7H0-000000013BG-1FxR;
-	Tue, 06 Oct 2026 15:40:10 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1xEBLG-00000001LYE-3o3G;
+	Tue, 06 Oct 2026 20:00:50 +0000
+Received: from mail-wm1-x329.google.com ([2a00:1450:4864:20::329])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xE7Gv-000000013B0-3poJ
+	id 1xEBLE-00000001LXg-3xvY
 	for linux-mtd@lists.infradead.org;
-	Tue, 06 Oct 2026 15:40:06 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 0FDF9601E4;
-	Tue,  6 Oct 2026 15:40:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E6E01F0089B;
-	Tue,  6 Oct 2026 15:40:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1791301204;
-	bh=Ud3Mt/eIMuHm80b+YlNkzvZDtJS39p8/gm1/Bfm2Ux4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=QltzygPTNr3rER0cqkdv/+pcD+3gMlNj2Ji7UT/OOUVqjrzs1t1pQPK0LcTnTrUkV
-	 aoLI+K1laGJ2J3TXK+Kz4TqXtIAdMKhrgDYz4I1KtWBVs0qkCVQ72B2b5OjV/7Q5kZ
-	 6KHO/+2HOUQbFbrk3hUHoUedEmyho5i23LALWclxxA84xXP6+7Rn8FyvMpsh/ezrtQ
-	 NyftbK4OwE4V3bQU+B8CqIIjq0GjqVbKNJxhIqBEkITCtrqk5+JuYqi3lv4R+5azt5
-	 GuNAsvW7crOF1CZkHP8bmbh0GJb0sLjFwcgjpNvbucNmy04bWu9cPsQQUxFQKmm8wG
-	 6aoSNxtMVUcLA==
-From: Sasha Levin <sashal@kernel.org>
-To: stable@vger.kernel.org
-Cc: Jan Kara <jack@suse.cz>,
-	Joern Engel <joern@lazybastard.org>,
-	linux-mtd@lists.infradead.org,
-	Christoph Hellwig <hch@lst.de>,
-	Christian Brauner <brauner@kernel.org>,
-	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6.y 1/3] mtd: block2mtd: Convert to bdev_open_by_dev/path()
-Date: Tue,  6 Oct 2026 11:39:59 -0400
-Message-ID: <20261006153928.760780-1-sashal@kernel.org>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <2026100520-kilogram-result-00fb@gregkh>
-References: <2026100520-kilogram-result-00fb@gregkh>
+	Tue, 06 Oct 2026 20:00:50 +0000
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-4a018dc1f98so10359885e9.3
+        for <linux-mtd@lists.infradead.org>; Tue, 06 Oct 2026 13:00:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1791316846; x=1791921646; darn=lists.infradead.org;
+        h=cc:to:message-id:content-transfer-encoding:content-type
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to:content-type;
+        bh=o3DAyDVHNrcV6GLzUE6mqYOVGNLRQA+er+Rt7Tx0w2s=;
+        b=jofIQTU0W/s3Ef9FfMYBAW2HQ/+O6b1MKR4MJOlz5PFV3Afb5Camy0MKt2uuLkB1pS
+         yCKgTwgsgmKgNV4vuyMhgAA/YVrlJuZgs/wTzll6qTHdZAswvuRpwOnLmn6vnWjhCKoy
+         tb8FHgVgM9iyMJBQAvqjp0r9+ejtj4paenwhpA92wcLISzSF3I1JK8HClc3eDPhopk50
+         GZkUTPb9W4rabj5PhmuwA5tKZixUf7ptW37Qban8PGGTwMwvZSJuvNnKdFSNR63IvuDR
+         KrX//zn+j50WSwfTgedpAAtjBhCgXoP69Y75Nnc4tAze0b4iH/HEZXVktV1dtdtiCqkB
+         AGaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1791316846; x=1791921646;
+        h=cc:to:message-id:content-transfer-encoding:content-type
+         :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to:content-type;
+        bh=o3DAyDVHNrcV6GLzUE6mqYOVGNLRQA+er+Rt7Tx0w2s=;
+        b=AAN01nKBbgpesZCb5m32SmG5zSj0mXzuL5WZ7EvI/NV9DRI7Dl/bndFaEW3H1GT10E
+         4nYZ3ct/bGp/AG+pVJXH5cDjvkfmu/L0Mi9rWvWgimhlI4c5Rq1GJlZqdE584mGQPSkx
+         41ufUiKQod83XpCSOmBnSWPBfd2K01yMfE/eyAv9drTskX0am3QGEZ32DMx0AuyG2yiY
+         M7nX+bgF0O4GZ3cuwDnhls06Dtz5r5Znx9iOpLTCkIp72dxxY1h1ANATLJXwQ7geblId
+         AORQ+sddBhrdi9Tnn1ypFR6WYbZO46eOQlb6lbkp9HaY0YaP3SVoWp2JWbz+jBuJDfQD
+         /w+A==
+X-Forwarded-Encrypted: i=1; AKwUvBzzNRHzr8QvCPR7pLghVdtBpNPOLlwYRjIq3uOww0j6PpZdS9+wr9wzsvquxXiVQr/GvuiSa0C1HKg=@lists.infradead.org
+X-Gm-Message-State: AFuF++m0cr/M70hxBfM5a5DAvv7z8SvZpotzP6vXFO4s5X8rzFNdb+1X
+	nk821aROvfED+NNUwV/yKUBnjI4PoWfmKm0gdkZHraqjZj5BfMDKqlnc
+X-Gm-Gg: AYBFou0ENpLjcYFMEfjb0tFrgIJ0TsbwlmgHDhPK1LyRS7Rmm+BG2EXdtEUFQ0UQjcA
+	51Sgbjru2MVUnEcrT6jPTFPE84prpGLzQXQHyoybutagH5+aWeqNEPuZJrfLpSfwa0s/TEBRIFI
+	WBFkPH/9hQVyWAnXN277AyjvjU0+JVGM4iCFU2zuSKVeEOFi7ZtLlrR0VRyBOXKfD4RPCPfMuuI
+	LrcpVGZe1fVuO7xL326wEmIJGztbYKcm8nb0vt5rAvetpa1UR7aHDMBIlp8mmLUWNmUx3EWVc6n
+	M1w+7/NRrqFT523bGv7OMqhQIzFRo05NlqagtaRVs8IV2wGF7E1R9/um6Lc32NNTePDKO939Ur5
+	axJ38/g8SxE9CSjjUmhRBUthSskc+IywFzPcqL65MFMzsrEaqRphk1Fdk5R5id+DiNEhpfxFNJD
+	E0jk0T5VZH124t5UjL/CA5PiHeO6pWH6f8iFGDhSWECgfYfEeyFOfQCOeG2N8u6E2Rr3v77Z9JX
+	sIqre61pZ4zOqlDyhcVj6VkTe8=
+X-Received: by 2002:a05:600c:840e:b0:49e:645e:2616 with SMTP id 5b1f17b1804b1-4a17b5365d6mr54722065e9.5.1791316846361;
+        Tue, 06 Oct 2026 13:00:46 -0700 (PDT)
+Received: from [192.168.0.253] (5403F394.catv.pool.telekom.hu. [84.3.243.148])
+        by smtp.googlemail.com with ESMTPSA id 5b1f17b1804b1-4a17f692cf4sm16366515e9.3.2026.10.06.13.00.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Oct 2026 13:00:45 -0700 (PDT)
+From: Gabor Juhos <j4g8y7@gmail.com>
+Date: Tue, 06 Oct 2026 22:00:41 +0200
+Subject: [PATCH] mtd: parsers: qcom: drop setting of partition's mask_flags
 MIME-Version: 1.0
+Message-Id: <20261006-qcom-smempart-ignore-mask_flags-v1-1-a48d9395b21b@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/x3N3QrCMAxA4VcZuTaQFZ0/ryIioctq0LZbIiKMv
+ bvFy+/mnBVcTMXh0q1g8lHXWhr6XQfxwSUJ6tgMgcLQEw24xJrRs+SZ7Y2aSjXBzP68Ty9Ojqc
+ jxXjgcN6PBK0ym0z6/R+ut237AW0ir+1xAAAA
+X-Change-ID: 20261006-qcom-smempart-ignore-mask_flags-870cc5a294d0
+To: Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-arm-msm@vger.kernel.org, linux-mtd@lists.infradead.org, 
+ linux-kernel@vger.kernel.org, Gabor Juhos <j4g8y7@gmail.com>
+X-Mailer: b4 0.14.3
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20261006_130049_049752_D3BF69A1 
+X-CRM114-Status: GOOD (  13.63  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,188 +103,41 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Jan Kara <jack@suse.cz>
+The 'attr' member of struct 'smem_flash_pentry' is 8 bits wide,
+so it is only usable to mask the lower 8 bits in the MTD flags.
+However the MTD layer does not define any maskable flags in
+these bits at all. Additionally, the meaning of the bits in the
+'attr' field is not documented, so it is not even possible to map
+those to the defined MTD flags.
 
-[ Upstream commit 3817d4b11212ca9d49d6e7141d41524aa48791c5 ]
+Due to the reasons above, remove the 'mask_flags' assignment code
+since it has no effect anyway.
 
-Convert block2mtd to use bdev_open_by_dev() and bdev_open_by_path() and
-pass the handle around.
-
-CC: Joern Engel <joern@lazybastard.org>
-CC: linux-mtd@lists.infradead.org
-Acked-by: Christoph Hellwig <hch@lst.de>
-Acked-by: Christian Brauner <brauner@kernel.org>
-Signed-off-by: Jan Kara <jack@suse.cz>
-Link: https://lore.kernel.org/r/20230927093442.25915-12-jack@suse.cz
-Signed-off-by: Christian Brauner <brauner@kernel.org>
-Stable-dep-of: b5965c422116 ("mtd: block2mtd: Fix divide error when erase_size is zero")
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
 ---
- drivers/mtd/devices/block2mtd.c | 51 +++++++++++++++++++--------------
- 1 file changed, 29 insertions(+), 22 deletions(-)
+ drivers/mtd/parsers/qcomsmempart.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/mtd/devices/block2mtd.c b/drivers/mtd/devices/block2mtd.c
-index be106dc20ff3c..aa44a23ec0451 100644
---- a/drivers/mtd/devices/block2mtd.c
-+++ b/drivers/mtd/devices/block2mtd.c
-@@ -37,7 +37,7 @@
- /* Info for the block device */
- struct block2mtd_dev {
- 	struct list_head list;
--	struct block_device *blkdev;
-+	struct bdev_handle *bdev_handle;
- 	struct mtd_info mtd;
- 	struct mutex write_mutex;
- };
-@@ -55,7 +55,8 @@ static struct page *page_read(struct address_space *mapping, pgoff_t index)
- /* erase a specified part of the device */
- static int _block2mtd_erase(struct block2mtd_dev *dev, loff_t to, size_t len)
- {
--	struct address_space *mapping = dev->blkdev->bd_inode->i_mapping;
-+	struct address_space *mapping =
-+				dev->bdev_handle->bdev->bd_inode->i_mapping;
- 	struct page *page;
- 	pgoff_t index = to >> PAGE_SHIFT;	// page index
- 	int pages = len >> PAGE_SHIFT;
-@@ -105,6 +106,8 @@ static int block2mtd_read(struct mtd_info *mtd, loff_t from, size_t len,
- 		size_t *retlen, u_char *buf)
- {
- 	struct block2mtd_dev *dev = mtd->priv;
-+	struct address_space *mapping =
-+				dev->bdev_handle->bdev->bd_inode->i_mapping;
- 	struct page *page;
- 	pgoff_t index = from >> PAGE_SHIFT;
- 	int offset = from & (PAGE_SIZE-1);
-@@ -117,7 +120,7 @@ static int block2mtd_read(struct mtd_info *mtd, loff_t from, size_t len,
- 			cpylen = len;	// this page
- 		len = len - cpylen;
+diff --git a/drivers/mtd/parsers/qcomsmempart.c b/drivers/mtd/parsers/qcomsmempart.c
+index d4fdc46a0073..cd562514f88d 100644
+--- a/drivers/mtd/parsers/qcomsmempart.c
++++ b/drivers/mtd/parsers/qcomsmempart.c
+@@ -144,7 +144,6 @@ static int parse_qcomsmem_part(struct mtd_info *mtd,
  
--		page = page_read(dev->blkdev->bd_inode->i_mapping, index);
-+		page = page_read(mapping, index);
- 		if (IS_ERR(page))
- 			return PTR_ERR(page);
- 
-@@ -139,7 +142,8 @@ static int _block2mtd_write(struct block2mtd_dev *dev, const u_char *buf,
- 		loff_t to, size_t len, size_t *retlen)
- {
- 	struct page *page;
--	struct address_space *mapping = dev->blkdev->bd_inode->i_mapping;
-+	struct address_space *mapping =
-+				dev->bdev_handle->bdev->bd_inode->i_mapping;
- 	pgoff_t index = to >> PAGE_SHIFT;	// page index
- 	int offset = to & ~PAGE_MASK;	// page offset
- 	int cpylen;
-@@ -194,7 +198,7 @@ static int block2mtd_write(struct mtd_info *mtd, loff_t to, size_t len,
- static void block2mtd_sync(struct mtd_info *mtd)
- {
- 	struct block2mtd_dev *dev = mtd->priv;
--	sync_blockdev(dev->blkdev);
-+	sync_blockdev(dev->bdev_handle->bdev);
- 	return;
- }
- 
-@@ -206,10 +210,10 @@ static void block2mtd_free_device(struct block2mtd_dev *dev)
- 
- 	kfree(dev->mtd.name);
- 
--	if (dev->blkdev) {
--		invalidate_mapping_pages(dev->blkdev->bd_inode->i_mapping,
--					0, -1);
--		blkdev_put(dev->blkdev, NULL);
-+	if (dev->bdev_handle) {
-+		invalidate_mapping_pages(
-+			dev->bdev_handle->bdev->bd_inode->i_mapping, 0, -1);
-+		bdev_release(dev->bdev_handle);
- 	}
- 
- 	kfree(dev);
-@@ -219,10 +223,10 @@ static void block2mtd_free_device(struct block2mtd_dev *dev)
-  * This function is marked __ref because it calls the __init marked
-  * early_lookup_bdev when called from the early boot code.
-  */
--static struct block_device __ref *mdtblock_early_get_bdev(const char *devname,
-+static struct bdev_handle __ref *mdtblock_early_get_bdev(const char *devname,
- 		blk_mode_t mode, int timeout, struct block2mtd_dev *dev)
- {
--	struct block_device *bdev = ERR_PTR(-ENODEV);
-+	struct bdev_handle *bdev_handle = ERR_PTR(-ENODEV);
- #ifndef MODULE
- 	int i;
- 
-@@ -230,7 +234,7 @@ static struct block_device __ref *mdtblock_early_get_bdev(const char *devname,
- 	 * We can't use early_lookup_bdev from a running system.
- 	 */
- 	if (system_state >= SYSTEM_RUNNING)
--		return bdev;
-+		return bdev_handle;
- 
- 	/*
- 	 * We might not have the root device mounted at this point.
-@@ -249,19 +253,20 @@ static struct block_device __ref *mdtblock_early_get_bdev(const char *devname,
- 		wait_for_device_probe();
- 
- 		if (!early_lookup_bdev(devname, &devt)) {
--			bdev = blkdev_get_by_dev(devt, mode, dev, NULL);
--			if (!IS_ERR(bdev))
-+			bdev_handle = bdev_open_by_dev(devt, mode, dev, NULL);
-+			if (!IS_ERR(bdev_handle))
- 				break;
- 		}
- 	}
- #endif
--	return bdev;
-+	return bdev_handle;
- }
- 
- static struct block2mtd_dev *add_device(char *devname, int erase_size,
- 		char *label, int timeout)
- {
- 	const blk_mode_t mode = BLK_OPEN_READ | BLK_OPEN_WRITE;
-+	struct bdev_handle *bdev_handle;
- 	struct block_device *bdev;
- 	struct block2mtd_dev *dev;
- 	char *name;
-@@ -274,21 +279,23 @@ static struct block2mtd_dev *add_device(char *devname, int erase_size,
- 		return NULL;
- 
- 	/* Get a handle on the device */
--	bdev = blkdev_get_by_path(devname, mode, dev, NULL);
--	if (IS_ERR(bdev))
--		bdev = mdtblock_early_get_bdev(devname, mode, timeout, dev);
--	if (IS_ERR(bdev)) {
-+	bdev_handle = bdev_open_by_path(devname, mode, dev, NULL);
-+	if (IS_ERR(bdev_handle))
-+		bdev_handle = mdtblock_early_get_bdev(devname, mode, timeout,
-+						      dev);
-+	if (IS_ERR(bdev_handle)) {
- 		pr_err("error: cannot open device %s\n", devname);
- 		goto err_free_block2mtd;
- 	}
--	dev->blkdev = bdev;
-+	dev->bdev_handle = bdev_handle;
-+	bdev = bdev_handle->bdev;
- 
- 	if (MAJOR(bdev->bd_dev) == MTD_BLOCK_MAJOR) {
- 		pr_err("attempting to use an MTD device as a block device\n");
- 		goto err_free_block2mtd;
- 	}
- 
--	if ((long)dev->blkdev->bd_inode->i_size % erase_size) {
-+	if ((long)bdev->bd_inode->i_size % erase_size) {
- 		pr_err("erasesize must be a divisor of device size\n");
- 		goto err_free_block2mtd;
- 	}
-@@ -306,7 +313,7 @@ static struct block2mtd_dev *add_device(char *devname, int erase_size,
- 
- 	dev->mtd.name = name;
- 
--	dev->mtd.size = dev->blkdev->bd_inode->i_size & PAGE_MASK;
-+	dev->mtd.size = bdev->bd_inode->i_size & PAGE_MASK;
- 	dev->mtd.erasesize = erase_size;
- 	dev->mtd.writesize = 1;
- 	dev->mtd.writebufsize = PAGE_SIZE;
+ 		parts[j].name = name;
+ 		parts[j].offset = le32_to_cpu(pentry->offset) * mtd->erasesize;
+-		parts[j].mask_flags = pentry->attr;
+ 		parts[j].size = le32_to_cpu(pentry->length) * mtd->erasesize;
+ 		pr_debug("%d: %s offs=0x%08x size=0x%08x attr:0x%08x\n",
+ 			 i, pentry->name, le32_to_cpu(pentry->offset),
+
+---
+base-commit: 55c5b6d5f59f59a8c98a7effc3195226cc20175c
+change-id: 20261006-qcom-smempart-ignore-mask_flags-870cc5a294d0
+
+Best regards,
 -- 
-2.53.0
+Gabor Juhos <j4g8y7@gmail.com>
 
 
 ______________________________________________________
