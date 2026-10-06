@@ -4,138 +4,137 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 57489CA5FF0
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0AC26CA5FFE
 	for <linux-mtd@archiver.kernel.org>; Tue,  6 Oct 2026 02:14:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:To:Subject:From:
+	List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:From:References:To:Subject:
 	Date:Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=FA+6XN5W6Jn8Hea6s0KbJJJJTICSNJryLJZYp56knjM=; b=3Tr/VCbbsWNgcHb1kPv0pKSzO4
-	PqP6Gwmj9a92YCYRpHP/ROrV6twH20d9UJ4dCV50A+YN3MGXRhJPC68QQ9yCb16FsVAWaHI+tuM0F
-	MFgEnVUA6qxz6gUojYnsjFq+p6u2m9U5tkFSIcISdxq9Aqg9SjI2b1cAQn+btibkTj124c04KXzY9
-	MXTHa8dkybAETnVJkRTKgbXMvaEDjri0XHrQ98ugkI7vaJAT8b4qLnIBiFu8qLBMb8RyOvJJIJ13w
-	QPsvtJHraFDYPUfzlkNxeOFh3M45/+YmZt87zR9mbVhpk/WIIYt4Rr5z379JIezU8dta1V/TJhkoa
-	tS9iS1yg==;
+	bh=CBbGT5MiWfzUYCyHa1uqgwGBQ/oBzSbm73sh8VVl0cQ=; b=PLirQA327Dz4CGXtdngwI/rwha
+	NZPJ4w6JQwm3KbFObGyTX97jEmsmiNTEmxeY7iXRArck2bcw4FWGc4PIQzUJ0lye/fK+aegQfB2ZT
+	/ZTDPxxukzHY4pGo4hFgxaFUXFkH0r0zz5Y4fwwCJyWzfH1oPkrNrnw3vgv3hoLmtcsnNmylHc9Dv
+	1ZRRyg4aQCMHnVc0+s5Vp/y9Pye1HrUerz/KJLUSxbdGbVkNw0r8x2YmvmQhCkUH37Vx7/9VJMsRF
+	Osqi95ljlGGjF9D2f5oL51WlhYp8hroVXQQ5mLO7A1OdOeXU/3icmnJF06heAU1MyEQIuQAT7E4II
+	SoqoyBRw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xDugo-0000000HULe-0rom;
-	Tue, 06 Oct 2026 02:13:58 +0000
-Received: from mail-westcentralusazon11010068.outbound.protection.outlook.com ([40.93.198.68] helo=CY7PR03CU001.outbound.protection.outlook.com)
+	id 1xDugu-0000000HUMW-1KAE;
+	Tue, 06 Oct 2026 02:14:04 +0000
+Received: from mail-westusazon11010065.outbound.protection.outlook.com ([52.101.85.65] helo=BYAPR05CU005.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xDugl-0000000HULA-2TiI
+	id 1xDugr-0000000HUM5-2WmW
 	for linux-mtd@lists.infradead.org;
-	Tue, 06 Oct 2026 02:13:57 +0000
+	Tue, 06 Oct 2026 02:14:03 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=PtC/9GMk5AkaOA/B9xo3ScgcI0R74xpMboO0EI4oSl4R0VLGfS9ijqeI9BrNUEfeIhPdn6VHnEJqcBaEW4bYKj/CqmVXzy7GXyiDaTft4EklEl4CQLoHCWPNCR2rNniwyKdeNaiZ3BkIIx+OTx0tQf0lSMj7QRZr7ap3QG3Q9yz4kUt0vZLHA5BDGVrtI6ljTst16KVquty/ZPwdHbelZvQETu3VsGsrP4vdHxmMNwOfwlU1e5jRen3ByRe2E0HWwB+SjtJOu/1c3qALWOXnETSufqWaYs14bDrfbL6k04VOeO1npG22Vm963B11+HXEH7oXkMnZHHbOaaEHD1C3PA==
+ b=DbZil9rMsjiVAXYs+vf/5d/C27s1VxTzdI16SUTJI7zioFuvXAtekIbEsGIzx0nHHN7fhEevpPKUcm36OvVyZlhdiG0qCHWaDWno+PnzuawZrOnGOLCohXEXfkk5GLX/DE9ezrzzKUFg6fj3Dq2pIvirgznBEjNz12EuzWxos4zYU6jTPVzlsM6/ZvIboeuHQkf4GSTwSDKpMEqeyvZGXDaSVSy0JDQaxzwHT0yvpelWiYRwuf/KdXKKuC80rEO5vpS/n+yCj8SWeD14+wrPHc3EFReiBfyv9srNTOyPFzKTzyimE4FGZeFbWdUTYxw2jxf7Thjd78ASaMUc16xupA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6gkwF64Pa+rkMmSN32uAQ+exkAUs0d6CN5e9PeduGSM=;
- b=Iq4g1Uw07OUxDjWQyvHmpMP/G2GQfxcTlB9OvlhEqayl0tAC2Ll1jiCr7J5hCLdS7zD4FIOoRpEcpGKm97xmeaHHxiUJvS48UlLvXzJcuFmctzQl2oz54P3PYqUAxW9EVkKGPhen8RazsdSPqcJI81nKpheIToPy9jQ+6RZncztO4lpWHt0DCycC2yuHP11jrhFQtiImxTnNNuRpepW2I9lEv0RJDWdQscAoxiKtuFLw1y8g9qP8vSq7147zTUqfVI3YcCIs2GK/e0Uj0MkrmPlFsrx7nFnEyAeZbT3soe4DvVuT9q6+PxIBknMqvpUTQ9SKSTuZExJjyqkrFdfttA==
+ bh=jJiE9h8HXmcEoqXYWBr8/RXbWLvj+mMuK5j/mZ6TVAs=;
+ b=zRvzf4qd/mvC4Hzebk+CeQUNiF0fK2VghRzolFLsuCInyXCt24GnxeUsUvPeJV6EMH4oOrt69TtUAim2/WvohLNKLRPtMBQxrs2QhA0qSXiyB+5/jPtB+eV/Tr9g7O/j8KdFVqJMfx7AdVeOQ6VjFOKI5qRCqb2RfS6QVK6DXNND+b8NVr29fd4zlt0tnnGY+g1YVURovb36MO9XWJeIv7LT9VnEy5kSkvSLUt0qP35XCAMsxk2Z+RQz+gWi51AuMMdAU4jjtJ0R/ReNN1P8dVK0fjqdaYP2L0OEWmzyd/B8ldCMLUFx/Y7byu5eL3SAdALWI/9lx8prOYJpOp0flQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=altera.com; dmarc=pass action=none header.from=altera.com;
  dkim=pass header.d=altera.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=altera.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6gkwF64Pa+rkMmSN32uAQ+exkAUs0d6CN5e9PeduGSM=;
- b=l5V5lOaea6JkotN3hNT4sCMYitR4h+GXE0wM+m7uu4hLEB1WxwurNvY4IjYH2Upfl0fhFZZAt6ypQXqS3PbfDhh5rnpvExuCQ/d5YR5jbjWX+8L9ogqbKnXz1Yq08j5PP7XYGewxB0IydrtL0nlVbLcj6Xi6nvKbNGVBAPpbHB7o06zTF4MI1pLsJh/aKOT/GZE16f2b+6b+EuoWemVHBe3W0NnpxJ8BoOmbBnD3cUWLwje+j116k01C+I/rwpkfLW3Ua4fPtpDHaGebiaCgIr0RBPGbTfXkcFXg5091usFNVWaAYfOgi6ieYOiHRfQB99Dg512yEnNR5+NjJdWWgw==
+ bh=jJiE9h8HXmcEoqXYWBr8/RXbWLvj+mMuK5j/mZ6TVAs=;
+ b=CAsSEcHI0fV1N4JrYJeUysBXY7p3CMUcTlRRsRnvXigiDNXb8vvbPyVsmHBADWcVa0OF0pHM5gUnft0BdOprqufvitOEFRtc0ZEGAnsF2Ru32KfO9k7sKSajVqpX32/dWNYm26Vf4OT3COmNx7lVfNk2sAznRWcwbPipA27GT90tw9y2zD9Qna2nLYiFFiOxmQgi+9QfT/8wLfYY0xMF5/4NcMWdRG8IWmu/dak9AbbsRHHFFmEIvYZDRA+Es1Hh8UQWDxH702LmVej2AE0n1JtKo0ykd6VXrE5BCZS0KFQB149BZ4JbfUz5HllOU17uECKHsfimpX8gIhjYMliSWA==
 Authentication-Results: mx.microsoft.com 1; dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=altera.com;
 Received: from SJ0PR03MB5950.namprd03.prod.outlook.com (2603:10b6:a03:2d3::20)
- by SA1PR03MB156663.namprd03.prod.outlook.com (2603:10b6:806:5a0::18) with
+ by SA1PR03MB6641.namprd03.prod.outlook.com (2603:10b6:806:1cc::9) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.472.20; Tue, 6 Oct
- 2026 02:13:49 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.451.18; Tue, 6 Oct
+ 2026 02:13:53 +0000
 Received: from SJ0PR03MB5950.namprd03.prod.outlook.com
  ([fe80::53a0:bf93:6b6b:de01]) by SJ0PR03MB5950.namprd03.prod.outlook.com
  ([fe80::53a0:bf93:6b6b:de01%5]) with mapi id 15.21.0472.016; Tue, 6 Oct 2026
- 02:13:49 +0000
-Message-ID: <9baf125f-bd02-4523-a23b-516f567f3777@altera.com>
-Date: Tue, 6 Oct 2026 10:13:43 +0800
+ 02:13:53 +0000
+Message-ID: <bb3d8d0b-360c-4f36-8231-d73a4a1d8382@altera.com>
+Date: Tue, 6 Oct 2026 10:13:51 +0800
 User-Agent: Mozilla Thunderbird
-From: "NG, TZE YEE" <tze.yee.ng@altera.com>
-Subject: Re: [PATCH 1/2] mtd: spi-nor: Fix deadlock in
- spi_nor_rww_start_exclusive()
+Subject: Re: [PATCH 2/2] mtd: spi-nor: core: Fix use-after-free of spi_nor on
+ unbind with open handles
 To: Michael Walle <mwalle@kernel.org>, Pratyush Yadav <pratyush@kernel.org>,
  Takahiro Kuwano <takahiro.kuwano@infineon.com>,
  Tudor Ambarus <tudor.ambarus@linaro.org>, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org
 References: <cover.1788404586.git.tze.yee.ng@altera.com>
- <46e4e2e31f051f64c120307216ce2766c004d9af.1788404586.git.tze.yee.ng@altera.com>
- <DLKSSLURXYDB.2VSDOA0K7U9MN@kernel.org>
+ <91e1b12d15d18361f77e5cca934fd4b37a47805b.1788404586.git.tze.yee.ng@altera.com>
+ <DLKTDTVQ5G87.3RWBEBN7AV0UI@kernel.org>
 Content-Language: en-US
-In-Reply-To: <DLKSSLURXYDB.2VSDOA0K7U9MN@kernel.org>
+From: "NG, TZE YEE" <tze.yee.ng@altera.com>
+In-Reply-To: <DLKTDTVQ5G87.3RWBEBN7AV0UI@kernel.org>
 X-ClientProxiedBy: SG2PR01CA0196.apcprd01.prod.exchangelabs.com
  (2603:1096:4:189::23) To SJ0PR03MB5950.namprd03.prod.outlook.com
  (2603:10b6:a03:2d3::20)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ0PR03MB5950:EE_|SA1PR03MB156663:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7f9df784-048a-4f50-9391-08df234f7599
+X-MS-TrafficTypeDiagnostic: SJ0PR03MB5950:EE_|SA1PR03MB6641:EE_
+X-MS-Office365-Filtering-Correlation-Id: 583cc939-d6a0-453d-de14-08df234f77e0
 X-MS-Exchange-AtpMessageProperties: SA
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|23010399003|366016|1800799024|55112099003|10067099003|22082099003|18002099003|4143699003|56012099006|11063799006;
-X-Microsoft-Antispam-Message-Info: NiAl8ttdgD3uir0TYdvzz5H41RvTOL9LMHXlcu5+oMe3muEXBr10p5jcZpaR4xg3Hk2Wxn1PwplFruXTnf6m2B5wDCa6xOUo0NoV8GerwiBNoEMSEFrEI+Z8wNuyipZwz/wFN5ZzzhY3jfl42RP8ruhOCHKahyaIeq7t2WWHFTN0+gZoPXkuXrpRcizafUM+p+aGfQwXY1jKErq4zjqNHybapOEyWYZVRjMS3EzfZtJIzYBx2gGib5NvEWzDKN0O8P5RYG5jqDAN0hZy9Q/Tn/VE6NNk5HfCqwXhEsxwZE9BmumA1L50BpALpVcdvgy8EMshPmdsAbkP8sKyAHV3RWdtqI6mBMZ/6UrYkn9yuN1qrFUWymbN3oc5a9dtVdH6Bu888FIq3VMGzqVVfRKtYOFQBJhM/BhbT4pvAGe1YoDMnOJb/SHOEwKuC/Sj3PLDlon1ocLcV6SB8iVSuT6HmLZISIMfm17Ciwgo9ETZf4uv1ocUxpLPt5I3vcHGv72G3i4WUIZjLVITOVjmprnZhmANBcpZ3dtlMLtyTy5E78l5DSqQMOvXFbNgU7CbYSbsT2CLnPoRqpq4KM+am4h7LA1ksWm6SUj2EO8X1fKGXbNdKf+Q/ExZ9W78ibiOfd5DBg1tYnvrGg7mjDts6YVvwzxvk7z6LgOyrHR7lOOzyNs=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR03MB5950.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(23010399003)(366016)(1800799024)(55112099003)(10067099003)(22082099003)(18002099003)(4143699003)(56012099006)(11063799006);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|1800799024|23010399003|56012099006|260925021311599003|260925021911599003|4143699003|10067099003|11063799006|22082099003|55112099003|260925022911599003|18002099003;
+X-Microsoft-Antispam-Message-Info: H13p2yxm/jCgKNXmDn2sEDbSikpmXHC0xSlB8t5JzVXq9/NTTCpDZhDpb61LumD+f0oQvySpvOue/MUttLtMRc7QWx/zBRauAHeU2S4O/zEYbgort+7Fyd56EFr0U3K75eAb3Mc7i+f4pojITdl40BzaQpZ/1P8EuwtddOXW7/RVZF4WNXUiIr8jgQ64GRUfWMb81MXssfKWF3lnkruR7I68wz3Tn1HxqwTwKUMBSv1IKAPo7sxi+WyKgRPidIPAv0YfrLp+uv9QA6OJdGMtUHgvNwiRe3RUro99sypOJAVU0enJrZWrtV1f0ndPhNGxy5t4odz6BFf7lNsIgRp3VuRd+jB15o6IVrtPNhc2cYvVOEnkPOSxuaWRxq3uuJtp1WolqRjTbWPmqPmDuKbZPBj4AEVvxg8QlRUyFj0cVY1PC8h2g4qjX1cjETrIsam27T/TXFXyV/5/t0jOCR/sMixo4vvOYh98lV4Hq3Ml5XtP58WvDCykDT3RDhoacMq3bFl0yG+Ye6iy6Ano1Cl7hOl6/uVz5xWQhw7ZDVjaIhvYk7hHYX7KmdKZPTM/z9+wQC7ecm8iNcwDYtCFFMo0wkFzXT8PYGj6U6LY9ZDt1vo=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR03MB5950.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024)(23010399003)(56012099006)(260925021311599003)(260925021911599003)(4143699003)(10067099003)(11063799006)(22082099003)(55112099003)(260925022911599003)(18002099003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UUFOLzJnYmdMZ3RpeVhNMUdOemVVVi9uSmFiRUx1UGZZRlVjekdWL2ZWSC9j?=
- =?utf-8?B?bEJ1S2JVNUVJS3NrMnVFTm14cjhzbjdvNC9oKzlBQ0JHMUVjcUJJelRFbzdL?=
- =?utf-8?B?em9YTU0yVVZIRFJuODBxL1hPRktxbjJSQlZMWVYyZFp4cHpYUFh5QitmN3pO?=
- =?utf-8?B?MjBFVGxLTEtMQmVTV0RLTkVvL0RDU01VdENDVTVuVHdwYWx3cHVrWURNY0x5?=
- =?utf-8?B?V0drcEpMVkw4ZHQxNXJONW1IMTY2ZG9YZHRNNGhuVEdOZHJod2h4akJnTU1E?=
- =?utf-8?B?UEQ4dEZXSkZlSjY2MjNuYm45OU83MEp6L2NUMTNrQlhJcDhCYzZSVmU1Qyto?=
- =?utf-8?B?eVFnK1hEYTFMSFhtaEk2Q0Q4QUlSM1NobzZ0QU1qZ0Q2Q2JSdXVCd2tlUUF0?=
- =?utf-8?B?YVFlTzdzUTVza0FEeVhBSkJjQ1FxeTkxSGZKRFRmR1R2WEc2Yk9OMVc3RkNB?=
- =?utf-8?B?VjZaL3dmYXVoQTF0bGZaVUxmK0ltK0Y3MlM3cm15TnVSQUdiYUkxR2diMHJX?=
- =?utf-8?B?OWg1ZHM2TkxNbW40VFAzL2h4SG05VG9oUXhmRHc3MlcxQWVvVDBSZTlTa3ht?=
- =?utf-8?B?a3QySEI3ekQ1ajlzVFJwSXY2bWxoZTUrcWZJd0V4UHlaMmJsVktQaGFpZFpu?=
- =?utf-8?B?VmlVZXA1L1RSUk00a05oR1hWUDVvbHg0SzRZV29NWGx5RHBxMTFEUitLcVha?=
- =?utf-8?B?SjYzOXBRbE1SWmZkeklhY0lteW1ORHNUeFFpalVOWXJHclRaVFJSbzNCL1Mx?=
- =?utf-8?B?d05QY2ROaWdMM0h1TXc1a0t0RjNnNEJwcU5JRHFETUZ1d29zSm5QaXZ6RVZS?=
- =?utf-8?B?dmlUNHdlZ0V6Y1dDMEJVeXBqc2VHb3lZQ2dDUE9WNlRrOU52cDBTampreG5s?=
- =?utf-8?B?ODI4RForbWU2U0w3WENvMVZEQk1JUDNyR1A5RVR3b25WaklhQW9HWG9iMGxs?=
- =?utf-8?B?QkczYjRDQW5UZk1BYnBqN3ozOXJhV3N3eDZSN3F5OVV5MHlwUWIyWlEzUEsx?=
- =?utf-8?B?cTZhM3hBU1Y0TmtPb0NkRENYUEZYS2lDR252Z2xJV000anE5ODJocXhWdklu?=
- =?utf-8?B?b3B3QWtsNFlodnVtSGRtenQzVTA3TTlHMlRMTnhwd1lDMGVZMk42aXdYSmx5?=
- =?utf-8?B?ZnVNUmNjMEVHekpiQkJDaTlsTUcwNW40dksyUlRMUHJlYUFSVENYVk40Rk55?=
- =?utf-8?B?c0JudHFON0VWdGM5YUt1eWV0QW1TY2E1SG9WbkRLN0JsVUovUWE2bEZxQjl1?=
- =?utf-8?B?a1dQU2VNa3QrU08reElDM3ZMbThxTURqVG44Zk96em1xdFljT3ZPaGJDTzBl?=
- =?utf-8?B?T3hCaXNmd0NrMXVZL3Bxa1FibnhtRC9NbUhBbW56TzBpcWRaV2doOGkwd3Jp?=
- =?utf-8?B?bmxla1BHK1BoUnl5Z0R6WU9yK2dEVlhMSmZOdldESVF5TThycUsrSHBlNUs1?=
- =?utf-8?B?U2QxTlJyS1U4VDBneHVBUVNSckh1ZTVJV1FIcEhTb09Td2RsczlINHkvL1BO?=
- =?utf-8?B?OWRmSWh6NmFmREt0YTRFbW8zWFdhQzJ4YXlXR1dVRWdSaGx3aWxZMVJNeVZ1?=
- =?utf-8?B?TWthQnNJS1ZpMVBPQU0yajFSWXRIUmtIY0VwejI1THRPMFRVYVA0S1dCa1ZW?=
- =?utf-8?B?a2hLVE9waFMvQXZWci9KMFRXRFRnaDFuUU1haFdaRVN5c2tDckhNbDUrWG50?=
- =?utf-8?B?V29odTZmR2ZOK2cwOXhJeTQyVy90STNiclBEclo1bHNhcGwyNktZeUVRTGtS?=
- =?utf-8?B?MFNudUV4aURVS1FUQ3VwVk90MUxscmFaMWdST0NYUS96RG5OdFdOakZhV0d1?=
- =?utf-8?B?SUYxNFVHdmZlKzlTYnV5bmZrSUxoWmNuODhjLzYrdEEyVWZLOWRrNkNoczRU?=
- =?utf-8?B?Z0wrVm5ZUEZhR3pmRTZMUmZ4MXd4NGdyOHlxQ2lkTmhEUnJzVTNPemFDcVZZ?=
- =?utf-8?B?TTBRaE5oOXZXVG1jeDdkc1JNNkFCSVlZUnFxWjJBNlZsL2xRQkZjVXhMR3Rh?=
- =?utf-8?B?L0ZEd3hTZGIvUmZwMmJyd05CaTA1OXY1M3RsVUswbU1PY0lXOWlwNzJtZ3BI?=
- =?utf-8?B?Z09Vdm5UUUlNOWZXWWliZTFiUjdyaGJUM3ZBVnkySTkzR2orbSs4cGdZZFNs?=
- =?utf-8?B?eWFIKzRQdnR5QmF3NjJISS9mV3Z3eTIyVk10cy96bVpSWCtuY3N2alJ1aldB?=
- =?utf-8?B?WmFabnpRUUFHL2pueDZ2UXdEdkhlUWx3bGhFOThaN1A4ZGUrMy90SUdLOXFj?=
- =?utf-8?B?emhmK0xKMWJzZXhwci9GbWRmVTN1TlJIQnpsU2NVbU02RXVPNWlabjhRbFlD?=
- =?utf-8?B?UkRPTXZjRG9teTVyYlpwZUtXd0VnNFlhNm9FcFZzVEdFTFB4VFZsQT09?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OXFwTzRWZHFGZkxMSmxNMVZvSVpFOGs1SE0wck9CcUQ0KzhQVkFPSW1jc0dj?=
+ =?utf-8?B?cmFWc0dmS0k0MVZTeGUxQjRPbVg0bm5LWEt6cmFEWUwrRHd5QXcveUZDR2Jk?=
+ =?utf-8?B?RjZreXF3Z3Q4ZDlDcTJDSEpJN0ZaNEJla0JrKzF1a2dDd3FmOVZFS2RQbnBU?=
+ =?utf-8?B?TktrM2MvQ09aZldqQlVuMUFvNHFSRDUwN2tzMURNWFFlV3RNM0t2K2tkTWJP?=
+ =?utf-8?B?SlQyUFRxV0FRUmpWd25ob0hHTkU1WkI1RUppSWhjSUpUdWtYTmI2TGdLL0Ns?=
+ =?utf-8?B?M041d1JBVTJlMXhtWkhRcDBldEtRSm9oSmRVTVQ1eWhRZm92ckQvSzdMVzMx?=
+ =?utf-8?B?d0loaTBSd3Fmc000K250THpkc0hERm1UcmJxc1hHblhUQ01oUzFXc1RRbHdD?=
+ =?utf-8?B?RUlKcS94cml6OWhUVXNncWJSUXlzZ3lvMnJBZTFGbHBTVkk2MFBXSFJOWDAz?=
+ =?utf-8?B?eFFOQlFFbDd5VG5VOW03anBQaGpQUnB3UHluTlpqT0FLSFdJSVVtRGlURUpp?=
+ =?utf-8?B?NzFpSTNUTHhST1BnbzRWL2U2aTZ0MnhZUnBuY0JxZ2ZrdHdoQUYxOUUwVGF5?=
+ =?utf-8?B?aUt2cmhGVUFjUHRKZ0lvalZyallWaUpRSS9XbDRjM0dtTHdhVnpEQyttdU01?=
+ =?utf-8?B?QVFMVExFM050NHdzRkhNU3A2cVIrRTBsMVFHbnZKcU9wQlR1WHo4VjVWMmUr?=
+ =?utf-8?B?TDR3bzA4UGsrOGdLOVBVOTVHd3hHZ3pTbEJXMGJuSzIzN2szZDhNcVdTcXFJ?=
+ =?utf-8?B?eWo2Mm9mRjVkV3lrUTNqR1UvZUhJY0lieDdSSTZVN1JvSWNiWjZpUldSeUxL?=
+ =?utf-8?B?NTJxdWdLdSs2bndrdVlOYU96TEN3QUN6VkRpWW1Cb0xCRlYrYktDOGRiOUtD?=
+ =?utf-8?B?b0o2TTI2Q3hQTTU1OUR2dEF1S2pqMnpvSEx2LzMxZnlpcUJVMHBhOE9JZGl0?=
+ =?utf-8?B?cytWY3RlVjFIeW16cWQvVUxxQWovKzFxY3VtMjBFNHI2WFQwNS8vczJ4Ymp3?=
+ =?utf-8?B?anVDelVOK2srUmZtcDBPODAzcDRhYWp6MmJhSmtEQ0pwaVA0SWE1M3k2TWMw?=
+ =?utf-8?B?dVNLdklBV0x3N292M25VeHRJQzR1OWtVWkRtdnE2eWhWcFNScVlCSzBIaGQ2?=
+ =?utf-8?B?b0RXQWlyMXYrQ0xjV283SjF0d29NalB1VnZaMDRabEhhUTVhbUVSN2dzeURs?=
+ =?utf-8?B?TWVDYkRmemwvSXhmT0hkUUhncUM1U3JRQ1BHRFdlZEF0VEZPemt2aDBsUXpv?=
+ =?utf-8?B?SXV1UW0rY1k2RStIRFRNaFNiUzlnRkM2QlBEUkhTTHlVam00VkdrbFJMNUl1?=
+ =?utf-8?B?aEUwYmphMFlFaHZSY3hrdjA5SVJvbFlDdzREaGY4QU1KOGdoejliVDFvNjBP?=
+ =?utf-8?B?bnh0cUlTNzZaTkZNMWJTNGU4cmR5UmZVZ0tSbERPQTF0S2ttZ1ZoQkxBRUtq?=
+ =?utf-8?B?aUJmeGZqV2FKWnh6Q0hETDlNZ3NTcHVqYkx1VlhodGlwTTZuajVkVHR6OFdi?=
+ =?utf-8?B?VjlqUkRISFdsN2lESytPbFVlakN3aXlpbitsdlYzWDdFbG1oaFZxWkZyUVRi?=
+ =?utf-8?B?OEljbG91bDRvZnBseDJHWDFIMHVKMDh6Yk55MHlpVmJQU0FJeUxOY2JNT2U5?=
+ =?utf-8?B?bW9tSUVkZGR4U3U4Z0diTFRid1NrUHVJclJvbmN3Kys3Y1h2bXhIT2JjaFFQ?=
+ =?utf-8?B?ZFRvUEc1d0xXL0RiVGxLcnptdDB3dUhYMUFIVHRZSGM1dS9kSmxmZTJZbkhW?=
+ =?utf-8?B?Q0hCbzRtdDBpRTZIMnB2YTNNUmo1T1dJalpuL1hGWUZCL0VROFV0WXYrYkpt?=
+ =?utf-8?B?aG9nOERlR2JtOG1scnJsMmEvWEVWa3VZSWxrSUh6b205NElJMTQ4NXNFeElm?=
+ =?utf-8?B?aUZ1VDJoNUI3VVJwTlhEdXJBN2ExelFzbElwam5Yc3hhT2pMeGNwQW0zalBx?=
+ =?utf-8?B?NEtTMzBwZ0Y0SnpuTkE1cmVocU4xbE0zR2xhWDJWaVNRckZpRTlYTmViajFy?=
+ =?utf-8?B?czFHTkZ5Snc4dytCdXZ1ci9wZmNFT2x6SGZTdVZOWHhTd0dGZnMyRi9YZnhY?=
+ =?utf-8?B?cko3MXI4RzcwS3hJeWtNTUk2RU45S25PVWxtTytGL0Z4cjFJcEpWUEw1bDNt?=
+ =?utf-8?B?VW40VjZxaWgwTlp2Z3hiRzBTcFRLUlZ4R1pHck14dVh6RktkU3JKOXRxVXg3?=
+ =?utf-8?B?R3BJUFRMaytoUjJibURJbjhOVEg5bmNmanFsaWRYcnB0T3hnbHd4Ri92NFlu?=
+ =?utf-8?B?dnBBNkkybWt5aHFSSGk1d0JWemk0SU9IN0grQmc5R0FqSzRkazNZa2RBbmM5?=
+ =?utf-8?B?WlZBT1dVdUpwRUxwblFtZjF6c3dEaEFuMnJtUU1Md2x3eFhMTnptQT09?=
 X-OriginatorOrg: altera.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7f9df784-048a-4f50-9391-08df234f7599
+X-MS-Exchange-CrossTenant-Network-Message-Id: 583cc939-d6a0-453d-de14-08df234f77e0
 X-MS-Exchange-CrossTenant-AuthSource: SJ0PR03MB5950.namprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Oct 2026 02:13:49.5762
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Oct 2026 02:13:53.1250
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: fbd72e03-d4a5-4110-adce-614d51f2077a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: J5guqEvN2t92eo13T75s4SlY/poCj1F4HEX0exU6DZ5wK/5EpeX8zBlwDnpBizqUVbZH5lUwg6nHyncSwQre5Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR03MB156663
+X-MS-Exchange-CrossTenant-UserPrincipalName: cZQoJD1mDwdAOhITsMM/oVCDGr5NvcgusDJkfmuUaZXEE8b7DiDj9e6SgkXe3+LIh7KTWCdK2qLGOEIgIHMTOQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR03MB6641
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261005_191355_657708_13832779 
-X-CRM114-Status: UNSURE (   7.62  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20261005_191401_681568_64D5D7BE 
+X-CRM114-Status: GOOD (  23.46  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -153,33 +152,317 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
-On 21/9/2026 2:58 pm, Michael Walle wrote:
+
+On 21/9/2026 3:26 pm, Michael Walle wrote:
 > On Thu Sep 3, 2026 at 5:14 AM CEST, tze.yee.ng wrote:
 >> From: Tze Yee Ng <tze.yee.ng@altera.com>
 >>
->> spi_nor_rww_start_exclusive() takes nor->lock with a bare mutex_lock()
->> and returns with it held, while its counterpart
->> spi_nor_rww_end_exclusive() re-acquires nor->lock via guard(mutex). Any
->> exclusive operation on a read-while-write (SNOR_F_RWW) part thus
->> deadlocks against itself.
+>> The spi_nor is allocated with devm_kzalloc() on the SPI device, so a
+>> sysfs unbind frees it while /dev/mtdX is still open. A later close then
+>> oopses in spi_nor_put_device()->module_put() on the freed spi_nor.
+>> try_module_get() does not help: it blocks rmmod, not an unbind.
 >>
->> The exclusive section is serialized by the rww ongoing_io/rd/pe flags,
->> so take nor->lock with guard(mutex) like the sibling start helpers.
+>> Give the spi_nor (and its params and bouncebuf) a kref lifetime on the
+>> spi-mem probe path so it survives until the last MTD user is gone, and
+>> cache the controller module for the put path. The spimem and dirmaps
+>> stay owned by the SPI core, so spi_nor_remove() drains in-flight
+>> operations and sets nor->removed to fail later ones with -ENODEV.
+>> Legacy controllers are unchanged.
 >>
->> Fixes: 03e7bb864d9a9 ("mtd: spi-nor: use scope-based mutex cleanup helpers")
->> Cc: stable@vger.kernel.org
 >> Signed-off-by: Tze Yee Ng <tze.yee.ng@altera.com>
 > 
-> This was already fixed in:
-> https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git/commit/?id=44b8a0bf5f96e8393312fc34b956766882341f16
+> Sashiko had some remarks:
+> 
+> https://sashiko.dev/#/patchset/cover.1788404586.git.tze.yee.ng%40altera.com
+> 
+> Also how does the other mtd subsystems (spi-nand?) doing this? Do we
+> have the wrong dev for devres?
 > 
 > -michael
+> 
 
-Thanks Michael, you're right. I missed that commit. I'll drop this patch 
-and resend the use-after-free fix (patch 2/2) standalone as v2.
+Thanks. I went through the Sashiko remarks.
+
+The prep leak on signal and the legacy-controller path were
+pre-existing, so I left them alone.
+
+The rest were real holes in v1: eraseregions was still
+devm-allocated, get_device() walked nor->spimem after unbind, and
+suspend/resume had no removed check. Those convinced me the
+spi-nor-local kref + nor->removed fence was the wrong place to fix
+this. It duplicated mtd->refcnt and still left every other driver to
+reimplement the same dance.
+
+On the second question: I don't think we have the wrong device for 
+devres. spi-nand does the same thing (devm on &mem->spi->dev). An open 
+/dev/mtdX can outlive unbind, so anything allocated on the SPI device is 
+already gone.
+
+In v2, I will moves the lifetime into the MTD core: optional mtd->_free 
+from the existing kref release, and mtd->removed so the core returns
+-ENODEV for hw ops, new openers, and suspend/resume. spi-nor uses
+that on the spi-mem path; legacy controllers are unchanged. spi-nand
+is not converted in this series.
+
+I'll send a v2 shortly.
 
 Thanks,
 Tze Yee
+
+>> ---
+>>   drivers/mtd/spi-nor/core.c  | 111 ++++++++++++++++++++++++++++++++----
+>>   include/linux/mtd/spi-nor.h |  17 ++++++
+>>   2 files changed, 118 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+>> index 8bc117b46e02..7fb61dde58f5 100644
+>> --- a/drivers/mtd/spi-nor/core.c
+>> +++ b/drivers/mtd/spi-nor/core.c
+>> @@ -45,6 +45,9 @@
+>>   #define SPI_NOR_SRST_SLEEP_MIN 200
+>>   #define SPI_NOR_SRST_SLEEP_MAX 400
+>>   
+>> +static void spi_nor_unlock_and_unprep_pe(struct spi_nor *nor, loff_t start, size_t len);
+>> +static void spi_nor_unlock_and_unprep_rd(struct spi_nor *nor, loff_t start, size_t len);
+>> +
+>>   /**
+>>    * spi_nor_get_cmd_ext() - Get the command opcode extension based on the
+>>    *			   extension type.
+>> @@ -1345,8 +1348,15 @@ int spi_nor_prep_and_lock(struct spi_nor *nor)
+>>   	else
+>>   		ret = wait_event_killable(nor->rww.wait,
+>>   					  spi_nor_rww_start_exclusive(nor));
+>> +	if (ret)
+>> +		return ret;
+>>   
+>> -	return ret;
+>> +	if (nor->removed) {
+>> +		spi_nor_unlock_and_unprep(nor);
+>> +		return -ENODEV;
+>> +	}
+>> +
+>> +	return 0;
+>>   }
+>>   
+>>   void spi_nor_unlock_and_unprep(struct spi_nor *nor)
+>> @@ -1416,8 +1426,15 @@ static int spi_nor_prep_and_lock_pe(struct spi_nor *nor, loff_t start, size_t le
+>>   	else
+>>   		ret = wait_event_killable(nor->rww.wait,
+>>   					  spi_nor_rww_start_pe(nor, start, len));
+>> +	if (ret)
+>> +		return ret;
+>>   
+>> -	return ret;
+>> +	if (nor->removed) {
+>> +		spi_nor_unlock_and_unprep_pe(nor, start, len);
+>> +		return -ENODEV;
+>> +	}
+>> +
+>> +	return 0;
+>>   }
+>>   
+>>   static void spi_nor_unlock_and_unprep_pe(struct spi_nor *nor, loff_t start, size_t len)
+>> @@ -1489,8 +1506,15 @@ static int spi_nor_prep_and_lock_rd(struct spi_nor *nor, loff_t start, size_t le
+>>   	else
+>>   		ret = wait_event_killable(nor->rww.wait,
+>>   					  spi_nor_rww_start_rd(nor, start, len));
+>> +	if (ret)
+>> +		return ret;
+>>   
+>> -	return ret;
+>> +	if (nor->removed) {
+>> +		spi_nor_unlock_and_unprep_rd(nor, start, len);
+>> +		return -ENODEV;
+>> +	}
+>> +
+>> +	return 0;
+>>   }
+>>   
+>>   static void spi_nor_unlock_and_unprep_rd(struct spi_nor *nor, loff_t start, size_t len)
+>> @@ -3186,7 +3210,12 @@ static int spi_nor_init_params(struct spi_nor *nor)
+>>   {
+>>   	int ret;
+>>   
+>> -	nor->params = devm_kzalloc(nor->dev, sizeof(*nor->params), GFP_KERNEL);
+>> +	/* Keep params on the kref lifetime so it survives unbind (see probe). */
+>> +	if (nor->refcounted)
+>> +		nor->params = kzalloc(sizeof(*nor->params), GFP_KERNEL);
+>> +	else
+>> +		nor->params = devm_kzalloc(nor->dev, sizeof(*nor->params),
+>> +					   GFP_KERNEL);
+>>   	if (!nor->params)
+>>   		return -ENOMEM;
+>>   
+>> @@ -3420,6 +3449,22 @@ static void spi_nor_resume(struct mtd_info *mtd)
+>>   		dev_err(dev, "resume() failed\n");
+>>   }
+>>   
+>> +static void spi_nor_release(struct kref *kref)
+>> +{
+>> +	struct spi_nor *nor = container_of(kref, struct spi_nor, refcount);
+>> +
+>> +	kfree(nor->bouncebuf);
+>> +	kfree(nor->params);
+>> +	kfree(nor);
+>> +}
+>> +
+>> +static void spi_nor_release_device(void *data)
+>> +{
+>> +	struct spi_nor *nor = data;
+>> +
+>> +	kref_put(&nor->refcount, spi_nor_release);
+>> +}
+>> +
+>>   static int spi_nor_get_device(struct mtd_info *mtd)
+>>   {
+>>   	struct mtd_info *master = mtd_get_master(mtd);
+>> @@ -3434,6 +3479,12 @@ static int spi_nor_get_device(struct mtd_info *mtd)
+>>   	if (!try_module_get(dev->driver->owner))
+>>   		return -ENODEV;
+>>   
+>> +	if (nor->refcounted) {
+>> +		/* Cache the module: the spimem/controller chain may be freed by put time. */
+>> +		nor->controller_module = dev->driver->owner;
+>> +		kref_get(&nor->refcount);
+>> +	}
+>> +
+>>   	return 0;
+>>   }
+>>   
+>> @@ -3443,6 +3494,14 @@ static void spi_nor_put_device(struct mtd_info *mtd)
+>>   	struct spi_nor *nor = mtd_to_spi_nor(master);
+>>   	struct device *dev;
+>>   
+>> +	if (nor->refcounted) {
+>> +		module_put(nor->controller_module);
+>> +
+>> +		/* Must be last: this may free nor (and the embedded mtd). */
+>> +		kref_put(&nor->refcount, spi_nor_release);
+>> +		return;
+>> +	}
+>> +
+>>   	if (nor->spimem)
+>>   		dev = nor->spimem->spi->controller->dev.parent;
+>>   	else
+>> @@ -3655,8 +3714,11 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+>>   	 * than 1KB) after spi_nor_scan() returns.
+>>   	 */
+>>   	nor->bouncebuf_size = PAGE_SIZE;
+>> -	nor->bouncebuf = devm_kmalloc(dev, nor->bouncebuf_size,
+>> -				      GFP_KERNEL);
+>> +	if (nor->refcounted)
+>> +		nor->bouncebuf = kmalloc(nor->bouncebuf_size, GFP_KERNEL);
+>> +	else
+>> +		nor->bouncebuf = devm_kmalloc(dev, nor->bouncebuf_size,
+>> +					      GFP_KERNEL);
+>>   	if (!nor->bouncebuf)
+>>   		return -ENOMEM;
+>>   
+>> @@ -3788,10 +3850,21 @@ static int spi_nor_probe(struct spi_mem *spimem)
+>>   	if (ret)
+>>   		return ret;
+>>   
+>> -	nor = devm_kzalloc(dev, sizeof(*nor), GFP_KERNEL);
+>> +	/*
+>> +	 * An open /dev/mtdX handle can outlive unbind, so manage the spi_nor
+>> +	 * with a kref and drop the probe-time reference from a devres callback.
+>> +	 */
+>> +	nor = kzalloc_obj(*nor, GFP_KERNEL);
+>>   	if (!nor)
+>>   		return -ENOMEM;
+>>   
+>> +	kref_init(&nor->refcount);
+>> +	nor->refcounted = true;
+>> +
+>> +	ret = devm_add_action_or_reset(dev, spi_nor_release_device, nor);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>>   	nor->spimem = spimem;
+>>   	nor->dev = dev;
+>>   	spi_nor_set_flash_node(nor, dev->of_node);
+>> @@ -3830,9 +3903,8 @@ static int spi_nor_probe(struct spi_mem *spimem)
+>>   	 */
+>>   	if (nor->params->page_size > PAGE_SIZE) {
+>>   		nor->bouncebuf_size = nor->params->page_size;
+>> -		devm_kfree(dev, nor->bouncebuf);
+>> -		nor->bouncebuf = devm_kmalloc(dev, nor->bouncebuf_size,
+>> -					      GFP_KERNEL);
+>> +		kfree(nor->bouncebuf);
+>> +		nor->bouncebuf = kmalloc(nor->bouncebuf_size, GFP_KERNEL);
+>>   		if (!nor->bouncebuf)
+>>   			return -ENOMEM;
+>>   	}
+>> @@ -3853,6 +3925,25 @@ static int spi_nor_remove(struct spi_mem *spimem)
+>>   {
+>>   	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
+>>   
+>> +	/*
+>> +	 * Drain in-flight operations and set nor->removed under the lock so
+>> +	 * later ones fail with -ENODEV before touching SPI-core state (spimem,
+>> +	 * dirmaps) freed after this returns. The wait is uninterruptible.
+>> +	 */
+>> +	if (!spi_nor_use_parallel_locking(nor))
+>> +		mutex_lock(&nor->lock);
+>> +	else
+>> +		wait_event(nor->rww.wait, spi_nor_rww_start_exclusive(nor));
+>> +
+>> +	nor->removed = true;
+>> +
+>> +	if (!spi_nor_use_parallel_locking(nor)) {
+>> +		mutex_unlock(&nor->lock);
+>> +	} else {
+>> +		spi_nor_rww_end_exclusive(nor);
+>> +		wake_up(&nor->rww.wait);
+>> +	}
+>> +
+>>   	spi_nor_restore(nor);
+>>   
+>>   	/* Clean up MTD stuff. */
+>> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+>> index 4b92494827b1..f8d5e3ca8371 100644
+>> --- a/include/linux/mtd/spi-nor.h
+>> +++ b/include/linux/mtd/spi-nor.h
+>> @@ -7,6 +7,7 @@
+>>   #define __LINUX_MTD_SPI_NOR_H
+>>   
+>>   #include <linux/bitops.h>
+>> +#include <linux/kref.h>
+>>   #include <linux/mtd/mtd.h>
+>>   #include <linux/spi/spi-mem.h>
+>>   
+>> @@ -352,6 +353,18 @@ struct spi_nor_flash_parameter;
+>>    * @rww.used_banks:	bitmap of the banks in use
+>>    * @dev:		pointer to an SPI device or an SPI NOR controller device
+>>    * @spimem:		pointer to the SPI memory device
+>> + * @refcount:		reference count keeping the kzalloc()'d spi_nor alive
+>> + *			past driver unbind until the last MTD user releases the
+>> + *			device. Only valid when @refcounted is set.
+>> + * @controller_module:	controller module pinned in spi_nor_get_device() so
+>> + *			spi_nor_put_device() need not walk the possibly freed
+>> + *			spimem/controller chain. Only valid when @refcounted is
+>> + *			set.
+>> + * @refcounted:		true when the spi_nor lifetime is kref-managed (the
+>> + *			spi-mem spi_nor_probe() path). Legacy controllers that
+>> + *			embed or devres-allocate spi_nor leave this clear.
+>> + * @removed:		set on unbind to make subsequent MTD operations fail
+>> + *			with -ENODEV instead of touching released resources.
+>>    * @bouncebuf:		bounce buffer used when the buffer passed by the MTD
+>>    *                      layer is not DMA-able
+>>    * @bouncebuf_size:	size of the bounce buffer
+>> @@ -393,6 +406,10 @@ struct spi_nor {
+>>   	} rww;
+>>   	struct device		*dev;
+>>   	struct spi_mem		*spimem;
+>> +	struct kref		refcount;
+>> +	struct module		*controller_module;
+>> +	bool			refcounted;
+>> +	bool			removed;
+>>   	u8			*bouncebuf;
+>>   	size_t			bouncebuf_size;
+>>   	u8			*id;
+> 
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
