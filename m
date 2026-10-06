@@ -4,96 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93A3FCA5FFC
-	for <linux-mtd@archiver.kernel.org>; Tue,  6 Oct 2026 10:41:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4CF5FCA5FFC
+	for <linux-mtd@archiver.kernel.org>; Tue,  6 Oct 2026 15:40:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=hvzax0BnvMJEmEghJ8vz/pcdeMU4M+Zzp77Kr4Hxu+s=; b=sCEi98Xpt8nn6j
-	7/yGjcbRcKYJfUbvcL4n01hfOFHCYVN9WTd0lrHIQy1sD6Qcxf943cN4RNb0buPru9vULN8xM1h1M
-	F8fTbTZTCYnzs0yDoJhZM2Yk5ifSWHnAEF1/GJLw2G/gt6DLev8WqhbsKaqDU1sx7fG4VLln70Je+
-	9ELpP4qoyy/fLU3LPMkvG4HYeDp8N6pzeNREN4RsopGei8eh0muhZzX0WCoJA9tw30P3jOM87auKT
-	q2IO0myl8S4TTx/7+GdIR3x7J34IO8TDQ0z6BDzZTn57XTfFbTE9H6rwJDgbM3tc0IDROy8by2+iM
-	eBe69pbxLkMWM/LafygA==;
+	List-Owner; bh=ddUDl/606PNjomNi4OvYGgsdK6LMwgyyPfGGs5NuV3k=; b=f3zuoNr44UIj+r
+	Au4IpBY1jL5wPG9NtwcQrkZh2rtK18f6+auhZURQNqabZPAhOuPLv1piUGc7kPz/YI3TDY0zlqU1e
+	offQg8xniUBmIvjf3TldRDtBb8mAqKGL8IUmS2e+tAetihOoL+dHoRcntBKgFtRe4JdYj7DdkLLup
+	1O4SDU2Pz/jxAiJijv4d9epg/PMUYg87ZNcDaMIgd9UzdFYPOkVhPh0lV6ZEpH8s4dCRqaKeSYAxp
+	+9SmJopP5mn9lyKSEVb+QEVIhiItAKLdK9v+cJz5lUdvIuZqni9nhyc0sXZo8J7VZNsQCXu0dJy47
+	7yxAd3Prxn8UiVu7kB0g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xE2cA-00000000Xa2-2Uij;
-	Tue, 06 Oct 2026 10:41:42 +0000
-Received: from mail-wr1-x42c.google.com ([2a00:1450:4864:20::42c])
+	id 1xE7H0-000000013BG-1FxR;
+	Tue, 06 Oct 2026 15:40:10 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xE2c7-00000000XZM-21JY
+	id 1xE7Gv-000000013B0-3poJ
 	for linux-mtd@lists.infradead.org;
-	Tue, 06 Oct 2026 10:41:41 +0000
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-48c4649b3aaso339519f8f.2
-        for <linux-mtd@lists.infradead.org>; Tue, 06 Oct 2026 03:41:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1791283297; x=1791888097; darn=lists.infradead.org;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=u9EgTKWvY83NOreoEpihq3C4uu+WwUDt2rznQTC8D2g=;
-        b=AHJi9vlRqRzze5WNcWOfDy2pLgBkFx7S4g2mwKDE+snsuXCYOhIOI++6I8s4ygDIp2
-         g47CwdzdKLYDM3JikSAw4jHOG/DVYG7wehvA39Rolye9vm0S0TVU7pFCqSNw/STFzeto
-         xHWa0UDzW+yobASJR90oqeKvHezaxLqvg3F0+m0ckTbU6njU8Otafc13jzS9R5FEN6tT
-         qXT0GYMdtMD30m+Mg4dHRhhHONePm83P6jdMJ4sBgHK9qqP9e5dxj8QnD1/8zA8RQC9u
-         DF4B6F/nsFso/HoudpaKBxpippGdq5qU4dwM5u4HVPOGN0zevolpHJLVwwRCLjAzbWtk
-         dOaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1791283297; x=1791888097;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=u9EgTKWvY83NOreoEpihq3C4uu+WwUDt2rznQTC8D2g=;
-        b=dOr+Z6gxoCjzGDXFrqKRy4z+S54zQVFCKWWwHMCELgIEY7lU7/zrf8jKgfDwABrlz5
-         YUqrymMFgLYcWdB3pptuNAx9FIvfE4Q3yy0o8w93RfPQBq2SodeDqkB0NTJIMVpjq2UZ
-         AfzyHKwnZmtyLZV8I2sDCr6j33HbULXT01NvpyF8AK9vkGL6wNtcA/GMJ/HNjaydyeR/
-         tCjIhAdLRY5Wx9OsJj/O3T2ioLGxUKkgmST70KNPG0Cm8R1zT1Z1+YIeuWvDEIXIjbFZ
-         r2tuclgzqWOFqX7CTlu6iu7mCoTrdOFMgWJqt+6lEkafdKd/5EGkQOS8sTz/myJtqx/b
-         o+Ug==
-X-Forwarded-Encrypted: i=1; AKwUvByASMxbXtRlPBzWwJ29M+FQ/euHzu8Mtfi6mupIqPiEAZq/Wv6Y4N556xMrEURZNotuZs4E2Q+/IA4=@lists.infradead.org
-X-Gm-Message-State: AFq9FYKaB23TENpnKc5LGIl5hn7fGHjT83UipuLAqL+hseMaIBTlRxz7
-	46xFWKL7ttB8KaFBP9Q2GNbKjJPNqHFhX2GAoWyyIaA+9so4/xNsuZU=
-X-Gm-Gg: AYBFou0Xzxfs5yZ8RA3XUmQFa6PItp/v0MLafWqFxoqOpF+x9TwJH6gwjYsM5K8SLec
-	vbMXv2RywCT69frW3L4U8l2bVKDMnP6ufNNroWv6RnAeW7hkMd6l8r75Uj8+6b1nAkWmjvyZB5a
-	HTLaAR3a/nfCu+akqC5hYAnyIZ+iM3CdqfJiIQDA5UziE67F9EtZgLTkS6GRHRbSozS8frwfEPx
-	R0nobl2iTUBp56msu4kqrsuvxDztEtppqwoWpqV0ORbq6bP/8vrAwSbZsiLNVlXIkdsXewaJ7ZX
-	lzkSZGQQDgoXT1dQ6VXZexFQe1njcl/AOqdzAnpB5km0QtdL2NAYif+cK0OiEKLvSNGBUADDgVa
-	/OiCQIzcbxQAQiBOQG5U8Bv5UUSUTm6kRo4IjHgyvMtvy2oGpbxqAU4jmxbRJ7l0z3iDjLR2G8k
-	R7XGdno5xikInHQNDKiD0tr43bMD2EmdUrsny0IsETqxKpT+q15iffaFB1ZquI1NC/nEtwaeY17
-	MFvlfPhMMF8poh5y4otAWnDOqwhZGW59ShnvMzm8xrCuAadcA==
-X-Received: by 2002:a05:6000:2dc7:b0:48c:41c2:46d6 with SMTP id ffacd0b85a97d-48c6d1c1c1amr2258645f8f.35.1791283296969;
-        Tue, 06 Oct 2026 03:41:36 -0700 (PDT)
-Received: from lithos ([2a02:810d:4a94:b300:d1f6:bf6:35f2:f07c])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-48c622704a5sm22046834f8f.15.2026.10.06.03.41.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Oct 2026 03:41:36 -0700 (PDT)
-Date: Tue, 6 Oct 2026 12:41:31 +0200
-From: Florian Fuchs <fuchsfl@gmail.com>
-To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	Rich Felker <dalias@libc.org>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Adrian McMenamin <adrianmcmenamin@gmail.com>,
-	linux-kernel@vger.kernel.org, Dmitry Torokhov <dtor@mail.ru>,
-	linux-input@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-sh@vger.kernel.org
-Subject: Re: [PATCH 02/26] Input: maple_keyb - fix key press detection
-Message-ID: <asTQW0F2nqp2Kj86@lithos>
-References: <20260703-b4-maple-cleanup-v1-0-41e424964da5@gmail.com>
- <20260703-b4-maple-cleanup-v1-2-41e424964da5@gmail.com>
+	Tue, 06 Oct 2026 15:40:06 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with ESMTP id 0FDF9601E4;
+	Tue,  6 Oct 2026 15:40:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E6E01F0089B;
+	Tue,  6 Oct 2026 15:40:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1791301204;
+	bh=Ud3Mt/eIMuHm80b+YlNkzvZDtJS39p8/gm1/Bfm2Ux4=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=QltzygPTNr3rER0cqkdv/+pcD+3gMlNj2Ji7UT/OOUVqjrzs1t1pQPK0LcTnTrUkV
+	 aoLI+K1laGJ2J3TXK+Kz4TqXtIAdMKhrgDYz4I1KtWBVs0qkCVQ72B2b5OjV/7Q5kZ
+	 6KHO/+2HOUQbFbrk3hUHoUedEmyho5i23LALWclxxA84xXP6+7Rn8FyvMpsh/ezrtQ
+	 NyftbK4OwE4V3bQU+B8CqIIjq0GjqVbKNJxhIqBEkITCtrqk5+JuYqi3lv4R+5azt5
+	 GuNAsvW7crOF1CZkHP8bmbh0GJb0sLjFwcgjpNvbucNmy04bWu9cPsQQUxFQKmm8wG
+	 6aoSNxtMVUcLA==
+From: Sasha Levin <sashal@kernel.org>
+To: stable@vger.kernel.org
+Cc: Jan Kara <jack@suse.cz>,
+	Joern Engel <joern@lazybastard.org>,
+	linux-mtd@lists.infradead.org,
+	Christoph Hellwig <hch@lst.de>,
+	Christian Brauner <brauner@kernel.org>,
+	Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 6.6.y 1/3] mtd: block2mtd: Convert to bdev_open_by_dev/path()
+Date: Tue,  6 Oct 2026 11:39:59 -0400
+Message-ID: <20261006153928.760780-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.53.0
+In-Reply-To: <2026100520-kilogram-result-00fb@gregkh>
+References: <2026100520-kilogram-result-00fb@gregkh>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260703-b4-maple-cleanup-v1-2-41e424964da5@gmail.com>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261006_034139_539544_77422C99 
-X-CRM114-Status: GOOD (  24.71  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -110,56 +73,189 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 03 Jul 22:57, Dmitry Torokhov wrote:
-> The key press detection logic was using ptr instead of !ptr (where ptr is
-> the result of memchr searching for the new key in the old keys).
-> 
-> If ptr is not NULL, it means the key was already pressed in the previous
-> report, so it is not a new press. If ptr is NULL, it means the key was
-> not pressed before, so it is a new press.
-> 
-> Using ptr instead of !ptr caused new presses to be ignored in the first
-> poll cycle (only reported in the second cycle if still held, because
-> then it was in 'old'), and caused redundant press events to be sent
-> on every subsequent poll while the key was held.
-> 
-> Fix this by using !ptr for press detection, matching the release
-> detection logic.
-> 
-> Fixes: b11d2127c489 ("Input: add support for SEGA Dreamcast keyboard")
-> Assisted-by: Antigravity:gemini-3.5-flash
-> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> ---
->  drivers/input/keyboard/maple_keyb.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/input/keyboard/maple_keyb.c b/drivers/input/keyboard/maple_keyb.c
-> index 3d5538dd4f23..623d7951405b 100644
-> --- a/drivers/input/keyboard/maple_keyb.c
-> +++ b/drivers/input/keyboard/maple_keyb.c
-> @@ -107,7 +107,7 @@ static void dc_scan_kbd(struct dc_kbd *kbd)
->  		}
->  		ptr = memchr(kbd->old + 2, kbd->new[i], 6);
->  		code = kbd->new[i];
-> -		if (code > 3 && ptr) {
-> +		if (code > 3 && !ptr) {
->  			keycode = kbd->keycode[code];
->  			if (keycode) {
->  				input_event(dev, EV_MSC, MSC_SCAN, code);
-> 
-> -- 
-> 2.55.0.rc0.799.gd6f94ed593-goog
-> 
+From: Jan Kara <jack@suse.cz>
 
-Hi Dmitry,
-do you want to pick this patch as well? It improves key press detection,
-so would be nice.
+[ Upstream commit 3817d4b11212ca9d49d6e7141d41524aa48791c5 ]
 
-Tested-By: Florian Fuchs <fuchsfl@gmail.com>
+Convert block2mtd to use bdev_open_by_dev() and bdev_open_by_path() and
+pass the handle around.
 
+CC: Joern Engel <joern@lazybastard.org>
+CC: linux-mtd@lists.infradead.org
+Acked-by: Christoph Hellwig <hch@lst.de>
+Acked-by: Christian Brauner <brauner@kernel.org>
+Signed-off-by: Jan Kara <jack@suse.cz>
+Link: https://lore.kernel.org/r/20230927093442.25915-12-jack@suse.cz
+Signed-off-by: Christian Brauner <brauner@kernel.org>
+Stable-dep-of: b5965c422116 ("mtd: block2mtd: Fix divide error when erase_size is zero")
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/mtd/devices/block2mtd.c | 51 +++++++++++++++++++--------------
+ 1 file changed, 29 insertions(+), 22 deletions(-)
 
-Regards
-Florian
+diff --git a/drivers/mtd/devices/block2mtd.c b/drivers/mtd/devices/block2mtd.c
+index be106dc20ff3c..aa44a23ec0451 100644
+--- a/drivers/mtd/devices/block2mtd.c
++++ b/drivers/mtd/devices/block2mtd.c
+@@ -37,7 +37,7 @@
+ /* Info for the block device */
+ struct block2mtd_dev {
+ 	struct list_head list;
+-	struct block_device *blkdev;
++	struct bdev_handle *bdev_handle;
+ 	struct mtd_info mtd;
+ 	struct mutex write_mutex;
+ };
+@@ -55,7 +55,8 @@ static struct page *page_read(struct address_space *mapping, pgoff_t index)
+ /* erase a specified part of the device */
+ static int _block2mtd_erase(struct block2mtd_dev *dev, loff_t to, size_t len)
+ {
+-	struct address_space *mapping = dev->blkdev->bd_inode->i_mapping;
++	struct address_space *mapping =
++				dev->bdev_handle->bdev->bd_inode->i_mapping;
+ 	struct page *page;
+ 	pgoff_t index = to >> PAGE_SHIFT;	// page index
+ 	int pages = len >> PAGE_SHIFT;
+@@ -105,6 +106,8 @@ static int block2mtd_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 		size_t *retlen, u_char *buf)
+ {
+ 	struct block2mtd_dev *dev = mtd->priv;
++	struct address_space *mapping =
++				dev->bdev_handle->bdev->bd_inode->i_mapping;
+ 	struct page *page;
+ 	pgoff_t index = from >> PAGE_SHIFT;
+ 	int offset = from & (PAGE_SIZE-1);
+@@ -117,7 +120,7 @@ static int block2mtd_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 			cpylen = len;	// this page
+ 		len = len - cpylen;
+ 
+-		page = page_read(dev->blkdev->bd_inode->i_mapping, index);
++		page = page_read(mapping, index);
+ 		if (IS_ERR(page))
+ 			return PTR_ERR(page);
+ 
+@@ -139,7 +142,8 @@ static int _block2mtd_write(struct block2mtd_dev *dev, const u_char *buf,
+ 		loff_t to, size_t len, size_t *retlen)
+ {
+ 	struct page *page;
+-	struct address_space *mapping = dev->blkdev->bd_inode->i_mapping;
++	struct address_space *mapping =
++				dev->bdev_handle->bdev->bd_inode->i_mapping;
+ 	pgoff_t index = to >> PAGE_SHIFT;	// page index
+ 	int offset = to & ~PAGE_MASK;	// page offset
+ 	int cpylen;
+@@ -194,7 +198,7 @@ static int block2mtd_write(struct mtd_info *mtd, loff_t to, size_t len,
+ static void block2mtd_sync(struct mtd_info *mtd)
+ {
+ 	struct block2mtd_dev *dev = mtd->priv;
+-	sync_blockdev(dev->blkdev);
++	sync_blockdev(dev->bdev_handle->bdev);
+ 	return;
+ }
+ 
+@@ -206,10 +210,10 @@ static void block2mtd_free_device(struct block2mtd_dev *dev)
+ 
+ 	kfree(dev->mtd.name);
+ 
+-	if (dev->blkdev) {
+-		invalidate_mapping_pages(dev->blkdev->bd_inode->i_mapping,
+-					0, -1);
+-		blkdev_put(dev->blkdev, NULL);
++	if (dev->bdev_handle) {
++		invalidate_mapping_pages(
++			dev->bdev_handle->bdev->bd_inode->i_mapping, 0, -1);
++		bdev_release(dev->bdev_handle);
+ 	}
+ 
+ 	kfree(dev);
+@@ -219,10 +223,10 @@ static void block2mtd_free_device(struct block2mtd_dev *dev)
+  * This function is marked __ref because it calls the __init marked
+  * early_lookup_bdev when called from the early boot code.
+  */
+-static struct block_device __ref *mdtblock_early_get_bdev(const char *devname,
++static struct bdev_handle __ref *mdtblock_early_get_bdev(const char *devname,
+ 		blk_mode_t mode, int timeout, struct block2mtd_dev *dev)
+ {
+-	struct block_device *bdev = ERR_PTR(-ENODEV);
++	struct bdev_handle *bdev_handle = ERR_PTR(-ENODEV);
+ #ifndef MODULE
+ 	int i;
+ 
+@@ -230,7 +234,7 @@ static struct block_device __ref *mdtblock_early_get_bdev(const char *devname,
+ 	 * We can't use early_lookup_bdev from a running system.
+ 	 */
+ 	if (system_state >= SYSTEM_RUNNING)
+-		return bdev;
++		return bdev_handle;
+ 
+ 	/*
+ 	 * We might not have the root device mounted at this point.
+@@ -249,19 +253,20 @@ static struct block_device __ref *mdtblock_early_get_bdev(const char *devname,
+ 		wait_for_device_probe();
+ 
+ 		if (!early_lookup_bdev(devname, &devt)) {
+-			bdev = blkdev_get_by_dev(devt, mode, dev, NULL);
+-			if (!IS_ERR(bdev))
++			bdev_handle = bdev_open_by_dev(devt, mode, dev, NULL);
++			if (!IS_ERR(bdev_handle))
+ 				break;
+ 		}
+ 	}
+ #endif
+-	return bdev;
++	return bdev_handle;
+ }
+ 
+ static struct block2mtd_dev *add_device(char *devname, int erase_size,
+ 		char *label, int timeout)
+ {
+ 	const blk_mode_t mode = BLK_OPEN_READ | BLK_OPEN_WRITE;
++	struct bdev_handle *bdev_handle;
+ 	struct block_device *bdev;
+ 	struct block2mtd_dev *dev;
+ 	char *name;
+@@ -274,21 +279,23 @@ static struct block2mtd_dev *add_device(char *devname, int erase_size,
+ 		return NULL;
+ 
+ 	/* Get a handle on the device */
+-	bdev = blkdev_get_by_path(devname, mode, dev, NULL);
+-	if (IS_ERR(bdev))
+-		bdev = mdtblock_early_get_bdev(devname, mode, timeout, dev);
+-	if (IS_ERR(bdev)) {
++	bdev_handle = bdev_open_by_path(devname, mode, dev, NULL);
++	if (IS_ERR(bdev_handle))
++		bdev_handle = mdtblock_early_get_bdev(devname, mode, timeout,
++						      dev);
++	if (IS_ERR(bdev_handle)) {
+ 		pr_err("error: cannot open device %s\n", devname);
+ 		goto err_free_block2mtd;
+ 	}
+-	dev->blkdev = bdev;
++	dev->bdev_handle = bdev_handle;
++	bdev = bdev_handle->bdev;
+ 
+ 	if (MAJOR(bdev->bd_dev) == MTD_BLOCK_MAJOR) {
+ 		pr_err("attempting to use an MTD device as a block device\n");
+ 		goto err_free_block2mtd;
+ 	}
+ 
+-	if ((long)dev->blkdev->bd_inode->i_size % erase_size) {
++	if ((long)bdev->bd_inode->i_size % erase_size) {
+ 		pr_err("erasesize must be a divisor of device size\n");
+ 		goto err_free_block2mtd;
+ 	}
+@@ -306,7 +313,7 @@ static struct block2mtd_dev *add_device(char *devname, int erase_size,
+ 
+ 	dev->mtd.name = name;
+ 
+-	dev->mtd.size = dev->blkdev->bd_inode->i_size & PAGE_MASK;
++	dev->mtd.size = bdev->bd_inode->i_size & PAGE_MASK;
+ 	dev->mtd.erasesize = erase_size;
+ 	dev->mtd.writesize = 1;
+ 	dev->mtd.writebufsize = PAGE_SIZE;
+-- 
+2.53.0
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
