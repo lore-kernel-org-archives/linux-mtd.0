@@ -4,94 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2484CA5FFF
-	for <linux-mtd@archiver.kernel.org>; Wed,  7 Oct 2026 06:11:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A34CCCA5FFC
+	for <linux-mtd@archiver.kernel.org>; Wed,  7 Oct 2026 12:30:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=l2vXwJA+1Pk27Y8ReTygw/aQapsbbtY0yH8HrewQRtY=; b=wpeuki6LoWiPWu
-	boED26/qLkl3m695HVj0ZSLN3tkx3j5n0FP5ql3wgKkvbto3YFDqQlE4kyXr22Fsn6Hkkk0AOqFH7
-	nabMCyOZ8rb8wYrxyqXXkQazDG+8D1jV+d68yIn0omDdibjpeubxqPUFc1UhTRqsWeqBkiH1DyGN8
-	xHkukuR651F4zfnl67XJWlaCUYiIrv/mJt++CzUawKbExbuIxTXTm1l2xxS0XhLtekzWPTnevCXTS
-	oB6I39phnK6KBGE/4iaOBICN47Pz4i4aAMmkvjSYxH3yzpQNCPKBAvShsDgzmKWnggTR/6CfR/M8D
-	f5LmjCaAdP9vXbEyiAoA==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version:Subject:
+	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=CjxQjF/6akOa2ZOe2JOLDag8aZGKKgSC8mA1zGwepp4=; b=C5cj6orFRGOtaS
+	bKowchdqKs4B/szEyCvtetA6q6k7BdnXcAcvyCwqVPKJ9PjR33aQpGmBG28y51Kwp8JHUMdb1yeEa
+	iQnNqvoUmvI422LF47gMLGzaoF8MHBQjWpAk/tmkrf0BObWBVdlKSgY4e/M3ltuQnA9d37txtd1uV
+	ZiAeOORe/mL5f6d6yaoEQuiVlgemBKK6QyTTIjdsUAwzWpzEkhFZeJ6YgvUMCTFLg6nxMngYm81eM
+	lBgmSvwUVpxaDfcSo0qPNzY4Z1qj29QmwJjwPFlCaS9tJkSEKSLZxm8ra5MNl0snLPFAoBmIfaD8A
+	s4Q6Sn0bmQHQ6DOeTgXQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xEKsL-00000001kd1-2SiJ;
-	Wed, 07 Oct 2026 06:11:37 +0000
-Received: from mail-wm1-x334.google.com ([2a00:1450:4864:20::334])
+	id 1xEQmo-00000002RlV-1ylQ;
+	Wed, 07 Oct 2026 12:30:18 +0000
+Received: from mail.fris.de ([116.203.77.234])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xEKsH-00000001kcX-2kCk
+	id 1xEQmk-00000002RkP-316G
 	for linux-mtd@lists.infradead.org;
-	Wed, 07 Oct 2026 06:11:35 +0000
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-4a16aaf2067so41045435e9.0
-        for <linux-mtd@lists.infradead.org>; Tue, 06 Oct 2026 23:11:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1791353492; x=1791958292; darn=lists.infradead.org;
-        h=mime-version:user-agent:content-transfer-encoding:content-type
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to:content-type;
-        bh=vCVqv3zqss70uKOdyCuiJtU+zwuXKOXJXwtTH7wskzU=;
-        b=Irt4/VdAJeAfOdvU9+LQ+aRyckCfkzexejIokh7YxKWNHg1i47NqlWnyUl9a5LK1a0
-         19Ab1WX5MlSVigVd/JgZIftZ+bC/GpWwS85UUS3IXvYLDliQopxTZbFgpLclRgIt5fZk
-         v/eMVnN8Yje0/MOafDB/KS8+1SzIm8S9PKnOCE4dhRxobXV1Y3YKMeahcMfbmxHBoHlq
-         FxuwIQDvEe640HM7nLbpVKQ9ERyJPPuqe+7D8WNQ8VDj8bw9XvKmNzFyUG3ENys8JGcT
-         9RlvVKoJU5v4wEiqcuJD/uuk7pBbCrv5uGPuBMkvHvjdUq4jYf61UyNOucO7I46fo2oH
-         Xc5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1791353492; x=1791958292;
-        h=mime-version:user-agent:content-transfer-encoding:content-type
-         :references:in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=vCVqv3zqss70uKOdyCuiJtU+zwuXKOXJXwtTH7wskzU=;
-        b=aBS7fQHrchMIXfO68TpAnIFGdPrm2hPdV68Uiqu7H5+oRESJf17Rpzq3WfxMSl5TH/
-         dig1YM/S/0Rg/NzqxJBeVs9hEijM45pPJ7nkXjh1AbVLnULov2YUgeiB9/tGcIwm0nFH
-         Nl8+I7jrUjN/LKvujcUuwIjMhS7ATiakEti5AFIq8LPi651kuGCDXXSIUJT+Y1IrdYPv
-         oYNCbA0aETtS+eC7XMT+LdDkO5IZOayUSi35eJPL/Qv2+OnmYH2mZ0RhmrCiwSnJvOuD
-         IAbSIyEhGguGKvQLMqr0IhgOCsMmjL/9kaGiHxUu7mphn+aLIduPEpQAVoBSwGDYBkTn
-         OCSQ==
-X-Forwarded-Encrypted: i=1; AKwUvBxSg7gyZo11Pmb2K8/RV76A1rrURCiePfNV9Tl0+O7s3DbtfG0ugCiIoaVBteu4QT5h4ng9MOxFZyE=@lists.infradead.org
-X-Gm-Message-State: AFuF++nmZ4Ouv4VRSwrFfb83cih7FPmlnouCF9LBo0W7QfLxhUAlqqZD
-	j6rMuHCHQUByKllxTV9MErH+JWI4DiRIOvX+Re3pyqi5whP4N1VPQhNj
-X-Gm-Gg: AYBFou3DoEGnwNj+QvIzJnU2kWLLALGhy52NuD+loBCaPJwu+Sf/HCA6N/vPUSAMTxs
-	+k89EIU/JFx2ZPUTvmg/cDFRjwGPXByoiYq+8aisjBLFDISbpDik98KP2y7t8/CUar9Q/J0VvmK
-	HqCAAkzqspgJRS6krb0Yt8vzf4fs1SIked+ec1ecK1Fw6L9eYm+aeb35eyE0DpmT/0L1pfMZ1H7
-	/94UiYwX8y1ODNOLEMlDjlyvIIdEyR60qVbhSBzl94JVAswPU8hvRh+ur1WRLYr7nUC46DxRKvS
-	UFzm1OtStgR/vqIKopbGypAnBf1CPio+Y6HAF71KuA4Sbj9TGMze+WHBcLsADs4IcJ0ZvGy7dg1
-	/mlYJkd2DSuCotya8dkWN+XLDu6lLMmptzsQ7vM/sTSLtIWidfenHOqFFTpheZ7qKo9cPMNgqbF
-	V7He2300n7zVfM5PuU/yfY0moKPGivB97luNc6D+8Gqe+89SzFN8BhKsMvHbRVTWzrtYkIxRp3X
-	p7rU03TmUyN/DTzgAqIXuWjRh5neHzhNky7d2X64mULvfiSK0D8ZiEt1vSC+xpUYwwbiw==
-X-Received: by 2002:a05:600c:609a:b0:4a0:2540:b46 with SMTP id 5b1f17b1804b1-4a18031130emr15222165e9.12.1791353491497;
-        Tue, 06 Oct 2026 23:11:31 -0700 (PDT)
-Received: from [192.168.1.67] (225.217.137.78.rev.vodafone.pt. [78.137.217.225])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4a178a17ac9sm123244485e9.1.2026.10.06.23.11.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Oct 2026 23:11:31 -0700 (PDT)
-Message-ID: <dde19ed4315a58bb7f109486a05277f40c2a2842.camel@gmail.com>
-Subject: Re: [RFC PATCH 0/4] spi: cadence-xspi: add ACMD PIO support for
- NAND and NOR
-From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To: Jisheng Zhang <jszhang@kernel.org>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Nuno =?ISO-8859-1?Q?S=E1?=	
- <nuno.sa@analog.com>, Fei Xie <fei.xie@horizon.auto>, Mark Brown	
- <broonie@kernel.org>, linux-spi@vger.kernel.org,
- linux-mtd@lists.infradead.org
-Date: Wed, 07 Oct 2026 07:12:57 +0100
-In-Reply-To: <asXPFxphyuGXxsfH@xhacker>
-References: <20260921093701.1341766-1-fei.xie@horizon.auto>
-	 <arOwdePAmoghlakj@nsa> <20260928055005.3987624-1-fei.xie@horizon.auto>
-	 <arp-E1MDFLfV1ASq@nsa> <87bj99lef4.fsf@bootlin.com>
-	 <c79f5f39a5656fa838e424ad2ca72fe74a1d31a8.camel@gmail.com>
-	 <asXPFxphyuGXxsfH@xhacker>
-User-Agent: Evolution 3.60.2 (3.60.2-1.fc44) 
+	Wed, 07 Oct 2026 12:30:16 +0000
+From: Frieder Schrempf <frieder@fris.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fris.de; s=mail;
+	t=1791376208;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=WHMsdtMcyk+8Q+f7Ua8bIT0rYNbiiZ8R6YG0j+dFBSk=;
+	b=Tvks570HmrX/sOyHn2IezEuj4Eqk9Bce38YRQJWwnkCY11jA1euIfHUOCakHoMdeLgCXDW
+	rHokY57wex0pRoY8qZ+8XZ5srNc7OLYFckVZK/65Nb+bRVjGOuVTHpH8G81wGHMv6T5sIP
+	zkMVd4yT/j4LGDkBoEzO1LjW0+4/Q31Yzfu6Sq5rkcxj5gMPZCQzE4L9wJVw3DNXsuHdQZ
+	w3hAKEQ4oan9lvWE75XiZSn+PjRSbVvj2WBsDznPmuMBC+bIA0AfP4/oaZ7KRFoE2wSd10
+	pEDgOxyDOMVoce1HFQcyFW55kNOj8nKhH4Wh2vVogMqiUqR4eT/WQTPpqMS77A==
+Date: Wed, 07 Oct 2026 14:29:56 +0200
+Subject: [PATCH] mtd: spinand: Do not re-enable continuous reads vetoed
+ during variant selection
 MIME-Version: 1.0
+Message-Id: <20261007-spinand-cont-read-supported-v1-1-411facc04d99@kontron.de>
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/yXMwQrCMAyA4VcZORvoilPwVcRD16YaD2lJOhHG3
+ t1uHr//8K9gpEwGt2EFpQ8bF+kYTwPEV5AnIadu8M5fRueuaJUlSMJYpKFSSGhLrUUb9ZZC9lN
+ 2cz5P0A9VKfP3uN8ff9syvym2fQnb9gMFs2NdfwAAAA==
+X-Change-ID: 20261007-spinand-cont-read-supported-cdaf25f0bf45
+To: Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ Frieder Schrempf <frieder.schrempf@kontron.de>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4434;
+ i=frieder.schrempf@kontron.de; h=from:subject:message-id;
+ bh=AGtlnWnwwn/wJDdwmj4K1iSV5CIBncvnLXETXmWNH1w=;
+ b=owGbwMvMwCWWWSatKlDTJMZ4Wi2JIeuYtX994fLAgrWfdZXiHF07m3It1vyX/yb84WvowVIFF
+ k2Ny+EdpSwMYlwMsmKKLFL8Fq9tzWJ95I9VR8HMYWUCGcLAxSkAE1nHxPCH61dd9uyJToYeqVNO
+ T2RnSri1i7Hd7VeTxb0XBsfmJDquZPifZaOpwWBgaGTxhrnww7kjT11zjpeUuvxpFprP5Dtx3iU
+ 2AA==
+X-Developer-Key: i=frieder.schrempf@kontron.de; a=openpgp;
+ fpr=1A0F38EB3D365D4C1FC67B5A69761B25107C8216
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261006_231133_772427_BB358874 
-X-CRM114-Status: GOOD (  57.03  )
+X-CRM114-CacheID: sfid-20261007_053015_321776_D2E27EFE 
+X-CRM114-Status: GOOD (  17.58  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,154 +75,118 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gV2VkLCAyMDI2LTEwLTA3IGF0IDEyOjQ4ICswODAwLCBKaXNoZW5nIFpoYW5nIHdyb3RlOgo+
-IE9uIFR1ZSwgT2N0IDA2LCAyMDI2IGF0IDA3OjUwOjQ0QU0gKzAxMDAsIE51bm8gU8OhIHdyb3Rl
-Ogo+ID4gT24gU3VuLCAyMDI2LTEwLTA0IGF0IDE2OjM3ICswMjAwLCBNaXF1ZWwgUmF5bmFsIHdy
-b3RlOgo+ID4gPiBIZWxsbywKPiA+ID4gCj4gPiA+IE9uIDI4LzA5LzIwMjYgYXQgMTY6MDI6Mjcg
-KzAxLCBOdW5vIFPDoSA8bnVuby5zYUBhbmFsb2cuY29tPiB3cm90ZToKPiA+ID4gCj4gPiA+ID4g
-T24gTW9uLCBTZXAgMjgsIDIwMjYgYXQgMDE6NTA6MDVQTSArMDgwMCwgRmVpIFhpZSB3cm90ZToK
-PiA+ID4gPiAKPiA+ID4gPiBIaSBGZWksCj4gPiA+ID4gCj4gPiA+ID4gPiBIaSBOdW5vLCBNaXF1
-ZWwsCj4gPiA+ID4gPiAKPiA+ID4gPiA+IFRoYW5rcyBmb3IgYXNraW5nIGZvciBiZW5jaG1hcmtz
-LiBJIGJhY2twb3J0ZWQgdGhlIDMyLzY0LWJpdCBTVElHIFNETUEKPiA+ID4gPiA+IHRyYW5zZmVy
-IGNoYW5nZXMgZnJvbSB0aGUgcGF0Y2ggTnVubyBwb2ludGVkIHRvIFsxXSB0byBvdXIgdmVuZG9y
-IDYuMQo+ID4gPiA+ID4ga2VybmVsLCBhbmQgY29tcGFyZWQgdGhhdCBTVElHIHBhdGggYWdhaW5z
-dCB0aGUgQUNNRCBTUEkgTkFORCBwYXRoIGZyb20KPiA+ID4gPiA+IHRoaXMgUkZDLiBJIGhhdmUg
-bm90IGFwcGxpZWQgTnVubydzIHNlcGFyYXRlIEFDTUQgcmVhZCBpbXBsZW1lbnRhdGlvbjsKPiA+
-ID4gPiA+IHRoZSBmaWd1cmVzIGJlbG93IGFyZSBmb3IgdGhlIGltcGxlbWVudGF0aW9uIGluIHRo
-aXMgUkZDLgo+ID4gPiA+ID4gCj4gPiA+ID4gPiBUaGUgZGV2aWNlIGlzIGEgR0Q1RjRHTThSRSBT
-UEkgTkFORCAoMiBLaUIgcGFnZXMsIDEyOCBLaUIgZXJhc2VibG9ja3MpCj4gPiA+ID4gPiBvbiBh
-IEhvcml6b24gSjZCIGJvYXJkLCBydW5uaW5nIGF0IDgwIE1IeiBpbiBxdWFkIFNEUiBtb2RlLiBC
-b3RoIHBhdGhzCj4gPiA+ID4gPiB1c2VkIHRoZSBzYW1lIGJvYXJkIFBIWSBjb25maWd1cmF0aW9u
-LiBTVElHIG5lZWRlZCBvbmUgYWRkaXRpb25hbCBkdW1teQo+ID4gPiA+ID4gY2xvY2sgZm9yIHRo
-ZSBFQmggcmVhZC1jYWNoZSBjb21tYW5kIG9uIHRoaXMgYm9hcmQgdG8gcmV0dXJuIGNvcnJlY3QK
-PiA+ID4gPiA+IGRhdGEgYXQgODAgTUh6LiBUaGlzIGlzIGEgbG9jYWwgdGVzdCBhZGp1c3RtZW50
-LCBub3QgcGFydCBvZiB0aGUgcG9zdGVkCj4gPiA+ID4gPiBSRkMgb3IgWzFdOyBJIGV4Y2x1ZGVk
-IHRoZSBpbmNvcnJlY3QgU1RJRyByZWFkcyBmcm9tIHRoZSBjb21wYXJpc29uLgo+ID4gPiA+ID4g
-Cj4gPiA+ID4gPiBJIHJhbiBmbGFzaF9zcGVlZCAtYyA1IC1kIC9kZXYvbXRkMTggdGhyZWUgdGlt
-ZXMgd2l0aCBlYWNoIG1vZGUuIFRoZQo+ID4gPiA+ID4gbnVtYmVycyBiZWxvdyBhcmUgdGhlIGFy
-aXRobWV0aWMgbWVhbnMsIGluIEtpQi9zOgo+ID4gPiA+ID4gCj4gPiA+ID4gPiDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgU1RJR8Kg
-wqDCoMKgwqAgQUNNRCBQSU8KPiA+ID4gPiA+IMKgIGVyYXNlYmxvY2sgd3JpdGUgc3BlZWTCoMKg
-wqDCoMKgIDM2ODXCoMKgwqDCoMKgwqDCoMKgwqAgMzU1NQo+ID4gPiA+ID4gwqAgZXJhc2VibG9j
-ayByZWFkIHNwZWVkwqDCoMKgwqDCoCAxMjQ2OMKgwqDCoMKgwqDCoMKgwqAgMTQyMjIKPiA+ID4g
-PiA+IMKgIHBhZ2Ugd3JpdGUgc3BlZWTCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDM2NzHCoMKgwqDC
-oMKgwqDCoMKgwqAgMzUxMAo+ID4gPiA+ID4gwqAgcGFnZSByZWFkIHNwZWVkwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoCAxMTkzMcKgwqDCoMKgwqDCoMKgwqAgMTM3MTYKPiA+ID4gPiA+IMKgIGVyYXNl
-IHNwZWVkwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDQwMDAwwqDCoMKgwqDCoMKgwqDC
-oCAzNzY0Nwo+ID4gPiA+IAo+ID4gPiA+IFNvIHRoaXMgZ29lcyBhbG9uZyB3aXRoIG15IGV4cGVj
-dGF0aW9ucy4gSSB0aGluayB3ZSBjYW4gYWxsIGFncmVlIHRoYXQKPiA+ID4gPiBQUk9HUkFNICsg
-RVJBU0UgaXMgbm90IHdvcnRoIHRoZSB0cm91YmxlPyBXZSBldmVuIGxvb3NlIHBlcmZvcm1hbmNl
-Li4uCj4gPiA+IAo+ID4gPiBZZWFoLgo+ID4gPiAKPiA+ID4gPiA+IEZvciBhIHNlcGFyYXRlIHNl
-cXVlbnRpYWwtcmVhZCB0ZXN0LCBJIGVyYXNlZCBhbmQgcHJvZ3JhbW1lZCB0aGUgZmlyc3QKPiA+
-ID4gPiA+IDY0IE1pQiB3aXRoIGtub3duIHJhbmRvbSBkYXRhLCB0aGVuIGNoZWNrZWQgdGhhdCBl
-YWNoIG1vZGUgcmVhZCBiYWNrCj4gPiA+ID4gPiB0aGUgY29tcGxldGUgYXJlYSBieXRlLWZvci1i
-eXRlLiBCb3RoIFNIQS0yNTYgaGFzaGVzIG1hdGNoZWQgdGhlIHNvdXJjZTsKPiA+ID4gPiA+IHRo
-ZSByZXBvcnRlZCBFQ0MgZmFpbHVyZSBjb3VudHMgd2VyZSB6ZXJvLiBJIHRoZW4gcmFuOgo+ID4g
-PiA+IAo+ID4gPiA+IFdoYXQgZG8geW91IG1lYW4gYnkgc2VxdWVudGlhbCByZWFkPyBEb2VzIHlv
-dXIgZmxhc2ggc3VwcG9ydHMgY29udGludW91cwo+ID4gPiA+IHJhZHMgKG9yIGJ1ZmZlcmVkIG1v
-ZGUgSSB0aGluaykuIElmIHNvLCBJIHdvdWxkIGV4cGVjdCBtdWNoIGJldHRlcgo+ID4gPiA+IG51
-bWJlciBmb3IgdGhlIEFDTUQgY2FzZS4gQnV0IHRoYXQgY2FuIGJlIHRoZSBpc3N1ZSBvZiBoYXZp
-bmcgYm90aCB0aGUKPiA+ID4gPiBjb250cm9sbGVyIGFuZCB0aGUgY2hpcCB0cnlpbmcgdG8gd2Fs
-ayBwYWdlcy4KPiA+ID4gCj4gPiA+IFNlcXVlbnRpYWwsIGNvbnRpbnVvdXMgYW5kIGJ1ZmZlcmVk
-IHNob3VsZCBtZWFuIHRoZSBzYW1lIGluIHRoZSBOQU5ECj4gPiA+IGNvbnRleHQuCj4gPiA+IAo+
-ID4gPiA+ID4gwqAgL3Zhci9idXN5Ym94L3RpbWUgLWYgJ3JlYWw9JWUgdXNlcj0lVSBzeXM9JVMg
-Y3B1PSVQJyBcCj4gPiA+ID4gPiDCoMKgwqAgZGQgaWY9L2Rldi9tdGQxOCBvZj0vZGV2L251bGwg
-YnM9MU0gY291bnQ9NjQKPiA+ID4gPiA+IAo+ID4gPiA+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgU1RJR8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgIEFDTUQgUElPCj4gPiA+ID4gPiDCoCBlbGFwc2VkICh0aHJlZSBydW5zKcKgwqDCoCA1LjMw
-LzUuMjgvNS4yNiBzwqAgNC42Ni80LjY1LzQuNjUgcwo+ID4gPiA+ID4gwqAgbWVhbiB0aHJvdWdo
-cHV0wqDCoMKgwqDCoMKgwqDCoCAxMi4xMiBNaUIvc8KgwqDCoMKgwqDCoCAxMy43NSBNaUIvcwo+
-ID4gPiA+ID4gwqAgbWVhbiBzeXN0ZW0gdGltZcKgwqDCoMKgwqDCoMKgIDMuNTUgc8KgwqDCoMKg
-wqDCoMKgwqDCoMKgwqAgMS4wNiBzCj4gPiA+ID4gPiDCoCBwcm9jZXNzIENQVSB1c2FnZcKgwqDC
-oMKgwqDCoCA2NyXCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDIyJQo+ID4gPiA+ID4gCj4g
-PiA+ID4gPiBPbiB0aGlzIE5BTkQsIEFDTUQgaW1wcm92ZXMgdGhlIDY0IE1pQiByZWFkIHRocm91
-Z2hwdXQgYnkgYWJvdXQgMTMuNSUKPiA+ID4gPiA+IGFuZCByZWR1Y2VzIHRoZSByZWFkaW5nIHBy
-b2Nlc3MncyBDUFUgdXNhZ2UgYnkgNDUgcGVyY2VudGFnZSBwb2ludHMuCj4gPiA+ID4gPiBUaGUg
-Zmxhc2hfc3BlZWQgcmVzdWx0cyBzaG93IGEgc2ltaWxhciBnYWluIGZvciByZWFkcywgaW5jbHVk
-aW5nCj4gPiA+ID4gPiBzaW5nbGUtcGFnZSByZWFkcy4KPiA+ID4gCj4gPiA+IEZZSSwgaWYgeW91
-IHB1bGwgYSByZWNlbnQgdmVyc2lvbiBvZiBtdGQtdXRpbHMsIGZsYXNoX3NwZWVkIGNhbgo+ID4g
-PiBiZW5jaG1hcmsgY29udGludW91cyByZWFkIGltcHJvdmVtZW50cyB3aXRoIHRoZSAtQyBvcHRp
-b24uCj4gPiA+IAo+ID4gPiA+ID4gSSBkbyBub3Qgc2VlIGEgcHJvZ3JhbSBvciBlcmFzZSB0aHJv
-dWdocHV0IGJlbmVmaXQ6Cj4gPiA+ID4gPiBBQ01EIGlzIHNsaWdodGx5IHNsb3dlciBmb3IgYm90
-aCBpbiB0aGlzIHNldHVwLiBUaGVzZSBhcmUgU1BJIE5BTkQKPiA+ID4gPiA+IHJlc3VsdHMgb25s
-eTsgSSBoYXZlIG5vdCBiZW5jaG1hcmtlZCB0aGUgTk9SIHBhdGggb24gdGhpcyBib2FyZC4KPiA+
-ID4gPiAKPiA+ID4gPiBTbyBDUFUgcmVzdWx0cyBhcmUgdGhlIGJpbmcgdGhpbmcgaGVyZS4gSSBn
-dWVzcyB3ZSBuZWVkIHRvIGRlY2lkZSBpZgo+ID4gPiA+IGl0J3Mgd29ydGggdGhlIGFtb3VudCBv
-ZiBjb21wbGV4aXR5IGl0IHJlcXVpcmVzIGZvciB0aGUgd2hvbGUgdGhpbmcgdG8KPiA+ID4gPiB3
-b3JrLiBBcyBJIG1lbnRpb25lZCwgaWYgdGhlIGNoaXAgaGFzIGNvbnRpbnVvdXMgbW9kZSBhbmQg
-d2UgdHJ5IHRvCj4gPiA+ID4gcmVhZCBhbnl0aGluZyBiaWdnZXIgdGhhbiBwYWdlIHNpemUgd2Ug
-c2hvdWxkIGxldCB0aGUgbmFuZCBjaGlwIHRvCj4gPiA+ID4gd2FsayB0aGUgcGFnZXMgYW5kIHRo
-YXQgbWVhbnMgdGhlIGJlaGF2aW9yIHdlIGhhdmUgdG9kYXkgKElNSE8gb2YKPiA+ID4gPiBjb3Vy
-c2UpOgo+ID4gPiA+IAo+ID4gPiA+IDB4MTMgKFNUSUcpICsgd2FpdCArIHJlYWQgZnJvbSBjYWNo
-ZSAoQUNNRCkKPiA+ID4gPiAKPiA+ID4gPiBJZiB3ZSdyZSBvbmx5IHJlYWRpbmcgYSBzaW5nbGUg
-cGFnZSB0aGVuIHRoZSBsb2dpYyBpbiB0aGlzIHNlcmllcyB3b3VsZAo+ID4gPiA+IHBheW9mZiAo
-c2xpZ2h0IHBlcmZvcm1hbmNlIGdhaW4gKyBzaWduaWZpY2FudCBkcm9wIGluIGNwdSBsb2FkKS4g
-T25lIHNpbXBsZQo+ID4gPiA+IHdheSBmb3IgZG9pbmcgdGhpcyBhcyBhIHN0YXJ0aW5nIHBvaW50
-IHdvdWxkIGJlOgo+ID4gPiA+IAo+ID4gPiA+ICogTmFuZCBoYXMgY29udCBtb2RlIC0+IHhzcGkg
-Y29udHJvbGxlciBkb2VzIG5vdGhpbmcgc3BlY2lhbAo+ID4gPiA+ICogTmFuZCBoYXMgbm8gY29u
-dCBtb2RlIC0+IEFnZ3JlZ2F0ZSB0aGUgeGZlcnMgdG9nZXRoZXIuCj4gPiA+IAo+ID4gPiBJJ20g
-ZmluZSB3aXRoIHN0YXRpYyBkZWNpc2lvbnMgbGlrZSB0aGF0LCBidXQgbXkgdW5kZXJzdGFuZGlu
-ZyBvZiB0aGUKPiA+ID4gYWJvdmUgaXMgdGhhdCBBQ01EIG1vZGUgaXMgdXNlZnVsIGZvciBhbGwg
-cmVhZHMuIHNvIEkgZG9uJ3QgZ2V0IHdoeSB5b3UKPiA+ID4gd291bGQgbm8gdXNlIGl0IGZvciBh
-bGwuIE1heWJlIGJlY2F1c2UgaXQgd291bGQgYnJlYWsgY29udGludW91cyByZWFkcz8KPiA+ID4g
-KHNvcnJ5IEkgbG9zdCBhIGJpdCBvZiB0aGUgY29udGV4dCBhbHJlYWR5KS4KPiA+IAo+ID4gRXhh
-Y3RseS4gSW4gQUNNRCwgaXMgYWxzbyBjYXBhYmxlIG9mICJ3YWxraW5nIHBhZ2VzIiBmb3IgcmVh
-ZHMgYmlnZ2VyIHRoYW4gcGFnZQo+ID4gc2l6ZQo+ID4gKGhlbmNlIHRoZSBuZWVkIHRvIGtub3cg
-dGhlIGZsYXNoIGdlb21ldHJ5KSBhbmQgSUlSQywgdGhhdCBkb2VzIG5vdCByZWFsbHkgd29yawo+
-ID4gd2VsbAo+ID4gd2hlbiB0aGUgZmxhc2ggaXMgYWxzbyBkb2luZyBpdC4KPiA+IAo+ID4gPiAK
-PiA+ID4gRm9yIHdyaXRlcyBhbmQgZXJhc2VzIGhvd2V2ZXIsIGl0IHNlZW1zIGxpa2Ugd2UgY291
-bGQga2VlcCB0aGUgU1RJRyBwYXRoLgo+ID4gPiAKPiA+ID4gPiBEb2luZyBzb21ldGhpbmcgZHlu
-YW1pYyB3b3VsZCBiZSBtdWNoIG1vcmUgY29tcGxleCBJIGd1ZXNzLiBXaXRoIHRoZQo+ID4gPiA+
-IGFib3ZlIHJlYXNvbmluZywgaGF2aW5nIHNvbWUgbWVtX2luZm8oKSBraW5kIG9mIHNwaV9tZW0g
-Y2FsbGJhY2sgdG8gdGVsbAo+ID4gPiA+IHVzIHRoaW5ncyBsaWtlIGdlb21ldHJ5LCBjb250aW51
-b3VzIG1vZGUgc3VwcG9ydCwgZXRjIHdvdWxkIGJlIGVub3VnaCB0bwo+ID4gPiA+IGhhbmRsZSB0
-aGUgYWJvdmUgSSB0aGluay4gVGhlIHJlYXNvbmluZyBpcyB0aGF0IHJlYWRpbmcgYSBuYW5kIHBh
-Z2UgaXMKPiA+ID4gPiBhbHdheXMgbGlrZSBzcGluYW5kX2xvYWRfcGFnZV9vcCgpIChvcGNvZGUg
-MHgxMykgKyBzcGluYW5kX3dhaXQoKSArCj4gPiA+ID4gc3BpbmFuZF9yZWFkX2Zyb21fY2FjaGVf
-b3AoKSBzbyB3ZSBjb3VsZCBwcm9iYWJseSBhZ2dyZWdhdGUgZXZlcnl0aGluZwo+ID4gPiA+IGlu
-IHRoZSBsYXN0IGNhbGwgb24gdGhlIGNvbnRyb2xsZXIgc2lkZSB3aXRob3V0IGNvbXBsaWNhdGlu
-ZyB0aGUgbmFuZCBjb3JlCj4gPiA+ID4gbG9naWMuCj4gPiA+IAo+ID4gPiBJbiBnZW5lcmFsLCBk
-cml2ZXJzIG1ha2luZyBhc3N1bXB0aW9ucyBoYXMgYmVlbiBhIGRpc2FzdGVyIGluIHRoZSByYXcK
-PiA+ID4gTkFORCB3b3JsZC4gVGhpcyB3YXMgdGhlIG1haW4gcmVhc29uIGZvciB0aGUgLT5leGVj
-X29wKCkgaW50cm9kdWN0aW9uCj4gPiA+IHRoZXJlOiBnaXZpbmcgdGhlIHdob2xlIG9wZXJhdGlv
-biB0byB0aGUgY29udHJvbGxlciBzbyBpdCBjYW4gZGVjaWRlCj4gPiA+IHdoYXQgdG8gZG8gd2l0
-aG91dCBndWVzc2luZy4gQnV0IHdlIHRoaW5raW5nIGF0IHRoZSBvcGVyYXRpb24gYm91bmRhcnks
-Cj4gPiA+IG5vdCBhdCB0aGUgInNldCBvZiBvcGVyYXRpb25zIiBsZXZlbC4gU2luY2UgLT5leGVj
-X29wKCkgaW4gdGhlIFNQSSBOQU5ECj4gPiA+IHN1YnN5c3RlbSBoYXMgYmVlbiB3cml0dGVuIGZv
-bGxvd2luZyB0aGUgc2FtZSBwaGlsb3NvcGh5LCBJIGZlYXIgd2UncmUKPiA+ID4gZ29pbmcgdG8g
-dHJ5IG1ha2Ugcm91bmRzIGZpdCBpbnNpZGUgc3F1YXJlcy4gT25lIG9mIHRoZSBwb3NzaWJsZQo+
-ID4gCj4gPiBGYWlyIGVub3VnaCEgQWdyZWVkCj4gPiAKPiA+ID4gYXBwcm9hY2ggd291bGQgYmUg
-dG8gbWltaWMgd2hhdCB3ZSd2ZSBkb25lIGZvciB0aGUgc29tZSBsaW1pdGVkCj4gPiA+IGNvbnRy
-b2xsZXJzOiBwYWNrIGV2ZXJ5dGhpbmcgaW4gb25lIHNpbmdsZSBvcCAoc2VlIHRoZSBfbW9ub2xp
-dGhpYwo+ID4gPiBzdWZmaXggaW4gZHJpdmVycy9tdGQvbmFuZC9yYXcvKS4gVGhhdCdzIGp1c3Qg
-b25lIGlkZWEuCj4gPiA+IAo+ID4gCj4gPiBJIGNhbiB0YWtlIGEgbG9vayBtb3N0bHkgZm9yIGN1
-cmlvc2l0eSBhcyBteSBpbnRlbnRpb24gaXMgbm90IHRvICJzdGVhbCIgdGhpcwo+ID4gd29yawo+
-ID4gZnJvbSBGZWkuIElmIGV2ZXJ5b25lIGFncmVlcyAoc3BlY2lhbGx5IEZlaSksIHdoYXQgSSBj
-YW4gZG8gaXMgdG8gc2VuZCBteSBzaW1wbGVyCj4gPiBwYXRjaGVzIHRoYXQganVzdCBzdXBwb3J0
-IEFDTUQgKHdpdGhvdXQgYW55IHNwZWNpYWwgZGlzdGluY3Rpb24gYmV0d2VlbiBOYW5kIGFuZAo+
-ID4gTm9yKQo+ID4gRm9yIE5hbmRzLCBJIGhhdmUgYSBtaXggb2YgU1RJRyBhbmQgQUNNRCwgd2hl
-cmUgYmlnIGdhaW5zIGNvbWUgZnJvbSBOYW5kcyB3aXRoCj4gPiBjb250Cj4gPiBtb2RlLgo+ID4g
-Cj4gPiBUaGVuIHdlIGNhbiBidWlsZCBvbiB0b3Agb2YgaXQgaW4gb3JkZXIgdG8gaW1wcm92ZSBO
-YW5kIHN1cHBvcnQgKG1vc3RseSBvbiBDUFUKPiA+IGxvYWQpLgo+IAo+IEknbSBhbHNvIGludGVy
-ZXN0ZWQgaW4gdGhpcyBkcml2ZXIncyBwZXJmb3JtYW5jZS4gQSBiaXQgb2ZmIHRoZSBzdWJqZWN0
-Cj4gYnV0IHJlbGF0ZWQgcXVlc3Rpb246IFVzdWFsbHksIHRoZSBTb2MgbWF5IGNvbm5lY3QgdGhl
-IHhzcGkgdG8gZG1hCj4gZW5naW5lLCBJJ20gY3VyaW91cyB3aGF0IHdvdWxkIGJlIHRoZSBiZW5l
-Zml0IG9mIGFkZGluZyBkbWEgZW5naW5lCj4gc3VwcG9ydCBpbnN0ZWFkIG9mIEFDTUQ/IElzIGRt
-YSBlbmdpbmUgc3VwcG9ydCBzaW1wbGVyIGFuZAo+IGlzIHRoZSBnYWluKHBlcmZvcm1hbmNlICsg
-Y3B1IGxvYWQpIG1vcmU/Cj4gCgpJJ20gbm90IGZhbWlsaWFyIHdpdGggdGhhdCBhcHByb2FjaCB0
-YmguIEJ1dCBJIHdvdWxkIGFzc3VtZSBwZXJmb3JtYW5jZSB0byBiZSBwcmV0dHkKbXVjaCBzaW1p
-bGFyIHRvIHdoYXQgSSBoYXZlIGdpdmVuIHRoYXQgQUNNRCB1c2VzIHRoZSBJUCBpbnRlcm5hbCBE
-TUEgZW5naW5lLiBCdXQgbm90CnVzaW5nIEFDTUQgbWVhbnMgbm90IGhhdmluZyB0aGUgY3B1IGdh
-aW5zIGF0IGxlYXN0IGZvciB0aGUgc21hbGxlciB0cmFuc2ZlcnMgYXMgd2UKd291bGQgbm90IGJl
-IGFibGUgdG8gYWdncmVnYXRlIHRyYW5zZmVycy4gRldJVywgZ2l2ZW4gdGhhdCB5b3UgbWlnaHQg
-bm90IGhhdmUgbG9va2VkCmF0IHRoZSB3aG9sZSB0aHJlYWQsIHRoaXMgaXMgd2hhdCBJIGhhdmU6
-CgpodHRwczovL2dpdGh1Yi5jb20vYW5hbG9nZGV2aWNlc2luYy9saW51eC9wdWxsLzM0NzgvY2hh
-bmdlcy80NzdlNjA5NTUwODU0NjU1MjA3MWI4MjVhNjY1MjJjZjY5N2MyN2MyCgotIE51bm8gU8Oh
-Cgo+IFJlZ2FyZHMKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3Rz
-LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+From: Frieder Schrempf <frieder.schrempf@kontron.de>
+
+spinand_match_and_init() clears cont_read_possible when the fastest
+continuous read variant is slower than the fastest read from cache
+variant, or when no SSDR/ODTR continuous read variant is supported by
+the controller. However, at that point cont_read_possible has not been
+set yet, and spinand_cont_read_init(), which runs later during
+spinand_init(), unconditionally sets it to true for any chip
+implementing ->set_cont_read().
+
+As a result, continuous reads end up being used while
+op_templates->cont_read_cache is NULL. spinand_create_dirmap() then does
+not provide a secondary template and spinand_read_from_cache_op() falls
+back to the regular read from cache operation while the chip is in
+continuous read mode. On Winbond chips, which do not expect the column
+address in this mode, this misaligns the data returned.
+
+Track the decision in a dedicated cont_read_unsupported flag and check it
+in spinand_cont_read_init() before enabling continuous reads.
+
+Fixes: 6eb7c193e751 ("mtd: spinand: Use secondary ops for continuous reads")
+Assisted-by: LLM
+Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+---
+I was using an LLM to check sync patches for U-Boot and the LLM reported
+a bug in the upstream kernel code. To me it looks like this is indeed a
+bug and the fix also looks correct to me, but I would like to mention, that
+this is purely LLM-generated and theoretical. I didn't verify the bug and
+the fix on actual hardware.
+
+@Miquel: Do you have a hardware setup that would be affected by this? Do
+you think there is a better fix?
+---
+ drivers/mtd/nand/spi/core.c | 9 +++++----
+ include/linux/mtd/spinand.h | 5 +++++
+ 2 files changed, 10 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index 95353777d7f7..e83341290ec3 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -995,7 +995,8 @@ static void spinand_cont_read_init(struct spinand_device *spinand)
+ 
+ 		if ((engine_type == NAND_ECC_ENGINE_TYPE_ON_DIE ||
+ 		     engine_type == NAND_ECC_ENGINE_TYPE_NONE) &&
+-		    !spi_mem_controller_is_capable(ctlr, no_cs_assertion))
++		    !spi_mem_controller_is_capable(ctlr, no_cs_assertion) &&
++		    !spinand->cont_read_unsupported)
+ 			spinand->cont_read_possible = true;
+ 	}
+ }
+@@ -1700,11 +1701,11 @@ int spinand_match_and_init(struct spinand_device *spinand,
+ 				    (read_op->addr.dtr && !op->addr.dtr) ||
+ 				    read_op->data.buswidth > op->data.buswidth ||
+ 				    (read_op->data.dtr && !op->data.dtr))
+-					spinand->cont_read_possible = false;
++					spinand->cont_read_unsupported = true;
+ 				else
+ 					spinand->ssdr_op_templates.cont_read_cache = op;
+ 			} else {
+-				spinand->cont_read_possible = false;
++				spinand->cont_read_unsupported = true;
+ 			}
+ 		}
+ 
+@@ -1736,7 +1737,7 @@ int spinand_match_and_init(struct spinand_device *spinand,
+ 			if (op)
+ 				spinand->odtr_op_templates.cont_read_cache = op;
+ 			else
+-				spinand->cont_read_possible = false;
++				spinand->cont_read_unsupported = true;
+ 		}
+ 
+ 		return 0;
+diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+index 5f4c00ae72a7..2c90426c4000 100644
+--- a/include/linux/mtd/spinand.h
++++ b/include/linux/mtd/spinand.h
+@@ -772,6 +772,10 @@ struct spinand_mem_ops {
+  *		suitable to use or not in general with this chip/configuration.
+  *		A per-transfer check must of course be done to ensure it is
+  *		actually relevant to enable this feature.
++ * @cont_read_unsupported: Set by the core during I/O variant selection when
++ *			   continuous reads cannot be used with the selected
++ *			   variants. Prevents @cont_read_possible from being
++ *			   set later on.
+  * @set_cont_read: Enable/disable the continuous read feature
+  * @priv: manufacturer private data
+  * @fact_otp: SPI NAND factory OTP info.
+@@ -810,6 +814,7 @@ struct spinand_device {
+ 	int (*configure_chip)(struct spinand_device *spinand,
+ 			      enum spinand_bus_interface iface);
+ 	bool cont_read_possible;
++	bool cont_read_unsupported;
+ 	int (*set_cont_read)(struct spinand_device *spinand,
+ 			     bool enable);
+ 	int (*set_randomizer)(struct spinand_device *spinand,
+
+---
+base-commit: a90ee4305c4a5df72c11b31dacfdc76e00fcf78a
+change-id: 20261007-spinand-cont-read-supported-cdaf25f0bf45
+
+Best regards,
+--  
+Frieder Schrempf <frieder.schrempf@kontron.de>
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
