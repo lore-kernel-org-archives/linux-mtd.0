@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E472CA9EDE
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29328CA9ED1
 	for <linux-mtd@archiver.kernel.org>; Mon, 12 Oct 2026 10:22:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,41 +12,42 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=2qG1pnuK7JPar2X5WLqyDCJX/rd+WFPEUYofO2tyLrk=; b=le6isexgbzhOoF
-	+tUDZc0kqybhJSn4HcByjTxeh0D11B4yknFb5JFh+p7AJLJBupLN+n/nfXj9abaT9obNtBdIJPT3Y
-	8ohdDsATUU37jjA8hqNoQhy2VsyKm9TKLBMCt0+wsbqOSrLhn2QrJDcF8h6qwWMCRRcX94Ez+ubqo
-	zVahS5vw2WBouiSE03Y1uNL/77IEePTe00ZREWViP40FjdEkhkc+cOHTuC7CbFFBYGAZHpcxZU2Rb
-	ZXvbJETzF1BeLZF+0uRbfSy5dRux3665b7MJbUpzUP4BHGEbxq2UEI9lzbXm6zhoiNbFosunZuqn4
-	coE6LUuAiMt0D9pwjA1A==;
+	List-Owner; bh=pd6eN7kAWSk6HQRN+teSrmPfKav5np1/Tj5glqoJ8iM=; b=dHIeGNLoFxTK13
+	Kw391hapmpUx1AIxSefKs3HOt8mc23tfMamxaZvxem6YyOa8BXG6IaC0x2CULXRpUVYXD5EH4XnnY
+	z4lnGb6G5Hah5Mz10MgnkVl5Ed4BfjbK6GK6fSfwBpmVXJ+ynapE3O3jaQy0MZq4IDDd5wetUdivO
+	SpVY9hPokqYKx8buieUFXx65Yd/oHGhg0ZroVbdTq02cBqZVLjcxI3I6y7iELGZMPvdJF/X8ThOmj
+	9Xt3KTl1gPrp8D//kuh7RZVlSnBNc/FKpoobWhuMUihhxVl6DNQsQlu9jhEFGG10c8r3aZGj43Gks
+	l2sfZhqXt81qkRNv6dJA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xGDAq-0000000ADSj-0qxj;
-	Mon, 12 Oct 2026 10:22:28 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1xGDAp-0000000ADR7-3YEB;
+	Mon, 12 Oct 2026 10:22:27 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xGDAm-0000000ADKg-1zSC
+	id 1xGDAi-0000000ADJe-4AJ6
 	for linux-mtd@lists.infradead.org;
 	Mon, 12 Oct 2026 10:22:25 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 3D5804047A;
-	Mon, 12 Oct 2026 10:22:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84E031F008A0;
+	by tor.source.kernel.org (Postfix) with ESMTP id 5718660142;
 	Mon, 12 Oct 2026 10:22:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9723C1F0089D;
+	Mon, 12 Oct 2026 10:22:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1791800544;
-	bh=KLZLkIiAjJEULoPvbaaMof2Wm7VaculwIYjOa+JEqTo=;
+	s=k20260515; t=1791800540;
+	bh=vF6wD0Zll72uTa36p+tHaKIxSo7ysyawmX89JEVH29o=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=EW2hoFBe86I1EkLnrP8pS5qeDmrh8bgHnspnlecNoVsMnw98T/im67V3DPUZKCJzA
-	 eKuolZDq3dxOyWtrIC3gpYXkAzEIU1Geq+O+eXURkjDoi6envgEz/2IgLc8mCome1A
-	 USyLrWsEAqizj48JLovGhLvNM2lHBI9ZlD1OX6qDEdi4Yn8lWHZj0RKbkcJaOb9h9x
-	 u9JkZ1hQAVBGbkbcOiZaCmhiEGGY+MiFdyBEi8wjiINze+s4doTkjowVZ2VNgxaPFh
-	 ZG3V6ZsdNyg2WlJTuFfDcEe7x9885WbLGzZHcB73ayuwdOoc0z6k9fhNdwKdEXIt0E
-	 EYLXcU2nC1/PQ==
+	b=lCmLFXMM5ukkg/GXugz2KLIScCuFj+rFIkgTEm6ia1LAK7q7aSB+WoMZ0pxCxa+jT
+	 fkAr8PakZEZhO8yCC3bBbkRpR8w42ACzv7gq+HkfEZl0kBTYx1VwPJpWHquj2l1mtx
+	 RQAT0lBXjnQcphTuMivDyejRQChssz2GMhrXCrXRy7iuBABZDqN1MmG248XgdCq2Be
+	 es9Q/YhAK/9OfsTyHh/URqK/AMY3OsLaOvnS1nkxJ36lOeoORIy3mIq2TJNH+H/pUZ
+	 QJFJ9SWGz+tJ4fpPb1rHNZLD/Tl8zovq+YkaIpA4dc3oYl8BYEOYQKC31q1OVOPJQx
+	 klmaHTllYLovw==
 From: Christian Brauner <brauner@kernel.org>
-Date: Mon, 12 Oct 2026 12:21:02 +0200
-Subject: [PATCH RFC 17/28] zonefs: don't set SB_RDONLY after I/O errors
+Date: Mon, 12 Oct 2026 12:21:01 +0200
+Subject: [PATCH RFC 16/28] ocfs2: don't set SB_RDONLY after filesystem
+ errors
 MIME-Version: 1.0
-Message-Id: <20261012-work-fs-sb_rdonly-v1-17-60743a3dc326@kernel.org>
+Message-Id: <20261012-work-fs-sb_rdonly-v1-16-60743a3dc326@kernel.org>
 References: <20261012-work-fs-sb_rdonly-v1-0-60743a3dc326@kernel.org>
 In-Reply-To: <20261012-work-fs-sb_rdonly-v1-0-60743a3dc326@kernel.org>
 To: Jan Kara <jack@suse.com>
@@ -57,14 +58,14 @@ Cc: Al Viro <viro@zeniv.linux.org.uk>, ecryptfs@vger.kernel.org,
  ocfs2-devel@lists.linux.dev, linux-btrfs@vger.kernel.org, 
  gfs2@lists.linux.dev, linux-efi@vger.kernel.org, 
  linux-mtd@lists.infradead.org, linux-xfs@vger.kernel.org, 
- "Christian Brauner (Amutable)" <brauner@kernel.org>, stable@vger.kernel.org
+ "Christian Brauner (Amutable)" <brauner@kernel.org>
 X-Mailer: b4 0.17-dev-3d1b8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=11381; i=brauner@kernel.org;
- h=from:subject:message-id; bh=JqcOU4hNR76h2J12g3Sc71Y635LG5rvEmOxfDFNsDz0=;
- b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWSd2TLZYMP/u86XOSacStvJxxH5Y3Yn8/HrC0or/5nMZ
- uN9vG2Nc0cpC4MYF4OsmCKLQ7tJuNxynorNRpkaMHNYmUCGMHBxCsBE8pIZGXZkfgpct1YogWXh
- ux36J7dU9u54Y9PyMf/3t/L/2y9I3Opi+CvcVazz5+E24a5Z7LfWvDzx65/y/bVtD+QlLppX/5k
- iGsMJAA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=18166; i=brauner@kernel.org;
+ h=from:subject:message-id; bh=8cupn7/EZREynB4Y9Hfo3FjJBbukyKDW4SYLCZDzvww=;
+ b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWSd2TJ5dfBm3Zw/T3oKxTgTL6UeuvjxzLeUu0/518n01
+ 1gfWBDu0lHKwiDGxSArpsji0G4SLrecp2KzUaYGzBxWJpAhDFycAjARpnJGhoOHctMntuk9ec43
+ 5eXUBSKGf82Mlx6POXxm943VVlt9opsZ/tkIfGlXumowRa0/d/uPhPJT6ouSv0QuZdF2Cnjb8NB
+ YkBEA
 X-Developer-Key: i=brauner@kernel.org; a=openpgp;
  fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 X-BeenThere: linux-mtd@lists.infradead.org
@@ -83,279 +84,474 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-zonefs sets SB_RDONLY from its I/O error handling without holding
-sb->s_umount. It does so in three places:
-
-- zonefs_handle_io_error() with errors=remount-ro, which is the default
-- __zonefs_io_error() when the zone report fails, for every errors= mode
-- zonefs_seq_file_write_close() when closing an explicitly opened zone
-  fails
+With errors=remount-ro, the default, ocfs2_handle_error() sets SB_RDONLY
+on every ocfs2_error() and on local mounts also on ocfs2_abort(). It
+does that without holding sb->s_umount.
 
 freeze_super() and thaw_super() both look at sb_rdonly() to figure out
-whether the s_writers rwsems need to be taken or released. So after an
-error while the filesystem is frozen thaw_super() skips ->unfreeze_fs()
-and sb_freeze_unlock() and the rwsems stay write-locked. Writers hang in
-sb_start_write(). A remount to read-write makes the filesystem writable
-again but the rwsems stay locked. So writers keep hanging and the next
-freeze blocks forever in sb_wait_write(). And umount warns in
-rcu_sync_dtor().
+whether the s_writers rwsems need to be taken or released. So an error
+while the filesystem is frozen leaves the rwsems write-locked after the
+thaw. Writers hang in sb_start_write() and so does umount, forever,
+because ocfs2_shutdown_local_alloc() starts a transaction and that needs
+sb_start_intwrite():
 
-zonefs has no ->freeze_fs() and is only frozen through bdev_freeze(),
-e.g. by a device mapper suspend with lockfs which also holds new I/O.
-But an fsync() that finds an earlier writeback error in the mapping runs
-the error handling without doing any I/O. For a conventional zone the
-zone report is faked so zonefs_handle_io_error() sets SB_RDONLY:
+  OCFS2: ERROR (device dm-0): ocfs2_get_clusters_nocache: Inode 5652 has bad extent record (0, 16, 0)
+  OCFS2: File system is now read-only.
 
-  zonefs (dm-0) WARNING: remounting filesystem read-only
-  WARNING: kernel/rcu/sync.c:177 at rcu_sync_dtor+0x143/0x190
+  [<0>] percpu_rwsem_wait+0x203/0x500
+  [<0>] ocfs2_start_trans+0x580/0x700
+  [<0>] ocfs2_shutdown_local_alloc+0x27d/0x800
+  [<0>] ocfs2_dismount_volume+0x1ad/0x700
+  [<0>] generic_shutdown_super+0x14c/0x530
+  [<0>] kill_block_super+0x3b/0xa0
 
-Do what ext4 did in commit d3476f3dad4a ("ext4: don't set SB_RDONLY
-after filesystem errors") and record the error in a new
-ZONEFS_SB_EMERGENCY_RO bit instead. All three places call the new
-zonefs_set_emergency_ro() which prints the existing "remounting
-filesystem read-only" warning once. An error on a read-only mount
-doesn't set the bit since there's nothing to refuse there. Write opens,
-write_iter and setattr are refused with -EROFS and page_mkwrite fails
-with VM_FAULT_SIGBUS. Refusing write opens also avoids a
-REQ_OP_ZONE_OPEN with explicit-open.
+ocfs2 has no ->freeze_fs() so this needs bdev_freeze(), e.g. a device
+mapper suspend with lockfs. A read of a file with a bad extent record
+whose dinode was cached before the suspend gets there without any I/O.
 
-A remount to read-write fails with -EROFS. A remount to read-only is
-allowed, also for emergency remount (sysrq u), and zonefs writes no
-metadata on that transition. So far "mount -o remount,rw" re-enabled
-writes after a remount-ro error. Now the state lasts until umount and
-Documentation/filesystems/zonefs.rst says so.
+The existing soft read-only state doesn't stop modifications on its own.
+OCFS2_OSB_SOFT_RO is set on every normal read-only mount as well and
+those still need transactions for journal and orphan recovery, the local
+alloc and the truncate log. So ocfs2_start_trans() can't refuse on it.
+The existing ocfs2_emergency_state() checks cover things like fsync,
+setattr, fallocate, remap and the resize ioctls. Everything else was
+stopped by the VFS because of SB_RDONLY.
+
+So like ext4 did in commit d3476f3dad4a ("ext4: don't set SB_RDONLY
+after filesystem errors") stop setting SB_RDONLY. ocfs2_handle_error()
+still sets SOFT_RO so all the existing ocfs2_emergency_state() checks
+keep working. And it now also sets a new OCFS2_OSB_EMERGENCY_RO flag
+which tells the error state apart from a normal read-only mount. Then
+refuse what the VFS doesn't refuse for us anymore with -EROFS, before
+dquot_initialize() and before taking any cluster lock. That's the
+namespace operations, opening for write, write_iter, xattrs and ACLs,
+fileattr_set and the reflink ioctl. page_mkwrite fails with
+VM_FAULT_SIGBUS. This extends what commit 752ba0976b25 ("ocfs2: add
+ocfs2_emergency_state helper and apply to setattr") and
+commit 7eff54dfd245 ("ocfs2: convert remaining read-only checks to
+ocfs2_emergency_state") started.
+
+The xattr check sits in the xattr handlers and not in ocfs2_xattr_set().
+chmod and setfacl store the ACL through it after they already committed
+the new mode. Refusing there would leave the new mode without its ACL
+when an error hits in between.
+
+quotactl_fd() takes write access to the mount which an error doesn't
+take away anymore, and Q_SETQUOTA and Q_SETINFO end in journalled quota
+writes. So ocfs2 now uses its own copy of dquot_quotactl_sysfile_ops
+whose ->set_dqblk() and ->set_info() refuse in that state. Note that
+Q_GETQUOTA and Q_GETNEXTQUOTA can still journal after an error. Reading
+a dquot that isn't in memory yet goes through ocfs2_acquire_dquot()
+which starts a transaction. quotactl(2) on the block device could always
+do that, also for the read-only superblock, and now quotactl_fd() can
+too, unprivileged for the caller's own ids. I've left that alone.
+
+Errors during the mount, e.g. from journal recovery, don't make the
+mount read-only anymore either. ocfs2_fill_super() didn't enable quotas
+on the read-only superblock and now doesn't in the error state either
+because loading the local quota files writes to them.
+
+ocfs2_sync_fs() already returned 0 for SOFT_RO but it still flushed the
+truncate log and kicked off a journal commit. Skip both. sync(2),
+syncfs(2), freeze and umount didn't call it for the read-only superblock
+before and normal read-only mounts never get there.
+
+A remount to read-write stays refused through the existing
+OCFS2_OSB_ERROR_FS check. A remount to read-only skips
+ocfs2_susp_quotas() which would write the quota info. That lets
+emergency remount turn an errored ocfs2 read-only without a WARN.
+Beyond that the sync_filesystem() every remount does only writes back
+data dirtied before the error.
 
 Like ext4 we show "emergency_ro" in the mount options. The mount stays
-"rw". Note that writes through file descriptors opened before the error
-failed with -EROFS before as well since zonefs_file_write_iter() already
-checked sb_rdonly(). What's new is that ftruncate() through such a file
-descriptor, i.e. a zone reset or finish, and write faults on shared
-mappings are refused too. fsync and writeback of conventional zone data
-dirtied before the error and the zone close on release behave as before
-because SB_RDONLY didn't stop those either.
+"rw" until a remount to read-only so statfs() doesn't report ST_RDONLY
+anymore, access(W_OK) succeeds and a second read-only mount of the
+device fails with -EBUSY. Writes through file descriptors opened before
+the error now fail with -EROFS. umount after such an error completes
+instead of hanging. ocfs2's internal transactions behave as before. The
+truncate log worker, orphan cleanup on evict, the local alloc and slot
+updates at umount and quota sync never cared about SB_RDONLY. Neither
+did data writeback.
 
 Reproducer:
 
-  modprobe null_blk nr_devices=0
-  mkdir /sys/kernel/config/nullb/z && cd /sys/kernel/config/nullb/z
-  echo 1 > memory_backed; echo 4096 > blocksize; echo 1 > zoned
-  echo 8 > zone_size; echo 4 > zone_nr_conv; echo 128 > size; echo 1 > power
-  mkzonefs /dev/z        # the disk is named after the configfs directory
-  dmsetup create zfs --table "0 $(blockdev --getsz /dev/z) linear /dev/z 0"
-  mount -t zonefs /dev/mapper/zfs /mnt
-  echo +16384-16391 > badblocks          # first 4k of zone 1, i.e. cnv/0
-  dd if=/dev/zero of=/mnt/cnv/0 bs=4k count=1 conv=notrunc; sync   # writeback fails
-  dmsetup suspend zfs
-  sync /mnt/cnv/0        # fsync() reports the writeback error -> SB_RDONLY while frozen
-  dmsetup resume zfs
-  touch /mnt/cnv/1       # hangs in sb_start_write()
-  # umount instead of touch: WARNING at kernel/rcu/sync.c:177 rcu_sync_dtor()
+  truncate -s 512M ocfs2.img; mkfs.ocfs2 -q -M local -b 4096 -C 4096 -N 1 ocfs2.img
+  losetup /dev/loop0 ocfs2.img
+  mount -t ocfs2 -o heartbeat=none /dev/loop0 /mnt
+  dd if=/dev/zero of=/mnt/data bs=64k count=1; ino=$(stat -c %i /mnt/data); umount /mnt
+  # zero l_recs[0].e_blkno (byte 0xd8) of data's dinode; the inode number is its block
+  dd if=/dev/zero of=/dev/loop0 bs=1 count=8 seek=$((ino * 4096 + 0xd8)) conv=notrunc
+  dmsetup create ocfs2 --table "0 $(blockdev --getsz /dev/loop0) linear /dev/loop0 0"
+  mount -t ocfs2 -o heartbeat=none,noatime /dev/mapper/ocfs2 /mnt
+  stat /mnt/data; getfattr -n user.x /mnt/data   # getxattr caches the dinode
+  dmsetup suspend ocfs2
+  cat /mnt/data      # ocfs2_get_clusters(): "bad extent record" -> SB_RDONLY while frozen
+  dmsetup resume ocfs2
+  touch /mnt/x       # hangs in sb_start_write()
+  # umount instead of touch: hangs in sb_start_intwrite() from
+  # ocfs2_start_trans() <- ocfs2_shutdown_local_alloc()
 
-Fixes: 8dcc1a9d90c1 ("fs: New zonefs file system")
-Cc: stable@vger.kernel.org
+noatime matters, otherwise the atime transaction of the read waits for
+the frozen filesystem.
+
 Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 ---
- Documentation/filesystems/zonefs.rst |  5 +++--
- fs/zonefs/file.c                     | 17 +++++++++--------
- fs/zonefs/super.c                    | 37 ++++++++++++++++++++++++++++--------
- fs/zonefs/zonefs.h                   | 16 ++++++++++++++++
- 4 files changed, 57 insertions(+), 18 deletions(-)
+ fs/ocfs2/acl.c          |  3 +++
+ fs/ocfs2/file.c         |  8 +++++++
+ fs/ocfs2/ioctl.c        |  3 +++
+ fs/ocfs2/mmap.c         |  3 +++
+ fs/ocfs2/namei.c        | 21 +++++++++++++++++
+ fs/ocfs2/ocfs2.h        | 12 ++++++++++
+ fs/ocfs2/refcounttree.c |  3 +++
+ fs/ocfs2/super.c        | 63 ++++++++++++++++++++++++++++++++++++++++++++-----
+ fs/ocfs2/xattr.c        |  8 +++++++
+ 9 files changed, 118 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/filesystems/zonefs.rst b/Documentation/filesystems/zonefs.rst
-index c22124c2213d..2bec05102db4 100644
---- a/Documentation/filesystems/zonefs.rst
-+++ b/Documentation/filesystems/zonefs.rst
-@@ -285,8 +285,9 @@ Further notes:
- * The "errors=remount-ro" mount option is the default behavior of zonefs I/O
-   error processing if no errors mount option is specified.
- * With the "errors=remount-ro" mount option, the change of the file access
--  permissions to read-only applies to all files. The file system is remounted
--  read-only.
-+  permissions to read-only applies to all files. A file system mounted
-+  read-write refuses all writes until it is unmounted and "emergency_ro" is
-+  shown in its mount options.
- * Access permission and file size changes due to the device transitioning zones
-   to the offline condition are permanent. Remounting or reformatting the device
-   with mkfs.zonefs (mkzonefs) will not change back offline zone files to a good
-diff --git a/fs/zonefs/file.c b/fs/zonefs/file.c
-index 5b34849be7a2..8959b6b36a83 100644
---- a/fs/zonefs/file.c
-+++ b/fs/zonefs/file.c
-@@ -299,7 +299,7 @@ static vm_fault_t zonefs_filemap_page_mkwrite(struct vm_fault *vmf)
- 	struct inode *inode = file_inode(vmf->vma->vm_file);
+diff --git a/fs/ocfs2/acl.c b/fs/ocfs2/acl.c
+index 090ec60fb576..cf23f6b32a52 100644
+--- a/fs/ocfs2/acl.c
++++ b/fs/ocfs2/acl.c
+@@ -268,6 +268,9 @@ int ocfs2_iop_set_acl(struct mnt_idmap *idmap, struct dentry *dentry,
+ 	struct ocfs2_lock_holder oh;
+ 	struct inode *inode = d_inode(dentry);
+ 
++	if (unlikely(ocfs2_emergency_state(OCFS2_SB(inode->i_sb))))
++		return -EROFS;
++
+ 	had_lock = ocfs2_inode_lock_tracker(inode, &bh, 1, &oh);
+ 	if (had_lock < 0)
+ 		return had_lock;
+diff --git a/fs/ocfs2/file.c b/fs/ocfs2/file.c
+index d6e977ba6565..4c8b3957488f 100644
+--- a/fs/ocfs2/file.c
++++ b/fs/ocfs2/file.c
+@@ -91,6 +91,11 @@ static int ocfs2_file_open(struct inode *inode, struct file *file)
+ 			      file->f_path.dentry->d_name.name, mode);
+ 
+ 	if (file->f_mode & FMODE_WRITE) {
++		if (unlikely(ocfs2_emergency_state(OCFS2_SB(inode->i_sb)))) {
++			status = -EROFS;
++			goto leave;
++		}
++
+ 		status = dquot_initialize(inode);
+ 		if (status)
+ 			goto leave;
+@@ -2404,6 +2409,9 @@ static ssize_t ocfs2_file_write_iter(struct kiocb *iocb,
+ 	if (count == 0)
+ 		return 0;
+ 
++	if (unlikely(ocfs2_emergency_state(osb)))
++		return -EROFS;
++
+ 	if (nowait) {
+ 		if (!inode_trylock(inode))
+ 			return -EAGAIN;
+diff --git a/fs/ocfs2/ioctl.c b/fs/ocfs2/ioctl.c
+index cbe59d231666..1888af1a3cdf 100644
+--- a/fs/ocfs2/ioctl.c
++++ b/fs/ocfs2/ioctl.c
+@@ -97,6 +97,9 @@ int ocfs2_fileattr_set(struct mnt_idmap *idmap,
+ 	if (fileattr_has_fsx(fa))
+ 		return -EOPNOTSUPP;
+ 
++	if (unlikely(ocfs2_emergency_state(osb)))
++		return -EROFS;
++
+ 	status = ocfs2_inode_lock(inode, &bh, 1);
+ 	if (status < 0) {
+ 		mlog_errno(status);
+diff --git a/fs/ocfs2/mmap.c b/fs/ocfs2/mmap.c
+index 6c570157caf1..e873b2082bc6 100644
+--- a/fs/ocfs2/mmap.c
++++ b/fs/ocfs2/mmap.c
+@@ -118,6 +118,9 @@ static vm_fault_t ocfs2_page_mkwrite(struct vm_fault *vmf)
+ 	int err;
  	vm_fault_t ret;
  
--	if (unlikely(IS_IMMUTABLE(inode)))
-+	if (unlikely(IS_IMMUTABLE(inode) || zonefs_emergency_ro(inode->i_sb)))
- 		return VM_FAULT_SIGBUS;
++	if (unlikely(ocfs2_emergency_state(OCFS2_SB(inode->i_sb))))
++		return VM_FAULT_SIGBUS;
++
+ 	sb_start_pagefault(inode->i_sb);
+ 	ocfs2_block_signals(&oldset);
  
- 	/*
-@@ -601,7 +601,7 @@ static ssize_t zonefs_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
- 	if (unlikely(IS_IMMUTABLE(inode)))
+diff --git a/fs/ocfs2/namei.c b/fs/ocfs2/namei.c
+index 58c6061ed983..c43e2d8a6f95 100644
+--- a/fs/ocfs2/namei.c
++++ b/fs/ocfs2/namei.c
+@@ -262,6 +262,9 @@ static int ocfs2_mknod(struct mnt_idmap *idmap,
+ 			  (unsigned long long)OCFS2_I(dir)->ip_blkno,
+ 			  (unsigned long)dev, mode);
+ 
++	if (unlikely(ocfs2_emergency_state(OCFS2_SB(dir->i_sb))))
++		return -EROFS;
++
+ 	status = dquot_initialize(dir);
+ 	if (status) {
+ 		mlog_errno(status);
+@@ -659,6 +662,9 @@ static struct dentry *ocfs2_mkdir(struct mnt_idmap *idmap,
+ 
+ 	trace_ocfs2_mkdir(dir, dentry, dentry->d_name.len, dentry->d_name.name,
+ 			  OCFS2_I(dir)->ip_blkno, mode);
++	if (unlikely(ocfs2_emergency_state(OCFS2_SB(dir->i_sb))))
++		return ERR_PTR(-EROFS);
++
+ 	ret = ocfs2_mknod(&nop_mnt_idmap, dir, dentry, mode, 0);
+ 	if (ret)
+ 		mlog_errno(ret);
+@@ -675,6 +681,9 @@ static int ocfs2_create(struct mnt_idmap *idmap,
+ 
+ 	trace_ocfs2_create(dir, dentry, dentry->d_name.len, dentry->d_name.name,
+ 			   (unsigned long long)OCFS2_I(dir)->ip_blkno, mode);
++	if (unlikely(ocfs2_emergency_state(OCFS2_SB(dir->i_sb))))
++		return -EROFS;
++
+ 	ret = ocfs2_mknod(&nop_mnt_idmap, dir, dentry, mode | S_IFREG, 0);
+ 	if (ret)
+ 		mlog_errno(ret);
+@@ -703,6 +712,9 @@ static int ocfs2_link(struct dentry *old_dentry,
+ 			 old_dentry->d_name.len, old_dentry->d_name.name,
+ 			 dentry->d_name.len, dentry->d_name.name);
+ 
++	if (unlikely(ocfs2_emergency_state(osb)))
++		return -EROFS;
++
+ 	if (S_ISDIR(inode->i_mode))
  		return -EPERM;
  
--	if (sb_rdonly(inode->i_sb))
-+	if (sb_rdonly(inode->i_sb) || zonefs_emergency_ro(inode->i_sb))
+@@ -899,6 +911,9 @@ static int ocfs2_unlink(struct inode *dir,
+ 			   (unsigned long long)OCFS2_I(dir)->ip_blkno,
+ 			   (unsigned long long)OCFS2_I(inode)->ip_blkno);
+ 
++	if (unlikely(ocfs2_emergency_state(osb)))
++		return -EROFS;
++
+ 	status = dquot_initialize(dir);
+ 	if (status) {
+ 		mlog_errno(status);
+@@ -1236,6 +1251,9 @@ static int ocfs2_rename(struct mnt_idmap *idmap,
+ 	struct ocfs2_dir_lookup_result target_insert = { NULL, };
+ 	bool should_add_orphan = false;
+ 
++	if (unlikely(ocfs2_emergency_state(OCFS2_SB(old_dir->i_sb))))
++		return -EROFS;
++
+ 	if (flags)
+ 		return -EINVAL;
+ 
+@@ -1843,6 +1861,9 @@ static int ocfs2_symlink(struct mnt_idmap *idmap,
+ 	trace_ocfs2_symlink_begin(dir, dentry, symname,
+ 				  dentry->d_name.len, dentry->d_name.name);
+ 
++	if (unlikely(ocfs2_emergency_state(OCFS2_SB(dir->i_sb))))
++		return -EROFS;
++
+ 	status = dquot_initialize(dir);
+ 	if (status) {
+ 		mlog_errno(status);
+diff --git a/fs/ocfs2/ocfs2.h b/fs/ocfs2/ocfs2.h
+index 62cad6522c7a..dc767efb2f47 100644
+--- a/fs/ocfs2/ocfs2.h
++++ b/fs/ocfs2/ocfs2.h
+@@ -282,6 +282,7 @@ enum ocfs2_mount_options
+ #define OCFS2_OSB_SOFT_RO	0x0001
+ #define OCFS2_OSB_HARD_RO	0x0002
+ #define OCFS2_OSB_ERROR_FS	0x0004
++#define OCFS2_OSB_EMERGENCY_RO	0x0008	/* error made the fs read-only */
+ #define OCFS2_DEFAULT_ATIME_QUANTUM	60
+ 
+ struct ocfs2_triggers {
+@@ -688,6 +689,17 @@ static inline int ocfs2_is_readonly(struct ocfs2_super *osb)
+ 	return ret;
+ }
+ 
++static inline int ocfs2_is_emergency_ro(struct ocfs2_super *osb)
++{
++	int ret;
++
++	spin_lock(&osb->osb_lock);
++	ret = osb->osb_flags & OCFS2_OSB_EMERGENCY_RO;
++	spin_unlock(&osb->osb_lock);
++
++	return ret;
++}
++
+ static inline int ocfs2_emergency_state(struct ocfs2_super *osb)
+ {
+ 	if (ocfs2_is_readonly(osb))
+diff --git a/fs/ocfs2/refcounttree.c b/fs/ocfs2/refcounttree.c
+index d9f22b4a2654..2404140c79fb 100644
+--- a/fs/ocfs2/refcounttree.c
++++ b/fs/ocfs2/refcounttree.c
+@@ -4441,6 +4441,9 @@ int ocfs2_reflink_ioctl(struct inode *inode,
+ 	if (!ocfs2_refcount_tree(OCFS2_SB(inode->i_sb)))
+ 		return -EOPNOTSUPP;
+ 
++	if (unlikely(ocfs2_emergency_state(OCFS2_SB(inode->i_sb))))
++		return -EROFS;
++
+ 	error = user_path_at(AT_FDCWD, oldname, 0, &old_path);
+ 	if (error) {
+ 		mlog_errno(error);
+diff --git a/fs/ocfs2/super.c b/fs/ocfs2/super.c
+index 26041371a666..014e7cca21ef 100644
+--- a/fs/ocfs2/super.c
++++ b/fs/ocfs2/super.c
+@@ -125,6 +125,33 @@ static struct dquot __rcu **ocfs2_get_dquots(struct inode *inode)
+ 	return OCFS2_I(inode)->i_dquot;
+ }
+ 
++/*
++ * quotactl_fd() takes write access to the mount, which an error doesn't take
++ * away anymore. Refuse quota limit and info changes once an error made the
++ * file system read-only: they are journalled writes.
++ */
++static int ocfs2_set_dqinfo(struct super_block *sb, int type,
++			    struct qc_info *ii)
++{
++	if (unlikely(ocfs2_is_emergency_ro(OCFS2_SB(sb))))
++		return -EROFS;
++	return dquot_set_dqinfo(sb, type, ii);
++}
++
++static int ocfs2_set_dqblk(struct super_block *sb, struct kqid qid,
++			   struct qc_dqblk *di)
++{
++	if (unlikely(ocfs2_is_emergency_ro(OCFS2_SB(sb))))
++		return -EROFS;
++	return dquot_set_dqblk(sb, qid, di);
++}
++
++/*
++ * dquot_quotactl_sysfile_ops with set_info and set_dqblk replaced, filled in by
++ * ocfs2_init().
++ */
++static struct quotactl_ops ocfs2_quotactl_ops __ro_after_init;
++
+ static const struct super_operations ocfs2_sops = {
+ 	.statfs		= ocfs2_statfs,
+ 	.alloc_inode	= ocfs2_alloc_inode,
+@@ -402,6 +429,13 @@ static int ocfs2_sync_fs(struct super_block *sb, int wait)
+ 	if (ocfs2_is_hard_readonly(osb))
  		return -EROFS;
  
- 	/* Write operations beyond the zone capacity are not allowed */
-@@ -788,6 +788,9 @@ static int zonefs_file_open(struct inode *inode, struct file *file)
- {
- 	int ret;
- 
-+	if ((file->f_mode & FMODE_WRITE) && zonefs_emergency_ro(inode->i_sb))
-+		return -EROFS;
++	/*
++	 * An error made the file system read-only: don't flush the truncate
++	 * log or kick off a journal commit.
++	 */
++	if (ocfs2_is_soft_readonly(osb))
++		return 0;
 +
- 	file->f_mode |= FMODE_CAN_ODIRECT;
- 	ret = generic_file_open(inode, file);
- 	if (ret)
-@@ -825,17 +828,15 @@ static void zonefs_seq_file_write_close(struct inode *inode)
- 			/*
- 			 * Leaving zones explicitly open may lead to a state
- 			 * where most zones cannot be written (zone resources
--			 * exhausted). So take preventive action by remounting
--			 * read-only.
-+			 * exhausted). So take preventive action by making the
-+			 * file system read-only.
- 			 */
- 			if (z->z_flags & ZONEFS_ZONE_OPEN &&
--			    !(sb->s_flags & SB_RDONLY)) {
-+			    !sb_rdonly(sb) && !zonefs_emergency_ro(sb)) {
- 				zonefs_warn(sb,
- 					"closing zone at %llu failed %d\n",
- 					z->z_sector, ret);
--				zonefs_warn(sb,
--					"remounting filesystem read-only\n");
--				sb->s_flags |= SB_RDONLY;
-+				zonefs_set_emergency_ro(sb);
- 			}
- 			goto unlock;
- 		}
-diff --git a/fs/zonefs/super.c b/fs/zonefs/super.c
-index ff43d6d1ea30..367d657febe5 100644
---- a/fs/zonefs/super.c
-+++ b/fs/zonefs/super.c
-@@ -247,6 +247,20 @@ static void zonefs_inode_update_mode(struct inode *inode)
- 	z->z_mode = inode->i_mode;
- }
+ 	if (wait) {
+ 		status = ocfs2_flush_truncate_log(osb);
+ 		if (status < 0)
+@@ -646,8 +680,11 @@ static int ocfs2_reconfigure(struct fs_context *fc)
  
-+/*
-+ * Make the file system refuse writes after an error. Don't set SB_RDONLY:
-+ * that needs sb->s_umount and a proper remount, and setting it while the file
-+ * system is frozen makes thaw_super() leave the s_writers rwsems locked.
-+ */
-+void zonefs_set_emergency_ro(struct super_block *sb)
-+{
-+	if (sb_rdonly(sb) ||
-+	    test_and_set_bit(ZONEFS_SB_EMERGENCY_RO, &ZONEFS_SB(sb)->s_state))
-+		return;
-+
-+	zonefs_warn(sb, "remounting filesystem read-only\n");
-+}
-+
- static int zonefs_io_error_cb(struct blk_zone *zone, unsigned int idx,
- 			      void *data)
- {
-@@ -339,13 +353,11 @@ static void zonefs_handle_io_error(struct inode *inode, struct blk_zone *zone,
- 		z->z_flags &= ~ZONEFS_ZONE_OPEN;
+ 	/* We're going to/from readonly mode. */
+ 	if ((bool)(fc->sb_flags & SB_RDONLY) != sb_rdonly(sb)) {
+-		/* Disable quota accounting before remounting RO */
+-		if (fc->sb_flags & SB_RDONLY) {
++		/*
++		 * Disable quota accounting before remounting RO, unless an
++		 * error made the fs read-only: nothing may be written then.
++		 */
++		if ((fc->sb_flags & SB_RDONLY) && !ocfs2_is_emergency_ro(osb)) {
+ 			ret = ocfs2_susp_quotas(osb, 0);
+ 			if (ret < 0)
+ 				goto out;
+@@ -1136,7 +1173,7 @@ static int ocfs2_fill_super(struct super_block *sb, struct fs_context *fc)
+ 	/* Now we can initialize quotas because we can afford to wait
+ 	 * for cluster locks recovery now. That also means that truncation
+ 	 * log recovery can happen but that waits for proper quota setup */
+-	if (!sb_rdonly(sb)) {
++	if (!sb_rdonly(sb) && !ocfs2_is_emergency_ro(osb)) {
+ 		status = ocfs2_enable_quotas(osb);
+ 		if (status < 0) {
+ 			/* We have to err-out specially here because
+@@ -1460,6 +1497,9 @@ static int ocfs2_show_options(struct seq_file *s, struct dentry *root)
+ 	else
+ 		seq_printf(s, ",errors=remount-ro");
  
- 	/*
--	 * If error=remount-ro was specified, any error result in remounting
--	 * the volume as read-only.
-+	 * If error=remount-ro was specified, any error makes the volume
-+	 * read-only.
- 	 */
--	if ((sbi->s_mount_opts & ZONEFS_MNTOPT_ERRORS_RO) && !sb_rdonly(sb)) {
--		zonefs_warn(sb, "remounting filesystem read-only\n");
++	if (ocfs2_is_emergency_ro(osb))
++		seq_puts(s, ",emergency_ro");
++
+ 	if (osb->preferred_slot != OCFS2_INVALID_SLOT)
+ 		seq_printf(s, ",preferred_slot=%d", osb->preferred_slot);
+ 
+@@ -1529,6 +1569,10 @@ static int __init ocfs2_init(void)
+ 
+ 	ocfs2_set_locking_protocol();
+ 
++	ocfs2_quotactl_ops = dquot_quotactl_sysfile_ops;
++	ocfs2_quotactl_ops.set_info = ocfs2_set_dqinfo;
++	ocfs2_quotactl_ops.set_dqblk = ocfs2_set_dqblk;
++
+ 	register_quota_format(&ocfs2_quota_format);
+ 
+ 	status = register_filesystem(&ocfs2_fs_type);
+@@ -1976,7 +2020,7 @@ static int ocfs2_initialize_super(struct super_block *sb,
+ 	sb->s_op = &ocfs2_sops;
+ 	set_default_d_op(sb, &ocfs2_dentry_ops);
+ 	sb->s_export_op = &ocfs2_export_ops;
+-	sb->s_qcop = &dquot_quotactl_sysfile_ops;
++	sb->s_qcop = &ocfs2_quotactl_ops;
+ 	sb->dq_op = &ocfs2_quota_operations;
+ 	sb->s_quota_types = QTYPE_MASK_USR | QTYPE_MASK_GRP;
+ 	sb->s_xattr = ocfs2_xattr_handlers;
+@@ -2497,11 +2541,18 @@ static int ocfs2_handle_error(struct super_block *sb)
+ 		rv = -EIO;
+ 	} else { /* default option */
+ 		rv = -EROFS;
+-		if (sb_rdonly(sb) && ocfs2_emergency_state(osb))
++		if (ocfs2_emergency_state(osb))
+ 			return rv;
+ 
+ 		pr_crit("OCFS2: File system is now read-only.\n");
 -		sb->s_flags |= SB_RDONLY;
--	}
-+	if (sbi->s_mount_opts & ZONEFS_MNTOPT_ERRORS_RO)
-+		zonefs_set_emergency_ro(sb);
- 
- 	/*
- 	 * Update block usage stats and the inode size  to prevent access to
-@@ -404,8 +416,7 @@ void __zonefs_io_error(struct inode *inode, bool write)
- 	if (ret != 1) {
- 		zonefs_err(sb, "Get inode %llu zone information failed %d\n",
- 			   inode->i_ino, ret);
--		zonefs_warn(sb, "remounting filesystem read-only\n");
--		sb->s_flags |= SB_RDONLY;
-+		zonefs_set_emergency_ro(sb);
- 		return;
++		/*
++		 * Don't set SB_RDONLY: that needs sb->s_umount and a proper
++		 * remount, and setting it while the file system is frozen
++		 * makes thaw_super() leave the s_writers rwsems locked.  The
++		 * soft read-only flag makes ocfs2_emergency_state() refuse
++		 * modifications until the file system is unmounted.
++		 */
++		ocfs2_set_osb_flag(osb, OCFS2_OSB_EMERGENCY_RO);
+ 		ocfs2_set_ro_flag(osb, 0);
  	}
  
-@@ -529,6 +540,8 @@ static int zonefs_show_options(struct seq_file *seq, struct dentry *root)
- 		seq_puts(seq, ",errors=zone-offline");
- 	if (sbi->s_mount_opts & ZONEFS_MNTOPT_ERRORS_REPAIR)
- 		seq_puts(seq, ",errors=repair");
-+	if (zonefs_emergency_ro(root->d_sb))
-+		seq_puts(seq, ",emergency_ro");
- 
- 	return 0;
- }
-@@ -539,6 +552,9 @@ static int zonefs_inode_setattr(struct mnt_idmap *idmap,
- 	struct inode *inode = d_inode(dentry);
- 	int ret;
- 
-+	if (unlikely(zonefs_emergency_ro(inode->i_sb)))
+diff --git a/fs/ocfs2/xattr.c b/fs/ocfs2/xattr.c
+index bfafe059bedf..26afa736b147 100644
+--- a/fs/ocfs2/xattr.c
++++ b/fs/ocfs2/xattr.c
+@@ -7505,6 +7505,9 @@ static int ocfs2_xattr_security_set(const struct xattr_handler *handler,
+ 				    const char *name, const void *value,
+ 				    size_t size, int flags)
+ {
++	if (unlikely(ocfs2_emergency_state(OCFS2_SB(inode->i_sb))))
 +		return -EROFS;
 +
- 	if (unlikely(IS_IMMUTABLE(inode)))
- 		return -EPERM;
- 
-@@ -1369,6 +1385,11 @@ static int zonefs_reconfigure(struct fs_context *fc)
- 	struct super_block *sb = fc->root->d_sb;
- 	struct zonefs_sb_info *sbi = sb->s_fs_info;
- 
-+	/* An error made the file system read-only until it is unmounted. */
-+	if (sb_rdonly(sb) && !(fc->sb_flags & SB_RDONLY) &&
-+	    zonefs_emergency_ro(sb))
+ 	return ocfs2_xattr_set(inode, OCFS2_XATTR_INDEX_SECURITY,
+ 			       name, value, size, flags);
+ }
+@@ -7600,6 +7603,9 @@ static int ocfs2_xattr_trusted_set(const struct xattr_handler *handler,
+ 				   const char *name, const void *value,
+ 				   size_t size, int flags)
+ {
++	if (unlikely(ocfs2_emergency_state(OCFS2_SB(inode->i_sb))))
 +		return -EROFS;
 +
- 	sync_filesystem(fc->root->d_sb);
- 	/* Copy new options from ctx into sbi. */
- 	sbi->s_mount_opts = ctx->s_mount_opts;
-diff --git a/fs/zonefs/zonefs.h b/fs/zonefs/zonefs.h
-index 8175652241b5..b14822cb9c02 100644
---- a/fs/zonefs/zonefs.h
-+++ b/fs/zonefs/zonefs.h
-@@ -241,6 +241,16 @@ struct zonefs_sb_info {
- 	bool			s_sysfs_registered;
- 	struct kobject		s_kobj;
- 	struct completion	s_kobj_unregister;
-+
-+	unsigned long		s_state;
-+};
-+
-+/*
-+ * Super block state bits (s_state).
-+ */
-+enum {
-+	/* An error made the file system read-only until it is unmounted */
-+	ZONEFS_SB_EMERGENCY_RO,
- };
- 
- static inline struct zonefs_sb_info *ZONEFS_SB(struct super_block *sb)
-@@ -248,6 +258,11 @@ static inline struct zonefs_sb_info *ZONEFS_SB(struct super_block *sb)
- 	return sb->s_fs_info;
+ 	return ocfs2_xattr_set(inode, OCFS2_XATTR_INDEX_TRUSTED,
+ 			       name, value, size, flags);
  }
+@@ -7635,6 +7641,8 @@ static int ocfs2_xattr_user_set(const struct xattr_handler *handler,
  
-+static inline bool zonefs_emergency_ro(struct super_block *sb)
-+{
-+	return test_bit(ZONEFS_SB_EMERGENCY_RO, &ZONEFS_SB(sb)->s_state);
-+}
-+
- #define zonefs_info(sb, format, args...)	\
- 	pr_info("zonefs (%s): " format, sb->s_id, ## args)
- #define zonefs_err(sb, format, args...)		\
-@@ -260,6 +275,7 @@ void zonefs_inode_account_active(struct inode *inode);
- int zonefs_inode_zone_mgmt(struct inode *inode, enum req_op op);
- void zonefs_i_size_write(struct inode *inode, loff_t isize);
- void zonefs_update_stats(struct inode *inode, loff_t new_isize);
-+void zonefs_set_emergency_ro(struct super_block *sb);
- void __zonefs_io_error(struct inode *inode, bool write);
+ 	if (osb->s_mount_opt & OCFS2_MOUNT_NOUSERXATTR)
+ 		return -EOPNOTSUPP;
++	if (unlikely(ocfs2_emergency_state(osb)))
++		return -EROFS;
  
- static inline void zonefs_io_error(struct inode *inode, bool write)
+ 	return ocfs2_xattr_set(inode, OCFS2_XATTR_INDEX_USER,
+ 			       name, value, size, flags);
 
 -- 
 2.53.0
