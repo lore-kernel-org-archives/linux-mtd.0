@@ -4,53 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B60ABCA9ED2
-	for <linux-mtd@archiver.kernel.org>; Mon, 12 Oct 2026 10:21:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E630CA9ED1
+	for <linux-mtd@archiver.kernel.org>; Mon, 12 Oct 2026 10:21:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id:Date:
-	Subject:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=O429Kw1OAXjJXvH5KoBOynqt2Tib5IrWep62sBO6rrA=; b=2oDczb79GU8PAm
-	XlQhieo06htP1STkK4rE/ki5/YwOYWiXqHVnNvqRbdUECr7ANAK0xZdCWdNLbLTWR6IwX+j48gRbL
-	NuIs2VVH03j5Cti6lI5sXGZcM8Uxp6tAF/49WClYcaYbfCV7GWDfGa1UHm47+bo23pJfqdRwEhYai
-	Pu/x2a2ktz+D5/AZ/8SRDWKEQ7XJTR8fV6DdOt6e0S0Z9bbn9O1uNP9nFAyuK9HXCPmMOVMMUFTzu
-	lja9toiba3OQqw1nUiRv4zMGHL1yWzt2wJzJSt9QrKOXlO0oIENzeeXYtiXLm5s7Z2SavS7Bs0ue5
-	AeDxfiui4ufFqzZJCdvQ==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
+	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=B/w4rVNsY58EFHlRnyI4aBqF5SmMGtdelmR2EIYcWn8=; b=naHX41tOQZYaMV
+	ZHMGAyJlXzYB7Ni00lONkwAbgblsKCTUEqUYtsNAPQuPT60TPkki/j1OLGRm8NtwlEmIvE9F7pRQl
+	Why7PdyjolyT3ia8NzL930zu+5VdOgyah4mbL8LcYFgE308wjKFe/s3IQUjxscBwP8OjvkzkPRuYN
+	umR8UC9Tx4N3q0AJpRVscPJAsNC8J5KtKQ11gsoYfiLCQTfqvwzesRlr23jpxFJDvUUtcmKQvmhe5
+	dkLPR3jEizxg5PKkgqebuPBE9mzFgI3WWtGVYvk7PhJAC8E2FOvb4Hc8igtPl4DhMjvqMCwn6Gcfe
+	tjOFkV9m2llvSBu+SqZQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xGD9h-0000000ACMO-0pwA;
-	Mon, 12 Oct 2026 10:21:17 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1xGD9k-0000000ACNY-2Ruf;
+	Mon, 12 Oct 2026 10:21:20 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xGD9f-0000000ACM9-3PqB
+	id 1xGD9j-0000000ACMr-15Z2
 	for linux-mtd@lists.infradead.org;
-	Mon, 12 Oct 2026 10:21:15 +0000
+	Mon, 12 Oct 2026 10:21:19 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id CD250600C8;
+	by sea.source.kernel.org (Postfix) with ESMTP id B9F4243982;
+	Mon, 12 Oct 2026 10:21:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07DB31F0089C;
 	Mon, 12 Oct 2026 10:21:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 791881F0089B;
-	Mon, 12 Oct 2026 10:21:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1791800474;
-	bh=sGKpoGj+G3U3TdVRgcDQb+hr4OJpMswZvqZ0tDZEHpE=;
-	h=From:Subject:Date:To:Cc;
-	b=l8N0YyT9w7CeNCJ6AqW4uuYHubBjTlmxG2nhvtqug+M5LWP7chDWcgJ8Q4qp1A7a7
-	 aP3ZE4yhy1mZHIFrbB1XNsKhGGkG45gUb4vTZcsTaJg1fYx7Pypr+p8QgXMnegZN1l
-	 469PJbjDPZc3pgqL4+TQX1LlYti9wPvox9fLoqKBjbdoDfq0tkK+T+oKsDTRS5qYr+
-	 y/x1ri+Ut7zt0D590edRyrTGt11FDZ4RSwg1T13C+i6T/nYbn7SYDT8KdH+A48NmFN
-	 nKohtXc9DZiuN1And3uHh3hyXmX0REdTqNpqP137PajjZmbeubh8xCPeOLE8svlex8
-	 bz4B3JmQ64IAA==
+	s=k20260515; t=1791800478;
+	bh=jSaTeXy5zEI39kgqqTi6yfSkP3Kgm5wm6RfoGXruvqg=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc;
+	b=daD9kmOaoDrecEZ+GKWXxyW9H20UJr48DcxIiw0e65dcl8QTST3JZXcj61YvqNTyb
+	 c5d34ADQW1FTC40OtFvDZ/r1oWnvdCTDB2nBPiUWZpsdvr64rU3yyTUZCbQmtT/WHN
+	 M4L3IE8ZFu/uZjDyHAoHWVVDuNF/pppyPWohHYEa4Yvx8fprF5PUJYsVDI169f9kxo
+	 jBe+V1vSuEX9xF71FfYPmOVHGKSg4cEB3pIABRCDPA7K95hBDggmzUqYSJbpYomakn
+	 PXM0tJDgLdWEhvw5L8NTowb8aNFn6hJrwa/MlDBOPgqwCRarNEsyBQ1YwBmx0RfVjr
+	 WbnHd24KBBfVA==
 From: Christian Brauner <brauner@kernel.org>
-Subject: [PATCH RFC 00/28] fs: don't set SB_RDONLY after filesystem errors
-Date: Mon, 12 Oct 2026 12:20:45 +0200
-Message-Id: <20261012-work-fs-sb_rdonly-v1-0-60743a3dc326@kernel.org>
+Date: Mon, 12 Oct 2026 12:20:46 +0200
+Subject: [PATCH RFC 01/28] ecryptfs: don't leak the inode when a lookup
+ can't open the lower file
 MIME-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAAAAAAAC/z2MSwoCMRAFrzL02g6TCAHdCh7ArYjk03Gikgxpv
- wxzdxMFl1W8VxMwlUgM626CQo/IMacKctGBG0w6EUZfGVSvtOylxGcuFwyMbI/F53R9Y1gtSSt
- tfe8U1N9YKMTXt7mH3XYDh5/kuz2Tu7Vam1nDhLaY5IamWlcEFv+uaAOY5w8ehgKHowAAAA==
-X-Change-ID: 20261011-work-fs-sb_rdonly-f93e626bd0c2
+Message-Id: <20261012-work-fs-sb_rdonly-v1-1-60743a3dc326@kernel.org>
+References: <20261012-work-fs-sb_rdonly-v1-0-60743a3dc326@kernel.org>
+In-Reply-To: <20261012-work-fs-sb_rdonly-v1-0-60743a3dc326@kernel.org>
 To: Jan Kara <jack@suse.com>
 Cc: Al Viro <viro@zeniv.linux.org.uk>, ecryptfs@vger.kernel.org, 
  linux-ext4@vger.kernel.org, jfs-discussion@lists.sourceforge.net, 
@@ -59,15 +58,14 @@ Cc: Al Viro <viro@zeniv.linux.org.uk>, ecryptfs@vger.kernel.org,
  ocfs2-devel@lists.linux.dev, linux-btrfs@vger.kernel.org, 
  gfs2@lists.linux.dev, linux-efi@vger.kernel.org, 
  linux-mtd@lists.infradead.org, linux-xfs@vger.kernel.org, 
- "Christian Brauner (Amutable)" <brauner@kernel.org>, stable@vger.kernel.org, 
- Karl Mehltretter <kmehltretter@gmail.com>
+ "Christian Brauner (Amutable)" <brauner@kernel.org>, stable@vger.kernel.org
 X-Mailer: b4 0.17-dev-3d1b8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=16145; i=brauner@kernel.org;
- h=from:subject:message-id; bh=6AhU3x0Rtr+v1hynbuYFK/eQo62lYffxM8xmBfNctF0=;
- b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWSd2TJpu4b/8nkWd9lZt616NzfOLkK1Mmi69+UkVX4Fj
- ZXr82t8OkpZGMS4GGTFFFkc2k3C5ZbzVGw2ytSAmcPKBDKEgYtTACbi/5mRYdtxt09Lw899PNYX
- 6LhVp0hZopHvbZQ0S1zaDEbFeP/rPxgZjlo5FE2LnDt5welLrE2efmvNwl7e8Ow/EMjGd3bXvSW
- N3AA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1919; i=brauner@kernel.org;
+ h=from:subject:message-id; bh=FHwfq/OCDsnntrfJYkKn8tLOjs4Tv7YHZV8JitYQDQ0=;
+ b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWSd2TJJmlVX9PaCsIn+FsHZwuxHGEpPFCj+mriqsDrpf
+ qGIfFJFRykLgxgXg6yYIotDu0m43HKeis1GmRowc1iZQIYwcHEKwETcDjD8sz1q8vHQt6fh7p09
+ uT08PmKLO9tkzFMehF2fYnDC/qOTC8P/xLgFX20+PbiQ+CC39cSDhwe1Dlq6qHKtT7/euMmvwfE
+ UHwA=
 X-Developer-Key: i=brauner@kernel.org; a=openpgp;
  fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 X-BeenThere: linux-mtd@lists.infradead.org
@@ -86,281 +84,57 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-A lot of filesystems handle errors by setting SB_RDONLY on the
-superblock. They do that from whatever context found the error and
-without holding s_umount. That's never been okay. SB_RDONLY is supposed
-to only change under s_umount through a proper remount.
+ecryptfs_lookup_interpose() opens the lower file of a regular file to
+read the size from the header. If that fails it calls make_bad_inode()
+and returns the error. A new inode is still I_NEW at that point and
+nothing ever unlocks or puts it, so it leaks together with the reference
+it holds on the lower inode. And an inode that was already in the cache
+gets marked bad for all its other users instead of just losing the
+reference this lookup took.
 
-And it breaks freezing. freeze_super() and thaw_super() both look at
-sb_rdonly() to figure out whether the s_writers rwsems need to be taken
-or released. So if an error sets SB_RDONLY while the filesystem is
-frozen thaw_super() takes the read-only shortcut, leaves the rwsems
-write-locked and marks the superblock unfrozen. Every writer after that
-hangs in sb_start_write() and umount warns when it frees the locked
-rwsems. jfs even oopses on umount. And the unlocked update of
-sb->s_flags races with everyone else who writes it.
+umount then complains:
 
-Karl noticed and proposed teaching thaw_super() to remember whether the
-freeze took the rwsems (cf. [1]). But a filesystem changing SB_RDONLY
-behind the VFS' back causes more problems than just confused freezing.
-Jan preferred fixing the filesystems instead (cf. [2]) and I agree. ext4
-and f2fs already stopped doing it. So this converts all the others to
-what ext4 does:
+  VFS: Busy inodes after unmount of ecryptfs (ecryptfs)
 
-- the error is recorded in filesystem private state and the filesystem
-  refuses modifications with EROFS itself
-- the superblock stays read-write and "emergency_ro" is shown in the
-  mount options ("withdrawn" for gfs2, "ro_ops" for efivarfs)
-- a remount to read-write fails with EROFS until umount
-- a remount to read-only works so emergency remount (sysrq u) doesn't
-  WARN, and it doesn't mark the filesystem clean
+That's a WARN, or a BUG with CONFIG_BUG_ON_DATA_CORRUPTION. The lower
+filesystem reports the same when it is unmounted. Use iget_failed() for
+a new inode and iput() for one from the cache.
 
-That's ext2, jfs, nilfs2, fat, exfat, hfs, affs, ufs, hpfs, ntfs, ocfs2,
-zonefs, btrfs, gfs2, efivarfs and ubifs. For gfs2 it's the withdraw and
-for efivarfs it's the notifier that flips SB_RDONLY when the efivar ops
-switch between ops that can and can't set variables. ubifs can't be
-frozen but it flips SB_RDONLY from any context all the same. hfsplus
-only did it when it created the attributes tree, where it can't trigger,
-so that check is simply limited to mount.
+Reproducer, opening the lower file read-write fails on a read-only bind
+mount:
 
-fat, exfat, hpfs, ntfs and ubifs keep setting SB_RDONLY for errors while
-the filesystem is still being mounted. Until SB_BORN the mounter holds
-s_umount and nothing can freeze the superblock so that's fine.
+  sig=$(printf x | ecryptfs-add-passphrase - | sed -n 's/.*\[\(.*\)\].*/\1/p')
+  mount --bind -o ro /lower /lower
+  mount -i -t ecryptfs -o ecryptfs_sig=$sig,ecryptfs_cipher=aes,ecryptfs_key_bytes=16,ecryptfs_passthrough /lower /upper
+  cat /upper/f      # EROFS
+  umount /upper     # VFS: Busy inodes after unmount of ecryptfs
 
-A few patches make the read-only remount work in the first place. exfat
-and ocfs2 didn't inherit their mount options on remount so emergency
-remount, which passes none, could fail on them. And gfs2 has a BUG_ON()
-when it's remounted read-only while a withdraw is still pending that
-this makes easier to hit. Those come before the conversion of the
-respective filesystem. ext4 and xfs have the same problem with their own
-error states. ext4 refused to go read-only in its emergency state at all
-and a shut down xfs couldn't be remounted read-only either. So sysrq u
-WARNed for every ext4 that hit an error and for every shut down xfs.
-Both are fixed at the end of the series.
-
-ecryptfs opens its lower files read-write unless the lower superblock is
-read-only. On top of one of these filesystems every lookup of a regular
-file would fail with EROFS after an error and leak the inode. umount
-then reports busy inodes. ext4 already behaves like that and so does a
-read-only bind mount underneath. The first two patches make ecryptfs
-fall back to a read-only lower file and plug the leak.
-
-There are user-visible changes but I think they're all fine. The big one
-is that "mount -o remount,rw" doesn't make the filesystem writable again
-after an error anymore. That's how ext4 behaves since
-commit d3476f3dad4a ("ext4: don't set SB_RDONLY after filesystem
-errors"). statfs() doesn't report ST_RDONLY after an error and a second
-read-only mount of the device fails with EBUSY. Writes through file
-descriptors opened before the error fail with EROFS now where they used
-to succeed. ext2, fat, hfs, affs, ufs and ubifs fail fsync() with EROFS
-after an error. Writeback drops what they can't write anymore so fsync()
-would report success otherwise. And remount helpers that pass the shown
-options back, busybox mount for example, trip over "emergency_ro".
-That's already the case on ext4.
-
-Every patch has a reproducer in the commit message. I ran all of them
-in a VM against the unpatched and the patched kernel, the latter with
-KASAN and kmemleak. There are selftests for ext2, jfs, nilfs2, gfs2 and
-the ext4 and xfs remount changes.
-
-This depends on three fixes that aren't upstream yet:
-
-  super: don't put the remount context under s_umount
-  super: keep the read-only state if a reconfiguration doesn't change it
-  nilfs2: don't reconfigure a frozen superblock on mount
-
-The first one matters most. This series makes errored filesystems
-reachable for sysrq u and without it a concurrent umount deadlocks on
-s_umount. The second one makes fc->sb_flags carry the current read-only
-state for fspick() reconfigurations, which ->reconfigure() of fat, affs,
-hfs, ufs, hpfs and btrfs rely on. The third one closes the last way
-nilfs2 changes SB_RDONLY on a frozen superblock, through a mount that
-reconfigures it.
-
-With this no filesystem changes SB_RDONLY outside of mount and remount
-anymore.
-
-[1]: https://lore.kernel.org/r/20260903060855.4610-1-kmehltretter@gmail.com
-[2]: https://lore.kernel.org/r/hyhuckyohsabx2suvq3z7uy3pbgmihva6wgzxr3op7pzcrlu33@p7zzlgp2ehjf
-
+Fixes: 3b06b3ebf441 ("eCryptfs: Fix new inode race condition")
+Cc: stable@vger.kernel.org
 Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 ---
-Christian Brauner (28):
-      ecryptfs: don't leak the inode when a lookup can't open the lower file
-      ecryptfs: fall back to a read-only lower file
-      ext2: don't set SB_RDONLY after filesystem errors
-      jfs: don't set SB_RDONLY after filesystem errors
-      nilfs2: don't set SB_RDONLY after filesystem errors
-      fat: don't set SB_RDONLY after filesystem errors
-      exfat: keep the current mount options on remount
-      exfat: don't set SB_RDONLY after filesystem errors
-      hfs: don't set SB_RDONLY after MDB write errors
-      hfsplus: don't set SB_RDONLY when creating the attributes tree
-      affs: don't set SB_RDONLY after filesystem errors
-      ufs: don't set SB_RDONLY after filesystem errors
-      hpfs: don't set SB_RDONLY after filesystem errors
-      ntfs: don't set SB_RDONLY after filesystem errors
-      ocfs2: keep options that can't change on remount
-      ocfs2: don't set SB_RDONLY after filesystem errors
-      zonefs: don't set SB_RDONLY after I/O errors
-      btrfs: check BTRFS_FS_STATE_RO instead of SB_RDONLY at runtime
-      btrfs: don't set SB_RDONLY after filesystem errors
-      gfs2: wait for a pending withdraw before remounting read-only
-      gfs2: don't set SB_RDONLY on withdraw
-      efivarfs: stop using SB_RDONLY for read-only efivar ops
-      ubifs: don't set SB_RDONLY after errors
-      selftests/filesystems: test filesystem errors while frozen
-      ext4: allow remounting read-only in the emergency state
-      selftests/filesystems: test ext4 remounts in the emergency state
-      xfs: allow remounting read-only after a shutdown
-      selftests/filesystems: test xfs remounts after a shutdown
+ fs/ecryptfs/inode.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
- Documentation/filesystems/zonefs.rst               |   5 +-
- fs/affs/affs.h                                     |   9 +
- fs/affs/amigaffs.c                                 |  10 +-
- fs/affs/file.c                                     |  16 +-
- fs/affs/inode.c                                    |   5 +
- fs/affs/namei.c                                    |  18 +
- fs/affs/super.c                                    |  24 +-
- fs/btrfs/acl.c                                     |   3 +-
- fs/btrfs/bio.c                                     |   2 +-
- fs/btrfs/block-group.c                             |   2 +-
- fs/btrfs/dev-replace.c                             |   2 +-
- fs/btrfs/discard.c                                 |   2 +-
- fs/btrfs/disk-io.c                                 |   4 +-
- fs/btrfs/fs.h                                      |  14 +
- fs/btrfs/inode.c                                   |   8 +-
- fs/btrfs/ioctl.c                                   |   8 +-
- fs/btrfs/messages.c                                |  21 +-
- fs/btrfs/qgroup.c                                  |   4 +-
- fs/btrfs/reflink.c                                 |   3 +-
- fs/btrfs/super.c                                   |  45 +-
- fs/btrfs/sysfs.c                                   |   6 +-
- fs/btrfs/tree-checker.c                            |   2 +-
- fs/btrfs/volumes.c                                 |   4 +-
- fs/btrfs/xattr.c                                   |   8 +-
- fs/ecryptfs/inode.c                                |   5 +-
- fs/ecryptfs/kthread.c                              |  19 +-
- fs/efivarfs/file.c                                 |   6 +
- fs/efivarfs/inode.c                                |  15 +
- fs/efivarfs/internal.h                             |  14 +-
- fs/efivarfs/super.c                                |  31 +-
- fs/exfat/exfat_fs.h                                |  19 +
- fs/exfat/file.c                                    |  54 +-
- fs/exfat/inode.c                                   |  11 +-
- fs/exfat/misc.c                                    |  24 +-
- fs/exfat/namei.c                                   |  27 +-
- fs/exfat/super.c                                   |  49 +-
- fs/ext2/balloc.c                                   |   5 +
- fs/ext2/dir.c                                      |   5 +-
- fs/ext2/ext2.h                                     |  14 +
- fs/ext2/file.c                                     |  16 +-
- fs/ext2/ialloc.c                                   |   2 +
- fs/ext2/inode.c                                    |  13 +-
- fs/ext2/ioctl.c                                    |   7 +
- fs/ext2/namei.c                                    |  10 +
- fs/ext2/super.c                                    |  62 ++-
- fs/ext2/xattr.c                                    |   2 +
- fs/ext4/super.c                                    |  20 +-
- fs/fat/dir.c                                       |   3 +
- fs/fat/fat.h                                       |  13 +
- fs/fat/fatent.c                                    |  11 +-
- fs/fat/file.c                                      |  19 +
- fs/fat/inode.c                                     |  26 +-
- fs/fat/misc.c                                      |  29 +-
- fs/fat/namei_msdos.c                               |   9 +
- fs/fat/namei_vfat.c                                |   9 +
- fs/gfs2/ops_fstype.c                               |   6 +-
- fs/gfs2/quota.c                                    |   2 +-
- fs/gfs2/super.c                                    |  41 +-
- fs/gfs2/util.c                                     |   8 +-
- fs/hfs/attr.c                                      |   3 +
- fs/hfs/dir.c                                       |  12 +
- fs/hfs/extent.c                                    |   5 +
- fs/hfs/hfs_fs.h                                    |  11 +
- fs/hfs/inode.c                                     |  30 +
- fs/hfs/mdb.c                                       |  18 +-
- fs/hfs/super.c                                     |   7 +-
- fs/hfsplus/btree.c                                 |   7 +-
- fs/hpfs/alloc.c                                    |   4 +-
- fs/hpfs/dir.c                                      |   3 +-
- fs/hpfs/file.c                                     |  17 +-
- fs/hpfs/hpfs_fn.h                                  |   9 +
- fs/hpfs/inode.c                                    |   2 +
- fs/hpfs/map.c                                      |   3 +-
- fs/hpfs/namei.c                                    |  14 +
- fs/hpfs/super.c                                    |  22 +-
- fs/jfs/acl.c                                       |   3 +
- fs/jfs/file.c                                      |  16 +-
- fs/jfs/inode.c                                     |   6 +-
- fs/jfs/ioctl.c                                     |   7 +
- fs/jfs/jfs_dtree.c                                 |   3 +-
- fs/jfs/jfs_extent.c                                |  10 +
- fs/jfs/jfs_incore.h                                |  12 +
- fs/jfs/jfs_inode.c                                 |   3 +
- fs/jfs/namei.c                                     |  12 +
- fs/jfs/super.c                                     |  69 ++-
- fs/jfs/xattr.c                                     |   3 +
- fs/nilfs2/file.c                                   |  15 +-
- fs/nilfs2/inode.c                                  |  13 +-
- fs/nilfs2/ioctl.c                                  |  36 +-
- fs/nilfs2/mdt.c                                    |   2 +-
- fs/nilfs2/namei.c                                  |   1 +
- fs/nilfs2/page.c                                   |   2 +-
- fs/nilfs2/segment.c                                |  13 +-
- fs/nilfs2/sufile.h                                 |   2 +-
- fs/nilfs2/super.c                                  |  35 +-
- fs/nilfs2/the_nilfs.h                              |   8 +
- fs/ntfs/aops.c                                     |   5 +-
- fs/ntfs/dir.c                                      |   5 +-
- fs/ntfs/ea.c                                       |  10 +-
- fs/ntfs/file.c                                     |  51 +-
- fs/ntfs/inode.c                                    |  22 +-
- fs/ntfs/iomap.c                                    |   6 +-
- fs/ntfs/mft.c                                      |  10 +-
- fs/ntfs/namei.c                                    |  40 +-
- fs/ntfs/super.c                                    |  58 +-
- fs/ntfs/volume.h                                   |  22 +
- fs/ocfs2/acl.c                                     |   3 +
- fs/ocfs2/file.c                                    |   8 +
- fs/ocfs2/ioctl.c                                   |   3 +
- fs/ocfs2/mmap.c                                    |   3 +
- fs/ocfs2/namei.c                                   |  21 +
- fs/ocfs2/ocfs2.h                                   |  12 +
- fs/ocfs2/refcounttree.c                            |   3 +
- fs/ocfs2/super.c                                   |  77 ++-
- fs/ocfs2/xattr.c                                   |   8 +
- fs/ubifs/dir.c                                     |   1 +
- fs/ubifs/file.c                                    |  24 +
- fs/ubifs/io.c                                      |   7 +-
- fs/ubifs/ioctl.c                                   |   4 +
- fs/ubifs/super.c                                   |   8 +-
- fs/ubifs/ubifs.h                                   |   1 +
- fs/ubifs/xattr.c                                   |   6 +
- fs/ufs/cylinder.c                                  |  12 +-
- fs/ufs/dir.c                                       |   5 +-
- fs/ufs/file.c                                      |  28 +-
- fs/ufs/inode.c                                     |   5 +
- fs/ufs/namei.c                                     |  22 +
- fs/ufs/super.c                                     |  74 ++-
- fs/ufs/ufs.h                                       |  10 +
- fs/xfs/xfs_super.c                                 |  15 +-
- fs/zonefs/file.c                                   |  17 +-
- fs/zonefs/super.c                                  |  37 +-
- fs/zonefs/zonefs.h                                 |  16 +
- tools/testing/selftests/Makefile                   |   1 +
- .../selftests/filesystems/sb_rdonly/.gitignore     |   5 +
- .../selftests/filesystems/sb_rdonly/Makefile       |   7 +
- .../testing/selftests/filesystems/sb_rdonly/config |   7 +
- .../filesystems/sb_rdonly/emergency_ro_test.c      | 612 +++++++++++++++++++++
- .../sb_rdonly/ext4_emergency_remount_test.c        | 312 +++++++++++
- .../filesystems/sb_rdonly/gfs2_withdraw_test.c     | 330 +++++++++++
- .../selftests/filesystems/sb_rdonly/settings       |   1 +
- .../sb_rdonly/xfs_shutdown_remount_test.c          | 307 +++++++++++
- 142 files changed, 3216 insertions(+), 294 deletions(-)
----
-base-commit: a5ebb76233b79db01e82e061173cb73c6d2b5c6b
-change-id: 20261011-work-fs-sb_rdonly-f93e626bd0c2
+diff --git a/fs/ecryptfs/inode.c b/fs/ecryptfs/inode.c
+index 525297c7ebd8..0d8452558a98 100644
+--- a/fs/ecryptfs/inode.c
++++ b/fs/ecryptfs/inode.c
+@@ -362,7 +362,10 @@ static struct dentry *ecryptfs_lookup_interpose(struct dentry *dentry,
+ 	if (S_ISREG(inode->i_mode)) {
+ 		rc = ecryptfs_i_size_read(dentry, inode);
+ 		if (rc) {
+-			make_bad_inode(inode);
++			if (inode_state_read_once(inode) & I_NEW)
++				iget_failed(inode);
++			else
++				iput(inode);
+ 			return ERR_PTR(rc);
+ 		}
+ 	}
+
+-- 
+2.53.0
 
 
 ______________________________________________________
