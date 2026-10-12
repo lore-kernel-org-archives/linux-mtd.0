@@ -4,50 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E630CA9ED1
-	for <linux-mtd@archiver.kernel.org>; Mon, 12 Oct 2026 10:21:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2BD55CA9ED1
+	for <linux-mtd@archiver.kernel.org>; Mon, 12 Oct 2026 10:21:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=B/w4rVNsY58EFHlRnyI4aBqF5SmMGtdelmR2EIYcWn8=; b=naHX41tOQZYaMV
-	ZHMGAyJlXzYB7Ni00lONkwAbgblsKCTUEqUYtsNAPQuPT60TPkki/j1OLGRm8NtwlEmIvE9F7pRQl
-	Why7PdyjolyT3ia8NzL930zu+5VdOgyah4mbL8LcYFgE308wjKFe/s3IQUjxscBwP8OjvkzkPRuYN
-	umR8UC9Tx4N3q0AJpRVscPJAsNC8J5KtKQ11gsoYfiLCQTfqvwzesRlr23jpxFJDvUUtcmKQvmhe5
-	dkLPR3jEizxg5PKkgqebuPBE9mzFgI3WWtGVYvk7PhJAC8E2FOvb4Hc8igtPl4DhMjvqMCwn6Gcfe
-	tjOFkV9m2llvSBu+SqZQ==;
+	List-Owner; bh=YRzJCIVLbdrsGQice1LhQCF5uaYI/Q1QV705UghW1m8=; b=DRe9LlTVvvcPwJ
+	g8DX/OMRC2AZmSdi7f9j7KyXM1LyaJlzjc3VBtUXQVnnmXSLj2UYPVxQxAFxLkQ9Jig3NZpYjsgH/
+	irbxDBZWyIadpYd5CPDrKOCLScM2uFR4KuEDQ6IdWErQhAbxRKXb/7tgIi6ip/Fdvw85dg6LHojE8
+	AMxzOhKFQT0IFooSNdgeBm/JAEIS9Ncgy+yhKcowqaefuQH7mIPQIhv4XnlKzS18d7FV0iSe5U5J+
+	buuUtUwCigpKW2xuJWLUAD9Uh8Or73peyy94azrlIAcBq96evJCHzfHos364UFD198ZKvSZCM1180
+	i0/uUUSv40Vrz5jLIm1Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xGD9k-0000000ACNY-2Ruf;
-	Mon, 12 Oct 2026 10:21:20 +0000
+	id 1xGD9p-0000000ACQ7-2qRP;
+	Mon, 12 Oct 2026 10:21:25 +0000
 Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xGD9j-0000000ACMr-15Z2
+	id 1xGD9m-0000000ACOg-3e46
 	for linux-mtd@lists.infradead.org;
-	Mon, 12 Oct 2026 10:21:19 +0000
+	Mon, 12 Oct 2026 10:21:23 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id B9F4243982;
+	by sea.source.kernel.org (Postfix) with ESMTP id 9E6C5410BB;
+	Mon, 12 Oct 2026 10:21:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23E421F0089D;
 	Mon, 12 Oct 2026 10:21:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07DB31F0089C;
-	Mon, 12 Oct 2026 10:21:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1791800478;
-	bh=jSaTeXy5zEI39kgqqTi6yfSkP3Kgm5wm6RfoGXruvqg=;
+	s=k20260515; t=1791800482;
+	bh=ICZn17F2Qr1X/UcceZ9Xh+NsEcH0M5p2m4jZVNK55KU=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=daD9kmOaoDrecEZ+GKWXxyW9H20UJr48DcxIiw0e65dcl8QTST3JZXcj61YvqNTyb
-	 c5d34ADQW1FTC40OtFvDZ/r1oWnvdCTDB2nBPiUWZpsdvr64rU3yyTUZCbQmtT/WHN
-	 M4L3IE8ZFu/uZjDyHAoHWVVDuNF/pppyPWohHYEa4Yvx8fprF5PUJYsVDI169f9kxo
-	 jBe+V1vSuEX9xF71FfYPmOVHGKSg4cEB3pIABRCDPA7K95hBDggmzUqYSJbpYomakn
-	 PXM0tJDgLdWEhvw5L8NTowb8aNFn6hJrwa/MlDBOPgqwCRarNEsyBQ1YwBmx0RfVjr
-	 WbnHd24KBBfVA==
+	b=g0UxJmEzdyfUNiNQFIlrTFJ4b2QMSnKfjzzfqPjucOeB7magi9V/kezyJu6R8lLmW
+	 5sHP0dy+ooX22UL76Mn6Ig4IU9RLQtMMY4tOEhL2pDyEPTN95tJLEiRQMUimGQkShR
+	 iZvC4WLmJhQgjbvA2LuTISoc7qjNQl6pBicsiTfqLxgKDjlOCCdNlW4bN524TTABZS
+	 UVMFT66mgA/1LJjmAZNQRqSjYUMCjOJqjB8Gp88OWutDuzQ56ZgMxBfiuVApEPx5kn
+	 Qs3IumkvEI4gAE38fP3hMdxjKtSwIJCqQ/M1R/dZ9S+oojJKed2pi4ANX7Xgw/lf7I
+	 N7/j/BB5Y4muw==
 From: Christian Brauner <brauner@kernel.org>
-Date: Mon, 12 Oct 2026 12:20:46 +0200
-Subject: [PATCH RFC 01/28] ecryptfs: don't leak the inode when a lookup
- can't open the lower file
+Date: Mon, 12 Oct 2026 12:20:47 +0200
+Subject: [PATCH RFC 02/28] ecryptfs: fall back to a read-only lower file
 MIME-Version: 1.0
-Message-Id: <20261012-work-fs-sb_rdonly-v1-1-60743a3dc326@kernel.org>
+Message-Id: <20261012-work-fs-sb_rdonly-v1-2-60743a3dc326@kernel.org>
 References: <20261012-work-fs-sb_rdonly-v1-0-60743a3dc326@kernel.org>
 In-Reply-To: <20261012-work-fs-sb_rdonly-v1-0-60743a3dc326@kernel.org>
 To: Jan Kara <jack@suse.com>
@@ -58,14 +57,14 @@ Cc: Al Viro <viro@zeniv.linux.org.uk>, ecryptfs@vger.kernel.org,
  ocfs2-devel@lists.linux.dev, linux-btrfs@vger.kernel.org, 
  gfs2@lists.linux.dev, linux-efi@vger.kernel.org, 
  linux-mtd@lists.infradead.org, linux-xfs@vger.kernel.org, 
- "Christian Brauner (Amutable)" <brauner@kernel.org>, stable@vger.kernel.org
+ "Christian Brauner (Amutable)" <brauner@kernel.org>
 X-Mailer: b4 0.17-dev-3d1b8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1919; i=brauner@kernel.org;
- h=from:subject:message-id; bh=FHwfq/OCDsnntrfJYkKn8tLOjs4Tv7YHZV8JitYQDQ0=;
- b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWSd2TJJmlVX9PaCsIn+FsHZwuxHGEpPFCj+mriqsDrpf
- qGIfFJFRykLgxgXg6yYIotDu0m43HKeis1GmRowc1iZQIYwcHEKwETcDjD8sz1q8vHQt6fh7p09
- uT08PmKLO9tkzFMehF2fYnDC/qOTC8P/xLgFX20+PbiQ+CC39cSDhwe1Dlq6qHKtT7/euMmvwfE
- UHwA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3015; i=brauner@kernel.org;
+ h=from:subject:message-id; bh=d4DV3ux+YqNZSwnqbBQiz2kxcDy+uUjQAoj3knRirZc=;
+ b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWSd2TLJICW/8hrXjx/Ldws/XrCs8MZc3ZN3/ud2ieUq5
+ O/L+Bhh31HKwiDGxSArpsji0G4SLrecp2KzUaYGzBxWJpAhDFycAjAREz5GhgWGG6KDt2zoSozU
+ sA7/e6XfdhXflaoT5+s0nqRkzHvvtISR4bO9X/sly5MVnAmuoWuucH/wlXm9e63liY1mGUIhKfV
+ L+QA=
 X-Developer-Key: i=brauner@kernel.org; a=openpgp;
  fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 X-BeenThere: linux-mtd@lists.infradead.org
@@ -84,54 +83,78 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-ecryptfs_lookup_interpose() opens the lower file of a regular file to
-read the size from the header. If that fails it calls make_bad_inode()
-and returns the error. A new inode is still I_NEW at that point and
-nothing ever unlocks or puts it, so it leaks together with the reference
-it holds on the lower inode. And an inode that was already in the cache
-gets marked bad for all its other users instead of just losing the
-reference this lookup took.
+ecryptfs opens the lower file read-write unless the lower inode is
+IS_RDONLY(). But a filesystem whose superblock is read-write can still
+refuse to open a file for writing. A read-only mount underneath does
+that with EROFS, and so does ext4 after an error since commit
+d3476f3dad4a ("ext4: don't set SB_RDONLY after filesystem errors"). The
+retry through the kthread opens read-write as well and fails the same
+way. Then every lookup of a regular file fails with EROFS because
+ecryptfs can't read the header, and nothing can be read through
+ecryptfs anymore.
 
-umount then complains:
+The filesystems that still set SB_RDONLY after an error are about to
+stop doing that as well. So far ecryptfs opened their files read-only
+after an error. Fall back to that on EROFS. Opening an ecryptfs file for
+writing then fails with EPERM like it does on top of a read-only
+superblock.
 
-  VFS: Busy inodes after unmount of ecryptfs (ecryptfs)
-
-That's a WARN, or a BUG with CONFIG_BUG_ON_DATA_CORRUPTION. The lower
-filesystem reports the same when it is unmounted. Use iget_failed() for
-a new inode and iput() for one from the cache.
-
-Reproducer, opening the lower file read-write fails on a read-only bind
-mount:
+Reproducer:
 
   sig=$(printf x | ecryptfs-add-passphrase - | sed -n 's/.*\[\(.*\)\].*/\1/p')
   mount --bind -o ro /lower /lower
   mount -i -t ecryptfs -o ecryptfs_sig=$sig,ecryptfs_cipher=aes,ecryptfs_key_bytes=16,ecryptfs_passthrough /lower /upper
-  cat /upper/f      # EROFS
-  umount /upper     # VFS: Busy inodes after unmount of ecryptfs
+  cat /upper/f      # before: EROFS, after: works
 
-Fixes: 3b06b3ebf441 ("eCryptfs: Fix new inode race condition")
-Cc: stable@vger.kernel.org
 Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 ---
- fs/ecryptfs/inode.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ fs/ecryptfs/kthread.c | 19 +++++++++++++++++--
+ 1 file changed, 17 insertions(+), 2 deletions(-)
 
-diff --git a/fs/ecryptfs/inode.c b/fs/ecryptfs/inode.c
-index 525297c7ebd8..0d8452558a98 100644
---- a/fs/ecryptfs/inode.c
-+++ b/fs/ecryptfs/inode.c
-@@ -362,7 +362,10 @@ static struct dentry *ecryptfs_lookup_interpose(struct dentry *dentry,
- 	if (S_ISREG(inode->i_mode)) {
- 		rc = ecryptfs_i_size_read(dentry, inode);
- 		if (rc) {
--			make_bad_inode(inode);
-+			if (inode_state_read_once(inode) & I_NEW)
-+				iget_failed(inode);
-+			else
-+				iput(inode);
- 			return ERR_PTR(rc);
+diff --git a/fs/ecryptfs/kthread.c b/fs/ecryptfs/kthread.c
+index ae4cb4e2e134..ba94b304edf3 100644
+--- a/fs/ecryptfs/kthread.c
++++ b/fs/ecryptfs/kthread.c
+@@ -30,6 +30,21 @@ static struct ecryptfs_kthread_ctl {
+ 
+ static struct task_struct *ecryptfs_kthread;
+ 
++/*
++ * A filesystem can refuse writes while its superblock stays read-write, e.g.
++ * after an error, and a read-only mount refuses them as well. Reading still
++ * works so fall back to that.
++ */
++static struct file *ecryptfs_open_lower(const struct path *path, int flags,
++					const struct cred *cred)
++{
++	struct file *file = dentry_open(path, flags, cred);
++
++	if (PTR_ERR_OR_ZERO(file) == -EROFS && (flags & O_ACCMODE) == O_RDWR)
++		file = dentry_open(path, (flags & ~O_ACCMODE) | O_RDONLY, cred);
++	return file;
++}
++
+ /**
+  * ecryptfs_threadfn
+  * @ignored: ignored
+@@ -59,7 +74,7 @@ static int ecryptfs_threadfn(void *ignored)
+ 					       struct ecryptfs_open_req,
+ 					       kthread_ctl_list);
+ 			list_del(&req->kthread_ctl_list);
+-			*req->lower_file = dentry_open(&req->path,
++			*req->lower_file = ecryptfs_open_lower(&req->path,
+ 				(O_RDWR | O_LARGEFILE), current_cred());
+ 			complete(&req->done);
  		}
- 	}
+@@ -132,7 +147,7 @@ int ecryptfs_privileged_open(struct file **lower_file,
+ 	 * lower file is fput() when all eCryptfs files for the inode are
+ 	 * released. */
+ 	flags |= IS_RDONLY(d_inode(lower_dentry)) ? O_RDONLY : O_RDWR;
+-	(*lower_file) = dentry_open(&req.path, flags, cred);
++	(*lower_file) = ecryptfs_open_lower(&req.path, flags, cred);
+ 	if (!IS_ERR(*lower_file))
+ 		goto out;
+ 	if ((flags & O_ACCMODE) == O_RDONLY) {
 
 -- 
 2.53.0
