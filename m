@@ -4,50 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3280CA9ED1
-	for <linux-mtd@archiver.kernel.org>; Mon, 12 Oct 2026 10:22:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE9F4CA9ED0
+	for <linux-mtd@archiver.kernel.org>; Mon, 12 Oct 2026 10:22:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WX/K3zvVcKj30xyITm5xK0fZe+Te3RFjOZXsRwAhfzg=; b=uVUJNHBUzusJ4K
-	6cW/S0Da5y0WkCEHFVuv2nxhZs5AEeAziu8ft+igqoc6JgIgIoSI0lP3l8laf+nVSpjmDgVSQrpGP
-	Bh9CqMMBteSrW1Po6y2WfjbnriqzPlSirMbI000S6wqyynwIq0Mr9CT2eK2Jidr4OsqkJeVGPDjLo
-	dpS3+b7dQ695tPxDIDfylI9neaAK7wVFHISkF/IUS0vmpzn2s6IHab+inMpZvFPFfdb+NkOUwf7f6
-	+87obbuKgoDPcfqUMVcj1A4bLSCyIuVooVqUqzZXDo7WDnfDleIzX7Fxo2cbxOBTi+eDMt2609JxT
-	gGI2+V5MI2+YDGtVRQTQ==;
+	List-Owner; bh=xGUdi6uzJivOib1t88TBv7CdZusS/ytYOz0LzcsdLNo=; b=2Dk/E5Ce9i67Ah
+	QVDs28AO1I5FA9aUtHFfxKdq5/GsUl7kknlxMxbrZCA2TjW8Gw2248FLlCQgeCv48fgZZKfAwK1kV
+	5RFfLpP6rDfzhiNrwBTyUrhcAfryDL5wR+n2TSbyPjWIIT57BG3NmyHeTjJXOulo2QXBckuDjdT+i
+	warI6IXDv+3CfEFeeFDq8d9C3wix8WOQgcdD3QYCjypi3jvVPVj7YuqckPf1ugmAi8+a/q0EUv/38
+	r1WT1qgt1hkxSoUxMUzRi+51db0Tq4NdiSprWWNw+q9b94TXftuetmJFnipWhqhiB6slVmsr+lHbO
+	KB4CgOhc6vXibN0UMybQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xGDAg-0000000ADFR-2l7K;
-	Mon, 12 Oct 2026 10:22:18 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1xGDAh-0000000ADIq-44RG;
+	Mon, 12 Oct 2026 10:22:19 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xGDAW-0000000AD2c-1QWA
+	id 1xGDAe-0000000ADD4-21Og
 	for linux-mtd@lists.infradead.org;
-	Mon, 12 Oct 2026 10:22:08 +0000
+	Mon, 12 Oct 2026 10:22:16 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id ED40B4034A;
-	Mon, 12 Oct 2026 10:22:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6779C1F0089B;
-	Mon, 12 Oct 2026 10:22:04 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 397894047A;
+	Mon, 12 Oct 2026 10:22:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B474D1F0089F;
+	Mon, 12 Oct 2026 10:22:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1791800527;
-	bh=R8MtnDEhaLaFQWMfm22wLVmTlisY6RqGmKdB5q9YCW4=;
+	s=k20260515; t=1791800536;
+	bh=RIH/N6j+KOC00sVVsAdpEKeQdTGTedvdRMVdVt4vl/w=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=KozTg57YUv8uNSducV+7VtX4AfGJlE1AxyeX0JUrGy9TG1Qlls+wFY2VYedDt+FRU
-	 dcKbNF/ejY0xSaOwBjmacrOeIgDbUoK8F5hNx8XMBB4JJYgAytZfqy+RSEwO8ELAIB
-	 OeNLwcAkyJaAr/yMsaQTqzMLJowTbJvma0aP4W829lrtdTPqlmchYiewxyx9PyDuua
-	 +iOhgQxDOKplZYq/PxxDV6UwgmP+653MBUday1kP5yvwyluNHW4UHgBRzs4LfRS8er
-	 TFxgWMcteHhSizR7+x21I/+44i+Yr8PNZUjoPbNtD8JTjA47OetafSNQvKf/z7dcEY
-	 0bP1xi075HMKg==
+	b=ci8MRYyH3GjInYEB6/omwxCTuwkI5hWbFDZqbi+4xbVMsBb2o+HSLorUoyf9VOJJG
+	 8UXMWxo03la4d9+JzYEefcX+lDjR4HTHoK6cgcWxeWiKX9ofaXldOVj8Uh8MlTEYBO
+	 4/u1kR8BxOKB4ntPmC3Z7r38xOQlN5LF6kNiUzekNFvSTpzvmuXWTBy5PPW4KYlQWf
+	 FRZRfhvjZgSHVC0hmkZtMhSzLcRbemk/GyCbgZV340j0Rz7Z1FyZZN5J0pdEN3/Xj9
+	 WKUUFe7VcmdJ81+bDTPtzTi+IVXVX0YeasV82GLIix+wcplP/4o3R6kblKhczUJj/O
+	 IaukkdOEjbNYQ==
 From: Christian Brauner <brauner@kernel.org>
-Date: Mon, 12 Oct 2026 12:20:58 +0200
-Subject: [PATCH RFC 13/28] hpfs: don't set SB_RDONLY after filesystem
- errors
+Date: Mon, 12 Oct 2026 12:21:00 +0200
+Subject: [PATCH RFC 15/28] ocfs2: keep options that can't change on remount
 MIME-Version: 1.0
-Message-Id: <20261012-work-fs-sb_rdonly-v1-13-60743a3dc326@kernel.org>
+Message-Id: <20261012-work-fs-sb_rdonly-v1-15-60743a3dc326@kernel.org>
 References: <20261012-work-fs-sb_rdonly-v1-0-60743a3dc326@kernel.org>
 In-Reply-To: <20261012-work-fs-sb_rdonly-v1-0-60743a3dc326@kernel.org>
 To: Jan Kara <jack@suse.com>
@@ -60,12 +59,12 @@ Cc: Al Viro <viro@zeniv.linux.org.uk>, ecryptfs@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-xfs@vger.kernel.org, 
  "Christian Brauner (Amutable)" <brauner@kernel.org>
 X-Mailer: b4 0.17-dev-3d1b8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=14135; i=brauner@kernel.org;
- h=from:subject:message-id; bh=3dX7JQUhz+2uCP72KoInu90B1u/eYxYjBnyUPuSxVmM=;
- b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWSd2TK5YE0i+2MDXtu+tSH701s++ZsdCchrV9x8z6uz6
- fgGLTfFjlIWBjEuBlkxRRaHdpNwueU8FZuNMjVg5rAygQxh4OIUgIlM1mZk6EqpLT/HZvi95nW5
- 75ZZYXYn/D90e24+8o9FasljdpeG9wz/vWfUH/+abP/oWOqSiw9Nvnx/xsrO+dRO/eSOpcKMXTk
- mnAA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3024; i=brauner@kernel.org;
+ h=from:subject:message-id; bh=9u7klthKdsCoYlVinjiBI3Ze+o4aPIRiJ0KJ0j4j6nw=;
+ b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWSd2TJ5idnl51m+k2unGrn9CzSYY6q4fvW7g+rl0q7W3
+ qk7Dof+6yhlYRDjYpAVU2RxaDcJl1vOU7HZKFMDZg4rE8gQBi5OAZjIIV5Ghoux3au+/v41t1rr
+ NMOK5P/nk2zXaVy9PCfycup2A9Z4fm1Ghpn5Iowndwr+PtXTlj+3cYPc7rayJoafK0+UicTyS8s
+ tZQcA
 X-Developer-Key: i=brauner@kernel.org; a=openpgp;
  fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 X-BeenThere: linux-mtd@lists.infradead.org
@@ -84,355 +83,72 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-With errors=remount-ro, the hpfs default, hpfs_error() sets SB_RDONLY
-on the first error. That happens without holding sb->s_umount, also
-while the filesystem is frozen.
+ocfs2_check_set_options() insists on exactly one heartbeat mode and
+ocfs2_reconfigure() refuses to change the data mode. But
+ocfs2_init_fs_context() doesn't inherit the current mount options for a
+reconfigure. So every remount that doesn't pass heartbeat= fails with
+-EINVAL and on a data=writeback mount so does every remount that doesn't
+pass data=writeback. That includes emergency remount (sysrq u) which
+passes no options at all. So it WARNs in reconfigure_super() for every
+ocfs2 that is mounted read-write:
 
-freeze_super() and thaw_super() both look at sb_rdonly() to figure out
-whether the s_writers rwsems need to be taken or released. So after an
-error on a frozen filesystem thaw_super() skips ->unfreeze_fs() and
-sb_freeze_unlock() and the rwsems stay write-locked. Writers block
-forever in sb_start_write() and umount warns in rcu_sync_dtor().
+  (kworker/3:1,54,3):ocfs2_check_set_options:1243 ERROR: Invalid heartbeat mount options
+  forced remount of a ocfs2 fs returned -22
+  WARNING: fs/super.c:1133 at reconfigure_super+0x498/0xb20, CPU#3: kworker/3:1/54
 
-hpfs has no ->freeze_fs() and is only frozen through bdev_freeze(), e.g.
-when device mapper suspends the device with lockfs. That holds new I/O
-as well. But hpfs metadata lives in the block device page cache so a bad
-fnode or dnode is still found from the cache:
+A remount that does pass heartbeat= has the opposite problem. Every
+option it doesn't repeat is reset to its default. So noacl turns into
+acl, errors=panic and errors=continue turn into errors=remount-ro, and
+barrier=1, nouser_xattr, coherency=buffered, intr, atime_quantum= and
+preferred_slot= are dropped. localflocks is always dropped because the
+parser ignores it on remount and inode64 is dropped unless it's passed
+again.
 
-  hpfs: filesystem error: bad magic on fnode 00000031; remounting read-only
-  WARNING: kernel/rcu/sync.c:177 at rcu_sync_dtor+0x143/0x190, CPU#1: kworker/1:1/31
-  WARNING: kernel/rcu/sync.c:180 at rcu_sync_dtor+0x14c/0x190
-  WARNING: kernel/rcu/sync.c:188 at rcu_sync_dtor+0x13d/0x190
+So start a reconfigure from the current options instead, like exfat and
+gfs2_init_fs_context() do. Then a remount only changes what it
+specifies. That's the mount option flags, the atime quantum, the
+preferred slot and whether a userspace cluster stack is used. Asking for
+a different data mode still fails with -EINVAL. Asking for a different
+heartbeat mode does too but now as "Invalid heartbeat mount options"
+because the current mode is already set.
 
-and with a create instead of the umount:
+The next patch stops ocfs2 from setting SB_RDONLY after errors. An
+errored ocfs2 then stays read-write as far as the VFS is concerned and
+emergency remount would run into this for it as well.
 
-  [<0>] percpu_rwsem_wait+0x203/0x500
-  [<0>] mnt_want_write+0x28f/0x2f0
-  INFO: task s5_dm:129 blocked for more than 30 seconds.
+Reproducer: mount any ocfs2, also with data=writeback, then
 
-This is deterministic with chkdsk=no. With the default chkdsk=errors
-hpfs_error() first writes the spare block synchronously, which waits for
-the resume and then races with the thaw.
-
-hpfs_error() is also called from hpfs_fill_super(), e.g. for a volume
-that wasn't cleanly unmounted. Setting SB_RDONLY there is fine because
-the mounter holds s_umount and the superblock can't be frozen before
-SB_BORN. So keep doing that during mount. Such mounts stay read-only and
-can be remounted read-write as before.
-
-At runtime follow what ext4 did in commit d3476f3dad4a ("ext4: don't
-set SB_RDONLY after filesystem errors") and record the error in a new
-HPFS_STATE_EMERGENCY_RO bit instead. It gets its own word because the
-existing sb_* bitfields all share one. hpfs then refuses modifications
-with -EROFS itself, in the namespace operations, setattr on files and
-directories, a new ->open() for opening for write and a new
-hpfs_file_write_iter(). FITRIM doesn't trim based on possibly bad
-bitmaps anymore. And unmark_dirty() does nothing in that state just like
-it did for the flipped superblock. So the spare block stays dirty and
-the next mount reports the volume as improperly stopped.
-
-Symlinks and device, fifo and socket inodes still use simple_setattr().
-Changing their attributes succeeds in memory but nothing writes it out.
-That's no different from a healthy hpfs though. It has no ->write_inode
-and only writes inodes from its own setattr, truncate and release paths
-and those inodes don't go through any of them.
-
-There are two places that relax their checks on a read-only superblock.
-hpfs_map_dnode() accepts over-long dirents and hpfs_lookup() tolerates
-HPFS386 ACL and XPERM entries. Both treat the emergency state like
-read-only so lookups behave as they did after the old flip.
-
-A remount to read-write fails with -EROFS until umount while so far
-"mount -o remount,rw" made the filesystem writable again after an error.
-A remount to read-only is allowed and doesn't write the spare block.
-Otherwise emergency remount (sysrq u) would WARN.
-
-Like ext4 we show "emergency_ro" in the mount options. The mount stays
-"rw" so statfs() doesn't report ST_RDONLY anymore and access(W_OK)
-succeeds. Writes through file descriptors that were opened before the
-error now fail with -EROFS where they used to succeed. A second
-read-only mount of the device fails with -EBUSY and a non-forced remount
-to read-only fails with -EBUSY while files are still open for writing.
-
-Reproducer. There's no mkfs for hpfs in Linux userspace. hpfs.img is an
-empty 8 MiB HPFS image (superblock, spare block, bitmaps, directory
-band, root fnode and dnode):
-
-  dev=$(losetup -f --show hpfs.img)
-  dmsetup create hpfs --table "0 $(blockdev --getsz $dev) linear $dev 0"
-  mount -t hpfs /dev/mapper/hpfs /mnt && mkdir /mnt/d
-  ino=$(stat -c %i /mnt/d) && umount /mnt
-  dd if=/dev/zero of=/dev/mapper/hpfs bs=512 seek=$ino count=1 conv=notrunc
-  mount -t hpfs -o errors=remount-ro,chkdsk=no /dev/mapper/hpfs /mnt
-  dd if=/dev/mapper/hpfs of=/dev/null bs=1M   # cache the fnode of "d"
-  dmsetup suspend hpfs
-  stat /mnt/d             # bad magic on fnode -> hpfs_error() -> SB_RDONLY
-  dmsetup resume hpfs
-  touch /mnt/x            # hangs
-  # instead of touch: umount /mnt -> WARNING in rcu_sync_dtor()
+  echo u > /proc/sysrq-trigger    # "forced remount of a ocfs2 fs returned -22"
 
 Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 ---
- fs/hpfs/alloc.c   |  4 ++--
- fs/hpfs/dir.c     |  3 ++-
- fs/hpfs/file.c    | 17 ++++++++++++++++-
- fs/hpfs/hpfs_fn.h |  9 +++++++++
- fs/hpfs/inode.c   |  2 ++
- fs/hpfs/map.c     |  3 ++-
- fs/hpfs/namei.c   | 14 ++++++++++++++
- fs/hpfs/super.c   | 22 ++++++++++++++++++++--
- 8 files changed, 67 insertions(+), 7 deletions(-)
+ fs/ocfs2/super.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-diff --git a/fs/hpfs/alloc.c b/fs/hpfs/alloc.c
-index f5150372618e..061b34dfbd9f 100644
---- a/fs/hpfs/alloc.c
-+++ b/fs/hpfs/alloc.c
-@@ -539,7 +539,7 @@ int hpfs_trim_fs(struct super_block *s, u64 start, u64 end, u64 minlen, unsigned
- 		return 0;
- 	if (start < sbi->sb_dirband_start + sbi->sb_dirband_size && end > sbi->sb_dirband_start) {
- 		hpfs_lock(s);
--		if (sb_rdonly(s)) {
-+		if (sb_rdonly(s) || hpfs_emergency_ro(s)) {
- 			err = -EROFS;
- 			goto unlock_1;
- 		}
-@@ -560,7 +560,7 @@ int hpfs_trim_fs(struct super_block *s, u64 start, u64 end, u64 minlen, unsigned
- 	end_bmp = (end + 0x3fff) >> 14;
- 	while (start_bmp < end_bmp && !err) {
- 		hpfs_lock(s);
--		if (sb_rdonly(s)) {
-+		if (sb_rdonly(s) || hpfs_emergency_ro(s)) {
- 			err = -EROFS;
- 			goto unlock_2;
- 		}
-diff --git a/fs/hpfs/dir.c b/fs/hpfs/dir.c
-index 3bf11202e2d3..be5d09545667 100644
---- a/fs/hpfs/dir.c
-+++ b/fs/hpfs/dir.c
-@@ -265,7 +265,8 @@ struct dentry *hpfs_lookup(struct inode *dir, struct dentry *dentry, unsigned in
- 	hpfs_result = hpfs_i(result);
- 	if (!de->directory) hpfs_result->i_parent_dir = dir->i_ino;
+diff --git a/fs/ocfs2/super.c b/fs/ocfs2/super.c
+index c62e389d4dd6..26041371a666 100644
+--- a/fs/ocfs2/super.c
++++ b/fs/ocfs2/super.c
+@@ -1213,6 +1213,20 @@ static int ocfs2_init_fs_context(struct fs_context *fc)
+ 	mopt->resv_level = OCFS2_DEFAULT_RESV_LEVEL;
+ 	mopt->dir_resv_level = -1;
  
--	if (de->has_acl || de->has_xtd_perm) if (!sb_rdonly(dir->i_sb)) {
-+	if ((de->has_acl || de->has_xtd_perm) &&
-+	    !sb_rdonly(dir->i_sb) && !hpfs_emergency_ro(dir->i_sb)) {
- 		hpfs_error(result->i_sb, "ACLs or XPERM found. This is probably HPFS386. This driver doesn't support it now. Send me some info on these structures");
- 		iput(result);
- 		result = ERR_PTR(-EINVAL);
-diff --git a/fs/hpfs/file.c b/fs/hpfs/file.c
-index 6a629ab956fc..0332cf74dbe3 100644
---- a/fs/hpfs/file.c
-+++ b/fs/hpfs/file.c
-@@ -256,12 +256,27 @@ const struct address_space_operations hpfs_aops = {
- 	.migrate_folio = buffer_migrate_folio,
- };
- 
-+static ssize_t hpfs_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
-+{
-+	if (hpfs_emergency_ro(file_inode(iocb->ki_filp)->i_sb))
-+		return -EROFS;
-+	return generic_file_write_iter(iocb, from);
-+}
++	/*
++	 * Start out with the current options so that a remount only changes
++	 * what it specifies. Emergency remount (sysrq u) passes no options at
++	 * all, and the heartbeat and data mode can't change.
++	 */
++	if (fc->purpose == FS_CONTEXT_FOR_RECONFIGURE) {
++		struct ocfs2_super *osb = OCFS2_SB(fc->root->d_sb);
 +
-+static int hpfs_file_open(struct inode *inode, struct file *filp)
-+{
-+	if ((filp->f_mode & FMODE_WRITE) && hpfs_emergency_ro(inode->i_sb))
-+		return -EROFS;
-+	return 0;
-+}
++		mopt->mount_opt = osb->s_mount_opt;
++		mopt->atime_quantum = osb->s_atime_quantum;
++		mopt->slot = osb->preferred_slot;
++		mopt->user_stack = ocfs2_userspace_stack(osb);
++	}
 +
- const struct file_operations hpfs_file_ops =
- {
- 	.llseek		= generic_file_llseek,
- 	.read_iter	= generic_file_read_iter,
--	.write_iter	= generic_file_write_iter,
-+	.write_iter	= hpfs_file_write_iter,
- 	.mmap_prepare	= generic_file_mmap_prepare,
-+	.open		= hpfs_file_open,
- 	.release	= hpfs_file_release,
- 	.fsync		= hpfs_file_fsync,
- 	.splice_read	= filemap_splice_read,
-diff --git a/fs/hpfs/hpfs_fn.h b/fs/hpfs/hpfs_fn.h
-index 237c1c23e855..9358a5b2e029 100644
---- a/fs/hpfs/hpfs_fn.h
-+++ b/fs/hpfs/hpfs_fn.h
-@@ -80,6 +80,7 @@ struct hpfs_sb_info {
- 	unsigned sb_lowercase : 1;	/* downcase filenames hackery */
- 	unsigned sb_was_error : 1;	/* there was an error, set dirty flag */
- 	unsigned sb_chkdsk : 2;		/* chkdsk: 0-no, 1-on errs, 2-allways */
-+	unsigned long sb_state;		/* HPFS_STATE_* bits */
- 	unsigned char *sb_cp_table;	/* code page tables: */
- 					/* 	128 bytes uppercasing table & */
- 					/*	128 bytes lowercasing table */
-@@ -94,6 +95,9 @@ struct hpfs_sb_info {
- 	secno hotfix_to[256];
- };
- 
-+/* bits in hpfs_sb_info->sb_state */
-+#define HPFS_STATE_EMERGENCY_RO	0	/* refuse modifications after an error */
-+
- /* Four 512-byte buffers and the 2k block obtained by concatenating them */
- 
- struct quad_buffer_head {
-@@ -322,6 +326,11 @@ static inline struct hpfs_sb_info *hpfs_sb(struct super_block *sb)
- 	return sb->s_fs_info;
- }
- 
-+static inline bool hpfs_emergency_ro(struct super_block *sb)
-+{
-+	return test_bit(HPFS_STATE_EMERGENCY_RO, &hpfs_sb(sb)->sb_state);
-+}
-+
- /* super.c */
- 
- __printf(2, 3)
-diff --git a/fs/hpfs/inode.c b/fs/hpfs/inode.c
-index 1b4fcf760aad..e18cf16d6625 100644
---- a/fs/hpfs/inode.c
-+++ b/fs/hpfs/inode.c
-@@ -263,6 +263,8 @@ int hpfs_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
- 	struct inode *inode = d_inode(dentry);
- 	int error = -EINVAL;
- 
-+	if (hpfs_emergency_ro(inode->i_sb))
-+		return -EROFS;
- 	hpfs_lock(inode->i_sb);
- 	if (inode->i_ino == hpfs_sb(inode->i_sb)->sb_root)
- 		goto out_unlock;
-diff --git a/fs/hpfs/map.c b/fs/hpfs/map.c
-index be73233502f8..69c3d003daf0 100644
---- a/fs/hpfs/map.c
-+++ b/fs/hpfs/map.c
-@@ -288,7 +288,8 @@ struct dnode *hpfs_map_dnode(struct super_block *s, unsigned secno,
- 					goto bail;
- 				}
- 				if (((31 + de->namelen + de->down*4 + 3) & ~3) != le16_to_cpu(de->length)) {
--					if (((31 + de->namelen + de->down*4 + 3) & ~3) < le16_to_cpu(de->length) && s->s_flags & SB_RDONLY) goto ok;
-+					if (((31 + de->namelen + de->down*4 + 3) & ~3) < le16_to_cpu(de->length) &&
-+					    (sb_rdonly(s) || hpfs_emergency_ro(s))) goto ok;
- 					hpfs_error(s, "namelen does not match dirent size in dnode %08x, dirent %03x, last %03x", secno, p, pp);
- 					goto bail;
- 				}
-diff --git a/fs/hpfs/namei.c b/fs/hpfs/namei.c
-index 9446f4038874..307a178aba18 100644
---- a/fs/hpfs/namei.c
-+++ b/fs/hpfs/namei.c
-@@ -35,6 +35,8 @@ static struct dentry *hpfs_mkdir(struct mnt_idmap *idmap, struct inode *dir,
- 	int r;
- 	struct hpfs_dirent dee;
- 	int err;
-+	if (hpfs_emergency_ro(dir->i_sb))
-+		return ERR_PTR(-EROFS);
- 	if ((err = hpfs_chk_name(name, &len))) return ERR_PTR(err==-ENOENT ? -EINVAL : err);
- 	hpfs_lock(dir->i_sb);
- 	err = -ENOSPC;
-@@ -140,6 +142,8 @@ static int hpfs_create(struct mnt_idmap *idmap, struct inode *dir,
- 	int r;
- 	struct hpfs_dirent dee;
- 	int err;
-+	if (hpfs_emergency_ro(dir->i_sb))
-+		return -EROFS;
- 	if ((err = hpfs_chk_name(name, &len)))
- 		return err==-ENOENT ? -EINVAL : err;
- 	hpfs_lock(dir->i_sb);
-@@ -227,6 +231,8 @@ static int hpfs_mknod(struct mnt_idmap *idmap, struct inode *dir,
- 	struct hpfs_dirent dee;
- 	struct inode *result = NULL;
- 	int err;
-+	if (hpfs_emergency_ro(dir->i_sb))
-+		return -EROFS;
- 	if ((err = hpfs_chk_name(name, &len))) return err==-ENOENT ? -EINVAL : err;
- 	if (hpfs_sb(dir->i_sb)->sb_eas < 2) return -EPERM;
- 	hpfs_lock(dir->i_sb);
-@@ -301,6 +307,8 @@ static int hpfs_symlink(struct mnt_idmap *idmap, struct inode *dir,
- 	struct hpfs_dirent dee;
- 	struct inode *result;
- 	int err;
-+	if (hpfs_emergency_ro(dir->i_sb))
-+		return -EROFS;
- 	if ((err = hpfs_chk_name(name, &len))) return err==-ENOENT ? -EINVAL : err;
- 	hpfs_lock(dir->i_sb);
- 	if (hpfs_sb(dir->i_sb)->sb_eas < 2) {
-@@ -380,6 +388,8 @@ static int hpfs_unlink(struct inode *dir, struct dentry *dentry)
- 	int r;
- 	int err;
- 
-+	if (hpfs_emergency_ro(dir->i_sb))
-+		return -EROFS;
- 	hpfs_lock(dir->i_sb);
- 	hpfs_adjust_length(name, &len);
- 
-@@ -432,6 +442,8 @@ static int hpfs_rmdir(struct inode *dir, struct dentry *dentry)
- 	int err;
- 	int r;
- 
-+	if (hpfs_emergency_ro(dir->i_sb))
-+		return -EROFS;
- 	hpfs_adjust_length(name, &len);
- 	hpfs_lock(dir->i_sb);
- 	err = -ENOENT;
-@@ -522,6 +534,8 @@ static int hpfs_rename(struct mnt_idmap *idmap, struct inode *old_dir,
- 	if (flags & ~RENAME_NOREPLACE)
- 		return -EINVAL;
- 
-+	if (hpfs_emergency_ro(old_dir->i_sb))
-+		return -EROFS;
- 	if ((err = hpfs_chk_name(new_name, &new_len))) return err;
- 	err = 0;
- 	hpfs_adjust_length(old_name, &old_len);
-diff --git a/fs/hpfs/super.c b/fs/hpfs/super.c
-index 8fbdbf080627..cff963cabbb6 100644
---- a/fs/hpfs/super.c
-+++ b/fs/hpfs/super.c
-@@ -44,7 +44,7 @@ static void unmark_dirty(struct super_block *s)
- {
- 	struct buffer_head *bh;
- 	struct hpfs_spare_block *sb;
--	if (sb_rdonly(s)) return;
-+	if (sb_rdonly(s) || hpfs_emergency_ro(s)) return;
- 	sync_blockdev(s->s_bdev);
- 	if ((sb = hpfs_map_sector(s, 17, &bh, 0))) {
- 		sb->dirty = hpfs_sb(s)->sb_chkdsk > 1 - hpfs_sb(s)->sb_was_error;
-@@ -81,7 +81,18 @@ void hpfs_error(struct super_block *s, const char *fmt, ...)
- 			else {
- 				pr_cont("; remounting read-only\n");
- 				mark_dirty(s, 0);
--				s->s_flags |= SB_RDONLY;
-+				/*
-+				 * Only a mount in progress may still set
-+				 * SB_RDONLY: later that needs s->s_umount,
-+				 * and on a frozen superblock it makes
-+				 * thaw_super() leave s_writers locked.
-+				 * Refuse modifications until umount instead.
-+				 */
-+				if (s->s_flags & SB_BORN)
-+					set_bit(HPFS_STATE_EMERGENCY_RO,
-+						&hpfs_sb(s)->sb_state);
-+				else
-+					s->s_flags |= SB_RDONLY;
- 			}
- 		} else if (sb_rdonly(s))
- 				pr_cont("; going on - but anything won't be destroyed because it's read-only\n");
-@@ -426,6 +437,11 @@ static int hpfs_reconfigure(struct fs_context *fc)
- 	struct super_block *s = fc->root->d_sb;
- 	struct hpfs_sb_info *sbi = hpfs_sb(s);
- 
-+	/* After an error, refuse going back to read-write until umount. */
-+	if (hpfs_emergency_ro(s) && sb_rdonly(s) &&
-+	    !(fc->sb_flags & SB_RDONLY))
-+		return -EROFS;
-+
- 	sync_filesystem(s);
- 
- 	fc->sb_flags |= SB_NOATIME;
-@@ -483,6 +499,8 @@ static int hpfs_show_options(struct seq_file *seq, struct dentry *root)
- 		seq_printf(seq, ",eas=ro");
- 	if (sbi->sb_timeshift)
- 		seq_printf(seq, ",timeshift=%d", sbi->sb_timeshift);
-+	if (hpfs_emergency_ro(root->d_sb))
-+		seq_puts(seq, ",emergency_ro");
- 	return 0;
- }
+ 	fc->fs_private = mopt;
+ 	fc->ops = &ocfs2_context_ops;
  
 
 -- 
