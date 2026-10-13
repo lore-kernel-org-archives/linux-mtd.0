@@ -4,60 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5301BCC6B03
-	for <linux-mtd@archiver.kernel.org>; Tue, 13 Oct 2026 05:38:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 879D1CC6B0E
+	for <linux-mtd@archiver.kernel.org>; Tue, 13 Oct 2026 06:09:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=zeicx4mrnCUjjTxuBEusHULDClGlE6wRoPWWFlXAc50=; b=1sKib1sBPnUKZ5
-	NJ75JZ6Tk7zm2tyVHvObnAE1GmE51jPu6+CnOf6C3gxjSp+WOopa+qFMWtw/gT8CuI7jWbkFfLR4+
-	iGDSh/vGD5/LGYQxurq1eKDnqky+wBrXF73CWn5tjKFXODTi/oE9g84BWR742+V0c31Na1VzJD/0Y
-	U5/IAU2oRtJRoWiiuicivqwUAwqvcX8WhDztKMhiCBiBFbJj0H+zk0KnIJi6ELwy9aHXNgTfHVDvj
-	B5fcLfrrKAOwdP0UjLBjbXQJ3+Gcq5/ozDgOnacYM0eqH1XmC2n5DE7x+TH9Km2I0pvPimDqi8HVz
-	QGy2w5hh4NnX3hegJTqA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=+PI239UFJkEgx99ppKUQlBsI1szRBb6sYY7DU2WPFYo=; b=0b0FN+/RVwMzrvGkt4FaKg7umn
+	oE6QN/2pFO7RA5iFZ2eLuuft28D7I0K7PqNDMu1F1SWtCD57xGLqFPvCzlJ8d3eqKgeRp0qlEq46o
+	QCvT4xgAYEs58yX1uGP0r0zusMcQl5wM2Ziunwbf6UUGp28a5KYYUjmN6p6isHKSMIqgQx2XB3xHb
+	jjCjM31C1nBA5WZBurHgo7mc4g5aW3cI6Wx1YKshuQ0LyEE9DwFcWQvB7wKtXfxmXIFiQvMG0pKZc
+	RB5vcR+0YdoXrLyPK9+P2Nsvi6Th1oUi1WJc92ZAysSbXwm2Y0P57jB+OBKSVt2LWXAyIACy3V8N1
+	XrTUBKZA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xGVDR-0000000C1gl-1ygS;
-	Tue, 13 Oct 2026 05:38:21 +0000
-Received: from smtp.h3c.com ([60.191.123.56] helo=h3cspam01-ex.h3c.com)
+	id 1xGVhh-0000000C6yp-1y15;
+	Tue, 13 Oct 2026 06:09:37 +0000
+Received: from canpmsgout07.his.huawei.com ([113.46.200.222])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xGVDM-0000000C1g1-2lSg
+	id 1xGVhb-0000000C6x1-323V
 	for linux-mtd@lists.infradead.org;
-	Tue, 13 Oct 2026 05:38:19 +0000
-Received: from mail.maildlp.com ([172.25.15.155])
-	by h3cspam01-ex.h3c.com with ESMTP id 69D5bt1B030486;
-	Tue, 13 Oct 2026 13:37:55 +0800 (+08)
-	(envelope-from lin.nan@h3c.com)
-Received: from DAG6EX09-BJD.srv.huawei-3com.com (unknown [10.153.34.11])
-	by mail.maildlp.com (Postfix) with ESMTP id DA74D2284EA2;
-	Tue, 13 Oct 2026 13:40:45 +0800 (CST)
-Received: from localhost.localdomain (10.142.164.48) by
- DAG6EX09-BJD.srv.huawei-3com.com (10.153.34.11) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1258.27; Tue, 13 Oct 2026 13:37:54 +0800
-From: Nan Lin <lin.nan@h3c.com>
-To: <richard@nod.at>
-CC: <chengzhihao1@huawei.com>, <lin.nan@h3c.com>,
-        <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
-        <wangxiaoqing@h3c.com>, <zhou.kete@h3c.com>, <stable@vger.kernel.org>
-Subject: [PATCH v2] ubifs: fix host inode TNC offset when deleting an xattr
-Date: Tue, 13 Oct 2026 13:29:53 +0800
-Message-ID: <20261013052953.1401741-1-lin.nan@h3c.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <mv5oa6u2.f135b439-8d58-4f22-b346-3aacaa66e9e4@nod.at>
+	Tue, 13 Oct 2026 06:09:34 +0000
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=40uAvGtB89UrnliI+trk4ouePijCjFhtYsvGS/V1SXw=;
+	b=hOQfiPjpIAoFpTW1jY9Ti5gnF0iwjU3DR6NTOIfes5GK6oIFW7bsMn0lqUZmvK9+JLH4MP7SV
+	X3T9Ef2shjvcNOYGMuLeSBG4rPd+r8FTJmDRkIKNUfHwDCPMuVxHtKNDaLxG/5Tjgj5liCLbqp+
+	TNzKTgKVAzqAfD5uI4Yr7Mc=
+Received: from mail.maildlp.com (unknown [172.19.163.15])
+	by canpmsgout07.his.huawei.com (SkyGuard) with ESMTPS id 4j3kBC0H3hzLlSh;
+	Tue, 13 Oct 2026 13:57:07 +0800 (CST)
+Received: from whupemo200011.china.huawei.com (unknown [7.152.185.179])
+	by mail.maildlp.com (Postfix) with ESMTPS id AAD9940578;
+	Tue, 13 Oct 2026 14:09:24 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ whupemo200011.china.huawei.com (7.152.185.179) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.45; Tue, 13 Oct 2026 14:09:23 +0800
+Subject: Re: [PATCH v2] ubifs: fix host inode TNC offset when deleting an
+ xattr
+To: Nan Lin <lin.nan@h3c.com>, <richard@nod.at>
+CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+	<wangxiaoqing@h3c.com>, <zhou.kete@h3c.com>, <stable@vger.kernel.org>
 References: <mv5oa6u2.f135b439-8d58-4f22-b346-3aacaa66e9e4@nod.at>
+ <20261013052953.1401741-1-lin.nan@h3c.com>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <e9bde32f-753c-a803-3fab-cb49e1031aeb@huawei.com>
+Date: Tue, 13 Oct 2026 14:09:22 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-X-Originating-IP: [10.142.164.48]
-X-ClientProxiedBy: BJSMTP02-EX.srv.huawei-3com.com (10.63.20.133) To
- DAG6EX09-BJD.srv.huawei-3com.com (10.153.34.11)
-X-DNSRBL: 
-X-MAIL: h3cspam01-ex.h3c.com 69D5bt1B030486
+In-Reply-To: <20261013052953.1401741-1-lin.nan@h3c.com>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: kwepems200002.china.huawei.com (7.221.188.68) To
+ whupemo200011.china.huawei.com (7.152.185.179)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261012_223817_492377_14DB4157 
-X-CRM114-Status: GOOD (  10.70  )
+X-CRM114-CacheID: sfid-20261012_230932_374481_78CE268F 
+X-CRM114-Status: GOOD (  16.99  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,72 +75,54 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="gbk"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-ubifs_jnl_delete_xattr() writes a group of three nodes: the xent, the
-xattr inode and the host inode. The host inode is packed at
-xent_offs + aligned_xlen + UBIFS_INO_NODE_SZ, but its TNC position is
-computed backwards as xent_offs + len - hlen. Since len includes the
-group's tail padding, ALIGN(hlen, 8) - hlen, the two differ whenever
-the host inode's inline data length is not a multiple of 8. This
-affects symlinks and device nodes.
-
-The unaligned offset ends up in the on-flash index and the next mount
-rejects the index node, turning the filesystem read-only.
-
-Fixes: 1e51764a3c2a ("UBIFS: add new flash file system")
-Cc: stable@vger.kernel.org
-Tested-by: Zhihao Cheng <chengzhihao1@huawei.com>
-Signed-off-by: Nan Lin <lin.nan@h3c.com>
-
-Changes since v1:
- - compute the host inode offset into a new host_offs variable instead
-   of open-coding the offset (Richard Weinberger);
- - shorten the commit message.
-
----
- fs/ubifs/journal.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
-index 40a95a2fad50..0b2dae57e467 100644
---- a/fs/ubifs/journal.c
-+++ b/fs/ubifs/journal.c
-@@ -1858,7 +1858,8 @@ int ubifs_jnl_delete_xattr(struct ubifs_info *c, const struct inode *host,
- 			   const struct inode *inode,
- 			   const struct fscrypt_name *nm)
- {
--	int err, xlen, hlen, len, lnum, xent_offs, aligned_xlen, write_len;
-+	int err, xlen, hlen, len, lnum, xent_offs, host_offs, aligned_xlen,
-+		write_len;
- 	struct ubifs_dent_node *xent;
- 	struct ubifs_ino_node *ino;
- 	union ubifs_key xent_key, key1, key2;
-@@ -1915,6 +1916,8 @@ int ubifs_jnl_delete_xattr(struct ubifs_info *c, const struct inode *host,
- 		ubifs_wbuf_add_ino_nolock(&c->jheads[BASEHD].wbuf, host->i_ino);
- 	release_head(c, BASEHD);
- 
-+	host_offs = xent_offs + aligned_xlen + UBIFS_INO_NODE_SZ;
-+
- 	ubifs_add_auth_dirt(c, lnum);
- 	kfree(xent);
- 	if (err)
-@@ -1943,7 +1946,7 @@ int ubifs_jnl_delete_xattr(struct ubifs_info *c, const struct inode *host,
- 
- 	/* And update TNC with the new host inode position */
- 	ino_key_init(c, &key1, host->i_ino);
--	err = ubifs_tnc_add(c, &key1, lnum, xent_offs + len - hlen, hlen, hash);
-+	err = ubifs_tnc_add(c, &key1, lnum, host_offs, hlen, hash);
- 	if (err)
- 		goto out_ro;
- 
--- 
-2.33.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+1NogMjAyNi8xMC8xMyAxMzoyOSwgTmFuIExpbiDQtLXAOgo+IHViaWZzX2pubF9kZWxldGVfeGF0
+dHIoKSB3cml0ZXMgYSBncm91cCBvZiB0aHJlZSBub2RlczogdGhlIHhlbnQsIHRoZQo+IHhhdHRy
+IGlub2RlIGFuZCB0aGUgaG9zdCBpbm9kZS4gVGhlIGhvc3QgaW5vZGUgaXMgcGFja2VkIGF0Cj4g
+eGVudF9vZmZzICsgYWxpZ25lZF94bGVuICsgVUJJRlNfSU5PX05PREVfU1osIGJ1dCBpdHMgVE5D
+IHBvc2l0aW9uIGlzCj4gY29tcHV0ZWQgYmFja3dhcmRzIGFzIHhlbnRfb2ZmcyArIGxlbiAtIGhs
+ZW4uIFNpbmNlIGxlbiBpbmNsdWRlcyB0aGUKPiBncm91cCdzIHRhaWwgcGFkZGluZywgQUxJR04o
+aGxlbiwgOCkgLSBobGVuLCB0aGUgdHdvIGRpZmZlciB3aGVuZXZlcgo+IHRoZSBob3N0IGlub2Rl
+J3MgaW5saW5lIGRhdGEgbGVuZ3RoIGlzIG5vdCBhIG11bHRpcGxlIG9mIDguIFRoaXMKPiBhZmZl
+Y3RzIHN5bWxpbmtzIGFuZCBkZXZpY2Ugbm9kZXMuCj4gCj4gVGhlIHVuYWxpZ25lZCBvZmZzZXQg
+ZW5kcyB1cCBpbiB0aGUgb24tZmxhc2ggaW5kZXggYW5kIHRoZSBuZXh0IG1vdW50Cj4gcmVqZWN0
+cyB0aGUgaW5kZXggbm9kZSwgdHVybmluZyB0aGUgZmlsZXN5c3RlbSByZWFkLW9ubHkuCj4gCj4g
+Rml4ZXM6IDFlNTE3NjRhM2MyYSAoIlVCSUZTOiBhZGQgbmV3IGZsYXNoIGZpbGUgc3lzdGVtIikK
+PiBDYzogc3RhYmxlQHZnZXIua2VybmVsLm9yZwo+IFRlc3RlZC1ieTogWmhpaGFvIENoZW5nIDxj
+aGVuZ3poaWhhbzFAaHVhd2VpLmNvbT4KPiBTaWduZWQtb2ZmLWJ5OiBOYW4gTGluIDxsaW4ubmFu
+QGgzYy5jb20+Cj4gCj4gQ2hhbmdlcyBzaW5jZSB2MToKPiAgIC0gY29tcHV0ZSB0aGUgaG9zdCBp
+bm9kZSBvZmZzZXQgaW50byBhIG5ldyBob3N0X29mZnMgdmFyaWFibGUgaW5zdGVhZAo+ICAgICBv
+ZiBvcGVuLWNvZGluZyB0aGUgb2Zmc2V0IChSaWNoYXJkIFdlaW5iZXJnZXIpOwo+ICAgLSBzaG9y
+dGVuIHRoZSBjb21taXQgbWVzc2FnZS4KPiAKPiAtLS0KPiAgIGZzL3ViaWZzL2pvdXJuYWwuYyB8
+IDcgKysrKystLQo+ICAgMSBmaWxlIGNoYW5nZWQsIDUgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlv
+bnMoLSkKClJldmlld2VkLWJ5OiBaaGloYW8gQ2hlbmcgPGNoZW5nemhpaGFvMUBodWF3ZWkuY29t
+Pgo+IAo+IGRpZmYgLS1naXQgYS9mcy91Ymlmcy9qb3VybmFsLmMgYi9mcy91Ymlmcy9qb3VybmFs
+LmMKPiBpbmRleCA0MGE5NWEyZmFkNTAuLjBiMmRhZTU3ZTQ2NyAxMDA2NDQKPiAtLS0gYS9mcy91
+Ymlmcy9qb3VybmFsLmMKPiArKysgYi9mcy91Ymlmcy9qb3VybmFsLmMKPiBAQCAtMTg1OCw3ICsx
+ODU4LDggQEAgaW50IHViaWZzX2pubF9kZWxldGVfeGF0dHIoc3RydWN0IHViaWZzX2luZm8gKmMs
+IGNvbnN0IHN0cnVjdCBpbm9kZSAqaG9zdCwKPiAgIAkJCSAgIGNvbnN0IHN0cnVjdCBpbm9kZSAq
+aW5vZGUsCj4gICAJCQkgICBjb25zdCBzdHJ1Y3QgZnNjcnlwdF9uYW1lICpubSkKPiAgIHsKPiAt
+CWludCBlcnIsIHhsZW4sIGhsZW4sIGxlbiwgbG51bSwgeGVudF9vZmZzLCBhbGlnbmVkX3hsZW4s
+IHdyaXRlX2xlbjsKPiArCWludCBlcnIsIHhsZW4sIGhsZW4sIGxlbiwgbG51bSwgeGVudF9vZmZz
+LCBob3N0X29mZnMsIGFsaWduZWRfeGxlbiwKPiArCQl3cml0ZV9sZW47Cj4gICAJc3RydWN0IHVi
+aWZzX2RlbnRfbm9kZSAqeGVudDsKPiAgIAlzdHJ1Y3QgdWJpZnNfaW5vX25vZGUgKmlubzsKPiAg
+IAl1bmlvbiB1Ymlmc19rZXkgeGVudF9rZXksIGtleTEsIGtleTI7Cj4gQEAgLTE5MTUsNiArMTkx
+Niw4IEBAIGludCB1Ymlmc19qbmxfZGVsZXRlX3hhdHRyKHN0cnVjdCB1Ymlmc19pbmZvICpjLCBj
+b25zdCBzdHJ1Y3QgaW5vZGUgKmhvc3QsCj4gICAJCXViaWZzX3didWZfYWRkX2lub19ub2xvY2so
+JmMtPmpoZWFkc1tCQVNFSERdLndidWYsIGhvc3QtPmlfaW5vKTsKPiAgIAlyZWxlYXNlX2hlYWQo
+YywgQkFTRUhEKTsKPiAgIAo+ICsJaG9zdF9vZmZzID0geGVudF9vZmZzICsgYWxpZ25lZF94bGVu
+ICsgVUJJRlNfSU5PX05PREVfU1o7Cj4gKwo+ICAgCXViaWZzX2FkZF9hdXRoX2RpcnQoYywgbG51
+bSk7Cj4gICAJa2ZyZWUoeGVudCk7Cj4gICAJaWYgKGVycikKPiBAQCAtMTk0Myw3ICsxOTQ2LDcg
+QEAgaW50IHViaWZzX2pubF9kZWxldGVfeGF0dHIoc3RydWN0IHViaWZzX2luZm8gKmMsIGNvbnN0
+IHN0cnVjdCBpbm9kZSAqaG9zdCwKPiAgIAo+ICAgCS8qIEFuZCB1cGRhdGUgVE5DIHdpdGggdGhl
+IG5ldyBob3N0IGlub2RlIHBvc2l0aW9uICovCj4gICAJaW5vX2tleV9pbml0KGMsICZrZXkxLCBo
+b3N0LT5pX2lubyk7Cj4gLQllcnIgPSB1Ymlmc190bmNfYWRkKGMsICZrZXkxLCBsbnVtLCB4ZW50
+X29mZnMgKyBsZW4gLSBobGVuLCBobGVuLCBoYXNoKTsKPiArCWVyciA9IHViaWZzX3RuY19hZGQo
+YywgJmtleTEsIGxudW0sIGhvc3Rfb2ZmcywgaGxlbiwgaGFzaCk7Cj4gICAJaWYgKGVycikKPiAg
+IAkJZ290byBvdXRfcm87Cj4gICAKPiAKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0
+Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
