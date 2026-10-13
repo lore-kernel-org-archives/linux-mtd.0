@@ -4,51 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A84CCC6B21
-	for <linux-mtd@archiver.kernel.org>; Tue, 13 Oct 2026 16:34:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0E85CC6B19
+	for <linux-mtd@archiver.kernel.org>; Tue, 13 Oct 2026 16:34:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=hdhvBywpYT+o+jqs0+7siHMCHoxc8Qnn1SyzPETdtUE=; b=3xwbYv3flaUfWI
-	jdO+CLxcVoX6B9Wqvs/6cLRmw6HI7Av5MxsSSZuPZSAjjcEe2/tEv4Drjy0itec+wmL4vXfKGB7ka
-	B9h08H5GqiMq/N86z2gB8ynq6mXSczAoZDtTBDCbGKQF/aqiynQePzzYQJSoTfA8U98kKP45W/xa/
-	Rr/ITeEgUMObCBDxrZmClrm9njLYTD9poVtAmtCLxP/ezxusZfGxD8KqdtRp0xN8wVX0U8i1f3JB/
-	tS1dSOjADvjNFV+msyYMQbKfmD+x+4JUmRzL4rnd446S5hrZsKuNe/Isie0P1fetfWwRVs47d4EbR
-	U/uUk4U/E368d10uCcHQ==;
+	List-Owner; bh=pck/J1Ml2V7HdySVlGz/8WqNrPgzLkYt7Y0svtqkrbE=; b=jgh7ID9i6Yv50V
+	poABsj8bzLcxPxpHt6TJ1oi0LWknCVv2cJu0OPHh4OHnzcv3t0TSuvMLVPv3IJzYGu8kEPu5ZdNDg
+	AZ6gnVanAb+3QQgPohzWYlIIyoSJ01Y63FbHWIU4vKl+RSMzRi282N3GGS3r3twdxwRbjWKHg9OXe
+	DTf6N1R1ApZZpPP4j4/eo5pRk1/ul53xxyxZ5/eQo4lvJSfOWBE0kNk1jyyK2DomSs8ujWvS3vx/W
+	B2wYsXhmfX+Y/D++fbbAOQjGNQc0cE2rOT3KXiwt4dvfLf+07/Ms/ezcEn9e7QP8swhcEhKkGRrg7
+	ZT6z9IlVSkfh54TSlGmQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xGfSl-0000000DX8R-32b9;
-	Tue, 13 Oct 2026 16:34:51 +0000
+	id 1xGfSp-0000000DXF0-0Gvm;
+	Tue, 13 Oct 2026 16:34:55 +0000
 Received: from smtpout-02.galae.net ([185.246.84.56])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xGfSg-0000000DX1d-0tRh
+	id 1xGfSk-0000000DX3h-0ymM
 	for linux-mtd@lists.infradead.org;
-	Tue, 13 Oct 2026 16:34:50 +0000
+	Tue, 13 Oct 2026 16:34:51 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id C13EB1A121A;
-	Tue, 13 Oct 2026 16:34:44 +0000 (UTC)
+	by smtpout-02.galae.net (Postfix) with ESMTPS id 786751A121C;
+	Tue, 13 Oct 2026 16:34:47 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 8FD3060362;
-	Tue, 13 Oct 2026 16:34:44 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id EE31711D71811;
-	Tue, 13 Oct 2026 18:34:42 +0200 (CEST)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 4D7E160362;
+	Tue, 13 Oct 2026 16:34:47 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 7180711D71813;
+	Tue, 13 Oct 2026 18:34:45 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1791909283; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1791909286; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=+GgPuz0YdNsBR/myCURF0hQWe66/L4vrv2i9zi9lDVI=;
-	b=NwTPnb1yLc/+fK+cLp2lTxgVPx8+RXEyadr6RTM/km/O/ljp6rsc9pjFmy1znk9QMAM18t
-	MV2WngDrOtS+cOVTI6WifHq87xZ0fG2ri3sTR1KBz4e+ZB7C4trd6ztlKZgv5RxHyoVuGH
-	GRYg4I777XnmX1Jhb3Is3IZE613FxGCealV6RhLv4Hggh/STnqsQpYv682b3APdPMy1CdW
-	J+rFsYN1QRaDOf/qv96ElXW7THDHQrny4m5+e2bM7XN9quhss1SPsozuXsuSI1Hhq637Mt
-	1x9rS7zzqUzRA9KbHN/Uls6HLX+Q6XMkiTKpb+M9kS3A4jVTS1dHpFtud233fQ==
+	bh=woBPfE2zyVEwVQtzqHUi3dF9ND0uu7ZMv6floLqY/Sk=;
+	b=1cYuobTkBJNXOLk+vInzyitX8iuy26xIWzv4aE5eNRdfF9THPWNNJjN8rHN3+js1yTnUa6
+	px6hF4J5AsckjnoLO9IiPBPmaWzkdtNvPH4ue3YRn8uGi9pMH1pnKGFkSAh9EK+buLgpEJ
+	opG3s+E3OnTCyEstC0iwqqYmvubc299fcoSh3JCqlRgf7LpOJ6BmiHEyAtaJpK4PF4ASK6
+	wKMCQf58UvYVrdIxmSRNlzXtHAYfkBMB9QAnBC4Y6wOSpi/SfCgncctgIZLlA+GDfk+rxF
+	H7rhZMO2zr5eUBj9DVomBpE+gAJwBQZE+ju01+UnMlZBpv2BH2xptpDrt5Ga2Q==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Tue, 13 Oct 2026 18:33:58 +0200
-Subject: [PATCH v3 08/17] mtd: spi-nor: Fix WRSR with ODTR chips
+Date: Tue, 13 Oct 2026 18:34:00 +0200
+Subject: [PATCH v3 10/17] mtd: spi-nor: Fix SWP for octal DTR chips
 MIME-Version: 1.0
-Message-Id: <20261013-winbond-master-spi-nor-w35t-v3-8-6dde1d513df8@bootlin.com>
+Message-Id: <20261013-winbond-master-spi-nor-w35t-v3-10-6dde1d513df8@bootlin.com>
 References: <20261013-winbond-master-spi-nor-w35t-v3-0-6dde1d513df8@bootlin.com>
 In-Reply-To: <20261013-winbond-master-spi-nor-w35t-v3-0-6dde1d513df8@bootlin.com>
 To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
@@ -60,8 +60,8 @@ Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261013_093447_972930_D132D3D6 
-X-CRM114-Status: GOOD (  12.36  )
+X-CRM114-CacheID: sfid-20261013_093450_421502_C6D3A3FB 
+X-CRM114-Status: GOOD (  13.25  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,50 +78,98 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The ODTR interface requires an even number of bytes in each section of
-the operation. spi_nor_spimem_setup_op() takes care of the opcode phase,
-but we have to adapt the rest of the operation ourself.
+During the recent rework of status registers handling, we mostly focused
+on quad capable devices, partially skipping ODTR devices in our mental
+model. It seems that many (if not all?) ODTR devices have no SR2 read
+opcode and have other control mechanisms. Because of that, the current
+support in swp.c is broken, because reading back the written value may
+or may not lead to the expected result.
 
-Inspiration comes from the spi_nor_read_sr_ll() helper which faces a
-similar case.
+Let's extend the _careful() suffix to the helper reading back the values
+and comparing them. Maybe this "carfulness" will have to be moved back
+to the core, it is a bit early to state it. For now, let's just make
+sure that we read back 0s without errors when virtually accessing SR2 on
+those chips.
 
-Make sure we don't face the sr1_and_sr2 case, which does not exist with
-ODTR devices (this is a legacy behaviour on certain quad capable chips).
-
-Fixes: 63489002d397 ("mtd: spi-nor: Refactor Read Status/Write Status support")
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/spi-nor/core.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ drivers/mtd/spi-nor/core.c |  2 +-
+ drivers/mtd/spi-nor/core.h |  1 +
+ drivers/mtd/spi-nor/swp.c  | 23 +++++++++++++++++++++--
+ 3 files changed, 23 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index bc11c8cbb234..8e55f12161d1 100644
+index 07364b0a742a..43dffca23102 100644
 --- a/drivers/mtd/spi-nor/core.c
 +++ b/drivers/mtd/spi-nor/core.c
-@@ -778,7 +778,8 @@ static int spi_nor_write_sr_ll(struct spi_nor *nor, u8 opcode, const u8 *sr,
+@@ -925,7 +925,7 @@ int spi_nor_write_sr2(struct spi_nor *nor, const u8 *sr2)
+  *
+  * Return 0 or errno.
+  */
+-static int spi_nor_write_sr1_and_sr2(struct spi_nor *nor, const u8 *sr)
++int spi_nor_write_sr1_and_sr2(struct spi_nor *nor, const u8 *sr)
  {
- 	int ret, i;
+ 	struct spi_nor_flash_parameter *params = nor->params;
+ 	int ret;
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index b64f26b69c05..cee33ca18b04 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -664,6 +664,7 @@ int spi_nor_read_sr2(struct spi_nor *nor, u8 *sr2);
+ int spi_nor_read_sr1_and_sr2(struct spi_nor *nor, u8 *sr);
+ int spi_nor_write_sr1(struct spi_nor *nor, const u8 *sr1);
+ int spi_nor_write_sr2(struct spi_nor *nor, const u8 *sr2);
++int spi_nor_write_sr1_and_sr2(struct spi_nor *nor, const u8 *sr);
+ int spi_nor_write_sr1_and_sr2_and_check(struct spi_nor *nor, const u8 *sr);
  
--	if (len > 2)
-+	/* There is no sr1_and_sr2 in ODTR mode: this is a quad-only corner case */
-+	if (len > 2  || (nor->reg_proto == SNOR_PROTO_8_8_8_DTR && len > 1))
+ ssize_t spi_nor_read_data(struct spi_nor *nor, loff_t from, size_t len,
+diff --git a/drivers/mtd/spi-nor/swp.c b/drivers/mtd/spi-nor/swp.c
+index 6c56fda3913e..bc733df203f3 100644
+--- a/drivers/mtd/spi-nor/swp.c
++++ b/drivers/mtd/spi-nor/swp.c
+@@ -240,6 +240,25 @@ static int spi_nor_read_sr1_and_sr2_careful(struct spi_nor *nor, u8 *sr)
+ 	return spi_nor_read_sr2_careful(nor, &sr[1]);
+ }
+ 
++static int spi_nor_write_sr1_and_sr2_and_check_careful(struct spi_nor *nor, const u8 *sr)
++{
++	u8 tmp[2];
++	int ret;
++
++	ret = spi_nor_write_sr1_and_sr2(nor, sr);
++	if (ret)
++		return ret;
++
++	ret = spi_nor_read_sr1_and_sr2_careful(nor, tmp);
++	if (ret)
++		return ret;
++
++	if (sr[0] != tmp[0] || sr[1] != tmp[1])
++		return -EIO;
++
++	return 0;
++}
++
+ /*
+  * Keep a local cache containing all lock-related bits for debugfs use only.
+  * This way, debugfs never needs to access the flash directly.
+@@ -407,7 +426,7 @@ static int spi_nor_sr_lock(struct spi_nor *nor, loff_t ofs, u64 len)
+ 	    (ofs_old < ofs_new || (ofs_new + len_new) < (ofs_old + len_old)))
  		return -EINVAL;
  
- 	ret = spi_nor_write_enable(nor);
-@@ -791,6 +792,14 @@ static int spi_nor_write_sr_ll(struct spi_nor *nor, u8 opcode, const u8 *sr,
- 	if (nor->spimem) {
- 		struct spi_mem_op op = SPI_NOR_WRSR_OP(opcode,
- 						       nor->bouncebuf, len);
-+		/*
-+		 * We don't want to write only one byte in DTR mode, so
-+		 * duplicate the buffer and write 2.
-+		 */
-+		if (nor->reg_proto == SNOR_PROTO_8_8_8_DTR) {
-+			op.data.nbytes = 2;
-+			nor->bouncebuf[1] = nor->bouncebuf[0];
-+		}
+-	ret = spi_nor_write_sr1_and_sr2_and_check(nor, best_status_new);
++	ret = spi_nor_write_sr1_and_sr2_and_check_careful(nor, best_status_new);
+ 	if (ret)
+ 		return ret;
  
- 		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
+@@ -529,7 +548,7 @@ static int spi_nor_sr_unlock(struct spi_nor *nor, loff_t ofs, u64 len)
+ 	    (ofs_new < ofs_old || (ofs_old + len_old) < (ofs_new + len_new)))
+ 		return -EINVAL;
+ 
+-	ret = spi_nor_write_sr1_and_sr2_and_check(nor, best_status_new);
++	ret = spi_nor_write_sr1_and_sr2_and_check_careful(nor, best_status_new);
+ 	if (ret)
+ 		return ret;
  
 
 -- 
