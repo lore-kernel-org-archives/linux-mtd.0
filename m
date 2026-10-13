@@ -4,71 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E7AEECC6B03
-	for <linux-mtd@archiver.kernel.org>; Tue, 13 Oct 2026 08:48:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA608CC6B03
+	for <linux-mtd@archiver.kernel.org>; Tue, 13 Oct 2026 09:44:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=hNncWs3EraYzlXQ/fWRMP9A0gFMjGKCvhB/+F4V3vhY=; b=VR7NaujHtjKsrI
-	xRCdaA9oJA8rrf9Kp3UWOSEWzlkbvVFqVQAA73v6x0TMqaOVwoW0yXQy1fm6sToc4OkjoImJNyNtw
-	gLeFQ6wytbiACW0Y2MuaTs88maariiyurclctTzyqvSKTo5BhieIpM4rNR2XRHTHUaww6uyVUbRKa
-	U8PN20+Bow8OsE8W5+ocucx31AIMgXXH3T4OWaoNX/bQK4DHhBVxh2cbhTYewZuyHIUGINknAVE5y
-	tdMAxb4r5G1lNesMxIewo4cUdiYIy/SfZUlay0HsINXEHpirnfN4XPw3vxut0pZnBLcjzY56jEQ89
-	w5CzAKZAwfq+bduWw/LA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=KCE80GvCjQclN7U1lVJAv8xsXKBiXIj+syUGDxZ4/ew=; b=zR2rklXXyoagkC
+	U+xPRJKUZXUTOksSfn7wo35Hp8rOr8rj0mJHhaLEB7TeTRra1GwZRONi6Iy29tFNCRauxbTySe/cH
+	y69T07IQPhu5vjDbpejQeBWQ6MVCCuKtAOJK7IZaRkNUOD9KuPnjHYESA8xqsEKLottWp5beJlEqp
+	5LQp/JYy/wpzJfwlmopQrlxCcBWjjU+RwoU6R62adBlYYrloOZe/+fb7ZDFnSQmfaw5MxUngRVS9X
+	3iq96661NKOCzr3dfgwvMMEnERnrP8zGpSyv1pL3nsfhGUElGSZ3/GLMtLizo7UkZFfY+W7wBuKMC
+	JCM4Pt26hWxdSTUfshXw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xGYBc-0000000CN69-08YT;
-	Tue, 13 Oct 2026 08:48:40 +0000
-Received: from smtpout-04.galae.net ([185.171.202.116])
+	id 1xGZ36-0000000CSBQ-1qb5;
+	Tue, 13 Oct 2026 09:43:56 +0000
+Received: from esa.microchip.iphmx.com ([68.232.154.123])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xGYBX-0000000CN4z-0NCG
+	id 1xGZ32-0000000CSAk-0V3i
 	for linux-mtd@lists.infradead.org;
-	Tue, 13 Oct 2026 08:48:37 +0000
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id 8E351C653DE;
-	Tue, 13 Oct 2026 08:49:27 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 181EA60362;
-	Tue, 13 Oct 2026 08:48:32 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id C672711D70DB5;
-	Tue, 13 Oct 2026 10:48:24 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1791881310; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=OhT44PlVEOFxx/Urz74a4tJMDTePj5JjWblo67Df0Eg=;
-	b=Lv+DzNHgur1CsfADLNUBDSzYO1Kh1Eh0cOqqwK2omkinCgrkYWdS5snKxVxrkgJ8Hxxf9J
-	JbjXDHFBZ+SVPeUIDTVYUukXfjU3AY9j8PZV6MWtI0YUaU9Qj3+sMC1iANNNp2tx5l3F7S
-	rJdFtqKPQOmx95oUbcX5idb8i8St3FNk6TWED4R96yrz/Ux5r1vhrdaXn7tb/1pw2+0EwN
-	RFVk+vC/2aulHMvCbSibATW9wBgkuua2sB4IpDB4OU5vyP4Hs4Uph3o6lAQ8+B0Sz8VYBk
-	+JBpv3OrpNp+l4pF/PDcGgxQ4HtLeEVSRjmkA+z2ssPfpiHKVyaw61Xj2AGmiQ==
-Message-ID: <60d100d6207660535e0dec5a9ae2a15555c2e181.camel@bootlin.com>
-Subject: Re: [PATCH 1/5] spi: spi-mem: Add support for panic mem writes
-From: Paul Cercueil <paul.cercueil@bootlin.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Mark Brown <broonie@kernel.org>, Pratyush Yadav <pratyush@kernel.org>, 
- Michael Walle <mwalle@kernel.org>, Takahiro Kuwano
- <takahiro.kuwano@infineon.com>, Richard Weinberger	 <richard@nod.at>,
- Vignesh Raghavendra <vigneshr@ti.com>, Thomas Petazzoni	
- <thomas.petazzoni@bootlin.com>, Kees Cook <kees@kernel.org>, Tony Luck	
- <tony.luck@intel.com>, "Guilherme G . Piccoli" <gpiccoli@igalia.com>, 
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	linux-spi@vger.kernel.org, Tanmay Jagdale <tanmay@marvell.com>
-Date: Tue, 13 Oct 2026 10:48:22 +0200
-In-Reply-To: <87y0c2vvul.fsf@bootlin.com>
-References: <20261005081141.33688-1-paul.cercueil@bootlin.com>
-		<20261005081141.33688-2-paul.cercueil@bootlin.com>
-		<asdVM883VTQy7WvH@sirena.co.uk>
-		<5c94b88bf7123e5a32d5c4bd77217e6a40683c83.camel@bootlin.com>
-	 <87y0c2vvul.fsf@bootlin.com>
-User-Agent: Evolution 3.56.2-0+deb13u1 
+	Tue, 13 Oct 2026 09:43:54 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1791884632; x=1823420632;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=aeBt89eyCnZiDw01mhYSfPD5Jm1xqwUzTa20QYRZwz8=;
+  b=DHMkxHmRBbXvvb8Tb4eK7GcYOyi6BhHPBDUN/mT3Y3U9OjynW/Mmtbfm
+   UlC6sCVc3YI2BQup+tvUfh+RcIcgA2IW1fIWMRAD3DOfGtWRriXrtnFrZ
+   Vj4iDiDrybntGq4aKaem83NB27gA4fzSVMiytZs3b4P8srzgR97BMkhxY
+   NdsmnWmB/lPlvkY0Kp49RKxqHproL7HyLxy6WHxzkikN9H1FQOEvUySWX
+   T6Dy01QYTVbdBV8DVepkgkhTqwnav10AzI8edsVZvchUo4n8dhbWRNXN5
+   w7hHSoT0zWcF38LXTGeBrxCDTcsFXCCuoCzSRpN8lYYR/0JxH08bbYkwS
+   w==;
+X-CSE-ConnectionGUID: /SwY72YgQ9iSb42s3ajJtg==
+X-CSE-MsgGUID: k72G8NVCREe0f1gvGgWCgw==
+X-IronPort-AV: E=Sophos;i="6.27,155,1787036400"; 
+   d="scan'208";a="65227556"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 13 Oct 2026 02:43:50 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.58; Tue, 13 Oct 2026 02:43:49 -0700
+Received: from archlinux.mchp-main.com (10.10.85.11) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.2507.58 via Frontend Transport; Tue, 13 Oct 2026 02:43:47 -0700
+From: Mihai Sain <mihai.sain@microchip.com>
+To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+	<tglx@kernel.org>, <kees@kernel.org>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>, "Mihai
+ Sain" <mihai.sain@microchip.com>
+Subject: [PATCH] mtd: nand: bbt: Use pr_fmt() for consistent log prefixes
+Date: Tue, 13 Oct 2026 12:43:39 +0300
+Message-ID: <20261013094339.7285-1-mihai.sain@microchip.com>
+X-Mailer: git-send-email 2.56.0
 MIME-Version: 1.0
-X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261013_014835_291777_C1CE56D1 
-X-CRM114-Status: GOOD (  28.38  )
+X-CRM114-CacheID: sfid-20261013_024352_970887_88BDBF2C 
+X-CRM114-Status: GOOD (  14.60  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,49 +78,151 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWlxdcOobCwKCkxlIG1hcmRpIDEzIG9jdG9icmUgMjAyNiDDoCAxMDozOCArMDIwMCwgTWlx
-dWVsIFJheW5hbCBhIMOpY3JpdMKgOgo+IE9uIDEzLzEwLzIwMjYgYXQgMTA6MjU6MDcgKzAyLCBQ
-YXVsIENlcmN1ZWlsIDxwYXVsLmNlcmN1ZWlsQGJvb3RsaW4uY29tPgo+IHdyb3RlOgo+IAo+ID4g
-SGkgTWFyaywKPiA+IAo+ID4gTGUgamV1ZGkgMDggb2N0b2JyZSAyMDI2IMOgIDEwOjMyICswMjAw
-LCBNYXJrIEJyb3duIGEgw6ljcml0wqA6Cj4gPiA+IE9uIE1vbiwgT2N0IDA1LCAyMDI2IGF0IDEw
-OjExOjM2QU0gKzAyMDAsIFBhdWwgQ2VyY3VlaWwgd3JvdGU6Cj4gPiA+ID4gRnJvbTogVGFubWF5
-IEphZ2RhbGUgPHRhbm1heUBtYXJ2ZWxsLmNvbT4KPiA+ID4gPiAKPiA+ID4gPiBBZGQgYSAncGFu
-aWNfd3JpdGUnIGZsYWcgdG8gdGhlIGNvbnRyb2xsZXIncyBjYXBhYmlsaXRpZXMgc3RydWN0Lgo+
-ID4gPiA+IFdoZW4gc2V0LCB0aGUgU1BJIGNvbnRyb2xsZXIgaW5kaWNhdGVzIHRoYXQgaXQgd2ls
-bCBiZSBhYmxlIHRvIHNlbmQKPiA+ID4gPiBjb21tYW5kcyB0byBhIGNvbm5lY3RlZCBOT1Igb3Ig
-TkFORCBtZW1vcnkgaW4gdGhlIGNvbnRleHQgb2YgYSBrZXJuZWwKPiA+ID4gPiBwYW5pYywgd2hp
-Y2ggbWVhbnMgd2l0aG91dCBzbGVlcGluZyBhbmQgd2l0aG91dCByZWx5aW5nIG9uIElSUXMuCj4g
-PiA+IAo+ID4gPiA+IC0tLSBhL2RyaXZlcnMvc3BpL3NwaS1tZW0uYwo+ID4gPiA+ICsrKyBiL2Ry
-aXZlcnMvc3BpL3NwaS1tZW0uYwo+ID4gPiA+IEBAIC0zOTgsNiArMzk4LDMxIEBAIGludCBzcGlf
-bWVtX2V4ZWNfb3Aoc3RydWN0IHNwaV9tZW0gKm1lbSwgY29uc3QKPiA+ID4gPiBzdHJ1Y3QKPiA+
-ID4gPiBzcGlfbWVtX29wICpvcCkKPiA+ID4gPiDCoAl1OCAqdG1wYnVmOwo+ID4gPiA+IMKgCWlu
-dCByZXQ7Cj4gPiA+ID4gwqAKPiA+ID4gPiArCWlmIChvcC0+cGFuaWNfd3JpdGUpIHsKPiA+ID4g
-PiArCQlpZiAoIXNwaV9tZW1fY29udHJvbGxlcl9pc19jYXBhYmxlKGN0bHIsIHBhbmljX3dyaXRl
-KSkKPiA+ID4gPiArCQkJcmV0dXJuIC1FT1BOT1RTVVBQOwo+ID4gPiA+ICsJCS8qCj4gPiA+ID4g
-KwkJICogT25seSBzdXBwb3J0IHBhbmljIHdyaXRlcyBpZiB3ZSdsbCBnbyB0aHJvdWdoCj4gPiA+
-ID4gLmV4ZWNfb3AoKS4KPiA+ID4gPiArCQkgKiBUaGUgcmVndWxhciBTUEkgcGF0aCAoc3BpX3N5
-bmMoKSwgZXRjLikgZXhwbGljaXRseQo+ID4gPiA+IG1lbnRpb25zCj4gPiA+ID4gKwkJICogdGhh
-dCBpdCBjYW4gb25seSBiZSB1c2VkIGZyb20gYSBjb250ZXh0IHRoYXQgbWF5Cj4gPiA+ID4gc2xl
-ZXAsCj4gPiA+ID4gd2hpY2gKPiA+ID4gPiArCQkgKiBpcyBub3QgdGhlIGNhc2Ugb24gYSBrZXJu
-ZWwgcGFuaWMuCj4gPiA+ID4gKwkJICogSWYgdGhpcyBjaGFuZ2VzIGluIHRoZSBmdXR1cmUsIHRo
-aXMgY291bGQgYmUKPiA+ID4gPiByZXdvcmtlZCwKPiA+ID4gPiBidXQKPiA+ID4gPiArCQkgKiBm
-b3Igbm93IHRoaXMgd2lsbCBoYXZlIHRvIGRvLgo+ID4gPiA+ICsJCSAqLwo+ID4gPiAKPiA+ID4g
-VGhpcyBhbHNvIG5lZWRzIHRvIGVuc3VyZSB0aGF0IHRoZSBxdWV1ZSBpcyBpZGxlIC0gd2UnbGwg
-c3RpbGwgZXhlY3V0ZQo+ID4gPiBzcGlfbWVtX2FjY2Vzc19zdGFydCgpIHdoaWNoIGZsdXNoZXMg
-dGhlIHF1ZXVlLCBhbmQgd2UndmUgZ290IHJ1bnRpbWUgUE0KPiA+ID4gb3BlcmF0aW9ucyB0aGVy
-ZSB3aGljaCBtaWdodCBiZSBhIGJpdCBjaGFsbGVuZ2luZyBpbiBhIHBhbmljIHNpdHVhdGlvbi4K
-PiA+IAo+ID4gRG9lcyBpdCB0aG91Z2g/IFRoZSBrZXJuZWwgaXMgcGFuaWNraW5nIHNvIHRoZSBx
-dWV1ZSB3b24ndCBiZSBwcm9jZXNzZWQKPiA+IGFueW1vcmUsCj4gPiBpdCBzaG91bGQgYmUgZmlu
-ZSB0byBqdXN0IGlnbm9yZSBpdC4KPiA+IAo+ID4gQUNLIGZvciB0aGUgUE0gLSBJIHRoaW5rIGlu
-IHRoZSBWMiBJJ2xsIGp1c3QgYmFpbCBpZiB0aGUgY29udHJvbGxlciBoYXMKPiA+IGF1dG8tCj4g
-PiBydW50aW1lLVBNIG9uLgo+IAo+IE1heWJlIHBtX3J1bnRpbWVfZ2V0X2lmX2FjdGl2ZSgpPyBJ
-ZiBhbHJlYWR5IGFjdGl2ZSBpdCByZXR1cm5zIDEgYW5kCj4geW91IGNhbiBwcm9jZWVkLgoKWWVz
-LCBnb29kIGlkZWEuCgpDaGVlcnMsCi1QYXVsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBs
-aXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRk
-Lwo=
+Define pr_fmt() in nand_bbt.c to automatically prepend the nand_bbt:
+prefix to log messages. Remove redundant subsystem prefixes from
+individual logging statements to avoid duplication and ensure consistent
+log formatting across the NAND bad block table implementation.
+No functional changes intended.
+
+Signed-off-by: Mihai Sain <mihai.sain@microchip.com>
+---
+ drivers/mtd/nand/raw/nand_bbt.c | 29 +++++++++++++++--------------
+ 1 file changed, 15 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/nand_bbt.c b/drivers/mtd/nand/raw/nand_bbt.c
+index b0e7592a2ab7..93f162805f31 100644
+--- a/drivers/mtd/nand/raw/nand_bbt.c
++++ b/drivers/mtd/nand/raw/nand_bbt.c
+@@ -52,6 +52,7 @@
+  * - bbts start at a page boundary, if autolocated on a block boundary
+  * - the space necessary for a bbt in FLASH does not exceed a block boundary
+  */
++#define pr_fmt(fmt) "nand_bbt: " fmt
+ 
+ #include <linux/slab.h>
+ #include <linux/types.h>
+@@ -193,15 +194,15 @@ static int read_bbt(struct nand_chip *this, uint8_t *buf, int page, int num,
+ 		res = mtd_read(mtd, from, len, &retlen, buf);
+ 		if (res < 0) {
+ 			if (mtd_is_eccerr(res)) {
+-				pr_info("nand_bbt: ECC error in BBT at 0x%012llx\n",
++				pr_info("ECC error in BBT at 0x%012llx\n",
+ 					from & ~mtd->writesize);
+ 				return res;
+ 			} else if (mtd_is_bitflip(res)) {
+-				pr_info("nand_bbt: corrected error in BBT at 0x%012llx\n",
++				pr_info("corrected error in BBT at 0x%012llx\n",
+ 					from & ~mtd->writesize);
+ 				ret = res;
+ 			} else {
+-				pr_info("nand_bbt: error reading BBT\n");
++				pr_info("error reading BBT\n");
+ 				return res;
+ 			}
+ 		}
+@@ -214,7 +215,7 @@ static int read_bbt(struct nand_chip *this, uint8_t *buf, int page, int num,
+ 				if (tmp == msk)
+ 					continue;
+ 				if (reserved_block_code && (tmp == reserved_block_code)) {
+-					pr_info("nand_read_bbt: reserved block at 0x%012llx\n",
++					pr_info("reserved block at 0x%012llx\n",
+ 						 (loff_t)(offs + act) <<
+ 						 this->bbt_erase_shift);
+ 					bbt_mark_entry(this, offs + act,
+@@ -226,7 +227,7 @@ static int read_bbt(struct nand_chip *this, uint8_t *buf, int page, int num,
+ 				 * Leave it for now, if it's matured we can
+ 				 * move this message to pr_debug.
+ 				 */
+-				pr_info("nand_read_bbt: bad block at 0x%012llx\n",
++				pr_info("bad block at 0x%012llx\n",
+ 					 (loff_t)(offs + act) <<
+ 					 this->bbt_erase_shift);
+ 				/* Factory marked bad or worn out? */
+@@ -503,7 +504,7 @@ static int create_bbt(struct nand_chip *this, uint8_t *buf,
+ 		from = 0;
+ 	} else {
+ 		if (chip >= nanddev_ntargets(&this->base)) {
+-			pr_warn("create_bbt(): chipnr (%d) > available chips (%d)\n",
++			pr_warn("chipnr (%d) > available chips (%d)\n",
+ 			        chip + 1, nanddev_ntargets(&this->base));
+ 			return -EINVAL;
+ 		}
+@@ -725,7 +726,7 @@ static void mark_bbt_block_bad(struct nand_chip *this,
+ 	to = (loff_t)block << this->bbt_erase_shift;
+ 	res = nand_markbad_bbm(this, to);
+ 	if (res)
+-		pr_warn("nand_bbt: error %d while marking block %d bad\n",
++		pr_warn("error %d while marking block %d bad\n",
+ 			res, block);
+ 
+ 	td->pages[chip] = -1;
+@@ -825,10 +826,10 @@ static int write_bbt(struct nand_chip *this, uint8_t *buf,
+ 			res = mtd_read(mtd, to, len, &retlen, buf);
+ 			if (res < 0) {
+ 				if (retlen != len) {
+-					pr_info("nand_bbt: error reading block for writing the bad block table\n");
++					pr_info("error reading block for writing the bad block table\n");
+ 					return res;
+ 				}
+-				pr_warn("nand_bbt: ECC error while reading block for writing bad block table\n");
++				pr_warn("ECC error while reading block for writing bad block table\n");
+ 			}
+ 			/* Read oob data */
+ 			ops.ooblen = (len >> this->page_shift) * mtd->oobsize;
+@@ -890,7 +891,7 @@ static int write_bbt(struct nand_chip *this, uint8_t *buf,
+ 		einfo.len = 1 << this->bbt_erase_shift;
+ 		res = nand_erase_nand(this, &einfo, 1);
+ 		if (res < 0) {
+-			pr_warn("nand_bbt: error while erasing BBT block %d\n",
++			pr_warn("error while erasing BBT block %d\n",
+ 				res);
+ 			mark_bbt_block_bad(this, td, chip, block);
+ 			continue;
+@@ -900,7 +901,7 @@ static int write_bbt(struct nand_chip *this, uint8_t *buf,
+ 				     td->options & NAND_BBT_NO_OOB ?
+ 				     NULL : &buf[len]);
+ 		if (res < 0) {
+-			pr_warn("nand_bbt: error while writing BBT block %d\n",
++			pr_warn("error while writing BBT block %d\n",
+ 				res);
+ 			mark_bbt_block_bad(this, td, chip, block);
+ 			continue;
+@@ -915,7 +916,7 @@ static int write_bbt(struct nand_chip *this, uint8_t *buf,
+ 	return 0;
+ 
+  outerr:
+-	pr_warn("nand_bbt: error while writing bad block table %d\n", res);
++	pr_warn("error while writing bad block table %d\n", res);
+ 	return res;
+ }
+ 
+@@ -1263,7 +1264,7 @@ static int nand_scan_bbt(struct nand_chip *this, struct nand_bbt_descr *bd)
+ 	 */
+ 	if (!td) {
+ 		if ((res = nand_memory_bbt(this, bd))) {
+-			pr_err("nand_bbt: can't scan flash and build the RAM-based BBT\n");
++			pr_err("can't scan flash and build the RAM-based BBT\n");
+ 			goto err_free_bbt;
+ 		}
+ 		return 0;
+@@ -1451,7 +1452,7 @@ int nand_isbad_bbt(struct nand_chip *this, loff_t offs, int allowbbt)
+ 	block = (int)(offs >> this->bbt_erase_shift);
+ 	res = bbt_get_entry(this, block);
+ 
+-	pr_debug("nand_isbad_bbt(): bbt info for offs 0x%08x: (block %d) 0x%02x\n",
++	pr_debug("bbt info for offs 0x%08x: (block %d) 0x%02x\n",
+ 		 (unsigned int)offs, block, res);
+ 
+ 	if (mtd_check_expert_analysis_mode())
+-- 
+2.56.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
