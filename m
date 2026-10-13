@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60616CC6B1C
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B87DCC6B1A
 	for <linux-mtd@archiver.kernel.org>; Tue, 13 Oct 2026 16:34:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,43 +12,44 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=e/7yCxbK2z0UxOIFiyUHXg6eWHnGmRApq7soW5vTIYI=; b=gVuzrXhCNzLylZ
-	EopJ+VtZqgMHXdGspGsQj/kDBNJ/ah+ZOkVlmFgE6QQcjjn2C+oQohncbTwGiBLIWGv2IrN4vdHWZ
-	UtVUYO7KZxG9vRrb+J8GirEbXvAtnQYhcXcnEwHctnBF89PDbwZ9jFjdqamyguodWaZadKG6uwuae
-	PEZul60roRXlmDqaIB0bM5+npWECoFMpTOBCJUQPpA9UVDYsKfItDXlb+vlPYdO6qUwq9U6JJbJmV
-	Ur04Vs+Zb9Th85MLCCezAsltwRH+KvmOLcSTSVS8MW2HNKbux/oyaEFi6xUUpRDukGLa8CxtSVOW5
-	BAR+uvYxTUkG2YGb9gQQ==;
+	List-Owner; bh=6aG6BGGeyExRryGxtH5fzd8qLV2YxfBjDukvbNiRXw8=; b=JaUBNpilBAEcuh
+	Y2vGMEtQ4bgPwGFI8F2c0maC+/ILxNS9A23RDbVQY11UTSptenvlyV8EvjFa83WdDUTW4YwnWoqxO
+	tIrSnZys4M9mnnvcSq0LnkdFccWrUEA1G9iiznLN7KpI6vRJODfX9k77Te8ocqXPOQJimMAr1pdpW
+	n5rI6v2dPQL3ibF4hTbCUikn8zpdclFJs/2mFS6qI/IKdL16xr6JgzasnSin44i6P7ME8uN37izfO
+	CCQM8HtcoOyUby8uK9IM9TGDKkCIk2MpOqry3pw+tb7j9VBxujG+b0CJzBMleKmxxrdTsHc7IwksH
+	1r7CpQzA1AVSEXnn8vgQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xGfSj-0000000DX4E-2KGp;
+	id 1xGfSj-0000000DX44-1jgb;
 	Tue, 13 Oct 2026 16:34:49 +0000
-Received: from smtpout-04.galae.net ([185.171.202.116])
+Received: from smtpout-03.galae.net ([185.246.85.4])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xGfSZ-0000000DWzj-3DUW
+	id 1xGfSY-0000000DWzR-1jF9
 	for linux-mtd@lists.infradead.org;
-	Tue, 13 Oct 2026 16:34:48 +0000
+	Tue, 13 Oct 2026 16:34:42 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id 94613C653F4;
-	Tue, 13 Oct 2026 16:35:33 +0000 (UTC)
+	by smtpout-03.galae.net (Postfix) with ESMTPS id 4D9D64E411FB;
+	Tue, 13 Oct 2026 16:34:35 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 0069560362;
-	Tue, 13 Oct 2026 16:34:38 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 2F31611D7180C;
-	Tue, 13 Oct 2026 18:34:36 +0200 (CEST)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 226A860362;
+	Tue, 13 Oct 2026 16:34:35 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 5BAE211D717B1;
+	Tue, 13 Oct 2026 18:34:29 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1791909277; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1791909270; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=3rH+xtaEE72c/dMWl13TrWCqgtJCjAS6ZGNblkbLQAU=;
-	b=FYAL9FtvXVAnibUXGPptNV1yQxRNmOeHHxs+yr3QPcKuL8/D5V4jHaRvmXzWUkAXPuR/+q
-	TdVq/Sui6GUDp+kFtgpalF7WzJ9RLBj9dVK0e7sRu7eTZ/w2EFQUF5HuO/i2PCpj21Chol
-	DSyJWKwVsBlkwZLPiAuGMsb61hcHUNE4QFw0ygfHxkT1RDAXms08DmsyZ11YUPq4bckGUd
-	EUBlcyzwI4J2BjcJH8ZCG2Ub3OoXWSH6r+6HhBhsxiNRAUBcIny3we151xHf9HzKTMnDCW
-	jmmgCN2tHoYBTb9RhNfSSRethozrh9V7DvBaU22f+woEbELBuYeGHIM0mNvOuw==
+	bh=0yk1JOJZFoVMiBC15xlQjxajHbRrIJKa+K6axnf23aY=;
+	b=qFkzE4QkUa4PWVdrzADF56OcxOqeYE8DT1kE3BSXRc/Dh7qgIymv3n3zXS36ZbygQmvQtE
+	eyY3p6GLlmxeOIn/vFvKEhRhBAwOWuXMMmV0g8BvXX5xq4rOPf4CPyYy20ifS8l7zSQCWh
+	tmGurB0XPrnoitF9ZoE6/gJ08PYq8BXNiaL+IiFpx9X9FXE8xt5M1dLiNEQAhkzd/DY6Rz
+	3o8ljyAWPe8alZ0XqUF/wypq9hy2+J2REx6bonkGMxtd167/ZqHsXQkz1VO9UCge+muRIN
+	R6nXxKkh1zzowpWKv6/3Ah4pdMUEjTe9Lf9Jc2NX8YjCSlv76m9CFNwEy3egcQ==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Tue, 13 Oct 2026 18:33:53 +0200
-Subject: [PATCH v3 03/17] mtd: spi-nor: Fix spacing between arguments
+Date: Tue, 13 Oct 2026 18:33:51 +0200
+Subject: [PATCH v3 01/17] mtd: spi-nor: Only switch to ODTR if the chip has
+ a callback for it
 MIME-Version: 1.0
-Message-Id: <20261013-winbond-master-spi-nor-w35t-v3-3-6dde1d513df8@bootlin.com>
+Message-Id: <20261013-winbond-master-spi-nor-w35t-v3-1-6dde1d513df8@bootlin.com>
 References: <20261013-winbond-master-spi-nor-w35t-v3-0-6dde1d513df8@bootlin.com>
 In-Reply-To: <20261013-winbond-master-spi-nor-w35t-v3-0-6dde1d513df8@bootlin.com>
 To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
@@ -60,9 +61,8 @@ Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261013_093441_991188_19EFEAE4 
-X-CRM114-Status: UNSURE (   7.94  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20261013_093438_596007_3B0F2E2A 
+X-CRM114-Status: GOOD (  15.13  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,26 +79,121 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-A spurious tab got inserted there.
+Every manufacturer has its own way of entering ODTR mode. This is
+typically implemented by the nor->params->set_octal_dtr()
+callback. Without this callback the core cannot switch to ODTR. If it
+actually does, the chip will stay in SDR mode and none of the subsequent
+operations will succeed.
+
+As of today, any chip not listed in any manufacturer/fixups table will
+get parsed through SFDP and operated based on the best compromise the
+core can find. A chip advertizing ODTR support in its SFDP content, will
+therefore be operated in ODTR mode, leading to a 100% failure rate in
+operating the chip out of the box.
+
+Make sure ODTR page reads and page programs are not enabled for chips
+without a ->set_octal_dtr() callback. If they support it, they will
+anyway work in octal mode, but with an SDR bus interface.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/spi-nor/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+
+I faced this problem while operating a Winbond W35T01NW SPI NOR chip
+which supports ODTR and properly advertizes it in its SFDP data. However
+it was not expected that it would not be usable at all without a vendor
+fixup. This commit allows to use all the features available through SFDP
+without the IDs being listed. Basic SPI NOR tests then passed and speed
+was obviously better than when constraining the I/O lines in DT:
+
+Before:
++ cat /sys/kernel/debug/spi-nor/spi0.0/capabilities
+Supported read modes by the flash
+ 1S-1S-1S
+  opcode	0x13
+  mode cycles	0
+  dummy cycles	0
+ 1S-1S-8S
+  opcode	0x7c
+  mode cycles	0
+  dummy cycles	8
+ 1S-8S-8S
+  opcode	0xcc
+  mode cycles	0
+  dummy cycles	16
+ 8D-8D-8D
+  opcode	0x0b
+  mode cycles	0
+  dummy cycles	22
+
+After:
++ cat /sys/kernel/debug/spi-nor/spi0.0/capabilities
+Supported read modes by the flash
+ 1S-1S-1S
+  opcode	0x13
+  mode cycles	0
+  dummy cycles	0
+ 1S-1S-8S
+  opcode	0x7c
+  mode cycles	0
+  dummy cycles	8
+ 1S-8S-8S
+  opcode	0xcc
+  mode cycles	0
+  dummy cycles	16
+
++ flash_speed /dev/mtd0 -dc10
+not NAND flash, assume page size is 512 bytes.
+scanning for bad eraseblocks
+scanned 10 eraseblocks, 0 are bad
+testing eraseblock write speed
+eraseblock write speed is 802 KiB/s
+testing eraseblock read speed
+eraseblock read speed is 20000 KiB/s
+testing page write speed
+page write speed is 796 KiB/s
+testing page read speed
+page read speed is 9696 KiB/s
+testing 2 page write speed
+2 page write speed is 799 KiB/s
+testing 2 page read speed
+2 page read speed is 13333 KiB/s
+Testing erase speed
+erase speed is 445 KiB/s
+---
+ drivers/mtd/spi-nor/core.c | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 9c61ff4b93c3..4b9e0410f2f5 100644
+index e2b6efafdd8d..9c61ff4b93c3 100644
 --- a/drivers/mtd/spi-nor/core.c
 +++ b/drivers/mtd/spi-nor/core.c
-@@ -773,7 +773,7 @@ int spi_nor_read_sr_ll(struct spi_nor *nor, u8 opcode, u8 *sr,
-  *
-  * Return: 0 on success, -errno otherwise.
-  */
--static int spi_nor_write_sr_ll(struct spi_nor *nor, u8 opcode,	const u8 *sr,
-+static int spi_nor_write_sr_ll(struct spi_nor *nor, u8 opcode, const u8 *sr,
- 			       unsigned int len)
+@@ -2991,15 +2991,21 @@ static int spi_nor_set_octal_dtr(struct spi_nor *nor, bool enable)
  {
- 	int ret, i;
+ 	int ret;
+ 
+-	if (!nor->params->set_octal_dtr)
+-		return 0;
+-
+ 	if (!(nor->read_proto == SNOR_PROTO_8_8_8_DTR &&
+ 	      nor->write_proto == SNOR_PROTO_8_8_8_DTR))
+ 		return 0;
+ 
+-	if (!(nor->params->flags & SNOR_F_IO_MODE_EN_VOLATILE))
+-		return 0;
++	if (enable &&
++	    (!nor->params->set_octal_dtr ||
++	     !(nor->params->flags & SNOR_F_IO_MODE_EN_VOLATILE))) {
++		struct spi_nor_hwcaps hwcaps = { .mask = SNOR_HWCAPS_ALL };
++
++		dev_err(nor->dev, "Cannot enter octal DTR mode\n");
++		hwcaps.mask &= ~(SNOR_HWCAPS_READ_8_8_8_DTR |
++				 SNOR_HWCAPS_PP_8_8_8_DTR);
++
++		return spi_nor_setup(nor, &hwcaps);
++	}
+ 
+ 	ret = nor->params->set_octal_dtr(nor, enable);
+ 	if (ret)
 
 -- 
 2.55.0
