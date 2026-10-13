@@ -4,51 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96828CC6B19
-	for <linux-mtd@archiver.kernel.org>; Tue, 13 Oct 2026 16:34:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60616CC6B1C
+	for <linux-mtd@archiver.kernel.org>; Tue, 13 Oct 2026 16:34:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=nmedCQ+oay0JmsEJy8UneFXYBJllzYG7gMP540OiHUI=; b=QP0EsQYrW3r/de
-	0FEBGfsICbIaHEMPeQvxZSMir/G6NaVRbdO+/nP899/fgwf1n5WPrXQIAXduhSBWrYaI2bPuIvvAE
-	b8WaT8YddUdjHIWjvCtGCUrErEVs1BO1ncPV7XLEsI9edsqDg/lDZHlofBeZ+9PSF2tZhCeMoEdJD
-	Kzam58tS1XijOMBSK7gT5xPzA0JCxVBeR8V/EiODYqd5NqfGWlaTYI+6NwzwPAyZHQmrHvbONxskS
-	+JHMZiSkLCtfUX32XTyvu0rr8VbgHod00DXilaECRvjrh4Spo1Y2lIHMyKTEUnQE1pLqhdAMJRnV5
-	h1XTc1aTRUTo5NCQndtw==;
+	List-Owner; bh=e/7yCxbK2z0UxOIFiyUHXg6eWHnGmRApq7soW5vTIYI=; b=gVuzrXhCNzLylZ
+	EopJ+VtZqgMHXdGspGsQj/kDBNJ/ah+ZOkVlmFgE6QQcjjn2C+oQohncbTwGiBLIWGv2IrN4vdHWZ
+	UtVUYO7KZxG9vRrb+J8GirEbXvAtnQYhcXcnEwHctnBF89PDbwZ9jFjdqamyguodWaZadKG6uwuae
+	PEZul60roRXlmDqaIB0bM5+npWECoFMpTOBCJUQPpA9UVDYsKfItDXlb+vlPYdO6qUwq9U6JJbJmV
+	Ur04Vs+Zb9Th85MLCCezAsltwRH+KvmOLcSTSVS8MW2HNKbux/oyaEFi6xUUpRDukGLa8CxtSVOW5
+	BAR+uvYxTUkG2YGb9gQQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xGfSi-0000000DX3B-18UH;
-	Tue, 13 Oct 2026 16:34:48 +0000
+	id 1xGfSj-0000000DX4E-2KGp;
+	Tue, 13 Oct 2026 16:34:49 +0000
 Received: from smtpout-04.galae.net ([185.171.202.116])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xGfSY-0000000DWzT-1JT1
+	id 1xGfSZ-0000000DWzj-3DUW
 	for linux-mtd@lists.infradead.org;
-	Tue, 13 Oct 2026 16:34:41 +0000
+	Tue, 13 Oct 2026 16:34:48 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id 27888C653F7;
-	Tue, 13 Oct 2026 16:35:32 +0000 (UTC)
+	by smtpout-04.galae.net (Postfix) with ESMTPS id 94613C653F4;
+	Tue, 13 Oct 2026 16:35:33 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 8CFA060362;
-	Tue, 13 Oct 2026 16:34:36 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 9F8C311D717B4;
-	Tue, 13 Oct 2026 18:34:34 +0200 (CEST)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 0069560362;
+	Tue, 13 Oct 2026 16:34:38 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 2F31611D7180C;
+	Tue, 13 Oct 2026 18:34:36 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1791909275; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1791909277; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=j/cXexyZ7T30AM1csq7xc9wIhMFboTJ8migmpErDMkQ=;
-	b=WuyHtFaTySo2iv/SBA20f+Gtj11qdNir8FeHbWfBtcbrnNt17uBbzXJBOU+HCVK5PPkYxT
-	nrzBQaT/d9N/Otm3iiiPCRA/DAH3Jx+HvNXZwm+K3vfetl8LA+ESiS/kgAtsuMYtZ1bc0V
-	TmQS83IT00p+LksJWzNzofPxA0WxpAWeN5T1z1zkxG8d0ZtKQcUV3Fe7GIvPYaXAlw/obG
-	upGx/wzQL2cVluImdIQ7ElyGMOvp43fRmuPy+x30wMW8Ne1p7gBmq+zsoqlYgKNNo+qroH
-	VsViiDS0n34iMazGKgmYZaW6Mv4Bjnm0KJKqzS0nEc1D2UWbaXI1k/bTBaigUw==
+	bh=3rH+xtaEE72c/dMWl13TrWCqgtJCjAS6ZGNblkbLQAU=;
+	b=FYAL9FtvXVAnibUXGPptNV1yQxRNmOeHHxs+yr3QPcKuL8/D5V4jHaRvmXzWUkAXPuR/+q
+	TdVq/Sui6GUDp+kFtgpalF7WzJ9RLBj9dVK0e7sRu7eTZ/w2EFQUF5HuO/i2PCpj21Chol
+	DSyJWKwVsBlkwZLPiAuGMsb61hcHUNE4QFw0ygfHxkT1RDAXms08DmsyZ11YUPq4bckGUd
+	EUBlcyzwI4J2BjcJH8ZCG2Ub3OoXWSH6r+6HhBhsxiNRAUBcIny3we151xHf9HzKTMnDCW
+	jmmgCN2tHoYBTb9RhNfSSRethozrh9V7DvBaU22f+woEbELBuYeGHIM0mNvOuw==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Tue, 13 Oct 2026 18:33:52 +0200
-Subject: [PATCH v3 02/17] mtd: spi-nor: swp: Fix SR2 initialization
+Date: Tue, 13 Oct 2026 18:33:53 +0200
+Subject: [PATCH v3 03/17] mtd: spi-nor: Fix spacing between arguments
 MIME-Version: 1.0
-Message-Id: <20261013-winbond-master-spi-nor-w35t-v3-2-6dde1d513df8@bootlin.com>
+Message-Id: <20261013-winbond-master-spi-nor-w35t-v3-3-6dde1d513df8@bootlin.com>
 References: <20261013-winbond-master-spi-nor-w35t-v3-0-6dde1d513df8@bootlin.com>
 In-Reply-To: <20261013-winbond-master-spi-nor-w35t-v3-0-6dde1d513df8@bootlin.com>
 To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
@@ -60,8 +60,9 @@ Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261013_093438_522538_5C6D79F6 
-X-CRM114-Status: GOOD (  11.26  )
+X-CRM114-CacheID: sfid-20261013_093441_991188_19EFEAE4 
+X-CRM114-Status: UNSURE (   7.94  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,35 +79,26 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The purpose of the original change was to make sure the SR2 buffer was
-returned initialized. One of the goals being to be able to compare
-it. While iterating over the implementation of this function, I believe
-the return -EINVAL that was initially there has been turned into a
-return 0, which does not completely make sense since we already return 0
-just below.
+A spurious tab got inserted there.
 
-Just make sure SR2 is correctly initialized when returning from this
-helper.
-
-Fixes: 63489002d397 ("mtd: spi-nor: Refactor Read Status/Write Status support")
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/spi-nor/swp.c | 2 +-
+ drivers/mtd/spi-nor/core.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/spi-nor/swp.c b/drivers/mtd/spi-nor/swp.c
-index 7e667e4ca84d..6c56fda3913e 100644
---- a/drivers/mtd/spi-nor/swp.c
-+++ b/drivers/mtd/spi-nor/swp.c
-@@ -223,7 +223,7 @@ static int spi_nor_read_sr2_careful(struct spi_nor *nor, u8 *sr2)
- 		 */
- 		*sr2 = params->qe_mask[1];
- 	} else {
--		return 0;
-+		*sr2 = 0;
- 	}
- 
- 	return 0;
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 9c61ff4b93c3..4b9e0410f2f5 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -773,7 +773,7 @@ int spi_nor_read_sr_ll(struct spi_nor *nor, u8 opcode, u8 *sr,
+  *
+  * Return: 0 on success, -errno otherwise.
+  */
+-static int spi_nor_write_sr_ll(struct spi_nor *nor, u8 opcode,	const u8 *sr,
++static int spi_nor_write_sr_ll(struct spi_nor *nor, u8 opcode, const u8 *sr,
+ 			       unsigned int len)
+ {
+ 	int ret, i;
 
 -- 
 2.55.0
