@@ -4,8 +4,8 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9760BCC6B1D
-	for <linux-mtd@archiver.kernel.org>; Tue, 13 Oct 2026 22:40:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33344CC6B1F
+	for <linux-mtd@archiver.kernel.org>; Tue, 13 Oct 2026 22:40:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -13,78 +13,77 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	References:Mime-Version:In-Reply-To:Date:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=Vy0xORtCsp7uhoTraK4kFzaCtFbimfEXgsAcYRbpks4=; b=2RONGecR9x+jtwYch7zscCHhX/
-	U2dr4s62wjYsb/2j+sBz/WntnEEKRFDaAwqRfloEzQARB5hgYDC4FXQ4dKcpmhuAg6f4zA7lA0ySF
-	T+8I5n3TC3CxJZncIlKMPx9cpUkqMGX66PeHUhQFwWnvMJFJdmzyLogD0kQb+VMFLovXP+1fxIqMR
-	tD4zs6TihjoalafcE6BWLtJRse4cft3S+dJBemMEjUafMaXeIUXBA1ulW8zmB7uC7nwo8lHD2BAlD
-	N1uOrJucfzRfvm3mi5XGTxN2GExsitEwD+KkD71dMU6F7dI1YELIIqtedOdRBpQq6U2YhW5+5ZMta
-	2+9IBRaw==;
+	bh=mwgvJ57NqLLUGEFwqPxshoJwC0Hdi/UuLJsiYlfYlyI=; b=LsjXTGZBx7Oo1UPdJnFdnW9G5f
+	Xv6D07FDZlEuqv/OIGDSQwuSg/RWp+xFyEqUvO6Frkrx73ZmGJZiD6k62xtxHrsnz15m2BpJJuwT5
+	ugCLQYzv34onTrn0FD00ZLjAYKJehVLQaugn4m1K1J9sp5Hu4a6bQWYNA7bjNwVHSOd9Ihm36OtDj
+	rMhpuaRdrg5mZnFBfiStgoT9ZneDo2TWl80ybC3JS00U9grt8q5+SnggYcAoKfNiHo77zJsZOAGhF
+	BJD+12baLDmp+PGpzAsdJbVlV6aQhM9pmMWgMuGeowE7A+TLj1dpKk1ycF4hY6fdV1gE0O9aNiLtw
+	OELZPkhQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xGlAt-0000000E9k6-0GbV;
-	Tue, 13 Oct 2026 22:40:47 +0000
+	id 1xGlB3-0000000E9kX-2QGM;
+	Tue, 13 Oct 2026 22:40:57 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xGlAq-0000000E9hS-06ze
+	id 1xGlAp-0000000E9hO-2mjM
 	for linux-mtd@bombadil.infradead.org;
 	Tue, 13 Oct 2026 22:40:45 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=desiato.20200630; h=Content-Type:Cc:To:From:Subject:
 	Message-ID:References:Mime-Version:In-Reply-To:Date:Sender:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=5eLIAAx2L+9DvCRKYW0jDBbtdiyv3jUNIhafttj/B0g=; b=Va/sUd6rLhztzCegxMK90J3lzC
-	ln5FNc2WmkctRnPWnG+F1yR6YVW/GDw57Cdqea8z0SulyTpf+/KnfhY4ullzjufkf9WhQR5MWwdOz
-	mUYAJHtkOGaaOyb1w31hnWvy1lNyLLZUJCGMJfAtYN8+EcSJeWjbgp85NIcfrGdDu8xfO63deVIBn
-	TVbhxrHSM+ObHe6mczzPCNPQ1eFGHW7UoVJesBwkRNwOQL5W+6oRvaQkf4LuJxnhUKEp270EgjeXv
-	W+tlt+guLODOt8rj3TUar4klvYpEyTxg2T+NpFATf1vyr2NvfGNO1HEr+u08Nd8j9NYEegNFG8/J6
-	prJjSGPw==;
+	bh=gurzTkqqRagMZrBgJFBCVz7i93uSa3r8+lp0iuHqO9A=; b=puvzvhJGetuYIDxU02kh6W/+cs
+	53wFm1Wx18M09saDb5x0uJXHVZmSY3/eJfx7+gHET1QTM8D1D8OvXwbhSQISvcH9AZnzcLFIJAvFR
+	2qgAbUp1jqSkAKvgKcL3w3xTJTgi+9gckUq7Ng3KfWdbg6+fU1iVfpSv/uy3lBfmH7m78vJG1X0Jf
+	HVaCDSWEuA5l+mkdp/56/AFdy7KTkQZErv/2apUMk7pjjIt3KrO7KrugksaVN8k+inGUs8vUIUdqT
+	zgIrWihMnkBuWuI34m/ZuJ9uxl/m7bfVDSvXeAqdjj8s3NtctIB5zASPZa2SwTFriYXDcO0gSAvYu
+	8S7gaaZg==;
 Received: from mail-dy1-x1348.google.com ([2607:f8b0:4864:20::1348])
 	by desiato.infradead.org with esmtps (Exim 4.99.5 #2 (Red Hat Linux))
-	id 1xGlAk-0000000G9oq-21io
+	id 1xGlAk-0000000G9or-2Kra
 	for linux-mtd@lists.infradead.org;
 	Tue, 13 Oct 2026 22:40:40 +0000
-Received: by mail-dy1-x1348.google.com with SMTP id 5a478bee46e88-357e2bc3b1bso5884417eec.0
+Received: by mail-dy1-x1348.google.com with SMTP id 5a478bee46e88-30c0d568830so7230971eec.1
         for <linux-mtd@lists.infradead.org>; Tue, 13 Oct 2026 15:40:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20251104; t=1791931236; x=1792536036; darn=lists.infradead.org;
         h=content-type:cc:to:from:subject:message-id:references:mime-version
          :in-reply-to:date:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=5eLIAAx2L+9DvCRKYW0jDBbtdiyv3jUNIhafttj/B0g=;
-        b=P2l0dK0AmVOOABXGpy4gjItKD9GHsq8EpCNsxJEhLJacRYM4117WSYuvjnYPvvO6si
-         B/LT61t3ARcykJW/mCx7OGPd+Uv4R7luRWvS3jF28G6daWknNFrtfEfCZX/4C99aFNyR
-         L23dPy98SvbcHHd9fMg0pe1Uu/LKR3U9A51ZjDTVAa8XMuzKLzfnb1QEztbE8ZElLx0c
-         oYz7UlGiaofkO2KZJLb9tIfVOnGr2A4v+sZalR18xAs39Igq5+gqWvorInCaf9CSrhxu
-         jbysNPqC49muXmAB99grG6Kv6Pzwi3AtdI3/aDKEOcsEFEC9v5sGxLvx/bn/PGVdVJkG
-         rXZQ==
+        bh=gurzTkqqRagMZrBgJFBCVz7i93uSa3r8+lp0iuHqO9A=;
+        b=otLBJVR794WAeKeP+nY3cyW1aRH6L2tcZmbN0Xp+s07BNuJ4Bao1FA3N1eZMOVe9r9
+         jWifbTFrDF8D0F62ddhNCQduYKW3nfEgD+zBvxMeJprhaDi3GTcVQmfALKIl0hnRjcrc
+         b+sr1oNETiDWBWb+HijJWoOKsv+1ExebT4u0ZgyCMI3DFawWLlhBfo8vrB/8z71jHkwC
+         pGnR07Oc1ohi85WVlTYchyqbvFdmCsOmJwgMbcLwf6vMwQdhBVlFoKX1R0AWy8nauWzR
+         AvwtJWZknz4RkYuoZSDgGp9Fyi1QArQ7KHlkV/k16MgGSLXiFwDHwfNLnO98yIOB00SC
+         0sQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20260707; t=1791931236; x=1792536036;
         h=content-type:cc:to:from:subject:message-id:references:mime-version
          :in-reply-to:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=5eLIAAx2L+9DvCRKYW0jDBbtdiyv3jUNIhafttj/B0g=;
-        b=BewekVPtzqsHuCS+wv+1vTnHpTcv7gqysWA79FGpy7B868pg8r2rXBkDxHQ/xX/VAw
-         kf9K4CHFkKk4g/vGXrSMhEh0xPPHpYWs6aRBPq8edRc+4iUkZI5LqJsZlqdVErrgbKPS
-         4pGYPL6xVHshbLIQrxFn/eeLpHHa8a/VSYaxkEH9tOjQZaEiTzoDUIR80ArTKslCDAje
-         UUv9YoKoldyEhKXEToQYqxpd0CUunyBDZm/74re+Xg9kK1hZ4na79KrACak1VGiKwNk4
-         NcFNlMfxbwdF3EKItOEn1tpfdw2zMmHRslbl0fRV5bGG9WoEX5aGXb02G4cwUQe9UB7Y
-         8h/Q==
-X-Forwarded-Encrypted: i=1; AKwUvBwtJOVL0FRtRZBYWQ1Hn/X/q0NyFmMXbCXzKGMNZv1Fi/Sr4LYCE6yN+ButJ+ZBcA1HP5fnzujSK/k=@lists.infradead.org
-X-Gm-Message-State: AFq9FYJmFvFTek4QMpvGzGyYi7NaHrPuic7J3f3lNQHGfralU02gN/eU
-	Z0dDd/d3nkZ0rOLXwHGlYVIxCt+CYWRSD2eymFJK6Fh/yFzp2bTV4lJy23wxfPaAjgvgBIN48yw
-	okoppUzTCpA==
-X-Received: from dlbuu9.prod.google.com ([2002:a05:7022:7e89:b0:16c:bd18:1ee2])
- (user=irogers job=prod-delivery.src-stubby-dispatcher) by 2002:a05:701b:231b:b0:165:55e2:2d69
- with SMTP id a92af1059eb24-16a640fcc35mr21018967c88.46.1791931235508; Tue, 13
- Oct 2026 15:40:35 -0700 (PDT)
-Date: Tue, 13 Oct 2026 15:39:45 -0700
+        bh=gurzTkqqRagMZrBgJFBCVz7i93uSa3r8+lp0iuHqO9A=;
+        b=EwVoKrxJmDdibfvgZ+0BKQY1pXm7Ej+4o1562HfPuhA6nQGRjrjH7UBlFq3eIuV3lV
+         wou9/ELEMCpbfGUE1xoSXVGE4VZEdSo0aloVf5ZNeLhdcW+gx+7faHfoogbK+KEu6XVH
+         Y6E34THvKtPSNDJgcdJ/wS9j26j/cGJ+e/9OS0Odom5FZv3BdDPSlsT788ly9IbVWjKF
+         tr+16tajqwUlXfWgrBFWOcyelbssPEObXi6iYR16vycyGU30uRSIOekxD+lxksN8sjfn
+         t7aKoEGA2j2sbploxPMU2ol8vC4bQI3g3otuJF+1SUnHkmZuwqrJ4a6d7eMUN1sOSU3N
+         Sg+g==
+X-Forwarded-Encrypted: i=1; AKwUvByaxWAO+tBadRRnN+cIbwGu/xjwHFcgaBTYdIcFdHmqj8JjC0t8FH8ODQxOmSa5U2/9Ga+UjX3ojl8=@lists.infradead.org
+X-Gm-Message-State: AFq9FYJtgYvPwJfVthNSOpavsQXNDIIJ1G6k+7TiaDJgbGMZvzUjXH8I
+	eZOD2HxTFYyGz35VkNu1q6HpboaqcwJkKCmYT0bnuXh8EEkpTkqHEh2MIOJp1KYDBGhXkLkoxHX
+	KDSwZtFBAZg==
+X-Received: from dleg6-n1.prod.google.com ([2002:a05:701b:4306:10b0:160:bb23:390d])
+ (user=irogers job=prod-delivery.src-stubby-dispatcher) by 2002:a05:701b:4586:20b0:169:b1b1:1445
+ with SMTP id a92af1059eb24-16a5dbfe73dmr17947821c88.31.1791931232672; Tue, 13
+ Oct 2026 15:40:32 -0700 (PDT)
+Date: Tue, 13 Oct 2026 15:39:44 -0700
 In-Reply-To: <20261013223946.1836757-1-irogers@google.com>
 Mime-Version: 1.0
 References: <20261013223946.1836757-1-irogers@google.com>
 X-Mailer: git-send-email 2.56.0.385.gd3acb90ef8-goog
-Message-ID: <20261013223946.1836757-11-irogers@google.com>
-Subject: [PATCH 10/11] drm/amdkfd: Free queue in procfs_queue_type kobject
- release callback
+Message-ID: <20261013223946.1836757-10-irogers@google.com>
+Subject: [PATCH 09/11] ubifs: sysfs: Use kset_create_and_add() for ubifs_kset
 From: Ian Rogers <irogers@google.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J . Wysocki" <rafael@kernel.org>, 
 	Danilo Krummrich <dakr@kernel.org>, Miguel Ojeda <ojeda@kernel.org>, Kees Cook <kees@kernel.org>, 
@@ -112,8 +111,8 @@ Cc: Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling <morbo@google.com>
 	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
 	Ian Rogers <irogers@google.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261013_234038_779159_840F8DC4 
-X-CRM114-Status: GOOD (  15.45  )
+X-CRM114-CacheID: sfid-20261013_234038_900510_ADAEA608 
+X-CRM114-Status: GOOD (  15.24  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -130,76 +129,73 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-struct queue embeds a struct kobject (q->kobj) for procfs entries, but
-procfs_queue_type had no .release callback and uninit_queue() freed q
-immediately after kfd_procfs_del_queue() called kobject_put(&q->kobj).
-With CONFIG_DEBUG_KOBJECT_RELEASE=y, this causes a use-after-free.
+ubifs_kset was a static struct kset using a custom ubifs_ktype that
+had no default_groups and no .release callback. With
+CONFIG_DEBUG_KOBJECT_RELEASE=y, unloading the ubifs module while delayed
+kobject release is pending causes a use-after-free on the static kset.
 
-Add kfd_procfs_queue_release() to free struct queue from the kobject
-release callback, change kfd_procfs_del_queue() to only remove the
-kobject from sysfs via kobject_del(), and drop the final reference in
-uninit_queue() via kobject_put().
+Replace the static ubifs_kset and empty ubifs_ktype with a dynamically
+allocated kset via kset_create_and_add().
 
-Fixes: 6d220a7e7971 ("drm/amdkfd: Add queue information to sysfs")
+Fixes: 203a55f04f66 ("ubifs: Fix memory leak in ubifs_sysfs_init()")
 Assisted-by: Antigravity:gemini-3.1-pro
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- drivers/gpu/drm/amd/amdkfd/kfd_process.c | 10 ++++++++--
- drivers/gpu/drm/amd/amdkfd/kfd_queue.c   |  5 ++++-
- 2 files changed, 12 insertions(+), 3 deletions(-)
+ fs/ubifs/sysfs.c | 24 +++++++-----------------
+ 1 file changed, 7 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_process.c b/drivers/gpu/drm/amd/amdkfd/kfd_process.c
-index 0a7c1900da95..6099cb893573 100644
---- a/drivers/gpu/drm/amd/amdkfd/kfd_process.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_process.c
-@@ -510,7 +510,15 @@ static const struct sysfs_ops procfs_queue_ops = {
- 	.show = kfd_procfs_queue_show,
+diff --git a/fs/ubifs/sysfs.c b/fs/ubifs/sysfs.c
+index dbf967dcf26e..e20931e3a62f 100644
+--- a/fs/ubifs/sysfs.c
++++ b/fs/ubifs/sysfs.c
+@@ -80,13 +80,7 @@ static const struct kobj_type ubifs_sb_ktype = {
+ 	.release	= ubifs_sb_release,
  };
  
-+static void kfd_procfs_queue_release(struct kobject *kobj)
-+{
-+	struct queue *q = container_of(kobj, struct queue, kobj);
-+
-+	kfree(q);
-+}
-+
- static const struct kobj_type procfs_queue_type = {
-+	.release = kfd_procfs_queue_release,
- 	.sysfs_ops = &procfs_queue_ops,
- 	.default_groups = procfs_queue_groups,
- };
-@@ -550,7 +558,6 @@ int kfd_procfs_add_queue(struct queue *q)
- 	if (ret < 0) {
- 		pr_warn("Creating proc/<pid>/queues/%u failed",
- 			q->properties.queue_id);
--		kobject_put(&q->kobj);
- 		return ret;
+-static const struct kobj_type ubifs_ktype = {
+-	.sysfs_ops	= &ubifs_attr_ops,
+-};
+-
+-static struct kset ubifs_kset = {
+-	.kobj	= {.ktype = &ubifs_ktype},
+-};
++static struct kset *ubifs_kset;
+ 
+ int ubifs_sysfs_register(struct ubifs_info *c)
+ {
+@@ -107,7 +101,7 @@ int ubifs_sysfs_register(struct ubifs_info *c)
+ 		goto out_free;
  	}
  
-@@ -699,7 +706,6 @@ void kfd_procfs_del_queue(struct queue *q)
- 		return;
+-	c->kobj.kset = &ubifs_kset;
++	c->kobj.kset = ubifs_kset;
+ 	init_completion(&c->kobj_unregister);
  
- 	kobject_del(&q->kobj);
--	kobject_put(&q->kobj);
- }
+ 	ret = kobject_init_and_add(&c->kobj, &ubifs_sb_ktype, NULL,
+@@ -139,18 +133,14 @@ void ubifs_sysfs_unregister(struct ubifs_info *c)
  
- int kfd_process_create_wq(void)
-diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_queue.c b/drivers/gpu/drm/amd/amdkfd/kfd_queue.c
-index 15eeaaebbbcd..8d1afc5b47e2 100644
---- a/drivers/gpu/drm/amd/amdkfd/kfd_queue.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_queue.c
-@@ -83,7 +83,10 @@ int init_queue(struct queue **q, const struct queue_properties *properties)
- 
- void uninit_queue(struct queue *q)
+ int __init ubifs_sysfs_init(void)
  {
--	kfree(q);
-+	if (q && q->kobj.state_initialized)
-+		kobject_put(&q->kobj);
-+	else
-+		kfree(q);
+-	int ret;
++	ubifs_kset = kset_create_and_add("ubifs", NULL, fs_kobj);
++	if (!ubifs_kset)
++		return -ENOMEM;
+ 
+-	kobject_set_name(&ubifs_kset.kobj, "ubifs");
+-	ubifs_kset.kobj.parent = fs_kobj;
+-	ret = kset_register(&ubifs_kset);
+-	if (ret)
+-		kset_put(&ubifs_kset);
+-
+-	return ret;
++	return 0;
  }
  
- #if IS_ENABLED(CONFIG_HSA_AMD_SVM)
+ void ubifs_sysfs_exit(void)
+ {
+-	kset_unregister(&ubifs_kset);
++	kset_unregister(ubifs_kset);
+ }
 -- 
 2.56.0.385.gd3acb90ef8-goog
 
