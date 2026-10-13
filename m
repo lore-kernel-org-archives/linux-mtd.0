@@ -4,77 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68757CC6B0F
-	for <linux-mtd@archiver.kernel.org>; Tue, 13 Oct 2026 14:15:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07EA7CC6B08
+	for <linux-mtd@archiver.kernel.org>; Tue, 13 Oct 2026 14:20:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Reply-To:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:References:
+	In-Reply-To:Cc:To:Subject:From:Message-ID:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=qBV+mSdQGE+4cZ9X6BzCiWtyNwc45+tdBI+RMl0KArA=; b=ZxoWROFMYuVJUE
-	0TpOQDutgnXQf+2UjB6Fy9WDkNuc1IJhVP8ju34bP0sHkw66ZKDDU+gqeAck7dtRX/TGVfo7V+E7l
-	jqT3WcemR+UBxYDzofUgdMnf8MLUk8OXierW/yVyinxanqQcXqApvpJ4L/6EkxZEq/RSAVUUAOSNY
-	YVRbngJjDiQhhq/zCoYo3mf5pfyLbND4CFD1fp57gvogXOLfROirRLS2OzLxkAjIc2Uhn21flUrMl
-	NQX3q5RuRKYdnt3y6pDBEz2/INSljuCCJSXmgKBd3WZA5yAn9Rj1EWeG4JNT0hKJoiL1bg2TeEZv8
-	Pf3g8DDNo/IFYYUytTmQ==;
+	List-Owner; bh=da81j/1sngL1a2V7u5RQ8TDpne7Ao2M7mXZP1jqchpQ=; b=Gu2uo+f+QDHEUI
+	giWDXZXpb5SDt/RBszCP1f86TChORsA2vviVPFfvXLS9xdYwdgN4xzVesb239JWAHtS5B34ffrNwm
+	2iohY50Jy2jD8m0cNg3MX9WW5mKiy+vsx/TpFflE133szKTQ51pFwPBh7RbBeytCYJwWVbBUCbjdG
+	BvzxXna67Xq1LKFolNu8fEu7fkP767RV2rUfpCjNkzNCK1Kmbr9XxPzOqwU7PRmz6SXUBpzxfnVbK
+	/pLnaq4hlB8gXFp1c6LfOXC6Bl6PRjOlnEaPHXwpmx+FnN8q9lyLwnZy4j1lp4IRxysrAbhgiekz8
+	/CD5AdYpp2nCH122k7bw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xGdHn-0000000D3fZ-41dJ;
-	Tue, 13 Oct 2026 14:15:23 +0000
-Received: from smtpout-04.galae.net ([185.171.202.116])
+	id 1xGdMN-0000000D4LD-0GkV;
+	Tue, 13 Oct 2026 14:20:07 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xGdHf-0000000D3ZV-3vi4
+	id 1xGdML-0000000D4Kv-2Imd
 	for linux-mtd@lists.infradead.org;
-	Tue, 13 Oct 2026 14:15:19 +0000
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id AC03EC653EF;
-	Tue, 13 Oct 2026 14:16:09 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 1BBD960362;
-	Tue, 13 Oct 2026 14:15:14 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id F153611D716AA;
-	Tue, 13 Oct 2026 16:15:09 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1791900912; h=from:subject:date:message-id:to:cc:mime-version:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=f6TdyDtEfyoB6iXQflOf/1BYBzMzPh/TXy/i0xSF+2A=;
-	b=AMSLNhszT8prcemUiikdW+BnXw8LpGnx+xSIjMUe14ooie5PG/aEwFB3DffeMmn2lRs/xu
-	LBCv2f9hmaeFSsfFmoubPUaC2T7wha5TitwIxFngkUHGEPNhYFC+NPzZ8hCuaEXfcFmLPm
-	WqJUA/+260i8aGOzJypCwBNcKT7V9LpfFfhervrQxp9n7J0w5V9uRrhBrsA9gSh8onZlsj
-	fIqtCUIqQ4IV5LI+OPGxn1UNsEpNUrt9Z4kOiOda7wF7FdkGjEEKZ9sggkvZGwLTK/MAsl
-	W4QjZj177UJ7taghs7MHPe11nN5pjXQ66o5n+jwPuJ27MCMpsCmaUNmkfRf8tw==
-From: Paul Cercueil <paul.cercueil@bootlin.com>
-To: Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <mwalle@kernel.org>,
-	Takahiro Kuwano <takahiro.kuwano@infineon.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Mark Brown <broonie@kernel.org>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Cc: Kees Cook <kees@kernel.org>,
-	Tony Luck <tony.luck@intel.com>,
-	"Guilherme G . Piccoli" <gpiccoli@igalia.com>,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linux-spi@vger.kernel.org,
-	Bharat Bhushan <bbhushan2@marvell.com>,
-	Sunil Kovvuri Goutham <sgoutham@marvell.com>,
-	Tanmay Jagdale <tanmay@marvell.com>,
-	Paul Cercueil <paul.cercueil@bootlin.com>
-Subject: [PATCH v2 7/7] spi: dt-bindings: cadence: Make XSPI's IRQ line optional
-Date: Tue, 13 Oct 2026 16:13:50 +0200
-Message-ID: <20261013141350.189996-8-paul.cercueil@bootlin.com>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20261013141350.189996-1-paul.cercueil@bootlin.com>
+	Tue, 13 Oct 2026 14:20:05 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with ESMTP id 9323B60A59;
+	Tue, 13 Oct 2026 14:20:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A93E61F00898;
+	Tue, 13 Oct 2026 14:20:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1791901204;
+	bh=fjXiG6sSkgFdgqTjba/VCSUErkiqrDOoHtUEuMFICos=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=B6L9C5AA6RNzYlBxY7p1LyxUI8czrXcHmqUqeGS8CHB3yIKglx9T0eKwv+0AqeMX8
+	 mSeA4Sya8sCCQnzOR+bgRJXHMQpHq89Hq5v6UThcwmV37fBKnP2PxhZc8ZgdNlqHR/
+	 nmp1CHXvX3DZB0dckHPmtRDaxZiXpjOpNAygcFwWThTKsUrNvKAX7MT7LxsS55INYj
+	 9xErZC4dCsRU16R/g31V8z2b1SD422uQBRoc+cyFJ3MNccI6RgLa5webmplYz2Mtfz
+	 Q3BH5ach3WLOhfvL2on0z4UQhdzU+DysK8xn5KHCtobxZRI7vVU6fV28Khq3hwW6O6
+	 P60+uGuh0fTmw==
+Message-ID: <sashiko-outbox-169897@kernel.org>
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH v2 7/7] spi: dt-bindings: cadence: Make XSPI's IRQ line
+ optional
+To: "Paul Cercueil" <paul.cercueil@bootlin.com>, "Pratyush Yadav" <pratyush@kernel.org>, "Michael
+ Walle" <mwalle@kernel.org>, "Takahiro Kuwano" <takahiro.kuwano@infineon.com>, "Miquel
+ Raynal" <miquel.raynal@bootlin.com>, "Richard Weinberger" <richard@nod.at>, "Vignesh
+ Raghavendra" <vigneshr@ti.com>, "Mark Brown" <broonie@kernel.org>, "Thomas
+ Petazzoni" <thomas.petazzoni@bootlin.com>
+Cc: "Kees Cook" <kees@kernel.org>, "Tony Luck" <tony.luck@intel.com>, "Guilherme
+ G . Piccoli" <gpiccoli@igalia.com>, linux-mtd@lists.infradead.org, "Bharat
+ Bhushan" <bbhushan2@marvell.com>, "Sunil Kovvuri Goutham" <sgoutham@marvell.com>, "Tanmay
+ Jagdale" <tanmay@marvell.com>
+In-Reply-To: <20261013141350.189996-8-paul.cercueil@bootlin.com>
 References: <20261013141350.189996-1-paul.cercueil@bootlin.com>
-MIME-Version: 1.0
-X-Last-TLS-Session-Version: TLSv1.3
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261013_071516_151873_0325EB92 
-X-CRM114-Status: UNSURE (   7.20  )
-X-CRM114-Notice: Please train this message.
+ <20261013141350.189996-8-paul.cercueil@bootlin.com>
+Date: Tue, 13 Oct 2026 14:20:03 +0000
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,43 +70,41 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Reply-To: sashiko-reviews@lists.linux.dev
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Tanmay Jagdale <tanmay@marvell.com>
-
-The spi-cadence-xspi driver will happily work without an IRQ line
-registered, which means that this IRQ line is optional.
-
-Signed-off-by: Tanmay Jagdale <tanmay@marvell.com>
-Co-developed-by: Paul Cercueil <paul.cercueil@bootlin.com>
-Signed-off-by: Paul Cercueil <paul.cercueil@bootlin.com>
----
-
-Notes:
-    v2: New patch
-
- Documentation/devicetree/bindings/spi/cdns,xspi.yaml | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/Documentation/devicetree/bindings/spi/cdns,xspi.yaml b/Documentation/devicetree/bindings/spi/cdns,xspi.yaml
-index 38a5795589de..dd8d03c07e68 100644
---- a/Documentation/devicetree/bindings/spi/cdns,xspi.yaml
-+++ b/Documentation/devicetree/bindings/spi/cdns,xspi.yaml
-@@ -43,7 +43,6 @@ properties:
- required:
-   - compatible
-   - reg
--  - interrupts
- 
- allOf:
-   - $ref: spi-controller.yaml#
--- 
-2.47.3
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+VGhhbmsgeW91IGZvciB5b3VyIGNvbnRyaWJ1dGlvbiEgU2FzaGlrbyBBSSByZXZpZXcgZm91bmQg
+MSBwb3RlbnRpYWwgaXNzdWUocykgdG8gY29uc2lkZXI6Ci0gW0xvd10gZHQtYmluZGluZ3M6IGp1
+c3RpZnlpbmcgb3B0aW9uYWwgaGFyZHdhcmUgcHJvcGVydHkgd2l0aCBkcml2ZXIgY2FwYWJpbGl0
+eQotLQoKY29tbWl0IGQzNTUyZGUzNThiMjA5MTYwMmU4MTc1YzI5YzYwYjE4MmFkMWFhMmEKQXV0
+aG9yOiBUYW5tYXkgSmFnZGFsZSA8dGFubWF5QG1hcnZlbGwuY29tPgoKc3BpOiBkdC1iaW5kaW5n
+czogY2FkZW5jZTogTWFrZSBYU1BJJ3MgSVJRIGxpbmUgb3B0aW9uYWwKClRoZSBjb21taXQgbWFr
+ZXMgdGhlICdpbnRlcnJ1cHRzJyBwcm9wZXJ0eSBvcHRpb25hbCBpbiB0aGUgQ2FkZW5jZSBYU1BJ
+CmJpbmRpbmcgYmVjYXVzZSB0aGUgZHJpdmVyIGNhbiBvcGVyYXRlIGluIHBvbGxpbmcgbW9kZS4K
+Cj4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zcGkvY2Ru
+cyx4c3BpLnlhbWwgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc3BpL2NkbnMs
+eHNwaS55YW1sCj4gaW5kZXggMzhhNTc5NTU4OWRlMi4uZGQ4ZDAzYzA3ZTY4OCAxMDA2NDQKPiAt
+LS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc3BpL2NkbnMseHNwaS55YW1s
+Cj4gKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NwaS9jZG5zLHhzcGku
+eWFtbAo+IEBAIC00Myw3ICs0Myw2IEBAIHByb3BlcnRpZXM6Cj4gIHJlcXVpcmVkOgo+ICAgIC0g
+Y29tcGF0aWJsZQo+ICAgIC0gcmVnCj4gLSAgLSBpbnRlcnJ1cHRzCgpbU2V2ZXJpdHk6IExvd10K
+RGV2aWNlIHRyZWUgYmluZGluZ3MgYXJlIGludGVuZGVkIHRvIGRlc2NyaWJlIGhhcmR3YXJlIHJh
+dGhlciB0aGFuIHNvZnR3YXJlCmRyaXZlciBjYXBhYmlsaXRpZXMuCgpUaGUgY29tbWl0IG1lc3Nh
+Z2UganVzdGlmaWVzIHJlbW92aW5nIHRoaXMgY29uc3RyYWludCBiZWNhdXNlIHRoZSBkcml2ZXIK
+IndpbGwgaGFwcGlseSB3b3JrIHdpdGhvdXQgYW4gSVJRIGxpbmUgcmVnaXN0ZXJlZCIuIERvZXMg
+cmVtb3ZpbmcgdGhpcwpjb25zdHJhaW50IGJhc2VkIG9uIHNvZnR3YXJlIGNhcGFiaWxpdHkgbGVh
+ZCB0byBhbiBpbmFjY3VyYXRlIGhhcmR3YXJlCmRlc2NyaXB0aW9uIGlmIHRoZSBpbnRlcnJ1cHQg
+bGluZSBpcyBhbHdheXMgcHJlc2VudCBpbiB0aGUgaGFyZHdhcmU/CgpTaG91bGQgdGhlIGp1c3Rp
+ZmljYXRpb24gZm9yIG1ha2luZyB0aGlzIHByb3BlcnR5IG9wdGlvbmFsIGJlIGJhc2VkIG9uCmhh
+cmR3YXJlIGluc3RlYWQsIHN1Y2ggYXMgd2hldGhlciB0aGUgSVJRIGlzIHBoeXNpY2FsbHkgb21p
+dHRlZCBvcgpkaXNjb25uZWN0ZWQgb24gY2VydGFpbiBib2FyZHM/Cgo+ICAKPiAgYWxsT2Y6Cj4g
+ICAgLSAkcmVmOiBzcGktY29udHJvbGxlci55YW1sIwoKLS0gClNhc2hpa28gQUkgcmV2aWV3IMK3
+IGh0dHBzOi8vc2FzaGlrby5kZXYvIy9wYXRjaHNldC8yMDI2MTAxMzE0MTM1MC4xODk5OTYtMS1w
+YXVsLmNlcmN1ZWlsQGJvb3RsaW4uY29tP3BhcnQ9NwoKX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxp
+bmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4
+LW10ZC8K
