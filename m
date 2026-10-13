@@ -4,66 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CCB33CC6B03
-	for <linux-mtd@archiver.kernel.org>; Tue, 13 Oct 2026 10:42:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 80BD5CA9ED2
+	for <linux-mtd@archiver.kernel.org>; Tue, 13 Oct 2026 11:01:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=C3EM+fh8IPUDMZhc3DR62CXtlSbdc5UjnNE5FZT3q3g=; b=wdzqsDs8IGT4gldX/BdBw3UuOT
-	F8f0kvEZYscCzPPXRhUGdY3xWYOnHLjIRKZNzQCJyss6wisPx0ojbpilesOMN1gprMgRrhs2c/1/4
-	Pmnz0t8Rbz2CZguvCbI3eVdXN/0ld13nRBo3H4GIbRyt9EHOVTmFJbC+IQWJAxldbDposoGMj9lVy
-	BzmO2XEEBxYbH9WDL0Rm9P/qgBoEM7tpVe9S20Yy9ViAPVBt3e3eyBL1qCzakF2ZlkBaMXvEtBv33
-	eEUiNNSWoQy0/cm7o3Nuy5gimsO4ARL7SQKrW6Mfc5wz5Qac0MpvvkfuYzesk37t/02Ql7V1SOaAd
-	ILMCQJyw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=NYa/P5oyVZ8MizMp/Jvw3cp83/ypVhe6hUG2RkzluWs=; b=U7tpybtLyOBzSC
+	ij/bW73UQGrbu7LBctL3ihGy0o8oIWoFC5BctqbuKW5FM5E53T5eOLbUX/Lv99XtWfbU+/GyLeZl0
+	Sihy9jcCba5GoPjmuAHT5VLObR/9Za923zLvchJ3XbxMC+eLT8nRck8SbrzJoo1hgek0zHZFstgW0
+	XW+RXnyA7spEnDixnnYwQoIh7mevxkdC4ThpKNsO82Vp/Fz1hpJT/kYbotqGWzF39Odgz9cP27dd2
+	CAVl//GlGirTqeR2EWd/TQGQb+GF3GuPJL9eyr/9kCisYawdWVIBSD6ZfIbFhxlFHKwrkEnl99D78
+	0ttUG7FzFjjGsaj6iotg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xGZy3-0000000Cc65-1HKx;
-	Tue, 13 Oct 2026 10:42:47 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1xGaG3-0000000CecH-3ut4;
+	Tue, 13 Oct 2026 11:01:23 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xGZy2-0000000Cc5z-30KW
+	id 1xGaFs-0000000Cean-38WU
+	for linux-mtd@bombadil.infradead.org;
+	Tue, 13 Oct 2026 11:01:16 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=MIME-Version:Content-Transfer-Encoding
+	:Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=pRsd0+ITU/DhENFNJeUWb5wGX0cdOh0IA/UVGxrV/7w=; b=LlikXTGN1PQmiqDhgnPFOyZXwt
+	ua8ieTukSWCcULHBplOo89rOgV/MXT6VZ1E/aRNhnZF9dAPxh+63Mxr64zVb5oJWJPPMq+VBUOsYd
+	aBquLQtuAp1tJ97gV63p1XcEGkhIr0fLRZzhEHXWAiXH3SQYIOys5ktaY5Xg1B7ocvE5Blr/yEv+K
+	S8z8tViYsH/zzLlULzpqEukJYEfRJUq8arHUUejnzwY/V1TCEZkSKoU+Ci5cVQXGJPA9CH3yBrg2I
+	Vm6NkozyffIwR49A4VX1obaiDbcjoJTRq+sse1qj21JjYLAc70DZTsAnPPuzEh9EQAQW+zdp+UeZf
+	cyNXCLRQ==;
+Received: from smtpout-04.galae.net ([185.171.202.116])
+	by desiato.infradead.org with esmtps (Exim 4.99.5 #2 (Red Hat Linux))
+	id 1xGaFp-0000000FSP7-2XqZ
 	for linux-mtd@lists.infradead.org;
-	Tue, 13 Oct 2026 10:42:46 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 792F2406D1;
-	Tue, 13 Oct 2026 10:42:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1A621F000FF;
-	Tue, 13 Oct 2026 10:42:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1791888166;
-	bh=FLoSrQhPeG9d2sAUZV2WghRPf9g8Vd0+KKpGYtfoJ8k=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=ZNXfKFA0ehUZk2802jnLM7KmyXkqxYpf4ZkwhwrvnJOYdPqWUzBVh3OsCGtS0d/Lr
-	 +tO72X2EnCthHmkKMEZiEhpgjjzT0tfaBI438ud3mNswBO7y92IBi5DyDZe7w9dpwM
-	 dN145mmeBSs1TOYXa5wKT416dCZDCV4H6gOEf/N5m+ZfxWaEs6+945LYlearv6jfTB
-	 aELnkmOWh1XRC1liALSQ1YOU22eM+Z5Yjflplxjj4cNfewO6koVLQ6dMsRsmccSfYb
-	 23fi+MH1/VdigrjOUktQRpVBYMLyEZjhpgZ3ldrdLeaiO2LtDQVdcIkyi/PC3XQ6sn
-	 HCxdoNQEIPeqA==
-Date: Tue, 13 Oct 2026 11:42:41 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Paul Cercueil <paul.cercueil@bootlin.com>
-Cc: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>,
-	Takahiro Kuwano <takahiro.kuwano@infineon.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Kees Cook <kees@kernel.org>, Tony Luck <tony.luck@intel.com>,
-	"Guilherme G . Piccoli" <gpiccoli@igalia.com>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-spi@vger.kernel.org, Tanmay Jagdale <tanmay@marvell.com>
+	Tue, 13 Oct 2026 11:01:11 +0000
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-04.galae.net (Postfix) with ESMTPS id 70610C653E6;
+	Tue, 13 Oct 2026 11:02:01 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id CBD8E60362;
+	Tue, 13 Oct 2026 11:01:05 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id AF66D11D70DB0;
+	Tue, 13 Oct 2026 13:00:52 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1791889259; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=pRsd0+ITU/DhENFNJeUWb5wGX0cdOh0IA/UVGxrV/7w=;
+	b=pa6q+aFWWBhpNbm91Cl8fTXViS2r51JQPutE+sx/neqqdCtEyFAs4GgOssai/IU8VWqWZ1
+	t4tSjUnFkSTzrR0tLAu22j5TN1aQrzF7MEe+mx21XPeGFwVYhEWXoHCPUmD5yvP2whUG2A
+	kOtRXPhSsx0fsmvskVnGBbVRGIGGx1UKGS4MbqhmYIqKYyrfEpSAHu6OLC4ORq2QK6v4i4
+	rQpAOq/lyFJJxtm8L4vepYNp/VAchjDNCCXV6DeRldcbbLw0m3zIF6x58iMtwdMVPUTbqH
+	ulUYuAkDJhGApzlQLsmS7dSVkqGfM3YLYTXF9J7cF+LlcddIQQWf1DcMGe0AyQ==
+Message-ID: <0d2f1d4149cd136ace8c1f08dc48ea7f25c5975c.camel@bootlin.com>
 Subject: Re: [PATCH 1/5] spi: spi-mem: Add support for panic mem writes
-Message-ID: <eb16cf0a-6b7e-4ea3-89c5-61ba0729492d@sirena.org.uk>
+From: Paul Cercueil <paul.cercueil@bootlin.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>,
+  Takahiro Kuwano <takahiro.kuwano@infineon.com>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, Richard Weinberger	 <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>, Thomas Petazzoni	
+ <thomas.petazzoni@bootlin.com>, Kees Cook <kees@kernel.org>, Tony Luck	
+ <tony.luck@intel.com>, "Guilherme G . Piccoli" <gpiccoli@igalia.com>, 
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	linux-spi@vger.kernel.org, Tanmay Jagdale <tanmay@marvell.com>
+Date: Tue, 13 Oct 2026 13:00:50 +0200
+In-Reply-To: <eb16cf0a-6b7e-4ea3-89c5-61ba0729492d@sirena.org.uk>
 References: <20261005081141.33688-1-paul.cercueil@bootlin.com>
- <20261005081141.33688-2-paul.cercueil@bootlin.com>
- <asdVM883VTQy7WvH@sirena.co.uk>
- <5c94b88bf7123e5a32d5c4bd77217e6a40683c83.camel@bootlin.com>
+	 <20261005081141.33688-2-paul.cercueil@bootlin.com>
+	 <asdVM883VTQy7WvH@sirena.co.uk>
+	 <5c94b88bf7123e5a32d5c4bd77217e6a40683c83.camel@bootlin.com>
+	 <eb16cf0a-6b7e-4ea3-89c5-61ba0729492d@sirena.org.uk>
+User-Agent: Evolution 3.56.2-0+deb13u1 
 MIME-Version: 1.0
-In-Reply-To: <5c94b88bf7123e5a32d5c4bd77217e6a40683c83.camel@bootlin.com>
-X-Cookie: Some equipment shown is optional.
+X-Last-TLS-Session-Version: TLSv1.3
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20261013_120109_864745_AF69D6BF 
+X-CRM114-Status: GOOD (  16.81  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,64 +95,30 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7499972241505358173=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
---===============7499972241505358173==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="wVYvEWtD/Zuy0eL6"
-Content-Disposition: inline
-
-
---wVYvEWtD/Zuy0eL6
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Oct 13, 2026 at 10:25:07AM +0200, Paul Cercueil wrote:
-> Le jeudi 08 octobre 2026 =E0 10:32 +0200, Mark Brown a =E9crit=A0:
-
-> > This also needs to ensure that the queue is idle - we'll still execute
-> > spi_mem_access_start() which flushes the queue, and we've got runtime PM
-> > operations there which might be a bit challenging in a panic situation.
-
-> Does it though? The kernel is panicking so the queue won't be processed a=
-nymore,
-> it should be fine to just ignore it.
-
-Do the other CPUs know they're panicing yet, and what state is the
-hardware in?  I'm a bit nervous about assuming panic got things into a
-good state.
-
---wVYvEWtD/Zuy0eL6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmrOCyAACgkQJNaLcl1U
-h9BbGwf/fEtwrUNGtObi0G+lPINw3irgjq4aUPmA1lkFzhV/7zmAOBtXjCy4/pp/
-mx3qbP/STKN47G8E/m1e7qhkOOXfEVt7ckY0ZNg4zUeRMi7w7ok1gQHm49bgy+eD
-7Eq/n2UBWtgSIz+CGU0+RxW1BLmz2rnHnJd08g0LlGFsHn7rxmBBQOJ8nnIUqirj
-2B019P3McvROJvYBGgWY9jHdqAQbiro5QE1qBVKZMYjXNTonO/9RrFvVATDOi+CK
-m/TKGKWt3ynbkpCSrBBN3dwc7W1s7Mk/q3gPdXJymZXsOJOT0Zlrv1ByjTX1hwMw
-sbsRiuv17q4Iae/oAdeCliHjjOmOJQ==
-=RxOc
------END PGP SIGNATURE-----
-
---wVYvEWtD/Zuy0eL6--
-
-
---===============7499972241505358173==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============7499972241505358173==--
-
+TGUgbWFyZGkgMTMgb2N0b2JyZSAyMDI2IMOgIDExOjQyICswMTAwLCBNYXJrIEJyb3duIGEgw6lj
+cml0wqA6Cj4gT24gVHVlLCBPY3QgMTMsIDIwMjYgYXQgMTA6MjU6MDdBTSArMDIwMCwgUGF1bCBD
+ZXJjdWVpbCB3cm90ZToKPiA+IExlIGpldWRpIDA4IG9jdG9icmUgMjAyNiDDoCAxMDozMiArMDIw
+MCwgTWFyayBCcm93biBhIMOpY3JpdMKgOgo+IAo+ID4gPiBUaGlzIGFsc28gbmVlZHMgdG8gZW5z
+dXJlIHRoYXQgdGhlIHF1ZXVlIGlzIGlkbGUgLSB3ZSdsbCBzdGlsbCBleGVjdXRlCj4gPiA+IHNw
+aV9tZW1fYWNjZXNzX3N0YXJ0KCkgd2hpY2ggZmx1c2hlcyB0aGUgcXVldWUsIGFuZCB3ZSd2ZSBn
+b3QgcnVudGltZSBQTQo+ID4gPiBvcGVyYXRpb25zIHRoZXJlIHdoaWNoIG1pZ2h0IGJlIGEgYml0
+IGNoYWxsZW5naW5nIGluIGEgcGFuaWMgc2l0dWF0aW9uLgo+IAo+ID4gRG9lcyBpdCB0aG91Z2g/
+IFRoZSBrZXJuZWwgaXMgcGFuaWNraW5nIHNvIHRoZSBxdWV1ZSB3b24ndCBiZSBwcm9jZXNzZWQK
+PiA+IGFueW1vcmUsCj4gPiBpdCBzaG91bGQgYmUgZmluZSB0byBqdXN0IGlnbm9yZSBpdC4KPiAK
+PiBEbyB0aGUgb3RoZXIgQ1BVcyBrbm93IHRoZXkncmUgcGFuaWNpbmcgeWV0LCBhbmQgd2hhdCBz
+dGF0ZSBpcyB0aGUKPiBoYXJkd2FyZSBpbj/CoCBJJ20gYSBiaXQgbmVydm91cyBhYm91dCBhc3N1
+bWluZyBwYW5pYyBnb3QgdGhpbmdzIGludG8gYQo+IGdvb2Qgc3RhdGUuCgpUaGUgb3RoZXIgQ1BV
+cyBhcmUgc3RvcHBlZCwgeWVzLiBBdCB0aGF0IHBvaW50IHRoZXJlJ3Mgbm8gU01QLCBubyBwcmVl
+bXB0aW9uLCBubwpJUlFzLCBubyB0aW1lIGFjY291bnRpbmcuCgpUaGUgaGFyZHdhcmUgaXMgc3Vw
+cG9zZWQgdG8gYmUgaW4gaWRsZSBzdGF0ZSwgYW5kIHRoZSB3YXkgd2UgZW5zdXJlIHRoYXQgaXMg
+YnkKY2hlY2tpbmcgdGhhdCB0aGUgY29udHJvbGxlcidzIGlvX211dGV4IC8gYnVzX2xvY2tfbXV0
+ZXggYXJlIHVubG9ja2VkLiBJZiB0aGUKU1BJIGRyaXZlciB3YXMgYnVzeSB3aGVuIHRoZSBwYW5p
+YyBvY2N1cmVkLCB3ZSBqdXN0IGJhaWwuCgpDaGVlcnMsCi1QYXVsCgpfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Np
+b24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
+Zm8vbGludXgtbXRkLwo=
