@@ -4,86 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 80BD5CA9ED2
-	for <linux-mtd@archiver.kernel.org>; Tue, 13 Oct 2026 11:01:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F1A5FCC6B0F
+	for <linux-mtd@archiver.kernel.org>; Tue, 13 Oct 2026 14:14:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=NYa/P5oyVZ8MizMp/Jvw3cp83/ypVhe6hUG2RkzluWs=; b=U7tpybtLyOBzSC
-	ij/bW73UQGrbu7LBctL3ihGy0o8oIWoFC5BctqbuKW5FM5E53T5eOLbUX/Lv99XtWfbU+/GyLeZl0
-	Sihy9jcCba5GoPjmuAHT5VLObR/9Za923zLvchJ3XbxMC+eLT8nRck8SbrzJoo1hgek0zHZFstgW0
-	XW+RXnyA7spEnDixnnYwQoIh7mevxkdC4ThpKNsO82Vp/Fz1hpJT/kYbotqGWzF39Odgz9cP27dd2
-	CAVl//GlGirTqeR2EWd/TQGQb+GF3GuPJL9eyr/9kCisYawdWVIBSD6ZfIbFhxlFHKwrkEnl99D78
-	0ttUG7FzFjjGsaj6iotg==;
+	List-Owner; bh=wcNO6vLmk5Ah++dEi59k2yf236lgieFXd117Wu4kv5M=; b=I8x0S8/J/FxhHA
+	0nU4rPaCLgIO/KuqNo/XP1W8XAsIhEpaui0oNzQsMo6lZv67v+ZExMhZkqQOoDzfPlhVXH5yp6ZX5
+	Za5eskbzwGZ8dQ9oTSmItm8CKtp07lWB5yNl2sIlTzyv26OzE+kz3cDRV1V5Aow/1Pcw86cR//bOO
+	EtVLgbJod65pmwRb6nT+rSTM0WPqOxlF3zXdHneTepulanPcSB9cMz+J4jcaSKYrG/rpwp/ex1ifC
+	/Ic+HVhFxY61SlJuI6hFpwbC8GFN39D2hLsG5g/sUC/jYoErTbb5hG6qO9pipeOlV5Ej0xro0cvq4
+	KIoR8nZRM6dWH7CMHwnA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xGaG3-0000000CecH-3ut4;
-	Tue, 13 Oct 2026 11:01:23 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xGaFs-0000000Cean-38WU
-	for linux-mtd@bombadil.infradead.org;
-	Tue, 13 Oct 2026 11:01:16 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=MIME-Version:Content-Transfer-Encoding
-	:Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=pRsd0+ITU/DhENFNJeUWb5wGX0cdOh0IA/UVGxrV/7w=; b=LlikXTGN1PQmiqDhgnPFOyZXwt
-	ua8ieTukSWCcULHBplOo89rOgV/MXT6VZ1E/aRNhnZF9dAPxh+63Mxr64zVb5oJWJPPMq+VBUOsYd
-	aBquLQtuAp1tJ97gV63p1XcEGkhIr0fLRZzhEHXWAiXH3SQYIOys5ktaY5Xg1B7ocvE5Blr/yEv+K
-	S8z8tViYsH/zzLlULzpqEukJYEfRJUq8arHUUejnzwY/V1TCEZkSKoU+Ci5cVQXGJPA9CH3yBrg2I
-	Vm6NkozyffIwR49A4VX1obaiDbcjoJTRq+sse1qj21JjYLAc70DZTsAnPPuzEh9EQAQW+zdp+UeZf
-	cyNXCLRQ==;
+	id 1xGdH7-0000000D3GK-2kit;
+	Tue, 13 Oct 2026 14:14:41 +0000
 Received: from smtpout-04.galae.net ([185.171.202.116])
-	by desiato.infradead.org with esmtps (Exim 4.99.5 #2 (Red Hat Linux))
-	id 1xGaFp-0000000FSP7-2XqZ
+	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
+	id 1xGdH4-0000000D3FG-32hY
 	for linux-mtd@lists.infradead.org;
-	Tue, 13 Oct 2026 11:01:11 +0000
+	Tue, 13 Oct 2026 14:14:40 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id 70610C653E6;
-	Tue, 13 Oct 2026 11:02:01 +0000 (UTC)
+	by smtpout-04.galae.net (Postfix) with ESMTPS id 49BD5C653ED;
+	Tue, 13 Oct 2026 14:15:30 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id CBD8E60362;
-	Tue, 13 Oct 2026 11:01:05 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id AF66D11D70DB0;
-	Tue, 13 Oct 2026 13:00:52 +0200 (CEST)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id B8D4C60362;
+	Tue, 13 Oct 2026 14:14:34 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id C5AA811D714ED;
+	Tue, 13 Oct 2026 16:14:26 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1791889259; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1791900869; h=from:subject:date:message-id:to:cc:mime-version:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=pRsd0+ITU/DhENFNJeUWb5wGX0cdOh0IA/UVGxrV/7w=;
-	b=pa6q+aFWWBhpNbm91Cl8fTXViS2r51JQPutE+sx/neqqdCtEyFAs4GgOssai/IU8VWqWZ1
-	t4tSjUnFkSTzrR0tLAu22j5TN1aQrzF7MEe+mx21XPeGFwVYhEWXoHCPUmD5yvP2whUG2A
-	kOtRXPhSsx0fsmvskVnGBbVRGIGGx1UKGS4MbqhmYIqKYyrfEpSAHu6OLC4ORq2QK6v4i4
-	rQpAOq/lyFJJxtm8L4vepYNp/VAchjDNCCXV6DeRldcbbLw0m3zIF6x58iMtwdMVPUTbqH
-	ulUYuAkDJhGApzlQLsmS7dSVkqGfM3YLYTXF9J7cF+LlcddIQQWf1DcMGe0AyQ==
-Message-ID: <0d2f1d4149cd136ace8c1f08dc48ea7f25c5975c.camel@bootlin.com>
-Subject: Re: [PATCH 1/5] spi: spi-mem: Add support for panic mem writes
+	bh=OLsy6HHrd9OhlTf5ijFBqojW+83puKqwZQgSDTxalnY=;
+	b=vPYtz7qVmDHNllXMQyumytOH7h1TmGBxMcPaIQ0IksGaa8t3qHFOHqCno5BCR50M/caxan
+	lSMbKm3vXxJH+CqZDrz3g48zipOuZPGz24vFZtYK4O0saPXp6G6ZBLFW72zDvyzndcxnhT
+	X7nKoIZRX/6IRmYBWFM7tLL4y7PaZF1oYMKAFQpSVPQ8B77XssAo3qfIr9BTYz5cZU2MVZ
+	2dn2jj2F8a6nUbR9iXmIqCDbW+w68Pl9O1ZVi1wElFd5GhTYKr0DCbQfcBd8C8zICVKArm
+	0ZC0ggq8tXrPnQrV4EU5n+Kx27M4ehRVG+ptQgdCtbh1fFTW07/W6e63nvq7SA==
 From: Paul Cercueil <paul.cercueil@bootlin.com>
-To: Mark Brown <broonie@kernel.org>
-Cc: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>,
-  Takahiro Kuwano <takahiro.kuwano@infineon.com>, Miquel Raynal
- <miquel.raynal@bootlin.com>, Richard Weinberger	 <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>, Thomas Petazzoni	
- <thomas.petazzoni@bootlin.com>, Kees Cook <kees@kernel.org>, Tony Luck	
- <tony.luck@intel.com>, "Guilherme G . Piccoli" <gpiccoli@igalia.com>, 
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	linux-spi@vger.kernel.org, Tanmay Jagdale <tanmay@marvell.com>
-Date: Tue, 13 Oct 2026 13:00:50 +0200
-In-Reply-To: <eb16cf0a-6b7e-4ea3-89c5-61ba0729492d@sirena.org.uk>
-References: <20261005081141.33688-1-paul.cercueil@bootlin.com>
-	 <20261005081141.33688-2-paul.cercueil@bootlin.com>
-	 <asdVM883VTQy7WvH@sirena.co.uk>
-	 <5c94b88bf7123e5a32d5c4bd77217e6a40683c83.camel@bootlin.com>
-	 <eb16cf0a-6b7e-4ea3-89c5-61ba0729492d@sirena.org.uk>
-User-Agent: Evolution 3.56.2-0+deb13u1 
+To: Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <mwalle@kernel.org>,
+	Takahiro Kuwano <takahiro.kuwano@infineon.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Mark Brown <broonie@kernel.org>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Cc: Kees Cook <kees@kernel.org>,
+	Tony Luck <tony.luck@intel.com>,
+	"Guilherme G . Piccoli" <gpiccoli@igalia.com>,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-spi@vger.kernel.org,
+	Bharat Bhushan <bbhushan2@marvell.com>,
+	Sunil Kovvuri Goutham <sgoutham@marvell.com>,
+	Tanmay Jagdale <tanmay@marvell.com>,
+	Paul Cercueil <paul.cercueil@bootlin.com>
+Subject: [PATCH v2 1/7] spi: spi-mem: Add support for panic mem writes
+Date: Tue, 13 Oct 2026 16:13:44 +0200
+Message-ID: <20261013141350.189996-2-paul.cercueil@bootlin.com>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20261013141350.189996-1-paul.cercueil@bootlin.com>
+References: <20261013141350.189996-1-paul.cercueil@bootlin.com>
 MIME-Version: 1.0
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261013_120109_864745_AF69D6BF 
-X-CRM114-Status: GOOD (  16.81  )
+X-CRM114-CacheID: sfid-20261013_071439_095500_3608266E 
+X-CRM114-Status: GOOD (  21.15  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,30 +85,138 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-TGUgbWFyZGkgMTMgb2N0b2JyZSAyMDI2IMOgIDExOjQyICswMTAwLCBNYXJrIEJyb3duIGEgw6lj
-cml0wqA6Cj4gT24gVHVlLCBPY3QgMTMsIDIwMjYgYXQgMTA6MjU6MDdBTSArMDIwMCwgUGF1bCBD
-ZXJjdWVpbCB3cm90ZToKPiA+IExlIGpldWRpIDA4IG9jdG9icmUgMjAyNiDDoCAxMDozMiArMDIw
-MCwgTWFyayBCcm93biBhIMOpY3JpdMKgOgo+IAo+ID4gPiBUaGlzIGFsc28gbmVlZHMgdG8gZW5z
-dXJlIHRoYXQgdGhlIHF1ZXVlIGlzIGlkbGUgLSB3ZSdsbCBzdGlsbCBleGVjdXRlCj4gPiA+IHNw
-aV9tZW1fYWNjZXNzX3N0YXJ0KCkgd2hpY2ggZmx1c2hlcyB0aGUgcXVldWUsIGFuZCB3ZSd2ZSBn
-b3QgcnVudGltZSBQTQo+ID4gPiBvcGVyYXRpb25zIHRoZXJlIHdoaWNoIG1pZ2h0IGJlIGEgYml0
-IGNoYWxsZW5naW5nIGluIGEgcGFuaWMgc2l0dWF0aW9uLgo+IAo+ID4gRG9lcyBpdCB0aG91Z2g/
-IFRoZSBrZXJuZWwgaXMgcGFuaWNraW5nIHNvIHRoZSBxdWV1ZSB3b24ndCBiZSBwcm9jZXNzZWQK
-PiA+IGFueW1vcmUsCj4gPiBpdCBzaG91bGQgYmUgZmluZSB0byBqdXN0IGlnbm9yZSBpdC4KPiAK
-PiBEbyB0aGUgb3RoZXIgQ1BVcyBrbm93IHRoZXkncmUgcGFuaWNpbmcgeWV0LCBhbmQgd2hhdCBz
-dGF0ZSBpcyB0aGUKPiBoYXJkd2FyZSBpbj/CoCBJJ20gYSBiaXQgbmVydm91cyBhYm91dCBhc3N1
-bWluZyBwYW5pYyBnb3QgdGhpbmdzIGludG8gYQo+IGdvb2Qgc3RhdGUuCgpUaGUgb3RoZXIgQ1BV
-cyBhcmUgc3RvcHBlZCwgeWVzLiBBdCB0aGF0IHBvaW50IHRoZXJlJ3Mgbm8gU01QLCBubyBwcmVl
-bXB0aW9uLCBubwpJUlFzLCBubyB0aW1lIGFjY291bnRpbmcuCgpUaGUgaGFyZHdhcmUgaXMgc3Vw
-cG9zZWQgdG8gYmUgaW4gaWRsZSBzdGF0ZSwgYW5kIHRoZSB3YXkgd2UgZW5zdXJlIHRoYXQgaXMg
-YnkKY2hlY2tpbmcgdGhhdCB0aGUgY29udHJvbGxlcidzIGlvX211dGV4IC8gYnVzX2xvY2tfbXV0
-ZXggYXJlIHVubG9ja2VkLiBJZiB0aGUKU1BJIGRyaXZlciB3YXMgYnVzeSB3aGVuIHRoZSBwYW5p
-YyBvY2N1cmVkLCB3ZSBqdXN0IGJhaWwuCgpDaGVlcnMsCi1QYXVsCgpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Np
-b24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
-Zm8vbGludXgtbXRkLwo=
+From: Tanmay Jagdale <tanmay@marvell.com>
+
+Add a 'panic_write' flag to the controller's capabilities struct.
+When set, the SPI controller indicates that it will be able to send
+commands to a connected NOR or NAND memory in the context of a kernel
+panic, which means without sleeping and without relying on IRQs.
+
+Whether or not a given memory operation is a panic mem write is given by
+the spi_mem_op.panic_write flag.
+
+Signed-off-by: Tanmay Jagdale <tanmay@marvell.com>
+Co-developed-by: Paul Cercueil <paul.cercueil@bootlin.com>
+Signed-off-by: Paul Cercueil <paul.cercueil@bootlin.com>
+---
+
+Notes:
+    v2: - Don't call spi_mem_access_start/end on panic. We don't need to
+          flush the SPI queue at that point, and we don't need to lock the
+          mutexes.
+        - Check that the SPI controller's PM status is active, and bail out
+          otherwise.
+
+ drivers/spi/spi-mem.c       | 35 +++++++++++++++++++++++++++++++++--
+ include/linux/spi/spi-mem.h |  5 +++++
+ 2 files changed, 38 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
+index b94680b60af9..3b6fa44e4550 100644
+--- a/drivers/spi/spi-mem.c
++++ b/drivers/spi/spi-mem.c
+@@ -398,6 +398,31 @@ int spi_mem_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
+ 	u8 *tmpbuf;
+ 	int ret;
+ 
++	if (op->panic_write) {
++		if (!spi_mem_controller_is_capable(ctlr, panic_write))
++			return -EOPNOTSUPP;
++
++		/*
++		 * Only support panic writes if we'll go through .exec_op().
++		 * The regular SPI path (spi_sync(), etc.) explicitly mentions
++		 * that it can only be used from a context that may sleep, which
++		 * is not the case on a kernel panic.
++		 * If this changes in the future, this could be reworked, but
++		 * for now this will have to do.
++		 */
++		if (WARN_ON_ONCE(!ctlr->mem_ops || !ctlr->mem_ops->exec_op))
++			return -EOPNOTSUPP;
++
++		if (spi_get_csgpiod(mem->spi, 0))
++			return -EPERM;
++
++		/* On panic IRQs are disabled so we cannot wait on locks */
++		if (mutex_is_locked(&ctlr->bus_lock_mutex) ||
++		    mutex_is_locked(&ctlr->io_mutex)) {
++			return -EPERM;
++		}
++	}
++
+ 	/* Make sure the operation frequency is correct before going futher */
+ 	spi_mem_adjust_op_freq(mem, (struct spi_mem_op *)op);
+ 
+@@ -420,7 +445,10 @@ int spi_mem_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
+ 		return -EOPNOTSUPP;
+ 
+ 	if (ctlr->mem_ops && ctlr->mem_ops->exec_op && !spi_get_csgpiod(mem->spi, 0)) {
+-		ret = spi_mem_access_start(mem);
++		if (!op->panic_write)
++			ret = spi_mem_access_start(mem);
++		else if (ctlr->auto_runtime_pm)
++			ret = pm_runtime_get_if_active(ctlr->dev.parent);
+ 		if (ret)
+ 			return ret;
+ 
+@@ -428,7 +456,10 @@ int spi_mem_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
+ 		ret = ctlr->mem_ops->exec_op(mem, op);
+ 		trace_spi_mem_stop_op(mem, op);
+ 
+-		spi_mem_access_end(mem);
++		if (!op->panic_write)
++			spi_mem_access_end(mem);
++		else if (ctlr->auto_runtime_pm)
++			pm_runtime_put_noidle(ctlr->dev.parent);
+ 
+ 		/*
+ 		 * Some controllers only optimize specific paths (typically the
+diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
+index 0cce6b57242a..2633307bfad5 100644
+--- a/include/linux/spi/spi-mem.h
++++ b/include/linux/spi/spi-mem.h
+@@ -169,6 +169,7 @@ enum spi_mem_data_dir {
+  *		 operation does not involve transferring data
+  * @data.buf.in: input buffer (must be DMA-able)
+  * @data.buf.out: output buffer (must be DMA-able)
++ * @panic_write: The command is executed in the context of a kernel panic
+  * @max_freq: frequency limitation wrt this operation. 0 means there is no
+  *	      specific constraint and the highest achievable frequency can be
+  *	      attempted.
+@@ -211,6 +212,7 @@ struct spi_mem_op {
+ 		} buf;
+ 	} data;
+ 
++	bool panic_write;
+ 	unsigned int max_freq;
+ };
+ 
+@@ -392,6 +394,8 @@ struct spi_controller_mem_ops {
+  *                   is a pause in the transfer (eg. internal bus contention or
+  *                   DMA arbitration on an interconnect). Features such as NAND
+  *                   continuous reads shall not be leveraged.
++ * @panic_write: Set to true if the controller driver supports writing to a
++ *               connected NAND/NOR memory in a kernel panic context
+  */
+ struct spi_controller_mem_caps {
+ 	bool dtr;
+@@ -400,6 +404,7 @@ struct spi_controller_mem_caps {
+ 	bool per_op_freq;
+ 	bool secondary_op_tmpl;
+ 	bool no_cs_assertion;
++	bool panic_write;
+ };
+ 
+ #define spi_mem_controller_is_capable(ctlr, cap)	\
+-- 
+2.47.3
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
