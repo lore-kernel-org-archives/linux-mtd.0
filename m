@@ -4,71 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33A39CC6B1E
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2FBD3CC6B12
 	for <linux-mtd@archiver.kernel.org>; Tue, 13 Oct 2026 22:40:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:From:Subject:Message-ID:
-	References:Mime-Version:In-Reply-To:Date:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=h+V+mQtc3RoqyD+a0wCyX+dDbe1PtTzirh1DzJaj6oM=; b=UXNkf7nfgjC0STrVUVPZw7As/B
-	ILBEssWEHx4eMC3krhhKegqjfTEmLWv8GkQ5Tg/MeAuet80pWTJN21KrLRT2hP/cRVWtcKIygbrdK
-	wA+Ohg0vz0yd4ompoHTv9771X/wtcQei8kYbpNIOns11s/r+bOZYwdArkyk08RWuecti736zo0oCN
-	NuogS84WQ5vrRxV/H3I/2AYBVusrqtG8ZZ6tBYODk0TH3aAP8BguIBwwnq+ehMhmmoB90KXIYh6mJ
-	gLa4ZHyRBk7L6aABYLWa6LpTGbpkOYm1Uo0ukB4JvGKOFrHghZiqLPd8q1no8TEq2qPlImL7HyOry
-	fub/AZiA==;
+	Mime-Version:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=6VXMV9fk0+6Da7Hsp/EgF8LVoiEpic6VBRQG8PTL0R0=; b=G3v
+	Ka7kUs4oDr9SHqCFHQaQ0CP7QNfOkpg9cI3KZE3Drb9/rh+ej6Zhfkaial+YIVEdbJntVv84y11XM
+	/b3lJbXDlyZ473HWBba34elsL1hFby11XicYNhugXDbcXNa4xDdXDUOeJoKoVSEkVBYLUEAdNYsEP
+	f93HluyFsmHRxvNKcN2v4/z5mKJWTC8br9ZOc0MVuX/AlDTrRtYBlyM/d6JSkQrKOfLeWfUrwxaSB
+	0p1HMrrFFRfIFuOd/pTzAY36dlQX/eFCXSXQxBZ6SqB7ztY+iUDjCBzxgeyuPnWSM2Vk+B8rq0NF0
+	4aAAn2aCjdd9asLOtr+WNKw8x2frWGQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xGlAW-0000000E9RX-2P3q;
-	Tue, 13 Oct 2026 22:40:24 +0000
-Received: from mail-dy1-x1347.google.com ([2607:f8b0:4864:20::1347])
+	id 1xGlAS-0000000E9PI-0RvI;
+	Tue, 13 Oct 2026 22:40:20 +0000
+Received: from mail-dy1-x1346.google.com ([2607:f8b0:4864:20::1346])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xGlAT-0000000E9PO-0A5f
+	id 1xGlAP-0000000E9Nv-1nmW
 	for linux-mtd@lists.infradead.org;
-	Tue, 13 Oct 2026 22:40:22 +0000
-Received: by mail-dy1-x1347.google.com with SMTP id 5a478bee46e88-35c5aef2a74so1454360eec.0
-        for <linux-mtd@lists.infradead.org>; Tue, 13 Oct 2026 15:40:20 -0700 (PDT)
+	Tue, 13 Oct 2026 22:40:19 +0000
+Received: by mail-dy1-x1346.google.com with SMTP id 5a478bee46e88-33c35f5ca6cso7840283eec.1
+        for <linux-mtd@lists.infradead.org>; Tue, 13 Oct 2026 15:40:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20251104; t=1791931220; x=1792536020; darn=lists.infradead.org;
-        h=content-type:cc:to:from:subject:message-id:references:mime-version
-         :in-reply-to:date:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=4r3hXDLd6Bqk9XmcFR/JS5uHIdkPs2TN+2FSnsngXIE=;
-        b=JrNFOBL72a7hnPpDIii6M/FChwe8PLCrsTCD9/B8NlAFPPF3unsO8oOxJ0u+1nc3Kw
-         1+xpbWxoaPP4vthUF7OikdhkThDO5d/F6j91yZTXCw4a+w/2gXcVNwEGDIQa1ZqFvHkY
-         u2Jvt5cUqpY08HPkx+I7FYd+EUK+SAxKJAjTEf/6btgx0L66SiZXVJO/LJJM8JUWGS93
-         1iGw6O6t3kUkILuxnBY0DXC0OCzc81V/Kjf8gc9xXUOxSk7L7jIlpyH8JApzU+meRQHg
-         1CD7eIQM575Ja04we5CNTeHR/VVbL8nVtgXpdxP6rq4xxRdboNQBaRVccFkIbmiIeI2A
-         gUuw==
+        d=google.com; s=20251104; t=1791931213; x=1792536013; darn=lists.infradead.org;
+        h=content-type:cc:to:from:subject:message-id:mime-version:date:from
+         :to:cc:subject:date:message-id:reply-to:content-type;
+        bh=6CWZGGdh7JOQ6UqV1gxmMbPkjK0LPv1nbOU26QpmZ10=;
+        b=hRzNWDWEFFV4cUJX6q1zhtyyrZdyPIPgKkTzFr5WWv2gUCaZnbYclJ8Vm07SJreM6n
+         rYcoSglGBJwkRY6RUa1WUSSEMII09bQUERvzFRx5O6mlijNpCKlhq/9dTRYEHnkOC7Zn
+         rUi8BEUmWpXNi0drDQ9oHwxKz5/e20KvyInkVV0vnFtsqicLk8N8S9n5dA90gWX258v8
+         synduK+rlP0sV4U+ry8UhThLG/+wYgrOQJZuj8tVVrgEn7Bg9Tw25QBhTR/iO3DfBY4V
+         ol+4Mg/r+7DxTK1OFOwpGMJQC5gy4xfZ+/I9Qm7RDyrvwLta8VsN1Nu9sRRS9TF1vbO3
+         QccQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1791931220; x=1792536020;
-        h=content-type:cc:to:from:subject:message-id:references:mime-version
-         :in-reply-to:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=4r3hXDLd6Bqk9XmcFR/JS5uHIdkPs2TN+2FSnsngXIE=;
-        b=Fa//uhIThDrBtbNIASkj4q8snnpwu2xqEAVjO0bKmkLUhaD3ttZu9w3fWI0SiGGn4P
-         i9QkKUBNY6cOO4AZikZICuPBCeapo6+e243BrZfJdyZZuYn8nxvXF8ZOeC4lwXWd0MR3
-         +xDbEE+iVhKslyO1B+ZBaOKlbPJwwVrYpDbW9HjpzjqmpbkZitP0B6CEw0DeV1Eef2VR
-         W3w9GoJgp9DSSA407zdNlTfFo/BxcRKSvL9I2cQxQMtWOfVJ5qgxaGv8X/8rOyuvyh6l
-         d0I1kuUQtvB87un+4Iidjvg7K3TXLmx21gtiLjhL36S6OMj9ghifM6iU3yNkPxtTV8Q+
-         6FbA==
-X-Forwarded-Encrypted: i=1; AKwUvBxYYna6OOjQgkt1P038sF/MjYRvPZWAFvtCSv9QpuUfknt8Mh2D2ToU2tG5PFDG5fmWmOkj/ROzk9U=@lists.infradead.org
-X-Gm-Message-State: AFq9FYKDOwQ2m7Qv1N3EgkQEubQgodPWWo0+sGfDSxibn6fKfIoTFIlp
-	potSem2zaQMFbsgBxUX6gx3gA8JLqW18QulGcUQgaW23w4K+a9EPl6jgNR083LmBmy+AEbXXLlN
-	rrnYtjFeIrA==
-X-Received: from dyu6.prod.google.com ([2002:a05:693c:8106:b0:352:94e:a8c9])
- (user=irogers job=prod-delivery.src-stubby-dispatcher) by 2002:a05:7301:71a8:b0:358:f717:ff61
- with SMTP id 5a478bee46e88-358f717ff90mr13337962eec.6.1791931219210; Tue, 13
- Oct 2026 15:40:19 -0700 (PDT)
-Date: Tue, 13 Oct 2026 15:39:38 -0700
-In-Reply-To: <20261013223946.1836757-1-irogers@google.com>
+        d=1e100.net; s=20260707; t=1791931213; x=1792536013;
+        h=content-type:cc:to:from:subject:message-id:mime-version:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=6CWZGGdh7JOQ6UqV1gxmMbPkjK0LPv1nbOU26QpmZ10=;
+        b=Caz3jnoCq+aIT6F34KciUtctvg7U1Njn4jJ+31AYOKVpMEU4Mjk2V+hOMxVChgI9Vv
+         DgZYfF0dV1RZ97pvzK6iRAk72Kz1wuGwrgkVL9VeJ6dmL+B1Kcfi28M5nCkgsVGnzFG1
+         rsZtBKmDfXBQGGxk9uDhNIac2K7KqDdCbkfc2pIvaWE+9w+HdE+1IzrGSwYz2yQAdaHv
+         ubDg5JAKViZrNERtejzTX616EhFpSWfQMYglsYWF0iJJsNFLd4mPRfTGHPBz5Rm+kURj
+         ePnOx1/N8xDt0r4ldfV86abu8UM85PaScHIdWlnS0X1sv2Mf1/SV+ec1nGPoWuCVuEfl
+         VFNg==
+X-Forwarded-Encrypted: i=1; AKwUvBysYxyLyhKfQu/hvIvAW7CxEWzidXh5OGxRYmPmAi1ONFwV+1TrxxV+76t+hWl92SOgiyrx4+R5UOk=@lists.infradead.org
+X-Gm-Message-State: AFq9FYJzqr2Wz8zGNQ5Z6nJGEtQFcUh4saMmDPntv/HG0O6Fod5YlPWG
+	xmd9GJTin2lsW9Ok9OHhKhzaY1ah7bECk1oguOT82yisF4U4IbaEqwIxC9nRxhKDq5snU/LTIyz
+	4mcc46V26jA==
+X-Received: from dlak14.prod.google.com ([2002:a05:701b:290e:b0:14e:f9ab:6f83])
+ (user=irogers job=prod-delivery.src-stubby-dispatcher) by 2002:a05:701b:2309:b0:153:7a27:b89
+ with SMTP id a92af1059eb24-16a5ed4008cmr22709999c88.21.1791931212336; Tue, 13
+ Oct 2026 15:40:12 -0700 (PDT)
+Date: Tue, 13 Oct 2026 15:39:35 -0700
 Mime-Version: 1.0
-References: <20261013223946.1836757-1-irogers@google.com>
 X-Mailer: git-send-email 2.56.0.385.gd3acb90ef8-goog
-Message-ID: <20261013223946.1836757-4-irogers@google.com>
-Subject: [PATCH 03/11] sh: sq: Add missing kobject release callback to ktype_percpu_entry
+Message-ID: <20261013223946.1836757-1-irogers@google.com>
+Subject: [PATCH 00/11] kobject: Require explicit initialization of struct kobj_type::release
 From: Ian Rogers <irogers@google.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J . Wysocki" <rafael@kernel.org>, 
 	Danilo Krummrich <dakr@kernel.org>, Miguel Ojeda <ojeda@kernel.org>, Kees Cook <kees@kernel.org>, 
@@ -96,8 +92,8 @@ Cc: Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling <morbo@google.com>
 	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
 	Ian Rogers <irogers@google.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261013_154021_100220_6EEDBFA4 
-X-CRM114-Status: GOOD (  10.85  )
+X-CRM114-CacheID: sfid-20261013_154017_521314_E0756119 
+X-CRM114-Status: GOOD (  12.47  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -114,38 +110,86 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-In sq_dev_add(), sq_kobject[cpu] is dynamically allocated with
-kzalloc_obj() and initialized with ktype_percpu_entry. When
-sq_dev_remove() calls kobject_put(kobj), the kobject is never freed
-because ktype_percpu_entry lacks a .release callback.
+Clang supports the 'require_explicit_initialization' attribute on struct
+fields to enforce that the field is explicitly initialized when an
+aggregate object is constructed, emitting -Wuninitialized-explicit-init
+(enabled by default) if the field is omitted.
 
-Provide a sq_kobj_release() callback that calls kfree(kobj).
+Following discussion at the Linux Plumbers Conference [1], this series
+introduces __require_explicit_initialization in
+include/linux/compiler_attributes.h and applies it to
+struct kobj_type::release.
 
-Fixes: d7c30c682a27 ("sh: Store Queue API rework.")
-Assisted-by: Antigravity:gemini-3.1-pro
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- arch/sh/kernel/cpu/sh4/sq.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+As Documentation/core-api/kobject.rst notes:
+  "One important point cannot be overstated: every kobject must have a
+  release() method, and the kobject must persist (in a consistent state)
+  until that method is called. If these constraints are not met, the code
+  is flawed."
 
-diff --git a/arch/sh/kernel/cpu/sh4/sq.c b/arch/sh/kernel/cpu/sh4/sq.c
-index 908a8e09113b..f33864958487 100644
---- a/arch/sh/kernel/cpu/sh4/sq.c
-+++ b/arch/sh/kernel/cpu/sh4/sq.c
-@@ -331,7 +331,13 @@ static const struct sysfs_ops sq_sysfs_ops = {
- 	.store	= sq_sysfs_store,
- };
- 
-+static void sq_kobj_release(struct kobject *kobj)
-+{
-+	kfree(kobj);
-+}
-+
- static struct kobj_type ktype_percpu_entry = {
-+	.release	= sq_kobj_release,
- 	.sysfs_ops	= &sq_sysfs_ops,
- 	.default_groups	= sq_sysfs_groups,
- };
+Annotating struct kobj_type::release caught 30 struct kobj_type
+definitions across the tree that omitted .release:
+- Patches 2-10 fix 10 struct kobj_type definitions where dynamically
+  allocated kobjects, ksets, or enclosing structures were either leaked on
+  kobject_put() or freed prematurely before kobject release (risking a
+  use-after-free when CONFIG_DEBUG_KOBJECT_RELEASE=y).
+- Patch 11 annotates struct kobj_type::release with
+  __require_explicit_initialization and explicitly sets .release = NULL
+  (with explanatory comments) on the remaining legacy struct kobj_type
+  definitions whose kobjects are static, per-CPU, or embedded in devm- or
+  parent-managed structures.
+
+[1] https://lpc.events/event/20/contributions/2392/
+
+Ian Rogers (11):
+  Compiler Attributes: Add __require_explicit_initialization macro
+  powerpc/secvar: Add missing kobject release callback to secvar_ktype
+  sh: sq: Add missing kobject release callback to ktype_percpu_entry
+  cpufreq: Initialize kobj_type release callback in ondemand and
+    conservative governors
+  ACPI: CPPC: Free cpc_desc in kobject release callback
+  dlm: Free dlm_ls in kobject release callback
+  xen/sys-hypervisor: Add release callback to hyp_sysfs_kobj_type
+  s390/sclp_mem: Allocate struct sclp_mem dynamically and add kobject
+    release
+  ubifs: sysfs: Use kset_create_and_add() for ubifs_kset
+  drm/amdkfd: Free queue in procfs_queue_type kobject release callback
+  kobject: Require explicit initialization of struct kobj_type::release
+
+ Documentation/conf.py                         |  1 +
+ arch/arm64/kernel/cpuinfo.c                   |  2 +
+ arch/powerpc/kernel/secvar-sysfs.c            |  6 ++
+ arch/sh/kernel/cpu/sh4/sq.c                   |  6 ++
+ drivers/acpi/cppc_acpi.c                      | 39 +++++-----
+ drivers/acpi/sysfs.c                          |  2 +
+ drivers/cpufreq/cpufreq_conservative.c        |  5 +-
+ drivers/cpufreq/cpufreq_governor.c            |  3 +-
+ drivers/cpufreq/cpufreq_governor.h            |  1 +
+ drivers/cpufreq/cpufreq_ondemand.c            |  5 +-
+ drivers/dma/ioat/sysfs.c                      |  2 +
+ drivers/gpu/drm/amd/amdgpu/amdgpu_xcp.c       |  4 +
+ drivers/gpu/drm/amd/amdkfd/kfd_process.c      | 10 ++-
+ drivers/gpu/drm/amd/amdkfd/kfd_queue.c        |  5 +-
+ drivers/infiniband/hw/hfi1/sysfs.c            |  2 +
+ drivers/infiniband/hw/usnic/usnic_ib_sysfs.c  |  2 +
+ drivers/parisc/pdc_stable.c                   |  2 +
+ drivers/power/supply/ab8500_fg.c              |  2 +
+ drivers/s390/char/sclp_mem.c                  | 73 +++++++++----------
+ drivers/soc/hisilicon/kunpeng_hccs.c          |  6 ++
+ .../fbdev/omap2/omapfb/dss/display-sysfs.c    |  2 +
+ .../fbdev/omap2/omapfb/dss/manager-sysfs.c    |  2 +
+ .../fbdev/omap2/omapfb/dss/overlay-sysfs.c    |  2 +
+ drivers/xen/sys-hypervisor.c                  |  6 ++
+ fs/dlm/lockspace.c                            | 19 +++--
+ fs/erofs/sysfs.c                              |  4 +
+ fs/f2fs/sysfs.c                               |  6 ++
+ fs/ocfs2/cluster/masklog.c                    |  2 +
+ fs/ubifs/sysfs.c                              | 24 ++----
+ include/linux/compiler_attributes.h           | 11 +++
+ include/linux/kobject.h                       |  2 +-
+ scripts/checkpatch.pl                         |  1 +
+ tools/lib/python/kdoc/xforms_lists.py         |  1 +
+ 33 files changed, 170 insertions(+), 90 deletions(-)
+
 -- 
 2.56.0.385.gd3acb90ef8-goog
 
