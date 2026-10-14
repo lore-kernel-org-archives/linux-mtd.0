@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7BD12CC6B2C
-	for <linux-mtd@archiver.kernel.org>; Wed, 14 Oct 2026 15:44:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B702CCC6B1A
+	for <linux-mtd@archiver.kernel.org>; Wed, 14 Oct 2026 15:44:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8AigVjmdoPk1jCm9ZhWrEJBnyEkYnTswhOUSEBLGUuM=; b=pJ24c/C7M5jyqm
-	mGBreQxQnxx9W2KzZyFXZByFuHjqagCRlHnKeb9vwj/qtSqJoDk35wtsngFvwlkHRORUb4AypHb6b
-	E5NfKDuKFoNxEMcxpjRtsGfw9euYZBspyWKXRgjMrUuK6KPT859DrLUTfpVQ2LwIJRV3Qn5qxafQt
-	E0Vr7DzxYqjBUlNXqWwksP4sYVkYHhi20CkeT7AKZbhzDwzvVLlg+NGZBEsWPiG/P9R8lgG86TlNu
-	ZAQCkK73IaN8JDOK0rBpoCWup7PRkBKxUVVCuvq8q5BdG44QzORla8015kWcRnSlAw2CJQ9kQPxl/
-	sHTVK2nela3PQBkqZvjg==;
+	List-Owner; bh=5IQGOcmYKwZIJKKf6q/VOKAHyr/enKiTm6BOBZopPm8=; b=n8RvgFM7gW9Rtu
+	JldEKJ69NQl+crohUrvKujo7d5vzFhkBMOQtoXf/+PHFFZPTYeOcF+4WeQHxJLCpduzoW/QTD5gVD
+	xM0FqmKL0CQR24XDmOqlbUizKQuylLmnc3ANxT744hU2lU21h0jhFsLJx460drjx7zih70t3uH8sl
+	/WmastyFm5+vLBi6HMp2lK2Bma8E9UldIvOJUSOm/DprFmK6v+x5movwBLnU3WrI1yJnV/5iuMr8r
+	5dFSfDQZEY8dxk2AF3JJLx2IPyrENVqnKKNTujx1+FTL1wYGkJsoWmt0P1n2lc4gKUDieTnn8eLIl
+	afmfhQSENdIw+k3yzQyQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xH19N-0000000Fssb-3W1V;
-	Wed, 14 Oct 2026 15:44:17 +0000
-Received: from smtpout-03.galae.net ([185.246.85.4])
+	id 1xH19a-0000000Fsxa-1L4h;
+	Wed, 14 Oct 2026 15:44:30 +0000
+Received: from smtpout-02.galae.net ([185.246.84.56])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xH19L-0000000FsrV-1U3C
+	id 1xH19V-0000000Fsui-2rl8
 	for linux-mtd@lists.infradead.org;
-	Wed, 14 Oct 2026 15:44:16 +0000
+	Wed, 14 Oct 2026 15:44:29 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id D035C4E41229;
-	Wed, 14 Oct 2026 15:44:13 +0000 (UTC)
+	by smtpout-02.galae.net (Postfix) with ESMTPS id 487771A1230;
+	Wed, 14 Oct 2026 15:44:23 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 9E80F60368;
-	Wed, 14 Oct 2026 15:44:13 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 35E8F103284ED;
-	Wed, 14 Oct 2026 17:44:09 +0200 (CEST)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 1D95060368;
+	Wed, 14 Oct 2026 15:44:23 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id C326410328540;
+	Wed, 14 Oct 2026 17:44:15 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1791992652; h=from:subject:date:message-id:to:cc:mime-version:
+	t=1791992658; h=from:subject:date:message-id:to:cc:mime-version:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=L3yzdkIIoXv+mg+K4J6YhHul2QjJeOxkn+qRFdP45OA=;
-	b=it6MIToYsynzobACp4L5OJp1WnYlJ7aazkBmu4Zj5E6nddHy4iQ5K2pWaZhEpIf31lCCfs
-	AetRiCanK/zzhBFbgPS+DAsw5nZF4wWtojnNd29rV4f0O/pw05S9/MXEmWVVdY5msS5A+o
-	wX2eVxMgizrO5A1KrURLqeNXzecPnP4q+t9gHLppGxdJ6pVyW7ahK7m6IAqRgysjIVqvjs
-	8p89hu4s0nHH9Abpmw4UHUieKvB0K5pmywQX4sXaIv7Pp/wPQZIkv4rR1gGP6Pya9sxF23
-	bOw8bQMUdEuHjyixpunzIF3EcWUJL/xibTZEX74DhkYJzBEVTK6FHr1+QMl/kw==
+	bh=zgfztfOJ6l8wxkOS8Fa5/mop0OdmxA0oYDEDAChq13Q=;
+	b=M2b5N9s8Qvfcv7PqrIOgEFUvM+FfX7QmRjwehcxPoYt/yhtlxRLvHkawbjQIJTg4zFf10m
+	qXurF++mQXdpTgNWwEEVC7wWwxhvnbztbls49jMC+BvJV0knJLmZzHMndiaJ0TlO0gdqAb
+	JMHJMrFn3fFNztSkN8JQWp27JyxTvMO7oXIgavraMPrH1KRmG4+bvwJSb3ZkTR5ScFkCJq
+	1etSsz+YFs21hP2/pQ3c+ztiu2yfsjY4zKpeJSRAt3eAiHrWq9E9+gsN0Yg4y81qtDpn01
+	ISdGItkbRtqmaysjWEK/dxm/VcihGRgfDNf5EUC620VBKCWD0Qt2licGnJVQ7Q==
 From: Paul Cercueil <paul.cercueil@bootlin.com>
 To: Pratyush Yadav <pratyush@kernel.org>,
 	Michael Walle <mwalle@kernel.org>,
@@ -62,18 +62,19 @@ Cc: Kees Cook <kees@kernel.org>,
 	Bharat Bhushan <bbhushan2@marvell.com>,
 	Sunil Kovvuri Goutham <sgoutham@marvell.com>,
 	Tanmay Jagdale <tanmay@marvell.com>,
+	stable@vger.kernel.org,
 	Paul Cercueil <paul.cercueil@bootlin.com>
-Subject: [PATCH v3 2/7] mtd: spi-nor: Wait for NOR ready with poll_timeout_us()
-Date: Wed, 14 Oct 2026 17:42:56 +0200
-Message-ID: <20261014154301.157755-3-paul.cercueil@bootlin.com>
+Subject: [PATCH v3 4/7] spi: cadence-xspi: Clear "SDMA ready" IRQ flag after polling
+Date: Wed, 14 Oct 2026 17:42:58 +0200
+Message-ID: <20261014154301.157755-5-paul.cercueil@bootlin.com>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20261014154301.157755-1-paul.cercueil@bootlin.com>
 References: <20261014154301.157755-1-paul.cercueil@bootlin.com>
 MIME-Version: 1.0
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261014_084415_535634_0F895B05 
-X-CRM114-Status: GOOD (  14.73  )
+X-CRM114-CacheID: sfid-20261014_084428_042027_02EC8377 
+X-CRM114-Status: GOOD (  10.34  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,13 +93,12 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Tanmay Jagdale <tanmay@marvell.com>
 
-Instead of polling for the spi_nor_ready() with a custom loop, use
-poll_timeout_us(). The sleep period between two polls is set to 100 us
-which I think should be fine.
+When polling for the "SDMA ready" event, once the corresponding bit is
+set in the CDNS_XSPI_SDMA_TRIGGER we should reset it to zero. Otherwise,
+any subsequent call to cdns_xspi_is_sdma_ready() will just return early.
 
-This will make it simpler to support waiting for the SPI NOR in atomic
-context later.
-
+Fixes: 931e389ded0f ("spi: cadence: Add Marvell xfer operation support")
+Cc: stable@vger.kernel.org
 Signed-off-by: Tanmay Jagdale <tanmay@marvell.com>
 Co-developed-by: Paul Cercueil <paul.cercueil@bootlin.com>
 Signed-off-by: Paul Cercueil <paul.cercueil@bootlin.com>
@@ -107,100 +107,42 @@ Signed-off-by: Paul Cercueil <paul.cercueil@bootlin.com>
 Notes:
     v2: New patch
     
-    v3: Set 'timeout_ms' parameter to u64 to prevent u32 overflow
+    v3: No change
 
- drivers/mtd/spi-nor/core.c | 40 +++++++++++++++-----------------------
- 1 file changed, 16 insertions(+), 24 deletions(-)
+ drivers/spi/spi-cadence-xspi.c | 20 ++++++++++++++------
+ 1 file changed, 14 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 8bc117b46e02..58257cc21c68 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -12,6 +12,7 @@
- #include <linux/device.h>
- #include <linux/err.h>
- #include <linux/errno.h>
-+#include <linux/iopoll.h>
- #include <linux/math64.h>
- #include <linux/module.h>
- #include <linux/mtd/mtd.h>
-@@ -32,13 +33,13 @@
-  * For everything but full-chip erase; probably could be much smaller, but kept
-  * around for safety for now
-  */
--#define DEFAULT_READY_WAIT_JIFFIES		(40UL * HZ)
-+#define DEFAULT_READY_TIMEOUT_MS		40000UL
- 
- /*
-  * For full-chip erase, calibrated to a 2MB flash (M25P16); should be scaled up
-  * for larger flash
-  */
--#define CHIP_ERASE_2MB_READY_WAIT_JIFFIES	(40UL * HZ)
-+#define CHIP_ERASE_2MB_READY_TIMEOUT_MS		40000UL
- 
- #define SPI_NOR_MAX_ADDR_NBYTES	4
- 
-@@ -711,30 +712,21 @@ static int spi_nor_ready(struct spi_nor *nor)
-  *
-  * Return: 0 on success, -errno otherwise.
-  */
--static int spi_nor_wait_till_ready_with_timeout(struct spi_nor *nor,
--						unsigned long timeout_jiffies)
-+static int spi_nor_wait_till_ready_with_timeout(struct spi_nor *nor, u64 timeout_ms)
+diff --git a/drivers/spi/spi-cadence-xspi.c b/drivers/spi/spi-cadence-xspi.c
+index 39c868a5b171..095bf640b379 100644
+--- a/drivers/spi/spi-cadence-xspi.c
++++ b/drivers/spi/spi-cadence-xspi.c
+@@ -1068,12 +1068,20 @@ static bool cdns_xspi_is_sdma_ready(struct cdns_xspi_dev *cdns_xspi, bool sleep)
  {
--	unsigned long deadline;
--	int timeout = 0, ret;
-+	int ret, status;
+ 	u32 ctrl_stat;
  
--	deadline = jiffies + timeout_jiffies;
--
--	while (!timeout) {
--		if (time_after_eq(jiffies, deadline))
--			timeout = 1;
--
--		ret = spi_nor_ready(nor);
--		if (ret < 0)
--			return ret;
--		if (ret)
--			return 0;
--
--		cond_resched();
-+	ret = poll_timeout_us(status = spi_nor_ready(nor), status,
-+			      100, timeout_ms * 1000, false);
-+	if (ret < 0) {
-+		dev_dbg(nor->dev, "flash operation timed out\n");
-+		return ret;
- 	}
- 
--	dev_dbg(nor->dev, "flash operation timed out\n");
-+	if (status < 0)
-+		return status;
- 
--	return -ETIMEDOUT;
-+	return 0;
+-	return !readl_relaxed_poll_timeout
+-		(cdns_xspi->iobase + CDNS_XSPI_INTR_STATUS_REG,
+-		ctrl_stat,
+-		(ctrl_stat & CDNS_XSPI_SDMA_TRIGGER),
+-		sleep ? MRVL_XSPI_POLL_DELAY_US : 0,
+-		sleep ? MRVL_XSPI_POLL_TIMEOUT_US : 0);
++	if (readl_relaxed_poll_timeout
++	    (cdns_xspi->iobase + CDNS_XSPI_INTR_STATUS_REG,
++	     ctrl_stat,
++	     (ctrl_stat & CDNS_XSPI_SDMA_TRIGGER),
++	     sleep ? MRVL_XSPI_POLL_DELAY_US : 0,
++	     sleep ? MRVL_XSPI_POLL_TIMEOUT_US : 0)) {
++		return false;
++	}
++
++	/* Clear the flag */
++	writel(CDNS_XSPI_SDMA_TRIGGER,
++	       cdns_xspi->iobase + CDNS_XSPI_INTR_STATUS_REG);
++
++	return true;
  }
  
- /**
-@@ -747,7 +739,7 @@ static int spi_nor_wait_till_ready_with_timeout(struct spi_nor *nor,
- int spi_nor_wait_till_ready(struct spi_nor *nor)
- {
- 	return spi_nor_wait_till_ready_with_timeout(nor,
--						    DEFAULT_READY_WAIT_JIFFIES);
-+						    DEFAULT_READY_TIMEOUT_MS);
- }
- 
- /**
-@@ -1781,8 +1773,8 @@ static int spi_nor_erase_dice(struct spi_nor *nor, loff_t addr,
- 	 * pull these from CFI/SFDP, but these values should be good
- 	 * enough for now.
- 	 */
--	timeout = max(CHIP_ERASE_2MB_READY_WAIT_JIFFIES,
--		      CHIP_ERASE_2MB_READY_WAIT_JIFFIES *
-+	timeout = max(CHIP_ERASE_2MB_READY_TIMEOUT_MS,
-+		      CHIP_ERASE_2MB_READY_TIMEOUT_MS *
- 		      (unsigned long)(nor->mtd.size / SZ_2M));
- 
- 	do {
+ static int cdns_xspi_transfer_one_message_b0(struct spi_controller *controller,
 -- 
 2.47.3
 
