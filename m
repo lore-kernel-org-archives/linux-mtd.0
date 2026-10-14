@@ -4,91 +4,145 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0A43CC6B1A
-	for <linux-mtd@archiver.kernel.org>; Wed, 14 Oct 2026 11:51:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6FE7FCC6B1A
+	for <linux-mtd@archiver.kernel.org>; Wed, 14 Oct 2026 12:05:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=TcUkM9RlQC39+xb2mGywv0/8kKBZApgvNnLlavH6yRM=; b=F1ZpxH/uS7xYNXRfeNjpq5lgb7
-	xfuwkSzoemOJa6ETqRqPp+PamHqWmC68kPCcSVVou8rUUB+tTMOtvjb1AcW8RCUm49F9kxIf3fHQd
-	X9WETz7ieKXHCsGMeMjz/RNOttwt7tj4wGmxEkALEEgxWuzefusQDHywZPC8oMM2VxTVAf9icwdZK
-	BM3EiisslrHze31u/vuF8IDzjIHCH3pKhi67pykak5yqTRF2XDTTKLcNkWWT0GObRxuDzkJ+ALOH9
-	w3+MwBVgpC/qocbrLJenTGbqm6oBobghUIuF0DtcYk+78S+lwZ89UxoAPAEGQVETVpz4O9TEjiMAH
-	aIAIh0xw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=94zFWoAjbIYpoBEMq6GLY4nPRwWLvuhRt2C/8GFpAD0=; b=mdTKZIIaUNHt6z
+	/mhFSl+UBUwKNGA+saAKdMNkLKYyL7ymrAQoi6hzVTrIZtTH1TO9uib74fCCqoOBSlYhEanuwnQKB
+	Lih/dm1vZGar0AY0yNx1vd151uSTvwgoP2nkR3k2IDsIzrsGu+uODN2Uf6pa5a/hBIqJQ/mRp50Y1
+	IwcgKN7lIjsg0kHd48RIPV7owO9SxEvi3uffwDpP+q8Y3qK7qKVkSnieglsU9nKggsuT8LKlQx91E
+	ORnKKSIpUHkcsMKwN6512RyeVUwvijd6drf2QTrYYiuMndgtRdSBmLDI4pioMkWeIYighDVfRik7w
+	WYecY9LP/IoODilyiFag==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xGxWH-0000000FNjZ-2Z1f;
-	Wed, 14 Oct 2026 11:51:41 +0000
-Received: from canpmsgout05.his.huawei.com ([113.46.200.220])
+	id 1xGxjf-0000000FOj0-3x0d;
+	Wed, 14 Oct 2026 12:05:31 +0000
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xGxWC-0000000FNiz-1PJS
+	id 1xGxjX-0000000FOiP-3KTv
 	for linux-mtd@lists.infradead.org;
-	Wed, 14 Oct 2026 11:51:40 +0000
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=xVlOyYaOJuVGaDfnk3Cn8S4up3VyrQrAPSaBBvMWJK4=;
-	b=NRQ2Wyi38AJGPQbJ80NuIBLnWk6SwO8PaLyJaV87efjwedpEJ9wjoxegROCOJ8+sMuMWLGkWu
-	Rm4/b05wv/F91TtAb5MycVTFxtVEUQvci6R9jyHnyeOMNTzXjiNJSTCZN3PILjcWfI1v2zeSqLV
-	B62e3eM4uUujj0AqiqJDPNY=
-Received: from mail.maildlp.com (unknown [172.19.163.104])
-	by canpmsgout05.his.huawei.com (SkyGuard) with ESMTPS id 4j4Tkr1HPxz12LD9;
-	Wed, 14 Oct 2026 19:39:32 +0800 (CST)
-Received: from whupemo200011.china.huawei.com (unknown [7.152.185.179])
-	by mail.maildlp.com (Postfix) with ESMTPS id 24D014056E;
-	Wed, 14 Oct 2026 19:51:26 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- whupemo200011.china.huawei.com (7.152.185.179) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.45; Wed, 14 Oct 2026 19:51:21 +0800
-Subject: Re: [PATCH 09/11] ubifs: sysfs: Use kset_create_and_add() for
- ubifs_kset
-To: Ian Rogers <irogers@google.com>, Greg Kroah-Hartman
-	<gregkh@linuxfoundation.org>, "Rafael J . Wysocki" <rafael@kernel.org>,
-	Danilo Krummrich <dakr@kernel.org>, Miguel Ojeda <ojeda@kernel.org>, Kees
- Cook <kees@kernel.org>, Nathan Chancellor <nathan@kernel.org>
-CC: Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling
-	<morbo@google.com>, Justin Stitt <justinstitt@google.com>, Jonathan Corbet
-	<corbet@lwn.net>, Madhavan Srinivasan <maddy@linux.ibm.com>, Michael Ellerman
-	<mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy
-	<chleroy@kernel.org>, Nayna Jain <nayna@linux.ibm.com>, Yoshinori Sato
-	<ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, John Paul Adrian
- Glaubitz <glaubitz@physik.fu-berlin.de>, Viresh Kumar
-	<viresh.kumar@linaro.org>, David Teigland <teigland@redhat.com>, Alexander
- Aring <aahringo@redhat.com>, Juergen Gross <jgross@suse.com>, Stefano
- Stabellini <sstabellini@kernel.org>, Oleksandr Tyshchenko
-	<oleksandr_tyshchenko@epam.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily
- Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle
-	<svens@linux.ibm.com>, Richard Weinberger <richard@nod.at>, Felix Kuehling
-	<Felix.Kuehling@amd.com>, Alex Deucher <alexander.deucher@amd.com>,
-	=?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-	<driver-core@lists.linux.dev>, <llvm@lists.linux.dev>,
-	<linux-hardening@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-	<linuxppc-dev@lists.ozlabs.org>, <linux-sh@vger.kernel.org>,
-	<linux-pm@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
-	<gfs2@lists.linux.dev>, <xen-devel@lists.xenproject.org>,
-	<linux-s390@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
-	<amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
-	<linux-kernel@vger.kernel.org>
+	Wed, 14 Oct 2026 12:05:27 +0000
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 69E9waOp2016607;
+	Wed, 14 Oct 2026 12:04:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=pp1; bh=ajZHd+qh6V9vTCXwQWUfdpmTLNkyLK
+	ozm1g9bOoFoFc=; b=JYQ2N0nSXD/tQ/r+o3naoBOH1U+r2oPu+xjGpN+7txoDex
+	Z0IWl63DxMAVur3sx+kmGREDCBqZc6k1HCDRjrOoEK+taOKH1OloSc9taF9O0FWY
+	WpVjMbVUV3y+904j6Wquin+qDgUZtE0vakTE5A47rqq/xC7whZpk/bAH05j6NUMo
+	GyNvztnXQB+E5AUtc1L0KRpmZ7LHjGzNNOr8tWNd56WpJVQz0J/T0JweCGvwVkOM
+	38Ai7Y5IXwL6To2w1AEdek15AbDAMLoAedQcEW17k9uz90AlYajIG2XNMhTS+zOV
+	bWm4qcBhLuQq6bVn5TQRsfV9c0VsPZQvM+kgHPMQ==
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4h7dugm5g8-1
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+	Wed, 14 Oct 2026 12:04:52 +0000 (GMT)
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.18.1.11/8.18.1.11) with ESMTP id 69EAnqN23211855;
+	Wed, 14 Oct 2026 12:04:51 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4h9q2ymp38-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 14 Oct 2026 12:04:51 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 69EC4l5Q50397474
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 14 Oct 2026 12:04:47 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 287A32004B;
+	Wed, 14 Oct 2026 12:04:47 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 7EC8420040;
+	Wed, 14 Oct 2026 12:04:45 +0000 (GMT)
+Received: from li-0f4bfd12-9554-4bfb-8b14-7ccf0f0767af.ibm.com (unknown [9.111.94.206])
+	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Wed, 14 Oct 2026 12:04:45 +0000 (GMT)
+Date: Wed, 14 Oct 2026 14:04:44 +0200
+From: Sumanth Korikkar <sumanthk@linux.ibm.com>
+To: Ian Rogers <irogers@google.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Danilo Krummrich <dakr@kernel.org>, Miguel Ojeda <ojeda@kernel.org>,
+        Kees Cook <kees@kernel.org>, Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Bill Wendling <morbo@google.com>,
+        Justin Stitt <justinstitt@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Madhavan Srinivasan <maddy@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <chleroy@kernel.org>,
+        Nayna Jain <nayna@linux.ibm.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        David Teigland <teigland@redhat.com>,
+        Alexander Aring <aahringo@redhat.com>, Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Richard Weinberger <richard@nod.at>,
+        Zhihao Cheng <chengzhihao1@huawei.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        driver-core@lists.linux.dev, llvm@lists.linux.dev,
+        linux-hardening@vger.kernel.org, linux-doc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org,
+        gfs2@lists.linux.dev, xen-devel@lists.xenproject.org,
+        linux-s390@vger.kernel.org, linux-mtd@lists.infradead.org,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 08/11] s390/sclp_mem: Allocate struct sclp_mem
+ dynamically and add kobject release
+Message-ID: <as9v3PUb0TymCvsc@li-0f4bfd12-9554-4bfb-8b14-7ccf0f0767af.ibm.com>
 References: <20261013223946.1836757-1-irogers@google.com>
- <20261013223946.1836757-10-irogers@google.com>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <3f6e7a0d-ba41-89dd-012f-9ac24e12da9d@huawei.com>
-Date: Wed, 14 Oct 2026 19:51:20 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+ <20261013223946.1836757-9-irogers@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20261013223946.1836757-10-irogers@google.com>
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: kwepems500001.china.huawei.com (7.221.188.70) To
- whupemo200011.china.huawei.com (7.152.185.179)
+Content-Disposition: inline
+In-Reply-To: <20261013223946.1836757-9-irogers@google.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Reinject: loops=2 maxloops=12
+X-Authority-Analysis: v=2.4 cv=Cr0q4X4D c=1 sm=1 tr=0 ts=6acf6fe5 cx=c_pps
+ a=GFwsV6G8L6GxiO2Y/PsHdQ==:117 a=GFwsV6G8L6GxiO2Y/PsHdQ==:17
+ a=kj9zAlcOel0A:10 a=660iZSQnnn4A:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=RnoormkPH1_aCDwRdu11:22 a=iQ6ETzBq9ecOQQE5vZCe:22 a=1XWaLZrsAAAA:8
+ a=1KnzZOXWGbpzuJ82zDMA:9 a=CjuIK1q_8ugA:10
+X-Proofpoint-GUID: _EktMNlxNi0Zhojhx4ASfWVXd_b7DOlL
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYxMDE0MDA0NiBTYWx0ZWRfX0fUPhxARNcJa
+ 9nS/iCLcc7dEQrcybdImltBqHci5KonN9BgYs2DYbqx1d8S2XOqe29HUtCRqWBLErMceEtiShcs
+ 4sOis3II/pHWvCugYS8aQjzU25z5oQrs/O3mU6gDGKNdZjvK+pDPTKbfQLhBgdreLHYt/eXKSLj
+ 8iaqk3GpEmiCS1rkaREHPfI9BfxMESceMf6fSb58kgdsHk98lVK94W4Z13ZaUDqucgF8UHsrXAF
+ s2Mz0WmLaipai7UjCU1P9wfoh1rJSRoR35Qnnl4GViW47ZEhEXi38+rmYIbdZGaRW5Gb4NFboLC
+ VDaNe6VnoQav6/qOqN3N/a+a+5cDALYf91XsQVsXP8nIWP35y0wihJcXC0kc0O7eYfGysmumoj8
+ nH3TGHAss/iHicos4JusXZh5QK06OZzsWCTSFTnMelfNV7UtEZDijv++v8M3SGrsGa+NyH77MdL
+ 5RJO9I7QJmKjVLI0vig==
+X-Proofpoint-Spam-Info: AW1haW4tMjYxMDE0MDA0NiBTYWx0ZWRfXzh8XCAetvSto
+ U4lKpTbi/IJ/4y5zYP4Ex816LutfdS+PI20y7l1acTJ0MKa2avnNDCgOzXRPOLPzbCG+UhRciiw
+ hNFMfBzpg0MTAxSwj76JilCNvE6uZfI=
+X-Proofpoint-ORIG-GUID: IbMwSeABL9gn-KtBlV7Mt5gD5Rq_VQT_
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.134,FMLib:17.12.100.49
+ definitions=2026-10-13_01,2026-10-09_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ bulkscore=0 spamscore=0 adultscore=0 priorityscore=1501 suspectscore=0
+ malwarescore=0 clxscore=1011 impostorscore=0 lowpriorityscore=0 phishscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2610080000 definitions=main-2610140046
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261014_045138_257512_A3A96AFF 
-X-CRM114-Status: GOOD (  18.47  )
+X-CRM114-CacheID: sfid-20261014_050523_844713_616D8639 
+X-CRM114-Status: GOOD (  15.54  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,49 +154,41 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-5ZyoIDIwMjYvMTAvMTQgNjozOSwgSWFuIFJvZ2VycyDlhpnpgZM6Cj4gdWJpZnNfa3NldCB3YXMg
-YSBzdGF0aWMgc3RydWN0IGtzZXQgdXNpbmcgYSBjdXN0b20gdWJpZnNfa3R5cGUgdGhhdAo+IGhh
-ZCBubyBkZWZhdWx0X2dyb3VwcyBhbmQgbm8gLnJlbGVhc2UgY2FsbGJhY2suIFdpdGgKPiBDT05G
-SUdfREVCVUdfS09CSkVDVF9SRUxFQVNFPXksIHVubG9hZGluZyB0aGUgdWJpZnMgbW9kdWxlIHdo
-aWxlIGRlbGF5ZWQKPiBrb2JqZWN0IHJlbGVhc2UgaXMgcGVuZGluZyBjYXVzZXMgYSB1c2UtYWZ0
-ZXItZnJlZSBvbiB0aGUgc3RhdGljIGtzZXQuCj4gCj4gUmVwbGFjZSB0aGUgc3RhdGljIHViaWZz
-X2tzZXQgYW5kIGVtcHR5IHViaWZzX2t0eXBlIHdpdGggYSBkeW5hbWljYWxseQo+IGFsbG9jYXRl
-ZCBrc2V0IHZpYSBrc2V0X2NyZWF0ZV9hbmRfYWRkKCkuCj4gCj4gRml4ZXM6IDIwM2E1NWYwNGY2
-NiAoInViaWZzOiBGaXggbWVtb3J5IGxlYWsgaW4gdWJpZnNfc3lzZnNfaW5pdCgpIikKPiBBc3Np
-c3RlZC1ieTogQW50aWdyYXZpdHk6Z2VtaW5pLTMuMS1wcm8KPiBTaWduZWQtb2ZmLWJ5OiBJYW4g
-Um9nZXJzIDxpcm9nZXJzQGdvb2dsZS5jb20+Cj4gLS0tCj4gICBmcy91Ymlmcy9zeXNmcy5jIHwg
-MjQgKysrKysrKy0tLS0tLS0tLS0tLS0tLS0tCj4gICAxIGZpbGUgY2hhbmdlZCwgNyBpbnNlcnRp
-b25zKCspLCAxNyBkZWxldGlvbnMoLSkKPiAKClRlc3RlZC1ieTogWmhpaGFvIENoZW5nIDxjaGVu
-Z3poaWhhbzFAaHVhd2VpLmNvbT4KUmV2aWV3ZWQtYnk6IFpoaWhhbyBDaGVuZyA8Y2hlbmd6aGlo
-YW8xQGh1YXdlaS5jb20+Cj4gZGlmZiAtLWdpdCBhL2ZzL3ViaWZzL3N5c2ZzLmMgYi9mcy91Ymlm
-cy9zeXNmcy5jCj4gaW5kZXggZGJmOTY3ZGNmMjZlLi5lMjA5MzFlM2E2MmYgMTAwNjQ0Cj4gLS0t
-IGEvZnMvdWJpZnMvc3lzZnMuYwo+ICsrKyBiL2ZzL3ViaWZzL3N5c2ZzLmMKPiBAQCAtODAsMTMg
-KzgwLDcgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBrb2JqX3R5cGUgdWJpZnNfc2Jfa3R5cGUgPSB7
-Cj4gICAJLnJlbGVhc2UJPSB1Ymlmc19zYl9yZWxlYXNlLAo+ICAgfTsKPiAgIAo+IC1zdGF0aWMg
-Y29uc3Qgc3RydWN0IGtvYmpfdHlwZSB1Ymlmc19rdHlwZSA9IHsKPiAtCS5zeXNmc19vcHMJPSAm
-dWJpZnNfYXR0cl9vcHMsCj4gLX07Cj4gLQo+IC1zdGF0aWMgc3RydWN0IGtzZXQgdWJpZnNfa3Nl
-dCA9IHsKPiAtCS5rb2JqCT0gey5rdHlwZSA9ICZ1Ymlmc19rdHlwZX0sCj4gLX07Cj4gK3N0YXRp
-YyBzdHJ1Y3Qga3NldCAqdWJpZnNfa3NldDsKPiAgIAo+ICAgaW50IHViaWZzX3N5c2ZzX3JlZ2lz
-dGVyKHN0cnVjdCB1Ymlmc19pbmZvICpjKQo+ICAgewo+IEBAIC0xMDcsNyArMTAxLDcgQEAgaW50
-IHViaWZzX3N5c2ZzX3JlZ2lzdGVyKHN0cnVjdCB1Ymlmc19pbmZvICpjKQo+ICAgCQlnb3RvIG91
-dF9mcmVlOwo+ICAgCX0KPiAgIAo+IC0JYy0+a29iai5rc2V0ID0gJnViaWZzX2tzZXQ7Cj4gKwlj
-LT5rb2JqLmtzZXQgPSB1Ymlmc19rc2V0Owo+ICAgCWluaXRfY29tcGxldGlvbigmYy0+a29ial91
-bnJlZ2lzdGVyKTsKPiAgIAo+ICAgCXJldCA9IGtvYmplY3RfaW5pdF9hbmRfYWRkKCZjLT5rb2Jq
-LCAmdWJpZnNfc2Jfa3R5cGUsIE5VTEwsCj4gQEAgLTEzOSwxOCArMTMzLDE0IEBAIHZvaWQgdWJp
-ZnNfc3lzZnNfdW5yZWdpc3RlcihzdHJ1Y3QgdWJpZnNfaW5mbyAqYykKPiAgIAo+ICAgaW50IF9f
-aW5pdCB1Ymlmc19zeXNmc19pbml0KHZvaWQpCj4gICB7Cj4gLQlpbnQgcmV0Owo+ICsJdWJpZnNf
-a3NldCA9IGtzZXRfY3JlYXRlX2FuZF9hZGQoInViaWZzIiwgTlVMTCwgZnNfa29iaik7Cj4gKwlp
-ZiAoIXViaWZzX2tzZXQpCj4gKwkJcmV0dXJuIC1FTk9NRU07Cj4gICAKPiAtCWtvYmplY3Rfc2V0
-X25hbWUoJnViaWZzX2tzZXQua29iaiwgInViaWZzIik7Cj4gLQl1Ymlmc19rc2V0LmtvYmoucGFy
-ZW50ID0gZnNfa29iajsKPiAtCXJldCA9IGtzZXRfcmVnaXN0ZXIoJnViaWZzX2tzZXQpOwo+IC0J
-aWYgKHJldCkKPiAtCQlrc2V0X3B1dCgmdWJpZnNfa3NldCk7Cj4gLQo+IC0JcmV0dXJuIHJldDsK
-PiArCXJldHVybiAwOwo+ICAgfQo+ICAgCj4gICB2b2lkIHViaWZzX3N5c2ZzX2V4aXQodm9pZCkK
-PiAgIHsKPiAtCWtzZXRfdW5yZWdpc3RlcigmdWJpZnNfa3NldCk7Cj4gKwlrc2V0X3VucmVnaXN0
-ZXIodWJpZnNfa3NldCk7Cj4gICB9Cj4gCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlz
-dApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+On Tue, Oct 13, 2026 at 03:39:43PM -0700, Ian Rogers wrote:
+> sclp_init_mem() allocated a single array of struct sclp_mem with
+> kzalloc_objs() and registered each embedded kobject using a kobj_type
+> without a .release callback. Allocate each struct sclp_mem individually
+> with kzalloc_obj() instead and add sclp_mem_release() to free it.
+> 
+> Fixes: ff18dcb19aab ("s390/sclp: Add support for dynamic (de)configuration of memory")
+> Assisted-by: Antigravity:gemini-3.1-pro
+> Signed-off-by: Ian Rogers <irogers@google.com>
+
+Hi Ian,
+
+The entries under /sys/firmware/memory/memoryX in sclp_mem.c are
+permanent. They are backed by a single array allocated at boot and
+remain for the lifetime of the system.
+
+Memory hotplug can add or remove memory blocks under
+/sys/devices/system/memory/, but it does not remove these firmware
+entries. The /sys/firmware/memory/memoryX kobjects are never
+unregistered or freed, so I think there is no need for
+kobject_put() and no execution of a .release callback.
+
+Instead, could this follow the approach used in Patch 11 of this series?
+static const struct kobj_type ktype = {
+	.release = NULL, /* Permanent firmware kobjects, never freed */
+	.sysfs_ops = &kobj_sysfs_ops,
+};
+
+Thank you
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
