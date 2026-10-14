@@ -4,70 +4,175 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4DC61CC6B15
-	for <linux-mtd@archiver.kernel.org>; Tue, 13 Oct 2026 22:57:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79646CC6B1A
+	for <linux-mtd@archiver.kernel.org>; Wed, 14 Oct 2026 04:25:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Reply-To:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:References:
-	In-Reply-To:Cc:To:Subject:From:Message-ID:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=McZ7xN+EtDV2VPnlINpPzbfkotgkk9rZ5mGhIXWRMT8=; b=kseuXIJI1dOuRm
-	EZ8kQL0bZMaPOvUyB4xVUCf7rpppfz+1x0LTtsi+VpWRXM8Qrhstx/nWq/PG4gK/QrIpEIpmjf4aW
-	qraw0nU6MFS+A5lNVuMN9wnVaKy0BMEuSnDddY3ZZFY+//7Azdvqgw8FSZzSnGmuEsZhrRiK3B5rd
-	DxnbPm286r5Wp1G3x0EoqII3m1+TIFXXvZauppekSku4PbpoVZ/kBxix/FJh0KlAihPJwtrf9LMEJ
-	bmJJ815LYvOsYBKzsq8DpcTpDvgw7penpTRv58eJLo8BjZcBzk4+9zdt4lPgWlmjw2qea3auj3ItG
-	paJFenZWWJ7fQOOo8V/A==;
+	List-Owner; bh=ejmZ4f+/oOepSi0pJXG03iSWislDOW2/puu3tMdqzvg=; b=hzykTghgvNXTUN
+	BOtAGCjB5hb6IirH9kGB+rqJeJa7T5u/cyH5b1kiY7z6cMuCzX2ipwOthFwBuk906VXV+20CLqOxS
+	bWYCk7Wpaj1C5lvsDYrCVkJL2DSLM1H7fUUgKoTgp4KbRmHx3K/rdMMZOdynf6lMlA1ECSXaxkamv
+	459vvio2zamKZ3IITH3oIvy1znAlGVM+o68RHt4tIcRV5YcMu2/oSiuNfVdF1eM3JyU9GCHcZZrxZ
+	u9nxViy9Gk4HY6Ovws4QFvjrlpamtxnu7EPjab77emne1AG0qJWq8x6IaTxocDn/pyvBM907Etmbr
+	gTwbd2JZ9O+SDL3/WwXg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xGlRF-0000000ECwh-3eKE;
-	Tue, 13 Oct 2026 22:57:41 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1xGqXw-0000000EUpV-3Nse;
+	Wed, 14 Oct 2026 04:24:56 +0000
+Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xGlRC-0000000ECwW-3uJs
+	id 1xGqXt-0000000EUp1-43OR
 	for linux-mtd@lists.infradead.org;
-	Tue, 13 Oct 2026 22:57:41 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 7C6F442DDE;
-	Tue, 13 Oct 2026 22:57:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 184311F000FF;
-	Tue, 13 Oct 2026 22:57:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1791932258;
-	bh=/tsBWa/AeIHpWYnSfggb/tcEzc59MfiSDgJMKAguNHg=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=MgFLhfUM1TXGEfGMJsgcAb6Y1wRILjIj+J3R430oMlOvQtyf5Jv0IB+lzvt1e4uzL
-	 67Q2NgzwDZcj0h0Gp+T4ZaD9fgQpqhU9WOBXb6JeIcXDiW/RmANUUDfYQ0h6pl/r4I
-	 hsAFKKlxYOd3LPAKeNTyC54ujuxFojj1SrrMesYXyVNqoCUi6IKFL2xce+4dIemMTs
-	 G6MjJFNmZLll7yoqdBaXLsVLdEvTrtoUCVBTfMvaHLChoNrsUz/e7sCt7ZqvxZmfgO
-	 q+KVRFyMjefBCAo4ERPG6jZrtvjqAE5PcsoFqWN9Ygr1Yn5uKAyTcrdqfg2Tg5EKX0
-	 R3ORV5tNZHeLQ==
-Message-ID: <sashiko-outbox-170614@kernel.org>
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH 10/11] drm/amdkfd: Free queue in procfs_queue_type
- kobject release callback
-To: "Ian Rogers" <irogers@google.com>, "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>, "Rafael
- J . Wysocki" <rafael@kernel.org>, "Danilo Krummrich" <dakr@kernel.org>, "Miguel
- Ojeda" <ojeda@kernel.org>, "Kees Cook" <kees@kernel.org>, "Nathan
- Chancellor" <nathan@kernel.org>
-Cc: "Nick Desaulniers" <ndesaulniers@google.com>, "Bill Wendling" <morbo@google.com>, "Justin
- Stitt" <justinstitt@google.com>, "Jonathan Corbet" <corbet@lwn.net>, "Madhavan
- Srinivasan" <maddy@linux.ibm.com>, "Michael Ellerman" <mpe@ellerman.id.au>, "Nicholas
- Piggin" <npiggin@gmail.com>, "Christophe Leroy" <chleroy@kernel.org>, "Nayna
- Jain" <nayna@linux.ibm.com>, "Yoshinori Sato" <ysato@users.sourceforge.jp>, "Rich
- Felker" <dalias@libc.org>, "John Paul Adrian Glaubitz" <glaubitz@physik.fu-berlin.de>, "Viresh
- Kumar" <viresh.kumar@linaro.org>, "David Teigland" <teigland@redhat.com>, "Alexander
- Aring" <aahringo@redhat.com>, "Juergen Gross" <jgross@suse.com>, "Stefano
- Stabellini" <sstabellini@kernel.org>, "Oleksandr Tyshchenko" <oleksandr_tyshchenko@epam.com>, "Heiko
- Carstens" <hca@linux.ibm.com>, "Vasily Gorbik" <gor@linux.ibm.com>, "Alexander
- Gordeev" <agordeev@linux.ibm.com>, "Christian Borntraeger" <borntraeger@linux.ibm.com>, "Sven
- Schnelle" <svens@linux.ibm.com>, "Richard Weinberger" <richard@nod.at>, "Zhihao
- Cheng" <chengzhihao1@huawei.com>, "Felix Kuehling" <Felix.Kuehling@amd.com>, "Alex
- Deucher" <alexander.deucher@amd.com>, =?utf-8?b?Q2hyaXN0aWFuIEvDtm5pZw==?= <christian.koenig@amd.com>, linux-s390@vger.kernel.org, linux-mtd@lists.infradead.org, dri-devel@lists.freedesktop.org
-In-Reply-To: <20261013223946.1836757-11-irogers@google.com>
+	Wed, 14 Oct 2026 04:24:55 +0000
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 69DK5iQA442751
+	for <linux-mtd@lists.infradead.org>; Wed, 14 Oct 2026 04:24:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
+	R/YWOWusTmnn9Tx8/iLnPWjpANYDhhlrDY+RymDC9lQ=; b=mfBIXI1uLAOYHNpx
+	M+pskrgQQbpJj/+60jNFLzZFxHw2r6RDPCnEYQak0C68FqNpjyua8eynX8SGcd1Y
+	2J1k4+K/t/BHMHnNSVt94VWd+zjp21ADu/+gT5GHSxkze+TVoAJ8ZcEJUegyUcj3
+	l02tjV+K80HtT6WpkHCz8hJA1pNAkGFI0embeDgtOOxCvfUQQ4c9lcW5zqnNjbim
+	+IIDJbRdlgftjP27N4Ac7M+zpCtJs+D/UR8kPP45vYPVDrD5gR3xqxJhNmnwyIgi
+	K4kI1TWbCLNx+Vt70sIiD4gGFEtC25wsPGiQD9gMthErtmViPMA3SxZL1fMU3msx
+	O1ZOMA==
+Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com [209.85.216.71])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4h9n71kh5e-1
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
+	for <linux-mtd@lists.infradead.org>; Wed, 14 Oct 2026 04:24:52 +0000 (GMT)
+Received: by mail-pj1-f71.google.com with SMTP id 98e67ed59e1d1-39deda201bcso6038201a91.2
+        for <linux-mtd@lists.infradead.org>; Tue, 13 Oct 2026 21:24:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=oss.qualcomm.com; s=google; t=1791951891; x=1792556691; darn=lists.infradead.org;
+        h=content-transfer-encoding:content-type:in-reply-to:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=R/YWOWusTmnn9Tx8/iLnPWjpANYDhhlrDY+RymDC9lQ=;
+        b=E06+MBW/FvCjPZX1m2m59kzaROtU57+zaSaEhdAgTUDr3FQ25N8PXb27nWas84sm25
+         ecdnvFf5aaNUoMTvwzYSV3GC0Ul+DMCRQm7lIvJM7RJc8P/SroHWZVa1A451lHkbZlbP
+         6LcL92pLQLoz9+yeGAfvgDKlJpRXwY4+2WMti8B1OPXgX0q4FkY7ef2hpiy+ohWcP9ss
+         Swep2bQ8fJ4yC8nizoq6QUE/RaGkorH9EGJxAXzy+qLdPWofhJnhmy1nRGtq8YdYa3Cr
+         YJ7NZwISidLJsH5xwjwvOnsjg49q+564Ao2iuCnmEpWYJYkm8RBkvt7PfXYDe9kNJ+Iq
+         12/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1791951891; x=1792556691;
+        h=content-transfer-encoding:content-type:in-reply-to:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=R/YWOWusTmnn9Tx8/iLnPWjpANYDhhlrDY+RymDC9lQ=;
+        b=eFbxvudW9pcp3se38FMJRj1jz/vSTOpbCDh29ZtOI/qPsTdKObIQ5YGrvk7nWk9V/d
+         WW0mTZ8NRZVgWa7LV8FWxIWcY7wnY+ODlyJ+pTdtyLQS3SrBHSCSXVFosoh5ByNWIZkD
+         4MTrTeEN0x6xOeLN4OZ/L5rfPItb0m6rFcK7Vm3QNcoHHmu5frq2ul+2+z2KLGZhTBjl
+         bVsdDJs+HjmO+qkaz9Rmd5ONeb633i5aAoDoVGZ70fwFQdZBxB1TFMJ/U3BFLj0NwbDX
+         Cc4q0vuaNN5CQPnHPjXNR6nKOS9mrXI5cEe6nTTrqoHIXbUhmaFoL4LTBw/vQEHZcVpz
+         TFYw==
+X-Forwarded-Encrypted: i=1; AKwUvBxzqT+9F1Hkdi/0KkDvAuBI7iwWBn+hwYPHsK7irUHCs9M6jubfAkOQlGDYGd96eD3a0zfEexrWHzk=@lists.infradead.org
+X-Gm-Message-State: AFq9FYIcN8Pf1u1NiZVxZVJV7fXYaAQUp110vz0nwi1FQRhdGLFMvAV6
+	+icBeHPHJQ2SxwGNOYLDJyfrlJriJFYrsU7Z/T+aGp6Jn69jHWPG+ML4fjFufak4e3eRrK7NhhV
+	CZOuDO3bQaFi0uBVUJnkotUm4KUiJCPUwuYINwgQxePCFLBUKTK63ZUwL8vhptYekeMEe
+X-Gm-Gg: AYBFou0hyAxEvH3zUVt2bNwcu5k/uabm7hWQIvhyYUm2b9daDOl1MEyIjeg7jMvsnZQ
+	OnQc19OwCiM4AFfmOLJvanbkaP8YOduO2cKd4JHf0iXrgfrY1LqGpLdP+amB3hXF13IuAAW5x+V
+	f44VpHIkGe2wEI84POzL/wBXU79tw1N6FL29jgLsISeplJjkNQoQU7nSsmMM6A9XBd9BCaqEjjm
+	ZsCDdgRkILUKz40l8uG7aBmjzF9qRF9jRORL3zbJJHnrDnsktEgq7lIrmIMlByU+Y+YN3qxUedB
+	zheeNLpLB1pZPpovVuVanUdX2bcKUKZiMtZ0FijSl/WuBqQEkyna5Fw+1vkGtoY5PQWJ0Mzi+OB
+	hd5Ny6+EHHzWxkOORk6U4PKOiWjcH5AaLk2tuoazRR2l8DG0s+JFrwOpzwBev5h9agcHPZfZ1
+X-Received: by 2002:a17:90b:35cc:b0:3a5:147a:3b63 with SMTP id 98e67ed59e1d1-3ab3a33db36mr12329644a91.8.1791951891070;
+        Tue, 13 Oct 2026 21:24:51 -0700 (PDT)
+X-Received: by 2002:a17:90b:35cc:b0:3a5:147a:3b63 with SMTP id 98e67ed59e1d1-3ab3a33db36mr12329579a91.8.1791951890405;
+        Tue, 13 Oct 2026 21:24:50 -0700 (PDT)
+Received: from [10.133.33.242] (tpe-colo-wan-fw-bordernet.qualcomm.com. [103.229.16.4])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3ac63279277sm860530a91.1.2026.10.13.21.24.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Oct 2026 21:24:49 -0700 (PDT)
+Message-ID: <252e86f2-9663-4ac7-a19e-6056b44e769b@oss.qualcomm.com>
+Date: Wed, 14 Oct 2026 12:24:38 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 04/11] cpufreq: Initialize kobj_type release callback in
+ ondemand and conservative governors
+To: Ian Rogers <irogers@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Danilo Krummrich
+ <dakr@kernel.org>, Miguel Ojeda <ojeda@kernel.org>,
+        Kees Cook <kees@kernel.org>, Nathan Chancellor <nathan@kernel.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>,
+        Bill Wendling <morbo@google.com>,
+        Justin Stitt <justinstitt@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Madhavan Srinivasan <maddy@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <chleroy@kernel.org>,
+        Nayna Jain <nayna@linux.ibm.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        David Teigland
+ <teigland@redhat.com>,
+        Alexander Aring <aahringo@redhat.com>, Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini
+ <sstabellini@kernel.org>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Richard Weinberger <richard@nod.at>,
+        Zhihao Cheng <chengzhihao1@huawei.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        driver-core@lists.linux.dev, llvm@lists.linux.dev,
+        linux-hardening@vger.kernel.org, linux-doc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org,
+        gfs2@lists.linux.dev, xen-devel@lists.xenproject.org,
+        linux-s390@vger.kernel.org, linux-mtd@lists.infradead.org,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, zhongqiu.han@oss.qualcomm.com
 References: <20261013223946.1836757-1-irogers@google.com>
- <20261013223946.1836757-11-irogers@google.com>
-Date: Tue, 13 Oct 2026 22:57:36 +0000
+ <20261013223946.1836757-5-irogers@google.com>
+Content-Language: en-US
+From: Zhongqiu Han <zhongqiu.han@oss.qualcomm.com>
+In-Reply-To: <20261013223946.1836757-5-irogers@google.com>
+X-Authority-Analysis: v=2.4 cv=FuqQbGrq c=1 sm=1 tr=0 ts=6acf0414 cx=c_pps
+ a=UNFcQwm+pnOIJct1K4W+Mw==:117 a=nuhDOHQX5FNHPW3J6Bj6AA==:17
+ a=IkcTkHD0fZMA:10 a=660iZSQnnn4A:10 a=s4-Qcg_JpJYA:10
+ a=VkNPw1HP01LnGYTKEx00:22 a=u7WPNUs3qKkmUXheDGA7:22 a=yx91gb_oNiZeI1HMLzn7:22
+ a=1XWaLZrsAAAA:8 a=Stt4M9KXtKJ5ZbChFzoA:9 a=QEXdDO2ut3YA:10
+ a=uKXjsCUrEbL0IQVhDsJ9:22
+X-Proofpoint-GUID: 8fekANBB_j1nxmQFElLMClty5q0yCE46
+X-Proofpoint-ORIG-GUID: 8fekANBB_j1nxmQFElLMClty5q0yCE46
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYxMDE0MDAxNyBTYWx0ZWRfX3aNZARMSok4p
+ dT+dlqVZEd3qY9laF0hXK8J+Was/qR5ZJmjqFyJ/+W1lau7z8cz1tsVXwP+dRrVz/2iedW+1UmO
+ hZJIcT0c+xQnEI+1DhQKwSKx7qBZUcyslaPIr9U8RMdR/xxgj6JgBf6891R6sGNdLkb2YL04yRC
+ 43eNCId2B9s0gs8APYiyU7BE0XsUY+9XeRM1QdRi7NUPGxRLotVJwR9hXBAJzl7U09gcE2UXfJ/
+ ALUhteUWpU44h6g/0F+A8zTjBMVmdpw3wt4JaSqK1b8x8fLxoDsunbtnRZl5FEvSL0az9S/HIiE
+ vaOLUyDHOchuUpF6CIVQv0ZuikveReNiNbtyPuvf8WJEs5v0W7BirZvD+lRMZTSuq8iyYXV/OoA
+ EUBANtZorBEKDfCfQbOkWAZAWLVVR/gpIr1PJG4KpB7rrtmhI2vqDgSSvut4HjD+8sAzff8sE9y
+ bMK+OX4PCSGEryVpAng==
+X-Proofpoint-Spam-Info: AW1haW4tMjYxMDE0MDAxNyBTYWx0ZWRfX4FoLTieG9YtU
+ 5Wlv8i20IfBsmZD6fSHHuJ+8MXifoGVnhLdtK1rMwVegfTMiZIRRQuGBlUkqwVjRvvC4L9P/Ljt
+ U69fkWMQ9RdQgtZelQ1QVQKVvCNSo6Y=
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.134,FMLib:17.12.100.49
+ definitions=2026-10-13_01,2026-10-09_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ clxscore=1015 malwarescore=0 adultscore=0 phishscore=0 suspectscore=0
+ priorityscore=1501 bulkscore=0 spamscore=0 impostorscore=0 lowpriorityscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2610080000 definitions=main-2610140017
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20261013_212454_132303_A9D42918 
+X-CRM114-Status: GOOD (  28.43  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,48 +184,139 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: sashiko-reviews@lists.linux.dev
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-VGhhbmsgeW91IGZvciB5b3VyIGNvbnRyaWJ1dGlvbiEgU2FzaGlrbyBBSSByZXZpZXcgZm91bmQg
-MSBwb3RlbnRpYWwgaXNzdWUocykgdG8gY29uc2lkZXI6Ci0gW01lZGl1bV0gc3lzZnM6IFdBUk5J
-TkcgaW4ga2VybmZzX3JlbW92ZV9ieV9uYW1lX25zIGR1ZSB0byB1bmNvbmRpdGlvbmFsbHkgZGVs
-ZXRpbmcgdW5pbml0aWFsaXplZCBrb2JqZWN0Ci0tCgpjb21taXQgYTgxM2U1ZTVlMzhmZjkyNmE4
-ODU5ZjIyNzMyZDhmZGUzZTBlZDY4OQpBdXRob3I6IElhbiBSb2dlcnMgPGlyb2dlcnNAZ29vZ2xl
-LmNvbT4KCmRybS9hbWRrZmQ6IEZyZWUgcXVldWUgaW4gcHJvY2ZzX3F1ZXVlX3R5cGUga29iamVj
-dCByZWxlYXNlIGNhbGxiYWNrCgpUaGlzIGNvbW1pdCBhZGRzIGEgcmVsZWFzZSBjYWxsYmFjayB0
-byBmcmVlIHRoZSBzdHJ1Y3QgcXVldWUgZnJvbSB0aGUga29iamVjdApyZWxlYXNlIGZ1bmN0aW9u
-IHRvIHByZXZlbnQgYSB1c2UtYWZ0ZXItZnJlZSwgYW5kIGFkanVzdHMgdGhlIGtvYmplY3RfcHV0
-KCkKbG9jYXRpb25zIGFjY29yZGluZ2x5LgoKPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJt
-L2FtZC9hbWRrZmQva2ZkX3Byb2Nlc3MuYyBiL2RyaXZlcnMvZ3B1L2RybS9hbWQvYW1ka2ZkL2tm
-ZF9wcm9jZXNzLmMKPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vYW1kL2FtZGtmZC9rZmRfcHJvY2Vz
-cy5jCj4gKysrIGIvZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRrZmQva2ZkX3Byb2Nlc3MuYwpbIC4u
-LiBdCj4gQEAgLTcwMSw3ICs3MDgsNiBAQCB2b2lkIGtmZF9wcm9jZnNfZGVsX3F1ZXVlKHN0cnVj
-dCBxdWV1ZSAqcSkKPiAgCQlyZXR1cm47Cj4gIAo+ICAJa29iamVjdF9kZWwoJnEtPmtvYmopOwoK
-W1NldmVyaXR5OiBNZWRpdW1dCkNhbiB0aGlzIHRyaWdnZXIgYSBrZXJuZWwgd2FybmluZyBpZiBz
-eXNmcyBjcmVhdGlvbiBmYWlscz8KCklmIGtmZF9wcm9jZnNfYWRkX3F1ZXVlKCkgZmFpbHMgKGZv
-ciBleGFtcGxlLCBkdWUgdG8gYSBtZW1vcnkgYWxsb2NhdGlvbiBmYWlsdXJlCmluIHN5c2ZzKSwg
-cS0+a29iai5zdGF0ZV9pbl9zeXNmcyByZW1haW5zIDAgYW5kIHEtPmtvYmouc2QgaXMgbnVsbC4g
-SG93ZXZlciwKcHFtX2NyZWF0ZV9xdWV1ZSgpIG1heSBpZ25vcmUgdGhpcyBzeXNmcyBmYWlsdXJl
-IGFuZCBrZWVwIHRoZSBxdWV1ZSBvcGVyYXRpb25hbC4KCkxhdGVyLCB3aGVuIHBxbV9kZXN0cm95
-X3F1ZXVlKCkgY2FsbHMga2ZkX3Byb2Nmc19kZWxfcXVldWUoKSwga29iamVjdF9kZWwoKSBpcwpj
-YWxsZWQgdW5jb25kaXRpb25hbGx5LgoKVGhpcyByZXN1bHRzIGluIGEgY2FsbCBjaGFpbiB0byBf
-X2tvYmplY3RfZGVsKCkgd2hpY2ggaW52b2tlcwpzeXNmc19yZW1vdmVfZ3JvdXBzKCkgd2l0aCBh
-IG51bGwga29iai0+c2QuIFRoaXMgZXZlbnR1YWxseSBwcm9wYWdhdGVzIHRvCmtlcm5mc19yZW1v
-dmVfYnlfbmFtZV9ucygpLCB3aGVyZSBhIHdhcm5pbmcgaXMgdHJpZ2dlcmVkIGV4cGxpY2l0bHkg
-d2hlbgppdHMgcGFyZW50IGFyZ3VtZW50IGlzIG51bGw6Cgpmcy9rZXJuZnMvZGlyLmM6a2VybmZz
-X3JlbW92ZV9ieV9uYW1lX25zKCkgewogICAgLi4uCiAgICBpZiAoIXBhcmVudCkgewogICAgICAg
-IFdBUk4oMSwgS0VSTl9XQVJOSU5HICJrZXJuZnM6IGNhbiBub3QgcmVtb3ZlICclcycsIG5vIGRp
-cmVjdG9yeVxuIiwgbmFtZSk7CiAgICAgICAgcmV0dXJuIC1FTk9FTlQ7CiAgICB9CiAgICAuLi4K
-fQoKU2hvdWxkIHdlIGNoZWNrIGlmIHRoZSBrb2JqZWN0IHdhcyBzdWNjZXNzZnVsbHkgYWRkZWQg
-dG8gc3lzZnMgKHN1Y2ggYXMgY2hlY2tpbmcKcS0+a29iai5zdGF0ZV9pbl9zeXNmcykgYmVmb3Jl
-IGNhbGxpbmcga29iamVjdF9kZWwoKT8KCj4gLQlrb2JqZWN0X3B1dCgmcS0+a29iaik7Cj4gIH0K
-Ci0tIApTYXNoaWtvIEFJIHJldmlldyDCtyBodHRwczovL3Nhc2hpa28uZGV2LyMvcGF0Y2hzZXQv
-MjAyNjEwMTMyMjM5NDYuMTgzNjc1Ny0xLWlyb2dlcnNAZ29vZ2xlLmNvbT9wYXJ0PTEwCgpfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXgg
-TVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
-aWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+Hi Ian,
+
+Thanks a lot for the patch.
+
+On 10/14/2026 6:39 AM, Ian Rogers wrote:
+> Export cpufreq_dbs_data_release() and set .kobj_type.release in the
+> ondemand and conservative governors so their gov_attr_set kobjects have
+> a valid release callback, matching cpufreq_ governor_dbs.
+
+Commit a85ee6401a47 ("cpufreq: governor: Use kobject release() method to
+free dbs_data") has already addressed the missing release callback
+issue(it adds the missing cpufreq_dbs_data_release() function.), with 
+its Fixes tag pointing to c4435630361d.
+
+Besides, "matching cpufreq_ governor_dbs." seems to be a typo?
+
+> 
+> This prepares for annotating struct kobj_type::release with
+> __require_explicit_initialization.
+
+It would be better to use "cpufreq: governor:" as the subject prefix.
+
+> 
+> Fixes: c4435630361d ("cpufreq: governor: New sysfs show/store callbacks for governor tunables")
+
+Since a85ee6401a47 ("cpufreq: governor: Use kobject release() method to
+free dbs_data") has already fixed the missing release callback issue,
+current cpufreq patch 4/11 seems to only move the release callback
+initialization to the static initializer in preparation for 11/11. The
+same callback is already set at runtime in cpufreq_dbs_governor_init(),
+so there is no functional change or bug fix here. Should we drop the
+Fixes tag?
+
+So, at least for cpufreq, the issue described in the cover letter
+doesn't seem to exist, right?
+
+"Patches 2-10 fix 10 struct kobj_type definitions where dynamically
+allocated kobjects, ksets, or enclosing structures were either leaked on
+kobject_put() or freed prematurely before kobject release"
+
+
+> Assisted-by: Antigravity:gemini-3.1-pro
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>   drivers/cpufreq/cpufreq_conservative.c | 5 ++++-
+>   drivers/cpufreq/cpufreq_governor.c     | 3 ++-
+>   drivers/cpufreq/cpufreq_governor.h     | 1 +
+>   drivers/cpufreq/cpufreq_ondemand.c     | 5 ++++-
+>   4 files changed, 11 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/cpufreq/cpufreq_conservative.c b/drivers/cpufreq/cpufreq_conservative.c
+> index 0b32ae28ec85..38c3bd5bf75a 100644
+> --- a/drivers/cpufreq/cpufreq_conservative.c
+> +++ b/drivers/cpufreq/cpufreq_conservative.c
+> @@ -316,7 +316,10 @@ static void cs_limits(struct cpufreq_policy *policy)
+>   
+>   static struct dbs_governor cs_governor = {
+>   	.gov = CPUFREQ_DBS_GOVERNOR_INITIALIZER("conservative"),
+> -	.kobj_type = { .default_groups = cs_groups },
+> +	.kobj_type = {
+> +		.release = cpufreq_dbs_data_release,
+> +		.default_groups = cs_groups,
+> +	},
+
+Nit: In that case, may I know can we also remove the following runtime
+assignment from cpufreq_dbs_governor_init() as below:
+
+gov->kobj_type.release = cpufreq_dbs_data_release;
+
+
+>   	.gov_dbs_update = cs_dbs_update,
+>   	.alloc = cs_alloc,
+>   	.free = cs_free,
+> diff --git a/drivers/cpufreq/cpufreq_governor.c b/drivers/cpufreq/cpufreq_governor.c
+> index 710d93ec89b5..97b64985927d 100644
+> --- a/drivers/cpufreq/cpufreq_governor.c
+> +++ b/drivers/cpufreq/cpufreq_governor.c
+> @@ -404,7 +404,7 @@ static void free_policy_dbs_info(struct policy_dbs_info *policy_dbs,
+>   	gov->free(policy_dbs);
+>   }
+>   
+> -static void cpufreq_dbs_data_release(struct kobject *kobj)
+> +void cpufreq_dbs_data_release(struct kobject *kobj)
+>   {
+>   	struct dbs_data *dbs_data = to_dbs_data(to_gov_attr_set(kobj));
+>   	struct dbs_governor *gov = dbs_data->gov;
+> @@ -412,6 +412,7 @@ static void cpufreq_dbs_data_release(struct kobject *kobj)
+>   	gov->exit(dbs_data);
+>   	kfree(dbs_data);
+>   }
+> +EXPORT_SYMBOL_GPL(cpufreq_dbs_data_release);
+>   
+>   int cpufreq_dbs_governor_init(struct cpufreq_policy *policy)
+>   {
+> diff --git a/drivers/cpufreq/cpufreq_governor.h b/drivers/cpufreq/cpufreq_governor.h
+> index 73b8ed7cfaae..c03d067f42eb 100644
+> --- a/drivers/cpufreq/cpufreq_governor.h
+> +++ b/drivers/cpufreq/cpufreq_governor.h
+> @@ -148,6 +148,7 @@ static inline struct dbs_governor *dbs_governor_of(struct cpufreq_policy *policy
+>   }
+>   
+>   /* Governor callback routines */
+> +void cpufreq_dbs_data_release(struct kobject *kobj);
+>   int cpufreq_dbs_governor_init(struct cpufreq_policy *policy);
+>   void cpufreq_dbs_governor_exit(struct cpufreq_policy *policy);
+>   int cpufreq_dbs_governor_start(struct cpufreq_policy *policy);
+> diff --git a/drivers/cpufreq/cpufreq_ondemand.c b/drivers/cpufreq/cpufreq_ondemand.c
+> index 9942dbb38dae..7386d043c665 100644
+> --- a/drivers/cpufreq/cpufreq_ondemand.c
+> +++ b/drivers/cpufreq/cpufreq_ondemand.c
+> @@ -374,7 +374,10 @@ static struct od_ops od_ops = {
+>   
+>   static struct dbs_governor od_dbs_gov = {
+>   	.gov = CPUFREQ_DBS_GOVERNOR_INITIALIZER("ondemand"),
+> -	.kobj_type = { .default_groups = od_groups },
+> +	.kobj_type = {
+> +		.release = cpufreq_dbs_data_release,
+> +		.default_groups = od_groups,
+> +	},
+>   	.gov_dbs_update = od_dbs_update,
+>   	.alloc = od_alloc,
+>   	.free = od_free,
+
+
+-- 
+Thx and BRs,
+Zhongqiu Han
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
