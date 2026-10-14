@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 543B3CC6B24
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7BD12CC6B2C
 	for <linux-mtd@archiver.kernel.org>; Wed, 14 Oct 2026 15:44:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,38 +12,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=9Z7lZutt9zrzHVdT29oFPJ1z/lVX2bXZQ2RX7QYU0IU=; b=PDlFSkaGR4s78z
-	Jh5yQbSkXFDuGIUssB/4Kz5idxcKDqoVH7AMXNdRICdOhx+62J8quZDVVg5cD4bSjlm8sgyQbxI1E
-	QQxTJOhypMSJ8cmw1d2u8jU3PZkAut4d/poVKl9W2UIDw6Q/6SlvJ06rzTSWOCw0SZgS1p994nedJ
-	BuSt8pQ0/oyXrVLuhvGS+RIAEu0KPUJEPnGD/WAVaqT1lVLHhBcvF914xGic9b1ktRfes2v/qcTxU
-	Nl2yPYOu2aSt5AzrDzGZMrqG+36AZIwO1mzm0m1T8pQEauoSAJ7E5RkWcgLkx+iMi0Ln15LNVa8hn
-	Guvw71hzNjzKubeNSt2w==;
+	List-Owner; bh=8AigVjmdoPk1jCm9ZhWrEJBnyEkYnTswhOUSEBLGUuM=; b=pJ24c/C7M5jyqm
+	mGBreQxQnxx9W2KzZyFXZByFuHjqagCRlHnKeb9vwj/qtSqJoDk35wtsngFvwlkHRORUb4AypHb6b
+	E5NfKDuKFoNxEMcxpjRtsGfw9euYZBspyWKXRgjMrUuK6KPT859DrLUTfpVQ2LwIJRV3Qn5qxafQt
+	E0Vr7DzxYqjBUlNXqWwksP4sYVkYHhi20CkeT7AKZbhzDwzvVLlg+NGZBEsWPiG/P9R8lgG86TlNu
+	ZAQCkK73IaN8JDOK0rBpoCWup7PRkBKxUVVCuvq8q5BdG44QzORla8015kWcRnSlAw2CJQ9kQPxl/
+	sHTVK2nela3PQBkqZvjg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xH19M-0000000FssA-39yn;
-	Wed, 14 Oct 2026 15:44:16 +0000
+	id 1xH19N-0000000Fssb-3W1V;
+	Wed, 14 Oct 2026 15:44:17 +0000
 Received: from smtpout-03.galae.net ([185.246.85.4])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xH19I-0000000Fsqb-1Zr4
+	id 1xH19L-0000000FsrV-1U3C
 	for linux-mtd@lists.infradead.org;
-	Wed, 14 Oct 2026 15:44:14 +0000
+	Wed, 14 Oct 2026 15:44:16 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id E0EEF4E41224;
-	Wed, 14 Oct 2026 15:44:10 +0000 (UTC)
+	by smtpout-03.galae.net (Postfix) with ESMTPS id D035C4E41229;
+	Wed, 14 Oct 2026 15:44:13 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id AE05D60368;
-	Wed, 14 Oct 2026 15:44:10 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 092A01032831F;
-	Wed, 14 Oct 2026 17:44:06 +0200 (CEST)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 9E80F60368;
+	Wed, 14 Oct 2026 15:44:13 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 35E8F103284ED;
+	Wed, 14 Oct 2026 17:44:09 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1791992649; h=from:subject:date:message-id:to:cc:mime-version:
+	t=1791992652; h=from:subject:date:message-id:to:cc:mime-version:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=GcId23e25YWV3EkaB1LBizu2mjqjYuhu3m5VaPrgCe4=;
-	b=0cUawt3iZB94ERJcV1Vcq0RhnLC91bvctwhwNptVZfctIksLxQgu6izYrdzeuZvVKdAxuY
-	56I7trDUwKvR8BBFP8lH7eqDffjVEifoXV2yb8GOOKyCr7XbHJAicDg/Da4Fwebapw84Pj
-	1p7r/AVjgnqtzPbAJAckcK+blIYQ9BzXr33aE2TICETXi38zpuoMVu59fvw7Jdyg3UCzGb
-	VxmYQu0VO94Vip1IwNd6bIOOK058OL8zCrEbR8dUf3vBR8hkmtNfK56W4Vt0LJIynQ7ynb
-	qe+Y6pmmQwkkxzytt0ML7XHmkv94NFttxOV+eFeX1mq1ebry73pv0c6FbTEscA==
+	bh=L3yzdkIIoXv+mg+K4J6YhHul2QjJeOxkn+qRFdP45OA=;
+	b=it6MIToYsynzobACp4L5OJp1WnYlJ7aazkBmu4Zj5E6nddHy4iQ5K2pWaZhEpIf31lCCfs
+	AetRiCanK/zzhBFbgPS+DAsw5nZF4wWtojnNd29rV4f0O/pw05S9/MXEmWVVdY5msS5A+o
+	wX2eVxMgizrO5A1KrURLqeNXzecPnP4q+t9gHLppGxdJ6pVyW7ahK7m6IAqRgysjIVqvjs
+	8p89hu4s0nHH9Abpmw4UHUieKvB0K5pmywQX4sXaIv7Pp/wPQZIkv4rR1gGP6Pya9sxF23
+	bOw8bQMUdEuHjyixpunzIF3EcWUJL/xibTZEX74DhkYJzBEVTK6FHr1+QMl/kw==
 From: Paul Cercueil <paul.cercueil@bootlin.com>
 To: Pratyush Yadav <pratyush@kernel.org>,
 	Michael Walle <mwalle@kernel.org>,
@@ -63,17 +63,17 @@ Cc: Kees Cook <kees@kernel.org>,
 	Sunil Kovvuri Goutham <sgoutham@marvell.com>,
 	Tanmay Jagdale <tanmay@marvell.com>,
 	Paul Cercueil <paul.cercueil@bootlin.com>
-Subject: [PATCH v3 1/7] spi: spi-mem: Add support for panic mem writes
-Date: Wed, 14 Oct 2026 17:42:55 +0200
-Message-ID: <20261014154301.157755-2-paul.cercueil@bootlin.com>
+Subject: [PATCH v3 2/7] mtd: spi-nor: Wait for NOR ready with poll_timeout_us()
+Date: Wed, 14 Oct 2026 17:42:56 +0200
+Message-ID: <20261014154301.157755-3-paul.cercueil@bootlin.com>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20261014154301.157755-1-paul.cercueil@bootlin.com>
 References: <20261014154301.157755-1-paul.cercueil@bootlin.com>
 MIME-Version: 1.0
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261014_084412_996317_49855C96 
-X-CRM114-Status: GOOD (  21.22  )
+X-CRM114-CacheID: sfid-20261014_084415_535634_0F895B05 
+X-CRM114-Status: GOOD (  14.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,13 +92,12 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Tanmay Jagdale <tanmay@marvell.com>
 
-Add a 'panic_write' flag to the controller's capabilities struct.
-When set, the SPI controller indicates that it will be able to send
-commands to a connected NOR or NAND memory in the context of a kernel
-panic, which means without sleeping and without relying on IRQs.
+Instead of polling for the spi_nor_ready() with a custom loop, use
+poll_timeout_us(). The sleep period between two polls is set to 100 us
+which I think should be fine.
 
-Whether or not a given memory operation is a panic mem write is given by
-the spi_mem_op.panic_write flag.
+This will make it simpler to support waiting for the SPI NOR in atomic
+context later.
 
 Signed-off-by: Tanmay Jagdale <tanmay@marvell.com>
 Co-developed-by: Paul Cercueil <paul.cercueil@bootlin.com>
@@ -106,129 +105,102 @@ Signed-off-by: Paul Cercueil <paul.cercueil@bootlin.com>
 ---
 
 Notes:
-    v2: - Don't call spi_mem_access_start/end on panic. We don't need to
-          flush the SPI queue at that point, and we don't need to lock the
-          mutexes.
-        - Check that the SPI controller's PM status is active, and bail out
-          otherwise.
+    v2: New patch
     
-    v3: - Use pm_runtime_active() instead of pm_runtime_get_if_active(). The
-          latter cannot be used in a panic context.
-        - Forbid fallback to regular SPI on panic
+    v3: Set 'timeout_ms' parameter to u64 to prevent u32 overflow
 
- drivers/spi/spi-mem.c       | 42 +++++++++++++++++++++++++++++++++----
- include/linux/spi/spi-mem.h |  5 +++++
- 2 files changed, 43 insertions(+), 4 deletions(-)
+ drivers/mtd/spi-nor/core.c | 40 +++++++++++++++-----------------------
+ 1 file changed, 16 insertions(+), 24 deletions(-)
 
-diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
-index b94680b60af9..9ad42dd9de70 100644
---- a/drivers/spi/spi-mem.c
-+++ b/drivers/spi/spi-mem.c
-@@ -398,6 +398,31 @@ int spi_mem_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
- 	u8 *tmpbuf;
- 	int ret;
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 8bc117b46e02..58257cc21c68 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -12,6 +12,7 @@
+ #include <linux/device.h>
+ #include <linux/err.h>
+ #include <linux/errno.h>
++#include <linux/iopoll.h>
+ #include <linux/math64.h>
+ #include <linux/module.h>
+ #include <linux/mtd/mtd.h>
+@@ -32,13 +33,13 @@
+  * For everything but full-chip erase; probably could be much smaller, but kept
+  * around for safety for now
+  */
+-#define DEFAULT_READY_WAIT_JIFFIES		(40UL * HZ)
++#define DEFAULT_READY_TIMEOUT_MS		40000UL
  
-+	if (op->panic_write) {
-+		if (!spi_mem_controller_is_capable(ctlr, panic_write))
-+			return -EOPNOTSUPP;
-+
-+		/*
-+		 * Only support panic writes if we'll go through .exec_op().
-+		 * The regular SPI path (spi_sync(), etc.) explicitly mentions
-+		 * that it can only be used from a context that may sleep, which
-+		 * is not the case on a kernel panic.
-+		 * If this changes in the future, this could be reworked, but
-+		 * for now this will have to do.
-+		 */
-+		if (WARN_ON_ONCE(!ctlr->mem_ops || !ctlr->mem_ops->exec_op))
-+			return -EOPNOTSUPP;
-+
-+		if (spi_get_csgpiod(mem->spi, 0))
-+			return -EPERM;
-+
-+		/* On panic IRQs are disabled so we cannot wait on locks */
-+		if (mutex_is_locked(&ctlr->bus_lock_mutex) ||
-+		    mutex_is_locked(&ctlr->io_mutex)) {
-+			return -EPERM;
-+		}
-+	}
-+
- 	/* Make sure the operation frequency is correct before going futher */
- 	spi_mem_adjust_op_freq(mem, (struct spi_mem_op *)op);
+ /*
+  * For full-chip erase, calibrated to a 2MB flash (M25P16); should be scaled up
+  * for larger flash
+  */
+-#define CHIP_ERASE_2MB_READY_WAIT_JIFFIES	(40UL * HZ)
++#define CHIP_ERASE_2MB_READY_TIMEOUT_MS		40000UL
  
-@@ -420,15 +445,20 @@ int spi_mem_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
- 		return -EOPNOTSUPP;
+ #define SPI_NOR_MAX_ADDR_NBYTES	4
  
- 	if (ctlr->mem_ops && ctlr->mem_ops->exec_op && !spi_get_csgpiod(mem->spi, 0)) {
--		ret = spi_mem_access_start(mem);
--		if (ret)
+@@ -711,30 +712,21 @@ static int spi_nor_ready(struct spi_nor *nor)
+  *
+  * Return: 0 on success, -errno otherwise.
+  */
+-static int spi_nor_wait_till_ready_with_timeout(struct spi_nor *nor,
+-						unsigned long timeout_jiffies)
++static int spi_nor_wait_till_ready_with_timeout(struct spi_nor *nor, u64 timeout_ms)
+ {
+-	unsigned long deadline;
+-	int timeout = 0, ret;
++	int ret, status;
+ 
+-	deadline = jiffies + timeout_jiffies;
+-
+-	while (!timeout) {
+-		if (time_after_eq(jiffies, deadline))
+-			timeout = 1;
+-
+-		ret = spi_nor_ready(nor);
+-		if (ret < 0)
 -			return ret;
-+		if (!op->panic_write) {
-+			ret = spi_mem_access_start(mem);
-+			if (ret)
-+				return ret;
-+		} else if (!pm_runtime_active(ctlr->dev.parent)) {
-+			return -EPERM;
-+		}
- 
- 		trace_spi_mem_start_op(mem, op);
- 		ret = ctlr->mem_ops->exec_op(mem, op);
- 		trace_spi_mem_stop_op(mem, op);
- 
--		spi_mem_access_end(mem);
-+		if (!op->panic_write)
-+			spi_mem_access_end(mem);
- 
- 		/*
- 		 * Some controllers only optimize specific paths (typically the
-@@ -441,6 +471,10 @@ int spi_mem_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
- 
- 			return ret;
- 		}
-+
-+		/* On panic write we can't fall back to the fallback SPI path */
-+		if (op->panic_write)
-+			return ret;
+-		if (ret)
+-			return 0;
+-
+-		cond_resched();
++	ret = poll_timeout_us(status = spi_nor_ready(nor), status,
++			      100, timeout_ms * 1000, false);
++	if (ret < 0) {
++		dev_dbg(nor->dev, "flash operation timed out\n");
++		return ret;
  	}
  
- 	tmpbufsize = op->cmd.nbytes + op->addr.nbytes + op->dummy.nbytes;
-diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
-index 0cce6b57242a..2633307bfad5 100644
---- a/include/linux/spi/spi-mem.h
-+++ b/include/linux/spi/spi-mem.h
-@@ -169,6 +169,7 @@ enum spi_mem_data_dir {
-  *		 operation does not involve transferring data
-  * @data.buf.in: input buffer (must be DMA-able)
-  * @data.buf.out: output buffer (must be DMA-able)
-+ * @panic_write: The command is executed in the context of a kernel panic
-  * @max_freq: frequency limitation wrt this operation. 0 means there is no
-  *	      specific constraint and the highest achievable frequency can be
-  *	      attempted.
-@@ -211,6 +212,7 @@ struct spi_mem_op {
- 		} buf;
- 	} data;
+-	dev_dbg(nor->dev, "flash operation timed out\n");
++	if (status < 0)
++		return status;
  
-+	bool panic_write;
- 	unsigned int max_freq;
- };
+-	return -ETIMEDOUT;
++	return 0;
+ }
  
-@@ -392,6 +394,8 @@ struct spi_controller_mem_ops {
-  *                   is a pause in the transfer (eg. internal bus contention or
-  *                   DMA arbitration on an interconnect). Features such as NAND
-  *                   continuous reads shall not be leveraged.
-+ * @panic_write: Set to true if the controller driver supports writing to a
-+ *               connected NAND/NOR memory in a kernel panic context
-  */
- struct spi_controller_mem_caps {
- 	bool dtr;
-@@ -400,6 +404,7 @@ struct spi_controller_mem_caps {
- 	bool per_op_freq;
- 	bool secondary_op_tmpl;
- 	bool no_cs_assertion;
-+	bool panic_write;
- };
+ /**
+@@ -747,7 +739,7 @@ static int spi_nor_wait_till_ready_with_timeout(struct spi_nor *nor,
+ int spi_nor_wait_till_ready(struct spi_nor *nor)
+ {
+ 	return spi_nor_wait_till_ready_with_timeout(nor,
+-						    DEFAULT_READY_WAIT_JIFFIES);
++						    DEFAULT_READY_TIMEOUT_MS);
+ }
  
- #define spi_mem_controller_is_capable(ctlr, cap)	\
+ /**
+@@ -1781,8 +1773,8 @@ static int spi_nor_erase_dice(struct spi_nor *nor, loff_t addr,
+ 	 * pull these from CFI/SFDP, but these values should be good
+ 	 * enough for now.
+ 	 */
+-	timeout = max(CHIP_ERASE_2MB_READY_WAIT_JIFFIES,
+-		      CHIP_ERASE_2MB_READY_WAIT_JIFFIES *
++	timeout = max(CHIP_ERASE_2MB_READY_TIMEOUT_MS,
++		      CHIP_ERASE_2MB_READY_TIMEOUT_MS *
+ 		      (unsigned long)(nor->mtd.size / SZ_2M));
+ 
+ 	do {
 -- 
 2.47.3
 
