@@ -4,48 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE5E6CC6B1A
-	for <linux-mtd@archiver.kernel.org>; Wed, 14 Oct 2026 16:37:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D665ACC6B1A
+	for <linux-mtd@archiver.kernel.org>; Wed, 14 Oct 2026 16:37:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=LiIBoLV7a5UV5bgZOVX2B/Waaw/gVOMtN2MUqO7cuxY=; b=j/RudHcdhRoEPQ
-	Ya/8nfmz0SrsYO1qVnwFSRiwW7ahFbWQioBiXM/5q8w5MGF2IuI4M6fiAA2mGsJdelEnQiaw+osHi
-	SSNhCObhzdLl/5heFySP31A7HlQsUa5XHrnwUZVWz5M5hvfRBN4MTT2fjduDWPM7QXRNZ0pa8jtko
-	6/ty1/vme1Qmgw+EGyCQDT7a7E9K8Ovazeq0qdBfwzPX8F+XbR6ErU0BB4VYt8cLxrRWkt2f8VDAD
-	2WlrydOTfO6ZUvke2PAgT3xeuxNfLWVDmPJc2heuRFlYnrU63UWoTs0LTblhniRfVoJjsqi0CVeBF
-	/PTZ7Lax7+aTLgtFjzrA==;
+	List-Owner; bh=pijDe9CNRZkxIPiO6kOxQjz2S0bjOq+SrdeqghtPB4o=; b=WfZPzzjD0+YGHp
+	2sYUEtZCAZ+2AtUEqAgay7cgM8hY8691O5w5ggZc+0mkMJ3fSjNaNeDLsPuOm5whC8L665EEkHfnI
+	1+AqnnnYpWbX8qOvCHLJZ2MjQpMUEXjpMN8wIY79ok327KcCpK/KpN+FXioVWLdIM+ko83mKGg5jR
+	+x6npya0a06dKPy6fW6xGjRqEZfY6YD+lLUFZKs/vqwfdyGroArYkMYJp8TnSL/rVI2mcSHjR9cOl
+	rrrNS2dNM47J/b9VXUBoT9TuqT4MrtPrDVTT70EYj5rbqtO/yJvR6Jbl+V4bMCOWra/Ll6q21Ixi6
+	EHUohSt1nFTW5ptU1oFw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xH1yc-0000000G0aD-251Q;
-	Wed, 14 Oct 2026 16:37:14 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1xH1z9-0000000G0gc-1xJ3;
+	Wed, 14 Oct 2026 16:37:47 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xH1ya-0000000G0Zt-2Vz9
+	id 1xH1z7-0000000G0gM-0XqA
 	for linux-mtd@lists.infradead.org;
-	Wed, 14 Oct 2026 16:37:12 +0000
+	Wed, 14 Oct 2026 16:37:45 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 4A7DB4138B;
-	Wed, 14 Oct 2026 16:37:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 258481F000C4;
-	Wed, 14 Oct 2026 16:37:12 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id C9B3E4094A;
+	Wed, 14 Oct 2026 16:37:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3E201F000C4;
+	Wed, 14 Oct 2026 16:37:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1791995832;
-	bh=D0qFplMD3JegnW7i3iVJkwgfMDmyoOPsyHFrtj+nxBA=;
+	s=k20260515; t=1791995864;
+	bh=ovAqcUcR1GnKTtcInlqEnrexmz1gsb8w6q2FfK1T5r4=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=n9IplbiX+93nceH23XmnKeZ5oYecY++a3sP1FSp8/eoJQHlwosXybufpa8S8KQDs4
-	 JSOYDlE3dW0Tstqig9001fDQnyF55nygDlSOHNkJdYmGR6xIoM+nl1dQhuyjrtkVwj
-	 EuXqe73P+3VZ6BDKW7wiUBDkX32NJU8qFo902yMRcaug/7BAm5oKbDw4gxCh7LxUqC
-	 Y7NxYDYR/y/z28DqpEx8zGTH0dUYz2jKMESyevlBsADLYmloXFD5sbjroBfTPOb1YO
-	 EAaIr8VM2TPJc/hDXYqOW71XwpeyatwvwVWF6WB1T2qG0eJVVmvgIrJgOh3HFB8l/2
-	 2qpSERGwTKhRA==
-Date: Wed, 14 Oct 2026 09:37:11 -0700
+	b=GwrpOxogXrqhTXQ0pfmjgGMR/nhqs689d6d2T2UbxyqwEi+VJ/4ET2F3bxSsa/yCN
+	 EaglIPzBQ4qutHm/Eihe0pPBAWe+NlyY72FoJLC4Rcx8zYnrd+VBcodEifrd7JTzwT
+	 8EqOjY6NHHc/4uGTfqT13dIP1aP05fs1tpq0wWe/LFtLEAv3fcER387/hVuHvXtsuD
+	 UxSDlOug9/2BlYA6zAYEAL+qTg5TM5momYM01f0IFfrqT1XCvpcIhwvzWCD/yfd3Rd
+	 ixvRP2r8X3I5Gfn87O/r4tNbn1q5lLdLD9Jj9tp7JpRRBzFzF6fUQnw/3GazF0kGmz
+	 Z7FdXtLFV/36A==
+Date: Wed, 14 Oct 2026 09:37:44 -0700
 From: Kees Cook <kees@kernel.org>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
 Cc: Ian Rogers <irogers@google.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	"Rafael J . Wysocki" <rafael@kernel.org>,
 	Danilo Krummrich <dakr@kernel.org>, Miguel Ojeda <ojeda@kernel.org>,
 	Nathan Chancellor <nathan@kernel.org>,
@@ -85,14 +86,15 @@ Cc: Ian Rogers <irogers@google.com>,
 	linux-s390@vger.kernel.org, linux-mtd@lists.infradead.org,
 	amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/11] kobject: Require explicit initialization of struct
- kobj_type::release
-Message-ID: <202610140932.5F9CFCE5@keescook>
+Subject: Re: [PATCH 01/11] Compiler Attributes: Add
+ __require_explicit_initialization macro
+Message-ID: <202610140937.B68C8C9AAC@keescook>
 References: <20261013223946.1836757-1-irogers@google.com>
- <2026101425-why-boring-4f2d@gregkh>
+ <20261013223946.1836757-2-irogers@google.com>
+ <CANiq72mLUh1JB=9e=tqStuL_H3=Ormx5v-uFkCDp-0zZm7tBrQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <2026101425-why-boring-4f2d@gregkh>
+In-Reply-To: <CANiq72mLUh1JB=9e=tqStuL_H3=Ormx5v-uFkCDp-0zZm7tBrQ@mail.gmail.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -104,61 +106,29 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Oct 14, 2026 at 07:36:41AM +0200, Greg Kroah-Hartman wrote:
-> On Tue, Oct 13, 2026 at 03:39:35PM -0700, Ian Rogers wrote:
-> > Clang supports the 'require_explicit_initialization' attribute on struct
-> > fields to enforce that the field is explicitly initialized when an
-> > aggregate object is constructed, emitting -Wuninitialized-explicit-init
-> > (enabled by default) if the field is omitted.
-> > 
-> > Following discussion at the Linux Plumbers Conference [1], this series
-> > introduces __require_explicit_initialization in
-> > include/linux/compiler_attributes.h and applies it to
-> > struct kobj_type::release.
-> 
-> Cool, sorry I missed that talk.
-
-Yeah, I'm really liking these compile-time checks. :)
-
-> 
-> > As Documentation/core-api/kobject.rst notes:
-> >   "One important point cannot be overstated: every kobject must have a
-> >   release() method, and the kobject must persist (in a consistent state)
-> >   until that method is called. If these constraints are not met, the code
-> >   is flawed."
-> > 
-> > Annotating struct kobj_type::release caught 30 struct kobj_type
-> > definitions across the tree that omitted .release:
-> > - Patches 2-10 fix 10 struct kobj_type definitions where dynamically
-> >   allocated kobjects, ksets, or enclosing structures were either leaked on
-> >   kobject_put() or freed prematurely before kobject release (risking a
-> >   use-after-free when CONFIG_DEBUG_KOBJECT_RELEASE=y).
-> > - Patch 11 annotates struct kobj_type::release with
-> >   __require_explicit_initialization and explicitly sets .release = NULL
-> >   (with explanatory comments) on the remaining legacy struct kobj_type
-> >   definitions whose kobjects are static, per-CPU, or embedded in devm- or
-> >   parent-managed structures.
-> 
-> Sounds great, but let's fix up the users before adding the attribute.
-> Looks like some of these need another version so it might take a bit of
-> time to get them all merged.
-
-I'd really like to have the attribute available, and I've got at least
-one user I can apply today that don't require fix-ups (seq_file), so
-if Miguel is okay with it, I'd like to snag patch 1 and send it with
-my seq_file "first user" for this coming merge window so it's available
-starting with v7.4-rc1, and we don't end up needing to wait 10 weeks for
-other subsystems to be able to use it. And the kobj fixups can continue
-in parallel. Does that sounds okay?
-
--- 
-Kees Cook
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gV2VkLCBPY3QgMTQsIDIwMjYgYXQgMDE6Mjg6NTVQTSArMDIwMCwgTWlndWVsIE9qZWRhIHdy
+b3RlOgo+IE9uIFdlZCwgT2N0IDE0LCAyMDI2IGF0IDEyOjQw4oCvQU0gSWFuIFJvZ2VycyA8aXJv
+Z2Vyc0Bnb29nbGUuY29tPiB3cm90ZToKPiA+Cj4gPiArLyoKPiA+ICsgKiBPcHRpb25hbDogbm90
+IHN1cHBvcnRlZCBieSBnY2MKPiA+ICsgKgo+ID4gKyAqIGNsYW5nOiBodHRwczovL2NsYW5nLmxs
+dm0ub3JnL2RvY3MvQXR0cmlidXRlUmVmZXJlbmNlLmh0bWwjcmVxdWlyZS1leHBsaWNpdC1pbml0
+aWFsaXphdGlvbgo+ID4gKyAqLwo+ID4gKyNpZiBfX2hhc19hdHRyaWJ1dGUoX19yZXF1aXJlX2V4
+cGxpY2l0X2luaXRpYWxpemF0aW9uX18pCj4gPiArIyBkZWZpbmUgX19yZXF1aXJlX2V4cGxpY2l0
+X2luaXRpYWxpemF0aW9uIF9fYXR0cmlidXRlX18oKF9fcmVxdWlyZV9leHBsaWNpdF9pbml0aWFs
+aXphdGlvbl9fKSkKPiA+ICsjZWxzZQo+ID4gKyMgZGVmaW5lIF9fcmVxdWlyZV9leHBsaWNpdF9p
+bml0aWFsaXphdGlvbgo+ID4gKyNlbmRpZgo+IAo+IFRoZSBMUEMgc2xpZGVzIG1lbnRpb24gQ2xh
+bmcgMTQrLCBidXQgZnJvbSBhIHF1aWNrIHRlc3QgaW4gQ29tcGlsZXIKPiBFeHBsb3JlciBhbmQg
+YSBgZ2l0IGxvZyAtLWdyZXBgIG9uIHRoZSBMTFZNIHJlcG9zaXRvcnkgdG8gY29uZmlybSwgaXQK
+PiBzZWVtcyB0aGUgYXR0cmlidXRlIHdhcyBpbnRyb2R1Y2VkIGluIENsYW5nIDIwKywgbm8/Cj4g
+Cj4gSWYgdGhhdCBpcyBjb3JyZWN0LCB0aGVuIGl0IGlzIG5vdCBhdmFpbGFibGUgaW4gYWxsIExM
+Vk0gdmVyc2lvbnMgd2UKPiBzdXBwb3J0IChMTFZNIDE3KyksIHNvIHdlIHNob3VsZCBhZGQ6Cj4g
+Cj4gICAgICAqIE9wdGlvbmFsOiBvbmx5IHN1cHBvcnRlZCBzaW5jZSBjbGFuZyA+PSAyMC4wCj4g
+Cj4gV2l0aCB0aGF0Ogo+IAo+IEFja2VkLWJ5OiBNaWd1ZWwgT2plZGEgPG9qZWRhQGtlcm5lbC5v
+cmc+CgpZdXAsIEkgY2FuIGNvbmZpcm0sIEkgb25seSBzZWUgaXQgd2l0aCAyMCsgdG9vLgoKLS0g
+CktlZXMgQ29vawoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMu
+aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
