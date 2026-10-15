@@ -4,69 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83398CC6B33
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Oct 2026 09:21:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 65E27CC6B34
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Oct 2026 09:31:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:References:To:From:Subject:Message-Id:Date:Mime-Version:Reply-To:
-	Cc:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=oeLiZOAz2LMMoTJ0dG9PetmSyI8K9bCTVYx+3LKyzRQ=; b=s78CxP1CWuYTME1RH2bvbXCfhZ
-	c9snUaU6+u2CwoTH23tZP2B1c25RV+MlVto375hHG0qUaetXAT3D3jiYuqkf492fzwjyNp18B8Ox3
-	ynXcJ3DVn94AmUj5xHThhxvgIPAsMEBfH4N5r595CVerwHcD5lhVbO8TuDT/a4TLq0tmKV2z41JHe
-	hbwy9WL1a5ErbxFaAQsGQvbLL+TeGqvtKfO6YbRHAh0KRSnj3FakZXLWjynSP0rx0rILOZak5y39q
-	ovaqQrJ73fGj/8IOrkbCYSwtcRsjJoazy113wgMqX9ht4a4sQwpslPu5hOWHaSAHVbaCP2Fb1ypPS
-	OH6rpx8w==;
+	bh=PTP5XHEkFyrqHrEwCENsNxAPkoc7imbmOLf2qx0HtfA=; b=p2WsqN/W1PtvgvdmGuyte2d+19
+	UxXq4JwyQUzOIYX0dEQG4/FIo0S8Pjgw8AqoFal9WZEtXcEykLXdzdfx7nyO/k7jOuQUi+R9UUe2s
+	+Nio0pUvIpbuBlvqY9cWs3fCcew/QlpM4XM8sXsPrzRTkNpIVBDhcHx6/UTXMg33uo/o7xgYKvwN7
+	iNg3n+QVq4ekCLoeIZceaP5nXMiXi7r8jqdSrCfVEdEyogcaszcGmyXfi5361SWfXxhmKcZKnB4+e
+	gBzDSFIGud3E0xRpUB+8O2TL871OtVI+q3Ku5wm9Jv3jB9OP17S1lerHHFpvnpalW85maNLDVRGYa
+	jHiy+2Zg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xHHe9-0000000HFF8-356K;
-	Thu, 15 Oct 2026 09:21:09 +0000
-Received: from 0001.3ffe.de ([159.69.201.130])
+	id 1xHHns-0000000HGxp-3g99;
+	Thu, 15 Oct 2026 09:31:12 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xHHe7-0000000HFDz-0MrB;
-	Thu, 15 Oct 2026 09:21:08 +0000
-Received: from localhost (unknown [213.135.10.150])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id 57DC648D;
-	Thu, 15 Oct 2026 11:21:04 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-	t=1792056064;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RhOXfJe2evQSmltYZcqoysV/ojsK0GjNWYjg2pyAuN0=;
-	b=qkTBo9hI6+sPXqeenT12ELPrdYL0GOJOtyFSPIXgxRq6GK4IMmNUqa4zVqQwJyGhapmTjI
-	ku5fbIeLlZw9IMaQV0mZxTKY7LL9rrPyW0jWHGVvz4VcSokzRzM+x9FQfuq8p5uBKgDVL1
-	wtN+QkhNuhLSM3kvlPcr7dkJPfzp0F4NcZ4qJxGJ4svJz0IrIXK5JIxlR0zK3Z8rl8WU8D
-	+VI81JPzU0CjbUX7sCpRqh40Fky5f3U0viqxNrw55gL8fqrdBVObQaQcLOzzGF0DCgapz2
-	Nv2v9AHnch1xy+b/hPijrh81mUG2kPf0svxawFPomN+5yrYI4o7MY9XDkHXEuA==
-Mime-Version: 1.0
-Date: Thu, 15 Oct 2026 11:21:02 +0200
-Message-Id: <DM5AUTOSX5TD.2RD50MZ8S8GAF@walle.cc>
-Subject: Re: [PATCH v8 4/8] mtd: spi-nor: sfdp: expose the SFDP as a
- read-only NVMEM device
-From: "Michael Walle" <michael@walle.cc>
-To: "Manikandan Muralidharan" <manikandan.m@microchip.com>,
- <pratyush@kernel.org>, <mwalle@kernel.org>, <takahiro.kuwano@infineon.com>,
- <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
- <robh@kernel.org>, <krzk+dt@kernel.org>, <conor+dt@kernel.org>,
- <srini@kernel.org>, <nicolas.ferre@microchip.com>,
- <alexandre.belloni@bootlin.com>, <claudiu.beznea@tuxon.dev>,
- <linux@armlinux.org.uk>, <richardcochran@gmail.com>, <linusw@kernel.org>,
- <arnd@arndb.de>, <aaro.koskinen@iki.fi>, <gregkh@linuxfoundation.org>,
- <mathieu.dubois-briand@bootlin.com>, <linux-mtd@lists.infradead.org>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- <linux-arm-kernel@lists.infradead.org>, <netdev@vger.kernel.org>
-X-Mailer: aerc 0.20.0
-References: <cover.1790847519.git.manikandan.m@microchip.com>
- <093672d183a06dc2f37366b2f9ff144316850863.1790847519.git.manikandan.m@microchip.com>
-In-Reply-To: <093672d183a06dc2f37366b2f9ff144316850863.1790847519.git.manikandan.m@microchip.com>
+	id 1xHHnr-0000000HGws-1rM9
+	for linux-mtd@bombadil.infradead.org;
+	Thu, 15 Oct 2026 09:31:11 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+	:In-Reply-To:MIME-Version:Date:Message-ID:From:References:CC:To:Subject:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=iRaXeKhUNjHXGpTHHMq9qJh0jfK4pRDZnGKPUhbBq/w=; b=V+DN8sLZbB8RXJYhviyELyrrtC
+	LptWOBkohcP4Zot60y8ZFllEyMX7OGDmPoaYlHBlsYwrBeWe0TuxegjXG0OHHf0dbV2dEwjvhPDAw
+	v1k0LMfxm3ucznWIGWr7SorFaEiRlPip2tJwhDB0ZBlz1sGdMJmxXdiVK0ZwFv5ymu2BYDxGU2lBT
+	7oFqJZjvZm3Jwh45YwEhq9gckt8tNwH11XvEI9rl4lIkJICbBz7AwCZpTQSUex+7zC1iIOPVEiiV6
+	rERNiIq0OwkAy63cEvHIXHg5wNAPwP0Yh54I9jazDlivDcvLtq03VWNN1NWLByiGRmvkAl5SDV8Pm
+	NXYGYqGg==;
+Received: from canpmsgout09.his.huawei.com ([113.46.200.224])
+	by desiato.infradead.org with esmtps (Exim 4.99.5 #2 (Red Hat Linux))
+	id 1xHHne-00000000Atl-14hl
+	for linux-mtd@lists.infradead.org;
+	Thu, 15 Oct 2026 09:31:09 +0000
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=iRaXeKhUNjHXGpTHHMq9qJh0jfK4pRDZnGKPUhbBq/w=;
+	b=Yzj0lm5DlwcUf1WeGfqGOu/OHAt4yjNR1H9xjxXI3DtulLV9fAp76rw8QynbmLRgXWh95Sz7w
+	Q2bO8cJFOEGH8WjSALlk3zeJGxoFgqButvjALLzF+pHIlcqDNdQrNicD8W7r77kFeVDhONVtqiA
+	bNzZdJOEvpPE/YW+GyLcB80=
+Received: from mail.maildlp.com (unknown [172.19.163.127])
+	by canpmsgout09.his.huawei.com (SkyGuard) with ESMTPS id 4j52ZY4h8dz1cyPY;
+	Thu, 15 Oct 2026 17:19:17 +0800 (CST)
+Received: from whupemo200011.china.huawei.com (unknown [7.152.185.179])
+	by mail.maildlp.com (Postfix) with ESMTPS id 980BE40572;
+	Thu, 15 Oct 2026 17:30:33 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ whupemo200011.china.huawei.com (7.152.185.179) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.45; Thu, 15 Oct 2026 17:30:31 +0800
+Subject: Re: [PATCH 1/2] mtd: ubi: block: forbid direct reclaim I/O during
+ synchronous read
+To: Yelin Fei <yelinfei66@gmail.com>, <linux-mtd@lists.infradead.org>
+CC: <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>,
+	<linux-kernel@vger.kernel.org>
+References: <cover.1792046946.git.yelinfei@ruijie.com.cn>
+ <d2657317d2d8f9cca201f09dbcd6d9b9b82744ba.1792046946.git.yelinfei@ruijie.com.cn>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <7fa1fa75-df70-a721-3403-53ec43162aca@huawei.com>
+Date: Thu, 15 Oct 2026 17:30:30 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
+MIME-Version: 1.0
+In-Reply-To: <d2657317d2d8f9cca201f09dbcd6d9b9b82744ba.1792046946.git.yelinfei@ruijie.com.cn>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: kwepems200001.china.huawei.com (7.221.188.67) To
+ whupemo200011.china.huawei.com (7.152.185.179)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261015_022107_273340_372E08D2 
-X-CRM114-Status: GOOD (  29.53  )
+X-CRM114-CacheID: sfid-20261015_103101_759731_692B9F66 
+X-CRM114-Status: GOOD (  27.05  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,188 +90,88 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4294679875070562085=="
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="gbk"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============4294679875070562085==
-Content-Type: multipart/signed;
- boundary=499acbdbca56ee494925b2505869d62d751ec95367d3b21bbc9e541b217b;
- micalg=pgp-sha384; protocol="application/pgp-signature"
-
---499acbdbca56ee494925b2505869d62d751ec95367d3b21bbc9e541b217b
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-
-On Wed Oct 14, 2026 at 8:40 AM CEST, Manikandan Muralidharan wrote:
-> The SPI NOR core already reads the SFDP tables during enumeration and
-> caches them in nor->sfdp->dwords (see spi_nor_parse_sfdp()). Re-expose
-> that cached data as a read-only NVMEM device, in on-flash byte order,
-> rooted at the flash's SFDP child node (compatible "jedec,sfdp").
->
-> This lets NVMEM cells reference any SFDP data: a fixed-layout for
-> parameters at a known offset, or an nvmem-layout parser for vendor data
-> whose location must be discovered at runtime. The device is only register=
-ed
-> when an "sfdp" node is present in the device tree.
->
-> Signed-off-by: Manikandan Muralidharan <manikandan.m@microchip.com>
-> ---
->  drivers/mtd/spi-nor/core.c | 78 ++++++++++++++++++++++++++++++++++++++
->  1 file changed, 78 insertions(+)
->
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index 8bc117b46e02..4e47459b1679 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -17,6 +17,7 @@
->  #include <linux/mtd/mtd.h>
->  #include <linux/mtd/spi-nor.h>
->  #include <linux/mutex.h>
-> +#include <linux/nvmem-provider.h>
->  #include <linux/of.h>
->  #include <linux/regulator/consumer.h>
->  #include <linux/sched/task_stack.h>
-> @@ -3001,6 +3002,75 @@ static void spi_nor_init_fixup_flags(struct spi_no=
-r *nor)
->  		nor->flags |=3D SNOR_F_IO_MODE_EN_VOLATILE;
->  }
-> =20
-> +static int spi_nor_sfdp_reg_read(void *priv, unsigned int offset,
-> +				 void *val, size_t bytes)
-> +{
-> +	struct spi_nor *nor =3D priv;
-> +	struct sfdp *sfdp =3D nor->sfdp;
-> +	size_t sfdp_size =3D sfdp->num_dwords * sizeof(*sfdp->dwords);
-> +
-> +	if (offset >=3D sfdp_size || bytes > sfdp_size - offset)
-> +		return -EINVAL;
-> +
-> +	/* The cached SFDP is kept in on-flash (little-endian) byte order. */
-> +	memcpy(val, (u8 *)sfdp->dwords + offset, bytes);
-> +
-> +	return 0;
-> +}
-> +
-> +/**
-> + * spi_nor_register_sfdp_nvmem() - expose the SFDP as a read-only NVMEM =
-device
-> + * @nor:	pointer to a 'struct spi_nor'
-> + *
-> + * Expose the whole SFDP, in on-flash byte order, as a read-only NVMEM d=
-evice
-> + * rooted at the flash's SFDP child node (compatible "jedec,sfdp"). This=
- lets
-> + * generic (fixed-layout) or vendor (nvmem-layout) cells reference any S=
-FDP
-> + * data. The device is only registered when a child node with the "jedec=
-,sfdp"
-> + * compatible is described in the device tree.
-> + *
-> + * Return: 0 on success or if there is nothing to do, -errno otherwise.
-> + */
-> +static int spi_nor_register_sfdp_nvmem(struct spi_nor *nor)
-> +{
-> +	struct device *dev =3D nor->dev;
-> +	struct nvmem_config config =3D { };
-> +	struct nvmem_device *nvmem;
-> +	struct device_node *np;
-> +
-> +	if (!nor->sfdp)
-> +		return 0;
-> +
-> +	np =3D of_get_compatible_child(dev_of_node(dev), "jedec,sfdp");
-> +	if (!np)
-> +		return 0;
-
-I've missed replying to your former question about this, sorry. Yeah
-I was implying to always add the nvmem device regardless of the
-device tree. I don't see a reason why it should only be added if dt
-node is there. Userspace might still do something useful with it.
-
-So if you'll respin a new version you can remove the check,
-otherwise it could be a follow-up patch.
-
-Reviewed-by: Michael Walle <mwalle@kernel.org>
-
--michael
-
-
-> +
-> +	config.dev =3D dev;
-> +	config.of_node =3D np;
-> +	config.name =3D "sfdp";
-> +	config.id =3D NVMEM_DEVID_AUTO;
-> +	config.owner =3D THIS_MODULE;
-> +	config.read_only =3D true;
-> +	config.word_size =3D 1;
-> +	config.stride =3D 1;
-> +	config.size =3D (int)(nor->sfdp->num_dwords * sizeof(*nor->sfdp->dwords=
-));
-> +	config.reg_read =3D spi_nor_sfdp_reg_read;
-> +	config.priv =3D nor;
-> +
-> +	nvmem =3D devm_nvmem_register(dev, &config);
-> +	of_node_put(np);
-> +	if (IS_ERR(nvmem)) {
-> +		/* NVMEM support is optional. */
-> +		if (PTR_ERR(nvmem) =3D=3D -EOPNOTSUPP)
-> +			return 0;
-> +		return dev_err_probe(dev, PTR_ERR(nvmem),
-> +				     "failed to register SFDP NVMEM device\n");
-> +	}
-> +
-> +	dev_dbg(dev, "exposed %d-byte SFDP as an NVMEM device\n", config.size);
-> +
-> +	return 0;
-> +}
-> +
->  /**
->   * spi_nor_late_init_params() - Late initialization of default flash par=
-ameters.
->   * @nor:	pointer to a 'struct spi_nor'
-> @@ -3204,6 +3274,14 @@ static int spi_nor_init_params(struct spi_nor *nor=
-)
->  		spi_nor_init_params_deprecated(nor);
->  	}
-> =20
-> +	/*
-> +	 * Expose the SFDP table as an NVMEM device only when
-> +	 * the flash actually provides one
-> +	 */
-> +	ret =3D spi_nor_register_sfdp_nvmem(nor);
-> +	if (ret)
-> +		return ret;
-> +
->  	ret =3D spi_nor_late_init_params(nor);
->  	if (ret)
->  		return ret;
-
-
---499acbdbca56ee494925b2505869d62d751ec95367d3b21bbc9e541b217b
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iKcEABMJAC8WIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCatCa/hEcbWljaGFlbEB3
-YWxsZS5jYwAKCRASJzzuPgIf+AyOAYDi48emPwhdKyXoa8JthR5GGnUzBcZHL2J2
-pZ6C6SSkmiXIHMoOJ/Th4WD1Cl8r1AgBf0EKFYwI9hHKsvev5mSZE2raQt8NV+Ew
-jpesdTau2EQaMxsXwnVl9FK/rXeEsy0+Hw==
-=sngz
------END PGP SIGNATURE-----
-
---499acbdbca56ee494925b2505869d62d751ec95367d3b21bbc9e541b217b--
-
-
---===============4294679875070562085==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============4294679875070562085==--
-
+1NogMjAyNi8xMC8xNSAxNTozMywgWWVsaW4gRmVpINC0tcA6Cj4gRnJvbTogWWUgTGluZmVpIDx5
+ZWxpbmZlaUBydWlqaWUuY29tLmNuPgo+IAo+IHViaWJsb2NrIGltcGxlbWVudHMgLT5xdWV1ZV9y
+cSgpIHN5bmNocm9ub3VzbHk6IHRoZSB0YXNrIHN1Ym1pdHRpbmcgdGhlCj4gYmlvIGV4ZWN1dGVz
+IHRoZSB3aG9sZSBVQkkvTVREIHJlYWQgaXRzZWxmLCBmcm9tIGluc2lkZSB0aGUgYmxvY2sgbGF5
+ZXIKPiBzdWJtaXNzaW9uIGxvb3AgKGN1cnJlbnQtPmJpb19saXN0IGlzIG5vbi1lbXB0eSkgYW5k
+IHdoaWxlIGhvbGRpbmcgdGhlCj4gdGFnX3NldCBTUkNVIHJlYWQgbG9jayAoYmxrX21xX3J1bl9k
+aXNwYXRjaF9vcHMoKSwgdGFrZW4gZm9yCj4gQkxLX01RX0ZfQkxPQ0tJTkcgZHJpdmVycykuCj4g
+Cj4gQW4gYWxsb2NhdGlvbiBpbiB0aGF0IGNvbnRleHQgbWF5IHRyaWdnZXIgZGlyZWN0IHJlY2xh
+aW0sIHdoaWNoIHdpdGgKPiBHRlBfTk9GUyAtIHVzZWQgYnkgYWxsIFVCSSBhbGxvY2F0aW9ucyAt
+IG1heSBzeW5jaHJvbm91c2x5IHdyaXRlIGRpcnR5Cj4gcGFnZXMgdG8gc3dhcC4gIE9uIHN5c3Rl
+bXMgd2hlcmUgc3dhcCBpcyBiYWNrZWQgYnkgYSBkZXZpY2Ugd2l0aAo+IEJMS19GRUFUX1NZTkNI
+Uk9OT1VTICh6cmFtKSwgdGhhdCBlbmRzIGluIHN3YXBfd3JpdGVwYWdlX2JkZXZfc3luYygpCj4g
+LT4gc3VibWl0X2Jpb193YWl0KCkuICBUaGUgc3dhcCBiaW8gaXMgb25seSBxdWV1ZWQgb250bwo+
+IGN1cnJlbnQtPmJpb19saXN0LCBuZXZlciBkaXNwYXRjaGVkOiBwZXIgc3VibWl0X2Jpb19ub2Fj
+Y3Rfbm9jaGVjaygpLAo+IGJpb3Mgc3VibWl0dGVkIHdoaWxlIGEgc3VibWlzc2lvbiBsb29wIGlz
+IGFjdGl2ZSBhcmUgb25seSBjb2xsZWN0ZWQgb24KPiBjdXJyZW50LT5iaW9fbGlzdCwgYW5kIHRo
+ZWlyIHNvbGUgZGlzcGF0Y2hlciBpcyB0aGUgdGFzayBjdXJyZW50bHkKPiBleGVjdXRpbmcgLT5x
+dWV1ZV9ycSgpIC0gd2hpY2ggaXMgbm93IHNsZWVwaW5nIHdhaXRpbmcgZm9yIHRoZSB2ZXJ5Cj4g
+c2FtZSBiaW8ncyBjb21wbGV0aW9uLiAgVGhlIHRhc2sgaGFuZ3MgZm9yZXZlciwgdGhlIHBlbmRp
+bmcgU1JDVSByZWFkCj4gbG9jayBmcmVlemVzIGdyYWNlIHBlcmlvZHMgKGJsa19tcV90aW1lb3V0
+X3dvcmsoKSAtPiBzeW5jaHJvbml6ZV9zcmN1KCkKPiBuZXZlciByZXR1cm5zKSwgYW5kIHRoZSB1
+bmZpbmlzaGVkIHJlcXVlc3QgYmxvY2tzIGFsbCBvdGhlciBJL08gdG8gdGhlCj4gZGV2aWNlLgo+
+IAo+IFRoaXMgd2FzIG9ic2VydmVkIGluIHRoZSBmaWVsZCBvbiBhIDEgR2lCIFJJU0MtViBuZXR3
+b3JraW5nIHByb2R1Y3QKPiBydW5uaW5nIHNxdWFzaGZzLW9uLXViaWJsb2NrIHdpdGggenJhbSBz
+d2FwOiA0NyB0YXNrcyBzdHVjayBpbiBkaXNrCj4gc2xlZXAgZm9yIDYwMCsgc2Vjb25kcywgZW5k
+aW5nIGluIGEgaHVuZyB0YXNrIHBhbmljLiAgVGhlIGFsbG9jYXRvcgo+IG5ldmVyIHJlYWNoZWQg
+dGhlIE9PTSBkZWNpc2lvbiBwb2ludCwgYmVjYXVzZSB0aGUgdGFzayBkaWVkIGluc2lkZQo+IHRy
+eV90b19mcmVlX3BhZ2VzKCkuCj4gCj4gTWFyayB0aGUgd2hvbGUgcmVhZCB3aXRoIG1lbWFsbG9j
+X25vaW9fc2F2ZSgpL21lbWFsbG9jX25vaW9fcmVzdG9yZSgpCj4gc28gZGlyZWN0IHJlY2xhaW0g
+bmV2ZXIgaXNzdWVzIGJsb2NrIEkvTyB3aGlsZSB0aGlzIGRyaXZlciBleGVjdXRlczoKPiByZWNs
+YWltIGlzIHJlc3RyaWN0ZWQgdG8gZHJvcHBpbmcgY2xlYW4gcGFnZSBjYWNoZSBhbmQgc2hyaW5r
+aW5nIHNsYWJzLAo+IHBhZ2UgKHN3YXApIHJlY2xhaW0gaXMgcGVyZm9ybWVkIGFzeW5jaHJvbm91
+c2x5IGJ5IGtzd2FwZCwgYW5kIHRoZQo+IHdvcnN0IGNhc2UgaXMgLUVOT01FTSwgd2hpY2ggcHJv
+cGFnYXRlcyB0byB0aGUgY2FsbGVyIGFzIGFuIG9yZGluYXJ5Cj4gcmVjb3ZlcmFibGUgSS9PIGVy
+cm9yIC0gYSByZWNvdmVyYWJsZSByZWFkIGZhaWx1cmUgaW5zdGVhZCBvZiBhIHRvdGFsCj4gc3lz
+dGVtIGhhbmcuCj4gCj4gVGhpcyBjb3ZlcnMgZXZlcnkgYWxsb2NhdGlvbiBwZXJmb3JtZWQgYmVs
+b3cgdWJpX3JlYWRfc2coKSwgaW5jbHVkaW5nCj4gbG9jay10cmVlIGVudHJpZXMsIFZJRCBidWZm
+ZXJzIGFuZCBJL08gaGVscGVycywgcmVnYXJkbGVzcyBvZiB0aGUgZ2ZwCj4gZmxhZ3MgdGhleSB1
+c2UgaW50ZXJuYWxseS4KPiAKPiBGaXhlczogOWQ1NGM4YTMzZWVjICgiVUJJOiBSL08gYmxvY2sg
+ZHJpdmVyIG9uIHRvcCBvZiBVQkkgdm9sdW1lcyIpCj4gQ2M6IHN0YWJsZUB2Z2VyLmtlcm5lbC5v
+cmcKPiBTaWduZWQtb2ZmLWJ5OiBZZSBMaW5mZWkgPHllbGluZmVpQHJ1aWppZS5jb20uY24+Cj4g
+LS0tCj4gICBkcml2ZXJzL210ZC91YmkvYmxvY2suYyB8IDE1ICsrKysrKysrKysrKysrKwo+ICAg
+MSBmaWxlIGNoYW5nZWQsIDE1IGluc2VydGlvbnMoKykKCkxvb2tzIGxpa2Ugb3RoZXIgYmxvY2sg
+ZHJpdmVycyhlZy4gbnZtZS9uYmQvcmJkLi4pICB3b24ndCB0cmlnZ2VyIGRpcmVjdCAKbWVtIHJl
+Y2xhaW0gYnkgdXNpbmcgZmxhZ3MgCkdGUF9BVE9NSUMobnZtZV9wY2lfc2V0dXBfbWV0YV9pdGVy
+KS9HRlBfTk9JTyhuYmQgCnNvY2tfeG1pdCkvR0ZQX05PV0FJVChsb29wKS4KClJldmlld2VkLWJ5
+OiBaaGloYW8gQ2hlbmcgPGNoZW5nemhpaGFvMUBodWF3ZWkuY29tPgo+IAo+IGRpZmYgLS1naXQg
+YS9kcml2ZXJzL210ZC91YmkvYmxvY2suYyBiL2RyaXZlcnMvbXRkL3ViaS9ibG9jay5jCj4gaW5k
+ZXggMjljMGQ2OTQxYTgxLi5jOWQ0MjE4MWJmNjQgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9tdGQv
+dWJpL2Jsb2NrLmMKPiArKysgYi9kcml2ZXJzL210ZC91YmkvYmxvY2suYwo+IEBAIC0zOCw2ICsz
+OCw3IEBACj4gICAjaW5jbHVkZSA8bGludXgvYmxrZGV2Lmg+Cj4gICAjaW5jbHVkZSA8bGludXgv
+YmxrLW1xLmg+Cj4gICAjaW5jbHVkZSA8bGludXgvaGRyZWcuaD4KPiArI2luY2x1ZGUgPGxpbnV4
+L3NjaGVkL21tLmg+Cj4gICAjaW5jbHVkZSA8bGludXgvc2NhdHRlcmxpc3QuaD4KPiAgICNpbmNs
+dWRlIDxsaW51eC9pZHIuaD4KPiAgICNpbmNsdWRlIDxhc20vZGl2NjQuaD4KPiBAQCAtMTg5LDYg
+KzE5MCw3IEBAIHN0YXRpYyBibGtfc3RhdHVzX3QgdWJpYmxvY2tfcmVhZChzdHJ1Y3QgcmVxdWVz
+dCAqcmVxKQo+ICAgCWludCBsZWIgPSBwb3M7Cj4gICAJc3RydWN0IHJlcV9pdGVyYXRvciBpdGVy
+Owo+ICAgCXN0cnVjdCBiaW9fdmVjIGJ2ZWM7Cj4gKwl1bnNpZ25lZCBpbnQgbm9pb19mbGFnczsK
+PiAgIAlpbnQgcmV0Owo+ICAgCj4gICAJYmxrX21xX3N0YXJ0X3JlcXVlc3QocmVxKTsKPiBAQCAt
+MjAxLDYgKzIwMywxOCBAQCBzdGF0aWMgYmxrX3N0YXR1c190IHViaWJsb2NrX3JlYWQoc3RydWN0
+IHJlcXVlc3QgKnJlcSkKPiAgIAl1Ymlfc2dsX2luaXQoJnBkdS0+dXNnbCk7Cj4gICAJYmxrX3Jx
+X21hcF9zZyhyZXEsIHBkdS0+dXNnbC5zZyk7Cj4gICAKPiArCS8qCj4gKwkgKiBUaGlzIGVudGly
+ZSBjYWxsYmFjayBydW5zIGluIHRoZSBzeW5jaHJvbm91cyBkaXNwYXRjaCBwYXRoIG9mCj4gKwkg
+KiBibGstbXE6IHN1Ym1pdF9iaW9fbm9hY2N0X25vY2hlY2soKSBvbmx5IHF1ZXVlcyBhIGJpbyBz
+dWJtaXR0ZWQKPiArCSAqIGZyb20gaGVyZSBvbnRvIGN1cnJlbnQtPmJpb19saXN0LCBhbmQgdGhl
+IHNvbGUgZGlzcGF0Y2hlciBvZgo+ICsJICogdGhhdCBsaXN0IGlzIHRoaXMgdmVyeSB0YXNrLCBi
+dXN5IGluc2lkZSAtPnF1ZXVlX3JxKCkuICBBbnkKPiArCSAqIGJsb2NrIEkvTyBpc3N1ZWQgZnJv
+bSBiZWxvdyB3b3VsZCB0aGVyZWZvcmUgZGVhZGxvY2sgYWdhaW5zdAo+ICsJICogaXRzZWxmIChl
+LmcuIHN5bmNocm9ub3VzIHN3YXAgd3JpdGViYWNrIHJlYWNoZWQgdmlhIGRpcmVjdAo+ICsJICog
+cmVjbGFpbSkuICBGb3JiaWQgaXQgZm9yIHRoZSB3aG9sZSByZWFkIGluc3RlYWQgb2YgcmVseWlu
+ZyBvbgo+ICsJICogZXZlcnkgY2FsbGVlIHVzaW5nIHNhZmUgYWxsb2NhdGlvbiBmbGFncy4KPiAr
+CSAqLwo+ICsJbm9pb19mbGFncyA9IG1lbWFsbG9jX25vaW9fc2F2ZSgpOwo+ICsKPiAgIAl3aGls
+ZSAoYnl0ZXNfbGVmdCkgewo+ICAgCQkvKgo+ICAgCQkgKiBXZSBjYW4gb25seSByZWFkIG9uZSBM
+RUIgYXQgYSB0aW1lLiBUaGVyZWZvcmUgaWYgdGhlIHJlYWQKPiBAQCAtMjIxLDYgKzIzNSw3IEBA
+IHN0YXRpYyBibGtfc3RhdHVzX3QgdWJpYmxvY2tfcmVhZChzdHJ1Y3QgcmVxdWVzdCAqcmVxKQo+
+ICAgCj4gICAJcnFfZm9yX2VhY2hfc2VnbWVudChidmVjLCByZXEsIGl0ZXIpCj4gICAJCWZsdXNo
+X2RjYWNoZV9wYWdlKGJ2ZWMuYnZfcGFnZSk7Cj4gKwltZW1hbGxvY19ub2lvX3Jlc3RvcmUobm9p
+b19mbGFncyk7Cj4gICAKPiAgIAlibGtfbXFfZW5kX3JlcXVlc3QocmVxLCBlcnJub190b19ibGtf
+c3RhdHVzKHJldCkpOwo+ICAgCj4gCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApo
+dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
