@@ -4,71 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1FAB2CC6B34
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21AE4CC6B39
 	for <linux-mtd@archiver.kernel.org>; Thu, 15 Oct 2026 07:33:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=mD0nvHVGjGPhqiY39DF/twn9kogCd4BWHQfnipjto5o=; b=ns4nCB46p5YodK
-	hzXUqmUzfYYYL09Fb2+iX9ZFtoxRyS2D5/v2FdeN9a3zgQP77pNjfTBhJWwa2vHTIKcNNmfRmSvjw
-	EIimFNkErXK1+i2F0ToLhyuPd5Pboc6IDTU31/uAZW2h9GYMryQU1oz3alKElbS5f0qUHyYK7Hxbx
-	tK4kUYygKcbzu22ZTWUNkFsCreWfVrgO5xKdHN6D+h69StieHevrMncAI+Ki9pBacBLjhkE6ZcBoF
-	sGFKyJp2p3PKBiV7OI4+QoQFTUFlLCDSF0gTS/LMPmYORzZ0/zu3MMl7ovqaAaC/PsEtLxkIAGYYF
-	pZIQsRG+d/Rj9/WIDa9Q==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=RLdY4fqANjnZ6lry6Y5pG9rUzTW9cK9hIEhu1cdrALU=; b=z1b7LzGqRheQqf
+	mm5l6sx2U3BwZOaSXSNAXlTfZKbdYbZCgo3IlWo/x9oNxWS8QC4h92akDdsoFmonf4jv/mO2rGlel
+	hHyZS3XqlmGF2tB4KIVEToZcdWbTs05nXZ1v6kJiIVRRQPtAO27QIz7f4R2MafXlPM4XUSFD9wJxt
+	x90a0vNg/0mlt4wC6pFbHkze7EGbEuwN5Gi3B0WDeVf/yAeIOvSy6h9o7x9DBFVHWTvTtkXjMzLVX
+	1A0Eb5Dvu5ZoB/YWpr61+4wpnFjqLr8lwxGl39IGWyQlpL0gZiq4XyGVsVLzTV8n3j5tpuBqDJUKJ
+	g+6qu0UnrUrky2aJ1mZA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xHFyE-0000000H2a1-2NpR;
+	id 1xHFyE-0000000H2a9-2lvp;
 	Thu, 15 Oct 2026 07:33:46 +0000
-Received: from mail-pj1-x1030.google.com ([2607:f8b0:4864:20::1030])
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xHFyA-0000000H2Z7-1yxg
+	id 1xHFyD-0000000H2ZW-1ojY
+	for linux-mtd@bombadil.infradead.org;
+	Thu, 15 Oct 2026 07:33:45 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
+	:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+	Content-Description:In-Reply-To:References;
+	bh=FojOk/s3XuClAwiyOiafNOx/R0mY/htX+AFS60ZWGXU=; b=IXzUwGLr6RXqgo4wvFskLIPPGB
+	3nQaV9X9oJWU93rLf+fNxFUHLDbZu4smI1H4oJB50KdZVTGYKv9S0SQ/W4QbKy0MgDZJSAreC0ztL
+	9WT60e9O6TnISpp5kFdPn68zDoiLktICSXlogMNx3obnC485Q2RgQuI8/uHIGMbEGxwNiF6d7GNTm
+	CLyv3TlICBLs+b3RVZWZ6xPGfNB2h7HqEgHkP51AXgAgDNHPhHnc6UZp1iJwdURbBjowodEntrGWB
+	VOeOIHUZR06i9o7j5kkLS2pQAo/UluQxaW/cJhJJE2CpQeKA0BvXdZXS8udjNxQxh0Tsg0GvKiQIt
+	T+nytFAQ==;
+Received: from mail-pg1-x533.google.com ([2607:f8b0:4864:20::533])
+	by desiato.infradead.org with esmtps (Exim 4.99.5 #2 (Red Hat Linux))
+	id 1xHFy9-0000000Ha2S-3cPz
 	for linux-mtd@lists.infradead.org;
 	Thu, 15 Oct 2026 07:33:44 +0000
-Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-38d489b6b71so2626886a91.0
-        for <linux-mtd@lists.infradead.org>; Thu, 15 Oct 2026 00:33:42 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-cd632f7a4a1so412404a12.3
+        for <linux-mtd@lists.infradead.org>; Thu, 15 Oct 2026 00:33:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1792049621; x=1792654421; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=pDV5CdvDDo6YswEAFIGrF4lABKfaTV0Zi1WVMCT/JHk=;
-        b=DLTDRRTNPqtIh8CaOF+IX+VQwHBapiotekvKL7inpr09IInsgjY0xP8qjTncOjfOqq
-         WtT09W6t7M3ckV2/6qddz4xNoeDAGXUba7rckeAwase/KR+I/OxWnfD87ejleEdxMsZ1
-         ykUmeFuG00uhiFyc6vi/B1KcpO5iOPhLIFGN8lIg6gvBK22hfN/xdyV8it1EFACpMoS6
-         u3h+ppQiDw9TvV/vMzhqDKD9jICEJBQn0h6fVyF9oCiqZOlRdtveJb5bcWc+e9Wbcy6N
-         opDbZnm5/cj4zqGVInhSSFE4mGJKMEgk89i0SZTlCvASKjA22l4/CwXIewFDbj4XOJZG
-         HpBQ==
+        d=gmail.com; s=20251104; t=1792049619; x=1792654419; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=FojOk/s3XuClAwiyOiafNOx/R0mY/htX+AFS60ZWGXU=;
+        b=rqOQ3Y9R3kcc2IuRFMSBEceWBr4Jd5yUNkIoqBClFfBhTg6fTMxYUbOlx2pFmYMkAR
+         9DOMkWD2wObtyBYUQHfltZ9IX3px7AY1rp2JTXFMOMWXuYah4Exg6OA4vrk49JtNiznm
+         CJ9q3j9lE+MXOiolokstGDgqlopmChVdWkdepiK0mo1EZV9xbX1DBq8Fj2TRXnHXcyoS
+         gc1dtmAHevYPM4PIVu5dETpEnAE8JVzs3uPFx5UX4V0PdzTRgGGLpm095OX4kE+ce3N0
+         QjLs2tebvWY+dwtgg+Dm6RQpNClZNJOqpWbTjtJDg2ZA3GDU2o+fWc3RGBdqqGLyOLlI
+         9Rlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1792049621; x=1792654421;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=pDV5CdvDDo6YswEAFIGrF4lABKfaTV0Zi1WVMCT/JHk=;
-        b=YdXh2vFDhFqsEkCCnxAsR6bgjgUnv6wRGI+LVsVDU8WZ+SgQ90wcFD2wsblSgYsiB6
-         kkaPsVMgV6symRVIC4VwcdAZgae+Icv2e6nE6ciS7zYVZ7wzUoeEdHZoV+3/W/rJDLvr
-         DCAvYu1j1OiqIGH/bb/CtLfaBthKvsE5UEF6XyqRmj5lzoW0ZzOfn9IEIE+05AuMtbEl
-         PwQPZrUa0wKUNEFCKjMjBSJrjS9DC5YTBNFIvfQaZIMtwbxFcRiBusPVw0xieG1XwfkP
-         td4YgVh2WdMJIdPNsBqN7qwS9toxsd9ZtluAaOKDmIkvdUe6Ga7Cxz1FswrphjFhI/35
-         CVMA==
-X-Gm-Message-State: AFq9FYLaI2/qpG7EEDFcio7rZiCY7zYW/XehjzcCr65vpFmUw8r6NWwe
-	AWVurgLgtE0zDWT6eqB2xPlwNHU5eduWiyu9IgqiH5KRCkbW751NawkaLLuL/tyGxDnQFA==
-X-Gm-Gg: AYBFou1n+0UTcrUb2IqiGA+syTXzCXfxSO3njMOEteNQuYcVpJ/Qi2XGtEvsW+72jZ8
-	7HlFooVlvQOifzf0VAbp6boF0NPE4FLifekRepowayby2wEpcKxeVb9SkoescuCIuvSRy7fyEop
-	c7p+W2gj2vq3gYzcbQl/QUBgeHr4tH5fb7EtETO0DpRgQJ2RH6GAzi0uPlQkq+MXSOyZQgTUOCw
-	WvTJfBUp45t0jonsnAkNQq35L31XBALT4qEkUg2plkMhJSGC0ns+UaXcpyODxALcJ0F4Rvo/dCu
-	Wqe+frswf+cTY1KzkMtoQQOqUETLvW8SGHBLyc81y/1GOy6YUzJ9mno2B+UDjMBbxuvNxT+nk1X
-	/ZnuxG6+QGWtaUCuTc2laGL4MqbY89X+XcTgvSXlUwizzildWuCy9xhct2yRdnGACO2K23mSBBr
-	JbHr/vCBKY5wPUptsUpGXzpCvIc0PvZhxYlfYLgho5I+6OrsbwqIzQeJM0BfBN9S538PrDG9REV
-	wCNqkCZZUL//6px
-X-Received: by 2002:a17:90b:2d06:b0:3ab:c80:9365 with SMTP id 98e67ed59e1d1-3ab3acdf2e1mr13286209a91.42.1792049621389;
-        Thu, 15 Oct 2026 00:33:41 -0700 (PDT)
+        d=1e100.net; s=20260707; t=1792049619; x=1792654419;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=FojOk/s3XuClAwiyOiafNOx/R0mY/htX+AFS60ZWGXU=;
+        b=ks8eQblW5neasuak+0ZYMBFhbiG5M2tRPjX5ND0ec9518gW/huh7KubiytNwRKaBZP
+         iMVaBzIo2EkgngIqLYI/FbTjoI1mCjNuNRdBhZJ3WpNrWbHDBcJPjjBOV5zPcQihCtB5
+         Fas2hCqqibKjR75S+I66y1AVfDDAGoWISG50ArCHFdwP6ccfp1JTrGzcNPn+j08ubnNo
+         ZJygAgo1Z75kCmIdZWphNI5O2JNePKMpaRGUyINFtDik696HXPoKApwwFodS2TfSOZ4U
+         0En/8RTi1G4mAlwNWD4NDvSFZhzYExlt9pTBhhPIF8ZUYTvGruHJrbm4BPlBXnvviejj
+         2nJg==
+X-Gm-Message-State: AFq9FYIGjNipt9ER9PGAul7JUDbI6uMQ940jQolYx/yM9Qm0ysk3E7QA
+	1yi5+Hsgj+88FTFp/7fvWKq9ORLkINXZCCzCOpygbTRmszBiy0DJ2yf7GuSGK0jWBP+Tjw==
+X-Gm-Gg: AYBFou2vNMQY6vIcO0gqj6SR3Z0ahLpRGPLCVUQu/MTZHg0X0U0UKuf439OtVPcJGYh
+	3Mh+ZWZL+e4d89rpUdtOtNMUiZ/7D0JJODMYEqE6OemqH+q3TgbsZ38S32ya+3GasGxwVZTvxo/
+	HExpPdoZEWKVTan0mva5aFYUUcBqM6KN55JTsTz+ULH6gKr15NC5w3JGsbhOqjTEeepn6uCIdIA
+	c7iNfpUosMp8Rb2zuRaptgP+zfgryDCuN+dI3QYtPP9rdYWhn1kxo3xzpE+x0fyysKB4TiVLiqJ
+	Uh4w1kK8FEh8PTdgmgDGFTtcK9pti5xFpUPK06cpUpVJNOz0txGqIs6iY3Lew2FvLgziGt9TZOb
+	JRG/vDZ7TTwywP9nAh+/2RvNTJlhqxuZ2WL0zLYoFUbgLDc/H1kWCNNLEh2ASfZM0u8+sOc5Ol0
+	9sfhyK7A5lY+fgLTo5/rHa7qC1/ToB3CeFzKmm6GTQQvF4avhoAYCrpzhgaOYXujZDj7ryfSDSL
+	DCj44Yhlmrdbdcr
+X-Received: by 2002:a17:90a:10cf:b0:3ab:9c73:12e with SMTP id 98e67ed59e1d1-3ab9c7307d0mr8435721a91.6.1792049618841;
+        Thu, 15 Oct 2026 00:33:38 -0700 (PDT)
 Received: from localhost.localdomain ([183.250.189.231])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3ac94748c6csm3066274a91.10.2026.10.15.00.33.39
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3ac94748c6csm3066274a91.10.2026.10.15.00.33.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Oct 2026 00:33:41 -0700 (PDT)
+        Thu, 15 Oct 2026 00:33:37 -0700 (PDT)
 From: Yelin Fei <yelinfei66@gmail.com>
 X-Google-Original-From: Yelin Fei <yelinfei@ruijie.com.cn>
 To: linux-mtd@lists.infradead.org
@@ -77,16 +91,15 @@ Cc: richard@nod.at,
 	miquel.raynal@bootlin.com,
 	vigneshr@ti.com,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] mtd: ubi: block: forbid direct reclaim I/O during synchronous read
-Date: Thu, 15 Oct 2026 15:33:20 +0800
-Message-Id: <d2657317d2d8f9cca201f09dbcd6d9b9b82744ba.1792046946.git.yelinfei@ruijie.com.cn>
+Subject: [PATCH 0/2] mtd: ubi: fix direct reclaim deadlock with synchronous block devices
+Date: Thu, 15 Oct 2026 15:33:19 +0800
+Message-Id: <cover.1792046946.git.yelinfei@ruijie.com.cn>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1792046946.git.yelinfei@ruijie.com.cn>
-References: <cover.1792046946.git.yelinfei@ruijie.com.cn>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261015_003342_817847_E72003E7 
-X-CRM114-Status: GOOD (  16.86  )
+X-CRM114-CacheID: sfid-20261015_083342_212597_5D583575 
+X-CRM114-Status: UNSURE (   8.63  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -105,98 +118,16 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Ye Linfei <yelinfei@ruijie.com.cn>
 
-ubiblock implements ->queue_rq() synchronously: the task submitting the
-bio executes the whole UBI/MTD read itself, from inside the block layer
-submission loop (current->bio_list is non-empty) and while holding the
-tag_set SRCU read lock (blk_mq_run_dispatch_ops(), taken for
-BLK_MQ_F_BLOCKING drivers).
+Two-part fix for ubiblock swap deadlock: forbid direct reclaim I/O in the synchronous dispatch path and switch the ltree entry allocation to GFP_NOIO.
 
-An allocation in that context may trigger direct reclaim, which with
-GFP_NOFS - used by all UBI allocations - may synchronously write dirty
-pages to swap.  On systems where swap is backed by a device with
-BLK_FEAT_SYNCHRONOUS (zram), that ends in swap_writepage_bdev_sync()
--> submit_bio_wait().  The swap bio is only queued onto
-current->bio_list, never dispatched: per submit_bio_noacct_nocheck(),
-bios submitted while a submission loop is active are only collected on
-current->bio_list, and their sole dispatcher is the task currently
-executing ->queue_rq() - which is now sleeping waiting for the very
-same bio's completion.  The task hangs forever, the pending SRCU read
-lock freezes grace periods (blk_mq_timeout_work() -> synchronize_srcu()
-never returns), and the unfinished request blocks all other I/O to the
-device.
+Ye Linfei (2):
+  mtd: ubi: block: forbid direct reclaim I/O during synchronous read
+  mtd: ubi: use GFP_NOIO for lock tree entry allocation
 
-This was observed in the field on a 1 GiB RISC-V networking product
-running squashfs-on-ubiblock with zram swap: 47 tasks stuck in disk
-sleep for 600+ seconds, ending in a hung task panic.  The allocator
-never reached the OOM decision point, because the task died inside
-try_to_free_pages().
-
-Mark the whole read with memalloc_noio_save()/memalloc_noio_restore()
-so direct reclaim never issues block I/O while this driver executes:
-reclaim is restricted to dropping clean page cache and shrinking slabs,
-page (swap) reclaim is performed asynchronously by kswapd, and the
-worst case is -ENOMEM, which propagates to the caller as an ordinary
-recoverable I/O error - a recoverable read failure instead of a total
-system hang.
-
-This covers every allocation performed below ubi_read_sg(), including
-lock-tree entries, VID buffers and I/O helpers, regardless of the gfp
-flags they use internally.
-
-Fixes: 9d54c8a33eec ("UBI: R/O block driver on top of UBI volumes")
-Cc: stable@vger.kernel.org
-Signed-off-by: Ye Linfei <yelinfei@ruijie.com.cn>
----
  drivers/mtd/ubi/block.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ drivers/mtd/ubi/eba.c   |  2 +-
+ 2 files changed, 16 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
-index 29c0d6941a81..c9d42181bf64 100644
---- a/drivers/mtd/ubi/block.c
-+++ b/drivers/mtd/ubi/block.c
-@@ -38,6 +38,7 @@
- #include <linux/blkdev.h>
- #include <linux/blk-mq.h>
- #include <linux/hdreg.h>
-+#include <linux/sched/mm.h>
- #include <linux/scatterlist.h>
- #include <linux/idr.h>
- #include <asm/div64.h>
-@@ -189,6 +190,7 @@ static blk_status_t ubiblock_read(struct request *req)
- 	int leb = pos;
- 	struct req_iterator iter;
- 	struct bio_vec bvec;
-+	unsigned int noio_flags;
- 	int ret;
- 
- 	blk_mq_start_request(req);
-@@ -201,6 +203,18 @@ static blk_status_t ubiblock_read(struct request *req)
- 	ubi_sgl_init(&pdu->usgl);
- 	blk_rq_map_sg(req, pdu->usgl.sg);
- 
-+	/*
-+	 * This entire callback runs in the synchronous dispatch path of
-+	 * blk-mq: submit_bio_noacct_nocheck() only queues a bio submitted
-+	 * from here onto current->bio_list, and the sole dispatcher of
-+	 * that list is this very task, busy inside ->queue_rq().  Any
-+	 * block I/O issued from below would therefore deadlock against
-+	 * itself (e.g. synchronous swap writeback reached via direct
-+	 * reclaim).  Forbid it for the whole read instead of relying on
-+	 * every callee using safe allocation flags.
-+	 */
-+	noio_flags = memalloc_noio_save();
-+
- 	while (bytes_left) {
- 		/*
- 		 * We can only read one LEB at a time. Therefore if the read
-@@ -221,6 +235,7 @@ static blk_status_t ubiblock_read(struct request *req)
- 
- 	rq_for_each_segment(bvec, req, iter)
- 		flush_dcache_page(bvec.bv_page);
-+	memalloc_noio_restore(noio_flags);
- 
- 	blk_mq_end_request(req, errno_to_blk_status(ret));
- 
 -- 
 2.25.1
 
