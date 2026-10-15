@@ -4,143 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6E22CC6B3A
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Oct 2026 11:26:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0FC16CC6B3A
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Oct 2026 11:32:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:To:From:Reply-To:Cc:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=dI/O3swrqJnpei2JKrFzziqGCR+jiPBH0umc6hOErbg=; b=dBaK8GzKQ4IKv9
-	8nOm+RHOyVpKPqjMPkB1ggcRBzmcXepPpb93UJbq3JEXzTfsUuVr5NhXfQgulLVTzCRBUD9WkFfMX
-	hAXtwKtdIyxLJ53fKHA5n77DsMPCQxfUNd1p6ovtE78lFxOqGWMGsI/jpPUhWxe9qCA/i/vOQU8j4
-	ej70ab7ku36beF+sgq8mt2gQpYSPDIafdS+weoOPGV05++AI2D94AuDOvxV9WcT5+MFIxde3tF/tx
-	mXqqZOKClUC3D36tbIv1aH5JlekkmMqIdjorWgYBSY2R53YyObIVE4XYjBjW9B/q5xVUak2RuvYMs
-	0DMCYxteNc9fnS8i+xgA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=PAC4lsQwccxqufy272KTI0OcdS1zJ2v/YblfyiFhWwE=; b=wWg/bYdobBfXoM
+	29go2xm0Ourh2U9CxQOTO4PY2ydezAxbpUPcVVpC0i6H6bcls2JbwTWKqwWzKc71IKC3xCl7KqZ0E
+	RnhI96UxyvinQx2ZMLt0ZucEOKg0AGv1S1qvioxz24V15spuxiUocNS8TpBr24KYO/33jw0KMhHg2
+	1fpjnpkEhHov8g+78ZJoHndZVCn3Cj4poq1QTI43yTr1WcGsK236Yt6VxPBq5Teq9gfTvYS2X4SU1
+	2mAHc1rR5HV4Lj2kLPPuVWyTQmksbtT2z152n4e58ErsTlFBbqM4QJ1MEoJWfOmGK9PDsWusHDrQ/
+	4GKB1zbET+wKhiD6b3bQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xHJbb-0000000HZAF-1UIL;
-	Thu, 15 Oct 2026 11:26:39 +0000
-Received: from mail-eastus2azlp170110003.outbound.protection.outlook.com ([2a01:111:f403:c110::3] helo=BN8PR05CU002.outbound.protection.outlook.com)
+	id 1xHJh5-0000000Ha8U-3j8M;
+	Thu, 15 Oct 2026 11:32:19 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xHJbY-0000000HZ9p-31jd;
-	Thu, 15 Oct 2026 11:26:38 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=tPb3AjHm6t41BoPXTS7HBvpJ4NF4b/cphTAV43+uiXwqXEx4BnTt9xeLfBPexxQs5N301y8wi36XKukwvhxf7dKQHiVfJnKndPqI9ZPxR9tAG/PNYbEErIJnTED/VWNSLaPIoagwGaChOYL/AJjnb0EXKsyC79zGa+wtySUtflo1rPR/oj1bYGhnAUIJmvjc2Uuc+AHI8L2HPX3RyLvCrIrae52nSAdGS+3tNEbeL0MfBOtQK8cY+FxVpBuHbzHM1zjC7TPv5G9uHB5yiJgnm2b6a0ZRwuPErX1sEMyerG6BquC+puRssyHp4EK6yk8p94zCLqDpQuGjr653GChW6w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Kaz9K5LWluj29T2axZuA8gbp4F9YCrbim4989ZRGPYE=;
- b=vgNZGjB9IsDiBLOYUHvv68E4zVegxqfeVb4xsQBAlfYJbpLnJmz/HYRIz4l6zH2RLrh0FRgAeriCmvcORtJQq8DZIzL06l+cYFaaXC61Vsfnomo8G3TBlemQurMqeh33jg6pvJdN8K8mjqMHdirwP5NZX56dwJi5Eod7h1QD/HTk7tod2ps4sKtIWmbVDRFB+mJJos6ZxiscOWxZCkZl2qClFGa4Fcg5AMheLjzH28eQsroYuxYzJJuWd4ZE5O+lGphOqDtFTF9JkRdAuFibqWRFgwPs4wi5BkmPvK4zc4SMA/USM0WZdHFXUcKSX/V+v1pbPM2xCyt+qiVv+P85Hw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microchip.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Kaz9K5LWluj29T2axZuA8gbp4F9YCrbim4989ZRGPYE=;
- b=sHFcGOZbaYfsig2IaYiO00qdyofoKEukMTpvZdfXcwDUyHzIyaDNT1lg1UihXPec8O7ZN1y4dGXijHZlyaqi7hBtAGk9j07Z+8I8VO37snAnKMp0JV8awoSYwjwbvpvNq5oXjxe9wOjN+SmqbTbIzsKvqwH2G02mY68pzI2bqy4W2mcWrlyKXRFh2sZLvidFpV7agEaP3Rmz/H3ezKQVfeUv9nj592+7il4RBIm+EPbw+ycDFNC2aj+x6ZQyzFKguTneF982lMOcHAGeslnjhEB0IpqvkvVLIg9AVVCqsczCUdFsbNtl2TDCcO6sQKk7CXi7BG4/Sqr7s6g4kb/VSA==
-Received: from DS6PR11MB523643.namprd11.prod.outlook.com (2603:10b6:8:468::12)
- by DS0PR11MB6352.namprd11.prod.outlook.com (2603:10b6:8:cb::5) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.496.23; Thu, 15 Oct 2026 11:26:29 +0000
-Received: from DS6PR11MB523643.namprd11.prod.outlook.com
- ([fe80::1cc0:e019:a70b:f954]) by DS6PR11MB523643.namprd11.prod.outlook.com
- ([fe80::1cc0:e019:a70b:f954%4]) with mapi id 15.21.0522.012; Thu, 15 Oct 2026
- 11:26:29 +0000
-From: <Manikandan.M@microchip.com>
-To: <michael@walle.cc>, <pratyush@kernel.org>, <mwalle@kernel.org>,
-	<takahiro.kuwano@infineon.com>, <miquel.raynal@bootlin.com>,
-	<richard@nod.at>, <vigneshr@ti.com>, <robh@kernel.org>, <krzk+dt@kernel.org>,
-	<conor+dt@kernel.org>, <srini@kernel.org>, <Nicolas.Ferre@microchip.com>,
-	<alexandre.belloni@bootlin.com>, <claudiu.beznea@tuxon.dev>,
-	<linux@armlinux.org.uk>, <richardcochran@gmail.com>, <linusw@kernel.org>,
-	<arnd@arndb.de>, <aaro.koskinen@iki.fi>, <gregkh@linuxfoundation.org>,
-	<mathieu.dubois-briand@bootlin.com>, <linux-mtd@lists.infradead.org>,
-	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <netdev@vger.kernel.org>
-Subject: Re: [PATCH v8 3/8] nvmem: core: take a reference on dev.of_node in
- nvmem_register()
-Thread-Topic: [PATCH v8 3/8] nvmem: core: take a reference on dev.of_node in
- nvmem_register()
-Thread-Index: AQHdW6cSHE+HOC+e2kKLMwSXuzZQlLb+U0sAgAAlcAA=
-Date: Thu, 15 Oct 2026 11:26:29 +0000
-Message-ID: <29e64d3d-a002-496d-a4b6-b696f3f3013d@microchip.com>
-References: <cover.1790847519.git.manikandan.m@microchip.com>
- <2e21cc4b871da8764e3a12d0ebdcf7cb799149ab.1790847519.git.manikandan.m@microchip.com>
- <DM5AO9LBE1OI.19L3SG4BQTNB0@walle.cc>
-In-Reply-To: <DM5AO9LBE1OI.19L3SG4BQTNB0@walle.cc>
-Accept-Language: en-GB, en-US
-Content-Language: en-GB
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: mx.microsoft.com 1; dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microchip.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DS6PR11MB523643:EE_|DS0PR11MB6352:EE_
-x-ms-office365-filtering-correlation-id: 72426daa-101d-4bd6-aa17-08df2aaf2817
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230040|7416014|376014|366016|1800799024|23010399003|921020|38070700021|11063799006|56012099006|4143699003|22082099003|18002099003|10067099003;
-x-microsoft-antispam-message-info: u4dLfjGgA+qvOyxFKF38q5YXRR2hN6fv+jhNaQv8SxX5QhgeFqsjpJCQyelAmaNlF6f7DR72hzeYjTWXgSKtS8yyNc6/bsdYqalcv5nLcDcM4TTCPQApiCbuB4ikBeTVYAQJN5FVchdSIGUeZ7UzMv9T2RuigbuLvO9Cw5+CPNAHuIQTnTl2LT3vzT0D/yoN5Xi89ss79GyaeqfLOvmb2rtsGgGz8995+UTiQENaxZMY9+ZWyRoCzAeoaJ+H5mgrU1yFGBSY2CAStomA4fbVuQrc2gU9jVhfrxDPvL/iDeD8aPVaV0W/zBYgPU9jSOFmnHK9i92E4RxcGgzDFujIxznJbf+27BwJ8IESWvMgmEFSmFGatckTTa9w2jCmNkE+F2/tA8wuIJgppWrfZEPpHr3LptG8HqkdUUUK+5in5za9MgGtQDvhFGDhjHtLOkZZEZpKx6IQrnHJA58hmNHkpoZA05hPRgdT4ibIwvE5T2weLNeHQHt31Ow7YeQvlo4jnG5yZokTRlAZuJFn6ZPrGX5xk//WAcEvmc1XidX6xPlS99ompoOEGEwkz8iaoNur4f8RPSltvNIeKxynQMbDncqvPux0Ts91n//y8qyUot9U+LayQqHhg5KKz+X78PSrGoNfiellV3xl/Caj+0bQlWb6EORZ0EgF0aaAOamhihb5OrQB9Wk7wgd+Q3NXz2vqmZkfSrKN3j65bkDVLhiJzkrL+wD/8Ox17XsJ0Q8fMHkdymZlR389znmIgUT0jUf1
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS6PR11MB523643.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(366016)(1800799024)(23010399003)(921020)(38070700021)(11063799006)(56012099006)(4143699003)(22082099003)(18002099003)(10067099003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?K1JhRHRXQ09qK25sQkpCcXJEYkhINjRKN2gxTFdVT1NoTXRob0t2QVIrUlVB?=
- =?utf-8?B?TEprbGhmN2Q0TXRIMVNIN1NLR0pvcy9qK2kwWW9KcUdOUGh5T0UvQ3JXZGF1?=
- =?utf-8?B?MjhwbmcvZ1BGOXdNVFREY0F6M2dubkU1c25PQ2pZV0JOQ2ZuVmpaZTZJRlV5?=
- =?utf-8?B?Y25hMFhyVTJUZVorcVpXcFptOWNySzZkbnlPb1F1bnZmeS93dElJK3BCMHNK?=
- =?utf-8?B?QVVuTTFtc0JZSGgxaEw5a042c3JvV3E3RElYRG1wWjBwTnA4cERPU1p3Zjd3?=
- =?utf-8?B?Y1dPRUdtL2tBNWxXcUtrMXRqQnREaksrQ2lzQTg1UzlDUlNqeWZuL25mR2FF?=
- =?utf-8?B?TllGV1pXWVNRTWlvQnYzVXlNRnkzK0krbllFL1J1OXo3R1ZNbGRlcy9pVzBW?=
- =?utf-8?B?Vk5OWHZ3YkRXMGxNMjEvWWQxTERpQVpzaVFTRFA2cTEwTFlDb1NTTzNGT2FP?=
- =?utf-8?B?eHFVcFVKODV0WGozZjdUYVZWMVdITDRnOUxBbC91ZzFUT0g5SnNKM25KcXVV?=
- =?utf-8?B?YVBXUFdyS2dmNk5nRnEydXZlTG11byt3WjZrSHk4S2R3eTE4S3BLRFpYT09G?=
- =?utf-8?B?KzY2b3F2d0lDUndyc1Boc1JQdGVZKy95Uzc1M0g1ZmM3aDU3WHAwMVI3SmRC?=
- =?utf-8?B?UGEwWnhzKy9uYm80UTdYeTI0TjlyZDNIYXN2RklTRmxRUHFYbFJVTGVRR0wv?=
- =?utf-8?B?SGk3TXRDRjlqQWZHb3hOanRoSGpHSXhkekJSWnoxTTNBZG1VN0k0VWhyb3l1?=
- =?utf-8?B?WCs5L2hncGtwRmpGT25LNnE4SjFERDF3bHcwL01ZaWU3SSs2MEZJRDVHNGd1?=
- =?utf-8?B?RmhsNUVZOEFnM3lBbytubDZEU0hGa09vK2ZlQlFieGs0Nkh2bDJNZFRJNkdu?=
- =?utf-8?B?MTRmblVlZFJYMTQ2VzNJWmJGZDVWbEI1MGJWVDJZakZ1QUxuRXlYUmRMQjl1?=
- =?utf-8?B?RllWK0d2bXN5WUY2aGVKbGIrN0loWWxZUFFxWlFCVktPSkFnUjZwaHpuRkNF?=
- =?utf-8?B?eWNscHEzdWVwMGlaLy9oekVrMmtUOUhrek05amRrUEdHM2pycGw1UjJQaDFC?=
- =?utf-8?B?WDlKVHNxeUxvKzFPSGRsMmd6L1Z6WktscENBRnNIQUlCeENMOEFkVURldU5r?=
- =?utf-8?B?djMxRzViRS9QMkJuYmgxaVRQM3VJcjZoS25IdURlTTAxVEM5b3FOVm8xMEN4?=
- =?utf-8?B?aXhtRlhyZm9LVDJ3TE0rdlltQ1N2VHMvSkJzQlV5SktmRjZtQWptMU5IS1dO?=
- =?utf-8?B?Z1lEeVpvZVBJbUdqcXhOR2FqV1MzRzc3cnhaSFJPODB6a2R4NlFZTExpVGIv?=
- =?utf-8?B?S1NyZGkyVVlRUXZ2YVh3ZEZQcFFyRTRHSU9vdmxWamZ2WUNDL29SVzF6L0Iv?=
- =?utf-8?B?MUNkTmZjR3cyQlhua0NFam5NN25EOGZ0RkVzVkFuTHhSSkcvRkQ4enpReFlS?=
- =?utf-8?B?WUFocTRyUWhsS1VnTWFTR1FNTkVXMGlVR0swdnQvcGJnV00rSzRkUk9RVDhJ?=
- =?utf-8?B?cG1uL2V3aHZWZU1iR3lqV2dkUHhMYThNeG1UajMwdGd1K1FQVDVNa2lrY3Fa?=
- =?utf-8?B?amRwS3I1WDBxSSt5Y3V6eG1hNzZwMkNZc3NuQ0wxNkhIaWMyWTRTQXZaQTlk?=
- =?utf-8?B?dnlFK2FRYkRGRkhjbGlKaTlmbkQrNzc3UkNlUkZUMVFBdzlpRVdWTEdqTTlG?=
- =?utf-8?B?SVlTcEFpZ01ZdnBKR0dkb3lMeDVmTG9rNW9vRXlQd0xWcHFqU0F4UlBteVBi?=
- =?utf-8?B?VEl0L0hXc3FmOHE0LzR6S1FMUjlJSFk5U3Q1Nmg5VnNySlo2eWpZZDB0R1do?=
- =?utf-8?B?Y0luaGpvMmVXOWVHYWh1UVhmeWQ2WXc0Tjg2SEVud0NjYUowY09OdzM2dy9S?=
- =?utf-8?B?ekphNHA2eDJ3YjgwTUxIYktoTUZKNGI3Z3pXMmxXUEdUQ0xmczJrbndzUlVn?=
- =?utf-8?B?dDdPQWdYYUdVcEVSRktvQ2lDM1BodlRGUUlBUURhNk9uTk1YZjNPN2dlY1Qw?=
- =?utf-8?B?d05qV25tTUNNWGtnSmZ1YUl3WTV2ZGxGYXpndE1YTmJvM3dvUHVWaXVpUFFC?=
- =?utf-8?B?SER0dnkrd1licytSUnZ3blRYVElxOTAyZnhlYW1QY1Z0ZDJ3N1F1bm9ZY0Nw?=
- =?utf-8?B?NlFpYXdDUDdZcDluakNRL0RwZzdUSmQ1VytLcThKc3MzWTYyd2ZlKzZ5WjZI?=
- =?utf-8?B?MW5HbnJ3b05mUUc2Vjd4RnZhekEwbU9TZk1YaDFMMHhHMHFidEQwbElXWkRX?=
- =?utf-8?B?bldFNkJyN2EyeGwzTGtCZyttQzRmM0lKVk5uTFVKM0xQMWY1VnNFbEpyUE1o?=
- =?utf-8?B?VG9MK244eVFFd0lrZEFGbStEWWxadHcwaU9sL0FGMEs5SlA4Y2NkZz09?=
-Content-ID: <26CFEE668BE2FC40B8C569F689B87FB0@namprd11.prod.outlook.com>
+	id 1xHJh4-0000000Ha88-3sQr
+	for linux-mtd@lists.infradead.org;
+	Thu, 15 Oct 2026 11:32:18 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id 4BF3D413EA;
+	Thu, 15 Oct 2026 11:32:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3174C1F000C4;
+	Thu, 15 Oct 2026 11:32:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1792063938;
+	bh=QD82TOQ9OGxgrllEERAIi/zP33vRrwNqhrzU5axxFWY=;
+	h=From:To:Cc:Subject:Date;
+	b=ZMjNmyAecradzBaB+dthqM1md27KcWUj0cFPv9GPYutzs4i4D4Zw8c9Q5/xq9Kf2H
+	 yIHNSr1tkmTnU2MnPf3HAQI0GMYVTuRGkhDvMs+rSnlvZodHtEl/A+MAAI0BUNHc0v
+	 IGa3ZcQ5JRw+SJVYER+9nUAaQWKxQ1f8opRPmKViT/4MbwZfKdYL8mxSu4kHtAePrk
+	 azNTZEBLk2lzUha6JaavOpacASDfx/qNVLyiXahbKRBFaYDwkc3pzs15sAarEv9Xl6
+	 t21PwN8FN/IiH/XbCpl9siJOerbqwPTESmcgcKdvQcmnahbY7j3d6reIWhHbpGKuzF
+	 NUr7gxhTTHmqQ==
+From: Michael Walle <mwalle@kernel.org>
+To: Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <mwalle@kernel.org>,
+	Takahiro Kuwano <takahiro.kuwano@infineon.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	David Laight <david.laight.linux@gmail.com>
+Cc: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] mtd: spi-nor: sfdp: reduce stack usage in spi_nor_parse_sfdp()
+Date: Thu, 15 Oct 2026 13:31:52 +0200
+Message-ID: <20261015113209.975641-1-mwalle@kernel.org>
+X-Mailer: git-send-email 2.47.3
 MIME-Version: 1.0
-X-OriginatorOrg: microchip.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DS6PR11MB523643.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 72426daa-101d-4bd6-aa17-08df2aaf2817
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Oct 2026 11:26:29.0119
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: R/5lC1/jxR7FDzpxCMzj79b+BJ3bYrz2SrJtnO5NLeJFerFAMSYCsrDZtLzpyZAuyHBTDlKZgR2D3uKArWqkjoseQJTMcKep+Vfv0Fm0Gd4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB6352
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261015_042636_984641_D44E238B 
-X-CRM114-Status: GOOD (  18.46  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -152,53 +69,141 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWljaGFlbCwNCg0KT24gMTAvMTUvMjYgMjo0MiBQTSwgTWljaGFlbCBXYWxsZSB3cm90ZToN
-Cj4gT24gV2VkIE9jdCAxNCwgMjAyNiBhdCA4OjQwIEFNIENFU1QsIE1hbmlrYW5kYW4gTXVyYWxp
-ZGhhcmFuIHdyb3RlOg0KPj4gbnZtZW1fcmVnaXN0ZXIoKSBzdG9yZXMgY29uZmlnLT5vZl9ub2Rl
-IChvciBjb25maWctPmRldi0+b2Zfbm9kZSkNCj4+IGludG8gbnZtZW0tPmRldi5vZl9ub2RlIHdp
-dGhvdXQgdGFraW5nIGl0cyBvd24gcmVmZXJlbmNlLiBDYWxsZXJzDQo+PiB0aGF0IGdldCB0aGUg
-bm9kZSB2aWEgb2ZfZ2V0X2NvbXBhdGlibGVfY2hpbGQoKSBldGMuIGFuZCBkcm9wIHRoZWlyDQo+
-PiByZWZlcmVuY2UgcmlnaHQgYWZ0ZXIgcmVnaXN0ZXJpbmcgbGVhdmUgbnZtZW0tPmRldi5vZl9u
-b2RlIGJhY2tlZCBieQ0KPj4gbm8gcmVmZXJlbmNlIGF0IGFsbC4NCj4+DQo+PiBUYWtlIGFuIG9m
-X25vZGVfZ2V0KCkgd2hlbiBhc3NpZ25pbmcgbnZtZW0tPmRldi5vZl9ub2RlIGFuZCByZWxlYXNl
-DQo+PiBpdCBpbiBudm1lbV9yZWxlYXNlKCkuIEV4aXN0aW5nIGNhbGxlcnMgdGhhdCBob2xkIHRo
-ZWlyIG93biBnZXQvcHV0DQo+PiBwYWlyIGFyb3VuZCB0aGUgcmVnaXN0cmF0aW9uIGNhbGwgbmVl
-ZCBubyBjaGFuZ2VzLCBzaW5jZSBnZXQvcHV0IG9uDQo+PiBhIGRldmljZV9ub2RlIGlzIHBlci1o
-b2xkZXIgYW5kIGluZGVwZW5kZW50IG9mIGNvcmUgbm93IGFsc28gaG9sZGluZw0KPj4gb25lLg0K
-Pj4NCj4+IFN1Z2dlc3RlZC1ieTogTWljaGFlbCBXYWxsZSA8bXdhbGxlQGtlcm5lbC5vcmc+DQo+
-PiBTaWduZWQtb2ZmLWJ5OiBNYW5pa2FuZGFuIE11cmFsaWRoYXJhbiA8bWFuaWthbmRhbi5tQG1p
-Y3JvY2hpcC5jb20+DQo+IA0KPiBOaWNlIQ0KPiANCj4gRGlkIHlvdSBjaGVjayBpZiBhbnkgY2Fs
-bGVycyBhcmUgYWxzbyB0YWtpbmcgYSByZWZlcmVuY2UsIHdoaWNoDQo+IG1pZ2h0IG5vdCBiZSBu
-ZWVkZWQgYW55bW9yZSBub3cuDQo+IA0KDQpZZXMsIEkgY2hlY2tlZCDigJQgbm9uZSBvZiB0aGUg
-Y2FsbGVycyBob2xkIGEgcmVmZXJlbmNlIGJleW9uZCB0aGUgDQpyZWdpc3RyYXRpb24gY2FsbCBp
-dHNlbGYuIFRoZSBwYXR0ZXJuIEkgdmVyaWZpZWQgaW4gZWFjaCBkcml2ZXJzIGlzIA0Kc2hvcnQt
-bGl2ZWQsIHRoZSByZWZlcmVuY2UgaXMgZHJvcHBlZCByaWdodCBhZnRlciANCm52bWVtX3JlZ2lz
-dGVyKCkvZGV2bV9udm1lbV9yZWdpc3RlcigpIGNhbGwuDQoNCj4gUmV2aWV3ZWQtYnk6IE1pY2hh
-ZWwgV2FsbGUgPG13YWxsZUBrZXJuZWwub3JnPg0KPiANCj4gLW1pY2hhZWwNCj4gDQo+PiAtLS0N
-Cj4+ICAgZHJpdmVycy9udm1lbS9jb3JlLmMgfCA1ICsrKy0tDQo+PiAgIDEgZmlsZSBjaGFuZ2Vk
-LCAzIGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pDQo+Pg0KPj4gZGlmZiAtLWdpdCBhL2Ry
-aXZlcnMvbnZtZW0vY29yZS5jIGIvZHJpdmVycy9udm1lbS9jb3JlLmMNCj4+IGluZGV4IDA1NTZk
-MTQwMTcwYS4uOTgxOTI1OTdiOTM1IDEwMDY0NA0KPj4gLS0tIGEvZHJpdmVycy9udm1lbS9jb3Jl
-LmMNCj4+ICsrKyBiL2RyaXZlcnMvbnZtZW0vY29yZS5jDQo+PiBAQCAtNTQxLDYgKzU0MSw3IEBA
-IHN0YXRpYyB2b2lkIG52bWVtX3JlbGVhc2Uoc3RydWN0IGRldmljZSAqZGV2KQ0KPj4gICANCj4+
-ICAgCWlkYV9mcmVlKCZudm1lbV9pZGEsIG52bWVtLT5pZCk7DQo+PiAgIAlncGlvZF9wdXQobnZt
-ZW0tPndwX2dwaW8pOw0KPj4gKwlvZl9ub2RlX3B1dChudm1lbS0+ZGV2Lm9mX25vZGUpOw0KPj4g
-ICAJa2ZyZWUobnZtZW0tPm9wcyk7DQo+PiAgIAlrZnJlZShudm1lbSk7DQo+PiAgIH0NCj4+IEBA
-IC05NTAsOSArOTUxLDkgQEAgc3RydWN0IG52bWVtX2RldmljZSAqbnZtZW1fcmVnaXN0ZXIoY29u
-c3Qgc3RydWN0IG52bWVtX2NvbmZpZyAqY29uZmlnKQ0KPj4gICAJbnZtZW0tPmtlZXBvdXQgPSBj
-b25maWctPmtlZXBvdXQ7DQo+PiAgIAludm1lbS0+bmtlZXBvdXQgPSBjb25maWctPm5rZWVwb3V0
-Ow0KPj4gICAJaWYgKGNvbmZpZy0+b2Zfbm9kZSkNCj4+IC0JCW52bWVtLT5kZXYub2Zfbm9kZSA9
-IGNvbmZpZy0+b2Zfbm9kZTsNCj4+ICsJCW52bWVtLT5kZXYub2Zfbm9kZSA9IG9mX25vZGVfZ2V0
-KGNvbmZpZy0+b2Zfbm9kZSk7DQo+PiAgIAllbHNlDQo+PiAtCQludm1lbS0+ZGV2Lm9mX25vZGUg
-PSBjb25maWctPmRldi0+b2Zfbm9kZTsNCj4+ICsJCW52bWVtLT5kZXYub2Zfbm9kZSA9IG9mX25v
-ZGVfZ2V0KGNvbmZpZy0+ZGV2LT5vZl9ub2RlKTsNCj4+ICAgDQo+PiAgIAlzd2l0Y2ggKGNvbmZp
-Zy0+aWQpIHsNCj4+ICAgCWNhc2UgTlZNRU1fREVWSURfTk9ORToNCj4gDQoNCg0KLS0gDQpUaGFu
-a3MgYW5kIFJlZ2FyZHMsDQpNYW5pa2FuZGFuIE0uDQpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGlu
-ZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgt
-bXRkLwo=
+Two large spi_nor_flash_parameter structures on a function stack
+are really too much, and this can exceed an otherwise reasonable
+frame limit:
+
+drivers/mtd/spi-nor/sfdp.c: In function 'spi_nor_parse_sfdp':
+drivers/mtd/spi-nor/sfdp.c:1717:1: error: the frame size of 1600 bytes is larger than 1536 bytes [-Werror=frame-larger-than=]
+
+Allocate both rollback copies on the heap and use structure copies
+for type safety.
+
+Suggested-by: Arnd Bergmann <arnd@arndb.de>
+Suggested-by: David Laight <david.laight.linux@gmail.com>
+Fixes: d20029474a76 ("mtd: spi-nor: push the rollback mechanism into the sfdp module")
+Signed-off-by: Michael Walle <mwalle@kernel.org>
+---
+v2:
+ - don't use the cleanup helpers to not mix them with gotos as
+   suggested by Miquel. I didn't carry your Rb over because there
+   is quite a bit more code change.
+
+ drivers/mtd/spi-nor/sfdp.c | 36 ++++++++++++++++++++++++------------
+ 1 file changed, 24 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
+index beb0f5c66212..2c96f7820188 100644
+--- a/drivers/mtd/spi-nor/sfdp.c
++++ b/drivers/mtd/spi-nor/sfdp.c
+@@ -1537,7 +1537,7 @@ int spi_nor_parse_sfdp(struct spi_nor *nor)
+ {
+ 	const struct sfdp_parameter_header *param_header, *bfpt_header;
+ 	struct sfdp_parameter_header *param_headers = NULL;
+-	struct spi_nor_flash_parameter params, params2;
++	struct spi_nor_flash_parameter *save_params;
+ 	struct sfdp_header header;
+ 	struct device *dev = nor->dev;
+ 	struct sfdp *sfdp;
+@@ -1549,17 +1549,22 @@ int spi_nor_parse_sfdp(struct spi_nor *nor)
+ 	 * Get a backup of all the parameter to roll back to in case of an
+ 	 * error.
+ 	 */
+-	memcpy(&params, nor->params, sizeof(params));
++	save_params = kmalloc_objs(*save_params, 2);
++	if (!save_params)
++		return -ENOMEM;
++	save_params[0] = *nor->params;
+ 
+ 	/* Get the SFDP header. */
+ 	err = spi_nor_read_sfdp_dma_unsafe(nor, 0, sizeof(header), &header);
+ 	if (err < 0)
+-		return err;
++		goto free_save_params;
+ 
+ 	/* Check the SFDP header version. */
+ 	if (le32_to_cpu(header.signature) != SFDP_SIGNATURE ||
+-	    header.major != SFDP_JESD216_MAJOR)
+-		return -EINVAL;
++	    header.major != SFDP_JESD216_MAJOR) {
++		err = -EINVAL;
++		goto free_save_params;
++	}
+ 
+ 	/*
+ 	 * Verify that the first and only mandatory parameter header is a
+@@ -1567,8 +1572,10 @@ int spi_nor_parse_sfdp(struct spi_nor *nor)
+ 	 */
+ 	bfpt_header = &header.bfpt_header;
+ 	if (SFDP_PARAM_HEADER_ID(bfpt_header) != SFDP_BFPT_ID ||
+-	    bfpt_header->major != SFDP_JESD216_MAJOR)
+-		return -EINVAL;
++	    bfpt_header->major != SFDP_JESD216_MAJOR) {
++		err = -EINVAL;
++		goto free_save_params;
++	}
+ 
+ 	sfdp_size = SFDP_PARAM_HEADER_PTP(bfpt_header) +
+ 		    SFDP_PARAM_HEADER_PARAM_LEN(bfpt_header);
+@@ -1588,8 +1595,10 @@ int spi_nor_parse_sfdp(struct spi_nor *nor)
+ 		psize = header.nph * sizeof(*param_headers);
+ 
+ 		param_headers = kmalloc(psize, GFP_KERNEL);
+-		if (!param_headers)
+-			return -ENOMEM;
++		if (!param_headers) {
++			err = -ENOMEM;
++			goto free_save_params;
++		}
+ 
+ 		err = spi_nor_read_sfdp(nor, sizeof(header),
+ 					psize, param_headers);
+@@ -1665,7 +1674,7 @@ int spi_nor_parse_sfdp(struct spi_nor *nor)
+ 
+ 	/* Parse optional parameter tables. */
+ 	for (i = 0; i < header.nph; i++) {
+-		memcpy(&params2, nor->params, sizeof(params2));
++		save_params[1] = *nor->params;
+ 		param_header = &param_headers[i];
+ 
+ 		switch (SFDP_PARAM_HEADER_ID(param_header)) {
+@@ -1703,7 +1712,7 @@ int spi_nor_parse_sfdp(struct spi_nor *nor)
+ 			 * spi_nor_flash_parameter data.
+ 			 */
+ 			err = 0;
+-			memcpy(nor->params, &params2, sizeof(*nor->params));
++			*nor->params = save_params[1];
+ 		}
+ 	}
+ 
+@@ -1712,6 +1721,7 @@ int spi_nor_parse_sfdp(struct spi_nor *nor)
+ 		goto clear_sfdp_ptr;
+ 
+ 	kfree(param_headers);
++	kfree(save_params);
+ 
+ 	return 0;
+ 
+@@ -1724,7 +1734,9 @@ int spi_nor_parse_sfdp(struct spi_nor *nor)
+ free_param_headers:
+ 	kfree(param_headers);
+ 	if (err)
+-		memcpy(nor->params, &params, sizeof(*nor->params));
++		*nor->params = save_params[0];
++free_save_params:
++	kfree(save_params);
+ 
+ 	return err;
+ }
+-- 
+2.47.3
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
