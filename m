@@ -4,89 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21822CC6B33
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Oct 2026 12:02:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E3C0CC6B33
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Oct 2026 12:09:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ol9tQgkIVHJQI59LbrhzMqCnFgcWAYlwaFIA0j+OPSw=; b=PJlKasl5VQ2YXX
-	gILScxHqbizh8h6QnSp/3ZPvV5tW5ki/hW0eO90rhGJQOPnqb+iS8URsBo+8+S6LLZ+89uiUOAT1i
-	b0Nrt2BwtzLDGdWi4EwdxIVdtrW0mRff60kIIhfxnWOS8SNWybwh4J+Dhg0z414qpT7ETrzmO3ivC
-	+38eMp4CqUrQWV0Foty0c+hoVydXVdRJ0mh4PZunq/YQVBvpRXz8dRezoo3jJl3Jd5HANQO0ikIkk
-	vrud7CjciZbM1Ywzrgoa/N9N4On4A8Sg+yN5jOe98auwqsEusPIRU+G6ZFHJuy3MJatGpIo9RBlhz
-	KHtY0ombWqEqwfBye2dg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=zOXjgY7WmSe2yETWK6UDLrIRYHA55+xxYimcpo27UZo=; b=PE0fkm8Gn/Aij/R6CBORxZ7qvR
+	oCPpu3x/zCw9d4nbfwHMJWollyR9g4gUcgqRWLf/UsjiXAdA9sOhMBbJBiyw9vUYvJsHJXLrmh3GX
+	LURNhqErYKD6LBa1HnSXkd4fTDvmozIxkY5PmL8JKNvSVOZeTYznGZlLHR8muE6HxBCCQBMZPu/fJ
+	WpnZjEDbA4RNt22EkzJi90FsFt/L1PRZTYBAvH9g2TC/HLPgY7vDEfd2Vq9ZEDwh0+NM1xQsZ9+bm
+	XgUMuWZncYcZdz8qNC5ZfVUgGVkgeywr8M/B3a3bt3ybI6vLSygF4A9a5aWttE1oCg3oDfoWfOsRZ
+	Wkaxw5LA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xHKAM-000000002zo-0Jhu;
-	Thu, 15 Oct 2026 12:02:34 +0000
-Received: from mail-pl1-x62f.google.com ([2607:f8b0:4864:20::62f])
+	id 1xHKHT-000000003jN-1pe4;
+	Thu, 15 Oct 2026 12:09:55 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xHKAK-000000002z6-0DLf
+	id 1xHKHS-000000003jH-3mhD
 	for linux-mtd@lists.infradead.org;
-	Thu, 15 Oct 2026 12:02:33 +0000
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-2e8ad5b31c7so30189175ad.3
-        for <linux-mtd@lists.infradead.org>; Thu, 15 Oct 2026 05:02:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1792065751; x=1792670551; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=ApNHjCttumEMl6K7MdkUpNjEISJlLnpsoD/T2Ism33Y=;
-        b=sugGePOuhQHoWyv4Hbk9s13lYYs1x5YJCQPkM2t1o4Xp2FUU841rdhLBHfxnWAZPZH
-         k9lO4EVVDlNU8r6iLeZDoXolfjulA+hz8+uiNqK4bYHQ7N6GuFberX6/6zbHNC122sIO
-         qM1218WC3xSjXiKhd1PwSUmXPR2j97/ibqHvtKXEeDyxjC2M/s6fD4zBOmwDo+UB+E24
-         PB2vszoUd5goKiGGydrTcdMioL1bryaF+BJSFfvNYeVK5Ys7cu04EdhHasx499izvwS5
-         vMQyVJoX8B05BdaU5KqGFmfy+HL6g3VOzxtTdW1Gy656XWEkqvhkFg0yYT1husjL7B23
-         CiYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1792065751; x=1792670551;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=ApNHjCttumEMl6K7MdkUpNjEISJlLnpsoD/T2Ism33Y=;
-        b=ivjKqakHZf1Cm24fw7zhm5+myzXJA1Har7c95rjsqkcZ4rYfL/9og6sdKr0OO3lDoH
-         0cAMfcdFctyor0xOvTDn7vbq/se68J6AO/Hl4U/GlwtLek5VhdTN8xMLMaFFsZraI3XV
-         dj5VS3LgKt52FS1ztIu2C1boPbVPkPLPx9oBP4x9SJ7Pfs+j/zw0irr6GnLAeF1xlj9n
-         PF3KigKQLAzJ6/akgHhpHJgWPJRJP7kandkeutCubfFUdNclvUSSUW+jbfftCzlSEPO8
-         goniccXC6OeFwmeMOrnc307o2AJ6aFjKgiTdbAAtJI1BQQC3hfyzduD+mn9jwbfsRtvW
-         wM3A==
-X-Gm-Message-State: AFq9FYIlFs64kAlnAMMxW4n/zfa48zpT5TUfo4E69IrMv3MlH+w5xji0
-	dQFcVF6RMluBnsG6TgjVS5/uzo9GGe/+OeSIkzZREmhywOVbwRcMa0DFYmXAKuj19IPt+w==
-X-Gm-Gg: AYBFou2tAUeDjosDS7rAp7Pd8jRbwRH4CdSfW5zWg9uDOILsS62bE/6FLw9RQY/2G4w
-	ydR2Qlm7ORh600b8FlWxpT4c1kJatxvtduu+JzAyMppu8aYx/gUccZe/F/KLoUNEA8MzfldbUxo
-	wz12Gn0iulVsqM3pM0a0ZQM63SjqsK+7EVw/RJ8v6HdQFv/qMENN9+60ru68iP9XXNSGdFySk0J
-	YirAR72D8/7d7Z177PtKGoMs+H5XycugG5kE5BODhX1JO5DooiYWbv0V1WC5IGa9ulrboFpOctT
-	odxU4Tsuau9EMlL040IPPEZEt0Sc40jCWtdTqR3bhAGOWQL/NuFX/+2FfCMBL+4J/7NdZU+E/YL
-	/q34lVyQwAN7Yi9B9Ig0+E+Jeq+I076UUUYlmteBXGPz40DMwJiJo3zr3qO3DJPrFvv4Xt/ELeL
-	wer+K+2zpTXpi8SgPa3nAxkuZcAIq0mqTE74dZAjRmM15MJ/bd8134f5ooMtHKTFD7jK7kgnEUn
-	cYdGa/djr32j4Y/fQ==
-X-Received: by 2002:a17:903:19e7:b0:2e6:1a6c:abcd with SMTP id d9443c01a7336-2e84280a68fmr186355835ad.3.1792065749469;
-        Thu, 15 Oct 2026 05:02:29 -0700 (PDT)
-Received: from localhost.localdomain ([183.250.189.231])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2e8421b1807sm80886315ad.43.2026.10.15.05.02.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Oct 2026 05:02:28 -0700 (PDT)
-From: Ye Linfei <yelinfei66@gmail.com>
-X-Google-Original-From: Ye Linfei <yelinfei@ruijie.com.cn>
-To: linux-mtd@lists.infradead.org
-Cc: chengzhihao1@huawei.com,
-	richard@nod.at,
-	miquel.raynal@bootlin.com,
-	vigneshr@ti.com,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2] mtd: ubi: block: forbid direct reclaim I/O during synchronous read
-Date: Thu, 15 Oct 2026 20:01:59 +0800
-Message-Id: <20261015120159.305277-1-yelinfei@ruijie.com.cn>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1792046946.git.yelinfei@ruijie.com.cn>
-References: <cover.1792046946.git.yelinfei@ruijie.com.cn>
+	Thu, 15 Oct 2026 12:09:54 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with ESMTP id 2DA33601EF;
+	Thu, 15 Oct 2026 12:09:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A91C11F000C4;
+	Thu, 15 Oct 2026 12:09:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1792066193;
+	bh=5TFfhtEZymDVC1w0b609A5ABsMnSltfDfvXOrQD/KY0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=IaX3kgJHKwrzWGgsgjJnuaLDvKBB+qN3POm3oEIbf4CfYR+vIEqVpODRMwoq/AGmy
+	 TdzQzIK0kCReQ7fZO85a/WPAPqfWpf5DdB9iQMijSUAMT0TWaT/TmzbMSbh8Gutk8Y
+	 esIi/DK15Mc0mZBSX6PO8EYq4MoWfLL5mDoKWgf/KmGbf/Fr+Lv2xn3yK3Ykdq3qtb
+	 xfQZATmrH2RxaQuDE56xel/CiLeLePygAMdIA8+jZo+2rMquKtAL20Y1tkxEXd1Nrg
+	 feW9oYuq37pvJXtf0BjWp1ZuSs/0PHlaqvda5USlv2zf9v0LYfxqiMtsY0FKGwqFLb
+	 BA5iDMruvYI3w==
+Date: Thu, 15 Oct 2026 13:09:48 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Paul Cercueil <paul.cercueil@bootlin.com>
+Cc: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>,
+	Takahiro Kuwano <takahiro.kuwano@infineon.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Kees Cook <kees@kernel.org>, Tony Luck <tony.luck@intel.com>,
+	"Guilherme G . Piccoli" <gpiccoli@igalia.com>,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-spi@vger.kernel.org, Bharat Bhushan <bbhushan2@marvell.com>,
+	Sunil Kovvuri Goutham <sgoutham@marvell.com>,
+	Tanmay Jagdale <tanmay@marvell.com>
+Subject: Re: [PATCH v3 6/7] spi: cadence-xspi: Add support for panic writes
+Message-ID: <f6008943-c4cb-43ae-a791-31965f374ffd@sirena.org.uk>
+References: <20261014154301.157755-1-paul.cercueil@bootlin.com>
+ <20261014154301.157755-7-paul.cercueil@bootlin.com>
 MIME-Version: 1.0
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261015_050232_111869_8089FD0C 
-X-CRM114-Status: GOOD (  17.59  )
+In-Reply-To: <20261014154301.157755-7-paul.cercueil@bootlin.com>
+X-Cookie: Tax and title extra.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,118 +75,64 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7721698933733685512=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-ubiblock implements ->queue_rq() synchronously: the task submitting the
-bio executes the whole UBI/MTD read itself, from inside the block layer
-submission loop (current->bio_list is non-empty) and while holding the
-tag_set SRCU read lock (blk_mq_run_dispatch_ops(), taken for
-BLK_MQ_F_BLOCKING drivers).
 
-An allocation in that context may trigger direct reclaim, which with
-GFP_NOFS - used by all UBI allocations - may synchronously write dirty
-pages to swap.  On systems where swap is backed by a device with
-BLK_FEAT_SYNCHRONOUS (zram), that ends in swap_writepage_bdev_sync()
--> submit_bio_wait().  The swap bio is only queued onto
-current->bio_list, never dispatched: per submit_bio_noacct_nocheck(),
-bios submitted while a submission loop is active are only collected on
-current->bio_list, and their sole dispatcher is the task currently
-executing ->queue_rq() - which is now sleeping waiting for the very
-same bio's completion.  The task hangs forever, the pending SRCU read
-lock freezes grace periods (blk_mq_timeout_work() -> synchronize_srcu()
-never returns), and the unfinished request blocks all other I/O to the
-device.
+--===============7721698933733685512==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="R7ilFvSy7hHntzSv"
+Content-Disposition: inline
 
-This was observed in the field on a 1 GiB RISC-V networking product
-running squashfs-on-ubiblock with zram swap: 47 tasks stuck in disk
-sleep for 600+ seconds, ending in a hung task panic.  The allocator
-never reached the OOM decision point, because the task died inside
-try_to_free_pages().
 
-Mark the whole read with memalloc_noio_save()/memalloc_noio_restore()
-so direct reclaim never issues block I/O while this driver executes:
-reclaim is restricted to dropping clean page cache and shrinking slabs,
-page (swap) reclaim is performed asynchronously by kswapd, and the
-worst case is -ENOMEM, which propagates to the caller as an ordinary
-recoverable I/O error - a recoverable read failure instead of a total
-system hang.
+--R7ilFvSy7hHntzSv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-This covers every allocation performed below ubi_read_sg(), including
-lock-tree entries, VID buffers and I/O helpers, regardless of the gfp
-flags they use internally.
+On Wed, Oct 14, 2026 at 05:43:00PM +0200, Paul Cercueil wrote:
+> From: Tanmay Jagdale <tanmay@marvell.com>
+>=20
+> Advertise support for panic writes. When a memory op is received with
+> the 'panic' flag set, the driver will then work without relying on
+> interrupts and without sleeping.
 
-Fixes: 9d54c8a33eec ("UBI: R/O block driver on top of UBI volumes")
-Cc: stable@vger.kernel.org
-Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
-Signed-off-by: Ye Linfei <yelinfei@ruijie.com.cn>
----
+We check device properties in cdns_xspi_supports_op() if the kernel is
+built with ACPI support, that ends up using of_find_property() which
+takes the devtree lock which means there's a possibility that we might
+deadlock (eg, if we took a NMI or the CPU fell over at the wrong
+moment).  This is probably thin enough it's not worth stopping the
+entire series over, it could be fixed incrementally by storing the
+values during probe.
 
-Changes in v2:
-- Drop the ltree GFP_NOIO patch: its allocation rides under
-  ubiblock_read()'s memalloc_noio_save() scope, which already implies
-  NOIO semantics, and the remaining ltree_add_entry() callers (cdev,
-  update and wear-leveling paths) run in process context where swap
-  I/O from direct reclaim can complete, so widening the flag change
-  was unnecessary.  Suggested by Zhihao Cheng.
-- Add Reviewed-by: Zhihao Cheng.
+--R7ilFvSy7hHntzSv
+Content-Type: application/pgp-signature; name="signature.asc"
 
- drivers/mtd/ubi/block.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+-----BEGIN PGP SIGNATURE-----
 
-diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
-index 29c0d6941a81..c9d42181bf64 100644
---- a/drivers/mtd/ubi/block.c
-+++ b/drivers/mtd/ubi/block.c
-@@ -38,6 +38,7 @@
- #include <linux/blkdev.h>
- #include <linux/blk-mq.h>
- #include <linux/hdreg.h>
-+#include <linux/sched/mm.h>
- #include <linux/scatterlist.h>
- #include <linux/idr.h>
- #include <asm/div64.h>
-@@ -189,6 +190,7 @@ static blk_status_t ubiblock_read(struct request *req)
- 	int leb = pos;
- 	struct req_iterator iter;
- 	struct bio_vec bvec;
-+	unsigned int noio_flags;
- 	int ret;
- 
- 	blk_mq_start_request(req);
-@@ -201,6 +203,18 @@ static blk_status_t ubiblock_read(struct request *req)
- 	ubi_sgl_init(&pdu->usgl);
- 	blk_rq_map_sg(req, pdu->usgl.sg);
- 
-+	/*
-+	 * This entire callback runs in the synchronous dispatch path of
-+	 * blk-mq: submit_bio_noacct_nocheck() only queues a bio submitted
-+	 * from here onto current->bio_list, and the sole dispatcher of
-+	 * that list is this very task, busy inside ->queue_rq().  Any
-+	 * block I/O issued from below would therefore deadlock against
-+	 * itself (e.g. synchronous swap writeback reached via direct
-+	 * reclaim).  Forbid it for the whole read instead of relying on
-+	 * every callee using safe allocation flags.
-+	 */
-+	noio_flags = memalloc_noio_save();
-+
- 	while (bytes_left) {
- 		/*
- 		 * We can only read one LEB at a time. Therefore if the read
-@@ -221,6 +235,7 @@ static blk_status_t ubiblock_read(struct request *req)
- 
- 	rq_for_each_segment(bvec, req, iter)
- 		flush_dcache_page(bvec.bv_page);
-+	memalloc_noio_restore(noio_flags);
- 
- 	blk_mq_end_request(req, errno_to_blk_status(ret));
- 
--- 
-2.25.1
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmrQwosACgkQJNaLcl1U
+h9Cd3gf/VAYkmxCeAkm7N9qwAd30xqwGrjFYs/2mOwDPMyBcp9h/7uWn9nSot0C9
+nMEPLDBJFOTtNJux/OtYP34Q0eGPYsHDNDd1IiQGe9eYYTeCvZGdhe6cDReFoTJy
+qostydL1ZPFj8fyX/L7dkxpHwj4q/Wh6Hwf+xrF6L+DdGUHWwdRPb+7Yyw4vXQhY
+wvYJpajlSSFVFJyLiCupa+a291bog0XIcWho6w7N3lJxwXt6arY8bbk13VeW9G3O
+vtu2lWsnPJPkzn7LcpGcQrS8Z8/oNEHws/il+zsBy62NaeIBd5pewH+HF6pVzkIP
+eRvH91UYtNEsMucoAyXMEauskiLWGg==
+=siEH
+-----END PGP SIGNATURE-----
 
+--R7ilFvSy7hHntzSv--
+
+
+--===============7721698933733685512==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============7721698933733685512==--
+
