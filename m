@@ -4,89 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 239ABCC6B3A
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Oct 2026 07:33:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E327CC6B2F
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Oct 2026 07:49:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Reply-To:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:References:
+	In-Reply-To:Cc:To:Subject:From:Message-ID:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=nVRKAthxXyRMzpwskW1ib0TsH5AQB6MJ2Cr9GS5EGLI=; b=IGlwz3VLKA+UaB
-	QmauCF9GhY+EEVj302WKK0US2QpqWopTk01CYcACEjHEp9YWrJMBZPk/iXFV3Egfca9oEKIn0wG2D
-	jG/yyTICKaHfJaK/h71h67tftC+Lp/0gQlOJocut04rjLmyFgnqprlAqTrF8whCF1twFY8kwxEx6n
-	J5hxiD6ai0Ol/G1SSNxkMU8ieaIZXRbqbpuX05TsjHXdq4VAhp5+v5fr1Ps1YhT8xUhgxIj/AN5zn
-	lTo6UGXcbZNYJA29Zirp9fUbkQex5TSp/OwlcmFiFZ0gIslOo3kHxyztXUxPtXIQgP6ZdKFUlTfDm
-	qnikBUz6shp+WkJ4nJTg==;
+	List-Owner; bh=fr83gPLGT6lcYQmwKBHch43puI9WldJkf8L3y76GRzI=; b=kfor7potr6S+M6
+	9jaPVWe7nsB7StatBzmdd2VHuwMQEmNcdrjnX1sTOheAWdiLT350aEN5uWdr14EU/mPF/6d58FMvc
+	KHliLVy/4Nip/CtS5maiMYy5xWMZUEt3vIcv+ZWktFg+RhTSJDCQooytdNafhqbtw4ck2DFg/p30h
+	i7NsVsCvotNQ+nOgkoD0/s5klQ2EEC3mpwE8zNKM2lDx/Srspkrs74j1iiRZ5QGyUfSZAlrQjcoWH
+	6jpGD4ouSgnDBJq4lJrRQkG+aQceDwL9zuw7IPb9S6mvSlchIi8JcuiXBB4qKVbYDGNWD09Ab9MhO
+	q06FrMFhGOFhhWpax8FQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xHFyE-0000000H2aF-36hj;
-	Thu, 15 Oct 2026 07:33:46 +0000
-Received: from mail-pg1-x52f.google.com ([2607:f8b0:4864:20::52f])
+	id 1xHGDS-0000000H4jS-20Gs;
+	Thu, 15 Oct 2026 07:49:30 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xHFyD-0000000H2ZT-0Rc0
+	id 1xHGDR-0000000H4iq-0R8g
 	for linux-mtd@lists.infradead.org;
-	Thu, 15 Oct 2026 07:33:46 +0000
-Received: by mail-pg1-x52f.google.com with SMTP id 41be03b00d2f7-cd632f7a4a1so412438a12.3
-        for <linux-mtd@lists.infradead.org>; Thu, 15 Oct 2026 00:33:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1792049624; x=1792654424; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=Ndo7bU5CbSJbisXie43oCLONWXZJBYZR9Gu8b5iBiZg=;
-        b=GoovWLdh6hmVuYZVXrOKihwNS8xlkTOpZglQTB7WxU20dx0d3GrHNTQv0TDZ2Haqm2
-         eMGKdDYE2Yw/tMy4++/HrGr5Tm5OmrCAtsvqcXb51NMfKOY4CxTAmdZlWOJdoGlHtBW0
-         xEVeViOV/L1GVWgldupCbIIiJ12qDjBgJNpVgYdVC2elmvXzlt05dDFJXcSMn7n8su5P
-         OjwsaAF7O61aQW6cOa5TOtLmt27ZK0HJOCpbH78ZPVKIL/sLhW2JRzB4V2E0UZgTA21g
-         PdukiE3aN+lBeQ2E++shzUXqhu8fkMMnDYA6+ngBLf2s/HRf8vGspoMBgyjq0n9DnbSm
-         9JCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1792049624; x=1792654424;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=Ndo7bU5CbSJbisXie43oCLONWXZJBYZR9Gu8b5iBiZg=;
-        b=P5QnEI27o3QFDitJ65Zhwn7M5yoAwUIPEN0q6O1ZVNCqmP6hWA3mskHC7UFmNT+bwz
-         6QFqLmo6RpfpWtEM1O4zHye72qy+xvULS37hVL0wjsCLpjZUUNG+BAdY3h1OTeLfiuuu
-         QZS2IDJvMUtcQ/y7VQ1bhOL2HlSuhrDqlnMK2opqTngN/sUYtp3v/gb5Z2J5Ojh5qqnb
-         qTeLyagudD7mpSMh/DCfSXzcPUqAzfyw1K3yw1xNaYIR3YtV1d8KY/JOVldzAOohI+NE
-         uUF3mN+0HZnQcfD39KsdWb6EK1TeOxWFMYfdwNqVtVvn8tCOnUBPpncExUnFCYOufJ/4
-         wfpQ==
-X-Gm-Message-State: AFq9FYIA2JoFOMuu7dBFdgL2pj70CIxFqktwrrZJ6mMCym0C1HKq99ze
-	xvcdq2s3l5KOb3vI4I5DatFSo/w1FYsCXnFMqMBioTBIj7Y9qBnTyl8pmWkhrFkYNOUmvA==
-X-Gm-Gg: AYBFou1Av4+6a30cU3y0rj6VfW73I+WFZfGN7wOAhGx6m5JsKSSZ3n4gU+yWpTvj3S4
-	Gel1SJusAsP5H5SgmVnofzLWS/4OGQ3n7uDt2emjf3vYhIlFKGOLEx+IIQO8HlyzpEvVDvqQVj6
-	fRfcRuyPZyI09p2LXEqnCGOCGM5Ob2dWOFWpegQoe4/sHY96LV0mNksvefRyeILVUAeN93yhtko
-	B9obm/5ayjCJACH6cKo8MvIqS0TzNuKNMjz6e5PQ3v3r2zGTId6oyKEhpXzJP/uAH6IRbQK4GEt
-	K2ww8tQLv/6k9YG9nE5wQfcV6Xyctlp1QnchtoeZdbsujaQT44M8KRJ6T+TIC5CJ9FDebKpFVdA
-	EQh9PRlykl/Q0dsP8Y+Hy3a/4fqIo99eAQLgXRssMJNuXgYQCP44Z8pmjvcPlRfYCU9PiELYH2Q
-	QJmhMqgA8m5mlncCp6jTmBUHi7w3qgsIEMDpeRaHRkPLHR6jyVhR6E4UnDl4Vv4oNenKIW8g1pb
-	NYo5Uq6l5lpPWhu
-X-Received: by 2002:a17:90b:3c92:b0:3ac:aa8d:19e0 with SMTP id 98e67ed59e1d1-3acaa8d2140mr133692a91.9.1792049623970;
-        Thu, 15 Oct 2026 00:33:43 -0700 (PDT)
-Received: from localhost.localdomain ([183.250.189.231])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3ac94748c6csm3066274a91.10.2026.10.15.00.33.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Oct 2026 00:33:43 -0700 (PDT)
-From: Yelin Fei <yelinfei66@gmail.com>
-X-Google-Original-From: Yelin Fei <yelinfei@ruijie.com.cn>
-To: linux-mtd@lists.infradead.org
-Cc: richard@nod.at,
-	chengzhihao1@huawei.com,
-	miquel.raynal@bootlin.com,
-	vigneshr@ti.com,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] mtd: ubi: use GFP_NOIO for lock tree entry allocation
-Date: Thu, 15 Oct 2026 15:33:21 +0800
-Message-Id: <8b4e0b970271095df8321b1662aa464c5b9002dc.1792046946.git.yelinfei@ruijie.com.cn>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1792046946.git.yelinfei@ruijie.com.cn>
+	Thu, 15 Oct 2026 07:49:29 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with ESMTP id 73D3A6022A;
+	Thu, 15 Oct 2026 07:49:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBBE41F000C4;
+	Thu, 15 Oct 2026 07:49:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1792050568;
+	bh=xd6hK/zaajgu8MS++QgUbLELls4lByinQPxBbFmL6J8=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=AFRKUfq0I1kaW8tuCfh3J2P7nHVl5fXqXUmrZTnTbwdQwh0tf5AFek95e+juVUVxd
+	 UkOqKjaSf+LXES/8cWIc9TmGaHMiAii85vJjWBMsbAHcXWt/omEcxOywv6GAbLiZRY
+	 FmrpPICRnnYpLeSgr+sfm2hejCr38HHqr/mrvdORIDX1Y8iWxHcI0uhCqufZlz4CPS
+	 QN6bHkBj3dakSg0wmj9WrxjkOEYvhz3qvrxn1cTDqNNyhruSjzrMhMAnkm5Gsppj8P
+	 DUzK+iaK6MyCUcvIJG9bZWceGRAfYixrMrfEQ5LtU/MsaLTsLKrx0nFgwbppL7818s
+	 B/1mtVctYlwLg==
+Message-ID: <sashiko-outbox-172435@kernel.org>
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH 1/2] mtd: ubi: block: forbid direct reclaim I/O during
+ synchronous read
+To: "Yelin Fei" <yelinfei66@gmail.com>, linux-mtd@lists.infradead.org
+Cc: richard@nod.at, chengzhihao1@huawei.com, miquel.raynal@bootlin.com, vigneshr@ti.com
+In-Reply-To: <d2657317d2d8f9cca201f09dbcd6d9b9b82744ba.1792046946.git.yelinfei@ruijie.com.cn>
 References: <cover.1792046946.git.yelinfei@ruijie.com.cn>
-MIME-Version: 1.0
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261015_003345_147319_C08651F3 
-X-CRM114-Status: GOOD (  13.55  )
+ <d2657317d2d8f9cca201f09dbcd6d9b9b82744ba.1792046946.git.yelinfei@ruijie.com.cn>
+Date: Thu, 15 Oct 2026 07:49:27 +0000
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,51 +63,65 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Reply-To: sashiko-reviews@lists.linux.dev
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Ye Linfei <yelinfei@ruijie.com.cn>
-
-The per-LEB lock tree entry can be allocated while UBI is executing on
-behalf of a synchronous block-layer consumer (ubiblock), where issuing
-further block I/O from direct reclaim would deadlock; see the
-preceding commit "mtd: ubi: block: forbid direct reclaim I/O during
-synchronous read" for the full analysis.
-
-Make the allocation self-contained: GFP_NOIO restricts direct reclaim
-to dropping clean page cache and shrinking slabs, page (swap) reclaim
-is left to kswapd, and the worst case is -ENOMEM, which callers
-already propagate as an ordinary recoverable I/O error.
-
-memalloc_noio_save()/memalloc_noio_restore() in ubiblock_read()
-already enforce this for the whole read scope; keeping the allocation
-here self-contained as well means the safety property does not depend
-on every future caller remembering to set up that scope.
-
-Signed-off-by: Ye Linfei <yelinfei@ruijie.com.cn>
----
- drivers/mtd/ubi/eba.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
-index f0c549e62c55..8fe68e7fff58 100644
---- a/drivers/mtd/ubi/eba.c
-+++ b/drivers/mtd/ubi/eba.c
-@@ -247,7 +247,7 @@ static struct ubi_ltree_entry *ltree_add_entry(struct ubi_device *ubi,
- {
- 	struct ubi_ltree_entry *le, *le1, *le_free;
- 
--	le = kmalloc_obj(struct ubi_ltree_entry, GFP_NOFS);
-+	le = kmalloc_obj(struct ubi_ltree_entry, GFP_NOIO); /* see ubiblock_read() */
- 	if (!le)
- 		return ERR_PTR(-ENOMEM);
- 
--- 
-2.25.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+VGhhbmsgeW91IGZvciB5b3VyIGNvbnRyaWJ1dGlvbiEgU2FzaGlrbyBBSSByZXZpZXcgZm91bmQg
+MSBwb3RlbnRpYWwgaXNzdWUocykgdG8gY29uc2lkZXI6Ci0gW0xvd10gbXRkOiBibG9jazogdW5p
+bml0aWFsaXplZCB1c2Ugb2YgJ3JldCcgb24gMC1ieXRlIHJlYWQKLS0KCmNvbW1pdCBkOThhNmFi
+MGNkMGJkMzIwMGU4ZmNhY2ZmNzUxYTg1ZTJmOWVlMzcyCkF1dGhvcjogWWUgTGluZmVpIDx5ZWxp
+bmZlaUBydWlqaWUuY29tLmNuPgoKbXRkOiB1Ymk6IGJsb2NrOiBmb3JiaWQgZGlyZWN0IHJlY2xh
+aW0gSS9PIGR1cmluZyBzeW5jaHJvbm91cyByZWFkCgpUaGlzIGNvbW1pdCBtYXJrcyB0aGUgZW50
+aXJlIHViaWJsb2NrX3JlYWQgb3BlcmF0aW9uIHdpdGgKbWVtYWxsb2Nfbm9pb19zYXZlKCkgYW5k
+IG1lbWFsbG9jX25vaW9fcmVzdG9yZSgpIHRvIGZvcmJpZCBkaXJlY3QgcmVjbGFpbQpJL08gd2hp
+bGUgdGhlIGRyaXZlciBleGVjdXRlcy4gVGhpcyBwcmV2ZW50cyBhIGRlYWRsb2NrIHdoZXJlIHN5
+bmNocm9ub3VzCnN3YXAgd3JpdGViYWNrIGNvdWxkIGJlIHRyaWdnZXJlZCB2aWEgZGlyZWN0IHJl
+Y2xhaW0gd2hpbGUgdGhlIHRhc2sgaXMKYWxyZWFkeSBob2xkaW5nIHRoZSBTUkNVIHJlYWQgbG9j
+ayBpbiB0aGUgYmxrLW1xIHN5bmNocm9ub3VzIGRpc3BhdGNoIHBhdGguCgpDYzogc3RhYmxlQHZn
+ZXIua2VybmVsLm9yZwoKPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvdWJpL2Jsb2NrLmMgYi9k
+cml2ZXJzL210ZC91YmkvYmxvY2suYwo+IGluZGV4IDI5YzBkNjk0MWE4MTguLmM5ZDQyMTgxYmY2
+NDggMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9tdGQvdWJpL2Jsb2NrLmMKPiArKysgYi9kcml2ZXJz
+L210ZC91YmkvYmxvY2suYwoKWyAuLi4gXQoKPiBAQCAtMTg5LDYgKzE5MCw3IEBAIHN0YXRpYyBi
+bGtfc3RhdHVzX3QgdWJpYmxvY2tfcmVhZChzdHJ1Y3QgcmVxdWVzdCAqcmVxKQo+ICAJaW50IGxl
+YiA9IHBvczsKPiAgCXN0cnVjdCByZXFfaXRlcmF0b3IgaXRlcjsKPiAgCXN0cnVjdCBiaW9fdmVj
+IGJ2ZWM7Cj4gKwl1bnNpZ25lZCBpbnQgbm9pb19mbGFnczsKPiAgCWludCByZXQ7Cj4gIAo+ICAJ
+YmxrX21xX3N0YXJ0X3JlcXVlc3QocmVxKTsKPiBAQCAtMjAxLDYgKzIwMywxOCBAQCBzdGF0aWMg
+YmxrX3N0YXR1c190IHViaWJsb2NrX3JlYWQoc3RydWN0IHJlcXVlc3QgKnJlcSkKPiAgCXViaV9z
+Z2xfaW5pdCgmcGR1LT51c2dsKTsKPiAgCWJsa19ycV9tYXBfc2cocmVxLCBwZHUtPnVzZ2wuc2cp
+Owo+ICAKPiArCS8qCj4gKwkgKiBUaGlzIGVudGlyZSBjYWxsYmFjayBydW5zIGluIHRoZSBzeW5j
+aHJvbm91cyBkaXNwYXRjaCBwYXRoIG9mCj4gKwkgKiBibGstbXE6IHN1Ym1pdF9iaW9fbm9hY2N0
+X25vY2hlY2soKSBvbmx5IHF1ZXVlcyBhIGJpbyBzdWJtaXR0ZWQKPiArCSAqIGZyb20gaGVyZSBv
+bnRvIGN1cnJlbnQtPmJpb19saXN0LCBhbmQgdGhlIHNvbGUgZGlzcGF0Y2hlciBvZgo+ICsJICog
+dGhhdCBsaXN0IGlzIHRoaXMgdmVyeSB0YXNrLCBidXN5IGluc2lkZSAtPnF1ZXVlX3JxKCkuICBB
+bnkKPiArCSAqIGJsb2NrIEkvTyBpc3N1ZWQgZnJvbSBiZWxvdyB3b3VsZCB0aGVyZWZvcmUgZGVh
+ZGxvY2sgYWdhaW5zdAo+ICsJICogaXRzZWxmIChlLmcuIHN5bmNocm9ub3VzIHN3YXAgd3JpdGVi
+YWNrIHJlYWNoZWQgdmlhIGRpcmVjdAo+ICsJICogcmVjbGFpbSkuICBGb3JiaWQgaXQgZm9yIHRo
+ZSB3aG9sZSByZWFkIGluc3RlYWQgb2YgcmVseWluZyBvbgo+ICsJICogZXZlcnkgY2FsbGVlIHVz
+aW5nIHNhZmUgYWxsb2NhdGlvbiBmbGFncy4KPiArCSAqLwo+ICsJbm9pb19mbGFncyA9IG1lbWFs
+bG9jX25vaW9fc2F2ZSgpOwo+ICsKPiAgCXdoaWxlIChieXRlc19sZWZ0KSB7Cj4gIAkJLyoKPiAg
+CQkgKiBXZSBjYW4gb25seSByZWFkIG9uZSBMRUIgYXQgYSB0aW1lLiBUaGVyZWZvcmUgaWYgdGhl
+IHJlYWQKPiBAQCAtMjIxLDYgKzIzNSw3IEBAIHN0YXRpYyBibGtfc3RhdHVzX3QgdWJpYmxvY2tf
+cmVhZChzdHJ1Y3QgcmVxdWVzdCAqcmVxKQo+ICAKPiAgCXJxX2Zvcl9lYWNoX3NlZ21lbnQoYnZl
+YywgcmVxLCBpdGVyKQo+ICAJCWZsdXNoX2RjYWNoZV9wYWdlKGJ2ZWMuYnZfcGFnZSk7Cj4gKwlt
+ZW1hbGxvY19ub2lvX3Jlc3RvcmUobm9pb19mbGFncyk7Cj4gIAo+ICAJYmxrX21xX2VuZF9yZXF1
+ZXN0KHJlcSwgZXJybm9fdG9fYmxrX3N0YXR1cyhyZXQpKTsKCltTZXZlcml0eTogTG93XQpEb2Vz
+IHViaWJsb2NrX3JlYWQoKSBpbiBkcml2ZXJzL210ZC91YmkvYmxvY2suYyBsZWF2ZSByZXQgdW5p
+bml0aWFsaXplZCBpZiBhCjAtYnl0ZSByZWFkIHJlcXVlc3QgaXMgc3VibWl0dGVkPwoKSWYgYmxr
+X3JxX2J5dGVzKHJlcSkgZXZhbHVhdGVzIHRvIDAsIGJ5dGVzX2xlZnQgaXMgMCBhbmQgdGhlIGxv
+b3AgaXMgYnlwYXNzZWQ6CgogICAgaW50IHRvX3JlYWQgPSBibGtfcnFfYnl0ZXMocmVxKTsKICAg
+IGludCBieXRlc19sZWZ0ID0gdG9fcmVhZDsKICAgIC4uLgogICAgaW50IHJldDsKICAgIC4uLgog
+ICAgd2hpbGUgKGJ5dGVzX2xlZnQpIHsgLy8gYnlwYXNzZWQgY29tcGxldGVseQogICAgICAgIC4u
+LgogICAgICAgIHJldCA9IHViaV9yZWFkX3NnKC4uLik7CiAgICB9CgpUaGlzIGxlYXZlcyB0aGUg
+dW5pbml0aWFsaXplZCByZXQgdmFsdWUgb24gdGhlIHN0YWNrIHRvIGJlIGNvbnN1bWVkIGhlcmUg
+YnkKZXJybm9fdG9fYmxrX3N0YXR1cygpLCByZXR1cm5pbmcgYW4gdW5wcmVkaWN0YWJsZSBibG9j
+ayBjb21wbGV0aW9uIHN0YXR1cy4KCldoaWxlIDAtYnl0ZSByZWFkcyBtaWdodCBiZSByYXJlIGlu
+IHByYWN0aWNlLCB0aGUgYmxvY2sgbGF5ZXIgZG9lcyBub3QKc3RydWN0dXJhbGx5IGZpbHRlciBv
+dXQgZGF0YWxlc3MgUkVRX09QX1JFQUQgYmlvcy4KCi0tIApTYXNoaWtvIEFJIHJldmlldyDCtyBo
+dHRwczovL3Nhc2hpa28uZGV2LyMvcGF0Y2hzZXQvY292ZXIuMTc5MjA0Njk0Ni5naXQueWVsaW5m
+ZWlAcnVpamllLmNvbS5jbj9wYXJ0PTEKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QK
+aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
