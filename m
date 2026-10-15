@@ -4,87 +4,195 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A50A7CCA464
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Oct 2026 18:39:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0EEACCC6B38
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Oct 2026 20:28:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=N8qc8nOqL8LcFGwbt+aslxPKKKPO6Nw8XV2r1Sr6i2o=; b=hkskgEVB1u1OY2
-	lgsyswIAKUVBxsrLc7vuqA1E/DV5RTgNElnTOexSHttGZU4T2EFlrt7XSgLa07OxJ5qkxTjJXinLn
-	FiGpj6q4UyZvl2uXMGFv2kb5bK/LFf9KGP+M6L081xeDi34UoeEfB8SSlr1YeNynI6+OkMM3k7Sto
-	0Kppqv02xLYdkySbKMu+/SlmfY8BwSTwRUkWIIo/WPhi8N2qshfytfg9VmMASTCvFWBkkqk7TPVbi
-	s4eT115uuMuuqxqKwhSvBak6HJVTpFC5mEJDBzIN7SuQc1/cv82H4cxj3tZQBa9nptBa4AowWpKcQ
-	EQZPpQMUHmQNXZigO2GQ==;
+	List-Owner; bh=F2Emo80NLIEIriPHSYAWrEg/p0oUTN/YH9fArblJRnQ=; b=oJ7lNcaopRNs4X
+	hjqvpAbnSqJrR/+8u6c/1PUoS9V/UoC5hoTKeKDey3h0drxoYRrejiKeQImNk7RDusVI6c3iKD8GM
+	i5SWYp6/jDpxrNwXG3bOCUO/KU327HZGXtfKQdhPl1UchhqHQKhcxOnTwn+QEG8QEixVEqKi85qeO
+	ycORRnxXY9MH06yHupD9HoXh2dJW2H0lh+WWlsFjeaHdl+gKL4X6xbqmIkNcPmjI+NtIo9iJU9mq7
+	rHaj2VWQknpG4hHWDGo3Dce2NqpWPOK6QIKtOJb1uf1SXPn9ymlpOPkJDiUOGP1ScN/PH+I61DMG4
+	7fVD5GKLOUGcCxRpBQOw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xHQMT-00000001BZn-2Nak;
-	Thu, 15 Oct 2026 18:39:29 +0000
-Received: from mx01.bremer-it.com ([85.215.132.167])
+	id 1xHS3r-00000001LC4-0a2g;
+	Thu, 15 Oct 2026 20:28:23 +0000
+Received: from mail-eastus2azlp170100001.outbound.protection.outlook.com ([2a01:111:f403:c110::1] helo=BN1PR04CU002.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xHQMQ-00000001BZ6-2O0Z
-	for linux-mtd@lists.infradead.org;
-	Thu, 15 Oct 2026 18:39:27 +0000
-Received: from cashel.logfs.org (c-98-33-96-243.hsd1.ca.comcast.net [98.33.96.243])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature ECDSA (secp384r1) server-digest SHA384)
-	(No client certificate requested)
-	by mx01.bremer-it.com (Postfix) with ESMTPSA id CB961200FB;
-	Thu, 15 Oct 2026 20:39:20 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=barelysecure.org;
-	s=dkim68; t=1792089563;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CMh6llIyZaU6gvbFXWPakzH4w8foKwyN30kmvQqNpoE=;
-	b=XMCYAa9CjIlcTczVfRSEK5t4dEdUGefNq783V0QWKU+s0cFZD3yKMo9ci+8safo0f6XcOG
-	vBeX5bsLyOS71SXaWquLI/GeaKYsbwAKZPCJA4XKFJESuSOtrGGnujySzlZX4FxKX1yrhJ
-	hpwpGnDcIp27WmNaQGue8xtn1UolJjv4eBGBimwAcdRYhbnkz4Fyi+OvDZPc+f0T+BhTab
-	Rb/zgcXVxNPnG6DCm1YIIKtezEN42jYA8Gu5P956M6n+Uz80/wjRwsYWzvnuAhiz9hA7oa
-	1ZjQBbycLOsc+gEtHTl+/IbY9C0T0mW6m254+CZyLo6qmUvu7S04cAeJ/9uD5Q==
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=joern@lazybastard.org smtp.mailfrom=joern@barelysecure.org
-Date: Thu, 15 Oct 2026 11:39:18 -0700
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@barelysecure.org>
-To: Tal Zussman <tz2294@columbia.edu>
-Cc: Joern Engel <joern@lazybastard.org>,
+	id 1xHS3o-00000001LB9-0Z2D;
+	Thu, 15 Oct 2026 20:28:21 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=T3FT+01/u6bliMTPcErBre6bF0mkEGYGd5FVi+ib6JpmtaPDnfyVfCj0UMu7cKjoOfptDUaXHj1HadDZE+RAGoOHmWnG0X6NASRO8UsWACGF242M46ak6tlAvjNs5cjXkXdo7jGTXQ53MSFUPKEWaan0WK54k2N4tE+t0B3M42eh9TCx1Xurz2jhP8SA6m41ha0KxbNPEnELuyv7+KCjtwP1zjk9BAqIPKhbtHao/QhHSHsLPkkA6zvZ4baNv8WYtcu2WwH9kzWvQP/taTSgXGUhFAMyVKBOSZopC/oQGaBh3TKeW8YZNJrEl2Q2yDe7fck+dP7snthc3TU05I0ukg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=dIhrhRYhWiXVbuVvBbLaM2UZKoe9JP+wgs2TfqwRFiY=;
+ b=tgzvhnelzUlGmOGlmH04oVmlXL5zzsmqZCwdIC1Z+0wWatB+ykAyg4gAUlN4NwPY5xOIFXuWAS/ltQa3fZ4eTS3RVNAE7m+qb7dM5Siq/COU5UmjCC6RObR7SyB8ojQtzISbtVxQYK/Obnhl9yGaZzq4KLhiDxTo2M+o0V2sheGBT+BHgJXYSrKoCHjgf5tI80J4VwB7EM/OXjyHMkfT8JxKAHy24KQ0NYs2DWdvrZpAovkriaJSiBGNkSuxmCmGUpZimhEIWkK/i0BmC+Tq9SNdW++yohaQVxNtxmGG759IZJseoPcbByjiKNgpQ/D4gfJGMDREGbeLn39DiTw6xg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dIhrhRYhWiXVbuVvBbLaM2UZKoe9JP+wgs2TfqwRFiY=;
+ b=1XEZfswBtRJsfrFGDbntL3y14D5qm421CEaErP5Wj+Ey213pwy9SYDTjV3veaagb+tlnxXMdn4rUAGmlVLqDHG1cakqumSs4DZrE9xchvmJg9NVtecbu0Jc/MlKYjx2VkU92ht4KW8/EA+ux4dXB2OAWNfzueGMrBaClJpnYJUc=
+Authentication-Results: mx.microsoft.com 1; dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DM4PR12MB6374.namprd12.prod.outlook.com (2603:10b6:8:a3::18) by
+ DS0PR12MB6631.namprd12.prod.outlook.com (2603:10b6:8:d1::14) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.21.472.20; Thu, 15 Oct 2026 20:26:05 +0000
+Received: from DM4PR12MB6374.namprd12.prod.outlook.com
+ ([fe80::af35:a7a6:6ca:7fcf]) by DM4PR12MB6374.namprd12.prod.outlook.com
+ ([fe80::af35:a7a6:6ca:7fcf%5]) with mapi id 15.21.0522.011; Thu, 15 Oct 2026
+ 20:26:03 +0000
+Date: Thu, 15 Oct 2026 16:25:45 -0400
+From: Yazen Ghannam <yazen.ghannam@amd.com>
+To: Juergen Gross <jgross@suse.com>
+Cc: linux-kernel@vger.kernel.org, x86@kernel.org,
+	linux-perf-users@vger.kernel.org, linux-hyperv@vger.kernel.org,
+	kvm@vger.kernel.org, virtualization@lists.linux.dev,
+	linux-edac@vger.kernel.org, linux-pci@vger.kernel.org,
+	linux-pm@vger.kernel.org, linux-coco@lists.linux.dev,
+	linux-acpi@vger.kernel.org, linux-ide@vger.kernel.org,
+	dri-devel@lists.freedesktop.org, linux-crypto@vger.kernel.org,
+	linux-gpio@vger.kernel.org, linux-hwmon@vger.kernel.org,
+	linux-mtd@lists.infradead.org, platform-driver-x86@vger.kernel.org,
+	linux-fbdev@vger.kernel.org, Thomas Gleixner <tglx@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	James Clark <james.clark@linaro.org>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+	Long Li <longli@microsoft.com>,
+	Sean Christopherson <seanjc@google.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Ajay Kaher <ajay.kaher@broadcom.com>,
+	Alexey Makhalov <alexey.makhalov@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+	Pu Wen <puwen@hygon.cn>, Tony Luck <tony.luck@intel.com>,
+	Reinette Chatre <reinette.chatre@intel.com>,
+	Dave Martin <Dave.Martin@arm.com>,
+	James Morse <james.morse@arm.com>, Babu Moger <babu.moger@amd.com>,
+	Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>,
+	Vitaly Kuznetsov <vkuznets@redhat.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Pavel Machek <pavel@kernel.org>, Kiryl Shutsemau <kas@kernel.org>,
+	Rick Edgecombe <rick.p.edgecombe@intel.com>,
+	Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+	Len Brown <lenb@kernel.org>, Damien Le Moal <dlemoal@kernel.org>,
+	Niklas Cassel <cassel@kernel.org>,
+	David Airlie <airlied@redhat.com>,
+	Olivia Mackall <olivia@selenic.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Viresh Kumar <viresh.kumar@linaro.org>,
+	Huang Rui <ray.huang@amd.com>,
+	Mario Limonciello <mario.limonciello@amd.com>,
+	Perry Yuan <perry.yuan@amd.com>,
+	K Prateek Nayak <kprateek.nayak@amd.com>,
+	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+	Linus Walleij <linusw@kernel.org>,
+	Bartosz Golaszewski <brgl@kernel.org>,
+	Guenter Roeck <linux@roeck-us.net>,
+	Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+	Artem Bityutskiy <dedekind1@gmail.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] mtd: block2mtd: convert to folios
-Message-ID: <atEd1rbZ_TCXpqXd@cashel.logfs.org>
-References: <20261014-block2mtd-folio-v1-0-19d24ae676ee@columbia.edu>
-MIME-Version: 1.0
+	Ashok Raj <ashok.raj.linux@gmail.com>,
+	Hans de Goede <hansg@kernel.org>,
+	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
+	Xi Pardee <xi.pardee@linux.intel.com>,
+	Daniel Lezcano <daniel.lezcano@kernel.org>,
+	Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>,
+	Helge Deller <deller@gmx.de>, xen-devel@lists.xenproject.org,
+	linux-geode@lists.infradead.org,
+	Michael Kelley <mhklinux@outlook.com>,
+	Zhongqiu Han <zhongqiu.han@oss.qualcomm.com>
+Subject: Re: [PATCH v4 12/13] treewide: convert rdmsrq() from a macro to an
+ inline function
+Message-ID: <20261015202545.GA1335@yaz-khff2.amd.com>
+References: <20261008071839.2247074-1-jgross@suse.com>
+ <20261008071839.2247074-13-jgross@suse.com>
 Content-Disposition: inline
-In-Reply-To: <20261014-block2mtd-folio-v1-0-19d24ae676ee@columbia.edu>
-X-Spamd-Bar: /
-X-Spamd-Result: default: False [-0.10 / 14.00];
-	MIME_GOOD(-0.10)[text/plain];
-	BAYES_HAM(-0.00)[10.10%];
-	RCVD_COUNT_ZERO(0.00)[0];
-	ARC_NA(0.00)[];
-	ASN(0.00)[asn:7922, ipnet:98.32.0.0/11, country:US];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	URIBL_BLOCKED(0.00)[barelysecure.org:from_mime,barelysecure.org:from_smtp];
-	FROM_EQ_ENVFROM(0.00)[];
-	DKIM_SIGNED(0.00)[barelysecure.org:s=dkim68];
-	LOCAL_OUTBOUND(0.00)[];
-	TO_MATCH_ENVRCPT_SOME(0.00)[];
-	TO_DN_SOME(0.00)[]
-X-Rspamd-Action: no action
-X-Rspamd-Server: server01
-X-Rspamd-Queue-Id: CB961200FB
+In-Reply-To: <20261008071839.2247074-13-jgross@suse.com>
+X-ClientProxiedBy: BLAPR03CA0069.namprd03.prod.outlook.com
+ (2603:10b6:208:329::14) To DM4PR12MB6374.namprd12.prod.outlook.com
+ (2603:10b6:8:a3::18)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR12MB6374:EE_|DS0PR12MB6631:EE_
+X-MS-Office365-Filtering-Correlation-Id: a2d1fad7-3215-4308-603c-08df2afa88a8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|7416014|366016|1800799024|23010399003|56012099006|11063799006|4143699003|10067099003|22082099003|18002099003;
+X-Microsoft-Antispam-Message-Info: 9PfaU+CcBdAhpbx/C/NnJ62bGXvju0n9WXba5N2vYW/Bu8MXDfMOwZXmplw0TWe/Xfy9Ue5H/8Vf0eTVqpjapRKvUGEXzvPOAez22EZCKfNUj+KdHstqtOI5QpR+mSJBbcyQps8Zqll4zN8nRwe1HJ94DcT18X92JboGTixnDlCcRU9ssowbjCQ2KXa2plgNFm2pi3WQdvbO02xHhuZ2JTvnuBWrnkG7FtFsUwaZ+oykNG0zjyDQAAN+2Lrw/7auGMjcahOuw/lc5BqDgM1jPPx6ItQv3sOz5IhbK0FNYK/7Kk/CxJgKFLDYvaHdOACx7nP6cPQdkntMLVjoF8qLFcqKWV0K6F5oNaMP++PUFPnUNzUiOc19az/JMRSW4XgADu3veOrqR8ABBdRB/vRR00C765Nt3rjJDHI3NWPM5RsuVkF6lD1AfxSJNtsM4k0KakJxcl1hBJqnACTytU303aKkaKmZep3mk2OkKKYwxlRmvWIAirFvQdEn3grk6XxesUfWNVFmXfhSs+KUPUp0pplmACDruIBXnGcVTAjNLhTaGEh+ZpVT3BBOSI5tP1gsJH2WclliUW8dG/PXBMLV2QDNypOW5tb4RbstTC0+7VGKht/4TndNa+ivB1OsDDqH6E2L9Nve16nMVimFCfUy1u0ZmvIalfkwb0+NwLUdQh8=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB6374.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(366016)(1800799024)(23010399003)(56012099006)(11063799006)(4143699003)(10067099003)(22082099003)(18002099003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?BeRIkSzZ8/fzyvoZWeb8eHGmHpJKuigV4R+vAkaFv49Fn23fQylbI0uNN3?=
+ =?iso-8859-1?Q?fpDbggTObTiE5LxUHsG6d8QJh3CcDhsPgn64Dgga5DSrUqZ6dbs8yVEbcy?=
+ =?iso-8859-1?Q?ToVhD7HSifFwpcnK0MYPy1IVry4tYn8lZA+J5joSdVH5SLfUDBwBy2eRSL?=
+ =?iso-8859-1?Q?K3/cQIWz6AvC/PE6dHLxW2qN9QZkcXl5xRCYGwOOm0nmL4XWqFFwfpqw5s?=
+ =?iso-8859-1?Q?OFFJbnp2KGlkbrws4YGlB2KUHjNch7UxIp/F2dS+fcLG5vfxg10ih3stde?=
+ =?iso-8859-1?Q?9Rq5vvxfjFzCn80wcuPnc1PPlrxxKWTLXeAd9RoKN3tuOVJjYv8scS+hTZ?=
+ =?iso-8859-1?Q?AcHWbhAHu7fcc2s7xp7uv8/nFOIDvqDw3XEyyrCrfu2IqSdL+FjhCUK68G?=
+ =?iso-8859-1?Q?thi5VN46zxhXIQ1/KMiOXpU7DNwt3b/piu+Adc3ss93lPVFcKAhsYnRn8y?=
+ =?iso-8859-1?Q?uPzLtPD2LKdq8ZqIRzMpaQW7lcK9GkQWBVzet8hs2hXdVIjkFdnmLq2Gny?=
+ =?iso-8859-1?Q?UGRXokDl88LB83pnRC4r/sgmi40WAemQKGdfqQSbbfGUHLpiW1U+uycR9B?=
+ =?iso-8859-1?Q?fYHure4O+uiw1/yS83SyJy1V8kLEOqJaArZsTyWw4+uxiVZ516EVhYhPJ1?=
+ =?iso-8859-1?Q?QXrlO+gWLkVMXswJDkj4yvFLfMdCr6Uiv+T74uBUr2+CpW4w/qTmx01W09?=
+ =?iso-8859-1?Q?uUhHaKqUBWWckgGA3s4twzSbkVwY1XW3KoUdOmhyiUIOM4byrb94SqE/+D?=
+ =?iso-8859-1?Q?8rKoYkE44C3qslEnt724cf7x5vOEJMrrKtNIOwOuOGYu4xitLUzSWMWhmF?=
+ =?iso-8859-1?Q?y7H08UTdyS7NtXNPUQMD5vkoi5GFPXkZk3R8MHkvwf1mOMunuyFb3dfmz0?=
+ =?iso-8859-1?Q?/3RWD8iDcN9nSnfX+hqhmvnGY7woHILu1WaeLQtFYthZBcAqExmDQHdcAe?=
+ =?iso-8859-1?Q?iGYIwBWVXmZJMY3+OcOJYdDd2Dx1eAZR8hHTkL/AeSjpXIJbtaYHOuuAV/?=
+ =?iso-8859-1?Q?ZU1GpbrTW8G4MnZOtmvpaq9Nk4oIHU5b8k1R6X+mKm9d2PGEAcwRmk5B62?=
+ =?iso-8859-1?Q?bfKAeoS9/JLRLjPB/We6a9uBmgdTnuqUHA/fm986f+qDBWeKlLaresnAVn?=
+ =?iso-8859-1?Q?nVqOCuMGAtfhUIPQ7HDtpSgSR21Pcf/kd9eoeU/4Ptfn6DmmtZtK3hnqU5?=
+ =?iso-8859-1?Q?7/pHXY2XbCeaV1TtTjAH86iTgQibYp1oTs+F+oYxlHwqZvRYj9s7SqOQXe?=
+ =?iso-8859-1?Q?Wtl/Xf1PQ+3l6TY2YE2ggKOHL2M/tTnlynRy7gp+JyNsfYFZTqcQRSQXkx?=
+ =?iso-8859-1?Q?pCow6V0A+3Uy5Cqeqo22bL9lVuvFQf98hqLQ/+bE5JZ5ucE/3KtBdoMpeS?=
+ =?iso-8859-1?Q?FeVwfdPdamV6QbZXYQZHGtiReIicPhpwDksBlun1d45pzFgd+Froj1hqna?=
+ =?iso-8859-1?Q?cDYR72jzbwcneD9UJ6FUscCJtZeqTzOygeRGZBShzSpySFrMAsEjYu1nOz?=
+ =?iso-8859-1?Q?A1rB3vGau4ZoahVFx9LU1uQLzTS7HvLOVvAjaehCF1ji5AktbPY/GSnT3x?=
+ =?iso-8859-1?Q?zrCbMeAEp4Q8zg4XraJk5DPwTcMXzl2UVoNmRpWuxsnWq371TSpnr5vu+q?=
+ =?iso-8859-1?Q?ypy5jxoGKbUorHrN37EcT51lmFSM82PJ82WFVza/E/UxMEe/JlP7aI1JjK?=
+ =?iso-8859-1?Q?2I4dtR0PH5kUuPw/llVJQLtxQ6V4v+94mObLpL75Fe+kyTbXKb1ddeCCsB?=
+ =?iso-8859-1?Q?xqy8C6ss8VmSAr7ycWz5vykeg04hgUq2wZX5Ykm2C6bDSO?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a2d1fad7-3215-4308-603c-08df2afa88a8
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB6374.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Oct 2026 20:26:03.4850
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1ffK53pvKIyCwXArrXQKNXAfnhDhCV5QTGz8DhqUVx69qv5dR5B5maC+lw5XHl4AfIutq0lizPx9oZqw6dFEMw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB6631
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261015_113926_750959_DD96BAE3 
-X-CRM114-Status: GOOD (  10.84  )
+X-CRM114-CacheID: sfid-20261015_132820_174404_B469F1E7 
+X-CRM114-Status: GOOD (  14.06  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,39 +209,48 @@ Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Oct 14, 2026 at 11:34:53PM -0400, Tal Zussman wrote:
+On Thu, Oct 08, 2026 at 09:18:38AM +0200, Juergen Gross wrote:
+> Today rdmsrq() is a macro using its second parameter as the target for
+> storing the read MSR value.
 > =
 
-> The numbers below are from mtd_speedtest, in MiB/s, by folio size,
-> except the last row, which is from the MEMERASE ioctl:
+> Convert rdmsrq() to an inline function returning the MSR value.
 > =
 
-> +------------------------------+-------+--------+---------+---------+
-> | Test                         | Folio |   Base | Patched |  Change |
-> +------------------------------+-------+--------+---------+---------+
-> | Eraseblock read (128 KiB)    |   4K  |  12545 |   12863 |   +2.5% |
-> |                              |  16K  |  12998 |   17229 |  +32.6% |
-> |                              |  64K  |  13009 |   19135 |  +47.1% |
-> +------------------------------+-------+--------+---------+---------+
+> The users have been converted using the following semantic patch:
+> =
 
-Thank you!  Code size goes down, code seems subjectively easier to read
-and performance goes up.  Good stuff!
+>   // Options: --include-headers
+> =
 
-The one pet complaint I have is that benchmarks should measure badness,
-not goodness.  Humans tend to prioritize the big numbers.  If you
-measure the bad thing (time in this case), they focus on the worst areas
-where most time is spent.  If you measure the good thing, they tend to
-improve things that are already too good to worry about even further.
+>   virtual patch
+>   virtual report
+> =
 
-Maybe you are immune to such psychological effects, but I am not and
-measuring time instead of throughput makes a difference to my mind.
+>   @@
+>   expression msr, val;
+>   @@
+>   (
+>   - rdmsrq(msr,val)
+>   + val =3D rdmsrq(msr)
+>   )
+> =
 
-J=F6rn
+> Signed-off-by: Juergen Gross <jgross@suse.com>
+> Acked-by: Damien Le Moal <dlemoal@kernel.org>      # ATA
+> Reviewed-by: Michael Kelley <mhklinux@outlook.com> # Hyper-V
+> Acked-by: Rafael J. Wysocki (Intel) <rafael@kernel.org> # ACPI, cpufreq, =
+powercap, thermal
+> Acked-by: Sean Christopherson <seanjc@google.com>
+> Acked-by: Reinette Chatre <reinette.chatre@intel.com> # resctrl
+> Reviewed-by: Zhongqiu Han <zhongqiu.han@oss.qualcomm.com> # cpufreq
+> Acked-by: Ilpo J=E4rvinen <ilpo.jarvinen@linux.intel.com>		# pdx86
+> ---
 
---
-The cheapest, fastest and most reliable components of a computer
-system are those that aren't there.
--- Gordon Bell, DEC labratories
+Reviewed-by: Yazen Ghannam <yazen.ghannam@amd.com> # mce, amd64_edac
+
+Thanks,
+Yazen
 
 ______________________________________________________
 Linux MTD discussion mailing list
