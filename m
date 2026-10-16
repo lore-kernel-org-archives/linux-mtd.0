@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7787CCA46D
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C304CCA46C
 	for <linux-mtd@archiver.kernel.org>; Fri, 16 Oct 2026 03:46:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,88 +12,73 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=twCJ49xNhrDw7Mx4GJaLLOOvOtXEHhykAwIhJF/B8gE=; b=J9kY1RBhw/HRAL
-	U5++hJ1efAzZYMJK7efhXBKsMjxWQ4Dc0Fa/xgFSYjdpL7u51TdnW12jipXwAapGUjhYvppPLQF7z
-	oaPkMmQzJczMyvkXmWGq0XFHKn/vyQpa53oW+nsIpKRHSrVVd/YMrd6qH1rcEzksV46lyi8KTDe8P
-	ey/KeX/iBghiRcKnFvEov2+4MklNEV0DcwhPHW+X3pQ4AGX6/PmB5oikzyVcnClMeKLAe+Ebq0VHY
-	Wb0/fhv+LZtKyGnwL0KtuQitxs23SLlQHYx7t7GBoYOv099F4//1c+oB8gyTX+WS1Uco+j2U9Uwyn
-	n2KRO2YMHs8Ne/MJEriQ==;
+	List-Owner; bh=P/agpW/lKntsXKX1/zVrk9YLmgZmGvMD3/pexV1vbLA=; b=t+cRsQM2xYknrg
+	FLhgFQFMipynXLgqU4M+K7dih8ArCMwqXVSfKbeqk4agVaOSBoeuK+69vOeDHGkNff8V1yEUwK+Qy
+	C4xepdcO2V4smc0Q7s3zuyVZlCA2aHK6k+EythS+ZW6mcljA3zy/tFK6dJUlq3cE8PyKqQK/Ndbaz
+	2dmp7Qj6GEmq/OMgOS3JlZevTWwEkZGUXiCDw+QdOw4LnPOs8edyjTfZF8o2mFtKWcbZ6bNWiXrMm
+	XgJJ0xhNAczYqz737HfLWEoFf98gXAeE7fVKqG+m8IwLp57QsQ/EP/5/e41N83JxbANqhy0oxIbE2
+	UiDC0AD774mG77DAhwvg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xHYtS-00000001t4k-2qmy;
+	id 1xHYtS-00000001t2r-0evh;
 	Fri, 16 Oct 2026 03:46:06 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+Received: from mail-ot1-f49.google.com ([209.85.210.49])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xHYtH-00000001sh8-34b5
-	for linux-mtd@bombadil.infradead.org;
-	Fri, 16 Oct 2026 03:45:55 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Cc:To:In-Reply-To:References:
-	Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
-	From:Sender:Reply-To:Content-ID:Content-Description;
-	bh=2rczNXeActkyUZxhNs2zIIuhfq4VixMAxBK569RVDfs=; b=N91SbyOM8T7BrqcPXCNcpWYQV6
-	9ap3RlfYtySv6pBgTZ7F8I5evFQAVVPntgJ/cZ/K7LwwLZUs9q5Bu9coWQ/qYt/wjLsJfxOkDe8lP
-	VVKIkg356gLhoxSd++2zblAkgRs/mILT/Ff0zzctW5wMdYRkhOK53zDojMcb1/dndxoow0fC/nPNg
-	grXCwBTiUzmE/RygoyGUxLua8tyQkAnfwn0bS5sMqmLrPsEBxsUgK6JcUp7DHNGp+8vNI/R77ppkC
-	hdAWsXUAetBBgq7TY1DxY4KNkSBAqaE59ZvcyOcDSqxhVJ5L1OnhvYDmzs5D674lXZQevjyifF96o
-	pBIFhJNQ==;
-Received: from mail-ot1-x334.google.com ([2607:f8b0:4864:20::334])
-	by desiato.infradead.org with esmtps (Exim 4.99.5 #2 (Red Hat Linux))
-	id 1xHYtD-00000001486-3fDC
+	id 1xHYtF-00000001sdN-1BVg
 	for linux-mtd@lists.infradead.org;
-	Fri, 16 Oct 2026 03:45:54 +0000
-Received: by mail-ot1-x334.google.com with SMTP id 46e09a7af769-823545ce223so2086474a34.2
-        for <linux-mtd@lists.infradead.org>; Thu, 15 Oct 2026 20:45:51 -0700 (PDT)
+	Fri, 16 Oct 2026 03:45:55 +0000
+Received: by mail-ot1-f49.google.com with SMTP id 46e09a7af769-838aaf42b2fso7428a34.0
+        for <linux-mtd@lists.infradead.org>; Thu, 15 Oct 2026 20:45:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1792122350; x=1792727150; darn=lists.infradead.org;
+        d=gmail.com; s=20251104; t=1792122352; x=1792727152; darn=lists.infradead.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=2rczNXeActkyUZxhNs2zIIuhfq4VixMAxBK569RVDfs=;
-        b=Cj4bZ1O6gnQaJYDhc6O3x7FA8qzF2e+OEQm7kaB+xi16pYS/G57NKaoMLpyWB0WYhW
-         cbgiYPX/1pspuHmTeVwhQv/+IlD8I67CU7GBrq+BHZuqca3NYZm1SV+O4dty9jXv5VSi
-         yZs3cRJ/kq6xmjmXkfrcMLtguwq36wOkkFkc48X01M1P6jdzvuYv98W3TpcUIy/MrDHN
-         LMUvel2eF36Nh73KDWqsfFxOpg58TUS9I41uHFR9dqyAiWH4gLDgcXSGQHr+oVRPH8v1
-         iVZE0d8u+Sge3wPO6ZV9oIeTxB4LJrb+DdtnrJZuikSCpS79+C/38jzEVWcqVFoTfzMc
-         E2hw==
+        bh=VzQcb2tw5a4i/pk86YXUJlRkyNKtc4irBMv9ftSpeS8=;
+        b=TDuoh/z45boEMS0NNdkRXShxscS1Nm3tNAsSXTIIy09d5hftE3DpdM6pC+bbLdbp+E
+         lx9Fg9Fug4qgIm18iztRJB+/slfsDvxUWp2DqOEzsUxxdULW7tSiVM73P8MjqvdOfwi8
+         Phi7qdAmaXwAs9trkw3fNS089/dZKeg+Pv3+b6MZT9GY6voxdrusnVs9hD+Nsp4CQNvM
+         2AKIGGMnwIJPAuAz27Xt+um0v0RquLrZaXpvDEnD5Y3jqnO6o2X+V8Jh1nCYTDfXJOKe
+         LB+YZBQl3jtdDmjU4TRxMc9DnxtKPSpVGZgfVuagjRHm9tfY4nVySSrqww9/H2MMF71d
+         3PJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1792122350; x=1792727150;
+        d=1e100.net; s=20260707; t=1792122352; x=1792727152;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=2rczNXeActkyUZxhNs2zIIuhfq4VixMAxBK569RVDfs=;
-        b=H8OlCEoDMDIaxEkTbvDlGw0bc/gzsGiIZ4b+Qpm19kZrKijStTa+GroO2+qQHJcpZM
-         07lerMJmcSPZSwN8QwyIh0n2ZphKhrsFH203KooiE+MydNxsfTB7ey2XHw5Ww0bCskQ1
-         oaed6tbGdqVMMJ8S3ZsOXmsg4DkcIIzz2meyHvbuU3S0aF8ZiM6HTmYLEmEeCfKqZfW+
-         p6sGAJ7VHl+lKB1Seb6KzwRtaWA6z4BlvINvUgJPiIOVvEluVUhpzixRBoR6WmKMcmHD
-         OPMZoEVvUpUhvJVcn+IaAtsC0CFN3srqgC9RE0ncf5tq8F1JMkfy0VmfpLitlUWrsvPt
-         2gZg==
-X-Forwarded-Encrypted: i=1; AKwUvByTyhPmbCTeKswbeMjSbudkjU9POn0v+me/sTx0RwZl9VJDjhFP9e2at65yzO2ayOWF5Sb6CEeMthM=@lists.infradead.org
-X-Gm-Message-State: AFq9FYJAhudGP3LzpY9j+GrnNf71sTNRulopNE0ZZM06rR3trBsvYS9N
-	DPpTr+D+riz23LAk3Q723MnS6Roahow5BXEVO/7VyjyBUBEalRg8y+VJ
-X-Gm-Gg: AYBFou0gvIDL/YTy3aR1xaq+WOiJNyhKUbNoTecWugCdQ7CVLgIhSC/mM3pap9I2fXM
-	oKKNy4p43aqUH/byj8ibbR3/E5Z+SM86cEa+ysKazb2SvDJLX9nOpOTnNb1DX5k294T26o1C3LF
-	m7HELdWMlMuKQany4fKgGqnq/FZMoNp0A+8ZZgX4uK6/SyRSKorb9x45/LlBveCw4s8kCVdmiHl
-	gTEKntIWFa8LMXiikwnx7ltOC+lRA5HdcN+2JtkPzNL0BCoig+vd3uBHmV8y6NdRJVJH7WCMgLp
-	/BgiaHtdp2gV7ZR19gDMx7+1TfXgrZobL5tXnrdliyzt5un+GxE1E2b5gRUD06TLD9qGoC8paZx
-	NR+7nVpbAB4nf/2AG5gaSipUepSuIPQrCYrz76nHJwvkftCgS3Vt62AppQ04BDUeYd7iwDMxCv8
-	rAv9pOjF8yRKGuvHzLi2KmcI0H7KkwYSd3w1JFbh+h9Xp57Gxn/awKmdsVoGdy5szhbWQjasn0j
-	YeS8i/Euh+TpPNmwcvLXoyZv86CUdHlgbmhO91aRf0nIquuhMNP/XxANef5FBe2f+F7tc2h+yE5
-	K2w+0H7W61aoAp+VsBNrj9MneNcXiUg1gmW+Dpo05j4eHtMLWuRTfR10ak1/+Yy1eNXircxRQ+2
-	bZHOwXLQtEz1p5vjEeuq8dg==
-X-Received: by 2002:a05:6830:640d:b0:804:ca33:4aff with SMTP id 46e09a7af769-83094e783f6mr19887903a34.9.1792122350229;
-        Thu, 15 Oct 2026 20:45:50 -0700 (PDT)
+        bh=VzQcb2tw5a4i/pk86YXUJlRkyNKtc4irBMv9ftSpeS8=;
+        b=SXNGQjILVS/UglPrzKuIrIulSKhjrSpxmXOaHWycIKzS/CC5Rai9JzJSY5jf7u8ZHj
+         J/nqL4yKNFA9MP/LOCyh+6ug11KeTjYBVoEO/596OOR+D8hIv/pDtuvV+Tc4B52BMuF+
+         9MXUYmCi3Ss4vipu0hTD3VLX3rNBEO/tKDRmsjQZv/WefVqykX+lMeVbrAS73VL0WjJ8
+         wvp+BwPErjN21m+MhVEX0QCa6A6ZwXayqg+F+1qRF0/J918pKUpiZzi2mM67fAviSYWK
+         uB5zCzXRWOo2JjZ34OIaJXcp9PpefGQ5Ct9WLqkyJj4c2qD3ilJMTKcopD5ffotzjG6Z
+         xTfw==
+X-Forwarded-Encrypted: i=1; AKwUvBykUixVftqOSP7WP8LSxcqBDB+I3gojJDCv8km3JQ1IU9ZAEZTre0IRfYgUJk5WXSNRH+UPH58Gjjg=@lists.infradead.org
+X-Gm-Message-State: AFq9FYLBpZd16cXLXdIQJzIwS5EwUQS8kMbl77L/i33E6wN7IOcWdSNv
+	f1imRMiEQwdtPZVMsBsmw0Cr+0WOE4KJsUYwY3I54EEmeodI5hohvwmT
+X-Gm-Gg: AYBFou1jzrOj8OsmHcArQBMIdGTiEAJchnrfpg7WGxfu1FV4uAg9abQwQfnD1dqqEWd
+	CDcIBQgfY1LeRygdIvUPYfiSwFz4/KmWCg8h0Ktvcs6CyqWX11zXsnAwk/R8ysU7xu2SpMKrkID
+	/ZYJ9flxw1tmZq4HjqtodfUEzZDdi0W0cqWFDt9mLORkA/SnD8UvCO6IffZ/ZZDwFjSv6f9kztn
+	W4wwj+oehQLnRRS0L48cFuVz4+0IS/k6DrhRR2uhkJ+3zBUq2A/Tw3HwtKgl6d0LFpfKFGEJ8Cx
+	vbBFeDPPNq5MoPHhMcHz8dtZNkF96194kdfzxrY7B/C4tYD7ybOdjMz0pZllTZLAI142Hha40Yv
+	0u3mGUn5mwoGk3kQWoK+16s7iQH/t/pG4gHlCoteMtiR4bZTI9Njr/JH52nx7UxaXaYqqI9LHKj
+	jrZMIDwVFh4WMATavKqNcsunCcNDeMC3Y7lIPLMqH+uZWGLCSV11ff7IhCRADXWAN6OvqPGoHA/
+	W0jLpoZDoHL5zlLDIp0xq/rNM5qzmnD666ciDzpWDSFxYB/9AmzB3VmdKXb8jY+Y/VRU5q1wayq
+	BPIQJY1R62Np9LgeG2NC993MebBux/+p/4Sltt9BC7Kt50LOE4Ywg+RF/UyalytLMxhj8vits+q
+	Nj12kKlFd6oiRl0FsdZmFPw==
+X-Received: by 2002:a9d:6241:0:b0:843:39a0:7a8e with SMTP id 46e09a7af769-84339a08521mr158641a34.21.1792122352163;
+        Thu, 15 Oct 2026 20:45:52 -0700 (PDT)
 Received: from [127.0.1.1] (174-29-1-49.hlrn.qwest.net. [174.29.1.49])
-        by smtp.gmail.com with ESMTPSA id 46e09a7af769-8429b57870fsm834402a34.0.2026.10.15.20.45.48
+        by smtp.gmail.com with ESMTPSA id 46e09a7af769-8429b57870fsm834402a34.0.2026.10.15.20.45.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Oct 2026 20:45:49 -0700 (PDT)
+        Thu, 15 Oct 2026 20:45:51 -0700 (PDT)
 From: James Hilliard <james.hilliard1@gmail.com>
-Date: Thu, 15 Oct 2026 21:45:28 -0600
-Subject: [PATCH v8 13/17] mtd: rawnand: sunxi: avoid redundant column
- changes for extra OOB
+Date: Thu, 15 Oct 2026 21:45:29 -0600
+Subject: [PATCH v8 14/17] mtd: rawnand: sunxi: avoid duplicate chip setup
+ before page commands
 MIME-Version: 1.0
-Message-Id: <20261015-submit-sunxi-nand-vendor-oob-layout-v1-v8-13-8ba4881fbee8@gmail.com>
+Message-Id: <20261015-submit-sunxi-nand-vendor-oob-layout-v1-v8-14-8ba4881fbee8@gmail.com>
 References: <20261015-submit-sunxi-nand-vendor-oob-layout-v1-v8-0-8ba4881fbee8@gmail.com>
 In-Reply-To: <20261015-submit-sunxi-nand-vendor-oob-layout-v1-v8-0-8ba4881fbee8@gmail.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, 
@@ -114,8 +99,8 @@ Cc: Chen-Yu Tsai <wens@kernel.org>,
  devicetree@vger.kernel.org, James Hilliard <james.hilliard1@gmail.com>
 X-Mailer: b4 0.15.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261016_044552_374404_2B9558F0 
-X-CRM114-Status: GOOD (  15.87  )
+X-CRM114-CacheID: sfid-20261015_204554_197246_381BABB6 
+X-CRM114-Status: GOOD (  11.83  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -132,37 +117,83 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Extra OOB is the spare-area tail after the last ECC step's protected
-user data and parity. The PIO write loop tracks cur_off as an absolute
-NAND column, starting at zero in the main-data area. The extra-OOB
-helper instead compares it with an offset relative to the OOB start. It
-therefore requests a column change even when the last step has already
-reached the tail.
+sunxi_nfc_select_chip() programs chip selection, timing and the
+spare-area base. The page-read callbacks and PIO page/subpage writers
+call it directly, then immediately call nand_read_page_op() or
+nand_prog_page_begin_op(). Those helpers dispatch through
+sunxi_nfc_exec_op(), which performs the same selection before executing
+the command. No controller access between the two selections needs the
+first one.
 
-Add mtd->writesize to the comparison, as the read helper already does.
-The comparison and the column-change command then refer to the same
-byte. Keep the command when the cursor differs or is unknown, including
-the DMA path, which passes no cursor. No transferred data or OOB layout
-changes.
+Remove the duplicate calls from those callbacks. Keep selection in the
+DMA writer: it accesses registers and prepares DMA before program-begin,
+so it cannot rely on the later exec_op() call. This removes redundant
+setup only; selection still runs for each executed operation, with no
+new cached state to invalidate after resets or chip switches.
 
 Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
 ---
- drivers/mtd/nand/raw/sunxi_nand.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/nand/raw/sunxi_nand.c | 12 ------------
+ 1 file changed, 12 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/sunxi_nand.c b/drivers/mtd/nand/raw/sunxi_nand.c
-index 105374e93b37..dfb2a64c6b50 100644
+index dfb2a64c6b50..2a9fe89b1ba5 100644
 --- a/drivers/mtd/nand/raw/sunxi_nand.c
 +++ b/drivers/mtd/nand/raw/sunxi_nand.c
-@@ -1620,7 +1620,7 @@ static int sunxi_nfc_hw_ecc_write_extra_oob(struct nand_chip *nand,
- 	if (len <= 0)
- 		return 0;
+@@ -1650,8 +1650,6 @@ static int sunxi_nfc_hw_ecc_read_page(struct nand_chip *nand, uint8_t *buf,
+ 	};
+ 	int ret, i, cur_off = 0;
  
--	if (!cur_off || *cur_off != offset) {
-+	if (!cur_off || *cur_off != (offset + mtd->writesize)) {
- 		ret = nand_change_write_column_op(nand, offset + mtd->writesize,
- 						  NULL, 0, false);
- 		if (ret)
+-	sunxi_nfc_select_chip(nand, nand->cur_cs);
+-
+ 	ret = nand_read_page_op(nand, page, 0, NULL, 0);
+ 	if (ret)
+ 		return ret;
+@@ -1677,8 +1675,6 @@ static int sunxi_nfc_hw_ecc_read_page_dma(struct nand_chip *nand, u8 *buf,
+ {
+ 	int ret;
+ 
+-	sunxi_nfc_select_chip(nand, nand->cur_cs);
+-
+ 	ret = nand_read_page_op(nand, page, 0, NULL, 0);
+ 	if (ret)
+ 		return ret;
+@@ -1704,8 +1700,6 @@ static int sunxi_nfc_hw_ecc_read_subpage(struct nand_chip *nand,
+ 	};
+ 	int ret, i, cur_off = 0;
+ 
+-	sunxi_nfc_select_chip(nand, nand->cur_cs);
+-
+ 	ret = nand_read_page_op(nand, page, 0, NULL, 0);
+ 	if (ret)
+ 		return ret;
+@@ -1734,8 +1728,6 @@ static int sunxi_nfc_hw_ecc_read_subpage_dma(struct nand_chip *nand,
+ 	int nchunks = DIV_ROUND_UP(data_offs + readlen, nand->ecc.size);
+ 	int ret;
+ 
+-	sunxi_nfc_select_chip(nand, nand->cur_cs);
+-
+ 	ret = nand_read_page_op(nand, page, 0, NULL, 0);
+ 	if (ret)
+ 		return ret;
+@@ -1759,8 +1751,6 @@ static int sunxi_nfc_hw_ecc_write_page(struct nand_chip *nand,
+ 	struct nand_ecc_ctrl *ecc = &nand->ecc;
+ 	int ret = 0, i, cur_off = 0;
+ 
+-	sunxi_nfc_select_chip(nand, nand->cur_cs);
+-
+ 	ret = nand_prog_page_begin_op(nand, page, 0, NULL, 0);
+ 	if (ret)
+ 		return ret;
+@@ -1804,8 +1794,6 @@ static int sunxi_nfc_hw_ecc_write_subpage(struct nand_chip *nand,
+ 	struct nand_ecc_ctrl *ecc = &nand->ecc;
+ 	int ret = 0, i, cur_off = 0;
+ 
+-	sunxi_nfc_select_chip(nand, nand->cur_cs);
+-
+ 	ret = nand_prog_page_begin_op(nand, page, 0, NULL, 0);
+ 	if (ret)
+ 		return ret;
 
 -- 
 2.53.0
