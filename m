@@ -4,92 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6DF9FCCA48B
-	for <linux-mtd@archiver.kernel.org>; Fri, 16 Oct 2026 10:39:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79855CCA464
+	for <linux-mtd@archiver.kernel.org>; Fri, 16 Oct 2026 10:39:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Reply-To:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:References:
+	In-Reply-To:Cc:To:Subject:From:Message-ID:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=mesqqpSm1991GikxtGwGP41zBJLoUziyu6elaRgjr2g=; b=RYk1G+EsIc+8J7
-	LmfidoawE2pFXseS0S66Vp8xf9+oYg8Qsp8qk7j2vfETv1MAhUULZyK4s3bOEhUqsGGDg/r48APD9
-	rDmwaAeLDgarQ3SWqMwV1es01zqSfOWT8mvSAdWizAAFspzvEqyXeYKdojU7SyhspgOctflZRhJFb
-	snsOxBCw/E0FOfVr5CaqIgxCzlBzDeTSKbN6BbhOMB2h/2zFPklFhNJcoEuoyy/5/aanplAOtg3Pz
-	TrU8r6ff9orWDmpLMnvywOh8jvinRzMPfdUjGnadb0H/9bR2T21joWnpZKoggGv7BCzsC0Iz9Dtxc
-	kM87hNO9RCoHF9fgn/qQ==;
+	List-Owner; bh=acExF0PIDoMqt55m6ubaU/szTxE27cIbOeixxHCKKE8=; b=tjmOUZrlVx6XTz
+	LLsX4lbjJNqpUWPYZECTK2QHICS55GOwvMXLKIWlA1XmETz943pxWc56MposR7s50yuJhDB1E/VGD
+	i0jjtRq8Ysx0twlpYk7cOvvJt7FSTzzPzlAGPtr+kaRQ2u1kqXeWXR5BkuVExUs0raMUiC17qvPm/
+	ImZrquM7OtrOPlm3UBSF+MvNQmy4CI5pmh1ISlJ/NPmjHKD1+sSHZHL7HWohP4Sh4HSCxKLg8GLiN
+	40AIMhdkpzmUFHIGV0rH1FPu+bXz+sHNGQwpG3zG7DZ6JvW9/+/+cmqzaj3VPBqX4pWUABnXExHHu
+	TzAYg++LjNswVs/F4YtA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xHfLl-00000002fhF-3hyX;
-	Fri, 16 Oct 2026 10:39:45 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1xHfLq-00000002flT-0WqC;
+	Fri, 16 Oct 2026 10:39:50 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xHfLk-00000002ff5-0vol;
-	Fri, 16 Oct 2026 10:39:44 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Type:Content-Transfer-Encoding
-	:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=81rtumvOwZF5YJF/8g6XUDJyRFlvfEFktfTfS1JZY1Q=; b=OTLjXKI8KMmilhh06WhV411Glv
-	KhjHAe8SIyt5dvBfr2dO47WvOKA0jsDg2kMrptfn9s8YkoHobZ5AZPmrY41zmR9C0K+STPYt62SQE
-	eXERlMRHBTTctbG80/eFGLAdR98cs0Izb3a/0YP1DkDb6cIPnbXsD3ei5I7rBSxqJtlRpgHReIaxB
-	inklDSszQACDdAc3w+inbAZVZtQtjkjunuz+3HWuhQ1gpZ2es9DUI39Txb0QP2rOoTM9JUa5/1Fbs
-	KLveB80C+7gW4VJUKMOg63+CnvSSa42ZfjcG0ogqLzfho4G4HI1FLVE18rlDpv2sDYSTkDTOt3ksJ
-	cQIJy6Kw==;
-Received: from esa.microchip.iphmx.com ([68.232.154.123])
-	by desiato.infradead.org with esmtps (Exim 4.99.5 #2 (Red Hat Linux))
-	id 1xHfLe-00000001OXD-3LP5;
-	Fri, 16 Oct 2026 10:39:43 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1792147178; x=1823683178;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=pyoeyqlj2ef2+TJRwREjVNJtbdmhfRsvaWxlfOjmE4A=;
-  b=N+hdVJ9vAiyJaGp1+ky39K7ebppctTrd3zn6NCr7optOjeIb3lrCbnzh
-   5wi/vODE7j4TFwQ6lw3+w6/kel4ZcP6PBFk1zNxV9iaspGa/uodAnSLR3
-   FIiLu2Ty4dEeStZPBY9KizCtK+SCRz0E+ARQkzWKo3jPTxVFDOVKGU+/r
-   7iTxm8ysxCGwXyKzXswK7F20Ny+dtBLoTmNfbdvjS4FONqQ0EVJK0bQ+R
-   IbmnPAGeT6QK77Z763iJfVmfbCItFK+MAYmOPfI3oczPNzTcVzE/s/unm
-   z2U19fJH9UuNPxxMWZmtLgvv3+YtXGnqt2UUsH8xS0Rida/1ilXjEuMrH
-   w==;
-X-CSE-ConnectionGUID: JDoxDy82Tu6LYhgkHviMTg==
-X-CSE-MsgGUID: Xa1eC8fnRnqH8lMVC36B0w==
-X-IronPort-AV: E=Sophos;i="6.27,161,1787036400"; 
-   d="scan'208";a="64191102"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2026 03:39:36 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.87.152) by
- chn-vm-ex4.mchp-main.com (10.10.87.33) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.2562.49; Fri, 16 Oct 2026 03:39:35 -0700
-Received: from che-ll-i67131.microchip.com (10.10.85.11) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.2507.58 via Frontend Transport; Fri, 16 Oct 2026 03:39:27 -0700
-From: Manikandan Muralidharan <manikandan.m@microchip.com>
-To: <pratyush@kernel.org>, <mwalle@kernel.org>,
-	<takahiro.kuwano@infineon.com>, <miquel.raynal@bootlin.com>,
-	<richard@nod.at>, <vigneshr@ti.com>, <robh@kernel.org>, <krzk+dt@kernel.org>,
-	<conor+dt@kernel.org>, <srini@kernel.org>, <nicolas.ferre@microchip.com>,
-	<alexandre.belloni@bootlin.com>, <claudiu.beznea@tuxon.dev>,
-	<linux@armlinux.org.uk>, <richardcochran@gmail.com>, <linusw@kernel.org>,
-	<arnd@arndb.de>, <pengpeng@iscas.ac.cn>, <gregkh@linuxfoundation.org>,
-	<mathieu.dubois-briand@bootlin.com>, <michael@walle.cc>,
-	<linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<netdev@vger.kernel.org>
-CC: <manikandan.m@microchip.com>
-Subject: [PATCH v9 4/8] mtd: spi-nor: sfdp: expose the SFDP as a read-only NVMEM device
-Date: Fri, 16 Oct 2026 16:08:32 +0530
-Message-ID: <889d6d5b7c608fd6553f38e4a34b050dcf70317f.1792145382.git.manikandan.m@microchip.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1792145382.git.manikandan.m@microchip.com>
-References: <cover.1792145382.git.manikandan.m@microchip.com>
-MIME-Version: 1.0
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261016_113939_598254_BC3B9F7C 
-X-CRM114-Status: GOOD (  17.35  )
+	id 1xHfLo-00000002fjQ-1dMO
+	for linux-mtd@lists.infradead.org;
+	Fri, 16 Oct 2026 10:39:48 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id BEEB1439ED;
+	Fri, 16 Oct 2026 10:39:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDF261F000C4;
+	Fri, 16 Oct 2026 10:39:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1792147187;
+	bh=1zDWfx3/qT7inXKrDL/dj6g+9A/hBWZepBY65K3FFIE=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=D7927W+fTiYlqY5W0qi+6R7HIRfaUkpwakPhBrZohZsJNF5rHA1ch+Sls7+8blPtG
+	 dJhn0pFJ1jKeznf+WJ0+Mm+PrL7xyxzISLKb8dopzl9PP4kIpe+Q4zCnSgTKKUNho2
+	 WwVogwLIQ1QDPZ/TyOBJ+FWHSDLxU0/MrnUsE7522cxnztoAjLAWArvVDtG8Kcb78z
+	 m/e9569Ju2aLv27ssy7yAZB/kqGUdCXK9K+eR/t6ifx4FEQpnh3IDG2Ert/4w3jawO
+	 6aoMzWufxz7CkHyvPaVNK97LeS5FVQsD35nr6VZHKUtXZPbxTW9Pgcta/Cb0rP4AAb
+	 cQCxbNMDAZ8zw==
+Message-ID: <sashiko-outbox-174189@kernel.org>
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH v4 7/7] spi: dt-bindings: cadence: Make XSPI's IRQ line
+ optional
+To: "Paul Cercueil" <paul.cercueil@bootlin.com>, "Pratyush Yadav" <pratyush@kernel.org>, "Michael
+ Walle" <mwalle@kernel.org>, "Takahiro Kuwano" <takahiro.kuwano@infineon.com>, "Miquel
+ Raynal" <miquel.raynal@bootlin.com>, "Richard Weinberger" <richard@nod.at>, "Vignesh
+ Raghavendra" <vigneshr@ti.com>, "Mark Brown" <broonie@kernel.org>
+Cc: "Kees Cook" <kees@kernel.org>, "Tony Luck" <tony.luck@intel.com>, "Guilherme
+ G . Piccoli" <gpiccoli@igalia.com>, "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>, linux-mtd@lists.infradead.org, "Bharat
+ Bhushan" <bbhushan2@marvell.com>, "Sunil Kovvuri Goutham" <sgoutham@marvell.com>, "Tanmay
+ Jagdale" <tanmay@marvell.com>
+In-Reply-To: <20261016102917.171095-8-paul.cercueil@bootlin.com>
+References: <20261016102917.171095-1-paul.cercueil@bootlin.com>
+ <20261016102917.171095-8-paul.cercueil@bootlin.com>
+Date: Fri, 16 Oct 2026 10:39:46 +0000
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,131 +69,54 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Reply-To: sashiko-reviews@lists.linux.dev
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The SPI NOR core already reads the SFDP tables during enumeration and
-caches them in nor->sfdp->dwords (see spi_nor_parse_sfdp()). Re-expose
-that cached data as a read-only NVMEM device, in on-flash byte order,
-rooted at the flash's SFDP child node (compatible "jedec,sfdp"), if any.
-
-This lets NVMEM cells reference any SFDP data: a fixed-layout for
-parameters at a known offset, or an nvmem-layout parser for vendor data
-whose location must be discovered at runtime.
-
-Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Reviewed-by: Michael Walle <mwalle@kernel.org>
-Signed-off-by: Manikandan Muralidharan <manikandan.m@microchip.com>
----
- drivers/mtd/spi-nor/core.c | 75 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 75 insertions(+)
-
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 8bc117b46e02..ed478e48ca11 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -17,6 +17,7 @@
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/spi-nor.h>
- #include <linux/mutex.h>
-+#include <linux/nvmem-provider.h>
- #include <linux/of.h>
- #include <linux/regulator/consumer.h>
- #include <linux/sched/task_stack.h>
-@@ -3001,6 +3002,72 @@ static void spi_nor_init_fixup_flags(struct spi_nor *nor)
- 		nor->flags |= SNOR_F_IO_MODE_EN_VOLATILE;
- }
- 
-+static int spi_nor_sfdp_reg_read(void *priv, unsigned int offset,
-+				 void *val, size_t bytes)
-+{
-+	struct spi_nor *nor = priv;
-+	struct sfdp *sfdp = nor->sfdp;
-+	size_t sfdp_size = sfdp->num_dwords * sizeof(*sfdp->dwords);
-+
-+	if (offset >= sfdp_size || bytes > sfdp_size - offset)
-+		return -EINVAL;
-+
-+	/* The cached SFDP is kept in on-flash (little-endian) byte order. */
-+	memcpy(val, (u8 *)sfdp->dwords + offset, bytes);
-+
-+	return 0;
-+}
-+
-+/**
-+ * spi_nor_register_sfdp_nvmem() - expose the SFDP as a read-only NVMEM device
-+ * @nor:	pointer to a 'struct spi_nor'
-+ *
-+ * Expose the whole SFDP, in on-flash byte order, as a read-only NVMEM device
-+ * rooted at the flash's SFDP child node (compatible "jedec,sfdp"), if any.
-+ * This lets generic (fixed-layout) or vendor (nvmem-layout) cells reference
-+ * any SFDP data.
-+ *
-+ * Return: 0 on success or if there is nothing to do, -errno otherwise.
-+ */
-+static int spi_nor_register_sfdp_nvmem(struct spi_nor *nor)
-+{
-+	struct device *dev = nor->dev;
-+	struct nvmem_config config = { };
-+	struct nvmem_device *nvmem;
-+	struct device_node *np;
-+
-+	if (!nor->sfdp)
-+		return 0;
-+
-+	np = of_get_compatible_child(dev_of_node(dev), "jedec,sfdp");
-+
-+	config.dev = dev;
-+	config.of_node = np;
-+	config.name = "sfdp";
-+	config.id = NVMEM_DEVID_AUTO;
-+	config.owner = THIS_MODULE;
-+	config.read_only = true;
-+	config.word_size = 1;
-+	config.stride = 1;
-+	config.size = (int)(nor->sfdp->num_dwords * sizeof(*nor->sfdp->dwords));
-+	config.reg_read = spi_nor_sfdp_reg_read;
-+	config.priv = nor;
-+
-+	nvmem = devm_nvmem_register(dev, &config);
-+	of_node_put(np);
-+	if (IS_ERR(nvmem)) {
-+		/* NVMEM support is optional. */
-+		if (PTR_ERR(nvmem) == -EOPNOTSUPP)
-+			return 0;
-+		return dev_err_probe(dev, PTR_ERR(nvmem),
-+				     "failed to register SFDP NVMEM device\n");
-+	}
-+
-+	dev_dbg(dev, "exposed %d-byte SFDP as an NVMEM device\n", config.size);
-+
-+	return 0;
-+}
-+
- /**
-  * spi_nor_late_init_params() - Late initialization of default flash parameters.
-  * @nor:	pointer to a 'struct spi_nor'
-@@ -3204,6 +3271,14 @@ static int spi_nor_init_params(struct spi_nor *nor)
- 		spi_nor_init_params_deprecated(nor);
- 	}
- 
-+	/*
-+	 * Expose the SFDP table as an NVMEM device only when
-+	 * the flash actually provides one
-+	 */
-+	ret = spi_nor_register_sfdp_nvmem(nor);
-+	if (ret)
-+		return ret;
-+
- 	ret = spi_nor_late_init_params(nor);
- 	if (ret)
- 		return ret;
--- 
-2.43.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+VGhhbmsgeW91IGZvciB5b3VyIGNvbnRyaWJ1dGlvbiEgU2FzaGlrbyBBSSByZXZpZXcgZm91bmQg
+MSBwb3RlbnRpYWwgaXNzdWUocykgdG8gY29uc2lkZXI6Ci0gW0hpZ2hdIHNwaTogY2FkZW5jZS14
+c3BpOiBwb2xsaW5nIG1vZGUgc2lsZW50bHkgaWdub3JlcyBTRE1BIGVycm9ycwotLQoKY29tbWl0
+IDQ1N2Y2NDg5N2M1M2Y3ZTk5ZDRmYTczOTJkYmJlYzYzMjkxYTlhOTcKQXV0aG9yOiBUYW5tYXkg
+SmFnZGFsZSA8dGFubWF5QG1hcnZlbGwuY29tPgoKc3BpOiBkdC1iaW5kaW5nczogY2FkZW5jZTog
+TWFrZSBYU1BJJ3MgSVJRIGxpbmUgb3B0aW9uYWwKClRoaXMgY29tbWl0IG1vZGlmaWVzIHRoZSBD
+YWRlbmNlIFhTUEkgZGV2aWNlIHRyZWUgYmluZGluZ3MgdG8gbWFrZSB0aGUKaW50ZXJydXB0cyBw
+cm9wZXJ0eSBvcHRpb25hbC4gSXQgaW5kaWNhdGVzIHRoYXQgdGhlIHNwaS1jYWRlbmNlLXhzcGkK
+ZHJpdmVyIGZ1bmN0aW9ucyBpbiBwb2xsaW5nIG1vZGUgd2hlbiBhbiBJUlEgaXMgbm90IHByb3Zp
+ZGVkLgoKPiBzcGk6IGR0LWJpbmRpbmdzOiBjYWRlbmNlOiBNYWtlIFhTUEkncyBJUlEgbGluZSBv
+cHRpb25hbAo+ICAgICAKPiBUaGUgc3BpLWNhZGVuY2UteHNwaSBkcml2ZXIgd2lsbCBoYXBwaWx5
+IHdvcmsgd2l0aG91dCBhbiBJUlEgbGluZQo+IHJlZ2lzdGVyZWQsIHdoaWNoIG1lYW5zIHRoYXQg
+dGhpcyBJUlEgbGluZSBpcyBvcHRpb25hbC4KCltTZXZlcml0eTogSGlnaF0KRG9lcyB0aGUgZHJp
+dmVyIGFjdHVhbGx5IHdvcmsgY29ycmVjdGx5IHdpdGhvdXQgYW4gSVJRIGxpbmU/CgpMb29raW5n
+IGF0IGNkbnNfeHNwaV9pc19zZG1hX3JlYWR5KCkgaW4gZHJpdmVycy9zcGkvc3BpLWNhZGVuY2Ut
+eHNwaS5jLAp0aGUgcG9sbGluZyBsb29wIGNoZWNrcyBmb3IgdGhlIHRyaWdnZXIgYml0IGJ1dCBm
+YWlscyB0byBjaGVjayBvciBjbGVhciB0aGUKU0RNQSBlcnJvciBiaXQ6Cgpkcml2ZXJzL3NwaS9z
+cGktY2FkZW5jZS14c3BpLmM6Y2Ruc194c3BpX2lzX3NkbWFfcmVhZHkoKSB7Ci4uLgoJaWYgKGNk
+bnNfcmVhZGxfcG9sbChjZG5zX3hzcGktPmlvYmFzZSArIENETlNfWFNQSV9JTlRSX1NUQVRVU19S
+RUcsCgkJCSAgICBjdHJsX3N0YXQsIChjdHJsX3N0YXQgJiBDRE5TX1hTUElfU0RNQV9UUklHR0VS
+KSwKCQkJICAgIE1SVkxfWFNQSV9QT0xMX0RFTEFZX1VTLCBNUlZMX1hTUElfUE9MTF9USU1FT1VU
+X1VTLAoJCQkgICAgc2xlZXApKSB7CgkJcmV0dXJuIGZhbHNlOwoJfQouLi4KfQoKSWYgYSBoYXJk
+d2FyZSBTRE1BIHRyYW5zYWN0aW9uIGVycm9yIG9jY3VycyB3aGlsZSB0aGUgZGV2aWNlIGlzIGlu
+IHBvbGxpbmcKbW9kZSwgdGhlIGVycm9yIGlzIGlnbm9yZWQuIFRoaXMgY291bGQgY2F1c2UgdGhl
+IGRyaXZlciB0byBibGluZGx5IHByb2NlZWQKb3IgdW5uZWNlc3NhcmlseSB0aW1lIG91dCwgcG90
+ZW50aWFsbHkgcmVzdWx0aW5nIGluIHNpbGVudCBkYXRhIGNvcnJ1cHRpb24KZHVyaW5nIGZsYXNo
+IEkvTy4KClNob3VsZCB0aGUgcG9sbGluZyBsb2dpYyBoYW5kbGUgQ0ROU19YU1BJX1NETUFfRVJS
+T1IgYmVmb3JlIG1ha2luZyB0aGUKaW50ZXJydXB0cyBwcm9wZXJ0eSBvcHRpb25hbD8KCj4gICAg
+IAo+IFNpZ25lZC1vZmYtYnk6IFRhbm1heSBKYWdkYWxlIDx0YW5tYXlAbWFydmVsbC5jb20+Cj4g
+Q28tZGV2ZWxvcGVkLWJ5OiBQYXVsIENlcmN1ZWlsIDxwYXVsLmNlcmN1ZWlsQGJvb3RsaW4uY29t
+Pgo+IFNpZ25lZC1vZmYtYnk6IFBhdWwgQ2VyY3VlaWwgPHBhdWwuY2VyY3VlaWxAYm9vdGxpbi5j
+b20+Cj4gCj4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9z
+cGkvY2Rucyx4c3BpLnlhbWwgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc3Bp
+L2NkbnMseHNwaS55YW1sCj4gaW5kZXggMzhhNTc5NTU4OWRlMi4uZGQ4ZDAzYzA3ZTY4OCAxMDA2
+NDQKPiAtLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc3BpL2NkbnMseHNw
+aS55YW1sCj4gKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NwaS9jZG5z
+LHhzcGkueWFtbAo+IEBAIC00Myw3ICs0Myw2IEBAIHByb3BlcnRpZXM6Cj4gIHJlcXVpcmVkOgo+
+ICAgIC0gY29tcGF0aWJsZQo+ICAgIC0gcmVnCj4gLSAgLSBpbnRlcnJ1cHRzCj4gIAo+ICBhbGxP
+ZjoKPiAgICAtICRyZWY6IHNwaS1jb250cm9sbGVyLnlhbWwjCgotLSAKU2FzaGlrbyBBSSByZXZp
+ZXcgwrcgaHR0cHM6Ly9zYXNoaWtvLmRldi8jL3BhdGNoc2V0LzIwMjYxMDE2MTAyOTE3LjE3MTA5
+NS0xLXBhdWwuY2VyY3VlaWxAYm9vdGxpbi5jb20/cGFydD03CgpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24g
+bWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8v
+bGludXgtbXRkLwo=
