@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12851CCF2C7
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06E29CCF2C6
 	for <linux-mtd@archiver.kernel.org>; Fri, 16 Oct 2026 19:11:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,89 +12,88 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=PmhVs4j5yih4R+b0ebI1S5icKHQVc7ittqRd2JrtqMM=; b=Cq0PR6dfOQRKd0
-	lhDLysmzFOaBWdELTD/JrLzYWRLufcebOSZQsUqPCkd+m5DS1rEeR6SW0WosbACEHs4xnd71RFJFo
-	vAdmb2OiE873zyyrZb08wWfKJjTxM39ZDF30qY8H1DQlsi2gY4EukSVSdflVGqSIV+mMizNBqtlaD
-	ymPkYdXKvuX++JnmFpsrTkuBrqlVfn2pGybOEB9Sx1IQlWPqActzDMl6yoEFJEp/4XyQD8aFMa3+T
-	bkbyknIP2jpY9ox7tBI+4jrp8zUk+V12qUXJifXEbU8ZwXmeqBHWub5w3/qghGJ98D7RX3vPIA7+U
-	sKHM6KpqbE4Xv75tyQxQ==;
+	List-Owner; bh=1AVmSJJOGVxBQhowz9+6OOKa8ysBJvQ2tnQIkiNG0Rc=; b=DgJa31LyU3kQVW
+	AscWkxxqXKvm0xF4T7528Z2nkH0hLvAHUxHa5gFf+tYT/2fQ2ZpqOYr1CEGljOd7Jn+bzx+Jvvs11
+	vYvq4iKNot1SiS42m56tny8dsKzC8pRu1bCngfKJpAuwXfrQTe33XjYRbeK3AitoVyyQZsYiJOWID
+	/jSDLSu+ezKThPbG1P9N5RchXmSXYzSN+coMH6s4yxmghvtcrleH6shc3LPR2bnRHOOhgxwq70bN1
+	oIk+PwbY1VeucynkYfalu5nTp/kR0YZLfWfrnp4xLFRZXdMryb9zC7jB3vMvi282y4KquEkc+HOVI
+	Wt9G94h7dr4uQ4rI/94A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xHnL6-00000003peT-2UpX;
+	id 1xHnL6-00000003ped-32sx;
 	Fri, 16 Oct 2026 19:11:36 +0000
-Received: from mx0b-00364e01.pphosted.com ([148.163.139.74])
+Received: from mx0a-00364e01.pphosted.com ([148.163.135.74])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xHnL1-00000003pbC-1gGt
+	id 1xHnL0-00000003pbA-09ip
 	for linux-mtd@lists.infradead.org;
 	Fri, 16 Oct 2026 19:11:33 +0000
-Received: from pps.filterd (m0167074.ppops.net [127.0.0.1])
-	by mx0b-00364e01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 69GIbvxK1352633
-	for <linux-mtd@lists.infradead.org>; Fri, 16 Oct 2026 15:11:30 -0400
+Received: from pps.filterd (m0167069.ppops.net [127.0.0.1])
+	by mx0a-00364e01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 69GIcDTZ463969
+	for <linux-mtd@lists.infradead.org>; Fri, 16 Oct 2026 15:11:29 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=columbia.edu; h=
 	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pps01; bh=7reK
-	9IL0rKrZfnHUnNNVAKzIpY5gnM5qXSoGxoG9+30=; b=WjqVHEjDkmJ1z0teN4Fy
-	EqYaeVYeFzWBTxFYSGO9XJV1uUQ0Q/Ny7TpGhU83y3tyYpF7St8Esva1cDu3Oep+
-	P0kAZReRm6p0ci0LkajWfFU3RMDa3B8z0u4goWagoBfasP4loqaYQVFS56hodDVH
-	p1KpaN5PBAm3XiF1yoZlc9eCZrhjiiacnClC0uZhNb66RqPMVF0e7petx8B828c0
-	axsC30iPKB+ojHb84jqupuGYcxN3/P/RJ3RT/U9yAa/Sh0SO/fpTmy4ptbPkLumw
-	PJNtVb2b5AfdWR39xKIVOYktSsE/vzZW6BCwyaB9+VIAzlEQW5QZdrD6W16x/F6J
-	HQ==
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com [209.85.219.71])
-	by mx0b-00364e01.pphosted.com (PPS) with ESMTPS id 4hbrtt8uhb-1
+	:message-id:mime-version:references:subject:to; s=pps01; bh=/fCp
+	J59+YgngC9F1OcKtiJqkIBPYAyjcjbtV+EnY0Qk=; b=fXto6E4TgNj8SNhOrr6R
+	uA0yn2fdpEzd7byl+9tpKBZ/wZWdJAYBT0mk8q1bC6yOka0J6Lg0YfIP3yhdFxv/
+	tHg8tpEh4nxzhAPgN9sIMvRCsNpFPBzgzwx8W0cOkHT3MMcVftoyKEIa5DSxgrCl
+	wqLg9UlyUANuIzgeva0KCxnzixQt+P4t4RKcZ6ian2GB88QsBxQ2+0oxzK7OO2S7
+	qf6zKwojpz7A7NI70DXsF1dvfzqUg/I2zstT84ZQPKwO5XlO5dFf/D42NoXHdpj9
+	kOEbWuCBJm1ov/o+vipZygwAqojDclTOjlAMT981bN4jfDH663gTk0eqpWoKH8xX
+	jw==
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com [209.85.219.72])
+	by mx0a-00364e01.pphosted.com (PPS) with ESMTPS id 4hbgyj4bu4-1
 	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
-	for <linux-mtd@lists.infradead.org>; Fri, 16 Oct 2026 15:11:30 -0400 (EDT)
-Received: by mail-qv1-f71.google.com with SMTP id 6a1803df08f44-91b92acedd9so8535556d6.2
-        for <linux-mtd@lists.infradead.org>; Fri, 16 Oct 2026 12:11:30 -0700 (PDT)
+	for <linux-mtd@lists.infradead.org>; Fri, 16 Oct 2026 15:11:29 -0400 (EDT)
+Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-9179743a76eso6591906d6.1
+        for <linux-mtd@lists.infradead.org>; Fri, 16 Oct 2026 12:11:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=columbia.edu; s=lionmail; t=1792177889; x=1792782689; darn=lists.infradead.org;
+        d=columbia.edu; s=lionmail; t=1792177888; x=1792782688; darn=lists.infradead.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=7reK9IL0rKrZfnHUnNNVAKzIpY5gnM5qXSoGxoG9+30=;
-        b=5p17D48KQEAu1rjgVcRDVJub+rGPqsOsiiHUcKLcaNh+i5FjTm85KN0ck+yGDQPqfU
-         4FNnVrgB+VRlrdhd9LcuYdLIRYdXk8j5FOZHS6mp8i5IXayiykQEMbKQbp2ZS8oy1bi6
-         Asu6x7Sc4t176nmm+XX3QfCUJJ5AinUQur9vCF30XSCSnvxNc0TxUpJXZtdY2D7JUHZz
-         ozmBzT5srg8+ClNlqE1yDj3vb7nFf2ShWP7qPqGnehQZJae9AwsOHCQHUn8Rl/jhaXEO
-         waHC2o60+F6ANryZqvLp5kuccavArrDsQ8b+Hzi2wQhuitc+8Gc1r8+gfiKcSA+aKaTV
-         hXbQ==
+        bh=/fCpJ59+YgngC9F1OcKtiJqkIBPYAyjcjbtV+EnY0Qk=;
+        b=K1uDJm1TsyzNZRqDJ0iNsHah93XeiUKuxqIiddGzqbuWnfBCiytBDWrZnCuByq/QDc
+         T3+XbjjW/L7fs73jSzp0Gx6O/NMhjbBrBCwdZU35gXb5FRw9e7WVhlxImrlAtg2a4oQ4
+         GMXXkXSc2mc+f1m5GIbhbwcMuaZ44GHQfFldO4xpQCXcPjWK/P3CT8Vj4+SRu33MKQDD
+         SPirRyoBU00PbsCi9B5N4F2gNQf+31TN0bgtBdjE37o64HtfWwhf4A0J+ccw/gfkcraK
+         rYIYJgBkP2WgmHNfXMK8IwvQ50Vf5FQi3b98YI44p0kuCpjz9YQYejBqNrws31sVjYn1
+         2GSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1792177889; x=1792782689;
+        d=1e100.net; s=20260707; t=1792177888; x=1792782688;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=7reK9IL0rKrZfnHUnNNVAKzIpY5gnM5qXSoGxoG9+30=;
-        b=DYxjtPk23UO9Z21rTOUH/vBirDVBJjVt3wQVgaH2iYduWuSsHTBee+ScZbRSYWoVpa
-         NfkEtdTKL615F7GgsFwwy/KPjVogQdb0qMPUF9k6BkAunLBj+YVNdGrVU+pPT4aeVzWv
-         Jww51wIUTwM/HtvPQTmRJ6Ux7ZM1TFRo5Lg8ka8XuoaDkPxpz69EYoZwAXtxsnefLUSw
-         awjHJjdMOxqgvXK3WVaS97pUGJ5wUw7XH0xJJc/M4aYGIr4ec8Eb+NWcuH/0Ymun0Wu8
-         PCxFi/Uj6NsMIeplOF/liIk3LGkWgrsEfZuhBtH7NVbyYcKhiKdEkB9XGDZvN67g9UTF
-         TdXw==
-X-Forwarded-Encrypted: i=1; AKwUvBwCXrGw7O7pC2KxjH3jEnzTfDqaCSgBSdsILWhK50YrV+TGnfXsmjXTn8CXirx2YABru73vGJbnF+s=@lists.infradead.org
-X-Gm-Message-State: AFq9FYJpKGne5O5yp5HtwnqvVLfwNLk29ajXNJ+RnrwtrNpw9jgVN3bE
-	kEpBjarZdp7qE2L6NOCmwnee2V5xUa2f03QrRkf3IeAXuW8xz96cSvxrQDxbJIWIFt+MejVXfOQ
-	INr4paerx900jbdk+5zOrHly4SelS1fXdey3GUoPflhCiBANXitoupXYu6cbT+44=
-X-Gm-Gg: AYBFou2F0KPzFvahVZ4U+jDe5gOhVaB5bwMXpU2/7VrIy6zQ3p9kAb3lTTm6hdXOT97
-	K/MfB6cBfFI2EaCIRhLPKyzRiWbssJzfhO6dz0ZqifrCYqKDL+I3vR7QDVS58g0ZjeLMfIg+RF6
-	y5Ce/HWI9tHC9cJz8CumF3t27cbn5PgZW4oT6f9xwbChQvNhY5cvY94dN0R+0prmSm3FmArx4kZ
-	mdq58rZelH5x/jeCjsNGmrXRHGhdMOkKhuBJFap6DtrpLQ884Xu4xXiG5b3NonQlzY07o6Lbegf
-	lFaGChBlED1PbPU6TxWLMjj+l139wosNbob0xNCxfMU03+gcJtXBqafgewkxBHHK6V77Zj4zg1/
-	M7sdVRH7yOKv7CtahQJsO8aJLoAIEHwqUaN3dnPCzdixwk2U=
-X-Received: by 2002:a05:6214:23c5:b0:91b:5d39:e13c with SMTP id 6a1803df08f44-91bdf40b4b9mr16382456d6.49.1792177889436;
-        Fri, 16 Oct 2026 12:11:29 -0700 (PDT)
-X-Received: by 2002:a05:6214:23c5:b0:91b:5d39:e13c with SMTP id 6a1803df08f44-91bdf40b4b9mr16381966d6.49.1792177888882;
+        bh=/fCpJ59+YgngC9F1OcKtiJqkIBPYAyjcjbtV+EnY0Qk=;
+        b=kNxvPBHnW4osFwrWSnLnSjkD/GbYzuYMy0Q06gfydRMQC9HgWBEqzTe49ay5hNmH6A
+         t1lKflhYG6ktf0UQIZs7GzSjncz1lOfKeNE6k/uF3Az7nHiw5iXLoV6JgLTR37IQqfw9
+         GdhGoYSZB9j3Hac64w0Q7HoxVcRXRUy5eY5ROJP7F/4TVB3ZMf3tN4mio0ftQE5Gm0Et
+         XkfthASc93COSMpoekBlYNkns3o4SlQ3Kuo8O9VLge0rSsn8EFzdE23RTAiN0NUmCQNR
+         MnGXVuuOBSmAfI2ofcMixmLkJum7xWnoj/KWy6YGfmeLsTH1OFs8D3QWNPBUqoI3KzDn
+         jvcw==
+X-Forwarded-Encrypted: i=1; AKwUvBxEN+7aBCyjiBnfv2mNbqlidCjIUYY/cBlsPoJFq7Y6tzRvUtA7vn+j75dSDo3UeDTrUgd48EFob/0=@lists.infradead.org
+X-Gm-Message-State: AFq9FYKb7SfXlqqueLp40IPCSyy6xsLNfsNLkjDI3/jMgR/ecHYPh9Wt
+	TUJpmGy/X2F8sTM9eTbslT+L6YK0a4ACaySRYTbfjNv+Rh4A8kF2n7rld2JDH5Z9AjDreTYiCLS
+	UgzjFlq5mSGrhAOjHYeGs4PBdULfoHfcxAV6/YSTDeQb7ab9b3wuYSBsoCkm+4l8=
+X-Gm-Gg: AYBFou04aWdzyDXA11dUjrqCjYXCvzooIzN1FLQiGs9L7+Z1y2dNBwz5d448jBAiUqV
+	5Uf62gBfT+xrz/O9dPj+0nxvynn+mRjguyxC7kmSdEEm35OeeWKmkjHhqrfbKjoTeB/a8eE93jq
+	fcPHkYSvfrzPe28HTOCxbULdxToFbGPeFb5j/kTaWRB+36lBLAU1Ejo2fGbPRxkg87IO2qvGVFw
+	wBK9n3SPuA6YnoXP9J5+SVA9a1GZrF7Hh1W+lXTNI+9fxyU3LtGOBhx8sQHON/yUDt4JWMkApGW
+	+BqrW34XQMLz4EfI2sKk1AH0yeJLFE66rx0lIMZVD/A4LZL8zb9QNE7irswPMD9Ml7t1IsCDMSz
+	vXbcNNkiui08CdMv1zoIqWqarPzJ2d0sV/VniIz9s5pqLO5U=
+X-Received: by 2002:a05:6214:3906:b0:917:9703:48b5 with SMTP id 6a1803df08f44-91bc9694f62mr68163526d6.26.1792177888249;
         Fri, 16 Oct 2026 12:11:28 -0700 (PDT)
+X-Received: by 2002:a05:6214:3906:b0:917:9703:48b5 with SMTP id 6a1803df08f44-91bc9694f62mr68163036d6.26.1792177887689;
+        Fri, 16 Oct 2026 12:11:27 -0700 (PDT)
 Received: from [127.0.1.1] (nat-128-59-178-241.net.columbia.edu. [128.59.178.241])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-91bcbb4f865sm29707776d6.37.2026.10.16.12.11.27
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-91bcbb4f865sm29707776d6.37.2026.10.16.12.11.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2026 12:11:28 -0700 (PDT)
+        Fri, 16 Oct 2026 12:11:25 -0700 (PDT)
 From: Tal Zussman <tz2294@columbia.edu>
-Date: Fri, 16 Oct 2026 15:11:09 -0400
-Subject: [PATCH v2 3/4] mtd: block2mtd: convert _block2mtd_write() to
- folios
+Date: Fri, 16 Oct 2026 15:11:08 -0400
+Subject: [PATCH v2 2/4] mtd: block2mtd: convert block2mtd_read() to folios
 MIME-Version: 1.0
-Message-Id: <20261016-block2mtd-folio-v2-3-8280c99e55c0@columbia.edu>
+Message-Id: <20261016-block2mtd-folio-v2-2-8280c99e55c0@columbia.edu>
 References: <20261016-block2mtd-folio-v2-0-8280c99e55c0@columbia.edu>
 In-Reply-To: <20261016-block2mtd-folio-v2-0-8280c99e55c0@columbia.edu>
 To: Joern Engel <joern@lazybastard.org>,
@@ -105,42 +104,41 @@ Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
         linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
         Tal Zussman <tz2294@columbia.edu>
 X-Mailer: b4 0.17-dev
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1792177881; l=2375;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1792177881; l=1701;
  i=tz2294@columbia.edu; s=20250528; h=from:subject:message-id;
- bh=ba6wHdZ5jYtlG/mAQ6lUyzY39YTkKcDwucFfXseGkDA=;
- b=otjLd6vj5+MsD2V71nWTN0O8k7Hhigk7YWwxYtShsgly8SVD8WEOLC5AuUcgUEWZRn9OanRQq
- /fpsEWofJeTDX6VhUYnJjj4cbRwPKhJMyuiHbhzMKRgJRv0Axtxv2kG
+ bh=1bz7r15jgAaWx4NqhBrgfqo1Nt2utTZw9ImBRfqga+c=;
+ b=kgsIJlXGhiCJQppSvK1s15+vrlEB05FEaSc6z/d24jbmQtrDbz07sPmP7hiUS0virMI81LXcv
+ DC2RsPPZDNADFC7ORXdUh83voz+AWowXdp/wb9MnSQBYKiq7f8BYhHo
 X-Developer-Key: i=tz2294@columbia.edu; a=ed25519;
  pk=BIj5KdACscEOyAC0oIkeZqLB3L94fzBnDccEooxeM5Y=
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYxMDE2MDA3NiBTYWx0ZWRfX623fXADjn6/H
- p963Y/lBLYQDmWvkt01ppoXwzZ1Xsec4eXkjP8e0Jp4QXcg86oeNQPq86Rsbx3eSbWIjdfAHw+4
- oG3lWus3g+yFlbaD+3w0w8DqrnTVVCFDYFoCPpgNQbsHaxSDcST2J/FP858+Wfwe4gnv10zyyTM
- l/cpDLKoFR76WmJlV7+TXk5UaEZPyYGMQHuUXcPHzy5Taox/eIKiu4Zq8yk2nk9g2pnI27yGMNq
- l/sgWfcL19LSq6LUmqnhP0IRGVMUOZycGnrmV4DZALPVDJMfS0EBS61pLMb+w0chhnuZ1tw9Cik
- 1cooE5AZViGgAUolZry7CzWADbBscbMkgu1zHpuJx6SED4beWyVAqOJ0rqhkmQiLQa1SMIVkFsU
- 0quRkU/5yDmJQhJQqGMtMXN8IZHTsdXNJwwTvtoGK045MCGmO3u6FaLR8coiUN/IDoqkurgAoU4
- WfChEREhfe0lWCKn/YQ==
-X-Proofpoint-GUID: rVTC5frZnYU53sllUcQEmcnFKSxW5Gea
-X-Authority-Analysis: v=2.4 cv=e8GT2qp/ c=1 sm=1 tr=0 ts=6ad276e2 cx=c_pps
- a=UgVkIMxJMSkC9lv97toC5g==:117 a=4lNGE6/ihKpdiDSMgFMHRw==:17
+X-Authority-Analysis: v=2.4 cv=TIPQ2Fla c=1 sm=1 tr=0 ts=6ad276e1 cx=c_pps
+ a=7E5Bxpl4vBhpaufnMqZlrw==:117 a=4lNGE6/ihKpdiDSMgFMHRw==:17
  a=IkcTkHD0fZMA:10 a=660iZSQnnn4A:10 a=x7bEGLp0ZPQA:10 a=A0y_DWxS2BwA:10
- a=VkNPw1HP01LnGYTKEx00:22 a=Da8U98TiO7q1upZEImrf:22 a=azVShVRs0zEubeQ0wG0L:22
- a=qqL285nydZm1SHY3jKwA:9 a=QEXdDO2ut3YA:10 a=1HOtulTD9v-eNWfpl4qZ:22
-X-Proofpoint-ORIG-GUID: rVTC5frZnYU53sllUcQEmcnFKSxW5Gea
-X-Proofpoint-Spam-Info: AW1haW4tMjYxMDE2MDA3NiBTYWx0ZWRfXx/IW13TzencE
- twiRHM2qzLshMHFYGKtzq+VtVgiJmUrwkBo648zH+ZXxWOUNWE6RZx+Ruw/LlkQsI7MGOOiz7XD
- J5w3cvesDC2BPWY/ucSruBlsPZcYGD+sDMBZFIQoyleaJzOgHoUQ
+ a=VkNPw1HP01LnGYTKEx00:22 a=Da8U98TiO7q1upZEImrf:22 a=JR4YdQiviy7OQf72WyZ1:22
+ a=A657Os1j7QBKVqWzl58A:9 a=QEXdDO2ut3YA:10 a=pJ04lnu7RYOZP9TFuWaZ:22
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYxMDE2MDA3NiBTYWx0ZWRfX98DjXT+4MpOk
+ fkcz6ZEv700pOcuYFdBrjFP/JKqWM1n9dqjLiHTEbXD7E2yQuGU28yfxR6zl591Bkk0mhcvAC+6
+ /qHESkG/mGx6AkNDrHEituUObu8R8n7h/c4Au1KGVOGQgJ93ct3Jdo80bF9DZ9lZtr9UPAR6IMi
+ UZkWS/pYtsXQTIpCbEN232acZKuAXGtYtEhTj2CkdLwUFzsJaGQJldnHFtTVKwXNmk3ijairrjG
+ x+lkvdPuuQrMnK5SnVsaTXer31Y9QQoUubCMV3xUxxA+rkFpZCjejrWLARCNfMYFwvKld/8iJ9O
+ NsT5hRbp8/PlckUxnJw4lA3hmNpmozWjl4n5EeC9+frbMi1/MBedDvKIBWK/XLsQLNr8lvdJD/P
+ sp9duA5fSVPyA2ZSTNnMfJmBZ9xORXMekcxNCM/yCL4AYshrw3D4MXaU871EADE4eZqPbDcQAdL
+ IhGZus8lFjhvyXiTmEw==
+X-Proofpoint-Spam-Info: AW1haW4tMjYxMDE2MDA3NiBTYWx0ZWRfX0AbIV+IMaAIX
+ FzlH1XNhTcZyMbyavgrfjNjKrUbB8o1yk51i7Mz6hsp6Pjjc7OZIa6C0p9waoPxwvOUYbTMVxIT
+ SxYIHfOc1LxDMo2vqzK7sgGjblfxbq+ZvwTSuKwKFdtZyRL/B9Dh
+X-Proofpoint-ORIG-GUID: 5kHPDVSMPF_bl-Y2vrsQk39pPmErafKA
+X-Proofpoint-GUID: 5kHPDVSMPF_bl-Y2vrsQk39pPmErafKA
 X-Proofpoint-Virus-Version: vendor=nai engine=6900 definitions=11937
  signatures=596817
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- adultscore=0 bulkscore=10 priorityscore=1501 spamscore=0 phishscore=0
- lowpriorityscore=10 clxscore=1015 impostorscore=10 malwarescore=0
- suspectscore=0 classifier=typeunknown authscore=0 authtc= authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2610080000
- definitions=main-2610160076
+ adultscore=0 bulkscore=10 priorityscore=1501 malwarescore=0 suspectscore=0
+ impostorscore=10 phishscore=0 lowpriorityscore=10 clxscore=1015 spamscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2610080000 definitions=main-2610160076
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261016_121131_773416_EE31766E 
-X-CRM114-Status: GOOD (  15.23  )
+X-CRM114-CacheID: sfid-20261016_121131_762014_E8581FE7 
+X-CRM114-Status: GOOD (  14.70  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -157,81 +155,57 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Write through a folio instead of a page, looking it up with
-read_mapping_folio() instead of page_read(). This removes four hidden
-compound_head() calls per page.
+Look the folio up with read_mapping_folio() instead of
+read_mapping_page() and copy from it directly. This removes a hidden
+compound_head() call per page.
 
 Signed-off-by: Tal Zussman <tz2294@columbia.edu>
 ---
- drivers/mtd/devices/block2mtd.c | 48 ++++++++++++++++++-----------------------
- 1 file changed, 21 insertions(+), 27 deletions(-)
+ drivers/mtd/devices/block2mtd.c | 28 +++++++++++-----------------
+ 1 file changed, 11 insertions(+), 17 deletions(-)
 
 diff --git a/drivers/mtd/devices/block2mtd.c b/drivers/mtd/devices/block2mtd.c
-index db5472c6b8c2..acfd3754c2b3 100644
+index ca72110b07d6..db5472c6b8c2 100644
 --- a/drivers/mtd/devices/block2mtd.c
 +++ b/drivers/mtd/devices/block2mtd.c
-@@ -139,44 +139,38 @@ static int block2mtd_read(struct mtd_info *mtd, loff_t from, size_t len,
- static int _block2mtd_write(struct block2mtd_dev *dev, const u_char *buf,
- 		loff_t to, size_t len, size_t *retlen)
+@@ -112,30 +112,24 @@ static int block2mtd_read(struct mtd_info *mtd, loff_t from, size_t len,
  {
--	struct page *page;
+ 	struct block2mtd_dev *dev = mtd->priv;
  	struct address_space *mapping = dev->bdev_file->f_mapping;
--	pgoff_t index = to >> PAGE_SHIFT;	// page index
--	int offset = to & ~PAGE_MASK;	// page offset
+-	struct page *page;
+-	pgoff_t index = from >> PAGE_SHIFT;
+-	int offset = from & (PAGE_SIZE-1);
 -	int cpylen;
 +	struct folio *folio;
 +	size_t offset, cpylen;
-+	void *p;
  
  	while (len) {
--		if ((offset+len) > PAGE_SIZE)
+-		if ((offset + len) > PAGE_SIZE)
 -			cpylen = PAGE_SIZE - offset;	// multiple pages
 -		else
--			cpylen = len;			// this page
+-			cpylen = len;	// this page
 -		len = len - cpylen;
 -
--retry:
 -		page = page_read(mapping, index);
 -		if (IS_ERR(page))
 -			return PTR_ERR(page);
-+		folio = read_mapping_folio(mapping, to >> PAGE_SHIFT, NULL);
++		folio = read_mapping_folio(mapping, from >> PAGE_SHIFT, NULL);
 +		if (IS_ERR(folio))
 +			return PTR_ERR(folio);
  
--		if (memcmp(page_address(page)+offset, buf, cpylen)) {
--			lock_page(page);
--			if (page_folio(page)->mapping != mapping) {
--				unlock_page(page);
--				put_page(page);
--				goto retry;
-+		offset = offset_in_folio(folio, to);
-+		cpylen = min(len, folio_size(folio) - offset);
-+		p = folio_address(folio) + offset;
-+		if (memcmp(p, buf, cpylen)) {
-+			folio_lock(folio);
-+			if (folio->mapping != mapping) {
-+				folio_unlock(folio);
-+				folio_put(folio);
-+				continue;
- 			}
--			memcpy(page_address(page) + offset, buf, cpylen);
--			set_page_dirty(page);
--			unlock_page(page);
-+			memcpy(p, buf, cpylen);
-+			folio_mark_dirty(folio);
-+			folio_unlock(folio);
- 			balance_dirty_pages_ratelimited(mapping);
- 		}
+-		memcpy(buf, page_address(page) + offset, cpylen);
 -		put_page(page);
++		offset = offset_in_folio(folio, from);
++		cpylen = min(len, folio_size(folio) - offset);
++		memcpy(buf, folio_address(folio) + offset, cpylen);
 +		folio_put(folio);
  
  		if (retlen)
  			*retlen += cpylen;
--
  		buf += cpylen;
 -		offset = 0;
 -		index++;
-+		to += cpylen;
++		from += cpylen;
 +		len -= cpylen;
  	}
  	return 0;
