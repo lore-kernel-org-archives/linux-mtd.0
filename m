@@ -4,85 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC1E6CCA48B
-	for <linux-mtd@archiver.kernel.org>; Fri, 16 Oct 2026 08:56:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A6DECCA464
+	for <linux-mtd@archiver.kernel.org>; Fri, 16 Oct 2026 09:13:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=16qfs++grVUBsIaYBlXKtp0utV7wLagElfCH6jkaZ/Y=; b=Q8b1gvqIs1PVyy
-	s5b37souN+C8DTcLPMrzgvb/XSHu3409a1a6K49uKpM50ii/5iYzqTDTDMA0Sen1T87/rXMGsoFWs
-	8KxY8OUOKI1IsHL2NKdM0EPeFE3XfP+/7DSOguM/8HfCpfCsBPohjekhH2PsgozmM+6Zm4rUquMXw
-	h5dJm1yeSikS2EQx8FDEvif8P2xsVgb8D+a2fu6eLiQBbTTibZQxJZGwZ+tAu55yY3F0C+U4+U2PX
-	Nrn4FWt90u1f/NgrKC6NdS7knwWb1QpOclsCc0FlxcYp4IUoXnLIzELQrFfsAIdmUN8qvV3VWh6EA
-	scdPgwuuWm3JL85Yk1Xw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=vUYVanCNm3Kfc5B4swjYdmXFOiNiWibqGchTK+BWGHc=; b=iL8njwj0Tg2UxN
+	J45fYPWTWY4RznYQLWH4ZAMRU+EPKBEgIcst61iELmrJ2Oi/vRnolOlXQAzANFcIWJf/MC0IRzH3c
+	5o6dklQge5oPjk9K57oTNM/fhgyUn5aawWL97nPrwqDZoK+SXiK/L0iQQ5i2Yls6IxWVFlguEbIcI
+	btOkzpiq3uNZ1RXLZ+PAPk5/n9oqnPqzhW6T6kAQ5x/b/iWDlA6Q9uPC9uaLtK1T/rIpKqTmAzDnr
+	97zx8JqfzEQqDnR1qzlMVxRo4menb8FrzYr9dfLzK0HzF9OLxZHwYyqdPoFs4uHFYnEEBbe8Kq++Z
+	hc2+sE7VL51pQ5D5iJIw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xHdjV-00000002NwV-2sMT;
-	Fri, 16 Oct 2026 08:56:09 +0000
+	id 1xHe01-00000002RV7-2jYi;
+	Fri, 16 Oct 2026 09:13:13 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xHdjT-00000002NwA-3HGq
+	id 1xHe00-00000002RSK-1hzE
 	for linux-mtd@bombadil.infradead.org;
-	Fri, 16 Oct 2026 08:56:07 +0000
+	Fri, 16 Oct 2026 09:13:12 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=MIME-Version:Content-Transfer-Encoding
-	:Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=ZT/sWpmVZ48A0UV1NDljoImwkaY+rB5RM0fdLed9wk8=; b=E9yuvp9F6CQgR4jB9LOdcEy4LM
-	nL5TAUZHh48eYhARTG3dEZ12Wjibm1keE0dLaZzdIYZwgVXHdL0SRtgW/NotWkm3XTtWJ0wvtMU7E
-	9j3Qyr0NDbf7DjQ2zPS/GViQr9zB63RVl9tY7/1isUkKgiXlWVo4xzu3Bcyq42sQmTjfUc+X6hzd1
-	O/xlW4HIShPXrDF0YrEs66DHPhG92Zc6W6DCPWYeoNDIKKb09HqS4aIACFjo5qXoNcOOzavMl29xW
-	xOYtjxWcClwxtPTokUXbMAkoLUr2wNFBgGQ/xdBLY4YUajbCsWUpNtPCReQZVKsfKV7O+4zmlvkU9
-	wWLQdj9Q==;
-Received: from smtpout-04.galae.net ([185.171.202.116])
+	d=infradead.org; s=desiato.20200630; h=Content-Type:Content-Transfer-Encoding
+	:MIME-Version:Message-ID:Date:Subject:CC:To:From:Sender:Reply-To:Content-ID:
+	Content-Description:In-Reply-To:References;
+	bh=CXrbmsDMEhEoRFaph3IxS440XZqWmmsl+j+3MjGaHrk=; b=ZkIzn/V8oM29eJX3xRtgwpaRoo
+	n8EHqx0K9Y8Qi5EUBS2ST41Ba6/zdnCcD5gxLvcQ6fPpBOAJyfGARO6zaGQI5855mvH1/afzcqjmP
+	KG9qldz03z5Zd2BO5PgdfBuBbC49huQHx3GtgRH88MVqtiO0VrI/LYnFzBKtrSu2AwoSu5VTYeOnk
+	P+YuQGvIF2hMOQcfLpDpEmJf7RfYgdyrkfXeAA2zrnDJLMgrnHGlTWTZGMazyegmxGhmQxdiTfoxH
+	c3A3XskpXdr//D9KqDCazxMWZKJOGGJ77WcZnNAyvH1QRTcNS5UpW9Jt5rIU3BZgegz1J7iJRr+bx
+	DNbOV9iA==;
+Received: from smtp.h3c.com ([60.191.123.56] helo=h3cspam01-ex.h3c.com)
 	by desiato.infradead.org with esmtps (Exim 4.99.5 #2 (Red Hat Linux))
-	id 1xHdjJ-00000001Hnm-15x6
+	id 1xHdzr-00000001J18-0PaT
 	for linux-mtd@lists.infradead.org;
-	Fri, 16 Oct 2026 08:56:06 +0000
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id E4DE5C6220F;
-	Fri, 16 Oct 2026 08:56:50 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 29A726075D;
-	Fri, 16 Oct 2026 08:55:54 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id DB4AD10328B9B;
-	Fri, 16 Oct 2026 10:55:46 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1792140952; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=ZT/sWpmVZ48A0UV1NDljoImwkaY+rB5RM0fdLed9wk8=;
-	b=BEtx/5etcejUtTY5MTUNcRWY/zuaQF4HOE5w+eoWKzFGhMri+rIsxGQ35KauvM5TCdNPVN
-	/x/Dl3eKK8stSz3LgVTC9F7xZpXMorpV0A7D8sI9WkcdYFJwoi1nAo0hWB4LJwudLVXZ6c
-	gSm1jgBmzRa+kGJBBrtctfPA0ZNOaHRYfcXMqoikgSqNWwHTwzq1EnD6WPTEYKy8Hd14tk
-	EgXMwfRxsvSkABA9bKuQovl5JNXQCHTOqyYseDyQ9WGAum5Dc47hfqOBB+lltQuqTzjxrP
-	Uts1BaA7t8hXpzD8qenXED+qUsaBUeuzHkWC/3mtvQwnbi+F4xspo7mx9muBXw==
-Message-ID: <d6490c5d09075a152909c2be00c2a6f23256c61d.camel@bootlin.com>
-Subject: Re: [PATCH v3 6/7] spi: cadence-xspi: Add support for panic writes
-From: Paul Cercueil <paul.cercueil@bootlin.com>
-To: Mark Brown <broonie@kernel.org>
-Cc: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>,
-  Takahiro Kuwano <takahiro.kuwano@infineon.com>, Miquel Raynal
- <miquel.raynal@bootlin.com>, Richard Weinberger	 <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>, Thomas Petazzoni	
- <thomas.petazzoni@bootlin.com>, Kees Cook <kees@kernel.org>, Tony Luck	
- <tony.luck@intel.com>, "Guilherme G . Piccoli" <gpiccoli@igalia.com>, 
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	linux-spi@vger.kernel.org, Bharat Bhushan <bbhushan2@marvell.com>, Sunil
- Kovvuri Goutham <sgoutham@marvell.com>, Tanmay Jagdale <tanmay@marvell.com>
-Date: Fri, 16 Oct 2026 10:55:43 +0200
-In-Reply-To: <f6008943-c4cb-43ae-a791-31965f374ffd@sirena.org.uk>
-References: <20261014154301.157755-1-paul.cercueil@bootlin.com>
-	 <20261014154301.157755-7-paul.cercueil@bootlin.com>
-	 <f6008943-c4cb-43ae-a791-31965f374ffd@sirena.org.uk>
-User-Agent: Evolution 3.56.2-0+deb13u1 
+	Fri, 16 Oct 2026 09:13:06 +0000
+Received: from mail.maildlp.com ([172.25.15.155])
+	by h3cspam01-ex.h3c.com with ESMTP id 69G9CKlJ023180;
+	Fri, 16 Oct 2026 17:12:25 +0800 (+08)
+	(envelope-from lin.nan@h3c.com)
+Received: from DAG6EX09-BJD.srv.huawei-3com.com (unknown [10.153.34.11])
+	by mail.maildlp.com (Postfix) with ESMTP id DA56A2284EA4;
+	Fri, 16 Oct 2026 17:15:23 +0800 (CST)
+Received: from localhost.localdomain (10.142.164.48) by
+ DAG6EX09-BJD.srv.huawei-3com.com (10.153.34.11) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.1258.27; Fri, 16 Oct 2026 17:12:25 +0800
+From: Nan Lin <lin.nan@h3c.com>
+To: <richard@nod.at>, <chengzhihao1@huawei.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <lin.nan@h3c.com>, <wangxiaoqing@h3c.com>, <zhou.kete@h3c.com>
+Subject: [PATCH] ubifs: zero stale data beyond EOF before file size grows
+Date: Fri, 16 Oct 2026 17:04:58 +0800
+Message-ID: <20261016090458.1891272-1-lin.nan@h3c.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-X-Last-TLS-Session-Version: TLSv1.3
+X-Originating-IP: [10.142.164.48]
+X-ClientProxiedBy: BJSMTP02-EX.srv.huawei-3com.com (10.63.20.133) To
+ DAG6EX09-BJD.srv.huawei-3com.com (10.153.34.11)
+X-DNSRBL: 
+X-MAIL: h3cspam01-ex.h3c.com 69G9CKlJ023180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261016_095605_057728_BE87C660 
-X-CRM114-Status: GOOD (  13.91  )
+X-CRM114-CacheID: sfid-20261016_101304_313539_1B60AE3B 
+X-CRM114-Status: GOOD (  17.91  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,27 +81,148 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWFyaywKCkxlIGpldWRpIDE1IG9jdG9icmUgMjAyNiDDoCAxMzowOSArMDEwMCwgTWFyayBC
-cm93biBhIMOpY3JpdMKgOgo+IE9uIFdlZCwgT2N0IDE0LCAyMDI2IGF0IDA1OjQzOjAwUE0gKzAy
-MDAsIFBhdWwgQ2VyY3VlaWwgd3JvdGU6Cj4gPiBGcm9tOiBUYW5tYXkgSmFnZGFsZSA8dGFubWF5
-QG1hcnZlbGwuY29tPgo+ID4gCj4gPiBBZHZlcnRpc2Ugc3VwcG9ydCBmb3IgcGFuaWMgd3JpdGVz
-LiBXaGVuIGEgbWVtb3J5IG9wIGlzIHJlY2VpdmVkIHdpdGgKPiA+IHRoZSAncGFuaWMnIGZsYWcg
-c2V0LCB0aGUgZHJpdmVyIHdpbGwgdGhlbiB3b3JrIHdpdGhvdXQgcmVseWluZyBvbgo+ID4gaW50
-ZXJydXB0cyBhbmQgd2l0aG91dCBzbGVlcGluZy4KPiAKPiBXZSBjaGVjayBkZXZpY2UgcHJvcGVy
-dGllcyBpbiBjZG5zX3hzcGlfc3VwcG9ydHNfb3AoKSBpZiB0aGUga2VybmVsIGlzCj4gYnVpbHQg
-d2l0aCBBQ1BJIHN1cHBvcnQsIHRoYXQgZW5kcyB1cCB1c2luZyBvZl9maW5kX3Byb3BlcnR5KCkg
-d2hpY2gKPiB0YWtlcyB0aGUgZGV2dHJlZSBsb2NrIHdoaWNoIG1lYW5zIHRoZXJlJ3MgYSBwb3Nz
-aWJpbGl0eSB0aGF0IHdlIG1pZ2h0Cj4gZGVhZGxvY2sgKGVnLCBpZiB3ZSB0b29rIGEgTk1JIG9y
-IHRoZSBDUFUgZmVsbCBvdmVyIGF0IHRoZSB3cm9uZwo+IG1vbWVudCkuwqAgVGhpcyBpcyBwcm9i
-YWJseSB0aGluIGVub3VnaCBpdCdzIG5vdCB3b3J0aCBzdG9wcGluZyB0aGUKPiBlbnRpcmUgc2Vy
-aWVzIG92ZXIsIGl0IGNvdWxkIGJlIGZpeGVkIGluY3JlbWVudGFsbHkgYnkgc3RvcmluZyB0aGUK
-PiB2YWx1ZXMgZHVyaW5nIHByb2JlLgoKQUNLLgoKSSBoYXZlIGFuIGV4dHJhIHNldCBvZiBjbGVh
-bnVwcyBpbiBteSBxdWV1ZSBmb3Igc3BpLWNhZGVuY2UteHNwaSBzbyBJJ2xsIGNoYW5nZQppdCB0
-aGVyZS4KCkNoZWVycywKLVBhdWwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0
-cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+mmap writes can dirty the page cache beyond EOF without changing
+i_size. A later extending write or ftruncate turns that region into a
+hole, but UBIFS never zeroes the partial page at the old EOF, so reads
+expose the stale data.
+
+Zero the tail of the old-EOF folio in all three size-extending paths:
+ubifs_write_begin() for writes starting beyond EOF, do_setattr()
+before truncate_setsize() grows the size, and ubifs_vm_page_mkwrite()
+so mmap writes cannot leave such a tail behind. This mirrors what
+block_page_mkwrite() does for buffer_head filesystems and what ext4
+does on size extension.
+
+All zeroing takes the old-EOF folio lock without ui->ui_mutex, keeping
+the folio_lock -> ui_mutex order of ->writepage() and
+->page_mkwrite(); the reverse order deadlocks.
+
+Signed-off-by: Nan Lin <lin.nan@h3c.com>
+---
+ fs/ubifs/file.c | 73 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 73 insertions(+)
+
+diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+index e73c28b12f97..e09b17d36495 100644
+--- a/fs/ubifs/file.c
++++ b/fs/ubifs/file.c
+@@ -202,6 +202,53 @@ static void release_existing_page_budget(struct ubifs_info *c)
+ 	ubifs_release_budget(c, &req);
+ }
+ 
++/**
++ * ubifs_zero_eof_hole - zero the stale tail of the old-EOF folio.
++ * @inode: inode whose size is about to grow
++ * @new_end: new end of the file, only used to bound the tail
++ *
++ * Zero the cached folio containing the old EOF for [old EOF,
++ * min(folio end, @new_end)) so a size extension does not expose stale
++ * data left beyond EOF by mmap writes.
++ *
++ * Must be called without ui->ui_mutex held: we block on the old-EOF
++ * folio lock, and ->writepage() and ->page_mkwrite() hold that folio
++ * lock while taking ui_mutex; the reverse order deadlocks.
++ */
++static void ubifs_zero_eof_hole(struct inode *inode, loff_t new_end)
++{
++	loff_t old_size = i_size_read(inode);
++	unsigned int from, to;
++	struct folio *folio;
++
++	if (new_end <= old_size)
++		return;
++
++	folio = filemap_lock_folio(inode->i_mapping, old_size >> PAGE_SHIFT);
++	if (IS_ERR(folio))
++		return;
++
++	/*
++	 * Re-read i_size under the folio lock: a concurrent truncate may
++	 * have shrunk the file, turning this folio into valid data.
++	 */
++	old_size = i_size_read(inode);
++	if (new_end <= old_size)
++		goto out;
++
++	from = old_size & (PAGE_SIZE - 1);
++	if (!from)
++		goto out;
++	to = (old_size >> PAGE_SHIFT) == (new_end >> PAGE_SHIFT) ?
++	     new_end & (PAGE_SIZE - 1) : PAGE_SIZE;
++	if (to > from)
++		folio_zero_range(folio, from, to - from);
++
++out:
++	folio_unlock(folio);
++	folio_put(folio);
++}
++
+ static int write_begin_slow(struct address_space *mapping,
+ 			    loff_t pos, unsigned len, struct folio **foliop)
+ {
+@@ -423,6 +470,14 @@ static int ubifs_write_begin(const struct kiocb *iocb,
+ 	if (unlikely(c->ro_error))
+ 		return -EROFS;
+ 
++	/*
++	 * The write starts beyond EOF: zero the stale tail of the old-EOF
++	 * folio before budgeting takes ui->ui_mutex. do_readpage() only
++	 * sanitizes the write folio, not the old-EOF folio.
++	 */
++	if (pos > inode->i_size)
++		ubifs_zero_eof_hole(inode, pos);
++
+ 	/* Try out the fast-path part first */
+ 	folio = __filemap_get_folio(mapping, index, FGP_WRITEBEGIN,
+ 			mapping_gfp_mask(mapping));
+@@ -1220,6 +1275,10 @@ static int do_setattr(struct ubifs_info *c, struct inode *inode,
+ 
+ 	if (attr->ia_valid & ATTR_SIZE) {
+ 		dbg_gen("size %lld -> %lld", inode->i_size, new_size);
++
++		/* Must run before the size change loses the old boundary. */
++		ubifs_zero_eof_hole(inode, new_size);
++
+ 		truncate_setsize(inode, new_size);
+ 	}
+ 
+@@ -1494,6 +1553,7 @@ static vm_fault_t ubifs_vm_page_mkwrite(struct vm_fault *vmf)
+ 	struct timespec64 now = current_time(inode);
+ 	struct ubifs_budget_req req = { .new_page = 1 };
+ 	int err, update_time;
++	loff_t i_size;
+ 
+ 	dbg_gen("ino %llu, pg %lu, i_size %lld",	inode->i_ino, folio->index,
+ 		i_size_read(inode));
+@@ -1553,6 +1613,19 @@ static vm_fault_t ubifs_vm_page_mkwrite(struct vm_fault *vmf)
+ 		filemap_dirty_folio(folio->mapping, folio);
+ 	}
+ 
++	/*
++	 * Zero the part of the EOF folio beyond i_size so mmap writes
++	 * cannot leave a stale tail behind (see ubifs_zero_eof_hole()).
++	 * For a page-aligned i_size the mkwrite entry check has already
++	 * returned SIGBUS, so @from is always non-zero here.
++	 */
++	i_size = i_size_read(inode);
++	if (folio->index == (i_size >> PAGE_SHIFT)) {
++		unsigned int from = i_size & (PAGE_SIZE - 1);
++
++		folio_zero_range(folio, from, PAGE_SIZE - from);
++	}
++
+ 	if (update_time) {
+ 		int release;
+ 		struct ubifs_inode *ui = ubifs_inode(inode);
+-- 
+2.33.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
