@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47FA6CCA46D
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F0B0CC6B38
 	for <linux-mtd@archiver.kernel.org>; Fri, 16 Oct 2026 06:41:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,50 +12,49 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
 	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=or8fdoLZZ+J2qP6zHrrzaseI5IrdbDjhbVQc2CISnJM=; b=4gmJZDbJiDmpRu
-	zKDO9CNhD/TwdyHBW1gJTB4F1vyG57yuKGu9gv9ALg2w1jxlvLukTY3XNswrOH+L0CcYDXpoSJUaH
-	NFij5Kt51KGKJM7Kvzo6jgPL75HTGOJGCu50lI9eYVbnKzMfwZPVKjGdgdWxQ8e+NCDkww4yCG5xi
-	9VXWilGdXYCseB68e0dvMb2lIoAF157GE4Y5SaQYU/gXK6LhFnIojYK532SPtJ5UDx8tKe22Lzp/C
-	Ps8moHgCtF1Aw0ytJRrOVtT5qbASG72bEOBI8ltS/pEi9IJu6wuqrAzffC5hH4gxEYUCfCZFWWOdf
-	wRcbybfXsBdUi8ac3bzg==;
+	List-Owner; bh=/nGVVDU5ioBn7zeToNDgPphgofOosNKF5kDCozygbpo=; b=tL7hlrU9DKPVEB
+	coRBNyzMXuzy0xA6esWsPQoCwGytQT5Wcl5BGsevS18vMYsxI60iJK3LrnM7Un+yz+vQ3+8OCtchP
+	Y8K81M/CfFGZne0791DfSg2pDzMx4mHx94PZa/5lV7ErsSQhiwpgAJtiZaEXepam5cYz+THPcERMG
+	LJVblR3l5rVq14IItzAgZmbtCaajEhR9jJHgLWZVpfm6z0BfqGmNkXuIwrZmgpEIC6gh8lxwhwmMl
+	xPXF5dOuMTqSFFN94MYwe4T2y8Sej7CYzpaVogVewlJEnhO1zC7SLS4uLoChuoRlpp8mCHj8WSomc
+	xwO/N5pe9ooZXbn9Emcw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xHbdG-000000028ou-3d9z;
-	Fri, 16 Oct 2026 06:41:34 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1xHbdD-000000028o0-3EH2;
+	Fri, 16 Oct 2026 06:41:31 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xHbdE-000000028o9-42hG
+	id 1xHbdC-000000028nu-3FCa
 	for linux-mtd@lists.infradead.org;
-	Fri, 16 Oct 2026 06:41:32 +0000
+	Fri, 16 Oct 2026 06:41:30 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 86CC142CBF;
-	Fri, 16 Oct 2026 06:41:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9823A1F000C5;
+	by sea.source.kernel.org (Postfix) with ESMTP id 437EE41917;
 	Fri, 16 Oct 2026 06:41:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C5AE1F000C4;
+	Fri, 16 Oct 2026 06:41:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792132892;
-	bh=TuTQOSuTkKq45lRXM4loOoRWaAqprlIEgvLlkpt8on8=;
+	s=k20260515; t=1792132890;
+	bh=VdouQ0ydHfSbTZsgO+bOmYzH+PNr65ZVU+s/MbMiUME=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date;
-	b=PPRr3b0cSD5zqpgRVQHzjZwE5jejcP9MmWs7+bzNj/rbpCUnSgwHaRj/ZKul16wwb
-	 tTjlfdcMGLlg5pC/m9KMGJrdkPMvcmi7QBUucRxsiW7jdRWVhVeFwZ4j5cc5HYwvpS
-	 Lqi94ZmGDwwFckP63xCddrgoJLup0+FHfPKg5Ifb63FXzbyADJ3QM7rBk/TQYm54by
-	 JOuvukrDjZI02TcIIYugcliG1McoNUnMALrdLliI2SX9+S00wwB0yLdIgnvkAWgH0u
-	 K7uBwtnwmW0Wdaa5Rb/Y8J8EhVMW3M0O0+A/2sl+tZFkZSwAhvXbFKfLotFuIOdtd8
-	 5C9PxQVQbCjjA==
+	b=Di2K7ZEkf7s+7Q+o8I6cxtw3iGM3sFyhOI/i69++P58ngosuyS+0BwMLP8lIxi3lM
+	 4UQnU36cdDnXs0O9uL3xoUmEstXF3G9oh5kGkKCFeMCzJw4FSVzuPjwJQtvKYr9PcR
+	 MgfVNyKecl2xEwniZB6ilBPbidVPflHM/ugzX30rFWCPPEzqS+dUT3uUb2asw8rcyG
+	 TTj7bu7pTeML+B6LCJkblz/Xw8axDz543wrat7Wv8hkNvGcUMVHS+VgIgAiezFvcPH
+	 4ggZF4tNoOS+wcbVuy2dcBtlC+BP8h5UxzkNn2xHu4PomDXgu2aGvzCkvfpLSXpgx4
+	 Rpr8/5Sf2ycdQ==
 From: Michael Walle <mwalle@kernel.org>
 To: Pratyush Yadav <pratyush@kernel.org>, 
  Takahiro Kuwano <takahiro.kuwano@infineon.com>, 
  Miquel Raynal <miquel.raynal@bootlin.com>, 
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
- Arnd Bergmann <arnd@arndb.de>, David Laight <david.laight.linux@gmail.com>, 
  Michael Walle <mwalle@kernel.org>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20261015113209.975641-1-mwalle@kernel.org>
-References: <20261015113209.975641-1-mwalle@kernel.org>
-Subject: Re: [PATCH v2] mtd: spi-nor: sfdp: reduce stack usage in
- spi_nor_parse_sfdp()
-Message-Id: <179213289035.1140554.7029307612793893706.b4-ty@b4>
-Date: Fri, 16 Oct 2026 08:41:30 +0200
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ kernel test robot <lkp@intel.com>
+In-Reply-To: <20261015084219.887963-1-mwalle@kernel.org>
+References: <20261015084219.887963-1-mwalle@kernel.org>
+Subject: Re: [PATCH] mtd: spi-nor: sfdp: fix missing kernel-doc
+Message-Id: <179213288823.1140554.3724392142186032224.b4-ty@b4>
+Date: Fri, 16 Oct 2026 08:41:28 +0200
 MIME-Version: 1.0
 X-Mailer: b4 0.16.0
 X-BeenThere: linux-mtd@lists.infradead.org
@@ -75,20 +74,16 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
-On Thu, 15 Oct 2026 13:31:52 +0200, Michael Walle wrote:
-> Two large spi_nor_flash_parameter structures on a function stack
-> are really too much, and this can exceed an otherwise reasonable
-> frame limit:
+On Thu, 15 Oct 2026 10:42:14 +0200, Michael Walle wrote:
+> Commit 69d9d7dabbeb ("mtd: spi-nor: move spi_nor_post_bfpt_fixups() into
+> sfdp") added the kernel-doc but missed one description for bfpt. Fix it.
 > 
-> drivers/mtd/spi-nor/sfdp.c: In function 'spi_nor_parse_sfdp':
-> drivers/mtd/spi-nor/sfdp.c:1717:1: error: the frame size of 1600 bytes is larger than 1536 bytes [-Werror=frame-larger-than=]
-> 
-> [...]
+> While at it, also add documentation for the return value.
 
 Applied, thanks!
 
-[1/1] mtd: spi-nor: sfdp: reduce stack usage in spi_nor_parse_sfdp()
-      commit: d7040c620d8b22f839af7750860b96e39cc58b7c
+[1/1] mtd: spi-nor: sfdp: fix missing kernel-doc
+      commit: 7dc9a4e7b9fcee871d021765c90943c4bab91474
 
 Best regards,
 -- 
