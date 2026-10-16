@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A95F4CCA464
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5E294CC6B38
 	for <linux-mtd@archiver.kernel.org>; Fri, 16 Oct 2026 10:30:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,53 +12,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=fVd23p5cxmCl3qXwNKBb2mNE9beNwdO//33thRAsNM0=; b=QrkzD/iwT5Mc0J
-	gqeuwj/icnwuee+pcqqWMeSQ/hz86OIagMOPNjrXfGb+y9749s4V44+Up8bFHEj6wfm0t87MiEIlG
-	AaA/xYukecMSbbu/Qy7plMwzpZj5iwjbp6PvuyANlpH7lY1epKz+SBPcioK/7yQJeEZ6wwei2Ezmr
-	vi82QGVf0ByNxg2Wj751/eLpBHsYU5qfltznJwOP/+VlsGwOKXNWPUdXTh8g8cU/jPk150RYS5T6O
-	l4MMtzTS3ahajTminuCjGKWJiayMx9Dr62Tuu/hpZdygh9EmKQwsOYwAuNMOw6AEz/DNCJE2m2Myo
-	Xh/bPiirwVaqEayw7YUQ==;
+	List-Owner; bh=s4/ZD+E6DcnBOPTC0DVVJoKY6CcHd3BSf/vC7Qfeyps=; b=GNdqvx2X5ekIJm
+	yIptKZe5Msw6+WJveOKMc+/HY0J4wih3Ts03JSttXtfj0QfbKuQIOXSonv6FfxiumIBsVUET9xauX
+	aM6lME1CDv1tTXcSWcDFZED8MlSj0ZxTDtFOMoHdwCuIu/GRSmLj/oGtzWy+BUOOGNa5qaInbH8hD
+	PTFFfo2zjwK9Is605OQPSt1wSnuIZ5+Jq5XTQKqArrxfFX7fxJk0i3Sj9EeIy+x774E+zKafYyzT0
+	DtQq3NitRxVKLigZcv+Ts7B6rxKOq50zLDYZ4fIhjQrMSWWxSAjDe0JDNV/Ydn7bsYibYn380rYFh
+	VN9PByLXgaZR2bq3aXzA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xHfCV-00000002cNB-3P05;
-	Fri, 16 Oct 2026 10:30:11 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xHfCU-00000002cLp-0R5X
-	for linux-mtd@bombadil.infradead.org;
+	id 1xHfCU-00000002cMa-2ZeW;
 	Fri, 16 Oct 2026 10:30:10 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
-	:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description;
-	bh=yIWRmoxTuioRnT0BgpV9XyWpmHQpmK8B4yOZV8/ES+4=; b=PTKa4h+cNBlzFnNU6P4ozLzYE2
-	/YqVjWkt9el5g0iVBwFqYdQRK196bw/8gwGrAv7GJpyt8BExTyTWpIPCDOCjAClLKlgvIHIgExRMD
-	ouRPnngnbfJCaLPYssQi7HLwY/FfcHFvVbtheFrA5Jwgm4jj0Ru65Poy50JqAn6yMoWdtUGd3LZGM
-	k6/TFqx8p7bJYLtPt6gqPXNLS0vsIUH2oHyWkvPJPBicO42lBsfATBFDqoeGogBYHJkHY8mBK20x6
-	YLI/02R6h/p3FuMWKgBjDIrHTzHY88QJXoMgwe4LsUvQsTir7NvXZtXsM9bgSamgeF6ZzdHJpk68K
-	W47UT8cw==;
 Received: from smtpout-03.galae.net ([185.246.85.4])
-	by desiato.infradead.org with esmtps (Exim 4.99.5 #2 (Red Hat Linux))
-	id 1xHfCQ-00000001Nfn-402c
+	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
+	id 1xHfCP-00000002cJQ-17i7
 	for linux-mtd@lists.infradead.org;
 	Fri, 16 Oct 2026 10:30:08 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id C094D4E41255;
-	Fri, 16 Oct 2026 10:30:05 +0000 (UTC)
+	by smtpout-03.galae.net (Postfix) with ESMTPS id B8A904E41248;
+	Fri, 16 Oct 2026 10:30:03 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 94CD36075D;
-	Fri, 16 Oct 2026 10:30:05 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id DB69E10328113;
-	Fri, 16 Oct 2026 12:30:01 +0200 (CEST)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 8CFF06075D;
+	Fri, 16 Oct 2026 10:30:03 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id E201D1032868C;
+	Fri, 16 Oct 2026 12:29:58 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1792146604; h=from:subject:date:message-id:to:cc:mime-version:
+	t=1792146601; h=from:subject:date:message-id:to:cc:mime-version:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=yIWRmoxTuioRnT0BgpV9XyWpmHQpmK8B4yOZV8/ES+4=;
-	b=WouJ4DXOihUK5Knhq9ROF4byLdA2KK2rWQsC03eqnZ25Liu1GMUVzXgPEX+JzydUMRWniV
-	L8vw4ahVvfms4Ntcdr342oJDD8hzpJXtQ9I7LKFskn7S9uz2ccqQ0IUcFLB8Eh5HJ1jH5q
-	sQPQlZWJvXB1Ct6/nGIRIXleQArMx3RmOJRlb1vo8I4DBchDx919osqjUYBz918PR7Lmol
-	dmsnR6jMa4Nq2sZl+BUeO1jCetBSZTBqz6d+cBzxFExiwsSTNelzUlSFUQTY4o3oLkE+NG
-	zRPgkc+og3fIB+GLPnAgE5y9+8QBJntx1ZaFxHhgLfeqjSFaq3fO5yb8IqotLA==
+	bh=lAvTALq8/2QjR+XVZhKb89O8degogFcCW3Yx3v3Zn8Q=;
+	b=rA4mX/K4Fi93ecjpKrPDMUq2XpFkMFgmFGPr6OHQAKVN8XiRqkfRJpNwXHj9xF60RtNtVb
+	WGBE/XxfAiVsH20Qm+wSz0+3AdZ8UY5RKkDWGX7ZWBQlKxIXSSQqAV+dCMb4aVq8ttnwzl
+	G4yVryDaXDZ932M8ETp3GDt6sl7CafSvrmNG7HE93RhfmH4/rggQ9sQ/98eUJ7RpoA3UBC
+	bHUPJK55Y7GQjOVVYll1AUzbTFU/Jsa22fnpM08XnRi4smK+kGYxLIR2p7FmMNcenadutK
+	lmifry5vHkAPJmCZNa1ADFcLU96iYi2yvZRH+F1xwmGIC85rhsx5krRRS0kIbg==
 From: Paul Cercueil <paul.cercueil@bootlin.com>
 To: Pratyush Yadav <pratyush@kernel.org>,
 	Michael Walle <mwalle@kernel.org>,
@@ -77,19 +62,18 @@ Cc: Kees Cook <kees@kernel.org>,
 	Bharat Bhushan <bbhushan2@marvell.com>,
 	Sunil Kovvuri Goutham <sgoutham@marvell.com>,
 	Tanmay Jagdale <tanmay@marvell.com>,
-	stable@vger.kernel.org,
 	Paul Cercueil <paul.cercueil@bootlin.com>
-Subject: [PATCH v4 4/7] spi: cadence-xspi: Clear "SDMA ready" IRQ flag after polling
-Date: Fri, 16 Oct 2026 12:29:14 +0200
-Message-ID: <20261016102917.171095-5-paul.cercueil@bootlin.com>
+Subject: [PATCH v4 3/7] mtd: spi-nor: Add support for panic writes
+Date: Fri, 16 Oct 2026 12:29:13 +0200
+Message-ID: <20261016102917.171095-4-paul.cercueil@bootlin.com>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20261016102917.171095-1-paul.cercueil@bootlin.com>
 References: <20261016102917.171095-1-paul.cercueil@bootlin.com>
 MIME-Version: 1.0
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261016_113007_353255_77F8E484 
-X-CRM114-Status: GOOD (  10.78  )
+X-CRM114-CacheID: sfid-20261016_033007_746574_6F78DE57 
+X-CRM114-Status: GOOD (  20.64  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -108,56 +92,253 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Tanmay Jagdale <tanmay@marvell.com>
 
-When polling for the "SDMA ready" event, once the corresponding bit is
-set in the CDNS_XSPI_SDMA_TRIGGER we should reset it to zero. Otherwise,
-any subsequent call to cdns_xspi_is_sdma_ready() will just return early.
+If the SPI controller supports it, provide the functionality of doing a
+panic write.
 
-Fixes: 931e389ded0f ("spi: cadence: Add Marvell xfer operation support")
-Cc: stable@vger.kernel.org
+Update the spi-nor core code and controllers to make sure they won't try
+to grab locked mutexes or sleep when doing a panic write, as preemption
+and IRQs are disabled.
+
+The information is carried down to the SPI controller driver through the
+spi_mem_op structure. If the corresponding flag is set there, and the
+SPI driver does support panic writes, it then has to respect the same
+rules.
+
 Signed-off-by: Tanmay Jagdale <tanmay@marvell.com>
 Co-developed-by: Paul Cercueil <paul.cercueil@bootlin.com>
 Signed-off-by: Paul Cercueil <paul.cercueil@bootlin.com>
 ---
 
 Notes:
-    v2: New patch
+    v2: - Update spi_nor_wait_till_ready_with_timeout() to use
+          poll_timeout_us_atomic() on panic
+        - Alloc temp buffer with GFP_ATOMIC in spi_nor_octal_dtr_write()
+          on panic
+        - Bail out if nor->rww.ongoing_pe is set in spi_nor_panic_write()
     
-    v3-v4: No change
+    v3: Use GFP_KERNEL xor GFP_ATOMIC
+    
+    v4: kmalloc() is not safe in panic context; reuse boucebuf instead
 
- drivers/spi/spi-cadence-xspi.c | 20 ++++++++++++++------
- 1 file changed, 14 insertions(+), 6 deletions(-)
+ drivers/mtd/spi-nor/core.c | 92 ++++++++++++++++++++++++++++++++++----
+ 1 file changed, 84 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/spi/spi-cadence-xspi.c b/drivers/spi/spi-cadence-xspi.c
-index 39c868a5b171..095bf640b379 100644
---- a/drivers/spi/spi-cadence-xspi.c
-+++ b/drivers/spi/spi-cadence-xspi.c
-@@ -1068,12 +1068,20 @@ static bool cdns_xspi_is_sdma_ready(struct cdns_xspi_dev *cdns_xspi, bool sleep)
- {
- 	u32 ctrl_stat;
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 7f347141ea3f..10ec80c54504 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -97,6 +97,9 @@ void spi_nor_spimem_setup_op(const struct spi_nor *nor,
+ 	if (op->data.nbytes)
+ 		op->data.buswidth = spi_nor_get_protocol_data_nbits(proto);
  
--	return !readl_relaxed_poll_timeout
--		(cdns_xspi->iobase + CDNS_XSPI_INTR_STATUS_REG,
--		ctrl_stat,
--		(ctrl_stat & CDNS_XSPI_SDMA_TRIGGER),
--		sleep ? MRVL_XSPI_POLL_DELAY_US : 0,
--		sleep ? MRVL_XSPI_POLL_TIMEOUT_US : 0);
-+	if (readl_relaxed_poll_timeout
-+	    (cdns_xspi->iobase + CDNS_XSPI_INTR_STATUS_REG,
-+	     ctrl_stat,
-+	     (ctrl_stat & CDNS_XSPI_SDMA_TRIGGER),
-+	     sleep ? MRVL_XSPI_POLL_DELAY_US : 0,
-+	     sleep ? MRVL_XSPI_POLL_TIMEOUT_US : 0)) {
-+		return false;
++	if (nor->mtd.oops_panic_write)
++		op->panic_write = true;
++
+ 	if (spi_nor_protocol_is_dtr(proto)) {
+ 		/*
+ 		 * SPIMEM supports mixed DTR modes, but right now we can only
+@@ -282,7 +285,7 @@ static ssize_t spi_nor_spimem_write_data(struct spi_nor *nor, loff_t to,
+ 	if (spi_nor_spimem_bounce(nor, &op))
+ 		memcpy(nor->bouncebuf, buf, op.data.nbytes);
+ 
+-	if (nor->dirmap.wdesc) {
++	if (nor->dirmap.wdesc && !nor->mtd.oops_panic_write) {
+ 		nbytes = spi_mem_dirmap_write(nor->dirmap.wdesc, op.addr.val,
+ 					      op.data.nbytes, op.data.buf.out);
+ 	} else {
+@@ -665,6 +668,9 @@ static void spi_nor_rww_end_rdst(struct spi_nor *nor)
+ 
+ static int spi_nor_lock_rdst(struct spi_nor *nor)
+ {
++	if (nor->mtd.oops_panic_write)
++		return 0;
++
+ 	if (spi_nor_use_parallel_locking(nor))
+ 		return spi_nor_rww_start_rdst(nor);
+ 
+@@ -673,6 +679,9 @@ static int spi_nor_lock_rdst(struct spi_nor *nor)
+ 
+ static void spi_nor_unlock_rdst(struct spi_nor *nor)
+ {
++	if (nor->mtd.oops_panic_write)
++		return;
++
+ 	if (spi_nor_use_parallel_locking(nor)) {
+ 		spi_nor_rww_end_rdst(nor);
+ 		wake_up(&nor->rww.wait);
+@@ -716,8 +725,14 @@ static int spi_nor_wait_till_ready_with_timeout(struct spi_nor *nor, u64 timeout
+ {
+ 	int ret, status;
+ 
+-	ret = poll_timeout_us(status = spi_nor_ready(nor), status,
+-			      100, timeout_ms * 1000, false);
++	if (nor->mtd.oops_panic_write) {
++		ret = poll_timeout_us_atomic(status = spi_nor_ready(nor), status,
++					     100, timeout_ms * 1000, false);
++	} else {
++		ret = poll_timeout_us(status = spi_nor_ready(nor), status,
++				      100, timeout_ms * 1000, false);
 +	}
 +
-+	/* Clear the flag */
-+	writel(CDNS_XSPI_SDMA_TRIGGER,
-+	       cdns_xspi->iobase + CDNS_XSPI_INTR_STATUS_REG);
+ 	if (ret < 0) {
+ 		dev_dbg(nor->dev, "flash operation timed out\n");
+ 		return ret;
+@@ -1283,6 +1298,9 @@ static void spi_nor_rww_end_io(struct spi_nor *nor)
+ 
+ static int spi_nor_lock_device(struct spi_nor *nor)
+ {
++	if (nor->mtd.oops_panic_write)
++		return 0;
 +
-+	return true;
+ 	if (!spi_nor_use_parallel_locking(nor))
+ 		return 0;
+ 
+@@ -1291,6 +1309,9 @@ static int spi_nor_lock_device(struct spi_nor *nor)
+ 
+ static void spi_nor_unlock_device(struct spi_nor *nor)
+ {
++	if (nor->mtd.oops_panic_write)
++		return;
++
+ 	if (spi_nor_use_parallel_locking(nor)) {
+ 		spi_nor_rww_end_io(nor);
+ 		wake_up(&nor->rww.wait);
+@@ -1328,6 +1349,9 @@ int spi_nor_prep_and_lock(struct spi_nor *nor)
+ {
+ 	int ret;
+ 
++	if (nor->mtd.oops_panic_write)
++		return 0;
++
+ 	ret = spi_nor_prep(nor);
+ 	if (ret)
+ 		return ret;
+@@ -1343,6 +1367,9 @@ int spi_nor_prep_and_lock(struct spi_nor *nor)
+ 
+ void spi_nor_unlock_and_unprep(struct spi_nor *nor)
+ {
++	if (nor->mtd.oops_panic_write)
++		return;
++
+ 	if (!spi_nor_use_parallel_locking(nor)) {
+ 		mutex_unlock(&nor->lock);
+ 	} else {
+@@ -1399,6 +1426,9 @@ static int spi_nor_prep_and_lock_pe(struct spi_nor *nor, loff_t start, size_t le
+ {
+ 	int ret;
+ 
++	if (nor->mtd.oops_panic_write)
++		return 0;
++
+ 	ret = spi_nor_prep(nor);
+ 	if (ret)
+ 		return ret;
+@@ -1414,6 +1444,9 @@ static int spi_nor_prep_and_lock_pe(struct spi_nor *nor, loff_t start, size_t le
+ 
+ static void spi_nor_unlock_and_unprep_pe(struct spi_nor *nor, loff_t start, size_t len)
+ {
++	if (nor->mtd.oops_panic_write)
++		return;
++
+ 	if (!spi_nor_use_parallel_locking(nor)) {
+ 		mutex_unlock(&nor->lock);
+ 	} else {
+@@ -1472,6 +1505,9 @@ static int spi_nor_prep_and_lock_rd(struct spi_nor *nor, loff_t start, size_t le
+ {
+ 	int ret;
+ 
++	if (nor->mtd.oops_panic_write)
++		return 0;
++
+ 	ret = spi_nor_prep(nor);
+ 	if (ret)
+ 		return ret;
+@@ -1487,6 +1523,9 @@ static int spi_nor_prep_and_lock_rd(struct spi_nor *nor, loff_t start, size_t le
+ 
+ static void spi_nor_unlock_and_unprep_rd(struct spi_nor *nor, loff_t start, size_t len)
+ {
++	if (nor->mtd.oops_panic_write)
++		return;
++
+ 	if (!spi_nor_use_parallel_locking(nor)) {
+ 		mutex_unlock(&nor->lock);
+ 	} else {
+@@ -2203,9 +2242,20 @@ static int spi_nor_octal_dtr_write(struct spi_nor *nor, loff_t to, size_t len,
+ 	if (IS_ALIGNED(to, 2) && IS_ALIGNED(len, 2))
+ 		return spi_nor_write_data(nor, to, len, buf);
+ 
+-	tmp_buf = kmalloc(nor->params->page_size, GFP_KERNEL);
+-	if (!tmp_buf)
+-		return -ENOMEM;
++	if (nor->mtd.oops_panic_write) {
++		/*
++		 * The kernel is panicking; kmalloc() is not safe. Shamelessly
++		 * reuse the 'bouncebuf' buffer, which is the size we want, and
++		 * won't be reused anymore at this point (the first two bytes
++		 * might be overwritten, but only after we transferred them, so
++		 * it's safe).
++		 */
++		tmp_buf = nor->bouncebuf;
++	} else {
++		tmp_buf = kmalloc(nor->params->page_size, GFP_KERNEL);
++		if (!tmp_buf)
++			return -ENOMEM;
++	}
+ 
+ 	memset(tmp_buf, 0xff, nor->params->page_size);
+ 
+@@ -2243,7 +2293,8 @@ static int spi_nor_octal_dtr_write(struct spi_nor *nor, loff_t to, size_t len,
+ 		ret -= end - (to + len);
+ 
+ out:
+-	kfree(tmp_buf);
++	if (!nor->mtd.oops_panic_write)
++		kfree(tmp_buf);
+ 	return ret;
  }
  
- static int cdns_xspi_transfer_one_message_b0(struct spi_controller *controller,
+@@ -3385,6 +3436,26 @@ static void spi_nor_soft_reset(struct spi_nor *nor)
+ 	usleep_range(SPI_NOR_SRST_SLEEP_MIN, SPI_NOR_SRST_SLEEP_MAX);
+ }
+ 
++static int spi_nor_panic_write(struct mtd_info *mtd, loff_t to, size_t len,
++			       size_t *retlen, const u_char *buf)
++{
++	struct spi_nor *nor = mtd_to_spi_nor(mtd);
++
++	/*
++	 * At this point preemption and local interrupts are disabled, so we
++	 * can't get the lock if it's taken.
++	 */
++	if (mutex_is_locked(&nor->lock))
++		return -EPERM;
++
++	if (spi_nor_use_parallel_locking(nor) &&
++	    (nor->rww.ongoing_io || nor->rww.ongoing_rd || nor->rww.ongoing_pe)) {
++		return -EPERM;
++	}
++
++	return spi_nor_write(mtd, to, len, retlen, buf);
++}
++
+ /* mtd suspend handler */
+ static int spi_nor_suspend(struct mtd_info *mtd)
+ {
+@@ -3588,8 +3659,13 @@ static int spi_nor_set_mtd_info(struct spi_nor *nor)
+ 	mtd->size = nor->params->size;
+ 	mtd->_read = spi_nor_read;
+ 	/* Might be already set by some SST flashes. */
+-	if (!mtd->_write)
++	if (!mtd->_write) {
+ 		mtd->_write = spi_nor_write;
++		if (nor->spimem &&
++		    spi_mem_controller_is_capable(nor->spimem->spi->controller, panic_write)) {
++			mtd->_panic_write = spi_nor_panic_write;
++		}
++	}
+ 	mtd->_suspend = spi_nor_suspend;
+ 	mtd->_resume = spi_nor_resume;
+ 	mtd->_get_device = spi_nor_get_device;
 -- 
 2.47.3
 
