@@ -4,60 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79855CCA464
-	for <linux-mtd@archiver.kernel.org>; Fri, 16 Oct 2026 10:39:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0211DCC6B38
+	for <linux-mtd@archiver.kernel.org>; Fri, 16 Oct 2026 10:39:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Reply-To:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:References:
-	In-Reply-To:Cc:To:Subject:From:Message-ID:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=acExF0PIDoMqt55m6ubaU/szTxE27cIbOeixxHCKKE8=; b=tjmOUZrlVx6XTz
-	LLsX4lbjJNqpUWPYZECTK2QHICS55GOwvMXLKIWlA1XmETz943pxWc56MposR7s50yuJhDB1E/VGD
-	i0jjtRq8Ysx0twlpYk7cOvvJt7FSTzzPzlAGPtr+kaRQ2u1kqXeWXR5BkuVExUs0raMUiC17qvPm/
-	ImZrquM7OtrOPlm3UBSF+MvNQmy4CI5pmh1ISlJ/NPmjHKD1+sSHZHL7HWohP4Sh4HSCxKLg8GLiN
-	40AIMhdkpzmUFHIGV0rH1FPu+bXz+sHNGQwpG3zG7DZ6JvW9/+/+cmqzaj3VPBqX4pWUABnXExHHu
-	TzAYg++LjNswVs/F4YtA==;
+	List-Owner; bh=ncmR1vkuTmbCO3bQvhgXfLplP8fHz7fLOycYQspBn60=; b=SukFbDjQqBnMj0
+	OsDTybli2qc9ndd57FAmMKmTY23XkwYaXW6yE9urpHouRJTePZhYwXahdZewz2u0pSxHYlqN4+IEW
+	bkNqFwd03LXt4CR9bDBcTklKHW0vcz6uXxhaGHSCJIAyJqdK3YHdOLS8u5htHVpf5rvD6aeKOoKkl
+	eXCxqpC6qPU5aPwNgz5mgGii5H3lN/XJcnVR05sfK8LYKHQTzyiITsrON9+ToJaZPX90LcPr2k4BD
+	HtW4WiaeVR18dLLm1LUjbnS1kA3JDaDjhCmFXXyQrL60620v8wyCr2FTL41qBaPX8QXra+abxmohW
+	hZ0UcCzUQPKolwOoV7hw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xHfLq-00000002flT-0WqC;
-	Fri, 16 Oct 2026 10:39:50 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1xHfLu-00000002fpB-12lm;
+	Fri, 16 Oct 2026 10:39:54 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xHfLo-00000002fjQ-1dMO
-	for linux-mtd@lists.infradead.org;
-	Fri, 16 Oct 2026 10:39:48 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id BEEB1439ED;
-	Fri, 16 Oct 2026 10:39:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDF261F000C4;
-	Fri, 16 Oct 2026 10:39:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792147187;
-	bh=1zDWfx3/qT7inXKrDL/dj6g+9A/hBWZepBY65K3FFIE=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=D7927W+fTiYlqY5W0qi+6R7HIRfaUkpwakPhBrZohZsJNF5rHA1ch+Sls7+8blPtG
-	 dJhn0pFJ1jKeznf+WJ0+Mm+PrL7xyxzISLKb8dopzl9PP4kIpe+Q4zCnSgTKKUNho2
-	 WwVogwLIQ1QDPZ/TyOBJ+FWHSDLxU0/MrnUsE7522cxnztoAjLAWArvVDtG8Kcb78z
-	 m/e9569Ju2aLv27ssy7yAZB/kqGUdCXK9K+eR/t6ifx4FEQpnh3IDG2Ert/4w3jawO
-	 6aoMzWufxz7CkHyvPaVNK97LeS5FVQsD35nr6VZHKUtXZPbxTW9Pgcta/Cb0rP4AAb
-	 cQCxbNMDAZ8zw==
-Message-ID: <sashiko-outbox-174189@kernel.org>
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH v4 7/7] spi: dt-bindings: cadence: Make XSPI's IRQ line
- optional
-To: "Paul Cercueil" <paul.cercueil@bootlin.com>, "Pratyush Yadav" <pratyush@kernel.org>, "Michael
- Walle" <mwalle@kernel.org>, "Takahiro Kuwano" <takahiro.kuwano@infineon.com>, "Miquel
- Raynal" <miquel.raynal@bootlin.com>, "Richard Weinberger" <richard@nod.at>, "Vignesh
- Raghavendra" <vigneshr@ti.com>, "Mark Brown" <broonie@kernel.org>
-Cc: "Kees Cook" <kees@kernel.org>, "Tony Luck" <tony.luck@intel.com>, "Guilherme
- G . Piccoli" <gpiccoli@igalia.com>, "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>, linux-mtd@lists.infradead.org, "Bharat
- Bhushan" <bbhushan2@marvell.com>, "Sunil Kovvuri Goutham" <sgoutham@marvell.com>, "Tanmay
- Jagdale" <tanmay@marvell.com>
-In-Reply-To: <20261016102917.171095-8-paul.cercueil@bootlin.com>
-References: <20261016102917.171095-1-paul.cercueil@bootlin.com>
- <20261016102917.171095-8-paul.cercueil@bootlin.com>
-Date: Fri, 16 Oct 2026 10:39:46 +0000
+	id 1xHfLs-00000002fnB-3Ydt;
+	Fri, 16 Oct 2026 10:39:52 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Content-Type:Content-Transfer-Encoding
+	:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=P5UW99AdAblencJA0A7nA9EDvREaKw1y8bvfSkP1Gak=; b=ixYJCcdypgj+imPJEdckfdA+Cy
+	7jyFKY4TFZxt2SIA7v1DKGPvZTBdQZleaSpSMAERR5yGg5Al3IW8d01+pEKXK3xdqNyKgLwQKWKMc
+	o6w/v8J1PxLhpPzxxvLMCbiVWMqPN7xy1pZrmQ2mNZT7toPk8K25xUUGKlXdVT3zSVCux8JNy0Vau
+	4vr6IbgPfuYjHMjHqI1Zj5h+YHmXKpIYSE1y6wmgapE/XlPW+NB2mTm7ZN/zz4ZvXBnz3FRYInVnJ
+	0FU9w2mz0SsJCy4euay1Knbz0n3oZPA8Yr7315PMgKVaivBB4j51EW5gtIt0Da0K1pm+2BOhjiFS+
+	q5E4gwIg==;
+Received: from esa.microchip.iphmx.com ([68.232.154.123])
+	by desiato.infradead.org with esmtps (Exim 4.99.5 #2 (Red Hat Linux))
+	id 1xHfLm-00000001OXD-1bTp;
+	Fri, 16 Oct 2026 10:39:49 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1792147186; x=1823683186;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=3bSl38s2tLJhFhy4c9tcLyogA1lm/am8kcN0iqZqXfg=;
+  b=I8IKaJ6xrmgh69ax5nbEeB8Ic/1r9XnoOfyZjTtl59pKhl/Hw0oU/DCd
+   I2BqxjQBuHP9Iyi0w4DSDjOS4hSrNXoiABGLIHvd9ESjEE/SrBBBa+03N
+   Yh15ijTYzRsAOrG5lPeTSLfVxulmh6OaB/aJ1SIFZJzAHHc/kpKA3vaQe
+   9MWKc7B9WW8vD1R7K2JIhgH45NRecM+6uq6IzQdp8SEAQDgQhgUbb0hHz
+   LX/8Zc+9eJ67MKtCTYfk8ejt9VqOZ2J7LZ5AbcKHsTaYpl1vlTf3o5jpP
+   NI/8wftjm9hvfHOwUprxrszybBrvHG3yDCqL7715uL+4uOatwj3wXYu8u
+   Q==;
+X-CSE-ConnectionGUID: jt9LUq0IQU6C/gWLMZTNVw==
+X-CSE-MsgGUID: 2fnhyIBQRKedujo60nsjtw==
+X-IronPort-AV: E=Sophos;i="6.27,161,1787036400"; 
+   d="scan'208";a="64191111"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 16 Oct 2026 03:39:45 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.58; Fri, 16 Oct 2026 03:39:45 -0700
+Received: from che-ll-i67131.microchip.com (10.10.85.11) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.2507.58 via Frontend Transport; Fri, 16 Oct 2026 03:39:36 -0700
+From: Manikandan Muralidharan <manikandan.m@microchip.com>
+To: <pratyush@kernel.org>, <mwalle@kernel.org>,
+	<takahiro.kuwano@infineon.com>, <miquel.raynal@bootlin.com>,
+	<richard@nod.at>, <vigneshr@ti.com>, <robh@kernel.org>, <krzk+dt@kernel.org>,
+	<conor+dt@kernel.org>, <srini@kernel.org>, <nicolas.ferre@microchip.com>,
+	<alexandre.belloni@bootlin.com>, <claudiu.beznea@tuxon.dev>,
+	<linux@armlinux.org.uk>, <richardcochran@gmail.com>, <linusw@kernel.org>,
+	<arnd@arndb.de>, <pengpeng@iscas.ac.cn>, <gregkh@linuxfoundation.org>,
+	<mathieu.dubois-briand@bootlin.com>, <michael@walle.cc>,
+	<linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<netdev@vger.kernel.org>
+CC: <manikandan.m@microchip.com>
+Subject: [PATCH v9 5/8] nvmem: layouts: add Microchip/SST SFDP EUI layout driver
+Date: Fri, 16 Oct 2026 16:08:33 +0530
+Message-ID: <9d578cf2d4ded92eb0b78a5e131e86fa19022b34.1792145382.git.manikandan.m@microchip.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <cover.1792145382.git.manikandan.m@microchip.com>
+References: <cover.1792145382.git.manikandan.m@microchip.com>
+MIME-Version: 1.0
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20261016_113946_963353_AEC06207 
+X-CRM114-Status: GOOD (  26.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,54 +101,266 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: sashiko-reviews@lists.linux.dev
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-VGhhbmsgeW91IGZvciB5b3VyIGNvbnRyaWJ1dGlvbiEgU2FzaGlrbyBBSSByZXZpZXcgZm91bmQg
-MSBwb3RlbnRpYWwgaXNzdWUocykgdG8gY29uc2lkZXI6Ci0gW0hpZ2hdIHNwaTogY2FkZW5jZS14
-c3BpOiBwb2xsaW5nIG1vZGUgc2lsZW50bHkgaWdub3JlcyBTRE1BIGVycm9ycwotLQoKY29tbWl0
-IDQ1N2Y2NDg5N2M1M2Y3ZTk5ZDRmYTczOTJkYmJlYzYzMjkxYTlhOTcKQXV0aG9yOiBUYW5tYXkg
-SmFnZGFsZSA8dGFubWF5QG1hcnZlbGwuY29tPgoKc3BpOiBkdC1iaW5kaW5nczogY2FkZW5jZTog
-TWFrZSBYU1BJJ3MgSVJRIGxpbmUgb3B0aW9uYWwKClRoaXMgY29tbWl0IG1vZGlmaWVzIHRoZSBD
-YWRlbmNlIFhTUEkgZGV2aWNlIHRyZWUgYmluZGluZ3MgdG8gbWFrZSB0aGUKaW50ZXJydXB0cyBw
-cm9wZXJ0eSBvcHRpb25hbC4gSXQgaW5kaWNhdGVzIHRoYXQgdGhlIHNwaS1jYWRlbmNlLXhzcGkK
-ZHJpdmVyIGZ1bmN0aW9ucyBpbiBwb2xsaW5nIG1vZGUgd2hlbiBhbiBJUlEgaXMgbm90IHByb3Zp
-ZGVkLgoKPiBzcGk6IGR0LWJpbmRpbmdzOiBjYWRlbmNlOiBNYWtlIFhTUEkncyBJUlEgbGluZSBv
-cHRpb25hbAo+ICAgICAKPiBUaGUgc3BpLWNhZGVuY2UteHNwaSBkcml2ZXIgd2lsbCBoYXBwaWx5
-IHdvcmsgd2l0aG91dCBhbiBJUlEgbGluZQo+IHJlZ2lzdGVyZWQsIHdoaWNoIG1lYW5zIHRoYXQg
-dGhpcyBJUlEgbGluZSBpcyBvcHRpb25hbC4KCltTZXZlcml0eTogSGlnaF0KRG9lcyB0aGUgZHJp
-dmVyIGFjdHVhbGx5IHdvcmsgY29ycmVjdGx5IHdpdGhvdXQgYW4gSVJRIGxpbmU/CgpMb29raW5n
-IGF0IGNkbnNfeHNwaV9pc19zZG1hX3JlYWR5KCkgaW4gZHJpdmVycy9zcGkvc3BpLWNhZGVuY2Ut
-eHNwaS5jLAp0aGUgcG9sbGluZyBsb29wIGNoZWNrcyBmb3IgdGhlIHRyaWdnZXIgYml0IGJ1dCBm
-YWlscyB0byBjaGVjayBvciBjbGVhciB0aGUKU0RNQSBlcnJvciBiaXQ6Cgpkcml2ZXJzL3NwaS9z
-cGktY2FkZW5jZS14c3BpLmM6Y2Ruc194c3BpX2lzX3NkbWFfcmVhZHkoKSB7Ci4uLgoJaWYgKGNk
-bnNfcmVhZGxfcG9sbChjZG5zX3hzcGktPmlvYmFzZSArIENETlNfWFNQSV9JTlRSX1NUQVRVU19S
-RUcsCgkJCSAgICBjdHJsX3N0YXQsIChjdHJsX3N0YXQgJiBDRE5TX1hTUElfU0RNQV9UUklHR0VS
-KSwKCQkJICAgIE1SVkxfWFNQSV9QT0xMX0RFTEFZX1VTLCBNUlZMX1hTUElfUE9MTF9USU1FT1VU
-X1VTLAoJCQkgICAgc2xlZXApKSB7CgkJcmV0dXJuIGZhbHNlOwoJfQouLi4KfQoKSWYgYSBoYXJk
-d2FyZSBTRE1BIHRyYW5zYWN0aW9uIGVycm9yIG9jY3VycyB3aGlsZSB0aGUgZGV2aWNlIGlzIGlu
-IHBvbGxpbmcKbW9kZSwgdGhlIGVycm9yIGlzIGlnbm9yZWQuIFRoaXMgY291bGQgY2F1c2UgdGhl
-IGRyaXZlciB0byBibGluZGx5IHByb2NlZWQKb3IgdW5uZWNlc3NhcmlseSB0aW1lIG91dCwgcG90
-ZW50aWFsbHkgcmVzdWx0aW5nIGluIHNpbGVudCBkYXRhIGNvcnJ1cHRpb24KZHVyaW5nIGZsYXNo
-IEkvTy4KClNob3VsZCB0aGUgcG9sbGluZyBsb2dpYyBoYW5kbGUgQ0ROU19YU1BJX1NETUFfRVJS
-T1IgYmVmb3JlIG1ha2luZyB0aGUKaW50ZXJydXB0cyBwcm9wZXJ0eSBvcHRpb25hbD8KCj4gICAg
-IAo+IFNpZ25lZC1vZmYtYnk6IFRhbm1heSBKYWdkYWxlIDx0YW5tYXlAbWFydmVsbC5jb20+Cj4g
-Q28tZGV2ZWxvcGVkLWJ5OiBQYXVsIENlcmN1ZWlsIDxwYXVsLmNlcmN1ZWlsQGJvb3RsaW4uY29t
-Pgo+IFNpZ25lZC1vZmYtYnk6IFBhdWwgQ2VyY3VlaWwgPHBhdWwuY2VyY3VlaWxAYm9vdGxpbi5j
-b20+Cj4gCj4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9z
-cGkvY2Rucyx4c3BpLnlhbWwgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc3Bp
-L2NkbnMseHNwaS55YW1sCj4gaW5kZXggMzhhNTc5NTU4OWRlMi4uZGQ4ZDAzYzA3ZTY4OCAxMDA2
-NDQKPiAtLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc3BpL2NkbnMseHNw
-aS55YW1sCj4gKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NwaS9jZG5z
-LHhzcGkueWFtbAo+IEBAIC00Myw3ICs0Myw2IEBAIHByb3BlcnRpZXM6Cj4gIHJlcXVpcmVkOgo+
-ICAgIC0gY29tcGF0aWJsZQo+ICAgIC0gcmVnCj4gLSAgLSBpbnRlcnJ1cHRzCj4gIAo+ICBhbGxP
-ZjoKPiAgICAtICRyZWY6IHNwaS1jb250cm9sbGVyLnlhbWwjCgotLSAKU2FzaGlrbyBBSSByZXZp
-ZXcgwrcgaHR0cHM6Ly9zYXNoaWtvLmRldi8jL3BhdGNoc2V0LzIwMjYxMDE2MTAyOTE3LjE3MTA5
-NS0xLXBhdWwuY2VyY3VlaWxAYm9vdGxpbi5jb20/cGFydD03CgpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24g
-bWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8v
-bGludXgtbXRkLwo=
+Add an NVMEM layout that exposes the factory-programmed EUI-48 identifier
+from the Microchip/SST vendor SFDP parameter table (e.g. SST26VF064BEUI)
+as a "mac-address" cell, for use as a network MAC address. The vendor
+table is located at runtime via the SFDP NVMEM device (no offset in DT),
+and a read_post_process callback reverses the LSB-first bytes into
+canonical MAC order. Binds to an "nvmem-layout" node with compatible
+"microchip,sst26vf-sfdp-eui".
+
+Signed-off-by: Manikandan Muralidharan <manikandan.m@microchip.com>
+---
+ MAINTAINERS                              |   6 +
+ drivers/nvmem/layouts/Kconfig            |  10 ++
+ drivers/nvmem/layouts/Makefile           |   1 +
+ drivers/nvmem/layouts/sst26vf-sfdp-eui.c | 181 +++++++++++++++++++++++
+ 4 files changed, 198 insertions(+)
+ create mode 100644 drivers/nvmem/layouts/sst26vf-sfdp-eui.c
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 5d39ec6feb03..dfd57043e8cc 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -17999,6 +17999,12 @@ F:	Documentation/devicetree/bindings/sound/atmel,at91-ssc.yaml
+ F:	drivers/misc/atmel-ssc.c
+ F:	include/linux/atmel-ssc.h
+ 
++MICROCHIP SST SFDP EUI NVMEM LAYOUT DRIVER
++M:	Manikandan Muralidharan <manikandan.m@microchip.com>
++S:	Maintained
++F:	Documentation/devicetree/bindings/nvmem/layouts/microchip,sst26vf-sfdp-eui.yaml
++F:	drivers/nvmem/layouts/sst26vf-sfdp-eui.c
++
+ Microchip Timer Counter Block (TCB) Capture Driver
+ M:	Kamel Bouhara <kamel.bouhara@bootlin.com>
+ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+diff --git a/drivers/nvmem/layouts/Kconfig b/drivers/nvmem/layouts/Kconfig
+index 5e586dfebe47..855c7db530da 100644
+--- a/drivers/nvmem/layouts/Kconfig
++++ b/drivers/nvmem/layouts/Kconfig
+@@ -26,6 +26,16 @@ config NVMEM_LAYOUT_ONIE_TLV
+ 
+ 	  If unsure, say N.
+ 
++config NVMEM_LAYOUT_SST26VF_SFDP_EUI
++	tristate "Microchip/SST SFDP EUI-48 layout support"
++	help
++	  Say Y here if you want to expose the factory-programmed EUI-48
++	  identifier stored in the Microchip/SST vendor-specific SFDP parameter
++	  table (e.g. SST26VF064BEUI) as NVMEM cells, so that network drivers
++	  can use them as a MAC address.
++
++	  If unsure, say N.
++
+ config NVMEM_LAYOUT_U_BOOT_ENV
+ 	tristate "U-Boot environment variables layout"
+ 	select CRC32
+diff --git a/drivers/nvmem/layouts/Makefile b/drivers/nvmem/layouts/Makefile
+index dd6c6c70b1a9..3f5e01e40448 100644
+--- a/drivers/nvmem/layouts/Makefile
++++ b/drivers/nvmem/layouts/Makefile
+@@ -7,3 +7,4 @@ obj-$(CONFIG_NVMEM_LAYOUTS) += fixed-layout.o
+ obj-$(CONFIG_NVMEM_LAYOUT_SL28_VPD) += sl28vpd.o
+ obj-$(CONFIG_NVMEM_LAYOUT_ONIE_TLV) += onie-tlv.o
+ obj-$(CONFIG_NVMEM_LAYOUT_U_BOOT_ENV) += u-boot-env.o
++obj-$(CONFIG_NVMEM_LAYOUT_SST26VF_SFDP_EUI) += sst26vf-sfdp-eui.o
+diff --git a/drivers/nvmem/layouts/sst26vf-sfdp-eui.c b/drivers/nvmem/layouts/sst26vf-sfdp-eui.c
+new file mode 100644
+index 000000000000..f46a6d9d0e93
+--- /dev/null
++++ b/drivers/nvmem/layouts/sst26vf-sfdp-eui.c
+@@ -0,0 +1,181 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * NVMEM layout for the factory-programmed EUI-48 identifier stored in the
++ * Microchip/SST vendor-specific SFDP parameter table (e.g. SST26VF064BEUI).
++ *
++ * The whole SFDP is exposed as a read-only NVMEM device by the SPI NOR core.
++ * This layout locates the Microchip vendor parameter table at runtime and
++ * registers the EUI-48 address as an NVMEM cell, so that a network driver can
++ * consume it as a MAC address. No offset is hardcoded in the device tree.
++ *
++ * Copyright (C) 2026 Microchip Technology Inc. and its subsidiaries
++ *
++ * Author: Manikandan Muralidharan <manikandan.m@microchip.com>
++ */
++
++#include <linux/etherdevice.h>
++#include <linux/minmax.h>
++#include <linux/nvmem-consumer.h>
++#include <linux/nvmem-provider.h>
++#include <linux/of.h>
++#include <linux/unaligned.h>
++#include <uapi/linux/if_ether.h>
++
++/* SFDP header and parameter header, as laid out on the flash. */
++struct sfdp_header {
++	u8 signature[4];
++	u8 minor;
++	u8 major;
++	u8 nph;
++	u8 unused;
++};
++
++struct sfdp_parameter_header {
++	u8 id_lsb;
++	u8 minor;
++	u8 major;
++	u8 length;
++	u8 parameter_table_pointer[3];
++	u8 id_msb;
++};
++
++#define SFDP_SIGNATURE			0x50444653U
++
++#define SFDP_PARAM_HEADER_ID(h)		(((h)->id_msb << 8) | (h)->id_lsb)
++#define SFDP_PARAM_HEADER_PTP(h)	get_unaligned_le24((h)->parameter_table_pointer)
++
++#define SFDP_MCHP_VENDOR_ID		0x01bf
++
++#define SFDP_MCHP_EUI48_MARKER_OFFSET	0x60
++#define SFDP_MCHP_EUI48_MARKER		0x30
++#define SFDP_MCHP_EUI48_OFFSET		0x61
++
++static int sfdp_eui_read_post_process(void *priv, const char *id, int index,
++				      unsigned int offset, void *buf,
++				      size_t bytes)
++{
++	u8 *data = buf;
++	int i;
++
++	if (bytes != ETH_ALEN)
++		return -EINVAL;
++
++	/* SFDP stores the address least-significant octet first; reverse it. */
++	for (i = 0; i < bytes / 2; i++)
++		swap(data[i], data[bytes - 1 - i]);
++
++	if (!is_valid_ether_addr(buf))
++		return -EINVAL;
++
++	return 0;
++}
++
++static int sfdp_eui_find_vendor_table(struct nvmem_device *nvmem, u32 *ptp)
++{
++	struct sfdp_parameter_header ph;
++	struct sfdp_header hdr;
++	int nph, i, ret;
++
++	ret = nvmem_device_read(nvmem, 0, sizeof(hdr), &hdr);
++	if (ret < 0)
++		return ret;
++
++	if (get_unaligned_le32(hdr.signature) != SFDP_SIGNATURE)
++		return -EINVAL;
++
++	nph = hdr.nph + 1;
++
++	for (i = 0; i < nph; i++) {
++		ret = nvmem_device_read(nvmem, sizeof(hdr) + i * sizeof(ph),
++					sizeof(ph), &ph);
++		if (ret < 0)
++			return ret;
++
++		if (SFDP_PARAM_HEADER_ID(&ph) != SFDP_MCHP_VENDOR_ID)
++			continue;
++
++		*ptp = SFDP_PARAM_HEADER_PTP(&ph);
++		return 0;
++	}
++
++	return -ENOENT;
++}
++
++static int sfdp_eui_add_cells(struct nvmem_layout *layout)
++{
++	struct nvmem_device *nvmem = layout->nvmem;
++	struct device *dev = &layout->dev;
++	struct nvmem_cell_info info = { };
++	struct device_node *layout_np;
++	u32 base = 0;
++	u8 marker;
++	int ret;
++
++	ret = sfdp_eui_find_vendor_table(nvmem, &base);
++	if (ret == -ENOENT) {
++		dev_dbg(dev, "no Microchip SFDP vendor table found\n");
++		return 0;
++	}
++	if (ret)
++		return ret;
++
++	/* The EUI-48 is present only if its marker byte is programmed. */
++	ret = nvmem_device_read(nvmem, base + SFDP_MCHP_EUI48_MARKER_OFFSET,
++				1, &marker);
++	if (ret < 0)
++		return ret;
++	if (marker != SFDP_MCHP_EUI48_MARKER) {
++		dev_dbg(dev, "EUI-48 not programmed (marker 0x%02x)\n", marker);
++		return 0;
++	}
++
++	layout_np = of_nvmem_layout_get_container(nvmem);
++	if (!layout_np)
++		return -ENOENT;
++
++	info.name = "mac-address";
++	info.offset = base + SFDP_MCHP_EUI48_OFFSET;
++	info.bytes = ETH_ALEN;
++	info.np = of_get_child_by_name(layout_np, "mac-address");
++	info.read_post_process = sfdp_eui_read_post_process;
++
++	ret = nvmem_add_one_cell(nvmem, &info);
++	if (ret)
++		of_node_put(info.np);
++
++	of_node_put(layout_np);
++
++	return ret;
++}
++
++static int sfdp_eui_probe(struct nvmem_layout *layout)
++{
++	layout->add_cells = sfdp_eui_add_cells;
++
++	return nvmem_layout_register(layout);
++}
++
++static void sfdp_eui_remove(struct nvmem_layout *layout)
++{
++	nvmem_layout_unregister(layout);
++}
++
++static const struct of_device_id sfdp_eui_of_match_table[] = {
++	{ .compatible = "microchip,sst26vf-sfdp-eui" },
++	{}
++};
++MODULE_DEVICE_TABLE(of, sfdp_eui_of_match_table);
++
++static struct nvmem_layout_driver sfdp_eui_layout = {
++	.driver = {
++		.name = "microchip-sst26vf-sfdp-eui-layout",
++		.of_match_table = sfdp_eui_of_match_table,
++	},
++	.probe = sfdp_eui_probe,
++	.remove = sfdp_eui_remove,
++};
++module_nvmem_layout_driver(sfdp_eui_layout);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Manikandan Muralidharan <manikandan.m@microchip.com>");
++MODULE_DESCRIPTION("NVMEM layout for the EUI-48 in the Microchip/SST SFDP vendor table");
+-- 
+2.43.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
