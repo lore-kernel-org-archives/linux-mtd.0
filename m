@@ -4,48 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C90BCCA46C
-	for <linux-mtd@archiver.kernel.org>; Sat, 17 Oct 2026 02:21:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1206CC6B2A
+	for <linux-mtd@archiver.kernel.org>; Sat, 17 Oct 2026 04:16:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=AtIReeu26h3XUsA241+eIL14zXyrg7/dsN53w8NVFpE=; b=U0BpwWvT49wguD
-	VOevl3MJtiPR3Dx2vQNeSXegyadJZ9oKWRKfkj4T4LvzTPk443oZj7B4DDudFULcLCEIw4dFjdDft
-	MuF4+a5pTq7t74hVNe29SldXNZMmXHO4KgA5fS4Wq7oT72ThctADX+hWM4zeZAJ5KI1U7O/pRRV8D
-	kL+PmtV9FupiwOwxJONjXiGMPjFNkKryhEAqQdC4CnuAKQYLJwJ5i0fQ5j9cG+haRiv88DVEiaKwP
-	CAAE4YoyidhIQhJF/HZapUlVgPTqB8KoPPj9pgYfDlHfGP8lQ2evVUxE4A4pUbNYCMKe4o4Akh/ZH
-	QU60nv8hlntyKdOailxQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=3rUquouccsWNGTExI34sNwpCWCFlteiRQZj8ZClCo74=; b=Yh8tl81jLhm4v6TKwmK9HMXfyu
+	6n36JcMV26PIyUwEcZH+UCSX/VFXtyTnw4yQnfHjrkn4+H/+f/Er+VH8D85tHb7TsBdiuO56E+HIe
+	2fKZMqN8miasLmAgHeloD1/yWIbsDF2tB6W7sQcYsakLENNmpmDpjGFtOjGY6DDVqv/Vn/yr/4YeD
+	zKa1zAXECMSfrlCfC5wkdvEI1Yz0jf9CmB8Q/CcMCi+721xmzKpoOevqXtPqd/LpW304NA9xgoSjd
+	uLSHPNKKJLdTzL1MWO2M0ZVezFxjp/dZfI80lO1TGE0h4tkmuETG45UbbSpcQ/PpPkfyzeZhoYr82
+	ZUXAYUGw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xHu36-00000004L3Q-13bt;
-	Sat, 17 Oct 2026 02:21:28 +0000
-Received: from outgoing2021.csail.mit.edu ([128.30.2.78])
+	id 1xHvqJ-00000004PII-0THA;
+	Sat, 17 Oct 2026 04:16:23 +0000
+Received: from canpmsgout01.his.huawei.com ([113.46.200.216])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xHu34-00000004L2d-0JW6
+	id 1xHvqF-00000004PHZ-1kaq
 	for linux-mtd@lists.infradead.org;
-	Sat, 17 Oct 2026 02:21:27 +0000
-Received: from escalante.csail.mit.edu ([128.52.128.198])
-	by outgoing2021.csail.mit.edu with esmtp (Exim 4.95)
-	(envelope-from <nickolai@csail.mit.edu>)
-	id 1xHu2u-00HRgx-OL;
-	Fri, 16 Oct 2026 22:21:16 -0400
-From: Nickolai Zeldovich <nickolai@csail.mit.edu>
-To: Richard Weinberger <richard@nod.at>
-Cc: Zhihao Cheng <chengzhihao1@huawei.com>,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Nickolai Zeldovich <nickolai@csail.mit.edu>
-Subject: [PATCH v1] ubifs: drop the obsolete ULONG_MAX assertion on the wbuf timer delta
-Date: Fri, 16 Oct 2026 22:21:16 -0400
-Message-ID: <20261017022116.792684-1-nickolai@csail.mit.edu>
-X-Mailer: git-send-email 2.53.0
+	Sat, 17 Oct 2026 04:16:22 +0000
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=yxSekVbdDs2YvZ76Mclc6ifIjoTHZncOhp1pXXoY3iM=;
+	b=OnnppQpLZbeAgwTvE9Vy4oAF5aT6ep6AXpV035z+CNoGzDq9++jF7rIlil1y3iuhzvII0hqOp
+	E5d9IvjDKfTHcZWRYOIwwNg/EffOOdbqJpHOtgHZXOrgE/4ATfyvkhnogofOtkU1235vgRptLBR
+	eLFvHiLnw7L+YKauA+416Mw=
+Received: from mail.maildlp.com (unknown [172.19.162.197])
+	by canpmsgout01.his.huawei.com (SkyGuard) with ESMTPS id 4j67ld6TdFz1T4LX;
+	Sat, 17 Oct 2026 12:15:57 +0800 (CST)
+Received: from whupemo200011.china.huawei.com (unknown [7.152.185.179])
+	by mail.maildlp.com (Postfix) with ESMTPS id D937440579;
+	Sat, 17 Oct 2026 12:15:59 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ whupemo200011.china.huawei.com (7.152.185.179) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.45; Sat, 17 Oct 2026 12:15:58 +0800
+Subject: Re: [PATCH v1] ubifs: drop the obsolete ULONG_MAX assertion on the
+ wbuf timer delta
+To: Nickolai Zeldovich <nickolai@csail.mit.edu>, Richard Weinberger
+	<richard@nod.at>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+References: <20261017022116.792684-1-nickolai@csail.mit.edu>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <9c7ffefb-a180-4220-4f09-1fc267b090fd@huawei.com>
+Date: Sat, 17 Oct 2026 12:15:57 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
+In-Reply-To: <20261017022116.792684-1-nickolai@csail.mit.edu>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: kwepems100001.china.huawei.com (7.221.188.238) To
+ whupemo200011.china.huawei.com (7.152.185.179)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261016_192126_120465_1F105EA3 
-X-CRM114-Status: GOOD (  16.45  )
+X-CRM114-CacheID: sfid-20261016_211620_117746_657EAB9A 
+X-CRM114-Status: GOOD (  28.75  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -57,105 +74,92 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="gbk"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On a 32-bit kernel, once root sets vm.dirty_writeback_centisecs to 4295
-or more (43 s; raised on flash-based systems to reduce wear), the next
-journal write of every mounted UBIFS file system fails its write-buffer
-timer assertion and, with the default assert=read-only, switches the file
-system to read-only mode:
-
-  UBIFS error (ubi0:0 pid 1): ubifs_assert_failed: UBIFS assert failed: delta <= ULONG_MAX, in fs/ubifs/io.c:516
-  UBIFS warning (ubi0:0 pid 1): ubifs_ro_mode.part.0: switched to read-only mode, error -22
-
-The create, write, unlink or fsync that started the timer returns EROFS
-and so does every later one until the file system is remounted; with
-assert=panic the machine crashes instead. 64-bit kernels are not
-affected. The assertion has been reachable since v4.10, when the timer
-started to follow the sysctl.
-
-new_wbuf_timer_nolock() computes the timer slack as
-
-	delta = dirty_writeback_interval * 10^6 ns
-
-in an unsigned long long and asserts delta <= ULONG_MAX. On 32-bit
-ULONG_MAX is 4294967295, exceeded from 4295 centiseconds on. The check
-dates from commit 2a35a3a8ab3e ("UBIFS: set write-buffer timout to 3-5
-seconds"), when hrtimer_start_range_ns() took the slack as an unsigned
-long and the value was a compile-time constant that could only be checked
-against truncation. Commit da8b44d5a9f8 ("timer: convert timer_slack_ns
-from unsigned long to u64") widened the parameter to u64, so nothing is
-truncated any more, and commit 1b7fc2c0069f ("ubifs: Use
-dirty_writeback_interval value for wbuf timer") then derived the value
-from the sysctl, which has no upper bound. The assertion no longer guards
-anything and fails on a legitimate setting.
-
-Remove it. The timer is started with the full 64-bit slack exactly as
-before.
-
-Tested on a riscv32 QEMU kernel with UBIFS on an mtdram-backed UBI
-volume: after "vm.dirty_writeback_centisecs = 4295" the first
-open(O_CREAT) fails with EROFS and the assertion is logged; with this
-patch the open and fsync succeed and the log is clean. 4294 works on
-both.
-
-Found while reviewing the users of dirty_writeback_interval for the
-formal verification of the periodic writeback code.
-
-Fixes: 1b7fc2c0069f ("ubifs: Use dirty_writeback_interval value for wbuf timer")
-Assisted-by: LLM
-Signed-off-by: Nickolai Zeldovich <nickolai@csail.mit.edu>
----
-
-Notes:
-    The write-buffer timer start is the only user of the value in fs/ubifs; the
-    softlimit next to it, ms_to_ktime(dirty_writeback_interval * 10), is a 32-bit
-    product on all architectures and wraps above 429496729 centiseconds (49.7 days),
-    the same wrap that fs/fs-writeback.c has at its two msecs_to_jiffies() sites;
-    that is a separate issue of the sysctl's range, not touched here.
-    
-    Reproducer (32-bit kernel, any UBIFS mount, root):
-    
-      sysctl -w vm.dirty_writeback_centisecs=4295
-      touch /mnt/ubifs/f
-    
-    Before: touch fails with EROFS; the log shows "UBIFS assert failed: delta <=
-    ULONG_MAX, in fs/ubifs/io.c:516" and "switched to read-only mode, error -22";
-    every later write to the file system fails with EROFS until it is remounted.
-    After: touch succeeds, nothing is logged. 4294 works on both; a 64-bit kernel
-    never trips the assertion.
-    
-    Run here as a freestanding init on qemu-system-riscv32 (-M virt,
-    CONFIG_MTD_MTDRAM=y with a 16 MiB device and 128 KiB erase blocks,
-    CONFIG_MTD_UBI=y, CONFIG_UBIFS_FS=y, "ubi.mtd=0" on the command line): the init
-    creates a 4 MiB dynamic UBI volume with UBI_IOCMKVOL, mounts "ubi0:v" (UBIFS
-    formats the empty volume), creates /mnt/a at 4294 (ok, fsync ok), sets 4295 and
-    creates /mnt/b: open returns -30 unpatched, 0 patched.
-
- fs/ubifs/io.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/fs/ubifs/io.c b/fs/ubifs/io.c
-index 6c6d68242779..da4eb0a82e62 100644
---- a/fs/ubifs/io.c
-+++ b/fs/ubifs/io.c
-@@ -513,7 +513,6 @@ static void new_wbuf_timer_nolock(struct ubifs_info *c, struct ubifs_wbuf *wbuf)
- 	delta *= 10ULL * NSEC_PER_MSEC / 10ULL;
- 
- 	ubifs_assert(c, !hrtimer_active(&wbuf->timer));
--	ubifs_assert(c, delta <= ULONG_MAX);
- 
- 	if (wbuf->no_timer)
- 		return;
-
-base-commit: 70dd4ee72eb2d5793c62e71c14e3aba78e5a4e56
--- 
-2.53.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+1NogMjAyNi8xMC8xNyAxMDoyMSwgTmlja29sYWkgWmVsZG92aWNoINC0tcA6Cj4gT24gYSAzMi1i
+aXQga2VybmVsLCBvbmNlIHJvb3Qgc2V0cyB2bS5kaXJ0eV93cml0ZWJhY2tfY2VudGlzZWNzIHRv
+IDQyOTUKPiBvciBtb3JlICg0MyBzOyByYWlzZWQgb24gZmxhc2gtYmFzZWQgc3lzdGVtcyB0byBy
+ZWR1Y2Ugd2VhciksIHRoZSBuZXh0Cj4gam91cm5hbCB3cml0ZSBvZiBldmVyeSBtb3VudGVkIFVC
+SUZTIGZpbGUgc3lzdGVtIGZhaWxzIGl0cyB3cml0ZS1idWZmZXIKPiB0aW1lciBhc3NlcnRpb24g
+YW5kLCB3aXRoIHRoZSBkZWZhdWx0IGFzc2VydD1yZWFkLW9ubHksIHN3aXRjaGVzIHRoZSBmaWxl
+Cj4gc3lzdGVtIHRvIHJlYWQtb25seSBtb2RlOgo+IAo+ICAgIFVCSUZTIGVycm9yICh1YmkwOjAg
+cGlkIDEpOiB1Ymlmc19hc3NlcnRfZmFpbGVkOiBVQklGUyBhc3NlcnQgZmFpbGVkOiBkZWx0YSA8
+PSBVTE9OR19NQVgsIGluIGZzL3ViaWZzL2lvLmM6NTE2Cj4gICAgVUJJRlMgd2FybmluZyAodWJp
+MDowIHBpZCAxKTogdWJpZnNfcm9fbW9kZS5wYXJ0LjA6IHN3aXRjaGVkIHRvIHJlYWQtb25seSBt
+b2RlLCBlcnJvciAtMjIKPiAKPiBUaGUgY3JlYXRlLCB3cml0ZSwgdW5saW5rIG9yIGZzeW5jIHRo
+YXQgc3RhcnRlZCB0aGUgdGltZXIgcmV0dXJucyBFUk9GUwo+IGFuZCBzbyBkb2VzIGV2ZXJ5IGxh
+dGVyIG9uZSB1bnRpbCB0aGUgZmlsZSBzeXN0ZW0gaXMgcmVtb3VudGVkOyB3aXRoCj4gYXNzZXJ0
+PXBhbmljIHRoZSBtYWNoaW5lIGNyYXNoZXMgaW5zdGVhZC4gNjQtYml0IGtlcm5lbHMgYXJlIG5v
+dAo+IGFmZmVjdGVkLiBUaGUgYXNzZXJ0aW9uIGhhcyBiZWVuIHJlYWNoYWJsZSBzaW5jZSB2NC4x
+MCwgd2hlbiB0aGUgdGltZXIKPiBzdGFydGVkIHRvIGZvbGxvdyB0aGUgc3lzY3RsLgo+IAo+IG5l
+d193YnVmX3RpbWVyX25vbG9jaygpIGNvbXB1dGVzIHRoZSB0aW1lciBzbGFjayBhcwo+IAo+IAlk
+ZWx0YSA9IGRpcnR5X3dyaXRlYmFja19pbnRlcnZhbCAqIDEwXjYgbnMKPiAKPiBpbiBhbiB1bnNp
+Z25lZCBsb25nIGxvbmcgYW5kIGFzc2VydHMgZGVsdGEgPD0gVUxPTkdfTUFYLiBPbiAzMi1iaXQK
+PiBVTE9OR19NQVggaXMgNDI5NDk2NzI5NSwgZXhjZWVkZWQgZnJvbSA0Mjk1IGNlbnRpc2Vjb25k
+cyBvbi4gVGhlIGNoZWNrCj4gZGF0ZXMgZnJvbSBjb21taXQgMmEzNWEzYThhYjNlICgiVUJJRlM6
+IHNldCB3cml0ZS1idWZmZXIgdGltb3V0IHRvIDMtNQo+IHNlY29uZHMiKSwgd2hlbiBocnRpbWVy
+X3N0YXJ0X3JhbmdlX25zKCkgdG9vayB0aGUgc2xhY2sgYXMgYW4gdW5zaWduZWQKPiBsb25nIGFu
+ZCB0aGUgdmFsdWUgd2FzIGEgY29tcGlsZS10aW1lIGNvbnN0YW50IHRoYXQgY291bGQgb25seSBi
+ZSBjaGVja2VkCj4gYWdhaW5zdCB0cnVuY2F0aW9uLiBDb21taXQgZGE4YjQ0ZDVhOWY4ICgidGlt
+ZXI6IGNvbnZlcnQgdGltZXJfc2xhY2tfbnMKPiBmcm9tIHVuc2lnbmVkIGxvbmcgdG8gdTY0Iikg
+d2lkZW5lZCB0aGUgcGFyYW1ldGVyIHRvIHU2NCwgc28gbm90aGluZyBpcwo+IHRydW5jYXRlZCBh
+bnkgbW9yZSwgYW5kIGNvbW1pdCAxYjdmYzJjMDA2OWYgKCJ1YmlmczogVXNlCj4gZGlydHlfd3Jp
+dGViYWNrX2ludGVydmFsIHZhbHVlIGZvciB3YnVmIHRpbWVyIikgdGhlbiBkZXJpdmVkIHRoZSB2
+YWx1ZQo+IGZyb20gdGhlIHN5c2N0bCwgd2hpY2ggaGFzIG5vIHVwcGVyIGJvdW5kLiBUaGUgYXNz
+ZXJ0aW9uIG5vIGxvbmdlciBndWFyZHMKPiBhbnl0aGluZyBhbmQgZmFpbHMgb24gYSBsZWdpdGlt
+YXRlIHNldHRpbmcuCj4gCgpSaWdodCwgdGhlIGFzc2VydGlvbiBpcyBub3QgbmVjZXNzYXJ5IHNp
+bmNlIGRhOGI0NGQ1YTlmOKOoobB0aW1lcjogvasgCnRpbWVyX3NsYWNrX25zILTTIHVuc2lnbmVk
+IGxvbmcg16q7u86qIHU2NKGxo6kuCj4gUmVtb3ZlIGl0LiBUaGUgdGltZXIgaXMgc3RhcnRlZCB3
+aXRoIHRoZSBmdWxsIDY0LWJpdCBzbGFjayBleGFjdGx5IGFzCj4gYmVmb3JlLgo+IAo+IFRlc3Rl
+ZCBvbiBhIHJpc2N2MzIgUUVNVSBrZXJuZWwgd2l0aCBVQklGUyBvbiBhbiBtdGRyYW0tYmFja2Vk
+IFVCSQo+IHZvbHVtZTogYWZ0ZXIgInZtLmRpcnR5X3dyaXRlYmFja19jZW50aXNlY3MgPSA0Mjk1
+IiB0aGUgZmlyc3QKPiBvcGVuKE9fQ1JFQVQpIGZhaWxzIHdpdGggRVJPRlMgYW5kIHRoZSBhc3Nl
+cnRpb24gaXMgbG9nZ2VkOyB3aXRoIHRoaXMKPiBwYXRjaCB0aGUgb3BlbiBhbmQgZnN5bmMgc3Vj
+Y2VlZCBhbmQgdGhlIGxvZyBpcyBjbGVhbi4gNDI5NCB3b3JrcyBvbgo+IGJvdGguCj4gCj4gRm91
+bmQgd2hpbGUgcmV2aWV3aW5nIHRoZSB1c2VycyBvZiBkaXJ0eV93cml0ZWJhY2tfaW50ZXJ2YWwg
+Zm9yIHRoZQo+IGZvcm1hbCB2ZXJpZmljYXRpb24gb2YgdGhlIHBlcmlvZGljIHdyaXRlYmFjayBj
+b2RlLgo+IAo+IEZpeGVzOiAxYjdmYzJjMDA2OWYgKCJ1YmlmczogVXNlIGRpcnR5X3dyaXRlYmFj
+a19pbnRlcnZhbCB2YWx1ZSBmb3Igd2J1ZiB0aW1lciIpCj4gQXNzaXN0ZWQtYnk6IExMTQo+IFNp
+Z25lZC1vZmYtYnk6IE5pY2tvbGFpIFplbGRvdmljaCA8bmlja29sYWlAY3NhaWwubWl0LmVkdT4K
+PiAtLS0KPiAKPiBOb3RlczoKPiAgICAgIFRoZSB3cml0ZS1idWZmZXIgdGltZXIgc3RhcnQgaXMg
+dGhlIG9ubHkgdXNlciBvZiB0aGUgdmFsdWUgaW4gZnMvdWJpZnM7IHRoZQo+ICAgICAgc29mdGxp
+bWl0IG5leHQgdG8gaXQsIG1zX3RvX2t0aW1lKGRpcnR5X3dyaXRlYmFja19pbnRlcnZhbCAqIDEw
+KSwgaXMgYSAzMi1iaXQKPiAgICAgIHByb2R1Y3Qgb24gYWxsIGFyY2hpdGVjdHVyZXMgYW5kIHdy
+YXBzIGFib3ZlIDQyOTQ5NjcyOSBjZW50aXNlY29uZHMgKDQ5LjcgZGF5cyksCj4gICAgICB0aGUg
+c2FtZSB3cmFwIHRoYXQgZnMvZnMtd3JpdGViYWNrLmMgaGFzIGF0IGl0cyB0d28gbXNlY3NfdG9f
+amlmZmllcygpIHNpdGVzOwo+ICAgICAgdGhhdCBpcyBhIHNlcGFyYXRlIGlzc3VlIG9mIHRoZSBz
+eXNjdGwncyByYW5nZSwgbm90IHRvdWNoZWQgaGVyZS4KPiAgICAgIAo+ICAgICAgUmVwcm9kdWNl
+ciAoMzItYml0IGtlcm5lbCwgYW55IFVCSUZTIG1vdW50LCByb290KToKPiAgICAgIAo+ICAgICAg
+ICBzeXNjdGwgLXcgdm0uZGlydHlfd3JpdGViYWNrX2NlbnRpc2Vjcz00Mjk1Cj4gICAgICAgIHRv
+dWNoIC9tbnQvdWJpZnMvZgo+ICAgICAgCj4gICAgICBCZWZvcmU6IHRvdWNoIGZhaWxzIHdpdGgg
+RVJPRlM7IHRoZSBsb2cgc2hvd3MgIlVCSUZTIGFzc2VydCBmYWlsZWQ6IGRlbHRhIDw9Cj4gICAg
+ICBVTE9OR19NQVgsIGluIGZzL3ViaWZzL2lvLmM6NTE2IiBhbmQgInN3aXRjaGVkIHRvIHJlYWQt
+b25seSBtb2RlLCBlcnJvciAtMjIiOwo+ICAgICAgZXZlcnkgbGF0ZXIgd3JpdGUgdG8gdGhlIGZp
+bGUgc3lzdGVtIGZhaWxzIHdpdGggRVJPRlMgdW50aWwgaXQgaXMgcmVtb3VudGVkLgo+ICAgICAg
+QWZ0ZXI6IHRvdWNoIHN1Y2NlZWRzLCBub3RoaW5nIGlzIGxvZ2dlZC4gNDI5NCB3b3JrcyBvbiBi
+b3RoOyBhIDY0LWJpdCBrZXJuZWwKPiAgICAgIG5ldmVyIHRyaXBzIHRoZSBhc3NlcnRpb24uCj4g
+ICAgICAKPiAgICAgIFJ1biBoZXJlIGFzIGEgZnJlZXN0YW5kaW5nIGluaXQgb24gcWVtdS1zeXN0
+ZW0tcmlzY3YzMiAoLU0gdmlydCwKPiAgICAgIENPTkZJR19NVERfTVREUkFNPXkgd2l0aCBhIDE2
+IE1pQiBkZXZpY2UgYW5kIDEyOCBLaUIgZXJhc2UgYmxvY2tzLAo+ICAgICAgQ09ORklHX01URF9V
+Qkk9eSwgQ09ORklHX1VCSUZTX0ZTPXksICJ1YmkubXRkPTAiIG9uIHRoZSBjb21tYW5kIGxpbmUp
+OiB0aGUgaW5pdAo+ICAgICAgY3JlYXRlcyBhIDQgTWlCIGR5bmFtaWMgVUJJIHZvbHVtZSB3aXRo
+IFVCSV9JT0NNS1ZPTCwgbW91bnRzICJ1YmkwOnYiIChVQklGUwo+ICAgICAgZm9ybWF0cyB0aGUg
+ZW1wdHkgdm9sdW1lKSwgY3JlYXRlcyAvbW50L2EgYXQgNDI5NCAob2ssIGZzeW5jIG9rKSwgc2V0
+cyA0Mjk1IGFuZAo+ICAgICAgY3JlYXRlcyAvbW50L2I6IG9wZW4gcmV0dXJucyAtMzAgdW5wYXRj
+aGVkLCAwIHBhdGNoZWQuCj4gCj4gICBmcy91Ymlmcy9pby5jIHwgMSAtCj4gICAxIGZpbGUgY2hh
+bmdlZCwgMSBkZWxldGlvbigtKQoKUmV2aWV3ZWQtYnk6IFpoaWhhbyBDaGVuZyA8Y2hlbmd6aGlo
+YW8xQGh1YXdlaS5jb20+Cj4gCj4gZGlmZiAtLWdpdCBhL2ZzL3ViaWZzL2lvLmMgYi9mcy91Ymlm
+cy9pby5jCj4gaW5kZXggNmM2ZDY4MjQyNzc5Li5kYTRlYjBhODJlNjIgMTAwNjQ0Cj4gLS0tIGEv
+ZnMvdWJpZnMvaW8uYwo+ICsrKyBiL2ZzL3ViaWZzL2lvLmMKPiBAQCAtNTEzLDcgKzUxMyw2IEBA
+IHN0YXRpYyB2b2lkIG5ld193YnVmX3RpbWVyX25vbG9jayhzdHJ1Y3QgdWJpZnNfaW5mbyAqYywg
+c3RydWN0IHViaWZzX3didWYgKndidWYpCj4gICAJZGVsdGEgKj0gMTBVTEwgKiBOU0VDX1BFUl9N
+U0VDIC8gMTBVTEw7Cj4gICAKPiAgIAl1Ymlmc19hc3NlcnQoYywgIWhydGltZXJfYWN0aXZlKCZ3
+YnVmLT50aW1lcikpOwo+IC0JdWJpZnNfYXNzZXJ0KGMsIGRlbHRhIDw9IFVMT05HX01BWCk7Cj4g
+ICAKPiAgIAlpZiAod2J1Zi0+bm9fdGltZXIpCj4gICAJCXJldHVybjsKPiAKPiBiYXNlLWNvbW1p
+dDogNzBkZDRlZTcyZWIyZDU3OTNjNjJlNzFjMTRlM2FiYTc4ZTVhNGU1Ngo+IAoKCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQg
+ZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9saW51eC1tdGQvCg==
