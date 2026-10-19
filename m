@@ -4,61 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE0A8CCA46C
-	for <linux-mtd@archiver.kernel.org>; Mon, 19 Oct 2026 03:34:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96CB7CCF2D4
+	for <linux-mtd@archiver.kernel.org>; Mon, 19 Oct 2026 03:49:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=hdhUOieht/HCdz5K6NZ1KUHIoYHWSEk/6M2Iu3c8Ubk=; b=scSXgkbYqY9MFu
-	Vvz9iobTaM/4rbFt6Y7yifhuJczWlqm6Z5ZwPWVHY4BB81o+A/nb10aASyehwtdglVByuBEeHsnHc
-	qId6EtXAGvIsOTRNKruQmXypY27E7ZitbPt+hz6YthRt+gPwEHlO6NOekZQQ2slUz7f9Sgql8/DB1
-	5RoY6ARrRQttss+KoBHVZXYjl47Hov/Ro5wLibeG1ZWXMBSjCgdtNqgr/nhjt4ya2M2223mKKvGkD
-	yVEd+mCrcgH9Z+E51gYo2dE4HiTe9iSXbZnNMGDFcE0msb7+i/vCJaWuzfsv4k5pIMXlIW2ObECGo
-	INGDMEqjlvRWlktPBdbA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=z20r32h3yPfY89o7zvXYV/jR5uLw9unnrFCh5eIGxXY=; b=U8PE9cvKuTZdgk
+	S5379BBgS9lxuJLyUT85uTm7lchOT7rQnW/uV9VnQOtUSCnSd34CDkN7KkMR/P6SmaZmhONCWlyiz
+	eN03Tn75OQH15MBUyMQ+hv6wmFnrrTL4APa+MP9TcxNJEhdtSFLvBcR/ZQEY0O1gAsvus+RPlwoRN
+	CR1DOyrCJhPyKegs0lJj8UVgZy061d64NSn+DrXaPuaaP2uaX8wJuV4bsH3CXS++EpEDbmLPaCD/+
+	yE2Ywaf1UU3V35QWhiSk+7JwFODk9mITXC2p5dVoZeEQhiYul+RHYXVMzqaQXKllHD4lQru2ri2yu
+	jN0JVJ/VaTpA8GaB3FjQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xIe8M-00000006XRm-0Ddj;
-	Mon, 19 Oct 2026 03:33:58 +0000
-Received: from smtp.h3c.com ([60.191.123.56] helo=h3cspam01-ex.h3c.com)
+	id 1xIeNN-00000006ZO6-07Nc;
+	Mon, 19 Oct 2026 03:49:29 +0000
+Received: from mail-wm1-x335.google.com ([2a00:1450:4864:20::335])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xIe8J-00000006XQQ-1CKS
+	id 1xIeNK-00000006ZNT-1fCX
 	for linux-mtd@lists.infradead.org;
-	Mon, 19 Oct 2026 03:33:57 +0000
-Received: from mail.maildlp.com ([172.25.15.155])
-	by h3cspam01-ex.h3c.com with ESMTP id 69J3XML9077055;
-	Mon, 19 Oct 2026 11:33:22 +0800 (+08)
-	(envelope-from lin.nan@h3c.com)
-Received: from DAG6EX09-BJD.srv.huawei-3com.com (unknown [10.153.34.11])
-	by mail.maildlp.com (Postfix) with ESMTP id 3544E2284EA2;
-	Mon, 19 Oct 2026 11:36:26 +0800 (CST)
-Received: from localhost.localdomain (10.142.164.48) by
- DAG6EX09-BJD.srv.huawei-3com.com (10.153.34.11) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1258.27; Mon, 19 Oct 2026 11:33:20 +0800
-From: Nan Lin <lin.nan@h3c.com>
-To: <sashiko-bot@kernel.org>
-CC: <chengzhihao1@huawei.com>, <lin.nan@h3c.com>,
-        <linux-mtd@lists.infradead.org>, <richard@nod.at>,
-        <sashiko-reviews@lists.linux.dev>, <wangxiaoqing@h3c.com>,
-        <zhou.kete@h3c.com>
-Subject: [PATCH v2] ubifs: zero stale data beyond EOF before file size grows
-Date: Mon, 19 Oct 2026 11:25:30 +0800
-Message-ID: <20261019032530.2212601-1-lin.nan@h3c.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <sashiko-outbox-174089@kernel.org>
-References: <sashiko-outbox-174089@kernel.org>
+	Mon, 19 Oct 2026 03:49:27 +0000
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-4a1dfd49525so8156045e9.0
+        for <linux-mtd@lists.infradead.org>; Sun, 18 Oct 2026 20:49:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1792381764; x=1792986564; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=UqF9Bl8qiczwJSI3x4ppM91PPkTQtiTR6DplOeX8g3I=;
+        b=cmFhh2hMlWq8vvMP7Ea9NVgRRCz8g7v8UdYPVAknW/J9PShVra8EkBfxn8q653mlPK
+         CYUASjZdi7my0LFvVS8Ng27cK3OndsNdMdbRUMkVUj0XD2dl+6gmkXT/pJpvxFudiuaZ
+         v1T454siAWG23m8KY+Bx4nqeynaLn41Y4veognayhheZyBsNs8wh08N4akSWMGJHO+j2
+         uW+7rwJTR3N+NTckzKg1LugYdXH9kcxRq4bAZG/hlDN7ZhD6gO3PtCuHhc7iBf4FqBSU
+         KivgIFmLhGhdceWG+FBZs9CaLYOj460cpKmyVujPiVMzmnY2GiFI5rGtOWGRfT3q5hsB
+         +yDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1792381764; x=1792986564;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=UqF9Bl8qiczwJSI3x4ppM91PPkTQtiTR6DplOeX8g3I=;
+        b=UMnvAn+Yo+N3edmGF0OuFH2A/zSn4x8iFSCJs2mV0q/DMjg/4z/tdKoA8IuaK6uauh
+         NquiPGmbpVRQhmiotA7RN5MNdwLobge6I0JF6uZCtDp0p9HI8KjKse28+heHnBs0Npuq
+         WUJRczLFcpVBs+brHKTjE4Uh/9WMPZliUGFHKOlM8LGzxOfP4zM6XZJoTwZcXZNo1+RS
+         YxAFpeJeGXVwvVpqXW2QZMJ53klTzMuOczFX8F5lbEB9/VPmjM9z4Z9tzsDgo1XMvxHi
+         YiaPNSyzVDckJnN2CgD2GIov/uai1BgPz1j3xxMMBRxthsSje3vBjE4iGzX/9Pgc0Rz2
+         c1xA==
+X-Gm-Message-State: AFq9FYL9dQXOcdbTyuZq1p1CLwOOefxcqBVlkIZjUSV46pBX/i4DL73C
+	m5gLKSErMR3HRVL4nlnwyMd8+0/CgLug/YyHirsjcws3wy4Uk8Ga1hFU
+X-Gm-Gg: AYBFou2eLqGH0IPDNVzcLb1nnR/SrLUTDMywcaZv04S3vqQqZoyEfjdk1+LyTCkx8nH
+	euiL69WVawfOcSO2gI/J4MliaxVj5g1lCSTde+Tjyk6zapyFUjFWV68RIxeHnIPsnhdKdG9f3z+
+	UsGFuIiNbsqrhu6VU3J3415UXkJgYNII5DFbXn9X+l9YWm8EmUEcNCW7g2naUYDfb3126jEOBWQ
+	jNGRc704f1t4ChTB2FnPuLEL6032fT7DkcHUVHQuBRgUcPCDzkptg0yjxX4YoOcupeuIEv9bRis
+	ScOMl6bu2LvOXSNzTGWH6EwAmhPyZ/5TbDlzAPJw3SGaX8ik/6yJMP9/jjO1h561XKINYZKQa+6
+	omXEJgT3+OGIljZFi1zmufAK90MSRcUMxgTIyVp/qK7JRxsurwecDj/sZ1Rqxmy1w60+J3YFeRD
+	NC0phEAkLfT8As2BhGFuReXzN5QzI27Lr3+oNFmG0KzFvyuW+vLerW7ENZHV8/wjbbBrmSdy1nP
+	W4Kg2J7Xb976ZoNB8icwoKG9m7vQWcgRkiiVdxdlisV/3+MI33N4Y9kte8Sv5UGsy+izaR1Sq9Q
+	BFI3wHx8kr8tlGfb
+X-Received: by 2002:a05:600c:b86:b0:4a1:d459:db4b with SMTP id 5b1f17b1804b1-4a1d7610722mr124043135e9.24.1792381763606;
+        Sun, 18 Oct 2026 20:49:23 -0700 (PDT)
+Received: from center.jhjvjihww5qejoy14qwv1cc4td.frax.internal.cloudapp.net ([131.189.143.225])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4a1cf04ffe9sm171762205e9.0.2026.10.18.20.49.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 18 Oct 2026 20:49:23 -0700 (PDT)
+From: Orgad Shaneh <orgads@gmail.com>
+To: miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com
+Cc: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH RESEND v2] mtd: cfi_cmdset_0002: also clamp the write buffer of an x16 part strapped to x8
+Date: Mon, 19 Oct 2026 03:49:22 +0000
+Message-ID: <20261019034922.3805782-1-orgads@gmail.com>
+X-Mailer: git-send-email 2.47.3
 MIME-Version: 1.0
-X-Originating-IP: [10.142.164.48]
-X-ClientProxiedBy: BJSMTP01-EX.srv.huawei-3com.com (10.63.20.132) To
- DAG6EX09-BJD.srv.huawei-3com.com (10.153.34.11)
-X-DNSRBL: 
-X-MAIL: h3cspam01-ex.h3c.com 69J3XML9077055
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261018_203356_005319_8EA55C8B 
-X-CRM114-Status: GOOD (  18.13  )
+X-CRM114-CacheID: sfid-20261018_204926_450158_6F3F7390 
+X-CRM114-Status: GOOD (  15.71  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,157 +99,73 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-mmap writes can dirty the page cache beyond EOF without changing
-i_size. A later extending write or ftruncate turns that region into a
-hole, but UBIFS never zeroes the partial page at the old EOF, so reads
-expose the stale data.
+Commit cfc5ebc9540e ("mtd: cfi_cmdset_0002: cap the write-buffer chunk
+at 256 bytes on an x8 device") limits a Write to Buffer to 256 bytes
+when cfi->device_type is CFI_DEVICETYPE_X8, because do_write_buffer()
+sends the word count as a single bus word and an 8-bit data lane
+truncates it.
 
-Zero the tail of the old-EOF folio in all three size-extending paths:
-ubifs_write_begin() for writes starting beyond EOF, do_setattr()
-before truncate_setsize() grows the size, and ubifs_vm_page_mkwrite()
-so mmap writes cannot leave such a tail behind. This mirrors what
-block_page_mkwrite() does for buffer_head filesystems and what ext4
-does on size extension.
+The M29EW that commit was written for is an x16 part strapped to x8.
+The probe reports it as
 
-All zeroing takes the old-EOF folio lock without ui->ui_mutex, keeping
-the folio_lock -> ui_mutex order of ->writepage() and
-->page_mkwrite(); the reverse order deadlocks.
+  phys_mapped_flash: Found 1 x16 devices at 0x0 in 8-bit bank.
+  Manufacturer ID 0x000089 Chip ID 0x00007e
 
-UBIFS does not enable large folios, so the EOF folio is always a
-single page today; nevertheless, use folio-relative arithmetic
-(offset_in_folio(), folio_contains(), folio_size()) throughout so the
-code is correct if that ever changes.
+so its device_type is CFI_DEVICETYPE_X16, the clamp does not apply, and
+every full 512-byte chunk still times out:
 
-Signed-off-by: Nan Lin <lin.nan@h3c.com>
+  MTD do_write_buffer_wait(): software timeout, address:0x002203ff.
 
-Changes since v1:
- - Both zeroing sites used PAGE_SIZE-relative arithmetic
-   (offset_in_page()-style) while folio_zero_range() expects
-   folio-relative offsets. UBIFS does not currently enable large
-   folios, so PAGE_SIZE == folio_size() and the two coincide in
-   practice, but switch to offset_in_folio()/folio_size() anyway so
-   the code is correct if UBIFS ever opts into large folios
-   (suggested by Sashiko AI review).
+What limits the count is the width of each device's data lane, not the
+part's type. Test that instead: map_bankwidth(map) / cfi_interleave(cfi)
+is 1 for an x8 part, for x8 parts interleaved on a wider bus, and for an
+x16 part in an 8-bit bank.
 
+On the board (Octeon CN6335, the same M29EW) writes of 1, 2, 32, 64 and
+256 bytes to an erased partition read back correctly and 512, 1024,
+2048 and 4096 failed with the timeout above; with this patch every size
+up to 64 KiB reads back correctly and the u-boot environment can be
+saved from Linux again.
+
+Fixes: cfc5ebc9540e ("mtd: cfi_cmdset_0002: cap the write-buffer chunk at 256 bytes on an x8 device")
+Assisted-by: LLM
+Signed-off-by: Orgad Shaneh <orgads@gmail.com>
 ---
- fs/ubifs/file.c | 73 +++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 73 insertions(+)
+RESEND: unchanged v2, which got no reply in a week; it still applies
+    to mtd/next (cfc5ebc9540e is its parent there).
+    v2: https://lore.kernel.org/all/20261013182327.549640-1-orgads@gmail.com/
+v2: rebased onto mtd/next (2f7fa8d90694); no other change. It applies
+    cleanly to that tip here, alone and together with the point()
+    series, so if it still fails for you please tell me which tree
+    you are applying it to.
+v1: https://lore.kernel.org/all/20261006052435.319751-1-orgads@gmail.com/
 
-diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-index e73c28b12f97..1726714161a1 100644
---- a/fs/ubifs/file.c
-+++ b/fs/ubifs/file.c
-@@ -202,6 +202,53 @@ static void release_existing_page_budget(struct ubifs_info *c)
- 	ubifs_release_budget(c, &req);
- }
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -286,13 +286,14 @@ static void fixup_use_write_buffers(struct mtd_info *mtd)
  
-+/**
-+ * ubifs_zero_eof_hole - zero the stale tail of the old-EOF folio.
-+ * @inode: inode whose size is about to grow
-+ * @new_end: new end of the file, only used to bound the tail
-+ *
-+ * Zero the cached folio containing the old EOF for [old EOF,
-+ * min(folio end, @new_end)) so a size extension does not expose stale
-+ * data left beyond EOF by mmap writes.
-+ *
-+ * Must be called without ui->ui_mutex held: we block on the old-EOF
-+ * folio lock, and ->writepage() and ->page_mkwrite() hold that folio
-+ * lock while taking ui_mutex; the reverse order deadlocks.
-+ */
-+static void ubifs_zero_eof_hole(struct inode *inode, loff_t new_end)
-+{
-+	loff_t old_size = i_size_read(inode);
-+	size_t from, to;
-+	struct folio *folio;
-+
-+	if (new_end <= old_size)
-+		return;
-+
-+	folio = filemap_lock_folio(inode->i_mapping, old_size >> PAGE_SHIFT);
-+	if (IS_ERR(folio))
-+		return;
-+
-+	/*
-+	 * Re-read i_size under the folio lock: a concurrent truncate may
-+	 * have shrunk the file, turning this folio into valid data.
-+	 */
-+	old_size = i_size_read(inode);
-+	if (new_end <= old_size)
-+		goto out;
-+
-+	from = offset_in_folio(folio, old_size);
-+	if (!from)
-+		goto out;
-+	to = folio_contains(folio, new_end >> PAGE_SHIFT) ?
-+	     offset_in_folio(folio, new_end) : folio_size(folio);
-+	if (to > from)
-+		folio_zero_range(folio, from, to - from);
-+
-+out:
-+	folio_unlock(folio);
-+	folio_put(folio);
-+}
-+
- static int write_begin_slow(struct address_space *mapping,
- 			    loff_t pos, unsigned len, struct folio **foliop)
- {
-@@ -423,6 +470,14 @@ static int ubifs_write_begin(const struct kiocb *iocb,
- 	if (unlikely(c->ro_error))
- 		return -EROFS;
- 
-+	/*
-+	 * The write starts beyond EOF: zero the stale tail of the old-EOF
-+	 * folio before budgeting takes ui->ui_mutex. do_readpage() only
-+	 * sanitizes the write folio, not the old-EOF folio.
-+	 */
-+	if (pos > inode->i_size)
-+		ubifs_zero_eof_hole(inode, pos);
-+
- 	/* Try out the fast-path part first */
- 	folio = __filemap_get_folio(mapping, index, FGP_WRITEBEGIN,
- 			mapping_gfp_mask(mapping));
-@@ -1220,6 +1275,10 @@ static int do_setattr(struct ubifs_info *c, struct inode *inode,
- 
- 	if (attr->ia_valid & ATTR_SIZE) {
- 		dbg_gen("size %lld -> %lld", inode->i_size, new_size);
-+
-+		/* Must run before the size change loses the old boundary. */
-+		ubifs_zero_eof_hole(inode, new_size);
-+
- 		truncate_setsize(inode, new_size);
- 	}
- 
-@@ -1494,6 +1553,7 @@ static vm_fault_t ubifs_vm_page_mkwrite(struct vm_fault *vmf)
- 	struct timespec64 now = current_time(inode);
- 	struct ubifs_budget_req req = { .new_page = 1 };
- 	int err, update_time;
-+	loff_t i_size;
- 
- 	dbg_gen("ino %llu, pg %lu, i_size %lld",	inode->i_ino, folio->index,
- 		i_size_read(inode));
-@@ -1553,6 +1613,19 @@ static vm_fault_t ubifs_vm_page_mkwrite(struct vm_fault *vmf)
- 		filemap_dirty_folio(folio->mapping, folio);
- 	}
- 
-+	/*
-+	 * Zero the part of the EOF folio beyond i_size so mmap writes
-+	 * cannot leave a stale tail behind (see ubifs_zero_eof_hole()).
-+	 * For a folio-aligned i_size the mkwrite entry check has already
-+	 * returned SIGBUS, so @from is always non-zero here.
-+	 */
-+	i_size = i_size_read(inode);
-+	if (folio_contains(folio, i_size >> PAGE_SHIFT)) {
-+		size_t from = offset_in_folio(folio, i_size);
-+
-+		folio_zero_range(folio, from, folio_size(folio) - from);
-+	}
-+
- 	if (update_time) {
- 		int release;
- 		struct ubifs_inode *ui = ubifs_inode(inode);
+ 	/*
+ 	 * The word count of the Write to Buffer command is a single bus
+-	 * word per device, so an x8 device can be told to program at most
+-	 * 256 bytes however large a buffer it advertises - including when
+-	 * several of them are interleaved on a wider bus, where CMD()
+-	 * replicates the count into each device's lane and it is truncated
+-	 * there.
++	 * word per device, so a device on an 8-bit data lane can be told
++	 * to program at most 256 bytes however large a buffer it
++	 * advertises: an x8 part, x8 parts interleaved on a wider bus
++	 * (CMD() replicates the count into each device's lane and it is
++	 * truncated there), and an x16 part strapped to x8, which the
++	 * probe reports as an x16 device in an 8-bit bank.
+ 	 */
+-	if (cfi->device_type == CFI_DEVICETYPE_X8 &&
++	if (map_bankwidth(map) / cfi_interleave(cfi) == 1 &&
+ 	    cfi->cfiq->MaxBufWriteSize > 8) {
+ 		cfi->cfiq->MaxBufWriteSize = 8;
+ 		mtd->writebufsize = cfi_interleave(cfi) <<
 -- 
-2.33.0
-
+2.47.0
 
 ______________________________________________________
 Linux MTD discussion mailing list
