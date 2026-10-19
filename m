@@ -4,85 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96CB7CCF2D4
-	for <linux-mtd@archiver.kernel.org>; Mon, 19 Oct 2026 03:49:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92D52CCF2DA
+	for <linux-mtd@archiver.kernel.org>; Mon, 19 Oct 2026 05:54:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=z20r32h3yPfY89o7zvXYV/jR5uLw9unnrFCh5eIGxXY=; b=U8PE9cvKuTZdgk
-	S5379BBgS9lxuJLyUT85uTm7lchOT7rQnW/uV9VnQOtUSCnSd34CDkN7KkMR/P6SmaZmhONCWlyiz
-	eN03Tn75OQH15MBUyMQ+hv6wmFnrrTL4APa+MP9TcxNJEhdtSFLvBcR/ZQEY0O1gAsvus+RPlwoRN
-	CR1DOyrCJhPyKegs0lJj8UVgZy061d64NSn+DrXaPuaaP2uaX8wJuV4bsH3CXS++EpEDbmLPaCD/+
-	yE2Ywaf1UU3V35QWhiSk+7JwFODk9mITXC2p5dVoZeEQhiYul+RHYXVMzqaQXKllHD4lQru2ri2yu
-	jN0JVJ/VaTpA8GaB3FjQ==;
+	List-Archive:List-Unsubscribe:List-Id:To:From:Subject:Message-ID:In-Reply-To:
+	Date:MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
+	List-Owner; bh=0ELLkaHWDJ72FpXqqr2PngJoRUCMsb3h7djMQPMQL2s=; b=hgW+U/FTnynDnw
+	wU9a2oyc18D+ko/VYRpLJQrhWapeWI8XVYsvcexFC+1OMQVkNvjHrPZ88rrpOcu2RUVNTKh2ucvoD
+	lECxX555Aqh9gSBfallCqLa7weHJhqdZ40JCmHCwXxDDI4rhUdhRBnANrexCoEuZibo8+bO7sZ8e7
+	Acqkf7N6Fq7+0Yngx0k+nACGALU6hG++tjmCRKAEjOT1j/u+CZ0B1j1cHhuWHJvIRcZD+8KttvwsT
+	dulVePFV6OXRO3iOEmefNdc9cRG9gmpaLhWk7r+/+qIP0kNWxHdWR7nkzjE5v9ugZtH0GZiw6cjsl
+	RqAgICTRXr1yabDKe4cw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xIeNN-00000006ZO6-07Nc;
-	Mon, 19 Oct 2026 03:49:29 +0000
-Received: from mail-wm1-x335.google.com ([2a00:1450:4864:20::335])
+	id 1xIgJy-00000006f3w-1M2y;
+	Mon, 19 Oct 2026 05:54:06 +0000
+Received: from mail-oi1-f197.google.com ([209.85.167.197])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xIeNK-00000006ZNT-1fCX
+	id 1xIgJv-00000006f3P-2hU6
 	for linux-mtd@lists.infradead.org;
-	Mon, 19 Oct 2026 03:49:27 +0000
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-4a1dfd49525so8156045e9.0
-        for <linux-mtd@lists.infradead.org>; Sun, 18 Oct 2026 20:49:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1792381764; x=1792986564; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=UqF9Bl8qiczwJSI3x4ppM91PPkTQtiTR6DplOeX8g3I=;
-        b=cmFhh2hMlWq8vvMP7Ea9NVgRRCz8g7v8UdYPVAknW/J9PShVra8EkBfxn8q653mlPK
-         CYUASjZdi7my0LFvVS8Ng27cK3OndsNdMdbRUMkVUj0XD2dl+6gmkXT/pJpvxFudiuaZ
-         v1T454siAWG23m8KY+Bx4nqeynaLn41Y4veognayhheZyBsNs8wh08N4akSWMGJHO+j2
-         uW+7rwJTR3N+NTckzKg1LugYdXH9kcxRq4bAZG/hlDN7ZhD6gO3PtCuHhc7iBf4FqBSU
-         KivgIFmLhGhdceWG+FBZs9CaLYOj460cpKmyVujPiVMzmnY2GiFI5rGtOWGRfT3q5hsB
-         +yDA==
+	Mon, 19 Oct 2026 05:54:04 +0000
+Received: by mail-oi1-f197.google.com with SMTP id 5614622812f47-4f9b643ae53so1492216b6e.3
+        for <linux-mtd@lists.infradead.org>; Sun, 18 Oct 2026 22:54:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1792381764; x=1792986564;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=UqF9Bl8qiczwJSI3x4ppM91PPkTQtiTR6DplOeX8g3I=;
-        b=UMnvAn+Yo+N3edmGF0OuFH2A/zSn4x8iFSCJs2mV0q/DMjg/4z/tdKoA8IuaK6uauh
-         NquiPGmbpVRQhmiotA7RN5MNdwLobge6I0JF6uZCtDp0p9HI8KjKse28+heHnBs0Npuq
-         WUJRczLFcpVBs+brHKTjE4Uh/9WMPZliUGFHKOlM8LGzxOfP4zM6XZJoTwZcXZNo1+RS
-         YxAFpeJeGXVwvVpqXW2QZMJ53klTzMuOczFX8F5lbEB9/VPmjM9z4Z9tzsDgo1XMvxHi
-         YiaPNSyzVDckJnN2CgD2GIov/uai1BgPz1j3xxMMBRxthsSje3vBjE4iGzX/9Pgc0Rz2
-         c1xA==
-X-Gm-Message-State: AFq9FYL9dQXOcdbTyuZq1p1CLwOOefxcqBVlkIZjUSV46pBX/i4DL73C
-	m5gLKSErMR3HRVL4nlnwyMd8+0/CgLug/YyHirsjcws3wy4Uk8Ga1hFU
-X-Gm-Gg: AYBFou2eLqGH0IPDNVzcLb1nnR/SrLUTDMywcaZv04S3vqQqZoyEfjdk1+LyTCkx8nH
-	euiL69WVawfOcSO2gI/J4MliaxVj5g1lCSTde+Tjyk6zapyFUjFWV68RIxeHnIPsnhdKdG9f3z+
-	UsGFuIiNbsqrhu6VU3J3415UXkJgYNII5DFbXn9X+l9YWm8EmUEcNCW7g2naUYDfb3126jEOBWQ
-	jNGRc704f1t4ChTB2FnPuLEL6032fT7DkcHUVHQuBRgUcPCDzkptg0yjxX4YoOcupeuIEv9bRis
-	ScOMl6bu2LvOXSNzTGWH6EwAmhPyZ/5TbDlzAPJw3SGaX8ik/6yJMP9/jjO1h561XKINYZKQa+6
-	omXEJgT3+OGIljZFi1zmufAK90MSRcUMxgTIyVp/qK7JRxsurwecDj/sZ1Rqxmy1w60+J3YFeRD
-	NC0phEAkLfT8As2BhGFuReXzN5QzI27Lr3+oNFmG0KzFvyuW+vLerW7ENZHV8/wjbbBrmSdy1nP
-	W4Kg2J7Xb976ZoNB8icwoKG9m7vQWcgRkiiVdxdlisV/3+MI33N4Y9kte8Sv5UGsy+izaR1Sq9Q
-	BFI3wHx8kr8tlGfb
-X-Received: by 2002:a05:600c:b86:b0:4a1:d459:db4b with SMTP id 5b1f17b1804b1-4a1d7610722mr124043135e9.24.1792381763606;
-        Sun, 18 Oct 2026 20:49:23 -0700 (PDT)
-Received: from center.jhjvjihww5qejoy14qwv1cc4td.frax.internal.cloudapp.net ([131.189.143.225])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4a1cf04ffe9sm171762205e9.0.2026.10.18.20.49.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 18 Oct 2026 20:49:23 -0700 (PDT)
-From: Orgad Shaneh <orgads@gmail.com>
-To: miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com
-Cc: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH RESEND v2] mtd: cfi_cmdset_0002: also clamp the write buffer of an x16 part strapped to x8
-Date: Mon, 19 Oct 2026 03:49:22 +0000
-Message-ID: <20261019034922.3805782-1-orgads@gmail.com>
-X-Mailer: git-send-email 2.47.3
+        d=1e100.net; s=20260707; t=1792389242; x=1792994042;
+        h=content-type:to:from:subject:message-id:in-reply-to:date
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to:content-type;
+        bh=1hWn9WlFALBXxXhElt5/Eo18vTu9PaxR/Ru42wA+dqw=;
+        b=CkfehAfySrZPOObIN9SnlAArbJOGQ+AizN6711UdqGeRJm+swnZLIlVTP07viZBLLB
+         xxMh+ulilZ+Itsogm8sL8oRQiK6FYJhEkRepY8cjSuXzKMNgftgfKvsbYqd4Czl3HCa8
+         fLgALnzIS8UwzqXbwfFWtnA9fsR3ob/T3nO62QV1yPNee5j90HilS99VMLVPf/+IMbxS
+         ZTrglnaww7xM7yLVn1ycBVkjN9+XMnHXeD+7GibTrYB/M5ketwExlKyp/aPXUfB3O16g
+         +8FXD81XF2UREDT9oFDm+Z29a0Gmgseeyje2cN8o+aRULl9lmskLzTPpnpe7op6kAKYt
+         uEgA==
+X-Forwarded-Encrypted: i=1; AKwUvBxSCQD17h2csWiflll85ofjCDLQ6+1wISvFu+BEAlw7bde4KVlwPTHjyUohopsBv67jzHuzOPqj23c=@lists.infradead.org
+X-Gm-Message-State: AFq9FYJjBlwMloIPVQhje0M2eCrlFycSHyRVYFvgWTm5qq/yE3ORe/iU
+	H7e03w2N0xcHUvQAquhHHx/E6y2AIpDDVY5CmAixjYe9y3thgNvIrlTTIEO0dn7u+9n4vng3HNf
+	txmlzVJad9wL0r3iybNQB2INjTqETNF1i+xguwhaN+SfJ/nmL7lSy7rZE1Fk=
 MIME-Version: 1.0
+X-Received: by 2002:a05:6808:c2d8:b0:4d6:9232:b3bc with SMTP id
+ 5614622812f47-53cd0570542mr5676180b6e.51.1792389241864; Sun, 18 Oct 2026
+ 22:54:01 -0700 (PDT)
+Date: Sun, 18 Oct 2026 22:54:01 -0700
+In-Reply-To: <6a7bfdf7.ed659fcc.23056a.007f.GAE@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <6ad5b079.7f4e89eb.3d59aa.00bd.GAE@google.com>
+Subject: Re: [syzbot] [jffs2?] KASAN: slab-use-after-free Read in jffs2_xattr_delete_inode
+From: syzbot <syzbot+3a8099322b09d8d073d1@syzkaller.appspotmail.com>
+To: dwmw2@infradead.org, linux-kernel@vger.kernel.org, 
+	linux-mtd@lists.infradead.org, luquijeffrey@gmail.com, 
+	miquel.raynal@bootlin.com, richard@nod.at, sashiko-bot@kernel.org, 
+	sashiko-reviews@lists.linux.dev, syzkaller-bugs@googlegroups.com, 
+	troglobit@gmail.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261018_204926_450158_6F3F7390 
-X-CRM114-Status: GOOD (  15.71  )
+X-CRM114-CacheID: sfid-20261018_225403_707395_66D0AF4E 
+X-CRM114-Status: UNSURE (   4.54  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,73 +81,27 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Commit cfc5ebc9540e ("mtd: cfi_cmdset_0002: cap the write-buffer chunk
-at 256 bytes on an x8 device") limits a Write to Buffer to 256 bytes
-when cfi->device_type is CFI_DEVICETYPE_X8, because do_write_buffer()
-sends the word count as a single bus word and an 8-bit data lane
-truncates it.
+syzbot has bisected this issue to:
 
-The M29EW that commit was written for is an x16 part strapped to x8.
-The probe reports it as
+commit 7b09acdcb944a9be6acc38ab1aa8a0ffd08871c1
+Author: Joachim Wiberg <troglobit@gmail.com>
+Date:   Sat Oct 9 06:09:55 2021 +0000
 
-  phys_mapped_flash: Found 1 x16 devices at 0x0 in 8-bit bank.
-  Manufacturer ID 0x000089 Chip ID 0x00007e
+    mtd: block2mtd: add support for an optional custom MTD label
 
-so its device_type is CFI_DEVICETYPE_X16, the clamp does not apply, and
-every full 512-byte chunk still times out:
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14e7b13e580000
+start commit:   32c52ec87d62 x86/insn-eval: Fix shadowed segment index in ..
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=16e7b13e580000
+console output: https://syzkaller.appspot.com/x/log.txt?x=12e7b13e580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b38d39c45202f4fa
+dashboard link: https://syzkaller.appspot.com/bug?extid=3a8099322b09d8d073d1
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17684bc9580000
 
-  MTD do_write_buffer_wait(): software timeout, address:0x002203ff.
+Reported-by: syzbot+3a8099322b09d8d073d1@syzkaller.appspotmail.com
+Fixes: 7b09acdcb944 ("mtd: block2mtd: add support for an optional custom MTD label")
 
-What limits the count is the width of each device's data lane, not the
-part's type. Test that instead: map_bankwidth(map) / cfi_interleave(cfi)
-is 1 for an x8 part, for x8 parts interleaved on a wider bus, and for an
-x16 part in an 8-bit bank.
-
-On the board (Octeon CN6335, the same M29EW) writes of 1, 2, 32, 64 and
-256 bytes to an erased partition read back correctly and 512, 1024,
-2048 and 4096 failed with the timeout above; with this patch every size
-up to 64 KiB reads back correctly and the u-boot environment can be
-saved from Linux again.
-
-Fixes: cfc5ebc9540e ("mtd: cfi_cmdset_0002: cap the write-buffer chunk at 256 bytes on an x8 device")
-Assisted-by: LLM
-Signed-off-by: Orgad Shaneh <orgads@gmail.com>
----
-RESEND: unchanged v2, which got no reply in a week; it still applies
-    to mtd/next (cfc5ebc9540e is its parent there).
-    v2: https://lore.kernel.org/all/20261013182327.549640-1-orgads@gmail.com/
-v2: rebased onto mtd/next (2f7fa8d90694); no other change. It applies
-    cleanly to that tip here, alone and together with the point()
-    series, so if it still fails for you please tell me which tree
-    you are applying it to.
-v1: https://lore.kernel.org/all/20261006052435.319751-1-orgads@gmail.com/
-
-diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
---- a/drivers/mtd/chips/cfi_cmdset_0002.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -286,13 +286,14 @@ static void fixup_use_write_buffers(struct mtd_info *mtd)
- 
- 	/*
- 	 * The word count of the Write to Buffer command is a single bus
--	 * word per device, so an x8 device can be told to program at most
--	 * 256 bytes however large a buffer it advertises - including when
--	 * several of them are interleaved on a wider bus, where CMD()
--	 * replicates the count into each device's lane and it is truncated
--	 * there.
-+	 * word per device, so a device on an 8-bit data lane can be told
-+	 * to program at most 256 bytes however large a buffer it
-+	 * advertises: an x8 part, x8 parts interleaved on a wider bus
-+	 * (CMD() replicates the count into each device's lane and it is
-+	 * truncated there), and an x16 part strapped to x8, which the
-+	 * probe reports as an x16 device in an 8-bit bank.
- 	 */
--	if (cfi->device_type == CFI_DEVICETYPE_X8 &&
-+	if (map_bankwidth(map) / cfi_interleave(cfi) == 1 &&
- 	    cfi->cfiq->MaxBufWriteSize > 8) {
- 		cfi->cfiq->MaxBufWriteSize = 8;
- 		mtd->writebufsize = cfi_interleave(cfi) <<
--- 
-2.47.0
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
 ______________________________________________________
 Linux MTD discussion mailing list
