@@ -2,57 +2,141 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B83FF606A31A
-	for <linux-mtd@archiver.kernel.org>; Wed, 21 Oct 2026 12:06:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 361A7606A327
+	for <linux-mtd@archiver.kernel.org>; Wed, 21 Oct 2026 12:47:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=jlkF1V4s;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=bVjgBFnv
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=a88X7+uk;
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=altera.com header.i=@altera.com header.a=rsa-sha256 header.s=selector2 header.b=AUpQK36C
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Reply-To:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:References:
-	In-Reply-To:Cc:To:Subject:From:Message-ID:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=2I2r4d8MtEiAe8xavlX6WS60HGKMeOfAR6vCvgz4jsQ=; b=jlkF1V4spy+Ppw
-	VKcBImDQ9tp6RObN7QU56Vk0H+Tqi0zERxlWmYK/QipkI8b+sLRjjxVF0XrE1xSIiLKLBQc0scZdi
-	+n/9UG4xAjnQY6wqhKr4qBP1PhTx37xeOAhvGFV0VPrA2tKxA4u33G+k19+AFhqXV+1+2TfRqWQXl
-	yhPU/zQDW6mcK4BlFcxsl5WnsBJnTEmPgOUELTM1TERdSDXrhd+szEEETCwzi5Jmw6L+85X+C/xFG
-	RBy9TWchrnq7NT5kCJpVrQghAsCGqB/yNmJxVRWDKtIEPWFe6Ch29v/o9gxjR8kUVDtL5BNoPKYvy
-	3su4XZLvb89SsVnNKnrA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:From:References:To:Subject:
+	Date:Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=eWMBALH+ZNCcNmN+XuX8xpR0ZhwM9Jygc9gz59IDyWw=; b=a88X7+ukEHZ7wV1FsQ6U8R2sBN
+	Casw3HiLeQ/Jy9KbPCIJAwEVTuDgaEIY96KZKoWuWxKH2yIXUi3K9qmkR8J4a3MqxcQE59LtYT8W5
+	CsfwheWRaYbJAWD8WKfo+khxM4C3qPq56rRECBE9oZxVTGvcEDIOlA3+SE0HFpdTfOB7mGDHL4d4H
+	EOVnhVmoVzKYRfywMWcmnQcm0FM8LCnXf16Gud887o8vZNFLYQO8l0os9Y44+xZVWVDyQ6hk6oyVz
+	1zs6Xhl+xc3H5nRvW1OLAUUB9VC0e/eSXi1y/cXzznEYW3Oo77iZx/ml/9rbXmf6So/IgqECXAv2y
+	rTp5jNWg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xJV59-0000000Blkj-35wj;
-	Wed, 21 Oct 2026 12:06:11 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1xJVjO-0000000Bpve-2TWk;
+	Wed, 21 Oct 2026 12:47:46 +0000
+Received: from mail-northcentralusazon11013003.outbound.protection.outlook.com ([40.107.201.3] helo=CH4PR04CU002.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xJV58-0000000BlkW-21oc
+	id 1xJVjM-0000000Bpux-1c2p
 	for linux-mtd@lists.infradead.org;
-	Wed, 21 Oct 2026 12:06:10 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id E6B7B4085A;
-	Wed, 21 Oct 2026 12:06:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DAFF1F000CA;
-	Wed, 21 Oct 2026 12:06:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792584369;
-	bh=PJjbuB1YMFVOTXUb3uXc3PrNzdyjQit41oCZ7CAgPJY=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=bVjgBFnv+oMYbUFExZhZaTvaNozvSCsSl7QDat+k2idp6+/NXLm4RaoBRqlo54dNu
-	 +AJ/ISy4rlDo0lRZaf7hlHsMl+zSl4iMmoURfL+eHHOxSYo/XqbEjrfe6fP8TLtKMO
-	 82HvgJFdpJK4OGMdfNutnXHnDBM41WCjDUGbM2MQih4Myvd+SZhNpoWuK8zYMzSXCT
-	 OBVkFVPNq+8cySS7cv5UCh0wMKf75eSjtED/KWSTi6JAqdA5a9j094MFsRNgCjspgk
-	 AhM15cZYbD9gzC96aXpjNO4lmRTuh8lHQ8GHtfabt2K2k2xz4HpOtdL+Js7SOjyZy3
-	 KQ809M5xk+jEw==
-Message-ID: <sashiko-outbox-180201@kernel.org>
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH] mtd: phram: reject non-RAM ranges for module parameters
-To: "Rahul Kumar" <rk0006818@gmail.com>, linux-mtd@lists.infradead.org
-Cc: "Joern Engel" <joern@lazybastard.org>, "Miquel Raynal" <miquel.raynal@bootlin.com>, "Richard
- Weinberger" <richard@nod.at>, "Vignesh Raghavendra" <vigneshr@ti.com>, "Vincent
- Whitchurch" <vincent.whitchurch@axis.com>, syzbot+eaaabe90f486cb6f31b2@syzkaller.appspotmail.com, syzbot+061cb4ee001379dbbfaf@syzkaller.appspotmail.com
-In-Reply-To: <20261021115348.799538-1-rk0006818@gmail.com>
-References: <20261021115348.799538-1-rk0006818@gmail.com>
-Date: Wed, 21 Oct 2026 12:06:09 +0000
+	Wed, 21 Oct 2026 12:47:45 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=dSkGCMv8cPTcTJ028BaL+b/Ap8Sns6nPToqZabqQh8yjwXJLvAZA30UaJUYRT3PY4j23UiOyKQR6BInPRGgxex9FSjtps4bPQHaqaYrVDPZn8saRVRm2R9EUJnLETdo9kyTAUO98cR98aic1veYP5WxBLWDfeuTtAigAciJJW+G/tcrvGcPNRaIG+mLhdg/e2QIhhQ1QCoPYLTrzsrIfHpsJgdFckYW7+ZPw7GVvc6BgGTt7yQ2UfLNe1DhbpWfMt8bGvfiuinOo5W/lfPwGP7qfos6wefN6b6K7zBkeP89d6iuunKG7hAxrqgWzTWirlyRtYlC3Wq58O8E/s+uk9Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=vSfnl8OViYKTfdQvMn5jQSgpVQGoxLoGul67I6FcqYc=;
+ b=vsmVimAwMFU/VvxsCs4Rt+9wkPvYnb5F5FxljUMcOs8v/stHP7QzTTTJD7bPSJihifHma44RHJdQi0ARhgsyEPVh/tYSvNeoarqHU3HvJB54aEpIMB/mqk2jiF+Dm7XhUzE1qnMvgE7oyOt4ruLNumgXcCoMjG6/3EmlkByBooyO1Ve1gS9OqQ5kBtqWBR1i12kFciDH/OTpn1fgE85YqE6BnJsSE3qdjA1sbhWLqkxuU0dhzCRrDs+MAyw7mtN0szjySj/PJMhU2WNQV77WiiL7XyTWqDzh0Y6CmCzY6Ky2OECshSDMlM9n53pOgMzix6id4ST0ji57YyWpyUdrlA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=altera.com; dmarc=pass action=none header.from=altera.com;
+ dkim=pass header.d=altera.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=altera.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vSfnl8OViYKTfdQvMn5jQSgpVQGoxLoGul67I6FcqYc=;
+ b=AUpQK36C9iBrcCv29CArvsFxxr3Ao/yrJFOiwlpyapMwHgZqN5NHdbIzJ7wupCU/h+VgMNMDABCk+jBHzHTUiUlE2DqmYKYlt4RavqBMGYSaP84IrnVibA9zGyodDwU5lI8IMx+HuBgrpT+Ono2iT4A9S2MoBVohtOh5DyqfEWvVcpGZ1VE4HZSP0ab/q97asqyH8gFclNEVotXD+/YO2kRBm7vn1cFgnWn432KeYR3889F/1N4PmMmkecUfcAnuTHrjVG+YcqC5tRDXXkh32FklzjoDp0NVeDfFimYYYgmPPkGsuCNhliipp+lWcm2TTBOWzhiPqhEsmsMoL1wdYQ==
+Authentication-Results: mx.microsoft.com 1; dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=altera.com;
+Received: from SJ0PR03MB5950.namprd03.prod.outlook.com (2603:10b6:a03:2d3::20)
+ by LV3PR03MB7732.namprd03.prod.outlook.com (2603:10b6:408:281::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.546.15; Wed, 21 Oct
+ 2026 12:47:30 +0000
+Received: from SJ0PR03MB5950.namprd03.prod.outlook.com
+ ([fe80::53a0:bf93:6b6b:de01]) by SJ0PR03MB5950.namprd03.prod.outlook.com
+ ([fe80::53a0:bf93:6b6b:de01%5]) with mapi id 15.21.0522.017; Wed, 21 Oct 2026
+ 12:47:30 +0000
+Message-ID: <9ae3221d-a849-4297-87f8-866ae45e6dcd@altera.com>
+Date: Wed, 21 Oct 2026 20:47:24 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] mtd: core: add release hook and removed flag for
+ unbind with open handles
+To: Michael Walle <mwalle@kernel.org>, linux-kernel@vger.kernel.org,
+ Pratyush Yadav <pratyush@kernel.org>,
+ Takahiro Kuwano <takahiro.kuwano@infineon.com>, linux-mtd@lists.infradead.org
+References: <cover.1791512623.git.tze.yee.ng@altera.com>
+ <e4312228d241860b3e3238864d12aae47b721db1.1791512623.git.tze.yee.ng@altera.com>
+ <sashiko-outbox-165038@kernel.org>
+Content-Language: en-US
+From: "NG, TZE YEE" <tze.yee.ng@altera.com>
+In-Reply-To: <sashiko-outbox-165038@kernel.org>
+X-ClientProxiedBy: SJ0PR13CA0057.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c2::32) To SJ0PR03MB5950.namprd03.prod.outlook.com
+ (2603:10b6:a03:2d3::20)
+X-Archived-By: <archiver.kernel.org>
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ0PR03MB5950:EE_|LV3PR03MB7732:EE_
+X-MS-Office365-Filtering-Correlation-Id: b27fdc4d-1ec6-48bb-7dbc-08df2f71781b
+X-MS-Exchange-AtpMessageProperties: SA
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|23010399003|1800799024|376014|55112099003|6133799003|18002099003|10067099003|22082099003|4143699003|261009223027099003|11063799006|56012099006;
+X-Microsoft-Antispam-Message-Info: pYxEYlbDKPpZiLsGyKcKTX3npCgk2XGfubVicGs5Cpf/UHYjMBbVLXH3vx+4cEaSVODW2kcXSIp4PqObCn8+UyUPZwBEIl2B0TDt/m+2+XjdDj6N/iaqMlCqhOeZFVKGm/mrkqL/rp63V9/NJ2K3px065fKPB9Rk/PjkEYLI18+WmoKzS4N3qGa47itzonslWVLvf0s42xR7GSKTDARC+RuFyyKEXVOqOIY9bpGKB/d1Y5UmalKAGPYiaxr82SHEhVvXqL4PzW3i4ulgoect8dq7weqMW9EaSpMCmvu8dADMPR98PREq+QO5Jv3DK8w/SyzS58SjB+6jFRx2rmRaJDKktKAhKecrLTtKnvJluUJYKLLMP9fqAFaEbLvepEJEPNMf+98+yU9GanLinFGd+FU0aZMmNqPg2fCpD8+VqbDAbuv96xLwmDLo1pcPV1jelQbePWiGo47ZqQwG0dufUodRoE57JFR9KjLNy3+uceTf6g5n6F8uLa4Uuo5I+z66JTDpIrRVUA6+9Eogi8ESfbL0yAPOCU4RopP5ntsTUyvH9yi54S6SqdWF7o50e+zOEb6AR+NLojM19/QdCPWZh5u0UT9UsYeKphr1PsGAIwtNzE7l6rwCDO7RYEyllmPFTuWi9gXiemsd0VG8MLWXobgIYmK0vF920ULqrcu6ICc=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR03MB5950.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(23010399003)(1800799024)(376014)(55112099003)(6133799003)(18002099003)(10067099003)(22082099003)(4143699003)(261009223027099003)(11063799006)(56012099006);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?d0tmYU1oZnlsMXJPYmZtelV2NjhVbzRyNncrdnRjSi8rcE9FbUFEUGgzeVpw?=
+ =?utf-8?B?eDYzTGhmdjQ5b2ZxYSswenUvVmdkaERrbU9JWVVxUGRXYUs0OWYxOVpldVJB?=
+ =?utf-8?B?NE1SU1grMjhTNDRRNTQ3SmJRbmJLOEdZNnVlQUxNbjh6c3g2K3EvQlZYN28x?=
+ =?utf-8?B?eElXSlRuNGsxK3RhbmRtbytvT0RQT3E0OGNwRzE4RjFQekVrcFY5QVNJV3hq?=
+ =?utf-8?B?NDNBcXhpQTBDdlVuUE9NekJ5TXI1NzFZZlRpWmViUS9kWjBxYSt5aHFjVHN4?=
+ =?utf-8?B?elVRSFRaZ0lnZ3F1UWZwYmVid0VmdnExWnVyMWdFeS9sUDBqMG1PRVlFN3ZP?=
+ =?utf-8?B?dnRaUnZHQ1dsd0tkaFhUV0p5WldOVnNWN0R1Mk9uZ0lESStKR0hUazJFSVVk?=
+ =?utf-8?B?TGpNcGRJbGJnMHlHb3JGaFRQRFNhWkszUjJocitzaUkrajNjSmdCUThia2w0?=
+ =?utf-8?B?NUFzdCtPOGFjdnpnTW5hcnNnQWMxZE9tUVlqQjBUaXJkcHZYS2syYzlNc0JR?=
+ =?utf-8?B?SEZ4VHNJOHV4TURhRWM3cGpqaVA1Um9PMXc1U2ZWbmNQdkd0Wmw2MmRmL1hm?=
+ =?utf-8?B?YUx0RC9IelZIQWxOejBPNUFLQkZvbm9aZzl2Z2w1bWRub1YyUThwNFRSZHRr?=
+ =?utf-8?B?N2lkWTFJM1ppLzlHNDArUlZtL2J1S3ZNNllYT3NRWTdxdWpmL2o3ZTF1Z2xH?=
+ =?utf-8?B?eDkyMXFXUmRQb1VmYVdFei9Ea3VIRU90VjNlZTF6a3ZZaWYyankzOVUxTE44?=
+ =?utf-8?B?WGZBTU81d1BITHpYcGZ0WG01RzBSSVZHdFV3ZFJyTzZCR1NWS1NNSTIxc2VX?=
+ =?utf-8?B?Nlo1RWtodVgydUcwVks5cEZVQmRKbVBvMkErZEdwelVOZ3VyZyt3YXI0SmFQ?=
+ =?utf-8?B?Wmk4Rjg1dUwzY0c0SURldTlmelo0YlBRdlJhOWRvMys1b1dmNElwMWNsbDM0?=
+ =?utf-8?B?eit6b0Z0OFE3RThpY1NkNk5rVnFkTUM0aWp1NS9QU1dFUHFVanozQXVUeFVh?=
+ =?utf-8?B?eWFyaUtlWEFzTXV5OFl0ZHpHNDVjSVJKU04rbTdvRlJIWmRLdEdjcENZbUts?=
+ =?utf-8?B?a2RHVUNFQ0dFYmswbVFFelRFM0hTYUlCK002WGIrbWdrdVpnb2NZUlpwMkZB?=
+ =?utf-8?B?V2FGVG9TejVyK0wwd3RneVRPM2lnWFlrV1JFcmxpM2JURE95RWw5bm00UmJv?=
+ =?utf-8?B?cjhjQnBkd2dmbkRjMlpDREVNVm9vRE5jN3JUOXQreUVFWjVKRDV1YmQ1Rkpl?=
+ =?utf-8?B?WnBYVVordUZZZG9hZTdjOUZwUGJveFpkdjhjZ1hLWHVtZUp3bGlFbk12Y3ps?=
+ =?utf-8?B?WDYva0NMMCs4UitQQTRENkZzWVc2TlJ0bTEwdmJGeFcwRjVrVzc3RlgyYmpv?=
+ =?utf-8?B?YThsREhyVEl6bzg2azc4SDRhRDhaTmJpZFNMQnhWTGZjSTZ4NzJleVVlQ1hs?=
+ =?utf-8?B?YWZuc1A3VFEwVHNRNTVDYTZSa2toYnZ3Z1FzdVJ1YWVBWm1SV3J3eE00TUFo?=
+ =?utf-8?B?T3JuS3dic2ZNb0ViMmdRbDJuazlLWFhYSE0zeng4YzNJbEZPSmh5WWdTdXlT?=
+ =?utf-8?B?djRkbkpYMXQvZGJmZUFxa0NWeXpxQTNZdmFFejNUeml4ZndpWHhsb3h6eUhT?=
+ =?utf-8?B?NEx6NDdWSHZUbkdZL3hDc3NHendxLzJDSWZBUTk0RjM0V3FYeXdCaXlsU0gx?=
+ =?utf-8?B?aVVLN1BCdlRrSmVzNEZLdTY1RmY5KzZtb0Vta1dJRi9VNitsdVh3RVV3T045?=
+ =?utf-8?B?QWxQM0p6bzFYVHBITHk3YXpqU00rMlB5ZFlSaC9ZYTdJamFlSnpEekVsVyt5?=
+ =?utf-8?B?V094djR4blA1UFUvU2g4VlNGc3UyYldSQktLSDk1ZTE0WUVrQlJRSENGWURY?=
+ =?utf-8?B?N05yWlliNG9YaHRiWk13ckZCZnpvWlJpV25YVnNPbjJSRE5tZXNjeVlVR2FI?=
+ =?utf-8?B?ZXg5RFErWno4Slk4dXNJNEpJdit1dzl1Q3J0R2hCNXk1bW1EUUtCOTMzdThM?=
+ =?utf-8?B?MnZHcjBSZWZWWFU3N3JwNE0wblJFbmNJdVV3ek0vUFlXNkNYN2ZuZ052Q1M3?=
+ =?utf-8?B?VWEyTHN3NERLdTd5OHVPYi9xRzdnRHdoVFkyVU02ZzdmeFFNcmFXeEs4VEFk?=
+ =?utf-8?B?dXc2N2liT1FKa1hNWndqYm1UVXRHRlpKZlp5L2hkWnJFVkw2WEtkTE41NTdG?=
+ =?utf-8?B?RSsxSDRwSC93aGlzU2VqQ3VNRXJLVXpxa1pyMXF5d1dLY1M3eGhDY0d4R2p0?=
+ =?utf-8?B?SGxQWHluU0ZnNzB3QmUvNXRmbmZVN1QwSnVyNVl4clJSejlWUGhLdjg5UFQy?=
+ =?utf-8?B?V1NTUXR6RXlwQlNrS1NySkpLbE5MckhpVmw5S011TlAxdTQxTExmQT09?=
+X-OriginatorOrg: altera.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b27fdc4d-1ec6-48bb-7dbc-08df2f71781b
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR03MB5950.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Oct 2026 12:47:30.4608
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: fbd72e03-d4a5-4110-adce-614d51f2077a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: b1z/Z6LjJpqQOwL7rvf1jp3pVzX6UjAZ8FRDesAIndGny0Ccd9UivGy7ODOohPaKlB5Zb+Swj0bEktTMn+JfQw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR03MB7732
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20261021_054744_460475_12823AF6 
+X-CRM114-Status: GOOD (  34.66  )
+X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -62,129 +146,161 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: sashiko-reviews@lists.linux.dev
-X-Archived-By: <archiver.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-9.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=4.0.1
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-VGhhbmsgeW91IGZvciB5b3VyIGNvbnRyaWJ1dGlvbiEgU2FzaGlrbyBBSSByZXZpZXcgZm91bmQg
-MiBwb3RlbnRpYWwgaXNzdWUocykgdG8gY29uc2lkZXI6Ci0gW0hpZ2hdIG10ZDogcGhyYW06IHJl
-cXVpcmluZyBTeXN0ZW0gUkFNIGluIHJlZ2lzdGVyX2RldmljZSgpIGJyZWFrcyBwaHJhbSB1c2Ug
-Y2FzZXMKLSBbSGlnaF0gbXRkOiBwaHJhbTogaW5jb21wbGV0ZSBSQU0gcmFuZ2UgY2hlY2sgaW4g
-cmVnaXN0ZXJfZGV2aWNlKCkgYWxsb3dzIGtlcm5lbCBvb3BzCi0tCgpjb21taXQgZjRkYTIwMTBl
-OWU1YWNlYjliNTVmMGI0ZDY1NGM1ZWNlYjEyOTlkNApBdXRob3I6IFJhaHVsIEt1bWFyIDxyazAw
-MDY4MThAZ21haWwuY29tPgoKbXRkOiBwaHJhbTogcmVqZWN0IG5vbi1SQU0gcmFuZ2VzIGZvciBt
-b2R1bGUgcGFyYW1ldGVycwoKVGhpcyBjb21taXQgdXBkYXRlcyByZWdpc3Rlcl9kZXZpY2UoKSBp
-biB0aGUgcGhyYW0gZHJpdmVyIHRvIHJlcXVpcmUgdGhhdAptb2R1bGUtcGFyYW1ldGVyIHBoeXNp
-Y2FsIGFkZHJlc3MgcmFuZ2VzIGludGVyc2VjdCBJT1JFU09VUkNFX1NZU1RFTV9SQU0gYW5kCmRl
-ZmF1bHRzIHRob3NlIG1hcHBpbmdzIHRvIGNhY2hlZCBtZW1yZW1hcCgpLgoKPiBkaWZmIC0tZ2l0
-IGEvZHJpdmVycy9tdGQvZGV2aWNlcy9waHJhbS5jIGIvZHJpdmVycy9tdGQvZGV2aWNlcy9waHJh
-bS5jCj4gaW5kZXggYjQyY2FkY2Q3NmIxMS4uOTc0N2U3ZTU4ZTZmYyAxMDA2NDQKPiAtLS0gYS9k
-cml2ZXJzL210ZC9kZXZpY2VzL3BocmFtLmMKPiArKysgYi9kcml2ZXJzL210ZC9kZXZpY2VzL3Bo
-cmFtLmMKWyAuLi4gXQo+IEBAIC0xMjYsMTAgKzEyNywxNiBAQCBzdGF0aWMgaW50IHJlZ2lzdGVy
-X2RldmljZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2LCBjb25zdCBjaGFyICpuYW1lLAo+
-ICAJCQkgICBwaHlzX2FkZHJfdCBzdGFydCwgc2l6ZV90IGxlbiwgdWludDMyX3QgZXJhc2VzaXpl
-KQo+ICB7Cj4gIAlzdHJ1Y3QgZGV2aWNlX25vZGUgKm5wID0gcGRldiA/IHBkZXYtPmRldi5vZl9u
-b2RlIDogTlVMTDsKPiAtCWJvb2wgY2FjaGVkID0gbnAgPyAhb2ZfcHJvcGVydHlfcmVhZF9ib29s
-KG5wLCAibm8tbWFwIikgOiBmYWxzZTsKPiArCWJvb2wgY2FjaGVkID0gbnAgPyAhb2ZfcHJvcGVy
-dHlfcmVhZF9ib29sKG5wLCAibm8tbWFwIikgOiB0cnVlOwo+ICAJc3RydWN0IHBocmFtX210ZF9s
-aXN0ICpuZXc7Cj4gIAlpbnQgcmV0ID0gLUVOT01FTTsKPiAgCj4gKwlpZiAoIW5wICYmIHJlZ2lv
-bl9pbnRlcnNlY3RzKHN0YXJ0LCBsZW4sIElPUkVTT1VSQ0VfU1lTVEVNX1JBTSwKPiArCQkJCSAg
-ICAgSU9SRVNfREVTQ19OT05FKSAhPSBSRUdJT05fSU5URVJTRUNUUykgewoKW1NldmVyaXR5OiBI
-aWdoXQpXb24ndCByZXF1aXJpbmcgSU9SRVNPVVJDRV9TWVNURU1fUkFNIGFuZCBkZWZhdWx0aW5n
-IHRvIGNhY2hlZCBtYXBwaW5ncyBpbgpyZWdpc3Rlcl9kZXZpY2UoKSBpbnRyb2R1Y2UgYSByZWdy
-ZXNzaW9uIHRoYXQgYnJlYWtzIHRoZSBkb2N1bWVudGVkCm1vZHVsZS1wYXJhbWV0ZXIgdXNlIGNh
-c2VzIGZvciBwaHJhbSB3aGlsZSBleHBvc2luZyBhY3RpdmUga2VybmVsIG1lbW9yeT8KCkluIGRy
-aXZlcnMvbXRkL2RldmljZXMvS2NvbmZpZywgTVREX1BIUkFNIGlzIGRvY3VtZW50ZWQgYXM6CgoJ
-Y29uZmlnIE1URF9QSFJBTQoJCXRyaXN0YXRlICJQaHlzaWNhbCBzeXN0ZW0gUkFNIgoJCWhlbHAK
-CQkgIFRoaXMgaXMgYSByZS1pbXBsZW1lbnRhdGlvbiBvZiB0aGUgc2xyYW0gZHJpdmVyIGFib3Zl
-LgoKCQkgIFVzZSB0aGlzIGRyaXZlciB0byBhY2Nlc3MgcGh5c2ljYWwgbWVtb3J5IHRoYXQgdGhl
-IGtlcm5lbCBwcm9wZXIKCQkgIGRvZXNuJ3QgaGF2ZSBhY2Nlc3MgdG8sIG1lbW9yeSBiZXlvbmQg
-dGhlIG1lbT14eHggbGltaXQsIG52cmFtLAoJCSAgbWVtb3J5IG9uIHRoZSB2aWRlbyBjYXJkLCBl
-dGMuLi4KClBoeXNpY2FsIG1lbW9yeSBiZXlvbmQgdGhlIG1lbT14eHggbGltaXQgaXMgcmVtb3Zl
-ZCBmcm9tIHRoZSBtZW1vcnkgbWFwIGR1cmluZwplYXJseSBib290IGJlZm9yZSBpb21lbV9yZXNv
-dXJjZSBpcyBwb3B1bGF0ZWQsIGZvciBleGFtcGxlIGluCmFyY2gveDg2L2tlcm5lbC9lODIwLmM6
-cGFyc2VfbWVtb3B0KCk6CgoJZTgyMF9fcmFuZ2VfcmVtb3ZlKG1lbV9zaXplLCBVTExPTkdfTUFY
-IC0gbWVtX3NpemUsIEU4MjBfVFlQRV9SQU0pOwoKKGFuZCBzaW1pbGFybHkgdmlhIGFybTY0X21l
-bWJsb2NrX2luaXQoKSAtPiBtZW1ibG9ja19tZW1fbGltaXRfcmVtb3ZlX21hcCgpIG9uCmFybTY0
-LCBlYXJseV9tZW0oKSBvbiBhcm0sIGFuZCBzZXR1cF9ib290bWVtKCkgLT4KbWVtYmxvY2tfZW5m
-b3JjZV9tZW1vcnlfbGltaXQoKSBvbiByaXNjdikuIExpa2V3aXNlLCByYW5nZXMgcmVzZXJ2ZWQg
-dmlhCm1lbW1hcD1ubiRzcyBvciBtZW1tYXA9bm4hc3MgYXJlIHJlZ2lzdGVyZWQgYXMgSU9SRVNP
-VVJDRV9NRU0gcmF0aGVyIHRoYW4KSU9SRVNPVVJDRV9TWVNURU1fUkFNIGluIGFyY2gveDg2L2tl
-cm5lbC9lODIwLmM6ZTgyMF90eXBlX3RvX2lvbWVtX3R5cGUoKToKCglzd2l0Y2ggKGVudHJ5LT50
-eXBlKSB7CgljYXNlIEU4MjBfVFlQRV9SQU06CQlyZXR1cm4gSU9SRVNPVVJDRV9TWVNURU1fUkFN
-OwoJLi4uCgljYXNlIEU4MjBfVFlQRV9QUkFNOgkJLyogRmFsbC10aHJvdWdoOiAqLwoJY2FzZSBF
-ODIwX1RZUEVfUE1FTToJCS8qIEZhbGwtdGhyb3VnaDogKi8KCWNhc2UgRTgyMF9UWVBFX1JFU0VS
-VkVEOgkvKiBGYWxsLXRocm91Z2g6ICovCgljYXNlIEU4MjBfVFlQRV9TT0ZUX1JFU0VSVkVEOgkv
-KiBGYWxsLXRocm91Z2g6ICovCglkZWZhdWx0OgkJCXJldHVybiBJT1JFU09VUkNFX01FTTsKCX0K
-Ck5WUkFNIGFuZCB2aWRlbyBjYXJkIG1lbW9yeSBhcmUgYWxzbyBub3QgcmVnaXN0ZXJlZCBhcyBJ
-T1JFU09VUkNFX1NZU1RFTV9SQU0uCldoZW4gcGhyYW1fc2V0dXAoKSAtPiByZWdpc3Rlcl9kZXZp
-Y2UoKSBpcyBjYWxsZWQgZm9yIGFueSBvZiB0aGVzZSByYW5nZXMgdmlhCnRoZSBtb2R1bGUgcGFy
-YW1ldGVyICh3aGVyZSBucCBpcyBOVUxMKSwgcmVnaW9uX2ludGVyc2VjdHMoKSByZXR1cm5zClJF
-R0lPTl9ESVNKT0lOVCBhbmQgcmVqZWN0cyB0aGVtIHdpdGggLUVJTlZBTC4KCkNvbnZlcnNlbHks
-IHJhbmdlcyB0aGF0IGRvIG1hdGNoIElPUkVTT1VSQ0VfU1lTVEVNX1JBTSB3aXRoIElPUkVTX0RF
-U0NfTk9ORSBpbgppb21lbV9yZXNvdXJjZSBhcmUgYWN0aXZlIFN5c3RlbSBSQU0gbWFuYWdlZCBi
-eSB0aGUgcGFnZSBhbGxvY2F0b3Igb3IgaG9sZGluZwprZXJuZWwgdGV4dCwgZGF0YSwgYW5kIHNs
-YWIgY2FjaGVzLiBQcmV2aW91c2x5LCBjYWNoZWQgd2FzIGZhbHNlIHdoZW4gIW5wLCBzbwpwaHJh
-bV9tYXAoKSBjYWxsZWQgaW9yZW1hcCgpLCB3aGljaCByZWZ1c2VkIHRvIG1hcCBhY3RpdmUgdW5y
-ZXNlcnZlZCBTeXN0ZW0KUkFNLiBXaXRoIGNhY2hlZCBzZXQgdG8gdHJ1ZSBhbmQgSU9SRVNPVVJD
-RV9TWVNURU1fUkFNIHJlcXVpcmVkLApwaHJhbV9tYXAoKSAtPiBtZW1yZW1hcChzdGFydCwgbGVu
-LCBNRU1SRU1BUF9XQikgLT4gdHJ5X3JhbV9yZW1hcCgpIGluCmtlcm5lbC9pb21lbS5jIHJ1bnM6
-CgoJaWYgKHBmbl92YWxpZChwZm4pICYmICFQYWdlSGlnaE1lbShwZm5fdG9fcGFnZShwZm4pKSAm
-JgoJICAgIGFyY2hfbWVtcmVtYXBfY2FuX3JhbV9yZW1hcChvZmZzZXQsIHNpemUsIGZsYWdzKSkK
-CQlyZXR1cm4gX192YShvZmZzZXQpOwoKRG9lc24ndCB0aGlzIHJldHVybiB0aGUga2VybmVsIGxp
-bmVhciBtYXBwaW5nIF9fdmEoc3RhcnQpIHdpdGhvdXQgY2hlY2tpbmcKUGFnZVJlc2VydmVkKCks
-IGFsbG93aW5nIHJlYWRzLCB3cml0ZXMsIG9yIGVyYXNlcyBvbiB0aGUgcmVzdWx0aW5nIE1URCBk
-ZXZpY2UKdG8gY29ycnVwdCBvciBkaXNjbG9zZSBsaXZlIGtlcm5lbCBtZW1vcnk/Cgo+ICsJCXBy
-X2Vycigic3RhcnQvbGVuIGlzIG5vdCBTeXN0ZW0gUkFNXG4iKTsKPiArCQlyZXR1cm4gLUVJTlZB
-TDsKPiArCX0KCltTZXZlcml0eTogSGlnaF0KRXZlbiBpZiB0aGUgZ29hbCBpcyB0byByZXN0cmlj
-dCBtb2R1bGUtcGFyYW1ldGVyIGRldmljZXMgdG8gU3lzdGVtIFJBTSwgY2FuIGEKcmFuZ2UgdGhh
-dCBwYXJ0aWFsbHkgb3ZlcmxhcHMgYW4gdW5tYXBwZWQgcGh5c2ljYWwgbWVtb3J5IGhvbGUgKG9y
-IHdyYXBzCmFyb3VuZCkgc3RpbGwgcGFzcyB0aGlzIHJlZ2lvbl9pbnRlcnNlY3RzKCkgY2hlY2sg
-YW5kIHRyaWdnZXIgYSBrZXJuZWwgb29wcyBvcgppb3JlbWFwIHdhcm5pbmc/CgpBcyBkZXNjcmli
-ZWQgaW4gdGhlIGNvbW1lbnQgYWJvdmUgcmVnaW9uX2ludGVyc2VjdHMoKSBpbiBrZXJuZWwvcmVz
-b3VyY2UuYzoKCgkgKiBSZXR1cm4gUkVHSU9OX0RJU0pPSU5UIGlmIHRoZSByZWdpb24gZG9lcyBu
-b3Qgb3ZlcmxhcCBAZmxhZ3MvQGRlc2MsCgkgKiByZXR1cm4gUkVHSU9OX01JWEVEIGlmIHRoZSBy
-ZWdpb24gb3ZlcmxhcHMgQGZsYWdzL0BkZXNjIGFuZCBhbm90aGVyCgkgKiByZXNvdXJjZSwgYW5k
-IHJldHVybiBSRUdJT05fSU5URVJTRUNUUyBpZiB0aGUgcmVnaW9uIG92ZXJsYXBzIEBmbGFncy9A
-ZGVzYwoJICogYW5kIG5vIG90aGVyIGRlZmluZWQgcmVzb3VyY2UuIE5vdGUgdGhhdCBSRUdJT05f
-SU5URVJTRUNUUyBpcyBhbHNvCgkgKiByZXR1cm5lZCBpbiB0aGUgY2FzZSB3aGVuIHRoZSBzcGVj
-aWZpZWQgcmVnaW9uIG92ZXJsYXBzIFJBTSBhbmQgdW5kZWZpbmVkCgkgKiBtZW1vcnkgaG9sZXMu
-CgpJbiBrZXJuZWwvcmVzb3VyY2UuYzpfX3JlZ2lvbl9pbnRlcnNlY3RzKCksIFJFR0lPTl9JTlRF
-UlNFQ1RTIGlzIHJldHVybmVkCndoZW5ldmVyIHRoZSByYW5nZSBvdmVybGFwcyBhdCBsZWFzdCBv
-bmUgbWF0Y2hpbmcgSU9SRVNPVVJDRV9TWVNURU1fUkFNCnJlc291cmNlIGFuZCBubyBvdGhlciBk
-ZWZpbmVkIHJlc291cmNlIGluIGlvbWVtX3Jlc291cmNlLiBVbmRlZmluZWQgcGh5c2ljYWwKbWVt
-b3J5IGhvbGVzIGhhdmUgbm8gcmVzb3VyY2UgZW50cnksIGFuZCBERUZJTkVfUkVTKHN0YXJ0LCBz
-aXplLCAwKSBjb21wdXRlcwpzdGFydCArIHNpemUgLSAxIHdpdGhvdXQgb3ZlcmZsb3cgY2hlY2tp
-bmcuCgpXaGVuIHBocmFtX21hcCgpIHRoZW4gY2FsbHMgbWVtcmVtYXAoc3RhcnQsIGxlbiwgTUVN
-UkVNQVBfV0IpLAprZXJuZWwvaW9tZW0uYzp0cnlfcmFtX3JlbWFwKCkgb25seSB2YWxpZGF0ZXMg
-dGhlIHN0YXJ0aW5nIHBhZ2UgdmlhClBIWVNfUEZOKG9mZnNldCkgYW5kIGlnbm9yZXMgc2l6ZToK
-CjEuIElmIHN0YXJ0IGlzIGluc2lkZSBTeXN0ZW0gUkFNIGFuZCBzdGFydCArIGxlbiBleHRlbmRz
-IHBhc3QgdGhlIGVuZCBvZgpTeXN0ZW0gUkFNIGludG8gYW4gdW5tYXBwZWQgaG9sZSAob3Igc3Rh
-cnQgKyBsZW4gLSAxIHdyYXBzIGFyb3VuZCBpbnNpZGUgdGhlCnNhbWUgU3lzdGVtIFJBTSByZXNv
-dXJjZSksIHJlZ2lvbl9pbnRlcnNlY3RzKCkgcmV0dXJucyBSRUdJT05fSU5URVJTRUNUUyBhbmQK
-dHJ5X3JhbV9yZW1hcCgpIHJldHVybnMgX192YShzdGFydCkuIFdoZW4gbXRkX2RldmljZV9yZWdp
-c3RlcigpIHNjYW5zIHRoZQpkZXZpY2Ugb3IgdXNlcnNwYWNlIGFjY2Vzc2VzIGl0LCB3b24ndCBw
-aHJhbV9yZWFkKCksIHBocmFtX3dyaXRlKCksIG9yCnBocmFtX2VyYXNlKCkgY2FsbCBtZW1jcHko
-KSBvciBtZW1zZXQoKSBwYXN0IHRoZSBlbmQgb2YgdGhlIGxpbmVhciBkaXJlY3QgbWFwCmFuZCBm
-YXVsdD8KCjIuIElmIHN0YXJ0IGxpZXMgaW4gYW4gdW5kZWZpbmVkIGhvbGUgYmVmb3JlIFN5c3Rl
-bSBSQU0gYW5kIHN0YXJ0ICsgbGVuCmV4dGVuZHMgaW50byBTeXN0ZW0gUkFNLCByZWdpb25faW50
-ZXJzZWN0cygpIHN0aWxsIHJldHVybnMgUkVHSU9OX0lOVEVSU0VDVFMsCndoaWxlIHRyeV9yYW1f
-cmVtYXAoKSBzZWVzICFwZm5fdmFsaWQoUEhZU19QRk4oc3RhcnQpKSBhbmQgZmFsbHMgYmFjayB0
-bwphcmNoX21lbXJlbWFwX3diKCkgLT4gaW9yZW1hcF9jYWNoZShzdGFydCwgbGVuKS4gV29uJ3Qg
-dGhhdCBzdGlsbCB0cmlnZ2VyIHRoZQpXQVJOX09OQ0UoKSBpbiBfX2lvcmVtYXBfY2FsbGVyKCkg
-b24geDg2IHdoZW4gY2hlY2tpbmcgdGhlIG92ZXJsYXBwaW5nIFJBTQp0YWlsLCBvciBtYXAgdGhl
-IG5vbi1SQU0gaG9sZSBvbiBhcm02NCBhbmQgZmF1bHQgaW4gbWVtY3B5KCkgd2hlbiBGVEwgc2Nh
-bnMKdGhlIGRldmljZT8KClsgLi4uIF0KCi0tIApTYXNoaWtvIEFJIHJldmlldyDCtyBodHRwczov
-L3Nhc2hpa28uZGV2LyMvcGF0Y2hzZXQvMjAyNjEwMjExMTUzNDguNzk5NTM4LTEtcmswMDA2ODE4
-QGdtYWlsLmNvbT9wYXJ0PTEKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDov
-L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+
+
+On 9/10/2026 3:49 pm, sashiko-bot@kernel.org wrote:
+
+Hi maintainers,
+
+Thanks for the review. For v3, I plan to drop the core release hook and 
+the removed flag, and reduce patch 1 to a reorder in __put_mtd_device(). 
+spi-nor would manage the object's lifetime with its own refcount.
+
+> Thank you for your contribution! Sashiko AI review found 4 potential issue(s) to consider:
+> - [Critical] mtd: Device Model lifecycle violation causing sysfs Use-After-Free> - [High] mtd: Use-After-Free of master object in __put_mtd_device()> 
+- [High] mtd: Master driver object memory leak when 
+CONFIG_MTD_PARTITIONED_MASTER is disabled
+> - [High] mtd: lockless TOCTOU race on master->removed allows UAF on unbind
+> --
+> 
+> commit 5c236b852da3e75f7d2ec6f13275ac5b432bb26f
+> Author: Tze Yee Ng <tze.yee.ng@altera.com>
+> 
+>      mtd: core: add release hook and removed flag for unbind with open handles
+> 
+> This commit introduces a new _free hook to struct mtd_info called from the
+> kref release function to ensure the backing driver object is destroyed only
+> when the last reference drops. It also adds a removed flag to struct mtd_info
+> which is set on unbind and checked before performing hardware operations to
+> prevent Use-After-Free of parent devm resources.
+> 
+>> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+>> index 491a27d0315fa..59133894b5e5c 100644
+>> --- a/drivers/mtd/mtdcore.c
+>> +++ b/drivers/mtd/mtdcore.c
+>> @@ -118,6 +118,7 @@ static void mtd_device_release(struct kref *kref)
+>>   {
+>>   	struct mtd_info *mtd = container_of(kref, struct mtd_info, refcnt);
+>>   	bool is_partition = mtd_is_partition(mtd);
+>> +	void (*mtd_free)(struct mtd_info *mtd) = mtd->_free;
+>>   
+>>   	debugfs_remove_recursive(mtd->dbg.dfs_dir);
+>>   
+>> @@ -135,6 +136,9 @@ static void mtd_device_release(struct kref *kref)
+>>   		memset(&mtd->dev, 0, sizeof(mtd->dev));
+>>   
+>>   	module_put(THIS_MODULE);
+>> +
+>> +	if (mtd_free)
+>> +		mtd_free(mtd);
+> 
+> [Severity: Critical]
+> Since struct mtd_info embeds a struct device, does freeing it here violate the
+> Device Model lifecycle?
+> 
+> If user-space holds an open sysfs file for the device, the device core retains
+> an elevated kobject reference count on mtd->dev even after device_unregister()
+> returns.
+> 
+> If mtd_free() destroys the memory containing the embedded struct device, won't
+> the device core access freed memory when put_device() is eventually called upon
+> sysfs file closure?
+> 
+> 
+
+Not new: mtd_info is embedded in the driver object for every MTD driver 
+and is already freed on unbind. v3 will frees it later than today, so it 
+is not worse. I plan to leave the sysfs lifetime out of this series.
+
+> [Severity: High]
+> Does this new mtd_free() hook cause a Use-After-Free in __put_mtd_device()?
+> 
+> Looking at __put_mtd_device() in drivers/mtd/mtdcore.c, we have:
+> 
+> 	if (IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER))
+> 		kref_put(&master->refcnt, mtd_device_release);
+> 
+> 	module_put(master->owner);
+> 
+> 	/* must be the last as master can be freed in the _put_device */
+> 	if (master->_put_device)
+> 		master->_put_device(master);
+> 
+> If mtd_device_release() synchronously frees the master object, won't the
+> subsequent dereferences of master->owner and master->_put_device access
+> freed memory?
+> 
+> 
+
+Agreed. v3 will reads master->owner first, calls ->_put_device() last 
+and drops the module reference after it.
+
+> [Severity: High]
+> Will the master driver object leak if CONFIG_MTD_PARTITIONED_MASTER is disabled?
+> 
+> When CONFIG_MTD_PARTITIONED_MASTER is disabled, the master device itself is
+> never registered via add_mtd_device(), so its refcount isn't incremented by
+> openers or managed by __get_mtd_device() or __put_mtd_device().
+> 
+> If drivers no longer free their objects in the remove() callback and rely
+> entirely on mtd_device_release(), how will the master driver object be freed
+> when CONFIG_MTD_PARTITIONED_MASTER is disabled?
+> 
+
+Agreed. This comes from relying on mtd_device_release() to free the
+driver object. In v3 spi-nor would own a kref and drop the registration
+reference unconditionally in remove(), independent of what
+mtd_device_unregister() does.
+
+>>   }
+>>   
+>>   #define MTD_DEVICE_ATTR_RO(name) \
+> 
+> [ ... ]
+> 
+>> @@ -1471,6 +1478,9 @@ int mtd_erase(struct mtd_info *mtd, struct erase_info *instr)
+>>   	instr->fail_addr = MTD_FAIL_ADDR_UNKNOWN;
+>>   	adjinstr = *instr;
+>>   
+>> +	if (master->removed)
+>> +		return -ENODEV;
+>> +
+>> [Severity: High]
+> Is this lockless check sufficient to prevent the Use-After-Free this patch
+> aims to solve?
+> 
+> If mtd_erase() checks master->removed and it evaluates to false, the thread
+> could be preempted.
+> 
+> If a concurrent driver unbind executes the driver's remove() callback,
+> drains in-flight operations, sets master->removed = true, and then the device
+> model tears down devm-managed resources, wouldn't the preempted MTD thread
+> resume and call master->_erase() on freed devm memory and a powered-down bus?
+> 
+
+Agreed. v3 would drop the flag from the core. spi-nor would set its own
+removed flag under nor->lock in remove(), and prep_and_lock*() would
+re-check it after taking the lock, so a waiter blocked on the lock sees
+it and returns -ENODEV.
+
+>>   	if (!mtd->erasesize || !master->_erase)
+>>   		return -ENOTSUPP;
+>>
+> 
+
+Thanks,
+Tze Yee
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
