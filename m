@@ -2,72 +2,72 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 361A7606A327
-	for <linux-mtd@archiver.kernel.org>; Wed, 21 Oct 2026 12:47:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EC65606A329
+	for <linux-mtd@archiver.kernel.org>; Wed, 21 Oct 2026 12:47:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=a88X7+uk;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=altera.com header.i=@altera.com header.a=rsa-sha256 header.s=selector2 header.b=AUpQK36C
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=QbdSxaG5;
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=altera.com header.i=@altera.com header.a=rsa-sha256 header.s=selector2 header.b=HGbIkmUc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
 	List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:From:References:To:Subject:
 	Date:Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=eWMBALH+ZNCcNmN+XuX8xpR0ZhwM9Jygc9gz59IDyWw=; b=a88X7+ukEHZ7wV1FsQ6U8R2sBN
-	Casw3HiLeQ/Jy9KbPCIJAwEVTuDgaEIY96KZKoWuWxKH2yIXUi3K9qmkR8J4a3MqxcQE59LtYT8W5
-	CsfwheWRaYbJAWD8WKfo+khxM4C3qPq56rRECBE9oZxVTGvcEDIOlA3+SE0HFpdTfOB7mGDHL4d4H
-	EOVnhVmoVzKYRfywMWcmnQcm0FM8LCnXf16Gud887o8vZNFLYQO8l0os9Y44+xZVWVDyQ6hk6oyVz
-	1zs6Xhl+xc3H5nRvW1OLAUUB9VC0e/eSXi1y/cXzznEYW3Oo77iZx/ml/9rbXmf6So/IgqECXAv2y
-	rTp5jNWg==;
+	bh=6fiKdG2la5thUXtbj8jNsMJDy2D6zbfpvN754lFBhBc=; b=QbdSxaG5t/WpSFwlAaZ3nABHq7
+	VcHaFh4JDov4+5uhQ/NJ9iIB8S2bXP2iZFGStq+Gorbydgksxk7JgFibBfLWxGiwInAVHdoeRiNzl
+	xRe/i9pSM4O63og/dj7aJHCEOphOjFBWZKbXy2haISVSchcD/tyYZGCYc6XRMMzflwHbei1iQC6je
+	FjVfkZzOqeieHt656Ygzkl5Nak3M3yP9sv53I57r4x98B7Yjf3RZt4iOZMPGRNqzyDuwzvxfg9+P1
+	2fRpDrKDlNsSUlrU0a/cvUQgDHxIzHN9wQWWc7IWaiwz90hHZYRNvxPsfq3Qe5jJ3RK7GQ2HVzQOR
+	pHAbn1Bg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xJVjO-0000000Bpve-2TWk;
-	Wed, 21 Oct 2026 12:47:46 +0000
+	id 1xJVjR-0000000BpwV-3BUg;
+	Wed, 21 Oct 2026 12:47:49 +0000
 Received: from mail-northcentralusazon11013003.outbound.protection.outlook.com ([40.107.201.3] helo=CH4PR04CU002.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xJVjM-0000000Bpux-1c2p
+	id 1xJVjN-0000000Bpux-3HFz
 	for linux-mtd@lists.infradead.org;
-	Wed, 21 Oct 2026 12:47:45 +0000
+	Wed, 21 Oct 2026 12:47:46 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=dSkGCMv8cPTcTJ028BaL+b/Ap8Sns6nPToqZabqQh8yjwXJLvAZA30UaJUYRT3PY4j23UiOyKQR6BInPRGgxex9FSjtps4bPQHaqaYrVDPZn8saRVRm2R9EUJnLETdo9kyTAUO98cR98aic1veYP5WxBLWDfeuTtAigAciJJW+G/tcrvGcPNRaIG+mLhdg/e2QIhhQ1QCoPYLTrzsrIfHpsJgdFckYW7+ZPw7GVvc6BgGTt7yQ2UfLNe1DhbpWfMt8bGvfiuinOo5W/lfPwGP7qfos6wefN6b6K7zBkeP89d6iuunKG7hAxrqgWzTWirlyRtYlC3Wq58O8E/s+uk9Q==
+ b=IartEXToUPy7opxTAz+xrbdbKYk+DTTLFjH8Nw7B2qKMSWZMHuxTj16OlVarqjPBBiRCurfE/oBa6+mea41BkmoLTNKFdalGaJT5NR+Y1SI2cZrtxxMHNL3/879PYsufzBOiDbmvFXInr/v5T5DPQZdKDaq6CfNQnYs9YkUZlp8NRJ8z2BYitP33TSU6WMm5eFKP5iZEQQ4JtI5U5q9bj8e454SEfqJ0tG5AzpDIc/mKcRDKo9PHHfEpPqN5Ijj+XPqXlts/6pDES5e35/Bh/R28nVSn+xxtd8yF5cY+VE72L+OhR5zTrdzAp/xGB4YKWhSvK7X6JQOgMRMFIHoh+Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vSfnl8OViYKTfdQvMn5jQSgpVQGoxLoGul67I6FcqYc=;
- b=vsmVimAwMFU/VvxsCs4Rt+9wkPvYnb5F5FxljUMcOs8v/stHP7QzTTTJD7bPSJihifHma44RHJdQi0ARhgsyEPVh/tYSvNeoarqHU3HvJB54aEpIMB/mqk2jiF+Dm7XhUzE1qnMvgE7oyOt4ruLNumgXcCoMjG6/3EmlkByBooyO1Ve1gS9OqQ5kBtqWBR1i12kFciDH/OTpn1fgE85YqE6BnJsSE3qdjA1sbhWLqkxuU0dhzCRrDs+MAyw7mtN0szjySj/PJMhU2WNQV77WiiL7XyTWqDzh0Y6CmCzY6Ky2OECshSDMlM9n53pOgMzix6id4ST0ji57YyWpyUdrlA==
+ bh=WFh9+hM5Xsu41g6QajXVIc0cnF1Vj+rs9UhhzOy/OgI=;
+ b=Q20LISVj+Do7fJ0PZlH1Hw0gUscsgTrP6LJOVey0zSq+s3M4OiM76a6nCLBsTcCmDY77JybCwxYX2giPyvPLeZi8wGsRvr14RgoTeGG/1llBMaI2qrJULIbqXgLCZJ2PPWTFDk7Rb/X/wQVoCnrDZTA9vSg5fdcWrmP+86WrgCcOYOx8HqGfEQUKkOXP3QLZ/hsu0MrHkRPA8/SmEaDozuST1KZhN+3smsEtJKFK9zFGhftltDinjfGYINO8lnkQlj13kJWfAjo5X1P5soPmB0EagkXR0oc0+pCUquhnFH5KodX8e54RQJ9J3kwG3AG5VWongUxKF+lo6tZIDsQK9Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=altera.com; dmarc=pass action=none header.from=altera.com;
  dkim=pass header.d=altera.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=altera.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vSfnl8OViYKTfdQvMn5jQSgpVQGoxLoGul67I6FcqYc=;
- b=AUpQK36C9iBrcCv29CArvsFxxr3Ao/yrJFOiwlpyapMwHgZqN5NHdbIzJ7wupCU/h+VgMNMDABCk+jBHzHTUiUlE2DqmYKYlt4RavqBMGYSaP84IrnVibA9zGyodDwU5lI8IMx+HuBgrpT+Ono2iT4A9S2MoBVohtOh5DyqfEWvVcpGZ1VE4HZSP0ab/q97asqyH8gFclNEVotXD+/YO2kRBm7vn1cFgnWn432KeYR3889F/1N4PmMmkecUfcAnuTHrjVG+YcqC5tRDXXkh32FklzjoDp0NVeDfFimYYYgmPPkGsuCNhliipp+lWcm2TTBOWzhiPqhEsmsMoL1wdYQ==
+ bh=WFh9+hM5Xsu41g6QajXVIc0cnF1Vj+rs9UhhzOy/OgI=;
+ b=HGbIkmUciiIN1ezF30mHC77ivsveAYskrp4KNwlLjfRTJWzrDO/ulCvkFbsGYk0f6TbsJpukC40/8WaOs9LWht6a1JlC40k8P1f1hjvsEWvAE7C9Qh5AzSFgSE+poVFX1MyJAQOxTZLa8i5bPczaOKbn7pjx7wpE8axGgzJt4Ns746naJAIiZNlhYVLhM6oAVUaHI3JN7BO7jUdoMB4df9VYi/98lRfVJwmVBSClMbOF+Xd+mqzxmaMof962M3RpWfJvO+w23Y6eWDdAIRDocLP0oHoTBJob6qH8BJSEDazE8uPWJcnprvv5m9FtjLgzV9IjbFcjRV34byejevB8mA==
 Authentication-Results: mx.microsoft.com 1; dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=altera.com;
 Received: from SJ0PR03MB5950.namprd03.prod.outlook.com (2603:10b6:a03:2d3::20)
  by LV3PR03MB7732.namprd03.prod.outlook.com (2603:10b6:408:281::9) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.546.15; Wed, 21 Oct
- 2026 12:47:30 +0000
+ 2026 12:47:35 +0000
 Received: from SJ0PR03MB5950.namprd03.prod.outlook.com
  ([fe80::53a0:bf93:6b6b:de01]) by SJ0PR03MB5950.namprd03.prod.outlook.com
  ([fe80::53a0:bf93:6b6b:de01%5]) with mapi id 15.21.0522.017; Wed, 21 Oct 2026
- 12:47:30 +0000
-Message-ID: <9ae3221d-a849-4297-87f8-866ae45e6dcd@altera.com>
-Date: Wed, 21 Oct 2026 20:47:24 +0800
+ 12:47:35 +0000
+Message-ID: <f9ca9c26-722a-47b5-b405-fd5e9c85bafe@altera.com>
+Date: Wed, 21 Oct 2026 20:47:33 +0800
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] mtd: core: add release hook and removed flag for
- unbind with open handles
-To: Michael Walle <mwalle@kernel.org>, linux-kernel@vger.kernel.org,
- Pratyush Yadav <pratyush@kernel.org>,
- Takahiro Kuwano <takahiro.kuwano@infineon.com>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v2 2/2] mtd: spi-nor: fix use-after-free on unbind with
+ open handles
+To: Michael Walle <mwalle@kernel.org>, Pratyush Yadav <pratyush@kernel.org>,
+ Takahiro Kuwano <takahiro.kuwano@infineon.com>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
 References: <cover.1791512623.git.tze.yee.ng@altera.com>
- <e4312228d241860b3e3238864d12aae47b721db1.1791512623.git.tze.yee.ng@altera.com>
- <sashiko-outbox-165038@kernel.org>
+ <f03556b68e5d25bca6b3f533e344d83fc611c3d5.1791512623.git.tze.yee.ng@altera.com>
+ <sashiko-outbox-165042@kernel.org>
 Content-Language: en-US
 From: "NG, TZE YEE" <tze.yee.ng@altera.com>
-In-Reply-To: <sashiko-outbox-165038@kernel.org>
+In-Reply-To: <sashiko-outbox-165042@kernel.org>
 X-ClientProxiedBy: SJ0PR13CA0057.namprd13.prod.outlook.com
  (2603:10b6:a03:2c2::32) To SJ0PR03MB5950.namprd03.prod.outlook.com
  (2603:10b6:a03:2d3::20)
@@ -75,67 +75,67 @@ X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: SJ0PR03MB5950:EE_|LV3PR03MB7732:EE_
-X-MS-Office365-Filtering-Correlation-Id: b27fdc4d-1ec6-48bb-7dbc-08df2f71781b
+X-MS-Office365-Filtering-Correlation-Id: c48cbf82-853e-4d0c-80ae-08df2f717b5e
 X-MS-Exchange-AtpMessageProperties: SA
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|23010399003|1800799024|376014|55112099003|6133799003|18002099003|10067099003|22082099003|4143699003|261009223027099003|11063799006|56012099006;
-X-Microsoft-Antispam-Message-Info: pYxEYlbDKPpZiLsGyKcKTX3npCgk2XGfubVicGs5Cpf/UHYjMBbVLXH3vx+4cEaSVODW2kcXSIp4PqObCn8+UyUPZwBEIl2B0TDt/m+2+XjdDj6N/iaqMlCqhOeZFVKGm/mrkqL/rp63V9/NJ2K3px065fKPB9Rk/PjkEYLI18+WmoKzS4N3qGa47itzonslWVLvf0s42xR7GSKTDARC+RuFyyKEXVOqOIY9bpGKB/d1Y5UmalKAGPYiaxr82SHEhVvXqL4PzW3i4ulgoect8dq7weqMW9EaSpMCmvu8dADMPR98PREq+QO5Jv3DK8w/SyzS58SjB+6jFRx2rmRaJDKktKAhKecrLTtKnvJluUJYKLLMP9fqAFaEbLvepEJEPNMf+98+yU9GanLinFGd+FU0aZMmNqPg2fCpD8+VqbDAbuv96xLwmDLo1pcPV1jelQbePWiGo47ZqQwG0dufUodRoE57JFR9KjLNy3+uceTf6g5n6F8uLa4Uuo5I+z66JTDpIrRVUA6+9Eogi8ESfbL0yAPOCU4RopP5ntsTUyvH9yi54S6SqdWF7o50e+zOEb6AR+NLojM19/QdCPWZh5u0UT9UsYeKphr1PsGAIwtNzE7l6rwCDO7RYEyllmPFTuWi9gXiemsd0VG8MLWXobgIYmK0vF920ULqrcu6ICc=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR03MB5950.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(23010399003)(1800799024)(376014)(55112099003)(6133799003)(18002099003)(10067099003)(22082099003)(4143699003)(261009223027099003)(11063799006)(56012099006);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|23010399003|1800799024|376014|55112099003|6133799003|18002099003|10067099003|22082099003|3023799007|4143699003|261009223027099003|11063799006|56012099006;
+X-Microsoft-Antispam-Message-Info: xClidCcr9UrWyH/rsQRainRjJ6EwukTKajMzsYBaHp7ps9TkcBTIJJ/2de6lxcASLp1BqTvZRX7rOjDO6sZPlSepDmyy9UzO7f7lTvqVo4eDpQS/7VXGgpuzF+j33lKQr+5920GzzGhShcklWrQB/XDRr7Cbjfb10LVqlF6PT6JoI0gu6s4k8VvyFqaIC5Sv3k36JXnHFJ0ri8YsTwbwsgJ2TPQD0M2+IVXQnycHASUBO72ABITbU4ZcaJT0C7Br+lx3D3edANLbMJv+ecR6vAJ1YdeMst+cZZ//rjDvwX+tCwsGgPqm9KsGZg9KXZaJTGet/C+KGZ/tXu+LgM79bdy3bozWLufpiEsnBRhWs10D5rJWJP2MPMVtEFFLz31JzibyoZ9CFwV3UMqf1s/bmhvQoyKY2JxAyJk6Gh3WfutkIoJEcDtm5eRmlet9idqo2/I7lxeqsRdq4LDWmSAQt6IUPTb5hNaJM47TeCWdD4uGLf/KLpPp1KKp4Y+onYV1I7MhRzRlGAJ7yF6cQeF4ci+wkZ18FogKNdpVT4LDbQOyGjfM7tmwqWP/Fo3bbA4R+CuTAwCY88RhtBqO45ZqQ75YGR+6pGLTobv6pZT9IoXNJjRKRMLwleS5VBhNBBZ110BBYoQjf8sBz3d9dXOzbt6i74jQ16OThkbfnseQ24w=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR03MB5950.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(23010399003)(1800799024)(376014)(55112099003)(6133799003)(18002099003)(10067099003)(22082099003)(3023799007)(4143699003)(261009223027099003)(11063799006)(56012099006);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?d0tmYU1oZnlsMXJPYmZtelV2NjhVbzRyNncrdnRjSi8rcE9FbUFEUGgzeVpw?=
- =?utf-8?B?eDYzTGhmdjQ5b2ZxYSswenUvVmdkaERrbU9JWVVxUGRXYUs0OWYxOVpldVJB?=
- =?utf-8?B?NE1SU1grMjhTNDRRNTQ3SmJRbmJLOEdZNnVlQUxNbjh6c3g2K3EvQlZYN28x?=
- =?utf-8?B?eElXSlRuNGsxK3RhbmRtbytvT0RQT3E0OGNwRzE4RjFQekVrcFY5QVNJV3hq?=
- =?utf-8?B?NDNBcXhpQTBDdlVuUE9NekJ5TXI1NzFZZlRpWmViUS9kWjBxYSt5aHFjVHN4?=
- =?utf-8?B?elVRSFRaZ0lnZ3F1UWZwYmVid0VmdnExWnVyMWdFeS9sUDBqMG1PRVlFN3ZP?=
- =?utf-8?B?dnRaUnZHQ1dsd0tkaFhUV0p5WldOVnNWN0R1Mk9uZ0lESStKR0hUazJFSVVk?=
- =?utf-8?B?TGpNcGRJbGJnMHlHb3JGaFRQRFNhWkszUjJocitzaUkrajNjSmdCUThia2w0?=
- =?utf-8?B?NUFzdCtPOGFjdnpnTW5hcnNnQWMxZE9tUVlqQjBUaXJkcHZYS2syYzlNc0JR?=
- =?utf-8?B?SEZ4VHNJOHV4TURhRWM3cGpqaVA1Um9PMXc1U2ZWbmNQdkd0Wmw2MmRmL1hm?=
- =?utf-8?B?YUx0RC9IelZIQWxOejBPNUFLQkZvbm9aZzl2Z2w1bWRub1YyUThwNFRSZHRr?=
- =?utf-8?B?N2lkWTFJM1ppLzlHNDArUlZtL2J1S3ZNNllYT3NRWTdxdWpmL2o3ZTF1Z2xH?=
- =?utf-8?B?eDkyMXFXUmRQb1VmYVdFei9Ea3VIRU90VjNlZTF6a3ZZaWYyankzOVUxTE44?=
- =?utf-8?B?WGZBTU81d1BITHpYcGZ0WG01RzBSSVZHdFV3ZFJyTzZCR1NWS1NNSTIxc2VX?=
- =?utf-8?B?Nlo1RWtodVgydUcwVks5cEZVQmRKbVBvMkErZEdwelVOZ3VyZyt3YXI0SmFQ?=
- =?utf-8?B?Wmk4Rjg1dUwzY0c0SURldTlmelo0YlBRdlJhOWRvMys1b1dmNElwMWNsbDM0?=
- =?utf-8?B?eit6b0Z0OFE3RThpY1NkNk5rVnFkTUM0aWp1NS9QU1dFUHFVanozQXVUeFVh?=
- =?utf-8?B?eWFyaUtlWEFzTXV5OFl0ZHpHNDVjSVJKU04rbTdvRlJIWmRLdEdjcENZbUts?=
- =?utf-8?B?a2RHVUNFQ0dFYmswbVFFelRFM0hTYUlCK002WGIrbWdrdVpnb2NZUlpwMkZB?=
- =?utf-8?B?V2FGVG9TejVyK0wwd3RneVRPM2lnWFlrV1JFcmxpM2JURE95RWw5bm00UmJv?=
- =?utf-8?B?cjhjQnBkd2dmbkRjMlpDREVNVm9vRE5jN3JUOXQreUVFWjVKRDV1YmQ1Rkpl?=
- =?utf-8?B?WnBYVVordUZZZG9hZTdjOUZwUGJveFpkdjhjZ1hLWHVtZUp3bGlFbk12Y3ps?=
- =?utf-8?B?WDYva0NMMCs4UitQQTRENkZzWVc2TlJ0bTEwdmJGeFcwRjVrVzc3RlgyYmpv?=
- =?utf-8?B?YThsREhyVEl6bzg2azc4SDRhRDhaTmJpZFNMQnhWTGZjSTZ4NzJleVVlQ1hs?=
- =?utf-8?B?YWZuc1A3VFEwVHNRNTVDYTZSa2toYnZ3Z1FzdVJ1YWVBWm1SV3J3eE00TUFo?=
- =?utf-8?B?T3JuS3dic2ZNb0ViMmdRbDJuazlLWFhYSE0zeng4YzNJbEZPSmh5WWdTdXlT?=
- =?utf-8?B?djRkbkpYMXQvZGJmZUFxa0NWeXpxQTNZdmFFejNUeml4ZndpWHhsb3h6eUhT?=
- =?utf-8?B?NEx6NDdWSHZUbkdZL3hDc3NHendxLzJDSWZBUTk0RjM0V3FYeXdCaXlsU0gx?=
- =?utf-8?B?aVVLN1BCdlRrSmVzNEZLdTY1RmY5KzZtb0Vta1dJRi9VNitsdVh3RVV3T045?=
- =?utf-8?B?QWxQM0p6bzFYVHBITHk3YXpqU00rMlB5ZFlSaC9ZYTdJamFlSnpEekVsVyt5?=
- =?utf-8?B?V094djR4blA1UFUvU2g4VlNGc3UyYldSQktLSDk1ZTE0WUVrQlJRSENGWURY?=
- =?utf-8?B?N05yWlliNG9YaHRiWk13ckZCZnpvWlJpV25YVnNPbjJSRE5tZXNjeVlVR2FI?=
- =?utf-8?B?ZXg5RFErWno4Slk4dXNJNEpJdit1dzl1Q3J0R2hCNXk1bW1EUUtCOTMzdThM?=
- =?utf-8?B?MnZHcjBSZWZWWFU3N3JwNE0wblJFbmNJdVV3ek0vUFlXNkNYN2ZuZ052Q1M3?=
- =?utf-8?B?VWEyTHN3NERLdTd5OHVPYi9xRzdnRHdoVFkyVU02ZzdmeFFNcmFXeEs4VEFk?=
- =?utf-8?B?dXc2N2liT1FKa1hNWndqYm1UVXRHRlpKZlp5L2hkWnJFVkw2WEtkTE41NTdG?=
- =?utf-8?B?RSsxSDRwSC93aGlzU2VqQ3VNRXJLVXpxa1pyMXF5d1dLY1M3eGhDY0d4R2p0?=
- =?utf-8?B?SGxQWHluU0ZnNzB3QmUvNXRmbmZVN1QwSnVyNVl4clJSejlWUGhLdjg5UFQy?=
- =?utf-8?B?V1NTUXR6RXlwQlNrS1NySkpLbE5MckhpVmw5S011TlAxdTQxTExmQT09?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?czlmZ0ttd2RwbldNYlBVQnErUWJRY3NRV2QwYjhON1BmUks1MnJidDBkK3d2?=
+ =?utf-8?B?bzFjZUpTMkI3Y2xvR0ZyVTQ2Rk0rbXJaVGt4djZiUnN1NGMvNHhZekVzMGFu?=
+ =?utf-8?B?eE05TCtmUGI0Q25XeGxxYmRqZzdMWCtFU0NTVzB6ZzV0YnAveERERUFVb2dQ?=
+ =?utf-8?B?MTVDKyt3TWxZbWhPRjArWVJwazVydk16ZzhpYVpWNDZER21pTW55WjNJWXgr?=
+ =?utf-8?B?a2NQdjJTOUkrRnUzUGxLeHEraDhHSy9aRk81NU5vVmtkbDhmSzZ1T0ZuSDFL?=
+ =?utf-8?B?SVRhN2k5THdqS0VzMEhIck03NFJtd01XeXdzT2dLTzFJMm1SQzV2aFh3YitJ?=
+ =?utf-8?B?b0JtQk1MMlVUVGR6WDJQOEN4anhNbnJERlYyTWFpTnBteWlQcFJseXBiVzBZ?=
+ =?utf-8?B?V0VYYmM5cXE3SXJ4VmoxZnZrTXBWWEo2YnhWUitvOW5UQTF4N3FOUjBEL3ND?=
+ =?utf-8?B?SGgzcjVOUUhlcUx2cS9lVS9qWjlHV0FyaVo1RlA4NkdjdTJZY3lma0EwVlo5?=
+ =?utf-8?B?WjBxanIreFhiSU8rVjVhL3praE42ZmdSbWJmQUoyMjd5alplcEM2UWpMbmg3?=
+ =?utf-8?B?emZ2c3RuV3dDU0JhUSs0bFRoTUVudDJsNE1xYmtNOHZ0bXkzNy80NTVoWUl6?=
+ =?utf-8?B?Mi9VTUM2bWRaMjBWZHJYOENOdzV0QWg0OW1ETCt6dVorQmliN3pYMWY2dXlZ?=
+ =?utf-8?B?SlF0clNVSDUyREN5eTZseGtVVFo2eEIvdllQRHl5UmNZQVlSSUJLdjBYVUVR?=
+ =?utf-8?B?K09HY0doRVlPb2dKcjVJOFc1blBjb3FpVWRrRjVONkpsT3hiaUZaWkwvdE9v?=
+ =?utf-8?B?R0JRQjlOc1hRd0l0T2JYRGVKWEViTGhYcUxTOG1pVCs0ckEyQ2pJRGowRmYx?=
+ =?utf-8?B?SXpQUElZVCtNcmpiZXNsK1BOZnFMeFJ5SThjOTNRZUxkYzJjZDVaTmkxSlh6?=
+ =?utf-8?B?MXBRcVpsZG1KWW9HZmFzQjFHcWZEaS9VWkppSWhCVkVpdzM3RU55alZ3Mlpo?=
+ =?utf-8?B?Wjl2eWhod1gxb1FBVDkxV054cDVLT3pkblhBQzM4WmYzWDQreFlqaDRUN1Zu?=
+ =?utf-8?B?dzNtbUU4V0MyVlFQVnRpRlN5YnpML284a25WMWJidGJFekp2VndjcDZVYmVS?=
+ =?utf-8?B?Z1VLQkY0R3RGaEFVRC82bktqUG5wYjRyU3RaZWg1eFFLQ2trVzB0cWRzQUM5?=
+ =?utf-8?B?bU51bDA4cU5iTTY0WGJodDR2bzU4czJlVFk4N2Y3TVY5cFRsZGJwbGJsc28y?=
+ =?utf-8?B?QitvQlhBMWpHczE0Wlp3UGlEV2JueDVJbDR5TkMzNlM0M1BLNEswa1JzeWFp?=
+ =?utf-8?B?SkxlN3U4bmhrWHdLeS8vbUQ2d0o1enZTTWptMjZtQXFKTGNadGpKaDY2ODQr?=
+ =?utf-8?B?QWRLZW5nUmFaaGxDbW9SZFZMZVB2UUdrbWJRbEVrZW9GNVhKSTNrYmVMejhn?=
+ =?utf-8?B?SS9MMnJFbnl2RWdRZEtjaG03bFhoZFJSZ2pCT1I1VjJwb0pDMlZCNHQwWEht?=
+ =?utf-8?B?K2pxcldaeVk4TkJVK09IR3g1TkJUZFdGUkp6ZHRWRjE3WTNsK25mK2tpWnI4?=
+ =?utf-8?B?cUNsWTI1ZDcxdW03Y2hKODhUNGEzMHdmRWY3MUNPUXJOZEZIVG5tVk9BUkhM?=
+ =?utf-8?B?ZC9XYjBUZGRtRUovSkhEOVRtNEEzLzhtQVBrRkpCVjF2cVBxNXczZUxwVkdH?=
+ =?utf-8?B?aVdMU29ITUgwaHBTUk1YU0hKL25QREx0MTFnVlVRc1p5WVVZcE4rNGowQzJE?=
+ =?utf-8?B?RURVZmNaenhJaHN0dTVGelFLejlXcGdYdSs2QXVWSnAvZEJrOG5nYzM5TUxj?=
+ =?utf-8?B?TTZBQ04vTzdOL3JZNmNHekRGeHdaQnE1c3lYeUEwVXRBYzhtamNydkxuVnMy?=
+ =?utf-8?B?TFVzSlpERTBEVzhKRTN3TXNFdW9tVG1CazAxK1BXZHhydTZKZ1Q1OWRBaG15?=
+ =?utf-8?B?V0tqRGl0UkcxM2h4bWhENzZHM29Wb3FZZk9FdFJ4SlBmQ1dJdXYvZmx1M1Jo?=
+ =?utf-8?B?c2FLdUltdlBpWnFkZGtsem1mektYOUI2aXNHQjZ1ZWlTQWhrU3h0elg4bDBm?=
+ =?utf-8?B?RFdnT3pYd05wRjNRUGJRWDZ5WjdFb3BiQ1cyYlF4aWVJK3MvQ1YvQXQzdGNr?=
+ =?utf-8?B?ZFNhS3lzUngvMUc0WDdjQXhQSUM1blJaalVkZTJETWE5M2VaV0xjTXFoWUd1?=
+ =?utf-8?B?djVIUFNMSGZZU0VUMXlFZk9nVTlJUVhmQ1lLcnBLRTV5RVZMcDlWa2NmdWhR?=
+ =?utf-8?B?SklsZWNLZW1JazFkWUgvdXJaU2xPQWpKdG0xNDlKV3RBRXc3QTZvSGRLREtE?=
+ =?utf-8?B?WXNaQWpxYWhIcUpTZDFtL1B5QVN5b1ZIdWZiMS80em4vK1o3MUd1QT09?=
 X-OriginatorOrg: altera.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b27fdc4d-1ec6-48bb-7dbc-08df2f71781b
+X-MS-Exchange-CrossTenant-Network-Message-Id: c48cbf82-853e-4d0c-80ae-08df2f717b5e
 X-MS-Exchange-CrossTenant-AuthSource: SJ0PR03MB5950.namprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Oct 2026 12:47:30.4608
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Oct 2026 12:47:35.8392
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: fbd72e03-d4a5-4110-adce-614d51f2077a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: b1z/Z6LjJpqQOwL7rvf1jp3pVzX6UjAZ8FRDesAIndGny0Ccd9UivGy7ODOohPaKlB5Zb+Swj0bEktTMn+JfQw==
+X-MS-Exchange-CrossTenant-UserPrincipalName: WTeJ5q2a8P8mnWgNEpVMEt7MUgYnciknvcFKs0emHdW8mEFrMtGrCqxMCfGTSEs1YVsnWbcJch00c2d2zDbJQg==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR03MB7732
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261021_054744_460475_12823AF6 
-X-CRM114-Status: GOOD (  34.66  )
+X-CRM114-CacheID: sfid-20261021_054745_887348_C95E85C8 
+X-CRM114-Status: GOOD (  35.31  )
 X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -156,150 +156,240 @@ X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-
-
-On 9/10/2026 3:49 pm, sashiko-bot@kernel.org wrote:
-
 Hi maintainers,
 
-Thanks for the review. For v3, I plan to drop the core release hook and 
-the removed flag, and reduce patch 1 to a reorder in __put_mtd_device(). 
-spi-nor would manage the object's lifetime with its own refcount.
+Thanks. Going through these, here is what I plan for v3:
 
-> Thank you for your contribution! Sashiko AI review found 4 potential issue(s) to consider:
-> - [Critical] mtd: Device Model lifecycle violation causing sysfs Use-After-Free> - [High] mtd: Use-After-Free of master object in __put_mtd_device()> 
-- [High] mtd: Master driver object memory leak when 
-CONFIG_MTD_PARTITIONED_MASTER is disabled
-> - [High] mtd: lockless TOCTOU race on master->removed allows UAF on unbind
+On 9/10/2026 3:57 pm, sashiko-bot@kernel.org wrote:
+> Thank you for your contribution! Sashiko AI review found 6 potential issue(s) to consider:
+> - [Critical] mtd: spi-nor: double-free on mtd_device_register error path
+> - [High] mtd: spi-nor: UAF via TOCTOU race from lockless master->removed check
+> - [High] mtd: spi-nor: UAF on nor->id and erase_map via debugfs after unbind
+> - [High] mtd: spi-nor: UAF and NULL pointer deref in spi_nor_put_device() on unbind
+> - [Medium] mtd: spi-nor: memory leak of mtd_region on error path
+> - [Medium] mtd: spi-nor: memory leak of spi_nor object on unbind
 > --
 > 
-> commit 5c236b852da3e75f7d2ec6f13275ac5b432bb26f
+> commit cf3ecfea956c974ea676c9cd71ff2115f0af32ca
 > Author: Tze Yee Ng <tze.yee.ng@altera.com>
 > 
->      mtd: core: add release hook and removed flag for unbind with open handles
+> mtd: spi-nor: fix use-after-free on unbind with open handles
 > 
-> This commit introduces a new _free hook to struct mtd_info called from the
-> kref release function to ensure the backing driver object is destroyed only
-> when the last reference drops. It also adds a removed flag to struct mtd_info
-> which is set on unbind and checked before performing hardware operations to
-> prevent Use-After-Free of parent devm resources.
+> The commit switches spi_nor objects from devm_kzalloc to kzalloc with
+> a custom mtd->_free hook to ensure they outlive the device if file handles
+> are held open. It also sets a removed flag in the remove callback to
+> fence off hardware operations during devres teardown.
 > 
->> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
->> index 491a27d0315fa..59133894b5e5c 100644
->> --- a/drivers/mtd/mtdcore.c
->> +++ b/drivers/mtd/mtdcore.c
->> @@ -118,6 +118,7 @@ static void mtd_device_release(struct kref *kref)
->>   {
->>   	struct mtd_info *mtd = container_of(kref, struct mtd_info, refcnt);
->>   	bool is_partition = mtd_is_partition(mtd);
->> +	void (*mtd_free)(struct mtd_info *mtd) = mtd->_free;
+>> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+>> index 8bc117b46e028..b28d896f16ed5 100644
+>> --- a/drivers/mtd/spi-nor/core.c
+>> +++ b/drivers/mtd/spi-nor/core.c
+> [ ... ]
+>> @@ -3549,8 +3558,12 @@ static int spi_nor_set_mtd_eraseregions(struct spi_nor *nor)
+>>   	struct mtd_info *mtd = &nor->mtd;
+>>   	u32 erasesize, i;
 >>   
->>   	debugfs_remove_recursive(mtd->dbg.dfs_dir);
->>   
->> @@ -135,6 +136,9 @@ static void mtd_device_release(struct kref *kref)
->>   		memset(&mtd->dev, 0, sizeof(mtd->dev));
->>   
->>   	module_put(THIS_MODULE);
->> +
->> +	if (mtd_free)
->> +		mtd_free(mtd);
+>> -	mtd_region = devm_kcalloc(nor->dev, map->n_regions, sizeof(*mtd_region),
+>> -				  GFP_KERNEL);
+>> +	if (spi_nor_uses_free_hook(nor))
+>> +		mtd_region = kcalloc(map->n_regions, sizeof(*mtd_region),
+>> +				     GFP_KERNEL);
+>> +	else
+>> +		mtd_region = devm_kcalloc(nor->dev, map->n_regions,
+>> +					  sizeof(*mtd_region), GFP_KERNEL);
+>>   	if (!mtd_region)
+>>   		return -ENOMEM;
 > 
-> [Severity: Critical]
-> Since struct mtd_info embeds a struct device, does freeing it here violate the
-> Device Model lifecycle?
+> [Severity: Medium]
+> Since mtd_region is now allocated with kcalloc, does it get leaked if
+> spi_nor_get_region_erasesize() fails later in this function?
 > 
-> If user-space holds an open sysfs file for the device, the device core retains
-> an elevated kobject reference count on mtd->dev even after device_unregister()
-> returns.
+> If an early return happens here:
 > 
-> If mtd_free() destroys the memory containing the embedded struct device, won't
-> the device core access freed memory when put_device() is eventually called upon
-> sysfs file closure?
+> drivers/mtd/spi-nor/core.c:spi_nor_set_mtd_eraseregions() {
+>      ...
+>      for (i = 0; i < map->n_regions; i++) {
+>          erasesize = spi_nor_get_region_erasesize(&region[i],
+>                                                   map->erase_type);
+>          if (!erasesize)
+>              return -EINVAL;
+>      ...
+> }
 > 
-> 
-
-Not new: mtd_info is embedded in the driver object for every MTD driver 
-and is already freed on unbind. v3 will frees it later than today, so it 
-is not worse. I plan to leave the sysfs lifetime out of this series.
-
-> [Severity: High]
-> Does this new mtd_free() hook cause a Use-After-Free in __put_mtd_device()?
-> 
-> Looking at __put_mtd_device() in drivers/mtd/mtdcore.c, we have:
-> 
-> 	if (IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER))
-> 		kref_put(&master->refcnt, mtd_device_release);
-> 
-> 	module_put(master->owner);
-> 
-> 	/* must be the last as master can be freed in the _put_device */
-> 	if (master->_put_device)
-> 		master->_put_device(master);
-> 
-> If mtd_device_release() synchronously frees the master object, won't the
-> subsequent dereferences of master->owner and master->_put_device access
-> freed memory?
-> 
-> 
-
-Agreed. v3 will reads master->owner first, calls ->_put_device() last 
-and drops the module reference after it.
-
-> [Severity: High]
-> Will the master driver object leak if CONFIG_MTD_PARTITIONED_MASTER is disabled?
-> 
-> When CONFIG_MTD_PARTITIONED_MASTER is disabled, the master device itself is
-> never registered via add_mtd_device(), so its refcount isn't incremented by
-> openers or managed by __get_mtd_device() or __put_mtd_device().
-> 
-> If drivers no longer free their objects in the remove() callback and rely
-> entirely on mtd_device_release(), how will the master driver object be freed
-> when CONFIG_MTD_PARTITIONED_MASTER is disabled?
-> 
-
-Agreed. This comes from relying on mtd_device_release() to free the
-driver object. In v3 spi-nor would own a kref and drop the registration
-reference unconditionally in remove(), independent of what
-mtd_device_unregister() does.
-
->>   }
->>   
->>   #define MTD_DEVICE_ATTR_RO(name) \
+> mtd_region isn't yet assigned to mtd->eraseregions, so spi_nor_free() will
+> just call kfree(NULL) and leak this allocation.
 > 
 > [ ... ]
-> 
->> @@ -1471,6 +1478,9 @@ int mtd_erase(struct mtd_info *mtd, struct erase_info *instr)
->>   	instr->fail_addr = MTD_FAIL_ADDR_UNKNOWN;
->>   	adjinstr = *instr;
+
+Agreed. I plan to assign mtd->eraseregions right after allocation, so
+the error path frees it.
+
+>> @@ -3788,12 +3820,13 @@ static int spi_nor_probe(struct spi_mem *spimem)
+>>   	if (ret)
+>>   		return ret;
 >>   
->> +	if (master->removed)
->> +		return -ENODEV;
+>> -	nor = devm_kzalloc(dev, sizeof(*nor), GFP_KERNEL);
+>> +	nor = kzalloc_obj(*nor, GFP_KERNEL);
+>>   	if (!nor)
+>>   		return -ENOMEM;
+>>   
+>>   	nor->spimem = spimem;
+>>   	nor->dev = dev;
+>> +	nor->mtd._free = spi_nor_mtd_free;
+> 
+> [Severity: High]
+> Does extending the lifetime of the spi_nor object cause a crash in
+> spi_nor_put_device() if the file is closed after the driver unbinds?
+> 
+> When the MTD device is eventually closed, mtdchar_close() calls
+> spi_nor_put_device(). Since nor is still alive, it will attempt to access
+> nor->spimem to find the controller. However, nor->spimem was allocated
+> via devres and freed on unbind. This also attempts to access dev->driver
+> which will be NULL.
+> 
+
+Agreed. In v3, the controller module will be cached at probe and used in
+->_get_device()/->_put_device() instead of nor->spimem and dev->driver. 
+Patch 1 will keeps the module pinned until ->_put_device() returns.
+
+> [ ... ]
+>> @@ -3830,29 +3863,56 @@ static int spi_nor_probe(struct spi_mem *spimem)
+> [ ... ]
+>> -	return mtd_device_register(&nor->mtd, data ? data->parts : NULL,
+>> -				   data ? data->nr_parts : 0);
+>> +	ret = mtd_device_register(&nor->mtd, data ? data->parts : NULL,
+>> +				  data ? data->nr_parts : 0);
+>> +	if (ret)
+>> +		goto err_free;
 >> +
->> [Severity: High]
-> Is this lockless check sufficient to prevent the Use-After-Free this patch
-> aims to solve?
+>> +	return 0;
+>> +
+>> +err_free:
+>> +	spi_nor_free(nor);
+>> +	return ret;
+>>   }
 > 
-> If mtd_erase() checks master->removed and it evaluates to false, the thread
-> could be preempted.
+> [Severity: Critical]
+> Can this cause a double-free of the spi_nor object?
 > 
-> If a concurrent driver unbind executes the driver's remove() callback,
-> drains in-flight operations, sets master->removed = true, and then the device
-> model tears down devm-managed resources, wouldn't the preempted MTD thread
-> resume and call master->_erase() on freed devm memory and a powered-down bus?
+> If mtd_device_register() succeeds in registering the master MTD but fails
+> subsequently (e.g., partition allocation fails), the MTD core's error cleanup
+> drops the master's kref to 0. This triggers mtd->_free (spi_nor_free) and
+> frees the object.
+> 
+> Then mtd_device_register() returns an error code, causing a jump to err_free
+> where spi_nor_free(nor) is called a second time on the already-freed pointer.
 > 
 
-Agreed. v3 would drop the flag from the core. spi-nor would set its own
-removed flag under nor->lock in remove(), and prep_and_lock*() would
-re-check it after taking the lock, so a waiter blocked on the lock sees
-it and returns -ENODEV.
+Agreed. I will fix in v3. With no core _free hook, the core would never 
+free the spi_nor. On a failed mtd_device_register() the probe would 
+fence ops and drop the single registration reference, so the object is 
+released exactly once.
 
->>   	if (!mtd->erasesize || !master->_erase)
->>   		return -ENOTSUPP;
->>
+> [ ... ]
+>> @@ -3875,6 +3908,21 @@ static int spi_nor_remove(struct spi_mem *spimem)
+>>   {
+>>   	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
+>>   
+>> +	/*
+>> +	 * Drain in-flight ops and mark removed so later ops get -ENODEV
+>> +	 * before touching bus resources freed after this returns.
+>> +	 */
+>> +	if (!spi_nor_use_parallel_locking(nor))
+>> +		mutex_lock(&nor->lock);
+>> +	else
+>> +		wait_event(nor->rww.wait, spi_nor_rww_start_exclusive(nor));
+>> +
+>> +	nor->mtd.removed = true;
+>> +
+>> +	if (!spi_nor_use_parallel_locking(nor)) {
+>> +		mutex_unlock(&nor->lock);
+>> +	} else {
+>> +		spi_nor_rww_end_exclusive(nor);
+>> +		wake_up(&nor->rww.wait);
+>> +	}
 > 
+> [Severity: High]
+> Does this create a TOCTOU race with lockless readers?
+> 
+> A reader in the MTD core can check master->removed locklessly and proceed.
+> 
+> If that reader blocks waiting for nor->lock, and spi_nor_remove() concurrently
+> acquires the lock, sets nor->mtd.removed = true, releases the lock, and returns,
+> the driver unbind completes and devres frees resources like nor->spimem.
+> 
+> The blocked reader will then wake up, acquire the lock (failing to check
+> removed again), and try to access the freed devres resources.
+> 
+
+I will fix in v3. removed is set under nor->lock (or the RWW exclusive
+section) and re-checked under the lock in prep_and_lock(), _pe() and
+_rd().
+
+>>   
+>>   	spi_nor_restore(nor);
+>>   
+>>   	/* Clean up MTD stuff. */
+>>   	return mtd_device_unregister(&nor->mtd);
+>>   }
+> 
+> [Severity: Medium]
+> Will this leak the entire spi_nor object if the device has partitions but
+> CONFIG_MTD_PARTITIONED_MASTER is disabled?
+> 
+> When that config is disabled, the master MTD is never registered. In that
+> scenario, mtd_device_unregister() returns 0 early without invoking kref_put()
+> on the master.
+> 
+> This means mtd->_free() will never be called, permanently leaking the
+> kzalloc'd spi_nor object.
+> 
+
+Agreed, same cause as the core leak above. remove() would always drop 
+the registration reference, whatever mtd_device_unregister() returns.
+
+>> diff --git a/drivers/mtd/spi-nor/debugfs.c b/drivers/mtd/spi-nor/debugfs.c
+>> index 288e2866daedb..a0639e91cb2d9 100644
+>> --- a/drivers/mtd/spi-nor/debugfs.c
+>> +++ b/drivers/mtd/spi-nor/debugfs.c
+> [ ... ]
+>> @@ -299,15 +297,10 @@ static struct dentry *rootdir;
+>>   void spi_nor_debugfs_register(struct spi_nor *nor)
+>>   {
+>>   	struct dentry *d;
+>> -	int ret;
+>>   
+>>   	if (!rootdir)
+>>   		rootdir = debugfs_create_dir(SPI_NOR_DEBUGFS_ROOT, NULL);
+>>   
+>> -	ret = devm_add_action(nor->dev, spi_nor_debugfs_unregister, nor);
+>> -	if (ret)
+>> -		return;
+>> -
+>>   	d = debugfs_create_dir(dev_name(nor->dev), rootdir);
+>>   	nor->debugfs_root = d;
+> 
+> [Severity: High]
+> Since this devm_add_action() is removed, do the debugfs files remain
+> accessible after unbind completes, while we wait for the final mtd close?
+> 
+> If the debugfs files persist, accessing them can cause a use-after-free.
+> 
+> For example, reading the params file will call spi_nor_params_show(), which
+> dereferences nor->id and erase_map.regions. Since those were allocated via
+> devres, they are freed when the driver unbinds, even if the spi_nor object
+> itself is kept alive.
+> 
+
+Agreed. In v3, spi_nor_debugfs_unregister() will be called at the start 
+of remove(), before devres frees nor->id and the erase map, and again on 
+the probe error path.
+
+I'll send v3 with these changes.
 
 Thanks,
 Tze Yee
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
