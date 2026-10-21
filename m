@@ -2,63 +2,78 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68996606A31A
-	for <linux-mtd@archiver.kernel.org>; Wed, 21 Oct 2026 02:21:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89ED1606A319
+	for <linux-mtd@archiver.kernel.org>; Wed, 21 Oct 2026 08:12:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=GFZw9GVU;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=nabladev.com header.i=@nabladev.com header.a=rsa-sha256 header.s=dkim header.b=ADYaOGiN
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=QqkhwXJh;
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=UP8AuJCL
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=3KQmfp8Tu+jeo3kXsX+y6pZrATHFHYQqYfXEB+/5gLY=; b=GFZw9GVUoylgtk
-	4tPZGn/atUhTrDB/+ThKK7xOJR6f9rXg+ePLc/4EqcyGu/fA49I3G6PEYAc1o0XLj9fUX9EVGAAnR
-	PkqhbB1QfsdVFrQDeJE06ISWyzDw0fqXTZouNDPcDJRSwtAJqNIaNOVfVSMMx01aEopfDLEtZam9g
-	JIKAVXODEnYSEYXYTLfqqH23joD9q5b4PmdTWtzmt0a3ObBTQduqdrEVlz3Vtd3FMxGo2WD6ubA7g
-	QD0+MZjQwGO4MRPZsYrSQQaPlk4Wom0UpeO/32FCi+PGhGLN+wv3yXcWEPMMFV9n3Ad2YeyWwl5B+
-	zKvuKXYWzjlS/ZrLz20A==;
+	List-Owner; bh=bQdkEtJGloX5WTlt0Efdp/OMdkqpqfQfZNneHpkOcXw=; b=QqkhwXJhFWqCm6
+	vC43mQyh6w2RTVKORSN+R4F47Uq4+ELseIE12P5SMdfuqKIsNIqKQbiVIp6r82Ix/VbnVwgs8FIYZ
+	ru5EDa4+Nk3O4X7U1Ky1eYOtMP0f8iTCPbJK2t1aOz+3s0NUXYTeUsvljvXJMu9lPmGSW4lMOPszA
+	KRFw5eblCGkPEfgG21cI05K1bZQFPfts6BsBCI/KRLyeDFQ3W2+k4QMNywjkNkaStZkgGMOZhtsMD
+	V9I8K8u9UxboUAUnndO0nJK4vARTQe+PZg3ANm+M2BmK2zjgESzCvmaHvrJ83iyDivo8l77EdiIog
+	MIkRzji1v3pcMKk0MoQQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xJLxg-0000000AwIZ-13OI;
-	Wed, 21 Oct 2026 02:21:52 +0000
-Received: from mx.nabladev.com ([178.251.229.89])
+	id 1xJRQk-0000000BJSs-1iLV;
+	Wed, 21 Oct 2026 08:12:14 +0000
+Received: from smtpout-02.galae.net ([185.246.84.56])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xJLxd-0000000AwHS-2rvF
+	id 1xJRQf-0000000BJRh-2Cej
 	for linux-mtd@lists.infradead.org;
-	Wed, 21 Oct 2026 02:21:51 +0000
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 5B26810A27C;
-	Wed, 21 Oct 2026 04:21:38 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nabladev.com;
-	s=dkim; t=1792549301;
-	h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:content-language:in-reply-to:references;
-	bh=oVvtiBusAQ8x+kZNnvGDY5KfIHpl0LwCSf6F6ycRMGc=;
-	b=ADYaOGiNy2rEJhjqw/oaY9tBQvgNCeusk8K98oDu6mqNyjK54TYP5CF+I1RJ372wKctnp0
-	PW8dJMG1lVFAMZoHcRzLgBQRXaJyTAPgsxD7lflOm3LbSezN41YG/H5ZPXWfeHPo/kw2ew
-	D1B+ejiPYgjj4MjxVWTQHslqIcdXoIk3CoQwKnRkXO9AGBE/IZ/LGSXlg/CucsZNM5ypcl
-	QtGEvg1TpdlPJMy+abD/OK3LjCWy886M/Z7ITMHbsW3i91cQ0GM7aaUYMvwkNwhOAqXUdm
-	jApswH0Hp0NzPLf7goFrRKOljlgWW7JCFn5FrDmEAenndLErku/PAKc+ZzcFLw==
-Message-ID: <75174a84-13b6-4a97-b4bf-7513ee43ab69@nabladev.com>
-Date: Wed, 21 Oct 2026 01:58:10 +0200
+	Wed, 21 Oct 2026 08:12:12 +0000
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-02.galae.net (Postfix) with ESMTPS id 7E6CE1A12AA;
+	Wed, 21 Oct 2026 08:12:06 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 43FFB606E3;
+	Wed, 21 Oct 2026 08:12:06 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 700F510328934;
+	Wed, 21 Oct 2026 10:12:00 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1792570325; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=ZTaJlHpLSgJPsP7bOCOBjIksawOrYCDV0TfT1aRROpc=;
+	b=UP8AuJCLcsP8mOIwkdKYmCr+tdOaTnu5ZrYPR2pOYT64VFEt6ecctUxi6wF5MSyiZi188f
+	uDELQGFfSk7OmlNUnxVRGxs99rkNRlVkS7Rg0QDpCMsArxG1mH98ZMQSqcFzmGkLy6lFMf
+	eFoQsBQ02vY0p6MSu+Ve/Mnt3TNtrAXUGOR0HUHRWkyElcx6daurs5F6XW1CoxUI5FI84e
+	brS++sGYCp/hPpqh7ncwsMF53uUmq7K0bojc+7J34uKgddCGAkCfjPEch5zGxNufBLaoN3
+	SMFGtnJaLv8hvAQe4z5/LbH2rAdgJOonjL4Z7i9xSr3suyPUO4xNnwlRrvvbRA==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Bough Chen <haibo.chen@oss.nxp.com>
+Cc: Pratyush Yadav <pratyush@kernel.org>,  Michael Walle
+ <mwalle@kernel.org>,  Takahiro Kuwano <takahiro.kuwano@infineon.com>,
+  Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
+ <vigneshr@ti.com>,  "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>,  "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>,  "michael@walle.cc" <michael@walle.cc>,
+  Bough Chen <haibo.chen@nxp.com>,  "open list:NXP i.MX 7D/6SX/6UL/93 AND
+ VF610 ADC DRIVER" <imx@lists.linux.dev>
+Subject: Re: [PATCH v2] mtd: spi-nor: clear the default RDCR opcode when
+ entering Octal DTR
+In-Reply-To: <20261020104152.l2qsutq66fwdrw7t@shlinux89> (Bough Chen's message
+	of "Tue, 20 Oct 2026 18:41:52 +0800")
+References: <20260929-spi-nor-fix-v2-1-75440cfe4e76@nxp.com>
+	<87zex05uvn.fsf@bootlin.com>
+	<AS8PR04MB8820E136E7257FC5A02F1A3E908C2@AS8PR04MB8820.eurprd04.prod.outlook.com>
+	<20261015031017.pdqnv2bp5627bhed@shlinux89>
+	<87zewfuus5.fsf@bootlin.com>
+	<20261020104152.l2qsutq66fwdrw7t@shlinux89>
+User-Agent: mu4e 1.12.12; emacs 30.2
+Date: Wed, 21 Oct 2026 10:12:00 +0200
+Message-ID: <87fqxzsca7.fsf@bootlin.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mtd: spi-nor: Describe locking support for MX25L51245G
-To: Takahiro.Kuwano@infineon.com, linux-mtd@lists.infradead.org
-Cc: chengminglin@mxic.com.tw, mwalle@kernel.org, miquel.raynal@bootlin.com,
- pratyush@kernel.org, richard@nod.at, vigneshr@ti.com,
- linux-kernel@vger.kernel.org
-References: <20260925014517.174496-1-marex@nabladev.com>
- <9bdd8b02469042ffa71851fd2641708e@infineon.com>
-Content-Language: en-US
-From: Marek Vasut <marex@nabladev.com>
-In-Reply-To: <9bdd8b02469042ffa71851fd2641708e@infineon.com>
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261020_192150_090869_7A6DC7D7 
-X-CRM114-Status: GOOD (  24.54  )
+X-CRM114-CacheID: sfid-20261021_011209_712269_E6B91063 
+X-CRM114-Status: GOOD (  52.72  )
 X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -69,312 +84,186 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-9.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=4.0.1
+	INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-On 10/1/26 9:17 AM, Takahiro.Kuwano@infineon.com wrote:
-
-Hello Kuwano-san,
-
-I apologize for my late reply.
-
->> The MX25L51245G part has the same 4-BP locking mechanism as MX25L12805D.
->> Describe the locking support.
->>
->> Signed-off-by: Marek Vasut <marex@nabladev.com>
->> ---
->> Cc: Cheng Ming Lin <chengminglin@mxic.com.tw>
->> Cc: Michael Walle <mwalle@kernel.org>
->> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
->> Cc: Pratyush Yadav <pratyush@kernel.org>
->> Cc: Richard Weinberger <richard@nod.at>
->> Cc: Takahiro Kuwano <takahiro.kuwano@infineon.com>
->> Cc: Vignesh Raghavendra <vigneshr@ti.com>
->> Cc: linux-kernel@vger.kernel.org
->> Cc: linux-mtd@lists.infradead.org
->> ---
-> 
-> Can you test locking as described in [1] and provide test log?
-> 
->>   drivers/mtd/spi-nor/macronix.c | 1 +
->>   1 file changed, 1 insertion(+)
->>
->> diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
->> index b3fdb4b2fa1ca..4de1b490b16b6 100644
->> --- a/drivers/mtd/spi-nor/macronix.c
->> +++ b/drivers/mtd/spi-nor/macronix.c
->> @@ -165,6 +165,7 @@ static const struct flash_info macronix_nor_parts[] = {
->>          }, {
->>                  /* MX25L51245G, MX25L51273G, MX66L51235F */
->>                  .id = SNOR_ID(0xc2, 0x20, 0x1a),
->> +               .flags = SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP,
-> 
-> According to datasheets [2][3][4], those chips have TB bit in Configuration
-> Register bit-3 and the bit is OTP.
-
-Yikes, that is correct and also scary.
-
-> The existing HAS_TB and HAS_TB_SR_BIT6
-> flags don't work as they expect non-OTP bit in Status Register.
-> Just supporting top area protection (TB==0) would be fine with me, but in
-> that case, fixup should check TB and activate locking only when TB==0.
-
-I came up with this addition, is this what you have in mind ?
-
-diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-index e97f5cbd9aad2..1539ff3ed404e 100644
---- a/drivers/mtd/spi-nor/macronix.c
-+++ b/drivers/mtd/spi-nor/macronix.c
-@@ -15,6 +15,9 @@
-  #define MXIC_NOR_REG_DOPI_EN	0x2		/* Enable Octal DTR */
-  #define MXIC_NOR_REG_SPI_EN	0x0		/* Enable SPI */
-
-+#define MX25L51245G_OP_RDCR	0x15
-+#define MX25L51245G_CR_TB	BIT(3)
-+
-  /* Convert dummy cycles to bit pattern */
-  #define MXIC_NOR_REG_DC(p) \
-  	((20 - (p)) >> 1)
-@@ -45,6 +48,52 @@ mx25l25635_post_bfpt_fixups(struct spi_nor *nor,
-  	return 0;
-  }
-
-+static int mx25l51245_read_cr(struct spi_nor *nor, u8 *cr)
-+{
-+	int ret;
-+
-+	if (nor->spimem) {
-+		struct spi_mem_op op = SPI_MEM_OP(SPI_MEM_OP_CMD(MX25L51245G_OP_RDCR, 0),
-+						  SPI_MEM_OP_NO_ADDR, SPI_MEM_OP_NO_DUMMY,
-+						  SPI_MEM_OP_DATA_IN(1, cr, 0));
-+
-+		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
-+
-+		ret = spi_mem_exec_op(nor->spimem, &op);
-+	} else {
-+		ret = spi_nor_controller_ops_read_reg(nor, MX25L51245G_OP_RDCR, cr, 1);
-+	}
-+
-+	if (ret)
-+		dev_dbg(nor->dev, "error %d reading CR\n", ret);
-+
-+	return ret;
-+}
-+
-+static int
-+mx25l51245_post_bfpt_fixups(struct spi_nor *nor,
-+			    const struct sfdp_parameter_header *bfpt_header,
-+			    const struct sfdp_bfpt *bfpt)
-+{
-+	int ret;
-+
-+	ret = mx25l51245_read_cr(nor, nor->bouncebuf);
-+	if (ret)
-+		return ret;
-+
-+	/*
-+	 * MX25L51245G supports locking, but the CR register TB bit is OTP.
-+	 * Enable locking only in case the TB bit is not programmed, or set
-+	 * to 0.
-+	 */
-+	if (nor->bouncebuf[0] & MX25L51245G_CR_TB)
-+		dev_dbg(nor->dev, "CR TB is set, bottom protection not supported\n");
-+	else
-+		nor->flags |= SNOR_F_HAS_LOCK | SNOR_F_HAS_4BIT_BP;
-+
-+	return 0;
-+}
-+
-  static int
-  macronix_qpp4b_post_sfdp_fixups(struct spi_nor *nor)
-  {
-@@ -89,6 +139,7 @@ static const struct spi_nor_fixups mx25l25635_fixups = {
-  };
-
-  static const struct spi_nor_fixups macronix_qpp4b_fixups = {
-+	.post_bfpt = mx25l51245_post_bfpt_fixups,
-  	.post_sfdp = macronix_qpp4b_post_sfdp_fixups,
-  };
-
-Which led to this locking log:
-
-"
-+ mktemp -d
-+ cd /tmp/tmp.45Mtr7ceEE
-+ cat /sys/bus/spi/devices/spi2.0/spi-nor/jedec_id
-c2201a
-+ cat /sys/bus/spi/devices/spi2.0/spi-nor/manufacturer
-macronix
-+ xxd -p /sys/bus/spi/devices/spi2.0/spi-nor/sfdp
-53464450060102ff00060110300000ffc2000104100100ff84000102c000
-00ffffffffffffffffffffffffffffffffffe520fbffffffff1f44eb086b
-083b04bbfeffffffffff00ffffff44eb0c200f5210d800ffd649c50081df
-04e34403673830b030b0f7bdd55c4a9e29fff050f985ffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffff7fefffff215cdcffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffff003600279df9c06485cbffffffffffff
-+ cat /sys/kernel/debug/spi-nor/spi2.0/capabilities
-Supported read modes by the flash
-  1S-1S-1S
-   opcode        0x13
-   mode cycles   0
-   dummy cycles  0
-  1S-1S-2S
-   opcode        0x3c
-   mode cycles   0
-   dummy cycles  8
-  1S-2S-2S
-   opcode        0xbc
-   mode cycles   0
-   dummy cycles  4
-  1S-1S-4S
-   opcode        0x6c
-   mode cycles   0
-   dummy cycles  8
-  1S-4S-4S
-   opcode        0xec
-   mode cycles   2
-   dummy cycles  4
-  4S-4S-4S
-   opcode        0xec
-   mode cycles   2
-   dummy cycles  4
-
-Supported page program modes by the flash
-  1S-1S-1S
-   opcode        0x12
-  1S-1S-4S
-   opcode        0x34
-  1S-4S-4S
-   opcode        0x3e
-+ cat /sys/kernel/debug/spi-nor/spi2.0/params
-name            (null)
-id              c2 20 1a c2 20 1a
-size            64.0 MiB
-write size      1
-page size       256
-address nbytes  4
-flags           4B_OPCODES | HAS_4BAIT | HAS_LOCK | HAS_4BIT_BP | SOFT_RESET
-
-opcodes
-  read           0xec
-   dummy cycles  6
-  erase          0x21
-  program        0x3e
-  8D extension   none
-
-protocols
-  read           1S-4S-4S
-  write          1S-4S-4S
-  register       1S-1S-1S
-
-erase commands
-  21 (4.00 KiB) [1]
-  5c (32.0 KiB) [2]
-  dc (64.0 KiB) [3]
-  c7 (64.0 MiB)
-
-sector map
-  region (in hex)   | erase mask | overlaid
-  ------------------+------------+----------
-  00000000-03ffffff |     [ 1  ] | no
-+ dd if=/dev/urandom of=./spi_test bs=1M count=2
-2+0 records in
-2+0 records out
-2097152 bytes (2.1 MB, 2.0 MiB) copied, 0.0514406 s, 40.8 MB/s
-+ mtd_debug erase /dev/mtd0 0 2097152
-Erased 2097152 bytes from address 0x00000000 in flash
-+ mtd_debug read /dev/mtd0 0 2097152 spi_read
-Copied 2097152 bytes from address 0x00000000 in flash to spi_read
-+ hexdump spi_read
-0000000 ffff ffff ffff ffff ffff ffff ffff ffff
-*
-0200000
-+ sha256sum spi_read
-4bda3a28f4ffe603c0ec1258c0034d65a1a0d35ab7bd523a834608adabf03cc5  spi_read
-+ mtd_debug write /dev/mtd0 0 2097152 spi_test
-Copied 2097152 bytes from spi_test to address 0x00000000 in flash
-+ mtd_debug read /dev/mtd0 0 2097152 spi_read
-Copied 2097152 bytes from address 0x00000000 in flash to spi_read
-+ sha256sum spi_read spi_test
-fa5dea0c7a85ed0bc865bd0b6ed09e2aef41bb336d9805a93bcfbbd26004ea7a  spi_read
-fa5dea0c7a85ed0bc865bd0b6ed09e2aef41bb336d9805a93bcfbbd26004ea7a  spi_test
-+ mtd_debug erase /dev/mtd0 0 2097152
-Erased 2097152 bytes from address 0x00000000 in flash
-+ mtd_debug read /dev/mtd0 0 2097152 spi_read
-Copied 2097152 bytes from address 0x00000000 in flash to spi_read
-+ sha256sum spi_read spi_test
-4bda3a28f4ffe603c0ec1258c0034d65a1a0d35ab7bd523a834608adabf03cc5  spi_read
-fa5dea0c7a85ed0bc865bd0b6ed09e2aef41bb336d9805a93bcfbbd26004ea7a  spi_test
-+ mtd_debug info /dev/mtd0
-mtd.type = MTD_NORFLASH
-mtd.flags = MTD_CAP_NORFLASH
-mtd.size = 67108864 (64M)
-mtd.erasesize = 4096 (4K)
-mtd.writesize = 1
-mtd.oobsize = 0
-regions = 0
-
-+ flash_lock -u /dev/mtd0
-+ flash_lock -i /dev/mtd0
-Device: /dev/mtd0
-Start: 0
-Len: 0x4000000
-Lock status: unlocked
-Return code: 0
-+ mtd_debug erase /dev/mtd0 0 2097152
-Erased 2097152 bytes from address 0x00000000 in flash
-+ mtd_debug write /dev/mtd0 0 2097152 spi_test
-Copied 2097152 bytes from spi_test to address 0x00000000 in flash
-+ mtd_debug read /dev/mtd0 0 2097152 spi_read
-Copied 2097152 bytes from address 0x00000000 in flash to spi_read
-+ sha256sum spi_read spi_test
-fa5dea0c7a85ed0bc865bd0b6ed09e2aef41bb336d9805a93bcfbbd26004ea7a  spi_read
-fa5dea0c7a85ed0bc865bd0b6ed09e2aef41bb336d9805a93bcfbbd26004ea7a  spi_test
-+ grep -A4 locked sectors /sys/kernel/debug/spi-nor/spi2.0/params
-+ flash_lock -l /dev/mtd0
-+ flash_lock -i /dev/mtd0
-Device: /dev/mtd0
-Start: 0
-Len: 0x4000000
-Lock status: locked
-Return code: 1
-+ mtd_debug erase /dev/mtd0 0 2097152
-Erased 2097152 bytes from address 0x00000000 in flash
-+ mtd_debug read /dev/mtd0 0 2097152 spi_read
-Copied 2097152 bytes from address 0x00000000 in flash to spi_read
-+ sha256sum spi_read spi_test
-fa5dea0c7a85ed0bc865bd0b6ed09e2aef41bb336d9805a93bcfbbd26004ea7a  spi_read
-fa5dea0c7a85ed0bc865bd0b6ed09e2aef41bb336d9805a93bcfbbd26004ea7a  spi_test
-+ dd if=/dev/urandom of=./spi_test2 bs=1M count=2
-2+0 records in
-2+0 records out
-2097152 bytes (2.1 MB, 2.0 MiB) copied, 0.051125 s, 41.0 MB/s
-+ mtd_debug write /dev/mtd0 0 2097152 spi_test2
-Copied 2097152 bytes from spi_test2 to address 0x00000000 in flash
-+ mtd_debug read /dev/mtd0 0 2097152 spi_read2
-Copied 2097152 bytes from address 0x00000000 in flash to spi_read2
-+ sha256sum spi_read spi_read2 spi_test spi_test2
-fa5dea0c7a85ed0bc865bd0b6ed09e2aef41bb336d9805a93bcfbbd26004ea7a  spi_read
-fa5dea0c7a85ed0bc865bd0b6ed09e2aef41bb336d9805a93bcfbbd26004ea7a  spi_read2
-fa5dea0c7a85ed0bc865bd0b6ed09e2aef41bb336d9805a93bcfbbd26004ea7a  spi_test
-eed3b73016802a59982c74a45ce96deafb7cd486cc5cd831e030239c0ddeb8cc  spi_test2
-+ grep -A4 locked sectors /sys/kernel/debug/spi-nor/spi2.0/params
-+ flash_lock -u /dev/mtd0
-"
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gMjAvMTAvMjAyNiBhdCAxODo0MTo1MiArMDgsIEJvdWdoIENoZW4gPGhhaWJvLmNoZW5Ab3Nz
+Lm54cC5jb20+IHdyb3RlOgoKPiBPbiBUaHUsIE9jdCAxNSwgMjAyNiBhdCAxMjoyMzozOFBNICsw
+MjAwLCBNaXF1ZWwgUmF5bmFsIHdyb3RlOgo+PiBPbiAxNS8xMC8yMDI2IGF0IDExOjEwOjE3ICsw
+OCwgQm91Z2ggQ2hlbiA8aGFpYm8uY2hlbkBvc3MubnhwLmNvbT4gd3JvdGU6Cj4+IAo+PiA+IE9u
+IFR1ZSwgU2VwIDI5LCAyMDI2IGF0IDA5OjEwOjM3QU0gKzAwMDAsIEJvdWdoIENoZW4gKE9TUykg
+d3JvdGU6Cj4+ID4+ID4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0KPj4gPj4gPiBGcm9tOiBN
+aXF1ZWwgUmF5bmFsIDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPgo+PiA+PiA+IFNlbnQ6IFR1
+ZXNkYXksIFNlcHRlbWJlciAyOSwgMjAyNiA0OjIzIFBNCj4+ID4+ID4gVG86IEJvdWdoIENoZW4g
+KE9TUykgPGhhaWJvLmNoZW5Ab3NzLm54cC5jb20+Cj4+ID4+ID4gQ2M6IFByYXR5dXNoIFlhZGF2
+IDxwcmF0eXVzaEBrZXJuZWwub3JnPjsgTWljaGFlbCBXYWxsZQo+PiA+PiA+IDxtd2FsbGVAa2Vy
+bmVsLm9yZz47IFRha2FoaXJvIEt1d2FubyA8dGFrYWhpcm8ua3V3YW5vQGluZmluZW9uLmNvbT47
+Cj4+ID4+ID4gUmljaGFyZCBXZWluYmVyZ2VyIDxyaWNoYXJkQG5vZC5hdD47IFZpZ25lc2ggUmFn
+aGF2ZW5kcmEKPj4gPj4gPiA8dmlnbmVzaHJAdGkuY29tPjsgbGludXgtbXRkQGxpc3RzLmluZnJh
+ZGVhZC5vcmc7IGxpbnV4LQo+PiA+PiA+IGtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IG1pY2hhZWxA
+d2FsbGUuY2M7IEJvdWdoIENoZW4KPj4gPj4gPiA8aGFpYm8uY2hlbkBueHAuY29tPgo+PiA+PiA+
+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggdjJdIG10ZDogc3BpLW5vcjogY2xlYXIgdGhlIGRlZmF1bHQg
+UkRDUiBvcGNvZGUgd2hlbgo+PiA+PiA+IGVudGVyaW5nIE9jdGFsIERUUgo+PiA+PiA+IAo+PiA+
+PiA+IE9uIDI5LzA5LzIwMjYgYXQgMTQ6NTM6MDcgKzA4LCBoYWliby5jaGVuQG9zcy5ueHAuY29t
+IHdyb3RlOgo+PiA+PiA+IAo+PiA+PiA+ID4gRnJvbTogSGFpYm8gQ2hlbiA8aGFpYm8uY2hlbkBu
+eHAuY29tPgo+PiA+PiA+ID4KPj4gPj4gPiA+IFRoZSBjb3JlIGRlZmF1bHRzIG9wY29kZXMucmVh
+ZF9zcjIgdG8gdGhlIGxlZ2FjeSBSRENSIG9wY29kZSAoMHgzNSkuCj4+ID4+ID4gPiBJbiA4RC04
+RC04RCBtb2RlIHRoZSBvcGNvZGUgaXMgZXh0ZW5kZWQgdG8gdHdvIGJ5dGVzIHBlciBjbWRfZXh0
+X3R5cGUsCj4+ID4+ID4gPiBidXQgdGhlIHJlc3VsdGluZyBjb21tYW5kIGlzIG5vdCBhIHZhbGlk
+IFNSMiByZWFkIGZvciB0aGVzZSBmbGFzaGVzLAo+PiA+PiA+ID4gd2hpY2ggYWNjZXNzIHRoZWly
+IHN0YXR1cy9jb25maWcgcmVnaXN0ZXJzIHRocm91Z2ggYSB2ZW5kb3Itc3BlY2lmaWMKPj4gPj4g
+PiA+IGluZGlyZWN0IHJlZ2lzdGVyIHNwYWNlLiBTaW5jZSBzcGlfbm9yX2NhY2hlX3NyX2xvY2tf
+Yml0cygpIG5vdyByZWFkcwo+PiA+PiA+ID4gU1IyIGR1cmluZyBpbml0LCBpLmUuIGFmdGVyIHRo
+ZSBzd2l0Y2ggdG8gT2N0YWwgRFRSLCB0aGUgZXh0ZW5kZWQgUkRDUgo+PiA+PiA+ID4gZ2V0cyBu
+byBkYXRhIGJhY2sgYW5kIHRoZSByZWFkIHRpbWVzIG91dCAob24gaS5NWCBGbGV4U1BJOiAtRVRJ
+TUVET1VUCj4+ID4+ID4gPiBhbmQgYSBjb250cm9sbGVyCj4+ID4+ID4gPiBXQVJOKCkgZHVyaW5n
+IHByb2JlIHdpdGggTWljcm9uIE1UMzV4VSBhbmQgTWFjcm9uaXggb2N0YWwgcGFydHMpLgo+PiA+
+PiA+ID4KPj4gPj4gPiA+IENsZWFyIHJlYWRfc3IyIHdoZW4gdGhlIHN3aXRjaCB0byBPY3RhbCBE
+VFIgYWN0dWFsbHkgc3VjY2VlZHMsIHNvIHRoZQo+PiA+PiA+ID4gU1IyIHJlYWQgaXMgc2tpcHBl
+ZCAoYSBjbGVhcmVkIG9wY29kZSBhbHJlYWR5IG1lYW5zICJ1bnN1cHBvcnRlZCIpLgo+PiA+PiA+
+ID4gRG9pbmcgaXQgaW4gc3BpX25vcl9zZXRfb2N0YWxfZHRyKCkga2V5cyBvZmYgdGhlIHJlYWwg
+cnVudGltZQo+PiA+PiA+ID4gcHJvdG9jb2w6IGEgZmxhc2ggdGhhdCBhZHZlcnRpc2VzIE9jdGFs
+IERUUiBidXQgcnVucyBpbiAoeClTVFIgYmVjYXVzZQo+PiA+PiA+ID4gdGhlIGhvc3QgbGFja3Mg
+c3VwcG9ydCBrZWVwcyBpdHMgdXNhYmxlIFJEQ1IuCj4+ID4+ID4gPgo+PiA+PiA+ID4gQXNzaXN0
+ZWQtYnk6IExMTQo+PiA+PiA+ID4gRml4ZXM6IGI3YjYzNDc1OTAzYyAoIm10ZDogc3BpLW5vcjog
+Q3JlYXRlIGEgbG9jYWwgU1IgY2FjaGUiKQo+PiA+PiA+ID4gRml4ZXM6IDYzNDg5MDAyZDM5NyAo
+Im10ZDogc3BpLW5vcjogUmVmYWN0b3IgUmVhZCBTdGF0dXMvV3JpdGUgU3RhdHVzCj4+ID4+ID4g
+PiBzdXBwb3J0IikKPj4gPj4gPiA+IFNpZ25lZC1vZmYtYnk6IEhhaWJvIENoZW4gPGhhaWJvLmNo
+ZW5AbnhwLmNvbT4KPj4gPj4gPiA+IC0tLQo+PiA+PiA+ID4gQ2hhbmdlcyBpbiB2MjoKPj4gPj4g
+PiA+IC0gUmV3b3JrIHRoZSBmaXggZm9sbG93aW5nIHJldmlldzogaW5zdGVhZCBvZiBndWFyZGlu
+ZyB0aGUgcmVhZCBhdCBydW50aW1lCj4+ID4+ID4gPiAgIGluIHNwaV9ub3JfcmVhZF9zcjIoKSwg
+Y2xlYXIgdGhlIGRlZmF1bHQgUkRDUiBvcGNvZGUucmVhZF9zcjIgb25jZSwgYXQgdGhlCj4+ID4+
+ID4gPiAgIHBvaW50IHRoZSBzd2l0Y2ggdG8gT2N0YWwgRFRSIHN1Y2NlZWRzIChzcGlfbm9yX3Nl
+dF9vY3RhbF9kdHIoKSkuCj4+ID4+ID4gCj4+ID4+ID4gSSBkb24ndCBnZXQgdGhhdCBjaG9pY2Uu
+IFdoeSBzd2l0Y2hpbmcgd2hlbiBPY3RhbCBEVFIgc3VjY2VlZHMgb25seT8gU1IyIGlzCj4+ID4+
+ID4gZWl0aGVyIHN1cHBvcnRlZCBvciBub3Qgc3VwcG9ydGVkLCBJIGRvbid0IHRoaW5rIGl0IGlz
+IGFueXdheSBkaWZmZXJlbnQgd2hlbgo+PiA+PiA+IGVudGVyaW5nIG9jdGFsIERUUiBtb2RlLCBp
+cyBpdD8gU28gSSB3b3VsZCBleHBlY3QgU1IyIHRvIGJlIGNsZWFyZWQgZWFybGllciB0aGFuCj4+
+ID4+ID4gdGhhdCwgb25jZSB3ZSBrbm93IHRoZSBjaGlwIGlzIG9jdGFsIERUUiBjYXBhYmxlLiBB
+bmQgdGhpcyBtdXN0IGJlIGVhcmx5Cj4+ID4+ID4gZW5vdWdoIHNvIHRoYXQgbWFudWZhY3R1cmVy
+IGRyaXZlcnMgY2FuIHN0aWxsIHNldCB0aGVpciBvd24gdmFsdWUuCj4+ID4+ID4gCj4+ID4+ID4g
+SSBhbSB3b25kZXJpbmcgd2hldGhlciB3ZSBzaG91bGQgc2ltcGx5IGRyb3Agc3IyIG9wY29kZSBp
+biB0aGUgUUVSIFNGRFAKPj4gPj4gPiBwYXJzaW5nIGVudGlyZWx5IGZvciBvY3RhbCBEVFIgZGV2
+aWNlcyAoTWljaGFlbD8pLgo+PiA+PiAKPj4gPj4gVGhlIHJlYXNvbiBJIGNsZWFyIGl0IGF0IHRo
+ZSBwb2ludCBPY3RhbCBEVFIgYWN0dWFsbHkgc3VjY2VlZHMgcmF0aGVyIHRoYW4KPj4gPj4gICJv
+bmNlIHRoZSBjaGlwIGlzIG9jdGFsLURUUi1jYXBhYmxlIiBpcyB0aGF0IGNhcGFiaWxpdHkgIT0g
+cnVubmluZyBtb2RlOiAKPj4gPj4gYSBjaGlwIGNhbiBhZHZlcnRpc2UgT2N0YWwgRFRSIHdoaWxl
+IHN0aWxsIHJ1bm5pbmcgaW4gKHgpU1RSIGJlY2F1c2UgdGhlIGhvc3QgCj4+ID4+IGNvbnRyb2xs
+ZXIgZG9lcyBub3Qgc3VwcG9ydCA4RCAoc2VlIHJlcGx5IGJlbG93KS4gSW4gdGhhdCAoeClTVFIg
+Y2FzZSBSRENSIGlzCj4+ID4+ICB2YWxpZCBhbmQgbmVlZGVkLCBzbyBrZXlpbmcgb2ZmIGNhcGFi
+aWxpdHkgYWxvbmUgd291bGQgd3JvbmdseSBkcm9wIGEgdXNhYmxlCj4+ID4+ICBTUjIgcmVhZC4K
+Pj4gPj4gCj4+ID4+IFRoYXQgc2FpZCwgSSBhZ3JlZSB0aGUgY3VycmVudCBzcG90IGlzIGF3a3dh
+cmQgYW5kIGRvZXMgbm90IGxldCBtYW51ZmFjdHVyZXIgCj4+ID4+IGRyaXZlcnMgb3ZlcnJpZGUg
+dGhlIHZhbHVlLiBJJ20gaGFwcHkgdG8gbW92ZSBpdCBlYXJsaWVyLiBUd28gb3B0aW9uczoKPj4g
+Pj4gMSwgQ2xlYXIgaXQgZHVyaW5nIFNGRFAgUUVSIHBhcnNpbmcgKGFzIHlvdSBzdWdnZXN0KSBm
+b3Igb2N0YWwtRFRSLWNhcGFibGUgZGV2aWNlcy4KPj4gPj4gICAgICBUaGlzIGlzIHRoZSBuYXR1
+cmFsIHBsYWNlIG5leHQgdG8gdGhlIGV4aXN0aW5nIHJlYWRfc3IyID0gMCBRRVIgY2FzZXMsIGFu
+ZCBpdCBydW5zIAo+PiA+PiAgICAgICBiZWZvcmUgdGhlIG1hbnVmYWN0dXJlciBsYXRlX2luaXQv
+Zml4dXBzLCBzbyBhIGRyaXZlciBjYW4gc3RpbGwgaW5zdGFsbCBpdHMgb3duIFNSMgo+PiA+PiAg
+ICAgICBvcGNvZGUgYWZ0ZXJ3YXJkcy4gCj4+ID4+ICAgICAgTXkgb25seSBjb25jZXJuIGlzIHRo
+ZSBjYXBhYmlsaXR5LXZzLXJ1bm5pbmctbW9kZSBwb2ludCBhYm92ZSDigJQgd2UnZCBiZSAKPj4g
+Pj4gICAgICBjbGVhcmluZyBiYXNlZCBvbiBhZHZlcnRpc2VkIDhEIGNhcGFiaWxpdHksIG5vdCBv
+biB3aGV0aGVyIDhEIGlzIGFjdHVhbGx5IGVudGVyZWQuCj4+ID4+IAo+PiA+PiAyLCBDbGVhciBp
+dCBpbiBzcGlfbm9yX2xhdGVfaW5pdF9wYXJhbXMoKSBhZnRlciB0aGUgbWFudWZhY3R1cmVyIGhv
+b2tzLCBnYXRlZCBvbiAKPj4gPj4gICAgICBvY3RhbC1EVFIgY2FwYWJpbGl0eSwgc28gdmVuZG9y
+IHZhbHVlcyBzZXQgaW4gdGhlaXIgbGF0ZV9pbml0IGFyZSBwcmVzZXJ2ZWQuCj4+ID4+IAo+PiA+
+PiBJZiB0aGUgY2FwYWJpbGl0eS1iYXNlZCBhcHByb2FjaCBpcyBhY2NlcHRhYmxlIChpLmUuIHdl
+IGFjY2VwdCB0aGF0IGEgY2hpcCBhZHZlcnRpc2luZwo+PiA+PiAgOEQgYnV0IGZvcmNlZCB0byBT
+VFIgYnkgdGhlIGhvc3QgbG9zZXMgaXRzIFJEQ1IpLCBJJ2xsIGdvIHdpdGggZHJvcHBpbmcgaXQg
+aW4gdGhlIFFFUiBTRkRQCj4+ID4+ICBwYXJzaW5nLiBNaWNoYWVsLCBkbyB5b3UgaGF2ZSBhIHBy
+ZWZlcmVuY2U/Cj4+ID4KPj4gPiBIaSBNaXF1ZWwsCj4+ID4KPj4gPiBBbnkgc3VnZ2VzdGlvbj8K
+Pj4gPgo+PiA+IFJlZ2FyZHMKPj4gPiBIYWlibyBDaGVuCj4+ID4KPj4gPj4gPiAKPj4gPj4gPiAK
+Pj4gPj4gPiA+IC0gS2V5IHRoZSBjbGVhciBvZmYgdGhlIHJlYWwgcnVudGltZSBwcm90b2NvbCBz
+byBhIGZsYXNoIHRoYXQgYWR2ZXJ0aXNlcwo+PiA+PiA+ID4gICBPY3RhbCBEVFIgYnV0IHJ1bnMg
+aW4gKHgpU1RSIChob3N0IHdpdGhvdXQgOEQgc3VwcG9ydCkga2VlcHMgaXRzCj4+ID4+ID4gPiAg
+IFJEQ1IuCj4+ID4+ID4gCj4+ID4+ID4gQXJlIHlvdSBzdXJlIHRoaXMgaXMgYSB2YWxpZCBjYXNl
+Pwo+PiA+PiAKPj4gPj4gWWVzLiBzcGlfbm9yX3NldHVwKCkgY29tcHV0ZXMgc2hhcmVkX21hc2sg
+PSBod2NhcHMtPm1hc2sgJiBwYXJhbXMtPmh3Y2Fwcy5tYXNrLCAKPj4gPj4gaS5lLiB0aGUgaW50
+ZXJzZWN0aW9uIG9mIGZsYXNoIGFuZCBjb250cm9sbGVyIGNhcGFiaWxpdGllcy4gSWYgdGhlIGhv
+c3QgZG9lcyBub3Qgc3VwcG9ydCA4RCwgCj4+ID4+IFNOT1JfSFdDQVBTX1JFQURfOF84XzhfRFRS
+IGlzIG5vdCBpbiBzaGFyZWRfbWFzaywgc3BpX25vcl9zZWxlY3RfcmVhZCgpIHBpY2tzIGEgCj4+
+ID4+IG5vbi04RCByZWFkX3Byb3RvL3dyaXRlX3Byb3RvLCBhbmQgc3BpX25vcl9zZXRfb2N0YWxf
+ZHRyKCkgYmFpbHMgb3V0IGVhcmx5IGF0Ogo+PiA+PiAKPj4gPj4gaWYgKCEobm9yLT5yZWFkX3By
+b3RvID09IFNOT1JfUFJPVE9fOF84XzhfRFRSICYmCj4+ID4+ICAgICAgIG5vci0+d3JpdGVfcHJv
+dG8gPT0gU05PUl9QUk9UT184XzhfOF9EVFIpKQo+PiA+PiAJcmV0dXJuIDA7Cj4+ID4+IAo+PiA+
+PiBTbyB0aGUgY2hpcCBzdGF5cyBpbiAoeClTVFIgd2l0aCByZWdfcHJvdG8gPT0gU05PUl9QUk9U
+T18xXzFfMSwgYW5kIFJEQ1IgaXMgc3RpbGwgYSB2YWxpZCAKPj4gPj4gc2luZ2xlLWJ5dGUgU1Iy
+IHJlYWQgdGhlcmUuIFRoYXQgaXMgdGhlIGNhc2UgSSB3YW50ZWQgdG8gYXZvaWQgYnJlYWtpbmcg
+Ynkga2V5aW5nIHRoZSBjbGVhcgo+PiA+PiAgb2ZmIHRoZSBuZWdvdGlhdGVkIHJ1bnRpbWUgcHJv
+dG9jb2wgcmF0aGVyIHRoYW4gdGhlIGFkdmVydGlzZWQgY2FwYWJpbGl0eS4gSWYgd2UgbW92ZSB0
+aGUgCj4+ID4+IGNsZWFyIHRvIGNhcGFiaWxpdHktYmFzZWQgU0ZEUC9sYXRlX2luaXQgYXMgZGlz
+Y3Vzc2VkLCB0aGlzIGlzIGV4YWN0bHkgdGhlIHNjZW5hcmlvIHdlIG5lZWQgdG8gCj4+ID4+IGJl
+IGNvbWZvcnRhYmxlIHJlZ3Jlc3NpbmcgKGFuIDhELWNhcGFibGUgcGFydCBvbiBhIG5vbi04RCBo
+b3N0IHdvdWxkIGxvc2UgaXRzIFJEQ1IgcmVhZCBvZiBTUjIpLgo+PiAKPj4gSSBhbSBzb3JyeSBi
+dXQgSSBmYWlsZWQgdG8gZmluZCBkZXZpY2VzIGFjdGluZyBsaWtlIHlvdSBkZXNjcmliZS4gWW91
+cgo+PiBjb21taXQgbG9nIG1lbnRpb25zIE1pY3JvbiBNVDM1WCBhbmQgTWFjcm9uaXggZGV2aWNl
+cy4gSSBjaGVja2VkIHRoZQo+PiBkYXRhc2hlZXRzOgo+PiAtIE1pY3JvbiBvY3RhbCBkZXZpY2Vz
+IGRvIG5vdCBzZWVtIHRvIHVzZSBTUjIgYXQgYWxsLCB0aGV5IGhhdmUgYSBmbGFnCj4+ICAgcmVn
+aXN0ZXIsIGJ1dCB0aGF0J3Mgc29tZXRoaW5nIGVsc2UgKGxpa2UgV2luYm9uZCkgYW5kIHRoZXkg
+aGF2ZQo+PiAgIHNpbWlsYXIgc3VwcG9ydCBmb3IgaXQgYm90aCBpbiBPRFRSIGFuZCBpbiBTU0RS
+IG1vZGUuCj4+IC0gTWFjcm9uaXggb2N0YWwgcHJvZHVjdHMgZmVhdHVyZSBzZXZlcmFsIFNSL0NS
+LiBUaGUgc3IxX2FuZF9zcjIgb3Bjb2RlCj4+ICAgZXhpc3QgYnV0IEkgd291bGQgbGlrZSB0byBz
+dG9wIHVzaW5nIGl0IHNpbmNlIHRoZXJlIGlzIG5vIG1vcmUgbmVlZAo+PiAgIGZvciBpdCBhbmQg
+aXQganVzdCBjb21wbGV4aWZpZXMgZXZlcnl0aGluZyBmb3Igbm8gZ29vZCByZWFzb24uIFRoZXJl
+Cj4+ICAgaXMgbm8gZGlmZmVyZW5jZSBiZXR3ZWVuIHRoZSBTU0RSIGFuZCB0aGUgT0RUUiBpbnN0
+cnVjdGlvbiBzZXRzLCB0aGV5Cj4+ICAgYm90aCBzdXBwb3J0IHRoZSBzYW1lIG9wY29kZXMgZm9y
+IHJlYWRpbmcgYW5kIHdyaXRpbmcgdGhvc2UgcmVnaXN0ZXJzCj4+ICAgKHdpdGggdGhlIHN1YnRs
+ZXR5IHRoYXQgdGhlIHJlcGVhdGVkIG9wY29kZSBzaG91bGQgYmUgYSBiaXR3aXNlCj4+ICAgY29t
+cGxlbWVudCkuCj4+IAo+PiBXaGljaCBkZXZpY2UgZG8geW91IHVzZSBleGFjdGx5PyBXaHkgaXMg
+aXQgbm90IHdvcmtpbmc/IEFyZSB5b3Ugc3VyZSBpdAo+PiBpcyBub3QgYSBwcm9ibGVtIHdpdGgg
+eW91ciBjb250cm9sbGVyIG9yIHRoZSBTRkRQIHRhYmxlcyBpbnN0ZWFkPwo+Cj4gSGkgTWlxdWVs
+LAo+Cj4gVGhlIGRldmljZSBpcyBhIE1pY3JvbiBNVDM1WFUwMUdCQkEgKEpFREVDIDJjIDViIDFi
+KSBvbiBhbiBpLk1YOTUgRVZLLCBhbmQKPiBhIE1hY3Jvbml4IE1YMjVVVzUxMzQ1RyhKRURFQyBj
+MiA4NCAzYSkgb24gYW4gaS5NWDhVTFAgRVZLLgo+Cj4gSW4gOEQgbW9kZSBSRElEICg5ZikgYW5k
+IFJEU1IxICgwNSkgYXJlIHJlYWQgYmFjayBmaW5lLiBPbmx5IFJEU1IyICgweDM1LCAKPiBleHRl
+bmRlZCB0byAweDM1MzUgb3IgMHgzNWNhKSB0aW1lcyBvdXQuIFNvIHRoZSBjb250cm9sbGVyIGFu
+ZCB0aGUgOEQgc2FtcGxpbmcKPiBhcmUgT0sg4oCUIHRoZSBmbGFzaCBzaW1wbHkgZG9lcyBub3Qg
+YW5zd2VyIGEgMHgzNSBpbiA4RCBtb2RlLgo+Cj4gUm9vdCBjYXVzZSBpcyBpbiB0aGUgY29yZSwg
+bm90IHRoZSBTRkRQL2NvbnRyb2xsZXI6IHNwaV9ub3JfaW5pdF9kZWZhdWx0X3BhcmFtcygpCj4g
+c2V0cyBvcGNvZGVzLnJlYWRfc3IyID0gUkRDUiAoMHgzNSkgdW5jb25kaXRpb25hbGx5LCB0aGUg
+TWljcm9uIGRyaXZlciBuZXZlciB0b3VjaGVzCj4gaXQsIGFuZCBzcGlfbm9yX2NhY2hlX3NyX2xv
+Y2tfYml0cygpIHRoZW4gcmVhZHMgU1IyIGR1cmluZyBpbml0LCBhZnRlciB0aGUgc3dpdGNoCj4g
+dG8gOEQuIEFzIHlvdSBub3RlZCwgTWljcm9uIG9jdGFsIHBhcnRzIGhhdmUgbm8gU1IyICh0aGV5
+IHVzZSB0aGUgZmxhZyByZWdpc3RlciksCj4gc28gMHgzNSBpcyBzaW1wbHkgbm90IGEgdmFsaWQg
+Y29tbWFuZCB0aGVyZS4gU2FtZSBmb3IgTWFjcm9uaXgsIDB4MzUgaXMgbm90IHZhbGlkCj4gaW4g
+OEQgbW9kZS4KPgo+IEZvciBzcGktbm9yIGRldmljZSB3aGljaCBzdXBwb3J0IDhELCBpdCBzaG91
+bGQgY29udGFpbiB0aGUgeFNQSSBQcm9maWxlIDEuMCB0YWJsZSwKPiBBbmQgUHJvZmlsZSAxLjAg
+ZG9lcyBub3QgZGVzY3JpYmUgYW55IFNSMi9SRENSIHJlYWQuIFBlciB5b3VyIHN1Z2dlc3Rpb24s
+IEkgY2FuCj4gY2xlYXIgb3Bjb2Rlcy5yZWFkX3NyMiBpbiBzcGlfbm9yX3BhcnNlX3Byb2ZpbGUx
+KCkuIEl0IHJ1bnMgZm9yIG9jdGFsLWNhcGFibGUKPiBwYXJ0cyBhbmQgYmVmb3JlIHRoZSBtYW51
+ZmFjdHVyZXIgbGF0ZV9pbml0LCBzbyBhIGRyaXZlciBjYW4gc3RpbGwgaW5zdGFsbCBpdHMKPiBv
+d24gU1IyIG9wY29kZSBhZnRlcndhcmRzLiBJIHRlc3QgdGhpcyBtZXRob2QsIGl0IGNhbiB3b3Jr
+cywgYnV0IEkgaGF2ZSBzb21lIGNvbmNlcm46IAo+IHRob3VnaCBmbGV4c3BpKGNvbnRyb2xsZXIp
+IGFuZCBzcGktbm9yIGRldmljZSBib3RoIHN1cHBvcnQgOEQgbW9kZSwgYnV0IHVzZXIKPiBzdGls
+bCBjYW4gZm9yY2UgdGhlIG1vZGUgdG8gMXMtMXMtMXMgbW9kZSBieSBzZXR0aW5nIHRoZSBzcGkt
+dChvciByKXgtYnVzLXdpZHRoPTEKPiBpbiBkdHMuIExpa2UgdGhlIE1hY3Jvbml4IG9uIGkuTVg4
+VUxQLCBpbiAxcy0xcy0xcyBtb2RlLCBpdCBkb3NlIGlzc3VlIDB4MzUsIGJ1dAo+IGl0IGhhcyBu
+byBIQVNfU1IyX0NNUF9CSVQ2IGZsYWcsIHNvIGNtcF9tYXNrIGlzIDAgYW5kIHRoZSBTUjIgdmFs
+dWUgaXMgZGlzY2FyZGVkCj4gYW55d2F5IOKAlCBjbGVhcmluZyByZWFkX3NyMiBjYXVzZXMgbm8g
+cmVncmVzc2lvbiB0aGVyZS4gCj4gQnV0IGlmIGFuIDhELWNhcGFibGUgcGFydCBkZWNsYXJlZCBT
+UElfTk9SX0hBU19DTVAgaW4gdGhlIGtlcm5lbCBhbmQgd2VyZSByZXN0cmljdGVkCj4gdG8gKHgp
+U1RSIGJ5IHRoZSBob3N0LCBjbGVhcmluZyByZWFkX3NyMiBieSBjYXBhYmlsaXR5IGluIFByb2Zp
+bGUgMS4wIHBhcnNpbmcgd291bGQKPiBkcm9wIGl0cyB1c2FibGUgU1IyLUNNUCByZWFkIGluIFNU
+UiBtb2RlLiBUaGlzIGlzIG15IGNvbmNlcm4uIFNvIEkgc3dpdGNoIHRvIHRoZQo+IHJ1bnRpbWUg
+bW9kZSwgY2xlYXIgdGhlIFNSMiBvbmx5IHdoZW4gbW9kZSBhY3R1YWxseSBpbiA4RCBtb2RlLgo+
+IEknbSBub3Qgc3VyZSB3aGV0aGVyIHN1Y2ggZGV2aWNlIHJlYWxseSBleGlzdC4KPgo+IFdoaWNo
+IG1ldGhvZCBkbyB5b3UgcHJlZmVyPyBJZiB5b3UgcHJlZmVyIGNsZWFyIFNSMiBpbiBzcGlfbm9y
+X3BhcnNlX3Byb2ZpbGUxKCksIEkKPiBjYW4gc2VuZCBWMyBwYXRjaC4KCkNNUCBpcyBvbmx5IHN1
+cHBvcnRlZCBvbiBXaW5ib25kIGZsYXNoZXMgdG9kYXksIGFuZCB0aGV5IGRpZCBub3QgcHV0IHRo
+ZQpiaXQgaW4gdGhlIHNhbWUgcmVnaXN0ZXIgYXMgdXN1YWwgaW4gdGhlaXIgOEQgY2FwYWJsZSBk
+ZXZpY2VzLCBzbyBDTVAgaXMKYWxyZWFkeSBub3QgYXZhaWxhYmxlIG9uIHRoZXNlIGRldmljZXMu
+IFBsZWFzZSBqdXN0IGdldCByaWQgb2YKb3Bjb2RlLnJlYWRfc3IyIGFzIHdlbGwgYXMgb3Bjb2Rl
+LnJlYWRfc3IxX2FuZF9zcjIgc3RhdGljYWxseSwgbm9ib2R5CnNob3VsZCB1c2UgdGhvc2Ugb24g
+c3VjaCBjaGlwcy4gVGhpcyB3aWxsIGdyZWF0bHkgc2ltcGxpZnkgb3VyCm1haW50YWluYW5jZSBq
+b2IuIElmIHNvbWVvbmUgbmVlZHMgdGhlbSwgdGhleSB3aWxsIGFkZCB0aGVtIGJhY2sgaW4gdGhl
+aXIKdmVuZG9yIGRyaXZlciwgdGhhdCdzIGZpbmUuCgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQg
+ZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9saW51eC1tdGQvCg==
