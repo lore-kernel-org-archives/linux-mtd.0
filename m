@@ -2,65 +2,74 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A2C0606A31D
-	for <linux-mtd@archiver.kernel.org>; Thu, 22 Oct 2026 13:23:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37055606A31E
+	for <linux-mtd@archiver.kernel.org>; Thu, 22 Oct 2026 13:28:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=PfXiqzec
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=LX900jQP;
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=Ru3JWSa4
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=YSii/3UBmyUb++ziOkS/XqrKmW6xNmlutsYY61VpjBk=; b=PfXiqzecvzY/gL0v1GqXydCkJK
-	U1KuT+7B5Hg7DnNDLHimYzEj3Cog3WhcjBrVcFhKlHb32yfC6u5gbOwWAW43f0oMqHRerhCkgZj37
-	XI3bRi3ynOgeF8lKUb85BgqKJ2X/Eb+Q+9isELdaNsslQUKJJ0cLQaRWNo+vfMjeuxMQsCDV8mTFq
-	HwKoKr3w8FAC9ZKs7TRTJmfSYUPcUKUJKFMMkBo/0jlsraekiOMfc8OOR8hQ+vvDx4h3fohUDB4Z8
-	4/fOY4a1JEJbmi1ErzexdXqd2AYtG2TcWSmzlY4GGl4ACSEBSVBtU99WYFqKT4rYRAD93YLPiNQOI
-	smUZKE3A==;
+	bh=cdxC2q6U8RVGgLnJpsOUjZ418F+qNY6xFmSLxoLk6WA=; b=LX900jQPTJJ9Z684gfIYMEKIPV
+	q7utP5o0lWbndTgC6XEcCn+P3aNXsLSfCkcD1m6WUNCiKO+yPyUmyi789gXUInx0rVVCWJ7pDSCX7
+	mOb8RhEK0GSTqCVIK1mA9c7JBvL3KZ3nmLwL2nvviIohxHzUzHLRkoSIFVqXoD3/j6drzhcg5jDES
+	DPJHYeA5VfKTVYilfN2/DM9cBxHQdveLW3YpPUgLHiIDLOBFGn3YfCn2xDk8hN4hq0ckIlvooR5hi
+	Q0bO2FYPhyfIJUdKx5o/mSPFSp/WbylDHzGqjy14rE+X17nZVPHTy+EPTbhKmWplJ9nyPKJoyGN6j
+	bRmtsdiw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xJslN-0000000EAin-0Ak9;
-	Thu, 22 Oct 2026 13:23:21 +0000
-Received: from smtp.h3c.com ([60.191.123.56] helo=h3cspam01-ex.h3c.com)
+	id 1xJspt-0000000EB7h-2aDI;
+	Thu, 22 Oct 2026 13:28:01 +0000
+Received: from smtpout-02.galae.net ([185.246.84.56])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xJslJ-0000000EAi1-1PHa
+	id 1xJspq-0000000EB7M-2SRK
 	for linux-mtd@lists.infradead.org;
-	Thu, 22 Oct 2026 13:23:19 +0000
-Received: from mail.maildlp.com ([172.25.15.155])
-	by h3cspam01-ex.h3c.com with ESMTP id 69MDMfU3056546;
-	Thu, 22 Oct 2026 21:22:41 +0800 (+08)
-	(envelope-from lin.nan@h3c.com)
-Received: from DAG6EX09-BJD.srv.huawei-3com.com (unknown [10.153.34.11])
-	by mail.maildlp.com (Postfix) with ESMTP id 19BEB20091FC;
-	Thu, 22 Oct 2026 21:25:53 +0800 (CST)
-Received: from localhost.localdomain (10.142.164.48) by
- DAG6EX09-BJD.srv.huawei-3com.com (10.153.34.11) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1258.27; Thu, 22 Oct 2026 21:22:41 +0800
-From: Nan Lin <lin.nan@h3c.com>
-To: <chengzhihao1@huawei.com>
-CC: <lin.nan@h3c.com>, <linux-mtd@lists.infradead.org>, <richard@nod.at>,
-        <sashiko-bot@kernel.org>, <sashiko-reviews@lists.linux.dev>,
-        <wangxiaoqing@h3c.com>, <zhou.kete@h3c.com>
-Subject: Re: [PATCH v2] ubifs: zero stale data beyond EOF before file size grows
-Date: Thu, 22 Oct 2026 21:15:09 +0800
-Message-ID: <20261022131509.3006011-1-lin.nan@h3c.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <9b07df29-a459-f607-e06c-07aa6b9cf290@huawei.com>
-References: <9b07df29-a459-f607-e06c-07aa6b9cf290@huawei.com>
+	Thu, 22 Oct 2026 13:28:00 +0000
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-02.galae.net (Postfix) with ESMTPS id 260881A12C5;
+	Thu, 22 Oct 2026 13:27:55 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id E186660360;
+	Thu, 22 Oct 2026 13:27:54 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 09DEF10328E5A;
+	Thu, 22 Oct 2026 15:27:42 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1792675674; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 in-reply-to:references; bh=/RgtJAwfFxMYwKRHR6ym49yRh7I5Fuz2Xy5zLf91xb0=;
+	b=Ru3JWSa450e+Pfh7Wr17MJeuBSndDLoX6yuq1Glk2pUuKCdE1g4SjrOYTy2wcqGbi8Im44
+	6FBKurVqPmB8fnoWsPyKf6mZnMyI86GP8R4S12gtVfD54xLKf0sHmb9+uxtHlFGRtUzQ5/
+	qYaXjWHsbgHVJvd5OdKM6JPqrqFw+griRskl1Hn0N478/R7oIdsLavPNBmZLY/cnQon8qg
+	2WrJpEFPRLkpUVnXPP3SHARlEXMdHbuiDioYFO0apGaJPyp6EIKek8VimAaDejD8vyT2jo
+	KdJIrleI4voqKPvz0C47SBNgZLW646ZZnceeyj4p9E2dhJHkW5aMMbhORDQUYg==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: "Michael Walle" <mwalle@kernel.org>
+Cc: "Changhuang Liang" <changhuang.liang@starfivetech.com>,  "Pratyush
+ Yadav" <pratyush@kernel.org>,  "Takahiro Kuwano"
+ <takahiro.kuwano@infineon.com>,  "Mark Brown" <broonie@kernel.org>,
+  "Richard Weinberger" <richard@nod.at>,  "Vignesh Raghavendra"
+ <vigneshr@ti.com>,  <linux-spi@vger.kernel.org>,
+  <linux-kernel@vger.kernel.org>,  <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH v1 2/4] mtd: spi-nor: Support mixed 1S-xD-xD DTR
+ protocols in spi_nor_spimem_setup_op()
+In-Reply-To: <DMBD190498R4.3PX7VO4SXKU3C@kernel.org> (Michael Walle's message
+	of "Thu, 22 Oct 2026 14:19:27 +0200")
+References: <20261022102614.75696-1-changhuang.liang@starfivetech.com>
+	<20261022102614.75696-3-changhuang.liang@starfivetech.com>
+	<875wyuqaj4.fsf@bootlin.com> <DMBD190498R4.3PX7VO4SXKU3C@kernel.org>
+User-Agent: mu4e 1.12.12; emacs 30.2
+Date: Thu, 22 Oct 2026 15:27:42 +0200
+Message-ID: <87ik2tq301.fsf@bootlin.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-ClientProxiedBy: BJSMTP02-EX.srv.huawei-3com.com (10.63.20.133) To
- DAG6EX09-BJD.srv.huawei-3com.com (10.153.34.11)
-X-DNSRBL: 
-X-SPAM-SOURCE-CHECK: pass
-X-MAIL: h3cspam01-ex.h3c.com 69MDMfU3056546
+X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261022_062318_030628_FAAE7419 
-X-CRM114-Status: GOOD (  24.14  )
-X-Spam-Score: 0.6 (/)
+X-CRM114-CacheID: sfid-20261022_062758_789139_7E8AE494 
+X-CRM114-Status: GOOD (  16.27  )
+X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,150 +82,93 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-6.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-13.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no
-	autolearn_force=no version=4.0.1
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
->> Hi Cheng,
+On 22/10/2026 at 14:19:27 +02, "Michael Walle" <mwalle@kernel.org> wrote:
+
+> On Thu Oct 22, 2026 at 12:45 PM CEST, Miquel Raynal wrote:
+>> On 22/10/2026 at 03:26:12 -07, Changhuang Liang <changhuang.liang@starfivetech.com> wrote:
 >>
->> Thanks for the detailed review. My responses are inline.
+>>> Currently spi_nor_spimem_setup_op() sets all four phases (cmd, addr,
+>>> dummy, data) to DTR whenever spi_nor_protocol_is_dtr(proto) is true.
+>>> This is too coarse: the 1S-xD-xD DTR protocols (1_1_1_DTR, 1_2_2_DTR,
+>>> 1_4_4_DTR, 1_8_8_DTR) send the command phase in STR on a single line,
+>>> and only the address, dummy and data phases in DTR. SPIMEM supports
+>>> such mixed DTR modes.
+>>>
+>>> Split the handling:
+>>>
+>>>   - For SNOR_PROTO_8_8_8_DTR, keep the existing behavior: set all
+>>>     phases to DTR and use a 2-byte opcode (opcode + extension).
+>>>
+>>>   - For the other DTR protocols, set the command phase to STR and only
+>>>     the address, dummy and data phases to DTR. Double op->dummy.nbytes
+>>>     since DTR transfers 2 bytes per clock cycle, matching how the dummy
+>>>     cycle count is specified for these protocols.
+>>>
+>>> No in-tree flash currently declares SNOR_HWCAPS_READ_1_x_x_DTR, so
+>>> this is not a bug fix but preparation for enabling these protocols.
+>>> A follow-up patch will enable 1S-4D-4D for the MX66L1G45G. The
+>>> 8D-8D-8D path is unchanged.
+>>>
+>>> Signed-off-by: Changhuang Liang <changhuang.liang@starfivetech.com>
+>>> ---
+>>>  drivers/mtd/spi-nor/core.c | 21 ++++++++++++++-------
+>>>  1 file changed, 14 insertions(+), 7 deletions(-)
+>>>
+>>> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+>>> index 90524c58602e..43e506e728ab 100644
+>>> --- a/drivers/mtd/spi-nor/core.c
+>>> +++ b/drivers/mtd/spi-nor/core.c
+>>> @@ -97,13 +97,7 @@ void spi_nor_spimem_setup_op(const struct spi_nor *nor,
+>>>  	if (op->data.nbytes)
+>>>  		op->data.buswidth = spi_nor_get_protocol_data_nbits(proto);
+>>>  
+>>> -	if (spi_nor_protocol_is_dtr(proto)) {
+>>> -		/*
+>>> -		 * SPIMEM supports mixed DTR modes, but right now we can only
+>>> -		 * have all phases either DTR or STR. IOW, SPIMEM can have
+>>> -		 * something like 4S-4D-4D, but SPI NOR can't. So, set all 4
+>>> -		 * phases to either DTR or STR.
+>>> -		 */
+>>> +	if (proto == SNOR_PROTO_8_8_8_DTR) {
+>>>  		op->cmd.dtr = true;
+>>>  		op->addr.dtr = true;
+>>>  		op->dummy.dtr = true;
+>>> @@ -115,6 +109,19 @@ void spi_nor_spimem_setup_op(const struct spi_nor *nor,
+>>>  		ext = spi_nor_get_cmd_ext(nor, op);
+>>>  		op->cmd.opcode = (op->cmd.opcode << 8) | ext;
+>>>  		op->cmd.nbytes = 2;
+>>> +	} else if (spi_nor_protocol_is_dtr(proto)) {
+>>> +		/*
+>>> +		 * 1S-xD-xD protocols: the opcode is sent in STR on a single
+>>> +		 * line, only the address, dummy and data phases are DTR. The
+>>> +		 * opcode stays 1 byte (no command extension).
+>>> +		 */
+>>> +		op->cmd.dtr = false;
+>>> +		op->addr.dtr = true;
+>>> +		op->dummy.dtr = true;
+>>> +		op->data.dtr = true;
 >>
->>> The filemap_lock_folio gets folio with FGP_LOCK, I think we should 
->>> use 'FGP_WRITEBEGIN | FGP_ACCESSED' just like ext4_load_tail_bh() 
->>> does, because the folio may not exist in ram when calling do_setattr().
->>
->> ext4_load_tail_bh() needs FGP_CREAT because in Ext4 the block behind 
->> an unwritten/delayed extent holds garbage on disk, so the zeroing must 
->> reach the media. UBIFS does not have this problem -- stale data can 
->> only live in the page cache, never on flash:
->>
->>    writeback:  ubifs_writepage() zeroes the straddling folio on every
->>                invocation and skips folios fully beyond i_size, so
->>                stale tails never reach the media.
->>    read-in:    do_readpage()/read_block() zero the tails of holes and
->>                short data nodes, so a folio loaded from flash is always
->>                tail-clean.
->>
->> So when the EOF folio is absent from the cache, there is nothing to 
->> zero anywhere: FGP_CREAT would merely allocate a fresh (already zero) 
->> folio to zero it again. Returning early on IS_ERR() is the correct and 
->> cheaper equivalent of Ext4's path.
+>> Still to coarse IMHO.
+
+too*
+
+>> What about xS-xS-xD?
 >
->There is one case makes me confused:
->File f, isize = 0
->1. setattr(f, isize = 3)
->    do_setattr -> ubifs_zero_eof_hole -> filemap_lock_folio // gets no folio and returns, nothing happens 2. pwrite(f, "123", offset = 6, len = 3)
->    ubifs_write_begin
->     ubifs_zero_eof_hole -> filemap_lock_folio // gets no folio and returns, nothing happens
->     folio = __filemap_get_folio(FGP_WRITEBEGIN) // create a new folio with random content
->     if (!folio_test_uptodate(folio))
->       do_readpage // does nothing
->        while (1) {
->          ENOENT = read_block
->        }
->    ubifs_write_end
->     isize = 9
->
->   ubifs_writepage
->    folio content looks like
->   | random | random | 123   |   zero       |
->   0        3        6       9             4096
->
+> Is this a thing? Are there any NOR flashes which support the address
+> being SDR? That doesn't make much sense, does it? The command being
+> SDR makes sense because you don't have to switch modes and thus
+> you're stateless.
 
-do_readpage() does run here: pos(6) != folio_pos(0), so the
-skipped_read branch is not taken. With i_size = 3:
+I honnestly don't know if it's actually a thing today in SPI NOR, but it
+is in SPI NAND. Just rising the flag.
 
-  do_readpage():
-    beyond = (3 + 4095) >> 12 = 1
-    block(0) < beyond(1) -> no early exit
-    read_block(block=0):
-      ubifs_tnc_lookup() -> -ENOENT (no data nodes yet)
-      -> folio_zero_range(folio, 0, 4096)     /* whole 4K block */
-      -> return -ENOENT                       /* file.c:52-59 */
-    hole branch: err = 0, folio_set_checked(), folio_mark_uptodate()
-
-So read_block() zeroes the full 4K block *before* returning -ENOENT. The folio VFS copies "123" into is:
-
-  | 0 ... 0 | 123 | 0 ... 0 |
-  0         3/6   9        4096
-
-not "| random | random | 123 |". The random bytes never survive:
-every !uptodate folio passes through do_readpage(), and read_block()
-zeroes every block whose TNC lookup returns -ENOENT. 
-
->According to the current implementations, could above process happen?
->If it is, I think we need to do two points:
->1. The folio(even not cached) zero range is necessary when setting a new
->bigger size?       -- For 0~3 case
->2. The folio(even not cached) zero range is necessary when writting
->starts after old isize?       -- For 3~6 case
->I think zeroing the whole folio in ubifs_read_folio(ENOENT case) is a simple solution?
->>
->>> Why skipping 'from == 0'? What if a user writes begin from
->>> offset-X(0<X<4096) to a new file(isize = 0)? Ext4 zero the range by 
->>> ext4_block_write_begin->folio_zero_segments(folio, to, block_end, 
->>> block_start, from), but ubifs not handle it.
->>
->> from == 0 means the old EOF is folio-aligned, so the EOF folio has no 
->> bytes beyond EOF and there is no hole in it:
->>
->>    from != 0:  |/////valid/////|stale|   <- zero [from, to)
->>    from == 0:  |/////valid/////|         <- nothing beyond EOF here
->>
->> For the i_size == 0 case: a zero-size file cannot hold a polluted 
->> folio. mmap cannot create one (page_mkwrite returns SIGBUS when 
->> folio_pos >= i_size), and write() followed by ftruncate(0) invalidates 
->> the folio. The [0, X) part of the write folio itself is zeroed by the 
->> existing do_readpage() path ("block >= beyond" -> folio_zero_range()), 
->> which is UBIFS's counterpart of ext4_block_write_begin()'s 
->> folio_zero_segments() -- the work happens at folio read-in because 
->> UBIFS's block size always equals the page size.
->>
->
->This question is similar with the previous one.
->
->>> The ext4 protection check is ext4_write_checks->ext4_block_zero_eof,
->>> I think we can add the zero hole check in ubifs_write_iter().
->>
->> Agreed. This mirrors ext4_write_checks() -> ext4_block_zero_eof() and 
->> runs once per syscall instead of once per write_begin() iteration.
->> Will move it there in v3.
->>
->>> If the program enters into this branch, the ubifs file's isize is not 
->>> zero, ubifs_read_folio has already zerod tail, do we still need this 
->>> folio_zero_range?
->>> Oh, there is one case, UBIFS file has isize without data nodes(eg.
->>> isize = 3, the first block is a data hole), ubifs_read_folio won't 
->>> zero the page tail, we still need folio_zero_range().
->>
->> Right -- and one more case on top of the hole-inode one: mkwrite also 
->> runs on already-cached folios, and earlier mmap stores may have 
->> re-dirtied the tail after ubifs_read_folio() cleaned it (only folios 
->> fully beyond EOF get SIGBUS; the straddling folio stays writable 
->> across its whole length). So the tail must be re-zeroed on every 
->> (re-)fault, and the folio_zero_range() stays.
->
->I;m still confusing about the necessary of this folio_zero_range().
->For a hole inode(isize = 3, no data nodes), if the folio is cached, ubifs_read_folio has zerod the whole folio content(Suspend we have applied the simple solution from the previous question). The subsequent dirty setting will not write the page content after the 3rd byte to a data node.
-
-Yes, I agree: ubifs_read_folio() zeroes the tail at read-in, and
-writeback does not persist bytes beyond EOF (the straddling folio's
-tail is zeroed and do_writepage() only writes i_size
-bytes). My concern is the cached tail of the EOF folio: a previous
-shared mapping may have modified it, and a later write fault may
-reuse the uptodate folio without calling ubifs_read_folio() again.
-The zeroing will clear that stale tail before page_mkwrite() returns.
-
-This is not a general fix for read-only re-mappings, since those do
-not invoke page_mkwrite(). In this scenario, I see the hunk as a
-defensive cleanup of the cached EOF tail on a later write fault,
-rather than a fix for writeback correctness. A userspace reproducer
-may race with writeback. I'd lean toward keeping it as a defensive
-measure, but I haven't yet demonstrated a correctness issue without
-it. What do you think?
 
 ______________________________________________________
 Linux MTD discussion mailing list
