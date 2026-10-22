@@ -2,64 +2,128 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD8AE606A31A
-	for <linux-mtd@archiver.kernel.org>; Thu, 22 Oct 2026 03:26:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D49F606A339
+	for <linux-mtd@archiver.kernel.org>; Thu, 22 Oct 2026 03:54:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=kxQy0o93
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=qWZb5eOF;
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=altera.com header.i=@altera.com header.a=rsa-sha256 header.s=selector2 header.b=RFroB+1c
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WFLJ19f+rMhx9Nnoa9hz0VTwHRpYQROApmFyQ4cLUQY=; b=kxQy0o93uOhpdP
-	QnHJ42teaMdEYl/QVyz+iT1wnJG770dnfar0yfmxgWhJJtVyapzKmKwh7UncUreD8/KYohmfPQWYE
-	1WCUON5oSEueYs3ynowVq7eQRx/y8q+nw2LUwboNFtYo1jJLv8TeNzzh239tk4PNW1+8VEXnkRKrY
-	c5tihx8QaxJ17Vn3Y/YY/t31NZaSqvVBBK032LI80KN34WZXJC35nn+tBP9snoOp2lFz1E5nYnYu7
-	mfK9ugz+5ytLdwYyzmBmDxVVxm2Dv3n/xXkL4Ibk53eJGCwnksbyc0tdVwv2siSCeNaU4WRSv3Yyu
-	z8+HXhBy5S9ZkUQ9/pAA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
+	:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=Vfg5Ckn0wXsVKLGxOVLZByZ9wEZ+tk+CIc5eiC8Japo=; b=qWZb5eOFoiWdx/
+	36Xda7Of9vTv7wlN2EN6Y78WNuk2JO3oeCID684K34Y0DIrSSFAr4ZPfTNZEKpO4hy0bM/ccK2xpq
+	NWZOzCxIeW/mkjfCIDTVWT3yeJj09Mp3rHZ06UHPsuU3iHF/rhpucqby5lPTJDVxWWXYZQLJWkNIQ
+	BHUKmzhTKPr15WrHH0nzZUjbuU+GWUHzOWf1okoZe57m03Bx0T/DnB5R/k9cuQLk9kvxZMndNgx/V
+	RGD0GpYLQ8IZhTFFidcKIdUbd3VXpPhBCLYeFX9dPfFdOpCWTeG4auI+zS8wlOYTBR5nLExa3KtqH
+	C0H4gZTKshqmf2nJ6mOQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xJjRs-0000000DH8a-3yNK;
-	Thu, 22 Oct 2026 03:26:36 +0000
-Received: from smtp.h3c.com ([60.191.123.56] helo=h3cspam01-ex.h3c.com)
+	id 1xJjsW-0000000DIlj-3bBV;
+	Thu, 22 Oct 2026 03:54:08 +0000
+Received: from mail-westcentralusazon11010002.outbound.protection.outlook.com ([40.93.198.2] helo=CY7PR03CU001.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xJjRp-0000000DH87-2cP1
+	id 1xJjsU-0000000DIlK-1LWC
 	for linux-mtd@lists.infradead.org;
-	Thu, 22 Oct 2026 03:26:35 +0000
-Received: from mail.maildlp.com ([172.25.15.155])
-	by h3cspam01-ex.h3c.com with ESMTP id 69M3Q5dx034063;
-	Thu, 22 Oct 2026 11:26:05 +0800 (+08)
-	(envelope-from lin.nan@h3c.com)
-Received: from DAG6EX09-BJD.srv.huawei-3com.com (unknown [10.153.34.11])
-	by mail.maildlp.com (Postfix) with ESMTP id CEDD1200920D;
-	Thu, 22 Oct 2026 11:29:15 +0800 (CST)
-Received: from localhost.localdomain (10.142.164.48) by
- DAG6EX09-BJD.srv.huawei-3com.com (10.153.34.11) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1258.27; Thu, 22 Oct 2026 11:26:04 +0800
-From: Nan Lin <lin.nan@h3c.com>
-To: <chengzhihao1@huawei.com>
-CC: <lin.nan@h3c.com>, <linux-mtd@lists.infradead.org>, <richard@nod.at>,
-        <sashiko-bot@kernel.org>, <sashiko-reviews@lists.linux.dev>,
-        <wangxiaoqing@h3c.com>, <zhou.kete@h3c.com>
-Subject: Re: [PATCH v2] ubifs: zero stale data beyond EOF before file size grows
-Date: Thu, 22 Oct 2026 11:18:14 +0800
-Message-ID: <20261022031814.2735650-1-lin.nan@h3c.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <9a775528-0259-2b88-d592-08c58b366253@huawei.com>
-References: <9a775528-0259-2b88-d592-08c58b366253@huawei.com>
+	Thu, 22 Oct 2026 03:54:07 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=JGgfb8Zxz9OI0WopzNRyflixW8x3istwIxXhQDnfb/OezWcHL8cn/czrbPlj12GC0i6fzoCTYALb560U59Qmy8PSexDbo19bxVmoVrVZooaPn2iyqZibF4xYYGx2SKq5gp8cPDR8CplesF4ah55184a8740rrHSqujwx2R09RvjudAOZKIj7QwEqmNk+gNXCfuuvhOPtNKbD9RYRrfo567clrxb93hxFuRLDMUDtCC7Tuc3evZCmLNQTx9YHGKudwoZ0yd7ifkI+nGb9tlZUMFCGfWA2yCN1Iu2wXwRmxLIKfRzF+K0niPON2JDX5liPejnwMs5+WKccs0p8dtPaXQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=yKJSjNBqMiy43Ufbjeud5oMM+jkhCRjfKm2/rwU8iz8=;
+ b=ZroeZo5g4CaKjOiGZSxGUTxKPWlQR/n32ZfuEpkRZpuPfLEdlqx2wue5hTWZXy3y5PQ4AvQdYqQi8/pqObxF43Gm4WmuKvcPVlufrJ01o2/WTT15zEvXRK0YJc7tQGZcvAcfBLIA+c+6TKSbF/xWpdINHEqcQgX/m/OYQCTqoKMV1m0jfn907884qdaPHR4JfABYZ5I5zGaAeAIpzI7dO2PTiLdmH4EdyIFc1evgADPtL0Uf0IYIptHJKpWV1SbkFDHam05r2TIhvujGhGgNxDe5mAObPjPaR1OPr7gfLa2sy6dTEvT8/R9ftQ86DMMMGpK3o6ZTEBvuP7ByyeqGZw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=altera.com; dmarc=pass action=none header.from=altera.com;
+ dkim=pass header.d=altera.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=altera.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yKJSjNBqMiy43Ufbjeud5oMM+jkhCRjfKm2/rwU8iz8=;
+ b=RFroB+1cEvKXDv1Gwt9nvmP+dqclJBpsya4eFFpX3SZEqFBzxtUmYlebHELukwh2ANfTn/OUcXZ035Xhs/oVQqq/CK02ZvFGahevBjfzTTic7Bz9sSCrByDWPp03hm24nr9WJ75dU4tpuDTs+MAoFP6ALWP6uZOAu2d0tvbJa2n5eBQHVBsyWBgqwZkQYr54gUD+KjXEtfmgQCb9/SkW+iFLG0C2DHMBnWjCbstF3vhKLDRjFHFMdXuoEWh1q2af4yRSp3ejkCOHg45H60J6FMqXZ+oAdk5O2cuIyr4rdZe5XcWrC5/Z5Xo16xBg7BtIMO5QtGR1CGWExb0LrDIuUg==
+Authentication-Results: mx.microsoft.com 1; dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=altera.com;
+Received: from SJ0PR03MB5950.namprd03.prod.outlook.com (2603:10b6:a03:2d3::20)
+ by SJ0PR03MB989363.namprd03.prod.outlook.com (2603:10b6:a03:40f::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.546.15; Thu, 22 Oct
+ 2026 03:54:01 +0000
+Received: from SJ0PR03MB5950.namprd03.prod.outlook.com
+ ([fe80::53a0:bf93:6b6b:de01]) by SJ0PR03MB5950.namprd03.prod.outlook.com
+ ([fe80::53a0:bf93:6b6b:de01%5]) with mapi id 15.21.0522.017; Thu, 22 Oct 2026
+ 03:53:59 +0000
+From: tze.yee.ng@altera.com
+To: linux-kernel@vger.kernel.org,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <mwalle@kernel.org>,
+	Takahiro Kuwano <takahiro.kuwano@infineon.com>,
+	linux-mtd@lists.infradead.org
+Subject: [PATCH v3 0/2] mtd: spi-nor: fix use-after-free on unbind with open handles
+Date: Thu, 22 Oct 2026 11:53:50 +0800
+Message-ID: <20261022035352.52129-1-tze.yee.ng@altera.com>
+X-Mailer: git-send-email 2.43.7
+X-ClientProxiedBy: SJ0PR03CA0271.namprd03.prod.outlook.com
+ (2603:10b6:a03:39e::6) To SJ0PR03MB5950.namprd03.prod.outlook.com
+ (2603:10b6:a03:2d3::20)
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-ClientProxiedBy: BJSMTP01-EX.srv.huawei-3com.com (10.63.20.132) To
- DAG6EX09-BJD.srv.huawei-3com.com (10.153.34.11)
-X-DNSRBL: 
-X-SPAM-SOURCE-CHECK: pass
-X-MAIL: h3cspam01-ex.h3c.com 69M3Q5dx034063
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ0PR03MB5950:EE_|SJ0PR03MB989363:EE_
+X-MS-Office365-Filtering-Correlation-Id: c52dd256-184a-49ab-f705-08df2ff01a4f
+X-MS-Exchange-AtpMessageProperties: SA
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|1800799024|23010399003|261009223027099003|261021123027099003|260925022911599003|56012099006|260925021311599003|260925021911599003|11063799006|10067099003|18002099003|55112099003|261021121427099003;
+X-Microsoft-Antispam-Message-Info: /SV9b0lBf+Lu4Q17gKXyo+Qq4oJtJFI2EAaPs6qPIBIBjYGx3GNuSmYo25jrrn5J0Z+a3RM0WrbUvyOvo1YNnLMa/PCxolAxfeF/xpy8wvsEUtT9bXiifQ5BQW52zI+0fm7LY//XoOYWYp4LicR8bn7TBbunypPtbMxoQYoUZN3zLz/M2R3/CHFJMtBVH/WAWBVX5pqsBdAp4N1JmQ4YwmeFEjq/nqle/xMw6iBiDcb11uOrK80rc7yaPOiKbnmDCDtribykwFivD44XeKILRRIjTH/BLXElR8eJIBm67h9nUwQd2Czfc+5sAiEQG/+IKQM50kg/5fSnTDauSsOd61nr5CF7zpxVgNayKSkcxz+NRSIMDAykAtYLKk8lY2HsEIkAZqKbeu67hYX+N7RdaTHvjbpwbBWovZp2/WfvWlDPrMz76q8xIGe3/e8ykZ5U3TDePVDDlflPkb1YF6ELt/ROXUY5xKsmyA3r99kD3QiuaZgEtn38Mt1qfTWkAFfcB84j2W9IWUQfUe56qPQUjfPWAa/SIN2hrmb5UHAF0XeYkFBEJMpXzISTeDC/FYkvT+5K4LwhIYkiL7LM/0vjl6cyTFFKxOH+WaBvzZiew5kf7PtOG1/B1uR9HM1mvAfp
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR03MB5950.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024)(23010399003)(261009223027099003)(261021123027099003)(260925022911599003)(56012099006)(260925021311599003)(260925021911599003)(11063799006)(10067099003)(18002099003)(55112099003)(261021121427099003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?aZqRfGS4ehkisrcCNMIRmwDNAYeXUvXDtccyZiP717cvEwY2IxeKFL7nnCza?=
+ =?us-ascii?Q?2YnjGuBkF9S5Ud6o4m46/isPBcRV7XTuh2XB+AKXcxxtGy+57xS9/TVLQSBf?=
+ =?us-ascii?Q?ZAnPWnXGtFzRnm01rn23waS8JRJzsza4rDZQZRMuFFHuCgbKuk+UGUMrTQtR?=
+ =?us-ascii?Q?qbl0WXcrmLCeOrbzw5I8QmqFkQt3RWxYT3F7uBVSW1W8ZXFTa4BUizukLreI?=
+ =?us-ascii?Q?BaXuMtXP+etfcY8GLeeTptGZI9A8Qpb+ojyHC+DZH84FJYMTssmdoZ7YHmeC?=
+ =?us-ascii?Q?NX5nHIFdwiXY2p+IYdd4HV/ePXB/ik2ypMOFH3+2pgSbawWVg8vWsaS9eUlq?=
+ =?us-ascii?Q?HhZzopPMGkEdiegY0SpekfirGSsp32Rdv00tD+v+XMahd62YRS71H6ElXqt/?=
+ =?us-ascii?Q?p1/cSwVuKB8QE4pGcx7cGryPYo9zjS/XLPNfezhseaI19Y3P7hxbBDMFrlmM?=
+ =?us-ascii?Q?qcNUytwDRB8D/RABO/zBiXDM67WK7zJjn+HmShxXawF2OAp1Y00RlXZs7bkN?=
+ =?us-ascii?Q?goX579cTsrwQQrF11xSzbO7fVhvsPz3+wvjZW3gUSbr3e9HKh8ZkowCCDLPD?=
+ =?us-ascii?Q?aYstD9ct8xHS56opqUPI6dXCIhwLQDSbOmi+3p7sAfeWSFVcPoHsfESuNN2a?=
+ =?us-ascii?Q?wHUMsrr8DghuiBslhN2JUGraS/g7kCo73fpXtKt3WDvl6YYOMgMCNUQFzgUD?=
+ =?us-ascii?Q?P//+797Da3jQgwygMk2YXAwaj40jzwvBFEJZ6ep8Q6uw/KY8vczuWFNozofa?=
+ =?us-ascii?Q?YIb0mYOI6rJomIC1oxqB62MLy5Tuea4Khu8pByD0lNv5/rNlNOgEC6TX0vLs?=
+ =?us-ascii?Q?hxZ7+yUug+a1u1OqWzfoRxNUdlPVUC6J+OJRNxxtJBj9SgkP7NmRcd4TvwQM?=
+ =?us-ascii?Q?dRX73wEIlB+CvTBgz/UD0SbIe092TlVLs3EHPF+fVA0945ORjIbCKuHxYd49?=
+ =?us-ascii?Q?l7knWjlYFa35Lmjxed9Ops8vwqq9Ff6b69r67+M1IE7vIsKi1eAJvqjMr+Jw?=
+ =?us-ascii?Q?K+TP2bkU7bA/Lxaq/5BLIZsFMxJewNYTFQJ54tQ1HzVby8H0Q05lWOoOsYQk?=
+ =?us-ascii?Q?rNPIro3tWrR9GXysvWBFkfnTZWHWKI1zsqgUyafk3NGGv39mtTmGLjjmTAMW?=
+ =?us-ascii?Q?uzaZPTujzgJVAtPPzIK+ncgZPY0/RJOkmdvL5rn3cUsZoHEY8/Tf9TW9G9vO?=
+ =?us-ascii?Q?atsO90D3Tol4TvcbvPNUXpeShtLTU9Vgh6D1htCunFQLiAR/zcOLJvJvfr+P?=
+ =?us-ascii?Q?H51WjSqNm99NDYyk2nqqxApUHAPUjpjR5CmwQKWbPXTQEzpeluZBWurtlwL8?=
+ =?us-ascii?Q?JEsuq1swuaU9bCgP/54JRr/zhVH8FpCOkRoa+4VE/K37WBkojCC7v+rtfMPN?=
+ =?us-ascii?Q?cm2oASS9ASzcw0N9A/VOERqIuJvQUVQidll6fzs8s5N5Qapg7zEEI6CScgDr?=
+ =?us-ascii?Q?d+ysULNwSTVRkmB7+OlzNKJSz+heQPXCcMadg9EoKXUlKRJx5F07LcvE7nPm?=
+ =?us-ascii?Q?iglVwYMgIbTOMl+8xEDwJF2jhqz9IwLUxHWhwrhDsj/bPMgvjicwARlu3ht7?=
+ =?us-ascii?Q?a05zZyCLxutggv0ALyR9A5p9mTzoINnRH//wkzesE8AxMHpyZS7Qxj0gfdfZ?=
+ =?us-ascii?Q?+avsdEihIOo2iYZUqmC7go8Pm+k9EPT4peFY9GXvOxWovwcZoiTQVVLTqfA3?=
+ =?us-ascii?Q?UPkrwn/FiDckU47hXZXW9gCh5XtEvBzDSp3qO+rmBuZN+uEWLGENg+qAe+cJ?=
+ =?us-ascii?Q?vrQV7yctWg=3D=3D?=
+X-OriginatorOrg: altera.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c52dd256-184a-49ab-f705-08df2ff01a4f
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR03MB5950.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Oct 2026 03:53:59.3095
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: fbd72e03-d4a5-4110-adce-614d51f2077a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: F8qBADV2JeroBhrwnPzPPL7clTPeBjhVX/fvDS4gfT9TxWi/kvrdVh7XFCIGeFcKvemPWaP9JYYS7u0SV/tONA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR03MB989363
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261021_202634_004581_901AD304 
-X-CRM114-Status: GOOD (  23.44  )
-X-Spam-Score: 0.6 (/)
+X-CRM114-CacheID: sfid-20261021_205406_371614_E09AE26C 
+X-CRM114-Status: GOOD (  13.33  )
+X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,245 +136,74 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-6.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-11.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no
-	autolearn_force=no version=4.0.1
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-Hi Cheng,
+From: Tze Yee Ng <tze.yee.ng@altera.com>
 
-Thanks for the detailed review. My responses are inline.
+An open /dev/mtdX can outlive driver unbind. The MTD core keeps mtd_info
+registered until the last close, but a spi_nor allocated with devm_*() on
+the SPI device is already freed, so a later close, ioctl, read or
+mtdblock flush uses freed memory.
 
-> The filemap_lock_folio gets folio with FGP_LOCK, I think we should use
-> 'FGP_WRITEBEGIN | FGP_ACCESSED' just like ext4_load_tail_bh() does,
-> because the folio may not exist in ram when calling do_setattr().
+v2 moved the lifetime into the MTD core (mtd->_free and mtd->removed).
+Review pointed out that this creates new problems in the core: the master
+can be freed inside __put_mtd_device() while it is still used, the driver
+object leaks when CONFIG_MTD_PARTITIONED_MASTER is off, and a lockless
+removed check races with remove(). Only spi-nor needs the fix, so v3
+goes back to a spi-nor-local kref and reduces the core change to one
+reorder:
+  - Patch 1: in __put_mtd_device(), call ->_put_device() first and drop the
+    module reference last, so the owner module stays pinned while
+    ->_put_device() frees the driver object.
+  - Patch 2: on the spi-mem path, allocate spi_nor, params, erase regions
+    and the bounce buffer with kmalloc and refcount spi_nor (one
+    reference for registration plus one per open handle). remove()
+    unregisters debugfs and the MTD device, then sets nor->removed under
+    the nor lock; prep_and_lock*() re-check it under the lock and return
+    -ENODEV. Legacy controllers keep the devres lifetime.
 
-ext4_load_tail_bh() needs FGP_CREAT because in Ext4 the block behind an
-unwritten/delayed extent holds garbage on disk, so the zeroing must
-reach the media. UBIFS does not have this problem -- stale data can
-only live in the page cache, never on flash:
+Not covered:
+  - A sysfs file held open across unbind is a core lifetime question for
+    all MTD drivers and is left out of this series.
 
-  writeback:  ubifs_writepage() zeroes the straddling folio on every
-              invocation and skips folios fully beyond i_size, so
-              stale tails never reach the media.
-  read-in:    do_readpage()/read_block() zero the tails of holes and
-              short data nodes, so a folio loaded from flash is always
-              tail-clean.
+---
+Changes in v3:
+  - Drop the core _free/removed hooks. Patch 1 is only the module_put()
+    reorder.
+  - Patch 2: spi-nor kref again, removed re-checked under the lock,
+    controller module cached at probe, debugfs and MTD unregistered at the
+    start of remove() so mtdblock can flush, eraseregions leak and probe
+    error paths fixed.
 
-So when the EOF folio is absent from the cache, there is nothing to
-zero anywhere: FGP_CREAT would merely allocate a fresh (already zero)
-folio to zero it again. Returning early on IS_ERR() is the correct and
-cheaper equivalent of Ext4's path.
+Changes in v2:
+  - Drop the unrelated RWW self-deadlock fix.
+  - New patch 1: MTD-core _free / removed hooks.
+  - Patch 2: drop the spi-nor kref / refcounted / controller_module
+    and the prep_and_lock*() removed checks; use the core hooks.
+    Also keep eraseregions on that lifetime, free on the probe
+    error path, and unregister debugfs from _free.
 
-> Why skipping 'from == 0'? What if a user writes begin from
-> offset-X(0<X<4096) to a new file(isize = 0)? Ext4 zero the range by
-> ext4_block_write_begin->folio_zero_segments(folio, to, block_end,
-> block_start, from), but ubifs not handle it.
+v2: https://lore.kernel.org/all/cover.1791512623.git.tze.yee.ng@altera.com/
 
-from == 0 means the old EOF is folio-aligned, so the EOF folio has no
-bytes beyond EOF and there is no hole in it:
+Tze Yee Ng (2):
+  mtd: core: drop the module reference after ->_put_device()
+  mtd: spi-nor: fix use-after-free on unbind with open handles
 
-  from != 0:  |/////valid/////|stale|   <- zero [from, to)
-  from == 0:  |/////valid/////|         <- nothing beyond EOF here
+ drivers/mtd/mtdcore.c         |   9 +-
+ drivers/mtd/spi-nor/core.c    | 173 +++++++++++++++++++++++++++-------
+ drivers/mtd/spi-nor/core.h    |   2 +
+ drivers/mtd/spi-nor/debugfs.c |   9 +-
+ include/linux/mtd/spi-nor.h   |   9 ++
+ 5 files changed, 159 insertions(+), 43 deletions(-)
 
-For the i_size == 0 case: a zero-size file cannot hold a polluted
-folio. mmap cannot create one (page_mkwrite returns SIGBUS when
-folio_pos >= i_size), and write() followed by ftruncate(0) invalidates
-the folio. The [0, X) part of the write folio itself is zeroed by the
-existing do_readpage() path ("block >= beyond" ->
-folio_zero_range()), which is UBIFS's counterpart of
-ext4_block_write_begin()'s folio_zero_segments() -- the work happens
-at folio read-in because UBIFS's block size always equals the page
-size.
+-- 
+2.43.7
 
-> The ext4 protection check is ext4_write_checks->ext4_block_zero_eof,
-> I think we can add the zero hole check in ubifs_write_iter().
-
-Agreed. This mirrors ext4_write_checks() -> ext4_block_zero_eof() and
-runs once per syscall instead of once per write_begin() iteration.
-Will move it there in v3. 
-
-> If the program enters into this branch, the ubifs file's isize is not
-> zero, ubifs_read_folio has already zerod tail, do we still need this
-> folio_zero_range?
-> Oh, there is one case, UBIFS file has isize without data nodes(eg.
-> isize = 3, the first block is a data hole), ubifs_read_folio won't
-> zero the page tail, we still need folio_zero_range().
-
-Right -- and one more case on top of the hole-inode one: mkwrite also
-runs on already-cached folios, and earlier mmap stores may have
-re-dirtied the tail after ubifs_read_folio() cleaned it (only folios
-fully beyond EOF get SIGBUS; the straddling folio stays writable
-across its whole length). So the tail must be re-zeroed on every
-(re-)fault, and the folio_zero_range() stays.
-
-For reproducibility I have attached a small single-writer reproducer.
-It covers both size-extending paths (S1: pwrite beyond EOF ->
-write_begin/write_end, S2: ftruncate up -> do_setattr) against a
-polluted old-EOF folio. 
-
-Build: gcc -O2 -Wall -o eof_hole_test eof_hole_test.c
-Run:   ./eof_hole_test <mountpoint>/eof_hole.bin
-
------------------[ eof_hole_test.c ]-----------------
-/*
- * eof_hole_repro.c -- repro for "stale data in hole" bug
- *
- * Reproduce:
- *   1. pwrite data to [0, 0x2000)          - full page 0 and 1
- *   2. ftruncate DOWN to 0x1100            - VFS zeroes page-1 tail
- *   3. mmap page 1; write junk into [0x1100, 0x1200) via the mapping
- *      (MAP_SHARED, past EOF)              - pollutes the cache tail,
- *                                            i_size unchanged, legal
- *   4. pwrite at 0x3000 (beyond EOF)       - i_size jumps; UBIFS's
- *                                            ubifs_write_end() does NOT
- *                                            zero [0x1100, 0x3000)
- *   5. pread [0x1100, 0x3000): must be all zero.
- *      Non-zero bytes = stale mmap junk exposed = bug reproduced.
- *
- * Scenario 2 uses ftruncate UP instead of pwrite to exercise
- * do_setattr() instead of write_end().
- *
- * Build: gcc -O2 -Wall -o eof_hole_test eof_hole_test.c
- * Run:   ./eof_hole_test /mnt/flash/eof_hole.bin
- */
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <errno.h>
-#include <sys/mman.h>
-
-#define PS       4096
-#define OLD_EOF  (PS + 0x100)   /* 0x1100: old EOF mid-page-1 */
-#define NEW_END  (3 * PS)       /* 0x3000: hole end */
-#define JUNK_LEN 0x100          /* 256 bytes of pollution */
-
-static int check_hole(int fd, off_t off, size_t len, const char *what)
-{
-	unsigned char buf[512];
-	size_t n, i;
-
-	while (len) {
-		n = len > sizeof(buf) ? sizeof(buf) : len;
-		if (pread(fd, buf, n, off) != (ssize_t)n) {
-			printf("FAIL: %s: pread error: %s\n", what,
-			       strerror(errno));
-			return 1;
-		}
-		for (i = 0; i < n; i++) {
-			if (buf[i] != 0) {
-				printf("FAIL: %s: byte 0x%02x at offset 0x%llx "
-				       "(hole offset +%zu)\n",
-				       what, buf[i],
-				       (unsigned long long)(off + i), i);
-				return 1;
-			}
-		}
-		off += n;
-		len -= n;
-	}
-	printf("PASS: %s\n", what);
-	return 0;
-}
-
-/* Create a file with EOF mid-page-1, then pollute the page-cache tail
- * beyond EOF via an mmap write (the only path that skips zeroing). */
-static int make_file(const char *path)
-{
-	unsigned char junk[PS];
-	void *map;
-	int fd;
-
-	memset(junk, 0x5a, sizeof(junk));
-
-	fd = open(path, O_RDWR | O_CREAT | O_TRUNC, 0644);
-	if (fd < 0) {
-		perror("open");
-		return -1;
-	}
-
-	/* page 1 full of junk, durable */
-	if (pwrite(fd, junk, PS, PS) != PS) {
-		perror("pwrite");
-		goto bad;
-	}
-	fsync(fd);
-
-	/* shrink: VFS zeroes page-1 tail [OLD_EOF, 0x2000) itself */
-	if (ftruncate(fd, OLD_EOF)) {
-		perror("ftruncate");
-		goto bad;
-	}
-
-	/* re-pollute [OLD_EOF, OLD_EOF+JUNK_LEN) through a shared
-	 * mapping. This goes through ->page_mkwrite() which does no
-	 * zeroing. */
-	map = mmap(NULL, PS, PROT_READ | PROT_WRITE, MAP_SHARED, fd, PS);
-	if (map == MAP_FAILED) {
-		perror("mmap");
-		goto bad;
-	}
-	memcpy((char *)map + 0x100, junk, JUNK_LEN);
-	munmap(map, PS);
-	return fd;
-
-bad:
-	close(fd);
-	return -1;
-}
-
-int main(int argc, char **argv)
-{
-	const char *path = argc > 1 ? argv[1] : "./eof_hole.bin";
-	unsigned char junk[JUNK_LEN];
-	int fd, fail = 0;
-
-	memset(junk, 0x5a, sizeof(junk));
-
-	/* ---------- S1: buffered write beyond EOF ----------
-	 * exercises ubifs_write_end() appending branch            */
-	fd = make_file(path);
-	if (fd < 0)
-		return 1;
-	if (pwrite(fd, junk, JUNK_LEN, NEW_END) != JUNK_LEN) {
-		perror("pwrite");
-		return 1;
-	}
-	fsync(fd);
-	fail |= check_hole(fd, OLD_EOF, NEW_END - OLD_EOF,
-			   "S1 write_end: hole [0x1100,0x3000)");
-	close(fd);
-
-	/* ---------- S2: ftruncate UP ----------
-	 * exercises do_setattr() ATTR_SIZE branch                  */
-	fd = make_file(path);
-	if (fd < 0)
-		return 1;
-	if (ftruncate(fd, NEW_END)) {
-		perror("ftruncate");
-		return 1;
-	}
-	fail |= check_hole(fd, OLD_EOF, NEW_END - OLD_EOF,
-			   "S2 do_setattr: hole [0x1100,0x3000)");
-	close(fd);
-
-	unlink(path);
-
-	if (fail) {
-		printf("\n===> BUG REPRODUCED: stale data visible in hole\n");
-		return 1;
-	}
-	printf("\n===> OK: hole reads as zeros on both paths\n");
-	return 0;
-}
-------------------------------------------------------
-
---
-Nan Lin
 
 ______________________________________________________
 Linux MTD discussion mailing list
