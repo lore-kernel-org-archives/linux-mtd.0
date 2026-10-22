@@ -2,10 +2,10 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C5C1606A31D
-	for <linux-mtd@archiver.kernel.org>; Thu, 22 Oct 2026 10:26:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07684606A31D
+	for <linux-mtd@archiver.kernel.org>; Thu, 22 Oct 2026 10:26:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=Hserf76r
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=RluaIleO
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -13,28 +13,28 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=mt3dlYcQgchF3KvlU8gy5SKnP/Gk2mPGK/3i+ZBv2wU=; b=Hserf76rtKNOfA5qUiofDo49Fv
-	gm42xUl0ICEj26/yTukJAl7g35XtMKSZ8gdfaKnz6IjRlZLpfrXjeQTRcxXPkRsHBxywO9Z/ce+ag
-	q2DQ9FDIX7wz3nFXXrHg4ZfvvgwYa9K4rR2jH7UGLA+nXU7HuuzB47o0fHDdLrGm4gv4kvV0HG/Ot
-	09lBYhwQZz/dnOW7rLbw1theFcHAJv5J3NwVYnhJ6t32L+DOKfUgzfCjXeljJAOEDWyuCHSalBKHl
-	c8doJyj8/tmK3qKgsJtFPKfcpl/u+Lv6KSvCk5qF2ieg+0lOz4/wyP2bEbXSywF8AXgp1WUfbhdcs
-	k4Qv1UzA==;
+	bh=GlQOXUvInxbFJNZcL4VupBjnWFUs/KCYaS3dWNEms1M=; b=RluaIleOQ78u/TVz88m8+nj7dz
+	E8bgchWbOiWS4tj28BepohyfQZuXcsh7g7amWqnZmdcUmYdkDoJtI87i4cR4Ek/+IAB2+HKwnh2Qh
+	sUdMLsHeRU6QB0bnN8EYzJzx8qYtmgVkg+x4JiwMCZOtA70MRWzyI57yrnYG0tYaqt762UlfV4fWr
+	HCB4EWmfr2FxoZJG6tbS8dXFdiL5Ym4RAcjwSuyyCgedWOzX8fSz/o3kcPsZrEBNRxmNQKlIO3G6Y
+	1XpLLYqNRtijuYfynMIz8Q/h+IT7AmYd+UtZ5j0VhORLyrZg3WS9xlI3Qjx6hlWn+g4PEUsY2kcYr
+	JB1njfYg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xJq0b-0000000Dvt6-0KAF;
-	Thu, 22 Oct 2026 10:26:53 +0000
+	id 1xJq0d-0000000Dvuq-2zcl;
+	Thu, 22 Oct 2026 10:26:55 +0000
 Received: from mail-sh0chn02on20706.outbound.protection.partner.outlook.cn ([2406:e500:4420:2::706] helo=CHN02-SH0-obe.outbound.protection.partner.outlook.cn)
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xJq0Y-0000000Dvqm-2QQm
+	id 1xJq0a-0000000Dvqm-25pB
 	for linux-mtd@lists.infradead.org;
-	Thu, 22 Oct 2026 10:26:51 +0000
+	Thu, 22 Oct 2026 10:26:54 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hMWdb88kCQONDciPa/GGRFerZvKdqNQk7vEI3/Xv2mVfranQeGaHFcNGtWXdUr7/xAvQ28CXUey2qpYwgqARV8d+EtCcDJEL7UEVjGFWB5yZmwnTIhOiRNKJr4zpEX2FFR7Vv3dbEZ7GAqbNBoLeG+CWCyAllUEDar8kRgnXzA8ZignfFa7LKc0Xx1ObFvo4jxMIf1SfW5SaE1uHEQ4jQdd/A8YXoc/Sx6e9r0ccmL6E3TfAD7lb+MM5qFLpd4WfJ3BzVBnaM7up/Q2eEWT1LLMopU/OuF/sCffAyIqc7mBpubfNT4up7uqt2g7GBvgF72Gu/twuhrcxLz6X5EvInA==
+ b=ZrJTvbKceTaU32YfS9Fdlht9FEK4pwGY1pbNz0Xa3gpOnKrdpnTC+DNZiYr1XuN1FWvGG+5TlIQoM3gZ77aVV5SwFodtGsBTX3GW7bIGJWxVgJKCpd0jLZ4sCEX2d4/8dwAuE1Ys+QQyJOpC2Nan7kZg3XoInPi2ZKH2DifK+syiokk83PGEHa25MxowUXAUKYcVGkHhckJokmePw+3ppeOJQ07jPFDWsSLXDoRtJkeVnh7F4HdiF/nTF8dXSBWWnOk80gJrOJ9HYngi0UfodZXlao4BTS3pn29rNqwpEaVREDUeH9WIWURS3vM/A5dFh+OG30q78ftO1JHV7+dkyA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=nBTiET3Et7AEazEA7AvaNZq9/jKOprtqxBU4xnIfKNU=;
- b=kuoU3XcPJcVfeDG+zc3pXjoQW0KGMxOPq5MKpX6uvii3mTf8oZQMHSF8H/8Gxsd0AQvwvzQ0eENXR88Xvy4V4BGNUuCqU3NgNUrikwcFEKd5vAZ6msGnK3EtkoTM3mLOUz0tBiSmTB5FRWkmTpANgjJBrjyA+8uaC1lt2of0PbvwHwmVtp1l2vFzR2+rv9b8au1y9VbQMGHVKF525O5bxQSIYy/7+58GeEyjf4pO10B8JfbQkLSF1hU+ceHeq39OuSA08BtLZjaLKlol+MWFNGpaNaxX4tpDRtxnONVXl9zlGFHtxRAgaQd/FwTet8TqXUJn1+IBQV3YT/+VahCerw==
+ bh=WoQvftIAcM10sQkTifo5UoiGV9FGutHD9FWKEAXIGYI=;
+ b=SV7Zutl0pR239CE8by1/ySZO34n23hDzxgSihLMwynn72N1jvlZnRczhc/2PlfixygIZz+7FyoXmqUJqcoNm7MQBPJWeAhjBe+BrwqEpWMjctgJJ8QayKdCBjfJZZjIamuAA60ce/2LtdntZa6X5OnKuLUaf8rsItRX9evSY4+f3uklfny30U6zsH0EqtZgAljWquQPl0bS41N8b0a6cizW7wck6SzTJMYNiHRY7nHeZEmwaJNutn8Iu8JHC4/bP0/4uFdgyKCWM0aA9Y8whIKujfLOr1WHTFIyKdR3uybio5FoNAqedHcy9dzxcrlOI8/jmNfeEYHjFRC+smF40QA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=starfivetech.com; dmarc=pass action=none
  header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
@@ -43,11 +43,11 @@ Authentication-Results: mx.microsoft.com 1; dkim=none (message not signed)
 Received: from ZQ4PR01MB1202.CHNPR01.prod.partner.outlook.cn (10.2.3.102) by
  ZQ4PR01MB1298.CHNPR01.prod.partner.outlook.cn (10.2.3.110) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.546.16; Thu, 22 Oct 2026 10:26:22 +0000
+ 15.21.546.16; Thu, 22 Oct 2026 10:26:23 +0000
 Received: from ZQ4PR01MB1202.CHNPR01.prod.partner.outlook.cn
  ([fe80::e7d4:256c:b066:850d]) by
  ZQ4PR01MB1202.CHNPR01.prod.partner.outlook.cn ([fe80::e7d4:256c:b066:850d%4])
- with mapi id 15.21.0546.016; Thu, 22 Oct 2026 10:26:22 +0000
+ with mapi id 15.21.0546.016; Thu, 22 Oct 2026 10:26:23 +0000
 From: Changhuang Liang <changhuang.liang@starfivetech.com>
 To: Pratyush Yadav <pratyush@kernel.org>,
 	Michael Walle <mwalle@kernel.org>,
@@ -60,9 +60,9 @@ Cc: linux-spi@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-mtd@lists.infradead.org,
 	Changhuang Liang <changhuang.liang@starfivetech.com>
-Subject: [PATCH v1 1/4] spi: dw: Add DDR (Dual Data-Rate) support for enhanced SPI mode
-Date: Thu, 22 Oct 2026 03:26:11 -0700
-Message-Id: <20261022102614.75696-2-changhuang.liang@starfivetech.com>
+Subject: [PATCH v1 2/4] mtd: spi-nor: Support mixed 1S-xD-xD DTR protocols in spi_nor_spimem_setup_op()
+Date: Thu, 22 Oct 2026 03:26:12 -0700
+Message-Id: <20261022102614.75696-3-changhuang.liang@starfivetech.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20261022102614.75696-1-changhuang.liang@starfivetech.com>
 References: <20261022102614.75696-1-changhuang.liang@starfivetech.com>
@@ -73,56 +73,56 @@ X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: ZQ4PR01MB1202:EE_|ZQ4PR01MB1298:EE_
-X-MS-Office365-Filtering-Correlation-Id: c372d93e-3898-4ab3-800e-08df3026eb79
+X-MS-Office365-Filtering-Correlation-Id: 28e6eb09-1a85-4d91-778f-08df3026ec00
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|7416014|376014|23010399003|52116014|1800799024|22082099003|18002099003|3023799007|38350700014|261009223027099003|10067099003|261021123027099003|261021121427099003|56012099006;
-X-Microsoft-Antispam-Message-Info: Cry/F72O2PTjiN5gJ0GK/Jfj4zm3j1ZfMgPozMN0tGb42cL8Ew8hT74rVebLiu8E6gHa4VGCSk0GDHaATmNSnY1BJu5I8wp209Ru4TEZ09twZ/yN2vE6gqjHpUlFLyvRjw+Vi8AG3bMNAiqrjhiOzCx2zyXGvj9ShTegd23OrcVWboAjWcxnXRHQFETXzwXNwD4HNMpW1FQghVk3oSLstinvJYNemIVO5Mc3seaTmQajiRv03x8FdvlbGU+3pgCFFSCjNMl6tb8p4nffHZlcSY5mtBWAReG8HwEu58R5qb8Ikclv7zC8oeQ0jzg9QDuPg5WNtLdpEDTg68L2NVRIkBFwPvfbdOqJVINUn2ULjFmynMq+fu7dTm/HoOOGNE8uH0NO1xftXdVO9CF4CoD5TwLaRe25TMn1AfFOyBM2MrHWXlwSu/yYlhFEDo1B+dRxZ/Wm6XyUFlCpPxTFJXEcyAb3KVIc53av+C39mUG1N7Ca4w8bEYrU6pWdZ6i1GHyOjzBF7CYkHczJ+b2T4PVFp8NrwcY5pvXYlDGyktWiox1LOWqiHnMETv2Lovn4aX+D
+X-Microsoft-Antispam-Message-Info: s0ThZ/9pCBjAvi3sN0NFA8ESC6T38yRApCwGwa267efdsrtfDJwEwQZjnh5CsiK0RBl3KyUS2LmpvOYHW+zqZDihGm2+CWavSpWZFWuh7nb8NbFFkLLI5jrIcUFuCfJiSLP+2o0+6k2SCi5b0K3fBgJnGU0a2m6vYL/dWjCVyfKYRemQ/iXCwCO85bLJJ9DrnCOFkHyLrx+5R8iQRoMCvIsKuEUOXx1UVplWDgpHv0OrkNB6BAmhxE6bcV6ZMFX1ao4Tfkd79oCsrqSJt0icBMoI7XJNCGyeT9b2GF27zW/6svzoQ3tM/Nsppf1q/NeUiWg9c0nb36WKrD87QTTcnjHYhOYQYsME7xIN3emM8WogwWIG25gcieQMU5QBbxS5e7jAEnwIbOs+OEE1921UleVgl9gJ0mehkcjrAbnQ1li3BhTGsDiL3fUYlzfsCDj15eKD+FQrKeqDeVgN/UqXBxQTM2UAn8AHnQvYJMoDv+toAYm1UZUIeHDvPacPDyWYe8l1LnNeAe5wJ1Qz800xCaFjbEqILWb1BcHl7taPKYmrhfMUbRtbSDW0atXITu1+
 X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:ZQ4PR01MB1202.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230040)(366016)(7416014)(376014)(23010399003)(52116014)(1800799024)(22082099003)(18002099003)(3023799007)(38350700014)(261009223027099003)(10067099003)(261021123027099003)(261021121427099003)(56012099006);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?L/MEIF+eVBRCvzv6a53mlBjb4DBWiKJVmtx56kFvn1oNirxOuGFgPfiRjTjg?=
- =?us-ascii?Q?hRFgEqu3tpn2k92VG7i3MvzOwxXVlNLJ6n2wPsjSwDtvnJrPLXG1D49B6GJy?=
- =?us-ascii?Q?gDESRFEDyItwrVlTmIlZKp68cJyOjlU1TIJhJ7kaXfZI8V38maPbpByQGoij?=
- =?us-ascii?Q?StAnGSC9ehGRDltrXM7BbNacBLzFnvj1v7UidlxF/1UCay0t0JavJAGjl46G?=
- =?us-ascii?Q?rLlBT3O64BItaR9BbpPk7Y9LmyeNIbAIQOxRYxw7YYo8IiflniuZ/lFim4rR?=
- =?us-ascii?Q?lxet7ER128q19FaaX+3ySj1AKzPmZKwvObOyJcIXnXPdCMMX4mPkjCa/4mlu?=
- =?us-ascii?Q?n70slMuqvCFtKr/S0BjkuYwT/qKLpUfgZgJGHZa6JjydRwRLddKU0vifWdP0?=
- =?us-ascii?Q?bfCPWZcO05eTu4cnfTUsmWOTtvah6pAonQv2Dc1CuKb2BGbA6p2VU7ggBR7Z?=
- =?us-ascii?Q?+peG38MjWLfo4DOHmINMqfX+l+KVYnbOWYxkYxN/6YZdz8HqfxG5/CyXdx08?=
- =?us-ascii?Q?pAOgM1AuqtKIfRCWUEZF+2gxqw8HCc2GLdwXqqUNeLxhyLWEUT/VdmuFszQY?=
- =?us-ascii?Q?DVVcPns/S6wLHAEc2h0IAFcEuA+3ZdZbm9+J+YMECzeCWfziFUsSSy5qR/VR?=
- =?us-ascii?Q?nr+76kbwMNEUF45n65fvSIGdYRTtxyEZpU47qo9a74CAhmb7NYAEu1qC6HPT?=
- =?us-ascii?Q?5+9OCVuDdJ9ttB+vaq/mYinNxStT6TgCKfdyhFKTf09ttiyK06j4B4eEVLDs?=
- =?us-ascii?Q?ipMGBrPKgUo4ggvAf3U4gXCAcwIMj7H+/tkGEXaVw/ZZLcJNrIc4iZQspTpP?=
- =?us-ascii?Q?b/e7ahwywnLiLJHDEeWJmr+YpOWIO5BFL8KTzvd98FzwX7lU4OzGnoJQYURO?=
- =?us-ascii?Q?c3XFzupLf0nFQtxC9bs+EOgNsGth6DRmK+ZzRuwOXhWh07Z2NfC68Rvdmybm?=
- =?us-ascii?Q?Rr5Y2K2eMxO4WgTjK22LEFCgH//W8T7H94DYYiln1PaIo/z41xZVwv2Uifj3?=
- =?us-ascii?Q?j0Mqb6IIT5zXD2xv+MzwNt3dI4iGVlNuKowHjYrnige7lMcswO1FQZP0aB7L?=
- =?us-ascii?Q?kCo7OgG4cgq2OyO/LukWo7HULE9CfEsdne7G5hO+n0yZjkSt94+BWVotE+CL?=
- =?us-ascii?Q?A+/mI6pbreofJ7AxhEMAPHnMXXUo22/jpsYoBxFlRez2asaXFMcSy8gc7gkj?=
- =?us-ascii?Q?MksGYGMwtq0OmRpGuD+U78/G/iP2Hf84p4jiC3XoNGtjMM/PwxusgQpEISu0?=
- =?us-ascii?Q?OR07ym/vdGB+ZgASTaRqn0/naay3X2BYBF335VFuC8QoxYnx7iQmgbTsnCt0?=
- =?us-ascii?Q?KrgWJchIq/X9M5TXt9hq8BBxhPcToB9jtxFCvp23cT9pUCNp/zq65K9iZ2Uy?=
- =?us-ascii?Q?B07FU8mbWA78UAECwqamwH7SYTK/KB45mD1iWn4/uEOOL1jIbd1e2Y+z3xwI?=
- =?us-ascii?Q?Uq0S+VrOxCRy4hl8Smkf+L1fquq5Ayl3kvHA9qF8mGjYlJslB7G/w4DOo4H8?=
- =?us-ascii?Q?tgUNqq1NFb0T6BkMDGfbsuvZugk8WRNBBa2vyA5i7B+ZbylN7ETP6eU9Htlj?=
- =?us-ascii?Q?8LHZ12xiVkhLFetmkjtRi5Z8Zw1ic6gThRCVujKIxvwXhL4OnT5/CBgcvdR4?=
- =?us-ascii?Q?xZMG6lAvJWZ4Gv7gqaH2Wft2/NMEBwxY1KYgrY2eLQSSwdyFM2N5facTa/01?=
- =?us-ascii?Q?2xXL1kyyC+YqaiQFPxkPNVVH0Z6SBwB0iqbxDDDA1vkN2wUGEl8nuYfBx1Qx?=
- =?us-ascii?Q?GTT0X9mZCYm1WbrSMznG5LawMTiqFa1lQHnbLjsV1iPny6bNbllo?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?7a7ga4skYN90P6lfZD/yePITKiyJdm6PJYCK7pgLTUFgWHE2Lh3NOR9ioL5p?=
+ =?us-ascii?Q?wiQyyZj7WnPpnexEvjrxG/rowsVXuUdOxaTfDTFpqGli6DnvNthI7oQlCcf5?=
+ =?us-ascii?Q?K/EHL1dmhzi+e6x62QjBLQe/PVgPXK2OWwFkx2cR6dH9RE5M3p+GTRhIfW9Q?=
+ =?us-ascii?Q?dybA2KsMBCnpzG6EOwaWlzzmSauIulNWJA2cgMY14qV/0Qu/306KB1LU5PQp?=
+ =?us-ascii?Q?3ZgV4TtHYmSaMsBK01DtbI7HuIy6j9BBKm82gCbn6DK0hZP5DKYDD6i2Jx6K?=
+ =?us-ascii?Q?yiHvDvWH7FnBULrU8okJI8yQnETw/8lznO5gNIeRVzi4p+MPe85tQ2ee2jCr?=
+ =?us-ascii?Q?US4mN4aftoNsgj/Pq9EfUvmVl+mV7k1Q9niNV5l8kL4Orx+/LSn3NjZjDjK3?=
+ =?us-ascii?Q?sv7ba3NqqMa5DTgiSNuSoEKP9rNRe+BtDeJ8xwTGgK0PnH75pAEtmJTquOIa?=
+ =?us-ascii?Q?Od+U8fB+sTjQSotkDOIbQzz5kQfNZJ9dlKUQmZo6sKwduWEh4hlLlmZcih4u?=
+ =?us-ascii?Q?NK+SFP12hbq6XJ0HlJDwFBNq8PUPu9e4XnS0DC5ut4xHFFNl7Bl/fdxM6AWO?=
+ =?us-ascii?Q?fzQMoVDQKSyMeQi+a+1dra9CrxRpZO9dp5R89lFpQZJ19p1b0nGMVkiZAEiB?=
+ =?us-ascii?Q?wNW0zCJ8Y7RgO/KKbAQ2H9KIv6hP+uwBKz+awVD2+Z1epp7oSzdaUOaiJcxJ?=
+ =?us-ascii?Q?pGl7RqR4vzeSlt5jBYvsJZPpbFuA0P9Gq5guTBlIk7K9KtckgMPNvsI1/9ym?=
+ =?us-ascii?Q?2Hg4BtDgltR1RGw1NYbxV4Om/U4cOTx+i6XAn8QlKYqqr78IDWOVvVR3Kmfs?=
+ =?us-ascii?Q?Mj1yawNXWkWaezY8M2BGyfVkruZt1Wjhz9tLS+tUrwZk/5t6BJDLgDm8ZMV8?=
+ =?us-ascii?Q?1FQx4xnDEivtFIQX5PjkTYV6dzIb/1eXEvNl2iWyiJZIs968sbO3RZqxi8qR?=
+ =?us-ascii?Q?jjWd0P1qx6CsDt5HsV0O5YEBA5z2HpP582zprtaAC+1olXNB1WSJg+Xujjub?=
+ =?us-ascii?Q?zFDrpJInxd5NuoNuOIN0CLWCtog9PR46UFNWfB6fYerkebCNEWrYtDehClRi?=
+ =?us-ascii?Q?8yMR7TeA6ekYHq43YwEzzvMsaWcLaFHYVS6mfhMBl3Com3UpuytINZ74nidV?=
+ =?us-ascii?Q?2KnLD5bDy8bfWLX+8cIlHdylR0DKCmq8PVoGlEsINSXKCG5lEX+7BvxhyPjF?=
+ =?us-ascii?Q?IpwNSNuXffUvrhqU54B8f9yqKgWs0WPkh7zRacMNm17jghjqEuebHavZeQuq?=
+ =?us-ascii?Q?m38ayFkrn/H6PiXVFgN8t8glps3QAz4R88uWH67jiGKc2RvdGAlJFle/kgz0?=
+ =?us-ascii?Q?4wGpVv3b/DfGACJ7ELxIRl/tbpx/B4dF7iL9JA3wYVXrynugr3iZ/IBZbuyJ?=
+ =?us-ascii?Q?7ZppPIdunZSz0obrV6myhWMJqrMHtUAUq0C47Asp5vis+7YnahuhWu8dJCua?=
+ =?us-ascii?Q?v/is+jqiW7lyZOHApTNC26PAPZR3I560gf9NZCbfgsAFh0fmfFDDsr4RK+r7?=
+ =?us-ascii?Q?o5g8grLEeRQf+Y9QqfC5jHPhrMnJXE+/0F/6kqrMWg9V9Q+TNuuxcQvNcHfD?=
+ =?us-ascii?Q?+6H6FrtlGPXe3DwBR73DEnuYwqnGr1f2ZYYqV7n0pRBceS9jH2WBxmIDlyEG?=
+ =?us-ascii?Q?kO3eXys91NXOMNza1rXWmr4AjzZMJc4o8n2Fo81+3NNnWPauYYuTr1HkosxO?=
+ =?us-ascii?Q?juneQICdnrHOX71is0wHyJJSpvghVxiKJjG0KxxWHyjTLuqGmKGZ8MlhHrzu?=
+ =?us-ascii?Q?/zVU2X3x2nnKjmVYUbc3MFLvdnMzTTlC4qwvcoalsE4fmB1vPgQn?=
 X-OriginatorOrg: starfivetech.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c372d93e-3898-4ab3-800e-08df3026eb79
+X-MS-Exchange-CrossTenant-Network-Message-Id: 28e6eb09-1a85-4d91-778f-08df3026ec00
 X-MS-Exchange-CrossTenant-AuthSource: ZQ4PR01MB1202.CHNPR01.prod.partner.outlook.cn
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Oct 2026 10:26:22.8652
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Oct 2026 10:26:23.7808
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: TjpEB9LHnVp4jewB2CiauDeMM0z/DqLULwUqQhMV0RBKD2ylNHzCvJtDCXkWpfB3gxEEO9vktxmBxy7paqI2+BuuEOIuzG4OF+UFbwVQ1K971dEaZd2oZVIPSDIkGzhi
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1u+3BZnEaBmy9+3KrsI/wjgd+IJV7KyzVIiBOwAZJd82niEW49RM4fbx99BERRX13UO9GiJ63hk5Obp6k7e4NXdruW2P6rMaTLyo13epThjUNW+1Lbx/83siIMGWhRWd
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: ZQ4PR01MB1298
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261022_032650_644891_8DDF9F93 
-X-CRM114-Status: GOOD (  21.16  )
+X-CRM114-CacheID: sfid-20261022_032652_565934_3DD88115 
+X-CRM114-Status: GOOD (  14.97  )
 X-Spam-Score: -1.9 (-)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -143,183 +143,75 @@ X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-Add support for DDR (Dual Data-Rate) transfers in the enhanced SPI
-mode of the DW SPI controller.
+Currently spi_nor_spimem_setup_op() sets all four phases (cmd, addr,
+dummy, data) to DTR whenever spi_nor_protocol_is_dtr(proto) is true.
+This is too coarse: the 1S-xD-xD DTR protocols (1_1_1_DTR, 1_2_2_DTR,
+1_4_4_DTR, 1_8_8_DTR) send the command phase in STR on a single line,
+and only the address, dummy and data phases in DTR. SPIMEM supports
+such mixed DTR modes.
 
-The enhanced SPI control register (SPI_CTRLR0) has dedicated fields to
-enable DDR mode for the instruction phase (INST_DDR_EN) and for the
-address/dummy/data phases (SPI_DDR_EN). Populate these from the
-corresponding dtr flags of the spi_mem_op.
+Split the handling:
 
-For DDR transfers, the dummy phase consumes two bits per clock per
-line, so the computed wait cycles must be halved. Factor the wait cycle
-calculation into a helper, dw_spi_enh_wait_cycles(), so that both the
-supports check and the exec path use the same value.
+  - For SNOR_PROTO_8_8_8_DTR, keep the existing behavior: set all
+    phases to DTR and use a 2-byte opcode (opcode + extension).
 
-When SPI DDR is enabled, program the DDR_DRIVE_EDGE register. The
-recommended TDE value is clk_div / 4, clamped to clk_div / 2 - 1 and to
-the field width.
+  - For the other DTR protocols, set the command phase to STR and only
+    the address, dummy and data phases to DTR. Double op->dummy.nbytes
+    since DTR transfers 2 bytes per clock cycle, matching how the dummy
+    cycle count is specified for these protocols.
 
-Finally, advertise DTR support to the SPI memory layer through a
-dedicated dw_spi_enh_mem_caps, selected when the controller has
-DW_SPI_CAP_EMODE, so that spi-mem may issue DDR operations.
+No in-tree flash currently declares SNOR_HWCAPS_READ_1_x_x_DTR, so
+this is not a bug fix but preparation for enabling these protocols.
+A follow-up patch will enable 1S-4D-4D for the MX66L1G45G. The
+8D-8D-8D path is unchanged.
 
 Signed-off-by: Changhuang Liang <changhuang.liang@starfivetech.com>
 ---
- drivers/spi/spi-dw-core.c | 52 +++++++++++++++++++++++++++++++++------
- drivers/spi/spi-dw.h      |  6 +++++
- 2 files changed, 51 insertions(+), 7 deletions(-)
+ drivers/mtd/spi-nor/core.c | 21 ++++++++++++++-------
+ 1 file changed, 14 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/spi/spi-dw-core.c b/drivers/spi/spi-dw-core.c
-index 47434fa78e4b..6ff142c8a6bd 100644
---- a/drivers/spi/spi-dw-core.c
-+++ b/drivers/spi/spi-dw-core.c
-@@ -46,6 +46,8 @@ struct dw_spi_enh_cfg {
- 	u8 inst_l;
- 	u8 addr_l;
- 	u8 trans_t;
-+	bool inst_ddr;
-+	bool spi_ddr;
- };
-
- #ifdef CONFIG_DEBUG_FS
-@@ -418,6 +420,7 @@ static void dw_spi_update_config(struct dw_spi *dws, struct spi_device *spi,
- 	u32 cr0 = chip->cr0;
- 	u32 speed_hz;
- 	u16 clk_div;
-+	u32 tde = 0;
-
- 	/* CTRLR0[ 4/3: 0] or CTRLR0[ 20: 16] Data Frame Size */
- 	cr0 |= (cfg->dfs - 1) << dws->dfs_offset;
-@@ -468,11 +471,26 @@ static void dw_spi_update_config(struct dw_spi *dws, struct spi_device *spi,
-
- 	if (enh_cfg) {
- 		cr0 = DW_SPI_ENH_CTRLR0_CLK_STRETCH_EN;
-+		if (enh_cfg->inst_ddr)
-+			cr0 |= DW_SPI_ENH_CTRLR0_INST_DDR_EN;
-+		if (enh_cfg->spi_ddr)
-+			cr0 |= DW_SPI_ENH_CTRLR0_SPI_DDR_EN;
- 		cr0 |= FIELD_PREP(DW_SPI_ENH_CTRLR0_WAIT_CYCLE_MASK, enh_cfg->wait_c);
- 		cr0 |= FIELD_PREP(DW_SPI_ENH_CTRLR0_INST_L_MASK, enh_cfg->inst_l);
- 		cr0 |= FIELD_PREP(DW_SPI_ENH_CTRLR0_ADDR_L_MASK, enh_cfg->addr_l);
- 		cr0 |= FIELD_PREP(DW_SPI_ENH_CTRLR0_TRANS_TYPE_MASK, enh_cfg->trans_t);
- 		dw_writel(dws, DW_SPI_SPI_CTRLR0, cr0);
-+
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 90524c58602e..43e506e728ab 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -97,13 +97,7 @@ void spi_nor_spimem_setup_op(const struct spi_nor *nor,
+ 	if (op->data.nbytes)
+ 		op->data.buswidth = spi_nor_get_protocol_data_nbits(proto);
+ 
+-	if (spi_nor_protocol_is_dtr(proto)) {
+-		/*
+-		 * SPIMEM supports mixed DTR modes, but right now we can only
+-		 * have all phases either DTR or STR. IOW, SPIMEM can have
+-		 * something like 4S-4D-4D, but SPI NOR can't. So, set all 4
+-		 * phases to either DTR or STR.
+-		 */
++	if (proto == SNOR_PROTO_8_8_8_DTR) {
+ 		op->cmd.dtr = true;
+ 		op->addr.dtr = true;
+ 		op->dummy.dtr = true;
+@@ -115,6 +109,19 @@ void spi_nor_spimem_setup_op(const struct spi_nor *nor,
+ 		ext = spi_nor_get_cmd_ext(nor, op);
+ 		op->cmd.opcode = (op->cmd.opcode << 8) | ext;
+ 		op->cmd.nbytes = 2;
++	} else if (spi_nor_protocol_is_dtr(proto)) {
 +		/*
-+		 * The recommended value of TDE is clk_div / 4, and it must not exceed
-+		 * SCKDV / 2 - 1
++		 * 1S-xD-xD protocols: the opcode is sent in STR on a single
++		 * line, only the address, dummy and data phases are DTR. The
++		 * opcode stays 1 byte (no command extension).
 +		 */
-+		if (enh_cfg->spi_ddr)
-+			tde = min3(clk_div / 4U, clk_div / 2U - 1,
-+				   FIELD_MAX(DW_SPI_DDR_DRIVE_EDGE_TDE_MASK));
++		op->cmd.dtr = false;
++		op->addr.dtr = true;
++		op->dummy.dtr = true;
++		op->data.dtr = true;
 +
-+		dw_writel(dws, DW_SPI_DDR_DRIVE_EDGE,
-+			  FIELD_PREP(DW_SPI_DDR_DRIVE_EDGE_TDE_MASK, tde));
++		/* 2 bytes per clock cycle in DTR mode. */
++		op->dummy.nbytes *= 2;
  	}
- }
-
-@@ -656,6 +674,21 @@ static int dw_spi_adjust_mem_op_size(struct spi_mem *mem, struct spi_mem_op *op)
- 	return 0;
- }
-
-+static u32 dw_spi_enh_wait_cycles(const struct spi_mem_op *op)
-+{
-+	u32 wait_c;
-+
-+	if (!op->dummy.nbytes || !op->dummy.buswidth)
-+		return 0;
-+
-+	wait_c = op->dummy.nbytes * BITS_PER_BYTE / op->dummy.buswidth;
-+	/* DTR transfers two bits per clock on each line. */
-+	if (op->dummy.dtr)
-+		wait_c >>= 1;
-+
-+	return wait_c;
-+}
-+
- static bool dw_spi_supports_enh_mem_op(struct spi_mem *mem,
- 				       const struct spi_mem_op *op)
- {
-@@ -678,10 +711,7 @@ static bool dw_spi_supports_enh_mem_op(struct spi_mem *mem,
- 	if (op->dummy.nbytes != 0 && op->data.dir == SPI_MEM_DATA_OUT)
- 		return false;
-
--	/* WAIT_CYCLES is a 5-bit field in SPI_CTRLR0 */
--	if (op->dummy.nbytes != 0 &&
--	    op->dummy.nbytes * BITS_PER_BYTE / op->dummy.buswidth >
--	    FIELD_MAX(DW_SPI_ENH_CTRLR0_WAIT_CYCLE_MASK))
-+	if (dw_spi_enh_wait_cycles(op) > FIELD_MAX(DW_SPI_ENH_CTRLR0_WAIT_CYCLE_MASK))
- 		return false;
-
- 	if ((dws->quirk_flags & DW_SPI_QUIRK_JHB100) && op->addr.nbytes &&
-@@ -1074,8 +1104,10 @@ static int dw_spi_exec_enh_mem_op(struct spi_mem *mem, const struct spi_mem_op *
- 	else
- 		enh_cfg.inst_l = DW_SPI_ENH_CTRLR0_INST_L_INST_L0;
-
--	if (op->dummy.buswidth)
--		enh_cfg.wait_c = op->dummy.nbytes * BITS_PER_BYTE / op->dummy.buswidth;
-+	enh_cfg.wait_c = dw_spi_enh_wait_cycles(op);
-+
-+	enh_cfg.inst_ddr = op->cmd.dtr;
-+	enh_cfg.spi_ddr = op->addr.dtr || op->dummy.dtr || op->data.dtr;
-
- 	dw_spi_enable_chip(dws, 0);
-
-@@ -1383,6 +1415,11 @@ static const struct spi_controller_mem_caps dw_spi_mem_caps = {
- 	.per_op_freq = true,
- };
-
-+static const struct spi_controller_mem_caps dw_spi_enh_mem_caps = {
-+	.per_op_freq = true,
-+	.dtr = true,
-+};
-+
- int dw_spi_add_controller(struct device *dev, struct dw_spi *dws)
- {
- 	struct spi_controller *ctlr;
-@@ -1439,7 +1476,8 @@ int dw_spi_add_controller(struct device *dev, struct dw_spi *dws)
- 			ctlr->set_cs = dw_spi_set_cs;
- 		if (dws->mem_ops.exec_op) {
- 			ctlr->mem_ops = &dws->mem_ops;
--			ctlr->mem_caps = &dw_spi_mem_caps;
-+			ctlr->mem_caps = (dws->caps & DW_SPI_CAP_EMODE) ?
-+					 &dw_spi_enh_mem_caps : &dw_spi_mem_caps;
- 		}
- 		ctlr->max_speed_hz = dws->max_freq;
- 		ctlr->flags = SPI_CONTROLLER_GPIO_SS;
-diff --git a/drivers/spi/spi-dw.h b/drivers/spi/spi-dw.h
-index c16225c5c887..67b4e0098ac3 100644
---- a/drivers/spi/spi-dw.h
-+++ b/drivers/spi/spi-dw.h
-@@ -66,6 +66,7 @@
- #define DW_SPI_RX_SAMPLE_DLY		0xf0
- #define DW_SPI_SPI_CTRLR0		0xf4
- #define DW_SPI_CS_OVERRIDE		0xf4
-+#define DW_SPI_DDR_DRIVE_EDGE		0xf8
-
- /* Register offsets (StarFive JHB100 DWC SSI IP-cores) */
- #define DW_SPI_JHB100_INST		0x1000
-@@ -139,6 +140,8 @@
-
- /* Bit fields in SPI_CTRLR0 */
- #define DW_SPI_ENH_CTRLR0_CLK_STRETCH_EN	BIT(30)
-+#define DW_SPI_ENH_CTRLR0_INST_DDR_EN		BIT(17)
-+#define DW_SPI_ENH_CTRLR0_SPI_DDR_EN		BIT(16)
- #define DW_SPI_ENH_CTRLR0_WAIT_CYCLE_MASK	GENMASK(15, 11)
- #define DW_SPI_ENH_CTRLR0_INST_L_MASK		GENMASK(9, 8)
- #define DW_SPI_ENH_CTRLR0_INST_L_INST_L0	0x0
-@@ -150,6 +153,9 @@
- #define DW_SPI_ENH_CTRLR0_TRANS_TYPE_TT2	0x2
- #define DW_SPI_ENH_CTRLR0_TRANS_TYPE_MASK	GENMASK(1, 0)
-
-+/* Bit fields in DDR_DRIVE_EDGE */
-+#define DW_SPI_DDR_DRIVE_EDGE_TDE_MASK		GENMASK(7, 0)
-+
- /* Mem/DMA operations helpers */
- #define DW_SPI_WAIT_RETRIES			5
- #define DW_SPI_BUF_SIZE \
---
+ 
+ 	if (proto == SNOR_PROTO_8_8_8_DTR && params->flags & SNOR_F_SWAP16)
+-- 
 2.25.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
