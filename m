@@ -2,86 +2,78 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 352F6606A322
-	for <linux-mtd@archiver.kernel.org>; Fri, 23 Oct 2026 08:05:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8313C606A31A
+	for <linux-mtd@archiver.kernel.org>; Fri, 23 Oct 2026 08:16:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=yml6OXpD;
-	dkim=fail reason="signature verification failed" (1024-bit key, unprotected) header.d=infineon.com header.i=@infineon.com header.a=rsa-sha256 header.s=IFXMAIL header.b=pcy5cMvu
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=lOWKFBAt;
+	dkim=fail reason="signature verification failed" (1024-bit key, unprotected) header.d=qq.com header.i=@qq.com header.a=rsa-sha256 header.s=s201512 header.b=qUnPm/q8
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Subject:Cc:To:From:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
 	List-Unsubscribe-Post:List-Owner;
-	bh=zA55yFFuL8FrDz1j4UFAuONhB342CGCG/Azsl5f7pcM=; b=yml6OXpDmydbvuQnZno1NyEudL
-	Qg7/C8wYuw6WOz+q0oC9d77hDHPXd/WrgL26n/UKisTaq5sR6zV8+2tRcI4DdhKLv/S2XKa/Lg3Pg
-	SsTbfeKQbTLVdt9Et+CGE8Zw+NnVULCD2sIT6ySNlXGbYEWkYKFoBs3g0UluDcAJBN9keGdfSZVEn
-	9kjL8PATwZ5/rwPeIEEpSPyigyYt1LnP4nTRjR50+AprUpf7w4iarCkOsBCrkST4msEM59HvXqIbX
-	OSXrp9VgcQjN5pUglq2X1csvSWsX8xPnAF9IULDvMAk4lZsOZ/snYoZonlbaGFxUweUEVaj3ZnRqq
-	Ux9SAvIQ==;
+	bh=a8fZwg3kPGf9KVyXzMKyMQ8U4UdCMKeKn6u9AtJ/8nE=; b=lOWKFBAtDqVUbFZqmRpfZu9D5O
+	vJygveqzo2qxksbWi7/3gznZ6VV7Y24f/S/60wIra53WPYewqWuN8da/1sy4j46t+mZamAW4r2yyo
+	wjXTJ//oeRuWmuszEXgUm2LGfcohwlmoM0u3PZNG7frBO7gp/FmPEJjI/e8iD9Fr2JD7x1Isgf3ML
+	cvXSMOpdDpaIrZ/Tpy9ASla2ZuKwTI1lD54xGTvToyrlBP8j4hkR0+8zN3J7xfJiKwT/UEJkFnLyS
+	rvD7AXzYDcGcHSo8CeJYlrzrvZ0uq86cH4jiRHN+Nc6Q56mAqKvToAAnCAuAv7QjGir5xvQWtUmnP
+	WG4CCs1g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xKAHI-0000000FrkC-05VN;
-	Fri, 23 Oct 2026 08:05:28 +0000
-Received: from smtp14.infineon.com ([2a00:18f0:1e00:4::6])
+	id 1xKARq-0000000FuQD-3JvE;
+	Fri, 23 Oct 2026 08:16:22 +0000
+Received: from out203-205-221-245.mail.qq.com ([203.205.221.245])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xKAHC-0000000Frjc-362k
+	id 1xKARn-0000000FuOX-1uzB
 	for linux-mtd@lists.infradead.org;
-	Fri, 23 Oct 2026 08:05:25 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=infineon.com; i=@infineon.com; q=dns/txt; s=IFXMAIL;
-  t=1792742723; x=1824278723;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=H2oED4GUmwRnFrjJBgiI4cK+SfJ+rcYm+R8lIye80N4=;
-  b=pcy5cMvu3inGI2uPb88LIDUcy6EhuO2VAmNR17SjvDDbSQcUJSiJmvSX
-   sqpG4LUIh2R/ICxU7+4u1+XWh2IxXV2F9aPkBRmAPdCZW8LWBPVt7mkRL
-   PuchIhl29EJqGby24NQRx+Fi/t55AiUo0nhCuyEkK3cCv1O/mzQn3PCUC
-   s=;
-X-CSE-ConnectionGUID: XylgxdTISWeFMTnbSYNLfA==
-X-CSE-MsgGUID: pbSlGX5pRwGPWdUuMN7IwA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11943"; a="152347539"
-X-IronPort-AV: E=Sophos;i="6.27,173,1787004000"; 
-   d="scan'208";a="152347539"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO MUCSE803.infineon.com) ([172.23.29.29])
-  by smtp14.infineon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2026 10:05:18 +0200
-Received: from MUCSE818.infineon.com (172.23.29.44) by MUCSE803.infineon.com
- (172.23.29.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.53; Fri, 23 Oct
- 2026 10:05:17 +0200
-Received: from MUCSE815.infineon.com (172.23.29.41) by MUCSE818.infineon.com
- (172.23.29.44) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.53; Fri, 23 Oct
- 2026 10:05:17 +0200
-Received: from MUCSE815.infineon.com ([fe80::b54c:c0bd:546c:c9be]) by
- MUCSE815.infineon.com ([fe80::b54c:c0bd:546c:c9be%12]) with mapi id
- 15.02.2562.053; Fri, 23 Oct 2026 10:05:17 +0200
-From: <Takahiro.Kuwano@infineon.com>
-To: <marex@nabladev.com>, <linux-mtd@lists.infradead.org>
-CC: <chengminglin@mxic.com.tw>, <mwalle@kernel.org>,
-	<miquel.raynal@bootlin.com>, <pratyush@kernel.org>, <richard@nod.at>,
-	<vigneshr@ti.com>, <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] mtd: spi-nor: Describe locking support for MX25L51245G
-Thread-Topic: [PATCH] mtd: spi-nor: Describe locking support for MX25L51245G
-Thread-Index: AQHdTI+RbslWC8yeRU+6uOH9/L7Fh7boPlmwgB7kuACAA8rMgA==
-Date: Fri, 23 Oct 2026 08:05:16 +0000
-Message-ID: <8daec856e8dd4f11a805d5d9dcf8d51a@infineon.com>
-References: <20260925014517.174496-1-marex@nabladev.com>
- <9bdd8b02469042ffa71851fd2641708e@infineon.com>
- <75174a84-13b6-4a97-b4bf-7513ee43ab69@nabladev.com>
-In-Reply-To: <75174a84-13b6-4a97-b4bf-7513ee43ab69@nabladev.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
+	Fri, 23 Oct 2026 08:16:21 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1792743370; bh=OJBm0kdro8PQFC/77dWApGE9VNnnb7mDYElFO9G+ddk=;
+	h=From:To:Cc:Subject:Date;
+	b=qUnPm/q8qUPaV6/qRUL+o+LQDrnnv1sJYe2v5sCY3Nkn7aZdB+wRCbh7N3bKZMqNX
+	 rQuWInbhm/kIGZwoC0RMsAmb9UHDyeVtTqqGTjsbuoFuWwAHYFbl2z9eL+RTbLZIze
+	 Ns8yJ/kUKygnoFWdwLmu890BTYSv4PCDt15fNDfA=
+Received: from shuai-VMware-Virtual-Platform.. ([218.28.192.28])
+	by newxmesmtplogicsvrsza63-0.qq.com (NewEsmtp) with SMTP
+	id 407AE242; Fri, 23 Oct 2026 16:16:07 +0800
+X-QQ-mid: xmsmtpt1792743367t24639m9l
+Message-ID: <tencent_90082E9C18DB04917B9F74368BBAFC695306@qq.com>
+X-QQ-XMAILINFO: M1rD3f8svNznrOjiZ53lu7yt9BFmB+lFO5xkRRJHXifRU9rhP18oTP8RL7gHc8
+	 /lGAbQ10QIPd7UsMOmMwGJ5qCKTcllNec1PPzVwN9Mj5zThzWqnfKc+/3I74f6jhhiMtmBnBhc0Y
+	 +/+iap4FXURogXI/P64OecQnm40FtIWnfdpgHITraJw89gtaUQWdEM62vJL4QghYnXbFXt4JvU8o
+	 iSOYhQckXjXUTzH+zvtVVtYFQnK4Eg6AuJS8ZnC0baf1i9rIEK7uyqiEQCaUzU3iZo9AuTt4sd+a
+	 MVFP2ZtI5opaeMMBCKZ57Dl/BrmfenNHT9V7FVon2mxySxiVMv/H1aws0Aw36ZAJu3D8lcLlYrtm
+	 hM5JvbledUIwTsMlJAQ7wyJOcovI/UrOuCgCmSZyrtStwBZouLmp/SgkkMs+45ZRYBxxuawMMTb7
+	 g6YGEjrBg7eHgBpAd4fYiv2DqnldPYkVOlAZ0z2RU3+hIa8RlDGeoTlqc4L2mfqkgPPByH4wBtjN
+	 bSZYaX4zQxXhCgqiWNbKnM/e5T3pCUNWO+TR+CYjfMkEpzQjtFU/nSUuMnBMmG4fkgXdiIf1NVKZ
+	 E1/wAnMzfLz+hJAhb8VqkdoGh+BzdP5hxNjhn+SJOA60fKPpBHxvKeQdrLpccJxLKpZYtz34lq1b
+	 E0SrYwIg0lqDDJPAJNF1yb1KQHso8aqjA/wYQFwnsFdKZs8uLZ5Oq/1LYUzKWeqIwiW783OjLJgU
+	 hpt3mDbi2g/9rxRk4En6grf+AGGHSZRqPthyvnlfX5YwVox4pl+efaOc9u3pPDt7TOS00/knIZqt
+	 7Uq4q1Rp5Hqwi+cF5nEhKBKy4rz6CGlgfZ7HGch3k5q7Lgk1i2W1wq2yUwyQPja7zuecq6APH8rb
+	 J2ILuIs55rnTGoMSArWVD8/UX1bkNxFFoYqsM7X7NJtu+iOzfqNd1K5eo4U0XmDbFQHOAlEEWeJj
+	 nxUinSIFEeJXYlunAonyez2daAjsx2zDfUHm4TJP+OnlY+IPneeeeCwdwwtC0BsLraU8A57uZ2qQ
+	 fMTVKm2R/T5Af1UC5m/G7osllcNnCx+Hlj1ws7Trb2B/ulRTdX6WekF2ErMAUCeCR+c5afEG+7G3
+	 1KBGxh
+X-QQ-XMRINFO: NyFYKkN4Ny6FuXrnB5Ye7Aabb3ujjtK+gg==
+From: Shuai Liu <847807867@qq.com>
+To: linux-mtd@lists.infradead.org
+Cc: miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com,
+	linux-kernel@vger.kernel.org,
+	kevinshq@163.com
+Subject: [PATCH] mtd: rawnand: samsung: fix pages_per_eraseblock calculation
+Date: Fri, 23 Oct 2026 16:16:07 +0800
+X-OQ-MSGID: <20261023081607.3836052-1-847807867@qq.com>
+X-Mailer: git-send-email 2.43.0
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261023_010523_280211_D6359489 
-X-CRM114-Status: GOOD (  37.07  )
-X-Spam-Score: -2.1 (--)
+X-CRM114-CacheID: sfid-20261023_011619_809333_AD02971B 
+X-CRM114-Status: GOOD (  10.31  )
+X-Spam-Score: -1.9 (-)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,318 +86,62 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=ham autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-Hello Marek,
+In samsung_nand_decode_id(), the division by memorg->pagesize binds
+tighter than the left shift due to C operator precedence, so the
+expression is evaluated as:
 
-> On 10/1/26 9:17 AM, Takahiro.Kuwano@infineon.com wrote:
-> 
-> Hello Kuwano-san,
-> 
-> I apologize for my late reply.
-> 
-No problem at all.
+    (128 * 1024) << (shift / pagesize)
 
-> >> The MX25L51245G part has the same 4-BP locking mechanism as MX25L12805D.
-> >> Describe the locking support.
-> >>
-> >> Signed-off-by: Marek Vasut <marex@nabladev.com>
-> >> ---
-> >> Cc: Cheng Ming Lin <chengminglin@mxic.com.tw>
-> >> Cc: Michael Walle <mwalle@kernel.org>
-> >> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-> >> Cc: Pratyush Yadav <pratyush@kernel.org>
-> >> Cc: Richard Weinberger <richard@nod.at>
-> >> Cc: Takahiro Kuwano <takahiro.kuwano@infineon.com>
-> >> Cc: Vignesh Raghavendra <vigneshr@ti.com>
-> >> Cc: linux-kernel@vger.kernel.org
-> >> Cc: linux-mtd@lists.infradead.org
-> >> ---
-> >
-> > Can you test locking as described in [1] and provide test log?
-> >
-> >>   drivers/mtd/spi-nor/macronix.c | 1 +
-> >>   1 file changed, 1 insertion(+)
-> >>
-> >> diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-> >> index b3fdb4b2fa1ca..4de1b490b16b6 100644
-> >> --- a/drivers/mtd/spi-nor/macronix.c
-> >> +++ b/drivers/mtd/spi-nor/macronix.c
-> >> @@ -165,6 +165,7 @@ static const struct flash_info macronix_nor_parts[] = {
-> >>          }, {
-> >>                  /* MX25L51245G, MX25L51273G, MX66L51235F */
-> >>                  .id = SNOR_ID(0xc2, 0x20, 0x1a),
-> >> +               .flags = SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP,
-> >
-> > According to datasheets [2][3][4], those chips have TB bit in Configuration
-> > Register bit-3 and the bit is OTP.
-> 
-> Yikes, that is correct and also scary.
-> 
-> > The existing HAS_TB and HAS_TB_SR_BIT6
-> > flags don't work as they expect non-OTP bit in Status Register.
-> > Just supporting top area protection (TB==0) would be fine with me, but in
-> > that case, fixup should check TB and activate locking only when TB==0.
-> 
-> I came up with this addition, is this what you have in mind ?
-> 
-Yes, but...
+The shift amount is at most 7 while pagesize is at least 2048, so the
+integer division always yields 0 and pages_per_eraseblock ends up
+being 131072 regardless of the actual chip geometry.
 
-> diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-> index e97f5cbd9aad2..1539ff3ed404e 100644
-> --- a/drivers/mtd/spi-nor/macronix.c
-> +++ b/drivers/mtd/spi-nor/macronix.c
-> @@ -15,6 +15,9 @@
->   #define MXIC_NOR_REG_DOPI_EN  0x2             /* Enable Octal DTR */
->   #define MXIC_NOR_REG_SPI_EN   0x0             /* Enable SPI */
-> 
-> +#define MX25L51245G_OP_RDCR    0x15
-> +#define MX25L51245G_CR_TB      BIT(3)
-> +
->   /* Convert dummy cycles to bit pattern */
->   #define MXIC_NOR_REG_DC(p) \
->         ((20 - (p)) >> 1)
-> @@ -45,6 +48,52 @@ mx25l25635_post_bfpt_fixups(struct spi_nor *nor,
->         return 0;
->   }
-> 
-> +static int mx25l51245_read_cr(struct spi_nor *nor, u8 *cr)
-> +{
-> +       int ret;
-> +
-> +       if (nor->spimem) {
-> +               struct spi_mem_op op = SPI_MEM_OP(SPI_MEM_OP_CMD(MX25L51245G_OP_RDCR, 0),
-> +                                                 SPI_MEM_OP_NO_ADDR, SPI_MEM_OP_NO_DUMMY,
-> +                                                 SPI_MEM_OP_DATA_IN(1, cr, 0));
-> +
-> +               spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
-> +
-> +               ret = spi_mem_exec_op(nor->spimem, &op);
-> +       } else {
-> +               ret = spi_nor_controller_ops_read_reg(nor, MX25L51245G_OP_RDCR, cr, 1);
-> +       }
-> +
-> +       if (ret)
-> +               dev_dbg(nor->dev, "error %d reading CR\n", ret);
-> +
-> +       return ret;
-> +}
-> +
-> +static int
-> +mx25l51245_post_bfpt_fixups(struct spi_nor *nor,
-> +                           const struct sfdp_parameter_header *bfpt_header,
-> +                           const struct sfdp_bfpt *bfpt)
-> +{
-> +       int ret;
-> +
-> +       ret = mx25l51245_read_cr(nor, nor->bouncebuf);
-> +       if (ret)
-> +               return ret;
-> +
-> +       /*
-> +        * MX25L51245G supports locking, but the CR register TB bit is OTP.
-> +        * Enable locking only in case the TB bit is not programmed, or set
-> +        * to 0.
-> +        */
-> +       if (nor->bouncebuf[0] & MX25L51245G_CR_TB)
-> +               dev_dbg(nor->dev, "CR TB is set, bottom protection not supported\n");
-> +       else
-> +               nor->flags |= SNOR_F_HAS_LOCK | SNOR_F_HAS_4BIT_BP;
-> +
-> +       return 0;
-> +}
-> +
->   static int
->   macronix_qpp4b_post_sfdp_fixups(struct spi_nor *nor)
->   {
-> @@ -89,6 +139,7 @@ static const struct spi_nor_fixups mx25l25635_fixups = {
->   };
-> 
->   static const struct spi_nor_fixups macronix_qpp4b_fixups = {
-> +       .post_bfpt = mx25l51245_post_bfpt_fixups,
->         .post_sfdp = macronix_qpp4b_post_sfdp_fixups,
->   };
-> 
-please use late_init hook. post_bfpt should fixe params declared in SFDP/BFPT.
-locking is not declared in SFDP/BFPT.
+nanddev_init() later computes mtd->erasesize as
+pagesize * pages_per_eraseblock, overwriting the correct value set in
+this function with an astronomic value (e.g. 0x20000000, 512 MiB, for
+a chip with 4096-byte pages).  MTD then rejects partitions not
+starting on such an eraseblock boundary and forces them read-only,
+breaking the rootfs on affected boards.
 
-> Which led to this locking log:
-> 
-> "
-> + mktemp -d
-> + cd /tmp/tmp.45Mtr7ceEE
-> + cat /sys/bus/spi/devices/spi2.0/spi-nor/jedec_id
-> c2201a
-> + cat /sys/bus/spi/devices/spi2.0/spi-nor/manufacturer
-> macronix
-> + xxd -p /sys/bus/spi/devices/spi2.0/spi-nor/sfdp
-> 53464450060102ff00060110300000ffc2000104100100ff84000102c000
-> 00ffffffffffffffffffffffffffffffffffe520fbffffffff1f44eb086b
-> 083b04bbfeffffffffff00ffffff44eb0c200f5210d800ffd649c50081df
-> 04e34403673830b030b0f7bdd55c4a9e29fff050f985ffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffff7fefffff215cdcffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffff003600279df9c06485cbffffffffffff
-> + cat /sys/kernel/debug/spi-nor/spi2.0/capabilities
-> Supported read modes by the flash
->   1S-1S-1S
->    opcode        0x13
->    mode cycles   0
->    dummy cycles  0
->   1S-1S-2S
->    opcode        0x3c
->    mode cycles   0
->    dummy cycles  8
->   1S-2S-2S
->    opcode        0xbc
->    mode cycles   0
->    dummy cycles  4
->   1S-1S-4S
->    opcode        0x6c
->    mode cycles   0
->    dummy cycles  8
->   1S-4S-4S
->    opcode        0xec
->    mode cycles   2
->    dummy cycles  4
->   4S-4S-4S
->    opcode        0xec
->    mode cycles   2
->    dummy cycles  4
-> 
-> Supported page program modes by the flash
->   1S-1S-1S
->    opcode        0x12
->   1S-1S-4S
->    opcode        0x34
->   1S-4S-4S
->    opcode        0x3e
-> + cat /sys/kernel/debug/spi-nor/spi2.0/params
-> name            (null)
-> id              c2 20 1a c2 20 1a
-> size            64.0 MiB
-> write size      1
-> page size       256
-> address nbytes  4
-> flags           4B_OPCODES | HAS_4BAIT | HAS_LOCK | HAS_4BIT_BP | SOFT_RESET
-> 
-> opcodes
->   read           0xec
->    dummy cycles  6
->   erase          0x21
->   program        0x3e
->   8D extension   none
-> 
-> protocols
->   read           1S-4S-4S
->   write          1S-4S-4S
->   register       1S-1S-1S
-> 
-> erase commands
->   21 (4.00 KiB) [1]
->   5c (32.0 KiB) [2]
->   dc (64.0 KiB) [3]
->   c7 (64.0 MiB)
-> 
-> sector map
->   region (in hex)   | erase mask | overlaid
->   ------------------+------------+----------
->   00000000-03ffffff |     [ 1  ] | no
-> + dd if=/dev/urandom of=./spi_test bs=1M count=2
-> 2+0 records in
-> 2+0 records out
-> 2097152 bytes (2.1 MB, 2.0 MiB) copied, 0.0514406 s, 40.8 MB/s
-> + mtd_debug erase /dev/mtd0 0 2097152
-> Erased 2097152 bytes from address 0x00000000 in flash
-> + mtd_debug read /dev/mtd0 0 2097152 spi_read
-> Copied 2097152 bytes from address 0x00000000 in flash to spi_read
-> + hexdump spi_read
-> 0000000 ffff ffff ffff ffff ffff ffff ffff ffff
-> *
-> 0200000
-> + sha256sum spi_read
-> 4bda3a28f4ffe603c0ec1258c0034d65a1a0d35ab7bd523a834608adabf03cc5  spi_read
-> + mtd_debug write /dev/mtd0 0 2097152 spi_test
-> Copied 2097152 bytes from spi_test to address 0x00000000 in flash
-> + mtd_debug read /dev/mtd0 0 2097152 spi_read
-> Copied 2097152 bytes from address 0x00000000 in flash to spi_read
-> + sha256sum spi_read spi_test
-> fa5dea0c7a85ed0bc865bd0b6ed09e2aef41bb336d9805a93bcfbbd26004ea7a  spi_read
-> fa5dea0c7a85ed0bc865bd0b6ed09e2aef41bb336d9805a93bcfbbd26004ea7a  spi_test
-> + mtd_debug erase /dev/mtd0 0 2097152
-> Erased 2097152 bytes from address 0x00000000 in flash
-> + mtd_debug read /dev/mtd0 0 2097152 spi_read
-> Copied 2097152 bytes from address 0x00000000 in flash to spi_read
-> + sha256sum spi_read spi_test
-> 4bda3a28f4ffe603c0ec1258c0034d65a1a0d35ab7bd523a834608adabf03cc5  spi_read
-> fa5dea0c7a85ed0bc865bd0b6ed09e2aef41bb336d9805a93bcfbbd26004ea7a  spi_test
-> + mtd_debug info /dev/mtd0
-> mtd.type = MTD_NORFLASH
-> mtd.flags = MTD_CAP_NORFLASH
-> mtd.size = 67108864 (64M)
-> mtd.erasesize = 4096 (4K)
-> mtd.writesize = 1
-> mtd.oobsize = 0
-> regions = 0
-> 
-> + flash_lock -u /dev/mtd0
-> + flash_lock -i /dev/mtd0
-> Device: /dev/mtd0
-> Start: 0
-> Len: 0x4000000
-> Lock status: unlocked
-> Return code: 0
-> + mtd_debug erase /dev/mtd0 0 2097152
-> Erased 2097152 bytes from address 0x00000000 in flash
-> + mtd_debug write /dev/mtd0 0 2097152 spi_test
-> Copied 2097152 bytes from spi_test to address 0x00000000 in flash
-> + mtd_debug read /dev/mtd0 0 2097152 spi_read
-> Copied 2097152 bytes from address 0x00000000 in flash to spi_read
-> + sha256sum spi_read spi_test
-> fa5dea0c7a85ed0bc865bd0b6ed09e2aef41bb336d9805a93bcfbbd26004ea7a  spi_read
-> fa5dea0c7a85ed0bc865bd0b6ed09e2aef41bb336d9805a93bcfbbd26004ea7a  spi_test
-> + grep -A4 locked sectors /sys/kernel/debug/spi-nor/spi2.0/params
-> + flash_lock -l /dev/mtd0
-> + flash_lock -i /dev/mtd0
-> Device: /dev/mtd0
-> Start: 0
-> Len: 0x4000000
-> Lock status: locked
-> Return code: 1
-> + mtd_debug erase /dev/mtd0 0 2097152
-> Erased 2097152 bytes from address 0x00000000 in flash
-> + mtd_debug read /dev/mtd0 0 2097152 spi_read
-> Copied 2097152 bytes from address 0x00000000 in flash to spi_read
-> + sha256sum spi_read spi_test
-> fa5dea0c7a85ed0bc865bd0b6ed09e2aef41bb336d9805a93bcfbbd26004ea7a  spi_read
-> fa5dea0c7a85ed0bc865bd0b6ed09e2aef41bb336d9805a93bcfbbd26004ea7a  spi_test
-> + dd if=/dev/urandom of=./spi_test2 bs=1M count=2
-> 2+0 records in
-> 2+0 records out
-> 2097152 bytes (2.1 MB, 2.0 MiB) copied, 0.051125 s, 41.0 MB/s
-> + mtd_debug write /dev/mtd0 0 2097152 spi_test2
-> Copied 2097152 bytes from spi_test2 to address 0x00000000 in flash
-> + mtd_debug read /dev/mtd0 0 2097152 spi_read2
-> Copied 2097152 bytes from address 0x00000000 in flash to spi_read2
-> + sha256sum spi_read spi_read2 spi_test spi_test2
-> fa5dea0c7a85ed0bc865bd0b6ed09e2aef41bb336d9805a93bcfbbd26004ea7a  spi_read
-> fa5dea0c7a85ed0bc865bd0b6ed09e2aef41bb336d9805a93bcfbbd26004ea7a  spi_read2
-> fa5dea0c7a85ed0bc865bd0b6ed09e2aef41bb336d9805a93bcfbbd26004ea7a  spi_test
-> eed3b73016802a59982c74a45ce96deafb7cd486cc5cd831e030239c0ddeb8cc  spi_test2
-> + grep -A4 locked sectors /sys/kernel/debug/spi-nor/spi2.0/params
-> + flash_lock -u /dev/mtd0
-> "
+Add parentheses around the shift expression so that the eraseblock
+size is computed before being divided by the page size.
 
-Thanks,
-Takahiro
+Reported-by: kevinshq <kevinshq@163.com>
+Closes: https://bugzilla.kernel.org/show_bug.cgi?id=222140
+Fixes: 629a442cad5f ("mtd: rawnand: Fill memorg during detection")
+Signed-off-by: Shuai Liu <847807867@qq.com>
+---
+ drivers/mtd/nand/raw/nand_samsung.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/nand_samsung.c b/drivers/mtd/nand/raw/nand_samsung.c
+index 0be6b7563..765c0a7d8 100644
+--- a/drivers/mtd/nand/raw/nand_samsung.c
++++ b/drivers/mtd/nand/raw/nand_samsung.c
+@@ -63,9 +63,9 @@ static void samsung_nand_decode_id(struct nand_chip *chip)
+ 
+ 		/* Get blocksize */
+ 		extid >>= 2;
+-		memorg->pages_per_eraseblock = (128 * 1024) <<
+-					       (((extid >> 1) & 0x04) |
+-						(extid & 0x03)) /
++		memorg->pages_per_eraseblock = ((128 * 1024) <<
++						(((extid >> 1) & 0x04) |
++						 (extid & 0x03))) /
+ 					       memorg->pagesize;
+ 		mtd->erasesize = (128 * 1024) <<
+ 				 (((extid >> 1) & 0x04) | (extid & 0x03));
+-- 
+2.43.0
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
