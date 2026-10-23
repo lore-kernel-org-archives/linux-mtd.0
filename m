@@ -2,58 +2,86 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 356E5606A31B
-	for <linux-mtd@archiver.kernel.org>; Fri, 23 Oct 2026 07:35:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 352F6606A322
+	for <linux-mtd@archiver.kernel.org>; Fri, 23 Oct 2026 08:05:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=c40oQW99;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=UjPBsuv3
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=yml6OXpD;
+	dkim=fail reason="signature verification failed" (1024-bit key, unprotected) header.d=infineon.com header.i=@infineon.com header.a=rsa-sha256 header.s=IFXMAIL header.b=pcy5cMvu
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Reply-To:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:References:
-	In-Reply-To:Cc:To:Subject:From:Message-ID:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=JpeRWgRjuakArKBMfCUNINFVK0ecdldVY75D2kxDTZc=; b=c40oQW99yuevzMh5yYPyDTxzn1
-	dZOZE78hNY5xSOBe2DemjckahussGnBNL4I7+Z1IkT5JETOtx+tLaUztxczq8SM/0Gg8A2TMXNXs9
-	vWFvzAohQkxv4hHHRrJQjgajw7gZPqd/nVF+VhcIxjIk1IYDj0pbbjdI8pgFMYpytd+9ZO3avPllO
-	4XygFLEenDMB0qd34JPxmQLGdKY5PZeg9GOkxTKjFflfBx33ASWDZDnnvSO21u4zuVNKXAwl1ALz9
-	8r0g/LFnoadl5/M/hk5VeMv1EXMcxEEgfBmDfxl5t/ItGUhEB2yYV4IznH1mY5e/rEMHZcs3dEO/k
-	S16hwnUw==;
+	bh=zA55yFFuL8FrDz1j4UFAuONhB342CGCG/Azsl5f7pcM=; b=yml6OXpDmydbvuQnZno1NyEudL
+	Qg7/C8wYuw6WOz+q0oC9d77hDHPXd/WrgL26n/UKisTaq5sR6zV8+2tRcI4DdhKLv/S2XKa/Lg3Pg
+	SsTbfeKQbTLVdt9Et+CGE8Zw+NnVULCD2sIT6ySNlXGbYEWkYKFoBs3g0UluDcAJBN9keGdfSZVEn
+	9kjL8PATwZ5/rwPeIEEpSPyigyYt1LnP4nTRjR50+AprUpf7w4iarCkOsBCrkST4msEM59HvXqIbX
+	OSXrp9VgcQjN5pUglq2X1csvSWsX8xPnAF9IULDvMAk4lZsOZ/snYoZonlbaGFxUweUEVaj3ZnRqq
+	Ux9SAvIQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xK9nu-0000000FmMt-1kuB;
-	Fri, 23 Oct 2026 07:35:06 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1xKAHI-0000000FrkC-05VN;
+	Fri, 23 Oct 2026 08:05:28 +0000
+Received: from smtp14.infineon.com ([2a00:18f0:1e00:4::6])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xK9ns-0000000FmM3-02GJ
+	id 1xKAHC-0000000Frjc-362k
 	for linux-mtd@lists.infradead.org;
-	Fri, 23 Oct 2026 07:35:04 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 5DEE541288;
-	Fri, 23 Oct 2026 07:35:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA3CD1F01828;
-	Fri, 23 Oct 2026 07:35:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792740903;
-	bh=I/ebZhn9Ly8/Im4kql03EQBUmpN6lKfz+E/Pl3Vbxow=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=UjPBsuv3kUsijbsGbJg7QWkanuqz/eu+cc+ndHbtUnYYJ0C82Xf6lpT7LpCa88vU5
-	 V7fy1mrqo4TJN7yD2Cv/nkLmT4l74B7iV8sS6qZBuyZ9ND5ZY0X3obALHufI6GsgcJ
-	 XHoTxgiCjrY0LG5v/FKdEUL8ZVEgl3crDfd/LcCU8anp5jUhgI8tQ2eut5jYNtc+SC
-	 bftM8cSZ/JkbvuXP1CVSSbLAWTqeQgNuhs0ojMJ2MuhzqKH047/Y4L63Sv2diHCpko
-	 o+KTxCxqSF3r0DYjiUxJZ8LIvl3yBBEaWyZXn/D74vJNpOPQptMKTEFOus8HvomqKk
-	 8J6fO0TUaToWA==
-Message-ID: <sashiko-outbox-182417@kernel.org>
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH v3] ubifs: zero stale data beyond EOF before file size
- grows
-To: "Nan Lin" <lin.nan@h3c.com>, chengzhihao1@huawei.com
-Cc: linux-mtd@lists.infradead.org, richard@nod.at, wangxiaoqing@h3c.com, zhou.kete@h3c.com
-In-Reply-To: <20261023071141.3507024-1-lin.nan@h3c.com>
-References: <9380b1bc-45b6-5d95-7260-5a8dc92acc09@huawei.com>
- <20261023071141.3507024-1-lin.nan@h3c.com>
-Date: Fri, 23 Oct 2026 07:35:02 +0000
+	Fri, 23 Oct 2026 08:05:25 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=infineon.com; i=@infineon.com; q=dns/txt; s=IFXMAIL;
+  t=1792742723; x=1824278723;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=H2oED4GUmwRnFrjJBgiI4cK+SfJ+rcYm+R8lIye80N4=;
+  b=pcy5cMvu3inGI2uPb88LIDUcy6EhuO2VAmNR17SjvDDbSQcUJSiJmvSX
+   sqpG4LUIh2R/ICxU7+4u1+XWh2IxXV2F9aPkBRmAPdCZW8LWBPVt7mkRL
+   PuchIhl29EJqGby24NQRx+Fi/t55AiUo0nhCuyEkK3cCv1O/mzQn3PCUC
+   s=;
+X-CSE-ConnectionGUID: XylgxdTISWeFMTnbSYNLfA==
+X-CSE-MsgGUID: pbSlGX5pRwGPWdUuMN7IwA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11943"; a="152347539"
+X-IronPort-AV: E=Sophos;i="6.27,173,1787004000"; 
+   d="scan'208";a="152347539"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO MUCSE803.infineon.com) ([172.23.29.29])
+  by smtp14.infineon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2026 10:05:18 +0200
+Received: from MUCSE818.infineon.com (172.23.29.44) by MUCSE803.infineon.com
+ (172.23.29.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.53; Fri, 23 Oct
+ 2026 10:05:17 +0200
+Received: from MUCSE815.infineon.com (172.23.29.41) by MUCSE818.infineon.com
+ (172.23.29.44) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.53; Fri, 23 Oct
+ 2026 10:05:17 +0200
+Received: from MUCSE815.infineon.com ([fe80::b54c:c0bd:546c:c9be]) by
+ MUCSE815.infineon.com ([fe80::b54c:c0bd:546c:c9be%12]) with mapi id
+ 15.02.2562.053; Fri, 23 Oct 2026 10:05:17 +0200
+From: <Takahiro.Kuwano@infineon.com>
+To: <marex@nabladev.com>, <linux-mtd@lists.infradead.org>
+CC: <chengminglin@mxic.com.tw>, <mwalle@kernel.org>,
+	<miquel.raynal@bootlin.com>, <pratyush@kernel.org>, <richard@nod.at>,
+	<vigneshr@ti.com>, <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] mtd: spi-nor: Describe locking support for MX25L51245G
+Thread-Topic: [PATCH] mtd: spi-nor: Describe locking support for MX25L51245G
+Thread-Index: AQHdTI+RbslWC8yeRU+6uOH9/L7Fh7boPlmwgB7kuACAA8rMgA==
+Date: Fri, 23 Oct 2026 08:05:16 +0000
+Message-ID: <8daec856e8dd4f11a805d5d9dcf8d51a@infineon.com>
+References: <20260925014517.174496-1-marex@nabladev.com>
+ <9bdd8b02469042ffa71851fd2641708e@infineon.com>
+ <75174a84-13b6-4a97-b4bf-7513ee43ab69@nabladev.com>
+In-Reply-To: <75174a84-13b6-4a97-b4bf-7513ee43ab69@nabladev.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+X-Archived-By: <archiver.kernel.org>
+MIME-Version: 1.0
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20261023_010523_280211_D6359489 
+X-CRM114-Status: GOOD (  37.07  )
+X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -63,130 +91,322 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: sashiko-reviews@lists.linux.dev
-X-Archived-By: <archiver.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-9.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=4.0.1
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-VGhhbmsgeW91IGZvciB5b3VyIGNvbnRyaWJ1dGlvbiEgU2FzaGlrbyBBSSByZXZpZXcgZm91bmQg
-MSBwb3RlbnRpYWwgaXNzdWUocykgdG8gY29uc2lkZXI6Ci0gW0NyaXRpY2FsXSB1YmlmczogdW5s
-b2NrZWQgdWJpZnNfemVyb19lb2ZfaG9sZSgpIGluIHViaWZzX3dyaXRlX2l0ZXIoKSBjb3JydXB0
-cyBkYXRhCi0tCgpjb21taXQgZjEwYjk1NmM2ZjMzZTdkMGM4YWJhMWVkOGY5NzljM2Q5ZTExOTdi
-ZgpBdXRob3I6IE5hbiBMaW4gPGxpbi5uYW5AaDNjLmNvbT4KCnViaWZzOiB6ZXJvIHN0YWxlIGRh
-dGEgYmV5b25kIEVPRiBiZWZvcmUgZmlsZSBzaXplIGdyb3dzCgpUaGlzIGNvbW1pdCBhZGRzIHVi
-aWZzX3plcm9fZW9mX2hvbGUoKSBhbmQgY2FsbHMgaXQgZnJvbSBkb19zZXRhdHRyKCkgYW5kCnVi
-aWZzX3dyaXRlX2l0ZXIoKSB0byB6ZXJvIHN0YWxlIHBvc3QtRU9GIGRhdGEgaW4gdGhlIGNhY2hl
-ZCBvbGQtRU9GIGZvbGlvCmJlZm9yZSBleHRlbmRpbmcgYSBmaWxlJ3Mgc2l6ZS4KCj4gZGlmZiAt
-LWdpdCBhL2ZzL3ViaWZzL2ZpbGUuYyBiL2ZzL3ViaWZzL2ZpbGUuYwo+IGluZGV4IGU3M2MyOGIx
-MmY5N2YuLmU5NGZiY2FlNmQzZDUgMTAwNjQ0Cj4gLS0tIGEvZnMvdWJpZnMvZmlsZS5jCj4gKysr
-IGIvZnMvdWJpZnMvZmlsZS5jCj4gQEAgLTIwMiw2ICsyMDIsNTMgQEAgc3RhdGljIHZvaWQgcmVs
-ZWFzZV9leGlzdGluZ19wYWdlX2J1ZGdldChzdHJ1Y3QgdWJpZnNfaW5mbyAqYykKPiAgCXViaWZz
-X3JlbGVhc2VfYnVkZ2V0KGMsICZyZXEpOwo+ICB9Cj4gIAo+ICsvKioKPiArICogdWJpZnNfemVy
-b19lb2ZfaG9sZSAtIHplcm8gdGhlIHN0YWxlIHRhaWwgb2YgdGhlIG9sZC1FT0YgZm9saW8uCj4g
-KyAqIEBpbm9kZTogaW5vZGUgd2hvc2Ugc2l6ZSBpcyBhYm91dCB0byBncm93Cj4gKyAqIEBuZXdf
-ZW5kOiBuZXcgZW5kIG9mIHRoZSBmaWxlLCBvbmx5IHVzZWQgdG8gYm91bmQgdGhlIHRhaWwKPiAr
-ICoKPiArICogWmVybyB0aGUgY2FjaGVkIGZvbGlvIGNvbnRhaW5pbmcgdGhlIG9sZCBFT0YgZm9y
-IFtvbGQgRU9GLAo+ICsgKiBtaW4oZm9saW8gZW5kLCBAbmV3X2VuZCkpIHNvIGEgc2l6ZSBleHRl
-bnNpb24gZG9lcyBub3QgZXhwb3NlIHN0YWxlCj4gKyAqIGRhdGEgbGVmdCBiZXlvbmQgRU9GIGJ5
-IG1tYXAgd3JpdGVzLgo+ICsgKgo+ICsgKiBNdXN0IGJlIGNhbGxlZCB3aXRob3V0IHVpLT51aV9t
-dXRleCBoZWxkOiB3ZSBibG9jayBvbiB0aGUgb2xkLUVPRgo+ICsgKiBmb2xpbyBsb2NrLCBhbmQg
-LT53cml0ZXBhZ2UoKSBhbmQgLT5wYWdlX21rd3JpdGUoKSBob2xkIHRoYXQgZm9saW8KPiArICog
-bG9jayB3aGlsZSB0YWtpbmcgdWlfbXV0ZXg7IHRoZSByZXZlcnNlIG9yZGVyIGRlYWRsb2Nrcy4K
-PiArICovCj4gK3N0YXRpYyB2b2lkIHViaWZzX3plcm9fZW9mX2hvbGUoc3RydWN0IGlub2RlICpp
-bm9kZSwgbG9mZl90IG5ld19lbmQpCj4gK3sKPiArCWxvZmZfdCBvbGRfc2l6ZSA9IGlfc2l6ZV9y
-ZWFkKGlub2RlKTsKPiArCXNpemVfdCBmcm9tLCB0bzsKPiArCXN0cnVjdCBmb2xpbyAqZm9saW87
-Cj4gKwo+ICsJaWYgKG5ld19lbmQgPD0gb2xkX3NpemUpCj4gKwkJcmV0dXJuOwo+ICsKPiArCWZv
-bGlvID0gZmlsZW1hcF9sb2NrX2ZvbGlvKGlub2RlLT5pX21hcHBpbmcsIG9sZF9zaXplID4+IFBB
-R0VfU0hJRlQpOwo+ICsJaWYgKElTX0VSUihmb2xpbykpCj4gKwkJcmV0dXJuOwo+ICsKPiArCS8q
-Cj4gKwkgKiBSZS1yZWFkIGlfc2l6ZSB1bmRlciB0aGUgZm9saW8gbG9jazogYSBjb25jdXJyZW50
-IHRydW5jYXRlIG1heQo+ICsJICogaGF2ZSBzaHJ1bmsgdGhlIGZpbGUsIHR1cm5pbmcgdGhpcyBm
-b2xpbyBpbnRvIHZhbGlkIGRhdGEuCj4gKwkgKi8KPiArCW9sZF9zaXplID0gaV9zaXplX3JlYWQo
-aW5vZGUpOwo+ICsJaWYgKG5ld19lbmQgPD0gb2xkX3NpemUpCj4gKwkJZ290byBvdXQ7Cj4gKwo+
-ICsJZnJvbSA9IG9mZnNldF9pbl9mb2xpbyhmb2xpbywgb2xkX3NpemUpOwo+ICsJaWYgKCFmcm9t
-KQo+ICsJCWdvdG8gb3V0Owo+ICsJdG8gPSBmb2xpb19jb250YWlucyhmb2xpbywgbmV3X2VuZCA+
-PiBQQUdFX1NISUZUKSA/Cj4gKwkgICAgIG9mZnNldF9pbl9mb2xpbyhmb2xpbywgbmV3X2VuZCkg
-OiBmb2xpb19zaXplKGZvbGlvKTsKPiArCWlmICh0byA+IGZyb20pCj4gKwkJZm9saW9femVyb19y
-YW5nZShmb2xpbywgZnJvbSwgdG8gLSBmcm9tKTsKPiArCj4gK291dDoKPiArCWZvbGlvX3VubG9j
-ayhmb2xpbyk7Cj4gKwlmb2xpb19wdXQoZm9saW8pOwo+ICt9CgpbIC4uLiBdCgo+IEBAIC0xNDMz
-LDcgKzE0ODQsMTcgQEAgc3RhdGljIGludCB1cGRhdGVfbWN0aW1lKHN0cnVjdCBpbm9kZSAqaW5v
-ZGUpCj4gIAo+ICBzdGF0aWMgc3NpemVfdCB1Ymlmc193cml0ZV9pdGVyKHN0cnVjdCBraW9jYiAq
-aW9jYiwgc3RydWN0IGlvdl9pdGVyICpmcm9tKQo+ICB7Cj4gLQlpbnQgZXJyID0gdXBkYXRlX21j
-dGltZShmaWxlX2lub2RlKGlvY2ItPmtpX2ZpbHApKTsKPiArCXN0cnVjdCBpbm9kZSAqaW5vZGUg
-PSBmaWxlX2lub2RlKGlvY2ItPmtpX2ZpbHApOwo+ICsJaW50IGVycjsKPiArCj4gKwkvKgo+ICsJ
-ICogVGhlIHdyaXRlIG1heSBleHRlbmQgYmV5b25kIEVPRjogemVybyB0aGUgc3RhbGUgdGFpbCBv
-ZiB0aGUKPiArCSAqIG9sZC1FT0YgZm9saW8gZmlyc3QuCj4gKwkgKi8KPiArCWlmIChpb2NiLT5r
-aV9wb3MgPiBpX3NpemVfcmVhZChpbm9kZSkpCj4gKwkJdWJpZnNfemVyb19lb2ZfaG9sZShpbm9k
-ZSwgaW9jYi0+a2lfcG9zKTsKPiArCj4gKwllcnIgPSB1cGRhdGVfbWN0aW1lKGlub2RlKTsKPiAg
-CWlmIChlcnIpCj4gIAkJcmV0dXJuIGVycjsKCltTZXZlcml0eTogQ3JpdGljYWxdClVubGlrZSBk
-b19zZXRhdHRyKCkgKGNhbGxlZCB3aXRoIGlub2RlX2xvY2soaW5vZGUpIGhlbGQgdmlhIG5vdGlm
-eV9jaGFuZ2UoKSkKYW5kIGV4dDRfYnVmZmVyZWRfd3JpdGVfaXRlcigpIC0+IGV4dDRfd3JpdGVf
-Y2hlY2tzKCkgLT4KZXh0NF9ibG9ja196ZXJvX2VvZigpLCB1Ymlmc193cml0ZV9pdGVyKCkgY2Fs
-bHMgdWJpZnNfemVyb19lb2ZfaG9sZSgpIGJlZm9yZQpnZW5lcmljX2ZpbGVfd3JpdGVfaXRlcigp
-IGFjcXVpcmVzIGlub2RlX2xvY2soaW5vZGUpIGFuZCBydW5zCmdlbmVyaWNfd3JpdGVfY2hlY2tz
-KGlvY2IsIGZyb20pOgoKbW0vZmlsZW1hcC5jOmdlbmVyaWNfZmlsZV93cml0ZV9pdGVyKCkgewoJ
-aW5vZGVfbG9jayhpbm9kZSk7CglyZXQgPSBnZW5lcmljX3dyaXRlX2NoZWNrcyhpb2NiLCBmcm9t
-KTsKCWlmIChyZXQgPiAwKQoJCXJldCA9IF9fZ2VuZXJpY19maWxlX3dyaXRlX2l0ZXIoaW9jYiwg
-ZnJvbSk7Cglpbm9kZV91bmxvY2soaW5vZGUpOwp9CgpDYW4gY2FsbGluZyB1Ymlmc196ZXJvX2Vv
-Zl9ob2xlKCkgd2l0aG91dCBob2xkaW5nIGlub2RlX2xvY2soaW5vZGUpIGFuZApiZWZvcmUgZ2Vu
-ZXJpY193cml0ZV9jaGVja3MoKSBjYXVzZSBkYXRhIGNvcnJ1cHRpb24gYW5kIG90aGVyIHJlZ3Jl
-c3Npb25zPwoKMS4gSWYgdWJpZnNfemVyb19lb2ZfaG9sZSgpIHJlYWRzIGFuIGluaXRpYWwgb2xk
-X3NpemUgaW4gZm9saW8gMCAoZm9yCmV4YW1wbGUsIG9sZF9zaXplID0gMTAwKSBhbmQgY2FsbHMg
-ZmlsZW1hcF9sb2NrX2ZvbGlvKCkgb24gaW5kZXggMCwgYQpjb25jdXJyZW50IHdyaXRlciBvciBl
-eHRlbmRpbmcgZnRydW5jYXRlKCkgaG9sZGluZyBpbm9kZV9sb2NrKGlub2RlKSBjYW4KZXh0ZW5k
-IGlub2RlLT5pX3NpemUgaW50byBhIGxhdGVyIGZvbGlvIChmb3IgZXhhbXBsZSwgb2xkX3NpemUg
-YmVjb21lcyA1MTAwCmluIGZvbGlvIDEsIHdoaWxlIG5ld19lbmQgaXMgMTAwMDAgaW4gZm9saW8g
-MikgYmVmb3JlIGZvbGlvIDAgaXMgbG9ja2VkLgpBdCB0aGF0IHBvaW50LCBhbGwgb2YgZm9saW8g
-MCBpcyB2YWxpZCBjb21taXR0ZWQgZmlsZSBkYXRhLgoKV2hlbiB1Ymlmc196ZXJvX2VvZl9ob2xl
-KCkgYWNxdWlyZXMgdGhlIGxvY2sgb24gZm9saW8gMCBhbmQgcmUtcmVhZHMKb2xkX3NpemUgPSBp
-X3NpemVfcmVhZChpbm9kZSksIG5ld19lbmQgPD0gb2xkX3NpemUgaXMgc3RpbGwgZmFsc2UsIGFu
-ZCB0aGVyZQppcyBubyBjaGVjayB0aGF0IGZvbGlvX2NvbnRhaW5zKGZvbGlvLCBvbGRfc2l6ZSA+
-PiBQQUdFX1NISUZUKS4gQ29tcHV0aW5nCmZyb20gPSBvZmZzZXRfaW5fZm9saW8oZm9saW8sIG9s
-ZF9zaXplKSBtYXNrcyB0aGUgbmV3IG9sZF9zaXplIGludG8gZm9saW8gMAphbmQgY2FsbHMgZm9s
-aW9femVyb19yYW5nZShmb2xpbywgMTAwNCwgMzA5Mikgb24gZm9saW8gMCwgemVyb2luZyBjb21t
-aXR0ZWQKaW4tYm91bmRzIGZpbGUgZGF0YSB3aGlsZSBsZWF2aW5nIHRoZSBhY3R1YWwgb2xkLUVP
-RiBmb2xpbyAoZm9saW8gMSkKdW56ZXJvZWQuCgpBIGNvbmN1cnJlbnQgc2hyaW5raW5nIHRydW5j
-YXRlIHRoYXQgbW92ZXMgaV9zaXplIGludG8gYW4gZWFybGllciBmb2xpbwpiZWZvcmUgdHJ1bmNh
-dGVfcGFnZWNhY2hlKCkgZXZpY3RzIHRoZSBsb2NrZWQgZm9saW8gd2lsbCBzaW1pbGFybHkgemVy
-byB0aGUKd3JvbmcgZm9saW8uIEFuZCBpZiBhIGNvbmN1cnJlbnQgZXh0ZW5kaW5nIGZ0cnVuY2F0
-ZSgpIHVwZGF0ZXMgaV9zaXplIGluCnRydW5jYXRlX3NldHNpemUoKSByaWdodCBhZnRlciB1Ymlm
-c196ZXJvX2VvZl9ob2xlKCkgcmUtcmVhZHMgb2xkX3NpemUsCnVzZXJzcGFjZSBtbWFwIHdyaXRl
-cyB0byB0aGUgbmV3bHkgaW4tYm91bmRzIHJlZ2lvbiBjYW4gYmUgb3ZlcndyaXR0ZW4gYnkKZm9s
-aW9femVyb19yYW5nZSgpLgoKMi4gQmVjYXVzZSBpbm9kZV9sb2NrKGlub2RlKSBpcyBub3QgaGVs
-ZCBhbmQgZm9saW9fbG9jayBpcyBkcm9wcGVkIGJlZm9yZQp1cGRhdGVfbWN0aW1lKCkgKHdoaWNo
-IGNhbiBzbGVlcCBpbiB1Ymlmc19idWRnZXRfc3BhY2UoKSkgYW5kIGJlZm9yZQpnZW5lcmljX2Zp
-bGVfd3JpdGVfaXRlcigpIGxvY2tzIHRoZSBpbm9kZSwgYSBjb25jdXJyZW50IHRydW5jYXRlIG9y
-IHdyaXRlIGNhbgpjaGFuZ2UgaV9zaXplIG9yIGFuIG1tYXAgd3JpdGUgY2FuIHJlLWRpcnR5IHRo
-ZSBwb3N0LUVPRiB0YWlsIGluIHRoZSB3aW5kb3cKYmV0d2VlbiB1Ymlmc196ZXJvX2VvZl9ob2xl
-KCkgYW5kIF9fZ2VuZXJpY19maWxlX3dyaXRlX2l0ZXIoKSwgbGVhdmluZyBzdGFsZQpkYXRhIGJl
-eW9uZCBFT0YgdW56ZXJvZWQuCgozLiBCZWNhdXNlIGdlbmVyaWNfd3JpdGVfY2hlY2tzKCkgaGFz
-IG5vdCBydW4geWV0OgotIEZvciBPX0FQUEVORCBvciBSV0ZfQVBQRU5EIHdyaXRlcyB3aGVyZSBr
-aV9wb3Mgd2FzIHBvc2l0aW9uZWQgcGFzdCBFT0YsCiAgZ2VuZXJpY193cml0ZV9jaGVja3NfY291
-bnQoKSBsYXRlciByZXNldHMgaW9jYi0+a2lfcG9zIHRvIGlfc2l6ZV9yZWFkKGlub2RlKQogIHNv
-IG5vIGhvbGUgaXMgY3JlYXRlZCwgYnV0IHViaWZzX3plcm9fZW9mX2hvbGUoKSBoYXMgYWxyZWFk
-eSBtb2RpZmllZCB0aGUKICBwYWdlIGNhY2hlLgotIEZvciB6ZXJvLWxlbmd0aCB3cml0ZXMgKGlv
-dl9pdGVyX2NvdW50KGZyb20pID09IDApIHdpdGgga2lfcG9zID4gaV9zaXplLAogIGdlbmVyaWNf
-d3JpdGVfY2hlY2tzKCkgcmV0dXJucyAwIHdpdGhvdXQgZXh0ZW5kaW5nIHRoZSBmaWxlLCBhZnRl
-cgogIHViaWZzX3plcm9fZW9mX2hvbGUoKSBoYXMgYWxyZWFkeSB6ZXJvZWQgdGhlIGZvbGlvIHRh
-aWwuCi0gRm9yIFJXRl9OT1dBSVQgd3JpdGVzICh3aGljaCBnZW5lcmljX3dyaXRlX2NoZWNrc19j
-b3VudCgpIHJlamVjdHMgd2l0aAogIC1FSU5WQUwgc2luY2UgRk9QX0JVRkZFUl9XQVNZTkMgaXMg
-bm90IHNldCkgb3Igd3JpdGVzIGZhaWxpbmcKICBnZW5lcmljX3dyaXRlX2NoZWNrX2xpbWl0cygp
-ICgtRUZCSUcpLCB1Ymlmc196ZXJvX2VvZl9ob2xlKCkgY2FuIGJsb2NrIG9uCiAgZmlsZW1hcF9s
-b2NrX2ZvbGlvKCkgYW5kIG11dGF0ZSB0aGUgcGFnZSBjYWNoZSBiZWZvcmUgdGhlIHdyaXRlIGlz
-CiAgcmVqZWN0ZWQuCgpTaG91bGQgdWJpZnNfd3JpdGVfaXRlcigpIGFjcXVpcmUgaW5vZGVfbG9j
-ayhpbm9kZSkgYW5kIHJ1bgpnZW5lcmljX3dyaXRlX2NoZWNrcygpIGJlZm9yZSBjYWxsaW5nIHVw
-ZGF0ZV9tY3RpbWUoKSwKdWJpZnNfemVyb19lb2ZfaG9sZSgpLCBhbmQgX19nZW5lcmljX2ZpbGVf
-d3JpdGVfaXRlcigpLCBvciBvdGhlcndpc2UgZW5zdXJlCnRoYXQgdWJpZnNfemVyb19lb2ZfaG9s
-ZSgpIHJ1bnMgdW5kZXIgaW5vZGVfbG9jayhpbm9kZSkgYWZ0ZXIgd3JpdGUgY2hlY2tzPwoKLS0g
-ClNhc2hpa28gQUkgcmV2aWV3IMK3IGh0dHBzOi8vc2FzaGlrby5kZXYvIy9wYXRjaHNldC8yMDI2
-MTAyMzA3MTE0MS4zNTA3MDI0LTEtbGluLm5hbkBoM2MuY29tP3BhcnQ9MQoKX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNj
-dXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2xpbnV4LW10ZC8K
+Hello Marek,
+
+> On 10/1/26 9:17 AM, Takahiro.Kuwano@infineon.com wrote:
+> 
+> Hello Kuwano-san,
+> 
+> I apologize for my late reply.
+> 
+No problem at all.
+
+> >> The MX25L51245G part has the same 4-BP locking mechanism as MX25L12805D.
+> >> Describe the locking support.
+> >>
+> >> Signed-off-by: Marek Vasut <marex@nabladev.com>
+> >> ---
+> >> Cc: Cheng Ming Lin <chengminglin@mxic.com.tw>
+> >> Cc: Michael Walle <mwalle@kernel.org>
+> >> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+> >> Cc: Pratyush Yadav <pratyush@kernel.org>
+> >> Cc: Richard Weinberger <richard@nod.at>
+> >> Cc: Takahiro Kuwano <takahiro.kuwano@infineon.com>
+> >> Cc: Vignesh Raghavendra <vigneshr@ti.com>
+> >> Cc: linux-kernel@vger.kernel.org
+> >> Cc: linux-mtd@lists.infradead.org
+> >> ---
+> >
+> > Can you test locking as described in [1] and provide test log?
+> >
+> >>   drivers/mtd/spi-nor/macronix.c | 1 +
+> >>   1 file changed, 1 insertion(+)
+> >>
+> >> diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
+> >> index b3fdb4b2fa1ca..4de1b490b16b6 100644
+> >> --- a/drivers/mtd/spi-nor/macronix.c
+> >> +++ b/drivers/mtd/spi-nor/macronix.c
+> >> @@ -165,6 +165,7 @@ static const struct flash_info macronix_nor_parts[] = {
+> >>          }, {
+> >>                  /* MX25L51245G, MX25L51273G, MX66L51235F */
+> >>                  .id = SNOR_ID(0xc2, 0x20, 0x1a),
+> >> +               .flags = SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP,
+> >
+> > According to datasheets [2][3][4], those chips have TB bit in Configuration
+> > Register bit-3 and the bit is OTP.
+> 
+> Yikes, that is correct and also scary.
+> 
+> > The existing HAS_TB and HAS_TB_SR_BIT6
+> > flags don't work as they expect non-OTP bit in Status Register.
+> > Just supporting top area protection (TB==0) would be fine with me, but in
+> > that case, fixup should check TB and activate locking only when TB==0.
+> 
+> I came up with this addition, is this what you have in mind ?
+> 
+Yes, but...
+
+> diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
+> index e97f5cbd9aad2..1539ff3ed404e 100644
+> --- a/drivers/mtd/spi-nor/macronix.c
+> +++ b/drivers/mtd/spi-nor/macronix.c
+> @@ -15,6 +15,9 @@
+>   #define MXIC_NOR_REG_DOPI_EN  0x2             /* Enable Octal DTR */
+>   #define MXIC_NOR_REG_SPI_EN   0x0             /* Enable SPI */
+> 
+> +#define MX25L51245G_OP_RDCR    0x15
+> +#define MX25L51245G_CR_TB      BIT(3)
+> +
+>   /* Convert dummy cycles to bit pattern */
+>   #define MXIC_NOR_REG_DC(p) \
+>         ((20 - (p)) >> 1)
+> @@ -45,6 +48,52 @@ mx25l25635_post_bfpt_fixups(struct spi_nor *nor,
+>         return 0;
+>   }
+> 
+> +static int mx25l51245_read_cr(struct spi_nor *nor, u8 *cr)
+> +{
+> +       int ret;
+> +
+> +       if (nor->spimem) {
+> +               struct spi_mem_op op = SPI_MEM_OP(SPI_MEM_OP_CMD(MX25L51245G_OP_RDCR, 0),
+> +                                                 SPI_MEM_OP_NO_ADDR, SPI_MEM_OP_NO_DUMMY,
+> +                                                 SPI_MEM_OP_DATA_IN(1, cr, 0));
+> +
+> +               spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
+> +
+> +               ret = spi_mem_exec_op(nor->spimem, &op);
+> +       } else {
+> +               ret = spi_nor_controller_ops_read_reg(nor, MX25L51245G_OP_RDCR, cr, 1);
+> +       }
+> +
+> +       if (ret)
+> +               dev_dbg(nor->dev, "error %d reading CR\n", ret);
+> +
+> +       return ret;
+> +}
+> +
+> +static int
+> +mx25l51245_post_bfpt_fixups(struct spi_nor *nor,
+> +                           const struct sfdp_parameter_header *bfpt_header,
+> +                           const struct sfdp_bfpt *bfpt)
+> +{
+> +       int ret;
+> +
+> +       ret = mx25l51245_read_cr(nor, nor->bouncebuf);
+> +       if (ret)
+> +               return ret;
+> +
+> +       /*
+> +        * MX25L51245G supports locking, but the CR register TB bit is OTP.
+> +        * Enable locking only in case the TB bit is not programmed, or set
+> +        * to 0.
+> +        */
+> +       if (nor->bouncebuf[0] & MX25L51245G_CR_TB)
+> +               dev_dbg(nor->dev, "CR TB is set, bottom protection not supported\n");
+> +       else
+> +               nor->flags |= SNOR_F_HAS_LOCK | SNOR_F_HAS_4BIT_BP;
+> +
+> +       return 0;
+> +}
+> +
+>   static int
+>   macronix_qpp4b_post_sfdp_fixups(struct spi_nor *nor)
+>   {
+> @@ -89,6 +139,7 @@ static const struct spi_nor_fixups mx25l25635_fixups = {
+>   };
+> 
+>   static const struct spi_nor_fixups macronix_qpp4b_fixups = {
+> +       .post_bfpt = mx25l51245_post_bfpt_fixups,
+>         .post_sfdp = macronix_qpp4b_post_sfdp_fixups,
+>   };
+> 
+please use late_init hook. post_bfpt should fixe params declared in SFDP/BFPT.
+locking is not declared in SFDP/BFPT.
+
+> Which led to this locking log:
+> 
+> "
+> + mktemp -d
+> + cd /tmp/tmp.45Mtr7ceEE
+> + cat /sys/bus/spi/devices/spi2.0/spi-nor/jedec_id
+> c2201a
+> + cat /sys/bus/spi/devices/spi2.0/spi-nor/manufacturer
+> macronix
+> + xxd -p /sys/bus/spi/devices/spi2.0/spi-nor/sfdp
+> 53464450060102ff00060110300000ffc2000104100100ff84000102c000
+> 00ffffffffffffffffffffffffffffffffffe520fbffffffff1f44eb086b
+> 083b04bbfeffffffffff00ffffff44eb0c200f5210d800ffd649c50081df
+> 04e34403673830b030b0f7bdd55c4a9e29fff050f985ffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffff7fefffff215cdcffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffff003600279df9c06485cbffffffffffff
+> + cat /sys/kernel/debug/spi-nor/spi2.0/capabilities
+> Supported read modes by the flash
+>   1S-1S-1S
+>    opcode        0x13
+>    mode cycles   0
+>    dummy cycles  0
+>   1S-1S-2S
+>    opcode        0x3c
+>    mode cycles   0
+>    dummy cycles  8
+>   1S-2S-2S
+>    opcode        0xbc
+>    mode cycles   0
+>    dummy cycles  4
+>   1S-1S-4S
+>    opcode        0x6c
+>    mode cycles   0
+>    dummy cycles  8
+>   1S-4S-4S
+>    opcode        0xec
+>    mode cycles   2
+>    dummy cycles  4
+>   4S-4S-4S
+>    opcode        0xec
+>    mode cycles   2
+>    dummy cycles  4
+> 
+> Supported page program modes by the flash
+>   1S-1S-1S
+>    opcode        0x12
+>   1S-1S-4S
+>    opcode        0x34
+>   1S-4S-4S
+>    opcode        0x3e
+> + cat /sys/kernel/debug/spi-nor/spi2.0/params
+> name            (null)
+> id              c2 20 1a c2 20 1a
+> size            64.0 MiB
+> write size      1
+> page size       256
+> address nbytes  4
+> flags           4B_OPCODES | HAS_4BAIT | HAS_LOCK | HAS_4BIT_BP | SOFT_RESET
+> 
+> opcodes
+>   read           0xec
+>    dummy cycles  6
+>   erase          0x21
+>   program        0x3e
+>   8D extension   none
+> 
+> protocols
+>   read           1S-4S-4S
+>   write          1S-4S-4S
+>   register       1S-1S-1S
+> 
+> erase commands
+>   21 (4.00 KiB) [1]
+>   5c (32.0 KiB) [2]
+>   dc (64.0 KiB) [3]
+>   c7 (64.0 MiB)
+> 
+> sector map
+>   region (in hex)   | erase mask | overlaid
+>   ------------------+------------+----------
+>   00000000-03ffffff |     [ 1  ] | no
+> + dd if=/dev/urandom of=./spi_test bs=1M count=2
+> 2+0 records in
+> 2+0 records out
+> 2097152 bytes (2.1 MB, 2.0 MiB) copied, 0.0514406 s, 40.8 MB/s
+> + mtd_debug erase /dev/mtd0 0 2097152
+> Erased 2097152 bytes from address 0x00000000 in flash
+> + mtd_debug read /dev/mtd0 0 2097152 spi_read
+> Copied 2097152 bytes from address 0x00000000 in flash to spi_read
+> + hexdump spi_read
+> 0000000 ffff ffff ffff ffff ffff ffff ffff ffff
+> *
+> 0200000
+> + sha256sum spi_read
+> 4bda3a28f4ffe603c0ec1258c0034d65a1a0d35ab7bd523a834608adabf03cc5  spi_read
+> + mtd_debug write /dev/mtd0 0 2097152 spi_test
+> Copied 2097152 bytes from spi_test to address 0x00000000 in flash
+> + mtd_debug read /dev/mtd0 0 2097152 spi_read
+> Copied 2097152 bytes from address 0x00000000 in flash to spi_read
+> + sha256sum spi_read spi_test
+> fa5dea0c7a85ed0bc865bd0b6ed09e2aef41bb336d9805a93bcfbbd26004ea7a  spi_read
+> fa5dea0c7a85ed0bc865bd0b6ed09e2aef41bb336d9805a93bcfbbd26004ea7a  spi_test
+> + mtd_debug erase /dev/mtd0 0 2097152
+> Erased 2097152 bytes from address 0x00000000 in flash
+> + mtd_debug read /dev/mtd0 0 2097152 spi_read
+> Copied 2097152 bytes from address 0x00000000 in flash to spi_read
+> + sha256sum spi_read spi_test
+> 4bda3a28f4ffe603c0ec1258c0034d65a1a0d35ab7bd523a834608adabf03cc5  spi_read
+> fa5dea0c7a85ed0bc865bd0b6ed09e2aef41bb336d9805a93bcfbbd26004ea7a  spi_test
+> + mtd_debug info /dev/mtd0
+> mtd.type = MTD_NORFLASH
+> mtd.flags = MTD_CAP_NORFLASH
+> mtd.size = 67108864 (64M)
+> mtd.erasesize = 4096 (4K)
+> mtd.writesize = 1
+> mtd.oobsize = 0
+> regions = 0
+> 
+> + flash_lock -u /dev/mtd0
+> + flash_lock -i /dev/mtd0
+> Device: /dev/mtd0
+> Start: 0
+> Len: 0x4000000
+> Lock status: unlocked
+> Return code: 0
+> + mtd_debug erase /dev/mtd0 0 2097152
+> Erased 2097152 bytes from address 0x00000000 in flash
+> + mtd_debug write /dev/mtd0 0 2097152 spi_test
+> Copied 2097152 bytes from spi_test to address 0x00000000 in flash
+> + mtd_debug read /dev/mtd0 0 2097152 spi_read
+> Copied 2097152 bytes from address 0x00000000 in flash to spi_read
+> + sha256sum spi_read spi_test
+> fa5dea0c7a85ed0bc865bd0b6ed09e2aef41bb336d9805a93bcfbbd26004ea7a  spi_read
+> fa5dea0c7a85ed0bc865bd0b6ed09e2aef41bb336d9805a93bcfbbd26004ea7a  spi_test
+> + grep -A4 locked sectors /sys/kernel/debug/spi-nor/spi2.0/params
+> + flash_lock -l /dev/mtd0
+> + flash_lock -i /dev/mtd0
+> Device: /dev/mtd0
+> Start: 0
+> Len: 0x4000000
+> Lock status: locked
+> Return code: 1
+> + mtd_debug erase /dev/mtd0 0 2097152
+> Erased 2097152 bytes from address 0x00000000 in flash
+> + mtd_debug read /dev/mtd0 0 2097152 spi_read
+> Copied 2097152 bytes from address 0x00000000 in flash to spi_read
+> + sha256sum spi_read spi_test
+> fa5dea0c7a85ed0bc865bd0b6ed09e2aef41bb336d9805a93bcfbbd26004ea7a  spi_read
+> fa5dea0c7a85ed0bc865bd0b6ed09e2aef41bb336d9805a93bcfbbd26004ea7a  spi_test
+> + dd if=/dev/urandom of=./spi_test2 bs=1M count=2
+> 2+0 records in
+> 2+0 records out
+> 2097152 bytes (2.1 MB, 2.0 MiB) copied, 0.051125 s, 41.0 MB/s
+> + mtd_debug write /dev/mtd0 0 2097152 spi_test2
+> Copied 2097152 bytes from spi_test2 to address 0x00000000 in flash
+> + mtd_debug read /dev/mtd0 0 2097152 spi_read2
+> Copied 2097152 bytes from address 0x00000000 in flash to spi_read2
+> + sha256sum spi_read spi_read2 spi_test spi_test2
+> fa5dea0c7a85ed0bc865bd0b6ed09e2aef41bb336d9805a93bcfbbd26004ea7a  spi_read
+> fa5dea0c7a85ed0bc865bd0b6ed09e2aef41bb336d9805a93bcfbbd26004ea7a  spi_read2
+> fa5dea0c7a85ed0bc865bd0b6ed09e2aef41bb336d9805a93bcfbbd26004ea7a  spi_test
+> eed3b73016802a59982c74a45ce96deafb7cd486cc5cd831e030239c0ddeb8cc  spi_test2
+> + grep -A4 locked sectors /sys/kernel/debug/spi-nor/spi2.0/params
+> + flash_lock -u /dev/mtd0
+> "
+
+Thanks,
+Takahiro
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
