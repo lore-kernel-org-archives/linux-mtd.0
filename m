@@ -2,153 +2,65 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22FF3606A32E
-	for <linux-mtd@archiver.kernel.org>; Fri, 23 Oct 2026 07:07:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1CFF606A31A
+	for <linux-mtd@archiver.kernel.org>; Fri, 23 Oct 2026 07:19:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=LArqnFez;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.a=rsa-sha256 header.s=selector1-NXP1-onmicrosoft-com header.b=bMlJHjqa
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=1SwrgaHa
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Cc:To:Message-Id:Subject:
-	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=hzyxUoH2rmgHIdnN9DE2tU7tC4NJC7WpJWEd6nXn4v4=; b=LArqnFeznuKKEA/PerHLMHBvs+
-	1H4MFyVR8di/H5VT+mN3BbhHrgtfEpN76KAYS3SBrEyyb//IMyMmE4KYgy4uxHmbgxiIaYzRxR98O
-	Vo4Bo0w6LUAjj0fRtUKCgPA67NvP/XRDn3VgvCyAcPTAz+1iDr4pItAGQb/V6qMid0XO0/8qYjmAy
-	nRF1rrimdVFMER/EQ/9t21aTY4vXNXcIf1B/QtTZu4xXaJdzLS4f6wWuYGgvoNpjRVoZ7vdj0KTHx
-	PmI3sp5xZKZviIxL3Nm9z2uk3JVe9S4PGuOh0+wdpgsEAgok9o7e0V2HGsw9AfsjHCgxoAFAWwRgW
-	O8FttwWw==;
+	bh=0wWjONpchVQaQ4Ln2w5KwWojjhbRsx4G610VZswB9IM=; b=1SwrgaHa7rsrevrwPogCVXbetN
+	sVBCvds5krYef1gG2X9hULkVaFuVhWWx9AbsA1vlFEH6n3JJ4CjJ2hfWkt1qFsVysojwxm/YKKYGR
+	oEs3nrcJfDi/sEovKo3+U5VpjEYPAVbTrA4pcxQhDuY2Ztdeb1742DvVz7RdE1H/AJIeuYFuRhk0I
+	PXqZ9UpFMyiXbrNieGdVnb+Ue3OhMjvHnn/sAWGJ0Ad+NBowa3l70tSHDtHhe3lS9dtDm4zdgH8ZP
+	2z+PhVONFjEUhozx520rrrYhBLmRwNJbBMqohtxIFUY5WsYEccHEawwSoUaC5l4djW18XoXeLLba9
+	3WYnC7Qg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xK9NC-0000000FiN2-2LDv;
-	Fri, 23 Oct 2026 07:07:30 +0000
-Received: from mail-westeuropeazlp170100001.outbound.protection.outlook.com ([2a01:111:f403:c201::1] helo=AM0PR83CU005.outbound.protection.outlook.com)
+	id 1xK9Z7-0000000FjrD-1jEg;
+	Fri, 23 Oct 2026 07:19:49 +0000
+Received: from smtp.h3c.com ([60.191.123.56] helo=h3cspam01-ex.h3c.com)
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xK9N9-0000000FiMf-3Asu
+	id 1xK9Z3-0000000Fjqf-0XdE
 	for linux-mtd@lists.infradead.org;
-	Fri, 23 Oct 2026 07:07:29 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=ch+tn0CdQfBDDIo233zZ8mHB9+Mov42XzVYejC5vWNLOMZj7azhUgr5wNT0RJO9gIpYb/+9tadtvco9MXAxV1fQwxtKcmIi5FiCZoolnbEXFByszccYp+TEwDH9TETCrD5OX+36kjLNYG04zPjYh6n460NTjkbThkOZztQE9M6Zw+VEf2uEBTiR78hvKjfA6dL2HH7a493F2ZIL74So8ogB8xKgmamqdt45V/Bwc5VdDbvWZieMNFsEevQBfBMFE4bYirwHYFpN5mYYvftm5kJjeSZsZ8EQiPbIkhvWQ1Wfg29mWhLI3WkDzFc1EztdX2PDduJXRRjZZ3obLWBqy3g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=tL8xTL1rsEvusWU+NkX50y7lNoQgmfN1AzMTmKmsrl0=;
- b=yxV9nFaqEwDA086Hy/haO+vwHboX3lwOU9tq9meqlcpxicdYyymmeGXeM276Y8b3g8BjLX293w261aFGIwJ3AfAcZ5xqbwq/E4HNH+Musgvv6JNg1kSiQWg9s7n9Ill8lgT1YUWznW/2GSVrgvIqZJeUYloqQshPSsTpEkBDL09D3cfSRtPLlTsNxyTEqbCQBOJzf0T0PEeeG34KMi8faSvfL9n2Sn7nO9Lx7VFXgdFBMljHyCAG+zWjm47B03GbQN4otNnorD3c4faaKDnbxnKuUamOraG2/vp/oRtgBrx8RVfFSc5gB0HovwbpecwQDHb7RWqf22pW1RJrrQpo5g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector1-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tL8xTL1rsEvusWU+NkX50y7lNoQgmfN1AzMTmKmsrl0=;
- b=bMlJHjqajw9izxu2G5g6dprM0Ofu3j86Um3wjd9zBwxs1Imippts3+vkKcI07er16jnhuSXIKdMGu2nD1ggnszNwiOWr+SBQqlOrawve2xDBlgRslpk+ujPn/YYgNT0AFEdYppA/ZM2BQbQKAMCqnpGkKUgn30n0JdSinKUME5K2fvs6++LAEacgUUb8kG0RPWY+jgzKIuiZEzrYRCIMEyo67aaduo80HvokSrJ16bkrsA57reiDf7dtpVdknDb9du7ZPqLVTwUs4UMr6RF8/Ooptdo5mPTilfxbpey4cpYlJzozTDTTkgi3HmNELLpbAbqHZF/Eye2phAWdb9fT8Q==
-Authentication-Results: mx.microsoft.com 1; dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=oss.nxp.com;
-Received: from PA6PR04MB11909.eurprd04.prod.outlook.com
- (2603:10a6:102:51c::22) by VI2PR04MB10091.eurprd04.prod.outlook.com
- (2603:10a6:800:22f::10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.546.19; Fri, 23 Oct
- 2026 07:07:22 +0000
-Received: from PA6PR04MB11909.eurprd04.prod.outlook.com
- ([fe80::a4b:fa4e:7fe7:e6a2]) by PA6PR04MB11909.eurprd04.prod.outlook.com
- ([fe80::a4b:fa4e:7fe7:e6a2%7]) with mapi id 15.21.0546.016; Fri, 23 Oct 2026
- 07:07:22 +0000
-From: haibo.chen@oss.nxp.com
-Date: Fri, 23 Oct 2026 15:11:54 +0800
-Subject: [PATCH v5] mtd: spi-nor: clear the default read_sr2 opcode for
- Octal DTR flashes
-Message-Id: <20261023-spi-nor-fix-v5-1-bb6e0ce21169@nxp.com>
-X-B4-Tracking: v=1; b=H4sIALkI22oC/33MQQ6CMBCF4auYrq0pQ0vFlfcwLtoylS4E0poGQ
- 7i7AwuVxLh8L/n+iSWMARM77SYWMYcU+o6G2u+Ya013Qx4a2gwEVKKGI09D4F0fuQ8jR6vRIoD
- RUjASQ0S619rlSrsN6dHH5xrPxfL+7uSCF9xhpayphfO2OXfjcHD9nS2VDN+y3kogqZWUxFCir
- rayfMtCAGxlSdJ6b4SwWjnQWyn/SEnSW1OiKxuwCj9ynucX2YnodlIBAAA=
-X-Change-ID: 20260928-spi-nor-fix-eb7ebe22a740
-To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
- Takahiro Kuwano <takahiro.kuwano@infineon.com>, 
- Miquel Raynal <miquel.raynal@bootlin.com>, 
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
- imx@lists.linux.dev, michael@walle.cc, Haibo Chen <haibo.chen@nxp.com>, 
- stable@vger.kernel.org
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1792739523; l=7268;
- i=haibo.chen@nxp.com; s=20250421; h=from:subject:message-id;
- bh=8wpCsjz8f6Fv7dmKbaq0WGU9v+jDfolyvlIJKnIdZng=;
- b=DdCGIFdWMhBXn+cho9IkeqZXyN+WyNOyrxJSMJ/p/ddSf7tSM7JmWgGGtGnTuY1/gJnQRqix1
- 5jCbDsw2rJBA6DQICFyGCdQXTJC9drXZLBfDeWSf1DKkvlpkHwChn9B
-X-Developer-Key: i=haibo.chen@nxp.com; a=ed25519;
- pk=HR9LLTuVOg3BUNeAf4/FNOIkMaZvuwVJdNrGpvKDKaI=
-X-ClientProxiedBy: SI2P153CA0034.APCP153.PROD.OUTLOOK.COM
- (2603:1096:4:190::17) To PA6PR04MB11909.eurprd04.prod.outlook.com
- (2603:10a6:102:51c::22)
+	Fri, 23 Oct 2026 07:19:47 +0000
+Received: from mail.maildlp.com ([172.25.15.155])
+	by h3cspam01-ex.h3c.com with ESMTP id 69N7JJ9e080264;
+	Fri, 23 Oct 2026 15:19:19 +0800 (+08)
+	(envelope-from lin.nan@h3c.com)
+Received: from DAG6EX09-BJD.srv.huawei-3com.com (unknown [10.153.34.11])
+	by mail.maildlp.com (Postfix) with ESMTP id A9F602284EA4;
+	Fri, 23 Oct 2026 15:22:31 +0800 (CST)
+Received: from localhost.localdomain (10.142.164.48) by
+ DAG6EX09-BJD.srv.huawei-3com.com (10.153.34.11) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.1258.27; Fri, 23 Oct 2026 15:19:18 +0800
+From: Nan Lin <lin.nan@h3c.com>
+To: <chengzhihao1@huawei.com>
+CC: <lin.nan@h3c.com>, <linux-mtd@lists.infradead.org>, <richard@nod.at>,
+        <sashiko-bot@kernel.org>, <sashiko-reviews@lists.linux.dev>,
+        <wangxiaoqing@h3c.com>, <zhou.kete@h3c.com>
+Subject: [PATCH v3] ubifs: zero stale data beyond EOF before file size grows
+Date: Fri, 23 Oct 2026 15:11:41 +0800
+Message-ID: <20261023071141.3507024-1-lin.nan@h3c.com>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <9380b1bc-45b6-5d95-7260-5a8dc92acc09@huawei.com>
+References: <9380b1bc-45b6-5d95-7260-5a8dc92acc09@huawei.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PA6PR04MB11909:EE_|VI2PR04MB10091:EE_
-X-MS-Office365-Filtering-Correlation-Id: 575fe637-5a25-4333-1fcd-08df30d4486b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|376014|7416014|23010399003|19092799006|11063799006|5023799004|56012099006|261009223027099003|261021121427099003|261022105027099003|261022075727099003|10067099003|18002099003|6133799003|3023799007;
-X-Microsoft-Antispam-Message-Info: DkTDll7Yyc3JKZZHXlldJ45E+s/u3FeU8I7tOYdJUFpdprIeak03uYRdtiCm+hQo0mu6ds7aIWWvj1ISs4dbqrdCIv0v6shsYLJXYpgczrqo2EBr6kXZ2D+LHL/o42nSY4bEIztJPT0aGiyC3IXW2cmmlkaDZobpMgX130i0JzxzLVRjWHl9lQnGXtNb0XYHdwwalbJ9kGYONzPwib4j86CjFCIEW9B7sNEMWbcnsBzykwWLEP+431GzCy0NSchsTcxCtk5niRPASshq2pSS6QqOO49q7EnsmQUC5ewxtWG9zunstF7zUgPgO8lfE1bIxXNWx6OzWYZj3KLFrpykRwL/ZaI2TubQOPIh3Khq6CDnQiFYmczhik7JrJbYg1EIgji++kWDNXHEx8eKjy0gzoTnVjq5dWxfeiZlY2a8ExADYtJINmw3EINufPFm/FAvhL7YdmIKkXjMvQ+5mLNI48dwt9VWjrlDtHyqnXyieAmdsTSOqud69+vymR9j2xV5AOTVjlzcxhhf3wauXto25Rw4zlNJALtcFxP9sqA/rUI2G4TKEexGi5DfJk0OAWEf9hMVCgqwgHmI2G8WRS38GDsv81vsQw2iWRbgfhhSxfg=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA6PR04MB11909.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014)(7416014)(23010399003)(19092799006)(11063799006)(5023799004)(56012099006)(261009223027099003)(261021121427099003)(261022105027099003)(261022075727099003)(10067099003)(18002099003)(6133799003)(3023799007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MjUwbzVEeW1JeU5kKzJPOVl3SFhQRmtMMFEycDlaN0lMWmZYYzZqL3ZRazk3?=
- =?utf-8?B?N1Z0WDdLcVlYSW5ZNGptWVB1TTM1MlZ5YnI1R3dYT28zTWVndjhiTUp0TE9r?=
- =?utf-8?B?bFBodTJjVHo4WFlJcXBLWW1DNmxOUDIrNUxzNjZ4MXFteXk4akFya0lDUUlL?=
- =?utf-8?B?SUw0UUFBNEk2cmZVY3pPb2ZuNUZWd1p1UFNJVUxuZE55UDVxMzVWaEtQKzR1?=
- =?utf-8?B?TzdXZXJmM2M3dTlJQndpUW9aL3JFTlFjdW1IRTRKeVludWNsdFR6Q1VWYzVX?=
- =?utf-8?B?dENWOTNCRUZLUFdwRXlWVjFrZXl1dFpBUm1iaDRvMTg1YnpuRWZrVVc2Mjl0?=
- =?utf-8?B?VVRXRnlSUFRkNWxYRlU0TkdydmltdW9CcU1IT0p6WStROFpDOENJMThGQmw0?=
- =?utf-8?B?bmNvNzdnUFprUytvNmdZbWRxWlZqTk9uQlRmV1FTZ254amY0Nm5ZRnFwQmNW?=
- =?utf-8?B?K2RISStGUndkZDRNSndHUHpRYVV0T0RDS0U3dGY0L3dtOFYzRVduVXlkWXda?=
- =?utf-8?B?YmZBY1JxTnJVbCtEZ2lYWmFmWGVvNDJ4dlREbGorU2g5c0FYT2Fxb09NZ1F4?=
- =?utf-8?B?aVFjL21MbUIzNHpKdWtONG55UkZlbXdQa0g4Q21CaWYyVklSOEt6NG83M2Q3?=
- =?utf-8?B?NEZyZkR3QTViWUEwY2x5SEdBMXJ3SmQ0clMvOFF6NGQvZ25HY2xubDdkVWtY?=
- =?utf-8?B?b0xwVEFEbFlEaWhZUDFHVHdReSs2RkhHUHpUZW14NnhyUDdBMmRrVDRBeXJX?=
- =?utf-8?B?WmFZR2VubVorYVh6ellzelR6dnkzVXZXMlBrcHFLV0VqNkxaUi9nNHI3UHhP?=
- =?utf-8?B?d0QvN1c4a2pGMUN0RnlJWFhUbktIQkZvT1l0Z3hyYWpzKzc0RnUxWXFwS0Vm?=
- =?utf-8?B?Q3BYYVR0dzJFRTJMRXArdHB0aERCQVBZTTFlaUV1Y0dkdmZpY1Z4YitpUXlP?=
- =?utf-8?B?UExtekJYM0tjTjRnNk1Rck8zbmtWNmZIbDlDemJOaDFaTDhsZ09OOEZ3WWo5?=
- =?utf-8?B?RVBnQ2JFTXJFelFmSWdpcDdGUzBKN1g5eFlWY1phQ2EzVndXRUJ5WnZEVjFE?=
- =?utf-8?B?emUxMnZVZUdwazNXcXAxbzlCYk9KTFFXdjdVQTJOTnpPR3Q5VTlSUWRtS1VF?=
- =?utf-8?B?RHd1Umhqakh3V2xXZnI3Z2lPb0NxZ3N3NmJNa2RBV0YydXJ6cWpJOW8xbXlo?=
- =?utf-8?B?Y2pIWUZraUZ6SjlDc1NkbHQvTUpTSVpVYWd3bERvYU90aWExK0Fjd2dLTmFv?=
- =?utf-8?B?ZlJrZXZGVkhNUFVkdnpTOVc0eC94dHp1TFMzWlhTZUNlcHA5L2Q2RXlUTENP?=
- =?utf-8?B?WTNSMjJBZGx0MmRocWpGTFM2OURSWThJbnRVVlMrM05rYjFHWXNOMFFidGNI?=
- =?utf-8?B?dGUzejVZdkowNkhjbGplcEZueDFyZEcxYmFuYi9wRkZoZUluc3ZDbmRPQzJN?=
- =?utf-8?B?K1NORUREZiswSXgxazg5WHMxaFBNbDV6SFd3U2VWdk1aUUdsOXdrREUxU3g2?=
- =?utf-8?B?N3ZacVM4TmV6WVp5ZVprRGZBaXpDQjZRVm5INGJNdGgyOEZ0UVlJeU1UZXZu?=
- =?utf-8?B?R0xTSi9vMmVhbjhIaW1MUlh3WC9HM2I1bjJuRkFRQ0pUMk8yMklsQURlQ1Ba?=
- =?utf-8?B?K0xJS1BVNXBnMEl3UGVnV3B0b244cXBJbVZMMGc2NkxRa04vbkltQ3ZoSTBo?=
- =?utf-8?B?enJOeTk0RHU1b2o3enlQTmsrZDRDTmEyWTQ0NTlsQ2tUU2VxZkdNZWF6MFF5?=
- =?utf-8?B?cDY2UVdINk1KYS9yK0NIVXJjbW9LN1IwTlNSL2duQkZtdkRIY2NFRjh1RHJz?=
- =?utf-8?B?RDVNRm5RN2xsTlJpUmY4ZklVQzlKQnFwVE4wK3FJS2ZMTWRJVnVOWmVzaVFD?=
- =?utf-8?B?M2lIL2lqT2xFc0xkTHVYUVNzejI1YXA5N3VNRzZLRXF1OHg4cXc5ZnFpNnll?=
- =?utf-8?B?MTRSWjBlbTBIT2RIZ09hTXhKUGlURURxUk9SZUJxc3UrS3V2L3lVZXdQYjM0?=
- =?utf-8?B?YS9oRUJEZzBtblNvQkxmSU91RlVGV3Btc1ZFaStIUFh2eExVZUNRU0FUZTVB?=
- =?utf-8?B?OU9hcVh1QkJNZVFELzJhUXVyVnQrNXpUOGNRSmJBSlBLVlBweHBTdXZRMlZR?=
- =?utf-8?B?WDJVYVJQdTdXZ3pmUzZDOUdWMVZmMkpnU0pSa2w4c0t3MzQ5RTRSVllRMTlJ?=
- =?utf-8?B?aGJvQVlYR003WDBSM2JIV3A1Ym1obTYzT2hTc1hLbThxNGovRGl1K3ZuUk5R?=
- =?utf-8?B?OFdEMlU5cHFrYWZRc2d6c2QrSW1KOU5zUGo3Ym1RTWFqS2YzUUZ6Zk9Hd01k?=
- =?utf-8?B?Y2M2Q3RwRXh2MllhMzd5eHR4STRnaFV0N253amdzVVlpYks2Sml5RFJRT1Z1?=
- =?utf-8?Q?rCLQRUKWXuoRTPuRCwy/dD5L0Jv62VFAElYPN?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 575fe637-5a25-4333-1fcd-08df30d4486b
-X-MS-Exchange-CrossTenant-AuthSource: PA6PR04MB11909.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Oct 2026 07:07:22.0340
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: B/pfPCE8bJ3xnWk+IPSpQfxr7H5utdyCbP6yZjn59qfcjyu9reeSrkIgIb5U3Vic6zVDslYEsnZ7OkSctK6RJJ55kyadVkZDoLU7eYF0ToYq2+mj/1NJPDnnztrU37fh
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI2PR04MB10091
+X-ClientProxiedBy: BJSMTP02-EX.srv.huawei-3com.com (10.63.20.133) To
+ DAG6EX09-BJD.srv.huawei-3com.com (10.153.34.11)
+X-DNSRBL: 
+X-SPAM-SOURCE-CHECK: pass
+X-MAIL: h3cspam01-ex.h3c.com 69N7JJ9e080264
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261023_000727_989155_AD9ED61B 
-X-CRM114-Status: GOOD (  20.28  )
-X-Spam-Score: 0.0 (/)
+X-CRM114-CacheID: sfid-20261023_001945_501521_2A44FEC3 
+X-CRM114-Status: GOOD (  17.17  )
+X-Spam-Score: 0.6 (/)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -168,158 +80,141 @@ X-Spam-Status: No, score=-17.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-From: Haibo Chen <haibo.chen@nxp.com>
+mmap writes can dirty the page cache beyond EOF without changing
+i_size. A later extending write or ftruncate turns that region into a
+hole, but UBIFS never zeroes the partial page at the old EOF, so reads
+expose the stale data.
 
-The core defaults opcodes.read_sr2 to the legacy RDCR opcode (0x35), and
-spi_nor_cache_sr_lock_bits() reads SR2 during spi_nor_init(), i.e. after
-the flash has been switched to its runtime protocol. On an octal flash
-running in 8D-8D-8D mode the opcode is extended per cmd_ext_type (e.g.
-0x3535), but RDCR is not a valid register read there: these parts access
-their status/configuration registers through a vendor-specific indirect
-space, if at all. The flash does not answer, the register read times out
-and probe (or resume) fails (on i.MX FlexSPI: -ETIMEDOUT and a controller
-WARN(), seen with a Micron MT35XU01G and a Macronix MX25UW51345G).
+Zero the tail of the cached old-EOF folio in both size-extending
+paths: ubifs_write_iter() for writes starting beyond EOF, and
+do_setattr() before truncate_setsize() grows the size. This mirrors
+what ext4 does on size extension;
 
-Clear read_sr2 on every path that enables 8D-8D-8D, so that
-spi_nor_read_sr1_and_sr2() degrades to an SR1-only read and no
-unsupported command is issued. A manufacturer driver that genuinely
-needs an SR2 read in this mode can still install its own opcode in a
-later fixup.
+All zeroing takes the old-EOF folio lock without ui->ui_mutex, keeping
+the folio_lock -> ui_mutex order of ->writepage(); the reverse order
+deadlocks.
 
-- spi_nor_parse_profile1(): the common case. The xSPI Profile 1.0 table
-  does not describe any SR2/RDCR read, and it runs before the
-  manufacturer late_init.
-- mt35xu512aba_post_sfdp_fixup(): some mt35xu512aba batches lack the
-  Profile 1.0 table and enable 8D here instead, with the BFPT QER field
-  left at a reserved value so read_sr2 keeps its RDCR default.
-- spi_nor_no_sfdp_init_params(): non-SFDP parts that enable 8D via
-  SPI_NOR_OCTAL_DTR_READ keep the RDCR default too.
+UBIFS does not enable large folios, so the EOF folio is always a
+single page today; nevertheless, use folio-relative arithmetic
+(offset_in_folio(), folio_contains(), folio_size()) throughout so the
+code is correct if that ever changes.
 
-CMP (the only user of SR2 beyond quad-enable in the locking code) is
-Winbond-specific and is not placed in SR2 on their 8D-capable parts, so
-no octal flash loses a usable SR2 read because of this change.
+Signed-off-by: Nan Lin <lin.nan@h3c.com>
 
-Fixes: 63489002d397 ("mtd: spi-nor: Refactor Read Status/Write Status support")
-Cc: stable@vger.kernel.org
-Signed-off-by: Haibo Chen <haibo.chen@nxp.com>
-Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Changes since v2:
+ - Move the extending-write check from ubifs_write_begin() to
+   ubifs_write_iter(), mirroring ext4_write_checks() ->
+   ext4_block_zero_eof(): the hole zeroing runs once per write()
+   syscall instead of once per ->write_begin() iteration (suggested
+   by Zhihao Cheng).
+ - Drop the ubifs_vm_page_mkwrite() zeroing: like ext4
+   (ext4_block_write_begin() with len = i_size - folio_pos),
+   ->page_mkwrite() does not zero the tail beyond EOF, and mmap
+   writes past EOF are the user's responsibility (suggested by
+   Zhihao Cheng).
+
+Changes since v1:
+ - Both zeroing sites used PAGE_SIZE-relative arithmetic
+   (offset_in_page()-style) while folio_zero_range() expects
+   folio-relative offsets. UBIFS does not currently enable large
+   folios, so PAGE_SIZE == folio_size() and the two coincide in
+   practice, but switch to offset_in_folio()/folio_size() anyway so
+   the code is correct if UBIFS ever opts into large folios
+   (suggested by Sashiko AI review).
 ---
-Changes in v5:
-- No code change; address review feedback from Miquel on v4:
-    - Drop the Fixes: b7b63475903c tag, keep only the Refactor one.
-    - Add Cc: stable.
-    - Collect Reviewed-by: Miquel Raynal.
-- Link to v4: https://lore.kernel.org/r/20261022-spi-nor-fix-v4-1-fba3ec3d2b5e@nxp.com
+ fs/ubifs/file.c | 63 ++++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 62 insertions(+), 1 deletion(-)
 
-Changes in v4:
-- Following the Sashiko review and Miquel's preference, keep the
-  capability-based clear but cover every path that enables 8D-8D-8D, not
-  only the xSPI Profile 1.0 one:
-    - spi_nor_parse_profile1() (the common case, already in v3),
-    - mt35xu512aba_post_sfdp_fixup(): some batches lack the 8D command
-      info in SFDP so Profile 1.0 parsing may not clear it,
-    - spi_nor_no_sfdp_init_params(): non-SFDP parts using
-      SPI_NOR_OCTAL_DTR_READ.
-- Checked all vendor drivers; Micron is the only one that enables 8D
-  outside Profile 1.0 parsing. Macronix and Cypress rely on Profile 1.0.
-- Link to v3: https://lore.kernel.org/r/20261022-spi-nor-fix-v3-1-bffa00b75c27@nxp.com
-
-Changes in v3:
-- Clear opcodes.read_sr2 in spi_nor_parse_profile1() (capability based)
-  instead of in spi_nor_set_octal_dtr() (runtime-protocol based), as
-  suggested by Miquel and Michael. It runs for octal-capable parts and
-  before the manufacturer late_init, so a driver can still install its
-  own SR2 opcode afterwards.
-- Confirmed on a Micron MT35XU01G (i.MX95) and a Macronix MX25UW51345G
-  (i.MX8ULP): both publish the xSPI Profile 1.0 table, and 0x35 is not a
-  valid SR2 read in 8D mode on either.
-- Drop the Assisted-by tag (removed upstream for 7.3).
-- Link to v2: https://lore.kernel.org/r/20260929-spi-nor-fix-v2-1-75440cfe4e76@nxp.com
-
-Changes in v2:
-- Rework the fix following review: instead of guarding the read at runtime
-  in spi_nor_read_sr2(), clear the default RDCR opcode.read_sr2 once, at the
-  point the switch to Octal DTR succeeds (spi_nor_set_octal_dtr()).
-- Key the clear off the real runtime protocol so a flash that advertises
-  Octal DTR but runs in (x)STR (host without 8D support) keeps its RDCR.
-- Drop the swp.c change and the -EOPNOTSUPP handling; a cleared read_sr2
-  already means "no SR2 read", handled by the existing debugfs caching path.
-- Trim the code comment; move the details to the commit message.
-- Link to v1: https://lore.kernel.org/r/20260928-spi-nor-fix-v1-1-ce65ba90cfbd@nxp.com
----
- drivers/mtd/spi-nor/core.c      |  6 ++++++
- drivers/mtd/spi-nor/micron-st.c | 10 ++++++++++
- drivers/mtd/spi-nor/sfdp.c      | 11 +++++++++++
- 3 files changed, 27 insertions(+)
-
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 90524c58602e1c27cd83951ab0cdd3669a2ebfd6..8ded5cd12669161a95d7c08773b5a3a9a5f9b3ac 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -2711,6 +2711,12 @@ static void spi_nor_no_sfdp_init_params(struct spi_nor *nor)
- 		spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_8_8_8_DTR],
- 					  0, 20, SPINOR_OP_READ_FAST,
- 					  SNOR_PROTO_8_8_8_DTR);
-+		/*
-+		 * The default SR2 read opcode(35h) is not usable in
-+		 * 8D-8D-8D mode; drop it so spi_nor_init() does not issue an
-+		 * unsupported command.
-+		 */
-+		params->opcodes.read_sr2 = 0;
+diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+index e73c28b12f97..e94fbcae6d3d 100644
+--- a/fs/ubifs/file.c
++++ b/fs/ubifs/file.c
+@@ -202,6 +202,53 @@ static void release_existing_page_budget(struct ubifs_info *c)
+ 	ubifs_release_budget(c, &req);
+ }
+ 
++/**
++ * ubifs_zero_eof_hole - zero the stale tail of the old-EOF folio.
++ * @inode: inode whose size is about to grow
++ * @new_end: new end of the file, only used to bound the tail
++ *
++ * Zero the cached folio containing the old EOF for [old EOF,
++ * min(folio end, @new_end)) so a size extension does not expose stale
++ * data left beyond EOF by mmap writes.
++ *
++ * Must be called without ui->ui_mutex held: we block on the old-EOF
++ * folio lock, and ->writepage() and ->page_mkwrite() hold that folio
++ * lock while taking ui_mutex; the reverse order deadlocks.
++ */
++static void ubifs_zero_eof_hole(struct inode *inode, loff_t new_end)
++{
++	loff_t old_size = i_size_read(inode);
++	size_t from, to;
++	struct folio *folio;
++
++	if (new_end <= old_size)
++		return;
++
++	folio = filemap_lock_folio(inode->i_mapping, old_size >> PAGE_SHIFT);
++	if (IS_ERR(folio))
++		return;
++
++	/*
++	 * Re-read i_size under the folio lock: a concurrent truncate may
++	 * have shrunk the file, turning this folio into valid data.
++	 */
++	old_size = i_size_read(inode);
++	if (new_end <= old_size)
++		goto out;
++
++	from = offset_in_folio(folio, old_size);
++	if (!from)
++		goto out;
++	to = folio_contains(folio, new_end >> PAGE_SHIFT) ?
++	     offset_in_folio(folio, new_end) : folio_size(folio);
++	if (to > from)
++		folio_zero_range(folio, from, to - from);
++
++out:
++	folio_unlock(folio);
++	folio_put(folio);
++}
++
+ static int write_begin_slow(struct address_space *mapping,
+ 			    loff_t pos, unsigned len, struct folio **foliop)
+ {
+@@ -1220,6 +1267,10 @@ static int do_setattr(struct ubifs_info *c, struct inode *inode,
+ 
+ 	if (attr->ia_valid & ATTR_SIZE) {
+ 		dbg_gen("size %lld -> %lld", inode->i_size, new_size);
++
++		/* Must run before the size change loses the old boundary. */
++		ubifs_zero_eof_hole(inode, new_size);
++
+ 		truncate_setsize(inode, new_size);
  	}
  
- 	if (no_sfdp_flags & SPI_NOR_OCTAL_DTR_PP) {
-diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
-index f97f2dead8c2f175564410871c896260dc31aad3..cff774a83d7656ca2d7dc5af13a78c8c520b1dd9 100644
---- a/drivers/mtd/spi-nor/micron-st.c
-+++ b/drivers/mtd/spi-nor/micron-st.c
-@@ -181,6 +181,16 @@ static int mt35xu512aba_post_sfdp_fixup(struct spi_nor *nor)
- 	nor->params->rdsr_dummy = 8;
- 	nor->params->rdsr_addr_nbytes = 0;
+@@ -1433,7 +1484,17 @@ static int update_mctime(struct inode *inode)
  
-+	/*
-+	 * Some batches do not expose the 8D-8D-8D command information through
-+	 * SFDP (see above), so spi_nor_parse_profile1() may not run and clear
-+	 * the default SR2 read opcode(35h). Drop it here as well: it is not a
-+	 * valid register read in 8D-8D-8D mode and would time out during
-+	 * spi_nor_init(). Clearing it again when it was already cleared is
-+	 * harmless.
-+	 */
-+	nor->params->opcodes.read_sr2 = 0;
+ static ssize_t ubifs_write_iter(struct kiocb *iocb, struct iov_iter *from)
+ {
+-	int err = update_mctime(file_inode(iocb->ki_filp));
++	struct inode *inode = file_inode(iocb->ki_filp);
++	int err;
 +
- 	/*
- 	 * The BFPT quad enable field is set to a reserved value so the quad
- 	 * enable function is ignored by spi_nor_parse_bfpt(). Make sure we
-diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
-index 4a3f82e97cef8a76c9704918aa6558ca4e2f2b97..722eeff71d0df8c47ec7bdd795c08ba1bdf5e9cc 100644
---- a/drivers/mtd/spi-nor/sfdp.c
-+++ b/drivers/mtd/spi-nor/sfdp.c
-@@ -1344,6 +1344,17 @@ static int spi_nor_parse_profile1(struct spi_nor *nor,
- 	 */
- 	nor->params->hwcaps.mask |= SNOR_HWCAPS_PP_8_8_8_DTR;
++	/*
++	 * The write may extend beyond EOF: zero the stale tail of the
++	 * old-EOF folio first.
++	 */
++	if (iocb->ki_pos > i_size_read(inode))
++		ubifs_zero_eof_hole(inode, iocb->ki_pos);
++
++	err = update_mctime(inode);
+ 	if (err)
+ 		return err;
  
-+	/*
-+	 * The xSPI Profile 1.0 table does not describe a Read Configuration
-+	 * Register (RDCR, 35h) instruction, and the single-byte RDCR default
-+	 * is not usable in 8D-8D-8D mode. Drop the SR2 read opcode for these
-+	 * octal-capable flashes so spi_nor_read_sr1_and_sr2() degrades to an
-+	 * SR1-only read and spi_nor_init() does not issue an unsupported
-+	 * command that the flash never answers. A manufacturer driver that
-+	 * actually needs SR2 can install its own opcode in a later fixup.
-+	 */
-+	nor->params->opcodes.read_sr2 = 0;
-+
- out:
- 	kfree(dwords);
- 	return ret;
-
----
-base-commit: 9a482184d910775cf648863148944945b74e2815
-change-id: 20260928-spi-nor-fix-eb7ebe22a740
-
-Best regards,
 -- 
-Haibo Chen <haibo.chen@nxp.com>
+2.33.0
 
 
 ______________________________________________________
