@@ -2,77 +2,60 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD72E606A322
-	for <linux-mtd@archiver.kernel.org>; Fri, 23 Oct 2026 09:24:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B64B9606A324
+	for <linux-mtd@archiver.kernel.org>; Fri, 23 Oct 2026 09:29:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=h8ArCQVh;
-	dkim=fail reason="signature verification failed" (1024-bit key, unprotected) header.d=qq.com header.i=@qq.com header.a=rsa-sha256 header.s=s201512 header.b=Jm7MsM9d
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=lGYSEajz;
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=H3PW+9+L
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Subject:Cc:To:From:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:References:To:From:Cc:Subject:Message-Id:Date:Mime-Version:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=jt/SscFUvrOtXIFQxvEhmxd1cmsMUL6sg8ScABXxWFw=; b=h8ArCQVhEPB0fqqPipIkbVd/8O
-	5urnBGet96bZEzFSgaCju+Ugpa9quSIZaREVjRuzW3Kx0+Djha8Poy2Kphzg4xreJ2N/SzI/jutyL
-	Yo56h41QhtQYtTo0G8XlVCQGIf3vlXhxNi8ouHSk0SeeDhfTaE7KinQlBEgxn8Xf24oj1N3QzMTfU
-	kGtZCqIWwiZXDXjia47FWfyUx51/Ye/GDCYffde37bHlFbXEqHJYOkbeOr1SD+zLqz/tq+CPkzFzV
-	Ow8nFqpu+/l6m5INcpABP/LoGd8Lakl/x1L0SaOaEZBafxeJv/SVA+Y+UkWQQMfssoG24jjBQEPoq
-	2uLEyYQw==;
+	bh=E1lOvTL7VmhMkOitM1iVGKuWpPR/QxjLFxyl/pkHuGc=; b=lGYSEajzZH80Zww/M+ui+OPcfA
+	YvmLC3kkZh/2xNEN42GQXWmjf2CkzA9VhGb8TFdDcIDDZJ2U4yy08BRstTEAVn58vBnrl3vrytkfE
+	sq7Ft9RMB7YAiXggwv97kyT9/w8QKqixWRboLU/pDjQ7rG7Y/h5u7MvvZIGOUPp80VLcU3Qf/iOEm
+	Xi+nO363KFbpEe7dmIUszpbhXuUaqleh9blhOh+TQXGdUGiZ/WcIJ5f3/EfHmQH0GD5hbQAbNsck9
+	kqbE1wld78wJGOIpSP0kpt5/AJ6/9BfcWHeKyzTLiDjQ0G2Mq6Sdrjumgp0qzchmxlhF/k5MSh/VO
+	4qGgbqQw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xKBWC-0000000G0cB-0CEh;
-	Fri, 23 Oct 2026 09:24:56 +0000
-Received: from out203-205-221-245.mail.qq.com ([203.205.221.245])
+	id 1xKBaL-0000000G24d-1nmE;
+	Fri, 23 Oct 2026 09:29:13 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xKBW7-0000000G0ao-01cc
+	id 1xKBaK-0000000G244-0VOb
 	for linux-mtd@lists.infradead.org;
-	Fri, 23 Oct 2026 09:24:53 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1792747488; bh=BL7WTqlyAuABxLMGFYeqZBZi8m9RhMdcDsbXwZkbTyo=;
-	h=From:To:Cc:Subject:Date;
-	b=Jm7MsM9dJ1Z2eZA8HSAoHklHX7dJJuhWbzeL9UxBLM/FWa02VvpKgE8ASlN6pzFMG
-	 JzM3vLrjXAKne1lTu+5AR56le/qQoT8bliNaFsJnPf37PWTcJor9JWDnMQZ1G2vRT4
-	 38md9xLY9otB1rGX/BlQcYFpPfXF5ekxJzE9bCb0=
-Received: from shuai-VMware-Virtual-Platform.. ([218.28.192.28])
-	by newxmesmtplogicsvrsza63-0.qq.com (NewEsmtp) with SMTP
-	id 62E256FD; Fri, 23 Oct 2026 17:24:46 +0800
-X-QQ-mid: xmsmtpt1792747486tffp7h4dp
-Message-ID: <tencent_25C57E270CDC01A4CB5894E4EF9B80708509@qq.com>
-X-QQ-XMAILINFO: NnYhxYSyuBnLcB4XdZEN2saK1lBHpYhsukBkey5CE/1hbH/SkgAQPijYkX+omo
-	 znx4IFyVogVUimtgm8rw37JbX8ii1DODcz8JRs3vgT1SU6Xdan5SE3lFj/XHzqiLQonBCUYoI54Z
-	 WwMj2VzOEnamAeKtHL0IFnRMljKpNOHDY0AsVsHGzOzenD+YI9o/7t4xGIxfmaKDZ1Tn6y/rXGY8
-	 03WHL31bv6Ccpk0n70D17xvo7MmAVmRer2o6xJkIj4DrHyDbQ4qNeUMuuxMl/S9/AZstN1KN3Y+S
-	 OGETsCtoL2eja2s1vFwFnEDK6DptQ8JHc5Vt+iydY1+QoVLQGxWOA4ku1/LqCxAww7wEdm3o0l7V
-	 XWcjLTRdErVbqGZvXnqLSQpWbsKngElz3n7xB0oqj9ytzCmelOrlO97OOU9vKTUFc48/qqR2t2KR
-	 8lWNYQiTH1at7bmhWPOBGUHzriGMHM/wOS0bvNKDWlTz1QLi55YxHuN/dJm+VD8+YKVNOm2C5Cam
-	 lMTQbJpWGXmTBhLeOvwWQm2TwfQW9qh5Kd9/6rBR6jCNKcYLZjoHEYuZM5OCl8ggT24uqmuIi/Kh
-	 pAcpujwriM+YL1BFtNms77hPAIFpawrbziuL9LZ1U8tn50rLqW1zQcPKQZNnn2dY8jYnKFA+2Xve
-	 yWkUOAYWB3RrKv3wmmL3pO5ob7Qke+LOPK+Vxtot1LQhR6jVWYkkH4dnXADwsjiukWsWcScvwzFu
-	 zvn7ljb+NFOzhCMpiafSWedsAPGaNo/KlzjGADYm/4YXPcppTyvSYAivZCrUnuFfd0QB1Hu/DT6Z
-	 g8xRq75Y/HdpD7jrlKPr9Te2sjMu3pAXAuNhrKC2v7i/XPyvea9CjY3KFBjyR+KIbL6DQ2WVRfdZ
-	 wUhSgigl7ch+SWzxTIYAksqOKRZDr0YWck/68LS/WhSYPFcm8OPSO4KtBBEVF0XcBWWR3vi9NiuL
-	 OFpZqwi17cR3E+S4lD02AdERYaX9PISm4biJOQGBaqvzIVmET3WBa9l3D4ZkCUDoBvh5teBtGChc
-	 9e8jZJpxRVT/Bs3T6z76wXsEt7DhlGk5iclEBJBDGHJJiSRw5L
-X-QQ-XMRINFO: OD9hHCdaPRBwH5bRRRw8tsiH4UAatJqXfg==
-From: Shuai Liu <847807867@qq.com>
-To: linux-mtd@lists.infradead.org
-Cc: pratyush@kernel.org,
-	mwalle@kernel.org,
-	takahiro.kuwano@infineon.com,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: spi-nor: swp: remove unnecessary else after return
-Date: Fri, 23 Oct 2026 17:24:45 +0800
-X-OQ-MSGID: <20261023092445.3969055-1-847807867@qq.com>
-X-Mailer: git-send-email 2.43.0
+	Fri, 23 Oct 2026 09:29:12 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with UTF8SMTP id 9C73E43AC3;
+	Fri, 23 Oct 2026 09:29:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id 069B91F031E5;
+	Fri, 23 Oct 2026 09:29:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1792747751;
+	bh=ApUOemm/+wB176QXWNQqZzhMXHryTGIJ+8y1XhrUjak=;
+	h=Date:Subject:Cc:From:To:References:In-Reply-To;
+	b=H3PW+9+L1G8I9O/jkz5r503Dc8BTCAHY97Rdo5IlGYc/DZuI/owoBGy5iWrHlQIjn
+	 HdfHj4q04tYXhomkndPLOmAH24Vtn8hYrvF656dds+0Nn8TcSAY86hwl3kmG8YDP2r
+	 dLhGEgdueHR+mgX3v5Z4tapFRbPy9yV8m06GvSBksxBFF7Vzx3HKGZ5yKspcLTdIYe
+	 BLq21DZWus/UZA8Iki+1fj+zJNy4SMgrUWEXOJTEJoYDHV2tGdNokVBTogoQIaXST0
+	 01zuESmCre2hI65O71t6sGLApsQZESZwRlzayu8SOq/mZi/z+LSOiO7dB/11l6WUCS
+	 I9+jrqQDKPTVQ==
 X-Archived-By: <archiver.kernel.org>
-MIME-Version: 1.0
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261023_022451_357168_AEBD4D16 
-X-CRM114-Status: UNSURE (   8.88  )
-X-CRM114-Notice: Please train this message.
-X-Spam-Score: -1.9 (-)
+Mime-Version: 1.0
+Date: Fri, 23 Oct 2026 11:29:07 +0200
+Message-Id: <DMC41DHV2V37.12QR2S7OFTWW6@kernel.org>
+Subject: Re: [PATCH] mtd: spi-nor: swp: remove unnecessary else after return
+Cc: <pratyush@kernel.org>, <takahiro.kuwano@infineon.com>,
+ <linux-kernel@vger.kernel.org>
+From: "Michael Walle" <mwalle@kernel.org>
+To: "Shuai Liu" <847807867@qq.com>, <linux-mtd@lists.infradead.org>
+X-Mailer: aerc 0.20.0
+References: <tencent_25C57E270CDC01A4CB5894E4EF9B80708509@qq.com>
+In-Reply-To: <tencent_25C57E270CDC01A4CB5894E4EF9B80708509@qq.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,47 +65,85 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2804157673741226755=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-Drop the else branch following an if that always returns, and move
-the trailing comment onto the fall-through path. Cosmetic only, no
-functional change; silences a checkpatch WARNING.
+--===============2804157673741226755==
+Content-Type: multipart/signed;
+ boundary=d49a4ba38a51693f880b561d78b3c10aafad54b49134b8a43e636d36a692;
+ micalg=pgp-sha384; protocol="application/pgp-signature"
 
-Signed-off-by: Shuai Liu <847807867@qq.com>
----
- drivers/mtd/spi-nor/swp.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+--d49a4ba38a51693f880b561d78b3c10aafad54b49134b8a43e636d36a692
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
 
-diff --git a/drivers/mtd/spi-nor/swp.c b/drivers/mtd/spi-nor/swp.c
-index 235070b21..3b8176b9d 100644
---- a/drivers/mtd/spi-nor/swp.c
-+++ b/drivers/mtd/spi-nor/swp.c
-@@ -135,9 +135,9 @@ static bool spi_nor_check_lock_status_sr(struct spi_nor *nor, loff_t ofs,
- 	if (locked)
- 		/* Requested range is a sub-range of locked range */
- 		return (offs_max <= lock_offs_max) && (ofs >= lock_offs);
--	else
--		/* Requested range does not overlap with locked range */
--		return (ofs >= lock_offs_max) || (offs_max <= lock_offs);
-+
-+	/* Requested range does not overlap with locked range */
-+	return (ofs >= lock_offs_max) || (offs_max <= lock_offs);
- }
- 
- bool spi_nor_is_locked_sr(struct spi_nor *nor, loff_t ofs, u64 len, const u8 *sr)
--- 
-2.43.0
+On Fri Oct 23, 2026 at 11:24 AM CEST, Shuai Liu wrote:
+> Drop the else branch following an if that always returns, and move
+> the trailing comment onto the fall-through path. Cosmetic only, no
+> functional change; silences a checkpatch WARNING.
 
+So what is the checkpatch warning? IMHO that change make the
+readability worse.
+
+-michael
+
+>
+> Signed-off-by: Shuai Liu <847807867@qq.com>
+> ---
+>  drivers/mtd/spi-nor/swp.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/mtd/spi-nor/swp.c b/drivers/mtd/spi-nor/swp.c
+> index 235070b21..3b8176b9d 100644
+> --- a/drivers/mtd/spi-nor/swp.c
+> +++ b/drivers/mtd/spi-nor/swp.c
+> @@ -135,9 +135,9 @@ static bool spi_nor_check_lock_status_sr(struct spi_n=
+or *nor, loff_t ofs,
+>  	if (locked)
+>  		/* Requested range is a sub-range of locked range */
+>  		return (offs_max <=3D lock_offs_max) && (ofs >=3D lock_offs);
+> -	else
+> -		/* Requested range does not overlap with locked range */
+> -		return (ofs >=3D lock_offs_max) || (offs_max <=3D lock_offs);
+> +
+> +	/* Requested range does not overlap with locked range */
+> +	return (ofs >=3D lock_offs_max) || (offs_max <=3D lock_offs);
+>  }
+> =20
+>  bool spi_nor_is_locked_sr(struct spi_nor *nor, loff_t ofs, u64 len, cons=
+t u8 *sr)
+
+
+--d49a4ba38a51693f880b561d78b3c10aafad54b49134b8a43e636d36a692
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCatso4xIcbXdhbGxlQGtl
+cm5lbC5vcmcACgkQEic87j4CH/geXAGAtmA1bXnVFLtWXOCoVlNCz/JjY81JBKrX
+HuSNRkg/SpVTWIGYXXqCmmUF62/MMvgNAX965Xq+msnzoy+l5lKPcS/aLyLzEGid
+4pWC+BcJ6IFEEdkXFPWpDt58aiFiWmMF+po=
+=QF+o
+-----END PGP SIGNATURE-----
+
+--d49a4ba38a51693f880b561d78b3c10aafad54b49134b8a43e636d36a692--
+
+
+--===============2804157673741226755==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============2804157673741226755==--
+
