@@ -2,61 +2,79 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AA65606C906
-	for <linux-mtd@archiver.kernel.org>; Fri, 23 Oct 2026 09:31:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F8DA606A326
+	for <linux-mtd@archiver.kernel.org>; Fri, 23 Oct 2026 09:35:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=h1075v4B;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=eIPlh+81
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=n1K/Etzz;
+	dkim=fail reason="signature verification failed" (1024-bit key, unprotected) header.d=qq.com header.i=@qq.com header.a=rsa-sha256 header.s=s201512 header.b=ysI2M+o8
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:References:To:From:Cc:Subject:Message-Id:Date:Mime-Version:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Date:Subject:Cc:To:From:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=Ot7ODTtuedaXz993Oy0Q5luX7NdatQRPPmxOSHmpG4k=; b=h1075v4Bz/uytEprvRbuDFOHVe
-	Em0t1wssUtgeEgccenNBQsUBvh3DQXBoIU56u7kaBRjB1PWqWobyImI6kQLJQXfYohW+FVG2eOHNc
-	NfmzTG91QUmLwN6lSKDrLXj/Kw+jE8OnGZ7N7CYITFzZwEUaPSGpLWASkXMnZ1CeWLN6y8kxiqgKR
-	eefm0uzJbP3nr6pXcmFL977I0bzz0q+nOY6N8So+DSfpm+FpHSGDyRJ8fzdtwCme/HfLHgPtilIin
-	h6eu14uGPyhlgFSIF0Eyp4ByvprHxQJp70tV+TcJO2JuAYkNuBQzwDXVXWZzZvIzkX0+qa5ZGL4O3
-	LJoEy8gA==;
+	bh=AX7R8sYfjS8G7lixhf2fEPz/1gCPWOZKR5sYxcw02lc=; b=n1K/EtzzIyJBCWPUkdzqJ4Sfsp
+	Uy61upRJnUtMCqwHYW3kKpqnYq0d//HHOornA1KHFH5BJ+9FgAi4FDT2CIU5Uuuq7HB0zFnSPy8iC
+	9l3N9puIzU6m+/Er42oPrhiIaSZ0Xa7i68nWd2U39ZiFYDBx2UNKL9BYuerOdgur58aSlPGOvbXNX
+	G/lbk7tpIuRMuwiduF8mFer2FQoMen0Qc19Zp3RWP+PZ+KcSgg/3kO47IoFd5WkWISvHNHxg0QcqF
+	GTC7zyGuVZbqzLxuaWtHs+tAFMcZfm8dcGNnuKsb7gpbZB6CgfT1/CawtbrtS0hvD6MKqHF52nvok
+	W7W8JSRA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xKBcI-0000000G2rA-2Sdh;
-	Fri, 23 Oct 2026 09:31:14 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1xKBg5-0000000G3bm-0gNe;
+	Fri, 23 Oct 2026 09:35:09 +0000
+Received: from out162-62-57-252.mail.qq.com ([162.62.57.252])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xKBc1-0000000G2ce-0aF2
+	id 1xKBg1-0000000G3bO-39mv
 	for linux-mtd@lists.infradead.org;
-	Fri, 23 Oct 2026 09:30:59 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with UTF8SMTP id 95D7243C3A;
-	Fri, 23 Oct 2026 09:30:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id F346E1F01201;
-	Fri, 23 Oct 2026 09:30:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792747856;
-	bh=tCYx7L2FNRpKZU6qBFW+ZmUHPGXqSze/QEf3XRwSkfs=;
-	h=Date:Subject:Cc:From:To:References:In-Reply-To;
-	b=eIPlh+81Vo0shpmUy36iplQPH7JbhU3dQhpgZsXogTA1MbB8IsyVrcGAWLwJmjryi
-	 uEtRBEVZRLP2HT+Q5xgEjpMhkeKBiVkH8nKxaU29o/ztHqNA3Pkl+wQpaXUs5YDQKS
-	 ncnp6BMm+lDeiuIJBle54xbxSBEx3nOov/HTnV5QsWOLIyq6eIhr4eUaf3z/Z5bGRW
-	 BrhuVzUPVWUZCPQCQxVWpiEr8So+h2FOYWzEFsnhxzE2YQw5SCS4/nf7Dc+j+t58ko
-	 0x2FpmryQlKHa3m4bTFZTpFcHg8hZHNlZc1cMRulkN9NepWqhpXZVBxuocMh5C8Gao
-	 YIakbUbvSmn9A==
+	Fri, 23 Oct 2026 09:35:07 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1792748101; bh=Q49VUA00x5uwNyTjfQDoJW5O3dFV558y68RO2tYrc+g=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=ysI2M+o8YXDhbNqM13zsUEyPFe2hRy3xnKtc34JIxBzmULYUdnD5MbSNLXPZFI3ma
+	 6pLItR4EWQ7Ci8gSpBwSGiQg2DFpNMxUvwIbe3vquxpYipBpHpzZq0t6SrPiw08XMu
+	 TbmixLTgqYZstPK2i/jO72y5sjneYrTjaW0UcRCk=
+Received: from shuai-VMware-Virtual-Platform.. ([218.28.192.28])
+	by newxmesmtplogicsvrszc50-0.qq.com (NewEsmtp) with SMTP
+	id 8BA976D0; Fri, 23 Oct 2026 17:34:58 +0800
+X-QQ-mid: xmsmtpt1792748098ts3wyb2of
+Message-ID: <tencent_32B822621313A1EE74D2622CD2F2BE4D7208@qq.com>
+X-QQ-XMAILINFO: M1rD3f8svNznYNwCOoVeajaew3v2Spxco+a06QtS3Kz423FRXqd/AT3815vgAq
+	 PdhNN1XO0QtTPUDn8pN+gSRk189GA1cTXK5WsPcq5LrXT8V3wKxcpg+r9AtBmd1LyI9WdeUNop5u
+	 Z1uE9KuWL1ZySGy7zpB3OKD5olw6Qdxg+2+Rh4e8C5TE/OvfNRq64TJ7NX3+HzzJEwUMFBbzUfcM
+	 WBpOZYiUomNP/hIZrLTCQ5jR7VkGlt8b77lsPjDn+kF+/S4sVPy5e6GYLyh+Ukbu3XXECkZ3wtQ+
+	 WQl6iY7SzSpsgJVpUSfeAfw5Pilqbi45LIGeNdyak0TMNAMs/XF4MrHujqW4cYjjpvS7CqiNfEVi
+	 ym1587xbETMJOyMY2gAYeXAtN7MlL+QIu+BF1LhbokhulhVsnSC5ZOO8HT1OgfeuafuNYI+etPF7
+	 RUhLW9GICTbPW6QlW8pN2Z3bW2+01PhAtRamuDGPh0uhgvnawuyXZwkqTeRqvhYk9BXDC11hnpx/
+	 dTesIB2d5keQU75a/0lybVbvMGZblyuKnA9oCFxSb/44sD7OKZCjZF2paqjBKSu9eEDByMaRteAR
+	 ywKZ4cqsGVswV2RRrGXC9g/O+3NyWebM7WdLlHzveTxbXYzmJs7Q4mU4xitekiN8ZLT3ufy9M9bi
+	 LDJ6dAGeKdQpo9/MCVCIMsbid5mAoqukS72IHIxkg+qVR9X4xQBzCJs6JNdF4stAUAe5n+if2sMw
+	 KjMwjdXFA13uoAHztYsgX+Ku+gVKZekpK8NJs3SoUH9d0VtjDx+/txYG65gEBsSn9n9TDyckoW6i
+	 6Oic2fzo7Xpp39GI65fIYQESh2zVBQYpgEHEzoA5DP0y4mO7iRo/r7DQMzbyLqwLwBRZ6NKjSOLY
+	 uh2jdEIJV1lIwrqTzL3AFkWniAb7VtU0MDZtZElF2hhJW31ymyT8avFgluh3qPDmxYmVmeIwfyti
+	 K1rZzuIb2tS6WbLxLqmDTR3QyAGc+MspJQuImOwp/6pc87qLV9BFFqLpEqHs9hwBLRtGV5oX3/4e
+	 va+ICaDLcHPMoRxkMJfQ0bKCsq9TYcLkZh7//0+qPh/XQFHM1YHf1gmn+D3Mc=
+X-QQ-XMRINFO: NyFYKkN4Ny6FuXrnB5Ye7Aabb3ujjtK+gg==
+From: Shuai Liu <847807867@qq.com>
+To: Michael Walle <mwalle@kernel.org>
+Cc: Pratyush Yadav <pratyush@kernel.org>,
+	Takahiro Kuwano <takahiro.kuwano@infineon.com>,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: spi-nor: swp: remove unnecessary else after return
+Date: Fri, 23 Oct 2026 17:34:58 +0800
+X-OQ-MSGID: <20261023093458.3974496-1-847807867@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20261023092445.3969055-1-847807867@qq.com>
+References: <20261023092445.3969055-1-847807867@qq.com>
 X-Archived-By: <archiver.kernel.org>
-Mime-Version: 1.0
-Date: Fri, 23 Oct 2026 11:30:52 +0200
-Message-Id: <DMC42PZGE0L9.25VCSYHXHMN9L@kernel.org>
-Subject: Re: [PATCH] mtd: spi-nor: fix missing space after comma in legacy
- flash names
-Cc: <pratyush@kernel.org>, <takahiro.kuwano@infineon.com>,
- <linux-kernel@vger.kernel.org>
-From: "Michael Walle" <mwalle@kernel.org>
-To: "Shuai Liu" <847807867@qq.com>, <linux-mtd@lists.infradead.org>
-X-Mailer: aerc 0.20.0
-References: <tencent_760494FBADB4184B967C5A93312EB198F506@qq.com>
-In-Reply-To: <tencent_760494FBADB4184B967C5A93312EB198F506@qq.com>
+MIME-Version: 1.0
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20261023_023506_333145_EF603D5C 
+X-CRM114-Status: UNSURE (   6.98  )
+X-CRM114-Notice: Please train this message.
+X-Spam-Score: -1.8 (-)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,83 +84,33 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============3690435065201257052=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=ham autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
---===============3690435065201257052==
-Content-Type: multipart/signed;
- boundary=9be7ba2c64a95e1a6709d5c62a9d871f17cb2ae09dd7b470022be5930c1f;
- micalg=pgp-sha384; protocol="application/pgp-signature"
+On Fri, Oct 23, 2026, Michael Walle wrote:
+> So what is the checkpatch warning? IMHO that change make the
+> readability worse.
 
---9be7ba2c64a95e1a6709d5c62a9d871f17cb2ae09dd7b470022be5930c1f
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
+It's the "else is not generally useful after a break or return"
+check in checkpatch.pl.
 
-On Fri Oct 23, 2026 at 11:24 AM CEST, Shuai Liu wrote:
-> Add the missing space between string literals in the legacy
-> flash_info entries. Cosmetic only, no functional change; silences
-> checkpatch ERRORs on these lines.
->
-> Signed-off-by: Shuai Liu <847807867@qq.com>
-> ---
->  drivers/mtd/spi-nor/core.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index 8bc117b46..31cba60bd 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -3898,11 +3898,11 @@ static const struct spi_device_id spi_nor_dev_ids=
-[] =3D {
->  	 */
->  	{"at25df321a"},	{"at25df641"},	{"at26df081a"},
->  	{"mx25l4005a"},	{"mx25l1606e"},	{"mx25l6405d"},	{"mx25l12805d"},
-> -	{"mx25l25635e"},{"mx66l51235l"},
-> +	{"mx25l25635e"}, {"mx66l51235l"},
->  	{"n25q064"},	{"n25q128a11"},	{"n25q128a13"},	{"n25q512a"},
->  	{"s25fl256s1"},	{"s25fl512s"},	{"s25sl12801"},	{"s25fl008k"},
->  	{"s25fl064k"},
-> -	{"sst25vf040b"},{"sst25vf016b"},{"sst25vf032b"},{"sst25wf040"},
-> +	{"sst25vf040b"}, {"sst25vf016b"}, {"sst25vf032b"}, {"sst25wf040"},
->  	{"m25p40"},	{"m25p80"},	{"m25p16"},	{"m25p32"},
->  	{"m25p64"},	{"m25p128"},
->  	{"w25x80"},	{"w25x32"},	{"w25q32"},	{"w25q32dw"},
+Fair point. With the comments attached to both branches, the
+symmetric if/else reads fine, and I agree this isn't worth
+changing. Please drop this patch.
 
-Well, that is because they are aligned with all the other entries.
-IMHO this is just unneeded code churn.
+Sorry for the noise.
 
--michael
+Best regards,
+Shuai Liu
 
---9be7ba2c64a95e1a6709d5c62a9d871f17cb2ae09dd7b470022be5930c1f
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCatspTRIcbXdhbGxlQGtl
-cm5lbC5vcmcACgkQEic87j4CH/jxuQF+MPmLCsn/qD564wFCQ3yZO71xLqbE2u5n
-kAu9LlAOmbkkKL+klaIOxRQbzKDPOUkCAYCmijTAryi287lsr1FFvdc9T8Pdbywq
-Weh6udZPUd2TK24yTspztZ00E4JDeCiNW3A=
-=rj7B
------END PGP SIGNATURE-----
-
---9be7ba2c64a95e1a6709d5c62a9d871f17cb2ae09dd7b470022be5930c1f--
-
-
---===============3690435065201257052==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============3690435065201257052==--
-
