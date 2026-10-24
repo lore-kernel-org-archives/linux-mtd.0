@@ -2,68 +2,67 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44631606A31A
-	for <linux-mtd@archiver.kernel.org>; Sat, 24 Oct 2026 01:45:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C068B606A31A
+	for <linux-mtd@archiver.kernel.org>; Sat, 24 Oct 2026 07:13:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=S2nuG/VC
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=3bkQsvtQ
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:From:Subject:Message-ID:In-Reply-To:
-	Date:MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
-	List-Unsubscribe-Post:List-Owner;
-	bh=yHZNrnAuUgkyoai5QsDZZa7VJLL8c/Ih/n0jQg+82Lc=; b=S2nuG/VCa5PWKWHXFf9LjaBYyk
-	qajRFzSEJUTa0fuL9acBpkitAPJA453904OQCMPHNE6xmTKdJm9pOHyqv/FL8WtOduwFnUvBPLsQw
-	gfuJoJ+d+HlR35kL3ZFJvOLb9DZWfyvjco9uSE0STmxrjexxx0yyDHHAeZvCom1FPlhf/gr0b73T9
-	MAZ3EGqZtWcFBfehQc1ojX6MpAiUPX+Navue+/YjEtUjB1qYj2+S9bLZFtkVq9wc+PCC5EdG5d3nH
-	2HECr60eU5W+yPasHXyfSr3iD3Yfhz1R4uSZLsgXaL7WxJfIUUy/LRv7KE7/hyBBnvdgznjgf4EE0
-	B77MIxQg==;
+	List-Archive:List-Unsubscribe:List-Id:To:From:Subject:Message-ID:Date:
+	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Unsubscribe-Post:List-Owner;
+	bh=deiq7wUvqkYBa86GWX6jrPcfvJvRTgrqLJsl1aKIwQQ=; b=3bkQsvtQCi5BRcJZahwpw9ItNq
+	ymEXvG42NmgojfebKZdGKQYQz7Cp8M6U+nGXBRtQ5XQfglKuPy2HmYdnW0eV91T7I+SHbg51Q2N48
+	mkyorZtnzt3jjI9QBSCWjeQBkdm7W7snbUmPzdwkLxEF75oHEBwOq0MubeddwtMH+7tSD9irq21do
+	lIBXN5gDSORNTxKC7PC1gDuNCPgenGaoqSqSAIvrETuE4zBdCHCQF08hYCoD5aZiMqJ3SSwf0u+WG
+	k9kN1cTXDso/eIQt3EaaGsPnoVD4xUz0Rjf2JPUEhglSqdgbGaJi98S7I6ve4cNKTQvfizfzphImp
+	MjSWQUWA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xKQoZ-0000000HKHt-2kHu;
-	Sat, 24 Oct 2026 01:44:55 +0000
-Received: from mail-oi1-f198.google.com ([209.85.167.198])
+	id 1xKVwn-0000000HX9s-3BoS;
+	Sat, 24 Oct 2026 07:13:45 +0000
+Received: from mail-oi1-f199.google.com ([209.85.167.199])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xKQoX-0000000HKHU-2IUi
+	id 1xKVwk-0000000HX9T-0TPC
 	for linux-mtd@lists.infradead.org;
-	Sat, 24 Oct 2026 01:44:54 +0000
-Received: by mail-oi1-f198.google.com with SMTP id 5614622812f47-4f8281066c4so1780946b6e.2
-        for <linux-mtd@lists.infradead.org>; Fri, 23 Oct 2026 18:44:52 -0700 (PDT)
+	Sat, 24 Oct 2026 07:13:43 +0000
+Received: by mail-oi1-f199.google.com with SMTP id 5614622812f47-4db3db8687fso2338256b6e.0
+        for <linux-mtd@lists.infradead.org>; Sat, 24 Oct 2026 00:13:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1792806291; x=1793411091;
-        h=content-type:to:from:subject:message-id:in-reply-to:date
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to:content-type;
-        bh=mxVb7oQQyhCzXTf8Q6KVBf93tVdrbTHX5eRVTct8tjE=;
-        b=NUAGUEFXL73YPZdEmATGKQAnlnMDd/w3Btgk7BT5/dY17dgnGBdDthL/4VmTNZbM+o
-         WhK7KL56+Gm2+FFGjJciqzpPdS0sa8VQqMisN3mjcityWCEfnUMroQ3uzyBNbzaxY75p
-         h95kwwtv6uj67xi5gwbUQMzhdfoTUdsEUZXuGbSE9cHbsiF0l7Gn2L1Qsbh6/jLdaQ1q
-         TeahEq5DOrMsAe8K2j/XXxuko9bOogzalrEn5h3LX1E4u7Cx9CFmbXdlZ/laNkVwq2Ts
-         UXRyjVxh96upntIOnlKGSub37dlnKKwSJVoqh/x84dY4Uidh2K9uMMOt3DafV+IWtQZY
-         S7Dw==
-X-Forwarded-Encrypted: i=1; AKwUvBynZDjD0uU7SkwpGzQQQLVdWJMTE9o42DMcE7ICtya6M5NtoILUhvXTY1e89rJTiNoiE2EFxCBpsYE=@lists.infradead.org
-X-Gm-Message-State: AFq9FYLKptMEYOazAxCEzgssgA2dLflrGJeHPr1xTGluhOw7om4/tMB5
-	NKs7UFHAvxpLQ0IiONMTMElBB9YE773V3WsURaNVuT6VPg6Unrg1oTSRw+JPqaDTgk0Bnu1bW9f
-	RI5FWi5+FN2xGxo1H75Z4ltMzZrD6jTJSdywcaDKBxqCJw0R6upaHUIdom3A=
+        d=1e100.net; s=20260707; t=1792826020; x=1793430820;
+        h=content-type:to:from:subject:message-id:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=kNHFNt8SmJ8cd5Z9Sx/36IlbVhmpvjSnWwa8Mn0QAug=;
+        b=tZva2Geim/8INd+p+krtV5zbTtBbrITwacBEy5PoWIDCZNkQFe0UNEvK9d2DJeYZGk
+         mFhARqhruMgro+FEgg6FfBNKl3TUMKyV52qY3GVgeRrkRYkWephglYCXclkRmyHKMe15
+         h+txX2lZF26dRODgT1WVmCku/lfUarJrhqzJGdg+I1V2gAJvgM4yXTa6729rbUof+r2Q
+         8zAO2Hjwk/wICI+U+1HRbZnGz2vv6fQcoNGv5tI9H2pXX2sSBJIrhsUgjBfOKcuy5BDY
+         AXs68AiiYgbownV19RyuKUX7wuwbsvxUH2k1G8R21SqrZwLQcmF7kTk1oAsx86Zfp8TC
+         4l7g==
+X-Forwarded-Encrypted: i=1; AKwUvBxxDxXfK93hoJJW/W757VMQzPVbkQT8DOplK5nQuV/+fAnJtjSSIFJaE3bcBk9hB4y0Nto5VgNu93g=@lists.infradead.org
+X-Gm-Message-State: AFq9FYKZxvmWSh5znk5D/qw5/GKjAY2+9ESRpY1DYTGBf8bsh80RoaYJ
+	sQXUG8dhS9jGf0YyXFrhc2oMqd2IC1udbO/8d0MF0xtSyroqphVFuPEjD1so8gpeXdCXtRoZ2hb
+	7/08CZ0waonQK3Gr9zcmZ3DzcyAaUulGJdMIb/8zQE0Jnc1D4GMSV9mlExrk=
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:50a6:b0:4c3:ebb:63d6 with SMTP id
- 5614622812f47-55c002e9610mr640257b6e.39.1792806291581; Fri, 23 Oct 2026
- 18:44:51 -0700 (PDT)
-Date: Fri, 23 Oct 2026 18:44:51 -0700
-In-Reply-To: <6a9e1995.a5e650b3.26d8a.0024.GAE@google.com>
+X-Received: by 2002:a05:6808:1205:b0:4fc:5e91:5377 with SMTP id
+ 5614622812f47-55c0038d63fmr828839b6e.59.1792826019851; Sat, 24 Oct 2026
+ 00:13:39 -0700 (PDT)
+Date: Sat, 24 Oct 2026 00:13:39 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6adc0d93.4ce6c07b.2dfc0c.0000.GAE@google.com>
-Subject: Re: [syzbot] [jffs2?] possible deadlock in jffs2_xattr_delete_inode
-From: syzbot <syzbot+fdfd8fdf716c90baef0f@syzkaller.appspotmail.com>
+Message-ID: <6adc5aa3.4ce6c07b.2dfc0c.0002.GAE@google.com>
+Subject: [syzbot] [jffs2?] KASAN: slab-use-after-free Read in jffs2_garbage_collect_thread
+From: syzbot <syzbot+ae2d1f6d474e1725bdc0@syzkaller.appspotmail.com>
 To: dwmw2@infradead.org, linux-kernel@vger.kernel.org, 
 	linux-mtd@lists.infradead.org, richard@nod.at, 
 	syzkaller-bugs@googlegroups.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261023_184453_596619_6D84354C 
-X-CRM114-Status: UNSURE (   5.38  )
+X-CRM114-CacheID: sfid-20261024_001342_191965_F66B9DFA 
+X-CRM114-Status: UNSURE (   6.08  )
 X-CRM114-Notice: Please train this message.
 X-Spam-Score: -0.7 (/)
 X-BeenThere: linux-mtd@lists.infradead.org
@@ -85,183 +84,196 @@ X-Spam-Status: No, score=-9.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-syzbot has found a reproducer for the following issue on:
+Hello,
 
-HEAD commit:    734bef548a96 Merge tag 'net-next-7.4' of git://git.kernel...
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=147da38e580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2ced4746a89083f5
-dashboard link: https://syzkaller.appspot.com/bug?extid=fdfd8fdf716c90baef0f
-compiler:       gcc (Debian 14.2.0-19) 14.2.0, GNU ld (GNU Binutils for Debian) 2.44
-userspace arch: i386
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=167da38e580000
+syzbot found the following issue on:
+
+HEAD commit:    f47d223627f8 Merge tag 'vfs-7.4-rc1.sync_close' of git://g..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15f8c121580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b8fd4ba7675545d0
+dashboard link: https://syzkaller.appspot.com/bug?extid=ae2d1f6d474e1725bdc0
+compiler:       Debian clang version 22.1.8 (1~deb13u4), Debian LLD 22.1.8
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/259fe840897d/disk-f47d2236.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/c8fb4bab2404/vmlinux-f47d2236.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/e3144718bd67/bzImage-f47d2236.xz
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+fdfd8fdf716c90baef0f@syzkaller.appspotmail.com
+Reported-by: syzbot+ae2d1f6d474e1725bdc0@syzkaller.appspotmail.com
 
-======================================================
-WARNING: possible circular locking dependency detected
-syzkaller #0 Not tainted
-------------------------------------------------------
-kswapd0/116 is trying to acquire lock:
-ffff8880143729d8 (&c->xattr_sem){++++}-{4:4}, at: jffs2_xattr_delete_inode+0x83/0x130 fs/jffs2/xattr.c:605
+==================================================================
+BUG: KASAN: slab-use-after-free in rt_spin_lock+0x83/0x400 kernel/locking/spinlock_rt.c:56
+Read of size 1 at addr ffff88804f2b02c0 by task jffs2_gcd_mtd0/12364
 
-but task is already holding lock:
-ffffffff901caa00 (fs_reclaim){+.+.}-{0:0}, at: balance_pgdat+0x243/0x1f00 mm/vmscan.c:7177
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #1 (fs_reclaim){+.+.}-{0:0}:
-       lock_acquire kernel/locking/lockdep.c:5942 [inline]
-       lock_acquire+0x1d1/0x380 kernel/locking/lockdep.c:5899
-       __fs_reclaim_acquire mm/page_alloc.c:4375 [inline]
-       fs_reclaim_acquire+0xc4/0x100 mm/page_alloc.c:4389
-       might_alloc include/linux/sched/mm.h:316 [inline]
-       slab_pre_alloc_hook mm/slub.c:4636 [inline]
-       slab_alloc_node mm/slub.c:4974 [inline]
-       kmem_cache_alloc_noprof+0x63/0x6a0 mm/slub.c:5010
-       jffs2_alloc_xattr_datum+0x1c/0xe0 fs/jffs2/malloc.c:264
-       create_xattr_datum fs/jffs2/xattr.c:363 [inline]
-       do_jffs2_setxattr+0x6f0/0x1610 fs/jffs2/xattr.c:1175
-       __vfs_setxattr+0x175/0x1e0 fs/xattr.c:223
-       __vfs_setxattr_noperm+0x127/0x660 fs/xattr.c:257
-       __vfs_setxattr_locked+0x127/0x2b0 fs/xattr.c:318
-       vfs_setxattr+0x14a/0x390 fs/xattr.c:344
-       do_setxattr+0x145/0x180 fs/xattr.c:662
-       file_setxattr fs/xattr.c:672 [inline]
-       file_setxattr+0x139/0x1b0 fs/xattr.c:666
-       path_setxattrat+0x335/0x3b0 fs/xattr.c:732
-       __do_sys_fsetxattr fs/xattr.c:782 [inline]
-       __se_sys_fsetxattr fs/xattr.c:779 [inline]
-       __ia32_sys_fsetxattr+0xc4/0x140 fs/xattr.c:779
-       do_syscall_32_irqs_on arch/x86/entry/syscall_32.c:79 [inline]
-       __do_fast_syscall_32+0x14b/0x8c0 arch/x86/entry/syscall_32.c:282
-       do_fast_syscall_32+0x32/0x70 arch/x86/entry/syscall_32.c:307
-       entry_SYSENTER_compat_after_hwframe+0x84/0x8e
-
--> #0 (&c->xattr_sem){++++}-{4:4}:
-       check_prev_add+0xeb/0xe60 kernel/locking/lockdep.c:3209
-       check_prevs_add kernel/locking/lockdep.c:3328 [inline]
-       validate_chain kernel/locking/lockdep.c:3952 [inline]
-       __lock_acquire+0x1528/0x1f40 kernel/locking/lockdep.c:5288
-       lock_acquire kernel/locking/lockdep.c:5942 [inline]
-       lock_acquire+0x1d1/0x380 kernel/locking/lockdep.c:5899
-       down_write+0x86/0x1f0 kernel/locking/rwsem.c:1631
-       jffs2_xattr_delete_inode+0x83/0x130 fs/jffs2/xattr.c:605
-       jffs2_do_clear_inode+0x50/0x470 fs/jffs2/readinode.c:1418
-       evict+0x3c2/0xad0 fs/inode.c:822
-       iput_final fs/inode.c:2014 [inline]
-       iput.part.0+0x989/0x1050 fs/inode.c:2063
-       iput+0x30/0x40 fs/inode.c:2029
-       dentry_unlink_inode+0x403/0x4d0 fs/dcache.c:493
-       dentry_kill+0x25d/0xca0 fs/dcache.c:840
-       finish_dput fs/dcache.c:1015 [inline]
-       dput.part.0+0xd2/0x240 fs/dcache.c:1056
-       dput+0x1f/0x30 fs/dcache.c:1051
-       ovl_destroy_inode+0x3e/0x190 fs/overlayfs/super.c:236
-       destroy_inode+0xcb/0x1c0 fs/inode.c:387
-       evict+0x599/0xad0 fs/inode.c:846
-       iput_final fs/inode.c:2014 [inline]
-       iput.part.0+0x989/0x1050 fs/inode.c:2063
-       iput+0x30/0x40 fs/inode.c:2029
-       dentry_unlink_inode+0x403/0x4d0 fs/dcache.c:493
-       dentry_kill+0x25d/0xca0 fs/dcache.c:840
-       shrink_kill fs/dcache.c:1289 [inline]
-       shrink_dentry_list+0x1e8/0x310 fs/dcache.c:1306
-       prune_dcache_sb+0xea/0x150 fs/dcache.c:1388
-       super_cache_scan+0x32b/0x550 fs/super.c:225
-       do_shrink_slab+0x411/0x1200 mm/shrinker.c:445
-       shrink_slab+0x171/0x12e0 mm/shrinker.c:676
-       shrink_one+0x398/0x850 mm/vmscan.c:5119
-       shrink_many mm/vmscan.c:5180 [inline]
-       lru_gen_shrink_node mm/vmscan.c:5258 [inline]
-       shrink_node+0x2b1b/0x4310 mm/vmscan.c:6247
-       kswapd_shrink_node mm/vmscan.c:7101 [inline]
-       balance_pgdat+0xb20/0x1f00 mm/vmscan.c:7279
-       kswapd+0x556/0xb50 mm/vmscan.c:7555
-       kthread+0x373/0x450 kernel/kthread.c:436
-       ret_from_fork+0x730/0xd60 arch/x86/kernel/process.c:158
-       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
-
-other info that might help us debug this:
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(fs_reclaim);
-                               lock(&c->xattr_sem);
-                               lock(fs_reclaim);
-  lock(&c->xattr_sem);
-
- *** DEADLOCK ***
-
-locks held by kswapd0/116: 2, last CPU#0:
- #0: ffffffff901caa00 (fs_reclaim){+.+.}-{0:0}, at: balance_pgdat+0x243/0x1f00 mm/vmscan.c:7177
- #1: ffff88804f2ec0e8 (&type->s_umount_key#57){.+.+}-{4:4}, at: super_trylock_shared fs/super.c:670 [inline]
- #1: ffff88804f2ec0e8 (&type->s_umount_key#57){.+.+}-{4:4}, at: super_cache_scan+0x9b/0x550 fs/super.c:200
-
-stack backtrace:
-CPU: 0 UID: 0 PID: 116 Comm: kswapd0 Not tainted syzkaller #0 PREEMPT(full) 
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+CPU: 1 UID: 0 PID: 12364 Comm: jffs2_gcd_mtd0 Not tainted syzkaller #0 PREEMPT_{RT,(full)} 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/07/2026
 Call Trace:
  <TASK>
- __dump_stack lib/dump_stack.c:94 [inline]
- dump_stack_lvl+0x100/0x190 lib/dump_stack.c:120
- print_circular_bug.cold+0x178/0x1be kernel/locking/lockdep.c:2087
- check_noncircular+0x146/0x160 kernel/locking/lockdep.c:2219
- check_prev_add+0xeb/0xe60 kernel/locking/lockdep.c:3209
- check_prevs_add kernel/locking/lockdep.c:3328 [inline]
- validate_chain kernel/locking/lockdep.c:3952 [inline]
- __lock_acquire+0x1528/0x1f40 kernel/locking/lockdep.c:5288
- lock_acquire kernel/locking/lockdep.c:5942 [inline]
- lock_acquire+0x1d1/0x380 kernel/locking/lockdep.c:5899
- down_write+0x86/0x1f0 kernel/locking/rwsem.c:1631
- jffs2_xattr_delete_inode+0x83/0x130 fs/jffs2/xattr.c:605
- jffs2_do_clear_inode+0x50/0x470 fs/jffs2/readinode.c:1418
- evict+0x3c2/0xad0 fs/inode.c:822
- iput_final fs/inode.c:2014 [inline]
- iput.part.0+0x989/0x1050 fs/inode.c:2063
- iput+0x30/0x40 fs/inode.c:2029
- dentry_unlink_inode+0x403/0x4d0 fs/dcache.c:493
- dentry_kill+0x25d/0xca0 fs/dcache.c:840
- finish_dput fs/dcache.c:1015 [inline]
- dput.part.0+0xd2/0x240 fs/dcache.c:1056
- dput+0x1f/0x30 fs/dcache.c:1051
- ovl_destroy_inode+0x3e/0x190 fs/overlayfs/super.c:236
- destroy_inode+0xcb/0x1c0 fs/inode.c:387
- evict+0x599/0xad0 fs/inode.c:846
- iput_final fs/inode.c:2014 [inline]
- iput.part.0+0x989/0x1050 fs/inode.c:2063
- iput+0x30/0x40 fs/inode.c:2029
- dentry_unlink_inode+0x403/0x4d0 fs/dcache.c:493
- dentry_kill+0x25d/0xca0 fs/dcache.c:840
- shrink_kill fs/dcache.c:1289 [inline]
- shrink_dentry_list+0x1e8/0x310 fs/dcache.c:1306
- prune_dcache_sb+0xea/0x150 fs/dcache.c:1388
- super_cache_scan+0x32b/0x550 fs/super.c:225
- do_shrink_slab+0x411/0x1200 mm/shrinker.c:445
- shrink_slab+0x171/0x12e0 mm/shrinker.c:676
- shrink_one+0x398/0x850 mm/vmscan.c:5119
- shrink_many mm/vmscan.c:5180 [inline]
- lru_gen_shrink_node mm/vmscan.c:5258 [inline]
- shrink_node+0x2b1b/0x4310 mm/vmscan.c:6247
- kswapd_shrink_node mm/vmscan.c:7101 [inline]
- balance_pgdat+0xb20/0x1f00 mm/vmscan.c:7279
- kswapd+0x556/0xb50 mm/vmscan.c:7555
- kthread+0x373/0x450 kernel/kthread.c:436
- ret_from_fork+0x730/0xd60 arch/x86/kernel/process.c:158
+ dump_stack_lvl+0xe8/0x150 lib/dump_stack.c:120
+ print_address_description+0x55/0x1e0 mm/kasan/report.c:378
+ print_report+0x58/0x70 mm/kasan/report.c:482
+ kasan_report+0x117/0x150 mm/kasan/report.c:595
+ __kasan_check_byte+0x2a/0x40 mm/kasan/common.c:585
+ kasan_check_byte include/linux/kasan.h:402 [inline]
+ lock_acquire+0x7d/0x350 kernel/locking/lockdep.c:5916
+ rt_spin_lock+0x83/0x400 kernel/locking/spinlock_rt.c:56
+ spin_lock include/linux/spinlock_rt.h:45 [inline]
+ jffs2_garbage_collect_thread+0x1dc/0x720 fs/jffs2/background.c:94
+ kthread+0x38b/0x470 kernel/kthread.c:436
+ ret_from_fork+0x514/0xb70 arch/x86/kernel/process.c:158
  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
  </TASK>
 
+Allocated by task 12363:
+ kasan_save_stack mm/kasan/common.c:57 [inline]
+ kasan_save_track+0x3e/0x80 mm/kasan/common.c:78
+ poison_kmalloc_redzone mm/kasan/common.c:409 [inline]
+ __kasan_kmalloc+0x93/0xb0 mm/kasan/common.c:426
+ kasan_kmalloc include/linux/kasan.h:263 [inline]
+ __kmalloc_cache_noprof+0x3d5/0x680 mm/slub.c:5563
+ _kmalloc_noprof include/linux/slab.h:991 [inline]
+ _kzalloc_noprof include/linux/slab.h:1312 [inline]
+ jffs2_init_fs_context+0x4f/0xc0 fs/jffs2/super.c:314
+ alloc_fs_context+0x9a3/0xd00 fs/fs_context.c:295
+ do_new_mount+0x177/0xb00 fs/namespace.c:3966
+ do_mount fs/namespace.c:4350 [inline]
+ __do_sys_mount fs/namespace.c:4566 [inline]
+ __se_sys_mount+0x31d/0x420 fs/namespace.c:4543
+ do_syscall_x64 arch/x86/entry/syscall_64.c:61 [inline]
+ do_syscall_64+0x166/0x520 arch/x86/entry/syscall_64.c:84
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+Freed by task 10613:
+ kasan_save_stack mm/kasan/common.c:57 [inline]
+ kasan_save_track+0x3e/0x80 mm/kasan/common.c:78
+ kasan_save_free_info+0x40/0x50 mm/kasan/generic.c:584
+ poison_slab_object mm/kasan/common.c:264 [inline]
+ __kasan_slab_free+0x5c/0x80 mm/kasan/common.c:296
+ kasan_slab_free include/linux/kasan.h:235 [inline]
+ slab_free_hook mm/slub.c:2748 [inline]
+ slab_free mm/slub.c:6509 [inline]
+ kfree+0x1c5/0x6d0 mm/slub.c:6802
+ deactivate_locked_super+0xbe/0x110 fs/super.c:586
+ cleanup_mnt+0x204/0x2a0 fs/namespace.c:1396
+ task_work_run+0x1d9/0x270 kernel/task_work.c:233
+ resume_user_mode_work include/linux/resume_user_mode.h:50 [inline]
+ __exit_to_user_mode_loop kernel/entry/common.c:70 [inline]
+ exit_to_user_mode_loop+0x204/0x770 kernel/entry/common.c:101
+ __exit_to_user_mode_prepare include/linux/irq-entry-common.h:207 [inline]
+ syscall_exit_to_user_mode_prepare include/linux/irq-entry-common.h:230 [inline]
+ syscall_exit_to_user_mode include/linux/entry-common.h:343 [inline]
+ do_syscall_64+0x328/0x520 arch/x86/entry/syscall_64.c:89
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+The buggy address belongs to the object at ffff88804f2b0000
+ which belongs to the cache kmalloc-4k of size 4096
+The buggy address is located 704 bytes inside of
+ freed 4096-byte region [ffff88804f2b0000, ffff88804f2b1000)
+
+The buggy address belongs to the physical page:
+page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x4f2b0
+head: order:3 mapcount:0 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+flags: 0x80000000000040(head|node=0|zone=1)
+page_type: f5(slab)
+raw: 0080000000000040 ffff88813ff44140 dead000000000100 dead000000000122
+raw: 0000000000000000 0000000000040004 00000000f5000000 0000000000000000
+head: 0080000000000040 ffff88813ff44140 dead000000000100 dead000000000122
+head: 0000000000000000 0000000000040004 00000000f5000000 0000000000000000
+head: 0080000000000003 fffffffffffffe01 00000000ffffffff 00000000ffffffff
+head: 00000007f6daf3f9 0000000000000000 00000000ffffffff 0000000000000008
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd2820(GFP_ATOMIC|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 157, tgid 157 (kworker/u8:6), ts 576233263105
+ set_page_owner include/linux/page_owner.h:33 [inline]
+ post_alloc_hook+0x1f9/0x250 mm/page_alloc.c:1871
+ prep_new_page mm/page_alloc.c:1879 [inline]
+ get_page_from_freelist+0x2591/0x2600 mm/page_alloc.c:3943
+ __alloc_frozen_pages_noprof+0x230/0x5c0 mm/page_alloc.c:5436
+ alloc_slab_page mm/slub.c:3347 [inline]
+ allocate_slab+0x7d/0x620 mm/slub.c:3462
+ new_slab mm/slub.c:3513 [inline]
+ refill_objects+0x2d8/0x350 mm/slub.c:7418
+ refill_sheaf mm/slub.c:2885 [inline]
+ __pcs_replace_empty_main+0x339/0x690 mm/slub.c:4774
+ alloc_from_pcs mm/slub.c:4850 [inline]
+ slab_alloc_node mm/slub.c:4984 [inline]
+ __do_kmalloc_node mm/slub.c:5413 [inline]
+ __kmalloc_node_track_caller_noprof+0x61e/0x7b0 mm/slub.c:5545
+ kmalloc_reserve net/core/skbuff.c:637 [inline]
+ __alloc_skb+0x2c1/0x7a0 net/core/skbuff.c:715
+ alloc_skb include/linux/skbuff.h:1384 [inline]
+ nsim_dev_trap_skb_build drivers/net/netdevsim/dev.c:744 [inline]
+ nsim_dev_trap_report drivers/net/netdevsim/dev.c:801 [inline]
+ nsim_dev_trap_report_work+0x2b1/0xcb0 drivers/net/netdevsim/dev.c:847
+ process_one_work kernel/workqueue.c:3396 [inline]
+ process_scheduled_works+0xc3d/0x1630 kernel/workqueue.c:3479
+ worker_thread+0xa47/0xfb0 kernel/workqueue.c:3560
+ kthread+0x38b/0x470 kernel/kthread.c:436
+ ret_from_fork+0x514/0xb70 arch/x86/kernel/process.c:158
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+page last free pid 5567 tgid 5567 ts 576130778544 stack trace:
+ reset_page_owner include/linux/page_owner.h:26 [inline]
+ __free_pages_prepare mm/page_alloc.c:1418 [inline]
+ __free_frozen_pages+0xf8e/0x1070 mm/page_alloc.c:2962
+ __slab_free+0x250/0x2a0 mm/slub.c:5823
+ qlink_free mm/kasan/quarantine.c:163 [inline]
+ qlist_free_all+0x99/0x100 mm/kasan/quarantine.c:179
+ kasan_quarantine_reduce+0x148/0x160 mm/kasan/quarantine.c:286
+ __kasan_slab_alloc+0x22/0x80 mm/kasan/common.c:361
+ kasan_slab_alloc include/linux/kasan.h:253 [inline]
+ slab_post_alloc_hook mm/slub.c:4683 [inline]
+ slab_alloc_node mm/slub.c:4996 [inline]
+ __kmalloc_cache_noprof+0x353/0x680 mm/slub.c:5559
+ _kmalloc_noprof include/linux/slab.h:991 [inline]
+ poll_get_entry fs/select.c:168 [inline]
+ __pollwait+0x27f/0x430 fs/select.c:223
+ poll_wait include/linux/poll.h:45 [inline]
+ pipe_poll+0x186/0x5a0 fs/pipe.c:759
+ vfs_poll include/linux/poll.h:82 [inline]
+ select_poll_one fs/select.c:480 [inline]
+ do_select+0x1016/0x1640 fs/select.c:536
+ core_sys_select+0x86f/0xb40 fs/select.c:677
+ do_pselect fs/select.c:770 [inline]
+ __do_sys_pselect6 fs/select.c:809 [inline]
+ __se_sys_pselect6+0x267/0x320 fs/select.c:800
+ do_syscall_x64 arch/x86/entry/syscall_64.c:61 [inline]
+ do_syscall_64+0x166/0x520 arch/x86/entry/syscall_64.c:84
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+Memory state around the buggy address:
+ ffff88804f2b0180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88804f2b0200: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff88804f2b0280: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                           ^
+ ffff88804f2b0300: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88804f2b0380: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
 
 ---
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
 ______________________________________________________
 Linux MTD discussion mailing list
