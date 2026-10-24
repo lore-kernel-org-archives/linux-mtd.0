@@ -2,69 +2,115 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C068B606A31A
-	for <linux-mtd@archiver.kernel.org>; Sat, 24 Oct 2026 07:13:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4746A606A31A
+	for <linux-mtd@archiver.kernel.org>; Sat, 24 Oct 2026 12:31:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=3bkQsvtQ
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=hF/ubykR;
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=alepacheco.dev header.i=@alepacheco.dev header.a=rsa-sha256 header.s=fm1 header.b=hqvobs24;
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=messagingengine.com header.i=@messagingengine.com header.a=rsa-sha256 header.s=fm2 header.b=IcforvgU
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:From:Subject:Message-ID:Date:
-	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Unsubscribe-Post:List-Owner;
-	bh=deiq7wUvqkYBa86GWX6jrPcfvJvRTgrqLJsl1aKIwQQ=; b=3bkQsvtQCi5BRcJZahwpw9ItNq
-	ymEXvG42NmgojfebKZdGKQYQz7Cp8M6U+nGXBRtQ5XQfglKuPy2HmYdnW0eV91T7I+SHbg51Q2N48
-	mkyorZtnzt3jjI9QBSCWjeQBkdm7W7snbUmPzdwkLxEF75oHEBwOq0MubeddwtMH+7tSD9irq21do
-	lIBXN5gDSORNTxKC7PC1gDuNCPgenGaoqSqSAIvrETuE4zBdCHCQF08hYCoD5aZiMqJ3SSwf0u+WG
-	k9kN1cTXDso/eIQt3EaaGsPnoVD4xUz0Rjf2JPUEhglSqdgbGaJi98S7I6ve4cNKTQvfizfzphImp
-	MjSWQUWA==;
+	List-Archive:List-Unsubscribe:List-Id:Subject:Message-Id:Cc:To:From:Date:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Unsubscribe-Post:List-Owner;
+	bh=PXuB/4fAYussGZqB0PKToMgc8nPj/0jMC2E/Te8c9Lw=; b=hF/ubykR7qIJTTwW03xwjikmM2
+	uvwZbgnVW+tMU2bV0WoFg7UNMOtwsQA2MkEgFnhtiu3gW3V1DQAhsPhU1stPl+7jL6qIfMcl/VUds
+	dSgC+nHJt8duwPfzyaG8LRK/q9M2GERGZ4s9TvNRLuNlG29Xe1oOkS6EWHF07UoqCFObu/b8siDTg
+	PyTJjvQYQxcYJS608i8fnm+GdEyBVKr143ReGBCe/fvMoXQ/t7s40lZdDa+u30ycvhS5yg7wbct+n
+	oz4n9MLokJhsm8VPGCEDLWNFVtNbBlb/Zs5OhRENr+VdvjzESg37p5wnUL+Yshnt1qmaGkeuYwwIF
+	kcVk8vSw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xKVwn-0000000HX9s-3BoS;
-	Sat, 24 Oct 2026 07:13:45 +0000
-Received: from mail-oi1-f199.google.com ([209.85.167.199])
+	id 1xKato-00000000BHu-0Fwd;
+	Sat, 24 Oct 2026 12:31:00 +0000
+Received: from flow-b8-smtp.messagingengine.com ([202.12.124.143])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xKVwk-0000000HX9T-0TPC
+	id 1xKati-00000000BGv-02AH
 	for linux-mtd@lists.infradead.org;
-	Sat, 24 Oct 2026 07:13:43 +0000
-Received: by mail-oi1-f199.google.com with SMTP id 5614622812f47-4db3db8687fso2338256b6e.0
-        for <linux-mtd@lists.infradead.org>; Sat, 24 Oct 2026 00:13:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1792826020; x=1793430820;
-        h=content-type:to:from:subject:message-id:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=kNHFNt8SmJ8cd5Z9Sx/36IlbVhmpvjSnWwa8Mn0QAug=;
-        b=tZva2Geim/8INd+p+krtV5zbTtBbrITwacBEy5PoWIDCZNkQFe0UNEvK9d2DJeYZGk
-         mFhARqhruMgro+FEgg6FfBNKl3TUMKyV52qY3GVgeRrkRYkWephglYCXclkRmyHKMe15
-         h+txX2lZF26dRODgT1WVmCku/lfUarJrhqzJGdg+I1V2gAJvgM4yXTa6729rbUof+r2Q
-         8zAO2Hjwk/wICI+U+1HRbZnGz2vv6fQcoNGv5tI9H2pXX2sSBJIrhsUgjBfOKcuy5BDY
-         AXs68AiiYgbownV19RyuKUX7wuwbsvxUH2k1G8R21SqrZwLQcmF7kTk1oAsx86Zfp8TC
-         4l7g==
-X-Forwarded-Encrypted: i=1; AKwUvBxxDxXfK93hoJJW/W757VMQzPVbkQT8DOplK5nQuV/+fAnJtjSSIFJaE3bcBk9hB4y0Nto5VgNu93g=@lists.infradead.org
-X-Gm-Message-State: AFq9FYKZxvmWSh5znk5D/qw5/GKjAY2+9ESRpY1DYTGBf8bsh80RoaYJ
-	sQXUG8dhS9jGf0YyXFrhc2oMqd2IC1udbO/8d0MF0xtSyroqphVFuPEjD1so8gpeXdCXtRoZ2hb
-	7/08CZ0waonQK3Gr9zcmZ3DzcyAaUulGJdMIb/8zQE0Jnc1D4GMSV9mlExrk=
+	Sat, 24 Oct 2026 12:30:56 +0000
+Received: from phl-compute-05.internal (phl-compute-05.internal [10.202.2.45])
+	by mailflow.stl.internal (Postfix) with ESMTP id C271B1300FA1
+	for <linux-mtd@lists.infradead.org>; Sat, 24 Oct 2026 08:30:49 -0400 (EDT)
+Received: from phl-imap-02 ([10.202.2.81])
+  by phl-compute-05.internal (MEProxy); Sat, 24 Oct 2026 08:30:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alepacheco.dev;
+	 h=cc:cc:content-transfer-encoding:content-type:content-type
+	:date:date:from:from:in-reply-to:message-id:mime-version
+	:reply-to:subject:subject:to:to; s=fm1; t=1792845049; x=
+	1792848649; bh=BX3h784nlZkKHs1VaapVIBduZWJ0fvF929JAJjAxBps=; b=h
+	qvobs24uO3iyDRoiO2Z6efnraD8aloU0NKQtwRvhiXSWlJtVjnZB0f1FNNmNGGkz
+	Jqj6vKAYT6daHW3gei/vedOg+YoMjwR31AXUJwg+O2Mgazwb0Vjx62e3Q9wWK34+
+	W15S4UZdXjUDomf7niTABNp0v88jIfP8QoCuizRHciYrSQdj3xpAgTg7jFdRjKvv
+	loItxuVizpH9rX+I3AvePVoo1AC+xMZsI3flbJbQRbpC+nkm5UQWV1fEQvjobAq+
+	DZqRVYgtI66+hwnRm+Cftq2FdJdb2s6gv8Y5LCQRd2iQXOPSBT9XW2l7MjiGiLDU
+	oevesaV4q8g10J2SYf4Uw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:message-id:mime-version:reply-to:subject
+	:subject:to:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1792845049; x=1792848649; bh=BX3h784nlZkKHs1VaapVIBduZWJ0
+	fvF929JAJjAxBps=; b=IcforvgUVVWRynpVTdKsDSbW3i8lC3qJfWLPASz/7LMq
+	vTCKCR/w9QnjVli6KNiDMmPj2nFKX1ZXsL6QAneQjOBRQW52K5CsIYd+vHvA3Jof
+	OtChDz+oYg+0cbo3BlAtEU6w53mPqQPZrCYDjbWhE9ukewdsMirdhn2fCXsMDxtB
+	yZ9KgLs3cf2xJ368pVP2f7JDFzgichHCUtaT6x+mPqc93Y04iUl3X62aFg/VyXla
+	uYQEcVifTyCHBzr5gY3KhwqH4hPmyxZA7GoFD3bcicAshauQdL1OAhMc/2VugPJt
+	9RZOwLkyysbEo8ykIQrmsgSS38fbxdHFYCW7HKhS/w==
+X-DKIM2-Info: draft=ietf-dkim-dkim2-spec-07;
+	repo=github.com/dkim2wg/interop; date=2026-10-18; sw=lmtpprox;
+	action=sign d=alepacheco.dev a=rsa-sha256;
+DKIM2-Signature: i=1; m=1; t=1792845049; d=alepacheco.dev;
+	mf=PGFsZUBhbGVwYWNoZWNvLmRldj4=;
+	rt=PGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnPg==;
+	s=fm1:rsa-sha256:dICfmbQ+03pIcvLVv8SbTLkM64vwtyRbBNy7ELcMvU2/Zt9
+	70ru5zjk7FxB2Xi/N1X4AAT9SIiuvS2NsUjREvIAee1TTi+J3oLIgI4pcPQZkrUs
+	YL52qieS0hU9197pNbPK6JI5E8WUaY3PRYZOsQZA2UpxCDYv1JC9ODiOA6e0lZIs
+	FjUqUt729aZuAhIImnbfUyYNU9OrdYglroKJDo370SNYQQoPrBpBTwhVSjACSRZA
+	g6wm0OqLyzKPInY5slhskoXvr0Ie0m69xHkUnQX+w0FZSXvmjWJ2AQCJfDECXKDy
+	quUGyEFRW/50V6es3yMK58OGIvt+eEFP5Ov7qxQ==;
+X-DKIM2-Info: draft=ietf-dkim-dkim2-spec-07;
+	repo=github.com/dkim2wg/interop; date=2026-10-18; sw=lmtpprox;
+	action=mi-m=1; hc=10;
+	hn=cc,content-transfer-encoding,content-type,date,feedback-id,
+	from,message-id,mime-version,subject,to;
+Message-Instance: m=1; h=sha256:JJVHwqiG2o/5SOEde/EvMV/8qaikxQTbXPnsZdW0M+c=:X4ij2PMFNMvkaGRSojAN61Pyua1WINB8JZzqqoI/IOs=;
+X-ME-Sender: <xms:-KTcapE0_UhGBthy9Lqkwbh6pT_pSLUAzKSy2n0P-t7KI2QvwZ-jmA>
+    <xme:-KTcapJ7RKDmRwBUCL7nvgr4H57PUTyy0RZMl8V3LcK6SN9x52FvQcAx5_Zfy2P1X
+    HwT4ypghNPHQ78TPSs693qCIG-GCEZxo9z3N6w8LvU1Z3NfOX7sHlUB>
+X-ME-Proxy-Cause: dmFkZTFcNf/WwB4t+u7TH6ItGsJLBDHJLERUFO7AXn82czZYhKxTF1w5cdpp8KbgcTzKyC
+    LeWWHg6SZN6idvVfOy5JA+DlPD99+/8FgEIu3lE9IpdPrsx3NT5wN2dpe/6hJEt79l8opH
+    kXYRAvZ+jAj7ZtceJoTSJVSsvbLVG7yj7BiLWUJKUiojC4Fk0rBBIhfD1KThZ6fQGx2iql
+    GGowOWPZ4MY3Trw6qG+xfS5Kd6YF2ybZAGaiHjVWB7YtVZs4XjdOKNFLhZBRFYq02vXVkm
+    k6UvYBBFhYdCQ/anBmz4lDK2Lwd4kuGKkHVyGvp+LOoP3dggoaokoRD7bT/9+dY2slAKa4
+    JDmd2A7UTxuleEKwBZqbaS8PFNTgsr5RlK5xLE1iY/y7FUP9BUMcaq+eU6z5qRRB3EiaVo
+    v41ZaJ6JyWJk9KMCsbKEH113z8ljwd2oqm/pj8AKU3i+Xj4An2mJrbJL7ele3oPIklDdS1
+    s4dWIopewnmA/v8MZnKlQmA6KjOCMDiqrtiCAEzPgZx2f3GpIyEyA9oL3ALJ6pvGLk/gYo
+    nr+vlKLJu5UmDCotA9CcbgGAWMI5KGQ08mxWvs53X7xtYPMskf7buKK8j6cUyzA2e9uORu
+    4CZt/ETUPZiNdX2OmljMP9YIFm2SOjaomjlxDwyW2Zu2+RDxHXTv8kCOkytA
+X-ME-Proxy: <xmx:-KTcagOfTE36BmkJ7KztekqtJJlqGX4NhP8K5mVIuwHNHRe12vL7vA>
+    <xmx:-KTcaia01j8ELf_Ir-WoT9HajdkaGe8A1Z6qUkVRgr0kGRP2wLJ9Yw>
+    <xmx:-KTcaqzrN6PqvrZLRsecL-OVdyjBqkcXPXm_qhp9jXbf-nMft-ENxw>
+    <xmx:-KTcatLGSEK26ps_z5sAlaPx2kv23FoyI5GGawIatDNk9ALZlyXLlg>
+    <xmx:-aTcair2QvaYQWLGL22MB1pJw1uPvYOZ7W48QLqHmdZSt8qRF_rroFWk>
+Feedback-ID: if58e4a8f:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id C819E700069; Sat, 24 Oct 2026 08:30:48 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:1205:b0:4fc:5e91:5377 with SMTP id
- 5614622812f47-55c0038d63fmr828839b6e.59.1792826019851; Sat, 24 Oct 2026
- 00:13:39 -0700 (PDT)
-Date: Sat, 24 Oct 2026 00:13:39 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6adc5aa3.4ce6c07b.2dfc0c.0002.GAE@google.com>
-Subject: [syzbot] [jffs2?] KASAN: slab-use-after-free Read in jffs2_garbage_collect_thread
-From: syzbot <syzbot+ae2d1f6d474e1725bdc0@syzkaller.appspotmail.com>
-To: dwmw2@infradead.org, linux-kernel@vger.kernel.org, 
-	linux-mtd@lists.infradead.org, richard@nod.at, 
-	syzkaller-bugs@googlegroups.com
+Date: Sat, 24 Oct 2026 08:30:48 -0400
+From: "Alejandro Pacheco" <ale@alepacheco.dev>
+To: "Richard Weinberger" <richard@nod.at>
+Cc: "Zhihao Cheng" <chengzhihao1@huawei.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Message-Id: <82903e1b-56b0-4947-b0ed-5c24a536491a@alepacheco.dev>
+Subject: [PATCH] ubifs: check the length of index branches before reading them
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261024_001342_191965_F66B9DFA 
-X-CRM114-Status: UNSURE (   6.08  )
-X-CRM114-Notice: Please train this message.
-X-Spam-Score: -0.7 (/)
+X-CRM114-CacheID: sfid-20261024_053054_577263_F3376204 
+X-CRM114-Status: GOOD (  18.86  )
+X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,203 +123,108 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-9.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,FROM_LOCAL_HEX,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-Hello,
+From: Alejandro Pacheco <ale@alepacheco.dev>
 
-syzbot found the following issue on:
+read_znode() validates each branch of the index node it reads: the LEB
+number and offset of every branch and, in a level 0 znode, the length of
+the leaf node the branch points to, against c->ranges[]. In a znode above
+level 0, where each branch points to another index node, the length is
+not checked:
 
-HEAD commit:    f47d223627f8 Merge tag 'vfs-7.4-rc1.sync_close' of git://g..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15f8c121580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b8fd4ba7675545d0
-dashboard link: https://syzkaller.appspot.com/bug?extid=ae2d1f6d474e1725bdc0
-compiler:       Debian clang version 22.1.8 (1~deb13u4), Debian LLD 22.1.8
+	if (znode->level)
+		continue;
 
-Unfortunately, I don't have any reproducer for this issue yet.
+When such a child is loaded, ubifs_load_znode() calls read_znode() for
+it, which allocates c->max_idx_node_sz bytes and has ubifs_read_node()
+read zbr->len bytes into them. Before the read, that length is bounded
+by the space left in the LEB but not by the size of the buffer; the
+length in the node header is compared with it and with c->ranges[] only
+after the read. So an image with a branch length larger than
+c->max_idx_node_sz, but within the LEB, can cause a heap buffer overflow.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/259fe840897d/disk-f47d2236.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/c8fb4bab2404/vmlinux-f47d2236.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/e3144718bd67/bzImage-f47d2236.xz
+dbg_check_old_index(), which walks the old index on the media when the
+chk_index debugging check is enabled, reads each child index node by its
+branch length the same way, into a buffer sized for an index node of
+c->fanout branches, without checking the length.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ae2d1f6d474e1725bdc0@syzkaller.appspotmail.com
+validate_master() already checks the root index node's length,
+c->zroot.len, against c->ranges[UBIFS_IDX_NODE]. Give every other index
+branch the same check before it is used for a read: in read_znode(), by
+running the length check level 0 branches get with type UBIFS_IDX_NODE,
+and in dbg_check_old_index(). Images written by UBIFS or mkfs.ubifs are
+not affected: an index node is ubifs_idx_node_sz() of its 1 to fanout
+branches long, which is the range in c->ranges[UBIFS_IDX_NODE], and
+ubifs_read_node() already rejects a length outside it, though only after
+the read.
 
-==================================================================
-BUG: KASAN: slab-use-after-free in rt_spin_lock+0x83/0x400 kernel/locking/spinlock_rt.c:56
-Read of size 1 at addr ffff88804f2b02c0 by task jffs2_gcd_mtd0/12364
+This needs a crafted image (the CRC of the index node holding the branch
+catches random corruption), and mounting UBIFS needs CAP_SYS_ADMIN in
+the initial user namespace.
 
-CPU: 1 UID: 0 PID: 12364 Comm: jffs2_gcd_mtd0 Not tainted syzkaller #0 PREEMPT_{RT,(full)} 
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/07/2026
-Call Trace:
- <TASK>
- dump_stack_lvl+0xe8/0x150 lib/dump_stack.c:120
- print_address_description+0x55/0x1e0 mm/kasan/report.c:378
- print_report+0x58/0x70 mm/kasan/report.c:482
- kasan_report+0x117/0x150 mm/kasan/report.c:595
- __kasan_check_byte+0x2a/0x40 mm/kasan/common.c:585
- kasan_check_byte include/linux/kasan.h:402 [inline]
- lock_acquire+0x7d/0x350 kernel/locking/lockdep.c:5916
- rt_spin_lock+0x83/0x400 kernel/locking/spinlock_rt.c:56
- spin_lock include/linux/spinlock_rt.h:45 [inline]
- jffs2_garbage_collect_thread+0x1dc/0x720 fs/jffs2/background.c:94
- kthread+0x38b/0x470 kernel/kthread.c:436
- ret_from_fork+0x514/0xb70 arch/x86/kernel/process.c:158
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
- </TASK>
+It was tested on a KASAN UML kernel built from this tree, with UBI on a
+64 MiB mtdram device and the chk_index debugging check enabled. A tree of
+1,830 files in 30 directories was copied to a freshly formatted volume,
+read back after a remount, partly deleted and copied again, and read
+back after another remount; the same tree was read back from a second
+volume written by mkfs.ubifs. Across the remounts, read_znode() read 909
+index nodes above level 0, and dbg_check_old_index() walked the old
+index at 20 commits, the whole index of each volume as it was on the
+media among them, with no KASAN report, warning or UBIFS error. This only
+runs the new checks on valid index nodes: no image with a bad branch
+length was made. It builds with no new warnings (W=1, x86_64 defconfig
+with UBIFS and KASAN), and checkpatch.pl --strict reports nothing.
 
-Allocated by task 12363:
- kasan_save_stack mm/kasan/common.c:57 [inline]
- kasan_save_track+0x3e/0x80 mm/kasan/common.c:78
- poison_kmalloc_redzone mm/kasan/common.c:409 [inline]
- __kasan_kmalloc+0x93/0xb0 mm/kasan/common.c:426
- kasan_kmalloc include/linux/kasan.h:263 [inline]
- __kmalloc_cache_noprof+0x3d5/0x680 mm/slub.c:5563
- _kmalloc_noprof include/linux/slab.h:991 [inline]
- _kzalloc_noprof include/linux/slab.h:1312 [inline]
- jffs2_init_fs_context+0x4f/0xc0 fs/jffs2/super.c:314
- alloc_fs_context+0x9a3/0xd00 fs/fs_context.c:295
- do_new_mount+0x177/0xb00 fs/namespace.c:3966
- do_mount fs/namespace.c:4350 [inline]
- __do_sys_mount fs/namespace.c:4566 [inline]
- __se_sys_mount+0x31d/0x420 fs/namespace.c:4543
- do_syscall_x64 arch/x86/entry/syscall_64.c:61 [inline]
- do_syscall_64+0x166/0x520 arch/x86/entry/syscall_64.c:84
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
+An LLM coding assistant was used to find this bug and to write this
+patch and its changelog.
 
-Freed by task 10613:
- kasan_save_stack mm/kasan/common.c:57 [inline]
- kasan_save_track+0x3e/0x80 mm/kasan/common.c:78
- kasan_save_free_info+0x40/0x50 mm/kasan/generic.c:584
- poison_slab_object mm/kasan/common.c:264 [inline]
- __kasan_slab_free+0x5c/0x80 mm/kasan/common.c:296
- kasan_slab_free include/linux/kasan.h:235 [inline]
- slab_free_hook mm/slub.c:2748 [inline]
- slab_free mm/slub.c:6509 [inline]
- kfree+0x1c5/0x6d0 mm/slub.c:6802
- deactivate_locked_super+0xbe/0x110 fs/super.c:586
- cleanup_mnt+0x204/0x2a0 fs/namespace.c:1396
- task_work_run+0x1d9/0x270 kernel/task_work.c:233
- resume_user_mode_work include/linux/resume_user_mode.h:50 [inline]
- __exit_to_user_mode_loop kernel/entry/common.c:70 [inline]
- exit_to_user_mode_loop+0x204/0x770 kernel/entry/common.c:101
- __exit_to_user_mode_prepare include/linux/irq-entry-common.h:207 [inline]
- syscall_exit_to_user_mode_prepare include/linux/irq-entry-common.h:230 [inline]
- syscall_exit_to_user_mode include/linux/entry-common.h:343 [inline]
- do_syscall_64+0x328/0x520 arch/x86/entry/syscall_64.c:89
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-The buggy address belongs to the object at ffff88804f2b0000
- which belongs to the cache kmalloc-4k of size 4096
-The buggy address is located 704 bytes inside of
- freed 4096-byte region [ffff88804f2b0000, ffff88804f2b1000)
-
-The buggy address belongs to the physical page:
-page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x4f2b0
-head: order:3 mapcount:0 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-flags: 0x80000000000040(head|node=0|zone=1)
-page_type: f5(slab)
-raw: 0080000000000040 ffff88813ff44140 dead000000000100 dead000000000122
-raw: 0000000000000000 0000000000040004 00000000f5000000 0000000000000000
-head: 0080000000000040 ffff88813ff44140 dead000000000100 dead000000000122
-head: 0000000000000000 0000000000040004 00000000f5000000 0000000000000000
-head: 0080000000000003 fffffffffffffe01 00000000ffffffff 00000000ffffffff
-head: 00000007f6daf3f9 0000000000000000 00000000ffffffff 0000000000000008
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd2820(GFP_ATOMIC|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 157, tgid 157 (kworker/u8:6), ts 576233263105
- set_page_owner include/linux/page_owner.h:33 [inline]
- post_alloc_hook+0x1f9/0x250 mm/page_alloc.c:1871
- prep_new_page mm/page_alloc.c:1879 [inline]
- get_page_from_freelist+0x2591/0x2600 mm/page_alloc.c:3943
- __alloc_frozen_pages_noprof+0x230/0x5c0 mm/page_alloc.c:5436
- alloc_slab_page mm/slub.c:3347 [inline]
- allocate_slab+0x7d/0x620 mm/slub.c:3462
- new_slab mm/slub.c:3513 [inline]
- refill_objects+0x2d8/0x350 mm/slub.c:7418
- refill_sheaf mm/slub.c:2885 [inline]
- __pcs_replace_empty_main+0x339/0x690 mm/slub.c:4774
- alloc_from_pcs mm/slub.c:4850 [inline]
- slab_alloc_node mm/slub.c:4984 [inline]
- __do_kmalloc_node mm/slub.c:5413 [inline]
- __kmalloc_node_track_caller_noprof+0x61e/0x7b0 mm/slub.c:5545
- kmalloc_reserve net/core/skbuff.c:637 [inline]
- __alloc_skb+0x2c1/0x7a0 net/core/skbuff.c:715
- alloc_skb include/linux/skbuff.h:1384 [inline]
- nsim_dev_trap_skb_build drivers/net/netdevsim/dev.c:744 [inline]
- nsim_dev_trap_report drivers/net/netdevsim/dev.c:801 [inline]
- nsim_dev_trap_report_work+0x2b1/0xcb0 drivers/net/netdevsim/dev.c:847
- process_one_work kernel/workqueue.c:3396 [inline]
- process_scheduled_works+0xc3d/0x1630 kernel/workqueue.c:3479
- worker_thread+0xa47/0xfb0 kernel/workqueue.c:3560
- kthread+0x38b/0x470 kernel/kthread.c:436
- ret_from_fork+0x514/0xb70 arch/x86/kernel/process.c:158
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
-page last free pid 5567 tgid 5567 ts 576130778544 stack trace:
- reset_page_owner include/linux/page_owner.h:26 [inline]
- __free_pages_prepare mm/page_alloc.c:1418 [inline]
- __free_frozen_pages+0xf8e/0x1070 mm/page_alloc.c:2962
- __slab_free+0x250/0x2a0 mm/slub.c:5823
- qlink_free mm/kasan/quarantine.c:163 [inline]
- qlist_free_all+0x99/0x100 mm/kasan/quarantine.c:179
- kasan_quarantine_reduce+0x148/0x160 mm/kasan/quarantine.c:286
- __kasan_slab_alloc+0x22/0x80 mm/kasan/common.c:361
- kasan_slab_alloc include/linux/kasan.h:253 [inline]
- slab_post_alloc_hook mm/slub.c:4683 [inline]
- slab_alloc_node mm/slub.c:4996 [inline]
- __kmalloc_cache_noprof+0x353/0x680 mm/slub.c:5559
- _kmalloc_noprof include/linux/slab.h:991 [inline]
- poll_get_entry fs/select.c:168 [inline]
- __pollwait+0x27f/0x430 fs/select.c:223
- poll_wait include/linux/poll.h:45 [inline]
- pipe_poll+0x186/0x5a0 fs/pipe.c:759
- vfs_poll include/linux/poll.h:82 [inline]
- select_poll_one fs/select.c:480 [inline]
- do_select+0x1016/0x1640 fs/select.c:536
- core_sys_select+0x86f/0xb40 fs/select.c:677
- do_pselect fs/select.c:770 [inline]
- __do_sys_pselect6 fs/select.c:809 [inline]
- __se_sys_pselect6+0x267/0x320 fs/select.c:800
- do_syscall_x64 arch/x86/entry/syscall_64.c:61 [inline]
- do_syscall_64+0x166/0x520 arch/x86/entry/syscall_64.c:84
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-Memory state around the buggy address:
- ffff88804f2b0180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88804f2b0200: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff88804f2b0280: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                           ^
- ffff88804f2b0300: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88804f2b0380: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
-
-
+Fixes: 1e51764a3c2a ("UBIFS: add new flash file system")
+Cc: stable@vger.kernel.org
+Signed-off-by: Alejandro Pacheco <ale@alepacheco.dev>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ fs/ubifs/commit.c   | 5 +++++
+ fs/ubifs/tnc_misc.c | 6 +++---
+ 2 files changed, 8 insertions(+), 3 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+diff --git a/fs/ubifs/commit.c b/fs/ubifs/commit.c
+index 5b3a840098b..0e50b584248 100644
+--- a/fs/ubifs/commit.c
++++ b/fs/ubifs/commit.c
+@@ -696,6 +696,11 @@ int dbg_check_old_index(struct ubifs_info *c, struct ubifs_zbranch *zroot)
+ 		lnum = le32_to_cpu(br->lnum);
+ 		offs = le32_to_cpu(br->offs);
+ 		len = le32_to_cpu(br->len);
++		if (len < c->ranges[UBIFS_IDX_NODE].min_len ||
++		    len > c->ranges[UBIFS_IDX_NODE].max_len) {
++			err = 8;
++			goto out_dump;
++		}
+ 		key_read(c, &br->key, &lower_key);
+ 		if (iip + 1 < le16_to_cpu(idx->child_cnt)) {
+ 			br = ubifs_idx_branch(c, idx, iip + 1);
+diff --git a/fs/ubifs/tnc_misc.c b/fs/ubifs/tnc_misc.c
+index 10b222dc6a5..e3ae17977c9 100644
+--- a/fs/ubifs/tnc_misc.c
++++ b/fs/ubifs/tnc_misc.c
+@@ -357,9 +357,9 @@ static int read_znode(struct ubifs_info *c, struct ubifs_zbranch *zzbr,
+ 		}
+ 
+ 		if (znode->level)
+-			continue;
+-
+-		type = key_type(c, &zbr->key);
++			type = UBIFS_IDX_NODE;
++		else
++			type = key_type(c, &zbr->key);
+ 		if (c->ranges[type].max_len == 0) {
+ 			if (zbr->len != c->ranges[type].len) {
+ 				ubifs_err(c, "bad target node (type %d) length (%d)",
 
 ______________________________________________________
 Linux MTD discussion mailing list
