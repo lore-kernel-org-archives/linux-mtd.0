@@ -2,120 +2,66 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E59DC606A323
-	for <linux-mtd@archiver.kernel.org>; Sat, 24 Oct 2026 12:43:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB8DD606A322
+	for <linux-mtd@archiver.kernel.org>; Sun, 25 Oct 2026 06:19:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=P6+sFtgQ;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=alepacheco.dev header.i=@alepacheco.dev header.a=rsa-sha256 header.s=fm1 header.b=B2z5nwCc;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=messagingengine.com header.i=@messagingengine.com header.a=rsa-sha256 header.s=fm2 header.b=tddHPVLO
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=pAk13Yy5;
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=YlIVB9eL
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Subject:References:In-Reply-To:
-	Message-Id:Cc:To:From:Date:MIME-Version:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Unsubscribe-Post:List-Owner;
-	bh=oGPHF0zARR5mJr7Rr7znrddPt7KR/L+5vkdooZk0oMI=; b=P6+sFtgQo9ZA5nB1I2RnG1KOGW
-	L7H9LcVlaVWvZWZddVdiYdwtLkl2HaNNO4SYF8RUNq73J2ZMF+NrnwscI97P9ahEhSursqZPNm+YJ
-	YbODEDHSBGkw1vy1FUQqewm2asEdEkR05C97W90YoaZiafJIA2mZtsxMKMvm5M7Ro7FSd8/MEUyY5
-	WJ9sIpE30kvlXZHjihG7uIMdv9MaYvvZlF9Me+TsgzPSpDeFfBEebhgT2e3VjYNzEMbTM9BgedMua
-	pAZWE/5VlqgArdOJCOdaCI0PCQ0+JcLt2eK575LlA/gOOmwzlURejef9U6X6zGCn6OHr/M9ZrLwZ0
-	1QyNqoBg==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Date:Message-Id:
+	References:In-Reply-To:From:Subject:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Unsubscribe-Post:List-Owner;
+	bh=PcJZ4WJkp+xQD+/QzFHru42jUEzE+vQA31wGF4HjOl4=; b=pAk13Yy5EnIZWhr6lZGt4rejZz
+	93uBfmiO4Tgev6pjtTopQx3mYZvX4ARpoNBEMwonoqAUSXGHgHP3OrVArNARJd2m7XxZ1TkzYaOLz
+	3ZZLATsbswgCSJLiWAi62dRAtgtd8/LVkLqrT4nMgLgPDp8QQe6Q5z7LdkXcsWwRcT9ZDSU3iQgla
+	MqWzhGn0WACldzCmTK7lJ0Y3PlRMZP4ipob8SkvLFo7avUHOpfXMkQOkRwXXoByTe/F8aInXNGSQL
+	8BrqvXzARVZw5+bOiG+QNHqZTdqOeRvBrrqm60bUi6CxBAo6C64mGbD1mPZcQ2wU+JL5lpUXFFaUW
+	F0wUoVaw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xKb6L-00000000BsD-1xqi;
-	Sat, 24 Oct 2026 12:43:57 +0000
-Received: from flow-b8-smtp.messagingengine.com ([202.12.124.143])
+	id 1xKrZG-00000000n1i-0bj2;
+	Sun, 25 Oct 2026 06:18:54 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xKb6I-00000000BrD-2vqO
+	id 1xKrZE-00000000n1Y-2PEI
 	for linux-mtd@lists.infradead.org;
-	Sat, 24 Oct 2026 12:43:56 +0000
-Received: from phl-compute-05.internal (phl-compute-05.internal [10.202.2.45])
-	by mailflow.stl.internal (Postfix) with ESMTP id 4FC6B13019AE
-	for <linux-mtd@lists.infradead.org>; Sat, 24 Oct 2026 08:43:53 -0400 (EDT)
-Received: from phl-imap-02 ([10.202.2.81])
-  by phl-compute-05.internal (MEProxy); Sat, 24 Oct 2026 08:43:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alepacheco.dev;
-	 h=cc:cc:content-transfer-encoding:content-type:content-type
-	:date:date:from:from:in-reply-to:in-reply-to:message-id
-	:mime-version:references:reply-to:subject:subject:to:to; s=fm1;
-	 t=1792845832; x=1792849432; bh=PJMwachCcqRYCX2Z0PCMjUBZKODxkOBb
-	1Ewo6sCszuk=; b=B2z5nwCc1t+VwpnKFv+BwVvspR+YFw7bqUwBwWo8c3KxoTNX
-	s8mibMmcSnhDSILmfMj4QYYQvp3G18YqpD7qPGj5vNXev6MRCujYZaeExoCWY6ik
-	iIYvygkKvrkPwZNM+VrO7M4dwd+OokU3xcY82YOCfUmzMvOMTe2tqMZSlZONOcup
-	D3HWuDU4dwmEVqDEo9GQYYTeWAD8iPWXaOWppHlsqMFO+MH11CA6wNQ3r+gO4QRQ
-	SNhLdHZi9ZDTiFrI3GUayxVw98lSG6itl4bjl4sFQJoLURmH2hhVuj5WCTlWS7vv
-	JiojujZzNzPq5L/HfbBvu9QF/q5GvewLWF/bzw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1792845832; x=
-	1792849432; bh=PJMwachCcqRYCX2Z0PCMjUBZKODxkOBb1Ewo6sCszuk=; b=t
-	ddHPVLOCfEdlhDgbefLAecc+6/Ig2KSEmGN/meiBIUzjqgy1yEx5L8xcHiMiwF00
-	3y4lIHxl9vxJhWEtdsJomauKcTc6yYzWyiZpMfnOfo8KtQb8C8bFkoU/KWJs1+yp
-	QK+E/er8PhsgbmTBP6Tdbzh4Fv6NCg6u9HwnJrXAOUspJ0pI3qcMFJWCPTIIrmwp
-	bik4miLeA98/+uffPxkl+W/arsJqPVwWV3+Nrcz8/QeUSVCT5pdmdseu50jeCiIf
-	ZjI7QIrK6I/WMYvJYqFVdqxANfcSFmUMtqtGUmEHGmuG4fyvKclqR8O6P9tvvUXE
-	eHRb2hy5k3ZXVwPInJGhQ==
-X-DKIM2-Info: draft=ietf-dkim-dkim2-spec-07;
-	repo=github.com/dkim2wg/interop; date=2026-10-18; sw=lmtpprox;
-	action=sign d=alepacheco.dev a=rsa-sha256;
-DKIM2-Signature: i=1; m=1; t=1792845832; d=alepacheco.dev;
-	mf=PGFsZUBhbGVwYWNoZWNvLmRldj4=;
-	rt=PGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnPg==;
-	s=fm1:rsa-sha256:Wk9po1Iec7pnN/2AsR9UtatB2XW+M2SwcXSTIuFLhCkZbLa
-	eYMtz9Mvwktl4s7LTPSkg31/UVgPPE+vHE2745KBM+cxdtA3l00Q1y5ouqDNC+OE
-	UEmrnhaTQe5EJDEYwKKCCuivH7An8zLYTqzBz5ihd8R2MA+baruNJftgno8yv6H8
-	sIM4cX25csYI8sfJWdsSP8145CEH6whNXzFIVQ3f30qtkpcE/RF6rotLQDsBOtij
-	pUpKxAY/dw8aUZvs/QL55oxBS8KGYn4ENqEqX2oh/8Ii+90iWP19J6ymtFWXqscw
-	fG//eR/UQ2cbQKcvPBU7Wddo/sbG2ei5+hq6/XA==;
-X-DKIM2-Info: draft=ietf-dkim-dkim2-spec-07;
-	repo=github.com/dkim2wg/interop; date=2026-10-18; sw=lmtpprox;
-	action=mi-m=1; hc=12;
-	hn=cc,content-transfer-encoding,content-type,date,feedback-id,
-	from,in-reply-to,message-id,mime-version,references,subject,to;
-Message-Instance: m=1; h=sha256:HSrSjjqnhb4zF3qYbXac3wWr9W9/ieZc48VxVizXgUk=:/WwECYBYaz0RtfG4RJ17uKTJsKoSrZsHFkJyi/TPmLs=;
-X-ME-Sender: <xms:CKjcavf7vfJ4fOPhXMJPcB0Za3mHPN5cUAwI5wtQq10t7-wFcKvMXA>
-    <xme:CKjcagAGh2AYBe7DzUU3wUWJvvYHI6FLFYjBmjggwABoTyrZYdUu9iQgHt63_ql4_
-    ol6Zg8Sq38H1W7RVwJGLAOCEwR1QUzL-Ip8t8UZ7WxwCQGW7prYxweF>
-X-ME-Proxy-Cause: dmFkZTFQaEfFHmDDkMRiWeU7z8blMPF79QeSm/V8M6NPW120fk/aMqYMXuF6FpKygg1L4p
-    407ISxGstzXVbmW8WHCRHwrbAIk1vhEZ9NvHBU0+1hT0t/Winvf8n2naQgXwgu8kuirct1
-    5DPglaqhPRL7CcSo8w/ljCSnqoOvATzNFDRdh/bykfa0Kk7sFYltoazi/TWEG//XuvXGP9
-    S3Lyc4rxl1g1EFY/0gcZuTSnPqLu+WOmsxsH89R+4SSabZyOi4xZJH3+UMaiwLIcZWzBPB
-    Ybq2BXLgumBP1tLWQE2lpttLw+JP7vn5BjraRG2XEu11gSpXylsR7s6QOLSpxFSigaMJOV
-    F4jvUrJd/RzGJeq0iE8cfj0oI73H5R9/FK6cJHBL2YXvtVw0bwlieylcvVXkRqhQ+5LesT
-    W8HNE854voc+SFmHI3SYj/PnR4atYlSw8XlnfAdQHwCwqFLKMoMKlje8s3tRJGUTrrzOi4
-    JnVwBel1YAu8XRrKgeO5xDXgwNIXOu5eNm+mbRgE+f5/NLyH4c2GAIzio8m/BwuCE+eiXe
-    np8UVzBSzHdNuD5wesbp2K/HtJoqoQRTuU1x3FS8994Zu2dvKR6o3FX4GXUIa+AYBE0oX5
-    ScrSEO4ATCPJYqMs9ySxQ82KeOTxjjItSlx1uNz47rfKUfPRTFuE6axEwKPA
-X-ME-Proxy: <xmx:CKjcag8svclYnT23DcRHZPksx5yrdbWMAP2ThPwhPFCjXCLDheIzMQ>
-    <xmx:CKjcajpbJQo-2aRHN5BegBgJKXaDYLSq9wwxhHIZ08dBfzvrLogUgA>
-    <xmx:CKjcalBqXlV964imdSAFRsaPJ6KEaRiJGYdJ3gcjiCwj4rAmjpVeuw>
-    <xmx:CKjcalwoRY3z0vKdKPU_krsxMahXx2tqLTtfUoJv_3VuQVtvKfYHFg>
-    <xmx:CKjcaoRJGjLGxdwfKwxokEIVuqg90uHsJKI9scc1VB926oq_Lgcqwvld>
-Feedback-ID: if58e4a8f:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id A22F6700069; Sat, 24 Oct 2026 08:43:52 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-X-Archived-By: <archiver.kernel.org>
-MIME-Version: 1.0
-Date: Sat, 24 Oct 2026 08:43:52 -0400
-From: "Alejandro Pacheco" <ale@alepacheco.dev>
-To: "Richard Weinberger" <richard@nod.at>
-Cc: "Zhihao Cheng" <chengzhihao1@huawei.com>,
- "Miquel Raynal" <miquel.raynal@bootlin.com>,
- "Vignesh Raghavendra" <vigneshr@ti.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Message-Id: <67870349-f17c-44ef-8647-28a78da80624@alepacheco.dev>
-In-Reply-To: <6083713b-4c4e-4e17-93c5-61f3bb7a77f1@alepacheco.dev>
-References: <6083713b-4c4e-4e17-93c5-61f3bb7a77f1@alepacheco.dev>
-Subject: [PATCH 1/2] ubi: fastmap: Check the PEB numbers in the fastmap lists
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261024_054354_833156_DB51FCA3 
-X-CRM114-Status: GOOD (  15.19  )
-X-Spam-Score: -2.1 (--)
+	Sun, 25 Oct 2026 06:18:52 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with ESMTP id 5A0BC600D4;
+	Sun, 25 Oct 2026 06:18:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F75E1F01825;
+	Sun, 25 Oct 2026 06:18:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1792909131;
+	bh=W1GXxDcSK71CyyAlZhZ4RUujcvAeck1ouL0OlpM3abk=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc;
+	b=YlIVB9eLXWGG9kXDrTxce/X1W46vBjv3G/lXo7p1J9FRq3IKoGSviAxqM5Wu1ad/E
+	 ZzugwweJvzti1x/dcWwpf3Lz6sFLB9fpHYNwJ9u8Xgp4CAYL49iUH3rNGRkWMZI68o
+	 UZaN7FV08fi1xl3XuxCxkgY8fEla51+6zspS4eMBhVtxXW6NYu40uXbrkIUASJjXY6
+	 OcTyyvSN5d+8qNjxY+0VlLf4I19DsRM3upMpiAOZWXyL1jMk8RG1x9j3Ifk8tlbJgi
+	 zdV3lnCV2d3c0Iti3VfkNUDv+iCCOplKosVVO2OIzCl0X98GqChoTmM11f5brUuVqE
+	 B6BMVn5ekxtdg==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 075FF392ED67;
+	Sun, 25 Oct 2026 06:18:51 +0000 (UTC)
+Subject: Re: [GIT PULL] mtd: Changes for 7.4
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <87ik2smjuf.fsf@bootlin.com>
+References: <87ik2smjuf.fsf@bootlin.com>
+X-PR-Tracked-List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
+X-PR-Tracked-Message-Id: <87ik2smjuf.fsf@bootlin.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/mtd/for-7.4
+X-PR-Tracked-Commit-Id: 0ef71adafaa9b36a06dd5b823aebcd2fa9b9b9c2
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 44388c8f3e22b578c9089df53301ef7e53e7fb01
+Message-Id: <179290912963.2017309.13368478325694786316.pr-tracker-bot@kernel.org>
+Date: Sun, 25 Oct 2026 06:18:49 +0000
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Michael Walle <michael@walle.cc>, Pratyush Yadav <pratyush@kernel.org>, Takahiro Kuwano <takahiro.kuwano@infineon.com>, linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -125,138 +71,30 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+X-Archived-By: <archiver.kernel.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-9.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=ham autolearn_force=no version=4.0.1
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-From: Alejandro Pacheco <ale@alepacheco.dev>
+The pull request you sent on Fri, 23 Oct 2026 19:02:00 +0200:
 
-ubi_attach_fastmap() reads the free, used, scrub and erase lists of the
-fastmap and adds every PEB number in them to the attach information as
-it is on the media. ubi_wl_init() later uses these PEB numbers as
-indexes into ubi->lookuptbl, which has ubi->peb_count entries, and the
-PEBs of the used and scrub lists become the PEBs of the volumes' LEBs.
-None of them is checked against the device, so a fastmap listing a PEB
-number that is negative or not below ubi->peb_count makes ubi_wl_init()
-write outside ubi->lookuptbl.
+> git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/mtd/for-7.4
 
-The PEB numbers of the two pools are not affected: scan_pool() reads
-every pool PEB from the flash before using it, and the MTD layer refuses
-an offset outside the device. A PEB number of an EBA table is only
-accepted when it is found in the used list.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/44388c8f3e22b578c9089df53301ef7e53e7fb01
 
-Check every PEB number of the four lists against ubi->peb_count, next to
-the other sanity checks of the fastmap, and treat a fastmap with a bad
-one as unusable, so that UBI attaches by scanning instead. Fastmaps
-written by UBI are not affected: ubi_write_fastmap() only lists PEBs of
-the device.
+Thank you!
 
-This needs a crafted fastmap (its data CRC catches random corruption)
-on a device that UBI attaches at boot or that a user with
-CAP_SYS_RESOURCE attaches.
-
-An LLM coding assistant was used to find this bug and to write this
-patch and its changelog.
-
-Fixes: dbb7d2a88d2a ("UBI: Add fastmap core")
-Cc: stable@vger.kernel.org
-Signed-off-by: Alejandro Pacheco <ale@alepacheco.dev>
----
- drivers/mtd/ubi/fastmap.c | 40 +++++++++++++++++++++++++++++----------
- 1 file changed, 30 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-index 3f9fb7c181f..41ead6b4f0a 100644
---- a/drivers/mtd/ubi/fastmap.c
-+++ b/drivers/mtd/ubi/fastmap.c
-@@ -558,7 +558,7 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
- 	struct ubi_fm_ec *fmec;
- 	struct ubi_fm_volhdr *fmvhdr;
- 	struct ubi_fm_eba *fm_eba;
--	int ret, i, j, pool_size, wl_pool_size;
-+	int ret, i, j, pnum, pool_size, wl_pool_size;
- 	size_t fm_pos = 0, fm_size = ubi->fm_size;
- 	unsigned long long max_sqnum = 0;
- 	void *fm_raw = ubi->fm_buf;
-@@ -640,8 +640,13 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
- 		if (fm_pos >= fm_size)
- 			goto fail_bad;
- 
--		ret = add_aeb(ai, &ai->free, be32_to_cpu(fmec->pnum),
--			      be32_to_cpu(fmec->ec), 0);
-+		pnum = be32_to_cpu(fmec->pnum);
-+		if (pnum < 0 || pnum >= ubi->peb_count) {
-+			ubi_err(ubi, "bad PEB %i in fastmap free list", pnum);
-+			goto fail_bad;
-+		}
-+
-+		ret = add_aeb(ai, &ai->free, pnum, be32_to_cpu(fmec->ec), 0);
- 		if (ret)
- 			goto fail;
- 	}
-@@ -653,8 +658,13 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
- 		if (fm_pos >= fm_size)
- 			goto fail_bad;
- 
--		ret = add_aeb(ai, &used, be32_to_cpu(fmec->pnum),
--			      be32_to_cpu(fmec->ec), 0);
-+		pnum = be32_to_cpu(fmec->pnum);
-+		if (pnum < 0 || pnum >= ubi->peb_count) {
-+			ubi_err(ubi, "bad PEB %i in fastmap used list", pnum);
-+			goto fail_bad;
-+		}
-+
-+		ret = add_aeb(ai, &used, pnum, be32_to_cpu(fmec->ec), 0);
- 		if (ret)
- 			goto fail;
- 	}
-@@ -666,8 +676,13 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
- 		if (fm_pos >= fm_size)
- 			goto fail_bad;
- 
--		ret = add_aeb(ai, &used, be32_to_cpu(fmec->pnum),
--			      be32_to_cpu(fmec->ec), 1);
-+		pnum = be32_to_cpu(fmec->pnum);
-+		if (pnum < 0 || pnum >= ubi->peb_count) {
-+			ubi_err(ubi, "bad PEB %i in fastmap scrub list", pnum);
-+			goto fail_bad;
-+		}
-+
-+		ret = add_aeb(ai, &used, pnum, be32_to_cpu(fmec->ec), 1);
- 		if (ret)
- 			goto fail;
- 	}
-@@ -679,8 +694,13 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
- 		if (fm_pos >= fm_size)
- 			goto fail_bad;
- 
--		ret = add_aeb(ai, &ai->erase, be32_to_cpu(fmec->pnum),
--			      be32_to_cpu(fmec->ec), 1);
-+		pnum = be32_to_cpu(fmec->pnum);
-+		if (pnum < 0 || pnum >= ubi->peb_count) {
-+			ubi_err(ubi, "bad PEB %i in fastmap erase list", pnum);
-+			goto fail_bad;
-+		}
-+
-+		ret = add_aeb(ai, &ai->erase, pnum, be32_to_cpu(fmec->ec), 1);
- 		if (ret)
- 			goto fail;
- 	}
-@@ -732,7 +752,7 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
- 		}
- 
- 		for (j = 0; j < be32_to_cpu(fm_eba->reserved_pebs); j++) {
--			int pnum = be32_to_cpu(fm_eba->pnum[j]);
-+			pnum = be32_to_cpu(fm_eba->pnum[j]);
- 
- 			if (pnum < 0)
- 				continue;
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
 ______________________________________________________
 Linux MTD discussion mailing list
