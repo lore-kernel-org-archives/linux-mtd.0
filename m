@@ -2,58 +2,73 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08DB7606A31A
-	for <linux-mtd@archiver.kernel.org>; Mon, 26 Oct 2026 13:30:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4232C606A31A
+	for <linux-mtd@archiver.kernel.org>; Mon, 26 Oct 2026 19:55:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=KUQ4M94B;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=FUl7sO6M
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=c9L8vc72;
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=acm.org header.i=@acm.org header.a=rsa-sha256 header.s=mr01 header.b=0cebf4mD
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Reply-To:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:References:
-	In-Reply-To:Cc:To:Subject:From:Message-ID:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
 	List-Unsubscribe-Post:List-Owner;
-	bh=FGc1zRiNgHh8tVOrKm54Pa/7NMW+5w6pi1Tb965TyjE=; b=KUQ4M94BZmh4D2TgTqABBDegkS
-	VsGfhKv12Kbxo8chf2qWKIH+bfKyr/kiXfgE5N5Hbd/g1dVfurWhn5iGY+UPJ8wyV+VQcgHjdE0X1
-	xXJ0cPyUdN164biS+Bl0nd7MFQpre6nB1KICfBC3YoZvWak0UDSVkIjeRF7cdRySwfSQb9FUBGY5Z
-	IQuSz7dKk7vZKX4Y5AyX9e2D0QDzfytiP160s+r2ku3jfropRNW19r2uajZAE46c5CfsVR2rxRM6L
-	TPj8B3tFAV+LEcLF4MtYLezJ9BhHAkrOcWGOsyQkaxlXeZ4nINVtS11c2xIhg4KIDojfM5e7NQDjU
-	oNqNHA6A==;
+	bh=qExUeRNYQlyuZKZda+9q3N8TJeiEDq6AXAus6Bh/AQA=; b=c9L8vc72eYoR/7nDqurHJ8KL7m
+	paiT2WAGx45eYNJXjwu1sZiiv7XTruJiJBR6rYJNS+UTWHalv31wxvkxBVmzSsZkRQ9j+db30r1+N
+	TrrO+ebUMnPkkfqI+RtpTNYiajB+Qwtmzsc4wMhlUwG2sAD+fMsGNDVZ7bz8YC1hcv8x93C+PJYoA
+	gJIaS2Z1ieaupjAbLUePs1fJcfk4JGxzgr+AJL9lHMK72SZGRn1gP8w1A0Kc6fqRfZG683jZ2TCnL
+	ChD6J5b0Xg7wI4y4SPYOktfrFkupvQKNZKhRoC4sRkYbrQVC7O5YxVL0OPn+GVhaV+dSvPytdo3ct
+	QApp2Ffg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xLKmX-00000002bZF-02bU;
-	Mon, 26 Oct 2026 13:30:33 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1xLQmW-00000003Bsl-3uQ9;
+	Mon, 26 Oct 2026 19:54:56 +0000
+Received: from 011.lax.mailroute.net ([199.89.1.14])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xLKmV-00000002bY5-1cAY
+	id 1xLQmR-00000003Bs7-2IH9
 	for linux-mtd@lists.infradead.org;
-	Mon, 26 Oct 2026 13:30:31 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id CAF2943D29;
-	Mon, 26 Oct 2026 13:30:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F23E1F031E4;
-	Mon, 26 Oct 2026 13:30:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793021430;
-	bh=xxFyXAK6h81SvCpLZVnWD2gPGovJspeHqZbLhgps2OA=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=FUl7sO6MvSTkNdwzFyvkM40yvalNg8LSNUq5P5au3WhZfqXLzvSKlWsDNWXmX4E31
-	 PJBxGf53XT0BZUietyuwhIJXnoG1/lHNyZDcBn+gq+nD31sGN08VgefzEFTXTSRson
-	 QqvcnWvydyGsLfgmXiOETcjTkktw5Y/lzYbTF2+8A+6IDnWhUuMoMxHouJPpiOyoTG
-	 QeSDsstw0UlQ15RA3loLUldDdSY1SPiPeFAVDCxSQawlAEarHkrCFtyoC18sYlUq87
-	 MTTZeq6+BG0dZcZSrSk8AmjZWHWzH8c4JrlDMm4BtCLD90Lj65MqcCkQVHxMh0bLly
-	 TMt0Btbbj1R+Q==
-Message-ID: <sashiko-outbox-185311@kernel.org>
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH v4] ubifs: zero stale data beyond EOF before file size
- grows
-To: "Nan Lin" <lin.nan@h3c.com>, chengzhihao1@huawei.com
-Cc: linux-mtd@lists.infradead.org, richard@nod.at, wangxiaoqing@h3c.com, zhou.kete@h3c.com
-In-Reply-To: <20261026125001.2570619-1-lin.nan@h3c.com>
-References: <3535aeb8-2f61-fc3d-a5a7-96d069459690@huawei.com>
- <20261026125001.2570619-1-lin.nan@h3c.com>
-Date: Mon, 26 Oct 2026 13:30:29 +0000
+	Mon, 26 Oct 2026 19:54:53 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by 011.lax.mailroute.net (Postfix) with ESMTP id 4jD48n4lr0z1XM30h;
+	Mon, 26 Oct 2026 19:54:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
+	content-transfer-encoding:mime-version:x-mailer:message-id:date
+	:date:subject:subject:from:from:received:received; s=mr01; t=
+	1793044487; x=1795636488; bh=hnz1gGcBW/BLbaqLHI+DXFHAqG4Qf4qDgMr
+	LAo2QDNQ=; b=0cebf4mDiIHij4m4u0EwL02baRi2Ei0EDMf1g9Gp76qfAQIs2+6
+	88qC8Q1u7+G6Eu7HfgzRuWzdYczD0ivVHq91tuWI3f5yy52o9LlTaBKq8JlcaZtv
+	uRSo6eJps3t0r2BthuvpDViUUQqr7XpZiR+wDR3nfdrrjrJrAkZjCmCV6ggvLuL4
+	Lq5+weJnpxe91QRjiX7e07fQzVt9ucXoJhxaPZeBISg3I0OdPyOP/rU51ksWXZcV
+	KNc/eamjBaW1jwnX344d8UNIIuL+pMdYjmycbKQVfh7xmNQrBBRYlw1jEJx5DmOy
+	3mh0e1gQ+SoukrpnEfwVEViYp8uXyRJ+/3Q==
+X-Virus-Scanned: by MailRoute
+Received: from 011.lax.mailroute.net ([127.0.0.1])
+ by localhost (011.lax [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
+ id PO44ncs_s4iu; Mon, 26 Oct 2026 19:54:47 +0000 (UTC)
+Received: from bvanassche.c.googlers.com.com (57.237.82.34.bc.googleusercontent.com [34.82.237.57])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: bvanassche@acm.org)
+	by 011.lax.mailroute.net (Postfix) with ESMTPSA id 4jD48k592zz1XM4Tl;
+	Mon, 26 Oct 2026 19:54:46 +0000 (UTC)
+From: Bart Van Assche <bvanassche@acm.org>
+To: Richard Weinberger <richard@nod.at>,
+	David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Bart Van Assche <bvanassche@acm.org>
+Subject: [PATCH] jffs2: Fix a lock leak in jffs2_flash_writev()
+Date: Mon, 26 Oct 2026 12:54:38 -0700
+Message-ID: <f7faca912d873560eff94cf729e6d75decee76bb.1793044478.git.bvanassche@acm.org>
+X-Mailer: git-send-email 2.56.0.307.g5fe7bd680c-goog
+X-Archived-By: <archiver.kernel.org>
+MIME-Version: 1.0
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20261026_125451_595971_03B0C359 
+X-CRM114-Status: GOOD (  11.52  )
+X-Spam-Score: -2.8 (--)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -63,114 +78,45 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: sashiko-reviews@lists.linux.dev
-X-Archived-By: <archiver.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-9.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-17.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=4.0.1
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-VGhhbmsgeW91IGZvciB5b3VyIGNvbnRyaWJ1dGlvbiEgU2FzaGlrbyBBSSByZXZpZXcgZm91bmQg
-MSBwb3RlbnRpYWwgaXNzdWUocykgdG8gY29uc2lkZXI6Ci0gW0hpZ2hdIHViaWZzOiBzdGFsZSBt
-bWFwIGRhdGEgZXhwb3NlZCBvbiBzaG9ydCBjb3B5IGluIHViaWZzX3dyaXRlX2l0ZXIoKQotLQoK
-Y29tbWl0IGFmZWQ0OTJiOWNhZWMwODk5NGEwYTk3YTQyN2FjMzllMjhkNzcxODAKQXV0aG9yOiBO
-YW4gTGluIDxsaW4ubmFuQGgzYy5jb20+Cgp1YmlmczogemVybyBzdGFsZSBkYXRhIGJleW9uZCBF
-T0YgYmVmb3JlIGZpbGUgc2l6ZSBncm93cwoKVGhpcyBjb21taXQgYWRkcyB1Ymlmc196ZXJvX2Vv
-Zl9ob2xlKCkgdG8gemVybyBzdGFsZSBtbWFwIGRhdGEgYmV5b25kIEVPRiBpbgp0aGUgb2xkLUVP
-RiBmb2xpbyBkdXJpbmcgZG9fc2V0YXR0cigpIGFuZCB1Ymlmc193cml0ZV9pdGVyKCksIGFuZCBy
-ZXN0cnVjdHVyZXMKdWJpZnNfd3JpdGVfaXRlcigpIHRvIHNlcmlhbGl6ZSB3cml0ZXMgdW5kZXIg
-aW5vZGVfbG9jaygpLgoKPiBkaWZmIC0tZ2l0IGEvZnMvdWJpZnMvZmlsZS5jIGIvZnMvdWJpZnMv
-ZmlsZS5jCj4gaW5kZXggZTczYzI4YjEyZjk3Zi4uNmYyYzgzYjZmNDMzMyAxMDA2NDQKPiAtLS0g
-YS9mcy91Ymlmcy9maWxlLmMKPiArKysgYi9mcy91Ymlmcy9maWxlLmMKPiBAQCAtMjAyLDYgKzIw
-Miw0NSBAQCBzdGF0aWMgdm9pZCByZWxlYXNlX2V4aXN0aW5nX3BhZ2VfYnVkZ2V0KHN0cnVjdCB1
-Ymlmc19pbmZvICpjKQo+ICAJdWJpZnNfcmVsZWFzZV9idWRnZXQoYywgJnJlcSk7Cj4gIH0KPiAg
-Cj4gKy8qKgo+ICsgKiB1Ymlmc196ZXJvX2VvZl9ob2xlIC0gemVybyB0aGUgc3RhbGUgdGFpbCBv
-ZiB0aGUgb2xkLUVPRiBmb2xpby4KPiArICogQGlub2RlOiBpbm9kZSB3aG9zZSBzaXplIGlzIGFi
-b3V0IHRvIGdyb3cKPiArICogQG5ld19lbmQ6IG5ldyBlbmQgb2YgdGhlIGZpbGUsIG9ubHkgdXNl
-ZCB0byBib3VuZCB0aGUgdGFpbAo+ICsgKgo+ICsgKiBaZXJvIHRoZSBjYWNoZWQgZm9saW8gY29u
-dGFpbmluZyB0aGUgb2xkIEVPRiBmb3IgW29sZCBFT0YsCj4gKyAqIG1pbihmb2xpbyBlbmQsIEBu
-ZXdfZW5kKSkgc28gYSBzaXplIGV4dGVuc2lvbiBkb2VzIG5vdCBleHBvc2Ugc3RhbGUKPiArICog
-ZGF0YSBsZWZ0IGJleW9uZCBFT0YgYnkgbW1hcCB3cml0ZXMuCj4gKyAqCj4gKyAqIE11c3QgYmUg
-Y2FsbGVkIHdpdGggaW5vZGVfbG9jayhpbm9kZSkgaGVsZCBhbmQgd2l0aG91dCB1aS0+dWlfbXV0
-ZXggaGVsZDoKPiArICogd2UgYmxvY2sgb24gdGhlIG9sZC1FT0YgZm9saW8gbG9jaywgYW5kIC0+
-d3JpdGVwYWdlKCkgYW5kIC0+cGFnZV9ta3dyaXRlKCkKPiArICogaG9sZCB0aGF0IGZvbGlvIGxv
-Y2sgd2hpbGUgdGFraW5nIHVpX211dGV4OyB0aGUgcmV2ZXJzZSBvcmRlciBkZWFkbG9ja3MuCj4g
-KyAqLwo+ICtzdGF0aWMgdm9pZCB1Ymlmc196ZXJvX2VvZl9ob2xlKHN0cnVjdCBpbm9kZSAqaW5v
-ZGUsIGxvZmZfdCBuZXdfZW5kKQo+ICt7Cj4gKwlsb2ZmX3Qgb2xkX3NpemUgPSBpX3NpemVfcmVh
-ZChpbm9kZSk7Cj4gKwlzaXplX3QgZnJvbSwgdG87Cj4gKwlzdHJ1Y3QgZm9saW8gKmZvbGlvOwo+
-ICsKPiArCWlmIChuZXdfZW5kIDw9IG9sZF9zaXplKQo+ICsJCXJldHVybjsKPiArCj4gKwlmb2xp
-byA9IGZpbGVtYXBfbG9ja19mb2xpbyhpbm9kZS0+aV9tYXBwaW5nLCBvbGRfc2l6ZSA+PiBQQUdF
-X1NISUZUKTsKPiArCWlmIChJU19FUlIoZm9saW8pKQo+ICsJCXJldHVybjsKPiArCj4gKwlmcm9t
-ID0gb2Zmc2V0X2luX2ZvbGlvKGZvbGlvLCBvbGRfc2l6ZSk7Cj4gKwlpZiAoIWZyb20pCj4gKwkJ
-Z290byBvdXQ7Cj4gKwl0byA9IGZvbGlvX2NvbnRhaW5zKGZvbGlvLCBuZXdfZW5kID4+IFBBR0Vf
-U0hJRlQpID8KPiArCSAgICAgb2Zmc2V0X2luX2ZvbGlvKGZvbGlvLCBuZXdfZW5kKSA6IGZvbGlv
-X3NpemUoZm9saW8pOwo+ICsJaWYgKHRvID4gZnJvbSkKPiArCQlmb2xpb196ZXJvX3JhbmdlKGZv
-bGlvLCBmcm9tLCB0byAtIGZyb20pOwo+ICsKPiArb3V0Ogo+ICsJZm9saW9fdW5sb2NrKGZvbGlv
-KTsKPiArCWZvbGlvX3B1dChmb2xpbyk7Cj4gK30KClsgLi4uIF0KCj4gQEAgLTE0MzMsMTEgKzE0
-NzYsNDYgQEAgc3RhdGljIGludCB1cGRhdGVfbWN0aW1lKHN0cnVjdCBpbm9kZSAqaW5vZGUpCj4g
-IAo+ICBzdGF0aWMgc3NpemVfdCB1Ymlmc193cml0ZV9pdGVyKHN0cnVjdCBraW9jYiAqaW9jYiwg
-c3RydWN0IGlvdl9pdGVyICpmcm9tKQo+ICB7Cj4gLQlpbnQgZXJyID0gdXBkYXRlX21jdGltZShm
-aWxlX2lub2RlKGlvY2ItPmtpX2ZpbHApKTsKPiAtCWlmIChlcnIpCj4gLQkJcmV0dXJuIGVycjsK
-PiArCXN0cnVjdCBpbm9kZSAqaW5vZGUgPSBmaWxlX2lub2RlKGlvY2ItPmtpX2ZpbHApOwo+ICsJ
-c3NpemVfdCByZXQ7Cj4gKwo+ICsJaWYgKGlvY2ItPmtpX2ZsYWdzICYgSU9DQl9OT1dBSVQpCj4g
-KwkJcmV0dXJuIC1FT1BOT1RTVVBQOwo+ICsKPiArCWlub2RlX2xvY2soaW5vZGUpOwo+ICsKPiAr
-CXJldCA9IGdlbmVyaWNfd3JpdGVfY2hlY2tzKGlvY2IsIGZyb20pOwo+ICsJaWYgKHJldCA8PSAw
-KQo+ICsJCWdvdG8gb3V0Owo+ICsKPiArCXJldCA9IGtpb2NiX21vZGlmaWVkKGlvY2IpOwo+ICsJ
-aWYgKHJldCkKPiArCQlnb3RvIG91dDsKPiAgCj4gLQlyZXR1cm4gZ2VuZXJpY19maWxlX3dyaXRl
-X2l0ZXIoaW9jYiwgZnJvbSk7Cj4gKwkvKgo+ICsJICogVUJJRlMgc2V0cyBTX05PQ01USU1FIG9u
-IGFsbCBpbm9kZXMsIHNvIFZGUydzIGZpbGVfdXBkYXRlX3RpbWVfZmxhZ3MoKQo+ICsJICogc2hv
-cnQtY2lyY3VpdHMgYW5kIG5ldmVyIGNhbGxzIHViaWZzX3VwZGF0ZV90aW1lKCkgZm9yIG10aW1l
-L2N0aW1lLgo+ICsJICogV2UgbXVzdCBjYWxsIHVwZGF0ZV9tY3RpbWUoKSBleHBsaWNpdGx5IGhl
-cmUuCj4gKwkgKi8KPiArCXJldCA9IHVwZGF0ZV9tY3RpbWUoaW5vZGUpOwo+ICsJaWYgKHJldCkK
-PiArCQlnb3RvIG91dDsKPiArCj4gKwkvKgo+ICsJICogSWYgdGhlIHdyaXRlIHBvc2l0aW9uIGlz
-IGJleW9uZCBFT0YsIHplcm8gdGhlIHN0YWxlIHRhaWwgb2YgdGhlCj4gKwkgKiBvbGQtRU9GIGZv
-bGlvIGZpcnN0LiAgZ2VuZXJpY193cml0ZV9jaGVja3MoKSBoYXMgYWxyZWFkeSByZXNvbHZlZAo+
-ICsJICogT19BUFBFTkQvUldGX0FQUEVORCBhbmQgcmVqZWN0ZWQgaW52YWxpZCB3cml0ZXMsIHNv
-IGlvY2ItPmtpX3Bvcwo+ICsJICogaXMgdGhlIGZpbmFsIHdyaXRlIHBvc2l0aW9uLgo+ICsJICov
-Cj4gKwlpZiAoaW9jYi0+a2lfcG9zID4gaV9zaXplX3JlYWQoaW5vZGUpKQo+ICsJCXViaWZzX3pl
-cm9fZW9mX2hvbGUoaW5vZGUsIGlvY2ItPmtpX3Bvcyk7Cj4gKwo+ICsJcmV0ID0gZ2VuZXJpY19w
-ZXJmb3JtX3dyaXRlKGlvY2IsIGZyb20pOwoKW1NldmVyaXR5OiBIaWdoXQpDYW4gc3RhbGUgbW1h
-cCBkYXRhIHN0aWxsIGJlIGV4cG9zZWQgd2hlbiBnZW5lcmljX3BlcmZvcm1fd3JpdGUoKSBlbmNv
-dW50ZXJzIGEKc2hvcnQgb3IgemVyby1ieXRlIGNvcHkgaW4gY29weV9mb2xpb19mcm9tX2l0ZXJf
-YXRvbWljKCk/CgpTdXBwb3NlIGEgZmlsZSBoYXMgYSBub24tcGFnZS1hbGlnbmVkIHNpemUgb2xk
-X3NpemUgYW5kIGEgc2hhcmVkIG1tYXAgd3JpdGVzCmJleW9uZCBFT0YsIGxlYXZpbmcgdGhlIG9s
-ZC1FT0YgZm9saW8gdXB0b2RhdGUgd2l0aCBzdGFsZSBkYXRhIGluCltvbGRfc2l6ZSwgZm9saW9f
-c2l6ZShmb2xpbykpLgoKV2hlbiBhIHN1YnNlcXVlbnQgd3JpdGUoKSBvciBwd3JpdGUoKSBzdGFy
-dHMgYXQgcG9zID49IG9sZF9zaXplIHdpdGhpbiB0aGF0CnNhbWUgZm9saW8sIHViaWZzX3dyaXRl
-X2l0ZXIoKSBza2lwcyB1Ymlmc196ZXJvX2VvZl9ob2xlKCkgaWYgcG9zID09IG9sZF9zaXplLApv
-ciBvbmx5IHplcm9lcyBbb2xkX3NpemUsIHBvcykgaWYgcG9zID4gb2xkX3NpemUsIGxlYXZpbmcg
-W3BvcywgZm9saW9fc2l6ZShmb2xpbykpCmNvbnRhaW5pbmcgdGhlIHN0YWxlIG1tYXAgZGF0YSB1
-bmRlciB0aGUgYXNzdW1wdGlvbiB0aGF0IHRoZSB3cml0ZSB3aWxsCm92ZXJ3cml0ZSBbcG9zLCBw
-b3MgKyBsZW4pLgoKSG93ZXZlciwgaWYgY29weV9mb2xpb19mcm9tX2l0ZXJfYXRvbWljKCkgY29w
-aWVzIGZld2VyIHRoYW4gbGVuIGJ5dGVzIChmb3IKZXhhbXBsZSwgY29waWVkID09IDAgZHVlIHRv
-IGFuIHVubWFwcGVkIHVzZXIgYnVmZmVyIHJldHVybmluZyAtRUZBVUxULCBvciBhbgp1bmZhdWx0
-ZWQgdXNlciBwYWdlIHdoZW4gYSBzaWduYWwgaXMgcGVuZGluZyksIHViaWZzX3dyaXRlX2VuZCgp
-IG9ubHkgdGFrZXMKdGhlIHNob3J0LWNvcHkgYmFpbG91dCB3aGVuICFmb2xpb190ZXN0X3VwdG9k
-YXRlKGZvbGlvKSwgYW5kIG90aGVyd2lzZSBleHRlbmRzCmlfc2l6ZSB0byBlbmRfcG9zID0gcG9z
-ICsgbGVuIHJhdGhlciB0aGFuIHBvcyArIGNvcGllZDoKCmZzL3ViaWZzL2ZpbGUuYzp1Ymlmc193
-cml0ZV9lbmQoKSB7Cglsb2ZmX3QgZW5kX3BvcyA9IHBvcyArIGxlbjsKCWludCBhcHBlbmRpbmcg
-PSAhIShlbmRfcG9zID4gaW5vZGUtPmlfc2l6ZSk7CgkuLi4KCWlmICh1bmxpa2VseShjb3BpZWQg
-PCBsZW4gJiYgIWZvbGlvX3Rlc3RfdXB0b2RhdGUoZm9saW8pKSkgewoJCS4uLgoJCWdvdG8gb3V0
-OwoJfQoJLi4uCglpZiAoYXBwZW5kaW5nKSB7CgkJaV9zaXplX3dyaXRlKGlub2RlLCBlbmRfcG9z
-KTsKCQl1aS0+dWlfc2l6ZSA9IGVuZF9wb3M7CgkJLi4uCgl9Cn0KCkJlY2F1c2UgdGhlIG9sZC1F
-T0YgZm9saW8gaXMgYWxyZWFkeSB1cHRvZGF0ZSwgd291bGRuJ3QgdWJpZnNfd3JpdGVfZW5kKCkK
-YWR2YW5jZSBpbm9kZS0+aV9zaXplIGFuZCB1aS0+dWlfc2l6ZSB0byBwb3MgKyBsZW4gZXZlbiB3
-aGVuIGNvcGllZCA8IGxlbiwKZXhwb3NpbmcgdGhlIHVuemVyb2VkIHN0YWxlIG1tYXAgZGF0YSBp
-biBbcG9zICsgY29waWVkLCBwb3MgKyBsZW4pPwoKQnkgY29tcGFyaXNvbiwgZXh0NF9ibG9ja196
-ZXJvX2VvZigpIHplcm9lcyB0aGUgZW50aXJlIHRhaWwgb2YgdGhlIG9sZC1FT0YKZm9saW8gZnJv
-bSBvbGRfc2l6ZSB0byBmb2xpb19zaXplKGZvbGlvKSwgYW5kIGV4dDRfd3JpdGVfZW5kKCkgb25s
-eSBhZHZhbmNlcwppX3NpemUgdG8gcG9zICsgY29waWVkLiBTaG91bGQgdWJpZnNfemVyb19lb2Zf
-aG9sZSgpIGFsc28gemVybyB0byB0aGUgZW5kIG9mCnRoZSBmb2xpbyAob3IgYmUgY2FsbGVkIHdo
-ZW5ldmVyIHRoZSB3cml0ZSBleHRlbmRzIHBhc3QgaV9zaXplKSwgb3Igc2hvdWxkCnViaWZzX3dy
-aXRlX2VuZCgpIGF2b2lkIGV4dGVuZGluZyBpX3NpemUgcGFzdCBwb3MgKyBjb3BpZWQ/CgotLSAK
-U2FzaGlrbyBBSSByZXZpZXcgwrcgaHR0cHM6Ly9zYXNoaWtvLmRldi8jL3BhdGNoc2V0LzIwMjYx
-MDI2MTI1MDAxLjI1NzA2MTktMS1saW4ubmFuQGgzYy5jb20/cGFydD0xCgpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1
-c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
-dGluZm8vbGludXgtbXRkLwo=
+jffs2_flash_writev() write-locks c->wbuf_sem near the start of the
+function. If jffs2_sum_add_kvec() fails, the function returns without
+unlocking c->wbuf_sem. Fix this by unlocking c->wbuf_sem before
+returning. This bug has been detected by the Clang thread-safety
+analyzer.
+
+Fixes: e631ddba5887 ("[JFFS2] Add erase block summary support (mount time improvement)")
+Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+---
+ fs/jffs2/wbuf.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/fs/jffs2/wbuf.c b/fs/jffs2/wbuf.c
+index 3b7803c75d58..c8fb58513783 100644
+--- a/fs/jffs2/wbuf.c
++++ b/fs/jffs2/wbuf.c
+@@ -904,8 +904,10 @@ int jffs2_flash_writev(struct jffs2_sb_info *c, const struct kvec *invecs,
+ 
+ 	if (jffs2_sum_active()) {
+ 		int res = jffs2_sum_add_kvec(c, invecs, count, (uint32_t) to);
+-		if (res)
++		if (res) {
++			up_write(&c->wbuf_sem);
+ 			return res;
++		}
+ 	}
+ 
+ 	if (c->wbuf_len && ino)
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
