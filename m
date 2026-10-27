@@ -2,72 +2,65 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5104606A31D
-	for <linux-mtd@archiver.kernel.org>; Tue, 27 Oct 2026 04:51:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8F14606A31B
+	for <linux-mtd@archiver.kernel.org>; Tue, 27 Oct 2026 06:18:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=INPRSR3A;
-	dkim=fail reason="signature verification failed" (1024-bit key, unprotected) header.d=huawei.com header.i=@huawei.com header.a=rsa-sha256 header.s=dkim header.b=6DKvMNv3
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=Q/EMSk5c
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=Sy85ZPEetAhlsdao5NfFac39v1JDyEvz1zNRCG92LDM=; b=INPRSR3AIn604AH1NdR7Auuczj
-	I0DA0Wf1gTQcnQj3BA4LQcLqEQ8RKFfnNR4HPUPG9cRJykPkMrGNrObnHmIqoyRhVqW/XiO9zOUdM
-	JP9LoeeUcVnUpgJgnUXgFQwrqKlJr0OKQSl08SdxC8F1AKqElnR4k95L6fwmCglvvgEM8g2jwT7gd
-	xddZcd57lTfjWisT1AI8QAWx0orALck2S5GUb5FpFGj/H4FVy466ZQxv/jflFhpb321yHpweE+vuL
-	daMSkODBdEw9BbuaFMz0UCdeftbxHd98FW/5K9MMh+3usBH+9a93N7tUVSDF9gNz8THD4NmZFMRtJ
-	WeiqPILg==;
+	bh=N7RpuCfrpjmyZXX4C2iDawLgazv3VH8uPFKpBrgPhhE=; b=Q/EMSk5c/Vqw9StiRQhdDhwd3q
+	4sqYntgNdWPfsfm3O8zezbx3tWHNjgKN1tAx53BeXQD+5eq4LOLQmaUYKWzwy+eH7FOO5Smv+xBcJ
+	q2Dma/eLiw3cUceG5/xj4e34sL75WEyLolbCkHgdkOZn+y0bY6TdQPevJuKwRJWUB+QN4vdF0Ns8z
+	6NRSV0ZZHfKObeVIFB1Rgir//hVHQADaaTXmLvzc9Xx9ZDMbYBasxCez8J9TuW0LnYDuHZ8pRbS/F
+	s6/AevlUf2Frd4ns4lx/7wDUCKUrB6cxbzHDis7xGE9T7Ke2vfwW8yKBxe/T7SgQVe5tcfGsIIWjq
+	r5bG79Rg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xLZA3-00000003km2-23SX;
-	Tue, 27 Oct 2026 04:51:47 +0000
-Received: from canpmsgout01.his.huawei.com ([113.46.200.216])
+	id 1xLaW1-00000003pNs-38VW;
+	Tue, 27 Oct 2026 06:18:33 +0000
+Received: from smtp.h3c.com ([60.191.123.56] helo=h3cspam01-ex.h3c.com)
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xLZ9z-00000003kl6-0Mjo
+	id 1xLaVy-00000003pNQ-1bqm
 	for linux-mtd@lists.infradead.org;
-	Tue, 27 Oct 2026 04:51:45 +0000
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=cPWULbQ6woqP/NAsptXcTt6XEbFzxz3GzS+cNv09yFE=;
-	b=6DKvMNv3pCI7PlnT4QSw9d6prDNgixhCpcElj/h9cw6LDcgWF/iIJoDFs20QrFCt8Vto3o2Uu
-	B9CXFGP9ZANnu/pNlSEaFbDEsvD560bsGfarOXm8mtMYMNThehNu25TVWaf8p5huSvwgyZUYy6M
-	ciAUBTp5slJA9FhF14ubaGM=
-Received: from mail.maildlp.com (unknown [172.19.163.0])
-	by canpmsgout01.his.huawei.com (SkyGuard) with ESMTPS id 4jDJ3w3xvwz1T4GR;
-	Tue, 27 Oct 2026 12:51:24 +0800 (CST)
-Received: from whupemo200011.china.huawei.com (unknown [7.152.185.179])
-	by mail.maildlp.com (Postfix) with ESMTPS id 8259C40561;
-	Tue, 27 Oct 2026 12:51:32 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- whupemo200011.china.huawei.com (7.152.185.179) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.45; Tue, 27 Oct 2026 12:51:31 +0800
-Subject: Re: [PATCH v4] ubifs: zero stale data beyond EOF before file size
- grows
-To: Nan Lin <lin.nan@h3c.com>
-CC: <linux-mtd@lists.infradead.org>, <richard@nod.at>,
-	<sashiko-reviews@lists.linux.dev>, <wangxiaoqing@h3c.com>,
-	<zhou.kete@h3c.com>
-References: <3535aeb8-2f61-fc3d-a5a7-96d069459690@huawei.com>
- <20261026125001.2570619-1-lin.nan@h3c.com>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <0f05834a-7483-3e4e-0612-1d70e045b893@huawei.com>
-Date: Tue, 27 Oct 2026 12:51:30 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	Tue, 27 Oct 2026 06:18:32 +0000
+Received: from mail.maildlp.com ([172.25.15.155])
+	by h3cspam01-ex.h3c.com with ESMTP id 69R6IEec044318;
+	Tue, 27 Oct 2026 14:18:14 +0800 (+08)
+	(envelope-from lin.nan@h3c.com)
+Received: from DAG6EX09-BJD.srv.huawei-3com.com (unknown [10.153.34.11])
+	by mail.maildlp.com (Postfix) with ESMTP id 9F7642284EA2;
+	Tue, 27 Oct 2026 14:21:35 +0800 (CST)
+Received: from localhost.localdomain (10.142.164.48) by
+ DAG6EX09-BJD.srv.huawei-3com.com (10.153.34.11) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.1258.27; Tue, 27 Oct 2026 14:18:05 +0800
+From: Nan Lin <lin.nan@h3c.com>
+To: <chengzhihao1@huawei.com>
+CC: <lin.nan@h3c.com>, <linux-mtd@lists.infradead.org>, <richard@nod.at>,
+        <sashiko-reviews@lists.linux.dev>, <wangxiaoqing@h3c.com>,
+        <zhou.kete@h3c.com>
+Subject: [PATCH v4] ubifs: zero stale data beyond EOF before file size grows
+Date: Tue, 27 Oct 2026 14:10:31 +0800
+Message-ID: <20261027061031.3502472-1-lin.nan@h3c.com>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <0f05834a-7483-3e4e-0612-1d70e045b893@huawei.com>
+References: <0f05834a-7483-3e4e-0612-1d70e045b893@huawei.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20261026125001.2570619-1-lin.nan@h3c.com>
-X-ClientProxiedBy: kwepems100002.china.huawei.com (7.221.188.206) To
- whupemo200011.china.huawei.com (7.152.185.179)
+X-ClientProxiedBy: BJSMTP02-EX.srv.huawei-3com.com (10.63.20.133) To
+ DAG6EX09-BJD.srv.huawei-3com.com (10.153.34.11)
+X-DNSRBL: 
+X-SPAM-SOURCE-CHECK: pass
+X-MAIL: h3cspam01-ex.h3c.com 69R6IEec044318
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261026_215143_768533_387CE2A0 
-X-CRM114-Status: GOOD (  30.82  )
-X-Spam-Score: -3.8 (---)
+X-CRM114-CacheID: sfid-20261026_231830_759137_D643C007 
+X-CRM114-Status: GOOD (  16.26  )
+X-Spam-Score: 0.6 (/)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,132 +70,195 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="gbk"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-17.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-17.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=4.0.1
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-1NogMjAyNi8xMC8yNiAyMDo1MCwgTmFuIExpbiDQtLXAOgo+IG1tYXAgd3JpdGVzIGNhbiBkaXJ0
-eSB0aGUgcGFnZSBjYWNoZSBiZXlvbmQgRU9GIHdpdGhvdXQgY2hhbmdpbmcKPiBpX3NpemUuIEEg
-bGF0ZXIgZXh0ZW5kaW5nIHdyaXRlIG9yIGZ0cnVuY2F0ZSB0dXJucyB0aGF0IHJlZ2lvbiBpbnRv
-IGEKPiBob2xlLCBidXQgVUJJRlMgbmV2ZXIgemVyb2VzIHRoZSBwYXJ0aWFsIHBhZ2UgYXQgdGhl
-IG9sZCBFT0YsIHNvIHJlYWRzCj4gZXhwb3NlIHRoZSBzdGFsZSBkYXRhLgo+IAo+IFplcm8gdGhl
-IHRhaWwgb2YgdGhlIGNhY2hlZCBvbGQtRU9GIGZvbGlvIGluIGJvdGggc2l6ZS1leHRlbmRpbmcK
-PiBwYXRoczogdWJpZnNfd3JpdGVfaXRlcigpIGZvciB3cml0ZXMgc3RhcnRpbmcgYmV5b25kIEVP
-RiwgYW5kCj4gZG9fc2V0YXR0cigpIGJlZm9yZSB0cnVuY2F0ZV9zZXRzaXplKCkgZ3Jvd3MgdGhl
-IHNpemUuIFRoaXMgbWlycm9ycwo+IHdoYXQgZXh0NCBkb2VzIG9uIHNpemUgZXh0ZW5zaW9uOwo+
-IAo+IFJlc3RydWN0dXJlIHViaWZzX3dyaXRlX2l0ZXIoKSB0byBtYXRjaCBleHQ0X2J1ZmZlcmVk
-X3dyaXRlX2l0ZXIoKToKPiBhY3F1aXJlIGlub2RlX2xvY2ssIHBlcmZvcm0gd3JpdGUgY2hlY2tz
-LCBjYWxsIGtpb2NiX21vZGlmaWVkKCkgZm9yCj4gc2V0dWlkL3NldGdpZCBjbGVhcmluZywgdXBk
-YXRlIG10aW1lL2N0aW1lIHZpYSB1cGRhdGVfbWN0aW1lKCkKPiAoVUJJRlMgc2V0cyBTX05PQ01U
-SU1FIHNvIFZGUyB0aW1lIHVwZGF0ZXMgc2hvcnQtY2lyY3VpdCksIHplcm8gdGhlCj4gRU9GIGhv
-bGUsIHRoZW4gZXhlY3V0ZSB0aGUgd3JpdGUgd2l0aCBnZW5lcmljX3BlcmZvcm1fd3JpdGUoKS4g
-VGhpcwo+IGVuc3VyZXMgcHJvcGVyIHNlcmlhbGl6YXRpb24gYW5kIHNlY3VyaXR5IGhhbmRsaW5n
-Lgo+IAo+IEFsbCB6ZXJvaW5nIHRha2VzIHRoZSBvbGQtRU9GIGZvbGlvIGxvY2sgd2l0aG91dCB1
-aS0+dWlfbXV0ZXgsIGtlZXBpbmcKPiB0aGUgZm9saW9fbG9jayAtPiB1aV9tdXRleCBvcmRlciBv
-ZiAtPndyaXRlcGFnZSgpOyB0aGUgcmV2ZXJzZSBvcmRlcgo+IGRlYWRsb2Nrcy4KPiAKPiBVQklG
-UyBkb2VzIG5vdCBlbmFibGUgbGFyZ2UgZm9saW9zLCBzbyB0aGUgRU9GIGZvbGlvIGlzIGFsd2F5
-cyBhCj4gc2luZ2xlIHBhZ2UgdG9kYXk7IG5ldmVydGhlbGVzcywgdXNlIGZvbGlvLXJlbGF0aXZl
-IGFyaXRobWV0aWMKPiAob2Zmc2V0X2luX2ZvbGlvKCksIGZvbGlvX2NvbnRhaW5zKCksIGZvbGlv
-X3NpemUoKSkgdGhyb3VnaG91dCBzbyB0aGUKPiBjb2RlIGlzIGNvcnJlY3QgaWYgdGhhdCBldmVy
-IGNoYW5nZXMuCj4gCj4gU2lnbmVkLW9mZi1ieTogTmFuIExpbiA8bGluLm5hbkBoM2MuY29tPgo+
-IAo+IENoYW5nZXMgc2luY2UgdjM6Cj4gICAtIEFkZCBpbm9kZV9sb2NrIGFuZCBtb3ZlIHplcm8t
-ZW9mIGFmdGVyIGdlbmVyaWNfd3JpdGVfY2hlY2tzKCksCj4gICAgIG1hdGNoaW5nIGV4dDRfYnVm
-ZmVyZWRfd3JpdGVfaXRlciBzdHJ1Y3R1cmUKPiAgICAgKHN1Z2dlc3RlZCBieSBTYXNoaWtvIEFJ
-IHJldmlldyAmIFpoaWhhbyBDaGVuZykuCj4gICAtIEFkZCBraW9jYl9tb2RpZmllZCgpIGZvciBz
-ZXR1aWQvc2V0Z2lkIGNsZWFyaW5nLgo+ICAgLSBLZWVwIGV4cGxpY2l0IHVwZGF0ZV9tY3RpbWUo
-KSBhcyBVQklGUyBzZXRzIFNfTk9DTVRJTUUuCj4gCj4gQ2hhbmdlcyBzaW5jZSB2MjoKPiAgIC0g
-TW92ZSB0aGUgZXh0ZW5kaW5nLXdyaXRlIGNoZWNrIGZyb20gdWJpZnNfd3JpdGVfYmVnaW4oKSB0
-bwo+ICAgICB1Ymlmc193cml0ZV9pdGVyKCksIG1pcnJvcmluZyBleHQ0X3dyaXRlX2NoZWNrcygp
-IC0+Cj4gICAgIGV4dDRfYmxvY2tfemVyb19lb2YoKTogdGhlIGhvbGUgemVyb2luZyBydW5zIG9u
-Y2UgcGVyIHdyaXRlKCkKPiAgICAgc3lzY2FsbCBpbnN0ZWFkIG9mIG9uY2UgcGVyIC0+d3JpdGVf
-YmVnaW4oKSBpdGVyYXRpb24gKHN1Z2dlc3RlZAo+ICAgICBieSBaaGloYW8gQ2hlbmcpLgo+ICAg
-LSBEcm9wIHRoZSB1Ymlmc192bV9wYWdlX21rd3JpdGUoKSB6ZXJvaW5nOiBsaWtlIGV4dDQKPiAg
-ICAgKGV4dDRfYmxvY2tfd3JpdGVfYmVnaW4oKSB3aXRoIGxlbiA9IGlfc2l6ZSAtIGZvbGlvX3Bv
-cyksCj4gICAgIC0+cGFnZV9ta3dyaXRlKCkgZG9lcyBub3QgemVybyB0aGUgdGFpbCBiZXlvbmQg
-RU9GLCBhbmQgbW1hcAo+ICAgICB3cml0ZXMgcGFzdCBFT0YgYXJlIHRoZSB1c2VyJ3MgcmVzcG9u
-c2liaWxpdHkgKHN1Z2dlc3RlZCBieQo+ICAgICBaaGloYW8gQ2hlbmcpLgo+IAo+IENoYW5nZXMg
-c2luY2UgdjE6Cj4gICAtIEJvdGggemVyb2luZyBzaXRlcyB1c2VkIFBBR0VfU0laRS1yZWxhdGl2
-ZSBhcml0aG1ldGljCj4gICAgIChvZmZzZXRfaW5fcGFnZSgpLXN0eWxlKSB3aGlsZSBmb2xpb196
-ZXJvX3JhbmdlKCkgZXhwZWN0cwo+ICAgICBmb2xpby1yZWxhdGl2ZSBvZmZzZXRzLiBVQklGUyBk
-b2VzIG5vdCBjdXJyZW50bHkgZW5hYmxlIGxhcmdlCj4gICAgIGZvbGlvcywgc28gUEFHRV9TSVpF
-ID09IGZvbGlvX3NpemUoKSBhbmQgdGhlIHR3byBjb2luY2lkZSBpbgo+ICAgICBwcmFjdGljZSwg
-YnV0IHN3aXRjaCB0byBvZmZzZXRfaW5fZm9saW8oKS9mb2xpb19zaXplKCkgYW55d2F5IHNvCj4g
-ICAgIHRoZSBjb2RlIGlzIGNvcnJlY3QgaWYgVUJJRlMgZXZlciBvcHRzIGludG8gbGFyZ2UgZm9s
-aW9zCj4gICAgIChzdWdnZXN0ZWQgYnkgU2FzaGlrbyBBSSByZXZpZXcpLgo+IC0tLQo+ICAgZnMv
-dWJpZnMvZmlsZS5jIHwgODYgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKy0tLQo+ICAgMSBmaWxlIGNoYW5nZWQsIDgyIGluc2VydGlvbnMoKyksIDQgZGVsZXRp
-b25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL2ZzL3ViaWZzL2ZpbGUuYyBiL2ZzL3ViaWZzL2ZpbGUu
-Ywo+IGluZGV4IGU3M2MyOGIxMmY5Ny4uNmYyYzgzYjZmNDMzIDEwMDY0NAo+IC0tLSBhL2ZzL3Vi
-aWZzL2ZpbGUuYwo+ICsrKyBiL2ZzL3ViaWZzL2ZpbGUuYwo+IEBAIC0yMDIsNiArMjAyLDQ1IEBA
-IHN0YXRpYyB2b2lkIHJlbGVhc2VfZXhpc3RpbmdfcGFnZV9idWRnZXQoc3RydWN0IHViaWZzX2lu
-Zm8gKmMpCj4gICAJdWJpZnNfcmVsZWFzZV9idWRnZXQoYywgJnJlcSk7Cj4gICB9Cj4gICAKPiAr
-LyoqCj4gKyAqIHViaWZzX3plcm9fZW9mX2hvbGUgLSB6ZXJvIHRoZSBzdGFsZSB0YWlsIG9mIHRo
-ZSBvbGQtRU9GIGZvbGlvLgo+ICsgKiBAaW5vZGU6IGlub2RlIHdob3NlIHNpemUgaXMgYWJvdXQg
-dG8gZ3Jvdwo+ICsgKiBAbmV3X2VuZDogbmV3IGVuZCBvZiB0aGUgZmlsZSwgb25seSB1c2VkIHRv
-IGJvdW5kIHRoZSB0YWlsCj4gKyAqCj4gKyAqIFplcm8gdGhlIGNhY2hlZCBmb2xpbyBjb250YWlu
-aW5nIHRoZSBvbGQgRU9GIGZvciBbb2xkIEVPRiwKPiArICogbWluKGZvbGlvIGVuZCwgQG5ld19l
-bmQpKSBzbyBhIHNpemUgZXh0ZW5zaW9uIGRvZXMgbm90IGV4cG9zZSBzdGFsZQo+ICsgKiBkYXRh
-IGxlZnQgYmV5b25kIEVPRiBieSBtbWFwIHdyaXRlcy4KPiArICoKPiArICogTXVzdCBiZSBjYWxs
-ZWQgd2l0aCBpbm9kZV9sb2NrKGlub2RlKSBoZWxkIGFuZCB3aXRob3V0IHVpLT51aV9tdXRleCBo
-ZWxkOgo+ICsgKiB3ZSBibG9jayBvbiB0aGUgb2xkLUVPRiBmb2xpbyBsb2NrLCBhbmQgLT53cml0
-ZXBhZ2UoKSBhbmQgLT5wYWdlX21rd3JpdGUoKQo+ICsgKiBob2xkIHRoYXQgZm9saW8gbG9jayB3
-aGlsZSB0YWtpbmcgdWlfbXV0ZXg7IHRoZSByZXZlcnNlIG9yZGVyIGRlYWRsb2Nrcy4KPiArICov
-Cj4gK3N0YXRpYyB2b2lkIHViaWZzX3plcm9fZW9mX2hvbGUoc3RydWN0IGlub2RlICppbm9kZSwg
-bG9mZl90IG5ld19lbmQpCj4gK3sKPiArCWxvZmZfdCBvbGRfc2l6ZSA9IGlfc2l6ZV9yZWFkKGlu
-b2RlKTsKPiArCXNpemVfdCBmcm9tLCB0bzsKPiArCXN0cnVjdCBmb2xpbyAqZm9saW87Cj4gKwo+
-ICsJaWYgKG5ld19lbmQgPD0gb2xkX3NpemUpCj4gKwkJcmV0dXJuOwo+ICsKPiArCWZvbGlvID0g
-ZmlsZW1hcF9sb2NrX2ZvbGlvKGlub2RlLT5pX21hcHBpbmcsIG9sZF9zaXplID4+IFBBR0VfU0hJ
-RlQpOwo+ICsJaWYgKElTX0VSUihmb2xpbykpCj4gKwkJcmV0dXJuOwo+ICsKPiArCWZyb20gPSBv
-ZmZzZXRfaW5fZm9saW8oZm9saW8sIG9sZF9zaXplKTsKPiArCWlmICghZnJvbSkKPiArCQlnb3Rv
-IG91dDsKPiArCXRvID0gZm9saW9fY29udGFpbnMoZm9saW8sIG5ld19lbmQgPj4gUEFHRV9TSElG
-VCkgPwo+ICsJICAgICBvZmZzZXRfaW5fZm9saW8oZm9saW8sIG5ld19lbmQpIDogZm9saW9fc2l6
-ZShmb2xpbyk7Cj4gKwlpZiAodG8gPiBmcm9tKQo+ICsJCWZvbGlvX3plcm9fcmFuZ2UoZm9saW8s
-IGZyb20sIHRvIC0gZnJvbSk7Cj4gKwo+ICtvdXQ6Cj4gKwlmb2xpb191bmxvY2soZm9saW8pOwo+
-ICsJZm9saW9fcHV0KGZvbGlvKTsKPiArfQo+ICsKPiAgIHN0YXRpYyBpbnQgd3JpdGVfYmVnaW5f
-c2xvdyhzdHJ1Y3QgYWRkcmVzc19zcGFjZSAqbWFwcGluZywKPiAgIAkJCSAgICBsb2ZmX3QgcG9z
-LCB1bnNpZ25lZCBsZW4sIHN0cnVjdCBmb2xpbyAqKmZvbGlvcCkKPiAgIHsKPiBAQCAtMTIyMCw2
-ICsxMjU5LDEwIEBAIHN0YXRpYyBpbnQgZG9fc2V0YXR0cihzdHJ1Y3QgdWJpZnNfaW5mbyAqYywg
-c3RydWN0IGlub2RlICppbm9kZSwKPiAgIAo+ICAgCWlmIChhdHRyLT5pYV92YWxpZCAmIEFUVFJf
-U0laRSkgewo+ICAgCQlkYmdfZ2VuKCJzaXplICVsbGQgLT4gJWxsZCIsIGlub2RlLT5pX3NpemUs
-IG5ld19zaXplKTsKPiArCj4gKwkJLyogTXVzdCBydW4gYmVmb3JlIHRoZSBzaXplIGNoYW5nZSBs
-b3NlcyB0aGUgb2xkIGJvdW5kYXJ5LiAqLwo+ICsJCXViaWZzX3plcm9fZW9mX2hvbGUoaW5vZGUs
-IG5ld19zaXplKTsKPiArCj4gICAJCXRydW5jYXRlX3NldHNpemUoaW5vZGUsIG5ld19zaXplKTsK
-PiAgIAl9Cj4gICAKPiBAQCAtMTQzMywxMSArMTQ3Niw0NiBAQCBzdGF0aWMgaW50IHVwZGF0ZV9t
-Y3RpbWUoc3RydWN0IGlub2RlICppbm9kZSkKPiAgIAo+ICAgc3RhdGljIHNzaXplX3QgdWJpZnNf
-d3JpdGVfaXRlcihzdHJ1Y3Qga2lvY2IgKmlvY2IsIHN0cnVjdCBpb3ZfaXRlciAqZnJvbSkKPiAg
-IHsKPiAtCWludCBlcnIgPSB1cGRhdGVfbWN0aW1lKGZpbGVfaW5vZGUoaW9jYi0+a2lfZmlscCkp
-Owo+IC0JaWYgKGVycikKPiAtCQlyZXR1cm4gZXJyOwo+ICsJc3RydWN0IGlub2RlICppbm9kZSA9
-IGZpbGVfaW5vZGUoaW9jYi0+a2lfZmlscCk7Cj4gKwlzc2l6ZV90IHJldDsKPiArCj4gKwlpZiAo
-aW9jYi0+a2lfZmxhZ3MgJiBJT0NCX05PV0FJVCkKPiArCQlyZXR1cm4gLUVPUE5PVFNVUFA7Cj4g
-Kwo+ICsJaW5vZGVfbG9jayhpbm9kZSk7Cj4gKwo+ICsJcmV0ID0gZ2VuZXJpY193cml0ZV9jaGVj
-a3MoaW9jYiwgZnJvbSk7Cj4gKwlpZiAocmV0IDw9IDApCj4gKwkJZ290byBvdXQ7Cj4gKwo+ICsJ
-cmV0ID0ga2lvY2JfbW9kaWZpZWQoaW9jYik7Cj4gKwlpZiAocmV0KQo+ICsJCWdvdG8gb3V0OwpI
-aSwKSSB0aGluayBmaWxlX3JlbW92ZV9wcml2cygpIGlzIGVub3V0aCwgYmVjYXVzZSB1YmlmcyBp
-bm9kZSBoYXMgClNfTk9DTVRJTUUgZmxhZyBhbmQgdGhlIGlvY2ItPmtpX2ZsYWdzIHdpdGhvdXQg
-J0lPQ0JfTk9XQUlUJy4KPiAgIAo+IC0JcmV0dXJuIGdlbmVyaWNfZmlsZV93cml0ZV9pdGVyKGlv
-Y2IsIGZyb20pOwo+ICsJLyoKPiArCSAqIFVCSUZTIHNldHMgU19OT0NNVElNRSBvbiBhbGwgaW5v
-ZGVzLCBzbyBWRlMncyBmaWxlX3VwZGF0ZV90aW1lX2ZsYWdzKCkKPiArCSAqIHNob3J0LWNpcmN1
-aXRzIGFuZCBuZXZlciBjYWxscyB1Ymlmc191cGRhdGVfdGltZSgpIGZvciBtdGltZS9jdGltZS4K
-PiArCSAqIFdlIG11c3QgY2FsbCB1cGRhdGVfbWN0aW1lKCkgZXhwbGljaXRseSBoZXJlLgo+ICsJ
-ICovCj4gKwlyZXQgPSB1cGRhdGVfbWN0aW1lKGlub2RlKTsKPiArCWlmIChyZXQpCj4gKwkJZ290
-byBvdXQ7Cj4gKwo+ICsJLyoKPiArCSAqIElmIHRoZSB3cml0ZSBwb3NpdGlvbiBpcyBiZXlvbmQg
-RU9GLCB6ZXJvIHRoZSBzdGFsZSB0YWlsIG9mIHRoZQo+ICsJICogb2xkLUVPRiBmb2xpbyBmaXJz
-dC4gIGdlbmVyaWNfd3JpdGVfY2hlY2tzKCkgaGFzIGFscmVhZHkgcmVzb2x2ZWQKPiArCSAqIE9f
-QVBQRU5EL1JXRl9BUFBFTkQgYW5kIHJlamVjdGVkIGludmFsaWQgd3JpdGVzLCBzbyBpb2NiLT5r
-aV9wb3MKPiArCSAqIGlzIHRoZSBmaW5hbCB3cml0ZSBwb3NpdGlvbi4KPiArCSAqLwo+ICsJaWYg
-KGlvY2ItPmtpX3BvcyA+IGlfc2l6ZV9yZWFkKGlub2RlKSkKPiArCQl1Ymlmc196ZXJvX2VvZl9o
-b2xlKGlub2RlLCBpb2NiLT5raV9wb3MpOwo+ICsKPiArCXJldCA9IGdlbmVyaWNfcGVyZm9ybV93
-cml0ZShpb2NiLCBmcm9tKTsKPiArb3V0Ogo+ICsJaW5vZGVfdW5sb2NrKGlub2RlKTsKPiArCWlm
-IChyZXQgPiAwKQo+ICsJCXJldCA9IGdlbmVyaWNfd3JpdGVfc3luYyhpb2NiLCByZXQpOwo+ICsJ
-cmV0dXJuIHJldDsKPiAgIH0KPiAgIAo+ICAgc3RhdGljIGJvb2wgdWJpZnNfZGlydHlfZm9saW8o
-c3RydWN0IGFkZHJlc3Nfc3BhY2UgKm1hcHBpbmcsCj4gCgoKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1h
-aWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xp
-bnV4LW10ZC8K
+>> mmap writes can dirty the page cache beyond EOF without changing
+>> i_size. A later extending write or ftruncate turns that region into a
+>> hole, but UBIFS never zeroes the partial page at the old EOF, so reads
+>> expose the stale data.
+>> 
+>> Zero the tail of the cached old-EOF folio in both size-extending
+>> paths: ubifs_write_iter() for writes starting beyond EOF, and
+>> do_setattr() before truncate_setsize() grows the size. This mirrors
+>> what ext4 does on size extension;
+>> 
+>> Restructure ubifs_write_iter() to match ext4_buffered_write_iter():
+>> acquire inode_lock, perform write checks, call kiocb_modified() for
+>> setuid/setgid clearing, update mtime/ctime via update_mctime()
+>> (UBIFS sets S_NOCMTIME so VFS time updates short-circuit), zero the
+>> EOF hole, then execute the write with generic_perform_write(). This
+>> ensures proper serialization and security handling.
+>> 
+>> All zeroing takes the old-EOF folio lock without ui->ui_mutex, keeping
+>> the folio_lock -> ui_mutex order of ->writepage(); the reverse order
+>> deadlocks.
+>> 
+>> UBIFS does not enable large folios, so the EOF folio is always a
+>> single page today; nevertheless, use folio-relative arithmetic
+>> (offset_in_folio(), folio_contains(), folio_size()) throughout so the
+>> code is correct if that ever changes.
+>> 
+>> Signed-off-by: Nan Lin <lin.nan@h3c.com>
+>> 
+>> Changes since v3:
+>>   - Add inode_lock and move zero-eof after generic_write_checks(),
+>>     matching ext4_buffered_write_iter structure
+>>     (suggested by Sashiko AI review & Zhihao Cheng).
+>>   - Add kiocb_modified() for setuid/setgid clearing.
+>>   - Keep explicit update_mctime() as UBIFS sets S_NOCMTIME.
+>> 
+>> Changes since v2:
+>>   - Move the extending-write check from ubifs_write_begin() to
+>>     ubifs_write_iter(), mirroring ext4_write_checks() ->
+>>     ext4_block_zero_eof(): the hole zeroing runs once per write()
+>>     syscall instead of once per ->write_begin() iteration (suggested
+>>     by Zhihao Cheng).
+>>   - Drop the ubifs_vm_page_mkwrite() zeroing: like ext4
+>>     (ext4_block_write_begin() with len = i_size - folio_pos),
+>>     ->page_mkwrite() does not zero the tail beyond EOF, and mmap
+>>     writes past EOF are the user's responsibility (suggested by
+>>     Zhihao Cheng).
+>> 
+>> Changes since v1:
+>>   - Both zeroing sites used PAGE_SIZE-relative arithmetic
+>>     (offset_in_page()-style) while folio_zero_range() expects
+>>     folio-relative offsets. UBIFS does not currently enable large
+>>     folios, so PAGE_SIZE == folio_size() and the two coincide in
+>>     practice, but switch to offset_in_folio()/folio_size() anyway so
+>>     the code is correct if UBIFS ever opts into large folios
+>>     (suggested by Sashiko AI review).
+>> ---
+>>   fs/ubifs/file.c | 86 ++++++++++++++++++++++++++++++++++++++++++++++---
+>>   1 file changed, 82 insertions(+), 4 deletions(-)
+>> 
+>> diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+>> index e73c28b12f97..6f2c83b6f433 100644
+>> --- a/fs/ubifs/file.c
+>> +++ b/fs/ubifs/file.c
+>> @@ -202,6 +202,45 @@ static void release_existing_page_budget(struct ubifs_info *c)
+>>   	ubifs_release_budget(c, &req);
+>>   }
+>>   
+>> +/**
+>> + * ubifs_zero_eof_hole - zero the stale tail of the old-EOF folio.
+>> + * @inode: inode whose size is about to grow
+>> + * @new_end: new end of the file, only used to bound the tail
+>> + *
+>> + * Zero the cached folio containing the old EOF for [old EOF,
+>> + * min(folio end, @new_end)) so a size extension does not expose stale
+>> + * data left beyond EOF by mmap writes.
+>> + *
+>> + * Must be called with inode_lock(inode) held and without ui->ui_mutex held:
+>> + * we block on the old-EOF folio lock, and ->writepage() and ->page_mkwrite()
+>> + * hold that folio lock while taking ui_mutex; the reverse order deadlocks.
+>> + */
+>> +static void ubifs_zero_eof_hole(struct inode *inode, loff_t new_end)
+>> +{
+>> +	loff_t old_size = i_size_read(inode);
+>> +	size_t from, to;
+>> +	struct folio *folio;
+>> +
+>> +	if (new_end <= old_size)
+>> +		return;
+>> +
+>> +	folio = filemap_lock_folio(inode->i_mapping, old_size >> PAGE_SHIFT);
+>> +	if (IS_ERR(folio))
+>> +		return;
+>> +
+>> +	from = offset_in_folio(folio, old_size);
+>> +	if (!from)
+>> +		goto out;
+>> +	to = folio_contains(folio, new_end >> PAGE_SHIFT) ?
+>> +	     offset_in_folio(folio, new_end) : folio_size(folio);
+>> +	if (to > from)
+>> +		folio_zero_range(folio, from, to - from);
+>> +
+>> +out:
+>> +	folio_unlock(folio);
+>> +	folio_put(folio);
+>> +}
+>> +
+>>   static int write_begin_slow(struct address_space *mapping,
+>>   			    loff_t pos, unsigned len, struct folio **foliop)
+>>   {
+>> @@ -1220,6 +1259,10 @@ static int do_setattr(struct ubifs_info *c, struct inode *inode,
+>>   
+>>   	if (attr->ia_valid & ATTR_SIZE) {
+>>   		dbg_gen("size %lld -> %lld", inode->i_size, new_size);
+>> +
+>> +		/* Must run before the size change loses the old boundary. */
+>> +		ubifs_zero_eof_hole(inode, new_size);
+>> +
+>>   		truncate_setsize(inode, new_size);
+>>   	}
+>>   
+>> @@ -1433,11 +1476,46 @@ static int update_mctime(struct inode *inode)
+>>   
+>>   static ssize_t ubifs_write_iter(struct kiocb *iocb, struct iov_iter *from)
+>>   {
+>> -	int err = update_mctime(file_inode(iocb->ki_filp));
+>> -	if (err)
+>> -		return err;
+>> +	struct inode *inode = file_inode(iocb->ki_filp);
+>> +	ssize_t ret;
+>> +
+>> +	if (iocb->ki_flags & IOCB_NOWAIT)
+>> +		return -EOPNOTSUPP;
+>> +
+>> +	inode_lock(inode);
+>> +
+>> +	ret = generic_write_checks(iocb, from);
+>> +	if (ret <= 0)
+>> +		goto out;
+>> +
+>> +	ret = kiocb_modified(iocb);
+>> +	if (ret)
+>> +		goto out;
+>Hi,
+>I think file_remove_privs() is enouth, because ubifs inode has 
+>S_NOCMTIME flag and the iocb->ki_flags without 'IOCB_NOWAIT'.
+
+Ack, This makes the code clearer.
+I'll make this change in the next revision.
+
+>>   
+>> -	return generic_file_write_iter(iocb, from);
+>> +	/*
+>> +	 * UBIFS sets S_NOCMTIME on all inodes, so VFS's file_update_time_flags()
+>> +	 * short-circuits and never calls ubifs_update_time() for mtime/ctime.
+>> +	 * We must call update_mctime() explicitly here.
+>> +	 */
+>> +	ret = update_mctime(inode);
+>> +	if (ret)
+>> +		goto out;
+>> +
+>> +	/*
+>> +	 * If the write position is beyond EOF, zero the stale tail of the
+>> +	 * old-EOF folio first.  generic_write_checks() has already resolved
+>> +	 * O_APPEND/RWF_APPEND and rejected invalid writes, so iocb->ki_pos
+>> +	 * is the final write position.
+>> +	 */
+>> +	if (iocb->ki_pos > i_size_read(inode))
+>> +		ubifs_zero_eof_hole(inode, iocb->ki_pos);
+>> +
+>> +	ret = generic_perform_write(iocb, from);
+>> +out:
+>> +	inode_unlock(inode);
+>> +	if (ret > 0)
+>> +		ret = generic_write_sync(iocb, ret);
+>> +	return ret;
+>>   }
+>>   
+>>   static bool ubifs_dirty_folio(struct address_space *mapping,
+>> 
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
