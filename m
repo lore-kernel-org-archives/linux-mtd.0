@@ -2,10 +2,10 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8F14606A31B
-	for <linux-mtd@archiver.kernel.org>; Tue, 27 Oct 2026 06:18:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A936606A31F
+	for <linux-mtd@archiver.kernel.org>; Tue, 27 Oct 2026 06:20:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=Q/EMSk5c
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=PGHqZhjF
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -13,54 +13,55 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=N7RpuCfrpjmyZXX4C2iDawLgazv3VH8uPFKpBrgPhhE=; b=Q/EMSk5c/Vqw9StiRQhdDhwd3q
-	4sqYntgNdWPfsfm3O8zezbx3tWHNjgKN1tAx53BeXQD+5eq4LOLQmaUYKWzwy+eH7FOO5Smv+xBcJ
-	q2Dma/eLiw3cUceG5/xj4e34sL75WEyLolbCkHgdkOZn+y0bY6TdQPevJuKwRJWUB+QN4vdF0Ns8z
-	6NRSV0ZZHfKObeVIFB1Rgir//hVHQADaaTXmLvzc9Xx9ZDMbYBasxCez8J9TuW0LnYDuHZ8pRbS/F
-	s6/AevlUf2Frd4ns4lx/7wDUCKUrB6cxbzHDis7xGE9T7Ke2vfwW8yKBxe/T7SgQVe5tcfGsIIWjq
-	r5bG79Rg==;
+	bh=Euk0E9oDLGCoJ2GuGIRO5U1qZ1w/TJdg8XfooBNrUIQ=; b=PGHqZhjFz0qa1vKpsChisbp96N
+	WB13WY2IO+X85rNziJmA58ICx1zpc9ufIgZtKY92A/ty/rDA23MfLhJ6XnLw9+Y10PkyMYSadCA7s
+	skoANTdd0JQV82pTQ/Q0A3Nuy/ugL1/ruX/20roo2VTo/yJ55bXGj6YBHX2009cxsaO8oOOwMQRm7
+	Asn3Xizp8r0NQr4omgKtfKOdUNB2v5wcjr2dZJi+tT2J3qH3CDsVNkrZWqRu2R46UAq1+LhyKw7Ee
+	w4GcH4GqKRoB0QlMYue1SbYAP2WV7ztDtxmbHrZ0NsYrvyp+RF2VLkqWw5p8MuUP5sBZO1OUDEHQX
+	E3LxpTYg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xLaW1-00000003pNs-38VW;
-	Tue, 27 Oct 2026 06:18:33 +0000
+	id 1xLaXr-00000003pUT-0LlH;
+	Tue, 27 Oct 2026 06:20:27 +0000
 Received: from smtp.h3c.com ([60.191.123.56] helo=h3cspam01-ex.h3c.com)
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xLaVy-00000003pNQ-1bqm
+	id 1xLaXk-00000003pTr-40sb
 	for linux-mtd@lists.infradead.org;
-	Tue, 27 Oct 2026 06:18:32 +0000
+	Tue, 27 Oct 2026 06:20:25 +0000
 Received: from mail.maildlp.com ([172.25.15.155])
-	by h3cspam01-ex.h3c.com with ESMTP id 69R6IEec044318;
-	Tue, 27 Oct 2026 14:18:14 +0800 (+08)
+	by h3cspam01-ex.h3c.com with ESMTP id 69R6K1MB052305;
+	Tue, 27 Oct 2026 14:20:01 +0800 (+08)
 	(envelope-from lin.nan@h3c.com)
 Received: from DAG6EX09-BJD.srv.huawei-3com.com (unknown [10.153.34.11])
-	by mail.maildlp.com (Postfix) with ESMTP id 9F7642284EA2;
-	Tue, 27 Oct 2026 14:21:35 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 4F8F12284EA5;
+	Tue, 27 Oct 2026 14:23:22 +0800 (CST)
 Received: from localhost.localdomain (10.142.164.48) by
  DAG6EX09-BJD.srv.huawei-3com.com (10.153.34.11) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1258.27; Tue, 27 Oct 2026 14:18:05 +0800
+ 15.2.1258.27; Tue, 27 Oct 2026 14:20:00 +0800
 From: Nan Lin <lin.nan@h3c.com>
-To: <chengzhihao1@huawei.com>
-CC: <lin.nan@h3c.com>, <linux-mtd@lists.infradead.org>, <richard@nod.at>,
+To: <sashiko-bot@kernel.org>
+CC: <chengzhihao1@huawei.com>, <lin.nan@h3c.com>,
+        <linux-mtd@lists.infradead.org>, <richard@nod.at>,
         <sashiko-reviews@lists.linux.dev>, <wangxiaoqing@h3c.com>,
         <zhou.kete@h3c.com>
 Subject: [PATCH v4] ubifs: zero stale data beyond EOF before file size grows
-Date: Tue, 27 Oct 2026 14:10:31 +0800
-Message-ID: <20261027061031.3502472-1-lin.nan@h3c.com>
+Date: Tue, 27 Oct 2026 14:12:26 +0800
+Message-ID: <20261027061226.3506517-1-lin.nan@h3c.com>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <0f05834a-7483-3e4e-0612-1d70e045b893@huawei.com>
-References: <0f05834a-7483-3e4e-0612-1d70e045b893@huawei.com>
+In-Reply-To: <sashiko-outbox-185311@kernel.org>
+References: <sashiko-outbox-185311@kernel.org>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 X-ClientProxiedBy: BJSMTP02-EX.srv.huawei-3com.com (10.63.20.133) To
  DAG6EX09-BJD.srv.huawei-3com.com (10.153.34.11)
 X-DNSRBL: 
 X-SPAM-SOURCE-CHECK: pass
-X-MAIL: h3cspam01-ex.h3c.com 69R6IEec044318
+X-MAIL: h3cspam01-ex.h3c.com 69R6K1MB052305
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261026_231830_759137_D643C007 
-X-CRM114-Status: GOOD (  16.26  )
-X-Spam-Score: 0.6 (/)
+X-CRM114-CacheID: sfid-20261026_232024_045300_38BBEB4E 
+X-CRM114-Status: GOOD (  15.84  )
+X-Spam-Score: -1.9 (-)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,80 +74,21 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-17.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-12.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
->> mmap writes can dirty the page cache beyond EOF without changing
->> i_size. A later extending write or ftruncate turns that region into a
->> hole, but UBIFS never zeroes the partial page at the old EOF, so reads
->> expose the stale data.
->> 
->> Zero the tail of the cached old-EOF folio in both size-extending
->> paths: ubifs_write_iter() for writes starting beyond EOF, and
->> do_setattr() before truncate_setsize() grows the size. This mirrors
->> what ext4 does on size extension;
->> 
->> Restructure ubifs_write_iter() to match ext4_buffered_write_iter():
->> acquire inode_lock, perform write checks, call kiocb_modified() for
->> setuid/setgid clearing, update mtime/ctime via update_mctime()
->> (UBIFS sets S_NOCMTIME so VFS time updates short-circuit), zero the
->> EOF hole, then execute the write with generic_perform_write(). This
->> ensures proper serialization and security handling.
->> 
->> All zeroing takes the old-EOF folio lock without ui->ui_mutex, keeping
->> the folio_lock -> ui_mutex order of ->writepage(); the reverse order
->> deadlocks.
->> 
->> UBIFS does not enable large folios, so the EOF folio is always a
->> single page today; nevertheless, use folio-relative arithmetic
->> (offset_in_folio(), folio_contains(), folio_size()) throughout so the
->> code is correct if that ever changes.
->> 
->> Signed-off-by: Nan Lin <lin.nan@h3c.com>
->> 
->> Changes since v3:
->>   - Add inode_lock and move zero-eof after generic_write_checks(),
->>     matching ext4_buffered_write_iter structure
->>     (suggested by Sashiko AI review & Zhihao Cheng).
->>   - Add kiocb_modified() for setuid/setgid clearing.
->>   - Keep explicit update_mctime() as UBIFS sets S_NOCMTIME.
->> 
->> Changes since v2:
->>   - Move the extending-write check from ubifs_write_begin() to
->>     ubifs_write_iter(), mirroring ext4_write_checks() ->
->>     ext4_block_zero_eof(): the hole zeroing runs once per write()
->>     syscall instead of once per ->write_begin() iteration (suggested
->>     by Zhihao Cheng).
->>   - Drop the ubifs_vm_page_mkwrite() zeroing: like ext4
->>     (ext4_block_write_begin() with len = i_size - folio_pos),
->>     ->page_mkwrite() does not zero the tail beyond EOF, and mmap
->>     writes past EOF are the user's responsibility (suggested by
->>     Zhihao Cheng).
->> 
->> Changes since v1:
->>   - Both zeroing sites used PAGE_SIZE-relative arithmetic
->>     (offset_in_page()-style) while folio_zero_range() expects
->>     folio-relative offsets. UBIFS does not currently enable large
->>     folios, so PAGE_SIZE == folio_size() and the two coincide in
->>     practice, but switch to offset_in_folio()/folio_size() anyway so
->>     the code is correct if UBIFS ever opts into large folios
->>     (suggested by Sashiko AI review).
->> ---
->>   fs/ubifs/file.c | 86 ++++++++++++++++++++++++++++++++++++++++++++++---
->>   1 file changed, 82 insertions(+), 4 deletions(-)
->> 
 >> diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
->> index e73c28b12f97..6f2c83b6f433 100644
+>> index e73c28b12f97f..6f2c83b6f4333 100644
 >> --- a/fs/ubifs/file.c
 >> +++ b/fs/ubifs/file.c
 >> @@ -202,6 +202,45 @@ static void release_existing_page_budget(struct ubifs_info *c)
->>   	ubifs_release_budget(c, &req);
->>   }
->>   
+>>  	ubifs_release_budget(c, &req);
+>>  }
+>>  
 >> +/**
 >> + * ubifs_zero_eof_hole - zero the stale tail of the old-EOF folio.
 >> + * @inode: inode whose size is about to grow
@@ -185,25 +127,13 @@ X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 >> +	folio_unlock(folio);
 >> +	folio_put(folio);
 >> +}
->> +
->>   static int write_begin_slow(struct address_space *mapping,
->>   			    loff_t pos, unsigned len, struct folio **foliop)
->>   {
->> @@ -1220,6 +1259,10 @@ static int do_setattr(struct ubifs_info *c, struct inode *inode,
->>   
->>   	if (attr->ia_valid & ATTR_SIZE) {
->>   		dbg_gen("size %lld -> %lld", inode->i_size, new_size);
->> +
->> +		/* Must run before the size change loses the old boundary. */
->> +		ubifs_zero_eof_hole(inode, new_size);
->> +
->>   		truncate_setsize(inode, new_size);
->>   	}
->>   
+>
+>[ ... ]
+>
 >> @@ -1433,11 +1476,46 @@ static int update_mctime(struct inode *inode)
->>   
->>   static ssize_t ubifs_write_iter(struct kiocb *iocb, struct iov_iter *from)
->>   {
+>>  
+>>  static ssize_t ubifs_write_iter(struct kiocb *iocb, struct iov_iter *from)
+>>  {
 >> -	int err = update_mctime(file_inode(iocb->ki_filp));
 >> -	if (err)
 >> -		return err;
@@ -222,14 +152,7 @@ X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 >> +	ret = kiocb_modified(iocb);
 >> +	if (ret)
 >> +		goto out;
->Hi,
->I think file_remove_privs() is enouth, because ubifs inode has 
->S_NOCMTIME flag and the iocb->ki_flags without 'IOCB_NOWAIT'.
-
-Ack, This makes the code clearer.
-I'll make this change in the next revision.
-
->>   
+>>  
 >> -	return generic_file_write_iter(iocb, from);
 >> +	/*
 >> +	 * UBIFS sets S_NOCMTIME on all inodes, so VFS's file_update_time_flags()
@@ -250,15 +173,59 @@ I'll make this change in the next revision.
 >> +		ubifs_zero_eof_hole(inode, iocb->ki_pos);
 >> +
 >> +	ret = generic_perform_write(iocb, from);
->> +out:
->> +	inode_unlock(inode);
->> +	if (ret > 0)
->> +		ret = generic_write_sync(iocb, ret);
->> +	return ret;
->>   }
->>   
->>   static bool ubifs_dirty_folio(struct address_space *mapping,
->> 
+>
+>[Severity: High]
+>Can stale mmap data still be exposed when generic_perform_write() encounters a
+>short or zero-byte copy in copy_folio_from_iter_atomic()?
+>
+>Suppose a file has a non-page-aligned size old_size and a shared mmap writes
+>beyond EOF, leaving the old-EOF folio uptodate with stale data in
+>[old_size, folio_size(folio)).
+>
+>When a subsequent write() or pwrite() starts at pos >= old_size within that
+>same folio, ubifs_write_iter() skips ubifs_zero_eof_hole() if pos == old_size,
+>or only zeroes [old_size, pos) if pos > old_size, leaving [pos, folio_size(folio))
+>containing the stale mmap data under the assumption that the write will
+>overwrite [pos, pos + len).
+>
+>However, if copy_folio_from_iter_atomic() copies fewer than len bytes (for
+>example, copied == 0 due to an unmapped user buffer returning -EFAULT, or an
+>unfaulted user page when a signal is pending), ubifs_write_end() only takes
+>the short-copy bailout when !folio_test_uptodate(folio), and otherwise extends
+>i_size to end_pos = pos + len rather than pos + copied:
+>
+>fs/ubifs/file.c:ubifs_write_end() {
+>	loff_t end_pos = pos + len;
+>	int appending = !!(end_pos > inode->i_size);
+>	...
+>	if (unlikely(copied < len && !folio_test_uptodate(folio))) {
+>		...
+>		goto out;
+>	}
+>	...
+>	if (appending) {
+>		i_size_write(inode, end_pos);
+>		ui->ui_size = end_pos;
+>		...
+>	}
+>}
+>
+>Because the old-EOF folio is already uptodate, wouldn't ubifs_write_end()
+>advance inode->i_size and ui->ui_size to pos + len even when copied < len,
+>exposing the unzeroed stale mmap data in [pos + copied, pos + len)?
+>
+>By comparison, ext4_block_zero_eof() zeroes the entire tail of the old-EOF
+>folio from old_size to folio_size(folio), and ext4_write_end() only advances
+>i_size to pos + copied. Should ubifs_zero_eof_hole() also zero to the end of
+>the folio (or be called whenever the write extends past i_size), or should
+>ubifs_write_end() avoid extending i_size past pos + copied?
+
+Valid concern. I think the short-copy issue is best handled separately
+since it involves write_end() budget semantics and affects all buffered
+writes, not just extending ones. Note that the i_size advance to pos + len on
+short copies is pre-existing UBIFS behavior, not introduced by this patch. 
+Worth a dedicated analysis/patch but outside the scope of this fix.
+
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
