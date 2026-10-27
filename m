@@ -2,72 +2,65 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89AAC606A31A
-	for <linux-mtd@archiver.kernel.org>; Tue, 27 Oct 2026 06:49:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA727606A321
+	for <linux-mtd@archiver.kernel.org>; Tue, 27 Oct 2026 08:14:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=IokWRmQv;
-	dkim=fail reason="signature verification failed" (1024-bit key, unprotected) header.d=huawei.com header.i=@huawei.com header.a=rsa-sha256 header.s=dkim header.b=bhNY92mI
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=1DG7ZgVh
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=Q7tWkcbWiS9CtkHd2+mplJKeSwo375t7XJkvZ356WA4=; b=IokWRmQvWBMS/N6ZIYVmUseMWj
-	mYSXEnGB+OOcSRSo7B5fJ1uepASM2NO5nG0QU9P+A7/yzWiwmCSARHIoFWGVeY5xOOAUVsVJ9xAk6
-	3WByfpEZmTl812ZtBGpqhsjVmavHbCMI9FFHda+ksnnl5kmOPdL1nWYb8dQKjC5qvyqCbpSx5BZ3+
-	3UOlg+J0eKRPj3P0YBMQ3llh6Vn+M39tu/HDI/v5y/TVw7R+wrwEJzB46LZgFJQ60eUovd6gCHmPq
-	Lzvw0MVJTkysbDdu+ecxFpWP4OfJxCY9+mdz3dkvI1le6JU9gZGuemNPni44QJNIaWSFhS4kYrCv4
-	dxFlisJA==;
+	bh=FS4vfcDq4AVuDHcPAu+eg/YSfnRkgUhfw08wiGbXb/g=; b=1DG7ZgVhIkkgEsUJL7G+nbB9P/
+	k4SdnG5IpFt7xMCplBVkSKsA/M0vJgWZJOPpZre2iXI0rug/znesNUr5uoJvI71ohfv97VbCgbRiz
+	PZi9yRlbZJveyDINqMHgB7vIV8qHh6dA3DW5fqNC2W3qJok/LCrc+AC8BajDX0b4L5WuGDbutx8NL
+	MbHIrod6UYnoPCKXej610cz5pZ73UHizFv4XRRHzVG6Zwqm2ygokX5dLxbW3sAAlYSVwhms+EeTYN
+	miwoi3AlpkVlzf7CsankS39EbvrEmzhoBIyesbxuxVH3iMwnuS63sVCdKFAZ3MXJiAUJsoCCe4agI
+	N+B801lg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xLaza-00000003rey-3Kpd;
-	Tue, 27 Oct 2026 06:49:06 +0000
-Received: from [113.46.200.227] (helo=canpmsgout12.his.huawei.com)
+	id 1xLcKH-000000040lx-2VAf;
+	Tue, 27 Oct 2026 08:14:33 +0000
+Received: from smtp.h3c.com ([60.191.123.56] helo=h3cspam01-ex.h3c.com)
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xLazY-00000003rdw-3HFC
+	id 1xLcKE-000000040jr-0j6S
 	for linux-mtd@lists.infradead.org;
-	Tue, 27 Oct 2026 06:49:06 +0000
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=E7AReoFYct7WUrQ4kv0lsePfBeMYH9Q/DmLWXz7IMes=;
-	b=bhNY92mI+eKRPemDJ92oKKy5AZ/98/OHSOo9nQk3wRFMvbbJnmmiB04rIEIGhA/61vxMNYVvP
-	d6/Bw9ndioPbsmPyH0Dvakb8AcHldVkGwMP98FZDNLKd60z5GL6ENA2RQ3zF72VYPvBZNer4sLu
-	XbmPtBBmSuL5xZyolT07xZ0=
-Received: from mail.maildlp.com (unknown [172.19.162.92])
-	by canpmsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4jDLgG3Z3sznTWH;
-	Tue, 27 Oct 2026 14:48:42 +0800 (CST)
-Received: from whupemo200011.china.huawei.com (unknown [7.152.185.179])
-	by mail.maildlp.com (Postfix) with ESMTPS id 6B81140565;
-	Tue, 27 Oct 2026 14:48:37 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- whupemo200011.china.huawei.com (7.152.185.179) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.45; Tue, 27 Oct 2026 14:48:36 +0800
-Subject: Re: [PATCH v4] ubifs: zero stale data beyond EOF before file size
- grows
-To: Nan Lin <lin.nan@h3c.com>, <sashiko-bot@kernel.org>
-CC: <linux-mtd@lists.infradead.org>, <richard@nod.at>,
-	<sashiko-reviews@lists.linux.dev>, <wangxiaoqing@h3c.com>,
-	<zhou.kete@h3c.com>
-References: <sashiko-outbox-185311@kernel.org>
- <20261027061226.3506517-1-lin.nan@h3c.com>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <2689b58f-883c-d6da-1796-221ae98e4dc1@huawei.com>
-Date: Tue, 27 Oct 2026 14:48:35 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	Tue, 27 Oct 2026 08:14:32 +0000
+Received: from mail.maildlp.com ([172.25.15.155])
+	by h3cspam01-ex.h3c.com with ESMTP id 69R8EHK1090189;
+	Tue, 27 Oct 2026 16:14:17 +0800 (+08)
+	(envelope-from lin.nan@h3c.com)
+Received: from DAG6EX09-BJD.srv.huawei-3com.com (unknown [10.153.34.11])
+	by mail.maildlp.com (Postfix) with ESMTP id DB09C2284EA2;
+	Tue, 27 Oct 2026 16:17:38 +0800 (CST)
+Received: from localhost.localdomain (10.142.164.48) by
+ DAG6EX09-BJD.srv.huawei-3com.com (10.153.34.11) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.1258.27; Tue, 27 Oct 2026 16:14:16 +0800
+From: Nan Lin <lin.nan@h3c.com>
+To: <chengzhihao1@huawei.com>
+CC: <lin.nan@h3c.com>, <linux-mtd@lists.infradead.org>, <richard@nod.at>,
+        <sashiko-reviews@lists.linux.dev>, <wangxiaoqing@h3c.com>,
+        <zhou.kete@h3c.com>
+Subject: [PATCH v5] ubifs: zero stale data beyond EOF before file size grows
+Date: Tue, 27 Oct 2026 16:05:36 +0800
+Message-ID: <20261027080536.3569047-1-lin.nan@h3c.com>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <0f05834a-7483-3e4e-0612-1d70e045b893@huawei.com>
+References: <0f05834a-7483-3e4e-0612-1d70e045b893@huawei.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20261027061226.3506517-1-lin.nan@h3c.com>
-X-ClientProxiedBy: kwepems100002.china.huawei.com (7.221.188.206) To
- whupemo200011.china.huawei.com (7.152.185.179)
+X-ClientProxiedBy: BJSMTP01-EX.srv.huawei-3com.com (10.63.20.132) To
+ DAG6EX09-BJD.srv.huawei-3com.com (10.153.34.11)
+X-DNSRBL: 
+X-SPAM-SOURCE-CHECK: pass
+X-MAIL: h3cspam01-ex.h3c.com 69R8EHK1090189
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261026_234904_999559_BAA5934B 
-X-CRM114-Status: GOOD (  11.58  )
-X-Spam-Score: -3.0 (---)
+X-CRM114-CacheID: sfid-20261027_011430_534254_E2BC0E4C 
+X-CRM114-Status: GOOD (  18.67  )
+X-Spam-Score: 0.6 (/)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,36 +70,196 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="gbk"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-12.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-17.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=4.0.1
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-1NogMjAyNi8xMC8yNyAxNDoxMiwgTmFuIExpbiDQtLXAOgo+Pj4gZGlmZiAtLWdpdCBhL2ZzL3Vi
-aWZzL2ZpbGUuYyBiL2ZzL3ViaWZzL2ZpbGUuYwo+IApbLi4uXQo+IAo+PiBCZWNhdXNlIHRoZSBv
-bGQtRU9GIGZvbGlvIGlzIGFscmVhZHkgdXB0b2RhdGUsIHdvdWxkbid0IHViaWZzX3dyaXRlX2Vu
-ZCgpCj4gCj4+IGFkdmFuY2UgaW5vZGUtPmlfc2l6ZSBhbmQgdWktPnVpX3NpemUgdG8gcG9zICsg
-bGVuIGV2ZW4gd2hlbiBjb3BpZWQgPCBsZW4sCj4gCj4+IGV4cG9zaW5nIHRoZSB1bnplcm9lZCBz
-dGFsZSBtbWFwIGRhdGEgaW4gW3BvcyArIGNvcGllZCwgcG9zICsgbGVuKT8KPiAKPj4KPiAKPj4g
-QnkgY29tcGFyaXNvbiwgZXh0NF9ibG9ja196ZXJvX2VvZigpIHplcm9lcyB0aGUgZW50aXJlIHRh
-aWwgb2YgdGhlIG9sZC1FT0YKPiAKPj4gZm9saW8gZnJvbSBvbGRfc2l6ZSB0byBmb2xpb19zaXpl
-KGZvbGlvKSwgYW5kIGV4dDRfd3JpdGVfZW5kKCkgb25seSBhZHZhbmNlcwo+IAo+PiBpX3NpemUg
-dG8gcG9zICsgY29waWVkLiBTaG91bGQgdWJpZnNfemVyb19lb2ZfaG9sZSgpIGFsc28gemVybyB0
-byB0aGUgZW5kIG9mCj4gCj4+IHRoZSBmb2xpbyAob3IgYmUgY2FsbGVkIHdoZW5ldmVyIHRoZSB3
-cml0ZSBleHRlbmRzIHBhc3QgaV9zaXplKSwgb3Igc2hvdWxkCj4gCj4+IHViaWZzX3dyaXRlX2Vu
-ZCgpIGF2b2lkIGV4dGVuZGluZyBpX3NpemUgcGFzdCBwb3MgKyBjb3BpZWQ/Cj4gCj4gCj4gCj4g
-VmFsaWQgY29uY2Vybi4gSSB0aGluayB0aGUgc2hvcnQtY29weSBpc3N1ZSBpcyBiZXN0IGhhbmRs
-ZWQgc2VwYXJhdGVseQo+IAo+IHNpbmNlIGl0IGludm9sdmVzIHdyaXRlX2VuZCgpIGJ1ZGdldCBz
-ZW1hbnRpY3MgYW5kIGFmZmVjdHMgYWxsIGJ1ZmZlcmVkCj4gCj4gd3JpdGVzLCBub3QganVzdCBl
-eHRlbmRpbmcgb25lcy4gTm90ZSB0aGF0IHRoZSBpX3NpemUgYWR2YW5jZSB0byBwb3MgKyBsZW4g
-b24KPiAKPiBzaG9ydCBjb3BpZXMgaXMgcHJlLWV4aXN0aW5nIFVCSUZTIGJlaGF2aW9yLCBub3Qg
-aW50cm9kdWNlZCBieSB0aGlzIHBhdGNoLgo+IAo+IFdvcnRoIGEgZGVkaWNhdGVkIGFuYWx5c2lz
-L3BhdGNoIGJ1dCBvdXRzaWRlIHRoZSBzY29wZSBvZiB0aGlzIGZpeC4KPiAKCkFncmVlZAo+IAo+
-IC4KPiAKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZy
-YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+mmap writes can dirty the page cache beyond EOF without changing
+i_size. A later extending write or ftruncate turns that region into a
+hole, but UBIFS never zeroes the partial page at the old EOF, so reads
+expose the stale data.
+
+Zero the tail of the cached old-EOF folio in both size-extending
+paths: ubifs_write_iter() for writes starting beyond EOF, and
+do_setattr() before truncate_setsize() grows the size. This mirrors
+what ext4 does on size extension;
+
+Restructure ubifs_write_iter() to match ext4_buffered_write_iter():
+acquire inode_lock, perform write checks, call file_remove_privs() for
+setuid/setgid clearing (UBIFS sets S_NOCMTIME so file_modified() is a
+no-op), update mtime/ctime via update_mctime(), zero the EOF hole,
+then execute the write with generic_perform_write(). This ensures
+proper serialization and security handling.
+
+All zeroing takes the old-EOF folio lock without ui->ui_mutex, keeping
+the folio_lock -> ui_mutex order of ->writepage(); the reverse order
+deadlocks.
+
+UBIFS does not enable large folios, so the EOF folio is always a
+single page today; nevertheless, use folio-relative arithmetic
+(offset_in_folio(), folio_contains(), folio_size()) throughout so the
+code is correct if that ever changes.
+
+Signed-off-by: Nan Lin <lin.nan@h3c.com>
+
+Changes since v4:
+ - Use file_remove_privs() instead of kiocb_modified(), as UBIFS sets
+   S_NOCMTIME making file_modified() a no-op (suggested by
+   Zhihao Cheng).
+
+Changes since v3:
+ - Add inode_lock and move zero-eof after generic_write_checks(),
+   matching ext4_buffered_write_iter structure
+   (suggested by Sashiko AI review & Zhihao Cheng).
+ - Add kiocb_modified() for setuid/setgid clearing.
+ - Keep explicit update_mctime() as UBIFS sets S_NOCMTIME.
+
+Changes since v2:
+ - Move the extending-write check from ubifs_write_begin() to
+   ubifs_write_iter(), mirroring ext4_write_checks() ->
+   ext4_block_zero_eof(): the hole zeroing runs once per write()
+   syscall instead of once per ->write_begin() iteration (suggested
+   by Zhihao Cheng).
+ - Drop the ubifs_vm_page_mkwrite() zeroing: like ext4
+   (ext4_block_write_begin() with len = i_size - folio_pos),
+   ->page_mkwrite() does not zero the tail beyond EOF, and mmap
+   writes past EOF are the user's responsibility (suggested by
+   Zhihao Cheng).
+
+Changes since v1:
+ - Both zeroing sites used PAGE_SIZE-relative arithmetic
+   (offset_in_page()-style) while folio_zero_range() expects
+   folio-relative offsets. UBIFS does not currently enable large
+   folios, so PAGE_SIZE == folio_size() and the two coincide in
+   practice, but switch to offset_in_folio()/folio_size() anyway so
+   the code is correct if UBIFS ever opts into large folios
+   (suggested by Sashiko AI review).
+
+Note: The short-copy issue in ubifs_write_end() where i_size may
+advance to pos + len on partial copies is pre-existing UBIFS behavior,
+not introduced by this patch. It affects all buffered writes and
+involves write_end() budget/ui_mutex handling; worth a dedicated
+analysis/patch but outside the scope of this fix.
+---
+ fs/ubifs/file.c | 80 ++++++++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 76 insertions(+), 4 deletions(-)
+
+diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+index e73c28b12f97..534e93793744 100644
+--- a/fs/ubifs/file.c
++++ b/fs/ubifs/file.c
+@@ -202,6 +202,44 @@ static void release_existing_page_budget(struct ubifs_info *c)
+ 	ubifs_release_budget(c, &req);
+ }
+ 
++/**
++ * ubifs_zero_eof_hole - zero the stale tail of the old-EOF folio.
++ * @inode: inode whose size is about to grow
++ * @new_end: new end of the file, only used to bound the tail
++ *
++ * Zero the cached folio containing the old EOF for [old EOF,
++ * min(folio end, @new_end)) so a size extension does not expose stale
++ * data left beyond EOF by mmap writes.
++ *
++ * Context: inode_lock held, ui_mutex not held.  The old-EOF folio_lock
++ * must nest outside ui_mutex to match ->writepage()/->page_mkwrite().
++ */
++static void ubifs_zero_eof_hole(struct inode *inode, loff_t new_end)
++{
++	loff_t old_size = i_size_read(inode);
++	size_t from, to;
++	struct folio *folio;
++
++	if (new_end <= old_size)
++		return;
++
++	folio = filemap_lock_folio(inode->i_mapping, old_size >> PAGE_SHIFT);
++	if (IS_ERR(folio))
++		return;
++
++	from = offset_in_folio(folio, old_size);
++	if (!from)
++		goto out;
++	to = folio_contains(folio, new_end >> PAGE_SHIFT) ?
++	     offset_in_folio(folio, new_end) : folio_size(folio);
++	if (to > from)
++		folio_zero_range(folio, from, to - from);
++
++out:
++	folio_unlock(folio);
++	folio_put(folio);
++}
++
+ static int write_begin_slow(struct address_space *mapping,
+ 			    loff_t pos, unsigned len, struct folio **foliop)
+ {
+@@ -1220,6 +1258,10 @@ static int do_setattr(struct ubifs_info *c, struct inode *inode,
+ 
+ 	if (attr->ia_valid & ATTR_SIZE) {
+ 		dbg_gen("size %lld -> %lld", inode->i_size, new_size);
++
++		/* Zero before truncate_setsize() changes i_size. */
++		ubifs_zero_eof_hole(inode, new_size);
++
+ 		truncate_setsize(inode, new_size);
+ 	}
+ 
+@@ -1433,11 +1475,41 @@ static int update_mctime(struct inode *inode)
+ 
+ static ssize_t ubifs_write_iter(struct kiocb *iocb, struct iov_iter *from)
+ {
+-	int err = update_mctime(file_inode(iocb->ki_filp));
+-	if (err)
+-		return err;
++	struct inode *inode = file_inode(iocb->ki_filp);
++	ssize_t ret;
++
++	if (iocb->ki_flags & IOCB_NOWAIT)
++		return -EOPNOTSUPP;
+ 
+-	return generic_file_write_iter(iocb, from);
++	inode_lock(inode);
++
++	ret = generic_write_checks(iocb, from);
++	if (ret <= 0)
++		goto out;
++
++	/* Clear setuid/setgid; skip file_modified() due to S_NOCMTIME. */
++	ret = file_remove_privs(iocb->ki_filp);
++	if (ret)
++		goto out;
++
++	/* Update mtime/ctime explicitly (VFS skips it for S_NOCMTIME). */
++	ret = update_mctime(inode);
++	if (ret)
++		goto out;
++
++	/*
++	 * Zero stale data beyond old EOF if extending.  At this point
++	 * ki_pos is final (O_APPEND/RWF_APPEND already resolved).
++	 */
++	if (iocb->ki_pos > i_size_read(inode))
++		ubifs_zero_eof_hole(inode, iocb->ki_pos);
++
++	ret = generic_perform_write(iocb, from);
++out:
++	inode_unlock(inode);
++	if (ret > 0)
++		ret = generic_write_sync(iocb, ret);
++	return ret;
+ }
+ 
+ static bool ubifs_dirty_folio(struct address_space *mapping,
+-- 
+2.33.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
