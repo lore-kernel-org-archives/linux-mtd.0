@@ -2,77 +2,72 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A759360A2622
-	for <linux-mtd@archiver.kernel.org>; Wed, 28 Oct 2026 16:05:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E2F2606A5F9
+	for <linux-mtd@archiver.kernel.org>; Wed, 28 Oct 2026 16:39:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=p9mJVcbD;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=iEGdvb86
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=xlOMWNSR;
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=qCMpHgry
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=iAj3r2s9Axbp+WeknkeRXhVvbhZ4Z3NFEEh4DTn5gus=; b=p9mJVcbDUtaxnVTX3ztqmPqik0
-	VU+QVWH1/sFACaPliX0G+eKORwZtlajfsrJMr5rnFh7UgDnkb50ORJ6iVejXylq4Ceb9d+cSceVlm
-	8o19O7IxUMkqG4X6IuaUkTKQGPPHA7d+JpG9A6/nVvyTuFeZjpbAwc7YJYhDFW5dz7APaXZCo0eWx
-	PFxI9UzJVYtaDmvxe2K9K9pS+Pb70cmiSXKxBAp84IkygOGEBdYtDtHZ2qySPuKkexBRUgLRmrFIk
-	YR7/l3Z5D2a+sEknQ2TLpWdmjFjg/4uY3S50z+mHKdChbRZ1evwPKbsigL2W91YqA1DjxsnKlp4Ju
-	0Y/V6VaA==;
+	bh=4HzYUwGltz2GtRbdAN3VTyEQAcwoYD0/FpZOaD57+Yg=; b=xlOMWNSR+EmAxN3B5/3hqOKowt
+	ls7Yqsy6MQScdS7KOmcYln0+jeELlVT3iG10/ft37ss/qDpzu2C2hjJEMggBGhcbLaHjOpLemHiZO
+	C4KpK0cKMDSMZRTfa3XpmTfawA6QxalAGj04KHjUkhOP+uVWd+rOX6FPmuMbreFzYFX8qP+xq3V8V
+	2varSxoY+NWLq5ECyZw7ANJGJNOrh/hlJB+GQkPPAP1iWIl9GVTa08qH7wDBIWJxJIABPjccE9Z0m
+	eq1Gg0P1543x6uh5as9LnFTeysMMi5DIG1wPabCaGRAfZHlabMNw1j6ZukJRzkdbLy/Ct2CmfnKRD
+	vLkXGLnA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xM69O-00000007UHk-1fs3;
-	Wed, 28 Oct 2026 16:05:18 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1xM6gr-00000007Yl1-3rnF;
+	Wed, 28 Oct 2026 16:39:53 +0000
+Received: from smtpout-04.galae.net ([185.171.202.116])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xM69M-00000007UHV-4BWH
+	id 1xM6gp-00000007Yis-2Hb9
 	for linux-mtd@lists.infradead.org;
-	Wed, 28 Oct 2026 16:05:17 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 0914E6020A;
-	Wed, 28 Oct 2026 16:05:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C57CF1F01285;
-	Wed, 28 Oct 2026 16:05:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793203515;
-	bh=88sfbrcRMagQo5uewTZLqJVOWmvLIZ7ZDDHfajCvQ8w=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=iEGdvb862gVq48UUgyRl/Xm6JMHFkS0Jzxlmh1uQ/FP154kv0/TjitiGESsor5WdQ
-	 C8Ve/mHow4xmhrJmq+PhbjqnTBi5ymT89KYt5rqJvqLtaHs91auSgZty38iRzuAaNY
-	 sGOGJMPqaSegYASCqriuMvHoyhSXhrWH0cznQKI8Z8TELXfHtMN7ZKOD1MT2ckz4xo
-	 lCT7U8xwgQPyPE/kc4kGz4PVC7PcOGpFDQc0DU1uHdID0r52NAIP/kj47a3WIfts6K
-	 K+2/BYbdOrzkQy31h86d4L7UB6r0C0qvkhbPm3Kgu+qXygGQYSsxvoxsYUNq3oppIg
-	 lKbUPV9aoH+oA==
-From: Christian Brauner <brauner@kernel.org>
-To: Hyunchul Lee <hyc.lee@gmail.com>
-Cc: Christian Brauner <brauner@kernel.org>,
-	Jan Kara <jack@suse.com>,
-	Al Viro <viro@zeniv.linux.org.uk>,
-	ecryptfs@vger.kernel.org,
-	linux-ext4@vger.kernel.org,
-	jfs-discussion@lists.sourceforge.net,
-	linux-nilfs@vger.kernel.org,
-	exfat@lists.linux.dev,
-	linux-fsdevel@vger.kernel.org,
-	ntfs@lists.linux.dev,
-	ocfs2-devel@lists.linux.dev,
-	linux-btrfs@vger.kernel.org,
-	gfs2@lists.linux.dev,
-	linux-efi@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	linux-xfs@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: Re: [PATCH RFC 14/28] ntfs: don't set SB_RDONLY after filesystem errors
-Date: Wed, 28 Oct 2026 17:05:06 +0100
-Message-ID: <20261028-fixstern-halunken-skelett-fb3cd0824159@brauner>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <atW1VhJXAIvtYPfd@hyunchul-PC02>
-References: <20261012-work-fs-sb_rdonly-v1-0-60743a3dc326@kernel.org> <20261012-work-fs-sb_rdonly-v1-14-60743a3dc326@kernel.org> <atW1VhJXAIvtYPfd@hyunchul-PC02>
+	Wed, 28 Oct 2026 16:39:53 +0000
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-04.galae.net (Postfix) with ESMTPS id 63874C4FED5;
+	Wed, 28 Oct 2026 16:40:47 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 54A7E60769;
+	Wed, 28 Oct 2026 16:39:45 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id C4ABD103290D5;
+	Wed, 28 Oct 2026 17:39:33 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1793205580; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 in-reply-to:references; bh=d047tn7ZyUAE4CZJF6OwqmbdpCg4ZRFaWnDJv2Xlu+8=;
+	b=qCMpHgryog1vBCpYw2HnRskue6gsLgB9uoaHyNvM0YNItQkxRCo1T8oI+12cGb5oxg6MgS
+	EKhcVHkSpJmnXgfq03mwJGrHU6ylLbZNOshuzLyT1eTX31bfoylyj6RjFTeTa91PVNX3uA
+	CFDxOIL63kdYVpkQfQtYyg/55KilXBl/VU1++SiVbKEjHIqY3qphAdZqMYGB+2bC8GGbl/
+	4MOIDH9pwJEfT7Vdg+fVsuEpQIAxgZ3O10KHXWyo4M32AwlQ2xslc/Y1AAmDKDqMFHMV4q
+	LTGC39X7sUZYIBe9gi1HS29LySxXbrl1x144YQZPz+lqRxwlrLlStqOmUUvgtQ==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Changhuang Liang <changhuang.liang@starfivetech.com>
+Cc: Pratyush Yadav <pratyush@kernel.org>,  Michael Walle
+ <mwalle@kernel.org>,  Takahiro Kuwano <takahiro.kuwano@infineon.com>,
+  Mark Brown <broonie@kernel.org>,  Richard Weinberger <richard@nod.at>,
+  Vignesh Raghavendra <vigneshr@ti.com>,  linux-spi@vger.kernel.org,
+  linux-kernel@vger.kernel.org,  linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v2 2/5] spi: dw: Add DDR (Dual Data-Rate) support for
+ enhanced SPI mode
+In-Reply-To: <20261028121100.79667-3-changhuang.liang@starfivetech.com>
+	(Changhuang Liang's message of "Wed, 28 Oct 2026 05:10:57 -0700")
+References: <20261028121100.79667-1-changhuang.liang@starfivetech.com>
+	<20261028121100.79667-3-changhuang.liang@starfivetech.com>
+User-Agent: mu4e 1.12.12; emacs 30.2
+Date: Wed, 28 Oct 2026 17:39:32 +0100
+Message-ID: <87a4nxg4or.fsf@bootlin.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2009; i=brauner@kernel.org; h=from:subject:message-id; bh=p94qtq7P6Iyb9ro/ig3qsXfneKNkQl3vnYSgqxFYI4M=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWQ9kjX5zM8Xn3WMa65c5ROjC84Wi7I8Vdelxp8Uknu7e NHt2DMXO0pZGMS4GGTFFFkc2k3C5ZbzVGw2ytSAmcPKBDKEgYtTACbSfZDhvxvLvOPaJy5+bO6u aPynfMBQpNjbPaLkmuimi/UFjT7r0xgZDpy9vTtgcu3kQxtM9P637q1UPByx2Tj5+w2OmuViLbe MGQA=
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+X-Last-TLS-Session-Version: TLSv1.3
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20261028_093951_773419_C7C95D4F 
+X-CRM114-Status: GOOD (  15.07  )
+X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,52 +80,44 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-6.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-8.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no
-	autolearn_force=no version=4.0.1
+	INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-On Mon, Oct 19, 2026 at 03:14:46PM +0900, Hyunchul Lee wrote:
-> Before this patch, SB_RDONLY is set, so remount,rw returned -EROFS. With
-> this patch, sb_rdonly(sb) is false, so remount,rw skips the check and
-> return success even though writes are rejected with -EROFS.
+On 28/10/2026 at 05:10:57 -07, Changhuang Liang <changhuang.liang@starfivetech.com> wrote:
 
-Yes, that's intended. ntfs_reconfigure() only refuses the transition
-from ro to rw. After an error with errors=remount-ro
-ntfs_handle_error() sets NV_Errors and NV_EmergencyRO. A remount to
-read-only works and a remount to read-write after that fails with
--EROFS. A "mount -o remount,rw" of a volume that is still read-write
-isn't a transition. It returns 0 but doesn't change anything.
-
-That's how ext4 behaves since commit d3476f3dad4a ("ext4: don't set
-SB_RDONLY after filesystem errors"). __ext4_remount() only looks at
-ext4_emergency_state() if the read-only state changes. And every other
-filesystem in this series does the same.
-
-> I think that the condition should be test NVolErrors(), for example
+> Add support for 1S-xD-xD DDR transfers in the enhanced SPI mode of the
+> DW SPI controller, on controllers that have DW_SPI_CAP_DDR.
 >
->     if ((sb_rdonly(sb) || NVolErrors(vol)) &&
->         !(fc->sb_flags & SB_RDONLY)) {
+> SPI_CTRLR0.SPI_DDR_EN switches the address, dummy and data phases to
+> DDR all together, and it only applies to the Dual/Quad/Octal frame
+> formats. So in supports_op() only accept DTR operations where the
+> command is sent in STR on one line, the data phase uses two lines or
+> more, and the address and dummy phases are DTR on the data lines.
+> DDR instruction phase (8D-8D-8D) is not supported for now.
+>
+> For DDR transfers the dummy phase takes two bits per clock on each
+> line, so the wait cycles must be halved. Factor the wait cycle
+> calculation into dw_spi_enh_wait_cycles(), so that supports_op() and
+> exec_op() use the same value, and refuse dummy phases that are not a
+> whole number of clock cycles.
+>
+> When DDR is enabled, program the DDR_DRIVE_EDGE register. The
+> recommended TDE value is SCKDV / 4, clamped to SCKDV / 2 - 1 and to
+> the field width. The register is only written when the controller
+> supports DDR.
+>
+> Finally, advertise DTR to the spi-mem layer through a dedicated
+> dw_spi_ddr_mem_caps when the controller has DW_SPI_CAP_DDR.
+>
+> Signed-off-by: Changhuang Liang <changhuang.liang@starfivetech.com>
 
-NV_Errors is the wrong bit for this. It's also set outside of
-ntfs_handle_error() no matter what errors= says. map_mft_record_folio()
-sets it when an mft record fails its checks and ntfs_read_locked_inode()
-when it marks an inode bad. So with errors=continue (which is the
-default?) a single corrupt mft record leaves NV_Errors set on a volume that is
-still writable.
+Looks correct to me.
 
-With your change every remount that keeps such a volume read-write, e.g. just
-to change another option, would fail with "Volume has errors and is read-only".
-
-If you really want ntfs to refuse remount,rw in the emergency state then
-NVolEmergencyRO() is the bit to test. But then ntfs would behave
-differently from ext4 and the rest of this series. So I'd rather keep it
-as is.
-
-Fwiw, in the next version reconfigure_super() refuses the transition to
-read-write itself. It uses the generic emergency read-only state Jan asked for.
+Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
 ______________________________________________________
 Linux MTD discussion mailing list
