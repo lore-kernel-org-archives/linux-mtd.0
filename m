@@ -2,71 +2,76 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CF5B606A32E
-	for <linux-mtd@archiver.kernel.org>; Wed, 28 Oct 2026 12:59:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 706BC606A31A
+	for <linux-mtd@archiver.kernel.org>; Wed, 28 Oct 2026 13:15:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=xIAZD+DE;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=hod/CvcS
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=iL67ZoVt;
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=HXMPqtaF
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=QEnATWiWtKJkmlkuT177K1S6INb+fp7/mNYqRXkOvbk=; b=xIAZD+DEGPKrh13FWl0F0s2w37
-	k8YTC/Nb5S1n51SCFJRBek76WaN+xjLyjaxziQnFg94Xaz2qg7dqHAv50eUCmaZ19f5BmTnO5jcu+
-	wiHiZou1lYVrtnBjkgosj0cIFGtZ8ro3kX+3D3LYn4QwIkMVTdK/LDtb4fZph6FHQM/WROCQRhYpu
-	oWk3r5ZA7NkCbrTrhwxCvUYJ17uIBqCzmtmPWdsP7hoe/tt/dG7zaxLqd8bsK2LdnXk5WVIChgHjT
-	JSlYttBSOpbhq4nASCF9wGtHOa5qQZVttbsIZnKiiqhxmf99f1X1qDc3rc+1D/Jy1IVf5qOuoQIAs
-	4tMpHdsA==;
+	bh=QM67lCOghuuPfha0aDW6nwt5RxQK37K7yus70h/Cruc=; b=iL67ZoVtIrl3DEH8OGY8Lp8WCx
+	To1whaR5n7OLGv6L0bbWpujkE1LGaE/008AN0YM1iwubE4Vhige+U7LH8Xi5Y/KRvILhyyvlpKrjM
+	i00fxrV3yXJRklUJoimT5Bf0yog/VuI6S0ceh1bJkAUXn/6B6vrZEt1cy9ouNuDQCYkbax3Dm/PbM
+	QWy4lVDLbr0DZv8ZxMNpw8Q0RA1LV3SArdmJuVzZI2A4ZKy5KwhQJQsZB6eX8nvlHgYeM3E6ev+qp
+	okpJWPMaDtSnWXmHKbXJbVenIVNxpFZI8QOYW70c8koZofPEl0WoK1Q88UgfBM4DhNKc1WpeVhsCi
+	5YxevzHQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xM3Fa-0000000702B-0HWg;
-	Wed, 28 Oct 2026 12:59:30 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1xM3Uv-0000000720k-0ajL;
+	Wed, 28 Oct 2026 13:15:21 +0000
+Received: from smtpout-04.galae.net ([185.171.202.116])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xM3FY-0000000701n-2fHA
+	id 1xM3Ur-00000007204-2A6h
 	for linux-mtd@lists.infradead.org;
-	Wed, 28 Oct 2026 12:59:28 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id E956F601F8;
-	Wed, 28 Oct 2026 12:59:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DDF41F01828;
-	Wed, 28 Oct 2026 12:59:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793192367;
-	bh=7Ukhz+foZbHEWrgGjP8lji/Ry9Af0ETpCcrE+aHg+Uw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=hod/CvcSGKGYWD7DlrMUfQbAQ5i6F6ec+swq+EgZt0PCWFrl4yOFUwI4CfFCfSYvq
-	 IIhwCOrBRQisOzfUtWt6dLP540Hyk0zhrmjZQrlbl2kd+9u5IRXCOsXg9IqNVVZQYb
-	 9UupWr6FNl+VjykdMdaqZJIh9SYeuJaDNaUWIuFNuDxxNPXsb2lGf5DhAschHBmaeT
-	 WSHwEWM8FZ0EO5nDLbFq1anGvhZOOi9wqy4jM2TReYqNXUwrPSjC6SK6B0AfbPq8yI
-	 MqHAKBVFnCQWWu+ka1ynionzWB6+5i9nDvyVA8YFx6nzc3agIlsFiMxWgFC2icaRyR
-	 SQbnl+kt4pWVw==
-Date: Wed, 28 Oct 2026 12:59:21 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Paul Cercueil <paul.cercueil@bootlin.com>
-Cc: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>,
-	Takahiro Kuwano <takahiro.kuwano@infineon.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>, Kees Cook <kees@kernel.org>,
-	Tony Luck <tony.luck@intel.com>,
-	"Guilherme G . Piccoli" <gpiccoli@igalia.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-spi@vger.kernel.org, Bharat Bhushan <bbhushan2@marvell.com>,
-	Sunil Kovvuri Goutham <sgoutham@marvell.com>,
-	Tanmay Jagdale <tanmay@marvell.com>
+	Wed, 28 Oct 2026 13:15:19 +0000
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-04.galae.net (Postfix) with ESMTPS id 4EB1CC4FED3;
+	Wed, 28 Oct 2026 13:16:16 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 5765360769;
+	Wed, 28 Oct 2026 13:15:14 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 60B931032904F;
+	Wed, 28 Oct 2026 14:15:03 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1793193309; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=X9Btf5XhOqdmeGG64jS4Slgjum0vmoxQYvsMqkyuAm0=;
+	b=HXMPqtaFe6tOTgCdgNq63gOjGLoD81XTo0eU2xSORaqhJYxwUFPh1DuTFkrKOTl/bDr90D
+	sZslTZoFozi9koBKKQ5/LjyLJrpC8KNB5hc055TsS/ZHXQG/GpyUEtqdOZCRmGdPS6mhZk
+	xpKAka+Nkx1+rdLCmeIQzx71XcRzp08jpTgyLfoiY1a0MhBhU4V7ICiD0A8Re4mkUjyhgA
+	NS2LFXXIFHaiYE2WIBYiiv2f2R0MC945QYx//nwxVgN5tqq2TTt74Aw1xBAkavdSYarpd+
+	Hz1miIjW61CvLfUIaEdOaI4A4cbE9RDUkutMfmpqjj1jsm22qwHxi/0bOMotlg==
+Message-ID: <cf96edf1cba37b775817d4df5f759b10e71c73da.camel@bootlin.com>
 Subject: Re: [PATCH v4 0/7] spi: Add support for panic mem writes
-Message-ID: <8979e4ad-5209-4fb0-bd3e-95919849d2fa@sirena.org.uk>
+From: Paul Cercueil <paul.cercueil@bootlin.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>,
+  Takahiro Kuwano <takahiro.kuwano@infineon.com>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, Richard Weinberger	 <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>, Kees Cook	 <kees@kernel.org>, Tony Luck
+ <tony.luck@intel.com>, "Guilherme G . Piccoli"	 <gpiccoli@igalia.com>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	linux-spi@vger.kernel.org, Bharat Bhushan <bbhushan2@marvell.com>, Sunil
+ Kovvuri Goutham <sgoutham@marvell.com>, Tanmay Jagdale <tanmay@marvell.com>
+Date: Wed, 28 Oct 2026 14:15:00 +0100
+In-Reply-To: <8979e4ad-5209-4fb0-bd3e-95919849d2fa@sirena.org.uk>
 References: <20261016102917.171095-1-paul.cercueil@bootlin.com>
- <fdc79c99e3045635841f68c89fec3b9d9e2f7233.camel@bootlin.com>
+	 <fdc79c99e3045635841f68c89fec3b9d9e2f7233.camel@bootlin.com>
+	 <8979e4ad-5209-4fb0-bd3e-95919849d2fa@sirena.org.uk>
+User-Agent: Evolution 3.56.2-0+deb13u1 
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <fdc79c99e3045635841f68c89fec3b9d9e2f7233.camel@bootlin.com>
-X-Cookie: Pushing 30 is exercise enough.
+X-Last-TLS-Session-Version: TLSv1.3
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20261028_061517_747650_77FEF47D 
+X-CRM114-Status: GOOD (  18.55  )
+X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,74 +81,34 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6625608989569910518=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-3.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
+	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-
---===============6625608989569910518==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="OsA/JmV6B8s4J2aS"
-Content-Disposition: inline
-
-
---OsA/JmV6B8s4J2aS
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Oct 28, 2026 at 11:42:33AM +0100, Paul Cercueil wrote:
->=20
-> I have a second patchset for spi-cadence-xspi pending (unrelated to this =
-one)
-> that happens to have some Fixes: tags, and those fixes conflict slightly =
-with
-> the changes here.
-
-> I'm thinking that in order to make it easier to backport those fixes to o=
-lder
-> kernels, my other patchset should be merged first. So I guess I'll v5 thi=
-s one
-> with a rebase once the other one is in.
-
-I have no idea what that other patch set is, sorry.
-
-> @Mark, do you want me to wait for -rc1 to send it to you?
-
-Please resend any new feature work after -rc1.  Please also do not
-misspell my name.
-
---OsA/JmV6B8s4J2aS
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmrh8agACgkQJNaLcl1U
-h9Ag0Af+J7jCK4vlB9pOTozhxgQrWlUhmjH9P6zCrUmUF1SImas2es1OELwnFMfK
-kDvcvJKBdWMSZACbwCjP8+EBWY7bV9axlwuxMDx2DIuBQd4dDW7tHpIZgFqVeo0Z
-RPkv0RS/kuOOb7upFxyYo4psGACYAS2GjGvbqTFysbG/gag9bEUb+utfUeWlX0xL
-k5a+RzFVAtJi6wq+sk0t6pRlAWPugAJcMe084lDmKgFfMCGUDV8B6fL8Pw1tF7c6
-/kWfzjPva9EJeKBedhraTEpZvIc45pdAfit0jKZoJDNPUPtOi9W8B+8HjPbfzF0+
-6SNPZd4HkQV8rXHNVy/+C5JziS82Dg==
-=IIp6
------END PGP SIGNATURE-----
-
---OsA/JmV6B8s4J2aS--
-
-
---===============6625608989569910518==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============6625608989569910518==--
-
+TGUgbWVyY3JlZGkgMjggb2N0b2JyZSAyMDI2IMOgIDEyOjU5ICswMDAwLCBNYXJrIEJyb3duIGEg
+w6ljcml0wqA6Cj4gT24gV2VkLCBPY3QgMjgsIDIwMjYgYXQgMTE6NDI6MzNBTSArMDEwMCwgUGF1
+bCBDZXJjdWVpbCB3cm90ZToKPiA+IAo+ID4gSSBoYXZlIGEgc2Vjb25kIHBhdGNoc2V0IGZvciBz
+cGktY2FkZW5jZS14c3BpIHBlbmRpbmcgKHVucmVsYXRlZCB0byB0aGlzCj4gPiBvbmUpCj4gPiB0
+aGF0IGhhcHBlbnMgdG8gaGF2ZSBzb21lIEZpeGVzOiB0YWdzLCBhbmQgdGhvc2UgZml4ZXMgY29u
+ZmxpY3Qgc2xpZ2h0bHkKPiA+IHdpdGgKPiA+IHRoZSBjaGFuZ2VzIGhlcmUuCj4gCj4gPiBJJ20g
+dGhpbmtpbmcgdGhhdCBpbiBvcmRlciB0byBtYWtlIGl0IGVhc2llciB0byBiYWNrcG9ydCB0aG9z
+ZSBmaXhlcyB0bwo+ID4gb2xkZXIKPiA+IGtlcm5lbHMsIG15IG90aGVyIHBhdGNoc2V0IHNob3Vs
+ZCBiZSBtZXJnZWQgZmlyc3QuIFNvIEkgZ3Vlc3MgSSdsbCB2NSB0aGlzCj4gPiBvbmUKPiA+IHdp
+dGggYSByZWJhc2Ugb25jZSB0aGUgb3RoZXIgb25lIGlzIGluLgo+IAo+IEkgaGF2ZSBubyBpZGVh
+IHdoYXQgdGhhdCBvdGhlciBwYXRjaCBzZXQgaXMsIHNvcnJ5LgoKQmVjYXVzZSBJIGhhdmVuJ3Qg
+c2VudCB0aGUgb3RoZXIgb25lIHlldC4gSSdtIGp1c3Qgc2F5aW5nIHRoYXQgc2luY2UgaXQgaGFz
+CmZpeGVzIGl0IHNob3VsZCBwcm9iYWJseSBnbyBmaXJzdCB0byBtYWtlIGl0IGVhc2llciB0byBi
+YWNrcG9ydCB0aG9zZS4gQmFzaWNhbGx5CkknbSBqdXN0IHNheWluZyAiZG9uJ3QgcGljayB0aGlz
+IG9uZSBxdWl0ZSB5ZXQiLgoKPiA+IEBNYXJrLCBkbyB5b3Ugd2FudCBtZSB0byB3YWl0IGZvciAt
+cmMxIHRvIHNlbmQgaXQgdG8geW91Pwo+IAo+IFBsZWFzZSByZXNlbmQgYW55IG5ldyBmZWF0dXJl
+IHdvcmsgYWZ0ZXIgLXJjMS7CoCBQbGVhc2UgYWxzbyBkbyBub3QKPiBtaXNzcGVsbCBteSBuYW1l
+LgoKWW91ciBuYW1lIGlzIG5vdCBNYXJrPyBPciB3aGVyZSBkaWQgSSBtaXNzcGVsbCBpdD8KCkNo
+ZWVycywKLVBhdWwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3Rz
+LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
