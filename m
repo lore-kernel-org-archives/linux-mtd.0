@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B09B606A31C
-	for <linux-mtd@archiver.kernel.org>; Wed, 28 Oct 2026 16:02:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A759360A2622
+	for <linux-mtd@archiver.kernel.org>; Wed, 28 Oct 2026 16:05:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=OUguiaDH;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ZG0L0aDj
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=p9mJVcbD;
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=iEGdvb86
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,38 +14,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=briz3uglq5o4xxAYsNscdaLExWZztTTihasYZd55bvI=; b=OUguiaDHchHbgAueujy1JFut2Q
-	kqGph2sK0DApsCtWIkXTGHRvBCtFya3XJJOb6ZXH0xfTOXCUCCzyQ06eA19THEox33XPGqlJ+vUnQ
-	h4Z3bZEMOozVap6/nIQHeR++0KKGWepkElbT0FVJq8ktxg3eXIOdfXviIBsful+ZeRy1Zhyottis2
-	Xay0Is39o4lY7ISymwiiiUuoLYOCmt6aV17Kc9rOhDLLOeXuMCXxylI2Gq+9uORs0LWol/HK/GhIY
-	3OleBP+c6syNNV8yyjr3qrt0u8IamRxSrX3NVdiVX6dy5h4t72JULgN1K50xtbTDv/9Qxsguqlbjw
-	1+iQDRnw==;
+	bh=iAj3r2s9Axbp+WeknkeRXhVvbhZ4Z3NFEEh4DTn5gus=; b=p9mJVcbDUtaxnVTX3ztqmPqik0
+	VU+QVWH1/sFACaPliX0G+eKORwZtlajfsrJMr5rnFh7UgDnkb50ORJ6iVejXylq4Ceb9d+cSceVlm
+	8o19O7IxUMkqG4X6IuaUkTKQGPPHA7d+JpG9A6/nVvyTuFeZjpbAwc7YJYhDFW5dz7APaXZCo0eWx
+	PFxI9UzJVYtaDmvxe2K9K9pS+Pb70cmiSXKxBAp84IkygOGEBdYtDtHZ2qySPuKkexBRUgLRmrFIk
+	YR7/l3Z5D2a+sEknQ2TLpWdmjFjg/4uY3S50z+mHKdChbRZ1evwPKbsigL2W91YqA1DjxsnKlp4Ju
+	0Y/V6VaA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xM66m-00000007U08-1xtC;
-	Wed, 28 Oct 2026 16:02:36 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1xM69O-00000007UHk-1fs3;
+	Wed, 28 Oct 2026 16:05:18 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xM66l-00000007U00-1oUc
+	id 1xM69M-00000007UHV-4BWH
 	for linux-mtd@lists.infradead.org;
-	Wed, 28 Oct 2026 16:02:35 +0000
+	Wed, 28 Oct 2026 16:05:17 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id BB8D943C3A;
-	Wed, 28 Oct 2026 16:02:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E46E81F01828;
-	Wed, 28 Oct 2026 16:02:30 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 0914E6020A;
+	Wed, 28 Oct 2026 16:05:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C57CF1F01285;
+	Wed, 28 Oct 2026 16:05:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793203354;
-	bh=pqvidO18/MsoqEupSyt5zaIZm2NWShVR3YPJxgjMIMs=;
+	s=k20260515; t=1793203515;
+	bh=88sfbrcRMagQo5uewTZLqJVOWmvLIZ7ZDDHfajCvQ8w=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=ZG0L0aDjqTsgzLztgQj3GHplRgcp3JC3WsGZx/YxNehTd57FmefkseXr4Ci+4rVVw
-	 zsXoUG77/qVXIA2DpIi2sH2fHwl0axkhR82Tjx9aQoC7Sw4R9qUujs/7L2qGiiyxQv
-	 PNpbPrkUbijZwlr47dpkhLJ1a+VXN/J5c5ub85J3WNeW3H3YLxnJ6AENufO/RZu6Ya
-	 JpHCSjA8ZNcK6EQ4M9Yem1gPVU7Mm8F8EsMtwmSU7iQFut12ngDTz77ZcX2DeEmXuM
-	 DTQlwFe9KPqXNTo3ZYRHY5f02yibn5HXVRh1DwdEbuXTEKLho1gpQlejTX87U/GRT9
-	 4dpxOZTZfBbdQ==
+	b=iEGdvb862gVq48UUgyRl/Xm6JMHFkS0Jzxlmh1uQ/FP154kv0/TjitiGESsor5WdQ
+	 C8Ve/mHow4xmhrJmq+PhbjqnTBi5ymT89KYt5rqJvqLtaHs91auSgZty38iRzuAaNY
+	 sGOGJMPqaSegYASCqriuMvHoyhSXhrWH0cznQKI8Z8TELXfHtMN7ZKOD1MT2ckz4xo
+	 lCT7U8xwgQPyPE/kc4kGz4PVC7PcOGpFDQc0DU1uHdID0r52NAIP/kj47a3WIfts6K
+	 K+2/BYbdOrzkQy31h86d4L7UB6r0C0qvkhbPm3Kgu+qXygGQYSsxvoxsYUNq3oppIg
+	 lKbUPV9aoH+oA==
 From: Christian Brauner <brauner@kernel.org>
-To: Andreas Gruenbacher <agruenba@redhat.com>
+To: Hyunchul Lee <hyc.lee@gmail.com>
 Cc: Christian Brauner <brauner@kernel.org>,
 	Jan Kara <jack@suse.com>,
 	Al Viro <viro@zeniv.linux.org.uk>,
@@ -63,15 +63,15 @@ Cc: Christian Brauner <brauner@kernel.org>,
 	linux-mtd@lists.infradead.org,
 	linux-xfs@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: Re: [PATCH RFC 21/28] gfs2: don't set SB_RDONLY on withdraw
-Date: Wed, 28 Oct 2026 17:01:49 +0100
-Message-ID: <20261028-zurschaustellen-okkupieren-inkompatibel-d11525ce88b8@brauner>
+Subject: Re: [PATCH RFC 14/28] ntfs: don't set SB_RDONLY after filesystem errors
+Date: Wed, 28 Oct 2026 17:05:06 +0100
+Message-ID: <20261028-fixstern-halunken-skelett-fb3cd0824159@brauner>
 X-Mailer: git-send-email 2.53.0
-In-Reply-To: <CAHc6FU6z4kX5R3Og8m0dYOHsjFcw+4Btvfe87AGPxy_EWs0E7A@mail.gmail.com>
-References: <20261012-work-fs-sb_rdonly-v1-0-60743a3dc326@kernel.org> <20261012-work-fs-sb_rdonly-v1-21-60743a3dc326@kernel.org> <CAHc6FU6z4kX5R3Og8m0dYOHsjFcw+4Btvfe87AGPxy_EWs0E7A@mail.gmail.com>
+In-Reply-To: <atW1VhJXAIvtYPfd@hyunchul-PC02>
+References: <20261012-work-fs-sb_rdonly-v1-0-60743a3dc326@kernel.org> <20261012-work-fs-sb_rdonly-v1-14-60743a3dc326@kernel.org> <atW1VhJXAIvtYPfd@hyunchul-PC02>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1939; i=brauner@kernel.org; h=from:subject:message-id; bh=/2bL9FoOj20KqA4rEtCDZi7CA8CHUBzAXKXFts8ojnQ=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWQ9ksmL8GiJ4XnsbsM5a7aM7ZHXDo+ubXVQend6xo3Dq c6XHseWd5SyMIhxMciKKbI4tJuEyy3nqdhslKkBM4eVCWQIAxenAEzk10SGf8Zp6etfiUn5Kaa4 zdp+ONFrN+eR4/7Xl/x14Hr2cnIIdxQjw5rNYWumRtzN/zyzJWbl3ZUT/BYEPb13q6vr0/3MC10 NDQwA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2009; i=brauner@kernel.org; h=from:subject:message-id; bh=p94qtq7P6Iyb9ro/ig3qsXfneKNkQl3vnYSgqxFYI4M=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWQ9kjX5zM8Xn3WMa65c5ROjC84Wi7I8Vdelxp8Uknu7e NHt2DMXO0pZGMS4GGTFFFkc2k3C5ZbzVGw2ytSAmcPKBDKEgYtTACbSfZDhvxvLvOPaJy5+bO6u aPynfMBQpNjbPaLkmuimi/UFjT7r0xgZDpy9vTtgcu3kQxtM9P637q1UPByx2Tj5+w2OmuViLbe MGQA=
 X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -92,47 +92,45 @@ X-Spam-Status: No, score=-6.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-On Fri, Oct 16, 2026 at 02:01:00AM +0200, Andreas Gruenbacher wrote:
-> According to commit d564053f0746 ("GFS2: Clean up freeze code"), the
-> idea of the freeze sysfs file was to make it behave like the FIFREEZE
-> / FITHAW ioctls. This isn't what the code is doing at all.
+On Mon, Oct 19, 2026 at 03:14:46PM +0900, Hyunchul Lee wrote:
+> Before this patch, SB_RDONLY is set, so remount,rw returned -EROFS. With
+> this patch, sb_rdonly(sb) is false, so remount,rw skips the check and
+> return success even though writes are rejected with -EROFS.
 
-That's a pre-existing and separate from this series. freeze_store() calls
-freeze_super() and thaw_super() directly with FREEZE_HOLDER_USERSPACE and never
-goes through gfs2_freeze_super() and gfs2_thaw_super(). So it never takes the
-freeze glock. I don't think that's for this series to fix.
+Yes, that's intended. ntfs_reconfigure() only refuses the transition
+from ro to rw. After an error with errors=remount-ro
+ntfs_handle_error() sets NV_Errors and NV_EmergencyRO. A remount to
+read-only works and a remount to read-write after that fails with
+-EROFS. A "mount -o remount,rw" of a volume that is still read-write
+isn't a transition. It returns 0 but doesn't change anything.
 
-> Not sure what should prevent us from fixing withdrawn filesystem
-> thawing and the SB_RDONLY issue in separate commits. Both need fixing
-> in the end, but that's okay.
+That's how ext4 behaves since commit d3476f3dad4a ("ext4: don't set
+SB_RDONLY after filesystem errors"). __ext4_remount() only looks at
+ext4_emergency_state() if the read-only state changes. And every other
+filesystem in this series does the same.
 
-I guess.
-
-> So before this patch, 'mount -o remount,rw' of a withdrawn filesystem
-> fails with -EIO, and this patch changes it to -EROFS. What's wrong
-> with -EIO? Once do_withdraw() doesn't set SB_RDONLY anymore, the
-> filesystem will remain read-write mounted; getting an -EROFS error in
-> that state seems odd.
-
-You can keep -EIO but I tried to make it somewhat consistent.
-
-> > +       /* A withdrawn filesystem can't take the freeze glock anymore. */
-> > +       if (gfs2_withdrawn(sdp)) {
-> > +               mutex_unlock(&sdp->sd_freeze_mutex);
-> > +               return -EIO;
-> > +       }
+> I think that the condition should be test NVolErrors(), for example
 >
-> This is racy; the filesystem can still be withdrawn after this
-> gfs2_withdrawn() check. It should make more sense to bail out of the
-> for loop in gfs2_freeze_super() on withdrawn filesystems.
+>     if ((sb_rdonly(sb) || NVolErrors(vol)) &&
+>         !(fc->sb_flags & SB_RDONLY)) {
 
-Right, good catch.
+NV_Errors is the wrong bit for this. It's also set outside of
+ntfs_handle_error() no matter what errors= says. map_mft_record_folio()
+sets it when an mft record fails its checks and ntfs_read_locked_inode()
+when it marks an inode bad. So with errors=continue (which is the
+default?) a single corrupt mft record leaves NV_Errors set on a volume that is
+still writable.
 
-> I'm not a fan of those fake mount options. It doesn't matter all that
-> much for "withdrawn" because remounting will fail anyway, but it's
-> still messy.
+With your change every remount that keeps such a volume read-write, e.g. just
+to change another option, would fail with "Volume has errors and is read-only".
 
-Sure.
+If you really want ntfs to refuse remount,rw in the emergency state then
+NVolEmergencyRO() is the bit to test. But then ntfs would behave
+differently from ext4 and the rest of this series. So I'd rather keep it
+as is.
+
+Fwiw, in the next version reconfigure_super() refuses the transition to
+read-write itself. It uses the generic emergency read-only state Jan asked for.
 
 ______________________________________________________
 Linux MTD discussion mailing list
