@@ -2,10 +2,10 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F132606A33A
-	for <linux-mtd@archiver.kernel.org>; Wed, 28 Oct 2026 12:11:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79611606A31C
+	for <linux-mtd@archiver.kernel.org>; Wed, 28 Oct 2026 12:11:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=UMtbfEz0
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=xUIv/DET
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -13,28 +13,28 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=xCu5HYawrKXY3jjF2Efe2YnY4ZrhjRAFBBXE5biu3Uk=; b=UMtbfEz00LRC5j0zTKeez8SEcQ
-	1cmWI/PYTt0L+sO/niZZuDxuHZOQ9HUv3VK/OVJePCewFHCZeJQJ7DBn5PfmNbXZFFvC40oQWdzBR
-	8GpXiHYUPXLAtxr0xeTJUoYB6qxKVmcJTk8jhnrfC+xFINZQA34RVXhDcGQNGsQdk0m39OZff5GQK
-	jH1x+opa7nvNkt18GGGaPPagpDUHWMBltqlJsOr+kAjCnXAmUyY4sHyQau2MZKZQ/hCl/VfJyZ51I
-	X7gwbTQdPVBML5NJiWuwdNDNJ+rmEpVqV2P848csUjWNZtJcwHOg52MUrU0mAyabwY7UN2AWjgn5R
-	6iXOp9Vw==;
+	bh=O31Ts69MdLar1mRCbjV/OdAksXJet5rXjaNytoxEpTg=; b=xUIv/DETQvDeeiscyYOy9bGMnd
+	ipLNuU2K66RQ33fifgp7MrVcqgtcTX6DlEmjCSXF4MK8Aqtpwt6zTLobavSwrS1uSyPQDX9sRxWWD
+	ASyYuaiNqfBdBNe4Y8ojGR4rhG7Pm+w2vyO7/O8/W1pBiGuCeBQaI6PBA9f9gyGNKvOs1zTxqtFKA
+	qG808R1Fd/Fdm/6CK9wPoWIQc+aO7rFVbJpG3D/CPdcmt3ydgworKTNRED2a0nEKmMFcQbuCn+XsL
+	xmyuqyoyPKwmZXcg8qwkzKmfjqsQv5VUwMKbLOqxjZPhA8luLSjn7AkKSw8p5P67ktLcjOFy9i4jG
+	ZpDjctbw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xM2VP-00000006vlF-3itL;
-	Wed, 28 Oct 2026 12:11:47 +0000
+	id 1xM2VR-00000006vnI-0pWh;
+	Wed, 28 Oct 2026 12:11:49 +0000
 Received: from mail-sh0chn02on2071f.outbound.protection.partner.outlook.cn ([2406:e500:4420:2::71f] helo=CHN02-SH0-obe.outbound.protection.partner.outlook.cn)
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xM2VN-00000006vgh-1hWc
+	id 1xM2VP-00000006vgh-1Qbc
 	for linux-mtd@lists.infradead.org;
-	Wed, 28 Oct 2026 12:11:46 +0000
+	Wed, 28 Oct 2026 12:11:48 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=f4bU1KKDLY4g94B14Sc0OoslkxSzMW1GpEkGW1TgWD87zEiifklYN8TaBnYo2qojq7vnhoxj2eUNIbL5f/S7TKcFV/XkImek0rTR0E2nXQiYqaccRkMA7YRlR+1xiga3bNIUxpWpeqYiGWp58wm3qifaJ4an/tWiVXQH4hmyHXUNc81cY55CPgDZIDcaPRiqdy1SHulSRZyiv6pPc1DoIDAcsyZdeoHRxewAvW5L6+GPc7qOfECVJnuROVV68+TILlrD0xv8joE93WHAtmmgtHa4jAbx/dlRenknl7eY5w4sHtBvxLDmQ0AKpSqfA8lf572joKLcMboniZcLAqyG9g==
+ b=auIxRmQVO7th9ngS2yqgyK1pIXArJVCORdfb5WaWhDF6S201MLOvKqiT18Q2wOoGXQute1Oxm06j/ov5CVsotRm/7I7qpoLg/VZwUkGoiB6e/LaXxkss6AfN8+Z1Xdk2M6hZ62D1/2IWTUSHDIg6JpiWlDx0+tA820w4VBJcfp22wh+n/GBnG/3XGdTBr7q8mDLmZ3ieKzBh6HdJYkeasN/wUoq9GGGRubB689Tkg68lE+pChP4ZU2zM6j1BXeVwrX/+No75fOoTMmX8PZIMUgfWTRJWePf1pr3pwUBYGAqgQQfdL+IT7PA/xEXEtj9Og80qyXRoU2ODKkH6g2Qdbw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/vy3n70/oQ5S5fauBqpGfqu7BJ0laCgO2F7TDmIdnv0=;
- b=FqOT61QxwkOqe0ptXtC1pbjiidIOch8HmUl2QsYv4WWH0C7gq+jtUxFJWbtfQNCQlQK24FsXLaOIrg1HQVBKWSoUOepAR4iBaVwXll2vblAhzGhH375bVhyEHFYiU8d7z7q5j+TTeGB0+vaeRZy0fC9dzAjwW0m/42/YFkPfInkDI1zeeszYcnIdhbx1MVuP1byG7DNfqSur3V9klRuVv2smp5vdlKwGeqkyrEbmmAT9dH3BnK/1ksOYL5EaQIiwYV9e9g5dJ0lWrDqx7ok91pZrGAJBxHCPDg7GLT0GcXyRW0o1ZiuXMaPQjQmkMwNG50dkT4VmYaacHRY9N+Yjaw==
+ bh=GN+WwHDPg8LekHgdVsttSwXVbh5IlJlEV7WmjubAHuU=;
+ b=Z5+qiwAhnmwVXZzUivKihfv2R1SC33NmeJula8mUuj/YDThKyKMXZ3GrNKeHhZUiJN7TL7wgmjCSw3jezEeGvc96F1mx7BADGDEJOytIfbtRd2URbwC7RhyU1fHgVF1TdOm3zD2R/gfqfODq0iBw+pw0JqlmR8OwJoCwqyl2FiBMqzzRKH58cyeFcdSlJMYqmJG1govJ/uHYR2wW08NU2Nt4YDisxorry6V3HsbNxB2z2WluFOFFj2MFbP8ZRdH7b/TrRajAaOjAAAm6o2mFeNEzJEuPEQNlFbXG1U/oyia75a6J9iCC7bMe2mwcyLet8JgMKXH6i1ff80AL/wICVg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=starfivetech.com; dmarc=pass action=none
  header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
@@ -44,11 +44,11 @@ Received: from NT0PR01MB1216.CHNPR01.prod.partner.outlook.cn
  (2406:e500:c510:11::9) by NT0PR01MB1070.CHNPR01.prod.partner.outlook.cn
  (2406:e500:c510:3::6) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.546.22; Wed, 28 Oct
- 2026 12:11:25 +0000
+ 2026 12:11:24 +0000
 Received: from NT0PR01MB1216.CHNPR01.prod.partner.outlook.cn
  ([fe80::1666:48e8:19e9:ad29]) by
  NT0PR01MB1216.CHNPR01.prod.partner.outlook.cn ([fe80::1666:48e8:19e9:ad29%4])
- with mapi id 15.21.0546.021; Wed, 28 Oct 2026 12:11:25 +0000
+ with mapi id 15.21.0546.021; Wed, 28 Oct 2026 12:11:24 +0000
 From: Changhuang Liang <changhuang.liang@starfivetech.com>
 To: Pratyush Yadav <pratyush@kernel.org>,
 	Michael Walle <mwalle@kernel.org>,
@@ -61,9 +61,9 @@ Cc: linux-spi@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-mtd@lists.infradead.org,
 	Changhuang Liang <changhuang.liang@starfivetech.com>
-Subject: [PATCH v2 5/5] mtd: spi-nor: macronix: Add 1-4-4 DTR read support for MX66L1G45G
-Date: Wed, 28 Oct 2026 05:11:00 -0700
-Message-Id: <20261028121100.79667-6-changhuang.liang@starfivetech.com>
+Subject: [PATCH v2 3/5] mtd: spi-nor: Support mixed 1S-xD-xD DTR protocols in spi_nor_spimem_setup_op()
+Date: Wed, 28 Oct 2026 05:10:58 -0700
+Message-Id: <20261028121100.79667-4-changhuang.liang@starfivetech.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20261028121100.79667-1-changhuang.liang@starfivetech.com>
 References: <20261028121100.79667-1-changhuang.liang@starfivetech.com>
@@ -74,56 +74,56 @@ X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: NT0PR01MB1216:EE_|NT0PR01MB1070:EE_
-X-MS-Office365-Filtering-Correlation-Id: 066b3ec8-299d-483a-9f09-08df34ec96ce
+X-MS-Office365-Filtering-Correlation-Id: 5ed476a7-17b1-4fd6-ac62-08df34ec960d
 X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|52116014|376014|23010399003|7416014|366016|261009221227099003|261009220027099003|261021121427099003|261009223327099003|261022105027099003|261022075727099003|261021123027099003|261009223027099003|261009221727099003|10067099003|56012099006|261026140227099003|3023799007|6133799003|18002099003|22082099003|261026121527099003|38350700014;
-X-Microsoft-Antispam-Message-Info: pUQhyQQT5R8/qtwxgxi0LVNYuUJN6UErdBDQk/pdtK4BbFaLYlt+L1J5N5lrYd1U78dewt0HZs2QeXdb6lkd9iUc13v+B3mffccP+MkFWGhFRl81NkJUseaCWoISOpY0IrHgoe+1Aq21G9IjCZY0kaudMeBfceKvbt22AXFFsQ2S93lkZWQN3QZNviAegqIDZoW9mFa3Q4DTEeUFvgpMxVJlUHVqSbA/Y1J1RMlsxSGRxi/ZqU0L2mMMRIjG9uaEL9z+ePx6Br5UUdadWJncyp3TnpcQQ8UeHhwHnDOPqwFAOb7bN/xxKTsCOK9BPCSqbKXZoWJ4yLRR83jE73BS1QjS/6UvR3wQZzH8LGMNeWnG1EqXVRUyHTgCTlArRlzItVyiy/ZX1hZvwBZdWK/2yVCtsSlcMU0EizsNrATpkDviCJ21XdEKSp7eYRyt1CpjM3QrwuymOxgmlsfj6GBRHelqB4YpF1JnBEk2YLpjiBE5OIRWEj0wawJosrEn8AKdNkAP8oKWGoUXR19ltjcS3sSKyEgdILomV1+WhX7dd2+gVn8Hg1zpox1V4+0Osi37
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:NT0PR01MB1216.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(52116014)(376014)(23010399003)(7416014)(366016)(261009221227099003)(261009220027099003)(261021121427099003)(261009223327099003)(261022105027099003)(261022075727099003)(261021123027099003)(261009223027099003)(261009221727099003)(10067099003)(56012099006)(261026140227099003)(3023799007)(6133799003)(18002099003)(22082099003)(261026121527099003)(38350700014);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|52116014|376014|23010399003|7416014|366016|261021121427099003|261022075727099003|261021123027099003|261009223027099003|10067099003|56012099006|3023799007|18002099003|22082099003|261026121527099003|38350700014;
+X-Microsoft-Antispam-Message-Info: 7LiBKGlBp2w5nkv0gZQjCY83DvtkbWKMJybIH40H9HoJG6mdFqWAH5mUUR9jl1s26c3B9I0l6t+HFz5IM3ynd39MtYztbyiuVhWYjyFJTDyBE6QUXMGtgmJ/QAfyby7dMV9ag4kZsA1F9QOjkdIDPr+0gk2+zdf4UzAB4Ym98kO+rqZ3Vm+8RdO735I9O1p+ksOBzxzLwIh/Z8dA4H59ZKSZgwjIl9FTsIUvDHviMnFtQdtsn1SL96LMpvEWaPo1QTiQMki7qpOWzTPNneEKzEHFLACgdx5sJdGtpNYifaIjM7U/X3ZnPb8wraWBlNXu3hPaeMSTQnsj0BF6UaTblpupZ5gLd/+2CJvHe4Sj1912L8Av882CMPKmtjmMzmmYNa+g+ny37yCjku8e7E6a8i3thV2K7itMNjsr776UaWu6WcWfOUgKNYk4M/k9C9TPrPtVSzCbmE6n3nkCNYA0tKGXKYkeK/6tAnvJhgbMvDsikuvKO6RSLsfWIeq62GxrNEZ5P1CulviYpyOQkPANpd+9+qxbPPaQWnfsxCNul3rWQup7jtZxw/Bh6tCqF7Xi
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:NT0PR01MB1216.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(52116014)(376014)(23010399003)(7416014)(366016)(261021121427099003)(261022075727099003)(261021123027099003)(261009223027099003)(10067099003)(56012099006)(3023799007)(18002099003)(22082099003)(261026121527099003)(38350700014);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?CeRVo/wkhx3GFrus8gIIpG2ORdSYtq7HVmPCXWF8b49lQiOF1jwOSDqdim1Z?=
- =?us-ascii?Q?mjTTRsxfKv9Edho7u5ZxGjcR+mS5FBS3esAZAcIs8rjxQCJiU4yoc3mooRV0?=
- =?us-ascii?Q?t8PP2ibDXcWpVCQ1zXmo1p0JsoFPXfGMKhgvfXvAhpVaP0BEzVmIYw6215Fw?=
- =?us-ascii?Q?WEA7HKlTCmUswq3nYiJMBkLow197LxN6Vh81z1XCROe3ELasN3CWFsjap8eo?=
- =?us-ascii?Q?83ex2R/JHM5re42N7Rm7Nv3JZYMQG95Ln8rJ6lVKK+2hPGZVaWbtrSAeD9fp?=
- =?us-ascii?Q?1qlTt71AQlaBR0Y2UpVLhSYDcMmoMaDBsYN/M8PYQQ2C9dS53221qKF4Hp2h?=
- =?us-ascii?Q?noX5HRYqsMuOkbCCRYzXRymfhZlaI4IQlaTOVeYCgE+RYT7YkZlcpeRWaAJ+?=
- =?us-ascii?Q?RBuTMB5XYypVEXWyJTZJljmQdiVhi2drXIIGLTRCZ4S2wTy/DLH5m6FFGpWc?=
- =?us-ascii?Q?JPweDF2kWoBletDzzvbBe/taDae0BPfTBgk9AhDIHDT5K5I/fMc2kp0Y7wkc?=
- =?us-ascii?Q?riVqA92C6Pqnhe392tUn+QsphA2YqDrZoQDaz71dwQNAGXep5Nnxr6yKOpm4?=
- =?us-ascii?Q?9gVQVqR/oYV0qkm6CIVomQDDmwEy8utdJQ8N7N+NyLD6x6nwAevw7DKACmmP?=
- =?us-ascii?Q?nqvU35DXEjKy+1Vy/gl6tqZqq3fgc+YCIPHMzqKskHzPf639EI1Skm9hnyKc?=
- =?us-ascii?Q?zrbCU8tuPnSoKCtISZcfipNrNK0Mwaoi4E4/8ifvy+kI9kbECZGm7Hz8rbTB?=
- =?us-ascii?Q?BqkXLnkuX6KG6MmFP9hXF38PR1rnb3TyqyKfNGCf3ePjBSF9JPCNPNVu2ONr?=
- =?us-ascii?Q?TcGZbHpHAsN/oOyhg5/DzlWbd7E1xFv5+tH+ot0bYsBqplSvF6gcUUqgWBe+?=
- =?us-ascii?Q?xqki9OrF5ACUmdPyXuYwuC363imOQ6aM9QyMS+9IAoLrV2UEKMD9XABmL782?=
- =?us-ascii?Q?PF0wpMEYFwB90f6iEQNiEfJUk6K7svi4116FFDDKesPn+QV18nPLwgIIUFwo?=
- =?us-ascii?Q?6ev247ir/dI0U3mjJgHq7sXllDCoxrW5+OrSnaKDmqfyBl5oqqDVZseQqIe7?=
- =?us-ascii?Q?kCQzOSNfhgq4rchOS3nhqckvC9In8sT2tFCdJ9Nr1By8wEjSnkuqB3YC1vJS?=
- =?us-ascii?Q?aoMYoGyvmC8qQL9F2ivD7LY6+nuwqpTGJ6ORYiy7AFxdgW/pP+ZBikJFZ2p4?=
- =?us-ascii?Q?DA5SGh2vyeP0306F9+UPhsVSgWLbWQMQjgoYAp0pznu6JDW5K2KFwhuqTErC?=
- =?us-ascii?Q?0TYQP7bpqkbJH3ew7anMf6ukiWZBDKKsnl9FAozDN4Ug6pMATFV9vGFzpnVx?=
- =?us-ascii?Q?BHOlaDFYbeMpLNZAopYjbF70L91WMoU8CzvkmXyt5fUWtzc9X9BbtV35FgJA?=
- =?us-ascii?Q?TXnkxBhQaIx/TsZ/h6fa85vw0JqqOEuWsZrp0l1aUhOLUDlVTfj04ujkvt9G?=
- =?us-ascii?Q?wq5liuRIwWVIZjD4JYoTWutaADmPtObtJ1KAdcJaDPdodQ6nOmSZZDzl4O3A?=
- =?us-ascii?Q?t9ltQocN6GD0Lpcgd0US/0lamqNtzCaNtOsl7waz2nMaOf314vC8rbEVBsb0?=
- =?us-ascii?Q?00dRg04aW6gvXKpztYAAmEKlMO68P0eRXv+AQ2YzqkISmtZQNLz0e19l4mwa?=
- =?us-ascii?Q?3cB797hJaBR1SVIWRtkgjJ0kV6ufZfKakU56jkLNsuxbnkbuaRv5jLHUB37R?=
- =?us-ascii?Q?wRAncHRPiyYL2Bl9/u6xSjlSMDap+MPVNITXjKtJFUppZVsDk1zzK9i16sNP?=
- =?us-ascii?Q?qS22OprkxfjkfcuidO5Skq73uEXrlnu7ZjQ1ObOgsYG71E2/ld0Z?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?8NDQJZUOIWokirkoN3pwffHt1U8/ItMg8cGLp2wh3BucvB2+ZuOw0U/Qg0kt?=
+ =?us-ascii?Q?Ud1YdILtB5cLORUFA03czF6tSVCSFQ3MlPfgb39tLj0mHO6G76h5dXUT8J8f?=
+ =?us-ascii?Q?xc1MBPS8zuJdQMM06djR3xXp+TiId2+1r2qudN9Jq+sZeWmuH/J3Zj0DC1Nd?=
+ =?us-ascii?Q?jZzsaIXoiJyoipRFejNDPUv4dXZU+PayBM4nMq5MKYY7AsHo+BbHcamEkiXw?=
+ =?us-ascii?Q?P6Q5difGCmy60FDQlEFS/m+VWqXAMxv0GjYMhb3BUOVSKRbYeRjrR1fM+pVT?=
+ =?us-ascii?Q?ldnZoP/l7JXeVmJ/vKdpS3eilxeZWMK7DFnsIzenHp4AMCNFUHcKMZxuVkmk?=
+ =?us-ascii?Q?mbt7+KXjqsdLqrWXxMBm+vL7eUZ8diH1N/nmyPEvU72Ivq2iT7qxlXLM/O9v?=
+ =?us-ascii?Q?QbL+C4EIxPUhd1JDcQisNEgTXp+0OKPGJFhynnOa8+VscByH2uFbZ4ceabun?=
+ =?us-ascii?Q?MKMDTCEKHV7ZcunaoV6HhzVV3qaI+x0/WXKtvNcPRs8llyqZpyclpVQVDhmj?=
+ =?us-ascii?Q?ceDTTM2oUji/lbSpiUx9AuVRWjJYYtHqtlc97amzTjFvelJyVgdTtmO82WrL?=
+ =?us-ascii?Q?8u35BmpAUbxFlppU/ch4UNHsEktZbk0/6RkTJ8E9+DaSuNoi+u22gFfAOT1O?=
+ =?us-ascii?Q?S+6KU5VXi99q0CCjVvPq5EqTIiOP/pzwYWEWPWSPspEiYv0HugNZaQfS/hSo?=
+ =?us-ascii?Q?iRRLWfWIKoKOwZXlUusssLvQyDsLJY1jRND2FoaUpXqfQInkXa0J8kuZHqZ4?=
+ =?us-ascii?Q?OTsvHGvuI7IYdhHWxnCYFTUR9g1hXviIH1wbmwv89amhoSVR5CqgCWbwVg9R?=
+ =?us-ascii?Q?PgZGsWCDAOU/2MiiqJ9ysMR4kTYEzvkLv90rfGwHb+65VxhVod+x6SmFuysy?=
+ =?us-ascii?Q?flcGe+HDWPbGKaT+l3cTRjG7p/Fgu7NVKz7qq+m9Dky91ndjID4ePVqJJxvg?=
+ =?us-ascii?Q?51w/jAWEqglTKy5Q09mUQ1viXm528q4zC2J4yDDsNZBz4GnQwTbBnumTLhV/?=
+ =?us-ascii?Q?P+wS/dHPDk4iuieZyM+oOh2YhByMQvawLdtAXnOJ3J+v6TXUrt2jqNueJt07?=
+ =?us-ascii?Q?9MS/cAL+1Cyh9XF4RUt6rPen+cVha5Iuc5YdtwctWdFjKS+8B2NKsUk08/Su?=
+ =?us-ascii?Q?ZZvGkz5Ku4cLi0xu94IlKhukm6OUq2cp76B1Sl/HmBSnVnBCT+xnThvqbuJs?=
+ =?us-ascii?Q?AoWuu6+nPK0cWSXV5vVSgI9kVf4GmcbP/T7Z+74MNQQqGve7x8Ps0D2C4b8X?=
+ =?us-ascii?Q?9bMsrGJKV+Wy1lycX2cEtZH1gKvIttT2eflflejqDpxLKK0MZhLyQGzeFVR7?=
+ =?us-ascii?Q?YknNf7vCxa2WiaogzSOBebFQwz7yt1rBzy5pvqVnlSo8ZDGBb0nAT4Lmpzd3?=
+ =?us-ascii?Q?uca1cPZacEJkKNTOi36FHJmLVk1mDd2HKLLxvZv1hOTWDWmZB54Rs2j4F2Hv?=
+ =?us-ascii?Q?MGmAGAYcQi3qs8u8eoye8SNRKr8XEsLoMuhE28zLmZQ2O2cWECf4LtsAel2n?=
+ =?us-ascii?Q?o5xn7mZiOO9wHNFnVu9jvFkj03TWNQPIB3tOPi4edayiyxVGSho9+jGz22/C?=
+ =?us-ascii?Q?DCRneh9c28uFDCXE4END79vn+cnzSVHWhvqS330eQroOqGqQNnYBH170cDVj?=
+ =?us-ascii?Q?fKzLqXAO4clkKJEphrk3lTW+y31Y7FzESlCq/Rma7GaQCrSJb5ydgfHql3Go?=
+ =?us-ascii?Q?mOr24W8h30jlKJuo+go3N2JUBp22LznVgBJgyIyUOO1rRFRowqrFmbX0MgwS?=
+ =?us-ascii?Q?NAZSTI5ViFeVeObW/Cu4sVRlYxDCieDRx/ebrpPoS5rnjkzWOsQG?=
 X-OriginatorOrg: starfivetech.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 066b3ec8-299d-483a-9f09-08df34ec96ce
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5ed476a7-17b1-4fd6-ac62-08df34ec960d
 X-MS-Exchange-CrossTenant-AuthSource: NT0PR01MB1216.CHNPR01.prod.partner.outlook.cn
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Oct 2026 12:11:25.8027
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Oct 2026 12:11:24.5104
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Kors0QCNu6xiY4IIOREyj5IcBYRW5R0e2ViqpWDMlQPsRmDLWxOC+mqaODqCnwKkfQlY2NK6PxQUID47ly/urO46i7+WglR+ClLx0wNw8IBSTAinemo+owTqrjIBD+sP
+X-MS-Exchange-CrossTenant-UserPrincipalName: FzvbAHmOGPk2HX3pV9eYx3KL3wzYLByCq+ESWiOTDwzJECJNAM8uPsocZ2Jkun+9szZ9wua29imvctWFPCcdyLdYu2YtmRA97vC4l8pnNd0GBRQWQb94iVxULVwfSc5U
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: NT0PR01MB1070
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261028_051145_454350_B1EA79C9 
-X-CRM114-Status: GOOD (  18.81  )
+X-CRM114-CacheID: sfid-20261028_051147_402787_2993A054 
+X-CRM114-Status: GOOD (  14.00  )
 X-Spam-Score: -1.9 (-)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -144,220 +144,78 @@ X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-The MX66L1G45G supports the 1-4-4 DTR read mode. This flash uses 6
-dummy cycles by default in 1-4-4 DTR mode.
+Currently spi_nor_spimem_setup_op() sets all four phases (cmd, addr,
+dummy, data) to DTR whenever spi_nor_protocol_is_dtr(proto) is true.
+This is too coarse: the 1S-xD-xD DTR protocols (1_1_1_DTR, 1_2_2_DTR,
+1_4_4_DTR, 1_8_8_DTR) send the command phase in STR on a single line,
+and only the address, dummy and data phases in DTR. SPIMEM supports
+such mixed DTR modes.
 
-For 1S-4D-4D, its support bit is located in the 21st DWORD of the
-BFPT table, while the dummy cycles are described in the 23rd DWORD.
-Unfortunately, the BFPT of this flash model currently only supports
-16 DWORDs, and the kernel's SFDP parser does not derive any
-SNOR_HWCAPS_READ_1_4_4_DTR capability from the BFPT table.
+Split the handling:
 
-Therefore, implement late_init to initialize support for this opcode,
-configuring the read settings with the default 6 dummy cycles.
+  - For SNOR_PROTO_8_8_8_DTR, keep the existing behavior: set all
+    phases to DTR and use a 2-byte opcode (opcode + extension).
 
-The SFDP of this part provides a 4BAIT table, which also advertises
-the 4-byte 1-4-4 DTR opcode (0xEE). SFDP parsing converts the read
-opcodes to their 4-byte variants and spi_nor_set_4byte_opcodes() is
-skipped later on, but the 1-4-4 DTR read is only added in late_init,
-after 4BAIT has been parsed, so it is not converted there. Select
-the 4-byte opcode directly in that case.
+  - For the other DTR protocols, set the command phase to STR and only
+    the address, dummy and data phases to DTR. Double op->dummy.nbytes
+    since DTR transfers 2 bytes per clock cycle, matching how the dummy
+    cycle count is specified for these protocols.
 
-Also set SPI_NOR_4B_OPCODES like MX66L51235F (0xc2 0x20 0x1a). The
-part supports the 4-byte opcode set, so if 4BAIT parsing does not
-complete, spi_nor_set_4byte_opcodes() still picks the 4-byte variants,
-including 0xEE for 1-4-4 DTR. With 4BAIT parsed, as on the tested
-part, the flag has no further effect.
+  - Move the SWAP16 handling into the 8D-8D-8D branch as well, since
+    it only applies there.
 
-Add a dedicated fixup for the part (SNOR_ID 0xc2, 0x20, 0x1b) that
-keeps the existing QPP 4-byte post-SFDP fixup and additionally
-advertises the 1-4-4 DTR read capability in late_init.
+No in-tree flash currently declares SNOR_HWCAPS_READ_1_x_x_DTR, so
+this is not a bug fix but preparation for enabling these protocols.
+A follow-up patch will enable 1S-4D-4D for the MX66L1G45G. The
+8D-8D-8D path is unchanged.
 
 Signed-off-by: Changhuang Liang <changhuang.liang@starfivetech.com>
-Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
+ drivers/mtd/spi-nor/core.c | 23 ++++++++++-------------
+ 1 file changed, 10 insertions(+), 13 deletions(-)
 
-Logs for MX66L1G45G:
-********************
-
-+ cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
-c2201b
-+ cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
-macronix
-+ xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-53464450060102ff00060110300000ffc2000104100100ff84000102c000
-00ffffffffffffffffffffffffffffffffffe520fbffffffff3f44eb086b
-083b04bbfeffffffffff00ffffff44eb0c200f5210d800ffd649c50085df
-04e34403673830b030b0f7bdd55c4a9e29fff050f985ffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffff7fefffff215cdcffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffff003600279df9c06485cbffffffffffff
-+ sha256sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-bec91ac20c9f7c63a00992fd2f779f8c5378d8f9afc699a2c741be5bdf268e35  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-+ cat /sys/kernel/debug/spi-nor/spi0.0/capabilities
-Supported read modes by the flash
- 1S-1S-1S
-  opcode        0x13
-  mode cycles   0
-  dummy cycles  0
- 1S-1S-2S
-  opcode        0x3c
-  mode cycles   0
-  dummy cycles  8
- 1S-2S-2S
-  opcode        0xbc
-  mode cycles   0
-  dummy cycles  4
- 1S-1S-4S
-  opcode        0x6c
-  mode cycles   0
-  dummy cycles  8
- 1S-4S-4S
-  opcode        0xec
-  mode cycles   2
-  dummy cycles  4
- 4S-4S-4S
-  opcode        0xec
-  mode cycles   2
-  dummy cycles  4
- 1S-4D-4D
-  opcode        0xee
-  mode cycles   0
-  dummy cycles  6
-
-Supported page program modes by the flash
- 1S-1S-1S
-  opcode        0x12
- 1S-1S-4S
-  opcode        0x34
- 1S-4S-4S
-  opcode        0x3e
- 1S-1S-8S
-  opcode        0x84
- 1S-8S-8S
-  opcode        0x8e
-+ cat /sys/kernel/debug/spi-nor/spi0.0/params
-name            (null)
-id              c2 20 1b c2 20 1b
-size            128 MiB
-write size      1
-page size       256
-address nbytes  4
-flags           4B_OPCODES | HAS_4BAIT | SOFT_RESET
-
-opcodes
- read           0xee
-  dummy cycles  6
- erase          0x21
- program        0x3e
- SR1 read       0x05
- SR1 write      0x01
- QE             SR1 bit 6
- 8D extension   none
-
-protocols
- read           1S-4D-4D
- write          1S-4S-4S
- register       1S-1S-1S
-
-erase commands
- 21 (4.00 KiB) [1]
- 5c (32.0 KiB) [2]
- dc (64.0 KiB) [3]
- c7 (128 MiB)
-
-sector map
- region (in hex)   | erase mask | overlaid
- ------------------+------------+---------
- 00000000-07ffffff |     [ 1  ] | no
-+ mtd_debug erase /dev/mtd0 0 2097152
-Erased 2097152 bytes from address 0x00000000 in flash
-+ mtd_debug read /dev/mtd0 0 2097152 spi_read
-Copied 2097152 bytes from address 0x00000000 in flash to spi_read
-+ hexdump spi_read
-0000000 ffff ffff ffff ffff ffff ffff ffff ffff
-*
-0200000
-+ sha256sum spi_read
-4bda3a28f4ffe603c0ec1258c0034d65a1a0d35ab7bd523a834608adabf03cc5  spi_read
-+ dd 'if=/dev/urandom' 'of=./spi_test' 'bs=1M' 'count=2'
-2+0 records in
-2+0 records out
-+ mtd_debug write /dev/mtd0 0 2097152 spi_test
-Copied 2097152 bytes from spi_test to address 0x00000000 in flash
-+ mtd_debug read /dev/mtd0 0 2097152 spi_read
-Copied 2097152 bytes from address 0x00000000 in flash to spi_read
-+ sha256sum spi_read spi_test
-4e6069fe661b4f2ad8b96620641219cd9b34758e1b5d8585af867ff9ab4c349c  spi_read
-4e6069fe661b4f2ad8b96620641219cd9b34758e1b5d8585af867ff9ab4c349c  spi_test
-+ mtd_debug info /dev/mtd0
-mtd.type = MTD_NORFLASH
-mtd.flags = MTD_CAP_NORFLASH
-mtd.size = 134217728 (128M)
-mtd.erasesize = 4096 (4K)
-mtd.writesize = 1
-mtd.oobsize = 0
-regions = 0
----
- drivers/mtd/spi-nor/macronix.c | 28 +++++++++++++++++++++++++++-
- 1 file changed, 27 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-index b3fdb4b2fa1c..3401275f096b 100644
---- a/drivers/mtd/spi-nor/macronix.c
-+++ b/drivers/mtd/spi-nor/macronix.c
-@@ -103,6 +103,26 @@ mx25l12805d_4pp3b_post_sfdp_fixups(struct spi_nor *nor)
- 	return 0;
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 90524c58602e..78b8ee58382e 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -98,13 +98,7 @@ void spi_nor_spimem_setup_op(const struct spi_nor *nor,
+ 		op->data.buswidth = spi_nor_get_protocol_data_nbits(proto);
+ 
+ 	if (spi_nor_protocol_is_dtr(proto)) {
+-		/*
+-		 * SPIMEM supports mixed DTR modes, but right now we can only
+-		 * have all phases either DTR or STR. IOW, SPIMEM can have
+-		 * something like 4S-4D-4D, but SPI NOR can't. So, set all 4
+-		 * phases to either DTR or STR.
+-		 */
+-		op->cmd.dtr = true;
++		/* we only support 1S-nD-nD or 8D-8D-8D */
+ 		op->addr.dtr = true;
+ 		op->dummy.dtr = true;
+ 		op->data.dtr = true;
+@@ -112,13 +106,16 @@ void spi_nor_spimem_setup_op(const struct spi_nor *nor,
+ 		/* 2 bytes per clock cycle in DTR mode. */
+ 		op->dummy.nbytes *= 2;
+ 
+-		ext = spi_nor_get_cmd_ext(nor, op);
+-		op->cmd.opcode = (op->cmd.opcode << 8) | ext;
+-		op->cmd.nbytes = 2;
+-	}
++		if (proto == SNOR_PROTO_8_8_8_DTR) {
++			op->cmd.dtr = true;
++			ext = spi_nor_get_cmd_ext(nor, op);
++			op->cmd.opcode = (op->cmd.opcode << 8) | ext;
++			op->cmd.nbytes = 2;
+ 
+-	if (proto == SNOR_PROTO_8_8_8_DTR && params->flags & SNOR_F_SWAP16)
+-		op->data.swap16 = true;
++			if (params->flags & SNOR_F_SWAP16)
++				op->data.swap16 = true;
++		}
++	}
  }
  
-+static int mx66l1g45g_late_init_fixups(struct spi_nor *nor)
-+{
-+	struct spi_nor_flash_parameter *params = nor->params;
-+	u8 opcode = SPINOR_OP_READ_1_4_4_DTR;
-+
-+	/*
-+	 * When a 4BAIT table is present, SFDP parsing already converted all
-+	 * read opcodes to their 4-byte variants and spi_nor_set_4byte_opcodes()
-+	 * is skipped later on, so select the 4-byte opcode here.
-+	 */
-+	if (params->flags & SNOR_F_HAS_4BAIT)
-+		opcode = SPINOR_OP_READ_1_4_4_DTR_4B;
-+
-+	params->hwcaps.mask |= SNOR_HWCAPS_READ_1_4_4_DTR;
-+	spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_1_4_4_DTR],
-+				  0, 6, opcode, SNOR_PROTO_1_4_4_DTR);
-+
-+	return 0;
-+}
-+
- static const struct spi_nor_fixups mx25l25635_fixups = {
- 	.post_bfpt = mx25l25635_post_bfpt_fixups,
- 	.post_sfdp = macronix_qpp4b_post_sfdp_fixups,
-@@ -120,6 +140,11 @@ static const struct spi_nor_fixups mx25l12805d_4pp3b_fixups = {
- 	.post_sfdp = mx25l12805d_4pp3b_post_sfdp_fixups,
- };
- 
-+static const struct spi_nor_fixups mx66l1g45g_fixups = {
-+	.post_sfdp = macronix_qpp4b_post_sfdp_fixups,
-+	.late_init = mx66l1g45g_late_init_fixups,
-+};
-+
- static const struct flash_info macronix_nor_parts[] = {
- 	{
- 		.id = SNOR_ID(0xc2, 0x20, 0x10),
-@@ -355,7 +380,8 @@ static const struct spi_nor_fixup macronix_fixups[] = {
- 	{ .id = SNOR_ID(0xc2, 0x20, 0x19), .fixups = &mx25l25635_fixups },
- 	{ .id = SNOR_ID(0xc2, 0x20, 0x1a), .fixups = &macronix_qpp4b_fixups,
- 	  .fixup_flags = SPI_NOR_4B_OPCODES },
--	{ .id = SNOR_ID(0xc2, 0x20, 0x1b), .fixups = &macronix_qpp4b_fixups },
-+	{ .id = SNOR_ID(0xc2, 0x20, 0x1b), .fixups = &mx66l1g45g_fixups,
-+	  .fixup_flags = SPI_NOR_4B_OPCODES },
- 	{ .id = SNOR_ID(0xc2, 0x20, 0x1c), .fixups = &macronix_qpp4b_fixups },
- 	{ .id = SNOR_ID(0xc2, 0x25, 0x3a), .fixups = &macronix_qpp4b_fixups },
- 	{ .id = SNOR_ID(0xc2, 0x25, 0x3b), .fixups = &macronix_qpp4b_fixups },
+ /**
 -- 
 2.25.1
 
