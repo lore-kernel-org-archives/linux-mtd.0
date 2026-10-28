@@ -2,104 +2,66 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D06F8606A326
-	for <linux-mtd@archiver.kernel.org>; Wed, 28 Oct 2026 08:17:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6AAC60A3825
+	for <linux-mtd@archiver.kernel.org>; Wed, 28 Oct 2026 09:30:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=HA2qn4BF;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=TUjGc/2y
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=JTcjSVtN
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Archive:List-Unsubscribe:List-Id:Subject:Cc:To:From:Mime-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
 	List-Unsubscribe-Post:List-Owner;
-	bh=UYOjpaTIqypDi/Q5//kQ19Uq0eSeabNoPDt/bF2lgZg=; b=HA2qn4BFCWOj2MOUyAG8ScpFwZ
-	gLTprshueUOO169MGCErkGl0VNQFWv95/X3g5nBJTvdv+2o9v45oOk9JwvJmvWg4Q3sLG4D9WmnQ2
-	CSY3I7n9QEhKqbCBesoARbTGYXMV67NBKIIYvVyCLS9hlb+KL9l5IvTFN5ZzgqY1rAt+DN3fjT8oS
-	FkUmu/yLB1f0b8qXt0TfdQaZAIyEHmnUDc1I8H9SEOtZpUObGiI1riD+9tuEd1ePq3xS2jx1wA/jS
-	4lPrEiaR7G+jHsgGZmjkrvb6wg/6ysKMCykp387F0J7kttsTbK/orFgcJGd5sLykXQRE2MJ345Shw
-	SwWoALOw==;
+	bh=ajDwMJI48W2Tnzi5g1vRmRlkrOkRaRets9bwoCl0C/E=; b=JTcjSVtNzExICM5MU1Sn45pGYK
+	tfzKG51UCCHo+bU3oB2lBO+Mpi4uRUMx3fTLl7E0VyYHxysEeTZfjUjWS+SRm8A5KsnGuwW5SlzKC
+	geP8RLIc+JJbcSOcO/OJMhN7NiGYnfLZ+IFR7lS9yz5Ln/1VvUuKc0OpA2W4egUWciO1I6NC4CFyx
+	VpyL8KpOapFMYVx4VPUyQ1GHmmpLIiJ/+6MoKTLAXr86XahIcOw8yBNbC1Rdd/BfXHB/48bMuX66A
+	UTWnyLkNCPWok+kHzkros5BauYA99YZ3lBdShdFwe54buSbpFMO1o7zYtXaRFggvpKSA5nnLSASy7
+	dZ7hJj3A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xLyqF-00000006WQz-45Ch;
-	Wed, 28 Oct 2026 08:17:03 +0000
-Received: from mail-pg1-x534.google.com ([2607:f8b0:4864:20::534])
+	id 1xLzzR-00000006fcO-1gUh;
+	Wed, 28 Oct 2026 09:30:37 +0000
+Received: from mxhk.zte.com.cn ([160.30.148.34])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xLypu-00000006WNO-2d7n
+	id 1xLzzM-00000006fbz-3roL
 	for linux-mtd@lists.infradead.org;
-	Wed, 28 Oct 2026 08:17:03 +0000
-Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-cd5cd8d89a7so349906a12.1
-        for <linux-mtd@lists.infradead.org>; Wed, 28 Oct 2026 01:16:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1793175401; x=1793780201; darn=lists.infradead.org;
-        h=content-transfer-encoding:content-type:mime-version:references
-         :in-reply-to:message-id:date:subject:cc:to:from:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=ewTGkXdsNJwvYFPISDJjvcJQGNkUEeqtLfVaYw+sa6o=;
-        b=TUjGc/2yTNw/A4sqFV8tkA6VvB2c+QcEtaLI0+mF2LK2OvJDWJeq9o54xRQGzUU4kO
-         Ab8DUCtA/VwoghcF5ujdS/PSOUD8cbTThtYw79u36ZmWIimdfKri3nftYXfoxXXyC3Wu
-         vr4ngkywAnKlnxh23gbIsYbl8vOx5UDpQ5cQaUzsmsMefzpWPREeyhUkIN1iUvwTf9xr
-         qHfAGVJqnSi5HDpL7SJrtRNYj/thmGSS9ZX0zEP3H/uZ6RWWd2ugnuMMKicvJH0seDH1
-         5lAOERLiL+T27DuG52Tnq3VZVCm2a8IiEuh78IBRKrvs42CJhZBVjA6Um2m/De7KWciX
-         Zh7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1793175401; x=1793780201;
-        h=content-transfer-encoding:content-type:mime-version:references
-         :in-reply-to:message-id:date:subject:cc:to:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=ewTGkXdsNJwvYFPISDJjvcJQGNkUEeqtLfVaYw+sa6o=;
-        b=hhIbDcFpAPonsTnc5oWpV2xxJE7xEY1F3wPGV+7QlKzE0mCW1UGvTkDrtk/2ARWMzA
-         klbVClbVp2cD2kDVGAov9FvQsxARkDr8xluoZYVnnpwaOWfR28Wc/ZI/GfOOMtfnWdVz
-         17/eY7IsjC/651kRQrYatC9yYL6HxhbetaZkppaDI7546fM3cEndyJajTIHe5REG91cV
-         yLHN9YR14dgvQOyBY6OwjhSEOL86g7W1dFRHKvc8exnhztTwx4CnQcTmJei/h2BknXAG
-         gtDzs1O3fq6waU4H6+hAgb5FBGhi4zfWK7kVCFyuk1mQjKN4AxfCYMK+a0DNTUakbklS
-         1Sag==
-X-Forwarded-Encrypted: i=1; AKwUvBydfAn6boQzZtn237y5X7Uqw4RPI2k+wxmxqJ2nMy37FYM1HJj509VeqVERTU2qy4XrP+AF/qxH9bQ=@lists.infradead.org
-X-Gm-Message-State: AFq9FYJ+TOOUk15tDj/mb+9Tc6gwUX6MgXvDzaT90+armdnnaiUAfxLL
-	/K34W2fwcmhyTt0OjaK0/yhaJ105JrB07ebW3Njdci6TdbQXFNx/d2fo
-X-Gm-Gg: AYBFou0k+YKTeVzhjlXUkeJi7SmKGdhAmI9Knc2G1GX+cBQTq703LDjVDSZDlR5jR08
-	rTq0FZmYiBezlIH+LrGo3p3e8SdG5LLRBSfW+9CapHMMafDPJkGISLm2GBgcXRRPIqF5TR/+S7c
-	o+CeLOhycer0OFiteAJ1Gqx7Hmj2Lnc+xo+D6MytqrdtUKll3n7mN16Z63DLMQdsOLnAam8nqh0
-	QqWCMuArE7iG0bL9sIg7PvTTTPHr+Xgp4nhMqGeZ+ztnGPijXGZptrDdJ2q8HZ4j+xhRS6/ZpQf
-	KtXiiNb3I84DEKZUvLlnTQ/QmQtY+s+SC4mDEmAEJoG3pK8flPRpcQD4yFYFPogO4F2+bnmCDG+
-	s3MdRy5/G+xegYh8PP+VDsLYaOxiLmMuy7u2FmE1mrZxOkG7XUFe8B+6gKfHL2yOq32aBb/0Osf
-	pLdrotq2IHzLffvOWB6Tesx25SrSSUfJmQ4inp6gp1h67TBqFvjLFXJ9gIwe5p24dTnqJ/aeDR7
-	Tss2xq4+CSIKL6M3PQfV5dIME7V2sbJ2tD1u1QZDUtndmNBDwMbotMfrphAtguo7AAVxvkwjKBw
-	xsiNlhRDcb+9gzZK4AYI63d7NVrkc+dr2BikcI5Uz8kf2m2Vk+U=
-X-Received: by 2002:a17:90b:4c:b0:3ad:9ecf:2b88 with SMTP id 98e67ed59e1d1-3ae580c7a08mr1105748a91.19.1793175401041;
-        Wed, 28 Oct 2026 01:16:41 -0700 (PDT)
-Received: from twhmp6px (mxsmtp211.mxic.com.tw. [211.75.127.162])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3ae5a902a51sm1953639a91.3.2026.10.28.01.16.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2026 01:16:39 -0700 (PDT)
-Received: from hqs-appsw-a2o.mp600.macronix.com (unknown [172.17.236.67])
-	by twhmp6px (Postfix) with ESMTPS id 2368A4163B73;
-	Wed, 28 Oct 2026 16:16:37 +0800 (CST)
-From: Cheng Ming Lin <linchengming884@gmail.com>
-To: Marek Vasut <marex@nabladev.com>
-Cc: Michael Walle <mwalle@kernel.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Takahiro Kuwano <takahiro.kuwano@infineon.com>,
-	Maarten Zanders <maarten@zanders.be>,
-	Cheng Ming Lin <chengminglin@mxic.com.tw>,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mtd: spi-nor: Describe locking support for MX25L51245G
-Date: Wed, 28 Oct 2026 16:15:34 +0800
-Message-Id: <20261028081534.945416-1-linchengming884@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <8ee5b312-80bc-4584-ac35-cc76c2812c5d@nabladev.com>
-References: <20261024001658.222147-1-marex@nabladev.com> <8ee5b312-80bc-4584-ac35-cc76c2812c5d@nabladev.com>
+	Wed, 28 Oct 2026 09:30:35 +0000
+Received: from mse-fl1.zte.com.cn (unknown [10.5.228.132])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mxhk.zte.com.cn (FangMail) with ESMTPS id 4jF2CL5V15z4yjjX;
+	Wed, 28 Oct 2026 17:30:22 +0800 (CST)
+Received: from xaxapp01.zte.com.cn ([10.88.99.176])
+	by mse-fl1.zte.com.cn with SMTP id 69S9U8U0063881;
+	Wed, 28 Oct 2026 17:30:08 +0800 (+08)
+	(envelope-from shao.mingyin@zte.com.cn)
+Received: from mapi (xaxapp04[null])
+	by mapi (Zmail) with MAPI id mid32;
+	Wed, 28 Oct 2026 17:30:11 +0800 (CST)
+X-Zmail-TransId: 2afb6ae1c0a3191-f6b36
+X-Mailer: Zmail v1.0
+Message-ID: <2026102817301132485IE4Ia6aXSqUo5KZUvgW@zte.com.cn>
+Date: Wed, 28 Oct 2026 17:30:11 +0800 (CST)
 X-Archived-By: <archiver.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0
+From: <shao.mingyin@zte.com.cn>
+To: <richard@nod.at>, <linux-mtd@lists.infradead.org>
+Cc: <chengzhihao1@huawei.com>, <linux-kernel@vger.kernel.org>,
+        <stable@vger.kernel.org>
+Subject: =?UTF-8?B?W1BBVENIXSB1YmlmczogeGF0dHI6IGZpeCBvdXQtb2YtYm91bmRzIHdyaXRlIGluIHViaWZzX2xpc3R4YXR0cigp?=
+X-MAIL: mse-fl1.zte.com.cn 69S9U8U0063881
+X-TLS: YES
+X-ENVELOPE-SENDER: shao.mingyin@zte.com.cn
+X-SOURCE-IP: 10.5.228.132 unknown Wed, 28 Oct 2026 17:30:22 +0800
+X-CLEAN: YES
+X-Fangmail-Anti-Spam-Filtered: true
+X-Fangmail-MID-QID: 6AE1C0AE.001/4jF2CL5V15z4yjjX
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261028_011642_706765_196F94EC 
-X-CRM114-Status: GOOD (  19.48  )
+X-CRM114-CacheID: sfid-20261028_023033_279953_684C5236 
+X-CRM114-Status: GOOD (  19.38  )
 X-Spam-Score: -1.9 (-)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -113,62 +75,122 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,UNPARSEABLE_RELAY autolearn=ham autolearn_force=no
 	version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-Hi Marek,
+From: Shao Mingyin <shao.mingyin@zte.com.cn>
 
-On 10/24/26 2:18 AM, Marek Vasut wrote:
-> Cheng Ming , can you (or someone from Macronix) please have a look at
-> this patch and confirm that it is OK ?
+ubifs_listxattr() derives the size of the name list from
+ui->xattr_names + ui->xattr_cnt and uses it to reject a call whose
+buffer is too small.  It then copies every visible xattr name returned
+by ubifs_tnc_next_ent() without checking @size again.
 
-I checked the patch against the MX25L51245G datasheet. RDCR (0x15),
-CR bit 3 as TB, the TB bit being OTP, and the 4-BP locking scheme all
-match the datasheet, so the description is correct from our side.
+Both counters are read from the on-flash inode node and are only
+accounting values.  A modified image can make them under-report the
+number of xattr entries while the TNC still contains more entries: the
+node CRC only protects against accidental corruption, it is recomputed
+for a crafted image.
 
-One concern, in line with the sashiko-bot comment: since locking is
-an optional feature, I think failing to read CR should not fail the
-probe. Controllers with a restricted opcode set (e.g. spi-intel) will
-return -EOPNOTSUPP for 0x15, and this part probes fine on them today
-with macronix_qpp4b_fixups. Rather than special-casing -EOPNOTSUPP,
-how about just leaving locking disabled on any CR read error, e.g.:
+The usual caller first invokes listxattr(path, NULL, 0), which returns
+the too small size computed from those counters, then allocates a
+buffer of that size and invokes listxattr() again.  In the second
+system call fs/xattr.c:listxattr() allocates the kernel buffer with
+kvmalloc(size) and passes it to ubifs_listxattr(), which copies the
+names past its end.  The copied bytes are the xattr names from the
+image, so part of the overflow content is attacker controlled.
 
-	/*
-	 * Locking is optional. If CR cannot be read (e.g. the controller
-	 * does not support RDCR), leave locking disabled instead of
-	 * failing the probe.
-	 */
-	if (mx25l51245_read_cr(nor, nor->bouncebuf))
-		return 0;
+Bound each copy by @size and return -ERANGE when the list does not fit.
+With a corrupt image the reported size may now be too small, but the
+following call fails cleanly instead of overflowing.  Note that nlen
+itself is already bounded by ubifs_validate_entry(), which every node
+returned by ubifs_tnc_next_ent() has passed; the missing check is only
+against the caller's buffer.
 
-Michael, a related question for you. Maarten posted a series last
-year to make the RDCR opcode configurable in the core and use 0x15
-for Macronix:
+While here, validate the two counters individually.  Their sum is
+computed in 32 bits, so the existing check is bypassed when it wraps
+around; rejecting the oversized values at mount time keeps the O(1)
+size query in listxattr() from returning a wrapped (possibly negative)
+length.
 
-https://lore.kernel.org/linux-mtd/20250922155635.749975-1-maarten@zanders.be/
+Mounting UBIFS requires CAP_SYS_ADMIN in the initial user namespace, so
+this is only reachable with a crafted image.  Compile tested with W=1
+and checkpatch --strict.  Runtime reproduction needs a modified UBI
+image: change xattr_cnt/xattr_names in an inode node and recompute its
+CRC; a KASAN kernel then reports the overflow on the second
+listxattr() call.
 
-It stalled because setting 0x15 for all Macronix parts is wrong (e.g.
-MX25L12805D has no RDCR), and because there was no user of RDCR at the
-time. This patch is now such a user.
+Fixes: 1e51764a3c2a ("UBIFS: add new flash file system")
+Cc: stable@vger.kernel.org
+Signed-off-by: Shao Mingyin <shao.mingyin@zte.com.cn>
+---
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index 38972786817e..fe24e1949bb3 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -82,7 +82,15 @@ static int validate_inode(struct ubifs_info *c, const struct inode *inode)
+ 		return 2;
+ 	}
 
-I have gone through the flashes currently in the Macronix ID table
-and checked which ones do not have a CR / do not support RDCR. If it
-helps, I can add this information per flash entry, so that 0x15 is
-only used for the parts that actually support it. For IDs that are
-shared by several parts, RDCR would only be enabled if all of them
-support it. That should address the concern on Maarten's series, and
-this patch could then simply use spi_nor_read_cr() instead of
-implementing its own RDCR helper in macronix.c.
+-	if (ui->xattr_names + ui->xattr_cnt > XATTR_LIST_MAX)
++	/*
++	 * Both counters are read from the on-flash inode node.  Check them
++	 * individually first: the addition is performed in 32 bits and can
++	 * wrap around, which would make the check below pass for absurd
++	 * values.
++	 */
++	if (ui->xattr_cnt > XATTR_LIST_MAX ||
++	    ui->xattr_names > XATTR_LIST_MAX ||
++	    ui->xattr_names + ui->xattr_cnt > XATTR_LIST_MAX)
+ 		return 3;
 
-Would that be an acceptable direction?
+ 	if (ui->data_len < 0 || ui->data_len > UBIFS_MAX_INO_DATA)
+diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
+index 3b0e8a270f59..8efe2c545bf4 100644
+--- a/fs/ubifs/xattr.c
++++ b/fs/ubifs/xattr.c
+@@ -421,8 +421,25 @@ ssize_t ubifs_listxattr(struct dentry *dentry, char *buffer, size_t size)
+ 		fname_len(&nm) = le16_to_cpu(xent->nlen);
 
-Thanks,
-Cheng Ming
+ 		if (xattr_visible(xent->name)) {
+-			memcpy(buffer + written, fname_name(&nm), fname_len(&nm) + 1);
+-			written += fname_len(&nm) + 1;
++			int nlen = fname_len(&nm);
++
++			/*
++			 * nlen is bounded by ubifs_validate_entry(): the
++			 * node length is nlen + UBIFS_DENT_NODE_SZ + 1 and
++			 * is itself bounded by UBIFS_MAX_DENT_NODE_SZ, so
++			 * the name cannot run past the node.
++			 *
++			 * The missing bound is the caller's buffer: the
++			 * on-flash xattr counters are not authoritative and
++			 * a crafted image can under-report them.
++			 */
++			if (written + nlen + 1 > size) {
++				kfree(xent);
++				err = -ERANGE;
++				break;
++			}
++			memcpy(buffer + written, fname_name(&nm), nlen + 1);
++			written += nlen + 1;
+ 		}
+
+ 		kfree(pxent);
+@@ -432,6 +449,9 @@ ssize_t ubifs_listxattr(struct dentry *dentry, char *buffer, size_t size)
+ 	kfree(pxent);
+ 	up_read(&host_ui->xattr_sem);
+
++	if (err == -ERANGE)
++		return err;
++
+ 	if (err != -ENOENT) {
+ 		ubifs_err(c, "cannot find next direntry, error %d", err);
+ 		return err;
 
 ______________________________________________________
 Linux MTD discussion mailing list
