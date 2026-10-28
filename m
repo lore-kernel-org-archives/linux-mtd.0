@@ -2,95 +2,83 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DF9A606A335
-	for <linux-mtd@archiver.kernel.org>; Wed, 28 Oct 2026 16:47:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4554E606A32A
+	for <linux-mtd@archiver.kernel.org>; Wed, 28 Oct 2026 18:56:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=DGI3hak+;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=P/FWCe6F
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=ADmvuyw5;
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=K+edzg6v
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=4Ce3lVJuoebXx5lv7MPDSDCGZ1i9NFKTveOZJp+BP4o=; b=DGI3hak+lsflEdP32c+AhWaZJ8
-	CFGNpNdYxXzg4V3v45P9nnMUMTP0bv0FXnMLdwlrX8W4lA03dwUDJrozU/hSIemo6REUvtFej+joZ
-	UklMtLU1pwzjsCnS64eP703SkWl1mgYDGAGoRdrE330cPag5u2MIwvpTEGctRjjlvVZUpcRjHLyyi
-	rYku1t0mfFwOTgKTRxc+sgwb35PTcVGvSdNdbqNOS58ZBYh5b8cfApEi3CtsiMFRMFYruzk/T+NZg
-	6e+7S6Ymg1pnlSWs5kWn+iYW5sc2p+GYXFWZHog/48+Agi1NAgTmiFkA4bjKgzbpTXk+iBhC/H3Gl
-	XMlZuaPw==;
+	bh=FkVt2Ql/6K1tVvqyp9xM2h8sW1R8+3yEBy+yfcvM+RY=; b=ADmvuyw5KBA0k0000AnjuOrZzx
+	lJ8hZzvYrNoJ/CKMl9jvFvt715gU5Wydq0tYneG6Q+DDWUAy1EQ70xEhIOic2fh8TMFAn1OQwwS7j
+	micGOJhXeCGtwhNgTAfMgK7w+bHWTdmiY/4b8JPvwmaTyfni+/eQ86JR0Vy1TOmolejjYN84Q4m58
+	RUCPt7pkfyODV7l5+7qomERJBJPBZa7funAvnutuFFeBHu8cxy0dlkMh73NGXCZast1ovLayqEyNl
+	IYiyHa9sQrfgR+01vqjKTd7sAnwkMYJApO0WUf6VYm5zdSf+u2CIZWd8gmoDrjdfVjVicS1iUwIFH
+	WBmGl/ig==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xM6od-00000007a9T-1IJu;
-	Wed, 28 Oct 2026 16:47:55 +0000
-Received: from mail-dy1-x1335.google.com ([2607:f8b0:4864:20::1335])
+	id 1xM8ol-00000007moQ-17Hl;
+	Wed, 28 Oct 2026 18:56:11 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xM6oa-00000007a8Q-2kN1
+	id 1xM8oj-00000007mo8-1zmQ
 	for linux-mtd@lists.infradead.org;
-	Wed, 28 Oct 2026 16:47:54 +0000
-Received: by mail-dy1-x1335.google.com with SMTP id 5a478bee46e88-369f3e9e431so944765eec.1
-        for <linux-mtd@lists.infradead.org>; Wed, 28 Oct 2026 09:47:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1793206071; x=1793810871; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=Y3c8hKxTfQ29WS+Th581uoCwhl1GtRSUhRSi/lkyiBg=;
-        b=P/FWCe6FbklC6APdC7E299nmwo2OYw4IWL+Yc18meuMNRPlhxCuqtN7twl0pjEbDwn
-         5d136lVuoxtO3xzGYMZMkyUNZa9JObl2Bg3hZReq4E604Z0nuOMJAurpfRnWvLtKdrt8
-         HSg0iwwrUjNwjuX5FqAxcWn1ZYoGMjxAO1y3x0NVS2SIrkmGrPgRo0LBxxZcEEVFLt81
-         AH2qyxbZefZlnuq0FruSg6WRbwvsTljBdvs9LctLrD/7a7BMAh9ZUDSGfeLbwjNzV23h
-         QIA6rCMh2BBkV4WmNevcaMAEowiVFxU7k5z84oMf3hix/cJOdexMucO+osJjhAv+txqx
-         FPjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1793206071; x=1793810871;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=Y3c8hKxTfQ29WS+Th581uoCwhl1GtRSUhRSi/lkyiBg=;
-        b=EYUUcUh34LWjT0uBnR07JLvpEZb40lMVwVJZ3n/ftvMHhUm62lUPhOb0O/fjdIwMyC
-         V/p2baVYZZVcDK8SBFmjgWGOIS/dg5Zo3nB+QfF9eML4k7JikU/RJOEajHSe7jYISwgG
-         gAyTLdMU/nJGYJGxo7QKPtT/SxpkPC/DiMtkeEOFj6kDe7BOMKTu/bxezyRXUCaMwm5q
-         8QjltgRxPiX4WOt2EYJden8dWSQ1iQkhzEs6hZRQ6mz6185vko70dlPOAuHeeZAO/zL7
-         1KlvO858SGxYR7ZCL7TtJM1gbLryfVeNMqPN6oANLydwXQHcOq8g/EIJdsCFSebEjTD1
-         GXtg==
-X-Gm-Message-State: AFq9FYKkkiIZ4DiHxUPwDTSpdFu7XFSBfEbcf6ZqHM8/uZaXhuDn1bkA
-	wOaV8zfBhaovTDpdmNixhdUHpJTTol0cpsidr1ERqmP3drqB9K1M89nJYXaai3w=
-X-Gm-Gg: AYBFou2FeCOlwAZV92JOSBBGyKA3YoRcnzlL2AGvo68NOfKV4JRsXEcC5cpCWDPU/TH
-	72J3nzMrtC78wEfEdq13E9FLnujGVLyX6QultJcgaQDpLjWeAiaitw2zKDyZZcrXndUOleRIgX2
-	yL2d2758cY8Ez8AfALFhNJlr5+jpq7VjC6h5ZaifafSMet8zLYdIvTQEclzkPCNaBqTsmufB7zj
-	rVdOLF1+yvEY0FK6W3wakjoA8Ri7THkMbGN76p9h1YMi32KUbCcWRT/M90mqz1w3KVVqpfAB63w
-	cYmeMcp/2SAHWeEiejoGrDAzFFWFRnzwdOWBwqtDCJeCRO6BKP6jvNRSwVvlMwHHJbXhubh9Rcb
-	KyOsFopBdQvnb9rtrl7RGQLWfQpa3k75Xgm6hzioPHXfOwXQU8eFPn2O4yw6/pFyHa7/yD5gP0q
-	NQ/b6dngG1qemqs5l0/rfV5IPCVK5JXegxWDEcQK+91N5+Lz7s3em2Z5VebTk49oUbsWljxtyZd
-	7J3WwresGmG+kJQO398z82WSXk56c34ElTMwGWEp4vxDOH73nFuMa1eb93O0qrqIECwryLnJOjD
-	TcB4vQrPPOw4vIAMKI3loP1KWzMsmdd2fGndZsW/YpdwHgis/M6nlgIrHT5/vdhSSUV7
-X-Received: by 2002:a05:7301:c009:b0:369:f3a3:fad6 with SMTP id 5a478bee46e88-36a2fd52a75mr120073eec.4.1793206070780;
-        Wed, 28 Oct 2026 09:47:50 -0700 (PDT)
-Received: from localhost.localdomain ([2406:3003:2002:639c:7583:67d7:1072:ccc0])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-36a237be80csm16894099eec.2.2026.10.28.09.47.48
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Wed, 28 Oct 2026 09:47:50 -0700 (PDT)
-From: Yige Jiang <yigejiang86@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: Yige Jiang <yigejiang86@gmail.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	linux-kernel@vger.kernel.org,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	linux-renesas-soc@vger.kernel.org
-Subject: [PATCH] mtd: hyperbus: rpc-if: fix an OF node reference leak
-Date: Thu, 29 Oct 2026 00:47:40 +0800
-Message-ID: <rc-review-20261023-ai33-33-fd231771d138@gmail.com>
-X-Mailer: git-send-email 2.50.1
+	Wed, 28 Oct 2026 18:56:09 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id 94BAC43E30;
+	Wed, 28 Oct 2026 18:56:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70D261F01828;
+	Wed, 28 Oct 2026 18:56:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1793213768;
+	bh=df/xPPyuiQPcm1AE1rSPxuyp5dlFq4Se196rhHrJoBM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=K+edzg6vK4sYIgPI0EHAxslJmPd/aExnxCZkYatx9SKb8ztopQpN/Brte7D1uGHDc
+	 +PWfIYIXj2TwEIjrIeT9aSjpQlU/qFISxxHuWsvH08dCGPPiD4L4rx5Tz6bxLuFRvY
+	 RhA3+DjTqfNcnhfh/7faDIzX0CmFsTI2XpkHQ8+jhA2LaeatAD4sqfFj21cmIRpM5b
+	 W2D2wH60j2ajxxUPUQIplNGc0FcQFY/hgWtTB/gjNx5LU362Hvl/ouMKfNIqzO8whL
+	 EQwWzgrE3+OvEllJ5XwE13QwOyNwuhXlhNdKAwm9IJuUZrFACWCEqjTJXX2ww3Zp+t
+	 0+IngOv7LotGw==
+Date: Wed, 28 Oct 2026 11:56:08 -0700
+From: Kees Cook <kees@kernel.org>
+To: Ian Rogers <irogers@google.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Miguel Ojeda <ojeda@kernel.org>,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	Danilo Krummrich <dakr@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+	Zhihao Cheng <chengzhihao1@huawei.com>,
+	Zhongqiu Han <zhongqiu.han@oss.qualcomm.com>,
+	Sumanth Korikkar <sumanthk@linux.ibm.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>, driver-core@lists.linux.dev,
+	llvm@lists.linux.dev, linux-hardening@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-acpi@vger.kernel.org, linux-pm@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org,
+	linux-s390@vger.kernel.org, gfs2@lists.linux.dev,
+	xen-devel@lists.xenproject.org, linux-mtd@lists.infradead.org,
+	amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+	Shuah Khan <skhan@linuxfoundation.org>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>
+Subject: Re: [PATCH v2 1/9] Compiler Attributes: Add __must_init macro
+Message-ID: <202610281155.4D2AA663@keescook>
+References: <20261027223847.652884-1-irogers@google.com>
+ <20261027223847.652884-2-irogers@google.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261028_094752_692926_459B3BDF 
-X-CRM114-Status: GOOD (  14.28  )
-X-Spam-Score: -1.9 (-)
+Content-Disposition: inline
+In-Reply-To: <20261027223847.652884-2-irogers@google.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,63 +91,52 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,
-	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-13.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-rpcif_hb_probe() gets a child-node reference with of_get_next_child().
-The HyperBus core does not consume it, so the driver leaks the
-reference on registration failure and remove.
+On Tue, Oct 27, 2026 at 03:38:36PM -0700, Ian Rogers wrote:
+> Clang supports the 'require_explicit_initialization' attribute on struct
+> fields to indicate that a field must be initialized explicitly by the
+> user when the object is constructed. When an aggregate initializer or
+> uninitialized variable omits an annotated field, Clang emits a
+> -Wuninitialized-explicit-init warning (enabled by default).
+> 
+> Add the __must_init macro to include/linux/compiler_attributes.h (which
+> is included by include/linux/compiler_types.h and
+> include/linux/compiler.h) so kernel structs with error-prone
+> initialization (such as mandatory callbacks or cleanup handlers) can
+> enforce explicit initialization at compile time, as discussed at the
+> Linux Plumbers Conference. The shorter __must_init spelling, rather than
+> the attribute's full name, keeps annotated struct members readable and
+> was suggested by Greg Kroah-Hartman.
+> 
+> Note that Clang does not yet diagnose file-scope objects declared
+> without any initializer (initializers at file scope that omit the field
+> are diagnosed), see https://github.com/llvm/llvm-project/issues/232483.
+> 
+> Also teach Sphinx (Documentation/conf.py), kernel-doc
+> (tools/lib/python/kdoc/xforms_lists.py), and checkpatch.pl about the new
+> attribute macro.
+> 
+> Link: https://lpc.events/event/20/contributions/2392/
+> Link: https://lore.kernel.org/lkml/2026101532-fantastic-deafness-e04c@gregkh/
+> Acked-by: Miguel Ojeda <ojeda@kernel.org>
+> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+> Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Ian Rogers <irogers@google.com>
 
-Put the node on registration failure and after unregistering the
-HyperBus device on remove. Leave hardware initialization failures on
-out_disable_rpm, since no node reference has been acquired there.
+Reviewed-by: Kees Cook <kees@kernel.org>
 
-Fixes: 5de15b610f78 ("mtd: hyperbus: add Renesas RPC-IF driver")
-Assisted-by: LLM
-Signed-off-by: Yige Jiang <yigejiang86@gmail.com>
----
-Based on linux-next next-20261016 (2efb7a11f1aa).
-Compile-tested: arm64, GCC 14.2.0, W=1, CONFIG_OF_DYNAMIC=y.
-COMPILE_TEST=y.
-The object was built from this exact base with the patch applied.
-No full kernel or module-link, hardware or runtime test was performed.
+As part of this, can you open a Clang bug for the lack of detecting
+global initializers? It'd be nice to get that fixed.
 
- drivers/mtd/hyperbus/rpc-if.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/hyperbus/rpc-if.c b/drivers/mtd/hyperbus/rpc-if.c
-index f448e23f9260f10abe17842849b312365dcd8294..aa69abe6d6bc674bb8cdb531bbadfb7b356e3123 100644
---- a/drivers/mtd/hyperbus/rpc-if.c
-+++ b/drivers/mtd/hyperbus/rpc-if.c
-@@ -145,10 +145,12 @@ static int rpcif_hb_probe(struct platform_device *pdev)
- 	hyperbus->hbdev.np = of_get_next_child(pdev->dev.parent->of_node, NULL);
- 	error = hyperbus_register_device(&hyperbus->hbdev);
- 	if (error)
--		goto out_disable_rpm;
-+		goto out_put_node;
- 
- 	return 0;
- 
-+out_put_node:
-+	of_node_put(hyperbus->hbdev.np);
- out_disable_rpm:
- 	pm_runtime_disable(hyperbus->rpc.dev);
- 	return error;
-@@ -161,6 +163,7 @@ static void rpcif_hb_remove(struct platform_device *pdev)
- 	hyperbus_unregister_device(&hyperbus->hbdev);
- 
- 	pm_runtime_disable(hyperbus->rpc.dev);
-+	of_node_put(hyperbus->hbdev.np);
- }
- 
- static const struct platform_device_id rpc_if_hyperflash_id_table[] = {
-
-base-commit: 2efb7a11f1aa4d2dc285fe2680cca22cb9f72f64
+-- 
+Kees Cook
 
 ______________________________________________________
 Linux MTD discussion mailing list
