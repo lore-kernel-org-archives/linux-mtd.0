@@ -2,76 +2,73 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 706BC606A31A
-	for <linux-mtd@archiver.kernel.org>; Wed, 28 Oct 2026 13:15:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D046D606A321
+	for <linux-mtd@archiver.kernel.org>; Wed, 28 Oct 2026 13:26:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=iL67ZoVt;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=HXMPqtaF
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=YuFzdkWv;
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=nppO/gcd
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=QM67lCOghuuPfha0aDW6nwt5RxQK37K7yus70h/Cruc=; b=iL67ZoVtIrl3DEH8OGY8Lp8WCx
-	To1whaR5n7OLGv6L0bbWpujkE1LGaE/008AN0YM1iwubE4Vhige+U7LH8Xi5Y/KRvILhyyvlpKrjM
-	i00fxrV3yXJRklUJoimT5Bf0yog/VuI6S0ceh1bJkAUXn/6B6vrZEt1cy9ouNuDQCYkbax3Dm/PbM
-	QWy4lVDLbr0DZv8ZxMNpw8Q0RA1LV3SArdmJuVzZI2A4ZKy5KwhQJQsZB6eX8nvlHgYeM3E6ev+qp
-	okpJWPMaDtSnWXmHKbXJbVenIVNxpFZI8QOYW70c8koZofPEl0WoK1Q88UgfBM4DhNKc1WpeVhsCi
-	5YxevzHQ==;
+	bh=gRNBK7jgYrJYdZ0H30EwrfiuBEhzYipg6BOdubi7tj4=; b=YuFzdkWvDqo49TB3kqfxc41NgX
+	CL6PryaP6Zyne3lO4oowdihDj+bOXqzHZPGwkpslED9xh5AltxQaB9rdsfNYgCqVPYfjRRJ33iMgo
+	9h9RtnpFWhyWRf3PAGPp8WRNt9iK/u29z4bdj5AThzjF0T/+rl85CllrmKa+3WPFBGNkTzmSdZJYR
+	yQEIA21X7PRKWNh8je9J1wjywuv+gsCkmktdjOzc1+tDWvA172zTtqJMdy8lCVz5xagXY9+aNhU/q
+	cBP/aVqC69QBRnM+z19l0nGB0Ph7HwL3hjZgPMprsdsim/iClMp4AGM8RNSge7Q/It4WHWjcwNrDl
+	7G1tvGsw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xM3Uv-0000000720k-0ajL;
-	Wed, 28 Oct 2026 13:15:21 +0000
-Received: from smtpout-04.galae.net ([185.171.202.116])
+	id 1xM3fG-0000000738W-0MVe;
+	Wed, 28 Oct 2026 13:26:02 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xM3Ur-00000007204-2A6h
+	id 1xM3fE-0000000738Q-0v3v
 	for linux-mtd@lists.infradead.org;
-	Wed, 28 Oct 2026 13:15:19 +0000
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id 4EB1CC4FED3;
-	Wed, 28 Oct 2026 13:16:16 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 5765360769;
-	Wed, 28 Oct 2026 13:15:14 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 60B931032904F;
-	Wed, 28 Oct 2026 14:15:03 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1793193309; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=X9Btf5XhOqdmeGG64jS4Slgjum0vmoxQYvsMqkyuAm0=;
-	b=HXMPqtaFe6tOTgCdgNq63gOjGLoD81XTo0eU2xSORaqhJYxwUFPh1DuTFkrKOTl/bDr90D
-	sZslTZoFozi9koBKKQ5/LjyLJrpC8KNB5hc055TsS/ZHXQG/GpyUEtqdOZCRmGdPS6mhZk
-	xpKAka+Nkx1+rdLCmeIQzx71XcRzp08jpTgyLfoiY1a0MhBhU4V7ICiD0A8Re4mkUjyhgA
-	NS2LFXXIFHaiYE2WIBYiiv2f2R0MC945QYx//nwxVgN5tqq2TTt74Aw1xBAkavdSYarpd+
-	Hz1miIjW61CvLfUIaEdOaI4A4cbE9RDUkutMfmpqjj1jsm22qwHxi/0bOMotlg==
-Message-ID: <cf96edf1cba37b775817d4df5f759b10e71c73da.camel@bootlin.com>
-Subject: Re: [PATCH v4 0/7] spi: Add support for panic mem writes
-From: Paul Cercueil <paul.cercueil@bootlin.com>
-To: Mark Brown <broonie@kernel.org>
+	Wed, 28 Oct 2026 13:26:00 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id F32D543BD2;
+	Wed, 28 Oct 2026 13:25:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBD401F01828;
+	Wed, 28 Oct 2026 13:25:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1793193959;
+	bh=07idZJgHA8uGkBFoT2EY4Wk6RmCDQXk80GkxlixdxRE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=nppO/gcd6xWYQXFDxz8DEnJhSOFHakV0ohSMCaHKPQhwUktD8EkRfAoe0/xCMQL2r
+	 g+m3CgndCd0A+VHCwwAZojXot+MOxkUwQxtr854YUZWOv5rUmxw0PiDJzK4xQUuFpS
+	 rqXwkbhE2wmULWjH32d3+s2mGCgONUzQ8d3Foq5Ikxb+Jb4BHejHjSfZCUmz8Dr0j+
+	 kmHFP+jwQ7LBgpdcfRrlwccJKw4smcpRmyjYDrLr3fCPZrYEdEjjAl9hUouH01HM/x
+	 TF+Bp+DkTY7q2IJ/th5UW0OjH++g5Ifl+IUIMS6/efUnYbcJ/9oBE6dgRslSQbC9We
+	 UwPlcddN9cylA==
+Date: Wed, 28 Oct 2026 13:25:54 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Paul Cercueil <paul.cercueil@bootlin.com>
 Cc: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>,
-  Takahiro Kuwano <takahiro.kuwano@infineon.com>, Miquel Raynal
- <miquel.raynal@bootlin.com>, Richard Weinberger	 <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>, Kees Cook	 <kees@kernel.org>, Tony Luck
- <tony.luck@intel.com>, "Guilherme G . Piccoli"	 <gpiccoli@igalia.com>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	linux-spi@vger.kernel.org, Bharat Bhushan <bbhushan2@marvell.com>, Sunil
- Kovvuri Goutham <sgoutham@marvell.com>, Tanmay Jagdale <tanmay@marvell.com>
-Date: Wed, 28 Oct 2026 14:15:00 +0100
-In-Reply-To: <8979e4ad-5209-4fb0-bd3e-95919849d2fa@sirena.org.uk>
+	Takahiro Kuwano <takahiro.kuwano@infineon.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>, Kees Cook <kees@kernel.org>,
+	Tony Luck <tony.luck@intel.com>,
+	"Guilherme G . Piccoli" <gpiccoli@igalia.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-spi@vger.kernel.org, Bharat Bhushan <bbhushan2@marvell.com>,
+	Sunil Kovvuri Goutham <sgoutham@marvell.com>,
+	Tanmay Jagdale <tanmay@marvell.com>
+Subject: Re: [PATCH v4 0/7] spi: Add support for panic mem writes
+Message-ID: <8c8cf14d-954f-4b33-a0e7-8524b1596845@sirena.org.uk>
 References: <20261016102917.171095-1-paul.cercueil@bootlin.com>
-	 <fdc79c99e3045635841f68c89fec3b9d9e2f7233.camel@bootlin.com>
-	 <8979e4ad-5209-4fb0-bd3e-95919849d2fa@sirena.org.uk>
-User-Agent: Evolution 3.56.2-0+deb13u1 
+ <fdc79c99e3045635841f68c89fec3b9d9e2f7233.camel@bootlin.com>
+ <8979e4ad-5209-4fb0-bd3e-95919849d2fa@sirena.org.uk>
+ <cf96edf1cba37b775817d4df5f759b10e71c73da.camel@bootlin.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-Last-TLS-Session-Version: TLSv1.3
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261028_061517_747650_77FEF47D 
-X-CRM114-Status: GOOD (  18.55  )
-X-Spam-Score: -2.1 (--)
+In-Reply-To: <cf96edf1cba37b775817d4df5f759b10e71c73da.camel@bootlin.com>
+X-Cookie: Pushing 30 is exercise enough.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,8 +78,7 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============1858099064267376676=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 X-Spam-Status: No, score=-3.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
@@ -91,24 +87,58 @@ X-Spam-Status: No, score=-3.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-TGUgbWVyY3JlZGkgMjggb2N0b2JyZSAyMDI2IMOgIDEyOjU5ICswMDAwLCBNYXJrIEJyb3duIGEg
-w6ljcml0wqA6Cj4gT24gV2VkLCBPY3QgMjgsIDIwMjYgYXQgMTE6NDI6MzNBTSArMDEwMCwgUGF1
-bCBDZXJjdWVpbCB3cm90ZToKPiA+IAo+ID4gSSBoYXZlIGEgc2Vjb25kIHBhdGNoc2V0IGZvciBz
-cGktY2FkZW5jZS14c3BpIHBlbmRpbmcgKHVucmVsYXRlZCB0byB0aGlzCj4gPiBvbmUpCj4gPiB0
-aGF0IGhhcHBlbnMgdG8gaGF2ZSBzb21lIEZpeGVzOiB0YWdzLCBhbmQgdGhvc2UgZml4ZXMgY29u
-ZmxpY3Qgc2xpZ2h0bHkKPiA+IHdpdGgKPiA+IHRoZSBjaGFuZ2VzIGhlcmUuCj4gCj4gPiBJJ20g
-dGhpbmtpbmcgdGhhdCBpbiBvcmRlciB0byBtYWtlIGl0IGVhc2llciB0byBiYWNrcG9ydCB0aG9z
-ZSBmaXhlcyB0bwo+ID4gb2xkZXIKPiA+IGtlcm5lbHMsIG15IG90aGVyIHBhdGNoc2V0IHNob3Vs
-ZCBiZSBtZXJnZWQgZmlyc3QuIFNvIEkgZ3Vlc3MgSSdsbCB2NSB0aGlzCj4gPiBvbmUKPiA+IHdp
-dGggYSByZWJhc2Ugb25jZSB0aGUgb3RoZXIgb25lIGlzIGluLgo+IAo+IEkgaGF2ZSBubyBpZGVh
-IHdoYXQgdGhhdCBvdGhlciBwYXRjaCBzZXQgaXMsIHNvcnJ5LgoKQmVjYXVzZSBJIGhhdmVuJ3Qg
-c2VudCB0aGUgb3RoZXIgb25lIHlldC4gSSdtIGp1c3Qgc2F5aW5nIHRoYXQgc2luY2UgaXQgaGFz
-CmZpeGVzIGl0IHNob3VsZCBwcm9iYWJseSBnbyBmaXJzdCB0byBtYWtlIGl0IGVhc2llciB0byBi
-YWNrcG9ydCB0aG9zZS4gQmFzaWNhbGx5CkknbSBqdXN0IHNheWluZyAiZG9uJ3QgcGljayB0aGlz
-IG9uZSBxdWl0ZSB5ZXQiLgoKPiA+IEBNYXJrLCBkbyB5b3Ugd2FudCBtZSB0byB3YWl0IGZvciAt
-cmMxIHRvIHNlbmQgaXQgdG8geW91Pwo+IAo+IFBsZWFzZSByZXNlbmQgYW55IG5ldyBmZWF0dXJl
-IHdvcmsgYWZ0ZXIgLXJjMS7CoCBQbGVhc2UgYWxzbyBkbyBub3QKPiBtaXNzcGVsbCBteSBuYW1l
-LgoKWW91ciBuYW1lIGlzIG5vdCBNYXJrPyBPciB3aGVyZSBkaWQgSSBtaXNzcGVsbCBpdD8KCkNo
-ZWVycywKLVBhdWwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3Rz
-LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+
+--===============1858099064267376676==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="qTajYpijgV2rIxUN"
+Content-Disposition: inline
+
+
+--qTajYpijgV2rIxUN
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Oct 28, 2026 at 02:15:00PM +0100, Paul Cercueil wrote:
+> Le mercredi 28 octobre 2026 =E0 12:59 +0000, Mark Brown a =E9crit=A0:
+> > On Wed, Oct 28, 2026 at 11:42:33AM +0100, Paul Cercueil wrote:
+
+> > > @Mark, do you want me to wait for -rc1 to send it to you?
+
+> > Please resend any new feature work after -rc1.=A0 Please also do not
+> > misspell my name.
+
+> Your name is not Mark? Or where did I misspell it?
+
+You added a random @ to it.
+
+--qTajYpijgV2rIxUN
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmrh9+EACgkQJNaLcl1U
+h9Ah9Af8DU/4M1KJdCrU+Dz5CzHQbXvivhJykrHffBFOH1qgQqVMX/A5/d2PDLN1
+4P+w1qmsAqME5pCxkWqjBn6YTUK35AnxidI2AfBX8eb8jXiN+iM21yg3I+CziV3+
+bidjhZIXoKFGv4WcvTI0PnFevebRVg5nOj5fTEYDP9lYrPCl8Qp6IsqzRV+6Gj08
+bmrwdS8+EnPtI1Izw0M1yzkAAbJOAkbugQTyiFvH3Bany84B/8HTT8h4i3bKNhCK
+oZnu11AZJbQY0a7gr4YwrjuFWsCslmmqLmIdKvrTetBy5wZOUeBlNjPnHJ22FAQC
+8BG6qRtmuqZMKX0/bj9nbyJ/P1rtFA==
+=Kn4k
+-----END PGP SIGNATURE-----
+
+--qTajYpijgV2rIxUN--
+
+
+--===============1858099064267376676==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============1858099064267376676==--
+
