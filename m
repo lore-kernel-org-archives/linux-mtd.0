@@ -2,60 +2,59 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83F3060A2613
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AAAC60A2628
 	for <linux-mtd@archiver.kernel.org>; Fri, 30 Oct 2026 17:45:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=sfRhDk+q;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=GIHQ6q94
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=E5e5TGPi;
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=WT9ygcEX
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id:Date:
-	Subject:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
+	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=Ww8TWflAQ3f08waJW/UJjK2TN+NCiHkexsaa9B8Nh1E=; b=sfRhDk+qzd0KL7uizCB2+WJtVZ
-	PWecUJ1jNjUNK9BZNhbHy9U6Kw/WebkWlid09Yv6dasJw0dBSF9Va7nylbu1KCIUXzPUnuOc/HiLO
-	qvGOlWgHqoRi2S0zNlFSWKesUeMTmpSSBqPGHLQ9tEMECXrjFPV5mdjfR+wNYr8Fp8xJ7f8NqjW4c
-	EAO9W36AtT6d4mkvBQFRXXpupwO5Sc3vDbxyccUXliF63BqzjhsKPZik93czmJ8gI6BdWKnpEBhtK
-	OQtJ9uPBYmsZtWJIRb6YJADlkacNjdU50ckx/ikM2EF8ZuUmL8Yq+ks0lKJMouSu0ou7MeaH+fYRe
-	7kxAc/Jw==;
+	bh=tfGFgK61sGsoUxzxIgtgEBkHfqyNDT/JYRmJszM+F+E=; b=E5e5TGPiQTTIcSGUu+oTZUvkqD
+	BjkrMhdTbfhu5XRXGFcK5I8OLVDkmseW4nR0Xtd59Pk9hmSPXKXngmEDnEA6VHKXZrL2g/TR3i5fq
+	CPRaUonL3Bw/PnZ2MOLilqNAep6fedB4/cbYocsp+HU93yvHkehRLlJEyAlvchlWlh1W4+5LePPWa
+	Q1zqepltZxtMhskBrogal1KI0K7oayNnTH1k3SKz7+JTq9SnzYrxKRLxh7dHpxKpFky8nmZYCkY3l
+	BI3XM1kmHX1FiC5Lx5MELHKFvDcBY3XJxtT9bqpXNp3AmZ9K99Qmv5pSsCNxYwT36B7a9NrMKSJSR
+	q0/f10nw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xMqfe-0000000CH95-1B7l;
-	Fri, 30 Oct 2026 17:45:42 +0000
-Received: from smtpout-04.galae.net ([185.171.202.116])
+	id 1xMqfi-0000000CHBt-0Zx4;
+	Fri, 30 Oct 2026 17:45:46 +0000
+Received: from smtpout-03.galae.net ([185.246.85.4])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xMqfX-0000000CH4p-3uRH
+	id 1xMqff-0000000CH8w-1fU8
 	for linux-mtd@lists.infradead.org;
-	Fri, 30 Oct 2026 17:45:41 +0000
+	Fri, 30 Oct 2026 17:45:45 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id 79B0BC49F57;
-	Fri, 30 Oct 2026 17:46:35 +0000 (UTC)
+	by smtpout-03.galae.net (Postfix) with ESMTPS id F139B4E413A5;
+	Fri, 30 Oct 2026 17:45:40 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 8A8B5603C2;
-	Fri, 30 Oct 2026 17:45:32 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 45BA210328D09;
-	Fri, 30 Oct 2026 18:45:28 +0100 (CET)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id C6908603C2;
+	Fri, 30 Oct 2026 17:45:40 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id C459D103290E8;
+	Fri, 30 Oct 2026 18:45:38 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1793382331; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding; bh=2go0p9yvpcIObJSf0p5k000x9/NneUIJMnzDKOu9y1g=;
-	b=GIHQ6q94ShdZBB+aACiDcuq+6rAeERoLG6WWWVgqVMDIBfA/FhayllF/jBOW7wCk7ia2Hf
-	orwEeKQ1pGppWUkci3TflBtAUeLAY7xbNtzHVM2ZFSr0+fOg8M7L6x7hBmY9jn7Gwegdvu
-	7B2Iju8gEi5uvVOrifmkjhDheA8XCNCqMOWqgRZJ4fi1l5trDecSpXyBTo/N927E3eA7A0
-	uoKVMJDvKNioSHZ0vLovtZosuxy592H81ILxJms/TzwwFaGy+6ZNKT+6DXqeQVbuPu565X
-	h0oKGYjVC2zK8hBimIy+/lycLNcn9DlEXaoFbpKZDoD5vTtlczMoikcO8GjqCg==
+	t=1793382339; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=H8qMNZwgNtZzt40osocLZQU4UFef1Rg580cIAOzUve8=;
+	b=WT9ygcEX8mCDI3gawCNZex0GoViUbi4Vtkk2cNFOCwXan6dSMfpuTUSIBW9RGjA7aeOMsZ
+	qF/wuBR2JI46yl00vm+FZyyNodNWMuLS6cDSTFOVGAb9MgaWHKHfC9n1IPAz7MiV0goVR6
+	zkkDz3TZ8MOfIiH7s0RusLN66XjrEdPKYVbak9QBzToi1GiN8pRqoFEnGpIfetdVp0T3b2
+	KvIGaeSeJcJIoNrLAJobCIi/5EcRr79OaA9MD6/gJT601DnMrHYFXvCakdXsvf8a2y87PX
+	gP0XgkMnZmtt8QZNrWxdFXjPaWnG8uG2LtBbWYZflMTA1dGNPh4rOKL2uq5IQw==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 00/13] mtd: spinand winbond: Add support for W25NxxLV and
- W25NxxLW chips
-Date: Fri, 30 Oct 2026 18:45:24 +0100
-Message-Id: <20261030-winbond-master-w25nxxlvw-v1-0-91f67407dc8b@bootlin.com>
+Date: Fri, 30 Oct 2026 18:45:29 +0100
+Subject: [PATCH 05/13] mtd: spinand: winbond: Rename the ->ecc_get_status()
+ helper
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAAAAAAAC/x3MQQqDMBBA0avIrB1IIlrbq0gX0UzsgB1LIiYQv
- HuDy7f4v0CkwBTh1RQIdHLkXSp028DysbISsqsGo8ygVacwscy7OPzaeFDAZHrJeTsT6uc4O9t
- Z/1gM1PwXyHO+19P7uv6d4YQoagAAAA==
-X-Change-ID: 20261030-winbond-master-w25nxxlvw-198bda3af7c2
+Message-Id: <20261030-winbond-master-w25nxxlvw-v1-5-91f67407dc8b@bootlin.com>
+References: <20261030-winbond-master-w25nxxlvw-v1-0-91f67407dc8b@bootlin.com>
+In-Reply-To: <20261030-winbond-master-w25nxxlvw-v1-0-91f67407dc8b@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, 
  Vignesh Raghavendra <vigneshr@ti.com>, 
  Daisuke Mizobuchi <mizo@atmark-techno.com>, 
@@ -66,8 +65,8 @@ Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261030_104536_166518_FC09A73B 
-X-CRM114-Status: UNSURE (   6.58  )
+X-CRM114-CacheID: sfid-20261030_104543_591467_FDB0DE96 
+X-CRM114-Status: UNSURE (   7.90  )
 X-CRM114-Notice: Please train this message.
 X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-mtd@lists.infradead.org
@@ -89,40 +88,96 @@ X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-These chips mostly reuse the existing infrastructure and have been
-tested using the mtd-utils test suite. In particular, I wrote and
-contributed a new tool to ease continuous read testing:
-https://lore.kernel.org/linux-mtd/20261030144108.2211604-1-miquel.raynal@bootlin.com/T/#u
+Most W25N chips (KV, LV, KW, LW) seem to share the same helper.
 
-A bit of reorganization and renaming is being done as well as
-preparation.
+Rename the helper to clarify its use.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
-Miquel Raynal (13):
-      mtd: spinand: winbond: Fix an OOB layout inconsistency with W25NxxLW chips
-      mtd: spinand: winbond: Generalize the KV OOB layout
-      mtd: spinand: winbond: Generalize the LW OOB layout
-      mtd: spinand: winbond: Rename the ->set_cont_read() helper
-      mtd: spinand: winbond: Rename the ->ecc_get_status() helper
-      mtd: spinand: winbond: Add 1S_1S_1S continuous read variant
-      mtd: spinand: winbond: Add basic support for W25N02LV
-      mtd: spinand: winbond: Add basic support for W25N04LV
-      mtd: spinand: winbond: Add basic support for W25N02LW
-      mtd: spinand: winbond: Add continuous read support for W25N02LV
-      mtd: spinand: winbond: Add continuous read support for W25N04LV
-      mtd: spinand: winbond: Add continuous read support for W25N02LW
-      mtd: spinand: winbond: Add continuous read support for W25N04LW
+ drivers/mtd/nand/spi/winbond.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
- drivers/mtd/nand/spi/winbond.c | 187 +++++++++++++++++++++++++++--------------
- 1 file changed, 126 insertions(+), 61 deletions(-)
----
-base-commit: b243a89e1b1e8ead7b44fc4eb0d0d4df0c9e3f4b
-change-id: 20261030-winbond-master-w25nxxlvw-198bda3af7c2
+diff --git a/drivers/mtd/nand/spi/winbond.c b/drivers/mtd/nand/spi/winbond.c
+index c6f7f0a42722..8bf2d4e08bec 100644
+--- a/drivers/mtd/nand/spi/winbond.c
++++ b/drivers/mtd/nand/spi/winbond.c
+@@ -470,8 +470,8 @@ static const struct mtd_ooblayout_ops w35n01jw_ooblayout = {
+ 	.free = w35n01jw_ooblayout_free,
+ };
+ 
+-static int w25n02kv_ecc_get_status(struct spinand_device *spinand,
+-				   u8 status)
++static int w25nxxkv_kw_lv_lw_ecc_get_status(struct spinand_device *spinand,
++					    u8 status)
+ {
+ 	struct nand_device *nand = spinand_to_nand(spinand);
+ 	u8 mbf = 0;
+@@ -735,7 +735,7 @@ static const struct spinand_info winbond_spinand_table[] = {
+ 					      &write_cache_variants,
+ 					      &update_cache_variants),
+ 		     0,
+-		     SPINAND_ECCINFO(&w25n01kv_ooblayout, w25n02kv_ecc_get_status)),
++		     SPINAND_ECCINFO(&w25n01kv_ooblayout, w25nxxkv_kw_lv_lw_ecc_get_status)),
+ 	SPINAND_INFO("W35N01JW", /* 1.8V */
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xdc, 0x21),
+ 		     NAND_MEMORG(1, 4096, 128, 64, 512, 10, 1, 1, 1),
+@@ -781,7 +781,7 @@ static const struct spinand_info winbond_spinand_table[] = {
+ 					      &write_cache_variants,
+ 					      &update_cache_variants),
+ 		     0,
+-		     SPINAND_ECCINFO(&w25nxxkv_kw_ooblayout, w25n02kv_ecc_get_status)),
++		     SPINAND_ECCINFO(&w25nxxkv_kw_ooblayout, w25nxxkv_kw_lv_lw_ecc_get_status)),
+ 	SPINAND_INFO("W25N02KW", /* 1.8V */
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xba, 0x22),
+ 		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
+@@ -790,7 +790,7 @@ static const struct spinand_info winbond_spinand_table[] = {
+ 					      &write_cache_variants,
+ 					      &update_cache_variants),
+ 		     0,
+-		     SPINAND_ECCINFO(&w25nxxkv_kw_ooblayout, w25n02kv_ecc_get_status)),
++		     SPINAND_ECCINFO(&w25nxxkv_kw_ooblayout, w25nxxkv_kw_lv_lw_ecc_get_status)),
+ 	SPINAND_INFO("W35N02JW", /* 1.8V */
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xdf, 0x22),
+ 		     NAND_MEMORG(1, 4096, 128, 64, 512, 10, 1, 2, 1),
+@@ -813,7 +813,7 @@ static const struct spinand_info winbond_spinand_table[] = {
+ 					      &write_cache_variants,
+ 					      &update_cache_variants),
+ 		     0,
+-		     SPINAND_ECCINFO(&w25nxxkv_kw_ooblayout, w25n02kv_ecc_get_status)),
++		     SPINAND_ECCINFO(&w25nxxkv_kw_ooblayout, w25nxxkv_kw_lv_lw_ecc_get_status)),
+ 	SPINAND_INFO("W25N04KW", /* 1.8V */
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xba, 0x23),
+ 		     NAND_MEMORG(1, 2048, 128, 64, 4096, 40, 1, 1, 1),
+@@ -822,7 +822,7 @@ static const struct spinand_info winbond_spinand_table[] = {
+ 					      &write_cache_variants,
+ 					      &update_cache_variants),
+ 		     0,
+-		     SPINAND_ECCINFO(&w25nxxkv_kw_ooblayout, w25n02kv_ecc_get_status)),
++		     SPINAND_ECCINFO(&w25nxxkv_kw_ooblayout, w25nxxkv_kw_lv_lw_ecc_get_status)),
+ 	SPINAND_INFO("W25N04LW", /* 1.8V */
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xb2, 0x23),
+ 		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
+@@ -831,7 +831,7 @@ static const struct spinand_info winbond_spinand_table[] = {
+ 					      &write_cache_variants,
+ 					      &update_cache_variants),
+ 		     0,
+-		     SPINAND_ECCINFO(&w25nxxkv_kw_ooblayout, w25n02kv_ecc_get_status)),
++		     SPINAND_ECCINFO(&w25nxxkv_kw_ooblayout, w25nxxkv_kw_lv_lw_ecc_get_status)),
+ 	SPINAND_INFO("W35N04JW", /* 1.8V */
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xdf, 0x23),
+ 		     NAND_MEMORG(1, 4096, 128, 64, 512, 10, 1, 4, 1),
+@@ -855,7 +855,7 @@ static const struct spinand_info winbond_spinand_table[] = {
+ 							&update_cache_variants,
+ 							&cont_read_cache_variants),
+ 		     0,
+-		     SPINAND_ECCINFO(&w25nxxlv_lw_ooblayout, w25n02kv_ecc_get_status),
++		     SPINAND_ECCINFO(&w25nxxlv_lw_ooblayout, w25nxxkv_kw_lv_lw_ecc_get_status),
+ 		     SPINAND_CONT_READ(w25n_set_cont_read)),
+ };
+ 
 
-Best regards,
 -- 
-Miquel Raynal <miquel.raynal@bootlin.com>
+2.56.0
 
 
 ______________________________________________________
