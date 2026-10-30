@@ -2,99 +2,58 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26102606A320
-	for <linux-mtd@archiver.kernel.org>; Fri, 30 Oct 2026 15:18:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08616606A31A
+	for <linux-mtd@archiver.kernel.org>; Fri, 30 Oct 2026 15:20:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=1Z38WvvW;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=BcspYYx5
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=TzLootwF;
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Y0KeBoD5
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Reply-To:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:References:
+	In-Reply-To:Cc:To:Subject:From:Message-ID:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=iOo93ASElTI9bZbXEEuIkSLUknZjL9DF+CyBnro1t3Q=; b=1Z38WvvW9NVfJaST9toZ/O2BfR
-	n3WCLsPDWl3loyYrT9a5AsnUh9dWyOb2TI9QpWNyBVvKSL9+KX0iqy8WTxuT+KEIcFvSOlXkMBd+V
-	u65LAeUTlSsK/hcDNMYM1k2qbX92iOK6DC2G/Dr+DGo7ORoAFn0wOIuWpMWNueEYE7FrDY2QXoeLj
-	RScy+TRY5cbqKOSefWu9844E2e4PhdU6D9tpBVB3x8B8pXD3eLJQmk8W3Rr7CPGS3k5ygXsVZ5C8g
-	8gH/1NgdMNCyURkanjERfejx/dHw7VIQ5E3n+8kgiT1z4yZCY/RAgTdSL5COcFXC0HJQvCPEAaBSp
-	eRFTisqQ==;
+	bh=v8FwZG6TjnIDw84FkE1e71KZptKnLybTqA33VcDP2yE=; b=TzLootwFVwdN4zPOD1nj79Yi4K
+	UF1c4H9R2RRhFR7CvGcaGgESxwNTuKMx6b0INAOxJMUQnQz5H6VZOcsbkXwFZwN9W0/qtvM2O3j07
+	p4TK9n63hnVMDO0qVH2Ag3Q7feHXNr5QUhAFPPB3OyOUG9stut03e/TAHGYKUAVeznn7zFGMr8bip
+	93mTPJcsXSkcnWyGtFUe2dpHZaWguk6Flefw0ryi1TEQ7R+2U0u7chiuuhl8pGR+RAlF1wirejh9F
+	IigqL8BSjVH9uJTlrx9y8eCIoOya4lPyPxo+fmj9lms2hwpIhQDfQ/BJsmmJ/ruu+qhZ6Nc3NSa7n
+	Y9UyM6+g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xMoNb-0000000BzFX-2ZbU;
-	Fri, 30 Oct 2026 15:18:55 +0000
-Received: from mail-pg1-x529.google.com ([2607:f8b0:4864:20::529])
+	id 1xMoPD-0000000BzWM-1Jxy;
+	Fri, 30 Oct 2026 15:20:35 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xMoNY-0000000BzE0-32vV
+	id 1xMoPC-0000000BzWF-1aoJ
 	for linux-mtd@lists.infradead.org;
-	Fri, 30 Oct 2026 15:18:54 +0000
-Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-cc4be0e5351so390891a12.0
-        for <linux-mtd@lists.infradead.org>; Fri, 30 Oct 2026 08:18:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1793373531; x=1793978331; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=6MjztBnlV5pomChElSlFxYSq9kFZVSiTPi38g4YWVXI=;
-        b=BcspYYx5XPSMqmuExAjeglVv9Z6VC8a+ZKDGbyKe9YpnG1uKSiZ1iSnfsIQmn80tbi
-         YJqcaD3US3CkMXHYqkiGHXw77fhhyOiadF9xAmUxY//fkGv/lnwkviSfc3eqYJnjqkW3
-         0NExvtD+FQlboUYY/oZTWuQqvWlAPMzha+s/2UcEpy5s9/eKU3CfZNnpV78S8YvTWIPu
-         Vuc2aoKTOTF3q7TJGamCsOBBFTqxf3+ReiRPnX8VxVP9r1hQGJfCeg6zawzBFOFouHWG
-         7U3/3nqnMQEorikQxgtgHE2Nu2vHAGjpEyW6b3Kan/rVC+2sNBzptHDJ1cCD7O8Fj9eU
-         GT+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1793373531; x=1793978331;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=6MjztBnlV5pomChElSlFxYSq9kFZVSiTPi38g4YWVXI=;
-        b=OXUv3pMIjteaqwG2uGUGCWvJ4+xunazuSRvKtE1sL9UJxSMLfyMJSgVMvUzjIVV379
-         /WbmraVcMIaFL6UF9fFBX58lKLz3tD5Pf1lFP4dEPjLs/VV8VIe7SRTsdPEe1XEmbrsn
-         o0QgLNEl/UZoMyknNiVfP6gsWV488tuK3WswoYWEESSwFgAW3+MhaXA9XpIp9Xzvnqc8
-         9T1v2JeNtCAQqlaiUO+0/EgwTQxjzeZLiEGG91pkkMKvBiKnnnYe1+SjEBPLrY/XHfhv
-         uXjkkRothVUVL5OPTCS4giLDH7j2K81wcQrPrISsZtVT61LE2zmpSo8Qnved2kuuuKb+
-         6JhQ==
-X-Forwarded-Encrypted: i=1; AKwUvBxUjndONqvdkx1WmxrVP/Kyr7QMt5oUfP+RBaxGjeVmSQkBj4/MJg7kbsrqt0xBmrBXzi+/qV9MkDw=@lists.infradead.org
-X-Gm-Message-State: AFq9FYLSYiSQY67cwXEgCF3tNcFsrjIH39NxZI2SdnMEWT4fiTV6JAw/
-	Ckzo0Hm9l6UO9abYhdUN3AJ7KUFD/i2NlWElJEB2vCjlNiiF/PJvZE2j6QC6dgADxPiluA==
-X-Gm-Gg: AYBFou3b/07Na04UOCQLIhr+ynfUuG9Ctc/dJtueUaWstc8pflpDfxclteX4fNEPgtN
-	Epj8mJyDtNzQTAczdb6KDJnehl6DYrwhJon6F09/hquDUu+xwV0KqClH2Wm9iOeTLQUj0r06KCt
-	VF2dzuP1C1CZ1+FoeRFDrUW1TlfbBqibiQHfr5DDSTt5Q1tYPwPAa6Kzp+8aa1fSu3HIdgjEIZv
-	z/wY/M6njoTyu7l8Sp0AwngC2vINnbRgrDWyXMr7j1lHYB7S63QJ9+PK9mMPr4uRvul8KO8f6kr
-	vkO2Ef/GyMq15N5NCzm84x3j0e5Sh4a1u1+bjwy28vvYEVrbMuls1nGiu+RZgO0eOQI7OKwL4s7
-	KXSw/JoYa7yYEheR7Uq6rsxuh1R/qkR14xcvMK98kzdsYNDhdPpAvdmGekAEmriA+THYlz7FcmD
-	ogq7U4xwB6plqMOy9phNt3TDQeyd9FvE/bSR8xY/JR8VMIToqN3CrM2VNu5QgaN2z0dVZ0R0WqH
-	x/oFkgYz6NJN7VheNmibxrIPV0WU/THuuV3OiU0FySYYg8EN9KYsBNc7GDfcQMR8noro18IfD8P
-	Ed0JXeVfqBNJbgz9HM4ALWYGTULFhWU5AdYMd1szP/mZ1ma9ZVpHF+lARBZPahXSo11GfxVc4FB
-	Fy3xaz7/YYLSb2+Ouzm/pLH/UrmhFxshoLR03EnauJioMxUlSPPCNWW9EuiQusyMlKYCKP4wUT6
-	dEpYkpIwOE5xib3mA=
-X-Received: by 2002:a17:90a:e7c6:b0:3ac:929e:691 with SMTP id 98e67ed59e1d1-3ae897c8337mr2072805a91.17.1793373531260;
-        Fri, 30 Oct 2026 08:18:51 -0700 (PDT)
-Received: from brev-9gdpyq8lp.ap-south-1.compute.internal (ec2-3-110-210-194.ap-south-1.compute.amazonaws.com. [3.110.210.194])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3ae845aa27esm4299626a91.11.2026.10.30.08.18.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2026 08:18:50 -0700 (PDT)
-From: Samarth Narang <samarth.colleges@gmail.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>
-Cc: Richard Weinberger <richard@nod.at>,
-	linux-mtd@lists.infradead.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Samarth Narang <samarth.colleges@gmail.com>
-Subject: [PATCH] mtd: rawnand: stm32_fmc2: retire data DMA before unmapping on errors
-Date: Fri, 30 Oct 2026 15:18:43 +0000
-Message-Id: <20261030151843.2953269-1-samarth.colleges@gmail.com>
-X-Mailer: git-send-email 2.34.1
-X-Archived-By: <archiver.kernel.org>
-MIME-Version: 1.0
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261030_081852_768099_D2041470 
-X-CRM114-Status: GOOD (  15.39  )
-X-Spam-Score: -2.1 (--)
+	Fri, 30 Oct 2026 15:20:34 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with ESMTP id 3C6AC60252;
+	Fri, 30 Oct 2026 15:20:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E9901F000C1;
+	Fri, 30 Oct 2026 15:20:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1793373632;
+	bh=Va0qgRoJC+I6P43e2l3958jRXn40zSbCj1URiH+FBbA=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=Y0KeBoD53Ydllwz2in3UhuiHG2bujYRXt3cOrbJS8W98PxnrG4HJx+ZCFZJSpSkzp
+	 /uoT2guTiI9ng75XMKcPVvCbunXgpcgvHXqe+3xNw/xy7Y3dfvDFb27vv6Oaen00na
+	 ylaNBfo4HIDyDxW4I8FfCuifAlMJYzS3PpRi+bokcbLio4PEU5IisVvpIhAHOIuXCX
+	 2dFDkKGbLe9Gkff3SS1Ph7CadEluB0igIPFOeTzY/sSBDZ+cKETNLXLPCJV4JHFASJ
+	 lOOOZ52kWpSlQwrWe2/COaCCzcBcieuMEy04uHSMHj59MK6P7cFhwBF7kbbZMMlpM8
+	 2F6ZYEpz7I01A==
+Message-ID: <sashiko-outbox-191156@kernel.org>
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH v2] mtd: rawnand: gpmi: terminate the DMA chain on
+ completion timeout
+To: "Samarth Narang" <samarth.colleges@gmail.com>, "Han Xu" <han.xu@nxp.com>, "Miquel
+ Raynal" <miquel.raynal@bootlin.com>, "Vignesh Raghavendra" <vigneshr@ti.com>
+Cc: "Richard Weinberger" <richard@nod.at>, imx@lists.linux.dev, linux-mtd@lists.infradead.org, Frank.Li@kernel.org
+In-Reply-To: <20261030150929.2944717-1-samarth.colleges@gmail.com>
+References: <20261030150929.2944717-1-samarth.colleges@gmail.com>
+Date: Fri, 30 Oct 2026 15:20:32 +0000
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -104,98 +63,65 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Reply-To: sashiko-reviews@lists.linux.dev
+X-Archived-By: <archiver.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,
-	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-8.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-When ECC descriptor preparation or submission fails in
-stm32_fmc2_nfc_xfer(), the driver unmaps the data scatterlist without
-terminating the previously issued DMA descriptor. The descriptor may
-remain queued and execute when the next page operation starts,
-potentially writing into a buffer that has already been unmapped and
-returned to the NAND core. The timeout paths have a similar issue, as
-they use dmaengine_terminate_all(), which does not guarantee that DMA
-has stopped before the buffer is unmapped.
-
-Terminate the outstanding data descriptor on ECC error paths and use
-dmaengine_terminate_sync() on timeout paths, ensuring that DMA has
-stopped before the associated mapping is released.
-
-Fixes: 2cd457f328c1 ("mtd: rawnand: stm32_fmc2: add STM32 FMC2 NAND flash controller driver")
-Assisted-by: LLM
-Signed-off-by: Samarth Narang <samarth.colleges@gmail.com>
----
-This issue was identified by a research static analyzer for DMA
-lifecycle ordering and has not been validated on hardware. The patch has
-only been compile-tested on arm64 with W=1.
-
- drivers/mtd/nand/raw/stm32_fmc2_nand.c |   13 ++++++++-----
-  1 file changed, 8 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/stm32_fmc2_nand.c b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-index c08d6b1..82d6301 100644
---- a/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-+++ b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-@@ -915,6 +915,7 @@ static int stm32_fmc2_nfc_xfer(struct nand_chip *chip, const u8 *buf,
- 						   DMA_PREP_INTERRUPT);
- 		if (!desc_ecc) {
- 			ret = -ENOMEM;
-+			dmaengine_terminate_sync(dma_ch);
- 			goto err_unmap_data;
- 		}
- 
-@@ -922,8 +923,10 @@ static int stm32_fmc2_nfc_xfer(struct nand_chip *chip, const u8 *buf,
- 		desc_ecc->callback = stm32_fmc2_nfc_dma_callback;
- 		desc_ecc->callback_param = &nfc->dma_ecc_complete;
- 		ret = dma_submit_error(dmaengine_submit(desc_ecc));
--		if (ret)
-+		if (ret) {
-+			dmaengine_terminate_sync(dma_ch);
- 			goto err_unmap_data;
-+		}
- 
- 		dma_async_issue_pending(nfc->dma_ecc_ch);
- 	}
-@@ -939,9 +942,9 @@ static int stm32_fmc2_nfc_xfer(struct nand_chip *chip, const u8 *buf,
- 	if (!wait_for_completion_timeout(&nfc->complete, timeout)) {
- 		dev_err(nfc->dev, "seq timeout\n");
- 		stm32_fmc2_nfc_disable_seq_irq(nfc);
--		dmaengine_terminate_all(dma_ch);
-+		dmaengine_terminate_sync(dma_ch);
- 		if (!write_data && !raw)
--			dmaengine_terminate_all(nfc->dma_ecc_ch);
-+			dmaengine_terminate_sync(nfc->dma_ecc_ch);
- 		ret = -ETIMEDOUT;
- 		goto err_unmap_data;
- 	}
-@@ -949,7 +952,7 @@ static int stm32_fmc2_nfc_xfer(struct nand_chip *chip, const u8 *buf,
- 	/* Wait DMA data transfer completion */
- 	if (!wait_for_completion_timeout(&nfc->dma_data_complete, timeout)) {
- 		dev_err(nfc->dev, "data DMA timeout\n");
--		dmaengine_terminate_all(dma_ch);
-+		dmaengine_terminate_sync(dma_ch);
- 		ret = -ETIMEDOUT;
- 	}
- 
-@@ -958,7 +961,7 @@ static int stm32_fmc2_nfc_xfer(struct nand_chip *chip, const u8 *buf,
- 		if (!wait_for_completion_timeout(&nfc->dma_ecc_complete,
- 						 timeout)) {
- 			dev_err(nfc->dev, "ECC DMA timeout\n");
--			dmaengine_terminate_all(nfc->dma_ecc_ch);
-+			dmaengine_terminate_sync(nfc->dma_ecc_ch);
- 			ret = -ETIMEDOUT;
- 		}
- 	}
-
-base-commit: 24a19b953e2a3d0ea5a8c4951a0ab8f32720c907
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+VGhhbmsgeW91IGZvciB5b3VyIGNvbnRyaWJ1dGlvbiEgU2FzaGlrbyBBSSByZXZpZXcgZm91bmQg
+MSBwb3RlbnRpYWwgaXNzdWUocykgdG8gY29uc2lkZXI6Ci0gW01lZGl1bV0gbXRkOiByYXduYW5k
+OiBncG1pOiB1bnN5bmNocm9uaXplZCBETUEgdGVybWluYXRpb24gaW4gZ3BtaV9uZmNfZXhlY19v
+cCgpCi0tCgpjb21taXQgZjlhYWM3OTJmOThkNTAyOTJmMDFkMDhiMDFkZDFiMDZkY2Y4NGFjMApB
+dXRob3I6IFNhbWFydGggTmFyYW5nIDxzYW1hcnRoLmNvbGxlZ2VzQGdtYWlsLmNvbT4KCm10ZDog
+cmF3bmFuZDogZ3BtaTogdGVybWluYXRlIHRoZSBETUEgY2hhaW4gb24gY29tcGxldGlvbiB0aW1l
+b3V0CgpUaGlzIGNvbW1pdCBjYWxscyBkbWFlbmdpbmVfdGVybWluYXRlX3N5bmMoKSBiZWZvcmUg
+dW5tYXBwaW5nIERNQSBidWZmZXJzCndoZW4gYSBETUEgY29tcGxldGlvbiB0aW1lb3V0IG9jY3Vy
+cyBpbiBncG1pX25mY19leGVjX29wKCksIGludGVuZGluZyB0bwpzdG9wIHRoZSBBUEJIIERNQSBj
+aGFubmVsIGFuZCBwcmV2ZW50IHN0YWxlIGRlc2NyaXB0b3JzIGZyb20gcnVubmluZyBhZ2FpbnN0
+CnVubWFwcGVkIGJ1ZmZlcnMuCgo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9n
+cG1pLW5hbmQvZ3BtaS1uYW5kLmMgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9ncG1pLW5hbmQvZ3Bt
+aS1uYW5kLmMKPiBpbmRleCA1MjcxNjVjY2M4MzlkLi44NjE2M2E1NTJhYWQ4IDEwMDY0NAo+IC0t
+LSBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L2dwbWktbmFuZC9ncG1pLW5hbmQuYwo+ICsrKyBiL2Ry
+aXZlcnMvbXRkL25hbmQvcmF3L2dwbWktbmFuZC9ncG1pLW5hbmQuYwo+IEBAIC0yNjU5LDYgKzI2
+NTksNyBAQCBzdGF0aWMgaW50IGdwbWlfbmZjX2V4ZWNfb3Aoc3RydWN0IG5hbmRfY2hpcCAqY2hp
+cCwKPiAgCWlmICghdG8pIHsKPiAgCQlkZXZfZXJyKHRoaXMtPmRldiwgIkRNQSB0aW1lb3V0LCBs
+YXN0IERNQVxuIik7Cj4gIAkJZ3BtaV9kdW1wX2luZm8odGhpcyk7Cj4gKwkJZG1hZW5naW5lX3Rl
+cm1pbmF0ZV9zeW5jKGdldF9kbWFfY2hhbih0aGlzKSk7CgpbU2V2ZXJpdHk6IE1lZGl1bV0KRG9l
+cyBkbWFlbmdpbmVfdGVybWluYXRlX3N5bmMoKSBhY3R1YWxseSBzeW5jaHJvbml6ZSB3aXRoIHRo
+ZSBjaGFubmVsIElSUQphbmQgY29tcGxldGlvbiB0YXNrbGV0IG9uIG14cy1kbWE/CgpJbiBkcml2
+ZXJzL2RtYS9teHMtZG1hLmMsIG14c19kbWFfcHJvYmUoKSBkb2VzIG5vdCBpbXBsZW1lbnQKZGV2
+aWNlX3N5bmNocm9uaXplLCBzbyBkbWFlbmdpbmVfc3luY2hyb25pemUoKSBpcyBhIG5vLW9wLCBh
+bmQKbXhzX2RtYV90ZXJtaW5hdGVfYWxsKCkgcmVzZXRzIHRoZSBjaGFubmVsIHdpdGhvdXQga2ls
+bGluZyBteHNfY2hhbi0+dGFza2xldApvciBjbGVhcmluZyBteHNfY2hhbi0+ZGVzYy5jYWxsYmFj
+azoKCmRyaXZlcnMvZG1hL214cy1kbWEuYzpteHNfZG1hX3Rlcm1pbmF0ZV9hbGwoKSB7CglteHNf
+ZG1hX3Jlc2V0X2NoYW4oY2hhbik7CglteHNfZG1hX2Rpc2FibGVfY2hhbihjaGFuKTsKCglyZXR1
+cm4gMDsKfQoKRnVydGhlcm1vcmUsIHdoZW4gbXhzX2RtYV9yZXNldF9jaGFuKCkgcmVzZXRzIGFu
+IGFjdGl2ZSBBUEJIIGNoYW5uZWwgKG9yIGlmCmEgbGF0ZSBjb21wbGV0aW9uIGludGVycnVwdCBy
+YWNlcyB3aXRoIHRoZSB0aW1lb3V0KSwgbXhzX2RtYV9pbnRfaGFuZGxlcigpCmZpcmVzIGZvciB0
+aGUgdGVybWluYXRpb24gZXJyb3IgKGVyciA9PSAweDAxKSBvciBjb21wbGV0aW9uIGFuZCBzY2hl
+ZHVsZXMKbXhzX2NoYW4tPnRhc2tsZXQ6Cgpkcml2ZXJzL2RtYS9teHMtZG1hLmM6bXhzX2RtYV9p
+bnRfaGFuZGxlcigpIHsKCS4uLgoJaWYgKGVycikgewoJCWRldl9kYmcobXhzX2RtYS0+ZG1hX2Rl
+dmljZS5kZXYsCgkJCSIlczogZXJyb3IgaW4gY2hhbm5lbCAlZFxuIiwgX19mdW5jX18sCgkJCWNo
+YW4pOwoJCW14c19jaGFuLT5zdGF0dXMgPSBETUFfRVJST1I7CgkJbXhzX2RtYV9yZXNldF9jaGFu
+KCZteHNfY2hhbi0+Y2hhbik7Cgl9CgkuLi4KCS8qIHNjaGVkdWxlIHRhc2tsZXQgb24gdGhpcyBj
+aGFubmVsICovCgl0YXNrbGV0X3NjaGVkdWxlKCZteHNfY2hhbi0+dGFza2xldCk7Cn0KCkJlY2F1
+c2UgbXhzX2NoYW4tPnRhc2tsZXQgaXMgbm90IHN5bmNocm9uaXplZCBiZWZvcmUKZG1hZW5naW5l
+X3Rlcm1pbmF0ZV9zeW5jKCkgcmV0dXJucywgY291bGQgbXhzX2RtYV90YXNrbGV0KCkgcnVuCmRt
+YV9pcnFfY2FsbGJhY2sodGhpcykgYW5kIGNvbXBsZXRlIHRoaXMtPmRtYV9kb25lIGFmdGVyIGEg
+c3Vic2VxdWVudApncG1pX25mY19leGVjX29wKCkgY2FsbCBoYXMgYWxyZWFkeSByZWluaXRpYWxp
+emVkIHRoaXMtPmRtYV9kb25lIGFuZApzdWJtaXR0ZWQgYSBuZXcgdHJhbnNmZXIsIGNhdXNpbmcg
+dGhlIG5ldyBvcGVyYXRpb24gdG8gY29tcGxldGUgcHJlbWF0dXJlbHkKYW5kIHVubWFwIGl0cyBi
+dWZmZXJzIHdoaWxlIERNQSBpcyBzdGlsbCBhY3RpdmU/CgotLSAKU2FzaGlrbyBBSSByZXZpZXcg
+wrcgaHR0cHM6Ly9zYXNoaWtvLmRldi8jL3BhdGNoc2V0LzIwMjYxMDMwMTUwOTI5LjI5NDQ3MTct
+MS1zYW1hcnRoLmNvbGxlZ2VzQGdtYWlsLmNvbT9wYXJ0PTEKCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBt
+YWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9s
+aW51eC1tdGQvCg==
