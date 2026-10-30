@@ -2,120 +2,94 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C89D606A31A
-	for <linux-mtd@archiver.kernel.org>; Fri, 30 Oct 2026 20:28:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D579F606A325
+	for <linux-mtd@archiver.kernel.org>; Fri, 30 Oct 2026 20:34:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=mX0mFZEr;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=atmark-techno.com header.i=@atmark-techno.com header.a=rsa-sha256 header.s=gw2_bookworm header.b=rRINWOJs;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=atmark-techno.com header.i=@atmark-techno.com header.a=rsa-sha256 header.s=google header.b=OQhzSFJv
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=JK0Ytjuc;
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=Lr16xVKD
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
 	List-Unsubscribe-Post:List-Owner;
-	bh=i8ex/YTBd+u5EwuwYFf9b2g2P3ImhqiDN0008uDBjXA=; b=mX0mFZErkcIdeQyJj5YIUu5mD6
-	ewp/rl8CfVgc12qfZoa/TKhpOwLsV7K+alQZHZmFdW6C693iA3m8RYDM370uzRfrva6d5dSfdxViy
-	WFLuDox38BrsMaNZV9rUsQdeHYsCTMuTXdANY8Qg/n+R1dl4jdDPsgKcjfVEyz1IPHoSM/+L8w0j1
-	DHVQyb7G8JqyoRRCQ6LCUgoVpht8TDxF+eRoNLOSPKZGobMuDyOxo7upGUqzUkm0UYuxir1mcc/cJ
-	p48bv8xfNbUt0pzTfJtcKFmvyqsjHTT8h3D3J0mpRJDGLBD7Dkta+dkrzOXH5zHV7n190wAex0Cs7
-	S+cvPykg==;
+	bh=ZgJFR6SQwREoRl35jvZMLB1UNpM9N8rVXEQihodk5E0=; b=JK0Ytjucdl0lWX5b3kCdPL1mz2
+	7a2AU3AtyoDYlFoZFDdzYuwA/9KoUBNKRrfMM4tZ6zqFx6YQcpOVPSMu67FW2p3x8vwW2YYhUJhrg
+	2o2KgoteGddIi7TghYpNKgvFxT57wPhzmeDnuA3HEkCLlNWnRcPtdXQU19F1hMqQvhlxqSiyKM+Nc
+	MmWTGnzOgHXNwTcO9RrRPruDOaj+DDYuwg+8+8ziJbpS6BZ4efMDUuyIXq7J+4R51/wtdwG16uoFo
+	0M1/OqIBPoO/8Sc/LTHV08QGd2Zt5iJcYzSs0KgcpCZXTTNfrpzaXTJ2Co3jKzJemt5HUOywWq5I8
+	Yci+++RA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xMtCd-0000000CXQH-0yOI;
-	Fri, 30 Oct 2026 20:27:55 +0000
-Received: from gw2.atmark-techno.com ([35.74.137.57])
+	id 1xMtIk-0000000CXgJ-0LoC;
+	Fri, 30 Oct 2026 20:34:14 +0000
+Received: from mail-ed1-x52e.google.com ([2a00:1450:4864:20::52e])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xMtCa-0000000CXPV-31TS
+	id 1xMtIg-0000000CXfr-3pJp
 	for linux-mtd@lists.infradead.org;
-	Fri, 30 Oct 2026 20:27:54 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=atmark-techno.com;
-	s=gw2_bookworm; t=1793392068;
-	bh=60Y9mp/9FBJ5YXY0MpcbRT4JhDkOWUwbs9rLePa8GmY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=rRINWOJsb84x0gSh160o/ofL/FBIBqFQWoU4vrcaaQa8vHMML13sfUhZ8cA5dLsrt
-	 wbwj2KKhIU7Gb2ii+7Fw1wKnqU/J9M0aa/0l3wwf/bU8Ey6FmvBTtobTwGOy78Jvvr
-	 taBfsDDZRWoUQrKXYZeP4CBaKnmIVVTrtdmqF4yE6IekI0F77l2fRcbHQaUxbDw4OV
-	 zsfLxqsKCE+SZwNuI57nW6W0XbzUSPOful1WP3OE3ldLj7v085/PW5prQO/x5Q3vAf
-	 y7NvfVz/ULpOaNNukcfWWLUR9bcxbD70i10lRFjdKtP3XxYuk9YVb/8oHbhC58JtRd
-	 cRPnmyYp6bQNg==
-Received: from gw2.atmark-techno.com (localhost [127.0.0.1])
-	by gw2.atmark-techno.com (Postfix) with ESMTP id 665046C2
-	for <linux-mtd@lists.infradead.org>; Sat, 31 Oct 2026 05:27:47 +0900 (JST)
-Authentication-Results: gw2.atmark-techno.com;
-	dkim=pass (2048-bit key; unprotected) header.d=atmark-techno.com header.i=@atmark-techno.com header.a=rsa-sha256 header.s=google header.b=OQhzSFJv;
-	dkim-atps=neutral
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com [209.85.216.69])
-	by gw2.atmark-techno.com (Postfix) with ESMTPS id B9E296BA
-	for <linux-mtd@lists.infradead.org>; Sat, 31 Oct 2026 05:27:46 +0900 (JST)
-Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-3ada8bc8575so2445281a91.3
-        for <linux-mtd@lists.infradead.org>; Fri, 30 Oct 2026 13:27:46 -0700 (PDT)
+	Fri, 30 Oct 2026 20:34:12 +0000
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-6b1d8944cb0so1818978a12.3
+        for <linux-mtd@lists.infradead.org>; Fri, 30 Oct 2026 13:34:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atmark-techno.com; s=google; t=1793392066; x=1793996866; darn=lists.infradead.org;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=5xXcIDxiVniNGdcbQJ6nFzj4IsHGrxD6GcvvhJ9Jcnc=;
-        b=OQhzSFJvHM1X41MF31CNfx3JG6EW5N+Z+qa8D9atK1rZHELF1cd9W5ZkJcs+IciyiH
-         FDmFDlZbTqO/On00Ni02pNgF5NKB49FMxTxy7rYFaA7JfSJrzHHI7nY7Il0rM85RQnkB
-         S76FRxsOWXnHCKyuwe2VRQfN8RYBCggAYw0+axKp8lcqWo8Ll3/mWuqvF2GlSzgQajDr
-         grJeLgqr1Z/KvVdzN38vcDIGd7ZB2i41RGtJMmgDg6J5pI4VW8WV+mKkRXOC2cyyDv+a
-         hOPgcH4+8M5SpS+HSdBATtuJC5z0rHjT62yoiRp6ob4ghZhSj0aWpU7fqKl/Jx3CdwxX
-         xqhQ==
+        d=gmail.com; s=20260707; t=1793392448; x=1793997248; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=4Nw8NpVUaIYw76IIZWbK2cq2xyPR6mLCTZOaoZttbUk=;
+        b=Lr16xVKDUzcftNVaEGJg6vBuKYKYH2hYuQRTpFQg0noMuo9Wi8Rb+cSZ9c8mMiWfBR
+         lTadrR0mmx7X7J2n07s3+DPOjBadf4P6/DC7Bpft3IWGbqI6aJLEw+FEcSOqF9kgcQbb
+         llzyzVNqZZPZKZn8SUkkeOr408qDZVP0e0q8XrICMGY/TcufRf/UORNpJrdTe6VAy1M1
+         yXi1kQc+jQg2fHk4FiS62JBnQIrTwAxwhuD9Q0iTEWW13R09wvZj6ogMrolPZSU17wTS
+         52dSfHXLdwC1lMzd0nc6YX9jd8LSivzQHhrREHug0GcHbDJPUCowVcOovPOk7i8cvlcz
+         SQYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1793392066; x=1793996866;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=5xXcIDxiVniNGdcbQJ6nFzj4IsHGrxD6GcvvhJ9Jcnc=;
-        b=Y7QNxuqOViLKVxkNaUlSKOwbTwZpDIHST8HFjaTYG+nJNLozkE8He3/TfCej/M6Zkl
-         HEmMXGOuL5c28MZY0ab8jUpTgGFfeELRz9Qensv3Jd6QGh9HevSySPkTttgzM9AZFmt1
-         Usit8jzzqtpJOD0cJz6tYJduKnuiO+8kvZPUoPzgs7uJtodk5DAwp5tjIFrykygetSnp
-         zQPWFI5hTix2KfV9UW973bmFpMEoCSzs2h50hSFS8Sd5qTG1oQ0v4i+1Hv2DlaqlRp9F
-         gy1YHgfGaKb8KEMpGSOwOdLaro2agnjBCdbswsNBhggHpnfWGjoXGrP3JTIjkEPV4abz
-         bi1Q==
-X-Forwarded-Encrypted: i=1; AKwUvBy8ZcsjZ4EUDGPmwRwD+47d0gS8HRKi5l7edSAlVxU5FBGOYYPGyHug9JWn3xd5YRzUMJ65EwhtWss=@lists.infradead.org
-X-Gm-Message-State: AFq9FYII0gsZCAbZLsfuOTvQjj1t6hb8gmvTjcOlpYvHkQigIx+vBah/
-	17yVjof9z32ZHVCiS06KB/6EikmQDlFNuPMvPUPgU34OB8Mi+5J00aT7zfRoPJUozolupsrQuXR
-	GVNqaA3E6dyeC3ZxDJRpSnBcX5UqlyW4zKiKscCqgppVOBIVucetxQ2xlYfqqbYlYbV2/
-X-Gm-Gg: AYBFou0Iobo/za4IFWFI/HOkDB1eiOyTrTJneMDpeBy+y0e+ByBlWQ7Evh5vDKa/6Pu
-	FGdXUtYKOjump9sr0cJFAJ3bL/OacqRtQKUvQKbT2ZmGL0+OvgZjqLGL/exuZmMWgfZEubPvLI2
-	Ok1SyldDWsWzSFgyBL0jY6ORlAi1ed5ZFvxyhUOFEH89Ctc47IFj7XMf4Yr6w8WcPJ6pnXUCmUt
-	wx6onVEY5FOvMRA3jeERrXPiOJt7O2XngpRIHLCfncd84QkPfIhzUhsCdU0or/Wbzx7joIEVdF5
-	kRcQUgOOAI6JeHyJxLstsOENPwSbUtjwcMaV3qs9enPfuC8xA5wh/169JaWDmaXYJdFRLE7Rn85
-	cYzZrG3z6ouEAN1lNCrLOZ9u9B6JpX6/g/W2Z/j9VWROKVG8kYqKlflCb2rc8/Lr4GIYnOejDwK
-	WBH8Xb5cxpD+oix3cU0m83
-X-Received: by 2002:a17:90b:53ce:b0:3ad:6090:a190 with SMTP id 98e67ed59e1d1-3ae89817b01mr2859641a91.41.1793392065724;
-        Fri, 30 Oct 2026 13:27:45 -0700 (PDT)
-X-Received: by 2002:a17:90b:53ce:b0:3ad:6090:a190 with SMTP id 98e67ed59e1d1-3ae89817b01mr2859629a91.41.1793392065287;
-        Fri, 30 Oct 2026 13:27:45 -0700 (PDT)
-Received: from localhost (sodcd-04p2-40.ppp11.odn.ad.jp. [203.139.65.40])
-        by smtp.gmail.com with UTF8SMTPSA id 98e67ed59e1d1-3ae84596e3bsm5414317a91.9.2026.10.30.13.27.44
+        d=1e100.net; s=20260707; t=1793392448; x=1793997248;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=4Nw8NpVUaIYw76IIZWbK2cq2xyPR6mLCTZOaoZttbUk=;
+        b=CSjP+XPoeINKsaVH2F8U97VOo19giOuygxmMMN3DREoIEPvjLcwasscfyWxLQEb8sg
+         +DQPzyyK/5cJE0336xg74r9G3XbD4T/7kvqMMr9GZv9NiQMhASXiTVFbU9hSzkh7TwTZ
+         3JBo/0TAgJ1DihPUilSV4VX5RCCGJBsAhtcp+dAW5G0kvMBHFD5V4Ar3wSla6a1HrHiT
+         mQ3OS+QQqZH89Z8XH8wMvwYOERpaJ03NMWq+PKZUkuDWKVvCgguUvWCGtBJOMNtB4lKu
+         PCUkzQG/QoZhpdJlTPF4I4kKynii8ngJNJJdIiubcNHTsrcr8nsm2IVFxmg15mIpe/w2
+         sF0A==
+X-Forwarded-Encrypted: i=1; AKwUvBwN2Sz+iug5PgFYO95942JLP86cGJCfBl9v1pWweVuEYHX70KcDFXGGLJfY6hjgzggt2Mhh45vgH9U=@lists.infradead.org
+X-Gm-Message-State: AFq9FYIvMf0Mzm84cSojFAq6ibhie47BVeOY68cfm5SZD57idFHmUyzg
+	S4hk8igeeedrELiV4fqs9Tadh9SkHcq/W2vUkcAe4hjWb1MwmxuchmENWp9VroihMW0u
+X-Gm-Gg: AYBFou1kQfojvLPaUX+CTTxaIAEg1lk9GPMaGpsmNYc3G3tBt198/lqqIp/LBX5cQNC
+	6jOvgJw8eCrwuxKtLC8vElVeaP01Wez01tB0yZoagZkXgxc3WYbCS+zVzDstb28R18gQFuu6T3c
+	TwzUZDgYVowrcw9a6ZWu/X9b1Cb/wDeCkg0iwL3nljChkGKYPHJfnwlkKZ8PrVd0HEhr2FJvaNI
+	NXq9z202SBu672mPBpFH2JS/JhsVzE/2KElXbd4lPTYoKBnnkZoyrJpNRijlNq4+oAmAeBNVv3T
+	R+gddwYubxOgV33SkMuLFM2ecKSoZHDLajSP3PEZH+12CTPxAuWH3XbaCORBHGKo6/4hibZn5/n
+	qYPJyhPsourGON1WffITqzsoDtmO/K7KRT6OFADQMaytq6WSV1P3pZm/v6GOt7TXt9Lx/jcsqaz
+	90IzvII1iw8sYdyaG9m6JWBVnNKqX9GqiMxHFxm2FUJXwwAMTj32iqasbYDqsnfhOuD8uqIVq5A
+	NCdXJqPbYLntWxoSlEDNr8JveXZB4R3mgNVWlK4v5s7Tot3lhL54YDE/9rW51c9ftgZYviFSE3N
+	pbPddymtSwZsjZMBpzU=
+X-Received: by 2002:a05:6402:74b:b0:6a5:fbc6:cad1 with SMTP id 4fb4d7f45d1cf-6b4d4687f4dmr1772470a12.7.1793392447949;
+        Fri, 30 Oct 2026 13:34:07 -0700 (PDT)
+Received: from fedora ([46.8.219.5])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-6b4ec9eebb0sm309091a12.8.2026.10.30.13.34.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2026 13:27:44 -0700 (PDT)
-Date: Sat, 31 Oct 2026 05:27:33 +0900
-From: Dominique Martinet <dominique.martinet@atmark-techno.com>
+        Fri, 30 Oct 2026 13:34:07 -0700 (PDT)
+From: Vitaliy Sochnev <sochnev.v.74@gmail.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
 Cc: Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
-	Daisuke Mizobuchi <mizo@atmark-techno.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Steam Lin <stlin2@winbond.com>, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 02/13] mtd: spinand: winbond: Generalize the KV OOB layout
-Message-ID: <auT9takcaT1TWj0W@atmark-techno.com>
-References: <20261030-winbond-master-w25nxxlvw-v1-0-91f67407dc8b@bootlin.com>
- <20261030-winbond-master-w25nxxlvw-v1-2-91f67407dc8b@bootlin.com>
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Vitaliy Sochnev <sochnev.v.74@gmail.com>,
+	Mikhail Zhilkin <csharper2005@gmail.com>
+Subject: [PATCH] mtd: spinand: confirm ready state on SkyHigh S35ML chips
+Date: Fri, 30 Oct 2026 22:33:42 +0200
+Message-ID: <20261030203342.91172-1-sochnev.v.74@gmail.com>
+X-Mailer: git-send-email 2.55.0
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20261030-winbond-master-w25nxxlvw-v1-2-91f67407dc8b@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261030_132752_990748_4A65DB17 
-X-CRM114-Status: GOOD (  12.96  )
-X-Spam-Score: -2.1 (--)
+X-CRM114-CacheID: sfid-20261030_133411_001715_4E54050D 
+X-CRM114-Status: GOOD (  22.62  )
+X-Spam-Score: -1.9 (-)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -128,47 +102,246 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-13.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=ham autolearn_force=no version=4.0.1
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-Miquel Raynal wrote on Fri, Oct 30, 2026 at 06:45:26PM +0100:
-> --- a/drivers/mtd/nand/spi/winbond.c
-> +++ b/drivers/mtd/nand/spi/winbond.c
-> @@ -318,16 +318,11 @@ static int w25n01kv_ooblayout_ecc(struct mtd_info *mtd, int section,
->  	return 0;
->  }
->  
-> -static int w25n02kv_ooblayout_ecc(struct mtd_info *mtd, int section,
-> -				  struct mtd_oob_region *region)
-> +static int w25nxxkv_kw_ooblayout_ecc(struct mtd_info *mtd, int section,
-> +				     struct mtd_oob_region *region)
->  {
-> -	int num_sections = 4;
-> -	int offset = 64;
-> -
-> -	if (mtd->oobsize == 256) {
-> -		num_sections = 8;
-> -		offset = 128;
-> -	}
-> +	unsigned int offset = mtd->oobsize / 2;
-> +	unsigned int num_sections = mtd->writesize / 512;
+On a Nokia XG-040G-MD with a SkyHigh 256 MiB SPI-NAND, UBI reports
+fixable bit-flips during rootfs mount without this workaround:
 
-Ah, I couldn't use oobsize for num_sections because of W25N01KV but
-using writesize makes sense as well as there's one section per 512 bytes
-chunk, and this works for all devices.
+  ubi0: fixable bit-flip detected at PEB 1979
+  ubi0: schedule PEB 1979 for scrubbing
+  ubi0: scrubbed PEB 1979 (LEB 5:53), data moved to PEB 645
 
-Good cleanup!
+Other reboots also report fixable bit-flips. A tester reports that after
+applying the workaround, sysupgrade, multiple reboots and an active
+workload produced no such warnings. Long-term operation is unverified.
 
-Reviewed-by: Dominique Martinet <dominique.martinet@atmark-techno.com>
+spinand_wait() accepts a single non-busy status sample. On these chips,
+the ready bit can briefly clear before the device is actually ready,
+allowing a premature cache read or a new program/erase command. The
+fallback status read for controllers with poll_status offload does not
+provide a second ready confirmation in the usual case.
 
--- 
-Dominique
+Mark the affected SkyHigh parts with a quirk and require a second ready
+status sample after spinand_wait() for those parts. If the chip becomes
+busy again, repeat the wait while the outer timeout has not elapsed.
+Each inner wait has its own timeout, so the quirk can wait up to roughly
+twice as long. Leave other SPI-NAND parts unchanged.
 
+Suggested-by: Mikhail Zhilkin <csharper2005@gmail.com>
+Signed-off-by: Vitaliy Sochnev <sochnev.v.74@gmail.com>
+---
+Notes for reviewers:
 
+The two ready samples are taken in separate SPI transactions, without an
+explicit delay. The duration of the premature-ready interval has not been
+measured. If both samples fall within that interval, the wait can still
+return too early. Would a measured, explicit delay be preferable here?
+
+The on-device result comes from a Nokia XG-040G-MD with a 256 MiB SkyHigh
+chip running OpenWrt with this workaround. The linux-next port has only
+been compile-tested; the other S35ML entries flagged by this patch have
+not been tested on hardware with this workaround.
+
+ drivers/mtd/nand/spi/core.c    | 85 +++++++++++++++++++++++++++-------
+ drivers/mtd/nand/spi/skyhigh.c | 12 +++--
+ include/linux/mtd/spinand.h    |  1 +
+ 3 files changed, 76 insertions(+), 22 deletions(-)
+
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index 133776ba53da0..b051ff1d6be5c 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -710,6 +710,53 @@ int spinand_wait(struct spinand_device *spinand, unsigned long initial_delay_us,
+ 	return status & STATUS_BUSY ? -ETIMEDOUT : 0;
+ }
+ 
++/**
++ * spinand_wait_ready_confirmed() - Wait for the device to be ready
++ * @spinand: the spinand device
++ * @initial_delay_us: delay in us before starting to poll
++ * @poll_delay_us: time to sleep between reads in us
++ * @s: the pointer to variable to store the value of REG_STATUS
++ *
++ * Same as spinand_wait(), except for devices flagged with
++ * SPINAND_PREMATURE_READY_QUIRK, whose ready bit can flip back to busy
++ * shortly after first reporting ready. For those, a ready result from
++ * spinand_wait() is only trusted once a follow-up status read still shows
++ * the device ready, and spinand_wait() is called again otherwise. Each
++ * spinand_wait() gets its own SPINAND_WAITRDY_TIMEOUT_MS budget and no
++ * new one is started once that span has elapsed, so such a device can
++ * spend up to roughly twice that time here.
++ *
++ * Return: 0 on success, a negative error code otherwise.
++ */
++static int spinand_wait_ready_confirmed(struct spinand_device *spinand,
++					unsigned long initial_delay_us,
++					unsigned long poll_delay_us, u8 *s)
++{
++	unsigned long timeo;
++	u8 status;
++	int ret;
++
++	if (!(spinand->flags & SPINAND_PREMATURE_READY_QUIRK))
++		return spinand_wait(spinand, initial_delay_us, poll_delay_us, s);
++
++	timeo = jiffies + msecs_to_jiffies(SPINAND_WAITRDY_TIMEOUT_MS);
++	do {
++		ret = spinand_wait(spinand, initial_delay_us, poll_delay_us,
++				   &status);
++		if (ret < 0)
++			return ret;
++
++		ret = spinand_read_status(spinand, &status);
++		if (ret)
++			return ret;
++	} while ((status & STATUS_BUSY) && time_before(jiffies, timeo));
++
++	if (s)
++		*s = status;
++
++	return status & STATUS_BUSY ? -ETIMEDOUT : 0;
++}
++
+ static int spinand_read_id_op(struct spinand_device *spinand, u8 naddr,
+ 			      u8 ndummy, u8 *buf)
+ {
+@@ -733,10 +780,10 @@ static int spinand_reset_op(struct spinand_device *spinand)
+ 	if (ret)
+ 		return ret;
+ 
+-	return spinand_wait(spinand,
+-			    SPINAND_RESET_INITIAL_DELAY_US,
+-			    SPINAND_RESET_POLL_DELAY_US,
+-			    NULL);
++	return spinand_wait_ready_confirmed(spinand,
++					    SPINAND_RESET_INITIAL_DELAY_US,
++					    SPINAND_RESET_POLL_DELAY_US,
++					    NULL);
+ }
+ 
+ static int spinand_lock_block(struct spinand_device *spinand, u8 lock)
+@@ -767,10 +814,10 @@ int spinand_read_page(struct spinand_device *spinand,
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = spinand_wait(spinand,
+-			   SPINAND_READ_INITIAL_DELAY_US,
+-			   SPINAND_READ_POLL_DELAY_US,
+-			   &status);
++	ret = spinand_wait_ready_confirmed(spinand,
++					   SPINAND_READ_INITIAL_DELAY_US,
++					   SPINAND_READ_POLL_DELAY_US,
++					   &status);
+ 	if (ret < 0)
+ 		return ret;
+ 
+@@ -814,10 +861,10 @@ int spinand_write_page(struct spinand_device *spinand,
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = spinand_wait(spinand,
+-			   SPINAND_WRITE_INITIAL_DELAY_US,
+-			   SPINAND_WRITE_POLL_DELAY_US,
+-			   &status);
++	ret = spinand_wait_ready_confirmed(spinand,
++					   SPINAND_WRITE_INITIAL_DELAY_US,
++					   SPINAND_WRITE_POLL_DELAY_US,
++					   &status);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -939,8 +986,10 @@ static int spinand_mtd_continuous_page_read(struct mtd_info *mtd, loff_t from,
+ 		if (ret)
+ 			goto end_cont_read;
+ 
+-		ret = spinand_wait(spinand, SPINAND_READ_INITIAL_DELAY_US,
+-				   SPINAND_READ_POLL_DELAY_US, NULL);
++		ret = spinand_wait_ready_confirmed(spinand,
++						   SPINAND_READ_INITIAL_DELAY_US,
++						   SPINAND_READ_POLL_DELAY_US,
++						   NULL);
+ 		if (ret < 0)
+ 			goto end_cont_read;
+ 
+@@ -1196,10 +1245,10 @@ static int spinand_erase(struct nand_device *nand, const struct nand_pos *pos)
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = spinand_wait(spinand,
+-			   SPINAND_ERASE_INITIAL_DELAY_US,
+-			   SPINAND_ERASE_POLL_DELAY_US,
+-			   &status);
++	ret = spinand_wait_ready_confirmed(spinand,
++					   SPINAND_ERASE_INITIAL_DELAY_US,
++					   SPINAND_ERASE_POLL_DELAY_US,
++					   &status);
+ 
+ 	if (!ret && (status & STATUS_ERASE_FAILED))
+ 		ret = -EIO;
+diff --git a/drivers/mtd/nand/spi/skyhigh.c b/drivers/mtd/nand/spi/skyhigh.c
+index bf9ce163e6a7b..19f2380b0427a 100644
+--- a/drivers/mtd/nand/spi/skyhigh.c
++++ b/drivers/mtd/nand/spi/skyhigh.c
+@@ -88,7 +88,8 @@ static const struct spinand_info skyhigh_spinand_table[] = {
+ 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+ 					      &write_cache_variants,
+ 					      &update_cache_variants),
+-		     SPINAND_NO_RAW_ACCESS,
++		     SPINAND_NO_RAW_ACCESS |
++		     SPINAND_PREMATURE_READY_QUIRK,
+ 		     SPINAND_ECCINFO(&skyhigh_spinand_ooblayout,
+ 				     skyhigh_spinand_ecc_get_status)),
+ 	SPINAND_INFO("S35ML01G300",
+@@ -98,7 +99,8 @@ static const struct spinand_info skyhigh_spinand_table[] = {
+ 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+ 					      &write_cache_variants,
+ 					      &update_cache_variants),
+-		     SPINAND_NO_RAW_ACCESS,
++		     SPINAND_NO_RAW_ACCESS |
++		     SPINAND_PREMATURE_READY_QUIRK,
+ 		     SPINAND_ECCINFO(&skyhigh_spinand_ooblayout,
+ 				     skyhigh_spinand_ecc_get_status)),
+ 	SPINAND_INFO("S35ML02G300",
+@@ -108,7 +110,8 @@ static const struct spinand_info skyhigh_spinand_table[] = {
+ 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+ 					      &write_cache_variants,
+ 					      &update_cache_variants),
+-		     SPINAND_NO_RAW_ACCESS,
++		     SPINAND_NO_RAW_ACCESS |
++		     SPINAND_PREMATURE_READY_QUIRK,
+ 		     SPINAND_ECCINFO(&skyhigh_spinand_ooblayout,
+ 				     skyhigh_spinand_ecc_get_status)),
+ 	SPINAND_INFO("S35ML04G300",
+@@ -118,7 +121,8 @@ static const struct spinand_info skyhigh_spinand_table[] = {
+ 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+ 					      &write_cache_variants,
+ 					      &update_cache_variants),
+-		     SPINAND_NO_RAW_ACCESS,
++		     SPINAND_NO_RAW_ACCESS |
++		     SPINAND_PREMATURE_READY_QUIRK,
+ 		     SPINAND_ECCINFO(&skyhigh_spinand_ooblayout,
+ 				     skyhigh_spinand_ecc_get_status)),
+ };
+diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+index d7c99fcfb85ef..0767964275cf2 100644
+--- a/include/linux/mtd/spinand.h
++++ b/include/linux/mtd/spinand.h
+@@ -492,6 +492,7 @@ struct spinand_ecc_info {
+ #define SPINAND_HAS_READ_PLANE_SELECT_BIT		BIT(3)
+ #define SPINAND_NO_RAW_ACCESS				BIT(4)
+ #define SPINAND_ODTR_PACKED_PAGE_READ			BIT(5)
++#define SPINAND_PREMATURE_READY_QUIRK			BIT(6)
+ 
+ /**
+  * struct spinand_ondie_ecc_conf - private SPI-NAND on-die ECC engine structure
+
+base-commit: 7649ba73f9e7e1e04d0b46213e39c79ae09dd55c
 
 ______________________________________________________
 Linux MTD discussion mailing list
