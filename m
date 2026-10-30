@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA4CA60A3816
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8DFB60A3814
 	for <linux-mtd@archiver.kernel.org>; Fri, 30 Oct 2026 17:45:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=au/uFzRb;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=jM7xzpu/
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=3adPmT6M;
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=iSJKyPIS
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,45 +14,45 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=Sw0q4zSVrHeMs5+d+c1+2TKPjlEyuNoopmbetB6YwK0=; b=au/uFzRbUAVu7C+At2e8In0Vkd
-	1kefJokeikKC2hUJYbK9PV0+JpERJlBMrvqzU+LYAvVjobIDhiAceTNGGKgMW2jO6zCKu7LaH6XD6
-	C2qHcIgE/glufMfVsLuAOTInIH+wRG6IGsQdULN+gcBx6ma+Cu1aTYmOqAO+ky9OJ3zuohY2YcMeU
-	X1MtMActqbqxBdz++zMOj4uDe/mMFhO4A3UJg+Vrz0bkCkrLIIqSCrfAElveDud4fQ6wYfpRqYQ3l
-	lFRBpD4C5VKNhw6HED4A+QfIm5JtuYqmDNzYx8r5pNOpYftsUMo05mcbDusqrUvkTvsjjOJlpc0Br
-	Y0nkWPPA==;
+	bh=COQxUf1ei13SJpA2EhxxJi02wlSelGKYdTAd4/Qexbo=; b=3adPmT6MgNw2xQqAwnES1T1kjT
+	kURwC3wn5seVCsuKz9stDbthLRoel3DA/oSyRfejwfWzSHOuwYIDme+KkBsHhy+eKeIPxFrhEJ9zw
+	zV21qgrGk5mSBaa4fSRESEmTMaX+EjkBpL8p4QPm4gMMPZaSTjnomYZySKjAeDzHGGikNcn/4u9Mq
+	ei72qDiEP/YR+9W4M/qjkK9w5iX/Y2mc5DgMTOsxk7ApOUeiGljFezVQZGLj/Uoq7IAe38V/a8JEw
+	51eOiAr7CyjV9hUyizLsrCZDCJCkQWqPBtXN/BwYdrNbnZQd7ta0rl8K55rhMGTf3lYKO47XfVOiV
+	0QcVb1DQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xMqfo-0000000CHMT-295n;
+	id 1xMqfo-0000000CHMH-1UI3;
 	Fri, 30 Oct 2026 17:45:52 +0000
-Received: from smtpout-04.galae.net ([185.171.202.116])
+Received: from smtpout-02.galae.net ([185.246.84.56])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xMqfl-0000000CHEU-3A9Z
+	id 1xMqfj-0000000CHCG-3Tje
 	for linux-mtd@lists.infradead.org;
-	Fri, 30 Oct 2026 17:45:51 +0000
+	Fri, 30 Oct 2026 17:45:49 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id 85C1BC49F65;
-	Fri, 30 Oct 2026 17:46:50 +0000 (UTC)
+	by smtpout-02.galae.net (Postfix) with ESMTPS id F40B91A13C4;
+	Fri, 30 Oct 2026 17:45:45 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id A27AE603C2;
-	Fri, 30 Oct 2026 17:45:47 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 73492103290EE;
-	Fri, 30 Oct 2026 18:45:45 +0100 (CET)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id C97FF603C2;
+	Fri, 30 Oct 2026 17:45:45 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id E4202103290E8;
+	Fri, 30 Oct 2026 18:45:43 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1793382346; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1793382345; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=ui4gby7N4mdOCrvAfN5xSL3mZEVtUhfU4Wmi60HiS/M=;
-	b=jM7xzpu/2aZkw1gweVa1xYsoZj0VKgXMEkYQUT6rrq69IrYSAA3KTUWB5h9xX1B2L1Sp7s
-	WP2ZJSF8X2vqTfEN1SZETvjSuQxL6tqStlyO0oKD9ccmfDCPAsy9Yf0JscNIVtqt7Isj+l
-	I/XEx6YTF3wazuhxV/MSIJmQtNxe1MCFOmPXJOLx9Q3Dep8CQXN5k6/5/zUVnvZ7VJYPh6
-	tpgaeRz1YbfRnYHdSJIPEcyXIhjNuxpMu9Q3tn+7JU1NUpPQfmWsL0xvi7i78kMGngvBKm
-	ZVr3J+0HrxwC83w/19sUeo5kdSyYMQlydJ6gP7YqteeggRe8OLwwL9orqVvmNA==
+	bh=HbDyM25MzK725/4xtPE89ooaiGYWRfqoAQK/XePlbM0=;
+	b=iSJKyPISVSlmdgPuSCx3Geiy/mLYVBo+sLEH9gdnRx5QL1f5LI37qNtlb3clyCJpSyxuXs
+	SloeFrjdUf76NeQ1Y+ltSRfHNRoYnszXNh+c6d1niogxef1PwJn755hf3bakzKWSVrDYEl
+	6rJUMHPLn3KsfesFQXAplm9LPLBZ6tpPrN2VY2JHx/MFv+MznM0w3E5NU/24R7pG1Opx5Q
+	f0wif8EoG2dPopTqnkgXW3S/1hqTDc38P94oVrhuBADRk2YVPbY2w5xj1QbHgpZQBUH6XX
+	fcqZgF1YjHGNZf1ApM+8yC9N4ZZ1RrVIlr/zDKhlEsxxbG+57/pD8xI6dfmg2g==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Fri, 30 Oct 2026 18:45:33 +0100
-Subject: [PATCH 09/13] mtd: spinand: winbond: Add basic support for
- W25N02LW
+Date: Fri, 30 Oct 2026 18:45:32 +0100
+Subject: [PATCH 08/13] mtd: spinand: winbond: Add basic support for
+ W25N04LV
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Message-Id: <20261030-winbond-master-w25nxxlvw-v1-9-91f67407dc8b@bootlin.com>
+Message-Id: <20261030-winbond-master-w25nxxlvw-v1-8-91f67407dc8b@bootlin.com>
 References: <20261030-winbond-master-w25nxxlvw-v1-0-91f67407dc8b@bootlin.com>
 In-Reply-To: <20261030-winbond-master-w25nxxlvw-v1-0-91f67407dc8b@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, 
@@ -65,8 +65,8 @@ Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261030_104549_999577_7CE78752 
-X-CRM114-Status: UNSURE (   7.46  )
+X-CRM114-CacheID: sfid-20261030_104548_026363_B6CB9895 
+X-CRM114-Status: UNSURE (   7.56  )
 X-CRM114-Notice: Please train this message.
 X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-mtd@lists.infradead.org
@@ -125,25 +125,25 @@ Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
  1 file changed, 9 insertions(+)
 
 diff --git a/drivers/mtd/nand/spi/winbond.c b/drivers/mtd/nand/spi/winbond.c
-index 410dd27473f8..6d7732761785 100644
+index e14f026fc99d..410dd27473f8 100644
 --- a/drivers/mtd/nand/spi/winbond.c
 +++ b/drivers/mtd/nand/spi/winbond.c
-@@ -824,6 +824,15 @@ static const struct spinand_info winbond_spinand_table[] = {
+@@ -856,6 +856,15 @@ static const struct spinand_info winbond_spinand_table[] = {
  					      &update_cache_variants),
  		     0,
- 		     SPINAND_ECCINFO(&w25nxxlv_lw_ooblayout, w25nxxkv_kw_lv_lw_ecc_get_status)),
-+	SPINAND_INFO("W25N02LW", /* 1.8V */
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x12, 0x22),
-+		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
+ 		     SPINAND_ECCINFO(&w25nxxkv_kw_ooblayout, w25nxxkv_kw_lv_lw_ecc_get_status)),
++	SPINAND_INFO("W25N04LV", /* 3.3V */
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x8b, 0x23),
++		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
 +		     NAND_ECCREQ(8, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++		     SPINAND_INFO_OP_VARIANTS(&w25nxxlv_read_cache_variants,
 +					      &write_cache_variants,
 +					      &update_cache_variants),
 +		     0,
 +		     SPINAND_ECCINFO(&w25nxxlv_lw_ooblayout, w25nxxkv_kw_lv_lw_ecc_get_status)),
- 	SPINAND_INFO("W35N02JW", /* 1.8V */
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xdf, 0x22),
- 		     NAND_MEMORG(1, 4096, 128, 64, 512, 10, 1, 2, 1),
+ 	SPINAND_INFO("W25N04LW", /* 1.8V */
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xb2, 0x23),
+ 		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
 
 -- 
 2.56.0
