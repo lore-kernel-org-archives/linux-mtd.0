@@ -2,94 +2,58 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D579F606A325
-	for <linux-mtd@archiver.kernel.org>; Fri, 30 Oct 2026 20:34:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE928606A31A
+	for <linux-mtd@archiver.kernel.org>; Fri, 30 Oct 2026 20:44:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=JK0Ytjuc;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=Lr16xVKD
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=h5QZOKcy;
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=nPTfxIUz
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Reply-To:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:References:
+	In-Reply-To:Cc:To:Subject:From:Message-ID:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=ZgJFR6SQwREoRl35jvZMLB1UNpM9N8rVXEQihodk5E0=; b=JK0Ytjucdl0lWX5b3kCdPL1mz2
-	7a2AU3AtyoDYlFoZFDdzYuwA/9KoUBNKRrfMM4tZ6zqFx6YQcpOVPSMu67FW2p3x8vwW2YYhUJhrg
-	2o2KgoteGddIi7TghYpNKgvFxT57wPhzmeDnuA3HEkCLlNWnRcPtdXQU19F1hMqQvhlxqSiyKM+Nc
-	MmWTGnzOgHXNwTcO9RrRPruDOaj+DDYuwg+8+8ziJbpS6BZ4efMDUuyIXq7J+4R51/wtdwG16uoFo
-	0M1/OqIBPoO/8Sc/LTHV08QGd2Zt5iJcYzSs0KgcpCZXTTNfrpzaXTJ2Co3jKzJemt5HUOywWq5I8
-	Yci+++RA==;
+	bh=InKbXpPdeQLX8l157RbdigDmT1P4d6VKMiyiGdOrkHM=; b=h5QZOKcy0ZGK2F5PdPMtXxzF7W
+	npdyf0EsS7sT/IkfbyZ4lDhBuZq/um06TwL7WANqN2RJKhFYlE+t7Dy5hVmuin9syg78bHzdMqk4w
+	+OCjh7N3VQIzQz2q/D8XLnc0U08OW0LYHkr6wgMf884VkPc9Wya40fNEgHJ4WHo5ZbxQGEYvsjv4V
+	dHhV+wkZocVq1OQ8DH7KQpmJPLuthDyPOILY8KdGe5HBGIMTE2QZBJBlEiqxAI4pulO6qOG48qfjI
+	csS8e4jqE7xwwgilagWr9tFLbTJuOf/BKLHfM7Is+YLWEF2AX6J+QBLUbKkEZpice9lXlUa5569QV
+	Cm3qg3hw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xMtIk-0000000CXgJ-0LoC;
-	Fri, 30 Oct 2026 20:34:14 +0000
-Received: from mail-ed1-x52e.google.com ([2a00:1450:4864:20::52e])
+	id 1xMtSk-0000000CZTG-3vRO;
+	Fri, 30 Oct 2026 20:44:34 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xMtIg-0000000CXfr-3pJp
+	id 1xMtSi-0000000CZT5-3rca
 	for linux-mtd@lists.infradead.org;
-	Fri, 30 Oct 2026 20:34:12 +0000
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-6b1d8944cb0so1818978a12.3
-        for <linux-mtd@lists.infradead.org>; Fri, 30 Oct 2026 13:34:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1793392448; x=1793997248; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=4Nw8NpVUaIYw76IIZWbK2cq2xyPR6mLCTZOaoZttbUk=;
-        b=Lr16xVKDUzcftNVaEGJg6vBuKYKYH2hYuQRTpFQg0noMuo9Wi8Rb+cSZ9c8mMiWfBR
-         lTadrR0mmx7X7J2n07s3+DPOjBadf4P6/DC7Bpft3IWGbqI6aJLEw+FEcSOqF9kgcQbb
-         llzyzVNqZZPZKZn8SUkkeOr408qDZVP0e0q8XrICMGY/TcufRf/UORNpJrdTe6VAy1M1
-         yXi1kQc+jQg2fHk4FiS62JBnQIrTwAxwhuD9Q0iTEWW13R09wvZj6ogMrolPZSU17wTS
-         52dSfHXLdwC1lMzd0nc6YX9jd8LSivzQHhrREHug0GcHbDJPUCowVcOovPOk7i8cvlcz
-         SQYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1793392448; x=1793997248;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=4Nw8NpVUaIYw76IIZWbK2cq2xyPR6mLCTZOaoZttbUk=;
-        b=CSjP+XPoeINKsaVH2F8U97VOo19giOuygxmMMN3DREoIEPvjLcwasscfyWxLQEb8sg
-         +DQPzyyK/5cJE0336xg74r9G3XbD4T/7kvqMMr9GZv9NiQMhASXiTVFbU9hSzkh7TwTZ
-         3JBo/0TAgJ1DihPUilSV4VX5RCCGJBsAhtcp+dAW5G0kvMBHFD5V4Ar3wSla6a1HrHiT
-         mQ3OS+QQqZH89Z8XH8wMvwYOERpaJ03NMWq+PKZUkuDWKVvCgguUvWCGtBJOMNtB4lKu
-         PCUkzQG/QoZhpdJlTPF4I4kKynii8ngJNJJdIiubcNHTsrcr8nsm2IVFxmg15mIpe/w2
-         sF0A==
-X-Forwarded-Encrypted: i=1; AKwUvBwN2Sz+iug5PgFYO95942JLP86cGJCfBl9v1pWweVuEYHX70KcDFXGGLJfY6hjgzggt2Mhh45vgH9U=@lists.infradead.org
-X-Gm-Message-State: AFq9FYIvMf0Mzm84cSojFAq6ibhie47BVeOY68cfm5SZD57idFHmUyzg
-	S4hk8igeeedrELiV4fqs9Tadh9SkHcq/W2vUkcAe4hjWb1MwmxuchmENWp9VroihMW0u
-X-Gm-Gg: AYBFou1kQfojvLPaUX+CTTxaIAEg1lk9GPMaGpsmNYc3G3tBt198/lqqIp/LBX5cQNC
-	6jOvgJw8eCrwuxKtLC8vElVeaP01Wez01tB0yZoagZkXgxc3WYbCS+zVzDstb28R18gQFuu6T3c
-	TwzUZDgYVowrcw9a6ZWu/X9b1Cb/wDeCkg0iwL3nljChkGKYPHJfnwlkKZ8PrVd0HEhr2FJvaNI
-	NXq9z202SBu672mPBpFH2JS/JhsVzE/2KElXbd4lPTYoKBnnkZoyrJpNRijlNq4+oAmAeBNVv3T
-	R+gddwYubxOgV33SkMuLFM2ecKSoZHDLajSP3PEZH+12CTPxAuWH3XbaCORBHGKo6/4hibZn5/n
-	qYPJyhPsourGON1WffITqzsoDtmO/K7KRT6OFADQMaytq6WSV1P3pZm/v6GOt7TXt9Lx/jcsqaz
-	90IzvII1iw8sYdyaG9m6JWBVnNKqX9GqiMxHFxm2FUJXwwAMTj32iqasbYDqsnfhOuD8uqIVq5A
-	NCdXJqPbYLntWxoSlEDNr8JveXZB4R3mgNVWlK4v5s7Tot3lhL54YDE/9rW51c9ftgZYviFSE3N
-	pbPddymtSwZsjZMBpzU=
-X-Received: by 2002:a05:6402:74b:b0:6a5:fbc6:cad1 with SMTP id 4fb4d7f45d1cf-6b4d4687f4dmr1772470a12.7.1793392447949;
-        Fri, 30 Oct 2026 13:34:07 -0700 (PDT)
-Received: from fedora ([46.8.219.5])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-6b4ec9eebb0sm309091a12.8.2026.10.30.13.34.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2026 13:34:07 -0700 (PDT)
-From: Vitaliy Sochnev <sochnev.v.74@gmail.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Vitaliy Sochnev <sochnev.v.74@gmail.com>,
-	Mikhail Zhilkin <csharper2005@gmail.com>
-Subject: [PATCH] mtd: spinand: confirm ready state on SkyHigh S35ML chips
-Date: Fri, 30 Oct 2026 22:33:42 +0200
-Message-ID: <20261030203342.91172-1-sochnev.v.74@gmail.com>
-X-Mailer: git-send-email 2.55.0
-X-Archived-By: <archiver.kernel.org>
-MIME-Version: 1.0
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261030_133411_001715_4E54050D 
-X-CRM114-Status: GOOD (  22.62  )
-X-Spam-Score: -1.9 (-)
+	Fri, 30 Oct 2026 20:44:32 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id 1BEDE43BAE;
+	Fri, 30 Oct 2026 20:44:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B15B71F000C1;
+	Fri, 30 Oct 2026 20:44:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1793393072;
+	bh=MdtKfQza+mSKux/ZGLGatM31U5FJ2H9ld5a0czdUH/U=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=nPTfxIUz7YedHGDwLgakiTASFMi7+UKnDH6qEIC6ZtD7g2acOYHDRjW9xRaPrlncJ
+	 otbrg+BAY7oBliWYsuQCbifYy+zPaEhG+PbrRpO6yOlSCQCuYthaS4qKaLMsvdwn/t
+	 1u5kQEnCmR5FqC1SvDIWHZqWJ6HHNA2L2JurDdtBZVDFWWbDrRFWXYf2IeBQ3JA8VM
+	 c69MNGcFTDqbZiBe57iECNtJNuu0CvlwdHFxZk7ysG+3euUUuCQSchO+iZDBsaMPD8
+	 IMw+oUl/ru1nVAx5uj8FH5DOZXVAD+PaKZDVQH2K8chOSVwZoubTrAKaJ9oUYFQEiP
+	 a+gezHGaaB16g==
+Message-ID: <sashiko-outbox-191490@kernel.org>
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH] mtd: spinand: confirm ready state on SkyHigh S35ML
+ chips
+To: "Vitaliy Sochnev" <sochnev.v.74@gmail.com>, "Miquel Raynal" <miquel.raynal@bootlin.com>
+Cc: "Richard Weinberger" <richard@nod.at>, "Vignesh Raghavendra" <vigneshr@ti.com>, linux-mtd@lists.infradead.org, "Mikhail
+ Zhilkin" <csharper2005@gmail.com>
+In-Reply-To: <20261030203342.91172-1-sochnev.v.74@gmail.com>
+References: <20261030203342.91172-1-sochnev.v.74@gmail.com>
+Date: Fri, 30 Oct 2026 20:44:31 +0000
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,250 +63,137 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Reply-To: sashiko-reviews@lists.linux.dev
+X-Archived-By: <archiver.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,
-	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-8.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-On a Nokia XG-040G-MD with a SkyHigh 256 MiB SPI-NAND, UBI reports
-fixable bit-flips during rootfs mount without this workaround:
-
-  ubi0: fixable bit-flip detected at PEB 1979
-  ubi0: schedule PEB 1979 for scrubbing
-  ubi0: scrubbed PEB 1979 (LEB 5:53), data moved to PEB 645
-
-Other reboots also report fixable bit-flips. A tester reports that after
-applying the workaround, sysupgrade, multiple reboots and an active
-workload produced no such warnings. Long-term operation is unverified.
-
-spinand_wait() accepts a single non-busy status sample. On these chips,
-the ready bit can briefly clear before the device is actually ready,
-allowing a premature cache read or a new program/erase command. The
-fallback status read for controllers with poll_status offload does not
-provide a second ready confirmation in the usual case.
-
-Mark the affected SkyHigh parts with a quirk and require a second ready
-status sample after spinand_wait() for those parts. If the chip becomes
-busy again, repeat the wait while the outer timeout has not elapsed.
-Each inner wait has its own timeout, so the quirk can wait up to roughly
-twice as long. Leave other SPI-NAND parts unchanged.
-
-Suggested-by: Mikhail Zhilkin <csharper2005@gmail.com>
-Signed-off-by: Vitaliy Sochnev <sochnev.v.74@gmail.com>
----
-Notes for reviewers:
-
-The two ready samples are taken in separate SPI transactions, without an
-explicit delay. The duration of the premature-ready interval has not been
-measured. If both samples fall within that interval, the wait can still
-return too early. Would a measured, explicit delay be preferable here?
-
-The on-device result comes from a Nokia XG-040G-MD with a 256 MiB SkyHigh
-chip running OpenWrt with this workaround. The linux-next port has only
-been compile-tested; the other S35ML entries flagged by this patch have
-not been tested on hardware with this workaround.
-
- drivers/mtd/nand/spi/core.c    | 85 +++++++++++++++++++++++++++-------
- drivers/mtd/nand/spi/skyhigh.c | 12 +++--
- include/linux/mtd/spinand.h    |  1 +
- 3 files changed, 76 insertions(+), 22 deletions(-)
-
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index 133776ba53da0..b051ff1d6be5c 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -710,6 +710,53 @@ int spinand_wait(struct spinand_device *spinand, unsigned long initial_delay_us,
- 	return status & STATUS_BUSY ? -ETIMEDOUT : 0;
- }
- 
-+/**
-+ * spinand_wait_ready_confirmed() - Wait for the device to be ready
-+ * @spinand: the spinand device
-+ * @initial_delay_us: delay in us before starting to poll
-+ * @poll_delay_us: time to sleep between reads in us
-+ * @s: the pointer to variable to store the value of REG_STATUS
-+ *
-+ * Same as spinand_wait(), except for devices flagged with
-+ * SPINAND_PREMATURE_READY_QUIRK, whose ready bit can flip back to busy
-+ * shortly after first reporting ready. For those, a ready result from
-+ * spinand_wait() is only trusted once a follow-up status read still shows
-+ * the device ready, and spinand_wait() is called again otherwise. Each
-+ * spinand_wait() gets its own SPINAND_WAITRDY_TIMEOUT_MS budget and no
-+ * new one is started once that span has elapsed, so such a device can
-+ * spend up to roughly twice that time here.
-+ *
-+ * Return: 0 on success, a negative error code otherwise.
-+ */
-+static int spinand_wait_ready_confirmed(struct spinand_device *spinand,
-+					unsigned long initial_delay_us,
-+					unsigned long poll_delay_us, u8 *s)
-+{
-+	unsigned long timeo;
-+	u8 status;
-+	int ret;
-+
-+	if (!(spinand->flags & SPINAND_PREMATURE_READY_QUIRK))
-+		return spinand_wait(spinand, initial_delay_us, poll_delay_us, s);
-+
-+	timeo = jiffies + msecs_to_jiffies(SPINAND_WAITRDY_TIMEOUT_MS);
-+	do {
-+		ret = spinand_wait(spinand, initial_delay_us, poll_delay_us,
-+				   &status);
-+		if (ret < 0)
-+			return ret;
-+
-+		ret = spinand_read_status(spinand, &status);
-+		if (ret)
-+			return ret;
-+	} while ((status & STATUS_BUSY) && time_before(jiffies, timeo));
-+
-+	if (s)
-+		*s = status;
-+
-+	return status & STATUS_BUSY ? -ETIMEDOUT : 0;
-+}
-+
- static int spinand_read_id_op(struct spinand_device *spinand, u8 naddr,
- 			      u8 ndummy, u8 *buf)
- {
-@@ -733,10 +780,10 @@ static int spinand_reset_op(struct spinand_device *spinand)
- 	if (ret)
- 		return ret;
- 
--	return spinand_wait(spinand,
--			    SPINAND_RESET_INITIAL_DELAY_US,
--			    SPINAND_RESET_POLL_DELAY_US,
--			    NULL);
-+	return spinand_wait_ready_confirmed(spinand,
-+					    SPINAND_RESET_INITIAL_DELAY_US,
-+					    SPINAND_RESET_POLL_DELAY_US,
-+					    NULL);
- }
- 
- static int spinand_lock_block(struct spinand_device *spinand, u8 lock)
-@@ -767,10 +814,10 @@ int spinand_read_page(struct spinand_device *spinand,
- 	if (ret)
- 		return ret;
- 
--	ret = spinand_wait(spinand,
--			   SPINAND_READ_INITIAL_DELAY_US,
--			   SPINAND_READ_POLL_DELAY_US,
--			   &status);
-+	ret = spinand_wait_ready_confirmed(spinand,
-+					   SPINAND_READ_INITIAL_DELAY_US,
-+					   SPINAND_READ_POLL_DELAY_US,
-+					   &status);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -814,10 +861,10 @@ int spinand_write_page(struct spinand_device *spinand,
- 	if (ret)
- 		return ret;
- 
--	ret = spinand_wait(spinand,
--			   SPINAND_WRITE_INITIAL_DELAY_US,
--			   SPINAND_WRITE_POLL_DELAY_US,
--			   &status);
-+	ret = spinand_wait_ready_confirmed(spinand,
-+					   SPINAND_WRITE_INITIAL_DELAY_US,
-+					   SPINAND_WRITE_POLL_DELAY_US,
-+					   &status);
- 	if (ret)
- 		return ret;
- 
-@@ -939,8 +986,10 @@ static int spinand_mtd_continuous_page_read(struct mtd_info *mtd, loff_t from,
- 		if (ret)
- 			goto end_cont_read;
- 
--		ret = spinand_wait(spinand, SPINAND_READ_INITIAL_DELAY_US,
--				   SPINAND_READ_POLL_DELAY_US, NULL);
-+		ret = spinand_wait_ready_confirmed(spinand,
-+						   SPINAND_READ_INITIAL_DELAY_US,
-+						   SPINAND_READ_POLL_DELAY_US,
-+						   NULL);
- 		if (ret < 0)
- 			goto end_cont_read;
- 
-@@ -1196,10 +1245,10 @@ static int spinand_erase(struct nand_device *nand, const struct nand_pos *pos)
- 	if (ret)
- 		return ret;
- 
--	ret = spinand_wait(spinand,
--			   SPINAND_ERASE_INITIAL_DELAY_US,
--			   SPINAND_ERASE_POLL_DELAY_US,
--			   &status);
-+	ret = spinand_wait_ready_confirmed(spinand,
-+					   SPINAND_ERASE_INITIAL_DELAY_US,
-+					   SPINAND_ERASE_POLL_DELAY_US,
-+					   &status);
- 
- 	if (!ret && (status & STATUS_ERASE_FAILED))
- 		ret = -EIO;
-diff --git a/drivers/mtd/nand/spi/skyhigh.c b/drivers/mtd/nand/spi/skyhigh.c
-index bf9ce163e6a7b..19f2380b0427a 100644
---- a/drivers/mtd/nand/spi/skyhigh.c
-+++ b/drivers/mtd/nand/spi/skyhigh.c
-@@ -88,7 +88,8 @@ static const struct spinand_info skyhigh_spinand_table[] = {
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
- 					      &write_cache_variants,
- 					      &update_cache_variants),
--		     SPINAND_NO_RAW_ACCESS,
-+		     SPINAND_NO_RAW_ACCESS |
-+		     SPINAND_PREMATURE_READY_QUIRK,
- 		     SPINAND_ECCINFO(&skyhigh_spinand_ooblayout,
- 				     skyhigh_spinand_ecc_get_status)),
- 	SPINAND_INFO("S35ML01G300",
-@@ -98,7 +99,8 @@ static const struct spinand_info skyhigh_spinand_table[] = {
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
- 					      &write_cache_variants,
- 					      &update_cache_variants),
--		     SPINAND_NO_RAW_ACCESS,
-+		     SPINAND_NO_RAW_ACCESS |
-+		     SPINAND_PREMATURE_READY_QUIRK,
- 		     SPINAND_ECCINFO(&skyhigh_spinand_ooblayout,
- 				     skyhigh_spinand_ecc_get_status)),
- 	SPINAND_INFO("S35ML02G300",
-@@ -108,7 +110,8 @@ static const struct spinand_info skyhigh_spinand_table[] = {
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
- 					      &write_cache_variants,
- 					      &update_cache_variants),
--		     SPINAND_NO_RAW_ACCESS,
-+		     SPINAND_NO_RAW_ACCESS |
-+		     SPINAND_PREMATURE_READY_QUIRK,
- 		     SPINAND_ECCINFO(&skyhigh_spinand_ooblayout,
- 				     skyhigh_spinand_ecc_get_status)),
- 	SPINAND_INFO("S35ML04G300",
-@@ -118,7 +121,8 @@ static const struct spinand_info skyhigh_spinand_table[] = {
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
- 					      &write_cache_variants,
- 					      &update_cache_variants),
--		     SPINAND_NO_RAW_ACCESS,
-+		     SPINAND_NO_RAW_ACCESS |
-+		     SPINAND_PREMATURE_READY_QUIRK,
- 		     SPINAND_ECCINFO(&skyhigh_spinand_ooblayout,
- 				     skyhigh_spinand_ecc_get_status)),
- };
-diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
-index d7c99fcfb85ef..0767964275cf2 100644
---- a/include/linux/mtd/spinand.h
-+++ b/include/linux/mtd/spinand.h
-@@ -492,6 +492,7 @@ struct spinand_ecc_info {
- #define SPINAND_HAS_READ_PLANE_SELECT_BIT		BIT(3)
- #define SPINAND_NO_RAW_ACCESS				BIT(4)
- #define SPINAND_ODTR_PACKED_PAGE_READ			BIT(5)
-+#define SPINAND_PREMATURE_READY_QUIRK			BIT(6)
- 
- /**
-  * struct spinand_ondie_ecc_conf - private SPI-NAND on-die ECC engine structure
-
-base-commit: 7649ba73f9e7e1e04d0b46213e39c79ae09dd55c
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+VGhhbmsgeW91IGZvciB5b3VyIGNvbnRyaWJ1dGlvbiEgU2FzaGlrbyBBSSByZXZpZXcgZm91bmQg
+MyBwb3RlbnRpYWwgaXNzdWUocykgdG8gY29uc2lkZXI6Ci0gW01lZGl1bV0gbXRkOiBzcGluYW5k
+OiBmYWxzZSAtRVRJTUVET1VUIGluIHNwaW5hbmRfd2FpdF9yZWFkeV9jb25maXJtZWQoKQotIFtN
+ZWRpdW1dIG10ZDogc3BpbmFuZDogdW5wYWNlZCBjb25maXJtYXRpb24gcmVhZCBpbiBzcGluYW5k
+X3dhaXRfcmVhZHlfY29uZmlybWVkKCkKLSBbTG93XSBtdGQ6IHNwaW5hbmQ6IHNwaW5hbmRfd2Fp
+dCgpIGJ5cGFzc2VzIFNQSU5BTkRfUFJFTUFUVVJFX1JFQURZX1FVSVJLCi0tCgpjb21taXQgMGQ2
+NzdiZDlhMmQyOTA1ZDk3Y2RjMzNmY2M4Y2NmY2Y3ZDhhN2NjNwpBdXRob3I6IFZpdGFsaXkgU29j
+aG5ldiA8c29jaG5ldi52Ljc0QGdtYWlsLmNvbT4KCm10ZDogc3BpbmFuZDogY29uZmlybSByZWFk
+eSBzdGF0ZSBvbiBTa3lIaWdoIFMzNU1MIGNoaXBzCgpUaGlzIGNvbW1pdCBhZGRzIGEgU1BJTkFO
+RF9QUkVNQVRVUkVfUkVBRFlfUVVJUksgZmxhZyBmb3IgU2t5SGlnaCBTMzVNTApTUEktTkFORCBj
+aGlwcyBhbmQgaW50cm9kdWNlcyBzcGluYW5kX3dhaXRfcmVhZHlfY29uZmlybWVkKCkgdG8gcGVy
+Zm9ybSBhCmZvbGxvdy11cCBzdGF0dXMgcmVhZCBhZnRlciBzcGluYW5kX3dhaXQoKSByZXBvcnRz
+IHJlYWR5LCByZXBlYXRpbmcgdGhlCndhaXQgaWYgU1RBVFVTX0JVU1kgaXMgc2V0IGFnYWluLgoK
+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9zcGkvY29yZS5jIGIvZHJpdmVycy9tdGQv
+bmFuZC9zcGkvY29yZS5jCj4gaW5kZXggMTMzNzc2YmE1M2RhMC4uYjA1MWZmMWQ2YmU1YyAxMDA2
+NDQKPiAtLS0gYS9kcml2ZXJzL210ZC9uYW5kL3NwaS9jb3JlLmMKPiArKysgYi9kcml2ZXJzL210
+ZC9uYW5kL3NwaS9jb3JlLmMKPiBAQCAtNzEwLDYgKzcxMCw1MyBAQCBpbnQgc3BpbmFuZF93YWl0
+KHN0cnVjdCBzcGluYW5kX2RldmljZSAqc3BpbmFuZCwgdW5zaWduZWQgbG9uZyBpbml0aWFsX2Rl
+bGF5X3VzLAo+ICAJcmV0dXJuIHN0YXR1cyAmIFNUQVRVU19CVVNZID8gLUVUSU1FRE9VVCA6IDA7
+Cj4gIH0KPiAgCj4gKy8qKgo+ICsgKiBzcGluYW5kX3dhaXRfcmVhZHlfY29uZmlybWVkKCkgLSBX
+YWl0IGZvciB0aGUgZGV2aWNlIHRvIGJlIHJlYWR5Cj4gKyAqIEBzcGluYW5kOiB0aGUgc3BpbmFu
+ZCBkZXZpY2UKPiArICogQGluaXRpYWxfZGVsYXlfdXM6IGRlbGF5IGluIHVzIGJlZm9yZSBzdGFy
+dGluZyB0byBwb2xsCj4gKyAqIEBwb2xsX2RlbGF5X3VzOiB0aW1lIHRvIHNsZWVwIGJldHdlZW4g
+cmVhZHMgaW4gdXMKPiArICogQHM6IHRoZSBwb2ludGVyIHRvIHZhcmlhYmxlIHRvIHN0b3JlIHRo
+ZSB2YWx1ZSBvZiBSRUdfU1RBVFVTCj4gKyAqCj4gKyAqIFNhbWUgYXMgc3BpbmFuZF93YWl0KCks
+IGV4Y2VwdCBmb3IgZGV2aWNlcyBmbGFnZ2VkIHdpdGgKPiArICogU1BJTkFORF9QUkVNQVRVUkVf
+UkVBRFlfUVVJUkssIHdob3NlIHJlYWR5IGJpdCBjYW4gZmxpcCBiYWNrIHRvIGJ1c3kKPiArICog
+c2hvcnRseSBhZnRlciBmaXJzdCByZXBvcnRpbmcgcmVhZHkuIEZvciB0aG9zZSwgYSByZWFkeSBy
+ZXN1bHQgZnJvbQo+ICsgKiBzcGluYW5kX3dhaXQoKSBpcyBvbmx5IHRydXN0ZWQgb25jZSBhIGZv
+bGxvdy11cCBzdGF0dXMgcmVhZCBzdGlsbCBzaG93cwo+ICsgKiB0aGUgZGV2aWNlIHJlYWR5LCBh
+bmQgc3BpbmFuZF93YWl0KCkgaXMgY2FsbGVkIGFnYWluIG90aGVyd2lzZS4gRWFjaAo+ICsgKiBz
+cGluYW5kX3dhaXQoKSBnZXRzIGl0cyBvd24gU1BJTkFORF9XQUlUUkRZX1RJTUVPVVRfTVMgYnVk
+Z2V0IGFuZCBubwo+ICsgKiBuZXcgb25lIGlzIHN0YXJ0ZWQgb25jZSB0aGF0IHNwYW4gaGFzIGVs
+YXBzZWQsIHNvIHN1Y2ggYSBkZXZpY2UgY2FuCj4gKyAqIHNwZW5kIHVwIHRvIHJvdWdobHkgdHdp
+Y2UgdGhhdCB0aW1lIGhlcmUuCj4gKyAqCj4gKyAqIFJldHVybjogMCBvbiBzdWNjZXNzLCBhIG5l
+Z2F0aXZlIGVycm9yIGNvZGUgb3RoZXJ3aXNlLgo+ICsgKi8KPiArc3RhdGljIGludCBzcGluYW5k
+X3dhaXRfcmVhZHlfY29uZmlybWVkKHN0cnVjdCBzcGluYW5kX2RldmljZSAqc3BpbmFuZCwKPiAr
+CQkJCQl1bnNpZ25lZCBsb25nIGluaXRpYWxfZGVsYXlfdXMsCj4gKwkJCQkJdW5zaWduZWQgbG9u
+ZyBwb2xsX2RlbGF5X3VzLCB1OCAqcykKPiArewo+ICsJdW5zaWduZWQgbG9uZyB0aW1lbzsKPiAr
+CXU4IHN0YXR1czsKPiArCWludCByZXQ7Cj4gKwo+ICsJaWYgKCEoc3BpbmFuZC0+ZmxhZ3MgJiBT
+UElOQU5EX1BSRU1BVFVSRV9SRUFEWV9RVUlSSykpCj4gKwkJcmV0dXJuIHNwaW5hbmRfd2FpdChz
+cGluYW5kLCBpbml0aWFsX2RlbGF5X3VzLCBwb2xsX2RlbGF5X3VzLCBzKTsKPiArCj4gKwl0aW1l
+byA9IGppZmZpZXMgKyBtc2Vjc190b19qaWZmaWVzKFNQSU5BTkRfV0FJVFJEWV9USU1FT1VUX01T
+KTsKPiArCWRvIHsKPiArCQlyZXQgPSBzcGluYW5kX3dhaXQoc3BpbmFuZCwgaW5pdGlhbF9kZWxh
+eV91cywgcG9sbF9kZWxheV91cywKPiArCQkJCSAgICZzdGF0dXMpOwo+ICsJCWlmIChyZXQgPCAw
+KQo+ICsJCQlyZXR1cm4gcmV0Owo+ICsKPiArCQlyZXQgPSBzcGluYW5kX3JlYWRfc3RhdHVzKHNw
+aW5hbmQsICZzdGF0dXMpOwo+ICsJCWlmIChyZXQpCj4gKwkJCXJldHVybiByZXQ7CgpbU2V2ZXJp
+dHk6IE1lZGl1bV0KSW4gc3BpbmFuZF93YWl0X3JlYWR5X2NvbmZpcm1lZCgpIGluIGRyaXZlcnMv
+bXRkL25hbmQvc3BpL2NvcmUuYywKc3BpbmFuZF9yZWFkX3N0YXR1cygpIGlzIGNhbGxlZCBpbW1l
+ZGlhdGVseSBhZnRlciBzcGluYW5kX3dhaXQoKSByZXR1cm5zIDAKd2l0aG91dCBhbnkgZGVsYXkg
+YmV0d2VlbiB0aGUgdHdvIHJlYWRzLgoKSW5zaWRlIHNwaW5hbmRfd2FpdCgpLCBzcGlfbWVtX3Bv
+bGxfc3RhdHVzKCkgd2FpdHMgaW5pdGlhbF9kZWxheV91cyBiZWZvcmUKdGhlIGZpcnN0IGNoZWNr
+IGFuZCBwb2xsX2RlbGF5X3VzIGJldHdlZW4gc3Vic2VxdWVudCBzb2Z0d2FyZSBwb2xscywgb3IK
+dXNlcyBoYXJkd2FyZSBzdGF0dXMtcG9sbGluZyBvZmZsb2FkIChzcGlfY29udHJvbGxlcl9tZW1f
+b3BzLnBvbGxfc3RhdHVzKQp3aGljaCBjb21wbGV0ZXMgYXMgc29vbiBhcyBTVEFUVVNfQlVTWSBm
+aXJzdCBjbGVhcnMuIEEgMy1ieXRlIEdFVF9GRUFUVVJFCnRyYW5zYWN0aW9uIG9uIGEgZmFzdCBT
+UEkgYnVzIHRha2VzIG9ubHkgYSBmcmFjdGlvbiBvZiBhIG1pY3Jvc2Vjb25kIG9uIHRoZQp3aXJl
+LiBPbiBhIGxvdy1vdmVyaGVhZCBTUEkgY29udHJvbGxlciBvciBvbmUgdXNpbmcgcG9sbF9zdGF0
+dXMgb2ZmbG9hZCwKY2FuIHRoZSBiYWNrLXRvLWJhY2sgc3BpbmFuZF9yZWFkX3N0YXR1cygpIGNh
+bGwgZXhlY3V0ZSBiZWZvcmUgdGhlCnByZW1hdHVyZS1yZWFkeSBnbGl0Y2ggd2luZG93IGhhcyBl
+bmRlZCwgYWxsb3dpbmcgc3BpbmFuZF9yZWFkX3BhZ2UoKSwKc3BpbmFuZF93cml0ZV9wYWdlKCks
+IHNwaW5hbmRfbXRkX2NvbnRpbnVvdXNfcGFnZV9yZWFkKCksIG9yCnNwaW5hbmRfZXJhc2UoKSB0
+byBwcm9jZWVkIHdoaWxlIHRoZSBjaGlwIGlzIHN0aWxsIGJ1c3k/CgpBbHNvLCB3aGVuIHNwaW5h
+bmRfcmVhZF9zdGF0dXMoKSBkb2VzIG9ic2VydmUgU1RBVFVTX0JVU1kgYW5kIHRoZSBkby13aGls
+ZQpsb29wIHJlcGVhdHMsIHNwaW5hbmRfd2FpdCgpIGlzIGNhbGxlZCBhZ2FpbiB3aXRoIHRoZSBv
+cmlnaW5hbAppbml0aWFsX2RlbGF5X3VzIChzdWNoIGFzIDI1MCB1cyBmb3IgZXJhc2Ugb3IgNzUg
+dXMgZm9yIHdyaXRlKSBldmVuIHRob3VnaAppbml0aWFsX2RlbGF5X3VzIGFscmVhZHkgZWxhcHNl
+ZCBvbiB0aGUgZmlyc3QgaXRlcmF0aW9uLiBTaG91bGQgdGhlcmUgYmUgYQpkZWxheSAoc3VjaCBh
+cyBwb2xsX2RlbGF5X3VzIG9yIGEgZGVkaWNhdGVkIHNldHRsaW5nIGRlbGF5KSBiZWZvcmUgdGhl
+CmNvbmZpcm1hdGlvbiBzcGluYW5kX3JlYWRfc3RhdHVzKCksIHdpdGggaW5pdGlhbF9kZWxheV91
+cyBjbGVhcmVkIHRvIDAgZm9yCnN1YnNlcXVlbnQgbG9vcCBpdGVyYXRpb25zPwoKPiArCX0gd2hp
+bGUgKChzdGF0dXMgJiBTVEFUVVNfQlVTWSkgJiYgdGltZV9iZWZvcmUoamlmZmllcywgdGltZW8p
+KTsKPiArCj4gKwlpZiAocykKPiArCQkqcyA9IHN0YXR1czsKPiArCj4gKwlyZXR1cm4gc3RhdHVz
+ICYgU1RBVFVTX0JVU1kgPyAtRVRJTUVET1VUIDogMDsKPiArfQoKW1NldmVyaXR5OiBNZWRpdW1d
+CkNhbiBzcGluYW5kX3dhaXRfcmVhZHlfY29uZmlybWVkKCkgaW4gZHJpdmVycy9tdGQvbmFuZC9z
+cGkvY29yZS5jIHJldHVybiBhCnNwdXJpb3VzIC1FVElNRURPVVQgaWYgdGhlIGNhbGxpbmcgdGFz
+ayBpcyBwcmVlbXB0ZWQgb3IgZGVsYXllZD8KCkZpcnN0LCB0aW1lbyBpcyBjb21wdXRlZCBiZWZv
+cmUgdGhlIGRvLXdoaWxlIGxvb3AgYXM6CgoJdGltZW8gPSBqaWZmaWVzICsgbXNlY3NfdG9famlm
+ZmllcyhTUElOQU5EX1dBSVRSRFlfVElNRU9VVF9NUyk7CgpPbiB0aGUgZmlyc3QgaXRlcmF0aW9u
+LCBpZiBzcGluYW5kX3dhaXQoKSBvYnNlcnZlcyB0aGUgcHJlbWF0dXJlIHJlYWR5CnNhbXBsZSAo
+Zm9yIGV4YW1wbGUgdmlhIGl0cyBwb3N0LXRpbWVvdXQgZmFsbGJhY2sgc3BpbmFuZF9yZWFkX3N0
+YXR1cygpCmFmdGVyIHNjaGVkdWxpbmcgZGVsYXkpIG9yIGlmIHRoZSB0YXNrIGlzIHByZWVtcHRl
+ZCBiZXR3ZWVuIHNwaW5hbmRfd2FpdCgpCmFuZCBzcGluYW5kX3JlYWRfc3RhdHVzKCkgc3VjaCB0
+aGF0IGppZmZpZXMgaXMgbm93IGF0IG9yIHBhc3QgdGltZW8gd2hlbgpzcGluYW5kX3JlYWRfc3Rh
+dHVzKCkgc2VlcyBTVEFUVVNfQlVTWSBzZXQgYWdhaW4sIHRpbWVfYmVmb3JlKGppZmZpZXMsCnRp
+bWVvKSBldmFsdWF0ZXMgdG8gZmFsc2UuIFRoZSBsb29wIHRoZW4gZXhpdHMgYWZ0ZXIgdGhlIGZp
+cnN0IGl0ZXJhdGlvbgphbmQgcmV0dXJucyAtRVRJTUVET1VUIHdpdGhvdXQgZXZlciBjYWxsaW5n
+IHNwaW5hbmRfd2FpdCgpIGEgc2Vjb25kIHRpbWUgdG8Kd2FpdCBmb3IgdGhlIGFjdHVhbCBmbGFz
+aCBvcGVyYXRpb24gdG8gZmluaXNoLgoKU2Vjb25kLCBpZiB0aGUgdGFzayBpcyBwcmVlbXB0ZWQg
+cmlnaHQgYWZ0ZXIgc3BpbmFuZF9yZWFkX3N0YXR1cygpIHJlYWRzClNUQVRVU19CVVNZIGFuZCBi
+ZWZvcmUgdGltZV9iZWZvcmUoamlmZmllcywgdGltZW8pIGlzIGV2YWx1YXRlZCwgdGhlIGxvb3AK
+ZXhpdHMgYW5kIHJldHVybnMgLUVUSU1FRE9VVCBiYXNlZCBvbiB0aGUgc3RhbGUgU1RBVFVTX0JV
+U1kgdmFsdWUgcmVhZApiZWZvcmUgdGhlIHByZWVtcHRpb24sIHdpdGhvdXQgcGVyZm9ybWluZyBh
+IGZpbmFsIHN0YXR1cyByZS1yZWFkIGFmdGVyIHRoZQp0aW1lb3V0IGV4cGlyZXMgKHVubGlrZSBz
+cGluYW5kX3dhaXQoKSkuIFNob3VsZCBzcGluYW5kX3JlYWRfc3RhdHVzKCkgYmUKY2hlY2tlZCBv
+bmUgbGFzdCB0aW1lIGlmIHRoZSBsb29wIHRlcm1pbmF0ZXMgd2l0aCBTVEFUVVNfQlVTWSBzZXQ/
+CgpbIC4uLiBdCgo+IEBAIC03MzMsMTAgKzc4MCwxMCBAQCBzdGF0aWMgaW50IHNwaW5hbmRfcmVz
+ZXRfb3Aoc3RydWN0IHNwaW5hbmRfZGV2aWNlICpzcGluYW5kKQo+ICAJaWYgKHJldCkKPiAgCQly
+ZXR1cm4gcmV0Owo+ICAKPiAtCXJldHVybiBzcGluYW5kX3dhaXQoc3BpbmFuZCwKPiAtCQkJICAg
+IFNQSU5BTkRfUkVTRVRfSU5JVElBTF9ERUxBWV9VUywKPiAtCQkJICAgIFNQSU5BTkRfUkVTRVRf
+UE9MTF9ERUxBWV9VUywKPiAtCQkJICAgIE5VTEwpOwo+ICsJcmV0dXJuIHNwaW5hbmRfd2FpdF9y
+ZWFkeV9jb25maXJtZWQoc3BpbmFuZCwKPiArCQkJCQkgICAgU1BJTkFORF9SRVNFVF9JTklUSUFM
+X0RFTEFZX1VTLAo+ICsJCQkJCSAgICBTUElOQU5EX1JFU0VUX1BPTExfREVMQVlfVVMsCj4gKwkJ
+CQkJICAgIE5VTEwpOwo+ICB9CgpbU2V2ZXJpdHk6IExvd10KVGhpcyBpc24ndCBhIGJ1ZywgYnV0
+IHNwaW5hbmRfd2FpdCgpIGlzIGRlY2xhcmVkIGluCmluY2x1ZGUvbGludXgvbXRkL3NwaW5hbmQu
+aCBhbmQgY2FsbGVkIGJ5IHZlbmRvciBkcml2ZXJzIChzdWNoIGFzCmY1MGwxZzQxbGJfb3RwX2xv
+Y2soKSBpbiBkcml2ZXJzL210ZC9uYW5kL3NwaS9lc210LmMgYW5kCm10MjlmMmcwMWFiYWdkX290
+cF9sb2NrKCkgaW4gZHJpdmVycy9tdGQvbmFuZC9zcGkvbWljcm9uLmMpIHRvIHdhaXQgZm9yCmRl
+dmljZSByZWFkaW5lc3MuCgpJbnN0ZWFkIG9mIGFkZGluZyBzcGluYW5kX3dhaXRfcmVhZHlfY29u
+ZmlybWVkKCkgYW5kIHVwZGF0aW5nIGFsbCBmaXZlCmNhbGxlcnMgaW4gZHJpdmVycy9tdGQvbmFu
+ZC9zcGkvY29yZS5jIChzcGluYW5kX3Jlc2V0X29wKCksCnNwaW5hbmRfcmVhZF9wYWdlKCksIHNw
+aW5hbmRfd3JpdGVfcGFnZSgpLApzcGluYW5kX210ZF9jb250aW51b3VzX3BhZ2VfcmVhZCgpLCBh
+bmQgc3BpbmFuZF9lcmFzZSgpKSB3aGlsZSBsZWF2aW5nCnNwaW5hbmRfd2FpdCgpIHVuY29uZmly
+bWVkLCB3b3VsZCBpdCBiZSBjbGVhbmVyIHRvIG1vdmUgdGhlIHNpbmdsZS13YWl0CmJvZHkgaW50
+byBhIHN0YXRpYyBoZWxwZXIgYW5kIGhhbmRsZSBTUElOQU5EX1BSRU1BVFVSRV9SRUFEWV9RVUlS
+SyBkaXJlY3RseQppbnNpZGUgc3BpbmFuZF93YWl0KCk/CgotLSAKU2FzaGlrbyBBSSByZXZpZXcg
+wrcgaHR0cHM6Ly9zYXNoaWtvLmRldi8jL3BhdGNoc2V0LzIwMjYxMDMwMjAzMzQyLjkxMTcyLTEt
+c29jaG5ldi52Ljc0QGdtYWlsLmNvbT9wYXJ0PTEKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5n
+IGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1t
+dGQvCg==
