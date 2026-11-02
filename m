@@ -2,97 +2,57 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7643606A324
-	for <linux-mtd@archiver.kernel.org>; Mon,  2 Nov 2026 08:30:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91063606A324
+	for <linux-mtd@archiver.kernel.org>; Mon,  2 Nov 2026 08:45:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=mwEFqIQi;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=bYcHxNNe
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=ps0vs0z6;
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=UUJFrUcU
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Reply-To:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:References:
+	In-Reply-To:Cc:To:Subject:From:Message-ID:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=AX1RmJpo/BBV/7Fyy4+1SLSfDea79KFKQWGbfQHxMb4=; b=mwEFqIQiIjnCHkVHX/OdR00xR/
-	P0RxYBL4Cvl4p8fhXnzpT5fhEXbI/kUX9rPLlSItJd6NbTLhylihQuJPTJLozrBiJbjxtu+5OxDbI
-	LfSOaIkaKCRbqgmeqP9IcpK2m8FhqEwZyBO03GUDfLS2dCZqMn+0b9C2SFiTo3IT1Zl+T0rbfAPXA
-	+9joF5HMnL+eAw3JxuObrGUb6M/dCfTPinBwjGVPwqqKQEN70pNvjlQprONCt4gQYbrJFJqkY8hqR
-	7Tb761qiuICH+bU3Faz/RHzKydV08lq6PyAVdy/pAELLvapIeVH9+zulcgdtITdewOb0rMWFoOlKb
-	n9LFgxVw==;
+	bh=mmfOFoRCuTzsIZJ9dz/D8Bs0R1pLyhit0agfhpldHrI=; b=ps0vs0z66u+juLUtNGBBNHh7gO
+	wvE3Vorl+mmbzIIgOf5X52744zS/rAPuiOrsD7YckhoEGIKRP4SWCMImjZQDL9GOMFkCZog3b2xGo
+	jzmMXjQeqgvMnpzJyrqReAAEOQBXxmz8HTlNT6VhRggSmhrZLs9/NU+OnfILLwMTwVS9+Gf4ETEB5
+	kzTdthkUFM5qIGkhxspF1hDeNJoSc5u+xlBwRx4L2JEWTRuz8bGDqbHIIKwR6kT3ROGji93yyls5s
+	gxYlrcimseyfyArsvvK35y/Pfm0m2yTRwqTQrDPTFLPvhdBkLx1lQxoPaUey16V3xNfVxyMarrKmu
+	9aTOrW2g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xNnRS-0000000FsEg-0v4B;
-	Mon, 02 Nov 2026 08:30:58 +0000
-Received: from mail-pj1-x1029.google.com ([2607:f8b0:4864:20::1029])
+	id 1xNnfG-0000000Fu5A-3A1M;
+	Mon, 02 Nov 2026 08:45:14 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xNnRO-0000000FsEJ-3rL6
+	id 1xNnfF-0000000Fu53-36Ld
 	for linux-mtd@lists.infradead.org;
-	Mon, 02 Nov 2026 08:30:56 +0000
-Received: by mail-pj1-x1029.google.com with SMTP id 98e67ed59e1d1-3ad2b3b1c02so1443353a91.1
-        for <linux-mtd@lists.infradead.org>; Mon, 02 Nov 2026 00:30:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1793608254; x=1794213054; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=8KAS6t6RcH5YSPgaYyaJ/vTgjaBHTXeGZTqVGqeK6VE=;
-        b=bYcHxNNemtnSEAumqNeB0xGGYez8FCPrGkmW7/HJgyNffXMad95ELzvzl9RfLIxfnT
-         /62OFSeThIMKVVBtZ9efRyoW1ySKjwsdHUo8+T4v9iTbGyVsJ0Fyp131AcfMOiplYmCf
-         YU9j0IazYIs8jmTfC+nAhJbdbIbvdwCsrr5sfH9+jjMaLbcE7MqIyw1eNxp62qTwgEKC
-         OPCexMKYcHkn4bYUaO7CAgV+Kp3P9NPKTVuRf9iJ/2JoUmBQP1ANwkiLCuIqGiOA8flk
-         TKdmKtxRAh2Cbht76ZkqqJTGJNU9U7Z+MdCbNAQfvHVuAb3VAJVvXoDyfqQqsE4Z8ky0
-         F5OA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1793608254; x=1794213054;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=8KAS6t6RcH5YSPgaYyaJ/vTgjaBHTXeGZTqVGqeK6VE=;
-        b=fr9VO9YYi0dhSafzB88IqZ7BkqJqtop6mYBQOXlpxW3pMHqdjIB+2RIBI3b3ayp5wk
-         +c5D1fYNJ1OZvvgA5rJAyl3DXKIpnFObSji7SWstp4ghRnJlXjvdKqPvUx8yuhZLBc31
-         WU8yIXc/LhTZ4oJd091CDvaMEDg0zOEshzdXiS1RXG2M60dUF/mDLUiHZ3CnUiWLVCjP
-         8wXmLPXb5+3gBYoBvxAjJC0p0jAhrBdQ23gXyR4j/gTf+V5GLKnvVlqZmy0qm4przN+0
-         SJDGS+mvm9XgMqIgmclpUvtDHrZKIzOHWwrNSx8+FVG1mmAM1BZjs/HVf8C3BFQeJdhs
-         7TFw==
-X-Forwarded-Encrypted: i=1; AKwUvBwqVBVJjR8GszxKudvG2XpMv042EcS1Rpq/PmPcqETQU6oxypUHksKfrauhoj+XTPa/TjMZvRcFEzs=@lists.infradead.org
-X-Gm-Message-State: APuU4Z+pAgTuA0dciOiJoXf4kTgjLqr4osWZLt+6kEaLvnr/P50Gifh/
-	VuE3Pl71Bpyta79XGX+19g64X1pr6K8B35oHhXz2UU2zSXPVc1NZ/PHO
-X-Gm-Gg: AYBFou0a1o0KqB18OqTGwp5MvN4M4yK8Zp3v21lfSRDo7uZy5sQfAEELhw2XlMELV3E
-	27L1FsCGvBAidQmfw7UKZ/p6kETWEtupOUrRcM2IOxbKGFcdOFiaqyPO6FDIdSwCHgFPBn/dozt
-	q0dzBtO7grTo5WABmszXP0flBxJeThRH+TodBwfBjWJMNcADVBX3ogd65t9srBiCvTFvmRNBCIb
-	xA+5tUCnZd7iH59ROz3H3kCfbEDSVWQle/zGRbD+SGqPsdI6ArJA2e+K7AE0rf28vO+xbW6Yt/U
-	9Z6q211PWYBlX2Jy6v6ZeYKC6tuMzvROCfszNQk3HRlB0OHNFaRZQIkMtw/Vl+Golgr1v+DKGhm
-	yXtG8hQZEisGKOG2PlhG3Pp+wzxwD7Z4f1gxN8E1LkA54lm+MflNdF7qf3C8oorDFmvzjalLd6k
-	0MK+V8BsomA2y5V7mVRJGpLNlwHv2/t3kY8BEMqhmQLMImhyFlHs94MGs2bzjm3wzLZ3pAdBe7F
-	a8ZlBgf5ZH2l0Q56zQpvUhI2VF2h8SU6LhZV8TdoK55m56woaqShxL/ZKmYfcP24smXdkEaFcNc
-	GpHQEHem91I4ZRNrwrY7z1CCtaIWpPUoPPXWXh6vR+gmnOfB0HD8wX0Vvh0QXI5XENR27v6p0eH
-	+
-X-Received: by 2002:a17:90b:57c5:b0:3ac:b44c:2d84 with SMTP id 98e67ed59e1d1-3ae897cc815mr8182409a91.13.1793608253825;
-        Mon, 02 Nov 2026 00:30:53 -0800 (PST)
-Received: from localhost.localdomain ([155.69.168.11])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3ae845ae5b9sm13365251a91.12.2026.11.02.00.30.49
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Mon, 02 Nov 2026 00:30:53 -0800 (PST)
-From: Yuqiang Sun <izaiahsun@gmail.com>
-To: miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com
-Cc: amit.kumar-mahapatra@amd.com,
-	luca.ceresoli@bootlin.com,
-	harshit.m.mogalapalli@oracle.com,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: [PATCH] mtd: virt-concat: Tear the concat down when its master goes away
-Date: Mon,  2 Nov 2026 16:30:45 +0800
-Message-ID: <20261102083045.8512-1-izaiahsun@gmail.com>
-X-Mailer: git-send-email 2.54.0
-X-Archived-By: <archiver.kernel.org>
-MIME-Version: 1.0
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261102_003054_972838_8666C269 
-X-CRM114-Status: GOOD (  31.26  )
-X-Spam-Score: -2.1 (--)
+	Mon, 02 Nov 2026 08:45:13 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id 7B52940A20;
+	Mon,  2 Nov 2026 08:45:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0707B1F000C1;
+	Mon,  2 Nov 2026 08:45:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1793609113;
+	bh=Lm83vNYJQrtOkSW7rFAbEdS0OMbzgcxNTZBXAZKnhfM=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=UUJFrUcUbhGxqd5l81Bcc6FINoeHJw6uBTQfb3b/0K//snT/M4T7Rv3GWChR9vhd8
+	 CQTuwDhBWY2w7UNGIJvptJ8E16BzCbHfh3DbG2DdKlyMEMGL8K9EPpFZN0zcjXpfYF
+	 XrW7qeBz0cNppvqUnbxHWnaaKzvWccVfn/UXrHpDJI50TgI4xy0UxyoMT1i+vp6Iud
+	 h1UEaSLxqamm9TJ90GpqkQFTYhPusSgdFTwzP95bio0k0+w4EAyu0xl2PiharlKvrc
+	 4lonyx3v4RmsNbqEe66UYFHJJWEbvEC39GT5umKfUq4A99YaUCEXul0UAJRzOMp5+K
+	 kyCX25L5gOenA==
+Message-ID: <sashiko-outbox-193135@kernel.org>
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH] mtd: virt-concat: Tear the concat down when its master
+ goes away
+To: "Yuqiang Sun" <izaiahsun@gmail.com>, miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com
+Cc: amit.kumar-mahapatra@amd.com, luca.ceresoli@bootlin.com, harshit.m.mogalapalli@oracle.com, linux-mtd@lists.infradead.org
+In-Reply-To: <20261102083045.8512-1-izaiahsun@gmail.com>
+References: <20261102083045.8512-1-izaiahsun@gmail.com>
+Date: Mon, 02 Nov 2026 08:45:12 +0000
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,265 +62,172 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Reply-To: sashiko-reviews@lists.linux.dev
+X-Archived-By: <archiver.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,
-	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-8.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-Partitions that are part of a virtual concatenation are never registered
-on their own: add_mtd_partitions() hands them to mtd_virt_concat_add() and
-skips them, so they are not on the parent's partition list either. The
-concatenated device is registered with a copy of the first partition's
-struct device, whose parent is the master's device.
-
-When the master is unregistered, mtd_virt_concat_destroy() looks for a
-concat item whose DT nodes include the master's of_node. The items hold
-the partition nodes, so nothing ever matches: the concat stays registered
-and keeps the master's device alive (it stays in the idr and in
-/proc/mtd), while the driver frees the master. Reading /proc/mtd then
-uses freed memory, and so does device_shutdown(). The concat's partitions
-are leaked, and since the item's subdev count is never reset, binding the
-driver again writes past the end of concat->subdev[].
-
-The matching branch is reached only from the MTD core's module exit,
-which cannot run while the concat is registered (it holds a reference on
-the module). There, a failed add_mtd_device() frees the caller's mtd
-instead of the child. The concat also puts references on its parts that
-it never took.
-
-Find the concats to tear down by the master of their parts instead.
-Unregister each one that includes a partition of the master that goes
-away, free those partitions and drop them from the item, which keeps its
-DT nodes and the other parts, so the concat is joined again when the
-master comes back. Do not put references that were never taken, and only
-unregister a concat at module exit if it is registered.
-
-Tested on QEMU (arm64 virt, TCG) with KASAN, with two partitions of the
-CFI flash joined by part-concat-next, physmap and the MTD core as
-modules: unbind physmap, bind it again, unbind it again, unload the
-modules. Without this patch the first unbind leaves both devices behind
-and each read of /proc/mtd gives KASAN slab-use-after-free reports in
-mtd_proc_show(), binding again gives slab-out-of-bounds writes in
-mtd_virt_concat_add(), the MTD core cannot be unloaded, and
-device_shutdown() at power-off reports use-after-free and refcount_t
-underflow. With it the concat is removed on unbind, created again and
-readable after binding, and the MTD core unloads, with no reports. The
-same steps without part-concat-next are clean with and without this
-patch.
-
-Fixes: 43db6366fc2d ("mtd: Add driver for concatenating devices")
-Cc: stable@vger.kernel.org
-Signed-off-by: Yuqiang Sun <izaiahsun@gmail.com>
----
-
-Notes:
-    The bug was found with kbound, a research static analysis prototype
-    (its report was the add_mtd_device() failure path in
-    mtd_virt_concat_destroy(); running it showed the teardown problem).
-    The patch, the changelog and the test setup were written with the help
-    of an AI coding assistant (Claude); I have reviewed and tested them as
-    described above.
-    
-    Not tested: a concat whose parts are on two different masters (QEMU virt
-    has one flash), and a concat device held open while its master goes
-    away, which this patch handles like a master that goes away while open.
-
- drivers/mtd/mtd_virt_concat.c | 106 ++++++++++++++--------------------
- include/linux/mtd/concat.h    |  13 ++---
- 2 files changed, 49 insertions(+), 70 deletions(-)
-
-diff --git a/drivers/mtd/mtd_virt_concat.c b/drivers/mtd/mtd_virt_concat.c
-index 40b300021dda..ecd5b07d32ce 100644
---- a/drivers/mtd/mtd_virt_concat.c
-+++ b/drivers/mtd/mtd_virt_concat.c
-@@ -57,94 +57,76 @@ static bool mtd_is_part_concat(struct device_node *dev)
- 	return false;
- }
- 
--static void mtd_virt_concat_put_mtd_devices(struct mtd_concat *concat)
-+/* Unregister the concatenated device, if it is registered */
-+static void mtd_virt_concat_unregister(struct mtd_concat *concat)
- {
--	int i;
--
--	for (i = 0; i < concat->num_subdev; i++)
--		put_mtd_device(concat->subdev[i]);
-+	if (!concat->mtd.name)
-+		return;
-+
-+	del_mtd_device(&concat->mtd);
-+	kfree(concat->mtd.name);
-+	concat->mtd.name = NULL;
-+	if (concat->mtd.numeraseregions)
-+		kfree(concat->mtd.eraseregions);
-+	concat->mtd.numeraseregions = 0;
- }
- 
- void mtd_virt_concat_destroy_joins(void)
- {
--	struct mtd_virt_concat_node *item, *tmp;
--	struct mtd_info *mtd;
-+	struct mtd_virt_concat_node *item;
- 
--	list_for_each_entry_safe(item, tmp, &concat_node_list, head) {
--		mtd = &item->concat->mtd;
--		if (item->concat) {
--			mtd_device_unregister(mtd);
--			kfree(mtd->name);
--			mtd_virt_concat_put_mtd_devices(item->concat);
--			mtd_concat_destroy(mtd);
--		}
-+	list_for_each_entry(item, &concat_node_list, head) {
-+		mtd_virt_concat_unregister(item->concat);
-+		mtd_concat_destroy(&item->concat->mtd);
-+		item->concat = NULL;
- 	}
- }
- 
- /**
-- * mtd_virt_concat_destroy - Destroy the concat that includes the mtd object
-+ * mtd_virt_concat_destroy - Destroy the concats that include partitions of
-+ *                           an MTD device
-  * @mtd:        pointer to 'mtd_info'
-  *
-- * Return: 0 on success, -error otherwise.
-+ * Called when the master of @mtd is unregistered. Partitions of that master
-+ * that are part of a concatenation were never registered on their own, so
-+ * unregister every concat that includes one of them and free them. The other
-+ * parts stay with the concat item, which is joined again once all its parts
-+ * are back.
-+ *
-+ * Return: 0.
-  */
- int mtd_virt_concat_destroy(struct mtd_info *mtd)
- {
- 	struct mtd_info *child, *master = mtd_get_master(mtd);
--	struct mtd_virt_concat_node *item, *tmp;
-+	struct mtd_virt_concat_node *item;
- 	struct mtd_concat *concat;
--	int idx, ret = 0;
--	bool is_mtd_found;
-+	int idx, n;
- 
--	list_for_each_entry_safe(item, tmp, &concat_node_list, head) {
--		is_mtd_found = false;
-+	list_for_each_entry(item, &concat_node_list, head) {
-+		concat = item->concat;
- 
--		/* Find the concat item that hold the mtd device */
--		for (idx = 0; idx < item->count; idx++) {
--			if (item->nodes[idx] == mtd->dev.of_node) {
--				is_mtd_found = true;
-+		for (idx = 0; idx < concat->num_subdev; idx++) {
-+			if (mtd_get_master(concat->subdev[idx]) == master)
- 				break;
--			}
- 		}
--		if (!is_mtd_found)
-+		if (idx == concat->num_subdev)
- 			continue;
--		concat = item->concat;
- 
--		/*
--		 * Since this concatenated device is being removed, retrieve
--		 * all MTD devices that are part of it and register them
--		 * individually.
--		 */
--		for (idx = 0; idx < concat->num_subdev; idx++) {
-+		mtd_virt_concat_unregister(concat);
-+
-+		for (idx = 0, n = 0; idx < concat->num_subdev; idx++) {
- 			child = concat->subdev[idx];
--			if (child->dev.of_node != mtd->dev.of_node) {
--				ret = add_mtd_device(child);
--				if (ret)
--					goto out;
-+			if (mtd_get_master(child) == master) {
-+				kfree(child->name);
-+				kfree(child);
-+			} else {
-+				concat->subdev[n++] = child;
- 			}
- 		}
--		/* Destroy the concat */
--		if (concat->mtd.name) {
--			del_mtd_device(&concat->mtd);
--			kfree(concat->mtd.name);
--			mtd_virt_concat_put_mtd_devices(item->concat);
--			mtd_concat_destroy(&concat->mtd);
--		}
--
--		list_del(&item->head);
--		for (idx = 0; idx < item->count; idx++)
--			of_node_put(item->nodes[idx]);
--
--		kfree(item);
-+		concat->num_subdev = n;
- 	}
--	return 0;
--out:
--	mutex_lock(&master->master.partitions_lock);
--	list_del(&child->part.node);
--	mutex_unlock(&master->master.partitions_lock);
--	kfree(mtd->name);
--	kfree(mtd);
- 
--	return ret;
-+	return 0;
- }
- 
- /**
-@@ -309,10 +291,8 @@ int mtd_virt_concat_create_join(void)
- 				name_sz += (strlen(concat->subdev[idx]->name) + 1);
- 			name_sz += strlen(CONCAT_POSTFIX);
- 			name = kmalloc(name_sz + 1, GFP_KERNEL);
--			if (!name) {
--				mtd_virt_concat_put_mtd_devices(concat);
-+			if (!name)
- 				return -ENOMEM;
--			}
- 
- 			ret = 0;
- 			for (idx = 0; idx < concat->num_subdev; idx++) {
-diff --git a/include/linux/mtd/concat.h b/include/linux/mtd/concat.h
-index f8d4d6ac1fc1..ce9824567f98 100644
---- a/include/linux/mtd/concat.h
-+++ b/include/linux/mtd/concat.h
-@@ -62,16 +62,15 @@ bool mtd_virt_concat_add(struct mtd_info *mtd);
- int mtd_virt_concat_create_join(void);
- 
- /**
-- * mtd_virt_concat_destroy - Remove the concat that includes a specific mtd device
-- *                           as one of its components.
-+ * mtd_virt_concat_destroy - Remove the concats that include partitions of a
-+ *                           specific mtd device as components.
-  * @mtd: pointer to MTD device info structure.
-  *
-- * Returns 0 on succes, or a negative error code.
-- *
-- * If the mtd_info object is part of a concatenated device, all other MTD devices
-- * within that concat are registered individually. The concatenated device is then
-- * removed, along with its concatenation component.
-+ * Returns 0.
-  *
-+ * Called when the master of @mtd is unregistered: every concatenated device
-+ * with a partition of that master is unregistered, and those partitions are
-+ * freed. The concatenation is created again when all its parts are back.
-  */
- int mtd_virt_concat_destroy(struct mtd_info *mtd);
- 
-
-base-commit: d135ab453a7400a34930bdda1ef4bdc8acfac80e
--- 
-2.53.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+VGhhbmsgeW91IGZvciB5b3VyIGNvbnRyaWJ1dGlvbiEgU2FzaGlrbyBBSSByZXZpZXcgZm91bmQg
+MyBwb3RlbnRpYWwgaXNzdWUocykgdG8gY29uc2lkZXI6Ci0gW0NyaXRpY2FsXSBtdGQ6IHZpcnQt
+Y29uY2F0OiBwYXJ0aXRpb24gb3JkZXIgY29ycnVwdGVkIG9uIHJlYmluZCBhZnRlciBwYXJ0aWFs
+IHRlYXJkb3duCi0gW0NyaXRpY2FsXSBtdGQ6IHZpcnQtY29uY2F0OiB1c2UtYWZ0ZXItZnJlZSB3
+aGVuIG1hc3RlciB1bmJpbmRzIHdpdGggY29uY2F0IGhlbGQgb3BlbgotIFtIaWdoXSBtdGQ6IHZp
+cnQtY29uY2F0OiBkb3VibGUgZnJlZSBvZiBlcmFzZXJlZ2lvbnMgYWZ0ZXIgYWRkX210ZF9kZXZp
+Y2UoKSBmYWlsdXJlCi0tCgpjb21taXQgOTljNDA4NDc3ZDUxYWRiMGRkNDVjNzIyM2NhOGRhNzZi
+MDc3ZTdjZgpBdXRob3I6IFl1cWlhbmcgU3VuIDxpemFpYWhzdW5AZ21haWwuY29tPgoKbXRkOiB2
+aXJ0LWNvbmNhdDogVGVhciB0aGUgY29uY2F0IGRvd24gd2hlbiBpdHMgbWFzdGVyIGdvZXMgYXdh
+eQoKVGhpcyBjb21taXQgdXBkYXRlcyBtdGRfdmlydF9jb25jYXRfZGVzdHJveSgpIHRvIGZpbmQg
+YW5kIHVucmVnaXN0ZXIgdmlydHVhbApjb25jYXRlbmF0ZWQgTVREIGRldmljZXMgYnkgbWF0Y2hp
+bmcgdGhlIG1hc3RlciBvZiB0aGVpciBjb21wb25lbnQgcGFydGl0aW9ucywKZnJlZWluZyB0aGUg
+ZGVwYXJ0aW5nIG1hc3RlcidzIHBhcnRpdGlvbnMgd2hpbGUgcmV0YWluaW5nIHRoZSBjb25jYXQg
+aXRlbSBzbwp0aGUgZGV2aWNlIGNhbiBiZSByZWNyZWF0ZWQgaWYgdGhlIG1hc3RlciBpcyBib3Vu
+ZCBhZ2Fpbi4KCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL210ZF92aXJ0X2NvbmNhdC5jIGIv
+ZHJpdmVycy9tdGQvbXRkX3ZpcnRfY29uY2F0LmMKPiBpbmRleCA0MGIzMDAwMjFkZGFhLi5lY2Q1
+YjA3ZDMyY2UzIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbXRkL210ZF92aXJ0X2NvbmNhdC5jCj4g
+KysrIGIvZHJpdmVycy9tdGQvbXRkX3ZpcnRfY29uY2F0LmMKPiBAQCAtNTcsOTQgKzU3LDc2IEBA
+IHN0YXRpYyBib29sIG10ZF9pc19wYXJ0X2NvbmNhdChzdHJ1Y3QgZGV2aWNlX25vZGUgKmRldikK
+PiAgCXJldHVybiBmYWxzZTsKPiAgfQo+ICAKPiAtc3RhdGljIHZvaWQgbXRkX3ZpcnRfY29uY2F0
+X3B1dF9tdGRfZGV2aWNlcyhzdHJ1Y3QgbXRkX2NvbmNhdCAqY29uY2F0KQo+ICsvKiBVbnJlZ2lz
+dGVyIHRoZSBjb25jYXRlbmF0ZWQgZGV2aWNlLCBpZiBpdCBpcyByZWdpc3RlcmVkICovCj4gK3N0
+YXRpYyB2b2lkIG10ZF92aXJ0X2NvbmNhdF91bnJlZ2lzdGVyKHN0cnVjdCBtdGRfY29uY2F0ICpj
+b25jYXQpCj4gIHsKPiAtCWludCBpOwo+IC0KPiAtCWZvciAoaSA9IDA7IGkgPCBjb25jYXQtPm51
+bV9zdWJkZXY7IGkrKykKPiAtCQlwdXRfbXRkX2RldmljZShjb25jYXQtPnN1YmRldltpXSk7Cj4g
+KwlpZiAoIWNvbmNhdC0+bXRkLm5hbWUpCj4gKwkJcmV0dXJuOwo+ICsKPiArCWRlbF9tdGRfZGV2
+aWNlKCZjb25jYXQtPm10ZCk7Cj4gKwlrZnJlZShjb25jYXQtPm10ZC5uYW1lKTsKPiArCWNvbmNh
+dC0+bXRkLm5hbWUgPSBOVUxMOwo+ICsJaWYgKGNvbmNhdC0+bXRkLm51bWVyYXNlcmVnaW9ucykK
+PiArCQlrZnJlZShjb25jYXQtPm10ZC5lcmFzZXJlZ2lvbnMpOwo+ICsJY29uY2F0LT5tdGQubnVt
+ZXJhc2VyZWdpb25zID0gMDsKPiAgfQoKW1NldmVyaXR5OiBIaWdoXQpDYW4gdGhpcyBkb3VibGUt
+ZnJlZSBjb25jYXQtPm10ZC5lcmFzZXJlZ2lvbnMgaWYgYWRkX210ZF9kZXZpY2UoKSBmYWlscyBp
+bgptdGRfdmlydF9jb25jYXRfY3JlYXRlX2pvaW4oKT8KCkluIGRyaXZlcnMvbXRkL210ZF92aXJ0
+X2NvbmNhdC5jOm10ZF92aXJ0X2NvbmNhdF9jcmVhdGVfam9pbigpLCAqbXRkIGlzCmNvcGllZCBp
+bnRvIGl0ZW0tPmNvbmNhdC0+bXRkIGJlZm9yZSBhZGRfbXRkX2RldmljZSgmY29uY2F0LT5tdGQp
+IGlzIGNhbGxlZDoKCgltdGQgPSBtdGRfY29uY2F0X2NyZWF0ZShjb25jYXQtPnN1YmRldiwgY29u
+Y2F0LT5udW1fc3ViZGV2LCBuYW1lKTsKCWlmICghbXRkKSB7CgkJa2ZyZWUobmFtZSk7CgkJcmV0
+dXJuIC1FTlhJTzsKCX0KCWNvbmNhdC0+bXRkID0gKm10ZDsKCWNvbmNhdC0+bXRkLmRldi5wYXJl
+bnQgPSBjb25jYXQtPnN1YmRldlswXS0+ZGV2LnBhcmVudDsKCWNvbmNhdC0+bXRkLmRldiA9IGNv
+bmNhdC0+c3ViZGV2WzBdLT5kZXY7CgoJcmV0ID0gYWRkX210ZF9kZXZpY2UoJmNvbmNhdC0+bXRk
+KTsKCWlmIChyZXQpCgkJZ290byBkZXN0cm95X2NvbmNhdDsKCS4uLgpkZXN0cm95X2NvbmNhdDoK
+CW10ZF9jb25jYXRfZGVzdHJveShtdGQpOwoKV2hlbiBtdGRfY29uY2F0X2NyZWF0ZSgpIGFsbG9j
+YXRlcyBtdGQtPmVyYXNlcmVnaW9ucyAod2hlbiBzdWJkZXZpY2VzIGhhdmUKbXVsdGlwbGUgZXJh
+c2UgcmVnaW9ucyksIGEgZmFpbHVyZSBpbiBhZGRfbXRkX2RldmljZSgpIGp1bXBzIHRvCmRlc3Ry
+b3lfY29uY2F0IGFuZCBjYWxscyBtdGRfY29uY2F0X2Rlc3Ryb3kobXRkKSwgd2hpY2ggZnJlZXMK
+bXRkLT5lcmFzZXJlZ2lvbnMsIGJ1dCBsZWF2ZXMgY29uY2F0LT5tdGQubmFtZSBub24tTlVMTCBh
+bmQKY29uY2F0LT5tdGQubnVtZXJhc2VyZWdpb25zID4gMCB3aXRoIGNvbmNhdC0+bXRkLmVyYXNl
+cmVnaW9ucyBwb2ludGluZyB0byB0aGUKZnJlZWQgYnVmZmVyLgoKV2hlbiBtdGRfdmlydF9jb25j
+YXRfZGVzdHJveSgpIG9yIG10ZF92aXJ0X2NvbmNhdF9kZXN0cm95X2pvaW5zKCkgbGF0ZXIgY2Fs
+bHMKbXRkX3ZpcnRfY29uY2F0X3VucmVnaXN0ZXIoY29uY2F0KSwgaXQgc2VlcyBjb25jYXQtPm10
+ZC5uYW1lICE9IE5VTEwsIGNhbGxzCmRlbF9tdGRfZGV2aWNlKCZjb25jYXQtPm10ZCkgb24gdGhl
+IHVucmVnaXN0ZXJlZCBkZXZpY2UsIGFuZCBjYWxscwprZnJlZShjb25jYXQtPm10ZC5lcmFzZXJl
+Z2lvbnMpIGEgc2Vjb25kIHRpbWUuCgo+ICAKPiAgdm9pZCBtdGRfdmlydF9jb25jYXRfZGVzdHJv
+eV9qb2lucyh2b2lkKQo+ICB7Cj4gLQlzdHJ1Y3QgbXRkX3ZpcnRfY29uY2F0X25vZGUgKml0ZW0s
+ICp0bXA7Cj4gLQlzdHJ1Y3QgbXRkX2luZm8gKm10ZDsKPiArCXN0cnVjdCBtdGRfdmlydF9jb25j
+YXRfbm9kZSAqaXRlbTsKPiAgCj4gLQlsaXN0X2Zvcl9lYWNoX2VudHJ5X3NhZmUoaXRlbSwgdG1w
+LCAmY29uY2F0X25vZGVfbGlzdCwgaGVhZCkgewo+IC0JCW10ZCA9ICZpdGVtLT5jb25jYXQtPm10
+ZDsKPiAtCQlpZiAoaXRlbS0+Y29uY2F0KSB7Cj4gLQkJCW10ZF9kZXZpY2VfdW5yZWdpc3Rlciht
+dGQpOwo+IC0JCQlrZnJlZShtdGQtPm5hbWUpOwo+IC0JCQltdGRfdmlydF9jb25jYXRfcHV0X210
+ZF9kZXZpY2VzKGl0ZW0tPmNvbmNhdCk7Cj4gLQkJCW10ZF9jb25jYXRfZGVzdHJveShtdGQpOwo+
+IC0JCX0KPiArCWxpc3RfZm9yX2VhY2hfZW50cnkoaXRlbSwgJmNvbmNhdF9ub2RlX2xpc3QsIGhl
+YWQpIHsKPiArCQltdGRfdmlydF9jb25jYXRfdW5yZWdpc3RlcihpdGVtLT5jb25jYXQpOwo+ICsJ
+CW10ZF9jb25jYXRfZGVzdHJveSgmaXRlbS0+Y29uY2F0LT5tdGQpOwo+ICsJCWl0ZW0tPmNvbmNh
+dCA9IE5VTEw7Cj4gIAl9Cj4gIH0KPiAgCj4gIC8qKgo+IC0gKiBtdGRfdmlydF9jb25jYXRfZGVz
+dHJveSAtIERlc3Ryb3kgdGhlIGNvbmNhdCB0aGF0IGluY2x1ZGVzIHRoZSBtdGQgb2JqZWN0Cj4g
+KyAqIG10ZF92aXJ0X2NvbmNhdF9kZXN0cm95IC0gRGVzdHJveSB0aGUgY29uY2F0cyB0aGF0IGlu
+Y2x1ZGUgcGFydGl0aW9ucyBvZgo+ICsgKiAgICAgICAgICAgICAgICAgICAgICAgICAgIGFuIE1U
+RCBkZXZpY2UKPiAgICogQG10ZDogICAgICAgIHBvaW50ZXIgdG8gJ210ZF9pbmZvJwo+ICAgKgo+
+IC0gKiBSZXR1cm46IDAgb24gc3VjY2VzcywgLWVycm9yIG90aGVyd2lzZS4KPiArICogQ2FsbGVk
+IHdoZW4gdGhlIG1hc3RlciBvZiBAbXRkIGlzIHVucmVnaXN0ZXJlZC4gUGFydGl0aW9ucyBvZiB0
+aGF0IG1hc3Rlcgo+ICsgKiB0aGF0IGFyZSBwYXJ0IG9mIGEgY29uY2F0ZW5hdGlvbiB3ZXJlIG5l
+dmVyIHJlZ2lzdGVyZWQgb24gdGhlaXIgb3duLCBzbwo+ICsgKiB1bnJlZ2lzdGVyIGV2ZXJ5IGNv
+bmNhdCB0aGF0IGluY2x1ZGVzIG9uZSBvZiB0aGVtIGFuZCBmcmVlIHRoZW0uIFRoZSBvdGhlcgo+
+ICsgKiBwYXJ0cyBzdGF5IHdpdGggdGhlIGNvbmNhdCBpdGVtLCB3aGljaCBpcyBqb2luZWQgYWdh
+aW4gb25jZSBhbGwgaXRzIHBhcnRzCj4gKyAqIGFyZSBiYWNrLgo+ICsgKgo+ICsgKiBSZXR1cm46
+IDAuCj4gICAqLwo+ICBpbnQgbXRkX3ZpcnRfY29uY2F0X2Rlc3Ryb3koc3RydWN0IG10ZF9pbmZv
+ICptdGQpCj4gIHsKPiAgCXN0cnVjdCBtdGRfaW5mbyAqY2hpbGQsICptYXN0ZXIgPSBtdGRfZ2V0
+X21hc3RlcihtdGQpOwo+IC0Jc3RydWN0IG10ZF92aXJ0X2NvbmNhdF9ub2RlICppdGVtLCAqdG1w
+Owo+ICsJc3RydWN0IG10ZF92aXJ0X2NvbmNhdF9ub2RlICppdGVtOwo+ICAJc3RydWN0IG10ZF9j
+b25jYXQgKmNvbmNhdDsKPiAtCWludCBpZHgsIHJldCA9IDA7Cj4gLQlib29sIGlzX210ZF9mb3Vu
+ZDsKPiArCWludCBpZHgsIG47Cj4gIAo+IC0JbGlzdF9mb3JfZWFjaF9lbnRyeV9zYWZlKGl0ZW0s
+IHRtcCwgJmNvbmNhdF9ub2RlX2xpc3QsIGhlYWQpIHsKPiAtCQlpc19tdGRfZm91bmQgPSBmYWxz
+ZTsKPiArCWxpc3RfZm9yX2VhY2hfZW50cnkoaXRlbSwgJmNvbmNhdF9ub2RlX2xpc3QsIGhlYWQp
+IHsKPiArCQljb25jYXQgPSBpdGVtLT5jb25jYXQ7Cj4gIAo+IC0JCS8qIEZpbmQgdGhlIGNvbmNh
+dCBpdGVtIHRoYXQgaG9sZCB0aGUgbXRkIGRldmljZSAqLwo+IC0JCWZvciAoaWR4ID0gMDsgaWR4
+IDwgaXRlbS0+Y291bnQ7IGlkeCsrKSB7Cj4gLQkJCWlmIChpdGVtLT5ub2Rlc1tpZHhdID09IG10
+ZC0+ZGV2Lm9mX25vZGUpIHsKPiAtCQkJCWlzX210ZF9mb3VuZCA9IHRydWU7Cj4gKwkJZm9yIChp
+ZHggPSAwOyBpZHggPCBjb25jYXQtPm51bV9zdWJkZXY7IGlkeCsrKSB7Cj4gKwkJCWlmIChtdGRf
+Z2V0X21hc3Rlcihjb25jYXQtPnN1YmRldltpZHhdKSA9PSBtYXN0ZXIpCj4gIAkJCQlicmVhazsK
+PiAtCQkJfQo+ICAJCX0KPiAtCQlpZiAoIWlzX210ZF9mb3VuZCkKPiArCQlpZiAoaWR4ID09IGNv
+bmNhdC0+bnVtX3N1YmRldikKPiAgCQkJY29udGludWU7Cj4gLQkJY29uY2F0ID0gaXRlbS0+Y29u
+Y2F0Owo+ICAKPiAtCQkvKgo+IC0JCSAqIFNpbmNlIHRoaXMgY29uY2F0ZW5hdGVkIGRldmljZSBp
+cyBiZWluZyByZW1vdmVkLCByZXRyaWV2ZQo+IC0JCSAqIGFsbCBNVEQgZGV2aWNlcyB0aGF0IGFy
+ZSBwYXJ0IG9mIGl0IGFuZCByZWdpc3RlciB0aGVtCj4gLQkJICogaW5kaXZpZHVhbGx5Lgo+IC0J
+CSAqLwo+IC0JCWZvciAoaWR4ID0gMDsgaWR4IDwgY29uY2F0LT5udW1fc3ViZGV2OyBpZHgrKykg
+ewo+ICsJCW10ZF92aXJ0X2NvbmNhdF91bnJlZ2lzdGVyKGNvbmNhdCk7Cj4gKwo+ICsJCWZvciAo
+aWR4ID0gMCwgbiA9IDA7IGlkeCA8IGNvbmNhdC0+bnVtX3N1YmRldjsgaWR4KyspIHsKPiAgCQkJ
+Y2hpbGQgPSBjb25jYXQtPnN1YmRldltpZHhdOwo+IC0JCQlpZiAoY2hpbGQtPmRldi5vZl9ub2Rl
+ICE9IG10ZC0+ZGV2Lm9mX25vZGUpIHsKPiAtCQkJCXJldCA9IGFkZF9tdGRfZGV2aWNlKGNoaWxk
+KTsKPiAtCQkJCWlmIChyZXQpCj4gLQkJCQkJZ290byBvdXQ7Cj4gKwkJCWlmIChtdGRfZ2V0X21h
+c3RlcihjaGlsZCkgPT0gbWFzdGVyKSB7Cj4gKwkJCQlrZnJlZShjaGlsZC0+bmFtZSk7Cj4gKwkJ
+CQlrZnJlZShjaGlsZCk7Cj4gKwkJCX0gZWxzZSB7Cj4gKwkJCQljb25jYXQtPnN1YmRldltuKytd
+ID0gY2hpbGQ7Cj4gIAkJCX0KPiAgCQl9Cj4gLQkJLyogRGVzdHJveSB0aGUgY29uY2F0ICovCj4g
+LQkJaWYgKGNvbmNhdC0+bXRkLm5hbWUpIHsKPiAtCQkJZGVsX210ZF9kZXZpY2UoJmNvbmNhdC0+
+bXRkKTsKPiAtCQkJa2ZyZWUoY29uY2F0LT5tdGQubmFtZSk7Cj4gLQkJCW10ZF92aXJ0X2NvbmNh
+dF9wdXRfbXRkX2RldmljZXMoaXRlbS0+Y29uY2F0KTsKPiAtCQkJbXRkX2NvbmNhdF9kZXN0cm95
+KCZjb25jYXQtPm10ZCk7Cj4gLQkJfQo+IC0KPiAtCQlsaXN0X2RlbCgmaXRlbS0+aGVhZCk7Cj4g
+LQkJZm9yIChpZHggPSAwOyBpZHggPCBpdGVtLT5jb3VudDsgaWR4KyspCj4gLQkJCW9mX25vZGVf
+cHV0KGl0ZW0tPm5vZGVzW2lkeF0pOwo+IC0KPiAtCQlrZnJlZShpdGVtKTsKPiArCQljb25jYXQt
+Pm51bV9zdWJkZXYgPSBuOwoKW1NldmVyaXR5OiBDcml0aWNhbF0KV2hhdCBoYXBwZW5zIGlmIHRo
+ZSBjb25jYXRlbmF0ZWQgTVREIGRldmljZSBpcyBoZWxkIG9wZW4gd2hlbiBpdHMgbWFzdGVyIGlz
+CnVucmVnaXN0ZXJlZD8KCkJlY2F1c2UgY29uY2F0LT5tdGQucGFyZW50IGlzIE5VTEwsIG9wZW5p
+bmcgdGhlIGNvbmNhdGVuYXRlZCBkZXZpY2UgaW5jcmVtZW50cwpjb25jYXQtPm10ZC5yZWZjbnQg
+KHZpYSBfX2dldF9tdGRfZGV2aWNlKCkpIHdpdGhvdXQgdGFraW5nIGEgcmVmZXJlbmNlIG9uIHRo
+ZQp1bmRlcmx5aW5nIHN1YmRldmljZXMgb3IgdGhlaXIgbWFzdGVycy4KCldoZW4gdGhlIG1hc3Rl
+ciBpcyB1bnJlZ2lzdGVyZWQgd2hpbGUgY29uY2F0LT5tdGQgaXMgb3BlbiwgZGVsX210ZF9kZXZp
+Y2UoKSBpbgptdGRfdmlydF9jb25jYXRfdW5yZWdpc3RlcigpIG9ubHkgZGVjcmVtZW50cyBjb25j
+YXQtPm10ZC5yZWZjbnQgZnJvbSAyIHRvIDEKd2l0aG91dCBydW5uaW5nIG10ZF9kZXZpY2VfcmVs
+ZWFzZSgpLCBzbyAmY29uY2F0LT5tdGQgcmVtYWlucyBsaXZlIGFuZCBpbgptdGRfaWRyLgoKSG93
+ZXZlciwgbXRkX3ZpcnRfY29uY2F0X3VucmVnaXN0ZXIoKSBpbW1lZGlhdGVseSBmcmVlcyBjb25j
+YXQtPm10ZC5uYW1lIChhbmQKc2V0cyBpdCB0byBOVUxMKSBhbmQgZnJlZXMgY29uY2F0LT5tdGQu
+ZXJhc2VyZWdpb25zLCBhbmQKbXRkX3ZpcnRfY29uY2F0X2Rlc3Ryb3koKSBpbW1lZGlhdGVseSBm
+cmVlcyB0aGUgY2hpbGQgcGFydGl0aW9uIHN0cnVjdHMgaW4KY29uY2F0LT5zdWJkZXZbXSBhbmQg
+c2hyaW5rcyBjb25jYXQtPm51bV9zdWJkZXYgdG8gbiB3aXRob3V0IGNsZWFyaW5nIHRyYWlsaW5n
+CmVudHJpZXMgaW4gY29uY2F0LT5zdWJkZXZbXS4KCldoaWxlICZjb25jYXQtPm10ZCByZW1haW5z
+IG9wZW46Ci0gcmVhZGluZyAvcHJvYy9tdGQgb3IgL3N5cy9jbGFzcy9tdGQvbXRkWC9uYW1lIGRl
+cmVmZXJlbmNlcyBOVUxMCiAgY29uY2F0LT5tdGQubmFtZTsKLSBjb25jYXRfYmxvY2tfaXNiYWQo
+KSB1bmNvbmRpdGlvbmFsbHkgZGVyZWZlcmVuY2VzIGNvbmNhdC0+c3ViZGV2WzBdIGJlZm9yZQog
+IGNoZWNraW5nIGNvbmNhdC0+bnVtX3N1YmRldiwgcmVhZGluZyB0aGUgZnJlZWQgY2hpbGQgd2hl
+biBuID09IDA7Ci0gY29uY2F0X2VyYXNlKCkgYWNjZXNzZXMgZnJlZWQgY29uY2F0LT5tdGQuZXJh
+c2VyZWdpb25zLCBmcmVlZCBjaGlsZC9tYXN0ZXIKICBzdHJ1Y3RzLCBvciBoaXRzIEJVR19PTihp
+ID49IGNvbmNhdC0+bnVtX3N1YmRldik7Ci0gY2xvc2luZyB0aGUgb3BlbiBkZXNjcmlwdG9yIHJ1
+bnMgbXRkX2RldmljZV9yZWxlYXNlKCkgLT4KICBkZXZpY2VfdW5yZWdpc3RlcigmY29uY2F0LT5t
+dGQuZGV2KSwgd2hpY2ggYWNjZXNzZXMgY29uY2F0LT5tdGQuZGV2LnBhcmVudAogICgmbWFzdGVy
+LT5kZXYpIGFmdGVyIG1hc3RlciBoYXMgYWxyZWFkeSBiZWVuIGZyZWVkLgoKW1NldmVyaXR5OiBD
+cml0aWNhbF0KQWxzbywgaWYgYSBjb25jYXRlbmF0aW9uIHNwYW5zIHR3byBtYXN0ZXJzIChmb3Ig
+ZXhhbXBsZSwgaXRlbS0+bm9kZXNbMF0gb24KbWFzdGVyIEEgYW5kIGl0ZW0tPm5vZGVzWzFdIG9u
+IG1hc3RlciBCKSwgd29uJ3QgdW5iaW5kaW5nIGFuZCByZWJpbmRpbmcgbWFzdGVyCkEgcmV2ZXJz
+ZSB0aGUgcGFydGl0aW9uIG9yZGVyIGluIGNvbmNhdC0+c3ViZGV2W10/CgpXaGVuIG1hc3RlciBB
+IGlzIHVucmVnaXN0ZXJlZCwgbXRkX3ZpcnRfY29uY2F0X2Rlc3Ryb3koKSBmcmVlcyBtYXN0ZXIg
+QSdzCnBhcnRpdGlvbiBhdCBjb25jYXQtPnN1YmRldlswXSBhbmQgY29tcGFjdHMgbWFzdGVyIEIn
+cyBwYXJ0aXRpb24gaW50bwpjb25jYXQtPnN1YmRldlswXSB2aWEgY29uY2F0LT5zdWJkZXZbbisr
+XSA9IGNoaWxkLCBzZXR0aW5nCmNvbmNhdC0+bnVtX3N1YmRldiA9IDEuCgpXaGVuIG1hc3RlciBB
+IGlzIGJvdW5kIGFnYWluLCBkcml2ZXJzL210ZC9tdGRfdmlydF9jb25jYXQuYzptdGRfdmlydF9j
+b25jYXRfYWRkKCkKYXBwZW5kcyBtYXN0ZXIgQSdzIHBhcnRpdGlvbiBhdCB0aGUgZW5kIG9mIGNv
+bmNhdC0+c3ViZGV2W106CgoJZm9yIChpZHggPSAwOyBpZHggPCBpdGVtLT5jb3VudDsgaWR4Kysp
+IHsKCQlpZiAoaXRlbS0+bm9kZXNbaWR4XSA9PSBtdGQtPmRldi5vZl9ub2RlKSB7CgkJCWNvbmNh
+dC0+c3ViZGV2W2NvbmNhdC0+bnVtX3N1YmRldisrXSA9IG10ZDsKCQkJcmV0dXJuIHRydWU7CgkJ
+fQoJfQoKVGhpcyBwbGFjZXMgbWFzdGVyIEEncyBwYXJ0aXRpb24gYXQgY29uY2F0LT5zdWJkZXZb
+MV0gaW5zdGVhZCBvZiBpbmRleCAwLCBzbwptdGRfdmlydF9jb25jYXRfY3JlYXRlX2pvaW4oKSBy
+ZWNyZWF0ZXMgdGhlIGNvbmNhdGVuYXRlZCBNVEQgZGV2aWNlIHdpdGggaXRzCnBhcnRpdGlvbnMs
+IGZsYXNoIG9mZnNldCBtYXBwaW5nLCBkZXZpY2UgbmFtZSwgYW5kIHBhcmVudCBkZXZpY2UgaW4g
+cmV2ZXJzZWQKb3JkZXIuCgotLSAKU2FzaGlrbyBBSSByZXZpZXcgwrcgaHR0cHM6Ly9zYXNoaWtv
+LmRldi8jL3BhdGNoc2V0LzIwMjYxMTAyMDgzMDQ1Ljg1MTItMS1pemFpYWhzdW5AZ21haWwuY29t
+P3BhcnQ9MQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5m
+cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
