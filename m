@@ -2,70 +2,59 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3799606A32D
-	for <linux-mtd@archiver.kernel.org>; Tue,  3 Nov 2026 09:00:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB14B606A32D
+	for <linux-mtd@archiver.kernel.org>; Tue,  3 Nov 2026 09:03:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=whtd7oj5;
-	dkim=pass (1024-bit key, unprotected) header.d=cmss.chinamobile.com header.i=@cmss.chinamobile.com header.a=rsa-sha256 header.s=default header.b=ex1PNzqx
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=u5FauzBQ
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=AWm3dNniSDBJCTt1PfTuZtsswGuEQvgRSX6eFdgEnJk=; b=whtd7oj59Ic+5F5/2GiDUEZQo+
-	4jXRpDz0V4ha9J37ASN1FRdEeDzkqU2DpAkar/8wfFV2d6P8aq2gF/qkeFjyfh3GZn+/In9XOhUGB
-	nWSVAR0Hw6EHvLC4LExfUk02mUxyu2A0ZPBX6ZfMXqi4qjWWadM5vacqAAdzkSzSrU3IsRSX13Bl1
-	Db86PXEflV6kg2KTZQEibKdLP+PJCpFZzAtWIM5H0UwtQKiEH/T57XRDTZ+ESMq2Mbo0n+dQgJGbj
-	ceN5zIaVQ9B9AJ2hfq+6hwAR/5WFG7toMBH5g+sfeiEN6qr05r/fe5H5UaLHhk8CXczp7AiUS6Qrz
-	vIqlgtSA==;
+	bh=45BlKlhrCk7+y/KS9/f7qTtR9dzWM6LaLjyf1RMal5E=; b=u5FauzBQZRVMAnXlG1pA2c1+Zu
+	x9WG8WfSH4wsoLJ580nN3+CXYGp95fjsB85u/+H8HZBRe+WzXf7eBr2WbfuoNz2OlP/NfzAA8vor7
+	VGASdMPsMbBbj8t06lR21JlIGS2Ld02+HSrTEy9BxLebBCAJDUDKnjlRWkKuOtmNnoJVxeApN3rrm
+	k+/eOfoqyvU4McPgkoclwHEKxKgps5V/rt2g3sj2PpjqQo0yBoxZtC2jsA8CqIc33fw86HdiJxY51
+	977Zk1mgwzXPTcIlikO68XsET0hQLxHCAkUmu+pGwAvmZrrSRKSCj0ei/ANY9rXfoavWHqLlCrCYt
+	wVrpPZpg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xOANu-00000001fcq-0tPH;
-	Tue, 03 Nov 2026 09:00:50 +0000
-Received: from cmccmta2.chinamobile.com ([111.22.67.135])
-	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xOANn-00000001fas-0HWn
+	id 1xOAQW-00000001gRf-2isa;
+	Tue, 03 Nov 2026 09:03:32 +0000
+Received: from verein.lst.de ([213.95.11.211])
+	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
+	id 1xOAQS-00000001gPt-2OMB
 	for linux-mtd@lists.infradead.org;
-	Tue, 03 Nov 2026 09:00:49 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=cmss.chinamobile.com; s=default; l=0;
-	h=from:subject:message-id:to:cc:mime-version;
-	bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
-	b=ex1PNzqxt+8NetH9NBMOt8M879RgNmYNIc8ZssNk/Bd1sBYXuvII/kkg4h3n72vAUNxazPp8aBk3P
-	 laYuyCH7uEBOeEQ+4kZNcI0s/VwXgcdVIKK3q1ydFM5qm/FssG+wPijcCnUXtJ3xU9at65TtZRdxnT
-	 MVzh4UbyZcEpLaW4=
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from spf.mail.chinamobile.com (unknown[10.188.0.87])
-	by rmmx-syy-dmz-app07-12007 (RichMail) with SMTP id 2ee76ae9a2aa7a6-93baf;
-	Tue, 03 Nov 2026 17:00:29 +0800 (CST)
-X-RM-TRANSID: 2ee76ae9a2aa7a6-93baf
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from fedora (unknown[223.108.79.101])
-	by rmsmtp-syy-appsvr06-12006 (RichMail) with SMTP id 2ee66ae9a2aa41b-f3235;
-	Tue, 03 Nov 2026 17:00:29 +0800 (CST)
-X-RM-TRANSID: 2ee66ae9a2aa41b-f3235
-From: Yiqing Wu <wuyiqing@cmss.chinamobile.com>
-To: David Woodhouse <dwmw2@infradead.org>,
-	Richard Weinberger <richard@nod.at>
-Cc: Al Viro <viro@zeniv.linux.org.uk>,
-	David Howells <dhowells@redhat.com>,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	syzbot+ae2d1f6d474e1725bdc0@syzkaller.appspotmail.com
-Subject: [PATCH] jffs2: fix use-after-free in jffs2_garbage_collect_thread
-Date: Tue,  3 Nov 2026 17:00:18 +0800
-Message-ID: <20261103090018.157034-1-wuyiqing@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.56.0
+	Tue, 03 Nov 2026 09:03:30 +0000
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id 5881F68B05; Tue,  3 Nov 2026 10:03:23 +0100 (CET)
+Date: Tue, 3 Nov 2026 10:03:23 +0100
+From: Christoph Hellwig <hch@lst.de>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Christoph Hellwig <hch@lst.de>, linux-fsdevel@vger.kernel.org,
+	Jan Kara <jack@suse.com>, Al Viro <viro@zeniv.linux.org.uk>,
+	ecryptfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+	jfs-discussion@lists.sourceforge.net, linux-nilfs@vger.kernel.org,
+	exfat@lists.linux.dev, linux-mm@kvack.org, ntfs@lists.linux.dev,
+	ocfs2-devel@lists.linux.dev, linux-btrfs@vger.kernel.org,
+	gfs2@lists.linux.dev, linux-efi@vger.kernel.org,
+	linux-mtd@lists.infradead.org, linux-xfs@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: Re: [PATCH v2 33/34] xfs: allow remounting read-only after a
+ shutdown
+Message-ID: <20261103090323.GA5314@lst.de>
+References: <20261029-work-fs-sb_rdonly-v2-0-2f44f64f0b66@kernel.org> <20261029-work-fs-sb_rdonly-v2-33-2f44f64f0b66@kernel.org> <20261103054155.GB1559@lst.de> <20261103-galgen-ehebruch-stehen-a967c14ce53e@brauner>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20261103-galgen-ehebruch-stehen-a967c14ce53e@brauner>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261103_010044_231865_D083A52B 
-X-CRM114-Status: GOOD (  18.83  )
-X-Spam-Score: -2.4 (--)
+X-CRM114-CacheID: sfid-20261103_010328_759401_E9A4B4D2 
+X-CRM114-Status: GOOD (  16.54  )
+X-Spam-Score: -1.9 (-)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,128 +67,27 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-5.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-jffs2_do_remount_fs() decides whether to (re)start the garbage collect
-thread from the requested flags:
+On Tue, Nov 03, 2026 at 09:41:58AM +0100, Christian Brauner wrote:
+> On Tue, Nov 03, 2026 at 06:41:55AM +0100, Christoph Hellwig wrote:
+> > Btw, if my previous reply wasn't clear:  please add the test for this
+> > to xfstests where they actually get run regularly and not the kernel
+> > selftests which for file systems are basically unused.
+> > 
+> > Bonus points for having generic tests instead of purely file system
+> > specific ones.
+> 
+> I can drop the tests from this series but xfstests for this will be a
+> follow-up.
 
-	if (!(fc->sb_flags & SB_RDONLY))
-		jffs2_start_garbage_collect_thread(c);
-
-The flags which actually take effect, however, are computed by
-reconfigure_super() as
-
-	sb->s_flags = (sb->s_flags & ~fc->sb_flags_mask) |
-		      (fc->sb_flags & fc->sb_flags_mask);
-
-and fspick(2) creates its reconfiguration context with both sb_flags
-and sb_flags_mask set to zero, i.e. "no change requested".  So after
-
-	fd = fspick(AT_FDCWD, mnt, 0);
-	fsconfig(fd, FSCONFIG_CMD_RECONFIGURE, NULL, NULL, 0);
-
-on a filesystem which was mounted read-only, jffs2 starts the GC
-thread (because fc->sb_flags carries no SB_RDONLY) while the superblock
-keeps its SB_RDONLY (because fc->sb_flags_mask is zero).  The classic
-mount(2) remount path is not affected: it always passes a full
-MS_RMT_MASK, so the flags it hands to the filesystem do take effect.
-
-jffs2_kill_sb() then refuses to stop the GC thread for a read-only
-superblock:
-
-	if (c && !sb_rdonly(sb))
-		jffs2_stop_garbage_collect_thread(c);
-	kill_mtd_super(sb);
-	kfree(c);
-
-so at unmount the thread is neither signalled nor waited for, and
-kfree(c) frees the jffs2_sb_info out from under the still-running
-jffs2_gcd_mtd%d kthread.  It dereferences the freed object when it
-wakes up from its 50 ms idle sleep:
-
-  BUG: KASAN: slab-use-after-free in rt_spin_lock
-  Read of size 1 at addr ffff88804f2b02c0 by task jffs2_gcd_mtd0/12364
-  Call Trace:
-  rt_spin_lock kernel/locking/spinlock_rt.c:56
-  spin_lock include/linux/spinlock_rt.h:45 [inline]
-  jffs2_garbage_collect_thread fs/jffs2/background.c:94
-
-Fix both layers of the desynchronisation:
-
-  - jffs2_do_remount_fs() now derives the flags which will be in
-    effect after the reconfiguration the same way reconfigure_super()
-    does, and only starts the GC thread if the filesystem will
-    actually be writable.
-
-  - jffs2_kill_sb() unconditionally stops and waits for the GC thread
-    before freeing c.  Without a running GC thread this is a no-op,
-    and the thread can no longer outlive the jffs2_sb_info, no matter
-    which future path manages to start it on a superblock that stays
-    read-only.
-
-Fixes: ec10a24f10c8 ("vfs: Convert jffs2 to use the new mount API")
-Reported-by: syzbot+ae2d1f6d474e1725bdc0@syzkaller.appspotmail.com
-Closes: https://syzbot.org/bug?extid=ae2d1f6d474e1725bdc0
-Signed-off-by: Yiqing Wu <wuyiqing@cmss.chinamobile.com>
----
- fs/jffs2/fs.c    | 13 ++++++++++++-
- fs/jffs2/super.c |  2 +-
- 2 files changed, 13 insertions(+), 2 deletions(-)
-
-diff --git a/fs/jffs2/fs.c b/fs/jffs2/fs.c
-index 05cf860307c7..a124f5309c2b 100644
---- a/fs/jffs2/fs.c
-+++ b/fs/jffs2/fs.c
-@@ -396,6 +396,7 @@ void jffs2_dirty_inode(struct inode *inode, int flags)
- int jffs2_do_remount_fs(struct super_block *sb, struct fs_context *fc)
- {
- 	struct jffs2_sb_info *c = JFFS2_SB_INFO(sb);
-+	unsigned int sb_flags;
- 
- 	if (c->flags & JFFS2_SB_FLAG_RO && !sb_rdonly(sb))
- 		return -EROFS;
-@@ -411,7 +412,17 @@ int jffs2_do_remount_fs(struct super_block *sb, struct fs_context *fc)
- 		mutex_unlock(&c->alloc_sem);
- 	}
- 
--	if (!(fc->sb_flags & SB_RDONLY))
-+	/*
-+	 * Start the GC thread only if the filesystem will actually be
-+	 * writable after the reconfiguration.  Note that reconfigure_super()
-+	 * applies the flags as
-+	 * (sb->s_flags & ~fc->sb_flags_mask) | (fc->sb_flags & fc->sb_flags_mask),
-+	 * so a zero sb_flags_mask (as e.g. used by fspick()) leaves the
-+	 * superblock read-only.
-+	 */
-+	sb_flags = (sb->s_flags & ~fc->sb_flags_mask) |
-+		   (fc->sb_flags & fc->sb_flags_mask);
-+	if (!(sb_flags & SB_RDONLY))
- 		jffs2_start_garbage_collect_thread(c);
- 
- 	fc->sb_flags |= SB_NOATIME;
-diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
-index 81396a092ba8..c846b435a38b 100644
---- a/fs/jffs2/super.c
-+++ b/fs/jffs2/super.c
-@@ -345,7 +345,7 @@ static void jffs2_put_super (struct super_block *sb)
- static void jffs2_kill_sb(struct super_block *sb)
- {
- 	struct jffs2_sb_info *c = JFFS2_SB_INFO(sb);
--	if (c && !sb_rdonly(sb))
-+	if (c)
- 		jffs2_stop_garbage_collect_thread(c);
- 	kill_mtd_super(sb);
- 	kfree(c);
--- 
-2.56.0
-
-
-
+I'd much prefer to have one canonical place for the tests over having
+them in two places.
 
 ______________________________________________________
 Linux MTD discussion mailing list
