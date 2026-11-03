@@ -2,75 +2,64 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A43D606A834
-	for <linux-mtd@archiver.kernel.org>; Tue,  3 Nov 2026 10:06:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99C846085085
+	for <linux-mtd@archiver.kernel.org>; Tue,  3 Nov 2026 10:26:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=ozYMkKjQ
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=lC7ZgV56;
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=LeahQ9Dq
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=I+FPa/CrgFWT3ujji/WCxuXD+8cWVJbREizqdlxzo+I=; b=ozYMkKjQ7fxVgjowvSm9F+2qDq
-	MTUcP3sWSkfQoZSKFQeHBw6NhLtnPPrCWhIVbPh2M4DKF4rLn5jXZ35gYy0Ztgde1Mdd8z4Aa6+Gx
-	FFUiC+Oq7LOoid00Ro3b/bhBcTT4BaQytRDPgi8K4qNMkguGjN7+A0571CO8yO54PWED8lTnnzKrm
-	ygUWh2FrtH7UUy27YJJdlEghiZNIa+7YCqlRNTXpkc2Jrun0qRTjhF1KB45x/DQBELWTOgDemxiVb
-	aCvaPiIByOWzKMGWt1pHWri8m0LM9q7acWdLJE5sicEQE4ixLKi3LK4Nt5p2ucvt0JiZI/nrM2d4k
-	ImMjjCeg==;
+	bh=YCeDT+QgK/r7PuQveND/iCWswCxvBpzvG7FjfshaAes=; b=lC7ZgV56+SjJX3/iB60mRxL2Zk
+	vckl0d1nM09dy0Wy/7qSxAzP8RaVjfcAm3yK7v5L6R7y1P6862IVKdGKFI2JSzdqFppu+sheqP9wm
+	ZaHJuOy9/ohRDLUnv2KjSJUi1F+T0gjb2mmxdSdUuw9EsH22YXHr1qHDeYV5lVNd0htWoRjfpCOFe
+	1naAgrmqE/MFoGxKIrUn+4R1ffNgDsbJTTNNyCp8/4z3UwgWEM0MfqF7PkScj7+dGiGhzlfz80qj7
+	BVJ2VrTMTDaBmEFOlMhQ96zhEiFamHUTb3C8gncqvQERL8UMseB/OsvsRS0qe1CdfWePizzrpz/TU
+	LHs+9eXg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xOBOy-00000001sTO-0gXW;
-	Tue, 03 Nov 2026 10:06:00 +0000
-Received: from smtp81.cstnet.cn ([159.226.251.81] helo=cstnet.cn)
+	id 1xOBie-00000001ydq-0Q4E;
+	Tue, 03 Nov 2026 10:26:20 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xOBOt-00000001sRa-3nzk;
-	Tue, 03 Nov 2026 10:05:57 +0000
-Received: from dfae2b116770.home.arpa (unknown [36.110.52.2])
-	by APP-03 (Coremail) with SMTP id rQCowAAnOJkBsulqf3w7AA--.2834S2;
-	Tue, 03 Nov 2026 18:05:53 +0800 (CST)
-From: Wentao Liang <vulab@iscas.ac.cn>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Claudiu Beznea <claudiu.beznea@tuxon.dev>
-Cc: linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Wentao Liang <vulab@iscas.ac.cn>,
-	stable@vger.kernel.org
-Subject: [PATCH] mtd: rawnand: atmel: Release the HSMC clock on legacy init failure
-Date: Tue,  3 Nov 2026 10:06:02 +0000
-Message-Id: <20261103100602.1310416-1-vulab@iscas.ac.cn>
-X-Mailer: git-send-email 2.34.1
+	id 1xOBib-00000001yda-3rT4;
+	Tue, 03 Nov 2026 10:26:17 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id CE08F4010F;
+	Tue,  3 Nov 2026 10:26:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BE941F000C1;
+	Tue,  3 Nov 2026 10:26:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1793701576;
+	bh=9clrbqdXgsnOrqBlmLUFDxai3Lw9LgBHe2HqLH/Q/qQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=LeahQ9DqABmAbcGyj0dThYoT0DpdsUvtLcNFqMLHA1CJdSENL0/8DLpPsbhNoS2yF
+	 zcOxZYbasmxfKxo4YZeIUek1YLFILiJ8neYYC0APDRMf48s08rTmCq8neceielPrL3
+	 hyF1Dqhx0guchGXSEienywv2eWIJ6an+TGlo4kP8r4WkDJ1GXr7Qkz7Ue8D6qY3dEK
+	 9HLopgH7WABUEAyBdBTMut1Zy0+Hq2w+WavwvK4y43pNox32G0NkaHtBxjlsho8L+K
+	 gKZopNZOxsyBRuthlcghJwvTuYddNK3Ub7b/NX5KZ3b5Rf5I89o1iLT/yvxfSA+z7v
+	 CNzEO7UxSdFwA==
+Date: Tue, 3 Nov 2026 11:26:14 +0100
+From: Krzysztof Kozlowski <krzk@kernel.org>
+To: Wentao Liang <vulab@iscas.ac.cn>
+Cc: linux-kernel@vger.kernel.org, 
+	Alexandre Belloni <alexandre.belloni@bootlin.com>, Vignesh Raghavendra <vigneshr@ti.com>, 
+	linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org, 
+	Richard Weinberger <richard@nod.at>, stable@vger.kernel.org, 
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>, Miquel Raynal <miquel.raynal@bootlin.com>, 
+	Nicolas Ferre <nicolas.ferre@microchip.com>
+Subject: Re: [PATCH] mtd: rawnand: atmel: Release the HSMC clock on legacy
+ init failure
+Message-ID: <20261103-watchful-iguana-of-criticism-257adf@quoll>
+References: <20261103100602.1310416-1-vulab@iscas.ac.cn>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-CM-TRANSID: rQCowAAnOJkBsulqf3w7AA--.2834S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxuFy8uFy7GF17Cr1DWF47CFg_yoW5Zw4xpF
-	W2qay7Gw1UXF4fuFsrKa1UJFyFqFZ7KayUCws3Ga42vw1FvryqqF1F9FyFqFW5GFWSvw43
-	Xa17t3WUCFyrAFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9a14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_Jw0_WrylYx0Ex4A2jsIE14v26F4UJVW0owAm72CE4IkC6x0Yz7v_Jr
-	0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E
-	8cxan2IY04v7MxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFV
-	Cjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWl
-	x4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r4j6r
-	yUMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UMIIF0xvE42xK8VAvwI8IcIk0rVWU
-	JVWUCwCI42IY6I8E87Iv67AKxVWxJVW8Jr1lIxAIcVC2z280aVCY1x0267AKxVWxJr0_Gc
-	JvcSsGvfC2KfnxnUUI43ZEXa7VU8jQ6JUUUUU==
-X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiDAEAA2rpnOFgzgAAse
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261103_020556_572697_5D8F2612 
-X-CRM114-Status: UNSURE (   8.13  )
-X-CRM114-Notice: Please train this message.
-X-Spam-Score: -0.9 (/)
+Content-Disposition: inline
+In-Reply-To: <20261103100602.1310416-1-vulab@iscas.ac.cn>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,128 +72,76 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-13.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
+	SPF_PASS autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-When atmel_hsmc_nand_controller_legacy_init() fails after acquiring the
-NFC clock with of_clk_get(), the error paths return without dropping the
-clock reference.  For failures after clk_prepare_enable(), the clock is
-also left enabled.  The caller returns the error without running the
-controller removal path, so the reference and the enable count are both
-leaked.
 
-Add error unwinding that disables the clock when it was prepared and
-always puts the reference.
+On Tue, 03 Nov 2026 10:06:02 +0000, Wentao Liang wrote:
+> When atmel_hsmc_nand_controller_legacy_init() fails after acquiring the
+> NFC clock with of_clk_get(), the error paths return without dropping the
+> clock reference.  For failures after clk_prepare_enable(), the clock is
+> also left enabled.  The caller returns the error without running the
+> controller removal path, so the reference and the enable count are both
+> leaked.
+> 
+> Add error unwinding that disables the clock when it was prepared and
+> always puts the reference.
+> 
+> Fixes: f88fc122cc34 ("mtd: nand: Cleanup/rework the atmel_nand driver")
+> Cc: stable@vger.kernel.org
+> Assisted-by: DeepSeek-V4.1-Flash and OpenAI Codex
+> Signed-off-by: Wentao Liang <vulab@iscas.ac.cn>
+> ---
+>  drivers/mtd/nand/raw/atmel/nand-controller.c | 26 ++++++++++++--------
+>  1 file changed, 16 insertions(+), 10 deletions(-)
+> 
 
-Fixes: f88fc122cc34 ("mtd: nand: Cleanup/rework the atmel_nand driver")
-Cc: stable@vger.kernel.org
-Assisted-by: DeepSeek-V4.1-Flash and OpenAI Codex
-Signed-off-by: Wentao Liang <vulab@iscas.ac.cn>
----
- drivers/mtd/nand/raw/atmel/nand-controller.c | 26 ++++++++++++--------
- 1 file changed, 16 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/atmel/nand-controller.c b/drivers/mtd/nand/raw/atmel/nand-controller.c
-index 0bdbcbb50d94..f798ac7b9c51 100644
---- a/drivers/mtd/nand/raw/atmel/nand-controller.c
-+++ b/drivers/mtd/nand/raw/atmel/nand-controller.c
-@@ -2185,7 +2185,7 @@ atmel_hsmc_nand_controller_legacy_init(struct atmel_hsmc_nand_controller *nc)
- 	if (ret) {
- 		dev_err(dev, "Failed to enable the HSMC clock (err = %d)\n",
- 			ret);
--		goto out;
-+		goto out_put_clk;
- 	}
- 
- 	nc->irq = of_irq_get(nand_np, 0);
-@@ -2194,20 +2194,20 @@ atmel_hsmc_nand_controller_legacy_init(struct atmel_hsmc_nand_controller *nc)
- 		if (ret != -EPROBE_DEFER)
- 			dev_err(dev, "Failed to get IRQ number (err = %d)\n",
- 				ret);
--		goto out;
-+		goto out_disable_clk;
- 	}
- 
- 	ret = of_address_to_resource(nfc_np, 0, &res);
- 	if (ret) {
- 		dev_err(dev, "Invalid or missing NFC IO resource (err = %d)\n",
- 			ret);
--		goto out;
-+		goto out_disable_clk;
- 	}
- 
- 	iomem = devm_ioremap_resource(dev, &res);
- 	if (IS_ERR(iomem)) {
- 		ret = PTR_ERR(iomem);
--		goto out;
-+		goto out_disable_clk;
- 	}
- 
- 	regmap_conf.name = "nfc-io";
-@@ -2217,20 +2217,20 @@ atmel_hsmc_nand_controller_legacy_init(struct atmel_hsmc_nand_controller *nc)
- 		ret = PTR_ERR(nc->io);
- 		dev_err(dev, "Could not create NFC IO regmap (err = %d)\n",
- 			ret);
--		goto out;
-+		goto out_disable_clk;
- 	}
- 
- 	ret = of_address_to_resource(nfc_np, 1, &res);
- 	if (ret) {
- 		dev_err(dev, "Invalid or missing HSMC resource (err = %d)\n",
- 			ret);
--		goto out;
-+		goto out_disable_clk;
- 	}
- 
- 	iomem = devm_ioremap_resource(dev, &res);
- 	if (IS_ERR(iomem)) {
- 		ret = PTR_ERR(iomem);
--		goto out;
-+		goto out_disable_clk;
- 	}
- 
- 	regmap_conf.name = "smc";
-@@ -2240,24 +2240,30 @@ atmel_hsmc_nand_controller_legacy_init(struct atmel_hsmc_nand_controller *nc)
- 		ret = PTR_ERR(nc->base.smc);
- 		dev_err(dev, "Could not create NFC IO regmap (err = %d)\n",
- 			ret);
--		goto out;
-+		goto out_disable_clk;
- 	}
- 
- 	ret = of_address_to_resource(nfc_np, 2, &res);
- 	if (ret) {
- 		dev_err(dev, "Invalid or missing SRAM resource (err = %d)\n",
- 			ret);
--		goto out;
-+		goto out_disable_clk;
- 	}
- 
- 	nc->sram.virt = devm_ioremap_resource(dev, &res);
- 	if (IS_ERR(nc->sram.virt)) {
- 		ret = PTR_ERR(nc->sram.virt);
--		goto out;
-+		goto out_disable_clk;
- 	}
- 
- 	nc->sram.dma = res.start;
- 
-+	goto out;
-+
-+out_disable_clk:
-+	clk_disable_unprepare(nc->clk);
-+out_put_clk:
-+	clk_put(nc->clk);
- out:
- 	of_node_put(nfc_np);
- 
--- 
-2.34.1
+
+Multiple things here:
+1. Your team ignored completely previous feedback. Multiple times.
+
+2. You use multiple identities with this email address, thus I doubt that we
+   speak with an actual person.
+
+3. Your bot does not even bother running checkpatch, right?
+
+4. Nothing of this was reproduced nor tested.
+
+5. Finally, the same feedback:
+You sent multiple independent patches, to multiple independent
+subsystems. The amount of these patches clearly suggest this was
+AI generated and most likely not tested.
+
+More importantly, you sent all this work without properly organizing
+relevant patches into patchsets. This makes reviewing difficult
+and might cause multiple reviewers to address the same issue.
+Replying to the entire set is impossible and requires handling each
+patch independently, instead of applying or discarding the set.
+Maintainers also won't see the bigger picture of your work. Quite
+worrying.
+
+This is on the verge of hostile patch: bomb us with so many
+contributions, we won't be able to handle them in efficient manner,
+like responding ONCE to ask you to slow down.  Considering all this
+is untested and LLM generated, I have even more doubts whether this
+should be considered for review.
+
+Please read kernel documentation BEFORE posting more work. It will
+explain you how to identify subsystems, how to organize your work per
+subsystem (so a patchset grouping multiple patches with a short cover
+letter), how to document the issue discovery method and what was
+or was not tested.
+
+Best regards,
+Krzysztof
+
+
+
 
 
 ______________________________________________________
