@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BB03606A324
-	for <linux-mtd@archiver.kernel.org>; Tue,  3 Nov 2026 04:50:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC99F606A326
+	for <linux-mtd@archiver.kernel.org>; Tue,  3 Nov 2026 04:51:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=m5/NVf6q;
-	dkim=fail reason="signature verification failed" (1024-bit key, unprotected) header.d=huawei.com header.i=@huawei.com header.a=rsa-sha256 header.s=dkim header.b=12COAAUg
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=4EnAi7zO;
+	dkim=fail reason="signature verification failed" (1024-bit key, unprotected) header.d=huawei.com header.i=@huawei.com header.a=rsa-sha256 header.s=dkim header.b=LEuibVSA
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
@@ -14,58 +14,57 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=cMvTg8iFJELyMq6L9sn6WXfvQLQWRKTP5kaxEv/yqBk=; b=m5/NVf6qu6+M/ssFmCndzqe2Ib
-	a6qLQfvF4Hx3+z+YxqB+wWW5u9yGm0DbWVhElvcAuByoZAp00OyBPMDwFm4+ClXs7c4O7LtB2CqII
-	zpyXLTgaKobFBvXNHkuFVl2SuADzjz5SoMGdV5+SApe0YlOOzKCwswJEXaVSsD77ufWVSJ2ldXjRM
-	aUJ4+skk5r+8WMOm8/g/UW/gxWmdacuQL2OkzdDZ32x+yiwti6VLvO/ADZTH/cad/SkiO1aWfPjhV
-	4QlRkzJRRspWwAvlxWiY19pfJfKqYHdH7VVpglVVGWxsQnmi+/xmBGX6LPpw56ol/AFIy4ymIKPH7
-	2hRm9dgw==;
+	bh=hrE+GaWfCJ23eTOWO5535+xStAgRpZDgAQFRylLSfJI=; b=4EnAi7zOW6YnbRDyVOyv7dVWuS
+	q00MVc2LAoyzUjSSQ40XUlPUuCtwC3op+syAqfAoDH8DzTrKqZQYscS7KFe4yOc2k0zSl2XpboJ1E
+	UgKIaLxF3ZAtdDrasBK6ctHyURg+Jt2rT5HjqwjjERnCYt5zg7R4nWdayqxm+/Ttm5/+kIrk2t9lr
+	S5J4um9dem6Lp9bLWeVIHVInrqyDccMoKrfV5graduSdDQgSvOt5EicbhKGpGPVZy2K3MPfGRzavb
+	jMFPp+sOgAx4fIWbogKY0GxweQjZ51AoonnPd3ZBqTRwD4gKxlxyfIBEIsd06zhVDrUCgE/jIUu/F
+	1LonEHjA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xO6Tc-000000016Lf-1xZw;
-	Tue, 03 Nov 2026 04:50:28 +0000
-Received: from canpmsgout09.his.huawei.com ([113.46.200.224])
+	id 1xO6UJ-000000016Se-2cVI;
+	Tue, 03 Nov 2026 04:51:11 +0000
+Received: from canpmsgout01.his.huawei.com ([113.46.200.216])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xO6TX-000000016Jg-2pyr
+	id 1xO6UE-000000016S6-3nIo
 	for linux-mtd@lists.infradead.org;
-	Tue, 03 Nov 2026 04:50:26 +0000
+	Tue, 03 Nov 2026 04:51:08 +0000
 dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
 	c=relaxed/relaxed; q=dns/txt;
 	h=From;
-	bh=tKYkGRJueQ4xHnKwkjwzEUwQGmQwSgxAdVrQiSPCVM0=;
-	b=12COAAUgRMSucGDaRdd9nEFO2NcTHpF5KyMlJi0iyNbGUdDBgOIlaA4H62rB1QpDjcR/0O6J0
-	FCB/aCxNjZUW3QzF9tjs8Zk17bI/TSawtH6KqJ7qfEqwtJc0SDMyoE6gs3BatGavL3lSTTOX83S
-	JevDnaKi2SQaddDID29g7Os=
-Received: from mail.maildlp.com (unknown [172.19.163.127])
-	by canpmsgout09.his.huawei.com (SkyGuard) with ESMTPS id 4jJbjD4M4mz1cyqq;
-	Tue,  3 Nov 2026 12:50:08 +0800 (CST)
+	bh=xaVG5gHIVqbQ9ul/dJPjVIZQfI9Fixu/KkPob37v9NY=;
+	b=LEuibVSAF+UvrgJznpG2pGaxo2AR0TiCltYbq0cXoZCkUUZGx/cF1Bx5sA5JRJVWPaGncLnCc
+	wNadBv1noSdJ1Vf6zQGoJ3hjyjij7DygQFIbbTyjFcAMctAjSKsdUH2zhca49Tnn3ozgmTxbVqu
+	s9Zawf+tIh9w3T9CAs23+r8=
+Received: from mail.maildlp.com (unknown [172.19.162.223])
+	by canpmsgout01.his.huawei.com (SkyGuard) with ESMTPS id 4jJbjv42Zzz1T4HJ;
+	Tue,  3 Nov 2026 12:50:43 +0800 (CST)
 Received: from whupemo200011.china.huawei.com (unknown [7.152.185.179])
-	by mail.maildlp.com (Postfix) with ESMTPS id 0024240574;
-	Tue,  3 Nov 2026 12:50:19 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 893BF40561;
+	Tue,  3 Nov 2026 12:51:01 +0800 (CST)
 Received: from [10.174.178.46] (10.174.178.46) by
  whupemo200011.china.huawei.com (7.152.185.179) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.45; Tue, 3 Nov 2026 12:50:17 +0800
-Subject: Re: [PATCH 3/5] ubifs: reject master nodes claiming a too small inode
- number
+ 15.2.2562.45; Tue, 3 Nov 2026 12:51:00 +0800
+Subject: Re: [PATCH 0/5] ubifs: harden validation of on-disk inode and node
+ metadata
 To: <shao.mingyin@zte.com.cn>
 CC: <richard@nod.at>, <linux-mtd@lists.infradead.org>,
 	<linux-kernel@vger.kernel.org>
-References: <20261103123104319tX_sQcNY56466a6yZeEgg@zte.com.cn>
+References: <20261103123059667zqKLXZXpg5bc5F5FV7Xy8@zte.com.cn>
 From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <a6608f36-7ce2-bfbe-339c-c5719bbb867f@huawei.com>
-Date: Tue, 3 Nov 2026 12:50:16 +0800
+Message-ID: <f9a31ba0-2a71-440a-6fe1-42641bdde01d@huawei.com>
+Date: Tue, 3 Nov 2026 12:50:59 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
  Thunderbird/68.5.0
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20261103123104319tX_sQcNY56466a6yZeEgg@zte.com.cn>
+In-Reply-To: <20261103123059667zqKLXZXpg5bc5F5FV7Xy8@zte.com.cn>
 X-ClientProxiedBy: kwepems200002.china.huawei.com (7.221.188.68) To
  whupemo200011.china.huawei.com (7.152.185.179)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261102_205024_580937_F08326CA 
-X-CRM114-Status: UNSURE (   9.80  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20261102_205107_405013_957D93A7 
+X-CRM114-Status: GOOD (  19.30  )
 X-Spam-Score: -3.8 (---)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -86,19 +85,36 @@ X-Spam-Status: No, score=-7.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-5ZyoIDIwMjYvMTEvMyAxMjozMSwgc2hhby5taW5neWluQHp0ZS5jb20uY24g5YaZ6YGTOgo+PiBU
-aGlzIGNoZWNrIGNvdWxkIGJlIG1lcmdlZCBpbnRvIHByZXZpb3VzIGNoZWNrOgo+PiAgICBmIChj
-LT5oaWdoZXN0X2ludW0gPj0gSU5VTV9XQVRFUk1BUkspCj4gCj4gQWdyZWVkLCB0aGUgdHdvIGJv
-dW5kcyBiZWxvbmcgaW4gb25lIHRlc3Q6Cj4gCj4gCWlmIChjLT5oaWdoZXN0X2ludW0gPj0gSU5V
-TV9XQVRFUk1BUksgfHwKPiAJICAgIGMtPmhpZ2hlc3RfaW51bSA8IFVCSUZTX0ZJUlNUX0lOTykK
-PiAKVGhpcyBsb29rcyBmaW5lLCB0aGVyZSBhcmUgbWFueSBwbGFjZXMgcmV0dXJuIHRoZSBzYW1l
-IGVyciBjb2RlIApjb3JyZXBvbmRpbmcgc2V2ZXJhbCByZWFzb25zLCB0aGUgZXJyIGNvZGUgaGVs
-cCB1c2VyIHRvIGlkZW50aWZ5IHdoaWNoIApmaWVsZCBpcyBpbmNvcnJlY3QsIHRoZW4gdWJpZnNf
-ZHVtcF9ub2RlKCkgd2lsbCBzaG93IGFsbCBkZXRhaWxzLgo+IE9uZSBzaWRlIGVmZmVjdDogYSB0
-b28gc21hbGwgaGlnaGVzdF9pbnVtIHRoZW4gcmVwb3J0cyBlcnJvciAzIGluc3RlYWQgb2YKPiB0
-aGUgc2VwYXJhdGUgY29kZSAyNC4gIElmIHlvdSB3b3VsZCByYXRoZXIga2VlcCB0aGUgdHdvIHJh
-bmdlcyBhcGFydCBpbgo+IHRoZSBsb2csIEkgY2FuIGxlYXZlIHRoZSBsb3dlciBib3VuZCBhcyBp
-dHMgb3duIGNoZWNrLgo+IAo+IFRoYW5rcywKPiBTaGFvCj4gLgo+IAoKCl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vz
-c2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9saW51eC1tdGQvCg==
+5ZyoIDIwMjYvMTEvMyAxMjozMCwgc2hhby5taW5neWluQHp0ZS5jb20uY24g5YaZ6YGTOgo+PiAg
+IEZyb20gbXkgcGVyc3BlY3RpdmUsIEknbSBub3QgcmVhbGx5IGludGVyZXN0ZWQgaW4gdGhlIHBy
+b2JsZW0gc2NlbmFyaW9zCj4+IHRyaWdnZXJlZCBieSBtYWxpY2lvdXMgZnMgaW1hZ2UsIGxldCBS
+aWNoYXJkIGRlY2lkZSB3aGV0aGVyIHRvIG1lcmdlIGl0Lgo+PiBUaGlzIHNlcmllcyBkb2VzIG5v
+dCBzZWVtIHRvIGludHJvZHVjZSBhbnkgaXNzdWVzLCB0aGVyZSBhcmUgdHdvIHNtYWxsCj4+IG5p
+dHMgaW4gcGF0Y2ggMiYzLgo+IAo+IFRoYW5rcyBmb3IgdGhlIHJldmlldy4gIFRoZSB0aHJlYXQg
+bW9kZWwgaW4gdGhlIGNvdmVyIGlzIHRoZSBvbmx5IG9uZSB0aGUKPiBzZXJpZXMgY2xhaW1zOiBt
+b3VudGluZyBzdWNoIGFuIGltYWdlIG5lZWRzIENBUF9TWVNfQURNSU4gaW4gdGhlIG1vdW50aW5n
+Cj4gbmFtZXNwYWNlIG9yIGFjY2VzcyB0byB0aGUgZmxhc2guCj4gCj4gVHdvIG9mIHRoZSBmaXZl
+IGFyZSBub3Qgc3RyaWN0bHkgIm1hbGljaW91cyBpbWFnZSBvbmx5IiwgaW4gY2FzZSB0aGF0IGlz
+Cj4gdXNlZnVsIGZvciBSaWNoYXJkJ3MgY2FsbDoKPiAKPiAtIDQvNSBpcyByZXBsYXk6IGEgbm9k
+ZSB0aGF0IHdhcyBjb3JydXB0ZWQgb24gZmxhc2ggb3Igd3JpdHRlbiB3cm9uZyB3b3VsZAo+ICAg
+IG90aGVyd2lzZSBsZXQgdWJpZnNfcmVjb3Zlcl9zaXplKCkgZXh0ZW5kIGFuIGlub2RlIHRvIGEg
+Ym9ndXMgc2l6ZS4KPiAtIDUvNSBsZWF2ZXMgdGhlIGltYWdlIHVubW91bnRhYmxlIGFmdGVyIGEg
+c2luZ2xlIHJlbW92ZXhhdHRyKCk6IHRoZQo+ICAgIHVuZGVyZmxvd2VkIGNvdW50ZXJzIGFyZSB3
+cml0dGVuIGJhY2sgdG8gZmxhc2gsIHNvIGl0IHN1cnZpdmVzIHJlbW91bnQuCj4gCj4gVGhlIG90
+aGVyIHRocmVlIGFyZSBtb3VudC10aW1lIHZhbGlkYXRpb24gb2YgZmllbGRzIHRoYXQgdmFsaWRh
+dGVfaW5vZGUoKQo+IGFuZCB2YWxpZGF0ZV9tYXN0ZXIoKSBhbHJlYWR5IHJhbmdlLWNoZWNrIGZv
+ciBvdGhlciB2YWx1ZXMsIHNvIHRoZXkgY2hhbmdlCj4gbm90aGluZyBmb3IgYSB2YWxpZCBpbWFn
+ZS4gIFRoZSBwYXRjaGVzIGFyZSBpbmRlcGVuZGVudCBhbmQgYW55IHN1YnNldAo+IGFwcGxpZXMs
+IHNvIGRyb3BwaW5nIHNvbWUgaXMgZmluZSAtLSBJIHdpbGwgbGVhdmUgdGhlIGRlY2lzaW9uIHRv
+IFJpY2hhcmQuCj4gCj4gQm90aCBuaXRzIGFyZSB0YWtlbjogcGF0Y2ggMiBmb2xkcyB0aGUgc2l6
+ZSBjaGVjayBpbnRvIHRoZSBleGlzdGluZwo+IHVpLT54YXR0ciBibG9jaywgcGF0Y2ggMyBtZXJn
+ZXMgdGhlIGxvd2VyIGJvdW5kIGludG8gdGhlIGhpZ2hlc3RfaW51bQo+IGNoZWNrICh0aGF0IG9u
+ZSB0aGVuIHJlcG9ydHMgZXJyb3IgMyBmb3IgYm90aCBib3VuZHMpLgo+IAo+IEZvciB0aGUgc2Vy
+aWVzOiBJIHdpbGwgcmVwb3N0IG9ubHkgdGhvc2UgdHdvIGFzIFtQQVRDSCB2Ml0gaW4gYSBuZXcK
+PiB0aHJlYWQsIGVhY2ggbm90aW5nIHRoYXQgaXQgc3VwZXJzZWRlcyAyLzUgb3IgMy81IG9mIHRo
+ZSB2MSBzZXJpZXMuICAxLzUsCj4gNC81IGFuZCA1LzUgYXJlIHVudG91Y2hlZCwgc28gSSB3b3Vs
+ZCByYXRoZXIgbm90IHJlc2VuZCB0aGVtIC0tIHNheSB0aGUKPiB3b3JkIGlmIHlvdSB3b3VsZCBw
+cmVmZXIgdGhlIHdob2xlIHNlcmllcyBhcyB2Mi4KUmVzZW5kIHYyIHNlcmllcyBwbGVhc2UuCj4g
+Cj4gVGhhbmtzLAo+IFNoYW8KPiAuCj4gCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlz
+dApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
