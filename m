@@ -2,72 +2,67 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93ACF606A336
-	for <linux-mtd@archiver.kernel.org>; Wed,  4 Nov 2026 08:58:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A59FD606A31B
+	for <linux-mtd@archiver.kernel.org>; Wed,  4 Nov 2026 16:25:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=xHLMib4V;
-	dkim=pass (1024-bit key, unprotected) header.d=cmss.chinamobile.com header.i=@cmss.chinamobile.com header.a=rsa-sha256 header.s=default header.b=VRaKuVPH
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=RGOgnHW7
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Archive:List-Unsubscribe:List-Id:Subject:Cc:To:From:Mime-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
 	List-Unsubscribe-Post:List-Owner;
-	bh=wjk7B089ZfgyxHawQnyRVyAN/12UXZDOZf4hydV7TCQ=; b=xHLMib4V9ZEtBgF78DbG3K0jH/
-	fGdfDaJqUflWQr75UcVVuz2Uk0PbV7WLaU3Hyn0g/odbJGVieIVZA2hyh44ScR69X7N2Rq+ymIA8J
-	kBPzSUFnVeRifrsLuO4JiIughS5rLmTpK3QOgc0p/q0GH+A/4z9GkowIfFhm0yhE4Ph4Wzlmrkfyf
-	6q3dw4joNYbQyBDP0Ttd1l6PIpOHSxFgECldRW/sfpuCU5629A0Cq351FxglEKG1A+A93IYlrPC+B
-	10+xktQt90ybUWn5zmFq0ZT7YGLO0HvSQkWXH+hONxm8UW6eOn2vieQTLr88IRB4m8hK26NSsQtpe
-	Lptd9grw==;
+	bh=6ZPOzQZsa3HWPnRS8AbMhi1OIlQaeWSSTSg/iV0i1n8=; b=RGOgnHW7pg2xks+UtlaOjUHAPO
+	VIyU4wzcRcrS96xmcjrEsV5SGrWiXVoBIqVtnE77gXkOkne045AcCv9q3wjBmT8Fa9nUhCo7t13Hs
+	wYlwohDvqQeU3IIb3uiRxlLq11nr6vIal97YVv/rPSeNDEc4z+8bA4rSnvjFkXOr7x0HZe1CKTMBi
+	R7F5X1LvyzBoR+FdwaR8oIZjXPoOPq7c5kwg+2oqtPH+uLl/dNDQf/hlkr+EwIKf782efPuu5cQlb
+	MIgo+x34Q5vlBCo6xnCyi95D6hukAljnmSUJfLEpQMC3gGKLmBy60GiB9etmqT5g+Xuf5xDyXCFyA
+	UGgYTHMg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xOWof-00000004nh9-13yO;
-	Wed, 04 Nov 2026 08:57:57 +0000
-Received: from cmccmta6.chinamobile.com ([111.22.67.139])
-	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xOWoa-00000004naL-1P73
+	id 1xOdnr-00000005y77-1Pzb;
+	Wed, 04 Nov 2026 16:25:35 +0000
+Received: from mxhk.zte.com.cn ([160.30.148.34])
+	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
+	id 1xOdnn-00000005y6I-1YYE
 	for linux-mtd@lists.infradead.org;
-	Wed, 04 Nov 2026 08:57:56 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=cmss.chinamobile.com; s=default; l=0;
-	h=from:subject:message-id:to:cc:mime-version;
-	bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
-	b=VRaKuVPHtyF+SUq90ZRWm13D5iHZ89zPZoYo0KRoljG8PmCEYWAhQfpW8tgyBk75XfibZJfxCQGka
-	 xtYol8l1Dve8JUMoAPhJgaPlImSdtwUIamassf/GABtkSA9Uz1YsltWoLnITnzu3VtbdpFjm6026hf
-	 7blJixSZI/+HyFls=
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from spf.mail.chinamobile.com (unknown[10.188.0.87])
-	by rmmx-syy-dmz-app09-12009 (RichMail) with SMTP id 2ee96aeaf3819fd-a1969;
-	Wed, 04 Nov 2026 16:57:38 +0800 (CST)
-X-RM-TRANSID: 2ee96aeaf3819fd-a1969
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from fedora (unknown[223.108.79.101])
-	by rmsmtp-syy-appsvr05-12005 (RichMail) with SMTP id 2ee56aeaf37cab6-1bfcb;
-	Wed, 04 Nov 2026 16:57:38 +0800 (CST)
-X-RM-TRANSID: 2ee56aeaf37cab6-1bfcb
-From: Yiqing Wu <wuyiqing@cmss.chinamobile.com>
-To: David Woodhouse <dwmw2@infradead.org>,
-	Richard Weinberger <richard@nod.at>
-Cc: Al Viro <viro@zeniv.linux.org.uk>,
-	David Howells <dhowells@redhat.com>,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	syzbot+ae2d1f6d474e1725bdc0@syzkaller.appspotmail.com
-Subject: [PATCH v2] jffs2: fix use-after-free in jffs2_garbage_collect_thread
-Date: Wed,  4 Nov 2026 16:57:25 +0800
-Message-ID: <20261104085725.241655-1-wuyiqing@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.56.0
-In-Reply-To: <20261103090018.157034-1-wuyiqing@cmss.chinamobile.com>
-References: <20261103090018.157034-1-wuyiqing@cmss.chinamobile.com>
+	Wed, 04 Nov 2026 16:25:34 +0000
+Received: from mse-fl1.zte.com.cn (unknown [10.5.228.132])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mxhk.zte.com.cn (FangMail) with ESMTPS id 4jKW4x5gWmz5BNRf;
+	Thu, 05 Nov 2026 00:25:21 +0800 (CST)
+Received: from xaxapp04.zte.com.cn ([10.99.98.157])
+	by mse-fl1.zte.com.cn with SMTP id 6A4GPCCv020169;
+	Thu, 5 Nov 2026 00:25:12 +0800 (+08)
+	(envelope-from shao.mingyin@zte.com.cn)
+Received: from mapi (xaxapp01[null])
+	by mapi (Zmail) with MAPI id mid32;
+	Thu, 5 Nov 2026 00:25:15 +0800 (CST)
+X-Zmail-TransId: 2af96aeb5c6b6a7-c1505
+X-Mailer: Zmail v1.0
+Message-ID: <20261105002515934UMImG6EiHrJdKjsLu3j9d@zte.com.cn>
+Date: Thu, 5 Nov 2026 00:25:15 +0800 (CST)
 X-Archived-By: <archiver.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0
+From: <shao.mingyin@zte.com.cn>
+To: <richard@nod.at>, <linux-mtd@lists.infradead.org>
+Cc: <chengzhihao1@huawei.com>, <linux-kernel@vger.kernel.org>,
+        <stable@vger.kernel.org>
+Subject: =?UTF-8?B?W1BBVENIIFJFU0VORF0gdWJpZnM6IHhhdHRyOiBmaXggb3V0LW9mLWJvdW5kcyB3cml0ZSBpbiB1Ymlmc19saXN0eGF0dHIoKQ==?=
+X-MAIL: mse-fl1.zte.com.cn 6A4GPCCv020169
+X-TLS: YES
+X-ENVELOPE-SENDER: shao.mingyin@zte.com.cn
+X-SOURCE-IP: 10.5.228.132 unknown Thu, 05 Nov 2026 00:25:21 +0800
+X-CLEAN: YES
+X-Fangmail-Anti-Spam-Filtered: true
+X-Fangmail-MID-QID: 6AEB5C71.000/4jKW4x5gWmz5BNRf
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261104_005753_970921_37353B27 
-X-CRM114-Status: GOOD (  20.57  )
-X-Spam-Score: -2.4 (--)
+X-CRM114-CacheID: sfid-20261104_082531_747191_ED26C797 
+X-CRM114-Status: GOOD (  20.22  )
+X-Spam-Score: -1.9 (-)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,166 +75,145 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-13.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
+	SPF_PASS,UNPARSEABLE_RELAY autolearn=ham autolearn_force=no
+	version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-jffs2_do_remount_fs() decides whether to (re)start the garbage collect
-thread from the requested flags:
+From: Shao Mingyin <shao.mingyin@zte.com.cn>
 
-	if (!(fc->sb_flags & SB_RDONLY))
-		jffs2_start_garbage_collect_thread(c);
+ubifs_listxattr() derives the size of the name list from
+ui->xattr_names + ui->xattr_cnt and uses it to reject a call whose
+buffer is too small.  It then copies every visible xattr name returned
+by ubifs_tnc_next_ent() without checking @size again.
 
-The flags which actually take effect, however, are computed by
-reconfigure_super() as
+Both counters are read from the on-flash inode node and are only
+accounting values.  A modified image can make them under-report the
+number of xattr entries while the TNC still contains more entries: the
+node CRC only protects against accidental corruption, it is recomputed
+for a crafted image.
 
-	sb->s_flags = (sb->s_flags & ~fc->sb_flags_mask) |
-		      (fc->sb_flags & fc->sb_flags_mask);
+The usual caller first invokes listxattr(path, NULL, 0), which returns
+the too small size computed from those counters, then allocates a
+buffer of that size and invokes listxattr() again.  In the second
+system call fs/xattr.c:listxattr() allocates the kernel buffer with
+kvmalloc(size) and passes it to ubifs_listxattr(), which copies the
+names past its end.  The copied bytes are the xattr names from the
+image, so part of the overflow content is attacker controlled.
 
-and fspick(2) creates its reconfiguration context with both sb_flags
-and sb_flags_mask set to zero, i.e. "no change requested".  So after
+Bound each copy by @size and return -ERANGE when the list does not fit.
+With a corrupt image the reported size may now be too small, but the
+following call fails cleanly instead of overflowing.  Note that nlen
+itself is already bounded by ubifs_validate_entry(), which every node
+returned by ubifs_tnc_next_ent() has passed; the missing check is only
+against the caller's buffer.
 
-	fd = fspick(AT_FDCWD, mnt, 0);
-	fsconfig(fd, FSCONFIG_CMD_RECONFIGURE, NULL, NULL, 0);
+While here, validate the two counters individually.  Their sum is
+computed in 32 bits, so the existing check is bypassed when it wraps
+around; rejecting the oversized values at mount time keeps the O(1)
+size query in listxattr() from returning a wrapped (possibly negative)
+length.
 
-on a filesystem which was mounted read-only, jffs2 starts the GC
-thread (because fc->sb_flags carries no SB_RDONLY) while the superblock
-keeps its SB_RDONLY (because fc->sb_flags_mask is zero).  The classic
-mount(2) remount path is not affected: it always passes a full
-MS_RMT_MASK, so the flags it hands to the filesystem do take effect.
+Mounting UBIFS requires CAP_SYS_ADMIN in the initial user namespace, so
+this is only reachable with a crafted image.  Compile tested with W=1
+and checkpatch --strict.  Runtime reproduction needs a modified UBI
+image: change xattr_cnt/xattr_names in an inode node and recompute its
+CRC; a KASAN kernel then reports the overflow on the second
+listxattr() call.
 
-jffs2_kill_sb() then refuses to stop the GC thread for a read-only
-superblock:
-
-	if (c && !sb_rdonly(sb))
-		jffs2_stop_garbage_collect_thread(c);
-	kill_mtd_super(sb);
-	kfree(c);
-
-so at unmount the thread is neither signalled nor waited for, and
-kfree(c) frees the jffs2_sb_info out from under the still-running
-jffs2_gcd_mtd%d kthread.  It dereferences the freed object when it
-wakes up from its 50 ms idle sleep:
-
-  BUG: KASAN: slab-use-after-free in rt_spin_lock
-  Read of size 1 at addr ffff88804f2b02c0 by task jffs2_gcd_mtd0/12364
-  Call Trace:
-  rt_spin_lock kernel/locking/spinlock_rt.c:56
-  spin_lock include/linux/spinlock_rt.h:45 [inline]
-  jffs2_garbage_collect_thread fs/jffs2/background.c:94
-
-Fix the desynchronisation, and harden the unmount path against it:
-
-  - jffs2_do_remount_fs() now derives the flags which will be in
-    effect after the reconfiguration the same way reconfigure_super()
-    does, and only starts the GC thread if the filesystem will
-    actually be writable.
-
-  - jffs2_kill_sb() unconditionally stops and waits for the GC thread
-    before freeing c.  Without a running GC thread this is a no-op,
-    and the thread can no longer outlive the jffs2_sb_info, no matter
-    which future path manages to start it on a superblock that stays
-    read-only.
-
-Fixes: ec10a24f10c8 ("vfs: Convert jffs2 to use the new mount API")
-Reported-by: syzbot+ae2d1f6d474e1725bdc0@syzkaller.appspotmail.com
-Closes: https://syzbot.org/bug?extid=ae2d1f6d474e1725bdc0
-Signed-off-by: Yiqing Wu <wuyiqing@cmss.chinamobile.com>
+Fixes: 1e51764a3c2a ("UBIFS: add new flash file system")
+Cc: stable@vger.kernel.org
+Signed-off-by: Shao Mingyin <shao.mingyin@zte.com.cn>
 ---
-v2:
-  - jffs2_fill_super() initialises the superblock locks before the
-    rp_size sanity check can fail the mount, so that the now
-    unconditional jffs2_stop_garbage_collect_thread() does not take an
-    uninitialised c->erase_completion_lock when a mount bails out
-    early.  (Read-write mounts with an oversized rp_size already
-    reached that path even before this change.)
-  - v1: https://lore.kernel.org/all/20261103090018.157034-1-wuyiqing@cmss.chinamobile.com/T/
----
- fs/jffs2/fs.c    | 13 ++++++++++++-
- fs/jffs2/super.c | 16 ++++++++++------
- 2 files changed, 22 insertions(+), 7 deletions(-)
+Resend after 7 days without feedback; no code change.
 
-diff --git a/fs/jffs2/fs.c b/fs/jffs2/fs.c
-index 05cf860307c7..a124f5309c2b 100644
---- a/fs/jffs2/fs.c
-+++ b/fs/jffs2/fs.c
-@@ -396,6 +396,7 @@ void jffs2_dirty_inode(struct inode *inode, int flags)
- int jffs2_do_remount_fs(struct super_block *sb, struct fs_context *fc)
- {
- 	struct jffs2_sb_info *c = JFFS2_SB_INFO(sb);
-+	unsigned int sb_flags;
- 
- 	if (c->flags & JFFS2_SB_FLAG_RO && !sb_rdonly(sb))
- 		return -EROFS;
-@@ -411,7 +412,17 @@ int jffs2_do_remount_fs(struct super_block *sb, struct fs_context *fc)
- 		mutex_unlock(&c->alloc_sem);
+Link: https://lore.kernel.org/all/2026102817301132485IE4Ia6aXSqUo5KZUvgW@zte.com.cn/
+
+Tested on 7.3.0-next-20261030 (QEMU/TCG, x86_64) with mtdram and KASAN.
+The image has a file with three xattrs, i.e. 21 bytes of names.  Its
+on-flash inode counters are modified and the node CRC recomputed.
+
+low (xattr_cnt=1, xattr_names=0), unpatched:
+  first listxattr() returns 1; the second call is given a 1-byte buffer
+  but copies 21 bytes.  KASAN reports a slab-out-of-bounds in
+  _copy_to_user and ubifs_assert(written <= size) fires.
+low, patched:
+  first returns 1; the second returns -ERANGE (errno 34).
+
+wrap (xattr_cnt=0x20, xattr_names=0xFFFFFFF0; the 32-bit sum is 16),
+unpatched:
+  first returns 16; the second call is given a 16-byte buffer but copies
+  21 bytes, with the same KASAN report and assert.
+wrap, patched:
+  first returns -EINVAL; ubifs_iget() rejects the counters in
+  validate_inode() before ubifs_listxattr() is called.
+
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index 38972786817e..fe24e1949bb3 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -82,7 +82,15 @@ static int validate_inode(struct ubifs_info *c, const struct inode *inode)
+ 		return 2;
  	}
  
--	if (!(fc->sb_flags & SB_RDONLY))
+-	if (ui->xattr_names + ui->xattr_cnt > XATTR_LIST_MAX)
 +	/*
-+	 * Start the GC thread only if the filesystem will actually be
-+	 * writable after the reconfiguration.  Note that reconfigure_super()
-+	 * applies the flags as
-+	 * (sb->s_flags & ~fc->sb_flags_mask) | (fc->sb_flags & fc->sb_flags_mask),
-+	 * so a zero sb_flags_mask (as e.g. used by fspick()) leaves the
-+	 * superblock read-only.
++	 * Both counters are read from the on-flash inode node.  Check them
++	 * individually first: the addition is performed in 32 bits and can
++	 * wrap around, which would make the check below pass for absurd
++	 * values.
 +	 */
-+	sb_flags = (sb->s_flags & ~fc->sb_flags_mask) |
-+		   (fc->sb_flags & fc->sb_flags_mask);
-+	if (!(sb_flags & SB_RDONLY))
- 		jffs2_start_garbage_collect_thread(c);
++	if (ui->xattr_cnt > XATTR_LIST_MAX ||
++	    ui->xattr_names > XATTR_LIST_MAX ||
++	    ui->xattr_names + ui->xattr_cnt > XATTR_LIST_MAX)
+ 		return 3;
  
- 	fc->sb_flags |= SB_NOATIME;
-diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
-index 81396a092ba8..9ac22b6479f7 100644
---- a/fs/jffs2/super.c
-+++ b/fs/jffs2/super.c
-@@ -267,12 +267,12 @@ static int jffs2_fill_super(struct super_block *sb, struct fs_context *fc)
- 	c->mtd = sb->s_mtd;
- 	c->os_priv = sb;
+ 	if (ui->data_len < 0 || ui->data_len > UBIFS_MAX_INO_DATA)
+diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
+index 3b0e8a270f59..8efe2c545bf4 100644
+--- a/fs/ubifs/xattr.c
++++ b/fs/ubifs/xattr.c
+@@ -421,8 +421,25 @@ ssize_t ubifs_listxattr(struct dentry *dentry, char *buffer, size_t size)
+ 		fname_len(&nm) = le16_to_cpu(xent->nlen);
  
--	if (c->mount_opts.rp_size > c->mtd->size)
--		return invalf(fc, "jffs2: Too large reserve pool specified, max is %llu KB",
--			      c->mtd->size / 1024);
--
- 	/* Initialize JFFS2 superblock locks, the further initialization will
--	 * be done later */
-+	 * be done later.  This must precede any error return: kill_sb() stops
-+	 * the GC thread even on mounts which failed before it could start,
-+	 * and jffs2_stop_garbage_collect_thread() takes
-+	 * c->erase_completion_lock.
-+	 */
- 	mutex_init(&c->alloc_sem);
- 	mutex_init(&c->erase_free_sem);
- 	init_waitqueue_head(&c->erase_wait);
-@@ -280,6 +280,10 @@ static int jffs2_fill_super(struct super_block *sb, struct fs_context *fc)
- 	spin_lock_init(&c->erase_completion_lock);
- 	spin_lock_init(&c->inocache_lock);
- 
-+	if (c->mount_opts.rp_size > c->mtd->size)
-+		return invalf(fc, "jffs2: Too large reserve pool specified, max is %llu KB",
-+			      c->mtd->size / 1024);
+ 		if (xattr_visible(xent->name)) {
+-			memcpy(buffer + written, fname_name(&nm), fname_len(&nm) + 1);
+-			written += fname_len(&nm) + 1;
++			int nlen = fname_len(&nm);
 +
- 	sb->s_op = &jffs2_super_operations;
- 	sb->s_export_op = &jffs2_export_ops;
- 	sb->s_flags = sb->s_flags | SB_NOATIME;
-@@ -345,7 +349,7 @@ static void jffs2_put_super (struct super_block *sb)
- static void jffs2_kill_sb(struct super_block *sb)
- {
- 	struct jffs2_sb_info *c = JFFS2_SB_INFO(sb);
--	if (c && !sb_rdonly(sb))
-+	if (c)
- 		jffs2_stop_garbage_collect_thread(c);
- 	kill_mtd_super(sb);
- 	kfree(c);
--- 
-2.56.0
-
-
-
++			/*
++			 * nlen is bounded by ubifs_validate_entry(): the
++			 * node length is nlen + UBIFS_DENT_NODE_SZ + 1 and
++			 * is itself bounded by UBIFS_MAX_DENT_NODE_SZ, so
++			 * the name cannot run past the node.
++			 *
++			 * The missing bound is the caller's buffer: the
++			 * on-flash xattr counters are not authoritative and
++			 * a crafted image can under-report them.
++			 */
++			if (written + nlen + 1 > size) {
++				kfree(xent);
++				err = -ERANGE;
++				break;
++			}
++			memcpy(buffer + written, fname_name(&nm), nlen + 1);
++			written += nlen + 1;
+ 		}
+ 
+ 		kfree(pxent);
+@@ -432,6 +449,9 @@ ssize_t ubifs_listxattr(struct dentry *dentry, char *buffer, size_t size)
+ 	kfree(pxent);
+ 	up_read(&host_ui->xattr_sem);
+ 
++	if (err == -ERANGE)
++		return err;
++
+ 	if (err != -ENOENT) {
+ 		ubifs_err(c, "cannot find next direntry, error %d", err);
+ 		return err;
 
 ______________________________________________________
 Linux MTD discussion mailing list
