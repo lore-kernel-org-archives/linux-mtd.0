@@ -2,98 +2,72 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3C6E606A331
-	for <linux-mtd@archiver.kernel.org>; Wed,  4 Nov 2026 06:13:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93ACF606A336
+	for <linux-mtd@archiver.kernel.org>; Wed,  4 Nov 2026 08:58:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=nt7yF7iz;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=vP3BO+pP
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=xHLMib4V;
+	dkim=pass (1024-bit key, unprotected) header.d=cmss.chinamobile.com header.i=@cmss.chinamobile.com header.a=rsa-sha256 header.s=default header.b=VRaKuVPH
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version:Subject:
-	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=TAT6o1DIiCupUja061UeFCd8qnRf4SaoA0ltOo3njM8=; b=nt7yF7izwPqoU46RvXJG2xiqKp
-	QmqI24gUBc1U2YXL7h57SbtF9twt994ndiHDLmDYsqZ5h4ped3XJKGOwtprTrzXBVZbUIzVSSvN0r
-	5bTTZQnGqtadJCgStPWvkyIZGzV5iNLVkOHjN93QuesYc1EWYPEQqrTqN+KhwxRiGw0gfBSZUXTEI
-	ppTHXrWsyjwpipFRSnSOYi7AjAFTFXOhsH3ca1yj7JDQBELxt8sLdkU2wWjgS2pwpIRH0mT1Krh7v
-	dww8Xx59aJXiKevwawDtsqxZm8npnt32Eo9f1ikAN7WcPIZouFmHHa1ZCpXMlnca66D0Ret/6/dll
-	QQBHLj0Q==;
+	bh=wjk7B089ZfgyxHawQnyRVyAN/12UXZDOZf4hydV7TCQ=; b=xHLMib4V9ZEtBgF78DbG3K0jH/
+	fGdfDaJqUflWQr75UcVVuz2Uk0PbV7WLaU3Hyn0g/odbJGVieIVZA2hyh44ScR69X7N2Rq+ymIA8J
+	kBPzSUFnVeRifrsLuO4JiIughS5rLmTpK3QOgc0p/q0GH+A/4z9GkowIfFhm0yhE4Ph4Wzlmrkfyf
+	6q3dw4joNYbQyBDP0Ttd1l6PIpOHSxFgECldRW/sfpuCU5629A0Cq351FxglEKG1A+A93IYlrPC+B
+	10+xktQt90ybUWn5zmFq0ZT7YGLO0HvSQkWXH+hONxm8UW6eOn2vieQTLr88IRB4m8hK26NSsQtpe
+	Lptd9grw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xOUFQ-00000004OkE-1Qjr;
-	Wed, 04 Nov 2026 06:13:24 +0000
-Received: from mail-oo1-xc35.google.com ([2607:f8b0:4864:20::c35])
-	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xOUFO-00000004Ojn-0ddq
+	id 1xOWof-00000004nh9-13yO;
+	Wed, 04 Nov 2026 08:57:57 +0000
+Received: from cmccmta6.chinamobile.com ([111.22.67.139])
+	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
+	id 1xOWoa-00000004naL-1P73
 	for linux-mtd@lists.infradead.org;
-	Wed, 04 Nov 2026 06:13:23 +0000
-Received: by mail-oo1-xc35.google.com with SMTP id 006d021491bc7-70b875f6f13so319423eaf.0
-        for <linux-mtd@lists.infradead.org>; Tue, 03 Nov 2026 22:13:21 -0800 (PST)
+	Wed, 04 Nov 2026 08:57:56 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1793772801; x=1794377601; darn=lists.infradead.org;
-        h=cc:to:message-id:content-transfer-encoding:content-type
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to:content-type;
-        bh=MVU4a1WbyoYsCog2h+z3lNAS2j7JA65g4JUPcSPW2I4=;
-        b=vP3BO+pPMUCsydj01iU1J32iDqXVuRYqeas+Dxy1r7U8MRI7iKpdG4c7z3YQYj7lEg
-         urySZWPsenVDnYxLv4Pkk4WD8/04IA9Ddi1f78VG70LkMkZ5rC/gWcTD5+6XTtXM9I7E
-         RpLyWBNibF5nUD/Zf2NCpoMa+/iA7PPQt3qI1Qbmjp298vdcgba4ilwWtM/JUCAPx4uF
-         6gzepiOzdCVQXRHJwyc0TE7A976HnS97Ol2vo9CaIaLYxJmDxA5pFQR+bdmMB1RlqU+D
-         Z1/4a+WS1BfLXY1vTSw7T/VZcYcbCtUC9H+Qnqr/oVIEl0NwRxGkfUWHvOTf9Wclcu3X
-         jzxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1793772801; x=1794377601;
-        h=cc:to:message-id:content-transfer-encoding:content-type
-         :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to:content-type;
-        bh=MVU4a1WbyoYsCog2h+z3lNAS2j7JA65g4JUPcSPW2I4=;
-        b=a25cSa/oZkCI72qNY2/38/7HfOQTo3fLoTZuiOeta6DpngSgQBy8dTEhEqURw5ic0r
-         2H/EZ/gNWKYKnH9czHuQailvvYWcN+Id7mqrG3DaxmfNnNik5NFWVLnlodXiPfrNl0/M
-         mwMIp9u04+QSnGL1Ub8AfDHkQYqB9+2tkDP4+xjjsT3PfcxFXiIXtEzSFda4cHh/UEqh
-         KLSEQREmKnlkYw2unuCxHCmCT4ujzWL2WL59jCwkEfDciCnlgoJonoalV4yiKbsyiSxZ
-         UEUmMPbb3U5K41GWdZ1x+WkBacjqxYlx7EUs1X43vH3lTh2uMTvxecqfibC7Hb47hfIa
-         fSSg==
-X-Gm-Message-State: APuU4Z+Yi6Yy02dV29siwwgJTCCL1YaIj2/KRHWwIqLccS96dK2h8v/x
-	EGoKrhwnNjWXUEMD9S+VQYJ3ovQCwEXbjSk3V1V/luqRuJbcayyjFA6U
-X-Gm-Gg: AYBFou2uCq1s/TsAGEXSDe7YyyaTzyurjmmIYHFwJ/gMcCiQjD0p/0pOGnqi05qLw4b
-	YsmzhJZGTp7PS96SyAGNcZ+U7XXzEpHgFewXSSpMeGs70/dOcMpxo9tBjxG6nB+9dw33M2xWoqx
-	3fiWpBv//0ZJ2We/M5SE3qtbcPpDuVeM9y6+Xs7lpycpdtlxcAhxWRmb+BH1gaKCHx7mlBsLkKx
-	anHkR8vm7EHkvX7eqp5zkXHXToB+UHofYeb6iBFoVqbbkwrPYPh8YNqyHyanr9XqPia3qw8MO1Q
-	j9C36qYsXToduhwVS6bbgnZfFhH+pI/XDTZ+DnANaTG9Jnl9GbacPl2Kjv3/4uMb3sVrMcQPvXK
-	OqhSX2VOXAzKbLEHXygqSH9aftwvN4iwxBDa/81Yc55VMLZKCT3LsXEsht9CMPcwvQb+aslhTS5
-	3/kD0UDXtfKU/bSLgO/G/vg2vee1mLv6102o29Pp7NvHGbf9ViJ0c8MbmPshgCPICM1jpF59WCf
-	gtQZMmaQN4ya11EAAS6fMnY+m90m/UvU7fqfdNDirwgKWDXudTSQlURODQQ85e5c0OdzZ01lLvK
-	RvHlSgr2ec18w0l94Q1rQPmFzNRx0CSEK6+8Ptl9QQgcKkDLRyh6zqQjn+j8/z2pWAgk2XMIJkk
-	3jyCVm4isBoOSCACaS4oHtJ0M4cC8S6xClzG+m94fPNJ1s3XnNARsUZ7C4ByWWNViGe6UEC+Hq7
-	iM8NFtNUijIhmTVvbTQ4pS4xdp6kwSu8KskqTHKL19T3DB0mE+qqt3
-X-Received: by 2002:a05:6820:83d9:20b0:70d:d3a7:24d2 with SMTP id 006d021491bc7-714f255ec1bmr6371290eaf.64.1793772801020;
-        Tue, 03 Nov 2026 22:13:21 -0800 (PST)
-Received: from [127.0.1.1] (174-29-1-49.hlrn.qwest.net. [174.29.1.49])
-        by smtp.gmail.com with ESMTPSA id 006d021491bc7-716c129a718sm1037919eaf.6.2026.11.03.22.13.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2026 22:13:20 -0800 (PST)
-From: James Hilliard <james.hilliard1@gmail.com>
-Date: Tue, 03 Nov 2026 23:13:18 -0700
-Subject: [PATCH] mtd: rawnand: propagate timing-mode recovery failures
+	d=cmss.chinamobile.com; s=default; l=0;
+	h=from:subject:message-id:to:cc:mime-version;
+	bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
+	b=VRaKuVPHtyF+SUq90ZRWm13D5iHZ89zPZoYo0KRoljG8PmCEYWAhQfpW8tgyBk75XfibZJfxCQGka
+	 xtYol8l1Dve8JUMoAPhJgaPlImSdtwUIamassf/GABtkSA9Uz1YsltWoLnITnzu3VtbdpFjm6026hf
+	 7blJixSZI/+HyFls=
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from spf.mail.chinamobile.com (unknown[10.188.0.87])
+	by rmmx-syy-dmz-app09-12009 (RichMail) with SMTP id 2ee96aeaf3819fd-a1969;
+	Wed, 04 Nov 2026 16:57:38 +0800 (CST)
+X-RM-TRANSID: 2ee96aeaf3819fd-a1969
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from fedora (unknown[223.108.79.101])
+	by rmsmtp-syy-appsvr05-12005 (RichMail) with SMTP id 2ee56aeaf37cab6-1bfcb;
+	Wed, 04 Nov 2026 16:57:38 +0800 (CST)
+X-RM-TRANSID: 2ee56aeaf37cab6-1bfcb
+From: Yiqing Wu <wuyiqing@cmss.chinamobile.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+	Richard Weinberger <richard@nod.at>
+Cc: Al Viro <viro@zeniv.linux.org.uk>,
+	David Howells <dhowells@redhat.com>,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	syzbot+ae2d1f6d474e1725bdc0@syzkaller.appspotmail.com
+Subject: [PATCH v2] jffs2: fix use-after-free in jffs2_garbage_collect_thread
+Date: Wed,  4 Nov 2026 16:57:25 +0800
+Message-ID: <20261104085725.241655-1-wuyiqing@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.56.0
+In-Reply-To: <20261103090018.157034-1-wuyiqing@cmss.chinamobile.com>
+References: <20261103090018.157034-1-wuyiqing@cmss.chinamobile.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Message-Id: <20261103-submit-rawnand-timing-recovery-v1-v1-1-1cc33723e052@gmail.com>
-X-B4-Tracking: v=1; b=H4sIAAAAAAAC/yXNMQ7CMAxA0atUnrHUJFUGroIYQuoUI9VFTgigq
- ncntONf3l8hkzJlOHcrKFXOvEgLc+og3oNMhDy2Bttbb0zvML9uMxfU8JYgIxaeWSZUiksl/WI
- 1GPwwOJusTy5Cc55KiT/743I9uiEPiuUPw7b9ADRS+VWFAAAA
-X-Change-ID: 20261103-submit-rawnand-timing-recovery-v1-a64432f26f3c
-To: Miquel Raynal <miquel.raynal@bootlin.com>, 
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
- Boris Brezillon <bbrezillon@kernel.org>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
- James Hilliard <james.hilliard1@gmail.com>
-X-Mailer: b4 0.15.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261103_221322_222516_70BDA283 
-X-CRM114-Status: GOOD (  12.72  )
-X-Spam-Score: -1.9 (-)
+X-CRM114-CacheID: sfid-20261104_005753_970921_37353B27 
+X-CRM114-Status: GOOD (  20.57  )
+X-Spam-Score: -2.4 (--)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -106,71 +80,165 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,
-	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-When GET_FEATURES succeeds but the chip does not acknowledge the requested
-timing mode, nand_setup_interface() falls back to mode 0. Both the
-controller-interface reset and the NAND RESET command can fail, but their
-return values are discarded. The function then returns the successful
-GET_FEATURES status even though the fallback did not complete.
+jffs2_do_remount_fs() decides whether to (re)start the garbage collect
+thread from the requested flags:
 
-Check the controller reset before issuing RESET and propagate either
-recovery error when there was no earlier error. Preserve an earlier
-GET_FEATURES failure and keep returning success when a timing mismatch
-is recovered by a successful mode-0 fallback.
+	if (!(fc->sb_flags & SB_RDONLY))
+		jffs2_start_garbage_collect_thread(c);
 
-Fixes: 415ae78ffb5d ("mtd: rawnand: check ONFI timings have been acked by the chip")
-Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+The flags which actually take effect, however, are computed by
+reconfigure_super() as
+
+	sb->s_flags = (sb->s_flags & ~fc->sb_flags_mask) |
+		      (fc->sb_flags & fc->sb_flags_mask);
+
+and fspick(2) creates its reconfiguration context with both sb_flags
+and sb_flags_mask set to zero, i.e. "no change requested".  So after
+
+	fd = fspick(AT_FDCWD, mnt, 0);
+	fsconfig(fd, FSCONFIG_CMD_RECONFIGURE, NULL, NULL, 0);
+
+on a filesystem which was mounted read-only, jffs2 starts the GC
+thread (because fc->sb_flags carries no SB_RDONLY) while the superblock
+keeps its SB_RDONLY (because fc->sb_flags_mask is zero).  The classic
+mount(2) remount path is not affected: it always passes a full
+MS_RMT_MASK, so the flags it hands to the filesystem do take effect.
+
+jffs2_kill_sb() then refuses to stop the GC thread for a read-only
+superblock:
+
+	if (c && !sb_rdonly(sb))
+		jffs2_stop_garbage_collect_thread(c);
+	kill_mtd_super(sb);
+	kfree(c);
+
+so at unmount the thread is neither signalled nor waited for, and
+kfree(c) frees the jffs2_sb_info out from under the still-running
+jffs2_gcd_mtd%d kthread.  It dereferences the freed object when it
+wakes up from its 50 ms idle sleep:
+
+  BUG: KASAN: slab-use-after-free in rt_spin_lock
+  Read of size 1 at addr ffff88804f2b02c0 by task jffs2_gcd_mtd0/12364
+  Call Trace:
+  rt_spin_lock kernel/locking/spinlock_rt.c:56
+  spin_lock include/linux/spinlock_rt.h:45 [inline]
+  jffs2_garbage_collect_thread fs/jffs2/background.c:94
+
+Fix the desynchronisation, and harden the unmount path against it:
+
+  - jffs2_do_remount_fs() now derives the flags which will be in
+    effect after the reconfiguration the same way reconfigure_super()
+    does, and only starts the GC thread if the filesystem will
+    actually be writable.
+
+  - jffs2_kill_sb() unconditionally stops and waits for the GC thread
+    before freeing c.  Without a running GC thread this is a no-op,
+    and the thread can no longer outlive the jffs2_sb_info, no matter
+    which future path manages to start it on a superblock that stays
+    read-only.
+
+Fixes: ec10a24f10c8 ("vfs: Convert jffs2 to use the new mount API")
+Reported-by: syzbot+ae2d1f6d474e1725bdc0@syzkaller.appspotmail.com
+Closes: https://syzbot.org/bug?extid=ae2d1f6d474e1725bdc0
+Signed-off-by: Yiqing Wu <wuyiqing@cmss.chinamobile.com>
 ---
- drivers/mtd/nand/raw/nand_base.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+v2:
+  - jffs2_fill_super() initialises the superblock locks before the
+    rp_size sanity check can fail the mount, so that the now
+    unconditional jffs2_stop_garbage_collect_thread() does not take an
+    uninitialised c->erase_completion_lock when a mount bails out
+    early.  (Read-write mounts with an oversized rp_size already
+    reached that path even before this change.)
+  - v1: https://lore.kernel.org/all/20261103090018.157034-1-wuyiqing@cmss.chinamobile.com/T/
+---
+ fs/jffs2/fs.c    | 13 ++++++++++++-
+ fs/jffs2/super.c | 16 ++++++++++------
+ 2 files changed, 22 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index a5b278ab9384..cb57a7d81810 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -840,7 +840,7 @@ static int nand_setup_interface(struct nand_chip *chip, int chipnr)
+diff --git a/fs/jffs2/fs.c b/fs/jffs2/fs.c
+index 05cf860307c7..a124f5309c2b 100644
+--- a/fs/jffs2/fs.c
++++ b/fs/jffs2/fs.c
+@@ -396,6 +396,7 @@ void jffs2_dirty_inode(struct inode *inode, int flags)
+ int jffs2_do_remount_fs(struct super_block *sb, struct fs_context *fc)
  {
- 	const struct nand_controller_ops *ops = chip->controller->ops;
- 	u8 tmode_param[ONFI_SUBFEATURE_PARAM_LEN] = { }, request;
--	int ret;
-+	int ret, reset_ret;
+ 	struct jffs2_sb_info *c = JFFS2_SB_INFO(sb);
++	unsigned int sb_flags;
  
- 	if (!nand_controller_can_setup_interface(chip))
- 		return 0;
-@@ -909,12 +909,15 @@ static int nand_setup_interface(struct nand_chip *chip, int chipnr)
- 	 * Fallback to mode 0 if the chip explicitly did not ack the chosen
- 	 * timing mode.
- 	 */
--	nand_reset_interface(chip, chipnr);
-+	reset_ret = nand_reset_interface(chip, chipnr);
-+	if (reset_ret)
-+		return ret ?: reset_ret;
+ 	if (c->flags & JFFS2_SB_FLAG_RO && !sb_rdonly(sb))
+ 		return -EROFS;
+@@ -411,7 +412,17 @@ int jffs2_do_remount_fs(struct super_block *sb, struct fs_context *fc)
+ 		mutex_unlock(&c->alloc_sem);
+ 	}
+ 
+-	if (!(fc->sb_flags & SB_RDONLY))
++	/*
++	 * Start the GC thread only if the filesystem will actually be
++	 * writable after the reconfiguration.  Note that reconfigure_super()
++	 * applies the flags as
++	 * (sb->s_flags & ~fc->sb_flags_mask) | (fc->sb_flags & fc->sb_flags_mask),
++	 * so a zero sb_flags_mask (as e.g. used by fspick()) leaves the
++	 * superblock read-only.
++	 */
++	sb_flags = (sb->s_flags & ~fc->sb_flags_mask) |
++		   (fc->sb_flags & fc->sb_flags_mask);
++	if (!(sb_flags & SB_RDONLY))
+ 		jffs2_start_garbage_collect_thread(c);
+ 
+ 	fc->sb_flags |= SB_NOATIME;
+diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
+index 81396a092ba8..9ac22b6479f7 100644
+--- a/fs/jffs2/super.c
++++ b/fs/jffs2/super.c
+@@ -267,12 +267,12 @@ static int jffs2_fill_super(struct super_block *sb, struct fs_context *fc)
+ 	c->mtd = sb->s_mtd;
+ 	c->os_priv = sb;
+ 
+-	if (c->mount_opts.rp_size > c->mtd->size)
+-		return invalf(fc, "jffs2: Too large reserve pool specified, max is %llu KB",
+-			      c->mtd->size / 1024);
+-
+ 	/* Initialize JFFS2 superblock locks, the further initialization will
+-	 * be done later */
++	 * be done later.  This must precede any error return: kill_sb() stops
++	 * the GC thread even on mounts which failed before it could start,
++	 * and jffs2_stop_garbage_collect_thread() takes
++	 * c->erase_completion_lock.
++	 */
+ 	mutex_init(&c->alloc_sem);
+ 	mutex_init(&c->erase_free_sem);
+ 	init_waitqueue_head(&c->erase_wait);
+@@ -280,6 +280,10 @@ static int jffs2_fill_super(struct super_block *sb, struct fs_context *fc)
+ 	spin_lock_init(&c->erase_completion_lock);
+ 	spin_lock_init(&c->inocache_lock);
+ 
++	if (c->mount_opts.rp_size > c->mtd->size)
++		return invalf(fc, "jffs2: Too large reserve pool specified, max is %llu KB",
++			      c->mtd->size / 1024);
 +
- 	nand_select_target(chip, chipnr);
--	nand_reset_op(chip);
-+	reset_ret = nand_reset_op(chip);
- 	nand_deselect_target(chip);
- 
--	return ret;
-+	return ret ?: reset_ret;
- }
- 
- /**
+ 	sb->s_op = &jffs2_super_operations;
+ 	sb->s_export_op = &jffs2_export_ops;
+ 	sb->s_flags = sb->s_flags | SB_NOATIME;
+@@ -345,7 +349,7 @@ static void jffs2_put_super (struct super_block *sb)
+ static void jffs2_kill_sb(struct super_block *sb)
+ {
+ 	struct jffs2_sb_info *c = JFFS2_SB_INFO(sb);
+-	if (c && !sb_rdonly(sb))
++	if (c)
+ 		jffs2_stop_garbage_collect_thread(c);
+ 	kill_mtd_super(sb);
+ 	kfree(c);
+-- 
+2.56.0
 
----
-base-commit: 30daaf3e7897b4a8d9b72e5b0c86dd6e2a4d7d85
-change-id: 20261103-submit-rawnand-timing-recovery-v1-a64432f26f3c
 
-Best regards,
---  
-James Hilliard <james.hilliard1@gmail.com>
 
 
 ______________________________________________________
