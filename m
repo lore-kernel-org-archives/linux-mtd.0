@@ -2,91 +2,98 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDA0C607A7D7
-	for <linux-mtd@archiver.kernel.org>; Wed,  4 Nov 2026 19:23:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44DFC606AC17
+	for <linux-mtd@archiver.kernel.org>; Wed,  4 Nov 2026 19:50:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=yaHSursP;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=U7M/F17Y
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=aMYg7UIy;
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=QkEkrFnY
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version:Subject:
+	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
 	List-Unsubscribe-Post:List-Owner;
-	bh=37lPONTeMOsZblh760EhvywxwyFrXcpyzXDwP4dCNEM=; b=yaHSursPpLsMG1G5R9WJ1kze7y
-	475n2lMvBDjnbdesoLnn30KB5NyeR+qGIjal6igSLsRdRhFpGmSTroM+c9HdM4p6LIxAwFaXY9PiV
-	answY8TA9o7//Bx8K8E7fQ8iXSC+UWaFLTeYA53OGkef7gs1XHPbMzucwPzIPbL0zmmUOTeMyMJJm
-	H2EFgPkBGJgM0Nf9BNmUYyHcuG5yHvxDf9HBmkIv3veB5QwqaO2yA0Ing4CvsiCEt5kLMBSkq1y7y
-	NoqxGKlO7ridjcVwEe8+eKsJHXQn9sPXLt+Djtpaqgw8sXqO6VMC8CfHI7vIFLTneU2Ihp+C553NQ
-	F6XXIvOg==;
+	bh=FWdwTpuSvVMYxWGKIJHI98TLEQLSwk8DEGUREbAV9as=; b=aMYg7UIypfegzeNTQwaE4GSINP
+	06N0gQkRp6JCQX7ledT78wre2YhjPAe6ixYuwaSQCl58qzhJbxqIUhrhgqir/zoQy5BEnKVYwqkzW
+	W0Z/T39dz/Pn5IOvUJ2LWSgJyczv5/+ojh01y3ZaHb7A/iGfqk1pfaUR3FTD3tkh3SrP1WELoqeuc
+	kUi34aNUayEMa7XKTN/q/KnGvVtVMZfa3xutalI6W9lVjGyAaQqtOoj7WEQTXVodDL+p4tp772/Vx
+	zqxUyEaBNnOvcznZH2E5wBE+TbPymVooCCcXxlZe3UkDrB1mml0vQiwSk8QVLGVXzttqGEJ8I364e
+	cGfkVa2A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xOgaC-00000006aP4-1xsh;
-	Wed, 04 Nov 2026 19:23:40 +0000
-Received: from mail-yw1-x1134.google.com ([2607:f8b0:4864:20::1134])
+	id 1xOh05-00000006lph-0ofo;
+	Wed, 04 Nov 2026 19:50:25 +0000
+Received: from mail-oo1-xc2b.google.com ([2607:f8b0:4864:20::c2b])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xOgaA-00000006aNd-2CKf
+	id 1xOh02-00000006ln6-2jRx
 	for linux-mtd@lists.infradead.org;
-	Wed, 04 Nov 2026 19:23:39 +0000
-Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-8b10d24345dso10586517b3.3
-        for <linux-mtd@lists.infradead.org>; Wed, 04 Nov 2026 11:23:36 -0800 (PST)
+	Wed, 04 Nov 2026 19:50:23 +0000
+Received: by mail-oo1-xc2b.google.com with SMTP id 006d021491bc7-6fbf1ba31fbso438716eaf.0
+        for <linux-mtd@lists.infradead.org>; Wed, 04 Nov 2026 11:50:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1793820215; x=1794425015; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=ps/8Xb65LPBbRmoABYT21NMRtekHEb1kQ0QpJBODTrA=;
-        b=U7M/F17Yf2Kjcf2bdALmTHZ6dqIj4C+xAR7FodDBzqsBWpRA8mDqdSutJ2mp+1Vl7N
-         Gn/e6fcR6fmJeiNKjXenvQEv4pW6WP5DmjA8pion20LhDZpC+t//6+xdEzLoJiaz7mXA
-         CJCzT8O3WpRycA8mD9Cn3oT39qSbaxacer7SdtXUgLEfW03xL9limti8e+9j0VV4wRfz
-         Gt+l0E7h12eHWZldm5lvSVKUvkh3h8UkdSQ2dtkB3CBB2euK1HIm0tEPSDJfj/mZ4AxJ
-         5H+8sQ4nquTaXlmn3rtJVsNPowaWQ90HNh8V5BGEuMWzsxj21bBXBeFEZfzdAokANNX1
-         0RUQ==
+        d=gmail.com; s=20260707; t=1793821821; x=1794426621; darn=lists.infradead.org;
+        h=cc:to:message-id:content-transfer-encoding:content-type
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to:content-type;
+        bh=OT/io50s2GTf++6usH4VAdftnCA55S4d8sAF74Ec5zI=;
+        b=QkEkrFnYSYUDE5HEq3AM7GB5qXhx0FE50gnSiGZY/rkF0sCCrGWcbF+apO7h7NbjM4
+         uLzRBRz4LCwvz4VIz0BA0V7AAgmqOrVmvhxRKEUDvLp2bJjrtso17uuUHuw1IFWeyuTt
+         G+bP6URZ3RxomsF4HOeiw5J1zKFF1ItUkJQoXIB8fJPUfGY1g++3cdT2mJv+8UxznHKX
+         T6MI4uA/jknOjiDbY0U6j5ysCWaYL0mkugRrSEvV90tKT4SuMDnzpS2OaQirDem4S37U
+         ktCn3VTJu+VW5LVvtZydM4tswrfhsBX6LCLdFKk3AD/Ur7ky0wib2qCe4JGtgVlCd3Qz
+         5H9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1793820215; x=1794425015;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=ps/8Xb65LPBbRmoABYT21NMRtekHEb1kQ0QpJBODTrA=;
-        b=MrlDKT9WWKUa530x8uNf5VYwxLA7Simmh4x+UwV6gZjva5BoOwJS+Ke5JgkU42q2w+
-         1A8u44/N4E0y1yPVemRUOcVewzZlftZ95aW4p+bSPcy9779De5yvNiDLP+c1C1TOAtgA
-         uC2lx2XNEsnUf0hGq9XjTsDf7MZM9xZbC/354OZKXAn3ZDovY8X2Q09dUAyZ4vqHMc93
-         2Zi0QplCduW/I8SGlySZHqz0Tp5YWOqAmngf5izuLHH9GN1/ENwxLZkXdZ7Yypmz4eCM
-         9lDy1i2z6hP8YbnjzDr9C4NgjVBg1ia+4R486WP7MxD8QGTsGFS14HT/NpJfqXI91cTo
-         ByVA==
-X-Gm-Message-State: APuU4Z+8Io/P9TtF2J/YO2+2t8i65mW78MR6mi0CCEzF89q4RGyO7RJa
-	ZjkhwdDSV/mwon9x092uxHknQpwtBZ1uesUs3EAzdO2zT3Ijs5+qGL2IavrvEHzFJ28=
-X-Gm-Gg: AYBFou0gCTJkTB3XV4Iv9+LgcsJNXXHGW0WdWIerA674YUdwSGtynZpqtzYOLEdjxiG
-	rbxS/tVlCBrlv54yvdwwIcdn8gT6T0EwibiBYcwks6ZcoDWWGRIrnKH9G2Cw91wjGlpfqZ+1y7/
-	TeFaF+DSMxn+NhlbO4i/IROd2fUsF8IvFC1kSBCBEWkvfN7qGdTKHjmnltuJpkNlOnC3E/Gof7r
-	DXcCazXctjN3VlDPTp8kjxkAx4reLJpZYF4KDk0HzkizR0IcXKmkacAIXEaQ8kJ8JVwJ1rgUmh/
-	TW/qkp9SayAGhgoROfXJ6m130E86oHCleQbZjK42JMtwmesEEQc3CKHtq/Uk4Au/3EVAGlBDLDY
-	YQaOlZ3OvTlYMHeO7FYy77ELEDynVrTMQ+tHsSaSxzZwdYByvAOyhYodUH5IKFPFZzY1K1wLGhp
-	i+3m+XE7uxOl2qUF9FCjyzza5GDr1+tGcSaPHiFLvCJJYXZums+1EMrBeoHFpbAVbbDsIud2Q7a
-	RGdakteEP/+Gg78qS6qJkBKMtmTJTCVJQHYfhyBDkmIPv7zbFiw0NAeMAbkbpT6n6+p+EQyPjSv
-	o4nXm34/1if+XNTub80TIYcedQepoaLUE9JUKRHCpA==
-X-Received: by 2002:a05:690c:698b:b0:8b3:1739:31f0 with SMTP id 00721157ae682-8b317394158mr12241547b3.10.1793820210547;
-        Wed, 04 Nov 2026 11:23:30 -0800 (PST)
-Received: from Abelha2618.autotrac.corp ([149.78.105.186])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-8b3098c313esm25250307b3.15.2026.11.04.11.23.28
+        d=1e100.net; s=20260707; t=1793821821; x=1794426621;
+        h=cc:to:message-id:content-transfer-encoding:content-type
+         :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to:content-type;
+        bh=OT/io50s2GTf++6usH4VAdftnCA55S4d8sAF74Ec5zI=;
+        b=l5J+DFHPigr5Bt/2FU0dwjH8wUVwYC3InnOc51E5kgu3acvfj92euNfU+FVxneHXoI
+         IWOQxom4LfuizyctAuwv7TolWSKsIzBsSiBoN2DM7ek/rgvbpXCbbcHR/NO3a+wkYDo/
+         k6XwbfbPPuwrZGBpjSIEtbvtSvJ49ehFp3KYHWJpXp0QgfRHqLeEZkaLr5bnxtSsHzhn
+         +JUNfe4s4Q2PLC4BTECxwTVLp1eacKfrUwrmu/UTwu1N42xLkd0urIvSV+3m8/0J9ANr
+         GQ2ZxNSpEf0NBZLVdZaz+Tn/GAC3Mi2j9W/9BTwWDsSphHp2aE954DMpKRHpfjI81cvG
+         TJBw==
+X-Gm-Message-State: APuU4Z90kA2BfZ9uls/WahcbjWt8Q1RavRnOC/OOG9ZfmAvRHZPMN+re
+	RD0F4Dcye2QG9K5eE9glrkwSfs9LyX3ChP9+pTvJvOW9KKXo6TYe2kaK
+X-Gm-Gg: AYBFou1SQyP6zbLHk+30AuTBJXIovgxYiLG21QUsXqAr/6xih3imYnhzDbvjlUzdaMV
+	8skZlaXcjcJNjcCwAgblzXFMT57R1k0Wm6l4BtJEA9JstJ+oQP3a76qgbm5+NddXpR5fJU4n5Ic
+	8W0nV6shHSK+wfYcBx98CHNoTTtHFNCbhaVOisCV8tR+zsQbXlFBaWN/aOM5+GqcQBIO/XGmQpC
+	cTrBIgJ4KrZjdtQrF4yK2ya4Ms4eZC0HfLZp4ytpRJRQp0wYwOqacdANzLDZ6MKADIRE5CnK8ls
+	l1hlrXYzBniYm9z1ZyNsBA6JPrfsq/jAY2vpO/WR1ZIL/Wt2ZmLgsfxkzRmOFW8ZGOX4zlUitke
+	RUIXNR9Y3SGcFJeWPbTqwzjYCGE8LU1PfIxqnBD+4Wi6y2S0KxOjfyrd2hxIRDrT7ztsxfUAuXC
+	tsEyljfklFH5uLK06QnLSmdOIlXNQw0QBsV0CzvQgUZDQmPvUDn4xYxP590aRhttTP+DscUBuqi
+	PD/FVDYJhxTxl+VLaXHR2BbeSMt/G5+z5cUU2plhESPLBWQvS+JgtQ6fFODUn7JwEpKzTWmifnO
+	vO/zcLnuvkrQME13M7njEr77T+o5hge7iFeRCdS5YY1Alb22GvrIqGvRG9VFIlJEElW3pl/07qw
+	EMik/PXcc7rxjucL/LmHeFGlGsazj+ubdFCi80faGne0wgHXV2cPzmxfdNcMva/eapy2Pre4SEL
+	7C9lSo+vQbA/qUDyDvLHWKJZ/tEsxXVeE9rq8INLjIw8pRbh+kvZo=
+X-Received: by 2002:a05:6820:55c6:20b0:716:bf0b:f804 with SMTP id 006d021491bc7-716bf0bfc08mr1741495eaf.79.1793821821491;
+        Wed, 04 Nov 2026 11:50:21 -0800 (PST)
+Received: from [127.0.1.1] (174-29-1-49.hlrn.qwest.net. [174.29.1.49])
+        by smtp.gmail.com with ESMTPSA id 006d021491bc7-716c12eb1b9sm2504522eaf.10.2026.11.04.11.50.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2026 11:23:30 -0800 (PST)
-From: Wagner Popov dos Santos <wpopov@gmail.com>
-To: linux-mtd@lists.infradead.org,
-	dwmw2@infradead.org,
-	wuyiqing@cmss.chinamobile.com,
-	richard@nod.at
-Cc: wpopov@gmail.com
-Subject: [PATCH] fs: jffs2: cache dirent name CRC in the raw node ref
-Date: Wed,  4 Nov 2026 16:23:24 -0300
-Message-ID: <20261104192324.1351450-1-wpopov@gmail.com>
-X-Mailer: git-send-email 2.43.0
+        Wed, 04 Nov 2026 11:50:21 -0800 (PST)
+From: James Hilliard <james.hilliard1@gmail.com>
+Date: Wed, 04 Nov 2026 12:50:19 -0700
+Subject: [PATCH] mtd: core: reject OOB transfers starting at the device end
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
+Message-Id: <20261104-submit-mtd-oob-end-v1-v1-1-5cb8ad921cb0@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/yXMQQqEMAxA0atI1gasiIu5iszCpokTwXZoqwji3
+ a26fIv/D0gclRN8qgMib5o0+AJTV0C/0U+M6oqhbdremKbDtNpFMy7ZYQgW2TvcDErnqBcrJDR
+ Caf+RRffnO3xfl3BmyvcMzvMC9n0lXXkAAAA=
+X-Change-ID: 20261104-submit-mtd-oob-end-v1-f4dc6fbfcfca
+To: Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+ Boris Brezillon <bbrezillon@kernel.org>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ stable@vger.kernel.org, James Hilliard <james.hilliard1@gmail.com>
+X-Mailer: b4 0.15.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261104_112338_625897_8E60C2F3 
-X-CRM114-Status: GOOD (  24.91  )
-X-Spam-Score: -2.1 (--)
+X-CRM114-CacheID: sfid-20261104_115022_700187_DE72BE94 
+X-CRM114-Status: GOOD (  12.72  )
+X-Spam-Score: -1.9 (-)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,247 +114,49 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-jffs2_garbage_collect_deletion_dirent() has to find every obsolete
-dirent that carries the same name as the deletion dirent being
-collected. To do so it walks the whole raw node list of the parent
-inode and, for each obsolete node whose total length matches, reads
-the node header back from flash just to compare the name CRC. On NAND
-based systems this turns the deletion of a single direntry into a long
-sequence of small flash reads, and the cost grows with the number of
-obsolete nodes still attached to the directory.
+mtd_check_oob_ops() permits offs == mtd->size when the data length is
+zero. For an OOB-only request with a nonzero ooboffs, maxooblen then
+underflows because there are no pages remaining. The wrapped value lets
+the request pass the OOB length check.
 
-Add the optional CONFIG_JFFS2_FS_CACHE_RAW_NAME_CRC, which stores the
-dirent name CRC directly in struct jffs2_raw_node_ref. The field is
-populated in every path that creates a reference to a dirent node:
-jffs2_write_dirent() for newly written names, jffs2_scan_dirent_node()
-and jffs2_sum_process_sum_data() during mount, read_direntry() when an
-inode is read back, and jffs2_wbuf_recover(), which just carries the
-value over to the relocated reference because the node contents do not
-change.
+The OOB ioctls can reach this case by encoding the OOB offset in the low
+bits of start. On a partition ending before its master device, the
+subsequent address translation allows the request to read or write OOB
+in the page immediately following the partition.
 
-The feature costs four extra bytes per raw node reference, so it is
-disabled by default and only worth enabling where the memory is less
-scarce than the flash bandwidth.
+Reject nonempty OOB transfers starting at or beyond the end of the MTD
+device before calculating the remaining OOB capacity. Keep empty
+requests and data-only operations unchanged.
 
-Signed-off-by: Wagner Popov dos Santos <wpopov@gmail.com>
+Fixes: d82c36821684 ("mtd: Fix mtd_check_oob_ops()")
+Cc: stable@vger.kernel.org
+Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
 ---
+ drivers/mtd/mtdcore.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-On a working partition subject to ongoing writes, new files are created,
-existing file contents are modified, and files are deleted. These
-operations leave obsolete directory entries that the GC may need to
-examine while reclaiming erase blocks. On NAND, this check is performed
-by jffs2_garbage_collect_deletion_dirent(), which examines obsolete
-dirents to determine whether a deletion dirent can be discarded or is
-still needed to delete a matching dirent elsewhere on flash. Caching
-the name CRC avoids many small NAND reads during this inspection. The
-without this optimization, the function could take several minutes to
-return in some cases, causing the corresponding userspace request to
-remain blocked for several minutes. The time reduction applies
-specifically to this dirent-inspection step, not necessarily to the
-total time for all GC activity or partition cleanup. In tests on an
-ARM AM3352 platform with NAND flash connected through the GPMC bus, this
-step took as little as 2% of its original time in some cases. The
-actual improvement depends on the workload and partition state.
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 491a27d0315f..b82fd7ccd111 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -1676,6 +1676,9 @@ static int mtd_check_oob_ops(struct mtd_info *mtd, loff_t offs,
+ 	if (ops->ooblen) {
+ 		size_t maxooblen;
+ 
++		if (offs >= mtd->size)
++			return -EINVAL;
++
+ 		if (ops->ooboffs >= mtd_oobavail(mtd, ops))
+ 			return -EINVAL;
+ 
 
-diff --git a/fs/jffs2/Kconfig b/fs/jffs2/Kconfig
-index 560187d61562..332d005d1731 100644
---- a/fs/jffs2/Kconfig
-+++ b/fs/jffs2/Kconfig
-@@ -63,6 +63,26 @@ config JFFS2_SUMMARY
- 
- 	  If unsure, say 'N'.
- 
-+config JFFS2_FS_CACHE_RAW_NAME_CRC
-+	bool "JFFS2 faster GC on cluttered partition"
-+	depends on JFFS2_FS
-+	default n
-+	help
-+	  This feature caches a small amount of additional information for
-+	  each directory entry, allowing the JFFS2 garbage collector (GC)
-+	  to reclaim erase blocks more efficiently and free Flash space for
-+	  pending read and write operations.
-+
-+	  On heavily fragmented or cluttered partitions, this can reduce the
-+	  time required for the GC to complete an erase-block reclamation
-+	  cycle by a significant margin. The actual benefit depends on the
-+	  workload and on how frequently such GC operations occur, so any
-+	  improvement may only be noticeable during periods of intensive
-+	  Flash activity.
-+
-+	  This optimization improves GC performance at the cost of a small
-+	  amount of additional RAM. If RAM is severely constrained, say 'N'.
-+
- config JFFS2_FS_XATTR
- 	bool "JFFS2 XATTR support"
- 	depends on JFFS2_FS
-diff --git a/fs/jffs2/gc.c b/fs/jffs2/gc.c
-index 1b833bbffcf5..f4244a46f31a 100644
---- a/fs/jffs2/gc.c
-+++ b/fs/jffs2/gc.c
-@@ -741,7 +741,19 @@ static int jffs2_garbage_collect_pristine(struct jffs2_sb_info *c,
- 			ret = -EIO;
- 		goto out_node;
- 	}
-+#ifdef CONFIG_JFFS2_FS_CACHE_RAW_NAME_CRC
-+	{
-+		struct jffs2_raw_node_ref *new_ref;
-+
-+		new_ref = jffs2_add_physical_node_ref(c, phys_ofs | REF_PRISTINE, rawlen, ic);
-+		/* The node was copied verbatim, so the name CRC is still valid */
-+		if (!IS_ERR(new_ref) &&
-+		    je16_to_cpu(node->u.nodetype) == JFFS2_NODETYPE_DIRENT)
-+			new_ref->name_crc = je32_to_cpu(node->d.name_crc);
-+	}
-+#else
- 	jffs2_add_physical_node_ref(c, phys_ofs | REF_PRISTINE, rawlen, ic);
-+#endif
- 
- 	jffs2_mark_node_obsolete(c, raw);
- 	jffs2_dbg(1, "WHEEE! GC REF_PRISTINE node at 0x%08x succeeded\n",
-@@ -929,6 +941,13 @@ static int jffs2_garbage_collect_deletion_dirent(struct jffs2_sb_info *c, struct
- 			if (!(ref_obsolete(raw)))
- 				continue;
- 
-+#ifdef CONFIG_JFFS2_FS_CACHE_RAW_NAME_CRC
-+			/* raw->name_crc above zero and differ? It's another file. */
-+			if (raw->name_crc && (raw->name_crc != name_crc)) {
-+				continue;
-+			}
-+#endif
-+
- 			/* Any dirent with the same name is going to have the same length... */
- 			if (ref_totlen(c, NULL, raw) != rawlen)
- 				continue;
-@@ -960,6 +979,14 @@ static int jffs2_garbage_collect_deletion_dirent(struct jffs2_sb_info *c, struct
- 			if (je16_to_cpu(rd->nodetype) != JFFS2_NODETYPE_DIRENT)
- 				continue;
- 
-+#ifdef CONFIG_JFFS2_FS_CACHE_RAW_NAME_CRC
-+			if(!raw->name_crc && je32_to_cpu(rd->name_crc)) {
-+				raw->name_crc = je32_to_cpu(rd->name_crc);
-+				JFFS2_WARNING("Unspected empty name_crc at %08x\n",
-+					ref_offset(raw));
-+			}
-+#endif
-+
- 			/* If the name CRC doesn't match, skip */
- 			if (je32_to_cpu(rd->name_crc) != name_crc)
- 				continue;
-diff --git a/fs/jffs2/malloc.c b/fs/jffs2/malloc.c
-index 411de8b361b2..6b2f28891ad5 100644
---- a/fs/jffs2/malloc.c
-+++ b/fs/jffs2/malloc.c
-@@ -175,9 +175,17 @@ static struct jffs2_raw_node_ref *jffs2_alloc_refblock(void)
- 		for (i=0; i < REFS_PER_BLOCK; i++) {
- 			ret[i].flash_offset = REF_EMPTY_NODE;
- 			ret[i].next_in_ino = NULL;
-+#ifdef CONFIG_JFFS2_FS_CACHE_RAW_NAME_CRC
-+			/* Always init name_crc with zero to allow pre-verification
-+			 * if the field is being updated in all the proper places. */
-+			ret[i].name_crc = 0x00000000;
-+#endif
- 		}
- 		ret[i].flash_offset = REF_LINK_NODE;
- 		ret[i].next_in_ino = NULL;
-+#ifdef CONFIG_JFFS2_FS_CACHE_RAW_NAME_CRC
-+		ret[i].name_crc = 0x00000000;
-+#endif
- 	}
- 	return ret;
- }
-diff --git a/fs/jffs2/nodelist.h b/fs/jffs2/nodelist.h
-index 2e98fa277dab..e21c3d40c7c0 100644
---- a/fs/jffs2/nodelist.h
-+++ b/fs/jffs2/nodelist.h
-@@ -86,6 +86,11 @@ struct jffs2_raw_node_ref
- 		xattr_ref or xattr_datum instead. The common part of those structures
- 		has NULL in the first word. See jffs2_raw_ref_to_ic() below */
- 	uint32_t flash_offset;
-+#ifdef CONFIG_JFFS2_FS_CACHE_RAW_NAME_CRC
-+	uint32_t name_crc;   /* Used in GC to pre-validation of direntry to avoid flash reading during the
-+				process to check if nodes are the same, excepted by the node version number.
-+				Zero means 'unknown', in which case the flash still has to be read. */
-+#endif
- #undef TEST_TOTLEN
- #ifdef TEST_TOTLEN
- 	uint32_t __totlen; /* This may die; use ref_totlen(c, jeb, ) below */
-diff --git a/fs/jffs2/readinode.c b/fs/jffs2/readinode.c
-index 1caabff9dc91..7615bf5be65a 100644
---- a/fs/jffs2/readinode.c
-+++ b/fs/jffs2/readinode.c
-@@ -690,6 +690,11 @@ static inline int read_direntry(struct jffs2_sb_info *c, struct jffs2_raw_node_r
- #endif
- 	}
- 
-+#ifdef CONFIG_JFFS2_FS_CACHE_RAW_NAME_CRC
-+	/* Populate the cache for every dirent, not only partial-name reads */
-+	ref->name_crc = je32_to_cpu(rd->name_crc);
-+#endif
-+
- 	fd->nhash = full_name_hash(NULL, fd->name, rd->nsize);
- 	fd->next = NULL;
- 	fd->name[rd->nsize] = '\0';
-diff --git a/fs/jffs2/scan.c b/fs/jffs2/scan.c
-index 06e494797724..c063cefd19c3 100644
---- a/fs/jffs2/scan.c
-+++ b/fs/jffs2/scan.c
-@@ -1104,6 +1104,9 @@ static int jffs2_scan_dirent_node(struct jffs2_sb_info *c, struct jffs2_eraseblo
- 
- 	fd->raw = jffs2_link_node_ref(c, jeb, ofs | dirent_node_state(rd),
- 				      PAD(je32_to_cpu(rd->totlen)), ic);
-+#ifdef CONFIG_JFFS2_FS_CACHE_RAW_NAME_CRC
-+	fd->raw->name_crc = je32_to_cpu(rd->name_crc);
-+#endif
- 
- 	fd->next = NULL;
- 	fd->version = je32_to_cpu(rd->version);
-diff --git a/fs/jffs2/summary.c b/fs/jffs2/summary.c
-index 4521a7723f30..bf4563a08033 100644
---- a/fs/jffs2/summary.c
-+++ b/fs/jffs2/summary.c
-@@ -472,6 +472,10 @@ static int jffs2_sum_process_sum_data(struct jffs2_sb_info *c, struct jffs2_eras
- 
- 				fd->raw = sum_link_node_ref(c, jeb,  je32_to_cpu(spd->offset) | REF_UNCHECKED,
- 							    PAD(je32_to_cpu(spd->totlen)), ic);
-+#ifdef CONFIG_JFFS2_FS_CACHE_RAW_NAME_CRC
-+				/* Must match the on-flash name_crc, which covers nsize bytes */
-+				fd->raw->name_crc = crc32(0, spd->name, spd->nsize);
-+#endif
- 
- 				fd->next = NULL;
- 				fd->version = je32_to_cpu(spd->version);
-diff --git a/fs/jffs2/wbuf.c b/fs/jffs2/wbuf.c
-index 3b7803c75d58..4d6e2671eaf0 100644
---- a/fs/jffs2/wbuf.c
-+++ b/fs/jffs2/wbuf.c
-@@ -526,6 +526,11 @@ static void jffs2_wbuf_recover(struct jffs2_sb_info *c)
- 
- 		new_ref = jffs2_link_node_ref(c, new_jeb, ofs | ref_flags(raw), rawlen, ic);
- 
-+#ifdef CONFIG_JFFS2_FS_CACHE_RAW_NAME_CRC
-+		/* The node contents didn't change, so keep the cached name CRC */
-+		new_ref->name_crc = raw->name_crc;
-+#endif
-+
- 		if (adjust_ref) {
- 			BUG_ON(*adjust_ref != raw);
- 			*adjust_ref = new_ref;
-diff --git a/fs/jffs2/write.c b/fs/jffs2/write.c
-index cda9a361368e..91f30fb31ea6 100644
---- a/fs/jffs2/write.c
-+++ b/fs/jffs2/write.c
-@@ -326,6 +326,9 @@ struct jffs2_full_dirent *jffs2_write_dirent(struct jffs2_sb_info *c, struct jff
- 		jffs2_free_full_dirent(fd);
- 		return ERR_CAST(hold_err);
- 	}
-+#ifdef CONFIG_JFFS2_FS_CACHE_RAW_NAME_CRC
-+	fd->raw->name_crc = crc32(0, name, namelen);
-+#endif
- 
- 	if (retried) {
- 		jffs2_dbg_acct_sanity_check(c,NULL);
--- 
-2.43.0
+---
+base-commit: 1c1a342aceec79528b3ba51f376eca2be5928fe7
+change-id: 20261104-submit-mtd-oob-end-v1-f4dc6fbfcfca
+
+Best regards,
+--  
+James Hilliard <james.hilliard1@gmail.com>
 
 
 ______________________________________________________
