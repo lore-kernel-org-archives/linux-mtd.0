@@ -2,66 +2,94 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A59FD606A31B
-	for <linux-mtd@archiver.kernel.org>; Wed,  4 Nov 2026 16:25:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82C90606A31B
+	for <linux-mtd@archiver.kernel.org>; Wed,  4 Nov 2026 19:12:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=RGOgnHW7
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=bODUJACb;
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=ZQ1knA5q
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Subject:Cc:To:From:Mime-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
 	List-Unsubscribe-Post:List-Owner;
-	bh=6ZPOzQZsa3HWPnRS8AbMhi1OIlQaeWSSTSg/iV0i1n8=; b=RGOgnHW7pg2xks+UtlaOjUHAPO
-	VIyU4wzcRcrS96xmcjrEsV5SGrWiXVoBIqVtnE77gXkOkne045AcCv9q3wjBmT8Fa9nUhCo7t13Hs
-	wYlwohDvqQeU3IIb3uiRxlLq11nr6vIal97YVv/rPSeNDEc4z+8bA4rSnvjFkXOr7x0HZe1CKTMBi
-	R7F5X1LvyzBoR+FdwaR8oIZjXPoOPq7c5kwg+2oqtPH+uLl/dNDQf/hlkr+EwIKf782efPuu5cQlb
-	MIgo+x34Q5vlBCo6xnCyi95D6hukAljnmSUJfLEpQMC3gGKLmBy60GiB9etmqT5g+Xuf5xDyXCFyA
-	UGgYTHMg==;
+	bh=vkBlHDNKwq73tb6Y/G9rk+4lvaZxAwLdXtFOCXGntXc=; b=bODUJACbSKLmAQ0wR43zMp+GCs
+	qfEYVtb9rq43zMqgQQwq+4Jl1fpULYY8eGRjQEvgE7pMJhQbQ7wvjgY8zr8kOdEdjfAFc7D6m0VFh
+	BZTI6T92nT3j6+sj+7ESuqPy+M/rppPCK3WPxzoHSyyLcbTs9/a1gRbQu2N1gZwYEomlOF/QLxP6Y
+	kAzoh9t1ayxTs3wYD8DD/3QRVeluXot5DRIzfCHU3JfvedQtXGTltWrKBhpTlu0XIRXIJJbQDeBYK
+	PqK+T+/sTyQPaOAFdM7jozvJQRuCnQgZP79FfMbQ+4BRMegSRi6+JfRVSXbM+8UEy/dpJvuVNwHkR
+	1HOAM3gw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xOdnr-00000005y77-1Pzb;
-	Wed, 04 Nov 2026 16:25:35 +0000
-Received: from mxhk.zte.com.cn ([160.30.148.34])
+	id 1xOgPa-00000006XA8-3x9l;
+	Wed, 04 Nov 2026 19:12:42 +0000
+Received: from mail-dy2-x09.google.com ([2607:f8b0:4864:36::9])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xOdnn-00000005y6I-1YYE
+	id 1xOgPY-00000006X9N-0ezp
 	for linux-mtd@lists.infradead.org;
-	Wed, 04 Nov 2026 16:25:34 +0000
-Received: from mse-fl1.zte.com.cn (unknown [10.5.228.132])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mxhk.zte.com.cn (FangMail) with ESMTPS id 4jKW4x5gWmz5BNRf;
-	Thu, 05 Nov 2026 00:25:21 +0800 (CST)
-Received: from xaxapp04.zte.com.cn ([10.99.98.157])
-	by mse-fl1.zte.com.cn with SMTP id 6A4GPCCv020169;
-	Thu, 5 Nov 2026 00:25:12 +0800 (+08)
-	(envelope-from shao.mingyin@zte.com.cn)
-Received: from mapi (xaxapp01[null])
-	by mapi (Zmail) with MAPI id mid32;
-	Thu, 5 Nov 2026 00:25:15 +0800 (CST)
-X-Zmail-TransId: 2af96aeb5c6b6a7-c1505
-X-Mailer: Zmail v1.0
-Message-ID: <20261105002515934UMImG6EiHrJdKjsLu3j9d@zte.com.cn>
-Date: Thu, 5 Nov 2026 00:25:15 +0800 (CST)
+	Wed, 04 Nov 2026 19:12:41 +0000
+Received: by mail-dy2-x09.google.com with SMTP id 5a478bee46e88-36c9b5c6faaso492974eec.0
+        for <linux-mtd@lists.infradead.org>; Wed, 04 Nov 2026 11:12:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20260707; t=1793819559; x=1794424359; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=2eBasa7agXmVq6bqhWG9P4J2rj64c5jg7X5XSFiq59I=;
+        b=ZQ1knA5qPmBukMPwyxKDPJKHwJJlolsDjStMIS99K5m5A33UaMhFoQRZXlhJhhh6kB
+         50v9kDya6ULZWT7N7vjvlva0GeiBkWPGrPzf8anaVqdAfJd4p6mBS2czhHOFUlwv+Aak
+         ynf+3ktdswfoTUFqBQFqwRpM4f7Gy6GinCna8sdgHYNIypRaljiNwbnG5+eX8SuHVpbK
+         FxgNmsc5m6HaVbHy97G3p96XVveIe68o8bMRVn7k1qC6q92s/f5ftQniGa+8EKJw8iHs
+         aNHNr1XHOwe98jURe5J3lGl4vT4ThgsUBmCtWSIH/mq2E/hPPO5eS23d0ShZKpLiS9ji
+         9xgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1793819559; x=1794424359;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=2eBasa7agXmVq6bqhWG9P4J2rj64c5jg7X5XSFiq59I=;
+        b=vY0ki6HLwHvOB2dseFcVkZy/bnKEXPQdG47HJVMAGZNfCwcmpHnCJP95nnjsg5Sroe
+         utdUVvT6yXB/952K5l1Rzddgda5tpBIiuPz24HN1qJAr6fySL2ae/Sx8yy/WzBGTlVhb
+         r5d9SwaSGIaq38JxmjQhVC+XFoZRbmd3JvHGd5CghzFaMVc3Pf0I1MKIfmwd0qRKxY9d
+         OFkF6v6tLCGVva5YZf0pSpltR0DKlTU4xGchBCSculMGrg7m2Z3AS7JLTszjoGyjRh7s
+         k99aoFp9KCsxJP0jyPeAjBF++kbpAB7Gy04n1RLdXsGeA40XV+ws0F58EC4FzY3RNlZP
+         QC4A==
+X-Forwarded-Encrypted: i=1; AKwUvBzygct7c/ecdP+wzG1A6q5CvBh8+TQUbs5yhdgBqsP+qLfBDkkmgU92tW1xASDLTAugXKYK+eoEA6w=@lists.infradead.org
+X-Gm-Message-State: APuU4Z9M/NZ77+DwXuL4+bH2m4fP6q0+0Iq2OxBf9yfDgzvsHRAzgqhW
+	YAkBVxxEq4E0YGL0jZu64VTWahRAREfgF0gujwcm3vxE47mwrUXzzbfnBQJBYLmvEWQ=
+X-Gm-Gg: AYBFou2D8AUYO7ewKLkgxBA+klmn8qgHlx4Thy6Ta4oRQZwlaPlmBuPUlsJGO9j84VB
+	YYOoUiI1kjUS+2HDS71ZZojcosBWVMq7zjmYhWtL6JjsWsgHq3FKkE3a2bqOMXAEixTkg9HDMGg
+	kL6qQFCio6mwzef6FXr7JBxypGjjDYsdvDXFq9/k8Y2luJq60R3Os8RACJDiFRilum9WtmgunYP
+	L4j1lk2qf0KqlPENkAt5hpY0ka8LBBtZ/wRqnyS4vifjqcf/LKV6d64U8+te7AJE/ZjT/KNe1W7
+	RVPp4Hx3E8nJ0jKLfBaRhvO3xCIIHBHG9O6JnhHmMPGRGTJEfS9kylo9JCB60hZxrr2C/VwYisK
+	sfwR820C31lzzGgMNQHTR6099tZy7ggF3Hf966Hu4AyIxuHk7kmlX7gnkYxEWsdwMOH3BgUB835
+	Lvi3OwhV1ttrKGiFb2pNBPLsqn98uC6r0IiSfFUnLEvx4r3IlRilTpFTTRiwBjZx92j6lP0OZ2d
+	bP8+7FdIIyttV6r7Xo+wcoK9DN6vP3q+lgcjk2glXslt4KhkRb9VEsGYbRf8q9vprVLCmHvCa7H
+	+vmNwH1qx2/8wBG4MfTu3W/NgkWQx2SD2KeNeL4Gi1U7A1p+4N+EWy2eEFxDBScMJle6g8qr7te
+	eZ2+Gq8dWoPjC7fV/mJwl/SY1w/5A49shjHcpzA==
+X-Received: by 2002:a05:7301:6189:20b0:358:ec5c:bef1 with SMTP id 5a478bee46e88-36a42425486mr23614256eec.39.1793819558461;
+        Wed, 04 Nov 2026 11:12:38 -0800 (PST)
+Received: from localhost.localdomain ([98.148.34.5])
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-36dad72dc52sm1916864eec.0.2026.11.04.11.12.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Nov 2026 11:12:38 -0800 (PST)
+From: Hungyu Lin <dennylin0707@gmail.com>
+To: richard@nod.at
+Cc: chengzhihao1@huawei.com,
+	lin.nan@h3c.com,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org,
+	Hungyu Lin <dennylin0707@gmail.com>
+Subject: [PATCH] ubifs: account for short copies in ubifs_write_end
+Date: Wed,  4 Nov 2026 19:11:31 +0000
+Message-ID: <20261104191132.89515-1-dennylin0707@gmail.com>
+X-Mailer: git-send-email 2.43.0
 X-Archived-By: <archiver.kernel.org>
-Mime-Version: 1.0
-From: <shao.mingyin@zte.com.cn>
-To: <richard@nod.at>, <linux-mtd@lists.infradead.org>
-Cc: <chengzhihao1@huawei.com>, <linux-kernel@vger.kernel.org>,
-        <stable@vger.kernel.org>
-Subject: =?UTF-8?B?W1BBVENIIFJFU0VORF0gdWJpZnM6IHhhdHRyOiBmaXggb3V0LW9mLWJvdW5kcyB3cml0ZSBpbiB1Ymlmc19saXN0eGF0dHIoKQ==?=
-X-MAIL: mse-fl1.zte.com.cn 6A4GPCCv020169
-X-TLS: YES
-X-ENVELOPE-SENDER: shao.mingyin@zte.com.cn
-X-SOURCE-IP: 10.5.228.132 unknown Thu, 05 Nov 2026 00:25:21 +0800
-X-CLEAN: YES
-X-Fangmail-Anti-Spam-Filtered: true
-X-Fangmail-MID-QID: 6AEB5C71.000/4jKW4x5gWmz5BNRf
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261104_082531_747191_ED26C797 
-X-CRM114-Status: GOOD (  20.22  )
+X-CRM114-CacheID: sfid-20261104_111240_199570_3D0BB0F7 
+X-CRM114-Status: GOOD (  15.49  )
 X-Spam-Score: -1.9 (-)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -75,145 +103,92 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-13.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,UNPARSEABLE_RELAY autolearn=ham autolearn_force=no
-	version=4.0.1
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-From: Shao Mingyin <shao.mingyin@zte.com.cn>
+ubifs_write_end() updates i_size and ui_size to pos + len even when
+fewer bytes were copied. A one-byte write at EOF from an unreadable
+buffer can fail with EFAULT while extending the file by one byte.
+Partial writes can also extend the file past the last byte copied.
 
-ubifs_listxattr() derives the size of the name list from
-ui->xattr_names + ui->xattr_cnt and uses it to reject a call whose
-buffer is too small.  It then copies every visible xattr name returned
-by ubifs_tnc_next_ent() without checking @size again.
-
-Both counters are read from the on-flash inode node and are only
-accounting values.  A modified image can make them under-report the
-number of xattr entries while the TNC still contains more entries: the
-node CRC only protects against accidental corruption, it is recomputed
-for a crafted image.
-
-The usual caller first invokes listxattr(path, NULL, 0), which returns
-the too small size computed from those counters, then allocates a
-buffer of that size and invokes listxattr() again.  In the second
-system call fs/xattr.c:listxattr() allocates the kernel buffer with
-kvmalloc(size) and passes it to ubifs_listxattr(), which copies the
-names past its end.  The copied bytes are the xattr names from the
-image, so part of the overflow content is attacker controlled.
-
-Bound each copy by @size and return -ERANGE when the list does not fit.
-With a corrupt image the reported size may now be too small, but the
-following call fails cleanly instead of overflowing.  Note that nlen
-itself is already bounded by ubifs_validate_entry(), which every node
-returned by ubifs_tnc_next_ent() has passed; the missing check is only
-against the caller's buffer.
-
-While here, validate the two counters individually.  Their sum is
-computed in 32 bits, so the existing check is bypassed when it wraps
-around; rejecting the oversized values at mount time keeps the O(1)
-size query in listxattr() from returning a wrapped (possibly negative)
-length.
-
-Mounting UBIFS requires CAP_SYS_ADMIN in the initial user namespace, so
-this is only reachable with a crafted image.  Compile tested with W=1
-and checkpatch --strict.  Runtime reproduction needs a modified UBI
-image: change xattr_cnt/xattr_names in an inode node and recompute its
-CRC; a KASAN kernel then reports the overflow on the second
-listxattr() call.
+Use pos + copied for size updates and cancel the budget when no data
+was copied. Keep the appending decision based on the requested length
+to match the inode budgeting and ui_mutex locking in ubifs_write_begin().
+If a short copy ends within the old size, release any unused inode budget
+without reducing the size, and still unlock ui_mutex.
 
 Fixes: 1e51764a3c2a ("UBIFS: add new flash file system")
+Link: https://lore.kernel.org/linux-mtd/20261027061226.3506517-1-lin.nan@h3c.com/
 Cc: stable@vger.kernel.org
-Signed-off-by: Shao Mingyin <shao.mingyin@zte.com.cn>
+Signed-off-by: Hungyu Lin <dennylin0707@gmail.com>
 ---
-Resend after 7 days without feedback; no code change.
+ fs/ubifs/file.c | 29 +++++++++++++++++++----------
+ 1 file changed, 19 insertions(+), 10 deletions(-)
 
-Link: https://lore.kernel.org/all/2026102817301132485IE4Ia6aXSqUo5KZUvgW@zte.com.cn/
-
-Tested on 7.3.0-next-20261030 (QEMU/TCG, x86_64) with mtdram and KASAN.
-The image has a file with three xattrs, i.e. 21 bytes of names.  Its
-on-flash inode counters are modified and the node CRC recomputed.
-
-low (xattr_cnt=1, xattr_names=0), unpatched:
-  first listxattr() returns 1; the second call is given a 1-byte buffer
-  but copies 21 bytes.  KASAN reports a slab-out-of-bounds in
-  _copy_to_user and ubifs_assert(written <= size) fires.
-low, patched:
-  first returns 1; the second returns -ERANGE (errno 34).
-
-wrap (xattr_cnt=0x20, xattr_names=0xFFFFFFF0; the 32-bit sum is 16),
-unpatched:
-  first returns 16; the second call is given a 16-byte buffer but copies
-  21 bytes, with the same KASAN report and assert.
-wrap, patched:
-  first returns -EINVAL; ubifs_iget() rejects the counters in
-  validate_inode() before ubifs_listxattr() is called.
-
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index 38972786817e..fe24e1949bb3 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -82,7 +82,15 @@ static int validate_inode(struct ubifs_info *c, const struct inode *inode)
- 		return 2;
+diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+index 99dd52715ee..8ebd3f4cddf 100644
+--- a/fs/ubifs/file.c
++++ b/fs/ubifs/file.c
+@@ -523,8 +523,8 @@ static int ubifs_write_end(const struct kiocb *iocb,
+ 	struct inode *inode = mapping->host;
+ 	struct ubifs_inode *ui = ubifs_inode(inode);
+ 	struct ubifs_info *c = inode->i_sb->s_fs_info;
+-	loff_t end_pos = pos + len;
+-	int appending = !!(end_pos > inode->i_size);
++	loff_t end_pos = pos + copied;
++	int appending = !!(pos + len > inode->i_size);
+ 
+ 	dbg_gen("ino %llu, pos %llu, pg %lu, len %u, copied %d, i_size %lld",
+ 		inode->i_ino, pos, folio->index, len, copied, inode->i_size);
+@@ -552,6 +552,11 @@ static int ubifs_write_end(const struct kiocb *iocb,
+ 		goto out;
  	}
  
--	if (ui->xattr_names + ui->xattr_cnt > XATTR_LIST_MAX)
-+	/*
-+	 * Both counters are read from the on-flash inode node.  Check them
-+	 * individually first: the addition is performed in 32 bits and can
-+	 * wrap around, which would make the check below pass for absurd
-+	 * values.
-+	 */
-+	if (ui->xattr_cnt > XATTR_LIST_MAX ||
-+	    ui->xattr_names > XATTR_LIST_MAX ||
-+	    ui->xattr_names + ui->xattr_cnt > XATTR_LIST_MAX)
- 		return 3;
- 
- 	if (ui->data_len < 0 || ui->data_len > UBIFS_MAX_INO_DATA)
-diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
-index 3b0e8a270f59..8efe2c545bf4 100644
---- a/fs/ubifs/xattr.c
-+++ b/fs/ubifs/xattr.c
-@@ -421,8 +421,25 @@ ssize_t ubifs_listxattr(struct dentry *dentry, char *buffer, size_t size)
- 		fname_len(&nm) = le16_to_cpu(xent->nlen);
- 
- 		if (xattr_visible(xent->name)) {
--			memcpy(buffer + written, fname_name(&nm), fname_len(&nm) + 1);
--			written += fname_len(&nm) + 1;
-+			int nlen = fname_len(&nm);
++	if (unlikely(!copied)) {
++		cancel_budget(c, folio, ui, appending);
++		goto out;
++	}
 +
+ 	if (len == folio_size(folio))
+ 		folio_mark_uptodate(folio);
+ 
+@@ -562,14 +567,18 @@ static int ubifs_write_end(const struct kiocb *iocb,
+ 	}
+ 
+ 	if (appending) {
+-		i_size_write(inode, end_pos);
+-		ui->ui_size = end_pos;
+-		/*
+-		 * We do not set @I_DIRTY_PAGES (which means that
+-		 * the inode has dirty pages), this was done in
+-		 * filemap_dirty_folio().
+-		 */
+-		__mark_inode_dirty(inode, I_DIRTY_DATASYNC);
++		if (end_pos > inode->i_size) {
++			i_size_write(inode, end_pos);
++			ui->ui_size = end_pos;
 +			/*
-+			 * nlen is bounded by ubifs_validate_entry(): the
-+			 * node length is nlen + UBIFS_DENT_NODE_SZ + 1 and
-+			 * is itself bounded by UBIFS_MAX_DENT_NODE_SZ, so
-+			 * the name cannot run past the node.
-+			 *
-+			 * The missing bound is the caller's buffer: the
-+			 * on-flash xattr counters are not authoritative and
-+			 * a crafted image can under-report them.
++			 * We do not set @I_DIRTY_PAGES (which means that
++			 * the inode has dirty pages), this was done in
++			 * filemap_dirty_folio().
 +			 */
-+			if (written + nlen + 1 > size) {
-+				kfree(xent);
-+				err = -ERANGE;
-+				break;
-+			}
-+			memcpy(buffer + written, fname_name(&nm), nlen + 1);
-+			written += nlen + 1;
- 		}
- 
- 		kfree(pxent);
-@@ -432,6 +449,9 @@ ssize_t ubifs_listxattr(struct dentry *dentry, char *buffer, size_t size)
- 	kfree(pxent);
- 	up_read(&host_ui->xattr_sem);
- 
-+	if (err == -ERANGE)
-+		return err;
-+
- 	if (err != -ENOENT) {
- 		ubifs_err(c, "cannot find next direntry, error %d", err);
- 		return err;
++			__mark_inode_dirty(inode, I_DIRTY_DATASYNC);
++		} else if (!ui->dirty) {
++			ubifs_release_dirty_inode_budget(c, ui);
++		}
+ 		ubifs_assert(c, mutex_is_locked(&ui->ui_mutex));
+ 		mutex_unlock(&ui->ui_mutex);
+ 	}
+
+base-commit: 6628e7d4c6b25c8d18f1345e3a20d21829aae7e4
+-- 
+2.50.1 (Apple Git-155)
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
