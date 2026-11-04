@@ -2,75 +2,103 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00DB2606A32F
-	for <linux-mtd@archiver.kernel.org>; Tue,  3 Nov 2026 22:01:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1333F606A326
+	for <linux-mtd@archiver.kernel.org>; Wed,  4 Nov 2026 00:50:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=FD0EvSJC;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=AuKAd+2p
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=uh1ve0Ta;
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=m9umDr/X
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:From:To:Cc:
-	Subject:Message-Id:Date:Mime-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=XSoRWNHCwjxUKoswUbaVKfFs9EWaVqxShJL0VrjWXKw=; b=FD0EvSJCSWhs3HLl8Ed6ShS5Jv
-	hB9jR3WE+dJfK2DCrSwasXf+r9hqGUsLzDjKNqQbL04t0XolMNpfu0prT9qBzoUoC4Y4dI+hWdDn4
-	vL3Z0fFjMStOKoMjLz+UEZ9jZdCYZjT3t88xXmChmGWuC18gplnn9rukfUuE0IwXmnSzMUsnTNykb
-	uDWuuxHu9P783rWBc2rlTbQ3rc6Msk7uxHJnHYmbrxNBYVwaIyjduJGD9/rhn+iCFfBZrDPEO0DYU
-	TBK6Y3hcPr+Dy86JZJP6g/l6ajX/8/6LekbuvAwSLdzaTjKj+InegRfjj57lX4elgTTCLWBh5R2gw
-	BjB1dNTA==;
+	bh=mv862xkH3kE2XZ345iewn5a8yWmqfPGI91+0uDWD7/M=; b=uh1ve0TaJ9HEXPr38982Y8EJMt
+	wkHV0O58fXZ4XX3InJDpbe6skzP3L+wwQo6G62scrbxzHYJ3eXklvjJHkuXA8HdNfo3fDjHdWhAIJ
+	hjA/WwifqaLnqUQQRid9mcgiVIjsxJQjW+n6VvAP6fXGVCP+cIkZtzxoZEUHc5RPnyvvM3gzHtJXO
+	3tMC4OSUBZCGKTvb6QauaPtGBHGUo3AO7q4p6wjL19+5uDoQqpJN8GNlv/xXkeK1XcqCckI6G22cn
+	pST6hQYK/7KhvaNsqTPg09hCDCWKs/LdzZ32jqMfRek0XApdJap5Ba8Zv4UIaHTt7lz5Eux8wjW1I
+	0LDBAZPQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xOMZH-00000003nQy-1biS;
-	Tue, 03 Nov 2026 22:01:23 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1xOPCN-000000041Ji-23n3;
+	Wed, 04 Nov 2026 00:49:55 +0000
+Received: from mail-pf1-x42f.google.com ([2607:f8b0:4864:20::42f])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xOMZG-00000003nQe-0AZH
+	id 1xOPCK-000000041JM-3X7H
 	for linux-mtd@lists.infradead.org;
-	Tue, 03 Nov 2026 22:01:22 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id B58204026B;
-	Tue,  3 Nov 2026 22:01:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73E5C1F000C1;
-	Tue,  3 Nov 2026 22:01:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793743281;
-	bh=R6uA9hX7fD85rhN6sNXcNNPGP4g4K/KhTQ6rqqOfAX0=;
-	h=Date:Subject:Cc:To:From:References:In-Reply-To;
-	b=AuKAd+2pAiWxmodz6a5kLrzOGag2dQXGCvIWfiU2SqiHPwjnt+DZeZOIZzwDoeFgW
-	 f5tvI82TTyJbTTJBeMupREcEqkEJOTnvm2tcg6rR6KzI977TOiUnB4XfJblBR0m8Ko
-	 3on7l/RW87okd18TkMziqprxQ9KNwBaxunuTpwN+wdELBok8svqqglFYItI7OaAie9
-	 SaIAxAjUUZc0FGMB/GEzff7Fem5FCCZW2y7K8Ha9aPGJ34HwNpxMac8F2DMTukXzX4
-	 NMMYmaBoHXuYiAJmGYwn0YL5KCqaN+IzO8Fe7/dimMO7SXev4BOPXOSMGcMZiQPmb5
-	 yEemvUz0AwJZg==
+	Wed, 04 Nov 2026 00:49:54 +0000
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-886e61fa30fso101054b3a.1
+        for <linux-mtd@lists.infradead.org>; Tue, 03 Nov 2026 16:49:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20260707; t=1793753391; x=1794358191; darn=lists.infradead.org;
+        h=in-reply-to:content-disposition:content-type:mime-version
+         :references:message-id:subject:cc:to:from:date:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=/bumM81nPiENiLh9PH/Fm40C+VENRMD3A/OuAfI8Z4s=;
+        b=m9umDr/XrC5mQTd+f6AgQ2IzkuAgtYcggkZeGrGo5DHDehcV4mPy7e5gwqTkto55aF
+         J1hD5R2fjkK+3mHuu2OvquNtc8iwGq34jVgQqADBVyLS6Z4FMf3y2ehmpTfzqs83S/I+
+         1Q0EUVSeW3sCvNBUzkuMFRRez8VxhH/lw0yZt6GW1S5zuUs1cW9Uocha+fmT78Nhl2PN
+         5QFbZH1k1mzmWvCd9IZH0M1QzkxB+sC184UQ8LMVld7BT106CN1JClkbhz/FeU28zjQ2
+         gv0exM5BrkhIlEjPFuu7Rex5S8RgTL0yAQKTv5zEyJqj3LCbCguoMEXJ02T7l/cYyDfy
+         bm1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1793753391; x=1794358191;
+        h=in-reply-to:content-disposition:content-type:mime-version
+         :references:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=/bumM81nPiENiLh9PH/Fm40C+VENRMD3A/OuAfI8Z4s=;
+        b=NbfzCEob0VrwEBVE2Q5HKWXgWMBMiY0S+Vk7F9t6dDnGFnnTJ+Iw1jCdlhwMSUXkfb
+         vY2mocR+TadKV5ULr0XdJnPwf8o/FwtjuDLN6PmzcC0d1XHUCP7RlSSNeKc5PMCm7Jmg
+         60rnF8FDUHbz6bJCTnFipNXI8SkO3dMUwYjAxsU3deZWPGbCj56S+vjdM030qDAG4+mv
+         P2yuu64Yg0vi4LshMQmfqgTeOqHhF4QoUYaCIzufbiVXjPD25elMqwIsxbWOOLuD6Ucg
+         Ekr17gguNQX/xXkxz4xE7KhdH8vroe0X5ksJCSuPjY1XTsqQGmree3KmdmaOjHgNSNvG
+         TOPw==
+X-Forwarded-Encrypted: i=1; AKwUvBxy2i4gZ3lVD9CISclEOAvPGlEEjrmbxRGEyFa2p7ZhpEgLtRrTYVJUcMSMB52zbF9Na5999rG+JUE=@lists.infradead.org
+X-Gm-Message-State: APuU4Z/p/dWHpkje9Qp2lt2LCeBDr2qrN32ElR0xKy0QyGJznaV3RcQ0
+	uaBHYRv7LT9IS/ypDdJf5+xMxvk4zGARIdD7em4pg3Jdw3ggiNCZmhwI
+X-Gm-Gg: AYBFou3iskCxV6tljKxdU2656J9aJMGgCQW0sqNV9/NQIx1Zb32pMJV5RvB0DnB3AEH
+	BlH9LsfqpkBiD6n7gYEuc9ORqmTb6POq3xR2IvLp9KTxDsma4Pr1HGAXIUXybNzjzJS9VXK6u7s
+	SAKj9OgQVroUF1W9YZTmsfHW3CuaoqfXvZdVhi0wTYFuftbt/UB+I+PW1p78cCxH+ClHewU5ld+
+	neFB+BEmedVYof+aMA4T8woHqWC2mlPTnSIljaOXzRaUuccx7BNYhtYlGCNHrYvxSFAKXkDKoc/
+	SN3zKl9RmHiOaeDWwbCrcdtBy5jFqy79sKHJnOmy4Qokynlkv4uXB3vzll/feJlAT9kkbwTrHjW
+	wQ2GRf5ERVyHEpKoi+UQWKGJ2gWzXUYatUH3dIyGe5MRN83F54+tFYy1yjvXPUKNhvjAQ1L2mSO
+	bEeEM8feYE1ZpIhtQP0+2lQL8fADe7mTf18zHEGrrKxj9vSVT+pvA2rpULQ7XF2rfYXwuGYuenP
+	ovSTpItCeoXYYPj1G6sGnxY4Jyq95Sy+ZiiJP41j3CjruDGPN0OX/uhCnbW3l419jBgveRv+86K
+	+wEbP9WHIbwoMwIg5E6xMkZ2Z363Tx+7MBxwurg=
+X-Received: by 2002:a05:6a20:914b:b0:3e2:9470:5303 with SMTP id adf61e73a8af0-3e928953948mr11828504637.15.1793753391239;
+        Tue, 03 Nov 2026 16:49:51 -0800 (PST)
+Received: from localhost ([27.122.242.71])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-cdb46440cc7sm329325a12.3.2026.11.03.16.49.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Nov 2026 16:49:50 -0800 (PST)
+Date: Wed, 4 Nov 2026 09:49:48 +0900
+From: Hyunchul Lee <hyc.lee@gmail.com>
+To: Christian Brauner <brauner@kernel.org>
+Cc: linux-fsdevel@vger.kernel.org, Jan Kara <jack@suse.com>,
+	Al Viro <viro@zeniv.linux.org.uk>, ecryptfs@vger.kernel.org,
+	linux-ext4@vger.kernel.org, jfs-discussion@lists.sourceforge.net,
+	linux-nilfs@vger.kernel.org, exfat@lists.linux.dev,
+	linux-mm@kvack.org, ntfs@lists.linux.dev,
+	ocfs2-devel@lists.linux.dev, linux-btrfs@vger.kernel.org,
+	gfs2@lists.linux.dev, linux-efi@vger.kernel.org,
+	linux-mtd@lists.infradead.org, linux-xfs@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: Re: [PATCH v2 17/34] ntfs: don't set SB_RDONLY after filesystem
+ errors
+Message-ID: <auqBLEvcurRZfGj6@hyunchul-PC02>
+References: <20261029-work-fs-sb_rdonly-v2-0-2f44f64f0b66@kernel.org>
+ <20261029-work-fs-sb_rdonly-v2-17-2f44f64f0b66@kernel.org>
 X-Archived-By: <archiver.kernel.org>
-Mime-Version: 1.0
-Date: Tue, 03 Nov 2026 23:01:15 +0100
-Message-Id: <DMLWX8NY1N1N.2OMQMQCIVRR18@kernel.org>
-Subject: Re: [PATCH v2 0/9] Add __must_init and require explicit
- kobj_type::release
-Cc: "Kees Cook" <kees@kernel.org>, "Greg Kroah-Hartman"
- <gregkh@linuxfoundation.org>, "Miguel Ojeda" <ojeda@kernel.org>, "Rafael J
- . Wysocki" <rafael@kernel.org>, "Nathan Chancellor" <nathan@kernel.org>,
- "Nick Desaulniers" <ndesaulniers@google.com>, "Miguel Ojeda"
- <miguel.ojeda.sandonis@gmail.com>, =?utf-8?q?Christian_K=C3=B6nig?=
- <christian.koenig@amd.com>, "Zhihao Cheng" <chengzhihao1@huawei.com>,
- "Zhongqiu Han" <zhongqiu.han@oss.qualcomm.com>, "Sumanth Korikkar"
- <sumanthk@linux.ibm.com>, "Bill Wendling" <morbo@google.com>, "Justin
- Stitt" <justinstitt@google.com>, <driver-core@lists.linux.dev>,
- <llvm@lists.linux.dev>, <linux-hardening@vger.kernel.org>,
- <linux-fsdevel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
- <linux-acpi@vger.kernel.org>, <linux-pm@vger.kernel.org>,
- <linuxppc-dev@lists.ozlabs.org>, <linux-sh@vger.kernel.org>,
- <linux-s390@vger.kernel.org>, <gfs2@lists.linux.dev>,
- <xen-devel@lists.xenproject.org>, <linux-mtd@lists.infradead.org>,
- <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
- <linux-kernel@vger.kernel.org>
-To: "Ian Rogers" <irogers@google.com>
-From: "Danilo Krummrich" <dakr@kernel.org>
-References: <20261027223847.652884-1-irogers@google.com>
-In-Reply-To: <20261027223847.652884-1-irogers@google.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20261029-work-fs-sb_rdonly-v2-17-2f44f64f0b66@kernel.org>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20261103_164952_884772_D8BDA74A 
+X-CRM114-Status: GOOD (  17.17  )
+X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,40 +111,55 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-3.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
 	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-On Tue Oct 27, 2026 at 11:38 PM CET, Ian Rogers wrote:
-> Clang supports the 'require_explicit_initialization' attribute on struct
-> fields to enforce that the field is explicitly initialized when an
-> aggregate object is constructed, emitting -Wuninitialized-explicit-init
-> (enabled by default) if the field is omitted.
->
-> Following discussion at the Linux Plumbers Conference [1], patch 1 adds
-> the attribute to include/linux/compiler_attributes.h as __must_init. In
-> v1 it was called __require_explicit_initialization. Kees picked up that
-> patch with a first seq_file user [2], and in that thread Greg suggested
-> the shorter __must_init spelling, which Kees and Miguel agreed to. As
-> the attribute did not land in the v7.4 merge window, Kees asked that
-> this series carry the renamed attribute. The Acked-by/Reviewed-by tags
-> on patch 1 were given for the original spelling; the rename is
-> mechanical.
+On Thu, Oct 29, 2026 at 05:07:08PM +0100, Christian Brauner wrote:
+> With errors=remount-ro every ntfs_error() ends up in ntfs_handle_error()
+> which sets SB_RDONLY without holding s_umount. If that happens while the
+> volume is frozen through bdev_freeze() thaw_super() sees a read-only
+> superblock and leaves the s_writers rwsems locked so every writer hangs.
+> 
+> So set NV_Errors and a new NV_EmergencyRO flag instead like ext4 does.
+> ntfs_emergency_state() returns EIO after a shutdown and EROFS after an
+> error and the write side shutdown checks use it now. fallocate,
+> ->set_acl(), FS_IOC_SETFSLABEL, FITRIM and ntfs_mft_record_free() get a
+> check as well. Errors while mounting still set SB_RDONLY, nothing can
+> freeze the superblock before SB_BORN.
+> 
+> NV_Errors already refuses a remount to read-write and since
+> commit 521978c4f444 ("ntfs: sync the volume dirty bit with the recorded
+> error state") the volume stays marked dirty once errors were recorded.
+> But the dirty bit may not be on disk yet when the error hits and
+> writeback is refused from then on. So a work item writes it right away
+> because ntfs_error() can be called with mft records locked, and umount
+> lets a pending one run first.
+> 
+> Unlinked inodes are left to chkdsk in that state. Their mft records are
+> freed with direct bios while the index and bitmap updates of the
+> deletion can't be written back anymore. And writing to an encrypted file
+> only warns now. It called ntfs_error() which let anyone put the volume
+> into the emergency state.
+> 
+> /proc/mounts keeps showing the volume read-write. Writes through file
+> descriptors opened before the error fail with EROFS.
+> 
+> Fixes: 6251f0b0de7d ("ntfs: update super block operations")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 
-This looks ready, and I plan to pick it up through the driver-core tree with the
-minor commit message correction.
+Looks good to me.
 
->   powerpc/secvar: Add missing kobject release callback to secvar_ktype
->   sh: sq: Add missing kobject release callback to ktype_percpu_entry
->   xen/sys-hypervisor: Add release callback to hyp_sysfs_kobj_type
+Reviewed-by: Hyunchul Lee <hyc.lee@gmail.com>
 
-Some ACKs would be appreciated. :)
-
+-- 
 Thanks,
-Danilo
+Hyunchul
 
 ______________________________________________________
 Linux MTD discussion mailing list
