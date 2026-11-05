@@ -2,65 +2,98 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C769A606A326
-	for <linux-mtd@archiver.kernel.org>; Thu,  5 Nov 2026 04:02:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B9DF606A331
+	for <linux-mtd@archiver.kernel.org>; Thu,  5 Nov 2026 04:04:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=2SmOFPrn;
-	dkim=fail reason="signature verification failed" (1024-bit key, unprotected) header.d=xiaopeng.com header.i=@xiaopeng.com header.a=rsa-sha256 header.s=default header.b=ATE2wn4E
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=UKlr+1Vc;
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=HuycHVa1
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version:Subject:
+	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
 	List-Unsubscribe-Post:List-Owner;
-	bh=5bdbv26d8fjLBMnW+LOMQj01qNq5gam0Nf3MTdRHRw8=; b=2SmOFPrnF7ZLCcueLtL/4GjtwB
-	JgkhLBahKTJ4Tlk71MvmCdEDt28ctJ3PU95LO94KlVM9dUjygiOObQHncWXbj5E0JI6kl20sgy1Ei
-	UXH0raMBzJQAdUjtXLQySi3McGt4QjKD9pIg0jewD/tI2nZ7/Ehwwbd0gRCMUoi5ozyaLpU+MJygX
-	aofv/Be44IuPlEurfB1/qkMR28k4JSfOG4rFyO8EwIL3ZsRoEtocDk9U2tpIG7SiHjFNtVCXgEsvU
-	umqyBIJ2JHzJ8RIhINR1XlGbHN9np4BzYJahqZFTBBkg6+qMhPL3q5r29EvmfprbuH/+dH3LngiGd
-	LfoDq7Cw==;
+	bh=9zgHq2x/rhaVN9p3+9Px5gyR6biGnzxqlyedGXjgwOU=; b=UKlr+1VcQPJOQUxJ80R42aXCAU
+	zqpW/VqvKspnxAVApWqJmUVfBQPmbHGdys2d2LO5vIwJDLemXsm+e77SRTeCQsGI3qiRUofMC+srN
+	g3PXg73jnfApSHHiAAdM22/SJa6r+OFKSsIxZBN9v54yhMw1RE8FIa2N1rGbVgN5mdm7F9ruWsL47
+	FEW0zzJYUxNmiaWAo1oQndD7WpNiudZG771YzXaeFJO50BlQPJlmEKBzGBo7jS3NxKRaohy0A5104
+	/jUqcDNl69fn7XUExblXwF+WF9Xx1030l3IQ7K5/P65prxictrYqrqGGRey4nF5Jw1ak/xnJ4rCx9
+	wCebbHXQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xOofv-00000007jZh-1pzB;
-	Thu, 05 Nov 2026 04:02:07 +0000
-Received: from out28-170.mail.aliyun.com ([115.124.28.170])
+	id 1xOohm-00000007jo8-3Hzs;
+	Thu, 05 Nov 2026 04:04:02 +0000
+Received: from mail-oo1-xc33.google.com ([2607:f8b0:4864:20::c33])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xOofq-00000007jXl-3ZYW
+	id 1xOohj-00000007jnh-3Jmg
 	for linux-mtd@lists.infradead.org;
-	Thu, 05 Nov 2026 04:02:06 +0000
+	Thu, 05 Nov 2026 04:04:01 +0000
+Received: by mail-oo1-xc33.google.com with SMTP id 006d021491bc7-6d290b10a35so660768eaf.2
+        for <linux-mtd@lists.infradead.org>; Wed, 04 Nov 2026 20:03:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=xiaopeng.com; s=default;
-	t=1793851315; h=From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=a04bwAD3CWa8jx8Sccj/WRN3FIlsMNLG3H8MqdlBKlw=;
-	b=ATE2wn4EF/nTmyPmoncoQhIKGa1lllRdszaofbssQsZMJgRq12YsWVqSUXLQXmvWlw5xKBT4sQaoAjKz2aEUj0UlReiekhJpslMmZJcrbq2hnGB9oeR3hsDu898FtPMElKE99CKW3yD7oEkwleI3cmpkJnijtqmOmJYWuQ6Smy8=
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1582222|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0131348-0.000717347-0.986148;FP=13791973953732560476|0|0|0|0|-1|-1|-1;HT=maildocker-contentspam011083099174;MF=zhugl3@xiaopeng.com;NM=1;PH=DS;RN=10;RT=10;SR=0;TI=SMTPD_---.jxDoTG0_1793851314;
-Received: from DESKTOP-UL5U09E.xiaopeng.local(mailfrom:zhugl3@xiaopeng.com fp:SMTPD_---.jxDoTG0_1793851314 cluster:ay29)
-          by smtp.aliyun-inc.com;
-          Thu, 05 Nov 2026 12:01:54 +0800
-From: Guanglei Zhu <zhugl3@xiaopeng.com>
-To: Paul Cercueil <paul@crapouillou.net>,
-	Harvey Hunt <harveyhuntnexus@gmail.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-mips@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	zhugl3@xiaopeng.com,
-	Weibin Liu <liuwb@xiaopeng.com>
-Subject: [PATCH 2/2] mtd: rawnand: ingenic: validate BCH error index in jz4780_correct()
-Date: Thu,  5 Nov 2026 12:01:53 +0800
-Message-ID: <20261105040153.66597-2-zhugl3@xiaopeng.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20261105040153.66597-1-zhugl3@xiaopeng.com>
-References: <20261105040153.66597-1-zhugl3@xiaopeng.com>
+        d=gmail.com; s=20260707; t=1793851438; x=1794456238; darn=lists.infradead.org;
+        h=cc:to:message-id:content-transfer-encoding:content-type
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to:content-type;
+        bh=AouVsEJi67JgAtqfY1MqGUWfrdWF3xPqbsbhWzfoN5g=;
+        b=HuycHVa1+YFHnUXjVHCw2ScK1VraMUhjU5ljnqg8gt2d1ocD99iEHV6noMe2gdpB92
+         cOx0boOMMw8YHPkoTwq+VlQ4YTLD30PovLg+oYHdKF4rFvzBrRwconiSKojyMasGgn/Z
+         IBUpD1HfuwrcSGUYv/L6gsrnWZT8DFOm6PtZQV6Fe7JF17uxrl/HJlSrsY1V0VbWm77/
+         6ongaagFrfp3DOihQtp+5EVivfBB+U7ieWAZ+07WZjT2mA/O4D98jlcyvhGmm3lszRqg
+         lJNtZdaRjhT30MpRmfVKQvj0ggNxDAUIpxau4/yBgercwC43uYdJYe/T7kmji0EjIvkQ
+         99/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1793851438; x=1794456238;
+        h=cc:to:message-id:content-transfer-encoding:content-type
+         :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to:content-type;
+        bh=AouVsEJi67JgAtqfY1MqGUWfrdWF3xPqbsbhWzfoN5g=;
+        b=nLUkrPbfJxWGZf4QxOBtlyqzxYDiDbEjdrwjOvfF1jamgqlNH7k9+Jp+ZSo2PUizQO
+         UtJ11qzwd6ric0frF/g/VyYuJzU89D7nWI7rXX7vfU3i3sTOejnya1gH1pn4ozJceV1N
+         AGoOoqhwnJrtuNn7BiOHtofOUNXgRm4eRtKsMgJGJDRVQ3eyl+43Ty3NEnoY2jO0iwZO
+         doAQhd3Nkr5MK99YF0NAGd55ZJv9HHMO2jEvG6zCDqzscQJhxVlcIKPbIb677mbb+js+
+         1t9ukF7fngiimiFnGjVblx0gqObCoP7qHt+Y5bjcGc9lJAZAKGHpdDavR0kDtjufFLp2
+         dt9A==
+X-Gm-Message-State: APuU4Z9ca+fJcRoGq9g4PG3fsHstdifcl5SMPZkJ61S1XXbBh9TwshYl
+	ZmGfGnNCDXKk+8v3+adufCzBKB5pFe8d2H1OLKUF7M7gr/Geg1PNj80A
+X-Gm-Gg: AYBFou07D1H7Op29kXbj7eO6DMHtNPF/mF1bJw5LHKv1H21MVn0OZLSn/f98GrY+2y+
+	m1NXCtR5hEtJhuQXIVKDjIXZyQqNdBE1SoWYJ5OLgU2CgGNb08DU5G2fzSeIc5FeLH5P+HRDe5V
+	v24B4VieUV57G9DcdcUvdN2W4LzOP1qFGOkYzIkuP7z1CCD6dmcE8mDsFwdl9jQkQ2P5mQsMbs3
+	iyJb7i5VKBCeY6Rd8BdZVPgKXuJ66vGQ7Kig0E0Y6mCjQtyvO2/SFPXnPPXMY19ziq2TSRpyvpT
+	OKv0A5urCdMcRYlKra7Wr3+ILl7RPK1ALFDh2vhvcX+9oOJMS/axIY/t9Hs3prENqfYB4JiqdR2
+	vR2MwhnA9KUhK+3HFLDrtpzURhc+a6zUma41VkVUOH3Ekee8lVq4MyIB2ijkFXhfiVtIoicPsx0
+	gKhNX/5OCAvrkq8zyryQJj5M8XwK7CZirWNmu+celKFJjwB/Nks7WVAzEtwzEoV9n4kDYDGxzqi
+	mHRNhfOve0CyZrCqjs2UBYRkHN1haIhoTij3g69rXRip9Qub+hPcQx2Ir2EkEZG/D0ptqR+kKjU
+	K9nHh/qDH6qAO7VnnZCXn2aDP4w/3meSwBt0ItkVHmML+90SY2Ej8yzoBlSIGdQvtSzG3Bc9WoS
+	25jy/h+6at0PB5m9/QVDF33mUkmmvKmglnVCYLALhr4xkmerZhhBVJFK17/2uKkCwt26x0QAnTh
+	LqMwjlGqiCQb63u1/o/mgFH+TytlD4DGuU4rxJeDHRVv6Mq4aIhqSVvzD+xDT7hXXaWWjHxb18
+X-Received: by 2002:a05:6820:560b:b0:700:dac:ba85 with SMTP id 006d021491bc7-714f295ac1cmr6702854eaf.14.1793851438261;
+        Wed, 04 Nov 2026 20:03:58 -0800 (PST)
+Received: from [127.0.1.1] (174-29-1-49.hlrn.qwest.net. [174.29.1.49])
+        by smtp.gmail.com with ESMTPSA id 006d021491bc7-716c12d1f36sm3018997eaf.8.2026.11.04.20.03.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Nov 2026 20:03:57 -0800 (PST)
+From: James Hilliard <james.hilliard1@gmail.com>
+Date: Wed, 04 Nov 2026 21:03:55 -0700
+Subject: [PATCH] mtd: core: avoid overflow when checking data bounds
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
+Message-Id: <20261104-submit-mtd-oob-bounds-v1-v1-1-05209fce5a3e@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/yXMQQqDMBBA0avIrB0wQ6ulVykuTDJpp2BSMlEK4
+ t2b6vIt/t9AOQsr3JsNMq+ikmKFaRtwryk+GcVXA3XUG9NdUBc7S8G5eEzJok1L9IqrQXJXF24
+ UaOgHqPknc5DvsX6Mp2v7Zlf+P9j3HzneXbd8AAAA
+X-Change-ID: 20261104-submit-mtd-oob-bounds-v1-2c5cf82f2767
+To: Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+ Boris Brezillon <bbrezillon@kernel.org>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ stable@vger.kernel.org, James Hilliard <james.hilliard1@gmail.com>
+X-Mailer: b4 0.15.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261104_200205_555665_2B3B7C7E 
-X-CRM114-Status: GOOD (  11.37  )
-X-Spam-Score: -2.1 (--)
+X-CRM114-CacheID: sfid-20261104_200359_843389_A264FB4E 
+X-CRM114-Status: GOOD (  15.40  )
+X-Spam-Score: -1.9 (-)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,61 +106,52 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=4.0.1
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-From: Weibin Liu <liuwb@xiaopeng.com>
+mtd_check_oob_ops() adds the starting offset to the data length before
+comparing the result with the device size. On 64-bit systems, a request
+with offs == 1 and ops->len == SIZE_MAX wraps that sum to zero and passes
+the range check. The public read and write wrappers can then pass an
+out-of-range request to the driver.
 
-The JZ4780 BCH controller reports each corrected bit error as a byte
-pair index, in the INDEX field of the BCH_BHERR registers. The field
-is 11 bits wide, but nothing in jz4780_correct() checks the reported
-index against the size of the data buffer being corrected:
+Validate the starting offset first, then compare the data length with
+the remaining capacity. Preserve NULL-buffer length normalization and
+empty requests at the end of the device.
 
-    buf[(index * 2) + 0] ^= mask;
-    buf[(index * 2) + 1] ^= mask >> 8;
-
-With data or ECC coming from an untrusted flash, the decoder can
-report an index that points past the end of the data buffer, and the
-above statements then flip bits outside the buffer.
-
-Reject the page with -EBADMSG when the reported index does not fit in
-the data area.
-
-Fixes: ae02ab00aa3c ("mtd: nand: jz4780: driver for NAND devices on JZ4780 SoCs")
-Signed-off-by: Weibin Liu <liuwb@xiaopeng.com>
+Fixes: 5cdd929da53d ("mtd: Add sanity checks in mtd_write/read_oob()")
+Cc: stable@vger.kernel.org
+Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
 ---
+ drivers/mtd/mtdcore.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Verified with a userspace replica of the correction loop: with
-params->size = 512, an index of 256 (first parity word) or at the
-field maximum (0x7ff) flips bits past the data buffer (ASAN
-heap-buffer-overflow); in-range indices keep correcting as before.
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 491a27d0315f..dda976ef52c9 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -1670,7 +1670,7 @@ static int mtd_check_oob_ops(struct mtd_info *mtd, loff_t offs,
+ 	if (!ops->oobbuf)
+ 		ops->ooblen = 0;
+ 
+-	if (offs < 0 || offs + ops->len > mtd->size)
++	if (offs < 0 || offs > mtd->size || ops->len > mtd->size - offs)
+ 		return -EINVAL;
+ 
+ 	if (ops->ooblen) {
 
- drivers/mtd/nand/raw/ingenic/jz4780_bch.c | 5 +++++
- 1 file changed, 5 insertions(+)
+---
+base-commit: 1c1a342aceec79528b3ba51f376eca2be5928fe7
+change-id: 20261104-submit-mtd-oob-bounds-v1-2c5cf82f2767
 
-diff --git a/drivers/mtd/nand/raw/ingenic/jz4780_bch.c b/drivers/mtd/nand/raw/ingenic/jz4780_bch.c
-index 12b5b0484fe9..204bc853c1b4 100644
---- a/drivers/mtd/nand/raw/ingenic/jz4780_bch.c
-+++ b/drivers/mtd/nand/raw/ingenic/jz4780_bch.c
-@@ -216,6 +216,11 @@ static int jz4780_correct(struct ingenic_ecc *bch,
- 						BCH_BHERR_MASK_SHIFT;
- 			index = (reg & BCH_BHERR_INDEX_MASK) >>
- 						BCH_BHERR_INDEX_SHIFT;
-+			if ((index * 2) + 1 >= params->size) {
-+				ret = -EBADMSG;
-+				goto out;
-+			}
-+
- 			buf[(index * 2) + 0] ^= mask;
- 			buf[(index * 2) + 1] ^= mask >> 8;
- 		}
--- 
-2.50.1
+Best regards,
+--  
+James Hilliard <james.hilliard1@gmail.com>
 
 
 ______________________________________________________
