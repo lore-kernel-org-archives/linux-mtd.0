@@ -2,12 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C80F606D801
-	for <linux-mtd@archiver.kernel.org>; Thu,  5 Nov 2026 17:14:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 770A8606A33C
+	for <linux-mtd@archiver.kernel.org>; Thu,  5 Nov 2026 17:14:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=JzTsAO3+;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=infradead.org header.i=@infradead.org header.a=rsa-sha256 header.s=desiato.20200630 header.b=F/DoIqsy;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=WAibX6K5
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=UmZ0sc2f;
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=E1FcOr8Q
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -15,53 +14,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=ZGjGYPwyoYtgGAE9oYPglcA8h4yRW0xPT/VyUhc4xtc=; b=JzTsAO3+nmumxfeCRLU7L42Hlx
-	vVEK5N4fUion8O9J7FjFcM86IvwrWR7yCXWWkk+IDQma8ZOM/dmlvwCf+p0qFzK2qmfGbKO5lf5He
-	jziFFmSRxc/729zs0IkD8q1l+gBX8vJYwV1fp3Mbvj8J09y7HSCj7rdrS0MpToubLjXynRCiastLh
-	9A+VhaXfdUN0Rn3ma9rszEHuJ23aXMb5JP8gVgisnFFolikT4dWPF5lydGDOQ9fiI3PMw5GzFNuVw
-	WGEy30nTvsHsjFzvA+bMKRRp1SgLZWxDOUtRz4ks2DsrNr9xxwn74kKX//ey6SzukZJ5Fhbl05nZk
-	O8h+e4eQ==;
+	bh=q7a2Og7L+EX/zyBFUhjLgeb6gyEP85YPmOSyMRT+U50=; b=UmZ0sc2f8tl5avQx07lHQFOid2
+	jgaXIBuzIOSG/5aCw3xAaKdXAEDkVyfZNPCnbdnCkaRuH5waqidiXv//xxdOmmPlQ1q2DxneCH6Yx
+	4ZJB8BChab4+xZsYIhinF8lazv71t0JP/nxhdO2vIJxFpxcSA8d90VCk7NCinNKOPUHd9RQ0PwKyd
+	u9rg3bHbQphzEtF+PCxJ57ECuvb5wslREtApRu+UDyBX76jda6V0SwnaZCdddS125nRk4i1FF9MTB
+	4jubIVTul6fJLPhXnX9lz57GfCBEai0blKMQqDXUewnBt3SmtYP8MCEaTSAqjt71phIQT3Qy3ru9B
+	uhxymchA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xP12a-00000009pDm-09oZ;
-	Thu, 05 Nov 2026 17:14:20 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1xP12j-00000009pLp-2gWw;
+	Thu, 05 Nov 2026 17:14:33 +0000
+Received: from smtpout-04.galae.net ([185.171.202.116])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xP11R-00000009ohz-0iqX
-	for linux-mtd@bombadil.infradead.org;
-	Thu, 05 Nov 2026 17:13:11 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
-	:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description;
-	bh=V5kDdJozdBER4zNiEbFblzGULK1BuE7KJGYVqxyveds=; b=F/DoIqsyXsGEJ8jK/aa7j7/STq
-	OE3COAm/JalpeMGtwp66AaIjsfN8Hg0EsLgtyzlmDdva+UQBwKygWoyKkTlybq1VXhg0re7KOXVfn
-	yExZ+ZWBcvFKduH33j/WuqrRP5qs64XAdlpO73jYQfOCp8JXz6r/ngUX+6VLBQB+WIC2qgsU65tDf
-	8vaUHFe4C/rL2z0A2ETGeM6HKXVfZEqGTJG6vY0IyMvmk1sgkSRJ8/1SEjjNHb4UVhsUpqGA9KUPB
-	SCYn/4FSFC6Ao5SiQC9t/9qrjCau9QXHPmxANdv6+YLEONwtfR7pa5kqy6L4WyLy20Hs8d9lTt7EU
-	fbJV9btA==;
-Received: from smtpout-03.galae.net ([185.246.85.4])
-	by desiato.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xP11O-00000003JnQ-2ggS
+	id 1xP11H-00000009oc7-1Z19
 	for linux-mtd@lists.infradead.org;
-	Thu, 05 Nov 2026 17:13:08 +0000
+	Thu, 05 Nov 2026 17:13:13 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id C9D8D4E40A04;
-	Thu,  5 Nov 2026 17:12:58 +0000 (UTC)
+	by smtpout-04.galae.net (Postfix) with ESMTPS id D4D72C69160;
+	Thu,  5 Nov 2026 17:12:56 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 99B0A5FF43;
-	Thu,  5 Nov 2026 17:12:58 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 5A4B610329258;
-	Thu,  5 Nov 2026 18:12:57 +0100 (CET)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id A64505FF43;
+	Thu,  5 Nov 2026 17:12:57 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 7DEDD10329289;
+	Thu,  5 Nov 2026 18:12:55 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1793898778; h=from:subject:date:message-id:to:cc:mime-version:
+	t=1793898776; h=from:subject:date:message-id:to:cc:mime-version:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=V5kDdJozdBER4zNiEbFblzGULK1BuE7KJGYVqxyveds=;
-	b=WAibX6K5VuFYzcX11Zu5A56/RlxSGuUFxqyVymZh0JIF9KHEh1BD4KTuKlWIaJqdgOEDLh
-	1a8t2XNzccsuN3Q5PscCcpEZwcUbDw17oalXNRLRRwLx9QT9D96zjGqEOuER+URUM1b5Of
-	vdIsAuOAgfb07CwvMRix5gIfgsdb4HEcJgyBbOqQVrzVvOfkwADkBh5dyIsg4pN2Iiy8mJ
-	dtFXMJRvut4SmkGqoy6UazFc1NANEe5D/3gUNWgNpo9RPLWOYu2bW+A8MvI+YGeyMXupwZ
-	3cfX0QBDek7W03bbYjijBnuTRt1tr8AInBThyLRmId4Dkkklu69Ni7Tl2wfLYg==
+	bh=eavNaDX6RIZNrQjZVF94tYLxdb7VwfBrEfcmK23egqg=;
+	b=E1FcOr8Q7cyVmUeRX5Hkju6/kQttDjE4GnpiEwm3/3VzWvc6Z5FwJE3EhMbshf50fohqON
+	44XGD3I3dwXL3YrSAZqQzFRaJsct9BtxnCgzIPcmt9qzEWoEwRnhwllRbKD0MqTtzSwU9/
+	np9EFGi7XJHbto19Flk1SCpr1ISedQ+H+eQQ1aUmtKbhqA3GD/iWt6HPLnYHSNXtKB8Tir
+	feEqsIIC1WUNIaKs/B7j6je9cXiyMIUvM7IKVPpsK5P2xzV3XsqjmJwRLS0zH44C/VmWyO
+	AIwtas7rthTuzlZFoEqarTHxvdjuTu0FkueYvAlcVfNmccS/cZDld5sgbfFJEg==
 From: Paul Cercueil <paul.cercueil@bootlin.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
@@ -69,10 +53,14 @@ To: Miquel Raynal <miquel.raynal@bootlin.com>,
 Cc: linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Paul Cercueil <paul.cercueil@bootlin.com>
-Subject: [PATCH 07/12] mtd: rawnand: fsmc: Remove #ifdef guards for PM related functions
-Date: Thu,  5 Nov 2026 18:11:53 +0100
-Message-ID: <20261105171158.399247-8-paul.cercueil@bootlin.com>
+	Paul Cercueil <paul.cercueil@bootlin.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Subject: [PATCH 06/12] mtd: nand: mtk: Remove #ifdef guards for PM related functions
+Date: Thu,  5 Nov 2026 18:11:52 +0100
+Message-ID: <20261105171158.399247-7-paul.cercueil@bootlin.com>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20261105171158.399247-1-paul.cercueil@bootlin.com>
 References: <20261105171158.399247-1-paul.cercueil@bootlin.com>
@@ -80,9 +68,9 @@ X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261105_171306_517147_1696FC06 
-X-CRM114-Status: GOOD (  15.01  )
-X-Spam-Score: -0.2 (/)
+X-CRM114-CacheID: sfid-20261105_091301_629396_C16AA5A9 
+X-CRM114-Status: GOOD (  14.33  )
+X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -112,38 +100,44 @@ regressions are subsequently easier to catch.
 
 Signed-off-by: Paul Cercueil <paul.cercueil@bootlin.com>
 ---
- drivers/mtd/nand/raw/fsmc_nand.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+Cc: Matthias Brugger <matthias.bgg@gmail.com>
+Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-mediatek@lists.infradead.org
 
-diff --git a/drivers/mtd/nand/raw/fsmc_nand.c b/drivers/mtd/nand/raw/fsmc_nand.c
-index 837c23c63aeb..56ab42ee9e7d 100644
---- a/drivers/mtd/nand/raw/fsmc_nand.c
-+++ b/drivers/mtd/nand/raw/fsmc_nand.c
-@@ -1186,7 +1186,6 @@ static void fsmc_nand_remove(struct platform_device *pdev)
- 	}
+ drivers/mtd/nand/ecc-mtk.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/mtd/nand/ecc-mtk.c b/drivers/mtd/nand/ecc-mtk.c
+index 66f0985ef7cd..6f210ba935ad 100644
+--- a/drivers/mtd/nand/ecc-mtk.c
++++ b/drivers/mtd/nand/ecc-mtk.c
+@@ -588,7 +588,6 @@ static int mtk_ecc_probe(struct platform_device *pdev)
+ 	return 0;
  }
  
 -#ifdef CONFIG_PM_SLEEP
- static int fsmc_nand_suspend(struct device *dev)
+ static int mtk_ecc_suspend(struct device *dev)
  {
- 	struct fsmc_nand_data *host = dev_get_drvdata(dev);
-@@ -1215,9 +1214,8 @@ static int fsmc_nand_resume(struct device *dev)
- 
+ 	struct mtk_ecc *ecc = dev_get_drvdata(dev);
+@@ -612,8 +611,7 @@ static int mtk_ecc_resume(struct device *dev)
  	return 0;
  }
+ 
+-static SIMPLE_DEV_PM_OPS(mtk_ecc_pm_ops, mtk_ecc_suspend, mtk_ecc_resume);
 -#endif
++static DEFINE_SIMPLE_DEV_PM_OPS(mtk_ecc_pm_ops, mtk_ecc_suspend, mtk_ecc_resume);
  
--static SIMPLE_DEV_PM_OPS(fsmc_nand_pm_ops, fsmc_nand_suspend, fsmc_nand_resume);
-+static DEFINE_SIMPLE_DEV_PM_OPS(fsmc_nand_pm_ops, fsmc_nand_suspend, fsmc_nand_resume);
+ MODULE_DEVICE_TABLE(of, mtk_ecc_dt_match);
  
- static const struct of_device_id fsmc_nand_id_table[] = {
- 	{ .compatible = "st,spear600-fsmc-nand" },
-@@ -1231,7 +1229,7 @@ static struct platform_driver fsmc_nand_driver = {
+@@ -622,9 +620,7 @@ static struct platform_driver mtk_ecc_driver = {
  	.driver = {
- 		.name = "fsmc-nand",
- 		.of_match_table = fsmc_nand_id_table,
--		.pm = &fsmc_nand_pm_ops,
-+		.pm = pm_sleep_ptr(&fsmc_nand_pm_ops),
+ 		.name  = "mtk-ecc",
+ 		.of_match_table = mtk_ecc_dt_match,
+-#ifdef CONFIG_PM_SLEEP
+-		.pm = &mtk_ecc_pm_ops,
+-#endif
++		.pm = pm_sleep_ptr(&mtk_ecc_pm_ops),
  	},
  };
  
