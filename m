@@ -2,65 +2,116 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0649D606A32E
-	for <linux-mtd@archiver.kernel.org>; Thu,  5 Nov 2026 19:13:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 437CE606A32D
+	for <linux-mtd@archiver.kernel.org>; Thu,  5 Nov 2026 20:13:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=3kKa+YYO;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=lCgVm33R
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=Df0b3DBX;
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=infradead.org header.i=@infradead.org header.a=rsa-sha256 header.s=desiato.20200630 header.b=n1tmnRvW;
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=KrNhxN16
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Reply-To:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:References:
-	In-Reply-To:Cc:To:Subject:From:Message-ID:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version:Subject:
+	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
 	List-Unsubscribe-Post:List-Owner;
-	bh=PHCkakb/TcmDUWcGRY5t8jt224jdXO//0JF05RTveHw=; b=3kKa+YYOSLt2HYCdEXpn6fMqqK
-	sRe2j0JhyNB4Hrmb/1uhwmMaICVOnWKoVS5pij9RrO3RXZxgv0Gcvz4uqDGrXlqxiNxA9PF0rM72K
-	noT0CRGaoQ7gOynY86Gwvl7MYJDE84l4620Ea+W4/zBlDNVvNATt2kIT+6llL5ezWP/LVr+ags63Y
-	0c1z5R59ssGIweUkc8Gv6WIE7u/gZd79oUDaWEeQhdmgy1ShbW5FsZ183UGovBgDcM4DsGetkCeVT
-	lUEUbTKFApNbwkuHkTM2JSn5vvErUXXv7jtLtiXhup7v2fWnPYwliM7/CQ8/hLznqEVVwdTiX73lz
-	uGW+afCw==;
+	bh=OXaM/Betk77Z9LHjtk+1s3Z8U3taeNTgsue8z8GAQ5U=; b=Df0b3DBXQXAAJFVC4TFZ5ggmJ1
+	h7GeDt9a1SezY7PjAqxghH6IzbaQ3knhwML2ZMYEto/QdG075GoHlD0/wG9j7in6fGKJyi+0GhtqK
+	njKiP1G7JQ9CUWERtpXMzpH2oOUlSw3Xx2w3SNSqfZgqCwjQ4bN+BnCGgMTK4IhLixPS1BoTOfrAo
+	DqFrMRblgI6iNWo7gVi2+7MhQ6ut+seFhkLQChPRVczBoqvA2INkpeBkjTm5tCtJi/OnFCcREFgox
+	ftaDLZOLTUhuwd7ZVuDBtTlUuw3LtxoOA/H3CndhlUEuBdlUL6K55O8k9eV7bbVPXf/GKj5kJKTrI
+	ng4R7uEA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xP2tn-0000000AIg4-1q0p;
-	Thu, 05 Nov 2026 19:13:23 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1xP3BL-0000000ALFK-1BTQ;
+	Thu, 05 Nov 2026 19:31:31 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xP2tm-0000000AIfx-32jR
+	id 1xP39k-0000000AKY0-0joU
+	for linux-mtd@bombadil.infradead.org;
+	Thu, 05 Nov 2026 19:29:57 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Cc:To:Message-Id:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:From:Sender:
+	Reply-To:Content-ID:Content-Description:In-Reply-To:References;
+	bh=DtHEe0lrgHKpeTNenFZAJ2JyMD75E5FYbOoxTznvRwQ=; b=n1tmnRvWDmcrD6ob5FXrEykJuP
+	QmPOIADSfKfCX191EdqQW0qq/M0wL0luWjGMlcv5olNcTViegpAtZomi8h+SRLjOlXlNsJCOKwxv/
+	VRc4DEXIVAURcT6q1QUzgplyXnC07Gb/AOTlFldFRohUOr12exKaDCjZSwXr4FOTX13tDr48Pzgfv
+	G1rSbkB5F1LX97/NTU1q676KieYWpFWorB4/BqOoCZJyYgXyp8Oj14lWQ+EEHr4OARn3mPGMKEg8O
+	iawP6bu5TpIQeqB76yWqGebEIwWJJRonYhDtfKDe9AUyzV5hhKi/5tpSQ5/ajtzKhdUTSgw9aymXi
+	jFslICfQ==;
+Received: from mail-oo1-xc2c.google.com ([2607:f8b0:4864:20::c2c])
+	by desiato.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
+	id 1xP39g-00000003T9O-3E6D
 	for linux-mtd@lists.infradead.org;
-	Thu, 05 Nov 2026 19:13:22 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 0502441B33;
-	Thu,  5 Nov 2026 19:13:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9C151F000C1;
-	Thu,  5 Nov 2026 19:13:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793906001;
-	bh=bWoUw0v85zV3qDcWRLloegiWXI8H90sykJZsNR/TAqw=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=lCgVm33RLYIh8TNpmuCn12/xAde129MgnsOWokB3gB6Rv91jNMzmtOSM257Ty9a7N
-	 2e/SKFKpw1DOZe70ojYG0BZqOUu/bOxnqFqPKtSfGkfEDaakQFFeoQ6C4uiT3eIX+m
-	 FUVnkJnAIULk52NAqho+YjViL9OsMWyVhVU6dKdskJOqEt7fpnQJVTyHjAO2V+nFDA
-	 dhgTSRbkn4RZzfNe+5+HAHoPmopQe0uGJn1ylama7Q1583QpQpqYqTguX4twG4mfvr
-	 dsr9nonV2SFJUqJAgK5Lewr2vtbCbR65T5vRCoLXUS23ND2em+CVCdH+J0b2uAkdZq
-	 FcztQSYXaouUA==
-Message-ID: <sashiko-outbox-199823@kernel.org>
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH v10 01/26] mtd: rawnand: sunxi: centralize OOB handling
-To: "James Hilliard" <james.hilliard1@gmail.com>, "Miquel Raynal" <miquel.raynal@bootlin.com>, "Richard
- Weinberger" <richard@nod.at>, "Vignesh Raghavendra" <vigneshr@ti.com>, "Sebastian
- Andrzej Siewior" <bigeasy@linutronix.de>, "Clark Williams" <clrkwllms@kernel.org>, "Steven
- Rostedt" <rostedt@goodmis.org>, "Rob Herring" <robh@kernel.org>, "Krzysztof
- Kozlowski" <krzk+dt@kernel.org>, "Conor Dooley" <conor+dt@kernel.org>, "Philipp
- Zabel" <p.zabel@pengutronix.de>
-Cc: "Chen-Yu Tsai" <wens@kernel.org>, "Jernej Skrabec" <jernej.skrabec@gmail.com>, "Samuel
- Holland" <samuel@sholland.org>, "Maxime Ripard" <mripard@kernel.org>, "Richard
- Genoud" <richard.genoud@bootlin.com>, "Boris Brezillon" <bbrezillon@kernel.org>, "Masahiro
- Yamada" <yamada.masahiro@socionext.com>, "Brian Norris" <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org, linux-sunxi@lists.linux.dev, linux-rt-devel@lists.linux.dev, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20261105-submit-sunxi-nand-vendor-oob-layout-v1-v10-1-dca1f6ed29a8@gmail.com>
-References: <20261105-submit-sunxi-nand-vendor-oob-layout-v1-v10-0-dca1f6ed29a8@gmail.com>
- <20261105-submit-sunxi-nand-vendor-oob-layout-v1-v10-1-dca1f6ed29a8@gmail.com>
-Date: Thu, 05 Nov 2026 19:13:20 +0000
+	Thu, 05 Nov 2026 19:29:51 +0000
+Received: by mail-oo1-xc2c.google.com with SMTP id 006d021491bc7-6ddef424972so1879962eaf.3
+        for <linux-mtd@lists.infradead.org>; Thu, 05 Nov 2026 11:29:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20260707; t=1793906987; x=1794511787; darn=lists.infradead.org;
+        h=cc:to:message-id:content-transfer-encoding:content-type
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to:content-type;
+        bh=DtHEe0lrgHKpeTNenFZAJ2JyMD75E5FYbOoxTznvRwQ=;
+        b=KrNhxN16Bfs3qtt9joK8HoqFwCF48Fbykh5DcOs53Qa1Glnsjg9qiiAKnDbI/LOm7j
+         Qw3ruPy1ZxYko2+GNovrn7HqdMGfPYnj83PAfLaGQ533XhrP9Xf72m7wXaZ7vGpm/k0+
+         Lqk9hnJLZQDrFEMxsYYS5m0IxB6U8mcrf+oAQxSg2OAZGyrIKPIDL35Zdom4BocZGlZx
+         rnImb8fMk8j214+2NWcTm5SkfeJXtnAxfQ7LqKqDZIXWrVpJT3YREZx/Zt7ENht3SS83
+         h2FeGGKkmPpZG5hy5GYsAFOhXmZu+KkXu4mTqv9kIO9fvQBHDwDxiyhk/IFcfyxj+fKM
+         GpgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1793906987; x=1794511787;
+        h=cc:to:message-id:content-transfer-encoding:content-type
+         :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to:content-type;
+        bh=DtHEe0lrgHKpeTNenFZAJ2JyMD75E5FYbOoxTznvRwQ=;
+        b=GC5nMuDzMgD6KWq3FmQs0szphgbpukCaCk9nso3zclVqs5GZ4D8yYm+6CiZD+N1Z5/
+         DsDDLDzK3xuqepMT5c7e/opf3gGP3P0JOd7CfC4UVWy9erFgNKf+ZU8RqLS/3Gjdykul
+         nn21wHVR3l8eym/sphdFXsdt/si/OMVkjBZTkr1qXlT+JLhgEnlL+Q8oqNpZdbZgf3hP
+         1ZyVDtuBqXpdmOIsof3gaPkLHEOgbKcXO9Otoyxz0ZNjGuuMmQIAjwWE0Me28J0Sa8fF
+         7d2/7af1I7a3qIgwVY/J4s/pmi+N+fi9kqc7rbzXxh4Wjvv0qggpLVPL2S765c3ICper
+         Byog==
+X-Gm-Message-State: APuU4Z+qMBMeB2OxALL+pi9bcNbgJBtG8ZEFMgLlvfdlcIajulEu7oqP
+	SEXPZJ/HaqJx8c2A1JWC5i/4HPQjPaTnAhSePei+EIBR2TaYi8pUv+w0
+X-Gm-Gg: AYBFou190u2LIKtkPuuwme1PcavPLVg9PRdFWZ5ch6venQIHSnft3NBLqa5ZplM3tc2
+	0SkXHj42Lj1T+lCeSiBJlV7NZbRTu84LDM3H0zYBWNWDBG34eGzh6ky/ZPxgr7jXeK9BC0QB3To
+	BAl+bRz+k+IUxn75T56V3PadVyZBqbH/nUPd/dig5fekeA7O6Kn4uKYqaaSR9+qYOVRsxJ2otbM
+	eSP8DloduxDl1ItuYr+kcDSIgi/L1nA9wCBP0ouI+xwA/Wf31xLJRhPfjypO4Io85Rx1ECiFo0I
+	EtUQzQ11MvnfLKoJPhoV3AdDJRjU1t/0iNuEG+l0aRR22GqkXqZLMqLzQTf1r6KJhUv+1SfJWdI
+	VG4Zi1Lh3xJs3SYJbxSBO7BcZYzJ5l3DjyKAQKZ7DeZ1JJu46DXT58/N63vL9RH8gStx7gkqW24
+	k+73Zfk0U+QiY972KIKoRpua/y7iweewVLr1mcz/RJ91+L335+M0b1PTQHWMHva2a8HsNzJkg31
+	k+s4BSZcmRiUxn8osHvO+55NAO5JUuIHXi3Yeipydn2VN4MYMzIPTduLWvipmwXJORLp8Xpk64M
+	oxBAsYKSS84YQkMJYGQPqP2/LrFwy6mZ48O8ZXkEuwMr3fnzm29HUIFiQNnATOMTjMTE77Ccl8v
+	/73ir0jUujvV6ZnOc4y3oCqELSNG1jlmjTL5HJqTJ5+fMEskGECxL0M2R+TXQ2K/jolK9N4TnYr
+	tJOd6jwrURbpOumEcxzI7I2I74K2gKazeVD8CXO3fuyNdjZPeOK2Ek
+X-Received: by 2002:a05:6820:16a8:b0:716:e855:4ff4 with SMTP id 006d021491bc7-716e8555060mr340379eaf.55.1793906986644;
+        Thu, 05 Nov 2026 11:29:46 -0800 (PST)
+Received: from [127.0.1.1] (174-29-1-49.hlrn.qwest.net. [174.29.1.49])
+        by smtp.gmail.com with ESMTPSA id 006d021491bc7-716e99465dbsm177463eaf.0.2026.11.05.11.29.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Nov 2026 11:29:46 -0800 (PST)
+From: James Hilliard <james.hilliard1@gmail.com>
+Date: Thu, 05 Nov 2026 12:29:40 -0700
+Subject: [PATCH v2] mtd: core: reject OOB transfers with no complete page
+ remaining
+X-Archived-By: <archiver.kernel.org>
+MIME-Version: 1.0
+Message-Id: <20261105-submit-mtd-oob-end-v1-v2-1-734bffdc2914@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/4WNQQ6CMBBFr0Jm7RjaIFFX3sOwaKctjLGUtJVoC
+ He34AFM/uYl//2/QLKRbYJrtUC0MycOYwF5qIAGNfYW2RQGWctWiLrB9NKeM/psMASNdjQ4C3S
+ NodZpR44UFHeK1vF73713Py7iw1LexrbGwCmH+NmPZ7H1/n2UCDyRPitzkYJ0feu94ueRgoduX
+ dcv0rCWA8wAAAA=
+X-Change-ID: 20261104-submit-mtd-oob-end-v1-f4dc6fbfcfca
+To: Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+ Boris Brezillon <bbrezillon@kernel.org>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ stable@vger.kernel.org, James Hilliard <james.hilliard1@gmail.com>
+X-Mailer: b4 0.15.2
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20261105_192948_692859_5558E9CA 
+X-CRM114-Status: GOOD (  14.44  )
+X-Spam-Score: 0.1 (/)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,95 +121,75 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: sashiko-reviews@lists.linux.dev
-X-Archived-By: <archiver.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-8.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-VGhhbmsgeW91IGZvciB5b3VyIGNvbnRyaWJ1dGlvbiEgU2FzaGlrbyBBSSByZXZpZXcgZm91bmQg
-MiBwb3RlbnRpYWwgaXNzdWUocykgdG8gY29uc2lkZXI6Ci0gW0hpZ2hdIG10ZDogcmF3bmFuZDog
-c3VueGk6IHByZW1hdHVyZSBvb2Jfb3BzIHNlbGVjdGlvbiBpbiBzdW54aV9uYW5kX2F0dGFjaF9j
-aGlwKCkKLSBbTWVkaXVtXSBtdGQ6IHJhd25hbmQ6IHN1bnhpOiB1bmFkZHJlc3NlZCBtYWludGFp
-bmVyIE5BQ0sgb24gdmVuZG9yIE9PQiBsYXlvdXQgb3BzCi0tCgpjb21taXQgOGZkYTVjOTlkOWJl
-ZmExNzcxNDE4NTE2ODI4ZjA0MGRlNjBjNTg0NQpBdXRob3I6IEphbWVzIEhpbGxpYXJkIDxqYW1l
-cy5oaWxsaWFyZDFAZ21haWwuY29tPgoKbXRkOiByYXduYW5kOiBzdW54aTogY2VudHJhbGl6ZSBP
-T0IgaGFuZGxpbmcKClRoaXMgY29tbWl0IGNlbnRyYWxpemVzIGhhcmR3YXJlIEVDQyByZXN1bHQg
-aW50ZXJwcmV0YXRpb24sIHByb3RlY3RlZCBPT0IKcmV0cmlldmFsLCBlcmFzZWQtY2h1bmsgY2hl
-Y2tpbmcsIGFuZCB1c2VyLWRhdGEgbGF5b3V0IHJlc2VydmF0aW9uIGJlaGluZApwZXItY2hpcCBz
-dW54aV9uZmNfb29iX29wcyBjYWxsYmFja3MgZm9yIGJvdGggUElPIGFuZCBETUEgcGF0aHMuCgo+
-IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9zdW54aV9uYW5kLmMgYi9kcml2ZXJz
-L210ZC9uYW5kL3Jhdy9zdW54aV9uYW5kLmMKPiBpbmRleCBmNDFmZWViZTQyNTcxLi44MDAwNmQx
-YTMzZDY4IDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L3N1bnhpX25hbmQuYwo+
-ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L3N1bnhpX25hbmQuYwpbIC4uLiBdCj4gQEAgLTIw
-NjYsNiArMjA5Niw1OCBAQCBzdGF0aWMgaW50IHN1bnhpX25mY19tYXhpbWl6ZV91c2VyX2RhdGEo
-c3RydWN0IG5hbmRfY2hpcCAqbmFuZCwgdWludDMyX3Qgb29ic2l6ZQpbIC4uLiBdCj4gKy8qCj4g
-KyAqIEJvdGggbW9kZXMgdXNlIHRoZSBzYW1lIGxheW91dCBhbmQgRUNDIHBvbGljeS4gU2NyYW1i
-bGVkIHRyYW5zZmVycyBhbHNvCj4gKyAqIGNvbXBlbnNhdGUgdGhlIGZpcnN0IHR3byB1c2VyIGJ5
-dGVzIHRvIGtlZXAgdGhlIG9uLWZsYXNoIEJCTSB1bm1vZGlmaWVkLgo+ICsgKi8KPiArc3RhdGlj
-IGNvbnN0IHN0cnVjdCBzdW54aV9uZmNfb29iX29wcyBzdW54aV9uZmNfcGxhaW5fb29iX29wcyA9
-IHsKPiArCS5taW5fdXNlcl9kYXRhID0gc3VueGlfbmZjX29vYl9taW5fdXNlcl9kYXRhLAo+ICsJ
-LmluaXRfdXNlcl9kYXRhID0gc3VueGlfbmZjX29vYl9pbml0X3VzZXJfZGF0YSwKPiArCS5yZWFk
-X2JhdGNoID0gc3VueGlfbmZjX29vYl9yZWFkX2JhdGNoLAo+ICsJLmZpbmlzaF9yZWFkID0gc3Vu
-eGlfbmZjX29vYl9maW5pc2hfcmVhZCwKPiArfTsKPiArCj4gK3N0YXRpYyBjb25zdCBzdHJ1Y3Qg
-c3VueGlfbmZjX29vYl9vcHMgc3VueGlfbmZjX3NjcmFtYmxlZF9wbGFpbl9iYm1fb29iX29wcyA9
-IHsKPiArCS5taW5fdXNlcl9kYXRhID0gc3VueGlfbmZjX29vYl9taW5fdXNlcl9kYXRhLAo+ICsJ
-LmluaXRfdXNlcl9kYXRhID0gc3VueGlfbmZjX29vYl9pbml0X3VzZXJfZGF0YSwKPiArCS50cmFu
-c2Zvcm1fYmJtID0gc3VueGlfbmZjX3JhbmRvbWl6ZV9iYm0sCj4gKwkucmVhZF9iYXRjaCA9IHN1
-bnhpX25mY19vb2JfcmVhZF9iYXRjaCwKPiArCS5maW5pc2hfcmVhZCA9IHN1bnhpX25mY19vb2Jf
-ZmluaXNoX3JlYWQsCj4gK307CgpbU2V2ZXJpdHk6IE1lZGl1bV0KQXMgcmVwb3J0ZWQgYnkgTWlx
-dWVsIFJheW5hbCBvbiB2NiBbMV0sIHRoZSBzZXJpZXMgYWRkaW5nIHN1cHBvcnQgZm9yIHRoZQp2
-ZW5kb3Itc3BlY2lmaWMgQWxsd2lubmVyIHJhbmRvbWl6ZWQgT09CIGxheW91dCB3YXMgZGVjbGlu
-ZWQgZHVlIHRvCm1haW50YWluYWJpbGl0eSBjb25jZXJucyBhbmQga2VybmVsIHBvbGljeSBhZ2Fp
-bnN0IHZlbmRvci1zcGVjaWZpYyBOQU5ECmxheW91dHMsIHdpdGggYW4gaW52aXRhdGlvbiB0byBz
-dWJtaXQgb25seSB0aGUgc3RhbmRhbG9uZSBmaXhlcyBvdXRzaWRlIG9mCnRoZSByYW5kb21pemVk
-IGxheW91dCBzdXBwb3J0LgoKSGVyZSwgc3VueGlfbmZjX3BsYWluX29vYl9vcHMgYW5kIHN1bnhp
-X25mY19zY3JhbWJsZWRfcGxhaW5fYmJtX29vYl9vcHMgdXNlCmlkZW50aWNhbCBjYWxsYmFja3Mg
-Zm9yIG1pbl91c2VyX2RhdGEsIGluaXRfdXNlcl9kYXRhLCByZWFkX2JhdGNoLCBhbmQKZmluaXNo
-X3JlYWQsIGRpZmZlcmluZyBvbmx5IGluIHRyYW5zZm9ybV9iYm0uIFRoZSByZW1haW5pbmcgaW5k
-aXJlY3Rpb24gaW4Kc3RydWN0IHN1bnhpX25mY19vb2Jfb3BzIGlzIG9ubHkgdXNlZCBieSB0aGUg
-dmVuZG9yLXNwZWNpZmljIHJhbmRvbWl6ZWQgT09CCmxheW91dCBwYXRjaCBsYXRlciBpbiB0aGUg
-c2VyaWVzLgoKQ291bGQgdGhlIFBJTyBhbmQgRE1BIEVDQyByZWFkIGhlbHBlcnMgYmUgc2hhcmVk
-IGRpcmVjdGx5IGFuZCB0aGUgc3RhbmRhbG9uZQpmaXhlcyBzcGxpdCBvdXQgd2l0aG91dCBpbnRy
-b2R1Y2luZyB0aGUgc3RydWN0IHN1bnhpX25mY19vb2Jfb3BzIHZ0YWJsZT8KClsgLi4uIF0KPiBA
-QCAtMjI1NCw2ICsyMzAzLDkgQEAgc3RhdGljIGludCBzdW54aV9uYW5kX2F0dGFjaF9jaGlwKHN0
-cnVjdCBuYW5kX2NoaXAgKm5hbmQpCj4gIAlpZiAoIWVjYy0+c2l6ZSB8fCAhZWNjLT5zdHJlbmd0
-aCkKPiAgCQlyZXR1cm4gLUVJTlZBTDsKPiAgCj4gKwlzdW54aV9uYW5kLT5vb2Jfb3BzID0gbmFu
-ZC0+b3B0aW9ucyAmIE5BTkRfTkVFRF9TQ1JBTUJMSU5HID8KPiArCQkmc3VueGlfbmZjX3NjcmFt
-YmxlZF9wbGFpbl9iYm1fb29iX29wcyA6ICZzdW54aV9uZmNfcGxhaW5fb29iX29wczsKCltTZXZl
-cml0eTogSGlnaF0KRG9lcyBzZWxlY3Rpbmcgc3VueGlfbmFuZC0+b29iX29wcyBpbiBzdW54aV9u
-YW5kX2F0dGFjaF9jaGlwKCkgYnJlYWsgYmFkCmJsb2NrIG1hcmtlciBjb21wZW5zYXRpb24gZm9y
-IGNoaXBzIHRoYXQgc2V0IE5BTkRfTkVFRF9TQ1JBTUJMSU5HIGR1cmluZwpuYW5kX21hbnVmYWN0
-dXJlcl9pbml0KCk/CgpJbiBuYW5kX3NjYW5fd2l0aF9pZHMoKSwgbmFuZF9hdHRhY2goKSBydW5z
-IGJlZm9yZSBuYW5kX3NjYW5fdGFpbCgpOgoKICBuYW5kX3NjYW5fd2l0aF9pZHMoKQogICAgLT4g
-bmFuZF9zY2FuX2lkZW50KCkKICAgIC0+IG5hbmRfYXR0YWNoKCkKICAgICAgLT4gc3VueGlfbmFu
-ZF9hdHRhY2hfY2hpcCgpCiAgICAtPiBuYW5kX3NjYW5fdGFpbCgpCiAgICAgIC0+IG5hbmRfbWFu
-dWZhY3R1cmVyX2luaXQoKQoKRm9yIE9ORkktY29tcGxpYW50IGNoaXBzIHdoZXJlIG5hbmRfb25m
-aV9kZXRlY3QoKSBzdWNjZWVkcyBpbiBuYW5kX2RldGVjdCgpCmFuZCBqdW1wcyB0byBpZGVudF9k
-b25lIHdpdGhvdXQgc2V0dGluZyBOQU5EX05FRURfU0NSQU1CTElORywgdGhlIGZsYWcgY2FuCmJl
-IHNldCBsYXRlciBpbiBuYW5kX21hbnVmYWN0dXJlcl9pbml0KCksIHN1Y2ggYXMgaW4KZHJpdmVy
-cy9tdGQvbmFuZC9yYXcvbmFuZF90b3NoaWJhLmM6CgogIHRvc2hpYmFfbmFuZF9pbml0KCkKICAg
-IC0+IHRjNTh0ZWc1ZGNsdGEwMF9pbml0KCkKICAgICAgY2hpcC0+b3B0aW9ucyB8PSBOQU5EX05F
-RURfU0NSQU1CTElORzsKCkJlY2F1c2Ugc3VueGlfbmFuZF9hdHRhY2hfY2hpcCgpIHJ1bnMgYmVm
-b3JlIG5hbmRfbWFudWZhY3R1cmVyX2luaXQoKSwKc3VueGlfbmFuZC0+b29iX29wcyBpcyBsYXRj
-aGVkIHRvIHN1bnhpX25mY19wbGFpbl9vb2Jfb3BzICh3aGVyZQp0cmFuc2Zvcm1fYmJtIGlzIE5V
-TEwpLiBMYXRlciwgZHVyaW5nIHBhZ2UgYW5kIE9PQiByZWFkcyBhbmQgd3JpdGVzLApzdW54aV9u
-ZmNfcmFuZG9taXplcl9jb25maWcoKSBhbmQgc3VueGlfbmZjX3JhbmRvbWl6ZXJfZW5hYmxlKCkg
-ZHluYW1pY2FsbHkKY2hlY2sgbmFuZC0+b3B0aW9ucyAmIE5BTkRfTkVFRF9TQ1JBTUJMSU5HIGFu
-ZCBlbmFibGUgaGFyZHdhcmUgc2NyYW1ibGluZywKd2hpbGUgc3VueGlfbmZjX2h3X2VjY19nZXRf
-cHJvdF9vb2JfYnl0ZXMoKSBhbmQKc3VueGlfbmZjX2h3X2VjY19zZXRfcHJvdF9vb2JfYnl0ZXMo
-KSBjaGVjayBzdW54aV9uYW5kLT5vb2Jfb3BzLT50cmFuc2Zvcm1fYmJtCmFuZCBza2lwIGNhbGxp
-bmcgc3VueGlfbmZjX3JhbmRvbWl6ZV9iYm0oKS4KClsxXSBodHRwczovL2xvcmUua2VybmVsLm9y
-Zy9yLzg3MXA5djRhMXguZnNmQGJvb3RsaW4uY29tCgotLSAKU2FzaGlrbyBBSSByZXZpZXcgwrcg
-aHR0cHM6Ly9zYXNoaWtvLmRldi8jL3BhdGNoc2V0LzIwMjYxMTA1LXN1Ym1pdC1zdW54aS1uYW5k
-LXZlbmRvci1vb2ItbGF5b3V0LXYxLXYxMC0wLWRjYTFmNmVkMjlhOEBnbWFpbC5jb20/cGFydD0x
-CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-TGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
-b3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+mtd_check_oob_ops() permits offs == mtd->size when the data length is
+zero. For an OOB-only request with a nonzero ooboffs, maxooblen then
+underflows because there are no pages remaining. The wrapped value lets
+the request pass the OOB length check.
+
+The OOB ioctls can reach this case by encoding the OOB offset in the low
+bits of start. On a partition ending before its master device, the
+subsequent address translation allows the request to read or write OOB
+in the page immediately following the partition.
+
+The same underflow is possible before the device end on a read-only
+partition whose size is not a multiple of writesize. An offset in its
+trailing partial page has the same page index as mtd->size, so the
+remaining-page count is zero even though offs < mtd->size.
+
+Reject nonempty OOB requests whose starting page is at or beyond the
+number of complete pages in the MTD device, before subtracting ooboffs
+from the remaining OOB capacity. This covers both exact EOF and trailing
+partial pages while preserving data-only and empty-request validation.
+
+Fixes: d82c36821684 ("mtd: Fix mtd_check_oob_ops()")
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/sashiko-outbox-197995@kernel.org
+Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+---
+Changes in v2:
+- Compare page indices to reject OOB requests in a trailing partial page
+  as well as at EOF, addressing Sashiko's review.
+- Link to v1: https://patch.msgid.link/20261104-submit-mtd-oob-end-v1-v1-1-5cb8ad921cb0@gmail.com
+---
+ drivers/mtd/mtdcore.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 491a27d0315f..34ab30df03a0 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -1676,6 +1676,10 @@ static int mtd_check_oob_ops(struct mtd_info *mtd, loff_t offs,
+ 	if (ops->ooblen) {
+ 		size_t maxooblen;
+ 
++		if (mtd_div_by_ws(offs, mtd) >=
++		    mtd_div_by_ws(mtd->size, mtd))
++			return -EINVAL;
++
+ 		if (ops->ooboffs >= mtd_oobavail(mtd, ops))
+ 			return -EINVAL;
+ 
+
+---
+base-commit: 1c1a342aceec79528b3ba51f376eca2be5928fe7
+change-id: 20261104-submit-mtd-oob-end-v1-f4dc6fbfcfca
+
+Best regards,
+--  
+James Hilliard <james.hilliard1@gmail.com>
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
