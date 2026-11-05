@@ -2,55 +2,56 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B420606A91A
-	for <linux-mtd@archiver.kernel.org>; Thu,  5 Nov 2026 16:42:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF7D7606A931
+	for <linux-mtd@archiver.kernel.org>; Thu,  5 Nov 2026 16:43:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=fnGGHqtV;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=klnMq719
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=uYl2Hhvj;
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=iVwQ/kky
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:Cc:To:From:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=aEoYRcFVPIde/ahGqV3+mSmilGaLhCr8KMP/18tfhWc=; b=fnGGHqtV4e+EjnOAlIlaD9anjD
-	kr0cnW334lQkZ/knB83/NmOgsUyAdiJbsJO/34AldyvXoJg/f5b2mnQsKhoB+yEHK+zUQ+jrAcXvn
-	egS0uIYTLq6iHWL5TAj15If5u/VSF5M/J4sQkEms3cNkzmyP78d6qb5W5/83X4SJlFT/X3TT9ZTp+
-	FcfcIn7zAQj+sL4kbJTZMlOcaTmv++TulMizyj4OSaB3X6pKBoEU96FZRswH/FYyzSXbOf3fjyZzA
-	rEABqd1QDiRJ1j0CWl5CLMdiBRiwuDgVdEvshPFjYuiW8X0uVyCx4aA+/LJLbC9xC7lQRLRdQPDT+
-	aFoYr2kg==;
+	bh=9b52MTmDXC06rtNl+OeHHyjqmykjKYJu7UfcWB9QHIA=; b=uYl2HhvjX1QbFJ3a+rl+un3SLi
+	zltGDITtSw0iiu3QjBDwwxSOegKLUZc6L7GHEAszpGc5IdfjiloOhlO3Qw4OK1SNkgWS1d5fohLqM
+	rHe5IuNys6o90wxw0BIxISuDzsaxU6HwLiKij2MlKzpUojjLWBislrydZrt/0qsqUuNmHwQZ5MUMu
+	XACDF2b7m4ecBnGD8gFiL/eQ3W5+IFVbeMyquq4a2BFZxY9jPnvej/6G+rq2Z+EWzJN9VXLsaXaN2
+	Dnv+VXIjWjiB0YDKSNwHp0txvLUep3R2kSMRSyDj961rQGiYYyb1Ncz19Z7mCZ4MXTd+3zm0qdtfB
+	xHg5qqpQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xP0Xr-00000009g2G-3VtY;
-	Thu, 05 Nov 2026 16:42:35 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1xP0YR-00000009gJL-1gLP;
+	Thu, 05 Nov 2026 16:43:11 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xP0XY-00000009fzd-4BT0
+	id 1xP0YN-00000009gI7-0h29
 	for linux-mtd@lists.infradead.org;
-	Thu, 05 Nov 2026 16:42:23 +0000
+	Thu, 05 Nov 2026 16:43:09 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id BEA64412DE;
-	Thu,  5 Nov 2026 16:42:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 855421F00A1E;
-	Thu,  5 Nov 2026 16:42:10 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 76CF560416;
+	Thu,  5 Nov 2026 16:43:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A89881F000C1;
+	Thu,  5 Nov 2026 16:42:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793896936;
-	bh=lRT1DmkMSM3hst3LQvw8oZU4aI/GpY2uYCcqHvaIJes=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=klnMq719xbNKVjbQABAQBjABmdQ0AiMN6iSTOu2nj4JCJMcSuqYmnBXbRfbItO2cW
-	 JUAROwFenOruUXQAn0L3qzENgivbZr+xW28Zo/sL/pZQqS+dClhYmIZST/XpKYUHuP
-	 Nv/5rfUL8aQideRIVUdDJ9H4hq+zVjyDST+0oi1Hhmh1omMlDg4DeOpqL8BRKPZmnf
-	 wsx/tLxDWZC31yXAtI5sVYjcN+zs1T6bvVPLvJpZw34nlskwcKXhLhqj5aHjQMp4V1
-	 2PmjkXCkHV86qleN2XmB7hcy+dHQUuwQSgyoyBsgXNe4moU/UMJTEyl+Mg9WnQclCz
-	 uIW5XHShrklFQ==
-Message-ID: <46fe4b63-71af-4df7-8f64-fdf19fd77f1f@kernel.org>
-Date: Thu, 5 Nov 2026 17:42:08 +0100
+	s=k20260515; t=1793896986;
+	bh=AJSPojTMD5FaksEtjWz2d1lbfmwj8ss6ZBjJxa7pTR0=;
+	h=Date:Subject:From:To:Cc:References:In-Reply-To;
+	b=iVwQ/kky9CNa8BZ8Pw8ciGpeOuW10hzVJ7jglN6j1zXY7nILyR8A7WNHOxZuhtOky
+	 vLYasOdsnjV7UnVmqg03D5ZsQq59dT9POEDCacPahnzz/xwwiEEv8OnfjAyIIFoJf5
+	 n2/mnxvWjeFJHzxVsAK1mh6Q+dO41ZDapyPgUHt0mXSwJ2JL4x4p2a1rOsxMoJkffk
+	 1KrKsiHWHqYYMwRCUaCwaIPQHLKc47WJlWFPgoauAucEvZ+sgHJ8mJ91OaFnBGapzX
+	 eKdnZfpNxQGydVoSDgmVO+jlqNUvhuIwuEUuuwig5DP8AFSeA1D8ueAlLuXAaSCZt5
+	 wsakPJ7AGQNKQ==
+Message-ID: <f8c6da62-057f-4795-b88e-273986ef79df@kernel.org>
+Date: Thu, 5 Nov 2026 17:42:57 +0100
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v11 02/19] spi: dt-bindings: add spi-phy-pattern-partition
- property
+Subject: Re: [PATCH v11 01/19] spi: dt-bindings: add
+ spi-max-post-config-frequency-hz property
+From: Krzysztof Kozlowski <krzk@kernel.org>
 To: Santhosh Kumar K <s-k6@ti.com>, broonie@kernel.org, robh@kernel.org,
  krzk+dt@kernel.org, conor+dt@kernel.org, miquel.raynal@bootlin.com,
  richard@nod.at, vigneshr@ti.com, pratyush@kernel.org, mwalle@kernel.org,
@@ -59,10 +60,10 @@ Cc: linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
  praneeth@ti.com, sebin.francis@ti.com, u-kumar1@ti.com,
  srikanth.boyapally@amd.com, m-shah@ti.com,
- Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
+ Conor Dooley <conor.dooley@microchip.com>
 References: <20261105105832.2134313-1-s-k6@ti.com>
- <20261105105832.2134313-3-s-k6@ti.com>
-From: Krzysztof Kozlowski <krzk@kernel.org>
+ <20261105105832.2134313-2-s-k6@ti.com>
+ <303eec47-bd2b-4ce2-b28f-aedbda21f91a@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=krzk@kernel.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -107,7 +108,7 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  K9bCVaboTA2T77QYkRcRJYSsO1alGX0ome/hMLD1daXlkrNUp1HWa3K4iytLRXjCSIorWiGs
  n+q3krnpXu3TFkA8qtOFZMdnIiFuiq1yLT8hptsV5xh1TA2nsVvSYiaCr3q4s4BKjS/KrLDb
  qoxzw8ISjdUp4pA85vb6YLCmb39NgidD+7PmAr65lBNveIFynTgsja1rRQ4=
-In-Reply-To: <20261105105832.2134313-3-s-k6@ti.com>
+In-Reply-To: <303eec47-bd2b-4ce2-b28f-aedbda21f91a@kernel.org>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -127,29 +128,30 @@ X-Spam-Status: No, score=-10.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-On 05/11/2026 11:58, Santhosh Kumar K wrote:
-> Add spi-phy-pattern-partition, a per-device phandle property on the
-> flash sub-node that allows the DT author to directly reference the
-> partition holding the SPI PHY tuning pattern. Used to locate the
-> pattern data during PHY tuning when the device cannot load the
-> pattern dynamically.
+On 05/11/2026 17:41, Krzysztof Kozlowski wrote:
+> On 05/11/2026 11:58, Santhosh Kumar K wrote:
+>> Add spi-max-post-config-frequency-hz, a generic property for SPI
+>> peripherals that operate at two distinct clock rates: a conservative
+>> rate always reachable without controller configuration, and a higher
+>> rate achievable only after controller-side configuration.
+>>
+>> When both properties are present, spi-max-frequency gives the
+>> conservative pre-configuration rate and spi-max-post-config-frequency-hz
+>> gives the higher post-configuration target.
+>>
+>> Acked-by: Conor Dooley <conor.dooley@microchip.com>
+>> Tested-by: Srikanth Boyapally <srikanth.boyapally@amd.com>
+>> Tested-by: Moteen Shah <m-shah@ti.com>
 > 
-> PHY tuning works by reading a known data pattern from the device
-> repeatedly while sweeping controller delay parameters until the
-> capture window is stable. For SPI NAND, the driver loads the pattern
-> into the page cache once using write-to-cache opcodes, then reads it
-> during the sweep. SPI NOR devices have no equivalent opcode, so the
-> pattern must be pre-programmed in a dedicated flash partition. One
-> partition per device is required to keep the procedure unambiguous
-> when multiple devices share a bus.
+> Drop tags, this did not happen. Please do not add blindly tags which are
+
+^ tested-by tags, I meant. Acked was correct.
+
+> obviously not applicable.
 > 
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
+> Best regards,
+> Krzysztof
 
-> Tested-by: Srikanth Boyapally <srikanth.boyapally@amd.com>
-> Tested-by: Moteen Shah <m-shah@ti.com>
-
-Drop tags, this did not happen. Please do not add blindly tags which are
-obviously not applicable.
 
 Best regards,
 Krzysztof
