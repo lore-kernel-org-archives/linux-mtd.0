@@ -2,113 +2,75 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF7D7606A931
-	for <linux-mtd@archiver.kernel.org>; Thu,  5 Nov 2026 16:43:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7AB9606A32C
+	for <linux-mtd@archiver.kernel.org>; Thu,  5 Nov 2026 17:13:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=uYl2Hhvj;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=iVwQ/kky
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=YpQEveF3;
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=qKk3HxH0
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:Cc:To:From:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
 	List-Unsubscribe-Post:List-Owner;
-	bh=9b52MTmDXC06rtNl+OeHHyjqmykjKYJu7UfcWB9QHIA=; b=uYl2HhvjX1QbFJ3a+rl+un3SLi
-	zltGDITtSw0iiu3QjBDwwxSOegKLUZc6L7GHEAszpGc5IdfjiloOhlO3Qw4OK1SNkgWS1d5fohLqM
-	rHe5IuNys6o90wxw0BIxISuDzsaxU6HwLiKij2MlKzpUojjLWBislrydZrt/0qsqUuNmHwQZ5MUMu
-	XACDF2b7m4ecBnGD8gFiL/eQ3W5+IFVbeMyquq4a2BFZxY9jPnvej/6G+rq2Z+EWzJN9VXLsaXaN2
-	Dnv+VXIjWjiB0YDKSNwHp0txvLUep3R2kSMRSyDj961rQGiYYyb1Ncz19Z7mCZ4MXTd+3zm0qdtfB
-	xHg5qqpQ==;
+	bh=ko1TUGAu6HI3gBYTtXvFjmg4nHGKkR9YXT6GgWZRl8c=; b=YpQEveF3eMMockOJ4RPh5yYNOF
+	oFt0o6u2kJWhKVO7qgP0FGCh9voUsdPYuGdGcHpnE8wJBQABnUMlRbvAFCpxoGp3y1h//3/1xQwT4
+	ILT6C54XqbbckH71+51E5eToQ8i0jBBxW+7q7fEjKrYD1NpPgJNBcwuJy/btZ0pS4OzWw449ynzSj
+	prBYumfiS00+CEF4ns0YsLh3GeMFkn7wX1VALVDgoRvSNqFc89taQkMFpx3A58rFe6rnJCQc3bVe5
+	I+Rp2Mp71iai7pXgtSME8gFkF9n+cwn1IDLHwv5KtKPOeO6V1WZPs+j8HSsG9r7ns8hyLqwQVH3Hh
+	CBH8+vYg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xP0YR-00000009gJL-1gLP;
-	Thu, 05 Nov 2026 16:43:11 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1xP11m-00000009opc-2JCN;
+	Thu, 05 Nov 2026 17:13:30 +0000
+Received: from smtpout-02.galae.net ([185.246.84.56])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xP0YN-00000009gI7-0h29
+	id 1xP11E-00000009oXf-0SsW
 	for linux-mtd@lists.infradead.org;
-	Thu, 05 Nov 2026 16:43:09 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 76CF560416;
-	Thu,  5 Nov 2026 16:43:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A89881F000C1;
-	Thu,  5 Nov 2026 16:42:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793896986;
-	bh=AJSPojTMD5FaksEtjWz2d1lbfmwj8ss6ZBjJxa7pTR0=;
-	h=Date:Subject:From:To:Cc:References:In-Reply-To;
-	b=iVwQ/kky9CNa8BZ8Pw8ciGpeOuW10hzVJ7jglN6j1zXY7nILyR8A7WNHOxZuhtOky
-	 vLYasOdsnjV7UnVmqg03D5ZsQq59dT9POEDCacPahnzz/xwwiEEv8OnfjAyIIFoJf5
-	 n2/mnxvWjeFJHzxVsAK1mh6Q+dO41ZDapyPgUHt0mXSwJ2JL4x4p2a1rOsxMoJkffk
-	 1KrKsiHWHqYYMwRCUaCwaIPQHLKc47WJlWFPgoauAucEvZ+sgHJ8mJ91OaFnBGapzX
-	 eKdnZfpNxQGydVoSDgmVO+jlqNUvhuIwuEUuuwig5DP8AFSeA1D8ueAlLuXAaSCZt5
-	 wsakPJ7AGQNKQ==
-Message-ID: <f8c6da62-057f-4795-b88e-273986ef79df@kernel.org>
-Date: Thu, 5 Nov 2026 17:42:57 +0100
+	Thu, 05 Nov 2026 17:13:05 +0000
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-02.galae.net (Postfix) with ESMTPS id BEC0F1A0C24;
+	Thu,  5 Nov 2026 17:12:50 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 813085FF43;
+	Thu,  5 Nov 2026 17:12:50 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id B639D10329258;
+	Thu,  5 Nov 2026 18:12:44 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1793898769; h=from:subject:date:message-id:to:cc:mime-version:
+	 content-transfer-encoding; bh=3+Md6IS5qsGquLQY5PzCkVhG7iMrdpAy4cpRkavqmhk=;
+	b=qKk3HxH09x1pQmKLG+wolNzp5jIkLcU1OiTumONkT/QdWFKInuy9NY/5/zWzCr3y1Fn4i7
+	cN5gtGgw5t6H3yPk08PmHKPF5hLz047oc2Lq9KKGDUzjP/nkNhaZAJ4D8k4go3AjYzNG0H
+	B7v9kGvelImPEikBMrw1DmViLDs4I8mnUWzAkvUPBdEaQJxWdx2C3uixe6bZ8dy8SWFzt8
+	tzG04ciK51dAx0N7q30KFyviB5m5QOEX2kXY9uLMgiegIBMN/PhSjPrWUOrFaLjhGqvbQR
+	YeV0pDw5u+gLyFAdPfq/lU9UY9CRDgqaXUDWthl687/XzX1RO3nZvoat+dlu0Q==
+From: Paul Cercueil <paul.cercueil@bootlin.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Paul Cercueil <paul.cercueil@bootlin.com>,
+	Stefan Agner <stefan@agner.ch>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org,
+	Maxim Levitsky <maximlevitsky@gmail.com>
+Subject: [PATCH 00/12] mtd: Remove #ifdef guards for PM related
+Date: Thu,  5 Nov 2026 18:11:46 +0100
+Message-ID: <20261105171158.399247-1-paul.cercueil@bootlin.com>
+X-Mailer: git-send-email 2.47.3
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v11 01/19] spi: dt-bindings: add
- spi-max-post-config-frequency-hz property
-From: Krzysztof Kozlowski <krzk@kernel.org>
-To: Santhosh Kumar K <s-k6@ti.com>, broonie@kernel.org, robh@kernel.org,
- krzk+dt@kernel.org, conor+dt@kernel.org, miquel.raynal@bootlin.com,
- richard@nod.at, vigneshr@ti.com, pratyush@kernel.org, mwalle@kernel.org,
- takahiro.kuwano@infineon.com
-Cc: linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- praneeth@ti.com, sebin.francis@ti.com, u-kumar1@ti.com,
- srikanth.boyapally@amd.com, m-shah@ti.com,
- Conor Dooley <conor.dooley@microchip.com>
-References: <20261105105832.2134313-1-s-k6@ti.com>
- <20261105105832.2134313-2-s-k6@ti.com>
- <303eec47-bd2b-4ce2-b28f-aedbda21f91a@kernel.org>
-Content-Language: en-US
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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
-In-Reply-To: <303eec47-bd2b-4ce2-b28f-aedbda21f91a@kernel.org>
+X-Last-TLS-Session-Version: TLSv1.3
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20261105_091256_325316_19B7332E 
+X-CRM114-Status: UNSURE (   9.55  )
+X-CRM114-Notice: Please train this message.
+X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -121,40 +83,67 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-10.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-11.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=4.0.1
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-On 05/11/2026 17:41, Krzysztof Kozlowski wrote:
-> On 05/11/2026 11:58, Santhosh Kumar K wrote:
->> Add spi-max-post-config-frequency-hz, a generic property for SPI
->> peripherals that operate at two distinct clock rates: a conservative
->> rate always reachable without controller configuration, and a higher
->> rate achievable only after controller-side configuration.
->>
->> When both properties are present, spi-max-frequency gives the
->> conservative pre-configuration rate and spi-max-post-config-frequency-hz
->> gives the higher post-configuration target.
->>
->> Acked-by: Conor Dooley <conor.dooley@microchip.com>
->> Tested-by: Srikanth Boyapally <srikanth.boyapally@amd.com>
->> Tested-by: Moteen Shah <m-shah@ti.com>
-> 
-> Drop tags, this did not happen. Please do not add blindly tags which are
+Hi,
 
-^ tested-by tags, I meant. Acked was correct.
+This patchset updates the MTD core / NAND core as well as several driver
+to get rid of the #ifdef CONFIG_PM guards.
 
-> obviously not applicable.
-> 
-> Best regards,
-> Krzysztof
+Instead, the code that depends on PM or runtime PM will be
+garbage-collected by the compiler automatically if this config option is
+not set.
 
+The rationale behind this change is that in general conditionally
+compiled code is a bad choice, as code behind a rarely-used config can
+get broken without anybody noticing.
 
-Best regards,
-Krzysztof
+Cheers,
+-Paul
+
+Paul Cercueil (12):
+  mtd: Remove #ifdef guards for PM related functions
+  mtd: rawnand: vf610: Remove #ifdef guards for PM related functions
+  mtd: spear_smi: Remove #ifdef guards for PM related functions
+  mtd: physmap: Remove #ifdef guards for PM related functions
+  mtd: maps: pxa2xx: Remove #ifdef guards for PM related functions
+  mtd: nand: mtk: Remove #ifdef guards for PM related functions
+  mtd: rawnand: fsmc: Remove #ifdef guards for PM related functions
+  mtd: rawnand: hisi504: Remove #ifdef guards for PM related functions
+  mtd: rawnand: mtk: Remove #ifdef guards for PM related functions
+  mtd: rawnand: omap_elm: Remove #ifdef guards for PM related functions
+  mtd: rawnand: r852: Remove #ifdef guards for PM related functions
+  mtd: rawnand: txx9ndfmc: Remove #ifdef guards for PM related functions
+
+ drivers/mtd/devices/spear_smi.c     |  6 ++----
+ drivers/mtd/maps/physmap-core.c     |  6 +-----
+ drivers/mtd/maps/pxa2xx-flash.c     |  6 +-----
+ drivers/mtd/mtdcore.c               | 10 ++--------
+ drivers/mtd/nand/ecc-mtk.c          |  8 ++------
+ drivers/mtd/nand/raw/fsmc_nand.c    |  6 ++----
+ drivers/mtd/nand/raw/hisi504_nand.c |  7 +++----
+ drivers/mtd/nand/raw/mtk_nand.c     |  8 ++------
+ drivers/mtd/nand/raw/omap_elm.c     |  6 ++----
+ drivers/mtd/nand/raw/r852.c         |  6 ++----
+ drivers/mtd/nand/raw/txx9ndfmc.c    |  6 +-----
+ drivers/mtd/nand/raw/vf610_nfc.c    |  6 ++----
+ 12 files changed, 22 insertions(+), 59 deletions(-)
+
+Cc: Stefan Agner <stefan@agner.ch>
+Cc: Matthias Brugger <matthias.bgg@gmail.com>
+Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-mediatek@lists.infradead.org
+Cc: Maxim Levitsky <maximlevitsky@gmail.com>
+
+-- 
+2.47.3
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
