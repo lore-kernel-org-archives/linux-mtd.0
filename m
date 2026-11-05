@@ -2,94 +2,80 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD097606D823
-	for <linux-mtd@archiver.kernel.org>; Fri,  6 Nov 2026 10:11:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8AC4606A339
+	for <linux-mtd@archiver.kernel.org>; Fri,  6 Nov 2026 11:09:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=VknLVeD5;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=R6HieFhB
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=qOnMqD2P;
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=WQlq67op
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
+	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=FsWNdHaGFWEj6Gk5tUwGuHSQtq07bPWseicCT6cgYWM=; b=VknLVeD5ZKOM5DiThBYBf4IhBE
-	+zowCdtF9ZW5kaXXAYsWi4yJJB/+QCV4cntm/5q1EU7Kk811UZCubS7HkmD8Ml93JjhSVdOezZGdO
-	kWxqI/vieX+rgNC62eDfAr7xbALbryIIjrQJg3Mbe3G1Ou0Esa++XT+iLTBXkh7wPGOqwK13mACcU
-	o72rnz+JqTbskAHntplgUYTnstYMiizvoFAur3qy6luJsljy79K/dMarCE3WbWDInlFXZVq8D9nhm
-	95FDUvNyf7eOhWI/YZXwwpSn2g2U8tjvGIWvY6QAldcevA3m24CXvo710cEwg9sRbLikhoaDZlUxV
-	OrQKySxw==;
+	bh=nN31V6VILZ//UIng9LOV1JP8uqXnsDP1noual2Dfbrs=; b=qOnMqD2PIDVhLusrnZY2WXfUPm
+	MUQisEnMIkwywWdP48ARIFKqyLwLl9XacfHAvNndE96fMf1axANMsaAg1hCdPzdIFGU8ECwWtApC8
+	VedVBSEYn0KzvSsPVBDeDbLH58c7m+E2akG+5etW5mRUjYyjaRKSwmXdjU5TipnwaomaVsRdhHkwN
+	CZCH0nWffWATDHoA+WN++AFR8zdK6FLHPsyivfH5NhMaAwn/b5HPHEW6GckxnOZxixfs3r0LQJ/xL
+	qN42bZX6VnlXqU71g77+v6CpvS2epNMrb/RjgaF5HQtYPcoxzBa4XGrTibTM3B2DMRPDqUnDrPBIp
+	i0XAbx9A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xPGuk-0000000BrU2-0LLg;
-	Fri, 06 Nov 2026 10:11:18 +0000
-Received: from mail-pj1-x1031.google.com ([2607:f8b0:4864:20::1031])
+	id 1xPHpG-0000000C5yO-3PoL;
+	Fri, 06 Nov 2026 11:09:42 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xPGug-0000000BrRk-0HFA
+	id 1xPHpF-0000000C5yH-1wel
 	for linux-mtd@lists.infradead.org;
-	Fri, 06 Nov 2026 10:11:16 +0000
-Received: by mail-pj1-x1031.google.com with SMTP id 98e67ed59e1d1-3ac91ac8924so230199a91.1
-        for <linux-mtd@lists.infradead.org>; Fri, 06 Nov 2026 02:11:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1793959873; x=1794564673; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=N8gjNRWAbARHANMWwPBkUdQHILY3xbkqW7VhewL5SJQ=;
-        b=R6HieFhBEKQFVcvghYg9KbU1Gaq7HyMP4J7y/N4+UTsd4jfzAc2MTsCwSvL1J4Lr+L
-         Uh0x4CJYXdW+QmFWIOqW7i1m3i4gxBtbU5QiBih7xjCMbZoaZm87s56ufFMpSxjWfdOJ
-         R3YgH40PQ4KlFuIm8IcdtkQELacsNMFChoguV4ZqcMhWVeoC4LYt8KtQLzyvEvSYw9Mc
-         tecFWi4vobCRLjteaB1fAiAOH2pCu1xN8nDmew2WzFvrE4/bSLKwSeubl7uHEkzvz4pu
-         DnsSekrRU+pa4OaMHLLrmx5s4jK+YjMcJ8MfeYbmpFMoBGEl2E/2pwMmQjIHMzQZtww1
-         Jv9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1793959873; x=1794564673;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=N8gjNRWAbARHANMWwPBkUdQHILY3xbkqW7VhewL5SJQ=;
-        b=Ql4DFFZHLkCWRfBYG7xyzOTaW7ZzgfFOKxhqucZVar5/llqsaU7GZoRz7w7to94ZrF
-         ZQetrpYro88nNCzItpmZ5jt6JzWr9iW1IQr0CfsFQ+HMtsnbjcDnSxCFhvbKp3sTB+0Q
-         q47A1CtFhU3eWvcBEqngZWeJqSGK9+c9Q3plQbAx3+qzYayoE4VuTm2d6TiJRquGxJqq
-         x3CCWJ1WVgfuYeZnKVZg0AoyyIeukvPNRyF8HRLEyhkowoIu7prlUm74RM2+d3TqjhUw
-         OWfZPUMIZRr8gEeeSV2NJMDPUhUn3XJ4jLweE+y26HQYuwibymW++5M9vyebn+PBBHun
-         hm3g==
-X-Gm-Message-State: APuU4Z/Wyutz8Y6fetJimuaiRyJeDMbj2nB1zJlB4RrkdReWW0+vyc0p
-	jit+VGE30Tiq4mdHeWtA2GCgxEsrBD/vjzP0eQQwTa67fbbzU1Xfj0jb
-X-Gm-Gg: AYBFou0bJM6rAOyHHVb9YoW1TJOa4EuhItUW1XSP4w1Pij4pGuprqLqq3e1CxH29EON
-	4irWkydmWUBzQotjSqmk2nEyAtsLMk3s5gHZ1WFKO/fbCveNZfnTQMnqHaWFEB1LUI/3Hndke5Z
-	ZSw75iuQKBBbSvQb5dKIztGojpnoW9+3pXjwIHEMezzSclN02hJovBzKw+IFw45pbtOXc9zlHeg
-	CJImQ/Z2Fm8XmIe6SDZzx+n26796jwobJ86wnGvyrrgO64xTK9rrMTTIYQvf2vLKxrqmCu15zwJ
-	wfhvmPXUwX7QNtNApAkQrdlSHxwqvjKaBtC1/UTWNdvjJkgXhE9mzQII1DRwnx0BxiMwF3fnFm3
-	HMweyzuxSavTK8aAz+1JL/Sho1RWy9sJ1phxu2ZOfsXEnPAmYMbDTvxAJX8Ft775SSWBp//j2nS
-	YeFRIfj1e5OMHHpQjN4pkIdvwZIfcdWhmsQjoPabLrtt4ky+1wLSpS/OG3g3xmYncPMGBJXUHdj
-	dT3fejC5k5O1+dOq6bSqYtK9Jk34GiD3me7vdj1byyTT1gMn/5kOBThpz6zPxbgZR/ZlYIGzvPN
-	RqJLE1PXJZyG1bldCrh53ewaWdO2w2keV6O/259Ne13cxZbI
-X-Received: by 2002:a17:90a:fc4b:b0:3b0:bc3c:3e7 with SMTP id 98e67ed59e1d1-3b0db6c9b44mr2066990a91.10.1793959873054;
-        Fri, 06 Nov 2026 02:11:13 -0800 (PST)
-Received: from hj.. ([163.239.22.29])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3b0d7c66881sm2736443a91.8.2026.11.06.02.11.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2026 02:11:12 -0800 (PST)
-From: hyunjungg <hj351016@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>,
-	Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Hyunjung Ko <hj351016@gmail.com>
-Subject: [PATCH v2] jffs2: validate summary length before scanning the summary node
-Date: Fri,  6 Nov 2026 19:11:00 +0900
-Message-ID: <20261106101100.2421360-1-hj351016@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20261106095108.2405364-1-hj351016@gmail.com>
-References: <20261106095108.2405364-1-hj351016@gmail.com>
+	Fri, 06 Nov 2026 11:09:41 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id 17CA043A7E;
+	Fri,  6 Nov 2026 11:09:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64BF21F008A1;
+	Fri,  6 Nov 2026 11:09:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1793963381;
+	bh=BbgI/fg5Vv6TpV5LNbbTNKOCgVgDnfLxy/DdQCF/Nt0=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date;
+	b=WQlq67opXPqkif8MNGGSCwjy7SciDVJagjdlSWNRZuM4ylEbyBBDwxBGGk5POOxKy
+	 7Dokl1dRtARuYheK7fwSEMyZQCiA+98Pe2iefyJzGPg9zppFx9InTAJM1oGD4eZIr0
+	 UHdLUOkGChewbSEkTTQgJMjYuJPItVOh0Fdgsz8qNU2cUq6W4NpmvkdLzVCle80dMS
+	 IouHDFBpdM8agJaqF0pN8ZLfwbq7mz6d+DYTqiJDmDeZLpGAgu5G6a5DIf+wzFLiGY
+	 DBlGNho33XG9rwxxHiNrqwJV2K3bi2ocljTdzs4ZrNl5yFQnN3RLdHYha3goru9yVH
+	 6oVk7S6LbgJ0w==
+Received: from traversing.sirena.org.uk (localhost [IPv6:::1])
+	by traversing.sirena.org.uk (Postfix) with ESMTP id 985D627E8440;
+	Fri, 06 Nov 2026 11:09:29 +0000 (GMT)
+From: Mark Brown <broonie@kernel.org>
+To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
+ Takahiro Kuwano <takahiro.kuwano@infineon.com>, 
+ Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+ Paul Cercueil <paul.cercueil@bootlin.com>
+Cc: Kees Cook <kees@kernel.org>, Tony Luck <tony.luck@intel.com>, 
+ "Guilherme G . Piccoli" <gpiccoli@igalia.com>, 
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ linux-spi@vger.kernel.org, Bharat Bhushan <bbhushan2@marvell.com>, 
+ Sunil Kovvuri Goutham <sgoutham@marvell.com>, 
+ Tanmay Jagdale <tanmay@marvell.com>
+In-Reply-To: <20261016102917.171095-1-paul.cercueil@bootlin.com>
+References: <20261016102917.171095-1-paul.cercueil@bootlin.com>
+Subject: Re: (subset) [PATCH v4 0/7] spi: Add support for panic mem writes
+Message-Id: <179389951044.3073895.8929573229341803829.b4-ty@b4>
+Date: Thu, 05 Nov 2026 17:25:10 +0000
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261106_021114_110875_135F0AB3 
-X-CRM114-Status: GOOD (  19.64  )
-X-Spam-Score: -1.9 (-)
+X-Mailer: b4 0.17-dev
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1312; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=z5DoyuXWSXWF8C2OUkElOyX4o16/3/SLC3dohqCg9mA=;
+ b=owGbwMvMwCWm/754w+YLFp2Mp9WSGLLebs0s2xu6SUPRbnGxcpn6s9fnv9bzWjtz9SyOeum4z
+ CRqxq4jHaUsDGJcDLJiiixxWdwv60ter+E7uLANZg4rE8gQBi5OAZiIGifD/yzWTRUmRe5CPJt2
+ a8T9kItRmHjXrmzuoeL1iq1HL24yz2VkOG9osDjdZ93Z+n5j6R1Fmo+6WznX6lXNWXPo6cYZSQ8
+ 9mQE=
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,100 +88,53 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,
-	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DATE_IN_PAST_12_24,
+	DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-From: Hyunjung Ko <hj351016@gmail.com>
+On Fri, 16 Oct 2026 12:29:10 +0200, Paul Cercueil wrote:
+> spi: Add support for panic mem writes
+> 
+> Hi,
+> 
+> Here is the v4 of my patchset that updates the MTD spi-nor code as well
+> as the spi-mem code, to add support for panic mem writes to a memory
+> partition configured as pstore.
+> 
+> [...]
 
-jffs2_scan_eraseblock() locates the summary node at the end of an
-eraseblock and derives its length from an on-flash offset in the
-summary marker:
+Applied to
 
-	sumptr = buf + je32_to_cpu(sm->offset);
-	sumlen = c->sector_size - je32_to_cpu(sm->offset);
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-7.4
 
-On a crafted image the summary marker bytes at the end of the last
-eraseblock are attacker-controlled, and two malformed values slip
-through:
+Thanks!
 
-  - sm->offset > sector_size makes sumlen underflow to a huge value.
-    The non-XIP branch rejects this with "sumlen > c->sector_size", but
-    the XIP branch (whole device mtd_point()ed, e.g. an mtdram-backed
-    MTD) has no such check.
+[1/7] spi: spi-mem: Add support for panic mem writes
+      https://git.kernel.org/broonie/sound/c/20f1752b9241
 
-  - sm->offset within the last few bytes of the eraseblock makes sumlen
-    small (0 .. sizeof(struct jffs2_raw_summary) - 1); this passes the
-    upper-bound check in both branches.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-jffs2_sum_scan_sumnode() then dereferences the pointer as a
-struct jffs2_raw_summary to read its fixed header and computes
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-	crc32(0, summary->sum, sumsize - sizeof(struct jffs2_raw_summary));
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-Without a lower bound the header read runs past the buffer (or past the
-mtd_point() mapping in the XIP case), and for a too-small sumsize the
-crc32 length underflows to ~4 GiB -> an out-of-bounds read of
-attacker-controlled length (KASAN: vmalloc-out-of-bounds, or a general
-protection fault on a real flash mapping). The summary header CRCs are
-computed over the attacker-controlled flash and can be satisfied, so
-they do not prevent the over-read.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-jffs2_sum_scan_sumnode() is the sole consumer of this length (it is
-only called from jffs2_scan_eraseblock()), so bound it there once -
-covering both the XIP and non-XIP paths and both the underflow and the
-too-small cases: reject a sumsize that cannot hold the fixed header or
-that exceeds the eraseblock, and fall back to a full scan.
+Thanks,
+Mark
 
-Reproduced under KASAN on 7.4-rc1 by mounting a crafted mtdram-backed
-image whose summary marker sets sm->offset > sector_size (the XIP
-path): KASAN reports a vmalloc-out-of-bounds read in the summary-node
-crc32. The small-sumsize case is the same over-read and length
-underflow in the same function.
-
-Fixes: 9641b784ff82 ("[JFFS2] Optimise reading of eraseblock summary nodes")
-Signed-off-by: Hyunjung Ko <hj351016@gmail.com>
----
-v2:
- - Move the check into jffs2_sum_scan_sumnode() instead of only the XIP
-   branch of jffs2_scan_eraseblock(), so both the XIP and non-XIP paths
-   are covered in one place (per Sashiko AI review).
- - Also reject sumsize < sizeof(struct jffs2_raw_summary): a summary
-   offset within the last few bytes of the eraseblock yields a small
-   sumlen that passed the previous upper-bound-only check but still
-   over-reads the header and underflows the crc32 length (per review).
- - Add Fixes: tag.
-
- fs/jffs2/summary.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
-
-diff --git a/fs/jffs2/summary.c b/fs/jffs2/summary.c
---- a/fs/jffs2/summary.c
-+++ b/fs/jffs2/summary.c
-@@ -577,6 +577,19 @@ int jffs2_sum_scan_sumnode(struct jffs2_sb_info *c, struct jffs2_eraseblock *jeb
- 	int ret, ofs;
- 	uint32_t crc;
-
-+	/*
-+	 * sumsize comes from an on-flash offset in the summary marker and
-+	 * is attacker-controlled on a crafted image.  It must be large
-+	 * enough to hold the fixed summary header and must not exceed the
-+	 * eraseblock; otherwise the header accesses below read past the
-+	 * buffer (or the mtd_point() mapping in the XIP case) and the
-+	 * "sumsize - sizeof(struct jffs2_raw_summary)" crc32 length
-+	 * underflows.  Fall back to a full scan in that case.
-+	 */
-+	if (sumsize < sizeof(struct jffs2_raw_summary) ||
-+	    sumsize > c->sector_size)
-+		return 0;
-+
- 	ofs = c->sector_size - sumsize;
-
- 	dbg_summary("summary found for 0x%08x at 0x%08x (0x%x bytes)\n",
 
 ______________________________________________________
 Linux MTD discussion mailing list
