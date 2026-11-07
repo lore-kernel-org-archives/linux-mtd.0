@@ -2,11 +2,10 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 698A3606D810
-	for <linux-mtd@archiver.kernel.org>; Sat,  7 Nov 2026 20:14:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E7D7606A335
+	for <linux-mtd@archiver.kernel.org>; Sat,  7 Nov 2026 20:14:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=sVYiqhrT;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.a=rsa-sha256 header.s=desiato.20200630 header.b=aD//XDDW
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=wUBhS2b6
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,77 +13,60 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=ZwabUeFMqwf8F242+EFnBFoQIxr5HuVS8CsU7tOhPig=; b=sVYiqhrTdrPExIoF9J5zgtedN8
-	bKVqJu6olTHqcJJGs2ESwGgA6oeNKq8AlD2EjcwJBmfU18kO/VSkf+m8w93OFQe0n46/piD/tO0Pi
-	xRQG6IYP+K+MLWvMQXqpxBiMJOK9dRGd3TArXxtedcZBHNYo8t1BXu+fdi1sWdvtK9tuUo9thQj0x
-	7+kwXP2mrwIg7jFDwG5sTCSvUIPwSzNCs2M7ibVD3JaGnX7EOc58ttfVR6OqrdkjZA07bdP4h0W/B
-	hnfQhs5yf65kYc4DuiA4Ci+FEDwYtTpUHd2zl3uvWYuIu5mWyOm+g/lA+Ps/JGWLBVKVpaAgUjl+9
-	zt3Bqieg==;
+	bh=bppUaTyDclCa3SxN+mvsO+FOBeWLAGO5tBgEfPOK1Zg=; b=wUBhS2b6QvT9lAgOGazR1iw2zA
+	3TX5DHpX+iXaGyCaPjD3oSP6GqeSNsIfObMAyouiKvrO+umnedRjAnuDyF945B4ekXNdUJ/CGtnO4
+	gAVuoh2duzIyAEI4GHdE6RrbgVqnbwmotp67T6msk0PHxyQU89mjh/G5y9S0VWUKGdDJPb+YCqNNT
+	4MXIKVG5er49PCjec5mt19Jnmas7DjZctuJH43mEVrYOy5X2NslFK5hhAaWLYMGEPJCoICBjl3PvA
+	2XbR+/EifLInWLHU40jb4FvFIeCCV0E345vacsz7BN8Kn2Pj30jCieT5S+y5D4eYHEg3542jcum6h
+	B6SPc39w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xPmoE-0000000FK7H-2eNj;
-	Sat, 07 Nov 2026 20:14:42 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1xPmoF-0000000FKA7-3gHU;
+	Sat, 07 Nov 2026 20:14:43 +0000
+Received: from mail-oa1-f53.google.com ([209.85.160.53])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xPmno-0000000FJJX-1EHD
-	for linux-mtd@bombadil.infradead.org;
-	Sat, 07 Nov 2026 20:14:16 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Cc:To:In-Reply-To:References:
-	Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
-	From:Sender:Reply-To:Content-ID:Content-Description;
-	bh=slReh3bGXbD9MmyB1S+b4Br8YbCA885gA/KmfHnbZqA=; b=aD//XDDW5UmyqErztyWJ5s7mMJ
-	vNXZva+vpD1PMEZIO2cZqWdGUuRrXiNtDM4RNBjF8m/RONe21d1r+6I/8HJh1oxK9y4gxDrbOgGFy
-	dCkLq8IVOe+Ef4N+ePDHOgdCVD29R7ZpOW3zeQBTsMRil46aXmRU9kc9b3V2sOLRazmKMWLVDSxK4
-	XMSZ3vQmP3pLObFJkvD2yOn4b3+Kyoi4XplQwZ1/e6XftEIU/1Q29mOycF5VezBfzgEU3QTBv9U7h
-	miHd8QBeHIZdoj6QqLkyGoib8EdVq4wMbYiz2E5nCEPzw7IBZGxTAz8J91zOanPiR7WvLtT4Qrsu3
-	Juy1vgOQ==;
-Received: from mail-oo1-f42.google.com ([209.85.161.42])
-	by desiato.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xPmnf-00000005Qx2-0gsO
+	id 1xPmnn-0000000FJJ6-1mS2
 	for linux-mtd@lists.infradead.org;
-	Sat, 07 Nov 2026 20:14:13 +0000
-Received: by mail-oo1-f42.google.com with SMTP id 006d021491bc7-6deb848ddd7so1125954eaf.0
-        for <linux-mtd@lists.infradead.org>; Sat, 07 Nov 2026 12:14:06 -0800 (PST)
+	Sat, 07 Nov 2026 20:14:19 +0000
+Received: by mail-oa1-f53.google.com with SMTP id 586e51a60fabf-48eee44b908so4099fac.1
+        for <linux-mtd@lists.infradead.org>; Sat, 07 Nov 2026 12:14:15 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794082445; x=1794687245;
+        d=1e100.net; s=20260707; t=1794082454; x=1794687254;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=slReh3bGXbD9MmyB1S+b4Br8YbCA885gA/KmfHnbZqA=;
-        b=zjYf/XoReCT+1poAJ+FYJVB0G0m7syEMAJdYqGgoN5xj+JOK83hDtwj8PkLOoLwED5
-         Vn69fwGNaxIsF/LSN1QD8vvInJPvcWI+NCxE2yeH/G9s6N7tAf+5/R1Z6UwLbdtbIM6u
-         6+X63uUVLBT4cD2W7kFEl8WtuevneQZLgQp21lOjgFBjX2zqc/pj3pVasAlmLctW9pb1
-         C3jcNRISG3EtixPJnoONE58Iqapb3zNPWQ9DkfsZ3r90xZBBepINI4ArtEEuEE8Yc9jc
-         Ks4sl1QuaHsa7Dd6COwSl/TZjE7hsjih6GCM9etZaYO8bQffYgSsrxAQTji8UHogXFJB
-         tiXg==
-X-Forwarded-Encrypted: i=1; AKwUvBwiSssWJWDwckWFGnHo3O37xjGbrQFO7Fm79yYE15qyEUrEPeQKS580v4nyBAoZUWPf7L4f74yUsas=@lists.infradead.org
-X-Gm-Message-State: APuU4Z9S/i9aetdWzAtlGeORkVjnekwO4LioI1h0xP0V2lCeJKluxdrp
-	HgEFGurBGW16i4pmpOc287FpxQNXFa16HMuwY+CRWqOxevGBnlbrahiXi8Q1zT2fF3o=
-X-Gm-Gg: AYBFou3v5S8KFOxxiiCTE9O9jPYNEhAPDojjiCgk8I17i206SPpsSTWPRTsHihgWA5U
-	0FkeN/7uk7XkP2VaqJlmeLDE6c2+uen/EjYJ4NhJF3eBt47ffMP2Fr1Lm3DT743ZhhAidIDco0l
-	PDlHWrCR7yk8AsaIhkDhQwz3sFUFreHx5YmpS1YSK8NptReU9Ps7T52w9FM0b2BNgbMrAajGMut
-	tUL1+5ydf/wZtFVGWgOHxJUM8dLB68x0PYr2/yY+6RoA1jKaOvpl2Kf4hezU2jlG7QTT80sR+UQ
-	SFcGwAjmGhDWuvaNt40Ze0kwma6mPI6VuyM3XTtUjYwtUYvwOOp5zrPiJ6P3ZsRuFF4vup9J+Gk
-	+hxSWw2wOrKT9UfAorN9fwguDCA+TMnotqZOxRR1/DKM+B4maTgkSTY32xlF9DSo39pe/td4L4D
-	DBRZi7gpmXBdoYH2j9ybel6SvtoQYDbn7iDhpsvxzq3eD5kuHL9x3H5KSKeGGa1ynRp81qgFczO
-	xaM2bpQtg1/cpIohd9wz4httqiGQ59wYarqLI75OZza3V4BOrpsAK99FGYa+NqYZjCP4V6qHzCk
-	9pj5GXJ5SVjHpgcza105HIqwTqyJGiE+Xz1KYiLBhwBxeM6n4gyYmuAZSnQ2pbHQOiEcnTOAZF7
-	6TXCJJg==
-X-Received: by 2002:a05:6820:820:b0:716:c0d5:2cfb with SMTP id 006d021491bc7-7170f1be2c9mr28227eaf.6.1794082445409;
-        Sat, 07 Nov 2026 12:14:05 -0800 (PST)
+        bh=Z28hpkRxNuFHQxwJ5bnvo4CTYnv30xHbFPLm6nkYYQ4=;
+        b=n2EhQJtJ1VWjDBZKLe7DShkhTPWTnm84lqSG0UZPXpnhXylhmuvArLogOWrQqI+5SW
+         O3vEZWG30yksHvxr/ppYJ6qZC6Mz/FlQUt4f6dIutkLFL8qWmvuwjXWx21qnSNNTlC7k
+         BGGNdx+km3b93eJHk5Orz0dmR7K3hHb33NzRGkdCZVsaILyMYmgW+1UcqHlToxepm9i8
+         CT5Wm65MLn2bQls/5d8hk9w0Ia6zM3sHcmiTAbYbNQPG9FnMsq+Dxp8B/0sc6G+oMWfD
+         3tZT+mLTRRn1HCTaANIRfzkzYpgtFEQs8dbFoLEacGZ+k851lOpfE3K0gGUkTxrqnJik
+         UqLg==
+X-Forwarded-Encrypted: i=1; AL+hErFP2ZOGunI7OYyiBoqK13kbNrpSHU/qI3dUj1CU/EmhND/GZDdndBJ/bIw5YieYa9AZr/oc1x9prD4=@lists.infradead.org
+X-Gm-Message-State: APuU4Z81wddu3f6B/JoH4Ur8rsVIIEnm7ywrwXgNdtEdSDRiutYPF5vD
+	olA9Jab0Rh4CHkfPU1A+eGTMlKHcONqGGSqjZgIv96X/+miSNkfnmqgqKNbarPAVoXM=
+X-Gm-Gg: AYBFou1vLuoIyckjo3Qobv1P5ppHCZu3yep0QWEEsBokrxd91EPXcJlTIoUPWr3/nYG
+	fpvkEaZFApfpCrk8HVzjaUoHzuX7/C0SIMiM+06WOmrRCCszWDCh9yshyf1d6gwHp9biSPTfgRR
+	xiHX5ae841pF5p1vGuqO5upBWoHMczZwZYQCfgiIVSHY/CgjgJ6eKwxaiOcm3wSHaHJDlFdG9nx
+	avS9KcVSao2wmAUlhplr36C23STdU/Cf+WX30S4L4nx9wD8tFmfX25Qk+U9xYI0fYqCPu9vVUVo
+	Pch8ViUk88n3fyB/MiXvnPPWUM29mXZRgvAdX4OGanfLOhmGu+z0YzhLUO0KX0fNeYP78owaLcX
+	JlsQMX3Krby4jN3sLiQpyJ/Q7XHWcg/B25ap8jqp+f2RljXGzy7jyfAHq+zigzhMk+q+stHba3y
+	LXkClh0vL7IV4mamhkUI2p7Jr9IZT896OQslYCxuA8PGExoam/IlYP7ryiOCO7gVfHrQae+U/a8
+	z99+Ilz34o/nC0qtlSxgZOpgJu6LoZj29yeQdYJp9xEq0mMD5FUv9tnkjJRutSJoFXzhDO54QzA
+	Qiai1ICSTITbXUJ977LvzsdLECtNT5pZ3d0N23g7/TbqGKDJ964PFFREMeNh
+X-Received: by 2002:a05:6870:788e:b0:4a7:4cd1:6f37 with SMTP id 586e51a60fabf-4ad9880f064mr3791819fac.19.1794082454298;
+        Sat, 07 Nov 2026 12:14:14 -0800 (PST)
 Received: from [127.0.1.1] (174-29-1-49.hlrn.qwest.net. [174.29.1.49])
-        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-4ade68aa561sm226096fac.5.2026.11.07.12.14.02
+        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-4ade68aa561sm226096fac.5.2026.11.07.12.14.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Nov 2026 12:14:04 -0800 (PST)
+        Sat, 07 Nov 2026 12:14:13 -0800 (PST)
 From: James Hilliard <james.hilliard1@gmail.com>
-Date: Sat, 07 Nov 2026 03:16:49 -0700
-Subject: [PATCH 52/58] mtd: rawnand: bcm47xxnflash: retain chip state
- across removal
+Date: Sat, 07 Nov 2026 03:16:52 -0700
+Subject: [PATCH 55/58] mtd: rawnand: r852: retain chip state across removal
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Message-Id: <20261107-submit-rawnand-retained-handle-lifetime-v1-v1-52-0181ef0cc4c8@gmail.com>
+Message-Id: <20261107-submit-rawnand-retained-handle-lifetime-v1-v1-55-0181ef0cc4c8@gmail.com>
 References: <20261107-submit-rawnand-retained-handle-lifetime-v1-v1-0-0181ef0cc4c8@gmail.com>
 In-Reply-To: <20261107-submit-rawnand-retained-handle-lifetime-v1-v1-0-0181ef0cc4c8@gmail.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
@@ -142,9 +124,9 @@ Cc: Tze Yee Ng <tze.yee.ng@altera.com>, linux-mtd@lists.infradead.org,
  linux-arm-msm@vger.kernel.org, James Hilliard <james.hilliard1@gmail.com>
 X-Mailer: b4 0.15.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261107_201407_234480_67F819C9 
-X-CRM114-Status: GOOD (  16.56  )
-X-Spam-Score: 3.5 (+++)
+X-CRM114-CacheID: sfid-20261107_121416_257812_C14B9749 
+X-CRM114-Status: GOOD (  26.53  )
+X-Spam-Score: 1.7 (+)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -154,8 +136,8 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 X-Spam-Status: No, score=-12.3 required=3.0 tests=BAYES_00,DATE_IN_PAST_06_12,
 	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,
@@ -165,47 +147,307 @@ X-Spam-Status: No, score=-12.3 required=3.0 tests=BAYES_00,DATE_IN_PAST_06_12,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-RGlzY29ubmVjdCB0aGUgc2Nhbm5lZCBjaGlwIG9uIHJlbW92YWwgYmVmb3JlIHRoZSBCQ01BLWJh
-Y2tlZCBoYXJkd2FyZQpzdGF0ZSBiZWNvbWVzIHVuYXZhaWxhYmxlLiBSZXRhaW4gdGhlIGVtYmVk
-ZGVkIE5BTkQgY29udHJvbGxlciBhbmQgY2hpcAp1bnRpbCB0aGUgZmluYWwgTVREIHB1dCwgaW5j
-bHVkaW5nIHJlZ2lzdHJhdGlvbiBmYWlsdXJlIGNsZWFudXAuCgpTaWduZWQtb2ZmLWJ5OiBKYW1l
-cyBIaWxsaWFyZCA8amFtZXMuaGlsbGlhcmQxQGdtYWlsLmNvbT4KLS0tCiBkcml2ZXJzL210ZC9u
-YW5kL3Jhdy9iY200N3h4bmZsYXNoL21haW4uYyB8IDIzICsrKysrKysrKysrKysrKysrKysrKy0t
-CiAxIGZpbGUgY2hhbmdlZCwgMjEgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkKCmRpZmYg
-LS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9iY200N3h4bmZsYXNoL21haW4uYyBiL2RyaXZl
-cnMvbXRkL25hbmQvcmF3L2JjbTQ3eHhuZmxhc2gvbWFpbi5jCmluZGV4IDRkNGUxODVjMjJlNS4u
-NjBmYzQ0MGQ0NTE1IDEwMDY0NAotLS0gYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9iY200N3h4bmZs
-YXNoL21haW4uYworKysgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9iY200N3h4bmZsYXNoL21haW4u
-YwpAQCAtMTksNiArMTksMTIgQEAgTU9EVUxFX0FVVEhPUigiUmFmYcWCIE1pxYJlY2tpIik7CiAK
-IHN0YXRpYyBjb25zdCBjaGFyICpwcm9iZXNbXSA9IHsgImJjbTQ3eHhwYXJ0IiwgTlVMTCB9Owog
-CitzdGF0aWMgdm9pZCBiY200N3h4bmZsYXNoX3JlbGVhc2Uoc3RydWN0IG5hbmRfY29udHJvbGxl
-ciAqY29udHJvbGxlcikKK3sKKwlrZnJlZShjb250YWluZXJfb2YoY29udHJvbGxlciwgc3RydWN0
-IGJjbTQ3eHhuZmxhc2gsCisJCQkgICBuYW5kX2NoaXAubGVnYWN5LmR1bW15X2NvbnRyb2xsZXIp
-KTsKK30KKwogc3RhdGljIGludCBiY200N3h4bmZsYXNoX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9k
-ZXZpY2UgKnBkZXYpCiB7CiAJc3RydWN0IGJjbWFfbmZsYXNoICpuZmxhc2ggPSBkZXZfZ2V0X3Bs
-YXRkYXRhKCZwZGV2LT5kZXYpOwpAQCAtMjYsOSArMzIsMTQgQEAgc3RhdGljIGludCBiY200N3h4
-bmZsYXNoX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCiAJc3RydWN0IG10ZF9p
-bmZvICptdGQ7CiAJaW50IGVyciA9IDA7CiAKLQliNDduID0gZGV2bV9remFsbG9jKCZwZGV2LT5k
-ZXYsIHNpemVvZigqYjQ3biksIEdGUF9LRVJORUwpOworCWI0N24gPSBremFsbG9jX29iaigqYjQ3
-bik7CiAJaWYgKCFiNDduKQogCQlyZXR1cm4gLUVOT01FTTsKKwliNDduLT5uYW5kX2NoaXAuY29u
-dHJvbGxlciA9ICZiNDduLT5uYW5kX2NoaXAubGVnYWN5LmR1bW15X2NvbnRyb2xsZXI7CisJZXJy
-ID0gZGV2bV9uYW5kX2NvbnRyb2xsZXJfaW5pdCgmcGRldi0+ZGV2LCBiNDduLT5uYW5kX2NoaXAu
-Y29udHJvbGxlciwKKwkJCQkJYmNtNDd4eG5mbGFzaF9yZWxlYXNlKTsKKwlpZiAoZXJyKQorCQly
-ZXR1cm4gZXJyOwogCiAJbmFuZF9zZXRfY29udHJvbGxlcl9kYXRhKCZiNDduLT5uYW5kX2NoaXAs
-IGI0N24pOwogCW10ZCA9IG5hbmRfdG9fbXRkKCZiNDduLT5uYW5kX2NoaXApOwpAQCAtNDgsOSAr
-NTksMTYgQEAgc3RhdGljIGludCBiY200N3h4bmZsYXNoX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9k
-ZXZpY2UgKnBkZXYpCiAKIAlwbGF0Zm9ybV9zZXRfZHJ2ZGF0YShwZGV2LCBiNDduKTsKIAorCWVy
-ciA9IG5hbmRfc2V0X3JlbGVhc2UoJmI0N24tPm5hbmRfY2hpcCwgTlVMTCk7CisJaWYgKGVycikg
-eworCQluYW5kX2NsZWFudXAoJmI0N24tPm5hbmRfY2hpcCk7CisJCXJldHVybiBlcnI7CisJfQog
-CWVyciA9IG10ZF9kZXZpY2VfcGFyc2VfcmVnaXN0ZXIobXRkLCBwcm9iZXMsIE5VTEwsIE5VTEws
-IDApOwogCWlmIChlcnIpIHsKIAkJcHJfZXJyKCJGYWlsZWQgdG8gcmVnaXN0ZXIgTVREIGRldmlj
-ZTogJWRcbiIsIGVycik7CisJCW5hbmRfZGlzY29ubmVjdCgmYjQ3bi0+bmFuZF9jaGlwKTsKKwkJ
-bXRkX3B1dF9tYXN0ZXIobXRkKTsKIAkJcmV0dXJuIGVycjsKIAl9CiAKQEAgLTY1LDcgKzgzLDgg
-QEAgc3RhdGljIHZvaWQgYmNtNDd4eG5mbGFzaF9yZW1vdmUoc3RydWN0IHBsYXRmb3JtX2Rldmlj
-ZSAqcGRldikKIAogCXJldCA9IG10ZF9kZXZpY2VfdW5yZWdpc3RlcihuYW5kX3RvX210ZChjaGlw
-KSk7CiAJV0FSTl9PTihyZXQpOwotCW5hbmRfY2xlYW51cChjaGlwKTsKKwluYW5kX2Rpc2Nvbm5l
-Y3QoY2hpcCk7CisJbXRkX3B1dF9tYXN0ZXIobmFuZF90b19tdGQoY2hpcCkpOwogfQogCiBzdGF0
-aWMgc3RydWN0IHBsYXRmb3JtX2RyaXZlciBiY200N3h4bmZsYXNoX2RyaXZlciA9IHsKCi0tIAoy
-LjUzLjAKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZy
-YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+A removed card can still have open MTD handles. Reinitializing the same
+nand_chip for a newly inserted card lets those handles access
+replacement media, while freeing it during PCI removal leaves dangling
+references.
+
+Allocate a fresh chip for every insertion and separate SmartMedia
+scanning from publication so lifetime ownership is installed first.
+Disconnect the old chip before disabling its hardware, and retain it and
+the controller until their final MTD reference is released. Stop
+IRQ-driven card-work scheduling before destroying the workqueue during
+PCI removal.
+
+Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+---
+ drivers/mtd/nand/raw/r852.c      | 111 ++++++++++++++++++++++++---------------
+ drivers/mtd/nand/raw/r852.h      |   1 +
+ drivers/mtd/nand/raw/sm_common.c |  15 ++----
+ drivers/mtd/nand/raw/sm_common.h |   2 +-
+ 4 files changed, 75 insertions(+), 54 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/r852.c b/drivers/mtd/nand/raw/r852.c
+index 92c47d351c27..0fb320cd7b77 100644
+--- a/drivers/mtd/nand/raw/r852.c
++++ b/drivers/mtd/nand/raw/r852.c
+@@ -625,16 +625,34 @@ static void r852_update_media_status(struct r852_device *dev)
+ 	spin_unlock_irqrestore(&dev->irqlock, flags);
+ }
+ 
+-/*
+- * Register the nand device
+- * Called when the card is detected
+- */
++static void r852_chip_release(struct nand_chip *chip)
++{
++	kfree(chip);
++}
++
++/* Register a new chip instance for each inserted card. */
+ static int r852_register_nand_device(struct r852_device *dev)
+ {
+-	struct mtd_info *mtd = nand_to_mtd(dev->chip);
++	struct nand_chip *chip;
++	struct mtd_info *mtd;
++	int ret;
+ 
+ 	WARN_ON(dev->card_registered);
+ 
++	chip = kzalloc_obj(*chip);
++	if (!chip)
++		goto error1;
++
++	chip->legacy.cmd_ctrl = r852_cmdctl;
++	chip->legacy.waitfunc = r852_wait;
++	chip->legacy.dev_ready = r852_ready;
++	chip->legacy.read_byte = r852_read_byte;
++	chip->legacy.read_buf = r852_read_buf;
++	chip->legacy.write_buf = r852_write_buf;
++	chip->controller = &dev->controller;
++	nand_set_controller_data(chip, dev);
++	dev->chip = chip;
++	mtd = nand_to_mtd(chip);
+ 	mtd->dev.parent = &dev->pci_dev->dev;
+ 
+ 	if (dev->readonly)
+@@ -642,8 +660,17 @@ static int r852_register_nand_device(struct r852_device *dev)
+ 
+ 	r852_engine_enable(dev);
+ 
+-	if (sm_register_device(mtd, dev->sm))
+-		goto error1;
++	ret = sm_scan_device(mtd, dev->sm);
++	if (ret)
++		goto free_chip;
++	ret = nand_set_release(chip, r852_chip_release);
++	if (ret) {
++		nand_cleanup(chip);
++		goto free_chip;
++	}
++	ret = mtd_device_register(mtd, NULL, 0);
++	if (ret)
++		goto put_chip;
+ 
+ 	if (device_create_file(&mtd->dev, &dev_attr_media_type)) {
+ 		message("can't create media type sysfs attribute");
+@@ -653,8 +680,17 @@ static int r852_register_nand_device(struct r852_device *dev)
+ 	dev->card_registered = 1;
+ 	return 0;
+ error3:
+-	WARN_ON(mtd_device_unregister(nand_to_mtd(dev->chip)));
+-	nand_cleanup(dev->chip);
++	WARN_ON(mtd_device_unregister(mtd));
++put_chip:
++	nand_disconnect(chip);
++	r852_engine_disable(dev);
++	dev->chip = NULL;
++	mtd_put_master(mtd);
++	goto error1;
++free_chip:
++	r852_engine_disable(dev);
++	dev->chip = NULL;
++	kfree(chip);
+ error1:
+ 	/* Force card redetect */
+ 	dev->card_detected = 0;
+@@ -667,16 +703,19 @@ static int r852_register_nand_device(struct r852_device *dev)
+ 
+ static void r852_unregister_nand_device(struct r852_device *dev)
+ {
+-	struct mtd_info *mtd = nand_to_mtd(dev->chip);
++	struct mtd_info *mtd;
+ 
+ 	if (!dev->card_registered)
+ 		return;
++	mtd = nand_to_mtd(dev->chip);
+ 
+ 	device_remove_file(&mtd->dev, &dev_attr_media_type);
+ 	WARN_ON(mtd_device_unregister(mtd));
+-	nand_cleanup(dev->chip);
++	nand_disconnect(dev->chip);
+ 	r852_engine_disable(dev);
++	dev->chip = NULL;
+ 	dev->card_registered = 0;
++	mtd_put_master(mtd);
+ }
+ 
+ /* Card state updater */
+@@ -734,7 +773,8 @@ static irqreturn_t r852_irq(int irq, void *data)
+ 	card_status = r852_read_reg(dev, R852_CARD_IRQ_STA);
+ 	r852_write_reg(dev, R852_CARD_IRQ_STA, card_status);
+ 
+-	if (card_status & (R852_CARD_IRQ_INSERT|R852_CARD_IRQ_REMOVE)) {
++	if (!dev->removing &&
++	    (card_status & (R852_CARD_IRQ_INSERT | R852_CARD_IRQ_REMOVE))) {
+ 
+ 		ret = IRQ_HANDLED;
+ 		dev->card_detected = !!(card_status & R852_CARD_IRQ_INSERT);
+@@ -841,10 +881,14 @@ static const struct nand_controller_ops r852_ops = {
+ 	.attach_chip = r852_attach_chip,
+ };
+ 
++static void r852_controller_release(struct nand_controller *controller)
++{
++	kfree(container_of(controller, struct r852_device, controller));
++}
++
+ static int  r852_probe(struct pci_dev *pci_dev, const struct pci_device_id *id)
+ {
+ 	int error;
+-	struct nand_chip *chip;
+ 	struct r852_device *dev;
+ 
+ 	/* pci initialization */
+@@ -866,42 +910,28 @@ static int  r852_probe(struct pci_dev *pci_dev, const struct pci_device_id *id)
+ 
+ 	error = -ENOMEM;
+ 
+-	/* init nand chip, but register it only on card insert */
+-	chip = kzalloc_obj(struct nand_chip);
+-
+-	if (!chip)
+-		goto error4;
+-
+-	/* commands */
+-	chip->legacy.cmd_ctrl = r852_cmdctl;
+-	chip->legacy.waitfunc = r852_wait;
+-	chip->legacy.dev_ready = r852_ready;
+-
+-	/* I/O */
+-	chip->legacy.read_byte = r852_read_byte;
+-	chip->legacy.read_buf = r852_read_buf;
+-	chip->legacy.write_buf = r852_write_buf;
+-
+ 	/* init our device structure */
+ 	dev = kzalloc_obj(struct r852_device);
+ 
+ 	if (!dev)
+-		goto error5;
++		goto error4;
++	error = devm_nand_controller_init(&pci_dev->dev, &dev->controller,
++					  r852_controller_release);
++	if (error)
++		goto error4;
+ 
+-	nand_set_controller_data(chip, dev);
+-	dev->chip = chip;
+ 	dev->pci_dev = pci_dev;
+ 	pci_set_drvdata(pci_dev, dev);
+ 
+-	nand_controller_init(&dev->controller);
+ 	dev->controller.ops = &r852_ops;
+-	chip->controller = &dev->controller;
+ 
+ 	dev->bounce_buffer = dma_alloc_coherent(&pci_dev->dev, R852_DMA_LEN,
+ 		&dev->phys_bounce_buffer, GFP_KERNEL);
+ 
+-	if (!dev->bounce_buffer)
++	if (!dev->bounce_buffer) {
++		error = -ENOMEM;
+ 		goto error6;
++	}
+ 
+ 
+ 	error = -ENODEV;
+@@ -961,9 +991,6 @@ static int  r852_probe(struct pci_dev *pci_dev, const struct pci_device_id *id)
+ 	dma_free_coherent(&pci_dev->dev, R852_DMA_LEN, dev->bounce_buffer,
+ 			  dev->phys_bounce_buffer);
+ error6:
+-	kfree(dev);
+-error5:
+-	kfree(chip);
+ error4:
+ 	pci_release_regions(pci_dev);
+ error3:
+@@ -976,6 +1003,11 @@ static int  r852_probe(struct pci_dev *pci_dev, const struct pci_device_id *id)
+ static void r852_remove(struct pci_dev *pci_dev)
+ {
+ 	struct r852_device *dev = pci_get_drvdata(pci_dev);
++	unsigned long flags;
++
++	spin_lock_irqsave(&dev->irqlock, flags);
++	dev->removing = true;
++	spin_unlock_irqrestore(&dev->irqlock, flags);
+ 
+ 	/* Stop detect workqueue -
+ 		we are going to unregister the device anyway*/
+@@ -995,9 +1027,6 @@ static void r852_remove(struct pci_dev *pci_dev)
+ 	dma_free_coherent(&pci_dev->dev, R852_DMA_LEN, dev->bounce_buffer,
+ 			  dev->phys_bounce_buffer);
+ 
+-	kfree(dev->chip);
+-	kfree(dev);
+-
+ 	/* Shutdown the PCI device */
+ 	pci_release_regions(pci_dev);
+ 	pci_disable_device(pci_dev);
+diff --git a/drivers/mtd/nand/raw/r852.h b/drivers/mtd/nand/raw/r852.h
+index 96fe301d15da..a89ab61ea51e 100644
+--- a/drivers/mtd/nand/raw/r852.h
++++ b/drivers/mtd/nand/raw/r852.h
+@@ -128,6 +128,7 @@ struct r852_device {
+ 	struct delayed_work card_detect_work;
+ 	struct workqueue_struct *card_workqueue;
+ 	int card_registered;		/* card registered with mtd */
++	bool removing;			/* stop card work during PCI removal */
+ 	int card_detected;		/* card detected in slot */
+ 	int card_unstable;		/* whenever the card is inserted,
+ 					   is not known yet */
+diff --git a/drivers/mtd/nand/raw/sm_common.c b/drivers/mtd/nand/raw/sm_common.c
+index e238784c8c3e..a79e3c3c77d1 100644
+--- a/drivers/mtd/nand/raw/sm_common.c
++++ b/drivers/mtd/nand/raw/sm_common.c
+@@ -182,28 +182,19 @@ static const struct nand_controller_ops sm_controller_ops = {
+ 	.attach_chip = sm_attach_chip,
+ };
+ 
+-int sm_register_device(struct mtd_info *mtd, int smartmedia)
++int sm_scan_device(struct mtd_info *mtd, int smartmedia)
+ {
+ 	struct nand_chip *chip = mtd_to_nand(mtd);
+ 	struct nand_flash_dev *flash_ids;
+-	int ret;
+ 
+ 	chip->options |= NAND_SKIP_BBTSCAN;
+ 
+ 	/* Scan for card properties */
+ 	chip->legacy.dummy_controller.ops = &sm_controller_ops;
+ 	flash_ids = smartmedia ? nand_smartmedia_flash_ids : nand_xd_flash_ids;
+-	ret = nand_scan_with_ids(chip, 1, flash_ids);
+-	if (ret)
+-		return ret;
+-
+-	ret = mtd_device_register(mtd, NULL, 0);
+-	if (ret)
+-		nand_cleanup(chip);
+-
+-	return ret;
++	return nand_scan_with_ids(chip, 1, flash_ids);
+ }
+-EXPORT_SYMBOL_GPL(sm_register_device);
++EXPORT_SYMBOL_GPL(sm_scan_device);
+ 
+ MODULE_LICENSE("GPL");
+ MODULE_AUTHOR("Maxim Levitsky <maximlevitsky@gmail.com>");
+diff --git a/drivers/mtd/nand/raw/sm_common.h b/drivers/mtd/nand/raw/sm_common.h
+index 57fc9f86f9ee..d8a330d6b730 100644
+--- a/drivers/mtd/nand/raw/sm_common.h
++++ b/drivers/mtd/nand/raw/sm_common.h
+@@ -33,7 +33,7 @@ struct sm_oob {
+ #define SM_SMALL_OOB_SIZE	8
+ 
+ 
+-int sm_register_device(struct mtd_info *mtd, int smartmedia);
++int sm_scan_device(struct mtd_info *mtd, int smartmedia);
+ 
+ 
+ static inline int sm_sector_valid(struct sm_oob *oob)
+
+-- 
+2.53.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
