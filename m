@@ -2,60 +2,70 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74B33606A326
-	for <linux-mtd@archiver.kernel.org>; Sat,  7 Nov 2026 05:40:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0D4E606A333
+	for <linux-mtd@archiver.kernel.org>; Sat,  7 Nov 2026 09:36:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=p5IUVZpC;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=P1oa73WC
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=GM0l1ogw;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=naver.com header.i=@naver.com header.a=rsa-sha256 header.s=s20171208 header.b=hI00iQLS
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Reply-To:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:References:
-	In-Reply-To:Cc:To:Subject:From:Message-ID:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
 	List-Unsubscribe-Post:List-Owner;
-	bh=ZRmGCmu0kIhG3Kygc1m42w7H/I2uppSR+HJjKtTypYM=; b=p5IUVZpCuHqLBxzGWVYa2MG6L/
-	Es2mYGWYudvzzjtplyPIX3XHh4tYIw2wsH5uM0pj6i3v/4wUAhrR/VdJRF777izFdyz13IvzpMXlM
-	Hpvz0ho86UvhXx1nFSxZUhrNQZ1f8nyZ25zEnhZ2ZwPWpPDklaCGC+Ri0RLhAc5pf8IGiZk3tdB8E
-	3WTnGHo3AW2R7lBICUepUE1KXZeEF82S4E3HJ6NEWm/VMLMYJWxeWqgNo/Yv+amhpPymtTqwHW7N8
-	ou7wq5tIsXXaPzREol2rQutyLmVjOXFfc22VOkbhH6UtkO3/l62+Et7HVZMFisR5rLIlHzZTXqgRW
-	OWmukzgQ==;
+	bh=J4HdclgiE9gfhfbKb9V8oqMQt0+bZKJwF4QoRaU9/2Y=; b=GM0l1ogwVovtVy9XESXg4xylRf
+	6Hg5YTmf/EIs+ECvovbQOu+yWUQ2wtfVVg8cUVMXvxuBR7TaU13vWwd9ExxM3Z9LcZM9AKfaS/QNG
+	SJz1RGR0wXMipaug0iAMOs8bw5Kh65wCmZ8rlaLTv2IkspnhTjzI1WEfhhDcJ7lBNrYlST9rGGzJt
+	UNu/M4a0khJta/uR7NdriT8ujqt45lr9NR/VEAkA9mMrQKuPRvK+kvpPSxemUieg3pB7p6DTUkeLa
+	LPWmP8RdeJUdfaUq8XgXg6Vj6GmkSG7thNHjDPkrDNgk/W0300R/j62GAhcqD1JesykfItHIz+S36
+	qr+F21pQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xPZAb-0000000EFKF-2WLa;
-	Sat, 07 Nov 2026 05:40:53 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1xPcq9-0000000EQjk-0XGA;
+	Sat, 07 Nov 2026 09:36:01 +0000
+Received: from cvsmtppost26.nm.naver.com ([114.111.35.112])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xPZAZ-0000000EFK9-2i6e
+	id 1xPcq6-0000000EQiz-0h5p
 	for linux-mtd@lists.infradead.org;
-	Sat, 07 Nov 2026 05:40:51 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 2428560E25;
-	Sat,  7 Nov 2026 05:40:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87E1E1F008A4;
-	Sat,  7 Nov 2026 05:40:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794030049;
-	bh=Oa1clJeg0q+r8RBm8MJ8pZ+KRzYuFRGUmVZjyIAeREE=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=P1oa73WC3I6LertiZ0euaYRww+c4D8z1YPsvGCo6ecqkcM0MVGvFCDkWPImZFlzu7
-	 Uit5JdV8MgMJ42k/gbEJlvfw1FuYbo1QgSTIkZ0G3pcQocYeWq8RCB022l1F4N3KfH
-	 d0RX7N9u1xVC+VVFMwf5jW4ePCAyS6UID/h0y7Y86NjJ9i33Ecgb4Co2K3yATuWYia
-	 oJbpm+2RFWYobZJEDaYt1HNkCmWarLYRxKwKIcLD4l7UL8R3XW+d9HJC1zoAmm5qfD
-	 b01eyIeimSvIw4AjgqVhG2GWhLHhIo0Ch7tiMD2XodeCNXB86be7UGYbnFdgOarPxE
-	 o8BIcc03cQYpA==
-Message-ID: <sashiko-outbox-202629@kernel.org>
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH 3/3] mtdchar: keep OOB chunks aligned with their data
- pages
-To: "James Hilliard" <james.hilliard1@gmail.com>, "Miquel Raynal" <miquel.raynal@bootlin.com>, "Richard
- Weinberger" <richard@nod.at>, "Vignesh Raghavendra" <vigneshr@ti.com>,
- =?utf-8?b?TWljaGHFgiBLxJlwaWXFhA==?= <kernel@kempniu.pl>
-Cc: linux-mtd@lists.infradead.org
-In-Reply-To: <20261106-submit-mtdchar-page-chunking-v1-v1-3-2973a03531bc@gmail.com>
-References: <20261106-submit-mtdchar-page-chunking-v1-v1-0-2973a03531bc@gmail.com>
- <20261106-submit-mtdchar-page-chunking-v1-v1-3-2973a03531bc@gmail.com>
-Date: Sat, 07 Nov 2026 05:40:49 +0000
+	Sat, 07 Nov 2026 09:35:59 +0000
+Received: from nv1s-hmac-real-26 ([10.180.31.91])
+  by cvsmtppost26.nm.naver.com with ESMTP id Oi4sds-oQkKnxwqAPo5i6w
+  for <linux-mtd@lists.infradead.org>;
+  Sat, 07 Nov 2026 09:35:53 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=naver.com; s=s20171208;
+	t=1794044153; bh=OrWjURs//sX/XPa08q6qNWmq97/DWOfU98L36NX1yFo=;
+	h=From:To:Subject:Date:Message-ID:From:Subject:Feedback-ID:
+	 X-Works-Security;
+	b=hI00iQLSsg4k4DHDh5AU9KCxZK7oNkT6Co37pzsFICFkKdihnFLdgUpNe1z/Yi3xV
+	 Yeggs0w9XlQQPMEvs6oXVI/FC9mfDldOpGD0Dloj4LAr+bN1oDkN/ZQCKzFQUzZs6h
+	 OGo0UBZcFuc361If0r4fcmhLjIy0ovR5kiyZAMLcHes/gh++okprq6tKqdyz836E4n
+	 9FeycKOkuxCvcTtYkvRAIXnvZB0RnnAS8kiIM8cd+zSWiDB+ICjmKonlHXlYeAlUbr
+	 exJVds3EhOYXk5HMS+DJvz0wcpLl3GsqPhKuiWk4U0k1LTwKIVwOI/cSncsRtjXdby
+	 lDKJPWexuqsKw==
+X-Session-ID: Y3wjdQtHSoWhTTk6-3N9nA
+X-Works-Send-Opt: OPFwpzGdjHmdKHFOMr39Ko3YKHmdjAudFqM9KqMqFxIYkEljxBmwjAg=
+X-Works-Smtp-Source: rZYwKAtlFqJZ+HmZFxbw+6E=
+Received: from localhost.localdomain ([115.136.205.4])
+  by cvnsmtp012.nm.naver.com with ESMTP id Y3wjdQtHSoWhTTk6-3N9nA
+  for <multiple recipients>
+  (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384);
+  Sat, 07 Nov 2026 09:35:52 -0000
+From: Sung Byeongchan <tjdqudcks0424@naver.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: rfd_ftl: quiesce requests before freeing mappings
+Date: Sat,  7 Nov 2026 18:35:46 +0900
+Message-ID: <20261107093546.619214-1-tjdqudcks0424@naver.com>
+X-Mailer: git-send-email 2.43.0
+X-Archived-By: <archiver.kernel.org>
+MIME-Version: 1.0
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20261107_013558_622513_F1B66EA7 
+X-CRM114-Status: GOOD (  11.30  )
+X-Spam-Score: -2.5 (--)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -65,120 +75,82 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: sashiko-reviews@lists.linux.dev
-X-Archived-By: <archiver.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-8.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-VGhhbmsgeW91IGZvciB5b3VyIGNvbnRyaWJ1dGlvbiEgU2FzaGlrbyBBSSByZXZpZXcgZm91bmQg
-MSBwb3RlbnRpYWwKaXNzdWUgdG8gY29uc2lkZXI6Ci0gW01lZGl1bV0gbXRkY2hhcjogaW5jb21w
-bGV0ZSBPT0IgdHJhbnNmZXIgd2hlbiBjb21iaW5lZCByZXF1ZXN0CiAgZXhoYXVzdHMgcmVxLmxl
-bgotLQoKY29tbWl0IDE0ODQzMWVjOGM0OGY5NDI2ZjYwYTJiNTJkYzVlMmY5YWFiNTYzNDcKQXV0
-aG9yOiBKYW1lcyBIaWxsaWFyZCA8amFtZXMuaGlsbGlhcmQxQGdtYWlsLmNvbT4KCm10ZGNoYXI6
-IGtlZXAgT09CIGNodW5rcyBhbGlnbmVkIHdpdGggdGhlaXIgZGF0YSBwYWdlcwoKVGhpcyBjb21t
-aXQgcm91bmRzIG5vbi1maW5hbCBPT0IgY2h1bmtzIGRvd24gdG8gd2hvbGUgcGFnZXMsIGNhcHMg
-dGhlIGRhdGEKY2h1bmsgdG8gdGhlIGNvcnJlc3BvbmRpbmcgcGFnZSBjb3VudCB3aGVuIE9PQiBp
-cyB0aGUgbGltaXRpbmcgYnVmZmVyLCBhbmQKYWR2YW5jZXMgcmVxLnN0YXJ0IGJ5IHRoZSBudW1i
-ZXIgb2YgT09CIHBhZ2VzIHRyYW5zZmVycmVkIG9uIE9PQi1vbmx5Cm9wZXJhdGlvbnMuCgo+IGRp
-ZmYgLS1naXQgYS9kcml2ZXJzL210ZC9tdGRjaGFyLmMgYi9kcml2ZXJzL210ZC9tdGRjaGFyLmMK
-PiBpbmRleCAxODllNDYyYTlkZjBmLi44NWU5ODkwNWY3MzIwIDEwMDY0NAo+IC0tLSBhL2RyaXZl
-cnMvbXRkL210ZGNoYXIuYwo+ICsrKyBiL2RyaXZlcnMvbXRkL210ZGNoYXIuYwo+IEBAIC01ODks
-NiArNTg5LDMwIEBAIHN0YXRpYyB2b2lkIGFkanVzdF9vb2JfbGVuZ3RoKHN0cnVjdCBtdGRfaW5m
-byAqbXRkLCB1aW50NjRfdCBzdGFydCwKPiAgCW9wcy0+b29ibGVuID0gbWluX3QodTY0LCBvcHMt
-Pm9vYmxlbiwgcGFnZXMgKiBvb2JfcGVyX3BhZ2UpOwo+ICB9Cj4gIAo+ICtzdGF0aWMgaW50IG10
-ZGNoYXJfYWRqdXN0X2lvX2xlbmd0aHMoc3RydWN0IG10ZF9pbmZvICptdGQsIHVpbnQ2NF90IHN0
-YXJ0LAo+ICsJCQkJICAgICBzdHJ1Y3QgbXRkX29vYl9vcHMgKm9wcywgdWludDY0X3QgcmVtYWlu
-aW5nX29vYikKPiArewo+ICsJdTMyIG9vYl9wZXJfcGFnZSA9IG10ZF9vb2JhdmFpbChtdGQsIG9w
-cyk7Cj4gKwl1NjQgbGVuOwo+ICsKPiArCWlmICghb3BzLT5vb2JsZW4pCj4gKwkJcmV0dXJuIDA7
-Cj4gKwlpZiAoIW9vYl9wZXJfcGFnZSkKPiArCQlyZXR1cm4gLUVJTlZBTDsKPiArCj4gKwlpZiAo
-b3BzLT5vb2JsZW4gPCByZW1haW5pbmdfb29iKSB7Cj4gKwkJLyogS2VlcCBhIHBhZ2UncyBPT0Ig
-dG9nZXRoZXIgd2hlbiBhbm90aGVyIGNodW5rIGZvbGxvd3MuICovCj4gKwkJb3BzLT5vb2JsZW4g
-PSByb3VuZGRvd24ob3BzLT5vb2JsZW4sIG9vYl9wZXJfcGFnZSk7Cj4gKwkJaWYgKG9wcy0+bGVu
-KSB7Cj4gKwkJCWxlbiA9ICh1NjQpKG9wcy0+b29ibGVuIC8gb29iX3Blcl9wYWdlKSAqIG10ZC0+
-d3JpdGVzaXplOwo+ICsJCQlsZW4gLT0gbXRkX21vZF9ieV93cyhzdGFydCwgbXRkKTsKPiArCQkJ
-b3BzLT5sZW4gPSBtaW5fdCh1NjQsIG9wcy0+bGVuLCBsZW4pOwo+ICsJCX0KPiArCX0KPiArCj4g
-KwlyZXR1cm4gMDsKPiArfQo+ICsKPiAgc3RhdGljIG5vaW5saW5lX2Zvcl9zdGFjayBpbnQKPiAg
-bXRkY2hhcl93cml0ZV9pb2N0bChzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgc3RydWN0IG10ZF93cml0
-ZV9yZXEgX191c2VyICphcmdwKQo+ICB7Cj4gQEAgLTYyOCw3ICs2NTIsOCBAQCBtdGRjaGFyX3dy
-aXRlX2lvY3RsKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBzdHJ1Y3QgbXRkX3dyaXRlX3JlcSBfX3Vz
-ZXIgKmFyZ3ApCj4gIAkJCXJldHVybiAtRU5PTUVNOwo+ICAJfQo+ICAKPiAtCW9vYmJ1Zl9sZW4g
-PSBtaW5fdChzaXplX3QsIHJlcS5vb2JsZW4sIG10ZC0+ZXJhc2VzaXplKTsKPiArCW9vYmJ1Zl9s
-ZW4gPSBtaW5fdChzaXplX3QsIHJlcS5vb2JsZW4sCj4gKwkJCSAgIG1heChtdGQtPmVyYXNlc2l6
-ZSwgbXRkLT5vb2JzaXplKSk7Cj4gIAlpZiAob29iYnVmX2xlbiA+IDApIHsKPiAgCQlvb2JidWYg
-PSBrdm1hbGxvYyhvb2JidWZfbGVuLCBHRlBfS0VSTkVMKTsKPiAgCQlpZiAoIW9vYmJ1Zikgewo+
-IEBAIC02NDgsMTMgKzY3MywxNyBAQCBtdGRjaGFyX3dyaXRlX2lvY3RsKHN0cnVjdCBtdGRfaW5m
-byAqbXRkLCBzdHJ1Y3QgbXRkX3dyaXRlX3JlcSBfX3VzZXIgKmFyZ3ApCj4gIAo+ICAJCS8qCj4g
-IAkJICogU2hvcnRlbiBub24tcGFnZS1hbGlnbmVkLCBlcmFzZWJsb2NrLXNpemVkIHdyaXRlcyBz
-byB0aGF0Cj4gLQkJICogdGhlIHdyaXRlIGVuZHMgb24gYW4gZXJhc2VibG9jayBib3VuZGFyeS4g
-IFRoaXMgaXMgbmVjZXNzYXJ5Cj4gKwkJICogdGhlIHdyaXRlIGVuZHMgb24gYSBwYWdlIGJvdW5k
-YXJ5LiAgVGhpcyBpcyBuZWNlc3NhcnkKPiAgCQkgKiBmb3IgYWRqdXN0X29vYl9sZW5ndGgoKSB0
-byBwcm9wZXJseSBoYW5kbGUgbm9uLXBhZ2UtYWxpZ25lZAo+ICAJCSAqIHdyaXRlcy4KPiAgCQkg
-Ki8KPiAgCQlpZiAob3BzLmxlbiA9PSBtdGQtPmVyYXNlc2l6ZSkKPiAgCQkJb3BzLmxlbiAtPSBt
-dGRfbW9kX2J5X3dzKHJlcS5zdGFydCArIG9wcy5sZW4sIG10ZCk7Cj4gIAo+ICsJCXJldCA9IG10
-ZGNoYXJfYWRqdXN0X2lvX2xlbmd0aHMobXRkLCByZXEuc3RhcnQsICZvcHMsIHJlcS5vb2JsZW4p
-Owo+ICsJCWlmIChyZXQpCj4gKwkJCWJyZWFrOwo+ICsKPiAgCQkvKgo+ICAJCSAqIEZvciB3cml0
-ZXMgd2hpY2ggYXJlIG5vdCBPT0Itb25seSwgYWRqdXN0IHRoZSBhbW91bnQgb2YgT09CCj4gIAkJ
-ICogZGF0YSB3cml0dGVuIGFjY29yZGluZyB0byB0aGUgbnVtYmVyIG9mIGRhdGEgcGFnZXMgd3Jp
-dHRlbi4KPiBAQCAtNjc0LDcgKzcwMywxMSBAQCBtdGRjaGFyX3dyaXRlX2lvY3RsKHN0cnVjdCBt
-dGRfaW5mbyAqbXRkLCBzdHJ1Y3QgbXRkX3dyaXRlX3JlcSBfX3VzZXIgKmFyZ3ApCj4gIAkJaWYg
-KHJldCkKPiAgCQkJYnJlYWs7Cj4gIAo+IC0JCXJlcS5zdGFydCArPSBvcHMucmV0bGVuOwo+ICsJ
-CWlmICh1c3JfZGF0YSkKPiArCQkJcmVxLnN0YXJ0ICs9IG9wcy5yZXRsZW47Cj4gKwkJZWxzZQo+
-ICsJCQlyZXEuc3RhcnQgKz0gKHU2NCkob3BzLm9vYnJldGxlbiAvIG10ZF9vb2JhdmFpbChtdGQs
-ICZvcHMpKSAqCj4gKwkJCQkgICAgIG10ZC0+d3JpdGVzaXplOwo+ICAJCXJlcS5sZW4gLT0gb3Bz
-LnJldGxlbjsKPiAgCQl1c3JfZGF0YSArPSBvcHMucmV0bGVuOwo+ICAKPiBAQCAtNzM5LDcgKzc3
-Miw4IEBAIG10ZGNoYXJfcmVhZF9pb2N0bChzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgc3RydWN0IG10
-ZF9yZWFkX3JlcSBfX3VzZXIgKmFyZ3ApCj4gIAkJfQo+ICAJfQo+ICAKPiAtCW9vYmJ1Zl9sZW4g
-PSBtaW5fdChzaXplX3QsIHJlcS5vb2JsZW4sIG10ZC0+ZXJhc2VzaXplKTsKPiArCW9vYmJ1Zl9s
-ZW4gPSBtaW5fdChzaXplX3QsIHJlcS5vb2JsZW4sCj4gKwkJCSAgIG1heChtdGQtPmVyYXNlc2l6
-ZSwgbXRkLT5vb2JzaXplKSk7Cj4gIAlpZiAob29iYnVmX2xlbiA+IDApIHsKPiAgCQlvb2JidWYg
-PSBrdm1hbGxvYyhvb2JidWZfbGVuLCBHRlBfS0VSTkVMKTsKPiAgCQlpZiAoIW9vYmJ1Zikgewo+
-IEBAIC03NjEsNyArNzk1LDcgQEAgbXRkY2hhcl9yZWFkX2lvY3RsKHN0cnVjdCBtdGRfaW5mbyAq
-bXRkLCBzdHJ1Y3QgbXRkX3JlYWRfcmVxIF9fdXNlciAqYXJncCkKPiAgCj4gIAkJLyoKPiAgCQkg
-KiBTaG9ydGVuIG5vbi1wYWdlLWFsaWduZWQsIGVyYXNlYmxvY2stc2l6ZWQgcmVhZHMgc28gdGhh
-dCB0aGUKPiAtCQkgKiByZWFkIGVuZHMgb24gYW4gZXJhc2VibG9jayBib3VuZGFyeS4gIFRoaXMg
-aXMgbmVjZXNzYXJ5IGluCj4gKwkJICogcmVhZCBlbmRzIG9uIGEgcGFnZSBib3VuZGFyeS4gIFRo
-aXMgaXMgbmVjZXNzYXJ5IGluCj4gIAkJICogb3JkZXIgdG8gcHJldmVudCBPT0IgZGF0YSBmb3Ig
-c29tZSBwYWdlcyBmcm9tIGJlaW5nCj4gIAkJICogZHVwbGljYXRlZCBpbiB0aGUgb3V0cHV0IG9m
-IG5vbi1wYWdlLWFsaWduZWQgcmVhZHMgcmVxdWlyaW5nCj4gIAkJICogbXVsdGlwbGUgbXRkX3Jl
-YWRfb29iKCkgY2FsbHMgdG8gYmUgY29tcGxldGVkLgo+IEBAIC03NjksNiArODAzLDkgQEAgbXRk
-Y2hhcl9yZWFkX2lvY3RsKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBzdHJ1Y3QgbXRkX3JlYWRfcmVx
-IF9fdXNlciAqYXJncCkKPiAgCQlpZiAob3BzLmxlbiA9PSBtdGQtPmVyYXNlc2l6ZSkKPiAgCQkJ
-b3BzLmxlbiAtPSBtdGRfbW9kX2J5X3dzKHJlcS5zdGFydCArIG9wcy5sZW4sIG10ZCk7Cj4gIAo+
-ICsJCXJldCA9IG10ZGNoYXJfYWRqdXN0X2lvX2xlbmd0aHMobXRkLCByZXEuc3RhcnQsICZvcHMs
-IHJlcS5vb2JsZW4pOwo+ICsJCWlmIChyZXQpCj4gKwkJCWJyZWFrOwo+ICAJCWlmIChvcHMubGVu
-IDwgcmVxLmxlbikKPiAgCQkJYWRqdXN0X29vYl9sZW5ndGgobXRkLCByZXEuc3RhcnQsICZvcHMp
-Owo+ICAKPiBAQCAtNzg5LDcgKzgyNiwxMSBAQCBtdGRjaGFyX3JlYWRfaW9jdGwoc3RydWN0IG10
-ZF9pbmZvICptdGQsIHN0cnVjdCBtdGRfcmVhZF9yZXEgX191c2VyICphcmdwKQo+ICAJCQlicmVh
-azsKPiAgCQl9Cj4gIAo+IC0JCXJlcS5zdGFydCArPSBvcHMucmV0bGVuOwo+ICsJCWlmICh1c3Jf
-ZGF0YSkKPiArCQkJcmVxLnN0YXJ0ICs9IG9wcy5yZXRsZW47Cj4gKwkJZWxzZQo+ICsJCQlyZXEu
-c3RhcnQgKz0gKHU2NCkob3BzLm9vYnJldGxlbiAvIG10ZF9vb2JhdmFpbChtdGQsICZvcHMpKSAq
-Cj4gKwkJCQkgICAgIG10ZC0+d3JpdGVzaXplOwo+ICAJCXJlcS5sZW4gLT0gb3BzLnJldGxlbjsK
-PiAgCQl1c3JfZGF0YSArPSBvcHMucmV0bGVuOwoKW1NldmVyaXR5OiBNZWRpdW1dCkNhbiBhIGNv
-bWJpbmVkIGRhdGEgYW5kIE9PQiByZXF1ZXN0IHN0aWxsIGV4aGF1c3QgcmVxLmxlbiBhbmQgZXhp
-dCB0aGUgSS9PCmxvb3AgYmVmb3JlIGFsbCBvZiByZXEub29ibGVuIGhhcyBiZWVuIHRyYW5zZmVy
-cmVkPwoKV2hlbiByZXEub29ibGVuIGV4Y2VlZHMgb29iYnVmX2xlbiAoc28gb3BzLT5vb2JsZW4g
-PCByZW1haW5pbmdfb29iKSBhbmQgdGhlCnJlbWFpbmluZyBkYXRhIHJlcS5sZW4gZml0cyB3aXRo
-aW4gdGhlIHBhZ2VzIGNvdmVyZWQgYnkgb3BzLT5vb2JsZW4sCm1pbl90KHU2NCwgb3BzLT5sZW4s
-IGxlbikgaW4gbXRkY2hhcl9hZGp1c3RfaW9fbGVuZ3RocygpIGxlYXZlcyBvcHMubGVuIGVxdWFs
-CnRvIHJlcS5sZW4uICBJbiBtdGRjaGFyX3JlYWRfaW9jdGwoKSwgYWRqdXN0X29vYl9sZW5ndGgo
-KSBpcyB0aGVuIHNraXBwZWQKYmVjYXVzZSBvcHMubGVuID09IHJlcS5sZW4sIHNvIG10ZF9yZWFk
-X29vYigpIGNvbnN1bWVzIGFsbCBvZiByZXEubGVuIGFsb25nCndpdGggb3BzLm9vYmxlbiBieXRl
-cyBvZiBPT0IgYWNyb3NzIHBhZ2VzIGJleW9uZCBvcHMucmV0bGVuLgoKQmVjYXVzZSB1c3JfZGF0
-YSBpcyBub24tTlVMTCwgcmVxLnN0YXJ0IG9ubHkgYWR2YW5jZXMgYnkgb3BzLnJldGxlbiBpbnN0
-ZWFkCm9mIHRoZSBPT0IgcGFnZXMgdmlzaXRlZCwgcmVxLmxlbiBkcm9wcyB0byAwIHdoaWxlIHJl
-cS5vb2JsZW4gaXMgc3RpbGwKbm9uLXplcm8sIGFuZCB0aGUgbG9vcCBjb25kaXRpb24KCiAgd2hp
-bGUgKHJlcS5sZW4gPiAwIHx8ICghdXNyX2RhdGEgJiYgcmVxLm9vYmxlbiA+IDApKQoKdGVybWlu
-YXRlcyB0aGUgaW9jdGwgd2l0aG91dCB0cmFuc2ZlcnJpbmcgdGhlIHJlbWFpbmluZyBPT0IgY2h1
-bmtzLgoKLS0gClNhc2hpa28gQUkgcmV2aWV3IMK3IGh0dHBzOi8vc2FzaGlrby5kZXYvIy9wYXRj
-aHNldC8yMDI2MTEwNi1zdWJtaXQtbXRkY2hhci1wYWdlLWNodW5raW5nLXYxLXYxLTAtMjk3M2Ew
-MzUzMWJjQGdtYWlsLmNvbT9wYXJ0PTMKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QK
-aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+
+rfd_ftl_remove_dev() frees the sector map, header cache and block array
+before del_mtd_blktrans_dev() stops new requests and drains the blk-mq
+queue. A block read admitted before that late barrier can consequently use
+the freed sector map in rfd_ftl_readsect().
+
+The issue reproduced as the same rfd_ftl_readsect() Oops in three of three
+fresh KASAN boots using the production MTD BLKPG add/delete and RFD block
+read paths. Normal, close-before-delete and wrong-partition controls were
+clean in nine of nine boots.
+
+Save the three allocation pointers while the enclosing partition is live,
+quiesce and drain through the blktrans core, then free only the saved
+pointers. This also avoids dereferencing the partition after core teardown
+may release its final reference.
+
+The fixed kernel completed 32 natural delete/read cycles in each of three
+fresh boots without Oops or KASAN. All fixed controls and following-valid
+operations also passed.
+
+The demonstrated impact is a local or delegated kernel invalid read and
+crash with administrative setup and deletion. Information disclosure,
+controlled write, RCE and LPE were not demonstrated.
+
+Fixes: d056f8cd2fc2 ("mtd: rfd_ftl: fix use-after-free")
+Link: https://lore.kernel.org/r/20210807214538.14484-5-sean@mess.org
+Assisted-by: OpenAI Codex
+
+Signed-off-by: Sung Byeongchan <tjdqudcks0424@naver.com>
+---
+ drivers/mtd/rfd_ftl.c |    9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+diff --git a/drivers/mtd/rfd_ftl.c b/drivers/mtd/rfd_ftl.c
+index 9f7efdab6e908..0f7b3fb27ece8 100644
+--- a/drivers/mtd/rfd_ftl.c
++++ b/drivers/mtd/rfd_ftl.c
+@@ -792,6 +792,9 @@ static void rfd_ftl_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
+ static void rfd_ftl_remove_dev(struct mtd_blktrans_dev *dev)
+ {
+ 	struct partition *part = container_of(dev, struct partition, mbd);
++	u_long *sector_map = part->sector_map;
++	u16 *header_cache = part->header_cache;
++	struct block *blocks = part->blocks;
+ 	int i;
+ 
+ 	for (i=0; i<part->total_blocks; i++) {
+@@ -799,10 +802,10 @@ static void rfd_ftl_remove_dev(struct mtd_blktrans_dev *dev)
+ 			part->mbd.mtd->name, i, part->blocks[i].erases);
+ 	}
+ 
+-	vfree(part->sector_map);
+-	kfree(part->header_cache);
+-	kfree(part->blocks);
+ 	del_mtd_blktrans_dev(&part->mbd);
++	vfree(sector_map);
++	kfree(header_cache);
++	kfree(blocks);
+ }
+ 
+ static struct mtd_blktrans_ops rfd_ftl_tr = {
+
+base-commit: d48723711bae9b8cdc56719c448ba42fef28cbee
+-- 
+2.43.0
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
