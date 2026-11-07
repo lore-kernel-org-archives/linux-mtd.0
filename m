@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD46A606A32E
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD1AE606A32D
 	for <linux-mtd@archiver.kernel.org>; Sat,  7 Nov 2026 19:22:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=XJHq/qjZ;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=RPmxjEsd
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=JaF4sOeJ;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=i364JM43
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,75 +14,75 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=u95/53UBMVfUXXpdjiojBxMO+/SusPgtfzoilwbxm7I=; b=XJHq/qjZ0yDxkOP1nKMUPxx+aZ
-	PCdSCxwFx9g1JqqyQcqjfjGAjqiN13Q+zebvn7gCKFAtfQ0HFnOIS7F69CllyFyU4hrK/77T1lAR3
-	NDLcei5CBoDEN+fK9XX2rI7ECPpH2TBAlCv32Bxex9s9SZqCt6HNnn6rJ1/SIcLi6jsP2+krHam9y
-	xZpWXgz3uYWL/IA6CGZ0+9nGuYYo/vGRSYuhV+HT7xGsi+6lenpB3vq4NqBaa9VUTfXhGgJqHu/G4
-	nZXtKNYACPSfr0uNtPoMmMco70gLaYRphscgwn0hVFIo/faumeHm2GMl4M2MXt2aAG+C9Ksu3byBQ
-	55MY0dCA==;
+	bh=iPvSo2+rOgDuDS3DXGTHak0vuML4Ew1bvdZYQlWIImk=; b=JaF4sOeJ6S9Z75ZghjGTLts+Yo
+	WJqXxonWCI3FebHL8AHTFA/QwSTbEUA7FWLvkxGjDwjfr+4BlpjfmgQ8KNw8Q9YxGZ8tDwlCi+W7R
+	heRsBSMjYZ1IkDmpaLzPZ8tQ87O/BEDdgzHd2V0fneoNZ/jd7qHUT2Vf5F7DdsSdx4HF/BUNPdd7d
+	TZfPMUIErUOtqJ+sVvDyVRmEZ/xfxkNys2wzeoLqs0j9ZhoTRALGHM2cU+XFk8u3G5BOZIlnf/LzV
+	XBFopnmGryzqUVkQMfQB95QsPaERCQkkVkVRWboTF+RhcTZYRggRilyE3+CnGiVdRJLybAfp5ElWj
+	xgLSyWqg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xPlzy-0000000FDhz-49QN;
-	Sat, 07 Nov 2026 19:22:46 +0000
-Received: from mail-oa1-x33.google.com ([2001:4860:4864:20::33])
-	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xPlzr-0000000FDcS-12mS
-	for linux-mtd@lists.infradead.org;
+	id 1xPlzw-0000000FDfV-2BvR;
 	Sat, 07 Nov 2026 19:22:44 +0000
-Received: by mail-oa1-x33.google.com with SMTP id 586e51a60fabf-490d838b425so858496fac.3
-        for <linux-mtd@lists.infradead.org>; Sat, 07 Nov 2026 11:22:38 -0800 (PST)
+Received: from mail-oa1-x2c.google.com ([2001:4860:4864:20::2c])
+	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
+	id 1xPlzn-0000000FDb7-2CJj
+	for linux-mtd@lists.infradead.org;
+	Sat, 07 Nov 2026 19:22:40 +0000
+Received: by mail-oa1-x2c.google.com with SMTP id 586e51a60fabf-4ad60ec5eaaso2787fac.0
+        for <linux-mtd@lists.infradead.org>; Sat, 07 Nov 2026 11:22:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794079358; x=1794684158; darn=lists.infradead.org;
+        d=gmail.com; s=20260707; t=1794079354; x=1794684154; darn=lists.infradead.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=/IYxRQsQO6UsoPYARG/MQ3DRm7b0plb/fBLBgAtsE5Q=;
-        b=RPmxjEsd3Kiw3SZxz6IDd4zQt5MLAmoyGOhAY2gFTRbn+96hXV21Bpa/w4CD7FnDWi
-         rn00qlRsuC9imVVtrtEkMiXR6b6CUK0QS0Mv2US4Uet09OCdxh1vHG6mEeupnlTZEWvZ
-         /WSsrIF/arG994O/A6vp5v6kMbwjUsqpVfndDS6v4mTqPGU/r1rloPcfT3kJGIrdfPbX
-         gV/9EHJ6rKjC1Sh2TBzSDBZc/vDfAng973m4vMEniOSOD9CAVXbrudvZlPv8ruN++G0Q
-         cbBBAh42jWWxUn8mDfuU8tWZYNoO3ytMCapykv7Loqd4W1lfVQidwFq+VLoODd7zhIlm
-         9sWg==
+        bh=0BAmvwUewoGLOJLuXxq6dZ5RycZKZl8yqwoNBMJWREA=;
+        b=i364JM43meKJ/HWMIu7WcIhOvTv3ej+FnhgLhmlhoEPTRYyWry4L+s97UfJgFnszyl
+         bkIU/4YPrJZvOwF7E2/I+0bndUIXTk2/N5+O2Jilqxhfa2HwS+nQpwQsyn8qJc1RbVXC
+         zUeluHFndAheGUYhugAU0TMeSFpO8xg0BkF4ZW97G26XGPUlFAOQSjvyfQC4wuFT2hHe
+         YvmBBF9wKfh7vX1IDIF30Vi0AL09h2b6JZDFmsi8R+5eidtkuYTqjeKtt9B8zEeiqADo
+         48ZDOf+Cm9nU2TxlRgbkKPTWBABh9BSej9UqwRGGq88UvRyMc6ocdKAViSBX01puneNY
+         G3Hg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794079358; x=1794684158;
+        d=1e100.net; s=20260707; t=1794079354; x=1794684154;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=/IYxRQsQO6UsoPYARG/MQ3DRm7b0plb/fBLBgAtsE5Q=;
-        b=hRWZFTtIEFZ89y+GNHN9PH8vhkkhWXwSNfPjWxlaFkk7syAxkLIiunxccyb1E3qXqX
-         LhbmWU1AVJwKz/tS7EIFFx3/sgie0C5wj3+oCuscOxeorQAlFNycUW6IRwWzrpaUrxIF
-         aw0kQnSBNAtr45XUXyW1sitJ9E9tuMn26NIsmuiVr85OR4q4l4eWxjQyxGAoQtlAbliR
-         4TYS3Ev0RXPkwT1xcTYQcMrbuRkr+4YOhUIR0eEIkRoAelgZFnNsyF+LJ+ic4s8SHQpz
-         KnApzGgXal9mTGqoJjSAGD2OhMXTPmQMGfMpWBrdV97Jh2xYIkiokkgjnNtLgAurDpDF
-         CTyQ==
-X-Forwarded-Encrypted: i=1; AKwUvByIhEZtLNFdh8JZ0j+szwWmAq0+k0X/1FFdtUj2wVdNZrUEsaidRI2Vy3nH3Cs88OWIC3i5q2etUP4=@lists.infradead.org
-X-Gm-Message-State: APuU4Z+MRNweQ6B3VdjueNoGk6KQDzpgNBeqaESgcVjHbc0nTUvkQ2gD
-	PuZmrrm6PMNwI2R+nENR9vrY6WkNWnwQChpCWIv6h4Fjf4pcamvsjUSF
-X-Gm-Gg: AYBFou2fg4eEBIvHNw+sYJKFmlkiq/G22Drd5w2QwolDvZF3WLIhy55FhmpBLTGVqE5
-	jFvSRBODy7FRXro104j2uLnihQCyWcEc7O4br8WXOoA4Sj2xxK1ifn8zNRmUwmCs9TGpU6h0DMx
-	bK7x1X1Zp4trDQccJloi8hpgmwxKFejkGypGob4onGFclZD3qBApWGL7cxWOT/guYjX1MFHVxWd
-	DQRyJV1B9HJzk3WdljXm+r8H0Ko2veYotgpAO6x8dhQzt/wNQuW/J2LHSczpoPh9/dJOPFrXJZq
-	jfZOyYeHA0eTEWJCa95HhRBpC2BSgc6NIqbBdHwkDUGr025upX3H4ZFYrlDAU6geFaZ+IorD+Gw
-	kKnHjIZyGqHPstverA6bsmcDCCRGVh3BzBXLHPRa90+TtChNsdr4uUXE3tNfCCg2YiTOE+n/E9N
-	MvUVSOqOT+CF4+Uj4RyGsffS8ViCRzivzcKl0YQHXS9b2n++PupsF1vlj6Fq2yzXjSsTyWctujM
-	Im1wZWvWXcIlfymMZhIqfwJ4DGg4duLegOiPeYL+81DjHjqLGf/YDRI+LzdydXh9ykWE4/779kY
-	4dCLee+AMra0hY6UFp2o0VakmX0cc3Uc6BERvnC0+b5azjsDYFPE98Q3zJ82PQWjRNE6UG75ZjX
-	kbqeK8/739hwQdnZg1QdXe/tofD0Pugh3CeLgx82tpyulafDzRflohliv0YFbS//EzMDKGGt9zO
-	acE2MpezNFJzFkzztYD+9nwhb6l1mJhOgUiD9jKXg9C1/o7j29ITEtVw==
-X-Received: by 2002:a05:6870:e091:b0:49d:c88d:8bea with SMTP id 586e51a60fabf-4ad98e66b72mr4108041fac.42.1794079357895;
-        Sat, 07 Nov 2026 11:22:37 -0800 (PST)
+        bh=0BAmvwUewoGLOJLuXxq6dZ5RycZKZl8yqwoNBMJWREA=;
+        b=qbAe7CdyNB8vrZQrim58oqFL9tkKNSBZiRhedZL6g9CVknggi0pAqjUH3CTRbu20CK
+         ccK5yET2x1xRKJD0HbAbZOCo6zXmKOXzO+RmQQtD6iUGHndvamiQKFCuhjfVinAnw6cK
+         1717Z77SPcmDj/KmEG4l4DpjujY7XCB1HVzHoT8NPtZYjpOkonokpox+gEEh1306Bs4M
+         rv4P/vkrYGiQUGAmb24zkyuG2Yzxodmzh/AnjHV46f+zAoYpmRlwrd/uZepDvYQ2y8OA
+         C8BEl/fgU6UWCHEz7CiBCU/K4wQg4Gsf3sdWso8n+/odO/KyP/b+l+dOxAWG6d5VSyiH
+         C4yg==
+X-Forwarded-Encrypted: i=1; AL+hErHJhknlmWhyFJddskjbxpo/w9lYxdvp16L4XqeIJaz8V9VFOEqwm4bT+Z3QtacR2OA62K7zWXSIFd8=@lists.infradead.org
+X-Gm-Message-State: APuU4Z/cl1lyIO3NiOQ2NmR8mNUNqNaM0A3rL2gVjdzWgfmXGPa+ScgX
+	ke5CnEucCemtTY9CzZ/2LFiuXNIhxW6qlfwkXSeW6XbPQr9F/EV00DVV
+X-Gm-Gg: AYBFou3+sq0h2Bz003as1Bpf91EjdI7wujsQ2nwlq+A9iZxWjUpEW0tJ25zpukD/Pf5
+	/lAh4+Fx8YahsglCZlrpcP2NFiQv2VI+emfihl8wiKk9yUWzcVRlUeAm+OduHzqVYyE8Q4cU/Hz
+	8LJpK4FUuUJ7XLzTQS0GceIZSJCuhK3JXiOEXkxpppcuQb8UGswZXKXb/bGA7jx7ztdmUxQBQpE
+	+nJBz5IT1fdfdiVRlwlG5a9uJSdwsDFuOOv9NyYbzLaDZNlRzRIktNwvYNWZ5XrQvNX6hRTNcdY
+	EvowdokpWMNYvqHs26y8c1dINaBoTJGefJh6yTVdQDApy/eD66/fnPGBIR+U8FOZjlDBq1BHdVM
+	I4rB8Nd7p+nrnREgBEFVfRKX8Xgmdn6Seh5inexsvKLlcjVrWzG7rhKMGU0h1s+Jvg+gb9hh4w2
+	QXngFc2Yq6PYop2TbFJtf93oevtm8Q2d9mnCqZeYxnzthtiZ5mSzUARBZWy7MS/cCCbPofIkxxT
+	RlG0crcUbAwtIRtWOiyCz+a+r+S6Lg/p54v9yUZFJ3B0EVfI6/3oxWulLxisfPZmIRytXAz8G5x
+	Ma5qrJRUHb7GWCbGQScB/FWqm7yF/rKQCC0stku7Uqgs2tAHVTHQ75aSns+t8SqQ1NLMkd0f4o7
+	OWEKWluEQ7KlETOELj9CawjdlwQAn1dC20qEMWqfxOSHM/2lnHsnhXze6lv9Oh4bi9oV6ifpfip
+	LJqJt460ngtNGWGABh4+Pv7lhs0uxNapX158xwqQtHlWPDGFFCqyD6
+X-Received: by 2002:a05:6870:b909:b0:49d:c800:c431 with SMTP id 586e51a60fabf-4adc0db6cc1mr1204864fac.28.1794079354066;
+        Sat, 07 Nov 2026 11:22:34 -0800 (PST)
 Received: from [127.0.1.1] (174-29-1-49.hlrn.qwest.net. [174.29.1.49])
-        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-4ade647f559sm167644fac.2.2026.11.07.11.22.34
+        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-4ade647f559sm167644fac.2.2026.11.07.11.22.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Nov 2026 11:22:37 -0800 (PST)
+        Sat, 07 Nov 2026 11:22:33 -0800 (PST)
 From: James Hilliard <james.hilliard1@gmail.com>
-Date: Sat, 07 Nov 2026 03:16:23 -0700
-Subject: [PATCH 26/58] mtd: rawnand: vf610: retain open-handle state on
+Date: Sat, 07 Nov 2026 03:16:22 -0700
+Subject: [PATCH 25/58] mtd: rawnand: hisi504: retain open-handle state on
  removal
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Message-Id: <20261107-submit-rawnand-retained-handle-lifetime-v1-v1-26-0181ef0cc4c8@gmail.com>
+Message-Id: <20261107-submit-rawnand-retained-handle-lifetime-v1-v1-25-0181ef0cc4c8@gmail.com>
 References: =?utf-8?q?=3C20261107-submit-rawnand-retained-handle-lifetime-v1?=
  =?utf-8?q?-v1-0-0181ef0cc4c8=40gmail=2Ecom=3E?=
 In-Reply-To: =?utf-8?q?=3C20261107-submit-rawnand-retained-handle-lifetime-v?=
@@ -142,8 +142,8 @@ Cc: Tze Yee Ng <tze.yee.ng@altera.com>, linux-mtd@lists.infradead.org,
  linux-arm-msm@vger.kernel.org, James Hilliard <james.hilliard1@gmail.com>
 X-Mailer: b4 0.15.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261107_112241_900564_47F7496B 
-X-CRM114-Status: GOOD (  16.46  )
+X-CRM114-CacheID: sfid-20261107_112237_705136_20E7EFD8 
+X-CRM114-Status: GOOD (  15.91  )
 X-Spam-Score: -0.3 (/)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -169,69 +169,64 @@ Keep chip metadata and controller storage alive until the final MTD
 reference is released. Unregister and disconnect each published chip
 before releasing the resources used by its hardware operations.
 
-Keep managed register, IRQ and clock teardown after chip disconnection.
+Retain the host through its embedded legacy controller.
 
 Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
 ---
- drivers/mtd/nand/raw/vf610_nfc.c | 22 ++++++++++++++++++----
- 1 file changed, 18 insertions(+), 4 deletions(-)
+ drivers/mtd/nand/raw/hisi504_nand.c | 23 ++++++++++++++++++++---
+ 1 file changed, 20 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/vf610_nfc.c b/drivers/mtd/nand/raw/vf610_nfc.c
-index 9940681810cf..903a25c549d8 100644
---- a/drivers/mtd/nand/raw/vf610_nfc.c
-+++ b/drivers/mtd/nand/raw/vf610_nfc.c
-@@ -805,6 +805,11 @@ static const struct nand_controller_ops vf610_nfc_controller_ops = {
- 
+diff --git a/drivers/mtd/nand/raw/hisi504_nand.c b/drivers/mtd/nand/raw/hisi504_nand.c
+index d97270ec1185..36427a242c2b 100644
+--- a/drivers/mtd/nand/raw/hisi504_nand.c
++++ b/drivers/mtd/nand/raw/hisi504_nand.c
+@@ -731,6 +731,11 @@ static const struct nand_controller_ops hisi_nfc_controller_ops = {
+ 	.attach_chip = hisi_nfc_attach_chip,
  };
  
-+static void vf610_nfc_release(struct nand_controller *controller)
++static void hisi_nfc_release(struct nand_controller *controller)
 +{
-+	kfree(container_of(controller, struct vf610_nfc, base));
++	kfree(container_of(controller, struct hinfc_host, chip.legacy.dummy_controller));
 +}
 +
- static int vf610_nfc_probe(struct platform_device *pdev)
+ static int hisi_nfc_probe(struct platform_device *pdev)
  {
- 	struct vf610_nfc *nfc;
-@@ -813,9 +818,12 @@ static int vf610_nfc_probe(struct platform_device *pdev)
- 	int err;
- 	int irq;
+ 	int ret = 0, irq, max_chips = HINFC504_MAX_CHIP;
+@@ -740,9 +745,14 @@ static int hisi_nfc_probe(struct platform_device *pdev)
+ 	struct mtd_info   *mtd;
+ 	struct device_node *np = dev->of_node;
  
--	nfc = devm_kzalloc(&pdev->dev, sizeof(*nfc), GFP_KERNEL);
-+	nfc = kzalloc_obj(*nfc);
- 	if (!nfc)
+-	host = devm_kzalloc(dev, sizeof(*host), GFP_KERNEL);
++	host = kzalloc_obj(*host);
+ 	if (!host)
  		return -ENOMEM;
-+	err = devm_nand_controller_init(&pdev->dev, &nfc->base, vf610_nfc_release);
-+	if (err)
-+		return err;
++	chip = &host->chip;
++	chip->controller = &chip->legacy.dummy_controller;
++	ret = devm_nand_controller_init(dev, chip->controller, hisi_nfc_release);
++	if (ret)
++		return ret;
+ 	host->dev = dev;
  
- 	nfc->dev = &pdev->dev;
- 	chip = &nfc->chip;
-@@ -873,7 +881,6 @@ static int vf610_nfc_probe(struct platform_device *pdev)
+ 	platform_set_drvdata(pdev, host);
+@@ -788,10 +798,16 @@ static int hisi_nfc_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		return ret;
  
- 	vf610_nfc_preinit_controller(nfc);
- 
--	nand_controller_init(&nfc->base);
- 	nfc->base.ops = &vf610_nfc_controller_ops;
- 	chip->controller = &nfc->base;
- 
-@@ -885,9 +892,15 @@ static int vf610_nfc_probe(struct platform_device *pdev)
- 	platform_set_drvdata(pdev, nfc);
- 
- 	/* Register device in MTD */
--	err = mtd_device_register(mtd, NULL, 0);
-+	err = nand_set_release(chip, NULL);
- 	if (err)
- 		goto err_cleanup_nand;
-+	err = mtd_device_register(mtd, NULL, 0);
-+	if (err) {
++	ret = nand_set_release(chip, NULL);
++	if (ret) {
++		nand_cleanup(chip);
++		return ret;
++	}
+ 	ret = mtd_device_register(mtd, NULL, 0);
+ 	if (ret) {
+ 		dev_err(dev, "Err MTD partition=%d\n", ret);
+-		nand_cleanup(chip);
 +		nand_disconnect(chip);
 +		mtd_put_master(mtd);
-+		return err;
-+	}
- 	return 0;
+ 		return ret;
+ 	}
  
- err_cleanup_nand:
-@@ -903,7 +916,8 @@ static void vf610_nfc_remove(struct platform_device *pdev)
+@@ -806,7 +822,8 @@ static void hisi_nfc_remove(struct platform_device *pdev)
  
  	ret = mtd_device_unregister(nand_to_mtd(chip));
  	WARN_ON(ret);
