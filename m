@@ -2,78 +2,98 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD09C606A32F
-	for <linux-mtd@archiver.kernel.org>; Fri,  6 Nov 2026 21:11:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3A32606A32F
+	for <linux-mtd@archiver.kernel.org>; Sat,  7 Nov 2026 04:31:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=RXOzF1OH;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=acm.org header.i=@acm.org header.a=rsa-sha256 header.s=mr01 header.b=ULZJPgCF
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=yuEkI164;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=QjepaDgw
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version:Subject:
+	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
 	List-Unsubscribe-Post:List-Owner;
-	bh=itOTwKU3mNoT9Tb0xojblp9EGEwf+4ocg+248t067OA=; b=RXOzF1OHlWVMl9z8CYvGaEmiYi
-	nfNpiX+l5GoTfXdFc4txeshCBM1qCVfARe43t9cnWasnDaolcYA2M2g6suaHJATtNi78D+Wo4K1fl
-	iQhSu51XCdKWZp80958JntLSs9YVt/4teRifWLBymro5iaxRZMHsDKXLcMwulEdqxG9bvs/v3Jdwx
-	59SF1dPKRwzz/paHWxc2PKjZ7IvWXS854sWT8cV/c307FyFRJVk68OxXRy1RV2p5GS81Sb9UxA7Lb
-	BAkWwkNlWc25aA3hQwaikc37x1p+q4HIxbVLQ+3LHe2aAINMWCDMdlIl9g7X7p9ftmbVbbwA0pba1
-	CH6+Cqug==;
+	bh=pIOtWGgAwjkavlr+waKcxEKP9KAyFtHEBdGs7bW51YI=; b=yuEkI164dLjl8mag7oi8Nsn2c0
+	d/Rj48JoFvAT7Q/v8Sz8r9Mh7C74aJ09QlfZBFKGP2UJ4EID0pSgXxtetNnZo39Z8cGir7iKIe154
+	pr6BJReA3mHuCSlnKM4SWk5GTc06I/fvd1c45eWVlwekjfAHEH7/cqwItERXLhvx/neejuEOsXoB+
+	MdhDtXZCGUVH/nelBT2nn3X8Hkk4/HFWXewhD0acUmOf1TT0y4BgRT25Zvfvso0nn0H6fVB4G/Li0
+	BHgwa/3bJhmhpPs6sMDpilxQ2po9LOFtupO86ZsxO2+VVo0ThoLuGgF7sfflWt81dN8fWiPucVBTk
+	OtHoKcVg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xPRDP-0000000Df32-3dR9;
-	Fri, 06 Nov 2026 21:11:15 +0000
-Received: from 011.lax.mailroute.net ([199.89.1.14])
+	id 1xPY5P-0000000EBt2-1p9B;
+	Sat, 07 Nov 2026 04:31:27 +0000
+Received: from mail-oo1-xc32.google.com ([2607:f8b0:4864:20::c32])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xPRDN-0000000Df2g-3YdF
+	id 1xPY5M-0000000EBsf-1oLJ
 	for linux-mtd@lists.infradead.org;
-	Fri, 06 Nov 2026 21:11:15 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by 011.lax.mailroute.net (Postfix) with ESMTP id 4jLsKs2p6tz1XLyhh;
-	Fri,  6 Nov 2026 21:11:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
-	content-transfer-encoding:content-type:content-type:in-reply-to
-	:from:from:content-language:references:subject:subject
-	:user-agent:mime-version:date:date:message-id:received:received;
-	 s=mr01; t=1793999469; x=1796591470; bh=xKjcuvfEsrQaalDXDb5/zzpQ
-	Y2N+PE19jIG9FttWmsg=; b=ULZJPgCFJAs7uYkZvw/AEp6SFwoUMH3c5Qnz7PpY
-	5IKb3jNrIg0ZYSo59tyqIVjuB5R6DifyGNZcgEfMA/Wn4Se26yorEzvWj73gYS3m
-	Oet/VTaoAgubyEkAkQ9xZXSLDxM5kc39zd+2TkIt9/5RqGzJ2D3uzKcp+zNBL8o2
-	bIZlY5rfN7bIWJsmzbqMvuXmnk4RHKrXJxMHUWHz+zJSg93btQqdKw36BcpBA5Jo
-	VHmFHrWBrF7oFVhnKXDXpNyQy4nZf+F6oVF2S3lbv8/3jr8HHVW2NEtPOlkKWZo7
-	CbidWRm9LHM0SG6QfKjAn8OcCIpndrhzAA8U0hwg4PoMzg==
-X-Virus-Scanned: by MailRoute
-Received: from 011.lax.mailroute.net ([127.0.0.1])
- by localhost (011.lax [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
- id UDGiGonopHWh; Fri,  6 Nov 2026 21:11:09 +0000 (UTC)
-Received: from [100.80.231.125] (unknown [104.135.182.41])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: bvanassche@acm.org)
-	by 011.lax.mailroute.net (Postfix) with ESMTPSA id 4jLsKn2hQFz1XM0nn;
-	Fri,  6 Nov 2026 21:11:09 +0000 (UTC)
-Message-ID: <534257c9-6f48-4a01-8589-330e4e4e41e1@acm.org>
-Date: Fri, 6 Nov 2026 13:11:08 -0800
+	Sat, 07 Nov 2026 04:31:26 +0000
+Received: by mail-oo1-xc32.google.com with SMTP id 006d021491bc7-716b58a4365so783801eaf.3
+        for <linux-mtd@lists.infradead.org>; Fri, 06 Nov 2026 20:31:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20260707; t=1794025883; x=1794630683; darn=lists.infradead.org;
+        h=cc:to:message-id:content-transfer-encoding:content-type
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to:content-type;
+        bh=0h921tV9Ds9KKioXJ9IFecI2/WeMjRPzZktFXa2aBNY=;
+        b=QjepaDgwRvd5W+ErlHW2eLIS/3oUmeFjaa6/shwW1jx3nlf7aMRXWz2hPR78tWttoS
+         sFOfWoGzYBogmSHGMRxpvKcLRctX/yHPfW+KrH15U44aEFyENwl8Wnc/60WktgGM8r3t
+         pT2gAOTFOjkoAvPxqp2hStLofEGjFFcrgczeNfZecWc6O2zCA+MAu2q7fOKQzPCYGbH3
+         s3yPuLqPH+V5vX0jURoUOxqKMogForXDoCt7mb5hUWKvOHLvyr3Zn4vbF1uEq5tw/JY7
+         7XYo0dzQX6Q0kdpKpIoUye7zzqx8JNXdfJx84hyJF4leJ2ocOwGy3qdN7DWTmUr4MkQu
+         dJpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1794025883; x=1794630683;
+        h=cc:to:message-id:content-transfer-encoding:content-type
+         :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to:content-type;
+        bh=0h921tV9Ds9KKioXJ9IFecI2/WeMjRPzZktFXa2aBNY=;
+        b=AlbpNbrei3JNRBpvJysIth18tutXe/uv0TaLzG66w9H7qc9xbeQigwJ+UpW5YUauFG
+         FGMJUPMXXSro5puhkp9scDuQvZppUms7iZ1vtTidlIIFob2e6j8aDkexwj+obeTb/A+i
+         Ngcp/AfhZYO9szNnVxuO42GrTzGvT3lwCYHbHxjNfdzCWp/q6CDeb0gsZGyFYme2jI75
+         x/++znarVzBm+dtCHkqQNOKzl5FFkGJapGeTVQHEj2+z9Cq/rsvNYnQ8e64257dl2h4q
+         SF4jfjBCPQELO8a7YDGnEU+ga76208vIkuLg1B3DWbChPhwIv88gKW4l6kJZHOtXXiTx
+         BDDg==
+X-Gm-Message-State: APuU4Z81fnF6F+3SmnEChbHvd8lfmEuiiRupcZ+KzD3AkXuL7b5iT0N3
+	py5M7qWNHD4wqPFd9jFLQMLKfKL4EuYIri2+gWQBLxoxEVrm3UiDsj/0
+X-Gm-Gg: AYBFou1DnbzcvX/gQe1KRBc7MDZyya3tla9YtGRj6ncEteM/beMcMrRBGYzhNRzBf2W
+	k6jCV+Dcu5GcwQVC0x+ZKXAcmTL1bfN/gJI1+igSGVxfYQY/ZYAtQqKpp4DXzI7+P6OSEMknpEd
+	y9o9h9emU2fOYQcTnfovwgOcKCj5tUXDXA/qUGDvihbUBwymVtPW+1u95qRsfcXbMjo1C/Cza63
+	tPV8qAKszhURnkDaqwQy8To1XcH0/i2XqvCzgO9yKdRwfaZl2PvBV7hUTiGAqQZqMrBx15BuCVt
+	ORWTaRjyv1qnDlg6bsMg5kJq+IJL/jHxEMfr880visPoLh81zUfGmXMRBIbNtcx0lHfAPOKfsPW
+	nW+CvH8bdTjbC1VdqM+5ClKJvsw0Qs39xErAHCZ2GyFbZWZaBbvCvv0mipb8xPcym8JwNjNy27/
+	XkZtDGUhtNQSgGi6ip/e3dz6C+u7AOy6O7XwZZcSa1HP5sWQqe2P8Zg4sQdWvmrHMTEUe8wtQ8G
+	A5MPEpbSONz+poC1nKgr4UQBW5GN48RoBQqistIb5WRIeYeGU+cO5l/8ClSITEFONuoGIXYOSiy
+	+HJMEmV/uk54FihMh/OyASBrvmo3ZZy2Ae3YlTBrNNJfi3OTRPmjovHmJqA5KG/0VmxcXHBIx4k
+	rHIqunXWIrauT5DgnHJSKCCukewsz2ZZ1Se6DMclng6dpOQTqkWR1KLQu4r1uQ1YvgM8JMY0qiH
+	7P4F6+yPInTN7eIHa9lPPd37GDKAFa8ulqgS5jkqSIAWVyDoTVmLo=
+X-Received: by 2002:a05:6820:3417:10b0:713:da3b:9127 with SMTP id 006d021491bc7-716e7912499mr1864653eaf.46.1794025883255;
+        Fri, 06 Nov 2026 20:31:23 -0800 (PST)
+Received: from [127.0.1.1] (174-29-1-49.hlrn.qwest.net. [174.29.1.49])
+        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-4ad979ebbd1sm3579607fac.9.2026.11.06.20.31.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Nov 2026 20:31:21 -0800 (PST)
+From: James Hilliard <james.hilliard1@gmail.com>
+Date: Fri, 06 Nov 2026 21:31:18 -0700
+Subject: [PATCH] mtdchar: initialize MEMREAD statistics before each read
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mtd: spi-nor: Reschedule in spi_nor_wait_till_ready()
-To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>
-Cc: Takahiro Kuwano <takahiro.kuwano@infineon.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Brian Norris <briannorris@chromium.org>
-References: <1b755e40b80fded4b4b4c1f1c81f0d171012a1de.1793999093.git.bvanassche@acm.org>
-Content-Language: en-US
-From: Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <1b755e40b80fded4b4b4c1f1c81f0d171012a1de.1793999093.git.bvanassche@acm.org>
+Message-Id: <20261106-submit-mtdchar-read-stats-v1-v1-1-173ac5c3ceb0@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/yWM0QrCMAxFf2X02eBaoWz+iviQtpmrsCpJHcLYv
+ 5u6h/twbnLPZoQ4k5hrtxmmNUt+FQV76kycsTwIclI2rnfe2t6DfMKSKyw16Z2BCRNIxSqwWsD
+ pQujG0bthMKp4M035+9ff7gfr/kmxNmf7CCgEgbHEuVWqPbccq33/AejgRP2gAAAA
+X-Change-ID: 20261106-submit-mtdchar-read-stats-v1-af3ea2996288
+To: Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+ =?utf-8?q?Micha=C5=82_K=C4=99pie=C5=84?= <kernel@kempniu.pl>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ stable@vger.kernel.org, James Hilliard <james.hilliard1@gmail.com>
+X-Mailer: b4 0.15.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261106_131113_916125_CDFB7223 
-X-CRM114-Status: GOOD (  21.52  )
-X-Spam-Score: -2.8 (--)
+X-CRM114-CacheID: sfid-20261106_203125_149012_CED732BE 
+X-CRM114-Status: GOOD (  11.16  )
+X-Spam-Score: -1.9 (-)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,71 +103,55 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-15.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=4.0.1
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-On 11/6/26 1:04 PM, Bart Van Assche wrote:
-> In spi_nor_wait_till_ready_with_timeout(), cond_resched() is only
-> called after spi_nor_ready() returns 0. If the flash is already ready on
-> the first status check, the function returns before reaching
-> cond_resched(). This happens e.g. under QEMU, where SPI NOR page
-> programs and sector erases complete synchronously during the MMIO write,
-> combined with a controller driver that polls without sleeping.
-> Consequently, multi-sector erases in spi_nor_erase() and multi-page
-> writes in spi_nor_write() may iterate over thousands of sectors or pages
-> without ever yielding the CPU on kernels built without
-> CONFIG_PREEMPTION, e.g. ARM32 kernels with CONFIG_PREEMPT_VOLUNTARY=y.
-> This triggers soft lockup and RCU stall reports.
-> 
-> Move cond_resched() to the start of the polling loop such that every
-> call reschedules if needed, even if the flash is ready on the first
-> check. Doing this in the shared wait helper instead of in the
-> spi_nor_erase() and spi_nor_write() loops covers all callers that wait
-> for a program or erase operation to complete.
-> 
-> Signed-off-by: Bart Van Assche <bvanassche@acm.org>
-> ---
->   drivers/mtd/spi-nor/core.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index 90524c58602e..3e3b727d262e 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -653,6 +653,8 @@ static int spi_nor_wait_till_ready_with_timeout(struct spi_nor *nor,
->   	deadline = jiffies + timeout_jiffies;
->   
->   	while (!timeout) {
-> +		cond_resched();
-> +
->   		if (time_after_eq(jiffies, deadline))
->   			timeout = 1;
->   
-> @@ -661,8 +663,6 @@ static int spi_nor_wait_till_ready_with_timeout(struct spi_nor *nor,
->   			return ret;
->   		if (ret)
->   			return 0;
-> -
-> -		cond_resched();
->   	}
->   
->   	dev_dbg(nor->dev, "flash operation timed out\n");
+mtd_read_oob() can reject an invalid OOB range before initializing
+ops->stats. mtdchar_read_ioctl() nevertheless accumulates the per-read
+statistics before checking the return code and copies the accumulated
+values back to userspace, even when the ioctl returns an error.
 
-(+Brian)
+Initialize the local statistics on every loop iteration so a rejected
+read contributes zero counters and preserves statistics from any earlier
+completed reads.
 
-The following probably should be added to the above patch:
+Fixes: 095bb6e44eb1 ("mtdchar: add MEMREAD ioctl")
+Cc: stable@vger.kernel.org
+Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+---
+ drivers/mtd/mtdchar.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Fixes: a95ce92e4b28 ("mtd: spi-nor: improve wait-till-ready timeout loop").
+diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+index bf01e6ac7293..cbc7114686b9 100644
+--- a/drivers/mtd/mtdchar.c
++++ b/drivers/mtd/mtdchar.c
+@@ -750,7 +750,7 @@ mtdchar_read_ioctl(struct mtd_info *mtd, struct mtd_read_req __user *argp)
+ 	}
+ 
+ 	while (req.len > 0 || (!usr_data && req.ooblen > 0)) {
+-		struct mtd_req_stats stats;
++		struct mtd_req_stats stats = {};
+ 		struct mtd_oob_ops ops = {
+ 			.mode = req.mode,
+ 			.len = min_t(size_t, req.len, datbuf_len),
 
-Bart.
+---
+base-commit: 1c1a342aceec79528b3ba51f376eca2be5928fe7
+change-id: 20261106-submit-mtdchar-read-stats-v1-af3ea2996288
+
+Best regards,
+--  
+James Hilliard <james.hilliard1@gmail.com>
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
