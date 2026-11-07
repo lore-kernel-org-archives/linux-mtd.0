@@ -2,12 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 460D360A2604
-	for <linux-mtd@archiver.kernel.org>; Sat,  7 Nov 2026 10:16:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B90860A2618
+	for <linux-mtd@archiver.kernel.org>; Sat,  7 Nov 2026 10:17:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=Nfc3wjxH;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.a=rsa-sha256 header.s=desiato.20200630 header.b=J19tH02n;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=lgxdwTpg
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=N+CfIkxe;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=ix5i5jfs
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -15,91 +14,75 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=FoyvWGwERdl7KgPDy3u+VyO+OqYTAJ5avx5aoJWsUOA=; b=Nfc3wjxH+XX2tcMTdI+f9CDFWz
-	fq+HGylZK43EW64yYX8Ue95S0tQMR9GkDtvZbIqEuaV7hfHrzAopX+oUJa39V99oL8Pgjr7GC59iF
-	ReQ/fVHqdYtuOPKCj+1kDSMuRj6aIctKxkiZaWdr5xPjFcpjX2UXNxKIoe9v3zVAvT9X6+7XQMakp
-	r9h1ri/hhnRzZLecrKCzbcXzEpXjrZCjdWojzL4uwJpgOLj7XJIA8unjAFihTP+iwrntGmtV4Pgyv
-	rs9JDJqjIhS027qJ7u91u0UZJYmXUTfhXIjdT8ExwcSBGqZkEPdrH8pXH3/BjOVz+YmtmqotmKjM0
-	ceqpRJjA==;
+	bh=/4oWLKnaiTEH6+PSJejQ1hwdm8f/fGlmFJdpUo3v54A=; b=N+CfIkxefWWyVdTC59TfUK4rwP
+	0mAuuTQCfsD6JCnmncDJVXi/ZLwOEWillnE35s15IB4+1pnEKp6k/2KQBAatRG7cMCP5Z/yScO0LC
+	5ZC9Ny8BkrgNsEmi8ucLztip9jOhxyFLrK/Klh5mT6dkjGj2MNDlVSZPMknB/Ub6V33WTcoKv5zsM
+	XnFJan8YZGihiwjGTpX+GfSF3tsAJknyoTT351ULCXxuRhWsE8pMSQHI31q5Tq40ETo2ZRWgtjlmn
+	7SdytCHNWc2LpTd3vYl9fyTikSRS41mewp22mWPRQXiin5qi0B5AvahDu3xlW27PTulcGH0XA1Kjd
+	CfE9JfjQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xPdTl-0000000ETMF-2Mfu;
-	Sat, 07 Nov 2026 10:16:57 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1xPdTo-0000000ETTz-3IVb;
+	Sat, 07 Nov 2026 10:17:00 +0000
+Received: from mail-ot1-x336.google.com ([2607:f8b0:4864:20::336])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xPdTc-0000000ET22-46zn
-	for linux-mtd@bombadil.infradead.org;
-	Sat, 07 Nov 2026 10:16:49 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Cc:To:In-Reply-To:References:
-	Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
-	From:Sender:Reply-To:Content-ID:Content-Description;
-	bh=kdpl0vJugGlz+uyTjhhRSpimIDWsRp0py3ymgbcmz+M=; b=J19tH02nkU1zSj7SpSmX3UR6qt
-	KmOHIk6/Pqpr+RNqAB1Q8wfeXAAQflUOm6caPGceiZRshN7FZcK8o511SP8pInjfdGqqLZ2+0OjWd
-	cSnvMOYa+UO2KgS21zd+fL2xjfekFwIt4mA/PcKiwHfWsmBr6P4DKxx+07540lJhNOVxwG6iCf785
-	9Ioj/iW8a38z5O7MXnzHDlKfs9frYsnVERYjRyujZuhR14l//8X7rldI16cF+UvYEdC0fyjg9B6/I
-	I5Z4FAGz4PSnDxWAnowp9wQHLGo3eVp901lCWHcNnUJADlNn7089I0CNoaSlYv0MEGeTU8RDPTvNl
-	mGHs3kcA==;
-Received: from mail-ot1-x32b.google.com ([2607:f8b0:4864:20::32b])
-	by desiato.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xPdTY-000000057bD-2LTl
+	id 1xPdTa-0000000ESwq-19B0
 	for linux-mtd@lists.infradead.org;
-	Sat, 07 Nov 2026 10:16:47 +0000
-Received: by mail-ot1-x32b.google.com with SMTP id 46e09a7af769-846566246e8so395264a34.1
-        for <linux-mtd@lists.infradead.org>; Sat, 07 Nov 2026 02:16:44 -0800 (PST)
+	Sat, 07 Nov 2026 10:16:51 +0000
+Received: by mail-ot1-x336.google.com with SMTP id 46e09a7af769-823b938464fso1112543a34.2
+        for <linux-mtd@lists.infradead.org>; Sat, 07 Nov 2026 02:16:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794046602; x=1794651402; darn=lists.infradead.org;
+        d=gmail.com; s=20260707; t=1794046605; x=1794651405; darn=lists.infradead.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=kdpl0vJugGlz+uyTjhhRSpimIDWsRp0py3ymgbcmz+M=;
-        b=lgxdwTpgd5z0PuvkyIHpK+edB4AspuU7l5gxAc4hlhVK43ATNj0W1W5x1dlBHdrOvo
-         jO1L6eWqJij2/Nrx3lfLwVoaYB0gEEQS81qpY/vBXYeBUbQWiW5gq1qzPUCp30XGPoRi
-         wE5JQCKeQShJmF0yVFcxIV/nA/Zi1sdeVzlAR6NgECCafoAEWMxdOh2mRaJ5TLhX7s7X
-         y0n7BV4rGwafsUnMxUIT1YviA2TvnHLWnzkzAOAyCXMfZMx9Sdsxaaea5TRPgI+ZALiD
-         xtVq6IBq42Rtt0YP+BhvD8JOUJ7SNdl4vEX6B7xQ0Pjc7MtMqH7CbvXFd0ciI0wOkNK2
-         HqgQ==
+        bh=MlZnG/7Sna+U2qbkmqtYLFmIOLPlVRBG830dYMD5F3Y=;
+        b=ix5i5jfsgFK4ousIeqxeXL5c9erjjepJ78EtGa/bhFaqM+2+25V1hegtueVoD1Q5mO
+         wkSoiySdn4KsCPM2UoVB/fAdtO8vHd7j2FsR0LZ+9xK35IDZhOpWMJHgjx9L+MqHP7c/
+         XoOWOY0S1vgB3E5auFPGTek0yZBkJjS3SniVWJfZqww2d3nMQxpqZbOso8zW3vPGFD1S
+         6Dwy3f+6ZkBhlKicJwzyCVfpLF2/JWaIJH9x4dZuipAb8sUN/XXcMefqwW9szoo81AUk
+         5OqvvshnuAlsYlaKG01VO3ENtKwfkkiJnouNGmPcdAKx1yLtnWdcK3WgoOaEI17t1hb8
+         g2hw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794046603; x=1794651403;
+        d=1e100.net; s=20260707; t=1794046605; x=1794651405;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=kdpl0vJugGlz+uyTjhhRSpimIDWsRp0py3ymgbcmz+M=;
-        b=AatGlzw2zknbyefybMpir2O88hQZVLN1vOsAkifMCyJxd+jOdniFABTMhu08pEfFQb
-         T004PfFhGsBindneePR4xjKWwl2oeBh3zgBkQKw4Lwcle/qrfh8zVrMClDss3t8eQ13u
-         2myUKlFB0T6QhKV3AMkk4qwwitxqGe2VZH4UlZPk6640lO0cIhFTIFBnTFloAGKMmBYX
-         4vR++8bJv3oJmC6HBtcoxMFcepvg/JQAUHEIlz0SxEWcf9yp1i0eGzzYyAeHoLmUhkqi
-         vp5ydogC9vwbaEMzr7wcy8xVGYnbX2gbhZ8H4U0/91zsDpyrdwdDm7fC/BKRu7b9g3zD
-         vzXw==
-X-Forwarded-Encrypted: i=1; AKwUvBzPqZCsxGCqIYiYR4lQdPitLyLNyFK1C4NJDJny6i2FBwhyPNatuNRgp2FZ7TqcG7G3/Q8iHCXw8V8=@lists.infradead.org
-X-Gm-Message-State: APuU4Z8CDnEVQIrhm89923kzN8DBko0US4+r8vfphRjll1d3ZmHOYx8j
-	bfLHFpSkSJK3LzoGQe9bLvH8qZEPxAduHmRSAxYbrtV08c2n7PplonRu
-X-Gm-Gg: AYBFou3+lsEChwmzxjmqGogmMQPBEEouX5vLOnFOQ+/5weFFKy1pWGmaJ5ArB9wJWZh
-	LvuAaOoWenwPjFDohWn5LvrYrqfRcRf20qJWcYZwPv38lpGe9Pxn6wgE+z4IQ5kuvRibssCS1kl
-	r3Ed2eOqpi5aX+wreQx3CCtoItzA6QJ5s+qVEmRACFczgaSlNQZ7ozFkHi6aPNOx3wb7E925luP
-	o66HnTyHBd1ZvAmvGEhBpR6/XYlj5KxdhF++xW3WJemDLVg87douzCggtGysfGQVCo9ZDcfejHj
-	sSkVH0NkJ3vGxV5aoNHK6eLygFXFCd2oWSv4ZrUqla+Tvz5A+h4vCZsLEchKkfKPl59C4MDMA6l
-	d3QIVE5bQZY+l+xj+H09yH1iuhPeLBfvencdX+siZ+yqFVfboIujw+TPvJt+Rn5TipOkChQKdSx
-	XjHwg3V6aQG1Qvb2UaBllaNvTBAIY9XY7vEsqBnxfwJJMrUCEsUtHg6rSm26QNDrU46Mc4pkBe3
-	nsHdiMZgofGuMfRu280Diy7z6tj4zvF2IJTnw8PcyRFTIuYNZ63W6P0ZixdjVmKPU25232miqQG
-	XKCLiejVnRH3Eq8JnWczvhAAagi7C4ue5qIzC1DaD4wHJUV11JM4tOtUTe8UV6Bepc/RlIPPlcd
-	Aco2/5fZBd3yfpcoF9jL+32rycwL4WcId0WQ+6q91lI++dJ+3AD79u73ES4OdjHa+rxt+z770BX
-	OXIAWmqHSB4TSaqkACChVwOMUCJOfn0AcXSy9R3Jiao2nAC/t+07BRpfO+IuIEHk2RU/gzQZo+R
-	Q==
-X-Received: by 2002:a05:6830:314f:b0:823:e626:277e with SMTP id 46e09a7af769-85f3419d333mr1085835a34.4.1794046602585;
-        Sat, 07 Nov 2026 02:16:42 -0800 (PST)
+        bh=MlZnG/7Sna+U2qbkmqtYLFmIOLPlVRBG830dYMD5F3Y=;
+        b=orvJs7n/fysX6fTmaAWABYdqo7AhIAr/ljctNf7z3oPrka/dlyA1PFYI3oQ4nBxGmz
+         l4qbDnMecccVwH2jam0qIYUbs1E2N+aPCzEiCcczAppSx/4azwFeNtTUkD/MwMJ/q9Jn
+         I38gn7BiuLyIaTGDpaBxWO1Dph627mSYKiwx2cq7Sby6OKi4w4cxdxfp7FU89PGjIVzK
+         fkpDCzdi5ASGECKrE66Un+h8ZMYgfqh02tbRtTu9DNt60YgXlBaftwtLV0hF3W8BjQtA
+         ocZHMLOsLBsvjXvzLJwqCpODcxbsztCf+WVSr1sVJpUlMbqFo5qFEaggIArmCUz7A2+J
+         4fmw==
+X-Forwarded-Encrypted: i=1; AKwUvBy7VCDdinOV3i4nxCLKaNJcbft39qsZwnH3efVNcFxIp3XJ9C7HVgqpBkZ1m7OTiSqeugiochwqHjo=@lists.infradead.org
+X-Gm-Message-State: APuU4Z/Xu1IY3t3UACBvYXBVzfeW9J1t9iYbONa3JVGvw9zqMxtTbBcX
+	phZIH8wPJTJ+lKl98JpgwRI8aUI936LoGkCv+kUw3Ep7Jvhczp49I2JM
+X-Gm-Gg: AYBFou0tIk0am+qnSYe7UahNPVqa9ZeWO5ozGacqhs/u6NPSB7RkUeU/SOeHGW3bTV/
+	07nUIP/mUWX6rNISSLPLweWzUQZBKC92zfh2DTjR+Zp723DB9kA2xv1FJ92CQSHDvUcYkIeLWhf
+	Bx2azvRTyaDyIpwesEZNHx4ez2DeNcN7yOSiIV3f1mfMQc6oCs89Ljt/g45kCIExunDfWkS4Y6j
+	AICuPU74tST6+8CqWXMcAwuZHVLVtXWbI6Q8VKMf8lgdW8lLwfkkntxb1znWxBFnoSaTHejl4MH
+	4tiIVTvzuDii6hWG+lvMy5lquA6hB66vEsfN+HfRGuCBS3cRYT+umMOBLwZUwmZiqukHs2Lypvo
+	+4Uw8ywxv5ceXrhQKnZ6iUki5Q45XK5Ye64qsF00qzZZYHc/07dvEHhfxhVXTvSmTTNPvfRWCGd
+	Ke5gzEs7yi+2EuhrtSK4KClv4e+gtf0BdJILUDoVjGUQoDuZfPPw+nCmkgSrTS2RhIOT9bv3bgl
+	Pqc5qYIkOTvtPKnvBGSgGhSr8QeP+50w4YaemXaEgr58zMhvSCiPBiSwg+EGklQP8n3P0CTTFKu
+	D5asZNevWLvS6XpKvl8VegeEP1MZYvmC9Ka0KR1nmKEyx3wNzVgjR9fgO/vkuLP1Ny0zPsY4Jjq
+	sAaRv7uFNmuNx+l5IijJ3tT5EHo5oJ5mYi/JBKo+aSm3kR4RjqTOtxxLxlGtt4Oht/FYTcZBCZG
+	6gf6F88ZjdcUOuOf19eGB5opj7XWoj1J0s+NyEkdCOnXWQCGcAx7TP
+X-Received: by 2002:a05:6830:310b:b0:85f:31f:7643 with SMTP id 46e09a7af769-85f1cf3e2c4mr5316383a34.7.1794046605233;
+        Sat, 07 Nov 2026 02:16:45 -0800 (PST)
 Received: from [127.0.1.1] (174-29-1-49.hlrn.qwest.net. [174.29.1.49])
-        by smtp.gmail.com with ESMTPSA id 46e09a7af769-85f1dbef224sm3990269a34.12.2026.11.07.02.16.39
+        by smtp.gmail.com with ESMTPSA id 46e09a7af769-85f1dbef224sm3990269a34.12.2026.11.07.02.16.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Nov 2026 02:16:42 -0800 (PST)
+        Sat, 07 Nov 2026 02:16:44 -0800 (PST)
 From: James Hilliard <james.hilliard1@gmail.com>
-Date: Sat, 07 Nov 2026 03:16:03 -0700
-Subject: [PATCH 06/58] mtd: rawnand: macronix: serialize OTP access with
- NAND operations
+Date: Sat, 07 Nov 2026 03:16:04 -0700
+Subject: [PATCH 07/58] mtd: rawnand: sunxi: retain chip state until the
+ final MTD put
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Message-Id: <20261107-submit-rawnand-retained-handle-lifetime-v1-v1-6-0181ef0cc4c8@gmail.com>
+Message-Id: <20261107-submit-rawnand-retained-handle-lifetime-v1-v1-7-0181ef0cc4c8@gmail.com>
 References: <20261107-submit-rawnand-retained-handle-lifetime-v1-v1-0-0181ef0cc4c8@gmail.com>
 In-Reply-To: <20261107-submit-rawnand-retained-handle-lifetime-v1-v1-0-0181ef0cc4c8@gmail.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, 
@@ -158,9 +141,9 @@ Cc: Tze Yee Ng <tze.yee.ng@altera.com>, linux-mtd@lists.infradead.org,
  linux-arm-msm@vger.kernel.org, James Hilliard <james.hilliard1@gmail.com>
 X-Mailer: b4 0.15.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261107_101644_551623_5BDEF71D 
-X-CRM114-Status: GOOD (  17.33  )
-X-Spam-Score: 0.1 (/)
+X-CRM114-CacheID: sfid-20261107_021646_432768_10F34624 
+X-CRM114-Status: GOOD (  20.58  )
+X-Spam-Score: -1.9 (-)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -181,81 +164,192 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-The Macronix OTP callbacks select a target and issue feature and page
-commands without taking the chip or controller locks. A retained OTP
-handle can therefore issue commands after controller disconnection, and
-normal NAND I/O can also interfere with the temporary OTP mode.
+sunxi_nand_chips_cleanup() unregisters each MTD device and immediately
+calls nand_cleanup(). Devres subsequently frees the chip and controller.
+An open MTD handle can outlive this sequence: another operation or even
+closing a writable handle reaches freed metadata and lock storage.
 
-Take the common NAND operation locks around the entire OTP transaction,
-including restoring normal mode. This also rejects operations on a
-disconnected chip and waits for suspended chips using the normal NAND
-rules.
+Unregister each MTD device while removal notifiers can still finish I/O,
+then disconnect the chip and release the driver's initial MTD lifetime
+reference. Defer nand_cleanup() and chip destruction until the final MTD
+or device reference is released. Retain the chip name, flash node and
+per-sector user-data lengths along with the NAND metadata.
 
-Fixes: e87161321a40 ("mtd: rawnand: macronix: OTP access for MX30LFxG18AC")
+Give the controller a reference for each retained chip and one owned by
+devres. Register that devres action first so the IRQ and hardware
+resources are released before the initial controller reference. The
+shared lock and parent device remain valid until the last chip is
+destroyed, while the disconnect gate prevents access to released
+hardware resources.
+
+Unwind heap allocations on probe failures, including attach failures for
+which nand_scan() does not invoke the detach callback.
+
+Fixes: 1fef62c1423b ("mtd: nand: add sunxi NAND flash controller support")
 Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
 ---
- drivers/mtd/nand/raw/internals.h     | 2 ++
- drivers/mtd/nand/raw/nand_base.c     | 4 ++--
- drivers/mtd/nand/raw/nand_macronix.c | 4 ++++
- 3 files changed, 8 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/raw/sunxi_nand.c | 59 +++++++++++++++++++++++++++++----------
+ 1 file changed, 45 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/internals.h b/drivers/mtd/nand/raw/internals.h
-index b8b29341b88c..dcd9536da449 100644
---- a/drivers/mtd/nand/raw/internals.h
-+++ b/drivers/mtd/nand/raw/internals.h
-@@ -81,6 +81,8 @@ extern const struct nand_manufacturer_ops toshiba_nand_manuf_ops;
- extern const struct mtd_pairing_scheme dist3_pairing_scheme;
+diff --git a/drivers/mtd/nand/raw/sunxi_nand.c b/drivers/mtd/nand/raw/sunxi_nand.c
+index f41feebe4257..57894ce45065 100644
+--- a/drivers/mtd/nand/raw/sunxi_nand.c
++++ b/drivers/mtd/nand/raw/sunxi_nand.c
+@@ -27,6 +27,7 @@
+ #include <linux/dmaengine.h>
+ #include <linux/interrupt.h>
+ #include <linux/iopoll.h>
++#include <linux/mutex.h>
+ #include <linux/reset.h>
  
- /* Core functions */
-+int nand_get_device(struct nand_chip *chip);
-+void nand_release_device(struct nand_chip *chip);
- const struct nand_manufacturer_desc *nand_get_manufacturer_desc(u8 id);
- int nand_bbm_get_next_page(struct nand_chip *chip, int page);
- int nand_markbad_bbm(struct nand_chip *chip, loff_t ofs);
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 8f7d2571e8d9..2667faf02a91 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -207,7 +207,7 @@ EXPORT_SYMBOL_GPL(nand_deselect_target);
-  *
-  * Release chip lock and wake up anyone waiting on the device.
-  */
--static void nand_release_device(struct nand_chip *chip)
-+void nand_release_device(struct nand_chip *chip)
+ #define NFC_REG_CTL		0x0000
+@@ -405,6 +406,13 @@ static inline struct sunxi_nfc *to_sunxi_nfc(struct nand_controller *ctrl)
+ 	return container_of(ctrl, struct sunxi_nfc, controller);
+ }
+ 
++static void sunxi_nfc_release(struct nand_controller *controller)
++{
++	struct sunxi_nfc *nfc = to_sunxi_nfc(controller);
++
++	kfree(nfc);
++}
++
+ static irqreturn_t sunxi_nfc_interrupt(int irq, void *dev_id)
  {
- 	/* Release the controller and the chip */
- 	mutex_unlock(&chip->controller->lock);
-@@ -336,7 +336,7 @@ static int nand_isbad_bbm(struct nand_chip *chip, loff_t ofs)
-  *
-  * Lock the device and its controller for exclusive access
-  */
--static int nand_get_device(struct nand_chip *chip)
-+int nand_get_device(struct nand_chip *chip)
+ 	struct sunxi_nfc *nfc = dev_id;
+@@ -2027,9 +2035,8 @@ static const struct mtd_ooblayout_ops sunxi_nand_ooblayout_ops = {
+ static void sunxi_nand_detach_chip(struct nand_chip *nand)
  {
- 	/* Wait until the device is resumed. */
- 	while (1) {
-diff --git a/drivers/mtd/nand/raw/nand_macronix.c b/drivers/mtd/nand/raw/nand_macronix.c
-index 03237310852c..1ffe2fc4943e 100644
---- a/drivers/mtd/nand/raw/nand_macronix.c
-+++ b/drivers/mtd/nand/raw/nand_macronix.c
-@@ -380,6 +380,9 @@ static int __macronix_30lfxg18ac_rw_otp(struct mtd_info *mtd,
+ 	struct sunxi_nand_chip *sunxi_nand = to_sunxi_nand(nand);
+-	struct sunxi_nfc *nfc = to_sunxi_nfc(nand->controller);
+ 
+-	devm_kfree(nfc->dev, sunxi_nand->user_data_bytes);
++	kfree(sunxi_nand->user_data_bytes);
+ 	sunxi_nand->user_data_bytes = NULL;
+ }
+ 
+@@ -2045,8 +2052,7 @@ static int sunxi_nfc_maximize_user_data(struct nand_chip *nand, uint32_t oobsize
+ 	if (nsectors <= 0)
+ 		return -EINVAL;
+ 
+-	sunxi_nand->user_data_bytes = devm_kzalloc(nfc->dev, nsectors,
+-						   GFP_KERNEL);
++	sunxi_nand->user_data_bytes = kzalloc(nsectors, GFP_KERNEL);
+ 	if (!sunxi_nand->user_data_bytes)
+ 		return -ENOMEM;
+ 
+@@ -2427,6 +2433,13 @@ static const struct nand_controller_ops sunxi_nand_controller_ops = {
+ 	.exec_op = sunxi_nfc_exec_op,
+ };
+ 
++static void sunxi_nand_release(struct nand_chip *chip)
++{
++	struct sunxi_nand_chip *sunxi_nand = to_sunxi_nand(chip);
++
++	kfree(sunxi_nand);
++}
++
+ static void sunxi_nand_chips_cleanup(struct sunxi_nfc *nfc)
+ {
+ 	struct sunxi_nand_chip *sunxi_nand;
+@@ -2440,8 +2453,9 @@ static void sunxi_nand_chips_cleanup(struct sunxi_nfc *nfc)
+ 		chip = &sunxi_nand->nand;
+ 		ret = mtd_device_unregister(nand_to_mtd(chip));
+ 		WARN_ON(ret);
+-		nand_cleanup(chip);
++		nand_disconnect(chip);
+ 		list_del(&sunxi_nand->node);
++		mtd_put_master(nand_to_mtd(chip));
+ 	}
+ }
+ 
+@@ -2465,8 +2479,7 @@ static int sunxi_nand_chip_init(struct device *dev, struct sunxi_nfc *nfc,
+ 		return -EINVAL;
+ 	}
+ 
+-	sunxi_nand = devm_kzalloc(dev, struct_size(sunxi_nand, sels, nsels),
+-				  GFP_KERNEL);
++	sunxi_nand = kzalloc(struct_size(sunxi_nand, sels, nsels), GFP_KERNEL);
+ 	if (!sunxi_nand)
+ 		return -ENOMEM;
+ 
+@@ -2477,19 +2490,21 @@ static int sunxi_nand_chip_init(struct device *dev, struct sunxi_nfc *nfc,
+ 		if (ret) {
+ 			dev_err(dev, "could not retrieve reg property: %d\n",
+ 				ret);
+-			return ret;
++			goto err_free_chip;
+ 		}
+ 
+ 		if (tmp > NFC_MAX_CS) {
+ 			dev_err(dev,
+ 				"invalid reg value: %u (max CS = 7)\n",
+ 				tmp);
+-			return -EINVAL;
++			ret = -EINVAL;
++			goto err_free_chip;
+ 		}
+ 
+ 		if (test_and_set_bit(tmp, &nfc->assigned_cs)) {
+ 			dev_err(dev, "CS %d already assigned\n", tmp);
+-			return -EINVAL;
++			ret = -EINVAL;
++			goto err_free_chip;
+ 		}
+ 
+ 		sunxi_nand->sels[i].cs = tmp;
+@@ -2518,18 +2533,32 @@ static int sunxi_nand_chip_init(struct device *dev, struct sunxi_nfc *nfc,
+ 
+ 	ret = nand_scan(nand, nsels);
+ 	if (ret)
+-		return ret;
++		goto err_free_chip;
++
++	ret = nand_set_release(nand, sunxi_nand_release);
++	if (ret)
++		goto err_cleanup_nand;
++	mtd->owner = THIS_MODULE;
+ 
+ 	ret = mtd_device_register(mtd, NULL, 0);
+ 	if (ret) {
+ 		dev_err(dev, "failed to register mtd device: %d\n", ret);
+-		nand_cleanup(nand);
++		nand_disconnect(nand);
++		mtd_put_master(mtd);
+ 		return ret;
+ 	}
+ 
+ 	list_add_tail(&sunxi_nand->node, &nfc->chips);
+ 
+ 	return 0;
++
++err_cleanup_nand:
++	nand_cleanup(nand);
++err_free_chip:
++	/* nand_scan() does not detach a chip whose attach callback failed. */
++	kfree(sunxi_nand->user_data_bytes);
++	kfree(sunxi_nand);
++	return ret;
+ }
+ 
+ static int sunxi_nand_chips_init(struct device *dev, struct sunxi_nfc *nfc)
+@@ -2610,12 +2639,14 @@ static int sunxi_nfc_probe(struct platform_device *pdev)
+ 	int irq;
  	int ret;
  
- 	nand = mtd_to_nand(mtd);
-+	ret = nand_get_device(nand);
+-	nfc = devm_kzalloc(dev, sizeof(*nfc), GFP_KERNEL);
++	nfc = kzalloc_obj(*nfc);
+ 	if (!nfc)
+ 		return -ENOMEM;
+ 
+ 	nfc->dev = dev;
+-	nand_controller_init(&nfc->controller);
++	ret = devm_nand_controller_init(dev, &nfc->controller, sunxi_nfc_release);
 +	if (ret)
 +		return ret;
- 	nand_select_target(nand, 0);
+ 	INIT_LIST_HEAD(&nfc->chips);
  
- 	ret = macronix_30lfxg18ac_otp_enable(nand);
-@@ -426,6 +429,7 @@ static int __macronix_30lfxg18ac_rw_otp(struct mtd_info *mtd,
- 			write ? "write" : "read");
- 
- 	nand_deselect_target(nand);
-+	nand_release_device(nand);
- 
- 	return ret;
- }
+ 	nfc->regs = devm_platform_get_and_ioremap_resource(pdev, 0, &r);
 
 -- 
 2.53.0
