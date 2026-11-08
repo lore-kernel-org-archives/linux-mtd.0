@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39434606A31A
-	for <linux-mtd@archiver.kernel.org>; Sun,  8 Nov 2026 02:07:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFE17606A31C
+	for <linux-mtd@archiver.kernel.org>; Sun,  8 Nov 2026 02:20:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=DMEEDDfx;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=arista.com header.i=@arista.com header.a=rsa-sha256 header.s=google header.b=EEhZXpfO
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=LtRL8oDs;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=arista.com header.i=@arista.com header.a=rsa-sha256 header.s=google header.b=cwRVYLSa
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,63 +14,63 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
 	List-Unsubscribe-Post:List-Owner;
-	bh=1u958mamd+IBd4dVwGzyjuggEkkXjCTrWic90ul4tQ0=; b=DMEEDDfxycw8wrR6+8u2bhuNvY
-	0D+U4iRBfM1G7NJ3twfSf92vXE3Ft+98PNU/rmL5xqsQ8pXWNq/Toze/z1sAo8vvHNoRaTnY9dQvo
-	nptOsY+yO4HDHHDru9EAWh1ZU6YcniQlugZz7V1s3CzBiTpDPmmRpjYEW3cxmHCFXvm1R0tkvQpeU
-	YjZiVXFGqcjeM6LM+cD7omj47F9UycxueMplv+QRByV0++NH0Kf2JCN4DymDZPva0ppep6eAc2qKY
-	38n4Xap8GbH52qLWZqoolzdFO8w9+CzqjoyNxfKEmxrC7FX+XCdtW24Aj0AzqmPEkMdUFOO/mLYOl
-	amJs8vpg==;
+	bh=Gqyh59q0D6pUbWebUl2Wl8b0avt8Dan6u/eEk7HqTi8=; b=LtRL8oDszI6m/Epy3/MKTrXZTM
+	TAceG9aG7WESmRSksCHTmW0zHD5saWpoTWB2BnRAUyGGF4gu1Ym6jX8MFs3tLoCD1XREL8Q+4Ct05
+	vHUSfVYe7TP4UiQiysNGSdXsWY8F/h1KMiqjI7oB6s7hGoKbyqeL7ISZO66pjTvVTfakLbtCobHsu
+	vTnGaGIsbaYh007w9naEeNBCfu39mgZthGJbNQ0K2SV2X+niVFKLcoEJykx7cVT7CP8weUvZaqrX8
+	g+RhKmLmaBrUd28EDHKtS47Cq0yyVeb2iNu3Af9d2JRbRJIhcy228UmCdOp/W7pzHrIYoPIkjlc0G
+	Wgeulilg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xPsJw-0000000Fb6O-3EP9;
-	Sun, 08 Nov 2026 02:07:48 +0000
-Received: from mail-dy1-x1330.google.com ([2607:f8b0:4864:20::1330])
+	id 1xPsW4-0000000FbVd-0sqx;
+	Sun, 08 Nov 2026 02:20:20 +0000
+Received: from mail-dl1-x1236.google.com ([2607:f8b0:4864:20::1236])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xPsJs-0000000Fb63-3MU2
+	id 1xPsW2-0000000FbVI-0N4t
 	for linux-mtd@lists.infradead.org;
-	Sun, 08 Nov 2026 02:07:47 +0000
-Received: by mail-dy1-x1330.google.com with SMTP id 5a478bee46e88-36fb88ea38cso1010248eec.1
-        for <linux-mtd@lists.infradead.org>; Sat, 07 Nov 2026 18:07:44 -0800 (PST)
+	Sun, 08 Nov 2026 02:20:19 +0000
+Received: by mail-dl1-x1236.google.com with SMTP id a92af1059eb24-1b2513decc3so98400c88.1
+        for <linux-mtd@lists.infradead.org>; Sat, 07 Nov 2026 18:20:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=google; t=1794103664; x=1794708464; darn=lists.infradead.org;
+        d=arista.com; s=google; t=1794104417; x=1794709217; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=nAUid8jDWzly69ovFD3scbJRnE8PsLmVF0z4XZSSRog=;
-        b=EEhZXpfOVrDZEqpSiNDinYd2otn2nOk55LgBVMMJblplnt26bW8G0yqZNMyNZzAwnk
-         qgM/GEUwuCzX/WWeHj8GEGKPXaZJ16P6rrQl3nkzWl7YWExzhlvqwP0vYODxjqpR0RVD
-         teqNGpHTbss3FxUp+BYW7nlut0elV/BHoxc8Xdii3sxJ9LQbxIGEhPG3l1JJDpFvzhld
-         9L3pe0Vlf0FU7nuuFE8GagSjpUOrz+OJif/oOY7UuWKOcl9M6Md3ds61fkIibtetmsQr
-         F5FUiVHUtHsUGMueQmvUs7+WZEFXDWuRWsQm+A6EB2YQAe78FT/Z2erqm2RTNwBgfzWe
-         +ruQ==
+        bh=qOV57dKgZ6M1Pug8TSXqnl7cmjzsOLs4V2weSI1QSbo=;
+        b=cwRVYLSaPQ/FUzgjrdgUFpJaI661rga25M1nF2WWOMPrcQSO+GmqNGrwDY1gCq8TFg
+         wWdSdmHsnJeCZ6/TYizOM4TUxyIWAY2SaLCe2hMB+OjhZNQDv9zKv6t9KK6QXlBCbJgj
+         8r1WkbT4kbWJ1lS7mqwHUn6EnwRIJme8L4sxlZ2qzqpJgjhhHPwvWtjELYDHQDGjynhj
+         POsCYy2qFw6pjnl2qb18WsfQC4VbJ2APtrVIQ3/lkOHTFUA/H8q9xCD19NmDD0XJCMtD
+         IM5iU9it8/odvhmdSw86J2ej+SKyp7tLzAp7bt7zBV0UQgqPaMV/OA6JnVaJV9iz+CG/
+         NhfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794103664; x=1794708464;
+        d=1e100.net; s=20260707; t=1794104417; x=1794709217;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=nAUid8jDWzly69ovFD3scbJRnE8PsLmVF0z4XZSSRog=;
-        b=zRs84oDUz79lKIwkpCZ4rp6yVJ1zP3VRuR4mWScOyUfZXVhKtLdF2YYh8A9MNMj9pd
-         Y4m6qTcfg2bJr4zM8m5BatcVN8lpNnPoSNB6RMIs2tyBCOFgRkB60d8kX78GAUFJ3iTm
-         94sJk1pxQA4+tIyvPZ/ROZGk5TgTFEFH38sVSB3rJhNQv3d+QUu2uiR45OtEyDmAshJB
-         PgWHKD8biSM+HPRbZrtUQZUmdL5XXhYafmXEF7P1ucXew2bZzwglnVctM+7vVSEOs9cg
-         +COFe7hMX+cYHkKmIJFi+9S3SnSCPyTAP9gvDArFjzv9ZavosNJrZV5niqcvLcjtUpfh
-         dgQw==
-X-Gm-Message-State: APuU4Z+QacbRso9SHA/cTU7/oZwEnfYjaIpMfOIqlbWrjzbuahhS45pn
-	dWD1dJiSnY/8TaWcWm2H9oKWnhrQTPMxqe/eWHhaADNJ43vjMJvf+SmMRKcmr0vZcA==
-X-Gm-Gg: AYBFou1OPBKnT/nF9lz5CVBpNYOPmU9+LtopTmN92GliySwWhtRNZqF1yFZsqD4fJda
-	pOjAUe7tahPCngFDT0zQgwznUFYcrrO0vSX315f2QGlaQLCoJ2mthEaTcNYrckFyc4ki9Hk3X86
-	L8jOa8qWIpBDMtkk/AYtPyFxsrcauPZK8pGBTeiMZ6cQtEzcLeEG7zX4XoSS/jzXJ3A6ozPuOcs
-	ohF8jknzdYvyYxolUhSUOTBf6XIWEGOp/aHjeBFLjJEUWUH+Cnn1ivUlTgdTyraMI/XbxOw+Y4O
-	qmwteI4WuUQQ8kxTKn5l5hbuSqJjs9n2jZscSNl4NzNRsR0nsk4mo0AvWcbbgb32nxfDK0XXZRP
-	e0P8sfCHDJO8Uc70NMFu5dM0xumN7/aBzX8vOYJfUxgFxJUijZXVnS8p1stVV+kK3mpFvJkpoi0
-	UOrm7uGVsUqbqX0MobQYu+A4ZK8MxMe3RVPHhJZjdxbhnnRBs5RM3K8yCyZwLh1eN3ROhWJDcaN
-	6Z+ZKDucYhkTl/4Lel/kCX40pEWlxABpAK922X7kh+EequNiJSUQ6wZfrEQ0Lt9TqtH+n3SNAhq
-	9h3JXANh3ImRN0djAtIL9/DwxPLajoCIDtJHuvtfWLSOwGJZYhVuw/BH2MlyCF9F
-X-Received: by 2002:a05:7022:170d:b0:1ae:d447:6c84 with SMTP id a92af1059eb24-1b269b21bf7mr4108916c88.19.1794103663378;
-        Sat, 07 Nov 2026 18:07:43 -0800 (PST)
+        bh=qOV57dKgZ6M1Pug8TSXqnl7cmjzsOLs4V2weSI1QSbo=;
+        b=NItwmsHQTbhj6fAzPjdoznfb9XK20O4zL+8SoDikqQm2iYTQzwv4y642upyYM2gqbX
+         7jZy5x5MJSybIgBvqvc5Mx2HSwU93eSXcgQzdKjg9k7dK51egc8+oZ3B176EpeP3AeDP
+         bGJKKVqB9xDOy4mBWn5kxN2T0XffwnX+Z+/8TVlr+Q8IJwWeveVzl2bPf/0qTEbapJYR
+         7RFspk23+yqQb814uvmC96pyLqFzZYVt6hRRYF7OpFeFlPmpKXBP/Wt38C9t18092W8X
+         H0GX3Xw+5jLVAKu/g/w7ViiHxPhB5nqUtbiHius6/NtXfOApmEn+Q7pUfu3OyJT0yacs
+         KAIQ==
+X-Gm-Message-State: APuU4Z8FiYk/v0gsLHFYGIc4KIaRCnl/1Cxr5G12eRCFVCi6Gjp1l6qx
+	OQbqRVJ4bdKyykz7FDZbxw2077YbPOMurCtGkNw4e26MfynFPkvpJ29WfnQq/3Q/KA==
+X-Gm-Gg: AYBFou2h2mqTi5my4wko46GczP6Dy6sNjSez81MWPytI0eLTr00vymHHN1Ql5fgZBce
+	gN5qHF7et8cRq5SsynnplfwfBG0FK4PUIEZRnVUlFLtsyMSRYGZEqj7fgoy4aXoG/mXo+GFyZ/6
+	1v7h8CeDlTkSvPKbKqzZXBIL/0YEjTFlO41O+lVOWyUWraWd1IKT4PvKJjekbI7YDK8Dp4t8xA0
+	8l3tYfBIGRx0dqfAbNG4v6FqX38NAZuTAZSya0mtYIN0HkgSYsXJ+SCU64iDdhu+tS3EyVCaMWw
+	vSoHHLwwa/mr+doz8TogmTc4s+2iOhI2nymRL36+oHHJBQuKZFeHzIGNv/RheHR4Y9jBAniEdix
+	KTqtfwsV+66F0pcseKoa1C8vtAshJz2bJTgb1CUR7qcYhFD47evmUXRZstNjKpveME/cLyzA3+H
+	H64e2JedNFakmrB9pApZJ461O8AMOOFeibDyihlPLm14+IWjfkVEPWZUFyzO4v9nmKylFDN58/b
+	FYd0WaAraJpHewt+Zv7EFZCV2r7YDtawO37gHUEFG2Wm9IscX59vH/57VEyZxNSLBeLgQdodyCi
+	R0jI5Odk+tqs/X+0OSI4QKGWiKgc6sCCLtAZOU7jiQtRayuT9eigUG2jLUT7v7HV
+X-Received: by 2002:a05:7022:2606:b0:194:9e7a:3ba2 with SMTP id a92af1059eb24-1b39fe301edmr686258c88.2.1794104416954;
+        Sat, 07 Nov 2026 18:20:16 -0800 (PST)
 Received: from mparker-home-xcrbr.sjc.aristanetworks.com ([74.123.28.17])
-        by smtp.gmail.com with ESMTPSA id a92af1059eb24-1b37561ccabsm2133832c88.12.2026.11.07.18.07.42
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-1b3755e936bsm2585693c88.6.2026.11.07.18.20.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Nov 2026 18:07:42 -0800 (PST)
+        Sat, 07 Nov 2026 18:20:16 -0800 (PST)
 From: Matthew Parker <mparker@arista.com>
 To: pratyush@kernel.org,
 	mwalle@kernel.org,
@@ -82,16 +82,15 @@ Cc: linux-mtd@lists.infradead.org,
 	stable@vger.kernel.org,
 	Matthew Parker <mparker@arista.com>,
 	Adam Calabrigo <adamc@arista.com>
-Subject: [PATCH v2] mtd: spi-nor: issi: Add support for ISSI IS25LP512MG
-Date: Sun,  8 Nov 2026 02:07:12 +0000
-Message-ID: <20261108020712.897714-1-mparker@arista.com>
+Subject: [PATCH] mtd: spi-nor: gigadevice: Add support for GigaDevice GD25B512
+Date: Sun,  8 Nov 2026 02:20:11 +0000
+Message-ID: <20261108022011.898185-1-mparker@arista.com>
 X-Mailer: git-send-email 2.51.0
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261107_180746_155696_9E4FC912 
-X-CRM114-Status: UNSURE (   9.86  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20261107_182018_145465_9BF25B4D 
+X-CRM114-Status: GOOD (  10.28  )
 X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -112,40 +111,37 @@ X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-Add support for the ISSI IS25LP512MG 512Mbit (64 MiB) SPI NOR flash.
+Add support for the GigaDevice GD25B512 512Mbit (64 MiB) SPI NOR flash.
 
-The device provides JESD216B SFDP tables which accurately describe
-geometry, erase types, and read-write opcodes. Flash read, write, and
-erase operations across the full 64 MiB array have been verified on
-hardware.
+The chip exposes valid JESD216B SFDP tables including 4-byte address
+instruction tables, from which geometry and opcodes are discovered.
+Stateless 4-byte opcodes and status register locking are enabled. Read,
+write, and erase functionality across the full memory array have been
+tested on hardware.
 
 Cc: stable@vger.kernel.org # v6.1+
 Co-developed-by: Adam Calabrigo <adamc@arista.com>
 Signed-off-by: Adam Calabrigo <adamc@arista.com>
 Signed-off-by: Matthew Parker <mparker@arista.com>
 ---
-v2:
- - Drop .name, .size, and .parse_sfdp per modern SFDP discovery
-   conventions.
- - Rely solely on JESD216B SFDP parsing with SPI_NOR_QUAD_PP.
+ drivers/mtd/spi-nor/gigadevice.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
- drivers/mtd/spi-nor/issi.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/mtd/spi-nor/issi.c b/drivers/mtd/spi-nor/issi.c
-index 2f057d731df2..d2b812050550 100644
---- a/drivers/mtd/spi-nor/issi.c
-+++ b/drivers/mtd/spi-nor/issi.c
-@@ -101,6 +101,9 @@ static const struct flash_info issi_nor_parts[] = {
- 	}, {
- 		.id = SNOR_ID(0x9d, 0x60, 0x19),
- 		.name = "is25lp256",
+diff --git a/drivers/mtd/spi-nor/gigadevice.c b/drivers/mtd/spi-nor/gigadevice.c
+index 6a2e6ebda148..de96cefde516 100644
+--- a/drivers/mtd/spi-nor/gigadevice.c
++++ b/drivers/mtd/spi-nor/gigadevice.c
+@@ -64,6 +64,10 @@ static const struct flash_info gigadevice_nor_parts[] = {
+ 		.id = SNOR_ID(0xc8, 0x40, 0x19),
+ 		.name = "gd25q256",
+ 		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6,
 +	}, {
-+		.id = SNOR_ID(0x9d, 0x60, 0x20),
-+		.flags = SPI_NOR_QUAD_PP,
++		.id = SNOR_ID(0xc8, 0x47, 0x1a),
++		.flags = SPI_NOR_HAS_LOCK,
++		.fixup_flags = SPI_NOR_4B_OPCODES,
  	}, {
- 		.id = SNOR_ID(0x9d, 0x70, 0x16),
- 		.name = "is25wp032",
+ 		.id = SNOR_ID(0xc8, 0x60, 0x16),
+ 		.name = "gd25lq32",
 -- 
 2.51.0
 
