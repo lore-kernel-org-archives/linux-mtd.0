@@ -2,103 +2,59 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 906C9606A339
-	for <linux-mtd@archiver.kernel.org>; Sun,  8 Nov 2026 21:16:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C62E606A31C
+	for <linux-mtd@archiver.kernel.org>; Sun,  8 Nov 2026 21:17:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=LOKEdtQT;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=EadXu8EX
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=zPP4UQrg;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=P4RjrBnN
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
-	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Reply-To:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:References:
+	In-Reply-To:Cc:To:Subject:From:Message-ID:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=PRCqqQGbLOfC4cEf/+MQ6RgDV9hlc1G170vO40XC6RE=; b=LOKEdtQTRkzTmF3Wh78bnAqixN
-	mNNbUWvxFL1eF4ftzc8SldtGeoPQUnMky22K/iy3l7FvAaBXdIJEIf1kxobefhiUz2m7hKm1oWBQP
-	RPezYx/VB6qXi2TExYBCn9Nzi1Ce8ibQnC8HvL++pAuhrISLuY3q+pH+hZ2aTPH4NOiIK80TY3oIG
-	H+pCCOyktkhLQb/lXuw/HoI0XFd1B7/KshFI62AIciNRTy8S0cMZkX0eLZVLZYx4zNBNw1f7ago/u
-	+VH0TxX9SoAqemswbGHUZaj5WvaQAf7KIDYrCII9+AN+FOXtj7e/v0XEi5fYXNIVafxR2UxtfEATC
-	FcbDIUtw==;
+	bh=drBNEhFhF4NuIWKTIXYBT5c4vlRTBGFaAwrXeF0sbVQ=; b=zPP4UQrgxaVWjuUk1X5fDqmcO8
+	NM7lIFl7sOZcJJ7GymSEXGvcdtlvHIlGoxrf392IrrtrPfiZz8So7NYH7Po0nInDDGqMtJwl1hzUU
+	uinmVA2DkS0BJVrxsbqCtuEceYqrRWnPGg1ZJdPGCC0hQMB1Oc7OOO0lVvFLYQ3v+6BhS6SmJ6A10
+	fs3qMyC0sXz3aGemjqj56izpXPc45mjSM04OMknFd1A1wB/P/jL3tx7HNnPj+dfmo2Ou4DxRp5Vqp
+	MLqcWz4bcS8MOGZMZzWB5KBWSpjDsgqPYNAtt/E8CtisTfpd/EXXJ3CkIZjWCZQnVUawtz8CvYzSo
+	im4itayQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xQAFt-0000000GhZ5-12zK;
-	Sun, 08 Nov 2026 21:16:49 +0000
-Received: from mail-oo1-xc31.google.com ([2607:f8b0:4864:20::c31])
+	id 1xQAGa-0000000Ghmr-2EuN;
+	Sun, 08 Nov 2026 21:17:32 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xQAFp-0000000GhWn-2feA
+	id 1xQAGZ-0000000Ghml-1h4b
 	for linux-mtd@lists.infradead.org;
-	Sun, 08 Nov 2026 21:16:47 +0000
-Received: by mail-oo1-xc31.google.com with SMTP id 006d021491bc7-6f5a0893610so182593eaf.1
-        for <linux-mtd@lists.infradead.org>; Sun, 08 Nov 2026 13:16:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794172605; x=1794777405; darn=lists.infradead.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :content-type:mime-version:subject:date:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=BTsIQ3GHuwszTciCCDtrpxdJaKcQmTY5JV7uV9WKwZk=;
-        b=EadXu8EX3RNwUX4rbNTbGyuYx5ZD/a/kfXqivfchO1iUO2kpPpqJcLkNCi6LQbNMQd
-         zZg47lOamo25un2AQtfRqVnLx3/gciH3UuEa+23y8gWeBsy0/SfXdXXGrcOVzLpiseMh
-         EKNkXwVdi1a+d0C8r1LX3YWED+UXuNbDmEqYGaUVrkImViTJSdg6SXXHZLBtINB8tPlt
-         sQWColpBYwc7lrVyTxydsjGMWX9QzWDILKppscxxSSLdxZPKrASNyfhbLKzUFlRlDxS+
-         50apeoyPIT2SVKrxbwFUJrpms/qhIpQxnPudlNuewj081hognbxdTMRhROT033L5Y29g
-         GcZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794172605; x=1794777405;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :content-type:mime-version:subject:date:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=BTsIQ3GHuwszTciCCDtrpxdJaKcQmTY5JV7uV9WKwZk=;
-        b=DCQHFj1aVef/oO8l60MV5xjwVW5pdqVJJQyYh6sz5Fw6CJUj0F9MJ4Fv5qn1vZBLrX
-         xRoB81szAnbGbWAVKrx9iq8441PrJc5O2shHGWL1xZIkFwvYHfi8U4M2gBX/xymrv0ym
-         cm2KTyjEtuFZ5u4wzU6QMrDgtfqZ2lnr5IkqletlHuIbpQ3z7J8ivxT2YX4bFBUI+E4A
-         9W9ubIViCOYGiV1PqvYtGyNLbKa1YKJ1GDYZv//tTEdQJ+4ipDIP/AW0UGmDswbXrvzq
-         amrqTg3s60Y64Skj1VJ/k2P076VO6wjbR7Kai2Umbs7fbmPI5NDtNnbi7TugTwVtph1s
-         tlOA==
-X-Gm-Message-State: APuU4Z9dqWVAzmKATkUFCN5eHdH8/UYw90u/4ULEUT3lnzSIAWZB5HQK
-	acg1VZXU3dRf9ZnwUbET+xszQWj+2LEELQnknDk5njo7MxeDJX3AOHkY7NNNXw==
-X-Gm-Gg: AYBFou2kokhbKijoILg5vaAEdfS7v+E4E20C43jzMv1PklR/oZWLr1eJSqxRIVUuCCH
-	5PUVlCc+4yPA2kck058SioXaww3zJCK9soQ08/xXe6JoukZYeIazBKj7y01G61OpcngnxtO2GRw
-	U/4wFiyrUzBCLFPaucYO/w0aHysI6JHk5jNdnd8oEs23klVa29QGX3zr3Wd/jQ9bQbPpBqBkUjh
-	X8jEbi7l8NU7XW/CEgIIBNZD9oIL7GIv9f8RQ/O9fyBQwPFHQreFBvWDi+42MBLBD7ugrUa1kW9
-	KA4V4NIe1NO+fsBj+6iYALEd/uZj3ACXY+pNl3/PrQ/9MWEmuMGsNC6EpQ/yF+9/cvhqXXfBw+K
-	h515s4nP7MJHpscUbO9Nsy1KGhTDaiKOstj6L75fLXyfojpkLcOsgOVb3As1isLgqVH/4zJ4FsU
-	bF6YOFtSnuWnda6mikbvR6PzreFq77TslKrIaXoi6Gvck9uN6xU0A7WIwqTLm5+UHhv+1Ttj97v
-	gHcZLgiSPEEcWuEexfpg112sa+WwjjcVg9vNwKQ9Nm5Y0dFRSA2jn/X28OXu5spKKnZpSi/+JKQ
-	VaImNxG1/IZgkirtdelOT4GWdQ0rhpgril9O0LLbhRnenqcSemlzhjtxUSdniOTBS7JxyWNK/vn
-	yZlr5cN7LG1GqfvdzVzoq8RAIM4lOGmiUGhMi5dr7rulX9taM5G6J6TX9CEfP2UryUhMKFUasyH
-	xF1BOC1dZucPhTosdjidVbxFn1940FgoAnbOBWeP0K2J9HOfMVAsWu
-X-Received: by 2002:a05:6820:858a:20b0:716:e3d0:c671 with SMTP id 006d021491bc7-7170f25b9e5mr902761eaf.14.1794172604868;
-        Sun, 08 Nov 2026 13:16:44 -0800 (PST)
-Received: from [127.0.1.1] (174-29-1-49.hlrn.qwest.net. [174.29.1.49])
-        by smtp.gmail.com with ESMTPSA id 006d021491bc7-7170f8fbc55sm1896378eaf.12.2026.11.08.13.16.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Nov 2026 13:16:44 -0800 (PST)
-From: James Hilliard <james.hilliard1@gmail.com>
-Date: Sun, 08 Nov 2026 14:16:37 -0700
-Subject: [PATCH 3/3] mtd: rawnand: qcom: unwind registered chips on child
- probe failure
-X-Archived-By: <archiver.kernel.org>
-MIME-Version: 1.0
-Message-Id: <20261108-submit-qcom-nand-child-probe-errors-v1-v1-3-509f30a9e14d@gmail.com>
-References: <20261108-submit-qcom-nand-child-probe-errors-v1-v1-0-509f30a9e14d@gmail.com>
-In-Reply-To: <20261108-submit-qcom-nand-child-probe-errors-v1-v1-0-509f30a9e14d@gmail.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, 
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
- Manivannan Sadhasivam <mani@kernel.org>, 
- Christian Marangi <ansuelsmth@gmail.com>, 
- Sricharan R <quic_srichara@quicinc.com>, 
- Md Sadre Alam <quic_mdalam@quicinc.com>, 
- Boris Brezillon <bbrezillon@kernel.org>
-Cc: linux-mtd@lists.infradead.org, linux-arm-msm@vger.kernel.org, 
- linux-kernel@vger.kernel.org, James Hilliard <james.hilliard1@gmail.com>, 
- stable@vger.kernel.org
-X-Mailer: b4 0.15.2
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261108_131645_923070_C69B5F26 
-X-CRM114-Status: GOOD (  13.95  )
-X-Spam-Score: -1.9 (-)
+	Sun, 08 Nov 2026 21:17:31 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with ESMTP id B0E0961D89;
+	Sun,  8 Nov 2026 21:17:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 294181F008A1;
+	Sun,  8 Nov 2026 21:17:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1794172650;
+	bh=3eG7JoY8DKHIfvaH7mikr0YCaFSehRyPBYbxAS4dXKY=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=P4RjrBnN8btPcTCPiiaGjdwtVzTKHBuX8xPXN5NSSxnDbwIMkvIDdAMyiYP99i992
+	 SbBC61mDjD1MyScdCd7sbQm2y32wtbcPhA/QhOTfT+4gGDM5u34SypwBLACmkilZ7J
+	 VGjpzziTilUY4X3ZbFwVvuHdacdUAihXUtPGaO5PSQtJ8pvyro9LAwfdPgpluodqcS
+	 EN/HfONzzHgkSMjpSYJ4cremfi+gtLuO2F4zjj7adVL/f/DwJT4vsnXQJwjWK7f9W1
+	 ljNiRnyu2BHp2hTTwfoIFR1Vv6GWivXWJX4Xf2eL0/B6hRwCZA/GPW2o6TNIEO/4/I
+	 oCChI+qSVwkQg==
+Message-ID: <sashiko-outbox-204070@kernel.org>
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH] mtd: retain the partition node reference across device
+ registration
+To: "James Hilliard" <james.hilliard1@gmail.com>, "Miquel Raynal" <miquel.raynal@bootlin.com>, "Richard
+ Weinberger" <richard@nod.at>, "Vignesh Raghavendra" <vigneshr@ti.com>, "Christian
+ Marangi" <ansuelsmth@gmail.com>
+Cc: linux-mtd@lists.infradead.org
+In-Reply-To: <20261108-submit-mtd-partition-node-reference-v1-v1-1-ad30359569d4@gmail.com>
+References: <20261108-submit-mtd-partition-node-reference-v1-v1-1-ad30359569d4@gmail.com>
+Date: Sun, 08 Nov 2026 21:17:29 +0000
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -108,104 +64,51 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Reply-To: sashiko-reviews@lists.linux.dev
+X-Archived-By: <archiver.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,
-	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-8.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-qcom_probe_nand_devices() continues after a child initialization error,
-allowing a later successful child to hide failures such as -ENOMEM or
--EPROBE_DEFER. If the last child fails, or allocating a subsequent host
-fails, probe releases controller resources without unregistering chips
-that were already published.
-
-Fail probe on the first error from an enabled NAND child and propagate
-that error. Share chip cleanup with removal and run it before releasing
-DMA resources or disabling the controller clocks.
-
-Fixes: 89f5127c4b0d ("mtd: nand: qcom: reorganize nand devices probing")
-Cc: stable@vger.kernel.org
-Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
----
- drivers/mtd/nand/raw/qcom_nandc.c | 29 ++++++++++++++++++-----------
- 1 file changed, 18 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-index 062fba9eaecc..14bb7f3d6c36 100644
---- a/drivers/mtd/nand/raw/qcom_nandc.c
-+++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -2085,7 +2085,7 @@ static int qcom_probe_nand_devices(struct qcom_nand_controller *nandc)
- 		ret = qcom_nand_host_init_and_register(nandc, host, child);
- 		if (ret) {
- 			devm_kfree(dev, host);
--			continue;
-+			return ret;
- 		}
- 
- 		list_add_tail(&host->node, &nandc->host_list);
-@@ -2094,6 +2094,19 @@ static int qcom_probe_nand_devices(struct qcom_nand_controller *nandc)
- 	return ret;
- }
- 
-+static void qcom_nandc_cleanup_chips(struct qcom_nand_controller *nandc)
-+{
-+	struct qcom_nand_host *host, *tmp;
-+	int ret;
-+
-+	list_for_each_entry_safe(host, tmp, &nandc->host_list, node) {
-+		ret = mtd_device_unregister(nand_to_mtd(&host->chip));
-+		WARN_ON(ret);
-+		nand_cleanup(&host->chip);
-+		list_del(&host->node);
-+	}
-+}
-+
- /* parse custom DT properties here */
- static int qcom_nandc_parse_dt(struct platform_device *pdev)
- {
-@@ -2184,10 +2197,12 @@ static int qcom_nandc_probe(struct platform_device *pdev)
- 
- 	ret = qcom_probe_nand_devices(nandc);
- 	if (ret)
--		goto err_setup;
-+		goto err_cleanup_chips;
- 
- 	return 0;
- 
-+err_cleanup_chips:
-+	qcom_nandc_cleanup_chips(nandc);
- err_setup:
- 	qcom_nandc_unalloc(nandc);
- err_nandc_alloc:
-@@ -2204,16 +2219,8 @@ static void qcom_nandc_remove(struct platform_device *pdev)
- {
- 	struct qcom_nand_controller *nandc = platform_get_drvdata(pdev);
- 	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	struct qcom_nand_host *host;
--	struct nand_chip *chip;
--	int ret;
- 
--	list_for_each_entry(host, &nandc->host_list, node) {
--		chip = &host->chip;
--		ret = mtd_device_unregister(nand_to_mtd(chip));
--		WARN_ON(ret);
--		nand_cleanup(chip);
--	}
-+	qcom_nandc_cleanup_chips(nandc);
- 
- 	qcom_nandc_unalloc(nandc);
- 
-
--- 
-2.53.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+VGhhbmsgeW91IGZvciB5b3VyIGNvbnRyaWJ1dGlvbiEgU2FzaGlrbyBBSSByZXZpZXcgZm91bmQg
+MSBwb3RlbnRpYWwKaXNzdWUgdG8gY29uc2lkZXI6Ci0gW0xvd10gbXRkOiBpbmNvcnJlY3QgRml4
+ZXMgdHJhaWxlciBjb21taXQgaW4gbXRkX2ZpbmRfb2Zfbm9kZSgpIGNoYW5nZQotLQoKY29tbWl0
+IDQzMzIzZTk5YTQ2YTg0Y2ZmMDE5NWM1MzA5OWNhNmE3YTcyMTU0MzIKQXV0aG9yOiBKYW1lcyBI
+aWxsaWFyZCA8amFtZXMuaGlsbGlhcmQxQGdtYWlsLmNvbT4KCj4gbXRkOiByZXRhaW4gdGhlIHBh
+cnRpdGlvbiBub2RlIHJlZmVyZW5jZSBhY3Jvc3MgZGV2aWNlIHJlZ2lzdHJhdGlvbgo+Cj4gbXRk
+X2NoZWNrX29mX25vZGUoKSBvYnRhaW5zIGEgY2hpbGQgbm9kZSByZWZlcmVuY2Ugd2hpbGUgbG9v
+a2luZyB1cCBhCj4gcGFydGl0aW9uLCBzdG9yZXMgdGhlIG5vZGUgaW4gdGhlIE1URCBkZXZpY2Us
+IGFuZCBkcm9wcyB0aGUgcmVmZXJlbmNlLgo+IGFkZF9tdGRfZGV2aWNlKCkgb25seSB0YWtlcyBp
+dHMgb3duIHJlZmVyZW5jZSBhZnRlciB0aGUgaGVscGVyIHJldHVybnMuCj4gQSBjb25jdXJyZW50
+IGR5bmFtaWMgRFQgcmVtb3ZhbCBjYW4gcmVsZWFzZSB0aGUgbm9kZSBpbiB0aGF0IGdhcC4KPgo+
+IFJldHVybiBhIHJlZmVyZW5jZWQgbm9kZSBmcm9tIHRoZSBsb29rdXAgaGVscGVyIGFuZCB0cmFu
+c2ZlciB0aGF0IHJlZmVyZW5jZQo+IHRvIHRoZSBNVEQgZGV2aWNlLiBGb3IgYW4gYWxyZWFkeSBz
+dXBwbGllZCBub2RlLCBhY3F1aXJlIHRoZSByZWZlcmVuY2UgaW4KPiB0aGUgc2FtZSBoZWxwZXIu
+IFRoZSBleGlzdGluZyByZWdpc3RyYXRpb24gdW53aW5kIGFuZCBkZXZpY2UgcmVsZWFzZSBwYXRo
+cwo+IHJlbWFpbiByZXNwb25zaWJsZSBmb3IgcHV0dGluZyBpdC4KPgo+IEZpeGVzOiBhZDliMTBk
+MWVhYWQgKCJtdGQ6IGNvcmU6IGludHJvZHVjZSBvZiBzdXBwb3J0IGZvciBkeW5hbWljIHBhcnRp
+dGlvbnMiKQo+IENjOiBzdGFibGVAdmdlci5rZXJuZWwub3JnCj4gU2lnbmVkLW9mZi1ieTogSmFt
+ZXMgSGlsbGlhcmQgPGphbWVzLmhpbGxpYXJkMUBnbWFpbC5jb20+CgpbU2V2ZXJpdHk6IExvd10K
+U2hvdWxkIHRoZSBGaXhlczogdGFnIHBvaW50IHRvIDVhYjliYmY2YzY3OCAoIm10ZDogRml4IHBv
+c3NpYmxlIHJlZmNvdW50aW5nCmlzc3VlIHdoZW4gZ29pbmcgdGhyb3VnaCBwYXJ0aXRpb24gbm9k
+ZXMiKSBpbnN0ZWFkPwoKQ29tbWl0IGFkOWIxMGQxZWFhZCAoIm10ZDogY29yZTogaW50cm9kdWNl
+IG9mIHN1cHBvcnQgZm9yIGR5bmFtaWMKcGFydGl0aW9ucyIpIGJyb2tlIG91dCBvZiBmb3JfZWFj
+aF9jaGlsZF9vZl9ub2RlKCkgd2l0aG91dCBjYWxsaW5nCm9mX25vZGVfcHV0KG10ZF9kbiksIGtl
+ZXBpbmcgdGhlIHJlZmVyZW5jZSBoZWxkIGFjcm9zcyB0aGUgcmV0dXJuIHRvCmFkZF9tdGRfZGV2
+aWNlKCkuICBDb21taXQgNWFiOWJiZjZjNjc4ICgibXRkOiBGaXggcG9zc2libGUgcmVmY291bnRp
+bmcgaXNzdWUKd2hlbiBnb2luZyB0aHJvdWdoIHBhcnRpdGlvbiBub2RlcyIpIGFkZGVkIHRoZSBv
+Zl9ub2RlX3B1dChtdGRfZG4pIGNhbGwgaW4KbXRkX2NoZWNrX29mX25vZGUoKSwgY3JlYXRpbmcg
+dGhlIHdpbmRvdyB3aGVyZSB0aGUgcmVmZXJlbmNlIGlzIGRyb3BwZWQKYmVmb3JlIGFkZF9tdGRf
+ZGV2aWNlKCkgY2FsbHMgb2Zfbm9kZV9nZXQoKS4KCi0tIApTYXNoaWtvIEFJIHJldmlldyDCtyBo
+dHRwczovL3Nhc2hpa28uZGV2LyMvcGF0Y2hzZXQvMjAyNjExMDgtc3VibWl0LW10ZC1wYXJ0aXRp
+b24tbm9kZS1yZWZlcmVuY2UtdjEtdjEtMS1hZDMwMzU5NTY5ZDRAZ21haWwuY29tP3BhcnQ9MQoK
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxp
+bnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
