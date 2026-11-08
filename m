@@ -2,76 +2,91 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3015B606A31C
-	for <linux-mtd@archiver.kernel.org>; Sun,  8 Nov 2026 11:04:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79760606A334
+	for <linux-mtd@archiver.kernel.org>; Sun,  8 Nov 2026 19:25:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=Gan1LjAC;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=lKmilFD7
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=o8KvC+7l;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=OxWmbT5o
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
-	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
 	List-Unsubscribe-Post:List-Owner;
-	bh=tOwKpLccU8keUwh942AQjI+BCwlI7JH6TrSTljdImnc=; b=Gan1LjAC1yf2USVXV60GfG20FW
-	/booeSFcEAlBDvX4ztV4xntGWMiY/bURQwcpJEkmihPc8O3lDnFcpIzFixpJC8s4J0e98iDrmUYoj
-	uF/SdrMl3mEjCD57l58zFXl01fW4RX7X/yNSG3dXSt0xNVkoJdJbJUuhjax4p452Jz+oGfC2eXgAH
-	ibFB5JkSOcjju/j+gRFTG2sviYQmxSwYT587g5OGHGcC7GDtmXhvSZCzWTYIgnRRwRnmpkTI3cQo1
-	QKJ6Z8DCNgMhOiJaPSQ2SG3A/YwJ7IpH/RGjjvtEUvgDGuu/AUE/2Q28+OaYblVaYZ71wZ0YqPIrj
-	RcDbfnxA==;
+	bh=CiexR6fAe54uDG84M06trlKYTWqcFq1ubdYAO1io8qU=; b=o8KvC+7ly+oNZDMgHClHu3yvcO
+	QfvxAQslMkpqFG0UUp6FOZxY60eD1V0p7wvju0f7JnoKHiX60EzuBOz7Ki1SrUSaaEKKwYATBgxSz
+	Y7gljp9FcnTA3vvpjhU34LTkCXXl8MXcQ6z0WmG086AnpZO9XIfGNJgLyp9LKZBSTDraqZnCcHEDF
+	PF1lxoDiksuXCW7jiDQiL/S5lNCJ9uq+jd5kTzhSKsSJhQKR3ROtLxUw5xu+guF0LhOG7x1b0K70E
+	EMeGOBuG0sJ/Qco07idE/vuFzj7dhBBl5qHVQfudmjg/4VKh3lD0DStzm9asOz9QiBqWRwF3R6PBV
+	PD7ZKlJQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xQ0gy-0000000G1No-0sqx;
-	Sun, 08 Nov 2026 11:04:08 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1xQ8WP-0000000GWaz-1zi9;
+	Sun, 08 Nov 2026 19:25:45 +0000
+Received: from mail-dy1-x132c.google.com ([2607:f8b0:4864:20::132c])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xQ0gv-0000000G1Nb-167A
+	id 1xQ8WM-0000000GWaS-2XC9
 	for linux-mtd@lists.infradead.org;
-	Sun, 08 Nov 2026 11:04:05 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 4A14C61472;
-	Sun,  8 Nov 2026 11:04:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC6481F0089F;
-	Sun,  8 Nov 2026 11:04:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794135844;
-	bh=p3NBFyErUdwmXe138graI7qm0I68SUXT5LMRQPFSpE8=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date;
-	b=lKmilFD72w61IjGyuxsnVCVhiW7IGGnsCGPV79JKH2bZKX1wuzb6aZJbggikpHGhz
-	 sZCY2UGogBNkuFNZZKBth2PWVzo2/srp4GSC2Tzcw80QpBHwTArb+niK9malrXNez1
-	 Pz1ez98Wnb2f5Q4lVzLLtsGCXW/m92sb0FGpaGHrHUfcmp/IgjSBS7On6xORUnBmUv
-	 kKPO1T7uaVSitbps+/dNFYJPTcNhrbg2dkiTCtIiT+EwXmuqREIFHZqeXDYZ0kp2vv
-	 oGIrnmo22lyJoJ9ei0yJszOVBod35DFmdNYjltaaRyxuF75Fp//+SFI7GsKob3AMXs
-	 /IKNmKbE6lzWg==
-Received: from traversing.sirena.org.uk (localhost [IPv6:::1])
-	by traversing.sirena.org.uk (Postfix) with ESMTP id 0A0D22BF8D23;
-	Sun, 08 Nov 2026 11:04:02 +0000 (GMT)
-From: Mark Brown <broonie@kernel.org>
-To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
- Takahiro Kuwano <takahiro.kuwano@infineon.com>, 
- Miquel Raynal <miquel.raynal@bootlin.com>, 
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
- Changhuang Liang <changhuang.liang@starfivetech.com>
-Cc: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-mtd@lists.infradead.org
-In-Reply-To: <20261028121100.79667-1-changhuang.liang@starfivetech.com>
-References: <20261028121100.79667-1-changhuang.liang@starfivetech.com>
-Subject: Re: (subset) [PATCH v2 0/5] Add DDR (Dual Data-Rate) support for
- DW SPI controller
-Message-Id: <179406387904.3424803.10093750511448298483.b4-ty@b4>
-Date: Sat, 07 Nov 2026 15:04:39 +0000
+	Sun, 08 Nov 2026 19:25:43 +0000
+Received: by mail-dy1-x132c.google.com with SMTP id 5a478bee46e88-3645f0f3fcdso449358eec.0
+        for <linux-mtd@lists.infradead.org>; Sun, 08 Nov 2026 11:25:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20260707; t=1794165941; x=1794770741; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=2B0XES+Futc2oiYdctR5M7D9QB0YhuOgiy88ZuvgwLY=;
+        b=OxWmbT5oktk88bfyZk4B7It7o88+m1owpSyB7qDUGiXOt2Cg6CQbRk62b+AuWMqY2g
+         1pP6N431LuBqAv6f6yRDnNrn0QoC7F7db9mwjcBrIUiqbsXoE6ta9OGmProZSX54NH4U
+         3gvZYokOtH+cbN+1i1qyQ9DMqP6paUhAKj3uS60rk1XlvPc5EUJyELEG4JUMB1aKPlo8
+         XxoRt6Bm+kx+iNYYLTnbo3pEETnAe15oRJyUuQW2FOzXClyWr7bwwLUvUiG2UFz7sTXA
+         k7+o/2IcTQ+5BLYF/1dtU6efBDM6f9xC5CdPFG+/mTR77uoi4UsAaiyvzLHjG6+ftU0l
+         1hqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1794165941; x=1794770741;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=2B0XES+Futc2oiYdctR5M7D9QB0YhuOgiy88ZuvgwLY=;
+        b=V6D014XIwSVUezAvdSUydC/KXLJXN6J5uODsVrvThoNjq3LiUcaXf/48NOOMweiSuw
+         hc1fVEYaoXIRImzpphcwVijTAbX/qjPxBUZONftaEr6MA1NQdr8rP0vAfLzantZzlYpk
+         aDNB1bIssmGOXZnrPlB2A2rcYCbZIDRXtFuMI5mncLA9cTscAc0kanD46EBj7V958ugv
+         pl6IK5FUAFDRbdDT3z2psVXpQmyxKSCGyJbGKgNRfvvCT8hrzELH0GyZljcmCOfAPzaH
+         bmiWr0my43OHSFkjtmq9JMfpzMZLhTEdJgA+1ICp4UlcdpWGFnyTuHLhuDMfneepIT+B
+         uYVQ==
+X-Gm-Message-State: APuU4Z+K2IIUv8Yxq3Ly9SJNhHTXvR9P6giZUhCPCOtNZb8Lnmaw7HUI
+	N6ixU634TuwW7kdKFN/JUQUtM9DNd31o2p8sIWN/4tGlygwai2Ouxwha
+X-Gm-Gg: AYBFou0s7gisJWBp4Abca9o9vwO9RKzMQ3wVYggyMZlngUa3g/2rscXr6tUZhR01O6w
+	WrjvwSxtOv9Pvt5YFmHrA6mPH8yGkzvrKWP0OhhcvqVBfwVGQLIjgtfVFGTGjATPZufR3Y9mqWp
+	tsJb5sneZ7cizRhoEvEOYqwVCbRaVo1vQP56eZv+tPbcWFGs3o+SSG/v0aRq9xxtYyhrOAkDnun
+	sQ8q08ITt0FC1EyZSkKkayKrYV/OhDVQwHbullLlaGKhN1NaBVb8B0NzpiesVWUaWDQ+XB8TpNy
+	nVY9nWnT4F7txIzihbny6xWTNpx9MbSxGVf5OwtgdTqq6Vl2A6d9p/OQyORbMDnSD2qcGqPeuNf
+	cO3pMX+IHYYGhdVa+JNQGaTTTc2oLh8RbQ9EobhPS3NgaJqm8ESw5dC+C6iY9BBSW8DZuy7ivJE
+	d8lk/IbN50w3T0VJyxMNDC2yjlljrD3m6g3Q1vRf9oTNP3HlRpvUrT1Xt7ULwnwaTUp7Qtk/U8s
+	YTPnEFe/dcr/oxgmGuQx+GraUbxhqlv/DMKS39lu+pcmknglWA3+uPJjkqRbC1H4QG25BS9BVH2
+	XI+l2kwY4s+3WHkc5elw5NCaJvG0FJPfyYkCqv2gRw+g
+X-Received: by 2002:a05:701b:2091:10b0:15b:7f7a:730d with SMTP id a92af1059eb24-1b39feb2b95mr3431115c88.28.1794165941286;
+        Sun, 08 Nov 2026 11:25:41 -0800 (PST)
+Received: from evo.www.tendawifi.com ([103.98.7.220])
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-1b37560d95dsm6607366c88.11.2026.11.08.11.25.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 08 Nov 2026 11:25:40 -0800 (PST)
+From: Archit More <architmore303@gmail.com>
+To: Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <mwalle@kernel.org>
+Cc: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Archit More <architmore303@gmail.com>
+Subject: [PATCH] mtd: spi-nor: winbond: W25Q512NW-Q/N/M: Fill locking information
+Date: Mon,  9 Nov 2026 00:55:18 +0530
+Message-Id: <20261108192518.46803-1-architmore303@gmail.com>
+X-Mailer: git-send-email 2.34.1
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-Mailer: b4 0.17-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1493; i=broonie@kernel.org;
- h=from:subject:message-id; bh=ES1TNf6PGsu5Apnp6Fa+gsDqHgK9eit/kgDlsilNUiI=;
- b=owGbwMvMwCWm/754w+YLFp2Mp9WSGLI+hMtxm7KvMNFY/VNX+LbpbeaHq2eF957/P23j1bub0
- 862KVzN6ihlYRDjYpAVU2SJy+J+WV/yeg3fwYVtMHNYmUCGMHBxCsBNvsPwh0t0x93wTZuPMp+W
- arkltOPCrVlblph5fnymUrZYVcc+JZbhf5pF4AxJvZXuBbHPFJn+8tn0ti71KmPOPjbLsuVSTn0
- ZCwA=
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20261108_112542_640282_411500EA 
+X-CRM114-Status: GOOD (  10.13  )
+X-Spam-Score: -1.9 (-)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,55 +99,51 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DATE_IN_PAST_12_24,
-	DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=4.0.1
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-On Wed, 28 Oct 2026 05:10:55 -0700, Changhuang Liang wrote:
-> Add DDR (Dual Data-Rate) support for DW SPI controller
-> 
-> This series implements DDR support for the DW SPI controller and also
-> implements 1-4-4-DTR read support for the MX66L1G45G.
-> This series has been tested on the JHB100 SoC.
-> 
-> Changes since v1:
-> - Add a new patch 1
-> 
-> [...]
+The W25Q512NW chips support standard Block Protection (BP0-BP3),
+Top/Bottom selection (TB in Status Register 1 bit 6), and Complement
+protection (CMP in Status Register 2 bit 6), matching the layout of
+other NW-family parts (such as W25Q01NW and W25H512NW).
 
-Applied to
+Add the missing flags so that software write protection and complement
+features are properly enabled.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-7.5
+Signed-off-by: Archit More <architmore303@gmail.com>
+---
+ drivers/mtd/spi-nor/winbond.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Thanks!
-
-[1/5] spi: dw: Detect DDR support in enhanced SPI mode
-      https://git.kernel.org/broonie/spi/c/c74069df13b0
-[2/5] spi: dw: Add DDR (Dual Data-Rate) support for enhanced SPI mode
-      https://git.kernel.org/broonie/spi/c/ed1e4b288e57
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
+index 51f6bcd3f8e5..6ba1a137a549 100644
+--- a/drivers/mtd/spi-nor/winbond.c
++++ b/drivers/mtd/spi-nor/winbond.c
+@@ -406,6 +406,8 @@ static const struct flash_info winbond_nor_parts[] = {
+ 		/* W25Q512NW-Q/N */
+ 		.id = SNOR_ID(0xef, 0x60, 0x20),
+ 		.name = "w25q512nwq",
++		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6 |
++			 SPI_NOR_4BIT_BP | SPI_NOR_HAS_CMP,
+ 		.otp = SNOR_OTP(256, 3, 0x1000, 0x1000),
+ 	}, {
+ 		/* W25Q01NW-Q/N */
+@@ -500,6 +502,8 @@ static const struct flash_info winbond_nor_parts[] = {
+ 		/* W25Q512NW-M */
+ 		.id = SNOR_ID(0xef, 0x80, 0x20),
+ 		.name = "w25q512nwm",
++		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6 |
++			 SPI_NOR_4BIT_BP | SPI_NOR_HAS_CMP,
+ 		.otp = SNOR_OTP(256, 3, 0x1000, 0x1000),
+ 	}, {
+ 		/* W25Q01NW-M */
+-- 
+2.34.1
 
 
 ______________________________________________________
