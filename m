@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2791F606A31C
-	for <linux-mtd@archiver.kernel.org>; Sun,  8 Nov 2026 20:55:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8E89606A31C
+	for <linux-mtd@archiver.kernel.org>; Sun,  8 Nov 2026 21:01:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=Pw6V0sQR;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=FEfHSWO6
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=cgeD1ghj;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=gAY2+Vf3
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,88 +14,88 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
 	List-Unsubscribe-Post:List-Owner;
-	bh=waJ6l+coW9oUP7x0jyjVN69H1H9V2oJhAZyEt78JCkA=; b=Pw6V0sQR5V1ndmvuB1MCG5uOfJ
-	PmU4nO0p2d0biv4LjzuBElb3xaRdwl2wzmK3UTVuPWhRVbLE829zDk4zdQU4mVPxFxPUKNMOIvM3A
-	GIOadKu3sRnQs0y0JdRPnE8ioqcgWVUb5azuB4vWMI+TNVnxHmkU4y/ajWMzMF1GJQgU6NmB6UxJ+
-	w3N00XDUNAzYcgBnzO0mbdo6F1lKvxovUb26dkTBTk9AIVTNM2sw9bK3d6WAx7d8giABROEmGBnAO
-	lxAi7N62iQoxinGmgtcXj81tex5tpfzpsQJLo6/VRQuJU3zH8curZBc0iW/HV151lgTuV6GuAhbC3
-	GP5zImJg==;
+	bh=CrSIBZP2RLCQWXl+1VDhjcsT+y6RXNrgGe7HtDjTECo=; b=cgeD1ghjcAS85jc7He0dNsEaYr
+	8FN4FgmmAseatB5oNfWObVba6Xxi2HtHNy/bU0zd67alrQlWoZWnrh0iV0w0jNmKi5i3FLzcxyoSc
+	iGdT6+pwhe4uo36WH3dHF7qbQ1e7OHCKNHXKZCDZXqS5ZKyrnpqgQElO9eh1jndwgzvFQHSIAo5Af
+	DG30P0SSnprDL7bFMt+8oc4YHxzR2vvTClb/fe8BKcQIyqsuAyQyulWaRLgTq32wK+QXfGsuLbrS2
+	Sxo0TlJ6q+bqutzh6WhesvPcd39Jq9vD87qQ2jq5ShDAmcuGXoyccs++988DwSoS9ESRAABWFePHq
+	VurmaKvA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xQ9v8-0000000GeJl-0kv2;
-	Sun, 08 Nov 2026 20:55:22 +0000
-Received: from mail-ot1-x335.google.com ([2607:f8b0:4864:20::335])
+	id 1xQA1U-0000000Gen9-0ULn;
+	Sun, 08 Nov 2026 21:01:56 +0000
+Received: from mail-oa1-x2d.google.com ([2001:4860:4864:20::2d])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xQ9v3-0000000GeIG-2o7A
+	id 1xQA1R-0000000GemE-41z7
 	for linux-mtd@lists.infradead.org;
-	Sun, 08 Nov 2026 20:55:20 +0000
-Received: by mail-ot1-x335.google.com with SMTP id 46e09a7af769-854e904005cso232162a34.1
-        for <linux-mtd@lists.infradead.org>; Sun, 08 Nov 2026 12:55:17 -0800 (PST)
+	Sun, 08 Nov 2026 21:01:55 +0000
+Received: by mail-oa1-x2d.google.com with SMTP id 586e51a60fabf-4ad89c49e0dso59369fac.2
+        for <linux-mtd@lists.infradead.org>; Sun, 08 Nov 2026 13:01:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794171316; x=1794776116; darn=lists.infradead.org;
+        d=gmail.com; s=20260707; t=1794171712; x=1794776512; darn=lists.infradead.org;
         h=cc:to:message-id:content-transfer-encoding:content-type
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to:content-type;
-        bh=K8i6P0KFfzK6HjaSVdFTUucMIIRoYWICC8FPLMcToIg=;
-        b=FEfHSWO6DoHFItRHQYQXmF+HPC0tDpKgLzBY3sc/yA3Hb0eLMbsUbkEVvkkj9VJRFf
-         RoDjmt4pt/EbNmk/OHGvVdaFL6jc5NIxwaiUIf0VHA1/ryUcSAzjSOUw+kAXhm9AGPOy
-         ia5CtjYKhZkOHIcQ56fla0wGvAWh32kbPZEdYmecVXAG1seGmDu4EEMxmG+tK5+mTgWW
-         3jQhFomOV3hqpHpDkDVOVgeRdDwSnSafNkd4BgnxpHnF3W96vQwEnlTxg8ARWQ6SDjr8
-         NCpQbRGCwDW289kHKI6rSw7/CmfKHQxxDfT+wBdoliMipkoPjEX84Ly3e99CdSRrhE/5
-         UASA==
+        bh=xzZ92AGYO1/PLurTCQdhrPzW6aHFVPEii/Y+wkIOdWo=;
+        b=gAY2+Vf3ZxW4rHXqByeQ4HC3//S/YaZ9ERDlTbflDnwaSmE7C6IqRZZTqNUso2DQm+
+         dUxAwmBUBcr+m9Y3Hot3lmsDGMQJR8DML59OKeBfcOmsB9sS9HrUH+pJfR5Zg1Wb33k+
+         Ey0ottVOxgtx4Gfo+nnU9LbgMfm6aTAiwZFtn6+9dHA9gTwCRnRb9ibXE2EFVRpUl7LX
+         qrlrTLpL0hYSI942Xy0yleURwjjH+0ivY4uS3W1h6PEXg0iW1GDstkFIfRrOi7yF0JOw
+         WHjDSOOhPe79/LrzJTU2xxCGWX85+bJNRFEMXpKnKLTKzX5tijg7n3IXA3xgRQQGYu7n
+         M8+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794171316; x=1794776116;
+        d=1e100.net; s=20260707; t=1794171712; x=1794776512;
         h=cc:to:message-id:content-transfer-encoding:content-type
          :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to:content-type;
-        bh=K8i6P0KFfzK6HjaSVdFTUucMIIRoYWICC8FPLMcToIg=;
-        b=Tdoz+Sj7nI5z76qi6QInMcdAKAgszg6axd+m0BKANTcRW2xAcnosICO2pqi7HNim0y
-         TYggGFcJS1xxZu8eOlttvY29c70p0PTzZ2JQQsHmoW8GO14MRJfHr8xUE7DFuD8oiVvO
-         PbbB3X1xX96WtMOujR4MW0HO1xd8QEfqnoF0vEKUvwiLjeokjp8euNsueskTI5yAOpUG
-         JbmFLKf/6SL2n+KpMSa63rcniCiColxLh3ij0Xkfo7Kn2JrNsLVpokhhDRZ8PO6vMfWu
-         5sSjbpmbkiS0dylpRsUY+IDp9mdA5jazWqjT8kTnarqUKqc8EfAutoYUaEBz4anqUPVN
-         HAzA==
-X-Gm-Message-State: APuU4Z/kghdoQV5W9k0p1zaD1YuDKSH1P1uMw/W3SdGaNWGfNL5ZDEkp
-	v4MnVBNgtxErPfMiSmA+gsXKEnAi8YEuVYd46wY4ddz5WEoW9yu/eqql
-X-Gm-Gg: AYBFou36AAW53SSJkmnv+qSy7oCt9A6I2J6BEz/PcNMa5+lLR0wu6MtA/+JJJfJ8YNB
-	98RrAbpyelveLLlDSqLGMw4h6B0V7/GSseEAjqCaCIDPkCEVXJkZ/KiVIkaUP0ATuHMaNfCma1L
-	aRZFUF9skBAb5+9hhZwmFM8oRW9yaH8bsgRREfVQGZ5TXihulYikkigby7vraj+KRg6Dr3Mjb2M
-	BxHima6CWOTnNrTJqdMyq7eUPOyKMK3J7UibHFKEnFiBwppsierWixmYJ3ohMEX93dQLlXe/1mq
-	8g0yRFUhKKiXKOu8KUk86ar4T061cbQs86KGelxlHeNrU7bxoFhuxZFMqLNQceH3zmGpTkNra9E
-	Hf7kGjy9uCxMoGNwWvDTabq1vpMGLnmGFMlFng2mgoizJzwQHynwVYce522t+kNOODtNEHkqZOq
-	4x7j4rz8Slg8RmuUnnV5v0ivDAo0XD39jr2+ENS4++kNX8reCeg84cxgQ/wGVI9xUoeJbyKr1BY
-	6rRF97yOo1j69slXWtG9HMKCI6FxShdjCZeiQzJ+4n46GhVoTLx9g3xMJFEMI3ySgsqdX+969H+
-	Wgoo6W8NIfC6nIE++bfDnzL7eVIB4n7YB3Zknbsd7qwc4/m7rhU4My+l+u52SxS8jZFsIX7I8sD
-	YaJ7p5WJNp6wcrlh3ujGeBYcx9abxDYm7r3xZVa3773tLAuzTe0cAJL3dQcQ95XvuNOmE4O6lFT
-	JwJEOH8htWGrc19eWfpPoXKT8xqtzE7RZqGgcu1l6qVUgIfsPty8sU
-X-Received: by 2002:a05:6820:3389:20b0:713:da3b:9530 with SMTP id 006d021491bc7-7170f2f0ffcmr657630eaf.44.1794171316382;
-        Sun, 08 Nov 2026 12:55:16 -0800 (PST)
+        bh=xzZ92AGYO1/PLurTCQdhrPzW6aHFVPEii/Y+wkIOdWo=;
+        b=RzOP8lqv3B1zrTU7aYrx+SZ3NyC0qOC74urxJ0+ZGwn69Tan/qbW/M2CahSu67xuSa
+         q2Eep8wV4cVx+wVDLQ/MC2L8cPQ6d3Zx3rin+UnVAs84xPeFEIg7GaB7CxKHnrJfbMAQ
+         uCp6zmDIkFOeg77BfvYg64rxtKWRoCDtNbgcT5i0xQCu9HtcjJMp5g7noSUXROhEuAZf
+         1BhkxQ+mnhJ8pgrEuMtCIylGYEdTuJYw1OwwzUQ1DFwioeex32wF6hxKZoyCyIBcPMAJ
+         IXf452RZay0EqsBanhWHgHpb63cyY96V3SNZDtcZLxc95xO7hZwRS5FsS0NOa9pwQReJ
+         YZgg==
+X-Gm-Message-State: APuU4Z8XWeTQ5ortNgxuMnoOUDPENEXZrEiTTgnZnKBGuEMOIYy1B+w9
+	u4w9eTq8tmthQISKsG8pdQxnThvGVaKo6/vY2I8ffvudl/YR1x7O5ading8N8g==
+X-Gm-Gg: AYBFou0BBDMplbnPpw9CJd6O/CHhjMMriMzAZ1IuEYaw1BdEXFLy47/n3qWrSNLpSla
+	012hYBT9jnt48wUpmTcogieixhWx9ywArrq0+KlYn/UjeJZwFt/ixbQIBl+Hcf+qEafvLzUSmM7
+	h8Y7iQJlfeW+j1HUJKlIZUMiiFEcCNw3xxdHurNabvNTdrvRm72Df7UDDQ+NgreXEVUcEgUirqa
+	0hEGvxW/Ad0jOYg/bTjbfgF91I9LkiduO3VweydvLx2Nnd0J7b5CAbWj+z7epklRo9K2oqOhQuj
+	dy3bUj4LUtfkEzpAUO72PrCAS88F/KzmNhZtG7WcpxoLbG1TI4eghxagU56Z/bDzUUUnnCrwdlb
+	5u0Laf6abHXya+2d6DLsFNSIDvChTUBhVSs8PGMf/RzgDgWzF2D+3fZjFibS7KEPcRjI9jf4HWZ
+	0UYOuY1yz4iYm0bZdaZu506qipCvPFmSlqDkeUXrHUZfNSQw1tXrxI14oDbxu5dyomnky7ldT4j
+	4MyJTBO5QupdGDCT/5cMp6IHMO+zfhn09lEogL/MYjn2EpfoBvCoYA6555PfQtVKA9IjRKLq0vD
+	IgNvTKleg/LgXgiCl//FGypEan6oqc+GBEbf5TUIK2x5LGUgKBMe+fq0PBQDNIa5VhgwnFnCHFB
+	RbrGARYuM6AYq3EOYyKBrqlKVBL+gOziN5wKgqJQIEhSYLwwbL9zw0W2CAXmpc0me9xmhSNc6Fq
+	wPvHfM9B5WtJmQSf11Iog7uwDOUmCSaBqJ2OMX7i3SK0ZvHUv3WbaT
+X-Received: by 2002:a05:6871:201:b0:4a7:1685:49f0 with SMTP id 586e51a60fabf-4adebfe9930mr1320398fac.11.1794171712263;
+        Sun, 08 Nov 2026 13:01:52 -0800 (PST)
 Received: from [127.0.1.1] (174-29-1-49.hlrn.qwest.net. [174.29.1.49])
-        by smtp.gmail.com with ESMTPSA id 006d021491bc7-7170f8b5825sm1917175eaf.5.2026.11.08.12.55.15
+        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-4ade6a0c000sm3239010fac.14.2026.11.08.13.01.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Nov 2026 12:55:15 -0800 (PST)
+        Sun, 08 Nov 2026 13:01:51 -0800 (PST)
 From: James Hilliard <james.hilliard1@gmail.com>
-Date: Sun, 08 Nov 2026 13:55:11 -0700
-Subject: [PATCH] mtd: rawnand: au1550nd: fix the memory reservation check
+Date: Sun, 08 Nov 2026 14:01:38 -0700
+Subject: [PATCH] mtd: rawnand: nandsim: validate overridesize before
+ shifting
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Message-Id: <20261108-submit-au1550nd-resource-claim-v1-v1-1-8f4c694fdd39@gmail.com>
-X-B4-Tracking: v=1; b=H4sIAAAAAAAC/yWN2wrCMBBEf6Xss4vZSFvxV8SHXLZ2xaaSpKVQ+
- u8m+jJwhuHMDomjcIJbs0PkVZLMoQCdGnCjCU9G8YVBK90RqR7TYifJaBZqWxU8Rk7zEh2jexu
- ZcCXsqe30cL14rwiK5xN5kO33cX/8uUhe7HIV14U1idFGE9xYqyn7czChBG8ZjuMLnW8gEaUAA
+Message-Id: <20261108-submit-nandsim-overridesize-bound-v1-v1-1-9cde7657a69b@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/yWNSw6CQBBEr0J6bQcGDaJXMS7m00qb0JjpgRAJd
+ 3dGl69S9WoDpcikcK02iLSw8iQZzKECP1h5EnLIDG3TdsY0Z9TZjZxQrATlEaeFYuRAyh9CN80
+ ScDFofH/0jvrm1F0gq96RHrz+bm73P2fPi3wq7tJwVvM+WvFDicYU6nJRC60J9v0L2yG+VqgAA
  AA=
-X-Change-ID: 20261107-submit-au1550nd-resource-claim-v1-71562f83dd01
+X-Change-ID: 20261107-submit-nandsim-overridesize-bound-v1-1c83cbe80469
 To: Miquel Raynal <miquel.raynal@bootlin.com>, 
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
- Artem Bityutskiy <dedekind1@gmail.com>, 
- Manuel Lauss <manuel.lauss@googlemail.com>
+ David Woodhouse <dwmw2@infradead.org>
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
- Thomas Fourier <fourier.thomas@gmail.com>, stable@vger.kernel.org, 
+ wang wei <a929244872@163.com>, stable@vger.kernel.org, 
  James Hilliard <james.hilliard1@gmail.com>
 X-Mailer: b4 0.15.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261108_125517_720003_8658300C 
-X-CRM114-Status: GOOD (  12.22  )
+X-CRM114-CacheID: sfid-20261108_130154_013944_826BFA28 
+X-CRM114-Status: GOOD (  13.14  )
 X-Spam-Score: -1.9 (-)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -117,36 +117,63 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-request_mem_region() returns a non-NULL pointer on success. The inverted
-check rejects a successful reservation without releasing it, and proceeds
-to map the NAND registers when the reservation actually failed.
+The size overflow check shifts by overridesize before validating it, so
+values at least 64 already cause an invalid shift. Smaller values can
+pass that check but exceed the width of the later eraseblock-count shift.
 
-Reject a NULL result so probe proceeds only after claiming the resource.
+Use check_shl_overflow() to calculate the unsigned eraseblock count and
+reject values that cannot be represented. Derive the byte size by
+multiplying the two 32-bit quantities in 64-bit arithmetic.
 
-Fixes: b67a1a02d463 ("MTD: nand: make au1550nd.c a platform_driver")
+Fixes: a5ac8aeb2900 ("[MTD] nandsim: enhance nandsim to allow arbitrary NAND size")
 Cc: stable@vger.kernel.org
 Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
 ---
- drivers/mtd/nand/raw/au1550nd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/nand/raw/nandsim.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/au1550nd.c b/drivers/mtd/nand/raw/au1550nd.c
-index f1e99197ab84..6796afe9cd29 100644
---- a/drivers/mtd/nand/raw/au1550nd.c
-+++ b/drivers/mtd/nand/raw/au1550nd.c
-@@ -276,7 +276,7 @@ static int au1550nd_probe(struct platform_device *pdev)
- 		ret = -ENODEV;
- 		goto out1;
+diff --git a/drivers/mtd/nand/raw/nandsim.c b/drivers/mtd/nand/raw/nandsim.c
+index fe968037f75a..6716eafb4b00 100644
+--- a/drivers/mtd/nand/raw/nandsim.c
++++ b/drivers/mtd/nand/raw/nandsim.c
+@@ -16,6 +16,7 @@
+ #include <linux/types.h>
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
++#include <linux/overflow.h>
+ #include <linux/vmalloc.h>
+ #include <linux/math64.h>
+ #include <linux/slab.h>
+@@ -2341,21 +2342,21 @@ static int __init ns_init_module(void)
  	}
--	if (request_mem_region(r->start, resource_size(r), "au1550-nand")) {
-+	if (!request_mem_region(r->start, resource_size(r), "au1550-nand")) {
- 		dev_err(&pdev->dev, "cannot claim NAND memory area\n");
- 		ret = -ENOMEM;
- 		goto out1;
+ 
+ 	if (overridesize) {
+-		uint64_t new_size = (uint64_t)nsmtd->erasesize << overridesize;
+ 		struct nand_memory_organization *memorg;
++		unsigned int eraseblocks;
+ 		u64 targetsize;
+ 
+ 		memorg = nanddev_get_memorg(&chip->base);
+ 
+-		if (new_size >> overridesize != nsmtd->erasesize) {
++		if (check_shl_overflow(1U, overridesize, &eraseblocks)) {
+ 			NS_ERR("overridesize is too big\n");
+ 			ret = -EINVAL;
+ 			goto cleanup_nand;
+ 		}
+ 
+ 		/* N.B. This relies on nand_scan not doing anything with the size before we change it */
+-		nsmtd->size = new_size;
+-		memorg->eraseblocks_per_lun = 1 << overridesize;
++		nsmtd->size = (u64)nsmtd->erasesize * eraseblocks;
++		memorg->eraseblocks_per_lun = eraseblocks;
+ 		targetsize = nanddev_target_size(&chip->base);
+ 		chip->chip_shift = ffs(nsmtd->erasesize) + overridesize - 1;
+ 		chip->pagemask = (targetsize >> chip->page_shift) - 1;
 
 ---
 base-commit: 30daaf3e7897b4a8d9b72e5b0c86dd6e2a4d7d85
-change-id: 20261107-submit-au1550nd-resource-claim-v1-71562f83dd01
+change-id: 20261107-submit-nandsim-overridesize-bound-v1-1c83cbe80469
 
 Best regards,
 --  
