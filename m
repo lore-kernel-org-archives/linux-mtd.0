@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65258606D82D
-	for <linux-mtd@archiver.kernel.org>; Sun,  8 Nov 2026 21:16:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 906C9606A339
+	for <linux-mtd@archiver.kernel.org>; Sun,  8 Nov 2026 21:16:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=cNt7AC5e;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=QnfyqPfy
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=LOKEdtQT;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=EadXu8EX
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,74 +14,74 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=X3/glzetu+7DLj293PI1TKpOWWyCKRNYcbuzgXg5CTg=; b=cNt7AC5eXVAufBVgAjUeOueSYw
-	XL1F6G2Jc/uoG7pSmMRbXRiDEoLKO9jEdTdGFkaGpzf9Nr3NtlFkp/4ZzWqFBmyRbnx8Kh0v1XxzY
-	yl9h7KPlMyRklGTLNtXiCrCJnS74cpbxHEwqlRBjcSRm1oIyC0pPI4vSmFIhuyVNRyZ6qjssYk9Cp
-	U10GmubG6L3oNklqB/DEOoTcPJzgWeL3XNHFpaOQHfzvKfPIn0Qle1fHmtl8EkXPLDxDqWQ/hQS0s
-	esCxWtmNLBPgQ9cXlbCmB5untZpbf8PpuAsQF4A1BPSH52fBuhWqcXVeW4YaX9qqkFDK6PMvA+Cui
-	olfUrplw==;
+	bh=PRCqqQGbLOfC4cEf/+MQ6RgDV9hlc1G170vO40XC6RE=; b=LOKEdtQTRkzTmF3Wh78bnAqixN
+	mNNbUWvxFL1eF4ftzc8SldtGeoPQUnMky22K/iy3l7FvAaBXdIJEIf1kxobefhiUz2m7hKm1oWBQP
+	RPezYx/VB6qXi2TExYBCn9Nzi1Ce8ibQnC8HvL++pAuhrISLuY3q+pH+hZ2aTPH4NOiIK80TY3oIG
+	H+pCCOyktkhLQb/lXuw/HoI0XFd1B7/KshFI62AIciNRTy8S0cMZkX0eLZVLZYx4zNBNw1f7ago/u
+	+VH0TxX9SoAqemswbGHUZaj5WvaQAf7KIDYrCII9+AN+FOXtj7e/v0XEi5fYXNIVafxR2UxtfEATC
+	FcbDIUtw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xQAFr-0000000GhXZ-0NJv;
-	Sun, 08 Nov 2026 21:16:47 +0000
+	id 1xQAFt-0000000GhZ5-12zK;
+	Sun, 08 Nov 2026 21:16:49 +0000
 Received: from mail-oo1-xc31.google.com ([2607:f8b0:4864:20::c31])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xQAFo-0000000GhWQ-3EGN
+	id 1xQAFp-0000000GhWn-2feA
 	for linux-mtd@lists.infradead.org;
-	Sun, 08 Nov 2026 21:16:45 +0000
-Received: by mail-oo1-xc31.google.com with SMTP id 006d021491bc7-6aa9606ddadso154625eaf.0
-        for <linux-mtd@lists.infradead.org>; Sun, 08 Nov 2026 13:16:44 -0800 (PST)
+	Sun, 08 Nov 2026 21:16:47 +0000
+Received: by mail-oo1-xc31.google.com with SMTP id 006d021491bc7-6f5a0893610so182593eaf.1
+        for <linux-mtd@lists.infradead.org>; Sun, 08 Nov 2026 13:16:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794172604; x=1794777404; darn=lists.infradead.org;
+        d=gmail.com; s=20260707; t=1794172605; x=1794777405; darn=lists.infradead.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=2ySxSOrcSb7uKygDj4na05JonBIKAGAKmpgaBjQ4aTs=;
-        b=QnfyqPfyEhCjiECX7vUnUPC/L5Dq24SfzYrcSd2S7a08F4f/dpbDagaeVK7Q5EbE2e
-         sHxbAGWimMtc7YHDzBecJA5YBN5X8pcZNSvXo2eT8io0m6M2oGTDzyY9N0uy3YGHehAI
-         WMFwUFKuvlFbDha+Dxcxel84Ed/xq+wJ9jYrSbWWqMQNU/+0XaDWj6UFC8sw+sdkFblF
-         XdzXejnSloWvUUsOjujR15NYYEd25B5McxHuk0cXCiq4HGg0K6glwa0WJzWgRjgVFV5z
-         +syw9e/KBhXMKVVoHue+mMrG2KU6eLdUzEBURMJBH0Flm7zO9t41Q4V/gyHgAQy0KjQ0
-         52xA==
+        bh=BTsIQ3GHuwszTciCCDtrpxdJaKcQmTY5JV7uV9WKwZk=;
+        b=EadXu8EX3RNwUX4rbNTbGyuYx5ZD/a/kfXqivfchO1iUO2kpPpqJcLkNCi6LQbNMQd
+         zZg47lOamo25un2AQtfRqVnLx3/gciH3UuEa+23y8gWeBsy0/SfXdXXGrcOVzLpiseMh
+         EKNkXwVdi1a+d0C8r1LX3YWED+UXuNbDmEqYGaUVrkImViTJSdg6SXXHZLBtINB8tPlt
+         sQWColpBYwc7lrVyTxydsjGMWX9QzWDILKppscxxSSLdxZPKrASNyfhbLKzUFlRlDxS+
+         50apeoyPIT2SVKrxbwFUJrpms/qhIpQxnPudlNuewj081hognbxdTMRhROT033L5Y29g
+         GcZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794172604; x=1794777404;
+        d=1e100.net; s=20260707; t=1794172605; x=1794777405;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=2ySxSOrcSb7uKygDj4na05JonBIKAGAKmpgaBjQ4aTs=;
-        b=ZteF42ttjj6gfjwyxU1EDCE+gsmvZYZtN0zmi57bX9JA91hvit8UmV+iM8oJBZZZmv
-         qL7jHfjcovRKrby0M3+RGJ/iPAdW48ErZM2u8tK2ka5TC2Rp9q9OS9mMMCryXBqwmPzy
-         GDb6TkUHJr3MtwjkYG7cI2pfgp24eLxfowbw4rU9pOapI6nk/xIKNmO1+fD2oNjzNud1
-         Og02OBk13PMuCu/Ly5fa6QsTEXt5uvqBvjUx7mhlVe0qBNGnA4WxpFID2bz4m1UcXHPT
-         JBWnZ1Ob+G18y0ykns4UM3/Kj/qSTUIsOLerlQ3ZweVZGgm0CejM2NF6fKAQzSYHyq4J
-         WN0Q==
-X-Gm-Message-State: APuU4Z/3zVjbYcGVL4PJQ6c6/Bmm2hxBta3ZsdTw3A1bAIQzgSWvulBe
-	yQNaPiATO33m9FT9NElj0O0Wl5SjtidoTl857v4qElqcY7eysavMbTRaVAZQnw==
-X-Gm-Gg: AYBFou0tE2trZ6tcVv9/Uqx6JupPj22Cgl/p8xUwflBlfzpuhk44fNkMrFbZJm6I2Jn
-	0AaFGRqeH5FJLGWmLNPunydn39atGAN+bCWPn3StrPM8d4FmfG0HYvckKYIutKfyTrjOl4Vw2B3
-	HCvTgHwHnSwZf2fgyLtEc5GOefkNnjQxbCV6PsnlFuemXhqIEnI30r7Mb61JR9tBwCs4FnapGLi
-	MvEgQk91r6y39ika+R6lzHqsLcHR422w60trG/z3XH+GfTTI9LekiKbs1Ck+5XDNYoQ4AxdBMlm
-	O7c4UUjkSwYjxDFmo3KFjtd96vaikzURKKrESKtfoJnNUsSgkjM4J2fQGkZFM5vezQd3zbIDRL2
-	YXh8L+9nLJLMHWzA7NfKMUMyZU4QLYedgFErxP8hJAWkdjSnDpEIjiiojKeK95SSp21qcaU2srP
-	f2tkKkRPw8gCXLsyS3OVzg/grOyJAL+Q9eGh4/DSD/iTOymN1ebQ28mxvhV+8AUNKfu6q0weIPy
-	HSuCSqUQrIPNM4+t06jfwyN2P9xVMkiHS7DILXdZxBCYv74KTy5qMkiZQowSVoTXCq5CH9AEswa
-	QyrXdKcnYeDL2hNTD3yZDNZhQYAqKUMYQH/3xADq52yJFTMazHjiNfuXihZl9ruv5w3aQ8Cxe2z
-	qRD8S6b0T/8rPKUb369B4gziEWle1q3QYfLxBVge31Iujl5v16LJOmvOyhLJ5t5gVhfSzdTeeyI
-	JkcfEmcXnYE7C7DIpGpYnzGLx7EvryDNStdVp+43mqUzkmNMRtjuU=
-X-Received: by 2002:a05:6820:1690:b0:709:529a:478f with SMTP id 006d021491bc7-7170f2dad52mr1144251eaf.60.1794172603603;
-        Sun, 08 Nov 2026 13:16:43 -0800 (PST)
+        bh=BTsIQ3GHuwszTciCCDtrpxdJaKcQmTY5JV7uV9WKwZk=;
+        b=DCQHFj1aVef/oO8l60MV5xjwVW5pdqVJJQyYh6sz5Fw6CJUj0F9MJ4Fv5qn1vZBLrX
+         xRoB81szAnbGbWAVKrx9iq8441PrJc5O2shHGWL1xZIkFwvYHfi8U4M2gBX/xymrv0ym
+         cm2KTyjEtuFZ5u4wzU6QMrDgtfqZ2lnr5IkqletlHuIbpQ3z7J8ivxT2YX4bFBUI+E4A
+         9W9ubIViCOYGiV1PqvYtGyNLbKa1YKJ1GDYZv//tTEdQJ+4ipDIP/AW0UGmDswbXrvzq
+         amrqTg3s60Y64Skj1VJ/k2P076VO6wjbR7Kai2Umbs7fbmPI5NDtNnbi7TugTwVtph1s
+         tlOA==
+X-Gm-Message-State: APuU4Z9dqWVAzmKATkUFCN5eHdH8/UYw90u/4ULEUT3lnzSIAWZB5HQK
+	acg1VZXU3dRf9ZnwUbET+xszQWj+2LEELQnknDk5njo7MxeDJX3AOHkY7NNNXw==
+X-Gm-Gg: AYBFou2kokhbKijoILg5vaAEdfS7v+E4E20C43jzMv1PklR/oZWLr1eJSqxRIVUuCCH
+	5PUVlCc+4yPA2kck058SioXaww3zJCK9soQ08/xXe6JoukZYeIazBKj7y01G61OpcngnxtO2GRw
+	U/4wFiyrUzBCLFPaucYO/w0aHysI6JHk5jNdnd8oEs23klVa29QGX3zr3Wd/jQ9bQbPpBqBkUjh
+	X8jEbi7l8NU7XW/CEgIIBNZD9oIL7GIv9f8RQ/O9fyBQwPFHQreFBvWDi+42MBLBD7ugrUa1kW9
+	KA4V4NIe1NO+fsBj+6iYALEd/uZj3ACXY+pNl3/PrQ/9MWEmuMGsNC6EpQ/yF+9/cvhqXXfBw+K
+	h515s4nP7MJHpscUbO9Nsy1KGhTDaiKOstj6L75fLXyfojpkLcOsgOVb3As1isLgqVH/4zJ4FsU
+	bF6YOFtSnuWnda6mikbvR6PzreFq77TslKrIaXoi6Gvck9uN6xU0A7WIwqTLm5+UHhv+1Ttj97v
+	gHcZLgiSPEEcWuEexfpg112sa+WwjjcVg9vNwKQ9Nm5Y0dFRSA2jn/X28OXu5spKKnZpSi/+JKQ
+	VaImNxG1/IZgkirtdelOT4GWdQ0rhpgril9O0LLbhRnenqcSemlzhjtxUSdniOTBS7JxyWNK/vn
+	yZlr5cN7LG1GqfvdzVzoq8RAIM4lOGmiUGhMi5dr7rulX9taM5G6J6TX9CEfP2UryUhMKFUasyH
+	xF1BOC1dZucPhTosdjidVbxFn1940FgoAnbOBWeP0K2J9HOfMVAsWu
+X-Received: by 2002:a05:6820:858a:20b0:716:e3d0:c671 with SMTP id 006d021491bc7-7170f25b9e5mr902761eaf.14.1794172604868;
+        Sun, 08 Nov 2026 13:16:44 -0800 (PST)
 Received: from [127.0.1.1] (174-29-1-49.hlrn.qwest.net. [174.29.1.49])
-        by smtp.gmail.com with ESMTPSA id 006d021491bc7-7170f8fbc55sm1896378eaf.12.2026.11.08.13.16.42
+        by smtp.gmail.com with ESMTPSA id 006d021491bc7-7170f8fbc55sm1896378eaf.12.2026.11.08.13.16.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Nov 2026 13:16:43 -0800 (PST)
+        Sun, 08 Nov 2026 13:16:44 -0800 (PST)
 From: James Hilliard <james.hilliard1@gmail.com>
-Date: Sun, 08 Nov 2026 14:16:36 -0700
-Subject: [PATCH 2/3] mtd: rawnand: qcom: retain the BAM transaction if
- replacement fails
+Date: Sun, 08 Nov 2026 14:16:37 -0700
+Subject: [PATCH 3/3] mtd: rawnand: qcom: unwind registered chips on child
+ probe failure
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Message-Id: <20261108-submit-qcom-nand-child-probe-errors-v1-v1-2-509f30a9e14d@gmail.com>
+Message-Id: <20261108-submit-qcom-nand-child-probe-errors-v1-v1-3-509f30a9e14d@gmail.com>
 References: <20261108-submit-qcom-nand-child-probe-errors-v1-v1-0-509f30a9e14d@gmail.com>
 In-Reply-To: <20261108-submit-qcom-nand-child-probe-errors-v1-v1-0-509f30a9e14d@gmail.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, 
@@ -96,8 +96,8 @@ Cc: linux-mtd@lists.infradead.org, linux-arm-msm@vger.kernel.org,
  stable@vger.kernel.org
 X-Mailer: b4 0.15.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261108_131644_821979_26B24BB6 
-X-CRM114-Status: GOOD (  12.34  )
+X-CRM114-CacheID: sfid-20261108_131645_923070_C69B5F26 
+X-CRM114-Status: GOOD (  13.95  )
 X-Spam-Score: -1.9 (-)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -119,58 +119,88 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-Attaching a chip frees the controller's BAM transaction before allocating
-one sized for its page geometry. Allocation failure leaves bam_txn NULL,
-although later chip scans and previously registered chips still use that
-shared transaction.
+qcom_probe_nand_devices() continues after a child initialization error,
+allowing a later successful child to hide failures such as -ENOMEM or
+-EPROBE_DEFER. If the last child fails, or allocating a subsequent host
+fails, probe releases controller resources without unregistering chips
+that were already published.
 
-Allocate the replacement before freeing the old transaction. Restore the
-old capacity on failure so the controller retains a usable transaction
-for already initialized chips, including I/O during probe cleanup.
+Fail probe on the first error from an enabled NAND child and propagate
+that error. Share chip cleanup with removal and run it before releasing
+DMA resources or disabling the controller clocks.
 
-Fixes: ba7542eb2dd5 ("mtd: rawnand: qcom: fix memory corruption that causes panic")
+Fixes: 89f5127c4b0d ("mtd: nand: qcom: reorganize nand devices probing")
 Cc: stable@vger.kernel.org
 Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
 ---
- drivers/mtd/nand/raw/qcom_nandc.c | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+ drivers/mtd/nand/raw/qcom_nandc.c | 29 ++++++++++++++++++-----------
+ 1 file changed, 18 insertions(+), 11 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-index f240d1effa04..062fba9eaecc 100644
+index 062fba9eaecc..14bb7f3d6c36 100644
 --- a/drivers/mtd/nand/raw/qcom_nandc.c
 +++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -1329,21 +1329,22 @@ static int qcom_nand_attach_chip(struct nand_chip *chip)
- 	ecc->engine_type = NAND_ECC_ENGINE_TYPE_ON_HOST;
- 
- 	mtd_set_ooblayout(mtd, &qcom_nand_ooblayout_ops);
--	/* Free the initially allocated BAM transaction for reading the ONFI params */
--	if (nandc->props->supports_bam)
--		qcom_free_bam_transaction(nandc);
--
--	nandc->max_cwperpage = max_t(unsigned int, nandc->max_cwperpage,
--				     cwperpage);
--
- 	/* Now allocate the BAM transaction based on updated max_cwperpage */
- 	if (nandc->props->supports_bam) {
--		nandc->bam_txn = qcom_alloc_bam_transaction(nandc);
--		if (!nandc->bam_txn) {
-+		unsigned int old_max_cwperpage = nandc->max_cwperpage;
-+		struct bam_transaction *bam_txn;
-+
-+		nandc->max_cwperpage = max_t(unsigned int, old_max_cwperpage,
-+					     cwperpage);
-+		bam_txn = qcom_alloc_bam_transaction(nandc);
-+		if (!bam_txn) {
-+			nandc->max_cwperpage = old_max_cwperpage;
- 			dev_err(nandc->dev,
- 				"failed to allocate bam transaction\n");
- 			return -ENOMEM;
+@@ -2085,7 +2085,7 @@ static int qcom_probe_nand_devices(struct qcom_nand_controller *nandc)
+ 		ret = qcom_nand_host_init_and_register(nandc, host, child);
+ 		if (ret) {
+ 			devm_kfree(dev, host);
+-			continue;
++			return ret;
  		}
-+		qcom_free_bam_transaction(nandc);
-+		nandc->bam_txn = bam_txn;
- 	}
  
- 	/*
+ 		list_add_tail(&host->node, &nandc->host_list);
+@@ -2094,6 +2094,19 @@ static int qcom_probe_nand_devices(struct qcom_nand_controller *nandc)
+ 	return ret;
+ }
+ 
++static void qcom_nandc_cleanup_chips(struct qcom_nand_controller *nandc)
++{
++	struct qcom_nand_host *host, *tmp;
++	int ret;
++
++	list_for_each_entry_safe(host, tmp, &nandc->host_list, node) {
++		ret = mtd_device_unregister(nand_to_mtd(&host->chip));
++		WARN_ON(ret);
++		nand_cleanup(&host->chip);
++		list_del(&host->node);
++	}
++}
++
+ /* parse custom DT properties here */
+ static int qcom_nandc_parse_dt(struct platform_device *pdev)
+ {
+@@ -2184,10 +2197,12 @@ static int qcom_nandc_probe(struct platform_device *pdev)
+ 
+ 	ret = qcom_probe_nand_devices(nandc);
+ 	if (ret)
+-		goto err_setup;
++		goto err_cleanup_chips;
+ 
+ 	return 0;
+ 
++err_cleanup_chips:
++	qcom_nandc_cleanup_chips(nandc);
+ err_setup:
+ 	qcom_nandc_unalloc(nandc);
+ err_nandc_alloc:
+@@ -2204,16 +2219,8 @@ static void qcom_nandc_remove(struct platform_device *pdev)
+ {
+ 	struct qcom_nand_controller *nandc = platform_get_drvdata(pdev);
+ 	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	struct qcom_nand_host *host;
+-	struct nand_chip *chip;
+-	int ret;
+ 
+-	list_for_each_entry(host, &nandc->host_list, node) {
+-		chip = &host->chip;
+-		ret = mtd_device_unregister(nand_to_mtd(chip));
+-		WARN_ON(ret);
+-		nand_cleanup(chip);
+-	}
++	qcom_nandc_cleanup_chips(nandc);
+ 
+ 	qcom_nandc_unalloc(nandc);
+ 
 
 -- 
 2.53.0
