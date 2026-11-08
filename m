@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CAF8606D82D
-	for <linux-mtd@archiver.kernel.org>; Sun,  8 Nov 2026 22:42:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B6CD606D80A
+	for <linux-mtd@archiver.kernel.org>; Sun,  8 Nov 2026 22:42:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=ai56by/6;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=BswAKc0V
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=DN29jPqW;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=uQ/Jo+yA
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,74 +14,74 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=PRCqqQGbLOfC4cEf/+MQ6RgDV9hlc1G170vO40XC6RE=; b=ai56by/6LBqSuR76UtnAJy4OZP
-	KNArmAP0qdGerLZNhDOkJsICZDeR9krEdeYJg3AQf2X4HQQB5moqtTLzmo5A8IZraZvNCEsVTMie7
-	Y66h9FjTeMMlQEWd/JXs0ffIYs/6p3/PCI0ucxg/aJz/aA9qnRMBEc3YUmbxb4FyADnIbiYM5B+We
-	iYH6p+sZzprIb7RNBIlVw2D9zqpj7rkt3ws6Ng0TtbFmALnAY1RhXtlIRgz2GGS4uFoAUX9xg0w/B
-	cRpOCLWXisbouqa3EnJ7CUiaG+oBQKTrME8Ki+hT2nxCPaF3VQOO+QXcpxQc1se2aK7peAOivPveh
-	5HAEEO5A==;
+	bh=XIsaD/79RBduNl3ckt4x97S4As1x8xcC89d7dqmAdos=; b=DN29jPqWf1cIBm1KyyUir1F+29
+	e7ZIvLe8D1Lc5XqCcT+XMwfhoXLyIFICsS/aBoMnzxXMaIn3tHld0w+gYDEsvRxLT6ajyfPo3oUjR
+	3XFkmjY3CCDzVzWopc2X2pr8gqz0lTSehjTKSGxo5SmBli+9/zyZDUwYfy0BYMplLMt+/BA3JlTUk
+	k25viXtjFwfh+rc7GZ7n2vDCZNrQVR5sp91qkBzJ6m4vR+UOir082Gp4Bsrn9OKrL0gmoWK2sUlTM
+	Xmxp0hsI4NzdA6PoECIRlWyFmjLPd21RY8mttGSo8LORfBeHMKCvXcs6GPCPN3jXbbjsVxXOHXX5S
+	2Kn+bXUw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xQBam-0000000Gr09-3bfx;
-	Sun, 08 Nov 2026 22:42:28 +0000
-Received: from mail-ot1-x32c.google.com ([2607:f8b0:4864:20::32c])
+	id 1xQBao-0000000Gr27-4Ak3;
+	Sun, 08 Nov 2026 22:42:30 +0000
+Received: from mail-oi1-x232.google.com ([2607:f8b0:4864:20::232])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xQBak-0000000GqxI-2F99
+	id 1xQBal-0000000Gqy4-2QmI
 	for linux-mtd@lists.infradead.org;
-	Sun, 08 Nov 2026 22:42:27 +0000
-Received: by mail-ot1-x32c.google.com with SMTP id 46e09a7af769-85ac281604dso187583a34.0
-        for <linux-mtd@lists.infradead.org>; Sun, 08 Nov 2026 14:42:26 -0800 (PST)
+	Sun, 08 Nov 2026 22:42:29 +0000
+Received: by mail-oi1-x232.google.com with SMTP id 5614622812f47-4e4a4d77e5bso218056b6e.0
+        for <linux-mtd@lists.infradead.org>; Sun, 08 Nov 2026 14:42:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794177745; x=1794782545; darn=lists.infradead.org;
+        d=gmail.com; s=20260707; t=1794177746; x=1794782546; darn=lists.infradead.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=BTsIQ3GHuwszTciCCDtrpxdJaKcQmTY5JV7uV9WKwZk=;
-        b=BswAKc0V6swRR50zfc8HegblIsw5zCI1LdjV10FrlD7ClLOBfROw0FZ/8rSUL8hRg/
-         39xy5FiIdhY3Q4zAAIBLW6YTFLOUr/r9XVtTCHo7ppIFaelF9VsEeGbZA3FGCi5lZgH4
-         K+PMRYYkUfRBmPu7/6iipraXMhgYQ+jxkukIapKJDe1UnbiDkZk+wP41JWSI0VG1fnK2
-         MCHpgy79Xd/UZSPOOXOJFuXWS7tCw2GTd94zsw/452ok6PRtpDg0i8sO8xrUr/VFMGSV
-         hO6U7suZr9t/Ehq1WuiMaDFvOHIXPdPZToFeJYsu9ggJV5TqeVxVnBZa2H3rWRgQi5/i
-         R0XA==
+        bh=qzHeLZPhDy5sgZl2YeSaSSmwqxhMbI/xK+PxVybiOB4=;
+        b=uQ/Jo+yADs7peBUnTZJuONjPUVttJRRN7/+a7CiympGrDs3tudfqpJlOZ+pGDz0FF6
+         fOplK7cXQgN2offFdcPFaNJVsbVFnliTtmJg7ML+C+YlXSr+1SjHI2sllzqb2ixVg8Or
+         1mWBmDKyvxT3cBJx06zJNsKOvpx9zrdcXU+xyZZgQJPuVCNuNJj058W9BOwRmlPA01M+
+         Gi0ZDfCYMAKXmIYQtGl2J/o8bdvHvE14EgMJVxw7R7e6JqQnk18fc8GttrmdLPlhL5LA
+         IpUJ8ChoSd8rrNbY8ZbBXVoSSy0mhRJaZZFrC6mSIWd0nU5RczbGorFsIyM68EiX/cnI
+         7lMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794177745; x=1794782545;
+        d=1e100.net; s=20260707; t=1794177746; x=1794782546;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=BTsIQ3GHuwszTciCCDtrpxdJaKcQmTY5JV7uV9WKwZk=;
-        b=p8rfnSKOe0N1/oFPTgqrkS63AORPihJUjvB7bhlo8Mbkpm7zHvssfPIPBfHu4aviTO
-         IooKFGtVUPRWRus0I9pnGj2lW/j/TowUAka3iZuzDyvrNLtui21wLUn64yiAS0SWSPGh
-         OmzZekpY3tZiI2D0KElkR2Zuoai+AvNdBpb49FQZ4QpMQhCgq+m1JePvGjCaMbN9Apxn
-         dJhtt+We+ndSPd6zby5Ytq3iLVvsvH01efdXnZaFYAAyYNsgumw3I2fjmL3ndA3mXnI7
-         02vrJz0GWsi+0PWkmn8RwC+8vdZIcqaHn1pnixqPaEFFPcgryFP16zy/uGj3d11UeSik
-         R8NQ==
-X-Gm-Message-State: APuU4Z9CeeFuOLhY/WNZAqx9fum/M/txQkTs5dmWw0UUJ+EJivuFib8Z
-	oBG/nPBJR8Psl1sIWB9s4nNSkfC+GTeKgTdqGyL+hufojYeIICsN32Pv
-X-Gm-Gg: AYBFou0wnjbqzqnJ94y7VGb045RQjFe/YC4QO9hz3qoZJ5+1KHmu5G60zDRXAU5cByy
-	7AW+CHlPFtuv4mgicSXBlqjJxCWHO8M3LlDsjjZRQV7Z28I5IcIGou2xpbAKtjdizFHiF5qY71b
-	5m4dzHzyVB14G+2s69Hc/2fzRlVDNZPreWFpA05kx/yNlOfkQ3/KHzKhZXcwSZpJwRiriBR+Lbd
-	C3LSdIpM4RCzUMhHxJWoJZqL/5OgAC91hGs7giJJg/2t6kbkET2TVfbcu3Fi+rAG81/dHsB8a5T
-	xqwNnI/fcPBIiZMW9oYWgqxlRkL4MXPADDAT3nbwVruyb3BUDLxzcU3QbEu0Sb8FDPEyo/ET+Xz
-	1uFPR0N67AfgG/DRDZtzcf70nEVuYf3qIqUup6d89z4L6E+fhzb+w6BtGQ6t/lUlcUABjpUIHNy
-	+LoaWMtEIPBythAlJGEoOYepeKbKBkDIRFVu8uYu5ARugcJ6jII2ILLTYCBREGF/jSX6fvqfoIY
-	bprGIScacysBxSVcTHvNEY5KiCAVaUzMl5Cb6rD+HDbLfZyk8nlKvVfMf/voetKQhY6zEpVPSMR
-	c8oh1cuqlS6PtOaU2o+OdQsoC2NpcYsTsCNxjkZpbF2XFbGOuM42KBX9VmCwoyzwNpD8FD67lp1
-	g4blAccHzK/Drz2vyiQfHKlu0CUsOKw/Wt4Fc/NhvKV7yu0zzIk4ogNGf5I0HTR682fq/4+gC5P
-	c6IgxFfsfG/+ns5g+9mbHYdv43TSQp7Ge4C5wd/8IsYQ9m5H2cNy2d
-X-Received: by 2002:a05:6808:191c:b0:4f6:3401:1c79 with SMTP id 5614622812f47-568143dc9bemr1634647b6e.49.1794177745010;
-        Sun, 08 Nov 2026 14:42:25 -0800 (PST)
+        bh=qzHeLZPhDy5sgZl2YeSaSSmwqxhMbI/xK+PxVybiOB4=;
+        b=L3JUdDd9DGFx+AyUwincBsKdlhX1I7YmyzZs5FzFgXQdLn7Us6Ayyyh858V/1BzvHf
+         vqyauuHz5HkVRoRLZLT3oAbqPxfdP8CI5Ccg9McedF9ca9S3fes8ZoKbzzzapJckPEXu
+         VLg2t+LruP0LyglwL0mo5m5vjEofXoNz0T2Cpb+gu6vpi0jGT/gkBKB30r9SAHbNxyYt
+         vdrumITT4qpyUe/hDSvANy+b+TWqdN2FTa5IY++BbWuwcMw9Gl6dABM7wjgCLtkNzkj8
+         itrO2jJjFrRFGGZAHm/ui/DYOCQEGVJLeXE/MaZLpAPEqQPmLF1YY2zfZsTwfhPKHo3h
+         B6HQ==
+X-Gm-Message-State: APuU4Z8vA6ZvxLmgzuZ8clTPgl1aaxriFnuDtWaYSGvGtFjW0FYOe68I
+	el+4nrulhNmIpVejtdVuvgrxMWQdsA+ERTSSeWhVUmr5Eu/GQpSWCi6g
+X-Gm-Gg: AYBFou10swvXbLjez8ddCjrHSVBAbMloepcqr/BNI3ZdJBauVi+6BvgNqL0RLGA8Bw/
+	jPhsa1SHLS0dDkJuW9fZ3TTcB+dwIIvkGBQP3hdGWIq9NxUiyBMoWmqiA9R7gSTtbenBHH8pwkn
+	F99gDU6Taz7T48Kp4zMNqGlkQvz5SYWBRIFLrLf1k6OOuTNVbI1Cbhuxx3mlItfUeDXnXaq3qET
+	fzHDwUUpuKvCZKsuQE2ZUyDkENw2xXmaVLvkIVIFKXokOIf6wmxqAhIF8/1W4QmDlMF/N2KJTUW
+	ww/TGe8ExFyrNlieNPNLiDsUXiD3Ql5wtL+iC3FQFs6I0xZO+ejllKC7NoafvZWNNUZya5kIIFB
+	mMT09vSmYMWzyfeoPRIFHtGeOHioXCAnyIb5SJUJlVgfebZLd2EUqQWklrCfq+00vYyhyvLIyy7
+	W/jzf+MZLU9UkDSVbvG18jh3tJgSF8YyleHJ7OrWIFW79pLBgxOjvCrzN0nQZRfRw9XrvR07fl+
+	B4BIPkKaaCYbc8RClp+OctDrHAV/avn5yn8FDUeRfq6O0g634pMWFzBixIOCyRKamzA2vmFzNUe
+	2cabgXBOV3s0v/gbXC3Y7gpjEhn4X6qBA5qoeBcD3qA0UHPzMt3OTaqTEOOq3nX2onBaRtb8UpV
+	tWm0Q/ZYZFmRFsvMoqtzySM1fB/LKQCXcz7Dfn4Bz9/LHvb6u+AbMKgq9cjGYoFHPUnVy2K/kDI
+	aJ78gprbOxCxBmZfIp1APg14IDRcsvVfxMD317xmKuy+wzenI2Vkxb
+X-Received: by 2002:a05:6808:181d:b0:53f:b2f9:1220 with SMTP id 5614622812f47-568144741edmr1029934b6e.5.1794177746301;
+        Sun, 08 Nov 2026 14:42:26 -0800 (PST)
 Received: from [127.0.1.1] (174-29-1-49.hlrn.qwest.net. [174.29.1.49])
-        by smtp.gmail.com with ESMTPSA id 5614622812f47-56813e54e39sm2859944b6e.15.2026.11.08.14.42.23
+        by smtp.gmail.com with ESMTPSA id 5614622812f47-56813e54e39sm2859944b6e.15.2026.11.08.14.42.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Nov 2026 14:42:24 -0800 (PST)
+        Sun, 08 Nov 2026 14:42:25 -0800 (PST)
 From: James Hilliard <james.hilliard1@gmail.com>
-Date: Sun, 08 Nov 2026 15:42:10 -0700
-Subject: [PATCH v2 3/4] mtd: rawnand: qcom: unwind registered chips on
- child probe failure
+Date: Sun, 08 Nov 2026 15:42:11 -0700
+Subject: [PATCH v2 4/4] mtd: rawnand: qcom: scan all chips before
+ registering MTD devices
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Message-Id: <20261108-submit-qcom-nand-child-probe-errors-v1-v2-3-4a8704cbf7b4@gmail.com>
+Message-Id: <20261108-submit-qcom-nand-child-probe-errors-v1-v2-4-4a8704cbf7b4@gmail.com>
 References: <20261108-submit-qcom-nand-child-probe-errors-v1-v2-0-4a8704cbf7b4@gmail.com>
 In-Reply-To: <20261108-submit-qcom-nand-child-probe-errors-v1-v2-0-4a8704cbf7b4@gmail.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, 
@@ -96,8 +96,8 @@ Cc: linux-mtd@lists.infradead.org, linux-arm-msm@vger.kernel.org,
  stable@vger.kernel.org
 X-Mailer: b4 0.15.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261108_144226_580764_A7A852D2 
-X-CRM114-Status: GOOD (  13.94  )
+X-CRM114-CacheID: sfid-20261108_144227_679985_3D91DC1E 
+X-CRM114-Status: GOOD (  16.77  )
 X-Spam-Score: -1.9 (-)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -119,88 +119,105 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-qcom_probe_nand_devices() continues after a child initialization error,
-allowing a later successful child to hide failures such as -ENOMEM or
--EPROBE_DEFER. If the last child fails, or allocating a subsequent host
-fails, probe releases controller resources without unregistering chips
-that were already published.
+Each NAND child is registered before the next child is scanned. Once a
+chip is published, its MTD operations can run concurrently with the next
+nand_scan(), which does not hold the controller lock. Both paths use
+controller-wide command buffers, and attaching another chip can replace
+the BAM transaction underneath an active transfer.
 
-Fail probe on the first error from an enabled NAND child and propagate
-that error. Share chip cleanup with removal and run it before releasing
-DMA resources or disabling the controller clocks.
+Initialize and scan every child before registering any MTD devices. Track
+which chips have been registered so probe failure unregisters only those
+devices while cleaning up every successfully scanned chip.
 
-Fixes: 89f5127c4b0d ("mtd: nand: qcom: reorganize nand devices probing")
+Fixes: 6a3cec64f18c ("mtd: rawnand: qcom: convert driver to nand_scan()")
 Cc: stable@vger.kernel.org
+Closes: https://lore.kernel.org/r/sashiko-outbox-204074@kernel.org/
 Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
 ---
- drivers/mtd/nand/raw/qcom_nandc.c | 29 ++++++++++++++++++-----------
- 1 file changed, 18 insertions(+), 11 deletions(-)
+ drivers/mtd/nand/raw/qcom_nandc.c | 28 ++++++++++++++++++----------
+ 1 file changed, 18 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-index 062fba9eaecc..14bb7f3d6c36 100644
+index 14bb7f3d6c36..978fa84f051d 100644
 --- a/drivers/mtd/nand/raw/qcom_nandc.c
 +++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -2085,7 +2085,7 @@ static int qcom_probe_nand_devices(struct qcom_nand_controller *nandc)
- 		ret = qcom_nand_host_init_and_register(nandc, host, child);
+@@ -89,6 +89,7 @@ struct qcom_op {
+  * @use_ecc:			request the controller to use ECC for the
+  *				upcoming read/write
+  * @bch_enabled:		flag to tell whether BCH ECC mode is used
++ * @registered:		whether the MTD device has been registered
+  */
+ struct qcom_nand_host {
+ 	struct qcom_nand_boot_partition *boot_partitions;
+@@ -118,6 +119,7 @@ struct qcom_nand_host {
+ 	bool codeword_fixup;
+ 	bool use_ecc;
+ 	bool bch_enabled;
++	bool registered;
+ };
+ 
+ static struct qcom_nand_host *to_qcom_nand_host(struct nand_chip *chip)
+@@ -2008,9 +2010,9 @@ static int qcom_nand_host_parse_boot_partitions(struct qcom_nand_controller *nan
+ 	return 0;
+ }
+ 
+-static int qcom_nand_host_init_and_register(struct qcom_nand_controller *nandc,
+-					    struct qcom_nand_host *host,
+-					    struct device_node *dn)
++static int qcom_nand_host_init(struct qcom_nand_controller *nandc,
++			       struct qcom_nand_host *host,
++			       struct device_node *dn)
+ {
+ 	struct nand_chip *chip = &host->chip;
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+@@ -2059,10 +2061,6 @@ static int qcom_nand_host_init_and_register(struct qcom_nand_controller *nandc,
+ 			goto err;
+ 	}
+ 
+-	ret = mtd_device_parse_register(mtd, probes, NULL, NULL, 0);
+-	if (ret)
+-		goto err;
+-
+ 	return 0;
+ 
+ err:
+@@ -2082,7 +2080,7 @@ static int qcom_probe_nand_devices(struct qcom_nand_controller *nandc)
+ 		if (!host)
+ 			return -ENOMEM;
+ 
+-		ret = qcom_nand_host_init_and_register(nandc, host, child);
++		ret = qcom_nand_host_init(nandc, host, child);
  		if (ret) {
  			devm_kfree(dev, host);
--			continue;
-+			return ret;
- 		}
- 
+ 			return ret;
+@@ -2091,6 +2089,14 @@ static int qcom_probe_nand_devices(struct qcom_nand_controller *nandc)
  		list_add_tail(&host->node, &nandc->host_list);
-@@ -2094,6 +2094,19 @@ static int qcom_probe_nand_devices(struct qcom_nand_controller *nandc)
+ 	}
+ 
++	list_for_each_entry(host, &nandc->host_list, node) {
++		ret = mtd_device_parse_register(nand_to_mtd(&host->chip),
++						probes, NULL, NULL, 0);
++		if (ret)
++			return ret;
++		host->registered = true;
++	}
++
  	return ret;
  }
  
-+static void qcom_nandc_cleanup_chips(struct qcom_nand_controller *nandc)
-+{
-+	struct qcom_nand_host *host, *tmp;
-+	int ret;
-+
-+	list_for_each_entry_safe(host, tmp, &nandc->host_list, node) {
-+		ret = mtd_device_unregister(nand_to_mtd(&host->chip));
-+		WARN_ON(ret);
-+		nand_cleanup(&host->chip);
-+		list_del(&host->node);
-+	}
-+}
-+
- /* parse custom DT properties here */
- static int qcom_nandc_parse_dt(struct platform_device *pdev)
- {
-@@ -2184,10 +2197,12 @@ static int qcom_nandc_probe(struct platform_device *pdev)
+@@ -2100,8 +2106,10 @@ static void qcom_nandc_cleanup_chips(struct qcom_nand_controller *nandc)
+ 	int ret;
  
- 	ret = qcom_probe_nand_devices(nandc);
- 	if (ret)
--		goto err_setup;
-+		goto err_cleanup_chips;
- 
- 	return 0;
- 
-+err_cleanup_chips:
-+	qcom_nandc_cleanup_chips(nandc);
- err_setup:
- 	qcom_nandc_unalloc(nandc);
- err_nandc_alloc:
-@@ -2204,16 +2219,8 @@ static void qcom_nandc_remove(struct platform_device *pdev)
- {
- 	struct qcom_nand_controller *nandc = platform_get_drvdata(pdev);
- 	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	struct qcom_nand_host *host;
--	struct nand_chip *chip;
--	int ret;
- 
--	list_for_each_entry(host, &nandc->host_list, node) {
--		chip = &host->chip;
--		ret = mtd_device_unregister(nand_to_mtd(chip));
+ 	list_for_each_entry_safe(host, tmp, &nandc->host_list, node) {
+-		ret = mtd_device_unregister(nand_to_mtd(&host->chip));
 -		WARN_ON(ret);
--		nand_cleanup(chip);
--	}
-+	qcom_nandc_cleanup_chips(nandc);
- 
- 	qcom_nandc_unalloc(nandc);
- 
++		if (host->registered) {
++			ret = mtd_device_unregister(nand_to_mtd(&host->chip));
++			WARN_ON(ret);
++		}
+ 		nand_cleanup(&host->chip);
+ 		list_del(&host->node);
+ 	}
 
 -- 
 2.53.0
