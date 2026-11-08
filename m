@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC64F606A332
-	for <linux-mtd@archiver.kernel.org>; Sun,  8 Nov 2026 21:23:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19B59606A31C
+	for <linux-mtd@archiver.kernel.org>; Sun,  8 Nov 2026 21:24:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=Pd6u5SGz;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=b4ZV31Hh
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=Cn8LurdB;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=y5NnPz2f
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,74 +14,74 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=bp9+w6aqShFRyJIQEuAK+EDSRPKjCGJBfKO8w2bTyn4=; b=Pd6u5SGzyU+ysrOgHlfuDD3y6h
-	LrzUZvNv59DKimNXtGpB0tzHZ6hUdGm5L1+4kh0IryPlsSEZZInqm7gW2aBD3Tikid6BzTmzrDE8j
-	Zj30KMmYT+6h+U8dOPhmSsm9KrMzShicxpcaiGGR6kK3Pun844VWzyJ++KtpLjDnaQF/BrFGpYBH7
-	5T7Z7hJN71MGEmn0Q52n+7UcSr7H0nQisg8Gd6p4Fakcn/DGV4XJoq/Ff7RVcV1qanRlYIRWt7ks2
-	mWhJfPh+XzW//AG0c6Q4OPxO8fcdN8b6EOUZlhy+7fg3zz8xu4tApu8viipdKjFthxsZHcLDdNBi+
-	/OYNlSCg==;
+	bh=QlYgXePETIoM6oG4I3ptNgSIBbpkkNGIt8YyoCu1IQc=; b=Cn8LurdBWIRPVdyPPEtg6EsrJ/
+	GpW12hS0dGCYddmi+9xO8gsNSlXHYlXZXaePVccO5+8kw6J2MUXutPAguW++MOoYT3RdCuvAkv8Yh
+	5g8uZF361tUzbPuNN/Fo+kMYXan4+KZm799nBAfnCgnbx3CXh6fsHUldyhGbmZxm0H8NIL3+9VUe9
+	CBfE8/CXYkidmMBpQ3MGtE4pP4+oN54Q00JYLpNJL6h+pgMAFlfT+NTHvrIc6usJemG1ImfszG/fc
+	8WGDfnGBew12Y5Kc/1MMkq5PWCBIWuakVJMUgc/XOu6y+AzdvLOM2UQpM8S8KT44wgc7BKaBNYtex
+	gJ25g5Mw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xQAMo-0000000Gi8u-2muC;
-	Sun, 08 Nov 2026 21:23:58 +0000
-Received: from mail-oo1-xc35.google.com ([2607:f8b0:4864:20::c35])
+	id 1xQAMq-0000000GiAN-3Q54;
+	Sun, 08 Nov 2026 21:24:00 +0000
+Received: from mail-oo1-xc2f.google.com ([2607:f8b0:4864:20::c2f])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xQAMm-0000000Gi7G-1EXz
+	id 1xQAMn-0000000Gi7n-26Vf
 	for linux-mtd@lists.infradead.org;
-	Sun, 08 Nov 2026 21:23:57 +0000
-Received: by mail-oo1-xc35.google.com with SMTP id 006d021491bc7-6dd7070699eso162152eaf.3
-        for <linux-mtd@lists.infradead.org>; Sun, 08 Nov 2026 13:23:55 -0800 (PST)
+	Sun, 08 Nov 2026 21:23:58 +0000
+Received: by mail-oo1-xc2f.google.com with SMTP id 006d021491bc7-6e560e00a86so161351eaf.1
+        for <linux-mtd@lists.infradead.org>; Sun, 08 Nov 2026 13:23:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794173035; x=1794777835; darn=lists.infradead.org;
+        d=gmail.com; s=20260707; t=1794173036; x=1794777836; darn=lists.infradead.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=V99b1R97qH/1vch1IDRgvyZu2Doy5l4KvwZ7hr979kc=;
-        b=b4ZV31HhoHLTDpJNSSmQNMWOznq04kC9crE3oE3S5BVntQE3ofXIafA89JjZSzFoGb
-         Zb/937jNDOPJiUBbST7BVrLKtAgzg86IZ81eyv+9W2AttgtJavAlARLx9jKDnPQhdvpG
-         /U2X0NyPGyPEdIqxu+Es30NlEESe8Y0cfwVo1g5rCOx+46NhiYmwfGav+E+5IUsipxf9
-         8kGdPNqTqgg2Gx2gjfeLr3DiYbGdFP52/zfyMS0iu1FkWCLTG1OTtqhZ1NmkAmDgER2x
-         Hg9WPkUAEjR/VgLvbibBNFDFcBNcbm/Liap2e6hznK0zxjFMSd7JEQd/RsRsVVOVnFUW
-         hXYA==
+        bh=ZzgA6XGsC14IAPU7geG6In3ud51Yu9iRbZaXfcFbd7c=;
+        b=y5NnPz2faAKI5SYInZr77nUcq+3hdKOs9lEUy97XZ/LEmUHzNPKlXKGIUDknaGqrQK
+         gccowviQq6lxzAEm4zMy10YhZtWnNVUAB3aMOI2vHUqbTOoMHB46ZNRuH1AuoIyPGWi/
+         hk3rf8croblXAcmIVFzHIrt4KmPiZP2JDMzNowPWBIu+j94k8VPj027z0TU4c/ylwf5J
+         MA1CgA/hWwjT2TF9Qb++mQrJJ7MZYZ7S8eURPqo/qvamK/8UbZE/edi7ON5bjgZELRpK
+         bGcbRD4ttVwJOOrpGmEUefUnjgQBtIVHvklwsENzKOYepZ3Awhb0so063OuefMFLRzIf
+         79ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794173035; x=1794777835;
+        d=1e100.net; s=20260707; t=1794173036; x=1794777836;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=V99b1R97qH/1vch1IDRgvyZu2Doy5l4KvwZ7hr979kc=;
-        b=NrcW+xdER5PA3JEfqc7GU5IjoQgNpBJwi85ixzAjU35Mp7Kmdr+gsGH+8i8ImKU2oM
-         jQdZ5gvpzUtBZbr9C+rCa143T081Oj+RlMTLlTCx8EWiJSAIxn5niOgBJ+iNuZ74YCeY
-         D1BDlxvU2YVRe6NMVeJYI/Kd4cquvmWN+ijsVn1K0in2emg9WoPbskD5K3Tk1Nr9nJKA
-         UEfz2Ip00mgzH06msE0ORNqvobZdRafLc11WNS/0YDKvLlHjk4ihhoSel8QmOYk8rmj6
-         bK203SbEISnmtdovp2MluXw/IeExcrgztqjYP5N3La/xstxnblw1n5O7fN+BGW+HbKP2
-         OWIA==
-X-Gm-Message-State: APuU4Z/MF7H4bmFY/axEOfthcIrQgH7DTLqgWLZJuLBw6gsO1HJtPfic
-	VBMHz6y/SFiMfJytZGE7vJKDWL9g6XyINu9hgVbt3R4VZbLTBAZhzI4G
-X-Gm-Gg: AYBFou3x+TnNZvknXBVmhtsGPj8GDyyBw8iO4Dvk9Fvkfjrv29NJ8DlWHQWG/5EE0b9
-	qSVw1c5uKgGpUvCLXQSBN/VAPz30oXRpCjRndGakZDj4UV2AR/Un1dPuDPAL14CQBvTWvjhny9e
-	d+83EUFkI3hF+6D+JWLIltSl/XZX2OJWKEFDC30EUQAw/1UwPMrCY92e8gIf0C0snTs14juq/BU
-	xqzrtvAxrl5jF57RVJx96cwoxOgWW0TTbT3A/U7i6tWmLvm+mWBO1mJvrIy/sZRHVgGHDruic1K
-	6AK7TklRV7WAZNhW6OYfk/ul4LXsOA7X3/eA0YtC/3bVhOttWLCf7jAQJ3zvJIo3j8dQhtBkvT5
-	kyON4J2a/uhZTdWedYLxVuPAzv/bzda/bI+uxzLzLVb1uMTptA6hxIukzsZpLVNCaFARJpr8lJY
-	0WLEp5beXcPgbpyJCShrhXBgWclhQyIrVJZ/cpFgozUSmoewf+lDeg7yrQy/SpvepO/1c2jqfvO
-	JpH0uq+lXIAEUDpEsJRBnC55oLJtH9RBlu8bPDb8QY4XBv0HPM67yv4lQCBuYq/4jk/K1sMePIc
-	duolwqRFVrVbRQ8+eYOpc0S8CZocHwBUSta4twHzcGTtDaXIvve4plwPbF5p6QrMt2Eyqn2RD8U
-	MDSOqbzu5tq2HNwIDblRTD+aJ1LTjFstP7zgr9qeoCX6bnCtcW/937t6iuk6y0qnoDtR0J4WLbE
-	pGuECHz1ns9zAWr1XnKAUhaf2zezpNqDUCnnX/+OxseXdbZ18mPUk=
-X-Received: by 2002:a05:6820:570a:10b0:702:f7c2:1937 with SMTP id 006d021491bc7-7170f35c361mr769608eaf.83.1794173035037;
-        Sun, 08 Nov 2026 13:23:55 -0800 (PST)
+        bh=ZzgA6XGsC14IAPU7geG6In3ud51Yu9iRbZaXfcFbd7c=;
+        b=q9ZG3EgGSd4uEyqts0F9tTuMFmS8MOeF1Vnl7x7fzTyQFIJk7/LJWr6oLfEtLOtFVI
+         CJOhPzqKbGUw6DQkruvjDsV+NuUpOfIjRO/RX1GD1PP3RnR0iyYEGQfOfDIlyiiWLjGf
+         eyQ0knz0N0MRAUQh8DI6iq27WKAcjGM4aZq47f12vPiT9WmeWPVz5ya7oWALcDkPeSQy
+         7t7fjZnhzpCZ8eUyo8DhFzoDjNiVk3wBYXOidaSP8wIyPS60pRksI0wyQAIIXFr5ohux
+         o5CGjGl+jHlI81bR2D0gCvewxhHQCnMxMqwCM2DviKDQoKyNShLZ9JcO3FRmsnjPC82b
+         FZrg==
+X-Gm-Message-State: APuU4Z9Z099ipeXZ3WfoohgUM5fSLuHlymBD+tk717/FAvtowy2MVrK+
+	XOrU4LUgW/aQzujvFGMQXBTx7gMH+CS+oioynGbQziqj1it9FTVcOpPd
+X-Gm-Gg: AYBFou1yY7dHzIEHiPEnnVE5KLGNVhIm2yJMMbyZQA67mrc27Vv7Cj4abjZRiGp23se
+	uzbKWLaczVGb4yldkrdlsk3OYfDO6lJaoqheXwdk3WJUzevIRjWejgb96pxvblZKKyTMxybeCi1
+	l+tukfVcsDt2c6s20/rGmDIppG8GqQFZulVJ+d2Ek8WFHW7BAd06+NAi4ea4H1AF9Hi+c8OOQXf
+	H8TF0KIUG5VHs9w5BhLsrZPNOYS1RwW6gyvSBKCI/DpJlzjoBD6QerNiqH+mkBuwHW3Fdtisa3Z
+	wwrinRiWhibzeTQ2uIfRnLUJbYJvgye6rCOUTRz+q35Y5uk5aoiIVjIitpSpljf3jzuDNGJK+rL
+	N8tod0sksggdFg2cpA5ICGqOuv95v+iz1eYEDTP/8Z2MpOD5fuwMRDEUWN6lleP/oYoHGKZ6eXO
+	Quz4pQr/9SzdP6meF1TMlJYheqW4di82sEN6T5kmLK72jZlPH7GZoQ3Kj4Zo0nV7bAkIPHSPtM0
+	a9G7aCldcMJJqyF5kbmuGIeH3PRZ7TjX/fodDLQSyAJKSjTv6nC21wp2c5ZdxBmCRoATfLk+374
+	HZ6Qk/btKv5NILZAKCnuJX/jmeocZpQuIPrQ8V4nggrzv1K4l2L7ubHDtT4Nb/dnslsIOqDu2Fj
+	Ed9SwmRQG9ihfLF+UUmsBYRYKjcTsDTXmUNZo3hCzmUAjDlXfWXmnD2HLdh5I5ybukeoptjzVPo
+	CHo4HWuGAGL4MWKVvGb6Ha3zigV3uNj65QzBtDiEx4j451/7zPGtA=
+X-Received: by 2002:a05:6820:a29c:10b0:717:f38:c6aa with SMTP id 006d021491bc7-7170f38cb27mr789245eaf.35.1794173036399;
+        Sun, 08 Nov 2026 13:23:56 -0800 (PST)
 Received: from [127.0.1.1] (174-29-1-49.hlrn.qwest.net. [174.29.1.49])
-        by smtp.gmail.com with ESMTPSA id 006d021491bc7-7170f8fbc55sm1908138eaf.12.2026.11.08.13.23.53
+        by smtp.gmail.com with ESMTPSA id 006d021491bc7-7170f8fbc55sm1908138eaf.12.2026.11.08.13.23.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Nov 2026 13:23:54 -0800 (PST)
+        Sun, 08 Nov 2026 13:23:55 -0800 (PST)
 From: James Hilliard <james.hilliard1@gmail.com>
-Date: Sun, 08 Nov 2026 14:23:22 -0700
-Subject: [PATCH 1/2] mtd: rawnand: macronix: serialize OTP access with NAND
- operations
+Date: Sun, 08 Nov 2026 14:23:23 -0700
+Subject: [PATCH 2/2] mtd: rawnand: serialize bad-block marker writes during
+ BBT recovery
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Message-Id: <20261108-submit-rawnand-operation-locking-v1-v1-1-565010fc5f8b@gmail.com>
+Message-Id: <20261108-submit-rawnand-operation-locking-v1-v1-2-565010fc5f8b@gmail.com>
 References: <20261108-submit-rawnand-operation-locking-v1-v1-0-565010fc5f8b@gmail.com>
 In-Reply-To: <20261108-submit-rawnand-operation-locking-v1-v1-0-565010fc5f8b@gmail.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, 
@@ -93,8 +93,9 @@ Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
  James Hilliard <james.hilliard1@gmail.com>, stable@vger.kernel.org
 X-Mailer: b4 0.15.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261108_132356_352205_D78101A9 
-X-CRM114-Status: GOOD (  15.08  )
+X-CRM114-CacheID: sfid-20261108_132357_563094_89B34398 
+X-CRM114-Status: UNSURE (   9.90  )
+X-CRM114-Notice: Please train this message.
 X-Spam-Score: -1.9 (-)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -116,82 +117,43 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-The Macronix OTP callbacks select a target and issue feature and page
-commands without taking the chip or controller locks. Normal NAND I/O
-can interleave with these commands, use a different target or access
-pages while OTP mode is enabled. OTP I/O can also run while the chip
-is suspended.
+When erasing or writing a flash-based BBT fails, write_bbt() marks the
+failed block bad before trying another reserved block. The erase and
+write helpers release the NAND locks before returning, but
+mark_bbt_block_bad() calls nand_markbad_bbm() without acquiring them.
 
-Make the existing NAND serialization helpers available within the raw
-NAND core and hold them across the entire OTP transaction, including
-restoring normal mode and deselecting the target. This uses the same
-lock ordering and suspend handling as normal NAND I/O.
+A BBT update triggered by a bad-block marking request can therefore
+issue the recovery marker commands concurrently with other NAND I/O or
+while the chip is suspended. The chip selection and shared page/OOB
+buffers are not protected on this path.
 
-Fixes: e87161321a40 ("mtd: rawnand: macronix: OTP access for MX30LFxG18AC")
+Take the chip and controller locks around the recovery marker write,
+as nand_block_markbad_lowlevel() already does for normal marker writes.
+
+Fixes: 10ffd570f117 ("mtd: nand_bbt: scan for next free bbt block if writing bbt fails")
 Cc: stable@vger.kernel.org
-Cc: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
 Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
 ---
- drivers/mtd/nand/raw/internals.h     | 2 ++
- drivers/mtd/nand/raw/nand_base.c     | 4 ++--
- drivers/mtd/nand/raw/nand_macronix.c | 2 ++
- 3 files changed, 6 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/raw/nand_bbt.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/mtd/nand/raw/internals.h b/drivers/mtd/nand/raw/internals.h
-index b8b29341b88c..2668f527e637 100644
---- a/drivers/mtd/nand/raw/internals.h
-+++ b/drivers/mtd/nand/raw/internals.h
-@@ -81,6 +81,8 @@ extern const struct nand_manufacturer_ops toshiba_nand_manuf_ops;
- extern const struct mtd_pairing_scheme dist3_pairing_scheme;
+diff --git a/drivers/mtd/nand/raw/nand_bbt.c b/drivers/mtd/nand/raw/nand_bbt.c
+index b0e7592a2ab7..51fe991358d6 100644
+--- a/drivers/mtd/nand/raw/nand_bbt.c
++++ b/drivers/mtd/nand/raw/nand_bbt.c
+@@ -720,10 +720,12 @@ static void mark_bbt_block_bad(struct nand_chip *this,
+ 	loff_t to;
+ 	int res;
  
- /* Core functions */
-+void nand_get_device(struct nand_chip *chip);
-+void nand_release_device(struct nand_chip *chip);
- const struct nand_manufacturer_desc *nand_get_manufacturer_desc(u8 id);
- int nand_bbm_get_next_page(struct nand_chip *chip, int page);
- int nand_markbad_bbm(struct nand_chip *chip, loff_t ofs);
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index a5b278ab9384..f125c529c62d 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -207,7 +207,7 @@ EXPORT_SYMBOL_GPL(nand_deselect_target);
-  *
-  * Release chip lock and wake up anyone waiting on the device.
-  */
--static void nand_release_device(struct nand_chip *chip)
-+void nand_release_device(struct nand_chip *chip)
- {
- 	/* Release the controller and the chip */
- 	mutex_unlock(&chip->controller->lock);
-@@ -336,7 +336,7 @@ static int nand_isbad_bbm(struct nand_chip *chip, loff_t ofs)
-  *
-  * Lock the device and its controller for exclusive access
-  */
--static void nand_get_device(struct nand_chip *chip)
-+void nand_get_device(struct nand_chip *chip)
- {
- 	/* Wait until the device is resumed. */
- 	while (1) {
-diff --git a/drivers/mtd/nand/raw/nand_macronix.c b/drivers/mtd/nand/raw/nand_macronix.c
-index 03237310852c..4fe7036ae992 100644
---- a/drivers/mtd/nand/raw/nand_macronix.c
-+++ b/drivers/mtd/nand/raw/nand_macronix.c
-@@ -380,6 +380,7 @@ static int __macronix_30lfxg18ac_rw_otp(struct mtd_info *mtd,
- 	int ret;
++	nand_get_device(this);
+ 	bbt_mark_entry(this, block, BBT_BLOCK_WORN);
  
- 	nand = mtd_to_nand(mtd);
-+	nand_get_device(nand);
- 	nand_select_target(nand, 0);
- 
- 	ret = macronix_30lfxg18ac_otp_enable(nand);
-@@ -426,6 +427,7 @@ static int __macronix_30lfxg18ac_rw_otp(struct mtd_info *mtd,
- 			write ? "write" : "read");
- 
- 	nand_deselect_target(nand);
-+	nand_release_device(nand);
- 
- 	return ret;
- }
+ 	to = (loff_t)block << this->bbt_erase_shift;
+ 	res = nand_markbad_bbm(this, to);
++	nand_release_device(this);
+ 	if (res)
+ 		pr_warn("nand_bbt: error %d while marking block %d bad\n",
+ 			res, block);
 
 -- 
 2.53.0
