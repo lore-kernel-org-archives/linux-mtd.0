@@ -2,56 +2,97 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE69F606A326
-	for <linux-mtd@archiver.kernel.org>; Sun,  8 Nov 2026 00:53:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39434606A31A
+	for <linux-mtd@archiver.kernel.org>; Sun,  8 Nov 2026 02:07:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=qjD+Zezq;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Drdve9qe
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=DMEEDDfx;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=arista.com header.i=@arista.com header.a=rsa-sha256 header.s=google header.b=EEhZXpfO
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Reply-To:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:References:
-	In-Reply-To:Cc:To:Subject:From:Message-ID:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
 	List-Unsubscribe-Post:List-Owner;
-	bh=JEqubC0PX8BaXlmTjId660KXZEI9FymOG6LG57O+JMo=; b=qjD+ZezqyYlgbh1S/98zQr/MI/
-	XCMvFojrfPjZbPOaU9C+6SUv7rku066rbYGpjqcsPTAIwV+EygG311H5lWfNKuyreG++bJUheTq9M
-	5/yWH5n8fnPJybbXOhFMYWvnHpjdH4lXrOZ+bucQmyMTNadbVdG7fNXrw9msvQtemfGlaQT00TPPH
-	IKHl8T6zXdNsX8lwtEFRMsyAFZf0MgH44RWAea/Y9WB0wxEQm/2HzU3XPesYEBQP49R3CyVFB7Pu2
-	J/G+hMEJLKpIjtr+vzk68/FHW0A2hTOTWc23xu8KlVWxfwEHcIhyflp4CZTqEA6OJFExM/BJCnoyn
-	xuH68vbg==;
+	bh=1u958mamd+IBd4dVwGzyjuggEkkXjCTrWic90ul4tQ0=; b=DMEEDDfxycw8wrR6+8u2bhuNvY
+	0D+U4iRBfM1G7NJ3twfSf92vXE3Ft+98PNU/rmL5xqsQ8pXWNq/Toze/z1sAo8vvHNoRaTnY9dQvo
+	nptOsY+yO4HDHHDru9EAWh1ZU6YcniQlugZz7V1s3CzBiTpDPmmRpjYEW3cxmHCFXvm1R0tkvQpeU
+	YjZiVXFGqcjeM6LM+cD7omj47F9UycxueMplv+QRByV0++NH0Kf2JCN4DymDZPva0ppep6eAc2qKY
+	38n4Xap8GbH52qLWZqoolzdFO8w9+CzqjoyNxfKEmxrC7FX+XCdtW24Aj0AzqmPEkMdUFOO/mLYOl
+	amJs8vpg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xPrA7-0000000FYv8-3npS;
-	Sun, 08 Nov 2026 00:53:35 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1xPsJw-0000000Fb6O-3EP9;
+	Sun, 08 Nov 2026 02:07:48 +0000
+Received: from mail-dy1-x1330.google.com ([2607:f8b0:4864:20::1330])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xPrA6-0000000FYv1-2YZm
+	id 1xPsJs-0000000Fb63-3MU2
 	for linux-mtd@lists.infradead.org;
-	Sun, 08 Nov 2026 00:53:34 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 030BA404A8;
-	Sun,  8 Nov 2026 00:53:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D1F81F0089F;
-	Sun,  8 Nov 2026 00:53:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794099213;
-	bh=Fdn2S799l9trXpJn3igScTLux+MfZY2g7ELUlMeYWeg=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=Drdve9qeceJiRgQpIX83TVO0Sl33ZxHhxnYdksWN1V6fT4ka7tYfJL3CzP/XBmV64
-	 sjwCzKHglYF3ONZHJVYSouxn9H3q8PxlFyek3jrWTziCu1yolRc2E3MoxQ2XiX0pGP
-	 8bGUbJk9bJ3khnwhJH8AGYsUKdvoU3MsBRT3c6Ua1PVKl9/upyE2oGnMDl3USttxw0
-	 zZ+FcG8LBZvHwioK6/m/dzn7Nz9dkeocVkwGHZ2kO7/ut6PlAudHVJl0sJYg8DyNwu
-	 KdX2q9L5Tg+uHe29gD9AeKwIILCxFhKnhdtcDULwvB+KFvHvq4RgvsTA3Eo8rIIARI
-	 bUY8aUzcmXBMA==
-Message-ID: <sashiko-outbox-203508@kernel.org>
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH] mtd: spi-nor: issi: Add support for ISSI IS25LP512MG
-To: "Matthew Parker" <mparker@arista.com>, pratyush@kernel.org, mwalle@kernel.org, miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com
-Cc: linux-mtd@lists.infradead.org, "Adam Calabrigo" <adamc@arista.com>
-In-Reply-To: <20261108004516.896887-1-mparker@arista.com>
-References: <20261108004516.896887-1-mparker@arista.com>
-Date: Sun, 08 Nov 2026 00:53:33 +0000
+	Sun, 08 Nov 2026 02:07:47 +0000
+Received: by mail-dy1-x1330.google.com with SMTP id 5a478bee46e88-36fb88ea38cso1010248eec.1
+        for <linux-mtd@lists.infradead.org>; Sat, 07 Nov 2026 18:07:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=arista.com; s=google; t=1794103664; x=1794708464; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=nAUid8jDWzly69ovFD3scbJRnE8PsLmVF0z4XZSSRog=;
+        b=EEhZXpfOVrDZEqpSiNDinYd2otn2nOk55LgBVMMJblplnt26bW8G0yqZNMyNZzAwnk
+         qgM/GEUwuCzX/WWeHj8GEGKPXaZJ16P6rrQl3nkzWl7YWExzhlvqwP0vYODxjqpR0RVD
+         teqNGpHTbss3FxUp+BYW7nlut0elV/BHoxc8Xdii3sxJ9LQbxIGEhPG3l1JJDpFvzhld
+         9L3pe0Vlf0FU7nuuFE8GagSjpUOrz+OJif/oOY7UuWKOcl9M6Md3ds61fkIibtetmsQr
+         F5FUiVHUtHsUGMueQmvUs7+WZEFXDWuRWsQm+A6EB2YQAe78FT/Z2erqm2RTNwBgfzWe
+         +ruQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1794103664; x=1794708464;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=nAUid8jDWzly69ovFD3scbJRnE8PsLmVF0z4XZSSRog=;
+        b=zRs84oDUz79lKIwkpCZ4rp6yVJ1zP3VRuR4mWScOyUfZXVhKtLdF2YYh8A9MNMj9pd
+         Y4m6qTcfg2bJr4zM8m5BatcVN8lpNnPoSNB6RMIs2tyBCOFgRkB60d8kX78GAUFJ3iTm
+         94sJk1pxQA4+tIyvPZ/ROZGk5TgTFEFH38sVSB3rJhNQv3d+QUu2uiR45OtEyDmAshJB
+         PgWHKD8biSM+HPRbZrtUQZUmdL5XXhYafmXEF7P1ucXew2bZzwglnVctM+7vVSEOs9cg
+         +COFe7hMX+cYHkKmIJFi+9S3SnSCPyTAP9gvDArFjzv9ZavosNJrZV5niqcvLcjtUpfh
+         dgQw==
+X-Gm-Message-State: APuU4Z+QacbRso9SHA/cTU7/oZwEnfYjaIpMfOIqlbWrjzbuahhS45pn
+	dWD1dJiSnY/8TaWcWm2H9oKWnhrQTPMxqe/eWHhaADNJ43vjMJvf+SmMRKcmr0vZcA==
+X-Gm-Gg: AYBFou1OPBKnT/nF9lz5CVBpNYOPmU9+LtopTmN92GliySwWhtRNZqF1yFZsqD4fJda
+	pOjAUe7tahPCngFDT0zQgwznUFYcrrO0vSX315f2QGlaQLCoJ2mthEaTcNYrckFyc4ki9Hk3X86
+	L8jOa8qWIpBDMtkk/AYtPyFxsrcauPZK8pGBTeiMZ6cQtEzcLeEG7zX4XoSS/jzXJ3A6ozPuOcs
+	ohF8jknzdYvyYxolUhSUOTBf6XIWEGOp/aHjeBFLjJEUWUH+Cnn1ivUlTgdTyraMI/XbxOw+Y4O
+	qmwteI4WuUQQ8kxTKn5l5hbuSqJjs9n2jZscSNl4NzNRsR0nsk4mo0AvWcbbgb32nxfDK0XXZRP
+	e0P8sfCHDJO8Uc70NMFu5dM0xumN7/aBzX8vOYJfUxgFxJUijZXVnS8p1stVV+kK3mpFvJkpoi0
+	UOrm7uGVsUqbqX0MobQYu+A4ZK8MxMe3RVPHhJZjdxbhnnRBs5RM3K8yCyZwLh1eN3ROhWJDcaN
+	6Z+ZKDucYhkTl/4Lel/kCX40pEWlxABpAK922X7kh+EequNiJSUQ6wZfrEQ0Lt9TqtH+n3SNAhq
+	9h3JXANh3ImRN0djAtIL9/DwxPLajoCIDtJHuvtfWLSOwGJZYhVuw/BH2MlyCF9F
+X-Received: by 2002:a05:7022:170d:b0:1ae:d447:6c84 with SMTP id a92af1059eb24-1b269b21bf7mr4108916c88.19.1794103663378;
+        Sat, 07 Nov 2026 18:07:43 -0800 (PST)
+Received: from mparker-home-xcrbr.sjc.aristanetworks.com ([74.123.28.17])
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-1b37561ccabsm2133832c88.12.2026.11.07.18.07.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 07 Nov 2026 18:07:42 -0800 (PST)
+From: Matthew Parker <mparker@arista.com>
+To: pratyush@kernel.org,
+	mwalle@kernel.org,
+	miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com
+Cc: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org,
+	Matthew Parker <mparker@arista.com>,
+	Adam Calabrigo <adamc@arista.com>
+Subject: [PATCH v2] mtd: spi-nor: issi: Add support for ISSI IS25LP512MG
+Date: Sun,  8 Nov 2026 02:07:12 +0000
+Message-ID: <20261108020712.897714-1-mparker@arista.com>
+X-Mailer: git-send-email 2.51.0
+X-Archived-By: <archiver.kernel.org>
+MIME-Version: 1.0
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20261107_180746_155696_9E4FC912 
+X-CRM114-Status: UNSURE (   9.86  )
+X-CRM114-Notice: Please train this message.
+X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -61,49 +102,54 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: sashiko-reviews@lists.linux.dev
-X-Archived-By: <archiver.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-8.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=4.0.1
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-VGhhbmsgeW91IGZvciB5b3VyIGNvbnRyaWJ1dGlvbiEgU2FzaGlrbyBBSSByZXZpZXcgZm91bmQg
-MiBwb3RlbnRpYWwKaXNzdWVzIHRvIGNvbnNpZGVyOgotIFtIaWdoXSBtdGQ6IHNwaS1ub3I6IGlz
-c2k6IGJ1aWxkIGZhaWx1cmUgZnJvbSByZW1vdmVkIHBhcnNlX3NmZHAKICBpbml0aWFsaXplcgot
-IFtNZWRpdW1dIG10ZDogc3BpLW5vcjogaXNzaTogc2V0dGluZyAuc2l6ZSBhbmQgLm5hbWUgYnJl
-YWtzCiAgc3BpX25vcl9uZWVkc19zZmRwKCkKLS0KCmNvbW1pdCBiODFkYTI2N2Q5OTQ2YjI3OTBi
-MWRhMjMyZDUwMjdmN2E4MTg1MzFjCkF1dGhvcjogTWF0dGhldyBQYXJrZXIgPG1wYXJrZXJAYXJp
-c3RhLmNvbT4KCm10ZDogc3BpLW5vcjogaXNzaTogQWRkIHN1cHBvcnQgZm9yIElTU0kgSVMyNUxQ
-NTEyTUcKClRoaXMgY29tbWl0IGFkZHMgYSBmbGFzaF9pbmZvIGVudHJ5IGZvciB0aGUgSVNTSSBJ
-UzI1TFA1MTJNRyA2NCBNaUIgU1BJIE5PUgpmbGFzaCBpbiBpc3NpX25vcl9wYXJ0c1tdLgoKPiBk
-aWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvc3BpLW5vci9pc3NpLmMgYi9kcml2ZXJzL210ZC9zcGkt
-bm9yL2lzc2kuYwo+IGluZGV4IDJmMDU3ZDczMWRmMmEuLjk3N2RjNWJhODAyODkgMTAwNjQ0Cj4g
-LS0tIGEvZHJpdmVycy9tdGQvc3BpLW5vci9pc3NpLmMKPiArKysgYi9kcml2ZXJzL210ZC9zcGkt
-bm9yL2lzc2kuYwo+IEBAIC0xMDEsNiArMTAxLDEyIEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgZmxh
-c2hfaW5mbyBpc3NpX25vcl9wYXJ0c1tdID0gewo+ICAJfSwgewo+ICAJCS5pZCA9IFNOT1JfSUQo
-MHg5ZCwgMHg2MCwgMHgxOSksCj4gIAkJLm5hbWUgPSAiaXMyNWxwMjU2IiwKPiArCX0sIHsKPiAr
-CQkuaWQgPSBTTk9SX0lEKDB4OWQsIDB4NjAsIDB4MjApLAo+ICsJCS5uYW1lID0gImlzMjVscDUx
-Mm1nIiwKPiArCQkuc2l6ZSA9IFNaXzY0TSwKCltTZXZlcml0eTogTWVkaXVtXQpEb2VzIHNldHRp
-bmcgLnNpemUgPSBTWl82NE0gYnJlYWsgc3BpX25vcl9uZWVkc19zZmRwKCkgZm9yIHRoaXMgZmxh
-c2g/CgpzcGlfbm9yX25lZWRzX3NmZHAoKSByZXR1cm5zICFub3ItPmluZm8tPnNpemUsIHNvIHNl
-dHRpbmcgLnNpemUgY2F1c2VzCnNwaV9ub3JfaW5pdF9wYXJhbXMoKSB0byBpZ25vcmUgc3BpX25v
-cl9wYXJzZV9zZmRwKCkgZmFpbHVyZXMgYW5kIGZhbGwgYmFjawp0byBpbmNvbXBsZXRlIHBhcmFt
-ZXRlcnMgd2l0aG91dCA0IEtpQiBlcmFzZSBvciBmYXN0LXJlYWQgbW9kZXMuICBJbgphZGRpdGlv
-biwgc3RydWN0IGZsYXNoX2luZm8gZG9jdW1lbnRzIC5uYW1lIGFzIG9ic29sZXRlIGZvciBuZXcg
-U0ZEUC1iYXNlZAplbnRyaWVzOyBib3RoIC5zaXplIGFuZCAubmFtZSBzaG91bGQgYmUgb21pdHRl
-ZCBoZXJlLgoKPiArCQkuZmxhZ3MgPSBTUElfTk9SX1FVQURfUFAsCj4gKwkJLnBhcnNlX3NmZHAg
-PSB0cnVlLAoKW1NldmVyaXR5OiBIaWdoXQpEb2VzIHRoaXMgZmFpbCB0byBidWlsZCB3aGVuIENP
-TkZJR19NVERfU1BJX05PUiBpcyBlbmFibGVkPyAgc3RydWN0CmZsYXNoX2luZm8gaGFzIG5vIC5w
-YXJzZV9zZmRwIG1lbWJlciBzaW5jZSAzZWEzZjBhYzI0MmMgKCJtdGQ6IHNwaS1ub3I6CmRyb3Ag
-LnBhcnNlX3NmZHAiKS4KCi0tIApTYXNoaWtvIEFJIHJldmlldyDCtyBodHRwczovL3Nhc2hpa28u
-ZGV2LyMvcGF0Y2hzZXQvMjAyNjExMDgwMDQ1MTYuODk2ODg3LTEtbXBhcmtlckBhcmlzdGEuY29t
-P3BhcnQ9MQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5m
-cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Add support for the ISSI IS25LP512MG 512Mbit (64 MiB) SPI NOR flash.
+
+The device provides JESD216B SFDP tables which accurately describe
+geometry, erase types, and read-write opcodes. Flash read, write, and
+erase operations across the full 64 MiB array have been verified on
+hardware.
+
+Cc: stable@vger.kernel.org # v6.1+
+Co-developed-by: Adam Calabrigo <adamc@arista.com>
+Signed-off-by: Adam Calabrigo <adamc@arista.com>
+Signed-off-by: Matthew Parker <mparker@arista.com>
+---
+v2:
+ - Drop .name, .size, and .parse_sfdp per modern SFDP discovery
+   conventions.
+ - Rely solely on JESD216B SFDP parsing with SPI_NOR_QUAD_PP.
+
+ drivers/mtd/spi-nor/issi.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/mtd/spi-nor/issi.c b/drivers/mtd/spi-nor/issi.c
+index 2f057d731df2..d2b812050550 100644
+--- a/drivers/mtd/spi-nor/issi.c
++++ b/drivers/mtd/spi-nor/issi.c
+@@ -101,6 +101,9 @@ static const struct flash_info issi_nor_parts[] = {
+ 	}, {
+ 		.id = SNOR_ID(0x9d, 0x60, 0x19),
+ 		.name = "is25lp256",
++	}, {
++		.id = SNOR_ID(0x9d, 0x60, 0x20),
++		.flags = SPI_NOR_QUAD_PP,
+ 	}, {
+ 		.id = SNOR_ID(0x9d, 0x70, 0x16),
+ 		.name = "is25wp032",
+-- 
+2.51.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
