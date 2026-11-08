@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04BFB606A334
-	for <linux-mtd@archiver.kernel.org>; Sun,  8 Nov 2026 21:10:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7BCA606A321
+	for <linux-mtd@archiver.kernel.org>; Sun,  8 Nov 2026 21:11:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=dcz+lWGV;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=pPTZIKqk
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=N22VW+Ud;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=VY1KNamq
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,86 +14,85 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
 	List-Unsubscribe-Post:List-Owner;
-	bh=5HyMd+CgPGQOM3DsJ7lY+gmGp/DHWJa73tsQMGtQGJQ=; b=dcz+lWGVzI4tD5P4HFqSoTGv/4
-	FlSZoycrcWLgZOiPeiG3q/wO5dtJ+AMt0s4y7nxW6VraAWiIRVyDD+IpThpKl8WFSseOR48dJkDCt
-	8L43qIbvtOZVi7SbX4jIvUXtMRxHinChT/GeCbyM/6uJeSEpUpGWTqqxRIQ8cz5J2yUmIiEm7VkUz
-	WELFifkg20HuCHgfooP/7I7U087TcZd66/jYrdu60Asl8wvcGOSs1Acbr7CoWl0JgGNgwXZuyg7+5
-	aTnhaA8ZV3eAArF36hW9VLz/6/8tWzf45e+i5yPmmcx6OM2snMK8pOjpP1T3iEVDknw9OJTiDLXcG
-	GlkC2rMg==;
+	bh=pLzbbD5v3ouvYeTR9YOPlJ5ej+xjZWNsl+eFM1aYXSs=; b=N22VW+UdzZWiRJaT3KXUO/xgZe
+	N6XSaTCcy0kFRE5jUZFlli/45pmkFBIlVdIeBblNuV+FNMJQBbrfW3aueu2SIbd41PJOOYzhitEnP
+	JOUILSLDM9AoX7bhZ8FClmMYRAUNxodbMnvCa+l5CQDUKxrY1bYMbGJH94qp5hn0n8Jl3d9D5XN0r
+	9Ou8iQRevaeCzKCeK2uujL0YBhzF625/+CGfAqCUd87Fs+3RYXTceZ2iN7j6o/9WKCLSpq6nEfXZE
+	Tdf/QBhjr90HywgTKofWaRjJw3j2cbp8joa/RZvrcdQPDLOpL4CtB8RST2Sw1xdanCurlk3IJjxv3
+	apAneLcA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xQAAD-0000000Ggbs-11UP;
-	Sun, 08 Nov 2026 21:10:57 +0000
-Received: from mail-ot1-x331.google.com ([2607:f8b0:4864:20::331])
+	id 1xQAAx-0000000Gggl-1hIZ;
+	Sun, 08 Nov 2026 21:11:43 +0000
+Received: from mail-oo1-xc35.google.com ([2607:f8b0:4864:20::c35])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xQAAA-0000000GgbX-2vlX
+	id 1xQAAu-0000000GggH-3AlV
 	for linux-mtd@lists.infradead.org;
-	Sun, 08 Nov 2026 21:10:55 +0000
-Received: by mail-ot1-x331.google.com with SMTP id 46e09a7af769-82109f51565so89289a34.2
-        for <linux-mtd@lists.infradead.org>; Sun, 08 Nov 2026 13:10:54 -0800 (PST)
+	Sun, 08 Nov 2026 21:11:42 +0000
+Received: by mail-oo1-xc35.google.com with SMTP id 006d021491bc7-702dedeb70dso127673eaf.1
+        for <linux-mtd@lists.infradead.org>; Sun, 08 Nov 2026 13:11:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794172253; x=1794777053; darn=lists.infradead.org;
+        d=gmail.com; s=20260707; t=1794172299; x=1794777099; darn=lists.infradead.org;
         h=cc:to:message-id:content-transfer-encoding:content-type
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to:content-type;
-        bh=OXxfToL8LXg6Oh0k9HdrHfUTYtCfhx6snQVUGjyIGDI=;
-        b=pPTZIKqkRYETcCQexYETXfwmFnb3WlFp0xp77Mtkt3dPTtJYof7UDidKMgSqNkZWcL
-         2mM9Vtvktay8NpO7vsKBINJYGSGkWuYnNGf1b+wgG7NQjyPozRj6zMnuaNaNNqmRDfMr
-         lumdo0IV7LjJxb5fHdgdCSl5SkZuGJPHY4bTUUot5lTEP4n+83oV/aNxIayfb8yl7QW0
-         MQCXIkcVahWNNbH+s9sNCEtXF2z+W6dfJIfI/hwhNZc0KxaHN31ERkjxKTzW0In1PRTA
-         9mOu2+/8z21falT7so1OgVTY09q6UUFuZ82KKoubqSR+poD6MqnQCK40M9ZUOlFV6Zym
-         Q1Bg==
+        bh=/tM7Th5heSIu0EjehKmDLLPeUVpt5UbMkUrc5jBJaHc=;
+        b=VY1KNamqDr7uQEkXhqQafn4a8lKanW0YqdqTwEm9gCUEGn3MuIPOpnzVWFU82PHtJ7
+         2p7f9utKdxLVmv+kUWupXGmyYC5bPcwoJfmgy01JauQqfv12aX+hoBJdqc0VYWVBVFwN
+         kM1us9ZOVPENGv+gpfzPtsHkFWWrXEXlgFayrVx8k/tvZEYyrAwew/tIZj2STSh5HZ6S
+         PSvVL0p6foTzoHmlZoQAhBtdBh1yzOwRfxM06xaoUPgo8tyP1dG94U1Xt69Msp/RS6mZ
+         xijImdkv2uhl5+v51jtD1jUoPaKdLzhCFX9N7krRDCQvqSSEInmpvRF+cLpFk9Hme8gm
+         4IZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794172253; x=1794777053;
+        d=1e100.net; s=20260707; t=1794172299; x=1794777099;
         h=cc:to:message-id:content-transfer-encoding:content-type
          :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to:content-type;
-        bh=OXxfToL8LXg6Oh0k9HdrHfUTYtCfhx6snQVUGjyIGDI=;
-        b=SjggRbIkFJABaB8Q2Vl3cLLHCvRBa+K0BXnaMDMEKWRmEBTMe9612Gi+6nmtkGKp2b
-         a1xDRVP1M+9IGEVcDzOxNCkmOs3FYoWgGeg+UMyHA+JWdCxHDFK1S6gUYAsBsGZiSyvU
-         8BFau3ZJN6jGE6cEnFs95Ir1XC58bu0QM8liMS9kmefgCjYp5eUbT2zyGZwkCYE+WmRG
-         axohINNh4hU/9BfSYHVj4ZuNqlljFpYFSJGCkORkVxQuBQDkvRQPHMmJAxd/5SsMaUZM
-         5f2HC+orqrm9IXrCYuriuA5vNUdvBoVfcRqTO8qHHSv9HM/hSNgKnhQXVwUKugfYuOeh
-         HH7g==
-X-Gm-Message-State: APuU4Z+T1TsFuC7DSY/xdfvbS9h7iW/4C63AMT+VWXHmRAQTFxN5N7jw
-	B/NFkqhTM/cgGG9bYoC/Ecqj8+MpHCXY/7GNqzPp9J3Y36B/I2iQyLNV4afGzQ==
-X-Gm-Gg: AYBFou33JbyCwg9T84AwCGkQOTdsO2H2xR6xfGPHm8PXgtPmiiYQOPer4aeMBkY1JfY
-	Pv2tJfP9bgGLjWjioU/HU3KEfhTe691CX1hGwdJxXtT9t5HddRafy7uOhZ5g6do7td8pSpq24pf
-	ckFyzNnfiJpi0kMf2V3zSUcVuI9XNmET/VtYPJoj/4U7Ccy/Jqmc6KM/GX1uLHxXyzJKmNJqG1v
-	T4sb0DhmRi83mDkQsyJsJc1Nox1MXUd1HpVUcc86FQHhWEpGYvCKteTVkBx/ou/8oCwrQR8Viw8
-	jSGf5ixZeC/BKrIg2akSRdiMlCvBf1QTq6O4q60v7U0uD66zn011D7WzTC8qV80C4UOyBO8K0MW
-	vRtZozQR5gOXIF/lSux2YLatTUkmSIIB/Ozj0/cOux9PJKzStdzKsgbkU3FV2s8P1gzssPcMSX/
-	otd2n/Xyj1ZKMl1eUgaet8xC2HEBybjYG40aaqtPqvijBYlsItjGhxl6lVoyzsomlED/swW34i1
-	U7YMuu0GpxFvuf+ovipGHSsDh3hkkNpHRitcwpDFLeipaQxvaErfn4dNuynIyG50tVJQqrHvp/v
-	qfF58zD+AoXBmi+QppGQ412PVdQpfb0+aEwEi9lWDzF1GWu1kSMQ+kjVvNM7QSmqsowcHG9XkPn
-	ZNZz62BMIrRAuRzhE6UfRypwMhjfUhggpp2nMF06meCbzIKP7YqfTIYJTBIKi4LXQMCZFl6grll
-	3LrAOdQ21qvtYAofH6gxXP3oTHyhcjOBCmXAblh6+H9de449piNziWl8wrFe5LttqR5hC60cin
-X-Received: by 2002:a05:6808:f13:b0:567:cbf5:bb96 with SMTP id 5614622812f47-568147067d9mr1423302b6e.44.1794172253510;
-        Sun, 08 Nov 2026 13:10:53 -0800 (PST)
+        bh=/tM7Th5heSIu0EjehKmDLLPeUVpt5UbMkUrc5jBJaHc=;
+        b=lgeAhagaUCTQprmoEBeVAMRvlxJ5fFtu8HlioXTtDqFCU6wjJk0rX77AUSti6eZzAj
+         NHhad7PRrlx/vrpXfXx9/YId9K9JXuqH66aMXtXgNaBJj6ZDzk5Y4TIhJLnIxsMY5s84
+         7kgiMLaEmDjprtvxTMTLtD2blS9Sh1dgQRFwmoOZbwvMaKiQz9+ykCo2PGbW0Dv3ImIr
+         WlEKMlRVeNzzMj8kRFV+XVcBeXUlmtFGtj4HUOymxlj8ryTscQoTmkuTD/f/rjf6e/SX
+         qCvt4Iu4QDayv9Fvcr3oiYUJUUH2qTbOCuix1z+Hsl8tvejX9C/az2Zen7YPTeS42PC1
+         yATQ==
+X-Gm-Message-State: APuU4Z9XqQeOCPWETfpGjTBRws8nMNyp2DPCwNJ1hPDAH/Q50nyQcS2T
+	8KRcmrvQGXsKVcVsbMMJ4xX7wYK3VeurNQxH5xkAiGFs0YJzHd+RxFb1
+X-Gm-Gg: AYBFou2JAOo37dAbEt4/62TEpOJDDRR1vxxx1xxAt6bMd+3vsE8skZIQf3TldXAkw7k
+	WoQvP3d+3thcoxBGxas/R5KXxNN9KqLez9nIo4sTwoqS5ad3W1OQPOgbdYKzsCGMfgTlGg0YmPj
+	tBJPakrQmjIuPC/kOgURmriRkwrt0T4ylNHFP/uxrnjpr74yotLZ7KHqdF/iOAPzhyB+mRIHmeJ
+	dCUohTTIifXJRL/+AyB1I88CUtDrjnmPhQ/nVHpxohKENpSla4pjvT9XAOC1cxV7/cYKRlVePaV
+	sG9fPg3BaoB9UntbW82tLEDI4iqITAYXmFxg42XIEfh5lB6cmcFG+wI6LMqvCTByBEKGv1PYNFm
+	GHLZLg8mJotbzTsqPRpaM7YyMMC5Pac9I0Bc9AQ2jHESVxdyC58qFC4+Pt8CcEDm7fZS0MFlaSY
+	ltwHkJr/YtJctWrbGq/xd5SA7c/SmMEqHb2SGkuDP1/BhnA9ATUbLHDCgFOdsOdZTklfWA2Jsw6
+	dh60iRGtAcXagptYFjd79lrJJr9+si79GoTiOSqIZJWrJPTI9esw/gHqPJ4+YK/uVsGVkXHSe6F
+	bnz6FaspQYdvslFQavhbJsfKsymSnoIKPcF8NzL049zxp1Xm8KBLFx4BGEIfUaXku0QjxlNbi53
+	xeTMMBI5UTFQiftMU4zeM1HD+snjeYMmiYgWXqGNDszZQNCqw4cK/YnOjq+obKHn3W8Q6IVBnQr
+	No7J0zKxkLsf+3HHeLhIJabeA+fOkGCTus3u+5sFwF0lY1YSy/5qw=
+X-Received: by 2002:a05:6820:c2cc:20b0:716:d70f:1c1c with SMTP id 006d021491bc7-7170f30f0e9mr760112eaf.90.1794172299437;
+        Sun, 08 Nov 2026 13:11:39 -0800 (PST)
 Received: from [127.0.1.1] (174-29-1-49.hlrn.qwest.net. [174.29.1.49])
-        by smtp.gmail.com with ESMTPSA id 5614622812f47-56813db1b41sm2618100b6e.8.2026.11.08.13.10.52
+        by smtp.gmail.com with ESMTPSA id 006d021491bc7-7170f5e1e93sm1970733eaf.0.2026.11.08.13.11.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Nov 2026 13:10:53 -0800 (PST)
+        Sun, 08 Nov 2026 13:11:38 -0800 (PST)
 From: James Hilliard <james.hilliard1@gmail.com>
-Date: Sun, 08 Nov 2026 14:10:40 -0700
-Subject: [PATCH] mtd: retain the partition node reference across device
- registration
+Date: Sun, 08 Nov 2026 14:11:37 -0700
+Subject: [PATCH] mtd: leave the device type unset when naming fails
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Message-Id: <20261108-submit-mtd-partition-node-reference-v1-v1-1-ad30359569d4@gmail.com>
-X-B4-Tracking: v=1; b=H4sIAAAAAAAC/yWNSw6DMAxEr4KyrlVCf6JXqbpIwlBciYCcFFVC3
- L1OWXjxbM+b1SQII5l7tRrBwomnqGAPlQmDiy8Qd8qmqZurtfWN0sePnGnMHc1OMmcNUJw6kKC
- HIAbQYqltEfqAsz9drFHZrFf+/osez53V9EbIxV4+vEsgLy6Goay04FhmT23bD0+Pr+eqAAAA
-X-Change-ID: 20261107-submit-mtd-partition-node-reference-v1-99ecfce4b351
+Message-Id: <20261108-submit-mtd-devname-retry-v1-v1-1-a67f332c54dd@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/yWMzQrCMBCEX6Xs2cUmBQ2+injIz9aukCibGJTSd
+ zexhzl8w8y3QiZhynAZVhCqnPmZGqjDAH6x6U7IoTHoUZ+UGg3mt4tcMJaAgWqykVCoyBerwmk
+ +e6cpmNFM0AwvoZk/f/v1tnO7P8iXruwLZzOhE5v80qtmPfbsr237ARH9KoSfAAAA
+X-Change-ID: 20261108-submit-mtd-devname-retry-v1-3f7cb2ed8083
 To: Miquel Raynal <miquel.raynal@bootlin.com>, 
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
- Christian Marangi <ansuelsmth@gmail.com>
+ Jens Axboe <axboe@kernel.dk>, Jan Kara <jack@suse.cz>
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
  stable@vger.kernel.org, James Hilliard <james.hilliard1@gmail.com>
 X-Mailer: b4 0.15.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261108_131054_751701_26050A1E 
-X-CRM114-Status: GOOD (  12.39  )
+X-CRM114-CacheID: sfid-20261108_131140_810933_8E050B64 
+X-CRM114-Status: GOOD (  12.31  )
 X-Spam-Score: -1.9 (-)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -115,87 +114,43 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-mtd_check_of_node() obtains a child node reference while looking up a
-partition, stores the node in the MTD device, and drops the reference.
-add_mtd_device() only takes its own reference after the helper returns.
-A concurrent dynamic DT removal can release the node in that gap.
+add_mtd_device() uses dev.type to reject a second registration of the
+same MTD. It sets that field before dev_set_name(), but the failure path
+for the name allocation leaves it set even though no device was
+registered. Retrying registration then warns and fails with -EEXIST.
 
-Return a referenced node from the lookup helper and transfer that reference
-to the MTD device. For an already supplied node, acquire the reference in
-the same helper. The existing registration unwind and device release paths
-remain responsible for putting it.
+Set the type only after naming succeeds. The later registration error
+paths already clear it before releasing the device.
 
-Fixes: ad9b10d1eaad ("mtd: core: introduce of support for dynamic partitions")
+Fixes: fa06052d637b ("mtd: Convert to dynamically allocated bdi infrastructure")
 Cc: stable@vger.kernel.org
 Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
 ---
- drivers/mtd/mtdcore.c | 17 +++++++----------
- 1 file changed, 7 insertions(+), 10 deletions(-)
+ drivers/mtd/mtdcore.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 491a27d0315f..f7fa895ede35 100644
+index 491a27d0315f..4f62a13dc481 100644
 --- a/drivers/mtd/mtdcore.c
 +++ b/drivers/mtd/mtdcore.c
-@@ -636,7 +636,7 @@ static int mtd_nvmem_add(struct mtd_info *mtd)
- 	return 0;
- }
- 
--static void mtd_check_of_node(struct mtd_info *mtd)
-+static struct device_node *mtd_find_of_node(struct mtd_info *mtd)
- {
- 	struct device_node *partitions, *parent_dn, *mtd_dn = NULL;
- 	const char *pname, *prefix = "partition-";
-@@ -644,14 +644,14 @@ static void mtd_check_of_node(struct mtd_info *mtd)
- 
- 	/* Check if MTD already has a device node */
- 	if (mtd_get_of_node(mtd))
--		return;
-+		return of_node_get(mtd_get_of_node(mtd));
- 
- 	if (!mtd_is_partition(mtd))
--		return;
-+		return NULL;
- 
- 	parent_dn = of_node_get(mtd_get_of_node(mtd->parent));
- 	if (!parent_dn)
--		return;
-+		return NULL;
- 
- 	if (mtd_is_partition(mtd->parent))
- 		partitions = of_node_get(parent_dn);
-@@ -679,16 +679,14 @@ static void mtd_check_of_node(struct mtd_info *mtd)
- 
- 		plen = strlen(pname) - offset;
- 		if (plen == mtd_name_len &&
--		    !strncmp(mtd->name, pname + offset, plen)) {
--			mtd_set_of_node(mtd, mtd_dn);
--			of_node_put(mtd_dn);
-+		    !strncmp(mtd->name, pname + offset, plen))
- 			break;
--		}
- 	}
- 
- 	of_node_put(partitions);
- exit_parent:
- 	of_node_put(parent_dn);
-+	return mtd_dn;
- }
- 
- /**
-@@ -805,8 +803,7 @@ int add_mtd_device(struct mtd_info *mtd)
+@@ -798,12 +798,12 @@ int add_mtd_device(struct mtd_info *mtd)
+ 	/* Caller should have set dev.parent to match the
+ 	 * physical device, if appropriate.
+ 	 */
+-	mtd->dev.type = &mtd_devtype;
+ 	mtd->dev.class = &mtd_class;
+ 	mtd->dev.devt = MTD_DEVT(i);
+ 	error = dev_set_name(&mtd->dev, "mtd%d", i);
  	if (error)
  		goto fail_devname;
++	mtd->dev.type = &mtd_devtype;
  	dev_set_drvdata(&mtd->dev, mtd);
--	mtd_check_of_node(mtd);
--	of_node_get(mtd_get_of_node(mtd));
-+	mtd_set_of_node(mtd, mtd_find_of_node(mtd));
- 	error = device_register(&mtd->dev);
- 	if (error)
- 		goto fail_added;
+ 	mtd_check_of_node(mtd);
+ 	of_node_get(mtd_get_of_node(mtd));
 
 ---
 base-commit: 1c1a342aceec79528b3ba51f376eca2be5928fe7
-change-id: 20261107-submit-mtd-partition-node-reference-v1-99ecfce4b351
+change-id: 20261108-submit-mtd-devname-retry-v1-3f7cb2ed8083
 
 Best regards,
 --  
