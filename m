@@ -2,59 +2,97 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9266606A31C
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED4B9606A320
 	for <linux-mtd@archiver.kernel.org>; Sun,  8 Nov 2026 21:12:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=VYHqxSo2;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=m/CME3Fz
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=ywa//o03;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=jq8rcn2S
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Reply-To:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:References:
-	In-Reply-To:Cc:To:Subject:From:Message-ID:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version:Subject:
+	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
 	List-Unsubscribe-Post:List-Owner;
-	bh=EuZqMHhtEJQm/S5VtKc2QInos35s6afRq/5bP9RSE8s=; b=VYHqxSo2z7m/IIOz0qLpQN5OlV
-	J+eDIcYcMl8aLxsVfNydWa5ZrCixBRW4lReW8DsrvdZlwRHQ/QXRxfnyO200hBYLf9x2M8yWPGcjX
-	W3tyQ4MmxE0mm2u9uwQQYA4gu8MvBYbMXRdumKRmaZO5iEu8DYkVaPf4gbds1V9dD+IlUtYnfSBXF
-	DZaTzBF0DyyKY13kBe3yxosKKWu2gK//M+5GCXQXXYNRgpumT5coWMcYqM7jzw5u5JFLekNr3G8B4
-	mZsrjgE0zJONNCvceqAvzZw+P26SbiXoGApBHwtE9axqFKsIgM3bQMGUoEePCBzzMFjFHS0qfm7o8
-	iUDUZpUA==;
+	bh=bJfKiRVDbhj97cgswHjg2atrpUNCU2VJrylOTHZ8nOw=; b=ywa//o036wzPqiIqgqkvZeDliZ
+	YW2ujR3MXzj0AS/Wua/Nv8vYm8eiD5uShLdl59vkADzSOAy51twl2NNxe61cyf7Rfpnxjbuk8vdA4
+	GCUK0JeoGbk8wZtlsGIPqKYSSorbP+l0cvkbamZ10ZkLIYaLK4LHC4QKuOvWfRwwjqeeBtSwO2vXV
+	Ysndejrntb/+dd+f7uAXODV1XSgqIm6xjYc4ixvwkN5pUICBjE+rPQTB99BqkO1Jo9riiC5zIlItK
+	GZnr2vndRLK5w8v65+QZ8vjYTpcptRlAwyNiaFyoQYFr4bFBpfC7jYKs5luwXY7T3oVWV248r4glm
+	et4dWsIA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xQABz-0000000Ggw5-0z7l;
+	id 1xQABz-0000000Ggvy-0en3;
 	Sun, 08 Nov 2026 21:12:47 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+Received: from mail-oa1-x2e.google.com ([2001:4860:4864:20::2e])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xQABx-0000000Ggvi-2SzT
+	id 1xQABw-0000000GgvL-01zS
 	for linux-mtd@lists.infradead.org;
 	Sun, 08 Nov 2026 21:12:45 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 0DDDD61849;
-	Sun,  8 Nov 2026 21:12:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6740A1F0089F;
-	Sun,  8 Nov 2026 21:12:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794172364;
-	bh=EPjROwjsgFSz78GoWhDnke4RAWwqEVi60B+CTkdOY/g=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=m/CME3FzCJck3vABeKx9WKq9n0+T+XD4d9R+OuGizoen9VmJPoY1DndmI9mFahz9h
-	 aP0RU5KNpQN83SbzM0B2UG4Rl7pF7cXrss4wEFbsdrVJGhJxmu4AfSW2PGrAh/wte0
-	 cIzYT1/qNyWQeyGjcabNx7zzeSHL/+I6cozpnNBIJ4poQSG54OC18rf4DqPOIYNelQ
-	 Xm0wzyID8wPvUdEqpPkSIlzSlndqmZGRigh1TNs0HxNhgC1GPICRmPvtSTjXhlXv32
-	 MUnq3YVU9LFlnDz4wUrSpqD73kgIH1u4xdgcCPPBVJOlg70dPTYiERq4RWI7RVh5hu
-	 /mpwTQxITSivA==
-Message-ID: <sashiko-outbox-204066@kernel.org>
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH] mtd: rawnand: nandsim: validate overridesize before
- shifting
-To: "James Hilliard" <james.hilliard1@gmail.com>, "Miquel Raynal" <miquel.raynal@bootlin.com>, "Richard
- Weinberger" <richard@nod.at>, "Vignesh Raghavendra" <vigneshr@ti.com>, "David
- Woodhouse" <dwmw2@infradead.org>
-Cc: linux-mtd@lists.infradead.org, "wang wei" <a929244872@163.com>
-In-Reply-To: <20261108-submit-nandsim-overridesize-bound-v1-v1-1-9cde7657a69b@gmail.com>
-References: <20261108-submit-nandsim-overridesize-bound-v1-v1-1-9cde7657a69b@gmail.com>
-Date: Sun, 08 Nov 2026 21:12:44 +0000
+Received: by mail-oa1-x2e.google.com with SMTP id 586e51a60fabf-48e9476e26aso79062fac.3
+        for <linux-mtd@lists.infradead.org>; Sun, 08 Nov 2026 13:12:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20260707; t=1794172363; x=1794777163; darn=lists.infradead.org;
+        h=cc:to:message-id:content-transfer-encoding:content-type
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to:content-type;
+        bh=qlC9xsQzooMGZMAFZeEoUmEZJVGfQC5/v/wrYEO4uww=;
+        b=jq8rcn2Soa87Fm+fME/QE4FMkwxwEbu13Yd7BlIWLlPwYfGWsq8FTyQHTJwYMkJbyH
+         qkv/vLSWGtPFhHXDbxUQRq6pRquUMEDXTjaWs57HeGrI0702qLxJ6l+8Gb3xenxVn0f/
+         dCtTkQ5Vh9dCNnmG7AjkzcyBFL6drXiZjCF8FS0ZYAWLeeHK3R7I7RFfsdV9MOZc1QL3
+         EPl5TAncqUY0mtByip0F4ph/e4bfOYOI7XVUeqfi2KqgmoZ0Sw/OfYUojUjiQNbAGD+t
+         8VFy6eshhXobFGHIYgNYzSjbdMG8gPvY373HcQa0k9kRCJHjFGriJi5BaqQMQGgWvdCJ
+         GOWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1794172363; x=1794777163;
+        h=cc:to:message-id:content-transfer-encoding:content-type
+         :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to:content-type;
+        bh=qlC9xsQzooMGZMAFZeEoUmEZJVGfQC5/v/wrYEO4uww=;
+        b=k/L19lPAKVsaywy8oSSrHQNQcydB2NCnaoix0AbALAJPDl0wmzL7cPucP7Uqerpugb
+         bBfLry56HiLH6IvVFPcVfHE5NeT7r+My3fS9gQRKqPpSqwrhngXI1kbhyLyFpeWzq8z1
+         ulkCSrSy2HeQjVWan/PF8P7SCKhN3zpm3BbpgnXRjdQBRxMGDDiXU205RmSQYsr5WsCd
+         laji5SoCbQbx53GwRxVRiF02MlvliA0WzmMUvbiJWLU+nFCj0zXJNzBLVczZDxC6aKyZ
+         qgjvp2VofVlb1lZ/NpTnmYM18iYNVDWg06bzuLDK9H0iC4AbCSUP198bRWqBncE0G3n+
+         A2Pw==
+X-Gm-Message-State: APuU4Z8D4hGbUmfL3mx0LoNMGnbxZvaJKc6+U0I0QEgKAFpHYjtixIki
+	jBawwcTduMTa5KdUA70TP0Vx0KgKljtoimxqbA4pVkJJ9UuC91zLaq/n
+X-Gm-Gg: AYBFou0k5CFGRSPClWNZUQ168LfmGiKEhVJka9sXH2H1CDX43yUA6lBnaa2aidC4SnX
+	o5aFmP7CE+Nju1DnZif3fK/CBIm0LYigAFRtnvsWytHLn7P/1b/JT9nSZQxPgToE1ZvDgpf3V12
+	D+Gb3If7UKl7qrlvhsn4widJPLqb2t3BW5eWEWz+hGpbxCg3d6AyKhopI52dCBWiTl9v9tqDhMe
+	moqcJBILs6p230LDXuofqUE2iuHsa7mP6J9FsmsFkhfusdrLtanqdFyATeZA2+BAw91RizevK3Q
+	H1iN8jatVubpW6FHgiHnWQMHHLZlD1+TtgJk1O3G80dH8bdRBryaG9bMaCo1gCLmmGbNwRSDG54
+	mU/ZQkGsN8GbTBqaU/v5l0IW8EePA4jnaG7rqoxUECtC3TBhJaSjSsvm0GRw+q9ZqpIyzUKUtG6
+	sVAroebm9PPWbx4PJBTQkRPcm3X2IAuDdd+nK070HBnaMP3uux3jy9ZwN5C1HbaGm5PLOHrjdS1
+	Yl0n9ixPHn3JXI9amLDxeTt3DWXhO+Rp3cxyH96xfWbEL84Fe78dKQzszFRfBqasPBpy2LtHQwY
+	0Tz+CSvfCg7qU24yaagTLZtPzB4KUV5x8CFT2oNNpb/g0y+IBvARQCCsWR1s+AjiSEOqsAVRjf9
+	N2/FbXO0+Y7hQdYBxPKujdi66sci1V3cQaUoucYVZ4Rcy4/VAX6HlsAtMnHvCtrs/y9N1TcAAdH
+	Dv6rk2MugnmJccMH/H5C4XHO7hVwgV/9YW6dHCCW3QCDC7txfIdds=
+X-Received: by 2002:a05:6808:2211:b0:551:eea6:9397 with SMTP id 5614622812f47-5681463f7b5mr1400461b6e.59.1794172362919;
+        Sun, 08 Nov 2026 13:12:42 -0800 (PST)
+Received: from [127.0.1.1] (174-29-1-49.hlrn.qwest.net. [174.29.1.49])
+        by smtp.gmail.com with ESMTPSA id 5614622812f47-56813ac62d0sm2795191b6e.2.2026.11.08.13.12.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 08 Nov 2026 13:12:42 -0800 (PST)
+From: James Hilliard <james.hilliard1@gmail.com>
+Date: Sun, 08 Nov 2026 14:12:39 -0700
+Subject: [PATCH] mtd: take a reference when opening an unpartitioned master
+X-Archived-By: <archiver.kernel.org>
+MIME-Version: 1.0
+Message-Id: <20261108-submit-mtd-master-open-reference-v1-v1-1-871aac8c6e05@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/yWNSw7CMAxEr1JljUVTQYu4Cuoin4EaKWkVhwqp6
+ t1J6MKLN/Y8b0qQGKLuzaYSVhaeYwF9apSbTHyB2BdWXdv1Wrc3ko8NnClkT8FIRqJ5QaSEJxK
+ iA62ajLbDtffO4zKoYlrKlr//L4/x4KJ5w+WqrhfWCMgmE91Uo2I/1zla+/4Dh3SPI6cAAAA=
+X-Change-ID: 20261108-submit-mtd-master-open-reference-v1-a1b756dcde47
+To: Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ stable@vger.kernel.org, James Hilliard <james.hilliard1@gmail.com>
+X-Mailer: b4 0.15.2
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20261108_131244_058101_6AA17EC4 
+X-CRM114-Status: GOOD (  11.79  )
+X-Spam-Score: -1.9 (-)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -64,63 +102,87 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: sashiko-reviews@lists.linux.dev
-X-Archived-By: <archiver.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-8.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-VGhhbmsgeW91IGZvciB5b3VyIGNvbnRyaWJ1dGlvbiEgU2FzaGlrbyBBSSByZXZpZXcgZm91bmQg
-bm8gbmV3IGlzc3VlcwppbiB0aGlzIHBhdGNoLCBidXQgbm90aWNlZCAxIHJlbGF0ZWQgcHJlLWV4
-aXN0aW5nIGlzc3VlIGl0IGRvZXMgbm90CmludHJvZHVjZToKLSBbQ3JpdGljYWxdIG10ZDogcmF3
-bmFuZDogbmFuZHNpbTogdW5zaWduZWQgaW50ZWdlciBvdmVyZmxvdyBpbgogIG5zX2luaXQoKSBb
-MV0KLS0KCmNvbW1pdCAxNzJhZWExOThjMmVlMDI1OWNlNzQ3MzRmNGI1ZGFiMWQwOGZhMTk1CkF1
-dGhvcjogSmFtZXMgSGlsbGlhcmQgPGphbWVzLmhpbGxpYXJkMUBnbWFpbC5jb20+CgptdGQ6IHJh
-d25hbmQ6IG5hbmRzaW06IHZhbGlkYXRlIG92ZXJyaWRlc2l6ZSBiZWZvcmUgc2hpZnRpbmcKClRo
-aXMgY29tbWl0IHZhbGlkYXRlcyB0aGUgb3ZlcnJpZGVzaXplIHNoaWZ0IGNvdW50IHVzaW5nCmNo
-ZWNrX3NobF9vdmVyZmxvdygpIGJlZm9yZSBjb21wdXRpbmcgdGhlIGVyYXNlYmxvY2sgY291bnQg
-YW5kIHRvdGFsIE1URApkZXZpY2Ugc2l6ZS4KCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25h
-bmQvcmF3L25hbmRzaW0uYyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L25hbmRzaW0uYwo+IGluZGV4
-IGZlOTY4MDM3Zjc1YTIuLjY3MTZlYWZiNGIwMDQgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9tdGQv
-bmFuZC9yYXcvbmFuZHNpbS5jCj4gKysrIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFuZHNpbS5j
-CgpbIC4uLiBdCgo+IEBAIC0yMzQxLDIxICsyMzQyLDIxIEBAIHN0YXRpYyBpbnQgX19pbml0IG5z
-X2luaXRfbW9kdWxlKHZvaWQpCj4gIAl9Cj4gIAo+ICAJaWYgKG92ZXJyaWRlc2l6ZSkgewo+IC0J
-CXVpbnQ2NF90IG5ld19zaXplID0gKHVpbnQ2NF90KW5zbXRkLT5lcmFzZXNpemUgPDwgb3ZlcnJp
-ZGVzaXplOwo+ICAJCXN0cnVjdCBuYW5kX21lbW9yeV9vcmdhbml6YXRpb24gKm1lbW9yZzsKPiAr
-CQl1bnNpZ25lZCBpbnQgZXJhc2VibG9ja3M7Cj4gIAkJdTY0IHRhcmdldHNpemU7Cj4gIAo+ICAJ
-CW1lbW9yZyA9IG5hbmRkZXZfZ2V0X21lbW9yZygmY2hpcC0+YmFzZSk7Cj4gIAo+IC0JCWlmIChu
-ZXdfc2l6ZSA+PiBvdmVycmlkZXNpemUgIT0gbnNtdGQtPmVyYXNlc2l6ZSkgewo+ICsJCWlmIChj
-aGVja19zaGxfb3ZlcmZsb3coMVUsIG92ZXJyaWRlc2l6ZSwgJmVyYXNlYmxvY2tzKSkgewo+ICAJ
-CQlOU19FUlIoIm92ZXJyaWRlc2l6ZSBpcyB0b28gYmlnXG4iKTsKPiAgCQkJcmV0ID0gLUVJTlZB
-TDsKPiAgCQkJZ290byBjbGVhbnVwX25hbmQ7Cj4gIAkJfQo+ICAKPiAgCQkvKiBOLkIuIFRoaXMg
-cmVsaWVzIG9uIG5hbmRfc2NhbiBub3QgZG9pbmcgYW55dGhpbmcgd2l0aCB0aGUgc2l6ZSBiZWZv
-cmUgd2UgY2hhbmdlIGl0ICovCj4gLQkJbnNtdGQtPnNpemUgPSBuZXdfc2l6ZTsKPiAtCQltZW1v
-cmctPmVyYXNlYmxvY2tzX3Blcl9sdW4gPSAxIDw8IG92ZXJyaWRlc2l6ZTsKPiArCQluc210ZC0+
-c2l6ZSA9ICh1NjQpbnNtdGQtPmVyYXNlc2l6ZSAqIGVyYXNlYmxvY2tzOwo+ICsJCW1lbW9yZy0+
-ZXJhc2VibG9ja3NfcGVyX2x1biA9IGVyYXNlYmxvY2tzOwoKW1NldmVyaXR5OiBDcml0aWNhbF0K
-VGhpcyBwcm9ibGVtIHdhc24ndCBpbnRyb2R1Y2VkIGJ5IHRoaXMgcGF0Y2gsIGJ1dCBjYW4gYSBs
-YXJnZQpvdmVycmlkZXNpemUgdGhhdCBwYXNzZXMgY2hlY2tfc2hsX292ZXJmbG93KCkgc3RpbGwg
-b3ZlcmZsb3cgdGhlIDMyLWJpdApucy0+Z2VvbS5wZ251bSBpbiBuc19pbml0KCkgWzFdPwoKZHJp
-dmVycy9tdGQvbmFuZC9yYXcvbmFuZHNpbS5jOm5zX2luaXQoKSB7CgkuLi4KCW5zLT5nZW9tLnRv
-dHN6ICAgID0gbXRkLT5zaXplOwoJbnMtPmdlb20ucGdzeiAgICAgPSBtdGQtPndyaXRlc2l6ZTsK
-CS4uLgoJbnMtPmdlb20ucGdudW0gICAgPSBkaXZfdTY0KG5zLT5nZW9tLnRvdHN6LCBucy0+Z2Vv
-bS5wZ3N6KTsKCS4uLgp9CgpCZWNhdXNlIGVhY2ggZXJhc2VibG9jayBjb250YWlucyBtdWx0aXBs
-ZSBwYWdlcywgYW4gZXJhc2VibG9jayBjb3VudCB0aGF0CmZpdHMgaW4gdW5zaWduZWQgaW50IGNh
-biBzdGlsbCBwcm9kdWNlIGEgdG90YWwgcGFnZSBjb3VudCBleGNlZWRpbmcKVUlOVF9NQVguICBU
-cnVuY2F0aW5nIG5zLT5nZW9tLnBnbnVtIGNhdXNlcyBuc19pbml0KCkgdG8gYWxsb2NhdGUgYQpz
-bWFsbGVyIHBhZ2UgYXJyYXkgdGhhbiBtdGQtPnNpemUgcmVxdWlyZXMsIGxlYWRpbmcgdG8gb3V0
-LW9mLWJvdW5kcwphY2Nlc3NlcyBkdXJpbmcgc2ltdWxhdGVkIGZsYXNoIG9wZXJhdGlvbnMuCgpb
-MV0gaHR0cHM6Ly9zYXNoaWtvLmRldi8jL2J1Zy9saW51eC0zYzM3OWE3My02NWRmLTRiNWYtODE3
-OS05NWNlYjJmNDQ3MTcKCi0tIApTYXNoaWtvIEFJIHJldmlldyDCtyBodHRwczovL3Nhc2hpa28u
-ZGV2LyMvcGF0Y2hzZXQvMjAyNjExMDgtc3VibWl0LW5hbmRzaW0tb3ZlcnJpZGVzaXplLWJvdW5k
-LXYxLXYxLTEtOWNkZTc2NTdhNjliQGdtYWlsLmNvbT9wYXJ0PTEKCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lv
-biBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9saW51eC1tdGQvCg==
+CONFIG_MTD_PARTITIONED_MASTER controls whether a master is registered
+alongside its partitions. Without that option, an unpartitioned device
+is still registered as a master and can be opened directly.
+
+__get_mtd_device() skips the master while walking the parent chain and
+only takes its reference when CONFIG_MTD_PARTITIONED_MASTER is enabled.
+A direct open therefore leaves the registration reference as the sole
+reference. Unregistering the device releases its device-model and NVMEM
+state while the handle remains open.
+
+Take and release the master reference for direct opens as well. Retain
+the existing behavior for partition handles whose master is not
+registered. Decide from the original handle before walking the parent
+chain so get and put use the same condition.
+
+Fixes: 264725e35fbc ("mtd: Clean refcounting with MTD_PARTITIONED_MASTER")
+Cc: stable@vger.kernel.org
+Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+---
+ drivers/mtd/mtdcore.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 491a27d0315f..444615804236 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -1330,6 +1330,7 @@ EXPORT_SYMBOL_GPL(get_mtd_device);
+ int __get_mtd_device(struct mtd_info *mtd)
+ {
+ 	struct mtd_info *master = mtd_get_master(mtd);
++	bool master_ref = mtd == master || IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER);
+ 	int err;
+ 
+ 	if (master->_get_device) {
+@@ -1350,7 +1351,7 @@ int __get_mtd_device(struct mtd_info *mtd)
+ 		mtd = mtd->parent;
+ 	}
+ 
+-	if (IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER))
++	if (master_ref)
+ 		kref_get(&master->refcnt);
+ 
+ 	return 0;
+@@ -1435,6 +1436,7 @@ EXPORT_SYMBOL_GPL(put_mtd_device);
+ void __put_mtd_device(struct mtd_info *mtd)
+ {
+ 	struct mtd_info *master = mtd_get_master(mtd);
++	bool master_ref = mtd == master || IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER);
+ 
+ 	while (mtd) {
+ 		/* kref_put() can relese mtd, so keep a reference mtd->parent */
+@@ -1445,7 +1447,7 @@ void __put_mtd_device(struct mtd_info *mtd)
+ 		mtd = parent;
+ 	}
+ 
+-	if (IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER))
++	if (master_ref)
+ 		kref_put(&master->refcnt, mtd_device_release);
+ 
+ 	module_put(master->owner);
+
+---
+base-commit: 1c1a342aceec79528b3ba51f376eca2be5928fe7
+change-id: 20261108-submit-mtd-master-open-reference-v1-a1b756dcde47
+
+Best regards,
+--  
+James Hilliard <james.hilliard1@gmail.com>
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
