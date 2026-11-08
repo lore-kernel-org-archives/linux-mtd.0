@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D3B9606D811
-	for <linux-mtd@archiver.kernel.org>; Sun,  8 Nov 2026 21:04:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4A74606A32A
+	for <linux-mtd@archiver.kernel.org>; Sun,  8 Nov 2026 21:05:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=mdhdohAr;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=BAFgFcrG
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=014kjFb/;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=TVXsewZ/
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,87 +14,86 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
 	List-Unsubscribe-Post:List-Owner;
-	bh=5lcR4x63qPyoIov3tQAEgyZNYwEuChOEgPaMuuIrVKU=; b=mdhdohArLgy50BKeoWZCcVYbj7
-	95EpTm/41GQXtgNSFlIszazMIOzPnis+AS+xCBzPJIksBConeGO0O8DMC7t5XiNdwiD2f3JJP2T1z
-	v+M98U4bxtwaT1rSPA0f7yWI0ILqmXinSN/rJeJmT58FxL7/liTpdLCwP9XNzVZ1a7wIOOuLfyzAY
-	SZ/lLrQrWBHb1532uzxs+b/pitpyd6Jm8VYNvwnhrqfoZRzlr54xr5B9XDxFXTpstbQMAdituILkd
-	QZTOUdmND/8Y3NE7FM014BxWqEZflLvpnVsVBVs/bAAwUvBYDmiKgAoR5HMySzXOVbrzdjsLw24os
-	KtfCwMcQ==;
+	bh=fHZs2hnAP514NA+1IcL2sC5tCeB3jokbr+9fHsLNSYk=; b=014kjFb/eeFWolzUaVqZQPjLO1
+	kqVjCB6TGVhHCBJPlJXhHu1fkpeUISymVIDEkfz/ocNLUpaKHGnMYAxbYTunnC6dGFFfM2h1RgWtH
+	2KeXc0tfaVqBhCJlwucKEnQuqtSUZsRypMORw/ooECy+bjyzCbxYgZRtBzGZ/OIjCtE9BFKyNE1g/
+	r2dAeXp8fO/MR2v+f8dFHrzrVM0U21So0bE0fXD/iJl32Xj/JtR+MjoznGb30E9iROUIdWcEFTYKx
+	qA9GdCy0qwWFK1EQTJisGyuGBomTylpjPjFm4wghF46MIr7sFwRRrWNX1q6T7w1meqydNtePJ41/T
+	6JMyQsJw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xQA3v-0000000GfEi-3lRE;
-	Sun, 08 Nov 2026 21:04:27 +0000
-Received: from mail-oa1-x33.google.com ([2001:4860:4864:20::33])
+	id 1xQA4p-0000000GfNz-084G;
+	Sun, 08 Nov 2026 21:05:23 +0000
+Received: from mail-ot1-x32f.google.com ([2607:f8b0:4864:20::32f])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xQA3t-0000000GfEA-0HTC
+	id 1xQA4m-0000000GfNO-2gn7
 	for linux-mtd@lists.infradead.org;
-	Sun, 08 Nov 2026 21:04:26 +0000
-Received: by mail-oa1-x33.google.com with SMTP id 586e51a60fabf-49429181ce9so185059fac.0
-        for <linux-mtd@lists.infradead.org>; Sun, 08 Nov 2026 13:04:24 -0800 (PST)
+	Sun, 08 Nov 2026 21:05:21 +0000
+Received: by mail-ot1-x32f.google.com with SMTP id 46e09a7af769-84e513874f8so179269a34.2
+        for <linux-mtd@lists.infradead.org>; Sun, 08 Nov 2026 13:05:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794171864; x=1794776664; darn=lists.infradead.org;
+        d=gmail.com; s=20260707; t=1794171919; x=1794776719; darn=lists.infradead.org;
         h=cc:to:message-id:content-transfer-encoding:content-type
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to:content-type;
-        bh=5GT+YOwt4Wk5UaYozi9TZs9C5IMfkSYjhBBTrIEYhmQ=;
-        b=BAFgFcrGJ3bnMmXKkXB6aDctCWqvoufFS2lMYXC6+uABiLhBHdSM+vmh7QtlGyh6nX
-         AbulZ6rspzu5iH38Coulk5V1O7f9N1w4aUdvchIec0q6VG54wL2PCfOeXpZ1Zdw2VaQC
-         4aAjt2OhSYSsk6/5rJRvBjmGN540XCKxr2YbLXHdAdMnQIA8MT+TUsUIt3zQq3mmvg0f
-         FHL84QeilRtuT30E5tFbiJgmkASzXLTJDxognw9PbWMnhxXNE+KuCpp3n8W8bC6NHtXM
-         9WoJfITEl3eDFu2ZybnzMawPODX47CqHAOTFQtyOSqKqjgH5U8Xbj0LhhWHwu7RB/Dvj
-         Ql3w==
+        bh=VOXdJqtU61quagom20vbQEtOrGbaqfLbHDdzOijlTys=;
+        b=TVXsewZ/0cGnU9UKtLEAzsjKjCLB632Ipt/ufrKmLab8rzBinVLPa++Qy2MCGhftqm
+         EG6lEM6xctSRs3RVPSeD9ylqwfHXsiOicRU13z0tY2HFUNXhEFw5Dqun4/ebFhHJ+e8I
+         BwaotJ7lXqMuFYj5T/kLL2hX+QO1emIFWRvCxrZPcvZjK9uECwH00keeGcocpp887HkN
+         Oy6ROOuhoxrmsqB75RGXIe+aJx6y0l8mXwPrsGHBVv8dNwj/SKV6UdXVa/twzkyKL7ll
+         ZtMgjrbS0U+c57HHbMEuvdNEFsPiErHyaqrIelPgCA6vERnlRVnHSN182PaC7j8Yy83r
+         ZYIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794171864; x=1794776664;
+        d=1e100.net; s=20260707; t=1794171919; x=1794776719;
         h=cc:to:message-id:content-transfer-encoding:content-type
          :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to:content-type;
-        bh=5GT+YOwt4Wk5UaYozi9TZs9C5IMfkSYjhBBTrIEYhmQ=;
-        b=rMX+ANi9rDskMG0a1K/X8q0iI8CbRE55ANqWuQ2C0hw7iJRK7zULPNDZkcBp9FqpH8
-         1adGYN2o+q+UFJcIWPhDM5Ns0SxRULG1idxOnTMnSiVLa/XHzpNDVVkaWOZlGfStTMAm
-         tJDIwWs/QWA4xrTSZeSQ/BBvvFePBOfWA7GS7Aw03zTCdNIUYmWsO5ZfX0zzR1i8Lrza
-         561v8WYwbbxjGjqubBAVgrGeKPx/BJsm5mUMwJlM5uKIiXZxK7d7/ESt/aiU8D9t8Lx5
-         sD3bwhKe+j3/OcafBEVupt1jZYs3ZhjK9y023C1m9tSUTW9jPGqle2i8aJ6Gt8l+RRQo
-         tc6A==
-X-Gm-Message-State: APuU4Z+1B6nZRxLbkxdJfZ9nmSimpf1UHfwHEIZMZ3SXuy7SVl8XloV9
-	3YlwZtEtLv4+DXSPbMWgDQqnYAwkuROw6Z+d7SXB9rxVRKwwR3z1JKEP
-X-Gm-Gg: AYBFou1nVnhjBA1iHHY3my6+V7v29b4ex3xRerGO/EHN0+KkZcSDi9cWYJrBznOruRS
-	mFVoZElfu9MaGvcC+EaC8mozznxGjzW6y1ch9R6ibdk7WA6573JdKKpnufe35mdpt+bOW21IPgT
-	bwCmprE2i2OEWkrndlEj0ojvpMYBqrONsKKBuoZYqAgLuVO9SftjxGeP47jhD9JA0nm/jxFL+Hd
-	087Q9P5qcW3u8UCiqyx0AaIKrylnx5E6JGAbOGrli9fPKqelW/ZoYYNgWAd78U1N+M32ZXIbrXR
-	+C4ElODqU78DkzBcKtX5A28wu3xWhXBSggcX/tCRGcD8pbBu4oWyTXQ7/EPXeGaJxDC9JSkLzcW
-	05NmNmrdvSUXjUPWJbZUyH6hu+LHIZUIvtWtQLeoyQy2XsqaowqyLrWrdmsxxxSKxFCpz6UGa0e
-	tMFTZ0xISx/0EBt/qKDznewuFvMtFqzKk+QHIaZNjZOiGuztkuAWv7n3F5BzEKysmrKHIxJn+AK
-	VOy1Wg7Y5GN3Gc689YH9lAG4/CFeLlkUx911IcU9ERwn8+A4xZLRIYX9CEs8KqYN+vktxKSARvX
-	dWwWj3AJiN7/HALnZOWhnV85Ks+SfE/Mk22xE9wrUMSexMbNiQoetX6J6b57pLzJhxH3C28N3V/
-	UGm4EoUuLiJNrYDg2X7fdfDNErzTcqBf/cK1d4eMIyIXlnU9HOcaI2+uQ30INndTIlTz5Fpilf/
-	cGaXxWyJSvSADd2dmHgOp8JVwk2PD79knNvjhxOwfZsJBryE5Dzzl/
-X-Received: by 2002:a05:6870:538b:b0:49d:d617:b692 with SMTP id 586e51a60fabf-4adecb98a9dmr1074710fac.49.1794171863950;
-        Sun, 08 Nov 2026 13:04:23 -0800 (PST)
+        bh=VOXdJqtU61quagom20vbQEtOrGbaqfLbHDdzOijlTys=;
+        b=cKKEwyBnDNzHJceZXx2v07u22B7ZeEPD6V7ZnfN+49PFX2RRsnKOFc5Sq1bsKSmOwm
+         JFGSjguHS2uCJOcjySzbGiNeECavRDiqtX/zN80DRfCfUyDU1sY9WAJHzeUzIy7Wcjo2
+         MTSnk2JaMosQaJposiVHM49bUhbyjKStNshhP8hB077XPLkRaqlWEY+FdH/5t1CMmG6h
+         r8RH/FGEsd0NFQmgbZ6fvAXdUT1FLBP+ep9hKyeFYQpvslhyUJxT9hvbV/2fdKLyxNl0
+         O27bpGyVvo6e+ZvOPOZFlixuCjMdPG8BcLHUtJOJBwjbHYJP1xpd6R7IAdDc7xVvuHHS
+         PRlQ==
+X-Gm-Message-State: APuU4Z/0s5XyGrLa2VjcswVEzF1Ak+Xpswva22svrCrG8DWi+HpYnbzL
+	7b21p+zKdX6bDBWnaabW+79ZCpDt+QqpFvqHncq+d8ggoidK4j95hchk
+X-Gm-Gg: AYBFou3PMYsAscsGMFmWMm7CvpLkDaBij1gLlG13w8O9yFJBeAj1pMOaJa5bnse0VjG
+	RVQmTvfWv/8+yS9miSFMFBsG5oN+pw6/a3CeXbK+AdFDGs6+lhAwfmZv67vOiM2ndbAQ4NYk5y4
+	8zrFSirnPhWyB3SdB9N1kmQ5Ki80X6xiYx19lRNZDpTzUwGFp26AIeQsbAfuUpwRca2WIklKCSG
+	00OkmpsS58+cCG9L5XX2KoyHoVjokdlu5Swedw6QsA03w/jAfaCLVyMI1scJLy8d6pmR7kcwHPQ
+	cI5PsrAAYVZS5/Q1CPP2dq+boKh7MBSu47WQdyTY2bjkfkarhDCPWCp7wH1Kald8Ss2zVIxKgnx
+	iAUzgevd9KuW9QRbDN6nmsdYC9x31EFm5tay7WXpC/wU0PeA9dMAXjITBHPy+9epTLn/yLUgw8O
+	cx1q8G61zAJIAmK/kYTWu6NG91Zh2s4a1xfx0lZ9Dt74Vq4/pvhBe6E/saV0GgjcQxMgxtK4rHE
+	4oFBmxR+Xqqsem8Ylkq8f0ug/iI7gUkqFoiPwj7OBArny/yaCGIFGs3wEzkb3TgxOoE9I4iw7CX
+	vaQttPXc8sbV4qNDWbeLnqgV7C7NgJMtguPyTyIf2zVZIcDuEmf9kBKolc7ewYNaC7RyEasz/2V
+	dpOX7B5K2zjZq2/aJJmL9FfLxXBh2ByPWzbh61BR01uKDDetxbgNDDK/rwajghjBA0R56AF2Eib
+	H9yegoK4Kcgaiw2SnymQ+pnvv+eDQ2b7boUDLM/kSMRz9+T5jFSQdA
+X-Received: by 2002:a05:6830:91a:b0:85c:4897:f2ff with SMTP id 46e09a7af769-85f5084cce8mr2349585a34.25.1794171919700;
+        Sun, 08 Nov 2026 13:05:19 -0800 (PST)
 Received: from [127.0.1.1] (174-29-1-49.hlrn.qwest.net. [174.29.1.49])
-        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-4ade695a5a6sm3597440fac.10.2026.11.08.13.04.23
+        by smtp.gmail.com with ESMTPSA id 46e09a7af769-85f4fbd820csm2226208a34.23.2026.11.08.13.05.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Nov 2026 13:04:23 -0800 (PST)
+        Sun, 08 Nov 2026 13:05:19 -0800 (PST)
 From: James Hilliard <james.hilliard1@gmail.com>
-Date: Sun, 08 Nov 2026 14:04:21 -0700
-Subject: [PATCH] mtd: rawnand: r852: prevent card work from being requeued
- during shutdown
+Date: Sun, 08 Nov 2026 14:05:17 -0700
+Subject: [PATCH] mtd: rawnand: intel: disable NAND when probe fails after
+ scanning
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Message-Id: <20261108-submit-r852-shutdown-work-v1-v1-1-8e448ad7c54c@gmail.com>
-X-B4-Tracking: v=1; b=H4sIAAAAAAAC/yWM2w7CIBBEf6XZZzcCltb4K8YHLltBU2qAXpKm/
- y7oyyRnMnN2SBQ9Jbg1O0RafPJTKMBPDRinwpPQ28IgmOg4Zz2mWY8+Y7xKgcnN2U5rwHWKb1w
- 4cjkQa+WlZ10LRfGJNPjtp78//lz+LzK5OutCq0SoowrG1WrM9hxUKEFbhuP4AqcfqoagAAAA
-X-Change-ID: 20261107-submit-r852-shutdown-work-v1-15fe04537064
+Message-Id: <20261108-submit-intel-nand-probe-disable-v1-v1-1-eb0471429e09@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/yXN3QrCMAyG4VsZOTasHTrBWxEP+hNdZMtGU8dg7
+ N5t9fD9CE92UEpMCrdmh0QrK89Swp4aCIOTFyHH0tCZrrfWXFE/fuKMLJlGFCcRlzR7wsjq/Ei
+ 4WjS9ucRozi70AQq0JHry9ntyf/y7KG8Kucr1wjsl9MlJGOo05dhWuhXaMhzHFziLSe2mAAAA
+X-Change-ID: 20261107-submit-intel-nand-probe-disable-v1-0605dd04ac6c
 To: Miquel Raynal <miquel.raynal@bootlin.com>, 
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
- Maxim Levitsky <maximlevitsky@gmail.com>
+ Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
- David Woodhouse <dwmw2@infradead.org>, stable@vger.kernel.org, 
- James Hilliard <james.hilliard1@gmail.com>
+ stable@vger.kernel.org, James Hilliard <james.hilliard1@gmail.com>
 X-Mailer: b4 0.15.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261108_130425_116867_09169178 
-X-CRM114-Status: GOOD (  12.63  )
+X-CRM114-CacheID: sfid-20261108_130520_694218_1126CD5C 
+X-CRM114-Status: GOOD (  10.49  )
 X-Spam-Score: -1.9 (-)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -116,39 +115,46 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-The card interrupt can queue card_detect_work after shutdown cancels it
-but before interrupts are disabled. The worker can then access the
-controller after pci_disable_device(), and can enable card interrupts
-again while processing the event.
+Operations issued by nand_scan() enable NAND mode in EBU_NAND_CON through
+ebu_select_chip(). A failed scan or MTD registration releases the DMA
+channels and other probe resources without clearing that enable bit.
 
-Disable and drain the delayed work before turning off interrupts and the
-PCI device. Later queue attempts are rejected while the IRQ handler can
-still acknowledge events until interrupt teardown completes.
+Disable NAND mode on both error paths, as the removal path already does.
+Keep failures before scanning on their existing cleanup path.
 
-Fixes: 67e054e91924 ("mtd: nand: Add driver for Ricoh xD/SmartMedia reader")
+Fixes: 0b1039f016e8 ("mtd: rawnand: Add NAND controller support on Intel LGM SoC")
 Cc: stable@vger.kernel.org
 Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
 ---
- drivers/mtd/nand/raw/r852.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/nand/raw/intel-nand-controller.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/raw/r852.c b/drivers/mtd/nand/raw/r852.c
-index 92c47d351c27..bf1c1be7f2aa 100644
---- a/drivers/mtd/nand/raw/r852.c
-+++ b/drivers/mtd/nand/raw/r852.c
-@@ -1007,7 +1007,7 @@ static void r852_shutdown(struct pci_dev *pci_dev)
- {
- 	struct r852_device *dev = pci_get_drvdata(pci_dev);
+diff --git a/drivers/mtd/nand/raw/intel-nand-controller.c b/drivers/mtd/nand/raw/intel-nand-controller.c
+index 477a427dac1f..97c82e9c1af2 100644
+--- a/drivers/mtd/nand/raw/intel-nand-controller.c
++++ b/drivers/mtd/nand/raw/intel-nand-controller.c
+@@ -690,7 +690,7 @@ static int ebu_nand_probe(struct platform_device *pdev)
+ 	/* Scan to find existence of the device */
+ 	ret = nand_scan(&ebu_host->chip, 1);
+ 	if (ret)
+-		goto err_cleanup_dma;
++		goto err_disable_nand;
  
--	cancel_delayed_work_sync(&dev->card_detect_work);
-+	disable_delayed_work_sync(&dev->card_detect_work);
- 	r852_disable_irqs(dev);
- 	synchronize_irq(dev->irq);
- 	pci_disable_device(pci_dev);
+ 	ret = mtd_device_register(mtd, NULL, 0);
+ 	if (ret)
+@@ -700,6 +700,8 @@ static int ebu_nand_probe(struct platform_device *pdev)
+ 
+ err_clean_nand:
+ 	nand_cleanup(&ebu_host->chip);
++err_disable_nand:
++	ebu_nand_disable(&ebu_host->chip);
+ err_cleanup_dma:
+ 	ebu_dma_cleanup(ebu_host);
+ err_of_node_put:
 
 ---
 base-commit: 30daaf3e7897b4a8d9b72e5b0c86dd6e2a4d7d85
-change-id: 20261107-submit-r852-shutdown-work-v1-15fe04537064
+change-id: 20261107-submit-intel-nand-probe-disable-v1-0605dd04ac6c
 
 Best regards,
 --  
