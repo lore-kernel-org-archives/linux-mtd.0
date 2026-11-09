@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E164606D832
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 Nov 2026 01:29:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ABFC606A334
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 Nov 2026 01:29:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=paS9ZyJ5;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=RLEB0oRf
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=VOKCmAC4;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=TrfK0m/V
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,75 +14,75 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=UONyjw+dWC1rrJzmUg+CKnY/LXiINatjkH+0PzWlAjM=; b=paS9ZyJ58TwsnZgcQ5lp+rdcGp
-	iS3w3ksrCQ41d/2CnL4LdxAgPxM3VRsYGSr6R7V43WLVKFJ/bqToq80KpZq/hYPWhnbg5mWsPS/Uo
-	NTWVr8aA1AHclAmYx880xQ0crQqhMHUD3aoMwUiE1q1rqttJ5bHH9TzOQD/zg6GUHrtogJGfaiYnr
-	010DMB8W98zLM1lyoEi2C2e4mNoDmaJLbrLMz5ZBs72V+xsDCwE1GriMOhUsFSzRQ4i8TIciCLPKm
-	y0Mx3MP8CYvaHV3hoW+MkXypIRXhMNXd52Ig35XcHkscRuEYlZUAXF7GPApluqPjBq3SgwqDRDaSt
-	AtV6hiGw==;
+	bh=qfV6R34w61fE0n/NbzDIV8oP6n63HIkMvsiO5YfNleY=; b=VOKCmAC4SCGM5UO7o63z6YcRBK
+	JH4pwp420ZZeLaJcvrKeeIVb/9NXTgSdRjyLolnPF30MQa/8mURWWhrgKSXQfd3hlzYIcbI3Ol3Au
+	chpqZtZb2TTXgXN4ZHuN6JJcyt44d8kqcW5txQhQR7/Uy12VcvqqXAXTjYFmFI46aYvopenU+5yMR
+	yqi7YTXlR5k15VRRx2kSvHwOpfD0xyjLLKpdA8x5M9BhETfy27vyLo/TP08YPlIksREhcYOvi2GeH
+	+LbWb648dQVFh0Hh2xEXu8xA+Hl5DLKbJpO9H6TsFkhSBq6yAa3lWXrJKfg7Md+ev1U1tkzUpvFtp
+	sLjjgyGA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xQECU-0000000H3L2-3LAf;
-	Mon, 09 Nov 2026 01:29:34 +0000
-Received: from mail-ot1-x32e.google.com ([2607:f8b0:4864:20::32e])
+	id 1xQECX-0000000H3MR-0bRi;
+	Mon, 09 Nov 2026 01:29:37 +0000
+Received: from mail-oo1-xc31.google.com ([2607:f8b0:4864:20::c31])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xQECR-0000000H3J3-221o
+	id 1xQECS-0000000H3Jc-2huG
 	for linux-mtd@lists.infradead.org;
-	Mon, 09 Nov 2026 01:29:32 +0000
-Received: by mail-ot1-x32e.google.com with SMTP id 46e09a7af769-854b6e2e41fso191514a34.3
-        for <linux-mtd@lists.infradead.org>; Sun, 08 Nov 2026 17:29:31 -0800 (PST)
+	Mon, 09 Nov 2026 01:29:34 +0000
+Received: by mail-oo1-xc31.google.com with SMTP id 006d021491bc7-7143451981fso252772eaf.3
+        for <linux-mtd@lists.infradead.org>; Sun, 08 Nov 2026 17:29:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794187770; x=1794792570; darn=lists.infradead.org;
+        d=gmail.com; s=20260707; t=1794187771; x=1794792571; darn=lists.infradead.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=vwaqv0RwpQdofsLvckQnMd1MHOnW+8febEpuFJFq6Z0=;
-        b=RLEB0oRfxt72MZcxUf30esw2CHebW3LXeeOOyVumv7a+1ALsA4HqAB7R5kZW8PUBIN
-         5xOyf1kJHG96GE2DRCXX8Y+M1i/UhbMCNpfZdrht2ZH08aSScgU94gKMbMsDgh9mKKKq
-         VuRPDrX2wbdAG8lx//+zrRoUpiGLHset1KHvuDnkQjDpEzPglq67ag3SETNU7By5ILUc
-         +vNYZ9OxEYVGMS/TCj0zgz4qYBCjmgOKeBusbE0rgenvQgVuPfCp1iqfo7QgWffhoyUS
-         YLWgNa9kjpVBUR3Mwf93u8B0aKxvqCJxo1aGGhT49R54LSu8DK27yoc1Vm0eNx79drt6
-         efbg==
+        bh=1LGO8kbqRjWmKCJdidhOgv7673/JPMkKyXcsVD0AoBg=;
+        b=TrfK0m/Veoz9g0uvXxVEbzPT0PjrVugdtWtdmXls4XiEhljPQkToCFc6IgZPgYp687
+         AkteX1g9NZaf82FnzOl0sECbtB2OZmRBOGxw2Rql0ktU2F6rV+JjV1C3ntnBNL6yzkc0
+         str09Ca+DjthvRbUiATwpXvKX8/B8dgdielp9TWS/ZiSNnehk4YT4DEF3axNBr0L9gtO
+         cMBpppQKiHF6QbKGsRXBp5RKJePBAAIjBxuc043pByMRSeSfLDkmK9SpjztAc18Pihuh
+         dmPGxrfyxM2C7lg1WvpZxWhvOKrmOjaE1s3YY8AoI3fqFoc0c2eT0wPqN1N/j2KB0rRq
+         qArg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794187770; x=1794792570;
+        d=1e100.net; s=20260707; t=1794187771; x=1794792571;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=vwaqv0RwpQdofsLvckQnMd1MHOnW+8febEpuFJFq6Z0=;
-        b=HPrWQCfxyriXBm8spMYa8CXb3LuW4zMDaxq2iIJMfFzcCLWzzYjJDmQJ/wcD4py0lm
-         jc6VCW3yVCQQTnr6IfZi2m24EEPM2yAiVnrHQR/1/sJc1kuY+4G3mLslEVzftuM4A2kp
-         MGDDrrzpRvSRREaM0lQrOCLa90rwzDMtdAGjjHIpvEd1ZHWUrEU3HGnVafShKrevsxmk
-         aMB49/dBF3M5780pvEyK62S2Ifu0p5wILoNRWBnWQJg+jwApJYZWPPNbaR1Kr3MvIrpf
-         XoP28rHsnnCN97m7pbN7V+AFqSEwTfX6oxUo5ERbualcHn9EUbEyIJwUbGM84dhKKFwe
-         RsJQ==
-X-Forwarded-Encrypted: i=1; AL+hErGQQkWrXINMthonYPjBb+qpZYEq4gG2IQGUW79W47f1ZDvAGumOPjWE30mfP6sTCnoo8zsaAgeznLY=@lists.infradead.org
-X-Gm-Message-State: APuU4Z/SRLeDv/CHJVZ81DDuFV+iBET8Pq6yycCL9D96UnQvOuAtCLrf
-	eTqRRzV3q+rB6/wtJ41xKMStzUv3YWc4HHvzccffQA4kxR8vs1TmRDKR
-X-Gm-Gg: AYBFou12Nbwk+QugE1xvQL1TSesNH5H4Zf+ef3Oe65AcEF52WKFw16SCPMw9x45YuFh
-	FC8qVmXAM1FWb8GNnww/vLYkQ8Vnj7xSxxVVoHtmd1sphklpIh+wD0IDANFLcZUv1a14K24PYWA
-	vs3sfwdOx2AevQt46MiS9LrDOLowBK+gHoacsnZUh35ue1N9SKypA5LToOMfuefsKKYqKU8R7nK
-	coDmeQyDUaG5p7v3ts/xwWP2MKWC9x9DVjS0iH5zq1ZjlKYBJWKUi4T3fShIhw8BRHHt9hrMLgU
-	MPpvuY+GWLOnUwQyG6Qj5dptZ31yiH/WLqktQSZ+77Ad74Q4K488nvSQ4pHswU612SoEGWPQJP2
-	WEU9RsVF+M6nb+AL9pQ2imHxU4vQ3+LoHlk9FiFOOuAmrW025SwTki/z2KIbkt7s2NAf7IrVESx
-	sCXl1dM6hi5OeAh/W+BmFRE73lNnVYmc6gI5YotdJpDCjNikWNgb8bLrO6ay8inyJrCYEftU5Cq
-	efA8r6xe0h5k7SkoXGlGggXPKK5YckkIJA/DPcab2i/rnGSU5gRjvAEPEhJYJ7Y5Rtk50uQ7ANs
-	iGsstDzuI57lmCdQqnv1MHVuWwrifeV+5YTbls3P/jZdLIJuxGiivEHeeGvxVTUmCUU3+dN4voI
-	+0mea9eyTT7y52A778dYqB9ZuJaQGyXRE4iB54gZypXpjDgSj0dKamBH0wNhln0AcUD4Q5l7C+G
-	o1XqikujDkRNtvoUjEv2MFfYlB+PDhsu4W+WChIx+Yn8uoJHWRhsDw
-X-Received: by 2002:a05:6808:191f:b0:561:fa43:1b17 with SMTP id 5614622812f47-5681460726amr2343413b6e.42.1794187770252;
-        Sun, 08 Nov 2026 17:29:30 -0800 (PST)
+        bh=1LGO8kbqRjWmKCJdidhOgv7673/JPMkKyXcsVD0AoBg=;
+        b=IXgkUtz4FLmYHsQXRwoFk1cmbr/LqGxkW8teRdykm4NLtlLAVOi/XsRlOShcAu1A71
+         9X7ivesdbIdftQ75qCUnPOnwjbKWOxOpbEmExC+evfEorpq0+zV8aO2i4o22+9o3+dvL
+         4DwQvHGGP3vzfevl2S/79RqjYQqvkm/mj82j46/UGI40u7H91DQnXFO0SLpea+v64B+V
+         v8uogcxony3+IXTw6sH6jLs0yepZY/7dYwdolRXqSp6b3Be7eoFej6QLM8tik3QzcI/2
+         MTNBpEBONiiR6hNhez/65mpk0tZx8O3q9xU2ZIfC+fFwHnYtFz/YqzJwnYjGO2wbEP42
+         AlvQ==
+X-Forwarded-Encrypted: i=1; AL+hErHRuPiwugnzkg8HjY6WXXkaK6H9zN7Qc3UE8/U8NxUAtLmbZop2eM0PEJy5SdDqamdDeBpBYLeXqhA=@lists.infradead.org
+X-Gm-Message-State: APuU4Z/8VlltOkNMUtKNFOPVmkqhdMT3f4lH+aZfH4cfbKDL1siVRVuu
+	ggvDyskn3ZG7GbT2AfrflXclscx3FbKczE5ho0OZNWAiDB8aYzPPNqVi
+X-Gm-Gg: AYBFou2CiBvOZDpnzXei8l1IpYgKwTZyoa8poQvdxibidwqR/mXlhwVn5lMMYiB5GGG
+	8OFyHH1eEquHDtWl4T2xlRGernoNvIIjHjfLvl7m8BzqShbSeg0gg1oTHCjP+Ypp6oFqOeKwI49
+	DpyEEYFi13DYBIjSS9F8dzeDo/NBWd6iUvFZFbZQr8Z7QkdpPhlOozi8ib1MzHBQoMPD6KZkV1u
+	hD/dVd4PM2aOUfw0wA2MOJ2oRCzukP5qqbFGpereyPS9dgE5t2PIK1TsdnCvwm6V78pgvHtvZsN
+	+0ezcTfIVdVR2koR6U9yKQuKZUqj30hwGQUxJ1dzHb4ZqN3d9FlJ7jiJPcX5nSo8+TAIMlhIYP1
+	vfcxU9y0cQtufB3mGPfXaMOaQqBRIyCp9PRr0P/8PJKZjXgULYDv+s4AWBqICj+UGK/DMHT8nu3
+	E9MOt0ghgw/s68X6fg8+12aV4c1V6DfLXTvncVdx9CWbO5Fs6olXKi1ICfnqK/xD9lIz9e/berG
+	L6j5EwrTaNymvK/xVdtXzSsGIw04KQ6SnDAfKOF3HzDuQPUarjNlBzKj7xenT+lySXBAhG1iR9P
+	9N7AFFOpJw8GVJwoeV3N5jO/FowyT2li0AgBfbaxBeG+hHeP01DP6SO5jW5s4XQMLJpnLnILjFu
+	1yBPZt54rigiRujpV2E7LqqGc+JucprdGucKDuyU2B4K4a/AwEqHBudHR0VBFtMRLnXoWjkHzLl
+	8ZKMxHmFW69ebF2kQmWyk6FlEpl0nBlOcU7iMoTghr31/OouJEXaUJ
+X-Received: by 2002:a05:6820:83d8:20b0:715:2147:23a9 with SMTP id 006d021491bc7-7170f23a98cmr975721eaf.19.1794187771525;
+        Sun, 08 Nov 2026 17:29:31 -0800 (PST)
 Received: from [127.0.1.1] (174-29-1-49.hlrn.qwest.net. [174.29.1.49])
-        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-4ade695a5a6sm4225818fac.10.2026.11.08.17.29.29
+        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-4ade695a5a6sm4225818fac.10.2026.11.08.17.29.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Nov 2026 17:29:29 -0800 (PST)
+        Sun, 08 Nov 2026 17:29:31 -0800 (PST)
 From: James Hilliard <james.hilliard1@gmail.com>
-Date: Sun, 08 Nov 2026 18:29:22 -0700
-Subject: [PATCH 3/4] mtd: rawnand: r852: use the standard OOB write
- operation
+Date: Sun, 08 Nov 2026 18:29:23 -0700
+Subject: [PATCH 4/4] mtd: rawnand: r852: restore SmartMedia and ECC
+ initialization
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Message-Id: <20261108-submit-r852-smartmedia-attach-v1-v1-3-56d08c0571a2@gmail.com>
+Message-Id: <20261108-submit-r852-smartmedia-attach-v1-v1-4-56d08c0571a2@gmail.com>
 References: <20261108-submit-r852-smartmedia-attach-v1-v1-0-56d08c0571a2@gmail.com>
 In-Reply-To: <20261108-submit-r852-smartmedia-attach-v1-v1-0-56d08c0571a2@gmail.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, 
@@ -94,8 +94,8 @@ Cc: Maxim Levitsky <maximlevitsky@gmail.com>,
  stable@vger.kernel.org
 X-Mailer: b4 0.15.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261108_172931_536396_2EDF27F5 
-X-CRM114-Status: GOOD (  11.58  )
+X-CRM114-CacheID: sfid-20261108_172932_704002_0C696C18 
+X-CRM114-Status: GOOD (  18.17  )
 X-Spam-Score: -1.9 (-)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -117,39 +117,110 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-r852 uses interleaved ECC placement to transfer a complete 512-byte sector
-and its 16-byte spare area through the hardware ECC engine. It supplies a
-custom OOB reader but leaves the OOB writer unset, so the NAND core selects
-nand_write_oob_syndrome().
+r852 uses its own NAND controller and attach_chip callback, but
+sm_register_device() installs sm_attach_chip() on the unused legacy
+dummy controller. nand_scan_with_ids() only calls the active controller's
+callback, so the SmartMedia setup is skipped.
 
-With one ECC step and no prepad or postpad, that writer starts programming
-at steps * (size + bytes), or byte 528. The subsequent 16-byte transfer
-starts beyond the spare area instead of writing bytes 512-527. Raw OOB
-writes inherit the same callback.
+This leaves the generic OOB layout and bad-block criteria in place,
+omits the SmartMedia bad-block marking callback, and skips rejection of
+unsupported page sizes.
 
-Set write_oob to nand_write_oob_std(), which writes the spare area starting
-at the page's data size. Keep the interleaved page callbacks for full-page
-ECC transfers.
+The same conversion removed the hardware-ECC default from probe. This
+PCI driver does not set a NAND device-tree node, so rawnand_dt_init()
+returns without selecting an ECC engine. The zero-initialized engine
+type remains invalid and nand_scan_tail() fails with -EINVAL.
 
-Fixes: 67e054e91924 ("mtd: nand: Add driver for Ricoh xD/SmartMedia reader")
+Restore the hardware-ECC default in probe. Export sm_attach_chip() and
+call it from r852_attach_chip() before the ECC-engine check, so both
+hardware and software ECC configurations get the media layout. Propagate
+its error before scanning finishes or the MTD device is published.
+Remove the unused dummy-controller setup; r852 is the only caller of
+sm_register_device().
+
+Fixes: 7ef969a04228 ("mtd: rawnand: r852: Move the ECC initialization to ->attach_chip()")
+Closes: https://lore.kernel.org/r/sashiko-outbox-204208@kernel.org/
 Cc: stable@vger.kernel.org
 Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
 ---
- drivers/mtd/nand/raw/r852.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/mtd/nand/raw/r852.c      | 8 ++++++++
+ drivers/mtd/nand/raw/sm_common.c | 8 ++------
+ drivers/mtd/nand/raw/sm_common.h | 3 +++
+ 3 files changed, 13 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/r852.c b/drivers/mtd/nand/raw/r852.c
-index 92c47d351c27..e78606b97b42 100644
+index e78606b97b42..ce7def018099 100644
 --- a/drivers/mtd/nand/raw/r852.c
 +++ b/drivers/mtd/nand/raw/r852.c
-@@ -833,6 +833,7 @@ static int r852_attach_chip(struct nand_chip *chip)
+@@ -820,6 +820,12 @@ static irqreturn_t r852_irq(int irq, void *data)
  
- 	/* TODO: hack */
- 	chip->ecc.read_oob = r852_read_oob;
-+	chip->ecc.write_oob = nand_write_oob_std;
+ static int r852_attach_chip(struct nand_chip *chip)
+ {
++	int ret;
++
++	ret = sm_attach_chip(chip);
++	if (ret)
++		return ret;
++
+ 	if (chip->ecc.engine_type != NAND_ECC_ENGINE_TYPE_ON_HOST)
+ 		return 0;
+ 
+@@ -883,6 +889,8 @@ static int  r852_probe(struct pci_dev *pci_dev, const struct pci_device_id *id)
+ 	chip->legacy.read_buf = r852_read_buf;
+ 	chip->legacy.write_buf = r852_write_buf;
+ 
++	chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_ON_HOST;
++
+ 	/* init our device structure */
+ 	dev = kzalloc_obj(struct r852_device);
+ 
+diff --git a/drivers/mtd/nand/raw/sm_common.c b/drivers/mtd/nand/raw/sm_common.c
+index a6387111d271..291aa21dff4f 100644
+--- a/drivers/mtd/nand/raw/sm_common.c
++++ b/drivers/mtd/nand/raw/sm_common.c
+@@ -167,7 +167,7 @@ static struct nand_flash_dev nand_xd_flash_ids[] = {
+ 	{NULL}
+ };
+ 
+-static int sm_attach_chip(struct nand_chip *chip)
++int sm_attach_chip(struct nand_chip *chip)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+ 
+@@ -186,10 +186,7 @@ static int sm_attach_chip(struct nand_chip *chip)
  
  	return 0;
  }
+-
+-static const struct nand_controller_ops sm_controller_ops = {
+-	.attach_chip = sm_attach_chip,
+-};
++EXPORT_SYMBOL_GPL(sm_attach_chip);
+ 
+ int sm_register_device(struct mtd_info *mtd, int smartmedia)
+ {
+@@ -200,7 +197,6 @@ int sm_register_device(struct mtd_info *mtd, int smartmedia)
+ 	chip->options |= NAND_SKIP_BBTSCAN;
+ 
+ 	/* Scan for card properties */
+-	chip->legacy.dummy_controller.ops = &sm_controller_ops;
+ 	flash_ids = smartmedia ? nand_smartmedia_flash_ids : nand_xd_flash_ids;
+ 	ret = nand_scan_with_ids(chip, 1, flash_ids);
+ 	if (ret)
+diff --git a/drivers/mtd/nand/raw/sm_common.h b/drivers/mtd/nand/raw/sm_common.h
+index 57fc9f86f9ee..599fce778fb2 100644
+--- a/drivers/mtd/nand/raw/sm_common.h
++++ b/drivers/mtd/nand/raw/sm_common.h
+@@ -33,6 +33,9 @@ struct sm_oob {
+ #define SM_SMALL_OOB_SIZE	8
+ 
+ 
++struct nand_chip;
++
++int sm_attach_chip(struct nand_chip *chip);
+ int sm_register_device(struct mtd_info *mtd, int smartmedia);
+ 
+ 
 
 -- 
 2.53.0
