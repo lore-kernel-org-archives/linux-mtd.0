@@ -2,11 +2,12 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C51E606A320
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 Nov 2026 02:14:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7688E606A322
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 Nov 2026 05:27:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=SJjn9/7T;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=arista.com header.i=@arista.com header.a=rsa-sha256 header.s=google header.b=EQFBP1KB
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=g8fMr09i;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.a=rsa-sha256 header.s=desiato.20200630 header.b=Ar7LxA0n;
+	dkim=pass (1024-bit key) header.d=cmss.chinamobile.com header.i=@cmss.chinamobile.com header.a=rsa-sha256 header.s=default header.b=u/sm3hVH
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,84 +15,73 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
 	List-Unsubscribe-Post:List-Owner;
-	bh=BuNjfBHjPhNrpf5R3pQqOIyycNubsQnUlzzg4OKpNuk=; b=SJjn9/7TfeWA/w9evn/a6Ee1T+
-	7gsyhZbfETTD+BAwf0DVSLuUzk8OX4YD1aZD84qJqvL29PEkFeCmj+mcPu4XQiMc6ZTdoxlUtxF0A
-	saSFJ7xgoMOe8clIKJrjyOK5csBg4eqYVMio37MAVdePF4FkgSmyOeK3fsT3xmtosbCStghYipu9A
-	qB3qZuibVg5KDYv5UM85oMazC9hSDX5INJQaB5mrWq6Z38pXgb5DZCTA/+BmGhhjuMNjeBw8A/b5b
-	xDax3JdmFwXOX9onMxMefL4PlSArqqogR2tZvI26zEUZUJco3lZthUPKWSPr5eNbDqsTrV/LWCrt0
-	85xfQcrw==;
+	bh=eLC/Jqe+bOpUja8OVRdAPEUOMz7DzgzPSYEI18veEK4=; b=g8fMr09i8WdpOk46A8OjboecTb
+	tk364hzA/ahHJhx1Y3Y0BsPJyN5s+7on71M6pmFF2X9+6pQxsZw/tsqcAFy8Wo1cgDJcw2wX8FmFP
+	alsBA/pW5z46b9S46M9IOxis/7LoMlmy+oraxf+fhvuCgSmR9lkhV6XP8PFRqSJo9LSfwE0ZtmbPk
+	qhLdMJRuuWGec5c5FlegmLuGRV+/qLWbLEpzLHmee4skSoiHUOrCfIsoknTarR40UfKzcpZFIym29
+	qiupn5YYqGn4+IgTbplMW/1QzdsoAARHbe6BpkHajfigTPVsuRErnujRn0jmHl9Odt794YPe35gOP
+	CSWk321A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xQEuD-0000000H6r2-0mYN;
-	Mon, 09 Nov 2026 02:14:45 +0000
-Received: from mail-dy1-x1336.google.com ([2607:f8b0:4864:20::1336])
+	id 1xQHv4-0000000HPPz-10bx;
+	Mon, 09 Nov 2026 05:27:50 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xQEuA-0000000H6qh-1pNO
+	id 1xQHv2-0000000HPPg-2j9R
+	for linux-mtd@bombadil.infradead.org;
+	Mon, 09 Nov 2026 05:27:48 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
+	:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+	Content-Description:In-Reply-To:References;
+	bh=LG1zeG/FAVWOYlqtmLmw2tMQraUdVSd/sMBgbfFTC7c=; b=Ar7LxA0n6AHCJyB0PqkI3V2JB5
+	05b1CTT39pO4qcAz98AiXWIM0kWr6LPExrN53tAj/3b92L/7gzUCFLkiRHU/33G9ozzcnqCVShGUo
+	MCKhBnABp6Tg5NnWwqEIF5kuSjsaIOC2qcbHtMeD4NapeGPNmavwrB7cFTAi28JiZ73AQhT8wMCSp
+	RDtglSkVnXTckVtK930lfHceMezfd39QKNBEkIj4g1Q4rIIwW0R88CZNvIxgMC2GJgiiNBmIIUZP8
+	ONukxJ3TGJNpWZ3e2tBAlo0m31EX7bjxN+cCj36dLZju7NHkdQ/+Cjg8J2x/d5gzNLKjXnLI0Zcgt
+	1kbxGyrw==;
+Received: from cmccmta8.chinamobile.com ([111.22.67.151])
+	by desiato.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
+	id 1xQHuw-00000006KC8-09Ze
 	for linux-mtd@lists.infradead.org;
-	Mon, 09 Nov 2026 02:14:43 +0000
-Received: by mail-dy1-x1336.google.com with SMTP id 5a478bee46e88-3282db206d3so900181eec.0
-        for <linux-mtd@lists.infradead.org>; Sun, 08 Nov 2026 18:14:41 -0800 (PST)
+	Mon, 09 Nov 2026 05:27:46 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=google; t=1794190481; x=1794795281; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=J+h57vEeYMsDL7q4YjW7EJHuQlkp7BLgFsx7/CAjkpU=;
-        b=EQFBP1KBgjr5KTEW1ZbWOMB0/aC3/kVGhXkyea6v2EU7k4wZSXfv3MVEWJ8NPI5liS
-         RPkYU2YxVOvx9ev0H0wQvNHNMILrmXkWf2YVtYMwzefa01c/tXq+swUM42/L3P3xIqq4
-         FFL9/pT25EecLWCSRj768vRnet3JioqNjxUTSMZrRBk5cOQEXJPcgmM3vJqrOGt7MjRE
-         NELAQpY0vGTGmViu6OdgfLDGst5Vct18xz+8rNr2yL9NwovD8f9DUmy3yx+QFJSFv15+
-         OSpvGE55asjS94cZPs55WAY4ijJKO0rZrfsAx7pLIngNH4Gai2M1bTQ1T0bsaqMLFWGO
-         y33w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794190481; x=1794795281;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=J+h57vEeYMsDL7q4YjW7EJHuQlkp7BLgFsx7/CAjkpU=;
-        b=FyQx1oOfn0eFRioDrmdtk7lAukC05BOxIEJbRjDHx7CTSbqxhDF/aeNzFYr0ctqJxa
-         O1v2aRfwAx2EEGra9Y3NeGKKRwXrjL6OHwSoK/oO3so4Of+izgWfNtaDxle9AECZ/qBT
-         m4A20XOrVRHRotVBV72tpbkiSg1dUPd1f0Z12kKvj4uw+3WPfqLUUb/d2nPlhaGuIYpQ
-         m9mK0ldpzRqgVnRzr8WwCAYVhvIEcP5to7AmtneacDJdr3UF72L2rLCCA5XF+19vt5rr
-         yHkPw3kzx0nPiPkE+tqGgTwFo9CppUI0HANJCHztliqqx9uHkVW2tVFQLYWwqXFoDx4G
-         IVvw==
-X-Gm-Message-State: APuU4Z9FHsHaNXFXmsoc7qlkupV5O4gxK3gNcav+zwx5OTmTldu1hAAn
-	sPNIoQ4emm61RFP8SzFJjv1IXyG+FAskLTieAB3tVkqDF4UT4PgvbLtnIrAmgRBPPw==
-X-Gm-Gg: AYBFou0p3h40/fSg2mb+85YytQsVNuykH7ECxufkCbkIIbseapJgNYQw3iyhEsGxTXe
-	BUYOo9+p+XyB4Y38QtNPVOKc3xt8wU/zLkJkO6ocd2iw1Mp1Ym81pl6UsGlNBjm7PyHKArkaYCY
-	+ndqapWiQMUMjPHSZOG/zeTAKa4KA2dMrTaoX8Sk6tvpCnvVPLFvV7wYmk1Bge7BFzMaGxVPVX/
-	0SwE1ecZyIFJ+5d/QTiZvQQeEinIH9qGZaAin6PffwIBI/WG5E9PWONmaBpaXMMviAFETY+dRyk
-	N0glOXzRLX79uG9Av+pUhUCu74eBdsjoVb27mJaSB1v6yhJAxJ5rt4ULWUGU6cm2akoXQgRsHEx
-	rHtZdleww4wRqZpIR9CQdTNQFFWsaxtV7z2lYvesfBCRT3DnCqLu/n+qouXOdGzhbsYsEe1ODhz
-	ZYD/OSdYK+VsE7MNuPcj320/piFaawSau2PsvxDJuQcJz6AYpxPFE73Ud6S2eMPsWntdpWjtR8t
-	20QxM271f+IvQYBrWXE3bGrIIwE7fllo7+ye/sMd/52OdgJQllOoe4/qHN6uanku9Liockev4A3
-	S1snjZ4oyW+Uu+n+AjPSSeJZwG7WZiAGWPU+yU+jA/oq+cxheEE7fD2pmQWiQZg3
-X-Received: by 2002:a05:7301:6492:b0:36d:a466:9d0b with SMTP id 5a478bee46e88-372568fffe1mr5590031eec.19.1794190480709;
-        Sun, 08 Nov 2026 18:14:40 -0800 (PST)
-Received: from mparker-home-xcrbr.sjc.aristanetworks.com ([74.123.28.20])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-372669d2826sm9392155eec.29.2026.11.08.18.14.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Nov 2026 18:14:40 -0800 (PST)
-From: Matthew Parker <mparker@arista.com>
-To: pratyush@kernel.org,
-	mwalle@kernel.org,
-	miquel.raynal@bootlin.com,
+	d=cmss.chinamobile.com; s=default; l=0;
+	h=from:subject:message-id:to:cc:mime-version;
+	bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
+	b=u/sm3hVHsIY7j7xtk4fqcT79pyDFhJzz1y7EduPO7aO5ujUVZlK5UFYgBIBrzFoOvqJLvUQfr0WTN
+	 rO3hsu7pAXT89FYRzm7h1tqEqQZejZzBeSKX6KsQlL+m0H53iceFool/RIoNndMHXXBmVjJYqUALvN
+	 wDvJSjamnSY8a/v0=
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from spf.mail.chinamobile.com (unknown[10.188.0.87])
+	by rmmx-syy-dmz-app02-12002 (RichMail) with SMTP id 2ee26af159bf1b5-fcf1a;
+	Mon, 09 Nov 2026 13:27:27 +0800 (CST)
+X-RM-TRANSID: 2ee26af159bf1b5-fcf1a
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from Z04181456177947 (unknown[10.55.1.71])
+	by rmsmtp-syy-appsvr08-12008 (RichMail) with SMTP id 2ee86af159bcc11-82633;
+	Mon, 09 Nov 2026 13:27:27 +0800 (CST)
+X-RM-TRANSID: 2ee86af159bcc11-82633
+From: Zhao Feng <zhaofeng2@cmss.chinamobile.com>
+To: linux-mtd@lists.infradead.org
+Cc: miquel.raynal@bootlin.com,
 	richard@nod.at,
-	vigneshr@ti.com
-Cc: linux-mtd@lists.infradead.org,
+	michal.simek@amd.com,
 	linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org,
-	Matthew Parker <mparker@arista.com>,
-	Adam Calabrigo <adamc@arista.com>
-Subject: [PATCH v3] mtd: spi-nor: gigadevice: Add support for GigaDevice GD25B512
-Date: Mon,  9 Nov 2026 02:14:35 +0000
-Message-ID: <20261109021435.904625-1-mparker@arista.com>
-X-Mailer: git-send-email 2.51.0
+	Zhao Feng <zhaofeng2@cmss.chinamobile.com>
+Subject: [PATCH 0/2] mtd: rawnand: fix GPIO CS descriptor leaks
+Date: Mon,  9 Nov 2026 13:27:22 +0800
+Message-ID: <20261109052724.1032-1-zhaofeng2@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.55.0.windows.5
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261108_181442_589199_2529F086 
-X-CRM114-Status: GOOD (  11.49  )
-X-Spam-Score: -2.1 (--)
+X-CRM114-CacheID: sfid-20261109_052742_769061_0E2BFC3B 
+X-CRM114-Status: UNSURE (   7.85  )
+X-CRM114-Notice: Please train this message.
+X-Spam-Score: -0.5 (/)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -104,51 +94,37 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-11.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-Add support for the GigaDevice GD25B512 512Mbit (64 MiB) SPI NOR flash.
+Two related fixes for GPIO chip-select descriptor leaks in the raw
+NAND core helper and its in-tree user, the Arasan controller driver:
 
-The chip exposes valid JESD216B SFDP tables including 4-byte address
-instruction tables, from which geometry and opcodes are discovered.
-Status register locking is enabled. Status register block protection is
-enabled using 4 BP bits (BP0-BP3) to cover the full 64 MiB address range.
-Read, write, and erase functionality across the full memory array have been
-tested on hardware.
+- patch 1 rolls back the already-acquired GPIO descriptors when
+  rawnand_dt_parse_gpio_cs() fails midway through the cs-gpios array;
+- patch 2 releases the parsed CS array on the arasan probe error
+  paths (invalid DT layout and anfc_chips_init() failure), factoring
+  the remove-time gpiod_put() loop into a shared helper.
 
-Cc: stable@vger.kernel.org # v6.1+
-Co-developed-by: Adam Calabrigo <adamc@arista.com>
-Signed-off-by: Adam Calabrigo <adamc@arista.com>
-Signed-off-by: Matthew Parker <mparker@arista.com>
----
-v2:
- - Drop .fixup_flags per modern SFDP discovery conventions.
-v3:
- - Add SPI_NOR_4BIT_BP flag to .flags.
+Both issues date back to the gpio-cs support merged in 2021 and are
+still present in current master.  Not runtime-tested (no hardware).
 
- drivers/mtd/spi-nor/gigadevice.c | 3 +++
- 1 file changed, 3 insertions(+)
+Zhao Feng (2):
+  mtd: rawnand: fix GPIO descriptor leak in rawnand_dt_parse_gpio_cs()
+  mtd: rawnand: arasan: fix GPIO CS leak on probe error paths
 
-diff --git a/drivers/mtd/spi-nor/gigadevice.c b/drivers/mtd/spi-nor/gigadevice.c
-index 6a2e6ebda148..113db85f7bd2 100644
---- a/drivers/mtd/spi-nor/gigadevice.c
-+++ b/drivers/mtd/spi-nor/gigadevice.c
-@@ -64,6 +64,9 @@ static const struct flash_info gigadevice_nor_parts[] = {
- 		.id = SNOR_ID(0xc8, 0x40, 0x19),
- 		.name = "gd25q256",
- 		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6,
-+	}, {
-+		.id = SNOR_ID(0xc8, 0x47, 0x1a),
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP,
- 	}, {
- 		.id = SNOR_ID(0xc8, 0x60, 0x16),
- 		.name = "gd25lq32",
+ drivers/mtd/nand/raw/arasan-nand-controller.c | 26 +++++++++++++++----
+ drivers/mtd/nand/raw/nand_base.c              | 12 +++++++---
+ 2 files changed, 27 insertions(+), 11 deletions(-)
+
 -- 
-2.51.0
+2.39.2
+
+
 
 
 ______________________________________________________
