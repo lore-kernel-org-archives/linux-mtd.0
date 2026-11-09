@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 981E160A3832
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC36460A3834
 	for <linux-mtd@archiver.kernel.org>; Mon,  9 Nov 2026 19:41:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=OtXrSH+o;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=k32GMRHa
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=jAtuVQoY;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=qjgBLXL6
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,73 +14,74 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=GohZLjhdgJHHbL963lg5qDQvVaOVV5xnHGZ0lbAQ1S4=; b=OtXrSH+oWryg0A/mIPerLeoVte
-	6WTlhAvrMx4vUc9Mp4hMigi6YIPJTLO35V0U/niL5NilfkxOYvA9eaqClcxqdzkvNLCHgXZLicjOv
-	ZXVN843j9hkIqDTZ060crqJSKzmO5dUeFWscnhmdga1OIPHasEcfvq41kh5pvn9hb1vVQArlHkydU
-	ua/LmXBqvhlTJXUY7TM/tqlcQ0xlctJRuOY99C7ytwfwT7p8SJ5guS/g11bEQzrL2XdBHUC7W9HRU
-	aOwhoIVg3sdN+q5ZNHXVuPW5sX+XQiPOhATNONtcc6rppIRMSgRHkK4eqeBKpHuM4sVWrYdDE9uBR
-	t1ypyexw==;
+	bh=PmLNwEQ8D7xk3Q+6R9JSX4Xk1UsT4HCXjSR1fYxJc8w=; b=jAtuVQoY4DYOpZDJ0QpoLNdxJl
+	N1X+Go7w0PZVR5bDxPl9MIW7pRIZyfbVWdUOHdFBTtXFzNAD/9HOgVr8yPR+X0qGOA17y8j7ov7/A
+	wGzLtSoFhW0n/FTQ8TxVFFtdW56c+0InS+2ScvZhZcI0asZ9ARlEpnvhkODdrLe47oZou6nUodW2O
+	oLxevgtksVoSQ+k4wX95fLNkaBoSbKOIEyap5eclvSpoJ8GE4Q1DBvIb6gfff8TKFOvFhIZLm5W8s
+	CviZNdU4uWeb/QSzduedsPcqgpU23tL8y2jEC1NJFlp0s8drQc4L9v7jUEQKTlK2SQGjR0a5Uwum4
+	4AzYI6Jw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xQVF8-00000001ZVT-2gFv;
-	Mon, 09 Nov 2026 19:41:26 +0000
-Received: from mail-wr1-x432.google.com ([2a00:1450:4864:20::432])
+	id 1xQVFA-00000001ZWY-1bfh;
+	Mon, 09 Nov 2026 19:41:28 +0000
+Received: from mail-wm1-x32a.google.com ([2a00:1450:4864:20::32a])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xQVF6-00000001ZSl-00xv
+	id 1xQVF7-00000001ZTc-0tdI
 	for linux-mtd@lists.infradead.org;
-	Mon, 09 Nov 2026 19:41:25 +0000
-Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-491846221ffso915772f8f.3
-        for <linux-mtd@lists.infradead.org>; Mon, 09 Nov 2026 11:41:23 -0800 (PST)
+	Mon, 09 Nov 2026 19:41:26 +0000
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-4b4571ff080so15506955e9.1
+        for <linux-mtd@lists.infradead.org>; Mon, 09 Nov 2026 11:41:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794253282; x=1794858082; darn=lists.infradead.org;
+        d=gmail.com; s=20260707; t=1794253283; x=1794858083; darn=lists.infradead.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=wZi3AbEuRwrPOxFpdt26jeERVpxEwSJfhncQlRMhB9g=;
-        b=k32GMRHaPFZRJN/0ei8xzzC+nX4RSjV8+y+ryN++Y+VReS96YjwvU47rTiQi4MXhWl
-         Py71VmH7KGUeSA1TdYd6gehENaJrMlWxb4TOXcQf3AH8fDeZVJZg7Pff1PbfBNl6X9Io
-         rJK0o79uYqahQQMZ2F/ngLHFnuVkY99vHwJdagbm3ssZqO3KrdfjkJ0vCls0AhpHCKeQ
-         Ol4cJ+bbbDoS3PbwR+xlGpH8G+Q1UdhxO3HnoauHBelHtp6uzQTwkObhgEpLCcq5soMi
-         B1mNefMZTgZAM8uH15dH1vyR0bYUEb6Rw77k9u7vmdtOuTrZWPABhpVJ6YIIwDYCTZol
-         I6ng==
+        bh=yPj6/SqRUU4G27b4S8AB+m7SzAAWnuPJHVAUoCo488I=;
+        b=qjgBLXL6NUCab3K4rJna7e61P/OFk8rocUU90ArUGYBFofwCf/nEcl/a94EuI+exUB
+         lG7940QCPcm8IAtkq2xI0t8obNMxWNkZ9IPej6YEcdB5+Msmc9RRNBngObMvwCQjYfG9
+         2JtVRnpgVbY3hOHAIWUak2fyOwsrpQFieRYB5FlXkgdxBe1YHMOa9ca9lBDcwGABfgsA
+         9qn8QPYC1wBa8nNYqFczArARYnX3ctJngIxqWjHv8GS+FrOEAUChdwRbDdFu8bSip5n/
+         Q4Z8lKyztIpgNVq1vnW2Q8G+QjO2IiQAzkRvPIimoGn+rj/COQa9mUXThVOKO9fh7W/X
+         W1Dg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794253282; x=1794858082;
+        d=1e100.net; s=20260707; t=1794253283; x=1794858083;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=wZi3AbEuRwrPOxFpdt26jeERVpxEwSJfhncQlRMhB9g=;
-        b=C30zcjwejDu89qNzPPyCygMd40jpvsDZj+vZ9ydBjtfVw+lyVIKd8AT2boWVCx8t7x
-         H2zLb4K3EsgiD/qB6v/VgVgbBg78t0oBxqBCn5rJJ866GkaLia7n4dEyxz96gNzoRugz
-         65YJLEyqftBCs1epyjfjxLOsZ59naBqoluzyVmYwN4gOuvcRP/5Q8mo/7CmneBRcJYSB
-         2t9yrg9s7sAzwLmMWL4WPcHj+4kNCBT9s3CyLPMRDTlKkt9VsAEku2WC8D/CkMITBIOZ
-         yW62mmKBUdrXFlwehr8VDGFfxVj9/lLOA3KqUZPV2x+2wvmK7dAD/YwRSzCBp7jbFDv/
-         WlWA==
-X-Forwarded-Encrypted: i=1; AL+hErFfs8NzuTharnXuF4MKporF1NyLav6VJnHd9bPOyzDAmR3IE4wYoTVYBJ7jmTfoVuDpLHdjQoObs6k=@lists.infradead.org
-X-Gm-Message-State: APuU4Z+9iy0E+6aReZDQvY+55piyhOSU8qEimpA/euu67G5tdsXe/a8w
-	4AqoRuT+M67jZZZMeX/zGTsvNL2d3v8qRZyDPXGymCbyUG5Z2XnH20nP
-X-Gm-Gg: AYBFou1jcVC+uVd3pk8tZTI7FF+ZMHZegkayLhA9wkDwoHQV620mrdXoy4wpQBi1qR5
-	oYPFB5y8TL+lzZef1qaSmAKTFfniLvjMzv7YdjWkZs8TxIG1QvYakyCRZ4o8O+rMW73JuruhvNe
-	g00d+d33klKuImihslo0lZtOBVgQoG7eFloWBWQTowpT9cNPzAS3Mb4RzuOTDx52++5+oJPcXHO
-	K5/RJptLr/yCZDvaFbOxsxUld7eKq0fymIRyR7lcTl6qXUBvN32P1ugb1ll7PbTMoC5kNA3g39w
-	yfkRBYsXUxAcsICGPEQMO/OOMuZfYbh2zQJDnvWWKh+EOZy7k+6K2gowkDFXlyYisugluTvaP1F
-	RLwHtTVGp9VATB40n43qSnwU3EO9Vytrja6w8/MfruXXzbfzPB+0ypgsv+vDr8dgsO5VmzffSNc
-	SlmHHqtgDyyV7moP4+V5VweMjT7UgYUKo2j4kEykv4nb5tAj8YCZFM+ATZGqXdFSUrj2GuAI6mV
-	ERndAbemLHstavbnCYTChMOiGlxGG/gv6Sd0bVZgBnJJdZGboThAzuRMhnYSWAq4ld/iE/LnyE6
-	y7CTR+L8LIJfnu/qc4+z5fKeZSZQQ9s5Rr19ZX2qQCSebcy/Q+lUV3xMFQ==
-X-Received: by 2002:a05:6000:4028:b0:48e:2f7e:bdbb with SMTP id ffacd0b85a97d-49830d81993mr835355f8f.50.1794253282019;
-        Mon, 09 Nov 2026 11:41:22 -0800 (PST)
+        bh=yPj6/SqRUU4G27b4S8AB+m7SzAAWnuPJHVAUoCo488I=;
+        b=l8aaScKvCMfRgVO5d+oCj0NRKxYARtjmwWXANFj1OSOpGdxyn/WCXlctt0sZkM3IQg
+         GBpA3mpkhqbYOkW41MHJVNKPlkgN9F51bO7EN0Y6GwnqMmF+lrGR+q1ZiFizzsbRnrUT
+         bPWHJEDL8TCHIJ5A0UUDn7VO6xKSSr8PSAnG7jn8lczO4S7+KOaJyOkG/0Cf/qgbHGwy
+         vHsIPOLe8Aay7yxgnqaOgnhe8MNVAKTHmTS+OIoLC0uDl62hVe4h3rOxz5fUMaHPtHeu
+         rlT1V+VIpUWr2DkdUacLbs6IEvlKtef2ai6uFLryxMCQuSvme6BkN7Ftqk9QhvI/+pvZ
+         vh7g==
+X-Forwarded-Encrypted: i=1; AL+hErFECi9IK7Lnh1o0ccin+uSA4DC0p9t+KZ23Jdt8VBnbS15q02XhWsQEmqFakqX9M2tV1nNj0dPSgKs=@lists.infradead.org
+X-Gm-Message-State: APuU4Z/b1ZEoyUcU1t3nJFOkbQV/x6wUXjslCf8qjJqVCQkhm/5HPJhv
+	qA1Amp7ctodJh1njwfx2HNDsw0JJpzM3CMoTSnqYF8meukTMnfSTucaD
+X-Gm-Gg: AYBFou0mDJjOpE1xaAgWywGPbuEH0e6894SMsx/ygn06jAJ8VdteChAH7Is/qiure4i
+	2gESydXSHe7S2U/0JbFnQYIIntlY9+qRB4wyLiHY0IFi6ied3opw3Kno2wOwoRRLGKwGWIgCGsg
+	VPfNoDrO67ColHiUyIP9rfei/ptJN86Vo9X9nt1lKG4Q/Ytaxp5GWHFBHMm8dDee/9HVUcnY45U
+	sKZ9D3cPa/MTvB/KbLUJ63n44JWFLCf9mSXxcUJHVFpiPPkdnriYzkwCoYAT2dTL9IjEyKY3I1K
+	kodBbxKycBIAHLJvyY58vf8E8Hl0TfawXDhri2S8JBcW8lbqY7ufVgNhvp8eXvldBofpwe3T3t1
+	UyIxQ3bAGB/EUujC6fjjW0fbfAHAjZAfTTHRKglXnKfBzbkdqslfV/jsflFCCQG8S8xFPZ1wQBn
+	NmICj8Vu+fDgiRw4EGPe5uxjNFaYcej+v5eZv3ZJWI2WXhYutK1h62aTRIGAlamy9va1isYV+ri
+	1mQvvZA4QdBCHSnimxaUB0nFiQUqbT3dORIB0lBwg0Uc103izOUOfrDAL9M6VS+H1r6LKA5Bdfe
+	7IffAAJROpQ1SifZAx5UkplfYPM10xIVbCIuWQtXbqaeldtJTOZkd0HhHtN5BS5O6DBoOhvz44n
+	p5lM=
+X-Received: by 2002:a05:600c:354a:b0:4a0:b6:4619 with SMTP id 5b1f17b1804b1-4ba022ca866mr5590405e9.0.1794253283177;
+        Mon, 09 Nov 2026 11:41:23 -0800 (PST)
 Received: from [192.168.0.253] (5403F394.catv.pool.telekom.hu. [84.3.243.148])
-        by smtp.googlemail.com with ESMTPSA id ffacd0b85a97d-49836b8eb11sm714822f8f.57.2026.11.09.11.41.20
+        by smtp.googlemail.com with ESMTPSA id ffacd0b85a97d-49836b8eb11sm714822f8f.57.2026.11.09.11.41.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2026 11:41:21 -0800 (PST)
+        Mon, 09 Nov 2026 11:41:22 -0800 (PST)
 From: Gabor Juhos <j4g8y7@gmail.com>
-Date: Mon, 09 Nov 2026 20:41:07 +0100
-Subject: [PATCH 6/7] spi: spi-qpic-snand: use the common
- qcom_nandc_set_read_loc_last() function
+Date: Mon, 09 Nov 2026 20:41:08 +0100
+Subject: [PATCH 7/7] spi: spi-qpic-snand: use the common
+ 'qcom_nandc_read_stats' structure
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Message-Id: <20261109-qpic-snand-use-common-functions-v1-6-1e8601e2db84@gmail.com>
+Message-Id: <20261109-qpic-snand-use-common-functions-v1-7-1e8601e2db84@gmail.com>
 References: <20261109-qpic-snand-use-common-functions-v1-0-1e8601e2db84@gmail.com>
 In-Reply-To: <20261109-qpic-snand-use-common-functions-v1-0-1e8601e2db84@gmail.com>
 To: Mark Brown <broonie@kernel.org>
@@ -91,8 +92,8 @@ Cc: Md Sadre Alam <md.alam@oss.qualcomm.com>,
  linux-kernel@vger.kernel.org, Gabor Juhos <j4g8y7@gmail.com>
 X-Mailer: b4 0.14.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261109_114124_067501_F6E29F85 
-X-CRM114-Status: GOOD (  11.90  )
+X-CRM114-CacheID: sfid-20261109_114125_279291_CC1A9C49 
+X-CRM114-Status: GOOD (  13.21  )
 X-Spam-Score: -1.9 (-)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -114,63 +115,65 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-The common function from the 'qpic_common' module provides the same
-functionality as the locally implemented counterpart.
+The 'qcom_nandc_read_stats' structure defined in the 'nand-qpic-common.h'
+header and the locally defined 'snandc_read_status' structure are
+identical type wise and both are serving the same purpose.
 
-Use the common function and remove the local one in order to reduce
-code duplication.
+Drop the local structure and use the global one instead to reduce
+duplication.
 
-No functional changes intended.
+No functional changes.
 
 Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
 ---
- drivers/spi/spi-qpic-snand.c | 26 +++-----------------------
- 1 file changed, 3 insertions(+), 23 deletions(-)
+ drivers/spi/spi-qpic-snand.c | 16 +++++-----------
+ 1 file changed, 5 insertions(+), 11 deletions(-)
 
 diff --git a/drivers/spi/spi-qpic-snand.c b/drivers/spi/spi-qpic-snand.c
-index ad91edd5f6df..4105a04afcdb 100644
+index 4105a04afcdb..6c5878f3f8b6 100644
 --- a/drivers/spi/spi-qpic-snand.c
 +++ b/drivers/spi/spi-qpic-snand.c
-@@ -122,27 +122,6 @@ struct qpic_spi_nand {
- 	bool quad_mode;
- };
+@@ -64,12 +64,6 @@
+ #define BAD_BLOCK_MARKER_SIZE		0x2
+ #define OOB_BUF_SIZE			128
  
--static void qcom_spi_set_read_loc_last(struct qcom_nand_controller *snandc,
--				       int reg, int cw_offset, int read_size,
--				       int is_last_read_loc)
--{
--	__le32 locreg_val;
--	u32 val = FIELD_PREP(READ_LOCATION_OFFSET_MASK, cw_offset) |
--		  FIELD_PREP(READ_LOCATION_SIZE_MASK, read_size) |
--		  FIELD_PREP(READ_LOCATION_LAST_MASK, is_last_read_loc);
+-struct snandc_read_status {
+-	__le32 snandc_flash;
+-	__le32 snandc_buffer;
+-	__le32 snandc_erased_cw;
+-};
 -
--	locreg_val = cpu_to_le32(val);
--
--	if (reg == NAND_READ_LOCATION_LAST_CW_0)
--		snandc->regs->read_location_last0 = locreg_val;
--	else if (reg == NAND_READ_LOCATION_LAST_CW_1)
--		snandc->regs->read_location_last1 = locreg_val;
--	else if (reg == NAND_READ_LOCATION_LAST_CW_2)
--		snandc->regs->read_location_last2 = locreg_val;
--	else if (reg == NAND_READ_LOCATION_LAST_CW_3)
--		snandc->regs->read_location_last3 = locreg_val;
--}
--
- static struct qcom_nand_controller *nand_to_qcom_snand(struct nand_device *nand)
+ /*
+  * ECC state struct
+  * @corrected:		ECC corrected
+@@ -610,7 +604,7 @@ static int qcom_spi_read_last_cw(struct qcom_nand_controller *snandc,
+ 
+ static int qcom_spi_check_error(struct qcom_nand_controller *snandc)
  {
- 	struct nand_ecc_engine *eng = nand->ecc.engine;
-@@ -490,8 +469,9 @@ static void qcom_spi_set_read_loc(struct qcom_nand_controller *snandc, int cw, i
- 	reg_base += reg * 4;
+-	struct snandc_read_status *buf;
++	struct qcom_nandc_read_stats *buf;
+ 	struct qpic_ecc *ecc_cfg = snandc->qspi->ecc;
+ 	int i, num_cw = snandc->qspi->num_cw;
+ 	bool flash_op_err = false, erased;
+@@ -621,14 +615,14 @@ static int qcom_spi_check_error(struct qcom_nand_controller *snandc)
+ 	snandc->qspi->ecc_stats.corrected = 0;
  
- 	if (cw == (num_cw - 1))
--		return qcom_spi_set_read_loc_last(snandc, reg_base, cw_offset,
--						  read_size, is_last_read_loc);
-+		return qcom_nandc_set_read_loc_last(snandc, reg_base, cw_offset,
-+						    read_size,
-+						    is_last_read_loc);
- 	else
- 		return qcom_nandc_set_read_loc_first(snandc, reg_base,
- 						     cw_offset,
+ 	qcom_nandc_dev_to_mem(snandc, true);
+-	buf = (struct snandc_read_status *)snandc->reg_read_buf;
++	buf = (struct qcom_nandc_read_stats *)snandc->reg_read_buf;
+ 
+ 	for (i = 0; i < num_cw; i++, buf++) {
+ 		u32 flash, buffer, erased_cw;
+ 
+-		flash = le32_to_cpu(buf->snandc_flash);
+-		buffer = le32_to_cpu(buf->snandc_buffer);
+-		erased_cw = le32_to_cpu(buf->snandc_erased_cw);
++		flash = le32_to_cpu(buf->flash);
++		buffer = le32_to_cpu(buf->buffer);
++		erased_cw = le32_to_cpu(buf->erased_cw);
+ 
+ 		if ((flash & FS_OP_ERR) && (buffer & BS_UNCORRECTABLE_BIT)) {
+ 			if (ecc_cfg->bch_enabled)
 
 -- 
 2.56.0
