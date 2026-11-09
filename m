@@ -2,101 +2,96 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ABFC606A334
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 Nov 2026 01:29:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C51E606A320
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 Nov 2026 02:14:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=VOKCmAC4;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=TrfK0m/V
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=SJjn9/7T;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=arista.com header.i=@arista.com header.a=rsa-sha256 header.s=google header.b=EQFBP1KB
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
-	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
 	List-Unsubscribe-Post:List-Owner;
-	bh=qfV6R34w61fE0n/NbzDIV8oP6n63HIkMvsiO5YfNleY=; b=VOKCmAC4SCGM5UO7o63z6YcRBK
-	JH4pwp420ZZeLaJcvrKeeIVb/9NXTgSdRjyLolnPF30MQa/8mURWWhrgKSXQfd3hlzYIcbI3Ol3Au
-	chpqZtZb2TTXgXN4ZHuN6JJcyt44d8kqcW5txQhQR7/Uy12VcvqqXAXTjYFmFI46aYvopenU+5yMR
-	yqi7YTXlR5k15VRRx2kSvHwOpfD0xyjLLKpdA8x5M9BhETfy27vyLo/TP08YPlIksREhcYOvi2GeH
-	+LbWb648dQVFh0Hh2xEXu8xA+Hl5DLKbJpO9H6TsFkhSBq6yAa3lWXrJKfg7Md+ev1U1tkzUpvFtp
-	sLjjgyGA==;
+	bh=BuNjfBHjPhNrpf5R3pQqOIyycNubsQnUlzzg4OKpNuk=; b=SJjn9/7TfeWA/w9evn/a6Ee1T+
+	7gsyhZbfETTD+BAwf0DVSLuUzk8OX4YD1aZD84qJqvL29PEkFeCmj+mcPu4XQiMc6ZTdoxlUtxF0A
+	saSFJ7xgoMOe8clIKJrjyOK5csBg4eqYVMio37MAVdePF4FkgSmyOeK3fsT3xmtosbCStghYipu9A
+	qB3qZuibVg5KDYv5UM85oMazC9hSDX5INJQaB5mrWq6Z38pXgb5DZCTA/+BmGhhjuMNjeBw8A/b5b
+	xDax3JdmFwXOX9onMxMefL4PlSArqqogR2tZvI26zEUZUJco3lZthUPKWSPr5eNbDqsTrV/LWCrt0
+	85xfQcrw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xQECX-0000000H3MR-0bRi;
-	Mon, 09 Nov 2026 01:29:37 +0000
-Received: from mail-oo1-xc31.google.com ([2607:f8b0:4864:20::c31])
+	id 1xQEuD-0000000H6r2-0mYN;
+	Mon, 09 Nov 2026 02:14:45 +0000
+Received: from mail-dy1-x1336.google.com ([2607:f8b0:4864:20::1336])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xQECS-0000000H3Jc-2huG
+	id 1xQEuA-0000000H6qh-1pNO
 	for linux-mtd@lists.infradead.org;
-	Mon, 09 Nov 2026 01:29:34 +0000
-Received: by mail-oo1-xc31.google.com with SMTP id 006d021491bc7-7143451981fso252772eaf.3
-        for <linux-mtd@lists.infradead.org>; Sun, 08 Nov 2026 17:29:32 -0800 (PST)
+	Mon, 09 Nov 2026 02:14:43 +0000
+Received: by mail-dy1-x1336.google.com with SMTP id 5a478bee46e88-3282db206d3so900181eec.0
+        for <linux-mtd@lists.infradead.org>; Sun, 08 Nov 2026 18:14:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794187771; x=1794792571; darn=lists.infradead.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :content-type:mime-version:subject:date:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=1LGO8kbqRjWmKCJdidhOgv7673/JPMkKyXcsVD0AoBg=;
-        b=TrfK0m/Veoz9g0uvXxVEbzPT0PjrVugdtWtdmXls4XiEhljPQkToCFc6IgZPgYp687
-         AkteX1g9NZaf82FnzOl0sECbtB2OZmRBOGxw2Rql0ktU2F6rV+JjV1C3ntnBNL6yzkc0
-         str09Ca+DjthvRbUiATwpXvKX8/B8dgdielp9TWS/ZiSNnehk4YT4DEF3axNBr0L9gtO
-         cMBpppQKiHF6QbKGsRXBp5RKJePBAAIjBxuc043pByMRSeSfLDkmK9SpjztAc18Pihuh
-         dmPGxrfyxM2C7lg1WvpZxWhvOKrmOjaE1s3YY8AoI3fqFoc0c2eT0wPqN1N/j2KB0rRq
-         qArg==
+        d=arista.com; s=google; t=1794190481; x=1794795281; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=J+h57vEeYMsDL7q4YjW7EJHuQlkp7BLgFsx7/CAjkpU=;
+        b=EQFBP1KBgjr5KTEW1ZbWOMB0/aC3/kVGhXkyea6v2EU7k4wZSXfv3MVEWJ8NPI5liS
+         RPkYU2YxVOvx9ev0H0wQvNHNMILrmXkWf2YVtYMwzefa01c/tXq+swUM42/L3P3xIqq4
+         FFL9/pT25EecLWCSRj768vRnet3JioqNjxUTSMZrRBk5cOQEXJPcgmM3vJqrOGt7MjRE
+         NELAQpY0vGTGmViu6OdgfLDGst5Vct18xz+8rNr2yL9NwovD8f9DUmy3yx+QFJSFv15+
+         OSpvGE55asjS94cZPs55WAY4ijJKO0rZrfsAx7pLIngNH4Gai2M1bTQ1T0bsaqMLFWGO
+         y33w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794187771; x=1794792571;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :content-type:mime-version:subject:date:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=1LGO8kbqRjWmKCJdidhOgv7673/JPMkKyXcsVD0AoBg=;
-        b=IXgkUtz4FLmYHsQXRwoFk1cmbr/LqGxkW8teRdykm4NLtlLAVOi/XsRlOShcAu1A71
-         9X7ivesdbIdftQ75qCUnPOnwjbKWOxOpbEmExC+evfEorpq0+zV8aO2i4o22+9o3+dvL
-         4DwQvHGGP3vzfevl2S/79RqjYQqvkm/mj82j46/UGI40u7H91DQnXFO0SLpea+v64B+V
-         v8uogcxony3+IXTw6sH6jLs0yepZY/7dYwdolRXqSp6b3Be7eoFej6QLM8tik3QzcI/2
-         MTNBpEBONiiR6hNhez/65mpk0tZx8O3q9xU2ZIfC+fFwHnYtFz/YqzJwnYjGO2wbEP42
-         AlvQ==
-X-Forwarded-Encrypted: i=1; AL+hErHRuPiwugnzkg8HjY6WXXkaK6H9zN7Qc3UE8/U8NxUAtLmbZop2eM0PEJy5SdDqamdDeBpBYLeXqhA=@lists.infradead.org
-X-Gm-Message-State: APuU4Z/8VlltOkNMUtKNFOPVmkqhdMT3f4lH+aZfH4cfbKDL1siVRVuu
-	ggvDyskn3ZG7GbT2AfrflXclscx3FbKczE5ho0OZNWAiDB8aYzPPNqVi
-X-Gm-Gg: AYBFou2CiBvOZDpnzXei8l1IpYgKwTZyoa8poQvdxibidwqR/mXlhwVn5lMMYiB5GGG
-	8OFyHH1eEquHDtWl4T2xlRGernoNvIIjHjfLvl7m8BzqShbSeg0gg1oTHCjP+Ypp6oFqOeKwI49
-	DpyEEYFi13DYBIjSS9F8dzeDo/NBWd6iUvFZFbZQr8Z7QkdpPhlOozi8ib1MzHBQoMPD6KZkV1u
-	hD/dVd4PM2aOUfw0wA2MOJ2oRCzukP5qqbFGpereyPS9dgE5t2PIK1TsdnCvwm6V78pgvHtvZsN
-	+0ezcTfIVdVR2koR6U9yKQuKZUqj30hwGQUxJ1dzHb4ZqN3d9FlJ7jiJPcX5nSo8+TAIMlhIYP1
-	vfcxU9y0cQtufB3mGPfXaMOaQqBRIyCp9PRr0P/8PJKZjXgULYDv+s4AWBqICj+UGK/DMHT8nu3
-	E9MOt0ghgw/s68X6fg8+12aV4c1V6DfLXTvncVdx9CWbO5Fs6olXKi1ICfnqK/xD9lIz9e/berG
-	L6j5EwrTaNymvK/xVdtXzSsGIw04KQ6SnDAfKOF3HzDuQPUarjNlBzKj7xenT+lySXBAhG1iR9P
-	9N7AFFOpJw8GVJwoeV3N5jO/FowyT2li0AgBfbaxBeG+hHeP01DP6SO5jW5s4XQMLJpnLnILjFu
-	1yBPZt54rigiRujpV2E7LqqGc+JucprdGucKDuyU2B4K4a/AwEqHBudHR0VBFtMRLnXoWjkHzLl
-	8ZKMxHmFW69ebF2kQmWyk6FlEpl0nBlOcU7iMoTghr31/OouJEXaUJ
-X-Received: by 2002:a05:6820:83d8:20b0:715:2147:23a9 with SMTP id 006d021491bc7-7170f23a98cmr975721eaf.19.1794187771525;
-        Sun, 08 Nov 2026 17:29:31 -0800 (PST)
-Received: from [127.0.1.1] (174-29-1-49.hlrn.qwest.net. [174.29.1.49])
-        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-4ade695a5a6sm4225818fac.10.2026.11.08.17.29.30
+        d=1e100.net; s=20260707; t=1794190481; x=1794795281;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=J+h57vEeYMsDL7q4YjW7EJHuQlkp7BLgFsx7/CAjkpU=;
+        b=FyQx1oOfn0eFRioDrmdtk7lAukC05BOxIEJbRjDHx7CTSbqxhDF/aeNzFYr0ctqJxa
+         O1v2aRfwAx2EEGra9Y3NeGKKRwXrjL6OHwSoK/oO3so4Of+izgWfNtaDxle9AECZ/qBT
+         m4A20XOrVRHRotVBV72tpbkiSg1dUPd1f0Z12kKvj4uw+3WPfqLUUb/d2nPlhaGuIYpQ
+         m9mK0ldpzRqgVnRzr8WwCAYVhvIEcP5to7AmtneacDJdr3UF72L2rLCCA5XF+19vt5rr
+         yHkPw3kzx0nPiPkE+tqGgTwFo9CppUI0HANJCHztliqqx9uHkVW2tVFQLYWwqXFoDx4G
+         IVvw==
+X-Gm-Message-State: APuU4Z9FHsHaNXFXmsoc7qlkupV5O4gxK3gNcav+zwx5OTmTldu1hAAn
+	sPNIoQ4emm61RFP8SzFJjv1IXyG+FAskLTieAB3tVkqDF4UT4PgvbLtnIrAmgRBPPw==
+X-Gm-Gg: AYBFou0p3h40/fSg2mb+85YytQsVNuykH7ECxufkCbkIIbseapJgNYQw3iyhEsGxTXe
+	BUYOo9+p+XyB4Y38QtNPVOKc3xt8wU/zLkJkO6ocd2iw1Mp1Ym81pl6UsGlNBjm7PyHKArkaYCY
+	+ndqapWiQMUMjPHSZOG/zeTAKa4KA2dMrTaoX8Sk6tvpCnvVPLFvV7wYmk1Bge7BFzMaGxVPVX/
+	0SwE1ecZyIFJ+5d/QTiZvQQeEinIH9qGZaAin6PffwIBI/WG5E9PWONmaBpaXMMviAFETY+dRyk
+	N0glOXzRLX79uG9Av+pUhUCu74eBdsjoVb27mJaSB1v6yhJAxJ5rt4ULWUGU6cm2akoXQgRsHEx
+	rHtZdleww4wRqZpIR9CQdTNQFFWsaxtV7z2lYvesfBCRT3DnCqLu/n+qouXOdGzhbsYsEe1ODhz
+	ZYD/OSdYK+VsE7MNuPcj320/piFaawSau2PsvxDJuQcJz6AYpxPFE73Ud6S2eMPsWntdpWjtR8t
+	20QxM271f+IvQYBrWXE3bGrIIwE7fllo7+ye/sMd/52OdgJQllOoe4/qHN6uanku9Liockev4A3
+	S1snjZ4oyW+Uu+n+AjPSSeJZwG7WZiAGWPU+yU+jA/oq+cxheEE7fD2pmQWiQZg3
+X-Received: by 2002:a05:7301:6492:b0:36d:a466:9d0b with SMTP id 5a478bee46e88-372568fffe1mr5590031eec.19.1794190480709;
+        Sun, 08 Nov 2026 18:14:40 -0800 (PST)
+Received: from mparker-home-xcrbr.sjc.aristanetworks.com ([74.123.28.20])
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-372669d2826sm9392155eec.29.2026.11.08.18.14.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Nov 2026 17:29:31 -0800 (PST)
-From: James Hilliard <james.hilliard1@gmail.com>
-Date: Sun, 08 Nov 2026 18:29:23 -0700
-Subject: [PATCH 4/4] mtd: rawnand: r852: restore SmartMedia and ECC
- initialization
+        Sun, 08 Nov 2026 18:14:40 -0800 (PST)
+From: Matthew Parker <mparker@arista.com>
+To: pratyush@kernel.org,
+	mwalle@kernel.org,
+	miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com
+Cc: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org,
+	Matthew Parker <mparker@arista.com>,
+	Adam Calabrigo <adamc@arista.com>
+Subject: [PATCH v3] mtd: spi-nor: gigadevice: Add support for GigaDevice GD25B512
+Date: Mon,  9 Nov 2026 02:14:35 +0000
+Message-ID: <20261109021435.904625-1-mparker@arista.com>
+X-Mailer: git-send-email 2.51.0
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Message-Id: <20261108-submit-r852-smartmedia-attach-v1-v1-4-56d08c0571a2@gmail.com>
-References: <20261108-submit-r852-smartmedia-attach-v1-v1-0-56d08c0571a2@gmail.com>
-In-Reply-To: <20261108-submit-r852-smartmedia-attach-v1-v1-0-56d08c0571a2@gmail.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, 
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Maxim Levitsky <maximlevitsky@gmail.com>, 
- Boris Brezillon <bbrezillon@kernel.org>, 
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org, 
- linux-kernel@vger.kernel.org, James Hilliard <james.hilliard1@gmail.com>, 
- stable@vger.kernel.org
-X-Mailer: b4 0.15.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261108_172932_704002_0C696C18 
-X-CRM114-Status: GOOD (  18.17  )
-X-Spam-Score: -1.9 (-)
+X-CRM114-CacheID: sfid-20261108_181442_589199_2529F086 
+X-CRM114-Status: GOOD (  11.49  )
+X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -109,121 +104,51 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,
-	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-r852 uses its own NAND controller and attach_chip callback, but
-sm_register_device() installs sm_attach_chip() on the unused legacy
-dummy controller. nand_scan_with_ids() only calls the active controller's
-callback, so the SmartMedia setup is skipped.
+Add support for the GigaDevice GD25B512 512Mbit (64 MiB) SPI NOR flash.
 
-This leaves the generic OOB layout and bad-block criteria in place,
-omits the SmartMedia bad-block marking callback, and skips rejection of
-unsupported page sizes.
+The chip exposes valid JESD216B SFDP tables including 4-byte address
+instruction tables, from which geometry and opcodes are discovered.
+Status register locking is enabled. Status register block protection is
+enabled using 4 BP bits (BP0-BP3) to cover the full 64 MiB address range.
+Read, write, and erase functionality across the full memory array have been
+tested on hardware.
 
-The same conversion removed the hardware-ECC default from probe. This
-PCI driver does not set a NAND device-tree node, so rawnand_dt_init()
-returns without selecting an ECC engine. The zero-initialized engine
-type remains invalid and nand_scan_tail() fails with -EINVAL.
-
-Restore the hardware-ECC default in probe. Export sm_attach_chip() and
-call it from r852_attach_chip() before the ECC-engine check, so both
-hardware and software ECC configurations get the media layout. Propagate
-its error before scanning finishes or the MTD device is published.
-Remove the unused dummy-controller setup; r852 is the only caller of
-sm_register_device().
-
-Fixes: 7ef969a04228 ("mtd: rawnand: r852: Move the ECC initialization to ->attach_chip()")
-Closes: https://lore.kernel.org/r/sashiko-outbox-204208@kernel.org/
-Cc: stable@vger.kernel.org
-Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+Cc: stable@vger.kernel.org # v6.1+
+Co-developed-by: Adam Calabrigo <adamc@arista.com>
+Signed-off-by: Adam Calabrigo <adamc@arista.com>
+Signed-off-by: Matthew Parker <mparker@arista.com>
 ---
- drivers/mtd/nand/raw/r852.c      | 8 ++++++++
- drivers/mtd/nand/raw/sm_common.c | 8 ++------
- drivers/mtd/nand/raw/sm_common.h | 3 +++
- 3 files changed, 13 insertions(+), 6 deletions(-)
+v2:
+ - Drop .fixup_flags per modern SFDP discovery conventions.
+v3:
+ - Add SPI_NOR_4BIT_BP flag to .flags.
 
-diff --git a/drivers/mtd/nand/raw/r852.c b/drivers/mtd/nand/raw/r852.c
-index e78606b97b42..ce7def018099 100644
---- a/drivers/mtd/nand/raw/r852.c
-+++ b/drivers/mtd/nand/raw/r852.c
-@@ -820,6 +820,12 @@ static irqreturn_t r852_irq(int irq, void *data)
- 
- static int r852_attach_chip(struct nand_chip *chip)
- {
-+	int ret;
-+
-+	ret = sm_attach_chip(chip);
-+	if (ret)
-+		return ret;
-+
- 	if (chip->ecc.engine_type != NAND_ECC_ENGINE_TYPE_ON_HOST)
- 		return 0;
- 
-@@ -883,6 +889,8 @@ static int  r852_probe(struct pci_dev *pci_dev, const struct pci_device_id *id)
- 	chip->legacy.read_buf = r852_read_buf;
- 	chip->legacy.write_buf = r852_write_buf;
- 
-+	chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_ON_HOST;
-+
- 	/* init our device structure */
- 	dev = kzalloc_obj(struct r852_device);
- 
-diff --git a/drivers/mtd/nand/raw/sm_common.c b/drivers/mtd/nand/raw/sm_common.c
-index a6387111d271..291aa21dff4f 100644
---- a/drivers/mtd/nand/raw/sm_common.c
-+++ b/drivers/mtd/nand/raw/sm_common.c
-@@ -167,7 +167,7 @@ static struct nand_flash_dev nand_xd_flash_ids[] = {
- 	{NULL}
- };
- 
--static int sm_attach_chip(struct nand_chip *chip)
-+int sm_attach_chip(struct nand_chip *chip)
- {
- 	struct mtd_info *mtd = nand_to_mtd(chip);
- 
-@@ -186,10 +186,7 @@ static int sm_attach_chip(struct nand_chip *chip)
- 
- 	return 0;
- }
--
--static const struct nand_controller_ops sm_controller_ops = {
--	.attach_chip = sm_attach_chip,
--};
-+EXPORT_SYMBOL_GPL(sm_attach_chip);
- 
- int sm_register_device(struct mtd_info *mtd, int smartmedia)
- {
-@@ -200,7 +197,6 @@ int sm_register_device(struct mtd_info *mtd, int smartmedia)
- 	chip->options |= NAND_SKIP_BBTSCAN;
- 
- 	/* Scan for card properties */
--	chip->legacy.dummy_controller.ops = &sm_controller_ops;
- 	flash_ids = smartmedia ? nand_smartmedia_flash_ids : nand_xd_flash_ids;
- 	ret = nand_scan_with_ids(chip, 1, flash_ids);
- 	if (ret)
-diff --git a/drivers/mtd/nand/raw/sm_common.h b/drivers/mtd/nand/raw/sm_common.h
-index 57fc9f86f9ee..599fce778fb2 100644
---- a/drivers/mtd/nand/raw/sm_common.h
-+++ b/drivers/mtd/nand/raw/sm_common.h
-@@ -33,6 +33,9 @@ struct sm_oob {
- #define SM_SMALL_OOB_SIZE	8
- 
- 
-+struct nand_chip;
-+
-+int sm_attach_chip(struct nand_chip *chip);
- int sm_register_device(struct mtd_info *mtd, int smartmedia);
- 
- 
+ drivers/mtd/spi-nor/gigadevice.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
+diff --git a/drivers/mtd/spi-nor/gigadevice.c b/drivers/mtd/spi-nor/gigadevice.c
+index 6a2e6ebda148..113db85f7bd2 100644
+--- a/drivers/mtd/spi-nor/gigadevice.c
++++ b/drivers/mtd/spi-nor/gigadevice.c
+@@ -64,6 +64,9 @@ static const struct flash_info gigadevice_nor_parts[] = {
+ 		.id = SNOR_ID(0xc8, 0x40, 0x19),
+ 		.name = "gd25q256",
+ 		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6,
++	}, {
++		.id = SNOR_ID(0xc8, 0x47, 0x1a),
++		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP,
+ 	}, {
+ 		.id = SNOR_ID(0xc8, 0x60, 0x16),
+ 		.name = "gd25lq32",
 -- 
-2.53.0
+2.51.0
 
 
 ______________________________________________________
