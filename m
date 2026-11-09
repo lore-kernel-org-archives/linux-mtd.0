@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 899F3606D830
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 Nov 2026 01:29:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E164606D832
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 Nov 2026 01:29:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=tnNxb687;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=BfcZnoWO
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=paS9ZyJ5;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=RLEB0oRf
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,75 +14,75 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=AY/r6p6SozdHeU0h93R1XgixlXz/yuUuihJ3GS1XYLc=; b=tnNxb687l8b5BgVz+SztpPV7IJ
-	CzI2fRveUQ9WRD67TCrHuJA1PlWEPWZDQvM0E9SQlMVhZf+sXEqI4u/aSylTRFL2baQ64SxVgD06b
-	DR4PrWgAWTVg6XQJswGZ+nMkC1B06R4CrxebNZAHqp66uJpg9YpKG9wdSWBNMvFcueCk1q8doh+a0
-	c9lVrMcvPJHRoCQMcRaZpI7x2ZII03FNZjTPhsbuwePCzMm6OQ9WP37UksjyClF4udLj4loWpq4+I
-	k5DmHjw4WfRGRRjkZXA0OgEHZpw9pEm89HNG2l0ZII7nlRq3s8KU83s75t7OVpYk5ltUhSi/cXjYf
-	xU6aKUSg==;
+	bh=UONyjw+dWC1rrJzmUg+CKnY/LXiINatjkH+0PzWlAjM=; b=paS9ZyJ58TwsnZgcQ5lp+rdcGp
+	iS3w3ksrCQ41d/2CnL4LdxAgPxM3VRsYGSr6R7V43WLVKFJ/bqToq80KpZq/hYPWhnbg5mWsPS/Uo
+	NTWVr8aA1AHclAmYx880xQ0crQqhMHUD3aoMwUiE1q1rqttJ5bHH9TzOQD/zg6GUHrtogJGfaiYnr
+	010DMB8W98zLM1lyoEi2C2e4mNoDmaJLbrLMz5ZBs72V+xsDCwE1GriMOhUsFSzRQ4i8TIciCLPKm
+	y0Mx3MP8CYvaHV3hoW+MkXypIRXhMNXd52Ig35XcHkscRuEYlZUAXF7GPApluqPjBq3SgwqDRDaSt
+	AtV6hiGw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xQECR-0000000H3JC-1FcY;
-	Mon, 09 Nov 2026 01:29:31 +0000
-Received: from mail-ot1-x32a.google.com ([2607:f8b0:4864:20::32a])
+	id 1xQECU-0000000H3L2-3LAf;
+	Mon, 09 Nov 2026 01:29:34 +0000
+Received: from mail-ot1-x32e.google.com ([2607:f8b0:4864:20::32e])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xQECP-0000000H3IA-0CHK
+	id 1xQECR-0000000H3J3-221o
 	for linux-mtd@lists.infradead.org;
-	Mon, 09 Nov 2026 01:29:30 +0000
-Received: by mail-ot1-x32a.google.com with SMTP id 46e09a7af769-85ac281604dso229645a34.0
-        for <linux-mtd@lists.infradead.org>; Sun, 08 Nov 2026 17:29:28 -0800 (PST)
+	Mon, 09 Nov 2026 01:29:32 +0000
+Received: by mail-ot1-x32e.google.com with SMTP id 46e09a7af769-854b6e2e41fso191514a34.3
+        for <linux-mtd@lists.infradead.org>; Sun, 08 Nov 2026 17:29:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794187768; x=1794792568; darn=lists.infradead.org;
+        d=gmail.com; s=20260707; t=1794187770; x=1794792570; darn=lists.infradead.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=muo/8VOQynEi/OPHvo7a1ZNTOIrWbQuTUTCZGRNs7Fw=;
-        b=BfcZnoWObzLsUwgaAADRgPQdrMu94E0kQcHA8NxmF2YDlED9MAWDA5CDENb07Bqor1
-         OgTyZczWGAAhbTeivDahF0LfIB5j3u+/FLF8jJWKzg7UbiAKYbXIqumImsZbHkAi7aoN
-         swnY2zzMhbIR2BF1LMNGcNybA3JDO3AKBQd0qOxhKoTTxCX4K+lCwQ7zgWuNRV/eovdf
-         ZwHB0JFK1c0rXgtNFWlQQ4QEcVZ78mq9w9c7xVyRYOUrJN5CGtQYCNdGebRGldVslsSY
-         t59tCNUK/rrpC8u8WP8oihaLjsnp5Yrh+1JjoT6Yq2yH1O3svLSLuHeEaLpUVzlXwsTI
-         vKjA==
+        bh=vwaqv0RwpQdofsLvckQnMd1MHOnW+8febEpuFJFq6Z0=;
+        b=RLEB0oRfxt72MZcxUf30esw2CHebW3LXeeOOyVumv7a+1ALsA4HqAB7R5kZW8PUBIN
+         5xOyf1kJHG96GE2DRCXX8Y+M1i/UhbMCNpfZdrht2ZH08aSScgU94gKMbMsDgh9mKKKq
+         VuRPDrX2wbdAG8lx//+zrRoUpiGLHset1KHvuDnkQjDpEzPglq67ag3SETNU7By5ILUc
+         +vNYZ9OxEYVGMS/TCj0zgz4qYBCjmgOKeBusbE0rgenvQgVuPfCp1iqfo7QgWffhoyUS
+         YLWgNa9kjpVBUR3Mwf93u8B0aKxvqCJxo1aGGhT49R54LSu8DK27yoc1Vm0eNx79drt6
+         efbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794187768; x=1794792568;
+        d=1e100.net; s=20260707; t=1794187770; x=1794792570;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=muo/8VOQynEi/OPHvo7a1ZNTOIrWbQuTUTCZGRNs7Fw=;
-        b=Cd2AGCC757KGUeaHDr5ObkmMmoVqnjr/tM5nO0EEsHn0nN4O/O2eSBTaMjaPmc26Ul
-         5XpmYyyv9JJKHhT99Ali/vsYYHBgb57LR5giwC1lyO+fb+rTijvdXYVUCsMtJ3CH/eQC
-         2ThF7GxnHR0h7Kr6tocEZOQQRKz0UVbby/xHr36xYdvpQ9H399lmEzMxuAH1ikgm1x3V
-         Yojtp/qB3OyYIp/+Zg0sgREG1r2bb9GyTMsEHOIM76KKpSvIx2ajfTYz3nB5Bfow05f1
-         OrmNbKDh2jPFxMHMelOXpkXmVBfiXMcXW+UMLPhWPvp0tl+2Qv8A8oB3vlVjjfzz8G6k
-         qqlQ==
-X-Forwarded-Encrypted: i=1; AL+hErEK5xyFg2CVz/veasZsZbzcsFpp7euFTGm8rZruqBzx7NyhKuvA6BTgMvFJQllHI/fLreRnTiNoIgw=@lists.infradead.org
-X-Gm-Message-State: APuU4Z/gt8uc5JGEG8Ooh08ddBOKLx6MyegQ+eq4BpcbZEhqgKG6ewDU
-	7kmnhuWn+0ju4qKo33AlJTCb1+DwAT0eRwtKV8J33AD+zFWxVWF0VSCR
-X-Gm-Gg: AYBFou1QPnDwPxtgAyvI/2G958hGc+k0scIpBCdGRNLoRJDu+6qvilrjDd1R0yr7wiz
-	vHYCoJiKINXw8jI3pwmZ8fudQ70mFhgeoguw49mAiNZQxCORZwW3QL0pKhJP4B5vK7Gvtl0A3Tq
-	cZ5fO2UHZxGcAOfNhykO8omaFCtNv0GAeptsC9D/zZ6kf4HPqOyxFFQkwxKNyx9akWIoeS0ygZA
-	c/jSMkbpNLw+efwS/GdpMIgn8REwlw0wrUxxm+WLEx0EwQL3/7qOS6Xtx1YmOgoZrSIVVOPUNMv
-	zp+QZ89mgybkHHxQp740DT3hUun5xWumR5uYBJhnnh8TZpn3oPGdYmOO1C1uyKU2g1PXelGYOOk
-	r0uqsQuxb02nZJHBUAyNR6mcKpYf11niz1yYg8RUV018gnqDQjBmkecUswiP/bU/kChWYWaD31U
-	jEhCnDZB9zhJb9di71NolADOC6V+ATwyEn9GdaXWWr8FrvsHAwn1Rg1c7/ob2LOxkIxESG7rsMJ
-	cFGM0Ww3Hd/4K4gTiYs0B5QdDHUbLd+ZpVAD0ry0nuA531DnkOH2U1wpR1rKuys/sMM69iYlcug
-	QGqMLX1b9UpzzxvnKyMwDsK8ViMm6up/Yb9AVMrvTP9Aqe7guw1tBCNvulh8/ugyRyHX5CPe3Ck
-	2OaBP4jhCF2WI4aP4XmhogE0h+/16E5SD1oCfkrpLr9uVV52PXIrRkmBE/p9tnQR7qD5Z/fEj20
-	zRi4Ekdeg32sgnh9EeTiZ6rpQ+1qa3/8kztHmYgyBpMhbI5ugsDaDk
-X-Received: by 2002:a05:6808:11c7:b0:538:d44:aaaa with SMTP id 5614622812f47-56814428c0bmr1663265b6e.63.1794187767780;
-        Sun, 08 Nov 2026 17:29:27 -0800 (PST)
+        bh=vwaqv0RwpQdofsLvckQnMd1MHOnW+8febEpuFJFq6Z0=;
+        b=HPrWQCfxyriXBm8spMYa8CXb3LuW4zMDaxq2iIJMfFzcCLWzzYjJDmQJ/wcD4py0lm
+         jc6VCW3yVCQQTnr6IfZi2m24EEPM2yAiVnrHQR/1/sJc1kuY+4G3mLslEVzftuM4A2kp
+         MGDDrrzpRvSRREaM0lQrOCLa90rwzDMtdAGjjHIpvEd1ZHWUrEU3HGnVafShKrevsxmk
+         aMB49/dBF3M5780pvEyK62S2Ifu0p5wILoNRWBnWQJg+jwApJYZWPPNbaR1Kr3MvIrpf
+         XoP28rHsnnCN97m7pbN7V+AFqSEwTfX6oxUo5ERbualcHn9EUbEyIJwUbGM84dhKKFwe
+         RsJQ==
+X-Forwarded-Encrypted: i=1; AL+hErGQQkWrXINMthonYPjBb+qpZYEq4gG2IQGUW79W47f1ZDvAGumOPjWE30mfP6sTCnoo8zsaAgeznLY=@lists.infradead.org
+X-Gm-Message-State: APuU4Z/SRLeDv/CHJVZ81DDuFV+iBET8Pq6yycCL9D96UnQvOuAtCLrf
+	eTqRRzV3q+rB6/wtJ41xKMStzUv3YWc4HHvzccffQA4kxR8vs1TmRDKR
+X-Gm-Gg: AYBFou12Nbwk+QugE1xvQL1TSesNH5H4Zf+ef3Oe65AcEF52WKFw16SCPMw9x45YuFh
+	FC8qVmXAM1FWb8GNnww/vLYkQ8Vnj7xSxxVVoHtmd1sphklpIh+wD0IDANFLcZUv1a14K24PYWA
+	vs3sfwdOx2AevQt46MiS9LrDOLowBK+gHoacsnZUh35ue1N9SKypA5LToOMfuefsKKYqKU8R7nK
+	coDmeQyDUaG5p7v3ts/xwWP2MKWC9x9DVjS0iH5zq1ZjlKYBJWKUi4T3fShIhw8BRHHt9hrMLgU
+	MPpvuY+GWLOnUwQyG6Qj5dptZ31yiH/WLqktQSZ+77Ad74Q4K488nvSQ4pHswU612SoEGWPQJP2
+	WEU9RsVF+M6nb+AL9pQ2imHxU4vQ3+LoHlk9FiFOOuAmrW025SwTki/z2KIbkt7s2NAf7IrVESx
+	sCXl1dM6hi5OeAh/W+BmFRE73lNnVYmc6gI5YotdJpDCjNikWNgb8bLrO6ay8inyJrCYEftU5Cq
+	efA8r6xe0h5k7SkoXGlGggXPKK5YckkIJA/DPcab2i/rnGSU5gRjvAEPEhJYJ7Y5Rtk50uQ7ANs
+	iGsstDzuI57lmCdQqnv1MHVuWwrifeV+5YTbls3P/jZdLIJuxGiivEHeeGvxVTUmCUU3+dN4voI
+	+0mea9eyTT7y52A778dYqB9ZuJaQGyXRE4iB54gZypXpjDgSj0dKamBH0wNhln0AcUD4Q5l7C+G
+	o1XqikujDkRNtvoUjEv2MFfYlB+PDhsu4W+WChIx+Yn8uoJHWRhsDw
+X-Received: by 2002:a05:6808:191f:b0:561:fa43:1b17 with SMTP id 5614622812f47-5681460726amr2343413b6e.42.1794187770252;
+        Sun, 08 Nov 2026 17:29:30 -0800 (PST)
 Received: from [127.0.1.1] (174-29-1-49.hlrn.qwest.net. [174.29.1.49])
-        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-4ade695a5a6sm4225818fac.10.2026.11.08.17.29.26
+        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-4ade695a5a6sm4225818fac.10.2026.11.08.17.29.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Nov 2026 17:29:27 -0800 (PST)
+        Sun, 08 Nov 2026 17:29:29 -0800 (PST)
 From: James Hilliard <james.hilliard1@gmail.com>
-Date: Sun, 08 Nov 2026 18:29:20 -0700
-Subject: [PATCH 1/4] mtd: rawnand: sm_common: restore the first ECC region
- offset
+Date: Sun, 08 Nov 2026 18:29:22 -0700
+Subject: [PATCH 3/4] mtd: rawnand: r852: use the standard OOB write
+ operation
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Message-Id: <20261108-submit-r852-smartmedia-attach-v1-v1-1-56d08c0571a2@gmail.com>
+Message-Id: <20261108-submit-r852-smartmedia-attach-v1-v1-3-56d08c0571a2@gmail.com>
 References: <20261108-submit-r852-smartmedia-attach-v1-v1-0-56d08c0571a2@gmail.com>
 In-Reply-To: <20261108-submit-r852-smartmedia-attach-v1-v1-0-56d08c0571a2@gmail.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, 
@@ -94,8 +94,8 @@ Cc: Maxim Levitsky <maximlevitsky@gmail.com>,
  stable@vger.kernel.org
 X-Mailer: b4 0.15.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261108_172929_094204_9C1DA928 
-X-CRM114-Status: GOOD (  12.22  )
+X-CRM114-CacheID: sfid-20261108_172931_536396_2EDF27F5 
+X-CRM114-Status: GOOD (  11.58  )
 X-Spam-Score: -1.9 (-)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -117,32 +117,36 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-The conversion to mtd_ooblayout_ops moved the first ECC region from bytes
-8-10 to bytes 5-7. Those bytes contain the bad-block marker and the first
-logical-block address, so software ECC writes can overwrite them and ECC
-reads use the wrong bytes.
+r852 uses interleaved ECC placement to transfer a complete 512-byte sector
+and its 16-byte spare area through the hardware ECC engine. It supplies a
+custom OOB reader but leaves the OOB writer unset, so the NAND core selects
+nand_write_oob_syndrome().
 
-Derive both ECC region offsets from struct sm_oob, restoring the original
-8-10 and 13-15 layout without overlapping the metadata.
+With one ECC step and no prepad or postpad, that writer starts programming
+at steps * (size + bytes), or byte 528. The subsequent 16-byte transfer
+starts beyond the spare area instead of writing bytes 512-527. Raw OOB
+writes inherit the same callback.
 
-Fixes: 987b913c2b7e ("mtd: nand: sm_common: switch to mtd_ooblayout_ops")
+Set write_oob to nand_write_oob_std(), which writes the spare area starting
+at the page's data size. Keep the interleaved page callbacks for full-page
+ECC transfers.
+
+Fixes: 67e054e91924 ("mtd: nand: Add driver for Ricoh xD/SmartMedia reader")
 Cc: stable@vger.kernel.org
 Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
 ---
- drivers/mtd/nand/raw/sm_common.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/mtd/nand/raw/r852.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/mtd/nand/raw/sm_common.c b/drivers/mtd/nand/raw/sm_common.c
-index e238784c8c3e..a3a3a05cc5a4 100644
---- a/drivers/mtd/nand/raw/sm_common.c
-+++ b/drivers/mtd/nand/raw/sm_common.c
-@@ -16,7 +16,8 @@ static int oob_sm_ooblayout_ecc(struct mtd_info *mtd, int section,
- 		return -ERANGE;
+diff --git a/drivers/mtd/nand/raw/r852.c b/drivers/mtd/nand/raw/r852.c
+index 92c47d351c27..e78606b97b42 100644
+--- a/drivers/mtd/nand/raw/r852.c
++++ b/drivers/mtd/nand/raw/r852.c
+@@ -833,6 +833,7 @@ static int r852_attach_chip(struct nand_chip *chip)
  
- 	oobregion->length = 3;
--	oobregion->offset = ((section + 1) * 8) - 3;
-+	oobregion->offset = section ? offsetof(struct sm_oob, ecc1) :
-+				      offsetof(struct sm_oob, ecc2);
+ 	/* TODO: hack */
+ 	chip->ecc.read_oob = r852_read_oob;
++	chip->ecc.write_oob = nand_write_oob_std;
  
  	return 0;
  }
