@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EBA960A382F
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 930F760A2600
 	for <linux-mtd@archiver.kernel.org>; Mon,  9 Nov 2026 19:41:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=oxxzeqtC;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=BnOzfeaQ
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=cPbRbg7+;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=jlfLBUSz
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,73 +14,74 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=uFIScW3blFb3Tkiqein7Ng5vjWYhZplFtwjngPUWyxk=; b=oxxzeqtCnrpS9KhksC8frhErF3
-	tyvySKZxH59caT/rOInRH1I1MJxfgD0xnwHgC4W0Y45SQAjS9YDYlwylL1w/Cam5qnZEIb/L4nyST
-	N+P/qkhTmC5Eu4QBa7a/QdZuPT6ZZtGpg+eTW9XYSUhHzNeg65brNvK4jNPSrHTw04sSghCkmg9o7
-	BrzolXwNpU9f6K30IeCc/cVa7ngEgbVIzNSj3jEo5688X6XMTBmBAzHusd6Yx1PwJ54A1Zs/MEPKU
-	4jnS5qgfm9ar0SyS/xnWPp3q+3sXbIlwf5urkwuXvvdQPpubig7FLLD6wVnvF97uIWdBtStm5TmtC
-	EQdoZzRQ==;
+	bh=IXNDlUovJLM+vfu7q+1bb1JL7PpXeDiWRLHFMPhxXPE=; b=cPbRbg7+/dnedHEpKB3YpiRUv5
+	hbAYyWxWDjkMn3KkNhDttuk/NWb5Ls6erluM7Z7cTTbkBD2Ow1fhln08cmHd6PcBZcjk7t5IAAQ14
+	UM1QrYDyzfYxNOR9E3Cc9CyuIC5SR40k02Al7b8aK5Ju3Koq2+h3EDroxX90R1xhufMcIKMRZj7uJ
+	kcg70q49G6V3p+Ik2QZ0ynLF2CYCyXh3myEzHwaAiX8s77R3QOSphvW0uOu/pJqSdDJ5g1qeQKvvE
+	/UzApCu5pc1Z1SrFDqbR/O+MlGlwKQdti/bxxxEv+9n1mb4Hek2bPad9lO2g4cyrobz7cofr+Wz3x
+	2vBD1HMA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xQVF8-00000001ZVK-2IGU;
-	Mon, 09 Nov 2026 19:41:26 +0000
-Received: from mail-wm1-x32d.google.com ([2a00:1450:4864:20::32d])
+	id 1xQVF5-00000001ZT6-0GsM;
+	Mon, 09 Nov 2026 19:41:23 +0000
+Received: from mail-wr1-x431.google.com ([2a00:1450:4864:20::431])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xQVF4-00000001ZSb-3Onc
+	id 1xQVF1-00000001ZQp-3fjI
 	for linux-mtd@lists.infradead.org;
-	Mon, 09 Nov 2026 19:41:24 +0000
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-4a60f9474c4so15715955e9.0
-        for <linux-mtd@lists.infradead.org>; Mon, 09 Nov 2026 11:41:22 -0800 (PST)
+	Mon, 09 Nov 2026 19:41:21 +0000
+Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-48e10a70540so794898f8f.1
+        for <linux-mtd@lists.infradead.org>; Mon, 09 Nov 2026 11:41:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794253281; x=1794858081; darn=lists.infradead.org;
+        d=gmail.com; s=20260707; t=1794253276; x=1794858076; darn=lists.infradead.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=CJBOrzmZfEeEjj8zj4QInIClRy264Xeumf7USqg34nY=;
-        b=BnOzfeaQLMVsDaMkxp7ZZ/gCZfiWSMqJdU+siJFkvnT1vAWEeV6zw1oBP46gs0GLQJ
-         CZsrRanaeqOIurUnc8NGpWPSySwLUh2S8/YW9WZz2e1wLhVUKEqKCQ4Lmj1tjBRnkcYa
-         8iVEyU4nhSXkYU1leXVx0vH5CVhuZpCJNu9+582cCjEaa2oPp5GF+KJHBICAmWaQVF6b
-         Jq/ZtE67TfV40QHeBw0ADuDxN9eQRLkJBVpdtHjw2JHBLpAQWMI9+dVpYc5QRWlqMlcG
-         +yckwSLjhwW/qe2yOli24f+UqpSWKcOEP3jf71VvM5F9QTuV9J9pZ2eqTdUo55OA+zFP
-         VLBg==
+        bh=qRwbk6U1HajIppxtFUV5odMGeHrOR5vt/U9rXvrWZSQ=;
+        b=jlfLBUSz5fkWE/HrcstWuJgXrNsrk3ugdzdmjW0/KEOAAU9Xjy3GMrF0+KEfSRIz74
+         dZVGNW2IpHn++M8rX2443Bbo1UjfKzkCHDqC0HMrORGN9dOw8Kz8o0QfosaNThSUtAZq
+         DMOTrSa7A2ON6aMlDPhikHiq97ipK5qrtgug+TVPpK7I2UAwKPxVNDPhGK/NEKMY+Uwz
+         imAHD8cGqOpd6YAtjT9A0hIAA/+ZLxyjDVpr843gtQ5+Oyr6KYnqjcnPEMCh/2so3Lpx
+         V0+kUjM2NOCXpo9v5GrmIOH9RL+EPQgnueCAb5bDxAsViw9iF0wD8tiXPVLuqwhTBeFA
+         m01g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794253281; x=1794858081;
+        d=1e100.net; s=20260707; t=1794253276; x=1794858076;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=CJBOrzmZfEeEjj8zj4QInIClRy264Xeumf7USqg34nY=;
-        b=A8lS6a/g9oi0DNVwWh1k4P576pF1JFODvcVCR+oAQEF797BabTT1rjDV2z9ykYbkCG
-         C5LnYOKrI2EkGDtW5cNZsdaoCl+wEMKgtHodzg16TttRKi4XvFNf2fqiPBBVdPQNSn/J
-         4pBvYCGrywHyiWuaCGNTgCRxv7r4jRcT0ORKlemGXlM0ZJuZUFxRmFfpfIvoHoIFjYe4
-         5O26UYNrsi7/VEoQ4O+AI4lQJR3Ux9AczOntoOlGbt6I0l98yc/v4ckrXAbIj94hx6sQ
-         c0FVgFiHcMulOKg43pnztsF76ZbNLS13TdrFvHdJtRKToij117PYFKAonauPlExz+cZ1
-         mGJg==
-X-Forwarded-Encrypted: i=1; AL+hErHns65rO80de7rADllyMU1+M/FI1kNIhAlOVIPJXc3TFUN4B0K/ecwW2euwIg5S62FEhvTvxRyX4Vs=@lists.infradead.org
-X-Gm-Message-State: APuU4Z8YRLZL1WPphWlFZwrPHE6lCH/Ur3CovZsZDh1M8wZDo7KNQrlL
-	jEbwRHyZE3PvTD60s+R6nXF1AeEMfm9LDgIM6B6dpmoMZU1kmnh2zOjE
-X-Gm-Gg: AYBFou3JWHq9taoieIx+UZWbLkOvDNAyeaDIuxf5tBLfV674FGtfVIzr0Sk2VaaLUdP
-	jEhN4brKNmZA2nntmhfFov3NZF88xFALRaagVqg0hJOuVKTMXyCp8U4KQ0MthuGMqrJciS3Tuy+
-	T8iiQif2Y04bfrP+3nCaOiZ59mzTeDKxOH7cuUu0QU6QoZoE/M4xj9W70KLmnXUzj9ukGcEv6ry
-	yVHRxf+YZ5vdPitzP5Lrcfm3ZxhCXpE5vjovQM1mINaz5CuW2jLsqP3AbfdwXxE7at1YCR5MBtn
-	5cMogqyCTiE6tjhFD2PGVHLOQyGsTedz+jSjfKiTsB3i8FIsplIX683Qy2zPjmE4jr4MSJTBLKI
-	1LIr2OfXMrplAzmgaskA//l44qdmx3zkuaV5SjcU4Fy7g0YtU5aHHw0KVcNm9Hmp3cA4EnAKGP0
-	R2p4povieJkNm2Bw3jd1KOMIzL9ho7G3lx4JhrmEUoDPJdVemgGAQfQh2B3kPamLuPnSMoqZcPr
-	3mpQGuaONeVfn/6/G5IKpGG63xlrpYT4ZcGDehCq/7FlYSTb6OQ0oPePbEQPXwVtBie0/l+o4YG
-	Ps10rWRw/bprypT0dHdQ25rJ60Okc1XLhVszxjm+xvGAB/6pUmQrLot2cQ==
-X-Received: by 2002:a05:6000:4283:b0:491:5b1:fa73 with SMTP id ffacd0b85a97d-49827cf2a91mr1085864f8f.0.1794253280640;
-        Mon, 09 Nov 2026 11:41:20 -0800 (PST)
+        bh=qRwbk6U1HajIppxtFUV5odMGeHrOR5vt/U9rXvrWZSQ=;
+        b=an1e3kzpIlIl5MEzTvwKfoxxNmkdKhOQuLVjZAo08fuSNb5DnQVUoLrj/pD2Bt/NuE
+         WgVf+sJ5VIduC8fCZ9nrrK0Xf4DfSirosAsk5VQpftutCsRosNZpNIeTVE3U1EihARTL
+         qnPqFALqybPRBnxklYRo2gFMMeba59PKxNqDU8X0idzb/+4knTj4IxkgIOfutFBZoFh3
+         tV9OGrAl+G76hJMlBYViv/wvSooZ/JObXf6CrxEfJfQH2ii2JTs4Wk4NbogK4EBVzQeX
+         ObiKO/FM+oBDkyQxtzZLy7HudYBaoJkur+5ldCMPoBGicrv9PWNWHQQ336c7S99iefZx
+         ApRA==
+X-Forwarded-Encrypted: i=1; AL+hErG8l/xpb7XRjdb0+WX0weZNp+lEMcl7xRgs8uXlFFR2WPd7CFhjR3CVMpov04knOyKL9YKCYPpLzgI=@lists.infradead.org
+X-Gm-Message-State: APuU4Z8ENS1OEQexEk8gA9FWVjT0rhWXOt65XzSlNyFJxHerz+B8UYqK
+	H6uCWnqdWGVa16F2j5y1WqDqMU1Tihug0PDySPCkKOm0n9LiWD2s6hzv
+X-Gm-Gg: AYBFou1Zubvg2IdoDXEIJMxlnZcOCKR0FQxYy0uzHATHXyu816HIXMpIhJAQcibxMgq
+	ufNKYUEiBlwaDGWzg85ecsIn2dSMrqbEO27gI7o6v884pxEEHt4hu7SWz9R28RZe5pXC9MCluqS
+	sb+FZwB78c4kbKt1s5+CitRwCF0e8A5mKlD066UkcGQrSPoqXZOE+okTS0j2oJGSB97bETnlgB0
+	HgzvIBJxSZR1HvB61Y0ac5s28p6rST19wueatv79J3ciMtGd4hRfNYBBAm+AWhgSnARC81QqiQZ
+	D1Y0ZTJIfVtoQJ90ZiZ1nITVYD2OJ+7c565iZLS9kWAQXSoDHtHz9u4NwqDBkE7GG11MOC3jEZD
+	uIBdzlJxNUckoChyo0DKbVolLpO0Rl75qt4ruC9rf+4sglmob6caKotBLTzgTXODPKXSOVmkEus
+	o/UNFwKkmQRDWg7t6DFcU/H1Qe19bX8w7W3oOTv7eOCRoFW68atkem89vWEOtBfyIRKMgLtG+ct
+	0CZcSbM9duZrcrxluX2ws5QfyAPCIytwuFCgb3kYozRWwy34Cxnpcjy9RmOsLzkCLAeVh1Q6DWB
+	H/NZ6nCT2eqD1A+KRM18kVJ5CYWBfEdjJyYhRgBthXu6thftodIi27pMlL8UhRlIfkeEK2jbpHn
+	3nOo=
+X-Received: by 2002:a05:6000:25fa:b0:492:e1a6:90eb with SMTP id ffacd0b85a97d-4982f1c0674mr682603f8f.10.1794253275742;
+        Mon, 09 Nov 2026 11:41:15 -0800 (PST)
 Received: from [192.168.0.253] (5403F394.catv.pool.telekom.hu. [84.3.243.148])
-        by smtp.googlemail.com with ESMTPSA id ffacd0b85a97d-49836b8eb11sm714822f8f.57.2026.11.09.11.41.19
+        by smtp.googlemail.com with ESMTPSA id ffacd0b85a97d-49836b8eb11sm714822f8f.57.2026.11.09.11.41.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2026 11:41:20 -0800 (PST)
+        Mon, 09 Nov 2026 11:41:15 -0800 (PST)
 From: Gabor Juhos <j4g8y7@gmail.com>
-Date: Mon, 09 Nov 2026 20:41:06 +0100
-Subject: [PATCH 5/7] spi: spi-qpic-snand: use the common
- qcom_nandc_set_read_loc_first() function
+Date: Mon, 09 Nov 2026 20:41:02 +0100
+Subject: [PATCH 1/7] spi: spi-qpic-snand: use the common
+ qcom_nandc_check_flash_errors() function
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Message-Id: <20261109-qpic-snand-use-common-functions-v1-5-1e8601e2db84@gmail.com>
+Message-Id: <20261109-qpic-snand-use-common-functions-v1-1-1e8601e2db84@gmail.com>
 References: <20261109-qpic-snand-use-common-functions-v1-0-1e8601e2db84@gmail.com>
 In-Reply-To: <20261109-qpic-snand-use-common-functions-v1-0-1e8601e2db84@gmail.com>
 To: Mark Brown <broonie@kernel.org>
@@ -91,8 +92,8 @@ Cc: Md Sadre Alam <md.alam@oss.qualcomm.com>,
  linux-kernel@vger.kernel.org, Gabor Juhos <j4g8y7@gmail.com>
 X-Mailer: b4 0.14.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261109_114122_897004_2553F76D 
-X-CRM114-Status: GOOD (  11.51  )
+X-CRM114-CacheID: sfid-20261109_114119_933289_224BB904 
+X-CRM114-Status: GOOD (  12.62  )
 X-Spam-Score: -1.9 (-)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -124,54 +125,54 @@ No functional changes intended.
 
 Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
 ---
- drivers/spi/spi-qpic-snand.c | 27 ++++-----------------------
- 1 file changed, 4 insertions(+), 23 deletions(-)
+ drivers/spi/spi-qpic-snand.c | 20 ++------------------
+ 1 file changed, 2 insertions(+), 18 deletions(-)
 
 diff --git a/drivers/spi/spi-qpic-snand.c b/drivers/spi/spi-qpic-snand.c
-index 6774a0a5db2a..ad91edd5f6df 100644
+index 41685a286e38..981e16221b59 100644
 --- a/drivers/spi/spi-qpic-snand.c
 +++ b/drivers/spi/spi-qpic-snand.c
-@@ -122,27 +122,6 @@ struct qpic_spi_nand {
- 	bool quad_mode;
- };
- 
--static void qcom_spi_set_read_loc_first(struct qcom_nand_controller *snandc,
--					int reg, int cw_offset, int read_size,
--					int is_last_read_loc)
--{
--	__le32 locreg_val;
--	u32 val = FIELD_PREP(READ_LOCATION_OFFSET_MASK, cw_offset) |
--		  FIELD_PREP(READ_LOCATION_SIZE_MASK, read_size) |
--		  FIELD_PREP(READ_LOCATION_LAST_MASK, is_last_read_loc);
--
--	locreg_val = cpu_to_le32(val);
--
--	if (reg == NAND_READ_LOCATION_0)
--		snandc->regs->read_location0 = locreg_val;
--	else if (reg == NAND_READ_LOCATION_1)
--		snandc->regs->read_location1 = locreg_val;
--	else if (reg == NAND_READ_LOCATION_2)
--		snandc->regs->read_location2 = locreg_val;
--	else if (reg == NAND_READ_LOCATION_3)
--		snandc->regs->read_location3 = locreg_val;
--}
--
- static void qcom_spi_set_read_loc_last(struct qcom_nand_controller *snandc,
- 				       int reg, int cw_offset, int read_size,
- 				       int is_last_read_loc)
-@@ -514,8 +493,10 @@ static void qcom_spi_set_read_loc(struct qcom_nand_controller *snandc, int cw, i
- 		return qcom_spi_set_read_loc_last(snandc, reg_base, cw_offset,
- 						  read_size, is_last_read_loc);
- 	else
--		return qcom_spi_set_read_loc_first(snandc, reg_base, cw_offset,
--						   read_size, is_last_read_loc);
-+		return qcom_nandc_set_read_loc_first(snandc, reg_base,
-+						     cw_offset,
-+						     read_size,
-+						     is_last_read_loc);
+@@ -592,22 +592,6 @@ static void qcom_spi_config_single_cw_page_read(struct qcom_nand_controller *sna
+ 	qcom_spi_config_cw_read(snandc, use_ecc, cw);
  }
  
- static void
+-static int qcom_spi_check_raw_flash_errors(struct qcom_nand_controller *snandc, int cw_cnt)
+-{
+-	int i;
+-
+-	qcom_nandc_dev_to_mem(snandc, true);
+-
+-	for (i = 0; i < cw_cnt; i++) {
+-		u32 flash = le32_to_cpu(snandc->reg_read_buf[i]);
+-
+-		if (flash & (FS_OP_ERR | FS_MPU_ERR))
+-			return -EIO;
+-	}
+-
+-	return 0;
+-}
+-
+ static int qcom_spi_read_last_cw(struct qcom_nand_controller *snandc,
+ 				 const struct spi_mem_op *op)
+ {
+@@ -651,7 +635,7 @@ static int qcom_spi_read_last_cw(struct qcom_nand_controller *snandc,
+ 		return ret;
+ 	}
+ 
+-	ret = qcom_spi_check_raw_flash_errors(snandc, 1);
++	ret = qcom_nandc_check_flash_errors(snandc, 1);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -819,7 +803,7 @@ static int qcom_spi_read_cw_raw(struct qcom_nand_controller *snandc, u8 *data_bu
+ 		return ret;
+ 	}
+ 
+-	return qcom_spi_check_raw_flash_errors(snandc, 1);
++	return qcom_nandc_check_flash_errors(snandc, 1);
+ }
+ 
+ static int qcom_spi_read_page_raw(struct qcom_nand_controller *snandc,
 
 -- 
 2.56.0
