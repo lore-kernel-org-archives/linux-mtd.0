@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C187B606A31C
-	for <linux-mtd@archiver.kernel.org>; Tue, 10 Nov 2026 21:59:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48534606A330
+	for <linux-mtd@archiver.kernel.org>; Tue, 10 Nov 2026 22:00:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=Gwn5SWb3;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=k07W8ph5
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=g94mrb3w;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=JVycrJem
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,52 +14,53 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=K7igYKl6B1f32H6PwnaiI51xJucTf6qSvXeNjue0oPU=; b=Gwn5SWb334swldhqj7/a4dkfHv
-	RZqLEq9Yqn6vflc7DEz5H9qX3z9ROzsgRwKVUZ+XGtOTNYPhu6QfT7D8ktV+4d6LmCuMwXyPKrdI6
-	pUDZypTTesXaxb9IrHahqUCyPhVSCJwbQEv1NDJAnQHcNlYnB8Bmg+ks4TalwoGO2rrDxgDemu3mW
-	Is5jfOlZcVtPn6csd1nk5jFluhiwWa25cvmX15Rzt8ZgakZOJnLSMGQv8+v/10/760y6wDB1ueK8b
-	E+EH3KEXl2KejYzQ1c6ohyOovcIJmy28JU68nUEzoiIU0evDsq8gkpr5Q1H7AaJvd8c5TqTTxTqtZ
-	kmsNumYA==;
+	bh=TU/ZkUY4UTt0S5pa+3gkXUnoASisbKRghy56Bu1NJs4=; b=g94mrb3wFdWApZuA0iTF5WtUrG
+	v07ES2+IoolQtBOerGST/tiudWmZ8xYAqEqO5ZZzhlotZHwQD9SeFDS8Z5NGdruvFiMI2p4THqiiV
+	PWd/01LJibEoKwqdjTNHtDUAlRC2shgYBxf9Sq8LnuKTB22eB0slL6mriJWyzypMunvbE5a0ND1E8
+	EhEeyC3j7N7fsAmS2nzX1xDsVQ4mX7DNvhFraX6l2yHlUyhqS4uzuD88jf6yuMmTYSxqFdMCshAje
+	4zbAcmQS4GqWwed7HqKmlkbkEYYQOwMi6KBSPEd9eS2PgGIrKOQ1mrLGRidCohowJtiB+H5TxBoNG
+	jl/3ndyA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xQtsX-0000000571B-1B2E;
-	Tue, 10 Nov 2026 21:59:45 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1xQtsu-0000000577D-00Km;
+	Tue, 10 Nov 2026 22:00:08 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xQtsW-00000005710-102u
+	id 1xQtss-0000000576s-2FFD
 	for linux-mtd@lists.infradead.org;
-	Tue, 10 Nov 2026 21:59:44 +0000
+	Tue, 10 Nov 2026 22:00:06 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id B9612455F7;
-	Tue, 10 Nov 2026 21:59:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0BB3E1F0089F;
-	Tue, 10 Nov 2026 21:59:40 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id E3E8C637BD;
+	Tue, 10 Nov 2026 22:00:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDA391F0089F;
+	Tue, 10 Nov 2026 22:00:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794347983;
-	bh=sSI5fSzHXT6l17Dh1aqL0HL8Ya/c/u8QoksVrlo85Oc=;
+	s=k20260515; t=1794348005;
+	bh=gSi1Cem5uo/nHM5eotKecOrdsXKahxKBDl5fLDSMhvk=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=k07W8ph5jDucWyYd1JAfrEw4i6xY04o8KKCSMcakegRQzZa6WBYF/iiSupP9LnPJ6
-	 PqRhHexhugKYQxif88bLv/RmfKXZebt0jM/KU0AoU7X/Rvq61mdIO9FJhp2BYx92kS
-	 p4IfKEBA/29+u3ojBvJItjPeNy1gDzVaKYKHNh0QJMp0FcqnToCGYHvHu+0j4vs2lh
-	 6l9GcvDZOpU9QKqBiCWntZiVc7lisJ/D0GY22YgK9BHJp/qwHkFYO1cN5SLvdma2T0
-	 YcK1DObxEoQMnj0ObSoLKNC4Sggkxu1v2pCbXzPTs5E5lpGJXBDIfiFdtYdZPgCyQ8
-	 L6MbrOl5ir66Q==
-Date: Tue, 10 Nov 2026 22:59:38 +0100
+	b=JVycrJemQMYteTNBsZxUIffQQQPnmrdfGKeARGla+1IErQkChKMhQGOQqlFsfFuhx
+	 iwIJoL9qUTODeU6AXawH9JQNrAydyCRqIIZbUIV5s97GSGrL10gNf3kHcDT+5OUruy
+	 Q4A/l5PfIpgDURJVTAxCGWrV/XmVD6HaFcN4brBwt1NHeMAiye9Wr1IJu70oJjCdtn
+	 XPSDMt6ALnAU6hffPYN51LzE3iM3nlgmmW4NNuqk/GDMMyDuPDB0Rj+b81J7Eztgj4
+	 4mfjQRZL094u1Ft6gJOZoWL8bPLzEMTw7x7xlRLHKixpz8bS4+KWY7fDcq9FGXfsPL
+	 m+JbHKkaOL78A==
+Date: Tue, 10 Nov 2026 23:00:00 +0100
 From: Christian Brauner <brauner@kernel.org>
 To: sashiko-reviews@lists.linux.dev
 Cc: Jan Kara <jack@suse.com>, Al Viro <viro@zeniv.linux.org.uk>, 
 	linux-ext4@vger.kernel.org, linux-mm@kvack.org, linux-efi@vger.kernel.org, 
 	linux-mtd@lists.infradead.org, dsterba@suse.cz, tytso@mit.edu, Mark Fasheh <mark@fasheh.com>, 
 	Joel Becker <jlbec@evilplan.org>, Joseph Qi <joseph.qi@linux.alibaba.com>
-Subject: Re: [PATCH v2 07/34] fat: don't set SB_RDONLY after filesystem errors
-Message-ID: <20261110-zehen-rammen-unabdingbar-81907ca99042@brauner>
+Subject: Re: [PATCH v2 09/34] exfat: don't set SB_RDONLY after filesystem
+ errors
+Message-ID: <20261110-kundgeben-charakter-womit-db0a0035bb5e@brauner>
 References: <20261029-work-fs-sb_rdonly-v2-0-2f44f64f0b66@kernel.org>
- <20261029-work-fs-sb_rdonly-v2-7-2f44f64f0b66@kernel.org>
- <sashiko-outbox-191226@kernel.org>
+ <20261029-work-fs-sb_rdonly-v2-9-2f44f64f0b66@kernel.org>
+ <sashiko-outbox-191228@kernel.org>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <sashiko-outbox-191226@kernel.org>
+In-Reply-To: <sashiko-outbox-191228@kernel.org>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,14 +80,12 @@ X-Spam-Status: No, score=-3.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-On Fri, Oct 30, 2026 at 04:09:53PM +0000, sashiko-bot@kernel.org wrote:
-> However, the dirty directory and FAT buffer_heads in sb->s_bdev are still
-> written out by bdev writeback, mmb_sync() in fat_evict_inode(), and
-> sync_blockdev() on unmount. Wouldn't that flush the deleted old directory
-> entry along with a new directory entry containing start = 0 and size = 0,
-> losing the file or directory contents and orphaning its cluster chain?
+On Fri, Oct 30, 2026 at 04:09:55PM +0000, sashiko-bot@kernel.org wrote:
+> Can __exfat_truncate() and/or exfat_evict_inode() check
+> exfat_emergency_state() to prevent metadata modifications and discards after
+> the filesystem enters emergency read-only state?
 
-Right. I'll drop that check.
+Pre-existing.
 
 -- 
 
