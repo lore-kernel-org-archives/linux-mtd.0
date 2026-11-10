@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C92EA606A325
-	for <linux-mtd@archiver.kernel.org>; Tue, 10 Nov 2026 21:50:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5672B606A33C
+	for <linux-mtd@archiver.kernel.org>; Tue, 10 Nov 2026 21:52:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=doDPZFQL;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=KO/XKzwP
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=UHRxojsR;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=acw6ROyl
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,56 +14,54 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=dsQZG7lbhtLcyvdC518dE2M8odtZDOcFijzZBGnjxoY=; b=doDPZFQL3MTmijUt5lkUMl8AN1
-	JQTiQZmTMsmm3beSlm6O8ZJQXSxcwDd86VfaJ1qovATZzGUi3yWk6UhGR3XIOSwWWMI+Nrgn0EaQI
-	vyutWbbXwfMISZHTCJq59s7PJjf80wkLcNoiW8Q6Jm3yf8WElLwM5P7MGejK0TuUu0+EeQhnoCWsx
-	rjPlZ4TbnnVhwIgIoOi/gSNaKmWuedjAay6qOeET5hDmHxt6oBn654rr+nbd4f6p5qer31ZUNnTZ1
-	r9BGKMsZ3fMGRkdyJ74Modps55YqiuEaK5051Yk2EPsyGtwmqNvdABI5dcNteo6PqOtNEW9YMh1kJ
-	PRKyEnIw==;
+	bh=UEyvhxLVDarE6VTOWrnaiukCMkX07IoLL/HEVeMXeHc=; b=UHRxojsRBwt2ehnHFMBGjuLlMy
+	SSvrO4LP+9LBgdwuBxF4DQxisL3qx/ibSpAwKxLgs3exuU1Z3EDjy8PIv2hxT/6zWfwEKQK5YC6Pk
+	9e2HXyb+qzKqg5V84v9rsRG8CsiKQHdl6L/x6SfSxuwZWnAAmcAtLCa99sjzcXtOKmE/b2qd8+cPh
+	M9aIk0WMztDrw3MDbSCbUcJV1Ok5vj0B9j5cLhtiDIWw/sueX3mOtKfInJJyIyj+tUByImUD2QpoD
+	yDEGygVPQDLlf5iR8ewVRgMN+H0w8ZE7sBLk8TE97YXwqmAbKWyNTID3NG7gWEH7Ievi5iJ/s+6S6
+	0ROMkThw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xQtjy-000000055Q2-2FXb;
-	Tue, 10 Nov 2026 21:50:54 +0000
+	id 1xQtlR-000000055b1-3HwY;
+	Tue, 10 Nov 2026 21:52:25 +0000
 Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xQtjx-000000055Pg-2wdP
+	id 1xQtlQ-000000055av-48B5
 	for linux-mtd@lists.infradead.org;
-	Tue, 10 Nov 2026 21:50:53 +0000
+	Tue, 10 Nov 2026 21:52:25 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 0CCC7405BD;
-	Tue, 10 Nov 2026 21:50:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2361E1F008A1;
-	Tue, 10 Nov 2026 21:50:48 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id BA1BB44F19;
+	Tue, 10 Nov 2026 21:52:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0BF171F0089F;
+	Tue, 10 Nov 2026 21:52:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794347452;
-	bh=jBjh6Hk100+KrECKKCLZMsdZH69ww17QHoFNGmE10pk=;
+	s=k20260515; t=1794347544;
+	bh=NG5N/qv9kqIWaHQubYWcMp3ybQzZkmkmYbSR6qxrMo0=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=KO/XKzwPaQTyl6+FijRmvYt7OfljTwf6lBoi7zd24R3KDOXd9HAGCZNC7KAYdyUYj
-	 hBJJdYiiuBfGwwWCOmpZV23Q4HudsU1yoE9Rhgry0hTKqHF+nkqklf5TUTaEFUD6GW
-	 niIPAXt+6OcJkFypr0b38UaCjrqEIesfHfavg1Y9gYKtIjC8fTa6yKcpG+wwc6ZeTA
-	 +T2K7aictElGKSFlX8kES5nifGp4/GVkQJk7tj2mA58Dkifk7h1fG13cfBeo6mHXLD
-	 iFLabsTbOzjUzu/9Krncuv56JNmgiwYwErGw5k9p1piJLK7fKkwVgKxFsoVF59iQ+M
-	 jJRcPY1T7tJnQ==
-Date: Tue, 10 Nov 2026 22:50:47 +0100
+	b=acw6ROylAoj6eTCgQIZH1HF5HgE5P5i985FgFa/sQiOMubXxw/4hpDuAimeoYHbKS
+	 0SA7cNzKIUClpR0boV9m6svRkVNWvTapQsEiZPpLQHWIu8PhcvqBqPX9y4UUlZ2KY/
+	 5fwYfFdUXyOFfzFfZY38g+/FK3zGeFYWShaCqv09SrX3g48zWo0/Idrv0VFBg41AxO
+	 WoebTuoM7ofgzaxUvwBHUAS3R/uMOhy/D8K88+u2/Ll+1y/YvTKQAeAJSY4m5TCMYt
+	 ONPv2sRQBHG3ZpoZpNmdTMDQx4GhCZL9ou3GR4YFh4AcRI3UVK+GX6nRvFAQH/csHa
+	 xf2OIXvo4ErlQ==
+Date: Tue, 10 Nov 2026 22:52:18 +0100
 From: Christian Brauner <brauner@kernel.org>
-To: Jan Kara <jack@suse.cz>
-Cc: linux-fsdevel@vger.kernel.org, Jan Kara <jack@suse.com>, 
-	Al Viro <viro@zeniv.linux.org.uk>, ecryptfs@vger.kernel.org, linux-ext4@vger.kernel.org, 
-	jfs-discussion@lists.sourceforge.net, linux-nilfs@vger.kernel.org, exfat@lists.linux.dev, 
-	linux-mm@kvack.org, ntfs@lists.linux.dev, ocfs2-devel@lists.linux.dev, 
-	linux-btrfs@vger.kernel.org, gfs2@lists.linux.dev, linux-efi@vger.kernel.org, 
-	linux-mtd@lists.infradead.org, linux-xfs@vger.kernel.org, 
-	Karl Mehltretter <kmehltretter@gmail.com>
-Subject: Re: [PATCH v2 04/34] ext2: don't set SB_RDONLY after filesystem
- errors
-Message-ID: <20261110-kargheit-impfen-pausieren-881763d28b19@brauner>
+To: Joseph Qi <joseph.qi@linux.alibaba.com>, linux-fsdevel@vger.kernel.org, 
+	Jan Kara <jack@suse.com>
+Cc: Al Viro <viro@zeniv.linux.org.uk>, ecryptfs@vger.kernel.org, 
+	linux-ext4@vger.kernel.org, jfs-discussion@lists.sourceforge.net, 
+	linux-nilfs@vger.kernel.org, exfat@lists.linux.dev, linux-mm@kvack.org, ntfs@lists.linux.dev, 
+	ocfs2-devel@lists.linux.dev, linux-btrfs@vger.kernel.org, gfs2@lists.linux.dev, 
+	linux-efi@vger.kernel.org, linux-mtd@lists.infradead.org, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v2 19/34] ocfs2: keep the current mount options on remount
+Message-ID: <20261110-zerfallen-meiden-wacholderbeere-a90ac157e063@brauner>
 References: <20261029-work-fs-sb_rdonly-v2-0-2f44f64f0b66@kernel.org>
- <20261029-work-fs-sb_rdonly-v2-4-2f44f64f0b66@kernel.org>
- <5qefa4mracb3x2z4vsdejmkyyfrhdcrixmmnooz4rzwcdfoejm@mqkvixj6afwp>
+ <20261029-work-fs-sb_rdonly-v2-19-2f44f64f0b66@kernel.org>
+ <0a8576a4-e397-4a49-ab0e-8f0f32bf2642@linux.alibaba.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <5qefa4mracb3x2z4vsdejmkyyfrhdcrixmmnooz4rzwcdfoejm@mqkvixj6afwp>
+In-Reply-To: <0a8576a4-e397-4a49-ab0e-8f0f32bf2642@linux.alibaba.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,41 +81,30 @@ X-Spam-Status: No, score=-3.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-On Thu, Nov 05, 2026 at 10:22:07AM +0100, Jan Kara wrote:
-> So shouldn't we just modify the sb_rdonly() check in sync_filesystem() to
-> use also sb_emergency_ro() and don't bother with modifying individual
-> filesystems?
+On Fri, Oct 30, 2026 at 10:58:52AM +0800, Joseph Qi wrote:
+> ocfs2_reconfigure() decides the transition from fc->sb_flags alone without
+> sb_flags_mask test, unlike reconfigure_super(). And fspick() passes
+> fs_context_for_reconfigure(target.dentry, 0, 0). So on a read-only mount:
 
-The VFS patch I posted in v1 thread did that. I dropped it because
-of jfs. jfs keeps anonymous tlocks for every allocation that writeback
-hasn't committed yet. If sync_filesystem() bails after the error nothing
-commits them before evict_inodes() and jfs_evict_inode() hits the
-BUG_ON() for a non-empty anon_inode_list on umount.
+> So it seems we should test sb_flags_mask as well?
 
-Which is what happened before the series because the error set
-SB_RDONLY. jfs_reconfigure() relies on the same sync_filesystem() call
-when going read-only after the error.
+No, that's a generic bug. I fixed that in reconfigure_super() with
+"super: keep the read-only state if a reconfiguration doesn't change it".
+That is in vfs-7.5.super (cf. [1]). This series depends on that work.
 
-jfs could commit them itself before evict_inodes() but that means a
-->kill_sb() wrapper and a txQuiesce()-like walk over the global
-anon_list filtered by superblock. I don't think that's worth it.
+If SB_RDONLY isn't in sb_flags_mask it fills in the current read-only
+state. So ocfs2_reconfigure() sees SB_RDONLY and stays read-only. ocfs2
+is one of the 23 filesystems listed there that only look at
+fc->sb_flags.
 
-> Also if we have the check in sync_filesystem(), then freeze_super() is
-> generally going to fail so this check could trigger only if
-> sb_emergency_ro() was set after sync_filesystem() ran and before we called
-> ->freeze_fs(). Since sb_emergency_ro() checking is pretty much guaranteed
-> to be racy (it is just a best effort framework to limit damage), we
-> probably don't have to bother with checking in ->freeze_fs() handlers.
+> The same falls out of a legacy remount whose flags omit MS_RDONLY.
 
-Ok, I'll drop it. ext2_freeze() then writes the superblock with
-EXT2_ERROR_FS in it which is fine.
+No, do_remount() always passes MS_RMT_MASK which includes MS_RDONLY. A
+remount without MS_RDONLY asks for read-write.
 
-> Is this really needed? All the xattr operations go through mnt_want_write()
-> / mnt_want_write_file() so this should be caught in VFS...
+Thanks for the review!
 
-Not the ones ecryptfs does on the lower filesystem...
-Hm, maybe we should make ecryptfs get write access to the lower mount
-instead and drop the xattr checks from the filesystems. Not sure.
+[1]: https://lore.kernel.org/r/20261011-work-super-fixes-core-v1-11-c727176c5b53@kernel.org
 
 ______________________________________________________
 Linux MTD discussion mailing list
