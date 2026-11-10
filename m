@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0DDC60A2634
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B53E860A2635
 	for <linux-mtd@archiver.kernel.org>; Tue, 10 Nov 2026 07:44:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=fe2F0eS4;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=ziBKIlp7
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=RPgsmmgM;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=KqWXhJSm
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,85 +14,87 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=/YKvyZIGsmb6UGe7Nkkj7vCoxhEfQ8wneJJuSpo5f2I=; b=fe2F0eS4AMxw6N/zfIFqsFeDu9
-	wglTZA1Ej+D03K3FIFlVbCAWxUlSDOUVq0RDgNmFj2dXwpqjNnqMsLyDmaC+WS2Cb+lrhCqmfDmhx
-	d0xs6iSlYp3s/6UAK8kBGve92Nta75nxS7XTcYEptj1g+v0wZ3ZHkRzQSKhe/VFeAuH+O9TpFxAsm
-	LFhO0rk5KG/blz+wyzdKrh0lmEiyCkrT3JN84avqxfeyJ75Bm96ec6NktD1QAeKygEkUSOCSGyOC+
-	IUDH490xSPiqVPdh8dxunzS42uaEIQKPgj5YPRaB1TDXds50T5c8AVSNpWpJ0jaLSkKJaYglaVAuR
-	wwtH8SWQ==;
+	bh=A8l0oLrtiNqSVLx0y1MZELT/e8hpboIvxVxXVDngUII=; b=RPgsmmgMZrayoCcq3CJXVGg46n
+	xg2XnmrRnhpZsLEZoYdLjBuoI49CqJYokaSTxtpkEOqTkMoTCu0DRxb7j03NJNH8gfYJKF6rvFuwX
+	L0hQummrt+JrsVl8rfrf0lOsMRo+e9nrw5OguD9sh8C7zMjcjfpsEwuzOdzcveY+n+4vlcBjnFeL8
+	4R4s7fYuoHrjMkdfaj6SN+O5FQZC7IeSH2s6qLOT0rghTyxhRx9deAe0NVN8YTtEeY0+loQI4mPhP
+	Sm4ac0EQQ9LLiIBIrBoHgaULm6MX8f6y5lzbyldfVgxDN4QwN+HN4zdh6rEu68zJKyGQx0xNh2nex
+	9USPJc9w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xQgWp-00000002vld-3Wdx;
-	Tue, 10 Nov 2026 07:44:27 +0000
-Received: from mail-ot1-x331.google.com ([2607:f8b0:4864:20::331])
+	id 1xQgWn-00000002vjm-1mU1;
+	Tue, 10 Nov 2026 07:44:25 +0000
+Received: from mail-oi1-x22a.google.com ([2607:f8b0:4864:20::22a])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xQgWm-00000002vig-1vn8
+	id 1xQgWl-00000002vi9-0xK4
 	for linux-mtd@lists.infradead.org;
-	Tue, 10 Nov 2026 07:44:26 +0000
-Received: by mail-ot1-x331.google.com with SMTP id 46e09a7af769-844a8bf7e25so1225091a34.1
-        for <linux-mtd@lists.infradead.org>; Mon, 09 Nov 2026 23:44:24 -0800 (PST)
+	Tue, 10 Nov 2026 07:44:24 +0000
+Received: by mail-oi1-x22a.google.com with SMTP id 5614622812f47-4d7034a99a9so956058b6e.3
+        for <linux-mtd@lists.infradead.org>; Mon, 09 Nov 2026 23:44:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794296663; x=1794901463; darn=lists.infradead.org;
+        d=gmail.com; s=20260707; t=1794296662; x=1794901462; darn=lists.infradead.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=uBO5z5i9rnDcZlHEY1YWIv7/CQoOu4BHG/HftOGk0ew=;
-        b=ziBKIlp74jGKHbM/Hb3A7w1lPLakp7di+Nnq7sZnfhm5ODm6/PgUGTNkGk7o1cxDrD
-         5Y5Dfo0yvVXCtZL3gdQFsY/DdHHlWtKfqjYd2bkEGg38spy+ILTv2x0Nj9wmuYYbvbUF
-         qLjg1UrRFwkM6jo96j3/O5D5bXGY/Hyo3GH6idEQmfFb13njBfWslXkM/3kMBeCSVSE7
-         KB4a04nrFpKk2lJoyvQcLHNUj3ENlpjA18d8eXcE+pyJWtUsyUEZMD3Ocn6/gPPbjyV3
-         QQZo47eZ0S0LgpIpdNQJOhXEhinBPNXehD/GSD3VY4suadX+lWsTWooP/+Un2kXjguir
-         Y5wQ==
+        bh=Q4Npotuz+vf92zyWk0dS+G8jQDeJZBCIwSnu3ob9NFI=;
+        b=KqWXhJSm0sGND9eSUY+zXsPzOZjQNJuP8FtlXETJcwvOF/uyRQm5lcaklm8T6esNaM
+         e8/PoE7dgSzUkV9FPyQP8HaZFBjRzguWFSyX4sBCz2ox2ZrC4UtphjR6tf0CcD+WAUnf
+         4yJobElN/51xfcR347Q41PICkW8aLvuBLJMdm1oBqLLrQ1YSdlUcbBy6A591Qh3rpQ8a
+         1yQTif+GWdVoyY17NM8u+E2PntjWg5ZBw1yIlktWddCjgiVZ916ZphdG4hV+a7l9MoJM
+         9NKbRjZui4N8G6+7XMLawozi9W3ua+gM+91IM6AeH3DsRaDLKwKiXrygjTmZXIdJkxgv
+         qn8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794296663; x=1794901463;
+        d=1e100.net; s=20260707; t=1794296662; x=1794901462;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=uBO5z5i9rnDcZlHEY1YWIv7/CQoOu4BHG/HftOGk0ew=;
-        b=hzymVcD1K9H2xC7swMTwh8vq4YGJFOnS0j33eW3rtJXsJ0IoOSrQVa6S4wUV3FuHIN
-         p7CvT2jcRWPjO9iENLEydESWWQBl40ZALJaQgppN9ll1dyaYDe7WEklFV+YjGZRdHhVd
-         W7CTQvIkKI7xRyJAHyO+oJt+8VuFBQC1sEaXrFyFUFXv+K5U/v5eIncTKO1FM20qTpLm
-         v0t/JY6tIlgG5T0D6PPolh9wLIuLtbouD0Rbke0uuwrSid0KvtKWkycSjvRzPaDdRFtD
-         4YV3ffvWcSrijTBXpzPXgpyYEv+4rosLf5cJ0LQ4qfJRUxGSX7zBalMDvOLR6GEYOMlT
-         GxZg==
-X-Gm-Message-State: APuU4Z/WwqX03pXE+Gt9R2cyhzsXOQ3jjvwlFvYjdg+bXODZzQa6Gltm
-	b2YsRjMtPoyjXTsL6W1A74cvbrPUT8HC39YaLXWM8K1FEqMUXVVUErTD
-X-Gm-Gg: AYBFou0cAocn5t7scpG0TdC+6D3DnHmqOAwsxSt0+7b64Z+QuyoRJQg8aXLBAF0vHiS
-	HtDKg5E6C/TkGhPCXMnQwM+zZJcoY2Ptleg9EnXHQNF5CXAEU0KcraKt5CUGItrUfRl9SQ5NYCH
-	Cl/fJD/imWW2iIuINkXpgx2FBOhgzrm5Iz3gIDG/1XHOwuk7V3XtzNqdlk7CVGkg3jefVYox31d
-	nIbbeOw3pGV7RbMtfYj5CJmYEFAyx/+42urOyrIntgBO70bSJ3dVIp1lRLj1tb5XT+/R2JPlb4A
-	NV2M9/Iyt5oeZ32MgMz+14Sy0F+3qwmYNQJ0PgVAn/Lg6chOEMT/AOmm0HWctZwOGZFHRvbdRAH
-	UOPCYQ+rcOMW2XQCyQYFlHD17vTXgRV4sZGI98ZABNG44XCQuyG0raBecE3t+Dt/f/sIM2g7ywW
-	qKGKUvUkAjuS8HsvCEVxQnchddO4YKlg75He1jBEuRV0414wcubEmGhgUt3iQuxC+OjAbTmTW/V
-	SaIAtxCSPvNe97fcb/jW2tRmqr1xjCeZ5B/Bj6ZPURBEwcGwdj4Ytcq9HNUCJ9TfX0mdchiVI7n
-	LiMzYsk95bQwYJPtaWPJrKyRYDXr6tbHjBYHEdBx7AhjO0Ws2x6MchaD+BenVogPLs0Vzrd/ylg
-	YpvoWobdOQGf3PI+etdQb8j8+zeI1fu5dlYkboDyTtYoAatmgAYqC/XPctalYYnfJqoWbZhlKvH
-	wLpLK6NL9BaLGpSNkot5/kw8yOF/fZBgnUZ4Ryoma1k9HkTz22pYc=
-X-Received: by 2002:a05:6808:4f67:b0:55b:ea1c:3ce8 with SMTP id 5614622812f47-5683c940da4mr1602630b6e.21.1794296663200;
-        Mon, 09 Nov 2026 23:44:23 -0800 (PST)
-Received: from [127.0.1.1] (174-29-1-49.hlrn.qwest.net. [174.29.1.49])
-        by smtp.gmail.com with ESMTPSA id 5614622812f47-5690504fdb5sm1522804b6e.3.2026.11.09.23.44.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        bh=Q4Npotuz+vf92zyWk0dS+G8jQDeJZBCIwSnu3ob9NFI=;
+        b=L2/oPpd8/51x/QVVEKsnbioJ5a3vg/TssNu5UV4vgBqV2H4ijdJfVcqsUqQHI/3PHz
+         R8S9mOaGBbCaEXVYThqP5FLZBopMoNvVD82tBW/rzkVw2+Tgzgs5qmPPzCYcDcDX1RQW
+         k0ZaW6zEsfLqeVj98H4iuhL3GDhKgpRt5xy2Ztaf9kIhCyLSl5DYTfZzgX28AM8bJFyR
+         7sCzu/9IjhKv89vUM/xEfxEBLxa7z41pH4Gy4A6vPdMk8lMWRTsNQJBQc/+vXY0OvLls
+         WiiUAX0mzbKR1Cy2OAOCelfebg/OkHc/hyBXyEzPGwXqcVybV9O6FyCYXZGQxRe8Kpni
+         SJBg==
+X-Gm-Message-State: APuU4Z8PLjtVw4xIIwm4vEXVvIBNaqKVemfZ0QBjd8vfEQXzHqJ7cHen
+	kegf7oS/OtzIjYrM8JOMK5NfeLV0Ca79DtQ2sfwNFlacqt3AM0PGN+0YIR4kRVdI
+X-Gm-Gg: AYBFou1AnVFcAbRfBaSlza/f0UQ6E+wrkrsBgypORqE6zb8Nu2qGGAAKRPXGfKY7LGb
+	r7aBM8sh8I7c7LOzc4gkUs9BULlON9tJOYwYQbkWMJZ5zPUGLe2D4ZT43Rhsz9varqm2h267rdv
+	ly7IUQC9z1Y5cCEE1cdK/MVnKo8/zb1CUtOGusZ7s/1sKZ7kDq3RK7XvpjGMpES8+pWorx1EX8o
+	apvOJTm+02gdHbgE0vbJCf7PUI4dTZ0gZNgiNPGODs94VoMZ/kACeONrz/1iLawvcJYabYyKgQU
+	zCxNE5ipB4CqR+Cy5BYvg1E5jjfoVgk9mr6L40ThlnXVA7QCLQ1Uni1TMUKDRztFZ2pHsvqsvT0
+	FvrFz1nllhGRdmRMld76FbcreHw8PovUdp/cpPhqUwThT6AnEQx29C7fnpBjVcuSITbzr+lfCCX
+	osoWLsTozXUh9Yt5woX142ysPkguqa3q3/M10sYNWcnq6koKW2UzRH4mUmOA5MEsXvApDri403k
+	pFEX8uIyimUmtG37cfmmpaSCqeo+kT6DKVy1SksSWbZRAdM/EZR8lsstPIV/wY0c6iKkdShLbF3
+	BgC9JDUvGw5r3nhTYry4pT/OCStH+8XSUCokbl55cLMO3LMNne6z4qFdjTYPP1QNxNZ9T172GmY
+	M769+YH+0QGMC19jdsG2K08JtyseICVsEA7E0CPBXA7lcNFKkkihb3q/2KK8geXJlc3wHuGfv2p
+	aahWyYY7BkAHQp8uPFj9lv39KoKMwx3BkZ93dfkOBnwjEsjb2bYK/9
+X-Received: by 2002:a05:6808:159c:b0:549:ef3b:1a90 with SMTP id 5614622812f47-5683ce4a928mr1595474b6e.54.1794296662184;
         Mon, 09 Nov 2026 23:44:22 -0800 (PST)
+Received: from [127.0.1.1] (174-29-1-49.hlrn.qwest.net. [174.29.1.49])
+        by smtp.gmail.com with ESMTPSA id 5614622812f47-5690504fdb5sm1522804b6e.3.2026.11.09.23.44.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Nov 2026 23:44:21 -0800 (PST)
 From: James Hilliard <james.hilliard1@gmail.com>
-Date: Tue, 10 Nov 2026 00:44:06 -0700
-Subject: [PATCH v2 03/58] mtd: add opt-in lifetime ownership for backing
- objects
+Date: Tue, 10 Nov 2026 00:44:05 -0700
+Subject: [PATCH v2 02/58] driver core: retain the owner of device release
+ callbacks
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Message-Id: <20261110-submit-rawnand-retained-handle-lifetime-v1-v2-3-9137d08f05df@gmail.com>
+Message-Id: <20261110-submit-rawnand-retained-handle-lifetime-v1-v2-2-9137d08f05df@gmail.com>
 References: <20261110-submit-rawnand-retained-handle-lifetime-v1-v2-0-9137d08f05df@gmail.com>
 In-Reply-To: <20261110-submit-rawnand-retained-handle-lifetime-v1-v2-0-9137d08f05df@gmail.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, 
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
  James Hilliard <james.hilliard1@gmail.com>, 
- Srinivas Kandagatla <srini@kernel.org>, Tze Yee Ng <tze.yee.ng@altera.com>
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ "Rafael J. Wysocki" <rafael@kernel.org>, Danilo Krummrich <dakr@kernel.org>, 
+ driver-core@lists.linux.dev
 X-Mailer: b4 0.15.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261109_234424_574841_E44794B7 
-X-CRM114-Status: GOOD (  31.25  )
+X-CRM114-CacheID: sfid-20261109_234423_313581_12FEA5F0 
+X-CRM114-Status: GOOD (  18.23  )
 X-Spam-Score: -1.9 (-)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -114,523 +116,93 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-MTD references retain registered nodes, but do not retain the backing
-object allocated by a controller driver. Keeping a partition open across
-driver unbind can therefore leave its master and driver metadata freed.
-Device references held outside get_mtd_device(), such as NVMEM
-consumers, also need the backing object and the partition ancestry to
-remain valid.
+Device references can outlive the driver or subsystem operation that
+unregistered the device. A modular release callback needs its code to
+remain loaded until it returns. Dropping its last module reference inside
+the callback permits concurrent unload before the function epilogue has
+finished.
 
-Add an optional master lifetime initialized by mtd_set_release(). The
-driver owns the initial reference. Each registered node and acquired MTD
-handle holds another reference. The node reference lasts through final
-device release, and nested partitions retain their parent device until
-then. mtd_put_master() drops the driver's reference after hardware has
-been disconnected and the MTD devices unregistered.
+Add an optional release_owner to struct device. device_initialize() takes
+the reference before the device can be published. The built-in device
+core caches the owner before invoking the release callback and drops the
+reference after the callback returns, allowing the callback to free the
+device itself. This also covers initialized devices that were never added
+and device_add() failures.
 
-Give OTP NVMEM providers their own backing-object references through the
-NVMEM context callbacks. They are parented to the physical device rather
-than the MTD node, so the node reference does not cover them. Keep these
-references through final NVMEM device release, including after failed MTD
-registration, and use the backing driver's module as the consumer owner.
+MTD will use this to keep its release callback available after retained
+device references outlive driver unbind.
 
-Pin the release callback's module when the driver drops its reference.
-If the module is initializing or unloading, wait for the remaining
-references instead: failed module initialization can discard module text
-despite reference pins, and unload cannot acquire a new pin. Keep the
-MTD core module pinned through its device and OTP release callbacks too.
-The device core owns the device callback reference and drops it after
-the callback returns, including on registration failure.
-
-Distinguish registration from retained references so an unregistered
-node cannot be opened again. Balance master references for direct
-opens even with MTD_PARTITIONED_MASTER disabled. Keep that decision
-independent of later master publication, so an earlier partition
-handle cannot drop an unacquired master reference.
-
-Remove the lookup entry under mtd_table_mutex at the last MTD put, but
-reserve its number until final device release. A retained NVMEM provider
-still uses that number in its device name, so reusing it earlier would
-make rebind fail with -EEXIST.
-
-On registration failure, wait for the overridden device release callback
-before returning ownership to the caller. This also covers delayed
-kobject release, when an immediate caller free would be premature.
-
-Cc: Srinivas Kandagatla <srini@kernel.org>
-Cc: Tze Yee Ng <tze.yee.ng@altera.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Rafael J. Wysocki <rafael@kernel.org>
+Cc: Danilo Krummrich <dakr@kernel.org>
+Cc: driver-core@lists.linux.dev
 Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
 ---
- drivers/mtd/mtdcore.c   | 194 +++++++++++++++++++++++++++++++++++++++++-------
- include/linux/mtd/mtd.h |  16 ++++
- 2 files changed, 183 insertions(+), 27 deletions(-)
+ drivers/base/core.c    | 9 +++++++++
+ include/linux/device.h | 4 ++++
+ 2 files changed, 13 insertions(+)
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 30b16f135f07..1c31e2a5fbe0 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -31,6 +31,7 @@
- #include <linux/nvmem-provider.h>
- #include <linux/root_dev.h>
- #include <linux/error-injection.h>
-+#include <linux/completion.h>
- 
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/partitions.h>
-@@ -70,6 +71,7 @@ static struct class mtd_class = {
- };
- 
- static DEFINE_IDR(mtd_idr);
-+static DEFINE_IDA(mtd_ids);
- 
- /* These are exported solely for the purpose of mtd_blkdevs.c. You
-    should not use them for _anything_ else */
-@@ -78,7 +80,15 @@ EXPORT_SYMBOL_GPL(mtd_table_mutex);
- 
- struct mtd_info *__mtd_next_device(int i)
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index 4c0c373998a1..03f8bf69219a 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -2617,6 +2617,7 @@ static void device_release(struct kobject *kobj)
  {
--	return idr_get_next(&mtd_idr, &i);
-+	struct mtd_info *mtd;
-+
-+	while ((mtd = idr_get_next(&mtd_idr, &i))) {
-+		if (mtd->registered)
-+			return mtd;
-+		i++;
-+	}
-+
-+	return NULL;
- }
- EXPORT_SYMBOL_GPL(__mtd_next_device);
- 
-@@ -87,37 +97,117 @@ static LIST_HEAD(mtd_notifiers);
- 
- #define MTD_DEVT(index) MKDEV(MTD_CHAR_MAJOR, (index)*2)
- 
--/* REVISIT once MTD uses the driver model better, whoever allocates
-- * the mtd_info will probably want to use the release() hook...
-+static void mtd_master_release(struct kref *ref)
-+{
-+	struct mtd_info *master = container_of(ref, struct mtd_info,
-+					     master.life_refcnt);
-+	struct completion *done = master->master.release_done;
-+	struct module *owner = master->master.release_owner;
-+
-+	master->master.release(master);
-+	if (done)
-+		complete(done);
-+	else
-+		module_put(owner);
-+}
-+
-+static void mtd_get_lifetime(struct mtd_info *master)
-+{
-+	if (master->master.release)
-+		kref_get(&master->master.life_refcnt);
-+}
-+
-+static void mtd_put_lifetime(struct mtd_info *master)
-+{
-+	if (master->master.release)
-+		kref_put(&master->master.life_refcnt, mtd_master_release);
-+}
-+
-+/**
-+ * mtd_set_release - initialize the lifetime of a dynamically allocated master
-+ * @master: master MTD device
-+ * @release: free the backing object and its retained metadata
-+ *
-+ * Call once before registration. The driver owns the initial reference and
-+ * drops it with mtd_put_master() after unregistering and disconnecting hardware.
-+ * Registered MTD devices and acquired handles retain the backing object too.
-+ * The release callback must not access resources released by driver unbind.
-+ */
-+void mtd_set_release(struct mtd_info *master,
-+		     void (*release)(struct mtd_info *mtd))
-+{
-+	kref_init(&master->master.life_refcnt);
-+	master->master.release = release;
-+}
-+EXPORT_SYMBOL_GPL(mtd_set_release);
-+
-+/**
-+ * mtd_put_master - drop the driver's initial lifetime reference
-+ * @master: master initialized by mtd_set_release()
-+ *
-+ * Hardware access must already be disconnected and drained. Unbind may return
-+ * while handles retain metadata. Keep the release callback's module loaded
-+ * until that metadata is freed. If the module is already unloading, wait for
-+ * the remaining references instead of scheduling a callback into the departing
-+ * module. Also wait during module initialization, which may fail and discard
-+ * the module despite pins.
-  */
-+void mtd_put_master(struct mtd_info *master)
-+{
-+	DECLARE_COMPLETION_ONSTACK(done);
-+
-+	if ((!master->owner || READ_ONCE(master->owner->state) == MODULE_STATE_LIVE) &&
-+	    try_module_get(master->owner)) {
-+		master->master.release_owner = master->owner;
-+		mtd_put_lifetime(master);
-+	} else {
-+		master->master.release_done = &done;
-+		mtd_put_lifetime(master);
-+		wait_for_completion(&done);
-+	}
-+}
-+EXPORT_SYMBOL_GPL(mtd_put_master);
-+
- static void mtd_release(struct device *dev)
- {
- 	struct mtd_info *mtd = dev_get_drvdata(dev);
--	dev_t index = MTD_DEVT(mtd->index);
-+	struct mtd_info *master = mtd->ref_master;
-+	struct mtd_info *parent = mtd->parent;
- 
--	idr_remove(&mtd_idr, mtd->index);
-+	/* Retained NVMEM providers use the MTD number in their device name. */
-+	ida_free(&mtd_ids, mtd->index);
- 	of_node_put(mtd_get_of_node(mtd));
- 
- 	if (mtd_is_partition(mtd))
- 		release_mtd_partition(mtd);
- 
--	/* remove /dev/mtdXro node */
--	device_destroy(&mtd_class, index + 1);
-+	if (master) {
-+		/* Nested partitions can outlive device_del() of their parents. */
-+		if (parent && parent != master)
-+			put_device(&parent->dev);
-+		mtd_put_lifetime(master);
-+	}
- }
- 
- /*
-- * No-op device release used in add_mtd_device() error paths.
-+ * Hand failed registrations back to their caller only after device release.
-  * Prevents mtd_release() from being called via device_release(),
-  * which would free the mtd_info that the caller still manages.
-  */
--static void mtd_dev_release_nop(struct device *dev)
-+static void mtd_dev_release_done(struct device *dev)
- {
-+	complete(dev_get_drvdata(dev));
- }
- 
- static void mtd_device_release(struct kref *kref)
- {
- 	struct mtd_info *mtd = container_of(kref, struct mtd_info, refcnt);
- 	bool is_partition = mtd_is_partition(mtd);
-+	bool managed = mtd->ref_master;
-+
-+	/* The table mutex is held by the registration or handle put path. */
-+	idr_remove(&mtd_idr, mtd->index);
-+	device_destroy(&mtd_class, MTD_DEVT(mtd->index) + 1);
- 
- 	debugfs_remove_recursive(mtd->dbg.dfs_dir);
- 
-@@ -131,10 +221,8 @@ static void mtd_device_release(struct kref *kref)
- 	 *  Should not be done for partition,
- 	 *  as it was already destroyed in device_unregister().
- 	 */
--	if (!is_partition)
-+	if (!is_partition && !managed)
- 		memset(&mtd->dev, 0, sizeof(mtd->dev));
--
--	module_put(THIS_MODULE);
- }
- 
- #define MTD_DEVICE_ATTR_RO(name) \
-@@ -612,7 +700,7 @@ static int mtd_nvmem_add(struct mtd_info *mtd)
- 	config.id = NVMEM_DEVID_NONE;
- 	config.dev = &mtd->dev;
- 	config.name = dev_name(&mtd->dev);
--	config.owner = THIS_MODULE;
-+	config.owner = mtd_get_master(mtd)->owner;
- 	config.add_legacy_fixed_of_cells = of_device_is_compatible(node, "nvmem-cells");
- 	config.reg_read = mtd_nvmem_reg_read;
- 	config.size = mtd->size;
-@@ -700,10 +788,13 @@ static struct device_node *mtd_find_of_node(struct mtd_info *mtd)
- 
- int add_mtd_device(struct mtd_info *mtd)
- {
-+	DECLARE_COMPLETION_ONSTACK(released);
- 	struct device_node *np = mtd_get_of_node(mtd);
- 	struct mtd_info *master = mtd_get_master(mtd);
- 	struct mtd_notifier *not;
- 	int i, error, ofidx;
-+	u32 id;
-+	bool wait_for_release = false;
+ 	struct device *dev = kobj_to_dev(kobj);
+ 	struct device_private *p = dev->p;
++	struct module *owner = dev->release_owner;
  
  	/*
- 	 * May occur, for instance, on buggy drivers which call
-@@ -746,16 +837,28 @@ int add_mtd_device(struct mtd_info *mtd)
- 	if (np)
- 		ofidx = of_alias_get_id(np, "mtd");
- 	if (ofidx >= 0)
--		i = idr_alloc(&mtd_idr, mtd, ofidx, ofidx + 1, GFP_KERNEL);
-+		i = ida_alloc_range(&mtd_ids, ofidx, ofidx, GFP_KERNEL);
- 	else
--		i = idr_alloc(&mtd_idr, mtd, 0, 0, GFP_KERNEL);
-+		i = ida_alloc(&mtd_ids, GFP_KERNEL);
- 	if (i < 0) {
- 		error = i;
- 		goto fail_locked;
- 	}
-+	id = i;
-+	error = idr_alloc_u32(&mtd_idr, mtd, &id, id, GFP_KERNEL);
-+	if (error) {
-+		ida_free(&mtd_ids, i);
-+		goto fail_locked;
-+	}
- 
- 	mtd->index = i;
- 	kref_init(&mtd->refcnt);
-+	if (master->master.release) {
-+		mtd_get_lifetime(master);
-+		mtd->ref_master = master;
-+		if (mtd->parent && mtd->parent != master)
-+			get_device(&mtd->parent->dev);
-+	}
- 
- 	/* default value if not set by driver */
- 	if (mtd->bitflip_threshold == 0)
-@@ -802,6 +905,7 @@ int add_mtd_device(struct mtd_info *mtd)
- 	error = dev_set_name(&mtd->dev, "mtd%d", i);
- 	if (error)
- 		goto fail_devname;
-+	mtd->dev.release_owner = THIS_MODULE;
- 	dev_set_drvdata(&mtd->dev, mtd);
- 	mtd_set_of_node(mtd, mtd_find_of_node(mtd));
- 	error = device_register(&mtd->dev);
-@@ -819,6 +923,7 @@ int add_mtd_device(struct mtd_info *mtd)
- 		      "mtd%dro", i);
- 
- 	pr_debug("mtd: Giving out device %d to %s\n", i, mtd->name);
-+	mtd->registered = true;
- 	/* No need to get a refcount on the module containing
- 	   the notifier, since we hold the mtd_table_mutex */
- 	list_for_each_entry(not, &mtd_notifiers, list)
-@@ -836,29 +941,38 @@ int add_mtd_device(struct mtd_info *mtd)
- 		}
- 	}
- 
--	/* We _know_ we aren't being removed, because
--	   our caller is still holding us here. So none
--	   of this try_ nonsense, and no bitching about it
--	   either. :) */
--	__module_get(THIS_MODULE);
- 	return 0;
- 
- fail_nvmem_add:
- 	device_del(&mtd->dev);
- fail_added:
- 	/*
--	 * Clear type and set nop release to prevent mtd_release() ->
-+	 * Clear type and override release to prevent mtd_release() ->
- 	 * release_mtd_partition() -> free_partition() from freeing mtd.
- 	 * The caller handles cleanup on failure.
- 	 */
- 	mtd->dev.type = NULL;
--	mtd->dev.release = mtd_dev_release_nop;
-+	mtd->dev.release = mtd_dev_release_done;
-+	dev_set_drvdata(&mtd->dev, &released);
-+	wait_for_release = true;
- 	put_device(&mtd->dev);
- 	of_node_put(mtd_get_of_node(mtd));
- fail_devname:
- 	idr_remove(&mtd_idr, i);
-+	ida_free(&mtd_ids, i);
-+	if (mtd->ref_master) {
-+		mtd->ref_master = NULL;
-+		if (mtd->parent && mtd->parent != master)
-+			put_device(&mtd->parent->dev);
-+		mtd_put_lifetime(master);
-+	}
- fail_locked:
- 	mutex_unlock(&mtd_table_mutex);
-+	if (wait_for_release) {
-+		wait_for_completion(&released);
-+		mtd->dev.release = NULL;
-+		dev_set_drvdata(&mtd->dev, mtd);
-+	}
- 	return error;
+ 	 * Some platform devices are driven without driver attached
+@@ -2642,6 +2643,7 @@ static void device_release(struct kobject *kobj)
+ 		WARN(1, KERN_ERR "Device '%s' does not have a release() function, it is broken and must be fixed. See Documentation/core-api/kobject.rst.\n",
+ 			dev_name(dev));
+ 	kfree(p);
++	module_put(owner);
  }
  
-@@ -879,7 +993,7 @@ int del_mtd_device(struct mtd_info *mtd)
- 
- 	mutex_lock(&mtd_table_mutex);
- 
--	if (idr_find(&mtd_idr, mtd->index) != mtd) {
-+	if (idr_find(&mtd_idr, mtd->index) != mtd || !mtd->registered) {
- 		ret = -ENODEV;
- 		goto out_error;
- 	}
-@@ -889,6 +1003,7 @@ int del_mtd_device(struct mtd_info *mtd)
- 	list_for_each_entry(not, &mtd_notifiers, list)
- 		not->remove(mtd);
- 
-+	mtd->registered = false;
- 	kref_put(&mtd->refcnt, mtd_device_release);
- 	ret = 0;
- 
-@@ -950,6 +1065,16 @@ static ssize_t mtd_otp_size(struct mtd_info *mtd, bool is_user)
- 	return ret == -ENODATA ? 0 : ret;
- }
- 
-+static void mtd_otp_nvmem_get(void *priv)
-+{
-+	mtd_get_lifetime(priv);
-+}
-+
-+static void mtd_otp_nvmem_put(void *priv)
-+{
-+	mtd_put_lifetime(priv);
-+}
-+
- static struct nvmem_device *mtd_otp_nvmem_register(struct mtd_info *mtd,
- 						   const char *compatible,
- 						   int size,
-@@ -966,7 +1091,7 @@ static struct nvmem_device *mtd_otp_nvmem_register(struct mtd_info *mtd,
- 	config.dev = mtd->dev.parent;
- 	config.name = compatible;
- 	config.id = NVMEM_DEVID_AUTO;
--	config.owner = THIS_MODULE;
-+	config.owner = mtd->owner;
- 	config.add_legacy_fixed_of_cells = !mtd_type_is_nand(mtd);
- 	config.type = NVMEM_TYPE_OTP;
- 	config.root_only = true;
-@@ -975,6 +1100,11 @@ static struct nvmem_device *mtd_otp_nvmem_register(struct mtd_info *mtd,
- 	config.size = size;
- 	config.of_node = np;
- 	config.priv = mtd;
-+	if (mtd->master.release) {
-+		config.priv_get = mtd_otp_nvmem_get;
-+		config.priv_put = mtd_otp_nvmem_put;
-+		config.priv_owner = THIS_MODULE;
-+	}
- 
- 	nvmem = nvmem_register(&config);
- 	/* Just ignore if there is no NVMEM support in the kernel */
-@@ -1332,8 +1462,12 @@ EXPORT_SYMBOL_GPL(get_mtd_device);
- int __get_mtd_device(struct mtd_info *mtd)
- {
- 	struct mtd_info *master = mtd_get_master(mtd);
-+	bool master_ref = mtd == master || IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER);
- 	int err;
- 
-+	if (!mtd->registered)
-+		return -ENODEV;
-+
- 	if (master->_get_device) {
- 		err = master->_get_device(mtd);
- 		if (err)
-@@ -1346,13 +1480,14 @@ int __get_mtd_device(struct mtd_info *mtd)
- 		return -ENODEV;
- 	}
- 
-+	mtd_get_lifetime(master);
- 	while (mtd) {
- 		if (mtd != master)
- 			kref_get(&mtd->refcnt);
- 		mtd = mtd->parent;
- 	}
- 
--	if (IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER))
-+	if (master_ref)
- 		kref_get(&master->refcnt);
- 
- 	return 0;
-@@ -1437,8 +1572,10 @@ EXPORT_SYMBOL_GPL(put_mtd_device);
- void __put_mtd_device(struct mtd_info *mtd)
- {
- 	struct mtd_info *master = mtd_get_master(mtd);
-+	bool master_ref = mtd == master || IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER);
- 	/* master can be freed in _put_device */
- 	struct module *owner = master->owner;
-+	bool managed = master->master.release;
- 
- 	while (mtd) {
- 		/* kref_put() can relese mtd, so keep a reference mtd->parent */
-@@ -1449,12 +1586,14 @@ void __put_mtd_device(struct mtd_info *mtd)
- 		mtd = parent;
- 	}
- 
--	if (IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER))
-+	if (master_ref)
- 		kref_put(&master->refcnt, mtd_device_release);
- 
--	/* must be the last use of master */
-+	/* Legacy _put_device() callbacks can free an unmanaged master. */
- 	if (master->_put_device)
- 		master->_put_device(master);
-+	if (managed)
-+		mtd_put_lifetime(master);
- 
- 	/* _put_device() runs code from @owner, so drop the module last */
- 	module_put(owner);
-@@ -2671,6 +2810,7 @@ static void __exit cleanup_mtd(void)
- 	bdi_unregister(mtd_bdi);
- 	bdi_put(mtd_bdi);
- 	idr_destroy(&mtd_idr);
-+	ida_destroy(&mtd_ids);
- }
- 
- module_init(init_mtd);
-diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index cd7b4671c456..eb9fd9ea0c79 100644
---- a/include/linux/mtd/mtd.h
-+++ b/include/linux/mtd/mtd.h
-@@ -187,6 +187,7 @@ struct mtd_pairing_scheme {
- };
- 
- struct module;	/* only needed for owner field in mtd_info */
-+struct completion;
- 
- /**
-  * struct mtd_debug_info - debugging information for an MTD device.
-@@ -225,6 +226,10 @@ struct mtd_part {
-  *		     sub-partitions.
-  * @suspended: set to 1 when the device is suspended, 0 otherwise
-  * @unregistering: removal has started; protected by partitions_lock
-+ * @life_refcnt: optional lifetime reference count for the backing object
-+ * @release: free the backing object after its last lifetime reference
-+ * @release_owner: module reference held during deferred release
-+ * @release_done: completion used when the owner module is already unloading
+ static const struct ns_common *device_namespace(const struct kobject *kobj)
+@@ -3225,11 +3227,18 @@ static void klist_children_put(struct klist_node *n)
+  * approach is to use kzalloc() to allocate the structure containing
+  * @dev.
   *
-  * This struct is embedded in mtd_info and contains master-specific
-  * properties/fields. The master is the root MTD device from the MTD partition
-@@ -235,6 +240,10 @@ struct mtd_master {
- 	struct mutex chrdev_lock;
- 	unsigned int suspended : 1;
- 	bool unregistering;
-+	struct kref life_refcnt;
-+	void (*release)(struct mtd_info *mtd);
-+	struct module *release_owner;
-+	struct completion *release_done;
- };
++ * If @dev->release_owner is set, the caller must keep that module loaded
++ * until this function acquires a reference. The core drops the reference
++ * after the release callback returns, including when device_add() fails.
++ * A module whose initialization fails must still drain its devices before
++ * returning the error, since module references do not prevent that unload.
++ *
+  * NOTE: Use put_device() to give up your reference instead of freeing
+  * @dev directly once you have called this function.
+  */
+ void device_initialize(struct device *dev)
+ {
++	__module_get(dev->release_owner);
+ 	dev->kobj.kset = devices_kset;
+ 	kobject_init(&dev->kobj, &device_ktype);
+ 	INIT_LIST_HEAD(&dev->dma_pools);
+diff --git a/include/linux/device.h b/include/linux/device.h
+index aee79fd6b32b..cd39ebf47ee7 100644
+--- a/include/linux/device.h
++++ b/include/linux/device.h
+@@ -683,6 +683,9 @@ enum struct_device_flags {
+  * @release:	Callback to free the device after all references have
+  * 		gone away. This should be set by the allocator of the
+  * 		device (i.e. the bus driver that discovered the device).
++ * @release_owner: Optional module containing the release callback. Set before
++ *		device_initialize() and leave unchanged for the device's lifetime.
++ *		The core holds a reference until the release callback returns.
+  * @iommu_group: IOMMU group the device belongs to.
+  * @iommu:	Per device generic IOMMU runtime data
+  * @physical_location: Describes physical location of the device connection
+@@ -787,6 +790,7 @@ struct device {
+ 	const struct attribute_group **groups;	/* optional groups */
  
- struct mtd_info {
-@@ -382,6 +391,10 @@ struct mtd_info {
- 	struct module *owner;
- 	struct device dev;
- 	struct kref refcnt;
-+	/* Protected by mtd_table_mutex; false after del_mtd_device(). */
-+	bool registered;
-+	/* Lifetime reference held until the device release callback. */
-+	struct mtd_info *ref_master;
- 	struct mtd_debug_info dbg;
- 	struct nvmem_device *nvmem;
- 	struct nvmem_device *otp_user_nvmem;
-@@ -683,6 +696,9 @@ extern int mtd_device_parse_register(struct mtd_info *mtd,
- #define mtd_device_register(master, parts, nr_parts)	\
- 	mtd_device_parse_register(master, NULL, NULL, parts, nr_parts)
- extern int mtd_device_unregister(struct mtd_info *master);
-+void mtd_set_release(struct mtd_info *master,
-+		     void (*release)(struct mtd_info *mtd));
-+void mtd_put_master(struct mtd_info *master);
- extern struct mtd_info *get_mtd_device(struct mtd_info *mtd, int num);
- extern int __get_mtd_device(struct mtd_info *mtd);
- extern void __put_mtd_device(struct mtd_info *mtd);
+ 	void	(*release)(struct device *dev);
++	struct module		*release_owner;
+ 	struct iommu_group	*iommu_group;
+ 	struct dev_iommu	*iommu;
+ 
 
 -- 
 2.53.0
