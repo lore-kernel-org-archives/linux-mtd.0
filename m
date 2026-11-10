@@ -2,11 +2,12 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6755B60A2618
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F32160A2616
 	for <linux-mtd@archiver.kernel.org>; Tue, 10 Nov 2026 07:45:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=o28s5HeT;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=PGZgCQ8c
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=Esmei5Am;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.a=rsa-sha256 header.s=desiato.20200630 header.b=b4LDx2ql;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=wAIJp9LG
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,85 +15,102 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=zHTIrnpmvh5C1HloZ6TB49Md8tzjIDEKa268rUsZSQE=; b=o28s5HeTpC1b44SrrTDA8sFG6R
-	3PgyFuwfj6X3VBWYMW9prFWdEEOBQ9htTRX9LjFQqKPokQAgozMKbvkjLXpAmVZMz8BIEYCPjQv+p
-	bZ6vbM7js/hxeZfdFe4mhjhM4hFr4eIPEkZriW9DW8WTFUjUf/bbI8B6nyLVAZvFVHe+JTR5zq5Vb
-	lwTI3ClBjONK0j3+GN8i9LCm7ViKsSmiY7XIjmwQaOaQz5ZztW8uAOYekACoCSdAyDC/ovJCmgrz7
-	pt9kH5vOCQpiDnJqNXEEPocrnF7gcLieCYfzp16i6rZ2TbkJoIuCHwUJ/xa90OfLpMCEgEnBtbpuf
-	5JB1gwPg==;
+	bh=U4zPkM+4ti2Y82hphGnYUJ9l5aJmxvuWK+HjPQ2g0do=; b=Esmei5AmNNZhsT/mrI2wCIb0oQ
+	NIDfsKNnQtLqmRwSmLrL3S4wRCu//qqP7HbLDBdLrdksm4W6uOaZrtcdkt+jU010Y50GVIp0ctzD5
+	aZPupaFUQdATjf6hAkhj9J/44NSxiplQAAyXejbNFupuHU2E+HPT+7PvKqJ8MB6xeGQ3iNfYG+IXO
+	xSjUwByV59AnwIqsdiIOaN/5J06/y2gMqlIGRjgCCopwpGTZmSMHosQoRR3KzLzMyg+T7QoZLaH21
+	uyeTQ93L3BRxy0P4QIJ18Umleattdz4BHSrl46FILBSb3vf1Jppv81hv28BC5kk0nz/Bxg/bZvanx
+	u1MBWP1Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xQgYA-00000002y5t-0Rli;
+	id 1xQgYA-00000002y6h-3aQS;
 	Tue, 10 Nov 2026 07:45:50 +0000
-Received: from mail-oa1-x36.google.com ([2001:4860:4864:20::36])
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xQgXD-00000002wY8-1SCL
+	id 1xQgXS-00000002x37-2xtJ
+	for linux-mtd@bombadil.infradead.org;
+	Tue, 10 Nov 2026 07:45:07 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Cc:To:In-Reply-To:References:
+	Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
+	From:Sender:Reply-To:Content-ID:Content-Description;
+	bh=9ndynNB7A1QLb3sbkkLOkw0hbY7VB6UW33KXzWEUKxo=; b=b4LDx2qlEdsL/qumexAhHTng6P
+	4pHyA8iBVygDvJReRaiD1x79LnSpRO98a1ls6BlaUJRp3agmUpg5zllSz9VvZZU8F29kh02/Pzl1P
+	vy44qf6xLhThzstEjnKOeBSnzuo169vHcaKJq7LfywYHsKXNVO/V/SCUwu4t7WEPLKxwOWKZySNbT
+	Rk+4olQ0SyyesFxIXvm9USvMsDTA9bGUrcJRMZEzJidkrCwv9JMg4cBNIO+GTzyLm0rjj1oHqH7hG
+	isgaj2Ex5uafgrLGaYuktkNqT/xcDeUV3edo9mSC9tT2wLKneAY26Szsdtqo7EJBwDfC2SbtWBMKP
+	Q96qM3VQ==;
+Received: from mail-oo1-xc2b.google.com ([2607:f8b0:4864:20::c2b])
+	by desiato.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
+	id 1xQgXL-00000007e3v-48IM
 	for linux-mtd@lists.infradead.org;
-	Tue, 10 Nov 2026 07:45:05 +0000
-Received: by mail-oa1-x36.google.com with SMTP id 586e51a60fabf-490d838b425so910846fac.3
-        for <linux-mtd@lists.infradead.org>; Mon, 09 Nov 2026 23:44:50 -0800 (PST)
+	Tue, 10 Nov 2026 07:45:02 +0000
+Received: by mail-oo1-xc2b.google.com with SMTP id 006d021491bc7-6fe4372c5f3so962158eaf.3
+        for <linux-mtd@lists.infradead.org>; Mon, 09 Nov 2026 23:44:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794296690; x=1794901490; darn=lists.infradead.org;
+        d=gmail.com; s=20260707; t=1794296697; x=1794901497; darn=lists.infradead.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=0NNmQES/+1JXrHeJNaKSoCC/3wqUoF1IkOWxzblHBjM=;
-        b=PGZgCQ8cjVqRXyWdp50YEtP3XlNLR7yW3/l2KKG6x5iFz5OYGWBLlRyTQ4k4xluLat
-         iUBoRSNxCR1QHb+0dn6vm97gG8w+lZoCkVn14lI0QBVujbnG+30uKww7HYNftaWB8tmq
-         KC9UTIzBPU1ffZl2JOexoPVf4jjYaUZ0NUQTqcfJDpSOWa0e8EqsVRtasuNcyaBAwQTS
-         OSFJ7D5xMzOJNb+gOwuaZVUR8Vnmn7aPpJB6h9CpQCAtkXRtrWLSV2Vd7RvgEzDKYzhT
-         /BK9tSLOM6Sovu9wrRboGW7R2gxljHHxvXK9U91he5tqNWDBE1IR99f8f3iPSuxKFj/k
-         hzLQ==
+        bh=9ndynNB7A1QLb3sbkkLOkw0hbY7VB6UW33KXzWEUKxo=;
+        b=wAIJp9LGlDYaxFyoTLjxCIMjils4rDWxb30Wjhnj7ftJIUo/w3RoQ3Dmk3CCDWw+go
+         vAfeMm/k7RW1tBy5DCvX0wOVm4wJZdb6RftQAOJYHotUjrfB7k2DNm3jbPk5jNPX4Kmx
+         I2eQuqcaBxqBjkfruhcYDiUUMgOym4DvQ1mQ4xF4526B/Wa28qWFJ0wV/0OE4fbA6de4
+         7RSLTnM/2zsjX/alYzqeQNqyVCdvrmB9qN0RWN64LMwThLp3ZziquImdh2UfjkbrpbRQ
+         ueYfL5L5trK7jj933yY27UGWcV/zbObaSQBrjr6Rv3ZpqYISPYTREhyLPE0+Hoa2Dt1a
+         rCEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794296690; x=1794901490;
+        d=1e100.net; s=20260707; t=1794296697; x=1794901497;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=0NNmQES/+1JXrHeJNaKSoCC/3wqUoF1IkOWxzblHBjM=;
-        b=enFvh0zA6CCuLOetpAclIYPVTKBFrjEfRvIvNZp61j5UVUdE6SluwfLfl3Hv2MheXM
-         lT1IaaNrnFJQHS9AG0JufF+tnYU/bXTkdfHvqatk+XdPHV+BIXG1nZAufcx7oGpG6nJd
-         9F5i1JVcgx7dzDx4yagPPWYY952FDDkxTdrNTcC/kmQejTTjt9GJdD57f9J3QIwby0xF
-         a9I7CUfTqx2UYEOKrNPcTRwuig1A46UR23mTmyH5xSprK+GAhMQmGIU3Jo5UnZ+Q28AZ
-         zMIP+SPE7vKhCj5TeI6P8zEhDIV2SJcd56ICMBZv7bmrMJoxiCHTXGty3pzyKckTT4/n
-         2RRQ==
-X-Gm-Message-State: APuU4Z9j8bk0YA79t7g1mlj58JLKE257WgbNuT5ZQWx3atMWsZXc2x0+
-	Ew4Cj68tetqixHMxSEz2lVWS08NxsS1ddhFtJ7hvfGvHwC5x0oCX4Hq8c6teXHP5
-X-Gm-Gg: AYBFou35XgOnU+7YJrAqlhN+AdKeFlcufr71BmmHngdL7E7Mn6rPGVMiB8Scgret7Hu
-	HMx5qZUyOwNBPcE4svXkCEl1HsmhyBdH7y+mXcxHyGF65vBwuNkiXFo+yQmn+Xu9nX2a1W/NQB9
-	thw0V3WRX/8fdHCux91kfWCy7WMZQ5oLEzIb6Ui2WYYR8chEXhAi+nVpWDIlZ7BsA4LzBQwHorx
-	DnX6BLLZr0Pvnffk7Su9BOOhyp9pKQ/iAiRThA1SkMEVjEKqtwa3EDQAKhqhFK8Fg5XXee1Db4Q
-	G9flF9udspv3SsUWfLrHtTHgYBP1/ma4VKtiSM3LtqeuPVmOJvnUlHoWQoa6x+MAu4NCjXUylmN
-	2XiLR3un9osTgHZNpJ27wgT+gn/TKUZve17lUC5CqkDSL0kMfb42+UehibyvhemqW3QRGt6uF+7
-	NB6DkSr7k0XLWUEIn4oWn10CtK4CLZ2bjYkSzmaSVyfLZS9iYt/swfAv6d+2Iz2xSRuPuG6cl8G
-	F25LC/2vdfczCI17tY7N87lurcyBOJObWhJRNtdnkzA7reR4EOA7Xagr6bn2byiwhwbsL+R8yAY
-	vZHipJpPZkx4hUN/nK5bXf1G1vfXUkt7Y0uhjECLY9a/hs8UiqEE9t9IZZjhkR6xtVd1AZL5an7
-	mkx+TnteHM9I2Aq0R0kIX4FzD5SYGc8QeMhr0lF9R32B2s1oeO24P5XIjjtSy5jhqT2NVru5Q63
-	xRgUzRc3JUlZLqWrqDUYWFbyLvnJ5Q8tjB6E1GelEikx+4xowp3Uv3
-X-Received: by 2002:a05:6808:4441:b0:4f3:6c2b:5f22 with SMTP id 5614622812f47-5683cc44e4bmr1593904b6e.29.1794296690088;
-        Mon, 09 Nov 2026 23:44:50 -0800 (PST)
+        bh=9ndynNB7A1QLb3sbkkLOkw0hbY7VB6UW33KXzWEUKxo=;
+        b=l7ViR6fleCq5GghuvlNi7GgjQyc77bwwHDHUhHPuG3VW5sGLXKGDhwBwXuToozK0+l
+         g+a7sIe6xHAjJbx/LANpaeL7eb9s9jzjayg8npVfW8SQF0pBhGaLfBD3dGsHxsmTV8d5
+         zWNOcCBOVrep/sNGnjqSU5Js03YfRyfizx5eJOk6+vBjzo2qPilWy1foeHR+ktkl+dyE
+         p9UA3dPJMPfQqCX5qoMjcrfrpHCOgUkiehWwCbiC2fqAaezYBl1j3fax0SbNgI8LYzZL
+         LpbtfX373/VjkvrQWBwwMSQzOFZ42cSMNRbh93sy9a7w1Hkd3eEIdqOVIJCDng65bquc
+         /sDg==
+X-Gm-Message-State: APuU4Z8elaL6xht/2zZn0HJxxVLpJwKhEynWAio6EQQT/v/GjSrpOMGM
+	0qKMHTJfJxu7CTK0/HcE8Nn88IiAb5ik8hSvqqAEOhD/5fml9zHHrpdg
+X-Gm-Gg: AYBFou0QDq8RI3bmkcJxV0QaegE/bYCC1sns9lnl19qGn4Erfesx2r/rctk9Ly1fJNw
+	9ICa8yGTg9Ywyws7gLsgSJNP+onjdRq7d6dR9CCEWo+FjHDhBGDFf4TOQXDETZPRLdZSQH03toO
+	98IOMWlrf1nCwXLGwWorYbBjIQIYUWQLsq4HsLj2VBS249gUK84UBh2dt+HoIm7JweqDtPwFqOL
+	6C+RZDqL6jH+13CeNjBKGy8BT+arKH7Sw7Fde96nFJh7lgE6idzD2vF+vPe8kfbmROlsAeKa2pi
+	D2LLtPs3mfuksYqVm7p+UjCL02bBex59XbUBWMNqHTSehxHx6GqhJSw0VakYlcjRlAWQhHPRgDj
+	19ymKbjrhzpqrE1NFe0D9M0I0akaC7eG4rSTRmZ3g2VWbMlm5pT+w7pgoY2A3aPuM+FCQZl+fWM
+	Bh0B5of8VbuXaBmRI7nkH+ztU+0hTHWzcegfiFYGaWKCnU7yOJ8fZvOuiKCLlwTpkGakFX8zL6g
+	D+V8mMi6knxGKOpBGOtXzu4gIxbprGEqtxsLx5l/wx2pBBmfzV6PwIb/ZCYw7nKW0DtMQIL8+u7
+	CU2nL//BkAB7LHVwc8N4kCNGLorxDuWuY7fpg//uVpUfSXfD70+sfdPXkTVH4fU37u9KC98n/Pk
+	AzVBmKDGZDw9W0sj3WiKHSf5N8q/AHTqguZPedXKVi5G6RmTG6d21o40+j7CQ6JSurT9MEJEXva
+	hdW8snKV6dzspowzj3yb2vokebGzxEwzcoLyLMQ1zWbI2ygv2JdvDIltnFzAxleQw/jekvoLL94
+	w==
+X-Received: by 2002:a05:6808:c232:b0:539:c292:8b04 with SMTP id 5614622812f47-5683c9dfddcmr1448284b6e.8.1794296696889;
+        Mon, 09 Nov 2026 23:44:56 -0800 (PST)
 Received: from [127.0.1.1] (174-29-1-49.hlrn.qwest.net. [174.29.1.49])
-        by smtp.gmail.com with ESMTPSA id 5614622812f47-5690504fdb5sm1522804b6e.3.2026.11.09.23.44.48
+        by smtp.gmail.com with ESMTPSA id 5614622812f47-5690504fdb5sm1522804b6e.3.2026.11.09.23.44.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2026 23:44:49 -0800 (PST)
+        Mon, 09 Nov 2026 23:44:56 -0800 (PST)
 From: James Hilliard <james.hilliard1@gmail.com>
-Date: Tue, 10 Nov 2026 00:44:30 -0700
-Subject: [PATCH v2 27/58] mtd: rawnand: technologic: retain open-handle
- state on removal
+Date: Tue, 10 Nov 2026 00:44:36 -0700
+Subject: [PATCH v2 33/58] mtd: rawnand: gpmi: retain open-handle state on
+ removal
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Message-Id: <20261110-submit-rawnand-retained-handle-lifetime-v1-v2-27-9137d08f05df@gmail.com>
+Message-Id: <20261110-submit-rawnand-retained-handle-lifetime-v1-v2-33-9137d08f05df@gmail.com>
 References: <20261110-submit-rawnand-retained-handle-lifetime-v1-v2-0-9137d08f05df@gmail.com>
 In-Reply-To: <20261110-submit-rawnand-retained-handle-lifetime-v1-v2-0-9137d08f05df@gmail.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, 
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
- James Hilliard <james.hilliard1@gmail.com>
+ James Hilliard <james.hilliard1@gmail.com>, Han Xu <han.xu@nxp.com>, 
+ imx@lists.linux.dev
 X-Mailer: b4 0.15.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261109_234451_432864_71E1E0C2 
-X-CRM114-Status: GOOD (  15.30  )
-X-Spam-Score: -1.9 (-)
+X-CRM114-CacheID: sfid-20261110_074500_813653_81949FD3 
+X-CRM114-Status: GOOD (  16.17  )
+X-Spam-Score: 0.1 (/)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -117,81 +135,85 @@ Keep chip metadata and controller storage alive until the final MTD
 reference is released. Unregister and disconnect each published chip
 before releasing the resources used by its hardware operations.
 
-Transfer flash-node ownership to the retained-chip helper.
+Keep geometry available after removal while releasing DMA and clocks.
 
+Cc: Han Xu <han.xu@nxp.com>
+Cc: imx@lists.linux.dev
 Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
 ---
- drivers/mtd/nand/raw/technologic-nand-controller.c | 25 ++++++++++++++++------
- 1 file changed, 19 insertions(+), 6 deletions(-)
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 22 ++++++++++++++++++----
+ 1 file changed, 18 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/technologic-nand-controller.c b/drivers/mtd/nand/raw/technologic-nand-controller.c
-index a3294aaf43bd..a67f4d45f57b 100644
---- a/drivers/mtd/nand/raw/technologic-nand-controller.c
-+++ b/drivers/mtd/nand/raw/technologic-nand-controller.c
-@@ -132,6 +132,11 @@ static const struct nand_controller_ops ts72xx_nand_ops = {
- 	.exec_op = ts72xx_nand_exec_op,
- };
+diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+index 527165ccc839..cda3bbdca928 100644
+--- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+@@ -2744,7 +2744,6 @@ static int gpmi_nand_init(struct gpmi_nand_data *this)
+ 	if (ret)
+ 		return ret;
  
-+static void ts72xx_nand_release(struct nand_controller *controller)
-+{
-+	kfree(container_of(controller, struct ts72xx_nand_data, controller));
-+}
-+
- static int ts72xx_nand_probe(struct platform_device *pdev)
- {
- 	struct ts72xx_nand_data *data;
-@@ -139,11 +144,13 @@ static int ts72xx_nand_probe(struct platform_device *pdev)
- 	struct mtd_info *mtd;
- 	int err;
+-	nand_controller_init(&this->base);
+ 	this->base.ops = &gpmi_nand_controller_ops;
+ 	chip->controller = &this->base;
  
--	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
-+	data = kzalloc_obj(*data);
- 	if (!data)
- 		return -ENOMEM;
+@@ -2759,9 +2758,15 @@ static int gpmi_nand_init(struct gpmi_nand_data *this)
+ 	if (ret)
+ 		goto err_nand_cleanup;
  
--	nand_controller_init(&data->controller);
-+	err = devm_nand_controller_init(&pdev->dev, &data->controller, ts72xx_nand_release);
-+	if (err)
-+		return err;
- 	data->controller.ops = &ts72xx_nand_ops;
- 	data->chip.controller = &data->controller;
- 
-@@ -175,10 +182,17 @@ static int ts72xx_nand_probe(struct platform_device *pdev)
- 	if (err)
- 		goto err_handle_put;
- 
--	err = mtd_device_parse_register(mtd, NULL, NULL, NULL, 0);
-+	err = nand_set_release(&data->chip, NULL);
- 	if (err)
- 		goto err_clean_nand;
-+	err = mtd_device_parse_register(mtd, NULL, NULL, NULL, 0);
-+	if (err) {
-+		nand_disconnect(&data->chip);
+-	ret = mtd_device_register(mtd, NULL, 0);
++	ret = nand_set_release(chip, NULL);
+ 	if (ret)
+ 		goto err_nand_cleanup;
++	ret = mtd_device_register(mtd, NULL, 0);
++	if (ret) {
++		nand_disconnect(chip);
 +		mtd_put_master(mtd);
-+		goto err_handle_put;
++		goto err_out;
 +	}
- 
-+	fwnode_handle_put(child);
  	return 0;
  
- err_clean_nand:
-@@ -191,14 +205,13 @@ static int ts72xx_nand_probe(struct platform_device *pdev)
- static void ts72xx_nand_remove(struct platform_device *pdev)
+ err_nand_cleanup:
+@@ -2782,14 +2787,22 @@ static const struct of_device_id gpmi_nand_id_table[] = {
+ };
+ MODULE_DEVICE_TABLE(of, gpmi_nand_id_table);
+ 
++static void gpmi_nand_release(struct nand_controller *controller)
++{
++	kfree(container_of(controller, struct gpmi_nand_data, base));
++}
++
+ static int gpmi_nand_probe(struct platform_device *pdev)
  {
- 	struct ts72xx_nand_data *data = platform_get_drvdata(pdev);
--	struct fwnode_handle *fwnode = dev_fwnode(&pdev->dev);
- 	struct nand_chip *chip = &data->chip;
+ 	struct gpmi_nand_data *this;
  	int ret;
+ 
+-	this = devm_kzalloc(&pdev->dev, sizeof(*this), GFP_KERNEL);
++	this = kzalloc_obj(*this);
+ 	if (!this)
+ 		return -ENOMEM;
++	ret = devm_nand_controller_init(&pdev->dev, &this->base, gpmi_nand_release);
++	if (ret)
++		return ret;
+ 
+ 	this->devdata = of_device_get_match_data(&pdev->dev);
+ 	platform_set_drvdata(pdev, this);
+@@ -2838,7 +2851,7 @@ static void gpmi_nand_remove(struct platform_device *pdev)
  
  	ret = mtd_device_unregister(nand_to_mtd(chip));
  	WARN_ON(ret);
 -	nand_cleanup(chip);
--	fwnode_handle_put(fwnode);
 +	nand_disconnect(chip);
+ 	gpmi_free_dma_buffer(this);
+ 	release_resources(this);
+ 	pm_runtime_dont_use_autosuspend(&pdev->dev);
+@@ -2846,6 +2859,7 @@ static void gpmi_nand_remove(struct platform_device *pdev)
+ #ifndef CONFIG_PM
+ 	gpmi_disable_clk(this);
+ #endif
 +	mtd_put_master(nand_to_mtd(chip));
  }
  
- static const struct of_device_id ts72xx_id_table[] = {
+ static int gpmi_pm_suspend(struct device *dev)
 
 -- 
 2.53.0
