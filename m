@@ -2,127 +2,83 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79B27606A321
-	for <linux-mtd@archiver.kernel.org>; Wed, 11 Nov 2026 10:13:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC1E5606A334
+	for <linux-mtd@archiver.kernel.org>; Wed, 11 Nov 2026 11:56:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=bKch15BN
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=1IU9zUjO;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=microchip.com header.i=@microchip.com header.a=rsa-sha256 header.s=mchp header.b=oiYou3WK
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
 	List-Unsubscribe-Post:List-Owner;
-	bh=fU7JAtnQiXNP2xZarYK4nHvlV6pn6KKXhLhX+mqtAYE=; b=bKch15BNj6v2+8exltT1oibxqS
-	utK7jgTozZsjlc3NcaWoZTblBSffJXij8by4h03ow2WGPh0Xntpzf29bVQGHmpT8VKT+hFALH8tPS
-	VGPiFLlfPI9+xGj2Z4OzVk1v8KEIdgs6Du4QL+LpC62i/I0RbRIBHH6m9RRJQqZj9uSirLHCy+Mcs
-	nWS0ALY+AUB09kzkPPK7EOZlZu/gah7+Fy16PVqzszmzO9xP5MvN5FOle6B3NGmbbY/GDOu+504Q8
-	Az0z/C438iAnlHAiuu7/QKJiETlShfmDN9+/jobE7oWqQe92sJYLmbkGgUFB9fevO3V8hOEuUHcBN
-	ou4u7iLQ==;
+	bh=VzIs3DgKbJ3y1F/HNAemm5mlMuWgbjS5pIRzfZC0hRc=; b=1IU9zUjOU4PGdzACS5TZPwGmgL
+	nUKAqYBKnDejaSbAUP5YH1+/InvG4SASWqKtTD47yAbVAoC2HJOlSTACyLSQqBtr46yBeNYFGSiFp
+	CBT6LR7iU2UG7Z9BIb+rl5qV8S+z+aHOHLkB4sDXI6ZLXRZ280Zp8tto+ZEs7LpcwXI0B9czjUWie
+	6sHAhgjaVbQRb95vZpEC079IOtFubzmHeepPtvb+bU1LnO7TRU9Lu4QRS1x8SWJk4eOg28CQZzmPd
+	ixHoj5LrQKz7DtADEwSbuYb7j7qqE2OqGEHuLzunFBYVDnAuVyYxxvFylsibNX33tsGXqddDGuK/z
+	Fs1pz3ww==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xR5KW-00000006JgO-3iOM;
-	Wed, 11 Nov 2026 10:13:24 +0000
-Received: from mail-sh0chn02on20731.outbound.protection.partner.outlook.cn ([2406:e500:4420:2::731] helo=CHN02-SH0-obe.outbound.protection.partner.outlook.cn)
+	id 1xR6vo-00000006ZIM-3aSs;
+	Wed, 11 Nov 2026 11:56:00 +0000
+Received: from esa.microchip.iphmx.com ([68.232.154.123])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xR5KT-00000006JaP-464j
-	for linux-mtd@lists.infradead.org;
-	Wed, 11 Nov 2026 10:13:23 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lazDVRKtoctY7vwUb3CTgGCxo7wxecMnUrULex2dwBnhTIkpngSTu2Lf0nFNPSyuwB2OXM81iTOMx0mrXyIbdRw5Bfylvi4bxnc1pUTPaJF3HTCTo7mpKC8blYg5Bniu2VoEDU79sPcehGLK1JN8L4BF6CvOM/5sVh0UYW+shppGmdvFd4I+MdYtwNDGYQYyy5RksIcLq+2G6UrbCOqbppi4lr4/ZkMakjnrabtP36aOQq5j9O0a8mR9RoIDt/nrbOA3p50s9HwOvxS95dHzRvtgUTxv8CxV+5vWE8Dwl+HBRv5AHQGpGCJy4nd+PPzPYq3Bw4dMktkaKgxI/Fxj4A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=F3Wl4ggiA/v1GWi0qXZ3pXFmpZmCK3BVVL8gezk4XD0=;
- b=SWxITlagwcpxyce1Q1Gn2DTJLmKfpksvhuSziLTsfLr4NIsxAdZRVLfmR4EjjnH9+dkFcTbtZwIQi26VY2gVTfX10/33YflzJYaWq6NOCPluqzMgnFtXWhybzWRlNvSy4f3L5cHP0Su//wLRkOzmZ1wsoGar0V5TUw/fwfB3w04LlptocvWW45CR/LLGY9LqZUP50eMGqPYAUiP6VVTggp5rcSyQxe6+m9d1H0haSjxR9yJeGsJn5eT0psJQCMcaQ5kBqQxabVzseSYJ/x3DplF4Chlk0Ja8k/Smi15Vm9Gx4CVzKgBdxQKrTjKeMQyWdjqIkPyFudqLuZYslnG7AA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=starfivetech.com; dmarc=pass action=none
- header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
-Authentication-Results: mx.microsoft.com 1; dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=starfivetech.com;
-Received: from ZQ4PR01MB1202.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c550:17::6) by ZQ4PR01MB1218.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c550:17::13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.615.8; Wed, 11 Nov
- 2026 10:12:56 +0000
-Received: from ZQ4PR01MB1202.CHNPR01.prod.partner.outlook.cn
- ([fe80::e7d4:256c:b066:850d]) by
- ZQ4PR01MB1202.CHNPR01.prod.partner.outlook.cn ([fe80::e7d4:256c:b066:850d%4])
- with mapi id 15.21.0615.008; Wed, 11 Nov 2026 10:12:56 +0000
-From: Changhuang Liang <changhuang.liang@starfivetech.com>
-To: Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <mwalle@kernel.org>,
-	Takahiro Kuwano <takahiro.kuwano@infineon.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	Changhuang Liang <changhuang.liang@starfivetech.com>
-Subject: [PATCH v1 3/3] mtd: spi-nor: macronix: Add 1-4-4 DTR read support for MX66L1G45G
-Date: Wed, 11 Nov 2026 02:12:40 -0800
-Message-Id: <20261111101240.7378-4-changhuang.liang@starfivetech.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20261111101240.7378-1-changhuang.liang@starfivetech.com>
-References: <20261111101240.7378-1-changhuang.liang@starfivetech.com>
-X-ClientProxiedBy: NT0PR01CA0017.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c510::6) To ZQ4PR01MB1202.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c550:17::6)
+	id 1xR6vm-00000006ZHm-10gg;
+	Wed, 11 Nov 2026 11:56:00 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1794398158; x=1825934158;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=iAo/MtDhNKHmBSnZPURm1ePfYky+B/A+M0UcnkNs04Y=;
+  b=oiYou3WKbRfiEy0NpgYtJWYYQH2hpQfxLTVtl8MmpfamfzBPtMI0fjKj
+   4VIu/Gj/AuEGOBXffcZdpuIurcVRXDr3DtanIicsoKob0VpukoklYcAXl
+   OzKN4CJGB1Kf2btDPBvQhrixQ8Wqe8ZtcMr+7FtjQbzxBefdIdd5kC0AC
+   PpKDa+ETBrKd8pdYqZUMiTKYvEpPvbiQUWZClzWAfGR7Dxx/z2nSpNcXV
+   EUqOGE+/CiO3Mr/AsSp1p4UAFW8fCKIBlgamFGbmo/9YcFEmv1A/0m9mN
+   NQs6dSzrP+/OP/tQD+ZeZbrI/5SMju1gc2oT95Q40COFxvMV4Lmaeaml4
+   A==;
+X-CSE-ConnectionGUID: LYG/GoI+QpaP1PxmQQ3/0A==
+X-CSE-MsgGUID: /ghRVTySTreVrSckWNpD8Q==
+X-IronPort-AV: E=Sophos;i="6.27,207,1787036400"; 
+   d="scan'208";a="65385184"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2026 04:55:56 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
+ chn-vm-ex1.mchp-main.com (10.10.87.30) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.2562.56; Wed, 11 Nov 2026 04:55:55 -0700
+Received: from che-ll-i67131.microchip.com (10.10.85.11) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.2507.58 via Frontend Transport; Wed, 11 Nov 2026 04:55:46 -0700
+From: Manikandan Muralidharan <manikandan.m@microchip.com>
+To: <pratyush@kernel.org>, <mwalle@kernel.org>,
+	<takahiro.kuwano@infineon.com>, <miquel.raynal@bootlin.com>,
+	<richard@nod.at>, <vigneshr@ti.com>, <robh@kernel.org>, <krzk+dt@kernel.org>,
+	<conor+dt@kernel.org>, <srini@kernel.org>, <nicolas.ferre@microchip.com>,
+	<alexandre.belloni@bootlin.com>, <claudiu.beznea@tuxon.dev>,
+	<linux@armlinux.org.uk>, <richardcochran@gmail.com>, <arnd@arndb.de>,
+	<linusw@kernel.org>, <enelsonmoore@gmail.com>, <aaro.koskinen@iki.fi>,
+	<pengpeng@iscas.ac.cn>, <mathieu.dubois-briand@bootlin.com>,
+	<gregkh@linuxfoundation.org>, <michael@walle.cc>,
+	<linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<netdev@vger.kernel.org>
+CC: <manikandan.m@microchip.com>
+Subject: [PATCH v10 0/8] Read MAC address from SST vendor specific SFDP region
+Date: Wed, 11 Nov 2026 17:25:32 +0530
+Message-ID: <cover.1794391660.git.manikandan.m@microchip.com>
+X-Mailer: git-send-email 2.43.0
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: ZQ4PR01MB1202:EE_|ZQ4PR01MB1218:EE_
-X-MS-Office365-Filtering-Correlation-Id: f71c1fb4-a40c-4664-7671-08df3fdc5ac2
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;ARA:13230040|52116014|376014|23010399003|366016|1800799024|38350700014|10067099003|261026121527099003|261021121427099003|261026140227099003|261022075727099003|261021123027099003|261102123227099003|261028144727099003|56012099006|261022105027099003|261009223027099003|261009220027099003|261009221727099003|261009221227099003|261009223327099003|22082099003|18002099003|6133799003|3023799007;
-X-Microsoft-Antispam-Message-Info: kCn39l9oxHZCJDri3kpz/IKENwPVzDfmXb1jPirl/J9AvncU8uNV2MUqeRKu5ig1qRyaEgLhZm58zXIrRk/52Re2ByCGFRL7oiAM5GUi4ey58/n+vVm1z+LOQgpqS73VgbGPl6IBZTkBY+kkfpLKxxho3cR4nu9gEa0qIPyFFlZy50+OQRQI79LaWqngfvJl5FeKGfPg5yyb8EEPinrKWjmmaaNtQhXnWNkbX2ApRLQLgnuLb80vpGcnFSOeu/QRaaTHRyVjE6GTKxCkfMYm/57bIqPVFTvvNQ79TQbOyXE+0ygdrnGaLxuKy8Huzuy8ThW1dN1bJvZu6ZGRQKA7pmexlX/DWBWX2C827MWmKSnZrcjK+iYkMJv+pCsbozDpVoFhjEHOXpiW6C0COMnu79li8s0oVyhM99sNg16iAkIhc1hH11WWrOq4eVSSRDPtzTDXiSMVoBliEmftSUuE0oiATt5dIoLVbnQoQwXvF4aJ9X8PfR4ou5qXBA0sgp6WSkT2C+xf2WIiKH0txSfiLZaCxjRIVN3i8YHCd2Hc1ezOPJZ72HEbOLNGgi4JkPMf
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:ZQ4PR01MB1202.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230040)(52116014)(376014)(23010399003)(366016)(1800799024)(38350700014)(10067099003)(261026121527099003)(261021121427099003)(261026140227099003)(261022075727099003)(261021123027099003)(261102123227099003)(261028144727099003)(56012099006)(261022105027099003)(261009223027099003)(261009220027099003)(261009221727099003)(261009221227099003)(261009223327099003)(22082099003)(18002099003)(6133799003)(3023799007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?F7eIG3nEv6SzMSdUDzBGRLzMfuymQnB/0ogNewDfjPuiz0Oo7N/UZDThjD/N?=
- =?us-ascii?Q?0+80nnSV8Ccd3ecgdm1qUuS2Tf8mgOUUX8lpWr+HCrhSDXbsYJC7nscNbWPf?=
- =?us-ascii?Q?GjUQmkFg83YRcb0A+wnkOZ8mB7sHNGhKZeguF/NFu4fHcxXDbGRcNcqpWbZf?=
- =?us-ascii?Q?r6NUW4OuT/NhGRwfs/YoICYmnvg8zO65Y3Oti19ME0iKdd46STLLTI4FYfQR?=
- =?us-ascii?Q?UQBd9SBt1QCSScBpv6etoo+8FHS2awn5NKpiPbnwc/NX5shXHsMIJeJiiQH0?=
- =?us-ascii?Q?ocQovDCOGdpdE9KB8z60jnNZ67TmGllo1Rih3M3sfolnT84vfe25DyVddfq4?=
- =?us-ascii?Q?iOZfi4EgBNLF2IXoqd9df+QQxeU6NgQG0wlLACJT8ICLLg2TBcLuRPKCp+kv?=
- =?us-ascii?Q?KnpF9ZRAC8yuQKZafvXR9Rmg59N9O+BWqak9Us962VI6lYu0AyiG2xoqW1zZ?=
- =?us-ascii?Q?zCJgnEa155WjRIUStgRIjEMzQd2ay9+Dob9IZ0G0Av+Runnay50G8RaXKdbX?=
- =?us-ascii?Q?W2o6us77lpVTXdF5u12vojhBfnW5y3KbJdtD3CK/3GOgaArJVLbDuJgYlSbc?=
- =?us-ascii?Q?yB3sxx2EOdsFpqCpzZdhLWjQuSVjX3HQDQAhhIjGSLbmDmC75K+NtBvNrRJ3?=
- =?us-ascii?Q?/dJf4pDToG7XJWCRUGlTzm9zCIPSV2o4dEZwNJCrhT6n9KInQjVSHkF36/K1?=
- =?us-ascii?Q?ioZfL9BCYo20PKRRDLreQpSHUk379CozyrO98yhgUtEiLHHkfF1qTcYdiy3d?=
- =?us-ascii?Q?Z3tQTcvS3svsG5MtceJZ5Osr793etrJr6xz0VMqtxy9da4/3q1Yb1E/uHWZ4?=
- =?us-ascii?Q?ZDk617gFezl8zHhexkVmiTHdNvqO/9wf0tUEGnJ1h/MxUSreuiqgzivHE5Mz?=
- =?us-ascii?Q?XXbNt5olI+3Auva1sW3J3fGqUH1sftdeU4EzXuwZWKLC5kEg1WPnP/dIAaG0?=
- =?us-ascii?Q?YCfFXQDV0guAEbm+KWpxDScIG3FcfxistXzb/8r59Uf6GoMXd18Unf+JIB2Z?=
- =?us-ascii?Q?kQjScYs3thBajQ3sbLFyFOAbBGJnSCu/tgGVA0Wjjbxm9NEmfkBrxqBdK3/E?=
- =?us-ascii?Q?C4HqthoQgc8zCPvVGWMCxP0KcZUKlaw0v7KA2Nwi2AVS0/hpxpIVfFDANaq+?=
- =?us-ascii?Q?9+kPVR7Wd1o7cn/WCcRH/fhVdpt3VyaoNAlqW2MsPO74BRyz1zpiQNJRjwzP?=
- =?us-ascii?Q?47rvdjXcuC00RCCOvwmdBPmjEWV2Ax930KceYtEW2mdvBCkuq/fWzv2CdHGL?=
- =?us-ascii?Q?xsqj8MJ2EloNxRHx2fOgJYOwHJ7FmiWsJDjbsx2OBHzZEpxl54WEzPt2+bLD?=
- =?us-ascii?Q?7g7fa0Z5r+CNUb704nU1UMuWk8RKD85DVrM/8EkExJ+131RcuEJkVfvkhZTY?=
- =?us-ascii?Q?FaYwvyGB9iMtIOpzoIHtw5eUNITtZ1UNQ6AJ9He9jreFAVq8b0Of1m+VdHCM?=
- =?us-ascii?Q?q0usZbXpaH1X6Pe2gZtGQ8iYQ/bXdIQcdSFM6aiZ6YmwKYQZa9h4V9D/xZME?=
- =?us-ascii?Q?DkLME/KEMh+LXmHNSOXLFD/LPJFBEzUOPM5S3dLObPdNlfQZN6eVc7yjDie1?=
- =?us-ascii?Q?M6y9KBvhwZnIffKGdxd3UQHvK7pRCGY64f0FnLQ4UhKHFS/kEcPtIWuqa+af?=
- =?us-ascii?Q?esYpWgRKDHnMQMdsOS0xUqRPqdJby2IOSB52faD/ekqgv1QKnY4SIQIpNJWH?=
- =?us-ascii?Q?7OfJF1umvikHcYLddMHLMrcAJSw66rQ3XDZ5k9gl/BsbV8vmpXCOUjBf7ane?=
- =?us-ascii?Q?7FuXF6AoxqpqeCP8yAkgPsgty3B4ivfKTHfJAdsEEzg1Q6FvRVqy?=
-X-OriginatorOrg: starfivetech.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f71c1fb4-a40c-4664-7671-08df3fdc5ac2
-X-MS-Exchange-CrossTenant-AuthSource: ZQ4PR01MB1202.CHNPR01.prod.partner.outlook.cn
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Nov 2026 10:12:55.9538
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: PZRj40PFe2EDO110M9Wjx84nzkzmg522FE2cg65vLCPmwcYL94mcPqK4KA7QbP3fHC549cN6jeJYzo+pNUnp7cShDQyVkLH5Jg4h380hteNEbP2z6m/0HDYuYtzAfTcR
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: ZQ4PR01MB1218
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261111_021322_194195_39A79B95 
-X-CRM114-Status: GOOD (  17.82  )
-X-Spam-Score: -1.9 (-)
+X-CRM114-CacheID: sfid-20261111_035558_561383_F78F5AD0 
+X-CRM114-Status: GOOD (  21.20  )
+X-Spam-Score: -4.4 (----)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -142,216 +98,133 @@ X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-The MX66L1G45G supports the 1-4-4 DTR read mode. This flash uses 6
-dummy cycles by default in 1-4-4 DTR mode.
+Some Microchip/SST QSPI flashes (e.g. the SST26VF064BEUI) are factory
+programmed with globally unique, write-protected EUI-48 and EUI-64
+identifiers stored in a vendor-specific SFDP parameter table. On boards
+that have no on-board EEPROM (sama5d27_wlsom1, sama5d29 curiosity,
+sam9x75 curiosity) this is a reliable source for an Ethernet MAC address,
+instead of relying on a U-Boot-provided or random address.
 
-For 1S-4D-4D, its support bit is located in the 21st DWORD of the
-BFPT table, while the dummy cycles are described in the 23rd DWORD.
-Unfortunately, the BFPT of this flash model only provides 16 DWORDs,
-and the kernel's SFDP parser does not derive any
-SNOR_HWCAPS_READ_1_4_4_DTR capability from the BFPT table.
+The series exposes the SFDP as a generic NVMEM framework with no vendor
+code in the SPI NOR core:
+ - The SPI NOR core exposes the entire SFDP as a generic read-only NVMEM
+   device, rooted at a new "sfdp" child node of the flash.
+ - A new NVMEM layout driver (drivers/nvmem/layouts/) locates the
+   Microchip vendor parameter table at runtime and presents the EUI-48 as
+   a "mac-address" cell.
+ - Arbitrary parameters can be read with a standard fixed-layout
+   (known offset) or with an nvmem-layout parser (location discovered at runtime).
 
-Since this information is expected to be in the BFPT, add a post_bfpt
-fixup which declares the 1-4-4 DTR read capability with the default 6
-dummy cycles and the 3-byte address opcode (0xED).
+Changes in v10:
+ - Rebased on v7.4-rc1 merge window.
+ - 3/8 - Rebased on the nvmem SRCU rework; of_node_put() moves into the
+         reworked nvmem_release(). No functional change.
+ - 4/8 - Commit message wording only;
+ - 5/8 - Drop the read_post_process() callback: the EUI-48 is already
+         stored in canonical MAC order (24-bit OUI followed by the 24-bit
+         extension identifier), so the cell is exposed as-is.
+Changes in v9:
+ - 3/8 - Add Reviewed-by: Miquel Raynal, Reviewed-by: Michael Walle.
+ - 4/8 - Add Reviewed-by: Miquel Raynal, Reviewed-by: Michael Walle.
+         Drop the early return after of_get_compatible_child(). Updated the
+		 comments and commit message to match.
+ - 5/8 - Move the Makefile entry for sst26vf-sfdp-eui.o to the end.
+         Move the ETH_ALEN check to the top of sfdp_eui_read_post_process()
+		 and bail out early.
+		 Compute nph as hdr.nph+1 and loop for the 0-based parameter-header count.
+         Cosmetic fixes.
 
-The SFDP of this part provides a 4BAIT table, which also advertises
-the 4-byte 1-4-4 DTR opcode (0xEE). As the capability is now set
-before the 4BAIT table is parsed, the 4BAIT parser keeps it and
-converts the opcode to its 4-byte variant, like it does for the other
-read commands.
+Changes in v8:
+ - New 3/8 - nvmem: core: take a reference on dev.of_node in
+             nvmem_register(). v7's 3/8 (now 4/8) called of_node_put() right
+			 after devm_nvmem_register(), which left nvmem->dev.of_node backed by
+			 no reference at all once the caller's own reference was dropped.
+			 Fixing it at the nvmem_register() by taking  its own of_node_get()
+			 when assigning nvmem->dev.of_node and released in nvmem_release().
+ - 6/8 - drop the #address-cells/#size-cells from the qspi1_flash node.
 
-Add a dedicated fixup for the part (SNOR_ID 0xc2, 0x20, 0x1b) that
-keeps the existing QPP 4-byte post-SFDP fixup and additionally
-advertises the 1-4-4 DTR read capability in post_bfpt.
+Changes in v7:
+ - 1/7 - Add blank lines in the "sfdp" schema per review;
+ 		 Add Reviewed-by: Rob Herring.
+ - 2/7 - Add Reviewed-by: Rob Herring.
+ - 3/7 - Drop the spi_nor_sfdp_nvmem_put_np() helper and
+ 		 call of_node_put() right after devm_nvmem_register().
+ - 6/7 - Note in the commit message that the sama5d27_wlsom1 SoM ships the
+         factory-programmed SST26VF064BEUI, so the EUI-48 "mac-address"
+         cell is always present.
 
-Signed-off-by: Changhuang Liang <changhuang.liang@starfivetech.com>
-Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
+Changes in v6:
+ - 3/7 - Move the SFDP NVMEM registration from sfdp.c into core.c, since
+         sfdp.c is only for parsing the tables;use of_get_compatible_child()
+		 instead of the open-coded child-node lookup.
+ - 2/7, 6/7, 7/7 - Add Reviewed-by: Linus Walleij.
 
-Logs for MX66L1G45G:
-********************
+Changes in v5:
+ - 1/7 and 5/7 - Add R-b tags
+ - 3/7- Rework the comments, function name and commit message.Check all the nodes
+        (for_each_available_child) for the right compatible "jedec,sfdp" instead
+		of node name.
 
-+ cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
-c2201b
-+ cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
-macronix
-+ xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-53464450060102ff00060110300000ffc2000104100100ff84000102c000
-00ffffffffffffffffffffffffffffffffffe520fbffffffff3f44eb086b
-083b04bbfeffffffffff00ffffff44eb0c200f5210d800ffd649c50085df
-04e34403673830b030b0f7bdd55c4a9e29fff050f985ffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffff7fefffff215cdcffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffff003600279df9c06485cbffffffffffff
-+ sha256sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-bec91ac20c9f7c63a00992fd2f779f8c5378d8f9afc699a2c741be5bdf268e35  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-+ cat /sys/kernel/debug/spi-nor/spi0.0/capabilities
-Supported read modes by the flash
- 1S-1S-1S
-  opcode        0x13
-  mode cycles   0
-  dummy cycles  0
- 1S-1S-2S
-  opcode        0x3c
-  mode cycles   0
-  dummy cycles  8
- 1S-2S-2S
-  opcode        0xbc
-  mode cycles   0
-  dummy cycles  4
- 1S-1S-4S
-  opcode        0x6c
-  mode cycles   0
-  dummy cycles  8
- 1S-4S-4S
-  opcode        0xec
-  mode cycles   2
-  dummy cycles  4
- 4S-4S-4S
-  opcode        0xec
-  mode cycles   2
-  dummy cycles  4
- 1S-4D-4D
-  opcode        0xee
-  mode cycles   0
-  dummy cycles  6
+Changes in v4:
+ - Rework per v3 review: remove the vendor-specific SFDP handling from the
+   SPI NOR core; expose the whole SFDP as a generic read-only NVMEM device
+   and move the EUI extraction into an nvmem-layout driver.
+ - Introduce a new nvmem-layout driver to discover the vendor-table location
+   at runtime; no offset hardcoded in the device tree.
+ - Describe the SFDP via a dedicated "sfdp" subnode (compatible
+   "jedec,sfdp"), which also resolves the v3 dtbs_check "Unevaluated
+   properties ('nvmem-layout')" warning.
+ - Reverse the stored EUI bytes into canonical MAC order.
+ - Enable the layout in sama5_defconfig.
 
-Supported page program modes by the flash
- 1S-1S-1S
-  opcode        0x12
- 1S-1S-4S
-  opcode        0x34
- 1S-4S-4S
-  opcode        0x3e
- 1S-1S-8S
-  opcode        0x84
- 1S-8S-8S
-  opcode        0x8e
-+ cat /sys/kernel/debug/spi-nor/spi0.0/params
-name            (null)
-id              c2 20 1b c2 20 1b
-size            128 MiB
-write size      1
-page size       256
-address nbytes  4
-flags           4B_OPCODES | HAS_4BAIT | SOFT_RESET
+Changes in v3:
+ - 2/3 - add support to update the QSPI partition into 'fixed-partition'
+   binding in sama5d27_wlsom1
+ - 3/3 - add nvmem-layout in qspi node for EUI48 MAC Address and nvmem cell
+   properties for macb node in sama5d27_wlsom1
 
-opcodes
- read           0xee
-  dummy cycles  6
- erase          0x21
- program        0x3e
- SR1 read       0x05
- SR1 write      0x01
- QE             SR1 bit 6
- 8D extension   none
+Changes in v2:
+ - 1/3 - parse the SST vendor table, read and store the addresses
+  into a resource - managed space. Register the addresses
+  into NVMEM framework
+ - 2/3 - add support to update the QSPI partition into 'fixed-partition'
+  binding
 
-protocols
- read           1S-4D-4D
- write          1S-4S-4S
- register       1S-1S-1S
+v9: https://lore.kernel.org/all/cover.1792145382.git.manikandan.m@microchip.com/
+v8: https://lore.kernel.org/all/cover.1790847519.git.manikandan.m@microchip.com/
 
-erase commands
- 21 (4.00 KiB) [1]
- 5c (32.0 KiB) [2]
- dc (64.0 KiB) [3]
- c7 (128 MiB)
+Manikandan Muralidharan (8):
+  dt-bindings: mtd: jedec,spi-nor: allow the SFDP to be exposed via
+    NVMEM
+  dt-bindings: nvmem: layouts: add Microchip/SST SFDP EUI layout
+  nvmem: core: take a reference on dev.of_node in nvmem_register()
+  mtd: spi-nor: sfdp: expose the SFDP as a read-only NVMEM device
+  nvmem: layouts: add Microchip/SST SFDP EUI layout driver
+  ARM: dts: microchip: sama5d27_wlsom1: use fixed-partitions for QSPI
+    flash
+  ARM: dts: microchip: sama5d27_wlsom1: read MAC address from QSPI SFDP
+  ARM: configs: sama5: enable Microchip/SST SFDP EUI NVMEM layout
 
-sector map
- region (in hex)   | erase mask | overlaid
- ------------------+------------+---------
- 00000000-07ffffff |     [ 1  ] | no
-+ mtd_debug erase /dev/mtd0 0 2097152
-Erased 2097152 bytes from address 0x00000000 in flash
-+ mtd_debug read /dev/mtd0 0 2097152 spi_read
-Copied 2097152 bytes from address 0x00000000 in flash to spi_read
-+ hexdump spi_read
-0000000 ffff ffff ffff ffff ffff ffff ffff ffff
-*
-0200000
-+ sha256sum spi_read
-4bda3a28f4ffe603c0ec1258c0034d65a1a0d35ab7bd523a834608adabf03cc5  spi_read
-+ dd 'if=/dev/urandom' 'of=./spi_test' 'bs=1M' 'count=2'
-2+0 records in
-2+0 records out
-+ mtd_debug write /dev/mtd0 0 2097152 spi_test
-Copied 2097152 bytes from spi_test to address 0x00000000 in flash
-+ mtd_debug read /dev/mtd0 0 2097152 spi_read
-Copied 2097152 bytes from address 0x00000000 in flash to spi_read
-+ sha256sum spi_read spi_test
-4e6069fe661b4f2ad8b96620641219cd9b34758e1b5d8585af867ff9ab4c349c  spi_read
-4e6069fe661b4f2ad8b96620641219cd9b34758e1b5d8585af867ff9ab4c349c  spi_test
-+ mtd_debug info /dev/mtd0
-mtd.type = MTD_NORFLASH
-mtd.flags = MTD_CAP_NORFLASH
-mtd.size = 134217728 (128M)
-mtd.erasesize = 4096 (4K)
-mtd.writesize = 1
-mtd.oobsize = 0
-regions = 0
----
- drivers/mtd/spi-nor/macronix.c | 28 +++++++++++++++++++++++++++-
- 1 file changed, 27 insertions(+), 1 deletion(-)
+ .../bindings/mtd/jedec,spi-nor.yaml           |  20 +++
+ .../layouts/microchip,sst26vf-sfdp-eui.yaml   |  60 +++++++
+ .../bindings/nvmem/layouts/nvmem-layout.yaml  |   1 +
+ MAINTAINERS                                   |   6 +
+ .../dts/microchip/at91-sama5d27_wlsom1.dtsi   |  63 ++++---
+ .../dts/microchip/at91-sama5d27_wlsom1_ek.dts |   2 +
+ arch/arm/configs/sama5_defconfig              |   1 +
+ drivers/mtd/spi-nor/core.c                    |  75 +++++++++
+ drivers/nvmem/core.c                          |   5 +-
+ drivers/nvmem/layouts/Kconfig                 |  10 ++
+ drivers/nvmem/layouts/Makefile                |   1 +
+ drivers/nvmem/layouts/sst26vf-sfdp-eui.c      | 158 ++++++++++++++++++
+ 12 files changed, 376 insertions(+), 26 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/nvmem/layouts/microchip,sst26vf-sfdp-eui.yaml
+ create mode 100644 drivers/nvmem/layouts/sst26vf-sfdp-eui.c
 
-diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-index b3fdb4b2fa1c..4ddddc7c175b 100644
---- a/drivers/mtd/spi-nor/macronix.c
-+++ b/drivers/mtd/spi-nor/macronix.c
-@@ -103,6 +103,27 @@ mx25l12805d_4pp3b_post_sfdp_fixups(struct spi_nor *nor)
- 	return 0;
- }
- 
-+static int
-+mx66l1g45g_post_bfpt_fixups(struct spi_nor *nor,
-+			    const struct sfdp_parameter_header *bfpt_header,
-+			    const struct sfdp_bfpt *bfpt)
-+{
-+	struct spi_nor_flash_parameter *params = nor->params;
-+
-+	/*
-+	 * MX66L1G45G supports 1S-4D-4D read, but its BFPT only provides 16
-+	 * DWORDs and lacks DWORD 21 and DWORD 23 which describe it. Declare
-+	 * it here with the 3-byte opcode, 4BAIT parsing converts it to the
-+	 * 4-byte variant.
-+	 */
-+	params->hwcaps.mask |= SNOR_HWCAPS_READ_1_4_4_DTR;
-+	spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_1_4_4_DTR],
-+				  0, 6, SPINOR_OP_READ_1_4_4_DTR,
-+				  SNOR_PROTO_1_4_4_DTR);
-+
-+	return 0;
-+}
-+
- static const struct spi_nor_fixups mx25l25635_fixups = {
- 	.post_bfpt = mx25l25635_post_bfpt_fixups,
- 	.post_sfdp = macronix_qpp4b_post_sfdp_fixups,
-@@ -120,6 +141,11 @@ static const struct spi_nor_fixups mx25l12805d_4pp3b_fixups = {
- 	.post_sfdp = mx25l12805d_4pp3b_post_sfdp_fixups,
- };
- 
-+static const struct spi_nor_fixups mx66l1g45g_fixups = {
-+	.post_bfpt = mx66l1g45g_post_bfpt_fixups,
-+	.post_sfdp = macronix_qpp4b_post_sfdp_fixups,
-+};
-+
- static const struct flash_info macronix_nor_parts[] = {
- 	{
- 		.id = SNOR_ID(0xc2, 0x20, 0x10),
-@@ -355,7 +381,7 @@ static const struct spi_nor_fixup macronix_fixups[] = {
- 	{ .id = SNOR_ID(0xc2, 0x20, 0x19), .fixups = &mx25l25635_fixups },
- 	{ .id = SNOR_ID(0xc2, 0x20, 0x1a), .fixups = &macronix_qpp4b_fixups,
- 	  .fixup_flags = SPI_NOR_4B_OPCODES },
--	{ .id = SNOR_ID(0xc2, 0x20, 0x1b), .fixups = &macronix_qpp4b_fixups },
-+	{ .id = SNOR_ID(0xc2, 0x20, 0x1b), .fixups = &mx66l1g45g_fixups },
- 	{ .id = SNOR_ID(0xc2, 0x20, 0x1c), .fixups = &macronix_qpp4b_fixups },
- 	{ .id = SNOR_ID(0xc2, 0x25, 0x3a), .fixups = &macronix_qpp4b_fixups },
- 	{ .id = SNOR_ID(0xc2, 0x25, 0x3b), .fixups = &macronix_qpp4b_fixups },
+
+base-commit: 05441d697f7f9a927264f4058cbbc6a03dfcac9d
 -- 
-2.25.1
+2.43.0
 
 
 ______________________________________________________
