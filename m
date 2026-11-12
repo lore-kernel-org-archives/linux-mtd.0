@@ -2,115 +2,60 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04985606A334
-	for <linux-mtd@archiver.kernel.org>; Thu, 12 Nov 2026 01:30:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2645D606A324
+	for <linux-mtd@archiver.kernel.org>; Thu, 12 Nov 2026 02:01:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=lzQ2A84Q;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.a=rsa-sha256 header.s=desiato.20200630 header.b=BD64O9jy;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=n8FjxxQv
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=AI1uib/8;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=EXkQ0AbY
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
-	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Reply-To:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:References:
+	In-Reply-To:Cc:To:Subject:From:Message-ID:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=gi+U/EO/Xex6l4GSrxnZuFmEP43Ew+dM1zqCWPiJ1fo=; b=lzQ2A84Qmh+pz4Ffc4c0YlcGFm
-	9l7qVtOhznBGp90JVSq29YMVXAqxGT3G8h3mAQYjl6VSe6pH9OxESCKMqzOCyBwaCfKCV1MeLQjsu
-	5AVyKI8CoUQto8/axwtpva6HErnzT/fyAvg9AYumNoki6yiGMrR3GQ79whbmQoNcC0wu/ct16UNVo
-	vEiR7cK8CgigH53EAV9kAcXGo2s/c2ekGC3kfUSkxj+LOg4NDE+VW9kcb7/DkULFSUmUbAKfG0q6w
-	9/nCwCUVrjDz4HB57259koUWT9CT7pd50OMkRxwqlJmC0M8HbaM9ZjJyC9RCyo17ThBp5rTE9smzC
-	uTDlczxA==;
+	bh=/XnsOJ6OIrZAiIrLnRIv5pnU0fUJ0ERplbSOvhBy2l0=; b=AI1uib/8WW3cEGcZ2dkyUXX3ew
+	kYw20t9C8Mw+Xb+d7LX+csRt39ne9YeZyOGgZAH6PdntZEoofMlAL0IUoBfGcQH/U1Vwr5Ypov43J
+	5tWRxQw4YNoZCTCudnvlrp+4Z9soWsmOeEe+d4skS1DibD/sPrKlg5oiP7XGmdL9Fm8m5cc50z9b5
+	OXhPgU16Mev8ytsNCu2roRlEvzf6hU//Cn155uaeDYH+ninfYLLrFtXv0y0IvW3xynLZ2oK+e1fVf
+	l+dif6E8SFgez+0SYlJYZWOLZ8yhcOvBzLCTTmQ+NICwfiD9Okra64f2E/nysA9ZYIl/Gk9VERyQ5
+	dADmT/jA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xRJe5-00000008Oiu-1of7;
-	Thu, 12 Nov 2026 01:30:33 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1xRK7c-00000008SxR-0fvz;
+	Thu, 12 Nov 2026 02:01:04 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xRJdL-00000008NBe-3Vuj
-	for linux-mtd@bombadil.infradead.org;
-	Thu, 12 Nov 2026 01:29:48 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Cc:To:In-Reply-To:References:
-	Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
-	From:Sender:Reply-To:Content-ID:Content-Description;
-	bh=oWUwJV+JlBCEZrihlkA2MkXrd5z9pouBqsCsn0XzyXE=; b=BD64O9jyWsZVmQV5XKTjvMoiud
-	StIrpKCPf4cD3r4v98Pm6pDSoCbdwcfu0n11eLFIiu7kqG5kVgGJPkCKBQveHl6CO67UwIDRQjKWA
-	HI9rOE/HkzKZCx0q23oY5l9DrQzN1f3hpxieiG6bQ2cQjbrUwVYqEF45QKLJqJwZKBlVjPNnmQ6DS
-	vO0hWf6Rs/AgB69KacHPFawEMQJ3+i9I5//sWmiVdAmpQF/ePkHaIjPBmEvyev9uMmwjrBTNVvKFW
-	0xwjZ7jj8F3yk24NEUwV2FNGIjslCbfgA6GRQF0Y40di36s+8Z7WvaMB28IqT3/b7GtPxswLaLUtc
-	ytPHvlcw==;
-Received: from mail-oi1-x235.google.com ([2607:f8b0:4864:20::235])
-	by desiato.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xRJd5-00000009mzB-1FRG
+	id 1xRK7Y-00000008Swo-1WPE
 	for linux-mtd@lists.infradead.org;
-	Thu, 12 Nov 2026 01:29:45 +0000
-Received: by mail-oi1-x235.google.com with SMTP id 5614622812f47-51f2e9e6987so276020b6e.1
-        for <linux-mtd@lists.infradead.org>; Wed, 11 Nov 2026 17:29:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794446969; x=1795051769; darn=lists.infradead.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :content-type:mime-version:subject:date:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=oWUwJV+JlBCEZrihlkA2MkXrd5z9pouBqsCsn0XzyXE=;
-        b=n8FjxxQvpBNmcbI2FDv4/HAYyiHwy9z3/1i5THGkHe88+4ErSxb8fkctgZWgYLa4Lw
-         cG0SBSzMEBKeaTbc/Sufs4mIkwX8DBopD+tO9sJj4YegC+UubKoSV6VvSGgOwwUj97Ow
-         UTa0G0yKWb7mic/U+c/4ZqKm/rdGJDLC6cMqBhgZiOkLT216bd0WvrBc4ZmUsV+/1YIb
-         AZcIpfItto+9B3NNYF90DcurT0wTkY0s6btd5+a2BBuNt11FNcZuhoMliMrWrzffBd+l
-         be8dvjj2GwquiXWjlXi9xmL5NZDb5X/w04RJg2unciU6z2xeDWZrnipG1S47RuTw5tRR
-         4IBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794446969; x=1795051769;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :content-type:mime-version:subject:date:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=oWUwJV+JlBCEZrihlkA2MkXrd5z9pouBqsCsn0XzyXE=;
-        b=chm0tQkQJMG4/YKja67L3FQ6dWnGQ3XFtpCMetdCv6CXsz3sYznxMxsxUfsvXzhW1Z
-         5btpfPp1XmocstcnQBW6IUYp7DP2RUxiWkEIUydza82r2ZYn7odoxvzAAzWzzavVUvNd
-         PdJzedRbQI4nwyPOSPNBTeG4YG4lBs6vij3kI2lUSmZxAkl3t+8TNK84El2tGO1dXFKK
-         NQYK2HzNkwbVN7/pLIfJFh/E5twcqHIy5uWoQCKpf4DSILC+ISwyvqG5mTyEJSs2XYZQ
-         r4W/2I0OZYYDwYbYyofcCLhEzRR2S5Dqk/bnd3TJx3sxFH9WYGWQIG66juDUuHm/GjEI
-         oVlA==
-X-Gm-Message-State: APuU4Z/2AwOiqFonMqr0rpb05cLPw9tdQyPeOZHxy833Hme8CId8+4Jh
-	rfOMYv5UTpsHRyXJD1GWP4swM9sidgBqlQucuwxJn7DyCRvwFUkcEqvU
-X-Gm-Gg: AYBFou1poprjGpdJtuI4E+7Awlt/l8rLdQMDfR5PoU1qrPdR9Ovo5s4mTs0Gz80KVw0
-	+QQO+E61MwnAPMzBNz5dj8V8/prIQnqmUqQoMuDKtmNO3gnIuxaRpFCD4LCJKwSTgyRUzGZvvDs
-	7SsjsLluJTVAQqphnPFjYnSkyPSuVV54ZWnKa7rQS5vNSbP907PQGI4rK/JuX9RvUwjS+IcvZii
-	/qB305Ug7AiyFhzCpzADpbjLx0m9MmAQrtQ44aYyhFP6qbqGHAVsGYiJvEATsumcXc+h4hiOWcx
-	GwbVRQUuvBF6tCmU2foCtFTZYCc00AU/+tZXTtdnko4o5gb2Xt106F9sYTAcIbZSSOQV+fITjZS
-	cw5Vyinhrq/c5bXyaPoY5lkR8Yw28l0UIV/nvsgCMEaawRZIXu3/aqw7XaX37Dm5uP6wXLTmo+k
-	IxVIpKC1lMpWxFJwF86LJ87XyAQfbzU0vJbTQRq6YcnN28+RPh1xTbUQGAYbnLEEyyt89B2xzFh
-	EfOqUUu2np7R6xtj20fts2qm1SpMmhufCOmHqW5M8IFyxKglMEnVkMtwv/ddeQWwbBst398yEAR
-	12WQEq5fbHyxCfa1QsyFyjAn7gXoHA6l7I816IwUwKq9O/FEWxom+Y2z+UlCprUjuubsGJyuoc9
-	REXEul3U7PkbZ4CcmAl++cfH9vhXMWgOojnmvknuCy+iXTuk+4Y3gQlGTQOjQLRpRg3iUj7cW5V
-	54j1w+ZtNlrTQUgyAGquHDrUdC8eJh3AZd2Dsc80hK9TTQdUOUaoJU
-X-Received: by 2002:a05:6808:11cb:b0:4a4:c95a:38d1 with SMTP id 5614622812f47-56cd547bd90mr885945b6e.4.1794446968745;
-        Wed, 11 Nov 2026 17:29:28 -0800 (PST)
-Received: from [127.0.1.1] (174-29-1-49.hlrn.qwest.net. [174.29.1.49])
-        by smtp.gmail.com with ESMTPSA id 5614622812f47-56905738049sm6823481b6e.10.2026.11.11.17.29.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2026 17:29:28 -0800 (PST)
-From: James Hilliard <james.hilliard1@gmail.com>
-Date: Wed, 11 Nov 2026 18:28:34 -0700
-Subject: [PATCH v3 55/58] mtd: rawnand: r852: retain chip state across
- removal
-X-Archived-By: <archiver.kernel.org>
-MIME-Version: 1.0
-Message-Id: <20261111-submit-rawnand-retained-handle-lifetime-v1-v3-55-ce537999741d@gmail.com>
+	Thu, 12 Nov 2026 02:01:01 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with ESMTP id 6A6EC6112D;
+	Thu, 12 Nov 2026 02:00:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B63FD1F00A05;
+	Thu, 12 Nov 2026 02:00:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1794448859;
+	bh=UKD8FlsTliJ660+VzZ7H9k5I73+s/a9i1vig+5XShSY=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=EXkQ0AbYLBJa4UOPtpGi3HUVz6GRXvRgFq3fAU8itriBwrnxxwLmM5flO2E8LC33I
+	 NVz6nEDdws4oxQ8VLJAC1zLDm9QWbm9fO3yQw5TuA95joigVG82/GCVKiq+OxmdMeE
+	 pfoN0cceTSzS65H0bRRNaYOmGjmPLUCCB7P42iIdoR50KUYwlXzvSVCBuRQRruuwnX
+	 iKpFS5I4AIawd1jeUa4RwMrydbVp73qBcaHMqPWrH9KdzXxbT+QZB4AfOMSklgvK0n
+	 3N3yMfz21nLfG3sF2yXvzllK6EF+8wGGdB5lLTmZiqGzdNTZ+6dQ7wRo71DA4kBqhV
+	 m11DhVGwQwMJg==
+Message-ID: <sashiko-outbox-210134@kernel.org>
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH v3 01/58] nvmem: disconnect provider callbacks before
+ unregister returns
+To: "James Hilliard" <james.hilliard1@gmail.com>, "Miquel Raynal" <miquel.raynal@bootlin.com>, "Richard
+ Weinberger" <richard@nod.at>, "Vignesh Raghavendra" <vigneshr@ti.com>
+Cc: linux-mtd@lists.infradead.org, "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>, "Srinivas
+ Kandagatla" <srini@kernel.org>, "Tze Yee Ng" <tze.yee.ng@altera.com>
+In-Reply-To: <20261111-submit-rawnand-retained-handle-lifetime-v1-v3-1-ce537999741d@gmail.com>
 References: <20261111-submit-rawnand-retained-handle-lifetime-v1-v3-0-ce537999741d@gmail.com>
-In-Reply-To: <20261111-submit-rawnand-retained-handle-lifetime-v1-v3-0-ce537999741d@gmail.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, 
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- James Hilliard <james.hilliard1@gmail.com>, 
- Maxim Levitsky <maximlevitsky@gmail.com>
-X-Mailer: b4 0.15.2
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261112_012942_883359_452FF266 
-X-CRM114-Status: GOOD (  26.60  )
-X-Spam-Score: 0.1 (/)
+ <20261111-submit-rawnand-retained-handle-lifetime-v1-v3-1-ce537999741d@gmail.com>
+Date: Thu, 12 Nov 2026 02:00:58 +0000
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -120,318 +65,220 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Reply-To: sashiko-reviews@lists.linux.dev
+X-Archived-By: <archiver.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,
-	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-8.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-A removed card can still have open MTD handles. Reinitializing the same
-nand_chip for a newly inserted card lets those handles access
-replacement media, while freeing it during PCI removal leaves dangling
-references.
-
-Allocate a fresh chip for every insertion and separate SmartMedia
-scanning from publication so lifetime ownership is installed first.
-Disconnect the old chip before disabling its hardware, and retain it and
-the controller until their final MTD reference is released. Stop
-IRQ-driven card-work scheduling before destroying the workqueue during
-PCI removal.
-
-Run NAND cleanup during disconnection; the final core-owned put only
-releases retained allocation and layout data.
-
-Cc: Maxim Levitsky <maximlevitsky@gmail.com>
-Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
----
- drivers/mtd/nand/raw/r852.c      | 103 +++++++++++++++++++++++----------------
- drivers/mtd/nand/raw/r852.h      |   1 +
- drivers/mtd/nand/raw/sm_common.c |  15 ++----
- drivers/mtd/nand/raw/sm_common.h |   2 +-
- 4 files changed, 65 insertions(+), 56 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/r852.c b/drivers/mtd/nand/raw/r852.c
-index 566662d45c2c..3c3161bc4b30 100644
---- a/drivers/mtd/nand/raw/r852.c
-+++ b/drivers/mtd/nand/raw/r852.c
-@@ -625,16 +625,29 @@ static void r852_update_media_status(struct r852_device *dev)
- 	spin_unlock_irqrestore(&dev->irqlock, flags);
- }
- 
--/*
-- * Register the nand device
-- * Called when the card is detected
-- */
-+/* Register a new chip instance for each inserted card. */
- static int r852_register_nand_device(struct r852_device *dev)
- {
--	struct mtd_info *mtd = nand_to_mtd(dev->chip);
-+	struct nand_chip *chip;
-+	struct mtd_info *mtd;
-+	int ret;
- 
- 	WARN_ON(dev->card_registered);
- 
-+	chip = kzalloc_obj(*chip);
-+	if (!chip)
-+		goto error1;
-+
-+	chip->legacy.cmd_ctrl = r852_cmdctl;
-+	chip->legacy.waitfunc = r852_wait;
-+	chip->legacy.dev_ready = r852_ready;
-+	chip->legacy.read_byte = r852_read_byte;
-+	chip->legacy.read_buf = r852_read_buf;
-+	chip->legacy.write_buf = r852_write_buf;
-+	chip->controller = &dev->controller;
-+	nand_set_controller_data(chip, dev);
-+	dev->chip = chip;
-+	mtd = nand_to_mtd(chip);
- 	mtd->parent_dev = &dev->pci_dev->dev;
- 
- 	if (dev->readonly)
-@@ -642,8 +655,17 @@ static int r852_register_nand_device(struct r852_device *dev)
- 
- 	r852_engine_enable(dev);
- 
--	if (sm_register_device(mtd, dev->sm))
--		goto error1;
-+	ret = sm_scan_device(mtd, dev->sm);
-+	if (ret)
-+		goto free_chip;
-+	ret = nand_set_lifetime(chip, chip);
-+	if (ret) {
-+		nand_cleanup(chip);
-+		goto free_chip;
-+	}
-+	ret = mtd_device_register(mtd, NULL, 0);
-+	if (ret)
-+		goto put_chip;
- 
- 	if (device_create_file(mtd->dev, &dev_attr_media_type)) {
- 		message("can't create media type sysfs attribute");
-@@ -653,8 +675,15 @@ static int r852_register_nand_device(struct r852_device *dev)
- 	dev->card_registered = 1;
- 	return 0;
- error3:
--	WARN_ON(mtd_device_unregister(nand_to_mtd(dev->chip)));
--	nand_cleanup(dev->chip);
-+	WARN_ON(mtd_device_unregister(mtd));
-+put_chip:
-+	nand_disconnect(chip);
-+	dev->chip = NULL;
-+	mtd_put_master(mtd);
-+	goto error1;
-+free_chip:
-+	dev->chip = NULL;
-+	kfree(chip);
- error1:
- 	/* Force card redetect */
- 	dev->card_detected = 0;
-@@ -667,16 +696,19 @@ static int r852_register_nand_device(struct r852_device *dev)
- 
- static void r852_unregister_nand_device(struct r852_device *dev)
- {
--	struct mtd_info *mtd = nand_to_mtd(dev->chip);
-+	struct mtd_info *mtd;
- 
- 	if (!dev->card_registered)
- 		return;
-+	mtd = nand_to_mtd(dev->chip);
- 
- 	device_remove_file(mtd->dev, &dev_attr_media_type);
- 	WARN_ON(mtd_device_unregister(mtd));
--	nand_cleanup(dev->chip);
-+	nand_disconnect(dev->chip);
- 	r852_engine_disable(dev);
-+	dev->chip = NULL;
- 	dev->card_registered = 0;
-+	mtd_put_master(mtd);
- }
- 
- /* Card state updater */
-@@ -734,7 +766,7 @@ static irqreturn_t r852_irq(int irq, void *data)
- 	card_status = r852_read_reg(dev, R852_CARD_IRQ_STA);
- 	r852_write_reg(dev, R852_CARD_IRQ_STA, card_status);
- 
--	if (card_status & (R852_CARD_IRQ_INSERT|R852_CARD_IRQ_REMOVE)) {
-+	if (card_status & (R852_CARD_IRQ_INSERT | R852_CARD_IRQ_REMOVE)) {
- 
- 		ret = IRQ_HANDLED;
- 		dev->card_detected = !!(card_status & R852_CARD_IRQ_INSERT);
-@@ -752,8 +784,10 @@ static irqreturn_t r852_irq(int irq, void *data)
- 
- 		/* let, card state to settle a bit, and then do the work */
- 		dev->card_unstable = 1;
--		queue_delayed_work(dev->card_workqueue,
--			&dev->card_detect_work, msecs_to_jiffies(100));
-+		if (!dev->removing)
-+			queue_delayed_work(dev->card_workqueue,
-+					   &dev->card_detect_work,
-+					   msecs_to_jiffies(100));
- 		goto out;
- 	}
- 
-@@ -844,7 +878,6 @@ static const struct nand_controller_ops r852_ops = {
- static int  r852_probe(struct pci_dev *pci_dev, const struct pci_device_id *id)
- {
- 	int error;
--	struct nand_chip *chip;
- 	struct r852_device *dev;
- 
- 	/* pci initialization */
-@@ -866,42 +899,27 @@ static int  r852_probe(struct pci_dev *pci_dev, const struct pci_device_id *id)
- 
- 	error = -ENOMEM;
- 
--	/* init nand chip, but register it only on card insert */
--	chip = kzalloc_obj(struct nand_chip);
--
--	if (!chip)
--		goto error4;
--
--	/* commands */
--	chip->legacy.cmd_ctrl = r852_cmdctl;
--	chip->legacy.waitfunc = r852_wait;
--	chip->legacy.dev_ready = r852_ready;
--
--	/* I/O */
--	chip->legacy.read_byte = r852_read_byte;
--	chip->legacy.read_buf = r852_read_buf;
--	chip->legacy.write_buf = r852_write_buf;
--
- 	/* init our device structure */
- 	dev = kzalloc_obj(struct r852_device);
- 
- 	if (!dev)
--		goto error5;
-+		goto error4;
-+	error = devm_nand_controller_init(&pci_dev->dev, &dev->controller, dev);
-+	if (error)
-+		goto error4;
- 
--	nand_set_controller_data(chip, dev);
--	dev->chip = chip;
- 	dev->pci_dev = pci_dev;
- 	pci_set_drvdata(pci_dev, dev);
- 
--	nand_controller_init(&dev->controller);
- 	dev->controller.ops = &r852_ops;
--	chip->controller = &dev->controller;
- 
- 	dev->bounce_buffer = dma_alloc_coherent(&pci_dev->dev, R852_DMA_LEN,
- 		&dev->phys_bounce_buffer, GFP_KERNEL);
- 
--	if (!dev->bounce_buffer)
-+	if (!dev->bounce_buffer) {
-+		error = -ENOMEM;
- 		goto error6;
-+	}
- 
- 
- 	error = -ENODEV;
-@@ -961,9 +979,6 @@ static int  r852_probe(struct pci_dev *pci_dev, const struct pci_device_id *id)
- 	dma_free_coherent(&pci_dev->dev, R852_DMA_LEN, dev->bounce_buffer,
- 			  dev->phys_bounce_buffer);
- error6:
--	kfree(dev);
--error5:
--	kfree(chip);
- error4:
- 	pci_release_regions(pci_dev);
- error3:
-@@ -976,6 +991,11 @@ static int  r852_probe(struct pci_dev *pci_dev, const struct pci_device_id *id)
- static void r852_remove(struct pci_dev *pci_dev)
- {
- 	struct r852_device *dev = pci_get_drvdata(pci_dev);
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&dev->irqlock, flags);
-+	dev->removing = true;
-+	spin_unlock_irqrestore(&dev->irqlock, flags);
- 
- 	/* Stop detect workqueue -
- 		we are going to unregister the device anyway*/
-@@ -995,9 +1015,6 @@ static void r852_remove(struct pci_dev *pci_dev)
- 	dma_free_coherent(&pci_dev->dev, R852_DMA_LEN, dev->bounce_buffer,
- 			  dev->phys_bounce_buffer);
- 
--	kfree(dev->chip);
--	kfree(dev);
--
- 	/* Shutdown the PCI device */
- 	pci_release_regions(pci_dev);
- 	pci_disable_device(pci_dev);
-diff --git a/drivers/mtd/nand/raw/r852.h b/drivers/mtd/nand/raw/r852.h
-index 96fe301d15da..a89ab61ea51e 100644
---- a/drivers/mtd/nand/raw/r852.h
-+++ b/drivers/mtd/nand/raw/r852.h
-@@ -128,6 +128,7 @@ struct r852_device {
- 	struct delayed_work card_detect_work;
- 	struct workqueue_struct *card_workqueue;
- 	int card_registered;		/* card registered with mtd */
-+	bool removing;			/* stop card work during PCI removal */
- 	int card_detected;		/* card detected in slot */
- 	int card_unstable;		/* whenever the card is inserted,
- 					   is not known yet */
-diff --git a/drivers/mtd/nand/raw/sm_common.c b/drivers/mtd/nand/raw/sm_common.c
-index e238784c8c3e..a79e3c3c77d1 100644
---- a/drivers/mtd/nand/raw/sm_common.c
-+++ b/drivers/mtd/nand/raw/sm_common.c
-@@ -182,28 +182,19 @@ static const struct nand_controller_ops sm_controller_ops = {
- 	.attach_chip = sm_attach_chip,
- };
- 
--int sm_register_device(struct mtd_info *mtd, int smartmedia)
-+int sm_scan_device(struct mtd_info *mtd, int smartmedia)
- {
- 	struct nand_chip *chip = mtd_to_nand(mtd);
- 	struct nand_flash_dev *flash_ids;
--	int ret;
- 
- 	chip->options |= NAND_SKIP_BBTSCAN;
- 
- 	/* Scan for card properties */
- 	chip->legacy.dummy_controller.ops = &sm_controller_ops;
- 	flash_ids = smartmedia ? nand_smartmedia_flash_ids : nand_xd_flash_ids;
--	ret = nand_scan_with_ids(chip, 1, flash_ids);
--	if (ret)
--		return ret;
--
--	ret = mtd_device_register(mtd, NULL, 0);
--	if (ret)
--		nand_cleanup(chip);
--
--	return ret;
-+	return nand_scan_with_ids(chip, 1, flash_ids);
- }
--EXPORT_SYMBOL_GPL(sm_register_device);
-+EXPORT_SYMBOL_GPL(sm_scan_device);
- 
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Maxim Levitsky <maximlevitsky@gmail.com>");
-diff --git a/drivers/mtd/nand/raw/sm_common.h b/drivers/mtd/nand/raw/sm_common.h
-index 57fc9f86f9ee..d8a330d6b730 100644
---- a/drivers/mtd/nand/raw/sm_common.h
-+++ b/drivers/mtd/nand/raw/sm_common.h
-@@ -33,7 +33,7 @@ struct sm_oob {
- #define SM_SMALL_OOB_SIZE	8
- 
- 
--int sm_register_device(struct mtd_info *mtd, int smartmedia);
-+int sm_scan_device(struct mtd_info *mtd, int smartmedia);
- 
- 
- static inline int sm_sector_valid(struct sm_oob *oob)
-
--- 
-2.53.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+VGhhbmsgeW91IGZvciB5b3VyIGNvbnRyaWJ1dGlvbiEgU2FzaGlrbyBBSSByZXZpZXcgZm91bmQg
+NSBwb3RlbnRpYWwKaXNzdWVzIHRvIGNvbnNpZGVyOgotIFtNZWRpdW1dIG52bWVtOiBudm1lbV9w
+b3B1bGF0ZV9zeXNmc19jZWxscygpIHNraXBzIGxheW91dCBjZWxscyBhbmQKICB0YWdzIHByb3Zp
+ZGVyIGNlbGxzCi0gW01lZGl1bV0gbnZtZW06IGxlYWtlZCBkZXZyZXMgYW5kIHN0YWxlIGNlbGxz
+X2dyb3VwIGluCiAgbnZtZW1fcG9wdWxhdGVfc3lzZnNfY2VsbHMoKQotIFtNZWRpdW1dIG52bWVt
+OiB1bnBhaXJlZCBOVk1FTV9SRU1PVkUgbm90aWZpZXIgZXZlbnQgb24KICBudm1lbV9yZWdpc3Rl
+cigpIGZhaWx1cmUKLSBbTWVkaXVtXSBudm1lbTogc3lzZnMgYmluX2F0dHJpYnV0ZSBVQUYgZHVy
+aW5nIGRldmljZV9kZWwoKSBpbgogIG52bWVtX3VucmVnaXN0ZXIoKQotIFtMb3ddIG52bWVtOiB1
+bnJlYWNoYWJsZSBkaXNjb25uZWN0ZWQgY2hlY2sgaW4gbnZtZW1fZGV2aWNlX21hdGNoKCkKLS0K
+CmNvbW1pdCA3ZTY2ODgzMWY4NGI4ZTY1MTM3ZTMxNTBhYjNhMjQxZDVkMjBjNzY1CkF1dGhvcjog
+SmFtZXMgSGlsbGlhcmQgPGphbWVzLmhpbGxpYXJkMUBnbWFpbC5jb20+Cgpudm1lbTogZGlzY29u
+bmVjdCBwcm92aWRlciBjYWxsYmFja3MgYmVmb3JlIHVucmVnaXN0ZXIgcmV0dXJucwoKVGhpcyBj
+b21taXQgZGlzY29ubmVjdHMgTlZNRU0gcHJvdmlkZXIgYW5kIGxheW91dCBjYWxsYmFja3MgdXNp
+bmcgU1JDVQp3aGVuIHVucmVnaXN0ZXJpbmcgYSBwcm92aWRlciBvciBsYXlvdXQsIGFuZCBhZGRz
+IHJlZmVyZW5jZSBjb3VudGluZyB0bwpzdHJ1Y3QgbnZtZW1fY2VsbF9lbnRyeSBzbyBjb25zdW1l
+cnMgY2FuIHNhZmVseSBvdXRsaXZlIHByb3ZpZGVyIHVuYmluZC4KCj4gZGlmZiAtLWdpdCBhL2Ry
+aXZlcnMvbnZtZW0vY29yZS5jIGIvZHJpdmVycy9udm1lbS9jb3JlLmMKPiBpbmRleCAwNTU2ZDE0
+MDE3MGE0Li44NTcxZDgyMTU5MWM5IDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbnZtZW0vY29yZS5j
+Cj4gKysrIGIvZHJpdmVycy9udm1lbS9jb3JlLmMKWyAuLi4gXQo+IEBAIC01MTEsOSArNTE2LDEw
+IEBAIHN0YXRpYyBpbnQgbnZtZW1fcG9wdWxhdGVfc3lzZnNfY2VsbHMoc3RydWN0IG52bWVtX2Rl
+dmljZSAqbnZtZW0pCj4gIAkJaSsrOwo+ICAJfQo+ICAKPiAtCWdyb3VwLmJpbl9hdHRycyA9IHBh
+dHRyczsKPiArCW52bWVtLT5jZWxsc19ncm91cC5uYW1lID0gImNlbGxzIjsKPiArCW52bWVtLT5j
+ZWxsc19ncm91cC5iaW5fYXR0cnMgPSBwYXR0cnM7Cj4gIAo+IC0JcmV0ID0gZGV2aWNlX2FkZF9n
+cm91cCgmbnZtZW0tPmRldiwgJmdyb3VwKTsKPiArCXJldCA9IGRldmljZV9hZGRfZ3JvdXAoJm52
+bWVtLT5kZXYsICZudm1lbS0+Y2VsbHNfZ3JvdXApOwo+ICAJaWYgKHJldCkKPiAgCQlyZXR1cm4g
+cmV0OwoKW1NldmVyaXR5OiBNZWRpdW1dCkRvZXMgYW4gZXJyb3IgaW4gbnZtZW1fcG9wdWxhdGVf
+c3lzZnNfY2VsbHMoKSBkdXJpbmcgbGF5b3V0IHJlZ2lzdHJhdGlvbgpsZWFrIHRoZSBkZXZyZXMg
+YWxsb2NhdGlvbnMgb24gbnZtZW0tPmRldiBhbmQgbGVhdmUgYSBzdGFsZQpudm1lbS0+Y2VsbHNf
+Z3JvdXAuYmluX2F0dHJzIHBvaW50ZXI/CgpwYXR0cnMsIGF0dHJzLCBhbmQgYXR0cnNbaV0uYXR0
+ci5uYW1lIGFyZSBhbGxvY2F0ZWQgd2l0aCBkZXZtX2tjYWxsb2MoKQphbmQgZGV2bV9rYXNwcmlu
+dGYoKSBvbiB0aGUgcGFyZW50ICZudm1lbS0+ZGV2LCBub3QgJmxheW91dC0+ZGV2LiAgSWYgb25l
+Cm9mIHRob3NlIGFsbG9jYXRpb25zIG9yIGRldmljZV9hZGRfZ3JvdXAoKSBmYWlscyAoZm9yIGV4
+YW1wbGUsIHdpdGgKLUVFWElTVCBvbiBhIGR1cGxpY2F0ZSBjZWxsIGF0dHJpYnV0ZSBuYW1lKSwg
+bnZtZW0tPnN5c2ZzX2NlbGxzX3BvcHVsYXRlZApyZW1haW5zIGZhbHNlLiAgV2hlbiBudm1lbV9s
+YXlvdXRfcmVnaXN0ZXIoKSB0aGVuIHVud2luZHMgdGhyb3VnaApudm1lbV9sYXlvdXRfdW5yZWdp
+c3RlcigpLCB0aGUgZGV2bV9rZnJlZSgpIGNsZWFudXAgaXMgc2tpcHBlZCBiZWNhdXNlCm52bWVt
+LT5zeXNmc19jZWxsc19wb3B1bGF0ZWQgaXMgZmFsc2UsIGxlYWtpbmcgdGhvc2UgYWxsb2NhdGlv
+bnMgYWNyb3NzCmxheW91dCBwcm9iZSByZXRyaWVzIGFuZCBsZWF2aW5nIG52bWVtLT5jZWxsc19n
+cm91cC5iaW5fYXR0cnMgcG9pbnRpbmcgdG8KYXR0cmlidXRlcyB3aG9zZSBwcml2YXRlIHBvaW50
+ZXJzIHJlZmVyZW5jZSBmcmVlZCBudm1lbV9jZWxsX2VudHJ5Cm9iamVjdHMuCgpbIC4uLiBdCgo+
+IEBAIC02NjMsNiArNjgyLDggQEAgaW50IG52bWVtX2FkZF9vbmVfY2VsbChzdHJ1Y3QgbnZtZW1f
+ZGV2aWNlICpudm1lbSwKPiAgCQlyZXR1cm4gcnZhbDsKPiAgCX0KPiAgCj4gKwlrcmVmX2luaXQo
+JmNlbGwtPnJlZmNudCk7Cj4gKwljZWxsLT5sYXlvdXQgPSBudm1lbS0+bGF5b3V0Owo+ICAJbnZt
+ZW1fY2VsbF9lbnRyeV9hZGQoY2VsbCk7Cj4gIAo+ICAJcmV0dXJuIDA7ClsgLi4uIF0KPiBAQCAt
+ODUxLDI5ICs4NzcsODEgQEAgaW50IG52bWVtX2xheW91dF9yZWdpc3RlcihzdHJ1Y3QgbnZtZW1f
+bGF5b3V0ICpsYXlvdXQpCj4gIAlpZiAoIWxheW91dC0+YWRkX2NlbGxzKQo+ICAJCXJldHVybiAt
+RUlOVkFMOwo+ICAKPiAtCS8qIFBvcHVsYXRlIHRoZSBjZWxscyAqLwo+IC0JcmV0ID0gbGF5b3V0
+LT5hZGRfY2VsbHMobGF5b3V0KTsKPiArCXNjb3BlZF9ndWFyZChzcmN1LCAmbGF5b3V0LT5udm1l
+bS0+c3JjdSkgewo+ICsJCWlmIChSRUFEX09OQ0UobGF5b3V0LT5udm1lbS0+ZGlzY29ubmVjdGVk
+KSkKPiArCQkJcmV0dXJuIC1FTk9ERVY7Cj4gKwkJcmV0ID0gbGF5b3V0LT5hZGRfY2VsbHMobGF5
+b3V0KTsKPiArCX0KPiAgCWlmIChyZXQpCj4gLQkJcmV0dXJuIHJldDsKPiArCQlnb3RvIGVycl91
+bnJlZ2lzdGVyOwo+ICAKPiAgI2lmZGVmIENPTkZJR19OVk1FTV9TWVNGUwo+ICAJcmV0ID0gbnZt
+ZW1fcG9wdWxhdGVfc3lzZnNfY2VsbHMobGF5b3V0LT5udm1lbSk7Cj4gLQlpZiAocmV0KSB7Cj4g
+LQkJbnZtZW1fZGV2aWNlX3JlbW92ZV9hbGxfY2VsbHMobGF5b3V0LT5udm1lbSk7Cj4gLQkJcmV0
+dXJuIHJldDsKPiAtCX0KPiArCWlmIChyZXQpCj4gKwkJZ290byBlcnJfdW5yZWdpc3RlcjsKPiAg
+I2VuZGlmCj4gIAo+ICAJcmV0dXJuIDA7Cj4gKwo+ICtlcnJfdW5yZWdpc3RlcjoKPiArCW52bWVt
+X2xheW91dF91bnJlZ2lzdGVyKGxheW91dCk7Cj4gKwlyZXR1cm4gcmV0Owo+ICB9Cj4gIEVYUE9S
+VF9TWU1CT0xfR1BMKG52bWVtX2xheW91dF9yZWdpc3Rlcik7Cj4gIAo+ICB2b2lkIG52bWVtX2xh
+eW91dF91bnJlZ2lzdGVyKHN0cnVjdCBudm1lbV9sYXlvdXQgKmxheW91dCkKPiAgewo+IC0JLyog
+S2VlcCB0aGUgQVBJIGV2ZW4gd2l0aCBhbiBlbXB0eSBzdHViIGluIGNhc2Ugd2UgbmVlZCBpdCBs
+YXRlciAqLwo+ICsJc3RydWN0IG52bWVtX2RldmljZSAqbnZtZW0gPSBsYXlvdXQtPm52bWVtOwo+
+ICsJc3RydWN0IG52bWVtX2NlbGxfZW50cnkgKmNlbGwsICpuZXh0Owo+ICsJc3RydWN0IGF0dHJp
+YnV0ZV9ncm91cCBncm91cCA9IHt9Owo+ICsJTElTVF9IRUFEKGNlbGxzKTsKPiArCj4gKwlzY29w
+ZWRfZ3VhcmQobXV0ZXgsICZudm1lbV9tdXRleCkgewo+ICsJCWlmIChudm1lbS0+c3lzZnNfY2Vs
+bHNfcG9wdWxhdGVkKQo+ICsJCQlncm91cCA9IG52bWVtLT5jZWxsc19ncm91cDsKPiArCQlsaXN0
+X2Zvcl9lYWNoX2VudHJ5X3NhZmUoY2VsbCwgbmV4dCwgJm52bWVtLT5jZWxscywgbm9kZSkgewo+
+ICsJCQlpZiAoY2VsbC0+bGF5b3V0ICE9IGxheW91dCkKPiArCQkJCWNvbnRpbnVlOwo+ICsJCQlX
+UklURV9PTkNFKGNlbGwtPmRpc2Nvbm5lY3RlZCwgdHJ1ZSk7Cj4gKwkJCWxpc3RfbW92ZV90YWls
+KCZjZWxsLT5ub2RlLCAmY2VsbHMpOwo+ICsJCX0KPiArCX0KPiArCj4gKwlpZiAoZ3JvdXAuYmlu
+X2F0dHJzKSB7Cj4gKwkJZGV2aWNlX3JlbW92ZV9ncm91cCgmbnZtZW0tPmRldiwgJmdyb3VwKTsK
+PiArCQlzY29wZWRfZ3VhcmQobXV0ZXgsICZudm1lbV9tdXRleCkgewo+ICsJCQludm1lbS0+c3lz
+ZnNfY2VsbHNfcG9wdWxhdGVkID0gZmFsc2U7Cj4gKwkJCW1lbXNldCgmbnZtZW0tPmNlbGxzX2dy
+b3VwLCAwLCBzaXplb2YobnZtZW0tPmNlbGxzX2dyb3VwKSk7Cj4gKwkJfQo+ICsJCWZvciAoaW50
+IGkgPSAwOyBncm91cC5iaW5fYXR0cnNbaV07IGkrKykKPiArCQkJZGV2bV9rZnJlZSgmbnZtZW0t
+PmRldiwgKHZvaWQgKilncm91cC5iaW5fYXR0cnNbaV0tPmF0dHIubmFtZSk7Cj4gKwkJZGV2bV9r
+ZnJlZSgmbnZtZW0tPmRldiwgKHZvaWQgKilncm91cC5iaW5fYXR0cnNbMF0pOwo+ICsJCWRldm1f
+a2ZyZWUoJm52bWVtLT5kZXYsIGdyb3VwLmJpbl9hdHRycyk7Cj4gKwl9Cj4gKwo+ICsJLyogT2xk
+IGNlbGwgaGFuZGxlcyByZXRhaW4gZGF0YSwgbmV2ZXIgYSBkZXBhcnRpbmcgbGF5b3V0J3MgY2Fs
+bGJhY2tzLiAqLwo+ICsJc3luY2hyb25pemVfc3JjdSgmbnZtZW0tPnNyY3UpOwo+ICsJbGlzdF9m
+b3JfZWFjaF9lbnRyeV9zYWZlKGNlbGwsIG5leHQsICZjZWxscywgbm9kZSkgewo+ICsJCWJsb2Nr
+aW5nX25vdGlmaWVyX2NhbGxfY2hhaW4oJm52bWVtX25vdGlmaWVyLCBOVk1FTV9DRUxMX1JFTU9W
+RSwgY2VsbCk7Cj4gKwkJbGlzdF9kZWwoJmNlbGwtPm5vZGUpOwo+ICsJCW52bWVtX2NlbGxfZW50
+cnlfcHV0KGNlbGwpOwo+ICsJfQo+ICsjaWZkZWYgQ09ORklHX05WTUVNX1NZU0ZTCj4gKwlpZiAo
+IVJFQURfT05DRShudm1lbS0+ZGlzY29ubmVjdGVkKSAmJiBudm1lbV9wb3B1bGF0ZV9zeXNmc19j
+ZWxscyhudm1lbSkpCj4gKwkJZGV2X3dhcm4oJm52bWVtLT5kZXYsICJGYWlsZWQgdG8gcmVzdG9y
+ZSBwcm92aWRlciBjZWxsIGF0dHJpYnV0ZXNcbiIpOwo+ICsjZW5kaWYKPiAgfQo+ICBFWFBPUlRf
+U1lNQk9MX0dQTChudm1lbV9sYXlvdXRfdW5yZWdpc3Rlcik7CgpbU2V2ZXJpdHk6IE1lZGl1bV0K
+Q2FuIG52bWVtX3BvcHVsYXRlX3N5c2ZzX2NlbGxzKCkgc2tpcCBsYXlvdXQgY2VsbCBzeXNmcyBh
+dHRyaWJ1dGVzIHdoZW4KcHJvdmlkZXIgY2VsbCBhdHRyaWJ1dGVzIGFyZSBhbHJlYWR5IHBvcHVs
+YXRlZCwgYW5kIGNhbiBudm1lbV9hZGRfb25lX2NlbGwoKQptaXNhdHRyaWJ1dGUgcHJvdmlkZXIg
+Y2VsbHMgdG8gbnZtZW0tPmxheW91dD8KCklmIGFuIG52bWVtX2RldmljZSBoYXMgcHJvdmlkZXIg
+Y2VsbHMgKG9yIGlmIG52bWVtX2xheW91dF91bnJlZ2lzdGVyKCkKcmVzdG9yZWQgcHJvdmlkZXIg
+Y2VsbCBhdHRyaWJ1dGVzIG9uIHVuYmluZCksIG52bWVtX3BvcHVsYXRlX3N5c2ZzX2NlbGxzKCkK
+aGFzIGFscmVhZHkgc2V0IG52bWVtLT5zeXNmc19jZWxsc19wb3B1bGF0ZWQgPSB0cnVlLiAgV2hl
+biBhIGxheW91dCBkcml2ZXIKbGF0ZXIgcHJvYmVzIChvciByZWJpbmRzKSBhbmQgbnZtZW1fbGF5
+b3V0X3JlZ2lzdGVyKCkgY2FsbHMKbnZtZW1fcG9wdWxhdGVfc3lzZnNfY2VsbHMoKSwgaXQgc2Vl
+cyBudm1lbS0+c3lzZnNfY2VsbHNfcG9wdWxhdGVkID09IHRydWUKYW5kIHJldHVybnMgMCB3aXRo
+b3V0IHJlYnVpbGRpbmcgbnZtZW0tPmNlbGxzX2dyb3VwLCBvbWl0dGluZyB0aGUgbGF5b3V0CmNl
+bGxzIGZyb20gc3lzZnMuICBBIHNpbWlsYXIgcmFjZSBleGlzdHMgZHVyaW5nIG52bWVtX3JlZ2lz
+dGVyKCkgYmVjYXVzZQpudm1lbV9wb3B1bGF0ZV9sYXlvdXQoKSBwdWJsaXNoZXMgbGF5b3V0LT5k
+ZXYgb24gbnZtZW1fbGF5b3V0X2J1c190eXBlCmJlZm9yZSBudm1lbV9yZWdpc3RlcigpIGNhbGxz
+IG52bWVtX3BvcHVsYXRlX3N5c2ZzX2NlbGxzKCkuCgpJbiBhZGRpdGlvbiwgbnZtZW0tPmxheW91
+dCBpcyBzZXQgaW4gbnZtZW1fbGF5b3V0X2NyZWF0ZV9kZXZpY2UoKSBmb3IgdGhlCmxpZmV0aW1l
+IG9mIHRoZSBsYXlvdXQgZGV2aWNlLCBzbyBzZXR0aW5nIGNlbGwtPmxheW91dCA9IG52bWVtLT5s
+YXlvdXQgaW4KbnZtZW1fYWRkX29uZV9jZWxsKCkgdGFncyBhbnkgY2VsbHMgYWRkZWQgYnkgYSBw
+cm92aWRlciBhZnRlcgpudm1lbV9yZWdpc3RlcigpIChzdWNoIGFzIGluIG10a19tZmdfaW5pdF9u
+dm1lbV9wcm92aWRlcigpIG9yCnVfYm9vdF9lbnZfcHJvYmUoKSkgYXMgbGF5b3V0IGNlbGxzIGFu
+ZCByZW1vdmVzIHRoZW0gb24gbGF5b3V0IHVuYmluZC4KClsgLi4uIF0KCj4gQEAgLTEwMTAsNyAr
+MTA4Niw3IEBAIHN0cnVjdCBudm1lbV9kZXZpY2UgKm52bWVtX3JlZ2lzdGVyKGNvbnN0IHN0cnVj
+dCBudm1lbV9jb25maWcgKmNvbmZpZykKPiAgCj4gIAlydmFsID0gbnZtZW1fcG9wdWxhdGVfbGF5
+b3V0KG52bWVtKTsKPiAgCWlmIChydmFsKQo+IC0JCWdvdG8gZXJyX3JlbW92ZV9kZXY7Cj4gKwkJ
+Z290byBlcnJfdW5yZWdpc3RlcjsKPiAgCj4gIAkvKiBJZiB0aGUgZGV2aWNlIGhhcyBXUCBHUElP
+LCBkZWZhdWx0IHRvIHJlYWQtb25seSAqLwo+ICAJaWYgKG52bWVtLT53cF9ncGlvKQo+IEBAIC0x
+MDE5LDIzICsxMDk1LDI0IEBAIHN0cnVjdCBudm1lbV9kZXZpY2UgKm52bWVtX3JlZ2lzdGVyKGNv
+bnN0IHN0cnVjdCBudm1lbV9jb25maWcgKmNvbmZpZykKPiAgI2lmZGVmIENPTkZJR19OVk1FTV9T
+WVNGUwo+ICAJcnZhbCA9IG52bWVtX3BvcHVsYXRlX3N5c2ZzX2NlbGxzKG52bWVtKTsKPiAgCWlm
+IChydmFsKQo+IC0JCWdvdG8gZXJyX2Rlc3Ryb3lfbGF5b3V0Owo+ICsJCWdvdG8gZXJyX3VucmVn
+aXN0ZXI7Cj4gICNlbmRpZgo+ICAKPiAgCWJsb2NraW5nX25vdGlmaWVyX2NhbGxfY2hhaW4oJm52
+bWVtX25vdGlmaWVyLCBOVk1FTV9BREQsIG52bWVtKTsKPiAgCj4gIAlyZXR1cm4gbnZtZW07Cj4g
+IAo+IC0jaWZkZWYgQ09ORklHX05WTUVNX1NZU0ZTCj4gLWVycl9kZXN0cm95X2xheW91dDoKPiAt
+CW52bWVtX2Rlc3Ryb3lfbGF5b3V0KG52bWVtKTsKPiAtI2VuZGlmCj4gLWVycl9yZW1vdmVfZGV2
+Ogo+IC0JZGV2aWNlX2RlbCgmbnZtZW0tPmRldik7Cj4gK2Vycl91bnJlZ2lzdGVyOgo+ICsJbnZt
+ZW1fdW5yZWdpc3Rlcihudm1lbSk7Cj4gKwlyZXR1cm4gRVJSX1BUUihydmFsKTsKCltTZXZlcml0
+eTogTWVkaXVtXQpEb2VzIGp1bXBpbmcgdG8gZXJyX3VucmVnaXN0ZXIgb24gZmFpbHVyZSBpbiBu
+dm1lbV9wb3B1bGF0ZV9sYXlvdXQoKSBvcgpudm1lbV9wb3B1bGF0ZV9zeXNmc19jZWxscygpIGVt
+aXQgYW4gdW5wYWlyZWQgTlZNRU1fUkVNT1ZFIG5vdGlmaWNhdGlvbj8KCmJsb2NraW5nX25vdGlm
+aWVyX2NhbGxfY2hhaW4oJm52bWVtX25vdGlmaWVyLCBOVk1FTV9BREQsIG52bWVtKSBpcyBvbmx5
+CmNhbGxlZCBhZnRlciBib3RoIGZ1bmN0aW9ucyBzdWNjZWVkLCBidXQgbnZtZW1fdW5yZWdpc3Rl
+cigpCnVuY29uZGl0aW9uYWxseSBzZW5kcyBOVk1FTV9SRU1PVkUuCgpbIC4uLiBdCgo+IEBAIC0x
+MDQ4LDI0ICsxMTI1LDI5IEBAIHN0YXRpYyB2b2lkIG52bWVtX2RldmljZV9yZWxlYXNlKHN0cnVj
+dCBrcmVmICprcmVmKQo+ICAKPiAgCW52bWVtID0gY29udGFpbmVyX29mKGtyZWYsIHN0cnVjdCBu
+dm1lbV9kZXZpY2UsIHJlZmNudCk7Cj4gIAo+IC0JYmxvY2tpbmdfbm90aWZpZXJfY2FsbF9jaGFp
+bigmbnZtZW1fbm90aWZpZXIsIE5WTUVNX1JFTU9WRSwgbnZtZW0pOwo+IC0KPiAtCW52bWVtX3N5
+c2ZzX3JlbW92ZV9jb21wYXQobnZtZW0pOwo+IC0KPiAtCW52bWVtX2RldmljZV9yZW1vdmVfYWxs
+X2NlbGxzKG52bWVtKTsKPiAtCW52bWVtX2Rlc3Ryb3lfbGF5b3V0KG52bWVtKTsKPiAtCWRldmlj
+ZV91bnJlZ2lzdGVyKCZudm1lbS0+ZGV2KTsKPiArCXB1dF9kZXZpY2UoJm52bWVtLT5kZXYpOwo+
+ICB9Cj4gIAo+ICAvKioKPiAgICogbnZtZW1fdW5yZWdpc3RlcigpIC0gVW5yZWdpc3RlciBwcmV2
+aW91c2x5IHJlZ2lzdGVyZWQgbnZtZW0gZGV2aWNlCj4gICAqCj4gICAqIEBudm1lbTogUG9pbnRl
+ciB0byBwcmV2aW91c2x5IHJlZ2lzdGVyZWQgbnZtZW0gZGV2aWNlLgo+ICsgKgo+ICsgKiBTdG9w
+IGFuZCBkcmFpbiBwcm92aWRlciBjYWxsYmFja3MgYmVmb3JlIHJldHVybmluZy4gRXhpc3Rpbmcg
+Y29uc3VtZXJzIGtlZXAKPiArICogdGhlaXIgY29yZS1vd25lZCBtZXRhZGF0YSwgYnV0IGZ1cnRo
+ZXIgYWNjZXNzIHJldHVybnMgLUVOT0RFVi4KPiAgICovCj4gIHZvaWQgbnZtZW1fdW5yZWdpc3Rl
+cihzdHJ1Y3QgbnZtZW1fZGV2aWNlICpudm1lbSkKPiAgewo+IC0JaWYgKG52bWVtKQo+IC0JCWty
+ZWZfcHV0KCZudm1lbS0+cmVmY250LCBudm1lbV9kZXZpY2VfcmVsZWFzZSk7Cj4gKwlpZiAoIW52
+bWVtKQo+ICsJCXJldHVybjsKPiArCj4gKwludm1lbV9kaXNjb25uZWN0KG52bWVtKTsKPiArCW52
+bWVtX2Rlc3Ryb3lfbGF5b3V0KG52bWVtKTsKPiArCWJsb2NraW5nX25vdGlmaWVyX2NhbGxfY2hh
+aW4oJm52bWVtX25vdGlmaWVyLCBOVk1FTV9SRU1PVkUsIG52bWVtKTsKPiArCW52bWVtX3N5c2Zz
+X3JlbW92ZV9jb21wYXQobnZtZW0pOwo+ICsJZGV2aWNlX2RlbCgmbnZtZW0tPmRldik7Cj4gKwlu
+dm1lbV9kZXZpY2VfcmVtb3ZlX2FsbF9jZWxscyhudm1lbSk7Cj4gKwlrcmVmX3B1dCgmbnZtZW0t
+PnJlZmNudCwgbnZtZW1fZGV2aWNlX3JlbGVhc2UpOwo+ICB9CgpbU2V2ZXJpdHk6IE1lZGl1bV0K
+Q2FuIGRldmljZV9kZWwoJm52bWVtLT5kZXYpIGluIG52bWVtX3VucmVnaXN0ZXIoKSBjYXVzZSBh
+IHVzZS1hZnRlci1mcmVlCm9uIHRoZSBkZXZyZXMtYWxsb2NhdGVkIGJpbl9hdHRyaWJ1dGUgYXJy
+YXkgaWYgYSBzeXNmcyByZWFkIHJhY2VzIHdpdGgKdW5yZWdpc3RyYXRpb24/Cgpudm1lbV9wb3B1
+bGF0ZV9zeXNmc19jZWxscygpIGFsbG9jYXRlcyBwYXR0cnMsIGF0dHJzLCBhbmQKYXR0cnNbaV0u
+YXR0ci5uYW1lIHdpdGggZGV2bV9rY2FsbG9jKCkgYW5kIGRldm1fa2FzcHJpbnRmKCkgb24gJm52
+bWVtLT5kZXYsCmFuZCByZWdpc3RlcnMgdGhlbSB2aWEgbm9uLWRldnJlcyBkZXZpY2VfYWRkX2dy
+b3VwKCZudm1lbS0+ZGV2LAombnZtZW0tPmNlbGxzX2dyb3VwKS4gIFdoZW4gbnZtZW1fdW5yZWdp
+c3RlcigpIHJ1bnMgd2l0aCBwcm92aWRlciBjZWxsCmF0dHJpYnV0ZXMgcG9wdWxhdGVkLCBpdCBj
+YWxscyBkZXZpY2VfZGVsKCZudm1lbS0+ZGV2KSB3aXRob3V0IGZpcnN0CmNhbGxpbmcgZGV2aWNl
+X3JlbW92ZV9ncm91cCgmbnZtZW0tPmRldiwgJm52bWVtLT5jZWxsc19ncm91cCk6CgpDUFUwICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIENQVTEKbnZtZW1fdW5yZWdpc3RlcigpCiAg
+ZGV2aWNlX2RlbCgmbnZtZW0tPmRldikKICAgIGRldnJlc19yZWxlYXNlX2FsbCgmbnZtZW0tPmRl
+dikKICAgICAgLyogZnJlZXMgYXR0cnMgKi8KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICBzeXNmc19rZl9iaW5fcmVhZCgpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICBiYXR0ciA9IG9mLT5rbi0+cHJpdjsKICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgIGJhdHRyLT5yZWFkKC4uLikgIDwtLSB1c2UtYWZ0ZXItZnJlZQogICAg
+a29iamVjdF9kZWwoJm52bWVtLT5kZXYua29iaikKCkluIGRldmljZV9kZWwoKSwgZGV2aWNlX3Jl
+bW92ZV9hdHRycygpIG9ubHkgcmVtb3ZlcyBkZXYtPmdyb3Vwcywgc28KbnZtZW0tPmNlbGxzX2dy
+b3VwIHJlbWFpbnMgYWN0aXZlIGluIHN5c2ZzIHVudGlsIGtvYmplY3RfZGVsKCkgcnVucyBhZnRl
+cgpkZXZyZXNfcmVsZWFzZV9hbGwoKS4KClsgLi4uIF0KCj4gQEAgLTExMDMsMjYgKzExODUsNDYg
+QEAgc3RydWN0IG52bWVtX2RldmljZSAqZGV2bV9udm1lbV9yZWdpc3RlcihzdHJ1Y3QgZGV2aWNl
+ICpkZXYsCj4gIH0KPiAgRVhQT1JUX1NZTUJPTF9HUEwoZGV2bV9udm1lbV9yZWdpc3Rlcik7Cj4g
+IAo+ICtzdHJ1Y3QgbnZtZW1fbWF0Y2hfZGF0YSB7Cj4gKwl2b2lkICpkYXRhOwo+ICsJaW50ICgq
+bWF0Y2gpKHN0cnVjdCBkZXZpY2UgKmRldiwgY29uc3Qgdm9pZCAqZGF0YSk7Cj4gK307Cj4gKwo+
+ICtzdGF0aWMgaW50IG52bWVtX21hdGNoX2RldmljZShzdHJ1Y3QgZGV2aWNlICpkZXYsIGNvbnN0
+IHZvaWQgKmRhdGEpCj4gK3sKPiArCWNvbnN0IHN0cnVjdCBudm1lbV9tYXRjaF9kYXRhICptYXRj
+aCA9IGRhdGE7Cj4gKwlzdHJ1Y3QgbnZtZW1fZGV2aWNlICpudm1lbSA9IHRvX252bWVtX2Rldmlj
+ZShkZXYpOwo+ICsKPiArCWd1YXJkKHNyY3UpKCZudm1lbS0+c3JjdSk7Cj4gKwlpZiAoUkVBRF9P
+TkNFKG52bWVtLT5kaXNjb25uZWN0ZWQpKQo+ICsJCXJldHVybiAwOwo+ICsJcmV0dXJuIG1hdGNo
+LT5tYXRjaChkZXYsIG1hdGNoLT5kYXRhKTsKPiArfQo+ICsKPiAgc3RhdGljIHN0cnVjdCBudm1l
+bV9kZXZpY2UgKm52bWVtX2RldmljZV9tYXRjaCh2b2lkICpkYXRhLAo+ICAJCQlpbnQgKCptYXRj
+aCkoc3RydWN0IGRldmljZSAqZGV2LCBjb25zdCB2b2lkICpkYXRhKSkKPiAgewo+ICsJc3RydWN0
+IG52bWVtX21hdGNoX2RhdGEgbWF0Y2hfZGF0YSA9IHsgLmRhdGEgPSBkYXRhLCAubWF0Y2ggPSBt
+YXRjaCB9Owo+ICAJc3RydWN0IG52bWVtX2RldmljZSAqbnZtZW0gPSBOVUxMOwo+ICAJc3RydWN0
+IGRldmljZSAqZGV2Owo+ICAKPiAtCXNjb3BlZF9ndWFyZChtdXRleCwgJm52bWVtX211dGV4KSB7
+Cj4gLQkJZGV2ID0gYnVzX2ZpbmRfZGV2aWNlKCZudm1lbV9idXNfdHlwZSwgTlVMTCwgZGF0YSwg
+bWF0Y2gpOwo+IC0JCWlmIChkZXYpCj4gLQkJCW52bWVtID0gdG9fbnZtZW1fZGV2aWNlKGRldik7
+Cj4gLQl9Cj4gKwlndWFyZChtdXRleCkoJm52bWVtX211dGV4KTsKPiArCWRldiA9IGJ1c19maW5k
+X2RldmljZSgmbnZtZW1fYnVzX3R5cGUsIE5VTEwsICZtYXRjaF9kYXRhLCBudm1lbV9tYXRjaF9k
+ZXZpY2UpOwo+ICsJaWYgKGRldikKPiArCQludm1lbSA9IHRvX252bWVtX2RldmljZShkZXYpOwo+
+ICAJaWYgKCFudm1lbSkKPiAgCQlyZXR1cm4gRVJSX1BUUigtRVBST0JFX0RFRkVSKTsKPiAgCj4g
+KwlpZiAoUkVBRF9PTkNFKG52bWVtLT5kaXNjb25uZWN0ZWQpKSB7Cj4gKwkJcHV0X2RldmljZShk
+ZXYpOwo+ICsJCXJldHVybiBFUlJfUFRSKC1FTk9ERVYpOwo+ICsJfQoKW1NldmVyaXR5OiBMb3dd
+CklzIHRoZSBzZWNvbmQgUkVBRF9PTkNFKG52bWVtLT5kaXNjb25uZWN0ZWQpIGNoZWNrIGluIG52
+bWVtX2RldmljZV9tYXRjaCgpCnJlYWNoYWJsZT8KCm52bWVtX2Rpc2Nvbm5lY3QoKSBzZXRzIG52
+bWVtLT5kaXNjb25uZWN0ZWQgdW5kZXIgbnZtZW1fbXV0ZXgsIGFuZApudm1lbV9kZXZpY2VfbWF0
+Y2goKSBob2xkcyBudm1lbV9tdXRleCBhY3Jvc3MgYnVzX2ZpbmRfZGV2aWNlKCksIHdoZXJlCm52
+bWVtX21hdGNoX2RldmljZSgpIGFscmVhZHkgcmVqZWN0cyBkaXNjb25uZWN0ZWQgZGV2aWNlcy4K
+Ci0tIApTYXNoaWtvIEFJIHJldmlldyDCtyBodHRwczovL3Nhc2hpa28uZGV2LyMvcGF0Y2hzZXQv
+MjAyNjExMTEtc3VibWl0LXJhd25hbmQtcmV0YWluZWQtaGFuZGxlLWxpZmV0aW1lLXYxLXYzLTAt
+Y2U1Mzc5OTk3NDFkQGdtYWlsLmNvbT9wYXJ0PTEKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5n
+IGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1t
+dGQvCg==
