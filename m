@@ -2,137 +2,72 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C5C8606A31C
-	for <linux-mtd@archiver.kernel.org>; Thu, 12 Nov 2026 15:58:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3163606A32A
+	for <linux-mtd@archiver.kernel.org>; Thu, 12 Nov 2026 17:04:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=KaW5+4gn;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.a=rsa-sha256 header.s=selector1-NXP1-onmicrosoft-com header.b=Q/XuVNfL
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=cGdDzHR4;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Zf85DQc6
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=SNLYczQeiOPRO7kX7T0Jl4l/wdDGDXkjuEY1JF1WZ0s=; b=KaW5+4gntX9C8QLA5vsg2MxB3F
-	HMVTziggZe2NMc/mQK6hRjSB2MG2+6uUU0ws8Wdx+BsX6jskxwJxeB3hsyzaQfu+wsqWS95+gxpZF
-	V83hUj6djK1Vv2NgxVH+Fnvij427NeYH/KoI8BlJnrvG8mN6g3q1zuCpN61MFraCwC0loru+UP/u/
-	rYDxHauscuEMjBo/16K8/hfzpnatDagHOUhVKuy38lOPigZI0eoZMSjNhuBvIToRwV3P56U5CVnA3
-	AzXiV66A7i4Qp+kkAldG6KD84wciakR9e8tNlkmEuTKLF3DNe+wa/Yecp5SNngnv1j9B2O4rRvPQP
-	uejVgpqA==;
+	bh=Nq7aQY6VC9nr9ODqVcsJMANnSKQ5NmkcGIUmvosvqPU=; b=cGdDzHR4tcM3ruhoSaRdETHA6L
+	Nv3JatcsBeAnuDdI7sLvcOvrP+RyXsNs79IpT6OPsT65dOVeBtdist6EZWbYvoR8p9x4xamaKk6F1
+	7qBcLGbUDpAumIZFqDzwWGZxHfeYbC3yajnGEqqvActr7BAZKKMkhK1dq0zTM8ryK1X+lJUuPlecF
+	9S6PVGwVe+A+k13g75CKtHk6SmYCHMakUP0yhqbloeUk7pWbYQp8s8S4Lxd8fl9T2mSqBREx3NtQ+
+	OYSzU94QwlnvXG2K3d0qOiaTF0O0W23aaTfWbd1ugXXzjPnBHdVqNSRUu/NAg0P2sxTYj4ZclZcgg
+	a3YSpnVQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xRXC5-0000000AWiW-0i3t;
-	Thu, 12 Nov 2026 15:58:33 +0000
-Received: from mail-francesouthazon11011023.outbound.protection.outlook.com ([40.107.130.23] helo=MRWPR03CU001.outbound.protection.outlook.com)
+	id 1xRYDV-0000000AhvJ-3d9t;
+	Thu, 12 Nov 2026 17:04:06 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xRXC2-0000000AWhg-0wxA
+	id 1xRYDT-0000000Ahv1-2NEf
 	for linux-mtd@lists.infradead.org;
-	Thu, 12 Nov 2026 15:58:31 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=r0iHjLvYIKTFkIvIM9nU/o5inQHMgR5c98aQq9ZOu4IuWTz6DLI9HOJoIBA2cHyzHX9sr/GwSzV/rBMKVw0fnLaSfCq2dY4xnWabn7M8e4QE7P9zDhwmyuSlpEyGD3osu95jSl8cTmeGUwWjHd9UjAvbQT7EjVk4gbgxWweAx219AKrxShsPvwmo375Vi1gObCOw6RMSUoAqmDG/FA1lLBWe8e18QHkrtRrrHPmjXj4A7JV08Phc3Xpw4Mc++uHDgUuRB3JUwaemp3jsW504dK7YYzSuQhYTurQ8urxUUfBJvaXWTTXG2rU7huHvLtbuBS9o9kQXEQ5LvqGyR7/W4w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CgyiL02x4m9j/jH8c8HyEJMO5R9v00Ha20Yrs2mhXMM=;
- b=AQx73AWilvNfrqnhF+CnT07JO2WVdBXT9tCxLWE5GPjK2rvxKRmNfNGp3xlndXsC954/59WSvNAxEo6LYeQ/Ej63TIxbBQ0IqMUvToLftBB1DkA1Q0Uljt22FcKK3OHrPwikXNWwCi8glLXyYfmgrso8XoRrr6U582BZ7ZYsLpwyeY2PJosFNRjExi/cKd8SjMyHZccBY81u79Kep8S52HMVOeqbUaBailzEry5lPgnJdFwHRXSdYuPCRENrSM3D/H3v5n5OblNlE+/6rXnzreMEXhM8m9YhAxQbwQlv6dhRAjVGCiK120p7cXaN2XkJhfS6UkTkxC9pvkoRtmPxWg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector1-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CgyiL02x4m9j/jH8c8HyEJMO5R9v00Ha20Yrs2mhXMM=;
- b=Q/XuVNfLghklvuTUbOo6QsJbEwVocHhbDXonuXhIO3AR65gLtsQVU8bvbVqwVfPDa5jp75O/UjKDaUuCdqV6xqsbh9tPWl51LU8vUPJKtcdBs8gob0H1buQnG/sYbAEUpJXIo+ShiqU7xVfY7Jri71Dy6F9lThwfcPGZHwAkKkwetGMhqq+Ve7JFLMmz4Pd6bvFu7VO644GZHEo7BEJUxjrR0GG4dZ28avTsrSyQindfHfOuMfn6vlsW/tlgp7lE0FM59wWR2nlylGcX+m7ve+n90NNLKplTf1MilDDQJ/xxoRs4dQefPeERYfibmcdgAIFMaN/hTjI/TVMNFCJiYA==
-Authentication-Results: mx.microsoft.com 1; dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=oss.nxp.com;
-Received: from MI3PR04MB12438.eurprd04.prod.outlook.com (2603:10a6:290:76::14)
- by AS8PR04MB8231.eurprd04.prod.outlook.com (2603:10a6:20b:3ff::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.615.10; Thu, 12 Nov
- 2026 15:58:25 +0000
-Received: from MI3PR04MB12438.eurprd04.prod.outlook.com
- ([fe80::c715:c32:8bb1:b70b]) by MI3PR04MB12438.eurprd04.prod.outlook.com
- ([fe80::c715:c32:8bb1:b70b%4]) with mapi id 15.21.0615.009; Thu, 12 Nov 2026
- 15:58:25 +0000
-Date: Thu, 12 Nov 2026 10:58:18 -0500
-From: Frank Li <Frank.li@oss.nxp.com>
-To: sashiko-reviews@lists.linux.dev
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>, Frank Li <Frank.Li@nxp.com>,
-	Alok Tiwari <alok.a.tiwari@oracle.com>,
-	Runyu Xiao <runyu.xiao@seu.edu.cn>, Chen Ni <nichen@iscas.ac.cn>,
-	Kees Cook <kees+treewide@kernel.org>,
-	Hemanth Selam <hemanth.selam@gmail.com>,
-	"open list:CADENCE NAND DRIVER" <linux-mtd@lists.infradead.org>,
-	imx@lists.linux.dev, Frank.Li@kernel.org
-Subject: Re: [PATCH 1/1] mtd: nand: raw: use dmaengine accessor API functions
-Message-ID: <avXiGrK747XRApda@lizhi-Precision-Tower-5810>
-References: <20261111202502.3860647-1-Frank.Li@oss.nxp.com>
- <sashiko-outbox-209681@kernel.org>
-Content-Disposition: inline
-In-Reply-To: <sashiko-outbox-209681@kernel.org>
-X-ClientProxiedBy: SA9PR11CA0016.namprd11.prod.outlook.com
- (2603:10b6:806:6e::21) To MI3PR04MB12438.eurprd04.prod.outlook.com
- (2603:10a6:290:76::14)
+	Thu, 12 Nov 2026 17:04:03 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with ESMTP id 3D0AA60D42;
+	Thu, 12 Nov 2026 17:04:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3D3C1F000C4;
+	Thu, 12 Nov 2026 17:03:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1794503041;
+	bh=Tnsto3oiPaaydpqyOg//yXc9fozFcn2RguD6V+U0YIc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=Zf85DQc6pK7hHpdOfyyEwWFYo25shivjhp9VCLeryfKzdPv1yeOydjI6p0YzDNZYI
+	 M+BVzJAlF5ZTlFd/VNz2+1lHlatmhrkC0UTDcQ8+HPg47A9l+LBbIY/cpnU2IwOZwn
+	 3arq6wKP65C+CTdJ5UvUVaSl7NEfMJV9kRlrNB0aDds7e9KDFR27O/ajjRBmuwHYi3
+	 tq3ba8VzH/X4jSmWAfhmGdCuMULrG6qP70y80wkfxbEc1K8cuUGIypQWKmT4pNRsjA
+	 ZcyEm5GxYwVRaVCPxCjlwa3che5c+f0zlFzB5/xeI7emLYt7KVnqJDiVHX3vJGSxaz
+	 HCx7Oi3QCP0Yw==
+Date: Thu, 12 Nov 2026 18:03:55 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Jan Kara <jack@suse.cz>
+Cc: linux-fsdevel@vger.kernel.org, Jan Kara <jack@suse.com>, 
+	Al Viro <viro@zeniv.linux.org.uk>, ecryptfs@vger.kernel.org, linux-ext4@vger.kernel.org, 
+	jfs-discussion@lists.sourceforge.net, linux-nilfs@vger.kernel.org, exfat@lists.linux.dev, 
+	linux-mm@kvack.org, ntfs@lists.linux.dev, ocfs2-devel@lists.linux.dev, 
+	linux-btrfs@vger.kernel.org, gfs2@lists.linux.dev, linux-efi@vger.kernel.org, 
+	linux-mtd@lists.infradead.org, linux-xfs@vger.kernel.org, 
+	Karl Mehltretter <kmehltretter@gmail.com>, Dave Kleikamp <shaggy@kernel.org>
+Subject: Re: [PATCH v2 04/34] ext2: don't set SB_RDONLY after filesystem
+ errors
+Message-ID: <20261112-aktivieren-datteln-assimilieren-062b8257ed49@brauner>
+References: <20261029-work-fs-sb_rdonly-v2-0-2f44f64f0b66@kernel.org>
+ <20261029-work-fs-sb_rdonly-v2-4-2f44f64f0b66@kernel.org>
+ <5qefa4mracb3x2z4vsdejmkyyfrhdcrixmmnooz4rzwcdfoejm@mqkvixj6afwp>
+ <20261110-kargheit-impfen-pausieren-881763d28b19@brauner>
+ <za33axmgzmuzsj3zmfeh43fkphtcsqtkhhrauwuvs7aiftelgp@dzl6z322st5f>
+ <20261112-wohncontainer-saurier-wonnen-91f30c3b3ae2@brauner>
+ <20261112-besorgen-nobel-handschuhe-fb3373259b5f@brauner>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MI3PR04MB12438:EE_|AS8PR04MB8231:EE_
-X-MS-Office365-Filtering-Correlation-Id: 22c364b7-c62b-497f-a942-08df40d5c8e4
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|376014|7416014|23010399003|19092799006|10067099003|4143699003|11063799006|260925021311599003|260925022911599003|260925021911599003|56012099006|261021135927099003|261022115727099003|261022113327099003|261026121527099003|261026130827099003|261028144727099003|261022075727099003|261022105027099003|261026140227099003|261026135527099003|261021133027099003|261021121427099003|261021123027099003|261021130227099003|261102124527099003|261102123227099003|261009223027099003|18002099003|22082099003|6133799003;
-X-Microsoft-Antispam-Message-Info: 5KvDsHIZzaggZeBPYMc7eMQ1sNHZ0sUPmEePRacZe3xPyPrGiE/wpzq2OUW1LAAUym2jpLzQ+iz1WmLC9lEO0zcfHACWBSALmmcBrKoguR6QbNneRDC/dXsO/t+tbhrBTr65Yf+4M/DD5eaTCSR7yRIr5u6/4f5WP41dFtOiT/dBl24gySxtI+y2ydIrM61KJO7QeiiBSvPnESqvZ/fUp9FcEDPTbvNwOQntK6i0EPBivhfdoOVG16TjTv7kT5toHaTBaMUVtP7KScRcBfMIprgiMZZxvgJog3eK8sfqjdfnw3vLdFWcO1BV8YknKgMQ/1d3JBngwhPsHMNAv7VELVQ2VVgUx1/47HO/CCHA0wQfZX9a6KZZo4RxuFQmT0ExxAF+Jm65Gf3o7nqf+QGp/iYVypcWbHVatM+FEZshU+g6Xx7zUC5gyJjuwITtoMHwdxs0xjFpQo6eQX51fOoPPHUdFfA/QqvC/E3dBRxAnHNt6lWBCP8gCCRwJRbUu/sFR0gM79Hdz7905D6c2/KWXfhgz/WAtXHWU8C8nCCnPeWoo8WqmZreewp2QTxmsGoONIv2+UoNseQxr1uGL5NEihaErHMf1xxiVOilA5RdgYw=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MI3PR04MB12438.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014)(7416014)(23010399003)(19092799006)(10067099003)(4143699003)(11063799006)(260925021311599003)(260925022911599003)(260925021911599003)(56012099006)(261021135927099003)(261022115727099003)(261022113327099003)(261026121527099003)(261026130827099003)(261028144727099003)(261022075727099003)(261022105027099003)(261026140227099003)(261026135527099003)(261021133027099003)(261021121427099003)(261021123027099003)(261021130227099003)(261102124527099003)(261102123227099003)(261009223027099003)(18002099003)(22082099003)(6133799003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?pOu1m2K6RCDK8Ti1NdSfmjrErx+QM+TqWLslRcsOZo4YeUjxVyy1H3h+MM?=
- =?iso-8859-1?Q?es0f9lgZTCb6CfQGTN9w0e9NZxuOdsiCEPZWEsc1FhEO7wjFZ654VCcq1w?=
- =?iso-8859-1?Q?4uNfEvnDhzVAqQTaEto88HQfFTBB0o2ic+lxux7CTArCSCsqkQ3yzRGxwA?=
- =?iso-8859-1?Q?ttNrTCmQMCxya0doz3EE28y4wzboW1uiyf0S2NG0UYlKL9MuRGdzHJUidW?=
- =?iso-8859-1?Q?80XCw6TMoWQ7SjynO2NajEyrxh3QJzCrQJiDAJxvbooRytcwSFwFVP3Ttt?=
- =?iso-8859-1?Q?O6PatswEepjOM3KmEMsn7rFrnSs9/d/VQw5kkXT5PaslAHxO0Vinm+Qjss?=
- =?iso-8859-1?Q?2Vqbp8v00g+0pTJEugGudDjPnwhxiAYoFroJYJ4eMAXxbZDZmfcHvrkDs6?=
- =?iso-8859-1?Q?XTbvCA4FqYYXNiS/rG5SrkYwHi1aWi/QtA9mxd3HQ+aPXZiKwRhreRxQ3j?=
- =?iso-8859-1?Q?44UcSVI8xgEmIXdu6gNSA+RSeO066GOlaElfs1V/Xhlru++h+y5ovyP5Yx?=
- =?iso-8859-1?Q?+5im2ezRhLVZdWoxoRVKyJ67lhe57MthsYup/WwCyR+hU5MfXnvoUx9YZz?=
- =?iso-8859-1?Q?zp2psnbnylbZsDWOjginnMeV3PDG/sUKdk2AzVJkN7g4hb9w2FkQ83T1BJ?=
- =?iso-8859-1?Q?N1uzjONKfL6rdnBVX7Sl3QrnGagFfSbtKKlQ5ADO4iTWVOhwtCE0Hr9mc3?=
- =?iso-8859-1?Q?yT964lBXWzIyo6lRaW+Kzs6/6MW8G99N/ymVn41if5cu/1JfSNWOSxBs8x?=
- =?iso-8859-1?Q?TWJpN9w4xP8EkrgWUYBbIvpYegn/D+1DMHTqBp+xcfamMnPg8zOaPRPWoM?=
- =?iso-8859-1?Q?HmySRoDWaCIQyXaBnYZeIiY2QipAHud8yc2u91lN+Zo6VPyoWjDDDV4fAt?=
- =?iso-8859-1?Q?eTvXGuTds9dHK2+bi5afxPq7UqxHzWqYqo6fc8A6fOERnS7QSWhkWxXOvI?=
- =?iso-8859-1?Q?J8mpGOMm9akcG7OCaqPw0dzSeb0EZnRqwCnCTTGEsTEbwH/dhgGzwy8/fz?=
- =?iso-8859-1?Q?Y3CdqSo2lKFBO0sHrqWhb7XQz5DhUqHM+rLdXjhVM6ZtIcjwKjqgE/X1dk?=
- =?iso-8859-1?Q?XRG0BoM1kzusTjY8QKsAJfc4kNFobVD09gJMHtTPuAO8QsneWs6HeqIai8?=
- =?iso-8859-1?Q?fgEdDo3L8vw3PzMUNK6BKwxCfvn41XGZWjbWVtlKMEWncemr5/hlqWvGnh?=
- =?iso-8859-1?Q?er4G2feGk3SGsJJALpPgtXtwtOAMftF4OPSH96MTU6ZKkrBMwVms+DwdwZ?=
- =?iso-8859-1?Q?TckI/661RlgHQNPNzX3aFALk6RF6nPBPSrGxwWI26ITi/oUid5LKVDvP2Y?=
- =?iso-8859-1?Q?y+2jHa08m/OzHoapH351yWLTuRiHVJ9RtHEAdzSnZ8zepfMdqA0LAjevnB?=
- =?iso-8859-1?Q?OlIGv9rcNrWHgT/1TFnJqqEIpNGp929Fo3RoqFH/bDFYnAm7kKMFZYYuJE?=
- =?iso-8859-1?Q?RIUwKjNVQjpAVGkxuu0gqOebcXak/HodtCN7XQaWXg281/ZHLHNv7Unrms?=
- =?iso-8859-1?Q?/cVpjD1HDwGwNl50Yf3hqrhcOXQ03lKicqky+SSJnxUWayF/uY5wF+gl5p?=
- =?iso-8859-1?Q?JC9TGFGs3px4tu+rdCDbjhrSRrQS45a8+CGAq6I2328NWXEiIaWXw6WW+G?=
- =?iso-8859-1?Q?lFlSuJ5K30r90/uY+qikYDULjy8rStgR9u9QiSvEppN9mMwMnGJXCj2Tpk?=
- =?iso-8859-1?Q?VaPMJaGrLBGp3rnIa30RntP7nBJE+dz+N4mdD3L4HGYpbJ4k0SA0lG+4Yx?=
- =?iso-8859-1?Q?I3DfubSEoci9K9pNhLzhI6/2O1foI5e1NF07dLCCKTt3+SjI5ZbpPq6R+J?=
- =?iso-8859-1?Q?ixjlDQh4W2Dw/IoDNfX13VStgqdECHxUy/SbKgGUCEImKgADxxhg?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 22c364b7-c62b-497f-a942-08df40d5c8e4
-X-MS-Exchange-CrossTenant-AuthSource: MI3PR04MB12438.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Nov 2026 15:58:25.3297
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: o6IuI1DrLLkI+s+MgcPY0bbRPxGZxp15GUOJ9SSfc6z85yj8TS3fNgqEJe0Av+Q7wcXYvk0Rknz77aR++FsSG8id1VAq9r39v3dcWRV/qK5RiECTcwnjqb+XgG2q/1cY
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8231
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261112_075830_428015_DC7D18F3 
-X-CRM114-Status: GOOD (  23.78  )
-X-Spam-Score: -1.7 (-)
+Content-Disposition: inline
+In-Reply-To: <20261112-besorgen-nobel-handschuhe-fb3373259b5f@brauner>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -142,8 +77,8 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 X-Spam-Status: No, score=-8.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
@@ -152,167 +87,627 @@ X-Spam-Status: No, score=-8.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-On Wed, Nov 11, 2026 at 08:51:17PM +0000, sashiko-bot@kernel.org wrote:
-> Thank you for your contribution! Sashiko AI review found 1 potential
-> issue to consider:
-> - [Medium] mtd: rawnand: cadence: unmap device mismatch in
->   cadence_nand_remove()
-> It also noticed 1 related pre-existing issue this patch does not
-> introduce:
-> - [Critical] mtd: rawnand: fsmc: missing reinit_completion() in
->   dma_xfer() [1]
-> --
->
-> commit 9eda52238f6d5af7214b32eeb0870d65126ccf3d
-> Author: Frank Li <Frank.Li@nxp.com>
->
-> mtd: nand: raw: use dmaengine accessor API functions
->
-> This commit replaces direct chan->device and device_prep_dma_memcpy()
-> accesses in the Cadence and FSMC raw NAND drivers with
-> dmaengine_get_dma_device() and dmaengine_prep_dma_memcpy().
->
-> > diff --git a/drivers/mtd/nand/raw/cadence-nand-controller.c b/drivers/m=
-td/nand/raw/cadence-nand-controller.c
-> > index 2085632631c02..5e3d34f24f9d9 100644
-> > --- a/drivers/mtd/nand/raw/cadence-nand-controller.c
-> > +++ b/drivers/mtd/nand/raw/cadence-nand-controller.c
-> [ ... ]
-> > @@ -3170,12 +3170,12 @@ static int cadence_nand_init(struct cdns_nand_c=
-trl *cdns_ctrl)
-> >  		}
-> >  	}
-> >
-> > -	dma_dev =3D cdns_ctrl->dmac->device;
-> > -	cdns_ctrl->io.iova_dma =3D dma_map_resource(dma_dev->dev, cdns_ctrl->=
-io.dma,
-> > +	dma_dev =3D dmaengine_get_dma_device(cdns_ctrl->dmac);
-> > +	cdns_ctrl->io.iova_dma =3D dma_map_resource(dma_dev, cdns_ctrl->io.dm=
-a,
-> >  						  cdns_ctrl->io.size,
-> >  						  DMA_BIDIRECTIONAL, 0);
-> >
-> > -	ret =3D dma_mapping_error(dma_dev->dev, cdns_ctrl->io.iova_dma);
-> > +	ret =3D dma_mapping_error(dma_dev, cdns_ctrl->io.iova_dma);
-> >  	if (ret) {
-> >  		dev_err(cdns_ctrl->dev, "Failed to map I/O resource to DMA\n");
-> >  		goto dma_release_chnl;
-> > @@ -3204,7 +3204,7 @@ static int cadence_nand_init(struct cdns_nand_ctr=
-l *cdns_ctrl)
-> >  	return 0;
-> >
-> >  unmap_dma_resource:
-> > -	dma_unmap_resource(dma_dev->dev, cdns_ctrl->io.iova_dma,
-> > +	dma_unmap_resource(dma_dev, cdns_ctrl->io.iova_dma,
-> >  			   cdns_ctrl->io.size, DMA_BIDIRECTIONAL, 0);
-> >
-> >  dma_release_chnl:
->
-> [Severity: Medium]
-> Should cadence_nand_remove() also use dmaengine_get_dma_device() when
-> unmapping cdns_ctrl->io.iova_dma?
->
-> drivers/mtd/nand/raw/cadence-nand-controller.c:cadence_nand_remove() {
-> 	...
-> 	if (cdns_ctrl->dmac)
-> 		dma_unmap_resource(cdns_ctrl->dmac->device->dev,
-> 				   cdns_ctrl->io.iova_dma, cdns_ctrl->io.size,
-> 				   DMA_BIDIRECTIONAL, 0);
+Ok, so if I understood you correctly the changes below should be
+implementing what you ask, @Jan.
 
-Already fixed at
+It's a diff against v2:
 
-commit a018524a2ec96da5bb1965053967a20e0069ed9e
-Author: Frank Li <Frank.Li@nxp.com>
-Date:   Thu Sep 17 16:47:06 2026 -0400
+- jfs: free the anonymous tlocks when evicting an inode the way
+  txUnlock() does. That's also a mainline fix.
 
-    mtd: use dmaengine_get_dma_device() instead of chan->device->dev
+- fs: sync_filesystem() and sync(2) skip a superblock in the emergency
+  state. syncfs(2) and Q_SYNC return EROFS.
 
-    Replace direct dma_chan::device::dev access with the proper
-    dmaengine_get_dma_device() for consumer API
+- fs: refuse to freeze a superblock in the emergency state. Otherwise
+  freeze doesn't sync anything anymore and the flusher keeps writing to
+  the frozen filesystem.
 
-Previous script have not recongize this pattern.
+  That means, FIFREEZE and dm suspend with lockfs now fail with EROFS on
+  an errored ext2, fat etc. I think you said that you expect freeze to
+  fail anyway. I think that's right.
 
-> 	...
-> }
->
-> When chan->dev->chan_dma_dev is set, dmaengine_get_dma_device() returns
-> &chan->dev->device rather than chan->device->dev, so cadence_nand_remove()
-> unmaps the resource against a different struct device than
-> cadence_nand_init() used to map it, leaking the mapping on driver removal.
-> It also leaves a direct dereference of struct dma_device.
->
-> > diff --git a/drivers/mtd/nand/raw/fsmc_nand.c b/drivers/mtd/nand/raw/fs=
-mc_nand.c
-> > index b13b2b0c3f300..831293a5bd814 100644
-> > --- a/drivers/mtd/nand/raw/fsmc_nand.c
-> > +++ b/drivers/mtd/nand/raw/fsmc_nand.c
-> > @@ -486,7 +486,7 @@ static int dma_xfer(struct fsmc_nand_data *host, vo=
-id *buffer, int len,
-> >  		    enum dma_data_direction direction)
-> >  {
-> >  	struct dma_chan *chan;
-> > -	struct dma_device *dma_dev;
-> > +	struct device *dma_dev;
-> >  	struct dma_async_tx_descriptor *tx;
-> >  	dma_addr_t dma_dst, dma_src, dma_addr;
-> >  	dma_cookie_t cookie;
-> > @@ -501,9 +501,9 @@ static int dma_xfer(struct fsmc_nand_data *host, vo=
-id *buffer, int len,
-> >  	else
-> >  		return -EINVAL;
-> >
-> > -	dma_dev =3D chan->device;
-> > -	dma_addr =3D dma_map_single(dma_dev->dev, buffer, len, direction);
-> > -	if (dma_mapping_error(dma_dev->dev, dma_addr))
-> > +	dma_dev =3D dmaengine_get_dma_device(chan);
-> > +	dma_addr =3D dma_map_single(dma_dev, buffer, len, direction);
-> > +	if (dma_mapping_error(dma_dev, dma_addr))
-> >  		return -EINVAL;
-> >
-> >  	if (direction =3D=3D DMA_TO_DEVICE) {
-> > @@ -514,8 +514,7 @@ static int dma_xfer(struct fsmc_nand_data *host, vo=
-id *buffer, int len,
-> >  		dma_dst =3D dma_addr;
-> >  	}
-> >
-> > -	tx =3D dma_dev->device_prep_dma_memcpy(chan, dma_dst, dma_src,
-> > -			len, flags);
-> > +	tx =3D dmaengine_prep_dma_memcpy(chan, dma_dst, dma_src, len, flags);
-> >  	if (!tx) {
-> >  		dev_err(host->dev, "device_prep_dma_memcpy error\n");
-> >  		ret =3D -EIO;
-> > @@ -547,7 +546,7 @@ static int dma_xfer(struct fsmc_nand_data *host, vo=
-id *buffer, int len,
-> >  	ret =3D 0;
-> >
-> >  unmap_dma:
-> > -	dma_unmap_single(dma_dev->dev, dma_addr, len, direction);
-> > +	dma_unmap_single(dma_dev, dma_addr, len, direction);
-> >
-> >  	return ret;
-> >  }
->
-> [Severity: Critical]
-> This problem wasn't introduced by this patch, but can dma_xfer() unmap
-> dma_addr while the DMA transfer is still in flight [1]?
+  The exfat, ntfs, btrfs and ext4 shutdown ioctls then have to skip the
+  freeze after an error.
 
-Existing problem.
+- ext2, fat, affs, ufs and hfs: drop the ->write_inode() refusals.
+  Otherwise the flusher writes data and bitmaps but never the inodes.
 
-Frank
+- ext2, jfs, nilfs2, ocfs2 and ubifs: their ->sync_fs() checks are dead
+  now and go.
 
->
-> If an earlier transfer times out and its callback fires late,
-> host->dma_access_complete is left signaled.  Because dma_xfer() does not
-> call reinit_completion(&host->dma_access_complete) before submitting a new
-> transfer, wait_for_completion_timeout() consumes the stale completion and
-> returns immediately, so dma_unmap_single() runs while hardware DMA is
-> still active on buffer.
->
-> [1] https://sashiko.dev/#/bug/linux-836e69de-023a-4bd2-8b41-03e05feb8137
->
-> --
-> Sashiko AI review =B7 https://sashiko.dev/#/patchset/20261111202502.38606=
-47-1-Frank.Li@oss.nxp.com?part=3D1
+- ubifs: drop dirty folios and inodes after an error. Without the sync
+  at remount the flusher otherwise hits ubifs' asserts after a remount
+  to read-only.
+
+With that nothing is synced on request after an error anymore.
+
+syncfs, fsync and Q_SYNC return EROFS without writing anything and
+sync(2) and umount skip the filesystem's own sync.
+
+The flusher and the block device flushes in sync(2) and
+kill_block_super() still write. So what ends up on disk is the same as
+on mainline today:
+
+Is that what you had in mind?
+
+diff --git a/fs/affs/inode.c b/fs/affs/inode.c
+index 009245ad6c99c..c7de9c793ab8f 100644
+--- a/fs/affs/inode.c
++++ b/fs/affs/inode.c
+@@ -173,8 +173,6 @@ affs_write_inode(struct inode *inode, struct writeback_control *wbc)
+ 
+ 	pr_debug("write_inode(%llu)\n", inode->i_ino);
+ 
+-	if (sb_emergency_ro(sb))
+-		return -EROFS;
+ 	if (!inode->i_nlink)
+ 		// possibly free block
+ 		return 0;
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index 2063075906c8f..7f88eeb8afc57 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -5165,6 +5165,11 @@ static int btrfs_ioctl_shutdown(struct btrfs_fs_info *fs_info, unsigned long arg
+ 	if (btrfs_is_shutdown(fs_info))
+ 		return 0;
+ 
++	/* After an error there is nothing to flush and freezing fails. */
++	if (flags != BTRFS_SHUTDOWN_FLAGS_NOLOGFLUSH &&
++	    sb_emergency_ro(fs_info->sb))
++		flags = BTRFS_SHUTDOWN_FLAGS_NOLOGFLUSH;
++
+ 	switch (flags) {
+ 	case BTRFS_SHUTDOWN_FLAGS_LOGFLUSH:
+ 	case BTRFS_SHUTDOWN_FLAGS_DEFAULT:
+diff --git a/fs/exfat/super.c b/fs/exfat/super.c
+index 67b34cfce247c..b47816f70bb33 100644
+--- a/fs/exfat/super.c
++++ b/fs/exfat/super.c
+@@ -176,6 +176,11 @@ int exfat_force_shutdown(struct super_block *sb, u32 flags)
+ 	if (exfat_forced_shutdown(sb))
+ 		return 0;
+ 
++	/* After an error there is nothing to sync and freezing fails. */
++	if ((flags == EXFAT_GOING_DOWN_DEFAULT ||
++	     flags == EXFAT_GOING_DOWN_FULLSYNC) && sb_emergency_ro(sb))
++		flags = EXFAT_GOING_DOWN_NOSYNC;
++
+ 	switch (flags) {
+ 	case EXFAT_GOING_DOWN_DEFAULT:
+ 	case EXFAT_GOING_DOWN_FULLSYNC:
+diff --git a/fs/ext2/dir.c b/fs/ext2/dir.c
+index c2c9fc2d0b273..e17bbc7598c14 100644
+--- a/fs/ext2/dir.c
++++ b/fs/ext2/dir.c
+@@ -445,9 +445,6 @@ static int ext2_handle_dirsync(struct inode *dir)
+ 	err = filemap_write_and_wait(dir->i_mapping);
+ 	if (!err)
+ 		err = sync_inode_metadata(dir, 1);
+-	/* The change is done, an error made us read-only in the meantime. */
+-	if (err == -EROFS && sb_emergency_ro(dir->i_sb))
+-		err = 0;
+ 	return err;
+ }
+ 
+diff --git a/fs/ext2/inode.c b/fs/ext2/inode.c
+index 5c4831f8f45d2..dd28637c60737 100644
+--- a/fs/ext2/inode.c
++++ b/fs/ext2/inode.c
+@@ -1483,14 +1483,10 @@ int ext2_write_inode(struct inode *inode, struct writeback_control *wbc)
+ 	uid_t uid = i_uid_read(inode);
+ 	gid_t gid = i_gid_read(inode);
+ 	struct buffer_head * bh;
+-	struct ext2_inode *raw_inode;
++	struct ext2_inode * raw_inode = ext2_get_inode(sb, ino, &bh);
+ 	int n;
+ 	int err = 0;
+ 
+-	if (sb_emergency_ro(sb))
+-		return -EROFS;
+-
+-	raw_inode = ext2_get_inode(sb, ino, &bh);
+ 	if (IS_ERR(raw_inode))
+  		return -EIO;
+ 
+diff --git a/fs/ext2/super.c b/fs/ext2/super.c
+index a39e0564e3852..c4ac0f8f96de3 100644
+--- a/fs/ext2/super.c
++++ b/fs/ext2/super.c
+@@ -1287,10 +1287,6 @@ static int ext2_sync_fs(struct super_block *sb, int wait)
+ 	struct ext2_sb_info *sbi = EXT2_SB(sb);
+ 	struct ext2_super_block *es = EXT2_SB(sb)->s_es;
+ 
+-	/* Nothing may be written after an error made us read-only. */
+-	if (sb_emergency_ro(sb))
+-		return 0;
+-
+ 	/*
+ 	 * Write quota structures to quota file, sync_blockdev() will write
+ 	 * them to disk later
+@@ -1353,9 +1349,7 @@ static int ext2_reconfigure(struct fs_context *fc)
+ 	int flags = fc->sb_flags;
+ 	int err;
+ 
+-	/* Nothing may be written after an error made us read-only. */
+-	if (!sb_emergency_ro(sb))
+-		sync_filesystem(sb);
++	sync_filesystem(sb);
+ 
+ 	new_opts.s_mount_opt = ctx->vals_s_mount_opt;
+ 	new_opts.s_resuid = ctx->s_resuid;
+diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
+index e8e579498c990..ce0e0ebdded61 100644
+--- a/fs/ext4/ioctl.c
++++ b/fs/ext4/ioctl.c
+@@ -821,6 +821,10 @@ int ext4_force_shutdown(struct super_block *sb, u32 flags)
+ 	ext4_msg(sb, KERN_ALERT, "shut down requested (%d)", flags);
+ 	trace_ext4_shutdown(sb, flags);
+ 
++	/* After an error there is nothing to flush and freezing fails. */
++	if (flags == EXT4_GOING_FLAGS_DEFAULT && ext4_emergency_ro(sb))
++		flags = EXT4_GOING_FLAGS_NOLOGFLUSH;
++
+ 	switch (flags) {
+ 	case EXT4_GOING_FLAGS_DEFAULT:
+ 		ret = bdev_freeze(sb->s_bdev);
+diff --git a/fs/fat/inode.c b/fs/fat/inode.c
+index afd73dc4ba9a8..2779583c64423 100644
+--- a/fs/fat/inode.c
++++ b/fs/fat/inode.c
+@@ -963,9 +963,6 @@ static int fat_write_inode(struct inode *inode, struct writeback_control *wbc)
+ {
+ 	int err;
+ 
+-	if (unlikely(sb_emergency_ro(inode->i_sb)))
+-		return -EROFS;
+-
+ 	if (inode->i_ino == MSDOS_FSINFO_INO) {
+ 		struct super_block *sb = inode->i_sb;
+ 
+@@ -1961,9 +1958,6 @@ int fat_flush_inodes(struct super_block *sb, struct inode *i1, struct inode *i2)
+ 		ret = writeback_inode(i2);
+ 	if (!ret)
+ 		ret = sync_blockdev_nowait(sb->s_bdev);
+-	/* The change is done, an error made us read-only in the meantime. */
+-	if (ret == -EROFS && sb_emergency_ro(sb))
+-		ret = 0;
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(fat_flush_inodes);
+diff --git a/fs/hfs/inode.c b/fs/hfs/inode.c
+index 71f7ddf60fb27..7e590e1308eac 100644
+--- a/fs/hfs/inode.c
++++ b/fs/hfs/inode.c
+@@ -479,17 +479,6 @@ int hfs_write_inode(struct inode *inode, struct writeback_control *wbc)
+ 	int res;
+ 
+ 	hfs_dbg("ino %llu\n", inode->i_ino);
+-	if (unlikely(sb_emergency_ro(inode->i_sb))) {
+-		/* Keep the headers in sync with the nodes writeback still writes. */
+-		if (inode->i_ino == HFS_EXT_CNID)
+-			hfs_btree_write(HFS_SB(inode->i_sb)->ext_tree);
+-		else if (inode->i_ino == HFS_CAT_CNID)
+-			hfs_btree_write(HFS_SB(inode->i_sb)->cat_tree);
+-		else
+-			return -EROFS;
+-		return 0;
+-	}
+-
+ 	res = hfs_ext_write_extent(inode);
+ 	if (res)
+ 		return res;
+diff --git a/fs/jfs/inode.c b/fs/jfs/inode.c
+index 8ee227006d2fb..4a27d6a7ffdc9 100644
+--- a/fs/jfs/inode.c
++++ b/fs/jfs/inode.c
+@@ -172,6 +172,16 @@ void jfs_evict_inode(struct inode *inode)
+ 	clear_inode(inode);
+ 	dquot_drop(inode);
+ 
++	/*
++	 * Writeback commits the anonymous transactions of allocations. If the
++	 * filesystem went read-only without a sync, e.g. after an error,
++	 * nothing did.
++	 */
++	if (ji->atlhead) {
++		WARN_ON_ONCE(!sb_rdonly(inode->i_sb) &&
++			     !sb_emergency_ro(inode->i_sb));
++		txAbortAnon(inode);
++	}
+ 	BUG_ON(!list_empty(&ji->anon_inode_list));
+ 
+ 	spin_lock_irq(&ji->ag_lock);
+diff --git a/fs/jfs/jfs_txnmgr.c b/fs/jfs/jfs_txnmgr.c
+index 083dbbb0c3268..85192dd4461a4 100644
+--- a/fs/jfs/jfs_txnmgr.c
++++ b/fs/jfs/jfs_txnmgr.c
+@@ -2581,6 +2581,74 @@ void txFreelock(struct inode *ip)
+ 	TXN_UNLOCK();
+ }
+ 
++/*
++ *	txAbortAnon()
++ *
++ * function:	free the anonymous tlocks of an inode that is evicted
++ *		before writeback committed them, e.g. because an error made
++ *		the filesystem read-only.
++ *
++ * A page that carries nothing but uncommitted changes isn't written home.
++ * A page that is also waiting to go home with committed changes (mp->lsn)
++ * goes home with both, after an error the superblock is marked dirty.
++ */
++void txAbortAnon(struct inode *ip)
++{
++	struct jfs_inode_info *jfs_ip = JFS_IP(ip);
++	struct linelock *linelock;
++	struct metapage *mp;
++	struct tlock *tlck;
++	lid_t lid, next, llid, k;
++
++	/* txQuiesce() and jfs_sync() commit under the commit_mutex */
++	mutex_lock(&jfs_ip->commit_mutex);
++
++	TXN_LOCK();
++	lid = jfs_ip->atlhead;
++	jfs_ip->atlhead = jfs_ip->atltail = 0;
++	list_del_init(&jfs_ip->anon_inode_list);
++	TXN_UNLOCK();
++
++	for (; lid; lid = next) {
++		tlck = lid_to_tlock(lid);
++		next = tlck->next;
++		mp = tlck->mp;
++
++		if (mp && (tlck->flag & tlckPAGELOCK)) {
++			/* undo txLock()'s metapage_nohomeok() */
++			hold_metapage(mp);
++			if (!mp->lsn)
++				clear_bit(META_dirty, &mp->flag);
++			TXN_LOCK();
++			mp->lid = 0;
++			TXN_UNLOCK();
++			_metapage_homeok(mp);
++			put_metapage(mp);
++		} else if (mp) {
++			/* the xtree root in the inode, it isn't written anymore */
++			TXN_LOCK();
++			if (jfs_ip->xtlid == lid)
++				jfs_ip->xtlid = 0;
++			else
++				mp->lid = 0;
++			TXN_UNLOCK();
++		}
++
++		TXN_LOCK();
++		llid = ((struct linelock *) &tlck->lock)->next;
++		while (llid) {
++			linelock = (struct linelock *) lid_to_tlock(llid);
++			k = linelock->next;
++			txLockFree(llid);
++			llid = k;
++		}
++		txLockFree(lid);
++		TXN_UNLOCK();
++	}
++
++	mutex_unlock(&jfs_ip->commit_mutex);
++}
++
+ /*
+  *	txAbort()
+  *
+diff --git a/fs/jfs/jfs_txnmgr.h b/fs/jfs/jfs_txnmgr.h
+index ba71eb5ced567..e9a7547afd3f6 100644
+--- a/fs/jfs/jfs_txnmgr.h
++++ b/fs/jfs/jfs_txnmgr.h
+@@ -288,6 +288,7 @@ extern struct linelock *txLinelock(struct linelock *);
+ extern void txFreeMap(struct inode *, struct maplock *, struct tblock *, int);
+ extern void txEA(tid_t, struct inode *, dxd_t *, dxd_t *);
+ extern void txFreelock(struct inode *);
++extern void txAbortAnon(struct inode *);
+ extern int lmLog(struct jfs_log *, struct tblock *, struct lrd *,
+ 		 struct tlock *);
+ extern void txQuiesce(struct super_block *);
+diff --git a/fs/jfs/super.c b/fs/jfs/super.c
+index 1926019b10949..4dcc1b28e51d0 100644
+--- a/fs/jfs/super.c
++++ b/fs/jfs/super.c
+@@ -372,7 +372,6 @@ static int jfs_reconfigure(struct fs_context *fc)
+ 	if (ctx->resize && sb_emergency_ro(sb))
+ 		return -EROFS;
+ 
+-	/* After an error this only commits what was queued before it. */
+ 	sync_filesystem(sb);
+ 
+ 	/* Transfer results of parsing to the sbi */
+@@ -667,10 +666,6 @@ static int jfs_sync_fs(struct super_block *sb, int wait)
+ {
+ 	struct jfs_log *log = JFS_SBI(sb)->log;
+ 
+-	/* After an error only freeze and umount write out the log. */
+-	if (sb_emergency_ro(sb))
+-		return 0;
+-
+ 	/* log == NULL indicates read-only mount */
+ 	if (log) {
+ 		/*
+diff --git a/fs/nilfs2/super.c b/fs/nilfs2/super.c
+index edb7d379ecbdf..e2d7865e4b378 100644
+--- a/fs/nilfs2/super.c
++++ b/fs/nilfs2/super.c
+@@ -530,10 +530,6 @@ static int nilfs_sync_fs(struct super_block *sb, int wait)
+ 	struct nilfs_super_block **sbp;
+ 	int err = 0;
+ 
+-	/* Nothing may be written after an error made us read-only. */
+-	if (sb_emergency_ro(sb))
+-		return 0;
+-
+ 	/* This function is called when super block should be written back */
+ 	if (wait)
+ 		err = nilfs_construct_segment(sb);
+diff --git a/fs/ntfs/super.c b/fs/ntfs/super.c
+index 7bc79b7766396..660fd145731fd 100644
+--- a/fs/ntfs/super.c
++++ b/fs/ntfs/super.c
+@@ -2271,6 +2271,11 @@ int ntfs_force_shutdown(struct super_block *sb, u32 flags)
+ 	if (NVolShutdown(vol))
+ 		return 0;
+ 
++	/* After an error there is nothing to flush and freezing fails. */
++	if ((flags == FS_SHUTDOWN_FLAGS_DEFAULT ||
++	     flags == FS_SHUTDOWN_FLAGS_LOGFLUSH) && sb_emergency_ro(sb))
++		flags = FS_SHUTDOWN_FLAGS_NOLOGFLUSH;
++
+ 	switch (flags) {
+ 	case FS_SHUTDOWN_FLAGS_DEFAULT:
+ 	case FS_SHUTDOWN_FLAGS_LOGFLUSH:
+diff --git a/fs/ocfs2/super.c b/fs/ocfs2/super.c
+index 6541294641da2..0600203931c42 100644
+--- a/fs/ocfs2/super.c
++++ b/fs/ocfs2/super.c
+@@ -403,10 +403,6 @@ static int ocfs2_sync_fs(struct super_block *sb, int wait)
+ 	if (ocfs2_is_hard_readonly(osb))
+ 		return -EROFS;
+ 
+-	/* Nothing to flush or commit after an error. */
+-	if (ocfs2_is_soft_readonly(osb))
+-		return 0;
+-
+ 	if (wait) {
+ 		status = ocfs2_flush_truncate_log(osb);
+ 		if (status < 0)
+diff --git a/fs/quota/dquot.c b/fs/quota/dquot.c
+index f469e6e18e4ca..75118a8359495 100644
+--- a/fs/quota/dquot.c
++++ b/fs/quota/dquot.c
+@@ -777,6 +777,10 @@ int dquot_quota_sync(struct super_block *sb, int type)
+ 	int cnt;
+ 	int ret;
+ 
++	/* An error made the filesystem read-only. */
++	if (sb_emergency_ro(sb))
++		return -EROFS;
++
+ 	ret = dquot_writeback_dquots(sb, type);
+ 	if (ret)
+ 		return ret;
+diff --git a/fs/super.c b/fs/super.c
+index 0855c96b95b5c..edc767d816597 100644
+--- a/fs/super.c
++++ b/fs/super.c
+@@ -2291,6 +2291,16 @@ int freeze_super(struct super_block *sb, enum freeze_holder who, const void *fre
+ 		goto retry;
+ 	}
+ 
++	/*
++	 * After an error nothing gets synced anymore while the flusher may
++	 * still write, so a new freeze can't give a stable filesystem. Joining
++	 * a freeze that is already in effect above is fine.
++	 */
++	if (sb_emergency_ro(sb)) {
++		deactivate_locked_super(sb);
++		return -EROFS;
++	}
++
+ 	if (sb_rdonly(sb)) {
+ 		/* Nothing to do really... */
+ 		WARN_ON_ONCE(freeze_inc(sb, who) > 1);
+@@ -2313,6 +2323,9 @@ int freeze_super(struct super_block *sb, enum freeze_holder who, const void *fre
+ 
+ 	/* All writers are done so after syncing there won't be dirty data */
+ 	ret = sync_filesystem(sb);
++	/* An error while we waited for the writers means nothing was synced. */
++	if (!ret && sb_emergency_ro(sb))
++		ret = -EROFS;
+ 	if (ret) {
+ 		sb->s_writers.frozen = SB_UNFROZEN;
+ 		sb_freeze_unlock(sb, SB_FREEZE_PAGEFAULT);
+diff --git a/fs/sync.c b/fs/sync.c
+index da1b35bd4445b..e282040b83e71 100644
+--- a/fs/sync.c
++++ b/fs/sync.c
+@@ -39,8 +39,9 @@ int sync_filesystem(struct super_block *sb)
+ 
+ 	/*
+ 	 * No point in syncing out anything if the filesystem is read-only.
++	 * After an error made it read-only nothing is pushed out anymore.
+ 	 */
+-	if (sb_rdonly(sb))
++	if (sb_rdonly(sb) || sb_emergency_ro(sb))
+ 		return 0;
+ 
+ 	/*
+@@ -73,14 +74,14 @@ EXPORT_SYMBOL(sync_filesystem);
+ 
+ static void sync_inodes_one_sb(struct super_block *sb, void *arg)
+ {
+-	if (!sb_rdonly(sb))
++	if (!sb_rdonly(sb) && !sb_emergency_ro(sb))
+ 		sync_inodes_sb(sb);
+ }
+ 
+ static void sync_fs_one_sb(struct super_block *sb, void *arg)
+ {
+-	if (!sb_rdonly(sb) && !(sb->s_iflags & SB_I_SKIP_SYNC) &&
+-	    sb->s_op->sync_fs)
++	if (!sb_rdonly(sb) && !sb_emergency_ro(sb) &&
++	    !(sb->s_iflags & SB_I_SKIP_SYNC) && sb->s_op->sync_fs)
+ 		sb->s_op->sync_fs(sb, *(int *)arg);
+ }
+ 
+@@ -157,6 +158,9 @@ SYSCALL_DEFINE1(syncfs, int, fd)
+ 
+ 	down_read(&sb->s_umount);
+ 	ret = sync_filesystem(sb);
++	/* An error made the filesystem read-only. */
++	if (!ret && sb_emergency_ro(sb))
++		ret = -EROFS;
+ 	up_read(&sb->s_umount);
+ 
+ 	ret2 = errseq_check_and_advance(&sb->s_wb_err, &fd_file(f)->f_sb_err);
+diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+index 99dd52715eee9..4eae6c2ae2eea 100644
+--- a/fs/ubifs/file.c
++++ b/fs/ubifs/file.c
+@@ -898,6 +898,13 @@ static int do_writepage(struct folio *folio, size_t len)
+ 
+ 	folio_start_writeback(folio);
+ 
++	/* Nothing gets written after an error, drop the folio. */
++	if (unlikely(c->ro_error)) {
++		err = -EROFS;
++		mapping_set_error(folio->mapping, err);
++		goto out;
++	}
++
+ 	block = folio->index << UBIFS_BLOCKS_PER_PAGE_SHIFT;
+ 	for (;;) {
+ 		blen = min_t(size_t, len, UBIFS_BLOCK_SIZE);
+@@ -918,6 +925,7 @@ static int do_writepage(struct folio *folio, size_t len)
+ 		ubifs_ro_mode(c, err);
+ 	}
+ 
++out:
+ 	ubifs_assert(c, folio->private != NULL);
+ 	if (folio_test_checked(folio))
+ 		release_new_page_budget(c);
+@@ -997,6 +1005,10 @@ static int ubifs_writepage(struct folio *folio, struct writeback_control *wbc)
+ 		goto out_unlock;
+ 	}
+ 
++	/* After an error do_writepage() drops the folio. */
++	if (unlikely(c->ro_error))
++		return do_writepage(folio, len);
++
+ 	spin_lock(&ui->ui_lock);
+ 	synced_i_size = ui->synced_i_size;
+ 	spin_unlock(&ui->ui_lock);
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index f041fe434d3b9..2d71274e89ad0 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -312,6 +312,12 @@ static int ubifs_write_inode(struct inode *inode, struct writeback_control *wbc)
+ 		return 0;
+ 	}
+ 
++	/* Nothing gets written after an error, drop the change. */
++	if (unlikely(c->ro_error)) {
++		err = -EROFS;
++		goto out;
++	}
++
+ 	/*
+ 	 * As an optimization, do not write orphan inodes to the media just
+ 	 * because this is not needed.
+@@ -327,6 +333,7 @@ static int ubifs_write_inode(struct inode *inode, struct writeback_control *wbc)
+ 			err = dbg_check_inode_size(c, inode, ui->ui_size);
+ 	}
+ 
++out:
+ 	ui->dirty = 0;
+ 	mutex_unlock(&ui->ui_mutex);
+ 	ubifs_release_dirty_inode_budget(c, ui);
+@@ -473,14 +480,6 @@ static int ubifs_sync_fs(struct super_block *sb, int wait)
+ 	if (!wait)
+ 		return 0;
+ 
+-	/*
+-	 * Nothing gets written after an error. Fail only here, after the
+-	 * !wait return: sync_filesystem() gives up at the first error and
+-	 * would skip sync_inodes_sb().
+-	 */
+-	if (c->ro_error)
+-		return -EROFS;
+-
+ 	/*
+ 	 * Synchronize write buffers, because 'ubifs_run_commit()' does not
+ 	 * do this if it waits for an already running commit.
+diff --git a/fs/ufs/dir.c b/fs/ufs/dir.c
+index 78c8839211153..e96174b738b4c 100644
+--- a/fs/ufs/dir.c
++++ b/fs/ufs/dir.c
+@@ -64,9 +64,6 @@ static int ufs_handle_dirsync(struct inode *dir)
+ 	err = filemap_write_and_wait(dir->i_mapping);
+ 	if (!err)
+ 		err = sync_inode_metadata(dir, 1);
+-	/* The change is done, an error made us read-only in the meantime. */
+-	if (err == -EROFS && sb_emergency_ro(dir->i_sb))
+-		err = 0;
+ 	return err;
+ }
+ 
+diff --git a/fs/ufs/inode.c b/fs/ufs/inode.c
+index ed5d98c8bfca2..c9ff8673fa668 100644
+--- a/fs/ufs/inode.c
++++ b/fs/ufs/inode.c
+@@ -828,8 +828,6 @@ static int ufs_update_inode(struct inode * inode, int do_sync)
+ 
+ int ufs_write_inode(struct inode *inode, struct writeback_control *wbc)
+ {
+-	if (sb_emergency_ro(inode->i_sb))
+-		return -EROFS;
+ 	return ufs_update_inode(inode, wbc->sync_mode == WB_SYNC_ALL);
+ }
+ 
+diff --git a/include/linux/fs/super.h b/include/linux/fs/super.h
+index 0fa6eaa93d44d..51810fe95a835 100644
+--- a/include/linux/fs/super.h
++++ b/include/linux/fs/super.h
+@@ -190,8 +190,8 @@ static inline bool sb_rdonly(const struct super_block *sb)
+ 
+ /*
+  * An error made the filesystem read-only. Check this wherever sb_rdonly()
+- * gates a write but never where it describes the mount, e.g. in freeze_super()
+- * and thaw_super(). It can get set while the superblock is frozen.
++ * gates a write but never where it describes the mount, e.g. in the read-only
++ * shortcuts of freeze_super() and thaw_super(). It can get set while frozen.
+  */
+ static inline bool sb_emergency_ro(const struct super_block *sb)
+ {
+diff --git a/tools/testing/selftests/filesystems/sb_rdonly/emergency_ro_test.c b/tools/testing/selftests/filesystems/sb_rdonly/emergency_ro_test.c
+index de442b8ee7099..44e92a98477c3 100644
+--- a/tools/testing/selftests/filesystems/sb_rdonly/emergency_ro_test.c
++++ b/tools/testing/selftests/filesystems/sb_rdonly/emergency_ro_test.c
+@@ -481,9 +481,13 @@ TEST_F_TIMEOUT(emergency_ro, freeze_error_thaw, 120)
+ 			"a modification did not fail with EROFS");
+ 	}
+ 
+-	/* freezing still works and doesn't leave writers blocked */
+-	ASSERT_EQ(ioctl(rootfd, FIFREEZE, 0), 0);
+-	ASSERT_EQ(ioctl(rootfd, FITHAW, 0), 0);
++	/* a new freeze is refused and doesn't leave writers blocked */
++	ret = ioctl(rootfd, FIFREEZE, 0);
++	EXPECT_EQ(ret, -1);
++	EXPECT_EQ(errno, EROFS);
++	ret = ioctl(rootfd, FITHAW, 0);
++	EXPECT_EQ(ret, -1);
++	EXPECT_EQ(errno, EINVAL);
+ 	ret = run_child(modify_all, self->mnt, prefd);
+ 	if (ret == -ETIMEDOUT)
+ 		self->wedged = true;
+
+-- 
 
 ______________________________________________________
 Linux MTD discussion mailing list
