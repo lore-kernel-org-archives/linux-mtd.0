@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 421B3606A337
-	for <linux-mtd@archiver.kernel.org>; Thu, 12 Nov 2026 00:14:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5ACC606A321
+	for <linux-mtd@archiver.kernel.org>; Thu, 12 Nov 2026 00:15:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=kCxHcyBC;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=infineon.com header.i=@infineon.com header.a=rsa-sha256 header.s=IFXMAIL header.b=Xa6OG/uU
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=d4sc6rAQ;
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=infineon.com header.i=@infineon.com header.a=rsa-sha256 header.s=IFXMAIL header.b=BmtEGwuN
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,65 +14,65 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=1gCEqoZlGyf45NO2Hyj+YWRnVHdl2ghtUmcoSFhtD2U=; b=kCxHcyBC4T9nE/EYVOqM56P0xX
-	HEva6HIN9+TvHBZKhOOK6P+ILEdz9jHTBMQANgwZ1YMUlnYx6ikLbRCgsveb8KaynAA/C6S3pvg5H
-	yH+YxJqY5vlnCYFU66M/5Rf94hSMBI7JnuwdCBd/5w8WXuojFMFw17APyCqJcDdv1MSt/lmARVOTh
-	jC3cfRxaQwjTw2bto+mWvdQe/2McpduMQBkXKKwXfbzE8+E/9h58UxiyX6hd4tnv6n/EKFlq5sM3X
-	hXfB0vOOWbj+DaHw2Jcp4tqE05sG8RVqc3g4/IdF6qNVlb7HdQj3Zpr6xzqkTjWcQ1bb/j3634XGE
-	Kb348zVg==;
+	bh=Z6in19e5yxga3PSr+uzz4BAJzUk10zNdbZyKqk5S6NU=; b=d4sc6rAQ3vj9ZPQfzdBP/UsJec
+	iRhp1nKtbXhuGo8XTK7/x1SL5yUy4iqWZaga+RKYX9DNcR0rDTIaXZMrfSDwPUOakxTxlR4GMre86
+	+v3OOC/tK12auG92TiG0YmKFF5zu575IzvC+pG6vsSO03NCWt98bF9Q4zliSF8cnrBycgt9fq2HRj
+	4qPGKp0Pq6mXyCQ6qZWBbfsuG/sVDdLKyPJc4qn6uKjoVrvOIqLe/RqcJrre3dC/yiNr223o9rtZU
+	pX7G4T6aPo42wFru0EEMvJLRqGwJCfHyKwmKnxKJvC6qdgUq3zOl0sNPtq5z0gDd2B7sArOZ1yngX
+	YvS8gkjA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xRIS7-00000008DIM-0cS7;
-	Thu, 12 Nov 2026 00:14:07 +0000
-Received: from smtp11.infineon.com ([2a00:18f0:1e00:4::5])
+	id 1xRITT-00000008DSw-2UHl;
+	Thu, 12 Nov 2026 00:15:31 +0000
+Received: from smtp9.infineon.com ([217.10.52.204])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xRIS4-00000008DHX-0nL0
+	id 1xRITQ-00000008DRi-1d7G
 	for linux-mtd@lists.infradead.org;
-	Thu, 12 Nov 2026 00:14:05 +0000
+	Thu, 12 Nov 2026 00:15:29 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=infineon.com; i=@infineon.com; q=dns/txt; s=IFXMAIL;
-  t=1794442444; x=1825978444;
+  t=1794442529; x=1825978529;
   h=from:to:cc:subject:date:message-id:references:
    in-reply-to:content-transfer-encoding:mime-version;
-  bh=Gjj8XrtdGf75bTN04E+EJ60Af0aZGvGLYuMFY0/g4K8=;
-  b=Xa6OG/uUa3BWolmgiURywjW8cpwU/zsTU5nkFvKFKB5PLVZQj85kyCUR
-   +yCWY/Elo6SGYplotirfyhkr8wYfEOn27/PsiXU9SCXD491rLgOYNqJ++
-   niSKKm3ViC6O/qaHyC2uY8PPDvGpdXHO/XAidYPHmQB3sdFFAw0qv37j0
-   E=;
-X-CSE-ConnectionGUID: pSyOsSnRQ+qVXrRISUb0YA==
-X-CSE-MsgGUID: tOlzg8wgQ2SHC0KGJW7FEA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11963"; a="169882909"
+  bh=k7kpbDZfkdOu+6+Q4eAosh4Dn7tQCdI9lK4TiaOQa1M=;
+  b=BmtEGwuNR83iiR6ZDXWTI5T3dDq6MWZy4EoyszLEtS9FFhzG7yblpX1W
+   qwJJcfHA/Zm6Zk7fTEolVeu1eABGsM+ZEwjNZqGyYgbcLaWfXUkeh5T2O
+   Qv3naIVwyrBqsaXWbx8juYd9URDlWqH++K5eIC0QeHJxcAItQtROd7z3q
+   k=;
+X-CSE-ConnectionGUID: HcBWqX06T3eMXfcMeEeiRw==
+X-CSE-MsgGUID: BhPEGWKUQMuvlhW+Eydr+w==
+X-IronPort-AV: E=McAfee;i="6800,10657,11963"; a="117413051"
 X-IronPort-AV: E=Sophos;i="6.27,208,1787004000"; 
-   d="scan'208";a="169882909"
+   d="scan'208";a="117413051"
 X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO MUCSE819.infineon.com) ([172.23.29.45])
-  by smtp11.infineon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2026 01:14:00 +0100
-Received: from MUCSE820.infineon.com (172.23.29.46) by MUCSE819.infineon.com
- (172.23.29.45) with Microsoft SMTP Server (version=TLS1_2,
+Received: from unknown (HELO MUCSE812.infineon.com) ([172.23.29.38])
+  by smtp9.infineon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2026 01:14:27 +0100
+Received: from MUCSE813.infineon.com (172.23.29.39) by MUCSE812.infineon.com
+ (172.23.29.38) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.56; Thu, 12 Nov
- 2026 01:13:59 +0100
-Received: from MUCSE815.infineon.com (172.23.29.41) by MUCSE820.infineon.com
- (172.23.29.46) with Microsoft SMTP Server (version=TLS1_2,
+ 2026 01:14:26 +0100
+Received: from MUCSE815.infineon.com (172.23.29.41) by MUCSE813.infineon.com
+ (172.23.29.39) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.56; Thu, 12 Nov
- 2026 01:13:59 +0100
+ 2026 01:14:25 +0100
 Received: from MUCSE815.infineon.com ([fe80::b54c:c0bd:546c:c9be]) by
  MUCSE815.infineon.com ([fe80::b54c:c0bd:546c:c9be%12]) with mapi id
- 15.02.2562.056; Thu, 12 Nov 2026 01:13:59 +0100
+ 15.02.2562.056; Thu, 12 Nov 2026 01:14:25 +0100
 From: <Takahiro.Kuwano@infineon.com>
 To: <changhuang.liang@starfivetech.com>, <pratyush@kernel.org>,
 	<mwalle@kernel.org>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
 	<vigneshr@ti.com>
 CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
-Subject: RE: [PATCH v1 3/3] mtd: spi-nor: macronix: Add 1-4-4 DTR read support
- for MX66L1G45G
-Thread-Topic: [PATCH v1 3/3] mtd: spi-nor: macronix: Add 1-4-4 DTR read
- support for MX66L1G45G
-Thread-Index: AQHdccU75kEGd21+l0yxtHbv82cQY7cpkaAg
-Date: Thu, 12 Nov 2026 00:13:59 +0000
-Message-ID: <ee182cedf0d94d5fa9dfc9696bb0b890@infineon.com>
+Subject: RE: [PATCH v1 2/3] mtd: spi-nor: debugfs: Correct DTR protocol names
+ for 1S-xD-xD modes
+Thread-Topic: [PATCH v1 2/3] mtd: spi-nor: debugfs: Correct DTR protocol names
+ for 1S-xD-xD modes
+Thread-Index: AQHdccU8ziCaTaZiX0OZMPbBig06S7cpkeuQ
+Date: Thu, 12 Nov 2026 00:14:25 +0000
+Message-ID: <53feff9e3be2486eadb42bb3302cfc5f@infineon.com>
 References: <20261111101240.7378-1-changhuang.liang@starfivetech.com>
- <20261111101240.7378-4-changhuang.liang@starfivetech.com>
-In-Reply-To: <20261111101240.7378-4-changhuang.liang@starfivetech.com>
+ <20261111101240.7378-3-changhuang.liang@starfivetech.com>
+In-Reply-To: <20261111101240.7378-3-changhuang.liang@starfivetech.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -80,9 +80,9 @@ X-MS-TNEF-Correlator:
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261111_161404_541127_C3EDF51C 
-X-CRM114-Status: GOOD (  13.85  )
-X-Spam-Score: -2.1 (--)
+X-CRM114-CacheID: sfid-20261111_161528_752089_52132B9F 
+X-CRM114-Status: GOOD (  11.53  )
+X-Spam-Score: -4.4 (----)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,35 +102,25 @@ X-Spam-Status: No, score=-8.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-> The MX66L1G45G supports the 1-4-4 DTR read mode. This flash uses 6
-> dummy cycles by default in 1-4-4 DTR mode.
+> The debugfs protocol names for the mixed DTR modes (1-1-1, 1-2-2,
+> 1-4-4, 1-8-8) currently print the command phase as "1D", i.e. dual
+> transfer on a single line.  That does not match the protocol
+> definition: these modes issue the opcode on a single line in single
+> data rate (S), and only the address, dummy and data phases use DTR
+> (D).  The "1D" prefix is therefore wrong.
 > 
-> For 1S-4D-4D, its support bit is located in the 21st DWORD of the
-> BFPT table, while the dummy cycles are described in the 23rd DWORD.
-> Unfortunately, the BFPT of this flash model only provides 16 DWORDs,
-> and the kernel's SFDP parser does not derive any
-> SNOR_HWCAPS_READ_1_4_4_DTR capability from the BFPT table.
+> Rename them to "1S-xD-xD" so the names reflect that the first phase
+> is single-data-rate on one line, consistent with the "8D-8D-8D"
+> naming for SNOR_PROTO_8_8_8_DTR.
 > 
-> Since this information is expected to be in the BFPT, add a post_bfpt
-> fixup which declares the 1-4-4 DTR read capability with the default 6
-> dummy cycles and the 3-byte address opcode (0xED).
-> 
-> The SFDP of this part provides a 4BAIT table, which also advertises
-> the 4-byte 1-4-4 DTR opcode (0xEE). As the capability is now set
-> before the 4BAIT table is parsed, the 4BAIT parser keeps it and
-> converts the opcode to its 4-byte variant, like it does for the other
-> read commands.
-> 
-> Add a dedicated fixup for the part (SNOR_ID 0xc2, 0x20, 0x1b) that
-> keeps the existing QPP 4-byte post-SFDP fixup and additionally
-> advertises the 1-4-4 DTR read capability in post_bfpt.
+> This only changes the strings printed by debugfs; no functional
+> behavior is affected.
 > 
 > Signed-off-by: Changhuang Liang <changhuang.liang@starfivetech.com>
 > Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
 > ---
 
 Reviewed-by: Takahiro Kuwano <takahiro.kuwano@infineon.com>
-
 
 ______________________________________________________
 Linux MTD discussion mailing list
