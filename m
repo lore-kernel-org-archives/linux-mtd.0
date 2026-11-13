@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6C5E606B52E
-	for <linux-mtd@archiver.kernel.org>; Fri, 13 Nov 2026 18:15:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C27D606C0DF
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 Nov 2026 18:15:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=PK5IJnaY;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=NoDpqQyb
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=oh6jWP3n;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=qdgH380A
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,74 +14,74 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=zy6PQOgpM4P7T63rRvLiQT3Onp8743+RJYmaL0CNF5Q=; b=PK5IJnaYX7gr/w+ulnOoQnd4rR
-	dnr+Bamu7oQdjG+fycMW0V/GQrTq1t91DyWV9Zl1Kf0QTVswAXCfWKB8W4qKlnEZuTV8+YThqSwuJ
-	xEs/0SkkVVlgNS4Qh6vYZ7jSGTgSaw5eVegAc7dJ9Cl0UMyqb1oPzmdfgXxeYP3nTP6DXU7yKmchm
-	Hk2m0BlMqL3x28EVUJxRAu6j7lPaDrHji9fIGPJqTBuduk5hgM/qcizvFGCDPpOJNH9r9GTN7bM3c
-	bK8DMJBrw8bvzO2DvMBaoA/IQa+LIkedWauyIrjTPSF8G5NMvDC3pPuvEvl9lNtMlwsdw/pFq6OYA
-	PGNn81og==;
+	bh=TR0CuypnC61jELJsl0XF5lPLsPWUkWFMZwCPhmVBl8o=; b=oh6jWP3nBRQzCjwmdsk50l6qQr
+	JnP5hCOFN1F9TMM7zNGR94xGanOOPVqSyB4lO5YgmMSYrlg2Jm6EU4eSIK+XG3wDBWQctbTK0rCaX
+	0ld++UfGqI1JwphDzYsM7lrDWPkHPQ1BHu3dJj6RPWEXB/wOzU/9pDXw83w4R5x9QiaU0esyxIQHt
+	fEa8U/1LkvGQV/yBpdTeTnMKkp4gnpPXswSuzqpig8/awiQdplBej5WsGmWvadJvX5Fij6HVI6KUW
+	PeQeXIa9jCQqm78kwTlf+MGWTwGoUmxSl1OT1t6b0oRlyYav8hIomALhM3M+FXjgGv489JP4Cuj1F
+	+crCA65w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xRvoN-0000000Dr2P-223G;
-	Fri, 13 Nov 2026 18:15:43 +0000
-Received: from mail-ot1-x32e.google.com ([2607:f8b0:4864:20::32e])
+	id 1xRvoP-0000000Dr7B-3gvC;
+	Fri, 13 Nov 2026 18:15:45 +0000
+Received: from mail-oo1-xc36.google.com ([2607:f8b0:4864:20::c36])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xRvoB-0000000Dqhb-2Fy7
+	id 1xRvoE-0000000Dqls-097B
 	for linux-mtd@lists.infradead.org;
-	Fri, 13 Nov 2026 18:15:37 +0000
-Received: by mail-ot1-x32e.google.com with SMTP id 46e09a7af769-833e671ee9fso2374816a34.0
-        for <linux-mtd@lists.infradead.org>; Fri, 13 Nov 2026 10:15:31 -0800 (PST)
+	Fri, 13 Nov 2026 18:15:38 +0000
+Received: by mail-oo1-xc36.google.com with SMTP id 006d021491bc7-716b58a4365so1380820eaf.3
+        for <linux-mtd@lists.infradead.org>; Fri, 13 Nov 2026 10:15:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794593730; x=1795198530; darn=lists.infradead.org;
+        d=gmail.com; s=20260707; t=1794593733; x=1795198533; darn=lists.infradead.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=GY/HbGTlJH0mFAMxk43t2Nol/0RsWbJ0WzHGNlvzcOU=;
-        b=NoDpqQyb1yWedi6bgTI22H93Lamciu91EEko+oPh03LliceGVKS7sr/k2ySDfV9gCK
-         LxFXn/tQY3rPJl7ogRV3eSVAcGAAHFEXxPnrmgs1HLYrfZvyTdirtu8nbeA8IrOVco0z
-         gXzOpTmsJdaf4kvA3iDG+PPuOnHXIz/N3yZB8rYjw+l0iV32cAEhtBMKxiSH7kIztgPB
-         JHTEgzdDhPuVT0uhEUkEchcsp68sJUBt804KmZZEwOk87HEoMqD2x0xGk9Aap14eyjP2
-         SIoz6q0X2IYON962TPeIGORv6TZs5aWcapcN0/ANLF33oDn2FWbQhLPzgVdz27p/cjdi
-         oJbw==
+        bh=eTeuHhgcUZaM9gs7XgXp1+b9XZi8CAzKYwVU1LGn4gk=;
+        b=qdgH380AEDFhH3d+NFQLm0Xv/ir3Iu5mEA7Y0n76fqDmxyZo3WATTI6T7LhFNYz6H4
+         fhEyF3QIHlbN8Y3uWpT4zb2RIf11bnNOS/xJxK9h0UWL7FyX8w0QhXe/ahMmjCzSTM6x
+         04ihBXSz3sHH99cNAlOfLIo9l6XNgpXkR24+rNrV81+bgpx34f/1s6z3Tx/or0suxeUm
+         5oQTBPgVVsGfWx8JajR3asAixk/mDT/4NXtIbx1AWTkPM+rolTVIZ+2FZIqEt0wIYTfX
+         ORmPw/SaQuz8RXTRcxsZvxIIf3vwM7rzRSPXqtvQ5SSLbr7QDK389zQ2rlPCMwN/zk7v
+         zCQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794593730; x=1795198530;
+        d=1e100.net; s=20260707; t=1794593733; x=1795198533;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=GY/HbGTlJH0mFAMxk43t2Nol/0RsWbJ0WzHGNlvzcOU=;
-        b=LZgxnVT0HTkZOTIVZB+OC72LLyboVuYHUIv+ww4ucesbswyrUIPdJ8DDV5ZfkI9V42
-         XzsQzEdwlcRVxXOE7DaGQHKylGUoxc9XQuy/YGxx0dx7eKqmkyb1OdFi4N+iPZjfSKYp
-         t02WyB2ngbEI+Uvx5Ezj92PJ7QqtAFx78F6AsG3QVvNmNdfJsrCa/I+jBvm+6XsiJNtz
-         4IK+mQ4Ew/8XA6k+NZlt4VfkI45TnW6goCpqHkQrAPj/MBHBIebm5GM5yEdnVOBlJ28Y
-         PIKSOSuVCJ3fII95I1VtjfSxVrr9Z8f9Iq3usTMUeeU0kyDu9vaAhgqsEkIU40bOs9tz
-         1XHQ==
-X-Gm-Message-State: APuU4Z9uV7vmh/Wnqaxfiy+RD+I1pMbBZVqGYal6Q866T5FoVNgIe0TS
-	rRbgjEwbAqpIee5rLEJFcfRJi7AMbTjFQEHnhgZdyCL1CpibXEUoDMAuPeF3y3Xe
-X-Gm-Gg: AYBFou0+QZDcx6hS5iJty0vwQ51mPJMRUHkfCEQjnDJ8repcUhy0V67ZYWpMFfApirt
-	rTI9YLWsRQCDLRbcsaI+0pfznfPipWGs7+PdUaQ7bi41Res2HBy2Su705r1ZGOF02goXiznDaqh
-	jOs3mV/FjV3rAQcQMZ32aAysYvj/hR7cT88+qIOLMkPClb6cy8hmW5gF6/JcHGMqqy6riNo2MCC
-	ZlZdQiM6DQgXGlIpbW6hjm6iT57DXSj80/NPhtK1bLl/ZuZqvb5I1smfueC5+8+sR4sdKKb/kwg
-	PYVLGLLdp9sSV1rkFqfxQKQKBhjTyelB68c5avHF5HStFsaIdcIO+ftcwA1/yy1kA+t0s2mzRzz
-	NvfH4sDifRm8SX/kBi3vI19behsblP4lCTDG+4kjXlUJLQyB4j4NSdsrIZWNyZg5whO47Msj3Y1
-	td70ETChgOyb/Bglgu3+b1j4r0U9LGdQYMgtqC6MEkD/eCb/hUJmOU0nWOLAGJGN6iTyuh+ecnq
-	VPxkGUfxpGqKAgj5XMrmEmNNPrFdIr3NcuB6oZnRGtt1fPgxUY23bASPxfTl89LDJ4PFRxJXpkz
-	OdYmxazT3isGEYTlLZmoHRIwUym9SnCs80ZC9pDCAlnUNWTSpnFdysAU0fhnJOPoHp+tPPTt4fI
-	2EYYzmJrpz5Y0XmUXl3x6WU/8p0jBm7neAQN5ilv+3YH+kXjYlXaRX1adSVTJygIja5ITMKu3fV
-	7yJSw5U3DUKw6M50EZ8VVjfnI/XNrcLq/He/JM+d8OP9NMxOny+0AVqWQ4Qrvs/Rx/4E3jTqUM
-X-Received: by 2002:a05:6830:2b28:b0:862:544d:b8b5 with SMTP id 46e09a7af769-8628991ea97mr2748255a34.27.1794593730542;
-        Fri, 13 Nov 2026 10:15:30 -0800 (PST)
+        bh=eTeuHhgcUZaM9gs7XgXp1+b9XZi8CAzKYwVU1LGn4gk=;
+        b=adJ2rYBFXrf3VzWczgrYM5OwBvVINSIpNghJ+/BmxAZd7xkN/6xAaUYZhb7LXQ6Ldl
+         IPdZ66ZQvmmFvbkQ2aM+zvo2DyZRhoRZLnvI9ywkuzKU7OgcTQn0Y3KMwAwr4mhzgqBw
+         C0BdSWEhKpIBG8uwuNOUzrDJSHJzU9+v/DuCJv2ApJQcWRywXe/iFJ6LRSr1qyiCdHqB
+         031avhLWg8etUeLXjzP3p683SD4brGIebR2hIfaxCZvR9pqrhiDKlchYNLp2wyVCBbJv
+         9CL96uJ7eRFZwaO3QSXFwvID72/0TeN+fsl2fsTibPqpYvDcWQMz7piQhrnX7yUpSL2L
+         2itg==
+X-Gm-Message-State: APuU4Z+YL0+Hl7BBSQZUIumZF+wcrIi2MUAzoPfaxvMsNIEqiPBfHnSt
+	h7Zrjt89svYnrTE95DEXMhHpyu0HVACh6rsXanIxTm+5zmbjk3ICJqBt
+X-Gm-Gg: AYBFou0wu/enc3ZS04cIvIPwMPCFPg9zEQWe+aIuOV55lLwfwCjnVKknWPBFkwGMRvL
+	aAlSKtJq5PeOwOTVjMug4V7qopAPflIlFbKZL1yWfvVMyHxtKn8fjl35kNJ7Ez9vSIkWejnsr5z
+	eJYakBdzkyS7JrQ4pRj/y2hUrFoigGcVHukikT3zJ5VIURaQJ8n8dc2d8JLMCTWtoq3zbsQjM0Y
+	EcGAj5SvfReX2ka31w9tL2rbatu55DNqTDJmTOS584wRXutlYnpiBXxMTw4560+myQjcOX4zjuO
+	AyhzsS3uU3HSU8w1rd1sfgId/10fK5UgMEEEaTccMmQTuga3T267YZL/MLnUyyELpI9g6M4i+xB
+	h0CnXvm5n4s2F6bjWHuk61JodJ4CHqyNlxo7ttBeXOZHSQXCeBfuX4HzNQuGEINR309Xnh2EW5o
+	stpY8RTvNJa/8Q5iw9Innu3/rdXjOQ5/YCk7YmXu7VncyUeBB+8DPKMPVCfKVvNyIPGbNvewo0o
+	kBXO9/rWEVe0zx8y1Q+WoPS8UKYQoFqpU7bK/QIZLBzYPLhCo5u/R/Ae4Tus4Xgv0W9ZrOLbSW2
+	YrSrm9kb7LLhUYMzvGyTstvQa67kTMR1UhMYT9AaMErk4PRByvsKaL05ZnoIqJxx2rGm7x3FfD4
+	tUEwH/0PsrNAtDeRQbzrcVAEYnxeFLcBp11/I01e7uduLDmiJSBsAfoZ3rM3i0b39AnwY5b9VDf
+	3QU7807pvquRHurTd2GLo/rHnmCXQcQDX3k1DSE5PfrScN6N+G3oA=
+X-Received: by 2002:a05:6820:16ac:b0:707:5453:73c5 with SMTP id 006d021491bc7-71ab4cf319amr2073260eaf.2.1794593732830;
+        Fri, 13 Nov 2026 10:15:32 -0800 (PST)
 Received: from [127.0.1.1] (174-29-1-49.hlrn.qwest.net. [174.29.1.49])
-        by smtp.gmail.com with ESMTPSA id 46e09a7af769-8628817d979sm3253414a34.22.2026.11.13.10.15.28
+        by smtp.gmail.com with ESMTPSA id 46e09a7af769-8628817d979sm3253414a34.22.2026.11.13.10.15.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2026 10:15:28 -0800 (PST)
+        Fri, 13 Nov 2026 10:15:31 -0800 (PST)
 From: James Hilliard <james.hilliard1@gmail.com>
-Date: Fri, 13 Nov 2026 11:14:28 -0700
-Subject: [PATCH v4 12/58] mtd: rawnand: arasan: retain chips across
- controller removal
+Date: Fri, 13 Nov 2026 11:14:30 -0700
+Subject: [PATCH v4 14/58] mtd: rawnand: intel: retain open-handle state on
+ removal
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Message-Id: <20261113-submit-rawnand-retained-handle-lifetime-v1-v4-12-556b1d7c6221@gmail.com>
+Message-Id: <20261113-submit-rawnand-retained-handle-lifetime-v1-v4-14-556b1d7c6221@gmail.com>
 References: <20261113-submit-rawnand-retained-handle-lifetime-v1-v4-0-556b1d7c6221@gmail.com>
 In-Reply-To: <20261113-submit-rawnand-retained-handle-lifetime-v1-v4-0-556b1d7c6221@gmail.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, 
@@ -89,12 +89,11 @@ To: Miquel Raynal <miquel.raynal@bootlin.com>,
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
  James Hilliard <james.hilliard1@gmail.com>, 
- Boris Brezillon <boris.brezillon@collabora.com>, 
- Michal Simek <michal.simek@amd.com>
+ Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
 X-Mailer: b4 0.15.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261113_101531_601229_2E3EF715 
-X-CRM114-Status: GOOD (  15.62  )
+X-CRM114-CacheID: sfid-20261113_101536_334331_423480E6 
+X-CRM114-Status: GOOD (  13.83  )
 X-Spam-Score: -1.9 (-)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -116,159 +115,73 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-Keep chip metadata and controller storage until the last MTD reference
-is released. Release BCH state during disconnection. Unregister and
-disconnect the chips before releasing chip-select GPIOs, so notifier I/O
-and active NAND operations finish while the hardware is usable.
+Disconnect NAND operations after unregistering MTD and before disabling
+the controller or releasing DMA channels. Retain the embedded chip,
+controller lock and NAND metadata until the last MTD reference is
+released, including references obtained during a partially successful
+probe.
 
-Free unpublished chip allocations directly and use retained cleanup
-after MTD registration has been attempted.
+Run NAND cleanup during disconnection; the final core-owned put only
+releases retained allocation and layout data.
 
-Fixes: 197b88fecc50 ("mtd: rawnand: arasan: Add new Arasan NAND controller")
-Cc: Boris Brezillon <boris.brezillon@collabora.com>
-Cc: Michal Simek <michal.simek@amd.com>
+Fixes: 0b1039f016e8 ("mtd: rawnand: Add NAND controller support on Intel LGM SoC")
+Cc: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
 Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
 ---
- drivers/mtd/nand/raw/arasan-nand-controller.c | 47 ++++++++++++++++++---------
- 1 file changed, 32 insertions(+), 15 deletions(-)
+ drivers/mtd/nand/raw/intel-nand-controller.c | 18 ++++++++++++++----
+ 1 file changed, 14 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/arasan-nand-controller.c b/drivers/mtd/nand/raw/arasan-nand-controller.c
-index 839aef6c460b..a28daae30330 100644
---- a/drivers/mtd/nand/raw/arasan-nand-controller.c
-+++ b/drivers/mtd/nand/raw/arasan-nand-controller.c
-@@ -1276,7 +1276,7 @@ static int anfc_chip_init(struct arasan_nfc *nfc, struct device_node *np)
- 	struct mtd_info *mtd;
- 	int rb, ret, i;
- 
--	anand = devm_kzalloc(nfc->dev, sizeof(*anand), GFP_KERNEL);
-+	anand = kzalloc_obj(*anand);
- 	if (!anand)
- 		return -ENOMEM;
- 
-@@ -1284,31 +1284,35 @@ static int anfc_chip_init(struct arasan_nfc *nfc, struct device_node *np)
- 	anand->ncs_idx = of_property_count_elems_of_size(np, "reg", sizeof(u32));
- 	if (anand->ncs_idx <= 0 || anand->ncs_idx > nfc->ncs) {
- 		dev_err(nfc->dev, "Invalid reg property\n");
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto free_chip;
- 	}
- 
- 	anand->cs_idx = devm_kcalloc(nfc->dev, anand->ncs_idx,
- 				     sizeof(*anand->cs_idx), GFP_KERNEL);
--	if (!anand->cs_idx)
--		return -ENOMEM;
-+	if (!anand->cs_idx) {
-+		ret = -ENOMEM;
-+		goto free_chip;
-+	}
- 
- 	for (i = 0; i < anand->ncs_idx; i++) {
- 		ret = of_property_read_u32_index(np, "reg", i,
- 						 &anand->cs_idx[i]);
- 		if (ret) {
- 			dev_err(nfc->dev, "invalid CS property: %d\n", ret);
--			return ret;
-+			goto free_chip;
- 		}
- 	}
- 
- 	/* Ready-busy init */
- 	ret = of_property_read_u32(np, "nand-rb", &rb);
- 	if (ret)
--		return ret;
-+		goto free_chip;
- 
- 	if (rb >= ANFC_MAX_CS) {
- 		dev_err(nfc->dev, "Wrong RB %d\n", rb);
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto free_chip;
- 	}
- 
- 	anand->rb = rb;
-@@ -1323,24 +1327,35 @@ static int anfc_chip_init(struct arasan_nfc *nfc, struct device_node *np)
- 	nand_set_flash_node(chip, np);
- 	if (!mtd->name) {
- 		dev_err(nfc->dev, "NAND label property is mandatory\n");
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto free_chip;
- 	}
- 
- 	ret = nand_scan(chip, anand->ncs_idx);
- 	if (ret) {
- 		dev_err(nfc->dev, "Scan operation failed\n");
--		return ret;
-+		goto free_chip;
- 	}
- 
--	ret = mtd_device_register(mtd, NULL, 0);
-+	ret = nand_set_lifetime(chip, to_anand(chip));
- 	if (ret) {
- 		nand_cleanup(chip);
-+		goto free_chip;
-+	}
-+	ret = mtd_device_register(mtd, NULL, 0);
-+	if (ret) {
-+		nand_disconnect(chip);
-+		mtd_put_master(mtd);
- 		return ret;
- 	}
- 
- 	list_add_tail(&anand->node, &nfc->chips);
- 
- 	return 0;
-+
-+free_chip:
-+	kfree(anand);
-+	return ret;
- }
- 
- static void anfc_chips_cleanup(struct arasan_nfc *nfc)
-@@ -1353,8 +1368,9 @@ static void anfc_chips_cleanup(struct arasan_nfc *nfc)
- 		chip = &anand->chip;
- 		ret = mtd_device_unregister(nand_to_mtd(chip));
- 		WARN_ON(ret);
--		nand_cleanup(chip);
-+		nand_disconnect(chip);
- 		list_del(&anand->node);
-+		mtd_put_master(nand_to_mtd(chip));
- 	}
- }
- 
-@@ -1436,12 +1452,14 @@ static int anfc_probe(struct platform_device *pdev)
- 	struct arasan_nfc *nfc;
+diff --git a/drivers/mtd/nand/raw/intel-nand-controller.c b/drivers/mtd/nand/raw/intel-nand-controller.c
+index d8071180cc0d..42a1d85b1cd4 100644
+--- a/drivers/mtd/nand/raw/intel-nand-controller.c
++++ b/drivers/mtd/nand/raw/intel-nand-controller.c
+@@ -585,12 +585,14 @@ static int ebu_nand_probe(struct platform_device *pdev)
  	int ret;
+ 	u32 cs;
  
--	nfc = devm_kzalloc(&pdev->dev, sizeof(*nfc), GFP_KERNEL);
-+	nfc = kzalloc_obj(*nfc);
- 	if (!nfc)
+-	ebu_host = devm_kzalloc(dev, sizeof(*ebu_host), GFP_KERNEL);
++	ebu_host = kzalloc_obj(*ebu_host);
+ 	if (!ebu_host)
  		return -ENOMEM;
-+	ret = devm_nand_controller_init(&pdev->dev, &nfc->controller, nfc);
++	ret = devm_nand_controller_init(dev, &ebu_host->controller, ebu_host);
 +	if (ret)
 +		return ret;
  
- 	nfc->dev = &pdev->dev;
--	nand_controller_init(&nfc->controller);
- 	nfc->controller.ops = &anfc_ops;
- 	INIT_LIST_HEAD(&nfc->chips);
+ 	ebu_host->dev = dev;
+-	nand_controller_init(&ebu_host->controller);
  
-@@ -1481,13 +1499,12 @@ static void anfc_remove(struct platform_device *pdev)
- 	int i;
- 	struct arasan_nfc *nfc = platform_get_drvdata(pdev);
+ 	ebu_host->ebu = devm_platform_ioremap_resource_byname(pdev, "ebunand");
+ 	if (IS_ERR(ebu_host->ebu))
+@@ -692,9 +694,16 @@ static int ebu_nand_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		goto err_disable_nand;
  
-+	anfc_chips_cleanup(nfc);
- 	for (i = 0; i < nfc->ncs; i++) {
- 		if (nfc->cs_array[i]) {
- 			gpiod_put(nfc->cs_array[i]);
- 		}
- 	}
--
--	anfc_chips_cleanup(nfc);
+-	ret = mtd_device_register(mtd, NULL, 0);
++	ret = nand_set_lifetime(nand, NULL);
+ 	if (ret)
+ 		goto err_clean_nand;
++	ret = mtd_device_register(mtd, NULL, 0);
++	if (ret) {
++		nand_disconnect(nand);
++		ebu_nand_disable(nand);
++		mtd_put_master(mtd);
++		goto err_cleanup_dma;
++	}
+ 
+ 	return 0;
+ 
+@@ -717,9 +726,10 @@ static void ebu_nand_remove(struct platform_device *pdev)
+ 
+ 	ret = mtd_device_unregister(nand_to_mtd(&ebu_host->chip));
+ 	WARN_ON(ret);
+-	nand_cleanup(&ebu_host->chip);
++	nand_disconnect(&ebu_host->chip);
+ 	ebu_nand_disable(&ebu_host->chip);
+ 	ebu_dma_cleanup(ebu_host);
++	mtd_put_master(nand_to_mtd(&ebu_host->chip));
  }
  
- static const struct of_device_id anfc_ids[] = {
+ static const struct of_device_id ebu_nand_match[] = {
 
 -- 
 2.53.0
