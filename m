@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDB55606A883
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0E47606A331
 	for <linux-mtd@archiver.kernel.org>; Sat, 14 Nov 2026 10:06:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=NOQBQIjB;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=simonwunderlich.de header.i=@simonwunderlich.de header.a=rsa-sha256 header.s=09092022 header.b=1MR1zANa
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=pxcuDsyf;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=simonwunderlich.de header.i=@simonwunderlich.de header.a=rsa-sha256 header.s=09092022 header.b=yqSHP3Np
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,39 +14,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=vtYtBSPamICthNkxZXrfIFkRAYsEBvvNWeuT6I8w7zY=; b=NOQBQIjBj2xYARU+zFXXcv26fq
-	RUr5b4NC1px/evORyXV2PuAXfVMX0d7XFXBHZekdT8NHZSR1ZWcczkRk+5sQTYoexo1cUGlLNcHsA
-	ROcslloDXfsemyHefiE5QmegWSO8p9cXZMN7KdRP86UumY6DK37+2DAuMqGFeL34GpAKWEVaVeow5
-	jekTQIN8renFU+YTWMS+lQyvHpooBsmIxnY+3GZmQbVYSwut/+Q9ufINcExvq8ykFeEkjyXAAlhMz
-	b6JnAcqrMkpYv1u7UDHbH9FX3GSMNlY/Xq6lWwxaAglx1vVW1rnllSUAwO+6WsgIYWoY6Yg3rew9c
-	mQJx/tgQ==;
+	bh=7h7Is7uidSozXd2ylUuDVhXL8zVxQLtUVuKlVltC4zg=; b=pxcuDsyfy018YlnmURVh+yeabs
+	hfMscZEizpMDr2NFu7n+V/Fu9dLGirRBRX9UKkNgvwoFW71JyyNy0KYPYvoueg8kYIvz5W1WDwvSl
+	Cug1PYkGO4BAwYlc/Sk+wU2LyDziKyQotCSYLjbZ2X35ctmqLoLDsZRIa/VYwdsMhmgCXHhBwjs2j
+	gL2S3PHBHf9bYeGvhQ/U5Qj+lIi/rM0+IY7T8dissEwrCYN4ZSuAaykgVNK3AhDyQJjSdjeIWm/NV
+	5UvgQr+2/SQcoFVEDzrDk12IlhdwVejyQWJ6mpDegpewVq5D62IBEpVvgJpwZlyerUjeM4zGtao4v
+	0lFC7hgA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xSAeK-0000000FjA0-3DGy;
-	Sat, 14 Nov 2026 10:06:20 +0000
-Received: from mail.simonwunderlich.de ([2a01:4f8:c17:e8c0::1])
+	id 1xSAeM-0000000FjAX-0D0F;
+	Sat, 14 Nov 2026 10:06:22 +0000
+Received: from mail.simonwunderlich.de ([23.88.38.48])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xSAeG-0000000Fj7a-2VMh
+	id 1xSAeF-0000000Fj74-3T3w
 	for linux-mtd@lists.infradead.org;
-	Sat, 14 Nov 2026 10:06:18 +0000
+	Sat, 14 Nov 2026 10:06:19 +0000
 Received: from kero.packetmixer.de (unknown [IPv6:2a02:3037:6ed:dd6c:838:344b:3152:2d5e])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange secp256r1 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail.simonwunderlich.de (Postfix) with UTF8SMTPSA id 65DE8FA1B6;
-	Sat, 14 Nov 2026 11:06:14 +0100 (CET)
+	by mail.simonwunderlich.de (Postfix) with UTF8SMTPSA id 578D7FA0B2;
+	Sat, 14 Nov 2026 11:06:11 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=simonwunderlich.de;
-	s=09092022; t=1794650774;
+	s=09092022; t=1794650771;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=N9LE3DiSe3KJ/dXtWyDO7BFnMiaTY4mvSwQvRj0h7Vs=;
-	b=1MR1zANaa6k6hzWq0h9tT0/d1NSk6dM6PcVi/aqbkX3OzQsUZzN0qb2p2b+WAskWPgSf3O
-	wkXE7YGSmVIjLlsUBkogt66DlUUm/DaW8cQjIpk4QIF6o9azHE6EmBEg4gvTtnIMwES9eE
-	nCkCKXXxrTEqnL5J0B5zJQpwzPQWmwGi21sJRlbDxdFb4rNU8HjAZxz02ZMKglwprJm6Er
-	SutC8ZvXbf7hJIb/5ha7gmsC9b2nElEHRwNqT+2jrF/6ZmOJCFMmG+VtxFntMy6ZVd0Asq
-	rkAeJ5zhP2Dasx3cEGpimrvPqd19fb/wzXXFXrt2cdBB6HbqRorwr1PeE7/34A==
+	bh=Pl2hOz6BzMGr9Dpq8GYJiAgRRx0ylFIRGI3z7sZaMZs=;
+	b=yqSHP3NpQXlqj10CQ0FopwiVDN+5CY7Z2xafQRDZxF7Bc2dqQgAeBw3kNge0fSqpj4999J
+	LsDUAP1nNvjpm0hLtB2c6Y1A7oI0+n6zQQGioVZ1KG0/Gr6C386KhtyxTchsVgWrAaXYzx
+	t/u4OA8WDnEinmAlc4bg4X21/UiyisXRXVF6J9QDYtFJyRHTtI2QmT+0ac1AX2V+T1EnZ3
+	vwc8AePElrLdBNcJ7DWuRzhHyeDXeQAKhEzgy+TOnYbPc0W/y1v78TWNjcoHvGaH1HVvHL
+	bg4e0PGEB9HAcTVIZYVL1c//TNgoKPGvnaqrBwbPDeN3W9DljUkHU7NoRNoS2Q==
 From: Simon Wunderlich <sw@simonwunderlich.de>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
@@ -64,18 +64,19 @@ Cc: Rob Herring <robh@kernel.org>,
 	Sebastien Decourriere <sebtx452@gmail.com>,
 	Yangtao Li <frank.li@vivo.com>,
 	linux-kernel@vger.kernel.org,
-	Simon Wunderlich <sw@simonwunderlich.de>
-Subject: [PATCH 4/5] mtd: maps: lantiq-flash: honour the EBU's own endianness swap
-Date: Sat, 14 Nov 2026 11:06:06 +0100
-Message-ID: <20261114100608.3432120-5-sw@simonwunderlich.de>
+	Simon Wunderlich <sw@simonwunderlich.de>,
+	stable@vger.kernel.org
+Subject: [PATCH 1/5] mtd: maps: lantiq-flash: fix NULL pointer dereference on probe
+Date: Sat, 14 Nov 2026 11:06:03 +0100
+Message-ID: <20261114100608.3432120-2-sw@simonwunderlich.de>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20261114100608.3432120-1-sw@simonwunderlich.de>
 References: <20261114100608.3432120-1-sw@simonwunderlich.de>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261114_020616_835452_22F015C3 
-X-CRM114-Status: GOOD (  20.62  )
+X-CRM114-CacheID: sfid-20261114_020616_430732_E47AD6D2 
+X-CRM114-Status: GOOD (  11.04  )
 X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -96,113 +97,49 @@ X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-The driver swaps address bit 1 while probing the chip and afterwards
-swizzles the CFI unlock addresses, to compensate for the EBU/PCI
-endianness swapping that boot loaders enable on Lantiq boards.
+Since commit 6145e07e9c77 ("mtd: lantiq-flash: Use
+devm_platform_get_and_ioremap_resource()"), ltq_mtd_probe() stores the
+ioremapped address in ltq_mtd->map->virt before ltq_mtd->map is
+allocated. ltq_mtd comes from devm_kzalloc(), so map is still NULL at
+that point and the probe dereferences a NULL pointer on every board
+with a "lantiq,nor" node.
 
-Boot loaders that instead enable the EBU's own endianness swapping for
-the flash chip select (EBU_BUSCON0 bit 30) present the chip at its
-unswapped addresses. With the driver's software swap on top, the CFI
-query returns garbage and probing fails, leaving the board without MTD.
-The bintec elmeg RS123 and RS353 (BOSS bootmonitor) are such boards.
+Allocate the map before mapping the resource.
 
-Measured on the RS123, CFI ident at 0x10/0x11/0x12 with bit 30 set:
+Found by code inspection while porting a lantiq-flash change from
+OpenWrt, which replaces this probe function downstream.
 
-  unswapped: 0051 0052 0059   ("QRY")
-  swapped:   8f5b 0000 3c11   (garbage)
-
-Clearing bit 30 before probing is not an option either: probing then
-succeeds, but all data comes back halfword-swapped relative to what the
-boot loader wrote and reads (the firmware header shows up as
-"LDTE CATseloyedE"), so neither the MAC address in the boot partition
-nor a kernel image written from Linux would be usable.
-
-Skip the software swap when the boot loader enabled the hardware swap.
-The bit only works on VR9 (xRX200) from revision 1.2 and on AR10
-(xRX300), so it is only read when the flash node carries
-"lantiq,ebu-swap-check", as requested in the review of the 2017
-submission of this fix. Falcon has no EBU of this kind, so the access
-is compiled in only for XWAY SoCs.
-
-Based on that patch by Sebastien Decourriere.
-
-Link: https://lists.infradead.org/pipermail/linux-mtd/2017-January/071749.html
-Link: https://lists.infradead.org/pipermail/linux-mtd/2017-January/071818.html
+Fixes: 6145e07e9c77 ("mtd: lantiq-flash: Use devm_platform_get_and_ioremap_resource()")
+Cc: stable@vger.kernel.org
 Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
 ---
- drivers/mtd/maps/lantiq-flash.c | 31 +++++++++++++++++++++++++++----
- 1 file changed, 27 insertions(+), 4 deletions(-)
+ drivers/mtd/maps/lantiq-flash.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/mtd/maps/lantiq-flash.c b/drivers/mtd/maps/lantiq-flash.c
-index 5c2ace302b50..7ee447227425 100644
+index 80d467eba92a..5c2ace302b50 100644
 --- a/drivers/mtd/maps/lantiq-flash.c
 +++ b/drivers/mtd/maps/lantiq-flash.c
-@@ -29,8 +29,17 @@
-  * map. The workaround involves swapping all addresses whilst probing the chip.
-  * Once probing is complete we stop swapping the addresses but swizzle the
-  * unlock addresses to ensure that access to the NOR device works correctly.
-+ *
-+ * Some boot loaders instead enable the EBU's own endianness swapping for the
-+ * flash chip select (EBU_BUSCON0 bit 30). The chip then answers at its
-+ * unswapped addresses and none of the above is needed. The bit only works on
-+ * VR9 from revision 1.2 and on AR10, so boards ask the driver to honour it
-+ * with the "lantiq,ebu-swap-check" property. Falcon has no EBU of this kind,
-+ * so the register is only read on XWAY SoCs.
-  */
+@@ -118,15 +118,15 @@ ltq_mtd_probe(struct platform_device *pdev)
  
-+#define EBU_ENDIAN_SWAP		BIT(30)
+ 	platform_set_drvdata(pdev, ltq_mtd);
+ 
+-	ltq_mtd->map->virt = devm_platform_get_and_ioremap_resource(pdev, 0, &ltq_mtd->res);
+-	if (IS_ERR(ltq_mtd->map->virt))
+-		return PTR_ERR(ltq_mtd->map->virt);
+-
+ 	ltq_mtd->map = devm_kzalloc(&pdev->dev, sizeof(struct map_info),
+ 				    GFP_KERNEL);
+ 	if (!ltq_mtd->map)
+ 		return -ENOMEM;
+ 
++	ltq_mtd->map->virt = devm_platform_get_and_ioremap_resource(pdev, 0, &ltq_mtd->res);
++	if (IS_ERR(ltq_mtd->map->virt))
++		return PTR_ERR(ltq_mtd->map->virt);
 +
- enum {
- 	LTQ_NOR_PROBING,
- 	LTQ_NOR_NORMAL
-@@ -105,11 +114,21 @@ ltq_copy_to(struct map_info *map, unsigned long to,
- 	spin_unlock_irqrestore(&ebu_lock, flags);
- }
+ 	ltq_mtd->map->phys = ltq_mtd->res->start;
+ 	ltq_mtd->map->size = resource_size(ltq_mtd->res);
  
-+static bool ltq_mtd_ebu_swap(struct platform_device *pdev)
-+{
-+#ifdef CONFIG_SOC_TYPE_XWAY
-+	if (of_property_read_bool(pdev->dev.of_node, "lantiq,ebu-swap-check"))
-+		return ltq_ebu_r32(LTQ_EBU_BUSCON0) & EBU_ENDIAN_SWAP;
-+#endif
-+	return false;
-+}
-+
- static int
- ltq_mtd_probe(struct platform_device *pdev)
- {
- 	struct ltq_mtd *ltq_mtd;
- 	struct cfi_private *cfi;
-+	bool hw_swap;
- 	int err;
- 
- 	ltq_mtd = devm_kzalloc(&pdev->dev, sizeof(struct ltq_mtd), GFP_KERNEL);
-@@ -137,7 +156,9 @@ ltq_mtd_probe(struct platform_device *pdev)
- 	ltq_mtd->map->copy_from = ltq_copy_from;
- 	ltq_mtd->map->copy_to = ltq_copy_to;
- 
--	ltq_mtd->map->map_priv_1 = LTQ_NOR_PROBING;
-+	hw_swap = ltq_mtd_ebu_swap(pdev);
-+
-+	ltq_mtd->map->map_priv_1 = hw_swap ? LTQ_NOR_NORMAL : LTQ_NOR_PROBING;
- 	ltq_mtd->mtd = do_map_probe("cfi_probe", ltq_mtd->map);
- 	ltq_mtd->map->map_priv_1 = LTQ_NOR_NORMAL;
- 
-@@ -149,9 +170,11 @@ ltq_mtd_probe(struct platform_device *pdev)
- 	ltq_mtd->mtd->dev.parent = &pdev->dev;
- 	mtd_set_of_node(ltq_mtd->mtd, pdev->dev.of_node);
- 
--	cfi = ltq_mtd->map->fldrv_priv;
--	cfi->addr_unlock1 ^= 1;
--	cfi->addr_unlock2 ^= 1;
-+	if (!hw_swap) {
-+		cfi = ltq_mtd->map->fldrv_priv;
-+		cfi->addr_unlock1 ^= 1;
-+		cfi->addr_unlock2 ^= 1;
-+	}
- 
- 	err = mtd_device_register(ltq_mtd->mtd, NULL, 0);
- 	if (err) {
 -- 
 2.47.3
 
