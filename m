@@ -2,127 +2,91 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC41E607359C
-	for <linux-mtd@archiver.kernel.org>; Sat, 14 Nov 2026 20:27:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56C06606A323
+	for <linux-mtd@archiver.kernel.org>; Sat, 14 Nov 2026 23:34:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=RDTqR6TM
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=4oR68/Dj;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=muwZkKGZ
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
 	List-Unsubscribe-Post:List-Owner;
-	bh=PY0aVBGlnurvuodhZMX+oyd6b3kG9MBeWHrA/C8/3JI=; b=RDTqR6TM7xVhTP99q5ehfvNrsn
-	XYBIUs4/EvUl4DsRbIf1b8jBIiKc2K+ZlNtwNFhwqk42I/qSrc680TXcEt/LeBcWJ+gqggDCzSukc
-	rjo2/MI9MtMQhraHRPaNnmYl1UyllgUETF/x5i4ihUd/QYlLRx+j0uEPkFNoHoTdrgsYBXi9NhqKk
-	xuCO5Fl7/jknHsiupqc8FiuVNKB8ZN2lrMpxpy3K0/drUCdU2G1AiDc0GlMa0+j46VLq/qhhMNwML
-	eW1/p5EWpT0h6neI2N4Cd5KDQbY/ZtLa1fb+XJ6+xfI/5Z3JTp53xlXlwjhmPPsblVHJVO10vuFG6
-	6WkXi+FA==;
+	bh=PR735w4ig2y2Ih2TJlqIrAHBYzFH6JVEj/Ljg1mgIZM=; b=4oR68/DjyCjG43ZP6vYcwBm4o9
+	TMvRu8dqW4TAy7yJD+Sk6l6ocPkqLjPVLVYwVSTDge+SkNYDdfSSVPBNoZep2moyNnZeTOnHzApzv
+	9pGgwI9va6PqhSOF0pdy2mIhx1oA7U7oMT8UX2lklj2SneYGYxuHEbqy0XRzzMenj+ddE+tnZWFYO
+	Q6/zkAUxYs/jRBrAHqOa5RmXOX+xKmJSxUjPWwZDsEunXmt6t+bmB0CgP9BcNdeEyDMIfiHDnZBOx
+	TO/eyRTkRVy3EPrzYN4yLfBEuFTEK0t6RGj/O86vUoogDJxMB5zedu8xTq0Lz8zz/nxE6+ymkYLzh
+	4WTignoQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xSKLr-0000000GjXl-1rCa;
-	Sat, 14 Nov 2026 20:27:57 +0000
-Received: from [50.53.43.113] (helo=bombadil.infradead.org)
-	by bombadil.infradead.org with esmtpsa (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xSKLM-0000000Giga-33TB;
-	Sat, 14 Nov 2026 20:27:26 +0000
-From: Randy Dunlap <rdunlap@infradead.org>
-To: linux-kernel@vger.kernel.org
-Cc: Randy Dunlap <rdunlap@infradead.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Shuah Khan <skhan@linuxfoundation.org>,
-	linux-doc@vger.kernel.org,
-	David Hildenbrand <david@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Jason Gunthorpe <jgg@nvidia.com>,
-	Leon Romanovsky <leonro@nvidia.com>,
-	linux-mm@kvack.org,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	linux-sound@vger.kernel.org,
-	Jens Axboe <axboe@kernel.dk>,
-	linux-block@vger.kernel.org,
-	Marcel Holtmann <marcel@holtmann.org>,
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-	linux-bluetooth@vger.kernel.org,
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-	Jason Wang <jasowangio@gmail.com>,
-	David Heidelberg <david@ixit.cz>,
-	oe-linux-nfc@lists.linux.dev,
-	Chas Williams <3chas3@gmail.com>,
-	linux-atm-general@lists.sourceforge.net,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@kernel.org>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org,
-	Helge Deller <deller@gmx.de>,
-	linux-fbdev@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	MPT-FusionLinux.pdl@broadcom.com,
-	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-	"Martin K. Petersen" <mkp@kernel.org>,
-	linux-scsi@vger.kernel.org,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Zhihao Cheng <chengzhihao1@huawei.com>,
-	linux-mtd@lists.infradead.org,
-	Neill Kapron <nkapron@google.com>,
-	Andrey Konovalov <andreyknvl@gmail.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-usb@vger.kernel.org,
-	Juergen Gross <jgross@suse.com>,
-	Stefano Stabellini <sstabellini@kernel.org>,
-	xen-devel@lists.xenproject.org,
-	Hans de Goede <hansg@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	"Michael S. Tsirkin" <mst@redhat.com>,
-	=?UTF-8?q?Eugenio=20P=C3=A9rez?= <eperezma@redhat.com>,
-	Sean Christopherson <seanjc@google.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	kvm@vger.kernel.org,
-	virtualization@lists.linux.dev,
-	Jan Kara <jack@suse.cz>,
-	linux-fsdevel@vger.kernel.org,
-	"Theodore Ts'o" <tytso@mit.edu>,
-	linux-ext4@vger.kernel.org,
-	Mike Marshall <hubcap@omnibond.com>,
-	devel@lists.orangefs.org,
-	Paulo Alcantara <pc@manguebit.org>,
-	Namjae Jeon <linkinjeon@kernel.org>,
-	linux-cifs@vger.kernel.org,
-	Jaegeuk Kim <jaegeuk@kernel.org>,
-	Chao Yu <chao@kernel.org>,
-	linux-f2fs-devel@lists.sourceforge.net,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	linux-rpi-kernel@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org,
-	Tzung-Bi Shih <tzungbi@kernel.org>,
-	Benson Leung <bleung@chromium.org>,
-	David Airlie <airlied@gmail.com>,
-	Simona Vetter <simona@ffwll.ch>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-	amd-gfx@lists.freedesktop.org,
-	Jani Nikula <jani.nikula@linux.intel.com>,
-	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-	Rodrigo Vivi <rodrigo.vivi@intel.com>,
-	Tvrtko Ursulin <tursulin@ursulin.net>,
-	intel-gfx@lists.freedesktop.org,
-	Matthew Brost <matthew.brost@intel.com>,
-	=?UTF-8?q?Thomas=20Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
-	intel-xe@lists.freedesktop.org
-Subject: [PATCH 12/12] docs: ioctl-number: update DRM entries
-Date: Sat, 14 Nov 2026 12:26:50 -0800
-Message-ID: <20261114202653.3113381-13-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.56.0
-In-Reply-To: <20261114202653.3113381-1-rdunlap@infradead.org>
-References: <20261114202653.3113381-1-rdunlap@infradead.org>
+	id 1xSNFx-0000000GtBn-1eVa;
+	Sat, 14 Nov 2026 23:34:01 +0000
+Received: from mail-pl1-x634.google.com ([2607:f8b0:4864:20::634])
+	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
+	id 1xSNFv-0000000GtBM-01is
+	for linux-mtd@lists.infradead.org;
+	Sat, 14 Nov 2026 23:34:00 +0000
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-2ede7cb02daso23213015ad.1
+        for <linux-mtd@lists.infradead.org>; Sat, 14 Nov 2026 15:33:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20260707; t=1794699237; x=1795304037; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=ts7qrELy4iZVhgGdLhRbHtA5AlBQL00T0NsgUzPShXI=;
+        b=muwZkKGZgbm3NvDkig28s06y571UReT6eXcleY95sfvGaym5VgJ6FqMZYtFV3IHwHD
+         1cXpYX6dNbjPwmygHETj7GwpZbH3bPS87y6tkF3WrW/jUVLA/bESjp/VYYAAIWFiIJ7p
+         tWHygbA78YWKaoLuc153Ki56MrU0iC9B7um9Nr3OurZO/10YQHc4swU0smxXOSCF7Bjk
+         x85HOzoV/LdbDnIFgKtAQ7OY0qre2eZ0n+9EW3DfdpSsLGtkcZMORwMfrPYJM26DcrCJ
+         6nSqf9ZlH63J0jSPJNXlIUkn4LJGcVm4FQcv6U9+1eYLPpfoZKOLNkjuewV8h+0D7x9h
+         hhAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1794699237; x=1795304037;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=ts7qrELy4iZVhgGdLhRbHtA5AlBQL00T0NsgUzPShXI=;
+        b=m686ji2F0Bw9tiGes+2jWYdPndNB+w2J/Qnd+OL7TTH1vn5WvR5MPTNkdPdUsYiua+
+         SPcODg28W29ykVunqYKLTexvQAF/S/EyoYuuCmxXVSZOb1p+w/lzN409OWyHFPHaoB9L
+         AJMDnyT1eAijpoc6L+BsKUQvquiO0jCw3YLepKslvF8yGBXmyqCYTFI3qnXkbsKRh3Cv
+         agrttkeWHQRs3Knu95+n4y4R6jk97Fgyc6ejiydetHKdkJWnLIDhBAoWYYgJ22jLe1sU
+         VeqvCiYMCLIrncXHzvoZRgzwa4hSrKvt1tHVgza+wDd/oYsIkKGOTMXxEVTjEhQLY2MV
+         /UTw==
+X-Gm-Message-State: APuU4Z+IOJhe4pjKu8gzth9uic0M5MpUcpARo8Ynkd6me3voM0qgPfzY
+	V3mmaFWG8ba/LCZXzrdPBbfrmtkm6sunO95gkoh3eA3ed2cX2fQufWnjdxB7Ag==
+X-Gm-Gg: AYBFou2vkjXFomYFOfB+j3AubODeqh/jNDUNw1PU0XPIV/lunAgomeb74Bt/XnS/kFH
+	UpIUPiofHNz06XmAFC1L54MAoiapgY+C7zXCsRzub4MNAaK9ZfjJ4Bwgso62BamPWxK6GLGGsZz
+	M6gau1NY/UxXfhaqYRzBi2FWAPDZXWOUac4olLFRmBSZWqqcknkKeLCxZJOjoHSZgHbvrYnRMXP
+	qPqB8Mb282+FNvh/NHu1M+4ddUlCy66YE6F8xfo8VIB+JLRg5zMITLani1uxiWqT+EfFQiN4jHz
+	aLzN5pB36UUAkgiJiB/AYPnxFZRq6WBEjlILl8H5hlHy8gIc6cpInXGOmeDU9LQU7XJCRudjAbR
+	MkNYAhHgiOejDhnw3nkfppKShMU4QuN77Blh8Ow7NTtK057JLrw1Wkuo0eDYoMhuISfo1L7sZFP
+	FQQkJ/Xt9KRgYS5ijTW0Wl4F1nxHti/oNVxgQWWEclrDbaYdmJ6fBEQVF/pZsFK7yGGT3HX9SDJ
+	LcUvc6fWUKvdz8btn5yOIvZLl8ixWmVo3tPDlJnrWUnvadI669bdjIZmQrIWwpzxPk4NVsknV8G
+	5XmMsLWfJTqMr5ttaDcjGbOp3UqdvYSeuONHP1nX6881o+p/QFszUtRkiB33UiNaoFpotARInFp
+	tiBypVRhwBgkRwNNaWEmxQoxZM9a1mdkh5M9AtDBsZvE4hoceA9aTes5PYh0NQhi5y6d1XUNPlc
+	0jEA==
+X-Received: by 2002:a17:90a:fc4f:b0:3ae:8983:4ef8 with SMTP id 98e67ed59e1d1-3b1b0b5c008mr3971105a91.9.1794699237483;
+        Sat, 14 Nov 2026 15:33:57 -0800 (PST)
+Received: from ryzen.lan ([2601:644:8000:37f::e34])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3b197d35525sm15393908a91.16.2026.11.14.15.33.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 14 Nov 2026 15:33:56 -0800 (PST)
+From: Rosen Penev <rosenp@gmail.com>
+To: linux-mtd@lists.infradead.org
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2] lib/bch: use flexible array member for xi_tab
+Date: Sat, 14 Nov 2026 15:33:54 -0800
+Message-ID: <20261114233354.84841-1-rosenp@gmail.com>
+X-Mailer: git-send-email 2.56.1
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20261114_153359_056288_50E12977 
+X-CRM114-Status: GOOD (  12.77  )
+X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -132,67 +96,85 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-VXBkYXRlIHRoZSBsaXN0IG9mIGZpbGVzIHdoZXJlIERSTSBpb2N0bHMgYXJlIGRlZmluZWQuCgpT
-aWduZWQtb2ZmLWJ5OiBSYW5keSBEdW5sYXAgPHJkdW5sYXBAaW5mcmFkZWFkLm9yZz4KLS0tCltT
-aW5jZSBoYXZpbmcgbXVsdGlwbGUgbWFpbnRhaW5lcnMgdHJ5aW5nIHRvIG1lcmdlIHRoZXNlIHdv
-dWxkCmNhdXNlIHNvbWUgY29uZmxpY3RzLCBpdCB3b3VsZCBiZSBtb3JlIG1hbmFnZWFibGUgZm9y
-IEpvbiB0bwp0YWtlIGFsbCBvZiB0aGVzZSB0aHJvdWdoIHRoZSBkb2NzLW5leHQgdHJlZS5dCgpD
-YzogSm9uYXRoYW4gQ29yYmV0IDxjb3JiZXRAbHduLm5ldD4KQ2M6IFNodWFoIEtoYW4gPHNraGFu
-QGxpbnV4Zm91bmRhdGlvbi5vcmc+CkNjOiBsaW51eC1kb2NAdmdlci5rZXJuZWwub3JnCkNjOiBE
-YXZpZCBBaXJsaWUgPGFpcmxpZWRAZ21haWwuY29tPgpDYzogU2ltb25hIFZldHRlciA8c2ltb25h
-QGZmd2xsLmNoPgpDYzogZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpDYzogQWxleCBE
-ZXVjaGVyIDxhbGV4YW5kZXIuZGV1Y2hlckBhbWQuY29tPgpDYzogQ2hyaXN0aWFuIEvDtm5pZyA8
-Y2hyaXN0aWFuLmtvZW5pZ0BhbWQuY29tPgpDYzogYW1kLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5v
-cmcKQ2M6IEphbmkgTmlrdWxhIDxqYW5pLm5pa3VsYUBsaW51eC5pbnRlbC5jb20+CkNjOiBKb29u
-YXMgTGFodGluZW4gPGpvb25hcy5sYWh0aW5lbkBsaW51eC5pbnRlbC5jb20+CkNjOiBSb2RyaWdv
-IFZpdmkgPHJvZHJpZ28udml2aUBpbnRlbC5jb20+CkNjOiBUdnJ0a28gVXJzdWxpbiA8dHVyc3Vs
-aW5AdXJzdWxpbi5uZXQ+CkNjOiBpbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCkNjOiBN
-YXR0aGV3IEJyb3N0IDxtYXR0aGV3LmJyb3N0QGludGVsLmNvbT4KQ2M6IFRob21hcyBIZWxsc3Ry
-w7ZtIDx0aG9tYXMuaGVsbHN0cm9tQGxpbnV4LmludGVsLmNvbT4KQ2M6IGludGVsLXhlQGxpc3Rz
-LmZyZWVkZXNrdG9wLm9yZwoKIERvY3VtZW50YXRpb24vdXNlcnNwYWNlLWFwaS9pb2N0bC9pb2N0
-bC1udW1iZXIucnN0IHwgICAgNSArKysrLQogMSBmaWxlIGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygr
-KSwgMSBkZWxldGlvbigtKQoKLS0tIGxpbnV4LW5leHQtMjAyNjExMTMub3JpZy9Eb2N1bWVudGF0
-aW9uL3VzZXJzcGFjZS1hcGkvaW9jdGwvaW9jdGwtbnVtYmVyLnJzdAorKysgbGludXgtbmV4dC0y
-MDI2MTExMy9Eb2N1bWVudGF0aW9uL3VzZXJzcGFjZS1hcGkvaW9jdGwvaW9jdGwtbnVtYmVyLnJz
-dApAQCAtOTgsNiArOTgsNyBAQCBDb2RlICBTZXEjICAgIEluY2x1ZGUgRmlsZQogMHgxYiAgYWxs
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICBJbmZpbmlCYW5kIFN1YnN5c3RlbQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA8aHR0cDovL2luZmluaWJh
-bmQuc291cmNlZm9yZ2UubmV0Lz4KIDB4MjAgIGFsbCAgICBkcml2ZXJzL2Nkcm9tL2NtMjA2LmgK
-KzB4MjAgIDAwLTAxICBkcml2ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS9hbWRncHVfdW1yLmgKIDB4
-MjIgIGFsbCAgICBzY3NpL3NnLmgKIDB4M0UgIDAwLTBGICBsaW51eC9jb3VudGVyLmggICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPG1haWx0bzpsaW51eC1paW9Admdl
-ci5rZXJuZWwub3JnPgogJyEnICAgMDAtMUYgIHVhcGkvbGludXgvc2VjY29tcC5oCkBAIC0yNjks
-NyArMjcwLDcgQEAgQ29kZSAgU2VxIyAgICBJbmNsdWRlIEZpbGUKICdjJyAgIDA4ICAgICBkcml2
-ZXJzL3Njc2kvY2guYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29u
-ZmxpY3QhCiAnYycgICA4MC05RiAgYXJjaC9zMzkwL2luY2x1ZGUvYXNtL2Noc2MuaCAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIGNvbmZsaWN0IQogJ2MnICAgQTAtQUYgIGFyY2gveDg2L2lu
-Y2x1ZGUvYXNtL21zci5oIGNvbmZsaWN0IQotJ2QnICAgMDAtRkYgIGxpbnV4L2NoYXIvZHJtL2Ry
-bS5oICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb25mbGljdCEKKydkJyAg
-IDAwLUZGICBkcm0vZHJtLmggICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgY29uZmxpY3QhCiAnZCcgICAwMi00MCAgcGNtY2lhL2RzLmggICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbmZsaWN0IQogJ2QnICAgRjAtRkYg
-IGxpbnV4L2RpZ2kxLmgKICdlJyAgIGFsbCAgICBsaW51eC9kaWdpMS5oICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29uZmxpY3QhCkBAIC0yOTMsNiArMjk0LDgg
-QEAgQ29kZSAgU2VxIyAgICBJbmNsdWRlIEZpbGUKICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPG1haWx0bzp6YXBt
-YW5AaW50ZXJsYW4ubmV0PgogJ2gnICAgMDAtMUYgIGxpbnV4L2hwZXQuaCAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb25mbGljdCEKICdoJyAgIDgwLThGICBm
-cy9oZnNwbHVzL2lvY3RsLmMKKydpJyAgIDAwLTAyICBkcm0vaTkxNV9kcm0uaAorJ2knICAgMDAt
-MDQgIGRybS94ZV9kcm0uaAogJ2knICAgMDAtM0YgIGxpbnV4L2kyby1kZXYuaCAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb25mbGljdCEKICdpJyAgIDBCLTFGICBs
-aW51eC9pcG1pLmggICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-Y29uZmxpY3QhCiAnaScgICA4MC04RiAgbGludXgvaThrLmgKCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBt
-YWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9s
-aW51eC1tdGQvCg==
+Convert xi_tab in struct bch_control from a separately allocated
+pointer to a flexible array member trailing the struct. This co-locates
+the xi_tab data with the struct allocation, reducing the number of
+individual heap allocations and simplifying cleanup.
+
+The xi_tab member is moved to the end of the struct and changed from
+'unsigned int *' to 'unsigned int []'. The allocation in bch_init()
+switches from kzalloc_obj + bch_alloc to kzalloc_flex, and the
+corresponding kfree in bch_free() is removed.
+
+Signed-off-by: Rosen Penev <rosenp@gmail.com>
+---
+ v2: resend
+ include/linux/bch.h | 2 +-
+ lib/bch.c           | 4 +---
+ 2 files changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/include/linux/bch.h b/include/linux/bch.h
+index 85fdce83d4e2..e736b3a46e96 100644
+--- a/include/linux/bch.h
++++ b/include/linux/bch.h
+@@ -47,12 +47,12 @@ struct bch_control {
+ 	uint32_t       *mod8_tab;
+ 	uint32_t       *ecc_buf;
+ 	uint32_t       *ecc_buf2;
+-	unsigned int   *xi_tab;
+ 	unsigned int   *syn;
+ 	int            *cache;
+ 	struct gf_poly *elp;
+ 	struct gf_poly *poly_2t[4];
+ 	bool		swap_bits;
++	unsigned int    xi_tab[];
+ };
+ 
+ struct bch_control *bch_init(int m, int t, unsigned int prim_poly,
+diff --git a/lib/bch.c b/lib/bch.c
+index c991c71c4cbd..f003965a21b9 100644
+--- a/lib/bch.c
++++ b/lib/bch.c
+@@ -1320,7 +1320,7 @@ struct bch_control *bch_init(int m, int t, unsigned int prim_poly,
+ 	if (prim_poly == 0)
+ 		prim_poly = prim_poly_tab[m-min_m];
+ 
+-	bch = kzalloc_obj(*bch);
++	bch = kzalloc_flex(*bch, xi_tab, m);
+ 	if (bch == NULL)
+ 		goto fail;
+ 
+@@ -1334,7 +1334,6 @@ struct bch_control *bch_init(int m, int t, unsigned int prim_poly,
+ 	bch->mod8_tab  = bch_alloc(words*1024*sizeof(*bch->mod8_tab), &err);
+ 	bch->ecc_buf   = bch_alloc(words*sizeof(*bch->ecc_buf), &err);
+ 	bch->ecc_buf2  = bch_alloc(words*sizeof(*bch->ecc_buf2), &err);
+-	bch->xi_tab    = bch_alloc(m*sizeof(*bch->xi_tab), &err);
+ 	bch->syn       = bch_alloc(2*t*sizeof(*bch->syn), &err);
+ 	bch->cache     = bch_alloc(2*t*sizeof(*bch->cache), &err);
+ 	bch->elp       = bch_alloc((t+1)*sizeof(struct gf_poly_deg1), &err);
+@@ -1384,7 +1383,6 @@ void bch_free(struct bch_control *bch)
+ 		kfree(bch->mod8_tab);
+ 		kfree(bch->ecc_buf);
+ 		kfree(bch->ecc_buf2);
+-		kfree(bch->xi_tab);
+ 		kfree(bch->syn);
+ 		kfree(bch->cache);
+ 		kfree(bch->elp);
+-- 
+2.56.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
