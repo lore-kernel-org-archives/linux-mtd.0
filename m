@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D661C606A33D
-	for <linux-mtd@archiver.kernel.org>; Sat, 14 Nov 2026 19:20:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CCA7606A33D
+	for <linux-mtd@archiver.kernel.org>; Sat, 14 Nov 2026 19:20:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=sCJk802+;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=rGO7KtyP
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=nrxaa3XR;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=zjjrwaRn
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,65 +14,65 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=Vyj6QTLs5jMyioY0xT4neofuc78RAB0AeAIWpvHiwrw=; b=sCJk802+7bPvSurupTQ5ICPH+d
-	S0L5Llfhi1yuNfDROOO8G6RxPnkaZnWq0xJDzAjwWN4SW6eG285AtVxyxdvmesFqEu+/cLy+rJsAm
-	J9vazYbaED5w66ZrOAJ9Me3K4EmX8ceisl42nIHI77ohe8Kr10XBwXVf57l/W6owNPfY0BQeBByHl
-	LaqWkWPNRfGdTtEIgpoCbhFGt9A/Jon+2+fFlzcxPfHo3Nvjxxeybj1MssG2TALKIKCN1gwsGm1fM
-	lIhmekg62YKop5Nmtl7cpcXxtXqzVJRHtyxOVVBFprH4STzyerHHhh9l/UrURiLMTc7i2emaT+5Yx
-	MVzj1T8w==;
+	bh=UB3GiK0B26V86igqQNsYOmmai+1P8SNyNoYjAB5LipM=; b=nrxaa3XRtCayRgHpKzUlFgq2QN
+	PlkUdA3t6YLo3HXTzIUXMd6YBTAthSQRjXYXkYggpXxC/8P9q6OhxqAiec9kD2DuEjqf9Xo61e/UC
+	Va4tNuyTRjIzg6n/IqdhaeS9OzTvi+ikw8uzHZh/e3Ht9FBLEfCf+LdLTkk/uEO0j5P6rtSzGrG7o
+	QQ80ejLE9wFvWafL/uoN7JhuSwQaCFvXBR5BxaPzwaO8aUjCQYbufNA2ZGQaORvGLCgtmtKO84EBA
+	UJRYgEB38KjBu9tLl3cLkpe/zq2F4ntzPDLF8gAdkZbaBSmcCiWdrIGeJVOauFjuZ4oey71TrzHmU
+	Eihi9WFg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xSJIp-0000000Gf5e-2Kn9;
-	Sat, 14 Nov 2026 19:20:43 +0000
-Received: from mail-qv1-xf31.google.com ([2607:f8b0:4864:20::f31])
+	id 1xSJIw-0000000Gf7C-0MAC;
+	Sat, 14 Nov 2026 19:20:50 +0000
+Received: from mail-qt1-x833.google.com ([2607:f8b0:4864:20::833])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xSJIk-0000000Gf4K-3YBC
+	id 1xSJIp-0000000Gf4h-0KXy
 	for linux-mtd@lists.infradead.org;
-	Sat, 14 Nov 2026 19:20:42 +0000
-Received: by mail-qv1-xf31.google.com with SMTP id 6a1803df08f44-91f0272ce61so32302916d6.2
-        for <linux-mtd@lists.infradead.org>; Sat, 14 Nov 2026 11:20:38 -0800 (PST)
+	Sat, 14 Nov 2026 19:20:47 +0000
+Received: by mail-qt1-x833.google.com with SMTP id d75a77b69052e-55c48582654so9787811cf.0
+        for <linux-mtd@lists.infradead.org>; Sat, 14 Nov 2026 11:20:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794684037; x=1795288837; darn=lists.infradead.org;
+        d=gmail.com; s=20260707; t=1794684042; x=1795288842; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=MQjf08pQarr4TMcmCq6Pk+sjEXtu6RANKHLEtOhYUik=;
-        b=rGO7KtyPVi7yzf1twWgbry+SjSronEIIOw3h7ZMMiG2y7PA5cSBZ+u/yykK/kO8YU3
-         STOJxQB8nfh1feVCPltXvXKjVdmZ9v+lbkvzrR8nJpJnk30xL6QC/0eNNpCAQOwwnS3q
-         YW9R2ne2tJ1h9oBtUubrqwWoNkGgzxTUCF7f0ugOMst024xogtzcICIwTey26PLBUvgl
-         PVmP+XMv0TvEVfrR2io7zHzUa/U0CbB7GH5rxOcoRDxbnsXDnOPQ1AMzMogxeu5YkWyu
-         ZwG8KhZWXQZ39PF4sDTIb3lFwHjmJ5aDMsO1gX1E7kVCY/B+UxbQ9wohA7om0FKBtIgt
-         CbJw==
+        bh=DeWc8W1NhIBdehZmUo3RGXoiEr7NAQbmeD328Wa8hwE=;
+        b=zjjrwaRnfKaBRipzJNLFoG4+JLeyB0aBUnqgsm9yzE0RtMdyBwj86M7tmDRoWrNubW
+         x4oD37yb/eC4YYQxGHE+yICdLVMFYC86pbwC6oos7m0FXaFCV7E8VWYxRD/6x9UqY/WQ
+         u4ASqMmtAAy1SZ81OQMr5jn4IqWpAZBeH1jrHJHNh4xPHGJMn6Nju2Iy7Ip+UiD8GiRB
+         EEDJKHlqw2ed6qGeGpkGZM++VkgWoF1BE9FVln9ro651pW3tPOCEio+3QWOmka8QlcsS
+         2ZeSJ9Ky3oFXUgQz0wgG1hDrz0KEpTJ58j0Ua4CPXLoc1kaaD5raU0i642RYxphcIDGa
+         JG1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794684037; x=1795288837;
+        d=1e100.net; s=20260707; t=1794684042; x=1795288842;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=MQjf08pQarr4TMcmCq6Pk+sjEXtu6RANKHLEtOhYUik=;
-        b=g+ejRxPYrE7gtaKdgI1om9E/TA4WbQgXPJ0wlW74qfJncTaN4BraUR7ahh6Bc7QIfo
-         JnFwjQ0bW53H1rv5F9BvAdjE5SKAK7Y4+ZLbjwMwFLk0XQ9AGooa10Ipqsu06MqpqIKR
-         Mw9B0kPCMCj0p4hD9W005c+wuvvGfP+OqNO7i0lbTSd2fq75pBU6xD5buvykECPL/RZd
-         59xxSCOv4v2+RtzP/A/23JXV/vmyF5aCy04h4O+QmfVI0izmcqXJ8KyiDGqzRmG6E3rQ
-         1TfRyRglB6Alebc81hZDUngOifmLjlAP/hfU29uri2TTvaBHn+uiOq/Y4KtduvY+F+0N
-         Ibog==
-X-Forwarded-Encrypted: i=1; AL+hErFkOqQZa68tlm4JFFgCzOgidYHR6MrMlgIxm4EljNokWeFnnBiFjbGFsYi/Ow/lqoCs2gjA4J5tKZo=@lists.infradead.org
-X-Gm-Message-State: APuU4Z+uTYQhOo75sG2RR1t/M6/xoNvlm1UQPu13x8v6YTqev+yCJKEX
-	hq2Rg77pRFhHrQiTTC3SnCFz4FniLIKQquKruo76aSQCz+IQtqCEeGDy
-X-Gm-Gg: AYBFou0gtGmMKttUuzTcolvWT6SVg826/jJLMAoPmOWuMy869SuFm+jMsrL7p/SnVGv
-	Sw1Cl7CaxUn9YT9EyAq6VP5KXPAf+8LZ1NY5Nx2ICMTOfvUI9OEDQzAC89jrU6fD/36zS7yjR3m
-	24dYBb5x+q07fmjz8ld8X2brnx3Fv9SUCvSth+JXCTNWgPNaN24ICg3vCZuAp0AmbTc76Id9axo
-	0rDlSvx1xc44F2xgVdkOYl+dNHhV2uo5u0iIMXc/z+mHATuWH3vW2Zj8cf9uPBU1TqHkC+1L6lC
-	pzJAgLMHlw8T+795RPLHUh8p74HQGqNzdhbQO8xK5U5FRQ8bjPitPoR1znobBKY+HpLMCCIP/7m
-	OkTo1JkYldtMM6BL1dTDednNzm8aLizJc/V6B7Q1j0UsgWsLVXeNtJx+Y9xds5J/AKcW6sYXGT3
-	9eO4Za0KuZxi13V7T6ZPNy9eEVBp3PkpVIgNZ10psZr6RFkAWR/vRIzmntjN4uZMoMhtYFiDq+G
-	p6pjAI9mhsxZnNLMODTugZ+yuk9bf1QtbAyHuJYW0s3LXxqruCB4h9mrCpsiz+KsQmPG2Gg0j6Q
-	EBLdL36INBAKE1VssRqUj+pja+SlTbnHTFk=
-X-Received: by 2002:a05:6214:3913:b0:91c:50af:f6ad with SMTP id 6a1803df08f44-91f24262a8amr97318066d6.50.1794684037579;
-        Sat, 14 Nov 2026 11:20:37 -0800 (PST)
+        bh=DeWc8W1NhIBdehZmUo3RGXoiEr7NAQbmeD328Wa8hwE=;
+        b=IWwlEFzHz6+IIodW5f8uZrXKEGKElQYhFMc+rwJjgjEZmA/IAnx+11ErSWzIVpX+Ow
+         0bLOHc2QObQbl3oy4Ys1aggxPMIY9Qg7WQmesqD0t0B3PC6qOhPViGn9nwVaVT3BzZn6
+         ED2SOOB55X2FYYxc15p1zgQ1JxSZFOAp+9KfhHo/VKsoT7qcuJE5iMq+XmajtR58roaQ
+         Dc3zs07Ng2ZJYMmz6TjNsUg2Z2Yhu95BVBgbM6cGC+j8i3asf3blaasc9Rujlzkr6Mgg
+         5R4QaPjJlmGVKyjfbSkD/Y4oA1TR7ETXDOfEkLeq7IR8vIF6TsT7nMYIX8JtN2AV83uw
+         Jsgg==
+X-Forwarded-Encrypted: i=1; AL+hErHHZ4rbDY2XZiwJpghFFNUEdKU1sYU4k9XmHNwcsuhclj+p7J66AuAnYozV/Vg36c5EWVGjRHzciSk=@lists.infradead.org
+X-Gm-Message-State: APuU4Z87+soPGirpFbci43/HU6ZLiUZICqUTHlGXEhvff3sUltiGl84U
+	1EMe9jOoWBoLywBkIsc/q8NWpC/E+MfKIJ4KPaesvDOigw8Lo5S4RCXI
+X-Gm-Gg: AYBFou3VUNVo7VS+KtpjRa7MAuxpl42qwwXWrimLBiv2zrgfVbtuG3OzuxVPD2fpnOS
+	Ox260sYevSCl8JrzJYnFHU7JtlcJq5nEgixgc1fFGCk2vGGWZb6ggbYcnrGB/Z075c7qFzPeK8K
+	jCOZheprCNbZ2Ph77x/UB6omVmCwRnrVhdjOw2HLEbXASxaNMzTJgRD9yEIqU2+d0sxvAHgvEd6
+	n06kkmgmRPbLr8JI6Y/+GgAu4J8NA0b43AwDmhC9EluH67nJ8hRrJV0r6cA9OXxhXdAk8IqF7v0
+	pmRQZMdZcjPe/RHxGwnTYQJNUj/lYXO9x2d+uco9OkTkmIVsyBeRPfEFc3skKv18MPvO3iI+pls
+	UbHgSUv6qR8VDcFFeAdFv6BnfhcG7cqEESG/iqgwshb80ax+0kBq28OpE03Twf1+NRvMgVBwk3D
+	Def7Y+/tYuWkYQSAIHjs+Paa6JwOVV21w4ai2FR4e7yUSZ/PaDJC0K25dE7EomxrDEo8Hof9wpD
+	qR/mTys8wuK8s2nq0Bnt7F5Ml7ar4RZVde0URmageHO9axgnKnhYKoo9OsKULq//kqnW63shkhi
+	47sm0k5XeKMPSOEkWesakON4LzUegjx9nJM=
+X-Received: by 2002:a05:622a:258e:b0:533:3bd5:b6e0 with SMTP id d75a77b69052e-55ac857f9e9mr105572911cf.59.1794684041554;
+        Sat, 14 Nov 2026 11:20:41 -0800 (PST)
 Received: from deb05.proceq.com ([213.160.61.66])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-91f23dbf30dsm48544256d6.44.2026.11.14.11.20.35
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-91f23dbf30dsm48544256d6.44.2026.11.14.11.20.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Nov 2026 11:20:37 -0800 (PST)
+        Sat, 14 Nov 2026 11:20:41 -0800 (PST)
 From: Mehmet Fide <mehmet.fide@gmail.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
 Cc: Stefan Agner <stefan@agner.ch>,
@@ -84,17 +84,17 @@ Cc: Stefan Agner <stefan@agner.ch>,
 	linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	mehmet.fide@screeningeagle.com
-Subject: [PATCH v2 1/3] mtd: rawnand: vf610_nfc: write the OOB bytes on page writes
-Date: Sat, 14 Nov 2026 20:20:29 +0100
-Message-ID: <20261114192031.959376-2-mehmet.fide@gmail.com>
+Subject: [PATCH v2 3/3] mtd: rawnand: vf610_nfc: return an error when a command times out
+Date: Sat, 14 Nov 2026 20:20:31 +0100
+Message-ID: <20261114192031.959376-4-mehmet.fide@gmail.com>
 X-Mailer: git-send-email 2.56.0
 In-Reply-To: <20261114192031.959376-1-mehmet.fide@gmail.com>
 References: <20261114192031.959376-1-mehmet.fide@gmail.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261114_112038_912795_51F37EE2 
-X-CRM114-Status: GOOD (  12.12  )
+X-CRM114-CacheID: sfid-20261114_112043_138618_DA78194E 
+X-CRM114-Status: GOOD (  15.62  )
 X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -118,38 +118,129 @@ X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 
 From: Mehmet Fide <mehmet.fide@screeningeagle.com>
 
-The ECC page write transfers the page and the spare area from the
-controller SRAM, but only the page data is copied there: the conversion
-to ->exec_op() dropped the vf610_nfc_write_buf() call that copied
-chip->oob_poi. Every written page gets the leftovers of the previous
-transfer as its OOB, and OOB data given by the caller is lost.
+A command that times out only prints a warning. The callers carry on,
+copy whatever the SRAM buffer holds and report success.
 
-Copy chip->oob_poi into the SRAM buffer as well. The NAND core fills it
-with 0xff when the caller writes no OOB, and the ECC engine overwrites
-the parity region on its way to the flash.
+Return -ETIMEDOUT from vf610_nfc_done() and pass it up through
+->exec_op() and the page read and write hooks.
 
-Fixes: 1cbe30b0ddc7 ("mtd: rawnand: vf610_nfc: make use of ->exec_op()")
-Cc: stable@vger.kernel.org
+Fixes: 456930d80a2d ("mtd: nand: vf610_nfc: Freescale NFC for VF610, MPC5125 and others")
 Signed-off-by: Mehmet Fide <mehmet.fide@screeningeagle.com>
 ---
- drivers/mtd/nand/raw/vf610_nfc.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/mtd/nand/raw/vf610_nfc.c | 29 +++++++++++++++++++----------
+ 1 file changed, 19 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/vf610_nfc.c b/drivers/mtd/nand/raw/vf610_nfc.c
-index 6ab3c440eac7..acc9ff282083 100644
+index 547eb1513893..d6d4a18432ce 100644
 --- a/drivers/mtd/nand/raw/vf610_nfc.c
 +++ b/drivers/mtd/nand/raw/vf610_nfc.c
-@@ -637,6 +637,8 @@ static int vf610_nfc_write_page(struct nand_chip *chip, const uint8_t *buf,
- 	 */
- 	vf610_nfc_wr_to_sram(nfc->regs + NFC_MAIN_AREA(0), buf,
- 			     mtd->writesize, false);
-+	vf610_nfc_wr_to_sram(nfc->regs + NFC_MAIN_AREA(0) + mtd->writesize,
-+			     chip->oob_poi, vf610_nfc_spare_size(mtd), false);
+@@ -288,9 +288,10 @@ static inline void vf610_nfc_clear_status(struct vf610_nfc *nfc)
+ 	vf610_nfc_write(nfc, NFC_IRQ_STATUS, tmp);
+ }
  
- 	code |= COMMAND_RB_HANDSHAKE;
+-static void vf610_nfc_done(struct vf610_nfc *nfc)
++static int vf610_nfc_done(struct vf610_nfc *nfc)
+ {
+ 	unsigned long timeout = msecs_to_jiffies(100);
++	int ret = 0;
+ 
+ 	vf610_nfc_clear_status(nfc);
+ 	reinit_completion(&nfc->cmd_done);
+@@ -309,9 +310,12 @@ static void vf610_nfc_done(struct vf610_nfc *nfc)
+ 		dev_warn(nfc->dev, "Timeout while waiting for BUSY.\n");
+ 		vf610_nfc_clear(nfc, NFC_IRQ_STATUS, IDLE_EN_BIT);
+ 		synchronize_irq(nfc->irq);
++		ret = -ETIMEDOUT;
+ 	}
+ 
+ 	vf610_nfc_clear_status(nfc);
++
++	return ret;
+ }
+ 
+ static irqreturn_t vf610_nfc_irq(int irq, void *data)
+@@ -331,8 +335,8 @@ static inline void vf610_nfc_ecc_mode(struct vf610_nfc *nfc, int ecc_mode)
+ 			    CONFIG_ECC_MODE_SHIFT, ecc_mode);
+ }
+ 
+-static inline void vf610_nfc_run(struct vf610_nfc *nfc, u32 col, u32 row,
+-				 u32 cmd1, u32 cmd2, u32 trfr_sz)
++static inline int vf610_nfc_run(struct vf610_nfc *nfc, u32 col, u32 row,
++				u32 cmd1, u32 cmd2, u32 trfr_sz)
+ {
+ 	vf610_nfc_set_field(nfc, NFC_COL_ADDR, COL_ADDR_MASK,
+ 			    COL_ADDR_SHIFT, col);
+@@ -348,7 +352,7 @@ static inline void vf610_nfc_run(struct vf610_nfc *nfc, u32 col, u32 row,
+ 		"col 0x%04x, row 0x%08x, cmd1 0x%08x, cmd2 0x%08x, len %d\n",
+ 		col, row, cmd1, cmd2, trfr_sz);
+ 
+-	vf610_nfc_done(nfc);
++	return vf610_nfc_done(nfc);
+ }
+ 
+ static inline const struct nand_op_instr *
+@@ -370,6 +374,7 @@ static int vf610_nfc_cmd(struct nand_chip *chip,
+ 	int op_id = -1, trfr_sz = 0, offset = 0;
+ 	u32 col = 0, row = 0, cmd1 = 0, cmd2 = 0, code = 0;
+ 	bool force8bit = false;
++	int ret;
+ 
+ 	/*
+ 	 * Some ops are optional, but the hardware requires the operations
+@@ -448,9 +453,9 @@ static int vf610_nfc_cmd(struct nand_chip *chip,
+ 
  	cmd2 |= code << CMD_CODE_SHIFT;
-
-base-commit: 7475ea8b58616b33c04afb976cf0fbaad9dd63fb
+ 
+-	vf610_nfc_run(nfc, col, row, cmd1, cmd2, trfr_sz);
++	ret = vf610_nfc_run(nfc, col, row, cmd1, cmd2, trfr_sz);
+ 
+-	if (instr && instr->type == NAND_OP_DATA_IN_INSTR) {
++	if (!ret && instr && instr->type == NAND_OP_DATA_IN_INSTR) {
+ 		/*
+ 		 * Don't fix endianness on page access for historical reasons.
+ 		 * See comment in vf610_nfc_rd_from_sram
+@@ -463,7 +468,7 @@ static int vf610_nfc_cmd(struct nand_chip *chip,
+ 	if (force8bit && (chip->options & NAND_BUSWIDTH_16))
+ 		vf610_nfc_set(nfc, NFC_FLASH_CONFIG, CONFIG_16BIT);
+ 
+-	return 0;
++	return ret;
+ }
+ 
+ static const struct nand_op_parser vf610_nfc_op_parser = NAND_OP_PARSER(
+@@ -572,7 +577,7 @@ static int vf610_nfc_read_page(struct nand_chip *chip, uint8_t *buf,
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	int trfr_sz = mtd->writesize + vf610_nfc_spare_size(mtd);
+ 	u32 row = 0, cmd1 = 0, cmd2 = 0, code = 0;
+-	int stat;
++	int stat, ret;
+ 
+ 	vf610_nfc_select_target(chip, chip->cur_cs);
+ 
+@@ -587,8 +592,10 @@ static int vf610_nfc_read_page(struct nand_chip *chip, uint8_t *buf,
+ 	cmd2 |= code << CMD_CODE_SHIFT;
+ 
+ 	vf610_nfc_ecc_mode(nfc, nfc->ecc_mode);
+-	vf610_nfc_run(nfc, 0, row, cmd1, cmd2, trfr_sz);
++	ret = vf610_nfc_run(nfc, 0, row, cmd1, cmd2, trfr_sz);
+ 	vf610_nfc_ecc_mode(nfc, ECC_BYPASS);
++	if (ret)
++		return ret;
+ 
+ 	/*
+ 	 * Don't fix endianness on page access for historical reasons.
+@@ -651,8 +658,10 @@ static int vf610_nfc_write_page(struct nand_chip *chip, const uint8_t *buf,
+ 	cmd2 |= code << CMD_CODE_SHIFT;
+ 
+ 	vf610_nfc_ecc_mode(nfc, nfc->ecc_mode);
+-	vf610_nfc_run(nfc, 0, row, cmd1, cmd2, trfr_sz);
++	ret = vf610_nfc_run(nfc, 0, row, cmd1, cmd2, trfr_sz);
+ 	vf610_nfc_ecc_mode(nfc, ECC_BYPASS);
++	if (ret)
++		return ret;
+ 
+ 	ret = nand_status_op(chip, &status);
+ 	if (ret)
 -- 
 2.56.0
 
