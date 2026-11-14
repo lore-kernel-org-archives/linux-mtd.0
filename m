@@ -2,10 +2,10 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65CA9606BB35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FFA4606BB39
 	for <linux-mtd@archiver.kernel.org>; Sat, 14 Nov 2026 20:27:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=0TJNFYXJ
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=fVSZdZRa
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -13,20 +13,20 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=+SxV5Y0PFi49mcjZm+VOnK1xo8CRrFtBgGjUx0DZvD4=; b=0TJNFYXJolhUqPYOBLZdEg/4dL
-	ie5ezsAbkKo2I9wrbSTXdX1LU64XEJ5+Vu2WP0cI4GltzvJnk112w8TqMeqGpVP3OdAy5y2MqFHUU
-	jCIiU+NdQPqdPdNjwIKo+PP+gGdOrTFm1HNVfZQkfTwIKMJwzyShDeXRNFw2P40bnxmJJp8/6UYIa
-	KPGSNNjjko7SroYoJ/P3DOJ1JYqg91mesBKXWolsCReVwKWENaWgcqlfGULvlaLGCph66VVgTCEFj
-	GKn5a76CuZt6YjrHvmV/P7c2/tKX7CrWv1EG1B8HK0f79Ke0WX2AIaTKuI0M0lvR/km9Wl6hpaqtJ
-	WTX104yA==;
+	bh=3wmb8HSvE521Ev8B3ejuvIiGojLW+Jo9tbrnG+hftjE=; b=fVSZdZRaEFQLrb+Un4/A15bCjl
+	5EJG5QAHBcZ3H9CXPQPn4iic2knqMC9I3kRNvI4UlI22ZrEhirRNeL8u1jWumHRNW4jO/y7Q0dbRu
+	g4tARJz449a8LLr+Qhj2mx5hPzqfsaU182bycTJfAhUPP9FLdTPGQUeelTtOhL9FECD/QmW7FAKf/
+	PSjfoLUgOKI95EUoy7zTPE6VqTZtI5UZoJ0vN+FOD1hgoLRHCEWZXsXnpdV53fS9qAzSWRspR5XKr
+	iykGZ7IQlTWA4Y+4LCESWfisZ+N+2VjJedP+BcWZV+rBV1q+vHAqf7op3cKHO+jTlcExFmsU9TFVn
+	Dl/F5+xQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xSKLD-0000000GilD-2Lkz;
-	Sat, 14 Nov 2026 20:27:15 +0000
+	id 1xSKLE-0000000Gilx-0XbW;
+	Sat, 14 Nov 2026 20:27:16 +0000
 Received: from [50.53.43.113] (helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtpsa (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xSKKv-0000000Giga-2gx2;
-	Sat, 14 Nov 2026 20:26:57 +0000
+	id 1xSKLB-0000000Giga-0GrV;
+	Sat, 14 Nov 2026 20:27:13 +0000
 From: Randy Dunlap <rdunlap@infradead.org>
 To: linux-kernel@vger.kernel.org
 Cc: Randy Dunlap <rdunlap@infradead.org>,
@@ -115,9 +115,9 @@ Cc: Randy Dunlap <rdunlap@infradead.org>,
 	Matthew Brost <matthew.brost@intel.com>,
 	=?UTF-8?q?Thomas=20Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
 	intel-xe@lists.freedesktop.org
-Subject: [PATCH 01/12] docs: ioctl-number: update MM entries
-Date: Sat, 14 Nov 2026 12:26:39 -0800
-Message-ID: <20261114202653.3113381-2-rdunlap@infradead.org>
+Subject: [PATCH 08/12] docs: ioctl-number: update USB entries
+Date: Sat, 14 Nov 2026 12:26:46 -0800
+Message-ID: <20261114202653.3113381-9-rdunlap@infradead.org>
 X-Mailer: git-send-email 2.56.0
 In-Reply-To: <20261114202653.3113381-1-rdunlap@infradead.org>
 References: <20261114202653.3113381-1-rdunlap@infradead.org>
@@ -142,7 +142,7 @@ X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-Add ioctl number entries for test_hmm_uapi and gup_test.
+Update the list of files where USB ioctls are defined.
 
 Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
 ---
@@ -153,32 +153,33 @@ take all of these through the docs-next tree.]
 Cc: Jonathan Corbet <corbet@lwn.net>
 Cc: Shuah Khan <skhan@linuxfoundation.org>
 Cc: linux-doc@vger.kernel.org
-Cc: David Hildenbrand <david@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Leon Romanovsky <leonro@nvidia.com>
-Cc: linux-mm@kvack.org
+Cc: Neill Kapron <nkapron@google.com>
+Cc: Andrey Konovalov <andreyknvl@gmail.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-usb@vger.kernel.org
 
- Documentation/userspace-api/ioctl/ioctl-number.rst |    4 ++++
- 1 file changed, 4 insertions(+)
+ Documentation/userspace-api/ioctl/ioctl-number.rst |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
 --- linux-next-20261111.orig/Documentation/userspace-api/ioctl/ioctl-number.rst
 +++ linux-next-20261111/Documentation/userspace-api/ioctl/ioctl-number.rst
-@@ -147,6 +147,8 @@ Code  Seq#    Include File
- 'G'   00-0F  xen/gntalloc.h, xen/gntdev.h                              conflict!
- 'H'   00-7F  linux/hiddev.h                                            conflict!
- 'H'   00-0F  linux/hidraw.h                                            conflict!
-+'H'   00-0F  lib/test_hmm_uapi.h                                       conflict!
-+                                                                       <mailto:linux-mm@kvack.org>
- 'H'   01     linux/mei.h                                               conflict!
- 'H'   02     linux/mei.h                                               conflict!
- 'H'   03     linux/mei.h                                               conflict!
-@@ -252,6 +254,8 @@ Code  Seq#    Include File
- 'f'   81-8F  linux/fsverity.h
- 'g'   00-0F  linux/usb/gadgetfs.h
+@@ -234,6 +234,9 @@ Code  Seq#    Include File
+ 'U'   00-EF  linux/usbdevice_fs.h
+ 'U'   C0-CF  drivers/bluetooth/hci_uart.h
+ 'U'   00     net/nfc/nci_core.h                                        conflict!
++'U'   00-0F  linux/usb/raw_gadget.h                                    conflict!
++'U'   01     linux/usb/g_uvc.h                                         conflict!
++'U'   64     drivers/usb/misc/usbtest.c                                conflict!
+ 'V'   all    linux/vt.h                                                conflict!
+ 'V'   all    linux/videodev2.h                                         conflict!
+ 'V'   C0     linux/ivtvfb.h                                            conflict!
+@@ -280,6 +283,9 @@ Code  Seq#    Include File
  'g'   20-2F  linux/usb/g_printer.h
-+'g'   01-0F  mm/gup_test.h                                             conflict!
-+                                                                       <mailto:linux-mm@kvack.org>
+ 'g'   01-0F  mm/gup_test.h                                             conflict!
+                                                                        <mailto:linux-mm@kvack.org>
++'g'   01-03  linux/usb/functionfs.h                                    conflict!
++      80-86
++'g'   41-42  linux/usb/g_hid.h
  'h'   00-7F                                                            conflict! Charon filesystem
                                                                         <mailto:zapman@interlan.net>
  'h'   00-1F  linux/hpet.h                                              conflict!
