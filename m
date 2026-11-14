@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0E47606A331
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E83D9606A880
 	for <linux-mtd@archiver.kernel.org>; Sat, 14 Nov 2026 10:06:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=pxcuDsyf;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=simonwunderlich.de header.i=@simonwunderlich.de header.a=rsa-sha256 header.s=09092022 header.b=yqSHP3Np
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=QuJd0PxE;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=simonwunderlich.de header.i=@simonwunderlich.de header.a=rsa-sha256 header.s=09092022 header.b=xRtSw/oz
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,39 +14,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=7h7Is7uidSozXd2ylUuDVhXL8zVxQLtUVuKlVltC4zg=; b=pxcuDsyfy018YlnmURVh+yeabs
-	hfMscZEizpMDr2NFu7n+V/Fu9dLGirRBRX9UKkNgvwoFW71JyyNy0KYPYvoueg8kYIvz5W1WDwvSl
-	Cug1PYkGO4BAwYlc/Sk+wU2LyDziKyQotCSYLjbZ2X35ctmqLoLDsZRIa/VYwdsMhmgCXHhBwjs2j
-	gL2S3PHBHf9bYeGvhQ/U5Qj+lIi/rM0+IY7T8dissEwrCYN4ZSuAaykgVNK3AhDyQJjSdjeIWm/NV
-	5UvgQr+2/SQcoFVEDzrDk12IlhdwVejyQWJ6mpDegpewVq5D62IBEpVvgJpwZlyerUjeM4zGtao4v
-	0lFC7hgA==;
+	bh=Vhpk50d0tv1EloE1S3HqRUnJx99imRRoCE3BN8lu4E8=; b=QuJd0PxEfgjvZCMNydOsncVcjP
+	INGxB3w6Vp1e++CJmn1RUZZqUiVruTy+fFXTTenq4GWBPiizz5/XXHWN6Jm2EIBEkmjxb25sTUFtC
+	aPbeWFvDY2HpR2pFwMRVivvd37zFrx+J/6a8PoKcUViX2xSuG74rUcAZXd6Kj5VCObzqGnR407R70
+	aiNEGL8ur1BV8o2g3j9RkqiEvvpfFqu39RtLuuyXJJfnl4EsTqoYXZ93bd54oJDPFGxqDgnRXXHeS
+	Q9BjYIkYKIeFqeDB66rZ9L0ASnanKurHOqBkG3ZZ55gqll4ODZ7X2zfBW2X6TnxvpEqwlASnxW8lf
+	y+1ktOsA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xSAeM-0000000FjAX-0D0F;
-	Sat, 14 Nov 2026 10:06:22 +0000
-Received: from mail.simonwunderlich.de ([23.88.38.48])
+	id 1xSAeK-0000000Fj9G-2l76;
+	Sat, 14 Nov 2026 10:06:20 +0000
+Received: from mail.simonwunderlich.de ([2a01:4f8:c17:e8c0::1])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xSAeF-0000000Fj74-3T3w
+	id 1xSAeF-0000000Fj7W-43hB
 	for linux-mtd@lists.infradead.org;
-	Sat, 14 Nov 2026 10:06:19 +0000
+	Sat, 14 Nov 2026 10:06:17 +0000
 Received: from kero.packetmixer.de (unknown [IPv6:2a02:3037:6ed:dd6c:838:344b:3152:2d5e])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange secp256r1 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail.simonwunderlich.de (Postfix) with UTF8SMTPSA id 578D7FA0B2;
-	Sat, 14 Nov 2026 11:06:11 +0100 (CET)
+	by mail.simonwunderlich.de (Postfix) with UTF8SMTPSA id 80B38FA1B2;
+	Sat, 14 Nov 2026 11:06:13 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=simonwunderlich.de;
-	s=09092022; t=1794650771;
+	s=09092022; t=1794650773;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Pl2hOz6BzMGr9Dpq8GYJiAgRRx0ylFIRGI3z7sZaMZs=;
-	b=yqSHP3NpQXlqj10CQ0FopwiVDN+5CY7Z2xafQRDZxF7Bc2dqQgAeBw3kNge0fSqpj4999J
-	LsDUAP1nNvjpm0hLtB2c6Y1A7oI0+n6zQQGioVZ1KG0/Gr6C386KhtyxTchsVgWrAaXYzx
-	t/u4OA8WDnEinmAlc4bg4X21/UiyisXRXVF6J9QDYtFJyRHTtI2QmT+0ac1AX2V+T1EnZ3
-	vwc8AePElrLdBNcJ7DWuRzhHyeDXeQAKhEzgy+TOnYbPc0W/y1v78TWNjcoHvGaH1HVvHL
-	bg4e0PGEB9HAcTVIZYVL1c//TNgoKPGvnaqrBwbPDeN3W9DljUkHU7NoRNoS2Q==
+	bh=HB65L63jLZH3QuI+gpMXKfarOmkNShyBiyJScYwhoZ8=;
+	b=xRtSw/ozCGXktIBENlYkLQc5BU1GXzczQ5x3obvG1QEOsaE+M97nZ9cocwlrC8ZLJ1DOUo
+	Qo35I80lo1fwJRWdEm23zZhe1R7KSrnwjWYAh+dT6MPZLA+BsRzxvoZgX/6BpLPOQVJVxh
+	wu684ClqOiES46t3bMjOO0HyMARKz7oeGB4Ciua1Ab/QYPdppHmBgOCNsoY3oJZOe5147K
+	VtKgH02yl74DIlo+EA994NvwX7KO1SHi3kznIIqi3Hsg3TOJQ98XPDgDYxO+XPoOTwX4XX
+	7vl7S4bk+li2XgFc0Fnt/USInldG0mMg1oP6BTLRFR1jOkkfAkjOkUvPkkFlFA==
 From: Simon Wunderlich <sw@simonwunderlich.de>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
@@ -64,19 +64,19 @@ Cc: Rob Herring <robh@kernel.org>,
 	Sebastien Decourriere <sebtx452@gmail.com>,
 	Yangtao Li <frank.li@vivo.com>,
 	linux-kernel@vger.kernel.org,
-	Simon Wunderlich <sw@simonwunderlich.de>,
-	stable@vger.kernel.org
-Subject: [PATCH 1/5] mtd: maps: lantiq-flash: fix NULL pointer dereference on probe
-Date: Sat, 14 Nov 2026 11:06:03 +0100
-Message-ID: <20261114100608.3432120-2-sw@simonwunderlich.de>
+	Simon Wunderlich <sw@simonwunderlich.de>
+Subject: [PATCH 3/5] mips: lantiq: xway: sysctrl: export ltq_ebu_membase
+Date: Sat, 14 Nov 2026 11:06:05 +0100
+Message-ID: <20261114100608.3432120-4-sw@simonwunderlich.de>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20261114100608.3432120-1-sw@simonwunderlich.de>
 References: <20261114100608.3432120-1-sw@simonwunderlich.de>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261114_020616_430732_E47AD6D2 
-X-CRM114-Status: GOOD (  11.04  )
+X-CRM114-CacheID: sfid-20261114_020616_430274_0BBB6753 
+X-CRM114-Status: UNSURE (   9.29  )
+X-CRM114-Notice: Please train this message.
 X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -97,49 +97,27 @@ X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-Since commit 6145e07e9c77 ("mtd: lantiq-flash: Use
-devm_platform_get_and_ioremap_resource()"), ltq_mtd_probe() stores the
-ioremapped address in ltq_mtd->map->virt before ltq_mtd->map is
-allocated. ltq_mtd comes from devm_kzalloc(), so map is still NULL at
-that point and the probe dereferences a NULL pointer on every board
-with a "lantiq,nor" node.
+The lantiq-flash driver, which can be built as a module, is about to
+read an EBU register with ltq_ebu_r32(), which uses ltq_ebu_membase.
+Export it like ebu_lock, so that the module still links.
 
-Allocate the map before mapping the resource.
-
-Found by code inspection while porting a lantiq-flash change from
-OpenWrt, which replaces this probe function downstream.
-
-Fixes: 6145e07e9c77 ("mtd: lantiq-flash: Use devm_platform_get_and_ioremap_resource()")
-Cc: stable@vger.kernel.org
 Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
 ---
- drivers/mtd/maps/lantiq-flash.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/mips/lantiq/xway/sysctrl.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/mtd/maps/lantiq-flash.c b/drivers/mtd/maps/lantiq-flash.c
-index 80d467eba92a..5c2ace302b50 100644
---- a/drivers/mtd/maps/lantiq-flash.c
-+++ b/drivers/mtd/maps/lantiq-flash.c
-@@ -118,15 +118,15 @@ ltq_mtd_probe(struct platform_device *pdev)
+diff --git a/arch/mips/lantiq/xway/sysctrl.c b/arch/mips/lantiq/xway/sysctrl.c
+index dd187726e3b2..90902ca3f83a 100644
+--- a/arch/mips/lantiq/xway/sysctrl.c
++++ b/arch/mips/lantiq/xway/sysctrl.c
+@@ -149,6 +149,7 @@ static u32 pmu_clk_cr_b[] = {
+ static void __iomem *pmu_membase;
+ void __iomem *ltq_cgu_membase;
+ void __iomem *ltq_ebu_membase;
++EXPORT_SYMBOL_GPL(ltq_ebu_membase);
  
- 	platform_set_drvdata(pdev, ltq_mtd);
- 
--	ltq_mtd->map->virt = devm_platform_get_and_ioremap_resource(pdev, 0, &ltq_mtd->res);
--	if (IS_ERR(ltq_mtd->map->virt))
--		return PTR_ERR(ltq_mtd->map->virt);
--
- 	ltq_mtd->map = devm_kzalloc(&pdev->dev, sizeof(struct map_info),
- 				    GFP_KERNEL);
- 	if (!ltq_mtd->map)
- 		return -ENOMEM;
- 
-+	ltq_mtd->map->virt = devm_platform_get_and_ioremap_resource(pdev, 0, &ltq_mtd->res);
-+	if (IS_ERR(ltq_mtd->map->virt))
-+		return PTR_ERR(ltq_mtd->map->virt);
-+
- 	ltq_mtd->map->phys = ltq_mtd->res->start;
- 	ltq_mtd->map->size = resource_size(ltq_mtd->res);
- 
+ static u32 ifccr = CGU_IFCCR;
+ static u32 pcicr = CGU_PCICR;
 -- 
 2.47.3
 
