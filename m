@@ -2,11 +2,10 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15215606A329
-	for <linux-mtd@archiver.kernel.org>; Sat, 14 Nov 2026 20:11:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66E5F606BB36
+	for <linux-mtd@archiver.kernel.org>; Sat, 14 Nov 2026 20:27:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=Aq6eFg34;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=Q7tbQKcL
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=LBCa6KKB
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,89 +13,116 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=bj0WdVIS+//29EuhOcbbUOVy8tBUBDdf/ir0CNHkhBU=; b=Aq6eFg342VC13RzXmv0lbLETLZ
-	cJGAs2mgXLMdOPFyCS2dIdCNrAL8doTN8wCye+AvEgE4XAlWCrUIFLiMmsKmQm/j5H9CBiiXJnd6H
-	tlFxmMqQqjG2anYuDew+jjvLupuGLm1sST9BWb7+T+l0UzVSoKJA16HskIW0LLk5LZjA26n48yvGx
-	Kla+N+YA9mIrywv0AG0INKtwbFpQBC/YmJkZh1eLR270O0paqRpY3kWguhciV9OT4qg1jjq/5rUaM
-	PmEhSMczqKik6vXt4vYULb9CPfoxJ3GtRiFMO8eWASncCAODJrSdQqtjC8PWH6sycofgrcMULTBOk
-	f6beQ5Iw==;
+	bh=L6CwMJN1l3ctECYgzOmJsIQYWKN+qUyoawrQsbdHTOs=; b=LBCa6KKBQz3DlQAiVA9bBbbHF4
+	fv5xQqjZ90RAp4lofaXYRtuzKQJLlZe+RONcOeiw6Fg8UpzQmuhqCWVQOicc94vuOw7FeMpDh+maQ
+	81A3FuZ09ha9Q66SJ7wqyhZN30C5lh7YHFpnrFBJd2HIjvQGwOHm4dtvFEmdh0lQPftkNrmNHW3Mo
+	BD0gUq1K0aoV+4IVkOh48/WSKlB9/mAOq8XdQPycsh1PlYBvVSnsagWfIakVJ2znlpML2mKz2gnMP
+	56pLWVf+raVHvF+NJmLEeUKP/57ij2jKY/XI1FPAxOjvHkfrKDXtgtUmfdLyP0H7D5ELC5tn7LCIV
+	5ra9l3nA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xSK5W-0000000GiHs-3oIg;
-	Sat, 14 Nov 2026 20:11:02 +0000
-Received: from mail-qt1-x82b.google.com ([2607:f8b0:4864:20::82b])
-	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xSK5T-0000000GiHZ-3gpy
-	for linux-mtd@lists.infradead.org;
-	Sat, 14 Nov 2026 20:11:01 +0000
-Received: by mail-qt1-x82b.google.com with SMTP id d75a77b69052e-55b8cd4e2abso21875911cf.1
-        for <linux-mtd@lists.infradead.org>; Sat, 14 Nov 2026 12:10:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794687058; x=1795291858; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=Q1YarXMG41jTbZALuXo8AzZfZMlmVAmtGfykhB4MycA=;
-        b=Q7tbQKcLGogsM2pdtGrze/DTXRE7YKGFCuNo+PSMu3J3+UUG4zI23Mjs4DCFOKFKJi
-         3FXl573Wqh2mcHlTJNVwz/7+YO/QMpuaZ9/+cHMKW6zNwH66J9jLHMfK37hpRvuFm55U
-         ycImili7ozOGnACKvjPBlom9407erMufnpGCjk/yt1dVOhR2oZcZAqGw4qdeYbvIWWII
-         fyBJPSBVMeOzXVoZs9QtKntCfT+31vTdRV/Z6a+66QiCI0ad43YKrerktdK5rrK7O/zT
-         CcQsJTbG7oBzrQE/XLjcmw3dAkztmDHfoAbPgENmUVTrR0IgoyG9bJJXoZ6PpMvuJIi2
-         ElqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794687058; x=1795291858;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=Q1YarXMG41jTbZALuXo8AzZfZMlmVAmtGfykhB4MycA=;
-        b=NcC3y6G1armJ6pqExVE9rPJ+yJ5IIqndVBtfQaimu6DZczKX9tngRnE2sh3ReY6l47
-         qLcpzRLJ2qlIAIxGmAlEsEk2ZXEZKREuskJpd4ZTr6HrjvuJObgT+vJsbfD2vBrbSLdS
-         WIJ7gzU3pOnA5c4s8vOzxS4cz/3QMjeTz31XjAM9e1AdVd4lwg9B4zkgouqG5JezIzHa
-         asBmrjW9bklVFG81rRFUv4imulZ61Q3SbsfLUTFYxnR3iMfAG8kqe32rhoSbc/Th2xEC
-         bVI/bWRaxlyBUo6zaZFAPEw1x76iGrLbKuiNYc5SrCxf1/4CofIEw9+0Iq8vhfRQETRv
-         6r8Q==
-X-Forwarded-Encrypted: i=1; AL+hErHi+IvP9GtuJKEcFSvtNz+nid6QKfJpLRh7R4cG0NY3Cqr/j2WwG9TlkC3VWCFjwO1K8KQAdmWhjRg=@lists.infradead.org
-X-Gm-Message-State: APuU4Z/+6B7bfE4bROQoZo2XbMvYSqjmd1dz7GeivVosfN3ardg80onp
-	U5YnuZfKqLSzWUuwbtxDfHoUqgJ3+MSbfLeQYtF4pXbzLhRJFY9dkZLN
-X-Gm-Gg: AYBFou2FpgkTxRAYr4fx44z+du6S9yW55ZNX/lqXCFUaH0yj0W4HfQOl6cFkk/eMQhn
-	8vpp11DaeD2Qe8fRl0dFfDNOowdVfahnKIyDqNXKul2QWcfU+7cBLzBTb4vY0hZMzWaVGhqBNbA
-	KGyYz8ypxB3w1JT6bkUBRnxkd3ijOB1fMwukGgXnbqsfSn6QFryrqNPP7NaCMtAZsvcUk+SgUBu
-	88GJwDMpmz1P1FKqG83O09Dr2Xwv8em+aIYy/7QyqFesK88TikLmy3TCWi3cUnsAgKvsAHuek6V
-	YiTNQLkqZqMs96Pz5fkprRjpCIZSEeJ5AtOOM2bfBWULdSdoPJD3uEdU1sLZJNFPEoujIMaNvZb
-	Z/HiadUrOsWJTQ1aI+xqQuPxOZo7YhX2AgXXVfi8H1tzkH+XSha+kjvEJGkUbHYP+VvpEhSP+We
-	W07YGnQ3oeLbgYxaikUkWdAonhdvgQSol1FBDXezrvIKhu3pxaAneSiDSO2sXuawQa/w8Y3oxix
-	38xfPet3jKDXtNVtPPbza13K2r9J8sV5/JJ8msG6Bip7jpu8Pw2RWRJ0n/7kBFrJ/7nCPMz7qh+
-	9j8VzPq7zhdmZPyoboE5trla/ADgVJVAED8=
-X-Received: by 2002:a05:620a:ac19:b0:949:5708:3c9c with SMTP id af79cd13be357-94957084b2bmr644160885a.39.1794687058217;
-        Sat, 14 Nov 2026 12:10:58 -0800 (PST)
-Received: from deb05.proceq.com ([213.160.61.66])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-9494c803afbsm476303285a.15.2026.11.14.12.10.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Nov 2026 12:10:57 -0800 (PST)
-From: Mehmet Fide <mehmet.fide@gmail.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Stefan Agner <stefan@agner.ch>,
+	id 1xSKLD-0000000Gil2-1tld;
+	Sat, 14 Nov 2026 20:27:15 +0000
+Received: from [50.53.43.113] (helo=bombadil.infradead.org)
+	by bombadil.infradead.org with esmtpsa (Exim 4.100.1 #2 (Red Hat Linux))
+	id 1xSKKx-0000000Giga-2h5V;
+	Sat, 14 Nov 2026 20:26:59 +0000
+From: Randy Dunlap <rdunlap@infradead.org>
+To: linux-kernel@vger.kernel.org
+Cc: Randy Dunlap <rdunlap@infradead.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Shuah Khan <skhan@linuxfoundation.org>,
+	linux-doc@vger.kernel.org,
+	David Hildenbrand <david@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Jason Gunthorpe <jgg@nvidia.com>,
+	Leon Romanovsky <leonro@nvidia.com>,
+	linux-mm@kvack.org,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	linux-sound@vger.kernel.org,
+	Jens Axboe <axboe@kernel.dk>,
+	linux-block@vger.kernel.org,
+	Marcel Holtmann <marcel@holtmann.org>,
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+	linux-bluetooth@vger.kernel.org,
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+	Jason Wang <jasowangio@gmail.com>,
+	David Heidelberg <david@ixit.cz>,
+	oe-linux-nfc@lists.linux.dev,
+	Chas Williams <3chas3@gmail.com>,
+	linux-atm-general@lists.sourceforge.net,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@kernel.org>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	netdev@vger.kernel.org,
+	Helge Deller <deller@gmx.de>,
+	linux-fbdev@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	MPT-FusionLinux.pdl@broadcom.com,
+	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+	"Martin K. Petersen" <mkp@kernel.org>,
+	linux-scsi@vger.kernel.org,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
-	Boris Brezillon <bbrezillon@kernel.org>,
-	Brian Norris <computersforpeace@gmail.com>,
-	Alexey Klimov <alexey.klimov@linaro.org>,
+	Zhihao Cheng <chengzhihao1@huawei.com>,
 	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	mehmet.fide@screeningeagle.com
-Subject: Re: [PATCH v2 3/3] mtd: rawnand: vf610_nfc: return an error when a command times out
-Date: Sat, 14 Nov 2026 21:10:54 +0100
-Message-ID: <20261114201054.975225-1-mehmet.fide@gmail.com>
+	Neill Kapron <nkapron@google.com>,
+	Andrey Konovalov <andreyknvl@gmail.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	linux-usb@vger.kernel.org,
+	Juergen Gross <jgross@suse.com>,
+	Stefano Stabellini <sstabellini@kernel.org>,
+	xen-devel@lists.xenproject.org,
+	Hans de Goede <hansg@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	"Michael S. Tsirkin" <mst@redhat.com>,
+	=?UTF-8?q?Eugenio=20P=C3=A9rez?= <eperezma@redhat.com>,
+	Sean Christopherson <seanjc@google.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	kvm@vger.kernel.org,
+	virtualization@lists.linux.dev,
+	Jan Kara <jack@suse.cz>,
+	linux-fsdevel@vger.kernel.org,
+	"Theodore Ts'o" <tytso@mit.edu>,
+	linux-ext4@vger.kernel.org,
+	Mike Marshall <hubcap@omnibond.com>,
+	devel@lists.orangefs.org,
+	Paulo Alcantara <pc@manguebit.org>,
+	Namjae Jeon <linkinjeon@kernel.org>,
+	linux-cifs@vger.kernel.org,
+	Jaegeuk Kim <jaegeuk@kernel.org>,
+	Chao Yu <chao@kernel.org>,
+	linux-f2fs-devel@lists.sourceforge.net,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	linux-rpi-kernel@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	Tzung-Bi Shih <tzungbi@kernel.org>,
+	Benson Leung <bleung@chromium.org>,
+	David Airlie <airlied@gmail.com>,
+	Simona Vetter <simona@ffwll.ch>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+	amd-gfx@lists.freedesktop.org,
+	Jani Nikula <jani.nikula@linux.intel.com>,
+	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	Tvrtko Ursulin <tursulin@ursulin.net>,
+	intel-gfx@lists.freedesktop.org,
+	Matthew Brost <matthew.brost@intel.com>,
+	=?UTF-8?q?Thomas=20Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
+	intel-xe@lists.freedesktop.org
+Subject: [PATCH 02/12] docs: ioctl-number: update sound entries
+Date: Sat, 14 Nov 2026 12:26:40 -0800
+Message-ID: <20261114202653.3113381-3-rdunlap@infradead.org>
 X-Mailer: git-send-email 2.56.0
-In-Reply-To: <20261114192031.959376-4-mehmet.fide@gmail.com>
-References: 
+In-Reply-To: <20261114202653.3113381-1-rdunlap@infradead.org>
+References: <20261114202653.3113381-1-rdunlap@infradead.org>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261114_121059_944185_7E1ED93D 
-X-CRM114-Status: UNSURE (   7.06  )
-X-CRM114-Notice: Please train this message.
-X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -109,25 +135,94 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no
-	version=4.0.1
+X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-Hi Miquel,
+Update the list of files where sound ioctls are defined and update
+the ranges of function numbers that are used.
 
-Please do not apply this patch as it is. Sashiko is right: when the
-timeout hits the raw re-read in vf610_nfc_correct_data(),
-vf610_nfc_read_page() counts it as an ECC failure and returns 0 instead
-of the error. I could reproduce it by forcing the timeout there.
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+---
+[Since having multiple maintainers trying to merge these would
+cause some conflicts, it would be more manageable for Jon to
+take all of these through the docs-next tree.]
 
-v3 will return it. Patches 1/3 and 2/3 are not affected.
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Shuah Khan <skhan@linuxfoundation.org>
+Cc: linux-doc@vger.kernel.org
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: linux-sound@vger.kernel.org
 
-Thanks,
-Mehmet
+ Documentation/userspace-api/ioctl/ioctl-number.rst |   12 +++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
+
+--- linux-next-20261111.orig/Documentation/userspace-api/ioctl/ioctl-number.rst
++++ linux-next-20261111/Documentation/userspace-api/ioctl/ioctl-number.rst
+@@ -122,11 +122,14 @@ Code  Seq#    Include File
+ 'A'   00-0F  linux/agpgart.h,                                          conflict!
+              drivers/char/agp/compat_ioctl.h
+ 'A'   00-7F  sound/asound.h                                            conflict!
++'A'   20     sound/pcm.h                                               conflict!
++'A'   20-53  sound/core/pcm_compat.c	                               conflict!
+ 'B'   00-1F  linux/cciss_ioctl.h                                       conflict!
+ 'B'   00-0F  include/linux/pmu.h                                       conflict!
+ 'B'   C0-FF  advanced bbus                                             <mailto:maassen@uni-freiburg.de>
+ 'B'   00-0F  xen/xenbus_dev.h                                          conflict!
+ 'C'   all    linux/soundcard.h                                         conflict!
++'C'   00-68  sound/compress_offload.h                                  conflict!
+ 'C'   01-2F  linux/capi.h                                              conflict!
+ 'C'   F0-FF  drivers/net/wan/cosa.h                                    conflict!
+ 'D'   all    arch/s390/include/asm/dasd.h
+@@ -152,6 +155,7 @@ Code  Seq#    Include File
+ 'H'   01     linux/mei.h                                               conflict!
+ 'H'   02     linux/mei.h                                               conflict!
+ 'H'   03     linux/mei.h                                               conflict!
++'H'   03     sound/core/hwdep_compat.c                                 conflict!
+ 'H'   00-0F  sound/asound.h                                            conflict!
+ 'H'   20-40  sound/asound_fm.h                                         conflict!
+ 'H'   80-8F  sound/sfnt_info.h                                         conflict!
+@@ -160,7 +164,9 @@ Code  Seq#    Include File
+ 'H'   10-1F  sound/hda_hwdep.h                                         conflict!
+ 'H'   40-4F  sound/hdspm.h                                             conflict!
+ 'H'   40-4F  sound/hdsp.h                                              conflict!
++'H'   60-63  sound/scarlett2.h
+ 'H'   90     sound/usb/usx2y/usb_stream.h
++'H'   FC     sound/pci/asihpi/hpios.h                                  conflict!
+ 'H'   00-0F  uapi/misc/habanalabs.h                                    conflict!
+ 'H'   A0     uapi/linux/usb/cdc-wdm.h
+ 'H'   C0-F0  net/bluetooth/hci.h                                       conflict!
+@@ -168,7 +174,7 @@ Code  Seq#    Include File
+ 'H'   C0-DF  net/bluetooth/cmtp/cmtp.h                                 conflict!
+ 'H'   C0-DF  net/bluetooth/bnep/bnep.h                                 conflict!
+ 'H'   F1     linux/hid-roccat.h                                        <mailto:erazor_de@users.sourceforge.net>
+-'H'   F8-FA  sound/firewire.h
++'H'   F8-FE  sound/firewire.h                                          conflict!
+ 'I'   all    linux/isdn.h                                              conflict!
+ 'I'   00-0F  drivers/isdn/divert/isdn_divert.h                         conflict!
+ 'I'   40-4F  linux/mISDNif.h                                           conflict!
+@@ -204,6 +210,8 @@ Code  Seq#    Include File
+ 'S'   80-81  scsi/scsi_ioctl.h                                         conflict!
+ 'S'   82-FF  scsi/scsi.h                                               conflict!
+ 'S'   00-7F  sound/asequencer.h                                        conflict!
++'S'   21-23  sound/core/seq/seq_compat.c                               conflict!
++'S'   60-67  sound/fcp.h                                               conflict!
+ 'T'   all    linux/soundcard.h                                         conflict!
+ 'T'   00-AF  sound/asound.h                                            conflict!
+ 'T'   all    arch/x86/include/asm/ioctls.h                             conflict!
+@@ -219,7 +227,7 @@ Code  Seq#    Include File
+ 'V'   C0     media/si4713.h                                            conflict!
+ 'W'   00-1F  linux/watchdog.h                                          conflict!
+ 'W'   00-1F  linux/wanrouter.h                                         conflict! (pre 3.9)
+-'W'   00-3F  sound/asound.h                                            conflict!
++'W'   00-41  sound/asound.h                                            conflict!
+ 'W'   40-5F  drivers/pci/switch/switchtec.c
+ 'W'   60-61  linux/watch_queue.h
+ 'X'   all    fs/xfs/xfs_fs.h,                                          conflict!
 
 ______________________________________________________
 Linux MTD discussion mailing list
