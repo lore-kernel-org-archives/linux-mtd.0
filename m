@@ -2,10 +2,10 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 468FA606FAD6
-	for <linux-mtd@archiver.kernel.org>; Sat, 14 Nov 2026 20:27:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F04A606FAD6
+	for <linux-mtd@archiver.kernel.org>; Sat, 14 Nov 2026 20:27:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=4w2g0VyY
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=LYol19ek
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -13,20 +13,20 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=N1Pn6YDSEh4pcPaAqA88+6T59C18eos1a9NYBFIFehQ=; b=4w2g0VyYU/5rS4d7Tc2yhOPsmo
-	z5JroKJtvNVA0UPbIUO7DG5/HpyDvRqIi+hIRCx/i/Q6ylSqZfEc24EKB7syjPhkgat1/bUP1xeID
-	kdzbNKKckn7jpi6PZv2AsotBe+KhtSbcbnxsCQJyFl8f0a2pv+4ETnq9Pmcn0tH+XkTy0h/Dw4AD7
-	EmZCwAHnafVcXDDu1e38ysCNx7ob8JQVO9tM7GIgSUyqV03qeznzeFT8eUvGk3SS3ujNhG1UAZ5S7
-	gR1TUT7tlefkEXZ8odTnKg/xpMp2LopLPWjgnvdXr5FTuaeDjNvIN9ea9ZiouZYhvQZgy7zYThRZL
-	+aq0POvg==;
+	bh=R7W9tIlYDklHquHB/BUB7kdbikj1tQNpcinwEVukYjw=; b=LYol19ek5aZCbQjVzX+XBAfVUV
+	rrZJTwS3/mBsx0MLJ6t70gjzJ9Oh4qj6ANXUQD4TwU+uozgD7ceX/XY00pfG1q3wTTbwl7ZI55K+r
+	0oahKJPOq5X56P1AdNnM7dJ9LuBDT9qxuPaFIDCBrvnMycV1ip9jjh2RDM5PFQJ+Uq0tgZ+Xo3fxb
+	nJAlhZJqXBYG4ZI2yR3JtmGAgwFg8Fs1+XP1+Y783XpqZnjgSCS/Zo5Uu+Fo2HtEG+2f9pEtwPJow
+	SH5OIcSAxfcPa7lGwzYrU4KiguuHe7bNhTYRLESBvN5IV4qd4i0wBTfofUXQQM5c8wPlVb92+ZqPM
+	yGTXejCg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xSKLh-0000000GjKB-3QC5;
-	Sat, 14 Nov 2026 20:27:45 +0000
+	id 1xSKLk-0000000GjPL-2vnt;
+	Sat, 14 Nov 2026 20:27:48 +0000
 Received: from [50.53.43.113] (helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtpsa (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xSKL9-0000000Giga-0JSK;
-	Sat, 14 Nov 2026 20:27:11 +0000
+	id 1xSKLF-0000000Giga-0jjJ;
+	Sat, 14 Nov 2026 20:27:19 +0000
 From: Randy Dunlap <rdunlap@infradead.org>
 To: linux-kernel@vger.kernel.org
 Cc: Randy Dunlap <rdunlap@infradead.org>,
@@ -115,9 +115,9 @@ Cc: Randy Dunlap <rdunlap@infradead.org>,
 	Matthew Brost <matthew.brost@intel.com>,
 	=?UTF-8?q?Thomas=20Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
 	intel-xe@lists.freedesktop.org
-Subject: [PATCH 07/12] docs: ioctl-number: update MTD entries
-Date: Sat, 14 Nov 2026 12:26:45 -0800
-Message-ID: <20261114202653.3113381-8-rdunlap@infradead.org>
+Subject: [PATCH 10/12] docs: ioctl-number: update FS entries
+Date: Sat, 14 Nov 2026 12:26:48 -0800
+Message-ID: <20261114202653.3113381-11-rdunlap@infradead.org>
 X-Mailer: git-send-email 2.56.0
 In-Reply-To: <20261114202653.3113381-1-rdunlap@infradead.org>
 References: <20261114202653.3113381-1-rdunlap@infradead.org>
@@ -142,7 +142,7 @@ X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-Update the list of files where MTD ioctls are defined and update
+Update the list of files where filesystem ioctls are defined and update
 the ranges of function numbers that are used.
 
 Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
@@ -154,37 +154,75 @@ take all of these through the docs-next tree.]
 Cc: Jonathan Corbet <corbet@lwn.net>
 Cc: Shuah Khan <skhan@linuxfoundation.org>
 Cc: linux-doc@vger.kernel.org
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Zhihao Cheng <chengzhihao1@huawei.com>
-Cc: linux-mtd@lists.infradead.org
+Cc: Jan Kara <jack@suse.cz>
+Cc: linux-fsdevel@vger.kernel.org
+Cc: "Theodore Ts'o" <tytso@mit.edu>
+Cc: linux-ext4@vger.kernel.org
+Cc: Mike Marshall <hubcap@omnibond.com>
+Cc: devel@lists.orangefs.org
+Cc: Paulo Alcantara <pc@manguebit.org>
+Cc: Namjae Jeon <linkinjeon@kernel.org>
+Cc: linux-cifs@vger.kernel.org
+Cc: Jaegeuk Kim <jaegeuk@kernel.org>
+Cc: Chao Yu <chao@kernel.org>
+Cc: linux-f2fs-devel@lists.sourceforge.net
 
- Documentation/userspace-api/ioctl/ioctl-number.rst |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ Documentation/userspace-api/ioctl/ioctl-number.rst |    9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
---- linux-next-20261111.orig/Documentation/userspace-api/ioctl/ioctl-number.rst
-+++ linux-next-20261111/Documentation/userspace-api/ioctl/ioctl-number.rst
-@@ -195,8 +195,8 @@ Code  Seq#    Include File
- 'L'   35-38  arch/m68k/include/asm/fbio.h
- 'L'   35-38  arch/sparc/include/asm/fbio.h
- 'M'   all    linux/soundcard.h                                         conflict!
--'M'   01-16  mtd/mtd-abi.h                                             conflict!
--      and    drivers/mtd/mtdchar.c
-+'M'   01-1A  mtd/mtd-abi.h                                             conflict!
-+'M'   03-04  drivers/mtd/mtdchar.c
- 'M'   01-03  drivers/scsi/megaraid/megaraid_sas.h
- 'M'   00-03  drivers/video/fbdev/mb862xx/mb862xxfb.h
- 'M'   00-0F  drivers/video/fsl-diu-fb.h                                conflict!
-@@ -306,7 +306,7 @@ Code  Seq#    Include File
- 'n'   E0-FF  linux/matroxfb.h                                          matroxfb
- 'n'   F8-FA  video/sisfb.h                                             sisfb
- 'o'   00-1F  fs/ocfs2/ocfs2_fs.h                                       OCFS2
--'o'   00-03  mtd/ubi-user.h                                            conflict! (OCFS2 and UBI overlaps)
-+'o'   00-06  mtd/ubi-user.h                                            conflict! (OCFS2 and UBI overlap)
- 'o'   40-41  mtd/ubi-user.h                                            UBI
- 'o'   01-A1  `linux/dvb/*.h`                                           DVB
- 'p'   00-0F  linux/phantom.h                                           conflict! (OpenHaptics needs this)
+--- linux-next-20261113.orig/Documentation/userspace-api/ioctl/ioctl-number.rst
++++ linux-next-20261113/Documentation/userspace-api/ioctl/ioctl-number.rst
+@@ -187,6 +187,7 @@ Code  Seq#    Include File
+ 'I'   all    linux/isdn.h                                              conflict!
+ 'I'   00-0F  drivers/isdn/divert/isdn_divert.h                         conflict!
+ 'I'   40-4F  linux/mISDNif.h                                           conflict!
++'I'   00     linux/inotify.h
+ 'K'   all    linux/kd.h
+ 'L'   00-1F  linux/loop.h                                              conflict!
+ 'L'   10-21  drivers/scsi/mpt3sas/mpt3sas_ctl.h                        conflict!
+@@ -275,7 +276,7 @@ Code  Seq#    Include File
+ 'f'   00-1F  linux/ext2_fs.h                                           conflict!
+ 'f'   00-1F  linux/ext3_fs.h                                           conflict!
+ 'f'   00-0F  fs/jfs/jfs_dinode.h                                       conflict!
+-'f'   00-0F  fs/ext4/ext4.h                                            conflict!
++'f'   00-2F  fs/ext4/ext4.h                                            conflict!
+ 'f'   00-0F  linux/fs.h                                                conflict!
+ 'f'   00-0F  fs/ocfs2/ocfs2_fs.h                                       conflict!
+ 'f'   13-27  linux/fscrypt.h
+@@ -300,6 +301,7 @@ Code  Seq#    Include File
+ 'k'   00-0F  linux/spi/spidev.h                                        conflict!
+ 'k'   00-05  video/kyro.h                                              conflict!
+ 'k'   10-17  linux/hsi/hsi_char.h                                      HSI character device
++'k'   01-0F  fs/orangefs/protocol.h                                    <mailto:devel@lists.orangefs.org>
+ 'l'   00-3F  linux/tcfs_fs.h                                           transparent cryptographic file system
+                                                                        <http://web.archive.org/web/%2A/http://mikonos.dia.unisa.it/tcfs>
+ 'l'   40-7F  linux/udf_fs_i.h                                          in development:
+@@ -373,7 +375,7 @@ Code  Seq#    Include File
+ 0x92  00-0F  drivers/usb/mon/mon_bin.c
+ 0x93  60-7F  linux/auto_fs.h
+ 0x94  all    fs/btrfs/ioctl.h                                          Btrfs filesystem
+-             and linux/fs.h                                            some lifted to vfs/generic
++0x94  all    linux/fs.h                                                some lifted from Btrfs to vfs/generic
+ 0x97  00-7F  fs/ceph/ioctl.h                                           Ceph file system
+ 0x99  00-0F                                                            537-Addinboard driver
+                                                                        <mailto:buk@buks.ipn.de>
+@@ -442,7 +444,7 @@ Code  Seq#    Include File
+ 0xCC  00-0F  drivers/misc/ibmvmc.h                                     pseries VMC driver
+ 0xCD  01     linux/reiserfs_fs.h                                       Dead since 6.13
+ 0xCE  01-02  uapi/linux/cxl_mem.h                                      Compute Express Link Memory Devices
+-0xCF  02     fs/smb/client/cifs_ioctl.h
++0xCF  01-0F  fs/smb/client/cifs_ioctl.h                                <mailto:linux-cifs@vger.kernel.org>
+ 0xDD  00-3F                                                            ZFCP device driver see drivers/s390/scsi/
+                                                                        <mailto:aherrman@de.ibm.com>
+ 0xE5  00-3F  linux/fuse.h
+@@ -451,6 +453,7 @@ Code  Seq#    Include File
+ 0xEF  00-0F  uapi/linux/ntfs.h                                         NTFS
+ 0xF3  00-3F  drivers/usb/misc/sisusbvga/sisusb.h                       sisfb
+ 0xF3  00-3F  video/sisfb.h                                             <mailto:thomas@winischhofer.net>
++0xF5  01-1F  uapi/linux/f2fs.h                                         <mailto:linux-f2fs-devel@lists.sourceforge.net>
+ 0xF6  all                                                              LTTng Linux Trace Toolkit Next Generation
+                                                                        <mailto:mathieu.desnoyers@efficios.com>
+ 0xF8  all    arch/x86/include/uapi/asm/amd_hsmp.h                      AMD HSMP EPYC system management interface driver
 
 ______________________________________________________
 Linux MTD discussion mailing list
