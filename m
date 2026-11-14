@@ -2,10 +2,10 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FDAB606FAE0
-	for <linux-mtd@archiver.kernel.org>; Sat, 14 Nov 2026 20:27:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 468FA606FAD6
+	for <linux-mtd@archiver.kernel.org>; Sat, 14 Nov 2026 20:27:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=FdCvU9Kw
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=4w2g0VyY
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -13,20 +13,20 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=3SZFoLQFwp77/j2wJB0y70fRK21OAOkD92d3RLwj+DI=; b=FdCvU9KwLV9Rozy3OsDvUA++U1
-	9hzoJwKf+IavqWVALZxCkFYXGUlQI7ntzKKEzeTMq3h/+W6+xs6dmNyrskiThdd3GgDS5t2CSXaSs
-	0uSmD+t7TiycYA1PgjYDcNR6dvHU4oC3dEMHU0H9q0J14M6RXZMd2a4aE+GHu2k4GilpvhJVhzaMB
-	EAC/swczPXsSSI1tEB0QLXdi4Ts7rYKZnwxluOXdt0JeHlaNCzysR4YyZ5oMiMNChpcapa7gJJsYq
-	UcH1n2gCcOMaYRDj16Y4s84ITokqh8UoKcHMrmJJNr22e8wSq/Av/GTgFA+yCNoFAdN7gm3xNMS6g
-	u1Vci7Mw==;
+	bh=N1Pn6YDSEh4pcPaAqA88+6T59C18eos1a9NYBFIFehQ=; b=4w2g0VyYU/5rS4d7Tc2yhOPsmo
+	z5JroKJtvNVA0UPbIUO7DG5/HpyDvRqIi+hIRCx/i/Q6ylSqZfEc24EKB7syjPhkgat1/bUP1xeID
+	kdzbNKKckn7jpi6PZv2AsotBe+KhtSbcbnxsCQJyFl8f0a2pv+4ETnq9Pmcn0tH+XkTy0h/Dw4AD7
+	EmZCwAHnafVcXDDu1e38ysCNx7ob8JQVO9tM7GIgSUyqV03qeznzeFT8eUvGk3SS3ujNhG1UAZ5S7
+	gR1TUT7tlefkEXZ8odTnKg/xpMp2LopLPWjgnvdXr5FTuaeDjNvIN9ea9ZiouZYhvQZgy7zYThRZL
+	+aq0POvg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xSKLe-0000000GjEv-3Qw8;
-	Sat, 14 Nov 2026 20:27:42 +0000
+	id 1xSKLh-0000000GjKB-3QC5;
+	Sat, 14 Nov 2026 20:27:45 +0000
 Received: from [50.53.43.113] (helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtpsa (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xSKLD-0000000Giga-0Wfi;
-	Sat, 14 Nov 2026 20:27:15 +0000
+	id 1xSKL9-0000000Giga-0JSK;
+	Sat, 14 Nov 2026 20:27:11 +0000
 From: Randy Dunlap <rdunlap@infradead.org>
 To: linux-kernel@vger.kernel.org
 Cc: Randy Dunlap <rdunlap@infradead.org>,
@@ -115,9 +115,9 @@ Cc: Randy Dunlap <rdunlap@infradead.org>,
 	Matthew Brost <matthew.brost@intel.com>,
 	=?UTF-8?q?Thomas=20Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
 	intel-xe@lists.freedesktop.org
-Subject: [PATCH 09/12] docs: ioctl-number: update virtualization entries
-Date: Sat, 14 Nov 2026 12:26:47 -0800
-Message-ID: <20261114202653.3113381-10-rdunlap@infradead.org>
+Subject: [PATCH 07/12] docs: ioctl-number: update MTD entries
+Date: Sat, 14 Nov 2026 12:26:45 -0800
+Message-ID: <20261114202653.3113381-8-rdunlap@infradead.org>
 X-Mailer: git-send-email 2.56.0
 In-Reply-To: <20261114202653.3113381-1-rdunlap@infradead.org>
 References: <20261114202653.3113381-1-rdunlap@infradead.org>
@@ -132,8 +132,8 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,INCLUDES_CR_TRAILER,
@@ -142,70 +142,50 @@ X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-VXBkYXRlIHRoZSBsaXN0IG9mIGZpbGVzIHdoZXJlIHZpcnR1YWxpemF0aW9uIGlvY3RscyBhcmUg
-ZGVmaW5lZC4KClNpZ25lZC1vZmYtYnk6IFJhbmR5IER1bmxhcCA8cmR1bmxhcEBpbmZyYWRlYWQu
-b3JnPgotLS0KW1NpbmNlIGhhdmluZyBtdWx0aXBsZSBtYWludGFpbmVycyB0cnlpbmcgdG8gbWVy
-Z2UgdGhlc2Ugd291bGQKY2F1c2Ugc29tZSBjb25mbGljdHMsIGl0IHdvdWxkIGJlIG1vcmUgbWFu
-YWdlYWJsZSBmb3IgSm9uIHRvCnRha2UgYWxsIG9mIHRoZXNlIHRocm91Z2ggdGhlIGRvY3MtbmV4
-dCB0cmVlLl0KCkNjOiBKb25hdGhhbiBDb3JiZXQgPGNvcmJldEBsd24ubmV0PgpDYzogU2h1YWgg
-S2hhbiA8c2toYW5AbGludXhmb3VuZGF0aW9uLm9yZz4KQ2M6IGxpbnV4LWRvY0B2Z2VyLmtlcm5l
-bC5vcmcKQ2M6IEp1ZXJnZW4gR3Jvc3MgPGpncm9zc0BzdXNlLmNvbT4KQ2M6IFN0ZWZhbm8gU3Rh
-YmVsbGluaSA8c3N0YWJlbGxpbmlAa2VybmVsLm9yZz4KQ2M6IHhlbi1kZXZlbEBsaXN0cy54ZW5w
-cm9qZWN0Lm9yZwpDYzogSGFucyBkZSBHb2VkZSA8aGFuc2dAa2VybmVsLm9yZz4KQ2M6IEFybmQg
-QmVyZ21hbm4gPGFybmRAYXJuZGIuZGU+CkNjOiBHcmVnIEtyb2FoLUhhcnRtYW4gPGdyZWdraEBs
-aW51eGZvdW5kYXRpb24ub3JnPgpDYzogIk1pY2hhZWwgUy4gVHNpcmtpbiIgPG1zdEByZWRoYXQu
-Y29tPgpDYzogSmFzb24gV2FuZyA8amFzb3dhbmdpb0BnbWFpbC5jb20+CkNjOiBFdWdlbmlvIFDD
-qXJleiA8ZXBlcmV6bWFAcmVkaGF0LmNvbT4KQ2M6IFNlYW4gQ2hyaXN0b3BoZXJzb24gPHNlYW5q
-Y0Bnb29nbGUuY29tPgpDYzogUGFvbG8gQm9uemluaSA8cGJvbnppbmlAcmVkaGF0LmNvbT4KQ2M6
-IGt2bUB2Z2VyLmtlcm5lbC5vcmcKQ2M6IHZpcnR1YWxpemF0aW9uQGxpc3RzLmxpbnV4LmRldgoK
-IERvY3VtZW50YXRpb24vdXNlcnNwYWNlLWFwaS9pb2N0bC9pb2N0bC1udW1iZXIucnN0IHwgICAg
-NiArKysrKysKIDEgZmlsZSBjaGFuZ2VkLCA2IGluc2VydGlvbnMoKykKCi0tLSBsaW51eC1uZXh0
-LTIwMjYxMTEzLm9yaWcvRG9jdW1lbnRhdGlvbi91c2Vyc3BhY2UtYXBpL2lvY3RsL2lvY3RsLW51
-bWJlci5yc3QKKysrIGxpbnV4LW5leHQtMjAyNjExMTMvRG9jdW1lbnRhdGlvbi91c2Vyc3BhY2Ut
-YXBpL2lvY3RsL2lvY3RsLW51bWJlci5yc3QKQEAgLTIwMCw2ICsyMDAsNyBAQCBDb2RlICBTZXEj
-ICAgIEluY2x1ZGUgRmlsZQogJ00nICAgMDEtMDMgIGRyaXZlcnMvc2NzaS9tZWdhcmFpZC9tZWdh
-cmFpZF9zYXMuaAogJ00nICAgMDAtMDMgIGRyaXZlcnMvdmlkZW8vZmJkZXYvbWI4NjJ4eC9tYjg2
-Mnh4ZmIuaAogJ00nICAgMDAtMEYgIGRyaXZlcnMvdmlkZW8vZnNsLWRpdS1mYi5oICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICBjb25mbGljdCEKKydNJyAgIDAxLTAzICB4ZW4vaW50ZXJm
-YWNlL3hlbi1tY2EuaCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29uZmxpY3Qh
-CiAnTicgICAwMC0xRiAgZHJpdmVycy91c2Ivc2Nhbm5lci5oCiAnTicgICA0MC03RiAgdWFwaS9s
-aW51eC9udm1lX2lvY3RsLmgKICdOJyAgIDgwLTgzICB1YXBpL2xpbnV4L250c3luYy5oIGFuZCB1
-YXBpL2xpbnV4L252bWVfaW9jdGwuaCAgICAgICAgICAgY29uZmxpY3QhCkBAIC0yMzksNiArMjQw
-LDcgQEAgQ29kZSAgU2VxIyAgICBJbmNsdWRlIEZpbGUKICdVJyAgIDY0ICAgICBkcml2ZXJzL3Vz
-Yi9taXNjL3VzYnRlc3QuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29uZmxpY3Qh
-CiAnVicgICBhbGwgICAgbGludXgvdnQuaCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgIGNvbmZsaWN0IQogJ1YnICAgYWxsICAgIGxpbnV4L3ZpZGVvZGV2Mi5o
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb25mbGljdCEKKydWJyAg
-IDAwLTFGICBsaW51eC92Ym94Z3Vlc3QuaCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgY29uZmxpY3QhCiAnVicgICBDMCAgICAgbGludXgvaXZ0dmZiLmggICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbmZsaWN0IQogJ1YnICAgQzAgICAg
-IGxpbnV4L2l2dHYuaCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICBjb25mbGljdCEKICdWJyAgIEMwICAgICBtZWRpYS9zaTQ3MTMuaCAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgY29uZmxpY3QhCkBAIC0zNTcsNiArMzU5LDcgQEAg
-Q29kZSAgU2VxIyAgICBJbmNsdWRlIEZpbGUKICd8JyAgIDgwLTlGICBzYW1wbGVzLyAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgQW55IHNhbXBsZSBhbmQg
-ZXhhbXBsZSBkcml2ZXJzCiAweDgwICAwMC0xRiAgbGludXgvZmIuaAogMHg4MSAgMDAtMUYgIGxp
-bnV4L3ZkdXNlLmgKKyAgICAgICAgICAgICBkcml2ZXJzL3ZkcGEvdmRwYV91c2VyL3ZkdXNlX2Rl
-di5jCiAweDg5ICAwMC0wNyAgYXNtLWdlbmVyaWMvc29ja2lvcy5oCiAweDg5ICAwNi0wNyAgbGlu
-dXgvc29ja2lvcy5oCiAweDg5ICAwQi1ERiAgbGludXgvc29ja2lvcy5oCkBAIC0zOTgsOCArNDAx
-LDExIEBAIENvZGUgIFNlcSMgICAgSW5jbHVkZSBGaWxlCiAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxtYWlsdG86
-a3ZtQHZnZXIua2VybmVsLm9yZz4KIDB4QUUgIDQwLUZGICBsaW51eC9rdm0uaCAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgS2VybmVsLWJhc2VkIFZpcnR1YWwg
-TWFjaGluZQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICA8bWFpbHRvOmt2bUB2Z2VyLmtlcm5lbC5vcmc+CisweEFF
-ICBDNiAgICAgYXJjaC94ODYva3ZtL3g4Ni5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgIFg4NiBLVk0KIDB4QUUgIDIwLTNGICBsaW51eC9uaXRyb19lbmNsYXZlcy5oICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgTml0cm8gRW5jbGF2ZXMKIDB4QUYgIDAw
-LTFGICBsaW51eC9mc2xfaHlwZXJ2aXNvci5oICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgRnJlZXNjYWxlIGh5cGVydmlzb3IKKzB4QUYgIDAwLThGICBsaW51eC92aG9zdC5oICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29uZmxpY3QhCisweEFG
-ICAzMS0zMiAgZHJpdmVycy92aG9zdC90ZXN0LmggICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgIGNvbmZsaWN0IQogMHhCMCAgYWxsICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBSQVRJTyBkZXZpY2VzIGluIGRldmVs
-b3BtZW50OgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICA8bWFpbHRvOnZnb0ByYXRpby5kZT4KIDB4QjEgIDAwLTFG
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgUFBQb1gKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmlu
-ZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+Update the list of files where MTD ioctls are defined and update
+the ranges of function numbers that are used.
+
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+---
+[Since having multiple maintainers trying to merge these would
+cause some conflicts, it would be more manageable for Jon to
+take all of these through the docs-next tree.]
+
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Shuah Khan <skhan@linuxfoundation.org>
+Cc: linux-doc@vger.kernel.org
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Zhihao Cheng <chengzhihao1@huawei.com>
+Cc: linux-mtd@lists.infradead.org
+
+ Documentation/userspace-api/ioctl/ioctl-number.rst |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+--- linux-next-20261111.orig/Documentation/userspace-api/ioctl/ioctl-number.rst
++++ linux-next-20261111/Documentation/userspace-api/ioctl/ioctl-number.rst
+@@ -195,8 +195,8 @@ Code  Seq#    Include File
+ 'L'   35-38  arch/m68k/include/asm/fbio.h
+ 'L'   35-38  arch/sparc/include/asm/fbio.h
+ 'M'   all    linux/soundcard.h                                         conflict!
+-'M'   01-16  mtd/mtd-abi.h                                             conflict!
+-      and    drivers/mtd/mtdchar.c
++'M'   01-1A  mtd/mtd-abi.h                                             conflict!
++'M'   03-04  drivers/mtd/mtdchar.c
+ 'M'   01-03  drivers/scsi/megaraid/megaraid_sas.h
+ 'M'   00-03  drivers/video/fbdev/mb862xx/mb862xxfb.h
+ 'M'   00-0F  drivers/video/fsl-diu-fb.h                                conflict!
+@@ -306,7 +306,7 @@ Code  Seq#    Include File
+ 'n'   E0-FF  linux/matroxfb.h                                          matroxfb
+ 'n'   F8-FA  video/sisfb.h                                             sisfb
+ 'o'   00-1F  fs/ocfs2/ocfs2_fs.h                                       OCFS2
+-'o'   00-03  mtd/ubi-user.h                                            conflict! (OCFS2 and UBI overlaps)
++'o'   00-06  mtd/ubi-user.h                                            conflict! (OCFS2 and UBI overlap)
+ 'o'   40-41  mtd/ubi-user.h                                            UBI
+ 'o'   01-A1  `linux/dvb/*.h`                                           DVB
+ 'p'   00-0F  linux/phantom.h                                           conflict! (OpenHaptics needs this)
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
