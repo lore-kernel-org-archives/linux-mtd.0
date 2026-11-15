@@ -2,105 +2,156 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1652606A337
-	for <linux-mtd@archiver.kernel.org>; Sun, 15 Nov 2026 07:20:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44622606A31A
+	for <linux-mtd@archiver.kernel.org>; Sun, 15 Nov 2026 16:59:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=gSdnVjKK;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=yjWSoPpF
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=Kf7F6xAd;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=GoWFHZsl
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version:Subject:
-	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=XYwyvxb++Zr/P7/XNCCpLc/qCVx9gVSIfyBzvh31kS0=; b=gSdnVjKKOCziy/LbbLlTegmHOA
-	o7U1DEIGUoW5v3EWL+Vl0oXflRqCh3jsXUm6lDNtMJrWfDQJprdojpLABuRbBvcBCsW26rUjDGjA/
-	7OkNs/8nECxRw0i7NBkFzj9HFN1vypL9KYoDo45w9FEHXmEjABRtNFwTbUI3QpRo50U2i5NbWw0RF
-	s7Ny4zBrO5xEC5GcVuMqhLtKkQGCiYwGYsIARbkbRe6aFL3PLpuQZOHekpT8a+muqqL46qp3H3hZK
-	OEjUCIaF5cAHgfdV1q26obsH16j1R8s8LfG13GlDplolKbKTklhcX9IJ6Vs1EiaCAFIjFTBNMCkOX
-	MZE0/8/Q==;
+	bh=Rwjm7+GH9U72k+15YhEcS17guQqf+Bhx9gfmF/kIzx8=; b=Kf7F6xAd+O04XKp3VYLyusPLYM
+	LtC2byuvJIXlxslFi+1mEJqV/xPlyM/VAdw80ebdUNII6wLQXu7bJNgWyTzeTO3R6AnBl2VpLdaQS
+	hHwWOeV6yRHLN2hrp5whH63FznqHAGIg0ufmgSWZluUN5BnutD2n3VGDfQvlM/oKmJO3N0DqkQ6+9
+	3yqFHzUB0+sSyD+FfKOlFOs771LO72OxQ05GNsXJcrHRr0LaUQZ8HnIetfRC5TP6Rckqz+WawKXV2
+	33y6NppfGOMwUzmZOH6G4SB5/fxeCIWWbiBcpbEFlWmOKNZkFiKxwFv2UoX7VDHpOe2Q+zNraDC7j
+	1bn2xUZQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xSUXI-0000000HA47-2oQv;
-	Sun, 15 Nov 2026 07:20:24 +0000
-Received: from mail-pf1-x430.google.com ([2607:f8b0:4864:20::430])
+	id 1xSdZF-00000000ENT-3yA0;
+	Sun, 15 Nov 2026 16:59:01 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xSUXE-0000000HA3k-0hrK
-	for linux-mtd@lists.infradead.org;
-	Sun, 15 Nov 2026 07:20:23 +0000
-Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-8b67f25e6e1so1259244b3a.0
-        for <linux-mtd@lists.infradead.org>; Sat, 14 Nov 2026 23:20:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794727219; x=1795332019; darn=lists.infradead.org;
-        h=cc:to:message-id:content-transfer-encoding:content-type
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to:content-type;
-        bh=KroQIiuPpq62ASZ4V9uK0JJ0eFDYvcn9D+kvCdldZig=;
-        b=yjWSoPpFaPQr2JoeJzgkQV52m7fRWWSYTjOOjnaRjRfD262vRK5kuH8CGBiK/8bWVD
-         WLfc2MER0T0zTo7DRMoDe+TPCsXI+NIXEZ8jWtgjGE6/TOyYC8V6DuM9E9SgzDzXtS0g
-         PC5NIU1FEVI9FvEL9xDxi1ruV6EviBTAnDFlWhU/0Eu2Ynoy4Iq6mOPHC5F36nmY60KT
-         STxcCulDo7z3w5MvqXqi7+HwiZ0si+o7AghBdrTS9fbOwUQsg+BxFy315BmHdm2qk5KP
-         FE+m70S1sZjfLY4NP3ttualQymHy1VglT0/xQ18l/pJRcfzP7WOmR+LOqbzgypuM7MeE
-         mg5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794727219; x=1795332019;
-        h=cc:to:message-id:content-transfer-encoding:content-type
-         :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to:content-type;
-        bh=KroQIiuPpq62ASZ4V9uK0JJ0eFDYvcn9D+kvCdldZig=;
-        b=evxm6sx2b7I+LWaXGIF4Hg+iaWGi9TGwW8NkxOeUmtUftLVOQJAui3LsMb4QKmFg5g
-         uVMG7bJlcdp5l8mwqL3jL6gbSH+VJVXn9u6H6CbaGf/6Wxx5Q9tgVjKuwCfGk3ZAShL6
-         NagsQFp1TQReU45tgIcQPszd/J9UqXMqlTNvj13NYWEJ9NrcB/S1ObIbbh8V1mzGQHc4
-         nOsLdgLodKbw9bhHDOvY63eIe6P5W6ZJZofb/AmTdBLWCtw67WPzZpThNiKm0QRH1XES
-         HKMWZVzZ9XZcaLlVwjj9sB24NVXKNUU8k3I+wsjQdG5GiT7bMSFKpLvuDetxx/oNWrJz
-         hGeA==
-X-Gm-Message-State: APuU4Z8ZpNnc+Ll0iRtKB+NFH5gPt7lfllAZIis5j/NjhPwP6L+IhdZn
-	5grQDQwx2Hb1KRW1CQ9NJmTrNfLOpZtHDLh7UMveZy3e08yoUWrZea6C
-X-Gm-Gg: AYBFou1W4yHBYvZ6DnJ0HOeF9covqBRH14odLgiXmk6AKTmHY/zdWDwl673PqCqW5Dl
-	pIar12zwZiCJB1IcMutWmvujyvjw46xu+X7fTevFyV9FqU7T8u3u5uhgpOGy1dyL3HGxwnwxdqm
-	FmRfVKtG7QYpuAq1gazgaXIZD3E6ckwjJsvH7FeEyxzm0qyA2PY2Hbtexn3f+gjs+5vR/dinTqG
-	EfsKbjqrifvKle2S1mh/h4z6D9zneluwxaGpdQEHMxgZO9ew7GGuCG4Eqel2TsiKJV3YJz4zlmx
-	xLOilaXJyGpoTmcxBPe6eEzrSq03j84kNt+ue2MKDzUBXZ24G0BfgHMxazM5Q3lg9jTPXeN9SO/
-	lHLzLc7cLL043iMAOk2a4pcRge22lINZ/FKlxPQ4JZ+EXZYph4sYsWGtUW8tiVc1AAbrQrKJjp8
-	AwKd1vXMZStDICDXrUS1pg2XN6FdNkgqjJtomf794er7ZFQcWlbFlw6G+D4u5OcrWoqX8gmG+k3
-	42F1gYOIjbMi+RHGCHpeupZO4/D44qZwTlTs88Z3xBsUmJLrJs9j0UZ656jwcKqao7Te0uAQbku
-	SPnYeHOTwqXUqe38YiqcNe8NGUE1Lx5RiC1nWVHYywKSLjSPPUJvlWZNMcaxssk0GtdkAef1hk9
-	pfdTHscenEuQPkOgCaRc9u66bMJjG
-X-Received: by 2002:a05:6a20:9c14:b0:3dd:a197:735a with SMTP id adf61e73a8af0-3f7a95f0de0mr6394154637.51.1794727218625;
-        Sat, 14 Nov 2026 23:20:18 -0800 (PST)
-Received: from junjungu-PC.localdomain ([2408:820c:9009:b6e2::6a87])
-        by smtp.googlemail.com with ESMTPSA id d2e1a72fcca58-8bed2055031sm2720925b3a.39.2026.11.14.23.20.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Nov 2026 23:20:18 -0800 (PST)
-From: Felix Gu <ustc.gu@gmail.com>
-Date: Sun, 15 Nov 2026 15:20:01 +0800
-Subject: [PATCH] mtd: nand: qpic_common: fix BAM transaction memory leak
+	id 1xSdZB-00000000EN5-45zE;
+	Sun, 15 Nov 2026 16:58:58 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id AD40542351;
+	Sun, 15 Nov 2026 16:58:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFC631F000C4;
+	Sun, 15 Nov 2026 16:58:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1794761937;
+	bh=7icfoIT+Mng+FLAG3S5PMcuwQv7cbo7W5CDYKdjKwU4=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=GoWFHZslNnHYuGjrh/bx7l/8F07iyWDyej/GltR19PHb0krwpgQZnzQ/w29MU9yvY
+	 9N/ydZSw/qY2tK5FaOYCK1ORBjMwxhvWBnuouItS4XKDkbn9gWaeGjF+XgXMKjfDRb
+	 yRjP08VgPpWhb821Sp+uoP9Td3foxZ3vOKkFT2wkHSIOuMW3DhfBOncL7YGvQAJ7mS
+	 moyJ26SpKW7UvwaxAzqtXI2cUraP21SQ9Ax6dJRbxzUvfCguVEowEmmIQeonLglFpU
+	 MQxnJgWY8X4ntDgBifkx9ExXqmq/oX+Iv0Gpat2G+lyO4H7GjhcZ2VGKcIIaDnB2Ev
+	 itbJF0Q8f6G0Q==
+Message-ID: <f37ccd71-8e1d-4dd4-b11a-e22b9e617dea@kernel.org>
+Date: Sun, 15 Nov 2026 17:58:23 +0100
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Message-Id: <20261115-nandc_unalloc-v1-1-65d849fa9998@gmail.com>
-X-B4-Tracking: v=1; b=H4sIAAAAAAAC/yXMQQqDMBBA0avIrA04oYr2KiISJ6NOkVESLQXx7
- k3r8i3+PyFyEI7wzE4I/JYoqyZgngHNTic24pPBFrZCxNKoU0/9oW5ZVjJ1ibap6gcNzkNqtsC
- jfP6/trsdj+HFtP8mcF1f13DbU3EAAAA=
-X-Change-ID: 20261115-nandc_unalloc-85129684cbad
-To: Miquel Raynal <miquel.raynal@bootlin.com>, 
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
- Md Sadre Alam <quic_mdalam@quicinc.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
- Sashiko <sashiko-bot@kernel.org>, Felix Gu <ustc.gu@gmail.com>
-X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1794727213; l=1169;
- i=ustc.gu@gmail.com; s=20261030; h=from:subject:message-id;
- bh=p0lMH4v4LyjSNh9wsFd3M/eshEtUTxninjjrG0SXaRc=;
- b=kCkyCuIAfbccVQxaiV/0aW6/6Kz2ZnKPh3J18rFcPaTifQsbmHvX1rXBFKKbD0YWTWQg1gd/x
- ydvwxHE9/QVBVspNoQGKWMCE6+qY40SWmt9bI5rIFAG5X+VAB8+pvgd
-X-Developer-Key: i=ustc.gu@gmail.com; a=ed25519;
- pk=fjDJtbnSeysEBjmOfNYqYUUDS6g7Tfov9W5oGngTBfo=
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261114_232020_220529_D589F0BB 
-X-CRM114-Status: UNSURE (   9.01  )
-X-CRM114-Notice: Please train this message.
-X-Spam-Score: -2.1 (--)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 01/12] docs: ioctl-number: update MM entries
+To: Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc: Jonathan Corbet <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>,
+ linux-doc@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+ Jason Gunthorpe <jgg@nvidia.com>, Leon Romanovsky <leonro@nvidia.com>,
+ linux-mm@kvack.org, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, linux-sound@vger.kernel.org,
+ Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+ Marcel Holtmann <marcel@holtmann.org>,
+ Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+ linux-bluetooth@vger.kernel.org,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+ Jason Wang <jasowangio@gmail.com>, David Heidelberg <david@ixit.cz>,
+ oe-linux-nfc@lists.linux.dev, Chas Williams <3chas3@gmail.com>,
+ linux-atm-general@lists.sourceforge.net,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@kernel.org>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ netdev@vger.kernel.org, Helge Deller <deller@gmx.de>,
+ linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ MPT-FusionLinux.pdl@broadcom.com,
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+ "Martin K. Petersen" <mkp@kernel.org>, linux-scsi@vger.kernel.org,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Zhihao Cheng <chengzhihao1@huawei.com>, linux-mtd@lists.infradead.org,
+ Neill Kapron <nkapron@google.com>, Andrey Konovalov <andreyknvl@gmail.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
+ Juergen Gross <jgross@suse.com>, Stefano Stabellini
+ <sstabellini@kernel.org>, xen-devel@lists.xenproject.org,
+ Hans de Goede <hansg@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+ "Michael S. Tsirkin" <mst@redhat.com>, =?UTF-8?Q?Eugenio_P=C3=A9rez?=
+ <eperezma@redhat.com>, Sean Christopherson <seanjc@google.com>,
+ Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+ virtualization@lists.linux.dev, Jan Kara <jack@suse.cz>,
+ linux-fsdevel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+ linux-ext4@vger.kernel.org, Mike Marshall <hubcap@omnibond.com>,
+ devel@lists.orangefs.org, Paulo Alcantara <pc@manguebit.org>,
+ Namjae Jeon <linkinjeon@kernel.org>, linux-cifs@vger.kernel.org,
+ Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+ linux-f2fs-devel@lists.sourceforge.net,
+ Florian Fainelli <florian.fainelli@broadcom.com>,
+ Broadcom internal kernel review list
+ <bcm-kernel-feedback-list@broadcom.com>,
+ linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ Tzung-Bi Shih <tzungbi@kernel.org>, Benson Leung <bleung@chromium.org>,
+ David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
+ Alex Deucher <alexander.deucher@amd.com>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ amd-gfx@lists.freedesktop.org, Jani Nikula <jani.nikula@linux.intel.com>,
+ Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+ Rodrigo Vivi <rodrigo.vivi@intel.com>, Tvrtko Ursulin
+ <tursulin@ursulin.net>, intel-gfx@lists.freedesktop.org,
+ Matthew Brost <matthew.brost@intel.com>,
+ =?UTF-8?Q?Thomas_Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
+ intel-xe@lists.freedesktop.org
+References: <20261114202653.3113381-1-rdunlap@infradead.org>
+ <20261114202653.3113381-2-rdunlap@infradead.org>
+From: "David Hildenbrand (Arm)" <david@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=david@kernel.org; keydata=
+ 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
+ qIws/H2t
+In-Reply-To: <20261114202653.3113381-2-rdunlap@infradead.org>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -113,50 +164,24 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,
-	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-5.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-qcom_nandc_alloc() allocates the BAM transaction, but
-qcom_nandc_unalloc() does not free it. This leaks the transaction on
-controller removal and probe failures after successful allocation.
+On 11/14/26 21:26, Randy Dunlap wrote:
+> Add ioctl number entries for test_hmm_uapi and gup_test.
 
-Release it in qcom_nandc_unalloc().
+Just curious, why do we care about uapi for test interfaces that never see the
+light of day in production kernels and their sole purpose is to go a long a
+dedicated selftest?
 
-Fixes: fdf3ee5c6e52 ("mtd: nand: Add qpic_common API file")
-Reported-by: Sashiko <sashiko-bot@kernel.org>
-Closes: https://sashiko.dev/#/bug/linux-ba3b41c6-9de2-42b9-8205-67454e0229f6
-Signed-off-by: Felix Gu <ustc.gu@gmail.com>
----
- drivers/mtd/nand/qpic_common.c | 2 ++
- 1 file changed, 2 insertions(+)
+-- 
+Cheers,
 
-diff --git a/drivers/mtd/nand/qpic_common.c b/drivers/mtd/nand/qpic_common.c
-index e97043b866d2..0f81303ae8b6 100644
---- a/drivers/mtd/nand/qpic_common.c
-+++ b/drivers/mtd/nand/qpic_common.c
-@@ -657,6 +657,8 @@ void qcom_nandc_unalloc(struct qcom_nand_controller *nandc)
- 
- 		if (nandc->cmd_chan)
- 			dma_release_channel(nandc->cmd_chan);
-+
-+		qcom_free_bam_transaction(nandc);
- 	} else {
- 		if (nandc->chan)
- 			dma_release_channel(nandc->chan);
-
----
-base-commit: 793807ca13bf3072fc6d16ce6d90e9ab9beff2a5
-change-id: 20261115-nandc_unalloc-85129684cbad
-
-Best regards,
---  
-Felix Gu <ustc.gu@gmail.com>
-
+David
 
 ______________________________________________________
 Linux MTD discussion mailing list
