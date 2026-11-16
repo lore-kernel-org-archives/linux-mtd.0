@@ -2,97 +2,154 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A9D7606A32F
-	for <linux-mtd@archiver.kernel.org>; Mon, 16 Nov 2026 15:32:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B8D8606A31C
+	for <linux-mtd@archiver.kernel.org>; Mon, 16 Nov 2026 15:45:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=SRpmjRHd;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=sn0gV5oW
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=lVuQb74C;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.a=rsa-sha256 header.s=selector1-NXP1-onmicrosoft-com header.b=pgvwaD1k
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=aggNcknaJdv5Q+jyXDWEKQxIESjhI26GP7CtW9hlOsQ=; b=SRpmjRHd/HaqRBHhqUfn6gu1/p
-	IvvXF3nFs8SE9i+O8UFonYOVJvOqee7631o/mA2K6Z5hyW+Hz1bm+MEhLgjmdqYCIDLwk53oTGrWk
-	QNl5uTTREtbPEU+Wsa2mC3a63TZluX2ewqggTP/dnnWfCVF5bZ4R5umqY/qgJiRJ5mEPMlV2bUbee
-	v6Yn25W733OCHNziclYYptUsm17CEASii/OXgq43zmsy0RKp9U0f+ZRgJQdDk51GOotQVhac+/WYv
-	LBK9668wFUernMaBNC4e+xbiRHVbZ2497Z5rFV/dnYEnbKeEKLj2AOHZXj3Zzj1TiCaQfayA804sI
-	SR1PEWHg==;
+	bh=zjmwIkU6lt3T77Clg/mMF8blEImEkLWMWsGeji7ue6A=; b=lVuQb74CzG8byi6pfew5lSQ8YR
+	WxyIJ1EvmIC5DtSIe/O2J52Ewh2KWSIqo4/GVJVpENtX7hMyQaFJ+grKZhvadCzxxGtG3QOtazHZw
+	RCt/ZxDBBmA1PqMzNJQEm33Ee+yHDdHpxh9uNiHEp8Z+hFFN/Uq9M+2HEWGjaWMNEpW2gfROCsWgb
+	cWPnGMhVGMjWoAEqK0hal4sN/K1hOqUWXdblbk1QYaTcv6eAUpw4vycSXXOVZuVL1J5cG6yhEza3C
+	xH/+GhHWhR+pEIESJDxpGHhM1rze8GYkRv8185gehhTLlJJj5h6OssQpVnZu+qTCww2/y3fWJxle8
+	Ci6e55iQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xSyhM-000000035G4-0sV0;
-	Mon, 16 Nov 2026 15:32:48 +0000
-Received: from mail-wm1-x332.google.com ([2a00:1450:4864:20::332])
+	id 1xSyte-0000000374P-2yhs;
+	Mon, 16 Nov 2026 15:45:30 +0000
+Received: from mail-francesouthazlp170110003.outbound.protection.outlook.com ([2a01:111:f403:c207::3] helo=MRWPR03CU001.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xSyhK-000000035Di-2OSF
+	id 1xSytb-0000000373z-2Rvz
 	for linux-mtd@lists.infradead.org;
-	Mon, 16 Nov 2026 15:32:47 +0000
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-4bb702a7548so11008615e9.1
-        for <linux-mtd@lists.infradead.org>; Mon, 16 Nov 2026 07:32:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794843164; x=1795447964; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=pFxqYSIZbtjxl66DM/SuqHMnpQJOwfAGCQV6L8DRO0A=;
-        b=sn0gV5oWGNOWv48LjaugJ4nJ++ZsguN1VQMj6bsCwVvR1PW1XbvhyiyXFOrgMzuBqy
-         VPdz7/NuXfB8sUri0PSs76yhTwfUjeQ2XdX2sq68m89VKkgnKGPbpdNmmzJO0JXqbjPh
-         +gTFZkkO2FaU4MB5z8134ctEEPE7nBzYwT2uyK19bqj68p0NMnRSpcLgE5mDXTBOmvTJ
-         qLTCU8lP3574gej1nA3ZOT5lCiB72IbG3IVmzqbIUIQ/RkukxWOxXPRtbn4QnMW9ItzG
-         0ZdeqDWeaGT1fl/LBRs0YpL0RksE8kpPs22MVyj4hMc9g4D07k/3HorisHT2owZnW4of
-         k71w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794843164; x=1795447964;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=pFxqYSIZbtjxl66DM/SuqHMnpQJOwfAGCQV6L8DRO0A=;
-        b=MYwproNifec+WRpajd2NavC/lqCc+YUQTAMfPJ/RxGj4OEf1B2kZIxnElF90BvKzwD
-         4ElFPuPJIrBOMBtBbTsszwhM0gFg64lugCpKHL/KyfgFCavmgDuouosb09DbcDbbxrLA
-         pBkOGBlVc3wzW6OD40pAvThbxYVxsu27ycDyhUcOlOxV3nK0V8n+ty6oAiFWObFNq8wi
-         wr735tdMV0bey89BUOnAV8ZsXbkd0lCK+ABTx9BXO3PArKsknodriAF5EVKLG9Ke/bdJ
-         kP7h/CJ/6WdcMjLeH5KdyR25/NxtjJvtKysUW9gUitZFQHDJjSeyEpUmiIdgUaQ3u03w
-         GX5Q==
-X-Forwarded-Encrypted: i=1; AL+hErG3zI/SOfLP4Sr0nT+cbfO8K01ycohiCt2UbujdG1gonjcNB7H5aEDzhbZkPSkKu2X4g0akLhroegY=@lists.infradead.org
-X-Gm-Message-State: APuU4Z+faAx8fUVoEmUNUtrB0ZVSyi6nGihS82ovEQi6aZ47LXqp1JJS
-	6BLn+pok+a2uv/GDbFjuOBeWmkAKrGJylGLw4TFuHcylzN00IK0YbQfY
-X-Gm-Gg: AYBFou1PFdpEzpKQYMOHpcJFN+uozoVMw2o3W0o06eqv7MiBbEq3/GMaIiv0Uw9vdCh
-	ZCp1RrO6STqmmRvwDLcrikqbwsIC++nHVRtlz5ptPinIIqKoQtmNbRdTZpksP0NDQ5rG/Oq4nFC
-	MH+oW2v9/ArBPLCKz/w26R9d2nPwhql86rU9VfsiQ8CoqnBM58D+iHnQpnq2u6OcR06cONGYT5r
-	N50TIZoq4vQLQvtq3Gm4dWVVLSLh77DcCj5IkWptIfLNJ97G0toOT5UtrwBTtWw0hAymtOKqvMX
-	IgS1mmLSXua11wAEGneXZrGhicngV47kmU+CHCZxmmABCqxbORQkq9wqctdzVscJmwzxnjWAz0W
-	8X1oPPSvjMw62Ajg96tuLbFXFmHGQ1GPcSmKTs7KFEkYMriMCKl0TewPgYl/0WxtNvYWglTDv9B
-	sXSlA7IqCpa4m6Uy5yrA6GqdFG9nec3s/e49WsFBIw9t1ux5xDwjmYnAtqOB48pCsRbMFp4Gkl8
-	UUHBq+3qE4Y9A3UCVBA4bd4fAz8k7Wc6VYV1z8NVyZvX3tYzWR5/AbJeUBL0JsLNSQWTq8DOwAR
-	2024xKoHZdPLhlZnUL8YyW7ixu8J+5NEEet2/tCpeMgPq5cSDF6AW+hz7ReRRMSBd6S+EEJZ5rs
-	=
-X-Received: by 2002:a05:600c:1c17:b0:4bb:6752:8400 with SMTP id 5b1f17b1804b1-4bb6752853emr169384055e9.17.1794843164207;
-        Mon, 16 Nov 2026 07:32:44 -0800 (PST)
-Received: from angelo-Precision-7550 ([94.154.175.53])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4bb62d0d430sm86798195e9.3.2026.11.16.07.32.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2026 07:32:43 -0800 (PST)
-From: Angelo Compagnucci <angelo.compagnucci@gmail.com>
+	Mon, 16 Nov 2026 15:45:30 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=pQXDUDFTw2NjzaZnzbBS/B9XoxYmkRrESj4cqjN/9Zum/1VrjMSP3DmYV9ml7EO3+wIXaZh75Mr1PuAyarF43ZZipsD7W3BB3eWOapZpfKZtFbmjnMOjLPjrvMtC9s3dQCfbrk6HWITfULkjhoTK+sbgfB78rWm+DZwx31qPncHIsPirB2yWxISAZf/AKY4O0GJUsWDqBdbnQkjAcK6gH1/Pr+i8ZcclsMZeBMOf5JjmwR5j+9ZOe58+StNGAl/UJBl+8zfF+Yh0BtJVLbxbhO5hfx4Iv61pID+q8oixUWWp3rXHYDSVJ+P5rmEUHuNRIyZUvAyT+NRtgzNoFEXfRA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=IMWB4jtlgoDv+la2UYIYALsqDtwbTwbZPG59uxT5PA8=;
+ b=sJ8b4dxuQ8U0qYMaJA9zMLCMOJI8ixN8TI5k2Ky0Z+xF4/Q+HUaiv6yRw4HrhBSDFY6Ybuu9AMf86uSGNSeAAXPgCTtSfmKomX6ob5jLbXAaORE1blrAaOwllrlqZ7hnuqgvb2DuKdwDxAEWloz0OCA+SotD4/ib7dgcP5w8kXFVBGIZVfbE1ha97Qhmqr8JjOd86KJ45H8RtUUnsEqNKpaWgB9IZdn9aCyH6SEGfOlDl6TiKwV+fT8OTdKuNiTpLgBILuCzNX5V1TnUMOW/9ZMjb03vMz1/k2Dfki64qfcF/ux0LhxRiwESTxALDXinA9e7Beuya3X/qBDDeUUvSQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector1-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=IMWB4jtlgoDv+la2UYIYALsqDtwbTwbZPG59uxT5PA8=;
+ b=pgvwaD1kAeBGbHB3LT4uRttQ6FI2IJB02UkJyrDzKFbcWuyEP2k/iPVrxYyP9NQNq9rMs3zzHLg3udN/ZjyQv7Oif4K2V0/aKJw4iGtEOAOkfguiWIH7OQmrxce9hgk0UrikwnKsN5OSnGLsBJUvApffdzX2Cv3zwQP49d867qGLUCSrVG3jGgbABFMBh1h4llqLihpBK+24nQl8f1912fPsl3POpqvawApk6cuqpuI9s65bIgkD/bsSreVzuFs0Xo1OCkj1QOvHuTrgJL3v9eXoI4oLmw2qDuRHfmleowdn9MUwGmwD6d5maHWe8K98qDG9/wIrM1nCtmVl1JE5rQ==
+Authentication-Results: mx.microsoft.com 1; dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=oss.nxp.com;
+Received: from MI3PR04MB12438.eurprd04.prod.outlook.com (2603:10a6:290:76::14)
+ by AM0PR04MB7041.eurprd04.prod.outlook.com (2603:10a6:208:19a::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.615.14; Mon, 16 Nov
+ 2026 15:45:21 +0000
+Received: from MI3PR04MB12438.eurprd04.prod.outlook.com
+ ([fe80::c715:c32:8bb1:b70b]) by MI3PR04MB12438.eurprd04.prod.outlook.com
+ ([fe80::c715:c32:8bb1:b70b%4]) with mapi id 15.21.0615.013; Mon, 16 Nov 2026
+ 15:45:21 +0000
+Date: Mon, 16 Nov 2026 09:45:05 -0600
+From: Frank Li <Frank.li@oss.nxp.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Angelo Compagnucci <angelo.compagnucci@gmail.com>
-Subject: [PATCH 2/2] mtd: spinand: xtx: add support for XT26G04C
-Date: Mon, 16 Nov 2026 16:28:47 +0100
-Message-ID: <20261116152847.3658486-3-angelo.compagnucci@gmail.com>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20261116152847.3658486-1-angelo.compagnucci@gmail.com>
-References: <20261116152847.3658486-1-angelo.compagnucci@gmail.com>
+Cc: sashiko-bot@kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
+	Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Richard Weinberger <richard@nod.at>,
+	Kyungmin Park <kyungmin.park@samsung.com>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>, Han Xu <han.xu@nxp.com>,
+	Keguang Zhang <keguang.zhang@gmail.com>,
+	Vladimir Zapolskiy <vz@mleia.com>,
+	Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Rosen Penev <rosenp@gmail.com>, Frank Li <Frank.Li@nxp.com>,
+	Wentao Liang <vulab@iscas.ac.cn>, Rob Herring <robh@kernel.org>,
+	Alok Tiwari <alok.a.tiwari@oracle.com>,
+	Chen Ni <nichen@iscas.ac.cn>, Runyu Xiao <runyu.xiao@seu.edu.cn>,
+	Hemanth Selam <hemanth.selam@gmail.com>,
+	Pengpeng Hou <pengpeng@iscas.ac.cn>,
+	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@baylibre.com>,
+	Triet Hoang <triet.hoang.dev@gmail.com>, open list: 
+	HYPERBUS SUPPORT <linux-mtd@lists.infradead.org>;,
+	FREESCALE GPMI NAND DRIVER <imx@lists.linux.dev>, moderated list: 
+	ARM/STM32 ARCHITECTURE <linux-stm32@st-md-mailman.stormreply.com>,
+	sashiko-reviews@lists.linux.dev, vkoul@kernel.org,
+	Frank.Li@kernel.org;
+Subject: Re: [PATCH 1/1] mtd: use dmaengine_desc_set_callback()
+Message-ID: <avslAXoa_LSuFNrP@SMW015318>
+References: <20261102181406.3994422-1-Frank.Li@oss.nxp.com>
+ <sashiko-outbox-193928@kernel.org>
+ <87wlqcrg0u.fsf@bootlin.com>
+Content-Disposition: inline
+In-Reply-To: <87wlqcrg0u.fsf@bootlin.com>
+X-ClientProxiedBy: PH7P220CA0127.NAMP220.PROD.OUTLOOK.COM
+ (2603:10b6:510:327::7) To MI3PR04MB12438.eurprd04.prod.outlook.com
+ (2603:10a6:290:76::14)
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MI3PR04MB12438:EE_|AM0PR04MB7041:EE_
+X-MS-Office365-Filtering-Correlation-Id: 43fc282f-510a-4e8f-3347-08df43f89f51
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|376014|7416014|19092799006|23010399003|366016|18002099003|22082099003|261009223027099003|4143699003|56012099006|11063799006|261028144727099003|261026140227099003|261022105027099003|10067099003;
+X-Microsoft-Antispam-Message-Info: URQzRkn8pPheGkVHrFH6O5oBelRCLX5puwKDsq4C1BPLcvK7S3q5KRZfDU9TMLCeOZFgqP2haNzpL7lzpzZkUzdoVv8sHuqfuS8QZzcMLUnw9fAjvlAuVERlEi9UpfBD1i7zlPcq/xMWvFMFyekHyp6QrDtl/7JzPZlFYUgllGCLGf4pGixpy5uVsVijYJbuypUsTPKnSOnH40IV33BgqrEkrMWhrhG2WnnwzBX6a3ino823LXqr/WDiXpwlV/H8Gsvs7WlCXCIkh9gBJw435mORFpF4+fPknstCSw3CuSuvc5emtxO80k9fYVFCzQ3vRMWh7svhYqQUmv0K+Afpf0iQAifD5QYgrG7Nn5OOWajhgbxvMV8tNcOEx22bamRQGRorMnTDnT0/7tz6Wq/gs0KpOoDVvraZ4+GnW7/Tf8adTppDJ2Hgj1zhU2c6sj8eD7H3nvIGrUBl2QlESczGuSXhjPjjnOex28hk15R8ojJxSZ5p9RZ/5q6HjAgG3Jl1mszyKDCqhtTbpUZorWHvRWNmNeDW5lITmzbiz7H7rK4vbZX3RzQAKoF/sTaXKFsDWWHu4SXdgTTZ8bIuhCF2iYIVLBlIL1ju19vVkn6jFbyOcNwbq5pAZ4ZTu3zI8xNfdruPQh8m25B0RqvHe9oIQV1qqI1AXOH7TeGfcXhEt+c=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MI3PR04MB12438.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(7416014)(19092799006)(23010399003)(366016)(18002099003)(22082099003)(261009223027099003)(4143699003)(56012099006)(11063799006)(261028144727099003)(261026140227099003)(261022105027099003)(10067099003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?UbNdDa+3P9WtKmScMArnJJrZGRFKt9GITSf3+GceQ8YPZTjjetts6sBx6M?=
+ =?iso-8859-1?Q?Pbt5sW8gZcGjvna8QuF/CpqcZfhK66K1MJlRkOzbL/WRiCbwmQ4/2mxPRd?=
+ =?iso-8859-1?Q?tDKstm2KwJC/Ns48esC5PBs9iDNUEhwN3daMcbwWeiqlo3mmaHnsFWI7IH?=
+ =?iso-8859-1?Q?oXCy3A5zPt/72uC+u1TswmpOe8vbzlvSevSMiZ61GOUfWnyKDCIXA/qwZU?=
+ =?iso-8859-1?Q?Er9ydP7IQ17X1i9f1o14ZeOB5VntVF0ydj8PSORSBt+4unoH4ewfeIIK5x?=
+ =?iso-8859-1?Q?U1hOUBhzLWBoLY7vzmNBuxOwF/hCnxut49qHoWpop+II7atsqk+hKkwGdh?=
+ =?iso-8859-1?Q?RqgoE4u64fANuT64MvekCMAVCWkKoFlCgof7kADQa7qTs4P70I//hFhDQM?=
+ =?iso-8859-1?Q?Hqr1wd/hK65sv2+1A9qLtFh0xxBoigLQzIwAH4HBypOGyY3t391PG7o+5K?=
+ =?iso-8859-1?Q?M3LsLMlZjJkztzwH1aRANgQehJWN2dnPAmtlanVTO2FWsL92w0IPj/ta60?=
+ =?iso-8859-1?Q?iVbZkvcqIxuF3xdqd+DLEI4ZfdmM+vAjJs6a8g7t0QXFoj85jlXU98BZcP?=
+ =?iso-8859-1?Q?3KRhfBFnmjng5+9lGkZiCUBqzdqgrwN5iWVW7ksHS/g/mbkIUdoBRJtabB?=
+ =?iso-8859-1?Q?WNNhWPoPRQ4oaWDBkl6iBvBS19AXyRB6S+a1ssqcPPDSLmxgpmNBlEtM5k?=
+ =?iso-8859-1?Q?pGZiT2hwan8gp2oO3oNX0wbXGoYoU/xJBaiUgR3PeCWsg8VnpXZsYjm/gS?=
+ =?iso-8859-1?Q?jsXCqb1JMnOIa0NfV53Z85Vnuzd8jyDJtRHCiH50bLK2qeZxfGNQffb2ag?=
+ =?iso-8859-1?Q?XEU15VHP4jgeY64FFW+fvALZT6t+nL59thjv6KSksNzQ1tp27ILmhKVnRD?=
+ =?iso-8859-1?Q?B0djkDjmDRi4P6VDGbLfQrE3jYr4cjSe4yDw0Ngl6gvAHJruwhQugWm7z+?=
+ =?iso-8859-1?Q?9zUOl7L9E0T7dSHYuzKZ7wjB7gbsetBSFiSChRxoFYc1Ra0/I/134Q7nB3?=
+ =?iso-8859-1?Q?DbjMZxJciZeg/cpz1rF47KgVj+RbRkKvDCab380Pu78ahgI7Wmf7ssTWbt?=
+ =?iso-8859-1?Q?oPmu6NtxkEGDloTyMnZYsdbWmgx+RmHDyERaE9mqf1prG3oTHnvRKyfgY5?=
+ =?iso-8859-1?Q?HIkQTpTTUlOaQJHvOdxZTgMwRiLnyG8YbRNB2z4uf2wz9Kij5PQohnSbst?=
+ =?iso-8859-1?Q?LGptLibIR84pjLD/7InCpwHREdRucBCQbWkQX+Wx2vyNfcydeRFLnmbvWt?=
+ =?iso-8859-1?Q?wiMb4KMqKvh6xQONWtx+2XRCYnsOznKU55DyagmJF85FolZEZGkjYCYete?=
+ =?iso-8859-1?Q?xALCwGNVh8e9FscX97fb7MjMJeoqxJ2Ltl11afLUQARrA+ugdsSKI47JEi?=
+ =?iso-8859-1?Q?eWYbi9BOYpPAwL7rFyVpAGtei41984dLhyDBD8JbWaBeWYGvMYw+ANl2ZU?=
+ =?iso-8859-1?Q?WRJzv24rKJfMLutCTiOk2BubHMrZKXoDK46k77cZqCXdv7pDbOnu5VG0J8?=
+ =?iso-8859-1?Q?llMNwsgOJq/zDWCfPKkz6VmrNIP226rbU/3oRO/XCoxtOyThhEB1Cj/lx4?=
+ =?iso-8859-1?Q?p90n9ba5SLzknm/5p+LKEIEATvhWykUaYc3Y6admu3vGvNO6XWZOWBojbz?=
+ =?iso-8859-1?Q?qlPHpK2fbCBvx0kk6088R148e/zPEtHf8w4nyjc/lcx7oRRtak1/QKkwSe?=
+ =?iso-8859-1?Q?sq1nvOhWLuTENDqWIZ4pTVXaMVn9W8IQpMAX824Pik4mvVW9L2RCuqPXm8?=
+ =?iso-8859-1?Q?zh06bwUwpiG/a3Neo4tVOz5/rAbWlExfHIi4MHvwBNL3h+gaKKmXpPP3sd?=
+ =?iso-8859-1?Q?4JAoyL9qk54Hl7iCYCDpxwvwNvSf3yfYRO0r9i0Ui8oD5TY5Ovbr?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 43fc282f-510a-4e8f-3347-08df43f89f51
+X-MS-Exchange-CrossTenant-AuthSource: MI3PR04MB12438.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2026 15:45:21.6012
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: aNtJDjq3qFYUV1hWrQqtb8xr9ExJJYAN/sf+bhAPNucBCHorhoYH44uL+gghrM3Xyy/+VviRgOHQZnuJNx0kcnfxOJZnvXPd4F6a8K6qcRRFXR2ba9vlefyRda6jCHH4
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB7041
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261116_073246_623654_E98729C0 
-X-CRM114-Status: GOOD (  12.42  )
-X-Spam-Score: -2.1 (--)
+X-CRM114-CacheID: sfid-20261116_074529_429676_08B63A13 
+X-CRM114-Status: GOOD (  13.12  )
+X-Spam-Score: 0.6 (/)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,89 +159,43 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,
-	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-3.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
+	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-Add the XTX XT26G04C. It is a 4Gbit 3.3V SPI NAND with 4096 byte pages,
-256 byte OOB and 8-bit on-die ECC.
+On Mon, Nov 16, 2026 at 03:45:53PM +0100, Miquel Raynal wrote:
+> Hello Frank!
+>
+> On 02/11/2026 at 18:21:00 GMT, sashiko-bot@kernel.org wrote:
+>
+> > Thank you for your contribution! Sashiko AI review found 2 potential is=
+sue(s) to consider:
+> > - [High] mtd: implicit declaration of dmaengine_desc_set_callback()
+> > breaks build
+>
+> Should this land after DMA core changes have been merged? I have too
+> many patches in my inbox atm, so I will drop this one, please re-send it
+> whenever it can be applied and I will happily take it (with the commit
+> log fixed).
 
-The status register reports the number of corrected bits in bits 7:4.
-Values 0 to 8 are valid and 0xf means an uncorrectable error. The other
-XTX parts use a different format, so add a new ECC status function.
+Sashiko should be wrong. dmaengine_desc_set_callback() already in v7.4-rc1.
 
-The values come from the XTX XT26G04C datasheet, Rev 1.9.
+Frank
 
-Tested on an STM32MP133 board with UBI and UBIFS.
-
-Signed-off-by: Angelo Compagnucci <angelo.compagnucci@gmail.com>
----
- drivers/mtd/nand/spi/xtx.c | 28 ++++++++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
-
-diff --git a/drivers/mtd/nand/spi/xtx.c b/drivers/mtd/nand/spi/xtx.c
-index 5915b37b4..70f853678 100644
---- a/drivers/mtd/nand/spi/xtx.c
-+++ b/drivers/mtd/nand/spi/xtx.c
-@@ -22,6 +22,9 @@
- #define XT26XXXD_STATUS_ECC_8_CORRECTED     (3)
- #define XT26XXXD_STATUS_ECC_UNCOR_ERROR     (2)
- 
-+#define XT26G0XC_STATUS_ECC_MASK	GENMASK(7, 4)
-+#define XT26G0XC_STATUS_ECC_UNCOR_ERROR	(0xf)
-+
- static SPINAND_OP_VARIANTS(read_cache_variants,
- 		SPINAND_PAGE_READ_FROM_CACHE_1S_4S_4S_OP(0, 1, NULL, 0, 0),
- 		SPINAND_PAGE_READ_FROM_CACHE_1S_1S_4S_OP(0, 1, NULL, 0, 0),
-@@ -138,6 +141,21 @@ static int xt26xxxd_ecc_get_status(struct spinand_device *spinand,
- 
- 	return -EINVAL;
- }
-+
-+static int xt26g0xc_ecc_get_status(struct spinand_device *spinand,
-+				   u8 status)
-+{
-+	u8 eccsr = FIELD_GET(XT26G0XC_STATUS_ECC_MASK, status);
-+
-+	if (eccsr <= 8)
-+		return eccsr;
-+
-+	if (eccsr == XT26G0XC_STATUS_ECC_UNCOR_ERROR)
-+		return -EBADMSG;
-+
-+	return -EINVAL;
-+}
-+
- static const struct spinand_info xtx_spinand_table[] = {
- 	SPINAND_INFO("XT26G01A",
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0xE1),
-@@ -249,6 +267,16 @@ static const struct spinand_info xtx_spinand_table[] = {
- 		     0,
- 		     SPINAND_ECCINFO(&xt26xxxd_ooblayout,
- 				     xt26xxxd_ecc_get_status)),
-+	SPINAND_INFO("XT26G04C",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x13),
-+		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
-+		     NAND_ECCREQ(8, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     SPINAND_HAS_QE_BIT,
-+		     SPINAND_ECCINFO(&xt26xxxd_ooblayout,
-+				     xt26g0xc_ecc_get_status)),
- };
- 
- static const struct spinand_manufacturer_ops xtx_spinand_manuf_ops = {
--- 
-2.53.0
-
+>
+> > - [Low] mtd: commit message inaccurately states change is across sound
+> > drivers
+>
+> :-)
+>
+> Cheers,
+> Miqu=E8l
 
 ______________________________________________________
 Linux MTD discussion mailing list
