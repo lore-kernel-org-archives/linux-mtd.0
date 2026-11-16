@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCADD606A330
-	for <linux-mtd@archiver.kernel.org>; Mon, 16 Nov 2026 06:47:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2271606A31C
+	for <linux-mtd@archiver.kernel.org>; Mon, 16 Nov 2026 06:59:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=kLOMrafS;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=jYfwsF3l
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=ctyQo5d3;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ViPGtfXQ
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:MIME-Version:Reply-To:List-Subscribe:
@@ -14,47 +14,49 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:Cc:To:Subject:From:Message-ID:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=IUncUTGVwPGkoSgtkLtNj49Wwv5gHpzElaPqo1NcchA=; b=kLOMrafS6dugjo+24DT1LLJEyp
-	A1+58urGDgtuvTzxAq5MAn5DSMQdytGKhPzfP1TGBJpcEd+VINTN+/grgzQ132FoR3r38BRonm6VB
-	xQuj2PbGjwxAFVBuwLGAh9FPemm0/9+B1bZ8GpX2/ZdB5E0O3kkXDi0M8TFIBjjnSz/lQS8toCCYs
-	foXEa2denmrWm5/uVrLpeBoBMwdFEuSqdnX24qfBw6ZGGrg34NHQMF/QGrAKpNfdkqCHhyWYBQXEv
-	1ZQ3Iw3KWrodBvlx+SoiD/Q2ClIs79jg7BbZA8uEt0ZR23ymNipMhdjfKTF04V03EoHQ+JjLqlqCn
-	OKrljweA==;
+	bh=g8klFlKKccpNeJOf89fcYKohfAgXhFSS9IeECXuq8yY=; b=ctyQo5d3do5fG+XgpachKlLE+B
+	6Xn7utlYcDNH5/nHtrm0NPVtLqDdd9gxXRG42+Lpx8pOkP4Qf4WQaG/vSobouZUkvaeI3uB+FVt4h
+	5OWgt2ivc0WLEP9qefQ2rldQ8SedFVuiqGV4BuIOG6BU4bk6IHC/dN6dgS4uxnpvVCbhMPrh0BNch
+	93xFJKWz2SUk0P/duxVWtmz86NnuQgW5MmoKwQ5Pjw0KK53UzjfgMfY1AVORlTWEML89I6Yh0lrzr
+	CQQQpcFkNwOWt89qo84tkw83i5MhjZlw7O9JDqvcmpbBrwITdBdg2VO+RlBMMJiAIKrP+ciwlheGV
+	VOscGMDw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xSqVD-00000001KqB-2KGe;
-	Mon, 16 Nov 2026 06:47:43 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1xSqgE-00000001LyL-1N4Y;
+	Mon, 16 Nov 2026 06:59:06 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xSqVC-00000001KpT-3Vt0
+	id 1xSqgB-00000001LyA-3H9r
 	for linux-mtd@lists.infradead.org;
-	Mon, 16 Nov 2026 06:47:42 +0000
+	Mon, 16 Nov 2026 06:59:03 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 00118626B0;
-	Mon, 16 Nov 2026 06:47:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6FEF1F000C7;
-	Mon, 16 Nov 2026 06:47:39 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 3A1E241495;
+	Mon, 16 Nov 2026 06:59:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A85011F000C4;
+	Mon, 16 Nov 2026 06:59:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794811661;
-	bh=DF5hukhiNITbkxRO73tTSNArz5kYHfygOs2SZDaU7Bc=;
+	s=k20260515; t=1794812342;
+	bh=mv6kVSNK4dr7bTDuGSSMWFwYhTaPUL9ikDDioGEIGCI=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=jYfwsF3lKW6jmrIyWdfVA5mCWpZgxC0Q9WTlOcTplJ1kXnPBSBHMcrhk4GZyS9JER
-	 rSBxUGJUXQnPPEgrmErymAMxhbYFyL1EVkOpj4RrvxisKarBmt+KGiF7yTQUfUzxVa
-	 JAwEEakpM+CABU2zudCck+/Sat3XC+Jw2wjw+FD1ddEuyZGcLefABM6eb9Hk6sqFJc
-	 07jGonzMXMzyE3lCzfDkjtexy3UmH8Q2/2dq7ZbVw3ASN7eDf/AmOb6kHGBY55Ig3s
-	 In0dBtCGCt720FWspLpX/cr1qOdTlkINGclF8L27v45z6+KJweWdXkD9moWDBWGXiE
-	 4cuiCIJAkn86A==
-Message-ID: <sashiko-outbox-216318@kernel.org>
+	b=ViPGtfXQFN49SWFLV+oGsQJwe0BG2mil1AEWvOsHhu1WbE9XKOYzvXYNhIJ8JJ5Gi
+	 LfHB9yDIGcet3A2yiaZHbg+qIxfMwSoDOOmJz129lhZat7M5mhlVFNKTspWBl7nYXS
+	 774hCe5QsjzdAOJAM5u5wI9TI7re1tEZ4DrweS/2ifr/Fv04VJwEE9TtPb9uLOkbPQ
+	 WXroApFLHjl+v0H0DSYaJoIPCiMFPMwaKS3BChIeM7s9g2LoPjnj6xnKSgwKY8GEQ2
+	 tmSbG/03vpfGEgeT6x9UuiOU8ARx9kJtVJawQoSxxImRc8bm1Jl0qSCt0owuiUDXcn
+	 eL7iIXK3KOwvw==
+Message-ID: <sashiko-outbox-216355@kernel.org>
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH v5 24/58] mtd: rawnand: xway: retain open-handle state
- on removal
+Subject: Re: [PATCH v5 02/58] mtd: acquire an MTD handle from a referenced
+ class device
 To: "James Hilliard" <james.hilliard1@gmail.com>, "Miquel Raynal" <miquel.raynal@bootlin.com>, "Richard
  Weinberger" <richard@nod.at>, "Vignesh Raghavendra" <vigneshr@ti.com>
-Cc: linux-mtd@lists.infradead.org, "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
-In-Reply-To: <20261115-submit-rawnand-retained-handle-lifetime-v1-v5-24-cbc49c5c5e74@gmail.com>
+Cc: linux-mtd@lists.infradead.org, "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>, "Richard
+ Cochran" <richardcochran@gmail.com>, "Jonathan Lemon" <jonathan.lemon@gmail.com>, "Vadim
+ Fedorenko" <vadim.fedorenko@linux.dev>
+In-Reply-To: <20261115-submit-rawnand-retained-handle-lifetime-v1-v5-2-cbc49c5c5e74@gmail.com>
 References: <20261115-submit-rawnand-retained-handle-lifetime-v1-v5-0-cbc49c5c5e74@gmail.com>
- <20261115-submit-rawnand-retained-handle-lifetime-v1-v5-24-cbc49c5c5e74@gmail.com>
-Date: Mon, 16 Nov 2026 06:47:38 +0000
+ <20261115-submit-rawnand-retained-handle-lifetime-v1-v5-2-cbc49c5c5e74@gmail.com>
+Date: Mon, 16 Nov 2026 06:59:01 +0000
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,26 +80,30 @@ X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
 VGhhbmsgeW91IGZvciB5b3VyIGNvbnRyaWJ1dGlvbiEgU2FzaGlrbyBBSSByZXZpZXcgZm91bmQg
-MSBwb3RlbnRpYWwKaXNzdWUgdG8gY29uc2lkZXI6Ci0gW0xvd10gbXRkOiByYXduYW5kOiB4d2F5
-OiBtaXNzaW5nIEZpeGVzIHRyYWlsZXIgZm9yIHJlbW92YWwgbGlmZXRpbWUKICBmaXgKLS0KCmNv
-bW1pdCBiNTE5NDhkMzBkODJjOWVmODQwOTg0MzZjNjkyOTkyNDQ4ZjY2NmRkCkF1dGhvcjogSmFt
-ZXMgSGlsbGlhcmQgPGphbWVzLmhpbGxpYXJkMUBnbWFpbC5jb20+Cgo+IG10ZDogcmF3bmFuZDog
-eHdheTogcmV0YWluIG9wZW4taGFuZGxlIHN0YXRlIG9uIHJlbW92YWwKPgo+IEtlZXAgY2hpcCBt
-ZXRhZGF0YSBhbmQgY29udHJvbGxlciBzdG9yYWdlIGFsaXZlIHVudGlsIHRoZSBmaW5hbCBNVEQK
-PiByZWZlcmVuY2UgaXMgcmVsZWFzZWQuIFVucmVnaXN0ZXIgYW5kIGRpc2Nvbm5lY3QgZWFjaCBw
-dWJsaXNoZWQgY2hpcAo+IGJlZm9yZSByZWxlYXNpbmcgdGhlIHJlc291cmNlcyB1c2VkIGJ5IGl0
-cyBoYXJkd2FyZSBvcGVyYXRpb25zLgo+Cj4gUmV0YWluIHRoZSBlbWJlZGRlZCBjb250cm9sbGVy
-IGFuZCBjaGlwIGFjcm9zcyBwbGF0Zm9ybS1kZXZpY2UgcmVtb3ZhbC4KPgo+IFJ1biBOQU5EIGNs
-ZWFudXAgZHVyaW5nIGRpc2Nvbm5lY3Rpb247IHRoZSBmaW5hbCBjb3JlLW93bmVkIHB1dCBvbmx5
-Cj4gcmVsZWFzZXMgcmV0YWluZWQgYWxsb2NhdGlvbiBhbmQgbGF5b3V0IGRhdGEuCj4KPiBTaWdu
-ZWQtb2ZmLWJ5OiBKYW1lcyBIaWxsaWFyZCA8amFtZXMuaGlsbGlhcmQxQGdtYWlsLmNvbT4KCltT
-ZXZlcml0eTogTG93XQpTaW5jZSB0aGlzIGZpeGVzIGZyZWVpbmcgc3RydWN0IHh3YXlfbmFuZF9k
-YXRhIHZpYSBkZXZyZXMgb24gZGV2aWNlIHJlbW92YWwKd2hpbGUgb3BlbiBNVEQgaGFuZGxlcyBj
-YW4gc3RpbGwgcmVmZXJlbmNlIGl0LCBzaG91bGQgaXQgaW5jbHVkZSBhIEZpeGVzCnRhZz8KCiAg
-Rml4ZXM6IDAyNDM2Njc1MGMyZSAoIm10ZDogbmFuZDogeHdheTogY29udmVydCB0byBub3JtYWwg
-cGxhdGZvcm0gZHJpdmVyIikKCi0tIApTYXNoaWtvIEFJIHJldmlldyDCtyBodHRwczovL3Nhc2hp
-a28uZGV2LyMvcGF0Y2hzZXQvMjAyNjExMTUtc3VibWl0LXJhd25hbmQtcmV0YWluZWQtaGFuZGxl
-LWxpZmV0aW1lLXYxLXY1LTAtY2JjNDljNWM1ZTc0QGdtYWlsLmNvbT9wYXJ0PTI0CgpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVRE
-IGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
-YW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+MSBwb3RlbnRpYWwKaXNzdWUgdG8gY29uc2lkZXI6Ci0gW0xvd10gcHRwOiBvY3A6IG1pc3Npbmcg
+Rml4ZXMgdHJhaWxlciBmb3IgcHRwX29jcF9kZXZsaW5rX2ZsYXNoKCkgYnVnCiAgZml4Ci0tCgpj
+b21taXQgZTFiNmQ2ZjBmNjRlMGFkOWVkOGNhZDRlNDUyZjIyYjZjMjliZmJjOQpBdXRob3I6IEph
+bWVzIEhpbGxpYXJkIDxqYW1lcy5oaWxsaWFyZDFAZ21haWwuY29tPgoKPiBtdGQ6IGFjcXVpcmUg
+YW4gTVREIGhhbmRsZSBmcm9tIGEgcmVmZXJlbmNlZCBjbGFzcyBkZXZpY2UKPgo+IFBUUCBPQ1Ag
+bG9jYXRlcyBmbGFzaCB0aHJvdWdoIHRoZSBkZXZpY2UgaGllcmFyY2h5IGFuZCB1c2VzIGRyaXZl
+ciBkYXRhCj4gZGlyZWN0bHkuIEEgY2xhc3MtZGV2aWNlIHJlZmVyZW5jZSBkb2VzIG5vdCBrZWVw
+IGFuIE1URCByZWdpc3RlcmVkIG9yIG93bgo+IHRoZSBiYWNraW5nIG9iamVjdCBuZWVkZWQgYnkg
+YW4gZXJhc2Ugb3Igd3JpdGUuCj4KPiBMb29rIHVwIHRoZSBleGFjdCBkZXZpY2UgdW5kZXIgbXRk
+X3RhYmxlX211dGV4IGFuZCBhY3F1aXJlIGFuIG9yZGluYXJ5IE1URAo+IGhhbmRsZSBiZWZvcmUg
+cmV0dXJuaW5nIGl0LiBVc2UgdGhhdCBoYW5kbGUgZm9yIHRoZSBPQ1AgdXBkYXRlIGFuZCByZWxl
+YXNlCj4gaXQgb24gZXZlcnkgZXhpdC4gQSByZW1vdmVkIGRldmljZSBjYW5ub3QgYmUgY29uZnVz
+ZWQgd2l0aCBhIHJlcGxhY2VtZW50Cj4gdGhhdCByZXVzZXMgaXRzIG5hbWUgb3IgbnVtYmVyLgo+
+Cj4gQ2M6IFJpY2hhcmQgQ29jaHJhbiA8cmljaGFyZGNvY2hyYW5AZ21haWwuY29tPgo+IENjOiBK
+b25hdGhhbiBMZW1vbiA8am9uYXRoYW4ubGVtb25AZ21haWwuY29tPgo+IENjOiBWYWRpbSBGZWRv
+cmVua28gPHZhZGltLmZlZG9yZW5rb0BsaW51eC5kZXY+Cj4gU2lnbmVkLW9mZi1ieTogSmFtZXMg
+SGlsbGlhcmQgPGphbWVzLmhpbGxpYXJkMUBnbWFpbC5jb20+CgpbU2V2ZXJpdHk6IExvd10KVGhp
+cyBmaXhlcyBhIGxpZmV0aW1lIGFuZCByZWZlcmVuY2UtY291bnRpbmcgYnVnIGluCnB0cF9vY3Bf
+ZGV2bGlua19mbGFzaCgpIHdoZXJlIGRldl9nZXRfZHJ2ZGF0YShkZXYpIHdhcyB1c2VkIGRpcmVj
+dGx5CndpdGhvdXQgYWNxdWlyaW5nIGFuIE1URCBkZXZpY2UgcmVmZXJlbmNlLiAgU2hvdWxkIHRo
+ZSBjb21taXQgbWVzc2FnZQppbmNsdWRlOgoKICBGaXhlczogNzczYmRhOTY0OTIxICgicHRwOiBv
+Y3A6IEV4cG9zZSB2YXJpb3VzIHJlc291cmNlcyBvbiB0aGUgdGltZWNhcmQuIikKCi0tIApTYXNo
+aWtvIEFJIHJldmlldyDCtyBodHRwczovL3Nhc2hpa28uZGV2LyMvcGF0Y2hzZXQvMjAyNjExMTUt
+c3VibWl0LXJhd25hbmQtcmV0YWluZWQtaGFuZGxlLWxpZmV0aW1lLXYxLXY1LTAtY2JjNDljNWM1
+ZTc0QGdtYWlsLmNvbT9wYXJ0PTIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0
+cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
