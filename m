@@ -2,58 +2,57 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BE3B606A31C
-	for <linux-mtd@archiver.kernel.org>; Mon, 16 Nov 2026 09:51:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1115A606A31C
+	for <linux-mtd@archiver.kernel.org>; Mon, 16 Nov 2026 09:51:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=oy2INsaE;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=K2+7tRLz
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=KAjVrFqs;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=KJOopPWA
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id:Date:
-	Subject:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
+	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=hDKImRJOwH185GxJNWFWNrU4Q0a8ZaHVwXHn5TTuwU0=; b=oy2INsaEb8UbTlwWx+ohgTcEUv
-	e79xdwYKkiDugy+mqbgZJqCcK0MSQLbOgmsrLx1fY1ZwbK8pcLltdlp+zM9cEzcdjKdItHQGcouky
-	PYT4yuFDlWopG6uxmwTNfSS9uw6qkVxxwO748OvsoY6neFol3LraotUE2aV1z3APZgrOj2pcVwMQ2
-	qGMUCVI8zRQ2TYlKr/QKnGCc7QYHpMYo3tv13QVCEj6k/KGFvrx8ND9r27jloaepu3vMb7ZYjgiKj
-	IAL0xBfhjwdVXYCC0b0i5Cy6K33rpe4bE03UMJZ1od5uQfSr0kxl5bRw6AC7cD6op8uBNKyZN2Ujz
-	I7e3Bquw==;
+	bh=lwQ15ndw9fejbW+Q4CAfEVuBm9AI4d6XItXa+xqChn8=; b=KAjVrFqsRf2s4CVw9562toexs1
+	GYQNVWqyaXQKTOtjb0BRNsIeiVdAW8KX9NSSNijswpJv2ejetsupwlKAMyHjQ68fc6yN8r6WLzJ3M
+	96PdwHExV4GlU/1QuhaBxGsPsW7swGOdOPuKWErNeWcr3+zLFzFPUOLMio9va6K5/KqNnTRZ44nLy
+	ivfPCHRpLOpp9CgLFm+joO7ebRmBHJk2gmgIe429oZrXPjau2i7Ael3s+3hrNtEkq3+qNxEhFNw7r
+	s/id4vqGN7f77JfdbDStNJBZs2E+2pRsNXP92y8Yehl5NXp8PhKbCttkzNTWy+D/TdXvRaGg0ODxI
+	IAuOZ0Cg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xStMd-00000001pxG-2ze2;
-	Mon, 16 Nov 2026 09:51:03 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1xStMi-00000001pyF-3Jfq;
+	Mon, 16 Nov 2026 09:51:08 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xStMc-00000001px8-2eMW
+	id 1xStMg-00000001pxp-3EVp
 	for linux-mtd@lists.infradead.org;
-	Mon, 16 Nov 2026 09:51:02 +0000
+	Mon, 16 Nov 2026 09:51:08 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 2A26C4133F;
+	by sea.source.kernel.org (Postfix) with ESMTP id 6EF5D43C13;
+	Mon, 16 Nov 2026 09:51:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9FE9E1F000C9;
 	Mon, 16 Nov 2026 09:51:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 609D61F000C4;
-	Mon, 16 Nov 2026 09:50:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794822662;
-	bh=8aRGBcpvx8xM7mxQtHaidBWPdNvahzYjZNEX0jkJ1yE=;
-	h=From:Subject:Date:To:Cc;
-	b=K2+7tRLzUA1vHpSh9Z4eYxrLSWLfx3VxiAtV+I2wsfPNb9ufsZBXDAGRXgVgW5eVT
-	 7EPd2127puPa6m8jR0gUbbLngHeCTt0SNmH9jNftFfvciTpnZOwt9ZFB8xaifyNx5I
-	 6T4/eGhfCJ4f1ugyPqE8JW8/pgNBj81vq/a0P4QMlvX9rDmpcnRbSLEfn3OZwjS09o
-	 Ffj8QthI/KmMMkRMsxQrY2bpnNRJNH0bSetX/pu6Ptvz0r4Eeu9O8UNelZBCix0Dko
-	 77WqR1fbWuPXsEef+M7YM+E7QUpfT9xgzJUFuXdxSrgNBt3AgthI6/SanCUbgR5X4y
-	 DYCuvs09giVyg==
+	s=k20260515; t=1794822666;
+	bh=WMX9pBMtAClRWJDRxKZww9HYXVLhq0s1qVF2v14nmjI=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc;
+	b=KJOopPWAZuqHeoKTeUi8HT9mhRMwYkIon7mX0IK2FrxH+lIz9w4mIDBtlmGpnVwRU
+	 Yznll+D1uDUZyn3BGiguZs2RizD5iLGvUZBE1f/ahPSalGMk7cZl2oQ5Rqiq93s5LC
+	 U9Li0n7CY5AN+wKZDFsmsA5wbGI9KypUjjh6u+/eNX8d7vTvDF0XwdYHWY4eW4yCs/
+	 UUhi6mBwRxDCZV0B9xlkJgpNLsuBeCZTY3Svx6fZ/8BAuzHZL/zc06sHPQyavE6SoY
+	 p+CeKKCxLUfa+oblEr0OQ46h01sLF+sff/BdqPIZamm+212su4blOkJvmv9qKQU08p
+	 bamoC2xoNMOsQ==
 From: Christian Brauner <brauner@kernel.org>
-Subject: [PATCH 0/3] fs: pre-existing fixes for the SB_RDONLY series
-Date: Mon, 16 Nov 2026 10:28:29 +0100
-Message-Id: <20261116-work-fs-sb_rdonly-fixes-v1-0-95a25ce917ad@kernel.org>
+Date: Mon, 16 Nov 2026 10:28:30 +0100
+Subject: [PATCH 1/3] gfs2: don't BUG when remounting read-only after a
+ withdraw during mount
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAAAAAAAC/z2M2QrCMBBFf6XMsxOaoK36KyKSZWKjksqMK6X/b
- qLg47nLmUCIEwlsmwmYHknSmAvoRQN+sPlImEJhMK3ptNYdPkc+YxQUd+Aw5ssbY3qRYOiXfmP
- 6uG7dCsr7yvQtynm3/7Hc3Yn8rerqwlkhdGyzH2pUxSqK+otVHcA8fwDm31WGpAAAAA==
-X-Change-ID: 20261116-work-fs-sb_rdonly-fixes-d74c927f80b5
+Message-Id: <20261116-work-fs-sb_rdonly-fixes-v1-1-95a25ce917ad@kernel.org>
+References: <20261116-work-fs-sb_rdonly-fixes-v1-0-95a25ce917ad@kernel.org>
+In-Reply-To: <20261116-work-fs-sb_rdonly-fixes-v1-0-95a25ce917ad@kernel.org>
 To: linux-fsdevel@vger.kernel.org
 Cc: Jan Kara <jack@suse.com>, ecryptfs@vger.kernel.org, 
  linux-ext4@vger.kernel.org, jfs-discussion@lists.sourceforge.net, 
@@ -64,12 +63,12 @@ Cc: Jan Kara <jack@suse.com>, ecryptfs@vger.kernel.org,
  linux-xfs@vger.kernel.org, 
  "Christian Brauner (Amutable)" <brauner@kernel.org>, stable@vger.kernel.org
 X-Mailer: b4 0.17-dev-ce4c1
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1425; i=brauner@kernel.org;
- h=from:subject:message-id; bh=jeCsQzF34oL0Arvs8F9B2uJQSCX+EzbT3qRU+Rbsju8=;
- b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWT9uvi7fE9w7bmpcv5J82/1za9S4FUrcTJtdFY06i+ct
- 14hJSyuo5SFQYyLQVZMkcWh3SRcbjlPxWajTA2YOaxMIEMYuDgFYCLiSxn+p61423H1yuqphyNy
- CypNQ07uYf2rs/yuFLtD9f/+bZMLtzEyTOL9teBm7yq3mqbpzbY+BsIR898sTkj0CjXjaTy2tLW
- IFQA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3170; i=brauner@kernel.org;
+ h=from:subject:message-id; bh=F50L2TAgntbYoNLTOVTGw9OEVAO4TN0+aJMweOBfZG8=;
+ b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWT9uvgn97Lk/4uNB7YmLgq9Hbn82lu9dd2iLLvW/WZLm
+ qf1pqr3akcpC4MYF4OsmCKLQ7tJuNxynorNRpkaMHNYmUCGMHBxCsBEWj0Y/hcIGl+at47v4bbw
+ /0JhMtYReYZPVCT+SFzwTzzHv2tl8w+GP3zb9rVaJHMW/z6+7PjCrZNr9j1LERb/ECxrfnBtvKH
+ qMj4A
 X-Developer-Key: i=brauner@kernel.org; a=openpgp;
  fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 X-BeenThere: linux-mtd@lists.infradead.org
@@ -91,40 +90,98 @@ X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-Three fixes for pre-existing bugs that came up during review of the
-SB_RDONLY series (cf. [1]). They don't depend on it and are all tagged
-for stable. I'll put them in front of the series in vfs-7.5.super.
+gfs2_withdraw() doesn't queue the withdraw work before the superblock is
+born. But gfs2_fill_super() makes the journal live before that and a
+withdraw can still happen until the mount is done, e.g. from the log or
+quota daemons or through the withdraw file in sysfs. The withdraw is
+then never processed and SDF_JOURNAL_LIVE stays set. A later remount to
+read-only, sysrq u included, goes through gfs2_make_fs_ro() whose log
+flushes bail out early on the withdrawn filesystem and then
+gfs2_quota_cleanup() hits its BUG_ON().
 
-- gfs2 hits the BUG_ON() in gfs2_quota_cleanup() on a remount to
-  read-only after a withdraw during mount. The withdraw work was never
-  queued so SDF_JOURNAL_LIVE stays set.
+So queue the withdraw work from gfs2_reconfigure() and wait for it
+before going read-only. The work can't run twice so guard the queueing
+with a new SDF_WITHDRAW_QUEUED bit.
 
-- exfat marks the volume clean at umount or on a remount to read-only
-  after a shutdown with EXFAT_GOING_DOWN_NOSYNC although it may be
-  inconsistent.
-
-- jfs takes a negative inode size from disk as is. A symlink with one
-  is treated as a fast symlink and jfs_iget() writes out of bounds.
-
-[1]: https://patch.msgid.link/20261113-work-fs-sb_rdonly-v3-0-0be92bb73709@kernel.org
-
+Fixes: 9c4a3de6cd5b ("gfs2: Asynchronous withdraw")
+Cc: stable@vger.kernel.org
 Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 ---
-Christian Brauner (3):
-      gfs2: don't BUG when remounting read-only after a withdraw during mount
-      exfat: keep the volume marked dirty after a shutdown
-      jfs: refuse inodes with a negative size
-
- fs/exfat/super.c     | 3 ++-
  fs/gfs2/incore.h     | 1 +
  fs/gfs2/ops_fstype.c | 5 +++++
  fs/gfs2/util.c       | 9 ++++++++-
  fs/gfs2/util.h       | 1 +
- fs/jfs/jfs_imap.c    | 4 ++++
- 6 files changed, 21 insertions(+), 2 deletions(-)
----
-base-commit: c339f4010dea8b0d754f84ace70cd1b089878ef8
-change-id: 20261116-work-fs-sb_rdonly-fixes-d74c927f80b5
+ 4 files changed, 15 insertions(+), 1 deletion(-)
+
+diff --git a/fs/gfs2/incore.h b/fs/gfs2/incore.h
+index 49cc232942a29..151458e90480b 100644
+--- a/fs/gfs2/incore.h
++++ b/fs/gfs2/incore.h
+@@ -605,6 +605,7 @@ enum {
+ 	SDF_KILL		= 15,
+ 	SDF_EVICTING		= 16,
+ 	SDF_FROZEN		= 17,
++	SDF_WITHDRAW_QUEUED	= 18,
+ };
+ 
+ #define GFS2_FSNAME_LEN		256
+diff --git a/fs/gfs2/ops_fstype.c b/fs/gfs2/ops_fstype.c
+index 6ec47376aecf2..3bd5702535dfe 100644
+--- a/fs/gfs2/ops_fstype.c
++++ b/fs/gfs2/ops_fstype.c
+@@ -1590,6 +1590,11 @@ static int gfs2_reconfigure(struct fs_context *fc)
+ 
+ 	if ((sb->s_flags ^ fc->sb_flags) & SB_RDONLY) {
+ 		if (fc->sb_flags & SB_RDONLY) {
++			/* gfs2_withdraw() doesn't queue the work during mount. */
++			if (gfs2_withdrawn(sdp)) {
++				gfs2_queue_withdraw(sdp);
++				flush_work(&sdp->sd_withdraw_work);
++			}
+ 			gfs2_make_fs_ro(sdp);
+ 		} else {
+ 			error = gfs2_make_fs_rw(sdp);
+diff --git a/fs/gfs2/util.c b/fs/gfs2/util.c
+index 529c3ec37a18a..5558af374994a 100644
+--- a/fs/gfs2/util.c
++++ b/fs/gfs2/util.c
+@@ -238,6 +238,13 @@ void gfs2_withdraw_func(struct work_struct *work)
+ 	fs_err(sdp, "file system withdrawn\n");
+ }
+ 
++/* The withdraw work must only run once. */
++void gfs2_queue_withdraw(struct gfs2_sbd *sdp)
++{
++	if (!test_and_set_bit(SDF_WITHDRAW_QUEUED, &sdp->sd_flags))
++		schedule_work(&sdp->sd_withdraw_work);
++}
++
+ void gfs2_withdraw(struct gfs2_sbd *sdp)
+ {
+ 	if (sdp->sd_args.ar_errors == GFS2_ERRORS_WITHDRAW ||
+@@ -253,7 +260,7 @@ void gfs2_withdraw(struct gfs2_sbd *sdp)
+ 		if (!(sdp->sd_vfs->s_flags & SB_BORN))
+ 			return;
+ 		fs_err(sdp, "about to withdraw this file system\n");
+-		schedule_work(&sdp->sd_withdraw_work);
++		gfs2_queue_withdraw(sdp);
+ 		return;
+ 	}
+ 
+diff --git a/fs/gfs2/util.h b/fs/gfs2/util.h
+index ffcc47d6b0b4b..78690fe76cfeb 100644
+--- a/fs/gfs2/util.h
++++ b/fs/gfs2/util.h
+@@ -195,5 +195,6 @@ void gfs2_lm(struct gfs2_sbd *sdp, const char *fmt, ...);
+ 
+ void gfs2_withdraw_func(struct work_struct *work);
+ void gfs2_withdraw(struct gfs2_sbd *sdp);
++void gfs2_queue_withdraw(struct gfs2_sbd *sdp);
+ 
+ #endif /* __UTIL_DOT_H__ */
+
+-- 
+2.53.0
 
 
 ______________________________________________________
