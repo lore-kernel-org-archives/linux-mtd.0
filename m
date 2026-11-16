@@ -2,12 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D46D606AEE3
-	for <linux-mtd@archiver.kernel.org>; Mon, 16 Nov 2026 06:30:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7518606A8AC
+	for <linux-mtd@archiver.kernel.org>; Mon, 16 Nov 2026 06:31:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=byqyROjy;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.a=rsa-sha256 header.s=casper.20170209 header.b=rm+1SX+y;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=Hfz3vuLs
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=nQx5n6BB;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=WPVyg215
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -15,104 +14,85 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=GWKIFZQalxa+IloODKiltiPSFDor85C9oVfRJaOxRuU=; b=byqyROjyCQnbox9Za1VI0g1K8z
-	Dwp0nnfWy7i+FRKWN3OOcGWDZjdDiqr0Q88oQ3nntVLj6osyAvWxwal/KGKmQKfXHuBigD8Pp0Rd2
-	+LMUUbaaY9Blmwcii80mpSwdEs9EZ0SfqI8MhUcDvlX1ZoIEUQdwurgv4a7hc2jLQhqu1Ue7SCz99
-	+C2QSE4WepeQUN2/hUoakgEMFj5wuwhQuyU+Ch3TKAeX5uwl4HeHL3vpcCriQf8pmWESzGAYPW5WL
-	AdqrCrnPbmqyJSj/Qg3fcxnM2E/9t7LpYAg3c/hibRA95IYQCpYLoROu9oLYHhMs9ZXBgPHv0W6iF
-	NUiUdwmQ==;
+	bh=Jsasm4Zv3HMlavjOBYtJaIgiDoxa+1u1sOMpM+hN+/Q=; b=nQx5n6BBKdcdAFicvEIIegJSw3
+	WnS6mb5ED0MNy2SeKWktvhPyQ0E2SAPhXiCJNuSd2JMqHu1eC1qz/NFcpotQDYzuP5d2SHQnGpRPX
+	I92vUnVwDwbPDuKCjMT9vsAdKlaJxeWBYvVPhIxLq9gwGAfKGQDJV/dI1Ui1KCBMKXBfcy9pDdjBX
+	4t30Ym0F3vIVfCC4ksMydrOKNd7LDcam84EtVV2kzlmARfzYJWeCZwy0WHB1Y958qOl/pVk4isP+h
+	0o8Zx/Jxw3CxiK3J1RmVWuPSp0/NM+BwVRZFM2nsiD2gnhURjBEaEZ36nWQY3Ep3UXTCnzKRRvBKW
+	U4aZhsHA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xSqEr-00000001GKp-3guR;
-	Mon, 16 Nov 2026 06:30:50 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1xSqF5-00000001Gk0-46KF;
+	Mon, 16 Nov 2026 06:31:04 +0000
+Received: from mail-oo1-xc2b.google.com ([2607:f8b0:4864:20::c2b])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xSqEd-00000001Fv6-36LF
-	for linux-mtd@bombadil.infradead.org;
-	Mon, 16 Nov 2026 06:30:35 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=Cc:To:In-Reply-To:References:Message-Id
-	:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:From:Sender
-	:Reply-To:Content-ID:Content-Description;
-	bh=SkGAF3rvqZpMpEv+A0EsfbrHuzz+MIXvk9S9duAZxjo=; b=rm+1SX+yG+m+SzVmb7ZK8xxY5c
-	7lu/Mrd5fZm4GAV7msCM7SxBBbGWNgLdklh6ahqcX7EQwSFP6OXlPN8leWE7YJ39NCv/QbRHkOcYN
-	nednwuwepn8sxUltreXkL5brSX+Bqzvu5Ej03M3x7sZbPWlCFgxSw2h+GkB9c2rivrHw05qU3aRog
-	XGifxWBvJSnthGXIWii5C2gfs2uT2ZzzREypKamb8JRoiQnBEBIrBS8jKIkVFzZIbJqO3KudF7IbN
-	X878thrE4ifD+f6/oWoSkwDVb4F4K2RGuLLdAZk/1roRm6MVrvmKwUrb6+xuZIIprOVoeiq4mxYRF
-	jFPHX++A==;
-Received: from mail-oo1-xc35.google.com ([2607:f8b0:4864:20::c35])
-	by casper.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xSqEB-0000000CeIN-12ZZ
+	id 1xSqEb-00000001FqS-0sWR
 	for linux-mtd@lists.infradead.org;
-	Mon, 16 Nov 2026 06:30:34 +0000
-Received: by mail-oo1-xc35.google.com with SMTP id 006d021491bc7-705cb6ceebaso3464960eaf.3
-        for <linux-mtd@lists.infradead.org>; Sun, 15 Nov 2026 22:30:06 -0800 (PST)
+	Mon, 16 Nov 2026 06:30:37 +0000
+Received: by mail-oo1-xc2b.google.com with SMTP id 006d021491bc7-6b1afdf5196so1046785eaf.2
+        for <linux-mtd@lists.infradead.org>; Sun, 15 Nov 2026 22:30:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794810604; x=1795415404; darn=lists.infradead.org;
+        d=gmail.com; s=20260707; t=1794810632; x=1795415432; darn=lists.infradead.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=SkGAF3rvqZpMpEv+A0EsfbrHuzz+MIXvk9S9duAZxjo=;
-        b=Hfz3vuLskyH5W/Bby7u/SAK1Avb3pZ0AtzXHTyNoq9RpvLLOIJpx4maY+lLOHn25FZ
-         F/y5gOnQe+aYQIb7uSrBi+2b10Fdt0wttemrIhvuHDa3y6a0PK0iqyeDy5eyVFyn8Vdj
-         TYQrl3VQ+dkhpJJzBJAH91oqaa9b2gtpf+gPhlFltNdjtMvmqvXj38Gw2lBK1BaOxHUz
-         ZTApZEUcYBL3+wpeXIR/2DcxOuGEznJwx0t2k/aZdSOdBVNXYiqpTc8wPysxd8TWK/5C
-         kwnxSqNnsJagEYD+9wkWSGn2IQd1hM57El7NR9iA6Uy7+iqtcj+j794DW1Na+FRY6aj+
-         8Z2A==
+        bh=/RbITScvmyfE/Fkxqbl633jAaoI3LnbBlJcMHpQ8T4s=;
+        b=WPVyg215y09aji2OtIUYuVALJxi86A3xwrwNniVW1KuHtTH8XXL04eLOr2u/UzXhsZ
+         i9WXeskVVjv6dRqqGU5NHHGKMqAbDTmqZyUjB1V4Q1nPCWYCVzouw4zw0r7Hg73dBEph
+         FBzCFCog+1/aGXKg9zFLnt43cveksbkz5XE3Gq3Cp17PNd3EZYxx1T+2fSoYtApt/v9y
+         AZCEZ8H69s4DrwxXF0KqV8pUsJe4WMS79kz1klNeuQBydW6Pzg3Q5p8NiKP0hYZqHUUz
+         XEUTZarb+/XdieKDsIOzrHgruCXZbP699FTqJX5ZvnKFrBJN+jKv7kdKN6UNFu5WAZ5t
+         FEnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794810604; x=1795415404;
+        d=1e100.net; s=20260707; t=1794810632; x=1795415432;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=SkGAF3rvqZpMpEv+A0EsfbrHuzz+MIXvk9S9duAZxjo=;
-        b=Dzk3sa4RuuaXaDqw2YlyDB6lxHx1oYoo0WQErtu7BoAp/R4Wj198A4xt6k2CmlvWLc
-         NxxR/K7bqDN+excVFm+2om9dr6JDQxueZG5f8G5Xc7Z64vF17nhqvZfyfmtOvC91Pf+U
-         RvaOsxJptupqmPbOwC6mC1JCpDBpIQex/FXx3dSJPvv3e+zLYwp3LovxyO4Tt5uLLMtG
-         LkMjMaiZw3dFC2EGcuwtHYTgOBwme+VcX6OKXwuqjZGAOtsM+xB4RZT5K52mFfeisa7D
-         roKj8Dh8NxppCOi++/R5J6Q6WUt0CTSUKRAV5a6GS0BmuM8ZxN4fJi3oGo2PIq+azqtu
-         2KjA==
-X-Gm-Message-State: APuU4Z8MkonMMwZ6n7vS0kOjIwjeqAgnxEH+aDvl9gywTxK4cKof9Lhg
-	/kYIecpSFvxZ+4bleKhzikQJ+Fefx1I3hyAX6hP6fTRIk0YLisGH2FJu
-X-Gm-Gg: AYBFou0jiWHu+4nDe6y01eyVzF2fuedbI1OBbbHMSYmCo/1IW6Al0p/gzk78gLEkJ0n
-	QqQPK2QCkBZjPk1IVHsu0GibdUhkInc8Uc/DM4e2TeRNQ6B1EL5MAuA0bb51gygppVueG79Tksy
-	q1Agkg3GWsduEr+t3SnrDO476b0xCSvuP3N7Vnc0zeFiINR7PxtcfU7oiNQetfXIMh3xZNGgHG1
-	9ZSdDUClCDTiwqvC6WYWqex60DdBbMRvEq/BXSf+gNydl+mRirgFyeRfGrh9Q0kBX+QPF59Y86z
-	6HVR7Jrr6zObqSf29zZllezWmFJ0HdQAzAJqGvV7jjOv7I02IzvwxBG5x0j2ZKTYrj3XlcLs818
-	x6w23ibn9S6Z0EfoI6fgd/DTgSC46c4c3POx8ii1NxAESUsT0CsmxQ7zZjxsWCWl1AtomwdwAXm
-	Y3vvsBZGyoMAXypwZkNQK4IsaAd/ulsmU4uaHh469We79Lq1mQAQwnglW+5AtWQCoqrN6Nt0TOY
-	tGlPopq8YBQ5DdUQoDjtYA+fnc6tWt3bOtuWdwL7vrppMYmoufmoxq2ekNtr4V2rACzdjBpNlzF
-	g7mBT1/R7MTkSIFbH2mfQvI8H3sW37qn6MGJ/ZbF4EGp+Kih4LHxMxX3kTx+MyX3B3cWevWDbHL
-	54YKnDQCB5k7Tz4cRQi1M6wGzeXh7MjOoRneMe+pc4/Da5qiTSW1XxZAZAGwzPC6mTkSLGVjDCY
-	o3YLIKiK+8JNWnLi6x3XX4cSgU8FT6Dvj+jHWmz1jhWlyY0445pQg=
-X-Received: by 2002:a05:6820:2224:b0:71a:f0fd:a804 with SMTP id 006d021491bc7-71af0fdb3ddmr1565613eaf.25.1794810603753;
-        Sun, 15 Nov 2026 22:30:03 -0800 (PST)
+        bh=/RbITScvmyfE/Fkxqbl633jAaoI3LnbBlJcMHpQ8T4s=;
+        b=uwikkbuOyplzMSxIhlv0iSvJYUX14cLnvq/oercdSHgND2aNvc63N0AXGDb+DgmTUM
+         sybwbU3ShJk7x26KEWrS0DN052q0FGqbLuYsyDilJDOk3eXIRB/fRPCIaAA0pryWKL9p
+         7lixFWVjEUyLtGRXTQ/rvc5NOqW3ew0DOCIwyddcaprjOF7qGiYGFrarAgigSvAnCOHU
+         t7dBY9gv906SBVwcpH3DNkGYeJqiCaXRBoPT9YIG8EZocEuyGSXqwJXgJ7Z7jXNb+Ckj
+         JrL1kUytQO7awPA38iMnqZXS1j0KN+amipY6eN44GggWxwWqqPvFvUftfe9dNj6BUAIu
+         RJQw==
+X-Gm-Message-State: APuU4Z8M/50eNWyhC/2Ewq9BMaRBeHyvaMqIRutN60HNEE1MI9F2xcEI
+	zzwNWX6PLhRoxTqC0/go8ZEXbKeIXRDGBAiqSrdgMsVCQcAqsg5FhoYu
+X-Gm-Gg: AYBFou2Z54mlCt3jXgAisjJECFwRy7zhdXOUFJMuOIItCXo5CR43MrBH1gxI+xMKrs5
+	DoCuQGG1TNJBRUNejlpUSM9RRN//784TyStqJbro6TIZpEc/EBOIF6jq4bgjLC6kD2CErohWw9g
+	Fol9Gc8y6PEHyo5MqIiXFy00mjwFeDfe2vbg3HlZHDkHYkwyoKZKBCKuZ9GL+amKHcQtX0hdQbg
+	F9lmKLK29V+f3eAt18Qzoy7D8hlbqUORhtFkQ9fArOn5t0gjehy/z8q1cBuCMNG0F+2NxMGDCoB
+	ALHvEdksrB/oWSqDXNDaX1MSdy3fdsWHaADbTuUvmLuiewGzhkWdUEPVkUC0/NPdP9YRCRM2rYH
+	mWLa1f2k71reY3+Q2XF83fd+ivBU8jLNm9iItRiQxjPnEMSFRvOLX8FhfU8JgOF6Hz358BvmaBF
+	lw3m3SFWS7WJkgociPonF2GNlCrfKt6hjtYzEU8QiMZH/q+J33gUlDyrazAhuD2Lt0KoMlMuMuh
+	gK4JBVxpc9AXIgiLQI/L9Ys85rJdHz5yeAxa1TClXu79EwD3yXWUq69SZMdZThWoRkWx3YqvGSS
+	ZsA9zvnsRiKCXQtYgZskm+abs8ll0yaZzrcbJ404EhNe8JmT9B2dE04WubvKnfNsdPXFTiVSYKL
+	bwD8nUQ1ARCy1fm5fjdhQ0yMQ/t7vRwOFeGcRij2Hql+olsk470iacIB4cXaAH+0J838m24Lfr8
+	OU1S57sli7UQqSS8DMShdwncKpxmv7ZuctwoArbottMBvgn2dTECc=
+X-Received: by 2002:a05:6820:1381:b0:71a:e932:8688 with SMTP id 006d021491bc7-71ae93289demr2085637eaf.41.1794810632331;
+        Sun, 15 Nov 2026 22:30:32 -0800 (PST)
 Received: from [127.0.1.1] (174-29-1-49.hlrn.qwest.net. [174.29.1.49])
-        by smtp.gmail.com with ESMTPSA id 006d021491bc7-71ab42c41e9sm7994558eaf.6.2026.11.15.22.30.02
+        by smtp.gmail.com with ESMTPSA id 006d021491bc7-71ab42c41e9sm7994558eaf.6.2026.11.15.22.30.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Nov 2026 22:30:03 -0800 (PST)
+        Sun, 15 Nov 2026 22:30:31 -0800 (PST)
 From: James Hilliard <james.hilliard1@gmail.com>
-Date: Sun, 15 Nov 2026 23:29:30 -0700
-Subject: [PATCH v5 15/58] mtd: rawnand: tegra: retain open-handle state on
- removal
+Date: Sun, 15 Nov 2026 23:29:53 -0700
+Subject: [PATCH v5 38/58] mtd: rawnand: cadence: retain open-handle state
+ on removal
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Message-Id: <20261115-submit-rawnand-retained-handle-lifetime-v1-v5-15-cbc49c5c5e74@gmail.com>
+Message-Id: <20261115-submit-rawnand-retained-handle-lifetime-v1-v5-38-cbc49c5c5e74@gmail.com>
 References: <20261115-submit-rawnand-retained-handle-lifetime-v1-v5-0-cbc49c5c5e74@gmail.com>
 In-Reply-To: <20261115-submit-rawnand-retained-handle-lifetime-v1-v5-0-cbc49c5c5e74@gmail.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, 
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- James Hilliard <james.hilliard1@gmail.com>, 
- Boris Brezillon <bbrezillon@kernel.org>, Lucas Stach <dev@lynxeye.de>, 
- Dmitry Osipenko <digetx@gmail.com>, Jonathan Hunter <jonathanh@nvidia.com>, 
- linux-tegra@vger.kernel.org, Stefan Agner <stefan@agner.ch>, 
- Thierry Reding <thierry.reding@kernel.org>
+ James Hilliard <james.hilliard1@gmail.com>
 X-Mailer: b4 0.17-dev
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261116_063007_549525_B87EA441 
-X-CRM114-Status: GOOD (  14.53  )
+X-CRM114-CacheID: sfid-20261115_223034_276438_94EAE6E1 
+X-CRM114-Status: GOOD (  15.65  )
 X-Spam-Score: -1.9 (-)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -134,122 +114,164 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-Retain the chip and controller allocations until their final MTD
-references are released. Disconnect the chip before suspending the
-controller so retained handles cannot reach powered-down hardware. Leave
-allocation release to the final core-owned put, including
-registration-failure unwinding.
+Keep chip metadata and controller storage alive until the final MTD
+reference is released. Unregister and disconnect each published chip
+before releasing the resources used by its hardware operations.
 
-Release the probe-time child-node reference on every exit. Lifetime
-ownership takes its own reference before publication.
+Allocate the final shared buffer before publishing any chip.
 
-Fixes: d7d9f8ec77fe ("mtd: rawnand: add NVIDIA Tegra NAND Flash controller driver")
-Cc: Boris Brezillon <bbrezillon@kernel.org>
-Cc: Lucas Stach <dev@lynxeye.de>
-Cc: Dmitry Osipenko <digetx@gmail.com>
-Cc: Jonathan Hunter <jonathanh@nvidia.com>
-Cc: linux-tegra@vger.kernel.org
-Cc: Stefan Agner <stefan@agner.ch>
-Cc: Thierry Reding <thierry.reding@kernel.org>
+Run NAND cleanup during disconnection; the final core-owned put only
+releases retained allocation and layout data.
+
 Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
 ---
- drivers/mtd/nand/raw/tegra_nand.c | 25 ++++++++++++++++---------
- 1 file changed, 16 insertions(+), 9 deletions(-)
+ drivers/mtd/nand/raw/cadence-nand-controller.c | 49 +++++++++++++++++---------
+ 1 file changed, 33 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/tegra_nand.c b/drivers/mtd/nand/raw/tegra_nand.c
-index ef765fa21e72..4b9416ecbe43 100644
---- a/drivers/mtd/nand/raw/tegra_nand.c
-+++ b/drivers/mtd/nand/raw/tegra_nand.c
-@@ -1068,9 +1068,7 @@ static int tegra_nand_chips_init(struct device *dev,
- 				 struct tegra_nand_controller *ctrl)
- {
- 	struct device_node *np = dev->of_node;
--	struct device_node *np_nand;
- 	int nsels, nchips = of_get_child_count(np);
--	struct tegra_nand_chip *nand;
- 	struct mtd_info *mtd;
- 	struct nand_chip *chip;
- 	int ret;
-@@ -1081,7 +1079,7 @@ static int tegra_nand_chips_init(struct device *dev,
- 		return -EINVAL;
+diff --git a/drivers/mtd/nand/raw/cadence-nand-controller.c b/drivers/mtd/nand/raw/cadence-nand-controller.c
+index 05d0659e6527..4e365ffdf905 100644
+--- a/drivers/mtd/nand/raw/cadence-nand-controller.c
++++ b/drivers/mtd/nand/raw/cadence-nand-controller.c
+@@ -562,6 +562,7 @@ struct cdns_nand_chip {
+ 	struct cadence_nand_timings timings;
+ 	struct nand_chip chip;
+ 	u8 nsels;
++	bool registered;
+ 	struct list_head node;
+ 
+ 	/*
+@@ -3007,9 +3008,7 @@ static int cadence_nand_chip_init(struct cdns_nand_ctrl *cdns_ctrl,
  	}
  
--	np_nand = of_get_next_child(np, NULL);
-+	struct device_node *np_nand __free(device_node) = of_get_next_child(np, NULL);
- 
- 	nsels = of_property_count_elems_of_size(np_nand, "reg", sizeof(u32));
- 	if (nsels != 1) {
-@@ -1096,7 +1094,7 @@ static int tegra_nand_chips_init(struct device *dev,
- 		return ret;
- 	}
- 
--	nand = devm_kzalloc(dev, sizeof(*nand), GFP_KERNEL);
-+	struct tegra_nand_chip *nand __free(kfree) = kzalloc_obj(*nand);
- 	if (!nand)
+ 	/* Allocate the nand chip structure. */
+-	cdns_chip = devm_kzalloc(cdns_ctrl->dev, sizeof(*cdns_chip) +
+-				 (nsels * sizeof(u8)),
+-				 GFP_KERNEL);
++	cdns_chip = kzalloc(struct_size(cdns_chip, cs, nsels), GFP_KERNEL);
+ 	if (!cdns_chip) {
+ 		dev_err(cdns_ctrl->dev, "could not allocate chip structure\n");
  		return -ENOMEM;
+@@ -3024,20 +3023,22 @@ static int cadence_nand_chip_init(struct cdns_nand_ctrl *cdns_ctrl,
+ 			dev_err(cdns_ctrl->dev,
+ 				"could not retrieve reg property: %d\n",
+ 				ret);
+-			return ret;
++			goto free_chip;
+ 		}
  
-@@ -1116,7 +1114,6 @@ static int tegra_nand_chips_init(struct device *dev,
- 	mtd = nand_to_mtd(chip);
+ 		if (cs >= cdns_ctrl->caps2.max_banks) {
+ 			dev_err(cdns_ctrl->dev,
+ 				"invalid reg value: %u (max CS = %d)\n",
+ 				cs, cdns_ctrl->caps2.max_banks);
+-			return -EINVAL;
++			ret = -EINVAL;
++			goto free_chip;
+ 		}
  
- 	mtd->parent_dev = dev;
--	mtd->owner = THIS_MODULE;
+ 		if (test_and_set_bit(cs, &cdns_ctrl->assigned_cs)) {
+ 			dev_err(cdns_ctrl->dev,
+ 				"CS %d already assigned\n", cs);
+-			return -EINVAL;
++			ret = -EINVAL;
++			goto free_chip;
+ 		}
  
- 	nand_set_flash_node(chip, np_nand);
- 
-@@ -1130,11 +1127,18 @@ static int tegra_nand_chips_init(struct device *dev,
- 		return ret;
- 
- 	mtd_ooblayout_ecc(mtd, 0, &nand->ecc);
-+	ret = nand_set_lifetime(chip, container_of(chip, struct tegra_nand_chip, chip));
-+	if (ret) {
-+		nand_cleanup(chip);
-+		return ret;
-+	}
-+	retain_and_null_ptr(nand);
- 
- 	ret = mtd_device_register(mtd, NULL, 0);
+ 		cdns_chip->cs[i] = cs;
+@@ -3059,20 +3060,22 @@ static int cadence_nand_chip_init(struct cdns_nand_ctrl *cdns_ctrl,
+ 	ret = nand_scan(chip, cdns_chip->nsels);
  	if (ret) {
- 		dev_err(dev, "Failed to register mtd device: %d\n", ret);
--		nand_cleanup(chip);
-+		nand_disconnect(chip);
-+		mtd_put_master(mtd);
- 		return ret;
+ 		dev_err(cdns_ctrl->dev, "could not scan the nand chip\n");
+-		return ret;
++		goto free_chip;
  	}
  
-@@ -1149,13 +1153,15 @@ static int tegra_nand_probe(struct platform_device *pdev)
- 	struct tegra_nand_controller *ctrl;
- 	int err = 0;
+-	ret = mtd_device_register(mtd, NULL, 0);
++	ret = nand_set_lifetime(chip, cdns_chip);
+ 	if (ret) {
+-		dev_err(cdns_ctrl->dev,
+-			"failed to register mtd device: %d\n", ret);
+ 		nand_cleanup(chip);
+-		return ret;
++		goto free_chip;
+ 	}
  
--	ctrl = devm_kzalloc(&pdev->dev, sizeof(*ctrl), GFP_KERNEL);
-+	ctrl = kzalloc_obj(*ctrl);
- 	if (!ctrl)
- 		return -ENOMEM;
-+	err = devm_nand_controller_init(&pdev->dev, &ctrl->controller, ctrl);
-+	if (err)
-+		return err;
+ 	list_add_tail(&cdns_chip->node, &cdns_ctrl->chips);
  
- 	ctrl->dev = &pdev->dev;
- 	platform_set_drvdata(pdev, ctrl);
--	nand_controller_init(&ctrl->controller);
- 	ctrl->controller.ops = &tegra_nand_controller_ops;
- 
- 	ctrl->regs = devm_platform_ioremap_resource(pdev, 0);
-@@ -1235,13 +1241,14 @@ static void tegra_nand_remove(struct platform_device *pdev)
- 
- 	WARN_ON(mtd_device_unregister(mtd));
- 
--	nand_cleanup(chip);
-+	nand_disconnect(chip);
- 
- 	writel_relaxed(0, ctrl->regs + IER);
- 	devm_free_irq(ctrl->dev, ctrl->irq, ctrl);
- 
- 	pm_runtime_put_sync_suspend(ctrl->dev);
- 	pm_runtime_force_suspend(ctrl->dev);
-+	mtd_put_master(mtd);
+ 	return 0;
++
++free_chip:
++	kfree(cdns_chip);
++	return ret;
  }
  
- static int __maybe_unused tegra_nand_runtime_resume(struct device *dev)
+ static void cadence_nand_chips_cleanup(struct cdns_nand_ctrl *cdns_ctrl)
+@@ -3083,10 +3086,13 @@ static void cadence_nand_chips_cleanup(struct cdns_nand_ctrl *cdns_ctrl)
+ 
+ 	list_for_each_entry_safe(entry, temp, &cdns_ctrl->chips, node) {
+ 		chip = &entry->chip;
+-		ret = mtd_device_unregister(nand_to_mtd(chip));
+-		WARN_ON(ret);
+-		nand_cleanup(chip);
++		if (entry->registered) {
++			ret = mtd_device_unregister(nand_to_mtd(chip));
++			WARN_ON(ret);
++		}
++		nand_disconnect(chip);
+ 		list_del(&entry->node);
++		mtd_put_master(nand_to_mtd(chip));
+ 	}
+ }
+ 
+@@ -3127,6 +3133,7 @@ static int cadence_nand_init(struct cdns_nand_ctrl *cdns_ctrl)
+ {
+ 	dma_cap_mask_t mask;
+ 	struct dma_device *dma_dev;
++	struct cdns_nand_chip *entry;
+ 	int ret;
+ 
+ 	cdns_ctrl->cdma_desc = dma_alloc_coherent(cdns_ctrl->dev,
+@@ -3181,7 +3188,6 @@ static int cadence_nand_init(struct cdns_nand_ctrl *cdns_ctrl)
+ 		goto dma_release_chnl;
+ 	}
+ 
+-	nand_controller_init(&cdns_ctrl->controller);
+ 	INIT_LIST_HEAD(&cdns_ctrl->chips);
+ 
+ 	cdns_ctrl->controller.ops = &cadence_nand_controller_ops;
+@@ -3201,9 +3207,17 @@ static int cadence_nand_init(struct cdns_nand_ctrl *cdns_ctrl)
+ 		goto unmap_dma_resource;
+ 	}
+ 
++	list_for_each_entry(entry, &cdns_ctrl->chips, node) {
++		ret = mtd_device_register(nand_to_mtd(&entry->chip), NULL, 0);
++		if (ret)
++			goto unmap_dma_resource;
++		entry->registered = true;
++	}
++
+ 	return 0;
+ 
+ unmap_dma_resource:
++	cadence_nand_chips_cleanup(cdns_ctrl);
+ 	dma_unmap_resource(dma_dev->dev, cdns_ctrl->io.iova_dma,
+ 			   cdns_ctrl->io.size, DMA_BIDIRECTIONAL, 0);
+ 
+@@ -3275,11 +3289,14 @@ static int cadence_nand_dt_probe(struct platform_device *ofdev)
+ 		return -ENOMEM;
+ 	}
+ 
+-	dt = devm_kzalloc(&ofdev->dev, sizeof(*dt), GFP_KERNEL);
++	dt = kzalloc_obj(*dt);
+ 	if (!dt)
+ 		return -ENOMEM;
+ 
+ 	cdns_ctrl = &dt->cdns_ctrl;
++	ret = devm_nand_controller_init(&ofdev->dev, &cdns_ctrl->controller, dt);
++	if (ret)
++		return ret;
+ 	cdns_ctrl->caps1 = devdata;
+ 
+ 	cdns_ctrl->dev = &ofdev->dev;
 
 -- 
 2.53.0
