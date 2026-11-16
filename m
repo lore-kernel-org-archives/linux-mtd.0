@@ -2,60 +2,76 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7E85606A31C
-	for <linux-mtd@archiver.kernel.org>; Mon, 16 Nov 2026 07:21:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BE3B606A31C
+	for <linux-mtd@archiver.kernel.org>; Mon, 16 Nov 2026 09:51:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=MARn/Y1A;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=N3+tJCa/
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=oy2INsaE;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=K2+7tRLz
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Reply-To:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:References:
-	In-Reply-To:Cc:To:Subject:From:Message-ID:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id:Date:
+	Subject:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
 	List-Unsubscribe-Post:List-Owner;
-	bh=3L0DyJDEvppRrB9G7OdJsWKeISMn8mGpQkzmDKDeCjU=; b=MARn/Y1ADI8yz5cn6TsRra7jHH
-	Jskx0pPW2jFgtTC/pnqJfVhWpRkZdYSKJkoovGliK6Enqr/i/tARdvQ9gbWKniaWNmCHJaglTKjow
-	Zb9O8FXTZUQRYCq/3Z5+sGli6vtE8sXuPn7TJ9v/loZ1Ik6CoOHgfUtVjvyEfBvAlLW6tf7vnFx9G
-	2ph1zVw3DTq/hMGxjgVKk8XDfbdeOEF0GWWAmafZt4VeLu6eTUuxsSgECJxZbsBFO5t6Lz+5IMtw5
-	Bc/XMU7UdjEIK34ZnOt90mOcrL3xr1ppEqcYL9Ttia0Il9F4h3hPLwZO60RKBMDoU1nIUCM7r5Ktb
-	jeZa3nNA==;
+	bh=hDKImRJOwH185GxJNWFWNrU4Q0a8ZaHVwXHn5TTuwU0=; b=oy2INsaEb8UbTlwWx+ohgTcEUv
+	e79xdwYKkiDugy+mqbgZJqCcK0MSQLbOgmsrLx1fY1ZwbK8pcLltdlp+zM9cEzcdjKdItHQGcouky
+	PYT4yuFDlWopG6uxmwTNfSS9uw6qkVxxwO748OvsoY6neFol3LraotUE2aV1z3APZgrOj2pcVwMQ2
+	qGMUCVI8zRQ2TYlKr/QKnGCc7QYHpMYo3tv13QVCEj6k/KGFvrx8ND9r27jloaepu3vMb7ZYjgiKj
+	IAL0xBfhjwdVXYCC0b0i5Cy6K33rpe4bE03UMJZ1od5uQfSr0kxl5bRw6AC7cD6op8uBNKyZN2Ujz
+	I7e3Bquw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xSr20-00000001OWr-2qtz;
-	Mon, 16 Nov 2026 07:21:36 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1xStMd-00000001pxG-2ze2;
+	Mon, 16 Nov 2026 09:51:03 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xSr1w-00000001OWY-3W8H
+	id 1xStMc-00000001px8-2eMW
 	for linux-mtd@lists.infradead.org;
-	Mon, 16 Nov 2026 07:21:32 +0000
+	Mon, 16 Nov 2026 09:51:02 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 2D06A44D7A;
-	Mon, 16 Nov 2026 07:21:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A611F1F000C4;
-	Mon, 16 Nov 2026 07:21:31 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 2A26C4133F;
+	Mon, 16 Nov 2026 09:51:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 609D61F000C4;
+	Mon, 16 Nov 2026 09:50:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794813692;
-	bh=/hvViL+L0TIWYki/bBMI/mmeJ30HVQwalmcaBmEMhD0=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=N3+tJCa/VpyrLyvbKCFuTJQA3fgf5YpsrkAnD4XLbPMU6qjMAX8LMLwqvYiXr1OJi
-	 7URSoOW1F+d+wH65FqjbSKjEzpLcrQQmvTrMresBoutS6Ag+4YG8ggrNwJzL8jg4IP
-	 06TavpG0zHVD/I0GHc5Jo9fWt/7g8lg7VsiGAu2uFYd29Ben7aU+iHQpqsZRfbXvme
-	 a9zCN4kO3dvgNrJ10pqwvan5L2EcMYQfyrSUXyFbO0M4F+4mzW1ulTwK8WSsMGTrhH
-	 37955muIT819cljNQPtImZdYv6gW3P9l9+tEt/RGV56QStcowxu4x3IoyDZ7gO+d+0
-	 nLq2JvgqEV/0w==
-Message-ID: <sashiko-outbox-216405@kernel.org>
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH v5 03/58] mtd: separate class devices from retained
- backing objects
-To: "James Hilliard" <james.hilliard1@gmail.com>, "Miquel Raynal" <miquel.raynal@bootlin.com>, "Richard
- Weinberger" <richard@nod.at>, "Vignesh Raghavendra" <vigneshr@ti.com>
-Cc: linux-mtd@lists.infradead.org, "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>, "Srinivas
- Kandagatla" <srini@kernel.org>, "Tze Yee Ng" <tze.yee.ng@altera.com>
-In-Reply-To: <20261115-submit-rawnand-retained-handle-lifetime-v1-v5-3-cbc49c5c5e74@gmail.com>
-References: <20261115-submit-rawnand-retained-handle-lifetime-v1-v5-0-cbc49c5c5e74@gmail.com>
- <20261115-submit-rawnand-retained-handle-lifetime-v1-v5-3-cbc49c5c5e74@gmail.com>
-Date: Mon, 16 Nov 2026 07:21:31 +0000
+	s=k20260515; t=1794822662;
+	bh=8aRGBcpvx8xM7mxQtHaidBWPdNvahzYjZNEX0jkJ1yE=;
+	h=From:Subject:Date:To:Cc;
+	b=K2+7tRLzUA1vHpSh9Z4eYxrLSWLfx3VxiAtV+I2wsfPNb9ufsZBXDAGRXgVgW5eVT
+	 7EPd2127puPa6m8jR0gUbbLngHeCTt0SNmH9jNftFfvciTpnZOwt9ZFB8xaifyNx5I
+	 6T4/eGhfCJ4f1ugyPqE8JW8/pgNBj81vq/a0P4QMlvX9rDmpcnRbSLEfn3OZwjS09o
+	 Ffj8QthI/KmMMkRMsxQrY2bpnNRJNH0bSetX/pu6Ptvz0r4Eeu9O8UNelZBCix0Dko
+	 77WqR1fbWuPXsEef+M7YM+E7QUpfT9xgzJUFuXdxSrgNBt3AgthI6/SanCUbgR5X4y
+	 DYCuvs09giVyg==
+From: Christian Brauner <brauner@kernel.org>
+Subject: [PATCH 0/3] fs: pre-existing fixes for the SB_RDONLY series
+Date: Mon, 16 Nov 2026 10:28:29 +0100
+Message-Id: <20261116-work-fs-sb_rdonly-fixes-v1-0-95a25ce917ad@kernel.org>
+X-Archived-By: <archiver.kernel.org>
+MIME-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/z2M2QrCMBBFf6XMsxOaoK36KyKSZWKjksqMK6X/b
+ qLg47nLmUCIEwlsmwmYHknSmAvoRQN+sPlImEJhMK3ptNYdPkc+YxQUd+Aw5ssbY3qRYOiXfmP
+ 6uG7dCsr7yvQtynm3/7Hc3Yn8rerqwlkhdGyzH2pUxSqK+otVHcA8fwDm31WGpAAAAA==
+X-Change-ID: 20261116-work-fs-sb_rdonly-fixes-d74c927f80b5
+To: linux-fsdevel@vger.kernel.org
+Cc: Jan Kara <jack@suse.com>, ecryptfs@vger.kernel.org, 
+ linux-ext4@vger.kernel.org, jfs-discussion@lists.sourceforge.net, 
+ linux-nilfs@vger.kernel.org, exfat@lists.linux.dev, linux-mm@kvack.org, 
+ ntfs@lists.linux.dev, ocfs2-devel@lists.linux.dev, 
+ linux-btrfs@vger.kernel.org, gfs2@lists.linux.dev, 
+ linux-efi@vger.kernel.org, linux-mtd@lists.infradead.org, 
+ linux-xfs@vger.kernel.org, 
+ "Christian Brauner (Amutable)" <brauner@kernel.org>, stable@vger.kernel.org
+X-Mailer: b4 0.17-dev-ce4c1
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1425; i=brauner@kernel.org;
+ h=from:subject:message-id; bh=jeCsQzF34oL0Arvs8F9B2uJQSCX+EzbT3qRU+Rbsju8=;
+ b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWT9uvi7fE9w7bmpcv5J82/1za9S4FUrcTJtdFY06i+ct
+ 14hJSyuo5SFQYyLQVZMkcWh3SRcbjlPxWajTA2YOaxMIEMYuDgFYCLiSxn+p61423H1yuqphyNy
+ CypNQ07uYf2rs/yuFLtD9f/+bZMLtzEyTOL9teBm7yq3mqbpzbY+BsIR898sTkj0CjXjaTy2tLW
+ IFQA=
+X-Developer-Key: i=brauner@kernel.org; a=openpgp;
+ fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -65,78 +81,52 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: sashiko-reviews@lists.linux.dev
-X-Archived-By: <archiver.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-8.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=4.0.1
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-VGhhbmsgeW91IGZvciB5b3VyIGNvbnRyaWJ1dGlvbiEgU2FzaGlrbyBBSSByZXZpZXcgZm91bmQg
-MSBwb3RlbnRpYWwKaXNzdWUgdG8gY29uc2lkZXI6Ci0gW01lZGl1bV0gbXRkOiBtdGRwYXJ0OiBn
-ZXRfbXRkX2RldmljZSgpIGluIGFkZF9tdGRfcGFydGl0aW9ucygpIGJyZWFrcwogIGJ1c3kgZ2x1
-ZWJpCi0tCgpjb21taXQgZWNmNWZmNzVmODU3MGU4ZmZkMGYxZjNiMzUzZmYzOThmY2E2N2JlNwpB
-dXRob3I6IEphbWVzIEhpbGxpYXJkIDxqYW1lcy5oaWxsaWFyZDFAZ21haWwuY29tPgoKbXRkOiBz
-ZXBhcmF0ZSBjbGFzcyBkZXZpY2VzIGZyb20gcmV0YWluZWQgYmFja2luZyBvYmplY3RzCgpUaGlz
-IGNvbW1pdCBzZXBhcmF0ZXMgdGhlIE1URCBjbGFzcyBkZXZpY2UgYWxsb2NhdGlvbiBmcm9tIHN0
-cnVjdAptdGRfaW5mbyBhbmQgYWRkcyByZWZlcmVuY2UgY291bnRpbmcgZm9yIGJhY2tpbmcgb2Jq
-ZWN0cyBhbmQgcGFydGl0aW9uCmxpZmV0aW1lcyBhY3Jvc3MgdW5yZWdpc3RyYXRpb24uCgo+IGRp
-ZmYgLS1naXQgYS9kcml2ZXJzL210ZC9tdGRwYXJ0LmMgYi9kcml2ZXJzL210ZC9tdGRwYXJ0LmMK
-PiBpbmRleCBjMzE2Y2ZlOTJjN2U0Li44YmU2MDRmN2MxNDBlIDEwMDY0NAo+IC0tLSBhL2RyaXZl
-cnMvbXRkL210ZHBhcnQuYwo+ICsrKyBiL2RyaXZlcnMvbXRkL210ZHBhcnQuYwpbIC4uLiBdCj4g
-QEAgLTQxOSwzNSArNDIwLDUyIEBAIGludCBhZGRfbXRkX3BhcnRpdGlvbnMoc3RydWN0IG10ZF9p
-bmZvICpwYXJlbnQsCj4gIAkgICAgICAgbmJwYXJ0cywgcGFyZW50LT5uYW1lKTsKPiAgCj4gIAlm
-b3IgKGkgPSAwOyBpIDwgbmJwYXJ0czsgaSsrKSB7Cj4gKwkJbXV0ZXhfbG9jaygmbWFzdGVyLT5t
-YXN0ZXIucGFydGl0aW9uc19sb2NrKTsKPiArCQlpZiAobWFzdGVyLT5tYXN0ZXIudW5yZWdpc3Rl
-cmluZyB8fAo+ICsJCSAgICAobXRkX2lzX3BhcnRpdGlvbihwYXJlbnQpICYmICFwYXJlbnQtPnJl
-Z2lzdGVyZWQpKSB7Cj4gKwkJCW11dGV4X3VubG9jaygmbWFzdGVyLT5tYXN0ZXIucGFydGl0aW9u
-c19sb2NrKTsKPiArCQkJcmV0dXJuIC1FTk9ERVY7Cj4gKwkJfQo+ICsKPiAgCQljaGlsZCA9IGFs
-bG9jYXRlX3BhcnRpdGlvbihwYXJlbnQsIHBhcnRzICsgaSwgaSwgY3VyX29mZnNldCk7Cj4gIAkJ
-aWYgKElTX0VSUihjaGlsZCkpIHsKPiAgCQkJcmV0ID0gUFRSX0VSUihjaGlsZCk7Cj4gLQkJCWdv
-dG8gZXJyX2RlbF9wYXJ0aXRpb25zOwo+ICsJCQlnb3RvIGVycl91bmxvY2s7Cj4gIAkJfQo+ICAK
-PiAgCQlpZiAoSVNfUkVBQ0hBQkxFKENPTkZJR19NVERfVklSVF9DT05DQVQpKSB7Cj4gLQkJCWlm
-IChtdGRfdmlydF9jb25jYXRfYWRkKGNoaWxkKSkKPiArCQkJaWYgKG10ZF92aXJ0X2NvbmNhdF9h
-ZGQoY2hpbGQpKSB7Cj4gKwkJCQltdXRleF91bmxvY2soJm1hc3Rlci0+bWFzdGVyLnBhcnRpdGlv
-bnNfbG9jayk7Cj4gIAkJCQljb250aW51ZTsKPiArCQkJfQo+ICAJCX0KPiAgCj4gLQkJbXV0ZXhf
-bG9jaygmbWFzdGVyLT5tYXN0ZXIucGFydGl0aW9uc19sb2NrKTsKPiAgCQlsaXN0X2FkZF90YWls
-KCZjaGlsZC0+cGFydC5ub2RlLCAmcGFyZW50LT5wYXJ0aXRpb25zKTsKPiAtCQltdXRleF91bmxv
-Y2soJm1hc3Rlci0+bWFzdGVyLnBhcnRpdGlvbnNfbG9jayk7Cj4gIAo+ICAJCXJldCA9IGFkZF9t
-dGRfZGV2aWNlKGNoaWxkKTsKPiAgCQlpZiAocmV0KSB7Cj4gLQkJCW11dGV4X2xvY2soJm1hc3Rl
-ci0+bWFzdGVyLnBhcnRpdGlvbnNfbG9jayk7Cj4gIAkJCWxpc3RfZGVsKCZjaGlsZC0+cGFydC5u
-b2RlKTsKPiAtCQkJbXV0ZXhfdW5sb2NrKCZtYXN0ZXItPm1hc3Rlci5wYXJ0aXRpb25zX2xvY2sp
-Owo+IC0KPiAgCQkJZnJlZV9wYXJ0aXRpb24oY2hpbGQpOwo+IC0JCQlnb3RvIGVycl9kZWxfcGFy
-dGl0aW9uczsKPiArCQkJZ290byBlcnJfdW5sb2NrOwo+ICAJCX0KPiAgCj4gIAkJbXRkX2FkZF9w
-YXJ0aXRpb25fYXR0cnMoY2hpbGQpOwo+ICsJCWN1cl9vZmZzZXQgPSBjaGlsZC0+cGFydC5vZmZz
-ZXQgKyBjaGlsZC0+cGFydC5zaXplOwo+ICsKPiArCQkvKiBQYXJzaW5nIGRyb3BzIHRoZSBwYXJ0
-aXRpb24gbG9jayBhbmQgbWF5IHJhY2Ugd2l0aCBkZWxldGlvbi4gKi8KPiArCQlyZXQgPSBQVFJf
-RVJSX09SX1pFUk8oZ2V0X210ZF9kZXZpY2UoY2hpbGQsIC0xKSk7Cj4gKwkJaWYgKHJldCkKPiAr
-CQkJZ290byBlcnJfdW5sb2NrOwoKW1NldmVyaXR5OiBNZWRpdW1dCkRvZXMgY2FsbGluZyBnZXRf
-bXRkX2RldmljZShjaGlsZCwgLTEpIGR1cmluZyBwYXJ0aXRpb24gcmVnaXN0cmF0aW9uIGJyZWFr
-CnBhcnRpdGlvbmVkIGdsdWViaSBkZXZpY2VzIHdoZW4gdGhlIHVuZGVybHlpbmcgVUJJIHZvbHVt
-ZSBpcyBhbHJlYWR5IG9wZW4KZm9yIHdyaXRpbmc/CgpnZXRfbXRkX2RldmljZSgpIGNhbGxzIF9f
-Z2V0X210ZF9kZXZpY2UoKSwgd2hpY2ggbm93IGludm9rZXMKbWFzdGVyLT5fZ2V0X2RldmljZSht
-YXN0ZXIpLiAgRm9yIGEgd3JpdGFibGUgZ2x1ZWJpIGRldmljZSwKZ2x1ZWJpX2dldF9kZXZpY2Uo
-KSBvcGVucyB0aGUgdm9sdW1lIHdpdGggVUJJX1JFQURXUklURToKCmRyaXZlcnMvbXRkL3ViaS9n
-bHVlYmkuYzpnbHVlYmlfZ2V0X2RldmljZSgpIHsKICAgIC4uLgoJaWYgKG10ZC0+ZmxhZ3MgJiBN
-VERfV1JJVEVBQkxFKQoJCXViaV9tb2RlID0gVUJJX1JFQURXUklURTsKICAgIC4uLgoJZ2x1ZWJp
-LT5kZXNjID0gdWJpX29wZW5fdm9sdW1lKGdsdWViaS0+dWJpX251bSwgZ2x1ZWJpLT52b2xfaWQs
-CgkJCQkgICAgICAgdWJpX21vZGUpOwoJaWYgKElTX0VSUihnbHVlYmktPmRlc2MpKSB7CgkJbXV0
-ZXhfdW5sb2NrKCZkZXZpY2VzX211dGV4KTsKCQlyZXR1cm4gUFRSX0VSUihnbHVlYmktPmRlc2Mp
-OwoJfQp9CgpQcmV2aW91c2x5LCBnbHVlYmlfZ2V0X2RldmljZSgpIG9ubHkgcmFuIHdoZW4gdGhl
-IE1URCBkZXZpY2Ugd2FzIGFjdHVhbGx5Cm9wZW5lZC4gIFdoZW4gZ2x1ZWJpIGlzIGxvYWRlZCB3
-aGlsZSBhIFVCSSB2b2x1bWUgYWxyZWFkeSBoYXMgYW4gYWN0aXZlCndyaXRlciBvciBleGNsdXNp
-dmUgb3BlbmVyIChzdWNoIGFzIGEgbW91bnRlZCByZWFkLXdyaXRlIFVCSUZTCmZpbGVzeXN0ZW0p
-LCB1Ymlfb3Blbl92b2x1bWUoKSByZXR1cm5zIC1FQlVTWSBmcm9tIGluc2lkZSB0aGUgVUJJIHZv
-bHVtZQpub3RpZmllciwgY2F1c2luZyBhZGRfbXRkX3BhcnRpdGlvbnMoKSB0byByb2xsIGJhY2sg
-YWxsIHBhcnRpdGlvbnMgYW5kCmZhaWwgZ2x1ZWJpX2NyZWF0ZSgpLgoKLS0gClNhc2hpa28gQUkg
-cmV2aWV3IMK3IGh0dHBzOi8vc2FzaGlrby5kZXYvIy9wYXRjaHNldC8yMDI2MTExNS1zdWJtaXQt
-cmF3bmFuZC1yZXRhaW5lZC1oYW5kbGUtbGlmZXRpbWUtdjEtdjUtMC1jYmM0OWM1YzVlNzRAZ21h
-aWwuY29tP3BhcnQ9MwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlz
-dHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Three fixes for pre-existing bugs that came up during review of the
+SB_RDONLY series (cf. [1]). They don't depend on it and are all tagged
+for stable. I'll put them in front of the series in vfs-7.5.super.
+
+- gfs2 hits the BUG_ON() in gfs2_quota_cleanup() on a remount to
+  read-only after a withdraw during mount. The withdraw work was never
+  queued so SDF_JOURNAL_LIVE stays set.
+
+- exfat marks the volume clean at umount or on a remount to read-only
+  after a shutdown with EXFAT_GOING_DOWN_NOSYNC although it may be
+  inconsistent.
+
+- jfs takes a negative inode size from disk as is. A symlink with one
+  is treated as a fast symlink and jfs_iget() writes out of bounds.
+
+[1]: https://patch.msgid.link/20261113-work-fs-sb_rdonly-v3-0-0be92bb73709@kernel.org
+
+Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
+---
+Christian Brauner (3):
+      gfs2: don't BUG when remounting read-only after a withdraw during mount
+      exfat: keep the volume marked dirty after a shutdown
+      jfs: refuse inodes with a negative size
+
+ fs/exfat/super.c     | 3 ++-
+ fs/gfs2/incore.h     | 1 +
+ fs/gfs2/ops_fstype.c | 5 +++++
+ fs/gfs2/util.c       | 9 ++++++++-
+ fs/gfs2/util.h       | 1 +
+ fs/jfs/jfs_imap.c    | 4 ++++
+ 6 files changed, 21 insertions(+), 2 deletions(-)
+---
+base-commit: c339f4010dea8b0d754f84ace70cd1b089878ef8
+change-id: 20261116-work-fs-sb_rdonly-fixes-d74c927f80b5
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
