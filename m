@@ -2,82 +2,72 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF041606A8AD
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Nov 2026 08:40:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 951B9606A89A
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Nov 2026 08:48:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=gAYgCtfx;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=qq.com header.i=@qq.com header.a=rsa-sha256 header.s=s201512 header.b=apGx4gLP
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=eMAY+bWr;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=lFcdQ8Pk
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Date:Subject:Cc:To:From:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=RJ4rCQqgFUFxTYAPi5cHoqbvTt2TtrIqyT63uSgjdi0=; b=gAYgCtfxVsz5KnW/mG9Yb2z/KQ
-	agWLswnwt97XUSKlIUjIHCWmoikOnDeapsxV3gKvWVPcs6zWqhclvDmiHhiV9OFQiHBolbywiCkoT
-	5EdFqWW9uuiWreTTyqLMwNNC1feKYSeK2FtiibczWkzamXoH/wcSjP15Z4JF2MySAcNMMUaliRLM2
-	iDDsNo/lcDuvSpxLpSxFk7Z26Y2fUvtuZwIsm6+F1AH2fUJbBhTRCkMr4nV2MnlJdhaV/b0N62pUc
-	zWSp7L6aqr5ze/OmHgVu5sBjy7j/QhmbuAswW8YB7vEHQiBeUTlZmLcRWmW4xxk/AszePJ7O45rRa
-	7NAFcyyw==;
+	bh=UPowu19DpSD5nbSUVRdEZVnmOvmFSpM/j8uMxv++nTE=; b=eMAY+bWrVR8FVUgwDMvF/wpWsj
+	7WdHayL7QBCIXmbbP+Ue7g8zFeyljJKDdQ9HM6vKfvx7ATYmufstBXazlEAfOC2Ze/jo7utYfY1Fo
+	hf02AwOi36VMCU+VG0ZdFsx4DCS89PytF9SK185IZmyeS6KyMBckQ9mJdotansXoIOOZaOjKlM+PR
+	czo4hK64ZjUPNQ1urk/SvUMSCD9O30dJ8cXdZ70/Kxu2lRPQ9cl6rtD7eiKY53AxA/XML8IMimPFt
+	prqRQkLpQ7PIAOtpdWdHkdFgayBgbSwRq8JnfggLOBC5PNDjyrQylcWPpcaDSxTLG2QOd43HuUsc0
+	Ufj/DQbA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTEjs-00000004vIs-3csr;
-	Tue, 17 Nov 2026 08:40:28 +0000
-Received: from out162-62-57-137.mail.qq.com ([162.62.57.137])
+	id 1xTErG-00000004x1z-2q6F;
+	Tue, 17 Nov 2026 08:48:06 +0000
+Received: from smtpout-04.galae.net ([185.171.202.116])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTEjp-00000004vI8-35OS
+	id 1xTErE-00000004wzc-0SGS
 	for linux-mtd@lists.infradead.org;
-	Tue, 17 Nov 2026 08:40:28 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1794904816; bh=Ow56Dh1ceICwHURLVlW6HlZuR50fD/53SALcfaqTYVk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=apGx4gLPIlOPLKOk4xL/Q/8f7+D8ZEpKLQqtBmUMTVngeESiBQKl0DdJa1Vn5BQ/+
-	 sAXfdT8Tb9pgjgtV1VrN+xHwamqZyP06gauAR6hRgeHx3LywY4HVK/N02MqOJ+yQ99
-	 vCCAAUow5oQcxdKIS4d+T2lqZeOFXvGVFs0Lpwl4=
-Received: from shuai-VMware-Virtual-Platform.. ([117.158.156.199])
-	by newxmesmtplogicsvrsza53-0.qq.com (NewEsmtp) with SMTP
-	id A0DAEC6E; Tue, 17 Nov 2026 16:40:13 +0800
-X-QQ-mid: xmsmtpt1794904813t0e4zgk25
-Message-ID: <tencent_3E79DC265C5C09B1C98951775AE90D167707@qq.com>
-X-QQ-XMAILINFO: MllZffuBkEb5dXmrjEO9y8FyXa/2kTS+cCFIhe5BjIeynOA5Xr5+NcgQhn+yhe
-	 1j3rK9VEG0RM2RZxBryByY41vRX/LchtSmGS2sJuxFFixpPnYsxyK3h/V9Q/h1OVgvrzzD5iK6Ef
-	 zEWwmB6BhcMN4vuNUqp1OHqF9DgcnwGirDTuSEPcA+pPt0jFzxbR5TVRsmqGHvR81wR9fHbT4Q8V
-	 n2yND2tDt2TUtTtHiQ++Unw6JRK0u0NlwL9PDqj/GSebrtwt9w4eLdxWyBwyEVUOTIY51dPjH9yd
-	 HSodN27I8SFJnVOwX6orkaOOlIoSStOhO0BZEXfJVdnww+7H3qfQgxkWcfSgPhXApxwCXMzmt8X5
-	 InqDuBPowkIkcYHeRdMLH5nXXjEt86BZxiL+tGl/703wIPeKYoMN74wzz0YEv8Dc4OyEzQ/3k20i
-	 zfcj59vEIs448TvLBn2aduNFRbtX/BdFKld0Prs3TLXa36Eb9yhzqpaBFm5hy+Lpc6F9YcbIZNQE
-	 3azGtG+YndmhngjCqcTo89BLUGMhEdpil/x+1ddYKQQMJiFGeq99Gpe91VP7PfjGQjiIlyoKdI9n
-	 UnT6zHeWbmW04dvT7OYnwPAY5nPhgNTmJAi0RqyYDNzgDcg3AcsQcEqHvIRIyFBi+CDLxBM7BzdD
-	 0gIdDSWkF8xOJlmu6tQaf3EkydHrCwvM5JwBDxkGUzkAIYGtrKcH7g4JC/uP7UMux9sw3MKofOxw
-	 R8UvAL6SqebrlUrnoULFeN9flSnbd3ADVdko1uCWj99jUcvgQknzr70PlIcXim5JOqzOC7413T4M
-	 iS5mg2ybrie2FvQiy2nJdC5+75Ln01MoxkxVO24hK10q4xKLrT6OKmu/vwIM3tkujBx9b8KH6s/R
-	 NZWz2/zbsG84p/leIxJTjJ6JkG4VJsXAWQ5r6MHPHWWVa9W42lHuqnOreFBHQwucJap1xR32/c1b
-	 9fb0A3pkpGu5tjd6O0H5gbJG3gzeCvt1F85J2HSvE1h4/HArfsEchI4HudvIStkZ28DuZ/iBiQ1P
-	 OXI7Om6AlNMpdXog5Qj4GCQSU7/xAH14lY1YNJYUecfC3r/+7CqBAcuGm97cigXAgwuK4p1w==
-X-QQ-XMRINFO: MPJ6Tf5t3I/ylTmHUqvI8+Wpn+Gzalws3A==
-From: Shuai Liu <847807867@qq.com>
-To: sashiko-bot@kernel.org
-Cc: linux-mtd@lists.infradead.org,
-	miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com,
-	syzbot+c66e7044aa73c620d862@syzkaller.appspotmail.com,
-	linux-kernel@vger.kernel.org,
-	847807867@qq.com
-Subject: Re: [PATCH v2] mtd: blktrans: keep reclaim out of the ->release paths
-Date: Tue, 17 Nov 2026 16:40:13 +0800
-X-OQ-MSGID: <20261117084013.314303-1-847807867@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <sashiko-outbox-218282@kernel.org>
-References: <sashiko-outbox-218282@kernel.org>
+	Tue, 17 Nov 2026 08:48:05 +0000
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-04.galae.net (Postfix) with ESMTPS id 33423C4EDB9;
+	Tue, 17 Nov 2026 08:48:05 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id D09645FC81;
+	Tue, 17 Nov 2026 08:48:00 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 8BF9611BC05B4;
+	Tue, 17 Nov 2026 09:47:57 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1794905280; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 in-reply-to:references; bh=GMyeOCsyGmqM0NGa1D39iQ2yejMGrgEyQhAWsjlLHwA=;
+	b=lFcdQ8PkPSBaiStysmxpPVTBLxmywr0b6pErWiPibBHQekSfhmjSJJIwhTFyJiY8oF50PE
+	GLICO9NWMTTTROMe1XuSuOyJ7eVqYoT1zV5V8oDEsiakvaqk6FVkwkAAVKCTVz3x4ziZuO
+	o5x2K88fOqQ3uKhCum+CJRYQ3YM8h9BLeZmdj3fYgHaXYlWn434/PJkMvF0Jnv2lZcEE93
+	4k5jE8Z71O7EwMNuGImTKeukmh+gBHE22CdXGe6j0QcEwkK8TSkDKNIi4NyrtgeVethg64
+	af1h00oYDDPSDfVoOa17NI+39gsf2PIC88PK2v4RmVBGgoldnmuPY1/Vyz49FA==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Bart Van Assche <bvanassche@acm.org>
+Cc: Pratyush Yadav <pratyush@kernel.org>,  Michael Walle
+ <mwalle@kernel.org>,  Takahiro Kuwano <takahiro.kuwano@infineon.com>,
+  Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
+ <vigneshr@ti.com>,  linux-mtd@lists.infradead.org,
+  linux-kernel@vger.kernel.org,  Brian Norris <briannorris@chromium.org>
+Subject: Re: [PATCH] mtd: spi-nor: Reschedule in spi_nor_wait_till_ready()
+In-Reply-To: <534257c9-6f48-4a01-8589-330e4e4e41e1@acm.org> (Bart Van Assche's
+	message of "Fri, 6 Nov 2026 13:11:08 -0800")
+References: <1b755e40b80fded4b4b4c1f1c81f0d171012a1de.1793999093.git.bvanassche@acm.org>
+	<534257c9-6f48-4a01-8589-330e4e4e41e1@acm.org>
+User-Agent: mu4e 1.12.12; emacs 30.2
+Date: Tue, 17 Nov 2026 09:47:56 +0100
+Message-ID: <87pkw3oncz.fsf@bootlin.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
+X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261117_004026_500473_E32A5BBC 
-X-CRM114-Status: UNSURE (   8.90  )
+X-CRM114-CacheID: sfid-20261117_004804_331975_49894D19 
+X-CRM114-Status: UNSURE (   9.91  )
 X-CRM114-Notice: Please train this message.
-X-Spam-Score: -1.8 (-)
+X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,67 +80,36 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-3.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-8.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-Hi,
+On 06/11/2026 at 13:11:08 -08, Bart Van Assche <bvanassche@acm.org> wrote:
 
-> [Severity: High]
-> Does mtd_queue_rq() or mtd_blktrans_work() actually call
-> memalloc_noio_save()?
+> On 11/6/26 1:04 PM, Bart Van Assche wrote:
+>> In spi_nor_wait_till_ready_with_timeout(), cond_resched() is only
+>> called after spi_nor_ready() returns 0. If the flash is already ready on
+>> the first status check, the function returns before reaching
+>> cond_resched(). This happens e.g. under QEMU, where SPI NOR page
+>> programs and sector erases complete synchronously during the MMIO write,
+>> combined with a controller driver that polls without sleeping.
+>> Consequently, multi-sector erases in spi_nor_erase() and multi-page
+>> writes in spi_nor_write() may iterate over thousands of sectors or pages
+>> without ever yielding the CPU on kernels built without
+>> CONFIG_PREEMPTION, e.g. ARM32 kernels with CONFIG_PREEMPT_VOLUNTARY=y.
+>> This triggers soft lockup and RCU stall reports.
+>> Move cond_resched() to the start of the polling loop such that every
+>> call reschedules if needed, even if the flash is ready on the first
+>> check. Doing this in the shared wait helper instead of in the
+>> spi_nor_erase() and spi_nor_write() loops covers all callers that wait
+>> for a program or erase operation to complete.
+>> Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+>> ---
 
-Yes, the I/O path is already covered on the current tree.
-mtd_queue_rq() wraps the whole dispatch in memalloc_noio_save() /
-memalloc_noio_restore() (drivers/mtd/mtd_blkdevs.c, linux-next
-next-20261113):
-
-	static blk_status_t mtd_queue_rq(struct blk_mq_hw_ctx *hctx,
-					 const struct blk_mq_queue_data *bd)
-	{
-		struct mtd_blktrans_dev *dev;
-		unsigned int noio_flags;
-
-		dev = hctx->queue->queuedata;
-		if (!dev) {
-			blk_mq_start_request(bd->rq);
-			return BLK_STS_IOERR;
-		}
-
-		/* Reclaim must not recurse into I/O while processing requests. */
-		noio_flags = memalloc_noio_save();
-		spin_lock_irq(&dev->queue_lock);
-		list_add_tail(&bd->rq->queuelist, &dev->rq_list);
-		mtd_blktrans_work(dev);
-		spin_unlock_irq(&dev->queue_lock);
-		memalloc_noio_restore(noio_flags);
-
-		return BLK_STS_OK;
-	}
-
-This was added by commit d498b2ddda99e ("mtd: block: prevent reclaim
-I/O during request processing"), which is also the precedent this patch
-mirrors for the ->release() paths.
-
-The REQ_OP_FLUSH example given in the review (mtdblock_flush() ->
-write_cached_data() -> erase_write() -> mtd_erase() -> concat_erase())
-runs inside mtd_blktrans_work() as called from mtd_queue_rq(), i.e.
-within the PF_MEMALLOC_NOIO scope, so it cannot record the
-fs_reclaim -> cache_mutex edge.  I verified this empirically in QEMU:
-a flush issued while cache pressure is high stays clean, while the
-same flush invoked from ->release() (process context, no noio scope
-before this patch) triggers the lockdep cycle.
-
-I believe the review comment was based on a truncated snippet that
-dropped the memalloc_noio_save()/memalloc_noio_restore() lines
-surrounding the quoted block.
-
-Thanks,
-Shuai Liu
-
+Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
 ______________________________________________________
 Linux MTD discussion mailing list
