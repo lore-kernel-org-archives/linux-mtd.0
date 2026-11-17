@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F92A606A899
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Nov 2026 09:38:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 118E0606A89D
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Nov 2026 09:38:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=uMORUawC;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=XyR6ygMv
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=uFNtyoT1;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=ueAEB2tx
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,38 +14,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=IcF6c8+MPnK7lU9KmsZupdd+lIN4JXdSbn8iMl3LLxQ=; b=uMORUawCBkneGQcLzujKYYxGku
-	HXB2VnOgPTzoWTCBwC5/BysSs3WD1L1qzsjyKKzJ4DI8FaGo+7A9CxBl7d5EYPCdv3t00Jg8NRX1w
-	NnSULE/3rq91FJxOVG+xf8ufxX2IPhS8obaGXq9JpjVXbAxsiWHFM0528Az+Qwe5CUxiRxKAC7G2b
-	05e0FCeqNTBX2mPyyM1YQx6rkpriiJvEJnvE7LGFqEfoGuE3Wxu3pvlZSzVrPv3IWmUE0rydy4soa
-	VuMZt1R8MxHdMyW+0CzMk+mTC3z+R4UO5qNs1F16nzryavAuneUAA+EL/ngo8oCeepZHKVXHorbZX
-	f005ptKg==;
+	bh=JK7SukmtOH0OFCehrU4sha8swigb/HMGNSVc2j90eVE=; b=uFNtyoT1riuiBjhQD7QFNui0D+
+	Jjb9IvYvoLOIkOfpJrZMmZ8S//j58UaZN425qVlMk+xC+0mD69T4ghK5e36yUimjrb2quDtUVJzk1
+	3CzK9QE+RYq94KiQwtT37ZdW3ufpTACTbdQzSHIccXQG+mnd3XXQEXoQ8z0AqFCITsnwqUFL5qt4p
+	5vATMqRGi6PhZFAl9O3DLk7vdSuMcN4sLj/DFbzxz5C9r6rBEAW587PYX853qF86qdim7CfnAt3+X
+	nI1pU2pA4zFa8OhS+L6rq4eCYMUm7X1SeBGQlL2GsWEaSckIcv0jiVgWXJeBhGeoDxVNwi0Sk5Onv
+	wjG8KgTg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTFdj-000000056qB-3Nfk;
-	Tue, 17 Nov 2026 09:38:11 +0000
+	id 1xTFdp-000000056z4-23Mu;
+	Tue, 17 Nov 2026 09:38:17 +0000
 Received: from smtpout-04.galae.net ([185.171.202.116])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTFdh-000000056nw-2YhO
+	id 1xTFdl-000000056qP-1S4x
 	for linux-mtd@lists.infradead.org;
-	Tue, 17 Nov 2026 09:38:11 +0000
+	Tue, 17 Nov 2026 09:38:14 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id 1D9F6C4EDBD;
-	Tue, 17 Nov 2026 09:38:12 +0000 (UTC)
+	by smtpout-04.galae.net (Postfix) with ESMTPS id E75E1C4EDB9;
+	Tue, 17 Nov 2026 09:38:15 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id C3C9D5FC81;
-	Tue, 17 Nov 2026 09:38:07 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id DE00711BC0C04;
-	Tue, 17 Nov 2026 10:38:05 +0100 (CET)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 99DED5FC81;
+	Tue, 17 Nov 2026 09:38:11 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 1626611BC0B8F;
+	Tue, 17 Nov 2026 10:38:09 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1794908286; h=from:subject:date:message-id:to:cc:mime-version:
+	t=1794908291; h=from:subject:date:message-id:to:cc:mime-version:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=jYzpQG4guVr73jaAY4k71MmViNWdI3Qkw+kWHlSxdUQ=;
-	b=XyR6ygMvMWK4oLJuBuJjNcGVc8XGDAs25P183bZZBbakAeed9AAz0wi3ALKkK7wFDSJFa5
-	lSg3tBgm9AtzffsLdnf2FFa9Rarc91IDd/hjneO6pEy+2utS7k2FpfgcderzD9CGOFLg03
-	dFYaOH2JgYq2xKh+9SijDwl+ZxEnOfcScoIBn6aFiqkDVK9OhO0DQrA/leOr+/ddZVhsIo
-	MXEwMLR1Tj4V7mbYEh34w+vf2SZm/4jNUqgV/LDkaqNr+T3GZRERAu+mzEMbAji+tw+BcX
-	f5iBroT0tXvP9UsLSMBpKbjgxfVe731ijDqT13xwr140NjPPut8HaQmQmefAag==
+	bh=U2zcWgafVMtElah9OWy/kylKC33TgfREtsEF6Thc7FA=;
+	b=ueAEB2txuOpQc6hJtPTYIDJytq+WC/AKQ6UL6eZNHAv35k1fmV9ANNahZT/Ec+aWIA7x60
+	uk2/NLXmVdFlL80/hd1/SYRQ50ibwIuIaZW/DLxXixmst6ZOolMLLSWHwavm8ic1OqWxwp
+	5iNbulW38qARIxWBF/GV28LuR727OJkso60gAJ3FLmKBLqCq6V9s1vSqfG7tgdqQ9c95YH
+	dGzpyAe45MgrsY7BqrxpPBhpZyAx6BLqqMeju3ko5NUqUFovdH0lJR5b0tSvDE0+PMfUkj
+	+mEis+LemMM0w+W9U4PoiaVCMtfnj0B29tLyeuffQ1feYLFtuKHNi6rDyboLVg==
 From: Paul Cercueil <paul.cercueil@bootlin.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
@@ -53,11 +53,10 @@ To: Miquel Raynal <miquel.raynal@bootlin.com>,
 Cc: linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Paul Cercueil <paul.cercueil@bootlin.com>,
-	Stefan Agner <stefan@agner.ch>
-Subject: [PATCH v2 02/12] mtd: rawnand: vf610: Remove #ifdef guards for PM related functions
-Date: Tue, 17 Nov 2026 10:37:40 +0100
-Message-ID: <20261117093751.14988-3-paul.cercueil@bootlin.com>
+	Paul Cercueil <paul.cercueil@bootlin.com>
+Subject: [PATCH v2 05/12] mtd: maps: pxa2xx: Remove #ifdef guards around shutdown callback
+Date: Tue, 17 Nov 2026 10:37:43 +0100
+Message-ID: <20261117093751.14988-6-paul.cercueil@bootlin.com>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20261117093751.14988-1-paul.cercueil@bootlin.com>
 References: <20261117093751.14988-1-paul.cercueil@bootlin.com>
@@ -65,8 +64,8 @@ X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261117_013809_836566_DFDEE63E 
-X-CRM114-Status: GOOD (  13.41  )
+X-CRM114-CacheID: sfid-20261117_013813_573144_8EA43719 
+X-CRM114-Status: GOOD (  10.72  )
 X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -87,53 +86,41 @@ X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-Use the new PM macros for the suspend and resume functions to be
-automatically dropped by the compiler when CONFIG_PM or
-CONFIG_PM_SLEEP are disabled, without having to use #ifdef guards.
+pxa2xx_flash_shutdown() calls mtd_suspend() and mtd_resume().
 
-This has the advantage of always compiling these functions in,
-independently of any Kconfig option. Thanks to that, bugs and other
-regressions are subsequently easier to catch.
+Unlike what their names suggest, those two functions aren't related to
+CONFIG_PM, and neither is the platform_driver.shutdown() callback.
 
 Signed-off-by: Paul Cercueil <paul.cercueil@bootlin.com>
 ---
-Cc: Stefan Agner <stefan@agner.ch>
 
-v2: No change
+v2: Don't use pm_ptr(), and rewrite commit message
 ---
- drivers/mtd/nand/raw/vf610_nfc.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/mtd/maps/pxa2xx-flash.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/vf610_nfc.c b/drivers/mtd/nand/raw/vf610_nfc.c
-index 9940681810cf..d785c3d28e51 100644
---- a/drivers/mtd/nand/raw/vf610_nfc.c
-+++ b/drivers/mtd/nand/raw/vf610_nfc.c
-@@ -906,7 +906,6 @@ static void vf610_nfc_remove(struct platform_device *pdev)
- 	nand_cleanup(chip);
+diff --git a/drivers/mtd/maps/pxa2xx-flash.c b/drivers/mtd/maps/pxa2xx-flash.c
+index bc303a9909d4..5846e09cea37 100644
+--- a/drivers/mtd/maps/pxa2xx-flash.c
++++ b/drivers/mtd/maps/pxa2xx-flash.c
+@@ -111,7 +111,6 @@ static void pxa2xx_flash_remove(struct platform_device *dev)
+ 	kfree(info);
  }
  
--#ifdef CONFIG_PM_SLEEP
- static int vf610_nfc_suspend(struct device *dev)
+-#ifdef CONFIG_PM
+ static void pxa2xx_flash_shutdown(struct platform_device *dev)
  {
- 	struct vf610_nfc *nfc = dev_get_drvdata(dev);
-@@ -928,15 +927,14 @@ static int vf610_nfc_resume(struct device *dev)
- 	vf610_nfc_init_controller(nfc);
- 	return 0;
+ 	struct pxa2xx_flash_info *info = platform_get_drvdata(dev);
+@@ -119,9 +118,6 @@ static void pxa2xx_flash_shutdown(struct platform_device *dev)
+ 	if (info && mtd_suspend(info->mtd) == 0)
+ 		mtd_resume(info->mtd);
  }
+-#else
+-#define pxa2xx_flash_shutdown NULL
 -#endif
  
--static SIMPLE_DEV_PM_OPS(vf610_nfc_pm_ops, vf610_nfc_suspend, vf610_nfc_resume);
-+static DEFINE_SIMPLE_DEV_PM_OPS(vf610_nfc_pm_ops, vf610_nfc_suspend, vf610_nfc_resume);
- 
- static struct platform_driver vf610_nfc_driver = {
- 	.driver		= {
- 		.name	= DRV_NAME,
- 		.of_match_table = vf610_nfc_dt_ids,
--		.pm	= &vf610_nfc_pm_ops,
-+		.pm	= pm_sleep_ptr(&vf610_nfc_pm_ops),
- 	},
- 	.probe		= vf610_nfc_probe,
- 	.remove		= vf610_nfc_remove,
+ static struct platform_driver pxa2xx_flash_driver = {
+ 	.driver = {
 -- 
 2.47.3
 
