@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DF54606A33F
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45AC3606A880
 	for <linux-mtd@archiver.kernel.org>; Tue, 17 Nov 2026 21:41:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=TjqE5s+8;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=LnRtsbDI
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=0DVF6lyr;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=i5zpdUTt
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,65 +14,65 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=DudC3vI8QuWARw26bCXnUDIe1zO3RAY213hwXJt7r1M=; b=TjqE5s+8+8PXKJPbex5VQ4G/eW
-	lVTaJEKnQMKLfQGhRY92YlhDBW/gSXaNsz0WuFvrdt+aHUi+rf9xjlx7A+qbnlN4qF069l1LPOmW6
-	IQ0ohALFI64crK2SVJOWVcpiFYfIeVNVGNvCJyziXLtPTGYZ+vFeyaSsfTtEszoNFORCJhSJ7/4jQ
-	LXFmgd0sh2qAbVKOHp4/jmDLUTESb3x3jHbxrUHcegkEO2t9wA8Ef5eHGftRQP+hyYnOAaqzRuhOS
-	/leHDc+r7HBvKaHX8f3Wc1gGsCC9SaOEngG2E8NZXLw9+rSqhqBsiJvyPWKFsjdu97kgZ43jjjyUm
-	F/i8wVwg==;
+	bh=BUjnqrbQ51thRj4C42hjT7CsnRj9xqd6/xJDMQXhONY=; b=0DVF6lyrZ3BWmwS1Mm5zO8EAj7
+	eM302yEx1ICPOd5l+5BRYaidOlkXRk9Kdou9m5RskogyIGHwx5Eqf2BKnqDfHP98a3ofm2i7jifld
+	kFAl7SQEZq/aDv7+JJbvzuM9PiA/pxc/Z7YM7Qpf6FO8H5rH6tBzJuXpdPtZRjtlQu7WQBKFJO1l6
+	psOJ9PaKAGlyJ3wvyQfZ0BS7D6mVpwkOvZBijVsqUGHD7qQJkuWOZIrHWcZrUKpVmgKmaymQKz5QK
+	TFSzgWxkLhwDHSUx6ds0vFGXO2f6BI1A8TB/EEtp8uo6e5VQdwgjM9Wx7dJ6fk7BVI2RwDDV5xIS2
+	ELcbVqQA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTQw3-000000079GP-2Wun;
-	Tue, 17 Nov 2026 21:41:51 +0000
-Received: from mail-wr1-x42c.google.com ([2a00:1450:4864:20::42c])
+	id 1xTQw5-000000079I4-47W6;
+	Tue, 17 Nov 2026 21:41:53 +0000
+Received: from mail-wr1-x433.google.com ([2a00:1450:4864:20::433])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTQvz-000000079Ep-36oh
+	id 1xTQw3-000000079Fy-0Af2
 	for linux-mtd@lists.infradead.org;
-	Tue, 17 Nov 2026 21:41:49 +0000
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-490d59c3edaso96878f8f.1
-        for <linux-mtd@lists.infradead.org>; Tue, 17 Nov 2026 13:41:47 -0800 (PST)
+	Tue, 17 Nov 2026 21:41:52 +0000
+Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-490d59c3edaso96908f8f.1
+        for <linux-mtd@lists.infradead.org>; Tue, 17 Nov 2026 13:41:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794951706; x=1795556506; darn=lists.infradead.org;
+        d=gmail.com; s=20260707; t=1794951709; x=1795556509; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=IzmjFOcyIIyhjknT+4ERxgpCmAjlA22Eb1QRiV9ePjY=;
-        b=LnRtsbDI1gEY20sZWMVzoP3qqiSiP+n5QRhKKrLLX9fEAKCKDg1rS7MDtvEg5vIHaz
-         5Z3Nn+EiHk7CthkX4Ag9pk3kxmJmYsUSgW0AAMDQCTkOssTdYqZ6WsxIS5O+raII3+4Z
-         Hi5p2+5ED9PPeAKzD75yiZ1wsFqK0GDRlV52Cd6FP0VhXwWJNIpl2YtEYm9dXrnT1pnn
-         Zv9Q/E8M+GmK1YklBFy4g4w3uHgXN5b3LC760nv1Ehu6dd4zxBJdRiifyLgGg1veyXs5
-         h3fJTzRoWbz4GiNiXxsCZcHFujYzWdTiYbCkO9Njg0X1utpXN4tfxGJ9D4wdjdboUy2y
-         qSow==
+        bh=FSOzTuildzOc1Vsgs2eOA/FCbZ+NSuERw0qAipq6Ry0=;
+        b=i5zpdUTtbFSJsjKTWhgqr01ySHP/0NGKkVnqqcltf9kH/gEHab36f4hDfDDX/BMSyI
+         QQ0hVDIYNRUeYzPpQ58VlGruhskljulZ258wkYLumknUL4kzjg63VcOZyq+i+rxgZGoh
+         w+INpWoV0FTmB4KMD2qezZgTUlm8szrPbdzxxWfVNxDsMf94aODA6UeKr9yVHLmCakJk
+         PwjoXwR02Jkp5VFc69YozKc85oBFaKvWSnWON3GsUGyoIrr8PjcBv54aMiMUtqheqBlH
+         e+FPVktchAEzURiiM+07+22cthRMHgK3kClmD1U7FTn6zSU0OZTqlziQXtyGy320+ZV0
+         02NA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794951706; x=1795556506;
+        d=1e100.net; s=20260707; t=1794951709; x=1795556509;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=IzmjFOcyIIyhjknT+4ERxgpCmAjlA22Eb1QRiV9ePjY=;
-        b=tQKxirpFVOeVdjTzj++TQMb2lGRgWlv4NRmtNZvgkGgF1IKcJ9HtjBQWdNxQKeZ9cq
-         WCb3fJHF6h4S3WVhqv2z87qv/kc1HXMNeTS2LuSjtbxjgKdxUmrDqQV96lWKtgBCDer/
-         ulOF8kjINLQEc5+IzLGJQF4KZFqkkMd+VcYlWIEsMhbAfz7jj+b9lb3R3fSDfYKI7dNt
-         utf2JI65m6HI6jzGrpqzt2yy51XH5usl7q3iB6x4ObjFmOlHnaqVivKBVSx7hZqEflAH
-         knBw46U2lS/vHuEFGJlkR93YwuYy4d6l08Hz2dI7OXacu97b7q1Y1d11LB26IaWCvyxX
-         CFxA==
-X-Gm-Message-State: APuU4Z/xOWxrVZGlyV9EeCuQxncw9KtV+EjlPMFkK3+gQzr8uLu9ZKJN
-	gm+vEO1+dYJGXHmXY3MSVqCoeBXm4MM7TvkbqXaLMs6Asks1kahDS2ej
-X-Gm-Gg: AZFdTZdOV6aB0Ne6A3E943IgKw3rgYENnyHTQQNpYZrHlK07dP3xYRWfpphdtIgq6tP
-	p1nzSgEe18t0xB3pMSDVxGW27DdYccEOWA/+9eyD30Co6R/QCNozwmAaLqRj2g3hqXFF3qidZ2N
-	VSXxMMV2TlJazQmjl5bHLB+ymruNXbuA+gL3xOqG5CoUBQ0uhuSRP/OmjMKxTCjzZgAbRM3vHRN
-	BIo5kMMe1wrfKUofQtCe1GrnMun2cau1zye1TH8KqZxfZ3moQYWoru1VwxXThqlp53TTFYJrYBE
-	oYCzoIRfcWNeEc8uBuBH3apUqSNeneRh5XaDlFdwnG6vM4njqwOUBhYhijnRTjm/RXNuYFtE529
-	TpxRCr5L9nDMGPt6qG38JsOc6Hn8fJl0fF0zUeeeihdcmVGL3uYhb107gO2ZkHyuPZLyoEMUbnb
-	zEO0UKS/U2r+qdwGJZyjrWnSDI5tSaFzv7xid8KfajBedCpXKJXv68SMn33z2sM5k/WivHk1sGl
-	t4W18nK+ay9U1cdWn0NmzzUPHQp4dPqxxTWWEsABYJIJBHKKMl0L9mEzOXWwDR6BteZo7LibsHl
-	sa5g1FddJ0tXhNgrjePS/hmhV7hekP5OmJWs9uSizFk5FxnYNm7lqo6RSuFaYgnsLhW7sPqLOd8
-	GfiP0I9ViGbUMFSFktRr7P8QuH5W+KV1HDS4D9vPsLEQIyzM=
-X-Received: by 2002:a05:6000:41c2:b0:48e:6651:5956 with SMTP id ffacd0b85a97d-4a36609c994mr8636932f8f.0.1794951705772;
-        Tue, 17 Nov 2026 13:41:45 -0800 (PST)
+        bh=FSOzTuildzOc1Vsgs2eOA/FCbZ+NSuERw0qAipq6Ry0=;
+        b=z3zlrhH0v+/wop6bDLravbc5I2iZaskGH20iMrGXwtIuB8nrzLxBR9dvDcFWak3p3c
+         jlA5A7Aq9ShGzAYbtFqXtxuhYJ4uDvYTRdrXMVN6hxu7J4K2tdkycF+XGlfoZ6CXa5co
+         y05eLF+5uJbcRtPws07b2eVMSOPERUNcQnSBMa+TL3O+McNEtZA0aa8X3eaADuKoskJ3
+         xizF79nvJxkIjurlEpeTjwPldT609Ee733o5OCzNvWAVP1HCR1m2J99ElY2infEVpJl+
+         8gij/PSDeTiWhqla1oeo8Psz+bvsY1PKu7GDqXEXwujO6buvCE+edmR1n3eYZVYKQ/Qa
+         uPXg==
+X-Gm-Message-State: APuU4Z9ZGAXksGaXZTH37I2QTuPAIhaoB10k75fMoZ8QywjU532g2P3S
+	pGtN9I9ooE2Ns0ffPVICE5Rc3VY9up+XHfg62IplKR08KSYrPn+WNs9b
+X-Gm-Gg: AZFdTZc/YRfSAbUqfh1NpnK+hmEHz50epS1owWZAhnJjehiJBpyOWEkeX2E50NfAbxt
+	dgfUksVvP9VmyATpjKHJ3OO3teX+t0nBI6K4wT9l9Ruw2TWCkkr7KJxlxvXx09U7JeA8+QfJI/2
+	x9rgmqKTpAkR5sxlfZ5KPknmExdD4D1huGmXHNhAQwMlXA6TgpRESsuMmlAD05r8aPu1zZWmioN
+	Te4KwlejbRatzYVgJoqJaE9wLdnlYKt8HgjVtCFl+hhttgjgX6sEDnYte5iFpWpsqGOek+Oi9dF
+	fGkdzaqxzJ2UO+BYC5RjJXUBQXmykSYBDLFypLLHAdRoF0jO12da0ajVoiIAphR2Er6hKtAIWUD
+	M4aLD5lCLCTn9gwKm+fhqFcrYNLIM3Kd37D1qonRrSDocHXuVomdJFKSlvkEl2tmlgslw4WXId+
+	92+6nqQazTO/2e3uUzUEcs0acFfF8n94nbLLwVbowot9ioNIq+qZE1qh9TvpKWKa9lll3tR9HUO
+	cNnR2ek44DlEnqA1HFIdkc7B6Jro4NIpIX9AlSe+m2GnjEys0YwZFVwdDc8NijJlODDojLJwKTu
+	2w7j3GdD7AiTPzRy3vECF0s2kyMTCWBtKzZLG1ClX35De7XRKT7Fm7GepW1l2FzddySCUuXj1D1
+	ZZ3WgaXdY8VLpAjH2uzaWCEj7pqIXt3Pav76gmzBgbvUh1EU=
+X-Received: by 2002:a05:6000:4705:b0:48e:d7c:4bc3 with SMTP id ffacd0b85a97d-4a3771eeb83mr9286381f8f.21.1794951709112;
+        Tue, 17 Nov 2026 13:41:49 -0800 (PST)
 Received: from center.jhjvjihww5qejoy14qwv1cc4td.frax.internal.cloudapp.net ([131.189.143.225])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4a65560b5f1sm978391f8f.21.2026.11.17.13.41.43
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4a65560b5f1sm978391f8f.21.2026.11.17.13.41.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2026 13:41:44 -0800 (PST)
+        Tue, 17 Nov 2026 13:41:48 -0800 (PST)
 From: Orgad Shaneh <orgads@gmail.com>
 To: miquel.raynal@bootlin.com,
 	richard@nod.at,
@@ -89,17 +89,17 @@ Cc: linux-mtd@lists.infradead.org,
 	dwmw2@infradead.org,
 	corbet@lwn.net,
 	linux-doc@vger.kernel.org
-Subject: [PATCH v4 1/4] mtd: maps: only point() maps read through the simple accessors
-Date: Tue, 17 Nov 2026 21:41:38 +0000
-Message-ID: <20261117214141.3826637-2-orgads@gmail.com>
+Subject: [PATCH v4 3/4] MIPS: Octeon: flash: allocate the map per device
+Date: Tue, 17 Nov 2026 21:41:40 +0000
+Message-ID: <20261117214141.3826637-4-orgads@gmail.com>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20261117214141.3826637-1-orgads@gmail.com>
 References: <20261117214141.3826637-1-orgads@gmail.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261117_134148_029586_78B65477 
-X-CRM114-Status: GOOD (  20.03  )
+X-CRM114-CacheID: sfid-20261117_134151_109455_B0C64792 
+X-CRM114-Status: GOOD (  19.30  )
 X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -121,156 +121,121 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-map_is_linear() only checks that a map has a physical address. Map
-drivers that install their own accessors keep one, and a pointer
-bypasses whatever those accessors do:
+octeon_flash_probe() fills in one static map_info for every "cfi-flash"
+node it binds to, so a second chip select overwrites the phys, virt,
+size and bank width of the first while that MTD device still uses the
+map. A probe whose do_map_probe() finds no chip also keeps its
+ioremap() mapping and still returns success.
 
-- physmap's IXP4xx support: the expansion bus only takes 16-bit
-  accesses (the reason it cannot use memcpy_fromio()), and on
-  little-endian kernels every access also flips address bit 1 and
-  swaps bytes;
-- physmap's Gemini support enables the flash pins only inside its
-  accessors;
-- lantiq-flash serializes the external bus against PCI and copies byte
-  by byte because the EBU cannot take a prefetching memcpy;
-- the cobalt PCI driver's flash map (drivers/media/pci/cobalt/
-  cobalt-flash.c) reads at an offset inside a PCI BAR while leaving
-  phys 0;
-- the Octeon bootbus flash map takes octeon_bootbus_sem in its
-  accessors, which a pointed read on an Intel NOR skips.
+Allocate the map with devm_kzalloc(), map it with devm_ioremap() and
+fail the probe when no chip is found or the partitions cannot be
+registered, so the mapping goes away with the device. mymtd was never
+read; drop it.
 
-cfi_cmdset_0001 hands such pointers to jffs2 today, and the IXP4xx
-boards carry Intel StrataFlash. lpddr, map_ram and map_rom enable
-point() on the same terms (map_rom unconditionally). Add
-map_is_simple(), true when the map reads through the simple accessors
-(always true without CONFIG_MTD_COMPLEX_MAPPINGS, where the accessors
-are inline), and require it in all four before enabling point(). Maps
-with custom accessors fall back to copying through them; on big-endian
-IXP4xx, where pointed reads happened to work, jffs2 mounts get slower.
+The driver has no remove(), and the mapping is now device-managed: a
+sysfs unbind would unmap the flash while its MTD device stays
+registered. Set suppress_bind_attrs to rule that out.
 
-Fixes: 9d3b5086f6d4 ("mtd: physmap_of_gemini: Handle pin control")
-Fixes: 2aba2f2a704d ("mtd: physmap_of: add a hook for Intel IXP4xx flash probing")
 Signed-off-by: Orgad Shaneh <orgads@gmail.com>
-Cc: Linus Walleij <linusw@kernel.org>
-Cc: Imre Kaloz <kaloz@kernel.org>
-Cc: Hans Ulli Kroll <ulli.kroll@googlemail.com>
-Cc: John Crispin <john@phrozen.org>
 ---
-v4: also gate lpddr, map_ram and map_rom, which point() on the same
-    terms; those three are compile-tested only. Rebased onto
-    v7.4-rc1; the Assisted-by tag is dropped (an LLM helped write
-    this series).
-v3: Assisted-by in the documented form.
-v2: no change.
+v4: new. sashiko flagged the shared static flash_map against v2 and
+    v3 of the next patch; v3 left it as it is in mainline, this fixes
+    it first.
 
- drivers/mtd/chips/cfi_cmdset_0001.c |  2 +-
- drivers/mtd/chips/map_ram.c         |  4 ++--
- drivers/mtd/chips/map_rom.c         |  6 ++++--
- drivers/mtd/lpddr/lpddr_cmds.c      |  2 +-
- drivers/mtd/maps/map_funcs.c        | 12 ++++++++++++
- include/linux/mtd/map.h             |  2 ++
- 6 files changed, 22 insertions(+), 6 deletions(-)
+ arch/mips/cavium-octeon/flash_setup.c | 49 ++++++++++++++++-----------
+ 1 file changed, 30 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
-index e5805ee..42fb042 100644
---- a/drivers/mtd/chips/cfi_cmdset_0001.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0001.c
-@@ -299,7 +299,7 @@ static void fixup_LH28F640BF(struct mtd_info *mtd)
- static void fixup_use_point(struct mtd_info *mtd)
+diff --git a/arch/mips/cavium-octeon/flash_setup.c b/arch/mips/cavium-octeon/flash_setup.c
+index 66d173b..0e5652f 100644
+--- a/arch/mips/cavium-octeon/flash_setup.c
++++ b/arch/mips/cavium-octeon/flash_setup.c
+@@ -18,8 +18,6 @@
+ 
+ #include <asm/octeon/octeon.h>
+ 
+-static struct map_info flash_map;
+-static struct mtd_info *mymtd;
+ static const char *part_probe_types[] = {
+ 	"cmdlinepart",
+ #if IS_ENABLED(CONFIG_MTD_REDBOOT_PARTS)
+@@ -71,6 +69,8 @@ static void octeon_flash_map_copy_to(struct map_info *map, unsigned long to,
+ static int octeon_flash_probe(struct platform_device *pdev)
  {
- 	struct map_info *map = mtd->priv;
--	if (!mtd->_point && map_is_linear(map)) {
-+	if (!mtd->_point && map_is_linear(map) && map_is_simple(map)) {
- 		mtd->_point   = cfi_intelext_point;
- 		mtd->_unpoint = cfi_intelext_unpoint;
+ 	union cvmx_mio_boot_reg_cfgx region_cfg;
++	struct map_info *map;
++	struct mtd_info *mtd;
+ 	u32 cs;
+ 	int r;
+ 	struct device_node *np = pdev->dev.of_node;
+@@ -85,6 +85,9 @@ static int octeon_flash_probe(struct platform_device *pdev)
+ 	 */
+ 	region_cfg.u64 = cvmx_read_csr(CVMX_MIO_BOOT_REG_CFGX(cs));
+ 	if (region_cfg.s.en) {
++		map = devm_kzalloc(&pdev->dev, sizeof(*map), GFP_KERNEL);
++		if (!map)
++			return -ENOMEM;
+ 		/*
+ 		 * The bootloader always takes the flash and sets its
+ 		 * address so the entire flash fits below
+@@ -94,26 +97,32 @@ static int octeon_flash_probe(struct platform_device *pdev)
+ 		 * access 4MB.
+ 		 */
+ 		/* Use this name so old part lines work */
+-		flash_map.name = "phys_mapped_flash";
+-		flash_map.phys = region_cfg.s.base << 16;
+-		flash_map.size = 0x1fc00000 - flash_map.phys;
++		map->name = "phys_mapped_flash";
++		map->phys = region_cfg.s.base << 16;
++		map->size = 0x1fc00000 - map->phys;
+ 		/* 8-bit bus (0 + 1) or 16-bit bus (1 + 1) */
+-		flash_map.bankwidth = region_cfg.s.width + 1;
+-		flash_map.virt = ioremap(flash_map.phys, flash_map.size);
++		map->bankwidth = region_cfg.s.width + 1;
++		map->virt = devm_ioremap(&pdev->dev, map->phys, map->size);
++		if (!map->virt)
++			return -ENOMEM;
+ 		pr_notice("Bootbus flash: Setting flash for %luMB flash at "
+-			  "0x%08llx\n", flash_map.size >> 20, flash_map.phys);
+-		WARN_ON(!map_bankwidth_supported(flash_map.bankwidth));
+-		flash_map.read = octeon_flash_map_read;
+-		flash_map.write = octeon_flash_map_write;
+-		flash_map.copy_from = octeon_flash_map_copy_from;
+-		flash_map.copy_to = octeon_flash_map_copy_to;
+-		mymtd = do_map_probe("cfi_probe", &flash_map);
+-		if (mymtd) {
+-			mymtd->owner = THIS_MODULE;
+-			mtd_device_parse_register(mymtd, part_probe_types,
+-						  NULL, NULL, 0);
+-		} else {
++			  "0x%08llx\n", map->size >> 20, map->phys);
++		WARN_ON(!map_bankwidth_supported(map->bankwidth));
++		map->read = octeon_flash_map_read;
++		map->write = octeon_flash_map_write;
++		map->copy_from = octeon_flash_map_copy_from;
++		map->copy_to = octeon_flash_map_copy_to;
++		mtd = do_map_probe("cfi_probe", map);
++		if (!mtd) {
+ 			pr_err("Failed to register MTD device for flash\n");
++			return -ENXIO;
++		}
++		mtd->owner = THIS_MODULE;
++		r = mtd_device_parse_register(mtd, part_probe_types,
++					      NULL, NULL, 0);
++		if (r) {
++			map_destroy(mtd);
++			return r;
+ 		}
  	}
-diff --git a/drivers/mtd/chips/map_ram.c b/drivers/mtd/chips/map_ram.c
-index 2dde70e..77c912f 100644
---- a/drivers/mtd/chips/map_ram.c
-+++ b/drivers/mtd/chips/map_ram.c
-@@ -74,8 +74,8 @@ static struct mtd_info *map_ram_probe(struct map_info *map)
- 	mtd->flags = MTD_CAP_RAM;
- 	mtd->writesize = 1;
- 
--	/* Disable direct access when NO_XIP is set */
--	if (map->phys != NO_XIP) {
-+	/* Disable direct access when NO_XIP is set or the map has its own accessors */
-+	if (map->phys != NO_XIP && map_is_simple(map)) {
- 		mtd->_point = mapram_point;
- 		mtd->_unpoint = mapram_unpoint;
- 	}
-diff --git a/drivers/mtd/chips/map_rom.c b/drivers/mtd/chips/map_rom.c
-index dbc34e8..65daa14 100644
---- a/drivers/mtd/chips/map_rom.c
-+++ b/drivers/mtd/chips/map_rom.c
-@@ -54,8 +54,10 @@ static struct mtd_info *map_rom_probe(struct map_info *map)
- 	mtd->name = map->name;
- 	mtd->type = MTD_ROM;
- 	mtd->size = map->size;
--	mtd->_point = maprom_point;
--	mtd->_unpoint = maprom_unpoint;
-+	if (map_is_simple(map)) {
-+		mtd->_point = maprom_point;
-+		mtd->_unpoint = maprom_unpoint;
-+	}
- 	mtd->_read = maprom_read;
- 	mtd->_write = maprom_write;
- 	mtd->_sync = maprom_nop;
-diff --git a/drivers/mtd/lpddr/lpddr_cmds.c b/drivers/mtd/lpddr/lpddr_cmds.c
-index a4167ee..23f0550 100644
---- a/drivers/mtd/lpddr/lpddr_cmds.c
-+++ b/drivers/mtd/lpddr/lpddr_cmds.c
-@@ -57,7 +57,7 @@ struct mtd_info *lpddr_cmdset(struct map_info *map)
- 	mtd->_writev = lpddr_writev;
- 	mtd->_lock = lpddr_lock;
- 	mtd->_unlock = lpddr_unlock;
--	if (map_is_linear(map)) {
-+	if (map_is_linear(map) && map_is_simple(map)) {
- 		mtd->_point = lpddr_point;
- 		mtd->_unpoint = lpddr_unpoint;
- 	}
-diff --git a/drivers/mtd/maps/map_funcs.c b/drivers/mtd/maps/map_funcs.c
-index b005493..5991794 100644
---- a/drivers/mtd/maps/map_funcs.c
-+++ b/drivers/mtd/maps/map_funcs.c
-@@ -41,5 +41,17 @@ void simple_map_init(struct map_info *map)
- }
- 
- EXPORT_SYMBOL(simple_map_init);
-+
-+/*
-+ * True when every access goes through the simple accessors, so a reader
-+ * may use map->virt directly; a map with its own accessors (byte swaps,
-+ * bus locking, address fixups) must not be pointed at.
-+ */
-+bool map_is_simple(struct map_info *map)
-+{
-+	return map->read == simple_map_read &&
-+	       map->copy_from == simple_map_copy_from;
-+}
-+EXPORT_SYMBOL(map_is_simple);
- MODULE_DESCRIPTION("Out-of-line map I/O");
- MODULE_LICENSE("GPL");
-diff --git a/include/linux/mtd/map.h b/include/linux/mtd/map.h
-index 75b0b2a..ebee3fe 100644
---- a/include/linux/mtd/map.h
-+++ b/include/linux/mtd/map.h
-@@ -449,6 +449,7 @@ static inline void inline_map_copy_to(struct map_info *map, unsigned long to, co
- #define map_copy_to(map, to, from, len) (map)->copy_to(map, to, from, len)
- 
- extern void simple_map_init(struct map_info *);
-+bool map_is_simple(struct map_info *map);
- #define map_is_linear(map) (map->phys != NO_XIP)
- 
- #else
-@@ -460,6 +461,7 @@ extern void simple_map_init(struct map_info *);
- 
- #define simple_map_init(map) BUG_ON(!map_bankwidth_supported((map)->bankwidth))
- #define map_is_linear(map) ({ (void)(map); 1; })
-+#define map_is_simple(map) ({ (void)(map); 1; })
- 
- #endif /* !CONFIG_MTD_COMPLEX_MAPPINGS */
- 
+ 	return 0;
+@@ -131,6 +140,8 @@ static struct platform_driver of_flash_driver = {
+ 	.driver = {
+ 		.name = "octeon-of-flash",
+ 		.of_match_table = of_flash_match,
++		/* No remove(): the map and the MTD device stay registered */
++		.suppress_bind_attrs = true,
+ 	},
+ 	.probe		= octeon_flash_probe,
+ };
 -- 
 2.53.0
 
