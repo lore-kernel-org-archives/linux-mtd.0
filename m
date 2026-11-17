@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF8C5606A882
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Nov 2026 14:23:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 006D5606A89D
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Nov 2026 14:23:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=q9BhLA3R;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=1q1S9Pd7
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=GfJjUDi0;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=HXx5EytN
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,59 +14,57 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=qk4tgURUWU/IzMbJqsUtgrOu0TXsctTUmcEoOLBWg3Q=; b=q9BhLA3RRLgmonNR2mqD+Ht3Wh
-	pst13v7JtmunEni/jlB4fNDlnlG7teQmRzs8Yq3h+PX+hxlPG8bPzMwS7TJAFOVYIGzcStOfcCpY+
-	SIBkILB/seZzpQMjTapcwtd2r1+qjTQCF6qgiQdJD341ois1Sro8jrf9fJ1Jr/scgxPnF/OaCeFe1
-	2sN/NMObvvw3TQe1j2uXnAdaFKJPJjtL9V7bZY+KloskbaQO1i6mk4alzvzudEoKIJy4tznUQYokk
-	wylhRnMRo33pqhIA9Twc4QjBqzslS2+U8H4OeM+0W+6ci5vW8NUjSQHakngML0A35Az9Zlt+SfZ6v
-	xB2+rfyA==;
+	bh=98Ef2JWf1oO+FZrrmRZFf93l0cfVo9Ud3pFJ51maziA=; b=GfJjUDi0ROUhEACEy1C3WJJ6KC
+	KvvhxcHSH60UNEjrctnDz2Bw2psbwGA6KW3N0twU0HIGtftLd1CkNt57YnWZbDSnquU9BLjudbFbe
+	XQJW4tpKj6C9NtK59HPawHjaxuRMLiYCMObtvemhPm//So8XOt0TxdZXJrWSOHppORNiddpL/aop+
+	ylEZH+VOwbaVINa2xtm2i3usqF0W2OddgyTADqIkRGbGte385hvjryHXtBBxGLZ0zbHV//zOejoEo
+	YW1LR3d9tiJra2l5JPtD9pmbJ9zPVSUel/4fsQJQdSfu56e0UaXGBIIRLMYqT5VGiDAkhd6foXaU3
+	ViA+6tQw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTK5t-000000066sw-0tF7;
-	Tue, 17 Nov 2026 14:23:33 +0000
-Received: from smtpout-03.galae.net ([185.246.85.4])
+	id 1xTK5v-000000066wi-2AKs;
+	Tue, 17 Nov 2026 14:23:35 +0000
+Received: from smtpout-02.galae.net ([185.246.84.56])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTK5o-000000066lX-3Odi
+	id 1xTK5q-000000066mi-2wBZ
 	for linux-mtd@lists.infradead.org;
-	Tue, 17 Nov 2026 14:23:31 +0000
+	Tue, 17 Nov 2026 14:23:34 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id 3E62A4E4157D;
-	Tue, 17 Nov 2026 14:23:27 +0000 (UTC)
+	by smtpout-02.galae.net (Postfix) with ESMTPS id 091A01A1691;
+	Tue, 17 Nov 2026 14:23:29 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 120E55FD6A;
-	Tue, 17 Nov 2026 14:23:27 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 1B0D011BC0039;
-	Tue, 17 Nov 2026 15:23:23 +0100 (CET)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id D35375FD6A;
+	Tue, 17 Nov 2026 14:23:28 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 1E00F11BC0041;
+	Tue, 17 Nov 2026 15:23:26 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1794925405; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1794925408; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=XtFQDcwceQa3Sr+OhE1k+wWRHerfk4qk4lkJyg2kfJo=;
-	b=1q1S9Pd77qyl4ks/rAZs4tWBzzKJxwbhs+GjdlKzNE8v8VfwmKF1gAM4tm+wT0HKqXcAI8
-	V85azkHVlxyod7PF09JjNMsoOJcva5H4RmM0O9j269IgEIWVqqsjN9q2t52UD2l+Pt+Rba
-	fGgerv2m2bVMgqfC3zwj7QEe38Clb9aL0GNUHpXkOwI/CzSrkE28jExKHZM51eC/e9M3I5
-	XVTsoW4/jxNOIsB0teTHQ++StlGA6+fp+3tSLe+8N9qIiCkIiblYqh6LUj/14ctV8D/8lZ
-	olnCiWeeX8ixtcvqSdcQJW7OSR/fmDNkexg9nNNHhdgJGQMCsn2h7SfendL1Aw==
+	bh=LFhzcWwrTklSI8rmoJqaj5WMDMpXtGy+ZT60s1LjZyY=;
+	b=HXx5EytN6e3Yr2QCfvkblUYi+D8RzT2TGOvGMCoUvE7pxq2eDfNCdEPF3puWzxAzUjwBct
+	Fkz/TETgSNJbXU7ooX5ajRShwX+cpzr/vHTKJ9aDygbugpno0237Zjf0YuvzZtQalhYvQo
+	I5fDmHePQ+NWkqlTMWSNVcq5WAa/VyMqzl/EntFIifVmTP3FK/xqHb/ioEWmVKHN+Jjwad
+	VOsQRrDIMFnq8ACb4wbjPBpjoEGPkRZayfsWH5N4twBbQWjBL+8brb3yGJb8Fym/iV7cqv
+	jRZ8N42BbK9A2PECIncnc+C0jNvgvfvF4J1P76S304Aai8RrTySOoKL4SXYQ8w==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, 
- Vignesh Raghavendra <vigneshr@ti.com>, Frank Li <Frank.Li@nxp.com>, 
- Alok Tiwari <alok.a.tiwari@oracle.com>, Runyu Xiao <runyu.xiao@seu.edu.cn>, 
- Chen Ni <nichen@iscas.ac.cn>, Kees Cook <kees+treewide@kernel.org>, 
- Hemanth Selam <hemanth.selam@gmail.com>, linux-mtd@lists.infradead.org, 
- linux-kernel@vger.kernel.org, Frank.Li@oss.nxp.com
-Cc: imx@lists.linux.dev
-In-Reply-To: <20261111202502.3860647-1-Frank.Li@oss.nxp.com>
-References: <20261111202502.3860647-1-Frank.Li@oss.nxp.com>
-Subject: Re: [PATCH 1/1] mtd: nand: raw: use dmaengine accessor API
- functions
-Message-Id: <179492540302.2259780.2818998667835752553.b4-ty@bootlin.com>
-Date: Tue, 17 Nov 2026 15:23:23 +0100
+ Vignesh Raghavendra <vigneshr@ti.com>, 
+ Md Sadre Alam <quic_mdalam@quicinc.com>, Felix Gu <ustc.gu@gmail.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ Sashiko <sashiko-bot@kernel.org>
+In-Reply-To: <20261115-nandc_unalloc-v1-1-65d849fa9998@gmail.com>
+References: <20261115-nandc_unalloc-v1-1-65d849fa9998@gmail.com>
+Subject: Re: [PATCH] mtd: nand: qpic_common: fix BAM transaction memory
+ leak
+Message-Id: <179492540601.2259780.2816763714967014660.b4-ty@bootlin.com>
+Date: Tue, 17 Nov 2026 15:23:26 +0100
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261117_062329_638408_B3B75539 
-X-CRM114-Status: UNSURE (   8.15  )
+X-CRM114-CacheID: sfid-20261117_062331_229602_7D5CE62D 
+X-CRM114-Status: UNSURE (   7.88  )
 X-CRM114-Notice: Please train this message.
 X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-mtd@lists.infradead.org
@@ -88,18 +86,17 @@ X-Spam-Status: No, score=-11.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-T24gV2VkLCAxMSBOb3YgMjAyNiAxNToyNDo0NSAtMDUwMCwgRnJhbmsuTGlAb3NzLm54cC5jb20g
-d3JvdGU6Cj4gVXNlIGRtYWVuZ2luZV9nZXRfZG1hX2RldmljZSgpIGluc3RlYWQgb2YgZGlyZWN0
-bHkgYWNjZXNzaW5nIGNoYW4tPmRldmljZQo+IGFuZCB1c2UgZG1hZW5naW5lX3ByZXBfZG1hX21l
-bWNweSgpIGluc3RlYWQgb2YgY2FsbGluZyB0aGUgZnVuY3Rpb24gcG9pbnRlcgo+IGRpcmVjdGx5
-LiBUaGlzIGZvbGxvd3MgdGhlIGRtYWVuZ2luZSBBUEkgY29udmVudGlvbiBvZiB1c2luZyBhY2Nl
-c3Nvcgo+IGhlbHBlcnMgdG8gZGVjb3VwbGUgZHJpdmVycyBmcm9tIGludGVybmFsIGRtYWVuZ2lu
-ZSBzdHJ1Y3R1cmVzLgo+IAo+IEFmZmVjdHMgY2FkZW5jZS1uYW5kLWNvbnRyb2xsZXIgYW5kIGZz
-bWNfbmFuZCBkcml2ZXJzLgo+IAo+IFsuLi5dCgpBcHBsaWVkIHRvIG5hbmQvbmV4dCwgdGhhbmtz
-IQoKWzEvMV0gbXRkOiBuYW5kOiByYXc6IHVzZSBkbWFlbmdpbmUgYWNjZXNzb3IgQVBJIGZ1bmN0
-aW9ucwogICAgICAobm8gY29tbWl0IGluZm8pCgpQYXRjaGUocykgc2hvdWxkIGJlIGF2YWlsYWJs
-ZSBvbiBtdGQvbGludXguZ2l0IGFuZCB3aWxsIGJlCnBhcnQgb2YgdGhlIG5leHQgUFIgKHByb3Zp
-ZGVkIHRoYXQgbm8gcm9ib3QgY29tcGxhaW5zIGJ5IHRoZW4pLgoKS2luZCByZWdhcmRzLApNaXF1
-w6hsCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFk
-ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+T24gU3VuLCAxNSBOb3YgMjAyNiAxNToyMDowMSArMDgwMCwgRmVsaXggR3Ugd3JvdGU6Cj4gcWNv
+bV9uYW5kY19hbGxvYygpIGFsbG9jYXRlcyB0aGUgQkFNIHRyYW5zYWN0aW9uLCBidXQKPiBxY29t
+X25hbmRjX3VuYWxsb2MoKSBkb2VzIG5vdCBmcmVlIGl0LiBUaGlzIGxlYWtzIHRoZSB0cmFuc2Fj
+dGlvbiBvbgo+IGNvbnRyb2xsZXIgcmVtb3ZhbCBhbmQgcHJvYmUgZmFpbHVyZXMgYWZ0ZXIgc3Vj
+Y2Vzc2Z1bCBhbGxvY2F0aW9uLgo+IAo+IFJlbGVhc2UgaXQgaW4gcWNvbV9uYW5kY191bmFsbG9j
+KCkuCj4gCj4gCj4gWy4uLl0KCkFwcGxpZWQgdG8gbmFuZC9uZXh0LCB0aGFua3MhCgpbMS8xXSBt
+dGQ6IG5hbmQ6IHFwaWNfY29tbW9uOiBmaXggQkFNIHRyYW5zYWN0aW9uIG1lbW9yeSBsZWFrCiAg
+ICAgIGNvbW1pdDogYTUzYmM5NDY4ZjdjNDQ2MWQ1MWM2NmNiZTk0OWQwZmJjYTM3ZjdmNgoKUGF0
+Y2hlKHMpIHNob3VsZCBiZSBhdmFpbGFibGUgb24gbXRkL2xpbnV4LmdpdCBhbmQgd2lsbCBiZQpw
+YXJ0IG9mIHRoZSBuZXh0IFBSIChwcm92aWRlZCB0aGF0IG5vIHJvYm90IGNvbXBsYWlucyBieSB0
+aGVuKS4KCktpbmQgcmVnYXJkcywKTWlxdcOobAoKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5n
+IGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1t
+dGQvCg==
