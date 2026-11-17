@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56905606A8AF
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Nov 2026 19:38:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 721AC60A3810
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Nov 2026 19:39:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=Va2ZzHZt;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=0R/BfLQz
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=R/LAPq2+;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=ixF6lec5
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,75 +14,75 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=2Ed67VMlBVd0ryoIIIr3ktHGEs6WEVPkQGTgOuKepFQ=; b=Va2ZzHZtfyHgkTWh2ikaq9aEpG
-	0pmgjyUUiIrtFdv9D+3HvnpVdoGoZu70KaL2/z9N728TZqt2ORrBgBoWEEnisaSRuyDOgrWRQTlJW
-	OdBBdzdgflSDog+DTKo44J/Ei80PVA8ufN0/MYmX5ifZS/LBb90Bgzlv1ixNaLLtfYefKjNVP1CrG
-	wDt3PSwq7Cqyc9OMwMM86UWg2Zb2FijAZJGfiJa+zmJz5T3IP0I6pw7245BW6Rtap+M042JRl4YTP
-	Kq6o6axjt18pJPS3FbQnSgGms8KKyr5ZeOE7SEMGnzvLKC3zI4i9rY0Ps2BiiYZD8UhvyocWAxHe7
-	KhA3YYFQ==;
+	bh=gd8wdgrgmZl+AI6kXx8XlEOFZibxhGGwrSUZOAcX76o=; b=R/LAPq2+y0avhYiuoETKalkg8P
+	0Kl2jjLQDZ7h6+C8MD15lF1Slyv5lUVkH4EDUrX/ZMxdTtHm7lgbvYohTxT/MUHz25smUrXmW1aKx
+	WL8LDsF5E/cfph72S9Fo4wIKPxee+FtMfiaOOxy0XUc23iMg7YwQBs6Ss2Wg0aY7SZegqcuvlJDDw
+	NIxaSDuh7pVCnLQ0dWqJRccYqltcEMBZ5sakga3YsZSmcUexeeI43/BbsgODcVTe+G0ga3ebf2DAQ
+	LXRYUKr9A2f4eDPt19N3km7bw2mc3WdkWIi3wVfcuj9z132vo1U3uM91xoxH9radw6UEDqjJkLDuV
+	uhFpjBpw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTP15-00000006vfL-02dK;
-	Tue, 17 Nov 2026 19:38:55 +0000
-Received: from mail-oo1-xc2a.google.com ([2607:f8b0:4864:20::c2a])
+	id 1xTP1H-00000006vp5-0e5i;
+	Tue, 17 Nov 2026 19:39:07 +0000
+Received: from mail-oo1-xc31.google.com ([2607:f8b0:4864:20::c31])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTP12-00000006vaa-1pKZ
+	id 1xTP1E-00000006vmx-40U1
 	for linux-mtd@lists.infradead.org;
-	Tue, 17 Nov 2026 19:38:53 +0000
-Received: by mail-oo1-xc2a.google.com with SMTP id 006d021491bc7-7190d9bdb2cso152096eaf.0
-        for <linux-mtd@lists.infradead.org>; Tue, 17 Nov 2026 11:38:52 -0800 (PST)
+	Tue, 17 Nov 2026 19:39:06 +0000
+Received: by mail-oo1-xc31.google.com with SMTP id 006d021491bc7-71ad099391dso117509eaf.3
+        for <linux-mtd@lists.infradead.org>; Tue, 17 Nov 2026 11:39:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794944331; x=1795549131; darn=lists.infradead.org;
+        d=gmail.com; s=20260707; t=1794944344; x=1795549144; darn=lists.infradead.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=1jqnv5GeXVKy3+PA2J2dSMUWrWP8qlh5fFKvFo9JWLY=;
-        b=0R/BfLQzAUnXgwgcNXA+QZlZ/Blcf5+oDSb1WPeEgJ0qWzajqlqW9Fp1xoWFGh4Rfq
-         3jOEJEqmKbAtZY7aWEUlSlZMoC1av2U6DO0I2SEsTcPyXS5p9WI91YQmMRz6HJtGs9yz
-         uNtg8RqLFtVIKWMmAZPsMRoXD+Uj6UoSJcFMr6KclNMsHjTmqqCkOoVXqA6mSC4Q4U45
-         1mEJltufPg3GUf+H5wrtOnRyRfw2K5VhftTESJtsCsZDkE/CyGeUs6Ax07i4AYxiaEpk
-         p1agKdGwZ2LllYjxhk+MMKklZZ3u+TkZDqDWRJEav3D8cOtkORt4CyfqqFXWBBc4oLny
-         03zA==
+        bh=T+JSBWZUTfeeNWblhp3VV5bFP0F5yNnWU4+fvh7K/Mg=;
+        b=ixF6lec5CFx7PLV6z7OTvONqsAoWw/IH+iATY0VnHV9iamjZLWGqHZG1RAtI2Cs5Tx
+         /EVJDoUJ/6WBFD1aAcAHEG2dMmdLsbAUhZKBT71iwFatggGbjJmmmx35avlJmgL0q2xm
+         eVt92V7WXXdF+Xz1da4mguhWwaAHnWypja0cX8duwWDuNfu/B+ys9b6Rn2GeJw6V7huw
+         VTzj8cY7T4KSp32aW+/qXM75pwwE9/HJ3lBiLCULXNCcSyacaWVleFwXX49+waTY2Ihs
+         pHQuYzuDtmWn8jfJLipovAUwcEXPf9sCrhie8WwnWiBlMpOXVSwtGRSDTE/9uqSKrr/v
+         BflA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794944331; x=1795549131;
+        d=1e100.net; s=20260707; t=1794944344; x=1795549144;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=1jqnv5GeXVKy3+PA2J2dSMUWrWP8qlh5fFKvFo9JWLY=;
-        b=rtHo1GpvgdrZQyJxhkr+vaZg7qa5U51ebhRav7PCZTPw8Fw1UVM9oucv1Ismn0AuTx
-         4IOa4UsNjdFHOShWul5uh8yc6euMQEeFIRqhFD3zdYAJ394wQ1AJY31x5oUHfJOn3nI4
-         pbauZ90fiBcBLNisKJemPuqwDe5BsrqDPOqOLA4x+SKNO6d6Zlm8Dxtj3mLtl3G5uArH
-         ZDzGDJ4G6CezlRn8vy9xGheaS3VTCRRfoPHJJbLnCeCekNOIk+6/3KvjvXSW1Jt4EpPJ
-         GXVERgrUOHvRcVgjPCiKeLTEFGVHmsmJhx/9eNnKxPjAeAnnjHC8+whNyCQtjg7sV6nX
-         YT5g==
-X-Forwarded-Encrypted: i=1; AL+hErEDmKyHvH8cIHRVLjbHEFvIdKYmESHMITNtzwlZIl0wNB7hvJ0DbouOqhwvgfwa4rOquV7xrRjKf6o=@lists.infradead.org
-X-Gm-Message-State: APuU4Z8Fac4LaWk5qDq4MHsE9Kj5gwIlRw7WFQeo4dF7xh72pF/iI3X/
-	6cOM97o5ZKp7SLIPteoK3n42AoRph1rkLuzYS2tZbX2PkK/yJ8/rulvY
-X-Gm-Gg: AYBFou33l6+ZFudCoO6bObSe0s35D+6C2Zp7JXASfslQB0GyD0NRexn/2GQhX/Fuiho
-	0GQceumK4R351nMtIVTVlQNg/WYxJ1UpvNr2Qyani1UTRyHmtN+7exPAXBwtOcEN/7+7yGGWuW1
-	nlUwvRta9G3i3tf2SpjAQtw24v78zDfZxaOwbEmUgifQTGR0BeHi6an9IZ08U9+gn0Ftxkpr1dl
-	Rl3c7bOJdOidnCoblrM33PgKhQbbDE4OHP13ZRgLaiuS6zExE663DwWVoG00OkJI+ZnuBpLtIQh
-	Nb77CDqR2qxmHHLSJ/YUHJhiL95B1UcPKJ5WVfXhoS1OwiuZS2B1tGK1lScIxkuSnRdomkqbk6t
-	kjglpcHBFqcTUJWIQSR3S4gkCRSSH6u8TODZygssMMf7w/CS+RzCzBdYOAvIhJIOKl8s4eUZ6WZ
-	KikmMuh9f2kBl93lsYQlst3G9DpZz0xDKzG3XdDZMyVDC0qawJ9VJ4DH3Cbf9sHde7IpzQqVpRX
-	cAFNDryda0iUdEknTqswRYEnfPetAi2d+ff+qw1BciFM81AUyyV38RC0o2YsmZ7IVncS0R8J6FS
-	lI4LqH9IbuoG7VWx0kuFyLLcjvv6KJsV/Qm5nlPV3gHI9W3igBuhg5NcKW2qDnHh+J4f3dNlYa/
-	NfraGZEwDFWzAM5WJv7eSsxpfuOvAiVEgIS/GXLJ23Cz+v5j1MjA4wBinPpAzzthokTXryR5A/d
-	uUwFDbjAAwKt7fzoY8roVtC1YH4kqujSmtJmaHFzvwMSbmjmqqp7eFaDdeHFANa1OqCRtaPyM/
-X-Received: by 2002:a05:6820:1627:b0:71a:df0d:ea2b with SMTP id 006d021491bc7-71b1883e80amr279612eaf.83.1794944331147;
-        Tue, 17 Nov 2026 11:38:51 -0800 (PST)
+        bh=T+JSBWZUTfeeNWblhp3VV5bFP0F5yNnWU4+fvh7K/Mg=;
+        b=jU0oko5fcnzSHbgCb2nkg7opLGBtqEj7JTzhRKlht2j0eXt1dnEWxchJFlk72u0TU8
+         fwJRGNsOE24MFoaUChVhLnUCxb15llNeychNPbQmPUyALH5KX3JsR6qP/H+XGJgT89kE
+         zB+G5YxmrZtVCrYvLGtDe3GfawOO/lxMt1xvaOyNNdVUkGVjAdCA7F8KPMcFu7ZgWdsR
+         AT5cdwbnwCaMV3axjmLCZ81LMmwdeeBdjd2CJEuRnNvRYjSTdMg89GKjOlHFMC3fKz76
+         aegcNprHddHcFbsbC3LBmGOmJOVYS9wuXGonbL9tScwZxS9yGsmuVzL9n8WTtNLYzfCW
+         ONjQ==
+X-Forwarded-Encrypted: i=1; AL+hErFCrlWcjNcv+FnfHjYXHCGGQnIyTYhF3slmAI7BurohLbywQkRVxddjzCOG51UEmv6IcUjRjdUsrMk=@lists.infradead.org
+X-Gm-Message-State: APuU4Z9qpT8CZjd/6A3LEk7oYEoAc09nD/ykstV5IgHotspmytcW8fH8
+	qkG982tle5eJbaJc4pstKkOwgPynypxLz5ljV+tFyMEmTLSqn+IXikPQ
+X-Gm-Gg: AYBFou0JA/IvcPDqp2gDiNFmZIuB3rRe7FnFDqCI/pJPJbpGjiZxZQJE+WgqsW9uPn6
+	FHDDMzwV72F73JEShHtLTnrjI3ZZlukPdG4R3M4PcLLqlqsHUeAESyudbKmTjXcJr8te5lyXf2Q
+	0Wa7enZEuUp/Tzj48nWnTw7oDANBZoNeqWrl51zrc2qOYZUK0rIKE/jVQnNfXYHAiEsoFf4Bys2
+	8bN7w8Fp1KlqJoi7Hz6H4BMcx38zImXU/Sy6muCNcKFh3HJYG6i5fIYSN5BnILlcETu/n2yccys
+	tYR4wOjzhGNe8OTKZXgF+7lfeyB4fPBf5jOtYqcedfRXAP/iXrB9NM7wFdy/mJIlvqLNZNydiiD
+	QVMlVPcM+egI1uqGvI2vb0UQUgq3QqBA/Nx6YJuzQTuMDbUOSx4m0jF2XzSDLgjd2zfTEw48XXF
+	Kjz5vVDH6X20AaYH7337hvmITVZ2O/qZikho62Gp0uHLCAN5qge2vnX6u4naEhKFB4UotFcdH3o
+	ciqhHqyd0uQMDBter1zRpXpXYcHkR9eKq7pCzGcX91jf2U6jcJwWuxqgqitVLN0wM+b6FdC2ASI
+	U8WffW8+6ZBxH0rBR5DEEpXeSG9UNQiMFP5wsWlhecOxvnS0mCsvrdmzah4OwJFwEOFf8K57Sfm
+	zcTEa3E1DvkDMmoJcF18axLyCOh3qkM5qE6Gk4jQzDlFH8sF3xC8xW6MqFB4qLQ6/cAdbMpHbm/
+	0kkuoL6nQiP3NpqoPc0BXvDiSTKvQkeeSbUhKL5IRtGUcgGH1wP5Q=
+X-Received: by 2002:a05:6820:a006:b0:71a:7b15:6159 with SMTP id 006d021491bc7-71b1858a8acmr220915eaf.52.1794944343789;
+        Tue, 17 Nov 2026 11:39:03 -0800 (PST)
 Received: from [127.0.1.1] (174-29-1-49.hlrn.qwest.net. [174.29.1.49])
-        by smtp.gmail.com with ESMTPSA id 006d021491bc7-71b192272ffsm146281eaf.2.2026.11.17.11.38.45
+        by smtp.gmail.com with ESMTPSA id 006d021491bc7-71b192272ffsm146281eaf.2.2026.11.17.11.38.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2026 11:38:46 -0800 (PST)
+        Tue, 17 Nov 2026 11:38:54 -0800 (PST)
 From: James Hilliard <james.hilliard1@gmail.com>
-Date: Tue, 17 Nov 2026 12:38:16 -0700
-Subject: [PATCH 09/11] nvmem: disconnect published devices before
- registration rollback
+Date: Tue, 17 Nov 2026 12:38:17 -0700
+Subject: [PATCH 10/11] nvmem: u-boot-env: propagate cell registration
+ errors
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Message-Id: <20261117-submit-nvmem-provider-lifetime-v1-v1-9-3cfbd48812b5@gmail.com>
+Message-Id: <20261117-submit-nvmem-provider-lifetime-v1-v1-10-3cfbd48812b5@gmail.com>
 References: <20261117-submit-nvmem-provider-lifetime-v1-v1-0-3cfbd48812b5@gmail.com>
 In-Reply-To: <20261117-submit-nvmem-provider-lifetime-v1-v1-0-3cfbd48812b5@gmail.com>
 To: Srinivas Kandagatla <srini@kernel.org>, 
@@ -96,8 +96,8 @@ Cc: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>,
  linux-mtd@lists.infradead.org, James Hilliard <james.hilliard1@gmail.com>
 X-Mailer: b4 0.17-dev
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261117_113852_495375_297C5688 
-X-CRM114-Status: GOOD (  14.13  )
+X-CRM114-CacheID: sfid-20261117_113905_003200_09DE3BD4 
+X-CRM114-Status: GOOD (  10.56  )
 X-Spam-Score: -1.9 (-)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -119,103 +119,49 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-Registration can fail after the NVMEM device is visible and a layout has
-published cells. Disconnect the provider before destroying that layout
-and deleting the device, just as for normal unregister. This prevents
-layout removal from rebuilding attributes while rollback removes them.
+The environment parser ignores cell registration failures, so allocation
+failures can leave a partially populated layout reported as successfully
+registered. The OF node reference obtained for a rejected cell is also
+leaked.
 
-Reuse nvmem_unregister() for failures after device_add(). Track whether
-the registration notification was emitted so an unsuccessful registration
-does not generate an unmatched removal notification.
+Return the registration error and release the node reference that was
+not transferred to a cell.
 
-Document when providers may release their callback state.
-
+Fixes: 7c8979b42b1a ("nvmem: u-boot-env: use nvmem_add_one_cell() nvmem subsystem helper")
 Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
 ---
- drivers/nvmem/core.c           | 22 ++++++++++++----------
- include/linux/nvmem-provider.h |  3 +++
- 2 files changed, 15 insertions(+), 10 deletions(-)
+ drivers/nvmem/layouts/u-boot-env.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-index f1a254a0a5cb..619d33a59697 100644
---- a/drivers/nvmem/core.c
-+++ b/drivers/nvmem/core.c
-@@ -27,6 +27,7 @@
- #define to_nvmem_device(d) container_of(d, struct nvmem_device, dev)
- 
- #define FLAG_COMPAT		BIT(0)
-+#define FLAG_REGISTERED		BIT(1)
- struct nvmem_cell_entry {
- 	struct kref		refcnt;
- 	bool			disconnected;
-@@ -1202,7 +1203,7 @@ struct nvmem_device *nvmem_register(const struct nvmem_config *config)
- 
- 	rval = nvmem_populate_layout(nvmem);
- 	if (rval)
--		goto err_remove_dev;
-+		goto err_unregister;
- 
- 	/* If the device has WP GPIO, default to read-only */
- 	if (nvmem->wp_gpio)
-@@ -1211,20 +1212,17 @@ struct nvmem_device *nvmem_register(const struct nvmem_config *config)
- #ifdef CONFIG_NVMEM_SYSFS
- 	rval = nvmem_populate_sysfs_cells(nvmem);
- 	if (rval)
--		goto err_destroy_layout;
-+		goto err_unregister;
- #endif
- 
-+	nvmem->flags |= FLAG_REGISTERED;
- 	blocking_notifier_call_chain(&nvmem_notifier, NVMEM_ADD, nvmem);
- 
- 	return nvmem;
- 
--#ifdef CONFIG_NVMEM_SYSFS
--err_destroy_layout:
--	nvmem_destroy_layout(nvmem);
--#endif
--err_remove_dev:
--	nvmem_sysfs_remove_cells(nvmem);
--	device_del(&nvmem->dev);
-+err_unregister:
-+	nvmem_unregister(nvmem);
-+	return ERR_PTR(rval);
- err_remove_compat:
- 	nvmem_sysfs_remove_compat(nvmem);
- err_put_device:
-@@ -1239,13 +1237,17 @@ EXPORT_SYMBOL_GPL(nvmem_register);
-  * nvmem_unregister() - Unregister previously registered nvmem device
-  *
-  * @nvmem: Pointer to previously registered nvmem device.
-+ *
-+ * Stop and drain provider callbacks before returning. Existing consumers keep
-+ * their core-owned metadata, but further access returns -ENODEV.
-  */
- void nvmem_unregister(struct nvmem_device *nvmem)
+diff --git a/drivers/nvmem/layouts/u-boot-env.c b/drivers/nvmem/layouts/u-boot-env.c
+index f1fb206846ff..83c687e43e5a 100644
+--- a/drivers/nvmem/layouts/u-boot-env.c
++++ b/drivers/nvmem/layouts/u-boot-env.c
+@@ -55,6 +55,7 @@ static int u_boot_env_parse_cells(struct device *dev, struct nvmem_device *nvmem
  {
- 	if (!nvmem)
- 		return;
+ 	char *data = buf + data_offset;
+ 	char *var, *value, *eq;
++	int ret;
  
--	blocking_notifier_call_chain(&nvmem_notifier, NVMEM_REMOVE, nvmem);
-+	if (nvmem->flags & FLAG_REGISTERED)
-+		blocking_notifier_call_chain(&nvmem_notifier, NVMEM_REMOVE, nvmem);
+ 	for (var = data;
+ 	     var < data + data_len && *var;
+@@ -79,10 +80,12 @@ static int u_boot_env_parse_cells(struct device *dev, struct nvmem_device *nvmem
+ 			info.read_post_process = u_boot_env_read_post_process_ethaddr;
+ 		}
  
- 	nvmem_disconnect(nvmem);
+-		if (layout)
+-			nvmem_layout_add_cell(layout, &info);
+-		else
+-			nvmem_add_one_cell(nvmem, &info);
++		ret = layout ? nvmem_layout_add_cell(layout, &info) :
++			       nvmem_add_one_cell(nvmem, &info);
++		if (ret) {
++			of_node_put(info.np);
++			return ret;
++		}
+ 	}
  
-diff --git a/include/linux/nvmem-provider.h b/include/linux/nvmem-provider.h
-index e0638bd50d1f..ba11c807593b 100644
---- a/include/linux/nvmem-provider.h
-+++ b/include/linux/nvmem-provider.h
-@@ -107,6 +107,9 @@ struct nvmem_cell_info {
-  *
-  * Note: Specifying name and setting id to -1 implies a unique device
-  * whose name is provided as-is (kept unaltered).
-+ *
-+ * Provider callbacks and @priv must remain valid until nvmem_unregister()
-+ * returns, or until a failed nvmem_register() returns.
-  */
- struct nvmem_config {
- 	struct device		*dev;
+ 	return 0;
 
 -- 
 2.53.0
