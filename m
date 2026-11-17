@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F05A6606A885
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F086C606A886
 	for <linux-mtd@archiver.kernel.org>; Tue, 17 Nov 2026 19:38:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=RNfrZzxy;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=qPkraLmQ
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=0YFD5HVs;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=pirwCURN
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,74 +14,75 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=QmXKATYDvw3nI5rmkjUECg64b/7dqNv4MBcwqxy32P4=; b=RNfrZzxyrDwKdkjit7eK79E6lA
-	ofPcCcv7qbmHEi+35pVQSV0jGqiXDZd1M8J0bt58N715t3Sen5DrtJpYobhMGZLdIYPc26muriDX4
-	IYFHirNOo0hvtPBlnvqoD3W5ngwQACcvpCL1ePRQ2wmGAHFR5z9bLPD4xBzj8NQWx5ylJzLLqZ/I4
-	Bu8xvJLmeajlqP82hnk46Ldr7XgD3OpWH6SRoCGjfuDqU6XUPaBq6HT2vQmnX3I9fzqzZNVAfRy1p
-	fdcexXRZbokebEGeTa4pj0zE8vnl6e9BjaGRszzN0o5lOLf8ihzzGpU6c9/C8Nnq2EzoXsTX9MUi3
-	6xRZUNgg==;
+	bh=xDl2nM979ULlvn7ZcMNFYi022Ur+hQz+s2RsIAekOJQ=; b=0YFD5HVsOQR8tpJAoOllx+wvft
+	wtQVNwbB+tywOjwsq7odWx818BrwLKOQw+VjoiHlMVLq0crYA7GtiQT88bE2xnSdTvgliWPUzEfU9
+	c3b45D7M/PGBPqgCb442QMd1GtZswCJ0tcyEiZaqAA4JV+D+pjrt0/D7jt1N/g7wfXuXHD+LQsw3N
+	jNt48gWEGiUSYrWVyqiuvM9kkAsEOWiIG3NfSrs/J2pdioIeERwk10xJiDE2yVB7+nRYUrktWLiGH
+	HqVdJjthcX7rUlcY2VAA0mcjguYJ/MCHsJf3Y1/G0PMIytoBy6po0L3+96fazSX2LYTKttf3zorIP
+	EdRzcKiw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTP0h-00000006vEd-0b4w;
+	id 1xTP0h-00000006vEn-1Dlz;
 	Tue, 17 Nov 2026 19:38:31 +0000
-Received: from mail-oo1-xc29.google.com ([2607:f8b0:4864:20::c29])
+Received: from mail-oo1-xc2e.google.com ([2607:f8b0:4864:20::c2e])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTP0d-00000006vDF-21cu
+	id 1xTP0e-00000006vDo-42Sc
 	for linux-mtd@lists.infradead.org;
-	Tue, 17 Nov 2026 19:38:28 +0000
-Received: by mail-oo1-xc29.google.com with SMTP id 006d021491bc7-71ad099391dso117110eaf.3
-        for <linux-mtd@lists.infradead.org>; Tue, 17 Nov 2026 11:38:27 -0800 (PST)
+	Tue, 17 Nov 2026 19:38:30 +0000
+Received: by mail-oo1-xc2e.google.com with SMTP id 006d021491bc7-6de2f213b7aso102559eaf.0
+        for <linux-mtd@lists.infradead.org>; Tue, 17 Nov 2026 11:38:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794944306; x=1795549106; darn=lists.infradead.org;
+        d=gmail.com; s=20260707; t=1794944308; x=1795549108; darn=lists.infradead.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=mzUXuDR8OHK81TyfGQx/IwpVMtB3XzAxHCLnFDfTBRk=;
-        b=qPkraLmQjUALZDxqLkuBW6XcmfaVnBnshFJuh/5Yolc3KMbJYUcPottlVABHxUxwr7
-         hYtLmDHwhweLwREgMtEX/ZVRePpfMyEOSXzYtfTnRm0+WoJB2moph657LWMlW+pqzaUf
-         WZWuMTKA/YDWl+xWsDX0dvcSfnK2YZP1heby5pGdT6l0G1AbvDN5x/7o+X9UXHPfsvR7
-         lS5dq/lz8xudn88A8clVi5+G1TcmvzqoNMdFeUnkaArO+4DJ7SFfp0lStspLn3xmUJ7a
-         Gs9QD/bJODoY4Hw8j7TkhnHJCMkGk6jYjBMG16/qFcgQ//CNyC2UmGGUNnc83biyIyaU
-         tlLw==
+        bh=+eAGOxWFaa2a5JyiXtLznZ+QwzFoe3T3DPshuhjNzj0=;
+        b=pirwCURNcGEaEcobSKlQsigC50B3yr8b/14Olh23HdYZ30A+uLZ58sj1aLWVPeOK8T
+         iwJvMS05IMjoLIbz4ygv9EIsg2bOw468ajmqtgSRTHO0zRcwjyqIyJqQJwsQ9vMunpR5
+         W2JlPSre0FmgBRTWG0AKEsknpoGz5QMahdKkkvMJWlTKDCPig1QyFV05UbWKR+rJJhCj
+         UvuY2KrK7OEC/yNVsTvek9RPU6bj80xZxRMhBANYL6e9S3eGLNtVG6lApJRL+gOi+kRG
+         +gWfBM20wqMy/kHk2nf+OLYIQMCwk/ydEwqw7JCku993GOJRJJLjlvk2Xzd0mVNXbcuo
+         sGog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794944306; x=1795549106;
+        d=1e100.net; s=20260707; t=1794944308; x=1795549108;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=mzUXuDR8OHK81TyfGQx/IwpVMtB3XzAxHCLnFDfTBRk=;
-        b=1DzQCQWBxzxPZGLDDD4JKi6WaUqaG0AIYCH9whqtqyrQR+C5q2WhrY9s/uOEI0oOKX
-         mm0lISanU9NJwJICDEIWBtQTvc2Tzhg4cklVBAiMBtFu9vwt24RfvFKzktHxntrXkH80
-         CX5CbvHxU2OWs88KEjb1bNr/py2SrEjWvbWWbB7mntdjbfBI8LHk/JIY4tvU1Uhv62NU
-         x9BQrYY+A+pB7kwIr+JqDdCbK3lIWgyZNCYy3eHNUKQvRgQl0oVa0PyLN9hqQcz8Fa+Z
-         ZJBdCct1d/RMZIYroytisz8G0GU2849cfelqJ2vUlzZJvRMyVhj2NvJh7y5hHuFJonCD
-         Ro4w==
-X-Forwarded-Encrypted: i=1; AL+hErGcZ9l3Q//aSzfAio+ZtMnHculbOuzhLdB1moePdy1niJvta6q6hM9KmfRcJPjJZWwz/vBpLfcDCAE=@lists.infradead.org
-X-Gm-Message-State: APuU4Z9HxIZQq0ATqNvNXM0u3DpPo5hz28/kyw9xjiavcdvgv4pbc438
-	Zu53cM99YT/9IkBb9owW9k9yeT/+HaPEu5EI/4fi3U3FIbJbcUVG4xUo5MPluw==
-X-Gm-Gg: AYBFou362+zh3Rzn5+gDfsITtGl4IeIKb3EoeijdQ+oUS8ldc/uAiVBBb+GlSaXXSYt
-	zaTp2oe5xHHTYYeGXKLXePz+A+N7fVGkftlffdP1PjHmcCtsPWlAQ+hYse5O/bj2HguLQhNWBbz
-	zaVXaKRCUG7stop2TQB1swLyPk6IEOBcTCjRfoGjTCy+jJGyrmpZivuI1y3tf8SVIsykNti2l8W
-	/XZWVEvjjlGrsdTDKyyVgmYFAiYdjbB1IXBmRvVFO73OF+hRKZp/a/MspsSwN4f+5nk2FOgDlF+
-	BfqhzF0UtnQYgyWNRV8iaFlkSh0jzGtnmeNk48CMsGQ2LMef8ecrsGhNXlUqLWAuIvcZcW98Q7W
-	Rkh4YAcsjDym80ziWoNAk0QiBidS8YqBOU9JkrtzrJ4FBhu7n0ceoFQLCQbihR55lPCbeuaHtDq
-	2nqLRyrfh2sl5ZuBKAYRtLOsuzmn0RVnoOA8gfNIyK+zw10XP2A2mZy8UH+Fb5DWh/o6Ar3a94H
-	nvjYiYy9iYMv0B851z98PUYJVPtzFVbDIzFi6HWFN0pQrriPjBCUuDQzUUqBy1vpO7V7xZw13DU
-	ng0kDMNpiSynVOFI3PnAYrLEb08rEe1SVMwnSBjT6p8MKYYKC4FwkZiyyUWvf3q+L7FVDMMeGZJ
-	v/vDYkILgGuCmlRwMRJe+GTTU0uRBYpbeJKCEk39EguAreNTfhiJxYUrjPzuzAT2AFVRnfbA/dz
-	fmqhMb/yyw5SnfHL3Esz5+ve1tSRIUk+Q8F2sapbQSsoPmz02nYqI=
-X-Received: by 2002:a05:6820:55c4:20b0:71a:fcbf:2476 with SMTP id 006d021491bc7-71b18485668mr207605eaf.14.1794944306356;
-        Tue, 17 Nov 2026 11:38:26 -0800 (PST)
+        bh=+eAGOxWFaa2a5JyiXtLznZ+QwzFoe3T3DPshuhjNzj0=;
+        b=JVi2JFnDEuZBn1qcV3/lUiB2ZOn/BMn2S8V6/l+QaajrvubKBey2BO8EzsvIF1KAOP
+         O0d59J/LiyavplIh4/0sWJD4G3ssrujdTH939g4zu09yZIu6KOnpQ2+7gCCXbTgffvmO
+         80epLO+rWwqEmq+Wwo9rNvkP4aNqIGvaGrBJllaT1E7uqXMNtv3NCUojMNyYJmJ3rtks
+         LejkLHRSsjyNFmvQN3/hJIELazdHfWkQaTEB3cEwqfZk0L2bRrBdsbKlL9JcdzGULe0W
+         VQH+pHfYI/X7LrdKRVNp5R+2cbq3C/oWriGhercrOXovgMcF66emSG6K7okQC3Pgi73g
+         g0ow==
+X-Forwarded-Encrypted: i=1; AL+hErErxHZw97AI4XQcSwfyC3W9pSnqx70Tae9rviEXvw98pl3CqnRrXBNvqQgNTAP84eYJ5oEB33/6ybI=@lists.infradead.org
+X-Gm-Message-State: APuU4Z8NzzWN2RdxVtZsntxQl3DYq37mWSj+/EYXj8mf5TS7tiLOUsf5
+	4rz/hJ41JKAhn9cyOTbYfffz2Xue7SNW7V9TmdLptWBE2YAbkr0T2+uK
+X-Gm-Gg: AYBFou1UxitmCor3Gyahe7/x2sa95F7ugH/pTGh5v8C7vod6hSlb7t8oc0/phzq8bb5
+	3FXklBa62veMLEw9CTG5cUxyLrYg7blyputLipbkQ02aR9VGAthSx/5mtxUdXMTHUbRfkCDsGNG
+	2js9EoVpqueah0UEkpHcZdI8AkM2SwRyBjBSOfy0tZgRJqYUyQTXI8smZVSWCGs4RnGuGYylAj6
+	wKJ3ukW4HfXExs3muiEd1lbThgyFwxcq6CkvieaxWSqfXn0IShFD6RDN7Pyi4ASGL8BtsyAgFWf
+	lMpvgThmJBOyWGcc+whoy/gQfE1gW1SI1SpGGSxWOZ6K7f1p+QuFi4xRzckK/vylAEdRHfAOzxX
+	7G6HBaiTQGbZ0YvlMmHX7jxJ8gQrbBCA2smdeOZa06tkqz+aEHtfwZqSvkrBcyrc8wSntnJkBdl
+	XYijFzVk7eIYNHJ9ScHbLKdK+4hXPCTy0Z2tcmDc7sYjanIyzv4Rxxt+ejZ1ryUuh/Q7lFJQrTW
+	3YY0f2lbabMyPnxCsp2y9hlmz26xeiy9aYw0OEfT2jBiE2mn7u2c0vLJ2RtBI2ky9PEuIAeBHYv
+	up4ZHxlPxrTdPXDjN+ycrdk44Bvlry+/UnEaZJfhOW/OhblC/XBJIhTk5xO6fDb8M7utk/dR+el
+	HkWYeJrQE9qlrHsS36KRctLX6G6gifQINSkL2+0cPiIMq+5lAahQgu59CPlfSQjSgQnFbX9+rbH
+	o/dlqXSqwJ7AbHypRKLK8eRl4WcEi1vSKIVVxIwB2jdVZovJAd27I=
+X-Received: by 2002:a05:6820:f035:b0:71a:df0d:ea22 with SMTP id 006d021491bc7-71b18465311mr297652eaf.17.1794944308105;
+        Tue, 17 Nov 2026 11:38:28 -0800 (PST)
 Received: from [127.0.1.1] (174-29-1-49.hlrn.qwest.net. [174.29.1.49])
-        by smtp.gmail.com with ESMTPSA id 006d021491bc7-71b192272ffsm146281eaf.2.2026.11.17.11.38.24
+        by smtp.gmail.com with ESMTPSA id 006d021491bc7-71b192272ffsm146281eaf.2.2026.11.17.11.38.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2026 11:38:25 -0800 (PST)
+        Tue, 17 Nov 2026 11:38:27 -0800 (PST)
 From: James Hilliard <james.hilliard1@gmail.com>
-Date: Tue, 17 Nov 2026 12:38:08 -0700
-Subject: [PATCH 01/11] nvmem: retain the provider node until device release
+Date: Tue, 17 Nov 2026 12:38:09 -0700
+Subject: [PATCH 02/11] nvmem: drain keepout and cell post-processing
+ accesses
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Message-Id: <20261117-submit-nvmem-provider-lifetime-v1-v1-1-3cfbd48812b5@gmail.com>
+Message-Id: <20261117-submit-nvmem-provider-lifetime-v1-v1-2-3cfbd48812b5@gmail.com>
 References: <20261117-submit-nvmem-provider-lifetime-v1-v1-0-3cfbd48812b5@gmail.com>
 In-Reply-To: <20261117-submit-nvmem-provider-lifetime-v1-v1-0-3cfbd48812b5@gmail.com>
 To: Srinivas Kandagatla <srini@kernel.org>, 
@@ -95,8 +96,9 @@ Cc: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>,
  linux-mtd@lists.infradead.org, James Hilliard <james.hilliard1@gmail.com>
 X-Mailer: b4 0.17-dev
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261117_113827_530106_66267518 
-X-CRM114-Status: GOOD (  11.90  )
+X-CRM114-CacheID: sfid-20261117_113829_011087_07BDD404 
+X-CRM114-Status: UNSURE (   9.98  )
+X-CRM114-Notice: Please train this message.
 X-Spam-Score: -1.9 (-)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -118,41 +120,58 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-An NVMEM device can remain referenced after its provider unregisters.
-Keep a reference to its OF node so retained devices do not depend on the
-provider retaining the node. Drop that reference in the device release
-callback, including registration-error paths.
+The register callbacks are protected by SRCU, but keepout traversal and
+cell post-processing take place outside that protection. Unregister can
+finish draining a register read and return while its caller still uses
+a provider-owned keepout table or invokes a post-processing callback.
 
-Fixes: 1333a6779501 ("nvmem: core: allow specifying of_node")
+Hold the SRCU read lock across the complete access, including keepout
+handling and post-processing. Reject accesses after the operations pointer
+has been cleared, including reads satisfied entirely by a keepout.
+
+Fixes: 6a7b4134fb7a ("nvmem: protect nvmem_device::ops with SRCU")
 Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
 ---
- drivers/nvmem/core.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/nvmem/core.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
 diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-index 7d4cce8e2742..802637f375f8 100644
+index 802637f375f8..73aa53145f0b 100644
 --- a/drivers/nvmem/core.c
 +++ b/drivers/nvmem/core.c
-@@ -570,6 +570,7 @@ static void nvmem_release(struct device *dev)
- 	gpiod_put(nvmem->wp_gpio);
- 	nvmem_device_remove_all_cells(nvmem);
- 	ida_free(&nvmem_ida, nvmem->id);
-+	of_node_put(nvmem->dev.of_node);
- 	cleanup_srcu_struct(&nvmem->srcu);
- 	kfree(nvmem);
- }
-@@ -973,9 +974,9 @@ struct nvmem_device *nvmem_register(const struct nvmem_config *config)
- 	nvmem->keepout = config->keepout;
- 	nvmem->nkeepout = config->nkeepout;
- 	if (config->of_node)
--		nvmem->dev.of_node = config->of_node;
-+		nvmem->dev.of_node = of_node_get(config->of_node);
- 	else
--		nvmem->dev.of_node = config->dev->of_node;
-+		nvmem->dev.of_node = of_node_get(config->dev->of_node);
+@@ -164,6 +164,10 @@ static int nvmem_access_with_keepouts(struct nvmem_device *nvmem,
+ static int nvmem_reg_read(struct nvmem_device *nvmem, unsigned int offset,
+ 			  void *val, size_t bytes)
+ {
++	guard(srcu)(&nvmem->srcu);
++	if (!srcu_dereference(nvmem->ops, &nvmem->srcu))
++		return -ENODEV;
++
+ 	if (!nvmem->nkeepout)
+ 		return __nvmem_reg_read(nvmem, offset, val, bytes);
  
- 	switch (config->id) {
- 	case NVMEM_DEVID_NONE:
+@@ -173,6 +177,10 @@ static int nvmem_reg_read(struct nvmem_device *nvmem, unsigned int offset,
+ static int nvmem_reg_write(struct nvmem_device *nvmem, unsigned int offset,
+ 			   void *val, size_t bytes)
+ {
++	guard(srcu)(&nvmem->srcu);
++	if (!srcu_dereference(nvmem->ops, &nvmem->srcu))
++		return -ENODEV;
++
+ 	if (!nvmem->nkeepout)
+ 		return __nvmem_reg_write(nvmem, offset, val, bytes);
+ 
+@@ -1651,6 +1659,10 @@ static int __nvmem_cell_read(struct nvmem_device *nvmem,
+ {
+ 	int rc;
+ 
++	guard(srcu)(&nvmem->srcu);
++	if (!srcu_dereference(nvmem->ops, &nvmem->srcu))
++		return -ENODEV;
++
+ 	rc = nvmem_reg_read(nvmem, cell->offset, buf, cell->raw_len);
+ 
+ 	if (rc)
 
 -- 
 2.53.0
