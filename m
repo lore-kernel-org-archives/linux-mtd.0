@@ -2,50 +2,49 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26964606A32A
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E0BE606A886
 	for <linux-mtd@archiver.kernel.org>; Tue, 17 Nov 2026 09:38:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=vpNM7jFV;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=iSc8KB3k
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=36phFrCO;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=yM/x3CPs
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
 	List-Unsubscribe-Post:List-Owner;
-	bh=FTeZYDGZ6L6smaHw5PIxLfWoM8+w56QHO93CP3YXNuE=; b=vpNM7jFVzFGI/NuxWOjALPmGes
-	92yIdlDzYxtBE4c9jWwcmUhh68pNTC0Az8MXWVVChoOC7iCGxsA8xJF757RnS0CMWBgRmYbYAAxDU
-	Gd0NKW3h8sFRHH3ccyojZeOJk0Xgp6ixT4x78LrfJoRW8S7uO8VKHx73Nk+cxLsrjKLPcZ6xbGeEh
-	K6JORxweqDUsaDuQGzeQxW32fzThq0egwZTm69t6hT/cjj5NkWzu1krHH1WIqyYkHWccZ/OPbrYCE
-	aOOQ0PHqKVv4lRbQ0Que0didPyvyxtlV+6oH3AMS7BLSUM2ZhSJ/BWPhpn45FT9YgfbySs/E6DVZF
-	XQ6RjT/g==;
+	bh=M3TrKfJNWyWUUzwBNKoyUenY7OOtQ0UBjD0hOqju7x0=; b=36phFrCOOZG5jC71v7SKpUjxxM
+	LXcVMFeSb/HH5cpBbaUpV0yDUPvzWA2fotSkKYEtjdR/T4/Q5Jz5bmvCimP9u3xwH6zYsH/Or0Fh/
+	V0ldbT/Crlwvhlcm2REkpl3tcBKpDSTq/63AMehY7asFAgxmYLj7+QjUfXG9aJzWY/4LhTapnHimd
+	OzTyjqZF94LsYDXoZ+NhxnildgnkEWiFw/KPEc3WgYQx1hL4/j6rWnyubwypVOe5D+Q8gsVjikhAU
+	P1LSGcq7Vy09l548PxgtQ1bNhoYRVsxDQzOfDv4GESTmxTrSgyFd8DNmJnOZE8bjneJCV/17au/Rr
+	G/bqK7pw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTFdm-000000056sr-0qAR;
-	Tue, 17 Nov 2026 09:38:14 +0000
-Received: from smtpout-04.galae.net ([185.171.202.116])
+	id 1xTFdj-000000056pt-2Xbk;
+	Tue, 17 Nov 2026 09:38:11 +0000
+Received: from smtpout-03.galae.net ([185.246.85.4])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTFdj-000000056oz-48c7
+	id 1xTFdf-000000056nW-1XqY
 	for linux-mtd@lists.infradead.org;
-	Tue, 17 Nov 2026 09:38:13 +0000
+	Tue, 17 Nov 2026 09:38:10 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id 8B683C4EDBE
-	for <linux-mtd@lists.infradead.org>; Tue, 17 Nov 2026 09:38:14 +0000 (UTC)
+	by smtpout-03.galae.net (Postfix) with ESMTPS id 665614E4094F;
+	Tue, 17 Nov 2026 09:38:05 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 3C0965FC81;
-	Tue, 17 Nov 2026 09:38:10 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id AC65F11BC0493;
-	Tue, 17 Nov 2026 10:38:08 +0100 (CET)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 25FBB5FC81;
+	Tue, 17 Nov 2026 09:38:05 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id C408411BC0493;
+	Tue, 17 Nov 2026 10:37:59 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1794908289; h=from:subject:date:message-id:to:cc:mime-version:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=CZ87Wox43t0Jo/dky+kjMqQf6H/f4c/RMbSUMAnICCw=;
-	b=iSc8KB3kQbTV/BByqc0IPv8ejI7dg0oV1b+7qodf4ShocMFu1pd2p535z93aaGnhsziu0J
-	4e8Lu5Ah33hm3y3PxKE/GS2rV1bSiMCtmRGKpu71BXpmR+5UA1f1+wn7rVCAhBq94pNEnT
-	c6Uw51Hv1ibeohFGzWQ7Od2OxHJBCsi9QyxvTYvIVQD3z7gHnl3pYFI4KoFrcbuvR9o4da
-	QBa/VKg5eNwOKGaZ3U6fl3j7S2V8SBZODzHU2FvmZY7Uwe2sKLkEN3mQU+0e4QTypSH7sJ
-	oGL3Zi/ae6UcvhAZ65SgACzbdUDU7PnI3Dt9b4AFlQ5M9WTDOLtvdpPeueWVUA==
+	t=1794908284; h=from:subject:date:message-id:to:cc:mime-version:
+	 content-transfer-encoding; bh=tlBoKmorBtcIb4QQ2wVoA2joobZWJYIm4KpVprAp2zE=;
+	b=yM/x3CPsv371lnsTibypMg+dMRNFgQIbfFoDeD2qBsDdboH+kKUZyk7mY5kgvDHH8C5oTI
+	n4FDAxEsuHU3so03bQpVcUf7zKewxSD8wups1A/67cAfBFJZNKXhKbeB/wHEClsHq9zDdQ
+	u2rk1fhyyoKKShNeiv7FIuwi9yqdEalIqOhHs9pdZM9c57U8AYHyUEZx3Yqu/n0ybxQ/kx
+	QxWqG/OiSKDJXe8izCYtt0EIIYhIIEJv5/8x1PfofgPPvv59fpGIWoca81f6dEXSWvLn0P
+	BZXOizTJT1HwU3zTq9Ahau3OnzWLrXfQyoJYy7nFGHRKmxM4dDYqqKEgnPxs/g==
 From: Paul Cercueil <paul.cercueil@bootlin.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
@@ -53,19 +52,23 @@ To: Miquel Raynal <miquel.raynal@bootlin.com>,
 Cc: linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Paul Cercueil <paul.cercueil@bootlin.com>
-Subject: [PATCH v2 04/12] mtd: physmap: Remove #ifdef guards around shutdown callback
-Date: Tue, 17 Nov 2026 10:37:42 +0100
-Message-ID: <20261117093751.14988-5-paul.cercueil@bootlin.com>
+	Paul Cercueil <paul.cercueil@bootlin.com>,
+	Stefan Agner <stefan@agner.ch>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org,
+	Maxim Levitsky <maximlevitsky@gmail.com>
+Subject: [PATCH v2 00/12] mtd: Remove #ifdef guards for PM functions
+Date: Tue, 17 Nov 2026 10:37:38 +0100
+Message-ID: <20261117093751.14988-1-paul.cercueil@bootlin.com>
 X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20261117093751.14988-1-paul.cercueil@bootlin.com>
-References: <20261117093751.14988-1-paul.cercueil@bootlin.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261117_013812_204649_D0334F61 
-X-CRM114-Status: GOOD (  11.92  )
+X-CRM114-CacheID: sfid-20261117_013807_554887_E26B02CF 
+X-CRM114-Status: GOOD (  10.77  )
 X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -79,48 +82,74 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-11.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-physmap_flash_shutdown() calls mtd_suspend() and mtd_resume().
+Hi,
 
-Unlike what their names suggest, those two functions aren't related to
-CONFIG_PM, and neither is the platform_driver.shutdown() callback.
+This is the v2 of my patchset that updates the MTD core / NAND core as
+well as several drivers to get rid of the #ifdef CONFIG_PM guards.
 
-Signed-off-by: Paul Cercueil <paul.cercueil@bootlin.com>
----
+Instead, the code that depends on PM or runtime PM will be
+garbage-collected by the compiler automatically if this config option is
+not set.
 
-v2: Don't use pm_ptr(), and rewrite commit message
----
- drivers/mtd/maps/physmap-core.c | 4 ----
- 1 file changed, 4 deletions(-)
+The rationale behind this change is that in general conditionally
+compiled code is a bad choice, as code behind a rarely-used config can
+get broken without anybody noticing.
 
-diff --git a/drivers/mtd/maps/physmap-core.c b/drivers/mtd/maps/physmap-core.c
-index dcda7685fc99..672747890972 100644
---- a/drivers/mtd/maps/physmap-core.c
-+++ b/drivers/mtd/maps/physmap-core.c
-@@ -600,7 +600,6 @@ static int physmap_flash_probe(struct platform_device *dev)
- 	return err;
- }
- 
--#ifdef CONFIG_PM
- static void physmap_flash_shutdown(struct platform_device *dev)
- {
- 	struct physmap_flash_info *info = platform_get_drvdata(dev);
-@@ -610,9 +609,6 @@ static void physmap_flash_shutdown(struct platform_device *dev)
- 		if (mtd_suspend(info->mtds[i]) == 0)
- 			mtd_resume(info->mtds[i]);
- }
--#else
--#define physmap_flash_shutdown NULL
--#endif
- 
- static struct platform_driver physmap_flash_driver = {
- 	.probe		= physmap_flash_probe,
+In this v2, I removed the pm_ptr() use on shutdown callbacks, as neither
+platform_driver.shutdown() nor the mtd_suspend() / mtd_resume() that the
+shutdown callbacks call are related to CONFIG_PM.
+
+Changelog:
+
+v2:
+- [04/12]: Don't use pm_ptr(), and rewrite commit message
+- [05/12]: Don't use pm_ptr(), and rewrite commit message
+
+Cheers,
+-Paul
+
+Paul Cercueil (12):
+  mtd: Remove #ifdef guards for PM related functions
+  mtd: rawnand: vf610: Remove #ifdef guards for PM related functions
+  mtd: spear_smi: Remove #ifdef guards for PM related functions
+  mtd: physmap: Remove #ifdef guards around shutdown callback
+  mtd: maps: pxa2xx: Remove #ifdef guards around shutdown callback
+  mtd: nand: mtk: Remove #ifdef guards for PM related functions
+  mtd: rawnand: fsmc: Remove #ifdef guards for PM related functions
+  mtd: rawnand: hisi504: Remove #ifdef guards for PM related functions
+  mtd: rawnand: mtk: Remove #ifdef guards for PM related functions
+  mtd: rawnand: omap_elm: Remove #ifdef guards for PM related functions
+  mtd: rawnand: r852: Remove #ifdef guards for PM related functions
+  mtd: rawnand: txx9ndfmc: Remove #ifdef guards for PM related functions
+
+ drivers/mtd/devices/spear_smi.c     |  6 ++----
+ drivers/mtd/maps/physmap-core.c     |  4 ----
+ drivers/mtd/maps/pxa2xx-flash.c     |  4 ----
+ drivers/mtd/mtdcore.c               | 10 ++--------
+ drivers/mtd/nand/ecc-mtk.c          |  8 ++------
+ drivers/mtd/nand/raw/fsmc_nand.c    |  6 ++----
+ drivers/mtd/nand/raw/hisi504_nand.c |  7 +++----
+ drivers/mtd/nand/raw/mtk_nand.c     |  8 ++------
+ drivers/mtd/nand/raw/omap_elm.c     |  6 ++----
+ drivers/mtd/nand/raw/r852.c         |  6 ++----
+ drivers/mtd/nand/raw/txx9ndfmc.c    |  6 +-----
+ drivers/mtd/nand/raw/vf610_nfc.c    |  6 ++----
+ 12 files changed, 20 insertions(+), 57 deletions(-)
+
+Cc: Stefan Agner <stefan@agner.ch>
+Cc: Matthias Brugger <matthias.bgg@gmail.com>
+Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-mediatek@lists.infradead.org
+Cc: Maxim Levitsky <maximlevitsky@gmail.com>
+
 -- 
 2.47.3
 
