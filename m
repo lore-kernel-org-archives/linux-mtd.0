@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7619E606A31C
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A39C606A329
 	for <linux-mtd@archiver.kernel.org>; Tue, 17 Nov 2026 09:38:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=VKCKlqVK;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=lNz1zWnR
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=vA7pTG+d;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=BSoJTKhP
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,38 +14,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=h4dnd5X8eqmA6GA1jAHTOEqEQFYEpb6qy4Xy6DkGZSQ=; b=VKCKlqVK6GAoVgfTCEqooR40Kg
-	yAyjkF91GOXb0Km8mT4QYmFrSkAyDOm2TMhebFQiY5rv1/KGiNnDvjMijotT9qMUzuFs7EH8y1MjH
-	Xl93OQtfD4aCYDl7on6hXf6ldSE27HMJ2opSW7EfIJQUNR/LAgsNSc5YI04jAFdZIgOHFyJ7xH5X5
-	N8lkyXd6llFJddj0UHxt7uA2MEgtK4d2FjqCFiYcuY7UnPD9qIbpAKnevKjDM5OgvmNm4kuaPGMnW
-	Tg9anaPmw4qn/GPT4/QJRX7AmKYUUTHcvmkNTKl9ZRbiwfN+rk5S+bKZr+Ix11/+40UhL9GSa47bR
-	ksRyNDYQ==;
+	bh=TWHoY9hvFIINAxCcvKie9SeC7yEZKvN4LYPUjhJqEfI=; b=vA7pTG+dGwHDx5eM9SkZi+UUHm
+	87kLMgxeWjlPSinPojO1hFu68UlA+oVK6zZcv6rumXay2dbD0Lf6ASUL2x2K7g+8DgwxEzbqR1/r8
+	iynhFB7xs1s+Z33v30vv6Mnr532kvgG1AftwWs1rGXdXkvbMjoBOtbe9TFCihy/DRgS2PLYebFxaO
+	LmTgpMK6aIktZ1uhlM7rg3g5ZpFjPToo5XVlUA3vwz+BOigzdS5MDipVLgvXEL8ae29jSzm8yABBU
+	wM0rz9SKH2Y8V+VxFIh87e8AsKb0IviOBfR2l+hoW9l6HxS9DQnQbpSXZl+qt3ZnzoyojoRicHRNa
+	YuCf5Kbg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTFeD-000000057Vv-43bz;
-	Tue, 17 Nov 2026 09:38:41 +0000
-Received: from smtpout-03.galae.net ([185.246.85.4])
+	id 1xTFeE-000000057WA-0dTD;
+	Tue, 17 Nov 2026 09:38:42 +0000
+Received: from smtpout-04.galae.net ([185.171.202.116])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTFdu-0000000571W-39GI
+	id 1xTFdw-0000000575o-1xaw
 	for linux-mtd@lists.infradead.org;
-	Tue, 17 Nov 2026 09:38:25 +0000
+	Tue, 17 Nov 2026 09:38:26 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id 2C8014E41146;
-	Tue, 17 Nov 2026 09:38:21 +0000 (UTC)
+	by smtpout-04.galae.net (Postfix) with ESMTPS id F2011C4EDB9;
+	Tue, 17 Nov 2026 09:38:26 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id F0B2B5FC81;
-	Tue, 17 Nov 2026 09:38:20 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id A94BF11BC0493;
-	Tue, 17 Nov 2026 10:38:18 +0100 (CET)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id A3B145FC81;
+	Tue, 17 Nov 2026 09:38:22 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 6F04211BC1143;
+	Tue, 17 Nov 2026 10:38:20 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1794908299; h=from:subject:date:message-id:to:cc:mime-version:
+	t=1794908301; h=from:subject:date:message-id:to:cc:mime-version:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=mkZMJlvFsdTPHRfq55Zs9n/rcb6WsZ4+FI+m4sk8u6c=;
-	b=lNz1zWnRE4JSNSZLC26MP50YP+jWpa1WLSxjtb0fqA3RPZvECe35jhudwj70niVx9ySB8A
-	I26rIhF56dORH1f+mQkvQq+2iXY90gHh57PlT7uwySLwXkTMCloraE2Mp1EZdUqkwsevrk
-	m6Yjd7uJi3aeu1F9Ftk2SVCWWEBv5Pr8rR1/iEdcaKqU5ELRPQSDmCYG37mOe+t5hpiNXW
-	Q/VtRIrpc06Ctcrw9qU3/1O6A7v7RxABiCvLPMJA8oL+tZFViSQfEDJiVa+ANSgPWEtNLq
-	Ykswoj/OWcgM9UhPK+6pJ40ZMm/gW3yCRm9+Mccflpufa8KFCdJuCkHSedTFNA==
+	bh=sf9xmRkRphyVToFoOZV9OHW8g4eV4+0BZB1/eN8sGwk=;
+	b=BSoJTKhPyCewKlL26koS2r0po1IAPc+dRY83uAh5CDRJGlN4RkwnQUqglKKIV32mW48dhZ
+	hBCb/yVSzOzWbX1Vd+2iyuBDoOtvnqzpE5ojTdPdgPSfloGPcUnFM6XEka0m6obmXjpl8O
+	1bmXcVTtug61TSqqlwQTn8Rm4w6Fm8v2TbgdiN5ct9d6mb4L6vDHsv39/aPoZctiG+Ev5Z
+	DQMpqkVw3hSO7GNFoGXyYy73B2sK3tM9cxRP9knwGTL1BcbwkEaW497OtiKpPnnvmOmArg
+	3yGd2A5vFIIQGz2Ms2K2hoMdEvuD3x/d0VeCtIogKqtWU94E5Kk2GepNlJ0rBA==
 From: Paul Cercueil <paul.cercueil@bootlin.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
@@ -53,10 +53,11 @@ To: Miquel Raynal <miquel.raynal@bootlin.com>,
 Cc: linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Paul Cercueil <paul.cercueil@bootlin.com>
-Subject: [PATCH v2 10/12] mtd: rawnand: omap_elm: Remove #ifdef guards for PM related functions
-Date: Tue, 17 Nov 2026 10:37:48 +0100
-Message-ID: <20261117093751.14988-11-paul.cercueil@bootlin.com>
+	Paul Cercueil <paul.cercueil@bootlin.com>,
+	Maxim Levitsky <maximlevitsky@gmail.com>
+Subject: [PATCH v2 11/12] mtd: rawnand: r852: Remove #ifdef guards for PM related functions
+Date: Tue, 17 Nov 2026 10:37:49 +0100
+Message-ID: <20261117093751.14988-12-paul.cercueil@bootlin.com>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20261117093751.14988-1-paul.cercueil@bootlin.com>
 References: <20261117093751.14988-1-paul.cercueil@bootlin.com>
@@ -64,8 +65,8 @@ X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261117_013822_978721_1E94E6DE 
-X-CRM114-Status: GOOD (  14.20  )
+X-CRM114-CacheID: sfid-20261117_013824_850245_F1A2ECD8 
+X-CRM114-Status: GOOD (  13.24  )
 X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -96,44 +97,51 @@ regressions are subsequently easier to catch.
 
 Signed-off-by: Paul Cercueil <paul.cercueil@bootlin.com>
 ---
+Cc: Maxim Levitsky <maximlevitsky@gmail.com>
 
 v2: No change
 ---
- drivers/mtd/nand/raw/omap_elm.c | 6 ++----
+ drivers/mtd/nand/raw/r852.c | 6 ++----
  1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/omap_elm.c b/drivers/mtd/nand/raw/omap_elm.c
-index c1d19b8e6715..2e8ab20d8edb 100644
---- a/drivers/mtd/nand/raw/omap_elm.c
-+++ b/drivers/mtd/nand/raw/omap_elm.c
-@@ -428,7 +428,6 @@ static void elm_remove(struct platform_device *pdev)
- 	pm_runtime_disable(&pdev->dev);
+diff --git a/drivers/mtd/nand/raw/r852.c b/drivers/mtd/nand/raw/r852.c
+index 92c47d351c27..c145eb8ac29d 100644
+--- a/drivers/mtd/nand/raw/r852.c
++++ b/drivers/mtd/nand/raw/r852.c
+@@ -1013,7 +1013,6 @@ static void r852_shutdown(struct pci_dev *pci_dev)
+ 	pci_disable_device(pci_dev);
  }
  
 -#ifdef CONFIG_PM_SLEEP
- /*
-  * elm_context_save
-  * saves ELM configurations to preserve them across Hardware powered-down
-@@ -540,9 +539,8 @@ static int elm_resume(struct device *dev)
- 	elm_context_restore(info);
+ static int r852_suspend(struct device *device)
+ {
+ 	struct r852_device *dev = dev_get_drvdata(device);
+@@ -1066,7 +1065,6 @@ static int r852_resume(struct device *device)
+ 	r852_update_card_detect(dev);
  	return 0;
  }
 -#endif
  
--static SIMPLE_DEV_PM_OPS(elm_pm_ops, elm_suspend, elm_resume);
-+static DEFINE_SIMPLE_DEV_PM_OPS(elm_pm_ops, elm_suspend, elm_resume);
+ static const struct pci_device_id r852_pci_id_tbl[] = {
  
- #ifdef CONFIG_OF
- static const struct of_device_id elm_of_match[] = {
-@@ -557,7 +555,7 @@ static struct platform_driver elm_driver = {
- 	.driver	= {
- 		.name	= DRIVER_NAME,
- 		.of_match_table = of_match_ptr(elm_of_match),
--		.pm	= &elm_pm_ops,
-+		.pm	= pm_sleep_ptr(&elm_pm_ops),
- 	},
- 	.probe	= elm_probe,
- 	.remove = elm_remove,
+@@ -1076,7 +1074,7 @@ static const struct pci_device_id r852_pci_id_tbl[] = {
+ 
+ MODULE_DEVICE_TABLE(pci, r852_pci_id_tbl);
+ 
+-static SIMPLE_DEV_PM_OPS(r852_pm_ops, r852_suspend, r852_resume);
++static DEFINE_SIMPLE_DEV_PM_OPS(r852_pm_ops, r852_suspend, r852_resume);
+ 
+ static struct pci_driver r852_pci_driver = {
+ 	.name		= DRV_NAME,
+@@ -1084,7 +1082,7 @@ static struct pci_driver r852_pci_driver = {
+ 	.probe		= r852_probe,
+ 	.remove		= r852_remove,
+ 	.shutdown	= r852_shutdown,
+-	.driver.pm	= &r852_pm_ops,
++	.driver.pm	= pm_sleep_ptr(&r852_pm_ops),
+ };
+ 
+ module_pci_driver(r852_pci_driver);
 -- 
 2.47.3
 
