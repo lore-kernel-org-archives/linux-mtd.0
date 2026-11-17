@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83EDC606A882
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Nov 2026 19:38:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 047F2606A88A
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Nov 2026 19:38:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=inVTicqo;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=U2N4GIbY
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=kQ8EQIWU;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=Ddjzzziz
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,75 +14,74 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=68n4huWZqOQN6gjqirP42Ep5HsQln6Qi7VwpdPaTyfE=; b=inVTicqop2NRbi1+6waoesQp/2
-	3Fw+sqXpOfDJSRaQ7Gy3oYko/uSVx9uxWt5M+T/dopXp33VByDOntzwasB8JC36v7k/ab7JU76f9N
-	70ssWTR+xFJAXnU7RKabhFLv6+30qBoi1+uctd7gPO24UcSpjykLXcD3cf41sSiqM8TlK2Ecubncl
-	j8bFtlZS2NkBO3CvPdZqsf4pcp5+Q6UqJ85BhzdiWzXpFX56h+CHNbJNVF0CAplRgfxyjxWuYLF4P
-	c5SD323Pq6iLKrQA82CEg7cpWgWjnttdJpxJ9KU9JUOwjGM68F3Lo98ZwfvrTIhc40OLhIEEkuwUK
-	XA9UTXRg==;
+	bh=Yx1nGrhggvbHPv2dsx54zxz3lMwTFuO/GWuWvD9k7sk=; b=kQ8EQIWU+GjGJ7zEakv48KaJiX
+	wtfE9kW68fRk8HoRTE22YU9ofSzKjsjx52nQwSl3y8O1Etf/81uURh4sQaRKoqJs83E38K0q8VbXh
+	6XnUwEHD/GZ5pN6KwxfUH9zgiZSXlJqzPRhzAuDr0ID5fwDrrtByJ7Knw9LhSOf9KRDhW0li84udY
+	oy7KTdeA9/sdhT1Aal6zHxajAbBK0F/khNHDfRB6n1BQ00ZzY+akIEgM6VVd+7U9nqKOw/TFvtJ14
+	c386zuNhVsTv17tt9xdpmOIEgb8rQeTgc2rICIDOYycm6yklyckkn1C3zwFwjIwnMaeSzXl01C9A3
+	vdzdc+9g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTP0t-00000006vQT-0aUQ;
-	Tue, 17 Nov 2026 19:38:43 +0000
-Received: from mail-oo1-xc2f.google.com ([2607:f8b0:4864:20::c2f])
+	id 1xTP0x-00000006vVO-2DTv;
+	Tue, 17 Nov 2026 19:38:47 +0000
+Received: from mail-oo1-xc34.google.com ([2607:f8b0:4864:20::c34])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTP0p-00000006vLb-2Lgc
+	id 1xTP0t-00000006vPP-0Xtm
 	for linux-mtd@lists.infradead.org;
-	Tue, 17 Nov 2026 19:38:40 +0000
-Received: by mail-oo1-xc2f.google.com with SMTP id 006d021491bc7-6d290b10a35so95676eaf.2
-        for <linux-mtd@lists.infradead.org>; Tue, 17 Nov 2026 11:38:39 -0800 (PST)
+	Tue, 17 Nov 2026 19:38:44 +0000
+Received: by mail-oo1-xc34.google.com with SMTP id 006d021491bc7-6e560e00a86so125818eaf.1
+        for <linux-mtd@lists.infradead.org>; Tue, 17 Nov 2026 11:38:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794944319; x=1795549119; darn=lists.infradead.org;
+        d=gmail.com; s=20260707; t=1794944322; x=1795549122; darn=lists.infradead.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=/NZ1YswqeB2Jx0L5yqWiurGJZ9TtP6lnIvyd7e3kWs8=;
-        b=U2N4GIbY76J2F1NZfW3OJRZrYzi4DVAgLlE4G51zgMM/+U+kwa7SSOjoiKKiQU/giq
-         NFGLu86oz+hrTnYSn073nEhj80qLPZ9yEb0B0PVRIjflr3CIz3JQR/4xgLyq/oWTmnod
-         yllVOr3khjsEAUCBsCGdyu0Ab3RXmG27U1cjVoQcn9DG/ltPBZR1iW4OpxeW54xOI7iq
-         kPfdhL05GDcmdLM/lgJsKOkwPWtXrtc7zruqhPf7xy0v2X/dYRc6jWYwzHnF1Ng0mPlY
-         LMzDpEuoNm6rRJ8KEfL81WSf2W459biNIt0p46gH8JdQb7/sRea5XlXg4s7kyIedgvM3
-         ON3w==
+        bh=6rFErE0i5Y2PWDxw+9q3X+0ibTPYPSnkikClXBrp3y4=;
+        b=DdjzzzizHbtVgJZw+CrQD3ug7EZrnjOX13QwnCvHzrCEBOqMe2x3VJotE4mY9cUFJ5
+         9V08llexho9bsjl1uL/e8r0JSpo/XUriEMvZG7XYXZyBCoejLQTPRHU6rCkOP2ERflo8
+         NNzsjGr8ISiCXFPVsjOvjbqdD1gI5rFecvybA2LLCK21TCtMOTcNJQ9h4CKRKYPy3mei
+         I433EkzetoXRFE5Cukbbz/S7YnAqq5JHsz5gPl393TX0ElAomEbdaNGwrDMseUue7oH5
+         h7kDm5HGRKKCcZzWWZ1qGxBZgVVOmCzunG2PQtWqnGWpmxA9RA15k+rEXDZYyIQK+hHk
+         fWAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794944319; x=1795549119;
+        d=1e100.net; s=20260707; t=1794944322; x=1795549122;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=/NZ1YswqeB2Jx0L5yqWiurGJZ9TtP6lnIvyd7e3kWs8=;
-        b=ryft041geV/EvUonDwdhPLE+eafmikisXyxa2vcEyB7P0edBaBzkKZTEwaCwZ6s1Ad
-         ZkvAdemOUG3ZxJ7wNnBHfUq4G5wuqbiuG/swbjvOw5Os4T8PmOerTmBcwBfbPgjnhvDV
-         3i7l1ctc2bZdi8tpGMVb7fT+xYe4LuAV3kODJACYMbitpckq6/rHYp/FQsZI4vXd/Etu
-         WE6HzhXbr+mtjKghuByUl/LtunWBJ7QHn/R77Uqj3RG9MLFa0SzMlTgzlwNR6Djtba8b
-         a/Y21aUZBfGDi1S3rekvp3A82eiS03lJNvLRSY1ad7ifXZIN0TJ2WPRgA95vznvoifQR
-         Jodg==
-X-Forwarded-Encrypted: i=1; AL+hErH9DkdFDqufCkqVtv8Z3oIwVPpnsZI8dL2IqOJ8hzXPaXC0bpwHOPQ6v6QY/BecpcCauawd4duSbW0=@lists.infradead.org
-X-Gm-Message-State: APuU4Z/D6Jxj/rl9wUfrNhA87CpRb0DIhtMjMDlKXaq2WT+EIv1d3tRy
-	5eQVxTxF6xcSvKzxRPeFlPLKA6XyHN5bTHl91ATV6gaYRogD/IcX+9aC
-X-Gm-Gg: AYBFou3jsIYzZLh4/AjhFrJU3ffipzNamlpU9PgzyUoH440Q16/5dadh9M7wL2eIzZp
-	PNGUSa4eyZJ5mc9ltpgQc+h+njkIT+dp/G4e6WQbPkmd0eNnkF3TEGOwBXn0xX9MceDXuMs6JdI
-	9/M41FBMN4EV7GW+aIfoLtoWBBa8uE2YockW6NulhKcg8z473ONHi3yh+SSIBcO5A4ilC2xExl1
-	VSyxrOi8Dt9go65XNrFaTgfEXXuNDdRWvsJZ94PReUgMzYnmo+iwgb5jpyjbQ52mnJ1PdKDXjxL
-	O/LkTjvhQ34BgkvdJEFVIJlMKKdXr6YUlJK01ac1CzNTXYJE0/x4GzF7dnMFLfztWCWoHywYUZE
-	FSgI6N9js3toKnac+SpOiM/By3kMx9OpsuOasPrWYGQZZeOnlaQXyG0Vi+wVQ/xtUHQ9FY1bWCx
-	yZIhC5dl+TnIzhEkhxgL53fqyodF8vUjoTHC+vJzDr8fIuJ0AscMTqmR/kdTA4WcAaGmMC598S7
-	lAyJtGOzp+s8w2++xKSBeEcXwdwzifOc6Z/11FjfjJ+rD4VNAYAgdQg7vnXFT72+Mjk9ix+LvYq
-	3eBlhecckZfij1yw43HzZUBhlRYl4wHVttu9XoCN3U+463/rWX1xLfVt/5P3ozPIaOi0qXSwrYW
-	KemA28zL/iz8a3hAV7TBVOkr/WIXpTLj8Nas1mOyIotyR67YvpPFxzbL9zzvHQQFklL5x1A6GAs
-	OdrHIvKOvzqLA/1rhNLjnde6clpuvHFM3+6dyrECeCJqunHzKYsRg=
-X-Received: by 2002:a05:6820:a747:10b0:716:d143:46b5 with SMTP id 006d021491bc7-71b1846e9b2mr216447eaf.29.1794944318682;
-        Tue, 17 Nov 2026 11:38:38 -0800 (PST)
+        bh=6rFErE0i5Y2PWDxw+9q3X+0ibTPYPSnkikClXBrp3y4=;
+        b=AQ/PvN1cgOCIlKyClb5Gt2vqhCskNPVyFTHpRsY0yBLs+FTHERhC+8IlHlw5WZqFYf
+         OPgo1Hea1WwtL7Qr7Hzc4VHF8pRPdwBZfPFLiQW69ZakzdCeVi8jBW8TSPv0upEXVBmQ
+         oVVDcr9ELtHzZ9TTPnx27G5P2jj7OjD0rwrX+IDowlJwkaps1Gv7JBXQeicFpwgYi9ES
+         vi6Hh9jayoK22EcbF2YWTvM6vUJg+MPJUNfghpPSKMgdxzOEcWFgMbJja/mResEgayLH
+         DlH4awnEvOGOFIRPEQ7Hzl/mVYccu8hk8SMLjLWmPx4zhorMEAmnvRYNBSFoTYNi/YDu
+         7wuQ==
+X-Forwarded-Encrypted: i=1; AL+hErEEKmBKCUpoozkezwbVtjfl+Sktyv4w7AtCxH0VkfvspZTaIy1QRsL/e05JI4yXx84XNZT6RTitkYI=@lists.infradead.org
+X-Gm-Message-State: APuU4Z/SP9Ozl7bm0yA8he2svfaiI+DAYxsEq8ZJuZmSBUpPgn8j9rvU
+	GZS0bZBu8kS20AOQiDLeYp01Hj5c4e178x+lmCQuGZ+nz5+YbEoOhUF/
+X-Gm-Gg: AYBFou046FhEthJ9KFzJ3bKLmkPgmxIZn4ur7nUC6QGqFYAkenjsaUlZ96WyRo3EM9b
+	AQ2Xiu8oSJH0suNhbjG+cpjj5DYXdPPaqqBqT2wU9zfNxzsOxjHdUGcoRa7kU3BeNLh5kn9IZIi
+	FhBJm8B5bq2N6xXWS6MBwV5L+6reA50zDEdPb3ntzuHinveBjmCxb/z+/Ivv+/c5/WprOdgsmYl
+	cSDsdmIEhBC7wVrYeKUXKqMQ0Akf9h2wxNhEgmimQ6k2Fd30Illt7nYiGnDv5XKaa1MoYDbNoA0
+	TjO1zjg5SZ8EZIvmaDo8MJTgC5ezEmLuNbC0TcYJOG8eynQHfPCUAq1hE/wWOJTicIuoV3G5J/n
+	9RfPYqQzVBPUmroHGDWfeGUDur+I8WT//AyGM+qdY/c7aZx3Xxcj7aQ0INmtuJW7RbsBabu6ibN
+	3a6XZsOFOx3obfhMNA7yh1vUW5kU97CmwCHGl/ywoZnMyc5z7oeSrxH5alRTrr4PF11Fupazia9
+	ZyphpR0XehcMKl0pPVQ4ZqENFqhUWHVEbL9FctCBDRz5RW1h77DsNPMro5GN7R0WBYJjQbfBScg
+	PIDtzO3PH/SlfxHGs0aiMJTLv3roIHNvT6cZOEb9GCjvBTc8VSqRh1ZuPTmcVgXo26CAe43l5+o
+	EY62naaUwSFjGYDXEVimtv7snwpuPz2wjA8wpntM9SKgoibujdR/rbKBvVPGt/pKAVeZyqGWNG+
+	VnYpZQ5fshJwe5R0Q1ip8MOIMvOrkPz2+nKDgN7qIs374SpUS4LMI=
+X-Received: by 2002:a05:6820:410d:b0:70b:a287:72b5 with SMTP id 006d021491bc7-71b18476f73mr234539eaf.20.1794944321863;
+        Tue, 17 Nov 2026 11:38:41 -0800 (PST)
 Received: from [127.0.1.1] (174-29-1-49.hlrn.qwest.net. [174.29.1.49])
-        by smtp.gmail.com with ESMTPSA id 006d021491bc7-71b192272ffsm146281eaf.2.2026.11.17.11.38.37
+        by smtp.gmail.com with ESMTPSA id 006d021491bc7-71b192272ffsm146281eaf.2.2026.11.17.11.38.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2026 11:38:37 -0800 (PST)
+        Tue, 17 Nov 2026 11:38:39 -0800 (PST)
 From: James Hilliard <james.hilliard1@gmail.com>
-Date: Tue, 17 Nov 2026 12:38:13 -0700
-Subject: [PATCH 06/11] nvmem: manage cell attributes independently of
- device resources
+Date: Tue, 17 Nov 2026 12:38:14 -0700
+Subject: [PATCH 07/11] nvmem: distinguish layout cells from provider cells
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Message-Id: <20261117-submit-nvmem-provider-lifetime-v1-v1-6-3cfbd48812b5@gmail.com>
+Message-Id: <20261117-submit-nvmem-provider-lifetime-v1-v1-7-3cfbd48812b5@gmail.com>
 References: <20261117-submit-nvmem-provider-lifetime-v1-v1-0-3cfbd48812b5@gmail.com>
 In-Reply-To: <20261117-submit-nvmem-provider-lifetime-v1-v1-0-3cfbd48812b5@gmail.com>
 To: Srinivas Kandagatla <srini@kernel.org>, 
@@ -96,8 +95,8 @@ Cc: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>,
  linux-mtd@lists.infradead.org, James Hilliard <james.hilliard1@gmail.com>
 X-Mailer: b4 0.17-dev
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261117_113839_622899_BDAA1086 
-X-CRM114-Status: GOOD (  22.13  )
+X-CRM114-CacheID: sfid-20261117_113843_234893_8E361857 
+X-CRM114-Status: GOOD (  22.40  )
 X-Spam-Score: -1.8 (-)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -119,237 +118,342 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-Cell attributes are populated once and remain until device deletion. A
-layout bound after provider registration therefore cannot publish its
-cells through an existing group, and the group cannot be refreshed when
-cells are removed.
+Layouts and providers currently add cells through the same interface.
+Record the owner when a layout adds a cell so removing that layout can
+leave independently registered provider cells intact.
 
-Keep the group in the NVMEM device and explicitly allocate and release
-its attributes. Each attribute holds a cell reference until sysfs has
-drained its readers. Rebuild the group from the current cell list, and
-unwind partial allocations if population fails.
+Add layout-specific registration helpers and convert all layout drivers.
+Keep the shared U-Boot environment parser usable by both its layout
+driver and the legacy provider, recording layout ownership only for the
+layout caller.
 
-Serialize group replacement separately from cell-list updates so removal
-can wait for sysfs readers without holding nvmem_mutex. Remove the group
-before device deletion on both unregister and registration failure.
-
-Fixes: 0331c611949f ("nvmem: core: Expose cells through sysfs")
 Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
 ---
- drivers/nvmem/core.c      | 127 ++++++++++++++++++++++++++++++++--------------
- drivers/nvmem/internals.h |   3 ++
- 2 files changed, 92 insertions(+), 38 deletions(-)
+ drivers/nvmem/core.c                 | 61 +++++++++++++++++++++++++++++-------
+ drivers/nvmem/internals.h            |  1 +
+ drivers/nvmem/layouts/fixed-layout.c |  2 +-
+ drivers/nvmem/layouts/onie-tlv.c     | 19 +++++------
+ drivers/nvmem/layouts/sl28vpd.c      |  2 +-
+ drivers/nvmem/layouts/u-boot-env.c   | 22 +++++++++----
+ include/linux/nvmem-provider.h       | 10 +++++-
+ 7 files changed, 87 insertions(+), 30 deletions(-)
 
 diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-index 70b6126886d9..14cc70e8ce78 100644
+index 14cc70e8ce78..57c1da5ab547 100644
 --- a/drivers/nvmem/core.c
 +++ b/drivers/nvmem/core.c
-@@ -13,6 +13,7 @@
- #include <linux/idr.h>
- #include <linux/init.h>
- #include <linux/kref.h>
-+#include <linux/lockdep.h>
- #include <linux/module.h>
- #include <linux/mutex.h>
- #include <linux/nvmem-consumer.h>
-@@ -496,59 +497,102 @@ static void nvmem_sysfs_remove_compat(struct nvmem_device *nvmem)
- 		device_remove_bin_file(nvmem->base_dev, &nvmem->eeprom);
+@@ -29,6 +29,7 @@
+ #define FLAG_COMPAT		BIT(0)
+ struct nvmem_cell_entry {
+ 	struct kref		refcnt;
++	struct nvmem_layout	*layout;
+ 	const char		*name;
+ 	int			offset;
+ 	size_t			raw_len;
+@@ -726,16 +727,9 @@ static int nvmem_cell_info_to_nvmem_cell_entry(struct nvmem_device *nvmem,
+ 	return 0;
  }
  
-+static void nvmem_sysfs_free_cell_attrs(const struct bin_attribute * const *attrs)
-+{
-+	if (!attrs)
-+		return;
-+
-+	for (int i = 0; attrs[i]; i++) {
-+		nvmem_cell_entry_put(attrs[i]->private);
-+		kfree(attrs[i]->attr.name);
-+		kfree(attrs[i]);
-+	}
-+	kfree(attrs);
-+}
-+
-+static void __nvmem_sysfs_remove_cells(struct nvmem_device *nvmem)
-+{
-+	lockdep_assert_held(&nvmem->sysfs_mutex);
-+
-+	if (!nvmem->sysfs_cells_populated)
-+		return;
-+
-+	device_remove_group(&nvmem->dev, &nvmem->cells_group);
-+	nvmem_sysfs_free_cell_attrs(nvmem->cells_group.bin_attrs);
-+	nvmem->cells_group.bin_attrs = NULL;
-+	nvmem->sysfs_cells_populated = false;
-+}
-+
-+static void nvmem_sysfs_remove_cells(struct nvmem_device *nvmem)
-+{
-+	guard(mutex)(&nvmem->sysfs_mutex);
-+	__nvmem_sysfs_remove_cells(nvmem);
-+}
-+
- static int nvmem_populate_sysfs_cells(struct nvmem_device *nvmem)
+-/**
+- * nvmem_add_one_cell() - Add one cell information to an nvmem device
+- *
+- * @nvmem: nvmem device to add cells to.
+- * @info: nvmem cell info to add to the device
+- *
+- * Return: 0 or negative error code on failure.
+- */
+-int nvmem_add_one_cell(struct nvmem_device *nvmem,
+-		       const struct nvmem_cell_info *info)
++static int __nvmem_add_one_cell(struct nvmem_device *nvmem,
++				const struct nvmem_cell_info *info,
++				struct nvmem_layout *layout)
  {
--	struct attribute_group group = {
--		.name	= "cells",
--	};
- 	struct nvmem_cell_entry *entry;
--	const struct bin_attribute **pattrs;
--	struct bin_attribute *attrs;
--	unsigned int ncells = 0, i = 0;
--	int ret;
-+	const struct bin_attribute **attrs = NULL;
-+	unsigned int i = 0;
-+	int ret = 0;
- 
--	guard(mutex)(&nvmem_mutex);
-+	guard(mutex)(&nvmem->sysfs_mutex);
- 
--	if (list_empty(&nvmem->cells) || nvmem->sysfs_cells_populated)
--		return 0;
-+	__nvmem_sysfs_remove_cells(nvmem);
- 
--	/* Allocate an array of attributes with a sentinel */
--	ncells = list_count_nodes(&nvmem->cells);
--	pattrs = devm_kcalloc(&nvmem->dev, ncells + 1,
--			      sizeof(*pattrs), GFP_KERNEL);
--	if (!pattrs)
--		return -ENOMEM;
--
--	attrs = devm_kcalloc(&nvmem->dev, ncells, sizeof(struct bin_attribute), GFP_KERNEL);
--	if (!attrs)
--		return -ENOMEM;
-+	scoped_guard(mutex, &nvmem_mutex) {
-+		if (!rcu_access_pointer(nvmem->ops))
-+			return -ENODEV;
-+		if (list_empty(&nvmem->cells))
-+			return 0;
- 
--	/* Initialize each attribute to take the name and size of the cell */
--	list_for_each_entry(entry, &nvmem->cells, node) {
--		sysfs_bin_attr_init(&attrs[i]);
--		attrs[i].attr.name = devm_kasprintf(&nvmem->dev, GFP_KERNEL,
--						    "%s@%x,%x", entry->name,
--						    entry->offset,
--						    entry->bit_offset);
--		attrs[i].attr.mode = 0444 & nvmem_bin_attr_get_umode(nvmem);
--		attrs[i].size = entry->bytes;
--		attrs[i].read = &nvmem_cell_attr_read;
--		attrs[i].private = entry;
--		if (!attrs[i].attr.name)
-+		attrs = kcalloc(list_count_nodes(&nvmem->cells) + 1,
-+				sizeof(*attrs), GFP_KERNEL);
-+		if (!attrs)
- 			return -ENOMEM;
- 
--		pattrs[i] = &attrs[i];
--		i++;
-+		list_for_each_entry(entry, &nvmem->cells, node) {
-+			struct bin_attribute *attr;
-+
-+			attr = kzalloc_obj(*attr);
-+			if (!attr) {
-+				ret = -ENOMEM;
-+				break;
-+			}
-+			sysfs_bin_attr_init(attr);
-+			attr->attr.name = kasprintf(GFP_KERNEL, "%s@%x,%x",
-+						   entry->name, entry->offset,
-+						   entry->bit_offset);
-+			if (!attr->attr.name) {
-+				kfree(attr);
-+				ret = -ENOMEM;
-+				break;
-+			}
-+			attr->attr.mode = 0444 & nvmem_bin_attr_get_umode(nvmem);
-+			attr->size = entry->bytes;
-+			attr->read = nvmem_cell_attr_read;
-+			attr->private = entry;
-+			kref_get(&entry->refcnt);
-+			attrs[i++] = attr;
-+		}
+ 	struct nvmem_cell_entry *cell;
+ 	int rval;
+@@ -755,12 +749,43 @@ int nvmem_add_one_cell(struct nvmem_device *nvmem,
  	}
-+	if (ret)
-+		goto err_free;
  
--	group.bin_attrs = pattrs;
-+	nvmem->cells_group.name = "cells";
-+	nvmem->cells_group.bin_attrs = attrs;
+ 	kref_init(&cell->refcnt);
++	cell->layout = layout;
+ 	nvmem_cell_entry_add(cell);
  
--	ret = device_add_group(&nvmem->dev, &group);
--	if (ret)
--		return ret;
-+	ret = device_add_group(&nvmem->dev, &nvmem->cells_group);
-+	if (ret) {
-+		nvmem->cells_group.bin_attrs = NULL;
-+		goto err_free;
-+	}
- 
- 	nvmem->sysfs_cells_populated = true;
-+	return 0;
- 
-+err_free:
-+	nvmem_sysfs_free_cell_attrs(attrs);
- 	return ret;
+ 	return 0;
  }
- 
-@@ -563,6 +607,10 @@ static void nvmem_sysfs_remove_compat(struct nvmem_device *nvmem)
- {
- }
- 
-+static void nvmem_sysfs_remove_cells(struct nvmem_device *nvmem)
-+{
-+}
 +
- #endif /* CONFIG_NVMEM_SYSFS */
++/**
++ * nvmem_add_one_cell() - Add one cell information to an nvmem device
++ *
++ * @nvmem: nvmem device to add cells to.
++ * @info: nvmem cell info to add to the device
++ *
++ * Return: 0 or negative error code on failure.
++ */
++int nvmem_add_one_cell(struct nvmem_device *nvmem,
++		       const struct nvmem_cell_info *info)
++{
++	return __nvmem_add_one_cell(nvmem, info, NULL);
++}
+ EXPORT_SYMBOL_GPL(nvmem_add_one_cell);
  
- static void nvmem_cell_entry_release(struct kref *ref)
-@@ -1000,6 +1048,7 @@ struct nvmem_device *nvmem_register(const struct nvmem_config *config)
- 	rcu_assign_pointer(nvmem->ops, ops);
- 
- 	device_initialize(&nvmem->dev);
-+	mutex_init(&nvmem->sysfs_mutex);
- 
- 	if (!config->ignore_wp)
- 		nvmem->wp_gpio = gpiod_get_optional(config->dev, "wp",
-@@ -1108,6 +1157,7 @@ struct nvmem_device *nvmem_register(const struct nvmem_config *config)
- 	nvmem_destroy_layout(nvmem);
- #endif
- err_remove_dev:
-+	nvmem_sysfs_remove_cells(nvmem);
- 	device_del(&nvmem->dev);
- err_remove_compat:
- 	nvmem_sysfs_remove_compat(nvmem);
-@@ -1136,6 +1186,7 @@ void nvmem_unregister(struct nvmem_device *nvmem)
- 	nvmem_sysfs_remove_compat(nvmem);
- 	nvmem_destroy_layout(nvmem);
- 
-+	nvmem_sysfs_remove_cells(nvmem);
- 	device_unregister(&nvmem->dev);
++/**
++ * nvmem_layout_add_cell() - Add a cell owned by an NVMEM layout
++ * @layout: Layout registering the cell from its add_cells callback.
++ * @info: Cell description.
++ *
++ * Associate the cell with the layout rather than the provider.
++ *
++ * Return: 0 or a negative error code.
++ */
++int nvmem_layout_add_cell(struct nvmem_layout *layout,
++			  const struct nvmem_cell_info *info)
++{
++	return __nvmem_add_one_cell(layout->nvmem, info, layout);
++}
++EXPORT_SYMBOL_GPL(nvmem_layout_add_cell);
++
+ /**
+  * nvmem_add_cells() - Add cell information to an nvmem device
+  *
+@@ -882,7 +907,8 @@ static int nvmem_validate_keepouts(struct nvmem_device *nvmem)
+ 	return 0;
  }
- EXPORT_SYMBOL_GPL(nvmem_unregister);
+ 
+-int nvmem_add_cells_from_dt(struct nvmem_device *nvmem, struct device_node *np)
++static int __nvmem_add_cells_from_dt(struct nvmem_device *nvmem, struct device_node *np,
++				     struct nvmem_layout *layout)
+ {
+ 	struct device *dev = &nvmem->dev;
+ 	const __be32 *addr;
+@@ -924,7 +950,7 @@ int nvmem_add_cells_from_dt(struct nvmem_device *nvmem, struct device_node *np)
+ 		if (nvmem->fixup_dt_cell_info)
+ 			nvmem->fixup_dt_cell_info(nvmem, &info);
+ 
+-		ret = nvmem_add_one_cell(nvmem, &info);
++		ret = __nvmem_add_one_cell(nvmem, &info, layout);
+ 		kfree(info.name);
+ 		if (ret) {
+ 			of_node_put(info.np);
+@@ -934,8 +960,19 @@ int nvmem_add_cells_from_dt(struct nvmem_device *nvmem, struct device_node *np)
+ 
+ 	return 0;
+ }
++
++int nvmem_add_cells_from_dt(struct nvmem_device *nvmem, struct device_node *np)
++{
++	return __nvmem_add_cells_from_dt(nvmem, np, NULL);
++}
+ EXPORT_SYMBOL_GPL(nvmem_add_cells_from_dt);
+ 
++int nvmem_layout_add_cells_from_dt(struct nvmem_layout *layout, struct device_node *np)
++{
++	return __nvmem_add_cells_from_dt(layout->nvmem, np, layout);
++}
++EXPORT_SYMBOL_GPL(nvmem_layout_add_cells_from_dt);
++
+ static int nvmem_add_cells_from_legacy_of(struct nvmem_device *nvmem)
+ {
+ 	return nvmem_add_cells_from_dt(nvmem, nvmem->dev.of_node);
 diff --git a/drivers/nvmem/internals.h b/drivers/nvmem/internals.h
-index bc7a99f5aefb..79ea56822ebe 100644
+index 79ea56822ebe..667955893b5c 100644
 --- a/drivers/nvmem/internals.h
 +++ b/drivers/nvmem/internals.h
-@@ -4,6 +4,7 @@
- #define _LINUX_NVMEM_INTERNALS_H
- 
- #include <linux/device.h>
-+#include <linux/mutex.h>
- #include <linux/nvmem-consumer.h>
- #include <linux/nvmem-provider.h>
- #include <linux/srcu.h>
-@@ -37,7 +38,9 @@ struct nvmem_device {
- 	struct nvmem_layout	*layout;
- 	struct nvmem_operations __rcu *ops;
- 	void *priv;
-+	struct mutex		sysfs_mutex;
- 	bool			sysfs_cells_populated;
-+	struct attribute_group cells_group;
+@@ -44,6 +44,7 @@ struct nvmem_device {
  };
  
  int nvmem_add_cells_from_dt(struct nvmem_device *nvmem, struct device_node *np);
++int nvmem_layout_add_cells_from_dt(struct nvmem_layout *layout, struct device_node *np);
+ 
+ #if IS_ENABLED(CONFIG_OF)
+ int nvmem_layout_bus_register(void);
+diff --git a/drivers/nvmem/layouts/fixed-layout.c b/drivers/nvmem/layouts/fixed-layout.c
+index 635d448b3dd2..b97f39897a75 100644
+--- a/drivers/nvmem/layouts/fixed-layout.c
++++ b/drivers/nvmem/layouts/fixed-layout.c
+@@ -19,7 +19,7 @@ static int fixed_layout_add_cells(struct nvmem_layout *layout)
+ 	if (!np)
+ 		return -ENOENT;
+ 
+-	ret = nvmem_add_cells_from_dt(layout->nvmem, np);
++	ret = nvmem_layout_add_cells_from_dt(layout, np);
+ 	of_node_put(np);
+ 
+ 	return ret;
+diff --git a/drivers/nvmem/layouts/onie-tlv.c b/drivers/nvmem/layouts/onie-tlv.c
+index 4da3a704388e..99e7a5406b4c 100644
+--- a/drivers/nvmem/layouts/onie-tlv.c
++++ b/drivers/nvmem/layouts/onie-tlv.c
+@@ -95,18 +95,19 @@ static nvmem_cell_post_process_t onie_tlv_read_cb(u8 type, u8 *buf)
+ 	return NULL;
+ }
+ 
+-static int onie_tlv_add_cells(struct device *dev, struct nvmem_device *nvmem,
++static int onie_tlv_add_cells(struct nvmem_layout *layout,
+ 			      size_t data_len, u8 *data)
+ {
++	struct device *dev = &layout->dev;
+ 	struct nvmem_cell_info cell = {};
+-	struct device_node *layout;
++	struct device_node *layout_np;
+ 	struct onie_tlv tlv;
+ 	unsigned int hdr_len = sizeof(struct onie_tlv_hdr);
+ 	unsigned int offset = 0;
+ 	int ret;
+ 
+-	layout = of_nvmem_layout_get_container(nvmem);
+-	if (!layout)
++	layout_np = of_nvmem_layout_get_container(layout->nvmem);
++	if (!layout_np)
+ 		return -ENOENT;
+ 
+ 	while (offset < data_len) {
+@@ -123,13 +124,13 @@ static int onie_tlv_add_cells(struct device *dev, struct nvmem_device *nvmem,
+ 
+ 		cell.offset = hdr_len + offset + sizeof(tlv.type) + sizeof(tlv.len);
+ 		cell.bytes = tlv.len;
+-		cell.np = of_get_child_by_name(layout, cell.name);
++		cell.np = of_get_child_by_name(layout_np, cell.name);
+ 		cell.read_post_process = onie_tlv_read_cb(tlv.type, data + offset + sizeof(tlv));
+ 
+-		ret = nvmem_add_one_cell(nvmem, &cell);
++		ret = nvmem_layout_add_cell(layout, &cell);
+ 		if (ret) {
+ 			of_node_put(cell.np);
+-			of_node_put(layout);
++			of_node_put(layout_np);
+ 			return ret;
+ 		}
+ 
+@@ -137,7 +138,7 @@ static int onie_tlv_add_cells(struct device *dev, struct nvmem_device *nvmem,
+ 		offset += sizeof(tlv) + tlv.len;
+ 	}
+ 
+-	of_node_put(layout);
++	of_node_put(layout_np);
+ 
+ 	return 0;
+ }
+@@ -222,7 +223,7 @@ static int onie_tlv_parse_table(struct nvmem_layout *layout)
+ 		return -EINVAL;
+ 
+ 	data = table + hdr_len;
+-	ret = onie_tlv_add_cells(dev, nvmem, data_len, data);
++	ret = onie_tlv_add_cells(layout, data_len, data);
+ 	if (ret)
+ 		return ret;
+ 
+diff --git a/drivers/nvmem/layouts/sl28vpd.c b/drivers/nvmem/layouts/sl28vpd.c
+index 79de1e6947d0..1e65a0b6c61f 100644
+--- a/drivers/nvmem/layouts/sl28vpd.c
++++ b/drivers/nvmem/layouts/sl28vpd.c
+@@ -124,7 +124,7 @@ static int sl28vpd_add_cells(struct nvmem_layout *layout)
+ 		info.read_post_process = pinfo->read_post_process;
+ 		info.np = of_get_child_by_name(layout_np, pinfo->name);
+ 
+-		ret = nvmem_add_one_cell(nvmem, &info);
++		ret = nvmem_layout_add_cell(layout, &info);
+ 		if (ret) {
+ 			of_node_put(info.np);
+ 			of_node_put(layout_np);
+diff --git a/drivers/nvmem/layouts/u-boot-env.c b/drivers/nvmem/layouts/u-boot-env.c
+index 33ec2350386f..f1fb206846ff 100644
+--- a/drivers/nvmem/layouts/u-boot-env.c
++++ b/drivers/nvmem/layouts/u-boot-env.c
+@@ -49,7 +49,8 @@ static int u_boot_env_read_post_process_ethaddr(void *context, const char *id, i
+ 	return 0;
+ }
+ 
+-static int u_boot_env_parse_cells(struct device *dev, struct nvmem_device *nvmem, uint8_t *buf,
++static int u_boot_env_parse_cells(struct device *dev, struct nvmem_device *nvmem,
++				  struct nvmem_layout *layout, uint8_t *buf,
+ 				  size_t data_offset, size_t data_len)
+ {
+ 	char *data = buf + data_offset;
+@@ -78,14 +79,17 @@ static int u_boot_env_parse_cells(struct device *dev, struct nvmem_device *nvmem
+ 			info.read_post_process = u_boot_env_read_post_process_ethaddr;
+ 		}
+ 
+-		nvmem_add_one_cell(nvmem, &info);
++		if (layout)
++			nvmem_layout_add_cell(layout, &info);
++		else
++			nvmem_add_one_cell(nvmem, &info);
+ 	}
+ 
+ 	return 0;
+ }
+ 
+-int u_boot_env_parse(struct device *dev, struct nvmem_device *nvmem,
+-		     enum u_boot_env_format format)
++static int __u_boot_env_parse(struct device *dev, struct nvmem_device *nvmem,
++			      struct nvmem_layout *layout, enum u_boot_env_format format)
+ {
+ 	size_t crc32_data_offset;
+ 	size_t crc32_data_len;
+@@ -156,13 +160,19 @@ int u_boot_env_parse(struct device *dev, struct nvmem_device *nvmem,
+ 	}
+ 
+ 	buf[dev_size - 1] = '\0';
+-	err = u_boot_env_parse_cells(dev, nvmem, buf, data_offset, data_len);
++	err = u_boot_env_parse_cells(dev, nvmem, layout, buf, data_offset, data_len);
+ 
+ err_kfree:
+ 	kfree(buf);
+ err_out:
+ 	return err;
+ }
++
++int u_boot_env_parse(struct device *dev, struct nvmem_device *nvmem,
++		     enum u_boot_env_format format)
++{
++	return __u_boot_env_parse(dev, nvmem, NULL, format);
++}
+ EXPORT_SYMBOL_GPL(u_boot_env_parse);
+ 
+ static int u_boot_env_add_cells(struct nvmem_layout *layout)
+@@ -172,7 +182,7 @@ static int u_boot_env_add_cells(struct nvmem_layout *layout)
+ 
+ 	format = (uintptr_t)device_get_match_data(dev);
+ 
+-	return u_boot_env_parse(dev, layout->nvmem, format);
++	return __u_boot_env_parse(dev, layout->nvmem, layout, format);
+ }
+ 
+ static int u_boot_env_probe(struct nvmem_layout *layout)
+diff --git a/include/linux/nvmem-provider.h b/include/linux/nvmem-provider.h
+index 6063fe5b7784..e0638bd50d1f 100644
+--- a/include/linux/nvmem-provider.h
++++ b/include/linux/nvmem-provider.h
+@@ -144,7 +144,7 @@ struct nvmem_config {
+  * @nvmem:		The underlying NVMEM device
+  * @add_cells:		Will be called if a nvmem device is found which
+  *			has this layout. The function will add layout
+- *			specific cells with nvmem_add_one_cell().
++ *			specific cells with nvmem_layout_add_cell().
+  *
+  * A nvmem device can hold a well defined structure which can just be
+  * evaluated during runtime. For example a TLV list, or a list of "name=val"
+@@ -173,6 +173,8 @@ struct nvmem_device *devm_nvmem_register(struct device *dev,
+ 
+ int nvmem_add_one_cell(struct nvmem_device *nvmem,
+ 		       const struct nvmem_cell_info *info);
++int nvmem_layout_add_cell(struct nvmem_layout *layout,
++			  const struct nvmem_cell_info *info);
+ 
+ int nvmem_layout_register(struct nvmem_layout *layout);
+ void nvmem_layout_unregister(struct nvmem_layout *layout);
+@@ -214,6 +216,12 @@ static inline int nvmem_layout_register(struct nvmem_layout *layout)
+ 
+ static inline void nvmem_layout_unregister(struct nvmem_layout *layout) {}
+ 
++static inline int nvmem_layout_add_cell(struct nvmem_layout *layout,
++				       const struct nvmem_cell_info *info)
++{
++	return -EOPNOTSUPP;
++}
++
+ static inline int nvmem_add_cells_from_dt(struct nvmem_device *nvmem,
+ 					  struct device_node *np)
+ {
 
 -- 
 2.53.0
