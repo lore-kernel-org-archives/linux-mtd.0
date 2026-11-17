@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF1EF606A333
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Nov 2026 19:38:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB990606A8AF
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Nov 2026 19:38:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=l9xAPEIu;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=QQG9YTt0
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=Gh7pVcf4;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=DURZB767
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,75 +14,75 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=v+j1rQz0hltj4OzTMUArq9aNKpPUeAVQpLmzeGQpNuo=; b=l9xAPEIuOektsXJJeAX4Sif4Jw
-	7hrEmjM91PiOOK80JxgYzUS0M0zr71/mkCP+F4WZDVNB4a4SOYD+oAb3VYWYp7hpn8RT+LeE7YGu0
-	lg5JuazNwGPQyfCCqyHWiT/uARgeJpA8q4Ok+ZGWL2pVALd1Md3Dp38DjRQYL7+V9sgqyAp1CVONz
-	67zsSNY2OdaeaZzVY60gSJeZQP+8Dum3S5m28n0TKAgYxHW0/uwvvqrmDLLVhTvBWV+c7wb0I/wYV
-	jWgdsUlIiBG99ZAJxu7oZ5lO5m9wahyKz2JSTsP2jFGVA6OB160pDWVQTL8kxNExgBfD9kqWxLDAo
-	SCTKmtJw==;
+	bh=e5CF8h+AyAZEQD63AYlnAUFBNYeKDCs78xWH/6QeOp4=; b=Gh7pVcf4dM/gOhOGN8Wr8Qzmwu
+	MJoz6p/wO+TUKDcVILZlD54mXNRy3J8RQmDDeQ0FkT16LIOER4J5Fiu6J2P24ekLQrFIb6CRAfOm1
+	cpHtv265UfEPkNrWF0E5k33ouItCb+HDWVhPbeg60JA3iA9qO/wPwLLZfnujyiXgOOgInoqeoQWOj
+	JwSALmNM65noKt/WH7U8f3Bf1qAAksVFvUVnqgOvYm2XWEf31gTrWxsz6xCoLEEsyoWDcOuH0JujI
+	XRnUfbflvWjDmjTpLBN5+oYqZnjFEyJCFN7/gqHkN/ENjp4DVs39SqziknuZll4iPUPino33Sz46c
+	MOkpcamw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTP0l-00000006vGr-1qdm;
-	Tue, 17 Nov 2026 19:38:35 +0000
-Received: from mail-oo1-xc29.google.com ([2607:f8b0:4864:20::c29])
+	id 1xTP0m-00000006vIK-2RDv;
+	Tue, 17 Nov 2026 19:38:36 +0000
+Received: from mail-oo1-xc2b.google.com ([2607:f8b0:4864:20::c2b])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTP0i-00000006vF8-0tsd
+	id 1xTP0k-00000006vFk-1fRf
 	for linux-mtd@lists.infradead.org;
-	Tue, 17 Nov 2026 19:38:33 +0000
-Received: by mail-oo1-xc29.google.com with SMTP id 006d021491bc7-71ad5f20016so172024eaf.1
-        for <linux-mtd@lists.infradead.org>; Tue, 17 Nov 2026 11:38:32 -0800 (PST)
+	Tue, 17 Nov 2026 19:38:35 +0000
+Received: by mail-oo1-xc2b.google.com with SMTP id 006d021491bc7-703be215729so110672eaf.1
+        for <linux-mtd@lists.infradead.org>; Tue, 17 Nov 2026 11:38:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794944311; x=1795549111; darn=lists.infradead.org;
+        d=gmail.com; s=20260707; t=1794944313; x=1795549113; darn=lists.infradead.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=O4G14ey9cBLBk2X2B6diBYnPvevqumzkjH39N3CiTGc=;
-        b=QQG9YTt0BUs+/nVbx2Wxp6nVN8rtPBaQwyDZ0IB+RH+lX+pY9nzY1na61CeleRxQNY
-         UO/6CtyNX+VzSWjTvkiLfGIUGKDq5zTP5QoMup+Z7qbkNlt8TOwv3cqn4vzGXbYhmWRc
-         Jd0dtiLOrHostt2Y1Ho8TREvaCbMGRs5Ml8zX+3Zc68G/b1ynalfU57pcwBeNiARtOq+
-         PhjFdtKbkiD4j7QjJ8L1HVS2l1g7Gw+2Fy4I1+3biWpZNBejNO7iOtwk8PRp84BCgIVs
-         7yb2yUhD9t3oXJkJyQQs7cCLG+lL4ib2BrABJ9zWnBriamGA/sYUpluDLPYqE+ZWO4mO
-         S+bQ==
+        bh=9DIN0rAQkEW8U5nsqT7XDQZL+K6j1354oAyZ/5xfRqw=;
+        b=DURZB7677miW8E+/YvKm9FP+gH5q+rz1OfvJr9aJte1jlms0jpSGlfWpLHMDwZULOO
+         PfcOFBQb9p5CmSCGFCfE7WUI+/p8E4g6pLk//prtXElunHz6qk/DmQqhtKbx5bfuxw7n
+         VgTrm1eaXQHGfCqM3mvjM1Kzfh0qlxnwb3d0RtfNd7trNmBm6eOxA7MBlVhJF8MTc2vR
+         N6haL1cCdUJPeBxoib1+Xo/P6ubwB310hTJGhbo72DMtEUl3bYPg6A5H84yX7n0ph/Ek
+         sucyvKcHNPG6tpXMXoU4CpsYWA62pLWGO3fnKtERg6Hdbe9E6C4q8eL8AxEMyHC4lrLq
+         J0rA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794944311; x=1795549111;
+        d=1e100.net; s=20260707; t=1794944313; x=1795549113;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=O4G14ey9cBLBk2X2B6diBYnPvevqumzkjH39N3CiTGc=;
-        b=CvFXDkXUNkkPwzxaYjmtW8FzH1j3FqRFNG94mE9qyJGpm+WyCgALI6Bf0Co9ay7a/q
-         F4nRsRACK+wrmbmZIQ+FXPUila92pCkxIcag+/bbldTaLofqx3+XlB3jvpAeRGlUIE71
-         mPdsauTDpiZGyON3sr6xD5NvcL4PjAkjJ6sR8iLQtEyCqcDf+zK8jIIWmWPPhc7k8j8J
-         REVjvwc7zSQNa/bAlBl+64WPk4nmp8U6gucppBHArpwqUfDBRpA2qpzKFFad2f/V88mm
-         7Zo+n2XzyA5LycDQK5AhGLyeQWtbzaGdMJcQfI/4wHVQiX8p0RX9tX/O7iF1n17YxATX
-         05/A==
-X-Forwarded-Encrypted: i=1; AL+hErFnDirq1rD/01ae+mjwT14aOH1sYv8z0N3FhYTI2udrV7UVzaLDSDB4i0tksS6njjiegSmOrWah/z0=@lists.infradead.org
-X-Gm-Message-State: APuU4Z+Arbw18xRMg1rUwjHGlrAGaOGhZfWEeA1M7ib8avkLG7eqfIuF
-	YAHT0sJXTBd1Ba1oT+zYFynGWCRmpyNQNt5v9dMiki8USI7qP+Jh+hRY
-X-Gm-Gg: AYBFou02XDoEdXj/mBXs32xGtRRi/lT1qpeHLMJBSsLnXQP+wXQFeygi51PUYWQB1AR
-	ZA23sW6CisgrmQSiTpAW/jTS6PvfIGKswTx65J0m52jdCR1JnVVKQJzdyYQI3M9CmdoXfz9D+an
-	e9SfaPSG1sZQXsMcPqy3wDlCZw/AgtSEDoDjpNUGIrTNhOyZQ86uhWozJvU3q9R4ioAuU4yXpU5
-	Wry4YJLJShMboPCPjazwiQLn52UMtoEmgVbRF2H4iHRy0DWY+6mY1Of/EuAwM2SQCgE6SyTfhPF
-	eIW5/iECCJDFx6htVUYf4x9xOQs9LswfhmZcC74uHcDOHRv7zOE88Z5Ihx5afcyW5GWxA0kB8lK
-	u3GpM/2nXnUq67cnzgFa8Tu1XqLtt9wZQXEI99S3KYn1+2wWDh/3VNonNL/u51yLDULvRKAv1aA
-	EB09N/PAIzrqoFS8A4Cg1nNbwyrw+XIr/t593dZNFs/WJ75fnr/Y1D4OU1MetlLFELaMzDrlllt
-	JWM54NOW1SKcry0Vr4sEWmFpTZtUIAg7Xj2BxCaAu2R2wo+1KiYWWPc9y3CvYz/L+gcRhkt47Nd
-	LtPi+MH7UmtevD5yzT8ahLp9LqZqja3u+kKRpDGc+4wJj8Nd4qM1OnyFfTu3V12D/3lylQmvArB
-	lhs2W6hA3NCrU6wst9z2kL43DR9mmg+4KIsgriJScqqskO5cfBnLEMltfPLCAdy0xvEh1uCF8HD
-	k0q13N2Vqa/8CQ/tex4sX2c5d/4zEtF14bvhekLAsV3aJbl700ZnU=
-X-Received: by 2002:a05:6820:504c:b0:6f7:c0ec:1a66 with SMTP id 006d021491bc7-71b1853c1f3mr255396eaf.29.1794944311378;
-        Tue, 17 Nov 2026 11:38:31 -0800 (PST)
+        bh=9DIN0rAQkEW8U5nsqT7XDQZL+K6j1354oAyZ/5xfRqw=;
+        b=HGuSIlPGdwKhz+hnf1k9v6Z2DHjCpOpK4HtW+HdQB4W2qbxRrmTabmvQxCPpwiyVPA
+         0Y/iD7Zegf93GDDNb9T0JQW3ujbptOL33vFC+1H5BwxIUqyUj+SD8Al4+p26HDMldmiP
+         FGkbuwv0rOpscfh/4Itt4jyxqSUD42KhIngyp5kBb6+prvAT4SlbELJseSsXKdJzeFCG
+         EMV8IVndShRU4yQHZBpXwisfRw2yUZOfJclJGZPHSyNZtiEYaNfHrPGu7/eZzSR+FISt
+         YT/ByumQ0a9qWl/kux9eSSZHBkqwrp+Gh+gLRwSckEyXiH3zolj1+WaOY8AKhVzX/ur5
+         wOWw==
+X-Forwarded-Encrypted: i=1; AL+hErF1B00GcVzhGiA3p1/5B3g2a+3RlTeOmDFtxWvF9H+UfLrZdRI9OBQfTkKJPKuOD1cySgLyhzlaIxE=@lists.infradead.org
+X-Gm-Message-State: APuU4Z9y2MjqRD7MLksbtyTXi9A4ODSUdHxSUcE2k9x/kyLP0qkylpoz
+	YdAHJzSnDIJh8MTDb4bfOylImhhh2rxQXSIbG5xBuOYyh6oQ+h3alZp0
+X-Gm-Gg: AYBFou1QJjciTmEpejw4BBDuDXaFMMIUe04CiY4ZyZeuNnME0GvXaCT5I+QZOSP7jFm
+	E1MPGjY/37KicFxxETyUQv+RxujyiXLdg7bamHEeChJtZBIW0iEZOsdtPoYx4XvJ4syvuM5+RcJ
+	/lgHs1bBLMJ7ukNdrwmR0Vhw7OeP0qSwEEmtI093rQ70uZJg4XHO7nEGcgAoMpSP45v8WJWwvgd
+	jkKgiGSlGS7bBmdiZsB3Yv51QLhqvAX5gQlVKTUpYOdOPaBvRB/5Iv/cCLUnM+PMnKCCRF6r2iv
+	1IxnLbnu+/Zrg2lTljJD0tZ3/ErdIBKyPKenQf6NwmZsEchVnYClwhmQrnpsM99OYLH/8ZZr3zK
+	v/+Oo5OjPgipO/vpgph5Xx2A+HxoAFpsuTcTDXxMnZ0fr8aHXDHy0Fu1Kue3ICKyorIsuu9EQ5d
+	j+PguJx5sD9CcgNiOZK1OzgneDcIu0plP7tLhKbWZqaYk9J36Jvx07/6AeUt5cSj3C5DwNfhopA
+	5tRR0CcPnTWXhxcEjOmDQdncgcw5uUBNGJAOzUQf0eHW3FHsdptYpT46m8jjVhnhbZzl5l1eECw
+	8l+LJ2ACvbsWCVHDxPT8TLkJf2SYfhabkJv+Q997Bz534EcJSgiqykGFJS7QBKU3Wzrw9+itWCB
+	dpqGmdBXe1Qsb3PhWR60y6lR0ItQv+QxPor6IQs0QxDm87d0044P5WNWeBr4SVyjsIGCdH//Lnb
+	e8IGvgvLnT8gSvFESWSHL4m1iDaQo2/oXb2n1Taf+ZMpvKOmkTbwU=
+X-Received: by 2002:a05:6820:1c99:b0:713:ddf9:4502 with SMTP id 006d021491bc7-71b1846d7camr283052eaf.20.1794944313266;
+        Tue, 17 Nov 2026 11:38:33 -0800 (PST)
 Received: from [127.0.1.1] (174-29-1-49.hlrn.qwest.net. [174.29.1.49])
-        by smtp.gmail.com with ESMTPSA id 006d021491bc7-71b192272ffsm146281eaf.2.2026.11.17.11.38.28
+        by smtp.gmail.com with ESMTPSA id 006d021491bc7-71b192272ffsm146281eaf.2.2026.11.17.11.38.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2026 11:38:29 -0800 (PST)
+        Tue, 17 Nov 2026 11:38:32 -0800 (PST)
 From: James Hilliard <james.hilliard1@gmail.com>
-Date: Tue, 17 Nov 2026 12:38:10 -0700
-Subject: [PATCH 03/11] nvmem: exclude disconnected providers from callback
- admission
+Date: Tue, 17 Nov 2026 12:38:11 -0700
+Subject: [PATCH 04/11] nvmem: release write protection when the provider
+ disconnects
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Message-Id: <20261117-submit-nvmem-provider-lifetime-v1-v1-3-3cfbd48812b5@gmail.com>
+Message-Id: <20261117-submit-nvmem-provider-lifetime-v1-v1-4-3cfbd48812b5@gmail.com>
 References: <20261117-submit-nvmem-provider-lifetime-v1-v1-0-3cfbd48812b5@gmail.com>
 In-Reply-To: <20261117-submit-nvmem-provider-lifetime-v1-v1-0-3cfbd48812b5@gmail.com>
 To: Srinivas Kandagatla <srini@kernel.org>, 
@@ -96,8 +96,8 @@ Cc: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>,
  linux-mtd@lists.infradead.org, James Hilliard <james.hilliard1@gmail.com>
 X-Mailer: b4 0.17-dev
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261117_113832_452920_85D35836 
-X-CRM114-Status: GOOD (  17.24  )
+X-CRM114-CacheID: sfid-20261117_113834_483826_A04D12B0 
+X-CRM114-Status: GOOD (  11.69  )
 X-Spam-Score: -1.9 (-)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -119,186 +119,39 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-A provider remains visible until device_unregister(), after its operations
-have been disconnected. Device matching can still call into it during
-that interval, and consumer acquisition can use its module pointer after
-unregister has returned. Cell registration and DT fixups also lack a
-callback drain.
+Retained NVMEM consumers keep the device allocation alive after unregister.
+Keeping the write-protect GPIO until final device release prevents a
+replacement provider from requesting the same GPIO.
 
-Cover matching, cell addition, DT fixups and layout population with the
-existing SRCU domain. Serialize disconnection with consumer acquisition
-under nvmem_mutex, keeping the module-reference acquisition inside that
-critical section. Check sysfs permissions under SRCU as well, since the
-operations pointer may already have been cleared.
+Release it after draining provider callbacks, when no write can still
+use it. Do this for registration failures as well as unregister.
 
-Share the disconnect sequence between unregister and registration unwind.
-
-Fixes: 6a7b4134fb7a ("nvmem: protect nvmem_device::ops with SRCU")
+Fixes: 2a127da461a9 ("nvmem: add support for the write-protect pin")
 Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
 ---
- drivers/nvmem/core.c | 77 ++++++++++++++++++++++++++++++++++++++++------------
- 1 file changed, 59 insertions(+), 18 deletions(-)
+ drivers/nvmem/core.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-index 73aa53145f0b..c41266241f3f 100644
+index c41266241f3f..65d89498edeb 100644
 --- a/drivers/nvmem/core.c
 +++ b/drivers/nvmem/core.c
-@@ -307,10 +307,14 @@ static ssize_t bin_attr_nvmem_write(struct file *filp, struct kobject *kobj,
- 
- static umode_t nvmem_bin_attr_get_umode(struct nvmem_device *nvmem)
+@@ -584,7 +584,6 @@ static void nvmem_release(struct device *dev)
  {
--	struct nvmem_operations *ops = rcu_dereference_raw(nvmem->ops);
--
-+	struct nvmem_operations *ops;
- 	umode_t mode = 0400;
- 
-+	guard(srcu)(&nvmem->srcu);
-+	ops = srcu_dereference(nvmem->ops, &nvmem->srcu);
-+	if (!ops)
-+		return 0;
-+
- 	if (!nvmem->root_only)
- 		mode |= 0044;
- 
-@@ -351,7 +355,12 @@ static umode_t nvmem_attr_is_visible(struct kobject *kobj,
- {
- 	struct device *dev = kobj_to_dev(kobj);
  	struct nvmem_device *nvmem = to_nvmem_device(dev);
--	struct nvmem_operations *ops = rcu_dereference_raw(nvmem->ops);
-+	struct nvmem_operations *ops;
-+
-+	guard(srcu)(&nvmem->srcu);
-+	ops = srcu_dereference(nvmem->ops, &nvmem->srcu);
-+	if (!ops)
-+		return 0;
  
- 	/*
- 	 * If the device has no .reg_write operation, do not allow
-@@ -673,6 +682,10 @@ int nvmem_add_one_cell(struct nvmem_device *nvmem,
- 	struct nvmem_cell_entry *cell;
- 	int rval;
- 
-+	guard(srcu)(&nvmem->srcu);
-+	if (!srcu_dereference(nvmem->ops, &nvmem->srcu))
-+		return -ENODEV;
-+
- 	cell = kzalloc_obj(*cell);
- 	if (!cell)
- 		return -ENOMEM;
-@@ -815,6 +828,10 @@ int nvmem_add_cells_from_dt(struct nvmem_device *nvmem, struct device_node *np)
- 	const __be32 *addr;
- 	int len, ret;
- 
-+	guard(srcu)(&nvmem->srcu);
-+	if (!srcu_dereference(nvmem->ops, &nvmem->srcu))
-+		return -ENODEV;
-+
- 	for_each_child_of_node_scoped(np, child) {
- 		struct nvmem_cell_info info = {0};
- 
-@@ -871,8 +888,11 @@ int nvmem_layout_register(struct nvmem_layout *layout)
- 	if (!layout->add_cells)
- 		return -EINVAL;
- 
--	/* Populate the cells */
--	ret = layout->add_cells(layout);
-+	scoped_guard(srcu, &layout->nvmem->srcu) {
-+		if (!srcu_dereference(layout->nvmem->ops, &layout->nvmem->srcu))
-+			return -ENODEV;
-+		ret = layout->add_cells(layout);
-+	}
- 	if (ret)
- 		return ret;
- 
-@@ -894,6 +914,17 @@ void nvmem_layout_unregister(struct nvmem_layout *layout)
+-	gpiod_put(nvmem->wp_gpio);
+ 	nvmem_device_remove_all_cells(nvmem);
+ 	ida_free(&nvmem_ida, nvmem->id);
+ 	of_node_put(nvmem->dev.of_node);
+@@ -922,6 +921,8 @@ static void nvmem_disconnect(struct nvmem_device *nvmem)
+ 		ops = rcu_replace_pointer(nvmem->ops, NULL,
+ 					 lockdep_is_held(&nvmem_mutex));
+ 	synchronize_srcu(&nvmem->srcu);
++	gpiod_put(nvmem->wp_gpio);
++	nvmem->wp_gpio = NULL;
+ 	kfree(ops);
  }
- EXPORT_SYMBOL_GPL(nvmem_layout_unregister);
- 
-+static void nvmem_disconnect(struct nvmem_device *nvmem)
-+{
-+	struct nvmem_operations *ops;
-+
-+	scoped_guard(mutex, &nvmem_mutex)
-+		ops = rcu_replace_pointer(nvmem->ops, NULL,
-+					 lockdep_is_held(&nvmem_mutex));
-+	synchronize_srcu(&nvmem->srcu);
-+	kfree(ops);
-+}
-+
- /**
-  * nvmem_register() - Register a nvmem device for given nvmem_config.
-  * Also creates a binary entry in /sys/bus/nvmem/devices/dev-name/nvmem
-@@ -1067,10 +1098,8 @@ struct nvmem_device *nvmem_register(const struct nvmem_config *config)
- err_remove_compat:
- 	nvmem_sysfs_remove_compat(nvmem);
- err_put_device:
--	ops = rcu_replace_pointer(nvmem->ops, NULL, true);
--	synchronize_srcu(&nvmem->srcu);
-+	nvmem_disconnect(nvmem);
- 	put_device(&nvmem->dev);
--	kfree(ops);
- 
- 	return ERR_PTR(rval);
- }
-@@ -1083,19 +1112,15 @@ EXPORT_SYMBOL_GPL(nvmem_register);
-  */
- void nvmem_unregister(struct nvmem_device *nvmem)
- {
--	struct nvmem_operations *ops;
--
- 	if (!nvmem)
- 		return;
- 
- 	blocking_notifier_call_chain(&nvmem_notifier, NVMEM_REMOVE, nvmem);
- 
--	ops = rcu_replace_pointer(nvmem->ops, NULL, true);
--	synchronize_srcu(&nvmem->srcu);
-+	nvmem_disconnect(nvmem);
- 
- 	nvmem_sysfs_remove_compat(nvmem);
- 	nvmem_destroy_layout(nvmem);
--	kfree(ops);
- 
- 	device_unregister(&nvmem->dev);
- }
-@@ -1135,17 +1160,33 @@ struct nvmem_device *devm_nvmem_register(struct device *dev,
- }
- EXPORT_SYMBOL_GPL(devm_nvmem_register);
- 
-+struct nvmem_match_data {
-+	void *data;
-+	int (*match)(struct device *dev, const void *data);
-+};
-+
-+static int nvmem_match_device(struct device *dev, const void *data)
-+{
-+	const struct nvmem_match_data *match = data;
-+	struct nvmem_device *nvmem = to_nvmem_device(dev);
-+
-+	guard(srcu)(&nvmem->srcu);
-+	if (!srcu_dereference(nvmem->ops, &nvmem->srcu))
-+		return 0;
-+	return match->match(dev, match->data);
-+}
-+
- static struct nvmem_device *nvmem_device_match(void *data,
- 			int (*match)(struct device *dev, const void *data))
- {
-+	struct nvmem_match_data match_data = { .data = data, .match = match };
- 	struct nvmem_device *nvmem = NULL;
- 	struct device *dev;
- 
--	scoped_guard(mutex, &nvmem_mutex) {
--		dev = bus_find_device(&nvmem_bus_type, NULL, data, match);
--		if (dev)
--			nvmem = to_nvmem_device(dev);
--	}
-+	guard(mutex)(&nvmem_mutex);
-+	dev = bus_find_device(&nvmem_bus_type, NULL, &match_data, nvmem_match_device);
-+	if (dev)
-+		nvmem = to_nvmem_device(dev);
- 	if (!nvmem)
- 		return ERR_PTR(-EPROBE_DEFER);
  
 
 -- 
