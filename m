@@ -2,62 +2,102 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D63C9606A32A
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Nov 2026 20:07:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A580606A31C
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Nov 2026 21:41:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=Mod+/62j;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=aji6BzPw
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=BszQrL/3;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=G/W7wgJG
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Reply-To:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:References:
-	In-Reply-To:Cc:To:Subject:From:Message-ID:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
 	List-Unsubscribe-Post:List-Owner;
-	bh=Unj2gjTD9euWqgnRQQD34nS7Zi2spGknMpdG7iF+1Rk=; b=Mod+/62jf/p7jG/z4qCmnRuxId
-	2gt/An/9lNlZQcK4NKsl8mrqeinySYL+TNmftq0+7GXtqUpRXjTbZDa7FN/N+Q/NpLniwmM6Mp4Qy
-	/LLXozKJLXbIWnOrighBDGCtILRZ/8r8S3f8VqQ8HqcWb/AvNp5iPgKAKxeM8bGPzITw7EfRMyY6/
-	zAu5LXFGen0oDAp7LDz24aVN4wwxRJZiMl7FLJebTelYmJ2lDGtasGOm881f+xC5kGXnwlRdoNGhY
-	SuQQaohKsqTeoJsLI2ZR1AyyiarC7wYfJncVPvSgiiM0D8iGnhWqALb/KP62rkMSc18Mi51oKUkUy
-	lIj+3Ykg==;
+	bh=V7T6bCTrZoTNPLrMLs7Z9LPzzu4a+YNClXbEfZepWU8=; b=BszQrL/3ijoXSRAExGorC+/E9N
+	5LkRYma55dX/tl5pbKbJUUFRozvCwtJ87oX+uH4W+2w8WzwbR74GXyBO4Mocjd8WW71urqLJ7Jfdm
+	Gli/9cY+VsHKR/8R5EFlDgS1MaTmG8z5XgqOo+ozjE1kWrLRv/QiLbV5LLgvduMqfRq+UDuZFgmW5
+	K+UCfHnysc8XdEgJLpznhjOObpdaPtF9V+65ULRTp7wrIlH+MbChLU8EXcjbZQAKHxzB/uw2aKTj/
+	zbKjvgwqjyAWQ0/Tu0ub3/csetbMIpH0bTCNAKF3iu8hUa4WTw1ZQKAxep4QNFtLXgz2e1xdsKKOD
+	GnWjhBEA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTPSX-00000006zPa-3TR6;
-	Tue, 17 Nov 2026 20:07:17 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1xTQw1-000000079Fm-248c;
+	Tue, 17 Nov 2026 21:41:49 +0000
+Received: from mail-wr1-x42b.google.com ([2a00:1450:4864:20::42b])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTPSW-00000006zPP-0Ec8
+	id 1xTQvy-000000079Ek-2osd
 	for linux-mtd@lists.infradead.org;
-	Tue, 17 Nov 2026 20:07:16 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 7113B44E82;
-	Tue, 17 Nov 2026 20:07:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD7CE1F000C4;
-	Tue, 17 Nov 2026 20:07:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794946035;
-	bh=C+auzSP8vYv/AykLo+QmG5xbC6yWj6/a5wNdehIgm4Q=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=aji6BzPwDO4e+Zn38fjtCNJhJINvJAwOQ+PvDY4s5PtB79CvX/yiHMETnHnBRrc02
-	 olRuSCLTZQcuh2g9bvulyvbRdHITLR59zVbrD/+MnQ6cNfpS7VcKPJU7Roo7TTlUlH
-	 FnQtN9m/Gy6P0p0KPX8EqtNhidTD8NSKcCQWBjY/qsI4ayYRpHDHnsnpE5eM/ddN9S
-	 Gopocu/VbJFSfes2p8jitTKr4/e5IT+uVDkM8maRyOv/LS2Bdc1M3vZSLC3eFs13AQ
-	 yPkTwrziIH5gAY8mLqRN2Efn7Q50AT4J5iITEqT6IuA86S9SOBbQFxdDZkfGsNBKeW
-	 AE4LNwTL3UtGw==
-Message-ID: <sashiko-outbox-219563@kernel.org>
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH 03/11] nvmem: exclude disconnected providers from
- callback admission
-To: "James Hilliard" <james.hilliard1@gmail.com>, "Srinivas Kandagatla" <srini@kernel.org>, "Mathieu
- Dubois-Briand" <mathieu.dubois-briand@bootlin.com>, "Michael Walle" <mwalle@kernel.org>,
- =?utf-8?b?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Cc: "Bartosz Golaszewski" <bartosz.golaszewski@oss.qualcomm.com>, "Greg
- Kroah-Hartman" <gregkh@linuxfoundation.org>, "Miquel Raynal" <miquel.raynal@bootlin.com>, "Paul
- Cercueil" <paul@crapouillou.net>, linux-mtd@lists.infradead.org
-In-Reply-To: <20261117-submit-nvmem-provider-lifetime-v1-v1-3-3cfbd48812b5@gmail.com>
-References: <20261117-submit-nvmem-provider-lifetime-v1-v1-0-3cfbd48812b5@gmail.com>
- <20261117-submit-nvmem-provider-lifetime-v1-v1-3-3cfbd48812b5@gmail.com>
-Date: Tue, 17 Nov 2026 20:07:14 +0000
+	Tue, 17 Nov 2026 21:41:48 +0000
+Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-48dfc0421d9so195063f8f.1
+        for <linux-mtd@lists.infradead.org>; Tue, 17 Nov 2026 13:41:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20260707; t=1794951704; x=1795556504; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=cM8zYdFhYY7QMWD01wtMfnMSvgeVrmpAogUxeL6zgEY=;
+        b=G/W7wgJGRD3fBC95okwJALzlE8PZIJtL3qIuyYwNPU0hCz4fVyqbWKZ1ZKYZ68S5R5
+         j4s2QtU6AMEPkk8yUTrPuPryc2WofHycQyMuleyh9tZLSeaMnX305SmnGq9VxyHd6Ri4
+         9D/t1dvyh8kq8NS1IiYjaw52nWBIvjOcoh0wiqKng0rOpkH4/sd8eLa8bS6CFVu+lxff
+         TD8qZ94KRD+Phj26GxjK/LaRja+SkekxU3v5dheatkxysHV9GZWNVbrN4r7BijgGtyG+
+         exeHMgHNoTrWhcRM3fHWW4dOYMtvq/Ji4Nkip2xkbHXJIRF4uNygV7Y/rWkpR9mFKP48
+         naUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1794951704; x=1795556504;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=cM8zYdFhYY7QMWD01wtMfnMSvgeVrmpAogUxeL6zgEY=;
+        b=Ey9TYT3ODfDdlfG1zOKnRRockx90PQIluN4N13xOiermxy1+F++OiTNIj8NYBLnOqR
+         /wJlL7QcL5TlxiceIZtiT4+FWeeIkIF6amNFYsQoz9M9aZE8g/B7f/1wobypB/01nQXz
+         e7QohrzPHAEIAGfpiRvbq+csKitH0eL/Rw7S/btbUhYj7I0MFCzqDQjYNIMO3LZLZQS0
+         U8B2u+jrygV7pnrvImPhUKE5YcH4xnsPzAzcbtJTwWgZPVlHAQGutK5FrAvY88UnWTKe
+         P00VCwGXyqtLwrEBrXjlk5cEhTWV856Q8JVrKsHfC7O+Cl93KEh2RSAfEsqtdRnXTxXi
+         uhUw==
+X-Gm-Message-State: APuU4Z8X2x89Fr0n+OcAjKsBAD4QfaEfm47RMCYmrlG+a6VeHlESLxVw
+	CHA6RoUFWTXoXUGKH9aA0Qkf9SETSkI/3hp/uPGRgPKIiCc8WMYwD9N4
+X-Gm-Gg: AZFdTZeB4fDa7oNTyAR6ew/YCc7Z0sv9MiRzgdnTyUHjuZXxrlT7gsPPeIqzqwfZOa6
+	7b96W/2PMJs2+ZbmTbViU31EfzsoxuFsl9eEemyjnbNvEdQBQ9Fb7sMLKTvJoKojd/kaMg7q8i8
+	JmOW9LCFt2fDMQ6Q8iW5Pei0vmujzY28B550c6fM0eCXZ7TawQxjq/di/DQB5eltNmbiPsCagxq
+	QXZ9cgVRMPVjf6dMuUXQ3VliGSA2ISIqzflL7ro+1KyCeidiJ3TYf58bAGWlLiWBsxsyYt56V+p
+	4gggmOnoP8QDxlMeX+0319BlmVo1EEFk8DXvGSFriE23wpfFCgZdZHU5rPxiVAG/i+YCf8dSqDw
+	0mwB/kppnqenqX4xkAaFrf+OjMfeOHJvhHRD9bLhMsupGbii/uiRAq0cv9JPiKACTWcLLxc1acJ
+	TyeP/W2VdDaZFjTwaFUBgOZYYipJXlKv5xbv7v95jgBxFyNQEDPxXuHTj/K/oeg1/23KZ8W3BUF
+	7bdbqp7AOwfgTVnVNjhDj24WXpqziyLO7S9T++eaLc7bO5dvbYmBf8Z0A4m6pTq863RewBE4oi+
+	Lrrpe4V2gPSaXaOw4dkUN/S46w8h8nMcxWT5AM5pCtqFs5lr1sI64u6VbH/ao8xijZrWKWhOWOg
+	HATLKUqj7TjWZSX/kvBmm80YI39CI8ptADwp19HY14xDyXFgp
+X-Received: by 2002:a05:6000:2798:b0:48d:f99d:a0d3 with SMTP id ffacd0b85a97d-4a63b137aa8mr951124f8f.46.1794951703521;
+        Tue, 17 Nov 2026 13:41:43 -0800 (PST)
+Received: from center.jhjvjihww5qejoy14qwv1cc4td.frax.internal.cloudapp.net ([131.189.143.225])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4a65560b5f1sm978391f8f.21.2026.11.17.13.41.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Nov 2026 13:41:42 -0800 (PST)
+From: Orgad Shaneh <orgads@gmail.com>
+To: miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com,
+	tsbogend@alpha.franken.de
+Cc: linux-mtd@lists.infradead.org,
+	linux-mips@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linusw@kernel.org,
+	kaloz@kernel.org,
+	ulli.kroll@googlemail.com,
+	john@phrozen.org,
+	nico@fluxnic.net,
+	dwmw2@infradead.org,
+	corbet@lwn.net,
+	linux-doc@vger.kernel.org
+Subject: [PATCH v4 0/4] mtd: point() for cfi_cmdset_0002, on simple maps only
+Date: Tue, 17 Nov 2026 21:41:37 +0000
+Message-ID: <20261117214141.3826637-1-orgads@gmail.com>
+X-Mailer: git-send-email 2.47.3
+X-Archived-By: <archiver.kernel.org>
+MIME-Version: 1.0
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20261117_134146_763155_394B0539 
+X-CRM114-Status: GOOD (  13.81  )
+X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,71 +107,79 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: sashiko-reviews@lists.linux.dev
-X-Archived-By: <archiver.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-8.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-VGhhbmsgeW91IGZvciB5b3VyIGNvbnRyaWJ1dGlvbiEgU2FzaGlrbyBBSSByZXZpZXcgZm91bmQg
-MSBwb3RlbnRpYWwKaXNzdWUgdG8gY29uc2lkZXI6Ci0gW01lZGl1bV0gbnZtZW06IFNSQ1UgaGVs
-ZCBhY3Jvc3MgbnZtZW1fY2VsbF9lbnRyeV9hZGQoKSB3aXRob3V0CiAgcmVjaGVja2luZyBvcHMK
-LS0KCmNvbW1pdCBmMmYzM2IxMDA1ZGU4MTk3OGMwOThlYmVkNDFkMGZjOGE3MWM2ZjdlCkF1dGhv
-cjogSmFtZXMgSGlsbGlhcmQgPGphbWVzLmhpbGxpYXJkMUBnbWFpbC5jb20+Cgpudm1lbTogZXhj
-bHVkZSBkaXNjb25uZWN0ZWQgcHJvdmlkZXJzIGZyb20gY2FsbGJhY2sgYWRtaXNzaW9uCgpUaGlz
-IGNvbW1pdCBwcm90ZWN0cyBzeXNmcyBwZXJtaXNzaW9uIGNoZWNrcywgY2VsbCBhZGRpdGlvbiwg
-RFQgZml4dXBzLApsYXlvdXQgcG9wdWxhdGlvbiwgYW5kIGRldmljZSBtYXRjaGluZyB3aXRoIHRo
-ZSBwcm92aWRlcidzIFNSQ1UgZG9tYWluLAphbmQgc2VyaWFsaXplcyBwcm92aWRlciBkaXNjb25u
-ZWN0aW9uIGFnYWluc3QgY29uc3VtZXIgbG9va3VwIHVuZGVyCm52bWVtX211dGV4LgoKPiBkaWZm
-IC0tZ2l0IGEvZHJpdmVycy9udm1lbS9jb3JlLmMgYi9kcml2ZXJzL252bWVtL2NvcmUuYwo+IGlu
-ZGV4IDczYWE1MzE0NWYwYjcuLmM0MTI2NjI0MWYzZjkgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9u
-dm1lbS9jb3JlLmMKPiArKysgYi9kcml2ZXJzL252bWVtL2NvcmUuYwpbIC4uLiBdCj4gQEAgLTY3
-Myw2ICs2ODIsMTAgQEAgaW50IG52bWVtX2FkZF9vbmVfY2VsbChzdHJ1Y3QgbnZtZW1fZGV2aWNl
-ICpudm1lbSwKPiAgCXN0cnVjdCBudm1lbV9jZWxsX2VudHJ5ICpjZWxsOwo+ICAJaW50IHJ2YWw7
-Cj4gIAo+ICsJZ3VhcmQoc3JjdSkoJm52bWVtLT5zcmN1KTsKPiArCWlmICghc3JjdV9kZXJlZmVy
-ZW5jZShudm1lbS0+b3BzLCAmbnZtZW0tPnNyY3UpKQo+ICsJCXJldHVybiAtRU5PREVWOwo+ICsK
-PiAgCWNlbGwgPSBremFsbG9jX29iaigqY2VsbCk7Cj4gIAlpZiAoIWNlbGwpCj4gIAkJcmV0dXJu
-IC1FTk9NRU07CgpbU2V2ZXJpdHk6IE1lZGl1bV0KRG9lcyBob2xkaW5nIG52bWVtLT5zcmN1IGFj
-cm9zcyBudm1lbV9jZWxsX2VudHJ5X2FkZCgpIGludmVydCB0aGUgbG9jawpvcmRlcmluZyB3aXRo
-IG52bWVtX25vdGlmaWVyLnJ3c2VtIGFuZCBhbGxvdyBjZWxscyB0byBiZSBhZGRlZCBhZnRlcgpu
-dm1lbV91bnJlZ2lzdGVyKCkgaGFzIGRpc2Nvbm5lY3RlZCB0aGUgcHJvdmlkZXI/Cgpudm1lbV9j
-ZWxsX2VudHJ5X2FkZCgpIGNhbGxzIGJsb2NraW5nX25vdGlmaWVyX2NhbGxfY2hhaW4oJm52bWVt
-X25vdGlmaWVyLApOVk1FTV9DRUxMX0FERCwgY2VsbCkgd2hpbGUgbnZtZW0tPnNyY3UgaXMgaGVs
-ZC4gQWxsIG52bWVtLT5zcmN1IGluc3RhbmNlcwphcmUgaW5pdGlhbGl6ZWQgd2l0aCBpbml0X3Ny
-Y3Vfc3RydWN0KCkgYW5kIHNoYXJlIGEgc2luZ2xlIHN0YXRpYyBsb2NrZGVwCmNsYXNzLiBOb3Rp
-ZmllciBjYWxsYmFja3Mgc3VjaCBhcyBjcDUwMF9udm1lbSgpIGNhbGwgbnZtZW1fcmVnaXN0ZXIo
-KSBhbmQKbnZtZW1fdW5yZWdpc3RlcigpIHVuZGVyIG52bWVtX25vdGlmaWVyLnJ3c2VtLCB3aGlj
-aCBvbiBlcnJvciB1bndpbmQgb3IKcmVtb3ZhbCBjYWxscyBudm1lbV9kaXNjb25uZWN0KCkgLT4g
-c3luY2hyb25pemVfc3JjdSgmbnZtZW0tPnNyY3UpOgoKQ1BVMCAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgIENQVTEKLS0tLSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC0tLS0KbG9j
-aygmbnZtZW0tPnNyY3UpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBkb3duX3Jl
-YWQoJm52bWVtX25vdGlmaWVyLnJ3c2VtKQpkb3duX3JlYWQoJm52bWVtX25vdGlmaWVyLnJ3c2Vt
-KQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3luY2hyb25pemVfc3JjdSgmbnZt
-ZW0tPnNyY3UpCgogKioqIERFQURMT0NLICoqKgoKQ1BVMDogbnZtZW1fYWRkX29uZV9jZWxsKCkg
-LT4gbnZtZW1fY2VsbF9lbnRyeV9hZGQoKQpDUFUxOiBibG9ja2luZ19ub3RpZmllcl9jYWxsX2No
-YWluKCkgLT4gY3A1MDBfbnZtZW0oKSAtPiBudm1lbV9yZWdpc3RlcigpCiAgICAgIC0+IG52bWVt
-X2Rpc2Nvbm5lY3QoKQoKSW4gYWRkaXRpb24sIG52bWVtX2FkZF9vbmVfY2VsbCgpIG9ubHkgY2hl
-Y2tzIG52bWVtLT5vcHMgYXQgZW50cnkgYmVmb3JlCm52bWVtX2NlbGxfZW50cnlfYWRkKCkgYWNx
-dWlyZXMgbnZtZW1fbXV0ZXg6Cgpkcml2ZXJzL252bWVtL2NvcmUuYzpudm1lbV9jZWxsX2VudHJ5
-X2FkZCgpIHsKCXNjb3BlZF9ndWFyZChtdXRleCwgJm52bWVtX211dGV4KQoJCWxpc3RfYWRkX3Rh
-aWwoJmNlbGwtPm5vZGUsICZjZWxsLT5udm1lbS0+Y2VsbHMpOwoJYmxvY2tpbmdfbm90aWZpZXJf
-Y2FsbF9jaGFpbigmbnZtZW1fbm90aWZpZXIsIE5WTUVNX0NFTExfQURELCBjZWxsKTsKfQoKSWYg
-bnZtZW1fdW5yZWdpc3RlcigpIHJ1bnMgY29uY3VycmVudGx5LCBpdCBzZW5kcyBOVk1FTV9SRU1P
-VkUsIGNsZWFycwpudm1lbS0+b3BzIHVuZGVyIG52bWVtX211dGV4IGluIG52bWVtX2Rpc2Nvbm5l
-Y3QoKSwgYW5kIHdhaXRzIGluCnN5bmNocm9uaXplX3NyY3UoKS4gQW4gaW4tZmxpZ2h0IG52bWVt
-X2FkZF9vbmVfY2VsbCgpIHRoYXQgcGFzc2VkIHRoZQppbml0aWFsIGNoZWNrIHRoZW4gYWNxdWly
-ZXMgbnZtZW1fbXV0ZXggd2l0aG91dCByZWNoZWNraW5nIG52bWVtLT5vcHMsCmFwcGVuZHMgdGhl
-IGNlbGwgdG8gdGhlIGRpc2Nvbm5lY3RlZCBwcm92aWRlciwgYW5kIGVtaXRzIE5WTUVNX0NFTExf
-QURECmFmdGVyIE5WTUVNX1JFTU9WRS4KCi0tIApTYXNoaWtvIEFJIHJldmlldyDCtyBodHRwczov
-L3Nhc2hpa28uZGV2LyMvcGF0Y2hzZXQvMjAyNjExMTctc3VibWl0LW52bWVtLXByb3ZpZGVyLWxp
-ZmV0aW1lLXYxLXYxLTAtM2NmYmQ0ODgxMmI1QGdtYWlsLmNvbT9wYXJ0PTMKCl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlz
-Y3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9saW51eC1tdGQvCg==
+jffs2 scans a flash in place through mtd_point() when the chip driver
+offers it, and copies every used eraseblock otherwise. cfi_cmdset_0002
+has no point(), so an Octeon CN6635 board with a 100 MB jffs2
+partition on an 8-bit M29EW spends 15-30 s mounting it at every boot.
+
+1/4 lets point() through only for maps read through the simple
+accessors; cfi_cmdset_0001, lpddr, map_ram and map_rom point today at
+maps whose own accessors swap bytes, switch pins or lock the bus.
+2/4 adds point() to cfi_cmdset_0002 behind that gate.
+3/4 gives each Octeon flash device its own map.
+4/4 lets that map use the simple accessors when no eMMC shares the
+boot bus. 3/4 and 4/4 build alone, but 4/4 only pays off with 1/4 and
+2/4, so taking all four through mtd with an ack from Thomas seems
+simplest.
+
+Tested on that board with 7.3.4: the mount drops to 0.55-0.6 s, and
+an 8 MB file written to the jffs2 partition keeps its md5 across a
+reboot. v3 held its md5s across ten 8 MB write/delete rounds on 7.2.9.
+The series applies to v7.4-rc1.
+
+One question: a cramfs on AMD flash falls back to the block device
+today. After 2/4 it keeps its image pointed while mounted, as it does
+on Intel flash, so jffs2 writes to the same chip wait until cramfs is
+unmounted. Is that acceptable, or should point() in cfi_cmdset_0002
+be opt-in?
+
+Changes in v4:
+- 1/4 also gates lpddr, map_ram and map_rom (compile-tested only).
+- New 3/4: the per-device map sashiko asked for on v2 and v3.
+- Rebased onto v7.4-rc1; Assisted-by dropped (an LLM helped write
+  this series).
+
+Earlier changes, in v4 numbering:
+- v3: in 2/4, an XIP erase no longer lets a point through either.
+- v2: in 2/4, a point no longer suspends an erase in progress; 4/4
+  checks the bank width before ioremap().
+
+v3: https://lore.kernel.org/all/20261011062908.2365879-1-orgads@gmail.com/
+v2: https://lore.kernel.org/all/20261010180840.2152492-1-orgads@gmail.com/
+v1: https://lore.kernel.org/all/20261010172142.2138956-1-orgads@gmail.com/
+
+Orgad Shaneh (4):
+  mtd: maps: only point() maps read through the simple accessors
+  mtd: cfi_cmdset_0002: implement point() for simple linear maps
+  MIPS: Octeon: flash: allocate the map per device
+  MIPS: Octeon: flash: use the simple map accessors without a shared eMMC
+
+  Documentation/filesystems/cramfs.rst  |  11 ++-
+  arch/mips/cavium-octeon/flash_setup.c |  73 +++++++++++----
+  drivers/mtd/chips/cfi_cmdset_0001.c   |   2 +-
+  drivers/mtd/chips/cfi_cmdset_0002.c   | 167 +++++++++++++++++++++++++++++++++-
+  drivers/mtd/chips/map_ram.c           |   4 +-
+  drivers/mtd/chips/map_rom.c           |   6 +-
+  drivers/mtd/lpddr/lpddr_cmds.c        |   2 +-
+  drivers/mtd/maps/map_funcs.c          |  12 +++
+  include/linux/mtd/map.h               |   2 +
+  9 files changed, 245 insertions(+), 34 deletions(-)
+
+-- 
+2.53.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
