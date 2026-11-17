@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BFD7606A32A
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7619E606A31C
 	for <linux-mtd@archiver.kernel.org>; Tue, 17 Nov 2026 09:38:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=tUEWGhK/;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=gV4ssBiq
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=VKCKlqVK;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=lNz1zWnR
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,37 +14,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=jJn/8N8uM27Voow5qdCWJzSJAM3OWzYXMNY4X40+77U=; b=tUEWGhK/A8GIWcCSX8gtT84NNi
-	WHTf6a7AFK7NROHi+EsKyOXTkrfNmAhhiNhHjPHF2SaUB5nJd//zpkCxpaEJk0bQG7k3mk7fM8PUj
-	36AxbjQ7Pq8pyMWKD35JfyIGL5sXtFuLp5szpW4vnMD9cR0V3eKoED5rUlffsoZwssOcaJIbJyJiE
-	wkia8E8hOz4eKjWJeK8E4XMnIKUQwK07SUJrDfijUBBIWmhUfKj0vbq5yGjz0jM7/kE9qTjfqkJDs
-	3NcBTmIT6ykRzLzdvEY5FeBpBcPqHSPUEphWmXtbqg+ALce6vG0tw80MHBT6NaH4rRdc+60owBe9V
-	90znzZTQ==;
+	bh=h4dnd5X8eqmA6GA1jAHTOEqEQFYEpb6qy4Xy6DkGZSQ=; b=VKCKlqVK6GAoVgfTCEqooR40Kg
+	yAyjkF91GOXb0Km8mT4QYmFrSkAyDOm2TMhebFQiY5rv1/KGiNnDvjMijotT9qMUzuFs7EH8y1MjH
+	Xl93OQtfD4aCYDl7on6hXf6ldSE27HMJ2opSW7EfIJQUNR/LAgsNSc5YI04jAFdZIgOHFyJ7xH5X5
+	N8lkyXd6llFJddj0UHxt7uA2MEgtK4d2FjqCFiYcuY7UnPD9qIbpAKnevKjDM5OgvmNm4kuaPGMnW
+	Tg9anaPmw4qn/GPT4/QJRX7AmKYUUTHcvmkNTKl9ZRbiwfN+rk5S+bKZr+Ix11/+40UhL9GSa47bR
+	ksRyNDYQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTFeD-000000057VS-31DF;
+	id 1xTFeD-000000057Vv-43bz;
 	Tue, 17 Nov 2026 09:38:41 +0000
-Received: from smtpout-02.galae.net ([185.246.84.56])
+Received: from smtpout-03.galae.net ([185.246.85.4])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTFds-0000000571J-36Oy;
-	Tue, 17 Nov 2026 09:38:24 +0000
+	id 1xTFdu-0000000571W-39GI
+	for linux-mtd@lists.infradead.org;
+	Tue, 17 Nov 2026 09:38:25 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id 21F001A158C;
-	Tue, 17 Nov 2026 09:38:19 +0000 (UTC)
+	by smtpout-03.galae.net (Postfix) with ESMTPS id 2C8014E41146;
+	Tue, 17 Nov 2026 09:38:21 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id E52805FC81;
-	Tue, 17 Nov 2026 09:38:18 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 2BAA811BC1129;
-	Tue, 17 Nov 2026 10:38:16 +0100 (CET)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id F0B2B5FC81;
+	Tue, 17 Nov 2026 09:38:20 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id A94BF11BC0493;
+	Tue, 17 Nov 2026 10:38:18 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1794908298; h=from:subject:date:message-id:to:cc:mime-version:
+	t=1794908299; h=from:subject:date:message-id:to:cc:mime-version:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=niJD0njQ1UDwvr3T+XYsWPwrBy0c6qlXpaKDdhLmAMk=;
-	b=gV4ssBiqLDmoCoXe4SIe/bAL9n9hYqos8FqYkltwMlaPBbOoBoKvKweKGq4kJIk2LPrHoS
-	QxTq4Tr7BQxbOt+1EWq72l/wdppm1KPu5tcgsipDdfYBTrTRt/cWPVs1JBYqon11EreHAa
-	s6CcWSvxAbB80MaBHKcXOEqQUJTZYrD40/070WgMNEPIpE+D/ktouXwY0HpeDpBe3VhedC
-	/eewolPwxLk6j840izkWrephiqyu6o/5Wx5yCm5B6fYW4WjGW8unTw3xY44q4GiAPbCEHO
-	5VfYMCgAtietMz0v1JSIdMLNdukBXq67F1BpOR2aN8OWIUzDVot+m+IERxcX6Q==
+	bh=mkZMJlvFsdTPHRfq55Zs9n/rcb6WsZ4+FI+m4sk8u6c=;
+	b=lNz1zWnRE4JSNSZLC26MP50YP+jWpa1WLSxjtb0fqA3RPZvECe35jhudwj70niVx9ySB8A
+	I26rIhF56dORH1f+mQkvQq+2iXY90gHh57PlT7uwySLwXkTMCloraE2Mp1EZdUqkwsevrk
+	m6Yjd7uJi3aeu1F9Ftk2SVCWWEBv5Pr8rR1/iEdcaKqU5ELRPQSDmCYG37mOe+t5hpiNXW
+	Q/VtRIrpc06Ctcrw9qU3/1O6A7v7RxABiCvLPMJA8oL+tZFViSQfEDJiVa+ANSgPWEtNLq
+	Ykswoj/OWcgM9UhPK+6pJ40ZMm/gW3yCRm9+Mccflpufa8KFCdJuCkHSedTFNA==
 From: Paul Cercueil <paul.cercueil@bootlin.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
@@ -52,14 +53,10 @@ To: Miquel Raynal <miquel.raynal@bootlin.com>,
 Cc: linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Paul Cercueil <paul.cercueil@bootlin.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: [PATCH v2 09/12] mtd: rawnand: mtk: Remove #ifdef guards for PM related functions
-Date: Tue, 17 Nov 2026 10:37:47 +0100
-Message-ID: <20261117093751.14988-10-paul.cercueil@bootlin.com>
+	Paul Cercueil <paul.cercueil@bootlin.com>
+Subject: [PATCH v2 10/12] mtd: rawnand: omap_elm: Remove #ifdef guards for PM related functions
+Date: Tue, 17 Nov 2026 10:37:48 +0100
+Message-ID: <20261117093751.14988-11-paul.cercueil@bootlin.com>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20261117093751.14988-1-paul.cercueil@bootlin.com>
 References: <20261117093751.14988-1-paul.cercueil@bootlin.com>
@@ -67,8 +64,8 @@ X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261117_013822_107034_4E327E6A 
-X-CRM114-Status: GOOD (  14.32  )
+X-CRM114-CacheID: sfid-20261117_013822_978721_1E94E6DE 
+X-CRM114-Status: GOOD (  14.20  )
 X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -99,49 +96,44 @@ regressions are subsequently easier to catch.
 
 Signed-off-by: Paul Cercueil <paul.cercueil@bootlin.com>
 ---
-Cc: Matthias Brugger <matthias.bgg@gmail.com>
-Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-mediatek@lists.infradead.org
 
 v2: No change
 ---
- drivers/mtd/nand/raw/mtk_nand.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ drivers/mtd/nand/raw/omap_elm.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/mtk_nand.c b/drivers/mtd/nand/raw/mtk_nand.c
-index c439b7814ebb..4b8451772f9b 100644
---- a/drivers/mtd/nand/raw/mtk_nand.c
-+++ b/drivers/mtd/nand/raw/mtk_nand.c
-@@ -1591,7 +1591,6 @@ static void mtk_nfc_remove(struct platform_device *pdev)
- 	mtk_ecc_release(nfc->ecc);
+diff --git a/drivers/mtd/nand/raw/omap_elm.c b/drivers/mtd/nand/raw/omap_elm.c
+index c1d19b8e6715..2e8ab20d8edb 100644
+--- a/drivers/mtd/nand/raw/omap_elm.c
++++ b/drivers/mtd/nand/raw/omap_elm.c
+@@ -428,7 +428,6 @@ static void elm_remove(struct platform_device *pdev)
+ 	pm_runtime_disable(&pdev->dev);
  }
  
 -#ifdef CONFIG_PM_SLEEP
- static int mtk_nfc_suspend(struct device *dev)
- {
- 	struct mtk_nfc *nfc = dev_get_drvdata(dev);
-@@ -1635,8 +1634,7 @@ static int mtk_nfc_resume(struct device *dev)
+ /*
+  * elm_context_save
+  * saves ELM configurations to preserve them across Hardware powered-down
+@@ -540,9 +539,8 @@ static int elm_resume(struct device *dev)
+ 	elm_context_restore(info);
  	return 0;
  }
- 
--static SIMPLE_DEV_PM_OPS(mtk_nfc_pm_ops, mtk_nfc_suspend, mtk_nfc_resume);
 -#endif
-+static DEFINE_SIMPLE_DEV_PM_OPS(mtk_nfc_pm_ops, mtk_nfc_suspend, mtk_nfc_resume);
  
- static struct platform_driver mtk_nfc_driver = {
- 	.probe  = mtk_nfc_probe,
-@@ -1644,9 +1642,7 @@ static struct platform_driver mtk_nfc_driver = {
- 	.driver = {
- 		.name  = MTK_NAME,
- 		.of_match_table = mtk_nfc_id_table,
--#ifdef CONFIG_PM_SLEEP
--		.pm = &mtk_nfc_pm_ops,
--#endif
-+		.pm = pm_sleep_ptr(&mtk_nfc_pm_ops),
+-static SIMPLE_DEV_PM_OPS(elm_pm_ops, elm_suspend, elm_resume);
++static DEFINE_SIMPLE_DEV_PM_OPS(elm_pm_ops, elm_suspend, elm_resume);
+ 
+ #ifdef CONFIG_OF
+ static const struct of_device_id elm_of_match[] = {
+@@ -557,7 +555,7 @@ static struct platform_driver elm_driver = {
+ 	.driver	= {
+ 		.name	= DRIVER_NAME,
+ 		.of_match_table = of_match_ptr(elm_of_match),
+-		.pm	= &elm_pm_ops,
++		.pm	= pm_sleep_ptr(&elm_pm_ops),
  	},
- };
- 
+ 	.probe	= elm_probe,
+ 	.remove = elm_remove,
 -- 
 2.47.3
 
