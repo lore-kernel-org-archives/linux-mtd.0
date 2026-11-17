@@ -2,81 +2,57 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F37AA606A334
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Nov 2026 05:28:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEE4D606A31C
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Nov 2026 05:40:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=4ep5QQrl;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=qq.com header.i=@qq.com header.a=rsa-sha256 header.s=s201512 header.b=l7xl29oB
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=avGGBLcq;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Ee9Rd984
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Date:Subject:Cc:To:From:Message-ID:Reply-To:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Reply-To:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:References:
+	In-Reply-To:Cc:To:Subject:From:Message-ID:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=2dBMOeCttrVaKLW/LXZtP7+8qtYlEbetk1BfxeaGjNY=; b=4ep5QQrlEIzgk7+rICSp7zpYMa
-	1PhF6km662UKA1QF6gxOL2HFYTqtEFBgUsKwpGFCsWtAAwRo2G79KVkeZscYWhhCpyG/aBzm9PM7f
-	NH8FSvteqRSxvpw63AwqlXD7S9zmP6Xs3dOatM7ybaVrY8EEYnVKXv/ivBHt8dgCnzHEsWiG1fOsP
-	7mQuzaBtjwdF7SsANa/hfj4/AWgbgORz19az6bWWkCuSMYSmbyjKYbXDfXhxE36Lb9JxIfNNFD/Ot
-	bZDH9Nd6GXm+hx9EjZEfz4sjvKNgVAfvlRFtpMQGYXNKCnGQy7lyz+Y9zrLTvcyhLhpX/D+RlrOS0
-	UEni4oXw==;
+	bh=KNnilIeLuQ/Y/IUQU1L7FE89WRF4YkCeVvq9Uv3GCW4=; b=avGGBLcqz5zcekbE5K/tw9fwcN
+	0WYC2GJw5cecsGC1omTwRTY+xyuGDPFEGpGTLLilcKVyDOIHVCLwT3gJdAezjpb7SRzyjbCdkEZzp
+	ee4yLF+FjToY1oA6eifvqNCg1yUt9X/kC9Zu+R3csVmLyKxbLqgC/boju1mMyVU3u4I8zLgPnJG9R
+	FN/hRKYeJuMxgoBjv9mcdyP0V0MNlEbH4Xp0AsRz+FK/SFQYBUHx+79qDwKRsgC9Rn7eYOObC4yoz
+	gp8j1K+wikwQzsSw2rtu5XtDN4cENDVHv7qKefTy0/Dxec4qlEoQRlZ9/+eFJGHmuQ2451Qf/udEI
+	dUS/AQNQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTBkS-00000004baz-0jXe;
-	Tue, 17 Nov 2026 05:28:52 +0000
-Received: from out162-62-57-49.mail.qq.com ([162.62.57.49])
+	id 1xTBvQ-00000004cI1-1cYi;
+	Tue, 17 Nov 2026 05:40:12 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTBkO-00000004baL-294l
+	id 1xTBvP-00000004cHp-1C1w
 	for linux-mtd@lists.infradead.org;
-	Tue, 17 Nov 2026 05:28:50 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1794893320; bh=2hOiWlxzK3aL96INQ3Sfam4C/pUNmjoawEgHh6mRKgs=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=l7xl29oB6/HsHEd+Dj80iRgLEkeft4xzHC/V+yuHX2niXPkMwrEIEuiN2d9+i5mIT
-	 2QN6uj4X4/hnS56Qo082hhK5Ne61aZNxvHsm0DWP16AHnCVkiq8ftD+WXXXXGZwZNK
-	 hbB88Ot0KXzVSsso38IIMdxTQjXmh5WQ6dMg0qOw=
-Received: from shuai-VMware-Virtual-Platform.. ([117.158.156.198])
-	by newxmesmtplogicsvrszb51-1.qq.com (NewEsmtp) with SMTP
-	id 725B424E; Tue, 17 Nov 2026 13:28:37 +0800
-X-QQ-mid: xmsmtpt1794893317tdsa74kf8
-Message-ID: <tencent_B9AEB406CBA2FC785312AE8158D20489FB06@qq.com>
-X-QQ-XMAILINFO: NVJ0hJNx7N5SWYMTtMeA3lkGAmWCORElAgIzEAkOoeoXTTmvN5gURaNIq57s5+
-	 MRBCLWQTvNeqIei6VwDTed4KW3cAzX5wDk2NpE+yUhq0nDZ6pXp38WSX22BR8Z9HeAZLRD2UAMQC
-	 3wA4q0LOgLAwA/8mN+EQyvDHst95phAdxuruyE5Kh+6YCsyXotB5/8Vk6dB+9iU09ASqfxUIf7ev
-	 m2tYS4MfXkuTyPBKC0t7SW4An5ycH4PQKZRTRpzKtFvFeW1rKjH2E9PPkN9c1edVVdT0BgbBFb5f
-	 84izC2Z2JiEjXeLvBPjm+BKS9XdOjDx/Sujltxgs/mYBgYPqpNrs2MvmhLHrHwFEqNZOMHGyplOQ
-	 SDx5WciYzVVQRxeHMsFvvmKn85W7poPCIZCdd7mREz7jgcm8aALLQEU8SlWOLDJeba8thgZS2t+Z
-	 JYdlJfNzvXcC9uMihtqJo78vVdZx7HCnyXwgN4U21xK0YVG/wv4Q9FKYbDKSzWpcDeuYwtf2LrZh
-	 gcau6qbLZi3M1RiRZ2FlQRZCFJghZWGoQoiyaL2lPPjOaoSCzXkOqOo6kbdrNHkE9odN1a8tTTMe
-	 Gnl0mOc7SSSAVs7ukwGOt9KT8g+AAcj6CTTe7oQd+qr9r1mol0RGzuO1/98mvvL4Aq5wyZ8MXEON
-	 KkufnrAPAKuKe4PflBEg9pkTh8z0UdUznvzFUZtI2KcL9NQgltaZL1mxz1HZVESLM5zXtK6yhExC
-	 27AdR2BZtBZJ5+xn/O6vPR8ArtN3AoeBUEgyM/9uiS7FVe8VXQOy0y36bRSWAU9VdsWI7dXkMs3Y
-	 ZDisrqRIoZQOsbI58WGiNRZR3T3GKwWLiifesB/7dTAM8300DoXeY+yokH3mc5LB6Vdyttdji4jA
-	 q01QMqy7bc7XxVYmzyFf26JaqnerP6jmhsYsgk8vrv6YECfaUiaZOgqs6LbMbeIURRQnPYInkTHR
-	 cby3qyNOtGUHXOHvrZdiuulB0rohUXTvSdu5aj4RsCs9hYKpeN9Jb2SQqw9rXT/73o2xPicih9mF
-	 exMlxo5pHTP4k3EcFQA04cxGfZ+fGqy42sOUuIytGDXKvIik46TF3cGWylfg8awSASXS+45gwIoz
-	 w3lZHw
-X-QQ-XMRINFO: OD9hHCdaPRBwH5bRRRw8tsiH4UAatJqXfg==
-From: Shuai Liu <847807867@qq.com>
-To: linux-mtd@lists.infradead.org
-Cc: miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com,
-	syzbot+c66e7044aa73c620d862@syzkaller.appspotmail.com,
-	linux-kernel@vger.kernel.org,
-	Shuai Liu <847807867@qq.com>
-Subject: [PATCH] mtd: blktrans: keep reclaim out of the ->release paths
-Date: Tue, 17 Nov 2026 13:28:37 +0800
-X-OQ-MSGID: <20261117052837.132886-1-847807867@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <6afb28e0.d140b701.164b01.0001.GAE@google.com>
+	Tue, 17 Nov 2026 05:40:11 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id A9EF645CBE;
+	Tue, 17 Nov 2026 05:40:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3370F1F000C5;
+	Tue, 17 Nov 2026 05:40:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1794894010;
+	bh=0Sw79EmcAmu/4alUzphAfJLPArhlOLS0w68JK4HZF0A=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=Ee9Rd984mDic36nmE8Lf5cC00VdW4GtQan9S2uqWPoT7ci6pze0K+GFQZCIJ3M+kS
+	 WTsdQVtDslPm84EnROQ0xw5KosVxX3xoU3UyePNRNz2N9U2l9zfWxabg6n3m1fVkQo
+	 Uuy0Tw0C0LP1erZJOqBqskzjwAm5/JpbjVhyIx0HysWdmWyU1LscZanV14TeXHA3MJ
+	 oDYRvRQQhJE/Cd//0evUaKUDCxi1AnVbQloajIgvfU07zTIpLFRCeCCQbqLO2nLf1G
+	 4oCQgLlGmRQOUZjY6sfSO1psCRr37w/4LAsO6T5yIDBn4EC+3kBGyZgwifY9qNX5JD
+	 iEm5dKY51fG9w==
+Message-ID: <sashiko-outbox-218218@kernel.org>
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH] mtd: blktrans: keep reclaim out of the ->release paths
+To: "Shuai Liu" <847807867@qq.com>, linux-mtd@lists.infradead.org
+Cc: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com, syzbot+c66e7044aa73c620d862@syzkaller.appspotmail.com
+In-Reply-To: <tencent_B9AEB406CBA2FC785312AE8158D20489FB06@qq.com>
 References: <6afb28e0.d140b701.164b01.0001.GAE@google.com>
-X-Archived-By: <archiver.kernel.org>
-MIME-Version: 1.0
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261116_212849_094010_52900315 
-X-CRM114-Status: GOOD (  16.64  )
-X-Spam-Score: -1.8 (-)
+ <tencent_B9AEB406CBA2FC785312AE8158D20489FB06@qq.com>
+Date: Tue, 17 Nov 2026 05:40:09 +0000
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,120 +62,67 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Reply-To: sashiko-reviews@lists.linux.dev
+X-Archived-By: <archiver.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-8.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-blktrans_release() invokes tr->release() while holding dev->lock, and
-translators can walk down into the flash driver from there:
-mtdblock_release() flushes its write cache via write_cached_data() ->
-erase_write() -> mtd_erase(), and concat_erase() allocates a struct
-erase_info with GFP_KERNEL. del_mtd_blktrans_dev() calls ->release()
-under the same lock on the device removal path.
-
-Reclaim from those allocations can recurse back into the same block
-queue and deadlock. lockdep reports the full cycle when a write to the
-concat device is flushed at last close:
-
-    init/1 is trying to acquire lock:
-      fs_reclaim, at: __kmalloc_cache_noprof
-    but task is already holding lock:
-      &mtdblk->cache_mutex, at: mtdblock_release
-
-    Chain exists of:
-      fs_reclaim --> &new->lock --> &mtdblk->cache_mutex
-
-    the existing dependency chain (in reverse order) is:
-      fs_reclaim -> q_usage_counter(io) -> elevator_lock
-        -> set->srcu -> new->lock -> mtdblk->cache_mutex
-
-    Call Trace:
-       concat_erase
-       mtd_erase
-       erase_write
-       write_cached_data
-       mtdblock_release
-       blktrans_release
-       bdev_release
-
-The io path is already protected: mtd_queue_rq() disables reclaim
-across dispatch with memalloc_noio_save(), because translators may
-allocate while processing requests under dev->lock and the srcu read
-side. ->release() runs under the same locks, so give it the same
-treatment in blktrans_release() and del_mtd_blktrans_dev().
-
-Verified with mtdram + block2mtd + concat + mtdblock on QEMU
-(CONFIG_PROVE_LOCKING): writing through /dev/mtdblockN and closing
-the fd produces the warning above on the unpatched kernel and stays
-silent with this patch, with the readback still succeeding.
-
-Reported-by: syzbot+c66e7044aa73c620d862@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=c66e7044aa73c620d862
-Signed-off-by: Shuai Liu <847807867@qq.com>
----
- drivers/mtd/mtd_blkdevs.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
-index 42f250344f0cd..be4ead01f5210 100644
---- a/drivers/mtd/mtd_blkdevs.c
-+++ b/drivers/mtd/mtd_blkdevs.c
-@@ -233,6 +233,7 @@ static int blktrans_open(struct gendisk *disk, blk_mode_t mode)
- static void blktrans_release(struct gendisk *disk)
- {
- 	struct mtd_blktrans_dev *dev = disk->private_data;
-+	unsigned int noio_flags;
- 
- 	mutex_lock(&dev->lock);
- 
-@@ -242,8 +243,12 @@ static void blktrans_release(struct gendisk *disk)
- 	module_put(dev->tr->owner);
- 
- 	if (dev->mtd) {
--		if (dev->tr->release)
-+		if (dev->tr->release) {
-+			/* Reclaim must not recurse into I/O while releasing the device. */
-+			noio_flags = memalloc_noio_save();
- 			dev->tr->release(dev);
-+			memalloc_noio_restore(noio_flags);
-+		}
- 		__put_mtd_device(dev->mtd);
- 	}
- unlock:
-@@ -410,6 +415,7 @@ int del_mtd_blktrans_dev(struct mtd_blktrans_dev *old)
- {
- 	unsigned long flags;
- 	unsigned int memflags;
-+	unsigned int noio_flags;
- 
- 	lockdep_assert_held(&mtd_table_mutex);
- 
-@@ -435,8 +441,11 @@ int del_mtd_blktrans_dev(struct mtd_blktrans_dev *old)
- 		then put mtd device, and don't touch it again */
- 	mutex_lock(&old->lock);
- 	if (old->open) {
--		if (old->tr->release)
-+		if (old->tr->release) {
-+			noio_flags = memalloc_noio_save();
- 			old->tr->release(old);
-+			memalloc_noio_restore(noio_flags);
-+		}
- 		__put_mtd_device(old->mtd);
- 	}
- 
-
-base-commit: 84abb955b1015477aa11a96e2f3ac1b938b77f48
--- 
-2.43.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+VGhhbmsgeW91IGZvciB5b3VyIGNvbnRyaWJ1dGlvbiEgU2FzaGlrbyBBSSByZXZpZXcgZm91bmQg
+MSBwb3RlbnRpYWwKaXNzdWUgdG8gY29uc2lkZXI6Ci0gW0xvd10gbXRkOiBibGt0cmFuczogbWlz
+c2luZyBGaXhlcyB0cmFpbGVyIGZvciByZWNsYWltIGRlYWRsb2NrIGluCiAgcmVsZWFzZSBwYXRo
+cwotLQoKY29tbWl0IDIzMjM5Mzk3NDg4MWQ1ODQ0NzJiYmIzNDljM2Q3NTUyOTgwYTVjYTAKQXV0
+aG9yOiBTaHVhaSBMaXUgPDg0NzgwNzg2N0BxcS5jb20+Cgo+IG10ZDogYmxrdHJhbnM6IGtlZXAg
+cmVjbGFpbSBvdXQgb2YgdGhlIC0+cmVsZWFzZSBwYXRocwo+Cj4gYmxrdHJhbnNfcmVsZWFzZSgp
+IGludm9rZXMgdHItPnJlbGVhc2UoKSB3aGlsZSBob2xkaW5nIGRldi0+bG9jaywgYW5kCj4gdHJh
+bnNsYXRvcnMgY2FuIHdhbGsgZG93biBpbnRvIHRoZSBmbGFzaCBkcml2ZXIgZnJvbSB0aGVyZToK
+PiBtdGRibG9ja19yZWxlYXNlKCkgZmx1c2hlcyBpdHMgd3JpdGUgY2FjaGUgdmlhIHdyaXRlX2Nh
+Y2hlZF9kYXRhKCkgLT4KPiBlcmFzZV93cml0ZSgpIC0+IG10ZF9lcmFzZSgpLCBhbmQgY29uY2F0
+X2VyYXNlKCkgYWxsb2NhdGVzIGEgc3RydWN0Cj4gZXJhc2VfaW5mbyB3aXRoIEdGUF9LRVJORUwu
+IGRlbF9tdGRfYmxrdHJhbnNfZGV2KCkgY2FsbHMgLT5yZWxlYXNlKCkKPiB1bmRlciB0aGUgc2Ft
+ZSBsb2NrIG9uIHRoZSBkZXZpY2UgcmVtb3ZhbCBwYXRoLgo+Cj4gUmVjbGFpbSBmcm9tIHRob3Nl
+IGFsbG9jYXRpb25zIGNhbiByZWN1cnNlIGJhY2sgaW50byB0aGUgc2FtZSBibG9jawo+IHF1ZXVl
+IGFuZCBkZWFkbG9jay4gbG9ja2RlcCByZXBvcnRzIHRoZSBmdWxsIGN5Y2xlIHdoZW4gYSB3cml0
+ZSB0byB0aGUKPiBjb25jYXQgZGV2aWNlIGlzIGZsdXNoZWQgYXQgbGFzdCBjbG9zZToKPgo+ICAg
+ICBpbml0LzEgaXMgdHJ5aW5nIHRvIGFjcXVpcmUgbG9jazoKPiAgICAgICBmc19yZWNsYWltLCBh
+dDogX19rbWFsbG9jX2NhY2hlX25vcHJvZgo+ICAgICBidXQgdGFzayBpcyBhbHJlYWR5IGhvbGRp
+bmcgbG9jazoKPiAgICAgICAmbXRkYmxrLT5jYWNoZV9tdXRleCwgYXQ6IG10ZGJsb2NrX3JlbGVh
+c2UKPgo+ICAgICBDaGFpbiBleGlzdHMgb2Y6Cj4gICAgICAgZnNfcmVjbGFpbSAtLT4gJm5ldy0+
+bG9jayAtLT4gJm10ZGJsay0+Y2FjaGVfbXV0ZXgKPgo+ICAgICB0aGUgZXhpc3RpbmcgZGVwZW5k
+ZW5jeSBjaGFpbiAoaW4gcmV2ZXJzZSBvcmRlcikgaXM6Cj4gICAgICAgZnNfcmVjbGFpbSAtPiBx
+X3VzYWdlX2NvdW50ZXIoaW8pIC0+IGVsZXZhdG9yX2xvY2sKPiAgICAgICAgIC0+IHNldC0+c3Jj
+dSAtPiBuZXctPmxvY2sgLT4gbXRkYmxrLT5jYWNoZV9tdXRleAo+Cj4gICAgIENhbGwgVHJhY2U6
+Cj4gICAgICAgIGNvbmNhdF9lcmFzZQo+ICAgICAgICBtdGRfZXJhc2UKPiAgICAgICAgZXJhc2Vf
+d3JpdGUKPiAgICAgICAgd3JpdGVfY2FjaGVkX2RhdGEKPiAgICAgICAgbXRkYmxvY2tfcmVsZWFz
+ZQo+ICAgICAgICBibGt0cmFuc19yZWxlYXNlCj4gICAgICAgIGJkZXZfcmVsZWFzZQo+Cj4gVGhl
+IGlvIHBhdGggaXMgYWxyZWFkeSBwcm90ZWN0ZWQ6IG10ZF9xdWV1ZV9ycSgpIGRpc2FibGVzIHJl
+Y2xhaW0KPiBhY3Jvc3MgZGlzcGF0Y2ggd2l0aCBtZW1hbGxvY19ub2lvX3NhdmUoKSwgYmVjYXVz
+ZSB0cmFuc2xhdG9ycyBtYXkKPiBhbGxvY2F0ZSB3aGlsZSBwcm9jZXNzaW5nIHJlcXVlc3RzIHVu
+ZGVyIGRldi0+bG9jayBhbmQgdGhlIHNyY3UgcmVhZAo+IHNpZGUuIC0+cmVsZWFzZSgpIHJ1bnMg
+dW5kZXIgdGhlIHNhbWUgbG9ja3MsIHNvIGdpdmUgaXQgdGhlIHNhbWUKPiB0cmVhdG1lbnQgaW4g
+YmxrdHJhbnNfcmVsZWFzZSgpIGFuZCBkZWxfbXRkX2Jsa3RyYW5zX2RldigpLgo+Cj4gVmVyaWZp
+ZWQgd2l0aCBtdGRyYW0gKyBibG9jazJtdGQgKyBjb25jYXQgKyBtdGRibG9jayBvbiBRRU1VCj4g
+KENPTkZJR19QUk9WRV9MT0NLSU5HKTogd3JpdGluZyB0aHJvdWdoIC9kZXYvbXRkYmxvY2tOIGFu
+ZCBjbG9zaW5nCj4gdGhlIGZkIHByb2R1Y2VzIHRoZSB3YXJuaW5nIGFib3ZlIG9uIHRoZSB1bnBh
+dGNoZWQga2VybmVsIGFuZCBzdGF5cwo+IHNpbGVudCB3aXRoIHRoaXMgcGF0Y2gsIHdpdGggdGhl
+IHJlYWRiYWNrIHN0aWxsIHN1Y2NlZWRpbmcuCj4KPiBSZXBvcnRlZC1ieTogc3l6Ym90K2M2NmU3
+MDQ0YWE3M2M2MjBkODYyQHN5emthbGxlci5hcHBzcG90bWFpbC5jb20KPiBDbG9zZXM6IGh0dHBz
+Oi8vc3l6a2FsbGVyLmFwcHNwb3QuY29tL2J1Zz9leHRpZD1jNjZlNzA0NGFhNzNjNjIwZDg2Mgo+
+IFNpZ25lZC1vZmYtYnk6IFNodWFpIExpdSA8ODQ3ODA3ODY3QHFxLmNvbT4KCltTZXZlcml0eTog
+TG93XQpUaGlzIGZpeGVzIGEgcmVjbGFpbSByZWN1cnNpb24gZGVhZGxvY2sgd2hlbiAtPnJlbGVh
+c2UoKSBpcyBjYWxsZWQgdW5kZXIKdGhlIHBlci1kZXZpY2UgbXV0ZXggaW50cm9kdWNlZCBieSBj
+b21taXQgMDQ4ZDg3MTk5NTY2ICgibXRkOiBibGt0cmFuczoKSG90cGx1ZyBmaXhlcyIpLiBTaG91
+bGQgdGhlIGNvbW1pdCBtZXNzYWdlIGluY2x1ZGUgYSBGaXhlcyB0YWcgZm9yIHN0YWJsZQpiYWNr
+cG9ydGluZzoKCiAgRml4ZXM6IDA0OGQ4NzE5OTU2NiAoIm10ZDogYmxrdHJhbnM6IEhvdHBsdWcg
+Zml4ZXMiKQoKLS0gClNhc2hpa28gQUkgcmV2aWV3IMK3IGh0dHBzOi8vc2FzaGlrby5kZXYvIy9w
+YXRjaHNldC90ZW5jZW50X0I5QUVCNDA2Q0JBMkZDNzg1MzEyQUU4MTU4RDIwNDg5RkIwNkBxcS5j
+b20/cGFydD0xCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5p
+bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
