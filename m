@@ -2,69 +2,81 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49CF9606A31C
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Nov 2026 04:33:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F37AA606A334
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Nov 2026 05:28:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=t6G5U9DP
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=4ep5QQrl;
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=qq.com header.i=@qq.com header.a=rsa-sha256 header.s=s201512 header.b=l7xl29oB
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:From:Subject:Message-ID:Date:
-	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Unsubscribe-Post:List-Owner;
-	bh=k6KARdvV+2f6TK/cxr8DJ4WdiaOiNyKN/T8SR/NONu4=; b=t6G5U9DPiikJy9Ez3Utxz7PUk9
-	BuEp7Gr2c7QqPQEwEEhYyNoDqDAOtKS62Qkq2/YeqmPQeBFqp5uNvU485+ovTyMscBfDn1LindgOC
-	n2zwzfCCAMjVqEqnA+z78nA4RucvB1poa6bNPASUbc70w9M5cV7ZkvHoYCJdXH6uWSXRm4Y13DbGg
-	WS8UFJ8EsPLnsscyImDZmHh8kEEv9SJTmal03XVM+YI/rn/l9AIeJFY6czYDX6DBuGd8JyEB9E5LO
-	qxlA+D4jXmcd5JnSxHwaSyI5ijUeLuRgDOZRQUIZ3MzjLG0a/9Vn8xSf3yayW8mstgWwbcatNLrWv
-	Zem317CA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Date:Subject:Cc:To:From:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Unsubscribe-Post:List-Owner;
+	bh=2dBMOeCttrVaKLW/LXZtP7+8qtYlEbetk1BfxeaGjNY=; b=4ep5QQrlEIzgk7+rICSp7zpYMa
+	1PhF6km662UKA1QF6gxOL2HFYTqtEFBgUsKwpGFCsWtAAwRo2G79KVkeZscYWhhCpyG/aBzm9PM7f
+	NH8FSvteqRSxvpw63AwqlXD7S9zmP6Xs3dOatM7ybaVrY8EEYnVKXv/ivBHt8dgCnzHEsWiG1fOsP
+	7mQuzaBtjwdF7SsANa/hfj4/AWgbgORz19az6bWWkCuSMYSmbyjKYbXDfXhxE36Lb9JxIfNNFD/Ot
+	bZDH9Nd6GXm+hx9EjZEfz4sjvKNgVAfvlRFtpMQGYXNKCnGQy7lyz+Y9zrLTvcyhLhpX/D+RlrOS0
+	UEni4oXw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTAt0-00000004XdE-14TW;
-	Tue, 17 Nov 2026 04:33:38 +0000
-Received: from mail-oi1-f197.google.com ([209.85.167.197])
+	id 1xTBkS-00000004baz-0jXe;
+	Tue, 17 Nov 2026 05:28:52 +0000
+Received: from out162-62-57-49.mail.qq.com ([162.62.57.49])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTAsx-00000004Xcj-2wyF
+	id 1xTBkO-00000004baL-294l
 	for linux-mtd@lists.infradead.org;
-	Tue, 17 Nov 2026 04:33:37 +0000
-Received: by mail-oi1-f197.google.com with SMTP id 5614622812f47-4eb0b989f0eso743339b6e.0
-        for <linux-mtd@lists.infradead.org>; Mon, 16 Nov 2026 20:33:34 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794890014; x=1795494814;
-        h=content-type:to:from:subject:message-id:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=IIDj9/6TQbU1XFTPX19xQeVl5pX677A/6eYbiA/99p8=;
-        b=t4VuJwYxS2aXQZ5cz5pej+Rdz8NbtSYUvBsIY/+G30ruKURrXt/e/12nBlJJV/XkS6
-         L2FqvcLko7NqO9A9Jlb33w0hi9PwNHKALnChbTyU2NLKm22fRVoSkfkjAHyzsylGdhRZ
-         ODsyhiRV+eMTFo7ua/DW6ofMhJA829nBYtrcFxGi9SceyGUNvUDFCrKWTRHV+8X0n5o2
-         H/5O/o1lSKMRTHw2UWDrFpJHBSGn1S2IIP13FbDZKWcyaSUB71lUWdgXFi+B/eunKMnl
-         /EHZDl8GiOE9ZLkQdDn2avpBuseJveCvftqJrC3VPFDJa/oO70k/bksfE+dPSUKhS4He
-         9+lw==
-X-Forwarded-Encrypted: i=1; AL+hErHDw7gAC4a0R45Mn0uUC1GH0orbAMEL3KxAif8QbZF5PIygFJvWo9oRoku9XsWosUSMRrqzUwj/dUw=@lists.infradead.org
-X-Gm-Message-State: APuU4Z+Bg7f3bfqZ2Huu/adWKq0y/1Q0/i2Y6K122VVt+7wo9WqPFNFA
-	cyWQIc0bEtUFuWCcvlZNQMEpssgQcPcAifhWZxI261jqQ4Sn5L3DGAYCb9eXhBXJ+xVNKYwqfhF
-	VCFRQhv1noo+8Zzj/4ZOBzCj8rSA97/ZTf2Kxq6GS4JO2pLc9aLfzSXA8mLk=
+	Tue, 17 Nov 2026 05:28:50 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1794893320; bh=2hOiWlxzK3aL96INQ3Sfam4C/pUNmjoawEgHh6mRKgs=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=l7xl29oB6/HsHEd+Dj80iRgLEkeft4xzHC/V+yuHX2niXPkMwrEIEuiN2d9+i5mIT
+	 2QN6uj4X4/hnS56Qo082hhK5Ne61aZNxvHsm0DWP16AHnCVkiq8ftD+WXXXXGZwZNK
+	 hbB88Ot0KXzVSsso38IIMdxTQjXmh5WQ6dMg0qOw=
+Received: from shuai-VMware-Virtual-Platform.. ([117.158.156.198])
+	by newxmesmtplogicsvrszb51-1.qq.com (NewEsmtp) with SMTP
+	id 725B424E; Tue, 17 Nov 2026 13:28:37 +0800
+X-QQ-mid: xmsmtpt1794893317tdsa74kf8
+Message-ID: <tencent_B9AEB406CBA2FC785312AE8158D20489FB06@qq.com>
+X-QQ-XMAILINFO: NVJ0hJNx7N5SWYMTtMeA3lkGAmWCORElAgIzEAkOoeoXTTmvN5gURaNIq57s5+
+	 MRBCLWQTvNeqIei6VwDTed4KW3cAzX5wDk2NpE+yUhq0nDZ6pXp38WSX22BR8Z9HeAZLRD2UAMQC
+	 3wA4q0LOgLAwA/8mN+EQyvDHst95phAdxuruyE5Kh+6YCsyXotB5/8Vk6dB+9iU09ASqfxUIf7ev
+	 m2tYS4MfXkuTyPBKC0t7SW4An5ycH4PQKZRTRpzKtFvFeW1rKjH2E9PPkN9c1edVVdT0BgbBFb5f
+	 84izC2Z2JiEjXeLvBPjm+BKS9XdOjDx/Sujltxgs/mYBgYPqpNrs2MvmhLHrHwFEqNZOMHGyplOQ
+	 SDx5WciYzVVQRxeHMsFvvmKn85W7poPCIZCdd7mREz7jgcm8aALLQEU8SlWOLDJeba8thgZS2t+Z
+	 JYdlJfNzvXcC9uMihtqJo78vVdZx7HCnyXwgN4U21xK0YVG/wv4Q9FKYbDKSzWpcDeuYwtf2LrZh
+	 gcau6qbLZi3M1RiRZ2FlQRZCFJghZWGoQoiyaL2lPPjOaoSCzXkOqOo6kbdrNHkE9odN1a8tTTMe
+	 Gnl0mOc7SSSAVs7ukwGOt9KT8g+AAcj6CTTe7oQd+qr9r1mol0RGzuO1/98mvvL4Aq5wyZ8MXEON
+	 KkufnrAPAKuKe4PflBEg9pkTh8z0UdUznvzFUZtI2KcL9NQgltaZL1mxz1HZVESLM5zXtK6yhExC
+	 27AdR2BZtBZJ5+xn/O6vPR8ArtN3AoeBUEgyM/9uiS7FVe8VXQOy0y36bRSWAU9VdsWI7dXkMs3Y
+	 ZDisrqRIoZQOsbI58WGiNRZR3T3GKwWLiifesB/7dTAM8300DoXeY+yokH3mc5LB6Vdyttdji4jA
+	 q01QMqy7bc7XxVYmzyFf26JaqnerP6jmhsYsgk8vrv6YECfaUiaZOgqs6LbMbeIURRQnPYInkTHR
+	 cby3qyNOtGUHXOHvrZdiuulB0rohUXTvSdu5aj4RsCs9hYKpeN9Jb2SQqw9rXT/73o2xPicih9mF
+	 exMlxo5pHTP4k3EcFQA04cxGfZ+fGqy42sOUuIytGDXKvIik46TF3cGWylfg8awSASXS+45gwIoz
+	 w3lZHw
+X-QQ-XMRINFO: OD9hHCdaPRBwH5bRRRw8tsiH4UAatJqXfg==
+From: Shuai Liu <847807867@qq.com>
+To: linux-mtd@lists.infradead.org
+Cc: miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com,
+	syzbot+c66e7044aa73c620d862@syzkaller.appspotmail.com,
+	linux-kernel@vger.kernel.org,
+	Shuai Liu <847807867@qq.com>
+Subject: [PATCH] mtd: blktrans: keep reclaim out of the ->release paths
+Date: Tue, 17 Nov 2026 13:28:37 +0800
+X-OQ-MSGID: <20261117052837.132886-1-847807867@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <6afb28e0.d140b701.164b01.0001.GAE@google.com>
+References: <6afb28e0.d140b701.164b01.0001.GAE@google.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:10d3:b0:4ca:9850:4dd8 with SMTP id
- 5614622812f47-575dd62825bmr1663844b6e.10.1794890014120; Mon, 16 Nov 2026
- 20:33:34 -0800 (PST)
-Date: Mon, 16 Nov 2026 20:33:34 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6afbd91e.e6a8accb.234e85.000a.GAE@google.com>
-Subject: [syzbot] Monthly jffs2 report (Nov 2026)
-From: syzbot <syzbot+list0fc9d5eaedfb6713a2f9@syzkaller.appspotmail.com>
-To: dwmw2@infradead.org, linux-kernel@vger.kernel.org, 
-	linux-mtd@lists.infradead.org, richard@nod.at, 
-	syzkaller-bugs@googlegroups.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261116_203335_743575_359C8B61 
-X-CRM114-Status: UNSURE (   5.07  )
-X-CRM114-Notice: Please train this message.
-X-Spam-Score: -0.7 (/)
+X-CRM114-CacheID: sfid-20261116_212849_094010_52900315 
+X-CRM114-Status: GOOD (  16.64  )
+X-Spam-Score: -1.8 (-)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,47 +89,116 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,FROM_LOCAL_HEX,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-Hello jffs2 maintainers/developers,
+blktrans_release() invokes tr->release() while holding dev->lock, and
+translators can walk down into the flash driver from there:
+mtdblock_release() flushes its write cache via write_cached_data() ->
+erase_write() -> mtd_erase(), and concat_erase() allocates a struct
+erase_info with GFP_KERNEL. del_mtd_blktrans_dev() calls ->release()
+under the same lock on the device removal path.
 
-This is a 31-day syzbot report for the jffs2 subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/jffs2
+Reclaim from those allocations can recurse back into the same block
+queue and deadlock. lockdep reports the full cycle when a write to the
+concat device is flushed at last close:
 
-During the period, 2 new issues were detected and 0 were fixed.
-In total, 11 issues are still open and 1 has already been fixed.
-There are also 2 low-priority issues.
+    init/1 is trying to acquire lock:
+      fs_reclaim, at: __kmalloc_cache_noprof
+    but task is already holding lock:
+      &mtdblk->cache_mutex, at: mtdblock_release
 
-Some of the still happening issues:
+    Chain exists of:
+      fs_reclaim --> &new->lock --> &mtdblk->cache_mutex
 
-Ref Crashes Repro Title
-<1> 44      Yes   KASAN: slab-use-after-free Read in jffs2_xattr_delete_inode
-                  https://syzkaller.appspot.com/bug?extid=3a8099322b09d8d073d1
-<2> 9       Yes   KASAN: invalid-free in jffs2_free_inode
-                  https://syzkaller.appspot.com/bug?extid=675e84fdf3dde67b4946
-<3> 14017   Yes   kernel BUG in jffs2_del_ino_cache
-                  https://syzkaller.appspot.com/bug?extid=44664704c1494ad5f7a0
-<4> 8       Yes   possible deadlock in jffs2_xattr_delete_inode
-                  https://syzkaller.appspot.com/bug?extid=fdfd8fdf716c90baef0f
+    the existing dependency chain (in reverse order) is:
+      fs_reclaim -> q_usage_counter(io) -> elevator_lock
+        -> set->srcu -> new->lock -> mtdblk->cache_mutex
 
+    Call Trace:
+       concat_erase
+       mtd_erase
+       erase_write
+       write_cached_data
+       mtdblock_release
+       blktrans_release
+       bdev_release
+
+The io path is already protected: mtd_queue_rq() disables reclaim
+across dispatch with memalloc_noio_save(), because translators may
+allocate while processing requests under dev->lock and the srcu read
+side. ->release() runs under the same locks, so give it the same
+treatment in blktrans_release() and del_mtd_blktrans_dev().
+
+Verified with mtdram + block2mtd + concat + mtdblock on QEMU
+(CONFIG_PROVE_LOCKING): writing through /dev/mtdblockN and closing
+the fd produces the warning above on the unpatched kernel and stays
+silent with this patch, with the readback still succeeding.
+
+Reported-by: syzbot+c66e7044aa73c620d862@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=c66e7044aa73c620d862
+Signed-off-by: Shuai Liu <847807867@qq.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ drivers/mtd/mtd_blkdevs.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
+diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
+index 42f250344f0cd..be4ead01f5210 100644
+--- a/drivers/mtd/mtd_blkdevs.c
++++ b/drivers/mtd/mtd_blkdevs.c
+@@ -233,6 +233,7 @@ static int blktrans_open(struct gendisk *disk, blk_mode_t mode)
+ static void blktrans_release(struct gendisk *disk)
+ {
+ 	struct mtd_blktrans_dev *dev = disk->private_data;
++	unsigned int noio_flags;
+ 
+ 	mutex_lock(&dev->lock);
+ 
+@@ -242,8 +243,12 @@ static void blktrans_release(struct gendisk *disk)
+ 	module_put(dev->tr->owner);
+ 
+ 	if (dev->mtd) {
+-		if (dev->tr->release)
++		if (dev->tr->release) {
++			/* Reclaim must not recurse into I/O while releasing the device. */
++			noio_flags = memalloc_noio_save();
+ 			dev->tr->release(dev);
++			memalloc_noio_restore(noio_flags);
++		}
+ 		__put_mtd_device(dev->mtd);
+ 	}
+ unlock:
+@@ -410,6 +415,7 @@ int del_mtd_blktrans_dev(struct mtd_blktrans_dev *old)
+ {
+ 	unsigned long flags;
+ 	unsigned int memflags;
++	unsigned int noio_flags;
+ 
+ 	lockdep_assert_held(&mtd_table_mutex);
+ 
+@@ -435,8 +441,11 @@ int del_mtd_blktrans_dev(struct mtd_blktrans_dev *old)
+ 		then put mtd device, and don't touch it again */
+ 	mutex_lock(&old->lock);
+ 	if (old->open) {
+-		if (old->tr->release)
++		if (old->tr->release) {
++			noio_flags = memalloc_noio_save();
+ 			old->tr->release(old);
++			memalloc_noio_restore(noio_flags);
++		}
+ 		__put_mtd_device(old->mtd);
+ 	}
+ 
 
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
+base-commit: 84abb955b1015477aa11a96e2f3ac1b938b77f48
+-- 
+2.43.0
 
-You may send multiple commands in a single email message.
 
 ______________________________________________________
 Linux MTD discussion mailing list
