@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A8B8606A8A0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62C35606A89F
 	for <linux-mtd@archiver.kernel.org>; Tue, 17 Nov 2026 09:38:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=i6k6kjGz;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=TvTdlOzJ
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=1pGMFZnh;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=kDnrmD3W
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,38 +14,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=9kDUlziBK/m7T+k87sqxD536izcJn2OkAflm7rklbzI=; b=i6k6kjGzkeQEtok18fQjJ48mRu
-	fgpxmlNJAQGxTWkRBRGRnbZubLVUdLOMHtY5O/zRr0Ja74hdO4NxAOs4RJQZ4XFGDBriCmnwjIBr/
-	1jbCeHQGNkT+iL6So7rO6PNS7Hoz5MlKdms+ZLk3uLG31fTbwzHoe/8B85vZKvwwCASggBq9Biwki
-	HkjwtH/ZMjsknGe7wMfjYeufBb4sxWghimqiUdK1QCn1oQTseD1gtNxZzM62uYi5lkbjyAc9QBk50
-	mmEwqdjErfsrP7bfuO5A/aUgCbIXvxlXlswUCrYd9FCL2QaefgqVZ/ukAKgdAxVq+dcZWEIR7gv+7
-	heNqyr6g==;
+	bh=h+VsQ65cPLBxk3L92trOkyAjGCzd4FmH1kkg442SyYI=; b=1pGMFZnh0o+/gJnmYm0dqTFJ3p
+	k+rH9IDnWsp3V7kN3bkVU3TItap1V9b71QrEdLUPT8XbCOLrL/QkkPPvFq/be8QRpXpsbhuwgdd2r
+	u8ftn1JzVezWOHiwnKcDtG7zxneBnaK9cb49/H+D2XyEJDM5rnXRuF4D4cP0Hms5RDnzmcfFojIXO
+	SeM+/0Qu2Azh+iL4Bg4Gk8HMB/weR7sfRqcGwgNLtPpHhGGsCRyEaNVWz5OnmeHMG3O9DJxd/FRjt
+	asv67xLxhf1Oo49H0bQHHyxWR4Xy+eMxEzj+sJoVt11Hzzu8R5Geh82btmJLqA3Wr8MyTsHN9S3yA
+	8NZX63mg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTFdj-000000056q5-2uv6;
-	Tue, 17 Nov 2026 09:38:11 +0000
-Received: from smtpout-04.galae.net ([185.171.202.116])
+	id 1xTFdk-000000056rE-3qoc;
+	Tue, 17 Nov 2026 09:38:12 +0000
+Received: from smtpout-03.galae.net ([185.246.85.4])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTFdg-000000056ng-0kXK
+	id 1xTFdi-000000056oT-2eqY
 	for linux-mtd@lists.infradead.org;
-	Tue, 17 Nov 2026 09:38:10 +0000
+	Tue, 17 Nov 2026 09:38:11 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id 71B11C4EDBC;
-	Tue, 17 Nov 2026 09:38:10 +0000 (UTC)
+	by smtpout-03.galae.net (Postfix) with ESMTPS id 266944E41471;
+	Tue, 17 Nov 2026 09:38:09 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 22B4D5FC81;
-	Tue, 17 Nov 2026 09:38:06 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 78E9411BC0B8F;
-	Tue, 17 Nov 2026 10:38:04 +0100 (CET)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id EAB575FC81;
+	Tue, 17 Nov 2026 09:38:08 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 6674C11BC0DE4;
+	Tue, 17 Nov 2026 10:38:07 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1794908285; h=from:subject:date:message-id:to:cc:mime-version:
+	t=1794908288; h=from:subject:date:message-id:to:cc:mime-version:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=iZd/PZUoFdKhBeyeAbEydYh49ajApffNHjJPJHfCAaM=;
-	b=TvTdlOzJgF7IQydOgcx59uFP25FsZSevvWPR2gRuWD2VoWw7ey2c+KDkFLVm3We2WrXQh9
-	havnkPK02DfeDn1cO6rsVclawX2fTcBf66AWUHOQ/4k5WOTgnQWx7BG1olimeVAtj5J768
-	VKgI/s3XLXsFwmS/aqrPOaLhjUndqYxuJYvEWI1k9yRMa9oSF+V4o352uL2FqDCE0t6SR3
-	TqCTL7hstrCI9pTMfPdBmtezs7X45r15fdWaB+uqo09qDjA+p2pvidL6EaJ9svDxIGgjUp
-	/fNH6c9tNopC6nM7dvf5wmy5XZSpJ4dD8GYUu4jD+lDbnC27mMeGCuIOUvSaJQ==
+	bh=zt+L2zvrl0xsIKg55Fyi5rBt8i3afRguaaN6st9GaVQ=;
+	b=kDnrmD3W+x2ewQ0EuCfxmSl7xRpGAc6G1HGyGvbRVetx3Kvjr8rO1qPEbb/08NorPNFDb/
+	JemkhKkqFRxOi67XXT0C7uW1dabk0Crm3ith2qtdXt3XCBMmQUyFKskzO2R5C6gtFFUF7n
+	83G6Qeg2n4G/HISngDN+rs/H5ZTNKDhBHMUcFhv5xO6K5FMab2kPi5LE2wm+EgYEbR2Dh5
+	YLCeGpR/pnW6kf5kGvDdzN+JKPtCSL1GSqhtrTtbOSplGsKMulqjy70WG/n8545aywvrfR
+	u2a2HrTCyOp29vFJpzVpx2LxOWFX+88pXdWiKaRbcX1/7vfzh8ArSe4E2WORAg==
 From: Paul Cercueil <paul.cercueil@bootlin.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
@@ -54,9 +54,9 @@ Cc: linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 	Paul Cercueil <paul.cercueil@bootlin.com>
-Subject: [PATCH v2 01/12] mtd: Remove #ifdef guards for PM related functions
-Date: Tue, 17 Nov 2026 10:37:39 +0100
-Message-ID: <20261117093751.14988-2-paul.cercueil@bootlin.com>
+Subject: [PATCH v2 03/12] mtd: spear_smi: Remove #ifdef guards for PM related functions
+Date: Tue, 17 Nov 2026 10:37:41 +0100
+Message-ID: <20261117093751.14988-4-paul.cercueil@bootlin.com>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20261117093751.14988-1-paul.cercueil@bootlin.com>
 References: <20261117093751.14988-1-paul.cercueil@bootlin.com>
@@ -64,8 +64,8 @@ X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261117_013808_396947_EC79CEDF 
-X-CRM114-Status: GOOD (  13.02  )
+X-CRM114-CacheID: sfid-20261117_013810_810473_ED8BCFEC 
+X-CRM114-Status: GOOD (  14.19  )
 X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -99,40 +99,41 @@ Signed-off-by: Paul Cercueil <paul.cercueil@bootlin.com>
 
 v2: No change
 ---
- drivers/mtd/mtdcore.c | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
+ drivers/mtd/devices/spear_smi.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 82b1e6392b16..037fe292867b 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -40,8 +40,6 @@
- 
- struct backing_dev_info *mtd_bdi;
- 
--#ifdef CONFIG_PM_SLEEP
--
- static int mtd_cls_suspend(struct device *dev)
- {
- 	struct mtd_info *mtd = dev_get_drvdata(dev);
-@@ -58,15 +56,11 @@ static int mtd_cls_resume(struct device *dev)
- 	return 0;
+diff --git a/drivers/mtd/devices/spear_smi.c b/drivers/mtd/devices/spear_smi.c
+index f02f96bff450..689141e525c0 100644
+--- a/drivers/mtd/devices/spear_smi.c
++++ b/drivers/mtd/devices/spear_smi.c
+@@ -1050,7 +1050,6 @@ static void spear_smi_remove(struct platform_device *pdev)
+ 	}
  }
  
--static SIMPLE_DEV_PM_OPS(mtd_cls_pm_ops, mtd_cls_suspend, mtd_cls_resume);
--#define MTD_CLS_PM_OPS (&mtd_cls_pm_ops)
--#else
--#define MTD_CLS_PM_OPS NULL
+-#ifdef CONFIG_PM_SLEEP
+ static int spear_smi_suspend(struct device *dev)
+ {
+ 	struct spear_smi *sdev = dev_get_drvdata(dev);
+@@ -1073,9 +1072,8 @@ static int spear_smi_resume(struct device *dev)
+ 		spear_smi_hw_init(sdev);
+ 	return ret;
+ }
 -#endif
-+static DEFINE_SIMPLE_DEV_PM_OPS(mtd_cls_pm_ops, mtd_cls_suspend, mtd_cls_resume);
  
- static struct class mtd_class = {
- 	.name = "mtd",
--	.pm = MTD_CLS_PM_OPS,
-+	.pm = pm_sleep_ptr(&mtd_cls_pm_ops),
- };
+-static SIMPLE_DEV_PM_OPS(spear_smi_pm_ops, spear_smi_suspend, spear_smi_resume);
++static DEFINE_SIMPLE_DEV_PM_OPS(spear_smi_pm_ops, spear_smi_suspend, spear_smi_resume);
  
- static DEFINE_IDR(mtd_idr);
+ #ifdef CONFIG_OF
+ static const struct of_device_id spear_smi_id_table[] = {
+@@ -1090,7 +1088,7 @@ static struct platform_driver spear_smi_driver = {
+ 		.name = "smi",
+ 		.bus = &platform_bus_type,
+ 		.of_match_table = of_match_ptr(spear_smi_id_table),
+-		.pm = &spear_smi_pm_ops,
++		.pm = pm_sleep_ptr(&spear_smi_pm_ops),
+ 	},
+ 	.probe = spear_smi_probe,
+ 	.remove = spear_smi_remove,
 -- 
 2.47.3
 
