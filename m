@@ -2,73 +2,98 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD3B6606A31C
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Nov 2026 15:34:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22070606A32A
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Nov 2026 16:20:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=PuftaVFN;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=Oy8qLtKP
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=douFgAhj;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=ny8bhEdt
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version:Subject:
+	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
 	List-Unsubscribe-Post:List-Owner;
-	bh=nqnIfhM5k7tVBnsj8DObg8YOtBfUHpqB+FUAW8E4YpE=; b=PuftaVFNygTqdghqKrhCfCDGES
-	wguy/2MpXU1/9dxfGWE3IC6xgNYwdjLetYNtXmZZgFV0U2xG1lNGF3otsenfagZmavWGxJprLBw3b
-	9+CB+aX+oPbB1aGwdrAZQhh6SH76BF13vvJ/PWKR06hV2x3QZYu8Y9PWrWJRiOzBNlbI9L2RF7ibB
-	mH9XNWGq2xJx6nOS12QWr6CGLWsQ0QqdIhdszezyYA4Qh90euppUUAIHHuZj+vn+5FKEPCWT7sGfm
-	z3TBIpQF2s5J7u0z8n790GX70FAN2NubqNUHnBvKRdgf4IbDsaS0Mw6EtaXejq1dwic/Mb4z7pqGn
-	bD3y7Hyg==;
+	bh=+iTBSEw6bpTcxp1ZuKTNDK5Adp+vny8pIhQL30jv/68=; b=douFgAhjDBfl+P21D+EyIzge0C
+	B87bQUZlPVvO4whYOK06yV/XXt0lb4ArlgltGI7EXqm7h9jd8NSYp85fJ4/1GQy6dAVeXDXBfe+Aq
+	pVZCPCOyKI1+JHuJUSLMQbbLxNuhz8KeERO27HXyxeEmKLuvYyv22T2Cn8NgYW7BMpdNYyP9/a7vX
+	QyK3hzpX1a8zzYLoujvDOQ/GKwfL4XrfmsQQHquTWWwKdxxqcN4XH5KkOkTc5ysaDPPWumpyxSazt
+	a6w5PwCX+qt+5JEZV8q4zhlBtDNq4t1v8xb8lE+L7DwMbHhCichnUqYNAFVP8GSygyjIGZ6/cvJVP
+	JNQFZJpQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTLC4-00000006J5D-3EPs;
-	Tue, 17 Nov 2026 15:34:00 +0000
-Received: from smtpout-03.galae.net ([185.246.85.4])
+	id 1xTLvR-00000006PRP-25Cc;
+	Tue, 17 Nov 2026 16:20:53 +0000
+Received: from mail-wm1-x332.google.com ([2a00:1450:4864:20::332])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTLC1-00000006J4t-3eH1
+	id 1xTLvP-00000006PPa-0eBs
 	for linux-mtd@lists.infradead.org;
-	Tue, 17 Nov 2026 15:33:59 +0000
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id 3680D4E4157D;
-	Tue, 17 Nov 2026 15:33:55 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 0BB775FDAD;
-	Tue, 17 Nov 2026 15:33:55 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 1352611BC0039;
-	Tue, 17 Nov 2026 16:33:46 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1794929630; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=ONkwR8RJvjAow7onxJtGa9LsxCz5oDZ9vzWweJzmNHs=;
-	b=Oy8qLtKPCvC71ub5Yj5zcGazS729StMFWBDRczYUonxTQmWBuoo++3Xzbe3GKl4aVM4rKi
-	I5HDHsy8dMxVsXYdZjqe3K64FLJlQ/SYPzTe4nGyZMjf23Wlsq5WbTxu+9M5x73rWPoJ/L
-	Dei9EbPwuTniT2oQ/EpFmy5IdvClo3deZqs1xpbeSnYKlBbFMveHOWRvpzV8w0o+Er5lXn
-	n+8x2OmvPo14NAUAWt5ysSFymABJ8DCP1m7lRRqkXnbUJkxQCvEWN/xZFMZ4lJPL6iPC4U
-	uqTLoorcBPwKktrzmEDrWrGm8IAnh3eq4XSYYNKuL2i2Iy6Vzzob5rpR5zMmjg==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Dominique Martinet <dominique.martinet@atmark-techno.com>
-Cc: Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
- <vigneshr@ti.com>,  Daisuke Mizobuchi <mizo@atmark-techno.com>,  Thomas
- Petazzoni <thomas.petazzoni@bootlin.com>,  Steam Lin <stlin2@winbond.com>,
-  linux-mtd@lists.infradead.org,  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 02/13] mtd: spinand: winbond: Generalize the KV OOB layout
-In-Reply-To: <auT9takcaT1TWj0W@atmark-techno.com> (Dominique Martinet's
-	message of "Sat, 31 Oct 2026 05:27:33 +0900")
-References: <20261030-winbond-master-w25nxxlvw-v1-0-91f67407dc8b@bootlin.com>
-	<20261030-winbond-master-w25nxxlvw-v1-2-91f67407dc8b@bootlin.com>
-	<auT9takcaT1TWj0W@atmark-techno.com>
-User-Agent: mu4e 1.12.12; emacs 30.2
-Date: Tue, 17 Nov 2026 16:33:46 +0100
-Message-ID: <875wxvlbfp.fsf@bootlin.com>
+	Tue, 17 Nov 2026 16:20:52 +0000
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-4bb702a7548so460535e9.1
+        for <linux-mtd@lists.infradead.org>; Tue, 17 Nov 2026 08:20:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20260707; t=1794932447; x=1795537247; darn=lists.infradead.org;
+        h=cc:to:message-id:content-transfer-encoding:content-type
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to:content-type;
+        bh=FRdBK0dChlQbRTj5qPhb7tv/PXLs2yoPzatxUDU3hFo=;
+        b=ny8bhEdthLIV7RviBf110eKOVikNTZFzCF06MayP/5JdJcGQA8j84KzE9FappyWs2s
+         ZNgiJ4yZml1amHD4z0R3mfBO0WiwGJtlNjtP2ZwcdFvQY6rsXnV8pSmcHB/itbPpZ0HK
+         YNiwg/w4HeKivSQNGMWCPLVNdwjotoAzzy7j/kLP6Ze5YooqHnLDsAbk21+8FDvl4z52
+         Uo8QeRl+N+QZn7/Gx1fHbVh8NwAmpwjfI9IMn65o3cs/jX03VQ03IGWr/DRZPyye+ghF
+         mRdPSNAjE1qoQy/xMXpLgkyTlFOM+CNYo4ix37xXw7DxHZ8f7Vah30zg24/MOXzWIAUd
+         Fyyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1794932447; x=1795537247;
+        h=cc:to:message-id:content-transfer-encoding:content-type
+         :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to:content-type;
+        bh=FRdBK0dChlQbRTj5qPhb7tv/PXLs2yoPzatxUDU3hFo=;
+        b=jvpG9nCB5LRtrhgypfvOSHoTxcA43EIqTRxdRMWdNXolVNhffHNV+rSj2BihMpdZjL
+         cD98SCf7QSZpnkFqkLTdcAHt9IAp+g2hqa4qz2SPXjVPd1lV47JYEB+FIyGyvDmEaybk
+         RamJOI11ME+WMwUokwJ9xz3IHVpbMFYxvJy7YgObQhttzJJBl9R8HMMwIq8trubOmnyA
+         sPmEnJNbbWPtH9CXg1KroGa+ioopbX1OoubS1xbdYPMDaddnr/MnYgZrz1g0glO5kqvN
+         ++Vn8bKLuL+PQN0SQDLGTPazp/KGmVl7FS7W0UjYNI0HS0VMEWgT0LTp5YL35G0wSlBS
+         pgGg==
+X-Gm-Message-State: APuU4Z9PBCeV4jUX/8fVVwrzrYC4+T1WUr98o3YJChMYQ1QAqlIHl6JY
+	JXxXeqhM/RJ9J3aq2ghdFqbFLRT6m6F+J2i26f9OCjnI4gO7ni4/9m6l
+X-Gm-Gg: AYBFou2GLsz9XJHiF6FL9v53B2GYcZmhSlZt/dpHk8OY7RzfKuzXJGQoLj208n+Q7V4
+	iqqJuUpZMuX9vQHfM++6bOxjTDVDntVDrHK8xIObEA13u6tb5EQsw9a+3ACmejksoo3UL64GwuM
+	mlywCAtOtzLOKJlVhEQdXtUo9uezB7scohn6Ehbsn9T3y2LCCVMz2BXxCJbvodz3aqSXSIyajxl
+	372hK3kppqcEA43e4nXIKvXtbnA30/fedo84wa44m1zkSD12lzECXINIT055xcBZRLh6IgCbVwb
+	dBPsyNKQwWfiRkwpGEfjEE21ppbtZBZmapp/1umwW+Sx8xpPH+4y8kHmmQweAn9tNSJ8cbEUdor
+	DiqZ8r+fy3E6zSHlE+Ff/LgvI1T9F1DhflMAp904uDVRHNZ10fL4ZWCk27SPywldDvP1nUlj87G
+	vv9kmAiII4LDxPAerSb1bjipSpyDMmx02pCvN9K8b4UqjDOFJm+AFoKIX93Zer5bkHBaiCS02up
+	lM3s4vhwzJYX9bh8ESKRkmKHm8CiR1inVXMiTGL1DlQRHRENBXKoKqYFJeNwqgvmI1X/1dYx4vR
+	y2sGg+b/wsqz4wWuIKiE7MetL05+vfSUZ+n/BsuVopFSrblc13MjzbFFg6m+PuwjPNbVEmXuMNQ
+	/1EE=
+X-Received: by 2002:a05:600d:2:b0:4b0:a307:46f8 with SMTP id 5b1f17b1804b1-4bb55a57c2cmr230733695e9.10.1794932447000;
+        Tue, 17 Nov 2026 08:20:47 -0800 (PST)
+Received: from [192.168.0.253] (5403F394.catv.pool.telekom.hu. [84.3.243.148])
+        by smtp.googlemail.com with ESMTPSA id 5b1f17b1804b1-4bb7839cabbsm73217975e9.11.2026.11.17.08.20.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Nov 2026 08:20:46 -0800 (PST)
+From: Gabor Juhos <j4g8y7@gmail.com>
+Date: Tue, 17 Nov 2026 17:20:41 +0100
+Subject: [PATCH] mtd: spinand: set request type explicitly in
+ spinand_{is,mark}bad() functions
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-Last-TLS-Session-Version: TLSv1.3
+Message-Id: <20261117-spinand-set-req-type-in-bbm-functions-v1-1-f46d5b3b8cf3@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/x2NQQqDQAwAvyI5GzDWutCvFA+6xjaHptvNWlrEv
+ xs8DgwzGxhnYYNbtUHmr5i81YHqCuJz1AejzM7QNm1PRAEtiY46o3HBzB8s/+SO4jS9cFk1Fg8
+ YXroQrtxH6rgBb6XMi/zOz33Y9wNpZ/BsdwAAAA==
+X-Change-ID: 20261117-spinand-set-req-type-in-bbm-functions-34775e6c14e0
+To: Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+ Boris Brezillon <boris.brezillon@collabora.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ Sashiko <sashiko-bot@kernel.org>, Gabor Juhos <j4g8y7@gmail.com>
+X-Mailer: b4 0.14.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261117_073358_069217_A4E707C7 
-X-CRM114-Status: UNSURE (   7.93  )
-X-CRM114-Notice: Please train this message.
-X-Spam-Score: -2.1 (--)
+X-CRM114-CacheID: sfid-20261117_082051_220150_9CCCB31A 
+X-CRM114-Status: GOOD (  15.78  )
+X-Spam-Score: -1.8 (-)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,23 +103,70 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-8.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-Cj4+ICsJdW5zaWduZWQgaW50IG9mZnNldCA9IG10ZC0+b29ic2l6ZSAvIDI7Cj4+ICsJdW5zaWdu
-ZWQgaW50IG51bV9zZWN0aW9ucyA9IG10ZC0+d3JpdGVzaXplIC8gNTEyOwo+Cj4gQWgsIEkgY291
-bGRuJ3QgdXNlIG9vYnNpemUgZm9yIG51bV9zZWN0aW9ucyBiZWNhdXNlIG9mIFcyNU4wMUtWIGJ1
-dAo+IHVzaW5nIHdyaXRlc2l6ZSBtYWtlcyBzZW5zZSBhcyB3ZWxsIGFzIHRoZXJlJ3Mgb25lIHNl
-Y3Rpb24gcGVyIDUxMiBieXRlcwo+IGNodW5rLCBhbmQgdGhpcyB3b3JrcyBmb3IgYWxsIGRldmlj
-ZXMuCj4KPiBHb29kIGNsZWFudXAhCj4KPiBSZXZpZXdlZC1ieTogRG9taW5pcXVlIE1hcnRpbmV0
-IDxkb21pbmlxdWUubWFydGluZXRAYXRtYXJrLXRlY2huby5jb20+CgpUaGFua3MgYSBsb3QgZm9y
-IHRoZSBmZWVkYmFjayEKCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QK
-aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+Commit 701981cab016 ("mtd: nand: Add a NAND page I/O request type")
+added a 'type' member to the 'nand_page_io_req' structure and updated
+the request iterators to utilize that, but the spinand_{is,mark}bad()
+functions were not updated by the commit. However in both of these
+functions the new member is implicitly inititalized to zero which
+corresponds to NAND_PAGE_READ. This is correct for the spinand_isbad()
+function since that uses a read request to get the bad block marker
+bytes, but the spinand_markbad() function does a write request so it
+should set the request type to NAND_PAGE_WRITE.
+
+Change the spinand_markbad() function to set the request type to the
+correct NAND_PAGE_WRITE value. For consistency, also update the
+spinand_isbad() function to set the request type to NAND_PAGE_READ
+explicitly.
+
+Fixes: 701981cab016 ("mtd: nand: Add a NAND page I/O request type")
+Reported-by: Sashiko <sashiko-bot@kernel.org>
+Link: https://sashiko.dev/#/log/192383 # See "**Investigating `req->type` in NAND Write Operations**"
+Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
+---
+ drivers/mtd/nand/spi/core.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index 18bba02fbd31..35bcb4a8861b 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -1105,6 +1105,7 @@ static bool spinand_isbad(struct nand_device *nand, const struct nand_pos *pos)
+ 	struct spinand_device *spinand = nand_to_spinand(nand);
+ 	u8 marker[2] = { };
+ 	struct nand_page_io_req req = {
++		.type = NAND_PAGE_READ,
+ 		.pos = *pos,
+ 		.ooblen = sizeof(marker),
+ 		.ooboffs = 0,
+@@ -1148,6 +1149,7 @@ static int spinand_markbad(struct nand_device *nand, const struct nand_pos *pos)
+ 	struct spinand_device *spinand = nand_to_spinand(nand);
+ 	u8 marker[2] = { };
+ 	struct nand_page_io_req req = {
++		.type = NAND_PAGE_WRITE,
+ 		.pos = *pos,
+ 		.ooboffs = 0,
+ 		.ooblen = sizeof(marker),
+
+---
+base-commit: 760d2efe91a84363d25c1051a10572242e75fe86
+change-id: 20261117-spinand-set-req-type-in-bbm-functions-34775e6c14e0
+
+Best regards,
+-- 
+Gabor Juhos <j4g8y7@gmail.com>
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
