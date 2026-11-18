@@ -2,10 +2,10 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0669C606A33D
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 Nov 2026 00:45:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5A95606A881
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 Nov 2026 00:49:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=gUdKUBFr
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=3DiQ5bbr
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -13,26 +13,26 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=uiPaLU87vMSgPD9z1proO14SzpfKLm015ZO5ef8quA8=; b=gUdKUBFrAPVR965m5hRATETo/G
-	AujIqTXS9PkNLNSgpj21hvsTKn3BilRtWpIMX4Ao+l/21s7PtObnDCqjCsSm2RL06WF9PLXsvPXRR
-	PoQj7gh0oS/CeU6EDv6lNaXlT18HPZfjN7wgMWaQd1hKBK2Vv63v/yd4y5wLXcykUipXy7cnzMKU8
-	AIyBkOE+j8en44h8bBjQwTNj6m65BhthDeESSV4Cl9e8QzDKRsKbiUsxSCVdKsLjo/J3iL6Hy1dgN
-	0vZmj63gdIvS8AsqOxRYNtSSrGCCqmXq+D87f/wlUft1M9iy7FQjcuYMGxX2u7xvrFoDcKq0yh3B9
-	eItikLZA==;
+	bh=zkBEv/NjUYDyXm+kj8eCb9sDa9n0OYkJuLfY3jUG5fI=; b=3DiQ5bbrARNln3lhkGZPLigX8M
+	nroCNNvN2QL4YXI1DkvsfpW4uN0hVajSnLmdPN9+CdSf5UJzOVFGFxtKe8q+BbhomFdIfDoE/sN6Y
+	XN+GnLgVrNVtK+3Bo8rFZ8HJ93cPFBQ3mZ/++4LRdHojmxcfm8anp8T8GPvr11eUU2g4hgfNbXCeA
+	JVr7Cz1cI+i6IGTEezI8imALqDceov+1cDZINyCiIhoa/f47kSlycxByu5VKrCh029hcqrHQKPBRv
+	CDOX4l/FK/gElv86cx4cauyIx9AJoisy9P91AoyLa3dOg+LSaYPn1WrXsMBtV3IMaIVV5HQZKpGEF
+	tflKV5CA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTTnc-00000007OwN-1i2a;
-	Wed, 18 Nov 2026 00:45:20 +0000
+	id 1xTTrz-00000007PHe-0hJj;
+	Wed, 18 Nov 2026 00:49:51 +0000
 Received: from [50.53.43.113] (helo=[192.168.254.34])
 	by bombadil.infradead.org with esmtpsa (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTTna-00000007Ovq-2LYg;
-	Wed, 18 Nov 2026 00:45:18 +0000
-Message-ID: <2566e84f-314c-49a7-b342-0d0880aa8416@infradead.org>
-Date: Tue, 17 Nov 2026 16:45:16 -0800
+	id 1xTTrj-00000007PFp-2tTG;
+	Wed, 18 Nov 2026 00:49:35 +0000
+Message-ID: <aab3bd74-80c6-4d51-a433-140b1d27946e@infradead.org>
+Date: Tue, 17 Nov 2026 16:49:32 -0800
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 07/12] docs: ioctl-number: update MTD entries
+Subject: Re: [PATCH 10/12] docs: ioctl-number: update FS entries
 To: sashiko-reviews@lists.linux.dev
 Cc: Jonathan Corbet <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>,
  David Hildenbrand <david@kernel.org>,
@@ -79,11 +79,11 @@ Cc: Jonathan Corbet <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>,
  =?UTF-8?Q?Thomas_Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
  intel-xe@lists.freedesktop.org
 References: <20261114202653.3113381-1-rdunlap@infradead.org>
- <20261114202653.3113381-8-rdunlap@infradead.org>
- <sashiko-outbox-215807@kernel.org>
+ <20261114202653.3113381-11-rdunlap@infradead.org>
+ <sashiko-outbox-215810@kernel.org>
 Content-Language: en-US
 From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <sashiko-outbox-215807@kernel.org>
+In-Reply-To: <sashiko-outbox-215810@kernel.org>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -108,36 +108,40 @@ X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 On 11/15/26 12:27 PM, sashiko-bot@kernel.org wrote:
 > Thank you for your contribution! Sashiko AI review found 1 potential
 > issue to consider:
-> - [Low] docs: ioctl-number: missing update of 'O' range for
->   mtd/ubi-user.h to 00-08
+> - [Low] docs: ioctl-number: ext4 00-2F ioctl range points to
+>   fs/ext4/ext4.h instead of uapi/linux/ext4.h
 > --
 > 
-> commit ccf1b77b46484d55fbc7ee02d93a71ebab16f010
+> commit 9072a8199d2be085dc5ab2567392180faf810c6d
 > Author: Randy Dunlap <rdunlap@infradead.org>
 > 
-> docs: ioctl-number: update MTD entries
+> docs: ioctl-number: update FS entries
 > 
-> This commit updates the sequence number ranges and file entries for MTD
-> and UBI ioctls in Documentation/userspace-api/ioctl/ioctl-number.rst.
+> This commit updates the header file paths and sequence number ranges for
+> filesystem ioctls in Documentation/userspace-api/ioctl/ioctl-number.rst.
 > 
 >> diff --git a/Documentation/userspace-api/ioctl/ioctl-number.rst b/Documentation/userspace-api/ioctl/ioctl-number.rst
->> index d47f817335666..1ff4fd4bf9b5c 100644
+>> index 87e547be9e2ac..abc89b6288ba3 100644
 >> --- a/Documentation/userspace-api/ioctl/ioctl-number.rst
 >> +++ b/Documentation/userspace-api/ioctl/ioctl-number.rst
 > 
 > [ ... ]
 > 
->> @@ -306,7 +306,7 @@ Code  Seq#    Include File                                             Comments
->>  'n'   E0-FF  linux/matroxfb.h                                          matroxfb
->>  'n'   F8-FA  video/sisfb.h                                             sisfb
->>  'o'   00-1F  fs/ocfs2/ocfs2_fs.h                                       OCFS2
->> -'o'   00-03  mtd/ubi-user.h                                            conflict! (OCFS2 and UBI overlaps)
->> +'o'   00-06  mtd/ubi-user.h                                            conflict! (OCFS2 and UBI overlap)
+>> @@ -275,7 +276,7 @@ Code  Seq#    Include File                                             Comments
+>>  'f'   00-1F  linux/ext2_fs.h                                           conflict!
+>>  'f'   00-1F  linux/ext3_fs.h                                           conflict!
+>>  'f'   00-0F  fs/jfs/jfs_dinode.h                                       conflict!
+>> -'f'   00-0F  fs/ext4/ext4.h                                            conflict!
+>> +'f'   00-2F  fs/ext4/ext4.h                                            conflict!
 > 
 > [Severity: Low]
-> Should the 'O' entry for mtd/ubi-user.h also be updated from 00-06 to
-> 00-08?  include/uapi/mtd/ubi-user.h defines UBI_VOL_IOC_MAGIC ('O')
-> ioctls up to 8 (UBI_IOCVOLCRBLK at 7 and UBI_IOCVOLRMBLK at 8).
+> Should this entry point to uapi/linux/ext4.h (or both headers) instead of
+> only fs/ext4/ext4.h?
+> 
+> Commit 519fe1bae7e2 ("ext4: Add a uapi header for ext4 userspace APIs")
+> moved the EXT4_IOC_* definitions spanning 0x03 through 0x2E into
+> include/uapi/linux/ext4.h, leaving only the compat EXT4_IOC32_* definitions
+> (0x03 through 0x08) in fs/ext4/ext4.h.
 
 Done.
 
