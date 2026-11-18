@@ -2,85 +2,96 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 356D9606A31C
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 Nov 2026 21:11:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76858606A320
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 Nov 2026 21:40:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=VLNUDZpV;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=kuXqBQo9
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=hibTBiBA;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=KAGT2Qk8
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:Subject:From:To:
-	Cc:Message-Id:Date:Mime-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=hkEqereTr18amm1odlS/79wQ7i8K/e+/EQEXMbCJmq4=; b=VLNUDZpVmFc4XQa5dFLwCu7/4q
-	ZYKdXMF/OyJXEuGnPupq6NFXavLV6f3HITWK30WI2xqxcfFvJPN5F03EaM4OvFnaGCEL7aU35R5ss
-	UxAt0sB+Hm5+C7Akw93bxINsh53k4eb7YHnM91z7hhh77MCrzyYSvREgtl6RD+Y1yITvWMLXxLF5x
-	labsBtvQI0NZQDt1J80Jx8/NmyMzuev9ZDp14Bvd7+3N3T9p0w9Tc0Ld3oDzPGl8sQwh/6Kin33mN
-	CpMP8nDnBl0LDCqgAhFmmkUDzWrkAPmc8O91GhN0vaTxxk61kiFiZhSpUHlUBzrasuUiE+ozxJnke
-	BxTVDSQw==;
+	bh=ihTcjVJkMmJXjqpU3EO1iKzdzSsq6XTV6rwwSurTwoo=; b=hibTBiBA2w7x7qVVmjKmSbqt4B
+	eWVpoBZT+tqfh8UmGLQvOLygiIdnFzKlspEUlnP8ABW+6Dp7DC+xLK08qvrM//kfeb/Q0cVG+9amr
+	o9X0MqzU013a9OMroBSh0F+foOcDNCRTKENeY6oSO44gW/cABNehhdctfXEFeIfMrHub50LKxhVgo
+	LR7IxuQrkOSPkQ5ZyXfVMzFaNIPlOB9WAVAbPLCCuLRyTqluf5iqIss6N4WhF5EF0GBl3rJ+1JBfo
+	mvxipld1XOyYpWWhDKm16VelvhgvPLcSTpYTVX8cWjPDcIqTnw3LnHXO8KX+N0ntGszCJKLX+gIic
+	pZxZewpg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTmwH-0000000AHux-1DPt;
-	Wed, 18 Nov 2026 21:11:33 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1xTnOf-0000000ALOt-1ypv;
+	Wed, 18 Nov 2026 21:40:53 +0000
+Received: from mail-wr1-x430.google.com ([2a00:1450:4864:20::430])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTmwG-0000000AHud-0Amo
+	id 1xTnOc-0000000ALO3-1gj2
 	for linux-mtd@lists.infradead.org;
-	Wed, 18 Nov 2026 21:11:32 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 2624E63DC5;
-	Wed, 18 Nov 2026 21:11:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4625B1F000C4;
-	Wed, 18 Nov 2026 21:11:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1795036290;
-	bh=fYW7C7ZSeq/hMphn21Jk8+ekBniTzrghgjy5BvzP2bc=;
-	h=Date:Cc:To:From:Subject:References:In-Reply-To;
-	b=kuXqBQo9E+h9GfS4TOHEmqgk/yUMmLyRthOV87kyoVvVOAzwMpnvqD7A1XkucwxwG
-	 +Vl7bpZlxX0JE1vzCQVuNBvbZMaKuIBAvlXTPAUK/GTa7v0LsXaOQ5W64VpbC1VuJl
-	 uqJ8OInlapAXmctcRxyW0008D6Xzwyp9lCFH5W/hdRpNqLETcSMRWepnBuLx7zwxxU
-	 Sylw1ch5ITJRoQmWb3zw4zYMMrzwKyJn/UZhs2/85dIxkfhwlxjTdBpT9dCJJryN21
-	 FmmGw4YgDxUh6xSvFjYiQgrHT7xeYbJw48awVnPj+qHidKGuRNABBugA/RDx9fw+YY
-	 xy76njp+TsmiA==
+	Wed, 18 Nov 2026 21:40:51 +0000
+Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-48e20ed3b9dso1372390f8f.2
+        for <linux-mtd@lists.infradead.org>; Wed, 18 Nov 2026 13:40:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20260707; t=1795038048; x=1795642848; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=V2TQ5JY/IVs2S8RR8BAhrV4k+I9Ja4L1F05T35wN/6Q=;
+        b=KAGT2Qk89QsLOzCDiD3AmqkYMEDcz1YJVZ2yfPqTiA43rFQhKXyROGoJ2y1V4JtfAd
+         BVQhg8G+on5cjCk290BWjrwSxpdZYUtQnmPrgAMUBVJcH/8+VT48RlsICPbxWDtStw/Z
+         lJHxYq6lb8XCWcQxTJUxfPrjrKYUqBOWT3sdR05XzKmcUf0qgDNcD7cPlN8jcB3iLbXy
+         WNy9k9o0i+y0i7wtjoBuilticigbQKSLi8lVvPmNRfhIn1pZjI5V9CEiLovc9F/09ynO
+         0TEHfL+yt+QpmY6kfcqQ2jfec2E5Iqtrwao0ZbwrnkdNFZanewffmjJ1u/iP6id/wBrB
+         pLbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1795038048; x=1795642848;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to:content-type;
+        bh=V2TQ5JY/IVs2S8RR8BAhrV4k+I9Ja4L1F05T35wN/6Q=;
+        b=DSlauOGDkOpGXLdzD0VEaTOGrEXvweh0jurZzOqjuoQGdWd1P4rLgZhfuMTnkLWXrJ
+         lVBL2ZbdAtbXtnZT3Bwdnu4y3ax7E6eR16nusH8TAugrNtPGTqiuYDsFbbVQxZ1b8V7K
+         cyKLJLuyLrN9ckdTu0t6Lp5qIQdBeMuWkvgW1pt1dFS1WJx7pXFoRj7B41n4D/F3du1P
+         oe0N0dza4mjb2C5QPfQrpSsS8U5bM8Sb5LMGMGSn47X2qxTcMeOW3/Ze3qvQEN20WL0V
+         oq1WAu9dXTYTCi0HOWuqlXUYxaNXcAcLhLgwLSwMrDAOCdbuMaC2wvkEot+m+D2VkcS0
+         Ds6A==
+X-Forwarded-Encrypted: i=1; AL+hErEhM1qmwhx3THFOVd3ZlmLt2KJKcx1AzQqbaAD/Xm2778DNTkwLQ30b3iXYeDSSBNAGsEICpcmyhIw=@lists.infradead.org
+X-Gm-Message-State: APuU4Z+aDu8Jwfl8vo4JmA6XsGTSySnTZf9GaJjVqc37SZx13VZuoMoR
+	BrsnAcvsuIFQRVH9DXd6fkOpuMiqryo4JcBp6bRYdfrmAiI0EgTGPeKS
+X-Gm-Gg: AZFdTZdH3VRIZ2wwibTZkflV/sty+uuspXUHkqA1KvKY+BmDR/xsookhuWxKrpiQYlE
+	MBMNnH0S/gFyqvK/kA2CbdpobxJzU3nYKVJC5aEiAU4j4pAZVbBcUDCRRhSxbjZCgqOu8gy+aeJ
+	QRzGNuzv8EUwwPvP1SjQhTlPcfT+RXWAV4u8O9oKhgulKhRQkeZjmLWauPwjqNOAczY4lSuC+Vn
+	53DzZw+8sSPpMGKVJT1PGy7IxL5yic6Sc9X1FY8V1ZJmQ7FG4sHZCxN59Js6+aQXiaEnRACTjD0
+	BEc5K14QnHwzLfrg+zN8tna2gR0hBzrilKFz2zp1XQfsETdNP9vCWNN0Liul6FCm5YUVx0OCQSC
+	F7/dZbe4ud/1FunZs06EFbd5yeefWC6kc3VUdgLLgiAqcfuxOXM+wIsIvi5Oevq+WbodWLsaOPi
+	pWxLq5BY8Xe6MiZwL/k/AlictZOc4sfHyUmJMAK30U8L/XmLM2LOxKne/jbzOJ+yAnAmk8b/2I0
+	BT/NNiIJl9YMxyRWcYNZXzQyhazZcYuOqvG6cO4S6NxYLi/9aJSI7J+zG5V0mYeVz7ttmAiU5Uu
+	ODMRyXaGTJlvsXJOWXuOjuAfnienXcGJBCIOJ486aOn8Eycb82hh2jKjEvs/3aXG+bNgVmZhoXK
+	wxrRgez+jmxY+DuZs4s6mwRKOcrmU+wWNw8EVKXT6j0WhUQo=
+X-Received: by 2002:a5d:5f42:0:b0:4a7:9630:7b4c with SMTP id ffacd0b85a97d-4a796308123mr6018312f8f.47.1795038048353;
+        Wed, 18 Nov 2026 13:40:48 -0800 (PST)
+Received: from center.jhjvjihww5qejoy14qwv1cc4td.frax.internal.cloudapp.net ([131.189.143.225])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4a654a8c3c6sm6361300f8f.19.2026.11.18.13.40.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Nov 2026 13:40:47 -0800 (PST)
+From: Orgad Shaneh <orgads@gmail.com>
+To: dwmw2@infradead.org,
+	richard@nod.at
+Cc: miquel.raynal@bootlin.com,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 2/2] jffs2: reschedule between the data CRC checks of an inode
+Date: Wed, 18 Nov 2026 21:40:45 +0000
+Message-ID: <20261118214045.107562-2-orgads@gmail.com>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20261118214045.107562-1-orgads@gmail.com>
+References: <20261118214045.107562-1-orgads@gmail.com>
 X-Archived-By: <archiver.kernel.org>
-Mime-Version: 1.0
-Date: Wed, 18 Nov 2026 22:11:20 +0100
-Message-Id: <DMYN979QJFNV.LM3T6O68OHW6@kernel.org>
-Cc: "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>, "Kees Cook"
- <kees@kernel.org>, "Miguel Ojeda" <ojeda@kernel.org>, "Rafael J . Wysocki"
- <rafael@kernel.org>, "Madhavan Srinivasan" <maddy@linux.ibm.com>, "Michael
- Ellerman" <mpe@ellerman.id.au>, "Nicholas Piggin" <npiggin@gmail.com>,
- "Christophe Leroy" <chleroy@kernel.org>, "Nayna Jain"
- <nayna@linux.ibm.com>, "Srish Srinivasan" <ssrish@linux.ibm.com>, "Mimi
- Zohar" <zohar@linux.ibm.com>, "Yoshinori Sato"
- <ysato@users.sourceforge.jp>, "Rich Felker" <dalias@libc.org>, "John Paul
- Adrian Glaubitz" <glaubitz@physik.fu-berlin.de>, "Juergen Gross"
- <jgross@suse.com>, "Stefano Stabellini" <sstabellini@kernel.org>,
- "Oleksandr Tyshchenko" <oleksandr_tyshchenko@epam.com>, "Nathan Chancellor"
- <nathan@kernel.org>, "Nick Desaulniers" <ndesaulniers@google.com>, "Viresh
- Kumar" <viresh.kumar@linaro.org>, "Zhongqiu Han"
- <zhongqiu.han@oss.qualcomm.com>, "Alexander Aring" <aahringo@redhat.com>,
- "Felix Kuehling" <felix.kuehling@amd.com>, =?utf-8?q?Christian_K=C3=B6nig?=
- <christian.koenig@amd.com>, "Zhihao Cheng" <chengzhihao1@huawei.com>,
- "Sumanth Korikkar" <sumanthk@linux.ibm.com>, "Bill Wendling"
- <morbo@google.com>, "Justin Stitt" <justinstitt@google.com>,
- <driver-core@lists.linux.dev>, <llvm@lists.linux.dev>,
- <linux-hardening@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
- <linux-doc@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
- <linux-pm@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
- <linux-sh@vger.kernel.org>, <linux-s390@vger.kernel.org>,
- <gfs2@lists.linux.dev>, <xen-devel@lists.xenproject.org>,
- <linux-mtd@lists.infradead.org>, <amd-gfx@lists.freedesktop.org>,
- <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-To: "Ian Rogers" <irogers@google.com>
-From: "Danilo Krummrich" <dakr@kernel.org>
-Subject: Re: [PATCH v3 9/9] kobject: Require explicit initialization of
- struct kobj_type::release
-References: <20261108223913.3624571-1-irogers@google.com>
- <20261108223913.3624571-10-irogers@google.com>
-In-Reply-To: <20261108223913.3624571-10-irogers@google.com>
+MIME-Version: 1.0
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20261118_134050_460403_65CD2917 
+X-CRM114-Status: GOOD (  11.60  )
+X-Spam-Score: -1.1 (-)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,43 +101,56 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-8.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,
+	FORGED_GMAIL_RCVD,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-T24gU3VuIE5vdiA4LCAyMDI2IGF0IDExOjM5IFBNIENFVCwgSWFuIFJvZ2VycyB3cm90ZToKPiAg
-c3RhdGljIGNvbnN0IHN0cnVjdCBrb2JqX3R5cGUgY3B1cmVnc19rb2JqX3R5cGUgPSB7Cj4gKwkv
-Kgo+ICsJICogUHJlLWV4aXN0aW5nOiBpbmZvLT5rb2JqIGlzIGVtYmVkZGVkIGluIHBlci1DUFUg
-Y3B1X2RhdGE7Cj4gKwkgKiBjcHVpZF9jcHVfb2ZmbGluZSgpIG9ubHkgY2FsbHMga29iamVjdF9k
-ZWwoKS4KPiArCSAqLwoKQWxsIG9mIHRoZXNlIGNvbW1lbnRzIGNhcnJ5IGEg4oCcUHJlLWV4aXN0
-aW5nOuKAnSBwcmVmaXgsIGJ1dCB0aGF0IGRvZXNu4oCZdApkaXN0aW5ndWlzaCBjYXNlcyB3aXRo
-IGJyb2tlbiBsaWZldGltZSBtYW5hZ2VtZW50IGZyb20gdGhvc2Ugd2hlcmUgdGhlIHN0b3JhZ2UK
-cmVtYWlucyB2YWxpZCBkZXNwaXRlIHRoZSBBUEkgbWlzdXNlLgoKRm9yIGV4YW1wbGU6Cgo+IGRp
-ZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS9hbWRncHVfeGNwLmMgYi9kcml2
-ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS9hbWRncHVfeGNwLmMKPiBpbmRleCBhYjE0MDc5ZDFjNDIu
-LjA4NDcxMzRhMTM5MSAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS9h
-bWRncHVfeGNwLmMKPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS9hbWRncHVfeGNw
-LmMKPiBAQCAtNzk3LDYgKzc5NywxMSBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IHN5c2ZzX29wcyB4
-Y3BfY2ZnX3Jlc19zeXNmc19vcHMgPSB7Cj4gIH07Cj4gIAo+ICBzdGF0aWMgY29uc3Qgc3RydWN0
-IGtvYmpfdHlwZSB4Y3BfY2ZnX3Jlc19zeXNmc19rdHlwZSA9IHsKPiArCS8qCj4gKwkgKiBQcmUt
-ZXhpc3Rpbmc6IHhjcF9yZXMgaXMgZW1iZWRkZWQgaW4gc3RydWN0IGFtZGdwdV94Y3BfY2ZnCj4g
-KwkgKiByYXRoZXIgdGhhbiBmcmVlZCBpbmRpdmlkdWFsbHkgYnkga29iamVjdF9wdXQoKS4KPiAr
-CSAqLwo+ICsJLnJlbGVhc2UgPSBOVUxMLAoKQmVpbmcgZW1iZWRkZWQgaW4gYW5vdGhlciBzdHJ1
-Y3R1cmUgZG9lc24ndCBleHBsYWluIHdoYXQgZ3VhcmFudGVlcyB0aGF0IHRoZQplbmNsb3Npbmcg
-YWxsb2NhdGlvbiBvdXRsaXZlcyB0aGUga29iamVjdOKAmXMgZmluYWwgY2xlYW51cC4KCkNvdWxk
-IHlvdSBwbGVhc2UgZHJvcCB0aGUg4oCcUHJlLWV4aXN0aW5nOuKAnSBwcmVmaXggYW5kIG1ha2Ug
-dGhhdCBkaXN0aW5jdGlvbgpleHBsaWNpdD8gRm9yIGJyb2tlbiBjYXNlcywgZGVzY3JpYmUgdGhl
-IGxpZmV0aW1lIHByb2JsZW0gYW5kIG1hcmsgaXQgYXMgbmVlZGluZwphIGZvbGxvdy11cCBmaXgu
-IEZvciBjYXNlcyB3aGVyZSB0aGUgbGlmZXRpbWUgaXMgc2FmZSwgZXhwbGFpbiB3aGF0IGd1YXJh
-bnRlZXMKdGhhdCBzYWZldHksIHdoaWxlIGFja25vd2xlZGdpbmcgdGhhdCBvbWl0dGluZyByZWxl
-YXNlKCkgc3RpbGwgdmlvbGF0ZXMgdGhlCmRvY3VtZW50ZWQgQVBJIGNvbnRyYWN0LgoKQWxzbywg
-ZG8geW91IHBsYW4gdG8gZm9sbG93IHVwIG9uIHRob3NlIGNhc2VzPwoKVGhhbmtzLApEYW5pbG8K
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpM
-aW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+The first read of an inode checks the data CRC of each of its unchecked
+nodes, all in one call. On an Octeon board with an 8-bit NOR, a
+46.6 MB file takes 13.8 s of kernel time there. Without kernel
+preemption, nothing else ran on that CPU in the meantime: an RT
+watchdog thread missed its deadline and the board rebooted. With
+this, the lookup takes as long, but the watchdog, the per-CPU
+workqueue and the other tasks of that CPU keep running.
+
+jffs2_get_inode_nodes() already reschedules per node while it reads
+the headers; do the same before each data check.
+
+Signed-off-by: Orgad Shaneh <orgads@gmail.com>
+---
+ fs/jffs2/readinode.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/fs/jffs2/readinode.c b/fs/jffs2/readinode.c
+index 18a47b432..bfee9e57f 100644
+--- a/fs/jffs2/readinode.c
++++ b/fs/jffs2/readinode.c
+@@ -39,6 +39,13 @@ static int check_node_data(struct jffs2_sb_info *c, struct jffs2_tmp_dnode_info
+ 
+ 	BUG_ON(tn->csize == 0);
+ 
++	/*
++	 * A large inode has thousands of data nodes to check on its first
++	 * read, and a slow flash takes seconds over them; give the CPU
++	 * away between nodes.
++	 */
++	cond_resched();
++
+ 	/* Calculate how many bytes were already checked */
+ 	ofs = ref_offset(ref) + sizeof(struct jffs2_raw_inode);
+ 	len = tn->csize;
+-- 
+2.53.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
