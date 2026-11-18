@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F344E60A2604
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 Nov 2026 17:19:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93E6960A2602
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 Nov 2026 17:37:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=wSpIG7hq;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=u0Cb5ONB
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=qRPWSgcH;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=NrW9F/dv
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,86 +14,87 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
 	List-Unsubscribe-Post:List-Owner;
-	bh=pQ2jX/vaeP5hG8AVa7Kyc+r48FbPmFsw7vbkqv5XIF8=; b=wSpIG7hqeK2RcM3Spm72LAhGSC
-	iZruyt+7zSuiWOmAqkzJLuNmHDEUY/cRtP/HSLdrrAMbtY1yQp8AOaXQIEvnMpvspryviiDMqn1UE
-	o+ojvzPSQjavxi8DAbNOa4aTvnPq2WgNM5ZA6sHXTupwy4b3V+JBGGu2SBtEykMb0JazazIjgePNf
-	p2NyHD18asdnQcU8BzMFRo7mXF7eYQh5aLld64wysJFHTsBbH6uL2JZoZzz1lOgL0i6zRq2OtRMdE
-	JkF+nM/R1iAzUMGa3PMHz4yJ/xcaeD8vDQNL+VAa9XIHCm2WDgMmLGVp6VOT/Y9mYqbP3AyUJNh1t
-	le9g3hCg==;
+	bh=68xqngELGSDjktlfL8spiL1nW25rnTTqbtc43b2rKqE=; b=qRPWSgcHyeKPDtbIml6CgWqLdu
+	mwTz3E7AZJCfVXm4scpbpJCjxdvk9WoUPnkTsNWlYFts3RLHPKo5LVu5C7PTF88ZcppqJTGCMyAp7
+	19b6X5tQBH3Vcal0W8+ns0/hlJLOE18MibLel1jIdYcELNwUmtukby04OQ1Amr6VSbpO5JUJlAghI
+	z/fmHO7/Bxr4T61CxqE0Mgb1goubXi8yms9AfW55TE+EKZ7+drcCQIg7WnO1cJS1+ONwqQD6SzVDs
+	rw47LAYXxHr6hCHj4mT9iT9hVj1c56iZG1oWX8tlA7Iaig86fo6WoaMYWoTa113OAz8aPFASJSTvw
+	I0qVR0VA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTjJu-00000009knL-3paX;
-	Wed, 18 Nov 2026 17:19:42 +0000
+	id 1xTjbM-00000009ntI-0TkJ;
+	Wed, 18 Nov 2026 17:37:44 +0000
 Received: from mail-oo1-xc2d.google.com ([2607:f8b0:4864:20::c2d])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTjJs-00000009kmz-0nGj
+	id 1xTjbJ-00000009nrE-0cXq
 	for linux-mtd@lists.infradead.org;
-	Wed, 18 Nov 2026 17:19:41 +0000
-Received: by mail-oo1-xc2d.google.com with SMTP id 006d021491bc7-71ad099391dso712447eaf.3
-        for <linux-mtd@lists.infradead.org>; Wed, 18 Nov 2026 09:19:39 -0800 (PST)
+	Wed, 18 Nov 2026 17:37:42 +0000
+Received: by mail-oo1-xc2d.google.com with SMTP id 006d021491bc7-71ada4644f8so802601eaf.0
+        for <linux-mtd@lists.infradead.org>; Wed, 18 Nov 2026 09:37:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1795022379; x=1795627179; darn=lists.infradead.org;
+        d=gmail.com; s=20260707; t=1795023460; x=1795628260; darn=lists.infradead.org;
         h=cc:to:message-id:content-transfer-encoding:content-type
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to:content-type;
-        bh=6gP6svfhzOhB+3p01vqjLTOkJSkqMxk4Z3G7OPboewU=;
-        b=u0Cb5ONB7G/WvgmGKVwPdhygZS7leehhusN5bnk8qNmgS6yyDphLHPFNFOIIZIDw9m
-         pYxhhGzYUonFCtnCLBbzzKoSMUoZOlnAr/ubzTbr4X2sj5TNGToMJfzISlJAeBl5hFRg
-         apJsnAszZL05nB7EgTTO3crys6J5vVJKqe5u2Sxn7EF+Ct74evRpIW/bhb6s8Yw4SW9t
-         eKNlLQNZp7IByAXDU8SWv0qaghOoJT0WzbsTPzpWR5KOmcPcD+Kc2Wqj7WAnqT/qn/PX
-         Iz7+SPCRqVHhSANZZLo/OKpsBD06T2yvBjxz5rfCuoesD/XxYvJjxKGMphiQkSFftH7g
-         yNkg==
+        bh=A6PuFLIJYWuXo/Cy+3hQI8qFRt6kaCnSgJyOuAQlQP8=;
+        b=NrW9F/dvC7+5iWUOZ0QM8VooDlEQyUd2h69H0gNcIK6hPOP0IS3Ips+owzXI1dJ6NI
+         gDKc5d1MXc6hfAOP/iApPOETR5TtTMvrUw2EmL1iQXnBjtfoBH7j3Wutpo2wTqCKmAcz
+         MMgWOGz8J0Q5WEC7l2yajyuBdD2CGOzxhl0DOppfONkmKvSBMEwmqKxLUipfduZA0Pxr
+         /InTvqtzwZQPYCUssSKhbWWnwRGjQ1F2bl+I4R+ZKNB0LL6NDTY79AM9jNPZnA+WC59E
+         XSw3VlLdePy8VsSxJ7qeKGoRjEmKcYgGrzqBLItw7L0JDdjAty/dd1Tqd3rFbVlBuxdI
+         NFng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1795022379; x=1795627179;
+        d=1e100.net; s=20260707; t=1795023460; x=1795628260;
         h=cc:to:message-id:content-transfer-encoding:content-type
          :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to:content-type;
-        bh=6gP6svfhzOhB+3p01vqjLTOkJSkqMxk4Z3G7OPboewU=;
-        b=zZuuo5OQ1NW3cqFdjT4Fhub49j2R61mJ+ihOzdJ51PkCMH9g3iJoYWEbMOjeX9Snu7
-         t2XMge0RLCkqUuviXMOZTJhyrqM1nMfmyRjDE0AwboPkKytQ7XKy8zM+4PWP06jH7s6r
-         Jhc7yCVlZxbGdWpPdsi3etfr66xDvt72C5Zk6Dr1SNgI6KYRc6gZQJPI5PuZiICeP3kU
-         f7tTJ1yrvSgY+DmLdSpw0mBhNG085G4Oqk33y9lpmKaFDyWJ4X93GmJEYdkbKizD4sNf
-         8UTtfeVltHNBh9qauUDOP2uUfqSZ6DbwWmKd8G3JMnzl8PBjKPmeZMwdXNVD1xTjSFYr
-         pXIw==
-X-Gm-Message-State: APuU4Z/sLLX6htGaNZo2+Ll2FfGOCJGq/LC8DBUnDEw8hCYWCcL/PSIG
-	A/5skgazF7APGcIXiX0+2Nyb1IlZMODLuOibv758rFwkhzq70539BmjC
-X-Gm-Gg: AYBFou3xs/Pq/2SwLOo5LWA0g2AkMLEeJ8oa+MtoCnwks61CbH/cw1TtR/ssWpk72XH
-	OgCqTL5a2HT1LcXEtySq3TnmUmqkx4XolinD6hm3w0+4H8eKovuQl5ZDqGUBDwBmvreF1Pun6AK
-	fkjEcIC7vJlG+LRjPIImOoP/nIPIRsPpSuPjgvbu0Ko3xp9FXE2SWhulTlhcMMkPmwAa5KxjlEd
-	JM7cPj1iClX11BRzxSQyoX1qDCGVDXtJYr7993Ixhu++I9VGPvvYptEmvR4WpPUs60WagY7vBB8
-	Zb9pM/GffFv8g+CJuOQSic8LUQqk/R6QwUQdw1A87dbt22nKQd9jiPi1mg9pN/EZ42pU/vl+JCx
-	q6ENn3YAQYmd2ULZ0/I5xUjJKowt6PKDDEQI+Pr6TPdVJHRz4oWdWXACkuUnu6XSGYl0QaS2110
-	X6Zw+RX8DH8s/fcyF/eFfLESrkWkvZrUuxe7xqCabPvMWTxzac66dsbA9W0RHbMkbjPQaorr1LZ
-	PBuXtYBgdHxOW37F2q3DCINKMeNKjDvNSrTqxsN1NYRXOOZGFSs0Geqx0vBQ3CBQBixHhEUcgny
-	nXHGFuYEm2H+e6pclWTpcv8gUxjptVmU1qQUdeuQn5ikSHFVPvhKoT3KCB/7vvwpbabYsGD9xkH
-	xGm4w4wl0GphFKNnL+C1dXmTALHndE50HaXvwa7dYjXPyrHQr8H4PbDytibk6bZmv7ku2K8nATA
-	vz+W1szA/CvTSycgm+8e4z3PAHDgBmUFZSEkpaY87Qaa6ybesvxNw=
-X-Received: by 2002:a05:6820:c3c8:b0:6f5:217:b0a2 with SMTP id 006d021491bc7-71b1827bc1fmr1617469eaf.12.1795022379086;
-        Wed, 18 Nov 2026 09:19:39 -0800 (PST)
+        bh=A6PuFLIJYWuXo/Cy+3hQI8qFRt6kaCnSgJyOuAQlQP8=;
+        b=CD2pbtFn9nlzvoqSFv25L2J1mSeQAh6HzL1nv2y8nd98JYlx4EXwI9zpE8rOUkidlF
+         fY/JEPcUWfovG2sMbyHJz4PHUJDQGdhpTNv5rZU66MgonPp9R82+OK3mDpb9b4LpUx2U
+         9rRI7lrEjhZazjlZ1TGQBFjy0lshmAqBStdiPBSUSbX+Num27bhFIlSjcWvpQMyfpSh/
+         UWZrxDNv+sbypw/xoDPwuhCFngjisf1WrCA4WFA/OnUjkHErKrOgBCOW8rwwFp06CRe3
+         zFdBwLf/o3Ag7jaj8gaI13foKc3JySAQqdKQKJxh6TS01WzO2//rXf8Bp4Sf9vfjZCLO
+         ax5Q==
+X-Gm-Message-State: APuU4Z9rRpGepyDo9+sykKfj7pLRKp9flu/q/FphwlyCIU8UJS3mwg4G
+	prTQWAInjxi/xDQ0ctLB4/+UuX0sePqhi3rU5Dtmj/Q6PHRqbXd8Rw6kIbrIDi1I
+X-Gm-Gg: AYBFou3J860gYrhBjlelJMeOAeSTUoBKDOVXOESt0XNzNOaEroOZS+n0qI5yVExDsaT
+	1RareC6NAbgrQHhKMI2JO4ORZmvuDS7XHgpt8ZNYEpjeNZMMcp+wX7XpEBl7xU8kJIa9J89vvtP
+	iEnL3rH3BUi+CjLIiFhWeVMcb+A8xP19enssM5tqYjRohu6OBjRUWr6B61pudj8XhlNLegLeGWT
+	PviOZkifBpw5b3WnubvH1awZ3ugOlf3NOWvkXBBhH91P6vBZAnvB4bDC8uosERVfo55xlNsCTth
+	7vnJAOEct6ucZa4JhDKkilz+0eI//mgDiHAxtyoFnp1MDiF5xIKaOOhXuCoEE+v2tDe/mViE0vZ
+	1z64WgQ3QKb/Zxy/a1VcgBUnjbpif+kR3JHq63j1Nm5qhBQ7UISjvsMQMPXhSKwYPWwufqHv3im
+	qgUriHTKZVyEz/v1DaVRtrZK6ptTjgofMyJs0h+LIVBBjB5rz08woguku4WU4DNOngxy637MqFq
+	xH8GdiRqGBS84UNja802Qf6xeFiY4k5CiH+ucWEycw0ney0N0Ix2zJ6d+hMEsvL39FWgvn2gtmD
+	j5loxr4knn37ZGuzwalBgyFDz+oqOzn4kQ2fdsP/fh7++qzV21UmvpVIOnO5LAc0J1qaShvLyj/
+	zQlLWKm08NO45MLhDdYYy3EhbWwu9Ymw9fj2dYnWwJagFHfnVDqP5HxZDRIZNkOYbRZ4BsiYbBw
+	d75ID9AE5qDAspHQi4dczri4L7N7mR5nebPhSVFyBnCK9+ADzHfQBh
+X-Received: by 2002:a05:6820:7090:10b0:71b:c44:1dc0 with SMTP id 006d021491bc7-71b185da426mr1708265eaf.76.1795023459992;
+        Wed, 18 Nov 2026 09:37:39 -0800 (PST)
 Received: from [127.0.1.1] (174-29-1-49.hlrn.qwest.net. [174.29.1.49])
-        by smtp.gmail.com with ESMTPSA id 46e09a7af769-862f021298dsm2495575a34.16.2026.11.18.09.19.38
+        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-4b743721fe9sm2863717fac.6.2026.11.18.09.37.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Nov 2026 09:19:38 -0800 (PST)
+        Wed, 18 Nov 2026 09:37:39 -0800 (PST)
 From: James Hilliard <james.hilliard1@gmail.com>
-Date: Wed, 18 Nov 2026 10:18:36 -0700
-Subject: [PATCH v2] mtd: core: skip empty read and write requests
+Date: Wed, 18 Nov 2026 10:37:28 -0700
+Subject: [PATCH v2] mtd: rawnand: abort BBT creation on scan failure
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Message-Id: <20261118-submit-mtd-empty-io-v1-v2-1-b980927931ef@gmail.com>
-X-B4-Tracking: v=1; b=H4sIAAAAAAAC/4WNQQ6CMBBFr0K6dgxTmmpceQ/DopQBxlhK2kokh
- Ltb8AAmf/OS//5fRaTAFMWtWEWgmSP7MYM8FcIOZuwJuM0sZCk1YqkgvhvHCVxqgdyUFmAPM4I
- 2pW6bq1ZYocjyFKjjzzH8qH+czSfZtK/tjYFj8mE5nmfce39PchCqTje2UxdF0tx7Z/h1tt6Je
- tu2L/6wvzPOAAAA
-X-Change-ID: 20261104-submit-mtd-empty-io-v1-6a06db864131
+Message-Id: <20261118-submit-rawnand-bbt-scan-error-v1-v2-1-c7b71dd22ad6@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/5WOQQ7CIBBFr2JYO6YDatCV9zBdAJ22YywYwKppe
+ ndpPYHLl/y89yeRKDIlcd5MItLIiYMvILcb4XrjOwJuCgtZySNipSA97cAZonl54xuwNkNyxgP
+ FGCKMCIhaNVojHawURfOI1PJ7TVzrHxfHjVxevMui55RD/KwfRlx2f+SWIlSWWq3UHk/aXbrB8
+ H3nwiDqeZ6/PVfV7uIAAAA=
+X-Change-ID: 20261103-submit-rawnand-bbt-scan-error-v1-1183d881e5b2
 To: Miquel Raynal <miquel.raynal@bootlin.com>, 
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
- Boris Brezillon <bbrezillon@kernel.org>
+ Thomas Gleixner <tglx@kernel.org>, 
+ "Artem B. Bityuckiy" <dedekind@infradead.org>
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
- stable@vger.kernel.org, James Hilliard <james.hilliard1@gmail.com>
+ James Hilliard <james.hilliard1@gmail.com>
 X-Mailer: b4 0.17-dev
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261118_091940_238639_2D47B1E2 
-X-CRM114-Status: GOOD (  12.73  )
+X-CRM114-CacheID: sfid-20261118_093741_204607_9518D8DB 
+X-CRM114-Status: GOOD (  13.36  )
 X-Spam-Score: -1.8 (-)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -116,55 +117,47 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-When mtd_read() and mtd_write() became wrappers around the OOB helpers,
-they lost their zero-length checks. An empty read at the end of a raw
-NAND device can then compute a die index one past the last die and hit
-the WARN_ON() in nand_select_target().
+A non-ECC error reading a factory bad block marker from OOB stops the
+scan. check_create() ignores the error and can write the partial table
+to flash as both the primary and the mirror. Both copies then list
+unscanned factory-bad blocks as good.
 
-Return success from the common helpers without calling the driver when
-the request is valid but has neither data nor OOB bytes to transfer.
+Return the scan error before setting the table versions or writing
+either copy.
 
-Fixes: 2431c4f5b46c ("mtd: Implement mtd_{read,write}() as wrappers around mtd_{read,write}_oob()")
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/sashiko-outbox-198544@kernel.org
+Fixes: eeada24da8bd ("[MTD] NAND: Read only OOB bytes during bad block scan")
 Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
 ---
 Changes in v2:
-- Clarify that the invalid die index triggers a warning at EOF.
-- Link to v1: https://patch.msgid.link/20261104-submit-mtd-empty-io-v1-v1-1-3f6bcf474e2a@gmail.com
+- Explain how a partial scan can record bad blocks as good on flash.
+- Link to v1: https://patch.msgid.link/20261103-submit-rawnand-bbt-scan-error-v1-v1-1-0bef8334198c@gmail.com
 ---
- drivers/mtd/mtdcore.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/mtd/nand/raw/nand_bbt.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index b170c3144ca8..ea21dc1bb5de 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -1805,6 +1805,9 @@ int mtd_read_oob(struct mtd_info *mtd, loff_t from, struct mtd_oob_ops *ops)
- 	if (ops->stats)
- 		memset(ops->stats, 0, sizeof(*ops->stats));
+diff --git a/drivers/mtd/nand/raw/nand_bbt.c b/drivers/mtd/nand/raw/nand_bbt.c
+index 93f162805f31..3ca1d7fe573f 100644
+--- a/drivers/mtd/nand/raw/nand_bbt.c
++++ b/drivers/mtd/nand/raw/nand_bbt.c
+@@ -1006,8 +1006,11 @@ static int check_create(struct nand_chip *this, uint8_t *buf,
+ 				continue;
  
-+	if (!ops->len && !ops->ooblen)
-+		return 0;
-+
- 	if (mtd->flags & MTD_SLC_ON_MLC_EMULATION)
- 		ret_code = mtd_io_emulated_slc(mtd, from, true, ops);
- 	else
-@@ -1849,6 +1852,9 @@ int mtd_write_oob(struct mtd_info *mtd, loff_t to,
- 	if (!master->_write_oob && (!master->_write || ops->oobbuf))
- 		return -EOPNOTSUPP;
+ 			/* Create the table in memory by scanning the chip(s) */
+-			if (!(this->bbt_options & NAND_BBT_CREATE_EMPTY))
+-				create_bbt(this, buf, bd, chipsel);
++			if (!(this->bbt_options & NAND_BBT_CREATE_EMPTY)) {
++				res = create_bbt(this, buf, bd, chipsel);
++				if (res)
++					return res;
++			}
  
-+	if (!ops->len && !ops->ooblen)
-+		return 0;
-+
- 	if (mtd->flags & MTD_SLC_ON_MLC_EMULATION)
- 		return mtd_io_emulated_slc(mtd, to, false, ops);
- 
+ 			td->version[i] = 1;
+ 			if (md)
 
 ---
-base-commit: 760d2efe91a84363d25c1051a10572242e75fe86
-base-tree: git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/fixes
-change-id: 20261104-submit-mtd-empty-io-v1-6a06db864131
+base-commit: 292f737382d3913d0d9addf220b7170fedd7a04f
+base-tree: git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next
+change-id: 20261103-submit-rawnand-bbt-scan-error-v1-1183d881e5b2
 
 Best regards,
 --  
