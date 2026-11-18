@@ -2,10 +2,10 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AB87606A89B
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 Nov 2026 00:42:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0669C606A33D
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 Nov 2026 00:45:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=j7pPlQQw
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=gUdKUBFr
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -13,26 +13,26 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=bnisyGs1Ou0sfKi88veTzqJ1jgAYpuKSJeO8isO/75A=; b=j7pPlQQwaHQCJ7JFqd7IJbX6ad
-	8FbWO7E/CkKNtKfqMHgJdtNsbdAEO/JjPAhO/BBE+/alJ5p9o079RJX4af+K31TlzmFgUlXO9t6JL
-	IxTnZpSP83iZWaWNFLvASIbAvj36mpJ+yGnlGT5Ao2BSiL5MyTdk+DPLZh184WkR8RJdBczkS3N3R
-	+JzsScXzwoHchX6OBb8OqwbJ5C7mDojcf+8A9IvyUsQ1BzkjeORhLFsmBJKynOzuPwvNcoYmNtF5w
-	p8Ecju9GJCNtLShxvCNfIkGLsQBF/80/L8Q4aXCvR6axBsEPxmZB9MvXJx1rd6n8ECFlGgKO6eecR
-	Dev7laoQ==;
+	bh=uiPaLU87vMSgPD9z1proO14SzpfKLm015ZO5ef8quA8=; b=gUdKUBFrAPVR965m5hRATETo/G
+	AujIqTXS9PkNLNSgpj21hvsTKn3BilRtWpIMX4Ao+l/21s7PtObnDCqjCsSm2RL06WF9PLXsvPXRR
+	PoQj7gh0oS/CeU6EDv6lNaXlT18HPZfjN7wgMWaQd1hKBK2Vv63v/yd4y5wLXcykUipXy7cnzMKU8
+	AIyBkOE+j8en44h8bBjQwTNj6m65BhthDeESSV4Cl9e8QzDKRsKbiUsxSCVdKsLjo/J3iL6Hy1dgN
+	0vZmj63gdIvS8AsqOxRYNtSSrGCCqmXq+D87f/wlUft1M9iy7FQjcuYMGxX2u7xvrFoDcKq0yh3B9
+	eItikLZA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTTlA-00000007Oo5-0GJE;
-	Wed, 18 Nov 2026 00:42:48 +0000
+	id 1xTTnc-00000007OwN-1i2a;
+	Wed, 18 Nov 2026 00:45:20 +0000
 Received: from [50.53.43.113] (helo=[192.168.254.34])
 	by bombadil.infradead.org with esmtpsa (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTTks-00000007Onb-3pzj;
-	Wed, 18 Nov 2026 00:42:30 +0000
-Message-ID: <8d287ebe-56cd-4429-89c7-d89c295efeca@infradead.org>
-Date: Tue, 17 Nov 2026 16:42:28 -0800
+	id 1xTTna-00000007Ovq-2LYg;
+	Wed, 18 Nov 2026 00:45:18 +0000
+Message-ID: <2566e84f-314c-49a7-b342-0d0880aa8416@infradead.org>
+Date: Tue, 17 Nov 2026 16:45:16 -0800
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 04/12] docs: ioctl-number: update networking entries
+Subject: Re: [PATCH 07/12] docs: ioctl-number: update MTD entries
 To: sashiko-reviews@lists.linux.dev
 Cc: Jonathan Corbet <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>,
  David Hildenbrand <david@kernel.org>,
@@ -79,11 +79,11 @@ Cc: Jonathan Corbet <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>,
  =?UTF-8?Q?Thomas_Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
  intel-xe@lists.freedesktop.org
 References: <20261114202653.3113381-1-rdunlap@infradead.org>
- <20261114202653.3113381-5-rdunlap@infradead.org>
- <sashiko-outbox-215804@kernel.org>
+ <20261114202653.3113381-8-rdunlap@infradead.org>
+ <sashiko-outbox-215807@kernel.org>
 Content-Language: en-US
 From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <sashiko-outbox-215804@kernel.org>
+In-Reply-To: <sashiko-outbox-215807@kernel.org>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -108,50 +108,38 @@ X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 On 11/15/26 12:27 PM, sashiko-bot@kernel.org wrote:
 > Thank you for your contribution! Sashiko AI review found 1 potential
 > issue to consider:
-> - [Low] docs: ioctl-number: duplicate bnep.h entry and missing conflict
->   marker
+> - [Low] docs: ioctl-number: missing update of 'O' range for
+>   mtd/ubi-user.h to 00-08
 > --
 > 
-> commit acf95c4d46bf87ab8fab382911993f6e83864afc
+> commit ccf1b77b46484d55fbc7ee02d93a71ebab16f010
 > Author: Randy Dunlap <rdunlap@infradead.org>
 > 
-> docs: ioctl-number: update networking entries
+> docs: ioctl-number: update MTD entries
 > 
-> This commit updates the networking ioctl file paths and function number
-> ranges in Documentation/userspace-api/ioctl/ioctl-number.rst.
+> This commit updates the sequence number ranges and file entries for MTD
+> and UBI ioctls in Documentation/userspace-api/ioctl/ioctl-number.rst.
 > 
 >> diff --git a/Documentation/userspace-api/ioctl/ioctl-number.rst b/Documentation/userspace-api/ioctl/ioctl-number.rst
->> index 2b2d3fd317158..cd4f0bf6db66a 100644
+>> index d47f817335666..1ff4fd4bf9b5c 100644
 >> --- a/Documentation/userspace-api/ioctl/ioctl-number.rst
 >> +++ b/Documentation/userspace-api/ioctl/ioctl-number.rst
->> @@ -132,6 +132,7 @@ Code  Seq#    Include File                                             Comments
->>  'B'   00-0F  include/linux/pmu.h                                       conflict!
->>  'B'   C0-FF  advanced bbus                                             <mailto:maassen@uni-freiburg.de>
->>  'B'   00-0F  xen/xenbus_dev.h                                          conflict!
->> +'B'   C8-D4  net/bluetooth/bnep/bnep.h                                 <mailto:linux-bluetooth@vger.kernel.org>
->>  'C'   all    linux/soundcard.h                                         conflict!
->>  'C'   00-68  sound/compress_offload.h                                  conflict!
->>  'C'   01-2F  linux/capi.h                                              conflict!
->> @@ -173,7 +174,7 @@ Code  Seq#    Include File                                             Comments
->>  'H'   FC     sound/pci/asihpi/hpios.h                                  conflict!
->>  'H'   00-0F  uapi/misc/habanalabs.h                                    conflict!
->>  'H'   A0     uapi/linux/usb/cdc-wdm.h
->> -'H'   C0-F0  net/bluetooth/hci.h                                       conflict!
->> +'H'   C0-F0  net/bluetooth/hci_sock.h                                  conflict!
->>  'H'   C0-DF  net/bluetooth/hidp/hidp.h                                 conflict!
->>  'H'   C0-DF  net/bluetooth/cmtp/cmtp.h                                 conflict!
->>  'H'   C0-DF  net/bluetooth/bnep/bnep.h                                 conflict!
+> 
+> [ ... ]
+> 
+>> @@ -306,7 +306,7 @@ Code  Seq#    Include File                                             Comments
+>>  'n'   E0-FF  linux/matroxfb.h                                          matroxfb
+>>  'n'   F8-FA  video/sisfb.h                                             sisfb
+>>  'o'   00-1F  fs/ocfs2/ocfs2_fs.h                                       OCFS2
+>> -'o'   00-03  mtd/ubi-user.h                                            conflict! (OCFS2 and UBI overlaps)
+>> +'o'   00-06  mtd/ubi-user.h                                            conflict! (OCFS2 and UBI overlap)
 > 
 > [Severity: Low]
-> Should the 'H' C0-DF entry for net/bluetooth/bnep/bnep.h be removed now
-> that 'B' C8-D4 is added, and should the 'B' C0-FF and 'B' C8-D4 entries
-> be marked with conflict!?
-> 
-> net/bluetooth/bnep/bnep.h only defines 'B' ioctls (BNEPCONNADD through
-> BNEPGETSUPPFEAT, 200-212) and none with code 'H', while 'B' C8-D4
-> overlaps with the 'B' C0-FF range for advanced bbus.
+> Should the 'O' entry for mtd/ubi-user.h also be updated from 00-06 to
+> 00-08?  include/uapi/mtd/ubi-user.h defines UBI_VOL_IOC_MAGIC ('O')
+> ioctls up to 8 (UBI_IOCVOLCRBLK at 7 and UBI_IOCVOLRMBLK at 8).
 
-All done (whatever advanced bbus is).
+Done.
 
 -- 
 ~Randy
