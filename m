@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D79BC606A334
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 Nov 2026 02:08:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01A53606A334
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 Nov 2026 02:13:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=2/IWWsBn;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=xiaopeng.com header.i=@xiaopeng.com header.a=rsa-sha256 header.s=default header.b=IZoPMmfu
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=bvFr1rcY;
+	dkim=pass (1024-bit key) header.d=cmss.chinamobile.com header.i=@cmss.chinamobile.com header.a=rsa-sha256 header.s=default header.b=CZMCxM5y
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,54 +14,61 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=fPIZe+hfoDt+GbP4hge3zxqOq0Jw74jPJ8N9T3iHKLY=; b=2/IWWsBnWXkoLTPASXnGnKjdi/
-	sdQpacX0WgHX2Ph+4WRMvwy7sFIW5JEBxhCFOUPOBHD1QKfncGPZCwwSOATz3rgsir3X0BfczyeHM
-	SeWPuBjXdxZ/qT3ZDkPvzUP5VUIyY3nyFKNwsYeCcf0GdsIGUPBSEJC358Ei70gVxhvnq4ZU+U/Qf
-	NLY66mf0WGSHKhKTdtNCuSDAdZegmHV8OyZ0ekksgWDlrqfQqMc84B4s318LwD7Xz5djUTkHnFWSZ
-	ulSnOuwgZOR3Jnk4r72LZsmlBdwMavvGtHo4V+NQemPkS9gj+lh8RVPsQCgnEv7eSj53KbnyYkR8D
-	gWQMaFQA==;
+	bh=M4hkupKcB6vRm9hNS6wbG2myuU8L2WSoPM0Kqyb4S5A=; b=bvFr1rcYnRW+cxX7p10YIt6Uu8
+	9aYZEg4DFHlgDvpVqPFCO3h62qLBXdu1LTft1iWlhOd2fxh1YLQr0urJhnrhzp1vqaqr7fos60RFP
+	LyK94klrG7by6FvnoIKowQ+QZvkp5uTO7UxzJzTp0BX96skp1lglXBrXyAA3MWzhYhe9++kyE8LQO
+	K6YOXnug7Ufd1imMDyqZKIuAIXhKLLJWle9R9WyJAditwJnqa4iJnO4PnZoEHmU5QbSpgV5d1jIYy
+	JZwAXY+g4BQUEos3PiWNFbE4Rrc0KC6oR3FgPFyGnRzT8Xt977jqBw7+TCmOjMVRIpmeK94EeSVfZ
+	HSNBeNpw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTV5f-00000007VkA-1yxz;
-	Wed, 18 Nov 2026 02:08:03 +0000
-Received: from out28-52.mail.aliyun.com ([115.124.28.52])
-	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTV5b-00000007Vj4-39pN
+	id 1xTVAT-00000007W5y-15AW;
+	Wed, 18 Nov 2026 02:13:01 +0000
+Received: from cmccmta2.chinamobile.com ([111.22.67.135])
+	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
+	id 1xTVAP-00000007W5K-0CNw
 	for linux-mtd@lists.infradead.org;
-	Wed, 18 Nov 2026 02:08:02 +0000
+	Wed, 18 Nov 2026 02:12:59 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=xiaopeng.com; s=default;
-	t=1794967672; h=From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=vUPmyTuUzWWeEug5UoL9wQXbXmMqziYU0ZCDFkqjrPs=;
-	b=IZoPMmfuDcOzVv+EvVQTMZWBBL1DQ7+JkXimg7NIK+nKC1qzw/OBuc+fH9uPgyerDJVl6aMPPfhJXiDJpM9NiDuUiq6NP72omTsXt05bsmgohwVsSw2Fdxej2lkMQ4d6rIMSv8dSc1JqDitcECu91nCNkVO0ZcrXl2K+HZhwKME=
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.08588208|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0022107-0.000197108-0.997592;FP=13709710654647639744|0|0|0|0|-1|-1|-1;HT=maildocker-contentspam033071099199;MF=zhugl3@xiaopeng.com;NM=1;PH=DS;RN=11;RT=11;SR=0;TI=SMTPD_---.k4NZxVQ_1794967671;
-Received: from DESKTOP-UL5U09E.xiaopeng.local(mailfrom:zhugl3@xiaopeng.com fp:SMTPD_---.k4NZxVQ_1794967671 cluster:ay29)
-          by smtp.aliyun-inc.com;
-          Wed, 18 Nov 2026 10:07:51 +0800
-From: Guanglei Zhu <zhugl3@xiaopeng.com>
-To: paul@crapouillou.net,
-	harveyhuntnexus@gmail.com,
-	miquel.raynal@bootlin.com
-Cc: richard@nod.at,
-	vigneshr@ti.com,
-	linux-mips@vger.kernel.org,
+	d=cmss.chinamobile.com; s=default; l=0;
+	h=from:subject:message-id:to:cc:mime-version;
+	bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
+	b=CZMCxM5yzAbpEyndOO+lsm/wltU2YIuSyeuxtGDIGTNGioRN2zbdnysGgmxiHshKG9ayboxuRK2/J
+	 h0sGiRY94EsfuhFvY8AutxCMP8dP4fgh+k3hPOpNmkXu9sSJwQuvFmxSUSHc4qSq9IoyJPFrGSiWCB
+	 I6k4qJC5FA8PHd7s=
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from spf.mail.chinamobile.com (unknown[10.188.0.87])
+	by rmmx-syy-dmz-app07-12007 (RichMail) with SMTP id 2ee76afd09a33ff-0f2c0;
+	Wed, 18 Nov 2026 10:12:52 +0800 (CST)
+X-RM-TRANSID: 2ee76afd09a33ff-0f2c0
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from  (unknown[10.55.1.71])
+	by rmsmtp-syy-appsvr06-12006 (RichMail) with SMTP id 2ee66afd09a1cf7-c534c;
+	Wed, 18 Nov 2026 10:12:52 +0800 (CST)
+X-RM-TRANSID: 2ee66afd09a1cf7-c534c
+From: zhaofeng2@cmss.chinamobile.com
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Zhao Feng <zhaofeng2@cmss.chinamobile.com>,
 	linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
-	liuwb@xiaopeng.com,
-	zhugl3@xiaopeng.com,
-	stable@vger.kernel.org
-Subject: [PATCH v3 1/2] mtd: rawnand: ingenic: validate BCH error index in jz4725b_correct()
-Date: Wed, 18 Nov 2026 10:07:50 +0800
-Message-ID: <20261118020751.1833498-1-zhugl3@xiaopeng.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <80f1ef9dd605d16df2add0a9dbdcdd5f9f508174.camel@crapouillou.net>
-References: <80f1ef9dd605d16df2add0a9dbdcdd5f9f508174.camel@crapouillou.net>
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>
+Subject: [PATCH v2 2/2] mtd: rawnand: arasan: drop manual GPIO CS release
+Date: Wed, 18 Nov 2026 10:12:47 +0800
+Message-ID: <20261118021248.1952-2-zhaofeng2@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.55.0.windows.5
+In-Reply-To: <20261118021248.1952-1-zhaofeng2@cmss.chinamobile.com>
+References: <20261109052724.1032-1-zhaofeng2@cmss.chinamobile.com>
+ <20261118021248.1952-1-zhaofeng2@cmss.chinamobile.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261117_180759_968456_8AD76F14 
-X-CRM114-Status: GOOD (  14.70  )
-X-Spam-Score: -2.1 (--)
+X-CRM114-CacheID: sfid-20261117_181257_674695_0FC32BFD 
+X-CRM114-Status: UNSURE (   7.47  )
+X-CRM114-Notice: Please train this message.
+X-Spam-Score: -2.4 (--)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,72 +84,50 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=4.0.1
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-From: Weibin Liu <liuwb@xiaopeng.com>
+From: Zhao Feng <zhaofeng2@cmss.chinamobile.com>
 
-The JZ4725B BCH controller reports each corrected bit error as an
-index into the codeword it was asked to decode, in the INDEX0/INDEX1
-fields of the BCH_BHERR registers. These fields are 13 bits wide, but
-nothing in jz4725b_correct() checks the reported index against the
-size of the data buffer being corrected:
+With rawnand_dt_parse_gpio_cs() acquiring the CS GPIO descriptors
+through devm_gpiod_get_index_optional(), the descriptors are owned and
+released by the device-managed framework on probe failure and at
+anfc_remove() time.  The manual gpiod_put() loop in anfc_remove() is
+therefore redundant, and would double-release the descriptors once the
+core helper is switched to devres.
 
-    buf[(bit >> 3)] ^= BIT(bit & 0x7);
+Drop the manual loop.
 
-With data or ECC coming from an untrusted flash, the decoder can
-report an index that points past the end of the data buffer, and the
-above statement then flips a bit outside the buffer.
+v2: respun together with the core devres change (1/2).
 
-Skip the correction when the reported index does not point into
-the data area.  A bitflip in the parity bytes does not affect the
-data, so rejecting the page for it would fail reads that are
-perfectly correctable, and an index beyond the codeword has no
-buffer to update in the first place.
-
-Fixes: 3e6ac2ad90b3 ("mtd: rawnand: ingenic: Add support for the JZ4725B")
-Cc: stable@vger.kernel.org
-Signed-off-by: Weibin Liu <liuwb@xiaopeng.com>
-Signed-off-by: Guanglei Zhu <zhugl3@xiaopeng.com>
+Signed-off-by: Zhao Feng <zhaofeng2@cmss.chinamobile.com>
 ---
-v3: add Cc: stable and my Signed-off-by as the sender, matching
-    the review comments on 2/2.
+Verified against current upstream master.  Not runtime-tested (no
+Arasan hardware).
 
-Changes in v2: skip the correction for an index that does not point
-into the data area instead of failing the page with -EBADMSG.  A
-correctable bitflip in the ECC bytes leaves the data valid, and the
-early exit also dropped the error entries that followed it.  This
-matches how jz4740_ecc_correct() treats its indexes.
+ drivers/mtd/nand/raw/arasan-nand-controller.c | 9 +------
+ 1 file changed, 2 deletions(-)
 
-Verified with a userspace replica of the correction loop: with
-params->size = 512, an index of 4099 (parity area) followed by a
-data-area index of 100 in the same BHERR register is now corrected
-(v1 returned -EBADMSG and left the data error unfixed), the field
-maximum (0x1fff) produces no write outside the buffer, and in-range
-indexes keep correcting as before.
-
- drivers/mtd/nand/raw/ingenic/jz4725b_bch.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/drivers/mtd/nand/raw/ingenic/jz4725b_bch.c b/drivers/mtd/nand/raw/ingenic/jz4725b_bch.c
-index 2d0e0a2192ae..9b1c3d4e5f6a 100644
---- a/drivers/mtd/nand/raw/ingenic/jz4725b_bch.c
-+++ b/drivers/mtd/nand/raw/ingenic/jz4725b_bch.c
-@@ -259,6 +259,10 @@ static int jz4725b_correct(struct ingenic_ecc *bch,
- 			bit = (reg & BCH_BHERR_INDEX0_MASK) >> BCH_BHERR_INDEX0_SHIFT;
- 		}
+--- a/drivers/mtd/nand/raw/arasan-nand-controller.c
++++ b/drivers/mtd/nand/raw/arasan-nand-controller.c
+@@ -1478,14 +1478,7 @@
  
-+		/* Skip indexes outside the data area. */
-+		if (bit >= params->size * 8)
-+			continue;
-+
- 		buf[(bit >> 3)] ^= BIT(bit & 0x7);
- 	}
+ static void anfc_remove(struct platform_device *pdev)
+ {
+-	int i;
+ 	struct arasan_nfc *nfc = platform_get_drvdata(pdev);
+-
+-	for (i = 0; i < nfc->ncs; i++) {
+-		if (nfc->cs_array[i]) {
+-			gpiod_put(nfc->cs_array[i]);
+-		}
+-	}
  
--- 
-2.50.1
+ 	anfc_chips_cleanup(nfc);
+ }
+
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
