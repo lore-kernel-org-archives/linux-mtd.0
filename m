@@ -2,151 +2,72 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5B71606A32F
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 Nov 2026 08:19:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C95C7606A32F
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 Nov 2026 08:45:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=Fpu+kDVG;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ibm.com header.i=@ibm.com header.a=rsa-sha256 header.s=pp1 header.b=CHYLikr7
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=1obwvmOg;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=fCOn2VL0
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=OnLxlHMxtvwfFj7lheREv+26gVxHAvFDQiPEuwTXhns=; b=Fpu+kDVGTQw4CGRDSPo8HApqoj
-	BeKksjnlUoxSbfVtxMpdVNQ+r7tutyW3Kse+UYyKqpYQRuW91GwNUKpK3D39Q4QgSySOGrD5vwAa+
-	fnK54tRImO7YBAO06Sdv0aPgTQdbvC3Nt1Kux/X7ZMXd/l87DfIlMM2iZXpqy5O8UoKuzuU5RK/nX
-	5PpwYt/m4jcqXWQVZHN79Mhf83BniakEpetIsJUZyKC0dV2OgS1+uFmIFrK17NCL+40YX6/6WcTpA
-	3GJxBlAelFZHyPmrB3A1AAWnZckDd4JFNUy5QHkYRXa1uKpCekJyPaT2LkNtAjXVduDezJxblgdfu
-	XEmCIRyQ==;
+	bh=OmO992BhNsPc/d030rr2N2j5WrbX45p9PtPtFuUcWtw=; b=1obwvmOgjVkojYEy0rUasxvQl9
+	SbbXepvi2R2IBsbIe1mXqKRD6DADp5dg27OBdWbDmK8syiVUmMKUBWnpWgE9uHpIz4OmeXqNT3WTI
+	zBQQhFYSUoFJGNQTnSx4jbfY5tYZxWSoLIwoGmrSniBNy/CdP5jTRanTGLdzWd5ed5p6ubYTZJjZJ
+	W2nOqSHfqw2rfBbuim2MJIEQcKtWPouHsqoTCtmxoYJDzwNUJImOGUSjqLMPvymF/CRj0HP1/cnAN
+	jRLAtk+0+HbXnh0UaDNW8Em8QxD5hJ9AtSuP4EtLv31pZ32EfBmon3Ih0hUqOBtdb+dJBSxio/4ht
+	fGayjVCA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTatJ-00000008ABT-0tLU;
-	Wed, 18 Nov 2026 08:19:41 +0000
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1])
+	id 1xTbIY-00000008DL3-3FBc;
+	Wed, 18 Nov 2026 08:45:46 +0000
+Received: from smtpout-03.galae.net ([185.246.85.4])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTatG-00000008AA1-2ZM9
+	id 1xTbIT-00000008DFA-2HLH
 	for linux-mtd@lists.infradead.org;
-	Wed, 18 Nov 2026 08:19:39 +0000
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 6AI2SM6x032357;
-	Wed, 18 Nov 2026 08:17:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=NZ2DiU
-	YcYA6riJMrquv0S0uzwR3KjlESIdF8oXXvnq4=; b=CHYLikr74UQY3xDY0mK1ln
-	UItMzkTfsxSuJmhUcOAg25lgq/Of3U/OWPyIqfvLwQJ5EO59MWPJqU/lkOiOw00F
-	QiaAQBtE4k4Hc9WrB/lQuSIre+I1HQTnaoDHCIqDtNuktjoUHG6jjFYNEL+AYOWp
-	AkwsM8SEMvfiFPLYfswocUBfLnLW6kY91l7jwFy16irUd2Hyu43GUzzYEquNSQXo
-	UyK4S+t3uNsLdoaGXVScfZ1Y9C4vhqTpxzeoQRyohmRx50QrMikRGXZr1iamvt6U
-	CdORrNAtH07XBbOCxsGRMb7C0/KVmFR39RPr9LZDxeNhQaaVAWzIQkbMBJPj7Smg
-	==
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4j105n9h67-1
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-	Wed, 18 Nov 2026 08:17:32 +0000 (GMT)
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.18.1.11/8.18.1.11) with ESMTP id 6AI8GsLG2766497;
-	Wed, 18 Nov 2026 08:17:31 GMT
-Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4hyxwt7qfs-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 18 Nov 2026 08:17:31 +0000 (GMT)
-Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
-	by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 6AI8HTxD34734796
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 18 Nov 2026 08:17:30 GMT
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id C966458052;
-	Wed, 18 Nov 2026 08:17:29 +0000 (GMT)
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 971BB5805D;
-	Wed, 18 Nov 2026 08:17:14 +0000 (GMT)
-Received: from [9.123.14.23] (unknown [9.123.14.23])
-	by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Wed, 18 Nov 2026 08:17:14 +0000 (GMT)
-Message-ID: <f201c30a-6fa9-4d9a-a77b-74d39f89f2d9@linux.ibm.com>
-Date: Wed, 18 Nov 2026 13:47:12 +0530
+	Wed, 18 Nov 2026 08:45:45 +0000
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-03.galae.net (Postfix) with ESMTPS id ABB004E4160A;
+	Wed, 18 Nov 2026 08:45:37 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 77ADB5FE9B;
+	Wed, 18 Nov 2026 08:45:37 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 0875711BC0AAD;
+	Wed, 18 Nov 2026 09:45:32 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1794991536; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=D8aW/fvdy/qLsQ/bXMIpI7RqiPKFGY+NzzzViUtgqks=;
+	b=fCOn2VL04CAe4uc6dNNRn8T9M6+C0SFFRTRTKjqQLDTSj+zt2weyl6UhwTCQLP1CirhTF2
+	dX3lt9nkzB8WhYESBI57iKo5mPcVtzzpc3mq0OiRrLloQIKYQLxyU5q05+VtVizsKNdIcZ
+	IQzZnd67Apy7fEK9U8BedwPaDjATqsCn1levczvqWIoES8I2cgNmgHmjIgDN9UlesQkd2j
+	kwRbwg3Uckfcck8xT0GZEF9HvXUkTdxfO6Vfgf3RaAVkAS+SrrIRdIgivr1LdEzfrQPVA0
+	E+Y2pXka3EguqmDdPtE0jHibIzQADHDnVV0L5Jmprx24e/eRfwouGfD8XkPt0g==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: sashiko-bot@kernel.org
+Cc: "Gabor Juhos" <j4g8y7@gmail.com>,  "Richard Weinberger"
+ <richard@nod.at>,  "Vignesh Raghavendra" <vigneshr@ti.com>,  "Boris
+ Brezillon" <boris.brezillon@collabora.com>,
+  sashiko-reviews@lists.linux.dev,  linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: spinand: set request type explicitly in
+ spinand_{is,mark}bad() functions
+In-Reply-To: <sashiko-outbox-219169@kernel.org> (sashiko-bot@kernel.org's
+	message of "Tue, 17 Nov 2026 16:27:11 +0000")
+References: <20261117-spinand-set-req-type-in-bbm-functions-v1-1-f46d5b3b8cf3@gmail.com>
+	<sashiko-outbox-219169@kernel.org>
+User-Agent: mu4e 1.12.12; emacs 30.2
+Date: Wed, 18 Nov 2026 09:45:32 +0100
+Message-ID: <87wlqajzo3.fsf@bootlin.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/9] powerpc/secvar: Add missing kobject release
- callback to secvar_ktype
-To: Ian Rogers <irogers@google.com>, Danilo Krummrich <dakr@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook
- <kees@kernel.org>, Miguel Ojeda <ojeda@kernel.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>
-Cc: Madhavan Srinivasan <maddy@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <chleroy@kernel.org>,
-        Nayna Jain <nayna@linux.ibm.com>, Mimi Zohar <zohar@linux.ibm.com>,
-        Yoshinori Sato
- <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini
- <sstabellini@kernel.org>,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Zhongqiu Han <zhongqiu.han@oss.qualcomm.com>,
-        Alexander Aring <aahringo@redhat.com>,
-        Felix Kuehling <felix.kuehling@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Zhihao Cheng <chengzhihao1@huawei.com>,
-        Sumanth Korikkar <sumanthk@linux.ibm.com>,
-        Bill Wendling <morbo@google.com>,
-        Justin Stitt <justinstitt@google.com>, driver-core@lists.linux.dev,
-        llvm@lists.linux.dev, linux-hardening@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-pm@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org,
-        linux-s390@vger.kernel.org, gfs2@lists.linux.dev,
-        xen-devel@lists.xenproject.org, linux-mtd@lists.infradead.org,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20261108223913.3624571-1-irogers@google.com>
- <20261108223913.3624571-3-irogers@google.com>
-Content-Language: en-US
-From: Srish Srinivasan <ssrish@linux.ibm.com>
-In-Reply-To: <20261108223913.3624571-3-irogers@google.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Reinject: loops=2 maxloops=12
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYxMTE4MDAzMSBTYWx0ZWRfX6HgVMZTRPl85
- Jn18W+xXyZCi92S6DV05FbfcOPNGJFHWP78E/tejMVWymJnqf6YRWa3lQfegmn4iFOJICQoFNbC
- 8fh77AnL+jCvHbyG7D8dqSe73s/x570g9zzXuT6BEhlr8jl3r0noGCIl5NBmBZT3KVNvrFD+dKM
- jmrjNQeA0euaud80lISJyfYHrs3jCYZTQa4ayAz9gFDK104eYk/TZg18Gqwd/J5Ixj5j5H+Mg2I
- ON9WlD8PFML3ou1bPmQl5abk01ve2XueAz/SPNj8iUQ/gnppB0P6G6CBLt3MEDM4SwAoGy7KId5
- yxw54L/3ILMaq2PyBoQpvOYAK35zGDxe3Y12powlrnXTOf7DqHPX9d2RKDcqN2WywfEZZZHqYGK
- e0tqtovVEX+A89Y42Kz3zAXdwVaBquDU9m+1ZF0j3UqpHYy7om6XFvFQQwEB9vdTA/NhCTJnATW
- AUOI0KD9i8Rc7/c3tuQ==
-X-Authority-Analysis: v=2.4 cv=HN9WhYtv c=1 sm=1 tr=0 ts=6afd5f1d cx=c_pps
- a=GFwsV6G8L6GxiO2Y/PsHdQ==:117 a=GFwsV6G8L6GxiO2Y/PsHdQ==:17
- a=IkcTkHD0fZMA:10 a=zJRp6_cAMcgA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=RnoormkPH1_aCDwRdu11:22 a=iQ6ETzBq9ecOQQE5vZCe:22 a=1XWaLZrsAAAA:8
- a=VnNF1IyMAAAA:8 a=UWczDWbm3HpFH-zmGUoA:9 a=QEXdDO2ut3YA:10
-X-Proofpoint-GUID: f4vCixBvRS1iziYkzXDAyNtWHqcSULbu
-X-Proofpoint-ORIG-GUID: OYeOqBGP-BuxJLy49XGYjOXqV8575ClT
-X-Proofpoint-Spam-Info: AW1haW4tMjYxMTE4MDAzMSBTYWx0ZWRfX6D4JeSBiVpo/
- 1SUsT7QUnarJqrFd/whI1VbYytmfTPlmOafAXSjzDWGt8A4WgXnRmkoTMU5NO0iqVRltJs6vVFH
- VSWDbLyBnOCi2lpPYRK0hG7fndYLOWg=
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.138,FMLib:17.12.100.49
- definitions=2026-11-18_01,2026-11-16_01,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- bulkscore=0 priorityscore=1501 impostorscore=0 suspectscore=0 malwarescore=0
- adultscore=0 phishscore=0 lowpriorityscore=0 clxscore=1011 spamscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2611040001 definitions=main-2611180031
+X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261118_001938_668697_534BAD48 
-X-CRM114-Status: GOOD (  18.60  )
-X-Spam-Score: -2.6 (--)
+X-CRM114-CacheID: sfid-20261118_004541_724653_27577F52 
+X-CRM114-Status: GOOD (  15.87  )
+X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -156,61 +77,50 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-15.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-8.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=4.0.1
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-
-On 11/9/26 4:09 AM, Ian Rogers wrote:
-> In add_var(), a struct kobject is dynamically allocated with
-> kzalloc_obj() and initialized with secvar_ktype. If kobject_add() or
-> sysfs_create_file() fails, kobject_put(kobj) is called to clean up.
-> However, secvar_ktype does not define a .release callback, which results
-> in a memory leak of kobj (and a pr_debug warning in kobject_cleanup()
-> when CONFIG_DEBUG_KOBJECT_RELEASE is enabled).
->
-> Provide a secvar_release() callback that calls kfree(kobj).
->
-> Fixes: bd5d9c743d38 ("powerpc: expose secure variables to userspace via sysfs")
-> Signed-off-by: Ian Rogers <irogers@google.com>
-
-
-LGTM,
-thank you!
-
-Reviewed-by: Srish Srinivasan <ssrish@linux.ibm.com>
-
-
-> ---
->   arch/powerpc/kernel/secvar-sysfs.c | 6 ++++++
->   1 file changed, 6 insertions(+)
->
-> diff --git a/arch/powerpc/kernel/secvar-sysfs.c b/arch/powerpc/kernel/secvar-sysfs.c
-> index 395399bbab2c..f3f6ac25ea78 100644
-> --- a/arch/powerpc/kernel/secvar-sysfs.c
-> +++ b/arch/powerpc/kernel/secvar-sysfs.c
-> @@ -126,7 +126,13 @@ static const struct attribute_group secvar_attr_group = {
->   };
->   __ATTRIBUTE_GROUPS(secvar_attr);
->   
-> +static void secvar_release(struct kobject *kobj)
-> +{
-> +	kfree(kobj);
-> +}
-> +
->   static const struct kobj_type secvar_ktype = {
-> +	.release	= secvar_release,
->   	.sysfs_ops	= &kobj_sysfs_ops,
->   	.default_groups = secvar_attr_groups,
->   };
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgR2Fib3IsCgpPbiAxNy8xMS8yMDI2IGF0IDE2OjI3OjExIEdNVCwgc2FzaGlrby1ib3RAa2Vy
+bmVsLm9yZyB3cm90ZToKCj4gVGhhbmsgeW91IGZvciB5b3VyIGNvbnRyaWJ1dGlvbiEgU2FzaGlr
+byBBSSByZXZpZXcgZm91bmQgbm8gbmV3IGlzc3Vlcwo+IGluIHRoaXMgcGF0Y2gsIGJ1dCBub3Rp
+Y2VkIDEgcmVsYXRlZCBwcmUtZXhpc3RpbmcgaXNzdWUgaXQgZG9lcyBub3QKPiBpbnRyb2R1Y2U6
+Cj4gLSBbQ3JpdGljYWxdIG10ZDogc3BpbmFuZDogMS1ieXRlIGJhZCBibG9jayBtYXJrZXIgb3Zl
+cmxhcCBpbgo+ICAgb29ibGF5b3V0X2ZyZWUoKSBbMV0KPiAtLQo+Cj4gY29tbWl0IGNkMzEzNmEy
+OGNhYTRjNjVkMzYwZjY2NDA4NWNiYjFlNjMwYWNiMGYKPiBBdXRob3I6IEdhYm9yIEp1aG9zIDxq
+NGc4eTdAZ21haWwuY29tPgo+Cj4gbXRkOiBzcGluYW5kOiBzZXQgcmVxdWVzdCB0eXBlIGV4cGxp
+Y2l0bHkgaW4gc3BpbmFuZF97aXMsbWFya31iYWQoKSBmdW5jdGlvbnMKPgo+IFRoaXMgY29tbWl0
+IGV4cGxpY2l0bHkgc2V0cyByZXEudHlwZSB0byBOQU5EX1BBR0VfUkVBRCBpbiBzcGluYW5kX2lz
+YmFkKCkKPiBhbmQgTkFORF9QQUdFX1dSSVRFIGluIHNwaW5hbmRfbWFya2JhZCgpLgo+Cj4gTGlu
+azogaHR0cHM6Ly9zYXNoaWtvLmRldi8jL2xvZy8xOTIzODMKPgo+PiBkaWZmIC0tZ2l0IGEvZHJp
+dmVycy9tdGQvbmFuZC9zcGkvY29yZS5jIGIvZHJpdmVycy9tdGQvbmFuZC9zcGkvY29yZS5jCj4+
+IGluZGV4IDE4YmJhMDJmYmQzMWYuLjM1YmNiNGE4ODYxYjQgMTAwNjQ0Cj4+IC0tLSBhL2RyaXZl
+cnMvbXRkL25hbmQvc3BpL2NvcmUuYwo+PiArKysgYi9kcml2ZXJzL210ZC9uYW5kL3NwaS9jb3Jl
+LmMKPj4gQEAgLTExMDUsNiArMTEwNSw3IEBAIHN0YXRpYyBib29sIHNwaW5hbmRfaXNiYWQoc3Ry
+dWN0IG5hbmRfZGV2aWNlICpuYW5kLCBjb25zdCBzdHJ1Y3QgbmFuZF9wb3MgKnBvcykKPj4gIAlz
+dHJ1Y3Qgc3BpbmFuZF9kZXZpY2UgKnNwaW5hbmQgPSBuYW5kX3RvX3NwaW5hbmQobmFuZCk7Cj4+
+ICAJdTggbWFya2VyWzJdID0geyB9Owo+PiAgCXN0cnVjdCBuYW5kX3BhZ2VfaW9fcmVxIHJlcSA9
+IHsKPj4gKwkJLnR5cGUgPSBOQU5EX1BBR0VfUkVBRCwKPj4gIAkJLnBvcyA9ICpwb3MsCj4+ICAJ
+CS5vb2JsZW4gPSBzaXplb2YobWFya2VyKSwKPj4gIAkJLm9vYm9mZnMgPSAwLAo+Cj4gW1NldmVy
+aXR5OiBDcml0aWNhbF0KPiBUaGlzIHByb2JsZW0gd2Fzbid0IGludHJvZHVjZWQgYnkgdGhpcyBw
+YXRjaCwgYnV0IGNhbiB0aGUgMi1ieXRlIG1hcmtlcltdCj4gcmVhZCBpbiBzcGluYW5kX2lzYmFk
+KCkgWzFdIGNvbGxpZGUgd2l0aCBmcmVlIE9PQiBzcGFjZSBvbiBjaGlwcyB0aGF0Cj4gcmVzZXJ2
+ZSBvbmx5IDEgYnl0ZSBmb3IgdGhlIGJhZCBibG9jayBtYXJrZXI/Cj4KPiBzcGluYW5kX2lzYmFk
+KCkgdHJlYXRzIGEgYmxvY2sgYXMgYmFkIHdoZW5ldmVyIG1hcmtlclswXSAhPSAweGZmIHx8Cj4g
+bWFya2VyWzFdICE9IDB4ZmYsIHJlYWRpbmcgT09CIG9mZnNldHMgMCBhbmQgMS4gIEhvd2V2ZXIs
+IHNldmVyYWwgdmVuZG9yCj4gb29ibGF5b3V0X2ZyZWUoKSBjYWxsYmFja3MgZXhwb3NlIE9PQiBv
+ZmZzZXQgMSBhcyBmcmVlIHNwYWNlOgo+Cj4gZHJpdmVycy9tdGQvbmFuZC9zcGkvZ2lnYWRldmlj
+ZS5jOmdkNWZ4Z3E0eGFfb29ibGF5b3V0X2ZyZWUoKSB7CgpUaGUgYnVnIGlzIGluIHRoZSBnaWdh
+ZGV2aWNlIGRyaXZlci4gSXQgd2FzIGFyYnRyYXJpbHkgZGVjaWRlZCB0byBrZWVwCnVzaW5nIDIg
+Ynl0ZXMgQkJNIGxpa2UgaW4gdGhlIHJhdyBOQU5EIHdvcmxkLgoKWW91IG1heSBmaXggdGhpcyBk
+cml2ZXIgaW4gYSBzZXBhcmF0ZSBwYXRjaCwgYnV0IHRoYXQgaXMgbm90IGEKcHJlcmVxdWlzaXRl
+IGZvciBtZS4KCkhvd2V2ZXIsIHdoeSBpcyB0aGlzIG5vdCBzdGFibGUgbWF0ZXJpYWw/CgpUaGFu
+a3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3Rz
+LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
