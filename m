@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 504BC606A336
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Nov 2026 09:38:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25227606A320
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Nov 2026 09:39:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=KEDbjpno;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=iGblYsT1
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=NcJuICU1;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=oJIfG8/N
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,64 +14,64 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=Sk4+XYakiOrCS3n2C4DiZK7x72s4HEvqICYdEKndMfc=; b=KEDbjpnofWU6zw5TXkR99FeFnW
-	8tAKwMNdHHKZA7BR6wfZMDux3xdpY4FS3eL+MNq5vfYnCcrBQW1qmE2U0tQwT/KvVSzQ+XWtDPbYU
-	GGjHZOx/+t+66W7SdroWi4W1WyUxmNI1jr5gLxXMYggt84r2xFkdIo6ivtDms8unRtGUhdy7fm44D
-	2gQ4gGjplYz3syzHS04S30ez9JBc9OYxyCRbHSnBHSsOCf8vofHdZ9Z5T+duMTOxCJlnFctfgK0ry
-	VPmmYUoccB6hYHEtuptFvWZ3SXksHOix426miEAqvh1//oLlJaz3uWr2q+l0VPUNOdeogwywzcWaQ
-	nnjjzmsA==;
+	bh=yntoeDisUaBLCnka00VxJ1v5pBAeOJKX3NSVH1KjWVU=; b=NcJuICU1QWBTWgpyGJwc67iEUW
+	bh6lIggadbqAdCFjNARak+TmWCIY3WHNcdIjbBB+unpftRYJ0tXP3WsjoYHamNfn2Vvqxpkb4NfJR
+	alnVMJlGruf+8u7EICIRJCZVf3Oo/TnnhLx2AoPg0TDoBRZq1JxNjO0niPaoCdtiyBg+a3gghrLr6
+	3hBag8P6qZjQ4XB85RKvPMnN4I1vZRwzgPGcLcrjoSHS8lvA3AncNK3L1446GM5itFK7RS2Zbk3V2
+	pVL4d1jMaEWnKGjG21tARLFQ/o8tiM9gedxq5TEAm06p5uvHxRDibhnUJI7LkuuwqaJtDTHmy4BON
+	Da466IKw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTyao-0000000BQDH-06sz;
-	Thu, 19 Nov 2026 09:38:10 +0000
-Received: from mail-pf1-x42b.google.com ([2607:f8b0:4864:20::42b])
+	id 1xTycM-0000000BQf5-2SS4;
+	Thu, 19 Nov 2026 09:39:46 +0000
+Received: from mail-pg1-x52e.google.com ([2607:f8b0:4864:20::52e])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTyak-0000000BQBy-38ga
+	id 1xTycK-0000000BQeA-1AEb
 	for linux-mtd@lists.infradead.org;
-	Thu, 19 Nov 2026 09:38:07 +0000
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-8b68e59ab33so1619469b3a.2
-        for <linux-mtd@lists.infradead.org>; Thu, 19 Nov 2026 01:38:06 -0800 (PST)
+	Thu, 19 Nov 2026 09:39:46 +0000
+Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-cdddc79a4afso962208a12.1
+        for <linux-mtd@lists.infradead.org>; Thu, 19 Nov 2026 01:39:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1795081086; x=1795685886; darn=lists.infradead.org;
+        d=gmail.com; s=20260707; t=1795081183; x=1795685983; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=f5iMD/+v8yFezHX9h0NFo7FfqvQ/A5A0bp0YVr9pyBs=;
-        b=iGblYsT1X/WzigGTUe+OYzKW8ed/vpqbxQJYyZ/uCrEskkcBwqaohnANLxJf52FUdD
-         8V+UnEMeao9VAtCiS3SkB3oOVObFqE3Y55DRoS+2FrRtHeFAdx0asvoPoPAPrlvr4AHo
-         prxUnzUZPZUrBQds1KPNWBhL+bfUf9aITvA4+u2FG/ibhi3nNC5iyNysCX0qhAluYVql
-         tFRAX6GV2Yj5UE/BfZMmImMn0kOZ7tfNGFzcIhjJGs9sQPXaFzCC5uJtqlWrmd9T4EKK
-         snzgPfFsWd7EdKQj/grPaVgb8m/mMKtrqcPjPo1gmhqI3t3lzM+mVj3FuFxhyjstw/IZ
-         +/1w==
+        bh=gWuVI8HxR7JfjA1t+/23RskheqcPsWvO6jyOlH8EQmk=;
+        b=oJIfG8/Nr10bw3bmwyd1Dyz92USf57mRU8jrepqJgLXMF6k9dPxDIHrD7VwXBfbj+8
+         K4GO3sa22IIkvUCXuTrkhrBeLhihZLlNz2bY0h+Dbxo2NJtKrdWIr20pw4Lxb993Lnm9
+         GCO06csYuntM0ayx8SU5OEW272uXbYbUnBMx6LIElT0EumwfCpdx040RMvZqy8+hqGaw
+         hH0UEoqKoxX43TAIn6H5yUvJETX2OCXyReLeizZUqTs9yHqR82x8zcl4fCR5oCim7Sj1
+         s1Bohxw6S1vWWDZA7BhtLohvzITHHIljuLfqcK5KOHWFcMHwxsEEI1etMhC+rtUm2mgV
+         T/Cg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1795081086; x=1795685886;
+        d=1e100.net; s=20260707; t=1795081183; x=1795685983;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=f5iMD/+v8yFezHX9h0NFo7FfqvQ/A5A0bp0YVr9pyBs=;
-        b=PQnFiHeW03TEtsTKolejmtEvtVe6APFd+SWle3Xfsx6yW3crc5h/XDDiyBIRjJ2xqQ
-         henbEwg03scH6zSdEyFMsd1wTfExtNcMnMx1snl97p29G92+J1LYjCAgt6vY7OSltxN5
-         efpsXN1EMHHQsMH7wbhkT+y15bOkCFnkKsA93IT7HR+bwvjBY4nP6Ehjmc1OJfsEgQAn
-         07KUaWV9hpyPetlPWGwVWNdEkDTGKC6OZlA2Xvf4yDhriYALnKfynB8t2i/dS6ooLb4X
-         yO46HGtwTApcuUuhV6aEfYwPqqYww1WD7FNDPs4JA4NOFl31MLbzqjTbLmbdu4QkAvhG
-         DeTQ==
-X-Gm-Message-State: APuU4Z8kCcClHOd+7ZQZ2FOikl2a+Lv3U/Azjha+Nog8fPsAxS1i4ldS
-	ZEuzn66lFIIEjmmV6FrvCNomvVwZSTz8uFgqQqZWfhpm0HI3aY4CB+F5
-X-Gm-Gg: AYBFou0tKBgAXLETMMYJeiuzuIl/giSaaEOAwGFQ1hQTzTwbhJGC+5lQDeW1PWYPOe9
-	ueIQSjHGRWaKuM7i3Kyu9+FiR2L4qVRZOJG7meFWbb7RYOnvxhUtZJE9u4/f9Q96k1hboxUDScW
-	eUeA5OhBuqkxOG5vXUym3T9cme7Rkc6aSO2DguvtA9Ro9SPu0GTmmJtvdBF9ays7Vf+t/bA0sl+
-	aBIOSjRGFUyabQTJV0/CUW9XPhM1tmK86Uu4k7SKzId6+gB4QsEmAgQ31cNG9t1ENpbqixMqFhT
-	ZAmNKpLt+D2QXW3TBxMAfNY+zcKwFAlnWgd7MIiMsxxdDMThMShqztuOK77alumigcwaSl9SBd2
-	nx7k2A4wGHCLuNjKLeY0qzC36hhIFivvNbvczj9w97qFA542v7cl+De8mGme1hhJCzI+juIjEaU
-	Zkewu0BVW+AYPjyF+c4b5IL6xWtu5i2lBFxJCsUMPqUeMfH9p4YK1Zz68j9no2oi7HDoDLk4JS5
-	8p3aOt/fWDZw3/kKjSRBZYdElBofajsKLW/Var80aWf8HpYbMRgDRaWap6sHQFE88jpnMXm6M4t
-	Qmx+c+mvuU5cYz7+8aGR2KqztWrfQGzVKg==
-X-Received: by 2002:a05:6a00:4b14:b0:898:22b4:c8b8 with SMTP id d2e1a72fcca58-8c5d0f24a2amr5021870b3a.3.1795081085930;
-        Thu, 19 Nov 2026 01:38:05 -0800 (PST)
+        bh=gWuVI8HxR7JfjA1t+/23RskheqcPsWvO6jyOlH8EQmk=;
+        b=hGsUS78d0CqV1MlXc4AYprrNlxMmBpg3Pfsv7Cc3JkfA3cAZqTsFuZSGRsYFvI1OPJ
+         qYmHq1EO1OCR10cNzhc6/5GRBraz5UsvDhz4WammS16utcaZ/Nb1W6Fjzr6plVlvrnjv
+         /Z/Wd1lZJc+Cml761ItW8ST5FfEhD+FeXrTp2vG9LSCIDzaUFlgpxVNKJn/QhKDsQO/v
+         cjh/KkxiIpidAW42Il07N8+J3hAxuzZwBiQaAI6vObujlRdEI9pAzBdf/ME2olXVHt79
+         yiBl7nWiPBY347PKinnQMmQDNSJSk0yfbIyWtN6LZDhOv/O9Zq4qaTnCJUE9aBNOUlxz
+         ONBw==
+X-Gm-Message-State: APuU4Z/SarYJbf1wC+WfueNE8hXtHHY6PcSu6CK0gXpCRk9ktv/Y3pMO
+	375UYAUhabjNkuNGi73WJe6nEuKFJXxuX1K2QZiFJ+iFE6e034clVJRh
+X-Gm-Gg: AZFdTZdK+lAwCW+2NmOIiWhgTAcgNxxKDiUhRzeAezbAi5gKnDXotKz1VYZWonKiz61
+	KWdK9GNrfKVMZBb+5dksi4NkGBpJX/+XToWc/YzxHy76T90vff3F80Dwo8pwgHOFccqNN0ZeJEn
+	FtEvDOAC8FWCQgSogZVQJk2d4Bj4a1Kx6jBTdVOuvhVKoWZownmq0WUg+FcyyzOnT1ztBajofto
+	jLOpDY8FfJeFkZVyPuHYnx4pWMTOUN8VkdGVOKyZ93ux+VVvVkgUmrpMfMuk0QXsW1WMqRl5AKe
+	S4OrHudtQvSiIJ0t0o1xxHFv/Ehd6Zv02+0qFXsvIvrB/Mrxvnt/ukDEQdbB10DsvcIvCXC1mQQ
+	L7sZ31sEZLANB84CD3KpeQvroW3Buf+OF8D1UUmBm+FF5sd1nLPrn9rzhJdZZ2OqDD+akRRcvsS
+	/dR0qmXOGKUR8RNlryBlEj8yOwL6lRFsFfLT/2qdsJTBkM9Y3dD5BwMdD6Qc+LRKDMQLkzCgZgv
+	8EyDSabClPgu5VhwvlpyxkGWJKQiJJ7kuY7Wjg3mfTnAgEs7jskAvGFWlAW212YKgblC0jVTX7m
+	sElcrluhCePFWV8+0AnywoPFvJszJMtCyA==
+X-Received: by 2002:a17:90b:2b4b:b0:3b0:d070:3c4b with SMTP id 98e67ed59e1d1-3b3d07b92dcmr4575955a91.33.1795081183316;
+        Thu, 19 Nov 2026 01:39:43 -0800 (PST)
 Received: from server225.. ([39.170.101.209])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-8c5ca7aa27dsm2523077b3a.19.2026.11.19.01.38.03
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3b405d63728sm2085855a91.8.2026.11.19.01.39.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Nov 2026 01:38:05 -0800 (PST)
+        Thu, 19 Nov 2026 01:39:42 -0800 (PST)
 From: Ping Li <leeonion.muyu@gmail.com>
 To: miquel.raynal@bootlin.com,
 	richard@nod.at,
@@ -80,16 +80,17 @@ Cc: linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	leeonion.muyu@gmail.com
 Subject: Re: [RFC PATCH 1/1] mtd: mtdchar: use kvmalloc() for large read/write buffers
-Date: Thu, 19 Nov 2026 17:38:01 +0800
-Message-Id: <20261119093801.1447618-1-leeonion.muyu@gmail.com>
+Date: Thu, 19 Nov 2026 17:39:39 +0800
+Message-Id: <20261119093939.1451208-1-leeonion.muyu@gmail.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <sashiko-outbox-222838@kernel.org>
-References: <sashiko-outbox-222838@kernel.org>
+In-Reply-To: <20261119093801.1447618-1-leeonion.muyu@gmail.com>
+References: <20261119093801.1447618-1-leeonion.muyu@gmail.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261119_013806_782544_425674BA 
-X-CRM114-Status: GOOD (  11.18  )
+X-CRM114-CacheID: sfid-20261119_013944_316221_0401595E 
+X-CRM114-Status: UNSURE (   6.28  )
+X-CRM114-Notice: Please train this message.
 X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -113,47 +114,8 @@ X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 
 From: leeonion.muyu@gmail.com
 
-Hi,
-
-Thanks for the review.  I verified the three findings in the tree and
-all of them check out.
-
-1. powernv_flash registers _read/_write directly and passes __pa(buf)
-   down to OPAL (powernv_flash.c:69, :220), so a vmalloc'd buffer
-   would hand firmware a bogus physical address.  fsmc_nand.c:505,
-   intel-nand-controller.c:312 and r852.c:196 dma_map_single() the
-   buffer without any virt_addr_valid() check.  This also explains
-   why the 2022 ioctl conversion (83208e106a8e8) was safe: MEMREAD
-   and MEMWRITE require _read_oob/_write_oob, which these drivers do
-   not implement.
-
-2. Agreed on the low-memory regression: kvmalloc() makes a single
-   kmalloc() attempt and then goes straight to vmalloc(), so the
-   size backoff that used to make progress under fragmentation is
-   gone.  The stale comment above mtdchar_read() is my oversight.
-
-3. Agreed that "shrink first, vmalloc last" is the right shape;
-   jumping to vmalloc while intermediate contiguous sizes are still
-   available trades a cheap shrink for an expensive bounce path.
-
-So the answer to the cover letter's question is: quite concerned.
-Plain kvmalloc() in the _read/_write path is a no-go as long as
-drivers assume a linear-map buffer.
-
-The options I see from here:
-
-  a) a small pre-cleanup series making the affected drivers
-     vmalloc-safe (bounce or reject), then converting
-     mtdchar_read()/mtdchar_write() with the size backoff kept and
-     vmalloc only as a last resort;
-  b) keeping the current halving-only behavior and dropping this
-     RFC.
-
-I am happy to work on (a) if that direction is acceptable;
-otherwise I will withdraw the RFC.
-
-Thanks,
-Ping
+Apologies for the duplicate -- that was a resend glitch on my side;
+the two messages are identical, please disregard one of them.
 
 ______________________________________________________
 Linux MTD discussion mailing list
