@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE58B60A3814
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Nov 2026 16:42:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1703960A3802
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Nov 2026 16:42:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=Wky/9RXN;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=KR58zEQD
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=f7ZqzJ0/;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=e67NC/Lh
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,75 +14,75 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=Mjjj9vkkkuBUbcDZPbMA5Ckmu0U0/Sdky2KDIGK30Rs=; b=Wky/9RXNjya7oJE54l3f1ATIP5
-	68u6kIhuQJfyWSsSTkNrvc7iFyUqL4wJawU1zgH3SFIvnKB24G9z6zkPiqyvXI0grtr80RSw7+cAA
-	bkD1sGecbVkTLxbwo8DuRFsh11fTjrpv/f+Kj+8nOg+AJRJpAyjGEhrs4nCuoWNe6se7SM8bOhktT
-	PIRxF5Cy/thRLEBT1NydDcs000rs074sGxFQbQYtWaqrN+Vh6DEzsThGEq/+xGDaajpGjbXWgKKQ3
-	vypKjZoCOeyiJiUKz1uonkPyGWuf1h/ymq7IjXkc/2FKly9GTIy6xgktDT3UML2DmMdn5V4ozcsyx
-	h7z5ADvA==;
+	bh=ds1JPXB9CncK69+4fnebHg3Q+t+deh4oSpEFS6Aqt6Y=; b=f7ZqzJ0/GZMjC04t45N3bRkJoH
+	3ZgqJ0JKtGwc33k8iaDxABJJz8ySt9sAxi2whHOolwhnbqOgDunD0gl0uflW+JUVQHMTMWnpaHEPH
+	+6RD0X3m1bJdNXmvjurfbPszhZMu3qq7v63Hw422vDioX0n4s68rETf1v6LMCifmgbdG8CqyNNQsJ
+	Im9SHoZpNLoe6pTjyI2V4ZlQcnnieX9UwfvMN0K12hwfqL0LXZ+JUTaREDXSVVEAoiJQ/iYvL0elU
+	xYqabeJEy3gLBB6FuwmGbSBLysYdW/eDl2ZadBIvqr9gWHEiIxsh88FWxh9qLjZkHy4j+BVZgA7jh
+	U/vl7HZA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xU5DV-0000000Cgpw-31Ph;
-	Thu, 19 Nov 2026 16:42:33 +0000
-Received: from mail-oo1-xc2b.google.com ([2607:f8b0:4864:20::c2b])
+	id 1xU5DY-0000000CgsQ-3Od3;
+	Thu, 19 Nov 2026 16:42:36 +0000
+Received: from mail-oo1-xc36.google.com ([2607:f8b0:4864:20::c36])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xU5DS-0000000CgoS-2rOV
+	id 1xU5DU-0000000Cgot-0bY8
 	for linux-mtd@lists.infradead.org;
-	Thu, 19 Nov 2026 16:42:31 +0000
-Received: by mail-oo1-xc2b.google.com with SMTP id 006d021491bc7-7190d9bdb2cso1680642eaf.0
-        for <linux-mtd@lists.infradead.org>; Thu, 19 Nov 2026 08:42:30 -0800 (PST)
+	Thu, 19 Nov 2026 16:42:33 +0000
+Received: by mail-oo1-xc36.google.com with SMTP id 006d021491bc7-71ad5f20016so1896716eaf.1
+        for <linux-mtd@lists.infradead.org>; Thu, 19 Nov 2026 08:42:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1795106549; x=1795711349; darn=lists.infradead.org;
+        d=gmail.com; s=20260707; t=1795106551; x=1795711351; darn=lists.infradead.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=dviFuqAIBQmCwTlGi/sNefyK6Za+SYcw7iPLWjwy1Ww=;
-        b=KR58zEQDH+pnaP1TMVkvp69PbmKdmQd5G/2g3mQakNgUQAYOY9dssgCDzC/o+SWF9h
-         TvhL76OqFW/HNusatyxrrHQ2Rw7iCZhUha9mw0kUXQ+k2FIYdNG0M/myx+lG9wF4HXoK
-         KMW7THUeFhlmrTUAy9+Gf9f0zYgWg3EBM+nQphzgLQ3i88e4ekG+6wmpqq/Cbe2ytHWg
-         DzSrQl8NnbpusTnnJ3X4CFUM0srGIxMXQamT8KjfWZc6r3/+O+4h+qB/6EULZas8Eozk
-         Vj2bWndVBdw+r+BbiOkPoFaJSPTCVi3gk/hTyEttzWyfTcuBqAD5fcSr6fifyalXQL9P
-         otow==
+        bh=TfKzkJmtwO3w9lSwQG9nI6f6Idy1UggKZRrUE1Xn1HQ=;
+        b=e67NC/LhFeEUal4R0Cl742zyhdYXuttLJdqLf6m4Cj8oIHAwtYXN65SysAK0vjuIGQ
+         LfHId7UkwfbVhQYuhMimN80prjOHmmjZ+jD2H2a8lSAfTXqVPmlFFREzhsFatReecwZo
+         ZzFD6CtTGmKspl6jbr9ZUzbu9qsIsMP6GAF+VxwdseI/Sgoyy0NXAATO+wAiUdtDd7OE
+         reDP5fVHKbyKCfilkNOqaX5yT+2UZbvDvGB058PNHSgI80O9hZlUY2OCRCY4ujUTMmv0
+         wn1IdhhZxRsnkfuCGmGOWmkLSZ2DlWAaxqKLk+ratf4pFIQgSW44CJfa1tEcilV2p+Q1
+         B2xw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1795106549; x=1795711349;
+        d=1e100.net; s=20260707; t=1795106551; x=1795711351;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=dviFuqAIBQmCwTlGi/sNefyK6Za+SYcw7iPLWjwy1Ww=;
-        b=1Najl12jX1vISbEh2jrrdf+y/z0bikJxW0apET52NotqlVoEXjTzHFX13NYDMn9Yk0
-         291sDhAmZBpeBaeiQ0NCgUnDDBliy+CINDw5LgnBj56B8MXfFbMN9RUWNpGpvzIo2Fit
-         jEmtDNyo41CXPGznf0v9ju/4BkptwcYmhoaAXeg0oEFTnX+J34O1mkoPHVrJycNOdYDf
-         Yd2GHDjAw4O9B59+uvtk5XBBqeLXNRQDTEys76HgYFa8K6v470XoMqlpwECnWMPx4Jj6
-         Zill7PcsGwwYFs4J2QRTNoEHF7bhLyv8TyRzRVbjxT3CDoB/y7kTtd+/BUd85rxaLzrT
-         Y/rQ==
-X-Forwarded-Encrypted: i=1; AL+hErGwnZ0uM1VkFrTIYKWlF1GFj7zPgZk47iRv5PR13RsYUaYEOow4SZAsfzgrtJmP1bjgrM1QWT3uLtc=@lists.infradead.org
-X-Gm-Message-State: APuU4Z/O2RlXqcbxg2tyDAljpHGgsdNsdhigYmMvUscOdUsaTxUP/5Ec
-	YzmEY2loI+XhW9FKRz5yOnHNmxHTLK41EJjqLmzR/YEq7TSMQyQtdJtq
-X-Gm-Gg: AYBFou2YUylUxE1edCNQY2CIz4kMh6GNSvcZI6Pr1wyEz31eBbN72DhhwQoZmjwIAgn
-	kOBtKmBbsRjY1xLlXF4MWbI6i7TE4gLDQis4dlJNw/1lBLrLrDhr6E/Py59J3e8bZOz9CYnnZla
-	jb61Txp80jrU+0ipgMWg2/aRvRw5qfSLSScpB6CO26lb5wuNbZXxVs4yItU4kT4kXW2+PeqWOQY
-	8RbPWw3mkSxYmX+/xFjdr21K5mcxW+pke/6vQPDqdhiP1AfNw/qJRKv6LoKoqMfl1msBU22JLZI
-	emigRyi69Bqfv6ajW7tcyz85Ut6N9lzuE2t+26s/B9bvF9VHb6neM06PdLq4RgUjBwy0Vj4Nziq
-	KXrpGud/n2L4W3Crtg86Ey6LOKx3QoCnwN5aYWo2N3Fcr/lsMZXp4sTkeyeiyHZwcneclCNEPNA
-	uQaRqZ7ARQf3F+iPiJn+LQDXLT5t+Ps9Yjo2k/DPO5p0HEDlWCSDelZ8V3edCFgZzkIskU+byWl
-	7GnkX0fVRaOquA5BGDGro7exP3oSqS/fkV4GagO3oXkuj0AsRXMymgobspE1arYpoxIWtC+zoEa
-	E5uvQ6Gt207aEL9UmWMIVpmNwZWCUoVsPKmjv+5WjV99p1Ywb4annxohQ3Ir9QD7zziplL2Q/HH
-	sncBLmG5bRnl3lLfPD4EGhXa+4v7bEl0gY/FP0BBxGomn+SfjjtmQ3J3TiwQ/57C67Ed3I2jyL4
-	lGbeJ81tLKA+ykPchLSxp1CY5s80pHVg9niBBXLgvIyRokem97nyM=
-X-Received: by 2002:a05:6820:8584:20b0:71b:123b:9ab1 with SMTP id 006d021491bc7-71b395e7441mr53911eaf.78.1795106549466;
-        Thu, 19 Nov 2026 08:42:29 -0800 (PST)
+        bh=TfKzkJmtwO3w9lSwQG9nI6f6Idy1UggKZRrUE1Xn1HQ=;
+        b=o8EzqdnW3h0ZociMbWjw0iZ0UhMmu8FxQZCAMn33aNCBQMOxYfe/aD8m1GN5Xg3B/9
+         jwAg8QQi7+O2x+B9vbzNg0c6bpjxxk/UOlJMH4fKLaMN/EDa7clo7qvDBLa7XdbKhpQX
+         W0hQ2cRg4YkPde9ipphvMPoguUqX3xkoYiwdiSV9+/kacLfjIWr+IGEiKYgv+hfR7YpY
+         YFq+XR2umn3KiSrqNzcm477Kvw949LMcn7YbDuZTxggIHK2cBfrQMO7QQS5Q1Ovzs0BX
+         zzf9V9NWDsPYTG6h3Cl//BK5PmGi16JZgNfvryebuahH/YSTrp9M2VFOk1rHnNY0J1bm
+         GXkg==
+X-Forwarded-Encrypted: i=1; AL+hErETezylFb4DBlOYGQDW4+OkO6t9hsek3wqRbwFnx8u0LUkbOM1uj3QjuMgSA6l8CF4pfRDXKu9VSZ4=@lists.infradead.org
+X-Gm-Message-State: APuU4Z9hsikItm6L9jWTINchuXNhvZ0kqF/GvCdpkKurTVVzI7Yz4ixA
+	E8qMDRl9fwzeA4oG7JYYHfZmys0dRWlT6OWFc7UjS5RAp++bDRtevX9y
+X-Gm-Gg: AYBFou0+/jRaxHyJ2czlhGZVFeI2PrwwyOqRl8cfB9EEgJFe3+gSBLKjUZb6pCVvV9H
+	I6wYCeqtlkDzSIuF5y0XsM9Bk+DX93YHioETDiMdnzAl0Q8eJk/e99iNPKFaD20eiRuISp1bFU5
+	Wp93VGqt4fbEUEl4tDOuiOsbvJm7wv7Dz1m4vd/9++s9TLr+5l8gSTewtEBOcA/UrZ/bHHRcc8A
+	wMJ24H8aedYkB3oiyExby42PxWbKMF8ySN6qfL6fhEdehSyRDVIb+VqJ1SJByg3EcQ55V3MSDSd
+	SeZ7BYvPkbY2S+qWDA7+RxPC5rIxv8Mi1WLa/KE4Ssj566PltHKWB/tlUGp6Bz4rPu6djESaFSQ
+	8k4q0VWwFC6DKJwSGOSbb4Ppy+ROq6xHKJNftuKVRtX+T+II4/nd0KxV24fwgjQncuUzAW396Hb
+	x/aUJFRq5yiW6sBHRpZOyD0zFN2vQRrbuhbf5vqutjO4UcaqPjE/3JMOpgWjJf4BJ7EoceCGpxZ
+	/rwW57wk2tl7VCYiVoRgMmYmTUXJPMqDMpYfVXk3vzAevJQlLCHf2KCAZgfiYmetRS8duX2lVu1
+	9PTCCo8F0/5Z2FYRxi6r1/foqyR/G8k4NKvBuzyIXs6Ka3/H0CnYL0rhbJN8jbXukD75oXwlsfV
+	m0rKqV70+ExlZtugKduTcoWJCu0Xjv4MYx8vAZtk37Nd2XUnBJj6cR79//gcCEwNgWtAs0NbqUc
+	q2NipSgl0WjKzNT3JD0QPOlfUM9aJ0k1OHgYHNPI60kLpE5Ivkzp4=
+X-Received: by 2002:a05:6820:4186:b0:71a:e4a8:bed3 with SMTP id 006d021491bc7-71b3957f53emr89958eaf.77.1795106550861;
+        Thu, 19 Nov 2026 08:42:30 -0800 (PST)
 Received: from [127.0.1.1] (174-29-1-49.hlrn.qwest.net. [174.29.1.49])
-        by smtp.gmail.com with ESMTPSA id 006d021491bc7-71b380e4a6dsm341975eaf.13.2026.11.19.08.42.28
+        by smtp.gmail.com with ESMTPSA id 006d021491bc7-71b380e4a6dsm341975eaf.13.2026.11.19.08.42.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Nov 2026 08:42:29 -0800 (PST)
+        Thu, 19 Nov 2026 08:42:30 -0800 (PST)
 From: James Hilliard <james.hilliard1@gmail.com>
-Date: Thu, 19 Nov 2026 09:41:59 -0700
-Subject: [PATCH v2 01/11] nvmem: retain the provider node until device
- release
+Date: Thu, 19 Nov 2026 09:42:00 -0700
+Subject: [PATCH v2 02/11] nvmem: drain keepout and cell post-processing
+ accesses
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Message-Id: <20261119-submit-nvmem-provider-lifetime-v1-v2-1-8fca3ec5f18c@gmail.com>
+Message-Id: <20261119-submit-nvmem-provider-lifetime-v1-v2-2-8fca3ec5f18c@gmail.com>
 References: <20261119-submit-nvmem-provider-lifetime-v1-v2-0-8fca3ec5f18c@gmail.com>
 In-Reply-To: <20261119-submit-nvmem-provider-lifetime-v1-v2-0-8fca3ec5f18c@gmail.com>
 To: Srinivas Kandagatla <srini@kernel.org>, 
@@ -98,8 +98,8 @@ Cc: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>,
  linux-mtd@lists.infradead.org, James Hilliard <james.hilliard1@gmail.com>
 X-Mailer: b4 0.17-dev
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261119_084230_732055_5391D906 
-X-CRM114-Status: GOOD (  11.77  )
+X-CRM114-CacheID: sfid-20261119_084232_208667_2BD1EEA5 
+X-CRM114-Status: GOOD (  17.94  )
 X-Spam-Score: -1.9 (-)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -121,41 +121,237 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-An NVMEM device can outlive its provider after unregister. Take a
-reference to the configured OF node, or reuse the provider device's node
-when none is specified. Drop the reference in the device release path
-so the node remains valid for the lifetime of the NVMEM device.
+A provider can unregister while a read is still walking its keepout table
+or running a cell's post-processing callback. Waiting for the register
+callback alone does not keep that provider state alive.
 
-Fixes: 1333a6779501 ("nvmem: core: allow specifying of_node")
+Take the SRCU read lock once for each register or cell access. Use the
+same operations pointer for every chunk, including the reads needed for
+a partial-byte write. Unregister then waits for the entire operation;
+new accesses fail even if they would only touch a keepout.
+
+Fixes: 6a7b4134fb7a ("nvmem: protect nvmem_device::ops with SRCU")
 Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
 ---
- drivers/nvmem/core.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/nvmem/core.c | 110 ++++++++++++++++++++++++++-------------------------
+ 1 file changed, 56 insertions(+), 54 deletions(-)
 
 diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-index 7d4cce8e2742..03ea878874e4 100644
+index 03ea878874e4..32d36ca904cd 100644
 --- a/drivers/nvmem/core.c
 +++ b/drivers/nvmem/core.c
-@@ -570,6 +570,7 @@ static void nvmem_release(struct device *dev)
- 	gpiod_put(nvmem->wp_gpio);
- 	nvmem_device_remove_all_cells(nvmem);
- 	ida_free(&nvmem_ida, nvmem->id);
-+	of_node_put(nvmem->dev.of_node);
- 	cleanup_srcu_struct(&nvmem->srcu);
- 	kfree(nvmem);
- }
-@@ -973,9 +974,9 @@ struct nvmem_device *nvmem_register(const struct nvmem_config *config)
- 	nvmem->keepout = config->keepout;
- 	nvmem->nkeepout = config->nkeepout;
- 	if (config->of_node)
--		nvmem->dev.of_node = config->of_node;
-+		nvmem->dev.of_node = of_node_get(config->of_node);
- 	else
--		nvmem->dev.of_node = config->dev->of_node;
-+		device_set_of_node_from_dev(&nvmem->dev, config->dev);
+@@ -54,32 +54,18 @@ static LIST_HEAD(nvmem_lookup_list);
  
- 	switch (config->id) {
- 	case NVMEM_DEVID_NONE:
+ static BLOCKING_NOTIFIER_HEAD(nvmem_notifier);
+ 
+-static int __nvmem_reg_read(struct nvmem_device *nvmem, unsigned int offset,
+-			    void *val, size_t bytes)
++static int nvmem_access_chunk(struct nvmem_device *nvmem,
++			      const struct nvmem_operations *ops,
++			      unsigned int offset, void *val, size_t bytes, bool write)
+ {
+-	struct nvmem_operations *ops;
+-
+-	guard(srcu)(&nvmem->srcu);
+-	ops = srcu_dereference(nvmem->ops, &nvmem->srcu);
+-	if (!ops)
+-		return -ENODEV;
+-
+-	if (!ops->reg_read)
+-		return -EOPNOTSUPP;
+-
+-	return ops->reg_read(nvmem->priv, offset, val, bytes);
+-}
+-
+-static int __nvmem_reg_write(struct nvmem_device *nvmem, unsigned int offset,
+-			     void *val, size_t bytes)
+-{
+-	struct nvmem_operations *ops;
+ 	int ret, wr_ok;
+ 
+-	guard(srcu)(&nvmem->srcu);
+-	ops = srcu_dereference(nvmem->ops, &nvmem->srcu);
+-	if (!ops)
+-		return -ENODEV;
++	if (!write) {
++		if (!ops->reg_read)
++			return -EOPNOTSUPP;
++
++		return ops->reg_read(nvmem->priv, offset, val, bytes);
++	}
+ 
+ 	if (!ops->reg_write)
+ 		return -EOPNOTSUPP;
+@@ -97,17 +83,20 @@ static int __nvmem_reg_write(struct nvmem_device *nvmem, unsigned int offset,
+ 	return wr_ok;
+ }
+ 
+-static int nvmem_access_with_keepouts(struct nvmem_device *nvmem,
+-				      unsigned int offset, void *val,
+-				      size_t bytes, int write)
++static int nvmem_access_locked(struct nvmem_device *nvmem,
++			       const struct nvmem_operations *ops,
++			       unsigned int offset, void *val, size_t bytes, bool write)
+ {
+-
+ 	unsigned int end = offset + bytes;
+ 	unsigned int kend, ksize;
+ 	const struct nvmem_keepout *keepout = nvmem->keepout;
+-	const struct nvmem_keepout *keepoutend = keepout + nvmem->nkeepout;
++	const struct nvmem_keepout *keepoutend;
+ 	int rc;
+ 
++	if (!nvmem->nkeepout)
++		return nvmem_access_chunk(nvmem, ops, offset, val, bytes, write);
++
++	keepoutend = keepout + nvmem->nkeepout;
+ 	/*
+ 	 * Skip all keepouts before the range being accessed.
+ 	 * Keepouts are sorted.
+@@ -120,11 +109,7 @@ static int nvmem_access_with_keepouts(struct nvmem_device *nvmem,
+ 		if (offset < keepout->start) {
+ 			kend = min(end, keepout->start);
+ 			ksize = kend - offset;
+-			if (write)
+-				rc = __nvmem_reg_write(nvmem, offset, val, ksize);
+-			else
+-				rc = __nvmem_reg_read(nvmem, offset, val, ksize);
+-
++			rc = nvmem_access_chunk(nvmem, ops, offset, val, ksize, write);
+ 			if (rc)
+ 				return rc;
+ 
+@@ -150,13 +135,8 @@ static int nvmem_access_with_keepouts(struct nvmem_device *nvmem,
+ 	 * If we ran out of keepouts but there's still stuff to do, send it
+ 	 * down directly
+ 	 */
+-	if (offset < end) {
+-		ksize = end - offset;
+-		if (write)
+-			return __nvmem_reg_write(nvmem, offset, val, ksize);
+-		else
+-			return __nvmem_reg_read(nvmem, offset, val, ksize);
+-	}
++	if (offset < end)
++		return nvmem_access_chunk(nvmem, ops, offset, val, end - offset, write);
+ 
+ 	return 0;
+ }
+@@ -164,19 +144,27 @@ static int nvmem_access_with_keepouts(struct nvmem_device *nvmem,
+ static int nvmem_reg_read(struct nvmem_device *nvmem, unsigned int offset,
+ 			  void *val, size_t bytes)
+ {
+-	if (!nvmem->nkeepout)
+-		return __nvmem_reg_read(nvmem, offset, val, bytes);
++	const struct nvmem_operations *ops;
++
++	guard(srcu)(&nvmem->srcu);
++	ops = srcu_dereference(nvmem->ops, &nvmem->srcu);
++	if (!ops)
++		return -ENODEV;
+ 
+-	return nvmem_access_with_keepouts(nvmem, offset, val, bytes, false);
++	return nvmem_access_locked(nvmem, ops, offset, val, bytes, false);
+ }
+ 
+ static int nvmem_reg_write(struct nvmem_device *nvmem, unsigned int offset,
+ 			   void *val, size_t bytes)
+ {
+-	if (!nvmem->nkeepout)
+-		return __nvmem_reg_write(nvmem, offset, val, bytes);
++	const struct nvmem_operations *ops;
++
++	guard(srcu)(&nvmem->srcu);
++	ops = srcu_dereference(nvmem->ops, &nvmem->srcu);
++	if (!ops)
++		return -ENODEV;
+ 
+-	return nvmem_access_with_keepouts(nvmem, offset, val, bytes, true);
++	return nvmem_access_locked(nvmem, ops, offset, val, bytes, true);
+ }
+ 
+ #ifdef CONFIG_NVMEM_SYSFS
+@@ -1649,10 +1637,15 @@ static int __nvmem_cell_read(struct nvmem_device *nvmem,
+ 			     struct nvmem_cell_entry *cell,
+ 			     void *buf, size_t *len, const char *id, int index)
+ {
++	const struct nvmem_operations *ops;
+ 	int rc;
+ 
+-	rc = nvmem_reg_read(nvmem, cell->offset, buf, cell->raw_len);
++	guard(srcu)(&nvmem->srcu);
++	ops = srcu_dereference(nvmem->ops, &nvmem->srcu);
++	if (!ops)
++		return -ENODEV;
+ 
++	rc = nvmem_access_locked(nvmem, ops, cell->offset, buf, cell->raw_len, false);
+ 	if (rc)
+ 		return rc;
+ 
+@@ -1708,6 +1701,7 @@ void *nvmem_cell_read(struct nvmem_cell *cell, size_t *len)
+ EXPORT_SYMBOL_GPL(nvmem_cell_read);
+ 
+ static void *nvmem_cell_prepare_write_buffer(struct nvmem_cell_entry *cell,
++					     const struct nvmem_operations *ops,
+ 					     u8 *_buf, int len)
+ {
+ 	struct nvmem_device *nvmem = cell->nvmem;
+@@ -1727,7 +1721,7 @@ static void *nvmem_cell_prepare_write_buffer(struct nvmem_cell_entry *cell,
+ 		*b <<= bit_offset;
+ 
+ 		/* setup the first byte with lsb bits from nvmem */
+-		rc = nvmem_reg_read(nvmem, cell->offset, &v, 1);
++		rc = nvmem_access_locked(nvmem, ops, cell->offset, &v, 1, false);
+ 		if (rc)
+ 			goto err;
+ 		*b++ |= GENMASK(bit_offset - 1, 0) & v;
+@@ -1746,8 +1740,8 @@ static void *nvmem_cell_prepare_write_buffer(struct nvmem_cell_entry *cell,
+ 	/* if it's not end on byte boundary */
+ 	if ((nbits + bit_offset) % BITS_PER_BYTE) {
+ 		/* setup the last byte with msb bits from nvmem */
+-		rc = nvmem_reg_read(nvmem,
+-				    cell->offset + cell->bytes - 1, &v, 1);
++		rc = nvmem_access_locked(nvmem, ops, cell->offset + cell->bytes - 1,
++					 &v, 1, false);
+ 		if (rc)
+ 			goto err;
+ 		*p |= GENMASK(7, (nbits + bit_offset) % BITS_PER_BYTE) & v;
+@@ -1763,10 +1757,18 @@ static void *nvmem_cell_prepare_write_buffer(struct nvmem_cell_entry *cell,
+ static int __nvmem_cell_entry_write(struct nvmem_cell_entry *cell, void *buf, size_t len)
+ {
+ 	struct nvmem_device *nvmem = cell->nvmem;
++	const struct nvmem_operations *ops;
+ 	int rc;
+ 
+-	if (!nvmem || nvmem->read_only ||
+-	    (cell->bit_offset == 0 && len != cell->bytes))
++	if (!nvmem)
++		return -EINVAL;
++
++	guard(srcu)(&nvmem->srcu);
++	ops = srcu_dereference(nvmem->ops, &nvmem->srcu);
++	if (!ops)
++		return -ENODEV;
++
++	if (nvmem->read_only || (cell->bit_offset == 0 && len != cell->bytes))
+ 		return -EINVAL;
+ 
+ 	/*
+@@ -1780,12 +1782,12 @@ static int __nvmem_cell_entry_write(struct nvmem_cell_entry *cell, void *buf, si
+ 	if (cell->bit_offset || cell->nbits) {
+ 		if (len != BITS_TO_BYTES(cell->nbits) && len != cell->bytes)
+ 			return -EINVAL;
+-		buf = nvmem_cell_prepare_write_buffer(cell, buf, len);
++		buf = nvmem_cell_prepare_write_buffer(cell, ops, buf, len);
+ 		if (IS_ERR(buf))
+ 			return PTR_ERR(buf);
+ 	}
+ 
+-	rc = nvmem_reg_write(nvmem, cell->offset, buf, cell->bytes);
++	rc = nvmem_access_locked(nvmem, ops, cell->offset, buf, cell->bytes, true);
+ 
+ 	/* free the tmp buffer */
+ 	if (cell->bit_offset || cell->nbits)
 
 -- 
 2.53.0
