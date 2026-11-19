@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A917760A2612
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Nov 2026 19:26:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC508606A325
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Nov 2026 19:26:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=mQ3R7DnL;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.a=rsa-sha256 header.s=20260707 header.b=ZXzuLad4
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=SyVVpdSC;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.a=rsa-sha256 header.s=20260707 header.b=mVkQRLNq
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,63 +14,63 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	References:Mime-Version:In-Reply-To:Date:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Unsubscribe-Post:List-Owner;
-	bh=591044eNIJ2I6r38/57c0jWxe41yf5BHYluO2YT9XEM=; b=mQ3R7DnLdXEFvE1B9PSph+QHwP
-	lHr44m3xsfyiyWvmRg00BrNFBieLHVfcAq0L1ZTKpIO0JWiXKsyAmyiigWKdrRbkDtvVxxalXoMu2
-	N6JP9Few2GnRRiKzlNxJhQDUMW8TiHKeIrry54AdyKxraAsuNY0dCNF1J1OSjukV5G34pfd2Dlll3
-	trUGm1BoCv9iLJciXwnRtXYlkNMdQrdTHU+vYyEdjvFfWhR4NCf+aWWT+HQKcWWAyPbEGtamMiwFN
-	HXLnHDes1UGL0yC7q8ZKA5hbk4qi886lvemZfIXExrJx0xHXr+kFxHFlO50BcX+X3HbbCc6iTHPZ9
-	wlvMbeyA==;
+	bh=ZXEKp8IxJZY/byx9QMIsoFfXCdAIkP7cj17z3bVYdJc=; b=SyVVpdSCL/B6ukyG1hvn8WK51G
+	frxrwIttTHEztd7K++npR4gpqHZY+5+Jx56zlRZmEamG2kCafHoeSv36nKFQIjpfQqnwgWujspkU6
+	X6eHjbjuCBvXnYOwzqAVIMAkcEkm1y9o9VxLLR1nbJwCdMmXgHVda58Y+9ri8vP4zgBYN/bS+8p6A
+	nlcjW/iA2V1s8q29KhrCySs84X7YS73cloTlDDE9Aa7+i3PnFb00S3LQwUGNuDvcgbpCQwYrMd3Yr
+	OEn+GNN8vCC+UOJxrlhEuv9WV7WK9VmPpyruduSXUUxiSkklbv7YRgAjkIhglweD9FXeXh/zmggOa
+	6AwTJabA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xU7lj-0000000DCES-1TOv;
-	Thu, 19 Nov 2026 19:26:03 +0000
-Received: from mail-pf1-x448.google.com ([2607:f8b0:4864:20::448])
+	id 1xU7ls-0000000DCNt-25ul;
+	Thu, 19 Nov 2026 19:26:12 +0000
+Received: from mail-pj1-x1047.google.com ([2607:f8b0:4864:20::1047])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xU7lg-0000000DCAA-1dGg
+	id 1xU7lm-0000000DCGP-3HbU
 	for linux-mtd@lists.infradead.org;
-	Thu, 19 Nov 2026 19:26:02 +0000
-Received: by mail-pf1-x448.google.com with SMTP id d2e1a72fcca58-8b32efd7ec4so136393b3a.3
-        for <linux-mtd@lists.infradead.org>; Thu, 19 Nov 2026 11:25:59 -0800 (PST)
+	Thu, 19 Nov 2026 19:26:10 +0000
+Received: by mail-pj1-x1047.google.com with SMTP id 98e67ed59e1d1-3ae6fda7a00so149202a91.2
+        for <linux-mtd@lists.infradead.org>; Thu, 19 Nov 2026 11:26:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20260707; t=1795116359; x=1795721159; darn=lists.infradead.org;
+        d=google.com; s=20260707; t=1795116365; x=1795721165; darn=lists.infradead.org;
         h=content-type:cc:to:from:subject:message-id:references:mime-version
          :in-reply-to:date:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=MCKguj/vcFyjyUsBFpEVwvA/Ew8DwdobaKTpU+d8I2Y=;
-        b=ZXzuLad4+R7o8Oh+IsCRenzt6n+Xt9vaA55xVG24vk1oeKlA/YSjvgYu2NuvYK2lIB
-         tGR0d8o1eyo2s/ZJbv2anden1Pv8IvX43ff/E5t60PJc4jeBwUpz4tzExp18kUn79nXs
-         JjpThNJeODgKgidWCmqnpMbT1HuTbjN9PRQ6w1Z9hBbbtM8a7NRCWrG82wrxsJfPOrO7
-         5gdGTpIY17X6j5/PU7wC8PS7GYySIFJu74wO0jqiU0k3Q5irktaxJw2dnd8FfpLtluOW
-         Dq7HI7srWidg6mO3xAABiZeI4z7sAOFf6S1VdEqB18oAKXeTw4LUaQkontW2LusWJNpm
-         pSBA==
+        bh=CSDEU43/2Gwf+VbjlCClZWJ4rTvHhhRb4YqVFYZr7ik=;
+        b=mVkQRLNq7Hso+pUQTDhP4puvpHzRvvx83URpGIhlFtFRRnZ3epZXC4O9WyXo1Ul6IW
+         rOhFdU71cSny10t58E4B7qWSo8QeL/17KUljJiEo4lf0Hx/22w1Ai04wOzBstNvMx2mb
+         Oo8FViXqQ+ArgwJfeADVy/VLXdcz6z2DOq8lXjF+yoAZVCSDi5Jhl820JzDZbkL2e8KU
+         yoaRWx0Hd17ldAhh5DxpT7KOizgSkuQoIZ6U1ppz6IMkzTPp1AW1RDmATo/W5QkwmFx6
+         7e1zVDFeQn/O29vECK5Oo4XXSNXACE/LU21sOLGdTJO75ej93EzthoFDU10zSrlP9F6L
+         p74w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1795116359; x=1795721159;
+        d=1e100.net; s=20260707; t=1795116365; x=1795721165;
         h=content-type:cc:to:from:subject:message-id:references:mime-version
          :in-reply-to:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=MCKguj/vcFyjyUsBFpEVwvA/Ew8DwdobaKTpU+d8I2Y=;
-        b=CJ17IRx/f2SjDB3NtQgOLFPlLyK+ZTlE9GPt6VG37MtVa3wTdJgEwM2ESEGHdpqUkT
-         PYTq0GFy6zV/poo8u89WVQXdJuN41ySdV+hCcwgfhrUsvo8ax8kG5md4CamrgRjQSPSp
-         Ch2LjqRn4yUeidFDzc1LoJyFE1fRcIsIiPP6CpX1XU3ZvBL21Zm9MrUd4GxQbKJ2/kh5
-         uq7Q4YaECsryinl53HRcoNqnB1TmCdk3jajsRaJJidHxskQNyf1P/7uxsze/Jm5A4oqM
-         zrRQg9ETyFyALNdEGiLaBmiilW4K+TZXKrCLt0B8FaOSF2qhR/HfeJr/Oi7epI2M3LTm
-         VvEw==
-X-Forwarded-Encrypted: i=1; AL+hErGoJmy+rBDSaYVNmF6Ylm29r6zfV1MKEhVIk1hrl4WxAi4wRWCZegPQklhhb57IatnG2nnDfDEttMk=@lists.infradead.org
-X-Gm-Message-State: APuU4Z8GNKcBGfyWMPbCR6kMVQe8DnUP/4KUVYsmc/HYCHOr57hrNV4I
-	dFQTcQf98bpRrk22CnatSWY6KUgjsiP0ZZR0e3WNo9kZeNdoWPiojrhG4kQ+aksiFL/ikIw8/V2
-	y19jJHSJcRA==
-X-Received: from pgjk11-n2.prod.google.com ([2002:a05:6a02:81cb:20b0:cd6:1fc4:6199])
- (user=irogers job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6a21:9191:b0:3fb:1bfb:ff29
- with SMTP id adf61e73a8af0-4014e74d624mr589862637.69.1795116358583; Thu, 19
- Nov 2026 11:25:58 -0800 (PST)
-Date: Thu, 19 Nov 2026 11:25:17 -0800
+        bh=CSDEU43/2Gwf+VbjlCClZWJ4rTvHhhRb4YqVFYZr7ik=;
+        b=HRyVZrtoLB6/umSSuGQafqYHqFtNv1/eOnDTRqMLhHCfxUio75rzdL6uW3HDx8Duu/
+         qOQgzSoIedJhe0giB5cmpAiylzEy/ne32Jm9wJF2e3dtUUwLG/p4vK7Gu43CM/kOaU21
+         VNErP6B6rL4mefI6RwlO9SKZPjB+OcMldKk4vAMWFROJ65uoAE66nx7f+1trCXXDWlKQ
+         jE4uA/edxRUOLmfmaTGFHf2yxF5x+vWpSrs3ii0CNwADFZ6t1b3iXqV8/mKr4tl/4UNu
+         PVX6cVAHa9PKwZJ8ZOyagKGYQe6jrBDfUOu45bGy9VzIYLTzRyCV0ysVU4HPWcRqsTvX
+         mT8g==
+X-Forwarded-Encrypted: i=1; AL+hErH45yTHsGgCiNzFcNle5++0kT+lo0ozINFnNTuRgTLjiaVd4UHWSxlrZfOr2RviCiuDQQR1Ls4FTXs=@lists.infradead.org
+X-Gm-Message-State: APuU4Z99zXUzMmcSulemPPCYiTBx/qApe03rSPPKGstSfrsohmMrgn0Y
+	WFnMj+9gkseuMQz/wnwyXNzKnG/XgTdM0jCLd6uKYT/IHKxtfyh+CLjHTUQXkj72K9CF4gzC0KX
+	B+NP7FW3ZhQ==
+X-Received: from pjbsk16.prod.google.com ([2002:a17:90b:2dd0:b0:3b3:ada0:c008])
+ (user=irogers job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90b:1c03:b0:3b4:1bf1:988f
+ with SMTP id 98e67ed59e1d1-3b41cb138f0mr288962a91.54.1795116364835; Thu, 19
+ Nov 2026 11:26:04 -0800 (PST)
+Date: Thu, 19 Nov 2026 11:25:18 -0800
 In-Reply-To: <20261119192520.1983406-1-irogers@google.com>
 X-Archived-By: <archiver.kernel.org>
 Mime-Version: 1.0
 References: <20261119192520.1983406-1-irogers@google.com>
 X-Mailer: git-send-email 2.56.1.750.gf70dc682cf-goog
-Message-ID: <20261119192520.1983406-7-irogers@google.com>
-Subject: [PATCH v4 6/9] xen/sys-hypervisor: Add release callback to hyp_sysfs_kobj_type
+Message-ID: <20261119192520.1983406-8-irogers@google.com>
+Subject: [PATCH v4 7/9] ubifs: sysfs: Use kset_create_and_add() for ubifs_kset
 From: Ian Rogers <irogers@google.com>
 To: Danilo Krummrich <dakr@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
 	Kees Cook <kees@kernel.org>, Miguel Ojeda <ojeda@kernel.org>, 
@@ -96,8 +96,8 @@ Cc: Madhavan Srinivasan <maddy@linux.ibm.com>, Srish Srinivasan <ssrish@linux.ib
 	amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, 
 	linux-kernel@vger.kernel.org, Ian Rogers <irogers@google.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261119_112600_447888_3FE8CDA8 
-X-CRM114-Status: GOOD (  10.28  )
+X-CRM114-CacheID: sfid-20261119_112606_890692_7E1022AD 
+X-CRM114-Status: GOOD (  13.28  )
 X-Spam-Score: -9.5 (---------)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -119,40 +119,74 @@ X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-hypervisor_init() in drivers/base/hypervisor.c creates hypervisor_kobj
-with kobject_create_and_add() (which allocates a dynamic kobject using
-dynamic_kobj_ktype), and hypervisor_subsys_init() in
-drivers/xen/sys-hypervisor.c then overwrites hypervisor_kobj->ktype with
-&hyp_sysfs_kobj_type, which had no .release callback.
+ubifs_kset was a static struct kset using a custom ubifs_ktype that
+had no default_groups and no .release callback. With
+CONFIG_DEBUG_KOBJECT_RELEASE=y, unloading the ubifs module while delayed
+kobject release is pending causes a use-after-free on the static kset.
 
-Add hyp_sysfs_release() calling kfree(kobj) to preserve the dynamic
-kobject release behavior.
+Replace the static ubifs_kset and empty ubifs_ktype with a dynamically
+allocated kset via kset_create_and_add().
 
-Fixes: cff7e81b3dd7 ("xen: add /sys/hypervisor support")
-Reviewed-by: Juergen Gross <jgross@suse.com>
+Fixes: 2e3cbf425804 ("ubifs: Export filesystem error counters")
+Tested-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- drivers/xen/sys-hypervisor.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ fs/ubifs/sysfs.c | 24 +++++++-----------------
+ 1 file changed, 7 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/xen/sys-hypervisor.c b/drivers/xen/sys-hypervisor.c
-index 91923242a5ae..0e8a2cd69fd6 100644
---- a/drivers/xen/sys-hypervisor.c
-+++ b/drivers/xen/sys-hypervisor.c
-@@ -659,7 +659,13 @@ static const struct sysfs_ops hyp_sysfs_ops = {
- 	.store = hyp_sysfs_store,
+diff --git a/fs/ubifs/sysfs.c b/fs/ubifs/sysfs.c
+index dbf967dcf26e..e20931e3a62f 100644
+--- a/fs/ubifs/sysfs.c
++++ b/fs/ubifs/sysfs.c
+@@ -80,13 +80,7 @@ static const struct kobj_type ubifs_sb_ktype = {
+ 	.release	= ubifs_sb_release,
  };
  
-+static void hyp_sysfs_release(struct kobject *kobj)
-+{
-+	kfree(kobj);
-+}
-+
- static const struct kobj_type hyp_sysfs_kobj_type = {
-+	.release = hyp_sysfs_release,
- 	.sysfs_ops = &hyp_sysfs_ops,
- };
+-static const struct kobj_type ubifs_ktype = {
+-	.sysfs_ops	= &ubifs_attr_ops,
+-};
+-
+-static struct kset ubifs_kset = {
+-	.kobj	= {.ktype = &ubifs_ktype},
+-};
++static struct kset *ubifs_kset;
  
+ int ubifs_sysfs_register(struct ubifs_info *c)
+ {
+@@ -107,7 +101,7 @@ int ubifs_sysfs_register(struct ubifs_info *c)
+ 		goto out_free;
+ 	}
+ 
+-	c->kobj.kset = &ubifs_kset;
++	c->kobj.kset = ubifs_kset;
+ 	init_completion(&c->kobj_unregister);
+ 
+ 	ret = kobject_init_and_add(&c->kobj, &ubifs_sb_ktype, NULL,
+@@ -139,18 +133,14 @@ void ubifs_sysfs_unregister(struct ubifs_info *c)
+ 
+ int __init ubifs_sysfs_init(void)
+ {
+-	int ret;
++	ubifs_kset = kset_create_and_add("ubifs", NULL, fs_kobj);
++	if (!ubifs_kset)
++		return -ENOMEM;
+ 
+-	kobject_set_name(&ubifs_kset.kobj, "ubifs");
+-	ubifs_kset.kobj.parent = fs_kobj;
+-	ret = kset_register(&ubifs_kset);
+-	if (ret)
+-		kset_put(&ubifs_kset);
+-
+-	return ret;
++	return 0;
+ }
+ 
+ void ubifs_sysfs_exit(void)
+ {
+-	kset_unregister(&ubifs_kset);
++	kset_unregister(ubifs_kset);
+ }
 -- 
 2.56.1.708.g77570a6a1d-goog
 
