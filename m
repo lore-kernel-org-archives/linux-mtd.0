@@ -2,10 +2,10 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9869606E32B
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Nov 2026 05:35:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38454606F942
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Nov 2026 05:35:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=SZUeBbWa
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=S7ySXkEr
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -13,20 +13,20 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=Pd44Fq4ZhJhAXIQkqORvcTD71RJHnXacdz5POveU4zE=; b=SZUeBbWag5z8f/TEAbbQOgCDKd
-	3r47uwuDuXAgKRHrMPUUewMjnYO+PzfSCkuQOaJgZS8ZXqv9FyPBrtES93ibmhgUSXVm6FthPGVbk
-	4+uOmxMMheMCgiTasUWEeSEysu0I2vNROKed73fJI/mGtmUVv643vdf7MQ1PbWpPUShL1gDDpemZ8
-	IW516MuqDIxW10rkEvn2IrxIMBDQmgqdo+95VbcifxFPPOiswk6adEXYfrau8UC3r4VQZ+QawOP3c
-	XB5LLckIJxe9DkRrZou64KB7piBFiSfoVALV1Q7W/moWlhovV31saa0JCePD/LUAIpsjTpAYgAMGe
-	rTWnbIJQ==;
+	bh=4i2pPpR0if4nQN5E8SMemgYCeRqwombR0GBEtA4Lv1o=; b=S7ySXkErp0tTWf5MIyCUlDyZap
+	GPMnnP7ETv9VUIPrhqIbjiyNfoEQR4O+EcyDjG+HYJJBGehpeXa0s/a5Q0O7OdrHf9MyKoC9UhtME
+	nzPMDcVBq+5y6jXByG6FKXQyB77UZO1aYDHkRZGr79WpXXhcYmxZJw+IpjIEnpmQdn3cLTY34G+Y+
+	WMsmPKav5G7++oRaxgvMcTMUbsilev7JJXcJzJJ1DDVFVyzsvKek+Fy3dbr4gsHw01zkjXZM31MNV
+	S6GH8lN38T1mZH5egtPGw5oJfaCvF3NJVLcz17avzGFuWYXNgLIwlrSnAKWryVVFhvJvcY9Mxu9T2
+	eUGimD9g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTuoD-0000000Av31-2S7G;
-	Thu, 19 Nov 2026 05:35:45 +0000
+	id 1xTuoF-0000000Av76-3DVo;
+	Thu, 19 Nov 2026 05:35:47 +0000
 Received: from [50.53.43.113] (helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtpsa (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTuoB-0000000Aufu-26GP;
-	Thu, 19 Nov 2026 05:35:43 +0000
+	id 1xTuoE-0000000Aufu-0eli;
+	Thu, 19 Nov 2026 05:35:46 +0000
 From: Randy Dunlap <rdunlap@infradead.org>
 To: linux-kernel@vger.kernel.org
 Cc: Randy Dunlap <rdunlap@infradead.org>,
@@ -112,9 +112,9 @@ Cc: Randy Dunlap <rdunlap@infradead.org>,
 	Matthew Brost <matthew.brost@intel.com>,
 	=?UTF-8?q?Thomas=20Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
 	intel-xe@lists.freedesktop.org
-Subject: [PATCH v2 09/12] docs: ioctl-number: update virtualization entries
-Date: Wed, 18 Nov 2026 21:35:10 -0800
-Message-ID: <20261119053514.255348-10-rdunlap@infradead.org>
+Subject: [PATCH v2 10/12] docs: ioctl-number: update FS entries
+Date: Wed, 18 Nov 2026 21:35:11 -0800
+Message-ID: <20261119053514.255348-11-rdunlap@infradead.org>
 X-Mailer: git-send-email 2.56.1
 In-Reply-To: <20261119053514.255348-1-rdunlap@infradead.org>
 References: <20261119053514.255348-1-rdunlap@infradead.org>
@@ -129,8 +129,8 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,INCLUDES_CR_TRAILER,
@@ -139,67 +139,91 @@ X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-VXBkYXRlIHRoZSBsaXN0IG9mIGZpbGVzIHdoZXJlIHZpcnR1YWxpemF0aW9uIGlvY3RscyBhcmUg
-ZGVmaW5lZC4KClNpZ25lZC1vZmYtYnk6IFJhbmR5IER1bmxhcCA8cmR1bmxhcEBpbmZyYWRlYWQu
-b3JnPgotLS0KdjI6IGRyb3AgMHhBRSwgQzYsIGFyY2gveDg2L2t2bS94ODYuYyAoY292ZXJlZCBi
-eSBsaW5lIGFib3ZlOwogICAgU2VhbiBDaHJpc3RvcGhlcnNvbikKCltTaW5jZSBoYXZpbmcgbXVs
-dGlwbGUgbWFpbnRhaW5lcnMgdHJ5aW5nIHRvIG1lcmdlIHRoZXNlIHdvdWxkCmNhdXNlIHNvbWUg
-Y29uZmxpY3RzLCBpdCB3b3VsZCBiZSBtb3JlIG1hbmFnZWFibGUgZm9yIEpvbiB0bwp0YWtlIGFs
-bCBvZiB0aGVzZSB0aHJvdWdoIHRoZSBkb2NzLW5leHQgdHJlZS5dCgpDYzogSm9uYXRoYW4gQ29y
-YmV0IDxjb3JiZXRAbHduLm5ldD4KQ2M6IFNodWFoIEtoYW4gPHNraGFuQGxpbnV4Zm91bmRhdGlv
-bi5vcmc+CkNjOiBsaW51eC1kb2NAdmdlci5rZXJuZWwub3JnCkNjOiBKdWVyZ2VuIEdyb3NzIDxq
-Z3Jvc3NAc3VzZS5jb20+CkNjOiBTdGVmYW5vIFN0YWJlbGxpbmkgPHNzdGFiZWxsaW5pQGtlcm5l
-bC5vcmc+CkNjOiB4ZW4tZGV2ZWxAbGlzdHMueGVucHJvamVjdC5vcmcKQ2M6IEhhbnMgZGUgR29l
-ZGUgPGhhbnNnQGtlcm5lbC5vcmc+CkNjOiBBcm5kIEJlcmdtYW5uIDxhcm5kQGFybmRiLmRlPgpD
-YzogR3JlZyBLcm9haC1IYXJ0bWFuIDxncmVna2hAbGludXhmb3VuZGF0aW9uLm9yZz4KQ2M6ICJN
-aWNoYWVsIFMuIFRzaXJraW4iIDxtc3RAcmVkaGF0LmNvbT4KQ2M6IEphc29uIFdhbmcgPGphc293
-YW5naW9AZ21haWwuY29tPgpDYzogRXVnZW5pbyBQw6lyZXogPGVwZXJlem1hQHJlZGhhdC5jb20+
-CkNjOiBTZWFuIENocmlzdG9waGVyc29uIDxzZWFuamNAZ29vZ2xlLmNvbT4KQ2M6IFBhb2xvIEJv
-bnppbmkgPHBib256aW5pQHJlZGhhdC5jb20+CkNjOiBrdm1Admdlci5rZXJuZWwub3JnCkNjOiB2
-aXJ0dWFsaXphdGlvbkBsaXN0cy5saW51eC5kZXYKCiBEb2N1bWVudGF0aW9uL3VzZXJzcGFjZS1h
-cGkvaW9jdGwvaW9jdGwtbnVtYmVyLnJzdCB8ICAgIDUgKysrKysKIDEgZmlsZSBjaGFuZ2VkLCA1
-IGluc2VydGlvbnMoKykKCi0tLSBsaW51eC1uZXh0LTIwMjYxMTE2Lm9yaWcvRG9jdW1lbnRhdGlv
-bi91c2Vyc3BhY2UtYXBpL2lvY3RsL2lvY3RsLW51bWJlci5yc3QKKysrIGxpbnV4LW5leHQtMjAy
-NjExMTYvRG9jdW1lbnRhdGlvbi91c2Vyc3BhY2UtYXBpL2lvY3RsL2lvY3RsLW51bWJlci5yc3QK
-QEAgLTE5OCw2ICsxOTgsNyBAQCBDb2RlICBTZXEjICAgIEluY2x1ZGUgRmlsZQogJ00nICAgMDEt
-MDMgIGRyaXZlcnMvc2NzaS9tZWdhcmFpZC9tZWdhcmFpZF9zYXMuaAogJ00nICAgMDAtMDMgIGRy
-aXZlcnMvdmlkZW8vZmJkZXYvbWI4NjJ4eC9tYjg2Mnh4ZmIuaAogJ00nICAgMDAtMEYgIGRyaXZl
-cnMvdmlkZW8vZnNsLWRpdS1mYi5oICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb25m
-bGljdCEKKydNJyAgIDAxLTAzICB4ZW4vaW50ZXJmYWNlL3hlbi1tY2EuaCAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgY29uZmxpY3QhCiAnTicgICAwMC0xRiAgZHJpdmVycy91c2Iv
-c2Nhbm5lci5oCiAnTicgICA0MC03RiAgdWFwaS9saW51eC9udm1lX2lvY3RsLmgKICdOJyAgIDgw
-LTgzICB1YXBpL2xpbnV4L250c3luYy5oIGFuZCB1YXBpL2xpbnV4L252bWVfaW9jdGwuaCAgICAg
-ICAgICAgY29uZmxpY3QhCkBAIC0yMzgsNiArMjM5LDcgQEAgQ29kZSAgU2VxIyAgICBJbmNsdWRl
-IEZpbGUKICdVJyAgIDY0ICAgICBkcml2ZXJzL3VzYi9taXNjL3VzYnRlc3QuYyAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgY29uZmxpY3QhCiAnVicgICBhbGwgICAgbGludXgvdnQuaCAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbmZsaWN0IQog
-J1YnICAgYWxsICAgIGxpbnV4L3ZpZGVvZGV2Mi5oICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICBjb25mbGljdCEKKydWJyAgIDAwLTFGICBsaW51eC92Ym94Z3Vlc3QuaCAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29uZmxpY3QhCiAnVicgICBD
-MCAgICAgbGludXgvaXZ0dmZiLmggICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgIGNvbmZsaWN0IQogJ1YnICAgQzAgICAgIGxpbnV4L2l2dHYuaCAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb25mbGljdCEKICdWJyAgIEMwICAgICBt
-ZWRpYS9zaTQ3MTMuaCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-Y29uZmxpY3QhCkBAIC0zNTYsNiArMzU4LDcgQEAgQ29kZSAgU2VxIyAgICBJbmNsdWRlIEZpbGUK
-ICd8JyAgIDgwLTlGICBzYW1wbGVzLyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgQW55IHNhbXBsZSBhbmQgZXhhbXBsZSBkcml2ZXJzCiAweDgwICAwMC0x
-RiAgbGludXgvZmIuaAogMHg4MSAgMDAtMUYgIGxpbnV4L3ZkdXNlLmgKKyAgICAgICAgICAgICBk
-cml2ZXJzL3ZkcGEvdmRwYV91c2VyL3ZkdXNlX2Rldi5jCiAweDg5ICAwMC0wNyAgYXNtLWdlbmVy
-aWMvc29ja2lvcy5oCiAweDg5ICAwNi0wNyAgbGludXgvc29ja2lvcy5oCiAweDg5ICAwQi1ERiAg
-bGludXgvc29ja2lvcy5oCkBAIC0zOTksNiArNDAyLDggQEAgQ29kZSAgU2VxIyAgICBJbmNsdWRl
-IEZpbGUKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgPG1haWx0bzprdm1Admdlci5rZXJuZWwub3JnPgogMHhBRSAg
-MjAtM0YgIGxpbnV4L25pdHJvX2VuY2xhdmVzLmggICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICBOaXRybyBFbmNsYXZlcwogMHhBRiAgMDAtMUYgIGxpbnV4L2ZzbF9oeXBlcnZpc29y
-LmggICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBGcmVlc2NhbGUgaHlwZXJ2aXNv
-cgorMHhBRiAgMDAtOEYgIGxpbnV4L3Zob3N0LmggICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICBjb25mbGljdCEKKzB4QUYgIDMxLTMyICBkcml2ZXJzL3Zob3N0L3Rl
-c3QuaCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29uZmxpY3QhCiAweEIw
-ICBhbGwgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgIFJBVElPIGRldmljZXMgaW4gZGV2ZWxvcG1lbnQ6CiAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxt
-YWlsdG86dmdvQHJhdGlvLmRlPgogMHhCMSAgMDAtMUYgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBQUFBvWAoKX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNz
-aW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2xpbnV4LW10ZC8K
+Update the list of files where filesystem ioctls are defined and update
+the ranges of function numbers that are used.
+
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+---
+v2: address sashiko review comment (ext4 00-2F range referred to
+    the wrong file name)
+
+[Since having multiple maintainers trying to merge these would
+cause some conflicts, it would be more manageable for Jon to
+take all of these through the docs-next tree.]
+
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Shuah Khan <skhan@linuxfoundation.org>
+Cc: linux-doc@vger.kernel.org
+Cc: Jan Kara <jack@suse.cz>
+Cc: linux-fsdevel@vger.kernel.org
+Cc: "Theodore Ts'o" <tytso@mit.edu>
+Cc: linux-ext4@vger.kernel.org
+Cc: Mike Marshall <hubcap@omnibond.com>
+Cc: devel@lists.orangefs.org
+Cc: Paulo Alcantara <pc@manguebit.org>
+Cc: Namjae Jeon <linkinjeon@kernel.org>
+Cc: linux-cifs@vger.kernel.org
+Cc: Jaegeuk Kim <jaegeuk@kernel.org>
+Cc: Chao Yu <chao@kernel.org>
+Cc: linux-f2fs-devel@lists.sourceforge.net
+
+ Documentation/userspace-api/ioctl/ioctl-number.rst |    9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+--- linux-next-20261116.orig/Documentation/userspace-api/ioctl/ioctl-number.rst
++++ linux-next-20261116/Documentation/userspace-api/ioctl/ioctl-number.rst
+@@ -185,6 +185,7 @@ Code  Seq#    Include File
+ 'I'   all    linux/isdn.h                                              conflict!
+ 'I'   00-0F  drivers/isdn/divert/isdn_divert.h                         conflict!
+ 'I'   40-4F  linux/mISDNif.h                                           conflict!
++'I'   00     linux/inotify.h
+ 'K'   all    linux/kd.h
+ 'L'   00-1F  linux/loop.h                                              conflict!
+ 'L'   10-21  drivers/scsi/mpt3sas/mpt3sas_ctl.h                        conflict!
+@@ -274,7 +275,7 @@ Code  Seq#    Include File
+ 'f'   00-1F  linux/ext2_fs.h                                           conflict!
+ 'f'   00-1F  linux/ext3_fs.h                                           conflict!
+ 'f'   00-0F  fs/jfs/jfs_dinode.h                                       conflict!
+-'f'   00-0F  fs/ext4/ext4.h                                            conflict!
++'f'   00-2F  fs/ext4/ext4.h, uapi/linux/ext4.h                         conflict!
+ 'f'   00-0F  linux/fs.h                                                conflict!
+ 'f'   00-0F  fs/ocfs2/ocfs2_fs.h                                       conflict!
+ 'f'   13-27  linux/fscrypt.h
+@@ -299,6 +300,7 @@ Code  Seq#    Include File
+ 'k'   00-0F  linux/spi/spidev.h                                        conflict!
+ 'k'   00-05  video/kyro.h                                              conflict!
+ 'k'   10-17  linux/hsi/hsi_char.h                                      HSI character device
++'k'   01-0F  fs/orangefs/protocol.h                                    <mailto:devel@lists.orangefs.org>
+ 'l'   00-3F  linux/tcfs_fs.h                                           transparent cryptographic file system
+                                                                        <http://web.archive.org/web/%2A/http://mikonos.dia.unisa.it/tcfs>
+ 'l'   40-7F  linux/udf_fs_i.h                                          in development:
+@@ -372,7 +374,7 @@ Code  Seq#    Include File
+ 0x92  00-0F  drivers/usb/mon/mon_bin.c
+ 0x93  60-7F  linux/auto_fs.h
+ 0x94  all    fs/btrfs/ioctl.h                                          Btrfs filesystem
+-             and linux/fs.h                                            some lifted to vfs/generic
++0x94  all    linux/fs.h                                                some lifted from Btrfs to vfs/generic
+ 0x97  00-7F  fs/ceph/ioctl.h                                           Ceph file system
+ 0x99  00-0F                                                            537-Addinboard driver
+                                                                        <mailto:buk@buks.ipn.de>
+@@ -440,7 +442,7 @@ Code  Seq#    Include File
+ 0xCC  00-0F  drivers/misc/ibmvmc.h                                     pseries VMC driver
+ 0xCD  01     linux/reiserfs_fs.h                                       Dead since 6.13
+ 0xCE  01-02  uapi/linux/cxl_mem.h                                      Compute Express Link Memory Devices
+-0xCF  02     fs/smb/client/cifs_ioctl.h
++0xCF  01-0F  fs/smb/client/cifs_ioctl.h                                <mailto:linux-cifs@vger.kernel.org>
+ 0xDD  00-3F                                                            ZFCP device driver see drivers/s390/scsi/
+                                                                        <mailto:aherrman@de.ibm.com>
+ 0xE5  00-3F  linux/fuse.h
+@@ -449,6 +451,7 @@ Code  Seq#    Include File
+ 0xEF  00-0F  uapi/linux/ntfs.h                                         NTFS
+ 0xF3  00-3F  drivers/usb/misc/sisusbvga/sisusb.h                       sisfb
+ 0xF3  00-3F  video/sisfb.h                                             <mailto:thomas@winischhofer.net>
++0xF5  01-1F  uapi/linux/f2fs.h                                         <mailto:linux-f2fs-devel@lists.sourceforge.net>
+ 0xF6  all                                                              LTTng Linux Trace Toolkit Next Generation
+                                                                        <mailto:mathieu.desnoyers@efficios.com>
+ 0xF8  all    arch/x86/include/uapi/asm/amd_hsmp.h                      AMD HSMP EPYC system management interface driver
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
