@@ -2,10 +2,10 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03B26606D91A
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Nov 2026 05:35:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E954606E31A
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Nov 2026 05:35:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=ldQiDjbH
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=zpU+mzkG
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -13,20 +13,20 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=B8SXHUU551CMYQRXJtvXrvKbCDdS8OZg1AA66pKqU5g=; b=ldQiDjbH3xrGcRwS4ftsR5YdSB
-	N5TNQm9XjxT9+ji2iPRnO2naC6q8QF5T3cL7l9J0Cx5V487fFFOMR+292jaC6ScKMioR+g+PdMB4k
-	olAOFbLjrz3UyUBwdPNcQbvfqxy+zdDaMF1CA4biqNkumZI7ZYzqp4KG3qFI6KzMmTRgUiefS9AeU
-	jNWURpGdb749/Svw99aSn0Lqxa0u1ilHZE9lwTK2p5+Ud5WMYLybDJD+3wa0uaTRMN+Ej5tWNSJ1s
-	xC4KMtcuxrkePmLXv5VNOsYe+fCUdCem3w5cKkzG4UzznwVHQceawWQVM+fBG6OYpUbmhLzJgPfL5
-	NduRYC7w==;
+	bh=TggyVfLAItC0Ib99arNUnjUON1mrf9PpM1WzYCBlIao=; b=zpU+mzkGaySXxOd4GU7DaPyZpC
+	GCnQIHrrgkl51+rw2U4E6N+HcvAhhGCH03tsUNlSpEW7SrO0KKZWkFcW8sUxXbSkn46cFWwtTT2HG
+	KpPymB8/P7BVVqKoD3b60dkPrRWypOMwOmgCpYUQyaF0dA48Ke44xQQ7Vo7frVMOXB3AW8+P1TvhI
+	d84n5OGYDjx9qtOREGIKr5m/IDXQJvL3Mxg9AXIxwHYCKk4/QdCfTVC+LYJbIxZhXYhrBHgH9trQL
+	AQsxTyxdUbCXcOhlv7VUXKLZ3Wq1xXKiGnDExz6iwEr3NM6ZJx9jWCgy+B6NABugiHpcH94hH37ik
+	zZ/mw4Gw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTuo8-0000000Auvh-2vt8;
-	Thu, 19 Nov 2026 05:35:40 +0000
+	id 1xTuoB-0000000AuyC-3W54;
+	Thu, 19 Nov 2026 05:35:43 +0000
 Received: from [50.53.43.113] (helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtpsa (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTuo6-0000000Aufu-3YNY;
-	Thu, 19 Nov 2026 05:35:38 +0000
+	id 1xTuo9-0000000Aufu-0VZ6;
+	Thu, 19 Nov 2026 05:35:41 +0000
 From: Randy Dunlap <rdunlap@infradead.org>
 To: linux-kernel@vger.kernel.org
 Cc: Randy Dunlap <rdunlap@infradead.org>,
@@ -112,9 +112,9 @@ Cc: Randy Dunlap <rdunlap@infradead.org>,
 	Matthew Brost <matthew.brost@intel.com>,
 	=?UTF-8?q?Thomas=20Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
 	intel-xe@lists.freedesktop.org
-Subject: [PATCH v2 07/12] docs: ioctl-number: update MTD entries
-Date: Wed, 18 Nov 2026 21:35:08 -0800
-Message-ID: <20261119053514.255348-8-rdunlap@infradead.org>
+Subject: [PATCH v2 08/12] docs: ioctl-number: update USB entries
+Date: Wed, 18 Nov 2026 21:35:09 -0800
+Message-ID: <20261119053514.255348-9-rdunlap@infradead.org>
 X-Mailer: git-send-email 2.56.1
 In-Reply-To: <20261119053514.255348-1-rdunlap@infradead.org>
 References: <20261119053514.255348-1-rdunlap@infradead.org>
@@ -139,13 +139,11 @@ X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-Update the list of files where MTD ioctls are defined and update
-the ranges of function numbers that are used.
+Update the list of files where USB ioctls are defined.
 
 Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
 ---
-v2: address sashiko review comments (missing update of 'O' range
-    for mtd/ubi-user.h)
+v2: no change
 
 [Since having multiple maintainers trying to merge these would
 cause some conflicts, it would be more manageable for Jon to
@@ -154,46 +152,36 @@ take all of these through the docs-next tree.]
 Cc: Jonathan Corbet <corbet@lwn.net>
 Cc: Shuah Khan <skhan@linuxfoundation.org>
 Cc: linux-doc@vger.kernel.org
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Zhihao Cheng <chengzhihao1@huawei.com>
-Cc: linux-mtd@lists.infradead.org
+Cc: Neill Kapron <nkapron@google.com>
+Cc: Andrey Konovalov <andreyknvl@gmail.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-usb@vger.kernel.org
 
- Documentation/userspace-api/ioctl/ioctl-number.rst |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ Documentation/userspace-api/ioctl/ioctl-number.rst |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
 --- linux-next-20261116.orig/Documentation/userspace-api/ioctl/ioctl-number.rst
 +++ linux-next-20261116/Documentation/userspace-api/ioctl/ioctl-number.rst
-@@ -193,8 +193,8 @@ Code  Seq#    Include File
- 'L'   35-38  arch/m68k/include/asm/fbio.h
- 'L'   35-38  arch/sparc/include/asm/fbio.h
- 'M'   all    linux/soundcard.h                                         conflict!
--'M'   01-16  mtd/mtd-abi.h                                             conflict!
--      and    drivers/mtd/mtdchar.c
-+'M'   01-1A  mtd/mtd-abi.h                                             conflict!
-+'M'   03-04  drivers/mtd/mtdchar.c
- 'M'   01-03  drivers/scsi/megaraid/megaraid_sas.h
- 'M'   00-03  drivers/video/fbdev/mb862xx/mb862xxfb.h
- 'M'   00-0F  drivers/video/fsl-diu-fb.h                                conflict!
-@@ -203,7 +203,7 @@ Code  Seq#    Include File
- 'N'   80-83  uapi/linux/ntsync.h and uapi/linux/nvme_ioctl.h           conflict!
- 'N'   84-8F  uapi/linux/ntsync.h                                       NT synchronization primitives
-                                                                        <mailto:wine-devel@winehq.org>
--'O'   00-06  mtd/ubi-user.h                                            UBI
-+'O'   00-08  mtd/ubi-user.h                                            UBI
- 'O'   1F-3F  linux/omapfb.h
- 'P'   all    linux/soundcard.h                                         conflict!
- 'P'   60-6F  sound/sscape_ioctl.h                                      conflict!
-@@ -305,7 +305,7 @@ Code  Seq#    Include File
- 'n'   E0-FF  linux/matroxfb.h                                          matroxfb
- 'n'   F8-FA  video/sisfb.h                                             sisfb
- 'o'   00-1F  fs/ocfs2/ocfs2_fs.h                                       OCFS2
--'o'   00-03  mtd/ubi-user.h                                            conflict! (OCFS2 and UBI overlaps)
-+'o'   00-06  mtd/ubi-user.h                                            conflict! (OCFS2 and UBI overlap)
- 'o'   40-41  mtd/ubi-user.h                                            UBI
- 'o'   01-A1  `linux/dvb/*.h`                                           DVB
- 'p'   00-0F  linux/phantom.h                                           conflict! (OpenHaptics needs this)
+@@ -233,6 +233,9 @@ Code  Seq#    Include File
+ 'U'   00-EF  linux/usbdevice_fs.h
+ 'U'   C0-CF  drivers/bluetooth/hci_uart.h
+ 'U'   00     net/nfc/nci_core.h                                        conflict!
++'U'   00-0F  linux/usb/raw_gadget.h                                    conflict!
++'U'   01     linux/usb/g_uvc.h                                         conflict!
++'U'   64     drivers/usb/misc/usbtest.c                                conflict!
+ 'V'   all    linux/vt.h                                                conflict!
+ 'V'   all    linux/videodev2.h                                         conflict!
+ 'V'   C0     linux/ivtvfb.h                                            conflict!
+@@ -279,6 +282,9 @@ Code  Seq#    Include File
+ 'g'   20-2F  linux/usb/g_printer.h
+ 'g'   01-0F  mm/gup_test.h                                             conflict!
+                                                                        <mailto:linux-mm@kvack.org>
++'g'   01-03  linux/usb/functionfs.h                                    conflict!
++      80-86
++'g'   41-42  linux/usb/g_hid.h
+ 'h'   00-7F                                                            conflict! Charon filesystem
+                                                                        <mailto:zapman@interlan.net>
+ 'h'   00-1F  linux/hpet.h                                              conflict!
 
 ______________________________________________________
 Linux MTD discussion mailing list
