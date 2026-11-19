@@ -2,69 +2,147 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE5E3606A33D
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Nov 2026 15:29:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E638606A331
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Nov 2026 16:23:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=xWUDoSNC;
-	dkim=fail reason="signature verification failed" (1024-bit key, unprotected) header.d=linux.dev header.i=@linux.dev header.a=rsa-sha256 header.s=key1 header.b=CAIR+2uE
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=EQt+7uGR;
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.cz header.i=@suse.cz header.a=rsa-sha256 header.s=susede2_rsa header.b=zCpVIITa;
+	dkim=fail reason="signature verification failed" header.d=suse.cz header.i=@suse.cz header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=szH07XgK;
+	dkim=neutral header.d=suse.cz header.i=@suse.cz header.a=rsa-sha256 header.s=susede2_rsa header.b=zCpVIITa;
+	dkim=neutral header.d=suse.cz header.i=@suse.cz header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=szH07XgK
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=D3y99nsh+v8hDSyZfSMl9TFKborTOhEocmmMqI2we0k=; b=xWUDoSNCknGF5gjowZ4svIbkUi
-	6D5GT3xiDw8kiQYAsxHqd2Pd3+uqkkMdsVMTbZvCUJr9JNEeuQMN3zSOdFB7JfilWLTY3VDHnoW6j
-	PGbh3VRYTVtOHBBZzwKjFnyYlFlGXllTKNEC9Ld0Z85iy9i8JZqmnR+PrT4AWXggqBqgOe3ahShes
-	BUwVFG5s7Ed/Uv1wA6ZFTEoZmEmSZlzyZ/hp+DEsQstlQ5VZN5aUsTjx2ECGCm7t/zL0nTP/vMiFV
-	3Pa161cldAXHJB4SEWJO6aBJrcORDmNvIfqWnFuOhRyvK47bMkRqk3WPFILC9S/jyHs0qGVtNoTLg
-	Ykqfi5NQ==;
+	bh=CM7TmVke43rGCtK1FIQbTFnQ1a1Awta+HXMWit6eSIY=; b=EQt+7uGRVj85oSHg4Y/m1pQFkh
+	SWpd7d7AzTJXiTOEJlsVPORJByUSiujYrt6OXY/f7y1WjQyEUE43hQUuTw2O0iT8qlxb+sIqBVgzq
+	e29gHJyYPta2xAylZNPMqjmHH+CgqtqC2wQ2BfoSvUCjUhNjEyfLchVTqjkco9dDPvq/XkeW5dIu2
+	SSHMb/+lyT0YkH51oF8bcHEwI2AMio+frm4ZPTjxUE7/5lJjq/tGuZM57eCz2Qm1WAaeS81R+qROZ
+	uOIEUcSyR8FW/kqdkVqeHUJkGVRrhOLs8E4D2Rq4J+GcpyhmGjT2btbVUctynLpT3mmtMBDc9v0E1
+	1+g980cA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xU44L-0000000CSA1-47zO;
-	Thu, 19 Nov 2026 15:29:01 +0000
-Received: from out-73.mta0.migadu.com ([2001:41d0:1004:224b::49] helo=mta0.migadu.com)
+	id 1xU4ut-0000000CcKO-3IIG;
+	Thu, 19 Nov 2026 16:23:19 +0000
+Received: from smtp-out2.suse.de ([195.135.223.131])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xU44F-0000000CS7a-3hHI
+	id 1xU4ur-0000000CcJA-1UVJ
 	for linux-mtd@lists.infradead.org;
-	Thu, 19 Nov 2026 15:29:01 +0000
-X-Envelope-To: linux-mtd@lists.infradead.org
-DKIM-Signature: a=rsa-sha256; bh=xstZUCpagJm1EvnCuEHUwHSA5x2dm2sB96xZUJUAL50=;
- c=simple/simple; d=linux.dev;
- h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
- t=1795102130; v=1; x=1795706930;
- b=CAIR+2uEwTXazYn2CoAM6aGyMboKmP/VT4odluvBCO1k6QqlvH/DJA1DHZjGDHiHaRrW/GUq
- ai6jTx+PP4QZVu3Ms/9K8qEnjIXT4eR5Xi6fySeImWWrXRl5N+9K+hX/3PDJfqXBSpGPC/tYefV
- ikT7EEry5SDtUanVbfSf8RLg=
-X-Envelope-To: linux-mtd@lists.infradead.org
-Received: by smtp.migadu.com with ESMTPS id c83126158e430bdc;
-	Thu, 19 Nov 2026 15:28:50 +0000
-X-Mizu-Trace-ID: c83126158e430bdc
-X-Migadu-Flow: FLOW_OUT
-Message-ID: <0f262ab4-9431-4720-9422-0ee2155fa933@linux.dev>
-Date: Thu, 19 Nov 2026 15:28:49 +0000
+	Thu, 19 Nov 2026 16:23:18 +0000
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id B22501FCBC;
+	Thu, 19 Nov 2026 16:23:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1795105393;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=pGj5HbpZMQVFnLgGwqwq1HzwBrkTidzvF9kv3fg0AJ0=;
+	b=zCpVIITadxuKe19ktUuwQ9hw/Q8Akrz6DPfqzWYgrQJqct6u8VTNIOKtJRlh+7j2gXO+X8
+	mNnR0IXTzORpP+f/2ziqXQnkSQXJBgJyFHUcx1/r6jjdUtFAnSBaHNPsV+F1VuuVSPNTj9
+	cMfgrR8jA2Aoxz75FD8GmqNRQBjg2MM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1795105393;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=pGj5HbpZMQVFnLgGwqwq1HzwBrkTidzvF9kv3fg0AJ0=;
+	b=szH07XgKW0Ri/DHD0v5Edd6rEwIXX2NQqJbC6pvY9oF3cAfD5W7Yz9KuOikhuLkXtSaD5Q
+	JrATr+N9ej8YsbAg==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=zCpVIITa;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=szH07XgK
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1795105393;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=pGj5HbpZMQVFnLgGwqwq1HzwBrkTidzvF9kv3fg0AJ0=;
+	b=zCpVIITadxuKe19ktUuwQ9hw/Q8Akrz6DPfqzWYgrQJqct6u8VTNIOKtJRlh+7j2gXO+X8
+	mNnR0IXTzORpP+f/2ziqXQnkSQXJBgJyFHUcx1/r6jjdUtFAnSBaHNPsV+F1VuuVSPNTj9
+	cMfgrR8jA2Aoxz75FD8GmqNRQBjg2MM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1795105393;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=pGj5HbpZMQVFnLgGwqwq1HzwBrkTidzvF9kv3fg0AJ0=;
+	b=szH07XgKW0Ri/DHD0v5Edd6rEwIXX2NQqJbC6pvY9oF3cAfD5W7Yz9KuOikhuLkXtSaD5Q
+	JrATr+N9ej8YsbAg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 794961342D;
+	Thu, 19 Nov 2026 16:23:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id s+5wFHEi/2rIewAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Thu, 19 Nov 2026 16:23:13 +0000
+Date: Thu, 19 Nov 2026 17:23:12 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Thorsten Blum <blum@kernel.org>
+Cc: David Sterba <dsterba@suse.com>, Chris Mason <mason@kernel.org>,
+	Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+	Richard Weinberger <richard@nod.at>,
+	Zhihao Cheng <chengzhihao1@huawei.com>,
+	Eric Biggers <ebiggers@kernel.org>,
+	"Theodore Y. Ts'o" <tytso@mit.edu>, linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-mtd@lists.infradead.org, linux-fscrypt@vger.kernel.org
+Subject: Re: [PATCH 2/4] btrfs: Use FSTR() for the "default" name
+Message-ID: <20261119162312.GA3245297@suse.cz>
+References: <20261118002845.574426-6-blum@kernel.org>
+ <20261118002845.574426-8-blum@kernel.org>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 02/58] mtd: acquire an MTD handle from a referenced
- class device
-To: James Hilliard <james.hilliard1@gmail.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Richard Cochran <richardcochran@gmail.com>,
- Jonathan Lemon <jonathan.lemon@gmail.com>
-References: <20261111-submit-rawnand-retained-handle-lifetime-v1-v3-0-ce537999741d@gmail.com>
- <20261111-submit-rawnand-retained-handle-lifetime-v1-v3-2-ce537999741d@gmail.com>
-Content-Language: en-US
-From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
-In-Reply-To: <20261111-submit-rawnand-retained-handle-lifetime-v1-v3-2-ce537999741d@gmail.com>
+Content-Disposition: inline
+In-Reply-To: <20261118002845.574426-8-blum@kernel.org>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Rspamd-Queue-Id: B22501FCBC
+X-Spam-Level: 
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-13.21 / 50.00];
+	SUSE_INTERNAL_BYPASS(-9.00)[];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	FROM_HAS_DN(0.00)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	MIME_TRACE(0.00)[0:+];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	MID_RHS_MATCH_FROM(0.00)[];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:dkim,suse.cz:replyto]
+X-Spam-Score: -13.21
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261119_072856_342236_CFCF0088 
-X-CRM114-Status: GOOD (  22.64  )
-X-Spam-Score: -2.1 (--)
+X-CRM114-CacheID: sfid-20261119_082317_545019_042D290C 
+X-CRM114-Status: UNSURE (   8.75  )
+X-CRM114-Notice: Please train this message.
+X-Spam-Score: -4.4 (----)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,118 +152,25 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Reply-To: dsterba@suse.cz
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-15.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-10.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=4.0.1
+	INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-On 12/11/2026 01:27, James Hilliard wrote:
-> PTP OCP locates flash through the device hierarchy and uses driver data
-> directly. A class-device reference does not keep an MTD registered or own
-> the backing object needed by an erase or write.
+On Wed, Nov 18, 2026 at 01:28:48AM +0100, Thorsten Blum wrote:
+> Replace FSTR_INIT() with FSTR() and drop the hard-coded length argument.
 > 
-> Look up the exact device under mtd_table_mutex and acquire an ordinary MTD
-> handle before returning it. Use that handle for the OCP update and release
-> it on every exit. A removed device cannot be confused with a replacement
-> that reuses its name or number.
+> Use FSTR() directly and remove the temporary name variables.
 > 
-> Cc: Richard Cochran <richardcochran@gmail.com>
-> Cc: Jonathan Lemon <jonathan.lemon@gmail.com>
-> Cc: Vadim Fedorenko <vadim.fedorenko@linux.dev>
-> Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
-> ---
->   drivers/mtd/mtdcore.c   | 23 +++++++++++++++++++++++
->   drivers/ptp/ptp_ocp.c   |  7 ++++++-
->   include/linux/mtd/mtd.h |  1 +
->   3 files changed, 30 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> index 30b16f135f07..620326279957 100644
-> --- a/drivers/mtd/mtdcore.c
-> +++ b/drivers/mtd/mtdcore.c
-> @@ -1329,6 +1329,29 @@ struct mtd_info *get_mtd_device(struct mtd_info *mtd, int num)
->   EXPORT_SYMBOL_GPL(get_mtd_device);
->   
->   
-> +/**
-> + * get_mtd_device_by_dev - acquire the MTD associated with a class device
-> + * @dev: referenced MTD class device
-> + *
-> + * Return: a referenced MTD, or an error if the device has been removed.
-> + */
-> +struct mtd_info *get_mtd_device_by_dev(struct device *dev)
-> +{
-> +	struct mtd_info *mtd;
-> +	int err;
-> +
-> +	guard(mutex)(&mtd_table_mutex);
-> +	mtd_for_each_device(mtd) {
-> +		if (&mtd->dev != dev)
-> +			continue;
-> +		err = __get_mtd_device(mtd);
-> +		return err ? ERR_PTR(err) : mtd;
-> +	}
-> +	return ERR_PTR(-ENODEV);
-> +}
-> +EXPORT_SYMBOL_GPL(get_mtd_device_by_dev);
-> +
-> +
->   int __get_mtd_device(struct mtd_info *mtd)
->   {
->   	struct mtd_info *master = mtd_get_master(mtd);
-> diff --git a/drivers/ptp/ptp_ocp.c b/drivers/ptp/ptp_ocp.c
-> index 3d26ec1f7b9e..459aeb24ae6b 100644
-> --- a/drivers/ptp/ptp_ocp.c
-> +++ b/drivers/ptp/ptp_ocp.c
-> @@ -2083,7 +2083,7 @@ static int
->   ptp_ocp_devlink_flash(struct devlink *devlink, struct device *dev,
->   		      const struct firmware *fw)
->   {
-> -	struct mtd_info *mtd = dev_get_drvdata(dev);
-> +	struct mtd_info *mtd;
->   	struct ptp_ocp *bp = devlink_priv(devlink);
->   	size_t off, len, size, resid, wrote;
->   	struct erase_info erase;
-> @@ -2091,6 +2091,10 @@ ptp_ocp_devlink_flash(struct devlink *devlink, struct device *dev,
->   	const u8 *data;
->   	int err;
->   
-> +	mtd = get_mtd_device_by_dev(dev);
-> +	if (IS_ERR(mtd))
-> +		return PTR_ERR(mtd);
-> +
->   	err = ptp_ocp_devlink_fw_image(devlink, fw, &data, &size);
->   	if (err)
->   		goto out;
-> @@ -2120,6 +2124,7 @@ ptp_ocp_devlink_flash(struct devlink *devlink, struct device *dev,
->   		resid -= len;
->   	}
->   out:
-> +	put_mtd_device(mtd);
->   	return err;
->   }
->   
-> diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-> index cd7b4671c456..745655e0d462 100644
-> --- a/include/linux/mtd/mtd.h
-> +++ b/include/linux/mtd/mtd.h
-> @@ -684,6 +684,7 @@ extern int mtd_device_parse_register(struct mtd_info *mtd,
->   	mtd_device_parse_register(master, NULL, NULL, parts, nr_parts)
->   extern int mtd_device_unregister(struct mtd_info *master);
->   extern struct mtd_info *get_mtd_device(struct mtd_info *mtd, int num);
-> +struct mtd_info *get_mtd_device_by_dev(struct device *dev);
->   extern int __get_mtd_device(struct mtd_info *mtd);
->   extern void __put_mtd_device(struct mtd_info *mtd);
->   extern struct mtd_info *of_get_mtd_device_by_node(struct device_node *np);
-> 
+> Signed-off-by: Thorsten Blum <blum@kernel.org>
 
-Acked-by: Vadim Fedorenko <vadim.fedorenko@linux.dev>
+Acked-by: David Sterba <dsterba@suse.com>
 
 ______________________________________________________
 Linux MTD discussion mailing list
