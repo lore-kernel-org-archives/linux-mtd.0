@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C441606A320
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Nov 2026 09:50:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F114D606A324
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Nov 2026 10:19:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=GLrjcui/;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=iPZwjHka
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=qR1SANsJ;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=B4cYlQmY
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,55 +14,60 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=Qj6k3pDm+n3J/ff7FDsfT+3/4fLCbZAnn4dOhe004xc=; b=GLrjcui/kNlBNPwWWorCtAK3Je
-	3un3WgItDFZOdYDgcyqRkF6zPtpCArBlefGlVMTimRP6K2zevJidPiGuYZ1hSjmqvQvdLapr5hUWS
-	bxcj/o3pvGLg4ED3g7aRZJMKfdWcVAGoWIyeDUYvYkoD1gsekaKcfA65Uk5qXUrMfmRA2LItBFeVl
-	tsk/9g2CdtBRNhwYDsq8x7GKHXrMxkndQVfbkzXynDHT/ln0zzmJi8o6c5RW6K5peYxBny+NwFKS/
-	Nc16ZcC95/pF9JHoUCreVUAlT+kSG2muM5B89DJVbjJKa6H026ReOwL0CqlXS0Ot0Vdh60WBOIsnK
-	WmMRXu6Q==;
+	bh=7R1uFBPe9CnGLisozNGrN38n7xobc5i07D5pmh6q46s=; b=qR1SANsJYnDthgHXwBV5LBN/6x
+	E49X1pQejLuSUxB4+q6tEAD20+r4TLjZqM5nHJ2QGCTCDZ05/XiUIUec3CQ2rV3GTnpH0Nl1NPpfb
+	NejOrLpfqxTUAUnPZ7noC/PbZfjyoeJmV8w2KvdRS6FuEBsWzKYiEkm0kYINu8PCHWzSjvmsMjGnB
+	+qXdWulkM/hLSqIpkjpX80tiKnQwTOfVrkxP9pCsQIDlNcjrmUL9VqlgLBR+zCn0A9R+qa5j6VDbH
+	1/2egwkADMsZGmnTLAV3O3AEsT7nq8U6iN1nM6YEuJQm+dAj1AlATPtGZxHVvPzYdRTtKpJN7sI0a
+	phgayf9g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTyn2-0000000BRv1-0v6B;
-	Thu, 19 Nov 2026 09:50:48 +0000
-Received: from smtpout-03.galae.net ([185.246.85.4])
+	id 1xTzEQ-0000000BWzX-0Tub;
+	Thu, 19 Nov 2026 10:19:06 +0000
+Received: from smtpout-04.galae.net ([185.171.202.116])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTymu-0000000BRtn-2fu2
+	id 1xTzEN-0000000BWyZ-1NaF
 	for linux-mtd@lists.infradead.org;
-	Thu, 19 Nov 2026 09:50:46 +0000
+	Thu, 19 Nov 2026 10:19:05 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id 1E4AE4E415F3;
-	Thu, 19 Nov 2026 09:50:38 +0000 (UTC)
+	by smtpout-04.galae.net (Postfix) with ESMTPS id 5AEA9C4CBEF;
+	Thu, 19 Nov 2026 10:19:05 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id E63F360237;
-	Thu, 19 Nov 2026 09:50:37 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 5551B11BC3329;
-	Thu, 19 Nov 2026 10:50:31 +0100 (CET)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 15FF260237;
+	Thu, 19 Nov 2026 10:19:00 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 30E9111BC0538;
+	Thu, 19 Nov 2026 11:18:53 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1795081833; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=HEoDeaJTImMBawubpaGZWjudv+J8A154zaqaDyONBtM=;
-	b=iPZwjHkaQA8GvDXb0be4rEpBVOPWczQwuQVidZe04kZ1axMziW8ctBFUrb6lKv9SpDsox+
-	8p/LXCvtERWx05CSoW44NDPEkPGteJMPrZYcSeROxoaS2aKaq4zOvgWyeQ+MHw1Lhj53bv
-	E2sU6AD+k+0FEapkgIlQBYJQo/nlPArdRVqfkcVZU+nY6Q7K7ET2iclpyL+8PhLnGNZnd0
-	mX1iW4YbeKLFFJ6um3IqO/JoIptnDGJ+CUhS+XesmrcxzCir33sVIP6NxUc/3GfDvhuotT
-	aeweWW4eGBhj5gXv63nxTWdKWA9nwsCfjO1VZRsm0e+OYKKETJ3k3YMhieR6+Q==
+	t=1795083535; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 in-reply-to:references; bh=FeryVqud6dMZkNfn8zKXkiXJSGWxThktDfDZczQxMD4=;
+	b=B4cYlQmYp/dw6yL3qQZzV7HRlK3dtJqO3Y7qwTTfEZC0XOGuazijPH6AcAEFK9pH2xlImG
+	OQIHHyAoXtqULMw4mwWZ02I6/4LLhoFFFU6TDP+QMDG1VSad039YHc/yaFvlHt/iB1oeBD
+	Bw96kcsNS4o2phBlg1UTGRhlkcN+Tv5XKJy72FB4sldIglGST5giRTvniJMKbWg9BPDkMs
+	PN9gbzwdhwo+HqvqiVNOVXuxuf1XSEG1UVGPf82eubhHsTW5hzuoqwYbWfUequtYbmuqBB
+	ARHo1LRbajyFROuC0D/9ZqnjVaqAZ+OpSY8nRMl1O2tg1j9radHQhjB5kSw+/g==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: "ping.li" <leeonion.muyu@gmail.com>
-Cc: richard@nod.at,  vigneshr@ti.com,  linux-mtd@lists.infradead.org,
+To: James Hilliard <james.hilliard1@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
+ <vigneshr@ti.com>,  Thomas Gleixner <tglx@kernel.org>,  "Artem B.
+ Bityuckiy" <dedekind@infradead.org>,  linux-mtd@lists.infradead.org,
   linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 0/1] mtdchar: kvmalloc() for large read/write buffers?
-In-Reply-To: <20261119090055.1255028-1-ping.li@horizon.auto> (ping li's
-	message of "Thu, 19 Nov 2026 17:00:54 +0800")
-References: <20261119090055.1255028-1-ping.li@horizon.auto>
+Subject: Re: [PATCH] mtd: rawnand: stop BBT creation when the marker scan fails
+In-Reply-To: <CADvTj4ok=HXZiD4t1pgomZAD5_zRpe3uJyRgfBiPON6Rfx-wVA@mail.gmail.com>
+	(James Hilliard's message of "Thu, 19 Nov 2026 02:35:26 -0700")
+References: <20261103-submit-rawnand-bbt-scan-error-v1-v1-1-0bef8334198c@gmail.com>
+	<87fqwyjwvk.fsf@bootlin.com>
+	<CADvTj4rY=fN5=RYbhL_X56O5kbim-NZWRoRMQJAndZAxUZUo+w@mail.gmail.com>
+	<87ld6pfc75.fsf@bootlin.com>
+	<CADvTj4ok=HXZiD4t1pgomZAD5_zRpe3uJyRgfBiPON6Rfx-wVA@mail.gmail.com>
 User-Agent: mu4e 1.12.12; emacs 30.2
-Date: Thu, 19 Nov 2026 10:50:29 +0100
-Message-ID: <875wxtf8uy.fsf@bootlin.com>
+Date: Thu, 19 Nov 2026 11:18:52 +0100
+Message-ID: <87tslddsz7.fsf@bootlin.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261119_015040_811064_8E13976A 
-X-CRM114-Status: GOOD (  22.67  )
+X-CRM114-CacheID: sfid-20261119_021903_964748_107F884E 
+X-CRM114-Status: GOOD (  18.22  )
 X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -73,8 +78,8 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 X-Spam-Status: No, score=-3.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
@@ -83,63 +88,35 @@ X-Spam-Status: No, score=-3.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-SGkgUGluZyBMaSwKCk9uIDE5LzExLzIwMjYgYXQgMTc6MDA6NTQgKzA4LCAicGluZy5saSIgPGxl
-ZW9uaW9uLm11eXVAZ21haWwuY29tPiB3cm90ZToKCj4gRnJvbTogUGluZyBMaSA8bGVlb25pb24u
-bXV5dUBnbWFpbC5jb20+Cj4KPiBXaGlsZSBpbnZlc3RpZ2F0aW5nIGEgdGhyb3VnaHB1dCByZWdy
-ZXNzaW9uIG9uIG9uZSBvZiBvdXIgcGxhdGZvcm1zCj4gKGxvbmcgdXB0aW1lLCBmcmFnbWVudGVk
-IG1lbW9yeSwgbGFyZ2UgcmVhZCgpL3dyaXRlKCkgb24gL2Rldi9tdGRYKQo+IEkgbm90aWNlZCBh
-biBpbmNvbnNpc3RlbmN5IGluc2lkZSBtdGRjaGFyOgo+Cj4gICAtIHRoZSBpb2N0bCBwYXRocyAo
-TUVNUkVBRC9NRU1XUklURSkgYWxsb2NhdGUgdGhlaXIgYm91bmNlCj4gICAgIGJ1ZmZlcnMgd2l0
-aCBrdm1hbGxvYygpICg4MzIwOGUxMDZhOGU4KSwKPiAgIC0gYnV0IHRoZSByZWFkKCkvd3JpdGUo
-KSBwYXRocyBzdGlsbCB1c2UgbXRkX2ttYWxsb2NfdXBfdG8oKSwKPiAgICAgd2hpY2ggaGFsdmVz
-IHRoZSBidWZmZXIgc2l6ZSB1bnRpbCBrbWFsbG9jKCkgc3VjY2VlZHMuCj4KPiBUaGUgaGFsdmlu
-ZyBiZWhhdmlvciBpcyBub3QgYSBjb3JyZWN0bmVzcyBwcm9ibGVtOiB0aGUgbG9vcCBpbgo+IG10
-ZGNoYXJfcmVhZCgpL210ZGNoYXJfd3JpdGUoKSBtYWtlcyBwcm9ncmVzcyB3aXRoIHdoYXRldmVy
-IGNodW5rCj4gc2l6ZSBpdCBnZXRzLiAgQnV0IHVuZGVyIGZyYWdtZW50YXRpb24gYSBtdWx0aS1t
-ZWdhYnl0ZSB0cmFuc2Zlcgo+IHNpbGVudGx5IGRlZ3JhZGVzIGludG8gbWFueSBzbWFsbCBtdGRf
-cmVhZCgpL210ZF93cml0ZSgpIGNhbGxzLAo+IHdoaWNoIGlzIHZpc2libGUgd2hlbiB0aGUgbG93
-LWxldmVsIGRyaXZlciBjb3N0IHNjYWxlcyB3aXRoIHRoZQo+IG51bWJlciBvZiB0cmFuc2FjdGlv
-bnMgKGUuZy4gZHJpdmVycyB0aGF0IGZvcndhcmQgZWFjaCBjYWxsIHRvIGEKPiByZW1vdGUgY29u
-dHJvbGxlciBvdmVyIGEgYnVzKS4KPgo+IFRoaXMgUkZDIHByb3Bvc2VzIHRvIGFsaWduIHRoZSBy
-ZWFkKCkvd3JpdGUoKSBwYXRocyB3aXRoIHRoZSBpb2N0bAo+IHBhdGhzIGJ5IHVzaW5nIGt2bWFs
-bG9jKCksIGtlZXBpbmcgdGhlIEtNQUxMT0NfTUFYX1NJWkUgY2FwLgo+Cj4gVGhlIG9wZW4gcXVl
-c3Rpb24gSSB3b3VsZCBsaWtlIHRvIHNvcnQgb3V0IGJlZm9yZSBzdWJtaXR0aW5nIGEKPiBwcm9w
-ZXIgcGF0Y2g6Cj4KPiAgIEhvdyBjb25jZXJuZWQgc2hvdWxkIHdlIGJlIGFib3V0IGxvdy1sZXZl
-bCBkcml2ZXJzIHJlY2VpdmluZyBhCj4gICB2bWFsbG9jJ2QgYnVmZmVyPwo+Cj4gTG9va2luZyBh
-dCB0aGUgdHJlZSwgbW9zdCBkcml2ZXJzIG9ubHkgbWVtY3B5KCkgdGhlIGJ1ZmZlciwgYW5kCj4g
-dGhlIGNvbnRyb2xsZXJzIHRoYXQgRE1BIGRpcmVjdGx5IGludG8gaXQgKGJyY21uYW5kLCBncG1p
-LAo+IGNhZGVuY2UsIGF0bWVsLCAuLi4pIGFscmVhZHkgY2hlY2sgaXNfdm1hbGxvY19hZGRyKCkv
-Cj4gdmlydF9hZGRyX3ZhbGlkKCkgYW5kIGZhbGwgYmFjayB0byBhIGJvdW5jZSBwYXRoLiAgU28g
-dm1hbGxvYydkCj4gYnVmZmVycyBhcmUgc3VwcG9ydGVkIGV2ZXJ5d2hlcmUgdG9kYXkgLS0ganVz
-dCBzbG93ZXIgb24gdGhvc2UKPiBjb250cm9sbGVycy4gIFdpdGggbXRkX2ttYWxsb2NfdXBfdG8o
-KSB0aGUgc2FtZSBjb250cm9sbGVycyBnZXQgYQo+IGttYWxsb2MnZCAoc21hbGxlcikgYnVmZmVy
-IGluc3RlYWQsIHNvIGVpdGhlciB3YXkgdGhlcmUgaXMgYQo+IHNsb3dkb3duOyBpdCBpcyBtb3N0
-bHkgYSBxdWVzdGlvbiBvZiB3aGljaCBvbmUgdXNlcnNwYWNlIHByZWZlcnM6Cj4gZmV3IGxhcmdl
-IHRyYW5zYWN0aW9ucyB0aHJvdWdoIGEgYm91bmNlIHBhdGgsIG9yIG1hbnkgc21hbGwKPiB0cmFu
-c2FjdGlvbnMgd2l0aG91dCBvbmUuCj4KPiBJZiB0aGUgZGlyZWN0aW9uIGlzIGFncmVlZCwgSSB3
-aWxsIGZvbGxvdyB1cCB3aXRoIGEgcHJvcGVyIHBhdGNoCj4gYW5kIG51bWJlcnMgZnJvbSBvdXIg
-cGxhdGZvcm0uCgpJIHdvdWxkIGJlIGN1cmlvdXMgdG8ga25vdyBob3cgdGhpcyBnZXRzIGZhc3Rl
-ciBhbmQgd2h5PyBCZWNhdXNlIHRoZQpwcmVmZXJyZWQgcGF0aCBpcyBvYnZpb3VzbHkgdmlhIERN
-QSB0byBhdm9pZCBrZWVwaW5nIHRoZSBDUFUgYnVzeSBmb3IKc3VjaCB0cmFuc2ZlcnMsIGluIHdo
-aWNoIGNhc2UgeW91IGhhdmUgbm8gb3RoZXIgY2hvaWNlIHRoYW4ga21hbGxvYydpbmcKeW91ciBi
-dWZmZXIgZm9yIHRoZSBsb3ctbGV2ZWwgZHJpdmVyLgoKSSBhbSBub3QgZ2VuZXJhbGx5IG9wcG9z
-ZWQgdG8gdGhlIGlkZWEuIEkgYWN0dWFsbHkgdGhpbmsgaXQncyBiZXN0IHRvCmhhdmUgYSB1bmlm
-aWVkIGFsbG9jYXRpb24gbWV0aG9kIGlmIHRoYXQgaXMgcG9zc2libGUgKHdpdGhvdXQgc3Ryb25n
-CnByZWZlcmVuY2UgbXlzZWxmLCBidXQgcGVyaGFwcyBSaWNoYXJkIHdpbGwgc2hhcmUgYSBtb3Jl
-IGVkdWNhdGVkCm9waW5pb24/KS4gVGhlIG1haW4gcHJvYmxlbSBpcyBob3cgdG8gaGFuZGxlIHRo
-ZSBsZWdhY3kgY2FzZXMuIFR5cGljYWxseQpTYXNoaWtvIHJhaXNlZCB0aGF0IHNvbWUgZGV2aWNl
-cyB1c2UgX19wYSgpIG92ZXIgdGhlIGJ1ZmZlciB2aXJ0dWFsCmFkZHJlc3MsIHdoaWNoIGlzIGFi
-c29sdXRlbHkgaG9ycmlibGUgaW4gMjAyNy4gVGhvc2Ugd2lsbCBoYXZlIHRvIGJlCmZpeGVkIGlu
-IHlvdXIgc2VyaWUgKGFzIHByZXJlcXVpc2l0ZXMpLiBTbyBiZSBhd2FyZSB0aGF0IHRoZSBzZXJp
-ZXMgaXMKZ29ubmEgYmUgbGFyZ2VyIHRoYW4gd2hhdCB5b3UgZXhwZWN0LgoKSWRlYWxseSwgSSBi
-ZWxpZXZlIHRoZSBsb3ctbGV2ZWwgZHJpdmVycyBzaG91bGQgdGVsbCB0aGUgTVREIGxheWVyCndo
-ZXRoZXIgdGhleSBleHBlY3QgY29udGludW91cyBidWZmZXJzID4gUEFHRV9TSVpFIG9yIG5vdC4g
-V2UgY291bGQKdGhlcmVmb3JlIGhhdmUgb3VyIG93biBkZXZtX210ZF9rdm1hbGxvYyhtdGQsIC4u
-Likgd2hpY2ggYXR0YWNoZXMgdGhlCmJ1ZmZlciB0byB0aGUgTVREIGRldmljZSwgdHJpZXMga3ph
-bGxvYygpIGlmIHJlcXVlc3RlZCBieSB0aGUgbXRkIGRldmljZQooc29tZSBraW5kIG9mIG10ZC0+
-ZXhwZWN0c19kbWFfYnVmcyBib29sZWFuIHNldCBkdXJpbmcgcHJvYmUsIHR5cGljYWxseQpiYXNl
-ZCBvbiB0aGUgYXZhaWxhYmlsaXR5IG9mIERNQSBjYWxsYmFja3MpLCBmYWxsYmFja3MgdG8gdm1h
-bGxvYygpCm90aGVyd2lzZS4KClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1h
-aWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xp
-bnV4LW10ZC8K
+
+>> >> I would prefer if you could write your own commit logs, giving us more
+>> >> confidence on the work that has been asked. You can use an LLM to
+>> >> improve/enhance it obviously.
+>> >
+>> > To be honest I've never been great at writing commit messages in
+>> > general and have gotten a lot more complaints about commit messages
+>> > missing important details prior to using LLM's. I can barely tell the
+>>
+>> For me the code is getting better but the commit logs are unclear. Some
+>> details which don't need (imo) to be written are there, and the big
+>> picture is often missing or not clearly stated before the details.
+>>
+>> Don't get me wrong, using an LLM to refine/reword/reorganize is fine,
+>> but letting the LLM write it entirely is not working well.
+>
+> I guess the issue is that I often don't have the best understanding
+> of what the big picture that needs explanation in the commit messages
+> is some of the time, if I did then I would then just instruct the LLM to
+> make those edits whenever I review patches before sending them.
+>
+> I think I just don't have good intuition when it comes to predicting what is
+> important to explain in commit messages.
+
+I get it, but for someone submitting this many patches, that lack of
+understanding is precisely the problem: delegating the wording to an LLM
+when you don't know the rationale doesn't remove the cost, it just
+shifts it onto others.
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
