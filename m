@@ -2,147 +2,105 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E638606A331
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Nov 2026 16:23:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE58B60A3814
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Nov 2026 16:42:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=EQt+7uGR;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.cz header.i=@suse.cz header.a=rsa-sha256 header.s=susede2_rsa header.b=zCpVIITa;
-	dkim=fail reason="signature verification failed" header.d=suse.cz header.i=@suse.cz header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=szH07XgK;
-	dkim=neutral header.d=suse.cz header.i=@suse.cz header.a=rsa-sha256 header.s=susede2_rsa header.b=zCpVIITa;
-	dkim=neutral header.d=suse.cz header.i=@suse.cz header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=szH07XgK
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=Wky/9RXN;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=KR58zEQD
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
+	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=CM7TmVke43rGCtK1FIQbTFnQ1a1Awta+HXMWit6eSIY=; b=EQt+7uGRVj85oSHg4Y/m1pQFkh
-	SWpd7d7AzTJXiTOEJlsVPORJByUSiujYrt6OXY/f7y1WjQyEUE43hQUuTw2O0iT8qlxb+sIqBVgzq
-	e29gHJyYPta2xAylZNPMqjmHH+CgqtqC2wQ2BfoSvUCjUhNjEyfLchVTqjkco9dDPvq/XkeW5dIu2
-	SSHMb/+lyT0YkH51oF8bcHEwI2AMio+frm4ZPTjxUE7/5lJjq/tGuZM57eCz2Qm1WAaeS81R+qROZ
-	uOIEUcSyR8FW/kqdkVqeHUJkGVRrhOLs8E4D2Rq4J+GcpyhmGjT2btbVUctynLpT3mmtMBDc9v0E1
-	1+g980cA==;
+	bh=Mjjj9vkkkuBUbcDZPbMA5Ckmu0U0/Sdky2KDIGK30Rs=; b=Wky/9RXNjya7oJE54l3f1ATIP5
+	68u6kIhuQJfyWSsSTkNrvc7iFyUqL4wJawU1zgH3SFIvnKB24G9z6zkPiqyvXI0grtr80RSw7+cAA
+	bkD1sGecbVkTLxbwo8DuRFsh11fTjrpv/f+Kj+8nOg+AJRJpAyjGEhrs4nCuoWNe6se7SM8bOhktT
+	PIRxF5Cy/thRLEBT1NydDcs000rs074sGxFQbQYtWaqrN+Vh6DEzsThGEq/+xGDaajpGjbXWgKKQ3
+	vypKjZoCOeyiJiUKz1uonkPyGWuf1h/ymq7IjXkc/2FKly9GTIy6xgktDT3UML2DmMdn5V4ozcsyx
+	h7z5ADvA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xU4ut-0000000CcKO-3IIG;
-	Thu, 19 Nov 2026 16:23:19 +0000
-Received: from smtp-out2.suse.de ([195.135.223.131])
+	id 1xU5DV-0000000Cgpw-31Ph;
+	Thu, 19 Nov 2026 16:42:33 +0000
+Received: from mail-oo1-xc2b.google.com ([2607:f8b0:4864:20::c2b])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xU4ur-0000000CcJA-1UVJ
+	id 1xU5DS-0000000CgoS-2rOV
 	for linux-mtd@lists.infradead.org;
-	Thu, 19 Nov 2026 16:23:18 +0000
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id B22501FCBC;
-	Thu, 19 Nov 2026 16:23:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1795105393;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pGj5HbpZMQVFnLgGwqwq1HzwBrkTidzvF9kv3fg0AJ0=;
-	b=zCpVIITadxuKe19ktUuwQ9hw/Q8Akrz6DPfqzWYgrQJqct6u8VTNIOKtJRlh+7j2gXO+X8
-	mNnR0IXTzORpP+f/2ziqXQnkSQXJBgJyFHUcx1/r6jjdUtFAnSBaHNPsV+F1VuuVSPNTj9
-	cMfgrR8jA2Aoxz75FD8GmqNRQBjg2MM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1795105393;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pGj5HbpZMQVFnLgGwqwq1HzwBrkTidzvF9kv3fg0AJ0=;
-	b=szH07XgKW0Ri/DHD0v5Edd6rEwIXX2NQqJbC6pvY9oF3cAfD5W7Yz9KuOikhuLkXtSaD5Q
-	JrATr+N9ej8YsbAg==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=zCpVIITa;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=szH07XgK
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1795105393;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pGj5HbpZMQVFnLgGwqwq1HzwBrkTidzvF9kv3fg0AJ0=;
-	b=zCpVIITadxuKe19ktUuwQ9hw/Q8Akrz6DPfqzWYgrQJqct6u8VTNIOKtJRlh+7j2gXO+X8
-	mNnR0IXTzORpP+f/2ziqXQnkSQXJBgJyFHUcx1/r6jjdUtFAnSBaHNPsV+F1VuuVSPNTj9
-	cMfgrR8jA2Aoxz75FD8GmqNRQBjg2MM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1795105393;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pGj5HbpZMQVFnLgGwqwq1HzwBrkTidzvF9kv3fg0AJ0=;
-	b=szH07XgKW0Ri/DHD0v5Edd6rEwIXX2NQqJbC6pvY9oF3cAfD5W7Yz9KuOikhuLkXtSaD5Q
-	JrATr+N9ej8YsbAg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 794961342D;
-	Thu, 19 Nov 2026 16:23:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id s+5wFHEi/2rIewAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Thu, 19 Nov 2026 16:23:13 +0000
-Date: Thu, 19 Nov 2026 17:23:12 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Thorsten Blum <blum@kernel.org>
-Cc: David Sterba <dsterba@suse.com>, Chris Mason <mason@kernel.org>,
-	Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-	Richard Weinberger <richard@nod.at>,
-	Zhihao Cheng <chengzhihao1@huawei.com>,
-	Eric Biggers <ebiggers@kernel.org>,
-	"Theodore Y. Ts'o" <tytso@mit.edu>, linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	linux-mtd@lists.infradead.org, linux-fscrypt@vger.kernel.org
-Subject: Re: [PATCH 2/4] btrfs: Use FSTR() for the "default" name
-Message-ID: <20261119162312.GA3245297@suse.cz>
-References: <20261118002845.574426-6-blum@kernel.org>
- <20261118002845.574426-8-blum@kernel.org>
+	Thu, 19 Nov 2026 16:42:31 +0000
+Received: by mail-oo1-xc2b.google.com with SMTP id 006d021491bc7-7190d9bdb2cso1680642eaf.0
+        for <linux-mtd@lists.infradead.org>; Thu, 19 Nov 2026 08:42:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20260707; t=1795106549; x=1795711349; darn=lists.infradead.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :content-type:mime-version:subject:date:from:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=dviFuqAIBQmCwTlGi/sNefyK6Za+SYcw7iPLWjwy1Ww=;
+        b=KR58zEQDH+pnaP1TMVkvp69PbmKdmQd5G/2g3mQakNgUQAYOY9dssgCDzC/o+SWF9h
+         TvhL76OqFW/HNusatyxrrHQ2Rw7iCZhUha9mw0kUXQ+k2FIYdNG0M/myx+lG9wF4HXoK
+         KMW7THUeFhlmrTUAy9+Gf9f0zYgWg3EBM+nQphzgLQ3i88e4ekG+6wmpqq/Cbe2ytHWg
+         DzSrQl8NnbpusTnnJ3X4CFUM0srGIxMXQamT8KjfWZc6r3/+O+4h+qB/6EULZas8Eozk
+         Vj2bWndVBdw+r+BbiOkPoFaJSPTCVi3gk/hTyEttzWyfTcuBqAD5fcSr6fifyalXQL9P
+         otow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1795106549; x=1795711349;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :content-type:mime-version:subject:date:from:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=dviFuqAIBQmCwTlGi/sNefyK6Za+SYcw7iPLWjwy1Ww=;
+        b=1Najl12jX1vISbEh2jrrdf+y/z0bikJxW0apET52NotqlVoEXjTzHFX13NYDMn9Yk0
+         291sDhAmZBpeBaeiQ0NCgUnDDBliy+CINDw5LgnBj56B8MXfFbMN9RUWNpGpvzIo2Fit
+         jEmtDNyo41CXPGznf0v9ju/4BkptwcYmhoaAXeg0oEFTnX+J34O1mkoPHVrJycNOdYDf
+         Yd2GHDjAw4O9B59+uvtk5XBBqeLXNRQDTEys76HgYFa8K6v470XoMqlpwECnWMPx4Jj6
+         Zill7PcsGwwYFs4J2QRTNoEHF7bhLyv8TyRzRVbjxT3CDoB/y7kTtd+/BUd85rxaLzrT
+         Y/rQ==
+X-Forwarded-Encrypted: i=1; AL+hErGwnZ0uM1VkFrTIYKWlF1GFj7zPgZk47iRv5PR13RsYUaYEOow4SZAsfzgrtJmP1bjgrM1QWT3uLtc=@lists.infradead.org
+X-Gm-Message-State: APuU4Z/O2RlXqcbxg2tyDAljpHGgsdNsdhigYmMvUscOdUsaTxUP/5Ec
+	YzmEY2loI+XhW9FKRz5yOnHNmxHTLK41EJjqLmzR/YEq7TSMQyQtdJtq
+X-Gm-Gg: AYBFou2YUylUxE1edCNQY2CIz4kMh6GNSvcZI6Pr1wyEz31eBbN72DhhwQoZmjwIAgn
+	kOBtKmBbsRjY1xLlXF4MWbI6i7TE4gLDQis4dlJNw/1lBLrLrDhr6E/Py59J3e8bZOz9CYnnZla
+	jb61Txp80jrU+0ipgMWg2/aRvRw5qfSLSScpB6CO26lb5wuNbZXxVs4yItU4kT4kXW2+PeqWOQY
+	8RbPWw3mkSxYmX+/xFjdr21K5mcxW+pke/6vQPDqdhiP1AfNw/qJRKv6LoKoqMfl1msBU22JLZI
+	emigRyi69Bqfv6ajW7tcyz85Ut6N9lzuE2t+26s/B9bvF9VHb6neM06PdLq4RgUjBwy0Vj4Nziq
+	KXrpGud/n2L4W3Crtg86Ey6LOKx3QoCnwN5aYWo2N3Fcr/lsMZXp4sTkeyeiyHZwcneclCNEPNA
+	uQaRqZ7ARQf3F+iPiJn+LQDXLT5t+Ps9Yjo2k/DPO5p0HEDlWCSDelZ8V3edCFgZzkIskU+byWl
+	7GnkX0fVRaOquA5BGDGro7exP3oSqS/fkV4GagO3oXkuj0AsRXMymgobspE1arYpoxIWtC+zoEa
+	E5uvQ6Gt207aEL9UmWMIVpmNwZWCUoVsPKmjv+5WjV99p1Ywb4annxohQ3Ir9QD7zziplL2Q/HH
+	sncBLmG5bRnl3lLfPD4EGhXa+4v7bEl0gY/FP0BBxGomn+SfjjtmQ3J3TiwQ/57C67Ed3I2jyL4
+	lGbeJ81tLKA+ykPchLSxp1CY5s80pHVg9niBBXLgvIyRokem97nyM=
+X-Received: by 2002:a05:6820:8584:20b0:71b:123b:9ab1 with SMTP id 006d021491bc7-71b395e7441mr53911eaf.78.1795106549466;
+        Thu, 19 Nov 2026 08:42:29 -0800 (PST)
+Received: from [127.0.1.1] (174-29-1-49.hlrn.qwest.net. [174.29.1.49])
+        by smtp.gmail.com with ESMTPSA id 006d021491bc7-71b380e4a6dsm341975eaf.13.2026.11.19.08.42.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Nov 2026 08:42:29 -0800 (PST)
+From: James Hilliard <james.hilliard1@gmail.com>
+Date: Thu, 19 Nov 2026 09:41:59 -0700
+Subject: [PATCH v2 01/11] nvmem: retain the provider node until device
+ release
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20261118002845.574426-8-blum@kernel.org>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Rspamd-Queue-Id: B22501FCBC
-X-Spam-Level: 
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-13.21 / 50.00];
-	SUSE_INTERNAL_BYPASS(-9.00)[];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCPT_COUNT_TWELVE(0.00)[14];
-	MIME_TRACE(0.00)[0:+];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	MID_RHS_MATCH_FROM(0.00)[];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:dkim,suse.cz:replyto]
-X-Spam-Score: -13.21
+Message-Id: <20261119-submit-nvmem-provider-lifetime-v1-v2-1-8fca3ec5f18c@gmail.com>
+References: <20261119-submit-nvmem-provider-lifetime-v1-v2-0-8fca3ec5f18c@gmail.com>
+In-Reply-To: <20261119-submit-nvmem-provider-lifetime-v1-v2-0-8fca3ec5f18c@gmail.com>
+To: Srinivas Kandagatla <srini@kernel.org>, 
+ Mathieu Dubois-Briand <mathieu.dubois-briand@bootlin.com>, 
+ Michael Walle <mwalle@kernel.org>, 
+ =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>, 
+ Michael Walle <michael@walle.cc>, Linus Walleij <linusw@kernel.org>, 
+ Khouloud Touil <ktouil@baylibre.com>, Bartosz Golaszewski <brgl@kernel.org>
+Cc: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Paul Cercueil <paul@crapouillou.net>, linux-kernel@vger.kernel.org, 
+ linux-mtd@lists.infradead.org, James Hilliard <james.hilliard1@gmail.com>
+X-Mailer: b4 0.17-dev
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261119_082317_545019_042D290C 
-X-CRM114-Status: UNSURE (   8.75  )
-X-CRM114-Notice: Please train this message.
-X-Spam-Score: -4.4 (----)
+X-CRM114-CacheID: sfid-20261119_084230_732055_5391D906 
+X-CRM114-Status: GOOD (  11.77  )
+X-Spam-Score: -1.9 (-)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -152,25 +110,56 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: dsterba@suse.cz
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-10.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-On Wed, Nov 18, 2026 at 01:28:48AM +0100, Thorsten Blum wrote:
-> Replace FSTR_INIT() with FSTR() and drop the hard-coded length argument.
-> 
-> Use FSTR() directly and remove the temporary name variables.
-> 
-> Signed-off-by: Thorsten Blum <blum@kernel.org>
+An NVMEM device can outlive its provider after unregister. Take a
+reference to the configured OF node, or reuse the provider device's node
+when none is specified. Drop the reference in the device release path
+so the node remains valid for the lifetime of the NVMEM device.
 
-Acked-by: David Sterba <dsterba@suse.com>
+Fixes: 1333a6779501 ("nvmem: core: allow specifying of_node")
+Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+---
+ drivers/nvmem/core.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
+index 7d4cce8e2742..03ea878874e4 100644
+--- a/drivers/nvmem/core.c
++++ b/drivers/nvmem/core.c
+@@ -570,6 +570,7 @@ static void nvmem_release(struct device *dev)
+ 	gpiod_put(nvmem->wp_gpio);
+ 	nvmem_device_remove_all_cells(nvmem);
+ 	ida_free(&nvmem_ida, nvmem->id);
++	of_node_put(nvmem->dev.of_node);
+ 	cleanup_srcu_struct(&nvmem->srcu);
+ 	kfree(nvmem);
+ }
+@@ -973,9 +974,9 @@ struct nvmem_device *nvmem_register(const struct nvmem_config *config)
+ 	nvmem->keepout = config->keepout;
+ 	nvmem->nkeepout = config->nkeepout;
+ 	if (config->of_node)
+-		nvmem->dev.of_node = config->of_node;
++		nvmem->dev.of_node = of_node_get(config->of_node);
+ 	else
+-		nvmem->dev.of_node = config->dev->of_node;
++		device_set_of_node_from_dev(&nvmem->dev, config->dev);
+ 
+ 	switch (config->id) {
+ 	case NVMEM_DEVID_NONE:
+
+-- 
+2.53.0
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
