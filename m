@@ -2,111 +2,75 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0340B606A332
-	for <linux-mtd@archiver.kernel.org>; Fri, 20 Nov 2026 16:22:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C88A60A261A
+	for <linux-mtd@archiver.kernel.org>; Fri, 20 Nov 2026 17:14:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=HMnP3rw4;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=a0Iby+SQ
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=Bs3Lg+s5;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=ykLe3nRj
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
+	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=8fiMx8lSJxA+ddKeXfcYoSa5edtre3NxFsjL5OVF7IE=; b=HMnP3rw401VIO0LJCLDcgzZAMX
-	qsfq1QagKTyqNm06iIzpgcsZX2yFPhBIkNFclfEF7B1SfuR8zXQeUF0fX2eGGVBA3BUB0eENvYmFQ
-	TJ8KvKCbmgY3T1JhHIOfxWQyM6evxImZi9o1FsNxFKecHV69IcfErXFLEiKCmLlGWRmZ4GlOd1LQk
-	SUPvDeIspdU49tQRnq/jEZ+ONblC9y6hVNa1kKEkH3nvlgndVYtH3I6PB2uBX4HZusSBtscVqH/o5
-	hLK1+SQDcfWlkPouXLX6UnBAqg+64AU4GSd3rn36KRrANE40CfjckKkH+B1RR/lLZ8JrFc+CIe0Kq
-	iZQssUgg==;
+	bh=qp8sP3b9kmKCDYkbqne6B6WyB+Oil5UPP+4QZzibaFI=; b=Bs3Lg+s5PEwQTCWf+oSdM9hOPH
+	Q1ZxQ9mBde0DZu/KaBYvOzyCivAYcvezgA4SOJ5SAzO5Tlw/uGprgOgp4YO+jt4f81TyTmGKvRcyG
+	rB9etzraHLeY2xGMqOqOJE+xGPnxFyxp/0a0eyyRv8f3hmC4cQCrnNCRTjt0LBlOymhHqsDjoudhX
+	a3WFEmvCATgVbKH4BkvGtodancFzRP3vphNeNbb63SE/+ApaATM3f1djg4hThvAPVD1Mije5dk07n
+	DCrNIRwAxdaYUbNxQW/lCGeLwkPf6eQqrUFT3bQu62bvTgjiXdRHzGGH5izmtO/EPquROytmHnjAN
+	ge2G8z1A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xURNG-0000000FXnk-1CeR;
-	Fri, 20 Nov 2026 16:22:06 +0000
-Received: from mail-oi2-x07.google.com ([2607:f8b0:4864:32::7])
+	id 1xUSCE-0000000Fdym-40IU;
+	Fri, 20 Nov 2026 17:14:46 +0000
+Received: from smtpout-02.galae.net ([185.246.84.56])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xURNB-0000000FXls-3Msw
+	id 1xUSCA-0000000Fdwv-24Dz
 	for linux-mtd@lists.infradead.org;
-	Fri, 20 Nov 2026 16:22:04 +0000
-Received: by mail-oi2-x07.google.com with SMTP id 5614622812f47-574d803e863so417961b6e.0
-        for <linux-mtd@lists.infradead.org>; Fri, 20 Nov 2026 08:22:01 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1795191721; cv=none;
-        d=google.com; s=arc-20260327;
-        b=OQ0sRkHpfIipm4iuniOtFJ948nVNBZ111n7rfNMtXMXA8howms/qn+SshfdrCTjp9p
-         qcoJ3IRwgt4AA3QjqqCau5PQuMsf784B30coFUJSHGedDTbN2Xyo/LVP95mEAtx9/h2i
-         X+vAUq26ZfU4sOKQhKNdbomT0Nx+d+2pmf8YMIxlCiceLcWEFWciFo9H6u4YJEjbX5F3
-         kstZ7KP9cLLSWn737RSYIP6CCmuTjzPDyfaAJOKfbsOWTH2Q5Qkh0kYz31PjUWSos6G6
-         nnAYRhx6mDxY1FGMkW1fQUdFTmaOf+E/VvYJgzcbc+A/4rJVyq6DLONsvVPIXsAYT8+b
-         moww==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:dkim-signature;
-        bh=YtzrsiYRAYlK8UNdUBau7Z8+kGG0uMSS1m3uavQxSD0=;
-        fh=jhKp/veUxwZKOK4Nb72eeCClIJqqyVXTwLfUOiGAkd0=;
-        b=W5noaU+gTgjXHwueG0vKWtmZBlSKwAjQ5xZwsMDzZ0vf14xulL42FG60x5myaQS1Un
-         5135/5ZGe6YUULFoclrJ5Ova72xhL3SmiR9e/LiyA91dvkOwUoLKRqzzfr3MHuAtcFMW
-         oLes4pUmzkDbTVf7s4ZEOs34EoNNUHaDIt4GcTFG6OOLrurf8zTsix4/zd89eKSJzjYy
-         YuZBmfkccUbrVcRY7SpgxopP9O9HsIBnzaXQuVKLPyYHkGxaSl3vB0l62WykkuZnAY6r
-         KzUr/g3tha69gL6rdJt5KhMYDUeHNTRvDYYUBQmNxfXMxoqJPRSD1pg++375dy4jvhhS
-         yFYg==;
-        darn=lists.infradead.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1795191721; x=1795796521; darn=lists.infradead.org;
-        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
-         :references:mime-version:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=YtzrsiYRAYlK8UNdUBau7Z8+kGG0uMSS1m3uavQxSD0=;
-        b=a0Iby+SQt0rMdtExSAuH9VT5wwwrY/CeFxXsvvTElIjKPlQprlhn+wNTHgYCfy1hMd
-         HXyHxdwYExE0xI8iPWbAaiIALcWsYvG92pVG1rgrXIN/WXuwX4hFtiKOoIGyrs6Q2OaH
-         zkxmUyPCYBtuD7D2qfuNDdjfqxwl+tbUCoVAyTfVgqyvR30WyAGiD/pMTtHbKzyA4ojR
-         nGwToagvtGUKc9lWUKPhLkjKboZVrbS45KmD36QHXKX8d5Z0bjCdnTLAb9jgiOi0GsYG
-         wJYITeINg7ZnOZ2cjuuGLtinbW4hAaeq3PnMSRX8xiuKjEa8DTmncIRQI8+4yzjXqy3c
-         9odA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1795191721; x=1795796521;
-        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
-         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=YtzrsiYRAYlK8UNdUBau7Z8+kGG0uMSS1m3uavQxSD0=;
-        b=ElLRYVXybeVkRr5+s7oXA0WNfsRzYem1HYIQ5YeOVUolqAD7AeOorcBFlaEfalshzj
-         y/5vq0oItLqaD+7btNsNu0b3epWpi/9K21RFiUQ9z6XLL2X5plufkSFKHxZ+u4gNxOu+
-         AJJgzBmKkRmMiSwF85ol/1YAGb613dFnSz1skmpG09qdUPrh+rN2wCzYdfPbdlmSVidM
-         7ezz9Y7tk9HwrXeTQ5gBekzu8uYo/MSgh1pvqNzSP0IL2URZ4SIRbnUX606/+f1Ozz1h
-         obgCUJpSj50AH2/Fy+aMnQb9Nt/CulPhLYd5D0F67keQEPRi9gGDoQ+qc2zJKFmmP9YR
-         5seA==
-X-Forwarded-Encrypted: i=1; AL+hErHKSuDhYZiU4g7/oLrHuAcvI+n5jnsLbSwNFmfv/DwsaKINE6EwgMnO5WHyCUkvrK/aMThM0PB50iE=@lists.infradead.org
-X-Gm-Message-State: APuU4Z/xeVMO5+e2QienmE/DEOgVo+H49uop7yhPT94pdf3afV3TIaKU
-	zFoqIhNcE6WUej3yFck+4vD+cGNFvsgBdCzMP3G43oCk0Nz/5t1a6BL+zIHbNaNoVr1bhXMrIOl
-	OJzsVBS31MMsMS7ZjrD2H1NUS1AUDRFxTTsDj3fqjlMmE
-X-Gm-Gg: AYBFou3EQE4J/pQo8TvRN48geRnZnJYs0nKu2R3mE+9G7gA/FH/pj3FH72r5eCAQRgu
-	FzPf4C+B9VBe+xAZNfLreedc949bVPbd9zkSD0kOgsJTCuDI/OEmYqjF1oWyLC7VvxqDynvJLRd
-	qnSep1WQqYGrmiXkoYoi9zauNUA8Z5zvilNMPXjnrLPy0TbK2P1eOr0HdtZD4/w06NqTObARs+M
-	91pzIqSAnFjbPK4IXxMMemorXdCkDmlePDgjzkNnWfliGuAOFioFv05qLADJRMmxaHhBJMblse8
-	HRJM8xOgM1M3pZ3VFGovv/tRGz9RM+VzjBTkDVee00YeJ4fSqDJmPxrk39N9D5UqvQ1WZfJbKIc
-	Lyhd97z5OfvF7PHtNQosKhxud6grOZ15SvT2PbT5/K0+CVokg8pVgBxOS1RHFHHAE+hD9TeqDyG
-	s1ALdBEuWjq+swi4aL0aQ3hUw52j4KG3jox+H03tfKPgjlITcsnJdC
-X-Received: by 2002:a05:6808:13d3:b0:531:7f68:842e with SMTP id
- 5614622812f47-57a06d1a865mr4088651b6e.8.1795191720553; Fri, 20 Nov 2026
- 08:22:00 -0800 (PST)
+	Fri, 20 Nov 2026 17:14:45 +0000
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-02.galae.net (Postfix) with ESMTPS id A7E981A1754;
+	Fri, 20 Nov 2026 17:14:39 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 7D81E601B9;
+	Fri, 20 Nov 2026 17:14:39 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id D0DE111BC04A2;
+	Fri, 20 Nov 2026 18:14:35 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1795194877; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=P3hD6i6FmHxjhbYulZUhRwAmsKH4wKmtldQ3QjAxjxM=;
+	b=ykLe3nRjZqOHOxvwu13ykk8zaeqY4YdR12e+9sqrVJ6vpzJKfsNk/p/AwdCGgBPxMuw2aY
+	f2YXoIHByiv5LizTM99x1xW+LYhzEdHpcpJ2/FvEsrofuJFmiCfMX0d3nWMjJa9fVVgbPe
+	F5F0eolM+6iND5kTu2qwlFUc15Jg/Z3+5Ymp4IxIF43PRkYh51x7U+7D5VdU/V7Vpp7oVu
+	Brfj3e96PwL3rU4dh3TcOb56rBBwiSjlC9vQUyNsxxWIejtpU/ecq0g3oKMZuWmbNRUBki
+	leR/URQEcDwCN5gyFjHCKu8rAIImQeMO2L7f56CgRb6LsSSKnWtJJO0J3Z/63g==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+Date: Fri, 20 Nov 2026 18:14:27 +0100
+Subject: [PATCH v4 01/11] spi: spi-mem: Rename the DQS setter and pin field
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-References: <20261112135839.6451-1-dennylin0707@gmail.com>
-In-Reply-To: <20261112135839.6451-1-dennylin0707@gmail.com>
-From: Hungyu Lin <dennylin0707@gmail.com>
-Date: Fri, 20 Nov 2026 08:21:49 -0800
-X-Gm-Features: Aa3M54rLCY5Ln1-BqmNVhIEKYaX4QPZ4mKm2voTzZa-x93WPoRkSXTUCtcqgWss
-Message-ID: <CAGEkeHcvJnuSFhsUkKMFMQNsA=Q4-Zq3G6XmDwtca0VcK7zi0Q@mail.gmail.com>
-Subject: Re: [PATCH v2] ubifs: account for short copies in ubifs_write_end
-To: richard@nod.at
-Cc: chengzhihao1@huawei.com, lin.nan@h3c.com, linux-mtd@lists.infradead.org, 
-	linux-kernel@vger.kernel.org
+Message-Id: <20261120-winbond-nand-next-phy-tuning-v4-1-8c21e1f71f41@bootlin.com>
+References: <20261120-winbond-nand-next-phy-tuning-v4-0-8c21e1f71f41@bootlin.com>
+In-Reply-To: <20261120-winbond-nand-next-phy-tuning-v4-0-8c21e1f71f41@bootlin.com>
+To: Mark Brown <broonie@kernel.org>, Richard Weinberger <richard@nod.at>, 
+ Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Pratyush Yadav <pratyush@kernel.org>, 
+ Michael Walle <mwalle@kernel.org>, 
+ Takahiro Kuwano <takahiro.kuwano@infineon.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, praneeth@ti.com, 
+ u-kumar1@ti.com, p-mantena@ti.com, a-dutta@ti.com, s-k6@ti.com, 
+ linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, 
+ Miquel Raynal <miquel.raynal@bootlin.com>
+X-Mailer: b4 0.14.3
+X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261120_082202_622988_7C4329E7 
-X-CRM114-Status: UNSURE (   5.07  )
-X-CRM114-Notice: Please train this message.
-X-Spam-Score: -1.9 (-)
+X-CRM114-CacheID: sfid-20261120_091442_854586_2A81EBBB 
+X-CRM114-Status: GOOD (  13.94  )
+X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -119,19 +83,100 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-0.8 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-Hi Richard,
+The current approach was a bit too simple. Using the DQS feature
+requires:
+1- the chip to feature a DQS pin
+2- proper wiring between the host and the chip
+3- the controller capability to use it
 
-Just following up on this patch.
+Rename the helper and the field to reflect that we are talking here
+about (1) the chip capability.
 
-Thanks,
-Hungyu
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+---
+ drivers/spi/spi-mem.c       | 10 +++++-----
+ include/linux/spi/spi-mem.h |  6 +++---
+ 2 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
+index baf6e430e563..1bea52c6f8a3 100644
+--- a/drivers/spi/spi-mem.c
++++ b/drivers/spi/spi-mem.c
+@@ -547,7 +547,7 @@ const char *spi_mem_get_name(struct spi_mem *mem)
+ EXPORT_SYMBOL_GPL(spi_mem_get_name);
+ 
+ /**
+- * spi_mem_set_dqs() - Mark DQS as being available
++ * spi_mem_set_dqs_pin_available() - Mark DQS as being available
+  * @mem: the SPI memory
+  *
+  * When reading at high frequencies (> 100MHz), especially when DTR is enabled,
+@@ -560,11 +560,11 @@ EXPORT_SYMBOL_GPL(spi_mem_get_name);
+  * Set the DQS boolean if the feature is available and configured at the chip
+  * level. Controllers may query this value.
+  */
+-void spi_mem_set_dqs(struct spi_mem *mem)
++void spi_mem_set_dqs_pin_available(struct spi_mem *mem)
+ {
+-	mem->dqs = true;
++	mem->dqs_pin = true;
+ }
+-EXPORT_SYMBOL_GPL(spi_mem_set_dqs);
++EXPORT_SYMBOL_GPL(spi_mem_set_dqs_pin_available);
+ 
+ /**
+  * spi_mem_has_dqs() - Query whether the DQS is available or not
+@@ -574,7 +574,7 @@ EXPORT_SYMBOL_GPL(spi_mem_set_dqs);
+  */
+ bool spi_mem_has_dqs(struct spi_mem *mem)
+ {
+-	return mem->dqs;
++	return mem->dqs_pin;
+ }
+ EXPORT_SYMBOL_GPL(spi_mem_has_dqs);
+ 
+diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
+index b69f671c40e7..e3c0016be768 100644
+--- a/include/linux/spi/spi-mem.h
++++ b/include/linux/spi/spi-mem.h
+@@ -275,7 +275,7 @@ struct spi_mem_dirmap_desc {
+  * @spi: the underlying SPI device
+  * @drvpriv: spi_mem_driver private data
+  * @name: name of the SPI memory device
+- * @dqs: extra data trobe pin available for high frequency read operations
++ * @dqs_pin: the memory provides a DQS pin
+  *
+  * Extra information that describe the SPI memory device and may be needed by
+  * the controller to properly handle this device should be placed here.
+@@ -287,7 +287,7 @@ struct spi_mem {
+ 	struct spi_device *spi;
+ 	void *drvpriv;
+ 	const char *name;
+-	bool dqs;
++	bool dqs_pin;
+ };
+ 
+ /**
+@@ -474,7 +474,7 @@ bool spi_mem_default_supports_op(struct spi_mem *mem,
+ }
+ #endif /* CONFIG_SPI_MEM */
+ 
+-void spi_mem_set_dqs(struct spi_mem *mem);
++void spi_mem_set_dqs_pin_available(struct spi_mem *mem);
+ bool spi_mem_has_dqs(struct spi_mem *mem);
+ int spi_mem_adjust_op_size(struct spi_mem *mem, struct spi_mem_op *op);
+ void spi_mem_adjust_op_freq(struct spi_mem *mem, struct spi_mem_op *op);
+
+-- 
+2.56.0
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
