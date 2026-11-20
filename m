@@ -2,115 +2,63 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85498606A326
-	for <linux-mtd@archiver.kernel.org>; Fri, 20 Nov 2026 08:09:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3CB060A2600
+	for <linux-mtd@archiver.kernel.org>; Fri, 20 Nov 2026 08:12:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=GUegzJyk;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.a=rsa-sha256 header.s=korg header.b=oNThT0mS
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=NKg6jXk7;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Wo7DzeTQ
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:References:To:From:Subject:Message-Id:Date:Mime-Version:Reply-To:
+	Cc:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=F58aUcHUfqUs961mcwf9aaF1UiiSyRzMhvDz0lEIyJE=; b=GUegzJykPLjY5I1k5rTG5iImL5
-	uYfsp4ULcRC6r05wLupm/ztifKkSLgFTl9WxMaBXuPhiPavnnot00GLCU4jnX2Rx/GmAspFIFhpIB
-	zPbIKKNTJBaakMJDvF7ThrrdSgvuVNcjDgIDPbQ1lYWwnE7p8xGXR9yCccFHnuQgXwqLE3o2AWpin
-	od4abdKuMQdEhegse06DAKJUQsK72COpaa/3Ip5hKiN8ZcUrRiy8MpbXRcJGB4vY5KdFZ/FLO3sLW
-	v9J/UotjTSnEt+cOL3t2UGKXOfX76gOZ2Kq8xcPEzsP3V+Xh22JiGD0udy0c1JnjDJIpgW58DcNSx
-	PVbYVMIQ==;
+	bh=FvkDj5mdWoP6jZjw++FAMkgXKJfhKfqcL090zdCYuSo=; b=NKg6jXk7CjltNQoTLNgxJzsevF
+	TcjURLeWiXkEmluNHdoAWNZ7ZKvPxFlZbjSP+4Df8Neo3VywAI1XLBfUKXIV/Z+4fXC4jFcMzQSIx
+	en6s2iXhLyL+2WGwlAOxWhnDTBE+ePVlWBPzCW2RGq+nZbBxSGB1z2lvz707XiEHwcUk7KJXpkXkI
+	SmAxQ0JZza2hiPs0FAcvU+lcks0k38Ru3IXCAoW9l9RRNSVZadgXHux5rx65If8NVEhEq7hmGp5nC
+	m0q0hIMLYPbgHMH/E26weDEgTu7gtuUK30pCyQtjFsepdBSaMAlDKUqh4VfoP2XofSOSCfS5kkJaK
+	RHIJTLLQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xUJgH-0000000EIak-2nPD;
-	Fri, 20 Nov 2026 08:09:13 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1xUJjq-0000000EJ2g-3rae;
+	Fri, 20 Nov 2026 08:12:54 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xUJfs-0000000EIR8-0N26
+	id 1xUJjp-0000000EJ2P-1ZfN
 	for linux-mtd@lists.infradead.org;
-	Fri, 20 Nov 2026 08:08:51 +0000
+	Fri, 20 Nov 2026 08:12:53 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 5C81B46936;
-	Fri, 20 Nov 2026 08:08:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 042371F000CA;
-	Fri, 20 Nov 2026 08:08:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxfoundation.org;
-	s=korg; t=1795162127;
-	bh=nhWTtz/XtWf+zHzkg8QT/u7XDoQ0xAQ0UFQlVcaEpd4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=oNThT0mSGG6kUZAwqZsOB53nYtEkre5+BXqj2CeCW2DezGxoseqckwyiR/VE/H5rV
-	 fasb29VNh/hB3PNLtjFkss79IjJ2QxSftm4LCX3QTWO6ojWb5uhH6sv3drEWCZAFZL
-	 WHSdRIgt+zBwwz1WhpggeQETXK/uvYvzW9vMcVhg=
-Date: Fri, 20 Nov 2026 09:08:23 +0100
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-	Shuah Khan <skhan@linuxfoundation.org>, linux-doc@vger.kernel.org,
-	David Hildenbrand <david@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Jason Gunthorpe <jgg@nvidia.com>,
-	Leon Romanovsky <leonro@nvidia.com>, linux-mm@kvack.org,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	linux-sound@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-	linux-block@vger.kernel.org, Marcel Holtmann <marcel@holtmann.org>,
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-	linux-bluetooth@vger.kernel.org,
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-	Jason Wang <jasowangio@gmail.com>, David Heidelberg <david@ixit.cz>,
-	oe-linux-nfc@lists.linux.dev, Chas Williams <3chas3@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@kernel.org>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org, Helge Deller <deller@gmx.de>,
-	linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	MPT-FusionLinux.pdl@broadcom.com,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	"Martin K. Petersen" <mkp@kernel.org>, linux-scsi@vger.kernel.org,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Zhihao Cheng <chengzhihao1@huawei.com>,
-	linux-mtd@lists.infradead.org, Neill Kapron <nkapron@google.com>,
-	Andrey Konovalov <andreyknvl@gmail.com>, linux-usb@vger.kernel.org,
-	Juergen Gross <jgross@suse.com>,
-	Stefano Stabellini <sstabellini@kernel.org>,
-	xen-devel@lists.xenproject.org, Hans de Goede <hansg@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	"Michael S. Tsirkin" <mst@redhat.com>,
-	Eugenio =?iso-8859-1?Q?P=E9rez?= <eperezma@redhat.com>,
-	Sean Christopherson <seanjc@google.com>,
-	Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-	virtualization@lists.linux.dev, Jan Kara <jack@suse.cz>,
-	linux-fsdevel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
-	linux-ext4@vger.kernel.org, Mike Marshall <hubcap@omnibond.com>,
-	devel@lists.orangefs.org, Paulo Alcantara <pc@manguebit.org>,
-	Namjae Jeon <linkinjeon@kernel.org>, linux-cifs@vger.kernel.org,
-	Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-	linux-f2fs-devel@lists.sourceforge.net,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	Tzung-Bi Shih <tzungbi@kernel.org>,
-	Benson Leung <bleung@chromium.org>,
-	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-	amd-gfx@lists.freedesktop.org,
-	Jani Nikula <jani.nikula@linux.intel.com>,
-	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-	Rodrigo Vivi <rodrigo.vivi@intel.com>,
-	Tvrtko Ursulin <tursulin@ursulin.net>,
-	intel-gfx@lists.freedesktop.org,
-	Matthew Brost <matthew.brost@intel.com>,
-	Thomas =?iso-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>,
-	intel-xe@lists.freedesktop.org
-Subject: Re: [PATCH v2 08/12] docs: ioctl-number: update USB entries
-Message-ID: <2026112013-crave-ocean-6117@gregkh>
-References: <20261119053514.255348-1-rdunlap@infradead.org>
- <20261119053514.255348-9-rdunlap@infradead.org>
+	by tor.source.kernel.org (Postfix) with UTF8SMTP id 74E5C60D15;
+	Fri, 20 Nov 2026 08:12:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id AB0B81F000C4;
+	Fri, 20 Nov 2026 08:12:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1795162372;
+	bh=7g7MZ9fUWqOrUAe8bi9LBUnozX0Zp8XzJ0El3O60aHc=;
+	h=Date:Subject:From:To:References:In-Reply-To;
+	b=Wo7DzeTQdrC7jOg9xJDJc5M5lNViAt87D+bA2JUQcxvW8+Tu3P7l0mXskDOjfq7Fg
+	 cflVVfv+oXaH0tVYXMJP8SMVPwLf4ycKUHbJggKe9hf73czav2j1PSBU7n65yq7xO2
+	 Lci6vsjCp+BWZxdTq+ZA8fND3vhs9V1aohjXITAFh/0GZwFAYmx0iZBq6JN0SYwsZS
+	 E1+YpktAVbuJ8ZVx6EmVEnn5YrTEp6k8+Ob3Vj0cIVbzl8/lNzuY2aVu5Rl5OwiRU5
+	 dJ1iTsGntW+1NuVpSaABpo2UUofuzifpWU/fyr2f0bV2XB5b6fJ8AvcYiM5+6di7XS
+	 BEtwQHI6N8nwQ==
 X-Archived-By: <archiver.kernel.org>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20261119053514.255348-9-rdunlap@infradead.org>
+Mime-Version: 1.0
+Date: Fri, 20 Nov 2026 09:12:41 +0100
+Message-Id: <DMZVY45HFRM3.2GTCZ9BV3YJL8@kernel.org>
+Subject: Re: [PATCH v3 0/2] mtd: spi-nor: fix use-after-free on unbind with
+ open handles
+From: "Michael Walle" <mwalle@kernel.org>
+To: "NG, TZE YEE" <tze.yee.ng@altera.com>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "Pratyush Yadav" <pratyush@kernel.org>,
+ "Takahiro Kuwano" <takahiro.kuwano@infineon.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+X-Mailer: aerc 0.20.0
+References: <20261022035352.52129-1-tze.yee.ng@altera.com>
+ <SJ0PR03MB5950FE5D82CA5E77AAE0AC9CA17A2@SJ0PR03MB5950.namprd03.prod.outlook.com> <DMY8H2AUQ3LV.VQ3MVOE3YV41@kernel.org> <381b16ea-cc02-4504-bbe0-83762886b46b@altera.com>
+In-Reply-To: <381b16ea-cc02-4504-bbe0-83762886b46b@altera.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -120,29 +68,63 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6247071408221061768=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-8.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-3.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=4.0.1
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
+	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-On Wed, Nov 18, 2026 at 09:35:09PM -0800, Randy Dunlap wrote:
-> Update the list of files where USB ioctls are defined.
-> 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> ---
-> v2: no change
-> 
-> [Since having multiple maintainers trying to merge these would
-> cause some conflicts, it would be more manageable for Jon to
-> take all of these through the docs-next tree.]
+--===============6247071408221061768==
+Content-Type: multipart/signed;
+ boundary=7f00468c0cc5da30f873745f70a967b80a05dcc6b5d5d22947fb6fbcabd1;
+ micalg=pgp-sha384; protocol="application/pgp-signature"
 
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+--7f00468c0cc5da30f873745f70a967b80a05dcc6b5d5d22947fb6fbcabd1
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+
+Hi,
+
+On Fri Nov 20, 2026 at 3:21 AM CET, TZE YEE NG wrote:
+> I would prefer to keep this series as a spi-nor-only fix, since it=20
+> solves the problem for spi-nor today. James Hilliard's raw NAND series=20
+> [1] adds a generic opt-in lifetime to the core (mtd_set_release()). I=20
+> would be happy to look at moving spi-nor onto it if it lands, but maybe=
+=20
+> in another series. Are you okay with keeping this series as is?
+
+No, not really. Sorry. Esp. given how cluttered it is and just
+solves the problem for one user of the MTD subsystem.
+
+-michael
+
+--7f00468c0cc5da30f873745f70a967b80a05dcc6b5d5d22947fb6fbcabd1
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCawAA+hIcbXdhbGxlQGtl
+cm5lbC5vcmcACgkQEic87j4CH/gkIAF/fh5e2uIwEPRaHgWLwwjxJkSCZdD6mRJP
+UdMlUv6168kien+EQKt6rwlXBkooVPDUAYDpDLhw/SfXapyqcMK3gqohUnjMnjhx
+1GIFNuA3LBmUyfsLENlX0keNJXiXjrKTC3w=
+=Ba9O
+-----END PGP SIGNATURE-----
+
+--7f00468c0cc5da30f873745f70a967b80a05dcc6b5d5d22947fb6fbcabd1--
+
+
+--===============6247071408221061768==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============6247071408221061768==--
+
