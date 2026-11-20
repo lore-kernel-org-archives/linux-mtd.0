@@ -2,58 +2,58 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F45F606A325
-	for <linux-mtd@archiver.kernel.org>; Fri, 20 Nov 2026 11:02:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F332F606A339
+	for <linux-mtd@archiver.kernel.org>; Fri, 20 Nov 2026 11:02:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=T3NLHE9Y;
-	dkim=fail reason="signature verification failed" (1024-bit key, unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256 header.s=selector1 header.b=PSkrgagH
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=Ik83Ytn3;
+	dkim=fail reason="signature verification failed" (1024-bit key, unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256 header.s=selector1 header.b=XsCyIOrs
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:CC:To:MIME-Version:Message-ID:Date:
-	Subject:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Archive:List-Unsubscribe:List-Id:CC:To:In-Reply-To:References:Message-ID
+	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=VRScvC9MvKTCQbnFtD+bVmMnrZm70AMN8xQKCkRnLGo=; b=T3NLHE9Y+RTRBrC4m6eJcYed76
-	/5ataOGtR70J8XpWaTGF9JH4C6a0SBIt9gK7SLYSbDX64FzAfYH72Es43k8F697V9NaL98PEOEkX+
-	MMZNIrDHdkRRp03WwDLVl6arbOO9WLtxJIhbBkMI3uTFM9Ej+xbn0bBhHCgaSdNeov/1I3EYn206U
-	Nk3QZPaMEamdqOpQO/Tj23UrEWWduBtV0eFH/vccCc1vYocdLRIU4LGvC+X4X8yYiKWegzQ1NHlNC
-	Tdr0HRv/AEk8u9Il3LrJv3t+H1XtDHNbmFQYz5ILNCon1dAgXdH0hjx/sbm2J7yoCygoDdnHHVS6U
-	iyZf4Yfw==;
+	bh=QNBcw8TvlV5fB7JNauNB4NDn1hZYdoRsPwWel/MLWdI=; b=Ik83Ytn3AxT+ytIvSsGmHOS0/N
+	Wgz7bHsKam9K1TYSey8A0NFWNvlmDxJJKCRv9VqUyaPTyPB6J/BqGyPXJpAF2ofSLKRtGNq7olbUF
+	ENoEosIkysOtSkNp3dSQpgQSSeMaTTmgL3SJMiNn59sA92hN6VZnuvNmgxRAmQWkIE3YOG+mlmKkq
+	iXamNTWehdLl3YE4+XhNQvQvmychZy7T92xaMT9c7V7QCmpQ3W1mvm/qDpLn5ic5gQt8we0CnNAo4
+	Ht8Pg2onL/ZSuYMZJBM+yPsg+gASfG2VdCgxMCi6tHkXum66fFeqcl6d27UvXaarS3PatdSgtwC5u
+	d7dOF5uA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xUMNb-0000000EglH-10C7;
-	Fri, 20 Nov 2026 11:02:07 +0000
-Received: from mail-eastus2azlp170100001.outbound.protection.outlook.com ([2a01:111:f403:c110::1] helo=BN1PR04CU002.outbound.protection.outlook.com)
+	id 1xUMNz-0000000Egrd-2sTf;
+	Fri, 20 Nov 2026 11:02:31 +0000
+Received: from mail-westusazlp170120002.outbound.protection.outlook.com ([2a01:111:f403:c001::2] helo=SJ2PR03CU001.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xUMNY-0000000Egk8-0L5w
+	id 1xUMNt-0000000Egpa-3ZoN
 	for linux-mtd@lists.infradead.org;
-	Fri, 20 Nov 2026 11:02:05 +0000
+	Fri, 20 Nov 2026 11:02:27 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=HS7jZ4u4cqkskPygNqJHe1EAu0u1r8ANPOcGnqJQshwWoM3tyHfdT+q1FgT0i/JzMwMVBtU9SAka2Etuc1Do9HdXT4d5WXJauqAZQWsCZB2RpYPa+RYntmxIoM+5tTVvlEczIjWi/JlSFb4ildJFEJC3oMFb0yrioMYa400gbWoXdl7EHW2UGVMSlelnOWqr1MZm9XoeRrJS+71zdw0GawDLDN+ySIxfc82lqzayJQLfTtWxJH8nNobdoohMzejE5tJy2r4dol94QDn3iURbhXMy8zQ2TZo1F20lg9L8a0/KwW45Km3P3GdQ/qHpjjld46mcZcMfWM/I3UzFOc74sg==
+ b=gKO5s+HxdhpPUZJwkJ14g5GHTMuHN0r3PMso3ksoQZ2cwY2utjqVpXhOPoiMOFpmUVGwIwQpIe56kidQAFQC9e4oSsz7HZsyW2suU7buGBa9uXH8CEUGAXoMjlElbM7PkkRPtumdmMbB44Qcq+HdA0crXS9cU1ue5JkiG1Adp3pdDABpAC56xT9GYkqGcZEklQUKt1mwtJXZkSUaqLXCuQGBPkDN27F8myZDin8IDc/49J6N3pphj6nzHKglS2kfJdLZzewJOPxX3+qTGr2IVtqJcZ9yNE6nB8M901/rBBuLHXXnnsZnICh/50yOEYEac8OnbpvK0uz8owdGwLlPiQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=dEkkAmzVJPlzOhnp7OGwqcYzqVwEy2ZzSmPlOweWOYI=;
- b=SXypCGCT+rDHKdTmlb6r8ukFqx8YRJjU01rjfXV/am16Xd9Ouz/fHy4ccbKLQ0RyMjaNYtcbQfwzqgSHCZUOF5BigcS6e85pd5sBI8AdwHAPyD1v/Pj+gdqPUd8jerWieUc4RyBRaTxy0ORKqrCwdUstEalBgCHbToAUdqEVD9+WZSDastEieiOP/8qA778/fW6DS1jHhmXN6hnHBKHIL1yrNZb+LwPYBQ3bRdflgHDUjOkByVioRFG6B16Z/6fVA8yHua/dK0wG4hzK2vpvIikh19Ei1Evkdiys9e+o9QJOsvRqUS3Ps4sh46+b8A3cpqq9OpCVzkszp6BmU2KuqQ==
+ bh=BP0XC2aajtGff3NEDHDUBa4V6oIMBhyR9mJOrCkPtkg=;
+ b=aVMFw49REIcoc5jqqGgzzozTSk5p6SNP5KKmnpP5yKUhldTaFqsRWnEq0oSMdKWckmiOrA41x0qM3lzL3Y5ygzBbtjgkNuuebeiUcgkC7YzpFKOXtHwfQtKFHd2wmHHwo2cZVe+5I/Vou7VTJ89FIaPf252Qe1taL4LSpilC5ZC5L+vko4wRJqcT+1uVVzmCtjbdfPm63KgT4niMHrkrpS0h4zRt9luP3IBtlHzPwzFDeR9T/eRemWxIkghJT1ytSQMQc+mV2NmeDgUeQ/YvsWzRJnpd9Ps9+vqFszUCdN2j+ylkG4d5SDNOAEku6XiM5uNyEBILwmMc37sh9q2Bqw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=infineon.com smtp.mailfrom=amd.com;
  dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
  header.from=amd.com; dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dEkkAmzVJPlzOhnp7OGwqcYzqVwEy2ZzSmPlOweWOYI=;
- b=PSkrgagHGo/9IhMeYiSS2OW1L0D6Nv4T/g4jSSr5m/FjukU5WWZcyPDOtYAkxGZaPxWCMZSEX1VbCaiOtQbY4oGtU8Ol4ZcJ6DvjsTnMn59+03S8xSwCLjHDMNGnlsRBflgu1u0/rTSqf3L6+UPJsQs9DmtRGmz1SSTFmtMjtjU=
-Received: from PH7P220CA0127.NAMP220.PROD.OUTLOOK.COM (2603:10b6:510:327::7)
- by IA1PR12MB8357.namprd12.prod.outlook.com (2603:10b6:208:3ff::13) with
+ bh=BP0XC2aajtGff3NEDHDUBa4V6oIMBhyR9mJOrCkPtkg=;
+ b=XsCyIOrsFtr4/5Ae1i5WgaD0/bKiFdKzv566wman6jXWfllH3uBzohaWcYDeJnPos40p3ZY+P69E26TFK/KPhrj3+PMTHeifs9HlC40iAw07uY5lSLf0tY/qYdAxLnlLajuGY4gqti1uWBNsaCaHQny0JqiT5MTqdV+KBlmKddA=
+Received: from BN9PR03CA0868.namprd03.prod.outlook.com (2603:10b6:408:13d::33)
+ by MN0PR12MB6055.namprd12.prod.outlook.com (2603:10b6:208:3cd::20) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.615.10; Fri, 20 Nov
- 2026 11:01:55 +0000
-Received: from PH1PEPF00062F24.namprd02.prod.outlook.com
- (2603:10b6:510:327:cafe::7c) by PH7P220CA0127.outlook.office365.com
- (2603:10b6:510:327::7) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.21.639.12 via Frontend Transport; Fri,
- 20 Nov 2026 11:01:55 +0000
+ 2026 11:02:17 +0000
+Received: from BN3PEPF00022BD4.namprd03.prod.outlook.com
+ (2603:10b6:408:13d:cafe::9a) by BN9PR03CA0868.outlook.office365.com
+ (2603:10b6:408:13d::33) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.21.615.10 via Frontend Transport; Fri,
+ 20 Nov 2026 11:02:17 +0000
 X-MS-Exchange-Authentication-Results: mx.microsoft.com 1; spf=pass (sender IP
  is 165.204.84.17) smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -61,26 +61,29 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
  client-ip=165.204.84.17; helo=satlexmb07.amd.com; pr=C
 Received: from satlexmb07.amd.com (165.204.84.17) by
- PH1PEPF00062F24.mail.protection.outlook.com (10.167.243.53) with Microsoft
+ BN3PEPF00022BD4.mail.protection.outlook.com (10.167.248.102) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.639.5 via Frontend Transport; Fri, 20 Nov 2026 11:01:54 +0000
-Received: from satlexmb08.amd.com (10.181.42.217) by satlexmb07.amd.com
+ 15.21.639.5 via Frontend Transport; Fri, 20 Nov 2026 11:02:17 +0000
+Received: from Satlexmb09.amd.com (10.181.42.218) by satlexmb07.amd.com
  (10.181.42.216) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.57; Fri, 20 Nov
- 2026 05:01:19 -0600
+ 2026 05:01:45 -0600
+Received: from satlexmb08.amd.com (10.181.42.217) by satlexmb09.amd.com
+ (10.181.42.218) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.57; Fri, 20 Nov
+ 2026 05:01:30 -0600
 Received: from xhdlc220225.xilinx.com (10.180.168.240) by satlexmb08.amd.com
  (10.181.42.217) with Microsoft SMTP Server id 15.2.2562.57 via Frontend
- Transport; Fri, 20 Nov 2026 05:01:16 -0600
+ Transport; Fri, 20 Nov 2026 05:01:27 -0600
 From: Srikanth Boyapally <srikanth.boyapally@amd.com>
-Subject: [PATCH 0/2] mtd: spi-nor: Add flash reset support during resume
-Date: Fri, 20 Nov 2026 16:31:13 +0530
-Message-ID: <20261120-nor_11_20-v1-0-70332a54037f@amd.com>
+Date: Fri, 20 Nov 2026 16:31:14 +0530
+Subject: [PATCH 1/2] mtd: spi-nor: Store GPIO info for resetting device
+ during resume
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAHkoAGsC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIzNDQyMD3bz8onhDw3ggy8w40dTSwtzMxDTVXAmovqAoNS2zAmxWdCyEX1y
- alJWaXAIyQKm2FgB6SyZkbQAAAA==
-X-Change-ID: 20261120-nor_11_20-63a5987645e7
+Message-ID: <20261120-nor_11_20-v1-1-70332a54037f@amd.com>
+References: <20261120-nor_11_20-v1-0-70332a54037f@amd.com>
+In-Reply-To: <20261120-nor_11_20-v1-0-70332a54037f@amd.com>
 To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>,
 	Takahiro Kuwano <takahiro.kuwano@infineon.com>, Miquel Raynal
 	<miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, "Vignesh
@@ -88,41 +91,39 @@ To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>,
 CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
 	<michal.simek@amd.com>, <git@amd.com>, Srikanth Boyapally
 	<srikanth.boyapally@amd.com>, Amit Kumar Mahapatra
-	<amit.kumar-mahapatra@amd.com>, Sai Krishna Potthuri
-	<sai.krishna.potthuri@amd.com>
+	<amit.kumar-mahapatra@amd.com>
 X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1795172476; l=798;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1795172476; l=2242;
  i=srikanth.boyapally@amd.com; s=20261106; h=from:subject:message-id;
- bh=EKFoSFf071LOYOkWiTaSFrk9uRosj95HpwKyluDnJXk=;
- b=FWEQxgnYehQyLo8QTecI91s1+8nV5yYhKZO+no6mSRE00TbBRUiPe1zVEPlfpbhWUdTR1hCYz
- pMCwMDvo2qbAcH1a2+Y3deazUIecXWOC6vpMSBhLI45adCVZda7lL83
+ bh=cOJJeNpB8RoJUzTG7to/wJlk7aBf7zq9lEsviU6B7X4=;
+ b=lOGkY7Fn/mxd0DEWjajwMAuqLJd4fKzayOTJIgKH8mDC4X5BX5uSXz+rRMZn+AjUfM849xVwa
+ WfkbzD/+SS7AMNCYTb1gzHB6QW/2gIdpw2D5Y7kX1tuAQZ63AnNRpyv
 X-Developer-Key: i=srikanth.boyapally@amd.com; a=ed25519;
  pk=VZiIwz5+m6FvZJ+3hzpXDQl0u531OPVeBcB2OVGeZVk=
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH1PEPF00062F24:EE_|IA1PR12MB8357:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0e50e6dc-b651-4358-acb1-08df46f5b028
+X-MS-TrafficTypeDiagnostic: BN3PEPF00022BD4:EE_|MN0PR12MB6055:EE_
+X-MS-Office365-Filtering-Correlation-Id: cb76ef50-e08a-4484-a7c2-08df46f5bdad
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|82310400026|23010399003|1800799024|36860700016|261102123227099003|10067099003|56012099006|11063799006|261021121427099003|261021123027099003|261022105027099003|261028144727099003|261022075727099003|261026140227099003|261009223027099003|18002099003;
-X-Microsoft-Antispam-Message-Info: 7jeQjxHLNinKT26yhYsXOkgw7yWoKCHl2kTzBr4spuRHiGslzAb0uM9BqXxGjoh2ma3Ck8yHRUQ3Q9+kdKoB3jfkg6P+JtI/Ywq2YTc5J2a2VbACzzoC6w41rZi9LFwzSSZfrLeYCfYlYMRXXoMDz9abgLLIOYzdTJ4WfkK1b6OVXgRTMkzEeosVkdLEWOKF0Yiy5PZp4nnuWDKD68/EdUKNtElQjiTa8Tjqw4Jtzi8G9DK8e2n250TBlkrT/b8h08AqUZdrCUWOs5xBs/83IM3OseYH1neomfq9KBzFgXEMQ0S2ZzR1kPDWdtOyD3LgDFC6S8ldqt7vms8oPxRSDHetaoLzSDgkFPYoSWgeFCQ6/0BDTI9gaLNx1BCsSlvCEYU9pAHGPw0mc6u2Z+8AgL2Gas142neHXM6qBjQiR1u8EJFtF2FeilfMe4xaEj8KR2o/QeMMMc/GyvI/3BogmYfNjuzVM+RxuGtTMJxJETpBB67vcrRpV3g8O4vUnBqLj0X9AzViQnXEvwyLMxJQPJ4T3+7WoulbBVC2Qe01hSMrK1YPLa+NZSbwuJgW20S9puDrRakRwy6gZ5U8RA6YiQ/SNrfBy0YkvOrP9aBYtH575Kvvu8hO0oViTfcGMoUaffQi2u6EqQ+SJM/G1nj1Bk9oic7sSwdp3qjoyLsi/E4CLTD/IcfDo422+O7L8tFAe9XCWq/M3XwbUz+jrz5nkg==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:satlexmb07.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(376014)(82310400026)(23010399003)(1800799024)(36860700016)(261102123227099003)(10067099003)(56012099006)(11063799006)(261021121427099003)(261021123027099003)(261022105027099003)(261028144727099003)(261022075727099003)(261026140227099003)(261009223027099003)(18002099003);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam: BCL:0;ARA:13230040|23010399003|376014|1800799024|82310400026|36860700016|10067099003|261028144727099003|56012099006|261026140227099003|11063799006|261021121427099003|261021123027099003|261022105027099003|261102123227099003|22082099003|261009223027099003|18002099003|6133799003;
+X-Microsoft-Antispam-Message-Info: QvXtQlRoGAswUOh8v9V7leot5vAvI7JGL290S3b3UcjSiuFErsj9aGfBsuQXIhJgI2E77rbjNCxNg7R1jnP+bfxGEOB5BjOA2dhOG7Ugo5dqOwOCSIyF5l9q7XeqTZOWBBd4VScDFCA1Dwb0ckmsJ9ff/FslsplVJdvb0XgbHOSwTmn2wzchK2AOXxTbokPT51Bfl5JGVarDvSDvE5gzwKd0/eUwmp4zlyAqd0SwBug08NRGEkEbXz5it84TzCpV4XIZAH6wBWbJqPF6hoE7D0BFgnz7H3VpkaaYX+TAw/O6VUgutLntHvZHpDEXpHsdC86XY1/p17lsN3Kgc6mX+3qFF9B6FaiHteIA6rXc12ZOLAbV1JT4BvKOcRd1eGCU0Va5Ds6UY5JD8bzcbHnrCFZGkvcMa/pp3z2EKVyKWdNWtdKnKid+/IeLl22WEx5fEGuPMboheiqTfySco94DkKiroDTc7HIAUbiqnWxWf4OacVfGlyk63jgbVED/CmvXnJGI4D40hv9zHrG84CF1mIin+uaE260oTM534CBoXsrItTlYe05ydBqxXew0ndDwObQjuPh0it9L8Y9h5WIjenSgUGNH2Bsut0UivbrFuja4ihEaWLgJAxQAXvzZi+Mc8VLJoX9QuY/31TkSmBfPLhl7/Ya/raGNXys24gwQIlO43DSQv4YsYjUWojWtaOAt00n9l2kXxR5nEGIx7eNluw==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:satlexmb07.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(23010399003)(376014)(1800799024)(82310400026)(36860700016)(10067099003)(261028144727099003)(56012099006)(261026140227099003)(11063799006)(261021121427099003)(261021123027099003)(261022105027099003)(261102123227099003)(22082099003)(261009223027099003)(18002099003)(6133799003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: OqGYXA+OMr8Q7qYiS1yIOMkW2fMEcdbR2ygNHw5j3vLkxEpTfOjYpzQcc+qy07sBBot5nzKoDxBTvyW9+lm3HLVBwXVmg5qIxRfLrFQlznMj50sF3f/YLPEDr52AxeFrghDUJd8FGv2ACCtWWp21os1Of5SaTdZfNz7/ZWrp/kT6dKkpUujKe22kwxZjNy4t7TN4rHtLbSfhoG/ZSV5JOgR6kfB+lEGqAwUwBFeI96o9LFB2tZW8yE4coF9oAp5p7UhwXay9DdShvOkLsdbJrY0XCv4jxMAoypXb2qDyQS2dLLAuC2YLu6VM9I4lwtMMr3dAUYodxLHSNwerADr2vKVCGjRqV2nZAWsTfIyxJjTDUdKi4lMiKFLARmJeY0WfVguqUJzyU8MiMHo/U2bKnGnZO8kWKJNTNZgGMeN6vnt5RHBsoLd0wCubPB2q/yIQ
+X-MS-Exchange-AntiSpam-MessageData-0: sOrxWonGE8QXNMDNG+BTGEwfUK7liEnpLuiLLTrTnbGCFfHtT4PYVT3aLtZcm0OzH9Yhgfen/C8ox59iLM0Vf0SKL5IpJlCl8Aeak2mOQjedtUXS20wkfMntwSXy7vkn312y98Rm1h6BVzh+ehRpjBnq945oEjcb9TxQRKPIAt4d1YC8L6I6SJ+zMEek3YOWpV9caqTQI1jtGUvO43QOGdO4qAYkoVtlBMKhAXIpP0DI1BGUNZOewIi4wRBtgSMllQ1+7mH7jfpNf/AOTulUv4olmLMCah8OmlF5SBw4rrZT67SLSmGrebJZ18OG021n4SNYk/2pC9lZCGUJkbuBY9j2KyWkcZcduzSXekTA30OGAu9YqyLLC/wSfA6dFJwI+92CfwHZNiaPWztIvGlEkN/2d2X1OOFAGQVpIghsGuqbVhWOCTLEqNsMMRD0Kj5X
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Nov 2026 11:01:54.5509
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Nov 2026 11:02:17.2722
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0e50e6dc-b651-4358-acb1-08df46f5b028
+X-MS-Exchange-CrossTenant-Network-Message-Id: cb76ef50-e08a-4484-a7c2-08df46f5bdad
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[satlexmb07.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: PH1PEPF00062F24.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthSource: BN3PEPF00022BD4.namprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB8357
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB6055
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261120_030204_158304_5B3A2721 
-X-CRM114-Status: UNSURE (   9.83  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20261120_030226_034908_6E22D8B3 
+X-CRM114-Status: GOOD (  16.09  )
 X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -143,30 +144,68 @@ X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-This series adds support for resetting SPI NOR devices during resume.
+From: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
 
-The first patch stores the reset GPIO information required to reset the
-flash device, and the second patch uses it to perform the reset during
-resume.
+Upon resume, SPI-NOR triggers the hardware reset API to reset the flash
+device by toggling the GPIO. This step is necessary because after resume,
+the flash needs to be put in SDR mode. To facilitate this, SPI-NOR needs
+GPIO information to reset the flash device. Therefore, a gpio_desc member
+is added to the spi_nor structure to retain the GPIO information and
+utilize it for resetting the device.
 
+Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
 Signed-off-by: Srikanth Boyapally <srikanth.boyapally@amd.com>
 ---
-Amit Kumar Mahapatra (1):
-      mtd: spi-nor: Store GPIO info for resetting device during resume
-
-Sai Krishna Potthuri (1):
-      mtd: spi-nor: Reset flash device on resume
-
- drivers/mtd/spi-nor/core.c  | 18 ++++++++++++++----
+ drivers/mtd/spi-nor/core.c  | 11 +++++++----
  include/linux/mtd/spi-nor.h |  2 ++
- 2 files changed, 16 insertions(+), 4 deletions(-)
----
-base-commit: 6628e7d4c6b25c8d18f1345e3a20d21829aae7e4
-change-id: 20261120-nor_11_20-63a5987645e7
+ 2 files changed, 9 insertions(+), 4 deletions(-)
 
-Best regards,
---  
-Srikanth Boyapally <srikanth.boyapally@amd.com>
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 90524c58602e..11227f8fa8ea 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -3389,11 +3389,14 @@ static int spi_nor_set_mtd_info(struct spi_nor *nor)
+ 
+ static int spi_nor_hw_reset(struct spi_nor *nor)
+ {
+-	struct gpio_desc *reset;
++	struct gpio_desc *reset = nor->reset;
+ 
+-	reset = devm_gpiod_get_optional(nor->dev, "reset", GPIOD_OUT_LOW);
+-	if (IS_ERR_OR_NULL(reset))
+-		return PTR_ERR_OR_ZERO(reset);
++	if (!reset) {
++		reset = devm_gpiod_get_optional(nor->dev, "reset", GPIOD_OUT_LOW);
++		if (IS_ERR_OR_NULL(reset))
++			return PTR_ERR_OR_ZERO(reset);
++		nor->reset = reset;
++	}
+ 
+ 	/*
+ 	 * Experimental delay values by looking at different flash device
+diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+index b3e3c6b10186..46b1f92a490a 100644
+--- a/include/linux/mtd/spi-nor.h
++++ b/include/linux/mtd/spi-nor.h
+@@ -374,6 +374,7 @@ struct spi_nor_flash_parameter;
+  *                      settings that can be overwritten by the spi_nor_fixups
+  *                      hooks, or dynamically when parsing the SFDP tables.
+  * @dirmap:		pointers to struct spi_mem_dirmap_desc for reads/writes.
++ * @reset:		GPIO descriptor for device reset.
+  * @priv:		pointer to the private data
+  */
+ struct spi_nor {
+@@ -415,6 +416,7 @@ struct spi_nor {
+ 		struct spi_mem_dirmap_desc *rdesc;
+ 		struct spi_mem_dirmap_desc *wdesc;
+ 	} dirmap;
++	struct gpio_desc	*reset;
+ 
+ 	void *priv;
+ };
+
+-- 
+2.43.0
 
 
 ______________________________________________________
