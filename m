@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 398F660A260D
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5768960A2608
 	for <linux-mtd@archiver.kernel.org>; Fri, 20 Nov 2026 17:15:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=ZIo/CJf6;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=0zvYjGKa
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=oEmWCl7P;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=wyZRYaA7
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,44 +14,44 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=hr+SZNW246Ayp6U65Ax665rDDMl71NjLEObPdshe+sM=; b=ZIo/CJf6hxJDIVPYbLpQi7GKYz
-	t+WDfjZQ2U7RGk9HyjNj4Zbxn0fzk/ZcQBXK7DDPQ+joBJON9iqkZnuPVFxr6tFhK13tcWNxRrRkw
-	1cTZHTrKK7Z6w0Tq1AmZxD0l5LDkxo1MJmo8GKuNnlQHyNIP3IKRXZ04sUsZKwHkHKtl/FiqnddKX
-	OBmt4fsyp8Vqg03ekY24Co9AFBbA0yu+OoR890ZEvuqKSY4/35w82PdP76fzh4klAveeDgu7hYN9d
-	IB0gg54NhMOj2m7bmrnsNMQGYuGCM3kmIZXHQ4JMBz12GJJxXFQA5DvJOdNPSdFST3CNdkzd1U4YI
-	9HWlScBA==;
+	bh=pNTlIVbOsiY7znK66YJFmnEhBFRBmP4eYdlDAwNja88=; b=oEmWCl7PXFsS9aN+3K6EtJGwX7
+	nutrW1/KKlNMIMMkWXyraNE8upfgiW2ro+rMNr0Sm4aveN8/BYJhDgOSU2XNSJy4pzaGoNHkQ9W4r
+	+U/DGOgnSauO0q6dAaihpgFPXSYIptXRRiWxXPSTqCB7gOIMCsLihQHf3/C8WXgyoCemAiGiOs4Kh
+	ANTudptJYI4YIGl/ZKvRkhZIlhbJDk/87zjoon4w0ml5xkQZQ26PumITuwGwPkBW4JPvsAGV8M0SF
+	1aFFssRjUGl5oXLTyEKd5ikk1dUn6Mgg9fS4YOIl34JAFlvFf245UlV5NdmLr4DnJAumNz9ZBbzUJ
+	nUIY1coA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xUSCW-0000000Fe7L-2St4;
-	Fri, 20 Nov 2026 17:15:04 +0000
-Received: from smtpout-04.galae.net ([185.171.202.116])
+	id 1xUSCX-0000000Fe8J-0IoW;
+	Fri, 20 Nov 2026 17:15:05 +0000
+Received: from smtpout-02.galae.net ([185.246.84.56])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xUSCH-0000000FdzC-4C2x
+	id 1xUSCL-0000000Fdzm-12w6
 	for linux-mtd@lists.infradead.org;
-	Fri, 20 Nov 2026 17:14:55 +0000
+	Fri, 20 Nov 2026 17:14:56 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id A7CB8C62224;
-	Fri, 20 Nov 2026 17:14:52 +0000 (UTC)
+	by smtpout-02.galae.net (Postfix) with ESMTPS id B518C1A175A;
+	Fri, 20 Nov 2026 17:14:51 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id E1113601B9;
-	Fri, 20 Nov 2026 17:14:46 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 61C0011BC0501;
-	Fri, 20 Nov 2026 18:14:42 +0100 (CET)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 8A0A0601B9;
+	Fri, 20 Nov 2026 17:14:51 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 015A511BC0500;
+	Fri, 20 Nov 2026 18:14:47 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1795194884; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1795194889; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=5r1Ij52HuLIX6Cb6AHPmD6axzXsm0u/VJUknky6+iKk=;
-	b=0zvYjGKa5CbmYs1bWtcLeDDgpPTtqwymd8vDuu7goJfvL/KzFupcsywIGICjDQt5ploRnp
-	1dcHj7+ENGnRkxqCAKIzEsq1vg34SkNBG6mpLfArutqThz0NovpmIG3OtCj6GE5paCKQSY
-	f7TNFJfpjAJenNCgK2sgv+JJoWn1mf8cAHeNZNxGXQXPD8AwuWqWGU73FCIS3jeK/70mtD
-	VFi2VjQn6U6AxCrnIaI2T0/64NMq+yrhikq50H8hrz5x+IiZ3vj5tLr6ehVyJpqYNm7BoC
-	1e1nbgbhuFkzYJODu9+B1ytU3hwt7K5rLnnJngTLjWIb0r2yOsi5fjvDCU703g==
+	bh=lJI13tJYjzjGtIHD9Wd2cBZDEmFMRj8+hARz6pmVykE=;
+	b=wyZRYaA7rdUucPHhAgRe3w46AtJR27dhbOgZmFrDyPf3Qj9Z2yWMvm35Jzj/Ce+EcEIhA/
+	AUMvShEeawcwrFFZFNmpmKPlkrrCeUjtXBjfcWGZEPNJLCUs0KSi8cvX6el/rKF64hWQ8p
+	yWNeA0doxrInbs7qQmBIb0VFVf6i1XRm4meS+c3CRVXjpYQS7TJhclXFp9A6V7Ra377TW1
+	LTWwhqSM0yZB9CTnbXAvIfHhrTMYocVLcyCI8zsQyXUZ7Qu0REy7y8Jw0iDU76AKzISD0v
+	kTpcZlFbWooysaos0m7hhq6p03SF9ZFaK+aC60cbcoZZt0OcCe3sHZz5jyXsEQ==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Fri, 20 Nov 2026 18:14:30 +0100
-Subject: [PATCH v4 04/11] spi: spi-mem: Take the DQS wiring into account
+Date: Fri, 20 Nov 2026 18:14:32 +0100
+Subject: [PATCH v4 06/11] spi: cadence-quadspi: Advertise DQS support
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Message-Id: <20261120-winbond-nand-next-phy-tuning-v4-4-8c21e1f71f41@bootlin.com>
+Message-Id: <20261120-winbond-nand-next-phy-tuning-v4-6-8c21e1f71f41@bootlin.com>
 References: <20261120-winbond-nand-next-phy-tuning-v4-0-8c21e1f71f41@bootlin.com>
 In-Reply-To: <20261120-winbond-nand-next-phy-tuning-v4-0-8c21e1f71f41@bootlin.com>
 To: Mark Brown <broonie@kernel.org>, Richard Weinberger <richard@nod.at>, 
@@ -68,8 +68,8 @@ Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, praneeth@ti.com,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261120_091453_064427_91558C31 
-X-CRM114-Status: GOOD (  16.07  )
+X-CRM114-CacheID: sfid-20261120_091453_570809_83B6EAB9 
+X-CRM114-Status: GOOD (  11.15  )
 X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -90,72 +90,38 @@ X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-The DQS line may not be routed between the memory and the controller.
-Parse the spi-dqs-not-wired property when the SPI memory device is
-created and only report DQS as available when the memory supports it and
-the line is wired.
+The Cadence QSPI controller supports DQS read data capture. Advertise this
+capability in the controller memory capabilities so that
+spi_mem_dqs_is_usable() reports DQS as usable when the memory supports it
+and the DQS line is wired.
+
+This lets memory drivers enable the DQS output only when the controller is
+able to make use of it.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/spi/spi-mem.c       | 7 +++++--
- include/linux/spi/spi-mem.h | 2 ++
- 2 files changed, 7 insertions(+), 2 deletions(-)
+ drivers/spi/spi-cadence-quadspi.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
-index 8c283953b302..f2e1ecd49fd6 100644
---- a/drivers/spi/spi-mem.c
-+++ b/drivers/spi/spi-mem.c
-@@ -8,6 +8,7 @@
- #include <linux/dmaengine.h>
- #include <linux/iopoll.h>
- #include <linux/pm_runtime.h>
-+#include <linux/property.h>
- #include <linux/spi/spi.h>
- #include <linux/spi/spi-mem.h>
- #include <linux/sched/task_stack.h>
-@@ -570,11 +571,11 @@ EXPORT_SYMBOL_GPL(spi_mem_set_dqs_pin_available);
-  * @mem: the SPI memory
-  *
-  * Return: a boolean indicating whether the DQS signal is usable or not. DQS is
-- * usable when the memory supports it.
-+ * usable when the memory supports it and the line is wired.
-  */
- bool spi_mem_dqs_is_usable(struct spi_mem *mem)
- {
--	return mem->dqs_pin;
-+	return mem->dqs_pin && mem->dqs_wired;
- }
- EXPORT_SYMBOL_GPL(spi_mem_dqs_is_usable);
- 
-@@ -1142,6 +1143,8 @@ static int spi_mem_probe(struct spi_device *spi)
- 		return -ENOMEM;
- 
- 	mem->spi = spi;
-+	mem->dqs_wired = !device_property_read_bool(&spi->dev,
-+						    "spi-dqs-not-wired");
- 
- 	if (ctlr->mem_ops && ctlr->mem_ops->get_name)
- 		mem->name = ctlr->mem_ops->get_name(mem);
-diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
-index 85a61ac62e2c..73fab3b004b5 100644
---- a/include/linux/spi/spi-mem.h
-+++ b/include/linux/spi/spi-mem.h
-@@ -276,6 +276,7 @@ struct spi_mem_dirmap_desc {
-  * @drvpriv: spi_mem_driver private data
-  * @name: name of the SPI memory device
-  * @dqs_pin: the memory provides a DQS pin
-+ * @dqs_wired: the DQS line is routed to the controller
-  *
-  * Extra information that describe the SPI memory device and may be needed by
-  * the controller to properly handle this device should be placed here.
-@@ -288,6 +289,7 @@ struct spi_mem {
- 	void *drvpriv;
- 	const char *name;
- 	bool dqs_pin;
-+	bool dqs_wired;
+diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
+index 2982df7fd092..72a5101c4a8c 100644
+--- a/drivers/spi/spi-cadence-quadspi.c
++++ b/drivers/spi/spi-cadence-quadspi.c
+@@ -3770,12 +3770,14 @@ static const struct spi_controller_mem_ops cqspi_mem_ops = {
+ static const struct spi_controller_mem_caps cqspi_mem_caps = {
+ 	.dtr = true,
+ 	.per_op_freq = true,
++	.dqs = true,
  };
  
- /**
+ static const struct spi_controller_mem_caps cqspi_am654_mem_caps = {
+ 	.dtr = true,
+ 	.per_op_freq = true,
+ 	.no_cs_assertion = true,
++	.dqs = true,
+ };
+ 
+ static int cqspi_setup_flash(struct cqspi_st *cqspi)
 
 -- 
 2.56.0
