@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B1A8606A335
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B692606A339
 	for <linux-mtd@archiver.kernel.org>; Fri, 20 Nov 2026 17:16:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=i1Hy5Kau;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=wY1wnTDJ
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=iytKHsAS;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=fHR6XY/d
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,45 +14,45 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=krObHQ+5Cb2BcCTpXwDMjqZZ1EOHipYQKxr0Xf3iI5k=; b=i1Hy5KauyHd89q4RPF2WgZkTfp
-	y1Lkp/7Ofwo/m00hVgkSoI3Msw7LElLmLfxbksMn+xZxQQpJPWuzjJUu23U4YbZo5uIaAX1ZHxe33
-	5xP+MDZqtJqZQQugHbib8XPgObsGj2zVMQRKGI1uCNgroo3oownCcHGTro9eT8lMnDuH8xW0rBczl
-	BWNRbC5VU+A3JNHkckRcKw0lF62tywAucFffqWnA0Ll4IxJXLnD+pA9j6RtgfdfK8ZZ10luUqBuYF
-	581QZAJKOC5uIJqsFisugccPSnwAu5wRivtbEp3CiogNjGa5Jgxf993z0xPGHEvsD48IPv8+EHY0G
-	Tn0e1Hpw==;
+	bh=XgDmuMkCFdk9jZ7SIyK9icE4xKorQtIPHr/ghiu1rO4=; b=iytKHsASnr8XEdvlrOk473K4rw
+	xKeQtpsNxl+OqYg4P+U41hEXb0DWVBKRZUI2Ieouvic3ywrfxsJiOkkpjFMiuEgrj7J41W4OQI29T
+	qw5Rwz+UKaLpeN9BH2IJ32LqwIN0e9pESG+4y/17q2DC/LD0Kff4I2SBl+6xpbQCjW21mMTyRzDIZ
+	XX20mVddjRL1olplB9KaNpy6yTsfFYU9bsMsy3d0koDd4DCzXjj8GNvzgjYW5pL1eSJe7mCGNBz30
+	Dx4XJyvRAOY0HkFwUzCjpqeXcEz3WMO3NHt+F8n/gW85nre7wL+EFMM1o/8nybvhEggvj0aOtv+md
+	r89JG3VA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xUSDW-0000000FeXw-1Ecc;
-	Fri, 20 Nov 2026 17:16:06 +0000
-Received: from smtpout-04.galae.net ([185.171.202.116])
+	id 1xUSDX-0000000Fean-0AQU;
+	Fri, 20 Nov 2026 17:16:07 +0000
+Received: from smtpout-02.galae.net ([185.246.84.56])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xUSCW-0000000Fe6H-0pai
+	id 1xUSCX-0000000Fe6f-0roV
 	for linux-mtd@lists.infradead.org;
-	Fri, 20 Nov 2026 17:15:05 +0000
+	Fri, 20 Nov 2026 17:15:07 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id 5C6BAC6221F;
-	Fri, 20 Nov 2026 17:15:08 +0000 (UTC)
+	by smtpout-02.galae.net (Postfix) with ESMTPS id ADE071A1754;
+	Fri, 20 Nov 2026 17:15:03 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 8A004601B9;
-	Fri, 20 Nov 2026 17:15:02 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 074FA11BC0554;
-	Fri, 20 Nov 2026 18:14:54 +0100 (CET)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 824A1601B9;
+	Fri, 20 Nov 2026 17:15:03 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 97D3811BC05A8;
+	Fri, 20 Nov 2026 18:14:58 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1795194898; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1795194900; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=sbrnTC1O3lLMY5mwmHSs1TEwBYsx23gEPdvUD7iMI6c=;
-	b=wY1wnTDJHs5MHmOCM+XI+uIWkVUFCTb/K5sDaV7u81Hy/T/CVml20RkhdzZRXxlSab4EBV
-	2WqIp1fEBW7KmH/nKSTQniMoSv8ivEeYuTTTgsG5ZMsLhbFs3rQ/RC8+X62fkB91yosBSA
-	FOfTOexSNkwo4w1mdQ7rFOIsJwcBeC3X5BJ/ZRnFIXANeYZNfMmoBjEXLbhMrhGWRuA2LH
-	0e5GAPDkkavzt55KA/Xd3XhoxIrTH3LhLZcZAz+TQpBQf7rs4aOgcz0v/MBd/Hm7vlHesP
-	48DSIjWUkA5voxpNor53qqcRC0mxnz0n+nFszyiJpJDiLW4KWPfyVW7ETC4O7g==
+	bh=31+QEQkTdBsAyjdQylHnzUm9tPSei/fUeG542zDh7q0=;
+	b=fHR6XY/dsAuwkq49kqO1G1gpUJP18bQnFEHtqr2pY7KpDvCdkr87Rwh7YZhIvsLktmfC04
+	kcNsvcVM5iVKZdKENVsIDsam65sE40JjUcsLgDMSQXITFGRD0nof1letJMJyRE/R/jt9Bg
+	2UW+K39vOD8hY04ZbMcWizS4qb+A1PDRUGnlpjCGf0DTT6SoCbl5K6ICBHqF9ji0qwz3a8
+	IcogV3nNRdxH9BOr9E0u3Ph8TuPjQ331sMkiRAapC7yXlyRhH6LRHReaMjkM4bOIHEaaUd
+	PS9MRvB5O0vxPONabqGAyNVLpb0McN0fsI7kcDwBuedREZNdrDFwHjImOx1SYA==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Fri, 20 Nov 2026 18:14:35 +0100
-Subject: [PATCH v4 09/11] mtd: spi-nor: Advertise DQS support for octal DTR
- flashes
+Date: Fri, 20 Nov 2026 18:14:36 +0100
+Subject: [PATCH v4 10/11] mtd: spi-nand: Set the DQS spi-mem capability if
+ available
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Message-Id: <20261120-winbond-nand-next-phy-tuning-v4-9-8c21e1f71f41@bootlin.com>
+Message-Id: <20261120-winbond-nand-next-phy-tuning-v4-10-8c21e1f71f41@bootlin.com>
 References: <20261120-winbond-nand-next-phy-tuning-v4-0-8c21e1f71f41@bootlin.com>
 In-Reply-To: <20261120-winbond-nand-next-phy-tuning-v4-0-8c21e1f71f41@bootlin.com>
 To: Mark Brown <broonie@kernel.org>, Richard Weinberger <richard@nod.at>, 
@@ -69,8 +69,8 @@ Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, praneeth@ti.com,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261120_091504_437951_D55DE0FA 
-X-CRM114-Status: GOOD (  12.71  )
+X-CRM114-CacheID: sfid-20261120_091505_655752_3CD2D4B4 
+X-CRM114-Status: GOOD (  11.72  )
 X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -91,40 +91,48 @@ X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-The SPI NOR core does not advertise the DQS capability to the controller,
-so spi_mem_dqs_is_usable() returns false for SPI NOR flashes even when
-they support DQS. Controllers able to use DQS read data capture are
-therefore not able to enable it with octal DTR flashes.
+Check whether the NAND is capable of generating a DQS signal and advertise
+the capability through the spi-mem layer. Do it as soon as the chip is
+identified and before the SSDR/ODTR operation variants are negotiated, so
+that controllers can take the capability into account when they need it.
 
-Advertise the DQS pin when the read protocol is octal DTR. DQS support is
-a per-flash capability which should be described in the flash_info tables,
-but there is no flag for it yet. Keep a TODO in the code and enable the
-feature by default for all octal DTR flashes until the per-flash
-description is added.
+Whether the DQS line is actually wired is described by the
+spi-dqs-not-wired DT property and handled by the spi-mem layer, which
+only reports DQS as available when the chip supports it, the line is
+wired and the controller can use it.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/spi-nor/core.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/mtd/nand/spi/core.c | 3 +++
+ include/linux/mtd/spinand.h | 1 +
+ 2 files changed, 4 insertions(+)
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index ecf5fdf38471..b78c8fb5a101 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -3638,6 +3638,13 @@ static int spi_nor_probe(struct spi_mem *spimem)
- 			return -ENOMEM;
- 	}
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index fee4a48b4c7f..6e1b7976d237 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -1797,6 +1797,9 @@ int spinand_match_and_init(struct spinand_device *spinand,
+ 			}
+ 		}
  
-+	/*
-+	 * TODO: DQS support is a per-flash capability which should be described
-+	 * in the flash_info tables, it is considered enabled by default.
-+	 */
-+	if (nor->read_proto == SNOR_PROTO_8_8_8_DTR)
-+		spi_mem_set_dqs_pin_available(spimem);
++		if (spinand->flags & SPINAND_HAS_DQS)
++			spi_mem_set_dqs_pin_available(spinand->spimem);
 +
- 	/*
- 	 * Populate the persistent template and run PHY tuning before dirmap
- 	 * creation so the validated frequency feeds into the dirmap op.
+ 		/* I/O variants selection with octo-spi DDR commands (optional) */
+ 
+ 		ret = spinand_init_odtr_instruction_set(spinand);
+diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+index 87107f0955eb..990d3e9ac3fe 100644
+--- a/include/linux/mtd/spinand.h
++++ b/include/linux/mtd/spinand.h
+@@ -492,6 +492,7 @@ struct spinand_ecc_info {
+ #define SPINAND_HAS_READ_PLANE_SELECT_BIT		BIT(3)
+ #define SPINAND_NO_RAW_ACCESS				BIT(4)
+ #define SPINAND_ODTR_PACKED_PAGE_READ			BIT(5)
++#define SPINAND_HAS_DQS					BIT(6)
+ 
+ /**
+  * struct spinand_ondie_ecc_conf - private SPI-NAND on-die ECC engine structure
 
 -- 
 2.56.0
