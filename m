@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B68460A2600
-	for <linux-mtd@archiver.kernel.org>; Fri, 20 Nov 2026 12:27:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9094B60A2605
+	for <linux-mtd@archiver.kernel.org>; Fri, 20 Nov 2026 12:27:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=sxZiJWJn;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=kLbMn2xB
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=A2iUhdYQ;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=D/hWv9yE
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,48 +14,48 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=/UW7No5KyLuMKp82iBB9mbNTrUasPAyACAfihxO+i8g=; b=sxZiJWJn46PIELycK8RySzQOsN
-	rAOR2bJUdG2VZD/Px4hTy4R94wxsIJFS5tZZAJlo4tHzRmENp90lddSrnmwZw3GpmEOT8NJPy4obE
-	nyacJ90vaWBvGzJTMaEt0CnAeq4lbJoThMaZFc5D1tJi2lbLPZuriuyQgatYiw+PS2cwLvZWHml4+
-	4XypP4FBDYeryuSJPbAaw79RuXQQ5gzh9P4wJngxbFVrkIqLGyq4p8MqiGJIQJohgCl/VzOR0KkAf
-	SQ9BApUBCi5gBfhEZJ/4gQFRfb71Q6qls7X93OMVXVpCzcVdZ2yOWz69IrEsiCaPFJ1r3kLDc+5XF
-	72PfUxew==;
+	bh=9hDEAPMllThKGR6rJWLQrQt2//kOnXIixwQsMqWcdfY=; b=A2iUhdYQBf+IxdisDda51AMx76
+	9YXXTTJJrikYf+M0bmv4SBwUE29DoaqGf/sCMzKUbU7K7A+d3SimH7WnecSDflMOKhGGBLR2bGCct
+	QsBLYaGp2HJt8DM3A1+GGlurNMR3DNhFCorEghX9KdjIv1p/jFl0wz7zuu4mje4u7HuuqWDIMPFuT
+	0lwqbWb1oMOrARDAk/NpAZ7vapIIcmHlD+O1PYJel5fHbQi7ZFK3ERxMHpAUPG3EYxD+tf4rdeSX+
+	yAxgtimDP+lOyrpeVanqxkqMoXUtBqZLx3Sstr18ms0RUvxHSuko92g9IFn4aFbdKs9sXspG69Lgk
+	AxdVdzSg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xUNi9-0000000ExBp-0gYE;
-	Fri, 20 Nov 2026 12:27:25 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1xUNiB-0000000ExDB-1Fqz;
+	Fri, 20 Nov 2026 12:27:27 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xUNi7-0000000ExB2-31tS
+	id 1xUNiA-0000000ExCD-0TDI
 	for linux-mtd@lists.infradead.org;
-	Fri, 20 Nov 2026 12:27:23 +0000
+	Fri, 20 Nov 2026 12:27:26 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 2869561160;
+	by tor.source.kernel.org (Postfix) with ESMTP id 8E6FC61DF5;
+	Fri, 20 Nov 2026 12:27:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91B401F000D2;
 	Fri, 20 Nov 2026 12:27:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F1F01F000E1;
-	Fri, 20 Nov 2026 12:27:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1795177642;
-	bh=WeFdTE4PR68OQCnZa7+zxRrhnvY3a7YtcGXshXCKTgo=;
+	s=k20260515; t=1795177645;
+	bh=TU45TieMHnoNsAzLGBQ9WAzCc/Ph1uI6h74S+nvnSBU=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date;
-	b=kLbMn2xBkz95rHft/v4+ZMDSvSxBYWNlZDLIhB6PVLI4VtASoCQJ/dnAvVS6PZvDc
-	 0N0sOxY/8fWX0z8fi3SbwvjHIkiLqX3Qt9SesXVtORAXSWYh1sIuSeuFRhPlCLnZNb
-	 KsxYvYWlYBpoiINnrEjEb71oEw0J4Sz53YiHJOqdtNyrIO0pND3R/ozy2j845BY2oP
-	 h467FfPfq5TpapIMMiK9OZEJOjsz9nqXKxcKVFUkmgANhwvUM+ETv5H1BMx6QYLAjQ
-	 5x/MIwyDIReeF94wsHu5b/Qm2U1xy/RbjMbL4vEZnEaCODy51ay+wEVgEGsY/KbCUK
-	 4a3/gcNZZ/G6Q==
+	b=D/hWv9yERp0ILvAGLn7xFqt1CMmapEK+cXBt0JXJfbu9LUdRm3dIVNXf4kaTvr5ju
+	 gvkzOrboyyesa5j1+QYu9T/hKd2rdLBFH9ioClASRw411PZhh16SawaEkHgTPNpn2F
+	 onfDPncQW4SGssT6lb4xEps7tBQlUQTtDQ5TBloSjXLpiCfJrx/+gJVp6c5PY4pB19
+	 UyvVrDqsVQyVg+aAK2L2xGMj5Pury0gO4jQuEvovpJhtis5iDwNUO/dnTll31Z+U74
+	 v23/RW/cy/7NR92JcQ1Tk09cEjRjcXSXfCzmKL6okU/68K3r0FqV5ySHCEUGZkdWYX
+	 l1WIuW4U3gs1g==
 From: Michael Walle <mwalle@kernel.org>
 To: Pratyush Yadav <pratyush@kernel.org>, 
- Bart Van Assche <bvanassche@acm.org>
-Cc: Takahiro Kuwano <takahiro.kuwano@infineon.com>, 
+ Takahiro Kuwano <takahiro.kuwano@infineon.com>, 
  Miquel Raynal <miquel.raynal@bootlin.com>, 
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-In-Reply-To: <1b755e40b80fded4b4b4c1f1c81f0d171012a1de.1793999093.git.bvanassche@acm.org>
-References: <1b755e40b80fded4b4b4c1f1c81f0d171012a1de.1793999093.git.bvanassche@acm.org>
-Subject: Re: [PATCH] mtd: spi-nor: Reschedule in spi_nor_wait_till_ready()
-Message-Id: <179517764105.1011003.7250063376346500539.b4-ty@b4>
-Date: Fri, 20 Nov 2026 13:27:21 +0100
+ Changhuang Liang <changhuang.liang@starfivetech.com>
+Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+In-Reply-To: <20261111101240.7378-1-changhuang.liang@starfivetech.com>
+References: <20261111101240.7378-1-changhuang.liang@starfivetech.com>
+Subject: Re: [PATCH v1 0/3] Add 1S-xD-xD DTR support for SPI NOR
+Message-Id: <179517764333.1011003.5755754465844686253.b4-ty@b4>
+Date: Fri, 20 Nov 2026 13:27:23 +0100
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 X-Mailer: b4 0.16.0
@@ -79,25 +79,26 @@ X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
 
-On Fri, 06 Nov 2026 13:04:53 -0800, Bart Van Assche wrote:
-> In spi_nor_wait_till_ready_with_timeout(), cond_resched() is only
-> called after spi_nor_ready() returns 0. If the flash is already ready on
-> the first status check, the function returns before reaching
-> cond_resched(). This happens e.g. under QEMU, where SPI NOR page
-> programs and sector erases complete synchronously during the MMIO write,
-> combined with a controller driver that polls without sleeping.
-> Consequently, multi-sector erases in spi_nor_erase() and multi-page
-> writes in spi_nor_write() may iterate over thousands of sectors or pages
-> without ever yielding the CPU on kernels built without
-> CONFIG_PREEMPTION, e.g. ARM32 kernels with CONFIG_PREEMPT_VOLUNTARY=y.
-> This triggers soft lockup and RCU stall reports.
+On Wed, 11 Nov 2026 02:12:37 -0800, Changhuang Liang wrote:
+> SPI NOR already defines the 1S-xD-xD DTR protocols (1S-1D-1D, 1S-2D-2D,
+> 1S-4D-4D, 1S-8D-8D), but spi_nor_spimem_setup_op() treats every DTR
+> protocol like 8D-8D-8D: it marks the command phase as DTR and turns
+> the opcode into a 2-byte opcode + extension. No flash declares these
+> protocols today, so the path has never been used.
+> 
+> This series makes the 1S-xD-xD protocols usable and enables the first
+> user(MX66L1G45G).
 > 
 > [...]
 
 Applied, thanks!
 
-[1/1] mtd: spi-nor: Reschedule in spi_nor_wait_till_ready()
-      commit: bcfbc784fce431f0f2b0a25c238b61feda2b710a
+[1/3] mtd: spi-nor: Support mixed 1S-xD-xD DTR protocols in spi_nor_spimem_setup_op()
+      commit: 20b85b6067e976c4a820eb0b099edc4735feed6c
+[2/3] mtd: spi-nor: debugfs: Correct DTR protocol names for 1S-xD-xD modes
+      commit: ed4a5fefe5134816d3827b3a44572b95af042863
+[3/3] mtd: spi-nor: macronix: Add 1-4-4 DTR read support for MX66L1G45G
+      commit: 7a7f426ca93dbbcb0a2b4f52fe48226fc2be71ca
 
 Best regards,
 -- 
