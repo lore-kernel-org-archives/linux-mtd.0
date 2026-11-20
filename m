@@ -2,68 +2,65 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07C42606A331
-	for <linux-mtd@archiver.kernel.org>; Fri, 20 Nov 2026 12:41:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F5BF606A32A
+	for <linux-mtd@archiver.kernel.org>; Fri, 20 Nov 2026 12:56:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=m4QtFG6F;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=hso3mAMK
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=giq9nMq4;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=QZgFJpCS
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:References:From:Cc:Subject:To:Message-Id:Date:Mime-Version:
+	In-Reply-To:References:To:From:Cc:Subject:Message-Id:Date:Mime-Version:
 	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
 	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=v49o9GaFu5bvoTwnfKH2OrYkVdEoUVDcU+aUi36JRNg=; b=m4QtFG6Ff/xsJFklL4gGncb9I4
-	lFmWVcZ1ptLEDl/xGqYXVu6L/NCZI6f/+bbmXP8GVhEp8fw7InO4CARdaQpjDIlPp/BV6mPV3TaSH
-	JDG1Jpk2CR33lYFN96xft7cxGSIfOO1ejX0lP9PDZdTOatYaxHSypDJ6wZFZ0dipwihqtfldy3Fws
-	/nwBPEG6BTFI/6URh2A56pCq3ClM/KJgRnHpYt63smqTcncKd2EDB9GnnZi3EeCPWdNBc+ZXxmeYk
-	RDs0p4BS/kCBK8Vl39OqVQ3bIvBNA9VLGIVxG7aL1HQxTTrzwhmDNzHe50YyW1WRKu2x0DSZNzCQ2
-	Jn9AJv1Q==;
+	bh=s1nYNVugtvZ7hMFQcyuhcmqPB0NgGwCf0SHyOqjgnZs=; b=giq9nMq4v0aO+KxzkeovS1MQoW
+	zLN6M5C6oa4mu3xJmTUa1xeLQtdrKeoEuqZ0FyCdrYYy2MF3s3Y/KpFjk6e+I7Gfo62RrJtu3A5RF
+	0XY/d6Ga8r7hmoGjUgJoGIre9c4B9TL/b7YMAJIJetzIODXmnHsNuo765dutRmQmN+aVvdYd7dEzT
+	xseUYK6Wn6UQl3vXdMLcd/se/86yWJ8Vr/Ddsh3EfoDshE5x723Zx3KX/kl8me8MRVkx544pJCFYS
+	N3QAgjcUOKTGf189qrMZkNt8ROEPb+54fyi9NFNbggBkHy38vESSIHJglypKXv952PFwLIwJ0sZ7s
+	KReaWE8w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xUNvh-0000000EzRg-46Ki;
-	Fri, 20 Nov 2026 12:41:25 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1xUOAd-0000000F1WS-0e4t;
+	Fri, 20 Nov 2026 12:56:51 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xUNvg-0000000EzRG-2GyC
+	id 1xUOAa-0000000F1U5-1CYd
 	for linux-mtd@lists.infradead.org;
-	Fri, 20 Nov 2026 12:41:24 +0000
+	Fri, 20 Nov 2026 12:56:48 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with UTF8SMTP id 175A6403CA;
-	Fri, 20 Nov 2026 12:41:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id 51C541F000CA;
-	Fri, 20 Nov 2026 12:41:23 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with UTF8SMTP id F076B4675B;
+	Fri, 20 Nov 2026 12:56:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id 427CC1F000E0;
+	Fri, 20 Nov 2026 12:56:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1795178483;
-	bh=pOz5Kp9Rx77Id2rt+cmAdtztYLE/96Bihgs/QD1W4Ds=;
-	h=Date:To:Subject:Cc:From:References:In-Reply-To;
-	b=hso3mAMKKr1LtxhrYacAuDi5W3FY/TsDpioBP9WvasaMxmR603VWxr5AAoZfadPtD
-	 GRn+eYgWucP6Dt0PEHvYfCk7lfiwXO4v9nHpRQ4AopeVhxSnevQb5fujM2iPZ3oR21
-	 t3obW9Y/gpmGQUZLUt6e2IdBUV0XI2ApJnOkWVLtsmWbE942T04u+IgWBJIYFWMmfS
-	 dKuVP8HFswJSP8tUwNfBcAyJ+mF+D3YG72F0uZnnQ5dpGu7BgBFhJmNJ4lr1EbXO9L
-	 /EqZDPuZlxvgKTJZcupnla90tT20DBDUtMSIVyn2q/lwGMjmlT6NpFyZ9yM4F4+7rB
-	 Ai1Jm9Fq4vIYg==
+	s=k20260515; t=1795179407;
+	bh=tFUgsonzdWZLAS1pzTBqmSJ/wCyu7F0wrC3wsF9xA4k=;
+	h=Date:Subject:Cc:From:To:References:In-Reply-To;
+	b=QZgFJpCSXGErrdr7UZI00oLmHhVCCzdMT8VQHkB/2F1wAFIhB2Ju7hPV/BR3TRngO
+	 2DF7hTlWHP0e56sa6XPyR0a3O+pwhnGkBosvxlP90u4xA+4hZ1iizknD54IuFKdvXC
+	 E5OV5R2Nkkdp4lOpFjF7YlbZB+687R7APSJT44S5a/zSOS+V92V4LcgaXW7ybsu3wm
+	 MCPcj3qs08uw2zjtBZude5YsTD7MdmOjbvu2xJxiaVYJ6ALPWmLOFprSq0KuQDpv/C
+	 qV4hKlPDWeom4IzCEEAZTnV6CLX1D5QJFe3IeNbVhXXCAuba4dHHR1tdGOFhGZ0z48
+	 2DRKoKoEQ/WCg==
 X-Archived-By: <archiver.kernel.org>
 Mime-Version: 1.0
-Date: Fri, 20 Nov 2026 13:41:19 +0100
-Message-Id: <DN01NSO0FLT0.11GY6QPV7JVR4@kernel.org>
-To: "Cheng Ming Lin" <linchengming884@gmail.com>, "Marek Vasut"
- <marex@nabladev.com>
-Subject: Re: [PATCH v2] mtd: spi-nor: Describe locking support for
- MX25L51245G
-Cc: "Pratyush Yadav" <pratyush@kernel.org>, "Miquel Raynal"
- <miquel.raynal@bootlin.com>, "Richard Weinberger" <richard@nod.at>,
- "Vignesh Raghavendra" <vigneshr@ti.com>, "Takahiro Kuwano"
- <takahiro.kuwano@infineon.com>, "Maarten Zanders" <maarten@zanders.be>,
- "Cheng Ming Lin" <chengminglin@mxic.com.tw>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Date: Fri, 20 Nov 2026 13:56:44 +0100
+Message-Id: <DN01ZL81VTHB.3PB0JO4WI6WU0@kernel.org>
+Subject: Re: [PATCH v11 00/19] spi: cadence-quadspi: add PHY tuning support
+Cc: <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+ <praneeth@ti.com>, <sebin.francis@ti.com>, <u-kumar1@ti.com>,
+ <srikanth.boyapally@amd.com>, <m-shah@ti.com>
 From: "Michael Walle" <mwalle@kernel.org>
+To: "Santhosh Kumar K" <s-k6@ti.com>, <broonie@kernel.org>,
+ <robh@kernel.org>, <krzk+dt@kernel.org>, <conor+dt@kernel.org>,
+ <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+ <pratyush@kernel.org>, <takahiro.kuwano@infineon.com>
 X-Mailer: aerc 0.20.0
-References: <20261024001658.222147-1-marex@nabladev.com>
- <8ee5b312-80bc-4584-ac35-cc76c2812c5d@nabladev.com>
- <20261028081534.945416-1-linchengming884@gmail.com>
-In-Reply-To: <20261028081534.945416-1-linchengming884@gmail.com>
+References: <20261105105832.2134313-1-s-k6@ti.com>
+In-Reply-To: <20261105105832.2134313-1-s-k6@ti.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,7 +70,7 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============9024688794372664824=="
+Content-Type: multipart/mixed; boundary="===============0179370182038993833=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 X-Spam-Status: No, score=-3.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
@@ -82,86 +79,125 @@ X-Spam-Status: No, score=-3.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
---===============9024688794372664824==
+--===============0179370182038993833==
 Content-Type: multipart/signed;
- boundary=654c4deafe92b97eeb8f531c0823c0f759ccbbe1599d33a102b0087920a3;
+ boundary=cd2dae19cb24704fa8f412b0fcbc099e07be2af6d62f1bb1ea7d9fe316ac;
  micalg=pgp-sha384; protocol="application/pgp-signature"
 
---654c4deafe92b97eeb8f531c0823c0f759ccbbe1599d33a102b0087920a3
+--cd2dae19cb24704fa8f412b0fcbc099e07be2af6d62f1bb1ea7d9fe316ac
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
 
-Hi,
+On Thu Nov 5, 2026 at 11:58 AM CET, Santhosh Kumar K wrote:
+> This series implements PHY tuning support for the Cadence QSPI controller
+> to enable reliable high-speed operations. Without PHY tuning, controllers
+> use conservative timing that limits performance. PHY tuning calibrates
+> RX/TX delay lines to find optimal data capture timing windows, enabling
+> operation up to the controller's maximum frequency.
+>
+> Background:
+> High-speed SPI memory controllers require precise timing calibration for
+> reliable operation. At higher frequencies, board-to-board variations make
+> fixed timing parameters inadequate. The Cadence QSPI controller includes
+> a PHY interface with programmable delay lines (0-127 taps) for RX and TX
+> paths, but these require runtime calibration to find the valid timing
+> window.
+>
+> Approach:
+> Add SDR/DDR PHY tuning algorithms for the Cadence controller:
+>
+> SDR Mode Tuning (1D search):
+>  - Searches for two consecutive valid RX delay windows
+>  - Selects the larger window and uses its midpoint for maximum margin
+>  - TX delay fixed at maximum (127) as it's less critical in SDR
+>
+> DDR Mode Tuning (2D search):
+>  - Finds RX boundaries (rxlow/rxhigh) using TX window sweeps
+>  - Finds TX boundaries (txlow/txhigh) at fixed RX positions
+>  - Defines valid region corners and detects gaps via binary search
+>  - Applies temperature compensation for optimal point selection
+>  - Handles single or dual passing regions with different strategies
+>
+> Patch description:
+> Infrastructure (1-5):
+>  - Patch 1:   Add spi-max-post-config-frequency-hz to describe maximum
+>               frequency achievable post controller configuration
+>  - Patch 2:   Add spi-phy-pattern-partition phandle for
+>               NOR flash PHY tuning pattern location
+>  - Patch 3:   Parse spi-max-post-config-frequency-hz in spi.c; adds
+>               spi_device.post_config_max_speed_hz (0 when not set
+>               keeping all existing DT fully compatible)
+>  - Patch 4:   Extend spi_mem_adjust_op_freq() with a bypass: if
+>               op->max_freq equals post_config_max_speed_hz, return
+>               immediately leaving op->max_freq unchanged. All other
+>               ops are capped to max_speed_hz. Also require per_op_freq
+>               controller capability for post-config ops in
+>               spi_mem_default_supports_op()
+>  - Patch 5:   Add execute_tuning callback to spi_controller_mem_ops and
+>               spi_mem_execute_tuning() wrapper in SPI-MEM core;
+>               serialises access via spi_mem_access_start/end and
+>               rejects GPIO chip selects
+>
+> Cadence QSPI Implementation (6-14):
+>  - Patch 6:   Move cqspi_readdata_capture() earlier (preparatory)
+>  - Patch 7:   Add DQS bit to cqspi_readdata_capture() (preparatory)
+>  - Patch 8:   Add complete PHY tuning support: DLL management, pattern
+>               verification (NOR via spi-phy-pattern-partition phandle,
+>               NAND via write-to-cache), SDR 1D and DDR 2D search
+>               algorithms with temperature compensation, AM654-specific
+>               execute_tuning entry point
+>  - Patch 9:   Reject 2-byte-address DDR operations via a new
+>               CQSPI_NO_PHY_TUNING_WITH_ODDR_2B_ADDR quirk flag to work
+>               around AM654 OSPI erratum i2383
+>  - Patch 10:  Refactor direct read path for PHY support (preparatory)
+>  - Patch 11:  Enable PHY for direct reads at the calibrated frequency
+>               when both transfer boundaries are 16-byte aligned,
+>               falling back to non-PHY DMA otherwise; also reprograms
+>               DLL on chip-select switch when two devices have
+>               different calibrated settings
+>  - Patch 12:  Enable PHY for indirect writes of at least
+>               CQSPI_PHY_MIN_INDIRECT_WRITE_LEN bytes
+>  - Patch 13:  Reprogram per-device CS timing on any chip-select switch
+>  - Patch 14:  Reprogram the PHY DLL (master config and RX/TX taps) on
+>               runtime resume, since the DLL loses its lock when the
+>               OSPI controller is power-gated
+>
+> MTD core (15-19):
+>  - Patch 15:  Extract spinand_select_op_variant() into a shared helper
+>               spinand_op_find_best_variant() with a skip_mask
+>  - Patch 16:  Negotiate optimal controller operating point before dirmap
+>               creation; iterate all read variants in performance order
+>               across ODTR and SSDR interfaces; re-pair cont_read_cache af=
+ter
+>               PHY tuning via protocol-shape matching
+>  - Patch 17:  Extract spi_nor_spimem_get_read_op() helper (preparatory)
+>  - Patch 18:  Execute controller optimization in spi_nor_probe() before
+>               creating dirmaps
+>  - Patch 19:  Reset max_read_op frequency for security register reads
 
-sorry for the slow response.
+So what is the merging strategy here? Getting the first parts in and
+then getting the spinand and spi_nor in in the next cycle?
 
-On Wed Oct 28, 2026 at 9:15 AM CET, Cheng Ming Lin wrote:
-> On 10/24/26 2:18 AM, Marek Vasut wrote:
->> Cheng Ming , can you (or someone from Macronix) please have a look at
->> this patch and confirm that it is OK ?
->
-> I checked the patch against the MX25L51245G datasheet. RDCR (0x15),
-> CR bit 3 as TB, the TB bit being OTP, and the 4-BP locking scheme all
-> match the datasheet, so the description is correct from our side.
->
-> One concern, in line with the sashiko-bot comment: since locking is
-> an optional feature, I think failing to read CR should not fail the
-> probe. Controllers with a restricted opcode set (e.g. spi-intel) will
-> return -EOPNOTSUPP for 0x15, and this part probes fine on them today
-> with macronix_qpp4b_fixups. Rather than special-casing -EOPNOTSUPP,
-> how about just leaving locking disabled on any CR read error, e.g.:
->
-> 	/*
-> 	 * Locking is optional. If CR cannot be read (e.g. the controller
-> 	 * does not support RDCR), leave locking disabled instead of
-> 	 * failing the probe.
-> 	 */
-> 	if (mx25l51245_read_cr(nor, nor->bouncebuf))
-> 		return 0;
->
-> Michael, a related question for you. Maarten posted a series last
-> year to make the RDCR opcode configurable in the core and use 0x15
-> for Macronix:
->
-> https://lore.kernel.org/linux-mtd/20250922155635.749975-1-maarten@zanders=
-.be/
->
-> It stalled because setting 0x15 for all Macronix parts is wrong (e.g.
-> MX25L12805D has no RDCR), and because there was no user of RDCR at the
-> time. This patch is now such a user.
->
-> I have gone through the flashes currently in the Macronix ID table
-> and checked which ones do not have a CR / do not support RDCR. If it
-> helps, I can add this information per flash entry, so that 0x15 is
-> only used for the parts that actually support it. For IDs that are
-> shared by several parts, RDCR would only be enabled if all of them
-> support it. That should address the concern on Maarten's series, and
-> this patch could then simply use spi_nor_read_cr() instead of
-> implementing its own RDCR helper in macronix.c.
->
-> Would that be an acceptable direction?
-
-Yes and in fact with the recent changes, you should be able to set
-.read_sr2.
+FWIW, the spi-nor parts looks good.
 
 -michael
 
---654c4deafe92b97eeb8f531c0823c0f759ccbbe1599d33a102b0087920a3
+--cd2dae19cb24704fa8f412b0fcbc099e07be2af6d62f1bb1ea7d9fe316ac
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCawA/8BIcbXdhbGxlQGtl
-cm5lbC5vcmcACgkQEic87j4CH/jcJAF9E/kmErxSnR7jg/hNYnj2SE2ALvVM715N
-vihDIpRMR9t4q5LL483W0iqcWM/no4krAX4uX2p6HZIN+77TdCHivdnx4Dnvcmyd
-Kl++/8Pn6vWeHBpg69v/a/6F/g63Tj88WYk=
-=QVSo
+iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCawBDjBIcbXdhbGxlQGtl
+cm5lbC5vcmcACgkQEic87j4CH/jlKgGAmJfvydKg0f8fTncnEJee3RHHg0horD+2
+iFLHf5kuyyb9k43qSNyXNtEh8Z9lOWHvAYC2s5jKfeXC8nMtNHHSPMfBTTj4BbZV
+boFxqVsvcIKVaEBgl0odMoW/LoONdY0SoiI=
+=fiz6
 -----END PGP SIGNATURE-----
 
---654c4deafe92b97eeb8f531c0823c0f759ccbbe1599d33a102b0087920a3--
+--cd2dae19cb24704fa8f412b0fcbc099e07be2af6d62f1bb1ea7d9fe316ac--
 
 
---===============9024688794372664824==
+--===============0179370182038993833==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -171,5 +207,5 @@ ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
---===============9024688794372664824==--
+--===============0179370182038993833==--
 
