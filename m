@@ -2,58 +2,62 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C88A60A261A
-	for <linux-mtd@archiver.kernel.org>; Fri, 20 Nov 2026 17:14:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F784606A33C
+	for <linux-mtd@archiver.kernel.org>; Fri, 20 Nov 2026 17:14:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=Bs3Lg+s5;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=ykLe3nRj
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=TwMWrdjG;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=kaJNstor
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
-	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id:Date:
+	Subject:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
 	List-Unsubscribe-Post:List-Owner;
-	bh=qp8sP3b9kmKCDYkbqne6B6WyB+Oil5UPP+4QZzibaFI=; b=Bs3Lg+s5PEwQTCWf+oSdM9hOPH
-	Q1ZxQ9mBde0DZu/KaBYvOzyCivAYcvezgA4SOJ5SAzO5Tlw/uGprgOgp4YO+jt4f81TyTmGKvRcyG
-	rB9etzraHLeY2xGMqOqOJE+xGPnxFyxp/0a0eyyRv8f3hmC4cQCrnNCRTjt0LBlOymhHqsDjoudhX
-	a3WFEmvCATgVbKH4BkvGtodancFzRP3vphNeNbb63SE/+ApaATM3f1djg4hThvAPVD1Mije5dk07n
-	DCrNIRwAxdaYUbNxQW/lCGeLwkPf6eQqrUFT3bQu62bvTgjiXdRHzGGH5izmtO/EPquROytmHnjAN
-	ge2G8z1A==;
+	bh=hDjShb1E3oSWvNr3bE4hLxx4BwCtiufv9RUFb25vfrM=; b=TwMWrdjGWcvHa1l2cFYOq4REim
+	lfdxgkkFNZIlTSoYNt+ZY0UZmRqua2bx22rJdliFsMYmSMtamN/Gzte6BrM0lORt0YogXkXM8LWoo
+	RICGVIPbbmJg8C9ClwBrDb71Y5tmAMi3qLM8OOftN+Lqu1HW3PHOmDtXMD2VeLj57GVbVTYDfC27l
+	wHQaKyb5J/MjhULiAAAV3d+xF/gRGXx8tA1zVFud6exs2Rxgh30RfpCs2tFU7mYEZmAT9+wY4r4P2
+	twh39hdIHrEDB0lkmqtIJb9CfJuFGMyhvDGixwrCo2k3BRF2YIfDzknpe8dA80v2DwdkzPAko/Cg+
+	wL09WPTw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xUSCE-0000000Fdym-40IU;
-	Fri, 20 Nov 2026 17:14:46 +0000
-Received: from smtpout-02.galae.net ([185.246.84.56])
+	id 1xUSCL-0000000FdzM-2Ji2;
+	Fri, 20 Nov 2026 17:14:53 +0000
+Received: from smtpout-03.galae.net ([185.246.85.4])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xUSCA-0000000Fdwv-24Dz
+	id 1xUSC9-0000000Fdws-3379
 	for linux-mtd@lists.infradead.org;
 	Fri, 20 Nov 2026 17:14:45 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id A7E981A1754;
-	Fri, 20 Nov 2026 17:14:39 +0000 (UTC)
+	by smtpout-03.galae.net (Postfix) with ESMTPS id E2A274E4168A;
+	Fri, 20 Nov 2026 17:14:37 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 7D81E601B9;
-	Fri, 20 Nov 2026 17:14:39 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id D0DE111BC04A2;
-	Fri, 20 Nov 2026 18:14:35 +0100 (CET)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 9A0AC601B9;
+	Fri, 20 Nov 2026 17:14:37 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 96ECC11BC0437;
+	Fri, 20 Nov 2026 18:14:30 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1795194877; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=P3hD6i6FmHxjhbYulZUhRwAmsKH4wKmtldQ3QjAxjxM=;
-	b=ykLe3nRjZqOHOxvwu13ykk8zaeqY4YdR12e+9sqrVJ6vpzJKfsNk/p/AwdCGgBPxMuw2aY
-	f2YXoIHByiv5LizTM99x1xW+LYhzEdHpcpJ2/FvEsrofuJFmiCfMX0d3nWMjJa9fVVgbPe
-	F5F0eolM+6iND5kTu2qwlFUc15Jg/Z3+5Ymp4IxIF43PRkYh51x7U+7D5VdU/V7Vpp7oVu
-	Brfj3e96PwL3rU4dh3TcOb56rBBwiSjlC9vQUyNsxxWIejtpU/ecq0g3oKMZuWmbNRUBki
-	leR/URQEcDwCN5gyFjHCKu8rAIImQeMO2L7f56CgRb6LsSSKnWtJJO0J3Z/63g==
+	t=1795194875; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding; bh=AfsaK7vstWBR+CIUmGq19kX6RuuD4U+3vDvduSS+ZUA=;
+	b=kaJNstorbnqrayLL/98d3HWZsLvpTIcVlH70NLij6H5sSMGM7AyL4RC8pjazgHLM/VMnqm
+	NbzayYO5o8bFk0bjYSiYKUwEzMf3z5KmnaNseSWjzzP7yhB/IHtA+VcheGH5+cbt658RC0
+	9IfENELf3ZryHLoxyerzSxWzMdmZp1llgPwJpLC2MQgA7L/L25hlWFEhJi8XYz2LLxbe7S
+	ifwHiL5WBCdYU1+CYlj0nSA13WHpEjY+rVFdB9Ax9r8d3hoO3HIXqvJTH3+kXmKEga4j2r
+	VU6ym60q+Qmq56G0olb5tuRdb5CN/zYhNF8beEZWZ9xE945Xbz40BFwxBH8k4A==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Fri, 20 Nov 2026 18:14:27 +0100
-Subject: [PATCH v4 01/11] spi: spi-mem: Rename the DQS setter and pin field
+Subject: [PATCH v4 00/11] mtd/spi-mem: Enable DQS control
+Date: Fri, 20 Nov 2026 18:14:26 +0100
+Message-Id: <20261120-winbond-nand-next-phy-tuning-v4-0-8c21e1f71f41@bootlin.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Message-Id: <20261120-winbond-nand-next-phy-tuning-v4-1-8c21e1f71f41@bootlin.com>
-References: <20261120-winbond-nand-next-phy-tuning-v4-0-8c21e1f71f41@bootlin.com>
-In-Reply-To: <20261120-winbond-nand-next-phy-tuning-v4-0-8c21e1f71f41@bootlin.com>
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/43QTWrDMBAF4KsYrTtGP5Zkm1Jyj9KFbI9j0VhKJ
+ cVNCLl7ZWfRli5SEII3i+/Bu5KIwWIkbXElARcbrXc5VE8F6Sfj9gh2yJlwyhXlVMKndZ13Azi
+ zfnhOcJwukE7Ouj0Y0+HYU1ZTwUkmjgFHe97417ecJxuTD5etbWHr9Z/wwoCCRD2IRquRjmzXe
+ Z8O1pW9n8lKL/ybq6l+wPHMaSEbiXUzKBR/OfGDY/QBJzJnGt0LoxgqLX9zt/sSAT9Oed90n4P
+ MGKPZ9m2L57WHMSrzqwUvOROVYAIYRHhXu2RX6GVdtDMRIYfZprZYdFlB6HmuuH0BNF7cmcoBA
+ AA=
+X-Change-ID: 20260205-winbond-nand-next-phy-tuning-aabefc018032
 To: Mark Brown <broonie@kernel.org>, Richard Weinberger <richard@nod.at>, 
  Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring <robh@kernel.org>, 
  Krzysztof Kozlowski <krzk+dt@kernel.org>, 
@@ -68,8 +72,8 @@ Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, praneeth@ti.com,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261120_091442_854586_2A81EBBB 
-X-CRM114-Status: GOOD (  13.94  )
+X-CRM114-CacheID: sfid-20261120_091442_828740_A3AC1AD6 
+X-CRM114-Status: GOOD (  19.06  )
 X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -90,92 +94,113 @@ X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-The current approach was a bit too simple. Using the DQS feature
-requires:
-1- the chip to feature a DQS pin
-2- proper wiring between the host and the chip
-3- the controller capability to use it
+For his PHY tuning series on the Cadence QSPI controller embedded in TI
+SoCs, Santhosh initially needed to access the availability of the DQS
+(data strobe) signal. This is a chip dependent capability, which may
+sometimes be enabled.
 
-Rename the helper and the field to reflect that we are talking here
-about (1) the chip capability.
+The SPI memory flag already exist but is too vague for it. Let the SPI
+NAND core and SPI NOR core set this flag when relevant (per-chip for SPI
+NAND, always for SPI NOR until we can do better). SPI controllers now
+feature a DQS capability that they need to fill. Manufacturer drivers
+and SPI controllers can now query the usability of the feature to use
+it/enable it.
+
+I contributed the spi-mem bit in the previous cycle but my changes were
+too simple, and a more complex approach was actually needed. For
+applying this series, I would expect all the spi-mem and spi bits to be
+taken by Mark, either based on an immutable branch (in which case the
+mtd bits can also get in during the same cycle) or directly through b4
+(and we will wait for the next cycle to merge the patches). There will
+be a temporary regression if we span those patches over two releases:
+the PHY tuning will not be optimal because it won't be using the DQS
+capability for a period of time. Hence, merging everything in a
+single release would be better, but not stricly needed either.
+
+This series applies on top of v7.4-rc2 and Santhosh's PHY tuning series.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/spi/spi-mem.c       | 10 +++++-----
- include/linux/spi/spi-mem.h |  6 +++---
- 2 files changed, 8 insertions(+), 8 deletions(-)
+Changes in v4:
+- Added a spi-dqs-not-wired DT property to describe boards where the DQS
+  line is not routed.
+- Parsed the property in spi-mem.
+- Renamed several helpers to explain what they do more obviously.
+- Added a controller DQS capability;
+- Expose that DQS is usable only when the memory supports it, the line
+  is wired and the controller supports it as well.
+- Advertised the DQS capability in the Cadence QSPI driver.
+- Advertised the DQS capability before the SSDR/ODTR variants are
+  negotiated.
+- Only enabled the Winbond DQS output when spi_mem_dqs_is_usable() reports
+  it as usable, to avoid useless power consumption.
+- Enabled DQS in SPI NOR (always).
+- Dropped the already merged spi-mem capability patch from the series.
+- Rebased on v7.4-rc2.
+- Link to v3: https://lore.kernel.org/r/20260810-winbond-nand-next-phy-tuning-v3-0-a97c3a61e675@bootlin.com
 
-diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
-index baf6e430e563..1bea52c6f8a3 100644
---- a/drivers/spi/spi-mem.c
-+++ b/drivers/spi/spi-mem.c
-@@ -547,7 +547,7 @@ const char *spi_mem_get_name(struct spi_mem *mem)
- EXPORT_SYMBOL_GPL(spi_mem_get_name);
- 
- /**
-- * spi_mem_set_dqs() - Mark DQS as being available
-+ * spi_mem_set_dqs_pin_available() - Mark DQS as being available
-  * @mem: the SPI memory
-  *
-  * When reading at high frequencies (> 100MHz), especially when DTR is enabled,
-@@ -560,11 +560,11 @@ EXPORT_SYMBOL_GPL(spi_mem_get_name);
-  * Set the DQS boolean if the feature is available and configured at the chip
-  * level. Controllers may query this value.
-  */
--void spi_mem_set_dqs(struct spi_mem *mem)
-+void spi_mem_set_dqs_pin_available(struct spi_mem *mem)
- {
--	mem->dqs = true;
-+	mem->dqs_pin = true;
- }
--EXPORT_SYMBOL_GPL(spi_mem_set_dqs);
-+EXPORT_SYMBOL_GPL(spi_mem_set_dqs_pin_available);
- 
- /**
-  * spi_mem_has_dqs() - Query whether the DQS is available or not
-@@ -574,7 +574,7 @@ EXPORT_SYMBOL_GPL(spi_mem_set_dqs);
-  */
- bool spi_mem_has_dqs(struct spi_mem *mem)
- {
--	return mem->dqs;
-+	return mem->dqs_pin;
- }
- EXPORT_SYMBOL_GPL(spi_mem_has_dqs);
- 
-diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
-index b69f671c40e7..e3c0016be768 100644
---- a/include/linux/spi/spi-mem.h
-+++ b/include/linux/spi/spi-mem.h
-@@ -275,7 +275,7 @@ struct spi_mem_dirmap_desc {
-  * @spi: the underlying SPI device
-  * @drvpriv: spi_mem_driver private data
-  * @name: name of the SPI memory device
-- * @dqs: extra data trobe pin available for high frequency read operations
-+ * @dqs_pin: the memory provides a DQS pin
-  *
-  * Extra information that describe the SPI memory device and may be needed by
-  * the controller to properly handle this device should be placed here.
-@@ -287,7 +287,7 @@ struct spi_mem {
- 	struct spi_device *spi;
- 	void *drvpriv;
- 	const char *name;
--	bool dqs;
-+	bool dqs_pin;
- };
- 
- /**
-@@ -474,7 +474,7 @@ bool spi_mem_default_supports_op(struct spi_mem *mem,
- }
- #endif /* CONFIG_SPI_MEM */
- 
--void spi_mem_set_dqs(struct spi_mem *mem);
-+void spi_mem_set_dqs_pin_available(struct spi_mem *mem);
- bool spi_mem_has_dqs(struct spi_mem *mem);
- int spi_mem_adjust_op_size(struct spi_mem *mem, struct spi_mem_op *op);
- void spi_mem_adjust_op_freq(struct spi_mem *mem, struct spi_mem_op *op);
+Changes in v3:
+- Rebased on top of linux-spi/for-7.3 and dopped all existing
+  dependencies on the MTD bits.
+- Link to v2: https://lore.kernel.org/r/20260807-winbond-nand-next-phy-tuning-v2-0-73595e89d6e3@bootlin.com
 
+Changes in v2:
+- Dropped the RFC prefix.
+- Rebased on top of v7.2-rc1.
+- Dropped the spi patch for now, just allowing to use DQS on a few
+  Winbond SPI NANDs (can be improved later).
+- Link to v1: https://lore.kernel.org/r/20260205-winbond-nand-next-phy-tuning-v1-0-5e7d3976f0f1@bootlin.com
+
+---
+Miquel Raynal (11):
+      spi: spi-mem: Rename the DQS setter and pin field
+      spi: spi-mem: Clarify the conditions upon which DQS is usable
+      dt-bindings: spi: Document the spi-dqs-not-wired property
+      spi: spi-mem: Take the DQS wiring into account
+      spi: spi-mem: Take the controller DQS support into account
+      spi: cadence-quadspi: Advertise DQS support
+      spi: cadence-quadspi: Decouple the read capture bypass from DQS
+      spi: cadence-quadspi: Check DQS usability before enabling DQS capture
+      mtd: spi-nor: Advertise DQS support for octal DTR flashes
+      mtd: spi-nand: Set the DQS spi-mem capability if available
+      mtd: spi-nand: winbond: Enable the DQS pin on W35N**JW series
+
+ .../bindings/spi/spi-peripheral-props.yaml         | 10 ++++++++
+ drivers/mtd/nand/spi/core.c                        |  3 +++
+ drivers/mtd/nand/spi/winbond.c                     | 10 +++++---
+ drivers/mtd/spi-nor/core.c                         |  7 ++++++
+ drivers/spi/spi-cadence-quadspi.c                  | 11 +++++---
+ drivers/spi/spi-mem.c                              | 29 ++++++++++++++--------
+ include/linux/mtd/spinand.h                        |  1 +
+ include/linux/spi/spi-mem.h                        | 12 ++++++---
+ 8 files changed, 61 insertions(+), 22 deletions(-)
+---
+base-commit: fd9230005e85472b81c1c7c16afe93dd878996b1
+change-id: 20260205-winbond-nand-next-phy-tuning-aabefc018032
+prerequisite-message-id: <20261105105832.2134313-1-s-k6@ti.com>
+prerequisite-patch-id: 7e80450b6b26ac3240d561a7f9f0e5fe177a89b7
+prerequisite-patch-id: 865537f117247ff4312d629514dd06f1f38f1d47
+prerequisite-patch-id: 5200192ca3b2cc4a2fdf8afff7ee5c757fdb66b5
+prerequisite-patch-id: f41f68176da636e14a8221fde30b3a32cd155bdd
+prerequisite-patch-id: d23997b62c52e24d7d92a3f795b2d64ad32a6dc7
+prerequisite-patch-id: 7d0c439461665f7c41639343042ddb96937d2838
+prerequisite-patch-id: d8770bcd1d4f60e882cdd4ad6f35409a08dc2402
+prerequisite-patch-id: 5b96154a5b95e52afc0e3f128212921984713615
+prerequisite-patch-id: 500bd167644ed25f95ee48bf7992d79d611b036a
+prerequisite-patch-id: 65a2ee2f666180289b3c38aef3e238803ba93f27
+prerequisite-patch-id: a58a38e05737feb5f097cafe49f814a4f4a1b252
+prerequisite-patch-id: d0717fa96dbc2f99111be023238973932a6c59b4
+prerequisite-patch-id: 817e0b94d11c4e7884c962781ff20131a9db1aa9
+prerequisite-patch-id: 16ba1c3be3824059d975c0e48a7056b061c2d652
+prerequisite-patch-id: f7d67c3465c65f61ec878b6d3f049addd44316af
+prerequisite-patch-id: d023f74d37fe6be398aa45a5de3cd70f775cb37a
+prerequisite-patch-id: c146c437ba46a28dc74dcebe4c66ff8107ce31a3
+prerequisite-patch-id: 14cf3f31d431b4622a4f225939b8d3d3eee21085
+prerequisite-patch-id: 95db84235391fa3a39c1947f19411634d762e1f9
+
+Best regards,
 -- 
-2.56.0
+Miquel Raynal <miquel.raynal@bootlin.com>
 
 
 ______________________________________________________
