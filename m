@@ -2,75 +2,57 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08842606A320
-	for <linux-mtd@archiver.kernel.org>; Fri, 20 Nov 2026 05:24:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FBEC606A326
+	for <linux-mtd@archiver.kernel.org>; Fri, 20 Nov 2026 05:35:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=2oCTk2gE;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sina.com header.i=@sina.com header.a=rsa-sha256 header.s=201208 header.b=C5J8yU9Z
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=vJcE40eb;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=VrXUs7j9
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Reply-To:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:References:
+	In-Reply-To:Cc:To:Subject:From:Message-ID:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=iA/HfGth34KMF7220FmEok/2NzRDWpRoFfnJ/k78giI=; b=2oCTk2gE4kbFrhTQRi4lfcIrPQ
-	bcsrmo+rruK13FBi1KMqyahCqHV+TqRXMCXct7beKIWTPugPivGRFRPEC7UuiveSoCBdH1GpziUy3
-	/mU0PLxj5Z3SRVf2ag8rsiyOLHjsXGn/XvFS5vazkQ9HfB0mUX4h9BNMWZFgj9IPb89EIbb5//uKW
-	/wf9wGGkr8L7MYhSm74kplAOfGL9NZV2jeTW1V2r1V8jbTKRZfbmz6wq2BSiJtQDzyB+40MaZ9dRD
-	mGWEoXQlUW7z16ZtPNxuYU6C0KSr0c6oijQEWHpYxTWiYpheO0ySIRyY3Bx/OGph9JwvXtj23JGfm
-	fM0kRhDQ==;
+	bh=7FG2iikA3uWHTMDZv//0jFE8iHA5WLD8svp47//bf24=; b=vJcE40eb6voYwy6EPgoVQa5EcO
+	U7NmXPDkbGujzeKwpEetR8Y6pmg0f3ACed+43KphWRHIM7nETZwoaqDJaKm0KecA1XFO8GBqFmDQp
+	Qpi8CY9+RhlxDlU+oB7DQTP0it2wfpyczVyRJZd9rJzM7XYZ0wJm2zXUPe2b9285YNra15Ck7dhU0
+	xIShinRUZnPtyWE+Cu7GLTDnmlrv7YURvY6F+WqIDxE6CZ0TBq55dt4Y/FerefwnDDyssn+BehwZJ
+	IoWFm2Lvvprl+TpuG8EkOI/sIzaZHjNFITyVgCiWEM/SDAykkqeUDGO2rFZ4qZPnk56+yjqEHqKCN
+	OYLQgFYA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xUH7E-0000000E3zg-2TgT;
-	Fri, 20 Nov 2026 05:24:52 +0000
-Received: from r3-21.sinamail.sina.com.cn ([202.108.3.21])
+	id 1xUHHb-0000000E5H2-1Fbf;
+	Fri, 20 Nov 2026 05:35:35 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xUH7A-0000000E3yp-0BDw
+	id 1xUHHa-0000000E5Gq-03sB
 	for linux-mtd@lists.infradead.org;
-	Fri, 20 Nov 2026 05:24:50 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sina.com; s=201208; t=1795152288;
-	bh=TItee/T03NTRENeR4cH4C0LDyn0Kmlrpb5BazOHyBL0=;
-	h=From:Subject:Date:Message-ID;
-	b=C5J8yU9ZjLmeZQz45tDQieZD10/bJCs5xOqpNQdBFs9MrasHPMgZA9v76uqiMp35x
-	 ZNoKkXHCYUIh2YFP/C73RhexhTu9RAod7CFv8OjHnpSughR3wz2Gb3Kz9xCdf4j+3A
-	 sPIptN4rV9DkrKyrbtcFZh68ekHuPmPP6QRpmlYg=
-X-SMAIL-HELO: lxu-pcd
-Received: from unknown (HELO lxu-pcd)([111.198.225.163])
-	by sina.com (10.54.253.33) with ESMTP
-	id 6AFFD99200004AB0; Fri, 20 Nov 2026 13:24:37 +0800 (CST)
-X-Sender: eadavis@sina.com
-X-Auth-ID: eadavis@sina.com
-Authentication-Results: sina.com;
-	 spf=none smtp.mailfrom=eadavis@sina.com;
-	 dkim=none header.i=none;
-	 dmarc=none action=none header.from=eadavis@sina.com
-X-SMAIL-MID: 3965716685128
-X-SMAIL-UIID: B96F6B02782F4AC6A66F80A8AF9D5791-20261120-132437-1
-From: Edward Adam Davis <eadavis@sina.com>
-To: sashiko-bot@kernel.org
-Cc: eadavis@sina.com,
-	joern@lazybastard.org,
-	linux-mtd@lists.infradead.org,
-	miquel.raynal@bootlin.com,
-	richard@nod.at,
-	sashiko-reviews@lists.linux.dev,
-	syzbot+ee09ee2112d03c35f1f7@syzkaller.appspotmail.com,
-	syzkaller-bugs@googlegroups.com,
-	vigneshr@ti.com
-Subject: [PATCH v2] mtd: Use I/O memory accessors when in an uncached
-Date: Fri, 20 Nov 2026 13:24:34 +0800
-Message-ID: <20261120052434.101613-1-eadavis@sina.com>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <sashiko-outbox-224471@kernel.org>
+	Fri, 20 Nov 2026 05:35:34 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id 60B58416B5;
+	Fri, 20 Nov 2026 05:35:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9C281F000D1;
+	Fri, 20 Nov 2026 05:35:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1795152933;
+	bh=Fu60wPyjB/XTUK2pcO7RrIqLXluKAvBUS+hdA0PrAzw=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=VrXUs7j9lIIQqUhloFkEJU8tQa+UJI9e+uf1Jwrg9az3RqT08j6xx6x4AHrXkp0sQ
+	 uLkyn5kgiuhuzo1p8hcC55agbFmUdYepxZvVepEQpLyck17dEoMGuXhcHSfa40Tbh4
+	 mscpPvRwAbYy9o61pF6fv8jSEWhaDLOJxscS7sGK96sx6pGb7Ssy649OpH6j9WLjwv
+	 A07txhx4dwT+eBvv77+2Yrs4j0jU8OrNgA+xJ24NlqxLLsG6Iuk64xn44Ojv0rF1fv
+	 ybfD7vtstkzC4slvggc9H+dctVX8BGYbs12BnPhumTORSYJmpBq5Ybhp2+rczUoSBj
+	 bbUv6W/z8PWPQ==
+Message-ID: <sashiko-outbox-224492@kernel.org>
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH v2] mtd: Use I/O memory accessors when in an uncached
+To: "Edward Adam Davis" <eadavis@sina.com>
+Cc: joern@lazybastard.org, linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com, richard@nod.at, syzbot+ee09ee2112d03c35f1f7@syzkaller.appspotmail.com, syzkaller-bugs@googlegroups.com, vigneshr@ti.com
+In-Reply-To: <20261120052434.101613-1-eadavis@sina.com>
 References: <sashiko-outbox-224471@kernel.org>
-X-Archived-By: <archiver.kernel.org>
-MIME-Version: 1.0
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261119_212448_717657_4AF7453B 
-X-CRM114-Status: UNSURE (   9.94  )
-X-CRM114-Notice: Please train this message.
-X-Spam-Score: -2.8 (--)
+ <20261120052434.101613-1-eadavis@sina.com>
+Date: Fri, 20 Nov 2026 05:35:32 +0000
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,96 +62,93 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Reply-To: sashiko-reviews@lists.linux.dev
+X-Archived-By: <archiver.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-13.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-When registering a phram device via module parameter or sysfs invokes
-register_device() with pdev = NULL, which causes new->cached to be false.
-As a result, phram_map() maps the physical memory region using ioremap()
-(mapped as PROT_DEVICE_nGnRE on arm64) and forces the pointer into mtd->
-priv, yet phram_read(), phram_write(), and phram_erase() access it using
-standard memcpy() and memset() instead of I/O memory accessors (like
-memcpy_fromio()). When scanning partition headers (e.g., ftl_add_mtd()
-reading a 68-byte header via mtd_read()), arm64's memcpy implementation
-issues pair-load (ldp) instructions at unaligned offsets, which triggers
-an alignment fault (FSC = 0x21) on Device memory and crashes the kernel.
-
-In phram_read/write/erase(), standard memory accessors are used when in
-a cached; otherwise, I/O memory accessors are used.
-
-Fixes: f3d45ac21e46 ("mtd: phram: Module parameters add writable permissions")
-Fixes: 285133040e6c ("arm64: Import latest memcpy()/memmove() implementation")
-Reported-by: syzbot+ee09ee2112d03c35f1f7@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=ee09ee2112d03c35f1f7
-Signed-off-by: Edward Adam Davis <eadavis@sina.com>
----
-v1 -> v2: use phram_mtd_list cached, add void __iomem* and write use toio
-
- drivers/mtd/devices/phram.c | 22 +++++++++++++++++++---
- 1 file changed, 19 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/mtd/devices/phram.c b/drivers/mtd/devices/phram.c
-index b42cadcd76b1..802da960d840 100644
---- a/drivers/mtd/devices/phram.c
-+++ b/drivers/mtd/devices/phram.c
-@@ -43,8 +43,14 @@ static LIST_HEAD(phram_list);
- static int phram_erase(struct mtd_info *mtd, struct erase_info *instr)
- {
- 	u_char *start = mtd->priv;
-+	struct phram_mtd_list *phram =
-+		container_of(mtd, struct phram_mtd_list, mtd);
- 
--	memset(start + instr->addr, 0xff, instr->len);
-+	if (phram->cached)
-+		memset(start + instr->addr, 0xff, instr->len);
-+	else
-+		memset_io((void __iomem *)start + instr->addr, 0xff,
-+			  instr->len);
- 
- 	return 0;
- }
-@@ -66,8 +72,13 @@ static int phram_read(struct mtd_info *mtd, loff_t from, size_t len,
- 		size_t *retlen, u_char *buf)
- {
- 	u_char *start = mtd->priv;
-+	struct phram_mtd_list *phram =
-+		container_of(mtd, struct phram_mtd_list, mtd);
- 
--	memcpy(buf, start + from, len);
-+	if (phram->cached)
-+		memcpy(buf, start + from, len);
-+	else
-+		memcpy_fromio(buf, (void __iomem *)start + from, len);
- 	*retlen = len;
- 	return 0;
- }
-@@ -76,8 +87,13 @@ static int phram_write(struct mtd_info *mtd, loff_t to, size_t len,
- 		size_t *retlen, const u_char *buf)
- {
- 	u_char *start = mtd->priv;
-+	struct phram_mtd_list *phram =
-+		container_of(mtd, struct phram_mtd_list, mtd);
- 
--	memcpy(start + to, buf, len);
-+	if (phram->cached)
-+		memcpy(start + to, buf, len);
-+	else
-+		memcpy_toio((void __iomem *)start + to, buf, len);
- 	*retlen = len;
- 	return 0;
- }
--- 
-2.43.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+VGhhbmsgeW91IGZvciB5b3VyIGNvbnRyaWJ1dGlvbiEgU2FzaGlrbyBBSSByZXZpZXcgZm91bmQg
+MiBwb3RlbnRpYWwKaXNzdWVzIHRvIGNvbnNpZGVyOgotIFtIaWdoXSBtdGQ6IHBocmFtOiB1bmNh
+Y2hlZCBpb3JlbWFwKCkgcG9pbnRlciBleHBvc2VkIHZpYQogIHBocmFtX3BvaW50KCkKLSBbTG93
+XSBtdGQ6IHBocmFtOiBpbmFjY3VyYXRlIEZpeGVzIHRyYWlsZXIgYW5kIHRydW5jYXRlZCBjb21t
+aXQKICBtZXNzYWdlCi0tCgpjb21taXQgNTRiMTRkMDdlZjAxNGRlYWU3MmY2ZmJjNjVjMDI1ZjZh
+YzkxM2FmNgpBdXRob3I6IEVkd2FyZCBBZGFtIERhdmlzIDxlYWRhdmlzQHNpbmEuY29tPgoKPiBt
+dGQ6IFVzZSBJL08gbWVtb3J5IGFjY2Vzc29ycyB3aGVuIGluIGFuIHVuY2FjaGVkCj4KPiBXaGVu
+IHJlZ2lzdGVyaW5nIGEgcGhyYW0gZGV2aWNlIHZpYSBtb2R1bGUgcGFyYW1ldGVyIG9yIHN5c2Zz
+IGludm9rZXMKPiByZWdpc3Rlcl9kZXZpY2UoKSB3aXRoIHBkZXYgPSBOVUxMLCB3aGljaCBjYXVz
+ZXMgbmV3LT5jYWNoZWQgdG8gYmUgZmFsc2UuCj4gQXMgYSByZXN1bHQsIHBocmFtX21hcCgpIG1h
+cHMgdGhlIHBoeXNpY2FsIG1lbW9yeSByZWdpb24gdXNpbmcgaW9yZW1hcCgpCj4gKG1hcHBlZCBh
+cyBQUk9UX0RFVklDRV9uR25SRSBvbiBhcm02NCkgYW5kIGZvcmNlcyB0aGUgcG9pbnRlciBpbnRv
+IG10ZC0+Cj4gcHJpdiwgeWV0IHBocmFtX3JlYWQoKSwgcGhyYW1fd3JpdGUoKSwgYW5kIHBocmFt
+X2VyYXNlKCkgYWNjZXNzIGl0IHVzaW5nCj4gc3RhbmRhcmQgbWVtY3B5KCkgYW5kIG1lbXNldCgp
+IGluc3RlYWQgb2YgSS9PIG1lbW9yeSBhY2Nlc3NvcnMgKGxpa2UKPiBtZW1jcHlfZnJvbWlvKCkp
+LiBXaGVuIHNjYW5uaW5nIHBhcnRpdGlvbiBoZWFkZXJzIChlLmcuLCBmdGxfYWRkX210ZCgpCj4g
+cmVhZGluZyBhIDY4LWJ5dGUgaGVhZGVyIHZpYSBtdGRfcmVhZCgpKSwgYXJtNjQncyBtZW1jcHkg
+aW1wbGVtZW50YXRpb24KPiBpc3N1ZXMgcGFpci1sb2FkIChsZHApIGluc3RydWN0aW9ucyBhdCB1
+bmFsaWduZWQgb2Zmc2V0cywgd2hpY2ggdHJpZ2dlcnMKPiBhbiBhbGlnbm1lbnQgZmF1bHQgKEZT
+QyA9IDB4MjEpIG9uIERldmljZSBtZW1vcnkgYW5kIGNyYXNoZXMgdGhlIGtlcm5lbC4KPgo+IElu
+IHBocmFtX3JlYWQvd3JpdGUvZXJhc2UoKSwgc3RhbmRhcmQgbWVtb3J5IGFjY2Vzc29ycyBhcmUg
+dXNlZCB3aGVuIGluCj4gYSBjYWNoZWQ7IG90aGVyd2lzZSwgSS9PIG1lbW9yeSBhY2Nlc3NvcnMg
+YXJlIHVzZWQuCj4KPiBGaXhlczogZjNkNDVhYzIxZTQ2ICgibXRkOiBwaHJhbTogTW9kdWxlIHBh
+cmFtZXRlcnMgYWRkIHdyaXRhYmxlIHBlcm1pc3Npb25zIikKPiBGaXhlczogMjg1MTMzMDQwZTZj
+ICgiYXJtNjQ6IEltcG9ydCBsYXRlc3QgbWVtY3B5KCkvbWVtbW92ZSgpIGltcGxlbWVudGF0aW9u
+IikKPiBSZXBvcnRlZC1ieTogc3l6Ym90K2VlMDllZTIxMTJkMDNjMzVmMWY3QHN5emthbGxlci5h
+cHBzcG90bWFpbC5jb20KPiBDbG9zZXM6IGh0dHBzOi8vc3l6a2FsbGVyLmFwcHNwb3QuY29tL2J1
+Zz9leHRpZD1lZTA5ZWUyMTEyZDAzYzM1ZjFmNwo+IFNpZ25lZC1vZmYtYnk6IEVkd2FyZCBBZGFt
+IERhdmlzIDxlYWRhdmlzQHNpbmEuY29tPgoKW1NldmVyaXR5OiBMb3ddCkFyZSB0aGUgRml4ZXMg
+dGFncyBhY2N1cmF0ZSBoZXJlPyAgQ2FsbGluZyBtZW1jcHkoKSBvbiBhbiBfX2lvbWVtIHBvaW50
+ZXIKZnJvbSBpb3JlbWFwKCkgaXMgYSBwaHJhbSBidWcgcmF0aGVyIHRoYW4gYSBidWcgaW4gMjg1
+MTMzMDQwZTZjICgiYXJtNjQ6CkltcG9ydCBsYXRlc3QgbWVtY3B5KCkvbWVtbW92ZSgpIGltcGxl
+bWVudGF0aW9uIiksIGFuZCB0aGlzIHBhdGNoIGJyYW5jaGVzIG9uCnBocmFtLT5jYWNoZWQsIHdo
+aWNoIHdhcyBhZGRlZCBpbiA5NDAxOTExZjJkOWYgKCJtdGQ6IHBocmFtOiBBbGxvdyBjYWNoZWQK
+bWFwcGluZ3MiKS4KCkFsc28sIHRoZSBzdWJqZWN0ICgibXRkOiBVc2UgSS9PIG1lbW9yeSBhY2Nl
+c3NvcnMgd2hlbiBpbiBhbiB1bmNhY2hlZCIpIGFuZApib2R5ICgid2hlbiBpbiBhIGNhY2hlZCIp
+IGFyZSBtaXNzaW5nIHRoZSAibXRkOiBwaHJhbToiIHByZWZpeCBhbmQgdGhlCnRyYWlsaW5nIG5v
+dW4gKHN1Y2ggYXMgIm1hcHBpbmciKS4KCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL2Rldmlj
+ZXMvcGhyYW0uYyBiL2RyaXZlcnMvbXRkL2RldmljZXMvcGhyYW0uYwo+IGluZGV4IGI0MmNhZGNk
+NzZiMTEuLjgwMmRhOTYwZDg0MGEgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9tdGQvZGV2aWNlcy9w
+aHJhbS5jCj4gKysrIGIvZHJpdmVycy9tdGQvZGV2aWNlcy9waHJhbS5jCj4gQEAgLTQzLDggKzQz
+LDE0IEBAIHN0YXRpYyBMSVNUX0hFQUQocGhyYW1fbGlzdCk7Cj4gIHN0YXRpYyBpbnQgcGhyYW1f
+ZXJhc2Uoc3RydWN0IG10ZF9pbmZvICptdGQsIHN0cnVjdCBlcmFzZV9pbmZvICppbnN0cikKPiAg
+ewo+ICAJdV9jaGFyICpzdGFydCA9IG10ZC0+cHJpdjsKPiArCXN0cnVjdCBwaHJhbV9tdGRfbGlz
+dCAqcGhyYW0gPQo+ICsJCWNvbnRhaW5lcl9vZihtdGQsIHN0cnVjdCBwaHJhbV9tdGRfbGlzdCwg
+bXRkKTsKPiAgCj4gLQltZW1zZXQoc3RhcnQgKyBpbnN0ci0+YWRkciwgMHhmZiwgaW5zdHItPmxl
+bik7Cj4gKwlpZiAocGhyYW0tPmNhY2hlZCkKPiArCQltZW1zZXQoc3RhcnQgKyBpbnN0ci0+YWRk
+ciwgMHhmZiwgaW5zdHItPmxlbik7Cj4gKwllbHNlCj4gKwkJbWVtc2V0X2lvKCh2b2lkIF9faW9t
+ZW0gKilzdGFydCArIGluc3RyLT5hZGRyLCAweGZmLAo+ICsJCQkgIGluc3RyLT5sZW4pOwo+ICAK
+PiAgCXJldHVybiAwOwo+ICB9Cj4gQEAgLTY2LDggKzcyLDEzIEBAIHN0YXRpYyBpbnQgcGhyYW1f
+cmVhZChzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgbG9mZl90IGZyb20sIHNpemVfdCBsZW4sCj4gIAkJ
+c2l6ZV90ICpyZXRsZW4sIHVfY2hhciAqYnVmKQo+ICB7Cj4gIAl1X2NoYXIgKnN0YXJ0ID0gbXRk
+LT5wcml2Owo+ICsJc3RydWN0IHBocmFtX210ZF9saXN0ICpwaHJhbSA9Cj4gKwkJY29udGFpbmVy
+X29mKG10ZCwgc3RydWN0IHBocmFtX210ZF9saXN0LCBtdGQpOwo+ICAKPiAtCW1lbWNweShidWYs
+IHN0YXJ0ICsgZnJvbSwgbGVuKTsKPiArCWlmIChwaHJhbS0+Y2FjaGVkKQo+ICsJCW1lbWNweShi
+dWYsIHN0YXJ0ICsgZnJvbSwgbGVuKTsKPiArCWVsc2UKPiArCQltZW1jcHlfZnJvbWlvKGJ1Ziwg
+KHZvaWQgX19pb21lbSAqKXN0YXJ0ICsgZnJvbSwgbGVuKTsKPiAgCSpyZXRsZW4gPSBsZW47Cj4g
+IAlyZXR1cm4gMDsKPiAgfQoKW1NldmVyaXR5OiBIaWdoXQpEb2VzIHBocmFtX3BvaW50KCkgc3Rp
+bGwgZXhwb3NlIHRoZSB1bmNhY2hlZCBpb3JlbWFwKCkgcG9pbnRlciBpbiBtdGQtPnByaXYKdG8g
+Y2FsbGVycyB0aGF0IHVzZSBub3JtYWwgbWVtY3B5KCkgb24gaXQ/CgpCZXR3ZWVuIHBocmFtX2Vy
+YXNlKCkgYW5kIHBocmFtX3JlYWQoKSwgcGhyYW1fcG9pbnQoKSByZW1haW5zIHVuY2hhbmdlZCBh
+bmQKaXMgdW5jb25kaXRpb25hbGx5IHdpcmVkIHVwIGluIHJlZ2lzdGVyX2RldmljZSgpOgoKZHJp
+dmVycy9tdGQvZGV2aWNlcy9waHJhbS5jOnBocmFtX3BvaW50KCkgewoJKnZpcnQgPSBtdGQtPnBy
+aXYgKyBmcm9tOwoJKnJldGxlbiA9IGxlbjsKCXJldHVybiAwOwp9CgpDYWxsZXJzIG9mIG10ZF9w
+b2ludCgpIGV4cGVjdCBub3JtYWwgZGlyZWN0LWFjY2Vzc2libGUgbWVtb3J5IGFuZCBieXBhc3MK
+bXRkX3JlYWQoKS4gIEZvciBleGFtcGxlLCBtb3VudGluZyBjcmFtZnMgb3IgamZmczIgb24gYW4g
+dW5jYWNoZWQgcGhyYW0KZGV2aWNlIHN1Y2NlZWRzIGluIG10ZF9wb2ludCgpIGFuZCBydW5zIG1l
+bWNweSgpIGRpcmVjdGx5IG9uIHRoZSByZXR1cm5lZApwb2ludGVyIChzdWNoIGFzIHRoZSA3Ni1i
+eXRlIHN1cGVyYmxvY2sgcmVhZCBpbiBjcmFtZnNfcmVhZF9zdXBlcigpKSwKdHJpZ2dlcmluZyB0
+aGUgc2FtZSBhbGlnbm1lbnQgZmF1bHQgb24gYXJtNjQgRGV2aWNlIG1lbW9yeS4gIFNob3VsZApf
+cG9pbnQgYW5kIF91bnBvaW50IG9ubHkgYmUgcmVnaXN0ZXJlZCAob3IgcGhyYW1fcG9pbnQoKSBy
+ZXR1cm4KLUVPUE5PVFNVUFApIHdoZW4gcGhyYW0tPmNhY2hlZCBpcyBmYWxzZT8KCi0tIApTYXNo
+aWtvIEFJIHJldmlldyDCtyBodHRwczovL3Nhc2hpa28uZGV2LyMvcGF0Y2hzZXQvMjAyNjExMjAw
+NTI0MzQuMTAxNjEzLTEtZWFkYXZpc0BzaW5hLmNvbT9wYXJ0PTEKCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lv
+biBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9saW51eC1tdGQvCg==
