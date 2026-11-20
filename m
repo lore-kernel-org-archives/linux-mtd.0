@@ -2,66 +2,68 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 010B7606A335
-	for <linux-mtd@archiver.kernel.org>; Fri, 20 Nov 2026 12:33:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07C42606A331
+	for <linux-mtd@archiver.kernel.org>; Fri, 20 Nov 2026 12:41:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=CfU3ZHm5;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Z47ZNjNR
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=m4QtFG6F;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=hso3mAMK
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:References:Subject:To:From:Cc:Message-Id:Date:Mime-Version:
+	In-Reply-To:References:From:Cc:Subject:To:Message-Id:Date:Mime-Version:
 	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
 	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=xRB2tbU+V9bb7Tj5PJcjim3lPO8+PAD8xcnwzMnZyUU=; b=CfU3ZHm5f7iUUOZ61J4A70s4A7
-	IxNNRhCx/OtNBJj1ktSHY5g2cbOArx90boNUtDEPxmv11wmEosr2OJ+S2XfGpOLM4Ebt88uIUUrz/
-	eMRbO0noJNO5qcreooPzblS4gDA7ZN4zch6gmr9SvUVlBtJxwLNx61QqdmSwuxi1u8JiQs23IIBWR
-	GPa4XrDp70/RKH0aAO8wjw+c2JZl6kAiGA9ID+E/70bbSMC9D8XGT3kpFy/FKka1tWb8d5Ez1gIA7
-	AxH/bxuBTZxNKp3B9vUgdUUtFPACtYwxjqb/Eh2pcRk68zYEQJvbIa5d4AueWA8TNHBvV7u3iSMXR
-	P2Bu4eEg==;
+	bh=v49o9GaFu5bvoTwnfKH2OrYkVdEoUVDcU+aUi36JRNg=; b=m4QtFG6Ff/xsJFklL4gGncb9I4
+	lFmWVcZ1ptLEDl/xGqYXVu6L/NCZI6f/+bbmXP8GVhEp8fw7InO4CARdaQpjDIlPp/BV6mPV3TaSH
+	JDG1Jpk2CR33lYFN96xft7cxGSIfOO1ejX0lP9PDZdTOatYaxHSypDJ6wZFZ0dipwihqtfldy3Fws
+	/nwBPEG6BTFI/6URh2A56pCq3ClM/KJgRnHpYt63smqTcncKd2EDB9GnnZi3EeCPWdNBc+ZXxmeYk
+	RDs0p4BS/kCBK8Vl39OqVQ3bIvBNA9VLGIVxG7aL1HQxTTrzwhmDNzHe50YyW1WRKu2x0DSZNzCQ2
+	Jn9AJv1Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xUNo9-0000000EyHA-1x70;
-	Fri, 20 Nov 2026 12:33:37 +0000
+	id 1xUNvh-0000000EzRg-46Ki;
+	Fri, 20 Nov 2026 12:41:25 +0000
 Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xUNo8-0000000EyGL-0uoi
+	id 1xUNvg-0000000EzRG-2GyC
 	for linux-mtd@lists.infradead.org;
-	Fri, 20 Nov 2026 12:33:36 +0000
+	Fri, 20 Nov 2026 12:41:24 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with UTF8SMTP id 935AC4024C;
-	Fri, 20 Nov 2026 12:33:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id 900061F000D3;
-	Fri, 20 Nov 2026 12:33:34 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with UTF8SMTP id 175A6403CA;
+	Fri, 20 Nov 2026 12:41:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id 51C541F000CA;
+	Fri, 20 Nov 2026 12:41:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1795178015;
-	bh=Cd4xaVepHD72b7QviLbxkG3jPYSQ+lzF4/87vIxXYlw=;
-	h=Date:Cc:From:To:Subject:References:In-Reply-To;
-	b=Z47ZNjNRpA9CyKNaylkPEkwMygpR3kcuL/gT9XIn892aoeg8o2G6nKyaHsLEhp6dj
-	 qC/Gcoq4O9fB/ayzLR4w1bswm7EeG3KFmj4yCRR8dEashZHo4lL9Xw1+/crZxQLU3a
-	 rQVIIL8tDP6euNmGIpuXqWHO8oSsJh1eUTMRDZ/mE8Ux9hqVcOVECpe0SD32s97KHz
-	 Ey+teYRqtAzd+L4nK92DSVikbtt6+8w8NEh1XDCMUYVE1frIMtCHEhS7JhvBujClJK
-	 OGsOBsgLhCZpZNvmEUbXDGeC1L56gG6OuwtDF3ZjKv4N2fcP0zzNq5qrXL8TigIdOz
-	 WpKzCaAbBQztw==
+	s=k20260515; t=1795178483;
+	bh=pOz5Kp9Rx77Id2rt+cmAdtztYLE/96Bihgs/QD1W4Ds=;
+	h=Date:To:Subject:Cc:From:References:In-Reply-To;
+	b=hso3mAMKKr1LtxhrYacAuDi5W3FY/TsDpioBP9WvasaMxmR603VWxr5AAoZfadPtD
+	 GRn+eYgWucP6Dt0PEHvYfCk7lfiwXO4v9nHpRQ4AopeVhxSnevQb5fujM2iPZ3oR21
+	 t3obW9Y/gpmGQUZLUt6e2IdBUV0XI2ApJnOkWVLtsmWbE942T04u+IgWBJIYFWMmfS
+	 dKuVP8HFswJSP8tUwNfBcAyJ+mF+D3YG72F0uZnnQ5dpGu7BgBFhJmNJ4lr1EbXO9L
+	 /EqZDPuZlxvgKTJZcupnla90tT20DBDUtMSIVyn2q/lwGMjmlT6NpFyZ9yM4F4+7rB
+	 Ai1Jm9Fq4vIYg==
 X-Archived-By: <archiver.kernel.org>
 Mime-Version: 1.0
-Date: Fri, 20 Nov 2026 13:33:31 +0100
-Message-Id: <DN01HTG5U6PY.1I5VK9AJ07JLO@kernel.org>
-Cc: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <michal.simek@amd.com>, <git@amd.com>, "Amit Kumar Mahapatra"
- <amit.kumar-mahapatra@amd.com>
+Date: Fri, 20 Nov 2026 13:41:19 +0100
+Message-Id: <DN01NSO0FLT0.11GY6QPV7JVR4@kernel.org>
+To: "Cheng Ming Lin" <linchengming884@gmail.com>, "Marek Vasut"
+ <marex@nabladev.com>
+Subject: Re: [PATCH v2] mtd: spi-nor: Describe locking support for
+ MX25L51245G
+Cc: "Pratyush Yadav" <pratyush@kernel.org>, "Miquel Raynal"
+ <miquel.raynal@bootlin.com>, "Richard Weinberger" <richard@nod.at>,
+ "Vignesh Raghavendra" <vigneshr@ti.com>, "Takahiro Kuwano"
+ <takahiro.kuwano@infineon.com>, "Maarten Zanders" <maarten@zanders.be>,
+ "Cheng Ming Lin" <chengminglin@mxic.com.tw>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
 From: "Michael Walle" <mwalle@kernel.org>
-To: "Srikanth Boyapally" <srikanth.boyapally@amd.com>, "Pratyush Yadav"
- <pratyush@kernel.org>, "Takahiro Kuwano" <takahiro.kuwano@infineon.com>,
- "Miquel Raynal" <miquel.raynal@bootlin.com>, "Richard Weinberger"
- <richard@nod.at>, "Vignesh Raghavendra" <vigneshr@ti.com>
-Subject: Re: [PATCH 1/2] mtd: spi-nor: Store GPIO info for resetting device
- during resume
 X-Mailer: aerc 0.20.0
-References: <20261120-nor_11_20-v1-0-70332a54037f@amd.com>
- <20261120-nor_11_20-v1-1-70332a54037f@amd.com>
-In-Reply-To: <20261120-nor_11_20-v1-1-70332a54037f@amd.com>
+References: <20261024001658.222147-1-marex@nabladev.com>
+ <8ee5b312-80bc-4584-ac35-cc76c2812c5d@nabladev.com>
+ <20261028081534.945416-1-linchengming884@gmail.com>
+In-Reply-To: <20261028081534.945416-1-linchengming884@gmail.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,113 +73,95 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============3689812318316715739=="
+Content-Type: multipart/mixed; boundary="===============9024688794372664824=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-13.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-3.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=ham autolearn_force=no version=4.0.1
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
+	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
---===============3689812318316715739==
+--===============9024688794372664824==
 Content-Type: multipart/signed;
- boundary=9582cc259129a8f4ebe4b845f7eb0ba9f1675c988c8d1e0c944e8705bca3;
+ boundary=654c4deafe92b97eeb8f531c0823c0f759ccbbe1599d33a102b0087920a3;
  micalg=pgp-sha384; protocol="application/pgp-signature"
 
---9582cc259129a8f4ebe4b845f7eb0ba9f1675c988c8d1e0c944e8705bca3
+--654c4deafe92b97eeb8f531c0823c0f759ccbbe1599d33a102b0087920a3
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
 
 Hi,
 
-On Fri Nov 20, 2026 at 12:01 PM CET, Srikanth Boyapally wrote:
-> From: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
->
-> Upon resume, SPI-NOR triggers the hardware reset API to reset the flash
-> device by toggling the GPIO. This step is necessary because after resume,
-> the flash needs to be put in SDR mode. To facilitate this, SPI-NOR needs
-> GPIO information to reset the flash device. Therefore, a gpio_desc member
-> is added to the spi_nor structure to retain the GPIO information and
-> utilize it for resetting the device.
->
-> Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
-> Signed-off-by: Srikanth Boyapally <srikanth.boyapally@amd.com>
-> ---
->  drivers/mtd/spi-nor/core.c  | 11 +++++++----
->  include/linux/mtd/spi-nor.h |  2 ++
->  2 files changed, 9 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index 90524c58602e..11227f8fa8ea 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -3389,11 +3389,14 @@ static int spi_nor_set_mtd_info(struct spi_nor *n=
-or)
-> =20
->  static int spi_nor_hw_reset(struct spi_nor *nor)
->  {
-> -	struct gpio_desc *reset;
-> +	struct gpio_desc *reset =3D nor->reset;
-> =20
-> -	reset =3D devm_gpiod_get_optional(nor->dev, "reset", GPIOD_OUT_LOW);
-> -	if (IS_ERR_OR_NULL(reset))
-> -		return PTR_ERR_OR_ZERO(reset);
-> +	if (!reset) {
+sorry for the slow response.
 
-Please set this the proper way in spi_nor_scan() and just use it
-here.
+On Wed Oct 28, 2026 at 9:15 AM CET, Cheng Ming Lin wrote:
+> On 10/24/26 2:18 AM, Marek Vasut wrote:
+>> Cheng Ming , can you (or someone from Macronix) please have a look at
+>> this patch and confirm that it is OK ?
+>
+> I checked the patch against the MX25L51245G datasheet. RDCR (0x15),
+> CR bit 3 as TB, the TB bit being OTP, and the 4-BP locking scheme all
+> match the datasheet, so the description is correct from our side.
+>
+> One concern, in line with the sashiko-bot comment: since locking is
+> an optional feature, I think failing to read CR should not fail the
+> probe. Controllers with a restricted opcode set (e.g. spi-intel) will
+> return -EOPNOTSUPP for 0x15, and this part probes fine on them today
+> with macronix_qpp4b_fixups. Rather than special-casing -EOPNOTSUPP,
+> how about just leaving locking disabled on any CR read error, e.g.:
+>
+> 	/*
+> 	 * Locking is optional. If CR cannot be read (e.g. the controller
+> 	 * does not support RDCR), leave locking disabled instead of
+> 	 * failing the probe.
+> 	 */
+> 	if (mx25l51245_read_cr(nor, nor->bouncebuf))
+> 		return 0;
+>
+> Michael, a related question for you. Maarten posted a series last
+> year to make the RDCR opcode configurable in the core and use 0x15
+> for Macronix:
+>
+> https://lore.kernel.org/linux-mtd/20250922155635.749975-1-maarten@zanders=
+.be/
+>
+> It stalled because setting 0x15 for all Macronix parts is wrong (e.g.
+> MX25L12805D has no RDCR), and because there was no user of RDCR at the
+> time. This patch is now such a user.
+>
+> I have gone through the flashes currently in the Macronix ID table
+> and checked which ones do not have a CR / do not support RDCR. If it
+> helps, I can add this information per flash entry, so that 0x15 is
+> only used for the parts that actually support it. For IDs that are
+> shared by several parts, RDCR would only be enabled if all of them
+> support it. That should address the concern on Maarten's series, and
+> this patch could then simply use spi_nor_read_cr() instead of
+> implementing its own RDCR helper in macronix.c.
+>
+> Would that be an acceptable direction?
+
+Yes and in fact with the recent changes, you should be able to set
+.read_sr2.
 
 -michael
 
-> +		reset =3D devm_gpiod_get_optional(nor->dev, "reset", GPIOD_OUT_LOW);
-> +		if (IS_ERR_OR_NULL(reset))
-> +			return PTR_ERR_OR_ZERO(reset);
-> +		nor->reset =3D reset;
-> +	}
-> =20
->  	/*
->  	 * Experimental delay values by looking at different flash device
-> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-> index b3e3c6b10186..46b1f92a490a 100644
-> --- a/include/linux/mtd/spi-nor.h
-> +++ b/include/linux/mtd/spi-nor.h
-> @@ -374,6 +374,7 @@ struct spi_nor_flash_parameter;
->   *                      settings that can be overwritten by the spi_nor_=
-fixups
->   *                      hooks, or dynamically when parsing the SFDP tabl=
-es.
->   * @dirmap:		pointers to struct spi_mem_dirmap_desc for reads/writes.
-> + * @reset:		GPIO descriptor for device reset.
->   * @priv:		pointer to the private data
->   */
->  struct spi_nor {
-> @@ -415,6 +416,7 @@ struct spi_nor {
->  		struct spi_mem_dirmap_desc *rdesc;
->  		struct spi_mem_dirmap_desc *wdesc;
->  	} dirmap;
-> +	struct gpio_desc	*reset;
-> =20
->  	void *priv;
->  };
-
-
---9582cc259129a8f4ebe4b845f7eb0ba9f1675c988c8d1e0c944e8705bca3
+--654c4deafe92b97eeb8f531c0823c0f759ccbbe1599d33a102b0087920a3
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCawA+GxIcbXdhbGxlQGtl
-cm5lbC5vcmcACgkQEic87j4CH/i+IAF+JMf0qAHeaawsOdQyUSgx97VR4Xj5/77x
-sC0kOwHMuzvBbaakKD/Vs6k/7fPLxd/rAYCu8W7HFLv1JUDjtdhNE6qWAob3Ae4/
-hIrMfmbPavGNziIF+dVDy78K63tG7oF7q/0=
-=1hpv
+iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCawA/8BIcbXdhbGxlQGtl
+cm5lbC5vcmcACgkQEic87j4CH/jcJAF9E/kmErxSnR7jg/hNYnj2SE2ALvVM715N
+vihDIpRMR9t4q5LL483W0iqcWM/no4krAX4uX2p6HZIN+77TdCHivdnx4Dnvcmyd
+Kl++/8Pn6vWeHBpg69v/a/6F/g63Tj88WYk=
+=QVSo
 -----END PGP SIGNATURE-----
 
---9582cc259129a8f4ebe4b845f7eb0ba9f1675c988c8d1e0c944e8705bca3--
+--654c4deafe92b97eeb8f531c0823c0f759ccbbe1599d33a102b0087920a3--
 
 
---===============3689812318316715739==
+--===============9024688794372664824==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -187,5 +171,5 @@ ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
---===============3689812318316715739==--
+--===============9024688794372664824==--
 
