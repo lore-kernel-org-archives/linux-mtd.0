@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0022606A6A5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C23B4606A331
 	for <linux-mtd@archiver.kernel.org>; Sat, 21 Nov 2026 01:13:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=nq7FV8vA;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=YNQy0iXS
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=O/eKqqTy;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=csmGGtkC
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,75 +14,75 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=rVQ0tNf4xzNpG/d+GJy/ziY1kLCGTqSgEbNiNy6wVcU=; b=nq7FV8vAwAcg/NbLF2WBM5yHLy
-	C7cFowPVKTcV83oj398Rj6qjK6K6ZCBIxmo9g9UbBeLDRFPle68L2tXDlkqPGhdsuVEFSkhp/HDKh
-	fRYlt25UG7DfxdHQO2NpzBXS99L1+KJdZnXYx79GKpHpIby3KodLK9SeoBOCo8ayGHEgQaW7qO94n
-	RBhnM5eXAWo4Y1X/3+ggnipq2FIG9hfdErlVn9FRNsBUHTbaE7NS7idZwS1UhlICaIHSQRn85UEZU
-	nTd0IuBv0z7BqxCdYHB8qZoic+b0KAKCuetTtbS8J/7+nSHpkGZUymbnzl0wBZJ4mFxGK49aL5zmm
-	1nCGUzKA==;
+	bh=xa1bHy1MvwIsLzUZr+8FBTrcGOG5tB2KkDZMQbnIH08=; b=O/eKqqTyxl05neg79r4tl0qTMg
+	K33yXlN3YHq6uih+fJQq7zukxyO7QwbnQP+VwzptqKwmKeLk5xKgHMnSpdOgu5DNWyxtCPIsx/Hj3
+	p2oItIFDHnykim1YtEd7XFskjSC3b34rsx0PVnxu+/ho2PUY3CmXomSKvfvLXaJmwQnhCARS10sP7
+	5K5ep7BW/Ui3Yz6QyAygeo8gzuLM14ZynZzPTQMYV1i3FiAkUsIRRwUPfJ7Befz1DPabxZp4VqJCB
+	te6fpjV0yoipCSnhq0oGzkRDjmkiA4nHsaKZ1jojnfv+UBwsuzufovN/LVk5MZjjWaLkVuwS1ZLwk
+	aQKMsaZQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xUZfw-0000000GbWh-2b17;
+	id 1xUZfw-0000000GbV1-22uz;
 	Sat, 21 Nov 2026 01:13:56 +0000
-Received: from mail-oi1-x235.google.com ([2607:f8b0:4864:20::235])
+Received: from mail-oi1-x236.google.com ([2607:f8b0:4864:20::236])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xUZdU-0000000GZXm-2t9V
+	id 1xUZdT-0000000GZWE-357i
 	for linux-mtd@lists.infradead.org;
-	Sat, 21 Nov 2026 01:11:32 +0000
-Received: by mail-oi1-x235.google.com with SMTP id 5614622812f47-4ab8cb2a6e4so1029050b6e.0
-        for <linux-mtd@lists.infradead.org>; Fri, 20 Nov 2026 17:11:24 -0800 (PST)
+	Sat, 21 Nov 2026 01:11:31 +0000
+Received: by mail-oi1-x236.google.com with SMTP id 5614622812f47-571eb508e44so785337b6e.3
+        for <linux-mtd@lists.infradead.org>; Fri, 20 Nov 2026 17:11:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1795223484; x=1795828284; darn=lists.infradead.org;
+        d=gmail.com; s=20260707; t=1795223482; x=1795828282; darn=lists.infradead.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=dWkb9R9dFJf53WgY0/fb7qetN7PVplL4lJbH2mVBctQ=;
-        b=YNQy0iXSAxejI7Pz/mC4+eXrQ5dv1asTBOSlzhXYcaz7ObR+7Uz0gXtM7JKS86YR3b
-         oW1Jj9597FLUvk2VJ5eHqqdSHsre4ANMgvYcEj613AsIZR+9Vg5c8MRm/b92vN+E3ZLH
-         CWJT/LOEbzYvuHEvsngg/q8E1/cGVqeN87O34trRZQ5t8YSgHYQUx05XX2fG9aTW1U49
-         6wF0TfYEy6Pj+s8+sI3tder1NdbGvJY2Boue7LXclG4J1ioISmOaWRAEAd7E57IuTSfk
-         7HWNWIYlrBuwIqUaadyTJiBFdh9a1iZ+bDKoeftKwD13ZTh9d3vr18FUlqhGn3zraToN
-         eD5A==
+        bh=9R93eLtRuVCsdbuGEdtd6/wt6t26wDnU5PW4NiI4F68=;
+        b=csmGGtkC8xWJX3kieIDCS54zZkawd9H0DUSqfWtKcN8+aDMemWcrgpAQLZqmvuADir
+         67q9q6ghhHffsYH1j5ba7j6FWfztBlCoPcWcQJh2A3tbQXaswMZq3lZgagdejrN+cFvY
+         J4UdSMv6K7lHeEaRihAvLB+qmy2tAdWuVGeQ/6sH+kJEj78Ct7X8lfbKTJwlRBzlG8QO
+         F1TVFSKYXyB5bXNrMAJqeI+g3h5o4bPdhJhHva6NUV7zD5vcdc6WQeKb2mWBDFI2sb2n
+         zfrssTmGGTmZEu0Q6IDQbE4C5JnV1UrqWDVUu5qLLG43bcaP/mPFOtZYfPgH1AkxZxi0
+         PGug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1795223484; x=1795828284;
+        d=1e100.net; s=20260707; t=1795223482; x=1795828282;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=dWkb9R9dFJf53WgY0/fb7qetN7PVplL4lJbH2mVBctQ=;
-        b=lJ9Vc/zEjVQmJ5I6yULuDE1ghZF2uD9ZNSOZRjcRpmGLqJ0VnTVlQptZ6xNVIakYVQ
-         piuIUufY0DUUuc5bdDrM+z0KDK/vkLh2T4q2ELC11i5pT/oh7gyTHj9OPVuHtiOAd4kC
-         XZoMnygwxkcKwOohhaJicwCbbliy5Ls2YRvwbpYk2vyvHbXB6vEPBdMMmMpZQMKPUb5f
-         DfkmJVLcYB0bj7eGTApa5ApMSGagP4hj7yHalyN3y7Ad6i33+saYEH8JvD+wWu9sfpRZ
-         zfPxaSmg2X/315WRB9Bip8mocwuWnBUx73LOLwPwgRb6FyY6Vc+LXtLCX9g8y7ZuCh8G
-         jVOQ==
-X-Forwarded-Encrypted: i=1; AL+hErGGAtZbiXPqIa3GRAV9UqDk+nup3Jqp5ihZvH6xjwl9L8i8cBAdBA9cOfZ4GNEagodYIcCPXMTovCs=@lists.infradead.org
-X-Gm-Message-State: APuU4Z+g9d3ZdfyJsP/hFtdTTcyUuFo93qIlMe6aW6UMjKv0iQ9tzat7
-	SGv6y1D21ZGjbkzoV2hd2lK9Oo35stCGa2ZOoa0OuHT9ezLNit75AeHJ
-X-Gm-Gg: AYBFou1VQfZhyFn+rkqcn6RjIIR7rq/xD52bkgu4nrzsskMXngQpLIFe0VPVHhRSPXD
-	O8sy3iAUlAWohgodKamFh2HOnJPge/aP6VieWwZD8IZRWrq99oeQJaB7wwWgO95hQG3fYEgJ9nT
-	XcGTj1HvYOjR3djsbv4ojnGQByrX87DV/Hm3PlkB3GBmuBTa1dSCxm+CdBLkqZc0OGSQywdyWFs
-	5/pxJHit9U0yQUYLT8m9YdkBqFpvJg++QJxNUHXi6YEQBhkWWQCVxShK3J5vt46g7mRN353mEni
-	W6zBDR2TSSFMNAEIae85h2Dd6Ukgo9qE5wCzfrfHKBo+tdKl4L0b2eSLhXDW1G572p/GW8iGQEw
-	07Sq/UXhtdAwDk6opcgEstXFnG0sJYG2M190vZl3d2bOCfLViBFqMcjP6j1JlV2wHlLgIsC8tfk
-	O/ul/PjLz7tQ6iVX2dNjHYbrWXVg1ULtnkxDe/je1cdzvq0xLcoU2Jt4D8JZ4rVWzMk/1634wfK
-	NsJFtn+BmulTWEzm5CzKYB5dMYMgfzSjcicDwsSNsD9YJzLDbvhUqKGJcmMp4XrpbFDARSQ00pg
-	bjiHAnz1xHKjEyGpBpf15wjUiUTfoBzsGLMJDOsbhxB+SwPEfqOza6GRvzY2fQiL22vktoQ3o8p
-	mCXFxbhqiiHHkSM22myJEFyntpEXSZTboMxWPMwr7mwHpGSo7XZ/97fUVjf1U8jCndBEW60kig3
-	oPGCiPUsO/JVCc8s5dQ6FnLoPP0EIyXCiVPBBjL8gFXy3151u8slNp
-X-Received: by 2002:a05:6808:4fdf:b0:571:b166:3d77 with SMTP id 5614622812f47-57a0af33b0amr6477590b6e.27.1795223483689;
-        Fri, 20 Nov 2026 17:11:23 -0800 (PST)
+        bh=9R93eLtRuVCsdbuGEdtd6/wt6t26wDnU5PW4NiI4F68=;
+        b=Ta+hNZObamBa5T1UGSWz9uM4BWxXCo1svLHPLPAqbAxVOKPFrKwnak33IChoF6vkf7
+         a5FQ5EtXDJ6mbrh660b3z9bw9lXzki4bDblo42V8dGPr/JFztM/dIoxphNgMVPsV0tKD
+         quYO8Lg7vfcgQkutwZjPKuQ1r3MiUQt1nzm5gmV7HPvpEDUWZOuxBERqrmqSeN0g9KAX
+         FhkWLUS2MxcGq7KVb70k3+Ht5HunfK8n+XeVIV13mg8cUiNMkesBPvalTG7tvDOeYX8j
+         Hz+92XQVRzCvlp695toCLbU2g8keZWi6ahLdpzup0EsXxITvmBtPv5ArlE0DhW8dFekP
+         6Ljw==
+X-Forwarded-Encrypted: i=1; AL+hErEH7okOFrFvm4qhW5gRr8YEb9mBih3KICwJtKlygY2D5wd0qx+1HVtQXR5icpwcT2TB7DgUK2fzgl0=@lists.infradead.org
+X-Gm-Message-State: APuU4Z+RZJaxl89tjAPaAaB0UrNLyhkmnv3EK6Esdmwjn/IQ8ZEqqalq
+	NiaOlih8qKr6x5cBohaEkjF6tEBtmmuBYePbWt8WAPTt+96wLCV/u5VW
+X-Gm-Gg: AYBFou0m2RL8n+y5UAgqG6nI+t/tjWEavuv3YFq54o1s0U4OY0c5yu1TsPDIAJHSjRD
+	9UyJ9ReXoON+V32FRieoP5uguuqeYlhyfrAEyDwsTXk6RctZZSiwbnGo0iqiAMXSOaOx3R47de5
+	LLRFl48HfngCnihXawNyT56Cj8yIyPj/NPPrmfspSkyAg+TMQTr63ayxCTboIRo2ngfhHBcstas
+	vlSDUWN8GgY1S39Sh/19PjkdSesrQA/XTLhs8c2QtKo0lSELGhYYMufLsY8vkgpQUNQ2Ml53Srg
+	o0wn5AQocXXUTCsLcDqLwJJIHWAdv2O+Od4iIgCS49esrZFbjxxgJU5xS0wx9h2/xcBmUaZrZys
+	y7GPHc9VzYwVpenJnBEKdbSJrSV9eYdo3ALGQA+a5McTsYLoTU/eNtduqGn3RL3M0WEfKuodWjZ
+	xaVndvTQiDI+TyLlmXe/sgG6cFA6GztM72MAkpYAgse7sjA1LBaoaOXBUDkHGqX92owEkbKKr6P
+	W2XVLTCW45eAGJgoxLVH8TFK1kR72n03jf+dAz4fDlZkrvKgdfVDgJ9yUXA99WHdcUfD4MCdAMG
+	iRWXywJmkEGa9H5bO2wrmAKHQmt43xzfSUfoqQ6bemEdbApsM1bZ64tgtiKCT7qiVJPE8uJHIeX
+	y4ICnjbExmtRoXr3zBv9pVeeTRo9uzDK33fVwlzCC6LPRHFuN7bsKo4q25MCYDC2Fdr3VqWMl8A
+	2WIM+SRFhI71eAR4+VAeVQU7DCXcn/LlkrAT1krVX8dUsjJYqJX6Yi
+X-Received: by 2002:a05:6808:13c5:b0:573:52b1:bb00 with SMTP id 5614622812f47-57a09910c41mr6373784b6e.39.1795223482353;
+        Fri, 20 Nov 2026 17:11:22 -0800 (PST)
 Received: from [127.0.1.1] (174-29-1-49.hlrn.qwest.net. [174.29.1.49])
-        by smtp.gmail.com with ESMTPSA id 5614622812f47-57a3485e3ecsm3291532b6e.9.2026.11.20.17.11.22
+        by smtp.gmail.com with ESMTPSA id 5614622812f47-57a3485e3ecsm3291532b6e.9.2026.11.20.17.11.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2026 17:11:23 -0800 (PST)
+        Fri, 20 Nov 2026 17:11:22 -0800 (PST)
 From: James Hilliard <james.hilliard1@gmail.com>
-Date: Fri, 20 Nov 2026 18:10:43 -0700
-Subject: [PATCH v11 20/26] mtd: rawnand: sunxi: limit buffer transfers to
- the command byte count
+Date: Fri, 20 Nov 2026 18:10:42 -0700
+Subject: [PATCH v11 19/26] mtd: rawnand: sunxi: propagate chip clock setup
+ errors
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Message-Id: <20261120-submit-sunxi-nand-vendor-oob-layout-v1-v11-20-9721b1905ef4@gmail.com>
+Message-Id: <20261120-submit-sunxi-nand-vendor-oob-layout-v1-v11-19-9721b1905ef4@gmail.com>
 References: <20261120-submit-sunxi-nand-vendor-oob-layout-v1-v11-0-9721b1905ef4@gmail.com>
 In-Reply-To: <20261120-submit-sunxi-nand-vendor-oob-layout-v1-v11-0-9721b1905ef4@gmail.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, 
@@ -104,8 +104,8 @@ Cc: Chen-Yu Tsai <wens@kernel.org>,
  devicetree@vger.kernel.org
 X-Mailer: b4 0.17-dev
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261120_171126_285052_8D64F38B 
-X-CRM114-Status: GOOD (  13.83  )
+X-CRM114-CacheID: sfid-20261120_171126_254404_AC912D57 
+X-CRM114-Status: GOOD (  16.68  )
 X-Spam-Score: -1.9 (-)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -127,77 +127,97 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-On H616 a page operation can report success after reading or writing
-only part of a large unprotected OOB tail. The controller has 8 KiB of
-SRAM, but its normal-command byte count has only ten bits, with zero
-encoding 1024 bytes. The buffer helpers use the SRAM size as their
-limit and advance by the requested length, even when the controller
-transfers fewer bytes.
+If clk_set_rate() fails during chip selection, the next NAND command
+can run with timings calculated for a clock rate that was never set.
+The driver also caches the requested rate, so selecting the chip again
+does not retry the change.
 
-The operation parser already splits data transfers at 1024 bytes, but
-the extra-OOB helpers call the buffer helpers directly. Share the
-parser's byte-count limit with the buffer helpers and keep each chunk
-within the controller's SRAM. Larger buffers are transferred in
-successive commands; controllers with 1 KiB of SRAM keep their
-existing chunk size.
+Return the clock error before programming the timings or updating the
+cache. Propagate it through exec_op() and the DMA page writer so
+neither starts a command at the wrong rate.
 
-Fixes: 88fd4e4deae8 ("mtd: rawnand: sunxi: Add support for H616 nand controller")
+Fixes: 1fef62c1423b ("mtd: nand: add sunxi NAND flash controller support")
 Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
 ---
- drivers/mtd/nand/raw/sunxi_nand.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ drivers/mtd/nand/raw/sunxi_nand.c | 32 ++++++++++++++++++++++----------
+ 1 file changed, 22 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/sunxi_nand.c b/drivers/mtd/nand/raw/sunxi_nand.c
-index 37cc023db74e..4478189bf920 100644
+index ee68ef9bba33..37cc023db74e 100644
 --- a/drivers/mtd/nand/raw/sunxi_nand.c
 +++ b/drivers/mtd/nand/raw/sunxi_nand.c
-@@ -89,6 +89,9 @@
- #define NFC_RAM0_BASE		0x0400
- #define NFC_RAM1_BASE		0x0800
- 
-+/* Maximum byte count for a normal data-transfer command. */
-+#define NFC_MAX_BYTE_COUNT	1024
-+
- /* define bit use in NFC_CTL */
- #define NFC_EN			BIT(0)
- #define NFC_RESET		BIT(1)
-@@ -667,7 +670,7 @@ static int sunxi_nfc_select_chip(struct nand_chip *nand, unsigned int cs)
- 
- static int sunxi_nfc_buf_chunk_size(struct sunxi_nfc *nfc, int len)
- {
--	return min(len, nfc->caps->sram_size);
-+	return min3(len, nfc->caps->sram_size, NFC_MAX_BYTE_COUNT);
+@@ -628,16 +628,25 @@ static void sunxi_nfc_dma_op_abort(struct sunxi_nfc *nfc)
+ 		dmaengine_terminate_all(nfc->dmac);
  }
  
- static int sunxi_nfc_read_buf(struct nand_chip *nand, u8 *buf, int len)
-@@ -2498,11 +2501,11 @@ static const struct nand_op_parser sunxi_nfc_op_parser = NAND_OP_PARSER(
- 			       NAND_OP_PARSER_PAT_ADDR_ELEM(true, 8),
- 			       NAND_OP_PARSER_PAT_CMD_ELEM(true),
- 			       NAND_OP_PARSER_PAT_WAITRDY_ELEM(true),
--			       NAND_OP_PARSER_PAT_DATA_IN_ELEM(true, 1024)),
-+			       NAND_OP_PARSER_PAT_DATA_IN_ELEM(true, NFC_MAX_BYTE_COUNT)),
- 	NAND_OP_PARSER_PATTERN(sunxi_nfc_exec_subop,
- 			       NAND_OP_PARSER_PAT_CMD_ELEM(true),
- 			       NAND_OP_PARSER_PAT_ADDR_ELEM(true, 8),
--			       NAND_OP_PARSER_PAT_DATA_OUT_ELEM(true, 1024),
-+			       NAND_OP_PARSER_PAT_DATA_OUT_ELEM(true, NFC_MAX_BYTE_COUNT),
- 			       NAND_OP_PARSER_PAT_CMD_ELEM(true),
- 			       NAND_OP_PARSER_PAT_WAITRDY_ELEM(true)),
- );
-@@ -2512,11 +2515,11 @@ static const struct nand_op_parser sunxi_nfc_norb_op_parser = NAND_OP_PARSER(
- 			       NAND_OP_PARSER_PAT_CMD_ELEM(true),
- 			       NAND_OP_PARSER_PAT_ADDR_ELEM(true, 8),
- 			       NAND_OP_PARSER_PAT_CMD_ELEM(true),
--			       NAND_OP_PARSER_PAT_DATA_IN_ELEM(true, 1024)),
-+			       NAND_OP_PARSER_PAT_DATA_IN_ELEM(true, NFC_MAX_BYTE_COUNT)),
- 	NAND_OP_PARSER_PATTERN(sunxi_nfc_exec_subop,
- 			       NAND_OP_PARSER_PAT_CMD_ELEM(true),
- 			       NAND_OP_PARSER_PAT_ADDR_ELEM(true, 8),
--			       NAND_OP_PARSER_PAT_DATA_OUT_ELEM(true, 1024),
-+			       NAND_OP_PARSER_PAT_DATA_OUT_ELEM(true, NFC_MAX_BYTE_COUNT),
- 			       NAND_OP_PARSER_PAT_CMD_ELEM(true)),
- 	NAND_OP_PARSER_PATTERN(sunxi_nfc_soft_waitrdy,
- 			       NAND_OP_PARSER_PAT_WAITRDY_ELEM(false)),
+-static void sunxi_nfc_select_chip(struct nand_chip *nand, unsigned int cs)
++static int sunxi_nfc_select_chip(struct nand_chip *nand, unsigned int cs)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(nand);
+ 	struct sunxi_nand_chip *sunxi_nand = to_sunxi_nand(nand);
+ 	struct sunxi_nfc *nfc = to_sunxi_nfc(sunxi_nand->nand.controller);
+ 	struct sunxi_nand_chip_sel *sel;
+ 	u32 ctl;
++	int ret;
+ 
+ 	if (cs >= sunxi_nand->nsels)
+-		return;
++		return -EINVAL;
++
++	if (nfc->clk_rate != sunxi_nand->clk_rate) {
++		ret = clk_set_rate(nfc->mod_clk, sunxi_nand->clk_rate);
++		if (ret)
++			return ret;
++
++		nfc->clk_rate = sunxi_nand->clk_rate;
++	}
+ 
+ 	ctl = readl(nfc->regs + NFC_REG_CTL) &
+ 	      ~(NFC_PAGE_SHIFT_MSK | NFC_CE_SEL_MSK | NFC_RB_SEL_MSK | NFC_EN);
+@@ -649,14 +658,11 @@ static void sunxi_nfc_select_chip(struct nand_chip *nand, unsigned int cs)
+ 
+ 	writel(mtd->writesize, nfc->regs + NFC_REG_SPARE_AREA(nfc));
+ 
+-	if (nfc->clk_rate != sunxi_nand->clk_rate) {
+-		clk_set_rate(nfc->mod_clk, sunxi_nand->clk_rate);
+-		nfc->clk_rate = sunxi_nand->clk_rate;
+-	}
+-
+ 	writel(sunxi_nand->timing_ctl, nfc->regs + NFC_REG_TIMING_CTL);
+ 	writel(sunxi_nand->timing_cfg, nfc->regs + NFC_REG_TIMING_CFG);
+ 	writel(ctl, nfc->regs + NFC_REG_CTL);
++
++	return 0;
+ }
+ 
+ static int sunxi_nfc_buf_chunk_size(struct sunxi_nfc *nfc, int len)
+@@ -1778,7 +1784,9 @@ static int sunxi_nfc_hw_ecc_write_page_dma(struct nand_chip *nand,
+ 	u32 wait;
+ 	int first_step, batch_steps, ret, i;
+ 
+-	sunxi_nfc_select_chip(nand, nand->cur_cs);
++	ret = sunxi_nfc_select_chip(nand, nand->cur_cs);
++	if (ret)
++		return ret;
+ 
+ 	for (first_step = 0; first_step < ecc->steps; first_step += batch_steps) {
+ 		unsigned int reg_index = 0;
+@@ -2519,9 +2527,13 @@ static int sunxi_nfc_exec_op(struct nand_chip *nand,
+ {
+ 	struct sunxi_nand_chip *sunxi_nand = to_sunxi_nand(nand);
+ 	const struct nand_op_parser *parser;
++	int ret;
+ 
+-	if (!check_only)
+-		sunxi_nfc_select_chip(nand, op->cs);
++	if (!check_only) {
++		ret = sunxi_nfc_select_chip(nand, op->cs);
++		if (ret)
++			return ret;
++	}
+ 
+ 	if (sunxi_nand->sels[op->cs].rb >= 0)
+ 		parser = &sunxi_nfc_op_parser;
 
 -- 
 2.53.0
