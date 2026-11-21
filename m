@@ -2,11 +2,12 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C23B4606A331
-	for <linux-mtd@archiver.kernel.org>; Sat, 21 Nov 2026 01:13:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2BD8606A69C
+	for <linux-mtd@archiver.kernel.org>; Sat, 21 Nov 2026 01:14:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=O/eKqqTy;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=csmGGtkC
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=edk3yGAF;
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=infradead.org header.i=@infradead.org header.a=rsa-sha256 header.s=desiato.20200630 header.b=aFMkyAQe;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=eaavoAbc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,75 +15,91 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=xa1bHy1MvwIsLzUZr+8FBTrcGOG5tB2KkDZMQbnIH08=; b=O/eKqqTyxl05neg79r4tl0qTMg
-	K33yXlN3YHq6uih+fJQq7zukxyO7QwbnQP+VwzptqKwmKeLk5xKgHMnSpdOgu5DNWyxtCPIsx/Hj3
-	p2oItIFDHnykim1YtEd7XFskjSC3b34rsx0PVnxu+/ho2PUY3CmXomSKvfvLXaJmwQnhCARS10sP7
-	5K5ep7BW/Ui3Yz6QyAygeo8gzuLM14ZynZzPTQMYV1i3FiAkUsIRRwUPfJ7Befz1DPabxZp4VqJCB
-	te6fpjV0yoipCSnhq0oGzkRDjmkiA4nHsaKZ1jojnfv+UBwsuzufovN/LVk5MZjjWaLkVuwS1ZLwk
-	aQKMsaZQ==;
+	bh=2HunzIj+pAaq7WlnP0oUfeFC/UDTDXAxZl3FOmhH+pI=; b=edk3yGAFf9Tirz5z/v7Ssn/1ry
+	hPmWoqs5Evy9vs0W9UFLgqvAJA9cBGmcL9qshgFIa1GPuRrOog/ssnei6YvZvqx6BhEsNaLcKQlaV
+	+hlJ1ckpRXVR1DbhrFLf/Pwtic6C2rs7dyoJ2rHK9EyJVb38k6N0IToPjl+EPgj+gPaxKljnwusRr
+	KE7m3CrZIiYu1Dbt9sNmtC7ps/OBu6rQ4KCXO2D3OtON38hFYPWmN7+9jYLQxgkyxaJCuM/0BQFy/
+	v0ZFzEovaaxEwRnmqYc3bBd20Xe01XRQ6Qbpli9VVBH5Qqg8kWonbIR0dEZzxvqLCUe3ecxa2mZM7
+	NJQ1NGJw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xUZfw-0000000GbV1-22uz;
-	Sat, 21 Nov 2026 01:13:56 +0000
-Received: from mail-oi1-x236.google.com ([2607:f8b0:4864:20::236])
+	id 1xUZg8-0000000Gbd1-2HXJ;
+	Sat, 21 Nov 2026 01:14:08 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xUZdT-0000000GZWE-357i
+	id 1xUZdl-0000000GZp0-1SuY
+	for linux-mtd@bombadil.infradead.org;
+	Sat, 21 Nov 2026 01:11:48 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Cc:To:In-Reply-To:References:
+	Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
+	From:Sender:Reply-To:Content-ID:Content-Description;
+	bh=KCmwAi76omzV3Ocey3RKQm8GgxKEzZYW/hAI8TU8mC4=; b=aFMkyAQeIBhXsPGSddVzsn+JmH
+	C3upbDBu1nOSNafH4BLEONfL7AlbTpV/PFhRwDBuNVUytOGf6EchVM6EWIZnEsUyUzKdgyvLzHxqd
+	FLfS2/8WpHq5EQ8MEb2Gs4Y2HOxIXf7fsyRG24v8jQlVg5bZpd64MJgurOnNvi881LqZwPw7NiYCX
+	CDJ410xyHhL7PPTQDluB6ysPkWDutjpOizb0HRHYWhU+JlBdcGgiv1OTkbIk/i44pA1KhPEQrthry
+	imd0hiMKTMIf4qtEiWPL5Lt3B9N0Zg9UFQsnalsT20imFaW8/cNFYQg2h4ldTDAUA3t7des8lpFiH
+	Zn8ZCmFA==;
+Received: from mail-oi1-x232.google.com ([2607:f8b0:4864:20::232])
+	by desiato.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
+	id 1xUZdb-00000001MRP-1ASj
 	for linux-mtd@lists.infradead.org;
-	Sat, 21 Nov 2026 01:11:31 +0000
-Received: by mail-oi1-x236.google.com with SMTP id 5614622812f47-571eb508e44so785337b6e.3
-        for <linux-mtd@lists.infradead.org>; Fri, 20 Nov 2026 17:11:23 -0800 (PST)
+	Sat, 21 Nov 2026 01:11:35 +0000
+Received: by mail-oi1-x232.google.com with SMTP id 5614622812f47-53dda625f63so913211b6e.1
+        for <linux-mtd@lists.infradead.org>; Fri, 20 Nov 2026 17:11:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1795223482; x=1795828282; darn=lists.infradead.org;
+        d=gmail.com; s=20260707; t=1795223481; x=1795828281; darn=lists.infradead.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=9R93eLtRuVCsdbuGEdtd6/wt6t26wDnU5PW4NiI4F68=;
-        b=csmGGtkC8xWJX3kieIDCS54zZkawd9H0DUSqfWtKcN8+aDMemWcrgpAQLZqmvuADir
-         67q9q6ghhHffsYH1j5ba7j6FWfztBlCoPcWcQJh2A3tbQXaswMZq3lZgagdejrN+cFvY
-         J4UdSMv6K7lHeEaRihAvLB+qmy2tAdWuVGeQ/6sH+kJEj78Ct7X8lfbKTJwlRBzlG8QO
-         F1TVFSKYXyB5bXNrMAJqeI+g3h5o4bPdhJhHva6NUV7zD5vcdc6WQeKb2mWBDFI2sb2n
-         zfrssTmGGTmZEu0Q6IDQbE4C5JnV1UrqWDVUu5qLLG43bcaP/mPFOtZYfPgH1AkxZxi0
-         PGug==
+        bh=KCmwAi76omzV3Ocey3RKQm8GgxKEzZYW/hAI8TU8mC4=;
+        b=eaavoAbczuwgz1m8zivFPellXohYm/Wxz2YJVEXrCsL0I1iIoys3Y1dXrQI/OW3v2/
+         szzSxjAOtV8xYFVcYDcMvV9xAoveYt8mO8JdL6XmZBLLsPzBn24nsf9koMAsLhIODYNz
+         92qvULmLatE/D7N/9+afLeLwWfSQ9TeuNkDrMYUT68fqTwhy3bMMkErqCv6Z+XLairJd
+         4FcHd4Uh1fKQQ3eD0miorNDhps3vryHRMQK2NUukgWE8ChIRoelNXfGMNmmak7QTNnoN
+         g53gl0TNjqze62yVBLYNplAF9GW1Yh1+flswEsTeRetMYVHUuWj8r+jqIdb4Ag6H0Qrf
+         sd+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1795223482; x=1795828282;
+        d=1e100.net; s=20260707; t=1795223481; x=1795828281;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=9R93eLtRuVCsdbuGEdtd6/wt6t26wDnU5PW4NiI4F68=;
-        b=Ta+hNZObamBa5T1UGSWz9uM4BWxXCo1svLHPLPAqbAxVOKPFrKwnak33IChoF6vkf7
-         a5FQ5EtXDJ6mbrh660b3z9bw9lXzki4bDblo42V8dGPr/JFztM/dIoxphNgMVPsV0tKD
-         quYO8Lg7vfcgQkutwZjPKuQ1r3MiUQt1nzm5gmV7HPvpEDUWZOuxBERqrmqSeN0g9KAX
-         FhkWLUS2MxcGq7KVb70k3+Ht5HunfK8n+XeVIV13mg8cUiNMkesBPvalTG7tvDOeYX8j
-         Hz+92XQVRzCvlp695toCLbU2g8keZWi6ahLdpzup0EsXxITvmBtPv5ArlE0DhW8dFekP
-         6Ljw==
-X-Forwarded-Encrypted: i=1; AL+hErEH7okOFrFvm4qhW5gRr8YEb9mBih3KICwJtKlygY2D5wd0qx+1HVtQXR5icpwcT2TB7DgUK2fzgl0=@lists.infradead.org
-X-Gm-Message-State: APuU4Z+RZJaxl89tjAPaAaB0UrNLyhkmnv3EK6Esdmwjn/IQ8ZEqqalq
-	NiaOlih8qKr6x5cBohaEkjF6tEBtmmuBYePbWt8WAPTt+96wLCV/u5VW
-X-Gm-Gg: AYBFou0m2RL8n+y5UAgqG6nI+t/tjWEavuv3YFq54o1s0U4OY0c5yu1TsPDIAJHSjRD
-	9UyJ9ReXoON+V32FRieoP5uguuqeYlhyfrAEyDwsTXk6RctZZSiwbnGo0iqiAMXSOaOx3R47de5
-	LLRFl48HfngCnihXawNyT56Cj8yIyPj/NPPrmfspSkyAg+TMQTr63ayxCTboIRo2ngfhHBcstas
-	vlSDUWN8GgY1S39Sh/19PjkdSesrQA/XTLhs8c2QtKo0lSELGhYYMufLsY8vkgpQUNQ2Ml53Srg
-	o0wn5AQocXXUTCsLcDqLwJJIHWAdv2O+Od4iIgCS49esrZFbjxxgJU5xS0wx9h2/xcBmUaZrZys
-	y7GPHc9VzYwVpenJnBEKdbSJrSV9eYdo3ALGQA+a5McTsYLoTU/eNtduqGn3RL3M0WEfKuodWjZ
-	xaVndvTQiDI+TyLlmXe/sgG6cFA6GztM72MAkpYAgse7sjA1LBaoaOXBUDkHGqX92owEkbKKr6P
-	W2XVLTCW45eAGJgoxLVH8TFK1kR72n03jf+dAz4fDlZkrvKgdfVDgJ9yUXA99WHdcUfD4MCdAMG
-	iRWXywJmkEGa9H5bO2wrmAKHQmt43xzfSUfoqQ6bemEdbApsM1bZ64tgtiKCT7qiVJPE8uJHIeX
-	y4ICnjbExmtRoXr3zBv9pVeeTRo9uzDK33fVwlzCC6LPRHFuN7bsKo4q25MCYDC2Fdr3VqWMl8A
-	2WIM+SRFhI71eAR4+VAeVQU7DCXcn/LlkrAT1krVX8dUsjJYqJX6Yi
-X-Received: by 2002:a05:6808:13c5:b0:573:52b1:bb00 with SMTP id 5614622812f47-57a09910c41mr6373784b6e.39.1795223482353;
-        Fri, 20 Nov 2026 17:11:22 -0800 (PST)
+        bh=KCmwAi76omzV3Ocey3RKQm8GgxKEzZYW/hAI8TU8mC4=;
+        b=a8dHMCyM2VDk7AgevS59wF1WuVPbdFyvnYXgKHJOx3AlplDzpE0AvdsKv6OJnhdFZ3
+         Blrna5IpdjOmBvGms9kJwmEEwpBI7eqh7NfaCoghfoWp7Ytd+R5/OL3KAGSg+evRJqM6
+         g0EZf7UNCngRXh+1jRo2ksxzYxGmG3Mw7gGc2WaXUfSUX/vpplBV/VDRPSLRVsc+4eqU
+         Dk4evk+a2OtirNnG9YhzrhVrVgXakNA1A/8W/2vFb5zfpWhKBV7SiOtky/M504MxHjC4
+         WVhoY+zZkj2UWmSfKOFQ0kaNsklT/8PLOF70k7CHASWkrb0pm7ShwdhO3n2QagklDNpe
+         0niw==
+X-Forwarded-Encrypted: i=1; AL+hErH2K026JoKHYO/A49kodeP3+7rSYFTaV1svcUwn7xjzNhin39ddiASi7k4eHGJhTDPtbQ4yOWQLHLw=@lists.infradead.org
+X-Gm-Message-State: APuU4Z9OhhVq3euq2pxUWI1WAsvqAWVTm+oAqWiThZgrCeVTmQ4o2K5s
+	d1jGi59ZrAOwFbqv50LPLMz6s6+19Znl28uDq/XpdWJ4XfMOBdCXraKx
+X-Gm-Gg: AYBFou2bfdWqggsRhE/x+9ldDYxkF3hYIFB4XbcI4q/9JbCznQcxSAgBQgcmaENK+gN
+	lzfF0Uh+KFA3T1uPtwqKL5avABVWL4nn3WhabhUIbFt65oNKcfBL4bn8smuou9XgdZ3WghNiWbl
+	dC/ZLWyduvwJF0tBgfZcQFrusUDfluxjaZdhCy/wo2ruubxjIk//Bdh6we3s8rTDN/z0rDfakGN
+	7D2txP562jdZpZ+HDDRZQK+4xbL9o+WhjdyCMDOP4mWZilPKF+cgT5/lKKy7qntZlwWDVFecAci
+	cjAT1GXaYX+cAsy2+hGY6esdfxGXk+9rG1mh7ocdV3VJEbAWB8iYgCPltr3cgEpGRqFCupuZDRx
+	mhusyf1NJi2aBQAgaVmDuUeWv3HtYEj8T6r/WSlGPCi7oDbif1z37UHLdgVkTISpMDCV0+XdrOA
+	OupA7GcsSn+nQkmH3ZksfP3aeCmKxz+NzjtXPANEg7lZRU3nyDZfUD8tQFbVLXI7oGRdFQ2J8jl
+	9/3EcYiy/sverMKe+W0XJ+UZOJxDmSDQDT/aLF8HjodbNnWzdZxtTLJvZskCAqJjn5EzwGYSgZ2
+	8uOMXFfdH4mJHrknP43Tz4yqYnRvatg7Xr0ME33iWR8IO25+AsKAavFyJOJzVhHz6Pv97utAi9w
+	AOlmJizb/+16y8wRregIV0yKt4x4mIErSupoLBAWemN4Aoh1Vpg/99XX2NaW+rdsucI/AizeT8j
+	v3nPnvfpVG3NepwzA7wWG6QNPnHQOn9V1hV8jIhXtfJKxtM10DPMZPAknB31QJit5sZ/xD5F74a
+	Q==
+X-Received: by 2002:a05:6808:152b:b0:53c:156b:a16d with SMTP id 5614622812f47-57a0a70b0d0mr5784172b6e.56.1795223481233;
+        Fri, 20 Nov 2026 17:11:21 -0800 (PST)
 Received: from [127.0.1.1] (174-29-1-49.hlrn.qwest.net. [174.29.1.49])
-        by smtp.gmail.com with ESMTPSA id 5614622812f47-57a3485e3ecsm3291532b6e.9.2026.11.20.17.11.21
+        by smtp.gmail.com with ESMTPSA id 5614622812f47-57a3485e3ecsm3291532b6e.9.2026.11.20.17.11.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2026 17:11:22 -0800 (PST)
+        Fri, 20 Nov 2026 17:11:20 -0800 (PST)
 From: James Hilliard <james.hilliard1@gmail.com>
-Date: Fri, 20 Nov 2026 18:10:42 -0700
-Subject: [PATCH v11 19/26] mtd: rawnand: sunxi: propagate chip clock setup
- errors
+Date: Fri, 20 Nov 2026 18:10:41 -0700
+Subject: [PATCH v11 18/26] mtd: rawnand: sunxi: send all address cycles in
+ split operations
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Message-Id: <20261120-submit-sunxi-nand-vendor-oob-layout-v1-v11-19-9721b1905ef4@gmail.com>
+Message-Id: <20261120-submit-sunxi-nand-vendor-oob-layout-v1-v11-18-9721b1905ef4@gmail.com>
 References: <20261120-submit-sunxi-nand-vendor-oob-layout-v1-v11-0-9721b1905ef4@gmail.com>
 In-Reply-To: <20261120-submit-sunxi-nand-vendor-oob-layout-v1-v11-0-9721b1905ef4@gmail.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, 
@@ -104,9 +121,9 @@ Cc: Chen-Yu Tsai <wens@kernel.org>,
  devicetree@vger.kernel.org
 X-Mailer: b4 0.17-dev
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261120_171126_254404_AC912D57 
-X-CRM114-Status: GOOD (  16.68  )
-X-Spam-Score: -1.9 (-)
+X-CRM114-CacheID: sfid-20261121_011132_932933_817BB797 
+X-CRM114-Status: GOOD (  17.43  )
+X-Spam-Score: 0.1 (/)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -127,97 +144,40 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-If clk_set_rate() fails during chip selection, the next NAND command
-can run with timings calculated for a clock rate that was never set.
-The driver also caches the requested rate, so selecting the chip again
-does not retry the change.
+When an address instruction exceeds the controller's eight-cycle limit,
+the driver can report success without sending all of the requested
+address. The parser splits the instruction; nand_subop_get_num_addr_cyc()
+returns a count for the current part, but the driver treats it as an end
+offset in the original instruction.
 
-Return the clock error before programming the timings or updating the
-cache. Propagate it through exec_op() and the DMA page writer so
-neither starts a command at the wrong rate.
+For example, an instruction with ten address cycles is accepted by the
+parser and split into eight cycles followed by two. The second
+suboperation starts at offset eight, so the old loop sends no address
+at all while reporting success.
 
-Fixes: 1fef62c1423b ("mtd: nand: add sunxi NAND flash controller support")
+Use the returned count as the loop bound and retain the start offset only
+when indexing the original address buffer. The parser limits each
+suboperation to the eight cycles supported by the address registers.
+
+Fixes: df5057999f8c ("mtd: rawnand: sunxi: Migrate to ->exec_op()")
 Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
 ---
- drivers/mtd/nand/raw/sunxi_nand.c | 32 ++++++++++++++++++++++----------
- 1 file changed, 22 insertions(+), 10 deletions(-)
+ drivers/mtd/nand/raw/sunxi_nand.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/nand/raw/sunxi_nand.c b/drivers/mtd/nand/raw/sunxi_nand.c
-index ee68ef9bba33..37cc023db74e 100644
+index f8bc6e3c3ac9..ee68ef9bba33 100644
 --- a/drivers/mtd/nand/raw/sunxi_nand.c
 +++ b/drivers/mtd/nand/raw/sunxi_nand.c
-@@ -628,16 +628,25 @@ static void sunxi_nfc_dma_op_abort(struct sunxi_nfc *nfc)
- 		dmaengine_terminate_all(nfc->dmac);
- }
+@@ -2410,7 +2410,7 @@ static int sunxi_nfc_exec_subop(struct nand_chip *nand,
+ 		case NAND_OP_ADDR_INSTR:
+ 			remaining = nand_subop_get_num_addr_cyc(subop, i);
+ 			start = nand_subop_get_addr_start_off(subop, i);
+-			for (j = 0; j < 8 && j + start < remaining; j++) {
++			for (j = 0; j < remaining; j++) {
+ 				u32 addr = instr->ctx.addr.addrs[j + start];
  
--static void sunxi_nfc_select_chip(struct nand_chip *nand, unsigned int cs)
-+static int sunxi_nfc_select_chip(struct nand_chip *nand, unsigned int cs)
- {
- 	struct mtd_info *mtd = nand_to_mtd(nand);
- 	struct sunxi_nand_chip *sunxi_nand = to_sunxi_nand(nand);
- 	struct sunxi_nfc *nfc = to_sunxi_nfc(sunxi_nand->nand.controller);
- 	struct sunxi_nand_chip_sel *sel;
- 	u32 ctl;
-+	int ret;
- 
- 	if (cs >= sunxi_nand->nsels)
--		return;
-+		return -EINVAL;
-+
-+	if (nfc->clk_rate != sunxi_nand->clk_rate) {
-+		ret = clk_set_rate(nfc->mod_clk, sunxi_nand->clk_rate);
-+		if (ret)
-+			return ret;
-+
-+		nfc->clk_rate = sunxi_nand->clk_rate;
-+	}
- 
- 	ctl = readl(nfc->regs + NFC_REG_CTL) &
- 	      ~(NFC_PAGE_SHIFT_MSK | NFC_CE_SEL_MSK | NFC_RB_SEL_MSK | NFC_EN);
-@@ -649,14 +658,11 @@ static void sunxi_nfc_select_chip(struct nand_chip *nand, unsigned int cs)
- 
- 	writel(mtd->writesize, nfc->regs + NFC_REG_SPARE_AREA(nfc));
- 
--	if (nfc->clk_rate != sunxi_nand->clk_rate) {
--		clk_set_rate(nfc->mod_clk, sunxi_nand->clk_rate);
--		nfc->clk_rate = sunxi_nand->clk_rate;
--	}
--
- 	writel(sunxi_nand->timing_ctl, nfc->regs + NFC_REG_TIMING_CTL);
- 	writel(sunxi_nand->timing_cfg, nfc->regs + NFC_REG_TIMING_CFG);
- 	writel(ctl, nfc->regs + NFC_REG_CTL);
-+
-+	return 0;
- }
- 
- static int sunxi_nfc_buf_chunk_size(struct sunxi_nfc *nfc, int len)
-@@ -1778,7 +1784,9 @@ static int sunxi_nfc_hw_ecc_write_page_dma(struct nand_chip *nand,
- 	u32 wait;
- 	int first_step, batch_steps, ret, i;
- 
--	sunxi_nfc_select_chip(nand, nand->cur_cs);
-+	ret = sunxi_nfc_select_chip(nand, nand->cur_cs);
-+	if (ret)
-+		return ret;
- 
- 	for (first_step = 0; first_step < ecc->steps; first_step += batch_steps) {
- 		unsigned int reg_index = 0;
-@@ -2519,9 +2527,13 @@ static int sunxi_nfc_exec_op(struct nand_chip *nand,
- {
- 	struct sunxi_nand_chip *sunxi_nand = to_sunxi_nand(nand);
- 	const struct nand_op_parser *parser;
-+	int ret;
- 
--	if (!check_only)
--		sunxi_nfc_select_chip(nand, op->cs);
-+	if (!check_only) {
-+		ret = sunxi_nfc_select_chip(nand, op->cs);
-+		if (ret)
-+			return ret;
-+	}
- 
- 	if (sunxi_nand->sels[op->cs].rb >= 0)
- 		parser = &sunxi_nfc_op_parser;
+ 				addrs[j / 4] |= addr << (j % 4) * 8;
 
 -- 
 2.53.0
