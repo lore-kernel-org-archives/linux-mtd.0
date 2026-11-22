@@ -2,88 +2,104 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AAC3606A32C
-	for <linux-mtd@archiver.kernel.org>; Sun, 22 Nov 2026 16:49:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9C2E606A327
+	for <linux-mtd@archiver.kernel.org>; Sun, 22 Nov 2026 21:57:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=kCyDDkYs
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=To9TgQLH;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=BXie8At5
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=aTGtRGbqia0HD+9A9pHrOkM0jkECJsz/IawJNfyxTok=; b=kCyDDkYsNDsjQ2kZ8jJ2MLqwEc
-	2TXZL2A2OI0uIK3GAyDIOs95ouTGcVvMBi6IDHnP1rcupqkXCXRe82wiOsXAhdrjgCLJ3UJRTvFkZ
-	0V6BFc1yfbhKHrS3WtpU84/Xo5asis46VM3iC+h1YY6qZoA0O2BITpj957cBYXjbEjCweEDWJYrfd
-	UkzSzM0VsnYW5m7/hxDEfrP/N54qJ7Fl77D0d9wcTdMfWLFRZNXWut6L9Wnm/LBogSB+NBPVdZQEx
-	mBYjWCF4he7Gk0mg9y4D2QYyRvK9tnrSsCVH7dwcODXMkrFmRULkoH7vtDriNP38lbMvGAnbQPumy
-	NIIgHG3g==;
+	bh=uWgAUaTmmt/iFBpgdfzYYrs28jNww9uhRGDxLdrN4VI=; b=To9TgQLHemQo261wy5pWkJ5AzF
+	pEp+eRvptwVLN4bmfzt5zDmcumbU58Dq2yMoeNejsT4Ey8gwueyHyUG3KKWJe01PWrYcFMqAu5Bxc
+	2XK/oXnENJMcuEyZCwZ1dbSdDXhHPwwiyRyRBXtovVbcWUO5vLFYPqfjr4T9rAuMrlyA2olyvDtlv
+	x6Ah7Oycs+Yeh8wfpxIGdqy40apAt7JGTAkeudsRKvKjaAdi8Q1EzvCRxvUXMb7NVSSxodQQMRVf+
+	c/yGolNFapQb0M0dulS2U4krDU30bROBpXB9ZBrpZ5JRTnMUIbhtDmOhgWr0v7otzmV72tMDwKQK7
+	WihBwTJg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xVAkl-00000001O7n-3qTb;
-	Sun, 22 Nov 2026 16:49:23 +0000
-Received: from [50.53.43.113] (helo=[192.168.254.34])
-	by bombadil.infradead.org with esmtpsa (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xVAkg-00000001O6v-277K;
-	Sun, 22 Nov 2026 16:49:19 +0000
-Message-ID: <1e62d5c8-3ca7-441d-8979-f054fb815912@infradead.org>
-Date: Sun, 22 Nov 2026 08:49:16 -0800
+	id 1xVFYM-00000001oz9-3cIf;
+	Sun, 22 Nov 2026 21:56:54 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
+	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
+	id 1xVFYK-00000001oz3-2lr2
+	for linux-mtd@lists.infradead.org;
+	Sun, 22 Nov 2026 21:56:52 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id 1FC5D4249A;
+	Sun, 22 Nov 2026 21:56:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 085171F000CF;
+	Sun, 22 Nov 2026 21:56:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1795384611;
+	bh=bwqVDHaqqXUJecFoI8gfarhhx3uMgHGFcxRh37PQR30=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=BXie8At5QFQ5VGJ5Wgxa+Ryfj2HbGOJ0KDHW1aolgsw2YtdZGPnu8WYcSmeFf9iTy
+	 5wiX3oWysPjoCke2hcQZDizPm34+kAe7FMjSaSZ9srwusVIqRO580db6LxZDAFaZ0+
+	 3aDEW76QVsDdxoBaJCF/eDmBo7SUv8nl1byepex6XqNbxhpJHXHoKY2hbT2kLTC95N
+	 7JnRNOt0TIdCgaQhdXGjEOlBwvV7HGnUumRRGA3StMRgzFJT0plPL8HRWUST+VQqvd
+	 X4RjTcvHCj0K1oKGcN/z3PbXWOEFtUMKW6QRQ4AjrpymszI4/3zzB9pQMRd26c47gs
+	 kxUaKiE3hZ+vA==
+From: Danilo Krummrich <dakr@kernel.org>
+To: Ian Rogers <irogers@google.com>
+Cc: Danilo Krummrich <dakr@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Kees Cook <kees@kernel.org>,
+	Miguel Ojeda <ojeda@kernel.org>,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Srish Srinivasan <ssrish@linux.ibm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <chleroy@kernel.org>,
+	Nayna Jain <nayna@linux.ibm.com>,
+	Mimi Zohar <zohar@linux.ibm.com>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	Rich Felker <dalias@libc.org>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Juergen Gross <jgross@suse.com>,
+	Stefano Stabellini <sstabellini@kernel.org>,
+	Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Viresh Kumar <viresh.kumar@linaro.org>,
+	Zhongqiu Han <zhongqiu.han@oss.qualcomm.com>,
+	Alexander Aring <aahringo@redhat.com>,
+	Felix Kuehling <felix.kuehling@amd.com>,
+	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+	Zhihao Cheng <chengzhihao1@huawei.com>,
+	Sumanth Korikkar <sumanthk@linux.ibm.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	driver-core@lists.linux.dev,
+	llvm@lists.linux.dev,
+	linux-hardening@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-acpi@vger.kernel.org,
+	linux-pm@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-sh@vger.kernel.org,
+	linux-s390@vger.kernel.org,
+	gfs2@lists.linux.dev,
+	xen-devel@lists.xenproject.org,
+	linux-mtd@lists.infradead.org,
+	amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 0/9] Add __must_init and require explicit kobj_type::release
+Date: Sun, 22 Nov 2026 22:56:39 +0100
+Message-ID: <20261122215639.1178566-1-dakr@kernel.org>
+X-Mailer: git-send-email 2.56.1
+In-Reply-To: <20261119192520.1983406-1-irogers@google.com>
+References: <20261119192520.1983406-1-irogers@google.com>
+X-Patch-Reply: applied
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 02/12] docs: ioctl-number: update sound entries
-To: sashiko-reviews@lists.linux.dev
-Cc: Jonathan Corbet <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>,
- David Hildenbrand <david@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>, Jason Gunthorpe <jgg@nvidia.com>,
- Leon Romanovsky <leonro@nvidia.com>, linux-mm@kvack.org,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- linux-sound@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
- Marcel Holtmann <marcel@holtmann.org>,
- Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
- Jason Wang <jasowangio@gmail.com>, David Heidelberg <david@ixit.cz>,
- Chas Williams <3chas3@gmail.com>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Helge Deller <deller@gmx.de>,
- dri-devel@lists.freedesktop.org, MPT-FusionLinux.pdl@broadcom.com,
- "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
- "Martin K. Petersen" <mkp@kernel.org>, linux-scsi@vger.kernel.org,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Zhihao Cheng <chengzhihao1@huawei.com>, linux-mtd@lists.infradead.org,
- Neill Kapron <nkapron@google.com>, Andrey Konovalov <andreyknvl@gmail.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
- Juergen Gross <jgross@suse.com>, Stefano Stabellini
- <sstabellini@kernel.org>, Hans de Goede <hansg@kernel.org>,
- Arnd Bergmann <arnd@arndb.de>, "Michael S. Tsirkin" <mst@redhat.com>,
- =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>,
- Sean Christopherson <seanjc@google.com>, Paolo Bonzini
- <pbonzini@redhat.com>, kvm@vger.kernel.org, virtualization@lists.linux.dev,
- Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>,
- linux-ext4@vger.kernel.org, Mike Marshall <hubcap@omnibond.com>,
- devel@lists.orangefs.org, Paulo Alcantara <pc@manguebit.org>,
- Namjae Jeon <linkinjeon@kernel.org>, Jaegeuk Kim <jaegeuk@kernel.org>,
- Chao Yu <chao@kernel.org>, Florian Fainelli <florian.fainelli@broadcom.com>,
- Broadcom internal kernel review list
- <bcm-kernel-feedback-list@broadcom.com>, Tzung-Bi Shih <tzungbi@kernel.org>,
- Benson Leung <bleung@chromium.org>, David Airlie <airlied@gmail.com>,
- Simona Vetter <simona@ffwll.ch>, Alex Deucher <alexander.deucher@amd.com>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- amd-gfx@lists.freedesktop.org, Jani Nikula <jani.nikula@linux.intel.com>,
- Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
- Rodrigo Vivi <rodrigo.vivi@intel.com>, Tvrtko Ursulin
- <tursulin@ursulin.net>, intel-gfx@lists.freedesktop.org,
- Matthew Brost <matthew.brost@intel.com>,
- =?UTF-8?Q?Thomas_Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
- intel-xe@lists.freedesktop.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>
-References: <20261119053514.255348-1-rdunlap@infradead.org>
- <20261119053514.255348-3-rdunlap@infradead.org>
- <sashiko-outbox-224494@kernel.org>
-Content-Language: en-US
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <sashiko-outbox-224494@kernel.org>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,58 +112,45 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-10.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-11.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
+On Thu, 19 Nov 2026 11:25:11 -0800, Ian Rogers wrote:
+> [PATCH v4 0/9] Add __must_init and require explicit kobj_type::release
 
+Applied, thanks!
 
-On 11/19/26 9:36 PM, sashiko-bot@kernel.org wrote:
-> Thank you for your contribution! Sashiko AI review found 1 potential
-> issue to consider:
-> - [Low] docs: ioctl-number: incomplete sequence range for
->   sound/scarlett2.h
-> --
-> 
-> commit 93a4f635ed001735e939a3dc4a2526e8af9e9bd0
-> Author: Randy Dunlap <rdunlap@infradead.org>
-> 
-> docs: ioctl-number: update sound entries
-> 
-> This commit updates the ioctl-number documentation table with additional
-> sound subsystem files and sequence number ranges.
-> 
->> diff --git a/Documentation/userspace-api/ioctl/ioctl-number.rst b/Documentation/userspace-api/ioctl/ioctl-number.rst
->> index e1d56d5cccd14..f29d2c17ca7b9 100644
->> --- a/Documentation/userspace-api/ioctl/ioctl-number.rst
->> +++ b/Documentation/userspace-api/ioctl/ioctl-number.rst
-> 
-> [ ... ]
-> 
->> @@ -204,6 +209,9 @@ Code  Seq#    Include File                                             Comments
->>  'S'   80-81  scsi/scsi_ioctl.h                                         conflict!
->>  'S'   82-FF  scsi/scsi.h                                               conflict!
->>  'S'   00-7F  sound/asequencer.h                                        conflict!
->> +'S'   20-52  sound/core/seq/seq_compat.c                               conflict!
->> +'S'   60-63  sound/scarlett2.h                                         conflict!
-> 
-> [Severity: Low]
-> Should the sequence range for sound/scarlett2.h be 60-64?
-> include/uapi/sound/scarlett2.h also defines
-> SCARLETT2_IOCTL_GET_ERASE_PROGRESS with sequence number 0x64:
-> 
-> include/uapi/sound/scarlett2.h:
-> #define SCARLETT2_IOCTL_GET_ERASE_PROGRESS \
-> 	_IOR('S', 0x64, struct scarlett2_flash_segment_erase_progress)
+  Branch: driver-core-testing
+  Tree:   git://git.kernel.org/pub/scm/linux/kernel/git/driver-core/driver-core.git
 
-Yes. Fixed now.
+[1/9] Compiler Attributes: Add __must_init macro
+      commit: b8a53320a885
+[2/9] powerpc/secvar: Add missing kobject release callback to secvar_ktype
+      commit: 4d5d4dd2a2e2
+[3/9] sh: sq: Add missing kobject release callback to ktype_percpu_entry
+      commit: d19384f2f3c7
+[4/9] cpufreq: governor: Initialize kobj_type release callback statically
+      commit: 009365942c15
+[5/9] dlm: Wait for kobject release before freeing dlm_ls
+      commit: 48ae948f4285
+[6/9] xen/sys-hypervisor: Add release callback to hyp_sysfs_kobj_type
+      commit: ecaf88d385c1
+[7/9] ubifs: sysfs: Use kset_create_and_add() for ubifs_kset
+      commit: 25d952902dee
+[8/9] drm/amdkfd: Free queue in procfs_queue_type kobject release callback
+      commit: 6d4ff4a020cf
+[9/9] kobject: Require explicit initialization of struct kobj_type::release
+      commit: 45eeed1f8094
 
--- 
-~Randy
+The patches will appear in the next linux-next integration (typically within 24
+hours on weekdays).
 
+The patches are in the driver-core-testing branch and will be promoted to
+driver-core-next after validation.
 
 ______________________________________________________
 Linux MTD discussion mailing list
