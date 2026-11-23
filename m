@@ -2,95 +2,104 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DE68606A31E
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Nov 2026 16:57:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7355606A32E
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 Nov 2026 18:42:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=a2W6rrna;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=HZQ3ANEm
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=g/8MJVvu;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=P5bnUYNW
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id
+	:Date:Subject:From:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
 	List-Unsubscribe-Post:List-Owner;
-	bh=IRwdlYwQ/2DK+mbC5mPorJTO1SMTKdhHcrbA4neQRD4=; b=a2W6rrnabFQEjldIa+Hvn2KhDC
-	GtCwmOG0acZGZ2nvf/JB266u6U/tsn4gdbOHuLRK9mJHOe895aQWZ+KuyFrvvlvBwl3n3WUoALqWW
-	x5dkf3qnZF6LOtBavlXqFo3R9+dtpzUTOpy5f418JP0PNM5rfUr4MogLUOzmOEJ16kgEpr72coYlK
-	nQSXWJAKvTFmUGxsK3PcCCKs2neD+BDFG3XibIOW+L4+wBzkkmmaMyDm6W60qnW+eOdkYkEzTS0Ds
-	g6SrgMQM7TecTenI3XyhoykEm0nyH+JT2eltl51nEOLKONh3JmFKK6mRw6sdLNF4pi6pXkJ32HR70
-	E7K1g9qg==;
+	bh=JE+91KMRzzDYxe6vxBwjdUKM6GkGEsZ/NNtu56nQQts=; b=g/8MJVvu66xWpCIshMe1NyVYAe
+	OmaBJPFZNq5WAUDggAlvXOIdQXqCnxI3pXJbHCiuDg9LJqWKVc4Ufbna++DH1NbhU0ZlFTs8X7JZ+
+	lMMkhGpuGjGENW+K9DLi7UwuRBzh+voyJINIpKbih3RCxu16MDLyCgKqmZ8IEM4a72y05yJZTfBno
+	o5gAqZ2Q+h0cMBLcL7OMjMJzw+/cJOgeme3Rr8gKN0vX69m7YJtoxWhk9rCxx9yj90BLhXDkDXl6U
+	eDjkKVyh2oA0XBudxTpNI9Jr2kutM+Uc65tv/LXhMY3BRGvSs2AxuC3diYUpicrrO3GDG6qhZPizB
+	IneCorqw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xVXMA-00000004GwW-2sCP;
-	Mon, 23 Nov 2026 16:57:30 +0000
-Received: from mail-dy1-x132b.google.com ([2607:f8b0:4864:20::132b])
+	id 1xVYzb-00000004Wl9-1504;
+	Mon, 23 Nov 2026 18:42:19 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xVXM5-00000004Gun-2UQy
+	id 1xVYzM-00000004WUt-0FTP
 	for linux-mtd@lists.infradead.org;
-	Mon, 23 Nov 2026 16:57:26 +0000
-Received: by mail-dy1-x132b.google.com with SMTP id 5a478bee46e88-386bd881d39so184161eec.1
-        for <linux-mtd@lists.infradead.org>; Mon, 23 Nov 2026 08:57:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1795453045; x=1796057845; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=Co4SdvXZ9sSIXs1Uh5/HXOpqDLiA1vGpW3W0bsDAIpY=;
-        b=HZQ3ANEm79zsuShLJz8eLECi4cKD6ya8lcacnWLHrp47kGrtrrm+u4um4oMvGaxQIy
-         IyZ4SjnrydTzldHWP1JVtAGNFmx0dghkzHFhQ/yXG8WiApUyofrlRNcR0ro28h6LjW8J
-         yS+f2OqhAqtTS+Ds3HGKoIIM6B9zbTsLW2WZRJ94m2SXF+NHmuvjCeaUhnm/WTfIuYzV
-         /Sw2ueHFpcx7fLnmAc4nWjYhAe7p9f7oMl3jSejr2tfoT60Td4xiXXfNg3RZpd76crWO
-         ej/Ig8bzhr3SvHoyvYsIr19XkAEMQyZiJo/lSDm6b3/gbcUTRUSO/7CYe4+Nrm2/uttD
-         dDyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1795453045; x=1796057845;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=Co4SdvXZ9sSIXs1Uh5/HXOpqDLiA1vGpW3W0bsDAIpY=;
-        b=zlppOgrtYgrV2ZuMi2Om3KQ2RqFuQ+gvcyAs/BuyHEbeDe4/RE2PEhwKuTQXfP7DHO
-         /3khRanvAFg+Y66a/6wTzx2ExZ4bObgFj+snXHvtlv678StUZX3SOrAmtz41CG4xuUtW
-         QmT5ATu+EmJOd6jQI46aVzz4qhaRWang+C4et3mlKp4P4ElXK6p9iGxQRsuK3szWkgny
-         whk6MFEk5XMk3OxJUcP6NgeDovGicihTKIfinU438YPgj9u05RLV5Cq0X3JFCAGXvNbm
-         yPqngXUEejPKLWS93MLUXPV2etrRZ0YhNTmBAUiPoj1MB6h5U4zMFDQDEu/U/Yzrt3aL
-         FDAA==
-X-Forwarded-Encrypted: i=1; AL+hErHKzk5jmw09YTvAYMdHH0VirHza+Q3XPyARrxoPX1sjXm1f3oq+SymzNIlD1H2Y8DA3MD5f9MM87Ao=@lists.infradead.org
-X-Gm-Message-State: APuU4Z9n2mgRdrI3VOOD0AGXgE+89deQe+EuM/o4eS9rITwFwYyJaVO3
-	GE2kkKEQQKbXciJfYgJYBQcrPvhCWOtGjx6GQAmtCP/ZZUTQSzclBrIF
-X-Gm-Gg: AZFdTZf/d7JVtWmb5GninMk0ZjP1mKHpKiG3xtxExKAaBbKziWI0a8Y1ux3BoersIf7
-	4lS5mYnUgbUB4GT5KTml4vaSPkcG3DcyNtmAK+giZJB/Ob8d1zsot1NSYh1jxMnXGnW++Wu3m2T
-	wVeefzDZ4arsdIg0dPLwnJUwaIlNuLLHk5EnDMxD69NyBT0fW5UNpcaFJrYeH+Z3v8tqTl9u3IP
-	S/391oWlA6aDV71zHa3dwSJXQVA+10L1zgzc4lS+QcRhoOuPmlbklwUt6KuNjREvbRVal2uDHLQ
-	DZDqaHr5K1yMD3crva/tLux7FUp+GDYM4ZWtmHHZ3NO1mwUpHUdrKq95/kFzmWeqqUSHZ6RJsKp
-	K5NHHFWsraA0Nzgdbojzzm9JiHCZLk/i5CzLo7PLhdor8CMTB+64NSnLx8LhRbbiW9/9hgGfZNZ
-	taryOdnxHYRhQbto63QNa5VB2iafHSdHnvk38gKgEGXdP/gwAb143MKiu13hRRKSTpmtwWhQnXG
-	UBK2TIZtkF3NpqOyZOvK7cIkGi4j3CG26pJIz5JUljEnvzo6iHLqyifhd1k0wDwNR1LtN/WlZFa
-	Ua29NcUXDovKvfijoj93v4LUFLOvgdDoB/su+NCxAWbXEYyObQ4A1ghrD4Ygn/csaboiMkDfAIP
-	1mGNmaUrCCu7767TLsqP+hA==
-X-Received: by 2002:a05:7300:5994:b0:386:a915:8b97 with SMTP id 5a478bee46e88-386a9158dcamr6410286eec.27.1795453044778;
-        Mon, 23 Nov 2026 08:57:24 -0800 (PST)
-Received: from acemagic-m1 ([2401:7400:c804:b668:77b4:9837:f7af:7965])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-385677c349csm39766715eec.22.2026.11.23.08.57.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Nov 2026 08:57:24 -0800 (PST)
-From: Ho Jie Feng <hjf3108@gmail.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Ho Jie Feng <hjf3108@gmail.com>,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: spinand: fmsh: add support for FM25S01
-Date: Tue, 24 Nov 2026 00:57:01 +0800
-Message-ID: <20261123165702.641230-1-hjf3108@gmail.com>
-X-Mailer: git-send-email 2.53.0
+	Mon, 23 Nov 2026 18:42:04 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id CE8F145A1B;
+	Mon, 23 Nov 2026 18:42:03 +0000 (UTC)
+Authentication-Results: smtp.kernel.org; arc=none smtp.remote-ip=100.80.115.77
+ARC-Seal: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256; cv=none;
+	t=1795459323;
+	b=GVIDuwaSJGOkot5A+GOYNIDlfMwsIa8gnbqtjCjlMXBM3Wpv3/QcfQerNPsgUK8HlSAm
+	 DOoO3YMGiYwns293ZylkUmgPCtmkxuWylIUA7TRn6ZwlhwBV6/VpBxg5yTsgDTpa1JwdM
+	 /4rIMFlX/KV6oF3GP5XuzgdCAZD1SmsfD3r/UMuLWt2KwF8BQKq+HsvmBtZ42AQ2CGYBf
+	 BEtGSIjySytF21pxKqgVFNuY6bN3r8DD88jJFb2zhZ0COdTwWpwVLM4rf5yvBsaUseHgv
+	 S+p+gJwgVjoPvvlGXVVlKCKZRE2mHHQfV7kfbPyyHFBk6UOqeWtda1PDa3QVl9EioMA==
+ARC-Message-Signature: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256;
+	c=relaxed/relaxed; t=1795459323;
+	h=DKIM-Signature:Received:From:Subject:Date:Message-Id:MIME-Version:
+	 Content-Type:Content-Transfer-Encoding:X-B4-Tracking:X-Change-ID:To:
+	 Cc:X-Mailer:X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
+	 X-Original-From:Reply-To;
+	bh=musLNBbvIPP0pZupDcF24ytIpe1LtyyAEg+0w1etnuc=;
+	b=tn3Z5xV+86KxjgQGbyQ4r0n0GTD1ko5esdq5b0vb3oQzDQanlW8FNyPzr+f0WS94EgZr
+	 FGauu2e1w4Z+WHUlGlkT5KnWHriBeiqwR+64K9oc3kzXOzhvGqNR2XFaVkZYFbqdpbWGQ
+	 W3+TBsPsl5828GP6bDfjkoZhT1woGmwJiLKwetdtk90k9NJseW63JHrZGfIJTtrFlo1o0
+	 giWviy4G9MhvlzM+pkf74M2aVzfq+iX1d1S+BSwb+xy2cFSJH/X0YXntxk2O1Slac+0Le
+	 jrcRrUlK6d21xuxuahPUoEQyM7YylcRDuk95rUSTTSd08BnnSsMXcfjoWbe6738COzA==
+ARC-Authentication-Results: i=1; smtp.kernel.org; 
+	arc=none smtp.remote-ip=100.80.115.77
+Received: from lkml.kernel.org (nexus.subspace.kernel.org [100.80.115.77])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	(No client certificate requested)
+	by smtp.kernel.org (Postfix) with ESMTPS id C55D71F00A36;
+	Mon, 23 Nov 2026 18:41:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1795459323;
+	bh=musLNBbvIPP0pZupDcF24ytIpe1LtyyAEg+0w1etnuc=;
+	h=From:Subject:Date:To:Cc:Reply-To;
+	b=P5bnUYNW/qfUnta20rQHeYIbUt9kf6vmumzv3slqe66G0sN/xnN8MfvRX9nYugYxa
+	 ZTLpPjD/kQiC1UKElkm8O+Ob+cL9ytdOxX2dFhorBhdtcOt+4RmCVeEsKJbv4nfceH
+	 p+JzRQe71SbxG1RMVI2LLj0OQmPaxUkl7pI3ieRlMHtR9e0+gj21pxoNymXA273SM1
+	 i0uneKnYgMZf5pwpBLs3bY8xH3CSvxj0wexygHaWE7LX5tGVLheeLVPcd7+d+rk3+8
+	 i42x4WYf8YcfGBdtUQn8dR9JPJZoz1FFxHMzXhWj44OjySyy6Kaqzj/OGHjhhHRhDU
+	 U1CmlFM8xp6IA==
+Received: from nexus.subspace.kernel.org (localhost [IPv6:::1])
+	by lkml.kernel.org (Postfix) with ESMTP id 9C6344C5DD;
+	Mon, 23 Nov 2026 18:41:39 +0000 (UTC)
+From: Fil Dunsky via B4 Relay <devnull+filipp.dunsky.gmail.com@kernel.org>
+Subject: [PATCH 0/3] Add Cortina Systems CS7542 NAND controller support
+Date: Mon, 23 Nov 2026 21:41:37 +0300
+Message-Id: <20261123-b4-cs7542-nand-v1-0-7ce179c011e2@gmail.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261123_085725_643092_5BCF506D 
-X-CRM114-Status: UNSURE (   7.92  )
-X-CRM114-Notice: Please train this message.
-X-Spam-Score: -1.9 (-)
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/yXMPQ6DMAxA4asgz1jKDzQNV0EMEEwxQ1rFgJAQd
+ ydtx2947wShxCTQFCck2ln4HTN0WUCY+/gi5DEbjDIPrY3FocIgrq4Mxj6O+HTeO7JKKechR59
+ EEx+/Ydv9LduwUFi/F7iuG0zWVTRyAAAA
+X-Change-ID: 20261123-b4-cs7542-nand-87997e300079
+To: Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org
+X-Mailer: b4 0.16.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1795459297; l=2618;
+ i=filipp.dunsky@gmail.com; s=20260930; h=from:subject:message-id;
+ bh=IP+8zwGE19sgIV+qJrA+fIZvVuRoJTEIEdbCodPzGtU=;
+ b=A3paAJAVDb1QxAgUbEX2zezC3SKwCyZzfy5VnRBZ+J1n6SsBvezOi5Eff9QoHtA3VwzJ5DQUH
+ yQkgk4XV8vNDssjh4xSkmKy+xk8Iurl0TmNFKohtHc9ZteD1qNEPgcy
+X-Developer-Key: i=filipp.dunsky@gmail.com; a=ed25519;
+ pk=JAYP8e2rJ54DHOmhNtXud8rl1igAaAXoOHxtJmVXI1g=
+X-Endpoint-Received: by B4 Relay for filipp.dunsky@gmail.com/20260930 with
+ auth_id=1085
+X-Original-From: Fil Dunsky <filipp.dunsky@gmail.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,49 +109,69 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Reply-To: filipp.dunsky@gmail.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,
-	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-11.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-Add the original FudanMicro FM25S01 (1 Gbit, 2048 + 128 bytes per page,
-64 pages per block, 1-bit on-die ECC per 512 bytes).
+Add the NAND controller used by the Securifi Almond+ (CS7542, two Cortex-A9
+CPUs). This is an independent binding/driver/MAINTAINERS series on
+Linux v7.4-rc4; it does not depend on ARCH_CORTINA_ACCESS or the platform
+series.
 
-Signed-off-by: Ho Jie Feng <hjf3108@gmail.com>
+The controller sequences complete command/address/data transactions. Use
+exec_op with explicit capability checking and cached ID, ONFI and page reads
+for NAND core's split operations. Retain firmware-initialized bus timing.
+This version supports large-page, 8-bit NAND with on-host Hamming ECC using
+256-byte steps and the existing OOB layout. It uses programmed I/O; DMA and
+unverified BCH modes are deliberately outside this initial implementation.
+
+Validation:
+- Full independent ARM vmlinux and modules builds, driver both =y and =m,
+  COMPILE_TEST=n, without the platform series.
+- Binding schema/example and strict source checkpatch pass.
+- Actual decoder functions: 292 boundary, address and sequence cases under
+  UBSAN. Address packing: 655360 cases cover every Almond+ page and
+  two-row-cycle large-page geometries. Actual Hamming correction function: 16389 cases covering every
+  single-data-bit position, invalid hardware offsets and error propagation.
+- Linux 7.4-rc4 booted in RAM on Almond+. NAND identification, all-device
+  bad-block scan, OOB reads and SHA256 of five existing protected regions
+  passed without new ECC failures.
+- The real UBI stack created a temporary two-LEB volume, wrote and verified
+  two 253952-byte patterns, removed the volume and reattached with the
+  original bad-block reserve. All 14 protected partition/configuration
+  checksums matched after returning to installed OpenWrt 6.18.64; the five
+  original UBI volumes and normal reserve remained intact.
+
+No kernel image was installed by these RAM tests. Board integration used
+for testing is kept separate from this series.
+
 ---
- drivers/mtd/nand/spi/fmsh.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+Fil Dunsky (3):
+      dt-bindings: mtd: Add Cortina CS7542 NAND controller
+      mtd: rawnand: Add Cortina CS7542 controller support
+      MAINTAINERS: Add Cortina CS7542 NAND controller entry
 
-diff --git a/drivers/mtd/nand/spi/fmsh.c b/drivers/mtd/nand/spi/fmsh.c
-index 6352e9c9e5..a2bdf3a445 100644
---- a/drivers/mtd/nand/spi/fmsh.c
-+++ b/drivers/mtd/nand/spi/fmsh.c
-@@ -216,6 +216,15 @@ static const struct spinand_info fmsh_spinand_table[] = {
- 		     SPINAND_HAS_QE_BIT,
- 		     SPINAND_ECCINFO(&fm25g01b_ooblayout,
- 				     fm25g01b_ecc_get_status)),
-+	SPINAND_INFO("FM25S01",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xa1),
-+		     NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
-+		     NAND_ECCREQ(1, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     0,
-+		     SPINAND_ECCINFO(&fm25g01b_ooblayout, NULL)),
- 	SPINAND_INFO("FM25S01A",
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xE4),
- 		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
+ .../bindings/mtd/cortina,cs7542-nand.yaml          |  66 ++
+ MAINTAINERS                                        |   7 +
+ drivers/mtd/nand/raw/Kconfig                       |  12 +
+ drivers/mtd/nand/raw/Makefile                      |   1 +
+ drivers/mtd/nand/raw/cs752x_nand.c                 | 826 +++++++++++++++++++++
+ 5 files changed, 912 insertions(+)
+---
+base-commit: b6a9fa34ce4187cb69d3c588a4bbffc31ce5db8f
+change-id: 20261123-b4-cs7542-nand-87997e300079
 
-base-commit: ec1e844b9486302a488abc03ea918db60709766e
--- 
-2.53.0
+Best regards,
+--  
+Fil Dunsky <filipp.dunsky@gmail.com>
+
 
 
 ______________________________________________________
