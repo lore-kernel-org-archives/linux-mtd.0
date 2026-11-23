@@ -2,62 +2,77 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34236606A32D
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Nov 2026 12:36:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06C74606A31A
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 Nov 2026 14:14:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=g15dawSj;
-	dkim=fail reason="signature verification failed" header.d=vitkazik.cz header.i=@vitkazik.cz header.a=ed25519-sha256 header.s=v1-ed25519-20261107 header.b=yXBNMm0K;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=vitkazik.cz header.i=@vitkazik.cz header.a=rsa-sha256 header.s=v1-rsa-20261107 header.b=n65J2f0U
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=TusU1sm1;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=XnhYjMjT
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:References:
-	In-Reply-To:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=bEi7LEGhRXnDkJvXGVQSDZYClHseK7aTQYSTi1oOC3w=; b=g15dawSjvFA6DQGg4qVQbhprL5
-	gyomeAgjwe58M8EZWLTj3hXNucSOHrk5gkGJJLtqWDcZN9C+b8aX+0HZ0apFSaQks4xDk2nM96lbm
-	07Da1TxmZEpHA15OLTx7w33DmDydBlW4yR8hp2LBJSPmqcOAR+QzMDgRDl6x0J4ZEx5ATgq/w7UgN
-	e6zjZgTby32fFbfZGi5QQvEqRgVo8FidGQAWn+feiQvx9+S6iqobkXEv4sHMMsfqn90iZRkDzfDIg
-	Gy/WtVI/MkYpuBfcxQf6LK4rv1qYppMcS5aLGS7ZBbyLZk/3rMiEmPcJ1jMPATjI0wbMo870Yv8SK
-	eeAQYnFw==;
+	bh=rYJm5k+27c23+ZY4qzzVKUEcslJCsaQG3KxJC24aGT8=; b=TusU1sm14qYhHW0Ilg8SGdsURB
+	x9QqzcePNKs8/smFZDa7MBlC+cZfIzxov5u0c5fzfpYk4VFxUGk7/iJWya//0eeY+wvDpRVaYWn4r
+	NsN/LrsLnyLIQO6LPUFfMifw1D8WyPc7SIik+V6A2tSFehSaiVj9hEyxb32HQr3K5wFf3tFtKFMK2
+	NcsoxXy8X/HyIIY8FeMnr2rtBIfC2kRJbVyOhLMYSGN992DSB64uvr+snyAG6eNkKdVp3uSQPbOIz
+	34Q6kYr0BfshrUaagHig7mVB8hmYRJvdPHse+NFk0b4hILE7+XzM8AL6lFywQtamu1PCviO4PVeve
+	Nn+unUKw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xVTHO-00000003OAR-1YOQ;
-	Mon, 23 Nov 2026 12:36:18 +0000
-Received: from [78.108.101.136] (helo=mail.vitkazik.cz)
+	id 1xVUo2-00000003h9e-3Jlo;
+	Mon, 23 Nov 2026 14:14:06 +0000
+Received: from smtpout-03.galae.net ([185.246.85.4])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xVTHJ-00000003O4w-2A1I
+	id 1xVUny-00000003h8c-3iTL
 	for linux-mtd@lists.infradead.org;
-	Mon, 23 Nov 2026 12:36:15 +0000
-DKIM-Signature: v=1; a=ed25519-sha256; s=v1-ed25519-20261107; d=vitkazik.cz; c=relaxed/relaxed; r=y;
-	h=Message-ID:Subject:To:From:Date; t=1795437352; bh=iFeOy59wvn0iVjKwkBcZpCT
-	AjC6Y+h4cQKqhS4RDEvE=; b=yXBNMm0KmfWX0mqhH3vCktGCc3++onzIMvK9//JtX1xzXyhY9i
-	3mkqK3nZEwnCFBqYXbbFzn+qmpBDWdKMVdDw==;
-DKIM-Signature: v=1; a=rsa-sha256; s=v1-rsa-20261107; d=vitkazik.cz; c=relaxed/relaxed; r=y;
-	h=Message-ID:Subject:To:From:Date; t=1795437352; bh=iFeOy59wvn0iVjKwkBcZpCT
-	AjC6Y+h4cQKqhS4RDEvE=; b=n65J2f0UsQqP3BFhMoaOGBA21lTBa8a3GzIzBdPB+jHSIuISpG
-	wdATvoh8QHaIrAUm3ourvP0BWt2plQt1L4kW3s4wdyIJEGy0yVmWxtD+HuDDgLbeLAUd1ZJikAa
-	iM+zkzcQnf/tvvkM4Mh5U1LdN7STJv952p25D9ww2vKJCc3V1lnGpZrc1m2mfpyQXPzgpdmCOBo
-	cULxnbtGSBMJPSdUwPKOrW7n4+oV8tAZwI14YhM9kBfoTQj58sbPMvkFpKwA25mfbgU+COb8cRG
-	NxIgY838wMhpNcotd54v+R6tZ2wB1omU9TR58Yl0FFDHAa2YxY3acTM2PS1jkuN530w==;
-Date: Mon, 23 Nov 2026 12:35:50 +0000
-From: =?ISO-8859-1?Q?V=EDt_Kaz=EDk?= <vitkazik@vitkazik.cz>
-To: Marco Felsch <m.felsch@pengutronix.de>
-CC: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- tudor.ambarus@linaro.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, sshivamurthy@micron.com
-Subject: Re: [PATCH] mtd: spinand: micron: add support for MT29F1G01AAADD
-In-Reply-To: <34hku3cwz5tgpz4l7jtcsupictopwpwv6dmbkyhwvi2husszfo@5pufgrbxligl>
-References: <20261121234125.16093-1-vitkazik@vitkazik.cz> <DF6A2762-566D-4A13-892A-AA18B9F987F0@vitkazik.cz> <34hku3cwz5tgpz4l7jtcsupictopwpwv6dmbkyhwvi2husszfo@5pufgrbxligl>
-Message-ID: <EAE15106-66A8-4457-A71E-12D68E06F506@vitkazik.cz>
+	Mon, 23 Nov 2026 14:14:04 +0000
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-03.galae.net (Postfix) with ESMTPS id 53D494E4126E;
+	Mon, 23 Nov 2026 14:14:00 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 1D33A601E1;
+	Mon, 23 Nov 2026 14:14:00 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id C0DED11E6A4C1;
+	Mon, 23 Nov 2026 15:13:49 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1795443234; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 in-reply-to:references; bh=nsdKbIq36FccgQPqfh448GwbaW+3f8OpmGVjFlQ7f0g=;
+	b=XnhYjMjTclObhst0aAEM0y3bJQXQR6cpMOqc6MhJ3wSz/AlktiY1ml+VnUwWOMiOCUl/Dq
+	OUYl5eOOhsyZNKYGbmumLIbXQV6QwCfpXQ45y7DHeBAIlya9J+WnIvcs9xP4vq3XZybDZG
+	2/c0Jer2kVEydpLrpjkpMtTx0NYGlqtfkdyIrw9FVX8eSVx96mYCG3WvOAuH7HJRTzc4h8
+	59Y50GvwIW+XmJP+JxfwzbtnrC1xrQkL4foNpEy1W+zJkK5dsy3KmqP3DVOFHhLsKO5T75
+	aANYJSXHsZ8qedaAwFOPQbo3gwJ35/zobcxZFj9hCKw//+KuX8fk/wW3E0GkTQ==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Paul Cercueil <paul.cercueil@bootlin.com>
+Cc: Pratyush Yadav <pratyush@kernel.org>,  Michael Walle
+ <mwalle@kernel.org>,  Takahiro Kuwano <takahiro.kuwano@infineon.com>,
+  Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
+ <vigneshr@ti.com>,  Mark Brown <broonie@kernel.org>,  Kees Cook
+ <kees@kernel.org>,  Tony Luck <tony.luck@intel.com>,  "Guilherme G .
+ Piccoli" <gpiccoli@igalia.com>,  Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>,  linux-mtd@lists.infradead.org,
+  linux-kernel@vger.kernel.org,  linux-spi@vger.kernel.org,  Bharat Bhushan
+ <bbhushan2@marvell.com>,  Sunil Kovvuri Goutham <sgoutham@marvell.com>,
+  Tanmay Jagdale <tanmay@marvell.com>
+Subject: Re: [PATCH v4 2/7] mtd: spi-nor: Wait for NOR ready with
+ poll_timeout_us()
+In-Reply-To: <20261016102917.171095-3-paul.cercueil@bootlin.com> (Paul
+	Cercueil's message of "Fri, 16 Oct 2026 12:29:12 +0200")
+References: <20261016102917.171095-1-paul.cercueil@bootlin.com>
+	<20261016102917.171095-3-paul.cercueil@bootlin.com>
+User-Agent: mu4e 1.12.12; emacs 30.2
+Date: Mon, 23 Nov 2026 15:13:49 +0100
+Message-ID: <874id7vdnm.fsf@bootlin.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
+X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261123_043613_602805_EF111EE2 
-X-CRM114-Status: UNSURE (   4.80  )
-X-CRM114-Notice: Please train this message.
-X-Spam-Score: -1.3 (-)
+X-CRM114-CacheID: sfid-20261123_061403_561359_CE5E10ED 
+X-CRM114-Status: GOOD (  10.14  )
+X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,22 +82,33 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-3.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-8.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
-	autolearn_force=no version=4.0.1
+	INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-SGkgTWFyY28sCgo+PiBIaSwKPj4gSSBmb3VuZCBNYXJjbyBGZWxzY2gncyBlYXJsaWVyIHN1Ym1p
-c3Npb24gZm9yIHRoaXMgY2hpcCAoMjAxOS8yMDIwKQo+Cj5VaGggdGhhdCdzIGFuIG9sZCBzZXJp
-ZXMgXl4gQ2FuIHlvdSBzZW5kIG1lIGEgbGluayBzbyBJIGNhbiBjaGVjayBpdAo+cXVpY2tseSBw
-bGVhc2U/CgpTdXJlLCBoZXJlIGlzIHRoZSBsYXN0IG1lc3NhZ2Ugb2YgdGhlIHRocmVhZApodHRw
-czovL2xvcmUua2VybmVsLm9yZy9hbGwvMjAyMDAxMTcwNzE4MTAuMmt1aXdyNnJobG9mcDZ0aEBw
-ZW5ndXRyb25peC5kZS8KClJlZ2FyZHMsClbDrXQKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5n
-IGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1t
-dGQvCg==
+On 16/10/2026 at 12:29:12 +02, Paul Cercueil <paul.cercueil@bootlin.com> wrote:
+
+> From: Tanmay Jagdale <tanmay@marvell.com>
+>
+> Instead of polling for the spi_nor_ready() with a custom loop, use
+> poll_timeout_us(). The sleep period between two polls is set to 100 us
+> which I think should be fine.
+>
+> This will make it simpler to support waiting for the SPI NOR in atomic
+> context later.
+>
+> Signed-off-by: Tanmay Jagdale <tanmay@marvell.com>
+> Co-developed-by: Paul Cercueil <paul.cercueil@bootlin.com>
+> Signed-off-by: Paul Cercueil <paul.cercueil@bootlin.com>
+
+Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
