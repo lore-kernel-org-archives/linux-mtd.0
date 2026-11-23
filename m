@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1ACC6606A31A
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Nov 2026 05:49:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8C0B606A31F
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 Nov 2026 05:50:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=UTmI8ogq;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=NxyrgNl7
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=hYkCoKQM;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=nhS7Is0e
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,63 +14,63 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
 	List-Unsubscribe-Post:List-Owner;
-	bh=TVn0gPSIqtJJ3P+4OYnHRGqtXheyVLESXl0YhaSnI5Q=; b=UTmI8ogqSD+hNRC5dsrCShRr4O
-	HI4p0E55YexLtnmx38stY9tIchD4LJyni1U3w4ReXjVIK17vIVQ4P5M1f0uCo9FKUU/31xWpZQGeF
-	v/D0tk3CAz4yBNGgo2bzMfa4wx88SDEB+51HNo4e+qh0VGlQF5P1K4JkXMeDTHM/E/tXVHx+jKhk7
-	XikkuSlXUFmGn6WhD2rW0NPk/UmNy4h919f/jxdEGEdTx5n24he2lDsQ9ZVxqv7CkVBf2FnEU3yhi
-	vuWnEQ1bPG8LG0kTyHXi2swLQzz2Q4LA+iw5HOW5wQQy0+c/nvCj3yX7JWb3iPx2BUkB4x9KoeaiK
-	FvY6VTNQ==;
+	bh=TVn0gPSIqtJJ3P+4OYnHRGqtXheyVLESXl0YhaSnI5Q=; b=hYkCoKQM6YGZgPDzRnIYxmsazL
+	hpZ7g+hRAAFe0UEJMenF8HjDrpueV8GcPcO6yVMWF5lwWl1cbfau/HTFVVW373zwgm7acY0kJi1eS
+	EMUpw9SlVT2YK72lIl4FAgAa8XmCfNZbCt+L7CPPHcG5rPGZ3dv0eUFfVl5fbl+4Q8Q1Mvw0A5Nxy
+	t5AVjSIYF1b9Hk/AxCq/doht0vzdGA89OWTAvPUFErHTWzc/VUhXdZ6z+R0YGHgvbrDh1IT7oi+n/
+	L/FUllf35k29doh+TjX2RT6qFfRX7wcIlu8nDo1yAeSasB83WqmVtLGYUBVCThGC21tXBvqCuewCX
+	L7MUiXRQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xVMvy-00000002KqO-3wvM;
-	Mon, 23 Nov 2026 05:49:46 +0000
-Received: from mail-pg1-x52c.google.com ([2607:f8b0:4864:20::52c])
+	id 1xVMwi-00000002Kyh-0f1g;
+	Mon, 23 Nov 2026 05:50:32 +0000
+Received: from mail-pl1-x62a.google.com ([2607:f8b0:4864:20::62a])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xVMvu-00000002Kpt-32aY
+	id 1xVMwd-00000002KyD-3pSW
 	for linux-mtd@lists.infradead.org;
-	Mon, 23 Nov 2026 05:49:45 +0000
-Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-cdb2dfcca94so1143111a12.1
-        for <linux-mtd@lists.infradead.org>; Sun, 22 Nov 2026 21:49:42 -0800 (PST)
+	Mon, 23 Nov 2026 05:50:31 +0000
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-2f07a960666so9944175ad.1
+        for <linux-mtd@lists.infradead.org>; Sun, 22 Nov 2026 21:50:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1795412981; x=1796017781; darn=lists.infradead.org;
+        d=gmail.com; s=20260707; t=1795413027; x=1796017827; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
         bh=U1miFl2IJmFM7VcXdj9lme3r8dskktuvJlE1HEUDWnA=;
-        b=NxyrgNl74kt9OVaO+WO4JeD757IbKubRKEZrPmoswZDTVumyCQyjR3TQUB9GScSbzh
-         RZQlQCNdNHk3jyyJC9ZeUEIEDlfoTXhgT1o1CIiFZ3TutbdxBWB0Hmh/nb/X84JQgn/p
-         zFHJsWaBjhvZ+tbk9hc/v8PuY9mkMFED/qjcpv7biaPgs86dU/71ZzrjDuYUCraBqmMc
-         ssbfRKtabC0f4wg/W1jDl4qdQ1jI7oek3a1tL/gCxoGrwIBP/KGLqNtAgX+qMdDQIc3L
-         VMNoYvTC+P1SS6tgIVgSeB1QrTC+D0CBeIzJHbcBjE3oYCxDZxNy3GuQwCEJp/bCDJnV
-         PL0A==
+        b=nhS7Is0e+fvHvESzaTYwKAbgStgLuRM57juupX8a8FFGErQ0j5mEG0K9sXJdaMLHgb
+         S1ew039PoySPxAqvkck+1Mdot9wxaljtRrTWz6P4vcfFIQ8TloGhhwN5oDEbHf57wyk3
+         PcpOOH9Ke329JY+MBfM8qV7dCwfyRXg4euRgzNwBlv4PZ+2I/AoLVjwWa3q5jQcTA/Da
+         XaMPgmFgfFLmpAX4p44lQJBiqZw5/Ht2ECg0m0SFo+ILSnCyWP2kHHUqtO4ihdb7bKua
+         q50EP6HNLkZfZZGor2gZY2DQkWLxXk1jAEzKeMQGXz5m3Kk2mss7dFcF3F+SWZu/u5nO
+         JBcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1795412981; x=1796017781;
+        d=1e100.net; s=20260707; t=1795413027; x=1796017827;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to:content-type;
         bh=U1miFl2IJmFM7VcXdj9lme3r8dskktuvJlE1HEUDWnA=;
-        b=Ljtttc5jb/wCqpmBf7EXTwXceNVcPLPqUMZKzvfzWk4JDJTZjXe3y92fJQbKnVbSaj
-         8vVBK0mSy8vemVNU9zupDQLgUhT6sYLbfQnXU9BBr7djkZc1dnlY6pgZ9wBhhLcHLGc8
-         1xnhqtgLIBIMqcaGqzTMu82aIcopp+8L4ZpcQgIKVAfbpwn38TlzZkZbqSbwNZzZmhq4
-         kuZRuZxJYe6RS0SBfjUdNuolmgUQlYYIdpfCjwGs3wePRsDOEeor1EcKNt9fLcQfVLHW
-         KwKnMaAZXDm6B6ZBL/jYULbRiv94AHT8Rt7kWMd81iaL+I3i2FVqINzPD+/MklXQ4CUr
-         AWGQ==
-X-Gm-Message-State: APuU4Z9C5Ld8/3PzrPv99zckZiEIVsHxPl2dX6PosJp13JCUXd+DpbW9
-	M0NTJ9RqguYxlo09mHtMfQMYlWKevsagg+Bk1uq5eGk9QiwwpFPbaY6G
-X-Gm-Gg: AZFdTZebykRuuFiaMh4naxhaV/COKjeKJ/df8LtA2uDnBT4XhTXYZai6EvG7rCBiqut
-	ezEaUYw4NVkg+Xcd28chitwpYhzbQ4ddQD4HGtdJ+bsdqShV7w7To5cdfa4jnVzbtV7/0khVH4e
-	5waJSXEpHSsyWZSyp8htZpnkAuOSbGgkm61hEHt8wEsWR6YW3BYxpsRXBQyGb5VPxD5I8MjY4M9
-	5e3655pnlTBizkGdc/KDzFhUYmyemRfEjKJl+OOjTO8Ka/lFH1DuZoMZ5QldUWX1tBbwiVXuovY
-	Iiu9bes2+hqhFkDFJtt00LQo8bHsujyN+zkl6wP26geuOF5kaOmdtHTGDSL7Oxu2B2dLYBFjoAf
-	o8JNMV6D/DZPKXi9wkuPRyn78fKXpFjLsFgX3s/TNjmIN+P7BK2ZxTk6/KrEvx+5AE00wAw5CEC
-	PdEyqRirfUpQHw2NxA5j29nrsbpvUR0Dcy69evd+WZW7Es012Y7yTfWxLYuGuHZuFRNDiMbMTMy
-	zOV2bBVnZhXVrxscz3D2p+cSu7GfYkhJd+HAP1/s/Ym/0xX7vQOHsioYNHESY9jDWoAFy1yt3h/
-	lH4Ii8hnOuMcbdM5YtfZBw2FmJN25T8=
-X-Received: by 2002:a17:90b:5287:b0:3b4:97f:8fc7 with SMTP id 98e67ed59e1d1-3b41c8fe219mr8662901a91.12.1795412981558;
-        Sun, 22 Nov 2026 21:49:41 -0800 (PST)
+        b=dZgUDaqaw89NnknnZqOI/bvDDct55Zab8JKnQkQO/DYAQ5OxsugU6TITWDCkiwEdxW
+         Nh8VdsNuwCusTfnAg8j+zYHsX8EL/hrDIvIvVEQJGetUIjFdP0WALKyUMk8PNFJbMi8I
+         Yk462ManFLvPRWdKsORXetH6v6PMC1yIBwkJRHLATQkJ3AGGq8sK+NU7jOD4qTLhtQP0
+         uhYdN4oo1FOJdmk1Yir6saRg2N7ac0O1CTXaoVKZ77dXA79DtGDs6lKsriqkxbj5B3hM
+         aBreMWxNxlU0VXjbtUvlWrolpmO+jxefoDHe0J3R2SxTu9ZH6tZT0k3w/+OYIN1ef+jH
+         If3w==
+X-Gm-Message-State: APuU4Z/BLTQJ15BkQNDf/x6apC0XBDveWOYqwsG1t+vZCaE7rq9TGRLT
+	lft+jh69/pktDvLc1RZUxWFgKNgJhITFTHRjwf994nvRGT2bmbGy9USN
+X-Gm-Gg: AZFdTZf5S9RMmDHLsamA9BbMrpVSYTtFJzzKgeaDCw0xuYSOYBCkbhvS+7NohuAJc+w
+	p1yM0Zbxdv/vyXjtWpLOHMUhdh/yw6CmMjzKyjn8Q6110kO6r1mDyYwyWewj2NjeZpCNJ+c6Xxh
+	zxdHrTfA3gC+Im0WltT1kfeeTeaSdp5OC0jOEK03/eAvcwcH405onk9kYv28IuRo8Jx9M3trJB+
+	EwOnOIRFe1w3KKq/3tUXrfmxWOb2lPxIkKiDqZnZoHtgSgSz7ypUj0+EjISYTMSyv12k4+CPp9j
+	74TEuJHZLyAYN13O3xrUryO8DfKN2jxB62T/FvtagEHs6WxSAlsJgIOTimSpqLy7C/KdSDkqKuv
+	y3gW3d/WhXzpKvj83HvkFt6myg3fpPAdQlDzDeAIo/GWLG/Srojvs/wCBrSgWmEwEJHKMtbVryM
+	w8vT/XCboeYk3PbndeV8DRs5e2U8ip86g+tUcHpoGmoFCQrRIWDnnN4+lpNqXywZbhjRnZjlTCV
+	3gFLynWRokPX6PbHCOU0cpxIf8cqHP1IJiXN+kXhGqse03l+ib/Fgq3QRD8vy0vfLwDDhg+FUjt
+	wrOcT7EtYGgBi+Vic2aoopGEv1y0Hw==
+X-Received: by 2002:a17:902:f547:b0:2f0:60c4:9d1b with SMTP id d9443c01a7336-2f060c4a58dmr72115095ad.62.1795413027126;
+        Sun, 22 Nov 2026 21:50:27 -0800 (PST)
 Received: from server225.. ([39.170.101.209])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3b44b7d36bcsm5974143a91.3.2026.11.22.21.49.39
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2f03f105b76sm46486325ad.50.2026.11.22.21.50.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Nov 2026 21:49:41 -0800 (PST)
+        Sun, 22 Nov 2026 21:50:26 -0800 (PST)
 From: "ping.li" <leeonion.muyu@gmail.com>
 X-Google-Original-From: "ping.li" <ping.li@horizon.auto>
 To: miquel.raynal@bootlin.com,
@@ -80,13 +80,13 @@ Cc: linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	Ping Li <leeonion.muyu@gmail.com>
 Subject: [PATCH 0/3] mtd: rawnand: protect DMA engines from vmalloc'd buffers
-Date: Mon, 23 Nov 2026 13:49:32 +0800
-Message-Id: <20261123054935.1925807-1-ping.li@horizon.auto>
+Date: Mon, 23 Nov 2026 13:50:17 +0800
+Message-Id: <20261123055020.1995251-1-ping.li@horizon.auto>
 X-Mailer: git-send-email 2.34.1
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261122_214943_239656_F4353826 
+X-CRM114-CacheID: sfid-20261122_215027_947385_6CC338EA 
 X-CRM114-Status: UNSURE (   8.91  )
 X-CRM114-Notice: Please train this message.
 X-Spam-Score: -2.1 (--)
