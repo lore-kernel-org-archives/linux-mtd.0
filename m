@@ -2,87 +2,85 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7355606A32E
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Nov 2026 18:42:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD475606A69C
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 Nov 2026 18:42:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=g/8MJVvu;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=P5bnUYNW
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=iLVkEzJB;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=SWOaP3ks
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id
-	:Date:Subject:From:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:
+	Message-Id:MIME-Version:Subject:Date:From:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=JE+91KMRzzDYxe6vxBwjdUKM6GkGEsZ/NNtu56nQQts=; b=g/8MJVvu66xWpCIshMe1NyVYAe
-	OmaBJPFZNq5WAUDggAlvXOIdQXqCnxI3pXJbHCiuDg9LJqWKVc4Ufbna++DH1NbhU0ZlFTs8X7JZ+
-	lMMkhGpuGjGENW+K9DLi7UwuRBzh+voyJINIpKbih3RCxu16MDLyCgKqmZ8IEM4a72y05yJZTfBno
-	o5gAqZ2Q+h0cMBLcL7OMjMJzw+/cJOgeme3Rr8gKN0vX69m7YJtoxWhk9rCxx9yj90BLhXDkDXl6U
-	eDjkKVyh2oA0XBudxTpNI9Jr2kutM+Uc65tv/LXhMY3BRGvSs2AxuC3diYUpicrrO3GDG6qhZPizB
-	IneCorqw==;
+	bh=p0riUw3JtcDgHtWlb9T92/1nt/MvHt4dTTYz7jVPTYo=; b=iLVkEzJBBiuQByq/jgzrrT7NXd
+	L0p1gXCx15LamQ4o4QuIy3wgM78S8eg026BP7iVebTSMVsO/m7R5xXKnoZvll1V3Qi3VjwzUnnGNp
+	y0y4Yssa8vsoYvubLAkA1P+jqWFPMjlt0B9kLZKUe5X/AGDSqt67GR0NYWTTN/vga+gKI4feaAPMP
+	xvjPE5n8u4R7iWJa8JcOVoBosMVogdxHuB/yLcg+mRFW7tQ0rq+NdQdCweKUUtksZfd3FnWPO8s2v
+	Lj2mB/OineoLHu/HoMC5u59qQob7au7c/I+Leek9rmNUCiYULNwjT5rg9sTKNYLpwPbTs2EPRKXgz
+	tsFKrPvQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xVYzb-00000004Wl9-1504;
-	Mon, 23 Nov 2026 18:42:19 +0000
+	id 1xVYzn-00000004WsM-2Dg9;
+	Mon, 23 Nov 2026 18:42:31 +0000
 Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xVYzM-00000004WUt-0FTP
+	id 1xVYzM-00000004WVL-3a5h
 	for linux-mtd@lists.infradead.org;
 	Mon, 23 Nov 2026 18:42:04 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id CE8F145A1B;
-	Mon, 23 Nov 2026 18:42:03 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 873F745A87;
+	Mon, 23 Nov 2026 18:42:04 +0000 (UTC)
 Authentication-Results: smtp.kernel.org; arc=none smtp.remote-ip=100.80.115.77
 ARC-Seal: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256; cv=none;
-	t=1795459323;
-	b=GVIDuwaSJGOkot5A+GOYNIDlfMwsIa8gnbqtjCjlMXBM3Wpv3/QcfQerNPsgUK8HlSAm
-	 DOoO3YMGiYwns293ZylkUmgPCtmkxuWylIUA7TRn6ZwlhwBV6/VpBxg5yTsgDTpa1JwdM
-	 /4rIMFlX/KV6oF3GP5XuzgdCAZD1SmsfD3r/UMuLWt2KwF8BQKq+HsvmBtZ42AQ2CGYBf
-	 BEtGSIjySytF21pxKqgVFNuY6bN3r8DD88jJFb2zhZ0COdTwWpwVLM4rf5yvBsaUseHgv
-	 S+p+gJwgVjoPvvlGXVVlKCKZRE2mHHQfV7kfbPyyHFBk6UOqeWtda1PDa3QVl9EioMA==
+	t=1795459324;
+	b=fJrmK2GeN2yuulwho1kfru2eoZ4BLCCb//sltEZsO0Ul7cMh3P1J9gniBXOyTOFma/PX
+	 Vze8o7c74yCE0SdASnGIXa40S4Cqjf4JOxm1FXw9Upx644NrVl+PzHauHhx0+OvU4iEHe
+	 4l5hOFAkG3bRK+DurHbB+XixEhML5Y5yC9MJIE3Pt05//rBDO9UwnifXaA4zI0zS069Vl
+	 /cc6WzUHgfl4Jn89Q4Z7CX6TGS40q3RXzkmMg87rnxbWxSxlwTFDX7t4h/5r8v4GZ+TYW
+	 7NAwYH2LqAdHEWqOMq2aVALocg5bZaiapqj+FQEz+eRuU5Yy+iEbQcPFwqYQZnLXr3A==
 ARC-Message-Signature: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256;
-	c=relaxed/relaxed; t=1795459323;
-	h=DKIM-Signature:Received:From:Subject:Date:Message-Id:MIME-Version:
-	 Content-Type:Content-Transfer-Encoding:X-B4-Tracking:X-Change-ID:To:
-	 Cc:X-Mailer:X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
-	 X-Original-From:Reply-To;
-	bh=musLNBbvIPP0pZupDcF24ytIpe1LtyyAEg+0w1etnuc=;
-	b=tn3Z5xV+86KxjgQGbyQ4r0n0GTD1ko5esdq5b0vb3oQzDQanlW8FNyPzr+f0WS94EgZr
-	 FGauu2e1w4Z+WHUlGlkT5KnWHriBeiqwR+64K9oc3kzXOzhvGqNR2XFaVkZYFbqdpbWGQ
-	 W3+TBsPsl5828GP6bDfjkoZhT1woGmwJiLKwetdtk90k9NJseW63JHrZGfIJTtrFlo1o0
-	 giWviy4G9MhvlzM+pkf74M2aVzfq+iX1d1S+BSwb+xy2cFSJH/X0YXntxk2O1Slac+0Le
-	 jrcRrUlK6d21xuxuahPUoEQyM7YylcRDuk95rUSTTSd08BnnSsMXcfjoWbe6738COzA==
+	c=relaxed/relaxed; t=1795459324;
+	h=DKIM-Signature:Received:From:Date:Subject:MIME-Version:Content-Type:
+	 Message-Id:References:In-Reply-To:To:Cc:X-Mailer:
+	 X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
+	 X-Original-From:Reply-To:Content-Transfer-Encoding;
+	bh=dTY9H4MEUXebkJIxacnGx6ldxYXsTr4Zi+O0m4hM0TQ=;
+	b=0cl4RSoqJ1ZU/m04JL9SYT2KGIEBipjsGpqTLO7LnjhaUDL/Ji6fZUYWJYaJ7HXvpQ7R
+	 T5G9ChhzRJ/9agecBq1OC5O/VR+WpHO3IUC9u9lVQ+9cYnj6YQqAyFim5cukuK7S/flzb
+	 IZxk+uwwG7ju6ptN5b6o3q1KOz7UWLXxPBJYnAfu0WYbCg+SmpAZvEBNK/WWggzWzgQ7f
+	 aiU/gvG2GS6xaMB621EgG3qKZJuamNMWUiPMywA+jHG5Ub/jIbEATH3wkJjM/gGWMEECz
+	 LubO6tdMRMKC9NbSjjKczmNB4571mRWXL6Ne47ckd8m8zAq8hbUgAfU5e/g8mxkm29Q==
 ARC-Authentication-Results: i=1; smtp.kernel.org; 
 	arc=none smtp.remote-ip=100.80.115.77
 Received: from lkml.kernel.org (nexus.subspace.kernel.org [100.80.115.77])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.kernel.org (Postfix) with ESMTPS id C55D71F00A36;
-	Mon, 23 Nov 2026 18:41:52 +0000 (UTC)
+	by smtp.kernel.org (Postfix) with ESMTPS id DE1B01F00ADE;
+	Mon, 23 Nov 2026 18:41:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1795459323;
-	bh=musLNBbvIPP0pZupDcF24ytIpe1LtyyAEg+0w1etnuc=;
-	h=From:Subject:Date:To:Cc:Reply-To;
-	b=P5bnUYNW/qfUnta20rQHeYIbUt9kf6vmumzv3slqe66G0sN/xnN8MfvRX9nYugYxa
-	 ZTLpPjD/kQiC1UKElkm8O+Ob+cL9ytdOxX2dFhorBhdtcOt+4RmCVeEsKJbv4nfceH
-	 p+JzRQe71SbxG1RMVI2LLj0OQmPaxUkl7pI3ieRlMHtR9e0+gj21pxoNymXA273SM1
-	 i0uneKnYgMZf5pwpBLs3bY8xH3CSvxj0wexygHaWE7LX5tGVLheeLVPcd7+d+rk3+8
-	 i42x4WYf8YcfGBdtUQn8dR9JPJZoz1FFxHMzXhWj44OjySyy6Kaqzj/OGHjhhHRhDU
-	 U1CmlFM8xp6IA==
+	s=k20260515; t=1795459324;
+	bh=dTY9H4MEUXebkJIxacnGx6ldxYXsTr4Zi+O0m4hM0TQ=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To;
+	b=SWOaP3kso5TwUQnd0EHBj0HxYvBuJQVjiXNBjP6zQCWg0V9d/BECBt0sxO34p+8xB
+	 U1ltQxiVyE1o+SXMQBfJDTZyMmimhJOOm02ME8FPc81eQ7uecxlrxVsNW6MGqFTdLs
+	 63fn5XeziLZLMaiZtR4FvtQvS5njJnuC47wIvqZmRzXMFywFA15y/txG3+RH3JfQAZ
+	 /I5H8Qsl93KTG/jjsXhQ5KzMbiSURvPFRL8DHL5HjbTthiPOgZpJETXRQcKoR01ySe
+	 wLxusjdWwHKyzWbv7traI1qVYa6holBvsnjAAV7+QTVpgBxQVb6OP3Tr8W1QJrLebv
+	 o9MT1J2JorAMw==
 Received: from nexus.subspace.kernel.org (localhost [IPv6:::1])
-	by lkml.kernel.org (Postfix) with ESMTP id 9C6344C5DD;
+	by lkml.kernel.org (Postfix) with ESMTP id BBAF94C5E1;
 	Mon, 23 Nov 2026 18:41:39 +0000 (UTC)
 From: Fil Dunsky via B4 Relay <devnull+filipp.dunsky.gmail.com@kernel.org>
-Subject: [PATCH 0/3] Add Cortina Systems CS7542 NAND controller support
-Date: Mon, 23 Nov 2026 21:41:37 +0300
-Message-Id: <20261123-b4-cs7542-nand-v1-0-7ce179c011e2@gmail.com>
+Date: Mon, 23 Nov 2026 21:41:38 +0300
+Subject: [PATCH 1/3] dt-bindings: mtd: Add Cortina CS7542 NAND controller
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAAAAAAAC/yXMPQ6DMAxA4asgz1jKDzQNV0EMEEwxQ1rFgJAQd
- ydtx2947wShxCTQFCck2ln4HTN0WUCY+/gi5DEbjDIPrY3FocIgrq4Mxj6O+HTeO7JKKechR59
- EEx+/Ydv9LduwUFi/F7iuG0zWVTRyAAAA
-X-Change-ID: 20261123-b4-cs7542-nand-87997e300079
+Message-Id: <20261123-b4-cs7542-nand-v1-1-7ce179c011e2@gmail.com>
+References: <20261123-b4-cs7542-nand-v1-0-7ce179c011e2@gmail.com>
+In-Reply-To: <20261123-b4-cs7542-nand-v1-0-7ce179c011e2@gmail.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, 
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
  Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
@@ -90,11 +88,11 @@ To: Miquel Raynal <miquel.raynal@bootlin.com>,
 Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, 
  linux-kernel@vger.kernel.org
 X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1795459297; l=2618;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1795459297; l=2237;
  i=filipp.dunsky@gmail.com; s=20260930; h=from:subject:message-id;
- bh=IP+8zwGE19sgIV+qJrA+fIZvVuRoJTEIEdbCodPzGtU=;
- b=A3paAJAVDb1QxAgUbEX2zezC3SKwCyZzfy5VnRBZ+J1n6SsBvezOi5Eff9QoHtA3VwzJ5DQUH
- yQkgk4XV8vNDssjh4xSkmKy+xk8Iurl0TmNFKohtHc9ZteD1qNEPgcy
+ bh=R4f5+AZ20ZvVDHkrykvH4nwddcpdeFmF1zCSrzBHxh8=;
+ b=bfHq8In5jdLo/dunT0UnO+Berlv962onqZZJnPFXMiVqyAFPk+hEUZm0R+b7I2/4SP/E82iWM
+ kwSK+k2RImTANU86YaMZ/NEGC2VMQezGEuSDrVfrnttey2FTzaCx63W
 X-Developer-Key: i=filipp.dunsky@gmail.com; a=ed25519;
  pk=JAYP8e2rJ54DHOmhNtXud8rl1igAaAXoOHxtJmVXI1g=
 X-Endpoint-Received: by B4 Relay for filipp.dunsky@gmail.com/20260930 with
@@ -113,64 +111,100 @@ Reply-To: filipp.dunsky@gmail.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-11.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-Add the NAND controller used by the Securifi Almond+ (CS7542, two Cortex-A9
-CPUs). This is an independent binding/driver/MAINTAINERS series on
-Linux v7.4-rc4; it does not depend on ARCH_CORTINA_ACCESS or the platform
-series.
+From: Fil Dunsky <filipp.dunsky@gmail.com>
 
-The controller sequences complete command/address/data transactions. Use
-exec_op with explicit capability checking and cached ID, ONFI and page reads
-for NAND core's split operations. Retain firmware-initialized bus timing.
-This version supports large-page, 8-bit NAND with on-host Hamming ECC using
-256-byte steps and the existing OOB layout. It uses programmed I/O; DMA and
-unverified BCH modes are deliberately outside this initial implementation.
+Describe the flash register bank and the single 8-bit NAND target used
+on CS7542. Specify the ROM-compatible Hamming ECC configuration and
+allow standard NAND partition descriptions. Firmware supplies the bus
+timing.
 
-Validation:
-- Full independent ARM vmlinux and modules builds, driver both =y and =m,
-  COMPILE_TEST=n, without the platform series.
-- Binding schema/example and strict source checkpatch pass.
-- Actual decoder functions: 292 boundary, address and sequence cases under
-  UBSAN. Address packing: 655360 cases cover every Almond+ page and
-  two-row-cycle large-page geometries. Actual Hamming correction function: 16389 cases covering every
-  single-data-bit position, invalid hardware offsets and error propagation.
-- Linux 7.4-rc4 booted in RAM on Almond+. NAND identification, all-device
-  bad-block scan, OOB reads and SHA256 of five existing protected regions
-  passed without new ECC failures.
-- The real UBI stack created a temporary two-LEB volume, wrote and verified
-  two 253952-byte patterns, removed the volume and reattached with the
-  original bad-block reserve. All 14 protected partition/configuration
-  checksums matched after returning to installed OpenWrt 6.18.64; the five
-  original UBI volumes and normal reserve remained intact.
-
-No kernel image was installed by these RAM tests. Board integration used
-for testing is kept separate from this series.
-
+Signed-off-by: Fil Dunsky <filipp.dunsky@gmail.com>
 ---
-Fil Dunsky (3):
-      dt-bindings: mtd: Add Cortina CS7542 NAND controller
-      mtd: rawnand: Add Cortina CS7542 controller support
-      MAINTAINERS: Add Cortina CS7542 NAND controller entry
+ .../bindings/mtd/cortina,cs7542-nand.yaml          | 66 ++++++++++++++++++++++
+ 1 file changed, 66 insertions(+)
 
- .../bindings/mtd/cortina,cs7542-nand.yaml          |  66 ++
- MAINTAINERS                                        |   7 +
- drivers/mtd/nand/raw/Kconfig                       |  12 +
- drivers/mtd/nand/raw/Makefile                      |   1 +
- drivers/mtd/nand/raw/cs752x_nand.c                 | 826 +++++++++++++++++++++
- 5 files changed, 912 insertions(+)
----
-base-commit: b6a9fa34ce4187cb69d3c588a4bbffc31ce5db8f
-change-id: 20261123-b4-cs7542-nand-87997e300079
+diff --git a/Documentation/devicetree/bindings/mtd/cortina,cs7542-nand.yaml b/Documentation/devicetree/bindings/mtd/cortina,cs7542-nand.yaml
+new file mode 100644
+index 000000000..c9ab9d4d9
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/cortina,cs7542-nand.yaml
+@@ -0,0 +1,66 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mtd/cortina,cs7542-nand.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Cortina Systems CS7542 NAND controller
++
++maintainers:
++  - Fil Dunsky <filipp.dunsky@gmail.com>
++
++description:
++  The flash controller supports programmed I/O transfers and a hardware
++  Hamming ECC engine. Firmware initializes the NAND bus timing.
++
++allOf:
++  - $ref: nand-controller.yaml#
++
++properties:
++  compatible:
++    const: cortina,cs7542-nand
++
++  reg:
++    maxItems: 1
++
++patternProperties:
++  "^nand@[0-9a-f]$":
++    type: object
++    $ref: raw-nand-chip.yaml#
++    properties:
++      reg:
++        const: 0
++      nand-bus-width:
++        const: 8
++      nand-ecc-mode:
++        const: hw
++      nand-ecc-algo:
++        const: hamming
++      nand-ecc-step-size:
++        const: 256
++      nand-ecc-strength:
++        const: 1
++    unevaluatedProperties: false
++
++required:
++  - compatible
++  - reg
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    nand-controller@f0050000 {
++        compatible = "cortina,cs7542-nand";
++        reg = <0xf0050000 0x300>;
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        nand@0 {
++            reg = <0>;
++            nand-ecc-mode = "hw";
++            nand-ecc-algo = "hamming";
++            nand-ecc-step-size = <256>;
++            nand-ecc-strength = <1>;
++        };
++    };
 
-Best regards,
---  
-Fil Dunsky <filipp.dunsky@gmail.com>
+-- 
+2.53.0
 
 
 
