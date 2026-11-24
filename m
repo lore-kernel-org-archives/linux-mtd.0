@@ -2,69 +2,76 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5903606A687
-	for <linux-mtd@archiver.kernel.org>; Wed, 25 Nov 2026 12:55:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF952606A31E
+	for <linux-mtd@archiver.kernel.org>; Wed, 25 Nov 2026 15:25:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=R8egBplK;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=aT2Zur7O
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=YlAg+0xU;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=mQm7XMoj
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
+	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=Wx4K2g191sNmk7Qqze1aX3KuslK6WxPsPt4gkODy5Mw=; b=R8egBplKthhdaS1SMnpiXreGHT
-	R5EjDY4U11p+ArQlyTWxSGmE8Rydmpyuihtf5skm1BDS0HTySl1cZRmCRIykYiacT7zwq2hoszVn5
-	b2Jnt/uSJ/gACz9A8UqPe9ul/zTDZlrixsPgwPXL/rU6Ngx4DpfV+STUCNpbT9bWq8ZhHC/xoRST+
-	09etVI1gCu+3kRDcu7UFKNeKkOAGVViab2+zB576vFPRVPM6iD1BELEDqmkm9WbicqD9ZjMfVKu8+
-	2vOZlnP9I0BHjoHnDGJJn/ATSa4hr4iL6jpBOxTEWk410QbZIlkGt6cMDNZkWXGnxyA2enxHnIVpA
-	K3ySg3jQ==;
+	bh=n26DmAqqU1lTqWY11bxVhQRkzS9WQyFoE188qZePCuo=; b=YlAg+0xUTpj4D+Tadx3QECNDfO
+	U6GIezecYoyGGOizvdOsOg/mC2dCAU+aeu7A+3rKW6HDRBTMOsCnsEW6dEFPwMCN8OZUVez1Cl3EH
+	kxZD8E98vliK4vg2tJNqm/bj2b5EFKNf5CJCwyCkv8d/l2qFJY9qNHi7mCjX0vioXIdVExQsSRZMr
+	aKjilpyv4kUkvNnkJj3EFY+jRythMESE1/LsmMbQjQS6wMp14e2s2QQxRiSK0dO/QfvT4xFkPBXsi
+	lQPrcAVOk6VJ7VOCzkksHJGMNXFqmKwQ4JYFkPdDT2I6LfgTrSxGR3jHr0ND3pN0CyySk49/oedm6
+	VcKT8+cQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xWCXP-00000009uV2-040K;
-	Wed, 25 Nov 2026 12:55:51 +0000
-Received: from smtpout-02.galae.net ([185.246.84.56])
+	id 1xWEro-0000000ALBz-28h3;
+	Wed, 25 Nov 2026 15:25:04 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xWCXM-00000009uS4-1ORD
+	id 1xWErh-0000000AL7u-1m2Y
 	for linux-mtd@lists.infradead.org;
-	Wed, 25 Nov 2026 12:55:50 +0000
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id 50D371A17E8;
-	Wed, 25 Nov 2026 12:55:45 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 1CE5260480;
-	Wed, 25 Nov 2026 12:55:45 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 7D2D011E6962C;
-	Wed, 25 Nov 2026 13:55:42 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1795611344; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 in-reply-to:references; bh=Zz8pRVPj1m/x6K4VKaV8LSIz7Bt1hMO6SMJiNKydZSY=;
-	b=aT2Zur7O4lBtxYQYfwKuAvhcn1SgPWKsRujduPByUAXeP7cKx2bXz2rl25hJECg1c9PDCg
-	n+jnwNyzkzWLHec2eToEEeqCDvglMfIN/J4VrrSIh2DV23apCc23WBose8SXWZLvxawhzk
-	q1oqb+8JaZkeC+qb3qv4XrxIpbkU2yZYAjnZFeDfjeeU3ILUhMgjxa9RGYLB1q1JbFtmjx
-	ZJiEPwJ0CxcMHQ9qSIqTuGtfys4S3K9M5OCrb9NMvOwGopqc5yNWLPguFsnVzHr24EwDTR
-	lha/uisEzrpIH7afHam8627TMN68SCVDBmGNl6O1Dl/2pJEZcttHFpXiIMcMZA==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Ping Li <leeonion.muyu@gmail.com>
-Cc: richard@nod.at,  vigneshr@ti.com,  linux-mtd@lists.infradead.org,
-  linux-kernel@vger.kernel.org,  stable@vger.kernel.org
-Subject: Re: [PATCH v5 3/3] mtd: rawnand: r852: declare NAND_USES_DMA
-In-Reply-To: <20261125122135.44696-4-leeonion.muyu@gmail.com> (Ping Li's
-	message of "Wed, 25 Nov 2026 20:21:35 +0800")
-References: <20261125115108.4147741-1-leeonion.muyu@gmail.com>
-	<20261125122135.44696-1-leeonion.muyu@gmail.com>
-	<20261125122135.44696-4-leeonion.muyu@gmail.com>
-User-Agent: mu4e 1.12.12; emacs 30.2
-Date: Wed, 25 Nov 2026 13:55:41 +0100
-Message-ID: <87cxrtyss2.fsf@bootlin.com>
+	Wed, 25 Nov 2026 15:24:59 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id 2D9854325B;
+	Wed, 25 Nov 2026 15:24:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5BF131F000D0;
+	Wed, 25 Nov 2026 15:24:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1795620296;
+	bh=khCQZr+lZ5ps02/NBTrpcyjkpLu9gA2+Gk1GsRmHCXA=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date;
+	b=mQm7XMojXDRKOjTVodJNFQw5rj41uOgx2Mnln3HRo0PzjmMed2JfzKJ4FSUkvsVXt
+	 bBbPcQULhAUyAqs1aDbNPwhYKrDNl4sDrwjT46YKkJTUwxXKHUO8qYHc3qAWBwIu4T
+	 j7Mq8hB6jzxwbHseQbdKWyEJ3+6TGzHPhxmGD+4xuTo3Y6L1ReOZMV0yMp/hL7wNOa
+	 30pwxz6cQIqbfRO4vQA14NsZOYRAV4Dv4wZJXVkw5B8kBbR+PtOHb6FGjXA5lmGDuI
+	 Ql6bd44lZXfV9SttRxiD/OvxMbZzVHwp11N5Ftssz6QLaFAvnZHoqxDK8We/qXLwZ8
+	 hE2iY0G2Q3ggg==
+From: Mark Brown <broonie@kernel.org>
+To: Richard Weinberger <richard@nod.at>, 
+ Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Pratyush Yadav <pratyush@kernel.org>, 
+ Michael Walle <mwalle@kernel.org>, 
+ Takahiro Kuwano <takahiro.kuwano@infineon.com>, 
+ Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, praneeth@ti.com, 
+ u-kumar1@ti.com, p-mantena@ti.com, a-dutta@ti.com, s-k6@ti.com, 
+ linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org
+In-Reply-To: <20261124-winbond-nand-next-phy-tuning-v5-0-261e0e712857@bootlin.com>
+References: <20261124-winbond-nand-next-phy-tuning-v5-0-261e0e712857@bootlin.com>
+Subject: Re: [PATCH v5 0/6] mtd/spi-mem: Enable DQS control
+Message-Id: <179554764437.947306.7383226666322227871.b4-ty@b4>
+Date: Tue, 24 Nov 2026 19:14:04 +0000
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-Last-TLS-Session-Version: TLSv1.3
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261125_045549_259794_7FD241BC 
-X-CRM114-Status: GOOD (  16.32  )
-X-Spam-Score: -2.1 (--)
+X-Mailer: b4 0.17-dev
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1947; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=hiFMYrNelLS4EF+eSytAriGzVrBmGJlkNeuhF2BICI0=;
+ b=owGbwMvMwCWm/754w+YLFp2Mp9WSGLLZ/h7W4P6zcq1usKFgc8PuvLOp75/Ofv7cfm22YoHnX
+ XWLl6xXO0pZGMS4GGTFFFnisrhf1pe8XsN3cGEbzBxWJpAhDFycAjCRPCtGhk+ilrcqyliK9VSu
+ nj3Pn5zY8uH3uSePaq33zhZm+bCXdxMjwxT9jPZHookW34u2rPTiUGTfvehhur5Tnclq2c2zHVS
+ E2AE=
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,52 +84,62 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-13.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=ham autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DATE_IN_PAST_12_24,
+	DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-On 25/11/2026 at 20:21:35 +08, Ping Li <leeonion.muyu@gmail.com> wrote:
+On Tue, 24 Nov 2026 15:43:01 +0100, Miquel Raynal wrote:
+> mtd/spi-mem: Enable DQS control
+> 
+> For his PHY tuning series on the Cadence QSPI controller embedded in TI
+> SoCs, Santhosh initially needed to access the availability of the DQS
+> (data strobe) signal. This is a chip dependent capability, which may
+> sometimes be enabled.
+> 
+> [...]
 
-> r852_do_dma() feeds the buffers provided by the NAND core straight
-> to dma_map_single(), which is only valid for linear-map addresses,
-> but the driver never declares NAND_USES_DMA.  Because of this,
-> nand_base cannot know the controller DMAs these buffers and never
-> bounces non-linear-map ones.  Such buffers are not hypothetical:
-> mtdblock's write cache is vmalloc'ed and UBIFS passes vmalloc'ed
-> LPT buffers.
->
-> Declare NAND_USES_DMA so that nand_base bounces non-linear-map
-> buffers through chip->data_buf, and advertise the hardware's
-> 512-byte alignment requirement through chip->buf_align so that
-> misaligned linear buffers are bounced as well, like the other
-> DMA-capable controllers do.  Both only apply when the controller
-> actually uses DMA: the PIO fallback path does not care about
-> buffer addresses being linear-map or 512-byte aligned.
->
-> Fixes: 67e054e919248 ("mtd: nand: Add driver for Ricoh xD/SmartMedia reader")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Ping Li <leeonion.muyu@gmail.com>
-> ---
->  drivers/mtd/nand/raw/r852.c | 5 +++++
->  1 file changed, 5 insertions(+)
->
-> diff --git a/drivers/mtd/nand/raw/r852.c b/drivers/mtd/nand/raw/r852.c
-> index 92c47d351c27..c5a3622cddf6 100644
-> --- a/drivers/mtd/nand/raw/r852.c
-> +++ b/drivers/mtd/nand/raw/r852.c
-> @@ -640,6 +640,11 @@ static int r852_register_nand_device(struct r852_device *dev)
->  	if (dev->readonly)
->  		dev->chip->options |= NAND_ROM;
->  
-> +	if (dev->dma_usable) {
-> +		dev->chip->options |= NAND_USES_DMA;
-> +		dev->chip->buf_align = R852_DMA_LEN;
-> +	}
+Applied to
 
-Wasn't in this driver a bounce buffering operation that is no longer needed?
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-7.5
+
+Thanks!
+
+[1/6] spi: spi-mem: Rename the DQS setter and pin field
+      https://git.kernel.org/broonie/spi/c/fab01b136dfe
+[2/6] spi: spi-mem: Clarify the conditions upon which DQS is usable
+      https://git.kernel.org/broonie/spi/c/5520745c6e30
+[3/6] dt-bindings: spi: Document the spi-dqs-not-wired property
+      https://git.kernel.org/broonie/spi/c/2bc362dc8074
+[4/6] spi: spi-mem: Take the DQS wiring into account
+      https://git.kernel.org/broonie/spi/c/4c9572bc7052
+[5/6] spi: spi-mem: Take the controller DQS support into account
+      https://git.kernel.org/broonie/spi/c/828d25f820a5
+[6/6] spi: cadence-quadspi: Advertise DQS support
+      https://git.kernel.org/broonie/spi/c/dd1f49bd2c44
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
