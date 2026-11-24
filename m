@@ -2,92 +2,57 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63C42606A321
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Nov 2026 13:06:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29A2D606A321
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Nov 2026 13:17:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=YRJMamBR;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=snXUYCyi
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=w9Y9z93V;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=MF99Sfrm
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Reply-To:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:References:
+	In-Reply-To:Cc:To:Subject:From:Message-ID:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=Oq9iwlRB2wke3J9KKHJdKnLmY4RbZ7w/1UQJXnC7JvA=; b=YRJMamBRYTmmF05iMitd2V4aGq
-	EUhfYICIT/ErghUEXgEGk/FPX07XQXvektV1uVeV66yFSkNDHC4TsMBoH+DKzEiOGK9kvGvdluHn2
-	68fXGGXxLfRpBAQvC0UKTjSCvI0Td4TA/53z3ANxbEpLoZPGtnkTIp8s6iAUSEiWOxcEbLwGmxwia
-	JX1vF1b6frImNiVv9KiG6dTYg2duBBsEujIIhiCe+Cp8smAZBh3hIviNDCbPTTRKJlrYrFBXTx8rg
-	DqzaVOR1IBz35t2zpIbXdFUQWTZviXs7/di89bLleqgIfGK7uAK6jeRNhh5S+l+OWKqh2TIxafkXt
-	r0OpvG/Q==;
+	bh=KYnLdy8AJw+Uzwlyg4FOk7d7aTM/0MLkfNF+e81YFrI=; b=w9Y9z93Vfn85uEKa35tTVVdt/N
+	N3ir2lTK/uHwjSOzMyrxGM3993XpWaUoWA1OiVNMv0a8CoxRC64ZPYvveKe+MXkikWg2gtyk2SP2Y
+	orNXIWpm4R05cjagvoOhgNtz2kn6MYrGPNjlTooTYFUg5gRYglUWK+e/OF+yMjeDRe3QIIpb9tBrt
+	BZP8OQBYl1Z0CoJqrMog3ak8sv6gtcwqYVU6rql4sB8R7DKzR9SmmVm2g4P9kTwvM1WMsjD6QbWLy
+	AGOyIP95YfmIfHeZCQ3yfsIJOtFPg8bMihKTX/wH6NRGSsuTt1Xp0LgFr4rwsxkS14f7YoWkEYKic
+	2q4TLjNw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xVqEV-00000006Zio-2gF0;
-	Tue, 24 Nov 2026 13:06:51 +0000
-Received: from mail-pj1-x102f.google.com ([2607:f8b0:4864:20::102f])
+	id 1xVqOS-00000006bW3-1fc9;
+	Tue, 24 Nov 2026 13:17:08 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xVqES-00000006ZhL-0isj
+	id 1xVqOR-00000006bVp-34aJ
 	for linux-mtd@lists.infradead.org;
-	Tue, 24 Nov 2026 13:06:50 +0000
-Received: by mail-pj1-x102f.google.com with SMTP id 98e67ed59e1d1-3b44bdcea8aso2136968a91.1
-        for <linux-mtd@lists.infradead.org>; Tue, 24 Nov 2026 05:06:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1795525606; x=1796130406; darn=lists.infradead.org;
-        h=content-disposition:content-type:mime-version:message-id:subject:cc
-         :to:from:date:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=EQHzCrvzke+hr2Xi0X+IPsE6+lahl8beI9U/c68AOh8=;
-        b=snXUYCyiuAHC9K2p4XxDUK+1R6Z8ar9u+FDtHrenGunoyIm8JwEFe+K5xs/JZ5BLRH
-         aDuyfjQoMSPU9SNrxrkL80HdMOGd5g7PJNocfh+tPivZKT9dS/QP5oENRVrUiU0PLjg/
-         sui7YIwtaSAqKdDdkEjuEOJVbPKbaHU8OAKhGDDlfixlZS/b+uKcLG/+sPJr+d/HaXey
-         lghj+ImY4PnPxWy0WD8GW735g3R/kXN1kdunSrL9/1CVb0n8K6F08cztIRET9Q+Bf+oZ
-         OxS4SJzPRDgNW9jXrhMAXrBDpXw/dOoS3xDrnW2X9j+b71rWb+6LhADGZRhXQm5DbG/A
-         HH6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1795525606; x=1796130406;
-        h=content-disposition:content-type:mime-version:message-id:subject:cc
-         :to:from:date:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=EQHzCrvzke+hr2Xi0X+IPsE6+lahl8beI9U/c68AOh8=;
-        b=R9necRczGUbkwDntdqgpZtR7Y7ilJ7llqyNP0/+Sq2KBM34CVW0Sv5MymrR0trGqrM
-         OvHuByASqEOq4RD1sPMKh8pD7pMI/mIbBm+yVXB7GQeg3I1B2ulcQPrSK59T144U39/S
-         t4nhTOSnkwUXtHMBqFFJLzwqP7JVqHtDJESQHOFH6DOdZgEeFjRc+cpGfUmw7duafLgU
-         yMXLWRERd/4PzmmwwnTet8hl5hphciQHJ61VryMPbkpJeQMpu/ZGQD9n1vA18+/P7gTu
-         xwEaatJUBHHTUiua9FGwTSf1XB52lo2ILIsqWDjz3Lx4zE07a403S4c61r2QAeVQpoyO
-         Zv4Q==
-X-Gm-Message-State: APuU4Z8Un1a/B/DJVQ6gysUcCBh7SKrz/a4JsKMd/AcvfLhmmT+JK9uc
-	+PiUSgI0DwSNweuybfFtlqG2mLh9uSDa8uaM+upsnx0rGXXBGofyz/ti//4Gfg==
-X-Gm-Gg: AZFdTZea+K9eA9pBGe+F01Zpr/94d9jN0rm9lBKh/dQI9YwSrkNE7uEKwe9o9oVgtGw
-	puktKN2r0uBNxLOV4uVutpVXD+h9QwoUU/r2Xc9uYDls/OIOqvoYRblcJqWpmm5Z2wQheYmENYD
-	+zqi5XqaJZ0Fs5ULsokLxulqHAvKckXilNfz3IMfdm1/q/nj1M1VbOM4k0Rw0M8GOc7wyEqowpu
-	Rt8yagjFtqIpU2SXP3GqoI/2f7pYekUJusV4QfhF1ixnQzV3ktgGvkxGQPTOscJo2R4T8G2fokm
-	3PuV2/oysAEBtGlEUVOLfgV5BTxRZHjcwZhQh3RzZEj/pN77qDlVQSZEUXbwKE5+tZiUV/iQgDQ
-	fxNY1W6Y12iAOzkM/OL0FE8vrR0eIiXM9fuOv7TyRfkhD2KGqlKa8NSoFTOC/foS580UwNHM/uu
-	EG2metYUQLih418FR489dnHrhz4v4tOt5NtafMV1ltJhvXQVPtKZ2ZYOgSGpuEe7bEg+MMqQ9o/
-	VuwrzqsSadT7TOXE787CIop9o+lkByAtDPVsaO8kNnUhp7h9Y1CR1BnVDtEWx5h55URpofX36xj
-	XQ8brKP4MvAtBy+rE0Orysb6nVj09wRP+BKlNcedFDQVzfaioZCA
-X-Received: by 2002:a17:90b:3fc5:b0:3a6:d850:bf16 with SMTP id 98e67ed59e1d1-3b41c91135emr9461581a91.23.1795525605953;
-        Tue, 24 Nov 2026 05:06:45 -0800 (PST)
-Received: from Fantast-WT.localdomain ([120.229.37.123])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3b405d96bd3sm25959489a91.12.2026.11.24.05.06.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Nov 2026 05:06:45 -0800 (PST)
-Date: Tue, 24 Nov 2026 21:06:21 +0800
-From: Teng Wu <gigadevice2025@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: miquel.raynal@bootlin.com, vigneshr@ti.com, richard@nod.at,
-	linux-kernel@vger.kernel.org, teng.wu@gigadevice.com,
-	weijie.huang@gigadevice.com
-Subject: [PATCH] mtd: rawnand: Skip timing mode readback check for GigaDevice
- NAND
-Message-ID: <awWLzWDg-m9VBZVr@Fantast-WT.localdomain>
-X-Archived-By: <archiver.kernel.org>
-MIME-Version: 1.0
-Content-Disposition: inline
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261124_050648_245655_372F664A 
-X-CRM114-Status: GOOD (  15.33  )
-X-Spam-Score: -1.8 (-)
+	Tue, 24 Nov 2026 13:17:07 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with ESMTP id E688A60D30;
+	Tue, 24 Nov 2026 13:17:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D423D1F000D0;
+	Tue, 24 Nov 2026 13:17:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1795526226;
+	bh=nhWHY5jo/sM5e44wbYzLaiyUlRowF84CuWVdtv9MPOY=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=MF99SfrmKdnPadPzXKTmhh6tgIwuW30FrvYwSUXnpMsg6w6u66IzA8ONUwAUNgGqh
+	 rpTXpLSosgeX2s2QdyJdBMSq5rH38vu8V6D3NMBghMn7mwLujLajBUazBbp/rw6j8e
+	 /edk5Y+b6eJo3jdfRi5VsRxzoPBgcjjS/DqZxTL7jm6yKMHD7bXwnPh1Fn4vjkFLGZ
+	 Wsp53Pfq4NIPSFUeWOQWLthKZHB4MBrNA4wN6RrzX/aAbDpT/xlDOKUG0b6yVaUFpt
+	 n0iL26r2Ihzu9YTJDlam9TdkSS52hY9xkFtk51Zdi4uO4ztau+pT7Lv4OI3TBhtEXo
+	 SRemngP/5OsMA==
+Message-ID: <sashiko-outbox-231192@kernel.org>
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH] mtd: rawnand: Skip timing mode readback check for
+ GigaDevice NAND
+To: "Teng Wu" <gigadevice2025@gmail.com>, linux-mtd@lists.infradead.org
+Cc: miquel.raynal@bootlin.com, vigneshr@ti.com, richard@nod.at, teng.wu@gigadevice.com, weijie.huang@gigadevice.com
+In-Reply-To: <awWLzWDg-m9VBZVr@Fantast-WT.localdomain>
+References: <awWLzWDg-m9VBZVr@Fantast-WT.localdomain>
+Date: Tue, 24 Nov 2026 13:17:05 +0000
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,67 +62,84 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Reply-To: sashiko-reviews@lists.linux.dev
+X-Archived-By: <archiver.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,
-	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=ham autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-8.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-GigaDevice raw NAND chips (manufacturer ID 0xC8) support the timing
-modes advertised in their ONFI parameter page, so there is no need to
-verify or enforce the timing mode switch on them.  The supported set
-depends on the supply voltage: 3.3V parts (e.g. GD9FU2G8F3A, DID DAh)
-report modes 0-5 (3Fh in byte 129-130 of the parameter page), while
-1.8V parts (e.g. GD9FS2G8F3A, DID AAh) report modes 0-4 (1Fh).  The
-highest supported mode is already picked automatically from the
-parameter page by nand_choose_best_sdr_timings(), so the only thing
-getting in the way is the readback check.
-
-The GET_FEATURE timing mode readback on these chips does not reflect
-the mode selected through SET_FEATURE.  The strict check in
-nand_setup_interface() therefore misdetects the chip as not
-acknowledging the requested timing mode, printing "timing mode N not
-acknowledged by the NAND chip" and falling back to a slower mode for
-no reason.
-
-Skip the readback check for GigaDevice chips while keeping it for all
-other vendors, and go straight to updating the interface
-configuration.
-
-Signed-off-by: Teng Wu <gigadevice2025@gmail.com>
----
- drivers/mtd/nand/raw/nand_base.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index a225b10f8145..8d77ebac4939 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -890,6 +890,15 @@ static int nand_setup_interface(struct nand_chip *chip, int chipnr)
- 		goto err_reset_chip;
- 
- 	if (request != tmode_param[0]) {
-+		/*
-+		* GigaDevice raw NAND chips (manufacturer ID 0xC8) support
-+		* the timing modes advertised in their ONFI parameter page.
-+		* Skip the strict ack check; keep it for other vendors.
-+		*/
-+		if (chip->id.data[0] == 0xC8) {
-+			goto update_interface_config;
-+		}
-+
- 		pr_warn("%s timing mode %d not acknowledged by the NAND chip\n",
- 			nand_interface_is_nvddr(chip->best_interface_config) ? "NV-DDR" : "SDR",
- 			chip->best_interface_config->timings.mode);
--- 
-2.43.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+VGhhbmsgeW91IGZvciB5b3VyIGNvbnRyaWJ1dGlvbiEgU2FzaGlrbyBBSSByZXZpZXcgZm91bmQg
+MSBwb3RlbnRpYWwKaXNzdWUgdG8gY29uc2lkZXI6Ci0gW01lZGl1bV0gbXRkOiByYXduYW5kOiBo
+YXJkY29kZWQgMHhDOCBjaGVjayBpbiBuYW5kX3NldHVwX2ludGVyZmFjZSgpCiAgaGl0cyBFU01U
+IGNoaXBzCkl0IGFsc28gbm90aWNlZCAxIHJlbGF0ZWQgcHJlLWV4aXN0aW5nIGlzc3VlIHRoaXMg
+cGF0Y2ggZG9lcyBub3QKaW50cm9kdWNlOgotIFtIaWdoXSBtdGQ6IHJhd25hbmQ6IHN0YWxlIGN1
+cnJlbnRfaW50ZXJmYWNlX2NvbmZpZyBpbgogIG5hbmRfc2V0dXBfaW50ZXJmYWNlKCkgWzFdCi0t
+Cgpjb21taXQgZGZjNWZhYzk0ZmI2MDBkN2JlYzhlZGY3ZmFjNzhiZTYzNmU5NzEzMgpBdXRob3I6
+IFRlbmcgV3UgPGdpZ2FkZXZpY2UyMDI1QGdtYWlsLmNvbT4KCm10ZDogcmF3bmFuZDogU2tpcCB0
+aW1pbmcgbW9kZSByZWFkYmFjayBjaGVjayBmb3IgR2lnYURldmljZSBOQU5ECgpUaGlzIGNvbW1p
+dCBza2lwcyB0aGUgT05GSSB0aW1pbmcgbW9kZSBHRVRfRkVBVFVSRVMgcmVhZGJhY2sgY2hlY2sg
+aW4KbmFuZF9zZXR1cF9pbnRlcmZhY2UoKSBmb3IgTkFORCBjaGlwcyB3aXRoIG1hbnVmYWN0dXJl
+ciBJRCAweEM4LgoKPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFuZF9iYXNl
+LmMgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9uYW5kX2Jhc2UuYwo+IGluZGV4IGZlOGM2ZGNjOWMw
+NzEuLjRlZWJkOGI0MzYxNzYgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFu
+ZF9iYXNlLmMKPiArKysgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9uYW5kX2Jhc2UuYwo+IEBAIC04
+OTAsNiArODkwLDE1IEBAIHN0YXRpYyBpbnQgbmFuZF9zZXR1cF9pbnRlcmZhY2Uoc3RydWN0IG5h
+bmRfY2hpcCAqY2hpcCwgaW50IGNoaXBucikKPiAgCQlnb3RvIGVycl9yZXNldF9jaGlwOwo+ICAK
+PiAgCWlmIChyZXF1ZXN0ICE9IHRtb2RlX3BhcmFtWzBdKSB7Cj4gKwkJLyoKPiArCQkqIEdpZ2FE
+ZXZpY2UgcmF3IE5BTkQgY2hpcHMgKG1hbnVmYWN0dXJlciBJRCAweEM4KSBzdXBwb3J0Cj4gKwkJ
+KiB0aGUgdGltaW5nIG1vZGVzIGFkdmVydGlzZWQgaW4gdGhlaXIgT05GSSBwYXJhbWV0ZXIgcGFn
+ZS4KPiArCQkqIFNraXAgdGhlIHN0cmljdCBhY2sgY2hlY2s7IGtlZXAgaXQgZm9yIG90aGVyIHZl
+bmRvcnMuCj4gKwkJKi8KPiArCQlpZiAoY2hpcC0+aWQuZGF0YVswXSA9PSAweEM4KSB7Cj4gKwkJ
+CWdvdG8gdXBkYXRlX2ludGVyZmFjZV9jb25maWc7Cj4gKwkJfQoKW1NldmVyaXR5OiBNZWRpdW1d
+CkRvZXMgY2hlY2tpbmcgY2hpcC0+aWQuZGF0YVswXSA9PSAweEM4IGhlcmUgYWxzbyBza2lwIHRp
+bWluZyBtb2RlCnJlYWRiYWNrIHZlcmlmaWNhdGlvbiBmb3IgRVNNVCBOQU5EIGNoaXBzPwoKTWFu
+dWZhY3R1cmVyIElEIDB4QzggKE5BTkRfTUZSX0VTTVQpIGlzIHNoYXJlZCBieSBib3RoIEVTTVQg
+YW5kCkdpZ2FEZXZpY2UuICBTdXBwcmVzc2luZyB0aGUgcmVhZGJhY2sgY2hlY2sgZm9yIGFsbCAw
+eEM4IGNoaXBzIHByZXZlbnRzCm5hbmRfc2V0dXBfaW50ZXJmYWNlKCkgZnJvbSBkZXRlY3Rpbmcg
+YSByZWplY3RlZCB0aW1pbmcgbW9kZSBhbmQgZmFsbGluZwpiYWNrIHRvIG1vZGUgMCBvbiBFU01U
+IHBhcnRzLCB3aGlsZSBzdGlsbCBpc3N1aW5nIHVubmVjZXNzYXJ5ClNFVF9GRUFUVVJFUyBhbmQg
+R0VUX0ZFQVRVUkVTIGJ1cyBvcGVyYXRpb25zIG9uIGFmZmVjdGVkIEdpZ2FEZXZpY2UKcGFydHMg
+YmVmb3JlIGlnbm9yaW5nIHRoZSByZXN1bHQuCgplc210X25hbmRfZml4X2Jyb2tlbl9nZXRfdGlt
+aW5ncygpIGluIGRyaXZlcnMvbXRkL25hbmQvcmF3L25hbmRfZXNtdC5jCmFscmVhZHkgaGFuZGxl
+cyB0aGlzIGZvciBHRDlGVTJHOEYzQSBieSBtYXRjaGluZyBjaGlwLT5wYXJhbWV0ZXJzLm1vZGVs
+CmFuZCBjbGVhcmluZyBPTkZJX0ZFQVRVUkVfQUREUl9USU1JTkdfTU9ERSBmcm9tIGdldF9mZWF0
+dXJlX2xpc3QgYW5kCnNldF9mZWF0dXJlX2xpc3Q6Cgpkcml2ZXJzL210ZC9uYW5kL3Jhdy9uYW5k
+X2VzbXQuYzplc210X25hbmRfZml4X2Jyb2tlbl9nZXRfdGltaW5ncygpIHsKCXN0YXRpYyBjb25z
+dCBjaGFyICogY29uc3QgYnJva2VuX2dldF90aW1pbmdzW10gPSB7CgkJIkdEOUZVMkc4RjNBIiwK
+CX07CiAgICAuLi4KCWJpdG1hcF9jbGVhcihjaGlwLT5wYXJhbWV0ZXJzLmdldF9mZWF0dXJlX2xp
+c3QsCgkJICAgICBPTkZJX0ZFQVRVUkVfQUREUl9USU1JTkdfTU9ERSwgMSk7CgliaXRtYXBfY2xl
+YXIoY2hpcC0+cGFyYW1ldGVycy5zZXRfZmVhdHVyZV9saXN0LAoJCSAgICAgT05GSV9GRUFUVVJF
+X0FERFJfVElNSU5HX01PREUsIDEpOwp9CgpDb3VsZCBvdGhlciBhZmZlY3RlZCBHaWdhRGV2aWNl
+IG1vZGVscyBzdWNoIGFzIEdEOUZTMkc4RjNBIGJlIGFkZGVkIHRvCmJyb2tlbl9nZXRfdGltaW5n
+c1tdIHRoZXJlIGluc3RlYWQ/CgpbU2V2ZXJpdHk6IEhpZ2hdClRoaXMgcHJvYmxlbSB3YXNuJ3Qg
+aW50cm9kdWNlZCBieSB0aGlzIHBhdGNoLCBidXQgbmFuZF9zZXR1cF9pbnRlcmZhY2UoKQpjYWxs
+cyBuYW5kX2dldF9mZWF0dXJlcygpIFsxXSBhZnRlciBzd2l0Y2hpbmcgYm90aCB0aGUgTkFORCBj
+aGlwCmFuZCB0aGUgY29udHJvbGxlciB0byBjaGlwLT5iZXN0X2ludGVyZmFjZV9jb25maWcgd2hp
+bGUKY2hpcC0+Y3VycmVudF9pbnRlcmZhY2VfY29uZmlnIHN0aWxsIGhvbGRzIHRoZSBTRFIgbW9k
+ZSAwIHJlc2V0CmNvbmZpZ3VyYXRpb24gdW50aWwgdXBkYXRlX2ludGVyZmFjZV9jb25maWcuCgpC
+ZWNhdXNlIG5hbmRfZ2V0X2ZlYXR1cmVzX29wKCkgcXVlcmllcyBuYW5kX2dldF9pbnRlcmZhY2Vf
+Y29uZmlnKGNoaXApLAppdCBwYXNzZXMgc3RhbGUgU0RSIG1vZGUgMCB0aW1pbmdzIHRvIG5hbmRf
+ZXhlY19vcCgpLiAgV2hlbiBzd2l0Y2hpbmcgdG8KYW4gTlYtRERSIHRpbWluZyBtb2RlLCBuYW5k
+X2ludGVyZmFjZV9pc19udmRkcihjb25mKSBldmFsdWF0ZXMgdG8gZmFsc2UsCnNvIG5hbmRfZ2V0
+X2ZlYXR1cmVzX29wKCkgcmVhZHMgb25seSA0IGJ5dGVzIGluc3RlYWQgb2YgOCBhbmQgc2tpcHMK
+TlYtRERSIGJ5dGUgZGUtaW50ZXJsZWF2aW5nLCBjb3JydXB0aW5nIHRtb2RlX3BhcmFtWzEuLjNd
+OgoKZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFuZF9iYXNlLmM6bmFuZF9nZXRfZmVhdHVyZXNfb3Ao
+KSB7CiAgICAuLi4KCWlmIChuYW5kX2hhc19leGVjX29wKGNoaXApKSB7CgkJY29uc3Qgc3RydWN0
+IG5hbmRfaW50ZXJmYWNlX2NvbmZpZyAqY29uZiA9CgkJCW5hbmRfZ2V0X2ludGVyZmFjZV9jb25m
+aWcoY2hpcCk7CiAgICAuLi4KCQkvKiBHRVRfRkVBVFVSRSBkYXRhIGJ5dGVzIGFyZSByZWNlaXZl
+ZCB0d2ljZSBpbiBOVi1ERFIgbW9kZSAqLwoJCWlmIChuYW5kX2ludGVyZmFjZV9pc19udmRkcihj
+b25mKSkgewoJCQlpbnN0cnNbM10uY3R4LmRhdGEubGVuICo9IDI7CgkJCWluc3Ryc1szXS5jdHgu
+ZGF0YS5idWYuaW4gPSBkZHJidWY7CgkJfQp9CgpbMV0gaHR0cHM6Ly9zYXNoaWtvLmRldi8jL2J1
+Zy9saW51eC0wNjE1ZThiYi0wOTg1LTRlZDUtODE3My0yNTgwZjEwMjNmMTIKCi0tIApTYXNoaWtv
+IEFJIHJldmlldyDCtyBodHRwczovL3Nhc2hpa28uZGV2LyMvcGF0Y2hzZXQvYXdXTHpXRGctbTlW
+QlpWckBGYW50YXN0LVdULmxvY2FsZG9tYWluP3BhcnQ9MQoKX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1h
+aWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xp
+bnV4LW10ZC8K
