@@ -2,31 +2,31 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8213C60A382F
-	for <linux-mtd@archiver.kernel.org>; Wed, 25 Nov 2026 06:13:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A37260A5BEA
+	for <linux-mtd@archiver.kernel.org>; Wed, 25 Nov 2026 06:13:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=EHC8bDY3
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=qgqu92C0
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=gCNzPhLgCc4LVR9zrTyfPSUk+nmHYcczB30slKgi54I=; b=EHC8bDY3KvVOMMiubTw5fRsdOK
-	zRs2eytQlVoFXSabV0oYw73Xl2lHMxWIl5V5sHyHem9NyZnEe/liR+QabyIC5mj7c9WXFi2zBfrhh
-	c6lgGvvUeUhVZGa2ecytteO5EK/H+5kmSbSOiqTkJ5Yoq/S3nNmPnHN2tFzrCMMJhHaBVLh3VGtQo
-	FWN9DXByWyw9wswxptL4Wyqfxb74Y/pwPUUBp2wttkFGYHBIHNx1p+uioHvnqlYK1KO0Wij6uS3U2
-	qoILl7PNEfmLGLdXojE2huxA31gsTCa0p8pTR4L3ByPvFK7dY2WYADyCGI+HCYhRamZjw3JAXQWP2
-	3Vk8bTPw==;
+	bh=OkQBJziQAYIrjfjMZ6L44Ifk2EHKoDpqNzsSY/BVZek=; b=qgqu92C0rRfoo7ITm8JhVBfTZt
+	Wt8DuLY6u1waAPAyunlm03ONIwP2ew1K4DITC9050fI7XN09sBlu9XW6W1tOxGO0jHUvoOzSWiJZQ
+	F/2L2KkeDzHaSnHtvE8uBmhtBaM6BfvGLDY3JT0HrqD7eGnwvLTnU9H9pqhxGaaUU7EyTTL4mO7MP
+	pMobVo5PUfavnjjzLQK3HqOfxawd1IaBu0g1GygJSLcR3iuCjmVwvr6xz+Bzmyo76XB2Y90BN2DuV
+	QnsCk84GRMLYCVEI2yfvLTUBPJNmvOzamOomYlR8d40Cqz2VXIZXptlOAeOpGwsGz++qZq/pmDKe/
+	gexEuJFw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xW6GN-00000008WxG-2LKt;
-	Wed, 25 Nov 2026 06:13:51 +0000
+	id 1xW6GS-00000008X0P-47We;
+	Wed, 25 Nov 2026 06:13:56 +0000
 Received: from [50.53.43.113] (helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtpsa (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xW6GF-00000008Wvh-2FgZ;
-	Wed, 25 Nov 2026 06:13:43 +0000
+	id 1xW6GQ-00000008Wvh-0lyd;
+	Wed, 25 Nov 2026 06:13:54 +0000
 From: Randy Dunlap <rdunlap@infradead.org>
 To: linux-kernel@vger.kernel.org
 Cc: Randy Dunlap <rdunlap@infradead.org>,
@@ -112,10 +112,12 @@ Cc: Randy Dunlap <rdunlap@infradead.org>,
 	Matthew Brost <matthew.brost@intel.com>,
 	=?UTF-8?q?Thomas=20Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
 	intel-xe@lists.freedesktop.org
-Subject: [PATCH v3 00/12] docs: ioctl-number: update entries
-Date: Tue, 24 Nov 2026 22:13:27 -0800
-Message-ID: <20261125061340.3402300-1-rdunlap@infradead.org>
+Subject: [PATCH v3 04/12] docs: ioctl-number: update networking entries
+Date: Tue, 24 Nov 2026 22:13:31 -0800
+Message-ID: <20261125061340.3402300-5-rdunlap@infradead.org>
 X-Mailer: git-send-email 2.56.1
+In-Reply-To: <20261125061340.3402300-1-rdunlap@infradead.org>
+References: <20261125061340.3402300-1-rdunlap@infradead.org>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 X-BeenThere: linux-mtd@lists.infradead.org
@@ -127,97 +129,132 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-12.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=4.0.1
+X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-VXBkYXRlIGZpbGUgbmFtZXMgdGhhdCBkZWZpbmUgaW9jdGxzIGFuZCB1cGRhdGUgdGhlIHJhbmdl
-IG9mCmlvY3RsIGZ1bmN0aW9uIG51bWJlcnMgdGhhdCBhcmUgdXNlZCB3aGVyZSB0aGV5IGhhdmUg
-Y2hhbmdlZC4KCltTaW5jZSBoYXZpbmcgbXVsdGlwbGUgbWFpbnRhaW5lcnMgdHJ5aW5nIHRvIG1l
-cmdlIHRoZXNlIHdvdWxkCmNhdXNlIHNvbWUgY29uZmxpY3RzLCBpdCB3b3VsZCBiZSBtb3JlIG1h
-bmFnZWFibGUgZm9yIEpvbiB0bwp0YWtlIGFsbCBvZiB0aGVzZSB0aHJvdWdoIHRoZSBkb2NzLW5l
-eHQgdHJlZS5dCgogW1BBVENIIDAxLzEyIHYyXSBkb2NzOiBpb2N0bC1udW1iZXI6IHVwZGF0ZSBN
-TSBlbnRyaWVzCiBbUEFUQ0ggMDIvMTIgdjJdIGRvY3M6IGlvY3RsLW51bWJlcjogdXBkYXRlIHNv
-dW5kIGVudHJpZXMKIFtQQVRDSCAwMy8xMiB2Ml0gZG9jczogaW9jdGwtbnVtYmVyOiB1cGRhdGUg
-YmxvY2sgZW50cmllcwogW1BBVENIIDA0LzEyIHYyXSBkb2NzOiBpb2N0bC1udW1iZXI6IHVwZGF0
-ZSBuZXR3b3JraW5nIGVudHJpZXMKIFtQQVRDSCAwNS8xMiB2Ml0gZG9jczogaW9jdGwtbnVtYmVy
-OiB1cGRhdGUgdmlkZW8vZmJkZXYgZW50cmllcwogW1BBVENIIDA2LzEyIHYyXSBkb2NzOiBpb2N0
-bC1udW1iZXI6IHVwZGF0ZSBTQ1NJIGVudHJpZXMKIFtQQVRDSCAwNy8xMiB2Ml0gZG9jczogaW9j
-dGwtbnVtYmVyOiB1cGRhdGUgTVREIGVudHJpZXMKIFtQQVRDSCAwOC8xMiB2Ml0gZG9jczogaW9j
-dGwtbnVtYmVyOiB1cGRhdGUgVVNCIGVudHJpZXMKIFtQQVRDSCAwOS8xMiB2Ml0gZG9jczogaW9j
-dGwtbnVtYmVyOiB1cGRhdGUgdmlydHVhbGl6YXRpb24gZW50cmllcwogW1BBVENIIDEwLzEyIHYy
-XSBkb2NzOiBpb2N0bC1udW1iZXI6IHVwZGF0ZSBGUyBlbnRyaWVzCiBbUEFUQ0ggMTEvMTIgdjJd
-IGRvY3M6IGlvY3RsLW51bWJlcjogdXBkYXRlIHBsYXRmb3JtIGVudHJpZXMKIFtQQVRDSCAxMi8x
-MiB2Ml0gZG9jczogaW9jdGwtbnVtYmVyOiB1cGRhdGUgRFJNIGVudHJpZXMKCiBEb2N1bWVudGF0
-aW9uL3VzZXJzcGFjZS1hcGkvaW9jdGwvaW9jdGwtbnVtYmVyLnJzdCB8ICAgOTEgKysrKysrKyst
-LS0KIDEgZmlsZSBjaGFuZ2VkLCA3MiBpbnNlcnRpb25zKCspLCAxOSBkZWxldGlvbnMoLSkKCnYy
-IGNoYW5nZXM6Ci0gYWRkcmVzcyBzYXNoaWtvIHJldmlldyBjb21tZW50cwotIGRyb3AgYWRkaXRp
-b24gb2YgYXJjaC94ODYva3ZtL3g4Ni5jIChTZWFuIENocmlzdG9waGVyc29uKQotIGRyb3AgbW9k
-ZXJhdGVkIG1haWxpbmcgbGlzdHMKdjMgY2hhbmdlczoKLSB1cGRhdGUgdGhlIHNjYXJsZXR0MiBz
-b3VuZCBkcml2ZXIgaW9jdGwgcmFuZ2UgKHNhc2hpa28pCi0gcmViYXNlIGFsbCBwYXRjaGVzIGlu
-IHRoZSBzZXJpZXMKCgpDYzogSm9uYXRoYW4gQ29yYmV0IDxjb3JiZXRAbHduLm5ldD4KQ2M6IFNo
-dWFoIEtoYW4gPHNraGFuQGxpbnV4Zm91bmRhdGlvbi5vcmc+CkNjOiBsaW51eC1kb2NAdmdlci5r
-ZXJuZWwub3JnCkNjOiBEYXZpZCBIaWxkZW5icmFuZCA8ZGF2aWRAa2VybmVsLm9yZz4KQ2M6IEFu
-ZHJldyBNb3J0b24gPGFrcG1AbGludXgtZm91bmRhdGlvbi5vcmc+CkNjOiBKYXNvbiBHdW50aG9y
-cGUgPGpnZ0BudmlkaWEuY29tPgpDYzogTGVvbiBSb21hbm92c2t5IDxsZW9ucm9AbnZpZGlhLmNv
-bT4KQ2M6IGxpbnV4LW1tQGt2YWNrLm9yZwpDYzogSmFyb3NsYXYgS3lzZWxhIDxwZXJleEBwZXJl
-eC5jej4KQ2M6IFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5jb20+CkNjOiBsaW51eC1zb3VuZEB2
-Z2VyLmtlcm5lbC5vcmcKQ2M6IEplbnMgQXhib2UgPGF4Ym9lQGtlcm5lbC5kaz4KQ2M6IGxpbnV4
-LWJsb2NrQHZnZXIua2VybmVsLm9yZwpDYzogTWFyY2VsIEhvbHRtYW5uIDxtYXJjZWxAaG9sdG1h
-bm4ub3JnPgpDYzogTHVpeiBBdWd1c3RvIHZvbiBEZW50eiA8bHVpei5kZW50ekBnbWFpbC5jb20+
-CkNjOiBsaW51eC1ibHVldG9vdGhAdmdlci5rZXJuZWwub3JnCkNjOiBXaWxsZW0gZGUgQnJ1aWpu
-IDx3aWxsZW1kZWJydWlqbi5rZXJuZWxAZ21haWwuY29tPgpDYzogSmFzb24gV2FuZyA8amFzb3dh
-bmdpb0BnbWFpbC5jb20+CkNjOiBEYXZpZCBIZWlkZWxiZXJnIDxkYXZpZEBpeGl0LmN6PgpDYzog
-b2UtbGludXgtbmZjQGxpc3RzLmxpbnV4LmRldgpDYzogQ2hhcyBXaWxsaWFtcyA8M2NoYXMzQGdt
-YWlsLmNvbT4KQ2M6ICJEYXZpZCBTLiBNaWxsZXIiIDxkYXZlbUBkYXZlbWxvZnQubmV0PgpDYzog
-RXJpYyBEdW1hemV0IDxlZHVtYXpldEBrZXJuZWwub3JnPgpDYzogSmFrdWIgS2ljaW5za2kgPGt1
-YmFAa2VybmVsLm9yZz4KQ2M6IFBhb2xvIEFiZW5pIDxwYWJlbmlAcmVkaGF0LmNvbT4KQ2M6IG5l
-dGRldkB2Z2VyLmtlcm5lbC5vcmcKQ2M6IEhlbGdlIERlbGxlciA8ZGVsbGVyQGdteC5kZT4KQ2M6
-IGxpbnV4LWZiZGV2QHZnZXIua2VybmVsLm9yZwpDYzogZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNr
-dG9wLm9yZwpDYzogTVBULUZ1c2lvbkxpbnV4LnBkbEBicm9hZGNvbS5jb20KQ2M6ICJKYW1lcyBF
-LkouIEJvdHRvbWxleSIgPEphbWVzLkJvdHRvbWxleUBIYW5zZW5QYXJ0bmVyc2hpcC5jb20+CkNj
-OiAiTWFydGluIEsuIFBldGVyc2VuIiA8bWtwQGtlcm5lbC5vcmc+CkNjOiBsaW51eC1zY3NpQHZn
-ZXIua2VybmVsLm9yZwpDYzogTWlxdWVsIFJheW5hbCA8bWlxdWVsLnJheW5hbEBib290bGluLmNv
-bT4KQ2M6IFJpY2hhcmQgV2VpbmJlcmdlciA8cmljaGFyZEBub2QuYXQ+CkNjOiBWaWduZXNoIFJh
-Z2hhdmVuZHJhIDx2aWduZXNockB0aS5jb20+CkNjOiBaaGloYW8gQ2hlbmcgPGNoZW5nemhpaGFv
-MUBodWF3ZWkuY29tPgpDYzogbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmcKQ2M6IE5laWxs
-IEthcHJvbiA8bmthcHJvbkBnb29nbGUuY29tPgpDYzogQW5kcmV5IEtvbm92YWxvdiA8YW5kcmV5
-a252bEBnbWFpbC5jb20+CkNjOiBHcmVnIEtyb2FoLUhhcnRtYW4gPGdyZWdraEBsaW51eGZvdW5k
-YXRpb24ub3JnPgpDYzogbGludXgtdXNiQHZnZXIua2VybmVsLm9yZwpDYzogSnVlcmdlbiBHcm9z
-cyA8amdyb3NzQHN1c2UuY29tPgpDYzogU3RlZmFubyBTdGFiZWxsaW5pIDxzc3RhYmVsbGluaUBr
-ZXJuZWwub3JnPgpDYzogeGVuLWRldmVsQGxpc3RzLnhlbnByb2plY3Qub3JnCkNjOiBIYW5zIGRl
-IEdvZWRlIDxoYW5zZ0BrZXJuZWwub3JnPgpDYzogQXJuZCBCZXJnbWFubiA8YXJuZEBhcm5kYi5k
-ZT4KQ2M6ICJNaWNoYWVsIFMuIFRzaXJraW4iIDxtc3RAcmVkaGF0LmNvbT4KQ2M6IEV1Z2VuaW8g
-UMOpcmV6IDxlcGVyZXptYUByZWRoYXQuY29tPgpDYzogU2VhbiBDaHJpc3RvcGhlcnNvbiA8c2Vh
-bmpjQGdvb2dsZS5jb20+CkNjOiBQYW9sbyBCb256aW5pIDxwYm9uemluaUByZWRoYXQuY29tPgpD
-Yzoga3ZtQHZnZXIua2VybmVsLm9yZwpDYzogdmlydHVhbGl6YXRpb25AbGlzdHMubGludXguZGV2
-CkNjOiBKYW4gS2FyYSA8amFja0BzdXNlLmN6PgpDYzogbGludXgtZnNkZXZlbEB2Z2VyLmtlcm5l
-bC5vcmcKQ2M6ICJUaGVvZG9yZSBUcydvIiA8dHl0c29AbWl0LmVkdT4KQ2M6IGxpbnV4LWV4dDRA
-dmdlci5rZXJuZWwub3JnCkNjOiBNaWtlIE1hcnNoYWxsIDxodWJjYXBAb21uaWJvbmQuY29tPgpD
-YzogZGV2ZWxAbGlzdHMub3JhbmdlZnMub3JnCkNjOiBQYXVsbyBBbGNhbnRhcmEgPHBjQG1hbmd1
-ZWJpdC5vcmc+CkNjOiBOYW1qYWUgSmVvbiA8bGlua2luamVvbkBrZXJuZWwub3JnPgpDYzogbGlu
-dXgtY2lmc0B2Z2VyLmtlcm5lbC5vcmcKQ2M6IEphZWdldWsgS2ltIDxqYWVnZXVrQGtlcm5lbC5v
-cmc+CkNjOiBDaGFvIFl1IDxjaGFvQGtlcm5lbC5vcmc+CkNjOiBsaW51eC1mMmZzLWRldmVsQGxp
-c3RzLnNvdXJjZWZvcmdlLm5ldApDYzogRmxvcmlhbiBGYWluZWxsaSA8Zmxvcmlhbi5mYWluZWxs
-aUBicm9hZGNvbS5jb20+CkNjOiBCcm9hZGNvbSBpbnRlcm5hbCBrZXJuZWwgcmV2aWV3IGxpc3Qg
-PGJjbS1rZXJuZWwtZmVlZGJhY2stbGlzdEBicm9hZGNvbS5jb20+CkNjOiBUenVuZy1CaSBTaGlo
-IDx0enVuZ2JpQGtlcm5lbC5vcmc+CkNjOiBCZW5zb24gTGV1bmcgPGJsZXVuZ0BjaHJvbWl1bS5v
-cmc+CkNjOiBEYXZpZCBBaXJsaWUgPGFpcmxpZWRAZ21haWwuY29tPgpDYzogU2ltb25hIFZldHRl
-ciA8c2ltb25hQGZmd2xsLmNoPgpDYzogZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpD
-YzogQWxleCBEZXVjaGVyIDxhbGV4YW5kZXIuZGV1Y2hlckBhbWQuY29tPgpDYzogQ2hyaXN0aWFu
-IEvDtm5pZyA8Y2hyaXN0aWFuLmtvZW5pZ0BhbWQuY29tPgpDYzogYW1kLWdmeEBsaXN0cy5mcmVl
-ZGVza3RvcC5vcmcKQ2M6IEphbmkgTmlrdWxhIDxqYW5pLm5pa3VsYUBsaW51eC5pbnRlbC5jb20+
-CkNjOiBKb29uYXMgTGFodGluZW4gPGpvb25hcy5sYWh0aW5lbkBsaW51eC5pbnRlbC5jb20+CkNj
-OiBSb2RyaWdvIFZpdmkgPHJvZHJpZ28udml2aUBpbnRlbC5jb20+CkNjOiBUdnJ0a28gVXJzdWxp
-biA8dHVyc3VsaW5AdXJzdWxpbi5uZXQ+CkNjOiBpbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Au
-b3JnCkNjOiBNYXR0aGV3IEJyb3N0IDxtYXR0aGV3LmJyb3N0QGludGVsLmNvbT4KQ2M6IFRob21h
-cyBIZWxsc3Ryw7ZtIDx0aG9tYXMuaGVsbHN0cm9tQGxpbnV4LmludGVsLmNvbT4KQ2M6IGludGVs
-LXhlQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlz
-dApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Update the list of files where networking ioctls are defined and update
+the ranges of function numbers that are used.
+
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+---
+v2: address sashiko comments (duplicat bnep.h entry; missing its
+    "conflict" marker);
+    drop moderated mailing lists
+v3: rebase
+
+[Since having multiple maintainers trying to merge these would
+cause some conflicts, it would be more manageable for Jon to
+take all of these through the docs-next tree.]
+
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Shuah Khan <skhan@linuxfoundation.org>
+Cc: linux-doc@vger.kernel.org
+Cc: Marcel Holtmann <marcel@holtmann.org>
+Cc: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Cc: linux-bluetooth@vger.kernel.org
+Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc: Jason Wang <jasowangio@gmail.com>
+Cc: David Heidelberg <david@ixit.cz>
+Cc: oe-linux-nfc@lists.linux.dev
+Cc: Chas Williams <3chas3@gmail.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Eric Dumazet <edumazet@kernel.org>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Paolo Abeni <pabeni@redhat.com>
+Cc: netdev@vger.kernel.org
+
+ Documentation/userspace-api/ioctl/ioctl-number.rst |   22 +++++++----
+ 1 file changed, 14 insertions(+), 8 deletions(-)
+
+--- linux-next-20261123.orig/Documentation/userspace-api/ioctl/ioctl-number.rst
++++ linux-next-20261123/Documentation/userspace-api/ioctl/ioctl-number.rst
+@@ -130,8 +130,9 @@ Code  Seq#    Include File
+ 'A'   10-53  sound/core/pcm_compat.c                                   conflict!
+ 'B'   00-1F  linux/cciss_ioctl.h                                       conflict!
+ 'B'   00-0F  include/linux/pmu.h                                       conflict!
+-'B'   C0-FF  advanced bbus                                             <mailto:maassen@uni-freiburg.de>
++'B'   C0-FF  advanced bbus                                             conflict! <mailto:maassen@uni-freiburg.de>
+ 'B'   00-0F  xen/xenbus_dev.h                                          conflict!
++'B'   C8-D4  net/bluetooth/bnep/bnep.h                                 conflict! <mailto:linux-bluetooth@vger.kernel.org>
+ 'C'   all    linux/soundcard.h                                         conflict!
+ 'C'   00-68  sound/compress_offload.h                                  conflict!
+ 'C'   01-2F  linux/capi.h                                              conflict!
+@@ -172,10 +173,9 @@ Code  Seq#    Include File
+ 'H'   FC     sound/pci/asihpi/hpios.h                                  conflict!
+ 'H'   00-0F  uapi/misc/habanalabs.h                                    conflict!
+ 'H'   A0     uapi/linux/usb/cdc-wdm.h
+-'H'   C0-F0  net/bluetooth/hci.h                                       conflict!
++'H'   C0-F0  net/bluetooth/hci_sock.h                                  conflict!
+ 'H'   C0-DF  net/bluetooth/hidp/hidp.h                                 conflict!
+ 'H'   C0-DF  net/bluetooth/cmtp/cmtp.h                                 conflict!
+-'H'   C0-DF  net/bluetooth/bnep/bnep.h                                 conflict!
+ 'H'   F1     linux/hid-roccat.h                                        <mailto:erazor_de@users.sourceforge.net>
+ 'H'   F8-FE  sound/firewire.h                                          conflict!
+ 'I'   all    linux/isdn.h                                              conflict!
+@@ -219,11 +219,12 @@ Code  Seq#    Include File
+ 'T'   all    linux/soundcard.h                                         conflict!
+ 'T'   00-AF  sound/asound.h                                            conflict!
+ 'T'   all    arch/x86/include/asm/ioctls.h                             conflict!
+-'T'   C0-DF  linux/if_tun.h                                            conflict!
++'T'   C0-E3  linux/if_tun.h                                            conflict!
+ 'U'   all    sound/asound.h                                            conflict!
+ 'U'   00-CF  linux/uinput.h                                            conflict!
+ 'U'   00-EF  linux/usbdevice_fs.h
+ 'U'   C0-CF  drivers/bluetooth/hci_uart.h
++'U'   00     net/nfc/nci_core.h                                        conflict!
+ 'V'   all    linux/vt.h                                                conflict!
+ 'V'   all    linux/videodev2.h                                         conflict!
+ 'V'   C0     linux/ivtvfb.h                                            conflict!
+@@ -242,8 +243,8 @@ Code  Seq#    Include File
+ 'Z'   14-15  drivers/message/fusion/mptctl.h
+ '['   00-3F  linux/usb/tmc.h                                           USB Test and Measurement Devices
+                                                                        <mailto:gregkh@linuxfoundation.org>
+-'a'   all    linux/atm*.h, linux/sonet.h                               ATM on linux
+-                                                                       <http://lrcwww.epfl.ch/>
++'a'   all    linux/atm*.h, linux/sonet.h, linux/atmbr2684.h            ATM on linux
++             linux/atmdev.h, net/atm/ioctl.c                           <http://lrcwww.epfl.ch/>
+ 'b'   00-FF                                                            conflict! bit3 vme host bridge
+                                                                        <mailto:natalia@nikhefk.nikhef.nl>
+ 'b'   00-0F  linux/dma-buf.h                                           conflict!
+@@ -264,6 +265,7 @@ Code  Seq#    Include File
+ 'f'   00-0F  fs/ocfs2/ocfs2_fs.h                                       conflict!
+ 'f'   13-27  linux/fscrypt.h
+ 'f'   81-8F  linux/fsverity.h
++'f'   7b-7c  arch/{alpha,mips,sh,xtensa}/include/uapi/asm/sockios.h
+ 'g'   00-0F  linux/usb/gadgetfs.h
+ 'g'   20-2F  linux/usb/g_printer.h
+ 'g'   01-0F  mm/gup_test.h                                             conflict!
+@@ -308,8 +310,11 @@ Code  Seq#    Include File
+ 'q'   80-FF  linux/telephony.h                                         Internet PhoneJACK, Internet LineJACK
+              linux/ixjuser.h                                           <http://web.archive.org/web/%2A/http://www.quicknet.net>
+ 'r'   00-1F  linux/msdos_fs.h and fs/fat/dir.c
+-'s'   all    linux/cdk.h
++'s'   all    linux/cdk.h                                               conflict!
++'s'   07-09  arch/{alpha,mips,sh,xtensa}/include/uapi/asm/sockios.h    conflict!
++'s'   64-65  arch/sh/include/uapi/asm/sockios.h                        conflict!
+ 't'   00-7F  linux/ppp-ioctl.h
++'t'   46-4D  drivers/net/ppp/ppp_generic.c
+ 't'   80-8F  linux/isdn_ppp.h
+ 't'   90-91  linux/toshiba.h                                           toshiba and toshiba_acpi SMM
+ 'u'   00-1F  linux/smb_fs.h                                            gone
+@@ -334,7 +339,8 @@ Code  Seq#    Include File
+ '|'   80-9F  samples/                                                  Any sample and example drivers
+ 0x80  00-1F  linux/fb.h
+ 0x81  00-1F  linux/vduse.h
+-0x89  00-06  arch/x86/include/asm/sockios.h
++0x89  00-07  asm-generic/sockios.h
++0x89  06-07  linux/sockios.h
+ 0x89  0B-DF  linux/sockios.h
+ 0x89  E0-EF  linux/sockios.h                                           SIOCPROTOPRIVATE range
+ 0x89  F0-FF  linux/sockios.h                                           SIOCDEVPRIVATE range
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
