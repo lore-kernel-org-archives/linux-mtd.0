@@ -2,10 +2,10 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A7FE60A6F7E
-	for <linux-mtd@archiver.kernel.org>; Wed, 25 Nov 2026 06:13:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97902606BA62
+	for <linux-mtd@archiver.kernel.org>; Wed, 25 Nov 2026 06:14:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=uNqAxyzY
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=QjPHYCuv
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -13,20 +13,20 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=8GUyqJnHGAzBNqW5mxo+GSHmotYPxMBpZmw5LF6ZnVs=; b=uNqAxyzYkLAicTZH4nrfKULgFu
-	fpExhG6v6m3U6FJ7ngl6PpqDUdkYBJ7GJrNG+7E4HrPWpgqknj58PrNnQkrwxMUeFhEsIM4kihJPu
-	qkeMZ5aB1BIsqRWtldYs1Bh9Ki806z3QwKan6wV/RjJkpEL0JzELDwgHjDhl/q8Id0/1zNMLeQReM
-	eRTuAMNtNVBDdDClVCmfgkTI7wec3Z8amfKSBB3koCY6ywG2466RlVno2QnAbcFRI952NcAZB+zbo
-	1MjbUyQFc2tv8DccFL4pXP5WAVFxekpGN8YSbVASi7w9MMADwhbaUkiAPUbkWNCQK/JQ3AkDM4ek0
-	cGGiTaog==;
+	bh=uP0YHC8sUL+Z6ou0A0VQw29/9MMilu4Ftg4ICfJm/L0=; b=QjPHYCuvTtkiTtgocX/ELFV443
+	t59KkK/sG7iWTuBBNkP+1K4uPUEtzGfbP32nO5UVdqThUpgUSjBoDd/s3+QWH+lGYyjgLeJD9LK0c
+	hpvnPJJOLIFAyeSU1b9WCMTAeHjVeQSXv2dSxgRAmJVE7iYmO4746dvMIAsiIQbpdpQb0QY5VK4IZ
+	KIDuMrjSB9Zj2WSime3IC+5av+H6pnZbbOBHyrz6dlbTiyuMYp0DAtuGnSSqsX8cGjHfg27O0flKR
+	VQr7Ij2/mdjwVcwKun5Hhh8AbjOnKJxyz4+/CvZbgecDFXazMxRuD5X28vtc6MUtAU0pfDH7GnIVO
+	KWupsQGw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xW6GV-00000008X3f-0pza;
-	Wed, 25 Nov 2026 06:13:59 +0000
+	id 1xW6GY-00000008X86-1LWM;
+	Wed, 25 Nov 2026 06:14:02 +0000
 Received: from [50.53.43.113] (helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtpsa (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xW6GS-00000008Wvh-0dNd;
-	Wed, 25 Nov 2026 06:13:56 +0000
+	id 1xW6GU-00000008Wvh-0Sz8;
+	Wed, 25 Nov 2026 06:13:58 +0000
 From: Randy Dunlap <rdunlap@infradead.org>
 To: linux-kernel@vger.kernel.org
 Cc: Randy Dunlap <rdunlap@infradead.org>,
@@ -112,9 +112,9 @@ Cc: Randy Dunlap <rdunlap@infradead.org>,
 	Matthew Brost <matthew.brost@intel.com>,
 	=?UTF-8?q?Thomas=20Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
 	intel-xe@lists.freedesktop.org
-Subject: [PATCH v3 05/12] docs: ioctl-number: update video/fbdev entries
-Date: Tue, 24 Nov 2026 22:13:32 -0800
-Message-ID: <20261125061340.3402300-6-rdunlap@infradead.org>
+Subject: [PATCH v3 06/12] docs: ioctl-number: update SCSI entries
+Date: Tue, 24 Nov 2026 22:13:33 -0800
+Message-ID: <20261125061340.3402300-7-rdunlap@infradead.org>
 X-Mailer: git-send-email 2.56.1
 In-Reply-To: <20261125061340.3402300-1-rdunlap@infradead.org>
 References: <20261125061340.3402300-1-rdunlap@infradead.org>
@@ -139,10 +139,11 @@ X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-Update the list of files where video or fbdev ioctls are defined and
-update the ranges of function numbers that are used.
+Update the list of files where SCSI ioctls are defined and update the
+ranges of function numbers that are used.
 
 Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reviewed-by: Martin K. Petersen (Oracle) <mkp@kernel.org>
 ---
 v2: no change
 v3: rebase
@@ -154,78 +155,33 @@ take all of these through the docs-next tree.]
 Cc: Jonathan Corbet <corbet@lwn.net>
 Cc: Shuah Khan <skhan@linuxfoundation.org>
 Cc: linux-doc@vger.kernel.org
-Cc: Helge Deller <deller@gmx.de>
-Cc: linux-fbdev@vger.kernel.org
-Cc: dri-devel@lists.freedesktop.org
+Cc: MPT-FusionLinux.pdl@broadcom.com
+Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+Cc: "Martin K. Petersen" <mkp@kernel.org>
+Cc: linux-scsi@vger.kernel.org
 
- Documentation/userspace-api/ioctl/ioctl-number.rst |   14 +++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+ Documentation/userspace-api/ioctl/ioctl-number.rst |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 --- linux-next-20261123.orig/Documentation/userspace-api/ioctl/ioctl-number.rst
 +++ linux-next-20261123/Documentation/userspace-api/ioctl/ioctl-number.rst
-@@ -148,9 +148,13 @@ Code  Seq#    Include File
- 'F'   20     linux/ivtvfb.h                                            conflict!
- 'F'   20     linux/matroxfb.h                                          conflict!
- 'F'   20     drivers/video/aty/atyfb_base.c                            conflict!
-+'F'   20     arch/powerpc/include/uapi/asm/ps3fb.h                     conflict!
-+'F'   00-21  arch/m68k/include/asm/fbio.h                              conflict!
-+'F'   00-21  arch/sparc/include/asm/fbio.h                             conflict!
- 'F'   00-0F  video/da8xx-fb.h                                          conflict!
- 'F'   80-8F  linux/arcfb.h                                             conflict!
- 'F'   DD     video/sstfb.h                                             conflict!
-+'G'   00-02  drivers/video/fbdev/pxa3xx-gcu.h                          conflict!
- 'G'   00-3F  drivers/misc/sgi-gru/grulib.h                             conflict!
- 'G'   00-0F  xen/gntalloc.h, xen/gntdev.h                              conflict!
- 'H'   00-7F  linux/hiddev.h                                            conflict!
-@@ -186,10 +190,13 @@ Code  Seq#    Include File
- 'L'   10-1F  drivers/scsi/mpt3sas/mpt3sas_ctl.h                        conflict!
+@@ -187,7 +187,7 @@ Code  Seq#    Include File
+ 'I'   40-4F  linux/mISDNif.h                                           conflict!
+ 'K'   all    linux/kd.h
+ 'L'   00-1F  linux/loop.h                                              conflict!
+-'L'   10-1F  drivers/scsi/mpt3sas/mpt3sas_ctl.h                        conflict!
++'L'   10-21  drivers/scsi/mpt3sas/mpt3sas_ctl.h                        conflict!
  'L'   E0-FF  linux/ppdd.h                                              encrypted disk device driver
                                                                         <http://linux01.gwdg.de/~alatham/ppdd.html>
-+'L'   35-38  arch/m68k/include/asm/fbio.h
-+'L'   35-38  arch/sparc/include/asm/fbio.h
- 'M'   all    linux/soundcard.h                                         conflict!
- 'M'   01-16  mtd/mtd-abi.h                                             conflict!
-       and    drivers/mtd/mtdchar.c
- 'M'   01-03  drivers/scsi/megaraid/megaraid_sas.h
-+'M'   00-03  drivers/video/fbdev/mb862xx/mb862xxfb.h
- 'M'   00-0F  drivers/video/fsl-diu-fb.h                                conflict!
- 'N'   00-1F  drivers/usb/scanner.h
- 'N'   40-7F  uapi/linux/nvme_ioctl.h
-@@ -197,6 +204,7 @@ Code  Seq#    Include File
- 'N'   84-8F  uapi/linux/ntsync.h                                       NT synchronization primitives
-                                                                        <mailto:wine-devel@winehq.org>
- 'O'   00-06  mtd/ubi-user.h                                            UBI
-+'O'   1F-3F  linux/omapfb.h
- 'P'   all    linux/soundcard.h                                         conflict!
- 'P'   60-6F  sound/sscape_ioctl.h                                      conflict!
- 'P'   00-0F  drivers/usb/class/usblp.c                                 conflict!
-@@ -294,6 +302,7 @@ Code  Seq#    Include File
- 'n'   00-7F  linux/ncp_fs.h and fs/ncpfs/ioctl.c
- 'n'   80-8F  uapi/linux/nilfs2_api.h                                   NILFS2
- 'n'   E0-FF  linux/matroxfb.h                                          matroxfb
-+'n'   F8-FA  video/sisfb.h                                             sisfb
- 'o'   00-1F  fs/ocfs2/ocfs2_fs.h                                       OCFS2
- 'o'   00-03  mtd/ubi-user.h                                            conflict! (OCFS2 and UBI overlaps)
- 'o'   40-41  mtd/ubi-user.h                                            UBI
-@@ -310,6 +319,7 @@ Code  Seq#    Include File
- 'q'   80-FF  linux/telephony.h                                         Internet PhoneJACK, Internet LineJACK
-              linux/ixjuser.h                                           <http://web.archive.org/web/%2A/http://www.quicknet.net>
- 'r'   00-1F  linux/msdos_fs.h and fs/fat/dir.c
-+'r'   01-06  arch/powerpc/include/uapi/asm/ps3fb.h
- 's'   all    linux/cdk.h                                               conflict!
- 's'   07-09  arch/{alpha,mips,sh,xtensa}/include/uapi/asm/sockios.h    conflict!
- 's'   64-65  arch/sh/include/uapi/asm/sockios.h                        conflict!
-@@ -425,8 +435,8 @@ Code  Seq#    Include File
- 0xEC  00-01  linux/platform_data/cros_ec_chardev.h                     ChromeOS EC driver
- 0xEE  00-09  uapi/linux/pfrut.h                                        Platform Firmware Runtime Update and Telemetry
- 0xEF  00-0F  uapi/linux/ntfs.h                                         NTFS
--0xF3  00-3F  drivers/usb/misc/sisusbvga/sisusb.h                       sisfb (in development)
--                                                                       <mailto:thomas@winischhofer.net>
-+0xF3  00-3F  drivers/usb/misc/sisusbvga/sisusb.h                       sisfb
-+0xF3  00-3F  video/sisfb.h                                             <mailto:thomas@winischhofer.net>
- 0xF6  all                                                              LTTng Linux Trace Toolkit Next Generation
-                                                                        <mailto:mathieu.desnoyers@efficios.com>
- 0xF8  all    arch/x86/include/uapi/asm/amd_hsmp.h                      AMD HSMP EPYC system management interface driver
+ 'L'   35-38  arch/m68k/include/asm/fbio.h
+@@ -259,6 +259,7 @@ Code  Seq#    Include File
+ 'c'   00-7F  linux/comstats.h                                          conflict!
+ 'c'   00-7F  linux/coda.h                                              conflict!
+ 'c'   00-1F  linux/chio.h                                              conflict!
++'c'   08     drivers/scsi/ch.c                                         conflict!
+ 'c'   80-9F  arch/s390/include/asm/chsc.h                              conflict!
+ 'c'   A0-AF  arch/x86/include/asm/msr.h conflict!
+ 'd'   00-FF  linux/char/drm/drm.h                                      conflict!
 
 ______________________________________________________
 Linux MTD discussion mailing list
