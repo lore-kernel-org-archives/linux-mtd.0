@@ -2,76 +2,108 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF952606A31E
-	for <linux-mtd@archiver.kernel.org>; Wed, 25 Nov 2026 15:25:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3FA1606A688
+	for <linux-mtd@archiver.kernel.org>; Wed, 25 Nov 2026 16:20:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=YlAg+0xU;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=mQm7XMoj
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=v3jfynIY;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=manguebit.org header.i=@manguebit.org header.a=rsa-sha256 header.s=dkim header.b=Au1x/Qfi
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
-	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Unsubscribe-Post:List-Owner;
-	bh=n26DmAqqU1lTqWY11bxVhQRkzS9WQyFoE188qZePCuo=; b=YlAg+0xUTpj4D+Tadx3QECNDfO
-	U6GIezecYoyGGOizvdOsOg/mC2dCAU+aeu7A+3rKW6HDRBTMOsCnsEW6dEFPwMCN8OZUVez1Cl3EH
-	kxZD8E98vliK4vg2tJNqm/bj2b5EFKNf5CJCwyCkv8d/l2qFJY9qNHi7mCjX0vioXIdVExQsSRZMr
-	aKjilpyv4kUkvNnkJj3EFY+jRythMESE1/LsmMbQjQS6wMp14e2s2QQxRiSK0dO/QfvT4xFkPBXsi
-	lQPrcAVOk6VJ7VOCzkksHJGMNXFqmKwQ4JYFkPdDT2I6LfgTrSxGR3jHr0ND3pN0CyySk49/oedm6
-	VcKT8+cQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:References:
+	In-Reply-To:Subject:Cc:To:From:Message-ID:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Unsubscribe-Post:List-Owner;
+	bh=VZaeA42XIc3Jm8oAs1Di31k3RzYS2ZEuaPDIUpmtmBo=; b=v3jfynIYZ5qHXlT6r3+LBlNiUY
+	zdUVWWC5idYc5m1+IFLt7ncKoWY7GZbEFFD7SzjF5xcVaFAzDiaIVg1dZWQjYjCtZfs0vJ8xp6Pdw
+	xpy+Q1ZP3dRXJGOCZsG4HC1r4n0bAqeDmR+iRLcHkp+8E6v3b0m9KQX80yORZY3JFO5Gmcu2f0stJ
+	tJIdAfI/CHge334F5HexXJtPNDwIlnBfX65BAkeiULjdxNktKNtUw0KTvKTv/aSZSdfzQDCdAd9YK
+	aBOPPMGJMOEX84GeEwU/TL7Q7J1TltOLeTAttE87Beb3yON5DouIJOdhMvyE4e/eqayEYrpEsR8nX
+	ZtbbX+kQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xWEro-0000000ALBz-28h3;
-	Wed, 25 Nov 2026 15:25:04 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1xWFjs-0000000AX66-2EYE;
+	Wed, 25 Nov 2026 16:20:56 +0000
+Received: from mx1.manguebit.org ([143.255.12.172])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xWErh-0000000AL7u-1m2Y
+	id 1xWFjq-0000000AX4P-2pss
 	for linux-mtd@lists.infradead.org;
-	Wed, 25 Nov 2026 15:24:59 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 2D9854325B;
-	Wed, 25 Nov 2026 15:24:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5BF131F000D0;
-	Wed, 25 Nov 2026 15:24:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1795620296;
-	bh=khCQZr+lZ5ps02/NBTrpcyjkpLu9gA2+Gk1GsRmHCXA=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date;
-	b=mQm7XMojXDRKOjTVodJNFQw5rj41uOgx2Mnln3HRo0PzjmMed2JfzKJ4FSUkvsVXt
-	 bBbPcQULhAUyAqs1aDbNPwhYKrDNl4sDrwjT46YKkJTUwxXKHUO8qYHc3qAWBwIu4T
-	 j7Mq8hB6jzxwbHseQbdKWyEJ3+6TGzHPhxmGD+4xuTo3Y6L1ReOZMV0yMp/hL7wNOa
-	 30pwxz6cQIqbfRO4vQA14NsZOYRAV4Dv4wZJXVkw5B8kBbR+PtOHb6FGjXA5lmGDuI
-	 Ql6bd44lZXfV9SttRxiD/OvxMbZzVHwp11N5Ftssz6QLaFAvnZHoqxDK8We/qXLwZ8
-	 hE2iY0G2Q3ggg==
-From: Mark Brown <broonie@kernel.org>
-To: Richard Weinberger <richard@nod.at>, 
- Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzk+dt@kernel.org>, 
- Conor Dooley <conor+dt@kernel.org>, Pratyush Yadav <pratyush@kernel.org>, 
- Michael Walle <mwalle@kernel.org>, 
- Takahiro Kuwano <takahiro.kuwano@infineon.com>, 
- Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, praneeth@ti.com, 
- u-kumar1@ti.com, p-mantena@ti.com, a-dutta@ti.com, s-k6@ti.com, 
- linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org
-In-Reply-To: <20261124-winbond-nand-next-phy-tuning-v5-0-261e0e712857@bootlin.com>
-References: <20261124-winbond-nand-next-phy-tuning-v5-0-261e0e712857@bootlin.com>
-Subject: Re: [PATCH v5 0/6] mtd/spi-mem: Enable DQS control
-Message-Id: <179554764437.947306.7383226666322227871.b4-ty@b4>
-Date: Tue, 24 Nov 2026 19:14:04 +0000
+	Wed, 25 Nov 2026 16:20:55 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=manguebit.org; s=dkim; h=Content-Type:MIME-Version:Date:References:
+	In-Reply-To:Subject:Cc:To:From:Message-ID:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=MFjp1Epxvbzt1A9g4t7Y/jDE3CxQAavGU4RMdlNgNPA=; b=Au1x/Qfixdt8Oeg5ELWQmTzZ7d
+	wr1MiZso849kQQI90RjKYgtWlHvOsL4sUODQa+yJU/QJtei3+nwrCl8XPzyxSYVWxD0jEkv9ZHfHG
+	OmNUZEcDaNBk4Nn1E9cP7BuRGcZNEM6J6xtS4Ket7/m79g97o7hU8kn2wKyFBLeu8gwPpXcQdviQ+
+	Hln2JCas14QUSmhfJsWIjqhstDco/PUWJlhmY/+248fQXkeCIGO5O9nEwcb7Q1W2v+0HrcyzdyrIT
+	XwITUgiGSX5J7ehQY0B1lclNs46kSXv1DsiPlzDA2AP0RSCXykcJrKqmOyVKoOLO8j21CyIPiZYaT
+	T4+/q8fw==;
+Received: from pc by mx1.manguebit.org with local (Exim 4.100.1)
+	id 1xWFjN-00000000vNZ-3XTu;
+	Wed, 25 Nov 2026 13:20:25 -0300
+Message-ID: <9afd33b0951849b9a48c5a0783d76fde@manguebit.org>
+From: Paulo Alcantara <pc@manguebit.org>
+To: Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc: Randy Dunlap <rdunlap@infradead.org>, Jonathan Corbet <corbet@lwn.net>,
+ Shuah Khan <skhan@linuxfoundation.org>, linux-doc@vger.kernel.org, David
+ Hildenbrand <david@kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
+ Jason Gunthorpe <jgg@nvidia.com>, Leon Romanovsky <leonro@nvidia.com>,
+ linux-mm@kvack.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai
+ <tiwai@suse.com>, linux-sound@vger.kernel.org, Jens Axboe
+ <axboe@kernel.dk>, linux-block@vger.kernel.org, Marcel Holtmann
+ <marcel@holtmann.org>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+ linux-bluetooth@vger.kernel.org, Willem de Bruijn
+ <willemdebruijn.kernel@gmail.com>, Jason Wang <jasowangio@gmail.com>,
+ David Heidelberg <david@ixit.cz>, oe-linux-nfc@lists.linux.dev, Chas
+ Williams <3chas3@gmail.com>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@kernel.org>, Jakub Kicinski <kuba@kernel.org>, Paolo
+ Abeni <pabeni@redhat.com>, netdev@vger.kernel.org, Helge Deller
+ <deller@gmx.de>, linux-fbdev@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, MPT-FusionLinux.pdl@broadcom.com, "James
+ E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, "Martin K.
+ Petersen" <mkp@kernel.org>, linux-scsi@vger.kernel.org, Miquel Raynal
+ <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>, Zhihao Cheng <chengzhihao1@huawei.com>,
+ linux-mtd@lists.infradead.org, Neill Kapron <nkapron@google.com>, Andrey
+ Konovalov <andreyknvl@gmail.com>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org, Juergen Gross
+ <jgross@suse.com>, Stefano Stabellini <sstabellini@kernel.org>,
+ xen-devel@lists.xenproject.org, Hans de Goede <hansg@kernel.org>, Arnd
+ Bergmann <arnd@arndb.de>, "Michael S. Tsirkin" <mst@redhat.com>, Eugenio
+ =?utf-8?Q?P=C3=A9rez?= <eperezma@redhat.com>, Sean Christopherson
+ <seanjc@google.com>,
+ Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+ virtualization@lists.linux.dev, Jan Kara <jack@suse.cz>,
+ linux-fsdevel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+ linux-ext4@vger.kernel.org, Mike Marshall <hubcap@omnibond.com>,
+ devel@lists.orangefs.org, Namjae Jeon <linkinjeon@kernel.org>,
+ linux-cifs@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu
+ <chao@kernel.org>, linux-f2fs-devel@lists.sourceforge.net, Florian
+ Fainelli <florian.fainelli@broadcom.com>, Broadcom internal kernel review
+ list <bcm-kernel-feedback-list@broadcom.com>, Tzung-Bi Shih
+ <tzungbi@kernel.org>, Benson Leung <bleung@chromium.org>, David Airlie
+ <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, Alex Deucher
+ <alexander.deucher@amd.com>, Christian =?utf-8?Q?K=C3=B6nig?=
+ <christian.koenig@amd.com>,
+ amd-gfx@lists.freedesktop.org, Jani Nikula <jani.nikula@linux.intel.com>,
+ Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Rodrigo Vivi
+ <rodrigo.vivi@intel.com>, Tvrtko Ursulin <tursulin@ursulin.net>,
+ intel-gfx@lists.freedesktop.org, Matthew Brost <matthew.brost@intel.com>,
+ Thomas =?utf-8?Q?Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
+ intel-xe@lists.freedesktop.org
+Subject: Re: [PATCH v2 10/12] docs: ioctl-number: update FS entries
+In-Reply-To: <20261119053514.255348-11-rdunlap@infradead.org>
+References: <20261119053514.255348-1-rdunlap@infradead.org>
+ <20261119053514.255348-11-rdunlap@infradead.org>
+Date: Wed, 25 Nov 2026 13:20:25 -0300
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-Mailer: b4 0.17-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1947; i=broonie@kernel.org;
- h=from:subject:message-id; bh=hiFMYrNelLS4EF+eSytAriGzVrBmGJlkNeuhF2BICI0=;
- b=owGbwMvMwCWm/754w+YLFp2Mp9WSGLLZ/h7W4P6zcq1usKFgc8PuvLOp75/Ofv7cfm22YoHnX
- XWLl6xXO0pZGMS4GGTFFFnisrhf1pe8XsN3cGEbzBxWJpAhDFycAjCRPCtGhk+ilrcqyliK9VSu
- nj3Pn5zY8uH3uSePaq33zhZm+bCXdxMjwxT9jPZHookW34u2rPTiUGTfvehhur5Tnclq2c2zHVS
- E2AE=
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20261125_082054_733384_CA46F978 
+X-CRM114-Status: UNSURE (   8.81  )
+X-CRM114-Notice: Please train this message.
+X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,62 +116,24 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DATE_IN_PAST_12_24,
-	DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=4.0.1
+X-Spam-Status: No, score=-8.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_ADSP_ALL,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-On Tue, 24 Nov 2026 15:43:01 +0100, Miquel Raynal wrote:
-> mtd/spi-mem: Enable DQS control
-> 
-> For his PHY tuning series on the Cadence QSPI controller embedded in TI
-> SoCs, Santhosh initially needed to access the availability of the DQS
-> (data strobe) signal. This is a chip dependent capability, which may
-> sometimes be enabled.
-> 
-> [...]
+Randy Dunlap <rdunlap@infradead.org> writes:
 
-Applied to
+> Update the list of files where filesystem ioctls are defined and update
+> the ranges of function numbers that are used.
+>
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> ---
+> v2: address sashiko review comment (ext4 00-2F range referred to
+>     the wrong file name)
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-7.5
-
-Thanks!
-
-[1/6] spi: spi-mem: Rename the DQS setter and pin field
-      https://git.kernel.org/broonie/spi/c/fab01b136dfe
-[2/6] spi: spi-mem: Clarify the conditions upon which DQS is usable
-      https://git.kernel.org/broonie/spi/c/5520745c6e30
-[3/6] dt-bindings: spi: Document the spi-dqs-not-wired property
-      https://git.kernel.org/broonie/spi/c/2bc362dc8074
-[4/6] spi: spi-mem: Take the DQS wiring into account
-      https://git.kernel.org/broonie/spi/c/4c9572bc7052
-[5/6] spi: spi-mem: Take the controller DQS support into account
-      https://git.kernel.org/broonie/spi/c/828d25f820a5
-[6/6] spi: cadence-quadspi: Advertise DQS support
-      https://git.kernel.org/broonie/spi/c/dd1f49bd2c44
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+Reviewed-by: Paulo Alcantara <pc@manguebit.org>
 
 ______________________________________________________
 Linux MTD discussion mailing list
