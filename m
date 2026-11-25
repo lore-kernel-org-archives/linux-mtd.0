@@ -2,66 +2,105 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3305F606A692
-	for <linux-mtd@archiver.kernel.org>; Wed, 25 Nov 2026 18:14:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 727AE606A33B
+	for <linux-mtd@archiver.kernel.org>; Wed, 25 Nov 2026 18:16:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=nwpONenx;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=UmS9TzoE
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=dRZXfuJ1;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=aMGzyTb3
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Reply-To:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:References:
-	In-Reply-To:Cc:To:Subject:From:Message-ID:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id
+	:Date:Subject:From:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
 	List-Unsubscribe-Post:List-Owner;
-	bh=mcHXZJbwyZIxk6nn1dHw2fYd3vWaV8uOVi5aMEDTE0Y=; b=nwpONenxW7dWd+g2yOU6wx6dwq
-	0+SgYQ7DoJEzoXiMmKdbqWGZNi8ZmG3ys1pEb8fhmfz3AObl11p2KiNzQ+9rG03/Hb6TcnKhWUWtV
-	YEUcljo1vDq3Wn1xUk3VZEPX+UipsHoGNCf+YxdAWKC00/yyTP7fhOL9XOEtMN98OgL/kfI3s/B13
-	uCty84XSFi2jwKor7zRKH3rDlHYJfHJorV9rWt6RcIH6vwuJ4U0birYMn1NONSrjemC8xVTsH+niD
-	24yoHC3ZjkPDk9yRENGlIjBzdi6XbqeQs3Tm2c88TboDLg7Lg+LOS9DVx3XTvysO1SyGye4+nXKxC
-	59cQWCOg==;
+	bh=kdSn9zweMXe71Sh96UeDv/5vZGg94UNXuEvGEwSRDw0=; b=dRZXfuJ15k7b0Olh5hIh86Ol+Q
+	hICEkRFoo711oN18SXjcZwXqOhG/Ni6Oq7o1n5NuaDTAJ1Iv/w7FWGOeKna/out1kOVclbkjm0um8
+	kkR4FQQBQ5A1S+bTzrgHd9ledBIwZqUPQIBYy65r30mGspyxmhV1r+1vBHwsLmQIZGGpA7LULEtqj
+	59sQHEp0X38J0JiYXVe0sBnIQrHtw66uKLqrpPAkW19oiItunfv3/bXd1FBSuVhj3otbXpjOB5ma4
+	kOQDgPJOnZu9V7lejZ3TfKzwyEL5XvYz4lARiUmwvuigFubiiupclVyDwVtsjYsI/ZDNnX0aTOhJ4
+	LGiEOM6g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xWHVU-0000000AyCx-3CJZ;
-	Wed, 25 Nov 2026 18:14:12 +0000
+	id 1xWHXK-0000000AyV5-3rpu;
+	Wed, 25 Nov 2026 18:16:06 +0000
 Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xWHVT-0000000AyCZ-2rXV;
-	Wed, 25 Nov 2026 18:14:12 +0000
+	id 1xWHX2-0000000AySs-0AIS
+	for linux-mtd@lists.infradead.org;
+	Wed, 25 Nov 2026 18:15:49 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 23F3E63280;
-	Wed, 25 Nov 2026 18:14:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 954B91F000E1;
-	Wed, 25 Nov 2026 18:14:09 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 695CB63583;
+	Wed, 25 Nov 2026 18:15:47 +0000 (UTC)
+Authentication-Results: smtp.kernel.org; arc=none smtp.remote-ip=100.80.115.77
+ARC-Seal: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256; cv=none;
+	t=1795630547;
+	b=vwFQdQWAvpPp+I72L+L67gKJxxXNzuRekfLaptHR5rft3GFq+GTsRicL4tXFGRwjZHq/
+	 knrKKsIyOCHveTuBkl9j2XE0KzgRxvkKqsgSxu53KjIsYxYG4/kgtaePmsNVGPrwpATk5
+	 q+sPeB2j2+uk5eUWzmuOonoWdDsUvo3arjyLM9/eRt4iU0npd9hMg903xa77Fk8QIRr3C
+	 nFO3flAIWh8Vk5VkdVNAtjEeIbOSxyE2ZnpPvAASjNls6k1xvJj20JZbtOifOCskWlTKx
+	 oP//m/A3VZG1QfExdOmUYY37Q7eLS99BVk45jbMJ4V1A9g+41ViAex0IsBVsbx6/kSg==
+ARC-Message-Signature: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256;
+	c=relaxed/relaxed; t=1795630547;
+	h=DKIM-Signature:Received:From:Subject:Date:Message-Id:MIME-Version:
+	 Content-Type:Content-Transfer-Encoding:X-B4-Tracking:X-Change-ID:To:
+	 Cc:X-Mailer:X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
+	 X-Original-From:Reply-To;
+	bh=/Zs+Kk5nSaDUNM5bX+GMTRHIICGM96JFbOkvqqbygyg=;
+	b=ykfxAnFWJG+0i1Dmeq+C3sHtnefKAwLIqi3DY2U21t+YPB/Y744oFK2LkKbAijXca49u
+	 lNhMV+sXPhAnmSvVHIQdCA2tsY5vP5EllWLNH9BSDsr33R/wq/3rmrsxJOMurmjeV0wF7
+	 nhlqRCUO14dpBMRwjVOz4vwLC0/SH8VMkPPdrN940p+R4C/LeTlMs8RlsO6x081qjsut1
+	 L2QpvqZ9RvXl8oWuT1GdAVL3EFQJuWQmvapaxGjlVLXXJ2Dt8tNy2VjzMLmiw3gzzYkAL
+	 lvdrM0Hc8syqkztxS2w+iZzOINXOqI1lbK2RM6i5D4yBprkG2ahvgXImHv8Um5KdAhg==
+ARC-Authentication-Results: i=1; smtp.kernel.org; 
+	arc=none smtp.remote-ip=100.80.115.77
+Received: from lkml.kernel.org (nexus.subspace.kernel.org [100.80.115.77])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	(No client certificate requested)
+	by smtp.kernel.org (Postfix) with ESMTPS id 152171F000C6;
+	Wed, 25 Nov 2026 18:15:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1795630450;
-	bh=Xss2yAo2XUtHtT/HbOssTVw0p9SQ1Jy0dk5U3JbzMf4=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=UmS9TzoEYsSvAXEgxzw4FGwSFC+aFI3PGGX/hkmKy/xvLsAk3GsqoA/jNCb76CUxQ
-	 sX0sTS3NcFXEC7oHN6vYMbsSvomdJaLmBugZAZMq++5OvwI8OAMjttDE0V1h1L9cqa
-	 PkGe1hXx6eMyGzoV1PAoKTbRyiuXbF98RUTBTnoGxRYm5IJiYzQ21FG9L5RAYVUm1x
-	 nRfDSvKGkvUDJFRZFApIeE2FexG01Hzt0D6txs/Z853JcIoIimhUe7O0fH7rVu1x5s
-	 fYJX6BRRwMmv/5qFLYBACK5UXaAtXuInlW8LL8qljpifxfNRDZ/SQ1R9LWkew5zxhe
-	 Rl0hZMEZDpV9w==
-Message-ID: <sashiko-outbox-233930@kernel.org>
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH RFC 15/16] spi: stm32-qspi: Consume dummy cycles
- directly
-To: "Miquel Raynal" <miquel.raynal@bootlin.com>, "Mark Brown" <broonie@kernel.org>, "Liang
- Yang" <liang.yang@amlogic.com>, "Feng Chen" <feng.chen@amlogic.com>, "Xianwei
- Zhao" <xianwei.zhao@amlogic.com>, "Han Xu" <han.xu@nxp.com>, "Conor Dooley" <conor.dooley@microchip.com>, "Valentina
- Fernandez" <valentina.fernandezalanis@microchip.com>, "Daire McNamara" <daire.mcnamara@microchip.com>, "Haibo
- Chen" <haibo.chen@nxp.com>, "Jyan Chou" <jyanchou@realtek.com>, "Yu-Chun
- Lin" <eleanor.lin@realtek.com>, "Maxime Coquelin" <mcoquelin.stm32@gmail.com>, "Alexandre
- Torgue" <alexandre.torgue@foss.st.com>, "Pratyush Yadav" <pratyush@kernel.org>, "Michael
- Walle" <mwalle@kernel.org>, "Takahiro Kuwano" <takahiro.kuwano@infineon.com>, "Richard
- Weinberger" <richard@nod.at>, "Vignesh Raghavendra" <vigneshr@ti.com>
-Cc: "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>, "Alvin Zhou" <alvinzhou@mxic.com.tw>, "Cheng
- Ming Lin" <chengminglin@mxic.com.tw>, linux-amlogic@lists.infradead.org, imx@lists.linux.dev, linux-stm32@st-md-mailman.stormreply.com, linux-mtd@lists.infradead.org, Frank.Li@kernel.org, neil.armstrong@linaro.org
-In-Reply-To: <20261125-macronix-upstreaming-spi-mem-cycles-v1-15-fd036402fd37@bootlin.com>
-References: <20261125-macronix-upstreaming-spi-mem-cycles-v1-0-fd036402fd37@bootlin.com>
- <20261125-macronix-upstreaming-spi-mem-cycles-v1-15-fd036402fd37@bootlin.com>
-Date: Wed, 25 Nov 2026 18:14:09 +0000
+	s=k20260515; t=1795630547;
+	bh=/Zs+Kk5nSaDUNM5bX+GMTRHIICGM96JFbOkvqqbygyg=;
+	h=From:Subject:Date:To:Cc:Reply-To;
+	b=aMGzyTb3A7FE67YC3nxmDcw/m2mNJJ4h5z5U18iYzip878vlbHUaBV0qVQDrODwS9
+	 Zor9jCjgGdKtLap5vynJMGe0regks4Zk6r+Ue3WcVRgzP6jKc78P0APxEQEfXA8m3S
+	 1A6hrUlF1xgqvSdyZ+p5SzAXKvZ4GpWC0rr9Eiou7jvswOVc0P7645NK/w2dlQl92e
+	 1965u8r35HXYYXBQtVBYqH55VRUESm6vvf4LU3qJUzhGwombbT33dcCcrMijBxNyG6
+	 LdAoNIBU9Vl7IoQjD7eDcegAOtzx+9HEGJSjlKXqrOS+9/QJQkGNA58UUbGWo4fJbM
+	 cJ1mY9C5lx/sQ==
+Received: from nexus.subspace.kernel.org (localhost [IPv6:::1])
+	by lkml.kernel.org (Postfix) with ESMTP id 8491F4CFBC;
+	Wed, 25 Nov 2026 18:15:29 +0000 (UTC)
+From: Fil Dunsky via B4 Relay <devnull+filipp.dunsky.gmail.com@kernel.org>
+Subject: [PATCH v3 0/3] Add Cortina Systems CS7542 NAND controller support
+Date: Wed, 25 Nov 2026 21:15:27 +0300
+Message-Id: <20261125-b4-cs7542-nand-v3-0-0b6d141c102e@gmail.com>
+X-Archived-By: <archiver.kernel.org>
+MIME-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/32NQQ6CMBQFr0K6tua3BUpZeQ/jAsoHaqSYFhsN4
+ e62uHGjy0nezFuJR2fQkzpbicNgvJltBHHIiB4bOyA1XWTCgZeMcUHbnGovi5xT29iOVlIpiQI
+ ApCJRujvszXMPni8f9o/2inpJlbQYjV9m99ofA0u7n/HAKFCpkUmlgTHkp2FqzO2o54mkeOD/d
+ R511akeqhKqQuTf+rZtbxP7tc79AAAA
+X-Change-ID: 20261123-b4-cs7542-nand-87997e300079
+To: Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org
+X-Mailer: b4 0.16.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1795630527; l=5154;
+ i=filipp.dunsky@gmail.com; s=20260930; h=from:subject:message-id;
+ bh=FxytYVQh1Bi01rQ9dueEmTxTm7lLV6AVOQ9uoQMr0ck=;
+ b=ETC/jJXYJFGf9J0x7cJw9IJcjfyyNxoX+S+PdnQVFwhN3n3mnhF8wlsUudz0e7tD9PuvsqTME
+ aqd2yTEZdKFCWL01PuA8JBQCRRLnND7tsGx4S27ZXCV48KjEVKiuxZH
+X-Developer-Key: i=filipp.dunsky@gmail.com; a=ed25519;
+ pk=JAYP8e2rJ54DHOmhNtXud8rl1igAaAXoOHxtJmVXI1g=
+X-Endpoint-Received: by B4 Relay for filipp.dunsky@gmail.com/20260930 with
+ auth_id=1085
+X-Original-From: Fil Dunsky <filipp.dunsky@gmail.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,74 +110,120 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: sashiko-reviews@lists.linux.dev
-X-Archived-By: <archiver.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Reply-To: filipp.dunsky@gmail.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-8.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-11.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=4.0.1
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-VGhhbmsgeW91IGZvciB5b3VyIGNvbnRyaWJ1dGlvbiEgU2FzaGlrbyBBSSByZXZpZXcgZm91bmQg
-MSBwb3RlbnRpYWwKaXNzdWUgdG8gY29uc2lkZXI6Ci0gW0hpZ2hdIHNwaTogc3RtMzItcXNwaTog
-bWlzc2luZyBkdW1teSBwaGFzZSBvbiBHUElPIENTIGZhbGxiYWNrIGluCiAgc3BpX21lbV9leGVj
-X29wKCkKLS0KCmNvbW1pdCBmMmUyYjBiZTk2YmJjYTY0N2FkMjYxMGJmYTdiYWRmODJmNTk5Njdm
-CkF1dGhvcjogTWlxdWVsIFJheW5hbCA8bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4KCnNwaTog
-c3RtMzItcXNwaTogQ29uc3VtZSBkdW1teSBjeWNsZXMgZGlyZWN0bHkKClRoaXMgY29tbWl0IGFk
-dmVydGlzZXMgZHVtbXlfY3ljbGVzIGluIHN0bTMyX3FzcGlfbWVtX2NhcHMgYW5kIHVzZXMKb3At
-PmR1bW15Lm5jeWNsZXMgZGlyZWN0bHkgaW4gc3RtMzJfcXNwaV9zZW5kKCkgYW5kCnN0bTMyX3Fz
-cGlfdHJhbnNmZXJfb25lX21lc3NhZ2UoKS4KCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvc3BpL3Nw
-aS1zdG0zMi1xc3BpLmMgYi9kcml2ZXJzL3NwaS9zcGktc3RtMzItcXNwaS5jCj4gaW5kZXggYjc3
-ZGFiYTZkYjgzYS4uOTkzYjA5Y2M1MTI0MCAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL3NwaS9zcGkt
-c3RtMzItcXNwaS5jCj4gKysrIGIvZHJpdmVycy9zcGkvc3BpLXN0bTMyLXFzcGkuYwpbIC4uLiBd
-Cj4gQEAgLTU5Myw3ICs1OTIsNyBAQCBzdGF0aWMgaW50IHN0bTMyX3FzcGlfdHJhbnNmZXJfb25l
-X21lc3NhZ2Uoc3RydWN0IHNwaV9jb250cm9sbGVyICpjdHJsLAo+ICAJCSAqLwo+ICAJCWlmICh0
-cmFuc2Zlci0+ZHVtbXlfZGF0YSkgewo+ICAJCQlvcC5kdW1teS5idXN3aWR0aCA9IHRyYW5zZmVy
-LT50eF9uYml0czsKPiAtCQkJb3AuZHVtbXkubmJ5dGVzID0gdHJhbnNmZXItPmxlbjsKPiArCQkJ
-b3AuZHVtbXkubmN5Y2xlcyA9IHRyYW5zZmVyLT5sZW4gKiA4IC8gdHJhbnNmZXItPnR4X25iaXRz
-Owo+ICAJCQlkdW1teV9ieXRlcyA9IHRyYW5zZmVyLT5sZW47Cj4gIAo+ICAJCQkvKiBpZiBoYXBw
-ZW5zLCBtZWFucyB0aGF0IG1lc3NhZ2UgaXMgbm90IGNvcnJlY3RseSBidWlsdCAqLwo+IEBAIC03
-NzMsNiArNzcyLDEwIEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgc3BpX2NvbnRyb2xsZXJfbWVtX29w
-cyBzdG0zMl9xc3BpX21lbV9vcHMgPSB7Cj4gIAkucG9sbF9zdGF0dXMJPSBzdG0zMl9xc3BpX3Bv
-bGxfc3RhdHVzLAo+ICB9Owo+ICAKPiArc3RhdGljIGNvbnN0IHN0cnVjdCBzcGlfY29udHJvbGxl
-cl9tZW1fY2FwcyBzdG0zMl9xc3BpX21lbV9jYXBzID0gewo+ICsJLmR1bW15X2N5Y2xlcyA9IHRy
-dWUsCj4gK307Cj4gKwo+ICBzdGF0aWMgaW50IHN0bTMyX3FzcGlfcHJvYmUoc3RydWN0IHBsYXRm
-b3JtX2RldmljZSAqcGRldikKPiAgewo+ICAJc3RydWN0IGRldmljZSAqZGV2ID0gJnBkZXYtPmRl
-djsKPiBAQCAtODU2LDYgKzg1OSw3IEBAIHN0YXRpYyBpbnQgc3RtMzJfcXNwaV9wcm9iZShzdHJ1
-Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQo+ICAJY3RybC0+c2V0dXAgPSBzdG0zMl9xc3BpX3Nl
-dHVwOwo+ICAJY3RybC0+YnVzX251bSA9IC0xOwo+ICAJY3RybC0+bWVtX29wcyA9ICZzdG0zMl9x
-c3BpX21lbV9vcHM7Cj4gKwljdHJsLT5tZW1fY2FwcyA9ICZzdG0zMl9xc3BpX21lbV9jYXBzOwo+
-ICAJY3RybC0+dXNlX2dwaW9fZGVzY3JpcHRvcnMgPSB0cnVlOwo+ICAJY3RybC0+dHJhbnNmZXJf
-b25lX21lc3NhZ2UgPSBzdG0zMl9xc3BpX3RyYW5zZmVyX29uZV9tZXNzYWdlOwo+ICAJY3RybC0+
-bnVtX2NoaXBzZWxlY3QgPSBTVE0zMl9RU1BJX01BWF9OT1JDSElQOwoKW1NldmVyaXR5OiBIaWdo
-XQpEb2VzIGVuYWJsaW5nIGR1bW15X2N5Y2xlcyBkcm9wIHRoZSBkdW1teSBwaGFzZSB3aGVuIGEg
-R1BJTyBjaGlwLXNlbGVjdCBpcwp1c2VkPwoKSW4gc3BpX21lbV9leGVjX29wKCksIHNwaV9tZW1f
-Y29udmVydF9kdW1teSgpIHJ1bnMgZmlyc3QgYW5kIHNldHMKb3AtPmR1bW15Lm5ieXRlcyA9IDAg
-YmVjYXVzZSB0aGUgY29udHJvbGxlciBhZHZlcnRpc2VzIGR1bW15X2N5Y2xlcy4gIFdoZW4Kc3Bp
-X2dldF9jc2dwaW9kKG1lbS0+c3BpLCAwKSBpcyBub24tTlVMTCwgc3BpX21lbV9leGVjX29wKCkg
-YnlwYXNzZXMKY3Rsci0+bWVtX29wcy0+ZXhlY19vcCBhbmQgZmFsbHMgYmFjayB0byBidWlsZGlu
-ZyBzcGlfdHJhbnNmZXJzIGZvcgpzdG0zMl9xc3BpX3RyYW5zZmVyX29uZV9tZXNzYWdlKCksIGJ1
-dCB0aGF0IGZhbGxiYWNrIHBhdGggb25seSBjcmVhdGVzIGEKZHVtbXlfZGF0YSB0cmFuc2ZlciB3
-aGVuIG9wLT5kdW1teS5uYnl0ZXMgaXMgbm9uLXplcm86Cgpkcml2ZXJzL3NwaS9zcGktbWVtLmM6
-c3BpX21lbV9leGVjX29wKCkgewoJLi4uCglpZiAoY3Rsci0+bWVtX29wcyAmJiBjdGxyLT5tZW1f
-b3BzLT5leGVjX29wICYmICFzcGlfZ2V0X2NzZ3Bpb2QobWVtLT5zcGksIDApKSB7CgkuLi4KCWlm
-IChvcC0+ZHVtbXkubmJ5dGVzKSB7CgkJbWVtc2V0KHRtcGJ1ZiArIG9wLT5hZGRyLm5ieXRlcyAr
-IDEsIDB4ZmYsIG9wLT5kdW1teS5uYnl0ZXMpOwoJCXhmZXJzW3hmZXJwb3NdLnR4X2J1ZiA9IHRt
-cGJ1ZiArIG9wLT5hZGRyLm5ieXRlcyArIDE7CgkJeGZlcnNbeGZlcnBvc10ubGVuID0gb3AtPmR1
-bW15Lm5ieXRlczsKCQl4ZmVyc1t4ZmVycG9zXS50eF9uYml0cyA9IG9wLT5kdW1teS5idXN3aWR0
-aDsKCQl4ZmVyc1t4ZmVycG9zXS5kdW1teV9kYXRhID0gMTsKCS4uLgp9CgpBcyBhIHJlc3VsdCwg
-bm8gZHVtbXlfZGF0YSB0cmFuc2ZlciBpcyBhZGRlZCB0byB0aGUgbWVzc2FnZSwgc28Kc3RtMzJf
-cXNwaV90cmFuc2Zlcl9vbmVfbWVzc2FnZSgpIGxlYXZlcyBvcC5kdW1teS5uY3ljbGVzIGF0IDAg
-YW5kIGNvcnJ1cHRzCmZsYXNoIG9wZXJhdGlvbnMgdGhhdCByZXF1aXJlIGR1bW15IGN5Y2xlcyBv
-biBib2FyZHMgdXNpbmcgY3MtZ3Bpb3MgKHN1Y2gKYXMgZHVhbC1mbGFzaCBjb25maWd1cmF0aW9u
-cykuCgotLSAKU2FzaGlrbyBBSSByZXZpZXcgwrcgaHR0cHM6Ly9zYXNoaWtvLmRldi8jL3BhdGNo
-c2V0LzIwMjYxMTI1LW1hY3Jvbml4LXVwc3RyZWFtaW5nLXNwaS1tZW0tY3ljbGVzLXYxLTAtZmQw
-MzY0MDJmZDM3QGJvb3RsaW4uY29tP3BhcnQ9MTUKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5n
-IGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1t
-dGQvCg==
+Add the NAND controller used by the Securifi Almond+ (CS7542, two Cortex-A9
+CPUs). This is an independent binding/driver/MAINTAINERS series on
+Linux v7.4-rc4; it does not depend on ARCH_CORTINA_ACCESS or the platform
+series.
+
+The controller sequences complete command/address/data transactions. Use
+exec_op with explicit capability checking and cached ID, ONFI and page reads
+for NAND core's split operations. Retain firmware-initialized bus timing.
+This version supports large-page, 8-bit NAND with on-host Hamming ECC using
+256-byte steps and the existing OOB layout. It uses programmed I/O; DMA and
+unverified BCH modes are deliberately outside this initial implementation.
+
+Validation:
+- Full independent ARM vmlinux and modules builds, driver both =y and =m,
+  COMPILE_TEST=n, without the platform series.
+- Binding schema/example and strict source checkpatch pass.
+- Actual decoder functions: 292 boundary, address and sequence cases under
+  UBSAN. Address packing: 655360 cases cover every Almond+ page and
+  two-row-cycle large-page geometries. Actual Hamming correction function: 20485 cases covering every
+  single-data-bit position, invalid hardware offsets and error propagation.
+- Linux 7.4-rc4 booted in RAM on Almond+. NAND identification, all-device
+  bad-block scan, OOB reads and SHA256 of five existing protected regions
+  passed without new ECC failures.
+- The real UBI stack created a temporary two-LEB volume, wrote and verified
+  two 253952-byte patterns, removed the volume and reattached with the
+  original bad-block reserve. All 14 protected partition/configuration
+  checksums matched after returning to installed OpenWrt 6.18.64; the five
+  original UBI volumes and normal reserve remained intact.
+
+V2 adds 630 actual attach-function geometry/ECC cases and repeats the full
+independent ARM =y/=m builds. V2 also booted Linux 7.4 in RAM with a single
+read-only partition: identification, bad-block scan, OOB reads and hashes
+of six protected regions including calibration passed, with no new ECC
+failures and automatic return to installed OpenWrt. The previous UBI
+write test above was on v1; it was not repeated on v2.
+
+On Almond+, I booted v3 in RAM with all 16 NAND partitions read-only.
+I read and verified 56 MiB against SHA-256 hashes of seven existing
+regions. Raw and generic OOB reads returned identical 64-byte buffers
+in all four banks. ECC reported five corrections and no uncorrectable
+errors. The fixed controller exposed no manual sysfs bind/unbind
+controls. That run was read-only.
+
+A subsequent Linux 7.4-rc4 RAM run used the unchanged v3 driver for a
+fresh UBI write/erase test. It created a temporary two-LEB volume and
+wrote and compared two 253952-byte patterns. Between the patterns,
+UBI_IOCEBER erased both LEBs and flushed physical erasure; reading the
+volume returned 253952 bytes of 0xff. The test removed only its newly
+created volume and restored the original bad-block reserve. All five
+original volumes, reserve 80/free 0/bad 0, 13 protected data hashes and
+15 configuration files matched after watchdog returned to OpenWrt.
+The four LCD services and normal watchdog were running afterward.
+
+No kernel image was installed by these RAM tests. Board integration used
+for testing is kept separate from this series.
+
+---
+Changes in v3:
+- Honor the current interface tWB maximum before polling R/B.
+- Suppress unsafe manual sysfs bind/unbind on fixed SoC flash.
+- Add actual-function timing regressions and repeat ARM built-in/module builds.
+- Link to v2: https://patch.msgid.link/20261123-b4-cs7542-nand-v2-0-9d9f08608534@gmail.com
+
+Changes in v2:
+- Reject unsupported page/OOB layouts and incompatible ECC requests.
+- Use 64-bit arithmetic before extracting the page bank.
+- Reject invalid hardware error-bit indices, preserve DT labels,
+  use the core OOB write helper and standard final-read polling.
+- Link to v1: https://patch.msgid.link/20261123-b4-cs7542-nand-v1-0-7ce179c011e2@gmail.com
+
+To: Fil Dunsky <filipp.dunsky@gmail.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Richard Weinberger <richard@nod.at>
+To: Vignesh Raghavendra <vigneshr@ti.com>
+To: Rob Herring <robh@kernel.org>
+To: Krzysztof Kozlowski <krzk+dt@kernel.org>
+To: Conor Dooley <conor+dt@kernel.org>
+Cc: linux-mtd@lists.infradead.org
+Cc: devicetree@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+
+---
+Fil Dunsky (3):
+      dt-bindings: mtd: Add Cortina CS7542 NAND controller
+      mtd: rawnand: Add Cortina CS7542 controller support
+      MAINTAINERS: Add Cortina CS7542 NAND controller entry
+
+ .../bindings/mtd/cortina,cs7542-nand.yaml          |  66 ++
+ MAINTAINERS                                        |   7 +
+ drivers/mtd/nand/raw/Kconfig                       |  12 +
+ drivers/mtd/nand/raw/Makefile                      |   1 +
+ drivers/mtd/nand/raw/cs752x_nand.c                 | 814 +++++++++++++++++++++
+ 5 files changed, 900 insertions(+)
+---
+base-commit: b6a9fa34ce4187cb69d3c588a4bbffc31ce5db8f
+change-id: 20261123-b4-cs7542-nand-87997e300079
+
+Best regards,
+--  
+Fil Dunsky <filipp.dunsky@gmail.com>
+
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
