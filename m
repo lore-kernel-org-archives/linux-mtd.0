@@ -2,10 +2,10 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 125EB60A380D
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 505A2606D30C
 	for <linux-mtd@archiver.kernel.org>; Wed, 25 Nov 2026 06:14:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=qhKDOB3m
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=NnvRVJNI
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -13,20 +13,20 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=4+3hw2/JyZfYISbtfr/5uvOdpXwBAeK9EStpaL/JETA=; b=qhKDOB3mDZe/jofw4TnAd7ulU+
-	6WVx1N84aDZarNPu/OuvfXSDL6wLy3+NnkF5RHhMNBTgY45M6lHWH5DZGObgalIzjDYQkPgPILKYt
-	NTK6MCZn5f6dDIEwuTk0wP2s2hS64OeSZehrpySgZsiL4uSwIwmfH8nypycLOb7ZABQXnUkUs2yaj
-	EBqjK7HtWqB3BoVXI3VtcJ5EQh4Q+di19bUtMK4VFkhUoaQjQn5svJvZR6ZOaIQVpFbJdTL3aOwvA
-	P1NyO3mCzKRRKXOv/u7mb57FybT1H/J1eTMl8a/wZbAlqNaB9/I+Y8v0Z+AriflHryLVUtBoYOO8I
-	asHGSEkA==;
+	bh=E0xBDteIeBEbSE1/wXSsDGpLhaDo1+i60xDor7ZBQ8M=; b=NnvRVJNItiGQuxi63t/P8S0ODx
+	k5OgxR0RY2M3dffjq/i0ip2znLrazo9VVzpFnrFdtw4bk6fuaiOpcD8l8QGW2I5jaaCxvGAwP99Mn
+	PKZuvrrpXfcM1emriQeeZ6dOasB9oxlZp+7hzeJZGXfxXBNG6uRfP7AMiePhSdEoP06nj7Y6cFeIP
+	3TG7LXI4q3LYnCQGLi0gZLeY87pZF0XLENnBrccorHJ2dFkjgCga/jfHLsj2PfjcvjbWTEwxyW9XS
+	w1kzgQj0CflbJAAUfuG1Px4wUsxp84ceGeY99pNv2itbWOLf3m13ZSS+NRlM+g9MJXBMFT+4DYvgY
+	o0E5+QHg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xW6Gc-00000008XEu-34vy;
+	id 1xW6Gc-00000008XF6-441T;
 	Wed, 25 Nov 2026 06:14:06 +0000
 Received: from [50.53.43.113] (helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtpsa (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xW6GY-00000008Wvh-1Dwn;
-	Wed, 25 Nov 2026 06:14:02 +0000
+	id 1xW6Gb-00000008Wvh-0C4P;
+	Wed, 25 Nov 2026 06:14:05 +0000
 From: Randy Dunlap <rdunlap@infradead.org>
 To: linux-kernel@vger.kernel.org
 Cc: Randy Dunlap <rdunlap@infradead.org>,
@@ -112,9 +112,9 @@ Cc: Randy Dunlap <rdunlap@infradead.org>,
 	Matthew Brost <matthew.brost@intel.com>,
 	=?UTF-8?q?Thomas=20Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
 	intel-xe@lists.freedesktop.org
-Subject: [PATCH v3 08/12] docs: ioctl-number: update USB entries
-Date: Tue, 24 Nov 2026 22:13:35 -0800
-Message-ID: <20261125061340.3402300-9-rdunlap@infradead.org>
+Subject: [PATCH v3 09/12] docs: ioctl-number: update virtualization entries
+Date: Tue, 24 Nov 2026 22:13:36 -0800
+Message-ID: <20261125061340.3402300-10-rdunlap@infradead.org>
 X-Mailer: git-send-email 2.56.1
 In-Reply-To: <20261125061340.3402300-1-rdunlap@infradead.org>
 References: <20261125061340.3402300-1-rdunlap@infradead.org>
@@ -129,8 +129,8 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,INCLUDES_CR_TRAILER,
@@ -139,52 +139,67 @@ X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-Update the list of files where USB ioctls are defined.
-
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
-v2: no change
-v3: rebase
-
-[Since having multiple maintainers trying to merge these would
-cause some conflicts, it would be more manageable for Jon to
-take all of these through the docs-next tree.]
-
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: Shuah Khan <skhan@linuxfoundation.org>
-Cc: linux-doc@vger.kernel.org
-Cc: Neill Kapron <nkapron@google.com>
-Cc: Andrey Konovalov <andreyknvl@gmail.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-usb@vger.kernel.org
-
- Documentation/userspace-api/ioctl/ioctl-number.rst |    6 ++++++
- 1 file changed, 6 insertions(+)
-
---- linux-next-20261123.orig/Documentation/userspace-api/ioctl/ioctl-number.rst
-+++ linux-next-20261123/Documentation/userspace-api/ioctl/ioctl-number.rst
-@@ -233,6 +233,9 @@ Code  Seq#    Include File
- 'U'   00-EF  linux/usbdevice_fs.h
- 'U'   C0-CF  drivers/bluetooth/hci_uart.h
- 'U'   00     net/nfc/nci_core.h                                        conflict!
-+'U'   00-0F  linux/usb/raw_gadget.h                                    conflict!
-+'U'   01     linux/usb/g_uvc.h                                         conflict!
-+'U'   64     drivers/usb/misc/usbtest.c                                conflict!
- 'V'   all    linux/vt.h                                                conflict!
- 'V'   all    linux/videodev2.h                                         conflict!
- 'V'   C0     linux/ivtvfb.h                                            conflict!
-@@ -279,6 +282,9 @@ Code  Seq#    Include File
- 'g'   20-2F  linux/usb/g_printer.h
- 'g'   01-0F  mm/gup_test.h                                             conflict!
-                                                                        <mailto:linux-mm@kvack.org>
-+'g'   01-03  linux/usb/functionfs.h                                    conflict!
-+      80-86
-+'g'   41-42  linux/usb/g_hid.h
- 'h'   00-7F                                                            conflict! Charon filesystem
-                                                                        <mailto:zapman@interlan.net>
- 'h'   00-1F  linux/hpet.h                                              conflict!
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+VXBkYXRlIHRoZSBsaXN0IG9mIGZpbGVzIHdoZXJlIHZpcnR1YWxpemF0aW9uIGlvY3RscyBhcmUg
+ZGVmaW5lZC4KClNpZ25lZC1vZmYtYnk6IFJhbmR5IER1bmxhcCA8cmR1bmxhcEBpbmZyYWRlYWQu
+b3JnPgotLS0KdjI6IGRyb3AgMHhBRSwgQzYsIGFyY2gveDg2L2t2bS94ODYuYyAoY292ZXJlZCBi
+eSBsaW5lIGFib3ZlOwogICAgU2VhbiBDaHJpc3RvcGhlcnNvbikKdjM6IHJlYmFzZQoKW1NpbmNl
+IGhhdmluZyBtdWx0aXBsZSBtYWludGFpbmVycyB0cnlpbmcgdG8gbWVyZ2UgdGhlc2Ugd291bGQK
+Y2F1c2Ugc29tZSBjb25mbGljdHMsIGl0IHdvdWxkIGJlIG1vcmUgbWFuYWdlYWJsZSBmb3IgSm9u
+IHRvCnRha2UgYWxsIG9mIHRoZXNlIHRocm91Z2ggdGhlIGRvY3MtbmV4dCB0cmVlLl0KCkNjOiBK
+b25hdGhhbiBDb3JiZXQgPGNvcmJldEBsd24ubmV0PgpDYzogU2h1YWggS2hhbiA8c2toYW5AbGlu
+dXhmb3VuZGF0aW9uLm9yZz4KQ2M6IGxpbnV4LWRvY0B2Z2VyLmtlcm5lbC5vcmcKQ2M6IEp1ZXJn
+ZW4gR3Jvc3MgPGpncm9zc0BzdXNlLmNvbT4KQ2M6IFN0ZWZhbm8gU3RhYmVsbGluaSA8c3N0YWJl
+bGxpbmlAa2VybmVsLm9yZz4KQ2M6IHhlbi1kZXZlbEBsaXN0cy54ZW5wcm9qZWN0Lm9yZwpDYzog
+SGFucyBkZSBHb2VkZSA8aGFuc2dAa2VybmVsLm9yZz4KQ2M6IEFybmQgQmVyZ21hbm4gPGFybmRA
+YXJuZGIuZGU+CkNjOiBHcmVnIEtyb2FoLUhhcnRtYW4gPGdyZWdraEBsaW51eGZvdW5kYXRpb24u
+b3JnPgpDYzogIk1pY2hhZWwgUy4gVHNpcmtpbiIgPG1zdEByZWRoYXQuY29tPgpDYzogSmFzb24g
+V2FuZyA8amFzb3dhbmdpb0BnbWFpbC5jb20+CkNjOiBFdWdlbmlvIFDDqXJleiA8ZXBlcmV6bWFA
+cmVkaGF0LmNvbT4KQ2M6IFNlYW4gQ2hyaXN0b3BoZXJzb24gPHNlYW5qY0Bnb29nbGUuY29tPgpD
+YzogUGFvbG8gQm9uemluaSA8cGJvbnppbmlAcmVkaGF0LmNvbT4KQ2M6IGt2bUB2Z2VyLmtlcm5l
+bC5vcmcKQ2M6IHZpcnR1YWxpemF0aW9uQGxpc3RzLmxpbnV4LmRldgoKIERvY3VtZW50YXRpb24v
+dXNlcnNwYWNlLWFwaS9pb2N0bC9pb2N0bC1udW1iZXIucnN0IHwgICAgNSArKysrKwogMSBmaWxl
+IGNoYW5nZWQsIDUgaW5zZXJ0aW9ucygrKQoKLS0tIGxpbnV4LW5leHQtMjAyNjExMjMub3JpZy9E
+b2N1bWVudGF0aW9uL3VzZXJzcGFjZS1hcGkvaW9jdGwvaW9jdGwtbnVtYmVyLnJzdAorKysgbGlu
+dXgtbmV4dC0yMDI2MTEyMy9Eb2N1bWVudGF0aW9uL3VzZXJzcGFjZS1hcGkvaW9jdGwvaW9jdGwt
+bnVtYmVyLnJzdApAQCAtMTk4LDYgKzE5OCw3IEBAIENvZGUgIFNlcSMgICAgSW5jbHVkZSBGaWxl
+CiAnTScgICAwMS0wMyAgZHJpdmVycy9zY3NpL21lZ2FyYWlkL21lZ2FyYWlkX3Nhcy5oCiAnTScg
+ICAwMC0wMyAgZHJpdmVycy92aWRlby9mYmRldi9tYjg2Mnh4L21iODYyeHhmYi5oCiAnTScgICAw
+MC0wRiAgZHJpdmVycy92aWRlby9mc2wtZGl1LWZiLmggICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIGNvbmZsaWN0IQorJ00nICAgMDEtMDMgIHhlbi9pbnRlcmZhY2UveGVuLW1jYS5oICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb25mbGljdCEKICdOJyAgIDAwLTFGICBk
+cml2ZXJzL3VzYi9zY2FubmVyLmgKICdOJyAgIDQwLTdGICB1YXBpL2xpbnV4L252bWVfaW9jdGwu
+aAogJ04nICAgODAtODMgIHVhcGkvbGludXgvbnRzeW5jLmggYW5kIHVhcGkvbGludXgvbnZtZV9p
+b2N0bC5oICAgICAgICAgICBjb25mbGljdCEKQEAgLTIzOCw2ICsyMzksNyBAQCBDb2RlICBTZXEj
+ICAgIEluY2x1ZGUgRmlsZQogJ1UnICAgNjQgICAgIGRyaXZlcnMvdXNiL21pc2MvdXNidGVzdC5j
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb25mbGljdCEKICdWJyAgIGFsbCAgICBs
+aW51eC92dC5oICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+Y29uZmxpY3QhCiAnVicgICBhbGwgICAgbGludXgvdmlkZW9kZXYyLmggICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIGNvbmZsaWN0IQorJ1YnICAgMDAtMUYgIGxpbnV4L3Zi
+b3hndWVzdC5oICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb25mbGlj
+dCEKICdWJyAgIEMwICAgICBsaW51eC9pdnR2ZmIuaCAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgY29uZmxpY3QhCiAnVicgICBDMCAgICAgbGludXgvaXZ0di5oICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbmZsaWN0IQogJ1Yn
+ICAgQzAgICAgIG1lZGlhL3NpNDcxMy5oICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICBjb25mbGljdCEKQEAgLTM1Niw2ICszNTgsNyBAQCBDb2RlICBTZXEjICAgIElu
+Y2x1ZGUgRmlsZQogJ3wnICAgODAtOUYgIHNhbXBsZXMvICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICBBbnkgc2FtcGxlIGFuZCBleGFtcGxlIGRyaXZlcnMK
+IDB4ODAgIDAwLTFGICBsaW51eC9mYi5oCiAweDgxICAwMC0xRiAgbGludXgvdmR1c2UuaAorICAg
+ICAgICAgICAgIGRyaXZlcnMvdmRwYS92ZHBhX3VzZXIvdmR1c2VfZGV2LmMKIDB4ODkgIDAwLTA3
+ICBhc20tZ2VuZXJpYy9zb2NraW9zLmgKIDB4ODkgIDA2LTA3ICBsaW51eC9zb2NraW9zLmgKIDB4
+ODkgIDBCLURGICBsaW51eC9zb2NraW9zLmgKQEAgLTM5OSw2ICs0MDIsOCBAQCBDb2RlICBTZXEj
+ICAgIEluY2x1ZGUgRmlsZQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA8bWFpbHRvOmt2bUB2Z2VyLmtlcm5lbC5v
+cmc+CiAweEFFICAyMC0zRiAgbGludXgvbml0cm9fZW5jbGF2ZXMuaCAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIE5pdHJvIEVuY2xhdmVzCiAweEFGICAwMC0xRiAgbGludXgvZnNs
+X2h5cGVydmlzb3IuaCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIEZyZWVzY2Fs
+ZSBoeXBlcnZpc29yCisweEFGICAwMC04RiAgbGludXgvdmhvc3QuaCAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbmZsaWN0IQorMHhBRiAgMzEtMzIgIGRyaXZl
+cnMvdmhvc3QvdGVzdC5oICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb25m
+bGljdCEKIDB4QjAgIGFsbCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgUkFUSU8gZGV2aWNlcyBpbiBkZXZlbG9wbWVudDoKICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgPG1haWx0bzp2Z29AcmF0aW8uZGU+CiAweEIxICAwMC0xRiAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFBQUG9YCgpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXgg
+TVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
+aWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
