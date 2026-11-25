@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1376606A32C
-	for <linux-mtd@archiver.kernel.org>; Wed, 25 Nov 2026 09:25:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B22E606A683
+	for <linux-mtd@archiver.kernel.org>; Wed, 25 Nov 2026 09:25:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=v54wa+Xr;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=Ri2++ZVm
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=FF35wwTo;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=W5R8P4N1
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,83 +14,82 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=8TxlANw8MBWnD8rgypPuM0ms/09TrFv71FSHigpduuI=; b=v54wa+XrlOXK0xf2gg9WWJbVLq
-	sOVl3/7rRttyVCMfllPrUWFwP9w863Vrp7hEqAd1Ivc9Of+Ttt8E2hV+a9wnkh82CKQLePVfbVEwT
-	KBD+bx81N5d8TFqayiMq2SyXSiCBtodb5oP+Vu6JxfKvZK6Zf5FXubUYLSbogwRhLi+xenN4j07+7
-	mJI97kuXvZGVYxAhylTnxagAdL+XP0iW0cK7nHwqcoCPnM82UfrLLEfWQ0VJcmld5GQAxvhVccOta
-	Vi7Cm/UzoD64mKzkTzIbxzvUm4M+C8TVjW/IGCfSNMxnnN4YrcDP6LJOWrl9JmPSP3blJGs5lWgcF
-	f+aBXqhg==;
+	bh=v5DwHPB0IF2UXdRiniK3dVAhElKSbmOGrTzKi0slB88=; b=FF35wwToZrgmTfj5/OpfwhWY8e
+	5D9EMzlgUx9G7O17wol7DR8veKtWPbzUMOz0THDiWn26AMlLuxuGHXcCy6JQgPjGxDtOtOjvOrUP+
+	/TtQysB8lJWzdwEJMYFRFLViEBMVdibHQ86P6n6pq4T5Pap4AKDzRzNMof2YPpEBlyBLd7ffD8WUq
+	bMPL9M50Pa65somudqbJQsuNM9zvajeMZb8dg4z+iDjOCguCKIuAjcJRycoMO+vxJD3eg7isK6UKm
+	+P3HLW6mQHfqLWu0dfPqK/kEZRoXNArMUeJP/l9qFDHSENyNveXnjCk/py9UOgOdRoT2Tocf8dc+F
+	bmcG8smw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xW9Fw-00000009H3P-2Zzp;
-	Wed, 25 Nov 2026 09:25:36 +0000
-Received: from mail-pg1-x52f.google.com ([2607:f8b0:4864:20::52f])
+	id 1xW9G6-00000009H6I-3C6E;
+	Wed, 25 Nov 2026 09:25:46 +0000
+Received: from mail-pl1-x634.google.com ([2607:f8b0:4864:20::634])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xW9Fu-00000009H2o-08hG
+	id 1xW9G3-00000009H53-1tlu
 	for linux-mtd@lists.infradead.org;
-	Wed, 25 Nov 2026 09:25:35 +0000
-Received: by mail-pg1-x52f.google.com with SMTP id 41be03b00d2f7-cdab8873d9dso2603770a12.1
-        for <linux-mtd@lists.infradead.org>; Wed, 25 Nov 2026 01:25:33 -0800 (PST)
+	Wed, 25 Nov 2026 09:25:44 +0000
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-2f052ae3c86so29894065ad.1
+        for <linux-mtd@lists.infradead.org>; Wed, 25 Nov 2026 01:25:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1795598733; x=1796203533; darn=lists.infradead.org;
+        d=gmail.com; s=20260707; t=1795598742; x=1796203542; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=kFVOFcFtL3Kl1lidL7Hzux9EmFfy+WWbY0BBgURBK0s=;
-        b=Ri2++ZVmIwpYe9kq33xB2LV/6y7wh4RB4nnLtzt9yUnqmgkix2QE3UstSDIAiFjUKH
-         4P2vXDPaSufWx1NPEZe1tPRrU+2aHYP2kyeCaZ92llK+cie4k/F1OrtttNMGHA9mviM0
-         MOufveAx5eGL3CGFtUJEX20qDMVV6GFyElGysooB2QkdR/GY2W5pMDueDhtwd8hqHTz/
-         CHVPW43YTFKau2NFPT6n0nLiaTDcZoqGy0FY3DtWD3bXe9steb6yyV3YBWVGowTmljXB
-         aqA1x5zgxugZhMszx1/u4UdV1v4dwt+Sgp6mFTo1XuYRrSkzleYFAj3cbdCdxN9cT70N
-         32WQ==
+        bh=GnB+aZxKe6ZtO8gfhG6inB6mdXvFtFPkZxKmjJASbvg=;
+        b=W5R8P4N1PbZJEkAPC2XMlq93rfKzvwH0m4LX0GgklYuTnLZP1X3HWbYiIRojqG48u0
+         sv3OARhhq2c04mV/dvB9nQhi1l9pSv5B9QELRUDzl8TYCuFD1cdZr4jcWzOXJpxcE4fK
+         xItQVuRZFed1DUUIl2Q8ADRAeQglEMpHb2sUreIwfEd8hUtRIFqcVdDWoq1EeZWE8RDP
+         wUt1v0FztjfJYkZqfb2a1g4x6AUAQoyCy9QjVi2fq70VUoematJ/txGi4ZcKiUFaWm7Z
+         z5gpNSCIf3dGEYyGGiMUwf4FIEvF4JEsRpcVbTYXuDIOZ4nFx3rUZB6RHF5k3SmgS5r0
+         MVCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1795598733; x=1796203533;
+        d=1e100.net; s=20260707; t=1795598742; x=1796203542;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=kFVOFcFtL3Kl1lidL7Hzux9EmFfy+WWbY0BBgURBK0s=;
-        b=DqZAdm1B0+HNhJGL1lyLCKySzKGRD1c2EJNNzJ1Ph24EjQjVdxOR6+KgEI9Fv6F7qw
-         Zd1Y0qWrXnOZPYheq2WGH1lJu0VAx94ysFmgLDhmRxLdE8zHImoWdrPeICBHr2b+5ABV
-         lKh1jY2Hwecl7tQAiXrAp6khSzyHjxKP6rPwwIM3ycwms9yHyFprmnrl+iJiGiv8r+zX
-         CT+V63eMnA4S1A/LfWy9M/rSGFOQbY8scnMgXvmOOk5KcZRn8LvnI5ddqrHwJTWTDJVD
-         FuOOJefwggLjq9Rsbo/bk+bUN8BC9kd9W9sRzFTTn5PzXifsVNNmjFd6c7egZtcVRxyx
-         64Lw==
-X-Gm-Message-State: APuU4Z8JxwaE8a1VfkgydF+TXjaeanUrhMm8hhxSVIrd5RopgnhBXo7V
-	yfdCvacJBKWLicRu1lVnVfcnCqfYmtegxPcmVV1hbXw10oSNwPeQet/+
-X-Gm-Gg: AZFdTZdEjawVjYMQVmw4pXRJ9XYVMa4npJBdMmjj9JOPiKHsDyvzfHqJPovK7oczIui
-	95P0RT4oaRc96b2gAdaVRANwjKa7UFm4oDSff/0FeuXrufFeew4OJ/BHHhHFKjP2wOemdSqfRXw
-	YHoGQX22FV9H1IZsg0Xx4EuDcK0C7Lxh6K5VV1eHqfRwTJ3u7Hxefol4LzUxx7v6n0Zv4AipJmV
-	yFwPbv9rvLAsrhAsj2Y7hrzFIUdldWxhfmI9KZS2q0eEsbDH9pf/iQh5QNKFgf4l3GD6jkVP8kt
-	i1mmYDcUm9776ZLUvF9H84QKKjq2Ag+CsLEwsy7Upqmg1RtfT/KuEhE2PMWyK9115IpDs1xBd1+
-	cnfoOpPmdSc6bI6zdrbYEJHiswdHIEh5+mn7HlxNP/dje9UqeMt6wmt54+rVbpYVff6x04LBAAr
-	6dVAW6qcXDqWXW78ZrZD+yI3Lo0VCJykkOf+6ZcQOPJRIyAh1MeQ1J7ogE7hdCoiOHJT+UkupCH
-	MzQt7AdUAfYjhjWRwp/2nufXwVsSJ3odCHDjpSpW+OOaDGUzCEwW9UhC6GKjlBKDqnzbkIU/OSd
-	DbPHHUIxPe2n/3HOChgF9vtcQJu5SQDC1mjvvur1I38dFhKMJqCDSJI=
-X-Received: by 2002:a17:90b:3d4d:b0:3b3:b704:119c with SMTP id 98e67ed59e1d1-3b41c938935mr15697647a91.37.1795598732549;
-        Wed, 25 Nov 2026 01:25:32 -0800 (PST)
+        bh=GnB+aZxKe6ZtO8gfhG6inB6mdXvFtFPkZxKmjJASbvg=;
+        b=HGJNeW6nuxzEkMcopbcpqWhhtqQpVBC8t5xYuFGOy1gh0zdmmshjwJ35/Ey9ZAMqk5
+         9Tz35DOcYtv/Q/Y384ZcJ91kS1Y7GhDJbb1PqxD+ZSX95vppvVXqYacaJ5trjz0JxOEd
+         egNdpzXiLZfFJO85mR7HOJTNYnQS+P76mpDlMo4XrjnrBQOWfJr7w/SoGfV/OfyTEh1n
+         aIV6iMr28DqJ+Lofr7yABpMdbCGqCDd73n41kAB27qy7jsCPu99/yFxTQWwq4/ua5NgM
+         0ggBhGjHhLRpcU74r5rtdOXMq5H95DyC8yATw18l72BPNFB5sqodXgTdpwYBctMc2LIb
+         8CiA==
+X-Gm-Message-State: APuU4Z+PEa8GSac7PxtFIxSvJVSkxRLM69ZGUaPb5CLtH9GA40RScdJT
+	/x4eHbtw/llGSQzvibOC8e2loho1Nd7nbZxz6jMDPxGrGoWyMnvMu0Qtj/nUenPW
+X-Gm-Gg: AZFdTZdL571B8Gj0fq66JEBkYA2NoRou27JyD8mefNXSnbAOU+OsH3BfKCYM0N308z4
+	jyEQx0Ve237mBtgLBbbzA0U6wvKs8Zf44+7T9rvLr6z9ma6xwNZxjo5oBksZFY1lFa+Pli78mSk
+	O1mC6aiy2jBdn5EMrWVfS/aXHJgC18wB4kuU0AHmOG9fveu9WBNNh5sL0m373wS4aQ+CXJ+jC10
+	jsmElHDaHebYR5AT+PrHPCvlYCpj0z87uGEKulmUC0/qRvXZqIfA09D/p8xmOCMpOnbmdTMFJ7G
+	ggqYy4BaKyRujX2WiY7lFmeKFz/dKLvAjLsdtXC6qW+OozXYhPZ1Mr0jyhb3tcFG6MW1KS3kPdn
+	TBZL/g4PI2vB3O9gQnhudyrNKA84OV/M79yXVusNayb/WD0oxDlfRq97WOlZAQ0pRpo5VNfShA5
+	vLJBfCaQ8Ih4lqsESDdpGnhaxes4Ood28LOM4TZsZSBQQbnQVSs0oSjUvUHEZ0YB/ZI25Ypt43O
+	HJ4dl/iNsnhNKzFk23VBIw1MNKg0lEapv8KPtKX2K3+nk/xUabwyK7Wth+Q5wqBjNgBX1r0XDv0
+	SrF52ZuSwt7v7+4ZfGs+X5h1SW28UrzqOA==
+X-Received: by 2002:a17:902:e847:b0:2ed:3db6:2eb0 with SMTP id d9443c01a7336-2f03f1d63c6mr171538965ad.48.1795598742548;
+        Wed, 25 Nov 2026 01:25:42 -0800 (PST)
 Received: from server225.. ([39.170.101.209])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3b41ad0b52dsm29160242a91.5.2026.11.25.01.25.30
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2f03f142b8bsm80883155ad.70.2026.11.25.01.25.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Nov 2026 01:25:32 -0800 (PST)
+        Wed, 25 Nov 2026 01:25:42 -0800 (PST)
 From: Ping Li <leeonion.muyu@gmail.com>
 To: miquel.raynal@bootlin.com,
 	richard@nod.at,
 	vigneshr@ti.com
 Cc: linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
-	leeonion.muyu@gmail.com
-Subject: Re: [PATCH v2 3/3] mtd: rawnand: r852: bounce non-linear-map buffers
-Date: Wed, 25 Nov 2026 17:25:27 +0800
-Message-Id: <20261125092527.1938256-1-leeonion.muyu@gmail.com>
+	Ping Li <leeonion.muyu@gmail.com>
+Subject: [PATCH v3 0/3] mtd: rawnand: protect DMA engines from vmalloc'd buffers
+Date: Wed, 25 Nov 2026 17:25:35 +0800
+Message-Id: <20261125092538.1938516-1-leeonion.muyu@gmail.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <875wxl1ea6.fsf@bootlin.com>
-References: <875wxl1ea6.fsf@bootlin.com>
+In-Reply-To: <20261123070440.3060882-1-leeonion.muyu@gmail.com>
+References: <20261123070440.3060882-1-leeonion.muyu@gmail.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261125_012534_076786_4C65DE7D 
-X-CRM114-Status: UNSURE (   9.10  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20261125_012543_492652_FD6BC626 
+X-CRM114-Status: GOOD (  13.35  )
 X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -104,37 +103,67 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no
-	version=4.0.1
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-From: leeonion.muyu@gmail.com
+While discussing a proposal to also allocate the mtdchar read/write
+bounce buffers with kvmalloc() [1], an audit showed that raw NAND
+controllers may DMA the buffers handed by the NAND core without
+declaring NAND_USES_DMA, so nand_base never bounces non-linear-map
+buffers for them (see the use_bounce_buf logic in
+nand_do_read_ops()/nand_do_write_ops()).
 
-Hi Miquel,
+Non-linear-map buffers are not hypothetical: mtdblock's write cache
+is vmalloc'ed and UBIFS passes vmalloc'ed LPT buffers to
+mtd_write().
 
-On 25/11/2026 at 09:55:13 +01, Miquel Raynal wrote:
-> Why do we need a local bounce if the core can do it with
-> NAND_USES_DMA?
+intel and r852 have no protection at all; declaring NAND_USES_DMA
+lets nand_base bounce through chip->data_buf as the other
+DMA-capable controllers (arasan, denali, meson, mtk, nuvoton...)
+already do.  r852 keeps its existing local bounce, which is still
+needed for the hardware's 512-byte alignment requirement.
 
-You are right, declaring NAND_USES_DMA is the consistent approach
-with the other controllers in this series, and I will rework this
-patch that way.  One part of the local check needs to stay though:
-the 512-byte alignment condition.  The hardware requires
-R852_DMA_LEN alignment, which the core condition (chip->buf_align,
-default 1) does not know about, so misaligned linear buffers still
-need the pre-existing local bounce.  The virt_addr_valid() part of
-the local condition becomes redundant once the core bounces the
-non-linear-map buffers, and v3 reverts it to the original form.
+While at it, a leak in intel's ebu_dma_start() (mapping never
+unmapped on success, wrong device used on the error path) found
+during the audit is fixed as well.
 
-> Also please add Cc: stable to these three patches.
+Changes in v3 (following Miquel's review [2]):
+- r852: use the core bounce through NAND_USES_DMA instead of
+  extending the local condition; the local alignment check stays,
+  as the core condition (chip->buf_align, default 1) does not
+  cover the 512-byte hardware requirement.
+- Add Cc: stable to the three patches.
 
-Done in v3, thanks.
+Changes in v2 (following the AI review of v1):
+- Drop the fsmc patch: nothing has set host->mode since
+  a1b1e1d5bdfe ("mtd: nand: fsmc: finally remove
+  fsmc_nand_platform_data"), so the DMA paths are dead code and
+  fsmc_exec_op() always takes the PIO branch.
+- Fix the Fixes: tags.
+- Add a fix for the ebu_dma_start() unmap problems.
 
-Ping
+[1] https://lore.kernel.org/linux-mtd/20261119090055.1255028-1-ping.li@horizon.auto/
+[2] https://lore.kernel.org/all/875wxl1ea6.fsf@bootlin.com/
+
+Ping Li (3):
+  mtd: rawnand: intel: declare NAND_USES_DMA
+  mtd: rawnand: intel: unmap the DMA buffer in ebu_dma_start()
+  mtd: rawnand: r852: declare NAND_USES_DMA
+
+ drivers/mtd/nand/raw/intel-nand-controller.c |  8 +++++---
+ drivers/mtd/nand/raw/r852.c                  | 10 ++++++++++
+ 2 files changed, 15 insertions(+), 3 deletions(-)
+
+
+base-commit: aebb7274476403040d582c61478df8f4a7bf9cd3
+-- 
+2.34.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
