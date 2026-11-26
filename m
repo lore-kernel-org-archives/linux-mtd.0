@@ -2,64 +2,56 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01D85606A31E
-	for <linux-mtd@archiver.kernel.org>; Thu, 26 Nov 2026 12:29:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 546BE606A31C
+	for <linux-mtd@archiver.kernel.org>; Thu, 26 Nov 2026 12:42:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=BXP6jlW2;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=163.com header.i=@163.com header.a=rsa-sha256 header.s=s110527 header.b=D+2HAIPh
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=P+FUAJGm;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=FD82p+3n
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Reply-To:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:References:
+	In-Reply-To:Cc:To:Subject:From:Message-ID:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=cOXfp3geA7Hmhk2W/OnggO1nSGOf+qAghQeCgMFni/I=; b=BXP6jlW2UFP91cEybQGgZARE3l
-	xsusYQwmF8ZMurMlROqYMPYzqRoBFc4fGEQU24iPsWnDHSNOG/TemYAoK1GKrZdkmPNGK7sAi8Mdx
-	1JH1Kwmb1L4KO2+qzyTRKl/XlJTNLGabbAnsJBrob5d6evnvN0Cs+Z8NE5CQgG0N8/70g5XPhbHI+
-	q1wWb8Pwb/s7lc9nVjWWWmYwZzL7nOf4+FajoSm0z84jttr+bCJxuMwfvN6lNcy4WrofrBl2UNeeF
-	/gZO74lrHYexjPUbTiXyZ//UhGj3JgyOZSwHS+qP7gxpTudyaGEcAbS11ft4g1SwKz99k8tZJaw6U
-	HOSb4qDw==;
+	bh=m94jCkl6dW+qjs8SJE2wY5UiBO+pjKL2h/B6YVCJKsU=; b=P+FUAJGmiccTd4xZBl4zpPfnA1
+	l5haGIQxVhmGCGxbkQ0+PAGzORd+33pcIsTT/8gEmqMnvLqEAfdazOZUW9UjK14Jf0KbBnTmOAFji
+	350ja/I9jIP2eJTa7RAkxxFwVeqkxXtMV9hI6PEsEYeTuUI28eGaEsZP5OOBFiaFFoJ4awLiSJ+hV
+	zT5CTdAULzwtSwz4vNV/ebJEQCAaO4hd2Jn8StmsDGX486L5jMAG25H8L8qRmFsV2lp/akKAk3g0z
+	PD/rsZzIzCIZFxtY3uIczRzNTQqswhy6I//IvIVrffFSffku4gaH9eI6hj3rKkTIyK1ci/CBE39R3
+	mn1jRGGw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xWYb8-0000000D9bV-2Wnz;
-	Thu, 26 Nov 2026 12:29:10 +0000
-Received: from m16.mail.163.com ([220.197.31.2])
+	id 1xWYo4-0000000DCJo-2rZP;
+	Thu, 26 Nov 2026 12:42:32 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xWYb3-0000000D9Yr-2sgd
+	id 1xWYo3-0000000DCIt-2rRE
 	for linux-mtd@lists.infradead.org;
-	Thu, 26 Nov 2026 12:29:07 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:To:Subject:Date:Message-Id:MIME-Version; bh=XT
-	XljccdonaNvjC+NUnCfR3TEYSwH8nx+I9ubDsYWNg=; b=D+2HAIPh24W8mULGZU
-	tm0TZn3UHizgWw7TPudSyHjEljOLKk01NDdi3HumJlULXSZ5OJdBJLp1VHTsVfJx
-	aVCl47c2Nz6iacLR0506cZeflPXKN5t4wZwBNh7wh+xse1jXZ+W9klr+BCa4tKwc
-	GBE+A1s2s0uVt4f7p2l27/KJQ=
-Received: from shaos.localdomain (unknown [])
-	by gzga-smtp-mtada-g0-0 (Coremail) with SMTP id _____wDn_ywAJghruGlULA--.30936S2;
-	Thu, 26 Nov 2026 20:28:49 +0800 (CST)
-From: shaos <shawnq1@163.com>
-To: dwmw2@infradead.org,
-	richard@nod.at
-Cc: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: [PATCH] jffs2: validate summary entry offsets before scanning
-Date: Thu, 26 Nov 2026 12:28:48 +0000
-Message-Id: <20261126122848.1504727-1-shawnq1@163.com>
-X-Mailer: git-send-email 2.34.1
-X-Archived-By: <archiver.kernel.org>
-MIME-Version: 1.0
-X-CM-TRANSID: _____wDn_ywAJghruGlULA--.30936S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW3Jry5ArWxCr43GFykurWDXFb_yoWxAw47pF
-	9IkrW5tF48JF43Zw4ftr1ku34fuwn7AFWUXry29wnIya97t3W8Za1rtryS9F1Fyr4DCry5
-	KFs0ga15uw1UJFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j2VbkUUUUU=
-X-CM-SenderInfo: pvkd40jtr6il2tof0z/xtbC0AJmdGsIJgITrwAA37
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261126_042906_177844_92D93C68 
-X-CRM114-Status: GOOD (  18.35  )
-X-Spam-Score: -1.8 (-)
+	Thu, 26 Nov 2026 12:42:31 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id 5E7604059E;
+	Thu, 26 Nov 2026 12:42:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF7771F000CA;
+	Thu, 26 Nov 2026 12:42:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1795696951;
+	bh=Jt6of5gwwIM9wkFKgz0k/5b9nM5c1mT4aWCb9BHQK1M=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=FD82p+3na30zf7Q82gjCxOuL4oIHQrB7uwuHsIINmjNi7G8hKVKWGAhElixtrI8E3
+	 HOdufZ/V14lbNGUtDNW9IC6QakRKO+SycyT89jqWSVHkELk/XmP9ZD8p586nby+upb
+	 vMiLBVBDPJRg2fR6ZdCFCMvJKF8LP81yEjawCjJDNncpV7GJA1Cj6vchx/gt/oTPlA
+	 xJmotZGBSP//KlPaIkrr3pc6mkZte1EfALwpaJ+ksvHb3LS29BpcVMY0LiY9UfpbqG
+	 CzDh2WhE2MCi/71sm+NlfUeHk9hib+vJsNScHYDNNFR73J3J48I53/F7hlklTG6pl5
+	 VzMO9J7PCUXHA==
+Message-ID: <sashiko-outbox-235513@kernel.org>
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH] jffs2: validate summary entry offsets before scanning
+To: shaos <shawnq1@163.com>, dwmw2@infradead.org, richard@nod.at
+Cc: linux-mtd@lists.infradead.org
+In-Reply-To: <20261126122848.1504727-1-shawnq1@163.com>
+References: <20261126122848.1504727-1-shawnq1@163.com>
+Date: Thu, 26 Nov 2026 12:42:30 +0000
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,204 +61,104 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Reply-To: sashiko-reviews@lists.linux.dev
+X-Archived-By: <archiver.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-8.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-Hello,
-
-A JFFS2 summary with valid CRCs can list the same on-flash node
-offset more than once. The second entry is passed to
-sum_link_node_ref(), and jffs2_link_node_ref() hits a BUG because
-the new reference is not immediately after the preceding reference.
-Mounting the crafted image on an MTD device therefore crashes the
-kernel.
-
-Validate summary entry sizes, offsets, ordering, and bounds before
-adding any references. If validation fails, return to the existing
-full eraseblock scan. The scan then uses the raw nodes, which remain
-valid in the reproducer.
-
-This is a manually constructed reproducer. It does not require a
-sanitizer. Mounting the crafted image requires administrative access
-to an MTD device. No unprivileged mount path, information disclosure,
-or code execution is demonstrated.
-
-HEAD commit:    8d7fe9885c62fc9a95bf55d9db244d9672a8aadc
-git tree:       fe970b05333fb8e41da21e9e289f652abcc7cba7
-source version: Linux 7.4.0-rc4-g8d7fe9885c62
-compiler:       gcc 11.4.0, GNU ld 2.38
-
-The Gist contains the complete console output, kernel configuration,
-PoC, and summary-image builder:
-https://gist.githubusercontent.com/shaos26/f9e640d9007f000a2af427056e64df76/raw/ce3f8ac28eccb971bc86f16d47083c43b9b7a6af/console-output.txt
-https://gist.githubusercontent.com/shaos26/f9e640d9007f000a2af427056e64df76/raw/ce3f8ac28eccb971bc86f16d47083c43b9b7a6af/kernel-config.txt
-https://gist.githubusercontent.com/shaos26/f9e640d9007f000a2af427056e64df76/raw/ce3f8ac28eccb971bc86f16d47083c43b9b7a6af/poc.c
-https://gist.githubusercontent.com/shaos26/f9e640d9007f000a2af427056e64df76/raw/ce3f8ac28eccb971bc86f16d47083c43b9b7a6af/mkjffs2.py
-
-To reproduce, build the kernel from the HEAD commit above using
-kernel-config.txt. Then download poc.c and mkjffs2.py from the Gist
-and run:
-
-    mkdir -p root
-    for kind in trigger control nosummary; do
-        python3 mkjffs2.py "$kind" "root/$kind.img"
-    done
-    gcc -O2 -static -Wall -Wextra -o root/init poc.c
-    (cd root && find . -print0 | cpio --null -o -H newc |
-        gzip -9) > initramfs.cpio.gz
-
-Run the trigger in a disposable QEMU guest. The trigger is expected
-to panic the unpatched kernel, so timeout is used to stop QEMU:
-
-    timeout -k 2 15 qemu-system-x86_64 -m 512 -smp 1 \
-        -kernel linux/build/arch/x86/boot/bzImage \
-        -initrd initramfs.cpio.gz \
-        -append 'console=ttyS0 rdinit=/init testcase=trigger oops=panic panic=1' \
-        -display none -serial file:trigger.log -monitor none -no-reboot
-
-Repeat with testcase=control and testcase=nosummary; both should
-mount successfully. The Gist console output records these controls
-and the patched-kernel run.
-
-The unpatched kernel reproduces the BUG at fs/jffs2/nodelist.c:622.
-With this patch, the malformed summary is rejected and the full scan
-mounts the same image successfully. The valid-summary control also
-mounts successfully.
-
-Fixes: e631ddba5887 ("[JFFS2] Add erase block summary support (mount time improvement)")
-Cc: stable@vger.kernel.org
-Signed-off-by: shaos <shawnq1@163.com>
----
- fs/jffs2/summary.c | 97 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 97 insertions(+)
-
-diff --git a/fs/jffs2/summary.c b/fs/jffs2/summary.c
-index 4521a7723f306..d18bfb71d9fdd 100644
---- a/fs/jffs2/summary.c
-+++ b/fs/jffs2/summary.c
-@@ -381,6 +381,96 @@ static struct jffs2_raw_node_ref *sum_link_node_ref(struct jffs2_sb_info *c,
- 	return jffs2_link_node_ref(c, jeb, jeb->offset + ofs, len, ic);
- }
- 
-+/* Check summary offsets before they are used to build the node-ref list. */
-+static int jffs2_sum_check_offsets(struct jffs2_sb_info *c,
-+				   struct jffs2_raw_summary *summary,
-+				   uint32_t sumsize)
-+{
-+	void *sp = summary->sum;
-+	size_t remaining;
-+	u32 prev_end, sum_start;
-+	unsigned int i;
-+
-+	if (sumsize < sizeof(*summary) + sizeof(struct jffs2_sum_marker))
-+		return -ENOTRECOVERABLE;
-+
-+	remaining = sumsize - sizeof(*summary) -
-+		    sizeof(struct jffs2_sum_marker);
-+	prev_end = PAD(je32_to_cpu(summary->cln_mkr));
-+	sum_start = c->sector_size - sumsize;
-+
-+	for (i = 0; i < je32_to_cpu(summary->sum_num); i++) {
-+		u16 nodetype;
-+		u32 offset, len;
-+		size_t entry_size;
-+
-+		if (remaining < sizeof(struct jffs2_sum_unknown_flash))
-+			return -ENOTRECOVERABLE;
-+
-+		nodetype = je16_to_cpu(((struct jffs2_sum_unknown_flash *)sp)->nodetype);
-+		switch (nodetype) {
-+		case JFFS2_NODETYPE_INODE: {
-+			struct jffs2_sum_inode_flash *spi = sp;
-+
-+			entry_size = sizeof(*spi);
-+			if (remaining < entry_size)
-+				return -ENOTRECOVERABLE;
-+			offset = je32_to_cpu(spi->offset);
-+			len = je32_to_cpu(spi->totlen);
-+			break;
-+		}
-+		case JFFS2_NODETYPE_DIRENT: {
-+			struct jffs2_sum_dirent_flash *spd = sp;
-+
-+			if (remaining < offsetof(struct jffs2_sum_dirent_flash, name))
-+				return -ENOTRECOVERABLE;
-+			entry_size = JFFS2_SUMMARY_DIRENT_SIZE(spd->nsize);
-+			if (remaining < entry_size)
-+				return -ENOTRECOVERABLE;
-+			offset = je32_to_cpu(spd->offset);
-+			len = je32_to_cpu(spd->totlen);
-+			break;
-+		}
-+#ifdef CONFIG_JFFS2_FS_XATTR
-+		case JFFS2_NODETYPE_XATTR: {
-+			struct jffs2_sum_xattr_flash *spx = sp;
-+
-+			entry_size = sizeof(*spx);
-+			if (remaining < entry_size)
-+				return -ENOTRECOVERABLE;
-+			offset = je32_to_cpu(spx->offset);
-+			len = je32_to_cpu(spx->totlen);
-+			break;
-+		}
-+		case JFFS2_NODETYPE_XREF: {
-+			struct jffs2_sum_xref_flash *spr = sp;
-+
-+			entry_size = sizeof(*spr);
-+			if (remaining < entry_size)
-+				return -ENOTRECOVERABLE;
-+			offset = je32_to_cpu(spr->offset);
-+			len = sizeof(struct jffs2_raw_xref);
-+			break;
-+		}
-+#endif
-+		default:
-+			/* Unknown types already require a full scan. */
-+			return -ENOTRECOVERABLE;
-+		}
-+
-+		if ((offset & 3) || offset < prev_end || offset > sum_start ||
-+		    !len || len > sum_start - offset ||
-+		    PAD(len) > sum_start - offset)
-+			return -ENOTRECOVERABLE;
-+
-+		prev_end = offset + PAD(len);
-+		sp += entry_size;
-+		remaining -= entry_size;
-+	}
-+
-+	return 0;
-+}
-+
- /* Process the stored summary information - helper function for jffs2_sum_scan_sumnode() */
- 
- static int jffs2_sum_process_sum_data(struct jffs2_sb_info *c, struct jffs2_eraseblock *jeb,
-@@ -613,6 +703,13 @@ int jffs2_sum_scan_sumnode(struct jffs2_sb_info *c, struct jffs2_eraseblock *jeb
- 		goto crc_err;
- 	}
- 
-+	ret = jffs2_sum_check_offsets(c, summary, sumsize);
-+	if (ret) {
-+		JFFS2_WARNING("Invalid summary entries in eraseblock at 0x%08x\n",
-+			      jeb->offset);
-+		return 0;
-+	}
-+
- 	if ( je32_to_cpu(summary->cln_mkr) ) {
- 
- 		dbg_summary("Summary : CLEANMARKER node \n");
--- 
-2.43.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+VGhhbmsgeW91IGZvciB5b3VyIGNvbnRyaWJ1dGlvbiEgU2FzaGlrbyBBSSByZXZpZXcgZm91bmQg
+MyBwb3RlbnRpYWwKaXNzdWVzIHRvIGNvbnNpZGVyOgotIFtNZWRpdW1dIGpmZnMyOiB1bnZhbGlk
+YXRlZCBjbG5fbWtyIGluIGpmZnMyX3N1bV9jaGVja19vZmZzZXRzKCkKICBhbGxvd3MgQlVHKCkK
+LSBbTWVkaXVtXSBqZmZzMjogbWlzc2luZyA0LWJ5dGUgYWxpZ25tZW50IGNoZWNrIG9uIHN1bXNp
+emUgaW4KICBqZmZzMl9zdW1fY2hlY2tfb2Zmc2V0cygpCi0gW01lZGl1bV0gamZmczI6IHN1bXNp
+emUgbWluaW11bSBjaGVjayBpbiBqZmZzMl9zdW1fY2hlY2tfb2Zmc2V0cygpCiAgcnVucyB0b28g
+bGF0ZQotLQoKY29tbWl0IDgyYWU3OTg5ZGI5ZGFkNDdlZWFmNjE1MmQ4MWNkNmI1ZjU0NmVhNGIK
+QXV0aG9yOiBzaGFvcyA8c2hhd25xMUAxNjMuY29tPgoKamZmczI6IHZhbGlkYXRlIHN1bW1hcnkg
+ZW50cnkgb2Zmc2V0cyBiZWZvcmUgc2Nhbm5pbmcKClRoaXMgY29tbWl0IGFkZHMgamZmczJfc3Vt
+X2NoZWNrX29mZnNldHMoKSB0byB2YWxpZGF0ZSBzdW1tYXJ5IGVudHJ5CnNpemVzLCBvZmZzZXRz
+LCBvcmRlcmluZywgYW5kIGJvdW5kcyBiZWZvcmUgYnVpbGRpbmcgdGhlIG5vZGUtcmVmIGxpc3Qs
+CmZhbGxpbmcgYmFjayB0byBhIGZ1bGwgZXJhc2VibG9jayBzY2FuIHdoZW4gdmFsaWRhdGlvbiBm
+YWlscy4KCj4gZGlmZiAtLWdpdCBhL2ZzL2pmZnMyL3N1bW1hcnkuYyBiL2ZzL2pmZnMyL3N1bW1h
+cnkuYwo+IGluZGV4IDQ1MjFhNzcyM2YzMDYuLmQxOGJmYjcxZDlmZGQgMTAwNjQ0Cj4gLS0tIGEv
+ZnMvamZmczIvc3VtbWFyeS5jCj4gKysrIGIvZnMvamZmczIvc3VtbWFyeS5jCj4gQEAgLTM4MSw2
+ICszODEsOTYgQEAgc3RhdGljIHN0cnVjdCBqZmZzMl9yYXdfbm9kZV9yZWYgKnN1bV9saW5rX25v
+ZGVfcmVmKHN0cnVjdCBqZmZzMl9zYl9pbmZvICpjLAo+ICAJcmV0dXJuIGpmZnMyX2xpbmtfbm9k
+ZV9yZWYoYywgamViLCBqZWItPm9mZnNldCArIG9mcywgbGVuLCBpYyk7Cj4gIH0KPiAgCj4gKy8q
+IENoZWNrIHN1bW1hcnkgb2Zmc2V0cyBiZWZvcmUgdGhleSBhcmUgdXNlZCB0byBidWlsZCB0aGUg
+bm9kZS1yZWYgbGlzdC4gKi8KPiArc3RhdGljIGludCBqZmZzMl9zdW1fY2hlY2tfb2Zmc2V0cyhz
+dHJ1Y3QgamZmczJfc2JfaW5mbyAqYywKPiArCQkJCSAgIHN0cnVjdCBqZmZzMl9yYXdfc3VtbWFy
+eSAqc3VtbWFyeSwKPiArCQkJCSAgIHVpbnQzMl90IHN1bXNpemUpCj4gK3sKPiArCXZvaWQgKnNw
+ID0gc3VtbWFyeS0+c3VtOwo+ICsJc2l6ZV90IHJlbWFpbmluZzsKPiArCXUzMiBwcmV2X2VuZCwg
+c3VtX3N0YXJ0Owo+ICsJdW5zaWduZWQgaW50IGk7Cj4gKwo+ICsJaWYgKHN1bXNpemUgPCBzaXpl
+b2YoKnN1bW1hcnkpICsgc2l6ZW9mKHN0cnVjdCBqZmZzMl9zdW1fbWFya2VyKSkKPiArCQlyZXR1
+cm4gLUVOT1RSRUNPVkVSQUJMRTsKPiArCj4gKwlyZW1haW5pbmcgPSBzdW1zaXplIC0gc2l6ZW9m
+KCpzdW1tYXJ5KSAtCj4gKwkJICAgIHNpemVvZihzdHJ1Y3QgamZmczJfc3VtX21hcmtlcik7Cj4g
+KwlwcmV2X2VuZCA9IFBBRChqZTMyX3RvX2NwdShzdW1tYXJ5LT5jbG5fbWtyKSk7Cj4gKwlzdW1f
+c3RhcnQgPSBjLT5zZWN0b3Jfc2l6ZSAtIHN1bXNpemU7CgpbU2V2ZXJpdHk6IE1lZGl1bV0KU2hv
+dWxkIGpmZnMyX3N1bV9jaGVja19vZmZzZXRzKCkgYWxzbyByZWplY3QgYW4gdW5hbGlnbmVkIHN1
+bV9zdGFydCAob3IKc3Vtc2l6ZSk/CgpUaGUgbG9vcCBiZWxvdyBjaGVja3MgKG9mZnNldCAmIDMp
+IGZvciBlYWNoIGVudHJ5LCBidXQgaWYgKHN1bV9zdGFydCAmIDMpCmlzIG5vbi16ZXJvIGFuZCBh
+bGwgZW50cmllcyBlbmQgYXQgb3IgYmVmb3JlIChzdW1fc3RhcnQgJiB+MyksIHZhbGlkYXRpb24K
+c3VjY2VlZHMuICBqZmZzMl9zdW1fc2Nhbl9zdW1ub2RlKCkgdGhlbiBjYWxscyBzdW1fbGlua19u
+b2RlX3JlZihjLCBqZWIsCm9mcyB8IFJFRl9OT1JNQUwsIHN1bXNpemUsIE5VTEwpLCB3aGljaCBt
+YXJrcyBkaXJ0eSBzcGFjZSBvbmx5IHVwIHRvCihvZnMgJiB+MykgYW5kIGxpbmtzIGplYi0+bGFz
+dF9ub2RlIGF0IGplYi0+b2Zmc2V0ICsgKG9mcyAmIH4zKSB3aGlsZQpjcmVkaXRpbmcgb25seSBz
+dW1zaXplIHRvIGplYi0+dXNlZF9zaXplLiAgQWZ0ZXIgdGhlIHJlbWFpbmluZyAob2ZzICYgMykK
+Ynl0ZXMgb2YgamViLT5mcmVlX3NpemUgYXJlIG1vdmVkIHRvIGplYi0+d2FzdGVkX3NpemUgYW5k
+IGplYi0+ZnJlZV9zaXplCmlzIHplcm9lZCwgX19yZWZfdG90bGVuKCkgZm9yIGplYi0+bGFzdF9u
+b2RlIGJlY29tZXMgc3Vtc2l6ZSArIChvZnMgJiAzKSwKZXhjZWVkaW5nIGplYi0+dXNlZF9zaXpl
+IGFuZCB0cmlnZ2VyaW5nIEJVRygpIGluCl9famZmczJfZGJnX2FjY3RfcGFyYW5vaWFfY2hlY2tf
+bm9sb2NrKCkgb3IgZHVyaW5nIGdhcmJhZ2UgY29sbGVjdGlvbiBpbgpqZmZzMl9tYXJrX25vZGVf
+b2Jzb2xldGUoKS4KCj4gKwo+ICsJZm9yIChpID0gMDsgaSA8IGplMzJfdG9fY3B1KHN1bW1hcnkt
+PnN1bV9udW0pOyBpKyspIHsKCltTZXZlcml0eTogTWVkaXVtXQpDYW4gYW4gdW52YWxpZGF0ZWQg
+c3VtbWFyeS0+Y2xuX21rciBzdGlsbCB0cmlnZ2VyIEJVRygpIHdoZW4Kc3VtbWFyeS0+c3VtX251
+bSBpcyAwIG9yIHdoZW4gUEFEKGplMzJfdG9fY3B1KHN1bW1hcnktPmNsbl9ta3IpKSB3cmFwcwph
+cm91bmQ/CgpwcmV2X2VuZCBpcyBvbmx5IGNvbXBhcmVkIGFnYWluc3Qgc3VtX3N0YXJ0IGluc2lk
+ZSB0aGlzIGxvb3AuICBXaGVuCnN1bW1hcnktPnN1bV9udW0gaXMgMCwgdGhlIGxvb3AgZG9lcyBu
+b3QgcnVuIGFuZCBqZmZzMl9zdW1fY2hlY2tfb2Zmc2V0cygpCnJldHVybnMgMCBmb3IgYW55IHN1
+bW1hcnktPmNsbl9ta3IuICBJbiBqZmZzMl9zdW1fc2Nhbl9zdW1ub2RlKCksIGEKY2xuX21rciB3
+aXRoIFBBRChjbG5fbWtyKSA+IGMtPnNlY3Rvcl9zaXplIHRoZW4gaGl0cyBCVUcoKSBpbgpqZmZz
+Ml9zY2FuX2RpcnR5X3NwYWNlKCkgYmVjYXVzZSBzaXplID4gamViLT5mcmVlX3NpemUsIHdoaWxl
+IGEgY2xuX21rcgp3aXRoIHN1bV9zdGFydCA8IFBBRChjbG5fbWtyKSA8PSBjLT5zZWN0b3Jfc2l6
+ZSBhZHZhbmNlcwpjLT5zZWN0b3Jfc2l6ZSAtIGplYi0+ZnJlZV9zaXplIHBhc3Qgb2ZzIGJlZm9y
+ZSBzdW1fbGlua19ub2RlX3JlZigpIGxpbmtzCnRoZSBzdW1tYXJ5IG5vZGUgYXQgb2ZzLCBoaXR0
+aW5nIEJVRygpIGluIGpmZnMyX2xpbmtfbm9kZV9yZWYoKS4gIEFsc28sIGlmCmplMzJfdG9fY3B1
+KHN1bW1hcnktPmNsbl9ta3IpID49IDB4ZmZmZmZmZmQsIFBBRCgpIG92ZXJmbG93cyAzMi1iaXQK
+dW5zaWduZWQgYXJpdGhtZXRpYyBhbmQgd3JhcHMgcHJldl9lbmQgdG8gMC4KClsgLi4uIF0KCj4g
+QEAgLTYxMyw2ICs3MDMsMTMgQEAgaW50IGpmZnMyX3N1bV9zY2FuX3N1bW5vZGUoc3RydWN0IGpm
+ZnMyX3NiX2luZm8gKmMsIHN0cnVjdCBqZmZzMl9lcmFzZWJsb2NrICpqZWIKPiAgCQlnb3RvIGNy
+Y19lcnI7Cj4gIAl9Cj4gIAo+ICsJcmV0ID0gamZmczJfc3VtX2NoZWNrX29mZnNldHMoYywgc3Vt
+bWFyeSwgc3Vtc2l6ZSk7Cj4gKwlpZiAocmV0KSB7Cj4gKwkJSkZGUzJfV0FSTklORygiSW52YWxp
+ZCBzdW1tYXJ5IGVudHJpZXMgaW4gZXJhc2VibG9jayBhdCAweCUwOHhcbiIsCj4gKwkJCSAgICAg
+IGplYi0+b2Zmc2V0KTsKPiArCQlyZXR1cm4gMDsKPiArCX0KCltTZXZlcml0eTogTWVkaXVtXQpE
+b2VzIHRoZSBzdW1zaXplIG1pbmltdW0gY2hlY2sgaW4gamZmczJfc3VtX2NoZWNrX29mZnNldHMo
+KSBydW4gdG9vIGxhdGUKdG8gcHJldmVudCBhbiBvdXQtb2YtYm91bmRzIHJlYWQgaW4gamZmczJf
+c3VtX3NjYW5fc3Vtbm9kZSgpPwoKV2hlbiBzbS0+b2Zmc2V0IGluIHRoZSBvbi1mbGFzaCBqZmZz
+Ml9zdW1fbWFya2VyIG1ha2VzIHN1bXNpemUgc21hbGxlcgp0aGFuIHNpemVvZihzdHJ1Y3QgamZm
+czJfcmF3X3N1bW1hcnkpLCBqZmZzMl9zdW1fc2Nhbl9zdW1ub2RlKCkgaGFzCmFscmVhZHkgcmVh
+ZCBmaWVsZHMgZnJvbSAqc3VtbWFyeSBwYXN0IHRoZSBlbmQgb2YgdGhlIHNjYW4gYnVmZmVyIGFu
+ZApwYXNzZWQgc3Vtc2l6ZSAtIHNpemVvZihzdHJ1Y3QgamZmczJfcmF3X3N1bW1hcnkpIHRvIGNy
+YzMyKCksIHdoaWNoCnVuZGVyZmxvd3MgdG8gYSBodWdlIGxlbmd0aCBiZWZvcmUgamZmczJfc3Vt
+X2NoZWNrX29mZnNldHMoKSBpcyByZWFjaGVkOgoKZnMvamZmczIvc3VtbWFyeS5jOmpmZnMyX3N1
+bV9zY2FuX3N1bW5vZGUoKSB7CiAgICAuLi4KCWNyYyA9IGNyYzMyKDAsIHN1bW1hcnksIHNpemVv
+ZihzdHJ1Y3QgamZmczJfcmF3X3N1bW1hcnkpLTgpOwoKCWlmIChqZTMyX3RvX2NwdShzdW1tYXJ5
+LT5ub2RlX2NyYykgIT0gY3JjKSB7CgkJZGJnX3N1bW1hcnkoIlN1bW1hcnkgbm9kZSBpcyBjb3Jy
+dXB0IChiYWQgQ1JDKVxuIik7CgkJZ290byBjcmNfZXJyOwoJfQoKCWNyYyA9IGNyYzMyKDAsIHN1
+bW1hcnktPnN1bSwgc3Vtc2l6ZSAtIHNpemVvZihzdHJ1Y3QgamZmczJfcmF3X3N1bW1hcnkpKTsK
+ICAgIC4uLgp9CgpDaGVja2luZyB0aGF0IHN1bXNpemUgaXMgYXQgbGVhc3Qgc2l6ZW9mKCpzdW1t
+YXJ5KSArIHNpemVvZihzdHJ1Y3QKamZmczJfc3VtX21hcmtlcikgKGFuZCBhdCBtb3N0IGMtPnNl
+Y3Rvcl9zaXplKSBiZWZvcmUgcmVhZGluZyAqc3VtbWFyeSBhdAp0aGUgc3RhcnQgb2YgamZmczJf
+c3VtX3NjYW5fc3Vtbm9kZSgpIHdvdWxkIGF2b2lkIHRoZSBvdXQtb2YtYm91bmRzIHJlYWQKYW5k
+IGxlbmd0aCB1bmRlcmZsb3cuCgotLSAKU2FzaGlrbyBBSSByZXZpZXcgwrcgaHR0cHM6Ly9zYXNo
+aWtvLmRldi8jL3BhdGNoc2V0LzIwMjYxMTI2MTIyODQ4LjE1MDQ3MjctMS1zaGF3bnExQDE2My5j
+b20/cGFydD0xCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5p
+bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
