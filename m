@@ -2,92 +2,87 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED548606A31C
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F37B0606A323
 	for <linux-mtd@archiver.kernel.org>; Thu, 26 Nov 2026 20:05:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=BNU6hfhp;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=c1AsMzXR
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=gJqioNSz;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=piKJl49t
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id:Date:
-	Subject:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
+	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=MFS+sj3qnYPhV0Hpxw1vS8zolgHbxvDzHYQxsLhMI/s=; b=BNU6hfhpOQ1LmS6N4zLyuVZmVR
-	nk3mKWcKsBnDWFaJ6ZBTVEbdsjBdRgmUh+HuwdRgGIZmSjH49nuLWYhpgHW22aPb8Vc8hgvXmj/in
-	uosZBNLANO+3Sa0cJ/PQZEHXcs2Xv8zEzE7hl6GKHYZSsoniYAfm0GK3rEOrVBrS5mWsfD+aNJsVV
-	DhA1oFIv/aD7Bdti0bZ9RMixofP9ptcQBZVdDVMc83VADwIovFgZqMPVXY0kY42Hgt6BXib4/oBXa
-	G/5+DZQWNioGFgKDfJDUGLjDPF/+p0yht5uqHCSOimtG8ftY4FxbpYywdQtEVPRCjw0ebbkXsOMVd
-	b2/MsAJg==;
+	bh=4q1We+1wfchdxO3gjtJuVCAjA13LMRfo/NJhepVhV4o=; b=gJqioNSzET9Enc8bujx/CyCx6v
+	3fy3fh/pyEnxeVJRcqh19N3D0VUOcnfcPBj3M574T1oDL+dtmLWGbfuDpSyRUSo8ODeHRAwByhY/m
+	Zes4dNDo0HMbCkvYrBkw5Xx86qc3v3LypG1C/XTWvhK4dAR0FxxDr54SB5BxZrZsqJqnxujDOYJUq
+	ml+T/7Dix2Z+qkTRaCgDqrjgkn03s7WN2jsF5clCEaEUUYq+3iLVAOQ61ZN6AEnyVYY8sFOl3LD5h
+	PI6zP3EVwQGwJjxEqvPYLHOh9Qm1WFWTPZhAeHojtB8UmuuDFJNedW7GUa9mhC5Q4v8bRA7k+cKrE
+	qr+NNQhw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xWfiQ-0000000EQdy-3PCV;
-	Thu, 26 Nov 2026 20:05:10 +0000
-Received: from mail-oa1-x2f.google.com ([2001:4860:4864:20::2f])
+	id 1xWfiR-0000000EQeW-3rmf;
+	Thu, 26 Nov 2026 20:05:11 +0000
+Received: from mail-oo1-xc2a.google.com ([2607:f8b0:4864:20::c2a])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xWfiN-0000000EQd2-0r0J
+	id 1xWfiN-0000000EQdG-46qv
 	for linux-mtd@lists.infradead.org;
-	Thu, 26 Nov 2026 20:05:09 +0000
-Received: by mail-oa1-x2f.google.com with SMTP id 586e51a60fabf-483c607ccb4so3777117fac.0
-        for <linux-mtd@lists.infradead.org>; Thu, 26 Nov 2026 12:05:06 -0800 (PST)
+	Thu, 26 Nov 2026 20:05:10 +0000
+Received: by mail-oo1-xc2a.google.com with SMTP id 006d021491bc7-716c0217635so8759314eaf.0
+        for <linux-mtd@lists.infradead.org>; Thu, 26 Nov 2026 12:05:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1795723506; x=1796328306; darn=lists.infradead.org;
-        h=cc:to:content-transfer-encoding:content-type:mime-version
-         :message-id:date:subject:from:from:to:cc:subject:date:message-id
-         :reply-to:content-type;
-        bh=tjcnLeVYykQLpngMcaexUPjWqyhAHn6eUqbyAQMUfmo=;
-        b=c1AsMzXRpcqoL+6jSKQu8OidV3Gw1FfHQSt2n30k/d1kCi9Mn11OAtCO9gbZ7yKnuI
-         HpeHFSjFQ90Id4s80vX3AenGCthTZnz3lAp4BRc25s0yp6Zgq5rBi4wjj8wQAbnXVYD1
-         88LZjeuz/ie/p5METfrTRnhykz9Z5A3+Z4pwU+2R9fiTwdymNR8xWwKzGaHnmIvSq/sT
-         ZsyEqwLVeaNS0rhKJFOCkRl9deft42+WtwLlqSZ5RIlcz+ScFW4G6YiCh2BwrChb3VFa
-         t7LQ+6PYr3VI1rn33lyxvfEFaM94rJVoKw6kUpIHzRL4s5G1FRWGqEB0DdEOlaFt3Hvi
-         RZpg==
+        d=gmail.com; s=20260707; t=1795723507; x=1796328307; darn=lists.infradead.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :content-type:mime-version:subject:date:from:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=xNZN4HN0iarz8uiHWLWlVZj+K8LaQpc5Il8O8NMbuXc=;
+        b=piKJl49tQrmuxj549XItW1HOhwH8a4SRuHMfo3hHZc9lXEZJjtA33ktgQFq5eZHaGm
+         tTp3UVTSyqP7CeS9ipV7Hxy1D1jAdNnPqoUQLmZPo8nzWNCo5b4/E7IIrKCu3YYmAhus
+         v3C+pjtIah49Bk6ABZSz1gxaGQQyp1Bh8c/1S3CxSZwmGnTo5fnMLE9GJ0JK02IICZAK
+         P+hqX5jeQy7HNOEqgiI8iWRVOM1kVBswQZWtaqQZWVmN2Hpohz6N0A9d7K97y9psE1fL
+         S1LNP4BYX10y3TGy2JFswlvdvvmY0BGawR/u5xoKJk+rBb7dV97/fGSFPXrZMfiEYDsG
+         D4/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1795723506; x=1796328306;
-        h=cc:to:content-transfer-encoding:content-type:mime-version
-         :message-id:date:subject:from:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=tjcnLeVYykQLpngMcaexUPjWqyhAHn6eUqbyAQMUfmo=;
-        b=NdCRKMY/JXQkn8E2DHJUkqNK0m88yzRTu/Ygfwv4GDNLwUn9i6fFY4IfEybiqlJg7f
-         p+3s6fL28ZriLehZrzkIpjStsejDNiN378n1w5lRJjXH8ARCrzQ7YnnbcqaQqldO2uH5
-         CqUuMbppX2I1jvEGsxGxo8K8niAAEyhyq8iCJoq0k/TijN1E9rQ3JG8i+pp2ecamuWUW
-         XDnPL7rzvuERHu2aWHKVxHYFOmorbm6ihl04M5yuPAJHiJ/VC1J8ZY8kq93pRSWTuRbF
-         Oty5Ou/tBhD0MnzAC81S9CJlxTFa59w4WIVFRoXdfiLGLGrC0+HcQawT/dF/hfebFZWg
-         eJXQ==
-X-Gm-Message-State: APuU4Z/PbOUwyTAil7Otxn4Gmy9JUPAb4vmm68ZOWZGPYZbRApUoOjAV
-	dyeamRPGw81vn8yeB4wTkhDn+FrTzx8hqeiyYFDZYbJPH/PIe9C7xdgo
-X-Gm-Gg: AZFdTZd0y9RCurCA8wGvw3Q/QwIa186FbNBNva5mgdgU6wr4Q3yyPGFFl05VP7ClaC+
-	l5KCtmUpseu1N7qWyi9vk92Nl70weo22AuhIHoFEJi5scA2xfjRpL+cXQlYdS4exIS8O6NipSCo
-	UrZWOBklqXFAeMfsHaJzrD+o5zizyr5s8XXf3x7Yhqrb3IMMUc07WSTE1qMA57YoU5s+sATsNUk
-	Ll5pnJIhzegyY0PuqlJlRPLTPeXv33o6b1jgMZlCclg1s/9NlhJGnesmDr1PU7FdtV0IYQL7F1K
-	Dc/SkBorI1h8AN+Ov2iPpI2njJtPVGrWwePm8ylvI6MliQPQiOjZz16QjRVMisrv6OYNGOr0EAG
-	QZ3sKqnVKIIJTeUQUgtSA/RduBMFh/lo/PbiKN9D2DV2Umw7qxq0Sy0skWUn5rQOCE7LwIdD+p6
-	C9d2GE/wl/dgjLsGXQ9wg7BQd+rSsBi+6k+loykDVFXnjrhhUGAcxa+MmPy5m8IyVgw4QxzFQiN
-	kM91bF7Bna02Ad3sg57hnmMoCtDfj0uKg3kw12J6TIlZERMj4Isw4M1RvVrY6xno7SLjQ4GGzRp
-	xMkZSCtj1tXxEAHoGepK4u0ce8dglT+J2bdX3DgcfJIl2yZ7nraPtfS8+5wDNGjZxSlbxCKYecc
-	K1wAOEC6qicCtLbSHLbdXf5oxK9DuDrN6I1fFpzEKlbpspY5R/Wn8JY8vkKTPkQ94RDXd4PvcUL
-	FiRyQT0UCUHxMvwtaNDVceT7qWaLExa/QMhJvAlcjguWzb5HC6peXM
-X-Received: by 2002:a05:6870:f61e:b0:4a8:1837:bc27 with SMTP id 586e51a60fabf-4bc7d272a48mr21046401fac.3.1795723505731;
-        Thu, 26 Nov 2026 12:05:05 -0800 (PST)
+        d=1e100.net; s=20260707; t=1795723507; x=1796328307;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :content-type:mime-version:subject:date:from:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=xNZN4HN0iarz8uiHWLWlVZj+K8LaQpc5Il8O8NMbuXc=;
+        b=auvdBTTrbPGL34sZeixCJjSv1YMd39DJVtDs7fe6H9opnRx7SWAlNT5bZlFk0upWkQ
+         Su0a98ld+l6MxdszhPNW5stwzrGYcnaHYJvcu/7isuoTZJ0V+XyGtOZr4EiC91PCs4CG
+         Auj1g7vZKYsyUBJhLkIHIeITWRFpu4Ho4H3N96u4a8MzHLr2fZVf85LaVJuF9TxuFWD5
+         EGXO0lZXygr3uugTT94tRvD4Y+RufaXQ6ZpQw4zFcknNkPM0zSYsru0iw+yQvSm7i7GP
+         iDqB6mgFznUFHkIM2L0FevqOnZEsdgDeDMLL/UDGqkw7RsdXSiOuyPCsJwSjcwXAVFHU
+         hjwg==
+X-Gm-Message-State: APuU4Z9PodfiNeodVRkFZ3bYkMvIle4tKO1WenYxkJIu6EmFljDLuIup
+	09g+z+C1Ur3eTmjQYw7xtuSn+fvLTePUU6ISzt900+60fB+fWVg06TY/
+X-Gm-Gg: AZFdTZevMeLbsARnpr3XVbdO4CUXFepjjfWJ7sl6tbZczdic2cDrAp46UlWqfA9eaxb
+	BQ/VA25eJMMtM731s1/YUYmAYPP4ZbFyv4LiNHJxSdBOwGbByqVXD24qr+cUldDS1PgNoU2UTfi
+	i63KkOLIB/zbpQCKLJh5mjYMbaU1L6+AIUD7Aw4gF7lW/evylVulRpHdUCwkPhPWpWNPExmfjxl
+	nNOIRy3CLd1fgUx1EpUAvYL0mt+xDs3GLMKmqSUJC/1/KBvV4sRiLJd4j53GZ3T3tsyb52sScT5
+	xpbhgVN7U+dn7K7Zh8VNsK5JdMuEDODctIbDkVVN5sU6qcUTAGiq14PDUe1UYW45l6ZFPAHwIFW
+	8IQ8Vg7ramM2YQPSa71yl4l90pDIcpa0v6WMkb+V65OLj7E9zALtDlUExiwkvkDYthU34KFtnvD
+	8UEC9VZH8TR6Fs3aTudPRsX8EuF+v+8HKnmbaf+kqU/p8kW9Om1odk2sqfmFb5UqBY5bvFyd7qc
+	8YUcfJCYufaL+TML25ENB0ILrFCuek952ykDh68KzHraobk9Q53Eo+ftPgR4w1XlnwqNhVOFDMU
+	Yiim4zcq0Lmpkf+rKDFoliimKwEL1tbmwTRsjAruGPeJ4Zk/NRkQ+mMlm4f7OCHoI2z0x6IAS3C
+	IMg4OcJoKYBQaNqPEpr7YIhzFCpXkggwbcM4BxVj40n+pBycWqbcYDGNEWBtqFadbrIBlTiFy4P
+	M9bEN6VqAKyWIDSD3T0XEq2m4uiClqQMYl96Rgl/6WvrRUd8IXipLwHw==
+X-Received: by 2002:a05:6820:1628:b0:713:d536:1d33 with SMTP id 006d021491bc7-71b3277f48fmr16157284eaf.46.1795723506801;
+        Thu, 26 Nov 2026 12:05:06 -0800 (PST)
 Received: from [127.0.1.1] (174-29-1-49.hlrn.qwest.net. [174.29.1.49])
-        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-4bc5fc97bb2sm19548249fac.9.2026.11.26.12.05.04
+        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-4bc5fc97bb2sm19548249fac.9.2026.11.26.12.05.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Nov 2026 12:05:05 -0800 (PST)
+        Thu, 26 Nov 2026 12:05:06 -0800 (PST)
 From: James Hilliard <james.hilliard1@gmail.com>
-Subject: [PATCH v3 0/2] mtd: rawnand: serialize OTP and BBT recovery
- operations
-Date: Thu, 26 Nov 2026 13:04:50 -0700
-Message-Id: <20261126-submit-rawnand-operation-locking-v1-v3-0-cd3794332f23@gmail.com>
+Date: Thu, 26 Nov 2026 13:04:51 -0700
+Subject: [PATCH v3 1/2] mtd: rawnand: serialize OTP operations in the core
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAAAAAAAC/5WQ0U6EMBBFf4X02ZppgVKIMf6H8WFaBra6UGxZX
- LPZf7eAiRufNOnLTWfOvXcuLFJwFFmTXVigxUXnxyTyu4zZA449cdcmzSRIJQRoHk9mcDMP+DH
- i2HI/UcA5LfGjt29u7PkiuEAwuqNKq7ZgiTQF6tx5c3l+2XXCvJKdV/Q6cXBx9uFzi7GIde5/j
- ukBL1UJAjpbdto89QO64731A1sdF3nDlPJvTJmYkIOxWlUd2OqWed1rBHo/pZvNezdmMBJP/4n
- dZGQF6aIwdaFVDhILrdFYyAlroVujoIK6UorW/gPFiNuxm+zhd/MBbfCjO3M/T5xC8CF+dxZcd
- 6pAiW2JAn7yPaaA1y/XtZlU3AEAAA==
-X-Change-ID: 20261108-submit-rawnand-operation-locking-v1-1a0b8fe786d4
+Message-Id: <20261126-submit-rawnand-operation-locking-v1-v3-1-cd3794332f23@gmail.com>
+References: <20261126-submit-rawnand-operation-locking-v1-v3-0-cd3794332f23@gmail.com>
+In-Reply-To: <20261126-submit-rawnand-operation-locking-v1-v3-0-cd3794332f23@gmail.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, 
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
  Arseniy Krasnov <AVKrasnov@sberdevices.ru>, 
@@ -97,9 +92,8 @@ Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
  James Hilliard <james.hilliard1@gmail.com>, stable@vger.kernel.org
 X-Mailer: b4 0.17-dev
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261126_120507_249578_53EC503A 
-X-CRM114-Status: UNSURE (   9.94  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20261126_120508_046543_7DBB7B54 
+X-CRM114-Status: GOOD (  19.19  )
 X-Spam-Score: -1.9 (-)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -113,63 +107,308 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,
 	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=4.0.1
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-Route raw NAND OTP callbacks through core wrappers that hold the chip
-and controller locks, and protect marker writes performed by BBT
-failure recovery. Both paths issue NAND commands outside the ordinary
-MTD read/write wrappers, so they need the same serialization and
-suspend handling as normal operations.
+OTP operations on Macronix MX30LFxG18AC chips switch the device into a
+dedicated mode before reading or programming pages. Their protection-
+register MTD callbacks bypass the raw NAND read/write wrappers. A
+concurrent NAND operation can therefore access the device while OTP
+mode is active, and OTP access can bypass the normal wait for a
+suspended chip.
 
-The first patch registers manufacturer OTP operations with the raw NAND
-core, which invokes them under the normal locks. The second uses those
-locks around BBT recovery marker writes.
+Add OTP callbacks to nand_chip_ops and route raw NAND protection-
+register requests through core wrappers. The wrappers hold the chip and
+controller locks around each callback, so normal NAND I/O cannot
+interleave with OTP access. If the chip is suspended, OTP access waits
+for nand_resume() to clear the suspended flag.
+Device-specific callbacks retain target selection and OTP mode handling.
 
+Fixes: e87161321a40 ("mtd: rawnand: macronix: OTP access for MX30LFxG18AC")
+Cc: stable@vger.kernel.org
+Cc: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
 Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
-
 ---
-Changes in v3:
-- Run raw NAND OTP callbacks under core-managed chip/controller locking
-  and resume handling; keep target selection in the device-specific
-  callbacks.
-- Keep helper visibility changes with the BBT recovery patch that uses
-  them.
-- Link to v2: https://patch.msgid.link/20261122-submit-rawnand-operation-locking-v1-v2-0-030bc867f0c7@gmail.com
-
-Changes in v2:
-- Rebase on nand/next after the BBT logging change.
-- Apply the Macronix locking change on top of the posted OTP error
-  propagation fix; both touch the OTP cleanup path.
-- Link to v1: https://patch.msgid.link/20261108-submit-rawnand-operation-locking-v1-v1-0-565010fc5f8b@gmail.com
-
----
-James Hilliard (2):
-      mtd: rawnand: serialize OTP operations in the core
-      mtd: rawnand: serialize bad-block marker writes during BBT recovery
-
- drivers/mtd/nand/raw/internals.h     |   2 +
- drivers/mtd/nand/raw/nand_base.c     | 110 ++++++++++++++++++++++++++++++++++-
- drivers/mtd/nand/raw/nand_bbt.c      |   2 +
- drivers/mtd/nand/raw/nand_macronix.c |  32 +++++-----
+ drivers/mtd/nand/raw/nand_base.c     | 106 +++++++++++++++++++++++++++++++++++
+ drivers/mtd/nand/raw/nand_macronix.c |  32 +++++------
  include/linux/mtd/rawnand.h          |  24 ++++++++
- 5 files changed, 151 insertions(+), 19 deletions(-)
----
-base-commit: ec1e844b9486302a488abc03ea918db60709766e
-base-tree: git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next
-change-id: 20261108-submit-rawnand-operation-locking-v1-1a0b8fe786d4
-prerequisite-message-id: <20261108-submit-macronix-otp-errors-v1-v1-1-8f64a2ad5a10@gmail.com>
-prerequisite-patch-id: a542c9cd698d2d4c090932b8d74dc6f520a71166
+ 3 files changed, 145 insertions(+), 17 deletions(-)
 
-Best regards,
---  
-James Hilliard <james.hilliard1@gmail.com>
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index 58dbcb004a62..5c877e2536e4 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -6180,6 +6180,98 @@ static const struct nand_ops rawnand_ops = {
+ 	.isbad = rawnand_isbad,
+ };
+ 
++static int nand_get_fact_prot_info(struct mtd_info *mtd, size_t len,
++				   size_t *retlen, struct otp_info *buf)
++{
++	struct nand_chip *chip = mtd_to_nand(mtd);
++	int ret;
++
++	nand_get_device(chip);
++	ret = chip->ops.get_fact_prot_info(chip, len, retlen, buf);
++	nand_release_device(chip);
++
++	return ret;
++}
++
++static int nand_read_fact_prot_reg(struct mtd_info *mtd, loff_t from,
++				   size_t len, size_t *retlen, u_char *buf)
++{
++	struct nand_chip *chip = mtd_to_nand(mtd);
++	int ret;
++
++	nand_get_device(chip);
++	ret = chip->ops.read_fact_prot_reg(chip, from, len, retlen, buf);
++	nand_release_device(chip);
++
++	return ret;
++}
++
++static int nand_get_user_prot_info(struct mtd_info *mtd, size_t len,
++				   size_t *retlen, struct otp_info *buf)
++{
++	struct nand_chip *chip = mtd_to_nand(mtd);
++	int ret;
++
++	nand_get_device(chip);
++	ret = chip->ops.get_user_prot_info(chip, len, retlen, buf);
++	nand_release_device(chip);
++
++	return ret;
++}
++
++static int nand_read_user_prot_reg(struct mtd_info *mtd, loff_t from,
++				   size_t len, size_t *retlen, u_char *buf)
++{
++	struct nand_chip *chip = mtd_to_nand(mtd);
++	int ret;
++
++	nand_get_device(chip);
++	ret = chip->ops.read_user_prot_reg(chip, from, len, retlen, buf);
++	nand_release_device(chip);
++
++	return ret;
++}
++
++static int nand_write_user_prot_reg(struct mtd_info *mtd, loff_t to,
++				    size_t len, size_t *retlen,
++				    const u_char *buf)
++{
++	struct nand_chip *chip = mtd_to_nand(mtd);
++	int ret;
++
++	nand_get_device(chip);
++	ret = chip->ops.write_user_prot_reg(chip, to, len, retlen, buf);
++	nand_release_device(chip);
++
++	return ret;
++}
++
++static int nand_lock_user_prot_reg(struct mtd_info *mtd, loff_t from,
++				   size_t len)
++{
++	struct nand_chip *chip = mtd_to_nand(mtd);
++	int ret;
++
++	nand_get_device(chip);
++	ret = chip->ops.lock_user_prot_reg(chip, from, len);
++	nand_release_device(chip);
++
++	return ret;
++}
++
++static int nand_erase_user_prot_reg(struct mtd_info *mtd, loff_t from,
++				    size_t len)
++{
++	struct nand_chip *chip = mtd_to_nand(mtd);
++	int ret;
++
++	nand_get_device(chip);
++	ret = chip->ops.erase_user_prot_reg(chip, from, len);
++	nand_release_device(chip);
++
++	return ret;
++}
++
+ /**
+  * nand_scan_tail - Scan for the NAND device
+  * @chip: NAND chip object
+@@ -6443,6 +6535,20 @@ static int nand_scan_tail(struct nand_chip *chip)
+ 	mtd->_block_isbad = nand_block_isbad;
+ 	mtd->_block_markbad = nand_block_markbad;
+ 	mtd->_max_bad_blocks = nanddev_mtd_max_bad_blocks;
++	if (chip->ops.get_fact_prot_info)
++		mtd->_get_fact_prot_info = nand_get_fact_prot_info;
++	if (chip->ops.read_fact_prot_reg)
++		mtd->_read_fact_prot_reg = nand_read_fact_prot_reg;
++	if (chip->ops.get_user_prot_info)
++		mtd->_get_user_prot_info = nand_get_user_prot_info;
++	if (chip->ops.read_user_prot_reg)
++		mtd->_read_user_prot_reg = nand_read_user_prot_reg;
++	if (chip->ops.write_user_prot_reg)
++		mtd->_write_user_prot_reg = nand_write_user_prot_reg;
++	if (chip->ops.lock_user_prot_reg)
++		mtd->_lock_user_prot_reg = nand_lock_user_prot_reg;
++	if (chip->ops.erase_user_prot_reg)
++		mtd->_erase_user_prot_reg = nand_erase_user_prot_reg;
+ 
+ 	/*
+ 	 * Initialize bitflip_threshold to its default prior scan_bbt() call.
+diff --git a/drivers/mtd/nand/raw/nand_macronix.c b/drivers/mtd/nand/raw/nand_macronix.c
+index 16847f28b19d..30e42594daec 100644
+--- a/drivers/mtd/nand/raw/nand_macronix.c
++++ b/drivers/mtd/nand/raw/nand_macronix.c
+@@ -326,7 +326,7 @@ static void macronix_nand_deep_power_down_support(struct nand_chip *chip)
+ 	chip->ops.resume = mxic_nand_resume;
+ }
+ 
+-static int macronix_30lfxg18ac_get_otp_info(struct mtd_info *mtd, size_t len,
++static int macronix_30lfxg18ac_get_otp_info(struct nand_chip *nand, size_t len,
+ 					    size_t *retlen,
+ 					    struct otp_info *buf)
+ {
+@@ -368,18 +368,16 @@ static int macronix_30lfxg18ac_otp_disable(struct nand_chip *nand)
+ 				 feature_buf);
+ }
+ 
+-static int __macronix_30lfxg18ac_rw_otp(struct mtd_info *mtd,
++static int __macronix_30lfxg18ac_rw_otp(struct nand_chip *nand,
+ 					loff_t offs_in_flash,
+ 					size_t len, size_t *retlen,
+ 					u_char *buf, bool write)
+ {
+-	struct nand_chip *nand;
+ 	size_t bytes_handled;
+ 	off_t offs_in_page;
+ 	u64 page;
+ 	int ret, cleanup_ret;
+ 
+-	nand = mtd_to_nand(mtd);
+ 	nand_select_target(nand, 0);
+ 
+ 	ret = macronix_30lfxg18ac_otp_enable(nand);
+@@ -418,11 +416,13 @@ static int __macronix_30lfxg18ac_rw_otp(struct mtd_info *mtd,
+ 
+ out_otp:
+ 	if (ret)
+-		dev_err(&mtd->dev, "failed to perform OTP IO: %i\n", ret);
++		dev_err(&nand_to_mtd(nand)->dev,
++			"failed to perform OTP IO: %i\n", ret);
+ 
+ 	cleanup_ret = macronix_30lfxg18ac_otp_disable(nand);
+ 	if (cleanup_ret)
+-		dev_err(&mtd->dev, "failed to leave OTP mode after %s\n",
++		dev_err(&nand_to_mtd(nand)->dev,
++			"failed to leave OTP mode after %s\n",
+ 			write ? "write" : "read");
+ 
+ 	nand_deselect_target(nand);
+@@ -430,22 +430,22 @@ static int __macronix_30lfxg18ac_rw_otp(struct mtd_info *mtd,
+ 	return ret ? ret : cleanup_ret;
+ }
+ 
+-static int macronix_30lfxg18ac_write_otp(struct mtd_info *mtd, loff_t to,
++static int macronix_30lfxg18ac_write_otp(struct nand_chip *nand, loff_t to,
+ 					 size_t len, size_t *rlen,
+ 					 const u_char *buf)
+ {
+-	return __macronix_30lfxg18ac_rw_otp(mtd, to, len, rlen, (u_char *)buf,
++	return __macronix_30lfxg18ac_rw_otp(nand, to, len, rlen, (u_char *)buf,
+ 					    true);
+ }
+ 
+-static int macronix_30lfxg18ac_read_otp(struct mtd_info *mtd, loff_t from,
++static int macronix_30lfxg18ac_read_otp(struct nand_chip *nand, loff_t from,
+ 					size_t len, size_t *rlen,
+ 					u_char *buf)
+ {
+-	return __macronix_30lfxg18ac_rw_otp(mtd, from, len, rlen, buf, false);
++	return __macronix_30lfxg18ac_rw_otp(nand, from, len, rlen, buf, false);
+ }
+ 
+-static int macronix_30lfxg18ac_lock_otp(struct mtd_info *mtd, loff_t from,
++static int macronix_30lfxg18ac_lock_otp(struct nand_chip *nand, loff_t from,
+ 					size_t len)
+ {
+ 	/* See comment in 'macronix_30lfxg18ac_get_otp_info()'. */
+@@ -459,7 +459,6 @@ static void macronix_nand_setup_otp(struct nand_chip *chip)
+ 		"MX30LF2G18AC",
+ 		"MX30LF4G18AC",
+ 	};
+-	struct mtd_info *mtd;
+ 
+ 	if (match_string(supported_otp_models,
+ 			 ARRAY_SIZE(supported_otp_models),
+@@ -474,11 +473,10 @@ static void macronix_nand_setup_otp(struct nand_chip *chip)
+ 	bitmap_set(chip->parameters.set_feature_list,
+ 		   ONFI_FEATURE_ADDR_30LFXG18AC_OTP, 1);
+ 
+-	mtd = nand_to_mtd(chip);
+-	mtd->_get_user_prot_info = macronix_30lfxg18ac_get_otp_info;
+-	mtd->_read_user_prot_reg = macronix_30lfxg18ac_read_otp;
+-	mtd->_write_user_prot_reg = macronix_30lfxg18ac_write_otp;
+-	mtd->_lock_user_prot_reg = macronix_30lfxg18ac_lock_otp;
++	chip->ops.get_user_prot_info = macronix_30lfxg18ac_get_otp_info;
++	chip->ops.read_user_prot_reg = macronix_30lfxg18ac_read_otp;
++	chip->ops.write_user_prot_reg = macronix_30lfxg18ac_write_otp;
++	chip->ops.lock_user_prot_reg = macronix_30lfxg18ac_lock_otp;
+ }
+ 
+ static int macronix_nand_init(struct nand_chip *chip)
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index 43fefff02025..b08aaadf133c 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -1191,6 +1191,16 @@ struct nand_legacy {
+  * @unlock_area: Unlock operation
+  * @setup_read_retry: Set the read-retry mode (mostly needed for MLC NANDs)
+  * @choose_interface_config: Choose the best interface configuration
++ * @get_fact_prot_info: Get information about the factory protection area
++ * @read_fact_prot_reg: Read the factory protection area
++ * @get_user_prot_info: Get information about the user protection area
++ * @read_user_prot_reg: Read the user protection area
++ * @write_user_prot_reg: Write the user protection area
++ * @lock_user_prot_reg: Lock the user protection area
++ * @erase_user_prot_reg: Erase the user protection area
++ *
++ * Protection-register callbacks are called with the chip and controller
++ * locked. They select and deselect the target as required.
+  */
+ struct nand_chip_ops {
+ 	int (*suspend)(struct nand_chip *chip);
+@@ -1200,6 +1210,20 @@ struct nand_chip_ops {
+ 	int (*setup_read_retry)(struct nand_chip *chip, int retry_mode);
+ 	int (*choose_interface_config)(struct nand_chip *chip,
+ 				       struct nand_interface_config *iface);
++	int (*get_fact_prot_info)(struct nand_chip *chip, size_t len,
++				  size_t *retlen, struct otp_info *buf);
++	int (*read_fact_prot_reg)(struct nand_chip *chip, loff_t from,
++				  size_t len, size_t *retlen, u_char *buf);
++	int (*get_user_prot_info)(struct nand_chip *chip, size_t len,
++				  size_t *retlen, struct otp_info *buf);
++	int (*read_user_prot_reg)(struct nand_chip *chip, loff_t from,
++				  size_t len, size_t *retlen, u_char *buf);
++	int (*write_user_prot_reg)(struct nand_chip *chip, loff_t to,
++				   size_t len, size_t *retlen, const u_char *buf);
++	int (*lock_user_prot_reg)(struct nand_chip *chip, loff_t from,
++				  size_t len);
++	int (*erase_user_prot_reg)(struct nand_chip *chip, loff_t from,
++				   size_t len);
+ };
+ 
+ /**
+
+-- 
+2.53.0
 
 
 ______________________________________________________
