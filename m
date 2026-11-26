@@ -2,95 +2,73 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88140606A323
-	for <linux-mtd@archiver.kernel.org>; Thu, 26 Nov 2026 11:25:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 216FF606A31C
+	for <linux-mtd@archiver.kernel.org>; Thu, 26 Nov 2026 11:40:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=aPJPM3R1;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=04x3aYY7
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=sAJsNlzs;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=fxmtEvOW
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=DlvN7U91zTN1McBFoWqdo0lSI21BpFD9IEykRXkIN/c=; b=aPJPM3R1EaykTmIbzDaMD7xDGs
-	trfoOaY0XU0knZDab13ArQgdDTX48I+Up0iZIyCYQ18fAic5nTfPrj7wBXdbDMwln6LJC4ZcWr9nT
-	O061D2X5uWoKMpVqSO7nDbNi6GWkF9944UAAlK3WVa4vBDQA8guAXlukzMrdFaqd/b9Qk3d4eWzxY
-	0E91p0et/i0W90fqUfsQN/GT728oT0UY3SlmQ0axER6X9y7gzj2+b3KgWj50MMvSk5WfOFiPpc1Mz
-	8ivanw8e1OOmQ642+rIR09TDred++brDOzRgP94nAs9189u0csP+EwDYohZ7BNvRwzLXjUA5cfwS8
-	HjTt8bbg==;
+	bh=eqL06Wco7Zc3gWzw9K+YkzWfFXiXiKdojFb3dgX35rQ=; b=sAJsNlzswnpINFl040uKqgFxG6
+	ZrwooSTTmM6WNqk7BYZZhgBEB68kUGQKx6LeQVcuid3JLapzkjYts+oWdRJeVVpZ8e9o4fXPznWe+
+	ipRGEY2SjXqgf9zaM0h1jYe3XkK3SnxPBApNQ5NFEP9MyUx85TEKMaTaUvvl42+R6MGvB8jIWpTz6
+	vJ15ji7U05RlZegrhlRz0opIQs7AeMa1w+bd3XEKYKl3mZtTQQN3zVLYPZGVM1olHazdPWOgCLa3w
+	C9KOwmSCtGXMRBqho3Vrv4cQhw83w4cYpeAbQQdDM+1MpRMP007uE2pV0Lh2HoLJQRwpl8IjZYwDY
+	umE5NecQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xWXbN-0000000D0GB-1dtx;
-	Thu, 26 Nov 2026 11:25:21 +0000
-Received: from mail-pj1-x1036.google.com ([2607:f8b0:4864:20::1036])
+	id 1xWXpw-0000000D2JT-0Bc2;
+	Thu, 26 Nov 2026 11:40:24 +0000
+Received: from smtpout-02.galae.net ([185.246.84.56])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xWXaK-0000000CzhE-0UUV
+	id 1xWXps-0000000D2Iw-0MRY
 	for linux-mtd@lists.infradead.org;
-	Thu, 26 Nov 2026 11:24:29 +0000
-Received: by mail-pj1-x1036.google.com with SMTP id 98e67ed59e1d1-3b487f44ee0so2754191a91.0
-        for <linux-mtd@lists.infradead.org>; Thu, 26 Nov 2026 03:24:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1795692255; x=1796297055; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=CPuYlgDQkbI5iiO9/9VOzdNRhnNYoSZ2JGqLIJUR010=;
-        b=04x3aYY7tMa2vGuf6hgyKk/pAsVchWtvgnpqqc0MHBlYzMrG/slR8RDxiun3p8G9Vo
-         gw9Ra3mxKLivC6YpxtjTq2rZk5bGANjUShDhxSio3oMJDndJTmKHv4R3kfN2z8lpLCAl
-         pyp32bldNJBzoSlHYyQXiMOjDKbTqlyFim86gAx2Jet7nwLk1XLCc2Q1CByMoPMDreO1
-         WUNhBN9M8FJ7vBGZqSfasl29JwW1vF8I0SGhBBuZSUwyajTHbzbZ6IJ03aONt9i17HnX
-         Q57StNUikOZEU98pa9ia75xTSoI2aLIoS6W/ZNf3RQEaYEyNjtz05xnzp4lLzkt5dhoI
-         nv5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1795692255; x=1796297055;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=CPuYlgDQkbI5iiO9/9VOzdNRhnNYoSZ2JGqLIJUR010=;
-        b=ZtQBYVrEA5Oov1lCeeNICyXWqBXW8Acks6LiwB8yEpbSJikZeR65ECw7ja5LigL8e5
-         lLFPebn4GG50M+d/d8FYg/M38xwZI5jSmz38X7F6mwPqKrUWHZt+X0ZIxosygvGE91sw
-         083QsptnqI/X6o250ouwjdBp+ip1fbOWR0g28ZMItkJrXIIP1ZljfNM0xiaO5tjLsXIB
-         WCSrjNszKuERmMnKV0aE2mRY+b0BNvnOfbSSJKyDRe0LnkwPmTDNyjhqGX7tTR92kXB6
-         f5YEGA7IY7MeO07dxu7ROYgrZeDK8kff2jaaRrmasCcF2DV1FQMUHEYBCHy4v7qzKbTa
-         jkDw==
-X-Gm-Message-State: APuU4Z8/XnQdHGIdoA+akviGZbyzOpK9q621NvKYWOVZ4awU6QAxH+Io
-	vjGWh+4GfZaprenJ8xbkptv3+FQ71A+42sQ7dsQUwj+gIbwfHNPwNXCD
-X-Gm-Gg: AZFdTZcJefnZF0GGy7EA590BdbgcaScYh/g6miN5mN+xCBLNBOInUmIYAveytlIIwte
-	ko5lZPl5c85eeYcQ7vmEVn4r+0uQIYb9BR7ZzcK6iuJs2bdFr7n6S84dCFgOLvZk1bNRvEL+/iA
-	EKUi9zTDSgakdCaLhmpdfEaql8drUTsQbj3uY9abEyaD7KLbm1I8mAE09nxLgbL2ygjx32mgiWp
-	K/jjx/coRaS+P8WcbuEDg2DoK8Z/8K2nQmKRv55I6YrQHTJDTgcvuTbAdX0kumnyMfiCXu2N4RW
-	xDWf6OTUWrmOnmAy4u+ioRljooWl/Ro0hWf4SVbd8zp2nc8SZFQ+hLqXaAZKd3LqKJ8lx2jlcdm
-	jmekspX/s3Of8Xfs5PvNA2+ydbtnn4r15bHa5F9AGDGP582F9wAf/qwvibE6YOJtyTxO6/XDumQ
-	fL209nlUfYezOpXrl9i51vmd0HFIN/LpuJHGQMsUmzrfUql+e5vUbLbHkUUQY9OM/cPoNsAj9yW
-	tGLt0Z8hW9ctK4UrBp1ZseZiL9Di9npXaQ4iYIOQTdRad577ljbpNOmWFVxCoGveKXofcVfBNns
-	QHmFf3OGHzKwKBcwZJEEIicjf67Z3cJStw==
-X-Received: by 2002:a17:90b:1801:b0:3ac:8446:c1b5 with SMTP id 98e67ed59e1d1-3b41c9e4b0dmr20385243a91.31.1795692254534;
-        Thu, 26 Nov 2026 03:24:14 -0800 (PST)
-Received: from server225.. ([39.170.101.209])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3b4dfbe54a2sm11652192a91.17.2026.11.26.03.24.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Nov 2026 03:24:14 -0800 (PST)
-From: Ping Li <leeonion.muyu@gmail.com>
-To: miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com
-Cc: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	leeonion.muyu@gmail.com
-Subject: Re: [PATCH v5 3/3] mtd: rawnand: r852: declare NAND_USES_DMA
-Date: Thu, 26 Nov 2026 19:24:09 +0800
-Message-Id: <20261126112409.8491-1-leeonion.muyu@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <878q2fyhvm.fsf@bootlin.com>
-References: <878q2fyhvm.fsf@bootlin.com>
+	Thu, 26 Nov 2026 11:40:22 +0000
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-02.galae.net (Postfix) with ESMTPS id A71031A17D9;
+	Thu, 26 Nov 2026 11:40:17 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 71F6960237;
+	Thu, 26 Nov 2026 11:40:17 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 6FCFC11E6B341;
+	Thu, 26 Nov 2026 12:40:08 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1795693212; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 in-reply-to:references; bh=+G3l9u5BX5z4dfgesqHF6ebXrWCDI2SoDoExM9Bxcso=;
+	b=fxmtEvOWvJ3n6hNnX7EMDpE46Uygj7BIihMA4GuxgT4apLDNMsx0cOHwGY845I9HvZ+4so
+	GWlOq1AgjLHr8Hglc+ySEClDX1wyYnLJpCCeqHdpQGUqKqGnro6bnTTYD9bdomGA3bjwnK
+	acabAfsprkbWuBq0fHXiPr3Dsir61SI3xuhAlhhx8/exmCNziF4Uc0PEmpkvVKtLMmpVhd
+	FRZ1rIJFxFR2DE80fI9mutdXmysFxQqv6gOns9bFPiFxzyi9mjok3s4TZOKtolLOrOjaUJ
+	PQZlxdEOAWRsVUbA/2Vw5BFB3ZcAfIB+hNIpxeZ8N/ov3AgbOVZEmtr2eN0kgQ==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: sashiko-bot@kernel.org
+Cc: "Pratyush Yadav" <pratyush@kernel.org>,  "Michael Walle"
+ <mwalle@kernel.org>,  "Takahiro Kuwano" <takahiro.kuwano@infineon.com>,
+  "Richard Weinberger" <richard@nod.at>,  "Vignesh Raghavendra"
+ <vigneshr@ti.com>,  sashiko-reviews@lists.linux.dev,  "Thomas Petazzoni"
+ <thomas.petazzoni@bootlin.com>,  "Alvin Zhou" <alvinzhou@mxic.com.tw>,
+  "Cheng Ming Lin" <chengminglin@mxic.com.tw>,
+  linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 1/4] mtd: spi-nor: macronix: Clear the default RDCR opcode
+In-Reply-To: <sashiko-outbox-233952@kernel.org> (sashiko-bot@kernel.org's
+	message of "Wed, 25 Nov 2026 18:17:28 +0000")
+References: <20261125-macronix-upstreaming-spi-nor-cleanup-v1-0-0d1ab783fd8b@bootlin.com>
+	<20261125-macronix-upstreaming-spi-nor-cleanup-v1-1-0d1ab783fd8b@bootlin.com>
+	<sashiko-outbox-233952@kernel.org>
+User-Agent: mu4e 1.12.12; emacs 30.2
+Date: Thu, 26 Nov 2026 12:40:07 +0100
+Message-ID: <87ld6fx1m0.fsf@bootlin.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
+X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261126_032416_197019_B58CD6D7 
-X-CRM114-Status: UNSURE (   6.92  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20261126_034020_337881_6B366D22 
+X-CRM114-Status: GOOD (  19.59  )
 X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -104,29 +82,82 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no
-	version=4.0.1
+X-Spam-Status: No, score=-8.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-From: leeonion.muyu@gmail.com
 
-Hi Miquel,
+> [Severity: Low]
+> Since this fixes the default SPINOR_OP_RDCR assignment for Macronix flashes,
+> should it include a Fixes: tag?
+>
+>   Fixes: 63489002d397 ("mtd: spi-nor: Refactor Read Status/Write
+>   Status support")
 
-Thanks for the reminder about the threading, and thanks a lot for
-your guidance on this series.
+No, this fixes tag is wrong. The problem has always existed but was not
+easily fixable before that rework.
 
-By the way, if you have some time to spare, I would appreciate if
-you could also have a look at the kvmalloc RFC this series came
-from:
+>> diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
+>> index b3fdb4b2fa1ca..2c6f507a2dde7 100644
+>> --- a/drivers/mtd/spi-nor/macronix.c
+>> +++ b/drivers/mtd/spi-nor/macronix.c
+>> @@ -333,6 +333,13 @@ static void macronix_nor_default_init(struct spi_nor *nor)
+>>  {
+>>  	nor->params->qe_mask[0] = BIT(6);
+>>  	nor->params->qe_mask[1] = 0;
+>> +
+>> +	/*
+>> +	 * The JEDEC RDCR opcode (0x35) is not valid for Macronix: some parts
+>> +	 * have no CR at all, others use 0x15. Clear the core default. Parts
+>> +	 * that do support the vendor opcode can opt-in from their own fixup.
+>> +	 */
+>> +	nor->params->opcodes.read_sr2 = 0;
+>>  }
+>>  
+>>  static int macronix_nor_late_init(struct spi_nor *nor)
+>
+> [Severity: High]
+> Should macronix_nor_default_init() also set opcodes.write_sr1 = SPINOR_OP_WRSR
+> and clear opcodes.write_sr1_and_sr2 = 0, matching BFPT_DWORD15_QER_SR1_BIT6 in
+> spi_nor_parse_bfpt()?
 
-https://lore.kernel.org/all/20261124025722.1476247-1-leeonion.muyu@gmail.com/
+Might be worth adding indeed.
 
-Thanks again,
-Ping
+> spi_nor_init_default_params() initializes opcodes.write_sr1_and_sr2 to
+> SPINOR_OP_WRSR and leaves opcodes.write_sr1 as 0.  On Macronix flashes without
+> SFDP (such as mx25l12805d) or with a 9-DWORD JESD216 v1.0 BFPT (such as
+> mx25l25635e), spi_nor_parse_bfpt() does not run the QER switch.  When
+> spi_nor_generic_quad_enable() or software lock/unlock runs with read_sr2
+> cleared to 0, spi_nor_read_sr1_and_sr2() leaves sr[1] = 0 and
+> spi_nor_write_sr1_and_sr2() issues a 2-byte WRSR (0x01) command instead of a
+> 1-byte SR1 write, either sending an invalid second byte to flashes without a
+> Configuration Register or overwriting the Configuration Register with 0x00.
+>
+> [Severity: Medium]
+> Does clearing opcodes.read_sr2 in macronix_nor_default_init() get overwritten
+> by spi_nor_parse_bfpt() on flashes with a >9-DWORD BFPT table and
+> BFPT_DWORD15_QER_NONE?
+
+Yes, and that's the whole point. Certain flash do not overwrite it, so
+for them we need a clean default.
+
+...
+
+> Because BFPT_DWORD15_QER_NONE leaves opcodes.read_sr2 untouched, any Macronix
+> flash with >9 BFPT DWORDs and QER_NONE gets 0x35 restored and will still issue
+> RDCR during spi_nor_init().  A later patch in the series, commit "mtd:
+> spi-nor: macronix: Clear the RDCR opcode on MX25L3255E", works around this in
+> late_init for MX25L3255E, but other QER_NONE Macronix parts with >9 BFPT
+> DWORDs (such as octal-only flashes like MX25UW51245G) remain with read_sr2 set
+> to 0x35.
+
+This is only set on a per-chip basis, not as a wide default, because it
+is safer not to user SR2 when it is available rather than use it when
+it's not there.
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
