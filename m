@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71F44606A687
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FD7E606A33C
 	for <linux-mtd@archiver.kernel.org>; Thu, 26 Nov 2026 08:59:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=od9k7Fp7;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=oUWur+aD
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=CH7Z6HLU;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=zeXoMtCN
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -14,64 +14,64 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=TIBp+MWt+rWDo0ooYUHvAwAnVVXPuyVBnMIAemHD6wg=; b=od9k7Fp722yyML2oIcDJ7wCTnP
-	uk1pn10unnwjBQvjXd028Hrvjs18b8qNrhNG1VmrgSqmpWzxXUG1TQuJgT5tF1ZJrzGkKE39b9o2w
-	hAdEyGNvtDbUJ1U7f4yqCLGxbIdyQzQZYyRGP8lGozreMJKXiJdIa9FhsS5b7lEFJrlqxlJN6n3UY
-	H1H0/oovX5J9P1pVpvrbYaFVgvxphwC67ELGX/pqCrpTquHB2r9IWD4jMDaAXQHe4u/VUD1dFtoHT
-	o26qBuvnKl3A6cXK3DOI7C0q3iT9Tgi1Qg4plK7rrtfAPRdyuFUuNZb69jTgUcuDkFQPxeyvlftkS
-	NgwS4qCA==;
+	bh=gAsJphGImSJtXgqglzW6rcX/At9JoYzVaqyklLsv4+Q=; b=CH7Z6HLUvxqERyFUE3jY5FVFd/
+	CFbaVn9ZLQJkp+ULjDUb1+AF7XWFhCDqJfOdVXS8YK+EqL4y59COUC7CB8m+uxknyn69oDeJcFpfL
+	k4TwnuOAwY0RAAO/f65YBdk5Rt/1y9iu7poVYJilVfmrxYoQa9nGpksrHEIGw90UhBx6vzq8twbS2
+	Y8R1VDxbkB0zgPtdIJYdEZJInyyYIPtbpJBcMNClXUiBjY2SrrTWYghGFlhexdNhnDoxaVdOhNMjy
+	umEoCyh7PF6/l4htt1SyHDVfDXWwZ1zNc4zybeMDggHzi/cCRfc81+HCd9w2+E4Z127GnQXjBCGrg
+	e77c88Lg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xWVK1-0000000CT6o-3sYY;
+	id 1xWVK1-0000000CT6e-3TlU;
 	Thu, 26 Nov 2026 08:59:17 +0000
-Received: from mail-wr1-x429.google.com ([2a00:1450:4864:20::429])
+Received: from mail-wm1-x32a.google.com ([2a00:1450:4864:20::32a])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xWVJy-0000000CT4V-0pHP
+	id 1xWVJx-0000000CT46-0kjL
 	for linux-mtd@lists.infradead.org;
-	Thu, 26 Nov 2026 08:59:15 +0000
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-4a2f4ca0dcfso3835045f8f.1
-        for <linux-mtd@lists.infradead.org>; Thu, 26 Nov 2026 00:59:13 -0800 (PST)
+	Thu, 26 Nov 2026 08:59:14 +0000
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-4bb606491faso35595335e9.3
+        for <linux-mtd@lists.infradead.org>; Thu, 26 Nov 2026 00:59:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1795683552; x=1796288352; darn=lists.infradead.org;
+        d=gmail.com; s=20260707; t=1795683551; x=1796288351; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=OZeaCKjXj7rhQtKUY6dpSt9k3JcLhM/MuU5+xZ27Sxw=;
-        b=oUWur+aDKv2q0Oljp8aFk4fSJ8/pt8MidQA1La6Gxe9V8INK1kJAd6f75wOjPPw0+x
-         5no/KDIvRT0avcH5Riw0xC7eQNb499kXopig87GYR+ffThpzOnabRnr/xa/nLO8Z8AbO
-         QGFWUM/uxTypq7z+C7BlVXddE6gjfK7MhihJHJbhKW22QzRNRJ433mufkMsf/6MTrpUH
-         Zta+wFzNMc8kSoqyT/hzev981t0DBoOX3lT+7jXVh1RYkyXYARkNNRrNb47JOAAUnA/W
-         EwEIuTDqnm7GBaENVQJ2ffiF8vndpOqhwhD2eP3y0BeEhpLKWG1p7PTHifI4NlVP0nkX
-         IfPQ==
+        bh=BQs/stfzWfhu5y1o8FnTdxs743T1XzE3knaeJk+HyjM=;
+        b=zeXoMtCNC7PWihPZ3ietLi4QpLLic05yhYL2sl+eYpH42KO4PodTXPzw4Jj+AV+eo7
+         Pkrb+bUz0RXlkHf/44Elh8Lzw1YCKD4x/2GA2366eIgRXt15n5B7N1L/JdODFSi9l3TQ
+         6EQJUZ5/LMJUqg0hnIIdvGc/SyIthVU/lwXFML6CLJjPazxonquI75UAx0qx0/JWwtDT
+         NdgOA3nNJS3tGlDx5bRV3jvV5IAZ5rmbxjTqeqNiDBJKuP6AlvvRAWh/rQwataeK46pc
+         zXyXuS1X/7qf14QDxyoVpJNFk+LndGGZ8QS89V3rtDWrJzBHSgMAKlAZ33CumBx5ZnVx
+         36fQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1795683552; x=1796288352;
+        d=1e100.net; s=20260707; t=1795683551; x=1796288351;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=OZeaCKjXj7rhQtKUY6dpSt9k3JcLhM/MuU5+xZ27Sxw=;
-        b=AVEjT1sPMGmbODkzyTiIROYH7TszPMtP7DBmUbmhQIjHiB/SILikYtedG5ok9OEbma
-         ArAsNvDd1obM/db1vtdzoXyHgK+UQocFmELEn5+/+V6ojRg0Vx2XkObMMF+JvpK6XqBM
-         i9MA1aPE/c3czzWAu3HZPdp84ywQwPbiprRKE0+QQxqTp9kEN4zH/MyOIqEeCm1q4a02
-         XGOn06kZpPX2y0xG+9oz/zh+swk0DRiMy0nOk0PVC3YEDus3ZRxXfNbGhmRagVNavEI2
-         bC6YqL4YMV9CFLUtdImFxSbd2h09bhV2/jCrrGSxwA3zsjokLHNX621cU3SK52Odr0H8
-         odig==
-X-Gm-Message-State: APuU4Z/ntZ9szneQ/jDBTRm8IArEdM2cCOvHiHNeZQTjZsC2+MbFBcd5
-	TMpJyhsHmkUXWo2JLaOAr5KUM+SVCe2ViFkWAac24FDVLzIFnNuGxUU7
-X-Gm-Gg: AZFdTZerikzBGGJ+F0Ch18AShTFGI5LycDTf2QMuEr2K+Ao9UVcTm7aruvhF0N2p6hi
-	2VsrQMy6AtVlTRyRrqCBTuVTUxbI43LfYMR2xcoztijYJtt9s3kutKOp/hdX4o/qhKn1Ht0MlB0
-	RdwP3Ntf6NvqTNTqXcqTsjP75RFQYZjkilAHri5CGWbtNvzBbAAKKKb54Z6AYyK+0hZZCSrQ2JX
-	VRpB6xwSDBQwbGp7DG7CF897jOmVdbmwj61Aov9KY6JgdV7uDziHsOTfsBMiD2wOadKlCkoS3+L
-	zQNxLQ0QmAvS9N07hs2aH6bBzpmClrptfpp5x8pPLEzKoZbDsjGAlpmZyDiIY6QlxryA/xipAWv
-	UxoT3AMtTQuAqWWN2UkLfZDr1boKBmjhC4SLqnGZ1zjsPbUSx8lgN+X/dKZQQLZ+wvDfxvQt+Ht
-	mbKPzIrJ8xLkFI0F1++t85AkmQ3YotpfEdaFUjuq78nmmX0px+ny2u1B/qmF95ZfFgX4Dd/Anng
-	7nTdMuHdLC9CkYCzmm461v0CP4pkkkqS5mUfPVngAUWvACPeoBRP3qFDNubtKmJjbX+ewbLuXHs
-	AJ25U6QnZpamAs1d6wj4Gb0lGAKnfPK+dgSVE0n1eOz71wObTGn56Q==
-X-Received: by 2002:a5d:64c8:0:b0:493:c0a:507d with SMTP id ffacd0b85a97d-4abaab633c7mr44200123f8f.1.1795683552059;
-        Thu, 26 Nov 2026 00:59:12 -0800 (PST)
+        bh=BQs/stfzWfhu5y1o8FnTdxs743T1XzE3knaeJk+HyjM=;
+        b=F/lk1++qvqTQtFu6w72y4TWqG6X+ZSpWMCasDV6RAwEA/l2dr9k4Cu/qoyqtyyXD11
+         2gQlaPFKwXUa+q1pFfs9rX8trfQJjsHXwBANW5zEs1r2R+h8PxZVfKy4r9TF2g1mcGX1
+         ISh1FAHUXzDihfGqiJVPEUU5inmYOxJavJoPXU5hgnF2NuGf3fP5vJC/hICs88Fu2kNg
+         Q0SVsED+kaIv3J1621a/dLIsGxFsjQCLClnORXfjp/CbXz9zIJqXDfQf80eQIfpN3Fdl
+         TE1fsFHIhzMT40p6mq4iQRUAwMzON23VaYxhZWt4K7OawPHfcOhB2b/FGfYb5QuGL0dG
+         v0TA==
+X-Gm-Message-State: APuU4Z+eFEkrbobWMLjFgJmeUurNQgEng/GifIY67+FZDFkvgbtP5kOF
+	uwaOfOtbXBP0CvLdnckV23Je+0JId2eoVU8RDH6cpZ1LYdEDq0ChbUXu
+X-Gm-Gg: AZFdTZcsxYXJaCCrHximkadmk10qupOlALpkrUed4fF63eJnY/5vrYPHU4bmhBTNrtZ
+	Txwji//YZdHKkVecbayyXPFZOJx2UdblqwwuUW4wQwl2sdqXADvaE4qIKVIhKBcrwBhp+S9FQXo
+	L+PflV9r/4vHbLAacyFc/BP3trxpebfWVgUwxnfHMcP7fPA5XKBdHUkVhYZSeXUvHZyF5VZIBxI
+	wEgqrl+/K+Y6zqT/kSwsqy23mNB4d74kUU8AyqUUFMMPFawmGq0XV8weU87X/H+w2kn/N17Vh0R
+	CdtKGb7E7Lwovi96CeeIHDlV0VbSmwQC353rKKLrqsQ4Bbh7i6YlZ4ruCuajzLIhwhq7nI6v5ls
+	/3fyaOy1UleIT6j7pxJMUlnD8EcIdBKlaobxB5tjb9181mc1pXJ83kW+/9lLknGs/OefOg3hx9C
+	ugv9ltKEM1keX1Y8nAz9bdOaNJsVDdGUat7i7WW5feOPtpJtu6WP/jsa4iuCm1rppMVTELZ436j
+	qoN5Bb3t7GRktJ167scW1JAz64quxtAuGsbfb5lkQGecZ8LTKtY2MRS9K2Muc4ZZvXcxSJ74gjq
+	Q6u5mc9zte0F6UJNQpo+RU6NCBepQ/5F5EQmGuribbi7Z8K64mKw1Q==
+X-Received: by 2002:a05:600c:3b8a:b0:4ba:761:c0c5 with SMTP id 5b1f17b1804b1-4bb8880f0e0mr415128395e9.5.1795683550926;
+        Thu, 26 Nov 2026 00:59:10 -0800 (PST)
 Received: from center.. ([131.189.143.225])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4ab6c61f558sm40313744f8f.58.2026.11.26.00.59.10
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4ab6c61f558sm40313744f8f.58.2026.11.26.00.59.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Nov 2026 00:59:11 -0800 (PST)
+        Thu, 26 Nov 2026 00:59:10 -0800 (PST)
 From: Orgad Shaneh <orgads@gmail.com>
 To: miquel.raynal@bootlin.com,
 	richard@nod.at,
@@ -89,18 +89,18 @@ Cc: linux-mtd@lists.infradead.org,
 	corbet@lwn.net,
 	linux-doc@vger.kernel.org,
 	Orgad Shaneh <orgads@gmail.com>
-Subject: [PATCH v5 3/4] MIPS: Octeon: flash: allocate the map per device
-Date: Thu, 26 Nov 2026 08:59:05 +0000
-Message-ID: <20261126085906.814373-4-orgads@gmail.com>
+Subject: [PATCH v5 2/4] mtd: cfi_cmdset_0002: implement point() for simple linear maps
+Date: Thu, 26 Nov 2026 08:59:04 +0000
+Message-ID: <20261126085906.814373-3-orgads@gmail.com>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20261126085906.814373-1-orgads@gmail.com>
 References: <20261126085906.814373-1-orgads@gmail.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261126_005914_259605_328AD493 
-X-CRM114-Status: GOOD (  19.62  )
-X-Spam-Score: -1.1 (-)
+X-CRM114-CacheID: sfid-20261126_005913_279361_546AA9E3 
+X-CRM114-Status: GOOD (  36.72  )
+X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -113,134 +113,334 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,
-	FORGED_GMAIL_RCVD,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=4.0.1
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-octeon_flash_probe() fills in one static map_info for every "cfi-flash"
-node it binds to, so a second chip select overwrites the phys, virt,
-size and bank width of the first while that MTD device still uses the
-map. A probe whose do_map_probe() finds no chip also keeps its
-ioremap() mapping and still returns success.
+cfi_cmdset_0001 lets a linearly mapped chip be pointed at, so jffs2 can
+scan it in place. cfi_cmdset_0002 never got point(), and the jffs2 mount
+on an AMD-style NOR copies every used eraseblock through
+map_copy_from() instead.
 
-Allocate the map with devm_kzalloc(), map it with devm_ioremap() and
-fail the probe when no chip is found or the partitions cannot be
-registered, so the mapping goes away with the device. mymtd was never
-read; drop it.
+Add a point()/unpoint() pair modeled on cfi_intelext_point(), entering
+array mode with the AMD reset command; get_chip() has an FL_POINT case
+already, adjusted below. Like cfi_cmdset_0001 it is only enabled for
+maps that are linear and read through the simple accessors. Where it
+differs:
 
-The driver has no remove(), and the mapping is now device-managed: a
-sysfs unbind would unmap the flash while its MTD device stays
-registered. Set suppress_bind_attrs to rule that out.
+- Points share the chip when no operation is suspended, and the reboot
+  reset may proceed from an idle FL_POINT (the chip is already in array
+  mode); an unpoint after that reset is not an error. On cfi_cmdset_0001
+  a point held across reboot leaves cfi_intelext_reset() waiting
+  forever.
+- unpoint() releases the chip only when the last reference goes, and
+  point() returns the error when nothing could be pointed.
+- A point never suspends an erase; it waits for the erase to finish.
+  The erase would otherwise stay suspended for as long as the point
+  is held, and the reboot reset with it. The cost: a point that meets
+  an erase waits for that sector erase to finish, where mtd_read()
+  would have suspended it. jffs2 points in its mount scan, in
+  jffs2_block_check_erase() and, the first time it checks the CRC of
+  a data node, in check_node_data().
 
-Fixes: 7f481716bc90 ("MIPS: OCTEON: Use device tree to probe for flash chips.")
+As with cfi_cmdset_0001, a held point makes writes, erases, lock and
+OTP operations and mtd_sync() on that chip wait uninterruptibly for
+the last unpoint, and system suspend fails with -EAGAIN. That matters
+for cramfs on MTD (CONFIG_CRAMFS_MTD), which keeps its whole image
+pointed while mounted: before this patch mtd_point() failed on AMD
+chips and cramfs fell back to the block device; now, with cramfs and
+jffs2 on the same chip, jffs2 writes and garbage collection,
+flash_erase, and the mtd_sync() in jffs2's umount - so a shutdown that
+unmounts jffs2 while cramfs is still the root - block until cramfs is
+unmounted.
+
+Name cfi_cmdset_0002 next to cfi_cmdset_0001 in the cramfs
+documentation's list of drivers that support point().
+
+On an Octeon CN6635 board with a 100 MB jffs2 partition on an M29EW
+(8-bit bus, ~3.4 MB/s reads) the mount drops from 15-30 s to under 1 s.
+A pointer is not faster for everything: jffs2's CRC check of a file's
+data on its first read runs crc32() a byte at a time over the
+uncached flash, and drops from 3.37 MB/s through map_copy_from() to
+2.77 MB/s (13.8 s to 16.8 s for a 46.6 MB file).
+
 Signed-off-by: Orgad Shaneh <orgads@gmail.com>
+Cc: Nicolas Pitre <nico@fluxnic.net>
+Cc: David Woodhouse <dwmw2@infradead.org>
 ---
-v5: add the Fixes tag (sashiko); join the split pr_notice() string.
-v4: new. sashiko flagged the shared static flash_map against v2 and
-    v3 of the next patch; v3 left it as it is in mainline, this fixes
-    it first.
+v5: return no pointer when nothing could be pointed; v4 left *virt
+    set on an error, and jffs2 would scan through it (sashiko).
+    The changelog also states the slower first CRC check of jffs2
+    data and that lock and OTP operations wait for an unpoint; a
+    stale comment in cfi_amdstd_unpoint() is fixed.
+v4: rebased onto v7.4-rc1; the Assisted-by tag is dropped (an LLM
+    helped write this series).
+v3: the same for an XIP erase: FL_XIP_WHILE_ERASING no longer lets a
+    point through (sashiko). The changelog states what waiting for
+    the erase costs a jffs2 read, and names jffs2's umount mtd_sync()
+    rather than sync(2) as what blocks behind a cramfs point.
+v2: a point no longer suspends an erase in progress; it waits for
+    the erase instead (sashiko).
 
 
- arch/mips/cavium-octeon/flash_setup.c | 51 ++++++++++++++++-----------
- 1 file changed, 31 insertions(+), 20 deletions(-)
+ Documentation/filesystems/cramfs.rst |  11 +-
+ drivers/mtd/chips/cfi_cmdset_0002.c  | 174 ++++++++++++++++++++++++++-
+ 2 files changed, 175 insertions(+), 10 deletions(-)
 
-diff --git a/arch/mips/cavium-octeon/flash_setup.c b/arch/mips/cavium-octeon/flash_setup.c
-index 66d173b57..d69249acf 100644
---- a/arch/mips/cavium-octeon/flash_setup.c
-+++ b/arch/mips/cavium-octeon/flash_setup.c
-@@ -18,8 +18,6 @@
+diff --git a/Documentation/filesystems/cramfs.rst b/Documentation/filesystems/cramfs.rst
+index 221c0bf91..7b706c503 100644
+--- a/Documentation/filesystems/cramfs.rst
++++ b/Documentation/filesystems/cramfs.rst
+@@ -75,11 +75,12 @@ The location of the cramfs image in memory is system dependent. You must
+ know the proper physical address where the cramfs image is located and
+ configure an MTD device for it. Also, that MTD device must be supported
+ by a map driver that implements the "point" method. Examples of such
+-MTD drivers are cfi_cmdset_0001 (Intel/Sharp CFI flash) or physmap
+-(Flash device in physical memory map). MTD partitions based on such devices
+-are fine too. Then that device should be specified with the "mtd:" prefix
+-as the mount device argument. For example, to mount the MTD device named
+-"fs_partition" on the /mnt directory::
++MTD drivers are cfi_cmdset_0001 (Intel/Sharp CFI flash), cfi_cmdset_0002
++(AMD/Fujitsu CFI flash) or physmap (Flash device in physical memory map).
++MTD partitions based on such devices are fine too. Then that device should
++be specified with the "mtd:" prefix as the mount device argument. For
++example, to mount the MTD device named "fs_partition" on the /mnt
++directory::
  
- #include <asm/octeon/octeon.h>
+     $ mount -t cramfs mtd:fs_partition /mnt
  
--static struct map_info flash_map;
--static struct mtd_info *mymtd;
- static const char *part_probe_types[] = {
- 	"cmdlinepart",
- #if IS_ENABLED(CONFIG_MTD_REDBOOT_PARTS)
-@@ -71,6 +69,8 @@ static void octeon_flash_map_copy_to(struct map_info *map, unsigned long to,
- static int octeon_flash_probe(struct platform_device *pdev)
- {
- 	union cvmx_mio_boot_reg_cfgx region_cfg;
-+	struct map_info *map;
-+	struct mtd_info *mtd;
- 	u32 cs;
- 	int r;
- 	struct device_node *np = pdev->dev.of_node;
-@@ -85,6 +85,9 @@ static int octeon_flash_probe(struct platform_device *pdev)
- 	 */
- 	region_cfg.u64 = cvmx_read_csr(CVMX_MIO_BOOT_REG_CFGX(cs));
- 	if (region_cfg.s.en) {
-+		map = devm_kzalloc(&pdev->dev, sizeof(*map), GFP_KERNEL);
-+		if (!map)
-+			return -ENOMEM;
- 		/*
- 		 * The bootloader always takes the flash and sets its
- 		 * address so the entire flash fits below
-@@ -94,26 +97,32 @@ static int octeon_flash_probe(struct platform_device *pdev)
- 		 * access 4MB.
- 		 */
- 		/* Use this name so old part lines work */
--		flash_map.name = "phys_mapped_flash";
--		flash_map.phys = region_cfg.s.base << 16;
--		flash_map.size = 0x1fc00000 - flash_map.phys;
-+		map->name = "phys_mapped_flash";
-+		map->phys = region_cfg.s.base << 16;
-+		map->size = 0x1fc00000 - map->phys;
- 		/* 8-bit bus (0 + 1) or 16-bit bus (1 + 1) */
--		flash_map.bankwidth = region_cfg.s.width + 1;
--		flash_map.virt = ioremap(flash_map.phys, flash_map.size);
--		pr_notice("Bootbus flash: Setting flash for %luMB flash at "
--			  "0x%08llx\n", flash_map.size >> 20, flash_map.phys);
--		WARN_ON(!map_bankwidth_supported(flash_map.bankwidth));
--		flash_map.read = octeon_flash_map_read;
--		flash_map.write = octeon_flash_map_write;
--		flash_map.copy_from = octeon_flash_map_copy_from;
--		flash_map.copy_to = octeon_flash_map_copy_to;
--		mymtd = do_map_probe("cfi_probe", &flash_map);
--		if (mymtd) {
--			mymtd->owner = THIS_MODULE;
--			mtd_device_parse_register(mymtd, part_probe_types,
--						  NULL, NULL, 0);
--		} else {
-+		map->bankwidth = region_cfg.s.width + 1;
-+		map->virt = devm_ioremap(&pdev->dev, map->phys, map->size);
-+		if (!map->virt)
-+			return -ENOMEM;
-+		pr_notice("Bootbus flash: Setting flash for %luMB flash at 0x%08llx\n",
-+			  map->size >> 20, map->phys);
-+		WARN_ON(!map_bankwidth_supported(map->bankwidth));
-+		map->read = octeon_flash_map_read;
-+		map->write = octeon_flash_map_write;
-+		map->copy_from = octeon_flash_map_copy_from;
-+		map->copy_to = octeon_flash_map_copy_to;
-+		mtd = do_map_probe("cfi_probe", map);
-+		if (!mtd) {
- 			pr_err("Failed to register MTD device for flash\n");
-+			return -ENXIO;
-+		}
-+		mtd->owner = THIS_MODULE;
-+		r = mtd_device_parse_register(mtd, part_probe_types,
-+					      NULL, NULL, 0);
-+		if (r) {
-+			map_destroy(mtd);
-+			return r;
- 		}
- 	}
- 	return 0;
-@@ -131,6 +140,8 @@ static struct platform_driver of_flash_driver = {
- 	.driver = {
- 		.name = "octeon-of-flash",
- 		.of_match_table = of_flash_match,
-+		/* No remove(): the map and the MTD device stay registered */
-+		.suppress_bind_attrs = true,
- 	},
- 	.probe		= octeon_flash_probe,
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+index 100cab95a..5b5a7811e 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -63,6 +63,9 @@ enum cfi_quirks {
  };
+ 
+ static int cfi_amdstd_read (struct mtd_info *, loff_t, size_t, size_t *, u_char *);
++static int cfi_amdstd_point(struct mtd_info *mtd, loff_t from, size_t len,
++			    size_t *retlen, void **virt, resource_size_t *phys);
++static int cfi_amdstd_unpoint(struct mtd_info *mtd, loff_t from, size_t len);
+ static int cfi_amdstd_write_words(struct mtd_info *, loff_t, size_t, size_t *, const u_char *);
+ #if !FORCE_WORD_WRITE
+ static int cfi_amdstd_write_buffers(struct mtd_info *, loff_t, size_t, size_t *, const u_char *);
+@@ -511,6 +514,22 @@ static struct cfi_fixup jedec_fixup_table[] = {
+ 	{ 0, 0, NULL }
+ };
+ 
++/*
++ * Let jffs2 scan a linearly mapped flash in place, as cfi_cmdset_0001
++ * does: without point() its mount copies every used eraseblock. Only
++ * for maps read through the simple accessors - a pointer bypasses any
++ * byte swapping or bus locking a map driver does in its own.
++ */
++static void fixup_use_point(struct mtd_info *mtd)
++{
++	struct map_info *map = mtd->priv;
++
++	if (!mtd->_point && map_is_linear(map) && map_is_simple(map)) {
++		mtd->_point   = cfi_amdstd_point;
++		mtd->_unpoint = cfi_amdstd_unpoint;
++	}
++}
++
+ static struct cfi_fixup fixup_table[] = {
+ 	/* The CFI vendor ids and the JEDEC vendor IDs appear
+ 	 * to be common.  It is like the devices id's are as
+@@ -518,6 +537,7 @@ static struct cfi_fixup fixup_table[] = {
+ 	 * we know that is the case.
+ 	 */
+ 	{ CFI_MFR_ANY, CFI_ID_ANY, fixup_use_erase_chip },
++	{ CFI_MFR_ANY, CFI_ID_ANY, fixup_use_point },
+ 	{ CFI_MFR_ATMEL, AT49BV6416, fixup_use_atmel_lock },
+ 	{ 0, 0, NULL }
+ };
+@@ -921,8 +941,12 @@ static int get_chip(struct map_info *map, struct flchip *chip, unsigned long adr
+ 		return 0;
+ 
+ 	case FL_ERASING:
++		/*
++		 * Not for a point: the erase would stay suspended for as
++		 * long as it is held, which for cramfs is the whole mount.
++		 */
+ 		if (!cfip || !(cfip->EraseSuspend & (0x1|0x2)) ||
+-		    !(mode == FL_READY || mode == FL_POINT ||
++		    !(mode == FL_READY ||
+ 		    (mode == FL_WRITING && (cfip->EraseSuspend & 0x2))))
+ 			goto sleep;
+ 
+@@ -963,8 +987,9 @@ static int get_chip(struct map_info *map, struct flchip *chip, unsigned long adr
+ 		return 0;
+ 
+ 	case FL_XIP_WHILE_ERASING:
+-		if (mode != FL_READY && mode != FL_POINT &&
+-		    (!cfip || !(cfip->EraseSuspend&2)))
++		/* Not for a point either, see FL_ERASING */
++		if (mode == FL_POINT ||
++		    (mode != FL_READY && (!cfip || !(cfip->EraseSuspend & 2))))
+ 			goto sleep;
+ 		chip->oldstate = chip->state;
+ 		chip->state = FL_READY;
+@@ -975,8 +1000,13 @@ static int get_chip(struct map_info *map, struct flchip *chip, unsigned long adr
+ 		return -EIO;
+ 
+ 	case FL_POINT:
+-		/* Only if there's no operation suspended... */
+-		if (mode == FL_READY && chip->oldstate == FL_READY)
++		/*
++		 * Only if there's no operation suspended: the chip is in
++		 * array mode, so reads, further points and the reboot
++		 * reset (which only re-enters array mode) can go ahead.
++		 */
++		if ((mode == FL_READY || mode == FL_POINT ||
++		     mode == FL_SHUTDOWN) && chip->oldstate == FL_READY)
+ 			return 0;
+ 		fallthrough;
+ 	default:
+@@ -1215,6 +1245,140 @@ do {  \
+ 
+ #endif
+ 
++static int do_point_onechip(struct map_info *map, struct flchip *chip,
++			    loff_t adr, size_t len)
++{
++	unsigned long cmd_addr;
++	struct cfi_private *cfi = map->fldrv_priv;
++	int ret;
++
++	adr += chip->start;
++
++	/* Ensure cmd read/writes are aligned. */
++	cmd_addr = adr & ~(map_bankwidth(map) - 1);
++
++	mutex_lock(&chip->mutex);
++	ret = get_chip(map, chip, cmd_addr, FL_POINT);
++	if (!ret) {
++		if (chip->state != FL_POINT && chip->state != FL_READY)
++			map_write(map, CMD(0xf0), cmd_addr);
++
++		chip->state = FL_POINT;
++		chip->ref_point_counter++;
++	}
++	mutex_unlock(&chip->mutex);
++
++	return ret;
++}
++
++static int cfi_amdstd_point(struct mtd_info *mtd, loff_t from, size_t len,
++			    size_t *retlen, void **virt, resource_size_t *phys)
++{
++	struct map_info *map = mtd->priv;
++	struct cfi_private *cfi = map->fldrv_priv;
++	unsigned long ofs, last_end = 0;
++	int chipnum;
++	int ret = -EINVAL;
++
++	if (!map->virt)
++		return -EINVAL;
++
++	/* ofs: offset within the first chip that the first read should start */
++	chipnum = (from >> cfi->chipshift);
++	ofs = from - (chipnum << cfi->chipshift);
++
++	*virt = map->virt + cfi->chips[chipnum].start + ofs;
++	if (phys)
++		*phys = map->phys + cfi->chips[chipnum].start + ofs;
++
++	while (len) {
++		unsigned long thislen;
++
++		if (chipnum >= cfi->numchips)
++			break;
++
++		/* We cannot point across chips that are virtually disjoint */
++		if (!last_end)
++			last_end = cfi->chips[chipnum].start;
++		else if (cfi->chips[chipnum].start != last_end)
++			break;
++
++		if ((len + ofs - 1) >> cfi->chipshift)
++			thislen = (1 << cfi->chipshift) - ofs;
++		else
++			thislen = len;
++
++		ret = do_point_onechip(map, &cfi->chips[chipnum], ofs, thislen);
++		if (ret)
++			break;
++
++		*retlen += thislen;
++		len -= thislen;
++
++		ofs = 0;
++		last_end += 1 << cfi->chipshift;
++		chipnum++;
++	}
++	if (*retlen)
++		return 0;
++
++	/* Nothing pointed: leave no pointer for a caller to read through */
++	*virt = NULL;
++	if (phys)
++		*phys = 0;
++	return ret;
++}
++
++static int cfi_amdstd_unpoint(struct mtd_info *mtd, loff_t from, size_t len)
++{
++	struct map_info *map = mtd->priv;
++	struct cfi_private *cfi = map->fldrv_priv;
++	unsigned long ofs;
++	int chipnum, err = 0;
++
++	/* ofs: offset within the first chip that the first read should start */
++	chipnum = (from >> cfi->chipshift);
++	ofs = from - (chipnum << cfi->chipshift);
++
++	while (len && !err) {
++		unsigned long thislen;
++		struct flchip *chip;
++
++		if (chipnum >= cfi->numchips)
++			break;
++		chip = &cfi->chips[chipnum];
++
++		if ((len + ofs - 1) >> cfi->chipshift)
++			thislen = (1 << cfi->chipshift) - ofs;
++		else
++			thislen = len;
++
++		mutex_lock(&chip->mutex);
++		if (chip->state == FL_POINT) {
++			/* The last unpoint returns the chip to FL_READY */
++			if (--chip->ref_point_counter == 0) {
++				chip->state = FL_READY;
++				put_chip(map, chip, chip->start);
++			}
++		} else if (chip->state != FL_SHUTDOWN) {
++			/*
++			 * After the reboot reset nothing is pointed any more;
++			 * ref_point_counter no longer matters there.
++			 */
++			pr_err("%s: Error: unpoint called on non pointed region\n",
++			       map->name);
++			err = -EINVAL;
++		}
++		mutex_unlock(&chip->mutex);
++
++		len -= thislen;
++		ofs = 0;
++		chipnum++;
++	}
++
++	return err;
++}
++
+ static inline int do_read_onechip(struct map_info *map, struct flchip *chip, loff_t adr, size_t len, u_char *buf)
+ {
+ 	unsigned long cmd_addr;
 -- 
 2.53.0
 
