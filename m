@@ -2,97 +2,74 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C68C606A31C
-	for <linux-mtd@archiver.kernel.org>; Thu, 26 Nov 2026 13:34:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A394606A680
+	for <linux-mtd@archiver.kernel.org>; Thu, 26 Nov 2026 13:42:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=eQSMszrI;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=bWgT00R4
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=0o9HXvm9;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=RSLNJBwN
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id:Date:
+	Subject:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
 	List-Unsubscribe-Post:List-Owner;
-	bh=ofum30Qy6aUdRZ5ZhbjIEfq1hSQ+aZdPeaT6eOn+B20=; b=eQSMszrIPuhDIlAKRC2DVnVQSd
-	L93PWueL0omPaYRwsN/IZ1CmV/qylQu+IaQJGQ4RGa0JdKMd8HRERlBYrMdmBlIdP/EJIqoR16Qma
-	u4TlS7kOUj0rrvY8R9yEMEmM90/mBgN05M6zforWllLgUrASlvQQiMIYlKgxjD5B+6jOn5WK5FKfq
-	mo31omjTIX/UdlubSxQSdH1HPD7xaCXgu6vXo3K4HltomvPceW20c+rd13V+ERn8b8agudxQ8tX44
-	ip/Oi9Qa9ttlL/8i3ox7ylwd1tEJ8PqkpQR/JEmZc/kil2SyW0ltX0HL9I85z72F5G1Y3AeVWYbN6
-	MnOVSeGg==;
+	bh=L2LzWFKngADMzVYWgtxSkMnavB+I1EP6x3ZSUM0dELQ=; b=0o9HXvm9D784YhVVkUxJxhjGuP
+	aO0oqvgC7HNBSTy7VTUeU8BXgf3T1bj6ISa4QIFm3CrPVeRTJX401Lf8veqSdN21XvdMeOfGxaDM7
+	H8rnA/Ub29gMpyHlUisBol1MNnLOr+6mk/CcA+Ikede4QExHwenAIe7A0kNmyTWE9PzCkw07vx1mu
+	XDjutmbDm0DKuNr9SwdNcJyRw7W3C6Tg6TgttQqot5bzmGHUWNpLMXAmrOxNyjW5JKOh7wtVNA0hA
+	rFEIXHp2HcQN55EhpSDynxL1snIP2N78GCQqy8ltsCsUd+maKRukqsQzvizLdHx43irvVoVY133bz
+	mzs/peqg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xWZc1-0000000DO4P-0Zta;
-	Thu, 26 Nov 2026 13:34:09 +0000
-Received: from mail-dy1-x132e.google.com ([2607:f8b0:4864:20::132e])
+	id 1xWZkL-0000000DPp5-2DkT;
+	Thu, 26 Nov 2026 13:42:45 +0000
+Received: from smtpout-04.galae.net ([185.171.202.116])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xWZbv-0000000DO2j-40FK
+	id 1xWZkG-0000000DPln-4C8r
 	for linux-mtd@lists.infradead.org;
-	Thu, 26 Nov 2026 13:34:07 +0000
-Received: by mail-dy1-x132e.google.com with SMTP id 5a478bee46e88-38431138772so9094206eec.1
-        for <linux-mtd@lists.infradead.org>; Thu, 26 Nov 2026 05:34:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1795700043; x=1796304843; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=3FsJRBNzOkF5OXCFiCSDbvRkuVUqKiha6GeXyCdWO5k=;
-        b=bWgT00R4D2Q5PLc/gmOYOOW4KZlv9B2KYFXFUUgvSQ0jzRNbix/P4p9lf3QovKb4XI
-         EkA+y9rEfB0GJ1zAdQ2QZ9VxmjYH36fh2kAzd4yj4cZL0aHXWr195zPJKhRq42V4p1SB
-         prisr3P9hDXmKOlWJOq9te9BUbnMN9/+VJDlfXRada8XBpTUElbU6EwW45/dtj3flmDK
-         4+oabRAchX/qoAuJSY/8QXlB39hMRmxdbI/BCUQaE10L/783lkr/UL7eLl0TYD+YXEz4
-         B+CcQsBzwELjoPSkJApdshy1pIqV0I3WGtXJIa9qe33K/HSmeHt/sDBlBCnr4U43XEXz
-         7WPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1795700043; x=1796304843;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=3FsJRBNzOkF5OXCFiCSDbvRkuVUqKiha6GeXyCdWO5k=;
-        b=eKK+6foEZ74gsyL0ElIc7EpEAcDLEFiUyiyRtvRtUy1wq0pi1CgNM1NYK8maFDoCPp
-         2rZAf1bdPXh+TfyWGGIRoqKBeVd6qlcH3eRWOgjmWINMKiMr0y1U2Ie03wUMJz3KGHgF
-         wGHQIVW3QKEUiPQ57oSolViv1t98oLUBPFFiihDqpywRRbSmHoCMX+aquLpOcOgE/f/R
-         1f+JqWh28L9ckzK7TOxXBEMNC+TfLF6O6GLyk2/FRC791cumRGNgBQfPKWYnlGhdONQM
-         kQ0rU/O3T9L6hDpEVb/W0+mLCDhGhP+X5t/N0sRJKOk69j6FMXqEm1URw+ir9dCEQ+9v
-         EuXw==
-X-Forwarded-Encrypted: i=1; AL+hErGOUSDd099EU53TyeTeOKsOe38G4IvrXB8H84boiLszBhcQpgwmHkGpOHWrEAIFmVhglXc+iCzanqE=@lists.infradead.org
-X-Gm-Message-State: APuU4Z+9zQz6en2Zf8UCO3YnORwLDlcuA29hH+TrMtBlKlg1KClE2scA
-	3mJFCBlNcMTS2xGjehEd8mzO7Qm38tQyRCowT7P0eDzMRpgPFMXcNS8=
-X-Gm-Gg: AZFdTZcTAzrweYl+drgkZQgyxxG3D6CixzuoZyzdGzxsBqgX4ELrJpvDl5bmVHC/qSA
-	DL3gifplHiuwt42KqX5NCmWYS+05d/vV1BtDq6tgUfzQIZPjudt2uR7Iq3KZWNJMo3Zzv1BnpP/
-	ehwwNKwdH3oErLZtGEIsN6BMjnR36vSnUppi/AWqqbs81gKG/e34wYp2df36GzVBVkjYnPd2b0S
-	CjuBfr4EKGsvzfWoeQyAecNlvPIOMH3D8BmpSxPCB2fMK5SxLgY2DiHUNjJwrk5v5pu91hUJkhd
-	p3BSbVIAnv1ENy+efmRr7CmHpn93xlePEzFVHV8MLzlLekDt/bCRpfINdJ4FymHw81zDbfXS0Ko
-	cHbGr9kD/2QbMKKeKm6Ln/9wX5aXuSYj+XYYSWycJGdpNdqJ/G2jhivylSMfqLRN8Yes2NhPS08
-	12pAw6K5KCe4ghvBRwspqedb2rGzd/D6Kv8Iboeoq65u5AkpiLIUykOzzXXexJ207a8I6br5NtF
-	imLiRt6FZaI2/66W2NJiSo/YgD3R26E03g/6btcEW4ZiAyDET7qIFHYns4gtQxldDYbWHx2YB5/
-	JgntgwziVGPEcv+O5ixPPwBAdxaw3Q0CkW42SoFYwm/PWBJtXAFadzxOq+fvCKvjU48=
-X-Received: by 2002:a05:693c:6010:b0:382:105f:e7e with SMTP id 5a478bee46e88-3857170e441mr26340102eec.36.1795700043018;
-        Thu, 26 Nov 2026 05:34:03 -0800 (PST)
-Received: from localhost.localdomain ([2406:3003:2002:639c:a06e:23f:85ed:4cfe])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-385677c0c1dsm70967222eec.21.2026.11.26.05.34.00
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Thu, 26 Nov 2026 05:34:02 -0800 (PST)
-From: Yige Jiang <yigejiang86@gmail.com>
-To: Han Xu <han.xu@nxp.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Yige Jiang <yigejiang86@gmail.com>,
-	Richard Weinberger <richard@nod.at>,
-	Maarten Zanders <maarten@zanders.be>,
-	imx@lists.linux.dev,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: [PATCH] mtd: rawnand: gpmi: fix probe error path when CONFIG_PM=N
-Date: Thu, 26 Nov 2026 21:32:39 +0800
-Message-ID: <rc-b1-20261110-vc-170-6561daaaf6bd@gmail.com>
-X-Mailer: git-send-email 2.50.1
+	Thu, 26 Nov 2026 13:42:43 +0000
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-04.galae.net (Postfix) with ESMTPS id 0C10EC2B9CF;
+	Thu, 26 Nov 2026 13:42:47 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 87769604ED;
+	Thu, 26 Nov 2026 13:42:38 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 53CCD11E680FD;
+	Thu, 26 Nov 2026 14:42:32 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1795700557; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding; bh=xqUDWasaCfPhDHYSBTjnp6pf/Pq7EjevJ+F+V/SKQbk=;
+	b=RSLNJBwNJl30Iyh9xdc5uiUZwuXvIUs7M+lfMR/4H+Ea1ZZu/H9d9hccz+BUQJcAHCM2GC
+	rYUQmk9YGDtNbim+zf9rPwBO5ZTPUTmYnmXxg6lRl+aZGRPG2I4XKMWBHeksYRkGdD7lSk
+	CHLZUfDryKFA+pLj5mq/+Ku2vH64fKmlPZGwbdRAKpTOpeGj00erJvHmKimrONzXa+gKuS
+	biC5w3SXdOylf703p/1v2NE5o7fkD4XVDr/p6t+K61JokrMiKPrxBYsoGDzWTZeBQAuLDQ
+	ol559AUelk6rzt3IJr+vb204MU863KV6t+sofRhOaIDorts03T8R+3OHZg+ubg==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH v2 0/4] mtd: spi-nor: macronix: Improve general support
+Date: Thu, 26 Nov 2026 14:42:25 +0100
+Message-Id: <20261126-macronix-upstreaming-spi-nor-cleanup-v2-0-672a59abed62@bootlin.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/5WOQQ6CMBBFr0Jm7RgKKoSV9zAs2jLqJNDitBAM4
+ e5WPIHL9/Pz318hkDAFaLIVhGYO7F2C4pCBfWr3IOQuMRR5cVGqOOOgrXjHC05jiEJ6YPfAMDI
+ 6L2h70m4aUed1eVbGUKU6SFOj0J2XXXNrfyz0mpIt/kIwOhBaPwwcm2yujicUW8K3++QQvbz3h
+ 7Pay/+dmRXmmHdKm6ou711trsb72LM7Jh+027Z9ADFd6BoGAQAA
+X-Change-ID: 20261125-macronix-upstreaming-spi-nor-cleanup-a08351bbe71d
+To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
+ Takahiro Kuwano <takahiro.kuwano@infineon.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Alvin Zhou <alvinzhou@mxic.com.tw>, 
+ Cheng Ming Lin <chengminglin@mxic.com.tw>, linux-mtd@lists.infradead.org, 
+ linux-kernel@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>
+X-Mailer: b4 0.14.3
+X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261126_053404_000857_3F278FF9 
-X-CRM114-Status: GOOD (  12.87  )
-X-Spam-Score: -1.9 (-)
+X-CRM114-CacheID: sfid-20261126_054241_202974_3A9F620B 
+X-CRM114-Status: UNSURE (   9.26  )
+X-CRM114-Notice: Please train this message.
+X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -105,67 +82,54 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,
-	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-With CONFIG_PM disabled, gpmi_nand_probe() enables the clocks by hand
-and gpmi_nand_remove() disables them again, but the probe error path
-was not updated to match:
+There are multiple ongoing issues with the current state of the Macronix
+vendor driver:
+- wrong RDCR opcode in general
+- erroneous QER handling
+- issues with locking
 
-- if gpmi_init() or gpmi_nand_init() fails, exit_nfc_init releases the
-  DMA channel but leaves the clocks prepared and enabled, so every
-  failed probe attempt adds another enable count;
-- if gpmi_enable_clk() fails, the jump to exit_acquire_resources skips
-  release_resources(), so the DMA channel taken by acquire_resources()
-  is never released.
+This series aims at fixing all those open points. One reason they have
+stayed for so long, is because there was no easy way to define a clean
+per-vendor RDCR opcode nor to easily hook fixups to JEDEC IDs *and*
+extra conditions. This is all possible now thanks to the recently merged
+heavy QER handling rework, so let's use these capabilities.
 
-Disable the clocks in the error path when CONFIG_PM is disabled, and
-let a clock enable failure fall through to the runtime PM and DMA
-cleanup. Builds with CONFIG_PM=y are unchanged.
-
-Fixes: 1001cc117124 ("mtd: nand: raw: gpmi: fix clocks when CONFIG_PM=N")
-Cc: stable@vger.kernel.org
-Signed-off-by: Yige Jiang <yigejiang86@gmail.com>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
-Based on linux-next next-20261109 (630059a5a632).
-Compile-tested: arm64, GCC 14.2.0, W=1, CONFIG_MTD_NAND_GPMI_NAND with CONFIG_PM=y (defconfig, =m) and CONFIG_PM=n (allnoconfig, =y), CONFIG_COMPILE_TEST=y (object only; no new warnings in either).
-No hardware or runtime test was performed.
-Needs a CONFIG_PM=n kernel on i.MX and a gpmi_init()/gpmi_nand_init() failure (e.g. no NAND chip found) or a clk_prepare_enable() failure in probe.
+Changes in v2:
+- Also prevent 2-byte wide SR writes in patch 1.
+- Replace patch 2 (no longer relevant) and instead drop the redundant QE
+  setting (also redundant now).
+- Clear the RDCR opcode and the 16-bit write that SFDP restores for
+  parts whose BFPT reports QER_NONE.
+- Use a local buffer when reading SR2 (to avoid overlapping memcpy()'s,
+  see Sashiko complaint).
+- Link to v1: https://lore.kernel.org/r/20261125-macronix-upstreaming-spi-nor-cleanup-v1-0-0d1ab783fd8b@bootlin.com
 
- drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+---
+Miquel Raynal (4):
+      mtd: spi-nor: macronix: Clear the default RDCR opcode
+      mtd: spi-nor: macronix: Drop redundant MX25L3255E QE settings
+      mtd: spi-nor: macronix: Enable RDCR for the parts that support it
+      mtd: spi-nor: macronix: Describe locking support for MX25L51245G
 
-diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-index 019df54c4bb0..fdfe11439a6c 100644
---- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-@@ -2806,7 +2806,7 @@ static int gpmi_nand_probe(struct platform_device *pdev)
- #ifndef CONFIG_PM
- 	ret = gpmi_enable_clk(this);
- 	if (ret)
--		goto exit_acquire_resources;
-+		goto exit_disable_pm;
- #endif
- 
- 	ret = gpmi_init(this);
-@@ -2822,6 +2822,10 @@ static int gpmi_nand_probe(struct platform_device *pdev)
- 	return 0;
- 
- exit_nfc_init:
-+#ifndef CONFIG_PM
-+	gpmi_disable_clk(this);
-+exit_disable_pm:
-+#endif
- 	pm_runtime_dont_use_autosuspend(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
- 	release_resources(this);
+ drivers/mtd/spi-nor/macronix.c | 120 +++++++++++++++++++++++++++++++++++------
+ 1 file changed, 103 insertions(+), 17 deletions(-)
+---
+base-commit: 19d1b4de6d37bccecc3ad9144d279f1baa405eb1
+change-id: 20261125-macronix-upstreaming-spi-nor-cleanup-a08351bbe71d
 
-base-commit: 630059a5a632377b9b7b487baccde92b7ae1dd47
+Best regards,
+-- 
+Miquel Raynal <miquel.raynal@bootlin.com>
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
