@@ -2,12 +2,12 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC949606C2D9
-	for <linux-mtd@archiver.kernel.org>; Fri, 27 Nov 2026 14:27:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97269606EF1D
+	for <linux-mtd@archiver.kernel.org>; Fri, 27 Nov 2026 14:28:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=gEBoxo4T;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.a=rsa-sha256 header.s=casper.20170209 header.b=fgv+QF4p;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=Fpmteki0
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=d4X0A6Vk;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.a=rsa-sha256 header.s=desiato.20200630 header.b=dlWvdVR9;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=Ubx3tDOw
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -15,57 +15,57 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=idplif8m5ZBW0d7Y5dvLACNe5pbJ2twfA5UlbZbzm+Q=; b=gEBoxo4TIPg2sgFcvQi4xSKmWI
-	l4vntJEEncskbfRdB+5rt2gVmI6yKpupDyRyVZL6gwRieFZOeTtN6IEQk1i6cTS+h4zev9g1NunLN
-	MdLIH20fCy/JQ4Jmnqm9AqKztp8YIe+oZbKHLCdIUpsxyavtsgrigK9LV46PldcunpyDo1E55eu7F
-	IYgUlnaYv7/UQ6pCSLLnBPir3iQPJW4JjXwdM8P6m+bqUbZN3HHaYMvq0uTPCgm6E4zBhPvtzhvZM
-	yDd02JEO/+GziAYvd7mkgw+g2EK+bMlZCPVN83SXumkNmYEFisz4lQso/MRw8O2ObalN+GYb9HTKy
-	yNQRB5nQ==;
+	bh=Ym7dY5JU9aiKAKzrOJjpQNH6BTGSsS3ZhctkKTCESvE=; b=d4X0A6VkKblNKRVyKwO1EI7Xdi
+	dcbREg3dLudRJSXQrnFmm5G4FrZb/gIoTdEn80Rx3z57ApSl/TC7l/PodamVKYTN6TcNenvhq77oi
+	BoQtA/lePWRcKaasBOu/VGmP6bw6cXnNj1dRJQe2nfSC0kNZFlLp8vnhom7tjhz8UNJjsG8lNVyJR
+	7V5ls0JG1W+e1+7HyYWlbhB5fBwBiFiVgRTWtFNPXZrDtnLypaQCPXvxxI1lZcZZne2dLRJyJlx2J
+	BglK2M07I0OhP2tCQaN7EWevPY3Ty54jy0yLngLK3LQlgAneY0RgDpavjlega+MO6maN54tsRl4TD
+	x1XWpAzw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xWwvN-0000000GUCO-3W7v;
-	Fri, 27 Nov 2026 14:27:41 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1xWwwO-0000000GVXU-3yWd;
+	Fri, 27 Nov 2026 14:28:44 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xWwuV-0000000GS01-1yuh;
-	Fri, 27 Nov 2026 14:26:47 +0000
+	id 1xWwuf-0000000GSMf-1wbb;
+	Fri, 27 Nov 2026 14:26:57 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=Cc:To:In-Reply-To:References:Message-Id
-	:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:From:Sender
-	:Reply-To:Content-ID:Content-Description;
-	bh=YzT25YrXhPdhGBX2h17WLtbdgvi9pFvDHL3L6j1EVv0=; b=fgv+QF4p8d2JdnLQukKXbJpl0k
-	Nuy1sRnF7jmbP+eVIo4DrdEgLDL0g1efpWZBKMUMQvLNI8gcZYT8weM7yV0729SaHDc1FK+WKTdak
-	H3lsYO7BzPrOv7WjsoELDLuyttg9EQu+2In5NG2RFmaYNSRfXic/3utvqvr6+7griTelj+cXFhKAh
-	JRavF9IavUsZ/GaFfe1psMLpgN5hXNBYNhjREQVVjqwgVbI8rXp61XZeYnf8fTnvDJG9RVUg06pIw
-	aYomAwSYZPNW3nvJ9q5mDrYNVbJ7sRpxtCqOd1wN1/emBcqLzI1PWn1D2NeqwgOfLJwwG3NaqHXDE
-	fdaGHLJQ==;
+	d=infradead.org; s=desiato.20200630; h=Cc:To:In-Reply-To:References:
+	Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
+	From:Sender:Reply-To:Content-ID:Content-Description;
+	bh=A/IqQZ9VTKgRjMcNT4EZBKACErnAYfbhJSeeu/M9Auw=; b=dlWvdVR9kwvSIqKMZfC35ZehNn
+	QFeUMpqb8Aq63nO4KaL5ohZiKlxb/7M4KZ0+09PTCQg4UayybR2Spo1IGqp1Z3WUlRt5S/Z+GKP6q
+	DWFHbrVAiIQ/kDqHEjlp4l1w6BoYDHF8TWsOrfvLO2NZD3skhLa+Fs2iQmCTmnPws5PXqULh/52AJ
+	oIcSVl4cnV4NQNYS8a+lwZcsWJIJhTECTulRQbLUFajkTBFVAy9FQwNInWNU1qWdF9P7Kg2/oaEe5
+	39svCtjLO05mEkPh2mTkOmpBEn1J8ZeiAcrBllBA1wiFDRccJL/VBdc9I4bGxpPY75F1pG6h6MG6k
+	6xjJVZ6g==;
 Received: from smtpout-04.galae.net ([185.171.202.116])
-	by casper.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xWwuS-0000000FaXP-1F4O;
-	Fri, 27 Nov 2026 14:26:46 +0000
+	by desiato.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
+	id 1xWwua-00000007njM-1S95;
+	Fri, 27 Nov 2026 14:26:56 +0000
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id 37420C6223B;
-	Fri, 27 Nov 2026 14:26:52 +0000 (UTC)
+	by smtpout-04.galae.net (Postfix) with ESMTPS id 22DBBC2AC4C;
+	Fri, 27 Nov 2026 14:27:00 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 6CC336049C;
-	Fri, 27 Nov 2026 14:26:43 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id C6DEE11E68FF9;
-	Fri, 27 Nov 2026 15:26:34 +0100 (CET)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 576E36049C;
+	Fri, 27 Nov 2026 14:26:51 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 3D39111E68FD9;
+	Fri, 27 Nov 2026 15:26:41 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1795789600; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1795789608; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=YzT25YrXhPdhGBX2h17WLtbdgvi9pFvDHL3L6j1EVv0=;
-	b=Fpmteki0Aybr9vK6i02FZbrrKdnKXnJriXCr7U+IqKfAZ+ZjARQAf3xSYHOufNwk9Rtc9G
-	0U9FU7sdV2u3iUKwF9SkItBvexDSdndISg8xQAuGppSnxwgLIf7RjhPFxB8d6RXjWBEXWd
-	BRqr3WMPnugTa/fqFQqaFZuoEhWNtUzBGo/muuF1v2VfinijqfNEKS6kqJthwVs6wSmJuL
-	lh+xQECYOHTiNJR+Exz8PAa+QNd+hO4XarM4R5aVNW7PKWoNVgUtTX++m7GU7/Zy9/isK2
-	5KXRHbiNhYEvdhJBmynuf2j/6oZiL4WhEcBkz6epU+W7pFASnm61iljlbdDSvQ==
+	bh=A/IqQZ9VTKgRjMcNT4EZBKACErnAYfbhJSeeu/M9Auw=;
+	b=Ubx3tDOwV6i0QBpzsCyzanuCPyUDDo4aCHNmLwm25tRKbXNc5vmxkKN60QMwfrkdqmQ9Jz
+	W7kyWWjP0od8K6vkQMKREz7zWXffZrPdkN3AGLKYj8mc7jB0gytVh0iUV3Ttyeo6V7yKa1
+	BFGhzVf18NQ+UmWjkL9mSegQkcGKm3KqhdCOHRba0n9GmycoED4NUg5sV0iyRGDmN9zo1y
+	fCSiIkJRCkS07GowircgCo22KGRVUoC3iWW/zY4D5iVslHneSG7qsvus9ZlJXofcDyQo54
+	314IuM911yasw0KDvRGF8Ki+ghgxrkdleT4jgJEapDWZ+cZPyaCRcc82YJkD+g==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Fri, 27 Nov 2026 15:22:47 +0100
-Subject: [PATCH RFC v2 25/35] spi: rtk-nor: Consume dummy cycles directly
+Date: Fri, 27 Nov 2026 15:22:48 +0100
+Subject: [PATCH RFC v2 26/35] spi: rtk-nor: Drop redundant checks
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Message-Id: <20261127-macronix-upstreaming-spi-mem-cycles-v2-25-5c93f5e5d630@bootlin.com>
+Message-Id: <20261127-macronix-upstreaming-spi-mem-cycles-v2-26-5c93f5e5d630@bootlin.com>
 References: <20261127-macronix-upstreaming-spi-mem-cycles-v2-0-5c93f5e5d630@bootlin.com>
 In-Reply-To: <20261127-macronix-upstreaming-spi-mem-cycles-v2-0-5c93f5e5d630@bootlin.com>
 To: Mark Brown <broonie@kernel.org>, Liang Yang <liang.yang@amlogic.com>, 
@@ -105,9 +105,10 @@ Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261127_142644_442500_F6F22D3F 
-X-CRM114-Status: GOOD (  12.43  )
-X-Spam-Score: -2.1 (--)
+X-CRM114-CacheID: sfid-20261127_142652_255977_4F014095 
+X-CRM114-Status: UNSURE (   8.90  )
+X-CRM114-Notice: Please train this message.
+X-Spam-Score: -0.2 (/)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -127,100 +128,28 @@ X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-The controller programs the dummy phase in clock cycles, but the driver
-converts the legacy dummy byte count into cycles. Advertise the
-dummy_cycles capability and use op->dummy.ncycles directly.
+The core already sanitizes the spi-mem operations, these checks are
+redundant so let's drop them.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/spi/spi-rtk-nor.c | 28 +++++++++++-----------------
- 1 file changed, 11 insertions(+), 17 deletions(-)
+ drivers/spi/spi-rtk-nor.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
 diff --git a/drivers/spi/spi-rtk-nor.c b/drivers/spi/spi-rtk-nor.c
-index 55ea7c371854..28fafa69cfbd 100644
+index 28fafa69cfbd..2fcd2172a0b4 100644
 --- a/drivers/spi/spi-rtk-nor.c
 +++ b/drivers/spi/spi-rtk-nor.c
-@@ -92,18 +92,10 @@ struct rtk_spi_host {
- 	size_t			dirmap_size;
- };
- 
--static u32 rtk_spi_calc_dummy_cycles(const struct spi_mem_op *op)
--{
--	if (!op->dummy.nbytes)
--		return 0;
--
--	return (op->dummy.nbytes * 8) / op->dummy.buswidth;
--}
--
- static void rtk_spi_read_mode(struct rtk_spi_host *host, const struct spi_mem_op *op)
- {
- 	u32 opcode = op->cmd.opcode;
--	u32 dummy_cycles, val;
-+	u32 val;
- 
- 	if (op->data.buswidth == 2)
- 		opcode |= DUAL_MODE_EN;
-@@ -113,10 +105,8 @@ static void rtk_spi_read_mode(struct rtk_spi_host *host, const struct spi_mem_op
- 	val = readl(host->regbase + SFC_CTL);
- 	val |= RW_DATAEN | ADDR_EN;
- 
--	dummy_cycles = rtk_spi_calc_dummy_cycles(op);
--
- 	val &= ~SFC_CTL_DMYCNT_MASK;
--	val |= (dummy_cycles << SFC_CTL_DMYCNT_SHIFT) & SFC_CTL_DMYCNT_MASK;
-+	val |= (op->dummy.ncycles << SFC_CTL_DMYCNT_SHIFT) & SFC_CTL_DMYCNT_MASK;
- 	writel(val, host->regbase + SFC_CTL);
- 
- 	readl(host->iobase);
-@@ -192,7 +182,7 @@ static int rtk_spi_command_read(struct rtk_spi_host *host, const struct spi_mem_
- 	size_t len = op->data.nbytes;
- 	loff_t offset = op->addr.val;
- 	u8 opcode = op->cmd.opcode;
--	u32 dummy_cycles, val;
-+	u32 val;
- 
- 	writel(opcode, host->regbase + SFC_OPCODE);
- 
-@@ -203,8 +193,7 @@ static int rtk_spi_command_read(struct rtk_spi_host *host, const struct spi_mem_
- 	if (op->addr.nbytes > 0)
- 		val |= ADDR_EN;
- 
--	dummy_cycles = rtk_spi_calc_dummy_cycles(op);
--	val |= (dummy_cycles << SFC_CTL_DMYCNT_SHIFT) & SFC_CTL_DMYCNT_MASK;
-+	val |= (op->dummy.ncycles << SFC_CTL_DMYCNT_SHIFT) & SFC_CTL_DMYCNT_MASK;
- 	writel(val, host->regbase + SFC_CTL);
- 
- 	return rtk_spi_byte_transfer(host, offset, len, op->data.buf.in, true);
-@@ -346,8 +335,8 @@ static bool rtk_spi_supports_op(struct spi_mem *mem,
- 	if (!op->addr.nbytes && op->data.nbytes > 1)
+@@ -316,9 +316,6 @@ static bool rtk_spi_supports_op(struct spi_mem *mem,
+ 	if (op->cmd.buswidth != 1)
  		return false;
  
--	if (op->dummy.nbytes != 0) {
--		if (op->dummy.buswidth > 1 || op->dummy.nbytes > 7)
-+	if (op->dummy.ncycles) {
-+		if (op->dummy.buswidth > 1 || op->dummy.ncycles > 7 * BITS_PER_BYTE)
+-	if (op->cmd.dtr || op->addr.dtr || op->data.dtr)
+-		return false;
+-
+ 	if (op->addr.nbytes != 0) {
+ 		if (op->addr.buswidth > 1)
  			return false;
- 	}
- 
-@@ -464,6 +453,10 @@ static const struct spi_controller_mem_ops rtk_spi_mem_ops = {
- 	.adjust_op_size = rtk_spi_adjust_op_size,
- };
- 
-+static const struct spi_controller_mem_caps rtk_spi_mem_caps = {
-+	.dummy_cycles = true,
-+};
-+
- static int rtk_spi_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
-@@ -535,6 +528,7 @@ static int rtk_spi_probe(struct platform_device *pdev)
- 	ctrl->mode_bits = SPI_RX_DUAL | SPI_TX_DUAL;
- 	ctrl->bus_num = -1;
- 	ctrl->mem_ops = &rtk_spi_mem_ops;
-+	ctrl->mem_caps = &rtk_spi_mem_caps;
- 	ctrl->num_chipselect = 1;
- 	ctrl->auto_runtime_pm = true;
- 
 
 -- 
 2.56.0
